@@ -1,7 +1,7 @@
 From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: [PATCH 17/22] m68k/kernel: Modernize printing of kernel messages
-Date: Wed,  7 Dec 2016 16:09:15 +0100
-Message-ID: <1481123360-10978-18-git-send-email-geert__10226.3765912086$1481123881$gmane$org@linux-m68k.org>
+Subject: [PATCH 08/22] m68k/mac: iop - Modernize printing of kernel messages
+Date: Wed,  7 Dec 2016 16:09:06 +0100
+Message-ID: <1481123360-10978-9-git-send-email-geert__39454.2733942673$1481123882$gmane$org@linux-m68k.org>
 References: <1481123360-10978-1-git-send-email-geert@linux-m68k.org>
 Return-path: <linux-m68k-owner@vger.kernel.org>
 In-Reply-To: <1481123360-10978-1-git-send-email-geert@linux-m68k.org>
@@ -10,182 +10,172 @@ List-Id: linux-m68k@vger.kernel.org
 To: Greg Ungerer <gerg@linux-m68k.org>, Sam Creasey <sammy@sammy.net>, Joshua Thompson <funaho@jurai.org>, Finn Thain <fthain@telegraphics.com.au>
 Cc: linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org, Geert Uytterhoeven <geert@linux-m68k.org>
 
-  - Use pr_err_ratelimited() instead of deprecated printk_ratelimit(),
-  - Add dummies for validating format strings when debugging is
-    disabled,
+  - Introduce helpers for printing debug messages, incl. dummies for
+    validating format strings when debugging is disabled,
   - Convert from printk() to pr_*(),
-  - Correct printf()-style format specifiers.
+  - Add missing continuations,
+  - Drop superfluous casts.
 
 Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
 ---
- arch/m68k/kernel/dma.c     |  4 ++--
- arch/m68k/kernel/module.c  | 12 ++++++------
- arch/m68k/kernel/process.c | 20 ++++++++++----------
- arch/m68k/kernel/signal.c  | 24 +++++++-----------------
- arch/m68k/kernel/uboot.c   |  3 +--
- 5 files changed, 26 insertions(+), 37 deletions(-)
+ arch/m68k/mac/iop.c | 69 ++++++++++++++++++++++-------------------------------
+ 1 file changed, 29 insertions(+), 40 deletions(-)
 
-diff --git a/arch/m68k/kernel/dma.c b/arch/m68k/kernel/dma.c
-index 8cf97cbadc91a705..805c6ccb23ef1bd5 100644
---- a/arch/m68k/kernel/dma.c
-+++ b/arch/m68k/kernel/dma.c
-@@ -110,8 +110,8 @@ static void m68k_dma_sync_single_for_device(struct device *dev,
- 		cache_clear(handle, size);
- 		break;
- 	default:
--		if (printk_ratelimit())
--			printk("dma_sync_single_for_device: unsupported dir %u\n", dir);
-+		pr_err_ratelimited("dma_sync_single_for_device: unsupported dir %u\n",
-+				   dir);
- 		break;
+diff --git a/arch/m68k/mac/iop.c b/arch/m68k/mac/iop.c
+index 7990b6f50105b19b..bbfeded6b270f950 100644
+--- a/arch/m68k/mac/iop.c
++++ b/arch/m68k/mac/iop.c
+@@ -116,6 +116,13 @@
+ #include <asm/mac_iop.h>
+ 
+ /*#define DEBUG_IOP*/
++#ifdef DEBUG_IOP
++#define pr_iop(fmt, ...) printk(KERN_DEBUG pr_fmt(fmt), ##__VA_ARGS__)
++#define pr_iop_cont(fmt, ...) pr_cont(fmt, ##__VA_ARGS__)
++#else
++#define pr_iop(fmt, ...) no_printk(KERN_DEBUG pr_fmt(fmt), ##__VA_ARGS__)
++#define pr_iop_cont(fmt, ...) no_printk(fmt, ##__VA_ARGS__)
++#endif
+ 
+ /* Non-zero if the IOPs are present */
+ 
+@@ -268,10 +275,10 @@ void __init iop_init(void)
+ 	int i;
+ 
+ 	if (iop_scc_present) {
+-		printk("IOP: detected SCC IOP at %p\n", iop_base[IOP_NUM_SCC]);
++		pr_info("IOP: detected SCC IOP at %p\n", iop_base[IOP_NUM_SCC]);
+ 	}
+ 	if (iop_ism_present) {
+-		printk("IOP: detected ISM IOP at %p\n", iop_base[IOP_NUM_ISM]);
++		pr_info("IOP: detected ISM IOP at %p\n", iop_base[IOP_NUM_ISM]);
+ 		iop_start(iop_base[IOP_NUM_ISM]);
+ 		iop_alive(iop_base[IOP_NUM_ISM]); /* clears the alive flag */
+ 	}
+@@ -310,9 +317,9 @@ void __init iop_register_interrupts(void)
+ 				pr_err("Couldn't register ISM IOP interrupt\n");
+ 		}
+ 		if (!iop_alive(iop_base[IOP_NUM_ISM])) {
+-			printk("IOP: oh my god, they killed the ISM IOP!\n");
++			pr_warn("IOP: oh my god, they killed the ISM IOP!\n");
+ 		} else {
+-			printk("IOP: the ISM IOP seems to be alive.\n");
++			pr_info("IOP: the ISM IOP seems to be alive.\n");
+ 		}
  	}
  }
-diff --git a/arch/m68k/kernel/module.c b/arch/m68k/kernel/module.c
-index eb46fd6038cac73a..aaac2da318ffd377 100644
---- a/arch/m68k/kernel/module.c
-+++ b/arch/m68k/kernel/module.c
-@@ -12,9 +12,9 @@
- #include <linux/kernel.h>
+@@ -349,9 +356,8 @@ void iop_complete_message(struct iop_msg *msg)
+ 	int chan = msg->channel;
+ 	int i,offset;
  
- #if 0
--#define DEBUGP printk
-+#define DEBUGP(fmt, ...) printk(KERN_DEBUG pr_fmt(fmt), ##__VA_ARGS__)
- #else
--#define DEBUGP(fmt...)
-+#define DEBUGP(fmt, ...) no_printk(KERN_DEBUG pr_fmt(fmt), ##__VA_ARGS__)
+-#ifdef DEBUG_IOP
+-	printk("iop_complete(%p): iop %d chan %d\n", msg, msg->iop_num, msg->channel);
+-#endif
++	pr_iop("iop_complete(%p): iop %d chan %d\n", msg, msg->iop_num,
++	       msg->channel);
+ 
+ 	offset = IOP_ADDR_RECV_MSG + (msg->channel * IOP_MSG_LEN);
+ 
+@@ -397,9 +403,7 @@ static void iop_handle_send(uint iop_num, uint chan)
+ 	struct iop_msg *msg,*msg2;
+ 	int i,offset;
+ 
+-#ifdef DEBUG_IOP
+-	printk("iop_handle_send: iop %d channel %d\n", iop_num, chan);
+-#endif
++	pr_iop("iop_handle_send: iop %d channel %d\n", iop_num, chan);
+ 
+ 	iop_writeb(iop, IOP_ADDR_SEND_STATE + chan, IOP_MSG_IDLE);
+ 
+@@ -430,9 +434,7 @@ static void iop_handle_recv(uint iop_num, uint chan)
+ 	int i,offset;
+ 	struct iop_msg *msg;
+ 
+-#ifdef DEBUG_IOP
+-	printk("iop_handle_recv: iop %d channel %d\n", iop_num, chan);
+-#endif
++	pr_iop("iop_handle_recv: iop %d channel %d\n", iop_num, chan);
+ 
+ 	msg = iop_alloc_msg();
+ 	msg->iop_num = iop_num;
+@@ -454,13 +456,14 @@ static void iop_handle_recv(uint iop_num, uint chan)
+ 	if (msg->handler) {
+ 		(*msg->handler)(msg);
+ 	} else {
++		pr_iop("iop_handle_recv: unclaimed message on iop %d channel %d\n",
++		       iop_num, chan);
+ #ifdef DEBUG_IOP
+-		printk("iop_handle_recv: unclaimed message on iop %d channel %d\n", iop_num, chan);
+-		printk("iop_handle_recv:");
++		pr_iop("iop_handle_recv:");
+ 		for (i = 0 ; i < IOP_MSG_LEN ; i++) {
+-			printk(" %02X", (uint) msg->message[i]);
++			pr_cont(" %02X", msg->message[i]);
+ 		}
+-		printk("\n");
++		pr_iop_cont("\n");
  #endif
+ 		iop_complete_message(msg);
+ 	}
+@@ -574,50 +577,36 @@ irqreturn_t iop_ism_irq(int irq, void *dev_id)
+ 	volatile struct mac_iop *iop = iop_base[iop_num];
+ 	int i,state;
  
- #ifdef CONFIG_MODULES
-@@ -51,8 +51,8 @@ int apply_relocate(Elf32_Shdr *sechdrs,
- 			*location += sym->st_value - (uint32_t)location;
- 			break;
- 		default:
--			printk(KERN_ERR "module %s: Unknown relocation: %u\n",
--			       me->name, ELF32_R_TYPE(rel[i].r_info));
-+			pr_err("module %s: Unknown relocation: %u\n", me->name,
-+			       ELF32_R_TYPE(rel[i].r_info));
- 			return -ENOEXEC;
+-#ifdef DEBUG_IOP
+-	printk("iop_ism_irq: status = %02X\n", (uint) iop->status_ctrl);
+-#endif
++	pr_iop("iop_ism_irq: status = %02X\n", iop->status_ctrl);
+ 
+ 	/* INT0 indicates a state change on an outgoing message channel */
+ 
+ 	if (iop->status_ctrl & IOP_INT0) {
+ 		iop->status_ctrl = IOP_INT0 | IOP_RUN | IOP_AUTOINC;
+-#ifdef DEBUG_IOP
+-		printk("iop_ism_irq: new status = %02X, send states",
+-			(uint) iop->status_ctrl);
+-#endif
++		pr_iop("iop_ism_irq: new status = %02X, send states",
++		       iop->status_ctrl);
+ 		for (i = 0 ; i < NUM_IOP_CHAN  ; i++) {
+ 			state = iop_readb(iop, IOP_ADDR_SEND_STATE + i);
+-#ifdef DEBUG_IOP
+-			printk(" %02X", state);
+-#endif
++			pr_iop_cont(" %02X", state);
+ 			if (state == IOP_MSG_COMPLETE) {
+ 				iop_handle_send(iop_num, i);
+ 			}
  		}
+-#ifdef DEBUG_IOP
+-		printk("\n");
+-#endif
++		pr_iop_cont("\n");
  	}
-@@ -91,8 +91,8 @@ int apply_relocate_add(Elf32_Shdr *sechdrs,
- 			*location = rel[i].r_addend + sym->st_value - (uint32_t)location;
- 			break;
- 		default:
--			printk(KERN_ERR "module %s: Unknown relocation: %u\n",
--			       me->name, ELF32_R_TYPE(rel[i].r_info));
-+			pr_err("module %s: Unknown relocation: %u\n", me->name,
-+			       ELF32_R_TYPE(rel[i].r_info));
- 			return -ENOEXEC;
+ 
+ 	if (iop->status_ctrl & IOP_INT1) {	/* INT1 for incoming msgs */
+ 		iop->status_ctrl = IOP_INT1 | IOP_RUN | IOP_AUTOINC;
+-#ifdef DEBUG_IOP
+-		printk("iop_ism_irq: new status = %02X, recv states",
+-			(uint) iop->status_ctrl);
+-#endif
++		pr_iop("iop_ism_irq: new status = %02X, recv states",
++		       iop->status_ctrl);
+ 		for (i = 0 ; i < NUM_IOP_CHAN ; i++) {
+ 			state = iop_readb(iop, IOP_ADDR_RECV_STATE + i);
+-#ifdef DEBUG_IOP
+-			printk(" %02X", state);
+-#endif
++			pr_iop_cont(" %02X", state);
+ 			if (state == IOP_MSG_NEW) {
+ 				iop_handle_recv(iop_num, i);
+ 			}
  		}
- 	}
-diff --git a/arch/m68k/kernel/process.c b/arch/m68k/kernel/process.c
-index 4ba1ae7345c324c9..2be5720e649ff42e 100644
---- a/arch/m68k/kernel/process.c
-+++ b/arch/m68k/kernel/process.c
-@@ -87,17 +87,17 @@ void machine_power_off(void)
- 
- void show_regs(struct pt_regs * regs)
- {
--	printk("\n");
--	printk("Format %02x  Vector: %04x  PC: %08lx  Status: %04x    %s\n",
--	       regs->format, regs->vector, regs->pc, regs->sr, print_tainted());
--	printk("ORIG_D0: %08lx  D0: %08lx  A2: %08lx  A1: %08lx\n",
--	       regs->orig_d0, regs->d0, regs->a2, regs->a1);
--	printk("A0: %08lx  D5: %08lx  D4: %08lx\n",
--	       regs->a0, regs->d5, regs->d4);
--	printk("D3: %08lx  D2: %08lx  D1: %08lx\n",
--	       regs->d3, regs->d2, regs->d1);
-+	pr_info("Format %02x  Vector: %04x  PC: %08lx  Status: %04x    %s\n",
-+		regs->format, regs->vector, regs->pc, regs->sr,
-+		print_tainted());
-+	pr_info("ORIG_D0: %08lx  D0: %08lx  A2: %08lx  A1: %08lx\n",
-+		regs->orig_d0, regs->d0, regs->a2, regs->a1);
-+	pr_info("A0: %08lx  D5: %08lx  D4: %08lx\n", regs->a0, regs->d5,
-+		regs->d4);
-+	pr_info("D3: %08lx  D2: %08lx  D1: %08lx\n", regs->d3, regs->d2,
-+		regs->d1);
- 	if (!(regs->sr & PS_S))
--		printk("USP: %08lx\n", rdusp());
-+		pr_info("USP: %08lx\n", rdusp());
- }
- 
- void flush_thread(void)
-diff --git a/arch/m68k/kernel/signal.c b/arch/m68k/kernel/signal.c
-index 58507edbdf1d5fa8..ef471c87776d92c7 100644
---- a/arch/m68k/kernel/signal.c
-+++ b/arch/m68k/kernel/signal.c
-@@ -598,9 +598,7 @@ static int mangle_kernel_stack(struct pt_regs *regs, int formatvec,
- 		/*
- 		 * user process trying to return with weird frame format
- 		 */
--#ifdef DEBUG
--		printk("user process returning with weird frame format\n");
+-#ifdef DEBUG_IOP
+-		printk("\n");
 -#endif
-+		pr_debug("user process returning with weird frame format\n");
- 		return 1;
++		pr_iop_cont("\n");
  	}
- 	if (!fsize) {
-@@ -846,10 +844,8 @@ static int setup_frame(struct ksignal *ksig, sigset_t *set,
- 	int err = 0, sig = ksig->sig;
- 
- 	if (fsize < 0) {
--#ifdef DEBUG
--		printk ("setup_frame: Unknown frame format %#x\n",
--			regs->format);
--#endif
-+		pr_debug("setup_frame: Unknown frame format %#x\n",
-+			 regs->format);
- 		return -EFAULT;
- 	}
- 
-@@ -905,9 +901,7 @@ static int setup_frame(struct ksignal *ksig, sigset_t *set,
- 	if (regs->stkadj) {
- 		struct pt_regs *tregs =
- 			(struct pt_regs *)((ulong)regs + regs->stkadj);
--#ifdef DEBUG
--		printk("Performing stackadjust=%04x\n", regs->stkadj);
--#endif
-+		pr_debug("Performing stackadjust=%04lx\n", regs->stkadj);
- 		/* This must be copied with decreasing addresses to
-                    handle overlaps.  */
- 		tregs->vector = 0;
-@@ -926,10 +920,8 @@ static int setup_rt_frame(struct ksignal *ksig, sigset_t *set,
- 	int err = 0, sig = ksig->sig;
- 
- 	if (fsize < 0) {
--#ifdef DEBUG
--		printk ("setup_frame: Unknown frame format %#x\n",
--			regs->format);
--#endif
-+		pr_debug("setup_frame: Unknown frame format %#x\n",
-+			 regs->format);
- 		return -EFAULT;
- 	}
- 
-@@ -993,9 +985,7 @@ static int setup_rt_frame(struct ksignal *ksig, sigset_t *set,
- 	if (regs->stkadj) {
- 		struct pt_regs *tregs =
- 			(struct pt_regs *)((ulong)regs + regs->stkadj);
--#ifdef DEBUG
--		printk("Performing stackadjust=%04x\n", regs->stkadj);
--#endif
-+		pr_debug("Performing stackadjust=%04lx\n", regs->stkadj);
- 		/* This must be copied with decreasing addresses to
-                    handle overlaps.  */
- 		tregs->vector = 0;
-diff --git a/arch/m68k/kernel/uboot.c b/arch/m68k/kernel/uboot.c
-index b3536a82a26202b6..b29c3b241e1bb590 100644
---- a/arch/m68k/kernel/uboot.c
-+++ b/arch/m68k/kernel/uboot.c
-@@ -83,8 +83,7 @@ static void __init parse_uboot_commandline(char *commandp, int size)
- 		initrd_start = uboot_initrd_start;
- 		initrd_end = uboot_initrd_end;
- 		ROOT_DEV = Root_RAM0;
--		printk(KERN_INFO "initrd at 0x%lx:0x%lx\n",
--			initrd_start, initrd_end);
-+		pr_info("initrd at 0x%lx:0x%lx\n", initrd_start, initrd_end);
- 	}
- #endif /* if defined(CONFIG_BLK_DEV_INITRD) */
+ 	return IRQ_HANDLED;
  }
 -- 
 1.9.1
