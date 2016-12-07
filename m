@@ -1,7 +1,7 @@
 From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: [PATCH 03/22] m68k/mac: via - Modernize printing of kernel messages
-Date: Wed,  7 Dec 2016 16:09:01 +0100
-Message-ID: <1481123360-10978-4-git-send-email-geert__14597.6078034893$1481123894$gmane$org@linux-m68k.org>
+Subject: [PATCH 16/22] m68k/sun3x: Modernize printing of kernel messages
+Date: Wed,  7 Dec 2016 16:09:14 +0100
+Message-ID: <1481123360-10978-17-git-send-email-geert__27363.5921221741$1481123895$gmane$org@linux-m68k.org>
 References: <1481123360-10978-1-git-send-email-geert@linux-m68k.org>
 Return-path: <linux-m68k-owner@vger.kernel.org>
 In-Reply-To: <1481123360-10978-1-git-send-email-geert@linux-m68k.org>
@@ -10,124 +10,169 @@ List-Id: linux-m68k@vger.kernel.org
 To: Greg Ungerer <gerg@linux-m68k.org>, Sam Creasey <sammy@sammy.net>, Joshua Thompson <funaho@jurai.org>, Finn Thain <fthain@telegraphics.com.au>
 Cc: linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org, Geert Uytterhoeven <geert@linux-m68k.org>
 
-  - Introduce helpers for printing debug messages, incl. dummies for
-    validating format strings when debugging is disabled,
   - Convert from printk() to pr_*(),
-  - Add missing continuations, to fix user-visible breakage,
-  - Drop superfluous casts.
+  - Remove #undef DEBUG,
+  - Drop useless Warning prefix,
+  - Use TABs for indentation while at it.
 
-Fixes: 4bcc595ccd80decb ("printk: reinstate KERN_CONT for printing continuation lines")
 Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
 ---
- arch/m68k/mac/via.c | 54 ++++++++++++++++++++++++++---------------------------
- 1 file changed, 27 insertions(+), 27 deletions(-)
+ arch/m68k/include/asm/sun3xflop.h | 14 +++++++-------
+ arch/m68k/sun3x/dvma.c            | 35 +++++++++++++----------------------
+ arch/m68k/sun3x/prom.c            |  4 ++--
+ 3 files changed, 22 insertions(+), 31 deletions(-)
 
-diff --git a/arch/m68k/mac/via.c b/arch/m68k/mac/via.c
-index 920ff63d4a81d77a..7c53b10d93817d9c 100644
---- a/arch/m68k/mac/via.c
-+++ b/arch/m68k/mac/via.c
-@@ -36,6 +36,12 @@
- #include <asm/mac_psc.h>
- #include <asm/mac_oss.h>
- 
-+#ifdef DEBUG_IRQUSE
-+#define pr_irq(fmt, ...) printk(KERN_DEBUG pr_fmt(fmt), ##__VA_ARGS__)
-+#else
-+#define pr_irq(fmt, ...) no_printk(KERN_DEBUG pr_fmt(fmt), ##__VA_ARGS__)
-+#endif
-+
- volatile __u8 *via1, *via2;
- int rbv_present;
- int via_alt_mapping;
-@@ -168,15 +174,15 @@ void __init via_init(void)
- 			panic("UNKNOWN VIA TYPE");
+diff --git a/arch/m68k/include/asm/sun3xflop.h b/arch/m68k/include/asm/sun3xflop.h
+index a02ea3a7bb20a029..159269b7f2e8d61e 100644
+--- a/arch/m68k/include/asm/sun3xflop.h
++++ b/arch/m68k/include/asm/sun3xflop.h
+@@ -48,7 +48,7 @@ static unsigned char sun3x_82072_fd_inb(int port)
+ //	udelay(5);
+ 	switch(port & 7) {
+ 	default:
+-		printk("floppy: Asked to read unknown port %d\n", port);
++		pr_crit("floppy: Asked to read unknown port %d\n", port);
+ 		panic("floppy: Port bolixed.");
+ 	case 4: /* FD_STATUS */
+ 		return (*sun3x_fdc.status_r) & ~STATUS_DMA;
+@@ -70,7 +70,7 @@ static void sun3x_82072_fd_outb(unsigned char value, int port)
+ //	udelay(5);
+ 	switch(port & 7) {
+ 	default:
+-		printk("floppy: Asked to write to unknown port %d\n", port);
++		pr_crit("floppy: Asked to write to unknown port %d\n", port);
+ 		panic("floppy: Port bolixed.");
+ 	case 2: /* FD_DOR */
+ 		/* Oh geese, 82072 on the Sun has no DOR register,
+@@ -127,7 +127,7 @@ asmlinkage irqreturn_t sun3xflop_hardint(int irq, void *dev_id)
+ 		return IRQ_HANDLED;
  	}
  
--	printk(KERN_INFO "VIA1 at %p is a 6522 or clone\n", via1);
-+	pr_info("VIA1 at %p is a 6522 or clone\n", via1);
+-//	printk("doing pdma\n");// st %x\n", sun_fdc->status_82072);
++//	pr_info("doing pdma\n");// st %x\n", sun_fdc->status_82072);
  
--	printk(KERN_INFO "VIA2 at %p is ", via2);
-+	pr_info("VIA2 at %p is ", via2);
- 	if (rbv_present) {
--		printk("an RBV\n");
-+		pr_cont("an RBV\n");
- 	} else if (oss_present) {
--		printk("an OSS\n");
-+		pr_cont("an OSS\n");
- 	} else {
--		printk("a 6522 or clone\n");
-+		pr_cont("a 6522 or clone\n");
- 	}
+ #ifdef TRACE_FLPY_INT
+ 	if(!calls)
+@@ -171,7 +171,7 @@ asmlinkage irqreturn_t sun3xflop_hardint(int irq, void *dev_id)
+ #ifdef TRACE_FLPY_INT
+ 	calls++;
+ #endif
+-//	printk("st=%02x\n", st);
++//	pr_info("st=%02x\n", st);
+ 	if(st == 0x20)
+ 		return IRQ_HANDLED;
+ 	if(!(st & 0x20)) {
+@@ -180,9 +180,9 @@ asmlinkage irqreturn_t sun3xflop_hardint(int irq, void *dev_id)
+ 		doing_pdma = 0;
  
- #ifdef DEBUG_VIA
-@@ -299,24 +305,22 @@ void __init via_init_clock(irq_handler_t func)
+ #ifdef TRACE_FLPY_INT
+-		printk("count=%x, residue=%x calls=%d bytes=%x dma_wait=%d\n",
+-		       virtual_dma_count, virtual_dma_residue, calls, bytes,
+-		       dma_wait);
++		pr_info("count=%x, residue=%x calls=%d bytes=%x dma_wait=%d\n",
++			virtual_dma_count, virtual_dma_residue, calls, bytes,
++			dma_wait);
+ 		calls = 0;
+ 		dma_wait=0;
+ #endif
+diff --git a/arch/m68k/sun3x/dvma.c b/arch/m68k/sun3x/dvma.c
+index d5ddcdaa23473561..9413c8724b0d3372 100644
+--- a/arch/m68k/sun3x/dvma.c
++++ b/arch/m68k/sun3x/dvma.c
+@@ -58,21 +58,17 @@
+ 					 ((addr & 0x03c00000) >>     \
+ 						(DVMA_PAGE_SHIFT+4)))
  
- void via_debug_dump(void)
+-#undef DEBUG
+-
+ #ifdef DEBUG
+ /* code to print out a dvma mapping for debugging purposes */
+ void dvma_print (unsigned long dvma_addr)
  {
--	printk(KERN_DEBUG "VIA1: DDRA = 0x%02X DDRB = 0x%02X ACR = 0x%02X\n",
--		(uint) via1[vDirA], (uint) via1[vDirB], (uint) via1[vACR]);
--	printk(KERN_DEBUG "         PCR = 0x%02X  IFR = 0x%02X IER = 0x%02X\n",
--		(uint) via1[vPCR], (uint) via1[vIFR], (uint) via1[vIER]);
-+	pr_debug("VIA1: DDRA = 0x%02X DDRB = 0x%02X ACR = 0x%02X\n",
-+		 via1[vDirA], via1[vDirB], via1[vACR]);
-+	pr_debug("       PCR = 0x%02X  IFR = 0x%02X IER = 0x%02X\n",
-+		 via1[vPCR], via1[vIFR], via1[vIER]);
- 	if (oss_present) {
--		printk(KERN_DEBUG "VIA2: <OSS>\n");
-+		pr_debug("VIA2: <OSS>\n");
- 	} else if (rbv_present) {
--		printk(KERN_DEBUG "VIA2:  IFR = 0x%02X  IER = 0x%02X\n",
--			(uint) via2[rIFR], (uint) via2[rIER]);
--		printk(KERN_DEBUG "      SIFR = 0x%02X SIER = 0x%02X\n",
--			(uint) via2[rSIFR], (uint) via2[rSIER]);
-+		pr_debug("VIA2:  IFR = 0x%02X  IER = 0x%02X\n", via2[rIFR],
-+			 via2[rIER]);
-+		pr_debug("      SIFR = 0x%02X SIER = 0x%02X\n", via2[rSIFR],
-+			 via2[rSIER]);
- 	} else {
--		printk(KERN_DEBUG "VIA2: DDRA = 0x%02X DDRB = 0x%02X ACR = 0x%02X\n",
--			(uint) via2[vDirA], (uint) via2[vDirB],
--			(uint) via2[vACR]);
--		printk(KERN_DEBUG "         PCR = 0x%02X  IFR = 0x%02X IER = 0x%02X\n",
--			(uint) via2[vPCR],
--			(uint) via2[vIFR], (uint) via2[vIER]);
-+		pr_debug("VIA2: DDRA = 0x%02X DDRB = 0x%02X ACR = 0x%02X\n",
-+			 via2[vDirA], via2[vDirB], via2[vACR]);
-+		pr_debug("       PCR = 0x%02X  IFR = 0x%02X IER = 0x%02X\n",
-+			 via2[vPCR], via2[vIFR], via2[vIER]);
- 	}
+ 
+-        unsigned long index;
+-
+-        index = dvma_addr >> DVMA_PAGE_SHIFT;
+-
+-        printk("idx %lx dvma_addr %08lx paddr %08lx\n", index, dvma_addr,
+-               dvma_entry_paddr(index));
++	unsigned long index;
+ 
++	index = dvma_addr >> DVMA_PAGE_SHIFT;
+ 
++	pr_info("idx %lx dvma_addr %08lx paddr %08lx\n", index, dvma_addr,
++		dvma_entry_paddr(index));
  }
+ #endif
  
-@@ -362,7 +366,7 @@ int via_get_cache_disable(void)
- {
- 	/* Safeguard against being called accidentally */
- 	if (!via2) {
--		printk(KERN_ERR "via_get_cache_disable called on a non-VIA machine!\n");
-+		pr_err("via_get_cache_disable called on a non-VIA machine!\n");
- 		return 1;
+@@ -91,10 +87,7 @@ inline int dvma_map_cpu(unsigned long kaddr,
+ 
+ 	end = PAGE_ALIGN(vaddr + len);
+ 
+-#ifdef DEBUG
+-	printk("dvma: mapping kern %08lx to virt %08lx\n",
+-	       kaddr, vaddr);
+-#endif
++	pr_debug("dvma: mapping kern %08lx to virt %08lx\n", kaddr, vaddr);
+ 	pgd = pgd_offset_k(vaddr);
+ 
+ 	do {
+@@ -126,10 +119,8 @@ inline int dvma_map_cpu(unsigned long kaddr,
+ 				end3 = end2;
+ 
+ 			do {
+-#ifdef DEBUG
+-				printk("mapping %08lx phys to %08lx\n",
+-				       __pa(kaddr), vaddr);
+-#endif
++				pr_debug("mapping %08lx phys to %08lx\n",
++					 __pa(kaddr), vaddr);
+ 				set_pte(pte, pfn_pte(virt_to_pfn(kaddr),
+ 						     PAGE_KERNEL));
+ 				pte++;
+@@ -162,7 +153,8 @@ inline int dvma_map_iommu(unsigned long kaddr, unsigned long baddr,
+ 	for(; index < end ; index++) {
+ //		if(dvma_entry_use(index))
+ //			BUG();
+-//		printk("mapping pa %lx to ba %lx\n", __pa(kaddr), index << DVMA_PAGE_SHIFT);
++//		pr_info("mapping pa %lx to ba %lx\n", __pa(kaddr),
++//			index << DVMA_PAGE_SHIFT);
+ 
+ 		dvma_entry_set(index, __pa(kaddr));
+ 
+@@ -190,13 +182,12 @@ void dvma_unmap_iommu(unsigned long baddr, int len)
+ 	end = (DVMA_PAGE_ALIGN(baddr+len) >> DVMA_PAGE_SHIFT);
+ 
+ 	for(; index < end ; index++) {
+-#ifdef DEBUG
+-		printk("freeing bus mapping %08x\n", index << DVMA_PAGE_SHIFT);
+-#endif
++		pr_debug("freeing bus mapping %08x\n",
++			 index << DVMA_PAGE_SHIFT);
+ #if 0
+ 		if(!dvma_entry_use(index))
+-			printk("dvma_unmap freeing unused entry %04x\n",
+-			       index);
++			pr_info("dvma_unmap freeing unused entry %04x\n",
++				index);
+ 		else
+ 			dvma_entry_dec(index);
+ #endif
+diff --git a/arch/m68k/sun3x/prom.c b/arch/m68k/sun3x/prom.c
+index 0898c3f8150851a3..5d60e65c1ee5274e 100644
+--- a/arch/m68k/sun3x/prom.c
++++ b/arch/m68k/sun3x/prom.c
+@@ -106,9 +106,9 @@ void __init sun3x_prom_init(void)
+ 	idprom_init();
+ 
+ 	if (!((idprom->id_machtype & SM_ARCH_MASK) == SM_SUN3X)) {
+-		printk("Warning: machine reports strange type %02x\n",
++		pr_warn("Machine reports strange type %02x\n",
+ 			idprom->id_machtype);
+-		printk("Pretending it's a 3/80, but very afraid...\n");
++		pr_warn("Pretending it's a 3/80, but very afraid...\n");
+ 		idprom->id_machtype = SM_SUN3X | SM_3_80;
  	}
  
-@@ -550,9 +554,7 @@ void via_irq_enable(int irq) {
- 	int irq_src	= IRQ_SRC(irq);
- 	int irq_idx	= IRQ_IDX(irq);
- 
--#ifdef DEBUG_IRQUSE
--	printk(KERN_DEBUG "via_irq_enable(%d)\n", irq);
--#endif
-+	pr_irq("via_irq_enable(%d)\n", irq);
- 
- 	if (irq_src == 1) {
- 		via1[vIER] = IER_SET_BIT(irq_idx);
-@@ -582,9 +584,7 @@ void via_irq_disable(int irq) {
- 	int irq_src	= IRQ_SRC(irq);
- 	int irq_idx	= IRQ_IDX(irq);
- 
--#ifdef DEBUG_IRQUSE
--	printk(KERN_DEBUG "via_irq_disable(%d)\n", irq);
--#endif
-+	pr_irq("via_irq_disable(%d)\n", irq);
- 
- 	if (irq_src == 1) {
- 		via1[vIER] = IER_CLR_BIT(irq_idx);
 -- 
 1.9.1
