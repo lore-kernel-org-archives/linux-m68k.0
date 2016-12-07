@@ -1,13 +1,13 @@
 From: Finn Thain <fthain@telegraphics.com.au>
-Subject: Re: [PATCH 07/22] m68k/mac: baboon - Modernize printing of kernel
+Subject: Re: [PATCH 08/22] m68k/mac: iop - Modernize printing of kernel
  messages
-Date: Thu, 8 Dec 2016 09:54:34 +1100 (AEDT)
-Message-ID: <alpine.LNX.2.00.1612080953460.9219__23515.1664274328$1481151280$gmane$org@nippy.intranet>
-References: <1481123360-10978-1-git-send-email-geert@linux-m68k.org> <1481123360-10978-8-git-send-email-geert@linux-m68k.org>
+Date: Thu, 8 Dec 2016 10:06:02 +1100 (AEDT)
+Message-ID: <alpine.LNX.2.00.1612080959250.9219@nippy.intranet>
+References: <1481123360-10978-1-git-send-email-geert@linux-m68k.org> <1481123360-10978-9-git-send-email-geert@linux-m68k.org>
 Mime-Version: 1.0
 Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <linux-m68k-owner@vger.kernel.org>
-In-Reply-To: <1481123360-10978-8-git-send-email-geert@linux-m68k.org>
+In-Reply-To: <1481123360-10978-9-git-send-email-geert@linux-m68k.org>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
 To: Geert Uytterhoeven <geert@linux-m68k.org>
@@ -19,77 +19,179 @@ On Wed, 7 Dec 2016, Geert Uytterhoeven wrote:
 >   - Introduce helpers for printing debug messages, incl. dummies for
 >     validating format strings when debugging is disabled,
 >   - Convert from printk() to pr_*(),
+>   - Add missing continuations,
 >   - Drop superfluous casts.
 > 
 > Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
 > ---
->  arch/m68k/mac/baboon.c | 22 ++++++++++------------
->  1 file changed, 10 insertions(+), 12 deletions(-)
+>  arch/m68k/mac/iop.c | 69 ++++++++++++++++++++++-------------------------------
+>  1 file changed, 29 insertions(+), 40 deletions(-)
 > 
-> diff --git a/arch/m68k/mac/baboon.c b/arch/m68k/mac/baboon.c
-> index f6f7d42713ec8b95..5dac92227654419b 100644
-> --- a/arch/m68k/mac/baboon.c
-> +++ b/arch/m68k/mac/baboon.c
-> @@ -15,6 +15,11 @@
->  #include <asm/mac_baboon.h>
+> diff --git a/arch/m68k/mac/iop.c b/arch/m68k/mac/iop.c
+> index 7990b6f50105b19b..bbfeded6b270f950 100644
+> --- a/arch/m68k/mac/iop.c
+> +++ b/arch/m68k/mac/iop.c
+> @@ -116,6 +116,13 @@
+>  #include <asm/mac_iop.h>
 >  
->  /* #define DEBUG_IRQS */
-> +#ifdef DEBUG_IRQS
-> +#define pr_irq(fmt, ...) printk(KERN_DEBUG pr_fmt(fmt), ##__VA_ARGS__)
+>  /*#define DEBUG_IOP*/
+> +#ifdef DEBUG_IOP
+
+We can use #if 0 here, since the macro can be avoided later...
+
+> +#define pr_iop(fmt, ...) printk(KERN_DEBUG pr_fmt(fmt), ##__VA_ARGS__)
+> +#define pr_iop_cont(fmt, ...) pr_cont(fmt, ##__VA_ARGS__)
 > +#else
-> +#define pr_irq(fmt, ...) no_printk(KERN_DEBUG pr_fmt(fmt), ##__VA_ARGS__)
+> +#define pr_iop(fmt, ...) no_printk(KERN_DEBUG pr_fmt(fmt), ##__VA_ARGS__)
+> +#define pr_iop_cont(fmt, ...) no_printk(fmt, ##__VA_ARGS__)
 > +#endif
 >  
+>  /* Non-zero if the IOPs are present */
+>  
+> @@ -268,10 +275,10 @@ void __init iop_init(void)
+>  	int i;
+>  
+>  	if (iop_scc_present) {
+> -		printk("IOP: detected SCC IOP at %p\n", iop_base[IOP_NUM_SCC]);
+> +		pr_info("IOP: detected SCC IOP at %p\n", iop_base[IOP_NUM_SCC]);
+>  	}
+>  	if (iop_ism_present) {
+> -		printk("IOP: detected ISM IOP at %p\n", iop_base[IOP_NUM_ISM]);
+> +		pr_info("IOP: detected ISM IOP at %p\n", iop_base[IOP_NUM_ISM]);
+>  		iop_start(iop_base[IOP_NUM_ISM]);
+>  		iop_alive(iop_base[IOP_NUM_ISM]); /* clears the alive flag */
+>  	}
+> @@ -310,9 +317,9 @@ void __init iop_register_interrupts(void)
+>  				pr_err("Couldn't register ISM IOP interrupt\n");
+>  		}
+>  		if (!iop_alive(iop_base[IOP_NUM_ISM])) {
+> -			printk("IOP: oh my god, they killed the ISM IOP!\n");
+> +			pr_warn("IOP: oh my god, they killed the ISM IOP!\n");
+>  		} else {
+> -			printk("IOP: the ISM IOP seems to be alive.\n");
+> +			pr_info("IOP: the ISM IOP seems to be alive.\n");
+>  		}
+>  	}
+>  }
+> @@ -349,9 +356,8 @@ void iop_complete_message(struct iop_msg *msg)
+>  	int chan = msg->channel;
+>  	int i,offset;
+>  
+> -#ifdef DEBUG_IOP
+> -	printk("iop_complete(%p): iop %d chan %d\n", msg, msg->iop_num, msg->channel);
+> -#endif
+> +	pr_iop("iop_complete(%p): iop %d chan %d\n", msg, msg->iop_num,
+> +	       msg->channel);
+>  
+>  	offset = IOP_ADDR_RECV_MSG + (msg->channel * IOP_MSG_LEN);
+>  
+> @@ -397,9 +403,7 @@ static void iop_handle_send(uint iop_num, uint chan)
+>  	struct iop_msg *msg,*msg2;
+>  	int i,offset;
+>  
+> -#ifdef DEBUG_IOP
+> -	printk("iop_handle_send: iop %d channel %d\n", iop_num, chan);
+> -#endif
+> +	pr_iop("iop_handle_send: iop %d channel %d\n", iop_num, chan);
+>  
+>  	iop_writeb(iop, IOP_ADDR_SEND_STATE + chan, IOP_MSG_IDLE);
+>  
+> @@ -430,9 +434,7 @@ static void iop_handle_recv(uint iop_num, uint chan)
+>  	int i,offset;
+>  	struct iop_msg *msg;
+>  
+> -#ifdef DEBUG_IOP
+> -	printk("iop_handle_recv: iop %d channel %d\n", iop_num, chan);
+> -#endif
+> +	pr_iop("iop_handle_recv: iop %d channel %d\n", iop_num, chan);
+>  
+>  	msg = iop_alloc_msg();
+>  	msg->iop_num = iop_num;
+> @@ -454,13 +456,14 @@ static void iop_handle_recv(uint iop_num, uint chan)
+>  	if (msg->handler) {
+>  		(*msg->handler)(msg);
+>  	} else {
+> +		pr_iop("iop_handle_recv: unclaimed message on iop %d channel %d\n",
+> +		       iop_num, chan);
+>  #ifdef DEBUG_IOP
+> -		printk("iop_handle_recv: unclaimed message on iop %d channel %d\n", iop_num, chan);
+> -		printk("iop_handle_recv:");
+> +		pr_iop("iop_handle_recv:");
+>  		for (i = 0 ; i < IOP_MSG_LEN ; i++) {
+> -			printk(" %02X", (uint) msg->message[i]);
+> +			pr_cont(" %02X", msg->message[i]);
+>  		}
+> -		printk("\n");
+> +		pr_iop_cont("\n");
+>  #endif
+>  		iop_complete_message(msg);
+>  	}
 
-I'd prefer to drop the DEBUG_IRQS printk messages in this file.
+I think you can avoid the DEBUG_IOP macro entirely, by using
+
+	pr_iop("iop_handle_recv: %*ph\n", IOP_MSG_LEN, msg->message);
 
 Thanks.
 
->  int baboon_present;
->  static volatile struct baboon *baboon;
-> @@ -38,7 +43,7 @@ void __init baboon_init(void)
->  	baboon = (struct baboon *) BABOON_BASE;
->  	baboon_present = 1;
+> @@ -574,50 +577,36 @@ irqreturn_t iop_ism_irq(int irq, void *dev_id)
+>  	volatile struct mac_iop *iop = iop_base[iop_num];
+>  	int i,state;
 >  
-> -	printk("Baboon detected at %p\n", baboon);
-> +	pr_info("Baboon detected at %p\n", baboon);
->  }
->  
->  /*
-> @@ -50,11 +55,8 @@ static void baboon_irq(struct irq_desc *desc)
->  	int irq_bit, irq_num;
->  	unsigned char events;
->  
-> -#ifdef DEBUG_IRQS
-> -	printk("baboon_irq: mb_control %02X mb_ifr %02X mb_status %02X\n",
-> -		(uint) baboon->mb_control, (uint) baboon->mb_ifr,
-> -		(uint) baboon->mb_status);
+> -#ifdef DEBUG_IOP
+> -	printk("iop_ism_irq: status = %02X\n", (uint) iop->status_ctrl);
 > -#endif
-> +	pr_irq("baboon_irq: mb_control %02X mb_ifr %02X mb_status %02X\n",
-> +	       baboon->mb_control, baboon->mb_ifr, baboon->mb_status);
+> +	pr_iop("iop_ism_irq: status = %02X\n", iop->status_ctrl);
 >  
->  	events = baboon->mb_ifr & 0x07;
->  	if (!events)
-> @@ -97,18 +99,14 @@ void __init baboon_register_interrupts(void)
+>  	/* INT0 indicates a state change on an outgoing message channel */
 >  
->  void baboon_irq_enable(int irq)
->  {
-> -#ifdef DEBUG_IRQUSE
-> -	printk("baboon_irq_enable(%d)\n", irq);
+>  	if (iop->status_ctrl & IOP_INT0) {
+>  		iop->status_ctrl = IOP_INT0 | IOP_RUN | IOP_AUTOINC;
+> -#ifdef DEBUG_IOP
+> -		printk("iop_ism_irq: new status = %02X, send states",
+> -			(uint) iop->status_ctrl);
 > -#endif
-> +	pr_irq("baboon_irq_enable(%d)\n", irq);
->  
->  	mac_irq_enable(irq_get_irq_data(IRQ_NUBUS_C));
->  }
->  
->  void baboon_irq_disable(int irq)
->  {
-> -#ifdef DEBUG_IRQUSE
-> -	printk("baboon_irq_disable(%d)\n", irq);
+> +		pr_iop("iop_ism_irq: new status = %02X, send states",
+> +		       iop->status_ctrl);
+>  		for (i = 0 ; i < NUM_IOP_CHAN  ; i++) {
+>  			state = iop_readb(iop, IOP_ADDR_SEND_STATE + i);
+> -#ifdef DEBUG_IOP
+> -			printk(" %02X", state);
 > -#endif
-> +	pr_irq("baboon_irq_disable(%d)\n", irq);
+> +			pr_iop_cont(" %02X", state);
+>  			if (state == IOP_MSG_COMPLETE) {
+>  				iop_handle_send(iop_num, i);
+>  			}
+>  		}
+> -#ifdef DEBUG_IOP
+> -		printk("\n");
+> -#endif
+> +		pr_iop_cont("\n");
+>  	}
 >  
->  	mac_irq_disable(irq_get_irq_data(IRQ_NUBUS_C));
+>  	if (iop->status_ctrl & IOP_INT1) {	/* INT1 for incoming msgs */
+>  		iop->status_ctrl = IOP_INT1 | IOP_RUN | IOP_AUTOINC;
+> -#ifdef DEBUG_IOP
+> -		printk("iop_ism_irq: new status = %02X, recv states",
+> -			(uint) iop->status_ctrl);
+> -#endif
+> +		pr_iop("iop_ism_irq: new status = %02X, recv states",
+> +		       iop->status_ctrl);
+>  		for (i = 0 ; i < NUM_IOP_CHAN ; i++) {
+>  			state = iop_readb(iop, IOP_ADDR_RECV_STATE + i);
+> -#ifdef DEBUG_IOP
+> -			printk(" %02X", state);
+> -#endif
+> +			pr_iop_cont(" %02X", state);
+>  			if (state == IOP_MSG_NEW) {
+>  				iop_handle_recv(iop_num, i);
+>  			}
+>  		}
+> -#ifdef DEBUG_IOP
+> -		printk("\n");
+> -#endif
+> +		pr_iop_cont("\n");
+>  	}
+>  	return IRQ_HANDLED;
 >  }
 > 
 
