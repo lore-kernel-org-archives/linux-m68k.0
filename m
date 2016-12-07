@@ -1,7 +1,7 @@
 From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: [PATCH 08/22] m68k/mac: iop - Modernize printing of kernel messages
-Date: Wed,  7 Dec 2016 16:09:06 +0100
-Message-ID: <1481123360-10978-9-git-send-email-geert__39454.2733942673$1481123882$gmane$org@linux-m68k.org>
+Subject: [PATCH 03/22] m68k/mac: via - Modernize printing of kernel messages
+Date: Wed,  7 Dec 2016 16:09:01 +0100
+Message-ID: <1481123360-10978-4-git-send-email-geert__14597.6078034893$1481123894$gmane$org@linux-m68k.org>
 References: <1481123360-10978-1-git-send-email-geert@linux-m68k.org>
 Return-path: <linux-m68k-owner@vger.kernel.org>
 In-Reply-To: <1481123360-10978-1-git-send-email-geert@linux-m68k.org>
@@ -13,169 +13,121 @@ Cc: linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org, Geert Uytterh
   - Introduce helpers for printing debug messages, incl. dummies for
     validating format strings when debugging is disabled,
   - Convert from printk() to pr_*(),
-  - Add missing continuations,
+  - Add missing continuations, to fix user-visible breakage,
   - Drop superfluous casts.
 
+Fixes: 4bcc595ccd80decb ("printk: reinstate KERN_CONT for printing continuation lines")
 Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
 ---
- arch/m68k/mac/iop.c | 69 ++++++++++++++++++++++-------------------------------
- 1 file changed, 29 insertions(+), 40 deletions(-)
+ arch/m68k/mac/via.c | 54 ++++++++++++++++++++++++++---------------------------
+ 1 file changed, 27 insertions(+), 27 deletions(-)
 
-diff --git a/arch/m68k/mac/iop.c b/arch/m68k/mac/iop.c
-index 7990b6f50105b19b..bbfeded6b270f950 100644
---- a/arch/m68k/mac/iop.c
-+++ b/arch/m68k/mac/iop.c
-@@ -116,6 +116,13 @@
- #include <asm/mac_iop.h>
+diff --git a/arch/m68k/mac/via.c b/arch/m68k/mac/via.c
+index 920ff63d4a81d77a..7c53b10d93817d9c 100644
+--- a/arch/m68k/mac/via.c
++++ b/arch/m68k/mac/via.c
+@@ -36,6 +36,12 @@
+ #include <asm/mac_psc.h>
+ #include <asm/mac_oss.h>
  
- /*#define DEBUG_IOP*/
-+#ifdef DEBUG_IOP
-+#define pr_iop(fmt, ...) printk(KERN_DEBUG pr_fmt(fmt), ##__VA_ARGS__)
-+#define pr_iop_cont(fmt, ...) pr_cont(fmt, ##__VA_ARGS__)
++#ifdef DEBUG_IRQUSE
++#define pr_irq(fmt, ...) printk(KERN_DEBUG pr_fmt(fmt), ##__VA_ARGS__)
 +#else
-+#define pr_iop(fmt, ...) no_printk(KERN_DEBUG pr_fmt(fmt), ##__VA_ARGS__)
-+#define pr_iop_cont(fmt, ...) no_printk(fmt, ##__VA_ARGS__)
++#define pr_irq(fmt, ...) no_printk(KERN_DEBUG pr_fmt(fmt), ##__VA_ARGS__)
 +#endif
- 
- /* Non-zero if the IOPs are present */
- 
-@@ -268,10 +275,10 @@ void __init iop_init(void)
- 	int i;
- 
- 	if (iop_scc_present) {
--		printk("IOP: detected SCC IOP at %p\n", iop_base[IOP_NUM_SCC]);
-+		pr_info("IOP: detected SCC IOP at %p\n", iop_base[IOP_NUM_SCC]);
++
+ volatile __u8 *via1, *via2;
+ int rbv_present;
+ int via_alt_mapping;
+@@ -168,15 +174,15 @@ void __init via_init(void)
+ 			panic("UNKNOWN VIA TYPE");
  	}
- 	if (iop_ism_present) {
--		printk("IOP: detected ISM IOP at %p\n", iop_base[IOP_NUM_ISM]);
-+		pr_info("IOP: detected ISM IOP at %p\n", iop_base[IOP_NUM_ISM]);
- 		iop_start(iop_base[IOP_NUM_ISM]);
- 		iop_alive(iop_base[IOP_NUM_ISM]); /* clears the alive flag */
- 	}
-@@ -310,9 +317,9 @@ void __init iop_register_interrupts(void)
- 				pr_err("Couldn't register ISM IOP interrupt\n");
- 		}
- 		if (!iop_alive(iop_base[IOP_NUM_ISM])) {
--			printk("IOP: oh my god, they killed the ISM IOP!\n");
-+			pr_warn("IOP: oh my god, they killed the ISM IOP!\n");
- 		} else {
--			printk("IOP: the ISM IOP seems to be alive.\n");
-+			pr_info("IOP: the ISM IOP seems to be alive.\n");
- 		}
- 	}
- }
-@@ -349,9 +356,8 @@ void iop_complete_message(struct iop_msg *msg)
- 	int chan = msg->channel;
- 	int i,offset;
  
--#ifdef DEBUG_IOP
--	printk("iop_complete(%p): iop %d chan %d\n", msg, msg->iop_num, msg->channel);
--#endif
-+	pr_iop("iop_complete(%p): iop %d chan %d\n", msg, msg->iop_num,
-+	       msg->channel);
+-	printk(KERN_INFO "VIA1 at %p is a 6522 or clone\n", via1);
++	pr_info("VIA1 at %p is a 6522 or clone\n", via1);
  
- 	offset = IOP_ADDR_RECV_MSG + (msg->channel * IOP_MSG_LEN);
- 
-@@ -397,9 +403,7 @@ static void iop_handle_send(uint iop_num, uint chan)
- 	struct iop_msg *msg,*msg2;
- 	int i,offset;
- 
--#ifdef DEBUG_IOP
--	printk("iop_handle_send: iop %d channel %d\n", iop_num, chan);
--#endif
-+	pr_iop("iop_handle_send: iop %d channel %d\n", iop_num, chan);
- 
- 	iop_writeb(iop, IOP_ADDR_SEND_STATE + chan, IOP_MSG_IDLE);
- 
-@@ -430,9 +434,7 @@ static void iop_handle_recv(uint iop_num, uint chan)
- 	int i,offset;
- 	struct iop_msg *msg;
- 
--#ifdef DEBUG_IOP
--	printk("iop_handle_recv: iop %d channel %d\n", iop_num, chan);
--#endif
-+	pr_iop("iop_handle_recv: iop %d channel %d\n", iop_num, chan);
- 
- 	msg = iop_alloc_msg();
- 	msg->iop_num = iop_num;
-@@ -454,13 +456,14 @@ static void iop_handle_recv(uint iop_num, uint chan)
- 	if (msg->handler) {
- 		(*msg->handler)(msg);
+-	printk(KERN_INFO "VIA2 at %p is ", via2);
++	pr_info("VIA2 at %p is ", via2);
+ 	if (rbv_present) {
+-		printk("an RBV\n");
++		pr_cont("an RBV\n");
+ 	} else if (oss_present) {
+-		printk("an OSS\n");
++		pr_cont("an OSS\n");
  	} else {
-+		pr_iop("iop_handle_recv: unclaimed message on iop %d channel %d\n",
-+		       iop_num, chan);
- #ifdef DEBUG_IOP
--		printk("iop_handle_recv: unclaimed message on iop %d channel %d\n", iop_num, chan);
--		printk("iop_handle_recv:");
-+		pr_iop("iop_handle_recv:");
- 		for (i = 0 ; i < IOP_MSG_LEN ; i++) {
--			printk(" %02X", (uint) msg->message[i]);
-+			pr_cont(" %02X", msg->message[i]);
- 		}
--		printk("\n");
-+		pr_iop_cont("\n");
- #endif
- 		iop_complete_message(msg);
- 	}
-@@ -574,50 +577,36 @@ irqreturn_t iop_ism_irq(int irq, void *dev_id)
- 	volatile struct mac_iop *iop = iop_base[iop_num];
- 	int i,state;
- 
--#ifdef DEBUG_IOP
--	printk("iop_ism_irq: status = %02X\n", (uint) iop->status_ctrl);
--#endif
-+	pr_iop("iop_ism_irq: status = %02X\n", iop->status_ctrl);
- 
- 	/* INT0 indicates a state change on an outgoing message channel */
- 
- 	if (iop->status_ctrl & IOP_INT0) {
- 		iop->status_ctrl = IOP_INT0 | IOP_RUN | IOP_AUTOINC;
--#ifdef DEBUG_IOP
--		printk("iop_ism_irq: new status = %02X, send states",
--			(uint) iop->status_ctrl);
--#endif
-+		pr_iop("iop_ism_irq: new status = %02X, send states",
-+		       iop->status_ctrl);
- 		for (i = 0 ; i < NUM_IOP_CHAN  ; i++) {
- 			state = iop_readb(iop, IOP_ADDR_SEND_STATE + i);
--#ifdef DEBUG_IOP
--			printk(" %02X", state);
--#endif
-+			pr_iop_cont(" %02X", state);
- 			if (state == IOP_MSG_COMPLETE) {
- 				iop_handle_send(iop_num, i);
- 			}
- 		}
--#ifdef DEBUG_IOP
--		printk("\n");
--#endif
-+		pr_iop_cont("\n");
+-		printk("a 6522 or clone\n");
++		pr_cont("a 6522 or clone\n");
  	}
  
- 	if (iop->status_ctrl & IOP_INT1) {	/* INT1 for incoming msgs */
- 		iop->status_ctrl = IOP_INT1 | IOP_RUN | IOP_AUTOINC;
--#ifdef DEBUG_IOP
--		printk("iop_ism_irq: new status = %02X, recv states",
--			(uint) iop->status_ctrl);
--#endif
-+		pr_iop("iop_ism_irq: new status = %02X, recv states",
-+		       iop->status_ctrl);
- 		for (i = 0 ; i < NUM_IOP_CHAN ; i++) {
- 			state = iop_readb(iop, IOP_ADDR_RECV_STATE + i);
--#ifdef DEBUG_IOP
--			printk(" %02X", state);
--#endif
-+			pr_iop_cont(" %02X", state);
- 			if (state == IOP_MSG_NEW) {
- 				iop_handle_recv(iop_num, i);
- 			}
- 		}
--#ifdef DEBUG_IOP
--		printk("\n");
--#endif
-+		pr_iop_cont("\n");
+ #ifdef DEBUG_VIA
+@@ -299,24 +305,22 @@ void __init via_init_clock(irq_handler_t func)
+ 
+ void via_debug_dump(void)
+ {
+-	printk(KERN_DEBUG "VIA1: DDRA = 0x%02X DDRB = 0x%02X ACR = 0x%02X\n",
+-		(uint) via1[vDirA], (uint) via1[vDirB], (uint) via1[vACR]);
+-	printk(KERN_DEBUG "         PCR = 0x%02X  IFR = 0x%02X IER = 0x%02X\n",
+-		(uint) via1[vPCR], (uint) via1[vIFR], (uint) via1[vIER]);
++	pr_debug("VIA1: DDRA = 0x%02X DDRB = 0x%02X ACR = 0x%02X\n",
++		 via1[vDirA], via1[vDirB], via1[vACR]);
++	pr_debug("       PCR = 0x%02X  IFR = 0x%02X IER = 0x%02X\n",
++		 via1[vPCR], via1[vIFR], via1[vIER]);
+ 	if (oss_present) {
+-		printk(KERN_DEBUG "VIA2: <OSS>\n");
++		pr_debug("VIA2: <OSS>\n");
+ 	} else if (rbv_present) {
+-		printk(KERN_DEBUG "VIA2:  IFR = 0x%02X  IER = 0x%02X\n",
+-			(uint) via2[rIFR], (uint) via2[rIER]);
+-		printk(KERN_DEBUG "      SIFR = 0x%02X SIER = 0x%02X\n",
+-			(uint) via2[rSIFR], (uint) via2[rSIER]);
++		pr_debug("VIA2:  IFR = 0x%02X  IER = 0x%02X\n", via2[rIFR],
++			 via2[rIER]);
++		pr_debug("      SIFR = 0x%02X SIER = 0x%02X\n", via2[rSIFR],
++			 via2[rSIER]);
+ 	} else {
+-		printk(KERN_DEBUG "VIA2: DDRA = 0x%02X DDRB = 0x%02X ACR = 0x%02X\n",
+-			(uint) via2[vDirA], (uint) via2[vDirB],
+-			(uint) via2[vACR]);
+-		printk(KERN_DEBUG "         PCR = 0x%02X  IFR = 0x%02X IER = 0x%02X\n",
+-			(uint) via2[vPCR],
+-			(uint) via2[vIFR], (uint) via2[vIER]);
++		pr_debug("VIA2: DDRA = 0x%02X DDRB = 0x%02X ACR = 0x%02X\n",
++			 via2[vDirA], via2[vDirB], via2[vACR]);
++		pr_debug("       PCR = 0x%02X  IFR = 0x%02X IER = 0x%02X\n",
++			 via2[vPCR], via2[vIFR], via2[vIER]);
  	}
- 	return IRQ_HANDLED;
  }
+ 
+@@ -362,7 +366,7 @@ int via_get_cache_disable(void)
+ {
+ 	/* Safeguard against being called accidentally */
+ 	if (!via2) {
+-		printk(KERN_ERR "via_get_cache_disable called on a non-VIA machine!\n");
++		pr_err("via_get_cache_disable called on a non-VIA machine!\n");
+ 		return 1;
+ 	}
+ 
+@@ -550,9 +554,7 @@ void via_irq_enable(int irq) {
+ 	int irq_src	= IRQ_SRC(irq);
+ 	int irq_idx	= IRQ_IDX(irq);
+ 
+-#ifdef DEBUG_IRQUSE
+-	printk(KERN_DEBUG "via_irq_enable(%d)\n", irq);
+-#endif
++	pr_irq("via_irq_enable(%d)\n", irq);
+ 
+ 	if (irq_src == 1) {
+ 		via1[vIER] = IER_SET_BIT(irq_idx);
+@@ -582,9 +584,7 @@ void via_irq_disable(int irq) {
+ 	int irq_src	= IRQ_SRC(irq);
+ 	int irq_idx	= IRQ_IDX(irq);
+ 
+-#ifdef DEBUG_IRQUSE
+-	printk(KERN_DEBUG "via_irq_disable(%d)\n", irq);
+-#endif
++	pr_irq("via_irq_disable(%d)\n", irq);
+ 
+ 	if (irq_src == 1) {
+ 		via1[vIER] = IER_CLR_BIT(irq_idx);
 -- 
 1.9.1
