@@ -1,13 +1,13 @@
 From: Finn Thain <fthain@telegraphics.com.au>
-Subject: Re: [PATCH 08/22] m68k/mac: iop - Modernize printing of kernel
+Subject: Re: [PATCH 09/22] m68k/mac: oss - Modernize printing of kernel
  messages
-Date: Thu, 8 Dec 2016 10:06:02 +1100 (AEDT)
-Message-ID: <alpine.LNX.2.00.1612080959250.9219@nippy.intranet>
-References: <1481123360-10978-1-git-send-email-geert@linux-m68k.org> <1481123360-10978-9-git-send-email-geert@linux-m68k.org>
+Date: Thu, 8 Dec 2016 10:08:43 +1100 (AEDT)
+Message-ID: <alpine.LNX.2.00.1612081006440.9219@nippy.intranet>
+References: <1481123360-10978-1-git-send-email-geert@linux-m68k.org> <1481123360-10978-10-git-send-email-geert@linux-m68k.org>
 Mime-Version: 1.0
 Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <linux-m68k-owner@vger.kernel.org>
-In-Reply-To: <1481123360-10978-9-git-send-email-geert@linux-m68k.org>
+In-Reply-To: <1481123360-10978-10-git-send-email-geert@linux-m68k.org>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
 To: Geert Uytterhoeven <geert@linux-m68k.org>
@@ -16,183 +16,92 @@ Cc: Greg Ungerer <gerg@linux-m68k.org>, Sam Creasey <sammy@sammy.net>, Joshua Th
 
 On Wed, 7 Dec 2016, Geert Uytterhoeven wrote:
 
+> Convert from printk() to pr_*().
+> 
 >   - Introduce helpers for printing debug messages, incl. dummies for
 >     validating format strings when debugging is disabled,
 >   - Convert from printk() to pr_*(),
->   - Add missing continuations,
->   - Drop superfluous casts.
+>   - Drop superfluous casts,
+>   - Add linebreaks before opening braces of function bodies.
 > 
 > Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
 > ---
->  arch/m68k/mac/iop.c | 69 ++++++++++++++++++++++-------------------------------
->  1 file changed, 29 insertions(+), 40 deletions(-)
+>  arch/m68k/mac/oss.c | 26 +++++++++++++++-----------
+>  1 file changed, 15 insertions(+), 11 deletions(-)
 > 
-> diff --git a/arch/m68k/mac/iop.c b/arch/m68k/mac/iop.c
-> index 7990b6f50105b19b..bbfeded6b270f950 100644
-> --- a/arch/m68k/mac/iop.c
-> +++ b/arch/m68k/mac/iop.c
-> @@ -116,6 +116,13 @@
->  #include <asm/mac_iop.h>
+> diff --git a/arch/m68k/mac/oss.c b/arch/m68k/mac/oss.c
+> index 55d6592783f55710..e3c22370e9c6ee0d 100644
+> --- a/arch/m68k/mac/oss.c
+> +++ b/arch/m68k/mac/oss.c
+> @@ -26,6 +26,12 @@
+>  #include <asm/mac_via.h>
+>  #include <asm/mac_oss.h>
 >  
->  /*#define DEBUG_IOP*/
-> +#ifdef DEBUG_IOP
-
-We can use #if 0 here, since the macro can be avoided later...
-
-> +#define pr_iop(fmt, ...) printk(KERN_DEBUG pr_fmt(fmt), ##__VA_ARGS__)
-> +#define pr_iop_cont(fmt, ...) pr_cont(fmt, ##__VA_ARGS__)
+> +#ifdef DEBUG_IRQS
+> +#define pr_irq(fmt, ...) printk(KERN_DEBUG pr_fmt(fmt), ##__VA_ARGS__)
 > +#else
-> +#define pr_iop(fmt, ...) no_printk(KERN_DEBUG pr_fmt(fmt), ##__VA_ARGS__)
-> +#define pr_iop_cont(fmt, ...) no_printk(fmt, ##__VA_ARGS__)
+> +#define pr_irq(fmt, ...) no_printk(KERN_DEBUG pr_fmt(fmt), ##__VA_ARGS__)
 > +#endif
+> +
+>  int oss_present;
+>  volatile struct mac_oss *oss;
 >  
->  /* Non-zero if the IOPs are present */
+
+Please just remove the DEBUG_IRQS macro and the related output.
+
+> @@ -72,8 +78,8 @@ static void oss_irq(struct irq_desc *desc)
+>  	if ((console_loglevel == 10) && !(events & OSS_IP_SCSI)) {
+>  		unsigned int irq = irq_desc_get_irq(desc);
 >  
-> @@ -268,10 +275,10 @@ void __init iop_init(void)
->  	int i;
->  
->  	if (iop_scc_present) {
-> -		printk("IOP: detected SCC IOP at %p\n", iop_base[IOP_NUM_SCC]);
-> +		pr_info("IOP: detected SCC IOP at %p\n", iop_base[IOP_NUM_SCC]);
+> -		printk("oss_irq: irq %u events = 0x%04X\n", irq,
+> -			(int) oss->irq_pending);
+> +		pr_irq("oss_irq: irq %u events = 0x%04X\n", irq,
+> +		       oss->irq_pending);
 >  	}
->  	if (iop_ism_present) {
-> -		printk("IOP: detected ISM IOP at %p\n", iop_base[IOP_NUM_ISM]);
-> +		pr_info("IOP: detected ISM IOP at %p\n", iop_base[IOP_NUM_ISM]);
->  		iop_start(iop_base[IOP_NUM_ISM]);
->  		iop_alive(iop_base[IOP_NUM_ISM]); /* clears the alive flag */
->  	}
-> @@ -310,9 +317,9 @@ void __init iop_register_interrupts(void)
->  				pr_err("Couldn't register ISM IOP interrupt\n");
->  		}
->  		if (!iop_alive(iop_base[IOP_NUM_ISM])) {
-> -			printk("IOP: oh my god, they killed the ISM IOP!\n");
-> +			pr_warn("IOP: oh my god, they killed the ISM IOP!\n");
->  		} else {
-> -			printk("IOP: the ISM IOP seems to be alive.\n");
-> +			pr_info("IOP: the ISM IOP seems to be alive.\n");
->  		}
->  	}
->  }
-> @@ -349,9 +356,8 @@ void iop_complete_message(struct iop_msg *msg)
->  	int chan = msg->channel;
->  	int i,offset;
->  
-> -#ifdef DEBUG_IOP
-> -	printk("iop_complete(%p): iop %d chan %d\n", msg, msg->iop_num, msg->channel);
-> -#endif
-> +	pr_iop("iop_complete(%p): iop %d chan %d\n", msg, msg->iop_num,
-> +	       msg->channel);
->  
->  	offset = IOP_ADDR_RECV_MSG + (msg->channel * IOP_MSG_LEN);
->  
-> @@ -397,9 +403,7 @@ static void iop_handle_send(uint iop_num, uint chan)
->  	struct iop_msg *msg,*msg2;
->  	int i,offset;
->  
-> -#ifdef DEBUG_IOP
-> -	printk("iop_handle_send: iop %d channel %d\n", iop_num, chan);
-> -#endif
-> +	pr_iop("iop_handle_send: iop %d channel %d\n", iop_num, chan);
->  
->  	iop_writeb(iop, IOP_ADDR_SEND_STATE + chan, IOP_MSG_IDLE);
->  
-> @@ -430,9 +434,7 @@ static void iop_handle_recv(uint iop_num, uint chan)
->  	int i,offset;
->  	struct iop_msg *msg;
->  
-> -#ifdef DEBUG_IOP
-> -	printk("iop_handle_recv: iop %d channel %d\n", iop_num, chan);
-> -#endif
-> +	pr_iop("iop_handle_recv: iop %d channel %d\n", iop_num, chan);
->  
->  	msg = iop_alloc_msg();
->  	msg->iop_num = iop_num;
-> @@ -454,13 +456,14 @@ static void iop_handle_recv(uint iop_num, uint chan)
->  	if (msg->handler) {
->  		(*msg->handler)(msg);
->  	} else {
-> +		pr_iop("iop_handle_recv: unclaimed message on iop %d channel %d\n",
-> +		       iop_num, chan);
->  #ifdef DEBUG_IOP
-> -		printk("iop_handle_recv: unclaimed message on iop %d channel %d\n", iop_num, chan);
-> -		printk("iop_handle_recv:");
-> +		pr_iop("iop_handle_recv:");
->  		for (i = 0 ; i < IOP_MSG_LEN ; i++) {
-> -			printk(" %02X", (uint) msg->message[i]);
-> +			pr_cont(" %02X", msg->message[i]);
->  		}
-> -		printk("\n");
-> +		pr_iop_cont("\n");
 >  #endif
->  		iop_complete_message(msg);
+>  
+> @@ -109,7 +115,7 @@ static void oss_nubus_irq(struct irq_desc *desc)
+>  
+>  #ifdef DEBUG_NUBUS_INT
+>  	if (console_loglevel > 7) {
+> -		printk("oss_nubus_irq: events = 0x%04X\n", events);
+> +		pr_info("oss_nubus_irq: events = 0x%04X\n", events);
 >  	}
+>  #endif
+>  	/* There are only six slots on the OSS, not seven */
 
-I think you can avoid the DEBUG_IOP macro entirely, by using
-
-	pr_iop("iop_handle_recv: %*ph\n", IOP_MSG_LEN, msg->message);
+Same with DEBUG_NUBUS_INT.
 
 Thanks.
 
-> @@ -574,50 +577,36 @@ irqreturn_t iop_ism_irq(int irq, void *dev_id)
->  	volatile struct mac_iop *iop = iop_base[iop_num];
->  	int i,state;
+> @@ -162,10 +168,9 @@ void __init oss_register_interrupts(void)
+>   * level for that source to nonzero, thus enabling the interrupt.
+>   */
 >  
-> -#ifdef DEBUG_IOP
-> -	printk("iop_ism_irq: status = %02X\n", (uint) iop->status_ctrl);
+> -void oss_irq_enable(int irq) {
+> -#ifdef DEBUG_IRQUSE
+> -	printk("oss_irq_enable(%d)\n", irq);
 > -#endif
-> +	pr_iop("iop_ism_irq: status = %02X\n", iop->status_ctrl);
+> +void oss_irq_enable(int irq)
+> +{
+> +	pr_irq("oss_irq_enable(%d)\n", irq);
+>  	switch(irq) {
+>  		case IRQ_MAC_SCC:
+>  			oss->irq_level[OSS_IOPSCC] = OSS_IRQLEV_IOPSCC;
+> @@ -198,10 +203,9 @@ void oss_irq_enable(int irq) {
+>   * to disable the interrupt.
+>   */
 >  
->  	/* INT0 indicates a state change on an outgoing message channel */
->  
->  	if (iop->status_ctrl & IOP_INT0) {
->  		iop->status_ctrl = IOP_INT0 | IOP_RUN | IOP_AUTOINC;
-> -#ifdef DEBUG_IOP
-> -		printk("iop_ism_irq: new status = %02X, send states",
-> -			(uint) iop->status_ctrl);
+> -void oss_irq_disable(int irq) {
+> -#ifdef DEBUG_IRQUSE
+> -	printk("oss_irq_disable(%d)\n", irq);
 > -#endif
-> +		pr_iop("iop_ism_irq: new status = %02X, send states",
-> +		       iop->status_ctrl);
->  		for (i = 0 ; i < NUM_IOP_CHAN  ; i++) {
->  			state = iop_readb(iop, IOP_ADDR_SEND_STATE + i);
-> -#ifdef DEBUG_IOP
-> -			printk(" %02X", state);
-> -#endif
-> +			pr_iop_cont(" %02X", state);
->  			if (state == IOP_MSG_COMPLETE) {
->  				iop_handle_send(iop_num, i);
->  			}
->  		}
-> -#ifdef DEBUG_IOP
-> -		printk("\n");
-> -#endif
-> +		pr_iop_cont("\n");
->  	}
->  
->  	if (iop->status_ctrl & IOP_INT1) {	/* INT1 for incoming msgs */
->  		iop->status_ctrl = IOP_INT1 | IOP_RUN | IOP_AUTOINC;
-> -#ifdef DEBUG_IOP
-> -		printk("iop_ism_irq: new status = %02X, recv states",
-> -			(uint) iop->status_ctrl);
-> -#endif
-> +		pr_iop("iop_ism_irq: new status = %02X, recv states",
-> +		       iop->status_ctrl);
->  		for (i = 0 ; i < NUM_IOP_CHAN ; i++) {
->  			state = iop_readb(iop, IOP_ADDR_RECV_STATE + i);
-> -#ifdef DEBUG_IOP
-> -			printk(" %02X", state);
-> -#endif
-> +			pr_iop_cont(" %02X", state);
->  			if (state == IOP_MSG_NEW) {
->  				iop_handle_recv(iop_num, i);
->  			}
->  		}
-> -#ifdef DEBUG_IOP
-> -		printk("\n");
-> -#endif
-> +		pr_iop_cont("\n");
->  	}
->  	return IRQ_HANDLED;
->  }
+> +void oss_irq_disable(int irq)
+> +{
+> +	pr_irq("oss_irq_disable(%d)\n", irq);
+>  	switch(irq) {
+>  		case IRQ_MAC_SCC:
+>  			oss->irq_level[OSS_IOPSCC] = 0;
 > 
 
 -- 
