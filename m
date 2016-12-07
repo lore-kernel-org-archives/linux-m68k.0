@@ -1,119 +1,130 @@
 From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: [PATCH 00/22] m68k: Modernize printing of kernel messages
-Date: Wed,  7 Dec 2016 16:08:58 +0100
-Message-ID: <1481123360-10978-1-git-send-email-geert__19924.3761286654$1481123899$gmane$org@linux-m68k.org>
+Subject: [PATCH 18/22] m68k/mm: kmap - Modernize printing of kernel messages
+Date: Wed,  7 Dec 2016 16:09:16 +0100
+Message-ID: <1481123360-10978-19-git-send-email-geert__7798.50753392584$1481123899$gmane$org@linux-m68k.org>
+References: <1481123360-10978-1-git-send-email-geert@linux-m68k.org>
 Return-path: <linux-m68k-owner@vger.kernel.org>
+In-Reply-To: <1481123360-10978-1-git-send-email-geert@linux-m68k.org>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
 To: Greg Ungerer <gerg@linux-m68k.org>, Sam Creasey <sammy@sammy.net>, Joshua Thompson <funaho@jurai.org>, Finn Thain <fthain@telegraphics.com.au>
 Cc: linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org, Geert Uytterhoeven <geert@linux-m68k.org>
 
-	Hi all,
+  - Convert from printk() to pr_*(),
+  - Add missing continuations,
+  - Remove #undef DEBUG.
 
-This patch series modernizes the printing of kernel messages in the m68k
-architecture core, which is mainly about converting from printk() to
-pr_*().
+Note that "#ifdef DEBUG" is sometimes retained because pr_cont() is not
+optimized away when debugging is disabled.
 
-The trigger for (finally) doing this was the user-visible breakage
-caused by commit 4bcc595ccd80decb ("printk: reinstate KERN_CONT for
-printing continuation lines").
+Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
+---
+ arch/m68k/mm/kmap.c | 26 ++++++++++++--------------
+ 1 file changed, 12 insertions(+), 14 deletions(-)
 
-I had hoped to sent this series much earlier, to be still included in
-v4.9, but that didn't happen due to lack of time. Fortunately v4.9 will
-be an LTS(I) kernel, so the first three patches (tagged with a "Fixes"
-tag) will hopefully make it to v4.9.x later ;-)
-
-Compile-tested with my standard set of configs.
-Boot-tested on ARAnyM.
-
-Thanks for your comments!
-
-Geert Uytterhoeven (22):
-  m68k/atari: Modernize printing of kernel messages
-  m68k/mac: macints - Modernize printing of kernel messages
-  m68k/mac: via - Modernize printing of kernel messages
-  m68k/68000: Modernize printing of kernel messages
-  m68k/bvme6000: Modernize printing of kernel messages
-  m68k/coldfire: Modernize printing of kernel messages
-  m68k/mac: baboon - Modernize printing of kernel messages
-  m68k/mac: iop - Modernize printing of kernel messages
-  m68k/mac: oss - Modernize printing of kernel messages
-  m68k/mac: psc - Modernize printing of kernel messages
-  m68k/mac: Modernize printing of kernel messages
-  m68k/mvme147: Modernize printing of kernel messages
-  m68k/mvme16x: Modernize printing of kernel messages
-  m68k/q40: Modernize printing of kernel messages
-  m68k/sun3: Modernize printing of kernel messages
-  m68k/sun3x: Modernize printing of kernel messages
-  m68k/kernel: Modernize printing of kernel messages
-  m68k/mm: kmap - Modernize printing of kernel messages
-  m68k/mm: motorola - Modernize printing of kernel messages
-  m68k/mm: sun3 - Modernize printing of kernel messages
-  m68k/mm: Modernize printing of kernel messages
-  m68k/include: Modernize printing of kernel messages
-
- arch/m68k/68000/m68328.c                 |  6 +-
- arch/m68k/68000/m68EZ328.c               |  6 +-
- arch/m68k/68000/m68VZ328.c               |  6 +-
- arch/m68k/atari/atakeyb.c                | 14 ++---
- arch/m68k/atari/config.c                 | 56 +++++++++---------
- arch/m68k/bvme6000/config.c              |  8 +--
- arch/m68k/bvme6000/rtc.c                 |  2 +-
- arch/m68k/coldfire/m528x.c               |  4 +-
- arch/m68k/coldfire/sltimers.c            |  4 +-
- arch/m68k/coldfire/timers.c              |  4 +-
- arch/m68k/coldfire/vectors.c             |  2 +-
- arch/m68k/include/asm/bug.h              |  4 +-
- arch/m68k/include/asm/dma.h              | 98 +++++++++++---------------------
- arch/m68k/include/asm/floppy.h           |  6 +-
- arch/m68k/include/asm/math-emu.h         | 10 ++--
- arch/m68k/include/asm/mcf_pgtable.h      |  9 +--
- arch/m68k/include/asm/motorola_pgtable.h |  6 +-
- arch/m68k/include/asm/sun3_pgtable.h     |  6 +-
- arch/m68k/include/asm/sun3xflop.h        | 14 ++---
- arch/m68k/kernel/dma.c                   |  4 +-
- arch/m68k/kernel/module.c                | 12 ++--
- arch/m68k/kernel/process.c               | 20 +++----
- arch/m68k/kernel/signal.c                | 24 +++-----
- arch/m68k/kernel/uboot.c                 |  3 +-
- arch/m68k/mac/baboon.c                   | 22 ++++---
- arch/m68k/mac/config.c                   | 34 ++++++-----
- arch/m68k/mac/iop.c                      | 69 ++++++++++------------
- arch/m68k/mac/macints.c                  | 42 +++++++-------
- arch/m68k/mac/misc.c                     |  8 +--
- arch/m68k/mac/oss.c                      | 26 +++++----
- arch/m68k/mac/psc.c                      | 32 +++++------
- arch/m68k/mac/via.c                      | 54 +++++++++---------
- arch/m68k/mm/init.c                      |  2 +-
- arch/m68k/mm/kmap.c                      | 26 ++++-----
- arch/m68k/mm/memory.c                    |  4 +-
- arch/m68k/mm/motorola.c                  | 32 ++++-------
- arch/m68k/mm/sun3kmap.c                  |  5 +-
- arch/m68k/mvme147/config.c               |  2 +-
- arch/m68k/mvme16x/config.c               | 32 +++++------
- arch/m68k/mvme16x/rtc.c                  |  2 +-
- arch/m68k/q40/config.c                   | 14 ++---
- arch/m68k/q40/q40ints.c                  | 15 +++--
- arch/m68k/sun3/config.c                  |  2 +-
- arch/m68k/sun3/dvma.c                    |  3 +-
- arch/m68k/sun3/idprom.c                  |  8 ++-
- arch/m68k/sun3/mmu_emu.c                 | 47 +++++++--------
- arch/m68k/sun3/prom/printf.c             |  2 +-
- arch/m68k/sun3/sun3dvma.c                | 51 +++++++----------
- arch/m68k/sun3x/dvma.c                   | 35 +++++-------
- arch/m68k/sun3x/prom.c                   |  4 +-
- 50 files changed, 412 insertions(+), 489 deletions(-)
-
+diff --git a/arch/m68k/mm/kmap.c b/arch/m68k/mm/kmap.c
+index 6e4955bc542bfc59..ce4773461651656a 100644
+--- a/arch/m68k/mm/kmap.c
++++ b/arch/m68k/mm/kmap.c
+@@ -21,8 +21,6 @@
+ #include <asm/pgalloc.h>
+ #include <asm/io.h>
+ 
+-#undef DEBUG
+-
+ #define PTRTREESIZE	(256*1024)
+ 
+ /*
+@@ -125,9 +123,7 @@ void __iomem *__ioremap(unsigned long physaddr, unsigned long size, int cachefla
+ 	}
+ #endif
+ 
+-#ifdef DEBUG
+-	printk("ioremap: 0x%lx,0x%lx(%d) - ", physaddr, size, cacheflag);
+-#endif
++	pr_debug("ioremap: 0x%lx,0x%lx(%d) - ", physaddr, size, cacheflag);
+ 	/*
+ 	 * Mappings have to be aligned
+ 	 */
+@@ -145,7 +141,7 @@ void __iomem *__ioremap(unsigned long physaddr, unsigned long size, int cachefla
+ 	virtaddr = (unsigned long)area->addr;
+ 	retaddr = virtaddr + offset;
+ #ifdef DEBUG
+-	printk("0x%lx,0x%lx,0x%lx", physaddr, virtaddr, retaddr);
++	pr_cont("0x%lx,0x%lx,0x%lx", physaddr, virtaddr, retaddr);
+ #endif
+ 
+ 	/*
+@@ -187,12 +183,12 @@ void __iomem *__ioremap(unsigned long physaddr, unsigned long size, int cachefla
+ 	while ((long)size > 0) {
+ #ifdef DEBUG
+ 		if (!(virtaddr & (PTRTREESIZE-1)))
+-			printk ("\npa=%#lx va=%#lx ", physaddr, virtaddr);
++			pr_info("\npa=%#lx va=%#lx ", physaddr, virtaddr);
+ #endif
+ 		pgd_dir = pgd_offset_k(virtaddr);
+ 		pmd_dir = pmd_alloc(&init_mm, pgd_dir, virtaddr);
+ 		if (!pmd_dir) {
+-			printk("ioremap: no mem for pmd_dir\n");
++			pr_err("ioremap: no mem for pmd_dir\n");
+ 			return NULL;
+ 		}
+ 
+@@ -204,7 +200,7 @@ void __iomem *__ioremap(unsigned long physaddr, unsigned long size, int cachefla
+ 		} else {
+ 			pte_dir = pte_alloc_kernel(pmd_dir, virtaddr);
+ 			if (!pte_dir) {
+-				printk("ioremap: no mem for pte_dir\n");
++				pr_err("ioremap: no mem for pte_dir\n");
+ 				return NULL;
+ 			}
+ 
+@@ -215,7 +211,7 @@ void __iomem *__ioremap(unsigned long physaddr, unsigned long size, int cachefla
+ 		}
+ 	}
+ #ifdef DEBUG
+-	printk("\n");
++	pr_cont("\n");
+ #endif
+ 	flush_tlb_all();
+ 
+@@ -254,7 +250,7 @@ void __iounmap(void *addr, unsigned long size)
+ 	while ((long)size > 0) {
+ 		pgd_dir = pgd_offset_k(virtaddr);
+ 		if (pgd_bad(*pgd_dir)) {
+-			printk("iounmap: bad pgd(%08lx)\n", pgd_val(*pgd_dir));
++			pr_err("iounmap: bad pgd(%08lx)\n", pgd_val(*pgd_dir));
+ 			pgd_clear(pgd_dir);
+ 			return;
+ 		}
+@@ -274,7 +270,7 @@ void __iounmap(void *addr, unsigned long size)
+ 		}
+ 
+ 		if (pmd_bad(*pmd_dir)) {
+-			printk("iounmap: bad pmd (%08lx)\n", pmd_val(*pmd_dir));
++			pr_err("iounmap: bad pmd (%08lx)\n", pmd_val(*pmd_dir));
+ 			pmd_clear(pmd_dir);
+ 			return;
+ 		}
+@@ -332,7 +328,8 @@ void kernel_set_cachemode(void *addr, unsigned long size, int cmode)
+ 	while ((long)size > 0) {
+ 		pgd_dir = pgd_offset_k(virtaddr);
+ 		if (pgd_bad(*pgd_dir)) {
+-			printk("iocachemode: bad pgd(%08lx)\n", pgd_val(*pgd_dir));
++			pr_err("iocachemode: bad pgd(%08lx)\n",
++			       pgd_val(*pgd_dir));
+ 			pgd_clear(pgd_dir);
+ 			return;
+ 		}
+@@ -351,7 +348,8 @@ void kernel_set_cachemode(void *addr, unsigned long size, int cmode)
+ 		}
+ 
+ 		if (pmd_bad(*pmd_dir)) {
+-			printk("iocachemode: bad pmd (%08lx)\n", pmd_val(*pmd_dir));
++			pr_err("iocachemode: bad pmd (%08lx)\n",
++			       pmd_val(*pmd_dir));
+ 			pmd_clear(pmd_dir);
+ 			return;
+ 		}
 -- 
 1.9.1
-
-Gr{oetje,eeting}s,
-
-						Geert
-
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-							    -- Linus Torvalds
