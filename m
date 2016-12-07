@@ -1,7 +1,7 @@
 From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: [PATCH 22/22] m68k/include: Modernize printing of kernel messages
-Date: Wed,  7 Dec 2016 16:09:20 +0100
-Message-ID: <1481123360-10978-23-git-send-email-geert__37215.2015254416$1481123866$gmane$org@linux-m68k.org>
+Subject: [PATCH 20/22] m68k/mm: sun3 - Modernize printing of kernel messages
+Date: Wed,  7 Dec 2016 16:09:18 +0100
+Message-ID: <1481123360-10978-21-git-send-email-geert@linux-m68k.org>
 References: <1481123360-10978-1-git-send-email-geert@linux-m68k.org>
 Return-path: <linux-m68k-owner@vger.kernel.org>
 In-Reply-To: <1481123360-10978-1-git-send-email-geert@linux-m68k.org>
@@ -11,82 +11,56 @@ To: Greg Ungerer <gerg@linux-m68k.org>, Sam Creasey <sammy@sammy.net>, Joshua Th
 Cc: linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org, Geert Uytterhoeven <geert@linux-m68k.org>
 
   - Convert from printk() to pr_*(),
-  - Add dummies for validating format strings when debugging is
-    disabled.
+  - Add missing print to do_page_mapin(), as print_pte_vaddr() calls
+    pr_cont().
 
 Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
 ---
- arch/m68k/include/asm/bug.h      |  4 ++--
- arch/m68k/include/asm/floppy.h   |  6 +++---
- arch/m68k/include/asm/math-emu.h | 10 +++++-----
- 3 files changed, 10 insertions(+), 10 deletions(-)
+ arch/m68k/include/asm/sun3_pgtable.h | 6 +++---
+ arch/m68k/mm/sun3kmap.c              | 5 +++--
+ 2 files changed, 6 insertions(+), 5 deletions(-)
 
-diff --git a/arch/m68k/include/asm/bug.h b/arch/m68k/include/asm/bug.h
-index ef9a2e47352f0d8a..5bc8d91d68d42bf0 100644
---- a/arch/m68k/include/asm/bug.h
-+++ b/arch/m68k/include/asm/bug.h
-@@ -6,12 +6,12 @@
- #ifdef CONFIG_DEBUG_BUGVERBOSE
- #ifndef CONFIG_SUN3
- #define BUG() do { \
--	printk("kernel BUG at %s:%d!\n", __FILE__, __LINE__); \
-+	pr_crit("kernel BUG at %s:%d!\n", __FILE__, __LINE__); \
- 	__builtin_trap(); \
- } while (0)
- #else
- #define BUG() do { \
--	printk("kernel BUG at %s:%d!\n", __FILE__, __LINE__); \
-+	pr_crit("kernel BUG at %s:%d!\n", __FILE__, __LINE__); \
- 	panic("BUG!"); \
- } while (0)
- #endif
-diff --git a/arch/m68k/include/asm/floppy.h b/arch/m68k/include/asm/floppy.h
-index 47365b1ccbecfeb9..c3b9ad6732fc68cc 100644
---- a/arch/m68k/include/asm/floppy.h
-+++ b/arch/m68k/include/asm/floppy.h
-@@ -234,9 +234,9 @@ asmlinkage irqreturn_t floppy_hardint(int irq, void *dev_id)
- 		virtual_dma_residue += virtual_dma_count;
- 		virtual_dma_count=0;
- #ifdef TRACE_FLPY_INT
--		printk("count=%x, residue=%x calls=%d bytes=%d dma_wait=%d\n",
--		       virtual_dma_count, virtual_dma_residue, calls, bytes,
--		       dma_wait);
-+		pr_info("count=%x, residue=%x calls=%d bytes=%d dma_wait=%d\n",
-+			virtual_dma_count, virtual_dma_residue, calls, bytes,
-+			dma_wait);
- 		calls = 0;
- 		dma_wait=0;
- #endif
-diff --git a/arch/m68k/include/asm/math-emu.h b/arch/m68k/include/asm/math-emu.h
-index 5e9249b0014ca0fc..b062696d5a0d99aa 100644
---- a/arch/m68k/include/asm/math-emu.h
-+++ b/arch/m68k/include/asm/math-emu.h
-@@ -105,21 +105,21 @@ struct fp_data {
- #ifdef FPU_EMU_DEBUG
- extern unsigned int fp_debugprint;
+diff --git a/arch/m68k/include/asm/sun3_pgtable.h b/arch/m68k/include/asm/sun3_pgtable.h
+index 48657f9fdeceac19..d5104a7b5388535f 100644
+--- a/arch/m68k/include/asm/sun3_pgtable.h
++++ b/arch/m68k/include/asm/sun3_pgtable.h
+@@ -151,11 +151,11 @@ static inline void pgd_clear (pgd_t *pgdp) {}
  
--#define dprint(bit, fmt, args...) ({			\
-+#define dprint(bit, fmt, ...) ({			\
- 	if (fp_debugprint & (1 << (bit)))		\
--		printk(fmt, ## args);			\
-+		pr_info(fmt, ##__VA_ARGS__);		\
- })
- #else
--#define dprint(bit, fmt, args...)
-+#define dprint(bit, fmt, ...)	no_printk(fmt, ##__VA_ARGS__)
+ 
+ #define pte_ERROR(e) \
+-	printk("%s:%d: bad pte %08lx.\n", __FILE__, __LINE__, pte_val(e))
++	pr_err("%s:%d: bad pte %08lx.\n", __FILE__, __LINE__, pte_val(e))
+ #define pmd_ERROR(e) \
+-	printk("%s:%d: bad pmd %08lx.\n", __FILE__, __LINE__, pmd_val(e))
++	pr_err("%s:%d: bad pmd %08lx.\n", __FILE__, __LINE__, pmd_val(e))
+ #define pgd_ERROR(e) \
+-	printk("%s:%d: bad pgd %08lx.\n", __FILE__, __LINE__, pgd_val(e))
++	pr_err("%s:%d: bad pgd %08lx.\n", __FILE__, __LINE__, pgd_val(e))
+ 
+ 
+ /*
+diff --git a/arch/m68k/mm/sun3kmap.c b/arch/m68k/mm/sun3kmap.c
+index 3dc41158c05e973a..ae03555449b85d0e 100644
+--- a/arch/m68k/mm/sun3kmap.c
++++ b/arch/m68k/mm/sun3kmap.c
+@@ -40,6 +40,7 @@ static inline void do_page_mapin(unsigned long phys, unsigned long virt,
+ 	sun3_put_pte(virt, pte);
+ 
+ #ifdef SUN3_KMAP_DEBUG
++	pr_info("mapin:");
+ 	print_pte_vaddr(virt);
  #endif
  
- #define uprint(str) ({					\
- 	static int __count = 3;				\
- 							\
- 	if (__count > 0) {				\
--		printk("You just hit an unimplemented "	\
-+		pr_err("You just hit an unimplemented "	\
- 		       "fpu instruction (%s)\n", str);	\
--		printk("Please report this to ....\n");	\
-+		pr_err("Please report this to ....\n");	\
- 		__count--;				\
- 	}						\
- })
+@@ -80,8 +81,8 @@ void __iomem *sun3_ioremap(unsigned long phys, unsigned long size,
+ 		return NULL;
+ 
+ #ifdef SUN3_KMAP_DEBUG
+-	printk("ioremap: got virt %p size %lx(%lx)\n",
+-	       area->addr, size, area->size);
++	pr_info("ioremap: got virt %p size %lx(%lx)\n", area->addr, size,
++		area->size);
+ #endif
+ 
+ 	pages = size / PAGE_SIZE;
 -- 
 1.9.1
