@@ -1,166 +1,119 @@
 From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: [PATCH 19/22] m68k/mm: motorola - Modernize printing of kernel messages
-Date: Wed,  7 Dec 2016 16:09:17 +0100
-Message-ID: <1481123360-10978-20-git-send-email-geert__7986.69372820786$1481123896$gmane$org@linux-m68k.org>
-References: <1481123360-10978-1-git-send-email-geert@linux-m68k.org>
+Subject: [PATCH 00/22] m68k: Modernize printing of kernel messages
+Date: Wed,  7 Dec 2016 16:08:58 +0100
+Message-ID: <1481123360-10978-1-git-send-email-geert__19924.3761286654$1481123899$gmane$org@linux-m68k.org>
 Return-path: <linux-m68k-owner@vger.kernel.org>
-In-Reply-To: <1481123360-10978-1-git-send-email-geert@linux-m68k.org>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
 To: Greg Ungerer <gerg@linux-m68k.org>, Sam Creasey <sammy@sammy.net>, Joshua Thompson <funaho@jurai.org>, Finn Thain <fthain@telegraphics.com.au>
 Cc: linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org, Geert Uytterhoeven <geert@linux-m68k.org>
 
-  - Convert from printk() to pr_*(),
-  - Remove #undef DEBUG,
-  - Add missing continuations.
+	Hi all,
 
-Note that "#ifdef DEBUG" is sometimes retained because pr_cont() is not
-optimized away when debugging is disabled.
+This patch series modernizes the printing of kernel messages in the m68k
+architecture core, which is mainly about converting from printk() to
+pr_*().
 
-Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
----
- arch/m68k/include/asm/motorola_pgtable.h |  6 +++---
- arch/m68k/mm/motorola.c                  | 32 ++++++++++++--------------------
- 2 files changed, 15 insertions(+), 23 deletions(-)
+The trigger for (finally) doing this was the user-visible breakage
+caused by commit 4bcc595ccd80decb ("printk: reinstate KERN_CONT for
+printing continuation lines").
 
-diff --git a/arch/m68k/include/asm/motorola_pgtable.h b/arch/m68k/include/asm/motorola_pgtable.h
-index 0085aab80e5a76aa..df651bdd5f21f3b7 100644
---- a/arch/m68k/include/asm/motorola_pgtable.h
-+++ b/arch/m68k/include/asm/motorola_pgtable.h
-@@ -153,11 +153,11 @@ static inline void pgd_set(pgd_t *pgdp, pmd_t *pmdp)
- #define pgd_page(pgd)		(mem_map + ((unsigned long)(__va(pgd_val(pgd)) - PAGE_OFFSET) >> PAGE_SHIFT))
- 
- #define pte_ERROR(e) \
--	printk("%s:%d: bad pte %08lx.\n", __FILE__, __LINE__, pte_val(e))
-+	pr_err("%s:%d: bad pte %08lx.\n", __FILE__, __LINE__, pte_val(e))
- #define pmd_ERROR(e) \
--	printk("%s:%d: bad pmd %08lx.\n", __FILE__, __LINE__, pmd_val(e))
-+	pr_err("%s:%d: bad pmd %08lx.\n", __FILE__, __LINE__, pmd_val(e))
- #define pgd_ERROR(e) \
--	printk("%s:%d: bad pgd %08lx.\n", __FILE__, __LINE__, pgd_val(e))
-+	pr_err("%s:%d: bad pgd %08lx.\n", __FILE__, __LINE__, pgd_val(e))
- 
- 
- /*
-diff --git a/arch/m68k/mm/motorola.c b/arch/m68k/mm/motorola.c
-index 8f37fdd80be9e9cc..9f83a70c796c3303 100644
---- a/arch/m68k/mm/motorola.c
-+++ b/arch/m68k/mm/motorola.c
-@@ -32,8 +32,6 @@
- #endif
- #include <asm/sections.h>
- 
--#undef DEBUG
--
- #ifndef mm_cachebits
- /*
-  * Bits to add to page descriptors for "normal" caching mode.
-@@ -86,9 +84,7 @@ static pmd_t * __init kernel_ptr_table(void)
- 		}
- 
- 		last_pgtable = (pmd_t *)last;
--#ifdef DEBUG
--		printk("kernel_ptr_init: %p\n", last_pgtable);
--#endif
-+		pr_debug("kernel_ptr_init: %p\n", last_pgtable);
- 	}
- 
- 	last_pgtable += PTRS_PER_PMD;
-@@ -124,7 +120,7 @@ static void __init map_node(int node)
- 	while (size > 0) {
- #ifdef DEBUG
- 		if (!(virtaddr & (PTRTREESIZE-1)))
--			printk ("\npa=%#lx va=%#lx ", physaddr & PAGE_MASK,
-+			pr_cont("\npa=%#lx va=%#lx ", physaddr & PAGE_MASK,
- 				virtaddr);
- #endif
- 		pgd_dir = pgd_offset_k(virtaddr);
-@@ -132,7 +128,7 @@ static void __init map_node(int node)
- 			if (!(virtaddr & (ROOTTREESIZE-1)) &&
- 			    size >= ROOTTREESIZE) {
- #ifdef DEBUG
--				printk ("[very early term]");
-+				pr_cont("[very early term]");
- #endif
- 				pgd_val(*pgd_dir) = physaddr;
- 				size -= ROOTTREESIZE;
-@@ -144,7 +140,7 @@ static void __init map_node(int node)
- 		if (!pgd_present(*pgd_dir)) {
- 			pmd_dir = kernel_ptr_table();
- #ifdef DEBUG
--			printk ("[new pointer %p]", pmd_dir);
-+			pr_cont("[new pointer %p]", pmd_dir);
- #endif
- 			pgd_set(pgd_dir, pmd_dir);
- 		} else
-@@ -153,14 +149,14 @@ static void __init map_node(int node)
- 		if (CPU_IS_020_OR_030) {
- 			if (virtaddr) {
- #ifdef DEBUG
--				printk ("[early term]");
-+				pr_cont("[early term]");
- #endif
- 				pmd_dir->pmd[(virtaddr/PTRTREESIZE) & 15] = physaddr;
- 				physaddr += PTRTREESIZE;
- 			} else {
- 				int i;
- #ifdef DEBUG
--				printk ("[zero map]");
-+				pr_cont("[zero map]");
- #endif
- 				zero_pgtable = kernel_ptr_table();
- 				pte_dir = (pte_t *)zero_pgtable;
-@@ -176,7 +172,7 @@ static void __init map_node(int node)
- 		} else {
- 			if (!pmd_present(*pmd_dir)) {
- #ifdef DEBUG
--				printk ("[new table]");
-+				pr_cont("[new table]");
- #endif
- 				pte_dir = kernel_page_table();
- 				pmd_set(pmd_dir, pte_dir);
-@@ -195,7 +191,7 @@ static void __init map_node(int node)
- 
- 	}
- #ifdef DEBUG
--	printk("\n");
-+	pr_cont("\n");
- #endif
- }
- 
-@@ -210,9 +206,7 @@ void __init paging_init(void)
- 	unsigned long addr, size, end;
- 	int i;
- 
--#ifdef DEBUG
--	printk ("start of paging_init (%p, %lx)\n", kernel_pg_dir, availmem);
--#endif
-+	pr_debug("start of paging_init (%p, %lx)\n", kernel_pg_dir, availmem);
- 
- 	/* Fix the cache mode in the page descriptors for the 680[46]0.  */
- 	if (CPU_IS_040_OR_060) {
-@@ -228,9 +222,9 @@ void __init paging_init(void)
- 	max_addr = min_addr + m68k_memory[0].size;
- 	for (i = 1; i < m68k_num_memory;) {
- 		if (m68k_memory[i].addr < min_addr) {
--			printk("Ignoring memory chunk at 0x%lx:0x%lx before the first chunk\n",
-+			pr_warn("Ignoring memory chunk at 0x%lx:0x%lx before the first chunk\n",
- 				m68k_memory[i].addr, m68k_memory[i].size);
--			printk("Fix your bootloader or use a memfile to make use of this area!\n");
-+			pr_warn("Fix your bootloader or use a memfile to make use of this area!\n");
- 			m68k_num_memory--;
- 			memmove(m68k_memory + i, m68k_memory + i + 1,
- 				(m68k_num_memory - i) * sizeof(struct m68k_mem_info));
-@@ -294,9 +288,7 @@ void __init paging_init(void)
- 	 */
- 	set_fs(KERNEL_DS);
- 
--#ifdef DEBUG
--	printk ("before free_area_init\n");
--#endif
-+	pr_debug("before free_area_init\n");
- 	for (i = 0; i < m68k_num_memory; i++) {
- 		zones_size[ZONE_DMA] = m68k_memory[i].size >> PAGE_SHIFT;
- 		free_area_init_node(i, zones_size,
+I had hoped to sent this series much earlier, to be still included in
+v4.9, but that didn't happen due to lack of time. Fortunately v4.9 will
+be an LTS(I) kernel, so the first three patches (tagged with a "Fixes"
+tag) will hopefully make it to v4.9.x later ;-)
+
+Compile-tested with my standard set of configs.
+Boot-tested on ARAnyM.
+
+Thanks for your comments!
+
+Geert Uytterhoeven (22):
+  m68k/atari: Modernize printing of kernel messages
+  m68k/mac: macints - Modernize printing of kernel messages
+  m68k/mac: via - Modernize printing of kernel messages
+  m68k/68000: Modernize printing of kernel messages
+  m68k/bvme6000: Modernize printing of kernel messages
+  m68k/coldfire: Modernize printing of kernel messages
+  m68k/mac: baboon - Modernize printing of kernel messages
+  m68k/mac: iop - Modernize printing of kernel messages
+  m68k/mac: oss - Modernize printing of kernel messages
+  m68k/mac: psc - Modernize printing of kernel messages
+  m68k/mac: Modernize printing of kernel messages
+  m68k/mvme147: Modernize printing of kernel messages
+  m68k/mvme16x: Modernize printing of kernel messages
+  m68k/q40: Modernize printing of kernel messages
+  m68k/sun3: Modernize printing of kernel messages
+  m68k/sun3x: Modernize printing of kernel messages
+  m68k/kernel: Modernize printing of kernel messages
+  m68k/mm: kmap - Modernize printing of kernel messages
+  m68k/mm: motorola - Modernize printing of kernel messages
+  m68k/mm: sun3 - Modernize printing of kernel messages
+  m68k/mm: Modernize printing of kernel messages
+  m68k/include: Modernize printing of kernel messages
+
+ arch/m68k/68000/m68328.c                 |  6 +-
+ arch/m68k/68000/m68EZ328.c               |  6 +-
+ arch/m68k/68000/m68VZ328.c               |  6 +-
+ arch/m68k/atari/atakeyb.c                | 14 ++---
+ arch/m68k/atari/config.c                 | 56 +++++++++---------
+ arch/m68k/bvme6000/config.c              |  8 +--
+ arch/m68k/bvme6000/rtc.c                 |  2 +-
+ arch/m68k/coldfire/m528x.c               |  4 +-
+ arch/m68k/coldfire/sltimers.c            |  4 +-
+ arch/m68k/coldfire/timers.c              |  4 +-
+ arch/m68k/coldfire/vectors.c             |  2 +-
+ arch/m68k/include/asm/bug.h              |  4 +-
+ arch/m68k/include/asm/dma.h              | 98 +++++++++++---------------------
+ arch/m68k/include/asm/floppy.h           |  6 +-
+ arch/m68k/include/asm/math-emu.h         | 10 ++--
+ arch/m68k/include/asm/mcf_pgtable.h      |  9 +--
+ arch/m68k/include/asm/motorola_pgtable.h |  6 +-
+ arch/m68k/include/asm/sun3_pgtable.h     |  6 +-
+ arch/m68k/include/asm/sun3xflop.h        | 14 ++---
+ arch/m68k/kernel/dma.c                   |  4 +-
+ arch/m68k/kernel/module.c                | 12 ++--
+ arch/m68k/kernel/process.c               | 20 +++----
+ arch/m68k/kernel/signal.c                | 24 +++-----
+ arch/m68k/kernel/uboot.c                 |  3 +-
+ arch/m68k/mac/baboon.c                   | 22 ++++---
+ arch/m68k/mac/config.c                   | 34 ++++++-----
+ arch/m68k/mac/iop.c                      | 69 ++++++++++------------
+ arch/m68k/mac/macints.c                  | 42 +++++++-------
+ arch/m68k/mac/misc.c                     |  8 +--
+ arch/m68k/mac/oss.c                      | 26 +++++----
+ arch/m68k/mac/psc.c                      | 32 +++++------
+ arch/m68k/mac/via.c                      | 54 +++++++++---------
+ arch/m68k/mm/init.c                      |  2 +-
+ arch/m68k/mm/kmap.c                      | 26 ++++-----
+ arch/m68k/mm/memory.c                    |  4 +-
+ arch/m68k/mm/motorola.c                  | 32 ++++-------
+ arch/m68k/mm/sun3kmap.c                  |  5 +-
+ arch/m68k/mvme147/config.c               |  2 +-
+ arch/m68k/mvme16x/config.c               | 32 +++++------
+ arch/m68k/mvme16x/rtc.c                  |  2 +-
+ arch/m68k/q40/config.c                   | 14 ++---
+ arch/m68k/q40/q40ints.c                  | 15 +++--
+ arch/m68k/sun3/config.c                  |  2 +-
+ arch/m68k/sun3/dvma.c                    |  3 +-
+ arch/m68k/sun3/idprom.c                  |  8 ++-
+ arch/m68k/sun3/mmu_emu.c                 | 47 +++++++--------
+ arch/m68k/sun3/prom/printf.c             |  2 +-
+ arch/m68k/sun3/sun3dvma.c                | 51 +++++++----------
+ arch/m68k/sun3x/dvma.c                   | 35 +++++-------
+ arch/m68k/sun3x/prom.c                   |  4 +-
+ 50 files changed, 412 insertions(+), 489 deletions(-)
+
 -- 
 1.9.1
+
+Gr{oetje,eeting}s,
+
+						Geert
+
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+							    -- Linus Torvalds
