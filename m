@@ -1,7 +1,7 @@
 From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: [PATCH 18/22] m68k/mm: kmap - Modernize printing of kernel messages
-Date: Wed,  7 Dec 2016 16:09:16 +0100
-Message-ID: <1481123360-10978-19-git-send-email-geert__7798.50753392584$1481123899$gmane$org@linux-m68k.org>
+Subject: [PATCH 09/22] m68k/mac: oss - Modernize printing of kernel messages
+Date: Wed,  7 Dec 2016 16:09:07 +0100
+Message-ID: <1481123360-10978-10-git-send-email-geert__29615.0545393632$1481123900$gmane$org@linux-m68k.org>
 References: <1481123360-10978-1-git-send-email-geert@linux-m68k.org>
 Return-path: <linux-m68k-owner@vger.kernel.org>
 In-Reply-To: <1481123360-10978-1-git-send-email-geert@linux-m68k.org>
@@ -10,121 +10,83 @@ List-Id: linux-m68k@vger.kernel.org
 To: Greg Ungerer <gerg@linux-m68k.org>, Sam Creasey <sammy@sammy.net>, Joshua Thompson <funaho@jurai.org>, Finn Thain <fthain@telegraphics.com.au>
 Cc: linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org, Geert Uytterhoeven <geert@linux-m68k.org>
 
-  - Convert from printk() to pr_*(),
-  - Add missing continuations,
-  - Remove #undef DEBUG.
+Convert from printk() to pr_*().
 
-Note that "#ifdef DEBUG" is sometimes retained because pr_cont() is not
-optimized away when debugging is disabled.
+  - Introduce helpers for printing debug messages, incl. dummies for
+    validating format strings when debugging is disabled,
+  - Convert from printk() to pr_*(),
+  - Drop superfluous casts,
+  - Add linebreaks before opening braces of function bodies.
 
 Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
 ---
- arch/m68k/mm/kmap.c | 26 ++++++++++++--------------
- 1 file changed, 12 insertions(+), 14 deletions(-)
+ arch/m68k/mac/oss.c | 26 +++++++++++++++-----------
+ 1 file changed, 15 insertions(+), 11 deletions(-)
 
-diff --git a/arch/m68k/mm/kmap.c b/arch/m68k/mm/kmap.c
-index 6e4955bc542bfc59..ce4773461651656a 100644
---- a/arch/m68k/mm/kmap.c
-+++ b/arch/m68k/mm/kmap.c
-@@ -21,8 +21,6 @@
- #include <asm/pgalloc.h>
- #include <asm/io.h>
+diff --git a/arch/m68k/mac/oss.c b/arch/m68k/mac/oss.c
+index 55d6592783f55710..e3c22370e9c6ee0d 100644
+--- a/arch/m68k/mac/oss.c
++++ b/arch/m68k/mac/oss.c
+@@ -26,6 +26,12 @@
+ #include <asm/mac_via.h>
+ #include <asm/mac_oss.h>
  
--#undef DEBUG
--
- #define PTRTREESIZE	(256*1024)
++#ifdef DEBUG_IRQS
++#define pr_irq(fmt, ...) printk(KERN_DEBUG pr_fmt(fmt), ##__VA_ARGS__)
++#else
++#define pr_irq(fmt, ...) no_printk(KERN_DEBUG pr_fmt(fmt), ##__VA_ARGS__)
++#endif
++
+ int oss_present;
+ volatile struct mac_oss *oss;
  
- /*
-@@ -125,9 +123,7 @@ void __iomem *__ioremap(unsigned long physaddr, unsigned long size, int cachefla
+@@ -72,8 +78,8 @@ static void oss_irq(struct irq_desc *desc)
+ 	if ((console_loglevel == 10) && !(events & OSS_IP_SCSI)) {
+ 		unsigned int irq = irq_desc_get_irq(desc);
+ 
+-		printk("oss_irq: irq %u events = 0x%04X\n", irq,
+-			(int) oss->irq_pending);
++		pr_irq("oss_irq: irq %u events = 0x%04X\n", irq,
++		       oss->irq_pending);
  	}
  #endif
  
--#ifdef DEBUG
--	printk("ioremap: 0x%lx,0x%lx(%d) - ", physaddr, size, cacheflag);
+@@ -109,7 +115,7 @@ static void oss_nubus_irq(struct irq_desc *desc)
+ 
+ #ifdef DEBUG_NUBUS_INT
+ 	if (console_loglevel > 7) {
+-		printk("oss_nubus_irq: events = 0x%04X\n", events);
++		pr_info("oss_nubus_irq: events = 0x%04X\n", events);
+ 	}
+ #endif
+ 	/* There are only six slots on the OSS, not seven */
+@@ -162,10 +168,9 @@ void __init oss_register_interrupts(void)
+  * level for that source to nonzero, thus enabling the interrupt.
+  */
+ 
+-void oss_irq_enable(int irq) {
+-#ifdef DEBUG_IRQUSE
+-	printk("oss_irq_enable(%d)\n", irq);
 -#endif
-+	pr_debug("ioremap: 0x%lx,0x%lx(%d) - ", physaddr, size, cacheflag);
- 	/*
- 	 * Mappings have to be aligned
- 	 */
-@@ -145,7 +141,7 @@ void __iomem *__ioremap(unsigned long physaddr, unsigned long size, int cachefla
- 	virtaddr = (unsigned long)area->addr;
- 	retaddr = virtaddr + offset;
- #ifdef DEBUG
--	printk("0x%lx,0x%lx,0x%lx", physaddr, virtaddr, retaddr);
-+	pr_cont("0x%lx,0x%lx,0x%lx", physaddr, virtaddr, retaddr);
- #endif
++void oss_irq_enable(int irq)
++{
++	pr_irq("oss_irq_enable(%d)\n", irq);
+ 	switch(irq) {
+ 		case IRQ_MAC_SCC:
+ 			oss->irq_level[OSS_IOPSCC] = OSS_IRQLEV_IOPSCC;
+@@ -198,10 +203,9 @@ void oss_irq_enable(int irq) {
+  * to disable the interrupt.
+  */
  
- 	/*
-@@ -187,12 +183,12 @@ void __iomem *__ioremap(unsigned long physaddr, unsigned long size, int cachefla
- 	while ((long)size > 0) {
- #ifdef DEBUG
- 		if (!(virtaddr & (PTRTREESIZE-1)))
--			printk ("\npa=%#lx va=%#lx ", physaddr, virtaddr);
-+			pr_info("\npa=%#lx va=%#lx ", physaddr, virtaddr);
- #endif
- 		pgd_dir = pgd_offset_k(virtaddr);
- 		pmd_dir = pmd_alloc(&init_mm, pgd_dir, virtaddr);
- 		if (!pmd_dir) {
--			printk("ioremap: no mem for pmd_dir\n");
-+			pr_err("ioremap: no mem for pmd_dir\n");
- 			return NULL;
- 		}
- 
-@@ -204,7 +200,7 @@ void __iomem *__ioremap(unsigned long physaddr, unsigned long size, int cachefla
- 		} else {
- 			pte_dir = pte_alloc_kernel(pmd_dir, virtaddr);
- 			if (!pte_dir) {
--				printk("ioremap: no mem for pte_dir\n");
-+				pr_err("ioremap: no mem for pte_dir\n");
- 				return NULL;
- 			}
- 
-@@ -215,7 +211,7 @@ void __iomem *__ioremap(unsigned long physaddr, unsigned long size, int cachefla
- 		}
- 	}
- #ifdef DEBUG
--	printk("\n");
-+	pr_cont("\n");
- #endif
- 	flush_tlb_all();
- 
-@@ -254,7 +250,7 @@ void __iounmap(void *addr, unsigned long size)
- 	while ((long)size > 0) {
- 		pgd_dir = pgd_offset_k(virtaddr);
- 		if (pgd_bad(*pgd_dir)) {
--			printk("iounmap: bad pgd(%08lx)\n", pgd_val(*pgd_dir));
-+			pr_err("iounmap: bad pgd(%08lx)\n", pgd_val(*pgd_dir));
- 			pgd_clear(pgd_dir);
- 			return;
- 		}
-@@ -274,7 +270,7 @@ void __iounmap(void *addr, unsigned long size)
- 		}
- 
- 		if (pmd_bad(*pmd_dir)) {
--			printk("iounmap: bad pmd (%08lx)\n", pmd_val(*pmd_dir));
-+			pr_err("iounmap: bad pmd (%08lx)\n", pmd_val(*pmd_dir));
- 			pmd_clear(pmd_dir);
- 			return;
- 		}
-@@ -332,7 +328,8 @@ void kernel_set_cachemode(void *addr, unsigned long size, int cmode)
- 	while ((long)size > 0) {
- 		pgd_dir = pgd_offset_k(virtaddr);
- 		if (pgd_bad(*pgd_dir)) {
--			printk("iocachemode: bad pgd(%08lx)\n", pgd_val(*pgd_dir));
-+			pr_err("iocachemode: bad pgd(%08lx)\n",
-+			       pgd_val(*pgd_dir));
- 			pgd_clear(pgd_dir);
- 			return;
- 		}
-@@ -351,7 +348,8 @@ void kernel_set_cachemode(void *addr, unsigned long size, int cmode)
- 		}
- 
- 		if (pmd_bad(*pmd_dir)) {
--			printk("iocachemode: bad pmd (%08lx)\n", pmd_val(*pmd_dir));
-+			pr_err("iocachemode: bad pmd (%08lx)\n",
-+			       pmd_val(*pmd_dir));
- 			pmd_clear(pmd_dir);
- 			return;
- 		}
+-void oss_irq_disable(int irq) {
+-#ifdef DEBUG_IRQUSE
+-	printk("oss_irq_disable(%d)\n", irq);
+-#endif
++void oss_irq_disable(int irq)
++{
++	pr_irq("oss_irq_disable(%d)\n", irq);
+ 	switch(irq) {
+ 		case IRQ_MAC_SCC:
+ 			oss->irq_level[OSS_IOPSCC] = 0;
 -- 
 1.9.1
