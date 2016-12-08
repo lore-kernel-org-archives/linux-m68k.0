@@ -1,145 +1,117 @@
-From: Finn Thain <fthain@telegraphics.com.au>
-Subject: Re: [PATCH 18/22] m68k/mm: kmap - Modernize printing of kernel
- messages
-Date: Thu, 8 Dec 2016 10:26:11 +1100 (AEDT)
-Message-ID: <alpine.LNX.2.00.1612081022280.9219__40168.4585529894$1481153191$gmane$org@nippy.intranet>
-References: <1481123360-10978-1-git-send-email-geert@linux-m68k.org> <1481123360-10978-19-git-send-email-geert@linux-m68k.org>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: Re: [PATCH 02/22] m68k/mac: macints - Modernize printing of kernel messages
+Date: Thu, 8 Dec 2016 13:25:54 +0100
+Message-ID: <CAMuHMdU+Fp+1QCVU4r+h9uUdZKsfa=E4JT7kuK56QjdPxPrSAg@mail.gmail.com>
+References: <1481123360-10978-1-git-send-email-geert@linux-m68k.org>
+ <1481123360-10978-3-git-send-email-geert@linux-m68k.org> <alpine.LNX.2.00.1612080938360.9219@nippy.intranet>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain; charset=UTF-8
 Return-path: <linux-m68k-owner@vger.kernel.org>
-In-Reply-To: <1481123360-10978-19-git-send-email-geert@linux-m68k.org>
+In-Reply-To: <alpine.LNX.2.00.1612080938360.9219@nippy.intranet>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: Greg Ungerer <gerg@linux-m68k.org>, Sam Creasey <sammy@sammy.net>, Joshua Thompson <funaho@jurai.org>, linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org
+To: Finn Thain <fthain@telegraphics.com.au>
+Cc: Greg Ungerer <gerg@linux-m68k.org>, Sam Creasey <sammy@sammy.net>, Joshua Thompson <funaho@jurai.org>, linux-m68k <linux-m68k@lists.linux-m68k.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
 
+On Wed, Dec 7, 2016 at 11:45 PM, Finn Thain <fthain@telegraphics.com.au> wrote:
+> On Wed, 7 Dec 2016, Geert Uytterhoeven wrote:
+>
+>>   - Introduce helpers for printing debug messages, incl. dummies for
+>>     validating format strings when debugging is disabled,
+>>   - Convert from printk() to pr_*(),
+>>   - Add missing continuations, to fix user-visible breakage.
+>>
+>> Fixes: 4bcc595ccd80decb ("printk: reinstate KERN_CONT for printing continuation lines")
+>> Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
+>> ---
+>>  arch/m68k/mac/macints.c | 42 ++++++++++++++++++++++--------------------
+>>  1 file changed, 22 insertions(+), 20 deletions(-)
+>>
+>> diff --git a/arch/m68k/mac/macints.c b/arch/m68k/mac/macints.c
+>> index 9f98c08719010e27..8572290cb93b6679 100644
+>> --- a/arch/m68k/mac/macints.c
+>> +++ b/arch/m68k/mac/macints.c
+>> @@ -135,6 +135,11 @@
+>>  irqreturn_t mac_debug_handler(int, void *);
+>>
+>>  /* #define DEBUG_MACINTS */
+>> +#ifdef DEBUG_MACINTS
+>> +#define pr_irq(fmt, ...) printk(KERN_DEBUG pr_fmt(fmt), ##__VA_ARGS__)
+>> +#else
+>> +#define pr_irq(fmt, ...) no_printk(KERN_DEBUG pr_fmt(fmt), ##__VA_ARGS__)
+>> +#endif
+>>
+>>  static unsigned int mac_irq_startup(struct irq_data *);
+>>  static void mac_irq_shutdown(struct irq_data *);
+>
+> I would prefer to delete all the DEBUG_MACINTS clutter.
 
-On Wed, 7 Dec 2016, Geert Uytterhoeven wrote:
+OK, can do that.
 
->   - Convert from printk() to pr_*(),
->   - Add missing continuations,
->   - Remove #undef DEBUG.
-> 
-> Note that "#ifdef DEBUG" is sometimes retained because pr_cont() is not
-> optimized away when debugging is disabled.
-> 
+>> @@ -281,7 +282,7 @@ static void mac_irq_shutdown(struct irq_data *data)
+>>  irqreturn_t mac_debug_handler(int irq, void *dev_id)
+>>  {
+>>       if (num_debug[irq] < 10) {
+>> -             printk("DEBUG: Unexpected IRQ %d\n", irq);
+>> +             pr_info("DEBUG: Unexpected IRQ %d\n", irq);
+>>               num_debug[irq]++;
+>>       }
+>>       return IRQ_HANDLED;
+>
+> Is this dead code?
 
-I think that argues for using printk(KERN_DEBUG ...) and print(KERN_CONT 
-...) inside #ifdef DEBUG, which would need no explanation.
+Yes, mac_debug_handler() is unused.
 
-If instead you use a combination of pr_debug and pr_cont and #ifdef DEBUG, 
-perhaps the explanation should be moved from the commit log to a comment 
-in the code?
+Removing that can be done in a separate patch (this is one of the
+patches I'd like
+to send upstream ASAP).
 
--- 
+>> @@ -319,20 +320,21 @@ irqreturn_t mac_nmi_handler(int irq, void *dev_id)
+>>  #if 0
+>>               struct pt_regs *fp = get_irq_regs();
+>>               show_state();
+>> -             printk("PC: %08lx\nSR: %04x  SP: %p\n", fp->pc, fp->sr, fp);
+>> -             printk("d0: %08lx    d1: %08lx    d2: %08lx    d3: %08lx\n",
+>> -                    fp->d0, fp->d1, fp->d2, fp->d3);
+>> -             printk("d4: %08lx    d5: %08lx    a0: %08lx    a1: %08lx\n",
+>> -                    fp->d4, fp->d5, fp->a0, fp->a1);
+>> +             pr_info("PC: %08lx\nSR: %04x  SP: %p\n", fp->pc, fp->sr, fp);
+>> +             pr_info("d0: %08lx    d1: %08lx    d2: %08lx    d3: %08lx\n",
+>> +                     fp->d0, fp->d1, fp->d2, fp->d3);
+>> +             pr_info("d4: %08lx    d5: %08lx    a0: %08lx    a1: %08lx\n",
+>> +                     fp->d4, fp->d5, fp->a0, fp->a1);
+>>
+>>               if (STACK_MAGIC != *(unsigned long *)current->kernel_stack_page)
+>> -                     printk("Corrupted stack page\n");
+>> -             printk("Process %s (pid: %d, stackpage=%08lx)\n",
+>> -                     current->comm, current->pid, current->kernel_stack_page);
+>> +                     pr_info("Corrupted stack page\n");
+>> +             pr_info("Process %s (pid: %d, stackpage=%08lx)\n",
+>> +                     current->comm, current->pid,
+>> +                     current->kernel_stack_page);
+>>               if (intr_count == 1)
+>>                       dump_stack((struct frame *)fp);
+>>  #else
+>> -             /* printk("NMI "); */
+>> +             /* pr_info("NMI "); */
+>>  #endif
+>>       }
+>>       in_nmi--;
+>>
+>
+> I think it would be good to use pr_debug here instead of #if 0. But that
+> will probably break the build... better ignore the #if 0 section for this
+> series, until I put together a different patch?
 
-> Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
-> ---
->  arch/m68k/mm/kmap.c | 26 ++++++++++++--------------
->  1 file changed, 12 insertions(+), 14 deletions(-)
-> 
-> diff --git a/arch/m68k/mm/kmap.c b/arch/m68k/mm/kmap.c
-> index 6e4955bc542bfc59..ce4773461651656a 100644
-> --- a/arch/m68k/mm/kmap.c
-> +++ b/arch/m68k/mm/kmap.c
-> @@ -21,8 +21,6 @@
->  #include <asm/pgalloc.h>
->  #include <asm/io.h>
->  
-> -#undef DEBUG
-> -
->  #define PTRTREESIZE	(256*1024)
->  
->  /*
-> @@ -125,9 +123,7 @@ void __iomem *__ioremap(unsigned long physaddr, unsigned long size, int cachefla
->  	}
->  #endif
->  
-> -#ifdef DEBUG
-> -	printk("ioremap: 0x%lx,0x%lx(%d) - ", physaddr, size, cacheflag);
-> -#endif
-> +	pr_debug("ioremap: 0x%lx,0x%lx(%d) - ", physaddr, size, cacheflag);
->  	/*
->  	 * Mappings have to be aligned
->  	 */
-> @@ -145,7 +141,7 @@ void __iomem *__ioremap(unsigned long physaddr, unsigned long size, int cachefla
->  	virtaddr = (unsigned long)area->addr;
->  	retaddr = virtaddr + offset;
->  #ifdef DEBUG
-> -	printk("0x%lx,0x%lx,0x%lx", physaddr, virtaddr, retaddr);
-> +	pr_cont("0x%lx,0x%lx,0x%lx", physaddr, virtaddr, retaddr);
->  #endif
->  
->  	/*
-> @@ -187,12 +183,12 @@ void __iomem *__ioremap(unsigned long physaddr, unsigned long size, int cachefla
->  	while ((long)size > 0) {
->  #ifdef DEBUG
->  		if (!(virtaddr & (PTRTREESIZE-1)))
-> -			printk ("\npa=%#lx va=%#lx ", physaddr, virtaddr);
-> +			pr_info("\npa=%#lx va=%#lx ", physaddr, virtaddr);
->  #endif
->  		pgd_dir = pgd_offset_k(virtaddr);
->  		pmd_dir = pmd_alloc(&init_mm, pgd_dir, virtaddr);
->  		if (!pmd_dir) {
-> -			printk("ioremap: no mem for pmd_dir\n");
-> +			pr_err("ioremap: no mem for pmd_dir\n");
->  			return NULL;
->  		}
->  
-> @@ -204,7 +200,7 @@ void __iomem *__ioremap(unsigned long physaddr, unsigned long size, int cachefla
->  		} else {
->  			pte_dir = pte_alloc_kernel(pmd_dir, virtaddr);
->  			if (!pte_dir) {
-> -				printk("ioremap: no mem for pte_dir\n");
-> +				pr_err("ioremap: no mem for pte_dir\n");
->  				return NULL;
->  			}
->  
-> @@ -215,7 +211,7 @@ void __iomem *__ioremap(unsigned long physaddr, unsigned long size, int cachefla
->  		}
->  	}
->  #ifdef DEBUG
-> -	printk("\n");
-> +	pr_cont("\n");
->  #endif
->  	flush_tlb_all();
->  
-> @@ -254,7 +250,7 @@ void __iounmap(void *addr, unsigned long size)
->  	while ((long)size > 0) {
->  		pgd_dir = pgd_offset_k(virtaddr);
->  		if (pgd_bad(*pgd_dir)) {
-> -			printk("iounmap: bad pgd(%08lx)\n", pgd_val(*pgd_dir));
-> +			pr_err("iounmap: bad pgd(%08lx)\n", pgd_val(*pgd_dir));
->  			pgd_clear(pgd_dir);
->  			return;
->  		}
-> @@ -274,7 +270,7 @@ void __iounmap(void *addr, unsigned long size)
->  		}
->  
->  		if (pmd_bad(*pmd_dir)) {
-> -			printk("iounmap: bad pmd (%08lx)\n", pmd_val(*pmd_dir));
-> +			pr_err("iounmap: bad pmd (%08lx)\n", pmd_val(*pmd_dir));
->  			pmd_clear(pmd_dir);
->  			return;
->  		}
-> @@ -332,7 +328,8 @@ void kernel_set_cachemode(void *addr, unsigned long size, int cmode)
->  	while ((long)size > 0) {
->  		pgd_dir = pgd_offset_k(virtaddr);
->  		if (pgd_bad(*pgd_dir)) {
-> -			printk("iocachemode: bad pgd(%08lx)\n", pgd_val(*pgd_dir));
-> +			pr_err("iocachemode: bad pgd(%08lx)\n",
-> +			       pgd_val(*pgd_dir));
->  			pgd_clear(pgd_dir);
->  			return;
->  		}
-> @@ -351,7 +348,8 @@ void kernel_set_cachemode(void *addr, unsigned long size, int cmode)
->  		}
->  
->  		if (pmd_bad(*pmd_dir)) {
-> -			printk("iocachemode: bad pmd (%08lx)\n", pmd_val(*pmd_dir));
-> +			pr_err("iocachemode: bad pmd (%08lx)\n",
-> +			       pmd_val(*pmd_dir));
->  			pmd_clear(pmd_dir);
->  			return;
->  		}
-> 
+Or worse, break at runtime. There's also non-printing code in that block.
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
