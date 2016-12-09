@@ -1,70 +1,69 @@
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: [git pull] m68k updates for 4.9 (take two)
-Date: Fri,  9 Dec 2016 09:00:23 +0100
-Message-ID: <1481270423-24910-1-git-send-email-geert@linux-m68k.org>
+From: Greg Ungerer <gerg@linux-m68k.org>
+Subject: Re: [PATCH 06/22] m68k/coldfire: Modernize printing of kernel
+ messages
+Date: Fri, 9 Dec 2016 22:09:25 +1000
+Message-ID: <b3e66b97-e8f3-f203-6479-6b8509844301@linux-m68k.org>
+References: <1481123360-10978-1-git-send-email-geert@linux-m68k.org>
+ <1481123360-10978-7-git-send-email-geert@linux-m68k.org>
+ <alpine.LNX.2.00.1612080949540.9219@nippy.intranet>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=windows-1252; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-m68k-owner@vger.kernel.org>
+In-Reply-To: <alpine.LNX.2.00.1612080949540.9219@nippy.intranet>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: Andrew Morton <akpm@linux-foundation.org>, Greg Ungerer <gerg@linux-m68k.org>, linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org, Geert Uytterhoeven <geert@linux-m68k.org>
+To: Finn Thain <fthain@telegraphics.com.au>, Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: Sam Creasey <sammy@sammy.net>, Joshua Thompson <funaho@jurai.org>, linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org
 
-	Hi Linus,
+Hi Finn, Geert,
 
-I almost forgot I still had some commits queued for v4.9, so here they
-are.
-Unfortunately the fixes for the pr_cont() breakage aren't ready yet, so
-they'll have to wait for (a second PR for) v4.10.
+On 08/12/16 08:53, Finn Thain wrote:
+>
+> On Wed, 7 Dec 2016, Geert Uytterhoeven wrote:
+>
+>>   - Introduce helpers for printing debug messages, incl. dummies for
+>>     validating format strings when debugging is disabled,
+>>   - Convert from printk() to pr_*(),
+>>   - Correct printf()-style format specifiers,
+>>   - Drop superfluous casts,
+>>
+>> Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
+>> ---
+>>  arch/m68k/coldfire/m528x.c          |  4 +-
+>>  arch/m68k/coldfire/sltimers.c       |  4 +-
+>>  arch/m68k/coldfire/timers.c         |  4 +-
+>>  arch/m68k/coldfire/vectors.c        |  2 +-
+>>  arch/m68k/include/asm/dma.h         | 98 +++++++++++++------------------------
+>>  arch/m68k/include/asm/mcf_pgtable.h |  9 ++--
+>>  6 files changed, 44 insertions(+), 77 deletions(-)
+>>
+[snip]
+>> diff --git a/arch/m68k/coldfire/vectors.c b/arch/m68k/coldfire/vectors.c
+>> index 08923fe600e013d9..a185df5963d4ae50 100644
+>> --- a/arch/m68k/coldfire/vectors.c
+>> +++ b/arch/m68k/coldfire/vectors.c
+>> @@ -24,7 +24,7 @@
+>>  asmlinkage void dbginterrupt_c(struct frame *fp)
+>>  {
+>>  	extern void dump(struct pt_regs *fp);
+>> -	printk(KERN_DEBUG "%s(%d): BUS ERROR TRAP\n", __FILE__, __LINE__);
+>> +	pr_debug("%s(%d): BUS ERROR TRAP\n", __FILE__, __LINE__);
+>>  	dump((struct pt_regs *) fp);
+>>  	asm("halt");
+>>  }
+>
+> This file also seems to lack #define DEBUG, so you and Greg might want to
+> check this change.
 
-Thanks for pulling!
+I think we still want this message in, even if DEBUG is
+not defined. This code is conditionally compiled in for
+hardware debuger processing - and this message should really
+come out if this trap case occurs so the user has some idea
+that it just tripped. (The text of the message is not perfect,
+but that is a separate issue).
 
-The following changes since commit 1001354ca34179f3db924eb66672442a173147dc:
+Perhaps pr_alert() or pr_crit() would be better?
 
-  Linux 4.9-rc1 (2016-10-15 12:17:50 -0700)
-
-are available in the git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/geert/linux-m68k.git tags/m68k-for-v4.9-tag2
-
-for you to fetch changes up to 7e251bb21ae08ca2e4fb28cc0981fac2685a8efa:
-
-  m68k: Fix ndelay() macro (2016-10-30 10:13:55 +0100)
-
-----------------------------------------------------------------
-m68k updates for 4.9 (take two)
-
-  - Build fix for drivers calling ndelay() in a conditional block
-    without curly braces,
-  - Defconfig updates.
-
-----------------------------------------------------------------
-Boris Brezillon (1):
-      m68k: Fix ndelay() macro
-
-Geert Uytterhoeven (1):
-      m68k/defconfig: Update defconfigs for v4.9-rc1
-
- arch/m68k/configs/amiga_defconfig    | 8 ++++++--
- arch/m68k/configs/apollo_defconfig   | 8 ++++++--
- arch/m68k/configs/atari_defconfig    | 8 ++++++--
- arch/m68k/configs/bvme6000_defconfig | 8 ++++++--
- arch/m68k/configs/hp300_defconfig    | 8 ++++++--
- arch/m68k/configs/mac_defconfig      | 8 ++++++--
- arch/m68k/configs/multi_defconfig    | 8 ++++++--
- arch/m68k/configs/mvme147_defconfig  | 8 ++++++--
- arch/m68k/configs/mvme16x_defconfig  | 8 ++++++--
- arch/m68k/configs/q40_defconfig      | 8 ++++++--
- arch/m68k/configs/sun3_defconfig     | 8 ++++++--
- arch/m68k/configs/sun3x_defconfig    | 8 ++++++--
- arch/m68k/include/asm/delay.h        | 2 +-
- 13 files changed, 73 insertions(+), 25 deletions(-)
-
-Gr{oetje,eeting}s,
-
-						Geert
-
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-							    -- Linus Torvalds
+Regards
+Greg
