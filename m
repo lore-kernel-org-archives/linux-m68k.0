@@ -1,79 +1,87 @@
-From: Finn Thain <fthain@telegraphics.com.au>
-Subject: Re: [PATCH 18/22] m68k/mm: kmap - Modernize printing of kernel
- messages
-Date: Sat, 10 Dec 2016 09:50:09 +1100 (AEDT)
-Message-ID: <alpine.LNX.2.00.1612100948260.22611__13378.5260528841$1481323815$gmane$org@nippy.intranet>
-References: <1481123360-10978-1-git-send-email-geert@linux-m68k.org> <1481123360-10978-19-git-send-email-geert@linux-m68k.org> <alpine.LNX.2.00.1612081022280.9219@nippy.intranet>
+From: Michael Schmitz <schmitzmic@gmail.com>
+Subject: Re: [PATCH 01/22] m68k/atari: Modernize printing of kernel messages
+Date: Sat, 10 Dec 2016 13:44:39 +1300
+Message-ID: <8dd7db81-fc45-8054-82fa-3b09be455ef7__36748.5729897909$1481330719$gmane$org@gmail.com>
+References: <1481123360-10978-1-git-send-email-geert@linux-m68k.org>
+ <1481123360-10978-2-git-send-email-geert@linux-m68k.org>
+ <alpine.LNX.2.00.1612080925380.9219@nippy.intranet>
+ <CAMuHMdXA2bseZ_JxeC7L+_X2aW=xpaRXc1QrgZZpEZyWtuE75g@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8bit
 Return-path: <linux-m68k-owner@vger.kernel.org>
-In-Reply-To: <alpine.LNX.2.00.1612081022280.9219@nippy.intranet>
+In-Reply-To: <CAMuHMdXA2bseZ_JxeC7L+_X2aW=xpaRXc1QrgZZpEZyWtuE75g@mail.gmail.com>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: Greg Ungerer <gerg@linux-m68k.org>, Sam Creasey <sammy@sammy.net>, Joshua Thompson <funaho@jurai.org>, linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org
+To: Geert Uytterhoeven <geert@linux-m68k.org>, Finn Thain <fthain@telegraphics.com.au>
+Cc: Greg Ungerer <gerg@linux-m68k.org>, Sam Creasey <sammy@sammy.net>, Joshua Thompson <funaho@jurai.org>, linux-m68k <linux-m68k@lists.linux-m68k.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
 
+Hi Geert,
 
-On Thu, 8 Dec 2016, I wrote:
-
+Am 09.12.2016 um 01:22 schrieb Geert Uytterhoeven:
+> On Wed, Dec 7, 2016 at 11:36 PM, Finn Thain <fthain@telegraphics.com.au> wrote:
+>> On Wed, 7 Dec 2016, Geert Uytterhoeven wrote:
+>>>   - Convert from printk() to pr_*(),
+>>>   - Add missing continuations, to fix user-visible breakage,
+>>>   - Drop useless WARNING prefix,
+>>>   - Move trailing spaces to start of continuations.
+>>>
+>>> Fixes: 4bcc595ccd80decb ("printk: reinstate KERN_CONT for printing continuation lines")
+>>> Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
+>>> ---
+>>>  arch/m68k/atari/atakeyb.c | 14 ++++++------
+>>>  arch/m68k/atari/config.c  | 56 +++++++++++++++++++++++------------------------
+>>>  2 files changed, 35 insertions(+), 35 deletions(-)
+>>>
+>>> diff --git a/arch/m68k/atari/atakeyb.c b/arch/m68k/atari/atakeyb.c
+>>> index 264db11268039329..37091898adb3d3b5 100644
+>>> --- a/arch/m68k/atari/atakeyb.c
+>>> +++ b/arch/m68k/atari/atakeyb.c
+>>> @@ -149,7 +149,7 @@ static irqreturn_t atari_keyboard_interrupt(int irq, void *dummy)
+>>>       if (acia_stat & ACIA_OVRN) {
+>>>               /* a very fast typist or a slow system, give a warning */
+>>>               /* ...happens often if interrupts were disabled for too long */
+>>> -             printk(KERN_DEBUG "Keyboard overrun\n");
+>>> +             pr_debug("Keyboard overrun\n");
+>>>               scancode = acia.key_data;
+>>>               if (ikbd_self_test)
+>>>                       /* During self test, don't do resyncing, just process the code */
+>>
+>> This is not equivalent (unless there is a DEBUG macro definition hinding
+>> in a header file somewhere). Since the changelog doesn't mention
+>> suppressing any output, perhaps you were deceived by the questionable API,
+>> as I have been in the past (see 16b9d870a0 and d61c5427f6).
 > 
-> On Wed, 7 Dec 2016, Geert Uytterhoeven wrote:
+> This is an actual message people want to see in the kernel log, even
+
+No, it's not something people want to see - clutters up the screen, and
+causes even more interrupt hogging disk IO from syslogd so exacerbates
+the problem on slow systems.
+
+But Finn is right in that output is now suppressed instead of given a
+particular log level. IMO stating that the message will now only be
+generated when the kernel has been compiled for debugging would be
+perfectly fine.
+
+Cheers,
+
+	Michael
+
+
+> when not debugging?
 > 
-> >   - Convert from printk() to pr_*(),
-> >   - Add missing continuations,
-> >   - Remove #undef DEBUG.
-> > 
-> > Note that "#ifdef DEBUG" is sometimes retained because pr_cont() is 
-> > not optimized away when debugging is disabled.
-> > 
+> Gr{oetje,eeting}s,
 > 
-> I think that argues for using printk(KERN_DEBUG ...) and print(KERN_CONT 
-> ...) inside #ifdef DEBUG, which would need no explanation.
+>                         Geert
 > 
-> If instead you use a combination of pr_debug and pr_cont and #ifdef 
-> DEBUG, perhaps the explanation should be moved from the commit log to a 
-> comment in the code?
+> --
+> Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 > 
-
-Perhaps a better solution than these alternatives would be,
-
-#if defined(DEBUG)
-#define pr_debug_cont pr_cont
-#else
-#define pr_debug_cont no_printk
-#endif
-
-But this API is still surprising and ugly. It doesn't work with 
-CONFIG_DYNAMIC_DEBUG but that's not so important.
-
-IMO, a far better linux/printk.h would have provided us with these 
-definitions:
-
-#define pr_emerg(fmt, ...) \
-        printk(KERN_EMERG pr_fmt(fmt), ##__VA_ARGS__)
-/* ... */
-#define pr_debug(fmt, ...) \
-        printk(KERN_DEBUG pr_fmt(fmt), ##__VA_ARGS__)
-#define pr_cont(fmt, ...) \
-        printk(KERN_CONT fmt, ##__VA_ARGS__)
-
-#if defined(CONFIG_DYNAMIC_DEBUG)
-#define pr_debug_cond(fmt, ...) \
-        dynamic_pr_debug(fmt, ##__VA_ARGS__)
-#define pr_cont_cond(fmt, ...) \
-        dynamic_pr_cont(fmt, ##__VA_ARGS__)
-#elif defined(DEBUG)
-#define pr_debug_cond(fmt, ...) \
-        printk(KERN_DEBUG pr_fmt(fmt), ##__VA_ARGS__)
-#define pr_cont_cond(fmt, ...) \
-        no_printk(KERN_CONT pr_fmt(fmt), ##__VA_ARGS__)
-#else
-#define pr_debug_cond(fmt, ...) \
-        no_printk(KERN_DEBUG pr_fmt(fmt), ##__VA_ARGS__)
-#define pr_cont_cond(fmt, ...) \
-        no_printk(KERN_CONT pr_fmt(fmt), ##__VA_ARGS__)
-#endif
-
-Which have the virtues of symmetry and least surprise.
-
--- 
+> In personal conversations with technical people, I call myself a hacker. But
+> when I'm talking to journalists I just say "programmer" or something like that.
+>                                 -- Linus Torvalds
+> --
+> To unsubscribe from this list: send the line "unsubscribe linux-m68k" in
+> the body of a message to majordomo@vger.kernel.org
+> More majordomo info at  http://vger.kernel.org/majordomo-info.html
+> 
