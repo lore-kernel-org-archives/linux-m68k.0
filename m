@@ -1,87 +1,115 @@
-From: Michael Schmitz <schmitzmic@gmail.com>
-Subject: Re: [PATCH 01/22] m68k/atari: Modernize printing of kernel messages
-Date: Sat, 10 Dec 2016 13:44:39 +1300
-Message-ID: <8dd7db81-fc45-8054-82fa-3b09be455ef7__36748.5729897909$1481330719$gmane$org@gmail.com>
-References: <1481123360-10978-1-git-send-email-geert@linux-m68k.org>
- <1481123360-10978-2-git-send-email-geert@linux-m68k.org>
- <alpine.LNX.2.00.1612080925380.9219@nippy.intranet>
- <CAMuHMdXA2bseZ_JxeC7L+_X2aW=xpaRXc1QrgZZpEZyWtuE75g@mail.gmail.com>
+From: Finn Thain <fthain@telegraphics.com.au>
+Subject: [PATCH] m68k/mac: Improve NMI handler
+Date: Mon, 12 Dec 2016 10:29:06 +1100 (AEDT)
+Message-ID: <alpine.LNX.2.00.1612121027050.12827@nippy.intranet>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8bit
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <linux-m68k-owner@vger.kernel.org>
-In-Reply-To: <CAMuHMdXA2bseZ_JxeC7L+_X2aW=xpaRXc1QrgZZpEZyWtuE75g@mail.gmail.com>
+Received: from kvm5.telegraphics.com.au ([98.124.60.144]:44404 "EHLO
+        kvm5.telegraphics.com.au" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1753930AbcLKX2t (ORCPT
+        <rfc822;linux-m68k@vger.kernel.org>); Sun, 11 Dec 2016 18:28:49 -0500
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Geert Uytterhoeven <geert@linux-m68k.org>, Finn Thain <fthain@telegraphics.com.au>
-Cc: Greg Ungerer <gerg@linux-m68k.org>, Sam Creasey <sammy@sammy.net>, Joshua Thompson <funaho@jurai.org>, linux-m68k <linux-m68k@lists.linux-m68k.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+To: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: linux-m68k@vger.kernel.org
 
-Hi Geert,
+mac_nmi_handler() is useless in its present form and locks up my PowerBook 
+180. Instead, let's have it do something useful and print a register dump 
+and a stack trace.
 
-Am 09.12.2016 um 01:22 schrieb Geert Uytterhoeven:
-> On Wed, Dec 7, 2016 at 11:36 PM, Finn Thain <fthain@telegraphics.com.au> wrote:
->> On Wed, 7 Dec 2016, Geert Uytterhoeven wrote:
->>>   - Convert from printk() to pr_*(),
->>>   - Add missing continuations, to fix user-visible breakage,
->>>   - Drop useless WARNING prefix,
->>>   - Move trailing spaces to start of continuations.
->>>
->>> Fixes: 4bcc595ccd80decb ("printk: reinstate KERN_CONT for printing continuation lines")
->>> Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
->>> ---
->>>  arch/m68k/atari/atakeyb.c | 14 ++++++------
->>>  arch/m68k/atari/config.c  | 56 +++++++++++++++++++++++------------------------
->>>  2 files changed, 35 insertions(+), 35 deletions(-)
->>>
->>> diff --git a/arch/m68k/atari/atakeyb.c b/arch/m68k/atari/atakeyb.c
->>> index 264db11268039329..37091898adb3d3b5 100644
->>> --- a/arch/m68k/atari/atakeyb.c
->>> +++ b/arch/m68k/atari/atakeyb.c
->>> @@ -149,7 +149,7 @@ static irqreturn_t atari_keyboard_interrupt(int irq, void *dummy)
->>>       if (acia_stat & ACIA_OVRN) {
->>>               /* a very fast typist or a slow system, give a warning */
->>>               /* ...happens often if interrupts were disabled for too long */
->>> -             printk(KERN_DEBUG "Keyboard overrun\n");
->>> +             pr_debug("Keyboard overrun\n");
->>>               scancode = acia.key_data;
->>>               if (ikbd_self_test)
->>>                       /* During self test, don't do resyncing, just process the code */
->>
->> This is not equivalent (unless there is a DEBUG macro definition hinding
->> in a header file somewhere). Since the changelog doesn't mention
->> suppressing any output, perhaps you were deceived by the questionable API,
->> as I have been in the past (see 16b9d870a0 and d61c5427f6).
-> 
-> This is an actual message people want to see in the kernel log, even
+mac_debug_handler() is dead code. Remove it along with its static data.
 
-No, it's not something people want to see - clutters up the screen, and
-causes even more interrupt hogging disk IO from syslogd so exacerbates
-the problem on slow systems.
+Signed-off-by: Finn Thain <fthain@telegraphics.com.au>
 
-But Finn is right in that output is now suppressed instead of given a
-particular log level. IMO stating that the message will now only be
-generated when the kernel has been compiled for debugging would be
-perfectly fine.
-
-Cheers,
-
-	Michael
-
-
-> when not debugging?
-> 
-> Gr{oetje,eeting}s,
-> 
->                         Geert
-> 
-> --
-> Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-> 
-> In personal conversations with technical people, I call myself a hacker. But
-> when I'm talking to journalists I just say "programmer" or something like that.
->                                 -- Linus Torvalds
-> --
-> To unsubscribe from this list: send the line "unsubscribe linux-m68k" in
-> the body of a message to majordomo@vger.kernel.org
-> More majordomo info at  http://vger.kernel.org/majordomo-info.html
-> 
+Index: linux/arch/m68k/mac/macints.c
+===================================================================
+--- linux.orig/arch/m68k/mac/macints.c	2016-12-12 10:01:30.000000000 +1100
++++ linux/arch/m68k/mac/macints.c	2016-12-12 10:14:19.000000000 +1100
+@@ -127,12 +127,9 @@
+ 
+ #define SHUTUP_SONIC
+ 
+-/*
+- * console_loglevel determines NMI handler function
+- */
++extern void show_registers(struct pt_regs *);
+ 
+ irqreturn_t mac_nmi_handler(int, void *);
+-irqreturn_t mac_debug_handler(int, void *);
+ 
+ /* #define DEBUG_MACINTS */
+ 
+@@ -276,65 +273,17 @@ static void mac_irq_shutdown(struct irq_
+ 		mac_irq_disable(data);
+ }
+ 
+-static int num_debug[8];
+-
+-irqreturn_t mac_debug_handler(int irq, void *dev_id)
+-{
+-	if (num_debug[irq] < 10) {
+-		printk("DEBUG: Unexpected IRQ %d\n", irq);
+-		num_debug[irq]++;
+-	}
+-	return IRQ_HANDLED;
+-}
+-
+-static int in_nmi;
+-static volatile int nmi_hold;
++static volatile int in_nmi;
+ 
+ irqreturn_t mac_nmi_handler(int irq, void *dev_id)
+ {
+-	int i;
+-	/*
+-	 * generate debug output on NMI switch if 'debug' kernel option given
+-	 * (only works with Penguin!)
+-	 */
+-
+-	in_nmi++;
+-	for (i=0; i<100; i++)
+-		udelay(1000);
+-
+-	if (in_nmi == 1) {
+-		nmi_hold = 1;
+-		printk("... pausing, press NMI to resume ...");
+-	} else {
+-		printk(" ok!\n");
+-		nmi_hold = 0;
+-	}
++	if (in_nmi)
++		return IRQ_HANDLED;
++	in_nmi = 1;
+ 
+-	barrier();
++	pr_info("Non-Maskable Interrupt\n");
++	show_registers(get_irq_regs());
+ 
+-	while (nmi_hold == 1)
+-		udelay(1000);
+-
+-	if (console_loglevel >= 8) {
+-#if 0
+-		struct pt_regs *fp = get_irq_regs();
+-		show_state();
+-		printk("PC: %08lx\nSR: %04x  SP: %p\n", fp->pc, fp->sr, fp);
+-		printk("d0: %08lx    d1: %08lx    d2: %08lx    d3: %08lx\n",
+-		       fp->d0, fp->d1, fp->d2, fp->d3);
+-		printk("d4: %08lx    d5: %08lx    a0: %08lx    a1: %08lx\n",
+-		       fp->d4, fp->d5, fp->a0, fp->a1);
+-
+-		if (STACK_MAGIC != *(unsigned long *)current->kernel_stack_page)
+-			printk("Corrupted stack page\n");
+-		printk("Process %s (pid: %d, stackpage=%08lx)\n",
+-			current->comm, current->pid, current->kernel_stack_page);
+-		if (intr_count == 1)
+-			dump_stack((struct frame *)fp);
+-#else
+-		/* printk("NMI "); */
+-#endif
+-	}
+-	in_nmi--;
++	in_nmi = 0;
+ 	return IRQ_HANDLED;
+ }
