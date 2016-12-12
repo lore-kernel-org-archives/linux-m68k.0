@@ -1,77 +1,88 @@
-From: Greg Ungerer <gerg@linux-m68k.org>
-Subject: [git pull] m68knommu changes for v4.10
-Date: Mon, 12 Dec 2016 10:35:01 +1000
-Message-ID: <d89dfa8b-a830-f985-471c-1a7ead5883da@linux-m68k.org>
+From: Finn Thain <fthain@telegraphics.com.au>
+Subject: [RFC] m68k/mac: Remove SONIC interrupt hack
+Date: Mon, 12 Dec 2016 14:45:15 +1100 (AEDT)
+Message-ID: <alpine.LNX.2.00.1612121404080.16984@nippy.intranet>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: torvalds@linux-foundation.org
-Cc: "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Linux/m68k <linux-m68k@vger.kernel.org>, Geert Uytterhoeven <geert@linux-m68k.org>
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Return-path: <linux-m68k-owner@vger.kernel.org>
+Received: from kvm5.telegraphics.com.au ([98.124.60.144]:50202 "EHLO
+        kvm5.telegraphics.com.au" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1751488AbcLLDox (ORCPT
+        <rfc822;linux-m68k@vger.kernel.org>); Sun, 11 Dec 2016 22:44:53 -0500
+Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
+To: linux-m68k@vger.kernel.org
+Cc: Laurent Vivier <laurent@vivier.eu>, Michael Schmitz <schmitzmic@gmail.com>
 
-Hi Linus,
+In macints.c there is some startup code which disables the SONIC interrupt 
+in an attempt to avoid an unhandled slot interrupt, which would be fatal. 
+This only works on those machines where the SONIC device is on-board.
 
-Can you please pull the m68knommu git tree, for-next branch.
+When the mac_sonic driver is built-in, there's little point in doing this, 
+because the device will be initialized a few seconds later anyway. But 
+when mac_sonic is a module, the window for an unhandled interrupt is 
+longer.
 
-There are two sets of changes in this pull. The largest is the addition
-of the ColdFire platform side i2c support (the IO addressing, setup and
-clock definitions). The i2c hardware module itself is driven by the kernels
-existing iMX i2c driver. The other change is the addition of support for
-the Amcore board.
+Either way, we've already run the gauntlet for 5 or 10 seconds by the time 
+we get around to disabling this particular device. It's only by sheer luck 
+that we got this far.
 
-Regards
-Greg
+Really, this is too little too late. The general problem of unhandled 
+early interrupts also affects other devices on other models. There are 
+better ways to resolve this problem.
 
+1) When using the Penguin bootloader, boot Mac OS with extensions disabled 
+   (by holding down the shift key at startup or by use of the Extensions 
+   Manager control panel). The Penguin docs already contain this advice, 
+   as it is always effective.
 
+2) Have the Penguin bootloader disable the interrupt. It already attempts 
+   to disable slot interrupts. But since some hardware cannot mask slot 
+   interrupts, Penguin should probably close the relevant device drivers 
+   instead.
 
-The following changes since commit 3e5de27e940d00d8d504dfb96625fb654f641509:
+3) Use Emile instead of Penguin. AFAIK the boot ROM never enables network 
+   device interrupts and hence they don't need to be disabled.
 
-  Linux 4.9-rc8 (2016-12-04 12:50:51 -0800)
+We should remove this hack. It requires maintenance and it doesn't solve 
+the problem. It improves the odds in a small number of cases. Far better 
+to simply set CONFIG_MAC_SONIC=y.
 
-are available in the git repository at:
+Signed-off-by: Finn Thain <fthain@telegraphics.com.au>
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/gerg/m68knommu.git for-next
+---
 
-for you to fetch changes up to 07c65a665b8d88f871d8083644ba3f41e68f048f:
+BTW, is it possible to get an error message printed to the console when an 
+irq is raised for which there is no handler? (Neglecting that this could 
+happen even before the early console starts...)
 
-  m68knommu: AMCORE board, add iMX i2c support (2016-12-05 08:53:27 +1000)
-
-----------------------------------------------------------------
-Angelo Dureghello (2):
-      m68k: add Sysam AMCORE open board support
-      m68knommu: AMCORE board, add iMX i2c support
-
-Steven King (1):
-      m68knommu: platform support for i2c devices on ColdFire SoC
-
- arch/m68k/Kconfig.machine          |   6 ++
- arch/m68k/coldfire/Makefile        |   1 +
- arch/m68k/coldfire/amcore.c        | 156 ++++++++++++++++++++++++++++++++++++
- arch/m68k/coldfire/device.c        | 159 +++++++++++++++++++++++++++++++++++++
- arch/m68k/coldfire/m5206.c         |  12 +++
- arch/m68k/coldfire/m520x.c         |  24 +++++-
- arch/m68k/coldfire/m523x.c         |  18 +++++
- arch/m68k/coldfire/m5249.c         |  25 ++++++
- arch/m68k/coldfire/m525x.c         |  10 ++-
- arch/m68k/coldfire/m527x.c         |  28 +++++++
- arch/m68k/coldfire/m528x.c         |  18 +++++
- arch/m68k/coldfire/m5307.c         |  14 ++++
- arch/m68k/coldfire/m53xx.c         |  20 ++++-
- arch/m68k/coldfire/m5407.c         |  14 ++++
- arch/m68k/coldfire/m5441x.c        |  12 +--
- arch/m68k/coldfire/m54xx.c         |  17 ++++
- arch/m68k/configs/amcore_defconfig | 118 +++++++++++++++++++++++++++
- arch/m68k/include/asm/m5206sim.h   |   8 ++
- arch/m68k/include/asm/m520xsim.h   |   8 ++
- arch/m68k/include/asm/m523xsim.h   |  10 ++-
- arch/m68k/include/asm/m527xsim.h   |   8 ++
- arch/m68k/include/asm/m528xsim.h   |   9 +++
- arch/m68k/include/asm/m5307sim.h   |   9 ++-
- arch/m68k/include/asm/m53xxsim.h   |   8 ++
- arch/m68k/include/asm/m5407sim.h   |   8 ++
- arch/m68k/include/asm/m54xxsim.h   |  11 +++
- 26 files changed, 713 insertions(+), 18 deletions(-)
- create mode 100644 arch/m68k/coldfire/amcore.c
- create mode 100644 arch/m68k/configs/amcore_defconfig
+Index: linux/arch/m68k/mac/macints.c
+===================================================================
+--- linux.orig/arch/m68k/mac/macints.c	2016-12-12 12:04:54.000000000 +1100
++++ linux/arch/m68k/mac/macints.c	2016-12-12 13:03:10.000000000 +1100
+@@ -125,8 +125,6 @@
+ #include <asm/hwtest.h>
+ #include <asm/irq_regs.h>
+ 
+-#define SHUTUP_SONIC
+-
+ extern void show_registers(struct pt_regs *);
+ 
+ irqreturn_t mac_nmi_handler(int, void *);
+@@ -151,16 +149,6 @@ void __init mac_init_IRQ(void)
+ #endif
+ 	m68k_setup_irq_controller(&mac_irq_chip, handle_simple_irq, IRQ_USER,
+ 				  NUM_MAC_SOURCES - IRQ_USER);
+-	/* Make sure the SONIC interrupt is cleared or things get ugly */
+-#ifdef SHUTUP_SONIC
+-	printk("Killing onboard sonic... ");
+-	/* This address should hopefully be mapped already */
+-	if (hwreg_present((void*)(0x50f0a000))) {
+-		*(long *)(0x50f0a014) = 0x7fffL;
+-		*(long *)(0x50f0a010) = 0L;
+-	}
+-	printk("Done.\n");
+-#endif /* SHUTUP_SONIC */
+ 
+ 	/*
+ 	 * Now register the handlers for the master IRQ handlers
