@@ -1,115 +1,77 @@
-From: Finn Thain <fthain@telegraphics.com.au>
-Subject: [PATCH] m68k/mac: Improve NMI handler
-Date: Mon, 12 Dec 2016 10:29:06 +1100 (AEDT)
-Message-ID: <alpine.LNX.2.00.1612121027050.12827@nippy.intranet>
+From: Greg Ungerer <gerg@linux-m68k.org>
+Subject: [git pull] m68knommu changes for v4.10
+Date: Mon, 12 Dec 2016 10:35:01 +1000
+Message-ID: <d89dfa8b-a830-f985-471c-1a7ead5883da@linux-m68k.org>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from kvm5.telegraphics.com.au ([98.124.60.144]:44404 "EHLO
-        kvm5.telegraphics.com.au" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1753930AbcLKX2t (ORCPT
-        <rfc822;linux-m68k@vger.kernel.org>); Sun, 11 Dec 2016 18:28:49 -0500
-Sender: linux-m68k-owner@vger.kernel.org
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: torvalds@linux-foundation.org
+Cc: "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Linux/m68k <linux-m68k@vger.kernel.org>, Geert Uytterhoeven <geert@linux-m68k.org>
 List-Id: linux-m68k@vger.kernel.org
-To: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: linux-m68k@vger.kernel.org
 
-mac_nmi_handler() is useless in its present form and locks up my PowerBook 
-180. Instead, let's have it do something useful and print a register dump 
-and a stack trace.
+Hi Linus,
 
-mac_debug_handler() is dead code. Remove it along with its static data.
+Can you please pull the m68knommu git tree, for-next branch.
 
-Signed-off-by: Finn Thain <fthain@telegraphics.com.au>
+There are two sets of changes in this pull. The largest is the addition
+of the ColdFire platform side i2c support (the IO addressing, setup and
+clock definitions). The i2c hardware module itself is driven by the kernels
+existing iMX i2c driver. The other change is the addition of support for
+the Amcore board.
 
-Index: linux/arch/m68k/mac/macints.c
-===================================================================
---- linux.orig/arch/m68k/mac/macints.c	2016-12-12 10:01:30.000000000 +1100
-+++ linux/arch/m68k/mac/macints.c	2016-12-12 10:14:19.000000000 +1100
-@@ -127,12 +127,9 @@
- 
- #define SHUTUP_SONIC
- 
--/*
-- * console_loglevel determines NMI handler function
-- */
-+extern void show_registers(struct pt_regs *);
- 
- irqreturn_t mac_nmi_handler(int, void *);
--irqreturn_t mac_debug_handler(int, void *);
- 
- /* #define DEBUG_MACINTS */
- 
-@@ -276,65 +273,17 @@ static void mac_irq_shutdown(struct irq_
- 		mac_irq_disable(data);
- }
- 
--static int num_debug[8];
--
--irqreturn_t mac_debug_handler(int irq, void *dev_id)
--{
--	if (num_debug[irq] < 10) {
--		printk("DEBUG: Unexpected IRQ %d\n", irq);
--		num_debug[irq]++;
--	}
--	return IRQ_HANDLED;
--}
--
--static int in_nmi;
--static volatile int nmi_hold;
-+static volatile int in_nmi;
- 
- irqreturn_t mac_nmi_handler(int irq, void *dev_id)
- {
--	int i;
--	/*
--	 * generate debug output on NMI switch if 'debug' kernel option given
--	 * (only works with Penguin!)
--	 */
--
--	in_nmi++;
--	for (i=0; i<100; i++)
--		udelay(1000);
--
--	if (in_nmi == 1) {
--		nmi_hold = 1;
--		printk("... pausing, press NMI to resume ...");
--	} else {
--		printk(" ok!\n");
--		nmi_hold = 0;
--	}
-+	if (in_nmi)
-+		return IRQ_HANDLED;
-+	in_nmi = 1;
- 
--	barrier();
-+	pr_info("Non-Maskable Interrupt\n");
-+	show_registers(get_irq_regs());
- 
--	while (nmi_hold == 1)
--		udelay(1000);
--
--	if (console_loglevel >= 8) {
--#if 0
--		struct pt_regs *fp = get_irq_regs();
--		show_state();
--		printk("PC: %08lx\nSR: %04x  SP: %p\n", fp->pc, fp->sr, fp);
--		printk("d0: %08lx    d1: %08lx    d2: %08lx    d3: %08lx\n",
--		       fp->d0, fp->d1, fp->d2, fp->d3);
--		printk("d4: %08lx    d5: %08lx    a0: %08lx    a1: %08lx\n",
--		       fp->d4, fp->d5, fp->a0, fp->a1);
--
--		if (STACK_MAGIC != *(unsigned long *)current->kernel_stack_page)
--			printk("Corrupted stack page\n");
--		printk("Process %s (pid: %d, stackpage=%08lx)\n",
--			current->comm, current->pid, current->kernel_stack_page);
--		if (intr_count == 1)
--			dump_stack((struct frame *)fp);
--#else
--		/* printk("NMI "); */
--#endif
--	}
--	in_nmi--;
-+	in_nmi = 0;
- 	return IRQ_HANDLED;
- }
+Regards
+Greg
+
+
+
+The following changes since commit 3e5de27e940d00d8d504dfb96625fb654f641509:
+
+  Linux 4.9-rc8 (2016-12-04 12:50:51 -0800)
+
+are available in the git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/gerg/m68knommu.git for-next
+
+for you to fetch changes up to 07c65a665b8d88f871d8083644ba3f41e68f048f:
+
+  m68knommu: AMCORE board, add iMX i2c support (2016-12-05 08:53:27 +1000)
+
+----------------------------------------------------------------
+Angelo Dureghello (2):
+      m68k: add Sysam AMCORE open board support
+      m68knommu: AMCORE board, add iMX i2c support
+
+Steven King (1):
+      m68knommu: platform support for i2c devices on ColdFire SoC
+
+ arch/m68k/Kconfig.machine          |   6 ++
+ arch/m68k/coldfire/Makefile        |   1 +
+ arch/m68k/coldfire/amcore.c        | 156 ++++++++++++++++++++++++++++++++++++
+ arch/m68k/coldfire/device.c        | 159 +++++++++++++++++++++++++++++++++++++
+ arch/m68k/coldfire/m5206.c         |  12 +++
+ arch/m68k/coldfire/m520x.c         |  24 +++++-
+ arch/m68k/coldfire/m523x.c         |  18 +++++
+ arch/m68k/coldfire/m5249.c         |  25 ++++++
+ arch/m68k/coldfire/m525x.c         |  10 ++-
+ arch/m68k/coldfire/m527x.c         |  28 +++++++
+ arch/m68k/coldfire/m528x.c         |  18 +++++
+ arch/m68k/coldfire/m5307.c         |  14 ++++
+ arch/m68k/coldfire/m53xx.c         |  20 ++++-
+ arch/m68k/coldfire/m5407.c         |  14 ++++
+ arch/m68k/coldfire/m5441x.c        |  12 +--
+ arch/m68k/coldfire/m54xx.c         |  17 ++++
+ arch/m68k/configs/amcore_defconfig | 118 +++++++++++++++++++++++++++
+ arch/m68k/include/asm/m5206sim.h   |   8 ++
+ arch/m68k/include/asm/m520xsim.h   |   8 ++
+ arch/m68k/include/asm/m523xsim.h   |  10 ++-
+ arch/m68k/include/asm/m527xsim.h   |   8 ++
+ arch/m68k/include/asm/m528xsim.h   |   9 +++
+ arch/m68k/include/asm/m5307sim.h   |   9 ++-
+ arch/m68k/include/asm/m53xxsim.h   |   8 ++
+ arch/m68k/include/asm/m5407sim.h   |   8 ++
+ arch/m68k/include/asm/m54xxsim.h   |  11 +++
+ 26 files changed, 713 insertions(+), 18 deletions(-)
+ create mode 100644 arch/m68k/coldfire/amcore.c
+ create mode 100644 arch/m68k/configs/amcore_defconfig
