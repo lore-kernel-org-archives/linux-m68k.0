@@ -1,21 +1,21 @@
 From: Laurent Vivier <laurent@vivier.eu>
 Subject: Re: [RFC] m68k/mac: Remove SONIC interrupt hack
-Date: Mon, 12 Dec 2016 15:22:48 +0100
-Message-ID: <ce6b1575-e3f6-4b49-c70f-0ce0d788e9a0@vivier.eu>
+Date: Mon, 12 Dec 2016 15:37:18 +0100
+Message-ID: <a78af69e-85bb-76a0-5191-d745d66282b1@vivier.eu>
 References: <alpine.LNX.2.00.1612121404080.16984@nippy.intranet>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 8bit
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from mout.kundenserver.de ([212.227.126.135]:62644 "EHLO
+Received: from mout.kundenserver.de ([212.227.17.10]:63770 "EHLO
         mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1752594AbcLLOW4 (ORCPT
-        <rfc822;linux-m68k@vger.kernel.org>); Mon, 12 Dec 2016 09:22:56 -0500
+        with ESMTP id S1752038AbcLLOhb (ORCPT
+        <rfc822;linux-m68k@vger.kernel.org>); Mon, 12 Dec 2016 09:37:31 -0500
 In-Reply-To: <alpine.LNX.2.00.1612121404080.16984@nippy.intranet>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
 To: Finn Thain <fthain@telegraphics.com.au>, linux-m68k@vger.kernel.org
-Cc: Michael Schmitz <schmitzmic@gmail.com>
+Cc: Michael Schmitz <schmitzmic@gmail.com>, Jes Sorensen <Jes.Sorensen@redhat.com>
 
 Le 12/12/2016 à 04:45, Finn Thain a écrit :
 > In macints.c there is some startup code which disables the SONIC interrupt 
@@ -53,9 +53,6 @@ Le 12/12/2016 à 04:45, Finn Thain a écrit :
 > to simply set CONFIG_MAC_SONIC=y.
 > 
 > Signed-off-by: Finn Thain <fthain@telegraphics.com.au>
-
-Reviewed-by: Laurent Vivier <laurent@vivier.eu>
-
 > 
 > ---
 > 
@@ -94,3 +91,31 @@ Reviewed-by: Laurent Vivier <laurent@vivier.eu>
 >  	/*
 >  	 * Now register the handlers for the master IRQ handlers
 > 
+
+It seems this hack appears in kernel 2.4.5.2:
+
+commit 4fdbe71c852f4b44203913c93a5d3a8a12041167
+Author: Linus Torvalds <torvalds@athlon.transmeta.com>
+Date:   Mon Feb 4 18:35:36 2002 -0800
+
+    v2.4.5.1 -> v2.4.5.2
+
+      - Takanori Kawano: brlock indexing bugfix
+      - Ingo Molnar, Jeff Garzik: softirq updates and fixes
+      - Al Viro: rampage of superblock cleanups.
+      - Jean Tourrilhes: Orinoco driver update v6, IrNET update
+      - Trond Myklebust: NFS brown-paper-bag thing
+      - Tim Waugh: parport update
+      - David Miller: networking and sparc updates
+      - Jes Sorensen: m68k update.
+      - Ben Fennema: UDF update
+      - Geert Uytterhoeven: fbdev logo updates
+      - Willem Riede: osst driver updates
+      - Paul Mackerras: PPC update
+      - Marcelo Tosatti: unlazy swap cache
+      - Mikulas Patocka: hpfs update
+
+Perhaps Jes has something to add (CC:)?
+
+Thanks,
+Laurent
