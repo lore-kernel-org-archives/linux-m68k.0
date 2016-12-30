@@ -1,33 +1,52 @@
-From: Corentin Labbe <clabbe.montjoie@gmail.com>
-Subject: [PATCH] m68k/mac: remove unneeded linux/miscdevice.h include
-Date: Thu, 15 Dec 2016 16:02:08 +0100
-Message-ID: <20161215150208.30752-1-clabbe.montjoie__20730.9212805287$1481814278$gmane$org@gmail.com>
+From: Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>
+Subject: [PATCH 0/3] ata: add m68k/Atari Falcon PATA support
+Date: Fri, 30 Dec 2016 15:01:15 +0100
+Message-ID: <1483106478-1382-1-git-send-email-b.zolnierkie@samsung.com>
+References: <CGME20161230140139epcas5p160eda5a6a77be084e21f12002c85cc2a@epcas5p1.samsung.com>
 Return-path: <linux-m68k-owner@vger.kernel.org>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: funaho@jurai.org, geert@linux-m68k.org, linux-m68k@lists.linux-m68k.org
-Cc: linux-kernel@vger.kernel.org, Corentin Labbe <clabbe.montjoie@gmail.com>
+To: Tejun Heo <tj@kernel.org>
+Cc: Geert Uytterhoeven <geert@linux-m68k.org>, Michael Schmitz <schmitzmic@gmail.com>, linux-ide@vger.kernel.org, linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org, b.zolnierkie@samsung.com
 
-arch/m68k/mac/misc.c does not use any miscdevice so the
-inclusion of linux/miscdevice.h is unnecessary.
-This patch remove this unnecessary include.
+Hi,
 
-Signed-off-by: Corentin Labbe <clabbe.montjoie@gmail.com>
----
- arch/m68k/mac/misc.c | 1 -
- 1 file changed, 1 deletion(-)
+This patchset adds m68k/Atari Falcon PATA support to libata.
+The major difference in the new libata's pata_falcon host
+driver when compared to legacy IDE's falconide host driver is
+that we are using polled PIO mode and thus avoiding the need
+for STDMA locking magic altogether.
 
-diff --git a/arch/m68k/mac/misc.c b/arch/m68k/mac/misc.c
-index 0fb54a9..c6b10bd 100644
---- a/arch/m68k/mac/misc.c
-+++ b/arch/m68k/mac/misc.c
-@@ -4,7 +4,6 @@
- 
- #include <linux/types.h>
- #include <linux/errno.h>
--#include <linux/miscdevice.h>
- #include <linux/kernel.h>
- #include <linux/delay.h>
- #include <linux/sched.h>
+Tested under ARAnyM emulator.
+
+Best regards,
+--
+Bartlomiej Zolnierkiewicz
+Samsung R&D Institute Poland
+Samsung Electronics
+
+
+Bartlomiej Zolnierkiewicz (3):
+  ata: allow subsystem to be used on m68k arch
+  ata: pass queued command to ->sff_data_xfer method
+  ata: add Atari Falcon PATA controller driver
+
+ drivers/ata/Kconfig           |  11 ++-
+ drivers/ata/Makefile          |   1 +
+ drivers/ata/libata-sff.c      |  29 +++----
+ drivers/ata/pata_at91.c       |   6 +-
+ drivers/ata/pata_bf54x.c      |   7 +-
+ drivers/ata/pata_ep93xx.c     |   4 +-
+ drivers/ata/pata_falcon.c     | 184 ++++++++++++++++++++++++++++++++++++++++++
+ drivers/ata/pata_ixp4xx_cf.c  |   4 +-
+ drivers/ata/pata_legacy.c     |  15 ++--
+ drivers/ata/pata_octeon_cf.c  |  12 +--
+ drivers/ata/pata_pcmcia.c     |   6 +-
+ drivers/ata/pata_samsung_cf.c |   4 +-
+ drivers/ata/sata_rcar.c       |   4 +-
+ include/linux/libata.h        |   8 +-
+ 14 files changed, 247 insertions(+), 48 deletions(-)
+ create mode 100644 drivers/ata/pata_falcon.c
+
 -- 
-2.10.2
+1.9.1
