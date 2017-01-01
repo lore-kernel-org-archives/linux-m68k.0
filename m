@@ -1,39 +1,54 @@
-From: Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>
-Subject: Re: [PATCH 1/3] ata: allow subsystem to be used on m68k arch
-Date: Fri, 30 Dec 2016 18:14:36 +0100
-Message-ID: <3484511.F6TxDiWTi4__45633.8348602459$1483118093$gmane$org@amdc3058>
-References: <1483106478-1382-1-git-send-email-b.zolnierkie@samsung.com>
- <1483106478-1382-2-git-send-email-b.zolnierkie@samsung.com>
- <20161230141249.GA4543@infradead.org>
- <CGME20161230171438epcas1p3c1d8ea8e4c77d796b81f7130c5e61d3f@epcas1p3.samsung.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7Bit
+From: Finn Thain <fthain@telegraphics.com.au>
+Subject: [PATCH RESEND 02/10] via-cuda: Remove redundant temporary variable
+Date: Sat, 31 Dec 2016 19:56:26 -0500 (EST)
+Message-ID: <5a4f903487ce29a690d5c26573d63d1490d2d29e.1483055859.git.fthain@telegraphics.com.au>
+References: <cover.1483055859.git.fthain@telegraphics.com.au>
 Return-path: <linux-m68k-owner@vger.kernel.org>
-In-reply-to: <20161230141249.GA4543@infradead.org>
+Received: from kvm5.telegraphics.com.au ([98.124.60.144]:49582 "EHLO
+        kvm5.telegraphics.com.au" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1754877AbdAAA43 (ORCPT
+        <rfc822;linux-m68k@vger.kernel.org>); Sat, 31 Dec 2016 19:56:29 -0500
+In-Reply-To: <cover.1483055859.git.fthain@telegraphics.com.au>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Christoph Hellwig <hch@infradead.org>
-Cc: Tejun Heo <tj@kernel.org>, Geert Uytterhoeven <geert@linux-m68k.org>, Michael Schmitz <schmitzmic@gmail.com>, linux-ide@vger.kernel.org, linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org
+To: Benjamin Herrenschmidt <benh@kernel.crashing.org>, Michael Ellerman <mpe@ellerman.id.au>, Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: linux-m68k@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
 
+There is no possibility that current_req can change during execution of
+cuda_start(). This can be confirmed by inspection: cuda_lock is always
+held whenever cuda_start() is called or current_req is modified.
 
-Hi,
+Tested-by: Stan Johnson <userm57@yahoo.com>
+Signed-off-by: Finn Thain <fthain@telegraphics.com.au>
+---
+ drivers/macintosh/via-cuda.c | 8 ++------
+ 1 file changed, 2 insertions(+), 6 deletions(-)
 
-On Friday, December 30, 2016 06:12:49 AM Christoph Hellwig wrote:
-> On Fri, Dec 30, 2016 at 03:01:16PM +0100, Bartlomiej Zolnierkiewicz wrote:
-> > When libata was merged m68k lacked IOMAP support.  This has not been
-> > true for a long time now so allow subsystem to be used on m68k.
-> 
-> Is that dependency needed at all anymore?  What exact functionality
-> is missing on m32r and s390?
-
-* m32r: I don't know why it was restricted but it builds fine nowadays
-  (I will fix it later in incremental patch)
-
-* s390: no PATA hardware, legacy IDE subsystem is also not supported
-
-Best regards,
---
-Bartlomiej Zolnierkiewicz
-Samsung R&D Institute Poland
-Samsung Electronics
+diff --git a/drivers/macintosh/via-cuda.c b/drivers/macintosh/via-cuda.c
+index 0617512..dd51df5 100644
+--- a/drivers/macintosh/via-cuda.c
++++ b/drivers/macintosh/via-cuda.c
+@@ -414,19 +414,15 @@ cuda_write(struct adb_request *req)
+ static void
+ cuda_start(void)
+ {
+-    struct adb_request *req;
+-
+     /* assert cuda_state == idle */
+-    /* get the packet to send */
+-    req = current_req;
+-    if (req == 0)
++    if (current_req == NULL)
+ 	return;
+     if ((in_8(&via[B]) & TREQ) == 0)
+ 	return;			/* a byte is coming in from the CUDA */
+ 
+     /* set the shift register to shift out and send a byte */
+     out_8(&via[ACR], in_8(&via[ACR]) | SR_OUT);
+-    out_8(&via[SR], req->data[0]);
++    out_8(&via[SR], current_req->data[0]);
+     out_8(&via[B], in_8(&via[B]) & ~TIP);
+     cuda_state = sent_first_byte;
+ }
+-- 
+2.10.2
