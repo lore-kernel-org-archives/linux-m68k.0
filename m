@@ -1,8 +1,8 @@
 From: Finn Thain <fthain@telegraphics.com.au>
-Subject: [PATCH RESEND 07/10] via-cuda: Use spinlock_irq_save/restore instead
- of enable/disable_irq
+Subject: [PATCH RESEND 08/10] via-cuda: Initialize data_index early and
+ increment consistently
 Date: Sat, 31 Dec 2016 19:56:26 -0500 (EST)
-Message-ID: <d85eed17fa9eb5095df100d435575ed996ee2984.1483055859.git.fthain@telegraphics.com.au>
+Message-ID: <cd02acbee18651e275a4bd8a5fdbf967b7abdd38.1483055859.git.fthain@telegraphics.com.au>
 References: <cover.1483055859.git.fthain@telegraphics.com.au>
 Return-path: <linux-kernel-owner@vger.kernel.org>
 In-Reply-To: <cover.1483055859.git.fthain@telegraphics.com.au>
@@ -11,83 +11,55 @@ To: Benjamin Herrenschmidt <benh@kernel.crashing.org>, Michael Ellerman <mpe@ell
 Cc: linux-m68k@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
 
-The cuda_start() function uses spinlock_irq_save/restore for mutual
-exclusion. Let's have cuda_poll() do the same when polling the VIA
-interrupt.
+Initialize data_index where appropriate to improve readability and
+assist debugging. This change doesn't affect driver behaviour.
 
-The benefit to disabling local irqs when the interrupt is being polled
-is that the interrupt handler now has the same timing properties
-regardless of whether it is invoked normally or from cuda_poll().
+I prefer to see
+	current_req->data[data_index++]
+in place of
+	current_req->data[0]
+or
+	current_req->data[1]
+inasmuchas it becomes obvious what the data_index variable does.
 
-This driver was written back when local irqs remained enabled during
-execution of interrupt handlers and cuda_poll() was probably trying
-to achieve the same effect by use of enable/disable_irq.
+Moreover, the actual value of data_index when examined at any given moment
+tells me something about prior events, which did prove helpful.
 
 Tested-by: Stan Johnson <userm57@yahoo.com>
 Signed-off-by: Finn Thain <fthain@telegraphics.com.au>
 ---
-I wondered whether the use of enable/disable_irq was an attempt to reduce
-interrupt latency given that VIA register accesses are slow. But if the
-interrupt has not yet fired, only one VIA access will take place, which
-imposes neglible latency anyway. If the interrupt has fired, we should
-execute the handler under the usual context, i.e. local irqs disabled.
----
- drivers/macintosh/via-cuda.c | 16 +++++-----------
- 1 file changed, 5 insertions(+), 11 deletions(-)
+ drivers/macintosh/via-cuda.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
 diff --git a/drivers/macintosh/via-cuda.c b/drivers/macintosh/via-cuda.c
-index 3212695..e3763cb 100644
+index e3763cb..57fb20d 100644
 --- a/drivers/macintosh/via-cuda.c
 +++ b/drivers/macintosh/via-cuda.c
-@@ -459,14 +459,7 @@ cuda_start(void)
- void
- cuda_poll(void)
- {
--    /* cuda_interrupt only takes a normal lock, we disable
--     * interrupts here to avoid re-entering and thus deadlocking.
--     */
--    if (cuda_irq)
--	disable_irq(cuda_irq);
--    cuda_interrupt(0, NULL);
--    if (cuda_irq)
--	enable_irq(cuda_irq);
-+	cuda_interrupt(0, NULL);
+@@ -446,12 +446,13 @@ cuda_start(void)
+     /* assert cuda_state == idle */
+     if (current_req == NULL)
+ 	return;
++    data_index = 0;
+     if (TREQ_asserted(in_8(&via[B])))
+ 	return;			/* a byte is coming in from the CUDA */
+ 
+     /* set the shift register to shift out and send a byte */
+     out_8(&via[ACR], in_8(&via[ACR]) | SR_OUT);
+-    out_8(&via[SR], current_req->data[0]);
++    out_8(&via[SR], current_req->data[data_index++]);
+     assert_TIP();
+     cuda_state = sent_first_byte;
  }
- EXPORT_SYMBOL(cuda_poll);
- 
-@@ -475,13 +468,14 @@ EXPORT_SYMBOL(cuda_poll);
- static irqreturn_t
- cuda_interrupt(int irq, void *arg)
- {
-+    unsigned long flags;
-     u8 status;
-     struct adb_request *req = NULL;
-     unsigned char ibuf[16];
-     int ibuf_len = 0;
-     int complete = 0;
-     
--    spin_lock(&cuda_lock);
-+    spin_lock_irqsave(&cuda_lock, flags);
- 
-     /* On powermacs, this handler is registered for the VIA IRQ. But they use
-      * just the shift register IRQ -- other VIA interrupt sources are disabled.
-@@ -494,7 +488,7 @@ cuda_interrupt(int irq, void *arg)
- #endif
-     {
-         if ((in_8(&via[IFR]) & SR_INT) == 0) {
--            spin_unlock(&cuda_lock);
-+            spin_unlock_irqrestore(&cuda_lock, flags);
-             return IRQ_NONE;
-         } else {
-             out_8(&via[IFR], SR_INT);
-@@ -616,7 +610,7 @@ cuda_interrupt(int irq, void *arg)
-     default:
- 	pr_err("cuda_interrupt: unknown cuda_state %d?\n", cuda_state);
-     }
--    spin_unlock(&cuda_lock);
-+    spin_unlock_irqrestore(&cuda_lock, flags);
-     if (complete && req) {
-     	void (*done)(struct adb_request *) = req->done;
-     	mb();
+@@ -524,9 +525,8 @@ cuda_interrupt(int irq, void *arg)
+ 	    negate_TIP_and_TACK();
+ 	    cuda_state = idle;
+ 	} else {
+-	    out_8(&via[SR], current_req->data[1]);
++	    out_8(&via[SR], current_req->data[data_index++]);
+ 	    toggle_TACK();
+-	    data_index = 2;
+ 	    cuda_state = sending;
+ 	}
+ 	break;
 -- 
 2.10.2
