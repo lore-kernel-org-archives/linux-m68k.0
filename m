@@ -1,117 +1,88 @@
 From: Finn Thain <fthain@telegraphics.com.au>
-Subject: [PATCH 1/3] m68k/mac: Improve NMI handler
+Subject: [PATCH 2/3] m68k/mac: Remove SHUTUP_SONIC interrupt hack
 Date: Mon,  2 Jan 2017 04:53:54 -0500 (EST)
-Message-ID: <0cb5e92b377bea6699f8af8f5c5a97081a217f74.1483350483.git.fthain@telegraphics.com.au>
+Message-ID: <6644f8a3fbab7aa31f01452adb170754aa998991.1483350483.git.fthain@telegraphics.com.au>
 References: <cover.1483350483.git.fthain@telegraphics.com.au>
-Return-path: <linux-kernel-owner@vger.kernel.org>
+Return-path: <linux-m68k-owner@vger.kernel.org>
+Received: from kvm5.telegraphics.com.au ([98.124.60.144]:47134 "EHLO
+        kvm5.telegraphics.com.au" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S932660AbdABJx5 (ORCPT
+        <rfc822;linux-m68k@vger.kernel.org>); Mon, 2 Jan 2017 04:53:57 -0500
 In-Reply-To: <cover.1483350483.git.fthain@telegraphics.com.au>
-Sender: linux-kernel-owner@vger.kernel.org
+Sender: linux-m68k-owner@vger.kernel.org
+List-Id: linux-m68k@vger.kernel.org
 To: Geert Uytterhoeven <geert@linux-m68k.org>
 Cc: linux-m68k@vger.kernel.org, linux-kernel@vger.kernel.org
-List-Id: linux-m68k@vger.kernel.org
 
-mac_nmi_handler() is useless in its present form and locks up my PowerBook
-180. Let's throw out the dead code and make it do something useful: print
-a register dump and a stack trace.
+In macints.c there is some startup code which disables the SONIC interrupt
+in an attempt to avoid an unhandled slot interrupt, which would be fatal.
+This only works on those machines where the SONIC device is on-board.
 
-mac_debug_handler() is also dead code. Remove it along with its static
-data.
+When the mac_sonic driver is built-in, there's little point in doing this,
+because the device will be initialized a few seconds later anyway. But
+when mac_sonic is a module, the window for an unhandled interrupt is
+longer.
+
+Either way, we've already run the gauntlet for 5 or 10 seconds by the time
+we get around to disabling this particular device. It's only by sheer luck
+that we got this far.
+
+Really, this is too little too late. The general problem of unhandled
+early interrupts also affects other devices on other models. There are
+better ways to resolve this problem.
+
+1) When using the Penguin bootloader, boot Mac OS with extensions disabled
+   (by holding down the shift key at startup or by use of the Extensions
+   Manager control panel). The Penguin docs already contain this advice,
+   as it is always effective.
+
+2) Have the Penguin bootloader disable the device. It already attempts
+   to disable slot interrupts. But since some hardware cannot mask slot
+   interrupts, Penguin should probably close the relevant device
+   drivers.
+
+3) Use Emile instead of Penguin. AFAIK the boot ROM never enables network
+   device interrupts and hence they don't need to be disabled.
+
+Remove this hack. It requires maintenance and it doesn't solve the
+problem. It improves the odds for a few models, but so does setting
+CONFIG_MAC_SONIC=y.
 
 Signed-off-by: Finn Thain <fthain@telegraphics.com.au>
+Reviewed-by: Laurent Vivier <laurent@vivier.eu>
 ---
- arch/m68k/mac/macints.c | 67 ++++++-------------------------------------------
- 1 file changed, 8 insertions(+), 59 deletions(-)
+ arch/m68k/mac/macints.c | 12 ------------
+ 1 file changed, 12 deletions(-)
 
 diff --git a/arch/m68k/mac/macints.c b/arch/m68k/mac/macints.c
-index 9f98c08..f9672bb 100644
+index f9672bb..1244d36 100644
 --- a/arch/m68k/mac/macints.c
 +++ b/arch/m68k/mac/macints.c
-@@ -127,12 +127,9 @@
+@@ -125,8 +125,6 @@
+ #include <asm/hwtest.h>
+ #include <asm/irq_regs.h>
  
- #define SHUTUP_SONIC
- 
--/*
-- * console_loglevel determines NMI handler function
-- */
-+extern void show_registers(struct pt_regs *);
+-#define SHUTUP_SONIC
+-
+ extern void show_registers(struct pt_regs *);
  
  irqreturn_t mac_nmi_handler(int, void *);
--irqreturn_t mac_debug_handler(int, void *);
- 
- /* #define DEBUG_MACINTS */
- 
-@@ -276,65 +273,17 @@ static void mac_irq_shutdown(struct irq_data *data)
- 		mac_irq_disable(data);
- }
- 
--static int num_debug[8];
--
--irqreturn_t mac_debug_handler(int irq, void *dev_id)
--{
--	if (num_debug[irq] < 10) {
--		printk("DEBUG: Unexpected IRQ %d\n", irq);
--		num_debug[irq]++;
+@@ -151,16 +149,6 @@ void __init mac_init_IRQ(void)
+ #endif
+ 	m68k_setup_irq_controller(&mac_irq_chip, handle_simple_irq, IRQ_USER,
+ 				  NUM_MAC_SOURCES - IRQ_USER);
+-	/* Make sure the SONIC interrupt is cleared or things get ugly */
+-#ifdef SHUTUP_SONIC
+-	printk("Killing onboard sonic... ");
+-	/* This address should hopefully be mapped already */
+-	if (hwreg_present((void*)(0x50f0a000))) {
+-		*(long *)(0x50f0a014) = 0x7fffL;
+-		*(long *)(0x50f0a010) = 0L;
 -	}
--	return IRQ_HANDLED;
--}
--
--static int in_nmi;
--static volatile int nmi_hold;
-+static volatile int in_nmi;
+-	printk("Done.\n");
+-#endif /* SHUTUP_SONIC */
  
- irqreturn_t mac_nmi_handler(int irq, void *dev_id)
- {
--	int i;
--	/*
--	 * generate debug output on NMI switch if 'debug' kernel option given
--	 * (only works with Penguin!)
--	 */
--
--	in_nmi++;
--	for (i=0; i<100; i++)
--		udelay(1000);
--
--	if (in_nmi == 1) {
--		nmi_hold = 1;
--		printk("... pausing, press NMI to resume ...");
--	} else {
--		printk(" ok!\n");
--		nmi_hold = 0;
--	}
-+	if (in_nmi)
-+		return IRQ_HANDLED;
-+	in_nmi = 1;
- 
--	barrier();
-+	pr_info("Non-Maskable Interrupt\n");
-+	show_registers(get_irq_regs());
- 
--	while (nmi_hold == 1)
--		udelay(1000);
--
--	if (console_loglevel >= 8) {
--#if 0
--		struct pt_regs *fp = get_irq_regs();
--		show_state();
--		printk("PC: %08lx\nSR: %04x  SP: %p\n", fp->pc, fp->sr, fp);
--		printk("d0: %08lx    d1: %08lx    d2: %08lx    d3: %08lx\n",
--		       fp->d0, fp->d1, fp->d2, fp->d3);
--		printk("d4: %08lx    d5: %08lx    a0: %08lx    a1: %08lx\n",
--		       fp->d4, fp->d5, fp->a0, fp->a1);
--
--		if (STACK_MAGIC != *(unsigned long *)current->kernel_stack_page)
--			printk("Corrupted stack page\n");
--		printk("Process %s (pid: %d, stackpage=%08lx)\n",
--			current->comm, current->pid, current->kernel_stack_page);
--		if (intr_count == 1)
--			dump_stack((struct frame *)fp);
--#else
--		/* printk("NMI "); */
--#endif
--	}
--	in_nmi--;
-+	in_nmi = 0;
- 	return IRQ_HANDLED;
- }
+ 	/*
+ 	 * Now register the handlers for the master IRQ handlers
 -- 
 2.10.2
