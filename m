@@ -1,18 +1,24 @@
 From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: [PATCH 3/6] ata: ATA_BMDMA should depend on HAS_DMA
-Date: Tue,  3 Jan 2017 19:09:46 +0100
-Message-ID: <1483466989-9091-4-git-send-email-geert@linux-m68k.org>
+Subject: [PATCH 1/6] ata: SATA_MV should depend on HAS_DMA
+Date: Tue,  3 Jan 2017 19:09:44 +0100
+Message-ID: <1483466989-9091-2-git-send-email-geert@linux-m68k.org>
 References: <1483466989-9091-1-git-send-email-geert@linux-m68k.org>
-Return-path: <linux-kernel-owner@vger.kernel.org>
+Return-path: <linux-m68k-owner@vger.kernel.org>
+Received: from albert.telenet-ops.be ([195.130.137.90]:35008 "EHLO
+        albert.telenet-ops.be" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1760143AbdACSKa (ORCPT
+        <rfc822;linux-m68k@vger.kernel.org>); Tue, 3 Jan 2017 13:10:30 -0500
 In-Reply-To: <1483466989-9091-1-git-send-email-geert@linux-m68k.org>
-Sender: linux-kernel-owner@vger.kernel.org
+Sender: linux-m68k-owner@vger.kernel.org
+List-Id: linux-m68k@vger.kernel.org
 To: Tejun Heo <tj@kernel.org>, Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>
 Cc: linux-ide@vger.kernel.org, linux-m68k@vger.kernel.org, linux-kernel@vger.kernel.org, Geert Uytterhoeven <geert@linux-m68k.org>
-List-Id: linux-m68k@vger.kernel.org
 
 If NO_DMA=y:
 
-    ERROR: "dmam_alloc_coherent" [drivers/ata/libata.ko] undefined!
+    ERROR: "dma_pool_alloc" [drivers/ata/sata_mv.ko] undefined!
+    ERROR: "dmam_pool_create" [drivers/ata/sata_mv.ko] undefined!
+    ERROR: "dma_pool_free" [drivers/ata/sata_mv.ko] undefined!
 
 Add a dependency on HAS_DMA to fix this.
 
@@ -22,16 +28,16 @@ Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
  1 file changed, 1 insertion(+)
 
 diff --git a/drivers/ata/Kconfig b/drivers/ata/Kconfig
-index 275dbbded6dbe03b..a973aa8aa5513eea 100644
+index cbd101933c69322a..7b36b791078a4806 100644
 --- a/drivers/ata/Kconfig
 +++ b/drivers/ata/Kconfig
-@@ -289,6 +289,7 @@ config SATA_SX4
+@@ -353,6 +353,7 @@ config SATA_HIGHBANK
  
- config ATA_BMDMA
- 	bool "ATA BMDMA support"
+ config SATA_MV
+ 	tristate "Marvell SATA support"
 +	depends on HAS_DMA
- 	default y
- 	help
- 	  This option adds support for SFF ATA controllers with BMDMA
+ 	depends on PCI || ARCH_DOVE || ARCH_MV78XX0 || \
+ 		   ARCH_MVEBU || ARCH_ORION5X || COMPILE_TEST
+ 	select GENERIC_PHY
 -- 
 1.9.1
