@@ -1,84 +1,53 @@
-From: Finn Thain <fthain@telegraphics.com.au>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
 Subject: Re: [PATCH 1/3] m68k/mac: Improve NMI handler
-Date: Tue, 3 Jan 2017 15:31:34 +1100 (AEDT)
-Message-ID: <alpine.LNX.2.00.1701031310520.24826@nippy.intranet>
-References: <cover.1483350483.git.fthain@telegraphics.com.au> <0cb5e92b377bea6699f8af8f5c5a97081a217f74.1483350483.git.fthain@telegraphics.com.au> <CAMuHMdWK1n9kyLhtNY8OKK6Yzo70QLsmAUc1TRLCdHNKWWdD7g@mail.gmail.com>
+Date: Tue, 3 Jan 2017 09:17:18 +0100
+Message-ID: <CAMuHMdWsOk0_mj=MBXi_p8Ks5YsTa+6y8t6qM=ZWJQWWpJTuRA@mail.gmail.com>
+References: <cover.1483350483.git.fthain@telegraphics.com.au>
+ <0cb5e92b377bea6699f8af8f5c5a97081a217f74.1483350483.git.fthain@telegraphics.com.au>
+ <CAMuHMdWK1n9kyLhtNY8OKK6Yzo70QLsmAUc1TRLCdHNKWWdD7g@mail.gmail.com> <alpine.LNX.2.00.1701031310520.24826@nippy.intranet>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain; charset=UTF-8
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from kvm5.telegraphics.com.au ([98.124.60.144]:49164 "EHLO
-        kvm5.telegraphics.com.au" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1756252AbdACEan (ORCPT
-        <rfc822;linux-m68k@vger.kernel.org>); Mon, 2 Jan 2017 23:30:43 -0500
-In-Reply-To: <CAMuHMdWK1n9kyLhtNY8OKK6Yzo70QLsmAUc1TRLCdHNKWWdD7g@mail.gmail.com>
+Received: from mail-it0-f67.google.com ([209.85.214.67]:36828 "EHLO
+        mail-it0-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S933986AbdACIRU (ORCPT
+        <rfc822;linux-m68k@vger.kernel.org>); Tue, 3 Jan 2017 03:17:20 -0500
+In-Reply-To: <alpine.LNX.2.00.1701031310520.24826@nippy.intranet>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: Linux/m68k <linux-m68k@vger.kernel.org>, linux-kernel@vger.kernel.org
+To: Finn Thain <fthain@telegraphics.com.au>
+Cc: Linux/m68k <linux-m68k@vger.kernel.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
 
+Hi Finn,
 
-On Mon, 2 Jan 2017, Geert Uytterhoeven wrote:
+On Tue, Jan 3, 2017 at 5:31 AM, Finn Thain <fthain@telegraphics.com.au> wrote:
+> On Mon, 2 Jan 2017, Geert Uytterhoeven wrote:
+>> >
+>> > -/*
+>> > - * console_loglevel determines NMI handler function
+>> > - */
+>> > +extern void show_registers(struct pt_regs *);
+>>
+>> Seems like we do have a declaration in ... <linux/kprobes.h>.
+>
+> Yes, and it would have to be moved outside of the #ifdef CONFIG_KPROBES
+> portion before it could be used by m68k, openrisc, cris or mn10300, which
+> all lack HAVE_KPROBES.
 
-> >
-> > -/*
-> > - * console_loglevel determines NMI handler function
-> > - */
-> > +extern void show_registers(struct pt_regs *);
-> 
-> Seems like we do have a declaration in ... <linux/kprobes.h>.
-> 
+Right, seems my manual cpp made a mistake here. It's indeed inside.
 
-Yes, and it would have to be moved outside of the #ifdef CONFIG_KPROBES 
-portion before it could be used by m68k, openrisc, cris or mn10300, which 
-all lack HAVE_KPROBES.
+> Or we could just leave the patch as it is, because thus far m68k has no
+> need for any declaration except a sole call site in macints.c.
 
-I can't see why linux/kprobes.h is more appropriate for this declaration 
-than, say linux/sched.h.
+Fine for me. Sorry for the noise.
 
-Despite the checkpatch warning, placing the extern at the call site is 
-very popular.
+Gr{oetje,eeting}s,
 
-$ egrep -r "extern.*show_registers" arch/
-arch/mips/kernel/unaligned.c:extern void show_registers(struct pt_regs *regs);
-arch/openrisc/kernel/process.c: extern void show_registers(struct pt_regs *regs);
-arch/cris/kernel/traps.c:extern void show_registers(struct pt_regs *regs);
-arch/cris/mm/fault.c:extern void show_registers(struct pt_regs *regs);
-arch/cris/arch-v32/mach-a3/arbiter.c:extern void show_registers(struct pt_regs *regs);
-arch/cris/arch-v32/kernel/time.c:extern void show_registers(struct pt_regs *regs);
-arch/cris/arch-v32/mach-fs/arbiter.c:extern void show_registers(struct pt_regs *regs);
-arch/mn10300/include/asm/gdb-stub.h:extern void show_registers_only(struct pt_regs *regs);
-arch/mn10300/include/asm/processor.h:extern void show_registers(struct pt_regs *regs);
-arch/frv/include/asm/gdb-stub.h:extern void show_registers_only(struct pt_regs *regs);
-$ 
-$ egrep -r "extern.*show_registers" include/
-include/linux/kprobes.h:extern void show_registers(struct pt_regs *regs);
-$ 
+                        Geert
 
-The situation with show_regs(struct pt_regs *) is a bit better in that the 
-declaration is not found at multiple call sites (as with cris) but still 
-appears in multiple header files.
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
-$ egrep -r "extern.*show_regs" arch/
-arch/x86/include/asm/kdebug.h:extern void __show_regs(struct pt_regs *regs, int all);
-arch/nios2/include/asm/ptrace.h:extern void show_regs(struct pt_regs *);
-arch/arm/include/asm/bug.h:extern void __show_regs(struct pt_regs *);
-arch/tile/include/asm/stack.h:extern void tile_show_regs(struct pt_regs *);
-arch/arm64/include/asm/system_misc.h:extern void __show_regs(struct pt_regs *);
-arch/c6x/include/asm/ptrace.h:extern void show_regs(struct pt_regs *);
-arch/avr32/include/asm/processor.h:extern void show_regs_log_lvl(struct pt_regs *regs, const char *log_lvl);
-arch/unicore32/kernel/setup.h:extern void __show_regs(struct pt_regs *);
-arch/alpha/kernel/proto.h:extern void dik_show_regs(struct pt_regs *regs, unsigned long *r9_15);
-$ 
-$ egrep -r "extern.*show_regs" include/
-include/linux/sched.h:extern void show_regs(struct pt_regs *);
-$ 
-
-I guess we could put a show_registers() declaration in 
-arch/m68k/include/asm/ptrace.h, as that's where struct pt_regs definition 
-comes from (actually uapi/asm/ptrace.h). Both nios2 and c6x do this for 
-show_regs().
-
-Or we could just leave the patch as it is, because thus far m68k has no 
-need for any declaration except a sole call site in macints.c.
-
--- 
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
