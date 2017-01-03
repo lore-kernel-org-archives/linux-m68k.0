@@ -1,45 +1,68 @@
 From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: Re: [PATCH 1/3] m68k/mac: Improve NMI handler
-Date: Tue, 3 Jan 2017 09:17:18 +0100
-Message-ID: <CAMuHMdWsOk0_mj=MBXi_p8Ks5YsTa+6y8t6qM=ZWJQWWpJTuRA@mail.gmail.com>
-References: <cover.1483350483.git.fthain@telegraphics.com.au>
- <0cb5e92b377bea6699f8af8f5c5a97081a217f74.1483350483.git.fthain@telegraphics.com.au>
- <CAMuHMdWK1n9kyLhtNY8OKK6Yzo70QLsmAUc1TRLCdHNKWWdD7g@mail.gmail.com> <alpine.LNX.2.00.1701031310520.24826@nippy.intranet>
+Subject: Re: [PATCH 0/3] ata: add m68k/Atari Falcon PATA support
+Date: Tue, 3 Jan 2017 11:49:16 +0100
+Message-ID: <CAMuHMdVpnhTNSRZ1h-q8+d0wjDKSHtev0eyVoVxYWhf0DCD+zg__39524.4476422251$1483440762$gmane$org@mail.gmail.com>
+References: <CGME20161230140139epcas5p160eda5a6a77be084e21f12002c85cc2a@epcas5p1.samsung.com>
+ <1483106478-1382-1-git-send-email-b.zolnierkie@samsung.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from mail-it0-f67.google.com ([209.85.214.67]:36828 "EHLO
-        mail-it0-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S933986AbdACIRU (ORCPT
-        <rfc822;linux-m68k@vger.kernel.org>); Tue, 3 Jan 2017 03:17:20 -0500
-In-Reply-To: <alpine.LNX.2.00.1701031310520.24826@nippy.intranet>
+In-Reply-To: <1483106478-1382-1-git-send-email-b.zolnierkie@samsung.com>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Finn Thain <fthain@telegraphics.com.au>
-Cc: Linux/m68k <linux-m68k@vger.kernel.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+To: Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>
+Cc: Tejun Heo <tj@kernel.org>, Michael Schmitz <schmitzmic@gmail.com>, "linux-ide@vger.kernel.org" <linux-ide@vger.kernel.org>, linux-m68k <linux-m68k@lists.linux-m68k.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
 
-Hi Finn,
+Hi Bartlomiej,
 
-On Tue, Jan 3, 2017 at 5:31 AM, Finn Thain <fthain@telegraphics.com.au> wrote:
-> On Mon, 2 Jan 2017, Geert Uytterhoeven wrote:
->> >
->> > -/*
->> > - * console_loglevel determines NMI handler function
->> > - */
->> > +extern void show_registers(struct pt_regs *);
->>
->> Seems like we do have a declaration in ... <linux/kprobes.h>.
->
-> Yes, and it would have to be moved outside of the #ifdef CONFIG_KPROBES
-> portion before it could be used by m68k, openrisc, cris or mn10300, which
-> all lack HAVE_KPROBES.
+On Fri, Dec 30, 2016 at 3:01 PM, Bartlomiej Zolnierkiewicz
+<b.zolnierkie@samsung.com> wrote:
+> This patchset adds m68k/Atari Falcon PATA support to libata.
 
-Right, seems my manual cpp made a mistake here. It's indeed inside.
+Thanks for your series!
 
-> Or we could just leave the patch as it is, because thus far m68k has no
-> need for any declaration except a sole call site in macints.c.
+That leaves us with 4 to go ;-)
 
-Fine for me. Sorry for the noise.
+    CONFIG_BLK_DEV_GAYLE
+    CONFIG_BLK_DEV_BUDDHA
+    CONFIG_BLK_DEV_MAC_IDE
+    CONFIG_BLK_DEV_Q40IDE
+
+Note that using libata instead of the legacy IDE driver increases kernel size.
+
+After enabling libata:
+
+    CONFIG_ATA=y
+    CONFIG_ATA_VERBOSE_ERROR=y
+    CONFIG_ATA_SFF=y
+    CONFIG_PATA_FALCON=y
+
+an atari_defconfig kernel grew by:
+
+    add/remove: 775/0 grow/shrink: 753/41 up/down: 98999/-242 (98757)
+
+After disabling CONFIG_IDE:
+
+    add/remove: 0/589 grow/shrink: 0/12 up/down: 0/-62835 (-62835)
+
+So the net result is:
+
+    add/remove: 775/589 grow/shrink: 749/51 up/down: 98886/-62964 (35922)
+
+Disabling CONFIG_ATA_VERBOSE_ERROR saved 1380 bytes, which is less than the
+value advertised by Kconfig (6KB).
+
+> The major difference in the new libata's pata_falcon host
+> driver when compared to legacy IDE's falconide host driver is
+> that we are using polled PIO mode and thus avoiding the need
+> for STDMA locking magic altogether.
+
+I'll let the Atari experts (Michael?) comment on that...
+
+> Tested under ARAnyM emulator.
+
+Works indeed fine on ARAnyM.
+Unfortunately I can't test it on real hardware...
 
 Gr{oetje,eeting}s,
 
