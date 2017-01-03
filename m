@@ -1,76 +1,44 @@
 From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: Re: [PATCH 0/3] ata: add m68k/Atari Falcon PATA support
-Date: Tue, 3 Jan 2017 11:49:16 +0100
-Message-ID: <CAMuHMdVpnhTNSRZ1h-q8+d0wjDKSHtev0eyVoVxYWhf0DCD+zg__39524.4476422251$1483440762$gmane$org@mail.gmail.com>
-References: <CGME20161230140139epcas5p160eda5a6a77be084e21f12002c85cc2a@epcas5p1.samsung.com>
- <1483106478-1382-1-git-send-email-b.zolnierkie@samsung.com>
+Subject: [PATCH 2/2] m68k/bitops: Correct signature of test_bit()
+Date: Tue,  3 Jan 2017 18:52:50 +0100
+Message-ID: <1483465970-11728-2-git-send-email-geert__29246.0053381093$1483466128$gmane$org@linux-m68k.org>
+References: <1483465970-11728-1-git-send-email-geert@linux-m68k.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Return-path: <linux-m68k-owner@vger.kernel.org>
-In-Reply-To: <1483106478-1382-1-git-send-email-b.zolnierkie@samsung.com>
+In-Reply-To: <1483465970-11728-1-git-send-email-geert@linux-m68k.org>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>
-Cc: Tejun Heo <tj@kernel.org>, Michael Schmitz <schmitzmic@gmail.com>, "linux-ide@vger.kernel.org" <linux-ide@vger.kernel.org>, linux-m68k <linux-m68k@lists.linux-m68k.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+To: Yoshinori Sato <ysato@users.sourceforge.jp>
+Cc: uclinux-h8-devel@lists.sourceforge.jp, linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org, Geert Uytterhoeven <geert@linux-m68k.org>
 
-Hi Bartlomiej,
+mm/filemap.c: In function ‘clear_bit_unlock_is_negative_byte’:
+mm/filemap.c:933: warning: passing argument 2 of ‘test_bit’ discards qualifiers from pointer target type
 
-On Fri, Dec 30, 2016 at 3:01 PM, Bartlomiej Zolnierkiewicz
-<b.zolnierkie@samsung.com> wrote:
-> This patchset adds m68k/Atari Falcon PATA support to libata.
+Make the bitmask pointed to by the "vaddr" parameter volatile to fix
+this, like is done on other architectures.
 
-Thanks for your series!
+Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
+---
+Exposed by commit 98473f9f3f9bd404 ("mm/filemap: fix parameters to
+test_bit()").
+---
+ arch/m68k/include/asm/bitops.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-That leaves us with 4 to go ;-)
-
-    CONFIG_BLK_DEV_GAYLE
-    CONFIG_BLK_DEV_BUDDHA
-    CONFIG_BLK_DEV_MAC_IDE
-    CONFIG_BLK_DEV_Q40IDE
-
-Note that using libata instead of the legacy IDE driver increases kernel size.
-
-After enabling libata:
-
-    CONFIG_ATA=y
-    CONFIG_ATA_VERBOSE_ERROR=y
-    CONFIG_ATA_SFF=y
-    CONFIG_PATA_FALCON=y
-
-an atari_defconfig kernel grew by:
-
-    add/remove: 775/0 grow/shrink: 753/41 up/down: 98999/-242 (98757)
-
-After disabling CONFIG_IDE:
-
-    add/remove: 0/589 grow/shrink: 0/12 up/down: 0/-62835 (-62835)
-
-So the net result is:
-
-    add/remove: 775/589 grow/shrink: 749/51 up/down: 98886/-62964 (35922)
-
-Disabling CONFIG_ATA_VERBOSE_ERROR saved 1380 bytes, which is less than the
-value advertised by Kconfig (6KB).
-
-> The major difference in the new libata's pata_falcon host
-> driver when compared to legacy IDE's falconide host driver is
-> that we are using polled PIO mode and thus avoiding the need
-> for STDMA locking magic altogether.
-
-I'll let the Atari experts (Michael?) comment on that...
-
-> Tested under ARAnyM emulator.
-
-Works indeed fine on ARAnyM.
-Unfortunately I can't test it on real hardware...
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+diff --git a/arch/m68k/include/asm/bitops.h b/arch/m68k/include/asm/bitops.h
+index b4a9b0d5928dfb33..dda58cfe8c22a3ec 100644
+--- a/arch/m68k/include/asm/bitops.h
++++ b/arch/m68k/include/asm/bitops.h
+@@ -148,7 +148,7 @@ static inline void bfchg_mem_change_bit(int nr, volatile unsigned long *vaddr)
+ #define __change_bit(nr, vaddr)	change_bit(nr, vaddr)
+ 
+ 
+-static inline int test_bit(int nr, const unsigned long *vaddr)
++static inline int test_bit(int nr, const volatile unsigned long *vaddr)
+ {
+ 	return (vaddr[nr >> 5] & (1UL << (nr & 31))) != 0;
+ }
+-- 
+1.9.1
