@@ -1,176 +1,51 @@
-From: "Xuetao Guan" <gxt@mprc.pku.edu.cn>
-Subject: Re: [PATCH 1/3] linux/const.h: move UL() macro to
- include/linux/const.h
-Date: Thu, 5 Jan 2017 09:42:38 +0800 (CST)
-Message-ID: <58740.203.187.182.140.1483580558.squirrel@mprc.pku.edu.cn>
+From: Masahiro Yamada <yamada.masahiro@socionext.com>
+Subject: Re: [PATCH 1/3] linux/const.h: move UL() macro to include/linux/const.h
+Date: Thu, 5 Jan 2017 11:22:55 +0900
+Message-ID: <CAK7LNATgkJJ4rnK7N8NQ2WR22eoCR3Hz5pCoE4VvOiRXrC0yPQ@mail.gmail.com>
 References: <1483520127-29316-1-git-send-email-yamada.masahiro@socionext.com>
- <1483520127-29316-2-git-send-email-yamada.masahiro@socionext.com>
-Reply-To: gxt@mprc.pku.edu.cn
+ <1483520127-29316-2-git-send-email-yamada.masahiro@socionext.com> <CAMuHMdVyzF4xFPotburrP+cihjfyCDfHeAt4bienLG9kdG_zSg@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
-In-Reply-To: <1483520127-29316-2-git-send-email-yamada.masahiro@socionext.com>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
-List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
-List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
-Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
-Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
-Cc: Mark Rutland <mark.rutland@arm.com>, Nicolas Pitre <nicolas.pitre@linaro.org>, linux-m68k@vger.kernel.org, Catalin Marinas <catalin.marinas@arm.com>, Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>, Will Deacon <will.deacon@arm.com>, David Howells <dhowells@redhat.com>, Masahiro Yamada <yamada.masahiro@socionext.com>, Chris Brandt <chris.brandt@renesas.com>, "H . Peter Anvin" <hpa@zytor.com>, Guan Xuetao <gxt@mprc.pku.edu.cn>, x86@kernel.org, Russell King <linux@armlinux.org.uk>, Ingo Molnar <mingo@redhat.com>, Geert Uytterhoeven <geert@linux-m68k.org>, Laura Abbott <labbott@redhat.com>, Neeraj Upadhyay <neeraju@codeaurora.org>, Arnd Bergmann <arnd@arndb.de>, Santosh Shilimkar <ssantosh@kernel.org>, Thomas Gleixner <tglx@linutronix.de>, linux-arm-kernel@lists.infradead.org, Ard Biesheuvel <ard.biesheuvel@linaro.org>, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset=UTF-8
+Return-path: <linux-m68k-owner@vger.kernel.org>
+In-Reply-To: <CAMuHMdVyzF4xFPotburrP+cihjfyCDfHeAt4bienLG9kdG_zSg@mail.gmail.com>
+Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
+To: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: Andrew Morton <akpm@linux-foundation.org>, Mark Rutland <mark.rutland@arm.com>, Nicolas Pitre <nicolas.pitre@linaro.org>, Catalin Marinas <catalin.marinas@arm.com>, Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>, Will Deacon <will.deacon@arm.com>, David Howells <dhowells@redhat.com>, Chris Brandt <chris.brandt@renesas.com>, "H . Peter Anvin" <hpa@zytor.com>, Guan Xuetao <gxt@mprc.pku.edu.cn>, the arch/x86 maintainers <x86@kernel.org>, Russell King <linux@armlinux.org.uk>, Ingo Molnar <mingo@redhat.com>, Laura Abbott <labbott@redhat.com>, Neeraj Upadhyay <neeraju@codeaurora.org>, Arnd Bergmann <arnd@arndb.de>, linux-m68k <linux-m68k@lists.linux-m68k.org>, Santosh Shilimkar <ssantosh@kernel.org>, Thomas Gleixner <tglx@linutronix.de>
 
-> Some architectures are duplicating the definition of UL():
->
->   #define UL(x) _AC(x, UL)
->
-> This is not actually arch-specific, so it will be useful to move it
-> to a common header.  Currently, we only have the uapi variant for
-> linux/const.h, so I am creating include/linux/const.h.
->
-> I am also adding _UL(x), _ULL(x), ULL(x) because _AC() is used for
-> UL in most places (and ULL in some places).  I expect _AC(..., UL)
-> will be replaced with _UL(...) or UL(...).  The underscore-prefixed
-> one should be used for exported headers.
->
-> Note:
-> I renamed UL(x) in arch/m68k/mm/init.c, where it is used for a
-> different meaning.
->
-> Signed-off-by: Masahiro Yamada <yamada.masahiro@socionext.com>
-> ---
->
->  arch/arm/include/asm/memory.h       | 6 ------
->  arch/arm64/include/asm/memory.h     | 6 ------
->  arch/m68k/mm/init.c                 | 6 +++---
->  arch/unicore32/include/asm/memory.h | 6 ------
->  include/linux/const.h               | 9 +++++++++
->  include/uapi/linux/const.h          | 9 ++++++---
->  6 files changed, 18 insertions(+), 24 deletions(-)
->  create mode 100644 include/linux/const.h
->
-> diff --git a/arch/arm/include/asm/memory.h b/arch/arm/include/asm/memory.h
-> index 76cbd9c..7558247 100644
-> --- a/arch/arm/include/asm/memory.h
-> +++ b/arch/arm/include/asm/memory.h
-> @@ -22,12 +22,6 @@
->  #include <mach/memory.h>
->  #endif
->
-> -/*
-> - * Allow for constants defined here to be used from assembly code
-> - * by prepending the UL suffix only with actual C code compilation.
-> - */
-> -#define UL(x) _AC(x, UL)
-> -
->  /* PAGE_OFFSET - the virtual address of the start of the kernel image */
->  #define PAGE_OFFSET		UL(CONFIG_PAGE_OFFSET)
->
-> diff --git a/arch/arm64/include/asm/memory.h
-> b/arch/arm64/include/asm/memory.h
-> index bfe6328..4310bcc 100644
-> --- a/arch/arm64/include/asm/memory.h
-> +++ b/arch/arm64/include/asm/memory.h
-> @@ -28,12 +28,6 @@
->  #include <asm/sizes.h>
->
->  /*
-> - * Allow for constants defined here to be used from assembly code
-> - * by prepending the UL suffix only with actual C code compilation.
-> - */
-> -#define UL(x) _AC(x, UL)
-> -
-> -/*
->   * Size of the PCI I/O space. This must remain a power of two so that
->   * IO_SPACE_LIMIT acts as a mask for the low bits of I/O addresses.
->   */
-> diff --git a/arch/m68k/mm/init.c b/arch/m68k/mm/init.c
-> index 9c1e656..a625144 100644
-> --- a/arch/m68k/mm/init.c
-> +++ b/arch/m68k/mm/init.c
-> @@ -121,9 +121,9 @@ void free_initmem(void)
->
->  void __init print_memmap(void)
->  {
-> -#define UL(x) ((unsigned long) (x))
-> -#define MLK(b, t) UL(b), UL(t), (UL(t) - UL(b)) >> 10
-> -#define MLM(b, t) UL(b), UL(t), (UL(t) - UL(b)) >> 20
-> +#define TO_UL(x) ((unsigned long) (x))
-> +#define MLK(b, t) TO_UL(b), TO_UL(t), (TO_UL(t) - TO_UL(b)) >> 10
-> +#define MLM(b, t) TO_UL(b), TO_UL(t), (TO_UL(t) - TO_UL(b)) >> 20
->  #define MLK_ROUNDUP(b, t) b, t, DIV_ROUND_UP(((t) - (b)), 1024)
->
->  	pr_notice("Virtual kernel memory layout:\n"
-> diff --git a/arch/unicore32/include/asm/memory.h
-> b/arch/unicore32/include/asm/memory.h
-> index 3bb0a29..66bb9f6 100644
-> --- a/arch/unicore32/include/asm/memory.h
-> +++ b/arch/unicore32/include/asm/memory.h
-> @@ -20,12 +20,6 @@
->  #include <mach/memory.h>
->
->  /*
-> - * Allow for constants defined here to be used from assembly code
-> - * by prepending the UL suffix only with actual C code compilation.
-> - */
-> -#define UL(x) _AC(x, UL)
-> -
-> -/*
->   * PAGE_OFFSET - the virtual address of the start of the kernel image
->   * TASK_SIZE - the maximum size of a user space task.
->   * TASK_UNMAPPED_BASE - the lower boundary of the mmap VM area
+Hi Geert,
 
-For UniCore32 codes:
-Acked-by: Guan Xuetao <gxt@mprc.pku.edu.cn>
+2017-01-04 18:27 GMT+09:00 Geert Uytterhoeven <geert@linux-m68k.org>:
+> Hi Yamada-san,
+>
+> On Wed, Jan 4, 2017 at 9:55 AM, Masahiro Yamada
+> <yamada.masahiro@socionext.com> wrote:
+>> Some architectures are duplicating the definition of UL():
+>>
+>>   #define UL(x) _AC(x, UL)
+>>
+>> This is not actually arch-specific, so it will be useful to move it
+>> to a common header.  Currently, we only have the uapi variant for
+>> linux/const.h, so I am creating include/linux/const.h.
+>>
+>> I am also adding _UL(x), _ULL(x), ULL(x) because _AC() is used for
+>> UL in most places (and ULL in some places).  I expect _AC(..., UL)
+>> will be replaced with _UL(...) or UL(...).  The underscore-prefixed
+>> one should be used for exported headers.
+>>
+>> Note:
+>> I renamed UL(x) in arch/m68k/mm/init.c, where it is used for a
+>> different meaning.
+>
+> Shouldn't that be a separate (prerequisite) patch?
 
-Thanks.
 
-Xuetao
+Yes, I did so in v2.
 
-> diff --git a/include/linux/const.h b/include/linux/const.h
-> new file mode 100644
-> index 0000000..7b55a55
-> --- /dev/null
-> +++ b/include/linux/const.h
-> @@ -0,0 +1,9 @@
-> +#ifndef _LINUX_CONST_H
-> +#define _LINUX_CONST_H
-> +
-> +#include <uapi/linux/const.h>
-> +
-> +#define UL(x)		(_UL(x))
-> +#define ULL(x)		(_ULL(x))
-> +
-> +#endif /* _LINUX_CONST_H */
-> diff --git a/include/uapi/linux/const.h b/include/uapi/linux/const.h
-> index c872bfd..76fb0f9 100644
-> --- a/include/uapi/linux/const.h
-> +++ b/include/uapi/linux/const.h
-> @@ -1,7 +1,7 @@
->  /* const.h: Macros for dealing with constants.  */
->
-> -#ifndef _LINUX_CONST_H
-> -#define _LINUX_CONST_H
-> +#ifndef _UAPI_LINUX_CONST_H
-> +#define _UAPI_LINUX_CONST_H
->
->  /* Some constant macros are used in both assembler and
->   * C code.  Therefore we cannot annotate them always with
-> @@ -21,7 +21,10 @@
->  #define _AT(T,X)	((T)(X))
->  #endif
->
-> +#define _UL(x)		(_AC(x, UL))
-> +#define _ULL(x)		(_AC(x, ULL))
-> +
->  #define _BITUL(x)	(_AC(1,UL) << (x))
->  #define _BITULL(x)	(_AC(1,ULL) << (x))
->
-> -#endif /* !(_LINUX_CONST_H) */
-> +#endif /* _UAPI_LINUX_CONST_H */
-> --
-> 2.7.4
->
+Thanks!
+
+
+
+-- 
+Best Regards
+Masahiro Yamada
