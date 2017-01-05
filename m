@@ -1,51 +1,51 @@
 From: Masahiro Yamada <yamada.masahiro@socionext.com>
-Subject: Re: [PATCH 1/3] linux/const.h: move UL() macro to include/linux/const.h
-Date: Thu, 5 Jan 2017 11:22:55 +0900
-Message-ID: <CAK7LNATgkJJ4rnK7N8NQ2WR22eoCR3Hz5pCoE4VvOiRXrC0yPQ@mail.gmail.com>
-References: <1483520127-29316-1-git-send-email-yamada.masahiro@socionext.com>
- <1483520127-29316-2-git-send-email-yamada.masahiro@socionext.com> <CAMuHMdVyzF4xFPotburrP+cihjfyCDfHeAt4bienLG9kdG_zSg@mail.gmail.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+Subject: [PATCH v2 1/4] m68k: rename UL() to TO_UL()
+Date: Thu,  5 Jan 2017 11:20:06 +0900
+Message-ID: <1483582810-7046-2-git-send-email-yamada.masahiro__31470.2523792677$1483583107$gmane$org@socionext.com>
+References: <1483582810-7046-1-git-send-email-yamada.masahiro@socionext.com>
 Return-path: <linux-m68k-owner@vger.kernel.org>
-In-Reply-To: <CAMuHMdVyzF4xFPotburrP+cihjfyCDfHeAt4bienLG9kdG_zSg@mail.gmail.com>
+In-Reply-To: <1483582810-7046-1-git-send-email-yamada.masahiro@socionext.com>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: Andrew Morton <akpm@linux-foundation.org>, Mark Rutland <mark.rutland@arm.com>, Nicolas Pitre <nicolas.pitre@linaro.org>, Catalin Marinas <catalin.marinas@arm.com>, Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>, Will Deacon <will.deacon@arm.com>, David Howells <dhowells@redhat.com>, Chris Brandt <chris.brandt@renesas.com>, "H . Peter Anvin" <hpa@zytor.com>, Guan Xuetao <gxt@mprc.pku.edu.cn>, the arch/x86 maintainers <x86@kernel.org>, Russell King <linux@armlinux.org.uk>, Ingo Molnar <mingo@redhat.com>, Laura Abbott <labbott@redhat.com>, Neeraj Upadhyay <neeraju@codeaurora.org>, Arnd Bergmann <arnd@arndb.de>, linux-m68k <linux-m68k@lists.linux-m68k.org>, Santosh Shilimkar <ssantosh@kernel.org>, Thomas Gleixner <tglx@linutronix.de>
+To: Andrew Morton <akpm@linux-foundation.org>
+Cc: "H . Peter Anvin" <hpa@zytor.com>, Arnd Bergmann <arnd@arndb.de>, David Howells <dhowells@redhat.com>, x86@kernel.org, Thomas Gleixner <tglx@linutronix.de>, Russell King <linux@armlinux.org.uk>, Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>, Ingo Molnar <mingo@redhat.com>, Will Deacon <will.deacon@arm.com>, Mark Rutland <mark.rutland@arm.com>, Olof Johansson <olof@lixom.net>, Catalin Marinas <catalin.marinas@arm.com>, linux-arm-kernel@lists.infradead.org, Masahiro Yamada <yamada.masahiro@socionext.com>, Geert Uytterhoeven <geert@linux-m68k.org>, linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org
 
-Hi Geert,
+ARM, ARM64 and UniCore32 define UL(x) like follows:
 
-2017-01-04 18:27 GMT+09:00 Geert Uytterhoeven <geert@linux-m68k.org>:
-> Hi Yamada-san,
->
-> On Wed, Jan 4, 2017 at 9:55 AM, Masahiro Yamada
-> <yamada.masahiro@socionext.com> wrote:
->> Some architectures are duplicating the definition of UL():
->>
->>   #define UL(x) _AC(x, UL)
->>
->> This is not actually arch-specific, so it will be useful to move it
->> to a common header.  Currently, we only have the uapi variant for
->> linux/const.h, so I am creating include/linux/const.h.
->>
->> I am also adding _UL(x), _ULL(x), ULL(x) because _AC() is used for
->> UL in most places (and ULL in some places).  I expect _AC(..., UL)
->> will be replaced with _UL(...) or UL(...).  The underscore-prefixed
->> one should be used for exported headers.
->>
->> Note:
->> I renamed UL(x) in arch/m68k/mm/init.c, where it is used for a
->> different meaning.
->
-> Shouldn't that be a separate (prerequisite) patch?
+  #define UL(x) _AC(x, UL)
 
+While, M68K defines it differently:
+  #define UL(x) ((unsigned long) (x))
 
-Yes, I did so in v2.
+I am moving the former to a common header in the next commit.
+Beforehand, this commit renames the latter to avoid name conflict.
 
-Thanks!
+Signed-off-by: Masahiro Yamada <yamada.masahiro@socionext.com>
+Acked-by: Geert Uytterhoeven <geert@linux-m68k.org>
+---
 
+Changes in v2:
+  - Split out as a prerequisite patch
 
+ arch/m68k/mm/init.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
+diff --git a/arch/m68k/mm/init.c b/arch/m68k/mm/init.c
+index 9c1e656..a625144 100644
+--- a/arch/m68k/mm/init.c
++++ b/arch/m68k/mm/init.c
+@@ -121,9 +121,9 @@ void free_initmem(void)
+ 
+ void __init print_memmap(void)
+ {
+-#define UL(x) ((unsigned long) (x))
+-#define MLK(b, t) UL(b), UL(t), (UL(t) - UL(b)) >> 10
+-#define MLM(b, t) UL(b), UL(t), (UL(t) - UL(b)) >> 20
++#define TO_UL(x) ((unsigned long) (x))
++#define MLK(b, t) TO_UL(b), TO_UL(t), (TO_UL(t) - TO_UL(b)) >> 10
++#define MLM(b, t) TO_UL(b), TO_UL(t), (TO_UL(t) - TO_UL(b)) >> 20
+ #define MLK_ROUNDUP(b, t) b, t, DIV_ROUND_UP(((t) - (b)), 1024)
+ 
+ 	pr_notice("Virtual kernel memory layout:\n"
 -- 
-Best Regards
-Masahiro Yamada
+2.7.4
