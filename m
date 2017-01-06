@@ -1,59 +1,27 @@
-From: Amaya Kouta <amaya.kouta@onet.eu>
-Subject: Frau Amaya Kouta
-Date: Fri, 6 Jan 2017 17:24:07 +0000 (UTC)
-Message-ID: <717149339.1941493.1483723447959@mail.yahoo.com>
-References: <717149339.1941493.1483723447959.ref@mail.yahoo.com>
-Reply-To: Amaya Kouta <amayakouta@yahoo.com>
+From: Andy Shevchenko <andy.shevchenko@gmail.com>
+Subject: Re: [PATCH v2 4/7] x86: put msr-index.h in uapi
+Date: Fri, 6 Jan 2017 22:50:34 +0200
+Message-ID: <CAHp75VdDfopdSy-7oy87ZeosDB9+FN4zFBhErPWLQB7tH81zTw@mail.gmail.com>
+References: <bf83da6b-01ef-bf44-b3e1-ca6fc5636818@6wind.com>
+ <1483695839-18660-1-git-send-email-nicolas.dichtel@6wind.com> <1483695839-18660-5-git-send-email-nicolas.dichtel@6wind.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
 Return-path: <linux-m68k-owner@vger.kernel.org>
+In-Reply-To: <1483695839-18660-5-git-send-email-nicolas.dichtel@6wind.com>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
+To: Nicolas Dichtel <nicolas.dichtel@6wind.com>
+Cc: Arnd Bergmann <arnd@arndb.de>, mmarek@suse.com, linux-kbuild@vger.kernel.org, Linux Documentation List <linux-doc@vger.kernel.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, linux-alpha@vger.kernel.org, linux-snps-arc@lists.infradead.org, linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>, adi-buildroot-devel@lists.sourceforge.net, linux-c6x-dev@linux-c6x.org, Cris <linux-cris-kernel@axis.com>, uclinux-h8-devel@lists.sourceforge.jp, linux-hexagon@vger.kernel.org, linux-ia64@vger.kernel.org, linux-m68k@lists.linux-m68k.org, linux-metag@vger.kernel.org, linux-mips@linux-mips.org, linux-am33-list@redhat.com, nios2-dev@lists.rocketboards.org, openrisc@lists.librecores.org, linux-parisc@vger.kernel.org, open list:LINUX FOR POWERPC PA SEMI PWRFICI
 
+On Fri, Jan 6, 2017 at 11:43 AM, Nicolas Dichtel
+<nicolas.dichtel@6wind.com> wrote:
+> This header file is exported, thus move it to uapi.
 
+Just hint for the future:
+-M (move)
+-C (copy)
+-D (delete) [though this is NOT for applying]
 
-Meine Liebste
-
-Ich wei=C3=9F nicht, wie mein Gro=C3=9Fz=C3=BCgigkeitsangebot Ihnen klingen=
- mag, besonders, weil es von einem Fremden kommt, da es die einzige =C3=84n=
-derung ist, die ich meinen Reichtum f=C3=BCr die N=C3=A4chstenliebearbeit w=
-egen meiner gesundheitlichen Situation geben muss.
-
-Ich bin Frau Amaya Kouta, ein japanischer Staatsb=C3=BCrger, 37 Jahre alte =
-Frauen. Ich wohne hier in Frankreich Ich verheiratete mich mit Herrn Jones =
-Kouta, der 21 Jahre lang Gesch=C3=A4ftsmann in Frankreich war, bevor er am =
-zweiten November 2014 starb, wir waren elf Jahre ohne Kind verheiratet. Er =
-starb nach einer kurzen Krankheit, die nur vier Jahre dauerte Tage.
-
-Seit seinem Tod habe ich beschlossen, nicht wieder zu heiraten oder ein Kin=
-d au=C3=9Ferhalb meiner ehelichen Heimat zu bekommen, als mein verstorbener=
- Mann am Leben war, legte er die Summe von US $ 7,5 Millionen Dollar in ein=
-er der f=C3=BChrenden Banken hier in Frankreich ab. Mein Arzt sagte mir, da=
-ss ich anfangen sollte, nach dem suchend, um meine Eigenschaften wegen mein=
-er Krebs- und Anschlagkrankheit zu werden, machte er mir klar, da=C3=9F er =
-nicht mein Leben in dieser Chirurgie garantieren wird.
-
-Ich werde Ihnen gerne diesen Fonds und meine Liegenschaften als Spende zur =
-=C3=9Cberbr=C3=BCckung der betroffenen und armen Stra=C3=9Fenkinder oder zu=
-r Gr=C3=BCndung eines Produktionsunternehmens zur Schaffung von Arbeitspl=
-=C3=A4tzen f=C3=BCr arbeitslose Menschen zu =C3=BCbergeben, wie ich es hier=
- in Frankreich aufgrund der j=C3=BCngsten blutigen politischen Krise nicht =
-investieren kann Hier nicht kontrolliert, m=C3=B6chte ich Ihnen diesen Fond=
-s =C3=BCbergeben, da es mein Gel=C3=BCbde war, ein Wohlt=C3=A4tigkeitsproje=
-kt zu gr=C3=BCnden, bevor ich die Welt verlasse. Ich nahm diese Entscheidun=
-g, weil ich kein Kind haben, das diesen Fonds erben wird, und meine Ehemann=
-verwandte haben alle seine Investitionen ergriffen, weil ich kein Kind habe=
-.
-
-Ich ben=C3=B6tige keine Telefonkommunikation in dieser Hinsicht wegen meine=
-s Zustandes und ich m=C3=B6chte nicht, dass jemand =C3=BCber dieses Projekt=
- Bescheid wei=C3=9F. Sobald Sie auf diese Nachricht antworten, werde ich di=
-e Bank umgehend informieren Bankkonto f=C3=BCr dieses Projekt, werde ich Ih=
-nen 20% Prozent des gesamten Fonds f=C3=BCr alle Ausgaben, die w=C3=A4hrend=
- dieser N=C3=A4chstenliebe Arbeit auftreten k=C3=B6nnen, und ich m=C3=B6cht=
-e, dass Sie immer f=C3=BCr mich f=C3=BCr meine bis kommenden Chirurgie bete=
-n,
-
-Deine Schwester im Herrn,
-Frau Amaya Kouta.
+-- 
+With Best Regards,
+Andy Shevchenko
