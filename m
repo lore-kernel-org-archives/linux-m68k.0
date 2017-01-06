@@ -1,30 +1,29 @@
-From: Borislav Petkov <bp@alien8.de>
-Subject: Re: [PATCH v2 4/7] x86: put msr-index.h in uapi
-Date: Fri, 6 Jan 2017 13:14:46 +0100
-Message-ID: <20170106121446.aizmoxons5gpecnc__13445.7007320181$1483705186$gmane$org@pd.tnic>
-References: <bf83da6b-01ef-bf44-b3e1-ca6fc5636818@6wind.com>
- <1483695839-18660-1-git-send-email-nicolas.dichtel@6wind.com>
- <1483695839-18660-5-git-send-email-nicolas.dichtel@6wind.com>
+From: Tejun Heo <tj@kernel.org>
+Subject: Re: [PATCH 0/6] ata: Missing HAS_DMA dependencies
+Date: Fri, 6 Jan 2017 11:37:17 -0500
+Message-ID: <20170106163717.GA16083@mtj.duckdns.org>
+References: <1483466989-9091-1-git-send-email-geert@linux-m68k.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Return-path: <linux-m68k-owner@vger.kernel.org>
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-ide-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <1483695839-18660-5-git-send-email-nicolas.dichtel@6wind.com>
-Sender: linux-m68k-owner@vger.kernel.org
+In-Reply-To: <1483466989-9091-1-git-send-email-geert@linux-m68k.org>
+Sender: linux-ide-owner@vger.kernel.org
+To: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>, linux-ide@vger.kernel.org, linux-m68k@vger.kernel.org, linux-kernel@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Nicolas Dichtel <nicolas.dichtel@6wind.com>
-Cc: arnd@arndb.de, mmarek@suse.com, linux-kbuild@vger.kernel.org, linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org, linux-alpha@vger.kernel.org, linux-snps-arc@lists.infradead.org, linux-arm-kernel@lists.infradead.org, adi-buildroot-devel@lists.sourceforge.net, linux-c6x-dev@linux-c6x.org, linux-cris-kernel@axis.com, uclinux-h8-devel@lists.sourceforge.jp, linux-hexagon@vger.kernel.org, linux-ia64@vger.kernel.org, linux-m68k@lists.linux-m68k.org, linux-metag@vger.kernel.org, linux-mips@linux-mips.org, linux-am33-list@redhat.com, nios2-dev@lists.rocketboards.org, openrisc@lists.librecores.org, linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, linux-s390@vger.kernel.org, linux-sh@vger.kernel.org, sparclinux@vger.kernel.org, linux-xtensa@linux-xtensa.orglinux-ar
 
-On Fri, Jan 06, 2017 at 10:43:56AM +0100, Nicolas Dichtel wrote:
-> This header file is exported, thus move it to uapi.
+On Tue, Jan 03, 2017 at 07:09:43PM +0100, Geert Uytterhoeven wrote:
+> 	Hi all,
+> 
+> Bartlomiej's "[PATCH 1/3] ata: allow subsystem to be used on m68k arch"
+> exposed a few missing dependencies on HAS_DMA. This series allows to
+> build again "allmodconfig" and "allyesconfig" kernels tailored for
+> Sun-3, which sets NO_DMA=y.
 
-It should rather not be exported - please remove it from
-arch/x86/include/uapi/asm/Kbuild instead.
+Applied to 1-6 to libata/for-4.11.
 
 Thanks.
 
 -- 
-Regards/Gruss,
-    Boris.
-
-Good mailing practices for 400: avoid top-posting and trim the reply.
+tejun
