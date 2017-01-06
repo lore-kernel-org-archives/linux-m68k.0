@@ -1,46 +1,85 @@
-From: Michael Schmitz <schmitzmic@gmail.com>
-Subject: Re: [PATCH 0/3] ata: add m68k/Atari Falcon PATA support
-Date: Fri, 6 Jan 2017 10:01:49 +1300
-Message-ID: <CAOmrzkJP6s34DPOHd4OFFx=CXko35Kt=CfeDZthOPvKDJy-9YA@mail.gmail.com>
-References: <CGME20161230140139epcas5p160eda5a6a77be084e21f12002c85cc2a@epcas5p1.samsung.com>
- <1483106478-1382-1-git-send-email-b.zolnierkie@samsung.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+From: Nicolas Dichtel <nicolas.dichtel@6wind.com>
+Subject: [PATCH v2 6/7] Makefile.headersinst: remove destination-y option
+Date: Fri,  6 Jan 2017 10:43:58 +0100
+Message-ID: <1483695839-18660-7-git-send-email-nicolas.dichtel__35070.7386075102$1483696480$gmane$org@6wind.com>
+References: <bf83da6b-01ef-bf44-b3e1-ca6fc5636818@6wind.com>
+ <1483695839-18660-1-git-send-email-nicolas.dichtel@6wind.com>
 Return-path: <linux-m68k-owner@vger.kernel.org>
-In-Reply-To: <1483106478-1382-1-git-send-email-b.zolnierkie@samsung.com>
+In-Reply-To: <1483695839-18660-1-git-send-email-nicolas.dichtel@6wind.com>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>
-Cc: Tejun Heo <tj@kernel.org>, Geert Uytterhoeven <geert@linux-m68k.org>, linux-ide@vger.kernel.org, Linux/m68k <linux-m68k@lists.linux-m68k.org>, Linux Kernel Development <linux-kernel@vger.kernel.org>
+To: arnd@arndb.de
+Cc: mmarek@suse.com, linux-kbuild@vger.kernel.org, linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org, linux-alpha@vger.kernel.org, linux-snps-arc@lists.infradead.org, linux-arm-kernel@lists.infradead.org, adi-buildroot-devel@lists.sourceforge.net, linux-c6x-dev@linux-c6x.org, linux-cris-kernel@axis.com, uclinux-h8-devel@lists.sourceforge.jp, linux-hexagon@vger.kernel.org, linux-ia64@vger.kernel.org, linux-m68k@lists.linux-m68k.org, linux-metag@vger.kernel.org, linux-mips@linux-mips.org, linux-am33-list@redhat.com, nios2-dev@lists.rocketboards.org, openrisc@lists.librecores.org, linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, linux-s390@vger.kernel.org, linux-sh@vger.kernel.org, sparclinux@vger.kernel.org, linux-xtensa@linux-xtensa.org, linux-arch@vger.kernel.
 
-Hi Bartlomiej,
+This option was added in commit c7bb349e7c25 ("kbuild: introduce destination-y
+for exported headers") but never used in-tree.
 
-thanks for caring to support our legacy PATA systems!
+Signed-off-by: Nicolas Dichtel <nicolas.dichtel@6wind.com>
+---
+ Documentation/kbuild/makefiles.txt | 23 ++++-------------------
+ scripts/Makefile.headersinst       |  2 +-
+ 2 files changed, 5 insertions(+), 20 deletions(-)
 
-On Sat, Dec 31, 2016 at 3:01 AM, Bartlomiej Zolnierkiewicz
-<b.zolnierkie@samsung.com> wrote:
-> Hi,
->
-> This patchset adds m68k/Atari Falcon PATA support to libata.
-> The major difference in the new libata's pata_falcon host
-> driver when compared to legacy IDE's falconide host driver is
-> that we are using polled PIO mode and thus avoiding the need
-> for STDMA locking magic altogether.
-
-I don't suppose this is the default libata mode for PIO?
-
-How is polling implemented in libata? Sleeping for something
-approximating the average seek latency shouldn't hurt but spinning
-wont be acceptable for a low performance single CPU architecture like
-the Falcon.
-
-> Tested under ARAnyM emulator.
-
-Not sure that the emulator is really feature complete enough - I'll
-get this tested on my Falcon in the next few weeks. I'm a bit worried
-about IDE still generating interrupts on seek completion (did you spot
-anything like that, Geert?).
-
-Cheers,
-
-  Michael
+diff --git a/Documentation/kbuild/makefiles.txt b/Documentation/kbuild/makefiles.txt
+index 9b9c4797fc55..37b525d329ae 100644
+--- a/Documentation/kbuild/makefiles.txt
++++ b/Documentation/kbuild/makefiles.txt
+@@ -46,9 +46,8 @@ This document describes the Linux kernel Makefiles.
+ 	=== 7 Kbuild syntax for exported headers
+ 		--- 7.1 header-y
+ 		--- 7.2 genhdr-y
+-		--- 7.3 destination-y
+-		--- 7.4 generic-y
+-		--- 7.5 generated-y
++		--- 7.3 generic-y
++		--- 7.4 generated-y
+ 
+ 	=== 8 Kbuild Variables
+ 	=== 9 Makefile language
+@@ -1295,21 +1294,7 @@ See subsequent chapter for the syntax of the Kbuild file.
+ 			#include/linux/Kbuild
+ 			genhdr-y += version.h
+ 
+-	--- 7.3 destination-y
+-
+-	When an architecture has a set of exported headers that needs to be
+-	exported to a different directory destination-y is used.
+-	destination-y specifies the destination directory for all exported
+-	headers in the file where it is present.
+-
+-		Example:
+-			#arch/xtensa/platforms/s6105/include/platform/Kbuild
+-			destination-y := include/linux
+-
+-	In the example above all exported headers in the Kbuild file
+-	will be located in the directory "include/linux" when exported.
+-
+-	--- 7.4 generic-y
++	--- 7.3 generic-y
+ 
+ 	If an architecture uses a verbatim copy of a header from
+ 	include/asm-generic then this is listed in the file
+@@ -1336,7 +1321,7 @@ See subsequent chapter for the syntax of the Kbuild file.
+ 		Example: termios.h
+ 			#include <asm-generic/termios.h>
+ 
+-	--- 7.5 generated-y
++	--- 7.4 generated-y
+ 
+ 	If an architecture generates other header files alongside generic-y
+ 	wrappers, and not included in genhdr-y, then generated-y specifies
+diff --git a/scripts/Makefile.headersinst b/scripts/Makefile.headersinst
+index 3e20d03432d2..876b42cfede4 100644
+--- a/scripts/Makefile.headersinst
++++ b/scripts/Makefile.headersinst
+@@ -14,7 +14,7 @@ kbuild-file := $(srctree)/$(obj)/Kbuild
+ include $(kbuild-file)
+ 
+ # called may set destination dir (when installing to asm/)
+-_dst := $(if $(destination-y),$(destination-y),$(if $(dst),$(dst),$(obj)))
++_dst := $(if $(dst),$(dst),$(obj))
+ 
+ old-kbuild-file := $(srctree)/$(subst uapi/,,$(obj))/Kbuild
+ ifneq ($(wildcard $(old-kbuild-file)),)
+-- 
+2.8.1
