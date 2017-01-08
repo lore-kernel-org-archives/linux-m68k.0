@@ -1,27 +1,29 @@
-From: Andy Shevchenko <andy.shevchenko@gmail.com>
-Subject: Re: [PATCH v2 4/7] x86: put msr-index.h in uapi
-Date: Fri, 6 Jan 2017 22:50:34 +0200
-Message-ID: <CAHp75VdDfopdSy-7oy87ZeosDB9+FN4zFBhErPWLQB7tH81zTw@mail.gmail.com>
-References: <bf83da6b-01ef-bf44-b3e1-ca6fc5636818@6wind.com>
- <1483695839-18660-1-git-send-email-nicolas.dichtel@6wind.com> <1483695839-18660-5-git-send-email-nicolas.dichtel@6wind.com>
+From: Christoph Hellwig <hch@infradead.org>
+Subject: Re: [PATCH 1/3] ata: allow subsystem to be used on m68k arch
+Date: Sun, 8 Jan 2017 02:08:23 -0800
+Message-ID: <20170108100823.GD25268__3851.95095227591$1483870226$gmane$org@infradead.org>
+References: <1483106478-1382-1-git-send-email-b.zolnierkie@samsung.com>
+ <1483106478-1382-2-git-send-email-b.zolnierkie@samsung.com>
+ <20161230141249.GA4543@infradead.org>
+ <CGME20161230171438epcas1p3c1d8ea8e4c77d796b81f7130c5e61d3f@epcas1p3.samsung.com>
+ <3484511.F6TxDiWTi4@amdc3058>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset=us-ascii
 Return-path: <linux-m68k-owner@vger.kernel.org>
-In-Reply-To: <1483695839-18660-5-git-send-email-nicolas.dichtel@6wind.com>
+Content-Disposition: inline
+In-Reply-To: <3484511.F6TxDiWTi4@amdc3058>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Nicolas Dichtel <nicolas.dichtel@6wind.com>
-Cc: Arnd Bergmann <arnd@arndb.de>, mmarek@suse.com, linux-kbuild@vger.kernel.org, Linux Documentation List <linux-doc@vger.kernel.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, linux-alpha@vger.kernel.org, linux-snps-arc@lists.infradead.org, linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>, adi-buildroot-devel@lists.sourceforge.net, linux-c6x-dev@linux-c6x.org, Cris <linux-cris-kernel@axis.com>, uclinux-h8-devel@lists.sourceforge.jp, linux-hexagon@vger.kernel.org, linux-ia64@vger.kernel.org, linux-m68k@lists.linux-m68k.org, linux-metag@vger.kernel.org, linux-mips@linux-mips.org, linux-am33-list@redhat.com, nios2-dev@lists.rocketboards.org, openrisc@lists.librecores.org, linux-parisc@vger.kernel.org, open list:LINUX FOR POWERPC PA SEMI PWRFICI
+To: Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>
+Cc: Christoph Hellwig <hch@infradead.org>, Tejun Heo <tj@kernel.org>, Geert Uytterhoeven <geert@linux-m68k.org>, Michael Schmitz <schmitzmic@gmail.com>, linux-ide@vger.kernel.org, linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org
 
-On Fri, Jan 6, 2017 at 11:43 AM, Nicolas Dichtel
-<nicolas.dichtel@6wind.com> wrote:
-> This header file is exported, thus move it to uapi.
+On Fri, Dec 30, 2016 at 06:14:36PM +0100, Bartlomiej Zolnierkiewicz wrote:
+> * m32r: I don't know why it was restricted but it builds fine nowadays
+>   (I will fix it later in incremental patch)
+> 
+> * s390: no PATA hardware, legacy IDE subsystem is also not supported
 
-Just hint for the future:
--M (move)
--C (copy)
--D (delete) [though this is NOT for applying]
-
--- 
-With Best Regards,
-Andy Shevchenko
+s390 now has PCIe support, so PATA could be attached through a PCIe to
+PCI bridge in theory.  And while that is very theoretical not having
+arch ifdefs is still something we should strive for, so I'd suggest
+removing the condition entirely.
