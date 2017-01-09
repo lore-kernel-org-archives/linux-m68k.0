@@ -1,29 +1,111 @@
-From: Christoph Hellwig <hch@infradead.org>
-Subject: Re: [PATCH 1/3] ata: allow subsystem to be used on m68k arch
-Date: Sun, 8 Jan 2017 02:08:23 -0800
-Message-ID: <20170108100823.GD25268__3851.95095227591$1483870226$gmane$org@infradead.org>
-References: <1483106478-1382-1-git-send-email-b.zolnierkie@samsung.com>
- <1483106478-1382-2-git-send-email-b.zolnierkie@samsung.com>
- <20161230141249.GA4543@infradead.org>
- <CGME20161230171438epcas1p3c1d8ea8e4c77d796b81f7130c5e61d3f@epcas1p3.samsung.com>
- <3484511.F6TxDiWTi4@amdc3058>
+From: Greg Ungerer <gregungerer@westnet.com.au>
+Subject: Re: [PATCH] m68k/defconfig: amcore board defconfig tuning
+Date: Mon, 9 Jan 2017 15:43:52 +1000
+Message-ID: <6a8520f4-fc2a-afb4-7b56-fc2bff3627fb@westnet.com.au>
+References: <1483486045-5635-1-git-send-email-angelo@sysam.it>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=windows-1252
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <3484511.F6TxDiWTi4@amdc3058>
+Received: from icp-osb-irony-out9.external.iinet.net.au ([203.59.1.226]:30331
+        "EHLO icp-osb-irony-out9.external.iinet.net.au" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1755010AbdAIFxP (ORCPT
+        <rfc822;linux-m68k@vger.kernel.org>); Mon, 9 Jan 2017 00:53:15 -0500
+In-Reply-To: <1483486045-5635-1-git-send-email-angelo@sysam.it>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>
-Cc: Christoph Hellwig <hch@infradead.org>, Tejun Heo <tj@kernel.org>, Geert Uytterhoeven <geert@linux-m68k.org>, Michael Schmitz <schmitzmic@gmail.com>, linux-ide@vger.kernel.org, linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org
+To: Angelo Dureghello <angelo@sysam.it>, linux-m68k@vger.kernel.org
 
-On Fri, Dec 30, 2016 at 06:14:36PM +0100, Bartlomiej Zolnierkiewicz wrote:
-> * m32r: I don't know why it was restricted but it builds fine nowadays
->   (I will fix it later in incremental patch)
+Hi Angelo,
+
+On 04/01/17 09:27, Angelo Dureghello wrote:
+> Signed-off-by: Angelo Dureghello <angelo@sysam.it>
+> ---
+>  arch/m68k/configs/amcore_defconfig | 14 ++++++++------
+>  1 file changed, 8 insertions(+), 6 deletions(-)
+
+No problem with the change.
+But can you provide more information in the log message?
+What tuning are the changes achieving?
+
+Thanks
+Greg
+
+
+ 
+> diff --git a/arch/m68k/configs/amcore_defconfig b/arch/m68k/configs/amcore_defconfig
+> index f108dd1..131b410 100644
+> --- a/arch/m68k/configs/amcore_defconfig
+> +++ b/arch/m68k/configs/amcore_defconfig
+> @@ -1,19 +1,20 @@
+> -CONFIG_LOCALVERSION="amcore-001"
+> +CONFIG_LOCALVERSION="amcore-002"
+>  CONFIG_DEFAULT_HOSTNAME="amcore"
+>  CONFIG_SYSVIPC=y
+>  # CONFIG_FHANDLE is not set
+>  # CONFIG_USELIB is not set
+>  CONFIG_LOG_BUF_SHIFT=14
+> -CONFIG_NAMESPACES=y
+>  CONFIG_CC_OPTIMIZE_FOR_SIZE=y
+>  # CONFIG_AIO is not set
+>  # CONFIG_ADVISE_SYSCALLS is not set
+>  # CONFIG_MEMBARRIER is not set
+>  CONFIG_EMBEDDED=y
+>  # CONFIG_VM_EVENT_COUNTERS is not set
+> +# CONFIG_SLUB_DEBUG is not set
+>  # CONFIG_COMPAT_BRK is not set
+>  # CONFIG_LBDAF is not set
+>  # CONFIG_BLK_DEV_BSG is not set
+> +# CONFIG_IOSCHED_CFQ is not set
+>  # CONFIG_MMU is not set
+>  CONFIG_M5307=y
+>  CONFIG_AMCORE=y
+> @@ -27,13 +28,14 @@ CONFIG_NET=y
+>  CONFIG_PACKET=y
+>  CONFIG_UNIX=y
+>  CONFIG_INET=y
+> +CONFIG_SYN_COOKIES=y
+>  # CONFIG_INET_XFRM_MODE_TRANSPORT is not set
+>  # CONFIG_INET_XFRM_MODE_TUNNEL is not set
+>  # CONFIG_INET_XFRM_MODE_BEET is not set
+>  # CONFIG_IPV6 is not set
+>  # CONFIG_WIRELESS is not set
+>  # CONFIG_UEVENT_HELPER is not set
+> -CONFIG_FW_LOADER_USER_HELPER_FALLBACK=y
+> +# CONFIG_FW_LOADER is not set
+>  # CONFIG_ALLOW_DEV_COREDUMP is not set
+>  CONFIG_CONNECTOR=y
+>  CONFIG_MTD=y
+> @@ -53,6 +55,7 @@ CONFIG_MTD_UCLINUX=y
+>  CONFIG_MTD_PLATRAM=y
+>  CONFIG_BLK_DEV_RAM=y
+>  CONFIG_NETDEVICES=y
+> +# CONFIG_NET_VENDOR_AMAZON is not set
+>  # CONFIG_NET_VENDOR_ARC is not set
+>  # CONFIG_NET_CADENCE is not set
+>  # CONFIG_NET_VENDOR_BROADCOM is not set
+> @@ -89,14 +92,12 @@ CONFIG_I2C=y
+>  CONFIG_I2C_CHARDEV=y
+>  # CONFIG_I2C_HELPER_AUTO is not set
+>  CONFIG_I2C_IMX=y
+> -CONFIG_PPS=y
+> +CONFIG_GPIO_SYSFS=y
+>  # CONFIG_HWMON is not set
+>  # CONFIG_USB_SUPPORT is not set
+>  CONFIG_RTC_CLASS=y
+>  # CONFIG_RTC_SYSTOHC is not set
+>  CONFIG_RTC_DRV_DS1307=y
+> -CONFIG_EXT2_FS=y
+> -CONFIG_EXT2_FS_XATTR=y
+>  # CONFIG_FILE_LOCKING is not set
+>  # CONFIG_DNOTIFY is not set
+>  # CONFIG_INOTIFY_USER is not set
+> @@ -108,6 +109,7 @@ CONFIG_ROMFS_BACKED_BY_BOTH=y
+>  # CONFIG_NETWORK_FILESYSTEMS is not set
+>  CONFIG_PRINTK_TIME=y
+>  # CONFIG_ENABLE_WARN_DEPRECATED is not set
+> +# CONFIG_ENABLE_MUST_CHECK is not set
+>  # CONFIG_SECTION_MISMATCH_WARN_ONLY is not set
+>  CONFIG_PANIC_ON_OOPS=y
+>  # CONFIG_SCHED_DEBUG is not set
 > 
-> * s390: no PATA hardware, legacy IDE subsystem is also not supported
-
-s390 now has PCIe support, so PATA could be attached through a PCIe to
-PCI bridge in theory.  And while that is very theoretical not having
-arch ifdefs is still something we should strive for, so I'd suggest
-removing the condition entirely.
