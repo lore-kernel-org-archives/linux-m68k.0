@@ -1,36 +1,75 @@
 From: Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>
-Subject: Re: [PATCH 1/3] ata: allow subsystem to be used on m68k arch
-Date: Mon, 09 Jan 2017 17:01:25 +0100
-Message-ID: <10029890.Tg9y6dSoXd__20371.7598029927$1483977802$gmane$org@amdc3058>
-References: <1483106478-1382-1-git-send-email-b.zolnierkie@samsung.com>
- <3484511.F6TxDiWTi4@amdc3058> <20170108100823.GD25268@infradead.org>
- <CGME20170109160128epcas1p36a0a8f79b32e5024ffa480fd848e3a79@epcas1p3.samsung.com>
+Subject: Re: [PATCH 0/3] ata: add m68k/Atari Falcon PATA support
+Date: Mon, 09 Jan 2017 17:11:12 +0100
+Message-ID: <3908219.8toGAOhnv9__18803.2694197775$1483978481$gmane$org@amdc3058>
+References: <CGME20161230140139epcas5p160eda5a6a77be084e21f12002c85cc2a@epcas5p1.samsung.com>
+ <1483106478-1382-1-git-send-email-b.zolnierkie@samsung.com>
+ <CAMuHMdVpnhTNSRZ1h-q8+d0wjDKSHtev0eyVoVxYWhf0DCD+zg@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Transfer-Encoding: 7Bit
 Return-path: <linux-m68k-owner@vger.kernel.org>
-In-reply-to: <20170108100823.GD25268@infradead.org>
+In-reply-to: <CAMuHMdVpnhTNSRZ1h-q8+d0wjDKSHtev0eyVoVxYWhf0DCD+zg@mail.gmail.com>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Christoph Hellwig <hch@infradead.org>
-Cc: Tejun Heo <tj@kernel.org>, Geert Uytterhoeven <geert@linux-m68k.org>, Michael Schmitz <schmitzmic@gmail.com>, linux-ide@vger.kernel.org, linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org
+To: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: Tejun Heo <tj@kernel.org>, Michael Schmitz <schmitzmic@gmail.com>, "linux-ide@vger.kernel.org" <linux-ide@vger.kernel.org>, linux-m68k <linux-m68k@lists.linux-m68k.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
 
 
 Hi,
 
-On Sunday, January 08, 2017 02:08:23 AM Christoph Hellwig wrote:
-> On Fri, Dec 30, 2016 at 06:14:36PM +0100, Bartlomiej Zolnierkiewicz wrote:
-> > * m32r: I don't know why it was restricted but it builds fine nowadays
-> >   (I will fix it later in incremental patch)
-> > 
-> > * s390: no PATA hardware, legacy IDE subsystem is also not supported
+On Tuesday, January 03, 2017 11:49:16 AM Geert Uytterhoeven wrote:
+> Hi Bartlomiej,
 > 
-> s390 now has PCIe support, so PATA could be attached through a PCIe to
-> PCI bridge in theory.  And while that is very theoretical not having
-> arch ifdefs is still something we should strive for, so I'd suggest
-> removing the condition entirely.
+> On Fri, Dec 30, 2016 at 3:01 PM, Bartlomiej Zolnierkiewicz
+> <b.zolnierkie@samsung.com> wrote:
+> > This patchset adds m68k/Atari Falcon PATA support to libata.
+> 
+> Thanks for your series!
+> 
+> That leaves us with 4 to go ;-)
+> 
+>     CONFIG_BLK_DEV_GAYLE
+>     CONFIG_BLK_DEV_BUDDHA
+>     CONFIG_BLK_DEV_MAC_IDE
+>     CONFIG_BLK_DEV_Q40IDE
 
-I agree.  I will do it later unless someone beats me to it.
+They should be easy to port to libata, one just needs to remember to
+use ->qc_defer for ports that require serialization.
+
+> Note that using libata instead of the legacy IDE driver increases kernel size.
+> 
+> After enabling libata:
+> 
+>     CONFIG_ATA=y
+>     CONFIG_ATA_VERBOSE_ERROR=y
+>     CONFIG_ATA_SFF=y
+>     CONFIG_PATA_FALCON=y
+> 
+> an atari_defconfig kernel grew by:
+> 
+>     add/remove: 775/0 grow/shrink: 753/41 up/down: 98999/-242 (98757)
+> 
+> After disabling CONFIG_IDE:
+> 
+>     add/remove: 0/589 grow/shrink: 0/12 up/down: 0/-62835 (-62835)
+> 
+> So the net result is:
+> 
+>     add/remove: 775/589 grow/shrink: 749/51 up/down: 98886/-62964 (35922)
+
+SATA-specific code is not needed on legacy PATA systems so it should be
+possible to reduce the size by adding new config option (i.e. SATA_HOST) and:
+
+- covering SATA only code with CONFIG_SATA_HOST ifdefs
+
+- making SATA_HOST to be selected by SATA host drivers in drivers/ata/KConfig
+
+> Disabling CONFIG_ATA_VERBOSE_ERROR saved 1380 bytes, which is less than the
+> value advertised by Kconfig (6KB).
+
+If it is only ~1kB nowadays I would vote for making the error logging always
+verbose and just removing CONFIG_ATA_VERBOSE_ERROR, Tejun?
 
 Best regards,
 --
