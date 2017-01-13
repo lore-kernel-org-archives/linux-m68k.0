@@ -1,96 +1,117 @@
-From: Finn Thain <fthain@telegraphics.com.au>
-Subject: Re: [PATCH 0/3] ata: add m68k/Atari Falcon PATA support
-Date: Fri, 13 Jan 2017 13:33:17 +1100 (AEDT)
-Message-ID: <alpine.LNX.2.00.1701111053340.22260@nippy.intranet>
-References: <CGME20161230140139epcas5p160eda5a6a77be084e21f12002c85cc2a@epcas5p1.samsung.com> <1483106478-1382-1-git-send-email-b.zolnierkie@samsung.com> <CAOmrzkJP6s34DPOHd4OFFx=CXko35Kt=CfeDZthOPvKDJy-9YA@mail.gmail.com> <3939493.HXZ6C33pKV@amdc3058>
- <CAOmrzkJfQu6PuCpyyRJL8PNvSYxYO42F-k8jEYf2d1-5C28A_A@mail.gmail.com>
-Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+From: Nicolas Dichtel <nicolas.dichtel@6wind.com>
+Subject: [PATCH v3 1/8] arm: put types.h in uapi
+Date: Fri, 13 Jan 2017 11:46:39 +0100
+Message-ID: <1484304406-10820-2-git-send-email-nicolas.dichtel@6wind.com>
+References: <3131144.4Ej3KFWRbz@wuerfel>
+ <1484304406-10820-1-git-send-email-nicolas.dichtel@6wind.com>
 Return-path: <linux-m68k-owner@vger.kernel.org>
-In-Reply-To: <CAOmrzkJfQu6PuCpyyRJL8PNvSYxYO42F-k8jEYf2d1-5C28A_A@mail.gmail.com>
+In-Reply-To: <1484304406-10820-1-git-send-email-nicolas.dichtel@6wind.com>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Michael Schmitz <schmitzmic@gmail.com>
-Cc: Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>, Tejun Heo <tj@kernel.org>, Geert Uytterhoeven <geert@linux-m68k.org>, linux-ide@vger.kernel.org, Linux/m68k <linux-m68k@lists.linux-m68k.org>, Linux Kernel Development <linux-kernel@vger.kernel.org>, Andreas Schwab <schwab@linux-m68k.org>
+To: arnd@arndb.de
+Cc: mmarek@suse.com, linux-kbuild@vger.kernel.org, linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org, linux-alpha@vger.kernel.org, linux-snps-arc@lists.infradead.org, linux-arm-kernel@lists.infradead.org, adi-buildroot-devel@lists.sourceforge.net, linux-c6x-dev@linux-c6x.org, linux-cris-kernel@axis.com, uclinux-h8-devel@lists.sourceforge.jp, linux-hexagon@vger.kernel.org, linux-ia64@vger.kernel.org, linux-m68k@lists.linux-m68k.org, linux-metag@vger.kernel.org, linux-mips@linux-mips.org, linux-am33-list@redhat.com, nios2-dev@lists.rocketboards.org, openrisc@lists.librecores.org, linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, linux-s390@vger.kernel.org, linux-sh@vger.kernel.org, sparclinux@vger.kernel.org, linux-xtensa@linux-xtensa.org, linux-arch@vger.kernel.
 
+This header file is exported, thus move it to uapi.
 
-On Wed, 11 Jan 2017, Michael Schmitz wrote:
+Signed-off-by: Nicolas Dichtel <nicolas.dichtel@6wind.com>
+---
+ arch/arm/include/asm/types.h      | 40 ---------------------------------------
+ arch/arm/include/uapi/asm/types.h | 40 +++++++++++++++++++++++++++++++++++++++
+ 2 files changed, 40 insertions(+), 40 deletions(-)
+ delete mode 100644 arch/arm/include/asm/types.h
+ create mode 100644 arch/arm/include/uapi/asm/types.h
 
-> What is still correct is that the IDE driver does use the interrupt 
-> only, not the ST-DMA chip. And a single IDE interrupt can be correctly 
-> assigned to IDE by looking at the status register.
-> 
-> With the SCSI (and IIRC also floppy) interrupts, we don't have direct 
-> access to the status registers without disturbing the state of the DMA 
-> though. Unless we know for definite that either chips have raised the 
-> interrupt (and DMA ops are in flight), we must not touch the DMA chip at 
-> all.
-> 
-> The case I'm worried about is both IDE and SCSI raising an interrupt. We 
-> don't currently mask the IDE/ST-DMA interrupt so a stacked interrupt 
-> must be processed in the same pass as the initial interrupt or it will 
-> get dropped. We'd have to peek at the DMA registers to check the SCSI or 
-> floppy interrupt status, and we just can't safely do that. So races of 
-> this kind are currently prevented by including IDE in the IRQ locking 
-> process.
-> 
-> Whether it's possible to mask the interrupt, do one pass, unmask and 
-> process the second interrupt I don't know.
-
-Would that require handling the SCSI DMA interrupt in the first pass? Or 
-handling IDE first, and ensuring that the IDE handler does not access 
-ST-DMA registers? What about FDC?
-
-The atari_scsi handler accesses the ST-DMA registers; it can do so because 
-it knows that any DMA must have completed -- it can infer this because a 
-simultaneous pending interrupt from FDC or IDE is impossible due to 
-stdma_lock().
-
-Your suggestion would seem to allow other pending interrupts, hence the 
-atari_scsi interrupt handler logic has to be tossed out. What logic would 
-replace it?
-
-If all else fails, perhaps we could inhibit DMA entirely when the new ATA 
-driver is loaded. Then we can just dispatch the ST-DMA irq like a shared 
-irq. I'm sure that atari_scsi can work without DMA. No idea about the FDC 
-driver though (ataflop.c).
-
-Another solution would be to dedicate the DMA function to atari_scsi, and 
-then mask the FDC and IDE interrupts during each DMA transfer. But once 
-again, this would mean changing the FDC driver to eliminate DMA, if that 
-is possible. From the schematic it looks the the FDC chip, "AJAX", is 
-another custom ...
-http://dev-docs.atariforge.org/files/Falcon030_Schematic.pdf
-
-Unfortunately my grasp of the ST hardware reflects my inability to read 
-German; those who can may want to take a look at "ATARI Profibuch 
-ST-STE-TT.pdf".
-
+diff --git a/arch/arm/include/asm/types.h b/arch/arm/include/asm/types.h
+deleted file mode 100644
+index a53cdb8f068c..000000000000
+--- a/arch/arm/include/asm/types.h
++++ /dev/null
+@@ -1,40 +0,0 @@
+-#ifndef _ASM_TYPES_H
+-#define _ASM_TYPES_H
+-
+-#include <asm-generic/int-ll64.h>
+-
+-/*
+- * The C99 types uintXX_t that are usually defined in 'stdint.h' are not as
+- * unambiguous on ARM as you would expect. For the types below, there is a
+- * difference on ARM between GCC built for bare metal ARM, GCC built for glibc
+- * and the kernel itself, which results in build errors if you try to build with
+- * -ffreestanding and include 'stdint.h' (such as when you include 'arm_neon.h'
+- * in order to use NEON intrinsics)
+- *
+- * As the typedefs for these types in 'stdint.h' are based on builtin defines
+- * supplied by GCC, we can tweak these to align with the kernel's idea of those
+- * types, so 'linux/types.h' and 'stdint.h' can be safely included from the same
+- * source file (provided that -ffreestanding is used).
+- *
+- *                    int32_t         uint32_t               uintptr_t
+- * bare metal GCC     long            unsigned long          unsigned int
+- * glibc GCC          int             unsigned int           unsigned int
+- * kernel             int             unsigned int           unsigned long
+- */
+-
+-#ifdef __INT32_TYPE__
+-#undef __INT32_TYPE__
+-#define __INT32_TYPE__		int
+-#endif
+-
+-#ifdef __UINT32_TYPE__
+-#undef __UINT32_TYPE__
+-#define __UINT32_TYPE__	unsigned int
+-#endif
+-
+-#ifdef __UINTPTR_TYPE__
+-#undef __UINTPTR_TYPE__
+-#define __UINTPTR_TYPE__	unsigned long
+-#endif
+-
+-#endif /* _ASM_TYPES_H */
+diff --git a/arch/arm/include/uapi/asm/types.h b/arch/arm/include/uapi/asm/types.h
+new file mode 100644
+index 000000000000..9435a42f575e
+--- /dev/null
++++ b/arch/arm/include/uapi/asm/types.h
+@@ -0,0 +1,40 @@
++#ifndef _UAPI_ASM_TYPES_H
++#define _UAPI_ASM_TYPES_H
++
++#include <asm-generic/int-ll64.h>
++
++/*
++ * The C99 types uintXX_t that are usually defined in 'stdint.h' are not as
++ * unambiguous on ARM as you would expect. For the types below, there is a
++ * difference on ARM between GCC built for bare metal ARM, GCC built for glibc
++ * and the kernel itself, which results in build errors if you try to build with
++ * -ffreestanding and include 'stdint.h' (such as when you include 'arm_neon.h'
++ * in order to use NEON intrinsics)
++ *
++ * As the typedefs for these types in 'stdint.h' are based on builtin defines
++ * supplied by GCC, we can tweak these to align with the kernel's idea of those
++ * types, so 'linux/types.h' and 'stdint.h' can be safely included from the same
++ * source file (provided that -ffreestanding is used).
++ *
++ *                    int32_t         uint32_t               uintptr_t
++ * bare metal GCC     long            unsigned long          unsigned int
++ * glibc GCC          int             unsigned int           unsigned int
++ * kernel             int             unsigned int           unsigned long
++ */
++
++#ifdef __INT32_TYPE__
++#undef __INT32_TYPE__
++#define __INT32_TYPE__		int
++#endif
++
++#ifdef __UINT32_TYPE__
++#undef __UINT32_TYPE__
++#define __UINT32_TYPE__	unsigned int
++#endif
++
++#ifdef __UINTPTR_TYPE__
++#undef __UINTPTR_TYPE__
++#define __UINTPTR_TYPE__	unsigned long
++#endif
++
++#endif /* _UAPI_ASM_TYPES_H */
 -- 
-
-> Maybe Andreas does?
-> 
-> Cheers,
-> 
->   Michael
-> 
-> 
-> > it should be okay to use IDE at the same time as SCSI/Floppy which is 
-> > what the new driver does (the old one is serialized operations by 
-> > ST-DMA related IRQ handling magic).
-> >
-> > Also the comment itself may need some fixups as on Falcon it is SCSI 
-> > not ACSI (according to the earlier comment in same file) and the old 
-> > IDE host driver name is not falhd.c but falconide.c.
-> >
-> > Best regards,
-> > --
-> > Bartlomiej Zolnierkiewicz
-> > Samsung R&D Institute Poland
-> > Samsung Electronics
-> >
-> --
-> To unsubscribe from this list: send the line "unsubscribe linux-m68k" in
-> the body of a message to majordomo@vger.kernel.org
-> More majordomo info at  http://vger.kernel.org/majordomo-info.html
-> 
+2.8.1
