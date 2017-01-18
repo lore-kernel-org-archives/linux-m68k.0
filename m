@@ -1,85 +1,29 @@
-From: Nicolas Dichtel <nicolas.dichtel@6wind.com>
-Subject: [PATCH v3 6/8] Makefile.headersinst: remove destination-y option
-Date: Fri, 13 Jan 2017 11:46:44 +0100
-Message-ID: <1484304406-10820-7-git-send-email-nicolas.dichtel__33031.5943494954$1496075405$gmane$org@6wind.com>
-References: <3131144.4Ej3KFWRbz@wuerfel>
- <1484304406-10820-1-git-send-email-nicolas.dichtel@6wind.com>
+From: SF Markus Elfring <elfring@users.sourceforge.net>
+Subject: [PATCH 0/3] m68k: Fine-tuning for sys_cacheflush()
+Date: Wed, 18 Jan 2017 17:45:44 +0100
+Message-ID: <558ff501-7440-a97f-4494-f48591644092__36827.9436407194$1496082061$gmane$org@users.sourceforge.net>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-m68k-owner@vger.kernel.org>
-In-Reply-To: <1484304406-10820-1-git-send-email-nicolas.dichtel@6wind.com>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: arnd@arndb.de
-Cc: mmarek@suse.com, linux-kbuild@vger.kernel.org, linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org, linux-alpha@vger.kernel.org, linux-snps-arc@lists.infradead.org, linux-arm-kernel@lists.infradead.org, adi-buildroot-devel@lists.sourceforge.net, linux-c6x-dev@linux-c6x.org, linux-cris-kernel@axis.com, uclinux-h8-devel@lists.sourceforge.jp, linux-hexagon@vger.kernel.org, linux-ia64@vger.kernel.org, linux-m68k@lists.linux-m68k.org, linux-metag@vger.kernel.org, linux-mips@linux-mips.org, linux-am33-list@redhat.com, nios2-dev@lists.rocketboards.org, openrisc@lists.librecores.org, linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, linux-s390@vger.kernel.org, linux-sh@vger.kernel.org, sparclinux@vger.kernel.org, linux-xtensa@linux-xtensa.org, linux-arch@vger.kernel.
+To: linux-m68k@lists.linux-m68k.org, Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: LKML <linux-kernel@vger.kernel.org>, kernel-janitors@vger.kernel.org
 
-This option was added in commit c7bb349e7c25 ("kbuild: introduce destination-y
-for exported headers") but never used in-tree.
+From: Markus Elfring <elfring@users.sourceforge.net>
+Date: Wed, 18 Jan 2017 17:42:34 +0100
 
-Signed-off-by: Nicolas Dichtel <nicolas.dichtel@6wind.com>
----
- Documentation/kbuild/makefiles.txt | 23 ++++-------------------
- scripts/Makefile.headersinst       |  2 +-
- 2 files changed, 5 insertions(+), 20 deletions(-)
+A few update suggestions were taken into account
+from static source code analysis.
 
-diff --git a/Documentation/kbuild/makefiles.txt b/Documentation/kbuild/makefiles.txt
-index 9b9c4797fc55..37b525d329ae 100644
---- a/Documentation/kbuild/makefiles.txt
-+++ b/Documentation/kbuild/makefiles.txt
-@@ -46,9 +46,8 @@ This document describes the Linux kernel Makefiles.
- 	=== 7 Kbuild syntax for exported headers
- 		--- 7.1 header-y
- 		--- 7.2 genhdr-y
--		--- 7.3 destination-y
--		--- 7.4 generic-y
--		--- 7.5 generated-y
-+		--- 7.3 generic-y
-+		--- 7.4 generated-y
- 
- 	=== 8 Kbuild Variables
- 	=== 9 Makefile language
-@@ -1295,21 +1294,7 @@ See subsequent chapter for the syntax of the Kbuild file.
- 			#include/linux/Kbuild
- 			genhdr-y += version.h
- 
--	--- 7.3 destination-y
--
--	When an architecture has a set of exported headers that needs to be
--	exported to a different directory destination-y is used.
--	destination-y specifies the destination directory for all exported
--	headers in the file where it is present.
--
--		Example:
--			#arch/xtensa/platforms/s6105/include/platform/Kbuild
--			destination-y := include/linux
--
--	In the example above all exported headers in the Kbuild file
--	will be located in the directory "include/linux" when exported.
--
--	--- 7.4 generic-y
-+	--- 7.3 generic-y
- 
- 	If an architecture uses a verbatim copy of a header from
- 	include/asm-generic then this is listed in the file
-@@ -1336,7 +1321,7 @@ See subsequent chapter for the syntax of the Kbuild file.
- 		Example: termios.h
- 			#include <asm-generic/termios.h>
- 
--	--- 7.5 generated-y
-+	--- 7.4 generated-y
- 
- 	If an architecture generates other header files alongside generic-y
- 	wrappers, and not included in genhdr-y, then generated-y specifies
-diff --git a/scripts/Makefile.headersinst b/scripts/Makefile.headersinst
-index 3e20d03432d2..876b42cfede4 100644
---- a/scripts/Makefile.headersinst
-+++ b/scripts/Makefile.headersinst
-@@ -14,7 +14,7 @@ kbuild-file := $(srctree)/$(obj)/Kbuild
- include $(kbuild-file)
- 
- # called may set destination dir (when installing to asm/)
--_dst := $(if $(destination-y),$(destination-y),$(if $(dst),$(dst),$(obj)))
-+_dst := $(if $(dst),$(dst),$(obj))
- 
- old-kbuild-file := $(srctree)/$(subst uapi/,,$(obj))/Kbuild
- ifneq ($(wildcard $(old-kbuild-file)),)
+Markus Elfring (3):
+  Return directly after a failed capable()
+  Delete an unnecessary variable assignment
+  Add some spaces for better code readability
+
+ arch/m68k/kernel/sys_m68k.c | 13 +++++--------
+ 1 file changed, 5 insertions(+), 8 deletions(-)
+
 -- 
-2.8.1
+2.11.0
