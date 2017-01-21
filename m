@@ -1,68 +1,59 @@
-From: <armouralumni@yahoo.com>
-Subject: (unknown)
-Date: Sat, 21 Jan 2017 09:48:17 -0000
-Message-ID: <148499209745.20378.13058227659551248876@hinet.net>
-Reply-To: <armouralumni@yahoo.com>
+From: Amaya Kouta <amaya.kouta@onet.eu>
+Subject: Frau Amaya Kouta
+Date: Sat, 21 Jan 2017 10:10:22 +0000 (UTC)
+Message-ID: <586139498.16663516.1484993422070@mail.yahoo.com>
+References: <586139498.16663516.1484993422070.ref@mail.yahoo.com>
+Reply-To: Amaya Kouta <amayakouta@yahoo.com>
 Mime-Version: 1.0
-Content-Type: application/zip; name="EMAIL_06644_linux-m68k.zip"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Subject: 
-Content-Disposition: attachment
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: linux-m68k <linux-m68k@lists.linux-m68k.org>
 
-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
-AAQAAAAAUEsFBgAAAAABAAEAUwAAAEcLAAAAAA==
+
+
+Meine Liebste
+
+Ich wei=C3=9F nicht, wie mein Gro=C3=9Fz=C3=BCgigkeitsangebot Ihnen klingen=
+ mag, besonders, weil es von einem Fremden kommt, da es die einzige =C3=84n=
+derung ist, die ich meinen Reichtum f=C3=BCr die N=C3=A4chstenliebearbeit w=
+egen meiner gesundheitlichen Situation geben muss.
+
+Ich bin Frau Amaya Kouta, ein japanischer Staatsb=C3=BCrger, 37 Jahre alte =
+Frauen. Ich wohne hier in Frankreich Ich verheiratete mich mit Herrn Jones =
+Kouta, der 21 Jahre lang Gesch=C3=A4ftsmann in Frankreich war, bevor er am =
+zweiten November 2014 starb, wir waren elf Jahre ohne Kind verheiratet. Er =
+starb nach einer kurzen Krankheit, die nur vier Jahre dauerte Tage.
+
+Seit seinem Tod habe ich beschlossen, nicht wieder zu heiraten oder ein Kin=
+d au=C3=9Ferhalb meiner ehelichen Heimat zu bekommen, als mein verstorbener=
+ Mann am Leben war, legte er die Summe von US $ 7,5 Millionen Dollar in ein=
+er der f=C3=BChrenden Banken hier in Frankreich ab. Mein Arzt sagte mir, da=
+ss ich anfangen sollte, nach dem suchend, um meine Eigenschaften wegen mein=
+er Krebs- und Anschlagkrankheit zu werden, machte er mir klar, da=C3=9F er =
+nicht mein Leben in dieser Chirurgie garantieren wird.
+
+Ich werde Ihnen gerne diesen Fonds und meine Liegenschaften als Spende zur =
+=C3=9Cberbr=C3=BCckung der betroffenen und armen Stra=C3=9Fenkinder oder zu=
+r Gr=C3=BCndung eines Produktionsunternehmens zur Schaffung von Arbeitspl=
+=C3=A4tzen f=C3=BCr arbeitslose Menschen zu =C3=BCbergeben, wie ich es hier=
+ in Frankreich aufgrund der j=C3=BCngsten blutigen politischen Krise nicht =
+investieren kann Hier nicht kontrolliert, m=C3=B6chte ich Ihnen diesen Fond=
+s =C3=BCbergeben, da es mein Gel=C3=BCbde war, ein Wohlt=C3=A4tigkeitsproje=
+kt zu gr=C3=BCnden, bevor ich die Welt verlasse. Ich nahm diese Entscheidun=
+g, weil ich kein Kind haben, das diesen Fonds erben wird, und meine Ehemann=
+verwandte haben alle seine Investitionen ergriffen, weil ich kein Kind habe=
+.
+
+Ich ben=C3=B6tige keine Telefonkommunikation in dieser Hinsicht wegen meine=
+s Zustandes und ich m=C3=B6chte nicht, dass jemand =C3=BCber dieses Projekt=
+ Bescheid wei=C3=9F. Sobald Sie auf diese Nachricht antworten, werde ich di=
+e Bank umgehend informieren Bankkonto f=C3=BCr dieses Projekt, werde ich Ih=
+nen 20% Prozent des gesamten Fonds f=C3=BCr alle Ausgaben, die w=C3=A4hrend=
+ dieser N=C3=A4chstenliebe Arbeit auftreten k=C3=B6nnen, und ich m=C3=B6cht=
+e, dass Sie immer f=C3=BCr mich f=C3=BCr meine bis kommenden Chirurgie bete=
+n,
+
+Deine Schwester im Herrn,
+Frau Amaya Kouta.
