@@ -1,141 +1,68 @@
-From: Finn Thain <fthain@telegraphics.com.au>
-Subject: Re: [PATCH 0/3] ata: add m68k/Atari Falcon PATA support
-Date: Sat, 21 Jan 2017 18:37:12 +1100 (AEDT)
-Message-ID: <alpine.LNX.2.00.1701211805050.18276__27035.9693015509$1484984184$gmane$org@nippy.intranet>
-References: <CGME20161230140139epcas5p160eda5a6a77be084e21f12002c85cc2a@epcas5p1.samsung.com> <1483106478-1382-1-git-send-email-b.zolnierkie@samsung.com> <CAOmrzkJP6s34DPOHd4OFFx=CXko35Kt=CfeDZthOPvKDJy-9YA@mail.gmail.com> <3939493.HXZ6C33pKV@amdc3058>
- <CAOmrzkJfQu6PuCpyyRJL8PNvSYxYO42F-k8jEYf2d1-5C28A_A@mail.gmail.com> <alpine.LNX.2.00.1701111053340.22260@nippy.intranet> <c55cb48c-7200-9577-974b-3c080e141907@gmail.com> <alpine.LNX.2.00.1701151046500.352@nippy.intranet> <a637f52e-d70a-4b10-3998-9db5c2534d83@gmail.com>
- <alpine.LNX.2.00.1701151541230.7981@nippy.intranet> <b1b409e0-9243-83a6-8379-50f933c97477@gmail.com>
+From: <armouralumni@yahoo.com>
+Subject: (unknown)
+Date: Sat, 21 Jan 2017 09:48:17 -0000
+Message-ID: <148499209745.20378.13058227659551248876@hinet.net>
+Reply-To: <armouralumni@yahoo.com>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: application/zip; name="EMAIL_06644_linux-m68k.zip"
+Content-Transfer-Encoding: base64
 Return-path: <linux-m68k-owner@vger.kernel.org>
-In-Reply-To: <b1b409e0-9243-83a6-8379-50f933c97477@gmail.com>
+Subject: 
+Content-Disposition: attachment
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Michael Schmitz <schmitzmic@gmail.com>
-Cc: Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>, Tejun Heo <tj@kernel.org>, Geert Uytterhoeven <geert@linux-m68k.org>, linux-ide@vger.kernel.org, Linux/m68k <linux-m68k@lists.linux-m68k.org>, Linux Kernel Development <linux-kernel@vger.kernel.org>, Andreas Schwab <schwab@linux-m68k.org>
+To: linux-m68k <linux-m68k@lists.linux-m68k.org>
 
-
-On Fri, 20 Jan 2017, Michael Schmitz wrote:
-
-> Am 15.01.2017 um 17:42 schrieb Finn Thain:
-> 
-> >> No, we can't check either FDC or SCSI interrupts (or indeed any chip 
-> >> registers) without touching the ST-DMA. The moment we select a FDC or 
-> >> SCSI register for read, DMA is terminated no questions asked.
-> >>
-> > 
-> > Perhaps we can convert DMA operations to PDMA (by polling with local 
-> > irqs disabled) and avoid the whole problem of interrupt handlers 
-> > executing during DMA transfers. The docs suggest that it is doable.
-> > 
-> > "Poll or service the Disk Driver Controller interrupt on the MK68901 
-> > MFP General Purpose I/O Register to detect the completion of a WD1772 
-> > FDC command. Do not poll the FDC Busy or DMA Sector Count Zero status 
-> > bits." -- ST HW Spec, p. 36. 
-> > http://dev-docs.atariforge.org/files/ST_HW_Spec_1-7-1986.pdf
-> 
-> The MFP interrupt in question is the same as the one used by IDE 
-> (wired-OR of IDE, FDC and SCSI), so we would still have to figure out 
-> where the interrupt originated.
-
-I thought you said the driver you're testing does not use any interrupt -- 
-I was assuming that only atari_scsi and ataflop drivers share the 
-interupt.
-
-> Polling instead of taking the interrupt does not change that fundamental 
-> problem (unless I'm missing something).
-> 
-
-Actually, the fundamental problem you are describing is partly solved. By 
-polling for DMA completion with local irqs disabled, we mostly avoid the 
-need for the stdma.c "lock" because FDC/SCSI/IDE interrupt handlers can 
-never interfere with a FDC/SCSI DMA process that might be underway.
-
-> > 
-> > On page 18 there is an algorithm for floppy writes which is 
-> > interesting.
-> 
-> That one (and the ACSI algorithm which would apply to SCSI for Falcon) 
-> does suggest it won't be possible to peek at the sector count register 
-> to detect end of DMA. The addendum (note 841017G) makes it clear that a 
-> write to the DMA mode register is required to look at the status 
-> register error bit (which might terminate DMA).
-> 
-> Maybe the DMA address register can be used to check for DMA completion 
-> ... it's used to check for residual or lost bytes anyway so that appears 
-> to work. And the FDC driver does use the same strategy to check if 
-> enough track data have been read.
-> 
-> Leaves the case where DMA hasn't completed but may have been aborted by 
-> a NCR5380 interrupt. I suppose we can detect that by checking for any 
-> change in the DMA address while repeatedly reading the DMA address 
-> register. No change means the DMA has got stuck. Not exactly pretty but 
-> all I can come up with.
-> 
-
-We don't have to poll any DMA registers (and I don't believe that it is 
-viable to do so). I was talking about polling for end of DMA by polling 
-for the interrupt (as per docs) but with local irqs disabled for the 
-duration of the transfer (which provides exlusive access to the DMA chip).
-
-> > 
-> > I suspect that we will need to keep the FDC idle during SCSI transfers 
-> > (and vice versa) much as the present stdma.c lock does.
-> > 
-> > "The interrupt outputs of the internal floppy disk controller and the 
-> > external ACSI DMA port are logically OR'ed. The pin of the MFP GPIP 
-> > will read as a '0' if either the FDC or a selected ACSI device 
-> > controller is asserting its interrupt request." -- ACSI/DMA 
-> > Integration Guide, p.16. 
-> > http://dev-docs.atariforge.org/files/ACSI_DMA_Guide_6-28-1991.pdf
-> 
-> On Falcon, the IDE interrupt is also OR'ed to the above two interrupt 
-> lines, hence the need for including IDE in the locking scheme there.
-> 
-
-I don't think the IDE/ATA driver needs to be included. atari_scsi and 
-ataflop would though (if both drivers need DMA transfers).
-
-> > 
-> > Polling the logically OR'ed interrupt sources to detect end-of-DMA 
-> > will not be reliable unless we disable those sources that aren't 
-> > relevant. Otherwise we access the DMA registers too early (which IIUC 
-> > would kill the transfer). I'm afraid we shall have to expect that a 
-> > few transfers will be interrupted by other devices in this way, and 
-> > carefully check for this.
-> > 
-> > For example, the 5380 SCSI bus reset interrupt is not maskable, which 
-> > could affect FDC transfers. If this terminated the polling for DMA 
-> > completion, the FDC driver then has to access the FDC registers and 
-> > confirm that the transfer was not terminated early.
-> > 
-> 
-> We'll have to make sure FDC and SCSI don't clash in their DMA and 
-> interrupt use.
-> 
-
-The point I was trying to make above is that stdma lock only gets you so 
-far: if SCSI or FDC generate an interrupt that can't be disabled, it could 
-mess up the interrupt polling (and the interrupt polling is a necessary 
-consequence of IDE operating without stdma lock). This would lead to a 
-short transfer (which could be easily detected).
-
-So the chips clash in their interrupt line use (rarely). The drivers need 
-not clash at all.
-
-Anyway, we seem to be talking past each other somewhat. I suggest we start 
-coding and discuss actual patches ... unless you can convince me that this 
-won't work ...
-
--- 
-
-> Cheers,
-> 
-> 	Michael
-> 
-> 
-> --
-> To unsubscribe from this list: send the line "unsubscribe linux-m68k" in
-> the body of a message to majordomo@vger.kernel.org
-> More majordomo info at  http://vger.kernel.org/majordomo-info.html
-> 
+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
+AAQAAAAAUEsFBgAAAAABAAEAUwAAAEcLAAAAAA==
