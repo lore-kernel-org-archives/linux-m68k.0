@@ -1,52 +1,74 @@
 From: "Gideon D'souza" <gidisrael@gmail.com>
-Subject: Re: [PATCH 2/2] m68k: replaced gcc specific macros with ones from compiler.h
-Date: Fri, 27 Jan 2017 22:48:31 +0530
-Message-ID: <CAPNrq4wf_ZwjN5uwzz6vgm8EMuMR5pf1CkTLHUZQNZyNo7bwYA@mail.gmail.com>
+Subject: Re: [PATCH 1/2] compiler-gcc.h: Added new macro for gcc attribute
+Date: Fri, 27 Jan 2017 22:50:52 +0530
+Message-ID: <CAPNrq4yVFRuZXRof9sPu+QvJmHdfN4sOcbjdXHnkqq1WcvtycQ@mail.gmail.com>
 References: <1485260068-2495-1-git-send-email-gidisrael@gmail.com>
- <1485260068-2495-2-git-send-email-gidisrael@gmail.com> <CAP=VYLobUppjdMpeoQ7gXn60zmbEZU6d5Ga1mccCPbbpw9n1yA@mail.gmail.com>
+ <1485309036.12563.46.camel@perches.com> <CAPNrq4wbhovDcyuNdK84kA1nYtVKcSw42SJGHPsJK68VVuyyyg@mail.gmail.com>
+ <CAPNrq4zYukoyRYiH6erX2SwFKVrPfOBhCkKD_Z6kKHmrzGqfFw@mail.gmail.com> <1485524751.12563.124.camel@perches.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Return-path: <linux-m68k-owner@vger.kernel.org>
-In-Reply-To: <CAP=VYLobUppjdMpeoQ7gXn60zmbEZU6d5Ga1mccCPbbpw9n1yA@mail.gmail.com>
+In-Reply-To: <1485524751.12563.124.camel@perches.com>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Paul Gortmaker <paul.gortmaker@windriver.com>
-Cc: Andrew Morton <akpm@linux-foundation.org>, LKML <linux-kernel@vger.kernel.org>, Greg Ungerer <gerg@linux-m68k.org>, Geert Uytterhoeven <geert@linux-m68k.org>, linux-m68k <linux-m68k@lists.linux-m68k.org>, "linux-next@vger.kernel.org" <linux-next@vger.kernel.org>
+To: Joe Perches <joe@perches.com>
+Cc: Andrew Morton <akpm@linux-foundation.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Greg Ungerer <gerg@linux-m68k.org>, Geert Uytterhoeven <geert@linux-m68k.org>, linux-m68k <linux-m68k@lists.linux-m68k.org>
 
->You've gone from printf to print here.  This commit is breaking the
->linux-next builds on m68k.  I see the kbuild bot tripped over the same
->issue and did the same bisect.
+>Please don't top post and perhaps Andrew can fix it up instead.
 
-I did do a build before sending, as you may guess I'm not on an m68k machine.
+What do you mean when you say "top post" I shouldn't re-send it?
 
-Forgive the newbie please!
-
-I'm re-sending my patch with the correction.
-
-On Fri, Jan 27, 2017 at 10:09 PM, Paul Gortmaker
-<paul.gortmaker@windriver.com> wrote:
-> On Tue, Jan 24, 2017 at 7:14 AM, Gideon Israel Dsouza
-> <gidisrael@gmail.com> wrote:
->> There is <linux/compiler.h> which provides macros for various gcc specific
->> constructs. Eg: __weak for __attribute__((weak)). I've cleaned all
->> instances of gcc specific attributes with the right macros for all files
->> under /arch/m68k
->>
->> This patch depends on the previous with changes in
+On Fri, Jan 27, 2017 at 7:15 PM, Joe Perches <joe@perches.com> wrote:
+> On Fri, 2017-01-27 at 19:04 +0530, Gideon D'souza wrote:
+>> Ok, I noticed this went into Andrew's tree and is now in linux-next,
+>> should I resend it?
 >
->> @@ -17,6 +18,6 @@ void nf_init(void);
->>  void nf_shutdown(void);
->>
->>  void nfprint(const char *fmt, ...)
->> -       __attribute__ ((format (printf, 1, 2)));
->> +       __print(1, 2);
->>
+> Please don't top post and perhaps Andrew can fix it up instead.
 >
-> You've gone from printf to print here.  This commit is breaking the
-> linux-next builds on m68k.  I see the kbuild bot tripped over the same
-> issue and did the same bisect.
+> Andrew, you need to change:
 >
-> http://kisskb.ellerman.id.au/kisskb/buildresult/12916834/
+> #define __mode          __attribute__((mode(x)))
 >
-> Paul.
-> --
+> to
+>
+> #define __mode(x)       __attribute__((mode(x)))
+>
+> thanks.
+>
+>> On Wed, Jan 25, 2017 at 10:20 AM, Gideon D'souza <gidisrael@gmail.com> wrote:
+>> > > #define __mode(x)       __attribute__((mode(x)))
+>> >
+>> > Well that's embarrassing. I so sorry for the trouble guys :( I'll resend this.
+>> >
+>> > On Wed, Jan 25, 2017 at 7:20 AM, Joe Perches <joe@perches.com> wrote:
+>> > > On Tue, 2017-01-24 at 17:44 +0530, Gideon Israel Dsouza wrote:
+>> > > > Added __mode(x) into compiler-gcc.h as part of a cleanup task I've
+>> > > > taken up, to replace gcc specific attributes with macros.
+>> > > >
+>> > > > Last accepted patch I sent into linux-next for crypto: d8c34b949d8c:
+>> > > > crypto: Replaced gcc specific attributes with macros from compiler.h
+>> > > >
+>> > > > The last commit of this task that went through you: 52f5684c8e1ec
+>> > > > kernel: use macros from compiler.h instead of __attribute__((...))
+>> > > >
+>> > > > The next patch is for cleaning up the m68k subsystem and it requires
+>> > > > a new macro to wrap __attribute__ ((mode (...)))
+>> > >
+>> > > []
+>> > > > diff --git a/include/linux/compiler-gcc.h b/include/linux/compiler-gcc.h
+>> > >
+>> > > []
+>> > > > @@ -121,6 +121,7 @@
+>> > > >  #define __attribute_const__  __attribute__((__const__))
+>> > > >  #define __maybe_unused               __attribute__((unused))
+>> > > >  #define __always_unused              __attribute__((unused))
+>> > > > +#define __mode                  __attribute__((mode(x)))
+>> > >
+>> > > Huh?
+>> > >
+>> > > Perhaps you meant
+>> > >
+>> > > #define __mode(x)       __attribute__((mode(x)))
+>> > >
+>> > > ?
+>> > >
