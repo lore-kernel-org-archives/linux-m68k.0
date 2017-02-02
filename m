@@ -1,202 +1,131 @@
-From: Michael Schmitz <schmitzmic@gmail.com>
-Subject: Re: [PATCH 0/3] ata: add m68k/Atari Falcon PATA support
-Date: Thu, 2 Feb 2017 20:48:54 +1300
-Message-ID: <42f63f91-b6e7-4b35-417f-2da1d22cf298__21968.1693743498$1486021759$gmane$org@gmail.com>
-References: <CGME20161230140139epcas5p160eda5a6a77be084e21f12002c85cc2a@epcas5p1.samsung.com>
- <1483106478-1382-1-git-send-email-b.zolnierkie@samsung.com>
- <CAOmrzkJP6s34DPOHd4OFFx=CXko35Kt=CfeDZthOPvKDJy-9YA@mail.gmail.com>
- <3939493.HXZ6C33pKV@amdc3058>
- <CAOmrzkJfQu6PuCpyyRJL8PNvSYxYO42F-k8jEYf2d1-5C28A_A@mail.gmail.com>
- <alpine.LNX.2.00.1701111053340.22260@nippy.intranet>
- <c55cb48c-7200-9577-974b-3c080e141907@gmail.com>
- <alpine.LNX.2.00.1701151046500.352@nippy.intranet>
- <a637f52e-d70a-4b10-3998-9db5c2534d83@gmail.com>
- <alpine.LNX.2.00.1701151541230.7981@nippy.intranet>
- <b1b409e0-9243-83a6-8379-50f933c97477@gmail.com>
- <alpine.LNX.2.00.1701211805050.18276@nippy.intranet>
- <1585626b-5642-3e42-2d40-52fae49c9e59@gmail.com>
- <alpine.LNX.2.00.1701261944160.23370@nippy.intranet>
- <a524b8e2-b7ea-482d-f62c-b0460e852a8b@gmail.com>
- <alpine.LNX.2.00.1701271858100.368@nippy.intranet>
+From: Waldemar Brodkorb <wbx@openadk.org>
+Subject: regression for m68k/coldfire
+Date: Thu, 2 Feb 2017 21:15:00 +0100
+Message-ID: <20170202201500.GU11210@waldemar-brodkorb.de>
+Reply-To: uClinux development list <uclinux-dev@uclinux.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=windows-1252
-Content-Transfer-Encoding: 8bit
-Return-path: <linux-m68k-owner@vger.kernel.org>
-In-Reply-To: <alpine.LNX.2.00.1701271858100.368@nippy.intranet>
-Sender: linux-m68k-owner@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <uclinux-dev-bounces@uclinux.org>
+Content-Disposition: inline
+List-Unsubscribe: <http://mailman.uclinux.org/mailman/options/uclinux-dev>,
+ <mailto:uclinux-dev-request@uclinux.org?subject=unsubscribe>
+List-Archive: <http://mailman.uclinux.org/pipermail/uclinux-dev>
+List-Post: <mailto:uclinux-dev@uclinux.org>
+List-Help: <mailto:uclinux-dev-request@uclinux.org?subject=help>
+List-Subscribe: <http://mailman.uclinux.org/mailman/listinfo/uclinux-dev>,
+ <mailto:uclinux-dev-request@uclinux.org?subject=subscribe>
+Errors-To: uclinux-dev-bounces@uclinux.org
+Sender: uclinux-dev-bounces@uclinux.org
+To: Nikita Yushchenko <nikita.yoush@cogentembedded.com>
+Cc: linux-m68k@vger.kernel.org, uclinux-dev@uclinux.org, linux-kernel@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Finn Thain <fthain@telegraphics.com.au>
-Cc: Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>, Tejun Heo <tj@kernel.org>, Geert Uytterhoeven <geert@linux-m68k.org>, linux-ide@vger.kernel.org, Linux/m68k <linux-m68k@lists.linux-m68k.org>, Linux Kernel Development <linux-kernel@vger.kernel.org>, Andreas Schwab <schwab@linux-m68k.org>
 
-Hi Finn,
+Hi,
 
+your commit 80cca775cdc4f8555612d2943a2872076b33e0ff breaks Linux
+booting in qemu-system-m68k:
 
-Am 01.02.2017 um 21:40 schrieb Finn Thain:
-> 
-> On Fri, 27 Jan 2017, Michael Schmitz wrote:
-> 
->> Am 26.01.2017 um 21:47 schrieb Finn Thain:
->>
->>> This would imply CPU overhead that is half of that which mac_scsi 
->>> incurs. That's the best case, but I see no reason to expect worse 
->>> performance than PDMA gets.
->>
->> But how much more overhead would we have compared to using the SCSI 
->> interrupt to signal DMA completion?
->>
-> 
-> I imagine that contention for the CPU bus would be a problem if we polled 
-> the interrupt flag without any delay between iterations. With a small 
-> delay I think the overhead would be comparable with PDMA and therefore 
-> tolerable.
+qemu-system-m68k -nographic -M mcf5208evb -cpu m5208 -kernel qemu-m68k-mcf5208-initramfspiggyback-kernel
 
-The first delay can even be quite long, estimated based on the transfer
-size.
+[    0.000000] Linux version 4.9.6-1 (wbx@vopenadk) (gcc version
+5.4.0 (GCC) ) #2 Thu Feb 2 21:08:59 CET 2017
+[    0.000000] uClinux with CPU COLDFIRE(m520x)
+[    0.000000] COLDFIRE port done by Greg Ungerer, gerg@snapgear.com
+[    0.000000] Flat model support (C) 1998,1999 Kenneth Albanowski,
+D. Jeff Dionne
+[    0.000000] Built 1 zonelists in Zone order, mobility grouping
+on.  Total pages: 16320
+[    0.000000] Kernel command line: console=ttyS0,115200 ro
+rootfstype=tmpfs
+[    0.000000] PID hash table entries: 512 (order: -2, 2048 bytes)
+[    0.000000] Dentry cache hash table entries: 16384 (order: 3,
+65536 bytes)
+[    0.000000] Inode-cache hash table entries: 8192 (order: 2, 32768
+bytes)
+[    0.000000] Memory: 127920K/131072K available (1292K kernel code,
+96K rwdata, 216K rodata, 560K init, 179K bss, 3152K reserved, 0K
+cma-reserved)
+[    0.000000] Virtual kernel memory layout:
+[    0.000000]     vector  : 0x40000000 - 0x40000400   (   1 KiB)
+[    0.000000]     kmap    : 0x00000000 - 0xffffffff   (4095 MiB)
+[    0.000000]     vmalloc : 0x00000000 - 0xffffffff   (4095 MiB)
+[    0.000000]     lowmem  : 0x40000000 - 0x48000000   ( 128 MiB)
+[    0.000000]       .init : 0x401b2000 - 0x4023e000   ( 560 KiB)
+[    0.000000]       .text : 0x40020000 - 0x40163350   (1293 KiB)
+[    0.000000]       .data : 0x40163350 - 0x401b1640   ( 313 KiB)
+[    0.000000]       .bss  : 0x4023e000 - 0x4026af04   ( 180 KiB)
+[    0.000000] SLUB: HWalign=16, Order=0-3, MinObjects=0, CPUs=1,
+Nodes=8
+[    0.000000] NR_IRQS:256
+[    0.000000] clocksource: pit: mask: 0xffffffff max_cycles:
+0xffffffff, max_idle_ns: 3669622406313 ns
+[    0.020000] Calibrating delay loop... 238.38 BogoMIPS
+(lpj=1191936)
+[    0.080000] pid_max: default: 4096 minimum: 301
+[    0.080000] Mount-cache hash table entries: 2048 (order: 0, 8192
+bytes)
+[    0.080000] Mountpoint-cache hash table entries: 2048 (order: 0,
+8192 bytes)
+[    0.160000] clocksource: jiffies: mask: 0xffffffff max_cycles:
+0xffffffff, max_idle_ns: 19112604462750000 ns
+[    0.170000] NET: Registered protocol family 16
+[    0.200000] pps_core: LinuxPPS API ver. 1 registered
+[    0.200000] pps_core: Software ver. 5.3.6 - Copyright 2005-2007
+Rodolfo Giometti <giometti@linux.it>
+[    0.200000] PTP clock support registered
+[    0.220000] clocksource: Switched to clocksource pit
+[    0.230000] NET: Registered protocol family 2
+[    0.240000] TCP established hash table entries: 2048 (order: 0,
+8192 bytes)
+[    0.240000] TCP bind hash table entries: 2048 (order: 0, 8192
+bytes)
+[    0.240000] TCP: Hash tables configured (established 2048 bind
+2048)
+[    0.240000] UDP hash table entries: 512 (order: 0, 8192 bytes)
+[    0.240000] UDP-Lite hash table entries: 512 (order: 0, 8192
+bytes)
+[    0.250000] NET: Registered protocol family 1
+[    2.560000] random: fast init done
+[    3.400000] futex hash table entries: 16 (order: -6, 192 bytes)
+[    3.400000] workingset: timestamp_bits=27 max_order=14
+bucket_order=0
+[    3.460000] ColdFire internal UART serial driver
+[    3.470000] mcfuart.0: ttyS0 at MMIO 0xfc060000 (irq = 90,
+base_baud = 2083333) is a ColdFire UART
+[    3.500000] console [ttyS0] enabled
+[    3.500000] mcfuart.0: ttyS1 at MMIO 0xfc064000 (irq = 91,
+base_baud = 2083333) is a ColdFire UART
+[    3.510000] mcfuart.0: ttyS2 at MMIO 0xfc068000 (irq = 92,
+base_baud = 2083333) is a ColdFire UART
+qemu: hardware error: mcf_fec_read: Bad address 0x200
 
->> Since IDE does not use the ST-DMA and does not share any registers with 
->> ST-DMA, peeking at the IDE status register in order to decide whether 
->> the interrupt was raised by the IDE interface won't hurt the running DMA 
->> process (regardless of whether FDC or SCSI started it). Nor will 
->> servicing the IDE interrupt.
->>
-> 
-> Maybe we can just call the IDE handler from the ST-DMA handler regardless 
-> of the status register. For a shared interrupt handler this should work 
-> okay. (BTW, where is the IDE status register found anyway?)
+CPU #0:
+D0 = 00000200   A0 = 4780fdec   F0 = 0000000000000000 (           0)
+D1 = 4780ff94   A1 = 401703de   F1 = 0000000000000000 (           0)
+D2 = 46dbb000   A2 = 4780f800   F2 = 0000000000000000 (           0)
+D3 = 4019d612   A3 = fc030200   F3 = 0000000000000000 (           0)
+D4 = 00000000   A4 = 4019d608   F4 = 0000000000000000 (           0)
+D5 = 40043f7a   A5 = 400222a0   F5 = 0000000000000000 (           0)
+D6 = 400df204   A6 = 4783de78   F6 = 0000000000000000 (           0)
+D7 = 401701c0   A7 = 4783de28   F7 = 0000000000000000 (           0)
+PC = 400e5ff2   SR = 2009 -N--C FPRESULT =            0
+Aborted
+wbx@vopenadk:~/m68k/openadk$     
+wbx@vopenadk:~/m68k/openadk$ qemu-system-m68k --version
+QEMU emulator version 2.8.0
+Copyright (c) 2003-2016 Fabrice Bellard and the QEMU Project
+developers
 
-We could do that as well, true. Easier to implement on the quick.
+Any ideas how to fix it?
 
->> If at the end of the IDE interrupt processing the interrupt status is 
->> cleared in the IDE interface, the interrupt line should go high again 
->> before the IDE inthandler returns.
->>
-> 
-> On page 2 of the schematic, MFP pin I5 is wired to the output of the 
-> logical OR combination of the IDEIRQ and XDISKINT signals (actually 
-> active-low signals fed into an AND gate). The pin is edge-triggered.
-> 
-> This is just like the wired-OR Nubus slot IRQs connected to the Mac's VIA 
-> pin. The handler must ack all asserted IRQs. Otherwise there will be no 
-> more edges and no more interrupts.
+best regards
+ Waldemar
 
-Quite right - that's why I mentioned monitoring the IRQ signal status in
-the GPIO register.
-
-> This means looping over the IDE, FDC/SCSI DMA handlers until they all 
-> return IRQ_NONE. (Or equivalently, looping over the IRQ flags in the 
-> device registers until they are all de-asserted.)
-
-Looping over the handlers risks stopping the DMA without need (except
-for IDE).
-
-> BTW, this makes me think that the stdma.c mechanism is already flawed, 
-> since stdma_int() can cause only one of IDEIRQ and XDISKINT to become 
-> inactive, but not both. That's fine as long as no device raises IRQ until 
-> it's driver acquires the stdma lock -- but we know this is not true for 
-> the 5380 bus reset interrupt and it isn't true for IDE devices either 
-> (based on Geert's email in this thread).
-
-The initial bus reset code had safeguards against raising an interrupt -
-the IRQ was 'turned off' while the bus reset was executed. Maybe we need
-something like that, at least in the case where SCSI does not hold the
-ST-DMA lock.
-
->> If we can ensure that the FDC/SCSI interrupt handler runs after the IDE 
->> handler, we can then make that handler check the interrupt line status 
->> and bail out if there's nothing to be done. (For the sake of simplicity, 
->> this check can be done in stdma_int() since we need to retain mutual 
->> locking of the DMA interface by SCSI and FDC anyway.)
->>
->> We can ensure the IDE interrupt is called first by using a special 
->> interrupt controller to register separate IDE and FDC/SCSI interrupts 
->> with (I've done that to provide distinct interrupt numbers and handlers 
->> for the timer D interrupt that's used to poll ethernet and USB interface 
->> status on the ROM port).
->>
->> That way, we can ensure IDE interrupts do not step on the ST-DMA state, 
->> and all that remains are premature SCSI interrupts terminating DMA 
->> transfer (which we already face anyway).
->>
->> Am I missing a potential race here? Does IDE send the next request off 
->> to the disk from inside the interrupt handler so we could see IDE 
->> immediately raise the next interrupt?  In that case, we'd also need to 
->> check the IDE interrupt status in the interface status register, and 
->> bail out for another pass through the IDE/FDC/SCSI handlers until IDE is 
->> no longer posting an interrupt...
->>
-> 
-> I don't know anything about IDE so I can't comment on this particular 
-> scenario (IDE interrupt handler causing IDE interrupt). The race condition 
-> may be only theoretical.
-> 
-> What you seem to be aiming at is an algorithm to ensure that no DMA 
-> interrupt is handled whilst an IDE interrupt is pending. Taking into 
-
-Whilst the IDE interrupt is the only one pending, to be precise.
-
-> account the logical OR issue, one could imagine a handler for the 
-> IRQ_MFP_FSCSI interrupt something like the following. (This code is 
-> probably useless for implementing your interrupt controller, but I hope it 
-> illustrates some of the issues.)
-> 
-> 	do {
-> 		handled = ata_handler(irq, ata_dev);
-> 		if (handled == IRQ_NONE && atari_irq_pending(IRQ_MFP_FSCSI))
-> 			handled |= stdma_int(irq, stdma_dev);
-> 	} while (handled != IRQ_NONE);
-
-Not quite - we can't be certain that there aren't actually two
-interrupts pending (say IDE interrupts first, and while we service that
-interrupt, SCSI interrupts next but since the IRQ signal remains low, we
-don't trigger another interrupt). So we must run the loop for both IDE
-and stdma_int for as long as the IRQ signal remains low.
-
-I had missed the case where SCSI interrupts first and the IDE interrupt
-only comes in while the SCSI inthandler is running - need to think a bit
-more about this.
-
-> Clearly this is not free from race conditions. The other problem is the 
-> use of atari_irq_pending(IRQ_MFP_FSCSI). It tells us when an edge appears 
-> but doesn't tell us about the present state of the IRQ output pins on the 
-> NCR5380 or the WD1772. We can't access the device registers so 
-> st_mfp.par_dt_reg & BIT(5) must be used instead of 
-> atari_irq_pending(IRQ_MFP_FSCSI);
-
-I've written a function to that effect, and tested it in the current
-Falcon inthandler (without sharing the interrupt truly yet).
-
-> The simplest approach is to treat it like a shared interrupt, with a loop 
-> to account for the logical OR:
-> 
-> 	do {
-> 		handled = ata_handler(irq, ata_dev) | 
-> 		          scsi_falcon_intr(irq, scsi_dev) |
-> 		          fdc_handler(irq, fdc_dev);
-> 	} while (handled != IRQ_NONE);
-
-We can never have both SCSI and FDC interrupt at the same time (both
-register access and DMA setup are shared between the two). Best retain
-stdma_lock() for these two.
-
-> This should work fine with polled DMA (and might even allow the flawed 
-> stdma.c lock mechanism to be eliminated) but it can't work with your 
-> scheme because scsi_falcon_intr() assumes exclusive access to the IRQ; 
-> hence it must not be called unless there is an actual 5380 or DMA 
-> interrupt.
-
-Correct - polled DMA might be easier to handle here.
-
-> I don't know which scheme is better. Mine is simpler and probably free of 
-> race conditions but does burn some CPU time. Your scheme is more 
-> complicated.
-
-Meaning likely to race...
-
-I'll have to test this with IDE removed from the locking scheme, and
-we'll hopefully see races pretty quick.
-
-Got a few new ideas to try now, thanks!
-
-Cheers,
-
-	Michael
+_______________________________________________
+uClinux-dev mailing list
+uClinux-dev@uclinux.org
+http://mailman.uclinux.org/mailman/listinfo/uclinux-dev
+This message was resent by uclinux-dev@uclinux.org
+To unsubscribe see:
+http://mailman.uclinux.org/mailman/options/uclinux-dev
