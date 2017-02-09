@@ -1,58 +1,68 @@
 From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: Re: [PATCH 3/3] m68k: Add some spaces for better code readability in sys_cacheflush()
-Date: Thu, 9 Feb 2017 12:12:27 +0100
-Message-ID: <CAMuHMdVwcDbOQrhkk-vGQjzVNLmWQmqrSJTKJo_bCVEUAYHbsQ__31971.4078134441$1486640488$gmane$org@mail.gmail.com>
-References: <558ff501-7440-a97f-4494-f48591644092@users.sourceforge.net> <bbebee4e-b726-348e-66f9-dc4657c4f8df@users.sourceforge.net>
+Subject: Re: [PATCH 01/22] m68k/atari: Modernize printing of kernel messages
+Date: Thu, 9 Feb 2017 12:59:32 +0100
+Message-ID: <CAMuHMdWU69aHsAdQggu07Wf8ePe6Fp3=akQJBiNQDHP_u3Eeqg@mail.gmail.com>
+References: <1481123360-10978-1-git-send-email-geert@linux-m68k.org>
+ <1481123360-10978-2-git-send-email-geert@linux-m68k.org> <alpine.LNX.2.00.1612080925380.9219@nippy.intranet>
+ <CAMuHMdXA2bseZ_JxeC7L+_X2aW=xpaRXc1QrgZZpEZyWtuE75g@mail.gmail.com> <8dd7db81-fc45-8054-82fa-3b09be455ef7@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Return-path: <linux-m68k-owner@vger.kernel.org>
-In-Reply-To: <bbebee4e-b726-348e-66f9-dc4657c4f8df@users.sourceforge.net>
+In-Reply-To: <8dd7db81-fc45-8054-82fa-3b09be455ef7@gmail.com>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: SF Markus Elfring <elfring@users.sourceforge.net>
-Cc: linux-m68k <linux-m68k@lists.linux-m68k.org>, LKML <linux-kernel@vger.kernel.org>, "kernel-janitors@vger.kernel.org" <kernel-janitors@vger.kernel.org>
+To: Michael Schmitz <schmitzmic@gmail.com>
+Cc: Finn Thain <fthain@telegraphics.com.au>, Greg Ungerer <gerg@linux-m68k.org>, Sam Creasey <sammy@sammy.net>, Joshua Thompson <funaho@jurai.org>, linux-m68k <linux-m68k@lists.linux-m68k.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
 
-Hi Markus,
+Hi Michael,
 
-On Wed, Jan 18, 2017 at 5:50 PM, SF Markus Elfring
-<elfring@users.sourceforge.net> wrote:
-> From: Markus Elfring <elfring@users.sourceforge.net>
-> Date: Wed, 18 Jan 2017 17:34:29 +0100
+On Sat, Dec 10, 2016 at 1:44 AM, Michael Schmitz <schmitzmic@gmail.com> wrote:
+> Am 09.12.2016 um 01:22 schrieb Geert Uytterhoeven:
+>> On Wed, Dec 7, 2016 at 11:36 PM, Finn Thain <fthain@telegraphics.com.au> wrote:
+>>> On Wed, 7 Dec 2016, Geert Uytterhoeven wrote:
+>>>>   - Convert from printk() to pr_*(),
+>>>>   - Add missing continuations, to fix user-visible breakage,
+>>>>   - Drop useless WARNING prefix,
+>>>>   - Move trailing spaces to start of continuations.
+>>>>
+>>>> Fixes: 4bcc595ccd80decb ("printk: reinstate KERN_CONT for printing continuation lines")
+>>>> Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
+>>>> ---
+>>>>  arch/m68k/atari/atakeyb.c | 14 ++++++------
+>>>>  arch/m68k/atari/config.c  | 56 +++++++++++++++++++++++------------------------
+>>>>  2 files changed, 35 insertions(+), 35 deletions(-)
+>>>>
+>>>> diff --git a/arch/m68k/atari/atakeyb.c b/arch/m68k/atari/atakeyb.c
+>>>> index 264db11268039329..37091898adb3d3b5 100644
+>>>> --- a/arch/m68k/atari/atakeyb.c
+>>>> +++ b/arch/m68k/atari/atakeyb.c
+>>>> @@ -149,7 +149,7 @@ static irqreturn_t atari_keyboard_interrupt(int irq, void *dummy)
+>>>>       if (acia_stat & ACIA_OVRN) {
+>>>>               /* a very fast typist or a slow system, give a warning */
+>>>>               /* ...happens often if interrupts were disabled for too long */
+>>>> -             printk(KERN_DEBUG "Keyboard overrun\n");
+>>>> +             pr_debug("Keyboard overrun\n");
+>>>>               scancode = acia.key_data;
+>>>>               if (ikbd_self_test)
+>>>>                       /* During self test, don't do resyncing, just process the code */
+>>>
+>>> This is not equivalent (unless there is a DEBUG macro definition hinding
+>>> in a header file somewhere). Since the changelog doesn't mention
+>>> suppressing any output, perhaps you were deceived by the questionable API,
+>>> as I have been in the past (see 16b9d870a0 and d61c5427f6).
+>>
+>> This is an actual message people want to see in the kernel log, even
 >
-> * Use space characters at some source code places according to
->   the Linux coding style convention.
+> No, it's not something people want to see - clutters up the screen, and
+> causes even more interrupt hogging disk IO from syslogd so exacerbates
+> the problem on slow systems.
 >
-> * Adjust indentation a bit.
->
-> Signed-off-by: Markus Elfring <elfring@users.sourceforge.net>
-> ---
->  arch/m68k/kernel/sys_m68k.c | 9 ++++-----
->  1 file changed, 4 insertions(+), 5 deletions(-)
->
-> diff --git a/arch/m68k/kernel/sys_m68k.c b/arch/m68k/kernel/sys_m68k.c
-> index 9870d00d2215..5b351f7a6c11 100644
-> --- a/arch/m68k/kernel/sys_m68k.c
-> +++ b/arch/m68k/kernel/sys_m68k.c
-> @@ -436,11 +436,10 @@ sys_cacheflush (unsigned long addr, int scope, int cache, unsigned long len)
->              * 040 or 060: don't blindly trust 'scope', someone could
->              * try to flush a few megs of memory.
->              */
-> -
-> -           if (len>=3*PAGE_SIZE && scope<FLUSH_SCOPE_PAGE)
-> -               scope=FLUSH_SCOPE_PAGE;
-> -           if (len>=10*PAGE_SIZE && scope<FLUSH_SCOPE_ALL)
-> -               scope=FLUSH_SCOPE_ALL;
-> +               if (len >= 3 * PAGE_SIZE && scope < FLUSH_SCOPE_PAGE)
-> +                       scope = FLUSH_SCOPE_PAGE;
-> +               if (len >= 10 * PAGE_SIZE && scope < FLUSH_SCOPE_ALL)
-> +                       scope = FLUSH_SCOPE_ALL;
->             if (CPU_IS_040) {
->                 ret = cache_flush_040 (addr, scope, cache, len);
->             } else if (CPU_IS_060) {
+> But Finn is right in that output is now suppressed instead of given a
+> particular log level. IMO stating that the message will now only be
+> generated when the kernel has been compiled for debugging would be
+> perfectly fine.
 
-What prevented you from correcting the indentation of the comments before,
-and the statements after?
-Now the lines in the else branch are no longer aligned at all!
+Thanks, will update the commit message.
 
 Gr{oetje,eeting}s,
 
