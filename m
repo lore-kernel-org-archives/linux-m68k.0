@@ -1,68 +1,49 @@
 From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: Re: [PATCH 01/22] m68k/atari: Modernize printing of kernel messages
-Date: Thu, 9 Feb 2017 12:59:32 +0100
-Message-ID: <CAMuHMdWU69aHsAdQggu07Wf8ePe6Fp3=akQJBiNQDHP_u3Eeqg@mail.gmail.com>
-References: <1481123360-10978-1-git-send-email-geert@linux-m68k.org>
- <1481123360-10978-2-git-send-email-geert@linux-m68k.org> <alpine.LNX.2.00.1612080925380.9219@nippy.intranet>
- <CAMuHMdXA2bseZ_JxeC7L+_X2aW=xpaRXc1QrgZZpEZyWtuE75g@mail.gmail.com> <8dd7db81-fc45-8054-82fa-3b09be455ef7@gmail.com>
+Subject: Re: [PATCH 1/3] m68k: Return directly after a failed capable() in sys_cacheflush()
+Date: Thu, 9 Feb 2017 12:06:57 +0100
+Message-ID: <CAMuHMdWwtHtLeKwxkc8RTSZDgPshpqkpZQmDRorHxF3HyYgRag__32902.795499149$1486645051$gmane$org@mail.gmail.com>
+References: <558ff501-7440-a97f-4494-f48591644092@users.sourceforge.net> <71513091-bc01-ce70-893f-3f376062d833@users.sourceforge.net>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Return-path: <linux-m68k-owner@vger.kernel.org>
-In-Reply-To: <8dd7db81-fc45-8054-82fa-3b09be455ef7@gmail.com>
+In-Reply-To: <71513091-bc01-ce70-893f-3f376062d833@users.sourceforge.net>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Michael Schmitz <schmitzmic@gmail.com>
-Cc: Finn Thain <fthain@telegraphics.com.au>, Greg Ungerer <gerg@linux-m68k.org>, Sam Creasey <sammy@sammy.net>, Joshua Thompson <funaho@jurai.org>, linux-m68k <linux-m68k@lists.linux-m68k.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+To: SF Markus Elfring <elfring@users.sourceforge.net>
+Cc: linux-m68k <linux-m68k@lists.linux-m68k.org>, LKML <linux-kernel@vger.kernel.org>, "kernel-janitors@vger.kernel.org" <kernel-janitors@vger.kernel.org>
 
-Hi Michael,
+Hi Markus,
 
-On Sat, Dec 10, 2016 at 1:44 AM, Michael Schmitz <schmitzmic@gmail.com> wrote:
-> Am 09.12.2016 um 01:22 schrieb Geert Uytterhoeven:
->> On Wed, Dec 7, 2016 at 11:36 PM, Finn Thain <fthain@telegraphics.com.au> wrote:
->>> On Wed, 7 Dec 2016, Geert Uytterhoeven wrote:
->>>>   - Convert from printk() to pr_*(),
->>>>   - Add missing continuations, to fix user-visible breakage,
->>>>   - Drop useless WARNING prefix,
->>>>   - Move trailing spaces to start of continuations.
->>>>
->>>> Fixes: 4bcc595ccd80decb ("printk: reinstate KERN_CONT for printing continuation lines")
->>>> Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
->>>> ---
->>>>  arch/m68k/atari/atakeyb.c | 14 ++++++------
->>>>  arch/m68k/atari/config.c  | 56 +++++++++++++++++++++++------------------------
->>>>  2 files changed, 35 insertions(+), 35 deletions(-)
->>>>
->>>> diff --git a/arch/m68k/atari/atakeyb.c b/arch/m68k/atari/atakeyb.c
->>>> index 264db11268039329..37091898adb3d3b5 100644
->>>> --- a/arch/m68k/atari/atakeyb.c
->>>> +++ b/arch/m68k/atari/atakeyb.c
->>>> @@ -149,7 +149,7 @@ static irqreturn_t atari_keyboard_interrupt(int irq, void *dummy)
->>>>       if (acia_stat & ACIA_OVRN) {
->>>>               /* a very fast typist or a slow system, give a warning */
->>>>               /* ...happens often if interrupts were disabled for too long */
->>>> -             printk(KERN_DEBUG "Keyboard overrun\n");
->>>> +             pr_debug("Keyboard overrun\n");
->>>>               scancode = acia.key_data;
->>>>               if (ikbd_self_test)
->>>>                       /* During self test, don't do resyncing, just process the code */
->>>
->>> This is not equivalent (unless there is a DEBUG macro definition hinding
->>> in a header file somewhere). Since the changelog doesn't mention
->>> suppressing any output, perhaps you were deceived by the questionable API,
->>> as I have been in the past (see 16b9d870a0 and d61c5427f6).
->>
->> This is an actual message people want to see in the kernel log, even
+On Wed, Jan 18, 2017 at 5:47 PM, SF Markus Elfring
+<elfring@users.sourceforge.net> wrote:
+> From: Markus Elfring <elfring@users.sourceforge.net>
+> Date: Wed, 18 Jan 2017 16:30:36 +0100
 >
-> No, it's not something people want to see - clutters up the screen, and
-> causes even more interrupt hogging disk IO from syslogd so exacerbates
-> the problem on slow systems.
+> Return directly after a call of the function "capable" failed
+> at the beginning.
 >
-> But Finn is right in that output is now suppressed instead of given a
-> particular log level. IMO stating that the message will now only be
-> generated when the kernel has been compiled for debugging would be
-> perfectly fine.
+> Signed-off-by: Markus Elfring <elfring@users.sourceforge.net>
+> ---
+>  arch/m68k/kernel/sys_m68k.c | 3 +--
+>  1 file changed, 1 insertion(+), 2 deletions(-)
+>
+> diff --git a/arch/m68k/kernel/sys_m68k.c b/arch/m68k/kernel/sys_m68k.c
+> index 9aa01adb407f..62bfeb3716a7 100644
+> --- a/arch/m68k/kernel/sys_m68k.c
+> +++ b/arch/m68k/kernel/sys_m68k.c
+> @@ -384,9 +384,8 @@ sys_cacheflush (unsigned long addr, int scope, int cache, unsigned long len)
+>
+>         if (scope == FLUSH_SCOPE_ALL) {
+>                 /* Only the superuser may explicitly flush the whole cache. */
+> -               ret = -EPERM;
+>                 if (!capable(CAP_SYS_ADMIN))
+> -                       goto out;
+> +                       return -EPERM;
 
-Thanks, will update the commit message.
+Given there is another "goto out" before this, I won't take this patch as-is.
+
+>         } else {
+>                 struct vm_area_struct *vma;
 
 Gr{oetje,eeting}s,
 
