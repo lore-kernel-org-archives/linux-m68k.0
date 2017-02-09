@@ -1,28 +1,34 @@
-From: Michael Ellerman <patch-notifications@ellerman.id.au>
-Subject: Re: [RESEND,01/10] via-cuda: Cleanup printk calls
-Date: Fri, 10 Feb 2017 00:17:52 +1100 (AEDT)
-Message-ID: <3vJzCN2hnJz9s7K@ozlabs.org>
-References: <f0e5117608ea57a64ed60562ec29203a46234b64.1483055859.git.fthain@telegraphics.com.au>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: Re: [PATCH] m68k/mac: remove unneeded linux/miscdevice.h include
+Date: Thu, 9 Feb 2017 14:23:20 +0100
+Message-ID: <CAMuHMdWJWqnLPFqm3-+W2XW47294_gr6YtBVerYFTRpP26zqcg@mail.gmail.com>
+References: <20161215150208.30752-1-clabbe.montjoie@gmail.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from ozlabs.org ([103.22.144.67]:52199 "EHLO ozlabs.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1751074AbdBINTx (ORCPT <rfc822;linux-m68k@vger.kernel.org>);
-        Thu, 9 Feb 2017 08:19:53 -0500
-In-Reply-To: <f0e5117608ea57a64ed60562ec29203a46234b64.1483055859.git.fthain@telegraphics.com.au>
+In-Reply-To: <20161215150208.30752-1-clabbe.montjoie@gmail.com>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Finn Thain <fthain@telegraphics.com.au>, Benjamin Herrenschmidt <benh@kernel.crashing.org>, Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: linux-m68k@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
+To: Corentin Labbe <clabbe.montjoie@gmail.com>
+Cc: Joshua Thompson <funaho@jurai.org>, linux-m68k <linux-m68k@lists.linux-m68k.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
 
-On Sun, 2017-01-01 at 00:56:26 UTC, Finn Thain wrote:
-> Add missing log message severity, remove old debug messages and
-> replace printk() loop with print_hex_dump() call.
-> 
-> Tested-by: Stan Johnson <userm57@yahoo.com>
-> Signed-off-by: Finn Thain <fthain@telegraphics.com.au>
+On Thu, Dec 15, 2016 at 4:02 PM, Corentin Labbe
+<clabbe.montjoie@gmail.com> wrote:
+> arch/m68k/mac/misc.c does not use any miscdevice so the
+> inclusion of linux/miscdevice.h is unnecessary.
+> This patch remove this unnecessary include.
+>
+> Signed-off-by: Corentin Labbe <clabbe.montjoie@gmail.com>
 
-Series applied to powerpc next, thanks.
+Thanks, applied and queued for v4.11.
 
-https://git.kernel.org/powerpc/c/523717d1496c794e8380d0e3de5ca6
+Gr{oetje,eeting}s,
 
-cheers
+                        Geert
+
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
