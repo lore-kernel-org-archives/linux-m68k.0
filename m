@@ -1,59 +1,52 @@
 From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: Re: [PATCH 00/22] m68k: Modernize printing of kernel messages
-Date: Thu, 9 Feb 2017 14:25:51 +0100
-Message-ID: <CAMuHMdU3aM3CUHyMpW+PinYO28pqXRNv0uwdKrtCVjBhqDMhsA__29510.928100399$1486647330$gmane$org@mail.gmail.com>
-References: <1481123360-10978-1-git-send-email-geert@linux-m68k.org>
+Subject: [PATCH] m68knommu: Fix typos in Coldfire 5272 DMA debug code
+Date: Thu,  9 Feb 2017 13:44:29 +0100
+Message-ID: <1486644269-7571-1-git-send-email-geert__30321.2901963436$1486657379$gmane$org@linux-m68k.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Return-path: <linux-m68k-owner@vger.kernel.org>
-In-Reply-To: <1481123360-10978-1-git-send-email-geert@linux-m68k.org>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Greg Ungerer <gerg@linux-m68k.org>, Sam Creasey <sammy@sammy.net>, Joshua Thompson <funaho@jurai.org>, Finn Thain <fthain@telegraphics.com.au>
-Cc: linux-m68k <linux-m68k@lists.linux-m68k.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Geert Uytterhoeven <geert@linux-m68k.org>
+To: Greg Ungerer <gerg@linux-m68k.org>
+Cc: uclinux-dev@uclinux.org, linux-m68k@lists.linux-m68k.org, Geert Uytterhoeven <geert@linux-m68k.org>
 
-On Wed, Dec 7, 2016 at 4:08 PM, Geert Uytterhoeven <geert@linux-m68k.org> wrote:
-> This patch series modernizes the printing of kernel messages in the m68k
-> architecture core, which is mainly about converting from printk() to
-> pr_*().
->
-> The trigger for (finally) doing this was the user-visible breakage
-> caused by commit 4bcc595ccd80decb ("printk: reinstate KERN_CONT for
-> printing continuation lines").
->
-> I had hoped to sent this series much earlier, to be still included in
-> v4.9, but that didn't happen due to lack of time. Fortunately v4.9 will
-> be an LTS(I) kernel, so the first three patches (tagged with a "Fixes"
-> tag) will hopefully make it to v4.9.x later ;-)
->
-> Compile-tested with my standard set of configs.
-> Boot-tested on ARAnyM.
->
-> Thanks for your comments!
->
-> Geert Uytterhoeven (22):
->   m68k/atari: Modernize printing of kernel messages
->   m68k/68000: Modernize printing of kernel messages
->   m68k/bvme6000: Modernize printing of kernel messages
->   m68k/mvme147: Modernize printing of kernel messages
->   m68k/mvme16x: Modernize printing of kernel messages
->   m68k/q40: Modernize printing of kernel messages
->   m68k/sun3: Modernize printing of kernel messages
->   m68k/sun3x: Modernize printing of kernel messages
->   m68k/kernel: Modernize printing of kernel messages
->   m68k/mm: sun3 - Modernize printing of kernel messages
->   m68k/mm: Modernize printing of kernel messages
->   m68k/include: Modernize printing of kernel messages
+If DEBUG_DMA is defined:
 
-I've applied and queued for v4.11 the subset above.
+    include/asm/dma.h: In function ‘set_dma_mode’:
+    include/asm/dma.h:392: error: ‘dmabp’ undeclared (first use in this function)
+    include/asm/dma.h:392: error: (Each undeclared identifier is reported only once
+    include/asm/dma.h:392: error: for each function it appears in.)
+    include/asm/dma.h: In function ‘set_dma_addr’:
+    include/asm/dma.h:423: error: ‘dmawp’ undeclared (first use in this function)
 
-Gr{oetje,eeting}s,
+Reported-by: kbuild test robot <fengguang.wu@intel.com>
+Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
+---
+ arch/m68k/include/asm/dma.h | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-                        Geert
-
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+diff --git a/arch/m68k/include/asm/dma.h b/arch/m68k/include/asm/dma.h
+index 208b4daa14b334f4..e74b55a690f44eb1 100644
+--- a/arch/m68k/include/asm/dma.h
++++ b/arch/m68k/include/asm/dma.h
+@@ -389,7 +389,7 @@ static __inline__ void set_dma_mode(unsigned int dmanr, char mode)
+ 
+ #ifdef DEBUG_DMA
+   printk("%s(%d): dmanr=%d DMR[%x]=%x DIR[%x]=%x\n", __FILE__, __LINE__,
+-         dmanr, (int) &dmalp[MCFDMA_DMR], dmabp[MCFDMA_DMR],
++	 dmanr, (int) &dmalp[MCFDMA_DMR], dmalp[MCFDMA_DMR],
+ 	 (int) &dmawp[MCFDMA_DIR], dmawp[MCFDMA_DIR]);
+ #endif
+ }
+@@ -420,7 +420,7 @@ static __inline__ void set_dma_addr(unsigned int dmanr, unsigned int a)
+ 
+ #ifdef DEBUG_DMA
+   printk("%s(%d): dmanr=%d DMR[%x]=%x SAR[%x]=%08x DAR[%x]=%08x\n",
+-	__FILE__, __LINE__, dmanr, (int) &dmawp[MCFDMA_DMR], dmawp[MCFDMA_DMR],
++	__FILE__, __LINE__, dmanr, (int) &dmalp[MCFDMA_DMR], dmalp[MCFDMA_DMR],
+ 	(int) &dmalp[MCFDMA_DSAR], dmalp[MCFDMA_DSAR],
+ 	(int) &dmalp[MCFDMA_DDAR], dmalp[MCFDMA_DDAR]);
+ #endif
+-- 
+1.9.1
