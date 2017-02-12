@@ -1,62 +1,37 @@
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: Re: [PATCH 00/22] m68k: Modernize printing of kernel messages
-Date: Sun, 12 Feb 2017 10:43:01 +0100
-Message-ID: <CAMuHMdXE7hYgBdR6xbtW2YVmedPr5fcT=rG5cNTUZMOhYt8+BA@mail.gmail.com>
-References: <1481123360-10978-1-git-send-email-geert@linux-m68k.org> <CAMuHMdU3aM3CUHyMpW+PinYO28pqXRNv0uwdKrtCVjBhqDMhsA@mail.gmail.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+From: Mathias Krause <minipli@googlemail.com>
+Subject: [PATCH 6/6] m68k: paging_init - remove dead code
+Date: Sun, 12 Feb 2017 22:12:12 +0100
+Message-ID: <1486933932-585-7-git-send-email-minipli__47105.2452260212$1486933987$gmane$org@googlemail.com>
+References: <1486933932-585-1-git-send-email-minipli@googlemail.com>
 Return-path: <linux-m68k-owner@vger.kernel.org>
-In-Reply-To: <CAMuHMdU3aM3CUHyMpW+PinYO28pqXRNv0uwdKrtCVjBhqDMhsA@mail.gmail.com>
+In-Reply-To: <1486933932-585-1-git-send-email-minipli@googlemail.com>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Greg Ungerer <gerg@linux-m68k.org>, Sam Creasey <sammy@sammy.net>, Joshua Thompson <funaho@jurai.org>, Finn Thain <fthain@telegraphics.com.au>
-Cc: linux-m68k <linux-m68k@lists.linux-m68k.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Geert Uytterhoeven <geert@linux-m68k.org>
+To: Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, "H. Peter Anvin" <hpa@zytor.com>
+Cc: Andrew Morton <akpm@linux-foundation.org>, Borislav Petkov <bp@alien8.de>, "David S. Miller" <davem@davemloft.net>, Jesper Nilsson <jesper.nilsson@axis.com>, Mikael Starvik <starvik@axis.com>, Geert Uytterhoeven <geert@linux-m68k.org>, x86@kernel.org, linux-kernel@vger.kernel.org, Mathias Krause <minipli@googlemail.com>, linux-m68k@lists.linux-m68k.org
 
-On Thu, Feb 9, 2017 at 2:25 PM, Geert Uytterhoeven <geert@linux-m68k.org> wrote:
-> On Wed, Dec 7, 2016 at 4:08 PM, Geert Uytterhoeven <geert@linux-m68k.org> wrote:
->> This patch series modernizes the printing of kernel messages in the m68k
->> architecture core, which is mainly about converting from printk() to
->> pr_*().
->>
->> The trigger for (finally) doing this was the user-visible breakage
->> caused by commit 4bcc595ccd80decb ("printk: reinstate KERN_CONT for
->> printing continuation lines").
->>
->> I had hoped to sent this series much earlier, to be still included in
->> v4.9, but that didn't happen due to lack of time. Fortunately v4.9 will
->> be an LTS(I) kernel, so the first three patches (tagged with a "Fixes"
->> tag) will hopefully make it to v4.9.x later ;-)
->>
->> Compile-tested with my standard set of configs.
->> Boot-tested on ARAnyM.
->>
->> Thanks for your comments!
->>
->> Geert Uytterhoeven (22):
->>   m68k/atari: Modernize printing of kernel messages
->>   m68k/68000: Modernize printing of kernel messages
->>   m68k/bvme6000: Modernize printing of kernel messages
->>   m68k/mvme147: Modernize printing of kernel messages
->>   m68k/mvme16x: Modernize printing of kernel messages
->>   m68k/q40: Modernize printing of kernel messages
->>   m68k/sun3: Modernize printing of kernel messages
->>   m68k/sun3x: Modernize printing of kernel messages
->>   m68k/kernel: Modernize printing of kernel messages
->>   m68k/mm: sun3 - Modernize printing of kernel messages
->>   m68k/mm: Modernize printing of kernel messages
->>   m68k/include: Modernize printing of kernel messages
->
-> I've applied and queued for v4.11 the subset above.
+The macro TEST_VERIFY_AREA can never be defined as there's no
+wp_works_ok variable. So just remove the dead code.
 
-This time for real...
+Cc: Geert Uytterhoeven <geert@linux-m68k.org>
+Signed-off-by: Mathias Krause <minipli@googlemail.com>
+---
+ arch/m68k/mm/sun3mmu.c |    3 ---
+ 1 file changed, 3 deletions(-)
 
-Gr{oetje,eeting}s,
-
-                        Geert
-
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+diff --git a/arch/m68k/mm/sun3mmu.c b/arch/m68k/mm/sun3mmu.c
+index b5b7d53f7283..177d776de1a0 100644
+--- a/arch/m68k/mm/sun3mmu.c
++++ b/arch/m68k/mm/sun3mmu.c
+@@ -44,9 +44,6 @@ void __init paging_init(void)
+ 	unsigned long zones_size[MAX_NR_ZONES] = { 0, };
+ 	unsigned long size;
+ 
+-#ifdef TEST_VERIFY_AREA
+-	wp_works_ok = 0;
+-#endif
+ 	empty_zero_page = alloc_bootmem_pages(PAGE_SIZE);
+ 
+ 	address = PAGE_OFFSET;
+-- 
+1.7.10.4
