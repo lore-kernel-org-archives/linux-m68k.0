@@ -1,52 +1,42 @@
 From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: [PATCH] m68k: Wire up statx
-Date: Mon,  6 Mar 2017 11:22:05 +0100
-Message-ID: <1488795725-1648-1-git-send-email-geert@linux-m68k.org>
+Subject: Re: [PATCH 2/2] m68k/bitops: Correct signature of test_bit()
+Date: Mon, 6 Mar 2017 11:32:52 +0100
+Message-ID: <CAMuHMdXC4ECAxy7CACehVh-jfQ=RPB08qEooCyPox7OsjiLv=g__23635.7630267323$1488797241$gmane$org@mail.gmail.com>
+References: <1483465970-11728-1-git-send-email-geert@linux-m68k.org> <1483465970-11728-2-git-send-email-geert@linux-m68k.org>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 Return-path: <linux-m68k-owner@vger.kernel.org>
+In-Reply-To: <1483465970-11728-2-git-send-email-geert@linux-m68k.org>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: linux-m68k@lists.linux-m68k.org
-Cc: Greg Ungerer <gerg@uclinux.org>, Andreas Schwab <schwab@linux-m68k.org>, linux-kernel@vger.kernel.org, Geert Uytterhoeven <geert@linux-m68k.org>
+To: Yoshinori Sato <ysato@users.sourceforge.jp>
+Cc: uclinux-h8-devel@lists.sourceforge.jp, linux-m68k <linux-m68k@lists.linux-m68k.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Geert Uytterhoeven <geert@linux-m68k.org>
 
-Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
----
- arch/m68k/include/asm/unistd.h      | 2 +-
- arch/m68k/include/uapi/asm/unistd.h | 1 +
- arch/m68k/kernel/syscalltable.S     | 1 +
- 3 files changed, 3 insertions(+), 1 deletion(-)
+On Tue, Jan 3, 2017 at 6:52 PM, Geert Uytterhoeven <geert@linux-m68k.org> w=
+rote:
+> mm/filemap.c: In function =E2=80=98clear_bit_unlock_is_negative_byte=E2=
+=80=99:
+> mm/filemap.c:933: warning: passing argument 2 of =E2=80=98test_bit=E2=80=
+=99 discards qualifiers from pointer target type
+>
+> Make the bitmask pointed to by the "vaddr" parameter volatile to fix
+> this, like is done on other architectures.
+>
+> Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
 
-diff --git a/arch/m68k/include/asm/unistd.h b/arch/m68k/include/asm/unistd.h
-index a857d82ec5094abc..aab1edd0d4bade51 100644
---- a/arch/m68k/include/asm/unistd.h
-+++ b/arch/m68k/include/asm/unistd.h
-@@ -4,7 +4,7 @@
- #include <uapi/asm/unistd.h>
- 
- 
--#define NR_syscalls		379
-+#define NR_syscalls		380
- 
- #define __ARCH_WANT_OLD_READDIR
- #define __ARCH_WANT_OLD_STAT
-diff --git a/arch/m68k/include/uapi/asm/unistd.h b/arch/m68k/include/uapi/asm/unistd.h
-index 9fe674bf911fd2a4..25589f5b8669631d 100644
---- a/arch/m68k/include/uapi/asm/unistd.h
-+++ b/arch/m68k/include/uapi/asm/unistd.h
-@@ -384,5 +384,6 @@
- #define __NR_copy_file_range	376
- #define __NR_preadv2		377
- #define __NR_pwritev2		378
-+#define __NR_statx		379
- 
- #endif /* _UAPI_ASM_M68K_UNISTD_H_ */
-diff --git a/arch/m68k/kernel/syscalltable.S b/arch/m68k/kernel/syscalltable.S
-index d6fd6d9ced2474ab..8c9fcfafe0dd90ba 100644
---- a/arch/m68k/kernel/syscalltable.S
-+++ b/arch/m68k/kernel/syscalltable.S
-@@ -399,3 +399,4 @@ ENTRY(sys_call_table)
- 	.long sys_copy_file_range
- 	.long sys_preadv2
- 	.long sys_pwritev2
-+	.long sys_statx
--- 
-2.7.4
+Applied, and queued for the second batch for 4.11.
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k=
+.org
+
+In personal conversations with technical people, I call myself a hacker. Bu=
+t
+when I'm talking to journalists I just say "programmer" or something like t=
+hat.
+                                -- Linus Torvalds
