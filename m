@@ -1,58 +1,64 @@
-From: <armouralumni@yahoo.com>
-Subject: 27278 linux-m68k
-Date: Mon, 20 Mar 2017 08:41:25 -0000
-Message-ID: <148999928574.3574.9600131515912194973@impuls-perm.ru>
-Reply-To: <armouralumni@yahoo.com>
+From: Greg Ungerer <gerg@linux-m68k.org>
+Subject: [PATCH] m68k: fix warnings on use of test_bit()
+Date: Mon, 27 Mar 2017 13:10:57 +1000
+Message-ID: <1490584257-15959-1-git-send-email-gerg@linux-m68k.org>
 Mime-Version: 1.0
-Content-Type: application/zip; name="6848292678860.zip"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Content-Disposition: attachment
+Received: from icp-osb-irony-out5.external.iinet.net.au ([203.59.1.221]:10762
+        "EHLO icp-osb-irony-out5.external.iinet.net.au" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1751832AbdC0DLJ (ORCPT
+        <rfc822;linux-m68k@vger.kernel.org>);
+        Sun, 26 Mar 2017 23:11:09 -0400
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: linux-m68k <linux-m68k@lists.linux-m68k.org>
+To: linux-m68k@vger.kernel.org
+Cc: geert@linux-m68k.org, Greg Ungerer <gerg@linux-m68k.org>
 
-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
-AAAAMwkAAAAA
+Compiling for m68k targets will give the following warning:
+
+mm/filemap.c: In function ‘clear_bit_unlock_is_negative_byte’:
+mm/filemap.c:940:30: warning: passing argument 2 of ‘test_bit’ discards ‘volatile’ qualifier from pointer target type [-Wdiscarded-qualifiers]
+  return test_bit(PG_waiters, mem);
+                              ^
+In file included from ./include/linux/bitops.h:36:0,
+                 from ./include/linux/kernel.h:10,
+                 from ./include/linux/list.h:8,
+                 from ./include/linux/wait.h:6,
+                 from ./include/linux/fs.h:5,
+                 from ./include/linux/dax.h:4,
+                 from mm/filemap.c:14:
+./arch/m68k/include/asm/bitops.h:151:19: note: expected ‘const long unsigned int *’ but argument is of type ‘volatile void *’
+ static inline int test_bit(int nr, const unsigned long *vaddr)
+                   ^
+
+(This is true at least for a gcc-5.4.0 based toolchain).
+
+The problem is that the m68k test_bit() arguments do not match the
+Documemtation/core-api/atomic_ops.rst defined one. (Most other
+architectures define it with "const volatile unsigned long *addr" too).
+
+Change the m68k test_bit() definition to more closely match the documented
+definition. This cleans up the warning.
+
+Signed-off-by: Greg Ungerer <gerg@linux-m68k.org>
+---
+ arch/m68k/include/asm/bitops.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/arch/m68k/include/asm/bitops.h b/arch/m68k/include/asm/bitops.h
+index b4a9b0d..dda58cf 100644
+--- a/arch/m68k/include/asm/bitops.h
++++ b/arch/m68k/include/asm/bitops.h
+@@ -148,7 +148,7 @@ static inline void bfchg_mem_change_bit(int nr, volatile unsigned long *vaddr)
+ #define __change_bit(nr, vaddr)	change_bit(nr, vaddr)
+ 
+ 
+-static inline int test_bit(int nr, const unsigned long *vaddr)
++static inline int test_bit(int nr, const volatile unsigned long *vaddr)
+ {
+ 	return (vaddr[nr >> 5] & (1UL << (nr & 31))) != 0;
+ }
+-- 
+1.9.1
