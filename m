@@ -1,7 +1,7 @@
 From: Finn Thain <fthain@telegraphics.com.au>
-Subject: [PATCH 01/10] m68k/mac: IOP - Modernize printing of kernel messages
+Subject: [PATCH 02/10] m68k/mac: Modernize printing of kernel messages
 Date: Sat,  8 Apr 2017 19:51:15 -0400 (EDT)
-Message-ID: <82778f2177d0ef7b25eecfcbf928c737c27c319c.1491695243.git.fthain@telegraphics.com.au>
+Message-ID: <076318a0ecd0393f5783a659db4132451c415057.1491695243.git.fthain@telegraphics.com.au>
 References: <cover.1491695243.git.fthain@telegraphics.com.au>
 Return-path: <linux-kernel-owner@vger.kernel.org>
 In-Reply-To: <cover.1491695243.git.fthain@telegraphics.com.au>
@@ -12,177 +12,120 @@ List-Id: linux-m68k@vger.kernel.org
 
 From: Geert Uytterhoeven <geert@linux-m68k.org>
 
-  - Introduce helpers for printing debug messages, incl. dummies for
-    validating format strings when debugging is disabled,
-  - Convert from printk() to pr_*(),
-  - Add missing continuations,
-  - Drop superfluous casts.
+Convert from printk() to pr_*().
 
-[Renamed pr_iop* macros, adjusted log message severity and
-eliminated DEBUG_IOP. -- FT]
+[Adjusted log message severity levels and retained bootinfo log. -- FT]
 
 Signed-off-by: Finn Thain <fthain@telegraphics.com.au>
 ---
- arch/m68k/mac/iop.c | 74 +++++++++++++++++++++--------------------------------
- 1 file changed, 29 insertions(+), 45 deletions(-)
+ arch/m68k/mac/config.c | 12 +++++-------
+ arch/m68k/mac/misc.c   | 23 +++++++++--------------
+ 2 files changed, 14 insertions(+), 21 deletions(-)
 
-diff --git a/arch/m68k/mac/iop.c b/arch/m68k/mac/iop.c
-index 7990b6f..1746cfc 100644
---- a/arch/m68k/mac/iop.c
-+++ b/arch/m68k/mac/iop.c
-@@ -115,7 +115,17 @@
- #include <asm/macints.h>
- #include <asm/mac_iop.h>
+diff --git a/arch/m68k/mac/config.c b/arch/m68k/mac/config.c
+index 9dc65a4..661892d 100644
+--- a/arch/m68k/mac/config.c
++++ b/arch/m68k/mac/config.c
+@@ -150,7 +150,7 @@ static void mac_cache_card_flush(int writeback)
+ void __init config_mac(void)
+ {
+ 	if (!MACH_IS_MAC)
+-		printk(KERN_ERR "ERROR: no Mac, but config_mac() called!!\n");
++		pr_err("ERROR: no Mac, but config_mac() called!!\n");
  
--/*#define DEBUG_IOP*/
-+#ifdef DEBUG
-+#define iop_pr_debug(fmt, ...) \
-+	printk(KERN_DEBUG "%s: " fmt, __func__, ##__VA_ARGS__)
-+#define iop_pr_cont(fmt, ...) \
-+	printk(KERN_CONT fmt, ##__VA_ARGS__)
-+#else
-+#define iop_pr_debug(fmt, ...) \
-+	no_printk(KERN_DEBUG "%s: " fmt, __func__, ##__VA_ARGS__)
-+#define iop_pr_cont(fmt, ...) \
-+	no_printk(KERN_CONT fmt, ##__VA_ARGS__)
-+#endif
- 
- /* Non-zero if the IOPs are present */
- 
-@@ -268,10 +278,10 @@ void __init iop_init(void)
- 	int i;
- 
- 	if (iop_scc_present) {
--		printk("IOP: detected SCC IOP at %p\n", iop_base[IOP_NUM_SCC]);
-+		pr_info("IOP: detected SCC IOP at %p\n", iop_base[IOP_NUM_SCC]);
+ 	mach_sched_init = mac_sched_init;
+ 	mach_init_IRQ = mac_init_IRQ;
+@@ -837,8 +837,7 @@ static void __init mac_identify(void)
+ 		/* no bootinfo model id -> NetBSD booter was used! */
+ 		/* XXX FIXME: breaks for model > 31 */
+ 		model = (mac_bi_data.cpuid >> 2) & 63;
+-		printk(KERN_WARNING "No bootinfo model ID, using cpuid instead "
+-		       "(obsolete bootloader?)\n");
++		pr_warn("No bootinfo model ID, using cpuid instead (obsolete bootloader?)\n");
  	}
- 	if (iop_ism_present) {
--		printk("IOP: detected ISM IOP at %p\n", iop_base[IOP_NUM_ISM]);
-+		pr_info("IOP: detected ISM IOP at %p\n", iop_base[IOP_NUM_ISM]);
- 		iop_start(iop_base[IOP_NUM_ISM]);
- 		iop_alive(iop_base[IOP_NUM_ISM]); /* clears the alive flag */
- 	}
-@@ -310,9 +320,9 @@ void __init iop_register_interrupts(void)
- 				pr_err("Couldn't register ISM IOP interrupt\n");
- 		}
- 		if (!iop_alive(iop_base[IOP_NUM_ISM])) {
--			printk("IOP: oh my god, they killed the ISM IOP!\n");
-+			pr_warn("IOP: oh my god, they killed the ISM IOP!\n");
- 		} else {
--			printk("IOP: the ISM IOP seems to be alive.\n");
-+			pr_warn("IOP: the ISM IOP seems to be alive.\n");
- 		}
- 	}
+ 
+ 	macintosh_config = mac_data_table;
+@@ -880,14 +879,13 @@ static void __init mac_identify(void)
+ 	 */
+ 	iop_preinit();
+ 
+-	printk(KERN_INFO "Detected Macintosh model: %d\n", model);
++	pr_info("Detected Macintosh model: %d\n", model);
+ 
+ 	/*
+ 	 * Report booter data:
+ 	 */
+ 	printk(KERN_DEBUG " Penguin bootinfo data:\n");
+-	printk(KERN_DEBUG " Video: addr 0x%lx "
+-		"row 0x%lx depth %lx dimensions %ld x %ld\n",
++	printk(KERN_DEBUG " Video: addr 0x%lx row 0x%lx depth %lx dimensions %ld x %ld\n",
+ 		mac_bi_data.videoaddr, mac_bi_data.videorow,
+ 		mac_bi_data.videodepth, mac_bi_data.dimensions & 0xFFFF,
+ 		mac_bi_data.dimensions >> 16);
+@@ -912,7 +910,7 @@ static void __init mac_identify(void)
+ 
+ static void __init mac_report_hardware(void)
+ {
+-	printk(KERN_INFO "Apple Macintosh %s\n", macintosh_config->name);
++	pr_info("Apple Macintosh %s\n", macintosh_config->name);
  }
-@@ -349,9 +359,8 @@ void iop_complete_message(struct iop_msg *msg)
- 	int chan = msg->channel;
- 	int i,offset;
  
--#ifdef DEBUG_IOP
--	printk("iop_complete(%p): iop %d chan %d\n", msg, msg->iop_num, msg->channel);
--#endif
-+	iop_pr_debug("msg %p iop_num %d channel %d\n", msg, msg->iop_num,
-+	             msg->channel);
- 
- 	offset = IOP_ADDR_RECV_MSG + (msg->channel * IOP_MSG_LEN);
- 
-@@ -397,9 +406,7 @@ static void iop_handle_send(uint iop_num, uint chan)
- 	struct iop_msg *msg,*msg2;
- 	int i,offset;
- 
--#ifdef DEBUG_IOP
--	printk("iop_handle_send: iop %d channel %d\n", iop_num, chan);
--#endif
-+	iop_pr_debug("iop_num %d chan %d\n", iop_num, chan);
- 
- 	iop_writeb(iop, IOP_ADDR_SEND_STATE + chan, IOP_MSG_IDLE);
- 
-@@ -430,9 +437,7 @@ static void iop_handle_recv(uint iop_num, uint chan)
- 	int i,offset;
- 	struct iop_msg *msg;
- 
--#ifdef DEBUG_IOP
--	printk("iop_handle_recv: iop %d channel %d\n", iop_num, chan);
--#endif
-+	iop_pr_debug("iop_num %d chan %d\n", iop_num, chan);
- 
- 	msg = iop_alloc_msg();
- 	msg->iop_num = iop_num;
-@@ -454,14 +459,9 @@ static void iop_handle_recv(uint iop_num, uint chan)
- 	if (msg->handler) {
- 		(*msg->handler)(msg);
- 	} else {
--#ifdef DEBUG_IOP
--		printk("iop_handle_recv: unclaimed message on iop %d channel %d\n", iop_num, chan);
--		printk("iop_handle_recv:");
--		for (i = 0 ; i < IOP_MSG_LEN ; i++) {
--			printk(" %02X", (uint) msg->message[i]);
--		}
--		printk("\n");
--#endif
-+		iop_pr_debug("unclaimed message on iop_num %d chan %d\n",
-+		             iop_num, chan);
-+		iop_pr_debug("%*ph\n", IOP_MSG_LEN, msg->message);
- 		iop_complete_message(msg);
+ static void mac_get_model(char *str)
+diff --git a/arch/m68k/mac/misc.c b/arch/m68k/mac/misc.c
+index 5b01704..8aa8792 100644
+--- a/arch/m68k/mac/misc.c
++++ b/arch/m68k/mac/misc.c
+@@ -281,8 +281,7 @@ static long via_read_time(void)
+ 		last_result.idata = result.idata;
  	}
+ 
+-	pr_err("via_read_time: failed to read a stable value; "
+-	       "got 0x%08lx then 0x%08lx\n",
++	pr_err("via_read_time: failed to read a stable value; got 0x%08lx then 0x%08lx\n",
+ 	       last_result.idata, result.idata);
+ 
+ 	return 0;
+@@ -465,7 +464,7 @@ void mac_poweroff(void)
+ #endif
+ 	}
+ 	local_irq_enable();
+-	printk("It is now safe to turn off your Macintosh.\n");
++	pr_crit("It is now safe to turn off your Macintosh.\n");
+ 	while(1);
  }
-@@ -574,50 +574,34 @@ irqreturn_t iop_ism_irq(int irq, void *dev_id)
- 	volatile struct mac_iop *iop = iop_base[iop_num];
- 	int i,state;
  
--#ifdef DEBUG_IOP
--	printk("iop_ism_irq: status = %02X\n", (uint) iop->status_ctrl);
--#endif
-+	iop_pr_debug("status %02X\n", iop->status_ctrl);
+@@ -556,7 +555,7 @@ void mac_reset(void)
  
- 	/* INT0 indicates a state change on an outgoing message channel */
- 
- 	if (iop->status_ctrl & IOP_INT0) {
- 		iop->status_ctrl = IOP_INT0 | IOP_RUN | IOP_AUTOINC;
--#ifdef DEBUG_IOP
--		printk("iop_ism_irq: new status = %02X, send states",
--			(uint) iop->status_ctrl);
--#endif
-+		iop_pr_debug("new status %02X, send states", iop->status_ctrl);
- 		for (i = 0 ; i < NUM_IOP_CHAN  ; i++) {
- 			state = iop_readb(iop, IOP_ADDR_SEND_STATE + i);
--#ifdef DEBUG_IOP
--			printk(" %02X", state);
--#endif
-+			iop_pr_cont(" %02X", state);
- 			if (state == IOP_MSG_COMPLETE) {
- 				iop_handle_send(iop_num, i);
- 			}
- 		}
--#ifdef DEBUG_IOP
--		printk("\n");
--#endif
-+		iop_pr_cont("\n");
- 	}
- 
- 	if (iop->status_ctrl & IOP_INT1) {	/* INT1 for incoming msgs */
- 		iop->status_ctrl = IOP_INT1 | IOP_RUN | IOP_AUTOINC;
--#ifdef DEBUG_IOP
--		printk("iop_ism_irq: new status = %02X, recv states",
--			(uint) iop->status_ctrl);
--#endif
-+		iop_pr_debug("new status %02X, recv states", iop->status_ctrl);
- 		for (i = 0 ; i < NUM_IOP_CHAN ; i++) {
- 			state = iop_readb(iop, IOP_ADDR_RECV_STATE + i);
--#ifdef DEBUG_IOP
--			printk(" %02X", state);
--#endif
-+			iop_pr_cont(" %02X", state);
- 			if (state == IOP_MSG_NEW) {
- 				iop_handle_recv(iop_num, i);
- 			}
- 		}
--#ifdef DEBUG_IOP
--		printk("\n");
--#endif
-+		iop_pr_cont("\n");
- 	}
- 	return IRQ_HANDLED;
+ 	/* should never get here */
+ 	local_irq_enable();
+-	printk ("Restart failed.  Please restart manually.\n");
++	pr_crit("Restart failed. Please restart manually.\n");
+ 	while(1);
  }
+ 
+@@ -661,17 +660,13 @@ int mac_hwclk(int op, struct rtc_time *t)
+ 		unmktime(now, 0,
+ 			 &t->tm_year, &t->tm_mon, &t->tm_mday,
+ 			 &t->tm_hour, &t->tm_min, &t->tm_sec);
+-#if 0
+-		printk("mac_hwclk: read %04d-%02d-%-2d %02d:%02d:%02d\n",
+-			t->tm_year + 1900, t->tm_mon + 1, t->tm_mday,
+-			t->tm_hour, t->tm_min, t->tm_sec);
+-#endif
++		pr_debug("%s: read %04d-%02d-%-2d %02d:%02d:%02d\n",
++		         __func__, t->tm_year + 1900, t->tm_mon + 1, t->tm_mday,
++		         t->tm_hour, t->tm_min, t->tm_sec);
+ 	} else { /* write */
+-#if 0
+-		printk("mac_hwclk: tried to write %04d-%02d-%-2d %02d:%02d:%02d\n",
+-			t->tm_year + 1900, t->tm_mon + 1, t->tm_mday,
+-			t->tm_hour, t->tm_min, t->tm_sec);
+-#endif
++		pr_debug("%s: tried to write %04d-%02d-%-2d %02d:%02d:%02d\n",
++		         __func__, t->tm_year + 1900, t->tm_mon + 1, t->tm_mday,
++		         t->tm_hour, t->tm_min, t->tm_sec);
+ 
+ 		now = mktime(t->tm_year + 1900, t->tm_mon + 1, t->tm_mday,
+ 			     t->tm_hour, t->tm_min, t->tm_sec);
 -- 
 2.10.2
