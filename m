@@ -1,57 +1,55 @@
-From: Wouter Verhelst <wouter@debian.org>
-Subject: Re: gcc possibly generating invalid assembler
-Date: Fri, 14 Apr 2017 09:36:51 +0200
-Message-ID: <20170414073651.bwpg7plhfz23v24b@grep.be>
-References: <5db978c6-15ce-c60e-d350-f9e87154e0b2@physik.fu-berlin.de>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: Re: [PATCH 00/10] mac68k: Miscellaneous fixes, cleanup and modernization
+Date: Sun, 16 Apr 2017 12:29:57 +0200
+Message-ID: <CAMuHMdUU8DYj-TKPCbjMCiCt5KrAi4ciTw9F=iL7eJ2shf9s=g@mail.gmail.com>
+References: <cover.1491695243.git.fthain@telegraphics.com.au>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=UTF-8
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from latin.grep.be ([46.4.76.168]:54792 "EHLO latin.grep.be"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1750784AbdDNIR0 (ORCPT <rfc822;linux-m68k@vger.kernel.org>);
-        Fri, 14 Apr 2017 04:17:26 -0400
-Content-Disposition: inline
-In-Reply-To: <5db978c6-15ce-c60e-d350-f9e87154e0b2@physik.fu-berlin.de>
+Received: from mail-it0-f66.google.com ([209.85.214.66]:33825 "EHLO
+        mail-it0-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1752958AbdDPK36 (ORCPT
+        <rfc822;linux-m68k@vger.kernel.org>); Sun, 16 Apr 2017 06:29:58 -0400
+In-Reply-To: <cover.1491695243.git.fthain@telegraphics.com.au>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
-Cc: Debian m68k <debian-68k@lists.debian.org>, Linux/m68k <linux-m68k@vger.kernel.org>
+To: Finn Thain <fthain@telegraphics.com.au>
+Cc: Linux/m68k <linux-m68k@vger.kernel.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
 
-On Thu, Apr 13, 2017 at 01:08:59PM +0200, John Paul Adrian Glaubitz wrote:
-> Hi!
-> 
-> I have unsuccessfully been trying to build liburcu on Debian/m68k. After
-> adding "m68k" as a detected architecture in configure.ac, the build
-> fails with the assembler generating syntax error messages [1]:
-> 
-> gcc -DHAVE_CONFIG_H -I. -I../.. -I../../urcu   -Wdate-time -D_FORTIFY_SOURCE=2 -I../.. -I../.. -I../../tests/common -g -g -O2
-> -fdebug-prefix-map=/<<PKGBUILDDIR>>=. -fstack-protector-strong -Wformat -Werror=format-security -pthread -c -o test_urcu_defer.o test_urcu_defer.c
-> /tmp/ccXHVXOc.s: Assembler messages:
-> /tmp/ccXHVXOc.s:312: Error: syntax error -- statement `add.l %d1,nr_writes@TLSLE+4(%a0)' ignored
-> /tmp/ccXHVXOc.s:440: Error: syntax error -- statement `add.l %d1,nr_writes@TLSLE+4(%a0)' ignored
+Hi Finn,
 
-Interesting.
+On Sun, Apr 9, 2017 at 1:51 AM, Finn Thain <fthain@telegraphics.com.au> wrote:
+> This series has various patches from several different people. Two printk
+> modernization patches were originally from Geert Uytterhoeven and three
+> Nubus patches were originally committed to the Linux/mac68k CVS by
+> David Huggins-Daines.
 
-> Since the source code file in question doesn't contain any m68k inline
-> assembly, I would suspect this to be a problem with the code generated
-> by gcc.
-> 
-> Any suggestions?
+Thanks, most of them look sane enough to apply and still queue for v4.12.
 
-I wanted to have a closer look, so added a line saying "[m68k],
-[ARCHTYPE="gcc"]," to the AS_CASE statement in configure.ac (which I'm
-assuming is what you did, too; next time it would be useful if you
-shared your patches ;-) ). Then I ran make until it encountered the
-above error.
+I'm a bit reluctant about the nubus changes (patches 6 and 8), though.
+Do you think they need more testing?
 
-Then I ran 'make CFLAGS=-save-temps' to see whether it perhaps did add
-some inline assembly somewhere but you missed the #include and this time
-it... worked?
+Thanks!
 
-Not sure what's going on here.
+> Finn Thain (10):
+>   m68k/mac: IOP - Modernize printing of kernel messages
+>   m68k/mac: Modernize printing of kernel messages
+>   m68k/mac: Adopt platform_device_register_simple()
+>   m68k/mac: Clarify IOP message alloc/free confusion
+>   nubus: Fix nubus_rewinddir (from mac68k CVS)
+>   nubus: Remove slot zero probe (from mac68k CVS)
+>   nubus: Clean up printk calls (from mac68k CVS)
+>   nubus: Fix pointer validation
+>   nubus: Clean up whitespace
+>   nubus: Add MVC and VSC video card definitions
 
--- 
-< ron> I mean, the main *practical* problem with C++, is there's like a dozen
-       people in the world who think they really understand all of its rules,
-       and pretty much all of them are just lying to themselves too.
- -- #debian-devel, OFTC, 2016-02-12
+Gr{oetje,eeting}s,
+
+                        Geert
+
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
