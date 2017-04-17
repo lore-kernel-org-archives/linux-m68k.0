@@ -1,73 +1,50 @@
-From: Finn Thain <fthain@telegraphics.com.au>
-Subject: Re: [PATCH 00/10] mac68k: Miscellaneous fixes, cleanup and
- modernization
-Date: Mon, 17 Apr 2017 11:50:27 +1000 (AEST)
-Message-ID: <alpine.LNX.2.00.1704171150090.15400@nippy.intranet>
-References: <cover.1491695243.git.fthain@telegraphics.com.au> <CAMuHMdUU8DYj-TKPCbjMCiCt5KrAi4ciTw9F=iL7eJ2shf9s=g@mail.gmail.com>
+From: Richard Z <rz@linux-m68k.org>
+Subject: Re: gcc possibly generating invalid assembler
+Date: Mon, 17 Apr 2017 22:01:53 +0200
+Message-ID: <20170417200153.GB4475@rz.localhost.localdomain>
+References: <5db978c6-15ce-c60e-d350-f9e87154e0b2@physik.fu-berlin.de>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain; charset=us-ascii
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from kvm5.telegraphics.com.au ([98.124.60.144]:51556 "EHLO
-        kvm5.telegraphics.com.au" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S932128AbdDQBuV (ORCPT
-        <rfc822;linux-m68k@vger.kernel.org>); Sun, 16 Apr 2017 21:50:21 -0400
-In-Reply-To: <CAMuHMdUU8DYj-TKPCbjMCiCt5KrAi4ciTw9F=iL7eJ2shf9s=g@mail.gmail.com>
+Received: from mail-wm0-f43.google.com ([74.125.82.43]:37394 "EHLO
+        mail-wm0-f43.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1752904AbdDQUCH (ORCPT
+        <rfc822;linux-m68k@vger.kernel.org>); Mon, 17 Apr 2017 16:02:07 -0400
+Received: by mail-wm0-f43.google.com with SMTP id u2so39099267wmu.0
+        for <linux-m68k@vger.kernel.org>; Mon, 17 Apr 2017 13:02:07 -0700 (PDT)
+Content-Disposition: inline
+In-Reply-To: <5db978c6-15ce-c60e-d350-f9e87154e0b2@physik.fu-berlin.de>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: linux-m68k@vger.kernel.org, linux-kernel@vger.kernel.org
+To: John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
+Cc: Debian m68k <debian-68k@lists.debian.org>, Linux/m68k <linux-m68k@vger.kernel.org>
 
-
-On Sun, 16 Apr 2017, Geert Uytterhoeven wrote:
-
-> Hi Finn,
+On Thu, Apr 13, 2017 at 01:08:59PM +0200, John Paul Adrian Glaubitz wrote:
+> Hi!
 > 
-> On Sun, Apr 9, 2017 at 1:51 AM, Finn Thain <fthain@telegraphics.com.au> 
-> wrote:
-> > This series has various patches from several different people. Two 
-> > printk modernization patches were originally from Geert Uytterhoeven 
-> > and three Nubus patches were originally committed to the Linux/mac68k 
-> > CVS by David Huggins-Daines.
+> I have unsuccessfully been trying to build liburcu on Debian/m68k. After
+> adding "m68k" as a detected architecture in configure.ac, the build
+> fails with the assembler generating syntax error messages [1]:
 > 
-> Thanks, most of them look sane enough to apply and still queue for 
-> v4.12.
+> gcc -DHAVE_CONFIG_H -I. -I../.. -I../../urcu   -Wdate-time -D_FORTIFY_SOURCE=2 -I../.. -I../.. -I../../tests/common -g -g -O2
+> -fdebug-prefix-map=/<<PKGBUILDDIR>>=. -fstack-protector-strong -Wformat -Werror=format-security -pthread -c -o test_urcu_defer.o test_urcu_defer.c
+> /tmp/ccXHVXOc.s: Assembler messages:
+> /tmp/ccXHVXOc.s:312: Error: syntax error -- statement `add.l %d1,nr_writes@TLSLE+4(%a0)' ignored
+> /tmp/ccXHVXOc.s:440: Error: syntax error -- statement `add.l %d1,nr_writes@TLSLE+4(%a0)' ignored
 > 
-> I'm a bit reluctant about the nubus changes (patches 6 and 8), though. 
-> Do you think they need more testing?
+> Since the source code file in question doesn't contain any m68k inline
+> assembly, I would suspect this to be a problem with the code generated
+> by gcc.
 > 
-> Thanks!
+> Any suggestions?
 
-Patch 6 is partly dead code removal. In principle, this patch is a 
-reversion to the old code (pre-v2.3.17). The old code was thoroughly 
-tested in Debian Sarge. I suppose a reviewer might wonder whether we want 
-to keep new code for probing fake slot resources in Apple's on-board ROMs. 
-That would be useful if it could eliminate the macintosh_config struct. 
-But it can't, and we don't want both mechanisms. Hence the reversion in 
-the mac68k CVS.
+The comments in gcc/config/m68k/m68k.c:m68k_final_prescan_insn() mention 
+this as potential problem but I have no deep insight or clue why the solution
+doesn't work.
 
-Patch 8 changes the pointer validation code and although this has been 
-tested on the valid path, you are right that it could use some negative 
-testing. But that would seem to require cards with flawed ROMs. I don't 
-know of any of such cards. So I think that all we can do is more review.
 
-Maybe Michael or Laurent would be willing to review these two patches?
+
+Richard
 
 -- 
-
-> 
-> > Finn Thain (10):
-> >   m68k/mac: IOP - Modernize printing of kernel messages
-> >   m68k/mac: Modernize printing of kernel messages
-> >   m68k/mac: Adopt platform_device_register_simple()
-> >   m68k/mac: Clarify IOP message alloc/free confusion
-> >   nubus: Fix nubus_rewinddir (from mac68k CVS)
-> >   nubus: Remove slot zero probe (from mac68k CVS)
-> >   nubus: Clean up printk calls (from mac68k CVS)
-> >   nubus: Fix pointer validation
-> >   nubus: Clean up whitespace
-> >   nubus: Add MVC and VSC video card definitions
-> 
-> Gr{oetje,eeting}s,
-> 
->                         Geert
-> 
+Name and OpenPGP keys available from pgp key servers
