@@ -1,54 +1,73 @@
-From: <zem.uchastok@gmail.com>
-Subject: (unknown)
-Date: Sun, 16 Apr 2017 17:49:22 -0000
-Message-ID: <149236496297.21738.13103900746777741386@hinet.net>
+From: Finn Thain <fthain@telegraphics.com.au>
+Subject: Re: [PATCH 00/10] mac68k: Miscellaneous fixes, cleanup and
+ modernization
+Date: Mon, 17 Apr 2017 11:50:27 +1000 (AEST)
+Message-ID: <alpine.LNX.2.00.1704171150090.15400@nippy.intranet>
+References: <cover.1491695243.git.fthain@telegraphics.com.au> <CAMuHMdUU8DYj-TKPCbjMCiCt5KrAi4ciTw9F=iL7eJ2shf9s=g@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: application/zip; name="EMAIL_28903012528_linux-m68k.zip"
-Content-Transfer-Encoding: base64
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from 114-36-26-63.dynamic-ip.hinet.net ([114.36.26.63]:33383 "HELO
-        hinet.net" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with SMTP
-        id S1756611AbdDPRta (ORCPT <rfc822;linux-m68k@vger.kernel.org>);
-        Sun, 16 Apr 2017 13:49:30 -0400
-Subject: 
-Content-Disposition: attachment
+Received: from kvm5.telegraphics.com.au ([98.124.60.144]:51556 "EHLO
+        kvm5.telegraphics.com.au" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S932128AbdDQBuV (ORCPT
+        <rfc822;linux-m68k@vger.kernel.org>); Sun, 16 Apr 2017 21:50:21 -0400
+In-Reply-To: <CAMuHMdUU8DYj-TKPCbjMCiCt5KrAi4ciTw9F=iL7eJ2shf9s=g@mail.gmail.com>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: linux-m68k <linux-m68k@vger.kernel.org>
+To: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: linux-m68k@vger.kernel.org, linux-kernel@vger.kernel.org
 
-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
-0gFQSwUGAAAAAAEAAQBbAAAAcgcAAAAA
+
+On Sun, 16 Apr 2017, Geert Uytterhoeven wrote:
+
+> Hi Finn,
+> 
+> On Sun, Apr 9, 2017 at 1:51 AM, Finn Thain <fthain@telegraphics.com.au> 
+> wrote:
+> > This series has various patches from several different people. Two 
+> > printk modernization patches were originally from Geert Uytterhoeven 
+> > and three Nubus patches were originally committed to the Linux/mac68k 
+> > CVS by David Huggins-Daines.
+> 
+> Thanks, most of them look sane enough to apply and still queue for 
+> v4.12.
+> 
+> I'm a bit reluctant about the nubus changes (patches 6 and 8), though. 
+> Do you think they need more testing?
+> 
+> Thanks!
+
+Patch 6 is partly dead code removal. In principle, this patch is a 
+reversion to the old code (pre-v2.3.17). The old code was thoroughly 
+tested in Debian Sarge. I suppose a reviewer might wonder whether we want 
+to keep new code for probing fake slot resources in Apple's on-board ROMs. 
+That would be useful if it could eliminate the macintosh_config struct. 
+But it can't, and we don't want both mechanisms. Hence the reversion in 
+the mac68k CVS.
+
+Patch 8 changes the pointer validation code and although this has been 
+tested on the valid path, you are right that it could use some negative 
+testing. But that would seem to require cards with flawed ROMs. I don't 
+know of any of such cards. So I think that all we can do is more review.
+
+Maybe Michael or Laurent would be willing to review these two patches?
+
+-- 
+
+> 
+> > Finn Thain (10):
+> >   m68k/mac: IOP - Modernize printing of kernel messages
+> >   m68k/mac: Modernize printing of kernel messages
+> >   m68k/mac: Adopt platform_device_register_simple()
+> >   m68k/mac: Clarify IOP message alloc/free confusion
+> >   nubus: Fix nubus_rewinddir (from mac68k CVS)
+> >   nubus: Remove slot zero probe (from mac68k CVS)
+> >   nubus: Clean up printk calls (from mac68k CVS)
+> >   nubus: Fix pointer validation
+> >   nubus: Clean up whitespace
+> >   nubus: Add MVC and VSC video card definitions
+> 
+> Gr{oetje,eeting}s,
+> 
+>                         Geert
+> 
