@@ -1,50 +1,40 @@
-From: Richard Z <rz@linux-m68k.org>
+From: John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
 Subject: Re: gcc possibly generating invalid assembler
-Date: Mon, 17 Apr 2017 22:01:53 +0200
-Message-ID: <20170417200153.GB4475@rz.localhost.localdomain>
+Date: Tue, 18 Apr 2017 20:42:32 +0200
+Message-ID: <cf267478-6b32-a822-c01d-2b6bfbe2f98f@physik.fu-berlin.de>
 References: <5db978c6-15ce-c60e-d350-f9e87154e0b2@physik.fu-berlin.de>
+ <20170414073651.bwpg7plhfz23v24b@grep.be>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=windows-1252
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from mail-wm0-f43.google.com ([74.125.82.43]:37394 "EHLO
-        mail-wm0-f43.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1752904AbdDQUCH (ORCPT
-        <rfc822;linux-m68k@vger.kernel.org>); Mon, 17 Apr 2017 16:02:07 -0400
-Received: by mail-wm0-f43.google.com with SMTP id u2so39099267wmu.0
-        for <linux-m68k@vger.kernel.org>; Mon, 17 Apr 2017 13:02:07 -0700 (PDT)
-Content-Disposition: inline
-In-Reply-To: <5db978c6-15ce-c60e-d350-f9e87154e0b2@physik.fu-berlin.de>
+Received: from outpost1.zedat.fu-berlin.de ([130.133.4.66]:43032 "EHLO
+        outpost1.zedat.fu-berlin.de" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1753015AbdDRSmf (ORCPT
+        <rfc822;linux-m68k@vger.kernel.org>);
+        Tue, 18 Apr 2017 14:42:35 -0400
+In-Reply-To: <20170414073651.bwpg7plhfz23v24b@grep.be>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
+To: Wouter Verhelst <wouter@debian.org>
 Cc: Debian m68k <debian-68k@lists.debian.org>, Linux/m68k <linux-m68k@vger.kernel.org>
 
-On Thu, Apr 13, 2017 at 01:08:59PM +0200, John Paul Adrian Glaubitz wrote:
-> Hi!
-> 
-> I have unsuccessfully been trying to build liburcu on Debian/m68k. After
-> adding "m68k" as a detected architecture in configure.ac, the build
-> fails with the assembler generating syntax error messages [1]:
-> 
-> gcc -DHAVE_CONFIG_H -I. -I../.. -I../../urcu   -Wdate-time -D_FORTIFY_SOURCE=2 -I../.. -I../.. -I../../tests/common -g -g -O2
-> -fdebug-prefix-map=/<<PKGBUILDDIR>>=. -fstack-protector-strong -Wformat -Werror=format-security -pthread -c -o test_urcu_defer.o test_urcu_defer.c
-> /tmp/ccXHVXOc.s: Assembler messages:
-> /tmp/ccXHVXOc.s:312: Error: syntax error -- statement `add.l %d1,nr_writes@TLSLE+4(%a0)' ignored
-> /tmp/ccXHVXOc.s:440: Error: syntax error -- statement `add.l %d1,nr_writes@TLSLE+4(%a0)' ignored
-> 
-> Since the source code file in question doesn't contain any m68k inline
-> assembly, I would suspect this to be a problem with the code generated
-> by gcc.
-> 
-> Any suggestions?
+On 04/14/2017 09:36 AM, Wouter Verhelst wrote:
+> Then I ran 'make CFLAGS=-save-temps' to see whether it perhaps did add
+> some inline assembly somewhere but you missed the #include and this time
+> it... worked?
 
-The comments in gcc/config/m68k/m68k.c:m68k_final_prescan_insn() mention 
-this as potential problem but I have no deep insight or clue why the solution
-doesn't work.
+Actually, adding -save-temps to CFLAGS doesn't help. However, since you
+wrote "CFLAGS=-save-temps" instead of "CFLAGS+=-save-temps", I assume
+you overrode the optimization level which has influence on the code
+generation.
 
+Will verify that.
 
-
-Richard
+Adrian
 
 -- 
-Name and OpenPGP keys available from pgp key servers
+ .''`.  John Paul Adrian Glaubitz
+: :' :  Debian Developer - glaubitz@debian.org
+`. `'   Freie Universitaet Berlin - glaubitz@physik.fu-berlin.de
+  `-    GPG: 62FF 8A75 84E0 2956 9546  0006 7426 3B37 F5B5 F913
