@@ -1,52 +1,49 @@
-From: Wouter Verhelst <wouter@debian.org>
+From: John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
 Subject: Re: gcc possibly generating invalid assembler
-Date: Wed, 19 Apr 2017 09:39:38 +0200
-Message-ID: <20170419073938.235okxaw2e4rw3ev@grep.be>
+Date: Wed, 19 Apr 2017 09:46:24 +0200
+Message-ID: <9c5075ae-4e80-be47-d318-dc38529f04a9@physik.fu-berlin.de>
 References: <5db978c6-15ce-c60e-d350-f9e87154e0b2@physik.fu-berlin.de>
  <20170414073651.bwpg7plhfz23v24b@grep.be>
  <cf267478-6b32-a822-c01d-2b6bfbe2f98f@physik.fu-berlin.de>
+ <20170419073938.235okxaw2e4rw3ev@grep.be>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=windows-1252
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from latin.grep.be ([46.4.76.168]:33776 "EHLO latin.grep.be"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1760291AbdDSHjs (ORCPT <rfc822;linux-m68k@vger.kernel.org>);
-        Wed, 19 Apr 2017 03:39:48 -0400
-Content-Disposition: inline
-In-Reply-To: <cf267478-6b32-a822-c01d-2b6bfbe2f98f@physik.fu-berlin.de>
+Received: from outpost1.zedat.fu-berlin.de ([130.133.4.66]:59033 "EHLO
+        outpost1.zedat.fu-berlin.de" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1760448AbdDSHq0 (ORCPT
+        <rfc822;linux-m68k@vger.kernel.org>);
+        Wed, 19 Apr 2017 03:46:26 -0400
+In-Reply-To: <20170419073938.235okxaw2e4rw3ev@grep.be>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
+To: Wouter Verhelst <wouter@debian.org>
 Cc: Debian m68k <debian-68k@lists.debian.org>, Linux/m68k <linux-m68k@vger.kernel.org>
 
-On Tue, Apr 18, 2017 at 08:42:32PM +0200, John Paul Adrian Glaubitz wrote:
-> On 04/14/2017 09:36 AM, Wouter Verhelst wrote:
-> > Then I ran 'make CFLAGS=-save-temps' to see whether it perhaps did add
-> > some inline assembly somewhere but you missed the #include and this time
-> > it... worked?
+On 04/19/2017 09:39 AM, Wouter Verhelst wrote:
+> Good point, but nope, even with 'CFLAGS+=-save-temps' it succeeds.
+
+For me, building the package succeeds with the following added to
+debian/rules:
+
+ifeq ($(DEB_HOST_ARCH_CPU), m68k)
+        export DEB_CFLAGS_MAINT_APPEND += -O0
+endif
+
+> Next attempt, "make V=1" returns the following command line:
 > 
-> Actually, adding -save-temps to CFLAGS doesn't help. However, since you
-> wrote "CFLAGS=-save-temps" instead of "CFLAGS+=-save-temps", I assume
-> you overrode the optimization level which has influence on the code
-> generation.
+> m68k-linux-gnu-gcc -DHAVE_CONFIG_H -I. -I../.. -I../../urcu -I../..  -I../.. -I../../tests/common -g -g -O2 -pthread -MT test_urcu_defer.o -MD -MP -MF .deps/test_urcu_defer.Tpo -c -o test_urcu_defer.o test_urcu_defer.c 
+> 
+> Anyway, that means the most likely cause is the optimizer.
 
-Good point, but nope, even with 'CFLAGS+=-save-temps' it succeeds.
+I agree. It's definitely the optimization level which triggers
+the issue.
 
-Next attempt, "make V=1" returns the following command line:
-
-m68k-linux-gnu-gcc -DHAVE_CONFIG_H -I. -I../.. -I../../urcu -I../..  -I../.. -I../../tests/common -g -g -O2 -pthread -MT test_urcu_defer.o -MD -MP -MF .deps/test_urcu_defer.Tpo -c -o test_urcu_defer.o test_urcu_defer.c 
-
-when I add CFLAGS=-save-temps (or CFLAGS+=, it makes not difference), it
-turns out that the bit "-g -O2 -pthread" is dropped; it may be either
-due to lack of pthread support, or the optimization level. Feels like
-someone failed to read the automake documentation properly (CFLAGS is
-supposed to remain unset; and indeed checking out configure.ac reveals
-some CFLAGS munging that shouldn't happen).
-
-Anyway, that means the most likely cause is the optimizer.
+Adrian
 
 -- 
-< ron> I mean, the main *practical* problem with C++, is there's like a dozen
-       people in the world who think they really understand all of its rules,
-       and pretty much all of them are just lying to themselves too.
- -- #debian-devel, OFTC, 2016-02-12
+ .''`.  John Paul Adrian Glaubitz
+: :' :  Debian Developer - glaubitz@debian.org
+`. `'   Freie Universitaet Berlin - glaubitz@physik.fu-berlin.de
+  `-    GPG: 62FF 8A75 84E0 2956 9546  0006 7426 3B37 F5B5 F913
