@@ -1,49 +1,34 @@
-From: John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
+From: Wouter Verhelst <wouter@debian.org>
 Subject: Re: gcc possibly generating invalid assembler
-Date: Wed, 19 Apr 2017 09:46:24 +0200
-Message-ID: <9c5075ae-4e80-be47-d318-dc38529f04a9@physik.fu-berlin.de>
+Date: Wed, 19 Apr 2017 09:51:50 +0200
+Message-ID: <20170419075150.3qdr2ivgqxwmsm2f@grep.be>
 References: <5db978c6-15ce-c60e-d350-f9e87154e0b2@physik.fu-berlin.de>
  <20170414073651.bwpg7plhfz23v24b@grep.be>
  <cf267478-6b32-a822-c01d-2b6bfbe2f98f@physik.fu-berlin.de>
  <20170419073938.235okxaw2e4rw3ev@grep.be>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=windows-1252
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from outpost1.zedat.fu-berlin.de ([130.133.4.66]:59033 "EHLO
-        outpost1.zedat.fu-berlin.de" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1760448AbdDSHq0 (ORCPT
-        <rfc822;linux-m68k@vger.kernel.org>);
-        Wed, 19 Apr 2017 03:46:26 -0400
+Received: from latin.grep.be ([46.4.76.168]:53906 "EHLO latin.grep.be"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1760593AbdDSHv7 (ORCPT <rfc822;linux-m68k@vger.kernel.org>);
+        Wed, 19 Apr 2017 03:51:59 -0400
+Content-Disposition: inline
 In-Reply-To: <20170419073938.235okxaw2e4rw3ev@grep.be>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Wouter Verhelst <wouter@debian.org>
+To: John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
 Cc: Debian m68k <debian-68k@lists.debian.org>, Linux/m68k <linux-m68k@vger.kernel.org>
 
-On 04/19/2017 09:39 AM, Wouter Verhelst wrote:
-> Good point, but nope, even with 'CFLAGS+=-save-temps' it succeeds.
-
-For me, building the package succeeds with the following added to
-debian/rules:
-
-ifeq ($(DEB_HOST_ARCH_CPU), m68k)
-        export DEB_CFLAGS_MAINT_APPEND += -O0
-endif
-
-> Next attempt, "make V=1" returns the following command line:
-> 
-> m68k-linux-gnu-gcc -DHAVE_CONFIG_H -I. -I../.. -I../../urcu -I../..  -I../.. -I../../tests/common -g -g -O2 -pthread -MT test_urcu_defer.o -MD -MP -MF .deps/test_urcu_defer.Tpo -c -o test_urcu_defer.o test_urcu_defer.c 
-> 
+On Wed, Apr 19, 2017 at 09:39:38AM +0200, Wouter Verhelst wrote:
 > Anyway, that means the most likely cause is the optimizer.
 
-I agree. It's definitely the optimization level which triggers
-the issue.
-
-Adrian
+side note: there actually is some inline assembly, but it looks like
+that's coming from places like /usr/m68k-linux-gnu/include/byteswap.h
+etc, so not the cause of this problem
 
 -- 
- .''`.  John Paul Adrian Glaubitz
-: :' :  Debian Developer - glaubitz@debian.org
-`. `'   Freie Universitaet Berlin - glaubitz@physik.fu-berlin.de
-  `-    GPG: 62FF 8A75 84E0 2956 9546  0006 7426 3B37 F5B5 F913
+< ron> I mean, the main *practical* problem with C++, is there's like a dozen
+       people in the world who think they really understand all of its rules,
+       and pretty much all of them are just lying to themselves too.
+ -- #debian-devel, OFTC, 2016-02-12
