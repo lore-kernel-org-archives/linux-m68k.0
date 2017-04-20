@@ -1,68 +1,41 @@
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: Re: [PATCH 00/10] mac68k: Miscellaneous fixes, cleanup and modernization
-Date: Thu, 20 Apr 2017 09:56:16 +0200
-Message-ID: <CAMuHMdUfVR1PqXPRwT9GKk-T9wZiiAziT8bPyEemw5y5EiUh5A@mail.gmail.com>
-References: <cover.1491695243.git.fthain@telegraphics.com.au>
- <CAMuHMdUU8DYj-TKPCbjMCiCt5KrAi4ciTw9F=iL7eJ2shf9s=g@mail.gmail.com> <alpine.LNX.2.00.1704171150090.15400@nippy.intranet>
+From: Michael Jeanson <mjeanson@ubuntu.com>
+Subject: Re: gcc possibly generating invalid assembler
+Date: Thu, 20 Apr 2017 17:00:35 -0400
+Message-ID: <87479900-ca57-fd8c-bd74-004ec5db2a29@ubuntu.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from mail-io0-f195.google.com ([209.85.223.195]:33350 "EHLO
-        mail-io0-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S940330AbdDTH4S (ORCPT
-        <rfc822;linux-m68k@vger.kernel.org>); Thu, 20 Apr 2017 03:56:18 -0400
-In-Reply-To: <alpine.LNX.2.00.1704171150090.15400@nippy.intranet>
+Received: from mail-io0-f180.google.com ([209.85.223.180]:33179 "EHLO
+        mail-io0-f180.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1034224AbdDTVAr (ORCPT
+        <rfc822;linux-m68k@vger.kernel.org>); Thu, 20 Apr 2017 17:00:47 -0400
+Received: by mail-io0-f180.google.com with SMTP id k87so86990801ioi.0
+        for <linux-m68k@vger.kernel.org>; Thu, 20 Apr 2017 14:00:42 -0700 (PDT)
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Finn Thain <fthain@telegraphics.com.au>
-Cc: Linux/m68k <linux-m68k@vger.kernel.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+To: John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
+Cc: Debian m68k <debian-68k@lists.debian.org>, Linux/m68k <linux-m68k@vger.kernel.org>
 
-Hi Finn,
+On Thu, Apr 13, 2017 at 01:08:59PM +0200, John Paul Adrian Glaubitz wrote:
+> 
+> I have unsuccessfully been trying to build liburcu on Debian/m68k. After
+> adding "m68k" as a detected architecture in configure.ac, the build
+> fails with the assembler generating syntax error messages [1]:
+> 
+> gcc -DHAVE_CONFIG_H -I. -I../.. -I../../urcu   -Wdate-time -D_FORTIFY_SOURCE=2 -I../.. -I../.. -I../../tests/common -g -g -O2
+> -fdebug-prefix-map=/<<PKGBUILDDIR>>=. -fstack-protector-strong -Wformat -Werror=format-security -pthread -c -o test_urcu_defer.o test_urcu_defer.c
+> /tmp/ccXHVXOc.s: Assembler messages:
+> /tmp/ccXHVXOc.s:312: Error: syntax error -- statement `add.l %d1,nr_writes@TLSLE+4(%a0)' ignored
+> /tmp/ccXHVXOc.s:440: Error: syntax error -- statement `add.l %d1,nr_writes@TLSLE+4(%a0)' ignored
 
-On Mon, Apr 17, 2017 at 3:50 AM, Finn Thain <fthain@telegraphics.com.au> wrote:
-> On Sun, 16 Apr 2017, Geert Uytterhoeven wrote:
->> On Sun, Apr 9, 2017 at 1:51 AM, Finn Thain <fthain@telegraphics.com.au>
->> wrote:
->> > This series has various patches from several different people. Two
->> > printk modernization patches were originally from Geert Uytterhoeven
->> > and three Nubus patches were originally committed to the Linux/mac68k
->> > CVS by David Huggins-Daines.
->>
->> Thanks, most of them look sane enough to apply and still queue for
->> v4.12.
->>
->> I'm a bit reluctant about the nubus changes (patches 6 and 8), though.
->> Do you think they need more testing?
->>
->> Thanks!
->
-> Patch 6 is partly dead code removal. In principle, this patch is a
-> reversion to the old code (pre-v2.3.17). The old code was thoroughly
-> tested in Debian Sarge. I suppose a reviewer might wonder whether we want
-> to keep new code for probing fake slot resources in Apple's on-board ROMs.
-> That would be useful if it could eliminate the macintosh_config struct.
-> But it can't, and we don't want both mechanisms. Hence the reversion in
-> the mac68k CVS.
->
-> Patch 8 changes the pointer validation code and although this has been
-> tested on the valid path, you are right that it could use some negative
-> testing. But that would seem to require cards with flawed ROMs. I don't
-> know of any of such cards. So I think that all we can do is more review.
->
-> Maybe Michael or Laurent would be willing to review these two patches?
+The invalid asm is related to Thread Local Storage and liburcu has a
+compat layer that can be enabled at configure for platforms that don't
+have it.
 
-OK.
+With './configure --disable-compiler-tls' the build succeeds and the
+regression test suite completes without having to disable optimisations.
 
-I've applied and queued all but patches 6 and 8.  This required some
-small adjustment to e.g. the whitespace patch.
+Hope this helps,
 
-Gr{oetje,eeting}s,
-
-                        Geert
-
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+Michael
