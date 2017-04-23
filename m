@@ -1,16 +1,29 @@
-From: "Mr.Jerry Smith" <laszlo.cserhalmi@forsterkozpont.hu>
-Subject: (unknown)
-Date: Fri, 21 Apr 2017 19:54:06 +0200 (CEST)
-Message-ID: <1327365728.4818596.1492797246682.JavaMail.zimbra@forsterkozpont.hu>
-Reply-To: "silvembievans@hotmail.com" <silvembievans@hotmail.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
+From: Finn Thain <fthain@telegraphics.com.au>
+Subject: [RFC 0/2] mac68k: NuBus fixes
+Date: Sat, 22 Apr 2017 21:24:16 -0400 (EDT)
+Message-ID: <cover.1492910474.git.fthain@telegraphics.com.au>
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Subject: 
+Received: from kvm5.telegraphics.com.au ([98.124.60.144]:45226 "EHLO
+        kvm5.telegraphics.com.au" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1757048AbdDWBYR (ORCPT
+        <rfc822;linux-m68k@vger.kernel.org>); Sat, 22 Apr 2017 21:24:17 -0400
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
+To: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: linux-m68k@vger.kernel.org
+
+Geert has agreed to merge these two patches if they receive a favorable
+review. Is anyone willing to do a review?
 
 
+David Huggins-Daines (1):
+  nubus: Remove slot zero probe
 
-We Give Out Loans At 3% Interest Rate And We Offer Loans From $5,000 To $50,000,000.00, Are You Looking To Buy A House Car Or Company Or Start Up A Truck Company or Buy A Truck Or Personal Loans Or Business Loan, Email Us At jerryfunds11@inbox.lv  With Amount Needed And Phone Number.
+Finn Thain (1):
+  nubus: Fix pointer validation
+
+ drivers/nubus/nubus.c | 125 +++++---------------------------------------------
+ 1 file changed, 11 insertions(+), 114 deletions(-)
+
+-- 
+2.10.2
