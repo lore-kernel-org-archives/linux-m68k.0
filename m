@@ -1,54 +1,64 @@
-From: Michael Schmitz <schmitzmic@gmail.com>
-Subject: [RFC] fix race in drivers/char/random.c:get_reg()
-Date: Sun, 30 Apr 2017 19:49:21 +1200
-Message-ID: <1493538561-5075-1-git-send-email-schmitzmic@gmail.com>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: [git pull] m68k updates for 4.12
+Date: Tue,  2 May 2017 09:23:13 +0200
+Message-ID: <1493709793-4976-1-git-send-email-geert@linux-m68k.org>
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from mail-pf0-f195.google.com ([209.85.192.195]:36715 "EHLO
-        mail-pf0-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S968649AbdD3Hta (ORCPT
-        <rfc822;linux-m68k@vger.kernel.org>); Sun, 30 Apr 2017 03:49:30 -0400
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: tytso@mit.edu, linux-kernel@vger.kernel.org
-Cc: linux-m68k@vger.kernel.org, Michael Schmitz <schmitzmic@gmail.com>
+To: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: Andrew Morton <akpm@linux-foundation.org>, Greg Ungerer <gerg@linux-m68k.org>, linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org, Geert Uytterhoeven <geert@linux-m68k.org>
 
-get_reg() can be reentered on architectures with prioritized interrupts
-(m68k in this case), causing f->reg_index to be incremented after the
-range check. Out of bounds memory access past the pt_regs struct results.
-This will go mostly undetected unless access is beyond end of memory.
+	Hi Linus,
 
-Prevent the race by disabling interrupts in get_reg().
+The following changes since commit c1ae3cfa0e89fa1a7ecc4c99031f5e9ae99d9201:
 
-Tested on m68k (Atari Falcon, and ARAnyM emulator).
+  Linux 4.11-rc1 (2017-03-05 12:59:56 -0800)
 
-Kudos to Geert Uytterhoeven for helping to trace this race.
+are available in the git repository at:
 
-Signed-off-by: Michael Schmitz <schmitzmic@gmail.com>
----
- drivers/char/random.c |    6 +++++-
- 1 files changed, 5 insertions(+), 1 deletions(-)
+  git://git.kernel.org/pub/scm/linux/kernel/git/geert/linux-m68k.git tags/m68k-for-v4.12-tag1
 
-diff --git a/drivers/char/random.c b/drivers/char/random.c
-index 1ef2640..7d1799b 100644
---- a/drivers/char/random.c
-+++ b/drivers/char/random.c
-@@ -1115,12 +1115,16 @@ static void add_interrupt_bench(cycles_t start)
- static __u32 get_reg(struct fast_pool *f, struct pt_regs *regs)
- {
- 	__u32 *ptr = (__u32 *) regs;
-+	unsigned long flags;
- 
- 	if (regs == NULL)
- 		return 0;
-+	local_irq_save(flags);
- 	if (f->reg_idx >= sizeof(struct pt_regs) / sizeof(__u32))
- 		f->reg_idx = 0;
--	return *(ptr + f->reg_idx++);
-+	ptr += f->reg_idx++;
-+	local_irq_restore(flags);
-+	return *ptr;
- }
- 
- void add_interrupt_randomness(int irq, int irq_flags)
--- 
-1.7.0.4
+for you to fetch changes up to f6ab4d59a5fe205f12287e515a43fc5e6de779b1:
+
+  nubus: Add MVC and VSC video card definitions (2017-04-20 09:54:24 +0200)
+
+----------------------------------------------------------------
+m68k updates for 4.12
+
+  - More kernel message modernizations and cleanups,
+  - Mac and Nubus improvements and cleanups.
+
+Thanks for pulling!
+
+----------------------------------------------------------------
+David Huggins-Daines (2):
+      nubus: Fix nubus_rewinddir
+      nubus: Clean up printk calls
+
+Finn Thain (4):
+      m68k/mac: Adopt platform_device_register_simple()
+      m68k/mac: Clarify IOP message alloc/free confusion
+      nubus: Clean up whitespace
+      nubus: Add MVC and VSC video card definitions
+
+Geert Uytterhoeven (2):
+      m68k/mac: IOP - Modernize printing of kernel messages
+      m68k/mac: Modernize printing of kernel messages
+
+ arch/m68k/mac/config.c     |  61 ++----
+ arch/m68k/mac/iop.c        |  93 ++++-----
+ arch/m68k/mac/misc.c       |  23 +--
+ drivers/nubus/nubus.c      | 459 +++++++++++++++++++++------------------------
+ include/uapi/linux/nubus.h |   4 +-
+ 5 files changed, 278 insertions(+), 362 deletions(-)
+
+Gr{oetje,eeting}s,
+
+						Geert
+
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+							    -- Linus Torvalds
