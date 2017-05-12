@@ -1,50 +1,62 @@
-From: John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
-Subject: Re: Testers with real m68k hardware needed
-Date: Thu, 11 May 2017 19:01:51 +0200
-Message-ID: <13b8a355-fbac-9316-0e5c-ea0a37126d9b@physik.fu-berlin.de>
-References: <e860e027-11ca-e590-59bb-40134fdedd2a@physik.fu-berlin.de>
- <02c664a6-99ff-fb6c-2b82-e6f7c8b0ee83@vivier.eu>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: Re: [alsa-devel] future of sounds/oss
+Date: Fri, 12 May 2017 09:03:07 +0200
+Message-ID: <CAMuHMdXiXfU=1hf6twMXd1Jjy0J5KQt_eQqWr3vh2HqE_77SVw@mail.gmail.com>
+References: <20170511082133.GA20304@lst.de> <s5hh90rhjbc.wl-tiwai@suse.de>
+ <20170511091511.GA21055@lst.de> <s5hy3u32lhi.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="UTF-8"
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from outpost1.zedat.fu-berlin.de ([130.133.4.66]:37955 "EHLO
-        outpost1.zedat.fu-berlin.de" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1756019AbdEKRBy (ORCPT
-        <rfc822;linux-m68k@vger.kernel.org>);
-        Thu, 11 May 2017 13:01:54 -0400
-In-Reply-To: <02c664a6-99ff-fb6c-2b82-e6f7c8b0ee83@vivier.eu>
+Received: from mail-it0-f67.google.com ([209.85.214.67]:33963 "EHLO
+        mail-it0-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1754757AbdELHDI (ORCPT
+        <rfc822;linux-m68k@vger.kernel.org>); Fri, 12 May 2017 03:03:08 -0400
+In-Reply-To: <s5hy3u32lhi.wl-tiwai@suse.de>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Laurent Vivier <laurent@vivier.eu>, Debian m68k <debian-68k@lists.debian.org>, Linux/m68k <linux-m68k@vger.kernel.org>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: Christoph Hellwig <hch@lst.de>, Jaroslav Kysela <perex@perex.cz>, Linus Torvalds <torvalds@linuxfoundation.org>, ALSA Development Mailing List <alsa-devel@alsa-project.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Linux/m68k <linux-m68k@vger.kernel.org>
 
-On 05/11/2017 06:31 PM, Laurent Vivier wrote:
->> After hours:
-> 
-> ...
->   CC       test_urcu_defer.o
-> /tmp/cczwtyzj.s: Assembler messages:
-> /tmp/cczwtyzj.s:298: Error: syntax error -- statement `add.l
-> %d1,nr_writes@TLSLE+4(%a0)' ignored
-> /tmp/cczwtyzj.s:421: Error: syntax error -- statement `add.l
-> %d1,nr_writes@TLSLE+4(%a0)' ignored
-> make[2]: *** [test_urcu_defer.o] Error 1
-> Makefile:1059: recipe for target 'test_urcu_defer.o' failed
-> make[2]: Leaving directory '/liburcu/userspace-rcu/tests/benchmark'
-> Makefile:367: recipe for target 'all-recursive' failed
-> make[1]: *** [all-recursive] Error 1
-> make[1]: Leaving directory '/liburcu/userspace-rcu/tests'
-> Makefile:474: recipe for target 'all-recursive' failed
-> make: *** [all-recursive] Error 1
+Hi Iwai-san,
 
-Ah, I forgot to mention that you need to build with --disable-compiler-tls.
+On Thu, May 11, 2017 at 10:21 PM, Takashi Iwai <tiwai@suse.de> wrote:
+> From: Takashi Iwai <tiwai@suse.de>
+> Subject: [PATCH] sound: Disable the build of OSS drivers
+>
+> OSS drivers are left as badly unmaintained, and now we're facing a
+> problem to clean up the hackish set_fs() usage in their codes.  Since
+> most of drivers have been covered by ALSA, and the others are dead old
+> and inactive, let's leave them RIP.
+>
+> This patch is the first step: disable the build of OSS drivers.
+> We'll eventually drop the whole codes and clean up later.
+>
+> Signed-off-by: Takashi Iwai <tiwai@suse.de>
+> ---
+>  sound/Kconfig | 26 ++++++++++++++------------
+>  1 file changed, 14 insertions(+), 12 deletions(-)
+>
+> diff --git a/sound/Kconfig b/sound/Kconfig
+> index ee2e69a9ecd1..41eda578d08e 100644
+> --- a/sound/Kconfig
+> +++ b/sound/Kconfig
+> @@ -54,7 +54,8 @@ config SOUND_OSS_CORE_PRECLAIM
+>
+>           If unsure, say Y.
+>
+> -source "sound/oss/dmasound/Kconfig"
+> +### TO-BE-REMOVED
+> +# source "sound/oss/dmasound/Kconfig"
 
-Could you try again? Sorry for the extra effort.
+Please note the dmasound drivers do not have ALSA equivalents.
 
-Adrian
+Gr{oetje,eeting}s,
 
--- 
- .''`.  John Paul Adrian Glaubitz
-: :' :  Debian Developer - glaubitz@debian.org
-`. `'   Freie Universitaet Berlin - glaubitz@physik.fu-berlin.de
-  `-    GPG: 62FF 8A75 84E0 2956 9546  0006 7426 3B37 F5B5 F913
+                        Geert
+
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
