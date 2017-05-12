@@ -1,39 +1,28 @@
-From: John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
-Subject: Re: Linux 4.11 FTBFS on m68k
-Date: Fri, 12 May 2017 10:47:40 +0200
-Message-ID: <20170512084740.GE29311@physik.fu-berlin.de>
-References: <b9276262-0f50-02c3-1751-344651d7e377@physik.fu-berlin.de>
+From: "Thomas Credit Firm" <miorellana@salud.gob.sv>
+Subject: APPLY FOR YOUR URGENT LOAN AT 2%
+Date: Fri, 12 May 2017 11:53:45 +0100
+Message-ID: <20170512105359.BD18E4807243@mail.salud.gob.sv>
+Reply-To: thomascreditfirm@gmail.com
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from outpost5.zedat.fu-berlin.de ([130.133.4.89]:34013 "EHLO
-        outpost5.zedat.fu-berlin.de" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1754971AbdELIrn (ORCPT
-        <rfc822;linux-m68k@vger.kernel.org>);
-        Fri, 12 May 2017 04:47:43 -0400
-Content-Disposition: inline
-In-Reply-To: <b9276262-0f50-02c3-1751-344651d7e377@physik.fu-berlin.de>
+Content-Description: Mail message body
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Linux/m68k <linux-m68k@vger.kernel.org>
-Cc: Debian m68k <debian-68k@lists.debian.org>
+To: receipt <miorellana@salud.gob.sv>
 
-On Sun, May 07, 2017 at 03:16:41PM +0200, John Paul Adrian Glaubitz wrote:
-> Just noticed that currently the 4.11 kernel fails to build from source
-> on m68k [1]:
+* Do you need an urgent loan? We offer all kinds of loan
+* Very fast and urgent transfer to your bank account. 
+* Payment begins (6) months after you get the money in your bank account 
+* Low interest rates 2% 
+* Payment of long-term (1-30 years) duration 
+For more information and loan application form through the Contact now 
 
-Ok, this problem is actually Debian-specific. Debian's linux source
-package contains a patch which removes the necessary #include
-directive for <linux/compiler.h> [1].
+E-mail:  Thomascreditfirm@gmail.com 
+Thomas B. Dawson 
+THOMAS CREDIT FIRM
 
-I'll open a bug report.
-
-Adrian
-
-> [1] https://anonscm.debian.org/cgit/kernel/linux.git/tree/debian/patches/bugfix/m68k/revert-m68k-move-exports-to-definitions.patch#n150
-
--- 
- .''`.  John Paul Adrian Glaubitz
-: :' :  Debian Developer - glaubitz@debian.org
-`. `'   Freie Universitaet Berlin - glaubitz@physik.fu-berlin.de
-  `-    GPG: 62FF 8A75 84E0 2956 9546  0006 7426 3B37 F5B5 F913
+---
+This email has been checked for viruses by Avast antivirus software.
+https://www.avast.com/antivirus
