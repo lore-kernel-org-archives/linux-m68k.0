@@ -1,60 +1,36 @@
 From: John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
-Subject: Re: [alsa-devel] future of sounds/oss
-Date: Fri, 12 May 2017 10:28:29 +0200
-Message-ID: <20170512082829.GB29311@physik.fu-berlin.de>
-References: <20170511082133.GA20304@lst.de>
- <s5hh90rhjbc.wl-tiwai@suse.de>
- <20170511091511.GA21055@lst.de>
- <s5hy3u32lhi.wl-tiwai@suse.de>
- <CAMuHMdXiXfU=1hf6twMXd1Jjy0J5KQt_eQqWr3vh2HqE_77SVw@mail.gmail.com>
- <s5hfuga35zc.wl-tiwai@suse.de>
- <CAMuHMdX_gzspdn0r37GWvdvYwomy7T1M9baxsxmX_jBmwUWhRg@mail.gmail.com>
- <s5hbmqy356r.wl-tiwai@suse.de>
+Subject: Re: Linux 4.11 FTBFS on m68k
+Date: Fri, 12 May 2017 10:47:40 +0200
+Message-ID: <20170512084740.GE29311@physik.fu-berlin.de>
+References: <b9276262-0f50-02c3-1751-344651d7e377@physik.fu-berlin.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from outpost5.zedat.fu-berlin.de ([130.133.4.89]:36385 "EHLO
+Received: from outpost5.zedat.fu-berlin.de ([130.133.4.89]:34013 "EHLO
         outpost5.zedat.fu-berlin.de" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1757335AbdELI2o (ORCPT
+        by vger.kernel.org with ESMTP id S1754971AbdELIrn (ORCPT
         <rfc822;linux-m68k@vger.kernel.org>);
-        Fri, 12 May 2017 04:28:44 -0400
+        Fri, 12 May 2017 04:47:43 -0400
 Content-Disposition: inline
-In-Reply-To: <s5hbmqy356r.wl-tiwai@suse.de>
+In-Reply-To: <b9276262-0f50-02c3-1751-344651d7e377@physik.fu-berlin.de>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Geert Uytterhoeven <geert@linux-m68k.org>, Christoph Hellwig <hch@lst.de>, Jaroslav Kysela <perex@perex.cz>, Linus Torvalds <torvalds@linuxfoundation.org>, ALSA Development Mailing List <alsa-devel@alsa-project.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Linux/m68k <linux-m68k@vger.kernel.org>
+To: Linux/m68k <linux-m68k@vger.kernel.org>
+Cc: Debian m68k <debian-68k@lists.debian.org>
 
-On Fri, May 12, 2017 at 09:27:56AM +0200, Takashi Iwai wrote:
-> But, looking at the tree again, I noticed that ALSA isn't built yet at
-> all for m68k.  I don't remember why it's disabled.
-> Jaroslav, do you know the reason behind it?
+On Sun, May 07, 2017 at 03:16:41PM +0200, John Paul Adrian Glaubitz wrote:
+> Just noticed that currently the 4.11 kernel fails to build from source
+> on m68k [1]:
 
-Might also just be because the m68k port had been dead in Debian for a
-while due the lack of TLS support in glibc on m68k. However, the port
-is active again and in pretty good shape now.
+Ok, this problem is actually Debian-specific. Debian's linux source
+package contains a patch which removes the necessary #include
+directive for <linux/compiler.h> [1].
 
-I'm currently working on fixing debian-installer on m68k, so that
-people can install the port without having to resort to things like
-debootstrap.
-
-> And, dmasound is a completely different implementation from the other
-> OSS, thus it doesn't suffer from set_fs() hack.  That is, we may still
-> keep dmasound, while removing other OSS stuff.
-
-Thanks! Highly appreciated.
-
-> Meanwhile we'll try to support ALSA on m64k and eventually target to
-> drop dmasound stuff.
-
-Ooooh, that would be awesome. If you need any testers on m68k, please
-let us know. I have plenty of m68k hardware for testing.
-
-> Does it sound more feasible?
-
-No idea whether it's feasible. But it sounds awesome :).
+I'll open a bug report.
 
 Adrian
+
+> [1] https://anonscm.debian.org/cgit/kernel/linux.git/tree/debian/patches/bugfix/m68k/revert-m68k-move-exports-to-definitions.patch#n150
 
 -- 
  .''`.  John Paul Adrian Glaubitz
