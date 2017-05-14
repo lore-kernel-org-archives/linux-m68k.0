@@ -1,28 +1,53 @@
-From: "Thomas Credit Firm" <miorellana@salud.gob.sv>
-Subject: APPLY FOR YOUR URGENT LOAN AT 2%
-Date: Fri, 12 May 2017 11:53:45 +0100
-Message-ID: <20170512105359.BD18E4807243@mail.salud.gob.sv>
-Reply-To: thomascreditfirm@gmail.com
+From: Michael Schmitz <schmitzmic@gmail.com>
+Subject: Re: Linux 4.11 FTBFS on m68k
+Date: Sun, 14 May 2017 15:11:24 +1200
+Message-ID: <284dc1b1-1fef-90c3-f56f-7927f5bf22b0@gmail.com>
+References: <b9276262-0f50-02c3-1751-344651d7e377@physik.fu-berlin.de>
+ <20170512084740.GE29311@physik.fu-berlin.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=windows-1252
+Content-Transfer-Encoding: 8bit
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Content-Description: Mail message body
+Received: from mail-pg0-f53.google.com ([74.125.83.53]:34777 "EHLO
+        mail-pg0-f53.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1757197AbdENDLc (ORCPT
+        <rfc822;linux-m68k@vger.kernel.org>); Sat, 13 May 2017 23:11:32 -0400
+Received: by mail-pg0-f53.google.com with SMTP id u28so45687289pgn.1
+        for <linux-m68k@vger.kernel.org>; Sat, 13 May 2017 20:11:32 -0700 (PDT)
+In-Reply-To: <20170512084740.GE29311@physik.fu-berlin.de>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: receipt <miorellana@salud.gob.sv>
+To: John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>, Linux/m68k <linux-m68k@vger.kernel.org>
+Cc: Debian m68k <debian-68k@lists.debian.org>
 
-* Do you need an urgent loan? We offer all kinds of loan
-* Very fast and urgent transfer to your bank account. 
-* Payment begins (6) months after you get the money in your bank account 
-* Low interest rates 2% 
-* Payment of long-term (1-30 years) duration 
-For more information and loan application form through the Contact now 
+Hi Adrian,
 
-E-mail:  Thomascreditfirm@gmail.com 
-Thomas B. Dawson 
-THOMAS CREDIT FIRM
+this may be compiler version specific - I recall these functions were
+used from the kernel source with gcc 3.3.6 or thereabouts (I had to add
+__divdi3 five years ago for some driver that needed it and it wasn't
+then provided by gcc for some reason). WIth gcc version 4, the need for
+this hack was gone.
 
----
-This email has been checked for viruses by Avast antivirus software.
-https://www.avast.com/antivirus
+What version of gcc does Debian use for building their kernel packages?
+What did you use?
+
+Cheers,
+
+	Michael
+
+
+Am 12.05.2017 um 20:47 schrieb John Paul Adrian Glaubitz:
+> On Sun, May 07, 2017 at 03:16:41PM +0200, John Paul Adrian Glaubitz wrote:
+>> Just noticed that currently the 4.11 kernel fails to build from source
+>> on m68k [1]:
+> 
+> Ok, this problem is actually Debian-specific. Debian's linux source
+> package contains a patch which removes the necessary #include
+> directive for <linux/compiler.h> [1].
+> 
+> I'll open a bug report.
+> 
+> Adrian
+> 
+>> [1] https://anonscm.debian.org/cgit/kernel/linux.git/tree/debian/patches/bugfix/m68k/revert-m68k-move-exports-to-definitions.patch#n150
+> 
