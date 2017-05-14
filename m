@@ -1,53 +1,37 @@
-From: Michael Schmitz <schmitzmic@gmail.com>
+From: Andreas Schwab <schwab@linux-m68k.org>
 Subject: Re: Linux 4.11 FTBFS on m68k
-Date: Sun, 14 May 2017 15:11:24 +1200
-Message-ID: <284dc1b1-1fef-90c3-f56f-7927f5bf22b0@gmail.com>
+Date: Sun, 14 May 2017 08:19:26 +0200
+Message-ID: <m2bmqwot8x.fsf@linux-m68k.org>
 References: <b9276262-0f50-02c3-1751-344651d7e377@physik.fu-berlin.de>
- <20170512084740.GE29311@physik.fu-berlin.de>
+        <20170512084740.GE29311@physik.fu-berlin.de>
+        <284dc1b1-1fef-90c3-f56f-7927f5bf22b0@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=windows-1252
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from mail-pg0-f53.google.com ([74.125.83.53]:34777 "EHLO
-        mail-pg0-f53.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1757197AbdENDLc (ORCPT
-        <rfc822;linux-m68k@vger.kernel.org>); Sat, 13 May 2017 23:11:32 -0400
-Received: by mail-pg0-f53.google.com with SMTP id u28so45687289pgn.1
-        for <linux-m68k@vger.kernel.org>; Sat, 13 May 2017 20:11:32 -0700 (PDT)
-In-Reply-To: <20170512084740.GE29311@physik.fu-berlin.de>
+Received: from mail-out.m-online.net ([212.18.0.10]:38075 "EHLO
+        mail-out.m-online.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1751124AbdENGTa (ORCPT
+        <rfc822;linux-m68k@vger.kernel.org>); Sun, 14 May 2017 02:19:30 -0400
+In-Reply-To: <284dc1b1-1fef-90c3-f56f-7927f5bf22b0@gmail.com> (Michael
+        Schmitz's message of "Sun, 14 May 2017 15:11:24 +1200")
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>, Linux/m68k <linux-m68k@vger.kernel.org>
-Cc: Debian m68k <debian-68k@lists.debian.org>
+To: Michael Schmitz <schmitzmic@gmail.com>
+Cc: John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>, Linux/m68k <linux-m68k@vger.kernel.org>, Debian m68k <debian-68k@lists.debian.org>
 
-Hi Adrian,
+On Mai 14 2017, Michael Schmitz <schmitzmic@gmail.com> wrote:
 
-this may be compiler version specific - I recall these functions were
-used from the kernel source with gcc 3.3.6 or thereabouts (I had to add
-__divdi3 five years ago for some driver that needed it and it wasn't
-then provided by gcc for some reason). WIth gcc version 4, the need for
-this hack was gone.
+> this may be compiler version specific - I recall these functions were
+> used from the kernel source with gcc 3.3.6 or thereabouts (I had to add
+> __divdi3 five years ago for some driver that needed it and it wasn't
+> then provided by gcc for some reason).
 
-What version of gcc does Debian use for building their kernel packages?
-What did you use?
+The kernel deliberately does not use libgcc, and it does not want a
+64-bit devision on 32-bit archs.
 
-Cheers,
+Andreas.
 
-	Michael
-
-
-Am 12.05.2017 um 20:47 schrieb John Paul Adrian Glaubitz:
-> On Sun, May 07, 2017 at 03:16:41PM +0200, John Paul Adrian Glaubitz wrote:
->> Just noticed that currently the 4.11 kernel fails to build from source
->> on m68k [1]:
-> 
-> Ok, this problem is actually Debian-specific. Debian's linux source
-> package contains a patch which removes the necessary #include
-> directive for <linux/compiler.h> [1].
-> 
-> I'll open a bug report.
-> 
-> Adrian
-> 
->> [1] https://anonscm.debian.org/cgit/kernel/linux.git/tree/debian/patches/bugfix/m68k/revert-m68k-move-exports-to-definitions.patch#n150
-> 
+-- 
+Andreas Schwab, schwab@linux-m68k.org
+GPG Key fingerprint = 58CA 54C7 6D53 942B 1756  01D3 44D5 214B 8276 4ED5
+"And now for something completely different."
