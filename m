@@ -1,41 +1,45 @@
 From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: Re: debian-installer progress and input needed
-Date: Tue, 16 May 2017 09:40:54 +0200
-Message-ID: <CAMuHMdXK2NsfZ8oV2XiDZjMzVWtW=5VViDQ5uqDmuONTphyoBg@mail.gmail.com>
-References: <b9651ade-0079-c8c6-40a3-80549f3601c5@physik.fu-berlin.de>
+Subject: Re: [alsa-devel] future of sounds/oss
+Date: Tue, 16 May 2017 09:45:04 +0200
+Message-ID: <CAMuHMdUfMt_HMybx9T0mUSCaNqhJSstqXaWYC7jhnzo36iBHKA@mail.gmail.com>
+References: <20170511082133.GA20304@lst.de> <s5hh90rhjbc.wl-tiwai@suse.de>
+ <20170511091511.GA21055@lst.de> <s5hy3u32lhi.wl-tiwai@suse.de>
+ <CAMuHMdXiXfU=1hf6twMXd1Jjy0J5KQt_eQqWr3vh2HqE_77SVw@mail.gmail.com>
+ <s5hfuga35zc.wl-tiwai@suse.de> <CAMuHMdX_gzspdn0r37GWvdvYwomy7T1M9baxsxmX_jBmwUWhRg@mail.gmail.com>
+ <s5hbmqy356r.wl-tiwai@suse.de> <CAMuHMdW5WFhX=wEiCfHCReXSeedPAshc_3D=ULx6PFeb9tEd-w@mail.gmail.com>
+ <s5ha86ifqre.wl-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="UTF-8"
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from mail-it0-f49.google.com ([209.85.214.49]:36117 "EHLO
-        mail-it0-f49.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1751500AbdEPHk4 (ORCPT
-        <rfc822;linux-m68k@vger.kernel.org>); Tue, 16 May 2017 03:40:56 -0400
-Received: by mail-it0-f49.google.com with SMTP id o5so57213909ith.1
-        for <linux-m68k@vger.kernel.org>; Tue, 16 May 2017 00:40:55 -0700 (PDT)
-In-Reply-To: <b9651ade-0079-c8c6-40a3-80549f3601c5@physik.fu-berlin.de>
+Received: from mail-it0-f47.google.com ([209.85.214.47]:37860 "EHLO
+        mail-it0-f47.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1751253AbdEPHpG (ORCPT
+        <rfc822;linux-m68k@vger.kernel.org>); Tue, 16 May 2017 03:45:06 -0400
+In-Reply-To: <s5ha86ifqre.wl-tiwai@suse.de>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
-Cc: Debian m68k <debian-68k@lists.debian.org>, Linux/m68k <linux-m68k@vger.kernel.org>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: Christoph Hellwig <hch@lst.de>, Jaroslav Kysela <perex@perex.cz>, Linus Torvalds <torvalds@linuxfoundation.org>, ALSA Development Mailing List <alsa-devel@alsa-project.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Linux/m68k <linux-m68k@vger.kernel.org>
 
-Hi Adrian,
+Hi Iwai-san,
 
-On Mon, May 15, 2017 at 11:21 PM, John Paul Adrian Glaubitz
-<glaubitz@physik.fu-berlin.de> wrote:
-> Thus, I would to ask around which modules are needed for the various
-> hardware people have, e.g. SCSI driver for 68k Macs, IDE drivers for
-> Amiga and Atari and so on.
+On Fri, May 12, 2017 at 10:01 AM, Takashi Iwai <tiwai@suse.de> wrote:
+>> > But, looking at the tree again, I noticed that ALSA isn't built yet at
+>> > all for m68k.  I don't remember why it's disabled.
+>> > Jaroslav, do you know the reason behind it?
+>>
+>> Because ALSA doesn't have any drivers that can be used on m68k platforms?
 >
-> The drivers need to be added to the corresponding module list in [2]
-> which will add them to module packages. The module packages then
-> have to be included in the pkg-list for d-i on m68k [3]. Of course,
-> the drivers need to be enabled in the kernel configuration as well.
+> But we have virtual and generic drivers (such as UART support), so
+> there seems no reason to stop it.  Maybe the lack of proper MMU
 
-You can extract a list of SCSI/IDE drivers needed from the defconfigs at:
+It seems to date back to the move of sound from arch/*/Kconfig
+to sound/Kconfig. I guess at that time there was just no use for ALSO on
+m68k.
 
-https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/arch/m68k/configs
+> support was the reason?  Let's try to cross-build...
 
-All needed drivers should be builtin in the defconfigs above.
+Building seems to work fine...
 
 Gr{oetje,eeting}s,
 
