@@ -1,60 +1,48 @@
-From: John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
-Subject: debian-installer progress and input needed
-Date: Mon, 15 May 2017 23:21:36 +0200
-Message-ID: <b9651ade-0079-c8c6-40a3-80549f3601c5@physik.fu-berlin.de>
+From: Michael Schmitz <schmitzmic@gmail.com>
+Subject: Re: Linux 4.11 FTBFS on m68k
+Date: Tue, 16 May 2017 13:58:07 +1200
+Message-ID: <CAOmrzk+atqA2s7-tiVN9uhW57uZgMX8gOy_YjjbEqLeE91uy4g@mail.gmail.com>
+References: <b9276262-0f50-02c3-1751-344651d7e377@physik.fu-berlin.de>
+ <20170512084740.GE29311@physik.fu-berlin.de> <284dc1b1-1fef-90c3-f56f-7927f5bf22b0@gmail.com>
+ <m2bmqwot8x.fsf@linux-m68k.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="UTF-8"
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from outpost1.zedat.fu-berlin.de ([130.133.4.66]:57294 "EHLO
-        outpost1.zedat.fu-berlin.de" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1758649AbdEOVVj (ORCPT
-        <rfc822;linux-m68k@vger.kernel.org>);
-        Mon, 15 May 2017 17:21:39 -0400
+Received: from mail-it0-f65.google.com ([209.85.214.65]:36398 "EHLO
+        mail-it0-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1751602AbdEPB6I (ORCPT
+        <rfc822;linux-m68k@vger.kernel.org>); Mon, 15 May 2017 21:58:08 -0400
+Received: by mail-it0-f65.google.com with SMTP id z15so12168458ite.3
+        for <linux-m68k@vger.kernel.org>; Mon, 15 May 2017 18:58:08 -0700 (PDT)
+In-Reply-To: <m2bmqwot8x.fsf@linux-m68k.org>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Debian m68k <debian-68k@lists.debian.org>
-Cc: Linux/m68k <linux-m68k@vger.kernel.org>
+To: Andreas Schwab <schwab@linux-m68k.org>
+Cc: John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>, Linux/m68k <linux-m68k@vger.kernel.org>, Debian m68k <debian-68k@lists.debian.org>
 
-Hi!
+Andreas,
 
-Recently, I made some progress with debian-installer on m68k and got it
-to build on m68k, at least the cdrom installer. It can be downloaded
-for testing purpose here [1]. It should work in emulators like Aranym
-and qemu-m68k in system mode.
+On Sun, May 14, 2017 at 6:19 PM, Andreas Schwab <schwab@linux-m68k.org> wrote:
+> On Mai 14 2017, Michael Schmitz <schmitzmic@gmail.com> wrote:
+>
+>> this may be compiler version specific - I recall these functions were
+>> used from the kernel source with gcc 3.3.6 or thereabouts (I had to add
+>> __divdi3 five years ago for some driver that needed it and it wasn't
+>> then provided by gcc for some reason).
+>
+> The kernel deliberately does not use libgcc, and it does not want a
+> 64-bit devision on 32-bit archs.
 
-I haven't tested the installer myself yet, but Laurent Vivier had a go
-and he confirmed it actually loaded the installer from initrd \o/.
+At that time, it clearly didn't use libgcc. It's hard to be certain
+but as far as I can reconstruct, the 64 bit division might have been
+required for the isp116x-hcd USB driver (the ndelay used in there,
+specifically). The current implementation clearny doesn't need 64 bit
+division anymore.
 
-However, there is one task that needs to be addressed and for that I
-need help. Since d-i hasn't been touched on m68k for a long time, the
-kernel module list is outdated and hence hardware like CD-ROM drives
-and similar are not detected.
+Anyway, I missed the point about the __mode() macro no longer being
+found - nothing to do with the arch/m68k/lib functions, nothing to see
+here. Sorry about the noise.
 
-Thus, I would to ask around which modules are needed for the various
-hardware people have, e.g. SCSI driver for 68k Macs, IDE drivers for
-Amiga and Atari and so on.
+Cheers,
 
-The drivers need to be added to the corresponding module list in [2]
-which will add them to module packages. The module packages then
-have to be included in the pkg-list for d-i on m68k [3]. Of course,
-the drivers need to be enabled in the kernel configuration as well.
-
-Another issue that needs to be addressed is that the loop-modules
-udeb package needs to be enabled for src:linux on m68k because it's
-required for the hdmedia d-i images. But I can open a bug report
-for that as well.
-
-Thanks,
-Adrian
-
-
-> [1] https://people.debian.org/~glaubitz/debian-installer-m68k/cdrom/
-> [2] https://anonscm.debian.org/cgit/kernel/linux.git/tree/debian/installer/m68k/modules/m68k
-> [3] https://anonscm.debian.org/cgit/d-i/debian-installer.git/tree/build/pkg-lists/cdrom/m68k.cfg
-
--- 
- .''`.  John Paul Adrian Glaubitz
-: :' :  Debian Developer - glaubitz@debian.org
-`. `'   Freie Universitaet Berlin - glaubitz@physik.fu-berlin.de
-  `-    GPG: 62FF 8A75 84E0 2956 9546  0006 7426 3B37 F5B5 F913
+  Michael
