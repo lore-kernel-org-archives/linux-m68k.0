@@ -1,48 +1,49 @@
-From: Michael Schmitz <schmitzmic@gmail.com>
-Subject: Re: Linux 4.11 FTBFS on m68k
-Date: Tue, 16 May 2017 13:58:07 +1200
-Message-ID: <CAOmrzk+atqA2s7-tiVN9uhW57uZgMX8gOy_YjjbEqLeE91uy4g@mail.gmail.com>
-References: <b9276262-0f50-02c3-1751-344651d7e377@physik.fu-berlin.de>
- <20170512084740.GE29311@physik.fu-berlin.de> <284dc1b1-1fef-90c3-f56f-7927f5bf22b0@gmail.com>
- <m2bmqwot8x.fsf@linux-m68k.org>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: Re: debian-installer progress and input needed
+Date: Tue, 16 May 2017 09:40:54 +0200
+Message-ID: <CAMuHMdXK2NsfZ8oV2XiDZjMzVWtW=5VViDQ5uqDmuONTphyoBg@mail.gmail.com>
+References: <b9651ade-0079-c8c6-40a3-80549f3601c5@physik.fu-berlin.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="UTF-8"
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from mail-it0-f65.google.com ([209.85.214.65]:36398 "EHLO
-        mail-it0-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1751602AbdEPB6I (ORCPT
-        <rfc822;linux-m68k@vger.kernel.org>); Mon, 15 May 2017 21:58:08 -0400
-Received: by mail-it0-f65.google.com with SMTP id z15so12168458ite.3
-        for <linux-m68k@vger.kernel.org>; Mon, 15 May 2017 18:58:08 -0700 (PDT)
-In-Reply-To: <m2bmqwot8x.fsf@linux-m68k.org>
+Received: from mail-it0-f49.google.com ([209.85.214.49]:36117 "EHLO
+        mail-it0-f49.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1751500AbdEPHk4 (ORCPT
+        <rfc822;linux-m68k@vger.kernel.org>); Tue, 16 May 2017 03:40:56 -0400
+Received: by mail-it0-f49.google.com with SMTP id o5so57213909ith.1
+        for <linux-m68k@vger.kernel.org>; Tue, 16 May 2017 00:40:55 -0700 (PDT)
+In-Reply-To: <b9651ade-0079-c8c6-40a3-80549f3601c5@physik.fu-berlin.de>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Andreas Schwab <schwab@linux-m68k.org>
-Cc: John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>, Linux/m68k <linux-m68k@vger.kernel.org>, Debian m68k <debian-68k@lists.debian.org>
+To: John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
+Cc: Debian m68k <debian-68k@lists.debian.org>, Linux/m68k <linux-m68k@vger.kernel.org>
 
-Andreas,
+Hi Adrian,
 
-On Sun, May 14, 2017 at 6:19 PM, Andreas Schwab <schwab@linux-m68k.org> wrote:
-> On Mai 14 2017, Michael Schmitz <schmitzmic@gmail.com> wrote:
+On Mon, May 15, 2017 at 11:21 PM, John Paul Adrian Glaubitz
+<glaubitz@physik.fu-berlin.de> wrote:
+> Thus, I would to ask around which modules are needed for the various
+> hardware people have, e.g. SCSI driver for 68k Macs, IDE drivers for
+> Amiga and Atari and so on.
 >
->> this may be compiler version specific - I recall these functions were
->> used from the kernel source with gcc 3.3.6 or thereabouts (I had to add
->> __divdi3 five years ago for some driver that needed it and it wasn't
->> then provided by gcc for some reason).
->
-> The kernel deliberately does not use libgcc, and it does not want a
-> 64-bit devision on 32-bit archs.
+> The drivers need to be added to the corresponding module list in [2]
+> which will add them to module packages. The module packages then
+> have to be included in the pkg-list for d-i on m68k [3]. Of course,
+> the drivers need to be enabled in the kernel configuration as well.
 
-At that time, it clearly didn't use libgcc. It's hard to be certain
-but as far as I can reconstruct, the 64 bit division might have been
-required for the isp116x-hcd USB driver (the ndelay used in there,
-specifically). The current implementation clearny doesn't need 64 bit
-division anymore.
+You can extract a list of SCSI/IDE drivers needed from the defconfigs at:
 
-Anyway, I missed the point about the __mode() macro no longer being
-found - nothing to do with the arch/m68k/lib functions, nothing to see
-here. Sorry about the noise.
+https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/arch/m68k/configs
 
-Cheers,
+All needed drivers should be builtin in the defconfigs above.
 
-  Michael
+Gr{oetje,eeting}s,
+
+                        Geert
+
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
