@@ -1,53 +1,99 @@
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: Re: [alsa-devel] future of sounds/oss
-Date: Tue, 16 May 2017 09:45:04 +0200
-Message-ID: <CAMuHMdUfMt_HMybx9T0mUSCaNqhJSstqXaWYC7jhnzo36iBHKA@mail.gmail.com>
-References: <20170511082133.GA20304@lst.de> <s5hh90rhjbc.wl-tiwai@suse.de>
- <20170511091511.GA21055@lst.de> <s5hy3u32lhi.wl-tiwai@suse.de>
- <CAMuHMdXiXfU=1hf6twMXd1Jjy0J5KQt_eQqWr3vh2HqE_77SVw@mail.gmail.com>
- <s5hfuga35zc.wl-tiwai@suse.de> <CAMuHMdX_gzspdn0r37GWvdvYwomy7T1M9baxsxmX_jBmwUWhRg@mail.gmail.com>
- <s5hbmqy356r.wl-tiwai@suse.de> <CAMuHMdW5WFhX=wEiCfHCReXSeedPAshc_3D=ULx6PFeb9tEd-w@mail.gmail.com>
- <s5ha86ifqre.wl-tiwai@suse.de>
+From: Finn Thain <fthain@telegraphics.com.au>
+Subject: Re: debian-installer progress and input needed
+Date: Tue, 16 May 2017 18:13:09 +1000 (AEST)
+Message-ID: <alpine.LNX.2.00.1705161739210.5040@nippy.intranet>
+References: <b9651ade-0079-c8c6-40a3-80549f3601c5@physik.fu-berlin.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from mail-it0-f47.google.com ([209.85.214.47]:37860 "EHLO
-        mail-it0-f47.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1751253AbdEPHpG (ORCPT
-        <rfc822;linux-m68k@vger.kernel.org>); Tue, 16 May 2017 03:45:06 -0400
-In-Reply-To: <s5ha86ifqre.wl-tiwai@suse.de>
+Received: from kvm5.telegraphics.com.au ([98.124.60.144]:37756 "EHLO
+        kvm5.telegraphics.com.au" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1751264AbdEPIIh (ORCPT
+        <rfc822;linux-m68k@vger.kernel.org>); Tue, 16 May 2017 04:08:37 -0400
+In-Reply-To: <b9651ade-0079-c8c6-40a3-80549f3601c5@physik.fu-berlin.de>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Christoph Hellwig <hch@lst.de>, Jaroslav Kysela <perex@perex.cz>, Linus Torvalds <torvalds@linuxfoundation.org>, ALSA Development Mailing List <alsa-devel@alsa-project.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Linux/m68k <linux-m68k@vger.kernel.org>
+To: John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
+Cc: Debian m68k <debian-68k@lists.debian.org>, Linux/m68k <linux-m68k@vger.kernel.org>
 
-Hi Iwai-san,
 
-On Fri, May 12, 2017 at 10:01 AM, Takashi Iwai <tiwai@suse.de> wrote:
->> > But, looking at the tree again, I noticed that ALSA isn't built yet at
->> > all for m68k.  I don't remember why it's disabled.
->> > Jaroslav, do you know the reason behind it?
->>
->> Because ALSA doesn't have any drivers that can be used on m68k platforms?
->
-> But we have virtual and generic drivers (such as UART support), so
-> there seems no reason to stop it.  Maybe the lack of proper MMU
+On Mon, 15 May 2017, John Paul Adrian Glaubitz wrote:
 
-It seems to date back to the move of sound from arch/*/Kconfig
-to sound/Kconfig. I guess at that time there was just no use for ALSO on
-m68k.
+> Hi!
+> 
+> Recently, I made some progress with debian-installer on m68k and got it 
+> to build on m68k, at least the cdrom installer. It can be downloaded for 
+> testing purpose here [1]. It should work in emulators like Aranym and 
+> qemu-m68k in system mode.
+> 
 
-> support was the reason?  Let's try to cross-build...
+Nice work!
 
-Building seems to work fine...
+> I haven't tested the installer myself yet, but Laurent Vivier had a go 
+> and he confirmed it actually loaded the installer from initrd \o/.
+> 
+> However, there is one task that needs to be addressed and for that I 
+> need help. Since d-i hasn't been touched on m68k for a long time, the 
+> kernel module list is outdated and hence hardware like CD-ROM drives and 
+> similar are not detected.
+> 
+> Thus, I would to ask around which modules are needed for the various 
+> hardware people have, e.g. SCSI driver for 68k Macs, IDE drivers for 
+> Amiga and Atari and so on.
+> 
 
-Gr{oetje,eeting}s,
+For m68k Macs, the SCSI, IDE, FDC and NIC driver modules are,
 
-                        Geert
+	mac_esp
+	mac_scsi
 
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+	macide
 
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+	swim_mod
+
+	mac8390
+	macmace
+	mac89x0
+	macsonic
+
+Their respective Kconfig symbols are:
+
+	CONFIG_SCSI_MAC_ESP
+	CONFIG_MAC_SCSI
+
+	CONFIG_BLK_DEV_MAC_IDE
+
+	BLK_DEV_SWIM
+
+	CONFIG_MAC8390
+	CONFIG_MACMACE
+	CONFIG_MAC89x0
+	CONFIG_MACSONIC
+
+Any other Mac-specific modules (ADB, FB, SCC etc) should probably be 
+built-in.
+
+> The drivers need to be added to the corresponding module list in [2] 
+> which will add them to module packages. The module packages then have to 
+> be included in the pkg-list for d-i on m68k [3]. Of course, the drivers 
+> need to be enabled in the kernel configuration as well.
+> 
+> Another issue that needs to be addressed is that the loop-modules udeb 
+> package needs to be enabled for src:linux on m68k because it's required 
+> for the hdmedia d-i images. But I can open a bug report for that as 
+> well.
+> 
+
+Installer images would be awesome (I gather that there is no ISO yet...)
+
+-- 
+
+> Thanks,
+> Adrian
+> 
+> 
+> > [1] https://people.debian.org/~glaubitz/debian-installer-m68k/cdrom/
+> > [2] https://anonscm.debian.org/cgit/kernel/linux.git/tree/debian/installer/m68k/modules/m68k
+> > [3] https://anonscm.debian.org/cgit/d-i/debian-installer.git/tree/build/pkg-lists/cdrom/m68k.cfg
+> 
+> 
