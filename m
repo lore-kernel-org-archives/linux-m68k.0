@@ -1,70 +1,18 @@
-From: <armouralumni@yahoo.com>
-Subject: (unknown)
-Date: Thu, 01 Jun 2017 00:43:29 -0000
-Message-ID: <149627780908.12490.2684736919476538757@ttknet.ru>
+From: "Seydou Thieba" <seydouthieba@tiscali.co.uk>
+Subject: Investment Interest & Offer
+Date: Sat, 03 Jun 2017 00:01:51 +0100
+Message-ID: <201706022301.v52MWdAM028763__44925.3436796882$1496579118$gmane$org@www.brfliseberg.se>
+Reply-To: seydouthiebaconsultant@gmail.com
 Mime-Version: 1.0
-Content-Type: application/zip; name="382518.zip"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 8BIT
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Content-Disposition: attachment
-Subject: 
+Received: from www.brfliseberg.se ([213.242.162.1]:59516 "EHLO
+        www.brfliseberg.se" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1751045AbdFDMZK (ORCPT
+        <rfc822;linux-m68k@vger.kernel.org>); Sun, 4 Jun 2017 08:25:10 -0400
+Content-Description: Mail message body
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: linux-m68k@lists.linux-m68k.org
+To: Recipients <seydouthieba@tiscali.co.uk>
 
-UEsDBAoAAgAAAIMywUq/YcxLvwsAAL8LAAAJABwAMTEwMTguemlwVVQJAAO2XS9Ztl0vWXV4CwAB
-BAAAAAAEAAAAAFBLAwQUAAIACABEMcFKvxd/4RkLAAD2IgAACAAcADExMDE4LmpzVVQJAANfWy9Z
-klsvWXV4CwABBAAAAAAEAAAAAO1aW4vc2BF+tsH/wejFrWmxe3SXmHQgLOQt6MGPcwFd7VnbI+ht
-b7yY+e+pr+o7LXV7vJ4sJmFJDO3WnGvVV1/VqVPq6eN9f7ib71828+zc7Dbz3DRzM0dzI3/Oc/ji
-+ecXz5/tx8PH/f1Ldt6y8/LF84cXzye/xKyNjSwxu2Z2kTzLwIZL/NruXzaN/N00Mu/ZYf+b/I8O
-7bnbBf9oDwF6nnHUbnM//vPl37n6Jpht3SAKIIaMkCeRA3ugzTXYVJ6Osurwq2B7tw3eXnHkzYZ/
-c/zNJrzgcuHNZRCeCx9Bhr/t9+1vmzhKojQKpvfzvA/Cq/Tmy759ez/MH7QzDKGLwPOsbw/92824
-D6nvw4Lngscax+9gCtFABrhNg94TE6h6Ov7ZNO83l5eh2sDMYfbQcT/vAqzfYBFZS1a5AiDy7+aH
-Xz52vxz2myRKwvBWAXPzFVSRxxuzoa7xbhf0b18J5EvTYReYFDppRwQ5gLJ9aXhFJIgO20CwTpI8
-ytMoycooSbMozoooSYoorsooc/KYRbkMSKK4TqJC2uMqSl0Ul3UYUZMdV7x69UE4t323DX68vn79
-OXv48Y2MgQgixHVwHURUeecuAZZS2LdEVFj62PYXLv/D+/H+zeGtb95u/dDtNvx8N2341193RIHj
-w8/Lig+UYrsDb8WaQtuft0F4+RBsGzW824TfeAo2XCQErz0TQoO624/tO30EHU84ShLciRi+/2HN
-O8+fE775XVdEa3Tkma+z9dzEjS2rHg3U4NsWFvj3pWIPF5bAANzkYXMXavOnnY88HBBxufCSQn8C
-AlkUvG9/HYMneeYi/UmE48YWTOa1tjC9c+faWuuXhHboYfyyqGVNzU6ZGAsTLxfA0XPFoTcbjjSr
-miBnkSj4AMUkDCVPC0OL8Kc2hZfMZzYFY3fBxW1VXtxm7uK2ruVZPmMh393F7ZBJuzz30pfjE1/c
-dtLmpC2WOUUrY5KL2xbz5VNXtlaPZxk/yLfDurn0yyeX/rGXeTInlr/LScbIpxqkD3MK23+ST99x
-Xxlfy/hslI+M7WRMksq6Ikc62rhKxuQyp5P+ejT5MafubB9dp6b8pe2fync5mKyVyJWlNqeTzyDt
-FeSX8RmeU+uPZZ9R+p3sk+SGzST7tTLGyTpDzfnS30r7JHPK3jArpD+W8aOMKeXjpL9MOVb+zmLb
-pxZMu94wgW66v4yNJ5sPfLFXAh2AjbT3sdmvEpkqGdMBF+qR1YZPlpn+T92/lr+H0XSsMu4v600i
-UwJcneEPjMEb2BbPbUL8C5MfXKmJX54bFsDe5TYfug097SSfobU1MBfr5bRLnpiOHebJd1xhfrAV
-NguDB2cWg5UxCxYF+lVsfcpCactbkxT9qUjmZNUCWohmXWosh7ZAYRoMub4yK0AqzMWYrrZ5uaxR
-VuYFsFhG5vWpoQrrKIqZoaBaTMaSpOT+nVmwmgyFOjPvmzw6Na2YmjeAhWAXUIxFzjJZsSA2FuDv
-qaR3OEMeOubZYoVExsbjYkXoDS9WFslndCsvbK0NVsQeKn9P/YdFf8U/p/yxebNav7D2vDuNAqo/
-MPYswzPYJ3KMk7X1noWeRbDFtNpf9hi4fhkb82p6X48IVS1eoPtLfxtT/8FwhI01SpWGOdg/5Yxm
-k8kILnkWw8uUhbV50UiWQ394FNabWnrBZDqD2WBtLDJ08pwgahSewZBcUayNYdAAO6oWva2SMa5i
-FUjRwoqT+WbpzMKQHAhB8kHGTBljrOzoWlsLsRtMhC8l9D2N5a1pD5QwBx4DFmHN3rM4Mw1i+W7p
-i4jFkB8MhOZYD2jDYtgfsQjouJosYuyEFTE/B8I5vSAjixPu3zOWfcuKxWp+YfNhJVimJ8MzYor5
-wBLyF4yxRWosWnvxf44Ff2b7ewb/nwX/yyz4M9vfM/hbLMCJ6FkAdDUvqYlCanmpP5GRO+rJi/mU
-fuLJhrwYKHoraF7DnDRO7RsZCuZllWUQWA8nIk527ItxsHTWLnlZOi15tea1icmJ/XR/MqevyaLE
-MoD/akbCMZgPK2L/srSc8Li/s2dYEfm/ZlRsL8n0tjf5k2Klf23YDDzR1TOdYaF5ZWH2gY1h2yQ7
-zUt7skTtPxhGsDNYCL0r5s3QASx1g3GhzMifxPp9FFBMY+IfmyzHjGa0O4VmmIwQmlE583B4zsjs
-xusPzwGO+TEPhi96FPV2QH/OqC2khBa6SmE7tfge+SzzHVlZ0gsgtavIosr8CDcMZP1oh0V1fG2+
-CB/UvNJRY0cUU2PCNFleBlT1dpDZ3rgh6e3ALbEMN1Cg5SgH8mp/O9FY1C63C7ViZfOQr6oV2yUW
-gVHYt3PmeUAx560J/e6x22XJ2xNyZt6Q1AuQn3bmBSr/ZJbHnUFvt7JuMRhrFF9nc3FvwA1S43JF
-7yDL4DWa1+K2By+gF6r+pcmr8tfGYD0LvuIFacXb9WixELc9zevpRYhCykLe7jOeVx3juOKfmP2h
-N+4NkB+MPt5rqpX+mXkEvAhnCKKT5vWxeVJWrrzw0SjqGayxtFhiKVCEFMriyiwKi4y0zNoXc97w
-sEMas0ZRUYvc+uC/QGFiHFX2nJ3o371GkZoXqM+T/bC0nmi9nTlAEecOYgnqCWlinqCxkDchnI7H
-2027eBHQrljfAH7wAsw/1mg63mJ58iGWj4yDWuNpDdciW84isMhHAWDk7+haIwKLcp4psEtHFkD/
-xKIIbJfWVv/AeQH5c97iMA9Mgy1gB3g+YlzJedhPb+eZeYFmRIxK/iycVjWakvtrjSlmRsBMK2fU
-0P2Z0fjbOWyqZ1lit38fRTSKppbhwAYja1vqbcmp/SqyvZo8gy0i/44WqJKwHoFT20d05xaUYAVo
-4TMSzQtpuYIo+rysYpxGjASq0FrzmpqxeOL84TSWa6Xl30GBNZZjpWw0K8By0A0ZjcbSyZ5PzgJ6
-2pAud3w9C5xlOmO1eBFyUs1rB4shac5Y5PvdqRW10jhyvq80MgokjAIlq3KasTB/hSd09CBgoVGk
-WuW1j0QheJHjuaJRZFwqZY4VMM/CY6UrY17O+Kn7d5aXTjwXBlYgsX7O7EBj+bicZVpVTVmpPasx
-oX4CLzxGMdi/sigGLvqzRO8lrOVg/niCn2fwH0FRK2W8HXiWA0V/oruUftr+gVjOWFa2RG4yFg3l
-E/Ly0VDIfEbA3FzrjdWSEYDB5xmN3x8VPq00uSUvB0v1/BiZ66U8kWta8Ql5rWLJSlXNMw5s0TMl
-MS/UWDzwLCEDarJVs6DW8Ic1B7KlZqUyY70Zcdj5e0HOs4Q5q3pxaTJpvfaxKLSqdGqlblpiuWZE
-rJTWnF+71fxqNf8rLOyI/cAztGcGCIy+drvUs4xRcGQNuh88gzUvIWvgD4hrSWtSJDzRVAvGNK0T
-sl6sVmSmnbM+ibGJM9ZpLOdbDb1dIDccvp7d+xMt4UnhvahfxULkicju4RFax+S3sphvHdQLO/YN
-vOMOy4kEGbC/Vs39iczbjb6BYOzRei9vI9l5RrG6namXeyuu8Et5d9BYxJNRmdQxL13d7s5vp67z
-t1t9Tby8oMOrqC/ee9sra/s6+enB7B756QFbv3gdifeJ+lMDe794HbhP18GWzVevDvPrw/7u/s2r
-m83pO0a/75Ne/h8lOtGA73vt3fCJBs6h5ZEfT3zaBRCHv56wYY/9eqJRle70FxSOv5awle21+Otg
-+2kbvLm6DqZr/EziOnjb7n+SRw6/2XCVo9KcefzhhGuiYD9/+Ck4eSMZzMMYhFfxE38UcdTz+/wo
-YvktBN9nhpf/AlBLAQIeAxQAAgAIAEQxwUq/F3/hGQsAAPYiAAAIABgAAAAAAAEAAACkgQAAAAAx
-MTAxOC5qc1VUBQADX1svWXV4CwABBAAAAAAEAAAAAFBLBQYAAAAAAQABAE4AAABbCwAAAABQSwEC
-HgMKAAIAAACDMsFKv2HMS78LAAC/CwAACQAYAAAAAAAAAAAApIEAAAAAMTEwMTguemlwVVQFAAO2
-XS9ZdXgLAAEEAAAAAAQAAAAAUEsFBgAAAAABAAEATwAAAAIMAAAAAA==
