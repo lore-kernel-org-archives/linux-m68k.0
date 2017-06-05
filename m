@@ -1,18 +1,43 @@
-From: "Seydou Thieba" <seydouthieba@tiscali.co.uk>
-Subject: Investment Interest & Offer
-Date: Sat, 03 Jun 2017 00:01:51 +0100
-Message-ID: <201706022301.v52MWdAM028763__44925.3436796882$1496579118$gmane$org@www.brfliseberg.se>
-Reply-To: seydouthiebaconsultant@gmail.com
-Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 8BIT
+From: Michael Schmitz <schmitzmic@gmail.com>
+Subject: [PATCH] m68k/atari: atari_scsi.c - use m68k_realnum_memory for FastRAM test
+Date: Mon,  5 Jun 2017 19:37:59 +1200
+Message-ID: <1496648279-15702-1-git-send-email-schmitzmic@gmail.com>
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from www.brfliseberg.se ([213.242.162.1]:59516 "EHLO
-        www.brfliseberg.se" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1751045AbdFDMZK (ORCPT
-        <rfc822;linux-m68k@vger.kernel.org>); Sun, 4 Jun 2017 08:25:10 -0400
-Content-Description: Mail message body
+Received: from mail-pf0-f195.google.com ([209.85.192.195]:33125 "EHLO
+        mail-pf0-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1751321AbdFEHiP (ORCPT
+        <rfc822;linux-m68k@vger.kernel.org>); Mon, 5 Jun 2017 03:38:15 -0400
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Recipients <seydouthieba@tiscali.co.uk>
+To: linux-m68k@vger.kernel.org, fthain@telegraphics.com.au
+Cc: geert@linux-m68k.org, cts@debian.org, linux-scsi@vger.kernel.org, Michael Schmitz <schmitzmic@gmail.com>
 
+m68k_num_memory is unsuitable to test for the presence of FastRAM
+on CT60 if the kernel is located in FastRAM: in arch/m68k/mm/motorola.c
+the ST-RAM chunk is skipped and m68k_num_memory is decremented in this
+case. m68k_realnum_memory still contains the actual number of RAM chunks
+so use that.
+
+Tested by Christian Steiges on his Falcon with kernel loaded in FastRAM
+- could you please reply with your Tested-by tag, Christian?
+
+Signed-off-by: Michael Schmitz <schmitzmic@gmail.com>
+---
+ drivers/scsi/atari_scsi.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+diff --git a/drivers/scsi/atari_scsi.c b/drivers/scsi/atari_scsi.c
+index f792420..a75feeb 100644
+--- a/drivers/scsi/atari_scsi.c
++++ b/drivers/scsi/atari_scsi.c
+@@ -776,7 +776,7 @@ static int __init atari_scsi_probe(struct platform_device *pdev)
+ 	 * from/to alternative Ram.
+ 	 */
+ 	if (ATARIHW_PRESENT(ST_SCSI) && !ATARIHW_PRESENT(EXTD_DMA) &&
+-	    m68k_num_memory > 1) {
++	    m68k_realnum_memory > 1) {
+ 		atari_dma_buffer = atari_stram_alloc(STRAM_BUFFER_SIZE, "SCSI");
+ 		if (!atari_dma_buffer) {
+ 			pr_err(PFX "can't allocate ST-RAM double buffer\n");
+-- 
+1.7.0.4
