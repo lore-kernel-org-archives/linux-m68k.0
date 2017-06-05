@@ -1,71 +1,58 @@
-From: <armouralumni@yahoo.com>
-Subject: (unknown)
-Date: Mon, 05 Jun 2017 17:32:03 -0000
-Message-ID: <149668392319.12492.5970892187530219318@zaural.ru>
+From: "Christian T. Steigies" <cts@debian.org>
+Subject: Re: [PATCH] m68k/atari: atari_scsi.c - use m68k_realnum_memory for
+ FastRAM test
+Date: Mon, 5 Jun 2017 21:17:09 +0200
+Message-ID: <20170605191709.GB4005@nunzio.venus.sol>
+References: <1496648279-15702-1-git-send-email-schmitzmic@gmail.com>
 Mime-Version: 1.0
-Content-Type: application/zip; name="5980832698.zip"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset=us-ascii
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Content-Disposition: attachment
-Subject: 
+Received: from slow1-d.mail.gandi.net ([217.70.178.86]:59788 "EHLO
+        slow1-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1751077AbdFET36 (ORCPT
+        <rfc822;linux-m68k@vger.kernel.org>); Mon, 5 Jun 2017 15:29:58 -0400
+Content-Disposition: inline
+In-Reply-To: <1496648279-15702-1-git-send-email-schmitzmic@gmail.com>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: linux-m68k@lists.linux-m68k.org
+To: Michael Schmitz <schmitzmic@gmail.com>
+Cc: linux-m68k@vger.kernel.org, fthain@telegraphics.com.au, geert@linux-m68k.org, cts@debian.org, linux-scsi@vger.kernel.org
 
-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
-AQBPAAAAHwwAAAAA
+On Mon, Jun 05, 2017 at 07:37:59PM +1200, Michael Schmitz wrote:
+> m68k_num_memory is unsuitable to test for the presence of FastRAM
+> on CT60 if the kernel is located in FastRAM: in arch/m68k/mm/motorola.c
+> the ST-RAM chunk is skipped and m68k_num_memory is decremented in this
+> case. m68k_realnum_memory still contains the actual number of RAM chunks
+> so use that.
+> 
+> Tested by Christian Steiges on his Falcon with kernel loaded in FastRAM
+> - could you please reply with your Tested-by tag, Christian?
+
+Sure, do I need to sign it or is this ok?
+
+Tested-by: Christian T. Steigies <cts@debian.org>
+> Signed-off-by: Michael Schmitz <schmitzmic@gmail.com>
+> ---
+>  drivers/scsi/atari_scsi.c |    2 +-
+>  1 files changed, 1 insertions(+), 1 deletions(-)
+> 
+> diff --git a/drivers/scsi/atari_scsi.c b/drivers/scsi/atari_scsi.c
+> index f792420..a75feeb 100644
+> --- a/drivers/scsi/atari_scsi.c
+> +++ b/drivers/scsi/atari_scsi.c
+> @@ -776,7 +776,7 @@ static int __init atari_scsi_probe(struct platform_device *pdev)
+>  	 * from/to alternative Ram.
+>  	 */
+>  	if (ATARIHW_PRESENT(ST_SCSI) && !ATARIHW_PRESENT(EXTD_DMA) &&
+> -	    m68k_num_memory > 1) {
+> +	    m68k_realnum_memory > 1) {
+>  		atari_dma_buffer = atari_stram_alloc(STRAM_BUFFER_SIZE, "SCSI");
+>  		if (!atari_dma_buffer) {
+>  			pr_err(PFX "can't allocate ST-RAM double buffer\n");
+> -- 
+> 1.7.0.4
+> 
+> --
+> To unsubscribe from this list: send the line "unsubscribe linux-m68k" in
+> the body of a message to majordomo@vger.kernel.org
+> More majordomo info at  http://vger.kernel.org/majordomo-info.html
