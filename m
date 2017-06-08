@@ -1,99 +1,44 @@
-From: Krzysztof Kozlowski <krzk@kernel.org>
-Subject: [PATCH 18/35] m68k: defconfig: Cleanup from old Kconfig options
-Date: Thu,  8 Jun 2017 18:10:29 +0200
-Message-ID: <20170608161049.12421-18-krzk__5379.67512286759$1496938698$gmane$org@kernel.org>
-References: <20170608160836.12196-1-krzk@kernel.org>
+From: Babu Moger <babu.moger@oracle.com>
+Subject: [PATCH 0/2] Define CPU_BIG_ENDIAN or warn for inconsistencies
+Date: Thu,  8 Jun 2017 15:17:21 -0700
+Message-ID: <1496960243-196898-1-git-send-email-babu.moger@oracle.com>
 Return-path: <linux-m68k-owner@vger.kernel.org>
-In-Reply-To: <20170608160836.12196-1-krzk@kernel.org>
+Received: from aserp1040.oracle.com ([141.146.126.69]:22173 "EHLO
+        aserp1040.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1751475AbdFHWTA (ORCPT
+        <rfc822;linux-m68k@vger.kernel.org>); Thu, 8 Jun 2017 18:19:00 -0400
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: linux-kernel@vger.kernel.org
-Cc: Arnd Bergmann <arnd@arndb.de>, Krzysztof Kozlowski <krzk@kernel.org>, Geert Uytterhoeven <geert@linux-m68k.org>, linux-m68k@lists.linux-m68k.org
+To: ysato@users.sourceforge.jp, geert@linux-m68k.org, jonas@southpole.se, stefan.kristiansson@saunalahti.fi, shorne@gmail.com, jejb@parisc-linux.org, deller@gmx.de, davem@davemloft.net, viro@zeniv.linux.org.uk
+Cc: mpe@ellerman.id.au, peterz@infradead.org, mingo@redhat.com, jcmvbkbc@gmail.com, linux-kernel@vger.kernel.org, uclinux-h8-devel@lists.sourceforge.jp, linux-m68k@vger.kernel.org, openrisc@lists.librecores.org, linux-parisc@vger.kernel.org, sparclinux@vger.kernel.org
 
-Remove old, dead Kconfig option INET_LRO. It is gone since
-commit 7bbf3cae65b6 ("ipv4: Remove inet_lro library").
+Found this problem while enabling queued rwlock on SPARC.
+The parameter CONFIG_CPU_BIG_ENDIAN is used to clear the
+specific byte in qrwlock structure. Without this parameter,
+we clear the wrong byte. Here is the code.
 
-Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
----
- arch/m68k/configs/m5208evb_defconfig | 1 -
- arch/m68k/configs/m5249evb_defconfig | 1 -
- arch/m68k/configs/m5272c3_defconfig  | 1 -
- arch/m68k/configs/m5275evb_defconfig | 1 -
- arch/m68k/configs/m5307c3_defconfig  | 1 -
- arch/m68k/configs/m5407c3_defconfig  | 1 -
- 6 files changed, 6 deletions(-)
+static inline u8 *__qrwlock_write_byte(struct qrwlock *lock)
+  {
+         return (u8 *)lock + 3 * IS_BUILTIN(CONFIG_CPU_BIG_ENDIAN);
+  }
 
-diff --git a/arch/m68k/configs/m5208evb_defconfig b/arch/m68k/configs/m5208evb_defconfig
-index 4c7b7938d53a..a3102ff7e5ed 100644
---- a/arch/m68k/configs/m5208evb_defconfig
-+++ b/arch/m68k/configs/m5208evb_defconfig
-@@ -26,7 +26,6 @@ CONFIG_INET=y
- # CONFIG_INET_XFRM_MODE_TRANSPORT is not set
- # CONFIG_INET_XFRM_MODE_TUNNEL is not set
- # CONFIG_INET_XFRM_MODE_BEET is not set
--# CONFIG_INET_LRO is not set
- # CONFIG_INET_DIAG is not set
- # CONFIG_IPV6 is not set
- # CONFIG_FW_LOADER is not set
-diff --git a/arch/m68k/configs/m5249evb_defconfig b/arch/m68k/configs/m5249evb_defconfig
-index a782f368650f..f7bb9ed3efa8 100644
---- a/arch/m68k/configs/m5249evb_defconfig
-+++ b/arch/m68k/configs/m5249evb_defconfig
-@@ -27,7 +27,6 @@ CONFIG_INET=y
- # CONFIG_INET_XFRM_MODE_TRANSPORT is not set
- # CONFIG_INET_XFRM_MODE_TUNNEL is not set
- # CONFIG_INET_XFRM_MODE_BEET is not set
--# CONFIG_INET_LRO is not set
- # CONFIG_INET_DIAG is not set
- # CONFIG_IPV6 is not set
- # CONFIG_FW_LOADER is not set
-diff --git a/arch/m68k/configs/m5272c3_defconfig b/arch/m68k/configs/m5272c3_defconfig
-index 6f5fb92f5cbf..1e679f6a400f 100644
---- a/arch/m68k/configs/m5272c3_defconfig
-+++ b/arch/m68k/configs/m5272c3_defconfig
-@@ -27,7 +27,6 @@ CONFIG_INET=y
- # CONFIG_INET_XFRM_MODE_TRANSPORT is not set
- # CONFIG_INET_XFRM_MODE_TUNNEL is not set
- # CONFIG_INET_XFRM_MODE_BEET is not set
--# CONFIG_INET_LRO is not set
- # CONFIG_INET_DIAG is not set
- # CONFIG_IPV6 is not set
- # CONFIG_FW_LOADER is not set
-diff --git a/arch/m68k/configs/m5275evb_defconfig b/arch/m68k/configs/m5275evb_defconfig
-index b5d7cd1ce856..d2987b40423e 100644
---- a/arch/m68k/configs/m5275evb_defconfig
-+++ b/arch/m68k/configs/m5275evb_defconfig
-@@ -27,7 +27,6 @@ CONFIG_INET=y
- # CONFIG_INET_XFRM_MODE_TRANSPORT is not set
- # CONFIG_INET_XFRM_MODE_TUNNEL is not set
- # CONFIG_INET_XFRM_MODE_BEET is not set
--# CONFIG_INET_LRO is not set
- # CONFIG_INET_DIAG is not set
- # CONFIG_IPV6 is not set
- # CONFIG_FW_LOADER is not set
-diff --git a/arch/m68k/configs/m5307c3_defconfig b/arch/m68k/configs/m5307c3_defconfig
-index 1b4c09461c40..97a78c99eeee 100644
---- a/arch/m68k/configs/m5307c3_defconfig
-+++ b/arch/m68k/configs/m5307c3_defconfig
-@@ -27,7 +27,6 @@ CONFIG_INET=y
- # CONFIG_INET_XFRM_MODE_TRANSPORT is not set
- # CONFIG_INET_XFRM_MODE_TUNNEL is not set
- # CONFIG_INET_XFRM_MODE_BEET is not set
--# CONFIG_INET_LRO is not set
- # CONFIG_INET_DIAG is not set
- # CONFIG_IPV6 is not set
- # CONFIG_FW_LOADER is not set
-diff --git a/arch/m68k/configs/m5407c3_defconfig b/arch/m68k/configs/m5407c3_defconfig
-index 275ad543d4bc..766a97f39a3a 100644
---- a/arch/m68k/configs/m5407c3_defconfig
-+++ b/arch/m68k/configs/m5407c3_defconfig
-@@ -28,7 +28,6 @@ CONFIG_INET=y
- # CONFIG_INET_XFRM_MODE_TRANSPORT is not set
- # CONFIG_INET_XFRM_MODE_TUNNEL is not set
- # CONFIG_INET_XFRM_MODE_BEET is not set
--# CONFIG_INET_LRO is not set
- # CONFIG_INET_DIAG is not set
- # CONFIG_IPV6 is not set
- # CONFIG_FW_LOADER is not set
--- 
-2.9.3
+Here is the previous discussion.
+http://www.spinics.net/lists/devicetree/msg178101.html
+
+Based on the discussion, it was decided to add CONFIG_CPU_BIG_ENDIAN
+for all the fixed big endian architecture(frv, h8300, m68k, openrisc,
+parisc and sparc). And warn if there are inconsistencies in this definition.
+
+Babu Moger (2):
+  arch: Define CPU_BIG_ENDIAN for all fixed big endian archs
+  include: warn for inconsistent endian config definition
+
+ arch/frv/Kconfig                        |    3 +++
+ arch/h8300/Kconfig                      |    3 +++
+ arch/m68k/Kconfig                       |    3 +++
+ arch/openrisc/Kconfig                   |    3 +++
+ arch/parisc/Kconfig                     |    3 +++
+ arch/sparc/Kconfig                      |    3 +++
+ include/linux/byteorder/big_endian.h    |    4 ++++
+ include/linux/byteorder/little_endian.h |    4 ++++
+ 8 files changed, 26 insertions(+), 0 deletions(-)
