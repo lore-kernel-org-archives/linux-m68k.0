@@ -1,7 +1,7 @@
 From: Babu Moger <babu.moger@oracle.com>
-Subject: [PATCH 2/2] include: warn for inconsistent endian config definition
-Date: Thu,  8 Jun 2017 15:17:23 -0700
-Message-ID: <1496960243-196898-3-git-send-email-babu.moger@oracle.com>
+Subject: [PATCH 1/2] arch: Define CPU_BIG_ENDIAN for all fixed big endian archs
+Date: Thu,  8 Jun 2017 15:17:22 -0700
+Message-ID: <1496960243-196898-2-git-send-email-babu.moger@oracle.com>
 References: <1496960243-196898-1-git-send-email-babu.moger@oracle.com>
 Return-path: <linux-kernel-owner@vger.kernel.org>
 In-Reply-To: <1496960243-196898-1-git-send-email-babu.moger@oracle.com>
@@ -10,49 +10,117 @@ To: ysato@users.sourceforge.jp, geert@linux-m68k.org, jonas@southpole.se, stefan
 Cc: mpe@ellerman.id.au, peterz@infradead.org, mingo@redhat.com, jcmvbkbc@gmail.com, linux-kernel@vger.kernel.org, uclinux-h8-devel@lists.sourceforge.jp, linux-m68k@vger.kernel.org, openrisc@lists.librecores.org, linux-parisc@vger.kernel.org, sparclinux@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
 
-Display warning if CPU_BIG_ENDIAN is not defined on big endian
-architecture and also warn if it defined on little endian architectures.
+While working on enabling queued rwlock on SPARC, found
+this following code in include/asm-generic/qrwlock.h
+which uses CONFIG_CPU_BIG_ENDIAN to clear a byte.
 
-We have seen some generic code(for example code include/asm-generic/qrwlock.h)
-uses CONFIG_CPU_BIG_ENDIAN to decide the endianess.
+static inline u8 *__qrwlock_write_byte(struct qrwlock *lock)
+ {
+	return (u8 *)lock + 3 * IS_BUILTIN(CONFIG_CPU_BIG_ENDIAN);
+ }
 
-Here is the original discussion
+Problem is many of the fixed big endian architectures dont define
+CPU_BIG_ENDIAN and clears the wrong byte.
+
+Define CPU_BIG_ENDIAN for all the fixed big endian architecture.
+
+Here is the orinal discussion
 http://www.spinics.net/lists/devicetree/msg178101.html
 
 Signed-off-by: Babu Moger <babu.moger@oracle.com>
 Suggested-by: Arnd Bergmann <arnd@arndb.de>
 ---
- include/linux/byteorder/big_endian.h    |    4 ++++
- include/linux/byteorder/little_endian.h |    4 ++++
- 2 files changed, 8 insertions(+), 0 deletions(-)
+ arch/frv/Kconfig      |    3 +++
+ arch/h8300/Kconfig    |    3 +++
+ arch/m68k/Kconfig     |    3 +++
+ arch/openrisc/Kconfig |    3 +++
+ arch/parisc/Kconfig   |    3 +++
+ arch/sparc/Kconfig    |    3 +++
+ 6 files changed, 18 insertions(+), 0 deletions(-)
 
-diff --git a/include/linux/byteorder/big_endian.h b/include/linux/byteorder/big_endian.h
-index 3920414..ffd2159 100644
---- a/include/linux/byteorder/big_endian.h
-+++ b/include/linux/byteorder/big_endian.h
-@@ -3,5 +3,9 @@
+diff --git a/arch/frv/Kconfig b/arch/frv/Kconfig
+index eefd9a4..1cce824 100644
+--- a/arch/frv/Kconfig
++++ b/arch/frv/Kconfig
+@@ -17,6 +17,9 @@ config FRV
+ 	select HAVE_DEBUG_STACKOVERFLOW
+ 	select ARCH_NO_COHERENT_DMA_MMAP
  
- #include <uapi/linux/byteorder/big_endian.h>
- 
-+#ifndef CONFIG_CPU_BIG_ENDIAN
-+#warning inconsistent configuration, needs CONFIG_CPU_BIG_ENDIAN
-+#endif
++config CPU_BIG_ENDIAN
++	def_bool y
 +
- #include <linux/byteorder/generic.h>
- #endif /* _LINUX_BYTEORDER_BIG_ENDIAN_H */
-diff --git a/include/linux/byteorder/little_endian.h b/include/linux/byteorder/little_endian.h
-index 0805737..ba910bb 100644
---- a/include/linux/byteorder/little_endian.h
-+++ b/include/linux/byteorder/little_endian.h
-@@ -3,5 +3,9 @@
+ config ZONE_DMA
+ 	bool
+ 	default y
+diff --git a/arch/h8300/Kconfig b/arch/h8300/Kconfig
+index 3ae8525..5380ac8 100644
+--- a/arch/h8300/Kconfig
++++ b/arch/h8300/Kconfig
+@@ -23,6 +23,9 @@ config H8300
+ 	select HAVE_ARCH_HASH
+ 	select CPU_NO_EFFICIENT_FFS
  
- #include <uapi/linux/byteorder/little_endian.h>
- 
-+#ifdef CONFIG_CPU_BIG_ENDIAN
-+#warning inconsistent configuration, CONFIG_CPU_BIG_ENDIAN is set
-+#endif
++config CPU_BIG_ENDIAN
++	def_bool y
 +
- #include <linux/byteorder/generic.h>
- #endif /* _LINUX_BYTEORDER_LITTLE_ENDIAN_H */
+ config RWSEM_GENERIC_SPINLOCK
+ 	def_bool y
+ 
+diff --git a/arch/m68k/Kconfig b/arch/m68k/Kconfig
+index d140206..029a58b 100644
+--- a/arch/m68k/Kconfig
++++ b/arch/m68k/Kconfig
+@@ -23,6 +23,9 @@ config M68K
+ 	select OLD_SIGSUSPEND3
+ 	select OLD_SIGACTION
+ 
++config CPU_BIG_ENDIAN
++	def_bool y
++
+ config RWSEM_GENERIC_SPINLOCK
+ 	bool
+ 	default y
+diff --git a/arch/openrisc/Kconfig b/arch/openrisc/Kconfig
+index 1e95920..a0f2e4a 100644
+--- a/arch/openrisc/Kconfig
++++ b/arch/openrisc/Kconfig
+@@ -29,6 +29,9 @@ config OPENRISC
+ 	select CPU_NO_EFFICIENT_FFS if !OPENRISC_HAVE_INST_FF1
+ 	select NO_BOOTMEM
+ 
++config CPU_BIG_ENDIAN
++	def_bool y
++
+ config MMU
+ 	def_bool y
+ 
+diff --git a/arch/parisc/Kconfig b/arch/parisc/Kconfig
+index 531da9e..dda1f55 100644
+--- a/arch/parisc/Kconfig
++++ b/arch/parisc/Kconfig
+@@ -47,6 +47,9 @@ config PARISC
+ 	  and later HP3000 series).  The PA-RISC Linux project home page is
+ 	  at <http://www.parisc-linux.org/>.
+ 
++config CPU_BIG_ENDIAN
++	def_bool y
++
+ config MMU
+ 	def_bool y
+ 
+diff --git a/arch/sparc/Kconfig b/arch/sparc/Kconfig
+index 58243b0..eb213b5 100644
+--- a/arch/sparc/Kconfig
++++ b/arch/sparc/Kconfig
+@@ -92,6 +92,9 @@ config ARCH_DEFCONFIG
+ config ARCH_PROC_KCORE_TEXT
+ 	def_bool y
+ 
++config CPU_BIG_ENDIAN
++	def_bool y
++
+ config ARCH_ATU
+ 	bool
+ 	default y if SPARC64
 -- 
 1.7.1
