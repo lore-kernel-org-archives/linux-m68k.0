@@ -1,44 +1,58 @@
 From: Babu Moger <babu.moger@oracle.com>
-Subject: [PATCH 0/2] Define CPU_BIG_ENDIAN or warn for inconsistencies
-Date: Thu,  8 Jun 2017 15:17:21 -0700
-Message-ID: <1496960243-196898-1-git-send-email-babu.moger@oracle.com>
-Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from aserp1040.oracle.com ([141.146.126.69]:22173 "EHLO
-        aserp1040.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1751475AbdFHWTA (ORCPT
-        <rfc822;linux-m68k@vger.kernel.org>); Thu, 8 Jun 2017 18:19:00 -0400
-Sender: linux-m68k-owner@vger.kernel.org
-List-Id: linux-m68k@vger.kernel.org
+Subject: [PATCH 2/2] include: warn for inconsistent endian config definition
+Date: Thu,  8 Jun 2017 15:17:23 -0700
+Message-ID: <1496960243-196898-3-git-send-email-babu.moger@oracle.com>
+References: <1496960243-196898-1-git-send-email-babu.moger@oracle.com>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <1496960243-196898-1-git-send-email-babu.moger@oracle.com>
+Sender: linux-kernel-owner@vger.kernel.org
 To: ysato@users.sourceforge.jp, geert@linux-m68k.org, jonas@southpole.se, stefan.kristiansson@saunalahti.fi, shorne@gmail.com, jejb@parisc-linux.org, deller@gmx.de, davem@davemloft.net, viro@zeniv.linux.org.uk
 Cc: mpe@ellerman.id.au, peterz@infradead.org, mingo@redhat.com, jcmvbkbc@gmail.com, linux-kernel@vger.kernel.org, uclinux-h8-devel@lists.sourceforge.jp, linux-m68k@vger.kernel.org, openrisc@lists.librecores.org, linux-parisc@vger.kernel.org, sparclinux@vger.kernel.org
+List-Id: linux-m68k@vger.kernel.org
 
-Found this problem while enabling queued rwlock on SPARC.
-The parameter CONFIG_CPU_BIG_ENDIAN is used to clear the
-specific byte in qrwlock structure. Without this parameter,
-we clear the wrong byte. Here is the code.
+Display warning if CPU_BIG_ENDIAN is not defined on big endian
+architecture and also warn if it defined on little endian architectures.
 
-static inline u8 *__qrwlock_write_byte(struct qrwlock *lock)
-  {
-         return (u8 *)lock + 3 * IS_BUILTIN(CONFIG_CPU_BIG_ENDIAN);
-  }
+We have seen some generic code(for example code include/asm-generic/qrwlock.h)
+uses CONFIG_CPU_BIG_ENDIAN to decide the endianess.
 
-Here is the previous discussion.
+Here is the original discussion
 http://www.spinics.net/lists/devicetree/msg178101.html
 
-Based on the discussion, it was decided to add CONFIG_CPU_BIG_ENDIAN
-for all the fixed big endian architecture(frv, h8300, m68k, openrisc,
-parisc and sparc). And warn if there are inconsistencies in this definition.
-
-Babu Moger (2):
-  arch: Define CPU_BIG_ENDIAN for all fixed big endian archs
-  include: warn for inconsistent endian config definition
-
- arch/frv/Kconfig                        |    3 +++
- arch/h8300/Kconfig                      |    3 +++
- arch/m68k/Kconfig                       |    3 +++
- arch/openrisc/Kconfig                   |    3 +++
- arch/parisc/Kconfig                     |    3 +++
- arch/sparc/Kconfig                      |    3 +++
+Signed-off-by: Babu Moger <babu.moger@oracle.com>
+Suggested-by: Arnd Bergmann <arnd@arndb.de>
+---
  include/linux/byteorder/big_endian.h    |    4 ++++
  include/linux/byteorder/little_endian.h |    4 ++++
- 8 files changed, 26 insertions(+), 0 deletions(-)
+ 2 files changed, 8 insertions(+), 0 deletions(-)
+
+diff --git a/include/linux/byteorder/big_endian.h b/include/linux/byteorder/big_endian.h
+index 3920414..ffd2159 100644
+--- a/include/linux/byteorder/big_endian.h
++++ b/include/linux/byteorder/big_endian.h
+@@ -3,5 +3,9 @@
+ 
+ #include <uapi/linux/byteorder/big_endian.h>
+ 
++#ifndef CONFIG_CPU_BIG_ENDIAN
++#warning inconsistent configuration, needs CONFIG_CPU_BIG_ENDIAN
++#endif
++
+ #include <linux/byteorder/generic.h>
+ #endif /* _LINUX_BYTEORDER_BIG_ENDIAN_H */
+diff --git a/include/linux/byteorder/little_endian.h b/include/linux/byteorder/little_endian.h
+index 0805737..ba910bb 100644
+--- a/include/linux/byteorder/little_endian.h
++++ b/include/linux/byteorder/little_endian.h
+@@ -3,5 +3,9 @@
+ 
+ #include <uapi/linux/byteorder/little_endian.h>
+ 
++#ifdef CONFIG_CPU_BIG_ENDIAN
++#warning inconsistent configuration, CONFIG_CPU_BIG_ENDIAN is set
++#endif
++
+ #include <linux/byteorder/generic.h>
+ #endif /* _LINUX_BYTEORDER_LITTLE_ENDIAN_H */
+-- 
+1.7.1
