@@ -1,107 +1,99 @@
-From: Andreas Schwab <schwab@linux-m68k.org>
-Subject: [PATCH] m68k: remove ptrace_signal_deliver
-Date: Wed, 07 Jun 2017 00:11:44 +0200
-Message-ID: <877f0oojfj.fsf@linux-m68k.org>
-Mime-Version: 1.0
-Content-Type: text/plain
+From: Krzysztof Kozlowski <krzk@kernel.org>
+Subject: [PATCH 18/35] m68k: defconfig: Cleanup from old Kconfig options
+Date: Thu,  8 Jun 2017 18:10:29 +0200
+Message-ID: <20170608161049.12421-18-krzk__5379.67512286759$1496938698$gmane$org@kernel.org>
+References: <20170608160836.12196-1-krzk@kernel.org>
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from mail-out.m-online.net ([212.18.0.9]:60493 "EHLO
-        mail-out.m-online.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1751398AbdFFWLs (ORCPT
-        <rfc822;linux-m68k@vger.kernel.org>); Tue, 6 Jun 2017 18:11:48 -0400
+In-Reply-To: <20170608160836.12196-1-krzk@kernel.org>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: linux-m68k@vger.kernel.org
-Cc: linux-kernel@vger.kernel.org
+To: linux-kernel@vger.kernel.org
+Cc: Arnd Bergmann <arnd@arndb.de>, Krzysztof Kozlowski <krzk@kernel.org>, Geert Uytterhoeven <geert@linux-m68k.org>, linux-m68k@lists.linux-m68k.org
 
-This fixes debugger syscall restart interactions.  A debugger that
-modifies the tracee's program counter is expected to set the orig_d0
-pseudo register to -1, to disable a possible syscall restart.
+Remove old, dead Kconfig option INET_LRO. It is gone since
+commit 7bbf3cae65b6 ("ipv4: Remove inet_lro library").
 
-This removes the last user of the ptrace_signal_deliver hook in the ptrace
-signal handling, so remove that as well.
-
-Signed-off-by: Andreas Schwab <schwab@linux-m68k.org>
+Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
 ---
- arch/m68k/include/asm/signal.h |  5 -----
- arch/m68k/kernel/signal.c      | 16 ----------------
- include/linux/ptrace.h         |  4 ----
- kernel/signal.c                |  1 -
- 4 files changed, 26 deletions(-)
+ arch/m68k/configs/m5208evb_defconfig | 1 -
+ arch/m68k/configs/m5249evb_defconfig | 1 -
+ arch/m68k/configs/m5272c3_defconfig  | 1 -
+ arch/m68k/configs/m5275evb_defconfig | 1 -
+ arch/m68k/configs/m5307c3_defconfig  | 1 -
+ arch/m68k/configs/m5407c3_defconfig  | 1 -
+ 6 files changed, 6 deletions(-)
 
-diff --git a/arch/m68k/include/asm/signal.h b/arch/m68k/include/asm/signal.h
-index 8c8ce5e1ee..3bc64d02ba 100644
---- a/arch/m68k/include/asm/signal.h
-+++ b/arch/m68k/include/asm/signal.h
-@@ -62,9 +62,4 @@ static inline int __gen_sigismember(sigset_t *set, int _sig)
- 
- #endif /* !CONFIG_CPU_HAS_NO_BITFIELDS */
- 
--#ifndef __uClinux__
--extern void ptrace_signal_deliver(void);
--#define ptrace_signal_deliver ptrace_signal_deliver
--#endif /* __uClinux__ */
--
- #endif /* _M68K_SIGNAL_H */
-diff --git a/arch/m68k/kernel/signal.c b/arch/m68k/kernel/signal.c
-index 093b7c42fb..098fa7185b 100644
---- a/arch/m68k/kernel/signal.c
-+++ b/arch/m68k/kernel/signal.c
-@@ -109,22 +109,6 @@ int handle_kernel_fault(struct pt_regs *regs)
- 	return 1;
- }
- 
--void ptrace_signal_deliver(void)
--{
--	struct pt_regs *regs = signal_pt_regs();
--	if (regs->orig_d0 < 0)
--		return;
--	switch (regs->d0) {
--	case -ERESTARTNOHAND:
--	case -ERESTARTSYS:
--	case -ERESTARTNOINTR:
--		regs->d0 = regs->orig_d0;
--		regs->orig_d0 = -1;
--		regs->pc -= 2;
--		break;
--	}
--}
--
- static inline void push_cache (unsigned long vaddr)
- {
- 	/*
-diff --git a/include/linux/ptrace.h b/include/linux/ptrace.h
-index 422bc2e4cb..9a2e04be06 100644
---- a/include/linux/ptrace.h
-+++ b/include/linux/ptrace.h
-@@ -388,10 +388,6 @@ static inline void user_single_step_siginfo(struct task_struct *tsk,
- #define current_pt_regs() task_pt_regs(current)
- #endif
- 
--#ifndef ptrace_signal_deliver
--#define ptrace_signal_deliver() ((void)0)
--#endif
--
- /*
-  * unlike current_pt_regs(), this one is equal to task_pt_regs(current)
-  * on *all* architectures; the only reason to have a per-arch definition
-diff --git a/kernel/signal.c b/kernel/signal.c
-index 7e59ebc2c2..742c08b409 100644
---- a/kernel/signal.c
-+++ b/kernel/signal.c
-@@ -2092,7 +2092,6 @@ static void do_jobctl_trap(void)
- 
- static int ptrace_signal(int signr, siginfo_t *info)
- {
--	ptrace_signal_deliver();
- 	/*
- 	 * We do not check sig_kernel_stop(signr) but set this marker
- 	 * unconditionally because we do not know whether debugger will
+diff --git a/arch/m68k/configs/m5208evb_defconfig b/arch/m68k/configs/m5208evb_defconfig
+index 4c7b7938d53a..a3102ff7e5ed 100644
+--- a/arch/m68k/configs/m5208evb_defconfig
++++ b/arch/m68k/configs/m5208evb_defconfig
+@@ -26,7 +26,6 @@ CONFIG_INET=y
+ # CONFIG_INET_XFRM_MODE_TRANSPORT is not set
+ # CONFIG_INET_XFRM_MODE_TUNNEL is not set
+ # CONFIG_INET_XFRM_MODE_BEET is not set
+-# CONFIG_INET_LRO is not set
+ # CONFIG_INET_DIAG is not set
+ # CONFIG_IPV6 is not set
+ # CONFIG_FW_LOADER is not set
+diff --git a/arch/m68k/configs/m5249evb_defconfig b/arch/m68k/configs/m5249evb_defconfig
+index a782f368650f..f7bb9ed3efa8 100644
+--- a/arch/m68k/configs/m5249evb_defconfig
++++ b/arch/m68k/configs/m5249evb_defconfig
+@@ -27,7 +27,6 @@ CONFIG_INET=y
+ # CONFIG_INET_XFRM_MODE_TRANSPORT is not set
+ # CONFIG_INET_XFRM_MODE_TUNNEL is not set
+ # CONFIG_INET_XFRM_MODE_BEET is not set
+-# CONFIG_INET_LRO is not set
+ # CONFIG_INET_DIAG is not set
+ # CONFIG_IPV6 is not set
+ # CONFIG_FW_LOADER is not set
+diff --git a/arch/m68k/configs/m5272c3_defconfig b/arch/m68k/configs/m5272c3_defconfig
+index 6f5fb92f5cbf..1e679f6a400f 100644
+--- a/arch/m68k/configs/m5272c3_defconfig
++++ b/arch/m68k/configs/m5272c3_defconfig
+@@ -27,7 +27,6 @@ CONFIG_INET=y
+ # CONFIG_INET_XFRM_MODE_TRANSPORT is not set
+ # CONFIG_INET_XFRM_MODE_TUNNEL is not set
+ # CONFIG_INET_XFRM_MODE_BEET is not set
+-# CONFIG_INET_LRO is not set
+ # CONFIG_INET_DIAG is not set
+ # CONFIG_IPV6 is not set
+ # CONFIG_FW_LOADER is not set
+diff --git a/arch/m68k/configs/m5275evb_defconfig b/arch/m68k/configs/m5275evb_defconfig
+index b5d7cd1ce856..d2987b40423e 100644
+--- a/arch/m68k/configs/m5275evb_defconfig
++++ b/arch/m68k/configs/m5275evb_defconfig
+@@ -27,7 +27,6 @@ CONFIG_INET=y
+ # CONFIG_INET_XFRM_MODE_TRANSPORT is not set
+ # CONFIG_INET_XFRM_MODE_TUNNEL is not set
+ # CONFIG_INET_XFRM_MODE_BEET is not set
+-# CONFIG_INET_LRO is not set
+ # CONFIG_INET_DIAG is not set
+ # CONFIG_IPV6 is not set
+ # CONFIG_FW_LOADER is not set
+diff --git a/arch/m68k/configs/m5307c3_defconfig b/arch/m68k/configs/m5307c3_defconfig
+index 1b4c09461c40..97a78c99eeee 100644
+--- a/arch/m68k/configs/m5307c3_defconfig
++++ b/arch/m68k/configs/m5307c3_defconfig
+@@ -27,7 +27,6 @@ CONFIG_INET=y
+ # CONFIG_INET_XFRM_MODE_TRANSPORT is not set
+ # CONFIG_INET_XFRM_MODE_TUNNEL is not set
+ # CONFIG_INET_XFRM_MODE_BEET is not set
+-# CONFIG_INET_LRO is not set
+ # CONFIG_INET_DIAG is not set
+ # CONFIG_IPV6 is not set
+ # CONFIG_FW_LOADER is not set
+diff --git a/arch/m68k/configs/m5407c3_defconfig b/arch/m68k/configs/m5407c3_defconfig
+index 275ad543d4bc..766a97f39a3a 100644
+--- a/arch/m68k/configs/m5407c3_defconfig
++++ b/arch/m68k/configs/m5407c3_defconfig
+@@ -28,7 +28,6 @@ CONFIG_INET=y
+ # CONFIG_INET_XFRM_MODE_TRANSPORT is not set
+ # CONFIG_INET_XFRM_MODE_TUNNEL is not set
+ # CONFIG_INET_XFRM_MODE_BEET is not set
+-# CONFIG_INET_LRO is not set
+ # CONFIG_INET_DIAG is not set
+ # CONFIG_IPV6 is not set
+ # CONFIG_FW_LOADER is not set
 -- 
-2.13.1
-
-
--- 
-Andreas Schwab, schwab@linux-m68k.org
-GPG Key fingerprint = 58CA 54C7 6D53 942B 1756  01D3 44D5 214B 8276 4ED5
-"And now for something completely different."
+2.9.3
