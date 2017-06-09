@@ -1,115 +1,49 @@
-From: Greg Ungerer <gregungerer@westnet.com.au>
-Subject: Re: [PATCH 18/35] m68k: defconfig: Cleanup from old Kconfig options
-Date: Fri, 9 Jun 2017 11:11:30 +1000
-Message-ID: <ed1a6f44-643a-b728-c421-c4a77ebe35c5@westnet.com.au>
-References: <20170608160836.12196-1-krzk@kernel.org>
- <20170608161049.12421-18-krzk@kernel.org>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: Re: [PATCH 1/2] arch: Define CPU_BIG_ENDIAN for all fixed big endian archs
+Date: Fri, 9 Jun 2017 09:03:18 +0200
+Message-ID: <CAMuHMdXke2z5YuVfGU-wQ-PawwrGRP5_TyDN0qH8zah-iidNUQ@mail.gmail.com>
+References: <1496960243-196898-1-git-send-email-babu.moger@oracle.com> <1496960243-196898-2-git-send-email-babu.moger@oracle.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-m68k-owner@vger.kernel.org>
-In-Reply-To: <20170608161049.12421-18-krzk@kernel.org>
-Content-Language: en-US
-Sender: linux-m68k-owner@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Return-path: <sparclinux-owner@vger.kernel.org>
+In-Reply-To: <1496960243-196898-2-git-send-email-babu.moger@oracle.com>
+Sender: sparclinux-owner@vger.kernel.org
+To: Babu Moger <babu.moger@oracle.com>
+Cc: Yoshinori Sato <ysato@users.sourceforge.jp>, Jonas Bonn <jonas@southpole.se>, Stefan Kristiansson <stefan.kristiansson@saunalahti.fi>, Stafford Horne <shorne@gmail.com>, "James E.J. Bottomley" <jejb@parisc-linux.org>, Helge Deller <deller@gmx.de>, "David S. Miller" <davem@davemloft.net>, Al Viro <viro@zeniv.linux.org.uk>, Michael Ellerman <mpe@ellerman.id.au>, Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>, Max Filippov <jcmvbkbc@gmail.com>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, uclinux-h8-devel@lists.sourceforge.jp, Linux/m68k <linux-m68k@vger.kernel.org>, openrisc@lists.librecores.org, Parisc List <linux-parisc@vger.kernel.org>, sparclinux <sparclinux@vger.kernel.org>
 List-Id: linux-m68k@vger.kernel.org
-To: Krzysztof Kozlowski <krzk@kernel.org>, linux-kernel@vger.kernel.org
-Cc: Arnd Bergmann <arnd@arndb.de>, Geert Uytterhoeven <geert@linux-m68k.org>, linux-m68k@lists.linux-m68k.org
 
-Hi  Krzyszto,
+On Fri, Jun 9, 2017 at 12:17 AM, Babu Moger <babu.moger@oracle.com> wrote:
+> While working on enabling queued rwlock on SPARC, found
+> this following code in include/asm-generic/qrwlock.h
+> which uses CONFIG_CPU_BIG_ENDIAN to clear a byte.
+>
+> static inline u8 *__qrwlock_write_byte(struct qrwlock *lock)
+>  {
+>         return (u8 *)lock + 3 * IS_BUILTIN(CONFIG_CPU_BIG_ENDIAN);
+>  }
+>
+> Problem is many of the fixed big endian architectures dont define
+> CPU_BIG_ENDIAN and clears the wrong byte.
+>
+> Define CPU_BIG_ENDIAN for all the fixed big endian architecture.
+>
+> Here is the orinal discussion
+> http://www.spinics.net/lists/devicetree/msg178101.html
+>
+> Signed-off-by: Babu Moger <babu.moger@oracle.com>
+> Suggested-by: Arnd Bergmann <arnd@arndb.de>
 
-On 09/06/17 02:10, Krzysztof Kozlowski wrote:
-> Remove old, dead Kconfig option INET_LRO. It is gone since
-> commit 7bbf3cae65b6 ("ipv4: Remove inet_lro library").
-> 
-> Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
+Hmm, the link above refers to a mail from me? ;-)
 
-I will take that via the m68knommu git tree. Thanks.
-Its in the for-next branch now.
+Acked-by: Geert Uytterhoeven <geert@linux-m68k.org>
 
-Regards
-Greg
+Gr{oetje,eeting}s,
 
+                        Geert
 
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
-> ---
->  arch/m68k/configs/m5208evb_defconfig | 1 -
->  arch/m68k/configs/m5249evb_defconfig | 1 -
->  arch/m68k/configs/m5272c3_defconfig  | 1 -
->  arch/m68k/configs/m5275evb_defconfig | 1 -
->  arch/m68k/configs/m5307c3_defconfig  | 1 -
->  arch/m68k/configs/m5407c3_defconfig  | 1 -
->  6 files changed, 6 deletions(-)
-> 
-> diff --git a/arch/m68k/configs/m5208evb_defconfig b/arch/m68k/configs/m5208evb_defconfig
-> index 4c7b7938d53a..a3102ff7e5ed 100644
-> --- a/arch/m68k/configs/m5208evb_defconfig
-> +++ b/arch/m68k/configs/m5208evb_defconfig
-> @@ -26,7 +26,6 @@ CONFIG_INET=y
->  # CONFIG_INET_XFRM_MODE_TRANSPORT is not set
->  # CONFIG_INET_XFRM_MODE_TUNNEL is not set
->  # CONFIG_INET_XFRM_MODE_BEET is not set
-> -# CONFIG_INET_LRO is not set
->  # CONFIG_INET_DIAG is not set
->  # CONFIG_IPV6 is not set
->  # CONFIG_FW_LOADER is not set
-> diff --git a/arch/m68k/configs/m5249evb_defconfig b/arch/m68k/configs/m5249evb_defconfig
-> index a782f368650f..f7bb9ed3efa8 100644
-> --- a/arch/m68k/configs/m5249evb_defconfig
-> +++ b/arch/m68k/configs/m5249evb_defconfig
-> @@ -27,7 +27,6 @@ CONFIG_INET=y
->  # CONFIG_INET_XFRM_MODE_TRANSPORT is not set
->  # CONFIG_INET_XFRM_MODE_TUNNEL is not set
->  # CONFIG_INET_XFRM_MODE_BEET is not set
-> -# CONFIG_INET_LRO is not set
->  # CONFIG_INET_DIAG is not set
->  # CONFIG_IPV6 is not set
->  # CONFIG_FW_LOADER is not set
-> diff --git a/arch/m68k/configs/m5272c3_defconfig b/arch/m68k/configs/m5272c3_defconfig
-> index 6f5fb92f5cbf..1e679f6a400f 100644
-> --- a/arch/m68k/configs/m5272c3_defconfig
-> +++ b/arch/m68k/configs/m5272c3_defconfig
-> @@ -27,7 +27,6 @@ CONFIG_INET=y
->  # CONFIG_INET_XFRM_MODE_TRANSPORT is not set
->  # CONFIG_INET_XFRM_MODE_TUNNEL is not set
->  # CONFIG_INET_XFRM_MODE_BEET is not set
-> -# CONFIG_INET_LRO is not set
->  # CONFIG_INET_DIAG is not set
->  # CONFIG_IPV6 is not set
->  # CONFIG_FW_LOADER is not set
-> diff --git a/arch/m68k/configs/m5275evb_defconfig b/arch/m68k/configs/m5275evb_defconfig
-> index b5d7cd1ce856..d2987b40423e 100644
-> --- a/arch/m68k/configs/m5275evb_defconfig
-> +++ b/arch/m68k/configs/m5275evb_defconfig
-> @@ -27,7 +27,6 @@ CONFIG_INET=y
->  # CONFIG_INET_XFRM_MODE_TRANSPORT is not set
->  # CONFIG_INET_XFRM_MODE_TUNNEL is not set
->  # CONFIG_INET_XFRM_MODE_BEET is not set
-> -# CONFIG_INET_LRO is not set
->  # CONFIG_INET_DIAG is not set
->  # CONFIG_IPV6 is not set
->  # CONFIG_FW_LOADER is not set
-> diff --git a/arch/m68k/configs/m5307c3_defconfig b/arch/m68k/configs/m5307c3_defconfig
-> index 1b4c09461c40..97a78c99eeee 100644
-> --- a/arch/m68k/configs/m5307c3_defconfig
-> +++ b/arch/m68k/configs/m5307c3_defconfig
-> @@ -27,7 +27,6 @@ CONFIG_INET=y
->  # CONFIG_INET_XFRM_MODE_TRANSPORT is not set
->  # CONFIG_INET_XFRM_MODE_TUNNEL is not set
->  # CONFIG_INET_XFRM_MODE_BEET is not set
-> -# CONFIG_INET_LRO is not set
->  # CONFIG_INET_DIAG is not set
->  # CONFIG_IPV6 is not set
->  # CONFIG_FW_LOADER is not set
-> diff --git a/arch/m68k/configs/m5407c3_defconfig b/arch/m68k/configs/m5407c3_defconfig
-> index 275ad543d4bc..766a97f39a3a 100644
-> --- a/arch/m68k/configs/m5407c3_defconfig
-> +++ b/arch/m68k/configs/m5407c3_defconfig
-> @@ -28,7 +28,6 @@ CONFIG_INET=y
->  # CONFIG_INET_XFRM_MODE_TRANSPORT is not set
->  # CONFIG_INET_XFRM_MODE_TUNNEL is not set
->  # CONFIG_INET_XFRM_MODE_BEET is not set
-> -# CONFIG_INET_LRO is not set
->  # CONFIG_INET_DIAG is not set
->  # CONFIG_IPV6 is not set
->  # CONFIG_FW_LOADER is not set
-> 
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
