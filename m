@@ -1,33 +1,43 @@
 From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: Re: [PATCH 1/2] arch: Define CPU_BIG_ENDIAN for all fixed big endian archs
-Date: Fri, 9 Jun 2017 09:03:18 +0200
-Message-ID: <CAMuHMdXke2z5YuVfGU-wQ-PawwrGRP5_TyDN0qH8zah-iidNUQ@mail.gmail.com>
-References: <1496960243-196898-1-git-send-email-babu.moger@oracle.com> <1496960243-196898-2-git-send-email-babu.moger@oracle.com>
+Subject: Re: [PATCH 2/2] include: warn for inconsistent endian config definition
+Date: Fri, 9 Jun 2017 09:05:57 +0200
+Message-ID: <CAMuHMdX2u8vZGBVXitH+FcfeMwZ8a1-g2b-Dh7V9=HnqJpj=hw@mail.gmail.com>
+References: <1496960243-196898-1-git-send-email-babu.moger@oracle.com> <1496960243-196898-3-git-send-email-babu.moger@oracle.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="UTF-8"
-Return-path: <sparclinux-owner@vger.kernel.org>
-In-Reply-To: <1496960243-196898-2-git-send-email-babu.moger@oracle.com>
-Sender: sparclinux-owner@vger.kernel.org
+Return-path: <linux-m68k-owner@vger.kernel.org>
+Received: from mail-io0-f193.google.com ([209.85.223.193]:35450 "EHLO
+        mail-io0-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1751526AbdFIHGA (ORCPT
+        <rfc822;linux-m68k@vger.kernel.org>); Fri, 9 Jun 2017 03:06:00 -0400
+In-Reply-To: <1496960243-196898-3-git-send-email-babu.moger@oracle.com>
+Sender: linux-m68k-owner@vger.kernel.org
+List-Id: linux-m68k@vger.kernel.org
 To: Babu Moger <babu.moger@oracle.com>
 Cc: Yoshinori Sato <ysato@users.sourceforge.jp>, Jonas Bonn <jonas@southpole.se>, Stefan Kristiansson <stefan.kristiansson@saunalahti.fi>, Stafford Horne <shorne@gmail.com>, "James E.J. Bottomley" <jejb@parisc-linux.org>, Helge Deller <deller@gmx.de>, "David S. Miller" <davem@davemloft.net>, Al Viro <viro@zeniv.linux.org.uk>, Michael Ellerman <mpe@ellerman.id.au>, Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>, Max Filippov <jcmvbkbc@gmail.com>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, uclinux-h8-devel@lists.sourceforge.jp, Linux/m68k <linux-m68k@vger.kernel.org>, openrisc@lists.librecores.org, Parisc List <linux-parisc@vger.kernel.org>, sparclinux <sparclinux@vger.kernel.org>
-List-Id: linux-m68k@vger.kernel.org
 
 On Fri, Jun 9, 2017 at 12:17 AM, Babu Moger <babu.moger@oracle.com> wrote:
-> While working on enabling queued rwlock on SPARC, found
-> this following code in include/asm-generic/qrwlock.h
-> which uses CONFIG_CPU_BIG_ENDIAN to clear a byte.
+> Display warning if CPU_BIG_ENDIAN is not defined on big endian
+> architecture and also warn if it defined on little endian architectures.
 >
-> static inline u8 *__qrwlock_write_byte(struct qrwlock *lock)
->  {
->         return (u8 *)lock + 3 * IS_BUILTIN(CONFIG_CPU_BIG_ENDIAN);
->  }
->
-> Problem is many of the fixed big endian architectures dont define
-> CPU_BIG_ENDIAN and clears the wrong byte.
->
-> Define CPU_BIG_ENDIAN for all the fixed big endian architecture.
->
-> Here is the orinal discussion
+> We have seen some generic code(for example code include/asm-generic/qrwlock.h)
+> uses CONFIG_CPU_BIG_ENDIAN to decide the endianess.
+
+That example is IMHO the least harmful, as qrwlock must be selected explicitly
+by the architecture.
+
+The uses in
+
+    drivers/of/base.c
+    drivers/of/fdt.c
+    drivers/tty/serial/earlycon.c
+    drivers/tty/serial/serial_core.c
+
+are more dangerous, and may have bitten people already.
+In addition, people may have worked around them in DT, so this series may
+actually introduce regressions.
+
+> Here is the original discussion
 > http://www.spinics.net/lists/devicetree/msg178101.html
 >
 > Signed-off-by: Babu Moger <babu.moger@oracle.com>
