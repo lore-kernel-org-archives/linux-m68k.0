@@ -1,126 +1,115 @@
-From: Babu Moger <babu.moger@oracle.com>
-Subject: [PATCH 1/2] arch: Define CPU_BIG_ENDIAN for all fixed big endian archs
-Date: Thu,  8 Jun 2017 15:17:22 -0700
-Message-ID: <1496960243-196898-2-git-send-email-babu.moger@oracle.com>
-References: <1496960243-196898-1-git-send-email-babu.moger@oracle.com>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1496960243-196898-1-git-send-email-babu.moger@oracle.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: ysato@users.sourceforge.jp, geert@linux-m68k.org, jonas@southpole.se, stefan.kristiansson@saunalahti.fi, shorne@gmail.com, jejb@parisc-linux.org, deller@gmx.de, davem@davemloft.net, viro@zeniv.linux.org.uk
-Cc: mpe@ellerman.id.au, peterz@infradead.org, mingo@redhat.com, jcmvbkbc@gmail.com, linux-kernel@vger.kernel.org, uclinux-h8-devel@lists.sourceforge.jp, linux-m68k@vger.kernel.org, openrisc@lists.librecores.org, linux-parisc@vger.kernel.org, sparclinux@vger.kernel.org
+From: Greg Ungerer <gregungerer@westnet.com.au>
+Subject: Re: [PATCH 18/35] m68k: defconfig: Cleanup from old Kconfig options
+Date: Fri, 9 Jun 2017 11:11:30 +1000
+Message-ID: <ed1a6f44-643a-b728-c421-c4a77ebe35c5@westnet.com.au>
+References: <20170608160836.12196-1-krzk@kernel.org>
+ <20170608161049.12421-18-krzk@kernel.org>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-m68k-owner@vger.kernel.org>
+In-Reply-To: <20170608161049.12421-18-krzk@kernel.org>
+Content-Language: en-US
+Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
+To: Krzysztof Kozlowski <krzk@kernel.org>, linux-kernel@vger.kernel.org
+Cc: Arnd Bergmann <arnd@arndb.de>, Geert Uytterhoeven <geert@linux-m68k.org>, linux-m68k@lists.linux-m68k.org
 
-While working on enabling queued rwlock on SPARC, found
-this following code in include/asm-generic/qrwlock.h
-which uses CONFIG_CPU_BIG_ENDIAN to clear a byte.
+Hi  Krzyszto,
 
-static inline u8 *__qrwlock_write_byte(struct qrwlock *lock)
- {
-	return (u8 *)lock + 3 * IS_BUILTIN(CONFIG_CPU_BIG_ENDIAN);
- }
+On 09/06/17 02:10, Krzysztof Kozlowski wrote:
+> Remove old, dead Kconfig option INET_LRO. It is gone since
+> commit 7bbf3cae65b6 ("ipv4: Remove inet_lro library").
+> 
+> Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
 
-Problem is many of the fixed big endian architectures dont define
-CPU_BIG_ENDIAN and clears the wrong byte.
+I will take that via the m68knommu git tree. Thanks.
+Its in the for-next branch now.
 
-Define CPU_BIG_ENDIAN for all the fixed big endian architecture.
+Regards
+Greg
 
-Here is the orinal discussion
-http://www.spinics.net/lists/devicetree/msg178101.html
 
-Signed-off-by: Babu Moger <babu.moger@oracle.com>
-Suggested-by: Arnd Bergmann <arnd@arndb.de>
----
- arch/frv/Kconfig      |    3 +++
- arch/h8300/Kconfig    |    3 +++
- arch/m68k/Kconfig     |    3 +++
- arch/openrisc/Kconfig |    3 +++
- arch/parisc/Kconfig   |    3 +++
- arch/sparc/Kconfig    |    3 +++
- 6 files changed, 18 insertions(+), 0 deletions(-)
 
-diff --git a/arch/frv/Kconfig b/arch/frv/Kconfig
-index eefd9a4..1cce824 100644
---- a/arch/frv/Kconfig
-+++ b/arch/frv/Kconfig
-@@ -17,6 +17,9 @@ config FRV
- 	select HAVE_DEBUG_STACKOVERFLOW
- 	select ARCH_NO_COHERENT_DMA_MMAP
- 
-+config CPU_BIG_ENDIAN
-+	def_bool y
-+
- config ZONE_DMA
- 	bool
- 	default y
-diff --git a/arch/h8300/Kconfig b/arch/h8300/Kconfig
-index 3ae8525..5380ac8 100644
---- a/arch/h8300/Kconfig
-+++ b/arch/h8300/Kconfig
-@@ -23,6 +23,9 @@ config H8300
- 	select HAVE_ARCH_HASH
- 	select CPU_NO_EFFICIENT_FFS
- 
-+config CPU_BIG_ENDIAN
-+	def_bool y
-+
- config RWSEM_GENERIC_SPINLOCK
- 	def_bool y
- 
-diff --git a/arch/m68k/Kconfig b/arch/m68k/Kconfig
-index d140206..029a58b 100644
---- a/arch/m68k/Kconfig
-+++ b/arch/m68k/Kconfig
-@@ -23,6 +23,9 @@ config M68K
- 	select OLD_SIGSUSPEND3
- 	select OLD_SIGACTION
- 
-+config CPU_BIG_ENDIAN
-+	def_bool y
-+
- config RWSEM_GENERIC_SPINLOCK
- 	bool
- 	default y
-diff --git a/arch/openrisc/Kconfig b/arch/openrisc/Kconfig
-index 1e95920..a0f2e4a 100644
---- a/arch/openrisc/Kconfig
-+++ b/arch/openrisc/Kconfig
-@@ -29,6 +29,9 @@ config OPENRISC
- 	select CPU_NO_EFFICIENT_FFS if !OPENRISC_HAVE_INST_FF1
- 	select NO_BOOTMEM
- 
-+config CPU_BIG_ENDIAN
-+	def_bool y
-+
- config MMU
- 	def_bool y
- 
-diff --git a/arch/parisc/Kconfig b/arch/parisc/Kconfig
-index 531da9e..dda1f55 100644
---- a/arch/parisc/Kconfig
-+++ b/arch/parisc/Kconfig
-@@ -47,6 +47,9 @@ config PARISC
- 	  and later HP3000 series).  The PA-RISC Linux project home page is
- 	  at <http://www.parisc-linux.org/>.
- 
-+config CPU_BIG_ENDIAN
-+	def_bool y
-+
- config MMU
- 	def_bool y
- 
-diff --git a/arch/sparc/Kconfig b/arch/sparc/Kconfig
-index 58243b0..eb213b5 100644
---- a/arch/sparc/Kconfig
-+++ b/arch/sparc/Kconfig
-@@ -92,6 +92,9 @@ config ARCH_DEFCONFIG
- config ARCH_PROC_KCORE_TEXT
- 	def_bool y
- 
-+config CPU_BIG_ENDIAN
-+	def_bool y
-+
- config ARCH_ATU
- 	bool
- 	default y if SPARC64
--- 
-1.7.1
+> ---
+>  arch/m68k/configs/m5208evb_defconfig | 1 -
+>  arch/m68k/configs/m5249evb_defconfig | 1 -
+>  arch/m68k/configs/m5272c3_defconfig  | 1 -
+>  arch/m68k/configs/m5275evb_defconfig | 1 -
+>  arch/m68k/configs/m5307c3_defconfig  | 1 -
+>  arch/m68k/configs/m5407c3_defconfig  | 1 -
+>  6 files changed, 6 deletions(-)
+> 
+> diff --git a/arch/m68k/configs/m5208evb_defconfig b/arch/m68k/configs/m5208evb_defconfig
+> index 4c7b7938d53a..a3102ff7e5ed 100644
+> --- a/arch/m68k/configs/m5208evb_defconfig
+> +++ b/arch/m68k/configs/m5208evb_defconfig
+> @@ -26,7 +26,6 @@ CONFIG_INET=y
+>  # CONFIG_INET_XFRM_MODE_TRANSPORT is not set
+>  # CONFIG_INET_XFRM_MODE_TUNNEL is not set
+>  # CONFIG_INET_XFRM_MODE_BEET is not set
+> -# CONFIG_INET_LRO is not set
+>  # CONFIG_INET_DIAG is not set
+>  # CONFIG_IPV6 is not set
+>  # CONFIG_FW_LOADER is not set
+> diff --git a/arch/m68k/configs/m5249evb_defconfig b/arch/m68k/configs/m5249evb_defconfig
+> index a782f368650f..f7bb9ed3efa8 100644
+> --- a/arch/m68k/configs/m5249evb_defconfig
+> +++ b/arch/m68k/configs/m5249evb_defconfig
+> @@ -27,7 +27,6 @@ CONFIG_INET=y
+>  # CONFIG_INET_XFRM_MODE_TRANSPORT is not set
+>  # CONFIG_INET_XFRM_MODE_TUNNEL is not set
+>  # CONFIG_INET_XFRM_MODE_BEET is not set
+> -# CONFIG_INET_LRO is not set
+>  # CONFIG_INET_DIAG is not set
+>  # CONFIG_IPV6 is not set
+>  # CONFIG_FW_LOADER is not set
+> diff --git a/arch/m68k/configs/m5272c3_defconfig b/arch/m68k/configs/m5272c3_defconfig
+> index 6f5fb92f5cbf..1e679f6a400f 100644
+> --- a/arch/m68k/configs/m5272c3_defconfig
+> +++ b/arch/m68k/configs/m5272c3_defconfig
+> @@ -27,7 +27,6 @@ CONFIG_INET=y
+>  # CONFIG_INET_XFRM_MODE_TRANSPORT is not set
+>  # CONFIG_INET_XFRM_MODE_TUNNEL is not set
+>  # CONFIG_INET_XFRM_MODE_BEET is not set
+> -# CONFIG_INET_LRO is not set
+>  # CONFIG_INET_DIAG is not set
+>  # CONFIG_IPV6 is not set
+>  # CONFIG_FW_LOADER is not set
+> diff --git a/arch/m68k/configs/m5275evb_defconfig b/arch/m68k/configs/m5275evb_defconfig
+> index b5d7cd1ce856..d2987b40423e 100644
+> --- a/arch/m68k/configs/m5275evb_defconfig
+> +++ b/arch/m68k/configs/m5275evb_defconfig
+> @@ -27,7 +27,6 @@ CONFIG_INET=y
+>  # CONFIG_INET_XFRM_MODE_TRANSPORT is not set
+>  # CONFIG_INET_XFRM_MODE_TUNNEL is not set
+>  # CONFIG_INET_XFRM_MODE_BEET is not set
+> -# CONFIG_INET_LRO is not set
+>  # CONFIG_INET_DIAG is not set
+>  # CONFIG_IPV6 is not set
+>  # CONFIG_FW_LOADER is not set
+> diff --git a/arch/m68k/configs/m5307c3_defconfig b/arch/m68k/configs/m5307c3_defconfig
+> index 1b4c09461c40..97a78c99eeee 100644
+> --- a/arch/m68k/configs/m5307c3_defconfig
+> +++ b/arch/m68k/configs/m5307c3_defconfig
+> @@ -27,7 +27,6 @@ CONFIG_INET=y
+>  # CONFIG_INET_XFRM_MODE_TRANSPORT is not set
+>  # CONFIG_INET_XFRM_MODE_TUNNEL is not set
+>  # CONFIG_INET_XFRM_MODE_BEET is not set
+> -# CONFIG_INET_LRO is not set
+>  # CONFIG_INET_DIAG is not set
+>  # CONFIG_IPV6 is not set
+>  # CONFIG_FW_LOADER is not set
+> diff --git a/arch/m68k/configs/m5407c3_defconfig b/arch/m68k/configs/m5407c3_defconfig
+> index 275ad543d4bc..766a97f39a3a 100644
+> --- a/arch/m68k/configs/m5407c3_defconfig
+> +++ b/arch/m68k/configs/m5407c3_defconfig
+> @@ -28,7 +28,6 @@ CONFIG_INET=y
+>  # CONFIG_INET_XFRM_MODE_TRANSPORT is not set
+>  # CONFIG_INET_XFRM_MODE_TUNNEL is not set
+>  # CONFIG_INET_XFRM_MODE_BEET is not set
+> -# CONFIG_INET_LRO is not set
+>  # CONFIG_INET_DIAG is not set
+>  # CONFIG_IPV6 is not set
+>  # CONFIG_FW_LOADER is not set
+> 
