@@ -1,49 +1,62 @@
 From: Babu Moger <babu.moger@oracle.com>
-Subject: Re: [PATCH 2/2] include: warn for inconsistent endian config
- definition
-Date: Fri, 9 Jun 2017 09:39:03 -0500
-Message-ID: <c1b36fc4-21ae-4c3a-41ae-ecbab3d15d1d@oracle.com>
+Subject: Re: [PATCH 1/2] arch: Define CPU_BIG_ENDIAN for all fixed big endian
+ archs
+Date: Fri, 9 Jun 2017 10:55:13 -0500
+Message-ID: <300417cd-2aed-8464-afc3-00bec56d1d4a@oracle.com>
 References: <1496960243-196898-1-git-send-email-babu.moger@oracle.com>
- <1496960243-196898-3-git-send-email-babu.moger@oracle.com>
- <CAMuHMdX2u8vZGBVXitH+FcfeMwZ8a1-g2b-Dh7V9=HnqJpj=hw@mail.gmail.com>
- <CAMuHMdVia9Jkwz0eEbSG0OE-Sw5wMbdjA1o3F6m10NaSWXq_Vw@mail.gmail.com>
- <257e0d57-bf55-eb1b-26e2-ba50b1bd2676@oracle.com>
- <CAMuHMdV7eC95C=jZdWoAHC2tHT8duoNxWkhO6jWQbzouLDZS4A@mail.gmail.com>
+ <1496960243-196898-2-git-send-email-babu.moger@oracle.com>
+ <CAMuHMdXke2z5YuVfGU-wQ-PawwrGRP5_TyDN0qH8zah-iidNUQ@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 7bit
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from userp1040.oracle.com ([156.151.31.81]:21895 "EHLO
+Received: from userp1040.oracle.com ([156.151.31.81]:32796 "EHLO
         userp1040.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1751534AbdFIOko (ORCPT
-        <rfc822;linux-m68k@vger.kernel.org>); Fri, 9 Jun 2017 10:40:44 -0400
-In-Reply-To: <CAMuHMdV7eC95C=jZdWoAHC2tHT8duoNxWkhO6jWQbzouLDZS4A@mail.gmail.com>
+        with ESMTP id S1751562AbdFIP4x (ORCPT
+        <rfc822;linux-m68k@vger.kernel.org>); Fri, 9 Jun 2017 11:56:53 -0400
+In-Reply-To: <CAMuHMdXke2z5YuVfGU-wQ-PawwrGRP5_TyDN0qH8zah-iidNUQ@mail.gmail.com>
 Content-Language: en-US
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: Yoshinori Sato <ysato@users.sourceforge.jp>, Jonas Bonn <jonas@southpole.se>, Stefan Kristiansson <stefan.kristiansson@saunalahti.fi>, Stafford Horne <shorne@gmail.com>, "James E.J. Bottomley" <jejb@parisc-linux.org>, Helge Deller <deller@gmx.de>, "David S. Miller" <davem@davemloft.net>, Al Viro <viro@zeniv.linux.org.uk>, Michael Ellerman <mpe@ellerman.id.au>, Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>, Max Filippov <jcmvbkbc@gmail.com>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, uclinux-h8-devel@lists.sourceforge.jp, Linux/m68k <linux-m68k@vger.kernel.org>, openrisc@lists.librecores.org, Parisc List <linux-parisc@vger.kernel.org>, sparclinux <sparclinux@vger.kernel.org>
+To: Geert Uytterhoeven <geert@linux-m68k.org>, "David S. Miller" <davem@davemloft.net>
+Cc: Yoshinori Sato <ysato@users.sourceforge.jp>, Jonas Bonn <jonas@southpole.se>, Stefan Kristiansson <stefan.kristiansson@saunalahti.fi>, Stafford Horne <shorne@gmail.com>, "James E.J. Bottomley" <jejb@parisc-linux.org>, Helge Deller <deller@gmx.de>, Al Viro <viro@zeniv.linux.org.uk>, Michael Ellerman <mpe@ellerman.id.au>, Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>, Max Filippov <jcmvbkbc@gmail.com>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, uclinux-h8-devel@lists.sourceforge.jp, Linux/m68k <linux-m68k@vger.kernel.org>, openrisc@lists.librecores.org, Parisc List <linux-parisc@vger.kernel.org>, sparclinux <sparclinux@vger.kernel.org>
 
 
-On 6/9/2017 9:11 AM, Geert Uytterhoeven wrote:
-> Hi Babu,
+On 6/9/2017 2:03 AM, Geert Uytterhoeven wrote:
+> On Fri, Jun 9, 2017 at 12:17 AM, Babu Moger <babu.moger@oracle.com> wrote:
+>> While working on enabling queued rwlock on SPARC, found
+>> this following code in include/asm-generic/qrwlock.h
+>> which uses CONFIG_CPU_BIG_ENDIAN to clear a byte.
+>>
+>> static inline u8 *__qrwlock_write_byte(struct qrwlock *lock)
+>>   {
+>>          return (u8 *)lock + 3 * IS_BUILTIN(CONFIG_CPU_BIG_ENDIAN);
+>>   }
+>>
+>> Problem is many of the fixed big endian architectures dont define
+>> CPU_BIG_ENDIAN and clears the wrong byte.
+>>
+>> Define CPU_BIG_ENDIAN for all the fixed big endian architecture.
+>>
+>> Here is the orinal discussion
+>> http://www.spinics.net/lists/devicetree/msg178101.html
+>>
+>> Signed-off-by: Babu Moger <babu.moger@oracle.com>
+>> Suggested-by: Arnd Bergmann <arnd@arndb.de>
+> Hmm, the link above refers to a mail from me? ;-)
 >
-> On Fri, Jun 9, 2017 at 3:55 PM, Babu Moger <babu.moger@oracle.com> wrote:
->> On 6/9/2017 2:16 AM, Geert Uytterhoeven wrote:
->>> On Fri, Jun 9, 2017 at 9:05 AM, Geert Uytterhoeven <geert@linux-m68k.org>
->>> wrote:
->>>>> Here is the original discussion
->>>>> http://www.spinics.net/lists/devicetree/msg178101.html
->>>>>
->>>>> Signed-off-by: Babu Moger <babu.moger@oracle.com>
->>>>> Suggested-by: Arnd Bergmann <arnd@arndb.de>
->> Yes. Got it.  So patch #1 is fine.   But, patch #2 might cause regressions.
->> Should I drop patch 2.
-> No, it should be applied, and regressions should be fixed.
+> Acked-by: Geert Uytterhoeven <geert@linux-m68k.org>
 
-Geert,  Ok. Sure. I will resubmit the patch mentioning all the 
-files(base.c, fdt.c etc..) that are affected by this change.
-thanks
+One more question before I resubmit.
+
+Dave,
+I have added CONFIG_CPU_BIG_ENDIAN for sparc via my earlier patch.
+https://patchwork.ozlabs.org/patch/766735/
+Should I exclude sparc here?
+Thanks
+Babu
+
+>
 > Gr{oetje,eeting}s,
 >
 >                          Geert
