@@ -1,63 +1,68 @@
 From: Babu Moger <babu.moger@oracle.com>
-Subject: [PATCH v3 0/3] Define CPU_BIG_ENDIAN or warn for inconsistencies
-Date: Mon, 12 Jun 2017 15:09:57 -0700
-Message-ID: <1497305400-147425-1-git-send-email-babu.moger@oracle.com>
-Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from userp1040.oracle.com ([156.151.31.81]:50934 "EHLO
-        userp1040.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1752430AbdFLWLY (ORCPT
-        <rfc822;linux-m68k@vger.kernel.org>); Mon, 12 Jun 2017 18:11:24 -0400
-Sender: linux-m68k-owner@vger.kernel.org
-List-Id: linux-m68k@vger.kernel.org
+Subject: [PATCH v3 2/3] arch/microblaze: Add choice for endianness and update Makefile
+Date: Mon, 12 Jun 2017 15:09:59 -0700
+Message-ID: <1497305400-147425-3-git-send-email-babu.moger@oracle.com>
+References: <1497305400-147425-1-git-send-email-babu.moger@oracle.com>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <1497305400-147425-1-git-send-email-babu.moger@oracle.com>
+Sender: linux-kernel-owner@vger.kernel.org
 To: ysato@users.sourceforge.jp, geert@linux-m68k.org, jonas@southpole.se, stefan.kristiansson@saunalahti.fi, shorne@gmail.com, jejb@parisc-linux.org, deller@gmx.de, davem@davemloft.net, viro@zeniv.linux.org.uk, monstr@monstr.eu
 Cc: mpe@ellerman.id.au, peterz@infradead.org, mingo@redhat.com, jcmvbkbc@gmail.com, linux-kernel@vger.kernel.org, uclinux-h8-devel@lists.sourceforge.jp, linux-m68k@vger.kernel.org, openrisc@lists.librecores.org, linux-parisc@vger.kernel.org, sparclinux@vger.kernel.org
+List-Id: linux-m68k@vger.kernel.org
 
-Found this problem while enabling queued rwlock on SPARC.
-The parameter CONFIG_CPU_BIG_ENDIAN is used to clear the
-specific byte in qrwlock structure. Without this parameter,
-we clear the wrong byte.
-Here is the code in include/asm-generic/qrwlock.h
+microblaze architectures can be configured for either little or
+big endian formats. Add a choice option for the user to select the
+correct endian format(default to big endian).
 
-static inline u8 *__qrwlock_write_byte(struct qrwlock *lock)
-  {
-         return (u8 *)lock + 3 * IS_BUILTIN(CONFIG_CPU_BIG_ENDIAN);
-  }
+Also update the Makefile so toolchain can compile for the format
+it is configured for.
 
-Also found few more references of this parameter in
-drivers/of/base.c
-drivers/of/fdt.c
-drivers/tty/serial/earlycon.c
-drivers/tty/serial/serial_core.c
+Signed-off-by: Babu Moger <babu.moger@oracle.com>
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+---
+ arch/microblaze/Kconfig  |   16 ++++++++++++++++
+ arch/microblaze/Makefile |    2 ++
+ 2 files changed, 18 insertions(+), 0 deletions(-)
 
-Here is our previous discussion.
-https://lkml.org/lkml/2017/5/24/620
-
-Based on the discussion, it was decided to add CONFIG_CPU_BIG_ENDIAN
-for all the fixed big endian architecture(frv, h8300, m68k, openrisc,
-parisc and sparc). And warn if there are inconsistencies in this definition.
-
-v2 -> v3:
- Added the choice statement for endianness selection for microblaze.
- Updated the Makefile for microblaze(Suggested by Arnd Bergmann) to
- properly compile for the correct format.
- Updated acks.
-
-v1 -> v2:
- Updated the commit messages and acks.
-
-Babu Moger (3):
-  arch: Define CPU_BIG_ENDIAN for all fixed big endian archs
-  arch/microblaze: Add choice for endianness and update Makefile
-  include: warn for inconsistent endian config definition
-
- arch/frv/Kconfig                        |    3 +++
- arch/h8300/Kconfig                      |    3 +++
- arch/m68k/Kconfig                       |    3 +++
- arch/microblaze/Kconfig                 |   16 ++++++++++++++++
- arch/microblaze/Makefile                |    2 ++
- arch/openrisc/Kconfig                   |    3 +++
- arch/parisc/Kconfig                     |    3 +++
- arch/sparc/Kconfig                      |    3 +++
- include/linux/byteorder/big_endian.h    |    4 ++++
- include/linux/byteorder/little_endian.h |    4 ++++
- 10 files changed, 44 insertions(+), 0 deletions(-)
+diff --git a/arch/microblaze/Kconfig b/arch/microblaze/Kconfig
+index 85885a5..74aa5de 100644
+--- a/arch/microblaze/Kconfig
++++ b/arch/microblaze/Kconfig
+@@ -35,6 +35,22 @@ config MICROBLAZE
+ 	select VIRT_TO_BUS
+ 	select CPU_NO_EFFICIENT_FFS
+ 
++# Endianness selection
++choice
++	prompt "Endianness selection"
++	default CPU_BIG_ENDIAN
++	help
++	  microblaze architectures can be configured for either little or
++	  big endian formats. Be sure to select the appropriate mode.
++
++config CPU_BIG_ENDIAN
++	bool "Big endian"
++
++config CPU_LITTLE_ENDIAN
++	bool "Little endian"
++
++endchoice
++
+ config SWAP
+ 	def_bool n
+ 
+diff --git a/arch/microblaze/Makefile b/arch/microblaze/Makefile
+index 740f2b8..1f6c486 100644
+--- a/arch/microblaze/Makefile
++++ b/arch/microblaze/Makefile
+@@ -35,6 +35,8 @@ endif
+ CPUFLAGS-$(CONFIG_XILINX_MICROBLAZE0_USE_DIV) += -mno-xl-soft-div
+ CPUFLAGS-$(CONFIG_XILINX_MICROBLAZE0_USE_BARREL) += -mxl-barrel-shift
+ CPUFLAGS-$(CONFIG_XILINX_MICROBLAZE0_USE_PCMP_INSTR) += -mxl-pattern-compare
++CPUFLAGS-$(CONFIG_BIG_ENDIAN) += -mbig-endian
++CPUFLAGS-$(CONFIG_LITTLE_ENDIAN) += -mlittle-endian
+ 
+ CPUFLAGS-1 += $(call cc-option,-mcpu=v$(CPU_VER))
+ 
+-- 
+1.7.1
