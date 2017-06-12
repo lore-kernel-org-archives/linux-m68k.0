@@ -1,120 +1,122 @@
-From: Masahiro Yamada <yamada.masahiro@socionext.com>
-Subject: [PATCH 00/27] kbuild, arch: complete UAPI de-coupling and cleanup scripts/Makefile.headersinst
-Date: Mon, 12 Jun 2017 12:26:54 +0900
-Message-ID: <1497238041-7011-1-git-send-email-yamada.masahiro__13461.4821443849$1497239004$gmane$org@socionext.com>
-Return-path: <linux-m68k-owner@vger.kernel.org>
-Sender: linux-m68k-owner@vger.kernel.org
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: Re: [PATCH] m68k: remove ptrace_signal_deliver
+Date: Mon, 12 Jun 2017 09:40:15 +0200
+Message-ID: <CAMuHMdXSG_js64tdosFa6ofHrk=Z5u3oUDwHn-TQ6VnjXK1U8w@mail.gmail.com>
+References: <877f0oojfj.fsf@linux-m68k.org>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="UTF-8"
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <877f0oojfj.fsf@linux-m68k.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Roland McGrath <roland@hack.frob.com>, Oleg Nesterov <oleg@redhat.com>, Al Viro <viro@zeniv.linux.org.uk>
+Cc: Andreas Schwab <schwab@linux-m68k.org>, Linux/m68k <linux-m68k@vger.kernel.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
 List-Id: linux-m68k@vger.kernel.org
-To: linux-kbuild@vger.kernel.org, linux-arch <linux-arch@vger.kernel.org>
-Cc: Masahiro Yamada <yamada.masahiro@socionext.com>, Ley Foon Tan <lftan@altera.com>, Tony Luck <tony.luck@intel.com>, linux-ia64@vger.kernel.org, linux-sh@vger.kernel.org, sparclinux@vger.kernel.org, James Hogan <james.hogan@imgtec.com>, linux-parisc@vger.kernel.org, Geert Uytterhoeven <geert@linux-m68k.org>, Steven Miao <realmz6@gmail.com>, Chris Metcalf <cmetcalf@mellanox.com>, Mikael Starvik <starvik@axis.com>, linux-c6x-dev@linux-c6x.org, linux-hexagon@vger.kernel.org, Catalin Marinas <catalin.marinas@arm.com>, Vineet Gupta <vgupta@synopsys.com>, linux-metag@vger.kernel.org, Yoshinori Sato <ysato@users.sourceforge.jp>, Jesper Nilsson <jesper.nilsson@axis.com>, Will Deacon <will.deacon@arm.com>, Fenghua Yu <fenghua.yu@intel.com>, linux-snps-a
 
+Hi Roland, Oleg, Al,
 
-In v4.12-rc1, we had a big progress for headers_install.
-All (and only) headers under UAPI directories are exported.
-However, asm-generic wrappers are still exceptions because
-most of arch/*/include/asm/Kbuild include "generic-y" for
-exported headers.  As a result, many of generic-wrappers to be
-exported are generated outside UAPI directories.
+If you don't mind, I plan to queue this up in the m68k tree for v4.13.
+There are no conflicts with current linux-next.
 
-To finish de-coupling UAPI, "generic-y" for exported headers
-should be moved to arch/*/include/uapi/asm/Kbuild.
+If you prefer to take this through a signal tree with my
+Acked-by: Geert Uytterhoeven <geert@linux-m68k.org>
+please let me know.
 
-With those cleanups, the logic of headers_install will become
-even simpler.  UAPI will be completely self-contained.
+Thanks!
 
-This series is based on v4.12-rc2 tag.
+On Wed, Jun 7, 2017 at 12:11 AM, Andreas Schwab <schwab@linux-m68k.org> wrote:
+> This fixes debugger syscall restart interactions.  A debugger that
+> modifies the tracee's program counter is expected to set the orig_d0
+> pseudo register to -1, to disable a possible syscall restart.
+>
+> This removes the last user of the ptrace_signal_deliver hook in the ptrace
+> signal handling, so remove that as well.
+>
+> Signed-off-by: Andreas Schwab <schwab@linux-m68k.org>
+> ---
+>  arch/m68k/include/asm/signal.h |  5 -----
+>  arch/m68k/kernel/signal.c      | 16 ----------------
+>  include/linux/ptrace.h         |  4 ----
+>  kernel/signal.c                |  1 -
+>  4 files changed, 26 deletions(-)
+>
+> diff --git a/arch/m68k/include/asm/signal.h b/arch/m68k/include/asm/signal.h
+> index 8c8ce5e1ee..3bc64d02ba 100644
+> --- a/arch/m68k/include/asm/signal.h
+> +++ b/arch/m68k/include/asm/signal.h
+> @@ -62,9 +62,4 @@ static inline int __gen_sigismember(sigset_t *set, int _sig)
+>
+>  #endif /* !CONFIG_CPU_HAS_NO_BITFIELDS */
+>
+> -#ifndef __uClinux__
+> -extern void ptrace_signal_deliver(void);
+> -#define ptrace_signal_deliver ptrace_signal_deliver
+> -#endif /* __uClinux__ */
+> -
+>  #endif /* _M68K_SIGNAL_H */
+> diff --git a/arch/m68k/kernel/signal.c b/arch/m68k/kernel/signal.c
+> index 093b7c42fb..098fa7185b 100644
+> --- a/arch/m68k/kernel/signal.c
+> +++ b/arch/m68k/kernel/signal.c
+> @@ -109,22 +109,6 @@ int handle_kernel_fault(struct pt_regs *regs)
+>         return 1;
+>  }
+>
+> -void ptrace_signal_deliver(void)
+> -{
+> -       struct pt_regs *regs = signal_pt_regs();
+> -       if (regs->orig_d0 < 0)
+> -               return;
+> -       switch (regs->d0) {
+> -       case -ERESTARTNOHAND:
+> -       case -ERESTARTSYS:
+> -       case -ERESTARTNOINTR:
+> -               regs->d0 = regs->orig_d0;
+> -               regs->orig_d0 = -1;
+> -               regs->pc -= 2;
+> -               break;
+> -       }
+> -}
+> -
+>  static inline void push_cache (unsigned long vaddr)
+>  {
+>         /*
+> diff --git a/include/linux/ptrace.h b/include/linux/ptrace.h
+> index 422bc2e4cb..9a2e04be06 100644
+> --- a/include/linux/ptrace.h
+> +++ b/include/linux/ptrace.h
+> @@ -388,10 +388,6 @@ static inline void user_single_step_siginfo(struct task_struct *tsk,
+>  #define current_pt_regs() task_pt_regs(current)
+>  #endif
+>
+> -#ifndef ptrace_signal_deliver
+> -#define ptrace_signal_deliver() ((void)0)
+> -#endif
+> -
+>  /*
+>   * unlike current_pt_regs(), this one is equal to task_pt_regs(current)
+>   * on *all* architectures; the only reason to have a per-arch definition
+> diff --git a/kernel/signal.c b/kernel/signal.c
+> index 7e59ebc2c2..742c08b409 100644
+> --- a/kernel/signal.c
+> +++ b/kernel/signal.c
+> @@ -2092,7 +2092,6 @@ static void do_jobctl_trap(void)
+>
+>  static int ptrace_signal(int signr, siginfo_t *info)
+>  {
+> -       ptrace_signal_deliver();
+>         /*
+>          * We do not check sig_kernel_stop(signr) but set this marker
+>          * unconditionally because we do not know whether debugger will
+> --
+> 2.13.1
 
-This series touches Kbuild files under arch/.  We have two options
-to merge this series.
+Gr{oetje,eeting}s,
 
-[1] I will collect Acked-by from arch maintainers, then apply the
-    whole series to the Kbuild tree.
+                        Geert
 
-[2] I will ask arch maintainers to pick up arch changes (for v4.13),
-    then apply Makefile changes to the Kbuild tree (for v4.14).
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
-[1] will finish this work by v4.13, but need to deal with some conflicts.
-[2] will allow us to reduce conflicts (still a bit conflicts),
-    but take more time to finish this work.
-
-If arch maintainers ack [1], I can manage conflicts
-before sending a pull request to Linus.
-
-
-
-Masahiro Yamada (27):
-  kbuild: remove useless $(gen) variable in Makefile.headersinst
-  kbuild: fix comment about dst of headers_{install,check}_all
-  kbuild: pass dst= to Makefile.headersinst from top Makefile
-  arm64: move generic-y of exported headers to uapi/asm/Kbuild
-  ARM: move generic-y of exported headers to uapi/asm/Kbuild
-  arc: move generic-y of exported headers to uapi/asm/Kbuild
-  blackfin: move generic-y of exported headers to uapi/asm/Kbuild
-  c6x: move generic-y of exported headers to uapi/asm/Kbuild
-  cris: move generic-y of exported headers to uapi/asm/Kbuild
-  h8300: move generic-y of exported headers to uapi/asm/Kbuild
-  hexagon: move generic-y of exported headers to uapi/asm/Kbuild
-  ia64: move generic-y of exported headers to uapi/asm/Kbuild
-  m32r: move generic-y of exported headers to uapi/asm/Kbuild
-  m68k: move generic-y of exported headers to uapi/asm/Kbuild
-  metag: move generic-y of exported headers to uapi/asm/Kbuild
-  nios2: remove unneeded arch/nios2/include/(generated/)asm/signal.h
-  nios2: move generic-y of exported headers to uapi/asm/Kbuild
-  openrisc: move generic-y of exported headers to uapi/asm/Kbuild
-  parisc: move generic-y of exported headers to uapi/asm/Kbuild
-  sh: move generic-y of exported headers to uapi/asm/Kbuild
-  sparc: move generic-y of exported headers to uapi/asm/Kbuild
-  tile: move generic-y of exported headers to uapi/asm/Kbuild
-  unicore32: move generic-y of exported headers to uapi/asm/Kbuild
-  xtensa: move generic-y of exported headers to uapi/asm/Kbuild
-  kbuild: do not include old-kbuild-file from Makefile.headersinst
-  kbuild: split exported generic header creation into uapi-asm-generic
-  kbuild: remove wrapper files handling from Makefile.headersinst
-
- Makefile                               | 13 +++++++------
- arch/arc/include/asm/Kbuild            | 25 -------------------------
- arch/arc/include/uapi/asm/Kbuild       | 26 ++++++++++++++++++++++++++
- arch/arm/include/asm/Kbuild            | 17 -----------------
- arch/arm/include/uapi/asm/Kbuild       | 16 ++++++++++++++++
- arch/arm64/include/asm/Kbuild          | 17 -----------------
- arch/arm64/include/uapi/asm/Kbuild     | 16 ++++++++++++++++
- arch/blackfin/include/asm/Kbuild       | 22 ----------------------
- arch/blackfin/include/uapi/asm/Kbuild  | 22 ++++++++++++++++++++++
- arch/c6x/include/asm/Kbuild            | 27 ---------------------------
- arch/c6x/include/uapi/asm/Kbuild       | 26 ++++++++++++++++++++++++++
- arch/cris/include/asm/Kbuild           | 18 ------------------
- arch/cris/include/uapi/asm/Kbuild      | 19 +++++++++++++++++++
- arch/h8300/include/asm/Kbuild          | 27 ---------------------------
- arch/h8300/include/uapi/asm/Kbuild     | 28 ++++++++++++++++++++++++++++
- arch/hexagon/include/asm/Kbuild        | 23 -----------------------
- arch/hexagon/include/uapi/asm/Kbuild   | 24 ++++++++++++++++++++++++
- arch/ia64/include/asm/Kbuild           |  2 --
- arch/m32r/include/asm/Kbuild           |  2 --
- arch/m32r/include/uapi/asm/Kbuild      |  2 ++
- arch/m68k/include/asm/Kbuild           | 12 ------------
- arch/m68k/include/uapi/asm/Kbuild      | 11 +++++++++++
- arch/metag/include/asm/Kbuild          | 24 ------------------------
- arch/metag/include/uapi/asm/Kbuild     | 24 ++++++++++++++++++++++++
- arch/nios2/include/asm/Kbuild          | 25 -------------------------
- arch/nios2/include/asm/signal.h        | 22 ----------------------
- arch/nios2/include/uapi/asm/Kbuild     | 24 ++++++++++++++++++++++++
- arch/openrisc/include/asm/Kbuild       | 28 ----------------------------
- arch/openrisc/include/uapi/asm/Kbuild  | 29 +++++++++++++++++++++++++++++
- arch/parisc/include/asm/Kbuild         |  5 -----
- arch/parisc/include/uapi/asm/Kbuild    |  4 ++++
- arch/sh/include/asm/Kbuild             | 20 --------------------
- arch/sh/include/uapi/asm/Kbuild        | 20 ++++++++++++++++++++
- arch/sparc/include/asm/Kbuild          |  1 -
- arch/sparc/include/uapi/asm/Kbuild     |  2 ++
- arch/tile/include/asm/Kbuild           | 19 -------------------
- arch/tile/include/uapi/asm/Kbuild      | 19 +++++++++++++++++++
- arch/unicore32/include/asm/Kbuild      | 31 +------------------------------
- arch/unicore32/include/uapi/asm/Kbuild | 28 ++++++++++++++++++++++++++++
- arch/xtensa/include/asm/Kbuild         |  9 ---------
- arch/xtensa/include/uapi/asm/Kbuild    | 10 ++++++++++
- scripts/Makefile.headersinst           | 28 ++++------------------------
- 42 files changed, 362 insertions(+), 405 deletions(-)
- delete mode 100644 arch/nios2/include/asm/signal.h
-
--- 
-2.7.4
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
