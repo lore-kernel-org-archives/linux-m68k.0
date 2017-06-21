@@ -1,32 +1,19 @@
-From: INFO <mguerrero@huv.gov.co>
-Subject: Re: Reply Urgent
-Date: Mon, 19 Jun 2017 14:39:18 -0500
-Message-ID: <20170619143918.2132176qvnaamicm__38645.0864295059$1497917349$gmane$org@correo.huv.gov.co>
+From: =?utf-8?q?Bernhard_St=C3=B6ckl?= <sunrisefundingltd@gmail.com>
+Subject: =?utf-8?q?AW=3A?=  Wir geben =?utf-8?q?j=C3=A4hrlich?= Darlehen
+ =?utf-8?q?f=C3=BCr?= 2% Zinsen aus
+Date: Thu, 22 Jun 2017 00:51:41 +0200
+Message-ID: <1b2-594af880-a9-75f20f80@186293666>
+Reply-To: sunrisefunding@yahoo.com
 Mime-Version: 1.0
-Content-Type: text/plain;
- charset=ISO-8859-1;
- DelSp="Yes";
- format="flowed"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8BIT
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Content-Disposition: inline
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
 
-Hello,
 
-How are you doing? I have been sent to inform you that, We have an  
-inheritance of a deceased client with your surname. Contact Mr Andrew  
-Bailey Reply Email To: myinfand@gmail.com with your "Full Names" for  
-more info.  Thanks for your understanding.
+Wir vergeben Kredite mit einem Zinssatz von jährlich 2%.
 
-Reply ASAP thank you.
+Die Bearbeitung des Antrags erfolgt rasch, wir verlangen keine Gebühren, was sie beantragen werden wir annehmen. Wir bewilligen Kredite von bis zu 40 Millionen Euro und von mindestens 15.000 Euro. Sie können einen geschäftlichen oder privaten Kredit beantrage, wobei Sie bei Geschäftskrediten eine Zahlungsfrist von einem Jahr erhalten.
 
-Melissa.
-----------------------------------
-Correo Corporativo Hospital Universitario del Valle E.S.E
-*******************************************************************************
-
-"Estamos re-dimensionandonos para crecer!"
-
-******************************************************************************
+Anfragen bitte per Mail an: sunrisefunding01@hotmail.com 
