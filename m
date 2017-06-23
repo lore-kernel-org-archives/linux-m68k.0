@@ -1,76 +1,193 @@
-From: <armouralumni@yahoo.com>
-Subject: (unknown)
-Date: Fri, 23 Jun 2017 19:27:43 -0000
-Message-ID: <149824606399.12492.11393297106273805572@zaural.ru>
-Mime-Version: 1.0
-Content-Type: application/zip; name="EMAIL_82952679061_linux-m68k.zip"
-Content-Transfer-Encoding: base64
+From: Palmer Dabbelt <palmer@dabbelt.com>
+Subject: [PATCH] pci:  Add and use PCI_GENERIC_SETUP Kconfig entry
+Date: Fri, 23 Jun 2017 14:45:38 -0700
+Message-ID: <20170623214538.25967-1-palmer__15145.6731757664$1498254479$gmane$org@dabbelt.com>
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Subject: 
-Content-Disposition: attachment
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: linux-m68k@lists.linux-m68k.org
+To: rth@twiddle.net, ink@jurassic.park.msu.ru, mattst88@gmail.com, vgupta@synopsys.com, linux@armlinux.org.uk, catalin.marinas@arm.com, will.deacon@arm.com, geert@linux-m68k.org, ralf@linux-mips.org, ysato@users.sourceforge.jp, dalias@libc.org, davem@davemloft.net, cmetcalf@mellanox.com, gxt@mprc.pku.edu.cn, bhelgaas@google.com, viro@zeniv.linux.org.uk, akpm@linux-foundation.org, linux-alpha@vger.kernel.org, linux-kernel@vger.kernel.org, linux-snps-arc@lists.infradead.org, linux-arm-kernel@lists.infradead.org, linux-m68k@lists.linux-m68k.org, linux-mips@linux-mips.org, linux-sh@vger.kernel.org, sparclinux@vger.kernel.org, linux-pci@vger.kernel.org, hch@infradead.org
+Cc: Palmer Dabbelt <palmer@dabbelt.com>
 
-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
-DQAAAAA=
+We wanted to add RISC-V to the list of architectures that used the
+generic PCI setup-irq.o inside the Makefile and it was suggested that
+instead we define a Kconfig entry and use that.
+
+I've done very minimal testing on this: I just checked to see that
+an aarch64 defconfig still build setup-irq.o with the patch applied.
+The intention is that this patch doesn't change the behavior of any
+build.
+
+Signed-off-by: Palmer Dabbelt <palmer@dabbelt.com>
+---
+ arch/alpha/Kconfig     |  1 +
+ arch/arc/Kconfig       |  1 +
+ arch/arm/Kconfig       |  1 +
+ arch/arm64/Kconfig     |  1 +
+ arch/m68k/Kconfig      |  1 +
+ arch/mips/Kconfig      |  1 +
+ arch/sh/Kconfig        |  1 +
+ arch/sparc/Kconfig     |  1 +
+ arch/tile/Kconfig      |  1 +
+ arch/unicore32/Kconfig |  1 +
+ drivers/pci/Kconfig    |  3 +++
+ drivers/pci/Makefile   | 11 +----------
+ 12 files changed, 14 insertions(+), 10 deletions(-)
+
+diff --git a/arch/alpha/Kconfig b/arch/alpha/Kconfig
+index 0e49d39ea74a..30f4e711f681 100644
+--- a/arch/alpha/Kconfig
++++ b/arch/alpha/Kconfig
+@@ -26,6 +26,7 @@ config ALPHA
+ 	select ODD_RT_SIGACTION
+ 	select OLD_SIGSUSPEND
+ 	select CPU_NO_EFFICIENT_FFS if !ALPHA_EV67
++	select PCI_GENERIC_SETUP
+ 	help
+ 	  The Alpha is a 64-bit general-purpose processor designed and
+ 	  marketed by the Digital Equipment Corporation of blessed memory,
+diff --git a/arch/arc/Kconfig b/arch/arc/Kconfig
+index a5459698f0ee..dd1f64858118 100644
+--- a/arch/arc/Kconfig
++++ b/arch/arc/Kconfig
+@@ -44,6 +44,7 @@ config ARC
+ 	select HAVE_GENERIC_DMA_COHERENT
+ 	select HAVE_KERNEL_GZIP
+ 	select HAVE_KERNEL_LZMA
++	select PCI_GENERIC_SETUP
+ 
+ config MIGHT_HAVE_PCI
+ 	bool
+diff --git a/arch/arm/Kconfig b/arch/arm/Kconfig
+index 4c1a35f15838..86872246951c 100644
+--- a/arch/arm/Kconfig
++++ b/arch/arm/Kconfig
+@@ -96,6 +96,7 @@ config ARM
+ 	select PERF_USE_VMALLOC
+ 	select RTC_LIB
+ 	select SYS_SUPPORTS_APM_EMULATION
++	select PCI_GENERIC_SETUP
+ 	# Above selects are sorted alphabetically; please add new ones
+ 	# according to that.  Thanks.
+ 	help
+diff --git a/arch/arm64/Kconfig b/arch/arm64/Kconfig
+index b2024db225a9..6c684d8c8816 100644
+--- a/arch/arm64/Kconfig
++++ b/arch/arm64/Kconfig
+@@ -115,6 +115,7 @@ config ARM64
+ 	select SPARSE_IRQ
+ 	select SYSCTL_EXCEPTION_TRACE
+ 	select THREAD_INFO_IN_TASK
++	select PCI_GENERIC_SETUP
+ 	help
+ 	  ARM 64-bit (AArch64) Linux support.
+ 
+diff --git a/arch/m68k/Kconfig b/arch/m68k/Kconfig
+index d140206d5d29..c16214344f1c 100644
+--- a/arch/m68k/Kconfig
++++ b/arch/m68k/Kconfig
+@@ -22,6 +22,7 @@ config M68K
+ 	select MODULES_USE_ELF_RELA
+ 	select OLD_SIGSUSPEND3
+ 	select OLD_SIGACTION
++	select PCI_GENERIC_SETUP
+ 
+ config RWSEM_GENERIC_SPINLOCK
+ 	bool
+diff --git a/arch/mips/Kconfig b/arch/mips/Kconfig
+index 2828ecde133d..474a7c710686 100644
+--- a/arch/mips/Kconfig
++++ b/arch/mips/Kconfig
+@@ -70,6 +70,7 @@ config MIPS
+ 	select HAVE_EXIT_THREAD
+ 	select HAVE_REGS_AND_STACK_ACCESS_API
+ 	select HAVE_COPY_THREAD_TLS
++	select PCI_GENERIC_SETUP
+ 
+ menu "Machine selection"
+ 
+diff --git a/arch/sh/Kconfig b/arch/sh/Kconfig
+index ee086958b2b2..90a98ac526fb 100644
+--- a/arch/sh/Kconfig
++++ b/arch/sh/Kconfig
+@@ -48,6 +48,7 @@ config SUPERH
+ 	select HAVE_ARCH_AUDITSYSCALL
+ 	select HAVE_FUTEX_CMPXCHG if FUTEX
+ 	select HAVE_NMI
++	select PCI_GENERIC_SETUP
+ 	help
+ 	  The SuperH is a RISC processor targeted for use in embedded systems
+ 	  and consumer electronics; it was also used in the Sega Dreamcast
+diff --git a/arch/sparc/Kconfig b/arch/sparc/Kconfig
+index 5639c9fe5b55..24cea64104bd 100644
+--- a/arch/sparc/Kconfig
++++ b/arch/sparc/Kconfig
+@@ -424,6 +424,7 @@ config SPARC_LEON
+ 	depends on SPARC32
+ 	select USB_EHCI_BIG_ENDIAN_MMIO
+ 	select USB_EHCI_BIG_ENDIAN_DESC
++	select PCI_GENERIC_SETUP
+ 	---help---
+ 	  If you say Y here if you are running on a SPARC-LEON processor.
+ 	  The LEON processor is a synthesizable VHDL model of the
+diff --git a/arch/tile/Kconfig b/arch/tile/Kconfig
+index 4583c0320059..6679af85a882 100644
+--- a/arch/tile/Kconfig
++++ b/arch/tile/Kconfig
+@@ -33,6 +33,7 @@ config TILE
+ 	select USER_STACKTRACE_SUPPORT
+ 	select USE_PMC if PERF_EVENTS
+ 	select VIRT_TO_BUS
++	select PCI_GENERIC_SETUP
+ 
+ config MMU
+ 	def_bool y
+diff --git a/arch/unicore32/Kconfig b/arch/unicore32/Kconfig
+index 0769066929c6..162a7d3def0c 100644
+--- a/arch/unicore32/Kconfig
++++ b/arch/unicore32/Kconfig
+@@ -18,6 +18,7 @@ config UNICORE32
+ 	select ARCH_WANT_FRAME_POINTERS
+ 	select GENERIC_IOMAP
+ 	select MODULES_USE_ELF_REL
++	select PCI_GENERIC_SETUP
+ 	help
+ 	  UniCore-32 is 32-bit Instruction Set Architecture,
+ 	  including a series of low-power-consumption RISC chip
+diff --git a/drivers/pci/Kconfig b/drivers/pci/Kconfig
+index e0cacb7b8563..658c9f95ab3f 100644
+--- a/drivers/pci/Kconfig
++++ b/drivers/pci/Kconfig
+@@ -131,6 +131,9 @@ config PCI_HYPERV
+           The PCI device frontend driver allows the kernel to import arbitrary
+           PCI devices from a PCI backend to support PCI driver domains.
+ 
++config PCI_GENERIC_SETUP
++	def_bool n
++
+ source "drivers/pci/hotplug/Kconfig"
+ source "drivers/pci/dwc/Kconfig"
+ source "drivers/pci/host/Kconfig"
+diff --git a/drivers/pci/Makefile b/drivers/pci/Makefile
+index 462c1f5f5546..26f4710c88ec 100644
+--- a/drivers/pci/Makefile
++++ b/drivers/pci/Makefile
+@@ -31,16 +31,7 @@ obj-$(CONFIG_PCI_IOV) += iov.o
+ #
+ # Some architectures use the generic PCI setup functions
+ #
+-obj-$(CONFIG_ALPHA) += setup-irq.o
+-obj-$(CONFIG_ARC) += setup-irq.o
+-obj-$(CONFIG_ARM) += setup-irq.o
+-obj-$(CONFIG_ARM64) += setup-irq.o
+-obj-$(CONFIG_UNICORE32) += setup-irq.o
+-obj-$(CONFIG_SUPERH) += setup-irq.o
+-obj-$(CONFIG_MIPS) += setup-irq.o
+-obj-$(CONFIG_TILE) += setup-irq.o
+-obj-$(CONFIG_SPARC_LEON) += setup-irq.o
+-obj-$(CONFIG_M68K) += setup-irq.o
++obj-$(CONFIG_PCI_GENERIC_SETUP) += setup-irq.o
+ 
+ #
+ # ACPI Related PCI FW Functions
+-- 
+2.13.0
