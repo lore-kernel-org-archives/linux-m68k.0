@@ -1,39 +1,40 @@
-From: Russell King - ARM Linux <linux@armlinux.org.uk>
-Subject: Re: [PATCH] pci:  Add and use PCI_GENERIC_SETUP Kconfig entry
-Date: Sat, 24 Jun 2017 10:14:07 +0100
-Message-ID: <20170624091406.GZ4902__22110.6550460265$1498295676$gmane$org@n2100.armlinux.org.uk>
-References: <20170623214538.25967-1-palmer@dabbelt.com>
- <20170623220104.GE31455@jhogan-linux.le.imgtec.org>
+From: Richard Henderson <rth@twiddle.net>
+Subject: Re: [PATCH] pci: Add and use PCI_GENERIC_SETUP Kconfig entry
+Date: Sat, 24 Jun 2017 08:08:43 -0700
+Message-ID: <60bd9a54-0220-5d52-8843-ea3a654020a6@twiddle.net>
+References: <20170623220104.GE31455@jhogan-linux.le.imgtec.org>
+ <20170623220857.28774-1-palmer@dabbelt.com>
+ <20170623220857.28774-2-palmer@dabbelt.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <20170623220104.GE31455@jhogan-linux.le.imgtec.org>
+Received: from mail-pf0-f196.google.com ([209.85.192.196]:34978 "EHLO
+        mail-pf0-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1754814AbdFXPIr (ORCPT
+        <rfc822;linux-m68k@vger.kernel.org>); Sat, 24 Jun 2017 11:08:47 -0400
+In-Reply-To: <20170623220857.28774-2-palmer@dabbelt.com>
+Content-Language: en-US
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: James Hogan <james.hogan@imgtec.com>
-Cc: Palmer Dabbelt <palmer@dabbelt.com>, rth@twiddle.net, ink@jurassic.park.msu.ru, mattst88@gmail.com, vgupta@synopsys.com, catalin.marinas@arm.com, will.deacon@arm.com, geert@linux-m68k.org, ralf@linux-mips.org, ysato@users.sourceforge.jp, dalias@libc.org, davem@davemloft.net, cmetcalf@mellanox.com, gxt@mprc.pku.edu.cn, bhelgaas@google.com, viro@zeniv.linux.org.uk, akpm@linux-foundation.org, linux-alpha@vger.kernel.org, linux-kernel@vger.kernel.org, linux-snps-arc@lists.infradead.org, linux-arm-kernel@lists.infradead.org, linux-m68k@lists.linux-m68k.org, linux-mips@linux-mips.org, linux-sh@vger.kernel.org, sparclinux@vger.kernel.org, linux-pci@vger.kernel.org, hch@infradead.org
+To: Palmer Dabbelt <palmer@dabbelt.com>, ink@jurassic.park.msu.ru, mattst88@gmail.com, vgupta@synopsys.com, linux@armlinux.org.uk, catalin.marinas@arm.com, will.deacon@arm.com, geert@linux-m68k.org, ralf@linux-mips.org, ysato@users.sourceforge.jp, dalias@libc.org, davem@davemloft.net, cmetcalf@mellanox.com, gxt@mprc.pku.edu.cn, bhelgaas@google.com, viro@zeniv.linux.org.uk, akpm@linux-foundation.org, linux-alpha@vger.kernel.org, linux-kernel@vger.kernel.org, linux-snps-arc@lists.infradead.org, linux-arm-kernel@lists.infradead.org, linux-m68k@vger.kernel.org, linux-mips@linux-mips.org, linux-sh@vger.kernel.org, sparclinux@vger.kernel.org, linux-pci@vger.kernel.org, hch@infradead.org
 
-On Fri, Jun 23, 2017 at 11:01:04PM +0100, James Hogan wrote:
-> On Fri, Jun 23, 2017 at 02:45:38PM -0700, Palmer Dabbelt wrote:
-> > diff --git a/arch/arm/Kconfig b/arch/arm/Kconfig
-> > index 4c1a35f15838..86872246951c 100644
-> > --- a/arch/arm/Kconfig
-> > +++ b/arch/arm/Kconfig
-> > @@ -96,6 +96,7 @@ config ARM
-> >  	select PERF_USE_VMALLOC
-> >  	select RTC_LIB
-> >  	select SYS_SUPPORTS_APM_EMULATION
-> > +	select PCI_GENERIC_SETUP
-> >  	# Above selects are sorted alphabetically; please add new ones
-> >  	# according to that.  Thanks.
+On 06/23/2017 03:08 PM, Palmer Dabbelt wrote:
+> We wanted to add RISC-V to the list of architectures that used the
+> generic PCI setup-irq.o inside the Makefile and it was suggested that
+> instead we define a Kconfig entry and use that.
 > 
-> This comment seems to suggest PCI_GENERIC_SETUP should be added a few
-> lines up to preserve the alphabetical sorting.
+> I've done very minimal testing on this: I just checked to see that
+> an aarch64 defconfig still build setup-irq.o with the patch applied.
+> The intention is that this patch doesn't change the behavior of any
+> build.
+> 
+> Signed-off-by: Palmer Dabbelt<palmer@dabbelt.com>
+> Reviewed-by: James Hogan<james.hogan@imgtec.com>
+> ---
+>   arch/alpha/Kconfig     |  1 +
 
-Indeed it should.
+Acked-by: Richard Henderson <rth@twiddle.net>
 
--- 
-RMK's Patch system: http://www.armlinux.org.uk/developer/patches/
-FTTC broadband for 0.8mile line: currently at 9.6Mbps down 400kbps up
-according to speedtest.net.
+
+r~
