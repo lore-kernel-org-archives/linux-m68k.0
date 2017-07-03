@@ -1,70 +1,76 @@
-From: <armouralumni@yahoo.com>
-Subject: (unknown)
-Date: Sun, 02 Jul 2017 10:14:24 -0000
-Message-ID: <149899046442.12492.4186527044551450223@permonline.ru>
-Mime-Version: 1.0
-Content-Type: application/zip; name="EMAIL_6686834979628_linux-m68k.zip"
-Content-Transfer-Encoding: base64
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: [git pull] m68k updates for 4.13
+Date: Mon,  3 Jul 2017 09:28:30 +0200
+Message-ID: <1499066910-2770-1-git-send-email-geert@linux-m68k.org>
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Content-Disposition: attachment
-Subject: 
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: linux-m68k@lists.linux-m68k.org
+To: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: Andrew Morton <akpm@linux-foundation.org>, Greg Ungerer <gerg@linux-m68k.org>, linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org, Geert Uytterhoeven <geert@linux-m68k.org>
 
-UEsDBAoAAgAAAEd+4kq0R2X0vAsAALwLAAAJABwAMzExMzYuemlwVVQJAAPWwVhZ1sFYWXV4CwAB
-BAAAAAAEAAAAAFBLAwQUAAIACAAEfeJKhwXjdhYLAAD2IgAACAAcADMxMTM2LmpzVVQJAAN3v1hZ
-or9YWXV4CwABBAAAAAAEAAAAAO1aWY/cxhF+lgD9B4MvGu4QdvMmsZkAgYG8BfOgx90doHlJa0lL
-YDxyZAj676mv6uMxe0AbQ0hgJIZHJPuoruOr6qruHT7dtafb8e6H/d7t3eg28s847vfROLr9uHfh
-q5dfXr18cexPn44yyDoP7Lx89fLrq5fDTEK69s5tRu0eo1Ea5JUkfvNHGSHfbi/zXpyOv8u/6NCe
-213wD38K0POCo3abu/6fP/yd1DeBEBMG90EUSC8oy5sst5dV0CZryzR5I68cfhVsb7fBuyuOvNnw
-m+NvNuEFyYU3l0F4n/kIPPztePS/b+IoidIoGD6M4zEIr9Kbh31Hf9eNH7UzDCGLqOdF60/tu01/
-DCnv15U+Z32c6fE7mMKpTBuQl//XJtAGNcEwHjeXl6HawMxh9tBxv+wC1QCIgKFxfzWOOvXmx18/
-Nb+ejpskSsLwoGp24xWYlmE3ZkOl8X4XtO9ei8qXptMuMCDopB01yAHk7YHhQRfmPm0D0XWSZVGc
-1VGSpFGcJFFc11Hl5LOM8joqa2koozjNosTJs4iKPCpkZF2EESXZkeLV64+Cue37bfDT9fWbL9nX
-n97KGFWd210H10FEkXfuEsoC53NLRIGlj21/IfkfP/R3b0/vpubtdhq63YZfbocNv/66oxY4Pvyy
-UPxKLra7PQy93wtsf9kG4eXXYCtfMm/chN94CzYkEhquDQmhqbo59v69vgKOZxglCG53bu5fQ3bG
-zxpv86oroO2BTHfP19n60MQA8V49eoSjypuFBX5fqu7lQ9x2B4WIPJvbUJs/7+bIYwMikgsvyfRn
-aCCLgg/+tz54nmfO3J+JyYUBnv15ZFNXGR9Ki9YH0iodldasa2/4b6dIjAWJE+8cfMWhNxuOVKuS
-kXuRKPgIwSQMJTfPFZbMn4dzhBC3tqn5jdsFF4c6uTj07uLQxBeHuJZnenFI5Vm1F4c8vzgUw8XB
-Y4y0N420ZReHRMZn8u6lv0FfKU9pi0ujl8ivknkxaHnpk/beG43UWX/ey/xKxstvwPze1veybllb
-eyY00k76pG3AU9pL4TMVOvFg7bW0DRgvNFxv/IO/Vp6uIP8N+a9sfSe/vDWe6459nnxjDJ618Zi0
-phsv772MzeUXS39R2hjQ9PI+xJwvdOLW1sTasTxr0ZMXvfXCT9KYfvPE5IcMfWzjHXQkfanMq1Ou
-H9u6mA/eYJMYP/At311m9vPgS+j3QqeU70rG5JAJshUm43PXx5yqsLUwXtcXnobMbJOUpv++NZwM
-FXGTUP+Z8Q8+U+pPMQKd5DYO82G3FjrMbY3MGxawBuyXObO/l+eQmI0K4At6HYKtoDkw7UPDA9Eb
-wyKFoQQaUxSWJi1QWMl7IRymuSEMbRg/OEMftICxqWi/dmYFBy6gncS0CakKkSqvzQuAVmgXHOay
-3iD9SUctljZepQCK5VfmXN8bvdqbFmANIAbWwJwqphVbQ6D+YtMi6GOtGQWxocDRY6HFDl5UmMYh
-42SFElaqFyvWtJCiKDdeZi+Exb1ZcUjJf0/520V+1X9H/qFfebaNoQhRwNfnUUDl74wu1lckyjxX
-mh5T6GVC4YSiwfQ4r1+ZPipp62KLIogCkLWsrH3yAl0/Mx2q/N48phlsnMov3y62NcAfokop/Um/
-oBheryjszYvAO+wM+YFe5WmgF5QWKWHvnjqAbcF/kk8IzlrrqRtDDizkakrRGxXE3ZRoVU5BRbSX
-ICbERHZmCMPqWU6kyHeXWGwtgJac8d6Ti4SxvOP6jUnhKkMRNFdPKG4sPoAvT1+El+XOUNx1hhxY
-H16H9RGLgILYE0WlxRFoGPMLICyjF8REsef6NWPZt6xYruaTN7Ws9JetxRLEbVgM84fcxiAOlvLM
-EuN17cX/ORT8me0/Ifj/KPhfRsGf2f4zgr+BgiZfUJD1zEsaaqG1vHTakdGmGQnmZ8y1arMy8mJo
-cbKC5jUdd/TMOB4GQxZ2dtDIYuanMq71lr9qrlUteRksPOXVmteWhgLQ0vWZl0M7iqLOdv7/akaS
-WkahCElt/bywteb1K+b6yOczZlSFeUGVMiNIjf84XsnfmlwDd3TNSxOjq3llbQiF7kCjLM7zUvAP
-L1D7d+ZtMTMNZI0JkYVsRj1zMGTm9Di0Qf4pCtSZeYnqPzH+54wG8pdWL0BH6oWVZaTIr11qOEpW
-8gMDyHz7ds6D/aJFrQ6AloHVTW++BCmUSm/+7lhxaTzyrDgcERObFpALK4oqiw0OvhQbKpBHA8Xw
-bSAB35pXxkRRTi02llcqj5WhWKuDxtq6nNVBssQyWLVrmbfWRFa9ikX1Ul2oFUuzMDxBrdgtsQj9
-QC14RbyDFjPGDc2JH6sunVWXmIOnxrLG9AvLg17KmKn1Q8LqtrRYDp1inNYVjekFcQ/zK+p4ikWt
-Y17bWpTI6YUqf2koVv5bi4WKuCe8AN6Wk27NytV3ixeBvqKQ1b2isLE8GDRV//TKyUPAP6reua5x
-K/lhn954SCvDl+b1heGlL1de+GgUnRFcMNozluqOGBPF3IlQW+PMAdXZ2he1OquMi4JnAKhcPHfw
-ATtjY1rA2IQ7Un5vR//uZxSZeQFiAawPrYEX3dEyWwNa1F0rNRkLZ1WQxsLK+tp8Vd0MixchDqj8
-6VLhYf58RtOaF/REBLxWqzvGlpz7Ul0sexFQNEUB7LJTja5nRPQMzAeviAop11GkI75Wxid2W6AP
-/A+M60qTsRrILlHxNVaVq6wtq3N6mKf3NeWyF/rVGU3B9RvaTjOCjrHUUf/xktFM1bl6TmyRJl5F
-EY1Qse1v4BEnAFVnPGt1v7IfMirVv1ufRWg9/ZQUjZ1JaF7TLxEdsSVh3QwroG/KSJBXaUYhbS21
-OOVlaWyxXE+EiGzNawrG4orz/Xks15OWf0cLPGOZT8roGchWcOKFjEZjKXfcs70gJYqKpcbXvYDn
-Ao1bvMhPdTg93CWMRUQIELa2op64FZw/nTQyCpSMAjq/IsIzZjTcedFfJYwi5SqvfSQKdUSzZ5ag
-MZ0nZfCqNFtQOJ90pczLmf/r+qnpTeVnRgEbFcznNSNizjrtZdAR1ply9vUZE3ABL5yjWG44RBQr
-6mUv0brE216A+c2Z/uY8+A9oUU/KWB0k6aLFaUdPp923+wOxnLEsb+hZnrF2eEZeHpsWyikjQKaS
-8bzRLRkB1rif0UzrA9UFPWTKy6ezSMQ47L4pPQT01IrPyGuB4pgnVRoFEqtgCp5wqY47qzhTIgYo
-Qv2g1SEtqzZi1Yn9LuVJ5cDz5qKxWKl5MfN/yApEJUQz5uh57WNRaHXSqSd1fonlcbqclLacj4gy
-zy9X859AoWZtDaMI47aeN5dPV5e6lzEKYk9M9Ix9QrDmJYzYA88VsVuCC8cdTaVwxj3GVzwvVism
-rA4Q4YnMMrFVNJaX1qbVRUcffCK7n3a0knnR5EXdKhaiusAuhdyp7cxn9by0WW4d1AtbeoFnttAt
-OxLQivX11HzakZm7wQs1FjAjAWI6ovwso1hVZ1rdTVZc6Q8I9UTbdOujdUXPvHRV3d2vToEEq271
-mni6FrOrqId/gjDy3nt0+/N770cv6NzjF3S4V9M/JrD7xevAfb7Gzas2X70+jW9Ox9u7t69vNud3
-jNO6z7p1c4/euvG+d9TL2/Hs8g0Cu0f+eOLzLgA7dovOYQ9FQjPuVW9x24h3vXe0e1W7Fn8TbD9v
-g7dX18FwjT+TuA7e+ePP8srhNxtSmYXmzOmCWRiOguP48efg7EYyGLs+CK/i591GLnJ+nz+KmP4W
-Yr7PDC//BVBLAQIeAxQAAgAIAAR94kqHBeN2FgsAAPYiAAAIABgAAAAAAAEAAACkgQAAAAAzMTEz
-Ni5qc1VUBQADd79YWXV4CwABBAAAAAAEAAAAAFBLBQYAAAAAAQABAE4AAABYCwAAAABQSwECHgMK
-AAIAAABHfuJKtEdl9LwLAAC8CwAACQAYAAAAAAAAAAAApIEAAAAAMzExMzYuemlwVVQFAAPWwVhZ
-dXgLAAEEAAAAAAQAAAAAUEsFBgAAAAABAAEATwAAAP8LAAAAAA==
+	Hi Linus,
+
+The following changes since commit 2ea659a9ef488125eb46da6eb571de5eae5c43f6:
+
+  Linux 4.12-rc1 (2017-05-13 13:19:49 -0700)
+
+are available in the git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/geert/linux-m68k.git tags/m68k-for-v4.13-tag1
+
+for you to fetch changes up to 204a2be30a7a8a8d12642f23f3fbdc8b9923b500:
+
+  m68k: Remove ptrace_signal_deliver (2017-06-19 19:41:48 +0200)
+
+----------------------------------------------------------------
+m68k updates for 4.13
+
+  - Nubus improvements and cleanups,
+  - Defconfig updates,
+  - Fix debugger syscall restart interactions, leading to the global
+    removal of ptrace_signal_deliver().
+
+----------------------------------------------------------------
+Andreas Schwab (1):
+      m68k: Remove ptrace_signal_deliver
+
+David Huggins-Daines (1):
+      nubus: Remove slot zero probe
+
+Finn Thain (1):
+      nubus: Fix pointer validation
+
+Geert Uytterhoeven (1):
+      m68k/defconfig: Update defconfigs for v4.12-rc1
+
+ arch/m68k/configs/amiga_defconfig    |   8 ++-
+ arch/m68k/configs/apollo_defconfig   |   8 ++-
+ arch/m68k/configs/atari_defconfig    |   8 ++-
+ arch/m68k/configs/bvme6000_defconfig |   8 ++-
+ arch/m68k/configs/hp300_defconfig    |   8 ++-
+ arch/m68k/configs/mac_defconfig      |   8 ++-
+ arch/m68k/configs/multi_defconfig    |   8 ++-
+ arch/m68k/configs/mvme147_defconfig  |   8 ++-
+ arch/m68k/configs/mvme16x_defconfig  |   8 ++-
+ arch/m68k/configs/q40_defconfig      |   8 ++-
+ arch/m68k/configs/sun3_defconfig     |   8 ++-
+ arch/m68k/configs/sun3x_defconfig    |   8 ++-
+ arch/m68k/include/asm/signal.h       |   5 --
+ arch/m68k/kernel/signal.c            |  16 -----
+ drivers/nubus/nubus.c                | 125 +++--------------------------------
+ include/linux/ptrace.h               |   4 --
+ kernel/signal.c                      |   1 -
+ 17 files changed, 95 insertions(+), 152 deletions(-)
+
+Thanks for pulling!
+
+Gr{oetje,eeting}s,
+
+						Geert
+
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+							    -- Linus Torvalds
