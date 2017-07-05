@@ -1,58 +1,43 @@
 From: Joe Perches <joe@perches.com>
-Subject: [PATCH 00/18] treewide: Move storage class before return type
-Date: Wed,  5 Jul 2017 13:02:09 -0700
-Message-ID: <cover.1499284835.git.joe__36515.0233534679$1499285392$gmane$org@perches.com>
+Subject: [PATCH 08/18] m68k: coldfire: Move inline before return type
+Date: Wed,  5 Jul 2017 13:02:17 -0700
+Message-ID: <14db9c166d5b68efa77e337cfe49bb9b29bca3f7.1499284835.git.joe__11111.6791995757$1499285443$gmane$org@perches.com>
+References: <cover.1499284835.git.joe@perches.com>
 Return-path: <linux-m68k-owner@vger.kernel.org>
+In-Reply-To: <cover.1499284835.git.joe@perches.com>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Andrew Morton <akpm@linux-foundation.org>, kvm@vger.kernel.org, linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu, linux-m68k@lists.linux-m68k.org, linux-efi@vger.kernel.org, linux-s390@vger.kernel.org, linux-serial@vger.kernel.org, linux-ia64@vger.kernel.org, linux-usb@vger.kernel.org, linux-fbdev@vger.kernel.org, linux-omap@vger.kernel.org, alsa-devel@alsa-project.org
-Cc: linux-kernel@vger.kernel.org, linux-cris-kernel@axis.com, linux-mips@linux-mips.org, linux-sh@vger.kernel.org
+To: Andrew Morton <akpm@linux-foundation.org>, Greg Ungerer <gerg@linux-m68k.org>
+Cc: Geert Uytterhoeven <geert@linux-m68k.org>, linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org
 
-Move the inline/asmlinkage keywords before the return types
-Add a checkpatch test for this too.
+Make the code like the rest of the kernel.
 
-Joe Perches (18):
-  checkpatch: improve the STORAGE_CLASS test
-  ARM: KVM: Move asmlinkage before type
-  ARM: HP Jornada 7XX: Move inline before return type
-  CRIS: gpio: Move inline before return type
-  FRV: tlbflush: Move asmlinkage before return type
-  ia64: Move inline before return type
-  ia64: sn: pci: Move inline before type
-  m68k: coldfire: Move inline before return type
-  MIPS: SMP: Move asmlinkage before return type
-  sh: Move inline before return type
-  x86/efi: Move asmlinkage before return type
-  drivers: s390: Move static and inline before return type
-  drivers: tty: serial: Move inline before return type
-  USB: serial: safe_serial: Move __inline__ before return type
-  video: fbdev: intelfb: Move inline before return type
-  video: fbdev: omap: Move inline before return type
-  ARM: samsung: usb-ohci: Move inline before return type
-  ALSA: opl4: Move inline before return type
+Signed-off-by: Joe Perches <joe@perches.com>
+---
+ arch/m68k/coldfire/intc-simr.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
- arch/arm/include/asm/kvm_hyp.h                 |  8 ++++----
- arch/arm/mach-sa1100/jornada720_ssp.c          |  2 +-
- arch/cris/arch-v10/drivers/gpio.c              |  4 ++--
- arch/frv/include/asm/tlbflush.h                |  8 ++++----
- arch/ia64/kernel/mca.c                         |  2 +-
- arch/ia64/sn/pci/pcibr/pcibr_ate.c             |  2 +-
- arch/ia64/sn/pci/tioce_provider.c              |  4 ++--
- arch/m68k/coldfire/intc-simr.c                 |  4 ++--
- arch/mips/include/asm/smp.h                    |  2 +-
- arch/sh/mm/cache-sh5.c                         |  2 +-
- arch/x86/include/asm/efi.h                     |  4 ++--
- drivers/s390/net/ctcm_main.c                   |  2 +-
- drivers/s390/net/qeth_l3_main.c                |  2 +-
- drivers/tty/serial/ioc3_serial.c               |  4 ++--
- drivers/tty/serial/ioc4_serial.c               |  4 ++--
- drivers/usb/serial/safe_serial.c               |  2 +-
- drivers/video/fbdev/intelfb/intelfbdrv.c       |  2 +-
- drivers/video/fbdev/omap/lcdc.c                |  6 +++---
- include/linux/platform_data/usb-ohci-s3c2410.h |  2 +-
- scripts/checkpatch.pl                          | 12 ++++++++++--
- sound/drivers/opl4/opl4_lib.c                  |  2 +-
- 21 files changed, 44 insertions(+), 36 deletions(-)
-
+diff --git a/arch/m68k/coldfire/intc-simr.c b/arch/m68k/coldfire/intc-simr.c
+index 7cf2c156f72d..15c4b7a6e38f 100644
+--- a/arch/m68k/coldfire/intc-simr.c
++++ b/arch/m68k/coldfire/intc-simr.c
+@@ -35,7 +35,7 @@
+ #define	EINT7	67	/* EDGE Port interrupt 7 */
+ 
+ static unsigned int irqebitmap[] = { 0, 1, 4, 7 };
+-static unsigned int inline irq2ebit(unsigned int irq)
++static inline unsigned int irq2ebit(unsigned int irq)
+ {
+ 	return irqebitmap[irq - EINT0];
+ }
+@@ -51,7 +51,7 @@ static unsigned int inline irq2ebit(unsigned int irq)
+ #define	EINT1	65	/* EDGE Port interrupt 1 */
+ #define	EINT7	71	/* EDGE Port interrupt 7 */
+ 
+-static unsigned int inline irq2ebit(unsigned int irq)
++static inline unsigned int irq2ebit(unsigned int irq)
+ {
+ 	return irq - EINT0;
+ }
 -- 
 2.10.0.rc2.1.g053435c
