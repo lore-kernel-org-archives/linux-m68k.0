@@ -1,63 +1,58 @@
-From: <armouralumni@yahoo.com>
-Subject: (unknown)
-Date: Wed, 05 Jul 2017 15:15:35 -0000
-Message-ID: <149926773563.2240.11677314082036919673@nsg-static-98.81.75.182-airtel.com>
-Mime-Version: 1.0
-Content-Type: application/zip; name="75316601415907.zip"
-Content-Transfer-Encoding: base64
+From: Joe Perches <joe@perches.com>
+Subject: [PATCH 00/18] treewide: Move storage class before return type
+Date: Wed,  5 Jul 2017 13:02:09 -0700
+Message-ID: <cover.1499284835.git.joe__36515.0233534679$1499285392$gmane$org@perches.com>
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Content-Disposition: attachment
-Subject: 
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: linux-m68k@lists.linux-m68k.org
+To: Andrew Morton <akpm@linux-foundation.org>, kvm@vger.kernel.org, linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu, linux-m68k@lists.linux-m68k.org, linux-efi@vger.kernel.org, linux-s390@vger.kernel.org, linux-serial@vger.kernel.org, linux-ia64@vger.kernel.org, linux-usb@vger.kernel.org, linux-fbdev@vger.kernel.org, linux-omap@vger.kernel.org, alsa-devel@alsa-project.org
+Cc: linux-kernel@vger.kernel.org, linux-cris-kernel@axis.com, linux-mips@linux-mips.org, linux-sh@vger.kernel.org
 
-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
-BgAAAAABAAEAWwAAAFIKAAAAAA==
+Move the inline/asmlinkage keywords before the return types
+Add a checkpatch test for this too.
+
+Joe Perches (18):
+  checkpatch: improve the STORAGE_CLASS test
+  ARM: KVM: Move asmlinkage before type
+  ARM: HP Jornada 7XX: Move inline before return type
+  CRIS: gpio: Move inline before return type
+  FRV: tlbflush: Move asmlinkage before return type
+  ia64: Move inline before return type
+  ia64: sn: pci: Move inline before type
+  m68k: coldfire: Move inline before return type
+  MIPS: SMP: Move asmlinkage before return type
+  sh: Move inline before return type
+  x86/efi: Move asmlinkage before return type
+  drivers: s390: Move static and inline before return type
+  drivers: tty: serial: Move inline before return type
+  USB: serial: safe_serial: Move __inline__ before return type
+  video: fbdev: intelfb: Move inline before return type
+  video: fbdev: omap: Move inline before return type
+  ARM: samsung: usb-ohci: Move inline before return type
+  ALSA: opl4: Move inline before return type
+
+ arch/arm/include/asm/kvm_hyp.h                 |  8 ++++----
+ arch/arm/mach-sa1100/jornada720_ssp.c          |  2 +-
+ arch/cris/arch-v10/drivers/gpio.c              |  4 ++--
+ arch/frv/include/asm/tlbflush.h                |  8 ++++----
+ arch/ia64/kernel/mca.c                         |  2 +-
+ arch/ia64/sn/pci/pcibr/pcibr_ate.c             |  2 +-
+ arch/ia64/sn/pci/tioce_provider.c              |  4 ++--
+ arch/m68k/coldfire/intc-simr.c                 |  4 ++--
+ arch/mips/include/asm/smp.h                    |  2 +-
+ arch/sh/mm/cache-sh5.c                         |  2 +-
+ arch/x86/include/asm/efi.h                     |  4 ++--
+ drivers/s390/net/ctcm_main.c                   |  2 +-
+ drivers/s390/net/qeth_l3_main.c                |  2 +-
+ drivers/tty/serial/ioc3_serial.c               |  4 ++--
+ drivers/tty/serial/ioc4_serial.c               |  4 ++--
+ drivers/usb/serial/safe_serial.c               |  2 +-
+ drivers/video/fbdev/intelfb/intelfbdrv.c       |  2 +-
+ drivers/video/fbdev/omap/lcdc.c                |  6 +++---
+ include/linux/platform_data/usb-ohci-s3c2410.h |  2 +-
+ scripts/checkpatch.pl                          | 12 ++++++++++--
+ sound/drivers/opl4/opl4_lib.c                  |  2 +-
+ 21 files changed, 44 insertions(+), 36 deletions(-)
+
+-- 
+2.10.0.rc2.1.g053435c
