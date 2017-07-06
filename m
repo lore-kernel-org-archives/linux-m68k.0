@@ -1,103 +1,82 @@
-From: <armouralumni@yahoo.com>
-Subject: (unknown)
-Date: Thu, 06 Jul 2017 06:10:38 -0000
-Message-ID: <149932143807.12492.1896632540824791909@zaural.ru>
+From: angelo <angelo70@gmail.com>
+Subject: mcf54415, spi nor and SD drivers
+Date: Thu, 6 Jul 2017 10:36:12 +0200
+Message-ID: <ba371285-38b5-5744-c386-1721bdf25f95@gmail.com>
 Mime-Version: 1.0
-Content-Type: application/zip; name="EMAIL_11449160770431_linux-m68k.zip"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Subject: 
-Content-Disposition: attachment
+Received: from mail-lf0-f50.google.com ([209.85.215.50]:34722 "EHLO
+        mail-lf0-f50.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1752050AbdGFIge (ORCPT
+        <rfc822;linux-m68k@vger.kernel.org>); Thu, 6 Jul 2017 04:36:34 -0400
+Received: by mail-lf0-f50.google.com with SMTP id t72so7662396lff.1
+        for <linux-m68k@vger.kernel.org>; Thu, 06 Jul 2017 01:36:28 -0700 (PDT)
+Received: from [192.168.0.2] (host160-163-dynamic.56-82-r.retail.telecomitalia.it. [82.56.163.160])
+        by smtp.googlemail.com with ESMTPSA id g24sm9248478edh.20.2017.07.06.01.36.12
+        for <linux-m68k@vger.kernel.org>
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+        Thu, 06 Jul 2017 01:36:12 -0700 (PDT)
+Content-Language: en-US
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: linux-m68k@lists.linux-m68k.org
+To: Linux/m68k <linux-m68k@vger.kernel.org>
 
-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
+Hi all,
+
+i designed here a new board with mcf54415. Testing a first mainline kernel.
+I would like to load a cramfs rootfs from SPI NOR (mtd, ftl) but actually
+i don't see the SPI NOR flash detected from dmesg.
+
+Next future step then would be load rootfs from SD.
+
+Seems there is no selectable driver for
+
+- SPI controller
+- SD (MMC) controller
+
+Those should be similar to existing drivers of some other freescale chip,
+or some new implementation is required ? Attaching dmesg.
+
+Regards,
+Angelo Dureghello
+
+
+U-Boot 2017.05-00709-g9d9f074dfe-dirty (Jul 02 2017 - 19:50:16 +0200)
+
+CPU:   Freescale MCF54410 (Mask:9f Version:2)
+        CPU CLK 240 MHz BUS CLK 120 MHz FLB CLK 60 MHz
+        INP CLK 30 MHz VCO CLK 480 MHz
+SPI:   ready
+DRAM:  128 MiB
+SF: Detected is25lp128 with page size 256 Bytes, erase size 64 KiB, total 16 MiB
+In:    serial
+Out:   serial
+Err:   serial
+Hit any key to stop autoboot:  0
+SF: Detected is25lp128 with page size 256 Bytes, erase size 64 KiB, total 16 MiB
+device 0 offset 0x100000, size 0x200000
+SF: 2097152 bytes @ 0x100000 Read: OK
+## Booting kernel from Legacy Image at 40001000 ...
+    Image Name:   mainline kernel
+    Created:      2017-07-05  23:58:53 UTC
+    Image Type:   M68K Linux Kernel Image (uncompressed)
+    Data Size:    1642496 Bytes = 1.6 MiB
+    Load Address: 40001000
+    Entry Point:  40001000
+    Verifying Checksum ... OK
+    Loading Kernel Image ... OK
+[    0.000000] Linux version 4.10.0-rc2stmark2-001-00020-g0f64df301240 (angelo@jerusalem) (gcc version 4.9.0 (crosstools-sysam-2016.04.16) ) #16 Thu Jul 6 01:58:52 CEST 2017
+[    0.000000] uClinux with CPU COLDFIRE(m5441x)
+[    0.000000] COLDFIRE port done by Greg Ungerer, gerg@snapgear.com
+[    0.000000] Flat model support (C) 1998,1999 Kenneth Albanowski, D. Jeff Dionne
+[    0.000000] Built 1 zonelists in Zone order, mobility grouping on.  Total pages: 16320
+[    0.000000] Kernel command line: console=ttyS0,115200 root=/dev/mtdblock3 mtdparts=spi-flash.0:1m(u-boot),7m(kernel),-(rootfs) rw rootwait
+[    0.000000] PID hash table entries: 512 (order: -2, 2048 bytes)
+[    0.000000] Dentry cache hash table entries: 16384 (order: 3, 65536 bytes)
+[    0.000000] Inode-cache hash table entries: 8192 (order: 2, 32768 bytes)
+[    0.000000] Memory: 128664K/131072K available (1154K kernel code, 92K rwdata, 304K rodata, 48K init, 121K bss, 2408K reserved, 0K cma-reserved)
+[    0.000000] Virtual kernel memory layout:
+[    0.000000]     vector  : 0x40000000 - 0x40000400   (   1 KiB)
+[    0.000000]     kmap    : 0x00000000 - 0xffffffff   (4095 MiB)
+[    0.000000]     vmalloc : 0x00000000 - 0xfffff ----- Message truncated -----
