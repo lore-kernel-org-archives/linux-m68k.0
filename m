@@ -1,122 +1,65 @@
-From: Greg Ungerer <gregungerer@westnet.com.au>
-Subject: Re: mcf54415, spi nor and SD drivers
-Date: Thu, 6 Jul 2017 23:07:46 +1000
-Message-ID: <30ab985a-70e5-3ca0-3bb1-ace05dd4ebc2@westnet.com.au>
-References: <ba371285-38b5-5744-c386-1721bdf25f95@gmail.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
+From: Babu Moger <babu.moger@oracle.com>
+Subject: [PATCH v3 0/3] Define CPU_BIG_ENDIAN or warn for inconsistencies
+Date: Thu,  6 Jul 2017 09:34:18 -0700
+Message-ID: <1499358861-179979-1-git-send-email-babu.moger@oracle.com>
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from icp-osb-irony-out5.external.iinet.net.au ([203.59.1.221]:59631
-        "EHLO icp-osb-irony-out5.external.iinet.net.au" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1752068AbdGFNRW (ORCPT
-        <rfc822;linux-m68k@vger.kernel.org>); Thu, 6 Jul 2017 09:17:22 -0400
-In-Reply-To: <ba371285-38b5-5744-c386-1721bdf25f95@gmail.com>
-Content-Language: en-US
+Received: from aserp1040.oracle.com ([141.146.126.69]:42643 "EHLO
+        aserp1040.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1751796AbdGFQgC (ORCPT
+        <rfc822;linux-m68k@vger.kernel.org>); Thu, 6 Jul 2017 12:36:02 -0400
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: angelo <angelo70@gmail.com>, Linux/m68k <linux-m68k@vger.kernel.org>
+To: gregkh@linuxfoundation.org, ysato@users.sourceforge.jp, geert@linux-m68k.org, jonas@southpole.se, stefan.kristiansson@saunalahti.fi, shorne@gmail.com, jejb@parisc-linux.org, deller@gmx.de, davem@davemloft.net, viro@zeniv.linux.org.uk, monstr@monstr.eu
+Cc: mpe@ellerman.id.au, peterz@infradead.org, mingo@redhat.com, jcmvbkbc@gmail.com, linux-kernel@vger.kernel.org, uclinux-h8-devel@lists.sourceforge.jp, linux-m68k@vger.kernel.org, openrisc@lists.librecores.org, linux-parisc@vger.kernel.org, sparclinux@vger.kernel.org
 
-Hi Angelo,
+Resending the series per Greg KH's request.
 
-On 06/07/17 18:36, angelo wrote:
-> i designed here a new board with mcf54415. Testing a first mainline kernel.
-> I would like to load a cramfs rootfs from SPI NOR (mtd, ftl) but actually
-> i don't see the SPI NOR flash detected from dmesg.
-> 
-> Next future step then would be load rootfs from SD.
-> 
-> Seems there is no selectable driver for
-> 
-> - SPI controller
-> - SD (MMC) controller
-> 
-> Those should be similar to existing drivers of some other freescale chip,
-> or some new implementation is required ? Attaching dmesg.
+Found this problem while enabling queued rwlock on SPARC.
+The parameter CONFIG_CPU_BIG_ENDIAN is used to clear the
+specific byte in qrwlock structure. Without this parameter,
+we clear the wrong byte.
+Here is the code in include/asm-generic/qrwlock.h
 
-Most other ColdFire parts use the QSPI hardware module, and its driver
-is at drivers/spi/spi-coldfire-qspi.c. But, looking at the hardware
-reference manual for the mcf5441x family it contains a DSPI hardware
-module - and it looks quite different.
+static inline u8 *__qrwlock_write_byte(struct qrwlock *lock)
+  {
+         return (u8 *)lock + 3 * IS_BUILTIN(CONFIG_CPU_BIG_ENDIAN);
+  }
 
-That DSPI module looks to be similar to the one in the Freescale iMX
-parts, and its driver is at drivers/spi/spi-fsl-dspi.c. I don't know
-that anyone has used that on ColdFire with the mcf5441x parts,
-but that is where you should start I think.
+Also found few more references of this parameter in
+drivers/of/base.c
+drivers/of/fdt.c
+drivers/tty/serial/earlycon.c
+drivers/tty/serial/serial_core.c
 
-I haven't used any SD/MMC drivers on ColdFire so no advice on where
-to look for that one.
+Here is our previous discussion.
+https://lkml.org/lkml/2017/5/24/620
 
-If you are feeling adventurous you may want to look at:
+Based on the discussion, it was decided to add CONFIG_CPU_BIG_ENDIAN
+for all the fixed big endian architecture(frv, h8300, m68k, openrisc,
+parisc and sparc). And warn if there are inconsistencies in this definition.
 
-   https://www.spinics.net/lists/linux-m68k/msg10057.html
+v2 -> v3:
+ Added the choice statement for endianness selection for microblaze.
+ Updated the Makefile for microblaze(Suggested by Arnd Bergmann) to
+ properly compile for the correct format.
+ Updated acks.
 
-With a reasonably recent kernel you don't even need to generate a
-different user space filesystem and binaries. You can run your flat
-format non-MMU binaries on an MMU configured ColdFire system (as long
-as you have CONFIG_BINFMT_FLAT=y in your kernel config). I would love
-to be able to push this patch to mainline.
+v1 -> v2:
+ Updated the commit messages and acks.
 
-Regards
-Greg
+Babu Moger (3):
+  arch: Define CPU_BIG_ENDIAN for all fixed big endian archs
+  arch/microblaze: Add choice for endianness and update Makefile
+  include: warn for inconsistent endian config definition
 
-
-
-> Regards,
-> Angelo Dureghello
-> 
-> 
-> U-Boot 2017.05-00709-g9d9f074dfe-dirty (Jul 02 2017 - 19:50:16 +0200)
-> 
-> CPU:   Freescale MCF54410 (Mask:9f Version:2)
->         CPU CLK 240 MHz BUS CLK 120 MHz FLB CLK 60 MHz
->         INP CLK 30 MHz VCO CLK 480 MHz
-> SPI:   ready
-> DRAM:  128 MiB
-> SF: Detected is25lp128 with page size 256 Bytes, erase size 64 KiB, 
-> total 16 MiB
-> In:    serial
-> Out:   serial
-> Err:   serial
-> Hit any key to stop autoboot:  0
-> SF: Detected is25lp128 with page size 256 Bytes, erase size 64 KiB, 
-> total 16 MiB
-> device 0 offset 0x100000, size 0x200000
-> SF: 2097152 bytes @ 0x100000 Read: OK
-> ## Booting kernel from Legacy Image at 40001000 ...
->     Image Name:   mainline kernel
->     Created:      2017-07-05  23:58:53 UTC
->     Image Type:   M68K Linux Kernel Image (uncompressed)
->     Data Size:    1642496 Bytes = 1.6 MiB
->     Load Address: 40001000
->     Entry Point:  40001000
->     Verifying Checksum ... OK
->     Loading Kernel Image ... OK
-> [    0.000000] Linux version 4.10.0-rc2stmark2-001-00020-g0f64df301240 
-> (angelo@jerusalem) (gcc version 4.9.0 (crosstools-sysam-2016.04.16) ) 
-> #16 Thu Jul 6 01:58:52 CEST 2017
-> [    0.000000] uClinux with CPU COLDFIRE(m5441x)
-> [    0.000000] COLDFIRE port done by Greg Ungerer, gerg@snapgear.com
-> [    0.000000] Flat model support (C) 1998,1999 Kenneth Albanowski, D. 
-> Jeff Dionne
-> [    0.000000] Built 1 zonelists in Zone order, mobility grouping on.  
-> Total pages: 16320
-> [    0.000000] Kernel command line: console=ttyS0,115200 
-> root=/dev/mtdblock3 mtdparts=spi-flash.0:1m(u-boot),7m(kernel),-(rootfs) 
-> rw rootwait
-> [    0.000000] PID hash table entries: 512 (order: -2, 2048 bytes)
-> [    0.000000] Dentry cache hash table entries: 16384 (order: 3, 65536 
-> bytes)
-> [    0.000000] Inode-cache hash table entries: 8192 (order: 2, 32768 bytes)
-> [    0.000000] Memory: 128664K/131072K available (1154K kernel code, 92K 
-> rwdata, 304K rodata, 48K init, 121K bss, 2408K reserved, 0K cma-reserved)
-> [    0.000000] Virtual kernel memory layout:
-> [    0.000000]     vector  : 0x40000000 - 0x40000400   (   1 KiB)
-> [    0.000000]     kmap    : 0x00000000 - 0xffffffff   (4095 MiB)
-> [    0.000000]     vmalloc : 0x00000000 - 0xfffff ----- Message 
-> truncated -----
-> -- 
-> To unsubscribe from this list: send the line "unsubscribe linux-m68k" in
-> the body of a message to majordomo@vger.kernel.org
-> More majordomo info at  http://vger.kernel.org/majordomo-info.html
-> 
+ arch/frv/Kconfig                        |    3 +++
+ arch/h8300/Kconfig                      |    3 +++
+ arch/m68k/Kconfig                       |    3 +++
+ arch/microblaze/Kconfig                 |   16 ++++++++++++++++
+ arch/microblaze/Makefile                |    2 ++
+ arch/openrisc/Kconfig                   |    3 +++
+ arch/parisc/Kconfig                     |    3 +++
+ arch/sparc/Kconfig                      |    3 +++
+ include/linux/byteorder/big_endian.h    |    4 ++++
+ include/linux/byteorder/little_endian.h |    4 ++++
+ 10 files changed, 44 insertions(+), 0 deletions(-)
