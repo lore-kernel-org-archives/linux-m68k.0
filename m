@@ -1,7 +1,7 @@
 From: Babu Moger <babu.moger@oracle.com>
-Subject: [PATCH v3 3/3] include: warn for inconsistent endian config definition
-Date: Thu,  6 Jul 2017 09:34:21 -0700
-Message-ID: <1499358861-179979-4-git-send-email-babu.moger@oracle.com>
+Subject: [PATCH v3 2/3] arch/microblaze: Add choice for endianness and update Makefile
+Date: Thu,  6 Jul 2017 09:34:20 -0700
+Message-ID: <1499358861-179979-3-git-send-email-babu.moger@oracle.com>
 References: <1499358861-179979-1-git-send-email-babu.moger@oracle.com>
 Return-path: <linux-kernel-owner@vger.kernel.org>
 In-Reply-To: <1499358861-179979-1-git-send-email-babu.moger@oracle.com>
@@ -10,57 +10,59 @@ To: gregkh@linuxfoundation.org, ysato@users.sourceforge.jp, geert@linux-m68k.org
 Cc: mpe@ellerman.id.au, peterz@infradead.org, mingo@redhat.com, jcmvbkbc@gmail.com, linux-kernel@vger.kernel.org, uclinux-h8-devel@lists.sourceforge.jp, linux-m68k@vger.kernel.org, openrisc@lists.librecores.org, linux-parisc@vger.kernel.org, sparclinux@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
 
-We have seen some generic code use config parameter CONFIG_CPU_BIG_ENDIAN
-to decide the endianness.
+microblaze architectures can be configured for either little or
+big endian formats. Add a choice option for the user to select the
+correct endian format(default to big endian).
 
-Here are the few examples.
-include/asm-generic/qrwlock.h
-drivers/of/base.c
-drivers/of/fdt.c
-drivers/tty/serial/earlycon.c
-drivers/tty/serial/serial_core.c
-
-Display warning if CPU_BIG_ENDIAN is not defined on big endian
-architecture and also warn if it defined on little endian architectures.
-
-Here is our original discussion
-https://lkml.org/lkml/2017/5/24/620
+Also update the Makefile so toolchain can compile for the format
+it is configured for.
 
 Signed-off-by: Babu Moger <babu.moger@oracle.com>
-Suggested-by: Arnd Bergmann <arnd@arndb.de>
-Acked-by: Geert Uytterhoeven <geert@linux-m68k.org>
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 ---
- include/linux/byteorder/big_endian.h    |    4 ++++
- include/linux/byteorder/little_endian.h |    4 ++++
- 2 files changed, 8 insertions(+), 0 deletions(-)
+ arch/microblaze/Kconfig  |   16 ++++++++++++++++
+ arch/microblaze/Makefile |    2 ++
+ 2 files changed, 18 insertions(+), 0 deletions(-)
 
-diff --git a/include/linux/byteorder/big_endian.h b/include/linux/byteorder/big_endian.h
-index 3920414..ffd2159 100644
---- a/include/linux/byteorder/big_endian.h
-+++ b/include/linux/byteorder/big_endian.h
-@@ -3,5 +3,9 @@
+diff --git a/arch/microblaze/Kconfig b/arch/microblaze/Kconfig
+index 85885a5..74aa5de 100644
+--- a/arch/microblaze/Kconfig
++++ b/arch/microblaze/Kconfig
+@@ -35,6 +35,22 @@ config MICROBLAZE
+ 	select VIRT_TO_BUS
+ 	select CPU_NO_EFFICIENT_FFS
  
- #include <uapi/linux/byteorder/big_endian.h>
- 
-+#ifndef CONFIG_CPU_BIG_ENDIAN
-+#warning inconsistent configuration, needs CONFIG_CPU_BIG_ENDIAN
-+#endif
++# Endianness selection
++choice
++	prompt "Endianness selection"
++	default CPU_BIG_ENDIAN
++	help
++	  microblaze architectures can be configured for either little or
++	  big endian formats. Be sure to select the appropriate mode.
 +
- #include <linux/byteorder/generic.h>
- #endif /* _LINUX_BYTEORDER_BIG_ENDIAN_H */
-diff --git a/include/linux/byteorder/little_endian.h b/include/linux/byteorder/little_endian.h
-index 0805737..ba910bb 100644
---- a/include/linux/byteorder/little_endian.h
-+++ b/include/linux/byteorder/little_endian.h
-@@ -3,5 +3,9 @@
- 
- #include <uapi/linux/byteorder/little_endian.h>
- 
-+#ifdef CONFIG_CPU_BIG_ENDIAN
-+#warning inconsistent configuration, CONFIG_CPU_BIG_ENDIAN is set
-+#endif
++config CPU_BIG_ENDIAN
++	bool "Big endian"
 +
- #include <linux/byteorder/generic.h>
- #endif /* _LINUX_BYTEORDER_LITTLE_ENDIAN_H */
++config CPU_LITTLE_ENDIAN
++	bool "Little endian"
++
++endchoice
++
+ config SWAP
+ 	def_bool n
+ 
+diff --git a/arch/microblaze/Makefile b/arch/microblaze/Makefile
+index 740f2b8..1f6c486 100644
+--- a/arch/microblaze/Makefile
++++ b/arch/microblaze/Makefile
+@@ -35,6 +35,8 @@ endif
+ CPUFLAGS-$(CONFIG_XILINX_MICROBLAZE0_USE_DIV) += -mno-xl-soft-div
+ CPUFLAGS-$(CONFIG_XILINX_MICROBLAZE0_USE_BARREL) += -mxl-barrel-shift
+ CPUFLAGS-$(CONFIG_XILINX_MICROBLAZE0_USE_PCMP_INSTR) += -mxl-pattern-compare
++CPUFLAGS-$(CONFIG_BIG_ENDIAN) += -mbig-endian
++CPUFLAGS-$(CONFIG_LITTLE_ENDIAN) += -mlittle-endian
+ 
+ CPUFLAGS-1 += $(call cc-option,-mcpu=v$(CPU_VER))
+ 
 -- 
 1.7.1
