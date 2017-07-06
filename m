@@ -1,61 +1,122 @@
-From: "Mr, Alif Tomar" <jamilatayeb26@gmail.com>
-Subject: Hello,
-Date: Thu, 6 Jul 2017 13:05:59 +0000
-Message-ID: <CAFXfxez+gyTga2A9BJx0LS7jjkNjpvuaMt67Jz2wo5x82DOV3A@mail.gmail.com>
+From: Greg Ungerer <gregungerer@westnet.com.au>
+Subject: Re: mcf54415, spi nor and SD drivers
+Date: Thu, 6 Jul 2017 23:07:46 +1000
+Message-ID: <30ab985a-70e5-3ca0-3bb1-ace05dd4ebc2@westnet.com.au>
+References: <ba371285-38b5-5744-c386-1721bdf25f95@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from mail-it0-f68.google.com ([209.85.214.68]:33415 "EHLO
-        mail-it0-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1752648AbdGFNGN (ORCPT
-        <rfc822;linux-m68k@vger.kernel.org>); Thu, 6 Jul 2017 09:06:13 -0400
-Received: by mail-it0-f68.google.com with SMTP id 188so265647itx.0
-        for <linux-m68k@vger.kernel.org>; Thu, 06 Jul 2017 06:06:07 -0700 (PDT)
+Received: from icp-osb-irony-out5.external.iinet.net.au ([203.59.1.221]:59631
+        "EHLO icp-osb-irony-out5.external.iinet.net.au" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1752068AbdGFNRW (ORCPT
+        <rfc822;linux-m68k@vger.kernel.org>); Thu, 6 Jul 2017 09:17:22 -0400
+In-Reply-To: <ba371285-38b5-5744-c386-1721bdf25f95@gmail.com>
+Content-Language: en-US
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
+To: angelo <angelo70@gmail.com>, Linux/m68k <linux-m68k@vger.kernel.org>
 
-Dear Friend,
+Hi Angelo,
 
-How are you today? Hope all is well with you and your family? I hope
-this mail finds you in an excellent condition of health. But if you do
-not remember me, you mint have received an email from me in the past
-regarding a business transaction which we never concluded.
+On 06/07/17 18:36, angelo wrote:
+> i designed here a new board with mcf54415. Testing a first mainline kernel.
+> I would like to load a cramfs rootfs from SPI NOR (mtd, ftl) but actually
+> i don't see the SPI NOR flash detected from dmesg.
+> 
+> Next future step then would be load rootfs from SD.
+> 
+> Seems there is no selectable driver for
+> 
+> - SPI controller
+> - SD (MMC) controller
+> 
+> Those should be similar to existing drivers of some other freescale chip,
+> or some new implementation is required ? Attaching dmesg.
 
-I am glad to inform you that the transaction has been concluded with
-another Greek Merchant who financed it to a logical conclusion. I
-thank you for your great effort towards our unfinished transfer of
-fund into your account,
+Most other ColdFire parts use the QSPI hardware module, and its driver
+is at drivers/spi/spi-coldfire-qspi.c. But, looking at the hardware
+reference manual for the mcf5441x family it contains a DSPI hardware
+module - and it looks quite different.
 
-I did not forget your past effort and attempts to assist me in the
-past have left an ATM VISA CARD for you, worth about $850,000.00 which
-you can use to withdraw at any ATM CARD machine anywhere in the world.
-My dear friend, please contact my Account Officer, Mrs. Sylvie Reine,
-so that she will send the ATM VISA CARD to you without any delay.
+That DSPI module looks to be similar to the one in the Freescale iMX
+parts, and its driver is at drivers/spi/spi-fsl-dspi.c. I don't know
+that anyone has used that on ColdFire with the mcf5441x parts,
+but that is where you should start I think.
 
-At the moment, I'm very busy here in Greece, trying to invest my own
-share of the funds with my new partner from Greece. Please I will like
-you to accept this token with good faith as this is from the bottom of
-my heart. Her contact is Contact Person: Mrs.Syvie Reine
+I haven't used any SD/MMC drivers on ColdFire so no advice on where
+to look for that one.
+
+If you are feeling adventurous you may want to look at:
+
+   https://www.spinics.net/lists/linux-m68k/msg10057.html
+
+With a reasonably recent kernel you don't even need to generate a
+different user space filesystem and binaries. You can run your flat
+format non-MMU binaries on an MMU configured ColdFire system (as long
+as you have CONFIG_BINFMT_FLAT=y in your kernel config). I would love
+to be able to push this patch to mainline.
+
+Regards
+Greg
 
 
 
-
-Email: mrs.syvieriene194@yahoo.com ::::
-Phone: +228 96629316.
-
-Forward to her your details such as,
-
-Your Full Name..............
-
-Your Address For Delivery.......
-
-Your Telephone Number........
-
-Your Country........
-
-for her reference and ask her to release the VISA ATM CARD to you
-because I have instructed her
-
-Best Regards,
-
-Mr Alif Tomar
+> Regards,
+> Angelo Dureghello
+> 
+> 
+> U-Boot 2017.05-00709-g9d9f074dfe-dirty (Jul 02 2017 - 19:50:16 +0200)
+> 
+> CPU:   Freescale MCF54410 (Mask:9f Version:2)
+>         CPU CLK 240 MHz BUS CLK 120 MHz FLB CLK 60 MHz
+>         INP CLK 30 MHz VCO CLK 480 MHz
+> SPI:   ready
+> DRAM:  128 MiB
+> SF: Detected is25lp128 with page size 256 Bytes, erase size 64 KiB, 
+> total 16 MiB
+> In:    serial
+> Out:   serial
+> Err:   serial
+> Hit any key to stop autoboot:  0
+> SF: Detected is25lp128 with page size 256 Bytes, erase size 64 KiB, 
+> total 16 MiB
+> device 0 offset 0x100000, size 0x200000
+> SF: 2097152 bytes @ 0x100000 Read: OK
+> ## Booting kernel from Legacy Image at 40001000 ...
+>     Image Name:   mainline kernel
+>     Created:      2017-07-05  23:58:53 UTC
+>     Image Type:   M68K Linux Kernel Image (uncompressed)
+>     Data Size:    1642496 Bytes = 1.6 MiB
+>     Load Address: 40001000
+>     Entry Point:  40001000
+>     Verifying Checksum ... OK
+>     Loading Kernel Image ... OK
+> [    0.000000] Linux version 4.10.0-rc2stmark2-001-00020-g0f64df301240 
+> (angelo@jerusalem) (gcc version 4.9.0 (crosstools-sysam-2016.04.16) ) 
+> #16 Thu Jul 6 01:58:52 CEST 2017
+> [    0.000000] uClinux with CPU COLDFIRE(m5441x)
+> [    0.000000] COLDFIRE port done by Greg Ungerer, gerg@snapgear.com
+> [    0.000000] Flat model support (C) 1998,1999 Kenneth Albanowski, D. 
+> Jeff Dionne
+> [    0.000000] Built 1 zonelists in Zone order, mobility grouping on.  
+> Total pages: 16320
+> [    0.000000] Kernel command line: console=ttyS0,115200 
+> root=/dev/mtdblock3 mtdparts=spi-flash.0:1m(u-boot),7m(kernel),-(rootfs) 
+> rw rootwait
+> [    0.000000] PID hash table entries: 512 (order: -2, 2048 bytes)
+> [    0.000000] Dentry cache hash table entries: 16384 (order: 3, 65536 
+> bytes)
+> [    0.000000] Inode-cache hash table entries: 8192 (order: 2, 32768 bytes)
+> [    0.000000] Memory: 128664K/131072K available (1154K kernel code, 92K 
+> rwdata, 304K rodata, 48K init, 121K bss, 2408K reserved, 0K cma-reserved)
+> [    0.000000] Virtual kernel memory layout:
+> [    0.000000]     vector  : 0x40000000 - 0x40000400   (   1 KiB)
+> [    0.000000]     kmap    : 0x00000000 - 0xffffffff   (4095 MiB)
+> [    0.000000]     vmalloc : 0x00000000 - 0xfffff ----- Message 
+> truncated -----
+> -- 
+> To unsubscribe from this list: send the line "unsubscribe linux-m68k" in
+> the body of a message to majordomo@vger.kernel.org
+> More majordomo info at  http://vger.kernel.org/majordomo-info.html
+> 
