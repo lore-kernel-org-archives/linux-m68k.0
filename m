@@ -1,71 +1,40 @@
-From: John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
-Subject: gnat-7 native builds failing with linker errors
-Date: Sun, 16 Jul 2017 10:01:58 +0200
-Message-ID: <ad2704fc-cd42-c5d5-33d4-3b4123ff5014@physik.fu-berlin.de>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: [PATCH 1/3] binfmt_flat: Use %u to format u32
+Date: Sun, 16 Jul 2017 13:57:27 +0200
+Message-ID: <1500206249-16670-1-git-send-email-geert__9425.65370719439$1500206259$gmane$org@linux-m68k.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from outpost1.zedat.fu-berlin.de ([130.133.4.66]:56717 "EHLO
-        outpost1.zedat.fu-berlin.de" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1751087AbdGPICC (ORCPT
-        <rfc822;linux-m68k@vger.kernel.org>);
-        Sun, 16 Jul 2017 04:02:02 -0400
-Content-Language: en-US
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Debian m68k <debian-68k@lists.debian.org>
-Cc: Linux/m68k <linux-m68k@vger.kernel.org>
+To: Alexander Viro <viro@zeniv.linux.org.uk>, Linus Torvalds <torvalds@linux-foundation.org>
+Cc: Steven Miao <realmz6@gmail.com>, Yoshinori Sato <ysato@users.sourceforge.jp>, Greg Ungerer <gerg@linux-m68k.org>, adi-buildroot-devel@lists.sourceforge.net, uclinux-h8-devel@lists.sourceforge.jp, linux-m68k@lists.linux-m68k.org, linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org, Geert Uytterhoeven <geert@linux-m68k.org>
 
-Hi!
+Several variables had their types changed from unsigned long to u32,
+but the printk()-style format to print them wasn't updated, leading to:
 
-I managed to cross-compile gnat-7 for m68k after getting a small fix merged
-upstream [1]. Then I tried to build gnat-7 natively on qemu-m68k which failed
-with [2]:
+    fs/binfmt_flat.c: In function ‘load_flat_file’:
+    fs/binfmt_flat.c:577: warning: format ‘%ld’ expects type ‘long int’, but argument 3 has type ‘u32’
 
-if [ xinfo = xinfo ]; then \
-	makeinfo --split-size=5000000 --split-size=5000000 --split-size=5000000 --no-split -I ../../src/gcc/doc \
-		-I ../../src/gcc/doc/include -o doc/gccinstall.info ../../src/gcc/doc/install.texi; \
-fi
-/usr/lib/gcc/m68k-linux-gnu/7/../../../m68k-linux-gnu/crt1.o: In function `_start':
-(.text+0x1c): undefined reference to `main'
-./xtreeprs.o: In function `_ada_xtreeprs':
-xtreeprs.adb:(.text+0x4a6): undefined reference to `xtreeprs__TnamesBIP.1929'
-xtreeprs.adb:(.text+0x4cc): undefined reference to `xtreeprs__TnamesBDI.1932'
-xtreeprs.adb:(.text+0x168c): undefined reference to `xtreeprs__put_line__2.2465'
-xtreeprs.adb:(.text+0x16b0): undefined reference to `xtreeprs__put_line__2.2465'
-xtreeprs.adb:(.text+0x17d0): undefined reference to `xtreeprs__put_line__2.2465'
-xtreeprs.adb:(.text+0x1802): undefined reference to `xtreeprs__put_line.2461'
-xtreeprs.adb:(.text+0x23f4): undefined reference to `xtreeprs__put_line__2.2465'
-xtreeprs.adb:(.text+0x26ae): undefined reference to `xtreeprs__put_line__2.2465'
-xtreeprs.adb:(.text+0x28de): undefined reference to `xtreeprs__put_line__2.2465'
-xtreeprs.adb:(.text+0x29a8): undefined reference to `xtreeprs__put_line.2461'
-xtreeprs.adb:(.text+0x29d8): undefined reference to `xtreeprs__put_line.2461'
-xtreeprs.adb:(.text+0x2a08): undefined reference to `xtreeprs__put_line.2461'
-xtreeprs.adb:(.text+0x2a38): undefined reference to `xtreeprs__put_line.2461'
-xtreeprs.adb:(.text+0x2cb2): undefined reference to `xtreeprs__put_line__2.2465'
-xtreeprs.adb:(.text+0x2fca): undefined reference to `xtreeprs__put_line__2.2465'
-xtreeprs.adb:(.text+0x309e): undefined reference to `xtreeprs__put_line.2461'
-xtreeprs.adb:(.text+0x30ce): undefined reference to `xtreeprs__put_line.2461'
-xtreeprs.adb:(.text+0x30ea): undefined reference to `xtreeprs___finalizer.1652'
-xtreeprs.adb:(.text+0x314e): undefined reference to `xtreeprs__TnamesBDF.1940'
-collect2: error: ld returned 1 exit status
-gnatlink-7: error when calling /usr/bin/gcc-7
-gnatmake: *** link failed.
-/bin/bash: ./xtreeprs: No such file or directory
-../../src/gcc/ada/Make-generated.in:28: recipe for target 'ada/treeprs.ads' failed
-make[5]: *** [ada/treeprs.ads] Error 127
-make[5]: *** Waiting for unfinished jobs....
+Fixes: 468138d78510688f ("binfmt_flat: flat_{get,put}_addr_from_rp() should be able to fail")
+Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
+---
+ fs/binfmt_flat.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Does anyone have an idea how to fix this?
-
-Adrian
-
-> [1] https://gcc.gnu.org/bugzilla/show_bug.cgi?id=81446
-> [2] https://people.debian.org/~glaubitz/gcc-7_7.1.0-9+b2_m68k.build
-
+diff --git a/fs/binfmt_flat.c b/fs/binfmt_flat.c
+index 69ec23daa25e003f..a1e6860b6f46a091 100644
+--- a/fs/binfmt_flat.c
++++ b/fs/binfmt_flat.c
+@@ -574,7 +574,7 @@ static int load_flat_file(struct linux_binprm *bprm,
+ 				MAX_SHARED_LIBS * sizeof(unsigned long),
+ 				FLAT_DATA_ALIGN);
+ 
+-		pr_debug("Allocated data+bss+stack (%ld bytes): %lx\n",
++		pr_debug("Allocated data+bss+stack (%u bytes): %lx\n",
+ 			 data_len + bss_len + stack_len, datapos);
+ 
+ 		fpos = ntohl(hdr->data_start);
 -- 
- .''`.  John Paul Adrian Glaubitz
-: :' :  Debian Developer - glaubitz@debian.org
-`. `'   Freie Universitaet Berlin - glaubitz@physik.fu-berlin.de
-  `-    GPG: 62FF 8A75 84E0 2956 9546  0006 7426 3B37 F5B5 F913
+2.7.4
