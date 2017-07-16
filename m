@@ -1,75 +1,71 @@
-From: Angelo Dureghello <angelo@sysam.it>
-Subject: Re: [PATCH] m68k: allow ColdFire m5441x parts to run with MMU enabled
-Date: Sat, 15 Jul 2017 01:47:52 +0200
-Message-ID: <d1ce1669-0286-ebad-7c6c-e9dfe37c266c@sysam.it>
-References: <bc3dc168-aaae-1271-b73b-4d649db5e301@sysam.it>
+From: John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
+Subject: gnat-7 native builds failing with linker errors
+Date: Sun, 16 Jul 2017 10:01:58 +0200
+Message-ID: <ad2704fc-cd42-c5d5-33d4-3b4123ff5014@physik.fu-berlin.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 7bit
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from sysam.it ([5.39.81.93]:58437 "EHLO sysam.it"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1751004AbdGNXry (ORCPT <rfc822;linux-m68k@vger.kernel.org>);
-        Fri, 14 Jul 2017 19:47:54 -0400
-In-Reply-To: <bc3dc168-aaae-1271-b73b-4d649db5e301@sysam.it>
+Received: from outpost1.zedat.fu-berlin.de ([130.133.4.66]:56717 "EHLO
+        outpost1.zedat.fu-berlin.de" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1751087AbdGPICC (ORCPT
+        <rfc822;linux-m68k@vger.kernel.org>);
+        Sun, 16 Jul 2017 04:02:02 -0400
 Content-Language: en-US
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Linux/m68k <linux-m68k@vger.kernel.org>
+To: Debian m68k <debian-68k@lists.debian.org>
+Cc: Linux/m68k <linux-m68k@vger.kernel.org>
 
-Hi Greg,
+Hi!
 
-On 15/07/2017 01:21, Angelo Dureghello wrote:
-> Hi Greg,
-> 
-> The Freescale ColdFire M5441x system-on-chip parts have full paged MMU
-> hardware support. So far though we have only allowed them to be
-> configured for use in non-MMU mode.
-> 
-> All required kernel changes to support operation of the M5441x parts
-> with MMU enabled have been pushed into the kernel, so now we can allow
-> it to be configured and used with the MMU enabled.
-> 
-> I don't actually have any M5441x based hardware so I can't do any real
-> testing on this. The changes up to now were based on Yannick Gicquel
-> initial patches to support this. Is anybody out there able to test
-> this properly?  I won't push this any further until we have some
-> confirmation that it all works as expected.
-> 
-> Signed-off-by: Greg Ungerer <gerg@linux-m68k.org>
-> ---
->   arch/m68k/Kconfig.cpu | 2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/arch/m68k/Kconfig.cpu b/arch/m68k/Kconfig.cpu
-> index d2219f30..4dc51c0 100644
-> --- a/arch/m68k/Kconfig.cpu
-> +++ b/arch/m68k/Kconfig.cpu
-> @@ -283,7 +283,7 @@ config M548x
-> 
->   config M5441x
->       bool "MCF5441x"
-> -    depends on !MMU
-> +    select MMU_COLDFIRE if MMU
->       select GENERIC_CLOCKEVENTS
->       select HAVE_CACHE_CB
->       help
+I managed to cross-compile gnat-7 for m68k after getting a small fix merged
+upstream [1]. Then I tried to build gnat-7 natively on qemu-m68k which failed
+with [2]:
 
-forgot some useful info on my test:
+if [ xinfo = xinfo ]; then \
+	makeinfo --split-size=5000000 --split-size=5000000 --split-size=5000000 --no-split -I ../../src/gcc/doc \
+		-I ../../src/gcc/doc/include -o doc/gccinstall.info ../../src/gcc/doc/install.texi; \
+fi
+/usr/lib/gcc/m68k-linux-gnu/7/../../../m68k-linux-gnu/crt1.o: In function `_start':
+(.text+0x1c): undefined reference to `main'
+./xtreeprs.o: In function `_ada_xtreeprs':
+xtreeprs.adb:(.text+0x4a6): undefined reference to `xtreeprs__TnamesBIP.1929'
+xtreeprs.adb:(.text+0x4cc): undefined reference to `xtreeprs__TnamesBDI.1932'
+xtreeprs.adb:(.text+0x168c): undefined reference to `xtreeprs__put_line__2.2465'
+xtreeprs.adb:(.text+0x16b0): undefined reference to `xtreeprs__put_line__2.2465'
+xtreeprs.adb:(.text+0x17d0): undefined reference to `xtreeprs__put_line__2.2465'
+xtreeprs.adb:(.text+0x1802): undefined reference to `xtreeprs__put_line.2461'
+xtreeprs.adb:(.text+0x23f4): undefined reference to `xtreeprs__put_line__2.2465'
+xtreeprs.adb:(.text+0x26ae): undefined reference to `xtreeprs__put_line__2.2465'
+xtreeprs.adb:(.text+0x28de): undefined reference to `xtreeprs__put_line__2.2465'
+xtreeprs.adb:(.text+0x29a8): undefined reference to `xtreeprs__put_line.2461'
+xtreeprs.adb:(.text+0x29d8): undefined reference to `xtreeprs__put_line.2461'
+xtreeprs.adb:(.text+0x2a08): undefined reference to `xtreeprs__put_line.2461'
+xtreeprs.adb:(.text+0x2a38): undefined reference to `xtreeprs__put_line.2461'
+xtreeprs.adb:(.text+0x2cb2): undefined reference to `xtreeprs__put_line__2.2465'
+xtreeprs.adb:(.text+0x2fca): undefined reference to `xtreeprs__put_line__2.2465'
+xtreeprs.adb:(.text+0x309e): undefined reference to `xtreeprs__put_line.2461'
+xtreeprs.adb:(.text+0x30ce): undefined reference to `xtreeprs__put_line.2461'
+xtreeprs.adb:(.text+0x30ea): undefined reference to `xtreeprs___finalizer.1652'
+xtreeprs.adb:(.text+0x314e): undefined reference to `xtreeprs__TnamesBDF.1940'
+collect2: error: ld returned 1 exit status
+gnatlink-7: error when calling /usr/bin/gcc-7
+gnatmake: *** link failed.
+/bin/bash: ./xtreeprs: No such file or directory
+../../src/gcc/ada/Make-generated.in:28: recipe for target 'ada/treeprs.ads' failed
+make[5]: *** [ada/treeprs.ads] Error 127
+make[5]: *** Waiting for unfinished jobs....
 
-- i built a 4.12 kernel from mainline (just pulled git master) and tested
-to boot properly as no-mmu
+Does anyone have an idea how to fix this?
 
-- i have those entries in my defconfig:
-....
-CONFIG_BINFMT_FLAT=y
-CONFIG_BINFMT_ZFLAT=y
-CONFIG_BINFMT_SHARED_FLAT=y
-CONFIG_BINFMT_MISC=y
-....
+Adrian
 
+> [1] https://gcc.gnu.org/bugzilla/show_bug.cgi?id=81446
+> [2] https://people.debian.org/~glaubitz/gcc-7_7.1.0-9+b2_m68k.build
 
-I can help on debug when back from holidays, in 3 weeks.
-
-Regards,
-Angelo Dureghello
+-- 
+ .''`.  John Paul Adrian Glaubitz
+: :' :  Debian Developer - glaubitz@debian.org
+`. `'   Freie Universitaet Berlin - glaubitz@physik.fu-berlin.de
+  `-    GPG: 62FF 8A75 84E0 2956 9546  0006 7426 3B37 F5B5 F913
