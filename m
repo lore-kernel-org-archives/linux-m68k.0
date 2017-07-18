@@ -1,72 +1,61 @@
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: Re: [PATCH 0/9] make clk_get_rate implementations behavior more consistent
-Date: Tue, 18 Jul 2017 14:01:19 +0200
-Message-ID: <CAMuHMdUQgZcgj88EnVDvbwcZniWJi-5XjVTmoeVrBJXsuqUUFQ@mail.gmail.com>
+From: Greg Ungerer <gerg@linux-m68k.org>
+Subject: Re: [PATCH 4/9] m68k: allow NULL clock for clk_get_rate
+Date: Tue, 18 Jul 2017 22:03:26 +1000
+Message-ID: <d9bde8fc-acd0-5b27-1c55-53c65a88ee06@linux-m68k.org>
 References: <20170718101730.2541-1-jonas.gorski@gmail.com>
+ <20170718101730.2541-5-jonas.gorski@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-m68k-owner@vger.kernel.org>
-In-Reply-To: <20170718101730.2541-1-jonas.gorski@gmail.com>
+In-Reply-To: <20170718101730.2541-5-jonas.gorski@gmail.com>
+Content-Language: en-US
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
 To: Jonas Gorski <jonas.gorski@gmail.com>
-Cc: "adi-buildroot-devel@lists.sourceforge.net" <adi-buildroot-devel@lists.sourceforge.net>, bcm-kernel-feedback-list@broadcom.com, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, linux-m68k <linux-m68k@lists.linux-m68k.org>, Linux MIPS Mailing List <linux-mips@linux-mips.org>
+Cc: Geert Uytterhoeven <geert@linux-m68k.org>, linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org
 
 Hi Jonas,
 
-On Tue, Jul 18, 2017 at 12:17 PM, Jonas Gorski <jonas.gorski@gmail.com> wrote:
-> The common clock and several other clock API implementations allow
-> calling clk_get_rate with a NULL pointer. While not specified as
-> expected behavior of the API, device drivers have come to rely on that,
-> causing them to OOPS when run on a platform with a different clock API
-> implementation.
->
-> Fix this by making sure all clk_get_rate implementations handle
-> NULL clocks instead of OOPSing.
->
-> While some custom implementations even allow ERR_PTR()s, I decided
-> against that as IIRC the usual idea is that errors should be handled and
-> not silently carried over.
->
-> Cc: adi-buildroot-devel@lists.sourceforge.net
-> Cc: bcm-kernel-feedback-list@broadcom.com
-> Cc: linux-arm-kernel@lists.infradead.org
-> Cc: linux-kernel@vger.kernel.org
+On 18/07/17 20:17, Jonas Gorski wrote:
+> Make the behaviour of clk_get_rate consistent with common clk's
+> clk_get_rate by accepting NULL clocks as parameter. Some device
+> drivers rely on this, and will cause an OOPS otherwise.
+> 
+> Fixes: facdf0ed4f59 ("m68knommu: introduce basic clk infrastructure")
+> Cc: Greg Ungerer <gerg@linux-m68k.org>
+
+Acked-by: Greg Ungerer <gerg@linux-m68k.org>
+
+Do you want me to push this via the m68knommu git tree?
+Or are you (or someone) taking the series as a whole?
+
+Regards
+Greg
+
+
+
+> Cc: Geert Uytterhoeven <geert@linux-m68k.org>
 > Cc: linux-m68k@lists.linux-m68k.org
-> Cc: linux-mips@linux-mips.org
->
-> Jonas Gorski (9):
->   ARM: ep93xx: allow NULL clock for clk_get_rate
->   ARM: mmp: allow NULL clock for clk_get_rate
->   blackfin: bf609: allow NULL clock for clk_get_rate
->   m68k: allow NULL clock for clk_get_rate
->   MIPS: AR7: allow NULL clock for clk_get_rate
->   MIPS: BCM63XX: allow NULL clock for clk_get_rate
->   MIPS: Loongson 2F: allow NULL clock for clk_get_rate
->   MIPS: ralink: allow NULL clock for clk_get_rate
->   unicore32: allow NULL clock for clk_get_rate
->
->  arch/arm/mach-ep93xx/clock.c           | 3 +++
->  arch/arm/mach-mmp/clock.c              | 4 +++-
->  arch/blackfin/mach-bf609/clock.c       | 2 +-
->  arch/m68k/coldfire/clk.c               | 3 +++
->  arch/mips/ar7/clock.c                  | 3 +++
->  arch/mips/bcm63xx/clk.c                | 3 +++
->  arch/mips/loongson64/lemote-2f/clock.c | 3 +++
->  arch/mips/ralink/clk.c                 | 3 +++
->  arch/unicore32/kernel/clock.c          | 3 +++
->  9 files changed, 25 insertions(+), 2 deletions(-)
-
-For the whole series:
-Reviewed-by: Geert Uytterhoeven <geert@linux-m68k.org>
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+> Cc: linux-kernel@vger.kernel.org
+> Reported-by: Mathias Kresin <dev@kresin.me>
+> Signed-off-by: Jonas Gorski <jonas.gorski@gmail.com>
+> ---
+>   arch/m68k/coldfire/clk.c | 3 +++
+>   1 file changed, 3 insertions(+)
+> 
+> diff --git a/arch/m68k/coldfire/clk.c b/arch/m68k/coldfire/clk.c
+> index 1e3c7e9193d1..856069a3196d 100644
+> --- a/arch/m68k/coldfire/clk.c
+> +++ b/arch/m68k/coldfire/clk.c
+> @@ -121,6 +121,9 @@ EXPORT_SYMBOL(clk_put);
+>   
+>   unsigned long clk_get_rate(struct clk *clk)
+>   {
+> +	if (!clk)
+> +		return 0;
+> +
+>   	return clk->rate;
+>   }
+>   EXPORT_SYMBOL(clk_get_rate);
+> 
