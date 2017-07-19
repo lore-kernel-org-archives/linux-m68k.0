@@ -1,61 +1,68 @@
-From: Greg Ungerer <gerg@linux-m68k.org>
-Subject: Re: [PATCH 4/9] m68k: allow NULL clock for clk_get_rate
-Date: Tue, 18 Jul 2017 22:03:26 +1000
-Message-ID: <d9bde8fc-acd0-5b27-1c55-53c65a88ee06@linux-m68k.org>
-References: <20170718101730.2541-1-jonas.gorski@gmail.com>
- <20170718101730.2541-5-jonas.gorski@gmail.com>
+From: Ben Hutchings <ben@decadent.org.uk>
+Subject: [PATCH] m68k: Restore symbol versions for symbols exported from
+ assembly
+Date: Wed, 19 Jul 2017 01:03:25 +0100
+Message-ID: <20170719000324.GE18698@decadent.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="NY6JkbSqL3W9mApi"
 Return-path: <linux-m68k-owner@vger.kernel.org>
-In-Reply-To: <20170718101730.2541-5-jonas.gorski@gmail.com>
-Content-Language: en-US
+Content-Disposition: inline
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Jonas Gorski <jonas.gorski@gmail.com>
-Cc: Geert Uytterhoeven <geert@linux-m68k.org>, linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org
-
-Hi Jonas,
-
-On 18/07/17 20:17, Jonas Gorski wrote:
-> Make the behaviour of clk_get_rate consistent with common clk's
-> clk_get_rate by accepting NULL clocks as parameter. Some device
-> drivers rely on this, and will cause an OOPS otherwise.
-> 
-> Fixes: facdf0ed4f59 ("m68knommu: introduce basic clk infrastructure")
-> Cc: Greg Ungerer <gerg@linux-m68k.org>
-
-Acked-by: Greg Ungerer <gerg@linux-m68k.org>
-
-Do you want me to push this via the m68knommu git tree?
-Or are you (or someone) taking the series as a whole?
-
-Regards
-Greg
+To: linux-m68k@lists.linux-m68k.org
 
 
+--NY6JkbSqL3W9mApi
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-> Cc: Geert Uytterhoeven <geert@linux-m68k.org>
-> Cc: linux-m68k@lists.linux-m68k.org
-> Cc: linux-kernel@vger.kernel.org
-> Reported-by: Mathias Kresin <dev@kresin.me>
-> Signed-off-by: Jonas Gorski <jonas.gorski@gmail.com>
-> ---
->   arch/m68k/coldfire/clk.c | 3 +++
->   1 file changed, 3 insertions(+)
-> 
-> diff --git a/arch/m68k/coldfire/clk.c b/arch/m68k/coldfire/clk.c
-> index 1e3c7e9193d1..856069a3196d 100644
-> --- a/arch/m68k/coldfire/clk.c
-> +++ b/arch/m68k/coldfire/clk.c
-> @@ -121,6 +121,9 @@ EXPORT_SYMBOL(clk_put);
->   
->   unsigned long clk_get_rate(struct clk *clk)
->   {
-> +	if (!clk)
-> +		return 0;
-> +
->   	return clk->rate;
->   }
->   EXPORT_SYMBOL(clk_get_rate);
-> 
+Add <asm/asm-prototypes.h> so that genksyms knows the types of
+these symbols and can generate CRCs for them.
+
+Fixes: d13ffb563044 ("m68k: move exports to definitions"
+Signed-off-by: Ben Hutchings <ben@decadent.org.uk>
+---
+This is build-tested only (m5475evb_defconfig + MODVERSIONS=y).
+
+Ben.
+
+ arch/m68k/include/asm/asm-prototypes.h | 5 +++++
+ 1 file changed, 5 insertions(+)
+ create mode 100644 arch/m68k/include/asm/asm-prototypes.h
+
+diff --git a/arch/m68k/include/asm/asm-prototypes.h b/arch/m68k/include/asm/asm-prototypes.h
+new file mode 100644
+index 000000000000..4cd692a44c11
+--- /dev/null
++++ b/arch/m68k/include/asm/asm-prototypes.h
+@@ -0,0 +1,5 @@
++extern void __divsi3(void);
++extern void __modsi3(void);
++extern void __mulsi3(void);
++extern void __udivsi3(void);
++extern void __umodsi3(void);
+
+--NY6JkbSqL3W9mApi
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1
+
+iQIVAwUBWW6hzOe/yOyVhhEJAQq6DhAAqo+GnRt7QZb9/DaIk//askL6odobSAhr
+9FxX60rVR6qEkOnjG6kggm9Q1qbCL4g3ZKATkq/jfHJL0QKsl2BeN8UabHypSmTh
+5TEuHKZ6P5jOxhxJZtFrouVM/S2tVn9vx1U1I9HmjFhl+G1h8FD/hd8tzWr+rA4a
+PnsPxOpirgCE32E4ffarfLiox91ffuoLqJDuT32QqE90YJu61XuZgZgNnQ50g6nw
+DZMeqTHcppG/tZtBktTR+LhaT8rRNNIuV8xdxIUy/D7vPAkqx+893AlALAxxVkds
+ydx0z5NJH40Rv2IakhZ/iZaEc9lUyhJSJStuY04rSO+JiwQrLxdDrHs0F2D9mTYV
+CYClAhGmxOGNFg7PEZwl6yQzsgDTSbq4Hi27JlmUWpffF3619yqLZrjlI5lJ3zxR
+wjhOK0Pbx9qxn8HdqNQynUSWV2aKnXEYWU/5Vlb797U0U++0ZoZVdiWjgHQXWrXj
+LDNcd5QVPQCo19eRChEFyHlf1SxoIPR3oOov8KqFPtpSGFlIbQfbEPbkNpZwP8oF
+ZjFTsDWS06293rdqGUd8YCZacEalAHrHYcxUCBEGvNybpbJLpkugIdPlQS9kOsJP
+1WmEE7+Z9FcLLR8Y2MDnJCBtcNXP8b3nteKWcsfZRQEg6sTUOS5FvkgywIuT7+AZ
+QnXdh7F/ba4=
+=BdAp
+-----END PGP SIGNATURE-----
+
+--NY6JkbSqL3W9mApi--
