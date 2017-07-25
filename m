@@ -1,20 +1,17 @@
-From: "Blue Sky Studio" <andrianto@stiami.ac.id>
-Subject: Dear Talented
-Date: Tue, 25 Jul 2017 16:46:32 +0100
-Message-ID: <20170725154647.2133F16DFF8A@mail.stiami.ac.id>
-Reply-To: blueskystud@usa.com
+From: "Sec Capital Loans" <lguerra@chimborazo.gob.ec>
+Subject: [SUSPECTED SPAM] Quick Loans
+Date: Wed, 26 Jul 2017 00:03:00 +0100
+Message-ID: <20170725230208.76E31120D7BF@mail.chimborazo.gob.ec>
+Reply-To: secloans@163.com
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 8BIT
+Content-Transfer-Encoding: quoted-printable
 Return-path: <linux-m68k-owner@vger.kernel.org>
 Content-Description: Mail message body
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Recipients <andrianto@stiami.ac.id>
+To: Recipients <lguerra@chimborazo.gob.ec>
 
-Dear Talented,
+Loan Offer at 3%, Feel Free to REPLY back to us for more info.
 
-I am Talent Scout For BLUE SKY FILM STUDIO, Present Blue Sky Studio a Film Corporation Located in the United State, is Soliciting for the Right to use Your Photo/Face and Personality as One of the Semi -Major Role/ Character in our Upcoming ANIMATED Stereoscope 3D Movie-The Story of Anubis (Anubis 2018) The Movie is Currently Filming (In Production) Please Note That There Will Be No Auditions, Traveling or Any Special / Professional Acting Skills, Since the Production of This Movie Will Be Done with our State of Art Computer -Generating Imagery Equipment. We Are Prepared to Pay the Total Sum of $620,000.00 USD.For More Information/Understanding.
-
-Talent Scout
-Kim Sharma
+Email Asegurado porby Check Point
