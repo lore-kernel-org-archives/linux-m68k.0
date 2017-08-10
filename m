@@ -1,202 +1,123 @@
-From: Angelo Dureghello <angelo@sysam.it>
+From: Greg Ungerer <gregungerer@westnet.com.au>
 Subject: Re: [PATCH] m68k: allow ColdFire m5441x parts to run with MMU enabled
-Date: Wed, 9 Aug 2017 17:32:25 +0200
-Message-ID: <c095233b-15fc-53f7-c21d-a6c805711040@sysam.it>
+Date: Thu, 10 Aug 2017 17:06:01 +1000
+Message-ID: <0e1723eb-0724-7007-5b63-7d80112268a2@westnet.com.au>
 References: <bc3dc168-aaae-1271-b73b-4d649db5e301@sysam.it>
  <d1ce1669-0286-ebad-7c6c-e9dfe37c266c@sysam.it>
  <30318b18-e955-1615-975e-9b378d3201b8@westnet.com.au>
+ <c095233b-15fc-53f7-c21d-a6c805711040@sysam.it>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed;
+ boundary="------------45937291D1746C5278D3744F"
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from sysam.it ([5.39.81.93]:58238 "EHLO sysam.it"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1753421AbdHIPc1 (ORCPT <rfc822;linux-m68k@vger.kernel.org>);
-        Wed, 9 Aug 2017 11:32:27 -0400
-In-Reply-To: <30318b18-e955-1615-975e-9b378d3201b8@westnet.com.au>
+Received: from icp-osb-irony-out2.external.iinet.net.au ([203.59.1.155]:20072
+        "EHLO icp-osb-irony-out2.external.iinet.net.au" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1752353AbdHJHGC (ORCPT
+        <rfc822;linux-m68k@vger.kernel.org>);
+        Thu, 10 Aug 2017 03:06:02 -0400
+In-Reply-To: <c095233b-15fc-53f7-c21d-a6c805711040@sysam.it>
 Content-Language: en-US
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Linux/m68k <linux-m68k@vger.kernel.org>
-Cc: Greg Ungerer <gregungerer@westnet.com.au>
+To: Angelo Dureghello <angelo@sysam.it>, Linux/m68k <linux-m68k@vger.kernel.org>
 
-Hi Greg,
+This is a multi-part message in MIME format.
+--------------45937291D1746C5278D3744F
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
 
-On 09/08/2017 15:04, Greg Ungerer wrote:
-> Hi Angelo,
+Hi Angelo,
+
+On 10/08/17 01:32, Angelo Dureghello wrote:
+[snip]
+> sure, on this board  http://sysam.it/cff_stmark2.html
+> there are 128MB of ddr2.
 > 
-> On 15/07/17 09:47, Angelo Dureghello wrote:
->> On 15/07/2017 01:21, Angelo Dureghello wrote:
->>> The Freescale ColdFire M5441x system-on-chip parts have full paged MMU
->>> hardware support. So far though we have only allowed them to be
->>> configured for use in non-MMU mode.
->>>
->>> All required kernel changes to support operation of the M5441x parts
->>> with MMU enabled have been pushed into the kernel, so now we can allow
->>> it to be configured and used with the MMU enabled.
->>>
->>> I don't actually have any M5441x based hardware so I can't do any real
->>> testing on this. The changes up to now were based on Yannick Gicquel
->>> initial patches to support this. Is anybody out there able to test
->>> this properly?  I won't push this any further until we have some
->>> confirmation that it all works as expected.
->>>
->>> Signed-off-by: Greg Ungerer <gerg@linux-m68k.org>
->>> ---
->>>   arch/m68k/Kconfig.cpu | 2 +-
->>>   1 file changed, 1 insertion(+), 1 deletion(-)
->>>
->>> diff --git a/arch/m68k/Kconfig.cpu b/arch/m68k/Kconfig.cpu
->>> index d2219f30..4dc51c0 100644
->>> --- a/arch/m68k/Kconfig.cpu
->>> +++ b/arch/m68k/Kconfig.cpu
->>> @@ -283,7 +283,7 @@ config M548x
->>>
->>>   config M5441x
->>>       bool "MCF5441x"
->>> -    depends on !MMU
->>> +    select MMU_COLDFIRE if MMU
->>>       select GENERIC_CLOCKEVENTS
->>>       select HAVE_CACHE_CB
->>>       help
->>
->> forgot some useful info on my test:
->>
->> - i built a 4.12 kernel from mainline (just pulled git master) and tested
->> to boot properly as no-mmu
->>
->> - i have those entries in my defconfig:
->> ....
->> CONFIG_BINFMT_FLAT=y
->> CONFIG_BINFMT_ZFLAT=y
->> CONFIG_BINFMT_SHARED_FLAT=y
->> CONFIG_BINFMT_MISC=y
->> ....
->>
->>
->> I can help on debug when back from holidays, in 3 weeks.
+> External SDRAM is accessible, at least without any mmc support enabled,
+> from 0x40000000.
 > 
-> Thanks for trying this out.
+> I have following test config:
 > 
-> Let me know when you have some time to debug further.
-> First up I would like to know what your RAM setup looks like.
-> Is it mapped from a base address of 0?
-> What is the RAM size?
+>   GNU nano 2.8.6                                                                              File: arch/m68k/configs/stmark2_defconfig
 > 
+> CONFIG_LOCALVERSION="stmark2-001"
+[snip]
+> 
+> 
+> I tried still yesterday a bit, but seems there is no much support for
+> earlyprintk / low level debug for this architecture.
+> 
+> In case i can try with a gpio toggling routine, at least to find
+> where kernel stops.
 
-sure, on this board  http://sysam.it/cff_stmark2.html
-there are 128MB of ddr2.
+The attached patch, is a quick and dirty early console output method.
+It works for me on the m5475, should work for you "as is" on the 5441x too.
 
-External SDRAM is accessible, at least without any mmc support enabled,
-from 0x40000000.
+It is kind of an early printk. Of course it still needs the early
+kernel boot to have succeeded before you will get anything much coming out.
+But it is worth trying.
 
-I have following test config:
+I am wondering if the non-0 base RAM may be a problem. I have only run
+the MMU enabled code on platforms with 0 based RAM so far. But lets see if
+the early console trace attached gives us anything before digging into that.
 
-   GNU nano 2.8.6                                                                              File: arch/m68k/configs/stmark2_defconfig
+Regards
+Greg
 
-CONFIG_LOCALVERSION="stmark2-001"
-CONFIG_DEFAULT_HOSTNAME="stmark2"
-CONFIG_SYSVIPC=y
-# CONFIG_FHANDLE is not set
-CONFIG_LOG_BUF_SHIFT=14
-CONFIG_NAMESPACES=y
-CONFIG_BLK_DEV_INITRD=y
-CONFIG_INITRAMFS_SOURCE="../uClinux-dist/romfs"
-# CONFIG_RD_BZIP2 is not set
-# CONFIG_RD_LZMA is not set
-# CONFIG_RD_XZ is not set
-# CONFIG_RD_LZO is not set
-# CONFIG_RD_LZ4 is not set
-CONFIG_CC_OPTIMIZE_FOR_SIZE=y
-# CONFIG_AIO is not set
-# CONFIG_ADVISE_SYSCALLS is not set
-# CONFIG_MEMBARRIER is not set
-CONFIG_EMBEDDED=y
-# CONFIG_VM_EVENT_COUNTERS is not set
-# CONFIG_COMPAT_BRK is not set
-# CONFIG_LBDAF is not set
-# CONFIG_BLK_DEV_BSG is not set
-CONFIG_BLK_CMDLINE_PARSER=y
-CONFIG_COLDFIRE=y
-CONFIG_M5441x=y
-CONFIG_CLOCK_FREQ=240000000
-CONFIG_STMARK2=y
-CONFIG_RAMBASE=0x40000000
-CONFIG_RAMSIZE=0x8000000
-CONFIG_VECTORBASE=0x40000000
-CONFIG_KERNELBASE=0x40001000
-CONFIG_BINFMT_FLAT=y
-CONFIG_BINFMT_ZFLAT=y
-CONFIG_BINFMT_SHARED_FLAT=y
-CONFIG_BINFMT_MISC=y
-# CONFIG_UEVENT_HELPER is not set
-CONFIG_DEVTMPFS=y
-CONFIG_DEVTMPFS_MOUNT=y
-CONFIG_FW_LOADER_USER_HELPER_FALLBACK=y
-# CONFIG_ALLOW_DEV_COREDUMP is not set
-CONFIG_MTD=y
-CONFIG_MTD_CMDLINE_PARTS=y
-CONFIG_MTD_BLOCK=y
-CONFIG_FTL=y
-CONFIG_MTD_CFI=y
-CONFIG_MTD_JEDECPROBE=y
-CONFIG_MTD_CFI_ADV_OPTIONS=y
-CONFIG_MTD_CFI_LE_BYTE_SWAP=y
-CONFIG_MTD_CFI_GEOMETRY=y
-# CONFIG_MTD_CFI_I2 is not set
-CONFIG_MTD_CFI_AMDSTD=y
-CONFIG_MTD_CFI_STAA=y
-CONFIG_MTD_ROM=y
-CONFIG_MTD_COMPLEX_MAPPINGS=y
-CONFIG_MTD_PHYSMAP=y
-CONFIG_MTD_PLATRAM=y
-CONFIG_MTD_SPI_NOR=y
-# CONFIG_INPUT_KEYBOARD is not set
-# CONFIG_INPUT_MOUSE is not set
-CONFIG_SERIO_LIBPS2=y
-# CONFIG_UNIX98_PTYS is not set
-# CONFIG_DEVMEM is not set
-CONFIG_SERIAL_MCF=y
-CONFIG_SERIAL_MCF_BAUDRATE=115200
-CONFIG_SERIAL_MCF_CONSOLE=y
-# CONFIG_HW_RANDOM is not set
-CONFIG_SPI=y
-# CONFIG_HWMON is not set
-# CONFIG_HID is not set
-# CONFIG_USB_SUPPORT is not set
-# CONFIG_FILE_LOCKING is not set
-# CONFIG_DNOTIFY is not set
-# CONFIG_INOTIFY_USER is not set
-CONFIG_FSCACHE=y
-# CONFIG_PROC_SYSCTL is not set
-CONFIG_PRINTK_TIME=y
-# CONFIG_ENABLE_WARN_DEPRECATED is not set
-# CONFIG_SECTION_MISMATCH_WARN_ONLY is not set
-CONFIG_PANIC_ON_OOPS=y
-# CONFIG_SCHED_DEBUG is not set
-# CONFIG_DEBUG_BUGVERBOSE is not set
-CONFIG_BOOTPARAM=y
-CONFIG_BOOTPARAM_STRING="console=ttyS0,115200 root=/dev/ram0 rw rootfstype=ramfs rdinit=/bin/init devtmpfs.mount=1"
-CONFIG_CRYPTO=y
-# CONFIG_CRYPTO_ECHAINIV is not set
-CONFIG_CRYPTO_ANSI_CPRNG=y
-# CONFIG_CRYPTO_HW is not set
-CONFIG_CRC16=y
+--------------45937291D1746C5278D3744F
+Content-Type: text/x-patch;
+ name="console.patch"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment;
+ filename="console.patch"
 
+diff --git a/drivers/tty/serial/mcf.c b/drivers/tty/serial/mcf.c
+index 02eb322..58b854e 100644
+--- a/drivers/tty/serial/mcf.c
++++ b/drivers/tty/serial/mcf.c
+@@ -568,6 +568,30 @@ static int __init mcf_console_setup(struct console *co, char *options)
+ 
+ /****************************************************************************/
+ 
++static void putrawch(char c)
++{
++	unsigned int membase = MCFUART_BASE0;
++	int i;
++
++	for (i = 0; (i < 0x10000); i++) {
++		if (readb(membase + MCFUART_USR) & MCFUART_USR_TXREADY)
++			break;
++	}
++	writeb(c, membase + MCFUART_UTB);
++	for (i = 0; (i < 0x10000); i++) {
++		if (readb(membase + MCFUART_USR) & MCFUART_USR_TXREADY)
++			break;
++	}
++}
++
++void printraw(const char *s)
++{
++	for (; *s != 0; s++)
++		putrawch(*s);
++}
++
++/****************************************************************************/
++
+ static struct uart_driver mcf_driver;
+ 
+ static struct console mcf_console = {
+diff --git a/kernel/printk/printk.c b/kernel/printk/printk.c
+index 2984fb0..39e62d1 100644
+--- a/kernel/printk/printk.c
++++ b/kernel/printk/printk.c
+@@ -1721,6 +1721,8 @@ asmlinkage int vprintk_emit(int facility, int level,
+ 	 */
+ 	text_len = vscnprintf(text, sizeof(textbuf), fmt, args);
+ 
++	{ extern void printraw(const char *); printraw(text); }
++
+ 	/* mark and strip a trailing newline */
+ 	if (text_len && text[text_len-1] == '\n') {
+ 		text_len--;
 
-I tried still yesterday a bit, but seems there is no much support for
-earlyprintk / low level debug for this architecture.
-
-In case i can try with a gpio toggling routine, at least to find
-where kernel stops.
-
-
-> Regards
-> Greg
-> -- 
-> To unsubscribe from this list: send the line "unsubscribe linux-m68k" in
-> the body of a message to majordomo@vger.kernel.org
-> More majordomo info at  http://vger.kernel.org/majordomo-info.html
-
-Regards,
-Angelo
+--------------45937291D1746C5278D3744F--
