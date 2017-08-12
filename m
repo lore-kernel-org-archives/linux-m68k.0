@@ -1,47 +1,117 @@
-From: Finn Thain <fthain@telegraphics.com.au>
-Subject: [PATCH] m68k/mac: Don't hang waiting for Cuda power-down command
-Date: Sat, 12 Aug 2017 17:11:02 +1000 (AEST)
-Message-ID: <alpine.LNX.2.00.1708121021180.1762@nippy.intranet>
+From: Angelo Dureghello <angelo@sysam.it>
+Subject: Re: [PATCH] m68k: allow ColdFire m5441x parts to run with MMU enabled
+Date: Sat, 12 Aug 2017 13:17:51 +0200
+Message-ID: <d4e220c9-f607-cf9a-2e63-910e745dbea9@sysam.it>
+References: <bc3dc168-aaae-1271-b73b-4d649db5e301@sysam.it>
+ <d1ce1669-0286-ebad-7c6c-e9dfe37c266c@sysam.it>
+ <30318b18-e955-1615-975e-9b378d3201b8@westnet.com.au>
+ <c095233b-15fc-53f7-c21d-a6c805711040@sysam.it>
+ <0e1723eb-0724-7007-5b63-7d80112268a2@westnet.com.au>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from kvm5.telegraphics.com.au ([98.124.60.144]:58614 "EHLO
-        kvm5.telegraphics.com.au" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1750972AbdHLHST (ORCPT
-        <rfc822;linux-m68k@vger.kernel.org>); Sat, 12 Aug 2017 03:18:19 -0400
+Received: from sysam.it ([5.39.81.93]:59023 "EHLO sysam.it"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1752031AbdHLLRy (ORCPT <rfc822;linux-m68k@vger.kernel.org>);
+        Sat, 12 Aug 2017 07:17:54 -0400
+In-Reply-To: <0e1723eb-0724-7007-5b63-7d80112268a2@westnet.com.au>
+Content-Language: en-US
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: linux-m68k@vger.kernel.org
+To: Greg Ungerer <gregungerer@westnet.com.au>, Linux/m68k <linux-m68k@vger.kernel.org>
 
-Testing shows that the CUDA_POWERDOWN command never completes (for a 
-Centris 660av or LC 475, at least). So, don't wait for command completion 
-on those Cuda-based models that do not support soft power. Just proceed to 
-log the usual message, "It is now safe to turn off your Macintosh."
+Hi Greg,
 
-Reported-by: Stan Johnson <userm57@yahoo.com>
-Tested-by: Stan Johnson <userm57@yahoo.com>
-Signed-off-by: Finn Thain <fthain@telegraphics.com.au>
+On 10/08/2017 09:06, Greg Ungerer wrote:
+> Hi Angelo,
+> 
+> On 10/08/17 01:32, Angelo Dureghello wrote:
+> [snip]
+>> sure, on this board  http://sysam.it/cff_stmark2.html
+>> there are 128MB of ddr2.
+>>
+>> External SDRAM is accessible, at least without any mmc support enabled,
+>> from 0x40000000.
+>>
+>> I have following test config:
+>>
+>>    GNU nano 2.8.6                                                                              File: arch/m68k/configs/stmark2_defconfig
+>>
+>> CONFIG_LOCALVERSION="stmark2-001"
+> [snip]
+>>
+>>
+>> I tried still yesterday a bit, but seems there is no much support for
+>> earlyprintk / low level debug for this architecture.
+>>
+>> In case i can try with a gpio toggling routine, at least to find
+>> where kernel stops.
+> 
+> The attached patch, is a quick and dirty early console output method.
+> It works for me on the m5475, should work for you "as is" on the 5441x too.
+> 
+> It is kind of an early printk. Of course it still needs the early
+> kernel boot to have succeeded before you will get anything much coming out.
+> But it is worth trying.
 
-diff --git a/arch/m68k/mac/misc.c b/arch/m68k/mac/misc.c
-index 0f3ba726e8a9..d96348a52362 100644
---- a/arch/m68k/mac/misc.c
-+++ b/arch/m68k/mac/misc.c
-@@ -357,6 +357,17 @@ static void cuda_shutdown(void)
- 	struct adb_request req;
- 	if (cuda_request(&req, NULL, 2, CUDA_PACKET, CUDA_POWERDOWN) < 0)
- 		return;
-+
-+	/* Avoid infinite polling loop when PSU is not under Cuda control */
-+	switch (macintosh_config->ident) {
-+	case MAC_MODEL_C660:
-+	case MAC_MODEL_Q605:
-+	case MAC_MODEL_Q605_ACC:
-+	case MAC_MODEL_P475:
-+	case MAC_MODEL_P475F:
-+		return;
-+	}
-+
- 	while (!req.complete)
- 		cuda_poll();
- }
+Ok many thanks. Btw i used a __square(); function written in asm, so i am
+sure i see the gpio toggling in very early stages.
+
+> 
+> I am wondering if the non-0 base RAM may be a problem. I have only run
+> the MMU enabled code on platforms with 0 based RAM so far. But lets see if
+> the early console trace attached gives us anything before digging into that.
+> 
+
+This MCU has sdram area physically mapped at 0x4000 0000 so U-Boot, to be
+able to execute the kernel must load it to that location/area anyway.
+
+But i have seen that it is not a problem, after MMU is enabled in head.S
+the jump
+         
+         movel   #_vstart,%a0      /* jump to "virtual" space */
+         jmp     %a0@
+
+works fine. Since that range is not hitting anything that is maintained
+physical, it can be translated into virtual without any issue.
+
+After some hard debug, i see the execution stops at:
+
+asmlinkage __visible void __init start_kernel(void)
+    ...
+    setup_arch(&command_line);      setup_mm.c
+       ...
+       paging_init();               mm/mcfmmu.c
+          ...
+          empty_zero_page = (void *) alloc_bootmem_pages(PAGE_SIZE);
+          ^line 47 mcfmmu.c
+
+Inside alloc_bootmem_pages(), execution seems to end up finally to
+mm/bootmem.c and likely to alloc_bootmem_bdata().
+In case i can still proceed to find the exact place where execution stops,
+but i suspect in the while(1), line 545.
+
+As a curious thing, i find in a different cf CPU code "m54xx.c"
+the following:
+
+void __init config_BSP(char *commandp, int size)
+{
+#ifdef CONFIG_MMU
+	cf_bootmem_alloc();
+	mmu_context_init();
+#endif
+	
+Do also m5441x.c maybe need this calls ?
+
+Would be very nice to have MMU working. Strangely, i don't see any
+board_config with it enabled. Was it ever tested on some Coldfire ?
+Waiting your suggestion on how to proceed.
+
+Regards,
+Angelo Dureghello
+  
+
+> Regards
+> Greg
+> 
