@@ -1,31 +1,35 @@
 From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: Re: [PATCH] m68k/mac: Avoid soft-lockup warning after mach_power_off
-Date: Mon, 21 Aug 2017 11:58:35 +0200
-Message-ID: <CAMuHMdXVA=6+__K45wppJQdPbiYM73eX7H8K30imF6mg2f-FrA@mail.gmail.com>
-References: <alpine.LNX.2.00.1708121021120.1762@nippy.intranet>
+Subject: Re: [PATCH v2] m68k: Restore symbol versions for symbols exported
+ from assembly
+Date: Mon, 21 Aug 2017 11:59:07 +0200
+Message-ID: <CAMuHMdXrYNruQDecYp69XwjPW0tkavuz-nVqvOhw130W59OP-g@mail.gmail.com>
+References: <1500966575-4136-1-git-send-email-geert@linux-m68k.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="UTF-8"
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from mail-pg0-f68.google.com ([74.125.83.68]:33579 "EHLO
-        mail-pg0-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1751894AbdHUJ6g (ORCPT
-        <rfc822;linux-m68k@vger.kernel.org>); Mon, 21 Aug 2017 05:58:36 -0400
-Received: by mail-pg0-f68.google.com with SMTP id n4so8206998pgn.0
-        for <linux-m68k@vger.kernel.org>; Mon, 21 Aug 2017 02:58:36 -0700 (PDT)
-In-Reply-To: <alpine.LNX.2.00.1708121021120.1762@nippy.intranet>
+In-Reply-To: <1500966575-4136-1-git-send-email-geert@linux-m68k.org>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Finn Thain <fthain@telegraphics.com.au>
-Cc: Linux/m68k <linux-m68k@vger.kernel.org>
+To: Ben Hutchings <ben@decadent.org.uk>, Greg Ungerer <gerg@linux-m68k.org>, Andreas Schwab <schwab@linux-m68k.org>
+Cc: linux-m68k <linux-m68k@lists.linux-m68k.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Geert Uytterhoeven <geert@linux-m68k.org>
 
-On Sat, Aug 12, 2017 at 9:12 AM, Finn Thain <fthain@telegraphics.com.au> wrote:
-> Disable interrupts for power-off, like other platforms do. This prevents
-> meaningless warnings from the soft-lockup detector on models with a power
-> supply unit not under software control.
+On Tue, Jul 25, 2017 at 9:09 AM, Geert Uytterhoeven
+<geert@linux-m68k.org> wrote:
+> From: Ben Hutchings <ben@decadent.org.uk>
 >
-> Reported-by: Stan Johnson <userm57@yahoo.com>
-> Tested-by: Stan Johnson <userm57@yahoo.com>
-> Signed-off-by: Finn Thain <fthain@telegraphics.com.au>
+> WARNING: EXPORT symbol "__divsi3" [vmlinux] version generation failed, symbol will not be versioned.
+> WARNING: EXPORT symbol "__umodsi3" [vmlinux] version generation failed, symbol will not be versioned.
+> WARNING: EXPORT symbol "__mulsi3" [vmlinux] version generation failed, symbol will not be versioned.
+> WARNING: EXPORT symbol "__modsi3" [vmlinux] version generation failed, symbol will not be versioned.
+> WARNING: EXPORT symbol "__udivsi3" [vmlinux] version generation failed, symbol will not be versioned.
+>
+> Add <asm/asm-prototypes.h> so that genksyms knows the types of these
+> symbols and can generate CRCs for them.
+>
+> Fixes: d13ffb563044 ("m68k: move exports to definitions"
+> Signed-off-by: Ben Hutchings <ben@decadent.org.uk>
+> [geert: Add warning messages, match actual prototypes]
+> Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
 
 Thank you, applied and queued for v4.14.
 
