@@ -1,7 +1,7 @@
 From: Greg Ungerer <gregungerer@westnet.com.au>
 Subject: Re: [PATCH] m68k: allow ColdFire m5441x parts to run with MMU enabled
-Date: Tue, 22 Aug 2017 11:08:43 +1000
-Message-ID: <e4c51dce-3497-bec1-76b4-25545e7c3d64@westnet.com.au>
+Date: Wed, 23 Aug 2017 17:06:25 +1000
+Message-ID: <f0fad6b5-96a9-6025-1fd3-7a1a0b6679d4@westnet.com.au>
 References: <bc3dc168-aaae-1271-b73b-4d649db5e301@sysam.it>
  <d1ce1669-0286-ebad-7c6c-e9dfe37c266c@sysam.it>
  <30318b18-e955-1615-975e-9b378d3201b8@westnet.com.au>
@@ -15,19 +15,24 @@ References: <bc3dc168-aaae-1271-b73b-4d649db5e301@sysam.it>
  <702374e9-7c94-1cbe-306a-d39a1fb70fdd@westnet.com.au>
  <c3357a3f-e429-8ae5-9340-064ed09e1f67@sysam.it>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed;
+ boundary="------------B1C62BCE1B146595231AC1D3"
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from icp-osb-irony-out4.external.iinet.net.au ([203.59.1.220]:9786
-        "EHLO icp-osb-irony-out4.external.iinet.net.au" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1754252AbdHVBIi (ORCPT
+Received: from icp-osb-irony-out5.external.iinet.net.au ([203.59.1.221]:39864
+        "EHLO icp-osb-irony-out5.external.iinet.net.au" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1753263AbdHWHGS (ORCPT
         <rfc822;linux-m68k@vger.kernel.org>);
-        Mon, 21 Aug 2017 21:08:38 -0400
+        Wed, 23 Aug 2017 03:06:18 -0400
 In-Reply-To: <c3357a3f-e429-8ae5-9340-064ed09e1f67@sysam.it>
 Content-Language: en-US
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
 To: Angelo Dureghello <angelo@sysam.it>, Linux/m68k <linux-m68k@vger.kernel.org>
+
+This is a multi-part message in MIME format.
+--------------B1C62BCE1B146595231AC1D3
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
 
 Hi Angelo,
 
@@ -337,15 +342,44 @@ On 22/08/17 10:35, Angelo Dureghello wrote:
 > ---[ end trace 0000000000000000 ]---
 > On node 0 totalpages: 16384
 > free_area_init_node: node 0, pgdat 401da8c0, node_mem_map a8c0401d
-                                                            ^^^^^^^^
 >   DMA zone: 72 pages used for memmap
 >   DMA zone: 0 pages reserved
 >   DMA zone: 16384 pages, LIFO batch:3
 > /page_alloc.c(1171): page=a8c0401d pfn=131072
-                            ^^^^^^^^
-Ok, this is getting somewhere. Clearly that page pointer is not valid.
 
-I'll have a dig around and see if I can figure out what might cause that.
+Another patch attached that digs a little deeper into why that page
+pointer ends up being invalid. If you could run with this and send
+the output that would be great.
 
 Regards
 Greg
+
+
+
+--------------B1C62BCE1B146595231AC1D3
+Content-Type: text/x-patch;
+ name="cf-page-trace.patch"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment;
+ filename="cf-page-trace.patch"
+
+diff --git a/linux/mm/page_alloc.c b/linux/mm/page_alloc.c
+index a2019fc..ab95a8c 100644
+--- a/linux/mm/page_alloc.c
++++ b/linux/mm/page_alloc.c
+@@ -1178,6 +1178,13 @@ static void free_one_page(struct zone *zone,
+ static void __meminit __init_single_page(struct page *page, unsigned long pfn,
+ 				unsigned long zone, int nid)
+ {
++	printk("%s(%d): page=%p pfn=%ld\n", __FILE__, __LINE__, page, pfn);
++	printk("%s(%d): __va(pfn=%ld)=%p\n", __FILE__, __LINE__, pfn, __va(pfn));
++	printk("%s(%d): pfn_to_virt(pfn=%ld)=%p\n", __FILE__, __LINE__, pfn, pfn_to_virt(pfn));
++	printk("%s(%d): __virt_to_node(pfn_to_virt(pfn=%ld))=%p\n", __FILE__, __LINE__, pfn, __virt_to_node((unsigned long)pfn_to_virt(pfn)));
++	printk("%s(%d): pg_data_map[0].node_start_pfn=%ld\n", __FILE__, __LINE__, pg_data_map[0].node_start_pfn);
++	printk("%s(%d): pg_data_map[0].node_present_pages=%ld\n", __FILE__, __LINE__, pg_data_map[0].node_present_pages);
++
+ 	set_page_links(page, zone, nid, pfn);
+ 	init_page_count(page);
+ 	page_mapcount_reset(page);
+
+--------------B1C62BCE1B146595231AC1D3--
