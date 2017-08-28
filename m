@@ -1,52 +1,44 @@
-From: Dmitry Torokhov <dmitry.torokhov@gmail.com>
-Subject: Re: [PATCH] input: misc: don't build m68kspkr when mach_beep is
- undefined
-Date: Mon, 28 Aug 2017 09:50:31 -0700
-Message-ID: <20170828165031.GD12195__24362.5166397125$1503939073$gmane$org@dtor-ws>
-References: <20170824144427.23873-1-alexandre.belloni@free-electrons.com>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: Re: [PATCH] input: misc: don't build m68kspkr when mach_beep is undefined
+Date: Mon, 28 Aug 2017 19:15:46 +0200
+Message-ID: <CAMuHMdV5um5L9WAk9pNEdQiTyT7YkQdgFRKH4vBqCwLPXsqPRw__32009.7992466346$1503940568$gmane$org@mail.gmail.com>
+References: <20170824144427.23873-1-alexandre.belloni@free-electrons.com> <20170828165031.GD12195@dtor-ws>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset="UTF-8"
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <20170824144427.23873-1-alexandre.belloni@free-electrons.com>
+In-Reply-To: <20170828165031.GD12195@dtor-ws>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Alexandre Belloni <alexandre.belloni@free-electrons.com>
-Cc: Greg Ungerer <gerg@linux-m68k.org>, Geert Uytterhoeven <geert@linux-m68k.org>, linux-m68k@lists.linux-m68k.org, linux-input@vger.kernel.org, linux-kernel@vger.kernel.org
+To: Dmitry Torokhov <dmitry.torokhov@gmail.com>
+Cc: Alexandre Belloni <alexandre.belloni@free-electrons.com>, Greg Ungerer <gerg@linux-m68k.org>, linux-m68k <linux-m68k@lists.linux-m68k.org>, "linux-input@vger.kernel.org" <linux-input@vger.kernel.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
 
-On Thu, Aug 24, 2017 at 04:44:27PM +0200, Alexandre Belloni wrote:
-> mach_beep is defined arch/m68k/kernel/setup_mm.c which is compiled only
-> when MMU is selected.
-> 
-> To avoid linking errors, make INPUT_M68K_BEEP depend on MMU.
+Hi Dmitry,
 
-Hmm, can we maybe pull mach_beep from setup_mm.c to setup.c? MMU
-dependency seems to be artificial.
+On Mon, Aug 28, 2017 at 6:50 PM, Dmitry Torokhov
+<dmitry.torokhov@gmail.com> wrote:
+> On Thu, Aug 24, 2017 at 04:44:27PM +0200, Alexandre Belloni wrote:
+>> mach_beep is defined arch/m68k/kernel/setup_mm.c which is compiled only
+>> when MMU is selected.
+>>
+>> To avoid linking errors, make INPUT_M68K_BEEP depend on MMU.
+>
+> Hmm, can we maybe pull mach_beep from setup_mm.c to setup.c? MMU
 
-> 
-> Signed-off-by: Alexandre Belloni <alexandre.belloni@free-electrons.com>
-> ---
->  drivers/input/misc/Kconfig | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/input/misc/Kconfig b/drivers/input/misc/Kconfig
-> index 3872488c3fd7..7a44f633a413 100644
-> --- a/drivers/input/misc/Kconfig
-> +++ b/drivers/input/misc/Kconfig
-> @@ -178,7 +178,7 @@ config INPUT_SPARCSPKR
->  
->  config INPUT_M68K_BEEP
->  	tristate "M68k Beeper support"
-> -	depends on M68K
-> +	depends on M68K && MMU
->  
->  config INPUT_MAX77693_HAPTIC
->  	tristate "MAXIM MAX77693/MAX77843 haptic controller support"
-> -- 
-> 2.14.1
-> 
+Sounds OK to me. Greg?
 
-Thanks.
+> dependency seems to be artificial.
 
--- 
-Dmitry
+That's indeed artificial, it's really a platform dependency.
+But currently these platforms (Amiga and Atari) do not support mmu-less
+operation (yet).
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
