@@ -1,71 +1,49 @@
-From: Greg Ungerer <gerg@linux-m68k.org>
-Subject: Re: [PATCH] input: misc: don't build m68kspkr when mach_beep is
- undefined
-Date: Tue, 29 Aug 2017 10:24:12 +1000
-Message-ID: <207ddeee-51dc-9b34-f7d9-eff2cb8143d7@linux-m68k.org>
-References: <20170824144427.23873-1-alexandre.belloni@free-electrons.com>
- <20170828165031.GD12195@dtor-ws>
- <CAMuHMdV5um5L9WAk9pNEdQiTyT7YkQdgFRKH4vBqCwLPXsqPRw@mail.gmail.com>
+From: Greg KH <gregkh@linuxfoundation.org>
+Subject: Re: [PATCH v3 0/3] Define CPU_BIG_ENDIAN or warn for inconsistencies
+Date: Tue, 29 Aug 2017 08:30:15 +0200
+Message-ID: <20170829063015.GA12198@kroah.com>
+References: <1499358861-179979-1-git-send-email-babu.moger@oracle.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-m68k-owner@vger.kernel.org>
-In-Reply-To: <CAMuHMdV5um5L9WAk9pNEdQiTyT7YkQdgFRKH4vBqCwLPXsqPRw@mail.gmail.com>
-Content-Language: en-US
-Sender: linux-m68k-owner@vger.kernel.org
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-parisc-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <1499358861-179979-1-git-send-email-babu.moger@oracle.com>
+Sender: linux-parisc-owner@vger.kernel.org
+To: Babu Moger <babu.moger@oracle.com>
+Cc: ysato@users.sourceforge.jp, geert@linux-m68k.org, jonas@southpole.se, stefan.kristiansson@saunalahti.fi, shorne@gmail.com, jejb@parisc-linux.org, deller@gmx.de, davem@davemloft.net, viro@zeniv.linux.org.uk, monstr@monstr.eu, mpe@ellerman.id.au, peterz@infradead.org, mingo@redhat.com, jcmvbkbc@gmail.com, linux-kernel@vger.kernel.org, uclinux-h8-devel@lists.sourceforge.jp, linux-m68k@vger.kernel.org, openrisc@lists.librecores.org, linux-parisc@vger.kernel.org, sparclinux@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Geert Uytterhoeven <geert@linux-m68k.org>, Dmitry Torokhov <dmitry.torokhov@gmail.com>
-Cc: Alexandre Belloni <alexandre.belloni@free-electrons.com>, linux-m68k <linux-m68k@lists.linux-m68k.org>, "linux-input@vger.kernel.org" <linux-input@vger.kernel.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
 
-Hi Geert, Dmitry, Alexandre,
-
-On 29/08/17 03:15, Geert Uytterhoeven wrote:
-> On Mon, Aug 28, 2017 at 6:50 PM, Dmitry Torokhov
-> <dmitry.torokhov@gmail.com> wrote:
->> On Thu, Aug 24, 2017 at 04:44:27PM +0200, Alexandre Belloni wrote:
->>> mach_beep is defined arch/m68k/kernel/setup_mm.c which is compiled only
->>> when MMU is selected.
->>>
->>> To avoid linking errors, make INPUT_M68K_BEEP depend on MMU.
->>
->> Hmm, can we maybe pull mach_beep from setup_mm.c to setup.c? MMU
+On Thu, Jul 06, 2017 at 09:34:18AM -0700, Babu Moger wrote:
+> Resending the series per Greg KH's request.
 > 
-> Sounds OK to me. Greg?
-
-Yeah, I have no problem with that.
-
-At the moment though setup.c is a basic stub with only this in it:
-
-    #ifdef CONFIG_MMU
-    #include "setup_mm.c"
-    #else
-    #include "setup_no.c"
-    #endif
-
-It is one of the very few files remaining that we have not fully
-re-merged from the original MMU and no-MMU versions.
-
-Maybe its time we looked at cleaning this up as well...
-
-Regards
-Greg
-
-
-
->> dependency seems to be artificial.
+> Found this problem while enabling queued rwlock on SPARC.
+> The parameter CONFIG_CPU_BIG_ENDIAN is used to clear the
+> specific byte in qrwlock structure. Without this parameter,
+> we clear the wrong byte.
+> Here is the code in include/asm-generic/qrwlock.h
 > 
-> That's indeed artificial, it's really a platform dependency.
-> But currently these platforms (Amiga and Atari) do not support mmu-less
-> operation (yet).
+> static inline u8 *__qrwlock_write_byte(struct qrwlock *lock)
+>   {
+>          return (u8 *)lock + 3 * IS_BUILTIN(CONFIG_CPU_BIG_ENDIAN);
+>   }
 > 
-> Gr{oetje,eeting}s,
+> Also found few more references of this parameter in
+> drivers/of/base.c
+> drivers/of/fdt.c
+> drivers/tty/serial/earlycon.c
+> drivers/tty/serial/serial_core.c
 > 
->                         Geert
+> Here is our previous discussion.
+> https://lkml.org/lkml/2017/5/24/620
 > 
-> --
-> Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-> 
-> In personal conversations with technical people, I call myself a hacker. But
-> when I'm talking to journalists I just say "programmer" or something like that.
->                                 -- Linus Torvalds
-> 
+> Based on the discussion, it was decided to add CONFIG_CPU_BIG_ENDIAN
+> for all the fixed big endian architecture(frv, h8300, m68k, openrisc,
+> parisc and sparc). And warn if there are inconsistencies in this definition.
+
+Did this series ever get picked up by anyone?  I don't know whose tree
+it should go through if not, anyone have any ideas?  I guess I could,
+but arch-specific stuff is odd...
+
+thanks,
+
+greg k-h
