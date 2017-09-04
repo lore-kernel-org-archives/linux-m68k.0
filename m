@@ -1,40 +1,73 @@
-From: John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
-Subject: Re: falconide not registering device nodes
-Date: Mon, 4 Sep 2017 11:49:04 +0200
-Message-ID: <77f0e192-6f43-ef7e-dfaf-8872ebc49089@physik.fu-berlin.de>
-References: <cbac2923-ea1e-47f2-3ac7-88a697b786d9@physik.fu-berlin.de>
- <alpine.LNX.2.00.1709041125280.4359@nippy.intranet>
- <59ca8e07-4e0a-b470-7db3-09aec537a416@physik.fu-berlin.de>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: [git pull] m68k updates for 4.14
+Date: Mon,  4 Sep 2017 12:42:34 +0200
+Message-ID: <1504521754-26149-1-git-send-email-geert@linux-m68k.org>
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from outpost1.zedat.fu-berlin.de ([130.133.4.66]:47694 "EHLO
-        outpost1.zedat.fu-berlin.de" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1753459AbdIDJtH (ORCPT
-        <rfc822;linux-m68k@vger.kernel.org>); Mon, 4 Sep 2017 05:49:07 -0400
-In-Reply-To: <59ca8e07-4e0a-b470-7db3-09aec537a416@physik.fu-berlin.de>
-Content-Language: en-US
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Finn Thain <fthain@telegraphics.com.au>
-Cc: Linux/m68k <linux-m68k@vger.kernel.org>, Debian m68k <debian-68k@lists.debian.org>
+To: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: Andrew Morton <akpm@linux-foundation.org>, Greg Ungerer <gerg@linux-m68k.org>, linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org, Geert Uytterhoeven <geert@linux-m68k.org>
 
-On 09/04/2017 09:13 AM, John Paul Adrian Glaubitz wrote:
-> On 09/04/2017 04:08 AM, Finn Thain wrote:
->> Did you confirm that the falconide module was actually loaded?
-> 
-> Yes, you can see the messages from the Falcon IDE driver in the
-> screenshot I posted. It loads and detects the hard drive as
-> hda and the CD-ROM drive as hdb.
+	Hi Linus,
 
-Could it be that the falconide driver is conflicting with the driver
-used for the nfhd hard disk inside Aranym?
+The following changes since commit 5771a8c08880cdca3bfb4a3fc6d309d6bba20877:
 
-Adrian
+  Linux v4.13-rc1 (2017-07-15 15:22:10 -0700)
 
--- 
-  .''`.  John Paul Adrian Glaubitz
-: :' :  Debian Developer - glaubitz@debian.org
-`. `'   Freie Universitaet Berlin - glaubitz@physik.fu-berlin.de
-   `-    GPG: 62FF 8A75 84E0 2956 9546  0006 7426 3B37 F5B5 F913
+are available in the git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/geert/linux-m68k.git tags/m68k-for-v4.14-tag1
+
+for you to fetch changes up to 558d5ad276c9b2ffbe706e78310a777f87e65c5f:
+
+  m68k/mac: Avoid soft-lockup warning after mach_power_off (2017-08-21 11:52:56 +0200)
+
+----------------------------------------------------------------
+m68k updates for 4.14
+
+  - Restore symbol versions for symbols exported from assembly,
+  - Defconfig updates,
+  - Mac fixes.
+
+Thanks for pulling!
+
+----------------------------------------------------------------
+Ben Hutchings (1):
+      m68k: Restore symbol versions for symbols exported from assembly
+
+Finn Thain (2):
+      m68k/mac: Don't hang waiting for Cuda power-down command
+      m68k/mac: Avoid soft-lockup warning after mach_power_off
+
+Geert Uytterhoeven (1):
+      m68k/defconfig: Update defconfigs for v4.13-rc1
+
+ arch/m68k/configs/amiga_defconfig      |  7 +++++--
+ arch/m68k/configs/apollo_defconfig     |  7 +++++--
+ arch/m68k/configs/atari_defconfig      |  8 ++++++--
+ arch/m68k/configs/bvme6000_defconfig   |  7 +++++--
+ arch/m68k/configs/hp300_defconfig      |  7 +++++--
+ arch/m68k/configs/mac_defconfig        |  7 +++++--
+ arch/m68k/configs/multi_defconfig      |  7 +++++--
+ arch/m68k/configs/mvme147_defconfig    |  7 +++++--
+ arch/m68k/configs/mvme16x_defconfig    |  7 +++++--
+ arch/m68k/configs/q40_defconfig        |  7 +++++--
+ arch/m68k/configs/sun3_defconfig       |  7 +++++--
+ arch/m68k/configs/sun3x_defconfig      |  7 +++++--
+ arch/m68k/include/asm/asm-prototypes.h |  5 +++++
+ arch/m68k/mac/misc.c                   | 16 ++++++++++++++--
+ 14 files changed, 80 insertions(+), 26 deletions(-)
+ create mode 100644 arch/m68k/include/asm/asm-prototypes.h
+
+Thanks for pulling!
+
+Gr{oetje,eeting}s,
+
+						Geert
+
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+							    -- Linus Torvalds
