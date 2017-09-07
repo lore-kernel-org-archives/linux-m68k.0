@@ -1,9 +1,8 @@
-From: Greg Ungerer <gregungerer@westnet.com.au>
+From: Angelo Dureghello <angelo@sysam.it>
 Subject: Re: [PATCH] m68k: allow ColdFire m5441x parts to run with MMU enabled
-Date: Thu, 7 Sep 2017 12:01:59 +1000
-Message-ID: <36ecd820-b51f-f334-65dd-2391673e161d@westnet.com.au>
+Date: Thu, 7 Sep 2017 22:23:10 +0200
+Message-ID: <9948f453-e83a-37cd-1b6c-bb2d5e625e5d@sysam.it>
 References: <bc3dc168-aaae-1271-b73b-4d649db5e301@sysam.it>
- <0e1723eb-0724-7007-5b63-7d80112268a2@westnet.com.au>
  <d4e220c9-f607-cf9a-2e63-910e745dbea9@sysam.it>
  <c5dfd7b3-3266-1ecd-1dbf-e66bd9f5aa32@westnet.com.au>
  <f7d80fbd-3b99-66c5-38f5-592780703f96@sysam.it>
@@ -20,321 +19,543 @@ References: <bc3dc168-aaae-1271-b73b-4d649db5e301@sysam.it>
  <72e95591-c47d-153c-693e-0bf7ad6bb535@sysam.it>
  <1f6469b9-9592-80bd-b635-4fafe8d46c19@westnet.com.au>
  <04bfbf62-232e-30b3-fe0f-5205c674ee30@sysam.it>
+ <36ecd820-b51f-f334-65dd-2391673e161d@westnet.com.au>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed;
+ boundary="------------973ECCB6632F0D0C80BF13BF"
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from icp-osb-irony-out2.external.iinet.net.au ([203.59.1.155]:4993
-        "EHLO icp-osb-irony-out2.external.iinet.net.au" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1753802AbdIGCCW (ORCPT
-        <rfc822;linux-m68k@vger.kernel.org>); Wed, 6 Sep 2017 22:02:22 -0400
-In-Reply-To: <04bfbf62-232e-30b3-fe0f-5205c674ee30@sysam.it>
+Received: from sysam.it ([5.39.81.93]:38055 "EHLO sysam.it"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1755543AbdIGUXN (ORCPT <rfc822;linux-m68k@vger.kernel.org>);
+        Thu, 7 Sep 2017 16:23:13 -0400
+In-Reply-To: <36ecd820-b51f-f334-65dd-2391673e161d@westnet.com.au>
 Content-Language: en-US
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Angelo Dureghello <angelo@sysam.it>, Geert Uytterhoeven <geert@linux-m68k.org>
+To: Greg Ungerer <gregungerer@westnet.com.au>, Geert Uytterhoeven <geert@linux-m68k.org>
 Cc: Linux/m68k <linux-m68k@vger.kernel.org>
 
-Hi Angelo,
+This is a multi-part message in MIME format.
+--------------973ECCB6632F0D0C80BF13BF
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On 05/09/17 00:42, Angelo Dureghello wrote:
-> On 04/09/2017 08:08, Greg Ungerer wrote:
->> I have attached a patch with a slightly different approach to
->> fixing this. Can you try this one out?
->>
->> I have a feel for what is going on, based in particular on
->> the changes you made in 0002-m68k-fix-mmu-for-coldfire-mcf5441x.patch.
->> I see that the virt_node_shift and accessing pg_data_map when
->> not 0 based is going to be problematic with the code as it is.
->>
->>
-> Great catch, the patch works,
+Hi Greg,
 
-Thats great, thanks for trying that out.
-
-
-> i maintaind btw the
+On 07/09/2017 04:01, Greg Ungerer wrote:
+> Hi Angelo,
 > 
-> memset(NODE_DATA(node), 0, sizeof(pg_data_t));
-> 
-> inside void __init m68k_setup_node(int node) since otherwise
-> there was that warning we've seen initially.
-
-Ok, I am not quite sure why you would still need that though.
-Do you mean the warning about overlaping chunks?  Can you send
-the exact warning output again running this now?
-
->From the code I would have expected that array area to be in the
-kernel bss and be zeroed out at system startup. (For what it is
-worth I don't see that warning on my non-zero based test 5475 test
-config).
-
-
-> About the "cd" issue, it seems to be a hush issue, maybe
-> becouse hush is built as nommu. Re-executing hush, i can now cd
-> to a subfolder, but i get then a SEGV on "cd ..".
-
-Yeah, maybe that is related to flat format binaries. Normally I
-run a uClibc ELF based user space with MMU enabled. I'll try with
-a FLAT format user space and see if I get any problems.
-
-Regards
-Greg
-
-
- 
-> This the boot log:
-> 
-> ## Booting kernel from Legacy Image at 40001000 ...
->    Image Name:   mainline kernel
->    Created:      2017-09-04  14:19:47 UTC
->    Image Type:   M68K Linux Kernel Image (uncompressed)
->    Data Size:    1930976 Bytes = 1.8 MiB
->    Load Address: 40001000
->    Entry Point:  40001000
->    Verifying Checksum ... OK
->    Loading Kernel Image ... OK
-> [    0.000000] Linux version 4.13.0-rc7stmark2-001-00039-g96e88773601f-dirty (angelo@jerusalem) (gcc version 5.2.0 (crosstools-sysam-2016.04.16)) #56 Mon Sep 4 16:19:46 CEST 2017
-> [    0.000000] Built 1 zonelists in Zone order, mobility grouping on.  Total pages: 16312
-> [    0.000000] Kernel command line: console=ttyS0,115200 root=/dev/ram0 rw rootfstype=ramfs rdinit=/bin/init devtmpfs.mount=1
-> [    0.000000] PID hash table entries: 512 (order: -2, 2048 bytes)
-> [    0.000000] Dentry cache hash table entries: 16384 (order: 3, 65536 bytes)
-> [    0.000000] Inode-cache hash table entries: 8192 (order: 2, 32768 bytes)
-> [    0.000000] Sorting __ex_table...
-> [    0.000000] Memory: 128288K/131072K available (1219K kernel code, 103K rwdata, 288K rodata, 264K init, 79K bss, 2784K reserved, 0K cma-reserved)
-> [    0.000000] Virtual kernel memory layout:
-> [    0.000000]     vector  : 0x40000000 - 0x40000400   (   1 KiB)
-> [    0.000000]     kmap    : 0xe0000000 - 0xf0000000   ( 256 MiB)
-> [    0.000000]     vmalloc : 0xd0000000 - 0xe0000000   ( 256 MiB)
-> [    0.000000]     lowmem  : 0x40000000 - 0x48000000   ( 128 MiB)
-> [    0.000000]       .init : 0x40196000 - 0x401d8000   ( 264 KiB)
-> [    0.000000]       .text : 0x40001000 - 0x40131cb0   (1220 KiB)
-> [    0.000000]       .data : 0x40131cb0 - 0x40193900   ( 392 KiB)
-> [    0.000000]       .bss  : 0x401d86e0 - 0x401ec680   (  80 KiB)
-> [    0.000000] SLUB: HWalign=16, Order=0-3, MinObjects=0, CPUs=1, Nodes=8
-> [    0.000000] NR_IRQS: 256
-> [    0.000000] clocksource: pit: mask: 0xffffffff max_cycles: 0xffffffff, max_idle_ns: 1019338904850 ns
-> [    0.000000] Console: colour dummy device 80x25
-> [    0.070000] Calibrating delay loop... 238.38 BogoMIPS (lpj=1191936)
-> [    0.070000] pid_max: default: 32768 minimum: 301
-> [    0.070000] Mount-cache hash table entries: 2048 (order: 0, 8192 bytes)
-> [    0.070000] Mountpoint-cache hash table entries: 2048 (order: 0, 8192 bytes)
-> [    0.080000] devtmpfs: initialized
-> [    0.090000] clocksource: jiffies: mask: 0xffffffff max_cycles: 0xffffffff, max_idle_ns: 19112604462750000 ns
-> [    0.090000] futex hash table entries: 256 (order: -2, 3072 bytes)
-> [    0.110000] clocksource: Switched to clocksource pit
-> [    0.110000] FS-Cache: Loaded
-> [    0.380000] workingset: timestamp_bits=27 max_order=14 bucket_order=0
-> [    0.430000] io scheduler noop registered
-> [    0.430000] io scheduler deadline registered
-> [    0.430000] io scheduler cfq registered (default)
-> [    0.430000] io scheduler mq-deadline registered
-> [    0.430000] io scheduler kyber registered
-> [    0.920000] ColdFire internal UART serial driver
-> [    0.920000] mcfuart.0: ttyS0 at MMIO 0xfc060000 (irq = 90, base_baud = 7500000) is a ColdFire UART
-> [    1.110000] console [ttyS0] enabled
-> [    1.110000] mcfuart.0: ttyS1 at MMIO 0xfc064000 (irq = 91, base_baud = 7500000) is a ColdFire UART
-> [    1.120000] mcfuart.0: ttyS2 at MMIO 0xfc068000 (irq = 92, base_baud = 7500000) is a ColdFire UART
-> [    1.130000] mcfuart.0: ttyS3 at MMIO 0xfc06c000 (irq = 93, base_baud = 7500000) is a ColdFire UART
-> [    1.150000] random: get_random_bytes called from init_oops_id+0x26/0x46 with crng_init=0
-> [    1.160000] Freeing unused kernel memory: 264K
-> [    1.170000] This architecture does not have kernel memory protection.
-> [    1.410000] random: fast init done
-> 
-> / #
-> 
-> 
->> On 02/09/17 08:08, Angelo Dureghello wrote:
->>> about my patch sent yesterday, unfortunately, i found btw
->>> at least 1 issue: the busybox "cd" doesn't change directory :)
+> On 05/09/17 00:42, Angelo Dureghello wrote:
+>> On 04/09/2017 08:08, Greg Ungerer wrote:
+>>> I have attached a patch with a slightly different approach to
+>>> fixing this. Can you try this one out?
 >>>
->>> / # cat /proc/vmallocinfo
->>> 0xd0006000-0xd000c000   24576 n_tty_open+0x16/0xae pages=2 vmalloc
->>> / # ls
->>> bin    etc    lib    mnt    proc   sbin   usr
->>> dev    home   media  opt    root   sys    var
->>> / # cd bin
->>> / # ls
->>> bin    etc    lib    mnt    proc   sbin   usr
->>> dev    home   media  opt    root   sys    var
->>> / # cat /proc/vm
->>> vmallocinfo  vmstat
->>> / # cat /proc/vm
->>> vmallocinfo  vmstat
->>> / # cat /proc/vmallocinfo
->>> 0xd0000000-0xd0006000   24576 unpurged vm_area
->>> 0xd0006000-0xd000c000   24576 n_tty_open+0x16/0xae pages=2 vmalloc
+>>> I have a feel for what is going on, based in particular on
+>>> the changes you made in 0002-m68k-fix-mmu-for-coldfire-mcf5441x.patch.
+>>> I see that the virt_node_shift and accessing pg_data_map when
+>>> not 0 based is going to be problematic with the code as it is.
 >>>
->>> And after each "cd" attempt, another "unpurged" message is added.
->>> Removing MMU cd works as expected.
+>>>
+>> Great catch, the patch works,
+> 
+> Thats great, thanks for trying that out.
+> 
+> 
+>> i maintaind btw the
 >>
->> I setup a configuration with my 5475 where I moved the build
->> RAM base to be 32MB - so it was no longer 0 based. Then I could run
->> some tests to at least simulate what you have on the 54411. (The
->> only catch is my code could still access 0 and surrounding memory
->> addresses without faulting...)
+>> memset(NODE_DATA(node), 0, sizeof(pg_data_t));
 >>
->> Running with my attached patch I didn't see any odd behavior with
->> cd/ls like you see above.
+>> inside void __init m68k_setup_node(int node) since otherwise
+>> there was that warning we've seen initially.
+> 
+> Ok, I am not quite sure why you would still need that though.
+> Do you mean the warning about overlaping chunks?  Can you send
+> the exact warning output again running this now?
+> 
+>  From the code I would have expected that array area to be in the
+> kernel bss and be zeroed out at system startup. (For what it is
+> worth I don't see that warning on my non-zero based test 5475 test
+> config).
+> 
+
+Sure, my mistake, i just maintained that line and didn't try to
+remove it after your final 1-line patch.
+
+Just re-tested now, without that memset, all works fine as you was
+expecting, no warnings.
+I attach the 2 progressive patches, the first you sent me initially,
+and this last one, that actually is just 1 line patch.
+
+> 
+>> About the "cd" issue, it seems to be a hush issue, maybe
+>> becouse hush is built as nommu. Re-executing hush, i can now cd
+>> to a subfolder, but i get then a SEGV on "cd ..".
+> 
+> Yeah, maybe that is related to flat format binaries. Normally I
+> run a uClibc ELF based user space with MMU enabled. I'll try with
+> a FLAT format user space and see if I get any problems.
+> 
+> Regards
+> Greg
+> 
+> 
+>   
+>> This the boot log:
 >>
->> Geert: interested if you have any thoughts on problems around
->>         virt_to_node_shift. Changing CONFIG_RAMBASE I don't think is
->>         going to resolve the problem in m68k_setup_node(). We access
->>         of the end of the array since it was divided up based on the
->>         size of the RAM, but we access it using an index derrived
->>         directly from the absolute address.
+>> ## Booting kernel from Legacy Image at 40001000 ...
+>>     Image Name:   mainline kernel
+>>     Created:      2017-09-04  14:19:47 UTC
+>>     Image Type:   M68K Linux Kernel Image (uncompressed)
+>>     Data Size:    1930976 Bytes = 1.8 MiB
+>>     Load Address: 40001000
+>>     Entry Point:  40001000
+>>     Verifying Checksum ... OK
+>>     Loading Kernel Image ... OK
+>> [    0.000000] Linux version 4.13.0-rc7stmark2-001-00039-g96e88773601f-dirty (angelo@jerusalem) (gcc version 5.2.0 (crosstools-sysam-2016.04.16)) #56 Mon Sep 4 16:19:46 CEST 2017
+>> [    0.000000] Built 1 zonelists in Zone order, mobility grouping on.  Total pages: 16312
+>> [    0.000000] Kernel command line: console=ttyS0,115200 root=/dev/ram0 rw rootfstype=ramfs rdinit=/bin/init devtmpfs.mount=1
+>> [    0.000000] PID hash table entries: 512 (order: -2, 2048 bytes)
+>> [    0.000000] Dentry cache hash table entries: 16384 (order: 3, 65536 bytes)
+>> [    0.000000] Inode-cache hash table entries: 8192 (order: 2, 32768 bytes)
+>> [    0.000000] Sorting __ex_table...
+>> [    0.000000] Memory: 128288K/131072K available (1219K kernel code, 103K rwdata, 288K rodata, 264K init, 79K bss, 2784K reserved, 0K cma-reserved)
+>> [    0.000000] Virtual kernel memory layout:
+>> [    0.000000]     vector  : 0x40000000 - 0x40000400   (   1 KiB)
+>> [    0.000000]     kmap    : 0xe0000000 - 0xf0000000   ( 256 MiB)
+>> [    0.000000]     vmalloc : 0xd0000000 - 0xe0000000   ( 256 MiB)
+>> [    0.000000]     lowmem  : 0x40000000 - 0x48000000   ( 128 MiB)
+>> [    0.000000]       .init : 0x40196000 - 0x401d8000   ( 264 KiB)
+>> [    0.000000]       .text : 0x40001000 - 0x40131cb0   (1220 KiB)
+>> [    0.000000]       .data : 0x40131cb0 - 0x40193900   ( 392 KiB)
+>> [    0.000000]       .bss  : 0x401d86e0 - 0x401ec680   (  80 KiB)
+>> [    0.000000] SLUB: HWalign=16, Order=0-3, MinObjects=0, CPUs=1, Nodes=8
+>> [    0.000000] NR_IRQS: 256
+>> [    0.000000] clocksource: pit: mask: 0xffffffff max_cycles: 0xffffffff, max_idle_ns: 1019338904850 ns
+>> [    0.000000] Console: colour dummy device 80x25
+>> [    0.070000] Calibrating delay loop... 238.38 BogoMIPS (lpj=1191936)
+>> [    0.070000] pid_max: default: 32768 minimum: 301
+>> [    0.070000] Mount-cache hash table entries: 2048 (order: 0, 8192 bytes)
+>> [    0.070000] Mountpoint-cache hash table entries: 2048 (order: 0, 8192 bytes)
+>> [    0.080000] devtmpfs: initialized
+>> [    0.090000] clocksource: jiffies: mask: 0xffffffff max_cycles: 0xffffffff, max_idle_ns: 19112604462750000 ns
+>> [    0.090000] futex hash table entries: 256 (order: -2, 3072 bytes)
+>> [    0.110000] clocksource: Switched to clocksource pit
+>> [    0.110000] FS-Cache: Loaded
+>> [    0.380000] workingset: timestamp_bits=27 max_order=14 bucket_order=0
+>> [    0.430000] io scheduler noop registered
+>> [    0.430000] io scheduler deadline registered
+>> [    0.430000] io scheduler cfq registered (default)
+>> [    0.430000] io scheduler mq-deadline registered
+>> [    0.430000] io scheduler kyber registered
+>> [    0.920000] ColdFire internal UART serial driver
+>> [    0.920000] mcfuart.0: ttyS0 at MMIO 0xfc060000 (irq = 90, base_baud = 7500000) is a ColdFire UART
+>> [    1.110000] console [ttyS0] enabled
+>> [    1.110000] mcfuart.0: ttyS1 at MMIO 0xfc064000 (irq = 91, base_baud = 7500000) is a ColdFire UART
+>> [    1.120000] mcfuart.0: ttyS2 at MMIO 0xfc068000 (irq = 92, base_baud = 7500000) is a ColdFire UART
+>> [    1.130000] mcfuart.0: ttyS3 at MMIO 0xfc06c000 (irq = 93, base_baud = 7500000) is a ColdFire UART
+>> [    1.150000] random: get_random_bytes called from init_oops_id+0x26/0x46 with crng_init=0
+>> [    1.160000] Freeing unused kernel memory: 264K
+>> [    1.170000] This architecture does not have kernel memory protection.
+>> [    1.410000] random: fast init done
+>>
+>> / #
 >>
 >>
->>> On 01/09/2017 15:30, Geert Uytterhoeven wrote:
->>>> Hi Greg,
+>>> On 02/09/17 08:08, Angelo Dureghello wrote:
+>>>> about my patch sent yesterday, unfortunately, i found btw
+>>>> at least 1 issue: the busybox "cd" doesn't change directory :)
 >>>>
->>>> On Fri, Sep 1, 2017 at 3:21 PM, Greg Ungerer <gregungerer@westnet.com.au> wrote:
->>>>> On 01/09/17 17:49, Geert Uytterhoeven wrote:
->>>>>> On Fri, Sep 1, 2017 at 12:38 AM, Angelo Dureghello <angelo@sysam.it>
->>>>>> wrote:
->>>>>>> did some additional study and tests.
+>>>> / # cat /proc/vmallocinfo
+>>>> 0xd0006000-0xd000c000   24576 n_tty_open+0x16/0xae pages=2 vmalloc
+>>>> / # ls
+>>>> bin    etc    lib    mnt    proc   sbin   usr
+>>>> dev    home   media  opt    root   sys    var
+>>>> / # cd bin
+>>>> / # ls
+>>>> bin    etc    lib    mnt    proc   sbin   usr
+>>>> dev    home   media  opt    root   sys    var
+>>>> / # cat /proc/vm
+>>>> vmallocinfo  vmstat
+>>>> / # cat /proc/vm
+>>>> vmallocinfo  vmstat
+>>>> / # cat /proc/vmallocinfo
+>>>> 0xd0000000-0xd0006000   24576 unpurged vm_area
+>>>> 0xd0006000-0xd000c000   24576 n_tty_open+0x16/0xae pages=2 vmalloc
+>>>>
+>>>> And after each "cd" attempt, another "unpurged" message is added.
+>>>> Removing MMU cd works as expected.
+>>>
+>>> I setup a configuration with my 5475 where I moved the build
+>>> RAM base to be 32MB - so it was no longer 0 based. Then I could run
+>>> some tests to at least simulate what you have on the 54411. (The
+>>> only catch is my code could still access 0 and surrounding memory
+>>> addresses without faulting...)
+>>>
+>>> Running with my attached patch I didn't see any odd behavior with
+>>> cd/ls like you see above.
+>>>
+>>> Geert: interested if you have any thoughts on problems around
+>>>          virt_to_node_shift. Changing CONFIG_RAMBASE I don't think is
+>>>          going to resolve the problem in m68k_setup_node(). We access
+>>>          of the end of the array since it was divided up based on the
+>>>          size of the RAM, but we access it using an index derrived
+>>>          directly from the absolute address.
+>>>
+>>>
+>>>> On 01/09/2017 15:30, Geert Uytterhoeven wrote:
+>>>>> Hi Greg,
+>>>>>
+>>>>> On Fri, Sep 1, 2017 at 3:21 PM, Greg Ungerer <gregungerer@westnet.com.au> wrote:
+>>>>>> On 01/09/17 17:49, Geert Uytterhoeven wrote:
+>>>>>>> On Fri, Sep 1, 2017 at 12:38 AM, Angelo Dureghello <angelo@sysam.it>
+>>>>>>> wrote:
+>>>>>>>> did some additional study and tests.
+>>>>>>>>
+>>>>>>>> Actually i cannot find any simpler patch, i just adjusted it a
+>>>>>>>> bit. I believe this patch will work on your cpu with 0-based
+>>>>>>>> memoryas well.
+>>>>>>>> I attach it for your comments.
 >>>>>>>
->>>>>>> Actually i cannot find any simpler patch, i just adjusted it a
->>>>>>> bit. I believe this patch will work on your cpu with 0-based
->>>>>>> memoryas well.
->>>>>>> I attach it for your comments.
->>>>>>
->>>>>>
->>>>>> I think your issue is caused by arch/m68k/include/asm/page_offset.h:
->>>>>>
->>>>>>        #if defined(CONFIG_RAMBASE)
->>>>>>        #define PAGE_OFFSET_RAW         CONFIG_RAMBASE
->>>>>>        #elif defined(CONFIG_SUN3)
->>>>>>        #define PAGE_OFFSET_RAW         0x0E000000
->>>>>>        #else
->>>>>>        #define PAGE_OFFSET_RAW         0x00000000
->>>>>>        #endif
->>>>>>
->>>>>> and arch/m68k/Kconfig.machine:
->>>>>>
->>>>>> if !MMU || COLDFIRE
->>>>>>
->>>>>>        config RAMBASE
->>>>>>                hex "Address of the base of RAM"
->>>>>>                default "0"
->>>>>>
->>>>>> So on MC680[2346]0 with MMU (and ignoring Sun-3, which is special),
->>>>>> PAGE_OFFSET == PAGE_OFFSET_RAW == 0.
->>>>>>
->>>>>> On Greg's zero-based Coldfire with MMU, CONFIG_RAMBASE is zero, and thus
->>>>>> PAGE_OFFSET is also zero.
->>>>>>
->>>>>> On your board CONFIG_RAMBASE is non-zero, hence PAGE_OFFSET is also
->>>>>> non-zero,
->>>>>> and thus you have to compensate for that, cfr. your second patch.
->>>>>>
->>>>>> Does it work if you force PAGE_OFFSET_RAW to zero?
->>>>>>
->>>>>> If yes, we either need:
->>>>>>
->>>>>> --- a/arch/m68k/include/asm/page_offset.h
->>>>>> +++ b/arch/m68k/include/asm/page_offset.h
->>>>>> @@ -1,6 +1,6 @@
->>>>>>     /* This handles the memory map.. */
->>>>>>
->>>>>> -#if defined(CONFIG_RAMBASE)
->>>>>> +#if !defined(CONFIG_MMU)
->>>>>>     #define PAGE_OFFSET_RAW                CONFIG_RAMBASE
->>>>>>     #elif defined(CONFIG_SUN3)
->>>>>>     #define PAGE_OFFSET_RAW                0x0E000000
->>>>>>
+>>>>>>>
+>>>>>>> I think your issue is caused by arch/m68k/include/asm/page_offset.h:
+>>>>>>>
+>>>>>>>         #if defined(CONFIG_RAMBASE)
+>>>>>>>         #define PAGE_OFFSET_RAW         CONFIG_RAMBASE
+>>>>>>>         #elif defined(CONFIG_SUN3)
+>>>>>>>         #define PAGE_OFFSET_RAW         0x0E000000
+>>>>>>>         #else
+>>>>>>>         #define PAGE_OFFSET_RAW         0x00000000
+>>>>>>>         #endif
+>>>>>>>
+>>>>>>> and arch/m68k/Kconfig.machine:
+>>>>>>>
+>>>>>>> if !MMU || COLDFIRE
+>>>>>>>
+>>>>>>>         config RAMBASE
+>>>>>>>                 hex "Address of the base of RAM"
+>>>>>>>                 default "0"
+>>>>>>>
+>>>>>>> So on MC680[2346]0 with MMU (and ignoring Sun-3, which is special),
+>>>>>>> PAGE_OFFSET == PAGE_OFFSET_RAW == 0.
+>>>>>>>
+>>>>>>> On Greg's zero-based Coldfire with MMU, CONFIG_RAMBASE is zero, and thus
+>>>>>>> PAGE_OFFSET is also zero.
+>>>>>>>
+>>>>>>> On your board CONFIG_RAMBASE is non-zero, hence PAGE_OFFSET is also
+>>>>>>> non-zero,
+>>>>>>> and thus you have to compensate for that, cfr. your second patch.
+>>>>>>>
+>>>>>>> Does it work if you force PAGE_OFFSET_RAW to zero?
+>>>>>>>
+>>>>>>> If yes, we either need:
+>>>>>>>
+>>>>>>> --- a/arch/m68k/include/asm/page_offset.h
+>>>>>>> +++ b/arch/m68k/include/asm/page_offset.h
+>>>>>>> @@ -1,6 +1,6 @@
+>>>>>>>      /* This handles the memory map.. */
+>>>>>>>
+>>>>>>> -#if defined(CONFIG_RAMBASE)
+>>>>>>> +#if !defined(CONFIG_MMU)
+>>>>>>>      #define PAGE_OFFSET_RAW                CONFIG_RAMBASE
+>>>>>>>      #elif defined(CONFIG_SUN3)
+>>>>>>>      #define PAGE_OFFSET_RAW                0x0E000000
+>>>>>>>
+>>>>
+>>>> I tested this patch, (removed mine) and kernel hangs somewhere silently at
+>>>> first init, i don't have the debug enabled now, but i suspect it still
+>>>> hangs at some initial "memset" since 0 area for kernel should
+>>>> be allocated before access.
+>>>>
+>>>> Isn't PAGE_OFFSET the starting area for the virtual kernel address space ?
+>>>> At least so it seems to be for the famous 3G + 1G of x86.
 >>>
->>> I tested this patch, (removed mine) and kernel hangs somewhere silently at
->>> first init, i don't have the debug enabled now, but i suspect it still
->>> hangs at some initial "memset" since 0 area for kernel should
->>> be allocated before access.
+>>> Well, for the current working ColdFire with MMU that is the case.
+>>> The kernel virtual addresses start at 0...
 >>>
->>> Isn't PAGE_OFFSET the starting area for the virtual kernel address space ?
->>> At least so it seems to be for the famous 3G + 1G of x86.
->>
->> Well, for the current working ColdFire with MMU that is the case.
->> The kernel virtual addresses start at 0...
->>
->>
->>> This is what i see at boot with my patch of yesterday:
 >>>
->>> [    0.000000] Virtual kernel memory layout:
->>> [    0.000000]     vector  : 0x40000000 - 0x40000400   (   1 KiB)
->>> [    0.000000]     kmap    : 0xe0000000 - 0xf0000000   ( 256 MiB)
->>> [    0.000000]     vmalloc : 0xd0000000 - 0xe0000000   ( 256 MiB)
->>> [    0.000000]     lowmem  : 0x40000000 - 0x48000000   ( 128 MiB)
->>> [    0.000000]       .init : 0x40196000 - 0x401d8000   ( 264 KiB)
->>> [    0.000000]       .text : 0x40001000 - 0x40131e70   (1220 KiB)
->>> [    0.000000]       .data : 0x40131e70 - 0x40193900   ( 391 KiB)
->>> [    0.000000]       .bss  : 0x401d86d8 - 0x401ec680   (  80 KiB)
->>
->> For whatever it is worth this is what I see now on my debug setup:
->>
->> Virtual kernel memory layout:
->>      vector  : 0x02000000 - 0x02000400   (   1 KiB)
->>      kmap    : 0xe0000000 - 0xf0000000   ( 256 MiB)
->>      vmalloc : 0xd0000000 - 0xe0000000   ( 256 MiB)
->>      lowmem  : 0x02000000 - 0x04000000   (  32 MiB)
->>        .init : 0x02288000 - 0x02296000   (  56 KiB)
->>        .text : 0x02020000 - 0x0221f270   (2045 KiB)
->>        .data : 0x0221f270 - 0x02284140   ( 404 KiB)
->>        .bss  : 0x022967a0 - 0x022ae60c   (  96 KiB)
->>
->> Regards
->> Greg
->>
->>
->>
->>>>>> or
+>>>> This is what i see at boot with my patch of yesterday:
+>>>>
+>>>> [    0.000000] Virtual kernel memory layout:
+>>>> [    0.000000]     vector  : 0x40000000 - 0x40000400   (   1 KiB)
+>>>> [    0.000000]     kmap    : 0xe0000000 - 0xf0000000   ( 256 MiB)
+>>>> [    0.000000]     vmalloc : 0xd0000000 - 0xe0000000   ( 256 MiB)
+>>>> [    0.000000]     lowmem  : 0x40000000 - 0x48000000   ( 128 MiB)
+>>>> [    0.000000]       .init : 0x40196000 - 0x401d8000   ( 264 KiB)
+>>>> [    0.000000]       .text : 0x40001000 - 0x40131e70   (1220 KiB)
+>>>> [    0.000000]       .data : 0x40131e70 - 0x40193900   ( 391 KiB)
+>>>> [    0.000000]       .bss  : 0x401d86d8 - 0x401ec680   (  80 KiB)
+>>>
+>>> For whatever it is worth this is what I see now on my debug setup:
+>>>
+>>> Virtual kernel memory layout:
+>>>       vector  : 0x02000000 - 0x02000400   (   1 KiB)
+>>>       kmap    : 0xe0000000 - 0xf0000000   ( 256 MiB)
+>>>       vmalloc : 0xd0000000 - 0xe0000000   ( 256 MiB)
+>>>       lowmem  : 0x02000000 - 0x04000000   (  32 MiB)
+>>>         .init : 0x02288000 - 0x02296000   (  56 KiB)
+>>>         .text : 0x02020000 - 0x0221f270   (2045 KiB)
+>>>         .data : 0x0221f270 - 0x02284140   ( 404 KiB)
+>>>         .bss  : 0x022967a0 - 0x022ae60c   (  96 KiB)
+>>>
+>>> Regards
+>>> Greg
+>>>
+>>>
+>>>
+>>>>>>> or
+>>>>>>>
+>>>>>>> --- a/arch/m68k/Kconfig.machine
+>>>>>>> +++ b/arch/m68k/Kconfig.machine
+>>>>>>> @@ -325,6 +325,7 @@ comment "RAM configuration"
+>>>>>>>
+>>>>>>>      config RAMBASE
+>>>>>>>             hex "Address of the base of RAM"
+>>>>>>> +       depends on MMU
 >>>>>>
->>>>>> --- a/arch/m68k/Kconfig.machine
->>>>>> +++ b/arch/m68k/Kconfig.machine
->>>>>> @@ -325,6 +325,7 @@ comment "RAM configuration"
 >>>>>>
->>>>>>     config RAMBASE
->>>>>>            hex "Address of the base of RAM"
->>>>>> +       depends on MMU
+>>>>>> Did you mean "depends on !MMU" here?
 >>>>>
+>>>>> Sorry, yes, depends on !MMU.
 >>>>>
->>>>> Did you mean "depends on !MMU" here?
->>>>
->>>> Sorry, yes, depends on !MMU.
->>>>
->>>>>> depending on whether anything else in the Coldfire code needs RAMBASE.
+>>>>>>> depending on whether anything else in the Coldfire code needs RAMBASE.
+>>>>>>
+>>>>>> There are a couple of places we depend on CONFIG_RAMBASE even
+>>>>>> when running with the MMU enabled. Most importantly in setting
+>>>>>> the cachable regions in arch/m68k/include/asm/m54xxacr.h.
+>>>>>> So this is probably not going to work on its own.
 >>>>>
->>>>> There are a couple of places we depend on CONFIG_RAMBASE even
->>>>> when running with the MMU enabled. Most importantly in setting
->>>>> the cachable regions in arch/m68k/include/asm/m54xxacr.h.
->>>>> So this is probably not going to work on its own.
+>>>>> OK, as I already feared/expected...
+>>>>>
+>>>>>> But the first patch above should be ok. It should certainly work on
+>>>>>> my 0 address base 5475 ColdFire setup. Angelo can you try that one?
+>>>>>
+>>>>> Right.
+>>>>>
+>>>>> Gr{oetje,eeting}s,
+>>>>>
+>>>>>                            Geert
+>>>>>
+>>>>> -- 
+>>>>> Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+>>>>>
+>>>>> In personal conversations with technical people, I call myself a hacker. But
+>>>>> when I'm talking to journalists I just say "programmer" or something like that.
+>>>>>                                    -- Linus Torvalds
+>>>>> -- 
+>>>>> To unsubscribe from this list: send the line "unsubscribe linux-m68k" in
+>>>>> the body of a message to majordomo@vger.kernel.org
+>>>>> More majordomo info at  http://vger.kernel.org/majordomo-info.html
+>>>>>
 >>>>
->>>> OK, as I already feared/expected...
->>>>
->>>>> But the first patch above should be ok. It should certainly work on
->>>>> my 0 address base 5475 ColdFire setup. Angelo can you try that one?
->>>>
->>>> Right.
->>>>
->>>> Gr{oetje,eeting}s,
->>>>
->>>>                           Geert
->>>>
->>>> -- 
->>>> Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
->>>>
->>>> In personal conversations with technical people, I call myself a hacker. But
->>>> when I'm talking to journalists I just say "programmer" or something like that.
->>>>                                   -- Linus Torvalds
->>>> -- 
->>>> To unsubscribe from this list: send the line "unsubscribe linux-m68k" in
->>>> the body of a message to majordomo@vger.kernel.org
->>>> More majordomo info at  http://vger.kernel.org/majordomo-info.html
+>>>> Regards,
+>>>> Angelo
 >>>>
 >>>
->>> Regards,
->>> Angelo
->>>
+>>
+>> Regards,
+>> Angelo
 >>
 > 
-> Regards,
-> Angelo
-> 
+
+Best regards,
+Angelo Dureghello
+
+--------------973ECCB6632F0D0C80BF13BF
+Content-Type: text/x-patch;
+ name="0001-Patch-to-enable-mmu-from-Greg.patch"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment;
+ filename="0001-Patch-to-enable-mmu-from-Greg.patch"
+
+>From 9f0e06f9566de4d91a234753cd30160ce02fc8a8 Mon Sep 17 00:00:00 2001
+From: Angelo Dureghello <angelo@sysam.it>
+Date: Thu, 24 Aug 2017 00:01:06 +0200
+Subject: [PATCH 1/2] Patch to enable mmu, from Greg.
+
+Signed-off-by: Angelo Dureghello <angelo@sysam.it>
+---
+ arch/m68k/Kconfig.cpu               |  2 +-
+ arch/m68k/coldfire/m54xx.c          |  4 ----
+ arch/m68k/configs/stmark2_defconfig |  5 +++--
+ arch/m68k/include/asm/mmu_context.h |  1 -
+ arch/m68k/kernel/setup_mm.c         |  1 +
+ arch/m68k/mm/mcfmmu.c               | 35 ++++++++++++++++++-----------------
+ 6 files changed, 23 insertions(+), 25 deletions(-)
+
+diff --git a/arch/m68k/Kconfig.cpu b/arch/m68k/Kconfig.cpu
+index d2219f30b78f..4dc51c090a45 100644
+--- a/arch/m68k/Kconfig.cpu
++++ b/arch/m68k/Kconfig.cpu
+@@ -283,7 +283,7 @@ config M548x
+ 
+ config M5441x
+ 	bool "MCF5441x"
+-	depends on !MMU
++	select MMU_COLDFIRE if MMU
+ 	select GENERIC_CLOCKEVENTS
+ 	select HAVE_CACHE_CB
+ 	help
+diff --git a/arch/m68k/coldfire/m54xx.c b/arch/m68k/coldfire/m54xx.c
+index c552851ec617..704efeaeab2d 100644
+--- a/arch/m68k/coldfire/m54xx.c
++++ b/arch/m68k/coldfire/m54xx.c
+@@ -95,10 +95,6 @@ static void mcf54xx_reset(void)
+ 
+ void __init config_BSP(char *commandp, int size)
+ {
+-#ifdef CONFIG_MMU
+-	cf_bootmem_alloc();
+-	mmu_context_init();
+-#endif
+ 	mach_reset = mcf54xx_reset;
+ 	mach_sched_init = hw_timer_init;
+ 	m54xx_uarts_init();
+diff --git a/arch/m68k/configs/stmark2_defconfig b/arch/m68k/configs/stmark2_defconfig
+index ea78b8f6a68e..b886f303cc3f 100644
+--- a/arch/m68k/configs/stmark2_defconfig
++++ b/arch/m68k/configs/stmark2_defconfig
+@@ -21,7 +21,7 @@ CONFIG_EMBEDDED=y
+ # CONFIG_LBDAF is not set
+ # CONFIG_BLK_DEV_BSG is not set
+ CONFIG_BLK_CMDLINE_PARSER=y
+-# CONFIG_MMU is not set
++CONFIG_COLDFIRE=y
+ CONFIG_M5441x=y
+ CONFIG_CLOCK_FREQ=240000000
+ CONFIG_STMARK2=y
+@@ -30,6 +30,8 @@ CONFIG_RAMSIZE=0x8000000
+ CONFIG_VECTORBASE=0x40000000
+ CONFIG_KERNELBASE=0x40001000
+ CONFIG_BINFMT_FLAT=y
++CONFIG_BINFMT_ZFLAT=y
++CONFIG_BINFMT_SHARED_FLAT=y
+ CONFIG_BINFMT_MISC=y
+ # CONFIG_UEVENT_HELPER is not set
+ CONFIG_DEVTMPFS=y
+@@ -53,7 +55,6 @@ CONFIG_MTD_COMPLEX_MAPPINGS=y
+ CONFIG_MTD_PHYSMAP=y
+ CONFIG_MTD_PLATRAM=y
+ CONFIG_MTD_SPI_NOR=y
+-# CONFIG_INPUT_MOUSEDEV is not set
+ # CONFIG_INPUT_KEYBOARD is not set
+ # CONFIG_INPUT_MOUSE is not set
+ CONFIG_SERIO_LIBPS2=y
+diff --git a/arch/m68k/include/asm/mmu_context.h b/arch/m68k/include/asm/mmu_context.h
+index 4a6ae6dffa34..00c28b1dc47b 100644
+--- a/arch/m68k/include/asm/mmu_context.h
++++ b/arch/m68k/include/asm/mmu_context.h
+@@ -91,7 +91,6 @@ static inline void activate_mm(struct mm_struct *active_mm,
+ 
+ #define deactivate_mm(tsk, mm) do { } while (0)
+ 
+-extern void mmu_context_init(void);
+ #define prepare_arch_switch(next) load_ksp_mmu(next)
+ 
+ static inline void load_ksp_mmu(struct task_struct *task)
+diff --git a/arch/m68k/kernel/setup_mm.c b/arch/m68k/kernel/setup_mm.c
+index 7a2c21212820..5632c48b9f3b 100644
+--- a/arch/m68k/kernel/setup_mm.c
++++ b/arch/m68k/kernel/setup_mm.c
+@@ -343,6 +343,7 @@ void __init setup_arch(char **cmdline_p)
+ #ifdef CONFIG_COLDFIRE
+ 	case MACH_M54XX:
+ 	case MACH_M5441X:
++		cf_bootmem_alloc();
+ 		config_BSP(NULL, 0);
+ 		break;
+ #endif
+diff --git a/arch/m68k/mm/mcfmmu.c b/arch/m68k/mm/mcfmmu.c
+index 87131cd3bc8f..c7efdf8e8eae 100644
+--- a/arch/m68k/mm/mcfmmu.c
++++ b/arch/m68k/mm/mcfmmu.c
+@@ -150,6 +150,23 @@ int cf_tlb_miss(struct pt_regs *regs, int write, int dtlb, int extension_word)
+ 	return 0;
+ }
+ 
++/*
++ * Initialize the context management stuff.
++ * The following was taken from arch/ppc/mmu_context.c
++ */
++static void __init mmu_context_init(void)
++{
++	/*
++	 * Some processors have too few contexts to reserve one for
++	 * init_mm, and require using context 0 for a normal task.
++	 * Other processors reserve the use of context zero for the kernel.
++	 * This code assumes FIRST_CONTEXT < 32.
++	 */
++	context_map[0] = (1 << FIRST_CONTEXT) - 1;
++	next_mmu_context = FIRST_CONTEXT;
++	atomic_set(&nr_free_contexts, LAST_CONTEXT - FIRST_CONTEXT + 1);
++}
++
+ void __init cf_bootmem_alloc(void)
+ {
+ 	unsigned long start_pfn;
+@@ -177,23 +194,7 @@ void __init cf_bootmem_alloc(void)
+ 	memstart += init_bootmem_node(NODE_DATA(0), start_pfn,
+ 		min_low_pfn, max_low_pfn);
+ 	free_bootmem_node(NODE_DATA(0), memstart, _ramend - memstart);
+-}
+-
+-/*
+- * Initialize the context management stuff.
+- * The following was taken from arch/ppc/mmu_context.c
+- */
+-void __init mmu_context_init(void)
+-{
+-	/*
+-	 * Some processors have too few contexts to reserve one for
+-	 * init_mm, and require using context 0 for a normal task.
+-	 * Other processors reserve the use of context zero for the kernel.
+-	 * This code assumes FIRST_CONTEXT < 32.
+-	 */
+-	context_map[0] = (1 << FIRST_CONTEXT) - 1;
+-	next_mmu_context = FIRST_CONTEXT;
+-	atomic_set(&nr_free_contexts, LAST_CONTEXT - FIRST_CONTEXT + 1);
++	mmu_context_init();
+ }
+ 
+ /*
+-- 
+2.14.1
+
+
+--------------973ECCB6632F0D0C80BF13BF
+Content-Type: text/x-patch;
+ name="0002-m68k-fix-mmu-for-coldfire-mcf5441x.patch"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment;
+ filename="0002-m68k-fix-mmu-for-coldfire-mcf5441x.patch"
+
+>From 9f6deae2b7c4291e792e2b341da461091613b790 Mon Sep 17 00:00:00 2001
+From: Angelo Dureghello <angelo@sysam.it>
+Date: Sun, 27 Aug 2017 02:42:42 +0200
+Subject: [PATCH 2/2] m68k: fix mmu for coldfire mcf5441x
+
+This patch fixes mmu not working for CPU's that has the base of the
+physical memory mapped at a non-zero address.
+
+Signed-off-by: Angelo Dureghello <angelo@sysam.it>
+---
+ arch/m68k/mm/mcfmmu.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/arch/m68k/mm/mcfmmu.c b/arch/m68k/mm/mcfmmu.c
+index c7efdf8e8eae..a79198a7fcab 100644
+--- a/arch/m68k/mm/mcfmmu.c
++++ b/arch/m68k/mm/mcfmmu.c
+@@ -186,7 +186,7 @@ void __init cf_bootmem_alloc(void)
+ 	max_pfn = max_low_pfn = PFN_DOWN(_ramend);
+ 	high_memory = (void *)_ramend;
+ 
+-	m68k_virt_to_node_shift = fls(_ramend - _rambase - 1) - 6;
++	m68k_virt_to_node_shift = fls(_ramend - 1) - 6;
+ 	module_fixup(NULL, __start_fixup, __stop_fixup);
+ 
+ 	/* setup bootmem data */
+-- 
+2.14.1
+
+
+--------------973ECCB6632F0D0C80BF13BF--
