@@ -1,50 +1,49 @@
-From: Greg Ungerer <gerg@linux-m68k.org>
-Subject: [PATCH 3/3] m68k: allow ColdFire m5441x parts to run with MMU enabled
-Date: Fri,  8 Sep 2017 17:01:01 +1000
-Message-ID: <1504854061-12830-4-git-send-email-gerg@linux-m68k.org>
+From: Angelo Dureghello <angelo@sysam.it>
+Subject: Re: [PATCH 0/3] m68k: coldfire MMU fixes
+Date: Sat, 9 Sep 2017 00:33:51 +0200
+Message-ID: <c2d0637b-0e6c-dfff-88d1-1de7990b0294@sysam.it>
 References: <1504854061-12830-1-git-send-email-gerg@linux-m68k.org>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from icp-osb-irony-out6.external.iinet.net.au ([203.59.1.106]:28548
-        "EHLO icp-osb-irony-out6.external.iinet.net.au" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1754358AbdIHHKt (ORCPT
-        <rfc822;linux-m68k@vger.kernel.org>); Fri, 8 Sep 2017 03:10:49 -0400
+Received: from sysam.it ([5.39.81.93]:38317 "EHLO sysam.it"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1753031AbdIHWdy (ORCPT <rfc822;linux-m68k@vger.kernel.org>);
+        Fri, 8 Sep 2017 18:33:54 -0400
 In-Reply-To: <1504854061-12830-1-git-send-email-gerg@linux-m68k.org>
+Content-Language: en-US
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: linux-m68k@vger.kernel.org
-Cc: geert@linux-m68k.org, Greg Ungerer <gerg@linux-m68k.org>
+To: Greg Ungerer <gerg@linux-m68k.org>, linux-m68k@vger.kernel.org
+Cc: geert@linux-m68k.org
 
-The Freescale ColdFire M5441x system-on-chip parts have full paged MMU
-hardware support. So far though we have only allowed them to be
-configured for use in non-MMU mode.
+Dear Greg,
 
-All required kernel changes to support operation of the M5441x parts
-with MMU enabled have been pushed into the kernel, so now we can allow
-it to be configured and used with the MMU enabled.
+On 08/09/2017 09:00, Greg Ungerer wrote:
+> The following patch series fixes some issues with the initialization phase
+> of the ColdFire MMU system startup. With these fixes applied we can also
+> enable and run the ColdFire 5441x family of parts with their MMU enabled.
+> 
+>   arch/m68k/Kconfig.cpu               |    2 +-
+>   arch/m68k/coldfire/m54xx.c          |    4 ----
+>   arch/m68k/include/asm/mcfmmu.h      |    1 +
+>   arch/m68k/include/asm/mmu_context.h |    1 -
+>   arch/m68k/kernel/setup_mm.c         |    2 ++
+>   arch/m68k/mm/mcfmmu.c               |    4 ++--
+>   6 files changed, 6 insertions(+), 8 deletions(-)
+> 
 
-I don't actually have any M5441x based hardware so I can't do any real
-testing on this. The changes up to now were based on Yannick Gicquel
-initial patches to support this. Is anybody out there able to test
-this properly?  I won't push this any further until we have some
-confirmation that it all works as expected.
+I just applied this patchset to fresh master and re-verified that enabling
+MMU works on my mcf54415 based board.
 
-Signed-off-by: Greg Ungerer <gerg@linux-m68k.org>
----
- arch/m68k/Kconfig.cpu | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Tested-by: Angelo Dureghello <angelo@sysam.it>
 
-diff --git a/arch/m68k/Kconfig.cpu b/arch/m68k/Kconfig.cpu
-index d2219f30..4dc51c0 100644
---- a/arch/m68k/Kconfig.cpu
-+++ b/arch/m68k/Kconfig.cpu
-@@ -283,7 +283,7 @@ config M548x
- 
- config M5441x
- 	bool "MCF5441x"
--	depends on !MMU
-+	select MMU_COLDFIRE if MMU
- 	select GENERIC_CLOCKEVENTS
- 	select HAVE_CACHE_CB
- 	help
--- 
-1.9.1
+Regards,
+Angelo Dureghello
+
+> --
+> To unsubscribe from this list: send the line "unsubscribe linux-m68k" in
+> the body of a message to majordomo@vger.kernel.org
+> More majordomo info at  http://vger.kernel.org/majordomo-info.html
+> 
