@@ -1,49 +1,48 @@
-From: Angelo Dureghello <angelo@sysam.it>
-Subject: Re: [PATCH 0/3] m68k: coldfire MMU fixes
-Date: Sat, 9 Sep 2017 00:33:51 +0200
-Message-ID: <c2d0637b-0e6c-dfff-88d1-1de7990b0294@sysam.it>
-References: <1504854061-12830-1-git-send-email-gerg@linux-m68k.org>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: [PATCH] m68k: Add braces to __pmd(x) initializer to kill compiler warning
+Date: Sun, 10 Sep 2017 15:20:03 +0200
+Message-ID: <1505049603-25546-1-git-send-email-geert@linux-m68k.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from sysam.it ([5.39.81.93]:38317 "EHLO sysam.it"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1753031AbdIHWdy (ORCPT <rfc822;linux-m68k@vger.kernel.org>);
-        Fri, 8 Sep 2017 18:33:54 -0400
-In-Reply-To: <1504854061-12830-1-git-send-email-gerg@linux-m68k.org>
-Content-Language: en-US
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Greg Ungerer <gerg@linux-m68k.org>, linux-m68k@vger.kernel.org
-Cc: geert@linux-m68k.org
+To: Linus Torvalds <torvalds@linux-foundation.org>, Andrew Morton <akpm@linux-foundation.org>, Zi Yan <zi.yan@cs.rutgers.edu>
+Cc: linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org, Geert Uytterhoeven <geert@linux-m68k.org>
 
-Dear Greg,
+With gcc 4.1.2:
 
-On 08/09/2017 09:00, Greg Ungerer wrote:
-> The following patch series fixes some issues with the initialization phase
-> of the ColdFire MMU system startup. With these fixes applied we can also
-> enable and run the ColdFire 5441x family of parts with their MMU enabled.
-> 
->   arch/m68k/Kconfig.cpu               |    2 +-
->   arch/m68k/coldfire/m54xx.c          |    4 ----
->   arch/m68k/include/asm/mcfmmu.h      |    1 +
->   arch/m68k/include/asm/mmu_context.h |    1 -
->   arch/m68k/kernel/setup_mm.c         |    2 ++
->   arch/m68k/mm/mcfmmu.c               |    4 ++--
->   6 files changed, 6 insertions(+), 8 deletions(-)
-> 
+    include/linux/swapops.h: In function ‘swp_entry_to_pmd’:
+    include/linux/swapops.h:294: warning: missing braces around initializer
+    include/linux/swapops.h:294: warning: (near initialization for ‘(anonymous).pmd’)
 
-I just applied this patchset to fresh master and re-verified that enabling
-MMU works on my mcf54415 based board.
+Due to a GCC zero initializer bug (#53119), the standard "(pmd_t){ 0 }"
+initializer is not accepted by all GCC versions.
+In addition, on m68k pmd_t is an array instead of a single value, so we
+need "(pmd_t){ { 0 }, }" instead of "(pmd_t){ 0 }".
 
-Tested-by: Angelo Dureghello <angelo@sysam.it>
+Based on commit 9157259d16a8ee81 ("mm: add pmd_t initializer __pmd() to
+work around a GCC bug.") for sparc32.
 
-Regards,
-Angelo Dureghello
+Fixes: 616b8371539a6c48 ("mm: thp: enable thp migration in generic path")
+Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
+---
+ arch/m68k/include/asm/page.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-> --
-> To unsubscribe from this list: send the line "unsubscribe linux-m68k" in
-> the body of a message to majordomo@vger.kernel.org
-> More majordomo info at  http://vger.kernel.org/majordomo-info.html
-> 
+diff --git a/arch/m68k/include/asm/page.h b/arch/m68k/include/asm/page.h
+index 430d4d54c88383a9..d8a02c7e72d3e610 100644
+--- a/arch/m68k/include/asm/page.h
++++ b/arch/m68k/include/asm/page.h
+@@ -32,7 +32,7 @@ typedef struct page *pgtable_t;
+ #define pgprot_val(x)	((x).pgprot)
+ 
+ #define __pte(x)	((pte_t) { (x) } )
+-#define __pmd(x)	((pmd_t) { (x) } )
++#define __pmd(x)	((pmd_t) { { (x) }, })
+ #define __pgd(x)	((pgd_t) { (x) } )
+ #define __pgprot(x)	((pgprot_t) { (x) } )
+ 
+-- 
+2.7.4
