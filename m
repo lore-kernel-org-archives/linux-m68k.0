@@ -1,49 +1,50 @@
 From: Greg Ungerer <gerg@linux-m68k.org>
-Subject: [git pull] m68knommu changes for v4.14
-Date: Mon, 11 Sep 2017 11:29:31 +1000
-Message-ID: <3db9c070-cede-72d7-cf06-5a6bbd8ceaa2@linux-m68k.org>
+Subject: Re: [PATCH 0/3] m68k: coldfire MMU fixes
+Date: Mon, 11 Sep 2017 13:08:09 +1000
+Message-ID: <f306bff6-975d-1558-5a69-4d3571472e18@linux-m68k.org>
+References: <1504854061-12830-1-git-send-email-gerg@linux-m68k.org>
+ <c2d0637b-0e6c-dfff-88d1-1de7990b0294@sysam.it>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
+Return-path: <linux-m68k-owner@vger.kernel.org>
+Received: from icp-osb-irony-out1.external.iinet.net.au ([203.59.1.210]:43432
+        "EHLO icp-osb-irony-out1.external.iinet.net.au" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1751965AbdIKDIH (ORCPT
+        <rfc822;linux-m68k@vger.kernel.org>);
+        Sun, 10 Sep 2017 23:08:07 -0400
+In-Reply-To: <c2d0637b-0e6c-dfff-88d1-1de7990b0294@sysam.it>
 Content-Language: en-US
-Sender: linux-kernel-owner@vger.kernel.org
-To: torvalds@linux-foundation.org
-Cc: "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Linux/m68k <linux-m68k@vger.kernel.org>, Geert Uytterhoeven <geert@linux-m68k.org>
+Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
+To: Angelo Dureghello <angelo@sysam.it>, linux-m68k@vger.kernel.org
+Cc: geert@linux-m68k.org
 
-Hi Linus,
+Hi Angelo,
 
-Can you please pull the m68knommu git tree, for-next branch.
+On 09/09/17 08:33, Angelo Dureghello wrote:
+> Dear Greg,
+> 
+> On 08/09/2017 09:00, Greg Ungerer wrote:
+>> The following patch series fixes some issues with the initialization phase
+>> of the ColdFire MMU system startup. With these fixes applied we can also
+>> enable and run the ColdFire 5441x family of parts with their MMU enabled.
+>>
+>>   arch/m68k/Kconfig.cpu               |    2 +-
+>>   arch/m68k/coldfire/m54xx.c          |    4 ----
+>>   arch/m68k/include/asm/mcfmmu.h      |    1 +
+>>   arch/m68k/include/asm/mmu_context.h |    1 -
+>>   arch/m68k/kernel/setup_mm.c         |    2 ++
+>>   arch/m68k/mm/mcfmmu.c               |    4 ++--
+>>   6 files changed, 6 insertions(+), 8 deletions(-)
+>>
+> 
+> I just applied this patchset to fresh master and re-verified that enabling
+> MMU works on my mcf54415 based board.
+> 
+> Tested-by: Angelo Dureghello <angelo@sysam.it>
 
-Only 2 changes. One removes unused code, the other makes local clock code
-arguments consistent with generic clock code.
+Thats great, thanks Angelo. I will add your tested-by tags to the commits.
 
 Regards
 Greg
-
-
-
-
-The following changes since commit cc4a41fe5541a73019a864883297bd5043aa6d98:
-
-  Linux 4.13-rc7 (2017-08-27 17:20:40 -0700)
-
-are available in the git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/gerg/m68knommu.git for-next
-
-for you to fetch changes up to 8a1943492bd629b7eae64535a96fcb959a01bbd0:
-
-  m68knommu: remove dead code (2017-08-28 10:40:30 +1000)
-
-----------------------------------------------------------------
-Alexandre Belloni (1):
-      m68knommu: remove dead code
-
-Jonas Gorski (1):
-      m68k: allow NULL clock for clk_get_rate
-
- arch/m68k/coldfire/clk.c    |  3 +++
- arch/m68k/coldfire/m5441x.c | 37 -------------------------------------
- 2 files changed, 3 insertions(+), 37 deletions(-)
