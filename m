@@ -1,50 +1,74 @@
-From: Greg Ungerer <gerg@linux-m68k.org>
-Subject: Re: [PATCH 0/3] m68k: coldfire MMU fixes
-Date: Mon, 11 Sep 2017 13:08:09 +1000
-Message-ID: <f306bff6-975d-1558-5a69-4d3571472e18@linux-m68k.org>
-References: <1504854061-12830-1-git-send-email-gerg@linux-m68k.org>
- <c2d0637b-0e6c-dfff-88d1-1de7990b0294@sysam.it>
+From: Linus Walleij <linus.walleij@linaro.org>
+Subject: Re: [PATCH] [RFC] clocksource: improve GENERIC_CLOCKEVENTS dependency
+Date: Tue, 12 Sep 2017 10:09:51 +0200
+Message-ID: <CACRpkdbruKbL-Qe6P7rCGwxbprFt5rBWF7-eYpuaVPK7fjhkGA__15259.1465077878$1505203836$gmane$org@mail.gmail.com>
+References: <20170905150504.1720954-1-arnd@arndb.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="UTF-8"
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from icp-osb-irony-out1.external.iinet.net.au ([203.59.1.210]:43432
-        "EHLO icp-osb-irony-out1.external.iinet.net.au" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1751965AbdIKDIH (ORCPT
-        <rfc822;linux-m68k@vger.kernel.org>);
-        Sun, 10 Sep 2017 23:08:07 -0400
-In-Reply-To: <c2d0637b-0e6c-dfff-88d1-1de7990b0294@sysam.it>
-Content-Language: en-US
+In-Reply-To: <20170905150504.1720954-1-arnd@arndb.de>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Angelo Dureghello <angelo@sysam.it>, linux-m68k@vger.kernel.org
-Cc: geert@linux-m68k.org
+To: Arnd Bergmann <arnd@arndb.de>, Russell King <linux@armlinux.org.uk>
+Cc: Daniel Lezcano <daniel.lezcano@linaro.org>, Thomas Gleixner <tglx@linutronix.de>, Randy Dunlap <rdunlap@infradead.org>, Geert Uytterhoeven <geert@linux-m68k.org>, "linux-m68k@lists.linux-m68k.org" <linux-m68k@lists.linux-m68k.org>, linux-ia64@vger.kernel.org, Tony Luck <tony.luck@intel.com>, Fenghua Yu <fenghua.yu@intel.com>, Ding Tianhong <dingtianhong@huawei.com>, Mark Rutland <mark.rutland@arm.com>, Marc Zyngier <marc.zyngier@arm.com>, Vineet Gupta <vgupta@synopsys.com>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
 
-Hi Angelo,
+On Tue, Sep 5, 2017 at 5:04 PM, Arnd Bergmann <arnd@arndb.de> wrote:
 
-On 09/09/17 08:33, Angelo Dureghello wrote:
-> Dear Greg,
-> 
-> On 08/09/2017 09:00, Greg Ungerer wrote:
->> The following patch series fixes some issues with the initialization phase
->> of the ColdFire MMU system startup. With these fixes applied we can also
->> enable and run the ColdFire 5441x family of parts with their MMU enabled.
->>
->>   arch/m68k/Kconfig.cpu               |    2 +-
->>   arch/m68k/coldfire/m54xx.c          |    4 ----
->>   arch/m68k/include/asm/mcfmmu.h      |    1 +
->>   arch/m68k/include/asm/mmu_context.h |    1 -
->>   arch/m68k/kernel/setup_mm.c         |    2 ++
->>   arch/m68k/mm/mcfmmu.c               |    4 ++--
->>   6 files changed, 6 insertions(+), 8 deletions(-)
->>
-> 
-> I just applied this patchset to fresh master and re-verified that enabling
-> MMU works on my mcf54415 based board.
-> 
-> Tested-by: Angelo Dureghello <angelo@sysam.it>
+> We regularly run into build errors when a clocksource driver selects
+> CONFIG_TIMER_OF while CONFIG_GENERIC_CLOCKEVENTS is disabled:
+>
+>  In file included from drivers/clocksource/timer-of.c:25:0:
+> drivers/clocksource/timer-of.h:35:28: error: field 'clkevt' has incomplete type
+>
+> At the moment, three drivers can show this behavior: ARMV7M_SYSTICK,
+> CLKSRC_ST_LPC and CLKSRC_NPS. We could add further dependencies as we did
+> many times, but I have looked a little bit more at what architectures
+> are left that don't use GENERIC_CLOCKEVENTS, and this shows that there
+> is a better solution.
+>
+> On arch/frv and arch/ia64, we never select CONFIG_GENERIC_CLOCKEVENTS
+> and we also don't use ARCH_USES_GETTIMEOFFSET, which would
+> block the clocksource Kconfig menu. On m68k, some platforms use
+> CONFIG_GENERIC_CLOCKEVENTS, some use ARCH_USES_GETTIMEOFFSET, and some
+> use neither of them. The good news is that there is no configuration that
+> does not set CONFIG_GENERIC_CLOCKEVENTS but that wants to enable any of
+> the Kconfig symbols in the menu, so we can simply replace the dependency
+> with the stricter one. While in theory one could have a clocksource
+> driver without the clockevent infrastructure, this seems unlikely
+> to be relevant in the future any more.
 
-Thats great, thanks Angelo. I will add your tested-by tags to the commits.
+As far as I can see this works and makes sense.
+Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
 
-Regards
-Greg
+> We can probably drop some of the other dependencies as well now,
+> e.g. there should generally be no reason to depend on CONFIG_ARM
+> unless the driver uses architecture specific assembly.
+
+I think they are just there to cut down on the available menu choices
+when doing manual configuration. Which is moot since the machine/subarch
+likely selects the right clocksource driver anyway.
+
+About ARM:
+
+For ARM we now have two subarchs not using generic clockevents:
+RISC PC and EBSA110.
+
+I think Russell stated these two cannot be converted to generic clockevents
+because of hardware limitations I guess, no timer interrupt, simply, which
+means no clockevents, or unreliable or not granular enough timers.
+
+IIUC the SA110 does not contain the built-in SoC goodies of the SA1100
+so it needs external timer blocks, and those two machines don't have
+good enough timers.
+
+That is a bit annoying since even the Commodore 64 has good enough
+timers to run generic clock events, had it only had compiler support
+and enough memory to run Linux...
+
+Anyways, I'm too ignorant to even fully understand what happens
+on a system with just GETTIMEOFFSET and not clockevents, does the
+OS just run in an eternal loop and advancing any event in the system
+using that time offset?
+
+Yours,
+Linus Walleij
