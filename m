@@ -1,60 +1,39 @@
-From: Linus Walleij <linus.walleij@linaro.org>
-Subject: Re: [PATCH] [RFC] clocksource: improve GENERIC_CLOCKEVENTS dependency
-Date: Tue, 12 Sep 2017 16:17:39 +0200
-Message-ID: <CACRpkdZwhLgtg1zH3xxo00rC3cN9URDvk+sHqjAsZ9oYgJ73fA__42037.3307112188$1505225904$gmane$org@mail.gmail.com>
-References: <20170905150504.1720954-1-arnd@arndb.de> <CACRpkdbruKbL-Qe6P7rCGwxbprFt5rBWF7-eYpuaVPK7fjhkGA@mail.gmail.com>
- <20170912091012.GD20805@n2100.armlinux.org.uk>
+From: John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
+Subject: Re: Installing with new Installer-Image
+Date: Fri, 15 Sep 2017 10:42:02 +0200
+Message-ID: <d20ba6f0-08fc-ca49-18bf-3a5801eaa25d@physik.fu-berlin.de>
+References: <f9c4e93e-342d-9cd2-e7f3-92829c6f5810@abbuc.de>
+ <b5f70ff9-2c86-de2c-5ba7-4b78b4816bd0@physik.fu-berlin.de>
+ <98ed5d64-d0d6-799e-a13e-63af27df3a4f@abbuc.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-m68k-owner@vger.kernel.org>
-In-Reply-To: <20170912091012.GD20805@n2100.armlinux.org.uk>
+Received: from outpost1.zedat.fu-berlin.de ([130.133.4.66]:50789 "EHLO
+        outpost1.zedat.fu-berlin.de" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1750838AbdIOImE (ORCPT
+        <rfc822;linux-m68k@vger.kernel.org>);
+        Fri, 15 Sep 2017 04:42:04 -0400
+In-Reply-To: <98ed5d64-d0d6-799e-a13e-63af27df3a4f@abbuc.de>
+Content-Language: en-US
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Russell King - ARM Linux <linux@armlinux.org.uk>
-Cc: Arnd Bergmann <arnd@arndb.de>, Daniel Lezcano <daniel.lezcano@linaro.org>, Thomas Gleixner <tglx@linutronix.de>, Randy Dunlap <rdunlap@infradead.org>, Geert Uytterhoeven <geert@linux-m68k.org>, "linux-m68k@lists.linux-m68k.org" <linux-m68k@lists.linux-m68k.org>, linux-ia64@vger.kernel.org, Tony Luck <tony.luck@intel.com>, Fenghua Yu <fenghua.yu@intel.com>, Ding Tianhong <dingtianhong@huawei.com>, Mark Rutland <mark.rutland@arm.com>, Marc Zyngier <marc.zyngier@arm.com>, Vineet Gupta <vgupta@synopsys.com>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+To: Stefan Niestegge <beetle@abbuc.de>
+Cc: Debian m68k <debian-68k@lists.debian.org>, Linux/m68k <linux-m68k@vger.kernel.org>
 
-On Tue, Sep 12, 2017 at 11:10 AM, Russell King - ARM Linux
-<linux@armlinux.org.uk> wrote:
-> On Tue, Sep 12, 2017 at 10:09:51AM +0200, Linus Walleij wrote:
->> For ARM we now have two subarchs not using generic clockevents:
->> RISC PC and EBSA110.
->>
->> I think Russell stated these two cannot be converted to generic clockevents
->> because of hardware limitations I guess, no timer interrupt, simply, which
->> means no clockevents, or unreliable or not granular enough timers.
->>
->> IIUC the SA110 does not contain the built-in SoC goodies of the SA1100
->> so it needs external timer blocks, and those two machines don't have
->> good enough timers.
->
-> That's hardly surprising because SA1100 is a SoC, SA110 is just a CPU,
-> containing no peripherals at all.
->
-> EBSA110 only has one usable timer, which must be programmed to produce
-> a regular timer tick to the OS: it's no good trying to double up the
-> clocksource and a periodic clockevent onto one counter register - the
-> clock source will see the same timer value +/- interrupt latency, and
-> in any case it won't wrap in a power-of-2 manner.
->
-> This breaks the assumptions behind the clocksource and timekeeping
-> code, which are that we have a timer that wraps in a power-of-2
-> manner, and which takes much longer than the desired period to wrap.
+On 09/15/2017 10:35 AM, Stefan Niestegge wrote:
+> - its possible to "modprobe falconide" as well as cdrom, isofs modules
+> - dmesg then shows that my Harddrive and my DVD Burner were found as hda, hdb
+> - but no device nodes are created for hda, hdb
+Yes, this is what I need to debug next. I had hoped for one of the kernel
+people to chime in and give me a hint what we might be missing here.
 
-Aha, that makes perfect sense. Now I finally understand the exact nature
-of this problem.
+Geert, maybe?
 
-> I think RiscPC may be convertable as there are two timers, and I think
-> the second timer is unused (so could be programmed to the requirements
-> of a clocksource) but is there much reason to bother given the EBSA110?
-> I think there isn't.
+Adrian
 
-The one reason I've seen is that converting to generic clockevents
-often makes it simple to also introduce a delay timer at the same time
-by just reusing the clocksource timer for it, and that saves the boot-time
-loop calibration. (The MOXA ART and Aspeed saw this when I unified
-the Faraday timers.)
-
-But in general no.
-
-Yours,
-Linus Walleij
+-- 
+  .''`.  John Paul Adrian Glaubitz
+: :' :  Debian Developer - glaubitz@debian.org
+`. `'   Freie Universitaet Berlin - glaubitz@physik.fu-berlin.de
+   `-    GPG: 62FF 8A75 84E0 2956 9546  0006 7426 3B37 F5B5 F913
