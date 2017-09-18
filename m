@@ -1,460 +1,57 @@
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: [PATCH] m68k/defconfig: Update defconfigs for v4.14-rc1
-Date: Mon, 18 Sep 2017 10:02:52 +0200
-Message-ID: <1505721772-30070-1-git-send-email-geert@linux-m68k.org>
+From: Daniel Lezcano <daniel.lezcano@linaro.org>
+Subject: Re: [PATCH] [RFC] clocksource: improve GENERIC_CLOCKEVENTS dependency
+Date: Tue, 19 Sep 2017 00:02:55 +0200
+Message-ID: <a12789f5-002f-51b1-7051-8802ec81d8e0__37889.4278932877$1505772193$gmane$org@linaro.org>
+References: <20170905150504.1720954-1-arnd@arndb.de>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8bit
 Return-path: <linux-m68k-owner@vger.kernel.org>
+In-Reply-To: <20170905150504.1720954-1-arnd@arndb.de>
+Content-Language: en-US
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: linux-m68k@lists.linux-m68k.org
-Cc: Geert Uytterhoeven <geert@linux-m68k.org>
+To: Arnd Bergmann <arnd@arndb.de>, Thomas Gleixner <tglx@linutronix.de>
+Cc: Randy Dunlap <rdunlap@infradead.org>, Geert Uytterhoeven <geert@linux-m68k.org>, linux-m68k@lists.linux-m68k.org, linux-ia64@vger.kernel.org, Tony Luck <tony.luck@intel.com>, Fenghua Yu <fenghua.yu@intel.com>, Linus Walleij <linus.walleij@linaro.org>, Ding Tianhong <dingtianhong@huawei.com>, Mark Rutland <mark.rutland@arm.com>, Marc Zyngier <marc.zyngier@arm.com>, Vineet Gupta <vgupta@synopsys.com>, linux-kernel@vger.kernel.org
 
-Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
----
- arch/m68k/configs/amiga_defconfig    | 4 ++++
- arch/m68k/configs/apollo_defconfig   | 4 ++++
- arch/m68k/configs/atari_defconfig    | 4 ++++
- arch/m68k/configs/bvme6000_defconfig | 4 ++++
- arch/m68k/configs/hp300_defconfig    | 4 ++++
- arch/m68k/configs/mac_defconfig      | 4 ++++
- arch/m68k/configs/multi_defconfig    | 4 ++++
- arch/m68k/configs/mvme147_defconfig  | 4 ++++
- arch/m68k/configs/mvme16x_defconfig  | 4 ++++
- arch/m68k/configs/q40_defconfig      | 4 ++++
- arch/m68k/configs/sun3_defconfig     | 4 ++++
- arch/m68k/configs/sun3x_defconfig    | 4 ++++
- 12 files changed, 48 insertions(+)
+On 05/09/2017 17:04, Arnd Bergmann wrote:
+> We regularly run into build errors when a clocksource driver selects
+> CONFIG_TIMER_OF while CONFIG_GENERIC_CLOCKEVENTS is disabled:
+> 
+>  In file included from drivers/clocksource/timer-of.c:25:0:
+> drivers/clocksource/timer-of.h:35:28: error: field 'clkevt' has incomplete type
+> 
+> At the moment, three drivers can show this behavior: ARMV7M_SYSTICK,
+> CLKSRC_ST_LPC and CLKSRC_NPS. We could add further dependencies as we did
+> many times, but I have looked a little bit more at what architectures
+> are left that don't use GENERIC_CLOCKEVENTS, and this shows that there
+> is a better solution.
+> 
+> On arch/frv and arch/ia64, we never select CONFIG_GENERIC_CLOCKEVENTS
+> and we also don't use ARCH_USES_GETTIMEOFFSET, which would
+> block the clocksource Kconfig menu. On m68k, some platforms use
+> CONFIG_GENERIC_CLOCKEVENTS, some use ARCH_USES_GETTIMEOFFSET, and some
+> use neither of them. The good news is that there is no configuration that
+> does not set CONFIG_GENERIC_CLOCKEVENTS but that wants to enable any of
+> the Kconfig symbols in the menu, so we can simply replace the dependency
+> with the stricter one. While in theory one could have a clocksource
+> driver without the clockevent infrastructure, this seems unlikely
+> to be relevant in the future any more.
+> 
+> We can probably drop some of the other dependencies as well now,
+> e.g. there should generally be no reason to depend on CONFIG_ARM
+> unless the driver uses architecture specific assembly.
+> 
+> Reported-by: Randy Dunlap <rdunlap@infradead.org>
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+> ---
 
-diff --git a/arch/m68k/configs/amiga_defconfig b/arch/m68k/configs/amiga_defconfig
-index 54191f6fc7159abe..455205a98b30ac7a 100644
---- a/arch/m68k/configs/amiga_defconfig
-+++ b/arch/m68k/configs/amiga_defconfig
-@@ -123,6 +123,7 @@ CONFIG_NFT_HASH=m
- CONFIG_NFT_FIB_INET=m
- CONFIG_NFT_DUP_NETDEV=m
- CONFIG_NFT_FWD_NETDEV=m
-+CONFIG_NFT_FIB_NETDEV=m
- CONFIG_NETFILTER_XT_SET=m
- CONFIG_NETFILTER_XT_TARGET_CHECKSUM=m
- CONFIG_NETFILTER_XT_TARGET_CLASSIFY=m
-@@ -302,6 +303,7 @@ CONFIG_MPLS=y
- CONFIG_NET_MPLS_GSO=m
- CONFIG_MPLS_ROUTING=m
- CONFIG_MPLS_IPTUNNEL=m
-+CONFIG_NET_NSH=m
- CONFIG_NET_L3_MASTER_DEV=y
- CONFIG_AF_KCM=m
- # CONFIG_WIRELESS is not set
-@@ -400,6 +402,7 @@ CONFIG_ARIADNE=y
- # CONFIG_NET_VENDOR_CIRRUS is not set
- # CONFIG_NET_VENDOR_EZCHIP is not set
- # CONFIG_NET_VENDOR_HP is not set
-+# CONFIG_NET_VENDOR_HUAWEI is not set
- # CONFIG_NET_VENDOR_INTEL is not set
- # CONFIG_NET_VENDOR_MARVELL is not set
- # CONFIG_NET_VENDOR_MICREL is not set
-@@ -451,6 +454,7 @@ CONFIG_PPS_CLIENT_LDISC=m
- CONFIG_PPS_CLIENT_PARPORT=m
- CONFIG_PTP_1588_CLOCK=m
- # CONFIG_HWMON is not set
-+# CONFIG_RC_CORE is not set
- CONFIG_FB=y
- CONFIG_FB_CIRRUS=y
- CONFIG_FB_AMIGA=y
-diff --git a/arch/m68k/configs/apollo_defconfig b/arch/m68k/configs/apollo_defconfig
-index fb466390442834ac..2c0c018382c7467f 100644
---- a/arch/m68k/configs/apollo_defconfig
-+++ b/arch/m68k/configs/apollo_defconfig
-@@ -121,6 +121,7 @@ CONFIG_NFT_HASH=m
- CONFIG_NFT_FIB_INET=m
- CONFIG_NFT_DUP_NETDEV=m
- CONFIG_NFT_FWD_NETDEV=m
-+CONFIG_NFT_FIB_NETDEV=m
- CONFIG_NETFILTER_XT_SET=m
- CONFIG_NETFILTER_XT_TARGET_CHECKSUM=m
- CONFIG_NETFILTER_XT_TARGET_CLASSIFY=m
-@@ -300,6 +301,7 @@ CONFIG_MPLS=y
- CONFIG_NET_MPLS_GSO=m
- CONFIG_MPLS_ROUTING=m
- CONFIG_MPLS_IPTUNNEL=m
-+CONFIG_NET_NSH=m
- CONFIG_NET_L3_MASTER_DEV=y
- CONFIG_AF_KCM=m
- # CONFIG_WIRELESS is not set
-@@ -377,6 +379,7 @@ CONFIG_VETH=m
- # CONFIG_NET_CADENCE is not set
- # CONFIG_NET_VENDOR_BROADCOM is not set
- # CONFIG_NET_VENDOR_EZCHIP is not set
-+# CONFIG_NET_VENDOR_HUAWEI is not set
- # CONFIG_NET_VENDOR_INTEL is not set
- # CONFIG_NET_VENDOR_MARVELL is not set
- # CONFIG_NET_VENDOR_MICREL is not set
-@@ -419,6 +422,7 @@ CONFIG_NTP_PPS=y
- CONFIG_PPS_CLIENT_LDISC=m
- CONFIG_PTP_1588_CLOCK=m
- # CONFIG_HWMON is not set
-+# CONFIG_RC_CORE is not set
- CONFIG_FB=y
- CONFIG_FRAMEBUFFER_CONSOLE=y
- CONFIG_LOGO=y
-diff --git a/arch/m68k/configs/atari_defconfig b/arch/m68k/configs/atari_defconfig
-index 70f4f32ecc6b1f0a..b6ee0bce43cc1c54 100644
---- a/arch/m68k/configs/atari_defconfig
-+++ b/arch/m68k/configs/atari_defconfig
-@@ -121,6 +121,7 @@ CONFIG_NFT_HASH=m
- CONFIG_NFT_FIB_INET=m
- CONFIG_NFT_DUP_NETDEV=m
- CONFIG_NFT_FWD_NETDEV=m
-+CONFIG_NFT_FIB_NETDEV=m
- CONFIG_NETFILTER_XT_SET=m
- CONFIG_NETFILTER_XT_TARGET_CHECKSUM=m
- CONFIG_NETFILTER_XT_TARGET_CLASSIFY=m
-@@ -300,6 +301,7 @@ CONFIG_MPLS=y
- CONFIG_NET_MPLS_GSO=m
- CONFIG_MPLS_ROUTING=m
- CONFIG_MPLS_IPTUNNEL=m
-+CONFIG_NET_NSH=m
- CONFIG_NET_L3_MASTER_DEV=y
- CONFIG_AF_KCM=m
- # CONFIG_WIRELESS is not set
-@@ -387,6 +389,7 @@ CONFIG_ATARILANCE=y
- # CONFIG_NET_CADENCE is not set
- # CONFIG_NET_VENDOR_BROADCOM is not set
- # CONFIG_NET_VENDOR_EZCHIP is not set
-+# CONFIG_NET_VENDOR_HUAWEI is not set
- # CONFIG_NET_VENDOR_INTEL is not set
- # CONFIG_NET_VENDOR_MARVELL is not set
- # CONFIG_NET_VENDOR_MICREL is not set
-@@ -434,6 +437,7 @@ CONFIG_PPS_CLIENT_LDISC=m
- CONFIG_PPS_CLIENT_PARPORT=m
- CONFIG_PTP_1588_CLOCK=m
- # CONFIG_HWMON is not set
-+# CONFIG_RC_CORE is not set
- CONFIG_FB=y
- CONFIG_FB_ATARI=y
- CONFIG_FRAMEBUFFER_CONSOLE=y
-diff --git a/arch/m68k/configs/bvme6000_defconfig b/arch/m68k/configs/bvme6000_defconfig
-index 1dd8d697545bc86f..465a4dc3b9162206 100644
---- a/arch/m68k/configs/bvme6000_defconfig
-+++ b/arch/m68k/configs/bvme6000_defconfig
-@@ -119,6 +119,7 @@ CONFIG_NFT_HASH=m
- CONFIG_NFT_FIB_INET=m
- CONFIG_NFT_DUP_NETDEV=m
- CONFIG_NFT_FWD_NETDEV=m
-+CONFIG_NFT_FIB_NETDEV=m
- CONFIG_NETFILTER_XT_SET=m
- CONFIG_NETFILTER_XT_TARGET_CHECKSUM=m
- CONFIG_NETFILTER_XT_TARGET_CLASSIFY=m
-@@ -298,6 +299,7 @@ CONFIG_MPLS=y
- CONFIG_NET_MPLS_GSO=m
- CONFIG_MPLS_ROUTING=m
- CONFIG_MPLS_IPTUNNEL=m
-+CONFIG_NET_NSH=m
- CONFIG_NET_L3_MASTER_DEV=y
- CONFIG_AF_KCM=m
- # CONFIG_WIRELESS is not set
-@@ -376,6 +378,7 @@ CONFIG_VETH=m
- # CONFIG_NET_CADENCE is not set
- # CONFIG_NET_VENDOR_BROADCOM is not set
- # CONFIG_NET_VENDOR_EZCHIP is not set
-+# CONFIG_NET_VENDOR_HUAWEI is not set
- CONFIG_BVME6000_NET=y
- # CONFIG_NET_VENDOR_MARVELL is not set
- # CONFIG_NET_VENDOR_MICREL is not set
-@@ -417,6 +420,7 @@ CONFIG_NTP_PPS=y
- CONFIG_PPS_CLIENT_LDISC=m
- CONFIG_PTP_1588_CLOCK=m
- # CONFIG_HWMON is not set
-+# CONFIG_RC_CORE is not set
- CONFIG_HID=m
- CONFIG_HIDRAW=y
- CONFIG_UHID=m
-diff --git a/arch/m68k/configs/hp300_defconfig b/arch/m68k/configs/hp300_defconfig
-index 02b39f50076e5615..5b1707a257e9a8f5 100644
---- a/arch/m68k/configs/hp300_defconfig
-+++ b/arch/m68k/configs/hp300_defconfig
-@@ -121,6 +121,7 @@ CONFIG_NFT_HASH=m
- CONFIG_NFT_FIB_INET=m
- CONFIG_NFT_DUP_NETDEV=m
- CONFIG_NFT_FWD_NETDEV=m
-+CONFIG_NFT_FIB_NETDEV=m
- CONFIG_NETFILTER_XT_SET=m
- CONFIG_NETFILTER_XT_TARGET_CHECKSUM=m
- CONFIG_NETFILTER_XT_TARGET_CLASSIFY=m
-@@ -300,6 +301,7 @@ CONFIG_MPLS=y
- CONFIG_NET_MPLS_GSO=m
- CONFIG_MPLS_ROUTING=m
- CONFIG_MPLS_IPTUNNEL=m
-+CONFIG_NET_NSH=m
- CONFIG_NET_L3_MASTER_DEV=y
- CONFIG_AF_KCM=m
- # CONFIG_WIRELESS is not set
-@@ -378,6 +380,7 @@ CONFIG_HPLANCE=y
- # CONFIG_NET_CADENCE is not set
- # CONFIG_NET_VENDOR_BROADCOM is not set
- # CONFIG_NET_VENDOR_EZCHIP is not set
-+# CONFIG_NET_VENDOR_HUAWEI is not set
- # CONFIG_NET_VENDOR_INTEL is not set
- # CONFIG_NET_VENDOR_MARVELL is not set
- # CONFIG_NET_VENDOR_MICREL is not set
-@@ -422,6 +425,7 @@ CONFIG_NTP_PPS=y
- CONFIG_PPS_CLIENT_LDISC=m
- CONFIG_PTP_1588_CLOCK=m
- # CONFIG_HWMON is not set
-+# CONFIG_RC_CORE is not set
- CONFIG_FB=y
- CONFIG_FRAMEBUFFER_CONSOLE=y
- CONFIG_LOGO=y
-diff --git a/arch/m68k/configs/mac_defconfig b/arch/m68k/configs/mac_defconfig
-index 044dcb2bf8fbec55..31bf1f7279c2d5de 100644
---- a/arch/m68k/configs/mac_defconfig
-+++ b/arch/m68k/configs/mac_defconfig
-@@ -120,6 +120,7 @@ CONFIG_NFT_HASH=m
- CONFIG_NFT_FIB_INET=m
- CONFIG_NFT_DUP_NETDEV=m
- CONFIG_NFT_FWD_NETDEV=m
-+CONFIG_NFT_FIB_NETDEV=m
- CONFIG_NETFILTER_XT_SET=m
- CONFIG_NETFILTER_XT_TARGET_CHECKSUM=m
- CONFIG_NETFILTER_XT_TARGET_CLASSIFY=m
-@@ -302,6 +303,7 @@ CONFIG_MPLS=y
- CONFIG_NET_MPLS_GSO=m
- CONFIG_MPLS_ROUTING=m
- CONFIG_MPLS_IPTUNNEL=m
-+CONFIG_NET_NSH=m
- CONFIG_NET_L3_MASTER_DEV=y
- CONFIG_AF_KCM=m
- # CONFIG_WIRELESS is not set
-@@ -395,6 +397,7 @@ CONFIG_MACMACE=y
- # CONFIG_NET_VENDOR_BROADCOM is not set
- CONFIG_MAC89x0=y
- # CONFIG_NET_VENDOR_EZCHIP is not set
-+# CONFIG_NET_VENDOR_HUAWEI is not set
- # CONFIG_NET_VENDOR_INTEL is not set
- # CONFIG_NET_VENDOR_MARVELL is not set
- # CONFIG_NET_VENDOR_MICREL is not set
-@@ -444,6 +447,7 @@ CONFIG_NTP_PPS=y
- CONFIG_PPS_CLIENT_LDISC=m
- CONFIG_PTP_1588_CLOCK=m
- # CONFIG_HWMON is not set
-+# CONFIG_RC_CORE is not set
- CONFIG_FB=y
- CONFIG_FB_VALKYRIE=y
- CONFIG_FB_MAC=y
-diff --git a/arch/m68k/configs/multi_defconfig b/arch/m68k/configs/multi_defconfig
-index 3ad04682077a24ac..1d60dadbf63c6ea3 100644
---- a/arch/m68k/configs/multi_defconfig
-+++ b/arch/m68k/configs/multi_defconfig
-@@ -130,6 +130,7 @@ CONFIG_NFT_HASH=m
- CONFIG_NFT_FIB_INET=m
- CONFIG_NFT_DUP_NETDEV=m
- CONFIG_NFT_FWD_NETDEV=m
-+CONFIG_NFT_FIB_NETDEV=m
- CONFIG_NETFILTER_XT_SET=m
- CONFIG_NETFILTER_XT_TARGET_CHECKSUM=m
- CONFIG_NETFILTER_XT_TARGET_CLASSIFY=m
-@@ -312,6 +313,7 @@ CONFIG_MPLS=y
- CONFIG_NET_MPLS_GSO=m
- CONFIG_MPLS_ROUTING=m
- CONFIG_MPLS_IPTUNNEL=m
-+CONFIG_NET_NSH=m
- CONFIG_NET_L3_MASTER_DEV=y
- CONFIG_AF_KCM=m
- # CONFIG_WIRELESS is not set
-@@ -436,6 +438,7 @@ CONFIG_MACMACE=y
- CONFIG_MAC89x0=y
- # CONFIG_NET_VENDOR_EZCHIP is not set
- # CONFIG_NET_VENDOR_HP is not set
-+# CONFIG_NET_VENDOR_HUAWEI is not set
- CONFIG_BVME6000_NET=y
- CONFIG_MVME16x_NET=y
- # CONFIG_NET_VENDOR_MARVELL is not set
-@@ -501,6 +504,7 @@ CONFIG_PPS_CLIENT_LDISC=m
- CONFIG_PPS_CLIENT_PARPORT=m
- CONFIG_PTP_1588_CLOCK=m
- # CONFIG_HWMON is not set
-+# CONFIG_RC_CORE is not set
- CONFIG_FB=y
- CONFIG_FB_CIRRUS=y
- CONFIG_FB_AMIGA=y
-diff --git a/arch/m68k/configs/mvme147_defconfig b/arch/m68k/configs/mvme147_defconfig
-index dc2dd61948cdb844..386318f4ef43edcf 100644
---- a/arch/m68k/configs/mvme147_defconfig
-+++ b/arch/m68k/configs/mvme147_defconfig
-@@ -118,6 +118,7 @@ CONFIG_NFT_HASH=m
- CONFIG_NFT_FIB_INET=m
- CONFIG_NFT_DUP_NETDEV=m
- CONFIG_NFT_FWD_NETDEV=m
-+CONFIG_NFT_FIB_NETDEV=m
- CONFIG_NETFILTER_XT_SET=m
- CONFIG_NETFILTER_XT_TARGET_CHECKSUM=m
- CONFIG_NETFILTER_XT_TARGET_CLASSIFY=m
-@@ -297,6 +298,7 @@ CONFIG_MPLS=y
- CONFIG_NET_MPLS_GSO=m
- CONFIG_MPLS_ROUTING=m
- CONFIG_MPLS_IPTUNNEL=m
-+CONFIG_NET_NSH=m
- CONFIG_NET_L3_MASTER_DEV=y
- CONFIG_AF_KCM=m
- # CONFIG_WIRELESS is not set
-@@ -376,6 +378,7 @@ CONFIG_MVME147_NET=y
- # CONFIG_NET_CADENCE is not set
- # CONFIG_NET_VENDOR_BROADCOM is not set
- # CONFIG_NET_VENDOR_EZCHIP is not set
-+# CONFIG_NET_VENDOR_HUAWEI is not set
- # CONFIG_NET_VENDOR_INTEL is not set
- # CONFIG_NET_VENDOR_MARVELL is not set
- # CONFIG_NET_VENDOR_MICREL is not set
-@@ -417,6 +420,7 @@ CONFIG_NTP_PPS=y
- CONFIG_PPS_CLIENT_LDISC=m
- CONFIG_PTP_1588_CLOCK=m
- # CONFIG_HWMON is not set
-+# CONFIG_RC_CORE is not set
- CONFIG_HID=m
- CONFIG_HIDRAW=y
- CONFIG_UHID=m
-diff --git a/arch/m68k/configs/mvme16x_defconfig b/arch/m68k/configs/mvme16x_defconfig
-index 54e7b523fc3d83ab..a58cd07cb04aa641 100644
---- a/arch/m68k/configs/mvme16x_defconfig
-+++ b/arch/m68k/configs/mvme16x_defconfig
-@@ -119,6 +119,7 @@ CONFIG_NFT_HASH=m
- CONFIG_NFT_FIB_INET=m
- CONFIG_NFT_DUP_NETDEV=m
- CONFIG_NFT_FWD_NETDEV=m
-+CONFIG_NFT_FIB_NETDEV=m
- CONFIG_NETFILTER_XT_SET=m
- CONFIG_NETFILTER_XT_TARGET_CHECKSUM=m
- CONFIG_NETFILTER_XT_TARGET_CLASSIFY=m
-@@ -298,6 +299,7 @@ CONFIG_MPLS=y
- CONFIG_NET_MPLS_GSO=m
- CONFIG_MPLS_ROUTING=m
- CONFIG_MPLS_IPTUNNEL=m
-+CONFIG_NET_NSH=m
- CONFIG_NET_L3_MASTER_DEV=y
- CONFIG_AF_KCM=m
- # CONFIG_WIRELESS is not set
-@@ -376,6 +378,7 @@ CONFIG_VETH=m
- # CONFIG_NET_CADENCE is not set
- # CONFIG_NET_VENDOR_BROADCOM is not set
- # CONFIG_NET_VENDOR_EZCHIP is not set
-+# CONFIG_NET_VENDOR_HUAWEI is not set
- CONFIG_MVME16x_NET=y
- # CONFIG_NET_VENDOR_MARVELL is not set
- # CONFIG_NET_VENDOR_MICREL is not set
-@@ -417,6 +420,7 @@ CONFIG_NTP_PPS=y
- CONFIG_PPS_CLIENT_LDISC=m
- CONFIG_PTP_1588_CLOCK=m
- # CONFIG_HWMON is not set
-+# CONFIG_RC_CORE is not set
- CONFIG_HID=m
- CONFIG_HIDRAW=y
- CONFIG_UHID=m
-diff --git a/arch/m68k/configs/q40_defconfig b/arch/m68k/configs/q40_defconfig
-index d63d8a15f6dbc289..7f597f58384b1aa1 100644
---- a/arch/m68k/configs/q40_defconfig
-+++ b/arch/m68k/configs/q40_defconfig
-@@ -119,6 +119,7 @@ CONFIG_NFT_HASH=m
- CONFIG_NFT_FIB_INET=m
- CONFIG_NFT_DUP_NETDEV=m
- CONFIG_NFT_FWD_NETDEV=m
-+CONFIG_NFT_FIB_NETDEV=m
- CONFIG_NETFILTER_XT_SET=m
- CONFIG_NETFILTER_XT_TARGET_CHECKSUM=m
- CONFIG_NETFILTER_XT_TARGET_CLASSIFY=m
-@@ -298,6 +299,7 @@ CONFIG_MPLS=y
- CONFIG_NET_MPLS_GSO=m
- CONFIG_MPLS_ROUTING=m
- CONFIG_MPLS_IPTUNNEL=m
-+CONFIG_NET_NSH=m
- CONFIG_NET_L3_MASTER_DEV=y
- CONFIG_AF_KCM=m
- # CONFIG_WIRELESS is not set
-@@ -386,6 +388,7 @@ CONFIG_VETH=m
- # CONFIG_NET_VENDOR_CIRRUS is not set
- # CONFIG_NET_VENDOR_EZCHIP is not set
- # CONFIG_NET_VENDOR_HP is not set
-+# CONFIG_NET_VENDOR_HUAWEI is not set
- # CONFIG_NET_VENDOR_INTEL is not set
- # CONFIG_NET_VENDOR_MARVELL is not set
- # CONFIG_NET_VENDOR_MICREL is not set
-@@ -434,6 +437,7 @@ CONFIG_PPS_CLIENT_LDISC=m
- CONFIG_PPS_CLIENT_PARPORT=m
- CONFIG_PTP_1588_CLOCK=m
- # CONFIG_HWMON is not set
-+# CONFIG_RC_CORE is not set
- CONFIG_FB=y
- CONFIG_FRAMEBUFFER_CONSOLE=y
- CONFIG_LOGO=y
-diff --git a/arch/m68k/configs/sun3_defconfig b/arch/m68k/configs/sun3_defconfig
-index d0924c22f52a7a43..37f914140afa8383 100644
---- a/arch/m68k/configs/sun3_defconfig
-+++ b/arch/m68k/configs/sun3_defconfig
-@@ -116,6 +116,7 @@ CONFIG_NFT_HASH=m
- CONFIG_NFT_FIB_INET=m
- CONFIG_NFT_DUP_NETDEV=m
- CONFIG_NFT_FWD_NETDEV=m
-+CONFIG_NFT_FIB_NETDEV=m
- CONFIG_NETFILTER_XT_SET=m
- CONFIG_NETFILTER_XT_TARGET_CHECKSUM=m
- CONFIG_NETFILTER_XT_TARGET_CLASSIFY=m
-@@ -295,6 +296,7 @@ CONFIG_MPLS=y
- CONFIG_NET_MPLS_GSO=m
- CONFIG_MPLS_ROUTING=m
- CONFIG_MPLS_IPTUNNEL=m
-+CONFIG_NET_NSH=m
- CONFIG_NET_L3_MASTER_DEV=y
- CONFIG_AF_KCM=m
- # CONFIG_WIRELESS is not set
-@@ -373,6 +375,7 @@ CONFIG_SUN3LANCE=y
- # CONFIG_NET_VENDOR_ARC is not set
- # CONFIG_NET_CADENCE is not set
- # CONFIG_NET_VENDOR_EZCHIP is not set
-+# CONFIG_NET_VENDOR_HUAWEI is not set
- CONFIG_SUN3_82586=y
- # CONFIG_NET_VENDOR_MARVELL is not set
- # CONFIG_NET_VENDOR_MICREL is not set
-@@ -416,6 +419,7 @@ CONFIG_NTP_PPS=y
- CONFIG_PPS_CLIENT_LDISC=m
- CONFIG_PTP_1588_CLOCK=m
- # CONFIG_HWMON is not set
-+# CONFIG_RC_CORE is not set
- CONFIG_FB=y
- CONFIG_FRAMEBUFFER_CONSOLE=y
- CONFIG_LOGO=y
-diff --git a/arch/m68k/configs/sun3x_defconfig b/arch/m68k/configs/sun3x_defconfig
-index 3001ee1e5dc52a69..119be8d6c27a3e2f 100644
---- a/arch/m68k/configs/sun3x_defconfig
-+++ b/arch/m68k/configs/sun3x_defconfig
-@@ -116,6 +116,7 @@ CONFIG_NFT_HASH=m
- CONFIG_NFT_FIB_INET=m
- CONFIG_NFT_DUP_NETDEV=m
- CONFIG_NFT_FWD_NETDEV=m
-+CONFIG_NFT_FIB_NETDEV=m
- CONFIG_NETFILTER_XT_SET=m
- CONFIG_NETFILTER_XT_TARGET_CHECKSUM=m
- CONFIG_NETFILTER_XT_TARGET_CLASSIFY=m
-@@ -295,6 +296,7 @@ CONFIG_MPLS=y
- CONFIG_NET_MPLS_GSO=m
- CONFIG_MPLS_ROUTING=m
- CONFIG_MPLS_IPTUNNEL=m
-+CONFIG_NET_NSH=m
- CONFIG_NET_L3_MASTER_DEV=y
- CONFIG_AF_KCM=m
- # CONFIG_WIRELESS is not set
-@@ -374,6 +376,7 @@ CONFIG_SUN3LANCE=y
- # CONFIG_NET_CADENCE is not set
- # CONFIG_NET_VENDOR_BROADCOM is not set
- # CONFIG_NET_VENDOR_EZCHIP is not set
-+# CONFIG_NET_VENDOR_HUAWEI is not set
- # CONFIG_NET_VENDOR_INTEL is not set
- # CONFIG_NET_VENDOR_MARVELL is not set
- # CONFIG_NET_VENDOR_MICREL is not set
-@@ -416,6 +419,7 @@ CONFIG_NTP_PPS=y
- CONFIG_PPS_CLIENT_LDISC=m
- CONFIG_PTP_1588_CLOCK=m
- # CONFIG_HWMON is not set
-+# CONFIG_RC_CORE is not set
- CONFIG_FB=y
- CONFIG_FRAMEBUFFER_CONSOLE=y
- CONFIG_LOGO=y
+Makes sense. Agree with this change.
+
+
 -- 
-2.7.4
+ <http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
+
+Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
+<http://twitter.com/#!/linaroorg> Twitter |
+<http://www.linaro.org/linaro-blog/> Blog
