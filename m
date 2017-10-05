@@ -1,47 +1,80 @@
-From: John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
+From: Christoph Biedl <debian.axhn@manchmal.in-ulm.de>
 Subject: Re: Bug#877735: busybox: m68k build broken due to "-Os" in CFLAGS
-Date: Thu, 5 Oct 2017 21:52:55 +0200
-Message-ID: <b2166bd9-576d-1fde-2349-a2b5ae64a842@physik.fu-berlin.de>
+Date: Thu, 5 Oct 2017 23:49:52 +0200
+Message-ID: <1507237676@msgid.manchmal.in-ulm.de>
 References: <150715899716.21351.14956363415364529265.reportbug@stretch64.physik.fu-berlin.de>
- <150715899716.21351.14956363415364529265.reportbug@stretch64.physik.fu-berlin.de>
  <998e4cf2-07bd-cb2d-1c47-c373372ce3fe@physik.fu-berlin.de>
- <20171005163846.kqzwht6276t3jxa6@tack.einval.com>
+ <CAEQ9gEmFPeibJUANPFbkTJfjyv6hLOG7Wr=ijyfrVSfRkKPEtw@mail.gmail.com>
+ <150715899716.21351.14956363415364529265.reportbug@stretch64.physik.fu-berlin.de>
+ <fb548f7a-eb98-949b-296c-fd031d8afa5f@physik.fu-berlin.de>
+ <150715899716.21351.14956363415364529265.reportbug@stretch64.physik.fu-berlin.de>
+ <20171005164054.k3tln4hduzmaw4tb@tack.einval.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from outpost1.zedat.fu-berlin.de ([130.133.4.66]:59922 "EHLO
-        outpost1.zedat.fu-berlin.de" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1751405AbdJETw5 (ORCPT
-        <rfc822;linux-m68k@vger.kernel.org>); Thu, 5 Oct 2017 15:52:57 -0400
-In-Reply-To: <20171005163846.kqzwht6276t3jxa6@tack.einval.com>
-Content-Language: en-US
-Sender: linux-m68k-owner@vger.kernel.org
-List-Id: linux-m68k@vger.kernel.org
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="e5GLnnZ8mDMEwH4V"
+Return-path: <bounce-debian-68k=debian-68k=m.gmane.org@lists.debian.org>
+Content-Disposition: inline
+In-Reply-To: <20171005164054.k3tln4hduzmaw4tb@tack.einval.com>
+Resent-Message-ID: <waAQyI6u4VB.A.J0B.Qkq1ZB@bendel>
+List-URL: <https://lists.debian.org/debian-68k/>
+List-Post: <mailto:debian-68k@lists.debian.org>
+List-Help: <mailto:debian-68k-request@lists.debian.org?subject=help>
+List-Subscribe: <mailto:debian-68k-request@lists.debian.org?subject=subscribe>
+List-Unsubscribe: <mailto:debian-68k-request@lists.debian.org?subject=unsubscribe>
+List-Archive: https://lists.debian.org/msgid-search/1507237676@msgid.manchmal.in-ulm.de
 To: Steve McIntyre <steve@einval.com>, 877735@bugs.debian.org
-Cc: Debian m68k <debian-68k@lists.debian.org>, Linux/m68k <linux-m68k@vger.kernel.org>
+Cc: John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>, Roger Shimizu <rogershimizu@gmail.com>, Debian m68k <debian-68k@lists.debian.org>, Linux/m68k <linux-m68k@vger.kernel.org>
+List-Id: linux-m68k@vger.kernel.org
 
-On 10/05/2017 06:38 PM, Steve McIntyre wrote:
->> On second thought, I would actually recommended to revert this change
->> for all architectures. Size isn't so much a constraint anymore these
->> days, you reduce the binary by about 200k. I don't think this is worth
->> the risk of breaking something as fundemantal as busybox.
-> 
-> I'd be more worried about the compiler breakage, to be honest. -Os is
-> meant to work!
 
-Yes, it is meant to work. But it is not as guaranteed to work as -O2
-simply because the majority of packages are built with -O2. So, there
-is some potential of things breaking.
+--e5GLnnZ8mDMEwH4V
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Of course, these issues should be fixed and I will file a bug report
-on the problem. I just meant that varying the optimization levels
-is not something that you can expect to work in 100% of the cases.
+Steve McIntyre wrote...
 
-Adrian
+> On Thu, Oct 05, 2017 at 06:12:46PM +0200, John Paul Adrian Glaubitz wrote:
 
--- 
- .''`.  John Paul Adrian Glaubitz
-: :' :  Debian Developer - glaubitz@debian.org
-`. `'   Freie Universitaet Berlin - glaubitz@physik.fu-berlin.de
-  `-    GPG: 62FF 8A75 84E0 2956 9546  0006 7426 3B37 F5B5 F913
+> >Hmm, ok. Is that currently actually a concern? If I'm seeing that correctly,
+> >the "-Os" here only saved us around 200k. Does that already make a difference
+> >on armel?
+>
+> Massively so, yes. Lots of the armel platforms that people care about
+> have very limited space for kernel and initramfs.
+
+Indeed. When we (KiBi, Chris and I) discussed maintaining busybox at
+DebConf, such size concerns were on the list of things to keep in mind.
+For that reason we will enable more applets upon justified request only.
+
+About that particular issue I'd really like to avoid a per-architecture
+switch in busybox. It adds complexity and works around a problem
+instead of solving it. So please take this to gcc first unless you've
+already done so. And let us know if you get the impression this won't
+get fixed soon-ish - breaking an architecture still beats packaging
+principles.
+
+    Christoph
+
+--e5GLnnZ8mDMEwH4V
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1
+
+iQIcBAEBCgAGBQJZ1qj/AAoJEMQsWOtZFJL9fl0P/jtWoFMlZBo0Y0Qu1asyBxog
+dImIvwdXvYqRUqUhXp7nh39/U3ygJNse92LA0BzExjge6p4A37xtgLcKdWJQrMtY
+ENw2mldiseAUK2hXBkpESUwOg+sMqSkMRJSHKeiTHcJ1aUAhrm24InaprttiU6cC
+uE/lY7WjAEbWE/P//GWKq5T+SfOOiuiHfYBCkc4hZrv9NTVpEOK5RZMb50qjSP0z
+kBQXh2JqM81pazrtLb+NZEeee82+ZT+SlUz5IYOnvoo6ag8+NtWYufn3Zsa00bn4
+2fZlV17rVolHxVCuJOF2YsSSBMuK75q24+7cknk0R2FE+opkO3npUIwT5fWlrowU
+1Kyc07EhYBHcsAs3K+o4Dq5kaWsuu30KjajVCQDldSnOJgejjurlYTg9SM1w3/Lu
+L/d0pdv84OWSdfXKC3JXL8JTRSgnTB8GwKEEZfCEo4IgOQR8oeQvGHD31znVG/Rg
+6imx87TEb2gnokdHGOw6PiVhX/3ln8uzO/CXr8iVJ11ORS8zJZn0Tk5DhRJ+RVKs
+5LSNr6bfQJCTCYKijh5HE6+L9JIiFsaeq7pEcW9F6KblXx8xn+LKsC0Ac4eufGsv
+AyRCnQmtKY90Ot7+v3fOuDiRX3nFUi/iaHvYaaVbiWcLQLCNpSJUZb2tzEkoNayI
+QANbvnz+HXMTixyTFnDK
+=OaQr
+-----END PGP SIGNATURE-----
+
+--e5GLnnZ8mDMEwH4V--
