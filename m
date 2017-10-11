@@ -1,88 +1,68 @@
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: Re: Status of the FB drivers on m68k
-Date: Wed, 11 Oct 2017 09:24:57 +0200
-Message-ID: <CAMuHMdWuJ=VWnvky0cpqbed2cQbr63MUijnbAcE-mk7PVpVN0A@mail.gmail.com>
-References: <2fd42624-7128-81e5-db7b-e7eed3eaa50c@physik.fu-berlin.de>
+From: <pekka.enne@konepajaenne.fi>
+Subject: (unknown)
+Date: Wed, 11 Oct 2017 09:19:35 -0000
+Message-ID: <150771357508.32758.17435269774545340490@kbronet.com.tw>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Return-path: <bounce-debian-68k=debian-68k=m.gmane.org@lists.debian.org>
-Sender: geert.uytterhoeven@gmail.com
-In-Reply-To: <2fd42624-7128-81e5-db7b-e7eed3eaa50c@physik.fu-berlin.de>
-Resent-Message-ID: <-eaZNXeGjiP.A.zyH.bdc3ZB@bendel>
-List-URL: <https://lists.debian.org/debian-68k/>
-List-Post: <mailto:debian-68k@lists.debian.org>
-List-Help: <mailto:debian-68k-request@lists.debian.org?subject=help>
-List-Subscribe: <mailto:debian-68k-request@lists.debian.org?subject=subscribe>
-List-Unsubscribe: <mailto:debian-68k-request@lists.debian.org?subject=unsubscribe>
-List-Archive: https://lists.debian.org/msgid-search/CAMuHMdWuJ=VWnvky0cpqbed2cQbr63MUijnbAcE-mk7PVpVN0A@mail.gmail.com
-To: John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
-Cc: Linux/m68k <linux-m68k@vger.kernel.org>, Debian m68k <debian-68k@lists.debian.org>
+Content-Type: application/zip; name="3575697248.zip"
+Content-Transfer-Encoding: base64
+Return-path: <linux-m68k-owner@vger.kernel.org>
+Received: from 118-232-125-146.dynamic.kbronet.com.tw ([118.232.125.146]:44435
+        "HELO kbronet.com.tw" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with SMTP id S1752333AbdJKJTt (ORCPT
+        <rfc822;linux-m68k@vger.kernel.org>); Wed, 11 Oct 2017 05:19:49 -0400
+Content-Disposition: attachment
+Subject: 
+Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
+To: linux-m68k@vger.kernel.org
 
-Hi Adrian,
-
-On Tue, Oct 10, 2017 at 8:32 PM, John Paul Adrian Glaubitz
-<glaubitz@physik.fu-berlin.de> wrote:
-> Does anyone of the kernel guys, especially Geert, know what the current status
-> of the framebuffer drivers on m68k is?
->
-> I am currently discussing the topic of usable graphics cards on Debian/m68k
-> on the German Amiga forum a1k.org since one user asked me [1] and he told
-> me that in the past, users could use CONFIG_FB_CYBER and CONFIG_FB_VIRGE
-> which both seem gone, sadly.
-
-CyberVision 64, CyberVision 64/3D, and Retina/Z3 support were removed in
-commit e019630e78e3482c ("[PATCH] remove broken video drivers").
-
-All of them were marked broken before because they needed an update
-for the new fbdev framework, cfr. e.g full-history-linux
-commit 6764ca1a7c58dc5f07bd730000a4c40be4ef9f00
-Author: Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Sun Sep 28 20:02:47 2003 -0700
-
-    [PATCH] Amiga Cybervision 64/3D frame buffer device is broken
-
-    Amiga Cybervision 64/3D frame buffer device is broken (needs update to new
-    fbdev framework)
-
-> Also, the CONFIG_FB_PM2 driver is marked as broken [2].
-
->From full-history-linux:
-commit a05cb1584100212ae8b20a8026dac1f814760158
-Author: Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Mon Apr 12 17:29:57 2004 -0700
-
-    [PATCH] Pm2fb is broken on Amiga
-
-    Permedia2: Mark pm2fb broken on Amiga, until somebody fixes it (pm2fb.c
-    explicitly tests for CONFIG_PCI right now)
-
-> Is there a chance to bring the CYBER and VIRGE drivers back? And maybe
-> get PM2 working on m68k?
-
-There's always a chance ;-)
-You "just" need someone with the hardware, programming skills, and a
-strong desire to get it working again.
-
-For CyberVision 64, CyberVision 64/3D, and Retina/Z3, the amount of work
-shouldn't be that big. Just revert commit e019630e78e3482c, and look how
-other fbdev driver were converted to the new framework.
-
-However, in the mean time another S3 Trio / Virge driver was added, so it
-may make more sense to add Amiga support to the latter.  But as I expect
-that driver to contain many PC-isms, and rely on the BIOS having initialized
-the graphics chip first, reviving FB_CYBER and FB_VIRGE as a first step,
-may be the best approach.
-
-I expect fixing Permedia2 to be much harder...
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+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
+fwoAAAAA
