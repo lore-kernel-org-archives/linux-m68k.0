@@ -1,68 +1,35 @@
-From: <pekka.enne@konepajaenne.fi>
-Subject: (unknown)
-Date: Wed, 11 Oct 2017 09:19:35 -0000
-Message-ID: <150771357508.32758.17435269774545340490@kbronet.com.tw>
+From: "Christian T. Steigies" <cts@debian.org>
+Subject: Re: Status of the FB drivers on m68k
+Date: Wed, 11 Oct 2017 13:09:24 +0200
+Message-ID: <20171011110924.GB20083@nunzio.venus.sol>
+References: <2fd42624-7128-81e5-db7b-e7eed3eaa50c@physik.fu-berlin.de>
+ <CAMuHMdWuJ=VWnvky0cpqbed2cQbr63MUijnbAcE-mk7PVpVN0A@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: application/zip; name="3575697248.zip"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset=us-ascii
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from 118-232-125-146.dynamic.kbronet.com.tw ([118.232.125.146]:44435
-        "HELO kbronet.com.tw" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with SMTP id S1752333AbdJKJTt (ORCPT
-        <rfc822;linux-m68k@vger.kernel.org>); Wed, 11 Oct 2017 05:19:49 -0400
-Content-Disposition: attachment
-Subject: 
+Received: from relay5-d.mail.gandi.net ([217.70.183.197]:40294 "EHLO
+        relay5-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1751462AbdJKLJ1 (ORCPT
+        <rfc822;linux-m68k@vger.kernel.org>); Wed, 11 Oct 2017 07:09:27 -0400
+Content-Disposition: inline
+In-Reply-To: <CAMuHMdWuJ=VWnvky0cpqbed2cQbr63MUijnbAcE-mk7PVpVN0A@mail.gmail.com>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: linux-m68k@vger.kernel.org
+To: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>, Linux/m68k <linux-m68k@vger.kernel.org>, Debian m68k <debian-68k@lists.debian.org>
 
-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
-fwoAAAAA
+Moin,
+On Wed, Oct 11, 2017 at 09:24:57AM +0200, Geert Uytterhoeven wrote:
+> On Tue, Oct 10, 2017 at 8:32 PM, John Paul Adrian Glaubitz
+> 
+> > Is there a chance to bring the CYBER and VIRGE drivers back? And maybe
+> > get PM2 working on m68k?
+> 
+> There's always a chance ;-)
+> You "just" need someone with the hardware, programming skills, and a
+> strong desire to get it working again.
+
+Wouldn't it be a coincidence if I gave my CV64/3D to Adrian for repair.
+Did I?
+ 
+Christian
