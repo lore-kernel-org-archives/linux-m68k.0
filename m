@@ -1,64 +1,284 @@
-From: <armouralumni@yahoo.com>
-Subject: (unknown)
-Date: Thu, 12 Oct 2017 08:17:47 -0000
-Message-ID: <150779626701.21014.2051431338471887476@fixed-189-203-9-175.totalplay.net>
-Mime-Version: 1.0
-Content-Type: application/zip; name="423180199556284.zip"
-Content-Transfer-Encoding: base64
+From: Angelo Dureghello <angelo@sysam.it>
+Subject: [PATCH] m68k: add Sysam stmark2 open board support
+Date: Fri, 13 Oct 2017 00:42:51 +0200
+Message-ID: <20171012224251.1015-1-angelo@sysam.it>
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Subject: 
-Content-Disposition: attachment
+Received: from sysam.it ([5.39.81.93]:48063 "EHLO sysam.it"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1753203AbdJLWm4 (ORCPT <rfc822;linux-m68k@vger.kernel.org>);
+        Thu, 12 Oct 2017 18:42:56 -0400
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: linux-m68k@lists.linux-m68k.org
+To: linux-m68k@vger.kernel.org
+Cc: gregungerer@westnet.com.au, Angelo Dureghello <angelo@sysam.it>
 
-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
-WwAAAIIKAAAAAA==
+Add support for Sysam stmark2 board, an open hardware embedded
+Linux board, see http://sysam.it/cff_stmark2.html for any info.
+
+Signed-off-by: Angelo Dureghello <angelo@sysam.it>
+---
+ arch/m68k/Kconfig.machine           |   6 ++
+ arch/m68k/coldfire/Makefile         |   3 +-
+ arch/m68k/coldfire/stmark2.c        | 120 ++++++++++++++++++++++++++++++++++++
+ arch/m68k/configs/stmark2_defconfig |  92 +++++++++++++++++++++++++++
+ 4 files changed, 220 insertions(+), 1 deletion(-)
+ create mode 100644 arch/m68k/coldfire/stmark2.c
+ create mode 100644 arch/m68k/configs/stmark2_defconfig
+
+diff --git a/arch/m68k/Kconfig.machine b/arch/m68k/Kconfig.machine
+index 9225b4ad9aeb..00698404b97f 100644
+--- a/arch/m68k/Kconfig.machine
++++ b/arch/m68k/Kconfig.machine
+@@ -265,6 +265,12 @@ config AMCORE
+ 	help
+ 	  Support for the Sysam AMCORE open-hardware generic board.
+ 
++config STMARK2
++        bool "Sysam stmark2 board support"
++        depends on M5441x
++        help
++          Support for the Sysam stmark2 open-hardware generic board.
++
+ config FIREBEE
+ 	bool "FireBee board support"
+ 	depends on M547x
+diff --git a/arch/m68k/coldfire/Makefile b/arch/m68k/coldfire/Makefile
+index 4aa2c57afc35..e45baeaadac8 100644
+--- a/arch/m68k/coldfire/Makefile
++++ b/arch/m68k/coldfire/Makefile
+@@ -34,7 +34,8 @@ obj-$(CONFIG_NETtel)	+= nettel.o
+ obj-$(CONFIG_CLEOPATRA)	+= nettel.o
+ obj-$(CONFIG_FIREBEE)	+= firebee.o
+ obj-$(CONFIG_MCF8390)	+= mcf8390.o
+-obj-$(CONFIG_AMCORE)    += amcore.o
++obj-$(CONFIG_AMCORE)	+= amcore.o
++obj-$(CONFIG_STMARK2)	+= stmark2.o
+ 
+ obj-$(CONFIG_PCI)	+= pci.o
+ 
+diff --git a/arch/m68k/coldfire/stmark2.c b/arch/m68k/coldfire/stmark2.c
+new file mode 100644
+index 000000000000..8eaf869de8e2
+--- /dev/null
++++ b/arch/m68k/coldfire/stmark2.c
+@@ -0,0 +1,120 @@
++/*
++ * stmark2.c -- Support for Sysam AMCORE open board
++ *
++ * (C) Copyright 2017, Angelo Dureghello <angelo@sysam.it>
++ *
++ * This file is subject to the terms and conditions of the GNU General Public
++ * License.  See the file COPYING in the main directory of this archive
++ * for more details.
++ */
++
++#include <linux/platform_device.h>
++#include <linux/mtd/partitions.h>
++#include <linux/spi/spi.h>
++#include <linux/spi/spi-fsl-dspi.h>
++#include <linux/spi/flash.h>
++#include <asm/mcfsim.h>
++
++/*
++ * Partitioning of parallel NOR flash (39VF3201B)
++ */
++static struct mtd_partition stmark2_partitions[] = {
++	{
++		.name = "U-Boot (1024K)",
++		.size = 0x100000,
++		.offset = 0x0
++	}, {
++		.name = "Kernel+initramfs (7168K)",
++		.size = 0x700000,
++		.offset = MTDPART_OFS_APPEND
++	}, {
++		.name = "Flash Free Space (8192K)",
++		.size = MTDPART_SIZ_FULL,
++		.offset = MTDPART_OFS_APPEND
++	}
++};
++
++static struct flash_platform_data stmark2_spi_flash_data = {
++	.name = "is25lp128",
++	.parts = stmark2_partitions,
++	.nr_parts = ARRAY_SIZE(stmark2_partitions),
++	.type = "is25lp128",
++};
++
++static struct spi_board_info stmark2_board_info[] __initdata = {
++	{
++		.modalias = "m25p80",
++		.max_speed_hz = 5000000,
++		.bus_num = 0,
++		.chip_select = 1,
++		.platform_data = &stmark2_spi_flash_data,
++		.mode = SPI_MODE_3,
++	}
++};
++
++/* SPI controller data, SPI (0) */
++static struct fsl_dspi_platform_data dspi_spi0_info = {
++	.cs_num = 4,
++	.bus_num = 0,
++	.sck_cs_delay = 100,
++	.cs_sck_delay = 100,
++};
++
++static struct resource dspi_spi0_resource[] = {
++	[0] = {
++		.start = MCFDSPI_BASE0,
++		.end   = MCFDSPI_BASE0 + 0xFF,
++		.flags = IORESOURCE_MEM,
++		},
++	[1] = {
++		.start = 12,
++		.end   = 13,
++		.flags = IORESOURCE_DMA,
++	},
++	[2] = {
++		.start = MCF_IRQ_DSPI0,
++		.end   = MCF_IRQ_DSPI0,
++		.flags = IORESOURCE_IRQ,
++	},
++};
++
++/* SPI controller, id = bus number */
++static struct platform_device dspi_spi0_device = {
++	.name = "fsl-dspi",
++	.id = 0,
++	.num_resources = ARRAY_SIZE(dspi_spi0_resource),
++	.resource = dspi_spi0_resource,
++	.dev = {
++		.platform_data = &dspi_spi0_info,
++	},
++};
++
++static struct platform_device *stmark2_devices[] __initdata = {
++	&dspi_spi0_device,
++};
++
++/*
++ * Note: proper pin-mux setup is mandatory for proper SPI functionality.
++ */
++static int __init init_stmark2(void)
++{
++	/* DSPI0, all pins as DSPI, and using CS1 */
++	__raw_writeb(0x80, MCFGPIO_PAR_DSPIOWL);
++	__raw_writeb(0xfc, MCFGPIO_PAR_DSPIOWH);
++
++	/* Board gpio setup */
++	__raw_writeb(0x00, MCFGPIO_PAR_BE);
++	__raw_writeb(0x00, MCFGPIO_PAR_FBCTL);
++	__raw_writeb(0x00, MCFGPIO_PAR_CS);
++	__raw_writeb(0x00, MCFGPIO_PAR_CANI2C);
++
++	platform_add_devices(stmark2_devices, ARRAY_SIZE(stmark2_devices));
++
++	spi_register_board_info(stmark2_board_info,
++				ARRAY_SIZE(stmark2_board_info));
++
++	return 0;
++}
++
++late_initcall(init_stmark2);
++
+diff --git a/arch/m68k/configs/stmark2_defconfig b/arch/m68k/configs/stmark2_defconfig
+new file mode 100644
+index 000000000000..55e55dbc2fb6
+--- /dev/null
++++ b/arch/m68k/configs/stmark2_defconfig
+@@ -0,0 +1,92 @@
++CONFIG_LOCALVERSION="stmark2-001"
++CONFIG_DEFAULT_HOSTNAME="stmark2"
++CONFIG_SYSVIPC=y
++# CONFIG_FHANDLE is not set
++CONFIG_LOG_BUF_SHIFT=14
++CONFIG_NAMESPACES=y
++CONFIG_BLK_DEV_INITRD=y
++CONFIG_INITRAMFS_SOURCE="../uClinux-dist/romfs"
++# CONFIG_RD_BZIP2 is not set
++# CONFIG_RD_LZMA is not set
++# CONFIG_RD_XZ is not set
++# CONFIG_RD_LZO is not set
++# CONFIG_RD_LZ4 is not set
++CONFIG_CC_OPTIMIZE_FOR_SIZE=y
++# CONFIG_AIO is not set
++# CONFIG_ADVISE_SYSCALLS is not set
++# CONFIG_MEMBARRIER is not set
++CONFIG_EMBEDDED=y
++# CONFIG_VM_EVENT_COUNTERS is not set
++# CONFIG_COMPAT_BRK is not set
++# CONFIG_LBDAF is not set
++# CONFIG_BLK_DEV_BSG is not set
++CONFIG_BLK_CMDLINE_PARSER=y
++# CONFIG_MMU is not set
++CONFIG_M5441x=y
++CONFIG_CLOCK_FREQ=240000000
++CONFIG_STMARK2=y
++CONFIG_RAMBASE=0x40000000
++CONFIG_RAMSIZE=0x8000000
++CONFIG_VECTORBASE=0x40000000
++CONFIG_KERNELBASE=0x40001000
++CONFIG_BINFMT_FLAT=y
++CONFIG_BINFMT_MISC=y
++# CONFIG_UEVENT_HELPER is not set
++CONFIG_DEVTMPFS=y
++CONFIG_DEVTMPFS_MOUNT=y
++CONFIG_FW_LOADER_USER_HELPER_FALLBACK=y
++# CONFIG_ALLOW_DEV_COREDUMP is not set
++CONFIG_MTD=y
++CONFIG_MTD_CMDLINE_PARTS=y
++CONFIG_MTD_BLOCK=y
++CONFIG_MTD_CFI=y
++CONFIG_MTD_JEDECPROBE=y
++CONFIG_MTD_CFI_ADV_OPTIONS=y
++CONFIG_MTD_CFI_LE_BYTE_SWAP=y
++CONFIG_MTD_CFI_GEOMETRY=y
++# CONFIG_MTD_CFI_I2 is not set
++CONFIG_MTD_CFI_AMDSTD=y
++CONFIG_MTD_CFI_STAA=y
++CONFIG_MTD_ROM=y
++CONFIG_MTD_COMPLEX_MAPPINGS=y
++CONFIG_MTD_PLATRAM=y
++CONFIG_MTD_M25P80=y
++CONFIG_MTD_SPI_NOR=y
++# CONFIG_INPUT_KEYBOARD is not set
++# CONFIG_INPUT_MOUSE is not set
++CONFIG_SERIO_LIBPS2=y
++# CONFIG_UNIX98_PTYS is not set
++# CONFIG_DEVMEM is not set
++CONFIG_SERIAL_MCF=y
++CONFIG_SERIAL_MCF_BAUDRATE=115200
++CONFIG_SERIAL_MCF_CONSOLE=y
++# CONFIG_HW_RANDOM is not set
++CONFIG_SPI=y
++CONFIG_SPI_DEBUG=y
++CONFIG_SPI_FSL_DSPI=y
++CONFIG_DEBUG_GPIO=y
++CONFIG_GPIO_SYSFS=y
++CONFIG_GPIO_GENERIC_PLATFORM=y
++# CONFIG_HWMON is not set
++# CONFIG_RC_CORE is not set
++# CONFIG_HID is not set
++# CONFIG_USB_SUPPORT is not set
++# CONFIG_FILE_LOCKING is not set
++# CONFIG_DNOTIFY is not set
++# CONFIG_INOTIFY_USER is not set
++CONFIG_FSCACHE=y
++# CONFIG_PROC_SYSCTL is not set
++CONFIG_PRINTK_TIME=y
++# CONFIG_ENABLE_WARN_DEPRECATED is not set
++# CONFIG_SECTION_MISMATCH_WARN_ONLY is not set
++CONFIG_SLUB_DEBUG_ON=y
++CONFIG_PANIC_ON_OOPS=y
++# CONFIG_SCHED_DEBUG is not set
++# CONFIG_DEBUG_BUGVERBOSE is not set
++CONFIG_BOOTPARAM=y
++CONFIG_BOOTPARAM_STRING="console=ttyS0,115200 root=/dev/ram0 rw rootfstype=ramfs rdinit=/bin/init devtmpfs.mount=1"
++CONFIG_CRYPTO=y
++# CONFIG_CRYPTO_ECHAINIV is not set
++CONFIG_CRYPTO_ANSI_CPRNG=y
++# CONFIG_CRYPTO_HW is not set
++CONFIG_CRC16=y
+-- 
+2.14.1
