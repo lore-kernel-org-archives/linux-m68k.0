@@ -1,79 +1,69 @@
-From: Greg Ungerer <gerg@linux-m68k.org>
-Subject: Re: [PATCH] m68k: pull mach_beep in setup.c
-Date: Thu, 12 Oct 2017 10:15:41 +1000
-Message-ID: <1cccc612-b2de-1ecb-db86-d22200961aae__21471.032096497$1507767903$gmane$org@linux-m68k.org>
-References: <20170928094452.4863-1-alexandre.belloni@free-electrons.com>
+From: Greg Ungerer <gregungerer@westnet.com.au>
+Subject: Re: mcf54415, spi nor and SD drivers
+Date: Thu, 12 Oct 2017 15:56:29 +1000
+Message-ID: <ffbf77cf-f01c-bba6-8f90-22f955dc519d@westnet.com.au>
+References: <ba371285-38b5-5744-c386-1721bdf25f95@gmail.com>
+ <30ab985a-70e5-3ca0-3bb1-ace05dd4ebc2@westnet.com.au>
+ <218c4625-2ba7-668e-f6e3-e4145c69c3b0@sysam.it>
+ <dc7ad189-0ddc-4852-1aba-9e6d0fba180b@westnet.com.au>
+ <461bb3c3-822b-98d7-45cf-268cb2a764d5@sysam.it>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 7bit
 Return-path: <linux-m68k-owner@vger.kernel.org>
-In-Reply-To: <20170928094452.4863-1-alexandre.belloni@free-electrons.com>
+Received: from icp-osb-irony-out1.external.iinet.net.au ([203.59.1.210]:47729
+        "EHLO icp-osb-irony-out1.external.iinet.net.au" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1751615AbdJLF4e (ORCPT
+        <rfc822;linux-m68k@vger.kernel.org>);
+        Thu, 12 Oct 2017 01:56:34 -0400
+In-Reply-To: <461bb3c3-822b-98d7-45cf-268cb2a764d5@sysam.it>
 Content-Language: en-US
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Alexandre Belloni <alexandre.belloni@free-electrons.com>, Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org
+To: Angelo Dureghello <angelo@sysam.it>
+Cc: Linux/m68k <linux-m68k@vger.kernel.org>
 
-Hi Alexandre,
+Hi Angelo,
 
-On 28/09/17 19:44, Alexandre Belloni wrote:
-> It is possible to select INPUT_M68K_BEEP in a nommu configuration. This
-> results in the following link error:
+On 07/10/17 08:22, Angelo Dureghello wrote:
+> On 06/10/2017 06:04, Greg Ungerer wrote:
+>> On 06/10/17 09:06, Angelo Dureghello wrote: 
+>>> Changes to spi-fsl-dspi.c driver is minimal, just mainly had to
+>>> get some few settings from board c file.
+>>>
+>>> Now the issue is how to proceed, likely, spi-list gouys would complain
+>>> i add board/platform support to the driver.>>> Is it better i send a patch for this stmark2 board.c before ?
+>>
+>> Sure, start with that. I don't mind if you send spi changes relevant to
+>> the 54411 here either for review.
+>>
 > 
-> drivers/input/misc/m68kspkr.o: In function `m68kspkr_event':
-> m68kspkr.c:(.text+0x3a): undefined reference to `mach_beep'
-> m68kspkr.c:(.text+0x5e): undefined reference to `mach_beep'
-> m68kspkr.c:(.text+0x78): undefined reference to `mach_beep'
-> drivers/input/misc/m68kspkr.o: In function `m68kspkr_init':
-> m68kspkr.c:(.init.text+0x4): undefined reference to `mach_beep'
+> well, to post the stmark2 patch there is only one issue btw:
+> stmark2.c contains a dspi-patch reference.
 > 
-> Pull the mach_beep definition in setup.c to avoid it.
+> #include <linux/spi/spi-fsl-dspi.h>
 > 
-> Signed-off-by: Alexandre Belloni <alexandre.belloni@free-electrons.com>
+> The above is a new file of few lines i created for the dspi
+> board.c support.
+> 
+> So, maybe i should start posting the dspi patch. I attach the patches for
+> your review, the patch n2 (spi-nor.c) is already under testing, so you can
+> ignore it.
 
-I plan on applying this to the m68knommu git tree (for-next) branch
-in the very near future.
+I don't see any problems with patch 0001.
 
-Geert: no objections?
+I certainly have no problem with the m5441x clock changes, and the
+DSPI address defines in patch 0003. In their own patch I could apply
+those now.
+
+In patch 0003 I would avoid superfluous white space changes - there
+appears to be a couple of blank lines added/removed. You can only ask
+what the spi-fsl-dspi driver maintainers think about adding board
+support. 
+
+Along with what Geert said I have been thinking about doing devicetree
+support for the ColdFire boards for a while. But I have had no spare
+cycles to really do any work on it.
 
 Regards
 Greg
-
-
-> ---
-> 
-> I didn't merge both files because I don't have any way to test the result.
-> 
->  arch/m68k/kernel/setup.c    | 5 +++++
->  arch/m68k/kernel/setup_mm.c | 4 ----
->  2 files changed, 5 insertions(+), 4 deletions(-)
-> 
-> diff --git a/arch/m68k/kernel/setup.c b/arch/m68k/kernel/setup.c
-> index 4bf129f1d2e2..81cadb55b2a2 100644
-> --- a/arch/m68k/kernel/setup.c
-> +++ b/arch/m68k/kernel/setup.c
-> @@ -3,3 +3,8 @@
->  #else
->  #include "setup_no.c"
->  #endif
-> +
-> +#if IS_ENABLED(CONFIG_INPUT_M68K_BEEP)
-> +void (*mach_beep)(unsigned int, unsigned int);
-> +EXPORT_SYMBOL(mach_beep);
-> +#endif
-> diff --git a/arch/m68k/kernel/setup_mm.c b/arch/m68k/kernel/setup_mm.c
-> index 7a2c21212820..ac5c9ee9bbf9 100644
-> --- a/arch/m68k/kernel/setup_mm.c
-> +++ b/arch/m68k/kernel/setup_mm.c
-> @@ -105,10 +105,6 @@ EXPORT_SYMBOL(mach_heartbeat);
->  #ifdef CONFIG_M68K_L2_CACHE
->  void (*mach_l2_flush) (int);
->  #endif
-> -#if IS_ENABLED(CONFIG_INPUT_M68K_BEEP)
-> -void (*mach_beep)(unsigned int, unsigned int);
-> -EXPORT_SYMBOL(mach_beep);
-> -#endif
->  #if defined(CONFIG_ISA) && defined(MULTI_ISA)
->  int isa_type;
->  int isa_sex;
-> 
