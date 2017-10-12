@@ -1,69 +1,50 @@
-From: Greg Ungerer <gregungerer@westnet.com.au>
-Subject: Re: mcf54415, spi nor and SD drivers
-Date: Thu, 12 Oct 2017 15:56:29 +1000
-Message-ID: <ffbf77cf-f01c-bba6-8f90-22f955dc519d@westnet.com.au>
-References: <ba371285-38b5-5744-c386-1721bdf25f95@gmail.com>
- <30ab985a-70e5-3ca0-3bb1-ace05dd4ebc2@westnet.com.au>
- <218c4625-2ba7-668e-f6e3-e4145c69c3b0@sysam.it>
- <dc7ad189-0ddc-4852-1aba-9e6d0fba180b@westnet.com.au>
- <461bb3c3-822b-98d7-45cf-268cb2a764d5@sysam.it>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: Re: [PATCH] m68k: pull mach_beep in setup.c
+Date: Thu, 12 Oct 2017 08:35:17 +0200
+Message-ID: <CAMuHMdWwZ0d25bYuneqa_1uFuQ2Zjsrfvbr28uGTpA0fESGFHQ__6933.62914394147$1507790134$gmane$org@mail.gmail.com>
+References: <20170928094452.4863-1-alexandre.belloni@free-electrons.com> <1cccc612-b2de-1ecb-db86-d22200961aae@linux-m68k.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="UTF-8"
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from icp-osb-irony-out1.external.iinet.net.au ([203.59.1.210]:47729
-        "EHLO icp-osb-irony-out1.external.iinet.net.au" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1751615AbdJLF4e (ORCPT
-        <rfc822;linux-m68k@vger.kernel.org>);
-        Thu, 12 Oct 2017 01:56:34 -0400
-In-Reply-To: <461bb3c3-822b-98d7-45cf-268cb2a764d5@sysam.it>
-Content-Language: en-US
+In-Reply-To: <1cccc612-b2de-1ecb-db86-d22200961aae@linux-m68k.org>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Angelo Dureghello <angelo@sysam.it>
-Cc: Linux/m68k <linux-m68k@vger.kernel.org>
+To: Greg Ungerer <gerg@linux-m68k.org>
+Cc: Alexandre Belloni <alexandre.belloni@free-electrons.com>, linux-m68k <linux-m68k@lists.linux-m68k.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
 
-Hi Angelo,
+Hi Greg,
 
-On 07/10/17 08:22, Angelo Dureghello wrote:
-> On 06/10/2017 06:04, Greg Ungerer wrote:
->> On 06/10/17 09:06, Angelo Dureghello wrote: 
->>> Changes to spi-fsl-dspi.c driver is minimal, just mainly had to
->>> get some few settings from board c file.
->>>
->>> Now the issue is how to proceed, likely, spi-list gouys would complain
->>> i add board/platform support to the driver.>>> Is it better i send a patch for this stmark2 board.c before ?
+On Thu, Oct 12, 2017 at 2:15 AM, Greg Ungerer <gerg@linux-m68k.org> wrote:
+> On 28/09/17 19:44, Alexandre Belloni wrote:
+>> It is possible to select INPUT_M68K_BEEP in a nommu configuration. This
+>> results in the following link error:
 >>
->> Sure, start with that. I don't mind if you send spi changes relevant to
->> the 54411 here either for review.
+>> drivers/input/misc/m68kspkr.o: In function `m68kspkr_event':
+>> m68kspkr.c:(.text+0x3a): undefined reference to `mach_beep'
+>> m68kspkr.c:(.text+0x5e): undefined reference to `mach_beep'
+>> m68kspkr.c:(.text+0x78): undefined reference to `mach_beep'
+>> drivers/input/misc/m68kspkr.o: In function `m68kspkr_init':
+>> m68kspkr.c:(.init.text+0x4): undefined reference to `mach_beep'
 >>
-> 
-> well, to post the stmark2 patch there is only one issue btw:
-> stmark2.c contains a dspi-patch reference.
-> 
-> #include <linux/spi/spi-fsl-dspi.h>
-> 
-> The above is a new file of few lines i created for the dspi
-> board.c support.
-> 
-> So, maybe i should start posting the dspi patch. I attach the patches for
-> your review, the patch n2 (spi-nor.c) is already under testing, so you can
-> ignore it.
+>> Pull the mach_beep definition in setup.c to avoid it.
+>>
+>> Signed-off-by: Alexandre Belloni <alexandre.belloni@free-electrons.com>
+>
+> I plan on applying this to the m68knommu git tree (for-next) branch
+> in the very near future.
+>
+> Geert: no objections?
 
-I don't see any problems with patch 0001.
+No objections:
+Acked-by: Geert Uytterhoeven <geert@linux-m68k.org>
 
-I certainly have no problem with the m5441x clock changes, and the
-DSPI address defines in patch 0003. In their own patch I could apply
-those now.
+Gr{oetje,eeting}s,
 
-In patch 0003 I would avoid superfluous white space changes - there
-appears to be a couple of blank lines added/removed. You can only ask
-what the spi-fsl-dspi driver maintainers think about adding board
-support. 
+                        Geert
 
-Along with what Geert said I have been thinking about doing devicetree
-support for the ColdFire boards for a while. But I have had no spare
-cycles to really do any work on it.
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
-Regards
-Greg
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
