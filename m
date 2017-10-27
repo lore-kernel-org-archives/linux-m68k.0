@@ -1,7 +1,7 @@
-From: Kars de Jong <jongk@linux-m68k.org>
+From: Kars de Jong <karsdejong@home.nl>
 Subject: Re: [PATCH 2/4] m68k/mac: Disentangle VIA and OSS initialization
-Date: Fri, 27 Oct 2017 13:02:59 +0200
-Message-ID: <CACz-3rj4Pxe7yk2+hzKoHsnOuV0wENvBg1EFE_zzA-ETSO+9dQ@mail.gmail.com>
+Date: Fri, 27 Oct 2017 13:00:30 +0200
+Message-ID: <CACz-3riSOZUYZJNRtV0W9_KpakOXUcEUc72_P0CPYpNq_2tULg@mail.gmail.com>
 References: <cover.1509071937.git.fthain@telegraphics.com.au> <683aede4ce8ad3e5d748a0913f0255bf6665ae87.1509071937.git.fthain@telegraphics.com.au>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="UTF-8"
@@ -13,6 +13,7 @@ Cc: Geert Uytterhoeven <geert@linux-m68k.org>, linux-m68k@vger.kernel.org, linux
 List-Id: linux-m68k@vger.kernel.org
 
 2017-10-27 4:45 GMT+02:00 Finn Thain <fthain@telegraphics.com.au>:
+>
 > macintosh_config->via_type is meaningless on Mac IIfx (i.e. the only
 > model with OSS chip), so skip the via_type switch statement.
 >
@@ -32,7 +33,3 @@ Was this tested on a Mac IIfx and on at least one other Mac?
 > Signed-off-by: Finn Thain <fthain@telegraphics.com.au>
 
 Reviewed-by: Kars de Jong <jongk@linux-m68k.org>
-
-(Geert, Finn: sorry about the spam. Bloody Gmail...)
-
-Kars.
