@@ -1,7 +1,7 @@
 From: Finn Thain <fthain@telegraphics.com.au>
-Subject: [PATCH 2/4] m68k/mac: Disentangle VIA and OSS initialization
+Subject: [PATCH 3/4] m68k/mac: Disentangle VIA/RBV and NuBus initialization
 Date: Thu, 26 Oct 2017 22:45:24 -0400 (EDT)
-Message-ID: <683aede4ce8ad3e5d748a0913f0255bf6665ae87.1509071937.git.fthain@telegraphics.com.au>
+Message-ID: <f6955de1853b5b5b706acadaea06f9f40caaf1c2.1509071937.git.fthain@telegraphics.com.au>
 References: <cover.1509071937.git.fthain@telegraphics.com.au>
 Return-path: <linux-kernel-owner@vger.kernel.org>
 In-Reply-To: <cover.1509071937.git.fthain@telegraphics.com.au>
@@ -10,142 +10,126 @@ To: Geert Uytterhoeven <geert@linux-m68k.org>
 Cc: linux-m68k@vger.kernel.org, linux-kernel@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
 
-macintosh_config->via_type is meaningless on Mac IIfx (i.e. the only
-model with OSS chip), so skip the via_type switch statement.
+The Nubus subsystem should not be concerned with differences between VIA,
+RBV and OSS platforms. It should be portable across Macs and PowerMacs.
+This goal has implications for the initialization code relating to bus
+locking and slot interrupts.
 
-Call oss_init() before via_init() because it is more important and
-because that is the right place to initialize the oss_present flag.
+During Nubus initialization, bus transactions are "unlocked": on VIA2 and
+RBV machines, via_nubus_init() sets a bit in the via2[gBufB] register to
+allow bus-mastering Nubus cards to arbitrate for the bus. This happens
+upon subsys_initcall(nubus_init). But because nubus_init() has no effect
+on card state, this sequence is arbitrary.
 
-On this model, bringing forward oss_init() and delaying via_init()
-is no problem because those functions are independent.
+Moreover, when Penguin is used to boot Linux, the bus is already unlocked
+when Linux starts. On OSS machines there's no attempt to unlock Nubus
+transactions at all. (Maybe there's no benefit on that platform or maybe
+no-one knows how.)
 
-The only requirement here is that oss_register_interrupts() happens
-after via_init(). That is, mac_init_IRQ() happens after config_mac().
+All of this demonstrates that there's no benefit in locking out
+bus-mastering cards, as yet. (If the need arises, we could lock the bus
+for the duration of a timing-critical operation.) NetBSD unlocks the
+Nubus early (at VIA initialization) and we can do the same.
+
+via_nubus_init() is also responsible for some VIA interrupt setup that
+should happen earlier than subsys_initcall(nubus_init). And actually, the
+Nubus subsystem need not be involved with slot interrupts: SLOT2IRQ
+works fine because Nubus slot IRQs are geographically assigned
+(regardless of platform).
+
+For certain platforms with PDS slots, some Nubus IRQs may be platform
+IRQs and this is not something that the NuBus subsystem should worry
+about. So let's invoke via_nubus_init() earlier and make the platform
+responsible for bus unlocking and interrupt setup instead of the NuBus
+subsystem.
 
 Tested-by: Stan Johnson <userm57@yahoo.com>
 Signed-off-by: Finn Thain <fthain@telegraphics.com.au>
 ---
- arch/m68k/mac/config.c |  2 +-
- arch/m68k/mac/oss.c    |  8 ++++----
- arch/m68k/mac/via.c    | 32 +++++++++++++-------------------
- 3 files changed, 18 insertions(+), 24 deletions(-)
+ arch/m68k/mac/oss.c   |  8 --------
+ arch/m68k/mac/via.c   |  5 ++++-
+ drivers/nubus/nubus.c | 13 -------------
+ 3 files changed, 4 insertions(+), 22 deletions(-)
 
-diff --git a/arch/m68k/mac/config.c b/arch/m68k/mac/config.c
-index 22123f7e8f75..16cd5cea5207 100644
---- a/arch/m68k/mac/config.c
-+++ b/arch/m68k/mac/config.c
-@@ -898,8 +898,8 @@ static void __init mac_identify(void)
- 		mac_bi_data.id, mac_bi_data.cpuid, mac_bi_data.memsize);
- 
- 	iop_init();
--	via_init();
- 	oss_init();
-+	via_init();
- 	psc_init();
- 	baboon_init();
- 
 diff --git a/arch/m68k/mac/oss.c b/arch/m68k/mac/oss.c
-index ca84dcf41fc9..61906eb67d0f 100644
+index 61906eb67d0f..21b85605db58 100644
 --- a/arch/m68k/mac/oss.c
 +++ b/arch/m68k/mac/oss.c
-@@ -31,18 +31,18 @@ volatile struct mac_oss *oss;
+@@ -52,14 +52,6 @@ void __init oss_init(void)
+ }
  
  /*
-  * Initialize the OSS
-- *
-- * The OSS "detection" code is actually in via_init() which is always called
-- * before us. Thus we can count on oss_present being valid on entry.
+- * Initialize OSS for Nubus access
+- */
+-
+-void __init oss_nubus_init(void)
+-{
+-}
+-
+-/*
+  * Handle miscellaneous OSS interrupts.
   */
  
- void __init oss_init(void)
- {
- 	int i;
- 
--	if (!oss_present) return;
-+	if (macintosh_config->ident != MAC_MODEL_IIFX)
-+		return;
- 
- 	oss = (struct mac_oss *) OSS_BASE;
-+	pr_debug("OSS detected at %p", oss);
-+	oss_present = 1;
- 
- 	/* Disable all interrupts. Unlike a VIA it looks like we    */
- 	/* do this by setting the source's interrupt level to zero. */
 diff --git a/arch/m68k/mac/via.c b/arch/m68k/mac/via.c
-index 05021381af0b..19ad46ba4787 100644
+index 19ad46ba4787..c38fab213e9f 100644
 --- a/arch/m68k/mac/via.c
 +++ b/arch/m68k/mac/via.c
-@@ -113,10 +113,6 @@ void via_debug_dump(void);
-  * First we figure out where they actually _are_ as well as what type of
-  * VIA we have for VIA2 (it could be a real VIA or an RBV or even an OSS.)
-  * Then we pretty much clear them out and disable all IRQ sources.
-- *
-- * Note: the OSS is actually "detected" here and not in oss_init(). It just
-- *	 seems more logical to do it here since via_init() needs to know
-- *	 these things anyways.
-  */
+@@ -106,6 +106,7 @@ static int gIER,gIFR,gBufA,gBufB;
+ static u8 nubus_disabled;
  
- void __init via_init(void)
-@@ -124,21 +120,18 @@ void __init via_init(void)
- 	via1 = (void *)VIA1_BASE;
- 	pr_debug("VIA1 detected at %p\n", via1);
+ void via_debug_dump(void);
++static void via_nubus_init(void);
  
--	switch(macintosh_config->via_type) {
-+	if (oss_present) {
-+		via2 = NULL;
-+		rbv_present = 0;
-+	} else {
-+		switch (macintosh_config->via_type) {
- 
- 		/* IIci, IIsi, IIvx, IIvi (P6xx), LC series */
- 
- 		case MAC_VIA_IICI:
--			if (macintosh_config->ident == MAC_MODEL_IIFX) {
--				via2 = NULL;
--				rbv_present = 0;
--				oss_present = 1;
--			} else {
--				via2 = (void *) RBV_BASE;
--				pr_debug("VIA2 (RBV) detected at %p\n", via2);
--				rbv_present = 1;
--				oss_present = 0;
--			}
-+			via2 = (void *)RBV_BASE;
-+			pr_debug("VIA2 (RBV) detected at %p\n", via2);
-+			rbv_present = 1;
- 			if (macintosh_config->ident == MAC_MODEL_LCIII) {
- 				rbv_clear = 0x00;
- 			} else {
-@@ -160,15 +153,16 @@ void __init via_init(void)
- 			via2 = (void *) VIA2_BASE;
- 			pr_debug("VIA2 detected at %p\n", via2);
- 			rbv_present = 0;
--			oss_present = 0;
- 			rbv_clear = 0x00;
- 			gIER = vIER;
- 			gIFR = vIFR;
- 			gBufA = vBufA;
- 			gBufB = vBufB;
- 			break;
-+
- 		default:
- 			panic("UNKNOWN VIA TYPE");
-+		}
+ /*
+  * Initialize the VIAs
+@@ -238,6 +239,8 @@ void __init via_init(void)
+ 		via2[vACR] &= ~0x03; /* disable port A & B latches */
  	}
  
- #ifdef DEBUG_VIA
-@@ -295,9 +289,9 @@ void via_debug_dump(void)
- 		(uint) via1[vDirA], (uint) via1[vDirB], (uint) via1[vACR]);
- 	printk(KERN_DEBUG "         PCR = 0x%02X  IFR = 0x%02X IER = 0x%02X\n",
- 		(uint) via1[vPCR], (uint) via1[vIFR], (uint) via1[vIER]);
++	via_nubus_init();
++
+ 	/* Everything below this point is VIA2 only... */
+ 
+ 	if (rbv_present)
+@@ -359,7 +362,7 @@ int via_get_cache_disable(void)
+  * Initialize VIA2 for Nubus access
+  */
+ 
+-void __init via_nubus_init(void)
++static void __init via_nubus_init(void)
+ {
+ 	/* unlock nubus transactions */
+ 
+diff --git a/drivers/nubus/nubus.c b/drivers/nubus/nubus.c
+index df431e8a0631..4f50f30650cd 100644
+--- a/drivers/nubus/nubus.c
++++ b/drivers/nubus/nubus.c
+@@ -18,11 +18,6 @@
+ #include <asm/setup.h>
+ #include <asm/page.h>
+ #include <asm/hwtest.h>
+-#include <asm/mac_via.h>
+-#include <asm/mac_oss.h>
+-
+-extern void via_nubus_init(void);
+-extern void oss_nubus_init(void);
+ 
+ /* Constants */
+ 
+@@ -840,14 +835,6 @@ static int __init nubus_init(void)
+ 	if (!MACH_IS_MAC)
+ 		return 0;
+ 
+-	/* Initialize the NuBus interrupts */
 -	if (oss_present) {
--		printk(KERN_DEBUG "VIA2: <OSS>\n");
--	} else if (rbv_present) {
-+	if (!via2)
-+		return;
-+	if (rbv_present) {
- 		printk(KERN_DEBUG "VIA2:  IFR = 0x%02X  IER = 0x%02X\n",
- 			(uint) via2[rIFR], (uint) via2[rIER]);
- 		printk(KERN_DEBUG "      SIFR = 0x%02X SIER = 0x%02X\n",
+-		oss_nubus_init();
+-	} else {
+-		via_nubus_init();
+-	}
+-
+-	/* And probe */
+ 	pr_info("NuBus: Scanning NuBus slots.\n");
+ 	nubus_devices = NULL;
+ 	nubus_boards = NULL;
 -- 
 2.13.6
