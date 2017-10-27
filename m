@@ -1,135 +1,52 @@
-From: Finn Thain <fthain@telegraphics.com.au>
-Subject: [PATCH 3/4] m68k/mac: Disentangle VIA/RBV and NuBus initialization
-Date: Thu, 26 Oct 2017 22:45:24 -0400 (EDT)
-Message-ID: <f6955de1853b5b5b706acadaea06f9f40caaf1c2.1509071937.git.fthain@telegraphics.com.au>
-References: <cover.1509071937.git.fthain@telegraphics.com.au>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <cover.1509071937.git.fthain@telegraphics.com.au>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: linux-m68k@vger.kernel.org, linux-kernel@vger.kernel.org
+From: Kars de Jong <jongk@linux-m68k.org>
+Subject: Re: [PATCH 1/4] m68k/mac: More printk modernization
+Date: Fri, 27 Oct 2017 12:59:27 +0200
+Message-ID: <CACz-3riWPO6Kef8mtSHWp=zm0Tzi5P-GvbRdgqp6RTSwauOrYg@mail.gmail.com>
+References: <cover.1509071937.git.fthain@telegraphics.com.au> <afe6ecb8fcbe726eecc42bd967e5d71502658f40.1509071937.git.fthain@telegraphics.com.au>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="UTF-8"
+Return-path: <linux-m68k-owner@vger.kernel.org>
+Received: from smtpq3.mnd.mail.iss.as9143.net ([212.54.34.166]:58321 "EHLO
+        smtpq3.mnd.mail.iss.as9143.net" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1751176AbdJ0K7b (ORCPT
+        <rfc822;linux-m68k@vger.kernel.org>);
+        Fri, 27 Oct 2017 06:59:31 -0400
+In-Reply-To: <afe6ecb8fcbe726eecc42bd967e5d71502658f40.1509071937.git.fthain@telegraphics.com.au>
+Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
+To: Finn Thain <fthain@telegraphics.com.au>
+Cc: Geert Uytterhoeven <geert@linux-m68k.org>, linux-m68k@vger.kernel.org, linux-kernel@vger.kernel.org
 
-The Nubus subsystem should not be concerned with differences between VIA,
-RBV and OSS platforms. It should be portable across Macs and PowerMacs.
-This goal has implications for the initialization code relating to bus
-locking and slot interrupts.
+2017-10-27 4:45 GMT+02:00 Finn Thain <fthain@telegraphics.com.au>:
+> Log message fragments used to be printed on one line but now get split up.
+> Fix this. Also, suppress log spam that merely prints known pointer values.
+>
+> Tested-by: Stan Johnson <userm57@yahoo.com>
+> Signed-off-by: Finn Thain <fthain@telegraphics.com.au>
+> ---
+>  arch/m68k/mac/baboon.c |  2 +-
+>  arch/m68k/mac/iop.c    |  4 ++--
+>  arch/m68k/mac/psc.c    |  6 ++----
+>  arch/m68k/mac/via.c    | 18 +++++-------------
+>  4 files changed, 10 insertions(+), 20 deletions(-)
 
-During Nubus initialization, bus transactions are "unlocked": on VIA2 and
-RBV machines, via_nubus_init() sets a bit in the via2[gBufB] register to
-allow bus-mastering Nubus cards to arbitrate for the bus. This happens
-upon subsys_initcall(nubus_init). But because nubus_init() has no effect
-on card state, this sequence is arbitrary.
+...
 
-Moreover, when Penguin is used to boot Linux, the bus is already unlocked
-when Linux starts. On OSS machines there's no attempt to unlock Nubus
-transactions at all. (Maybe there's no benefit on that platform or maybe
-no-one knows how.)
+> diff --git a/arch/m68k/mac/psc.c b/arch/m68k/mac/psc.c
+> index 439a2a2e5874..8d547df4e16c 100644
+> --- a/arch/m68k/mac/psc.c
+> +++ b/arch/m68k/mac/psc.c
+> @@ -42,7 +42,7 @@ static void psc_debug_dump(void)
+>                 return;
+>
+>         for (i = 0x30 ; i < 0x70 ; i += 0x10) {
+> -               printk("PSC #%d:  IFR = 0x%02X IER = 0x%02X\n",
+> +               printk(KERN_DEBUG "PSC #%d:  IFR = 0x%02X IER = 0x%02X\n",
+>                         i >> 4,
+>                         (int) psc_read_byte(pIFRbase + i),
+>                         (int) psc_read_byte(pIERbase + i));
 
-All of this demonstrates that there's no benefit in locking out
-bus-mastering cards, as yet. (If the need arises, we could lock the bus
-for the duration of a timing-critical operation.) NetBSD unlocks the
-Nubus early (at VIA initialization) and we can do the same.
+Any particular reason why you didn't use pr_debug() here? I'm guessing
+it's because this is not a known pointer value?
 
-via_nubus_init() is also responsible for some VIA interrupt setup that
-should happen earlier than subsys_initcall(nubus_init). And actually, the
-Nubus subsystem need not be involved with slot interrupts: SLOT2IRQ
-works fine because Nubus slot IRQs are geographically assigned
-(regardless of platform).
-
-For certain platforms with PDS slots, some Nubus IRQs may be platform
-IRQs and this is not something that the NuBus subsystem should worry
-about. So let's invoke via_nubus_init() earlier and make the platform
-responsible for bus unlocking and interrupt setup instead of the NuBus
-subsystem.
-
-Tested-by: Stan Johnson <userm57@yahoo.com>
-Signed-off-by: Finn Thain <fthain@telegraphics.com.au>
----
- arch/m68k/mac/oss.c   |  8 --------
- arch/m68k/mac/via.c   |  5 ++++-
- drivers/nubus/nubus.c | 13 -------------
- 3 files changed, 4 insertions(+), 22 deletions(-)
-
-diff --git a/arch/m68k/mac/oss.c b/arch/m68k/mac/oss.c
-index 61906eb67d0f..21b85605db58 100644
---- a/arch/m68k/mac/oss.c
-+++ b/arch/m68k/mac/oss.c
-@@ -52,14 +52,6 @@ void __init oss_init(void)
- }
- 
- /*
-- * Initialize OSS for Nubus access
-- */
--
--void __init oss_nubus_init(void)
--{
--}
--
--/*
-  * Handle miscellaneous OSS interrupts.
-  */
- 
-diff --git a/arch/m68k/mac/via.c b/arch/m68k/mac/via.c
-index 19ad46ba4787..c38fab213e9f 100644
---- a/arch/m68k/mac/via.c
-+++ b/arch/m68k/mac/via.c
-@@ -106,6 +106,7 @@ static int gIER,gIFR,gBufA,gBufB;
- static u8 nubus_disabled;
- 
- void via_debug_dump(void);
-+static void via_nubus_init(void);
- 
- /*
-  * Initialize the VIAs
-@@ -238,6 +239,8 @@ void __init via_init(void)
- 		via2[vACR] &= ~0x03; /* disable port A & B latches */
- 	}
- 
-+	via_nubus_init();
-+
- 	/* Everything below this point is VIA2 only... */
- 
- 	if (rbv_present)
-@@ -359,7 +362,7 @@ int via_get_cache_disable(void)
-  * Initialize VIA2 for Nubus access
-  */
- 
--void __init via_nubus_init(void)
-+static void __init via_nubus_init(void)
- {
- 	/* unlock nubus transactions */
- 
-diff --git a/drivers/nubus/nubus.c b/drivers/nubus/nubus.c
-index df431e8a0631..4f50f30650cd 100644
---- a/drivers/nubus/nubus.c
-+++ b/drivers/nubus/nubus.c
-@@ -18,11 +18,6 @@
- #include <asm/setup.h>
- #include <asm/page.h>
- #include <asm/hwtest.h>
--#include <asm/mac_via.h>
--#include <asm/mac_oss.h>
--
--extern void via_nubus_init(void);
--extern void oss_nubus_init(void);
- 
- /* Constants */
- 
-@@ -840,14 +835,6 @@ static int __init nubus_init(void)
- 	if (!MACH_IS_MAC)
- 		return 0;
- 
--	/* Initialize the NuBus interrupts */
--	if (oss_present) {
--		oss_nubus_init();
--	} else {
--		via_nubus_init();
--	}
--
--	/* And probe */
- 	pr_info("NuBus: Scanning NuBus slots.\n");
- 	nubus_devices = NULL;
- 	nubus_boards = NULL;
--- 
-2.13.6
+Kars.
