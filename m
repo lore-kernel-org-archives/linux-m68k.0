@@ -1,41 +1,43 @@
-From: Luc Van Oostenryck <luc.vanoostenryck@gmail.com>
-Subject: [PATCH] m68k: pass endianness info to sparse
-Date: Tue, 31 Oct 2017 18:22:15 +0100
-Message-ID: <20171031172215.10088-1-luc.vanoostenryck@gmail.com>
+From: John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
+Subject: Debian 68k meeting in 2018
+Date: Sat, 4 Nov 2017 12:51:53 +0100
+Message-ID: <80eb7c16-6016-55f7-089a-8ea2511c6f00@physik.fu-berlin.de>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-m68k-owner@vger.kernel.org>
+Received: from outpost1.zedat.fu-berlin.de ([130.133.4.66]:37448 "EHLO
+        outpost1.zedat.fu-berlin.de" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1756669AbdKDLvz (ORCPT
+        <rfc822;linux-m68k@vger.kernel.org>); Sat, 4 Nov 2017 07:51:55 -0400
+Content-Language: en-US
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: Luc Van Oostenryck <luc.vanoostenryck@gmail.com>, linux-m68k@lists.linux-m68k.org
+To: Debian m68k <debian-68k@lists.debian.org>
+Cc: Linux/m68k <linux-m68k@vger.kernel.org>
 
-m68k is big-endian only but sparse assumes the same endianness
-as the building machine.
-This is problematic for code which expect __BYTE_ORDER__ being
-correctly predefined by the compiler which sparse can then
-pre-process differently from what gcc would, depending on the
-building machine endianness.
+Hi list!
 
-Fix this by letting sparse know about the architecture endianness.
+I was wondering whether anyone would be interested in having another
+Debian/m68k meeting in 2018 after the last one in 2015 was quite a
+success :).
 
-To: Geert Uytterhoeven <geert@linux-m68k.org>
-CC: linux-m68k@lists.linux-m68k.org
-Signed-off-by: Luc Van Oostenryck <luc.vanoostenryck@gmail.com>
----
- arch/m68k/Makefile | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+We could work on resurrecting various kernel drivers for Amiga hardware
+as I have now enough hardware available for testing which I could bring.
 
-diff --git a/arch/m68k/Makefile b/arch/m68k/Makefile
-index f0dd9fc84..74f05eb72 100644
---- a/arch/m68k/Makefile
-+++ b/arch/m68k/Makefile
-@@ -76,7 +76,7 @@ ifdef CONFIG_SUN3
- LDFLAGS_vmlinux = -N
- endif
- 
--CHECKFLAGS += -D__mc68000__
-+CHECKFLAGS += -D__mc68000__ -mbig-endian
- 
- 
- ifdef CONFIG_KGDB
+Another area to work on would be the debian-installer which has made
+some process in the past months but there are certainly still some
+things that can be improved.
+
+Maybe we can gather more people this time since the overall visibility
+of Debian/m68k seems to have increased.
+
+Any suggestions for a venue?
+
+Adrian
+
 -- 
-2.14.0
+ .''`.  John Paul Adrian Glaubitz
+: :' :  Debian Developer - glaubitz@debian.org
+`. `'   Freie Universitaet Berlin - glaubitz@physik.fu-berlin.de
+  `-    GPG: 62FF 8A75 84E0 2956 9546  0006 7426 3B37 F5B5 F913
