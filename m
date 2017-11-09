@@ -1,36 +1,43 @@
-From: =?utf-8?Q?Ingo_J=C3=BCrgensmann?= <ij@2017.bluespice.org>
+From: Carsten Strotmann <cas@strotmann.de>
 Subject: Re: Debian 68k meeting in 2018
-Date: Thu, 9 Nov 2017 11:07:56 +0100
-Message-ID: <D877EC26-1557-43D3-8B21-780D84DAD0F7@2017.bluespice.org>
+Date: Thu, 9 Nov 2017 12:17:07 +0100
+Message-ID: <5cd068fc-8fdb-fb8d-4d7a-e590570815ea@strotmann.de>
 References: <80eb7c16-6016-55f7-089a-8ea2511c6f00@physik.fu-berlin.de>
  <20171108120844.GA21585@nunzio.venus.sol>
  <d01ce7aa-a134-56de-fc4c-3079cd544465@physik.fu-berlin.de>
  <20171109095738.GA22602@nunzio.venus.sol>
-Mime-Version: 1.0 (Mac OS X Mail 11.1 \(3445.4.7\))
-Content-Type: text/plain;
-        charset=utf-8
-Content-Transfer-Encoding: 8BIT
+ <e7984163-47b0-7667-944a-6175b02be12f@physik.fu-berlin.de>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from vserv.windfluechter.net ([31.172.31.194]:34258 "EHLO
-        vserv.windfluechter.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1750726AbdKIKYk (ORCPT
-        <rfc822;linux-m68k@vger.kernel.org>); Thu, 9 Nov 2017 05:24:40 -0500
-In-Reply-To: <20171109095738.GA22602@nunzio.venus.sol>
+Received: from smtp3.strotmann.de ([46.38.233.133]:56674 "EHLO
+        smtp3.strotmann.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1753955AbdKIL0F (ORCPT
+        <rfc822;linux-m68k@vger.kernel.org>); Thu, 9 Nov 2017 06:26:05 -0500
+In-Reply-To: <e7984163-47b0-7667-944a-6175b02be12f@physik.fu-berlin.de>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: "Steigies Christian T." <cts@debian.org>
-Cc: John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>, Debian m68k <debian-68k@lists.debian.org>, Linux/m68k <linux-m68k@vger.kernel.org>
+To: John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>, Debian m68k <debian-68k@lists.debian.org>, Linux/m68k <linux-m68k@vger.kernel.org>
 
-Am 09.11.2017 um 10:57 schrieb Christian T. Steigies <cts@debian.org>:
+Hi,
 
-> Probably you want some feedback from Geert and Michael and Roman and
-> Thorsten and Andreas and Ingo and ... first before we lockin a date?
+John Paul Adrian Glaubitz wrote:
 
->From my current point of view: 
-I would prefer summer, at least not winter. Maybe we can find some date with a „Brueckentag“ or so, but however I would just come by for a day, like the last time I was there, because I’m only a user and not a programmer (and no, I don’t intend to change this! ;-))...  
+ > Any suggestions for a venue?
 
--- 
-Ciao...          //        http://blog.windfluechter.net
-      Ingo     \X/     XMPP: ij@jabber.windfluechter.net
-	
-gpg pubkey:  http://www.juergensmann.de/ij_public_key.asc
+I offer to organize a meeting at Linuxhotel (http://linuxhotel.de) in 
+Essen/Germany.
+
+Prices are low (for open source community meetings, around 40 
+Euro/Weekend/per Person), we have network, hotel rooms and meeting rooms 
+on venue in a nice park.
+
+And Linuxhotel would fit the meeting theme :)
+
+Linuxhotel is especially nice in Spring/Summer.
+
+Best regards
+
+Carsten Strotmann
+(just a random Debian m68K user)
