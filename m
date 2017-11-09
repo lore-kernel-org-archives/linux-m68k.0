@@ -1,43 +1,35 @@
-From: Carsten Strotmann <cas@strotmann.de>
-Subject: Re: Debian 68k meeting in 2018
-Date: Thu, 9 Nov 2017 12:17:07 +0100
-Message-ID: <5cd068fc-8fdb-fb8d-4d7a-e590570815ea@strotmann.de>
-References: <80eb7c16-6016-55f7-089a-8ea2511c6f00@physik.fu-berlin.de>
- <20171108120844.GA21585@nunzio.venus.sol>
- <d01ce7aa-a134-56de-fc4c-3079cd544465@physik.fu-berlin.de>
- <20171109095738.GA22602@nunzio.venus.sol>
- <e7984163-47b0-7667-944a-6175b02be12f@physik.fu-berlin.de>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: Re: [PATCH 0/4] m68k/mac: Various cleanups and fixes
+Date: Thu, 9 Nov 2017 23:09:21 +0100
+Message-ID: <CAMuHMdU+TiJy0VQMY0ZEvEcv7PQZQ+9ApvkZgj=x1+-sN0Hs6Q@mail.gmail.com>
+References: <cover.1509071937.git.fthain@telegraphics.com.au>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from smtp3.strotmann.de ([46.38.233.133]:56674 "EHLO
-        smtp3.strotmann.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1753955AbdKIL0F (ORCPT
-        <rfc822;linux-m68k@vger.kernel.org>); Thu, 9 Nov 2017 06:26:05 -0500
-In-Reply-To: <e7984163-47b0-7667-944a-6175b02be12f@physik.fu-berlin.de>
-Sender: linux-m68k-owner@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <cover.1509071937.git.fthain@telegraphics.com.au>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Finn Thain <fthain@telegraphics.com.au>
+Cc: Linux/m68k <linux-m68k@vger.kernel.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
 List-Id: linux-m68k@vger.kernel.org
-To: John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>, Debian m68k <debian-68k@lists.debian.org>, Linux/m68k <linux-m68k@vger.kernel.org>
 
-Hi,
+Hi Finn,
 
-John Paul Adrian Glaubitz wrote:
+On Fri, Oct 27, 2017 at 4:45 AM, Finn Thain <fthain@telegraphics.com.au> wrote:
+> Finn Thain (4):
+>   m68k/mac: More printk modernization
+>   m68k/mac: Disentangle VIA and OSS initialization
+>   m68k/mac: Disentangle VIA/RBV and NuBus initialization
+>   m68k/mac: Add mutual exclusion for IOP interrupt polling
 
- > Any suggestions for a venue?
+Thanks, applied, and queued for v4.15.
 
-I offer to organize a meeting at Linuxhotel (http://linuxhotel.de) in 
-Essen/Germany.
+Gr{oetje,eeting}s,
 
-Prices are low (for open source community meetings, around 40 
-Euro/Weekend/per Person), we have network, hotel rooms and meeting rooms 
-on venue in a nice park.
+                        Geert
 
-And Linuxhotel would fit the meeting theme :)
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
-Linuxhotel is especially nice in Spring/Summer.
-
-Best regards
-
-Carsten Strotmann
-(just a random Debian m68K user)
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
