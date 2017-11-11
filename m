@@ -1,35 +1,51 @@
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: Re: [PATCH 0/4] m68k/mac: Various cleanups and fixes
-Date: Thu, 9 Nov 2017 23:09:21 +0100
-Message-ID: <CAMuHMdU+TiJy0VQMY0ZEvEcv7PQZQ+9ApvkZgj=x1+-sN0Hs6Q@mail.gmail.com>
-References: <cover.1509071937.git.fthain@telegraphics.com.au>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <cover.1509071937.git.fthain@telegraphics.com.au>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Finn Thain <fthain@telegraphics.com.au>
-Cc: Linux/m68k <linux-m68k@vger.kernel.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+From: Finn Thain <fthain@telegraphics.com.au>
+Subject: [PATCH 00/14] Modernization and fixes for NuBus subsystem
+Date: Sat, 11 Nov 2017 01:12:48 -0500 (EST)
+Message-ID: <cover.1510377368.git.fthain@telegraphics.com.au>
+Return-path: <linux-m68k-owner@vger.kernel.org>
+Received: from kvm5.telegraphics.com.au ([98.124.60.144]:57804 "EHLO
+        kvm5.telegraphics.com.au" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1750789AbdKKGMt (ORCPT
+        <rfc822;linux-m68k@vger.kernel.org>); Sat, 11 Nov 2017 01:12:49 -0500
+Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
+To: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: linux-m68k@vger.kernel.org, linux-kernel@vger.kernel.org
 
-Hi Finn,
+This series begins with cleanups and fixes for the NuBus subsystem and
+finishes with a patch to add support for the Linux Driver Model.
+The next series, which requires this one, will modernize NuBus drivers.
 
-On Fri, Oct 27, 2017 at 4:45 AM, Finn Thain <fthain@telegraphics.com.au> wrote:
-> Finn Thain (4):
->   m68k/mac: More printk modernization
->   m68k/mac: Disentangle VIA and OSS initialization
->   m68k/mac: Disentangle VIA/RBV and NuBus initialization
->   m68k/mac: Add mutual exclusion for IOP interrupt polling
 
-Thanks, applied, and queued for v4.15.
+Finn Thain (14):
+  nubus: Avoid array underflow and overflow
+  nubus: Fix up header split
+  nubus: Use static functions where possible
+  nubus: Fix log spam
+  nubus: Validate slot resource IDs
+  nubus: Call proc_mkdir() not more than once per slot
+  nubus: Remove redundant code
+  nubus: Clean up whitespace
+  nubus: Don't needlessly unpack vidname and driver resources
+  nubus: Depopulate /proc/bus/nubus/s/
+  nubus: Repopulate /proc/bus/nubus/s/
+  nubus: Rename struct nubus_dev
+  nubus: Add expansion_type values for various Mac models
+  nubus: Add support for the driver model
 
-Gr{oetje,eeting}s,
+ arch/m68k/include/asm/macintosh.h       |   9 +-
+ arch/m68k/mac/config.c                  | 110 +++----
+ drivers/net/ethernet/8390/mac8390.c     |  12 +-
+ drivers/net/ethernet/natsemi/macsonic.c |  12 +-
+ drivers/nubus/Makefile                  |   2 +-
+ drivers/nubus/bus.c                     |  87 ++++++
+ drivers/nubus/nubus.c                   | 500 ++++++++++++++++++--------------
+ drivers/nubus/proc.c                    | 247 ++++++++++------
+ drivers/video/fbdev/macfb.c             |   2 +-
+ include/linux/nubus.h                   | 200 ++++++++-----
+ include/uapi/linux/nubus.h              |  23 --
+ 11 files changed, 724 insertions(+), 480 deletions(-)
+ create mode 100644 drivers/nubus/bus.c
 
-                        Geert
-
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+-- 
+2.13.6
