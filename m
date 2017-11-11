@@ -1,34 +1,36 @@
-From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Subject: Re: [PATCH 14/14] nubus: Add support for the driver model
-Date: Sat, 11 Nov 2017 09:46:53 +0100
-Message-ID: <20171111084653.GB6403@kroah.com>
+From: Joe Perches <joe@perches.com>
+Subject: Re: [PATCH 04/14] nubus: Fix log spam
+Date: Sat, 11 Nov 2017 07:04:09 -0800
+Message-ID: <1510412649.10883.12.camel@perches.com>
 References: <cover.1510377368.git.fthain@telegraphics.com.au>
- <6c64ec1ff338853f8ba34783e70896565f968854.1510377369.git.fthain@telegraphics.com.au>
- <20171111084553.GA6403@kroah.com>
+         <0c2f94698a76d320786aac770d2db006fd4e5764.1510377368.git.fthain@telegraphics.com.au>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from mail.linuxfoundation.org ([140.211.169.12]:55834 "EHLO
-        mail.linuxfoundation.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1751514AbdKKIqo (ORCPT
-        <rfc822;linux-m68k@vger.kernel.org>); Sat, 11 Nov 2017 03:46:44 -0500
-Content-Disposition: inline
-In-Reply-To: <20171111084553.GA6403@kroah.com>
-Sender: linux-m68k-owner@vger.kernel.org
+Content-Type: text/plain; charset="ISO-8859-1"
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <0c2f94698a76d320786aac770d2db006fd4e5764.1510377368.git.fthain@telegraphics.com.au>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Finn Thain <fthain@telegraphics.com.au>, Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: linux-m68k@vger.kernel.org, linux-kernel@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Finn Thain <fthain@telegraphics.com.au>
-Cc: Geert Uytterhoeven <geert@linux-m68k.org>, linux-m68k@vger.kernel.org, linux-kernel@vger.kernel.org
 
-On Sat, Nov 11, 2017 at 09:45:53AM +0100, Greg Kroah-Hartman wrote:
-> On Sat, Nov 11, 2017 at 01:12:49AM -0500, Finn Thain wrote:
-> > Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> > Tested-by: Stan Johnson <userm57@yahoo.com>
-> > Signed-off-by: Finn Thain <fthain@telegraphics.com.au>
-> > ---
-> 
-> I can't take patches without any changelog text at all, that's not good
-> engineering, sorry :(
-> 
-> Please fix up and resend and I will be glad to review.
+On Sat, 2017-11-11 at 01:12 -0500, Finn Thain wrote:
+> Testing shows that a single Radius PrecisionColor 24X display board,
+> which has 95 functional resources, produces over a thousand lines of
+> log messages. Suppress these messages with pr_debug().
+> Remove some redundant messages relating to nubus_get_subdir() calls.
+> Fix the format block debug messages which has the sequence of entries
+> backwards (my bad).
+> Move the "Scanning slots" message to its proper location.
 
-Also, please test device removal, I don't think you did that :(
+pr_debug calls are compiled completely away to nothing
+unless DEBUG is
+defined or CONFIG_DYNAMIC_DEBUG is
+enabled.
+
+Aren't some of these actually useful?
+
+Perhaps it'd be nicer to have some nubus
+specific flag to enable these outputs instead
+of relying on either #define DEBUG or
+CONFIG_DYNAMIC_DEBUG?
