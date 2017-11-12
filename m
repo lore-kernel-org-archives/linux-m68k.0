@@ -1,90 +1,52 @@
-From: Joe Perches <joe@perches.com>
-Subject: Re: [PATCH 04/14] nubus: Fix log spam
-Date: Sat, 11 Nov 2017 16:08:33 -0800
-Message-ID: <1510445313.10883.46.camel@perches.com>
-References: <cover.1510377368.git.fthain@telegraphics.com.au>
-         <0c2f94698a76d320786aac770d2db006fd4e5764.1510377368.git.fthain@telegraphics.com.au>
-         <1510412649.10883.12.camel@perches.com>
-         <alpine.LNX.2.00.1711121022470.3@nippy.intranet>
+From: Finn Thain <fthain@telegraphics.com.au>
+Subject: Re: [PATCH 14/14] nubus: Add support for the driver model
+Date: Sun, 12 Nov 2017 14:52:32 +1100 (AEDT)
+Message-ID: <alpine.LNX.2.00.1711121407590.3@nippy.intranet>
+References: <cover.1510377368.git.fthain@telegraphics.com.au> <6c64ec1ff338853f8ba34783e70896565f968854.1510377369.git.fthain@telegraphics.com.au> <20171111084553.GA6403@kroah.com> <20171111084653.GB6403@kroah.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="ISO-8859-1"
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from smtprelay0030.hostedemail.com ([216.40.44.30]:58750 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1752275AbdKLAIi (ORCPT
-        <rfc822;linux-m68k@vger.kernel.org>);
-        Sat, 11 Nov 2017 19:08:38 -0500
-In-Reply-To: <alpine.LNX.2.00.1711121022470.3@nippy.intranet>
-Sender: linux-m68k-owner@vger.kernel.org
-List-Id: linux-m68k@vger.kernel.org
-To: Finn Thain <fthain@telegraphics.com.au>
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20171111084653.GB6403@kroah.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Cc: Geert Uytterhoeven <geert@linux-m68k.org>, linux-m68k@vger.kernel.org, linux-kernel@vger.kernel.org
+List-Id: linux-m68k@vger.kernel.org
 
-On Sun, 2017-11-12 at 10:47 +1100, Finn Thain wrote:
-> On Sat, 11 Nov 2017, Joe Perches wrote:
-> 
-> > On Sat, 2017-11-11 at 01:12 -0500, Finn Thain wrote:
-> > > Testing shows that a single Radius PrecisionColor 24X display board,
-> > > which has 95 functional resources, produces over a thousand lines of
-> > > log messages. Suppress these messages with pr_debug().
-> > > Remove some redundant messages relating to nubus_get_subdir() calls.
-> > > Fix the format block debug messages which has the sequence of entries
-> > > backwards (my bad).
-> > > Move the "Scanning slots" message to its proper location.
+On Sat, 11 Nov 2017, Greg Kroah-Hartman wrote:
+
+> On Sat, Nov 11, 2017 at 09:45:53AM +0100, Greg Kroah-Hartman wrote:
 > > 
-> > pr_debug calls are compiled completely away to nothing
-> > unless DEBUG is
-> > defined or CONFIG_DYNAMIC_DEBUG is
-> > enabled.
+> > I can't take patches without any changelog text at all, that's not 
+> > good engineering, sorry :(
 > > 
-> > Aren't some of these actually useful?
-> > 
+
+I forgot to write it, sorry. I was going to explain the decision to leave 
+the bus matching up to the driver.
+
+> > Please fix up and resend and I will be glad to review.
 > 
-> No, not AFAIK. Was there anything in particular that you wanted to see in 
-> the log?
-
-I don't have any of these and I only glanced at
-the code, so if it's unimportant, then that's fine.
-
-The only one I saw as remotely useful was the MAC
-address.
-
-> > Perhaps it'd be nicer to have some nubus
-> > specific flag to enable these outputs instead
-> > of relying on either #define DEBUG or
-> > CONFIG_DYNAMIC_DEBUG?
-> > 
+> Also, please test device removal, I don't think you did that :(
 > 
-> The file /proc/nubus has the important info. These patches don't affect 
-> that. For example,
-> 
-> # cat /proc/nubus
-> Nubus devices found:
-> Slot E: Farallon EtherMac LC-TP
-> # 
 
-Anyway maybe use nubus_debug and allow that to be
-something like:
+The modprobe, rmmod, modprobe sequence was tested. But I think that isn't 
+what you meant.
 
-#ifdef CONFIG_NUBUS_DEBUG
-#define DEBUG
-#endif
+Are you saying there is a missing NULL check? That is,
 
-#define nubus_debug pr_debug
+ static int nubus_device_remove(struct device *dev)
+ {
+ 	struct nubus_driver *ndrv = to_nubus_driver(dev->driver);
+ 	int err = -ENODEV;
+ 
+-	if (ndrv->remove)
++	if (dev->driver && ndrv->remove)
+ 		err = ndrv->remove(to_nubus_board(dev));
+ 	return err;
+ }
 
-or
+Anyway, I will revise the patch and test the unbind operation on a device 
+not already bound.
 
-and maybe allow some module param to control it
+Thanks for your feedback.
 
-MODULE_PARM_DESC(nubus_init_loggging, "Enable nubus init debug logging - set to 1 to enable");
-
-#define nubus_debug(fmt, ...)					\
-do {								\
-	if (nubus_init_logging)					\
-		printk(KERN_DEBUG fmt, ##__VA_ARGS__);		\
-} while (0)
-
-Just suggestions.  Use or ignore.
-
-cheers, Joe
+-- 
