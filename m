@@ -1,73 +1,79 @@
-From: Greg Ungerer <gerg@linux-m68k.org>
-Subject: [git pull] m68knommu changes for v4.15
-Date: Mon, 13 Nov 2017 15:25:26 +1000
-Message-ID: <1837dd8e-4c05-54ab-09f2-2834f557f711@linux-m68k.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Language: en-US
-Sender: linux-kernel-owner@vger.kernel.org
-To: torvalds@linux-foundation.org
-Cc: "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Linux/m68k <linux-m68k@vger.kernel.org>, Geert Uytterhoeven <geert@linux-m68k.org>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: [git pull] m68k updates for 4.15
+Date: Mon, 13 Nov 2017 09:35:30 +0100
+Message-ID: <1510562130-14410-1-git-send-email-geert@linux-m68k.org>
+Return-path: <linux-m68k-owner@vger.kernel.org>
+Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
+To: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: Andrew Morton <akpm@linux-foundation.org>, Greg Ungerer <gerg@linux-m68k.org>, linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org, Geert Uytterhoeven <geert@linux-m68k.org>
 
-Hi Linus,
+	Hi Linus,
 
-Can you please pull the m68knommu git tree, for-next branch.
+The following changes since commit 0b07194bb55ed836c2cc7c22e866b87a14681984:
 
-The bulk of the changes are to support the ColdFire 5441x SoC family with
-their MMU enabled. The parts have been supported for a long time now, but
-only in no-MMU mode. Angelo Dureghello has a new board with a 5441x and
-we have ironed out the last problems with MMU enabled on it. So there is
-also some changes to properly support that board too. Also a fix for a
-link problem when selecting the traditional 68k beep device in no-MMU
-configurations.
-
-Regards
-Greg
-
-
-
-
-The following changes since commit 39dae59d66acd86d1de24294bd2f343fd5e7a625:
-
-  Linux 4.14-rc8 (2017-11-05 13:05:14 -0800)
+  Linux 4.14-rc7 (2017-10-29 13:58:38 -0700)
 
 are available in the git repository at:
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/gerg/m68knommu.git for-next
+  git://git.kernel.org/pub/scm/linux/kernel/git/geert/linux-m68k.git tags/m68k-for-v4.15-tag1
 
-for you to fetch changes up to c8b61d508986b7e77bab11f8252b67e6e2b9a7cc:
+for you to fetch changes up to 5e387199c17c4d2fb8b72ada82fbf81f4ba6f317:
 
-  m68k: add Sysam stmark2 open board support (2017-11-07 13:27:38 +1000)
+  m68k/defconfig: Update defconfigs for v4.14-rc7 (2017-11-09 23:02:58 +0100)
 
 ----------------------------------------------------------------
-Alexandre Belloni (1):
-      m68k: pull mach_beep in setup.c
+m68k updates for 4.15
 
-Angelo Dureghello (2):
-      m68k: coldfire: add dspi0 module support
-      m68k: add Sysam stmark2 open board support
+  - More printk modernization,
+  - Various cleanups and fixes (incl. a race condition) for Mac,
+  - Defconfig updates.
 
-Greg Ungerer (3):
-      m68k: move coldfire MMU initialization code
-      m68k: fix ColdFire node shift size calculation
-      m68k: allow ColdFire m5441x parts to run with MMU enabled
+Note that this is based on v4.14-rc7 not -rc1 due to -rc7 triggering a
+defconfig refresh.
 
- arch/m68k/Kconfig.cpu               |   2 +-
- arch/m68k/Kconfig.machine           |   6 ++
- arch/m68k/coldfire/Makefile         |   3 +-
- arch/m68k/coldfire/m5441x.c         |   3 +-
- arch/m68k/coldfire/m54xx.c          |   4 --
- arch/m68k/coldfire/stmark2.c        | 119 ++++++++++++++++++++++++++++++++++++
- arch/m68k/configs/stmark2_defconfig |  92 ++++++++++++++++++++++++++++
- arch/m68k/include/asm/m5441xsim.h   |   6 ++
- arch/m68k/include/asm/mcfmmu.h      |   1 +
- arch/m68k/include/asm/mmu_context.h |   1 -
- arch/m68k/kernel/setup.c            |   5 ++
- arch/m68k/kernel/setup_mm.c         |   6 +-
- arch/m68k/mm/mcfmmu.c               |   4 +-
- 13 files changed, 238 insertions(+), 14 deletions(-)
- create mode 100644 arch/m68k/coldfire/stmark2.c
- create mode 100644 arch/m68k/configs/stmark2_defconfig
+Thanks for pulling!
+
+----------------------------------------------------------------
+Finn Thain (4):
+      m68k/mac: More printk modernization
+      m68k/mac: Disentangle VIA and OSS initialization
+      m68k/mac: Disentangle VIA/RBV and NuBus initialization
+      m68k/mac: Add mutual exclusion for IOP interrupt polling
+
+Geert Uytterhoeven (1):
+      m68k/defconfig: Update defconfigs for v4.14-rc7
+
+ arch/m68k/configs/amiga_defconfig    |  6 ++--
+ arch/m68k/configs/apollo_defconfig   |  6 ++--
+ arch/m68k/configs/atari_defconfig    |  6 ++--
+ arch/m68k/configs/bvme6000_defconfig |  6 ++--
+ arch/m68k/configs/hp300_defconfig    |  6 ++--
+ arch/m68k/configs/mac_defconfig      |  6 ++--
+ arch/m68k/configs/multi_defconfig    |  6 ++--
+ arch/m68k/configs/mvme147_defconfig  |  6 ++--
+ arch/m68k/configs/mvme16x_defconfig  |  6 ++--
+ arch/m68k/configs/q40_defconfig      |  6 ++--
+ arch/m68k/configs/sun3_defconfig     |  6 ++--
+ arch/m68k/configs/sun3x_defconfig    |  6 ++--
+ arch/m68k/include/asm/mac_iop.h      |  1 +
+ arch/m68k/mac/baboon.c               |  2 +-
+ arch/m68k/mac/config.c               |  2 +-
+ arch/m68k/mac/iop.c                  | 13 +++++++--
+ arch/m68k/mac/oss.c                  | 16 +++--------
+ arch/m68k/mac/psc.c                  |  6 ++--
+ arch/m68k/mac/via.c                  | 53 ++++++++++++++----------------------
+ drivers/macintosh/adb-iop.c          |  4 +--
+ drivers/nubus/nubus.c                | 13 ---------
+ 21 files changed, 90 insertions(+), 92 deletions(-)
+
+Gr{oetje,eeting}s,
+
+						Geert
+
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+							    -- Linus Torvalds
