@@ -1,79 +1,63 @@
 From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: [git pull] m68k updates for 4.15
-Date: Mon, 13 Nov 2017 09:35:30 +0100
-Message-ID: <1510562130-14410-1-git-send-email-geert@linux-m68k.org>
+Subject: Re: [PATCH 11/14] nubus: Repopulate /proc/bus/nubus/s/
+Date: Mon, 13 Nov 2017 09:56:35 +0100
+Message-ID: <CAMuHMdUCWzmGNyPp0OV-XFvtyTcxCgW-eLKdxnkd0gg_rGToVw@mail.gmail.com>
+References: <cover.1510377368.git.fthain@telegraphics.com.au> <51c5a1526bbf522bbb76d6a71040c220e7e72a8a.1510377369.git.fthain@telegraphics.com.au>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="UTF-8"
 Return-path: <linux-m68k-owner@vger.kernel.org>
+Received: from mail-qt0-f194.google.com ([209.85.216.194]:49794 "EHLO
+        mail-qt0-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1751585AbdKMI4g (ORCPT
+        <rfc822;linux-m68k@vger.kernel.org>); Mon, 13 Nov 2017 03:56:36 -0500
+In-Reply-To: <51c5a1526bbf522bbb76d6a71040c220e7e72a8a.1510377369.git.fthain@telegraphics.com.au>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: Andrew Morton <akpm@linux-foundation.org>, Greg Ungerer <gerg@linux-m68k.org>, linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org, Geert Uytterhoeven <geert@linux-m68k.org>
+To: Finn Thain <fthain@telegraphics.com.au>
+Cc: Linux/m68k <linux-m68k@vger.kernel.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
 
-	Hi Linus,
+Hi Finn,
 
-The following changes since commit 0b07194bb55ed836c2cc7c22e866b87a14681984:
+On Sat, Nov 11, 2017 at 7:12 AM, Finn Thain <fthain@telegraphics.com.au> wrote:
+> Create the /proc/bus/nubus/s/ inodes while scanning slot s. During
+> descent through slot resource subdirectories, call the new
+> nubus_proc_add_foo() functions to create the procfs inodes.
+>
+> Also add a new function, nubus_seq_write_rsrc_mem(), to write the
+> contents of a particular slot resource to a given seq_file. This is
+> used by the procfs file_operations methods, to finally give userspace
+> access to slot ROM information, such as the available video modes.
+>
+> Tested-by: Stan Johnson <userm57@yahoo.com>
+> Signed-off-by: Finn Thain <fthain@telegraphics.com.au>
 
-  Linux 4.14-rc7 (2017-10-29 13:58:38 -0700)
+Thanks for your patch!
 
-are available in the git repository at:
+> ---
+>  drivers/nubus/nubus.c | 117 +++++++++++++++++++++++++++-------
+>  drivers/nubus/proc.c  | 170 +++++++++++++++++++++++++++++++++++++++++++++++---
+>  include/linux/nubus.h |  35 ++++++++++-
+>  3 files changed, 288 insertions(+), 34 deletions(-)
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/geert/linux-m68k.git tags/m68k-for-v4.15-tag1
+Wow, that's much more code added than was removed by "[PATCH 10/14] nubus:
+Depopulate /proc/bus/nubus/s/":
 
-for you to fetch changes up to 5e387199c17c4d2fb8b72ada82fbf81f4ba6f317:
+ drivers/nubus/proc.c  | 100 --------------------------------------------------
+ include/linux/nubus.h |   1 -
+ 2 files changed, 101 deletions(-)
 
-  m68k/defconfig: Update defconfigs for v4.14-rc7 (2017-11-09 23:02:58 +0100)
+How much memory is saved by not using the stored representation of
+slot resource data?
 
-----------------------------------------------------------------
-m68k updates for 4.15
-
-  - More printk modernization,
-  - Various cleanups and fixes (incl. a race condition) for Mac,
-  - Defconfig updates.
-
-Note that this is based on v4.14-rc7 not -rc1 due to -rc7 triggering a
-defconfig refresh.
-
-Thanks for pulling!
-
-----------------------------------------------------------------
-Finn Thain (4):
-      m68k/mac: More printk modernization
-      m68k/mac: Disentangle VIA and OSS initialization
-      m68k/mac: Disentangle VIA/RBV and NuBus initialization
-      m68k/mac: Add mutual exclusion for IOP interrupt polling
-
-Geert Uytterhoeven (1):
-      m68k/defconfig: Update defconfigs for v4.14-rc7
-
- arch/m68k/configs/amiga_defconfig    |  6 ++--
- arch/m68k/configs/apollo_defconfig   |  6 ++--
- arch/m68k/configs/atari_defconfig    |  6 ++--
- arch/m68k/configs/bvme6000_defconfig |  6 ++--
- arch/m68k/configs/hp300_defconfig    |  6 ++--
- arch/m68k/configs/mac_defconfig      |  6 ++--
- arch/m68k/configs/multi_defconfig    |  6 ++--
- arch/m68k/configs/mvme147_defconfig  |  6 ++--
- arch/m68k/configs/mvme16x_defconfig  |  6 ++--
- arch/m68k/configs/q40_defconfig      |  6 ++--
- arch/m68k/configs/sun3_defconfig     |  6 ++--
- arch/m68k/configs/sun3x_defconfig    |  6 ++--
- arch/m68k/include/asm/mac_iop.h      |  1 +
- arch/m68k/mac/baboon.c               |  2 +-
- arch/m68k/mac/config.c               |  2 +-
- arch/m68k/mac/iop.c                  | 13 +++++++--
- arch/m68k/mac/oss.c                  | 16 +++--------
- arch/m68k/mac/psc.c                  |  6 ++--
- arch/m68k/mac/via.c                  | 53 ++++++++++++++----------------------
- drivers/macintosh/adb-iop.c          |  4 +--
- drivers/nubus/nubus.c                | 13 ---------
- 21 files changed, 90 insertions(+), 92 deletions(-)
+BTW, should 10 and 11 be combined, to avoid a regression during bisection?
 
 Gr{oetje,eeting}s,
 
-						Geert
+                        Geert
 
 --
 Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
 In personal conversations with technical people, I call myself a hacker. But
 when I'm talking to journalists I just say "programmer" or something like that.
-							    -- Linus Torvalds
+                                -- Linus Torvalds
