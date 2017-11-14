@@ -1,77 +1,68 @@
 From: Finn Thain <fthain@telegraphics.com.au>
-Subject: Re: [PATCH 12/14] nubus: Rename struct nubus_dev
-Date: Tue, 14 Nov 2017 11:18:49 +1100 (AEDT)
-Message-ID: <alpine.LNX.2.00.1711132052080.3@nippy.intranet>
-References: <cover.1510377368.git.fthain@telegraphics.com.au> <e431877669099f4245c8e9ef4d0240896195c467.1510377369.git.fthain@telegraphics.com.au> <CAMuHMdUkMTHZA8zjky6Tmj1mdtyA0GkJXGt2QSvFd8Of63TOaA@mail.gmail.com>
+Subject: Re: [PATCH 11/14] nubus: Repopulate /proc/bus/nubus/s/
+Date: Tue, 14 Nov 2017 11:21:29 +1100 (AEDT)
+Message-ID: <alpine.LNX.2.00.1711141020480.3@nippy.intranet>
+References: <cover.1510377368.git.fthain@telegraphics.com.au> <51c5a1526bbf522bbb76d6a71040c220e7e72a8a.1510377369.git.fthain@telegraphics.com.au> <CAMuHMdUCWzmGNyPp0OV-XFvtyTcxCgW-eLKdxnkd0gg_rGToVw@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from kvm5.telegraphics.com.au ([98.124.60.144]:51390 "EHLO
+Received: from kvm5.telegraphics.com.au ([98.124.60.144]:51448 "EHLO
         kvm5.telegraphics.com.au" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1751576AbdKNASs (ORCPT
-        <rfc822;linux-m68k@vger.kernel.org>); Mon, 13 Nov 2017 19:18:48 -0500
-In-Reply-To: <CAMuHMdUkMTHZA8zjky6Tmj1mdtyA0GkJXGt2QSvFd8Of63TOaA@mail.gmail.com>
+        with ESMTP id S1751113AbdKNAV2 (ORCPT
+        <rfc822;linux-m68k@vger.kernel.org>); Mon, 13 Nov 2017 19:21:28 -0500
+In-Reply-To: <CAMuHMdUCWzmGNyPp0OV-XFvtyTcxCgW-eLKdxnkd0gg_rGToVw@mail.gmail.com>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
 To: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: Linux/m68k <linux-m68k@vger.kernel.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>, "netdev@vger.kernel.org" <netdev@vger.kernel.org>, Linux Fbdev development list <linux-fbdev@vger.kernel.org>
+Cc: Linux/m68k <linux-m68k@vger.kernel.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
 
 On Mon, 13 Nov 2017, Geert Uytterhoeven wrote:
 
-> Hi Finn,
-> 
 > On Sat, Nov 11, 2017 at 7:12 AM, Finn Thain <fthain@telegraphics.com.au> 
 > wrote:
-> > It is misleading to use "dev" to mean a functional resource. And in 
-> > adopting the Linux Driver Model, struct nubus_board will embed a 
-> > struct device. Drivers will then bind with boards, not with functional 
-> > resources.
-> >
-> > Rename struct nubus_dev as struct nubus_functional_resource. This is 
-> > the vendor's terminology and avoids confusion.
 > 
-> Isn't "struct nubus_functional_resource" a bit long? 
-
-Right.
-
-> What about "nubus_res"? "nubus_fres"?
+> > ---
+> >  drivers/nubus/nubus.c | 117 +++++++++++++++++++++++++++-------
+> >  drivers/nubus/proc.c  | 170 +++++++++++++++++++++++++++++++++++++++++++++++---
+> >  include/linux/nubus.h |  35 ++++++++++-
+> >  3 files changed, 288 insertions(+), 34 deletions(-)
+> 
+> Wow, that's much more code added than was removed by "[PATCH 10/14] 
+> nubus: Depopulate /proc/bus/nubus/s/":
+> 
+>  drivers/nubus/proc.c  | 100 --------------------------------------------------
+>  include/linux/nubus.h |   1 -
+>  2 files changed, 101 deletions(-)
 > 
 
-I think the temporary variables can remain 'fres', as that's just a 
-mnemonic, though the declaration really ought to tell us something 
-meaningful.
+You're right. The new code includes two structs file_operations and there 
+is probably some redundancy in this arrangement. I'll see if it can be 
+done with one set of file operations methods.
 
-You and I both avoided 'func' as an abbreviation. I think it suggests a 
-'C' function pointer. And 'res' and 'rsrc' suggest an ioport.h struct 
-resource. An unambiguous compromise would be 'nubus_functional_rsrc' but 
-maybe this is still too long?
+> How much memory is saved by not using the stored representation of slot 
+> resource data?
+> 
 
-Perhaps 'struct nubus_rsrc' or 'struct nubus_res' are okay if we can keep 
-the distinction between 'functional resources', 'slot resources' and 
-'board resources' clear by naming instances appropriately? E.g.
+That question might be expressed as "how much RAM would be wasted by 
+duplicating the contents of the slot ROM resources in RAM?".
 
-@@ -33,7 +33,7 @@ struct nubus_dirent {
- 
- struct nubus_board {
-        struct nubus_board *next;
--       struct nubus_dev *first_dev;
-+       struct nubus_rsrc *first_func_rsrc;
- 
-        /* Only 9-E actually exist, though 0-8 are also theoretically
-           possible, and 0 is a special case which represents the
-@@ -81,8 +81,8 @@ struct nubus_dev {
-        struct nubus_board *board;
- };
- 
--/* This is all NuBus devices (used to find devices later on) */
--extern struct nubus_dev *nubus_devices;
-+/* This is all NuBus functional resources (used to find devices later on) 
-*/
-+extern struct nubus_rsrc *nubus_func_rsrcs;
- /* This is all NuBus cards */
- extern struct nubus_board *nubus_boards;
+Either way, the answer is hard to estimate because we don't know which 
+resources will be accessed via procfs. (Resource IDs that are not known to 
+nubus.c are omitted already though they may end up being needed.)
 
-etc.
+The few resources needed by sysfs are already stored in RAM at a cost of a 
+tens of bytes per board. The resources required by drivers are read from 
+ROM as needed and I think that's the simplest and cheapest approach for 
+procfs too.
+
+> BTW, should 10 and 11 be combined, to avoid a regression during 
+> bisection?
+> 
+
+Right. There isn't any reason to separate them now. I'll squash them 
+together.
+
+Thanks for reviewing.
 
 -- 
 
