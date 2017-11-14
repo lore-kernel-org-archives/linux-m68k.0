@@ -1,39 +1,81 @@
-From: =?utf-8?Q?Ingo_J=C3=BCrgensmann?= <ij@2017.bluespice.org>
-Subject: Re: Debian 68k meeting in 2018
-Date: Mon, 13 Nov 2017 20:05:14 +0100
-Message-ID: <C38A5596-8DA7-4541-A08C-FE93795DCA46@2017.bluespice.org>
-References: <80eb7c16-6016-55f7-089a-8ea2511c6f00@physik.fu-berlin.de>
- <20171108120844.GA21585@nunzio.venus.sol>
- <d01ce7aa-a134-56de-fc4c-3079cd544465@physik.fu-berlin.de>
- <20171109095738.GA22602@nunzio.venus.sol>
- <e7984163-47b0-7667-944a-6175b02be12f@physik.fu-berlin.de>
- <5cd068fc-8fdb-fb8d-4d7a-e590570815ea@strotmann.de>
-Mime-Version: 1.0 (Mac OS X Mail 11.1 \(3445.4.7\))
-Content-Type: text/plain;
-        charset=utf-8
-Content-Transfer-Encoding: 8BIT
+From: Finn Thain <fthain@telegraphics.com.au>
+Subject: Re: [PATCH 12/14] nubus: Rename struct nubus_dev
+Date: Tue, 14 Nov 2017 11:18:49 +1100 (AEDT)
+Message-ID: <alpine.LNX.2.00.1711132052080.3@nippy.intranet>
+References: <cover.1510377368.git.fthain@telegraphics.com.au> <e431877669099f4245c8e9ef4d0240896195c467.1510377369.git.fthain@telegraphics.com.au> <CAMuHMdUkMTHZA8zjky6Tmj1mdtyA0GkJXGt2QSvFd8Of63TOaA@mail.gmail.com>
+Mime-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from vserv.windfluechter.net ([31.172.31.194]:46512 "EHLO
-        vserv.windfluechter.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1754253AbdKMTFb (ORCPT
-        <rfc822;linux-m68k@vger.kernel.org>); Mon, 13 Nov 2017 14:05:31 -0500
-In-Reply-To: <5cd068fc-8fdb-fb8d-4d7a-e590570815ea@strotmann.de>
+Received: from kvm5.telegraphics.com.au ([98.124.60.144]:51390 "EHLO
+        kvm5.telegraphics.com.au" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1751576AbdKNASs (ORCPT
+        <rfc822;linux-m68k@vger.kernel.org>); Mon, 13 Nov 2017 19:18:48 -0500
+In-Reply-To: <CAMuHMdUkMTHZA8zjky6Tmj1mdtyA0GkJXGt2QSvFd8Of63TOaA@mail.gmail.com>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Carsten Strotmann <cas@strotmann.de>
-Cc: John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>, Debian m68k <debian-68k@lists.debian.org>, Linux/m68k <linux-m68k@vger.kernel.org>
+To: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: Linux/m68k <linux-m68k@vger.kernel.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>, "netdev@vger.kernel.org" <netdev@vger.kernel.org>, Linux Fbdev development list <linux-fbdev@vger.kernel.org>
 
-Am 09.11.2017 um 12:17 schrieb Carsten Strotmann <cas@strotmann.de>:
+On Mon, 13 Nov 2017, Geert Uytterhoeven wrote:
 
-> I offer to organize a meeting at Linuxhotel (http://linuxhotel.de) in Essen/Germany.
-> Prices are low (for open source community meetings, around 40 Euro/Weekend/per Person), we have network, hotel rooms and meeting rooms on venue in a nice park.
-> And Linuxhotel would fit the meeting theme :)
-> Linuxhotel is especially nice in Spring/Summer.
+> Hi Finn,
+> 
+> On Sat, Nov 11, 2017 at 7:12 AM, Finn Thain <fthain@telegraphics.com.au> 
+> wrote:
+> > It is misleading to use "dev" to mean a functional resource. And in 
+> > adopting the Linux Driver Model, struct nubus_board will embed a 
+> > struct device. Drivers will then bind with boards, not with functional 
+> > resources.
+> >
+> > Rename struct nubus_dev as struct nubus_functional_resource. This is 
+> > the vendor's terminology and avoids confusion.
+> 
+> Isn't "struct nubus_functional_resource" a bit long? 
 
-Linuxhotel sounds great. Never been to Linuxhotel so far… :-) 
+Right.
+
+> What about "nubus_res"? "nubus_fres"?
+> 
+
+I think the temporary variables can remain 'fres', as that's just a 
+mnemonic, though the declaration really ought to tell us something 
+meaningful.
+
+You and I both avoided 'func' as an abbreviation. I think it suggests a 
+'C' function pointer. And 'res' and 'rsrc' suggest an ioport.h struct 
+resource. An unambiguous compromise would be 'nubus_functional_rsrc' but 
+maybe this is still too long?
+
+Perhaps 'struct nubus_rsrc' or 'struct nubus_res' are okay if we can keep 
+the distinction between 'functional resources', 'slot resources' and 
+'board resources' clear by naming instances appropriately? E.g.
+
+@@ -33,7 +33,7 @@ struct nubus_dirent {
+ 
+ struct nubus_board {
+        struct nubus_board *next;
+-       struct nubus_dev *first_dev;
++       struct nubus_rsrc *first_func_rsrc;
+ 
+        /* Only 9-E actually exist, though 0-8 are also theoretically
+           possible, and 0 is a special case which represents the
+@@ -81,8 +81,8 @@ struct nubus_dev {
+        struct nubus_board *board;
+ };
+ 
+-/* This is all NuBus devices (used to find devices later on) */
+-extern struct nubus_dev *nubus_devices;
++/* This is all NuBus functional resources (used to find devices later on) 
+*/
++extern struct nubus_rsrc *nubus_func_rsrcs;
+ /* This is all NuBus cards */
+ extern struct nubus_board *nubus_boards;
+
+etc.
 
 -- 
-Ciao...          //        http://blog.windfluechter.net
-      Ingo     \X/     XMPP: ij@jabber.windfluechter.net
-	
-gpg pubkey:  http://www.juergensmann.de/ij_public_key.asc
+
+> Gr{oetje,eeting}s,
+> 
+>                         Geert
+> 
