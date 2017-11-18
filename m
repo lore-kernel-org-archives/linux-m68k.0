@@ -1,141 +1,122 @@
 From: Finn Thain <fthain@telegraphics.com.au>
-Subject: [PATCH v2 08/13] nubus: Clean up whitespace
+Subject: [PATCH v2 06/13] nubus: Call proc_mkdir() not more than once per slot
+ directory
 Date: Fri, 17 Nov 2017 21:30:11 -0500 (EST)
-Message-ID: <53bb259732e066cebf0271d91c0e741155f3393d.1510960933.git.fthain@telegraphics.com.au>
+Message-ID: <27ee96e457704a2ba33312641bb761b20b2a4ae6.1510960933.git.fthain@telegraphics.com.au>
 References: <cover.1510960933.git.fthain@telegraphics.com.au>
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from kvm5.telegraphics.com.au ([98.124.60.144]:34560 "EHLO
+Received: from kvm5.telegraphics.com.au ([98.124.60.144]:34556 "EHLO
         kvm5.telegraphics.com.au" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1161398AbdKRCaN (ORCPT
-        <rfc822;linux-m68k@vger.kernel.org>); Fri, 17 Nov 2017 21:30:13 -0500
+        with ESMTP id S1161399AbdKRCaM (ORCPT
+        <rfc822;linux-m68k@vger.kernel.org>); Fri, 17 Nov 2017 21:30:12 -0500
 In-Reply-To: <cover.1510960933.git.fthain@telegraphics.com.au>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
 To: Geert Uytterhoeven <geert@linux-m68k.org>
 Cc: linux-m68k@vger.kernel.org, linux-kernel@vger.kernel.org
 
+This patch fixes the following WARNING.
+
+proc_dir_entry 'nubus/a' already registered
+Modules linked in:
+CPU: 0 PID: 1 Comm: swapper Tainted: G        W       4.13.0-00036-gd57552077387 #1
+Stack from 01c1bd9c:
+        01c1bd9c 003c2c8b 01c1bdc0 0001b0fe 00000000 00322f4a 01c43a20 01c43b0c
+        01c8c420 01c1bde8 0001b1b8 003a4ac3 00000148 000faa26 00000009 00000000
+        01c1bde0 003a4b6c 01c1bdfc 01c1be20 000faa26 003a4ac3 00000148 003a4b6c
+        01c43a71 01c8c471 01c10000 00326430 0043d00c 00000005 01c71a00 0020bce0
+        00322964 01c1be38 000fac04 01c43a20 01c8c420 01c1bee0 01c8c420 01c1be50
+        000fac4c 01c1bee0 00000000 01c43a20 00000000 01c1bee8 0020bd26 01c1bee0
+Call Trace: [<0001b0fe>] __warn+0xae/0xde
+ [<00322f4a>] memcmp+0x0/0x5c
+ [<0001b1b8>] warn_slowpath_fmt+0x2e/0x36
+ [<000faa26>] proc_register+0xbe/0xd8
+ [<000faa26>] proc_register+0xbe/0xd8
+ [<00326430>] sprintf+0x0/0x20
+ [<0020bce0>] nubus_proc_attach_device+0x0/0x1b8
+ [<00322964>] strcpy+0x0/0x22
+ [<000fac04>] proc_mkdir_data+0x64/0x96
+ [<000fac4c>] proc_mkdir+0x16/0x1c
+ [<0020bd26>] nubus_proc_attach_device+0x46/0x1b8
+ [<0020bce0>] nubus_proc_attach_device+0x0/0x1b8
+ [<00322964>] strcpy+0x0/0x22
+ [<00001ba6>] kernel_pg_dir+0xba6/0x1000
+ [<004339a2>] proc_bus_nubus_add_devices+0x1a/0x2e
+ [<000faa40>] proc_create_data+0x0/0xf2
+ [<0003297c>] parse_args+0x0/0x2d4
+ [<00433a08>] nubus_proc_init+0x52/0x5a
+ [<00433944>] nubus_init+0x0/0x44
+ [<00433982>] nubus_init+0x3e/0x44
+ [<000020dc>] do_one_initcall+0x38/0x196
+ [<000020a4>] do_one_initcall+0x0/0x196
+ [<0003297c>] parse_args+0x0/0x2d4
+ [<00322964>] strcpy+0x0/0x22
+ [<00040004>] __up_read+0xe/0x40
+ [<004231d4>] repair_env_string+0x0/0x7a
+ [<0042312e>] kernel_init_freeable+0xee/0x194
+ [<00423146>] kernel_init_freeable+0x106/0x194
+ [<00433944>] nubus_init+0x0/0x44
+ [<000a6000>] kfree+0x0/0x156
+ [<0032768c>] kernel_init+0x0/0xda
+ [<00327698>] kernel_init+0xc/0xda
+ [<0032768c>] kernel_init+0x0/0xda
+ [<00002a90>] ret_from_kernel_thread+0xc/0x14
+---[ end trace 14a6d619908ea253 ]---
+------------[ cut here ]------------
+
+This gets repeated with each additional functional reasource.
+
+The problem here is calling proc_mkdir() when the directory already
+exists. Each nubus_board gets a directory such as /proc/bus/nubus/s/
+where s is the hex slot number. Therefore, store the 'procdir' pointer
+in struct nubus_board instead of struct nubus_dev.
+
 Tested-by: Stan Johnson <userm57@yahoo.com>
 Signed-off-by: Finn Thain <fthain@telegraphics.com.au>
 ---
- include/linux/nubus.h | 54 +++++++++++++++++++++++++--------------------------
- 1 file changed, 27 insertions(+), 27 deletions(-)
+ drivers/nubus/proc.c  | 6 +++++-
+ include/linux/nubus.h | 5 +++--
+ 2 files changed, 8 insertions(+), 3 deletions(-)
 
+diff --git a/drivers/nubus/proc.c b/drivers/nubus/proc.c
+index fc20dbcd3b9a..91211192f36f 100644
+--- a/drivers/nubus/proc.c
++++ b/drivers/nubus/proc.c
+@@ -134,9 +134,13 @@ int nubus_proc_attach_device(struct nubus_dev *dev)
+ 		return -1;
+ 	}
+ 		
++	if (dev->board->procdir)
++		return 0;
++
+ 	/* Create a directory */
+ 	snprintf(name, sizeof(name), "%x", dev->board->slot);
+-	e = dev->procdir = proc_mkdir(name, proc_bus_nubus_dir);
++	e = proc_mkdir(name, proc_bus_nubus_dir);
++	dev->board->procdir = e;
+ 	if (!e)
+ 		return -ENOMEM;
+ 
 diff --git a/include/linux/nubus.h b/include/linux/nubus.h
-index 46e4d983feac..84f2e0fa1898 100644
+index bffd09a07326..474f304485ec 100644
 --- a/include/linux/nubus.h
 +++ b/include/linux/nubus.h
-@@ -28,9 +28,9 @@ struct nubus_dirent {
+@@ -53,13 +53,14 @@ struct nubus_board {
+ 	unsigned char rev;
+ 	unsigned char format;
+ 	unsigned char lanes;
++
++	/* Directory entry in /proc/bus/nubus */
++	struct proc_dir_entry *procdir;
  };
- 
- struct nubus_board {
--	struct nubus_board* next;
--	struct nubus_dev* first_dev;
--	
-+	struct nubus_board *next;
-+	struct nubus_dev *first_dev;
-+
- 	/* Only 9-E actually exist, though 0-8 are also theoretically
- 	   possible, and 0 is a special case which represents the
- 	   motherboard and onboard peripherals (Ethernet, video) */
-@@ -39,10 +39,10 @@ struct nubus_board {
- 	char name[64];
- 
- 	/* Format block */
--	unsigned char* fblock;
-+	unsigned char *fblock;
- 	/* Root directory (does *not* always equal fblock + doffset!) */
--	unsigned char* directory;
--	
-+	unsigned char *directory;
-+
- 	unsigned long slot_addr;
- 	/* Offset to root directory (sometimes) */
- 	unsigned long doffset;
-@@ -60,7 +60,7 @@ struct nubus_board {
  
  struct nubus_dev {
  	/* Next link in device list */
--	struct nubus_dev* next;
-+	struct nubus_dev *next;
+ 	struct nubus_dev* next;
+-	/* Directory entry in /proc/bus/nubus */
+-	struct proc_dir_entry* procdir;
  
  	/* The functional resource ID of this device */
  	unsigned char resid;
-@@ -70,17 +70,17 @@ struct nubus_dev {
- 	unsigned short type;
- 	unsigned short dr_sw;
- 	unsigned short dr_hw;
--	
-+
- 	/* Functional directory */
--	unsigned char* directory;
-+	unsigned char *directory;
- 	/* Much of our info comes from here */
--	struct nubus_board* board;
-+	struct nubus_board *board;
- };
- 
- /* This is all NuBus devices (used to find devices later on) */
--extern struct nubus_dev* nubus_devices;
-+extern struct nubus_dev *nubus_devices;
- /* This is all NuBus cards */
--extern struct nubus_board* nubus_boards;
-+extern struct nubus_board *nubus_boards;
- 
- /* Generic NuBus interface functions, modelled after the PCI interface */
- #ifdef CONFIG_PROC_FS
-@@ -91,38 +91,38 @@ static inline void nubus_proc_init(void) {}
- 
- int nubus_proc_attach_device(struct nubus_dev *dev);
- /* If we need more precision we can add some more of these */
--struct nubus_dev* nubus_find_type(unsigned short category,
-+struct nubus_dev *nubus_find_type(unsigned short category,
- 				  unsigned short type,
--				  const struct nubus_dev* from);
-+				  const struct nubus_dev *from);
- /* Might have more than one device in a slot, you know... */
--struct nubus_dev* nubus_find_slot(unsigned int slot,
--				  const struct nubus_dev* from);
-+struct nubus_dev *nubus_find_slot(unsigned int slot,
-+				  const struct nubus_dev *from);
- 
- /* These are somewhat more NuBus-specific.  They all return 0 for
-    success and -1 for failure, as you'd expect. */
- 
- /* The root directory which contains the board and functional
-    directories */
--int nubus_get_root_dir(const struct nubus_board* board,
--		       struct nubus_dir* dir);
-+int nubus_get_root_dir(const struct nubus_board *board,
-+		       struct nubus_dir *dir);
- /* The board directory */
- int nubus_get_board_dir(const struct nubus_board* board,
- 			struct nubus_dir* dir);
- /* The functional directory */
--int nubus_get_func_dir(const struct nubus_dev* dev,
--		       struct nubus_dir* dir);
-+int nubus_get_func_dir(const struct nubus_dev *dev,
-+		       struct nubus_dir *dir);
- 
- /* These work on any directory gotten via the above */
--int nubus_readdir(struct nubus_dir* dir,
--		  struct nubus_dirent* ent);
--int nubus_find_rsrc(struct nubus_dir* dir,
-+int nubus_readdir(struct nubus_dir *dir,
-+		  struct nubus_dirent *ent);
-+int nubus_find_rsrc(struct nubus_dir *dir,
- 		    unsigned char rsrc_type,
--		    struct nubus_dirent* ent);
--int nubus_rewinddir(struct nubus_dir* dir);
-+		    struct nubus_dirent *ent);
-+int nubus_rewinddir(struct nubus_dir *dir);
- 
- /* Things to do with directory entries */
--int nubus_get_subdir(const struct nubus_dirent* ent,
--		     struct nubus_dir* dir);
-+int nubus_get_subdir(const struct nubus_dirent *ent,
-+		     struct nubus_dir *dir);
- void nubus_get_rsrc_mem(void *dest, const struct nubus_dirent *dirent,
-                         unsigned int len);
- void nubus_get_rsrc_str(char *dest, const struct nubus_dirent *dirent,
 -- 
 2.13.6
