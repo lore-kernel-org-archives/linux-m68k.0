@@ -1,7 +1,7 @@
 From: Finn Thain <fthain@telegraphics.com.au>
-Subject: [PATCH v2 05/13] nubus: Validate slot resource IDs
+Subject: [PATCH v2 07/13] nubus: Remove redundant code
 Date: Fri, 17 Nov 2017 21:30:11 -0500 (EST)
-Message-ID: <08a484a876eb07106641b42007b0bbc7b24d85ca.1510960933.git.fthain@telegraphics.com.au>
+Message-ID: <3486d0a3064a75346d954a871f72d424741e54b8.1510960933.git.fthain@telegraphics.com.au>
 References: <cover.1510960933.git.fthain@telegraphics.com.au>
 Return-path: <linux-kernel-owner@vger.kernel.org>
 In-Reply-To: <cover.1510960933.git.fthain@telegraphics.com.au>
@@ -10,82 +10,170 @@ To: Geert Uytterhoeven <geert@linux-m68k.org>
 Cc: linux-m68k@vger.kernel.org, linux-kernel@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
 
-While we are here, include the slot number in the related error messages.
+Eliminate unused values from struct nubus_dev to save wasted memory
+(a Radius PrecisionColor 24X card has about 95 functional resources
+and up to six such cards may be fitted). Also remove redundant static
+variable initialization, an unreachable !MACH_IS_MAC conditional,
+the unused nubus_find_device() function and the bogus get_nubus_list()
+prototype.
 
 Tested-by: Stan Johnson <userm57@yahoo.com>
 Signed-off-by: Finn Thain <fthain@telegraphics.com.au>
 ---
- drivers/nubus/nubus.c | 25 +++++++++++++++++++------
- 1 file changed, 19 insertions(+), 6 deletions(-)
+ drivers/nubus/nubus.c | 52 +++++++++++++++++++++------------------------------
+ drivers/nubus/proc.c  |  2 --
+ include/linux/nubus.h | 17 +----------------
+ 3 files changed, 22 insertions(+), 49 deletions(-)
 
 diff --git a/drivers/nubus/nubus.c b/drivers/nubus/nubus.c
-index bdf3f4f96705..72536ef28bd7 100644
+index 72536ef28bd7..7a0af37e52b8 100644
 --- a/drivers/nubus/nubus.c
 +++ b/drivers/nubus/nubus.c
-@@ -616,7 +616,7 @@ static int __init nubus_get_board_resource(struct nubus_board *board, int slot,
- 				nbtdata[0], nbtdata[1], nbtdata[2], nbtdata[3]);
- 			if (nbtdata[0] != 1 || nbtdata[1] != 0 ||
- 			    nbtdata[2] != 0 || nbtdata[3] != 0)
--				pr_err("this sResource is not a board resource!\n");
-+				pr_err("Slot %X: sResource is not a board resource!\n", slot);
- 			break;
+@@ -282,23 +282,6 @@ EXPORT_SYMBOL(nubus_rewinddir);
+ /* Driver interface functions, more or less like in pci.c */
+ 
+ struct nubus_dev*
+-nubus_find_device(unsigned short category, unsigned short type,
+-		  unsigned short dr_hw, unsigned short dr_sw,
+-		  const struct nubus_dev *from)
+-{
+-	struct nubus_dev *itor = from ? from->next : nubus_devices;
+-
+-	while (itor) {
+-		if (itor->category == category && itor->type == type &&
+-		    itor->dr_hw == dr_hw && itor->dr_sw == dr_sw)
+-			return itor;
+-		itor = itor->next;
+-	}
+-	return NULL;
+-}
+-EXPORT_SYMBOL(nubus_find_device);
+-
+-struct nubus_dev*
+ nubus_find_type(unsigned short category, unsigned short type,
+ 		const struct nubus_dev *from)
+ {
+@@ -469,8 +452,10 @@ nubus_get_functional_resource(struct nubus_board *board, int slot,
  		}
  		case NUBUS_RESID_NAME:
-@@ -671,6 +671,7 @@ static struct nubus_board * __init nubus_add_board(int slot, int bytelanes)
- 	unsigned long dpat;
- 	struct nubus_dir dir;
- 	struct nubus_dirent ent;
-+	int prev_resid = -1;
- 
- 	/* Move to the start of the format block */
- 	rp = nubus_rom_addr(slot);
-@@ -710,10 +711,10 @@ static struct nubus_board * __init nubus_add_board(int slot, int bytelanes)
- 
- 	/* Directory offset should be small and negative... */
- 	if (!(board->doffset & 0x00FF0000))
--		pr_warn("Dodgy doffset!\n");
-+		pr_warn("Slot %X: Dodgy doffset!\n", slot);
- 	dpat = nubus_get_rom(&rp, 4, bytelanes);
- 	if (dpat != NUBUS_TEST_PATTERN)
--		pr_warn("Wrong test pattern %08lx!\n", dpat);
-+		pr_warn("Slot %X: Wrong test pattern %08lx!\n", slot, dpat);
- 
- 	/*
- 	 *	I wonder how the CRC is meant to work -
-@@ -739,12 +740,15 @@ static struct nubus_board * __init nubus_add_board(int slot, int bytelanes)
- 	   for each of them. */
- 	if (nubus_readdir(&dir, &ent) == -1) {
- 		/* We can't have this! */
--		pr_err("Board resource not found!\n");
-+		pr_err("Slot %X: Board resource not found!\n", slot);
- 		return NULL;
--	} else {
--		nubus_get_board_resource(board, slot, &ent);
- 	}
- 
-+	if (ent.type < 1 || ent.type > 127)
-+		pr_warn("Slot %X: Board resource ID is invalid!\n", slot);
+ 		{
+-			nubus_get_rsrc_str(dev->name, &ent, sizeof(dev->name));
+-			pr_debug("    name: %s\n", dev->name);
++			char name[64];
 +
-+	nubus_get_board_resource(board, slot, &ent);
-+
- 	while (nubus_readdir(&dir, &ent) != -1) {
- 		struct nubus_dev *dev;
- 		struct nubus_dev **devp;
-@@ -753,6 +757,15 @@ static struct nubus_board * __init nubus_add_board(int slot, int bytelanes)
- 		if (dev == NULL)
- 			continue;
++			nubus_get_rsrc_str(name, &ent, sizeof(name));
++			pr_debug("    name: %s\n", name);
+ 			break;
+ 		}
+ 		case NUBUS_RESID_DRVRDIR:
+@@ -479,32 +464,39 @@ nubus_get_functional_resource(struct nubus_board *board, int slot,
+ 			   use this :-) */
+ 			struct nubus_dir drvr_dir;
+ 			struct nubus_dirent drvr_ent;
++			unsigned char *driver;
  
-+		/* Resources should appear in ascending ID order. This sanity
-+		 * check prevents duplicate resource IDs.
-+		 */
-+		if (dev->resid <= prev_resid) {
-+			kfree(dev);
-+			continue;
+ 			nubus_get_subdir(&ent, &drvr_dir);
+ 			nubus_readdir(&drvr_dir, &drvr_ent);
+-			dev->driver = nubus_dirptr(&drvr_ent);
+-			pr_debug("    driver at: 0x%p\n", dev->driver);
++			driver = nubus_dirptr(&drvr_ent);
++			pr_debug("    driver at: 0x%p\n", driver);
+ 			break;
+ 		}
+ 		case NUBUS_RESID_MINOR_BASEOS:
++		{
+ 			/* We will need this in order to support
+ 			   multiple framebuffers.  It might be handy
+ 			   for Ethernet as well */
+-			nubus_get_rsrc_mem(&dev->iobase, &ent, 4);
+-			pr_debug("    memory offset: 0x%08lx\n", dev->iobase);
++			u32 base_offset;
++
++			nubus_get_rsrc_mem(&base_offset, &ent, 4);
++			pr_debug("    memory offset: 0x%08x\n", base_offset);
+ 			break;
 +		}
-+		prev_resid = dev->resid;
+ 		case NUBUS_RESID_MINOR_LENGTH:
++		{
+ 			/* Ditto */
+-			nubus_get_rsrc_mem(&dev->iosize, &ent, 4);
+-			pr_debug("    memory length: 0x%08lx\n", dev->iosize);
++			u32 length;
 +
- 		/* We zeroed this out above */
- 		if (board->first_dev == NULL)
- 			board->first_dev = dev;
++			nubus_get_rsrc_mem(&length, &ent, 4);
++			pr_debug("    memory length: 0x%08x\n", length);
+ 			break;
++		}
+ 		case NUBUS_RESID_FLAGS:
+-			dev->flags = ent.data;
+-			pr_debug("    flags: 0x%06x\n", dev->flags);
++			pr_debug("    flags: 0x%06x\n", ent.data);
+ 			break;
+ 		case NUBUS_RESID_HWDEVID:
+-			dev->hwdevid = ent.data;
+-			pr_debug("    hwdevid: 0x%06x\n", dev->hwdevid);
++			pr_debug("    hwdevid: 0x%06x\n", ent.data);
+ 			break;
+ 		default:
+ 			/* Local/Private resources have their own
+@@ -837,8 +829,6 @@ static int __init nubus_init(void)
+ 	if (!MACH_IS_MAC)
+ 		return 0;
+ 
+-	nubus_devices = NULL;
+-	nubus_boards = NULL;
+ 	nubus_scan_bus();
+ 	nubus_proc_init();
+ 	return 0;
+diff --git a/drivers/nubus/proc.c b/drivers/nubus/proc.c
+index 91211192f36f..41ec859bdd8b 100644
+--- a/drivers/nubus/proc.c
++++ b/drivers/nubus/proc.c
+@@ -230,8 +230,6 @@ void __init proc_bus_nubus_add_devices(void)
+ void __init nubus_proc_init(void)
+ {
+ 	proc_create("nubus", 0, NULL, &nubus_proc_fops);
+-	if (!MACH_IS_MAC)
+-		return;
+ 	proc_bus_nubus_dir = proc_mkdir("bus/nubus", NULL);
+ 	proc_create("devices", 0, proc_bus_nubus_dir, &nubus_devices_proc_fops);
+ 	proc_bus_nubus_add_devices();
+diff --git a/include/linux/nubus.h b/include/linux/nubus.h
+index 474f304485ec..46e4d983feac 100644
+--- a/include/linux/nubus.h
++++ b/include/linux/nubus.h
+@@ -70,16 +70,6 @@ struct nubus_dev {
+ 	unsigned short type;
+ 	unsigned short dr_sw;
+ 	unsigned short dr_hw;
+-	/* This is the device's name rather than the board's.
+-	   Sometimes they are different.  Usually the board name is
+-	   more correct. */
+-	char name[64];
+-	/* MacOS driver (I kid you not) */
+-	unsigned char* driver;
+-	/* Actually this is an offset */
+-	unsigned long iobase;
+-	unsigned long iosize;
+-	unsigned char flags, hwdevid;
+ 	
+ 	/* Functional directory */
+ 	unsigned char* directory;
+@@ -98,14 +88,9 @@ extern void nubus_proc_init(void);
+ #else
+ static inline void nubus_proc_init(void) {}
+ #endif
+-int get_nubus_list(char *buf);
++
+ int nubus_proc_attach_device(struct nubus_dev *dev);
+ /* If we need more precision we can add some more of these */
+-struct nubus_dev* nubus_find_device(unsigned short category,
+-				    unsigned short type,
+-				    unsigned short dr_hw,
+-				    unsigned short dr_sw,
+-				    const struct nubus_dev* from);
+ struct nubus_dev* nubus_find_type(unsigned short category,
+ 				  unsigned short type,
+ 				  const struct nubus_dev* from);
 -- 
 2.13.6
