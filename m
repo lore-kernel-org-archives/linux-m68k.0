@@ -1,122 +1,228 @@
 From: Finn Thain <fthain@telegraphics.com.au>
-Subject: [PATCH v2 06/13] nubus: Call proc_mkdir() not more than once per slot
- directory
+Subject: [PATCH v2 09/13] nubus: Generalize block resource handling
 Date: Fri, 17 Nov 2017 21:30:11 -0500 (EST)
-Message-ID: <27ee96e457704a2ba33312641bb761b20b2a4ae6.1510960933.git.fthain@telegraphics.com.au>
+Message-ID: <837be075ddaded2440637def8de567acc0286ca6.1510960933.git.fthain@telegraphics.com.au>
 References: <cover.1510960933.git.fthain@telegraphics.com.au>
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from kvm5.telegraphics.com.au ([98.124.60.144]:34556 "EHLO
+Received: from kvm5.telegraphics.com.au ([98.124.60.144]:34562 "EHLO
         kvm5.telegraphics.com.au" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1161399AbdKRCaM (ORCPT
-        <rfc822;linux-m68k@vger.kernel.org>); Fri, 17 Nov 2017 21:30:12 -0500
+        with ESMTP id S1161403AbdKRCaN (ORCPT
+        <rfc822;linux-m68k@vger.kernel.org>); Fri, 17 Nov 2017 21:30:13 -0500
 In-Reply-To: <cover.1510960933.git.fthain@telegraphics.com.au>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
 To: Geert Uytterhoeven <geert@linux-m68k.org>
 Cc: linux-m68k@vger.kernel.org, linux-kernel@vger.kernel.org
 
-This patch fixes the following WARNING.
-
-proc_dir_entry 'nubus/a' already registered
-Modules linked in:
-CPU: 0 PID: 1 Comm: swapper Tainted: G        W       4.13.0-00036-gd57552077387 #1
-Stack from 01c1bd9c:
-        01c1bd9c 003c2c8b 01c1bdc0 0001b0fe 00000000 00322f4a 01c43a20 01c43b0c
-        01c8c420 01c1bde8 0001b1b8 003a4ac3 00000148 000faa26 00000009 00000000
-        01c1bde0 003a4b6c 01c1bdfc 01c1be20 000faa26 003a4ac3 00000148 003a4b6c
-        01c43a71 01c8c471 01c10000 00326430 0043d00c 00000005 01c71a00 0020bce0
-        00322964 01c1be38 000fac04 01c43a20 01c8c420 01c1bee0 01c8c420 01c1be50
-        000fac4c 01c1bee0 00000000 01c43a20 00000000 01c1bee8 0020bd26 01c1bee0
-Call Trace: [<0001b0fe>] __warn+0xae/0xde
- [<00322f4a>] memcmp+0x0/0x5c
- [<0001b1b8>] warn_slowpath_fmt+0x2e/0x36
- [<000faa26>] proc_register+0xbe/0xd8
- [<000faa26>] proc_register+0xbe/0xd8
- [<00326430>] sprintf+0x0/0x20
- [<0020bce0>] nubus_proc_attach_device+0x0/0x1b8
- [<00322964>] strcpy+0x0/0x22
- [<000fac04>] proc_mkdir_data+0x64/0x96
- [<000fac4c>] proc_mkdir+0x16/0x1c
- [<0020bd26>] nubus_proc_attach_device+0x46/0x1b8
- [<0020bce0>] nubus_proc_attach_device+0x0/0x1b8
- [<00322964>] strcpy+0x0/0x22
- [<00001ba6>] kernel_pg_dir+0xba6/0x1000
- [<004339a2>] proc_bus_nubus_add_devices+0x1a/0x2e
- [<000faa40>] proc_create_data+0x0/0xf2
- [<0003297c>] parse_args+0x0/0x2d4
- [<00433a08>] nubus_proc_init+0x52/0x5a
- [<00433944>] nubus_init+0x0/0x44
- [<00433982>] nubus_init+0x3e/0x44
- [<000020dc>] do_one_initcall+0x38/0x196
- [<000020a4>] do_one_initcall+0x0/0x196
- [<0003297c>] parse_args+0x0/0x2d4
- [<00322964>] strcpy+0x0/0x22
- [<00040004>] __up_read+0xe/0x40
- [<004231d4>] repair_env_string+0x0/0x7a
- [<0042312e>] kernel_init_freeable+0xee/0x194
- [<00423146>] kernel_init_freeable+0x106/0x194
- [<00433944>] nubus_init+0x0/0x44
- [<000a6000>] kfree+0x0/0x156
- [<0032768c>] kernel_init+0x0/0xda
- [<00327698>] kernel_init+0xc/0xda
- [<0032768c>] kernel_init+0x0/0xda
- [<00002a90>] ret_from_kernel_thread+0xc/0x14
----[ end trace 14a6d619908ea253 ]---
-------------[ cut here ]------------
-
-This gets repeated with each additional functional reasource.
-
-The problem here is calling proc_mkdir() when the directory already
-exists. Each nubus_board gets a directory such as /proc/bus/nubus/s/
-where s is the hex slot number. Therefore, store the 'procdir' pointer
-in struct nubus_board instead of struct nubus_dev.
+Scrap the specialized code to unpack video mode name resources and
+driver resources. It isn't useful.
+Instead, add a re-usable function to handle lists of block resources of
+any kind, and descend into the mode table resource directory.
+Rename callers as nubus_get_foo(), consistent with their purpose and
+with related functions in the same file.
 
 Tested-by: Stan Johnson <userm57@yahoo.com>
 Signed-off-by: Finn Thain <fthain@telegraphics.com.au>
 ---
- drivers/nubus/proc.c  | 6 +++++-
- include/linux/nubus.h | 5 +++--
- 2 files changed, 8 insertions(+), 3 deletions(-)
+ drivers/nubus/nubus.c | 123 ++++++++++++++++++++++++++------------------------
+ 1 file changed, 65 insertions(+), 58 deletions(-)
 
-diff --git a/drivers/nubus/proc.c b/drivers/nubus/proc.c
-index fc20dbcd3b9a..91211192f36f 100644
---- a/drivers/nubus/proc.c
-+++ b/drivers/nubus/proc.c
-@@ -134,9 +134,13 @@ int nubus_proc_attach_device(struct nubus_dev *dev)
- 		return -1;
+diff --git a/drivers/nubus/nubus.c b/drivers/nubus/nubus.c
+index 7a0af37e52b8..0ca8a7a9be2b 100644
+--- a/drivers/nubus/nubus.c
++++ b/drivers/nubus/nubus.c
+@@ -331,16 +331,63 @@ EXPORT_SYMBOL(nubus_find_rsrc);
+    among other things.  The rest of it should go in the /proc code.
+    For now, we just use it to give verbose boot logs. */
+ 
+-static int __init nubus_show_display_resource(struct nubus_dev *dev,
+-					      const struct nubus_dirent *ent)
++static int __init nubus_get_block_rsrc_dir(struct nubus_board *board,
++                                           const struct nubus_dirent *parent)
++{
++	struct nubus_dir dir;
++	struct nubus_dirent ent;
++
++	nubus_get_subdir(parent, &dir);
++
++	while (nubus_readdir(&dir, &ent) != -1) {
++		u32 size;
++
++		nubus_get_rsrc_mem(&size, &ent, 4);
++		pr_debug("        block (0x%x), size %d\n", ent.type, size);
++	}
++	return 0;
++}
++
++static int __init nubus_get_display_vidmode(struct nubus_board *board,
++                                            const struct nubus_dirent *parent)
++{
++	struct nubus_dir dir;
++	struct nubus_dirent ent;
++
++	nubus_get_subdir(parent, &dir);
++
++	while (nubus_readdir(&dir, &ent) != -1) {
++		switch (ent.type) {
++		case 1: /* mVidParams */
++		case 2: /* mTable */
++		{
++			u32 size;
++
++			nubus_get_rsrc_mem(&size, &ent, 4);
++			pr_debug("        block (0x%x), size %d\n", ent.type,
++				size);
++			break;
++		}
++		default:
++			pr_debug("        unknown resource 0x%02x, data 0x%06x\n",
++				ent.type, ent.data);
++		}
++	}
++	return 0;
++}
++
++static int __init nubus_get_display_resource(struct nubus_dev *dev,
++                                             const struct nubus_dirent *ent)
+ {
+ 	switch (ent->type) {
+ 	case NUBUS_RESID_GAMMADIR:
+ 		pr_debug("    gamma directory offset: 0x%06x\n", ent->data);
++		nubus_get_block_rsrc_dir(dev->board, ent);
+ 		break;
+ 	case 0x0080 ... 0x0085:
+ 		pr_debug("    mode 0x%02x info offset: 0x%06x\n",
+ 			ent->type, ent->data);
++		nubus_get_display_vidmode(dev->board, ent);
+ 		break;
+ 	default:
+ 		pr_debug("    unknown resource 0x%02x, data 0x%06x\n",
+@@ -349,8 +396,8 @@ static int __init nubus_show_display_resource(struct nubus_dev *dev,
+ 	return 0;
+ }
+ 
+-static int __init nubus_show_network_resource(struct nubus_dev *dev,
+-					      const struct nubus_dirent *ent)
++static int __init nubus_get_network_resource(struct nubus_dev *dev,
++                                             const struct nubus_dirent *ent)
+ {
+ 	switch (ent->type) {
+ 	case NUBUS_RESID_MAC_ADDRESS:
+@@ -368,8 +415,8 @@ static int __init nubus_show_network_resource(struct nubus_dev *dev,
+ 	return 0;
+ }
+ 
+-static int __init nubus_show_cpu_resource(struct nubus_dev *dev,
+-					  const struct nubus_dirent *ent)
++static int __init nubus_get_cpu_resource(struct nubus_dev *dev,
++                                         const struct nubus_dirent *ent)
+ {
+ 	switch (ent->type) {
+ 	case NUBUS_RESID_MEMINFO:
+@@ -397,18 +444,18 @@ static int __init nubus_show_cpu_resource(struct nubus_dev *dev,
+ 	return 0;
+ }
+ 
+-static int __init nubus_show_private_resource(struct nubus_dev *dev,
+-					      const struct nubus_dirent *ent)
++static int __init nubus_get_private_resource(struct nubus_dev *dev,
++                                             const struct nubus_dirent *ent)
+ {
+ 	switch (dev->category) {
+ 	case NUBUS_CAT_DISPLAY:
+-		nubus_show_display_resource(dev, ent);
++		nubus_get_display_resource(dev, ent);
+ 		break;
+ 	case NUBUS_CAT_NETWORK:
+-		nubus_show_network_resource(dev, ent);
++		nubus_get_network_resource(dev, ent);
+ 		break;
+ 	case NUBUS_CAT_CPU:
+-		nubus_show_cpu_resource(dev, ent);
++		nubus_get_cpu_resource(dev, ent);
+ 		break;
+ 	default:
+ 		pr_debug("    unknown resource 0x%02x, data 0x%06x\n",
+@@ -462,14 +509,9 @@ nubus_get_functional_resource(struct nubus_board *board, int slot,
+ 		{
+ 			/* MacOS driver.  If we were NetBSD we might
+ 			   use this :-) */
+-			struct nubus_dir drvr_dir;
+-			struct nubus_dirent drvr_ent;
+-			unsigned char *driver;
+-
+-			nubus_get_subdir(&ent, &drvr_dir);
+-			nubus_readdir(&drvr_dir, &drvr_ent);
+-			driver = nubus_dirptr(&drvr_ent);
+-			pr_debug("    driver at: 0x%p\n", driver);
++			pr_debug("    driver directory offset: 0x%06x\n",
++				ent.data);
++			nubus_get_block_rsrc_dir(board, &ent);
+ 			break;
+ 		}
+ 		case NUBUS_RESID_MINOR_BASEOS:
+@@ -501,50 +543,13 @@ nubus_get_functional_resource(struct nubus_board *board, int slot,
+ 		default:
+ 			/* Local/Private resources have their own
+ 			   function */
+-			nubus_show_private_resource(dev, &ent);
++			nubus_get_private_resource(dev, &ent);
+ 		}
  	}
- 		
-+	if (dev->board->procdir)
-+		return 0;
-+
- 	/* Create a directory */
- 	snprintf(name, sizeof(name), "%x", dev->board->slot);
--	e = dev->procdir = proc_mkdir(name, proc_bus_nubus_dir);
-+	e = proc_mkdir(name, proc_bus_nubus_dir);
-+	dev->board->procdir = e;
- 	if (!e)
- 		return -ENOMEM;
  
-diff --git a/include/linux/nubus.h b/include/linux/nubus.h
-index bffd09a07326..474f304485ec 100644
---- a/include/linux/nubus.h
-+++ b/include/linux/nubus.h
-@@ -53,13 +53,14 @@ struct nubus_board {
- 	unsigned char rev;
- 	unsigned char format;
- 	unsigned char lanes;
-+
-+	/* Directory entry in /proc/bus/nubus */
-+	struct proc_dir_entry *procdir;
- };
+ 	return dev;
+ }
  
- struct nubus_dev {
- 	/* Next link in device list */
- 	struct nubus_dev* next;
--	/* Directory entry in /proc/bus/nubus */
--	struct proc_dir_entry* procdir;
- 
- 	/* The functional resource ID of this device */
- 	unsigned char resid;
+-/* This is cool. */
+-static int __init nubus_get_vidnames(struct nubus_board *board,
+-				     const struct nubus_dirent *parent)
+-{
+-	struct nubus_dir dir;
+-	struct nubus_dirent ent;
+-
+-	/* FIXME: obviously we want to put this in a header file soon */
+-	struct vidmode {
+-		u32 size;
+-		/* Don't know what this is yet */
+-		u16 id;
+-		/* Longest one I've seen so far is 26 characters */
+-		char name[36];
+-	};
+-
+-	pr_debug("    video modes supported:\n");
+-	nubus_get_subdir(parent, &dir);
+-
+-	while (nubus_readdir(&dir, &ent) != -1) {
+-		struct vidmode mode;
+-		u32 size;
+-
+-		/* First get the length */
+-		nubus_get_rsrc_mem(&size, &ent, 4);
+-
+-		/* Now clobber the whole thing */
+-		if (size > sizeof(mode) - 1)
+-			size = sizeof(mode) - 1;
+-		memset(&mode, 0, sizeof(mode));
+-		nubus_get_rsrc_mem(&mode, &ent, size);
+-		pr_debug("      0x%02x: 0x%04x %s\n", ent.type,
+-			mode.id, mode.name);
+-	}
+-	return 0;
+-}
+-
+ /* This is *really* cool. */
+ static int __init nubus_get_icon(struct nubus_board *board,
+ 				 const struct nubus_dirent *ent)
+@@ -639,7 +644,9 @@ static int __init nubus_get_board_resource(struct nubus_board *board, int slot,
+ 			break;
+ 			/* WTF isn't this in the functional resources? */
+ 		case NUBUS_RESID_VIDNAMES:
+-			nubus_get_vidnames(board, &ent);
++			pr_debug("    vidnames directory offset: 0x%06x\n",
++				ent.data);
++			nubus_get_block_rsrc_dir(board, &ent);
+ 			break;
+ 			/* Same goes for this */
+ 		case NUBUS_RESID_VIDMODES:
 -- 
 2.13.6
