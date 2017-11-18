@@ -1,53 +1,112 @@
-From: mustapha ali <mustaphaali0001@gmail.com>
-Subject: GREETINGS FROM MR.MUSTAPHA ALI.
-Date: Thu, 16 Nov 2017 17:54:28 +0100
-Message-ID: <CAFK+uunMaX+cJHwVxySB_hbpPjSYdiv3UixQU34TJDauAmEM4A@mail.gmail.com>
-Reply-To: mustaphaali7911@gmail.com
-Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+From: Finn Thain <fthain@telegraphics.com.au>
+Subject: [PATCH v2 02/13] nubus: Fix up header split
+Date: Fri, 17 Nov 2017 21:30:11 -0500 (EST)
+Message-ID: <431a3bbea89182301a1ad4d63c7b1d8bbdbeb90b.1510960933.git.fthain@telegraphics.com.au>
+References: <cover.1510960933.git.fthain@telegraphics.com.au>
 Return-path: <linux-m68k-owner@vger.kernel.org>
+Received: from kvm5.telegraphics.com.au ([98.124.60.144]:34534 "EHLO
+        kvm5.telegraphics.com.au" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1161385AbdKRCaL (ORCPT
+        <rfc822;linux-m68k@vger.kernel.org>); Fri, 17 Nov 2017 21:30:11 -0500
+In-Reply-To: <cover.1510960933.git.fthain@telegraphics.com.au>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
+To: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: linux-m68k@vger.kernel.org, linux-kernel@vger.kernel.org
 
-My Dear Friend.
+Due to the '#ifdef __KERNEL__' being located in the wrong place, some
+definitions from the kernel API were placed in the UAPI header during
+the scripted header split. Fix this. Also, remove the duplicate comment
+which is only relevant to the UAPI header.
 
-I am Mr. Mustapha  Ali, I work with Bank Of Africa Burkina Faso West
-Africa as their Auditing Manager. My Dear I have a business proposal
-for you that concern release and transfer of $13.5 M USD into a
-foreign account.
+Fixes: 607ca46e97a1 ("UAPI: (Scripted) Disintegrate include/linux")
+Tested-by: Stan Johnson <userm57@yahoo.com>
+Signed-off-by: Finn Thain <fthain@telegraphics.com.au>
+---
+ include/linux/nubus.h      | 27 +++++++++++++++++++++++----
+ include/uapi/linux/nubus.h | 23 -----------------------
+ 2 files changed, 23 insertions(+), 27 deletions(-)
 
-Everything about the transaction shall be done legal and official on
-your behalf without any problem.  Again you shouldn=E2=80=99t be embarrasse=
-d
-how I came across you for I got your email address from Daor Board of
-Directors Directory and I decided to get in touch with you with the
-proposal.
-
-If you are interested to execute the business with me and also to
-provide foreign account to receive the fund then get back to me for
-more details about the business deal for as soon as I receive your
-positive response along with your personal information, I will not
-hesitate to feed you with more details on how we are to achieve our
-goal.
-
-You will be entitle  to have 50% as your own share from the fund and
-50% will be for me,  If you are willing to execute the business  then
-send me immediately your personal  information listed below and make
-sure you call me on +226 55484087.
-
-
-1. Full name:.........
-2. Current Address:.........
-3. Phone.............
-4. Occupation:.............
-5. Age:............
-6. Country:........
-7. Sex........
-8. Your Passport or ID card or Driving License
-
-Waiting For Your Urgent Response
-
-Thanks
-
-Mr. Mustapha  Ali.
+diff --git a/include/linux/nubus.h b/include/linux/nubus.h
+index 18c300222362..a6edf7838e22 100644
+--- a/include/linux/nubus.h
++++ b/include/linux/nubus.h
+@@ -5,16 +5,28 @@
+   Originally written by Alan Cox.
+ 
+   Hacked to death by C. Scott Ananian and David Huggins-Daines.
+-  
+-  Some of the constants in here are from the corresponding
+-  NetBSD/OpenBSD header file, by Allen Briggs.  We figured out the
+-  rest of them on our own. */
++*/
++
+ #ifndef LINUX_NUBUS_H
+ #define LINUX_NUBUS_H
+ 
+ #include <asm/nubus.h>
+ #include <uapi/linux/nubus.h>
+ 
++struct nubus_dir {
++	unsigned char *base;
++	unsigned char *ptr;
++	int done;
++	int mask;
++};
++
++struct nubus_dirent {
++	unsigned char *base;
++	unsigned char type;
++	__u32 data;	/* Actually 24 bits used */
++	int mask;
++};
++
+ struct nubus_board {
+ 	struct nubus_board* next;
+ 	struct nubus_dev* first_dev;
+@@ -130,4 +142,11 @@ void nubus_get_rsrc_mem(void *dest, const struct nubus_dirent *dirent,
+                         unsigned int len);
+ void nubus_get_rsrc_str(char *dest, const struct nubus_dirent *dirent,
+                         unsigned int maxlen);
++
++/* Returns a pointer to the "standard" slot space. */
++static inline void *nubus_slot_addr(int slot)
++{
++	return (void *)(0xF0000000 | (slot << 24));
++}
++
+ #endif /* LINUX_NUBUS_H */
+diff --git a/include/uapi/linux/nubus.h b/include/uapi/linux/nubus.h
+index f3776cc80f4d..48031e7858f1 100644
+--- a/include/uapi/linux/nubus.h
++++ b/include/uapi/linux/nubus.h
+@@ -221,27 +221,4 @@ enum nubus_display_res_id {
+ 	NUBUS_RESID_SIXTHMODE   = 0x0085
+ };
+ 
+-struct nubus_dir
+-{
+-	unsigned char *base;
+-	unsigned char *ptr;
+-	int done;
+-	int mask;
+-};
+-
+-struct nubus_dirent
+-{
+-	unsigned char *base;
+-	unsigned char type;
+-	__u32 data;	/* Actually 24bits used */
+-	int mask;
+-};
+-
+-
+-/* We'd like to get rid of this eventually.  Only daynaport.c uses it now. */
+-static inline void *nubus_slot_addr(int slot)
+-{
+-	return (void *)(0xF0000000|(slot<<24));
+-}
+-
+ #endif /* _UAPILINUX_NUBUS_H */
+-- 
+2.13.6
