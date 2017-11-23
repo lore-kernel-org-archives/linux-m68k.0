@@ -1,54 +1,54 @@
-From: Ben Hutchings <ben@decadent.org.uk>
-Subject: [PATCH 3.16 054/133] m68k: allow NULL clock for clk_get_rate
-Date: Wed, 22 Nov 2017 01:58:13 +0000
-Message-ID: <lsq.1511315893.982088477__33831.613607663$1511317623$gmane$org@decadent.org.uk>
-References: <lsq.1511315892.657723235@decadent.org.uk>
+From: Finn Thain <fthain@telegraphics.com.au>
+Subject: Re: [PATCH v2 13/13] nubus: Add support for the driver model
+Date: Thu, 23 Nov 2017 11:24:38 +1100 (AEDT)
+Message-ID: <alpine.LNX.2.00.1711211046150.3@nippy.intranet>
+References: <cover.1510960933.git.fthain@telegraphics.com.au> <7f84ae0e2d6195ce0a4af1963d5ac15ff02a4749.1510960933.git.fthain@telegraphics.com.au> <20171118102123.GC8368@kroah.com> <alpine.LNX.2.00.1711190910550.3@nippy.intranet>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8bit
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <lsq.1511315892.657723235@decadent.org.uk>
+Received: from kvm5.telegraphics.com.au ([98.124.60.144]:38810 "EHLO
+        kvm5.telegraphics.com.au" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1751494AbdKWAYe (ORCPT
+        <rfc822;linux-m68k@vger.kernel.org>); Wed, 22 Nov 2017 19:24:34 -0500
+In-Reply-To: <alpine.LNX.2.00.1711190910550.3@nippy.intranet>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc: akpm@linux-foundation.org, Mathias Kresin <dev@kresin.me>, linux-m68k@lists.linux-m68k.org, Geert Uytterhoeven <geert@linux-m68k.org>, Greg Ungerer <gerg@linux-m68k.org>, Jonas Gorski <jonas.gorski@gmail.com>
+To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc: Geert Uytterhoeven <geert@linux-m68k.org>, linux-m68k@vger.kernel.org, linux-kernel@vger.kernel.org
 
-3.16.51-rc1 review patch.  If anyone has any objections, please let me know.
+On Mon, 20 Nov 2017, I wrote:
 
-------------------
+> > You need to free up the memory allocated, and I don't see that 
+> > happening here ... The kernel should yell at you ...
 
-From: Jonas Gorski <jonas.gorski@gmail.com>
+> 
+>                 WARN(1, KERN_ERR "Device '%s' does not have a release() "
+>                         "function, it is broken and must be fixed.\n",
+>                         dev_name(dev));
+> 
+> This won't fire unless device_del() is called, right?
 
-commit 94b282267c2f3af725b154c91275ed374c1f11de upstream.
+Sorry, I should have written, "This won't fire unless device_unregister() 
+is called, right?" -- though I guess it could be any call to put_device().
 
-Make the behaviour of clk_get_rate consistent with common clk's
-clk_get_rate by accepting NULL clocks as parameter. Some device
-drivers rely on this, and will cause an OOPS otherwise.
+If need be I can add code to cleanly tear down the bus devices and the 
+associated linked lists and procfs structures, just prior to kernel 
+termination, as a kernel exitcall. But I don't see this pattern in use.
 
-Fixes: facdf0ed4f59 ("m68knommu: introduce basic clk infrastructure")
-Cc: Greg Ungerer <gerg@linux-m68k.org>
-Cc: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: linux-m68k@lists.linux-m68k.org
-Cc: linux-kernel@vger.kernel.org
-Reported-by: Mathias Kresin <dev@kresin.me>
-Signed-off-by: Jonas Gorski <jonas.gorski@gmail.com>
-Signed-off-by: Greg Ungerer <gerg@linux-m68k.org>
-[bwh: Backported to 3.16: adjust filename]
-Signed-off-by: Ben Hutchings <ben@decadent.org.uk>
----
- arch/m68k/platform/coldfire/clk.c | 3 +++
- 1 file changed, 3 insertions(+)
+It's not clear to me that the extra complexity is worth it. This may 
+explain the other devices which never get unregistered (e.g. rtc_device, 
+rtc_efi_dev, etc.)
 
---- a/arch/m68k/platform/coldfire/clk.c
-+++ b/arch/m68k/platform/coldfire/clk.c
-@@ -117,6 +117,9 @@ EXPORT_SYMBOL(clk_put);
- 
- unsigned long clk_get_rate(struct clk *clk)
- {
-+	if (!clk)
-+		return 0;
-+
- 	return clk->rate;
- }
- EXPORT_SYMBOL(clk_get_rate);
+I've read Documentation/driver-model/ and watched your presentations on 
+this topic but it's unclear to me whether you are saying in this thread 
+that calling device_unregister() is mandatory.
+
+It sounds like you are saying that a non-NULL device.release method is 
+mandatory (which is easily solved with an empty function). But 
+Documentation/driver-model/porting.txt says the release method is 
+optional.
+
+If device_unregister() is never called, the release method seems to be 
+pointless. Would you clarify your objection please?
+
+-- 
