@@ -1,424 +1,62 @@
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: [PATCH] m68k/defconfig: Update defconfigs for v4.15-rc1
-Date: Mon, 27 Nov 2017 11:58:08 +0100
-Message-ID: <1511780288-20088-1-git-send-email-geert@linux-m68k.org>
+From: Arnd Bergmann <arnd@arndb.de>
+Subject: [PATCH 1/3] Input: hil_mlc: convert timeval to time64_t
+Date: Mon, 27 Nov 2017 12:22:57 +0100
+Message-ID: <20171127112324.1917698-1-arnd__14761.7927207195$1511781821$gmane$org@arndb.de>
 Return-path: <linux-m68k-owner@vger.kernel.org>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: linux-m68k@lists.linux-m68k.org
-Cc: Geert Uytterhoeven <geert@linux-m68k.org>
+To: linux-input@vger.kernel.org, Dmitry Torokhov <dmitry.torokhov@gmail.com>
+Cc: linux-m68k@lists.linux-m68k.org, Geert Uytterhoeven <geert@linux-m68k.org>, linux-parisc@vger.kernel.org, Helge Deller <deller@gmx.de>, "James E . J . Bottomley" <jejb@parisc-linux.org>, WEN Pingbo <pingbo.wen@linaro.org>, Arnd Bergmann <arnd@arndb.de>, linux-kernel@vger.kernel.org
 
-Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
+From: WEN Pingbo <pingbo.wen@linaro.org>
+
+Since mlc->lcv_t is only interested in seconds, directly using time64_t
+here.
+
+This gets rid of the deprecated do_gettimeofday() and avoids problems
+with time going backwards since we now use the monotonic clocksource.
+
+Signed-off-by: WEN Pingbo <pingbo.wen@linaro.org>
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 ---
- arch/m68k/configs/amiga_defconfig    | 4 +++-
- arch/m68k/configs/apollo_defconfig   | 4 +++-
- arch/m68k/configs/atari_defconfig    | 4 +++-
- arch/m68k/configs/bvme6000_defconfig | 4 +++-
- arch/m68k/configs/hp300_defconfig    | 4 +++-
- arch/m68k/configs/mac_defconfig      | 4 +++-
- arch/m68k/configs/multi_defconfig    | 4 +++-
- arch/m68k/configs/mvme147_defconfig  | 4 +++-
- arch/m68k/configs/mvme16x_defconfig  | 4 +++-
- arch/m68k/configs/q40_defconfig      | 4 +++-
- arch/m68k/configs/sun3_defconfig     | 4 +++-
- arch/m68k/configs/sun3x_defconfig    | 4 +++-
- 12 files changed, 36 insertions(+), 12 deletions(-)
+ drivers/input/serio/hil_mlc.c | 8 +++-----
+ include/linux/hil_mlc.h       | 2 +-
+ 2 files changed, 4 insertions(+), 6 deletions(-)
 
-diff --git a/arch/m68k/configs/amiga_defconfig b/arch/m68k/configs/amiga_defconfig
-index 5b5fa9831b4d1f1d..e0b285e1e75f873e 100644
---- a/arch/m68k/configs/amiga_defconfig
-+++ b/arch/m68k/configs/amiga_defconfig
-@@ -454,7 +454,6 @@ CONFIG_PPS_CLIENT_LDISC=m
- CONFIG_PPS_CLIENT_PARPORT=m
- CONFIG_PTP_1588_CLOCK=m
- # CONFIG_HWMON is not set
--# CONFIG_RC_CORE is not set
- CONFIG_FB=y
- CONFIG_FB_CIRRUS=y
- CONFIG_FB_AMIGA=y
-@@ -595,6 +594,7 @@ CONFIG_TEST_RHASHTABLE=m
- CONFIG_TEST_HASH=m
- CONFIG_TEST_USER_COPY=m
- CONFIG_TEST_BPF=m
-+CONFIG_TEST_FIND_BIT=m
- CONFIG_TEST_FIRMWARE=m
- CONFIG_TEST_SYSCTL=m
- CONFIG_TEST_UDELAY=m
-@@ -624,6 +624,7 @@ CONFIG_CRYPTO_RMD256=m
- CONFIG_CRYPTO_RMD320=m
- CONFIG_CRYPTO_SHA512=m
- CONFIG_CRYPTO_SHA3=m
-+CONFIG_CRYPTO_SM3=m
- CONFIG_CRYPTO_TGR192=m
- CONFIG_CRYPTO_WP512=m
- CONFIG_CRYPTO_AES_TI=m
-@@ -653,3 +654,4 @@ CONFIG_CRYPTO_USER_API_AEAD=m
- # CONFIG_CRYPTO_HW is not set
- CONFIG_CRC32_SELFTEST=m
- CONFIG_XZ_DEC_TEST=m
-+CONFIG_STRING_SELFTEST=m
-diff --git a/arch/m68k/configs/apollo_defconfig b/arch/m68k/configs/apollo_defconfig
-index 72a7764b74edfd7f..3281026a3e153a6b 100644
---- a/arch/m68k/configs/apollo_defconfig
-+++ b/arch/m68k/configs/apollo_defconfig
-@@ -422,7 +422,6 @@ CONFIG_NTP_PPS=y
- CONFIG_PPS_CLIENT_LDISC=m
- CONFIG_PTP_1588_CLOCK=m
- # CONFIG_HWMON is not set
--# CONFIG_RC_CORE is not set
- CONFIG_FB=y
- CONFIG_FRAMEBUFFER_CONSOLE=y
- CONFIG_LOGO=y
-@@ -554,6 +553,7 @@ CONFIG_TEST_RHASHTABLE=m
- CONFIG_TEST_HASH=m
- CONFIG_TEST_USER_COPY=m
- CONFIG_TEST_BPF=m
-+CONFIG_TEST_FIND_BIT=m
- CONFIG_TEST_FIRMWARE=m
- CONFIG_TEST_SYSCTL=m
- CONFIG_TEST_UDELAY=m
-@@ -583,6 +583,7 @@ CONFIG_CRYPTO_RMD256=m
- CONFIG_CRYPTO_RMD320=m
- CONFIG_CRYPTO_SHA512=m
- CONFIG_CRYPTO_SHA3=m
-+CONFIG_CRYPTO_SM3=m
- CONFIG_CRYPTO_TGR192=m
- CONFIG_CRYPTO_WP512=m
- CONFIG_CRYPTO_AES_TI=m
-@@ -612,3 +613,4 @@ CONFIG_CRYPTO_USER_API_AEAD=m
- # CONFIG_CRYPTO_HW is not set
- CONFIG_CRC32_SELFTEST=m
- CONFIG_XZ_DEC_TEST=m
-+CONFIG_STRING_SELFTEST=m
-diff --git a/arch/m68k/configs/atari_defconfig b/arch/m68k/configs/atari_defconfig
-index 4f06da723023cee5..6c063bab33b38d05 100644
---- a/arch/m68k/configs/atari_defconfig
-+++ b/arch/m68k/configs/atari_defconfig
-@@ -437,7 +437,6 @@ CONFIG_PPS_CLIENT_LDISC=m
- CONFIG_PPS_CLIENT_PARPORT=m
- CONFIG_PTP_1588_CLOCK=m
- # CONFIG_HWMON is not set
--# CONFIG_RC_CORE is not set
- CONFIG_FB=y
- CONFIG_FB_ATARI=y
- CONFIG_FRAMEBUFFER_CONSOLE=y
-@@ -583,6 +582,7 @@ CONFIG_TEST_RHASHTABLE=m
- CONFIG_TEST_HASH=m
- CONFIG_TEST_USER_COPY=m
- CONFIG_TEST_BPF=m
-+CONFIG_TEST_FIND_BIT=m
- CONFIG_TEST_FIRMWARE=m
- CONFIG_TEST_SYSCTL=m
- CONFIG_TEST_UDELAY=m
-@@ -612,6 +612,7 @@ CONFIG_CRYPTO_RMD256=m
- CONFIG_CRYPTO_RMD320=m
- CONFIG_CRYPTO_SHA512=m
- CONFIG_CRYPTO_SHA3=m
-+CONFIG_CRYPTO_SM3=m
- CONFIG_CRYPTO_TGR192=m
- CONFIG_CRYPTO_WP512=m
- CONFIG_CRYPTO_AES_TI=m
-@@ -641,3 +642,4 @@ CONFIG_CRYPTO_USER_API_AEAD=m
- # CONFIG_CRYPTO_HW is not set
- CONFIG_CRC32_SELFTEST=m
- CONFIG_XZ_DEC_TEST=m
-+CONFIG_STRING_SELFTEST=m
-diff --git a/arch/m68k/configs/bvme6000_defconfig b/arch/m68k/configs/bvme6000_defconfig
-index fcfa60d31499bce4..700c2310c3363133 100644
---- a/arch/m68k/configs/bvme6000_defconfig
-+++ b/arch/m68k/configs/bvme6000_defconfig
-@@ -420,7 +420,6 @@ CONFIG_NTP_PPS=y
- CONFIG_PPS_CLIENT_LDISC=m
- CONFIG_PTP_1588_CLOCK=m
- # CONFIG_HWMON is not set
--# CONFIG_RC_CORE is not set
- CONFIG_HID=m
- CONFIG_HIDRAW=y
- CONFIG_UHID=m
-@@ -546,6 +545,7 @@ CONFIG_TEST_RHASHTABLE=m
- CONFIG_TEST_HASH=m
- CONFIG_TEST_USER_COPY=m
- CONFIG_TEST_BPF=m
-+CONFIG_TEST_FIND_BIT=m
- CONFIG_TEST_FIRMWARE=m
- CONFIG_TEST_SYSCTL=m
- CONFIG_TEST_UDELAY=m
-@@ -575,6 +575,7 @@ CONFIG_CRYPTO_RMD256=m
- CONFIG_CRYPTO_RMD320=m
- CONFIG_CRYPTO_SHA512=m
- CONFIG_CRYPTO_SHA3=m
-+CONFIG_CRYPTO_SM3=m
- CONFIG_CRYPTO_TGR192=m
- CONFIG_CRYPTO_WP512=m
- CONFIG_CRYPTO_AES_TI=m
-@@ -604,3 +605,4 @@ CONFIG_CRYPTO_USER_API_AEAD=m
- # CONFIG_CRYPTO_HW is not set
- CONFIG_CRC32_SELFTEST=m
- CONFIG_XZ_DEC_TEST=m
-+CONFIG_STRING_SELFTEST=m
-diff --git a/arch/m68k/configs/hp300_defconfig b/arch/m68k/configs/hp300_defconfig
-index 9d597bbbbbfe6b26..271d57fa4301e08a 100644
---- a/arch/m68k/configs/hp300_defconfig
-+++ b/arch/m68k/configs/hp300_defconfig
-@@ -425,7 +425,6 @@ CONFIG_NTP_PPS=y
- CONFIG_PPS_CLIENT_LDISC=m
- CONFIG_PTP_1588_CLOCK=m
- # CONFIG_HWMON is not set
--# CONFIG_RC_CORE is not set
- CONFIG_FB=y
- CONFIG_FRAMEBUFFER_CONSOLE=y
- CONFIG_LOGO=y
-@@ -556,6 +555,7 @@ CONFIG_TEST_RHASHTABLE=m
- CONFIG_TEST_HASH=m
- CONFIG_TEST_USER_COPY=m
- CONFIG_TEST_BPF=m
-+CONFIG_TEST_FIND_BIT=m
- CONFIG_TEST_FIRMWARE=m
- CONFIG_TEST_SYSCTL=m
- CONFIG_TEST_UDELAY=m
-@@ -585,6 +585,7 @@ CONFIG_CRYPTO_RMD256=m
- CONFIG_CRYPTO_RMD320=m
- CONFIG_CRYPTO_SHA512=m
- CONFIG_CRYPTO_SHA3=m
-+CONFIG_CRYPTO_SM3=m
- CONFIG_CRYPTO_TGR192=m
- CONFIG_CRYPTO_WP512=m
- CONFIG_CRYPTO_AES_TI=m
-@@ -614,3 +615,4 @@ CONFIG_CRYPTO_USER_API_AEAD=m
- # CONFIG_CRYPTO_HW is not set
- CONFIG_CRC32_SELFTEST=m
- CONFIG_XZ_DEC_TEST=m
-+CONFIG_STRING_SELFTEST=m
-diff --git a/arch/m68k/configs/mac_defconfig b/arch/m68k/configs/mac_defconfig
-index 45da20d1286ceb6a..88761b86797557d1 100644
---- a/arch/m68k/configs/mac_defconfig
-+++ b/arch/m68k/configs/mac_defconfig
-@@ -447,7 +447,6 @@ CONFIG_NTP_PPS=y
- CONFIG_PPS_CLIENT_LDISC=m
- CONFIG_PTP_1588_CLOCK=m
- # CONFIG_HWMON is not set
--# CONFIG_RC_CORE is not set
- CONFIG_FB=y
- CONFIG_FB_VALKYRIE=y
- CONFIG_FB_MAC=y
-@@ -578,6 +577,7 @@ CONFIG_TEST_RHASHTABLE=m
- CONFIG_TEST_HASH=m
- CONFIG_TEST_USER_COPY=m
- CONFIG_TEST_BPF=m
-+CONFIG_TEST_FIND_BIT=m
- CONFIG_TEST_FIRMWARE=m
- CONFIG_TEST_SYSCTL=m
- CONFIG_TEST_UDELAY=m
-@@ -607,6 +607,7 @@ CONFIG_CRYPTO_RMD256=m
- CONFIG_CRYPTO_RMD320=m
- CONFIG_CRYPTO_SHA512=m
- CONFIG_CRYPTO_SHA3=m
-+CONFIG_CRYPTO_SM3=m
- CONFIG_CRYPTO_TGR192=m
- CONFIG_CRYPTO_WP512=m
- CONFIG_CRYPTO_AES_TI=m
-@@ -636,3 +637,4 @@ CONFIG_CRYPTO_USER_API_AEAD=m
- # CONFIG_CRYPTO_HW is not set
- CONFIG_CRC32_SELFTEST=m
- CONFIG_XZ_DEC_TEST=m
-+CONFIG_STRING_SELFTEST=m
-diff --git a/arch/m68k/configs/multi_defconfig b/arch/m68k/configs/multi_defconfig
-index fda880c1086156a2..7cb35dadf03bf33d 100644
---- a/arch/m68k/configs/multi_defconfig
-+++ b/arch/m68k/configs/multi_defconfig
-@@ -504,7 +504,6 @@ CONFIG_PPS_CLIENT_LDISC=m
- CONFIG_PPS_CLIENT_PARPORT=m
- CONFIG_PTP_1588_CLOCK=m
- # CONFIG_HWMON is not set
--# CONFIG_RC_CORE is not set
- CONFIG_FB=y
- CONFIG_FB_CIRRUS=y
- CONFIG_FB_AMIGA=y
-@@ -658,6 +657,7 @@ CONFIG_TEST_RHASHTABLE=m
- CONFIG_TEST_HASH=m
- CONFIG_TEST_USER_COPY=m
- CONFIG_TEST_BPF=m
-+CONFIG_TEST_FIND_BIT=m
- CONFIG_TEST_FIRMWARE=m
- CONFIG_TEST_SYSCTL=m
- CONFIG_TEST_UDELAY=m
-@@ -687,6 +687,7 @@ CONFIG_CRYPTO_RMD256=m
- CONFIG_CRYPTO_RMD320=m
- CONFIG_CRYPTO_SHA512=m
- CONFIG_CRYPTO_SHA3=m
-+CONFIG_CRYPTO_SM3=m
- CONFIG_CRYPTO_TGR192=m
- CONFIG_CRYPTO_WP512=m
- CONFIG_CRYPTO_AES_TI=m
-@@ -716,3 +717,4 @@ CONFIG_CRYPTO_USER_API_AEAD=m
- # CONFIG_CRYPTO_HW is not set
- CONFIG_CRC32_SELFTEST=m
- CONFIG_XZ_DEC_TEST=m
-+CONFIG_STRING_SELFTEST=m
-diff --git a/arch/m68k/configs/mvme147_defconfig b/arch/m68k/configs/mvme147_defconfig
-index 7d5e4863efec03bd..b139d7b6839391f3 100644
---- a/arch/m68k/configs/mvme147_defconfig
-+++ b/arch/m68k/configs/mvme147_defconfig
-@@ -420,7 +420,6 @@ CONFIG_NTP_PPS=y
- CONFIG_PPS_CLIENT_LDISC=m
- CONFIG_PTP_1588_CLOCK=m
- # CONFIG_HWMON is not set
--# CONFIG_RC_CORE is not set
- CONFIG_HID=m
- CONFIG_HIDRAW=y
- CONFIG_UHID=m
-@@ -546,6 +545,7 @@ CONFIG_TEST_RHASHTABLE=m
- CONFIG_TEST_HASH=m
- CONFIG_TEST_USER_COPY=m
- CONFIG_TEST_BPF=m
-+CONFIG_TEST_FIND_BIT=m
- CONFIG_TEST_FIRMWARE=m
- CONFIG_TEST_SYSCTL=m
- CONFIG_TEST_UDELAY=m
-@@ -575,6 +575,7 @@ CONFIG_CRYPTO_RMD256=m
- CONFIG_CRYPTO_RMD320=m
- CONFIG_CRYPTO_SHA512=m
- CONFIG_CRYPTO_SHA3=m
-+CONFIG_CRYPTO_SM3=m
- CONFIG_CRYPTO_TGR192=m
- CONFIG_CRYPTO_WP512=m
- CONFIG_CRYPTO_AES_TI=m
-@@ -604,3 +605,4 @@ CONFIG_CRYPTO_USER_API_AEAD=m
- # CONFIG_CRYPTO_HW is not set
- CONFIG_CRC32_SELFTEST=m
- CONFIG_XZ_DEC_TEST=m
-+CONFIG_STRING_SELFTEST=m
-diff --git a/arch/m68k/configs/mvme16x_defconfig b/arch/m68k/configs/mvme16x_defconfig
-index 7763b71a9c4973e8..398346138769d7af 100644
---- a/arch/m68k/configs/mvme16x_defconfig
-+++ b/arch/m68k/configs/mvme16x_defconfig
-@@ -420,7 +420,6 @@ CONFIG_NTP_PPS=y
- CONFIG_PPS_CLIENT_LDISC=m
- CONFIG_PTP_1588_CLOCK=m
- # CONFIG_HWMON is not set
--# CONFIG_RC_CORE is not set
- CONFIG_HID=m
- CONFIG_HIDRAW=y
- CONFIG_UHID=m
-@@ -546,6 +545,7 @@ CONFIG_TEST_RHASHTABLE=m
- CONFIG_TEST_HASH=m
- CONFIG_TEST_USER_COPY=m
- CONFIG_TEST_BPF=m
-+CONFIG_TEST_FIND_BIT=m
- CONFIG_TEST_FIRMWARE=m
- CONFIG_TEST_SYSCTL=m
- CONFIG_TEST_UDELAY=m
-@@ -575,6 +575,7 @@ CONFIG_CRYPTO_RMD256=m
- CONFIG_CRYPTO_RMD320=m
- CONFIG_CRYPTO_SHA512=m
- CONFIG_CRYPTO_SHA3=m
-+CONFIG_CRYPTO_SM3=m
- CONFIG_CRYPTO_TGR192=m
- CONFIG_CRYPTO_WP512=m
- CONFIG_CRYPTO_AES_TI=m
-@@ -604,3 +605,4 @@ CONFIG_CRYPTO_USER_API_AEAD=m
- # CONFIG_CRYPTO_HW is not set
- CONFIG_CRC32_SELFTEST=m
- CONFIG_XZ_DEC_TEST=m
-+CONFIG_STRING_SELFTEST=m
-diff --git a/arch/m68k/configs/q40_defconfig b/arch/m68k/configs/q40_defconfig
-index 17eaebfa3e198f11..14c608326f6de1b6 100644
---- a/arch/m68k/configs/q40_defconfig
-+++ b/arch/m68k/configs/q40_defconfig
-@@ -437,7 +437,6 @@ CONFIG_PPS_CLIENT_LDISC=m
- CONFIG_PPS_CLIENT_PARPORT=m
- CONFIG_PTP_1588_CLOCK=m
- # CONFIG_HWMON is not set
--# CONFIG_RC_CORE is not set
- CONFIG_FB=y
- CONFIG_FRAMEBUFFER_CONSOLE=y
- CONFIG_LOGO=y
-@@ -569,6 +568,7 @@ CONFIG_TEST_RHASHTABLE=m
- CONFIG_TEST_HASH=m
- CONFIG_TEST_USER_COPY=m
- CONFIG_TEST_BPF=m
-+CONFIG_TEST_FIND_BIT=m
- CONFIG_TEST_FIRMWARE=m
- CONFIG_TEST_SYSCTL=m
- CONFIG_TEST_UDELAY=m
-@@ -598,6 +598,7 @@ CONFIG_CRYPTO_RMD256=m
- CONFIG_CRYPTO_RMD320=m
- CONFIG_CRYPTO_SHA512=m
- CONFIG_CRYPTO_SHA3=m
-+CONFIG_CRYPTO_SM3=m
- CONFIG_CRYPTO_TGR192=m
- CONFIG_CRYPTO_WP512=m
- CONFIG_CRYPTO_AES_TI=m
-@@ -627,3 +628,4 @@ CONFIG_CRYPTO_USER_API_AEAD=m
- # CONFIG_CRYPTO_HW is not set
- CONFIG_CRC32_SELFTEST=m
- CONFIG_XZ_DEC_TEST=m
-+CONFIG_STRING_SELFTEST=m
-diff --git a/arch/m68k/configs/sun3_defconfig b/arch/m68k/configs/sun3_defconfig
-index d1cb7a04ae1d3835..97dec0bf52f1ed68 100644
---- a/arch/m68k/configs/sun3_defconfig
-+++ b/arch/m68k/configs/sun3_defconfig
-@@ -419,7 +419,6 @@ CONFIG_NTP_PPS=y
- CONFIG_PPS_CLIENT_LDISC=m
- CONFIG_PTP_1588_CLOCK=m
- # CONFIG_HWMON is not set
--# CONFIG_RC_CORE is not set
- CONFIG_FB=y
- CONFIG_FRAMEBUFFER_CONSOLE=y
- CONFIG_LOGO=y
-@@ -548,6 +547,7 @@ CONFIG_TEST_RHASHTABLE=m
- CONFIG_TEST_HASH=m
- CONFIG_TEST_USER_COPY=m
- CONFIG_TEST_BPF=m
-+CONFIG_TEST_FIND_BIT=m
- CONFIG_TEST_FIRMWARE=m
- CONFIG_TEST_SYSCTL=m
- CONFIG_TEST_UDELAY=m
-@@ -576,6 +576,7 @@ CONFIG_CRYPTO_RMD256=m
- CONFIG_CRYPTO_RMD320=m
- CONFIG_CRYPTO_SHA512=m
- CONFIG_CRYPTO_SHA3=m
-+CONFIG_CRYPTO_SM3=m
- CONFIG_CRYPTO_TGR192=m
- CONFIG_CRYPTO_WP512=m
- CONFIG_CRYPTO_AES_TI=m
-@@ -605,3 +606,4 @@ CONFIG_CRYPTO_USER_API_AEAD=m
- # CONFIG_CRYPTO_HW is not set
- CONFIG_CRC32_SELFTEST=m
- CONFIG_XZ_DEC_TEST=m
-+CONFIG_STRING_SELFTEST=m
-diff --git a/arch/m68k/configs/sun3x_defconfig b/arch/m68k/configs/sun3x_defconfig
-index ea3a331c62d5b1c9..56df28d6d91d9290 100644
---- a/arch/m68k/configs/sun3x_defconfig
-+++ b/arch/m68k/configs/sun3x_defconfig
-@@ -419,7 +419,6 @@ CONFIG_NTP_PPS=y
- CONFIG_PPS_CLIENT_LDISC=m
- CONFIG_PTP_1588_CLOCK=m
- # CONFIG_HWMON is not set
--# CONFIG_RC_CORE is not set
- CONFIG_FB=y
- CONFIG_FRAMEBUFFER_CONSOLE=y
- CONFIG_LOGO=y
-@@ -548,6 +547,7 @@ CONFIG_TEST_RHASHTABLE=m
- CONFIG_TEST_HASH=m
- CONFIG_TEST_USER_COPY=m
- CONFIG_TEST_BPF=m
-+CONFIG_TEST_FIND_BIT=m
- CONFIG_TEST_FIRMWARE=m
- CONFIG_TEST_SYSCTL=m
- CONFIG_TEST_UDELAY=m
-@@ -577,6 +577,7 @@ CONFIG_CRYPTO_RMD256=m
- CONFIG_CRYPTO_RMD320=m
- CONFIG_CRYPTO_SHA512=m
- CONFIG_CRYPTO_SHA3=m
-+CONFIG_CRYPTO_SM3=m
- CONFIG_CRYPTO_TGR192=m
- CONFIG_CRYPTO_WP512=m
- CONFIG_CRYPTO_AES_TI=m
-@@ -606,3 +607,4 @@ CONFIG_CRYPTO_USER_API_AEAD=m
- # CONFIG_CRYPTO_HW is not set
- CONFIG_CRC32_SELFTEST=m
- CONFIG_XZ_DEC_TEST=m
-+CONFIG_STRING_SELFTEST=m
+diff --git a/drivers/input/serio/hil_mlc.c b/drivers/input/serio/hil_mlc.c
+index d66d01c5373b..581e47119363 100644
+--- a/drivers/input/serio/hil_mlc.c
++++ b/drivers/input/serio/hil_mlc.c
+@@ -274,14 +274,12 @@ static int hilse_match(hil_mlc *mlc, int unused)
+ /* An LCV used to prevent runaway loops, forces 5 second sleep when reset. */
+ static int hilse_init_lcv(hil_mlc *mlc, int unused)
+ {
+-	struct timeval tv;
++	time64_t now = ktime_get_seconds();
+ 
+-	do_gettimeofday(&tv);
+-
+-	if (mlc->lcv && (tv.tv_sec - mlc->lcv_tv.tv_sec) < 5)
++	if (mlc->lcv && (now - mlc->lcv_time) < 5)
+ 		return -1;
+ 
+-	mlc->lcv_tv = tv;
++	mlc->lcv_time = now;
+ 	mlc->lcv = 0;
+ 
+ 	return 0;
+diff --git a/include/linux/hil_mlc.h b/include/linux/hil_mlc.h
+index 394a8405dd74..d6fc839bdf46 100644
+--- a/include/linux/hil_mlc.h
++++ b/include/linux/hil_mlc.h
+@@ -149,7 +149,7 @@ struct hil_mlc {
+ 
+ 	int			ddi;	/* Last operational device id */
+ 	int			lcv;	/* LCV to throttle loops */
+-	struct timeval		lcv_tv; /* Time loop was started */
++	time64_t		lcv_time; /* Time loop was started */
+ 
+ 	int			di_map[7]; /* Maps below items to live devs */
+ 	struct hil_mlc_devinfo	di[HIL_MLC_DEVMEM];
 -- 
-2.7.4
+2.9.0
