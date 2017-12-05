@@ -1,47 +1,40 @@
 From: Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>
-Subject: Re: [PATCH v3 11/14] nubus: Rename struct nubus_dev
-Date: Tue, 05 Dec 2017 14:50:55 +0100
-Message-ID: <2621660.olL7LkYlpq@amdc3058>
+Subject: Re: [PATCH v3 12/14] nubus: Adopt standard linked list
+ implementation
+Date: Tue, 05 Dec 2017 14:51:19 +0100
+Message-ID: <2055799.vQuQORffXy@amdc3058>
 References: <cover.1512454057.git.fthain@telegraphics.com.au>
-        <CGME20171205062004epcas5p2f8586fbcbbe377a56e8403c7566e8c3c@epcas5p2.samsung.com>
-        <60d598946ac219440cbb1fabed05964e806ebc5f.1512454057.git.fthain@telegraphics.com.au>
+        <CGME20171205062005epcas1p192e7c295d64034067554997825ab6539@epcas1p1.samsung.com>
+        <7b1f483782e215b88dbd8945838e3b2d9a4a1dc1.1512454057.git.fthain@telegraphics.com.au>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7Bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-reply-to: <60d598946ac219440cbb1fabed05964e806ebc5f.1512454057.git.fthain@telegraphics.com.au>
-Sender: linux-kernel-owner@vger.kernel.org
+Return-path: <netdev-owner@vger.kernel.org>
+In-reply-to: <7b1f483782e215b88dbd8945838e3b2d9a4a1dc1.1512454057.git.fthain@telegraphics.com.au>
+Sender: netdev-owner@vger.kernel.org
 To: Finn Thain <fthain@telegraphics.com.au>
 Cc: Geert Uytterhoeven <geert@linux-m68k.org>, linux-m68k@vger.kernel.org, linux-kernel@vger.kernel.org, netdev@vger.kernel.org, linux-fbdev@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
 
 On Tuesday, December 05, 2017 01:20:02 AM Finn Thain wrote:
-> It is misleading to call a functional resource a "device". In adopting
-> the Linux Driver Model, the struct device will be embedded in struct
-> nubus_board. That will compound the terminlogy problem because drivers
-> will bind with boards, not with functional resources. Avoid this by
-> renaming struct nubus_dev as struct nubus_rsrc. "Functional resource"
-> is the vendor's terminology so this helps avoid confusion.
+> This increases code re-use and improves readability.
 > 
 > Cc: Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>
-> Tested-by: Stan Johnson <userm57@yahoo.com>
 > Signed-off-by: Finn Thain <fthain@telegraphics.com.au>
+> Tested-by: Stan Johnson <userm57@yahoo.com>
 
 Acked-by: Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>
 
 for fbdev part
 
 > ---
->  drivers/net/ethernet/8390/mac8390.c     |  26 ++++----
->  drivers/net/ethernet/natsemi/macsonic.c |  22 +++----
->  drivers/nubus/nubus.c                   | 105 ++++++++++++++++----------------
->  drivers/nubus/proc.c                    |  15 ++---
->  drivers/video/fbdev/macfb.c             |   2 +-
->  include/linux/nubus.h                   |  30 +++++----
->  6 files changed, 98 insertions(+), 102 deletions(-)
+>  drivers/net/ethernet/8390/mac8390.c     |  7 +++--
+>  drivers/net/ethernet/cirrus/mac89x0.c   |  6 +++--
+>  drivers/net/ethernet/natsemi/macsonic.c |  8 +++---
+>  drivers/nubus/nubus.c                   | 45 ++++++++-------------------------
+>  drivers/nubus/proc.c                    | 11 +++-----
+>  drivers/video/fbdev/macfb.c             |  8 +++---
+>  include/linux/nubus.h                   | 15 +++++------
+>  7 files changed, 40 insertions(+), 60 deletions(-)
 
 Best regards,
---
-Bartlomiej Zolnierkiewicz
-Samsung R&D Institute Poland
-Samsung Electronics
