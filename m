@@ -1,815 +1,545 @@
 From: Finn Thain <fthain@telegraphics.com.au>
-Subject: [PATCH v3 10/14] nubus: Rework /proc/bus/nubus/s/ implementation
+Subject: [PATCH v3 11/14] nubus: Rename struct nubus_dev
 Date: Tue,  5 Dec 2017 01:20:02 -0500 (EST)
-Message-ID: <8b335dfd88dbc33cb9fec268eaf0bb4edabfb333.1512454057.git.fthain@telegraphics.com.au>
+Message-ID: <60d598946ac219440cbb1fabed05964e806ebc5f.1512454057.git.fthain@telegraphics.com.au>
 References: <cover.1512454057.git.fthain@telegraphics.com.au>
 Return-path: <linux-kernel-owner@vger.kernel.org>
 In-Reply-To: <cover.1512454057.git.fthain@telegraphics.com.au>
 Sender: linux-kernel-owner@vger.kernel.org
 To: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: linux-m68k@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc: linux-m68k@vger.kernel.org, linux-kernel@vger.kernel.org, Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>, netdev@vger.kernel.org, linux-fbdev@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
 
-The /proc/bus/nubus/s/ directory tree for any slot s is missing a lot
-of information. The struct file_operations methods have long been left
-unimplemented (hence the familiar compile-time warning, "Need to set
-some I/O handlers here").
+It is misleading to call a functional resource a "device". In adopting
+the Linux Driver Model, the struct device will be embedded in struct
+nubus_board. That will compound the terminlogy problem because drivers
+will bind with boards, not with functional resources. Avoid this by
+renaming struct nubus_dev as struct nubus_rsrc. "Functional resource"
+is the vendor's terminology so this helps avoid confusion.
 
-Slot resources have a complex structure which varies depending on board
-function. The logic for interpreting these ROM data structures is found
-in nubus.c. Let's not duplicate that logic in proc.c.
-
-Create the /proc/bus/nubus/s/ inodes while scanning slot s. During
-descent through slot resource subdirectories, call the new
-nubus_proc_add_foo() functions to create the procfs inodes.
-
-Also add a new function, nubus_seq_write_rsrc_mem(), to write the
-contents of a particular slot resource to a given seq_file. This is
-used by the procfs file_operations methods, to finally give userspace
-access to slot ROM information, such as the available video modes.
-
+Cc: Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>
 Tested-by: Stan Johnson <userm57@yahoo.com>
 Signed-off-by: Finn Thain <fthain@telegraphics.com.au>
 ---
- drivers/nubus/nubus.c | 118 ++++++++++++++++++++------
- drivers/nubus/proc.c  | 223 ++++++++++++++++++++++++++++++--------------------
- include/linux/nubus.h |  37 ++++++++-
- 3 files changed, 259 insertions(+), 119 deletions(-)
+ drivers/net/ethernet/8390/mac8390.c     |  26 ++++----
+ drivers/net/ethernet/natsemi/macsonic.c |  22 +++----
+ drivers/nubus/nubus.c                   | 105 ++++++++++++++++----------------
+ drivers/nubus/proc.c                    |  15 ++---
+ drivers/video/fbdev/macfb.c             |   2 +-
+ include/linux/nubus.h                   |  30 +++++----
+ 6 files changed, 98 insertions(+), 102 deletions(-)
 
+diff --git a/drivers/net/ethernet/8390/mac8390.c b/drivers/net/ethernet/8390/mac8390.c
+index 9497f18eaba0..929ff6419621 100644
+--- a/drivers/net/ethernet/8390/mac8390.c
++++ b/drivers/net/ethernet/8390/mac8390.c
+@@ -123,7 +123,8 @@ enum mac8390_access {
+ };
+ 
+ extern int mac8390_memtest(struct net_device *dev);
+-static int mac8390_initdev(struct net_device *dev, struct nubus_dev *ndev,
++static int mac8390_initdev(struct net_device *dev,
++			   struct nubus_rsrc *ndev,
+ 			   enum mac8390_type type);
+ 
+ static int mac8390_open(struct net_device *dev);
+@@ -169,11 +170,11 @@ static void word_memcpy_tocard(unsigned long tp, const void *fp, int count);
+ static void word_memcpy_fromcard(void *tp, unsigned long fp, int count);
+ static u32 mac8390_msg_enable;
+ 
+-static enum mac8390_type __init mac8390_ident(struct nubus_dev *dev)
++static enum mac8390_type __init mac8390_ident(struct nubus_rsrc *fres)
+ {
+-	switch (dev->dr_sw) {
++	switch (fres->dr_sw) {
+ 	case NUBUS_DRSW_3COM:
+-		switch (dev->dr_hw) {
++		switch (fres->dr_hw) {
+ 		case NUBUS_DRHW_APPLE_SONIC_NB:
+ 		case NUBUS_DRHW_APPLE_SONIC_LC:
+ 		case NUBUS_DRHW_SONNET:
+@@ -184,7 +185,7 @@ static enum mac8390_type __init mac8390_ident(struct nubus_dev *dev)
+ 		break;
+ 
+ 	case NUBUS_DRSW_APPLE:
+-		switch (dev->dr_hw) {
++		switch (fres->dr_hw) {
+ 		case NUBUS_DRHW_ASANTE_LC:
+ 			return MAC8390_NONE;
+ 		case NUBUS_DRHW_CABLETRON:
+@@ -201,7 +202,7 @@ static enum mac8390_type __init mac8390_ident(struct nubus_dev *dev)
+ 	case NUBUS_DRSW_TECHWORKS:
+ 	case NUBUS_DRSW_DAYNA2:
+ 	case NUBUS_DRSW_DAYNA_LC:
+-		if (dev->dr_hw == NUBUS_DRHW_CABLETRON)
++		if (fres->dr_hw == NUBUS_DRHW_CABLETRON)
+ 			return MAC8390_CABLETRON;
+ 		else
+ 			return MAC8390_APPLE;
+@@ -212,7 +213,7 @@ static enum mac8390_type __init mac8390_ident(struct nubus_dev *dev)
+ 		break;
+ 
+ 	case NUBUS_DRSW_KINETICS:
+-		switch (dev->dr_hw) {
++		switch (fres->dr_hw) {
+ 		case NUBUS_DRHW_INTERLAN:
+ 			return MAC8390_INTERLAN;
+ 		default:
+@@ -225,8 +226,8 @@ static enum mac8390_type __init mac8390_ident(struct nubus_dev *dev)
+ 		 * These correspond to Dayna Sonic cards
+ 		 * which use the macsonic driver
+ 		 */
+-		if (dev->dr_hw == NUBUS_DRHW_SMC9194 ||
+-		    dev->dr_hw == NUBUS_DRHW_INTERLAN)
++		if (fres->dr_hw == NUBUS_DRHW_SMC9194 ||
++		    fres->dr_hw == NUBUS_DRHW_INTERLAN)
+ 			return MAC8390_NONE;
+ 		else
+ 			return MAC8390_DAYNA;
+@@ -289,7 +290,8 @@ static int __init mac8390_memsize(unsigned long membase)
+ 	return i * 0x1000;
+ }
+ 
+-static bool __init mac8390_init(struct net_device *dev, struct nubus_dev *ndev,
++static bool __init mac8390_init(struct net_device *dev,
++				struct nubus_rsrc *ndev,
+ 				enum mac8390_type cardtype)
+ {
+ 	struct nubus_dir dir;
+@@ -394,7 +396,7 @@ static bool __init mac8390_init(struct net_device *dev, struct nubus_dev *ndev,
+ struct net_device * __init mac8390_probe(int unit)
+ {
+ 	struct net_device *dev;
+-	struct nubus_dev *ndev = NULL;
++	struct nubus_rsrc *ndev = NULL;
+ 	int err = -ENODEV;
+ 	struct ei_device *ei_local;
+ 
+@@ -489,7 +491,7 @@ static const struct net_device_ops mac8390_netdev_ops = {
+ };
+ 
+ static int __init mac8390_initdev(struct net_device *dev,
+-				  struct nubus_dev *ndev,
++				  struct nubus_rsrc *ndev,
+ 				  enum mac8390_type type)
+ {
+ 	static u32 fwrd4_offsets[16] = {
+diff --git a/drivers/net/ethernet/natsemi/macsonic.c b/drivers/net/ethernet/natsemi/macsonic.c
+index a42433fb6949..14f3fb50dc21 100644
+--- a/drivers/net/ethernet/natsemi/macsonic.c
++++ b/drivers/net/ethernet/natsemi/macsonic.c
+@@ -428,26 +428,26 @@ static int mac_nubus_sonic_ethernet_addr(struct net_device *dev,
+ 	return 0;
+ }
+ 
+-static int macsonic_ident(struct nubus_dev *ndev)
++static int macsonic_ident(struct nubus_rsrc *fres)
+ {
+-	if (ndev->dr_hw == NUBUS_DRHW_ASANTE_LC &&
+-	    ndev->dr_sw == NUBUS_DRSW_SONIC_LC)
++	if (fres->dr_hw == NUBUS_DRHW_ASANTE_LC &&
++	    fres->dr_sw == NUBUS_DRSW_SONIC_LC)
+ 		return MACSONIC_DAYNALINK;
+-	if (ndev->dr_hw == NUBUS_DRHW_SONIC &&
+-	    ndev->dr_sw == NUBUS_DRSW_APPLE) {
++	if (fres->dr_hw == NUBUS_DRHW_SONIC &&
++	    fres->dr_sw == NUBUS_DRSW_APPLE) {
+ 		/* There has to be a better way to do this... */
+-		if (strstr(ndev->board->name, "DuoDock"))
++		if (strstr(fres->board->name, "DuoDock"))
+ 			return MACSONIC_DUODOCK;
+ 		else
+ 			return MACSONIC_APPLE;
+ 	}
+ 
+-	if (ndev->dr_hw == NUBUS_DRHW_SMC9194 &&
+-	    ndev->dr_sw == NUBUS_DRSW_DAYNA)
++	if (fres->dr_hw == NUBUS_DRHW_SMC9194 &&
++	    fres->dr_sw == NUBUS_DRSW_DAYNA)
+ 		return MACSONIC_DAYNA;
+ 
+-	if (ndev->dr_hw == NUBUS_DRHW_APPLE_SONIC_LC &&
+-	    ndev->dr_sw == 0) { /* huh? */
++	if (fres->dr_hw == NUBUS_DRHW_APPLE_SONIC_LC &&
++	    fres->dr_sw == 0) { /* huh? */
+ 		return MACSONIC_APPLE16;
+ 	}
+ 	return -1;
+@@ -456,7 +456,7 @@ static int macsonic_ident(struct nubus_dev *ndev)
+ static int mac_nubus_sonic_probe(struct net_device *dev)
+ {
+ 	static int slots;
+-	struct nubus_dev* ndev = NULL;
++	struct nubus_rsrc *ndev = NULL;
+ 	struct sonic_local* lp = netdev_priv(dev);
+ 	unsigned long base_addr, prom_addr;
+ 	u16 sonic_dcr;
 diff --git a/drivers/nubus/nubus.c b/drivers/nubus/nubus.c
-index a7b480534a17..b0d8aa721173 100644
+index b0d8aa721173..324f6e4407c8 100644
 --- a/drivers/nubus/nubus.c
 +++ b/drivers/nubus/nubus.c
-@@ -15,6 +15,7 @@
- #include <linux/errno.h>
- #include <linux/init.h>
- #include <linux/module.h>
-+#include <linux/seq_file.h>
- #include <linux/slab.h>
- #include <asm/setup.h>
- #include <asm/page.h>
-@@ -146,7 +147,7 @@ static inline void *nubus_rom_addr(int slot)
- 	return (void *)(0xF1000000 + (slot << 24));
+@@ -32,7 +32,7 @@
+ 
+ /* Globals */
+ 
+-struct nubus_dev *nubus_devices;
++struct nubus_rsrc *nubus_func_rsrcs;
+ struct nubus_board *nubus_boards;
+ 
+ /* Meaning of "bytelanes":
+@@ -228,12 +228,11 @@ int nubus_get_root_dir(const struct nubus_board *board,
+ EXPORT_SYMBOL(nubus_get_root_dir);
+ 
+ /* This is a slyly renamed version of the above */
+-int nubus_get_func_dir(const struct nubus_dev *dev,
+-		       struct nubus_dir *dir)
++int nubus_get_func_dir(const struct nubus_rsrc *fres, struct nubus_dir *dir)
+ {
+-	dir->ptr = dir->base = dev->directory;
++	dir->ptr = dir->base = fres->directory;
+ 	dir->done = 0;
+-	dir->mask = dev->board->lanes;
++	dir->mask = fres->board->lanes;
+ 	return 0;
  }
+ EXPORT_SYMBOL(nubus_get_func_dir);
+@@ -306,11 +305,10 @@ EXPORT_SYMBOL(nubus_rewinddir);
  
--static unsigned char *nubus_dirptr(const struct nubus_dirent *nd)
-+unsigned char *nubus_dirptr(const struct nubus_dirent *nd)
+ /* Driver interface functions, more or less like in pci.c */
+ 
+-struct nubus_dev*
+-nubus_find_type(unsigned short category, unsigned short type,
+-		const struct nubus_dev *from)
++struct nubus_rsrc *nubus_find_type(unsigned short category, unsigned short type,
++                                   const struct nubus_rsrc *from)
  {
- 	unsigned char *p = nd->base;
+-	struct nubus_dev *itor = from ? from->next : nubus_devices;
++	struct nubus_rsrc *itor = from ? from->next : nubus_func_rsrcs;
  
-@@ -173,8 +174,8 @@ void nubus_get_rsrc_mem(void *dest, const struct nubus_dirent *dirent,
+ 	while (itor) {
+ 		if (itor->category == category && itor->type == type)
+@@ -321,10 +319,10 @@ nubus_find_type(unsigned short category, unsigned short type,
  }
- EXPORT_SYMBOL(nubus_get_rsrc_mem);
+ EXPORT_SYMBOL(nubus_find_type);
  
--void nubus_get_rsrc_str(char *dest, const struct nubus_dirent *dirent,
--                        unsigned int len)
-+unsigned int nubus_get_rsrc_str(char *dest, const struct nubus_dirent *dirent,
-+                                unsigned int len)
+-struct nubus_dev*
+-nubus_find_slot(unsigned int slot, const struct nubus_dev *from)
++struct nubus_rsrc *nubus_find_slot(unsigned int slot,
++                                   const struct nubus_rsrc *from)
  {
- 	char *t = dest;
- 	unsigned char *p = nubus_dirptr(dirent);
-@@ -189,9 +190,33 @@ void nubus_get_rsrc_str(char *dest, const struct nubus_dirent *dirent,
- 	}
- 	if (len > 0)
- 		*t = '\0';
-+	return t - dest;
- }
- EXPORT_SYMBOL(nubus_get_rsrc_str);
+-	struct nubus_dev *itor = from ? from->next : nubus_devices;
++	struct nubus_rsrc *itor = from ? from->next : nubus_func_rsrcs;
  
-+void nubus_seq_write_rsrc_mem(struct seq_file *m,
-+                              const struct nubus_dirent *dirent,
-+                              unsigned int len)
-+{
-+	unsigned long buf[32];
-+	unsigned int buf_size = sizeof(buf);
-+	unsigned char *p = nubus_dirptr(dirent);
-+
-+	/* If possible, write out full buffers */
-+	while (len >= buf_size) {
-+		unsigned int i;
-+
-+		for (i = 0; i < ARRAY_SIZE(buf); i++)
-+			buf[i] = nubus_get_rom(&p, sizeof(buf[0]),
-+			                       dirent->mask);
-+		seq_write(m, buf, buf_size);
-+		len -= buf_size;
-+	}
-+	/* If not, write out individual bytes */
-+	while (len--)
-+		seq_putc(m, nubus_get_rom(&p, 1, dirent->mask));
-+}
-+
- int nubus_get_root_dir(const struct nubus_board *board,
- 		       struct nubus_dir *dir)
- {
-@@ -326,35 +351,35 @@ EXPORT_SYMBOL(nubus_find_rsrc);
-    looking at, and print out lots and lots of information from the
-    resource blocks. */
- 
--/* FIXME: A lot of this stuff will eventually be useful after
--   initialization, for intelligently probing Ethernet and video chips,
--   among other things.  The rest of it should go in the /proc code.
--   For now, we just use it to give verbose boot logs. */
--
- static int __init nubus_get_block_rsrc_dir(struct nubus_board *board,
-+                                           struct proc_dir_entry *procdir,
-                                            const struct nubus_dirent *parent)
- {
- 	struct nubus_dir dir;
- 	struct nubus_dirent ent;
- 
- 	nubus_get_subdir(parent, &dir);
-+	dir.procdir = nubus_proc_add_rsrc_dir(procdir, parent, board);
- 
- 	while (nubus_readdir(&dir, &ent) != -1) {
- 		u32 size;
- 
- 		nubus_get_rsrc_mem(&size, &ent, 4);
- 		pr_debug("        block (0x%x), size %d\n", ent.type, size);
-+		nubus_proc_add_rsrc_mem(dir.procdir, &ent, size);
- 	}
+ 	while (itor) {
+ 		if (itor->board->slot == slot)
+@@ -403,19 +401,19 @@ static int __init nubus_get_display_vidmode(struct nubus_board *board,
  	return 0;
  }
  
- static int __init nubus_get_display_vidmode(struct nubus_board *board,
-+                                            struct proc_dir_entry *procdir,
-                                             const struct nubus_dirent *parent)
- {
- 	struct nubus_dir dir;
- 	struct nubus_dirent ent;
- 
- 	nubus_get_subdir(parent, &dir);
-+	dir.procdir = nubus_proc_add_rsrc_dir(procdir, parent, board);
- 
- 	while (nubus_readdir(&dir, &ent) != -1) {
- 		switch (ent.type) {
-@@ -366,37 +391,42 @@ static int __init nubus_get_display_vidmode(struct nubus_board *board,
- 			nubus_get_rsrc_mem(&size, &ent, 4);
- 			pr_debug("        block (0x%x), size %d\n", ent.type,
- 				size);
-+			nubus_proc_add_rsrc_mem(dir.procdir, &ent, size);
- 			break;
- 		}
- 		default:
- 			pr_debug("        unknown resource 0x%02x, data 0x%06x\n",
- 				ent.type, ent.data);
-+			nubus_proc_add_rsrc_mem(dir.procdir, &ent, 0);
- 		}
- 	}
- 	return 0;
- }
- 
- static int __init nubus_get_display_resource(struct nubus_dev *dev,
-+                                             struct proc_dir_entry *procdir,
+-static int __init nubus_get_display_resource(struct nubus_dev *dev,
++static int __init nubus_get_display_resource(struct nubus_rsrc *fres,
+                                              struct proc_dir_entry *procdir,
                                               const struct nubus_dirent *ent)
  {
  	switch (ent->type) {
  	case NUBUS_RESID_GAMMADIR:
  		pr_debug("    gamma directory offset: 0x%06x\n", ent->data);
--		nubus_get_block_rsrc_dir(dev->board, ent);
-+		nubus_get_block_rsrc_dir(dev->board, procdir, ent);
+-		nubus_get_block_rsrc_dir(dev->board, procdir, ent);
++		nubus_get_block_rsrc_dir(fres->board, procdir, ent);
  		break;
  	case 0x0080 ... 0x0085:
  		pr_debug("    mode 0x%02x info offset: 0x%06x\n",
  			ent->type, ent->data);
--		nubus_get_display_vidmode(dev->board, ent);
-+		nubus_get_display_vidmode(dev->board, procdir, ent);
+-		nubus_get_display_vidmode(dev->board, procdir, ent);
++		nubus_get_display_vidmode(fres->board, procdir, ent);
  		break;
  	default:
  		pr_debug("    unknown resource 0x%02x, data 0x%06x\n",
- 			ent->type, ent->data);
-+		nubus_proc_add_rsrc_mem(procdir, ent, 0);
- 	}
+@@ -425,7 +423,7 @@ static int __init nubus_get_display_resource(struct nubus_dev *dev,
  	return 0;
  }
  
- static int __init nubus_get_network_resource(struct nubus_dev *dev,
-+                                             struct proc_dir_entry *procdir,
+-static int __init nubus_get_network_resource(struct nubus_dev *dev,
++static int __init nubus_get_network_resource(struct nubus_rsrc *fres,
+                                              struct proc_dir_entry *procdir,
                                               const struct nubus_dirent *ent)
  {
- 	switch (ent->type) {
-@@ -406,16 +436,19 @@ static int __init nubus_get_network_resource(struct nubus_dev *dev,
- 
- 		nubus_get_rsrc_mem(addr, ent, 6);
- 		pr_debug("    MAC address: %pM\n", addr);
-+		nubus_proc_add_rsrc_mem(procdir, ent, 6);
- 		break;
- 	}
- 	default:
- 		pr_debug("    unknown resource 0x%02x, data 0x%06x\n",
- 			ent->type, ent->data);
-+		nubus_proc_add_rsrc_mem(procdir, ent, 0);
- 	}
+@@ -447,7 +445,7 @@ static int __init nubus_get_network_resource(struct nubus_dev *dev,
  	return 0;
  }
  
- static int __init nubus_get_cpu_resource(struct nubus_dev *dev,
-+                                         struct proc_dir_entry *procdir,
+-static int __init nubus_get_cpu_resource(struct nubus_dev *dev,
++static int __init nubus_get_cpu_resource(struct nubus_rsrc *fres,
+                                          struct proc_dir_entry *procdir,
                                           const struct nubus_dirent *ent)
  {
- 	switch (ent->type) {
-@@ -426,6 +459,7 @@ static int __init nubus_get_cpu_resource(struct nubus_dev *dev,
- 		nubus_get_rsrc_mem(&meminfo, ent, 8);
- 		pr_debug("    memory: [ 0x%08lx 0x%08lx ]\n",
- 			meminfo[0], meminfo[1]);
-+		nubus_proc_add_rsrc_mem(procdir, ent, 8);
- 		break;
- 	}
- 	case NUBUS_RESID_ROMINFO:
-@@ -435,31 +469,35 @@ static int __init nubus_get_cpu_resource(struct nubus_dev *dev,
- 		nubus_get_rsrc_mem(&rominfo, ent, 8);
- 		pr_debug("    ROM:    [ 0x%08lx 0x%08lx ]\n",
- 			rominfo[0], rominfo[1]);
-+		nubus_proc_add_rsrc_mem(procdir, ent, 8);
- 		break;
- 	}
- 	default:
- 		pr_debug("    unknown resource 0x%02x, data 0x%06x\n",
- 			ent->type, ent->data);
-+		nubus_proc_add_rsrc_mem(procdir, ent, 0);
- 	}
+@@ -480,19 +478,19 @@ static int __init nubus_get_cpu_resource(struct nubus_dev *dev,
  	return 0;
  }
  
- static int __init nubus_get_private_resource(struct nubus_dev *dev,
-+                                             struct proc_dir_entry *procdir,
+-static int __init nubus_get_private_resource(struct nubus_dev *dev,
++static int __init nubus_get_private_resource(struct nubus_rsrc *fres,
+                                              struct proc_dir_entry *procdir,
                                               const struct nubus_dirent *ent)
  {
- 	switch (dev->category) {
+-	switch (dev->category) {
++	switch (fres->category) {
  	case NUBUS_CAT_DISPLAY:
--		nubus_get_display_resource(dev, ent);
-+		nubus_get_display_resource(dev, procdir, ent);
+-		nubus_get_display_resource(dev, procdir, ent);
++		nubus_get_display_resource(fres, procdir, ent);
  		break;
  	case NUBUS_CAT_NETWORK:
--		nubus_get_network_resource(dev, ent);
-+		nubus_get_network_resource(dev, procdir, ent);
+-		nubus_get_network_resource(dev, procdir, ent);
++		nubus_get_network_resource(fres, procdir, ent);
  		break;
  	case NUBUS_CAT_CPU:
--		nubus_get_cpu_resource(dev, ent);
-+		nubus_get_cpu_resource(dev, procdir, ent);
+-		nubus_get_cpu_resource(dev, procdir, ent);
++		nubus_get_cpu_resource(fres, procdir, ent);
  		break;
  	default:
  		pr_debug("    unknown resource 0x%02x, data 0x%06x\n",
- 			ent->type, ent->data);
-+		nubus_proc_add_rsrc_mem(procdir, ent, 0);
- 	}
- 	return 0;
- }
-@@ -474,6 +512,7 @@ nubus_get_functional_resource(struct nubus_board *board, int slot,
- 
- 	pr_debug("  Functional resource 0x%02x:\n", parent->type);
- 	nubus_get_subdir(parent, &dir);
-+	dir.procdir = nubus_proc_add_rsrc_dir(board->procdir, parent, board);
- 
- 	/* Actually we should probably panic if this fails */
- 	if ((dev = kzalloc(sizeof(*dev), GFP_ATOMIC)) == NULL)
-@@ -495,14 +534,17 @@ nubus_get_functional_resource(struct nubus_board *board, int slot,
- 			dev->dr_hw    = nbtdata[3];
- 			pr_debug("    type: [cat 0x%x type 0x%x sw 0x%x hw 0x%x]\n",
- 				nbtdata[0], nbtdata[1], nbtdata[2], nbtdata[3]);
-+			nubus_proc_add_rsrc_mem(dir.procdir, &ent, 8);
- 			break;
- 		}
- 		case NUBUS_RESID_NAME:
- 		{
- 			char name[64];
-+			unsigned int len;
- 
--			nubus_get_rsrc_str(name, &ent, sizeof(name));
-+			len = nubus_get_rsrc_str(name, &ent, sizeof(name));
- 			pr_debug("    name: %s\n", name);
-+			nubus_proc_add_rsrc_mem(dir.procdir, &ent, len + 1);
- 			break;
- 		}
- 		case NUBUS_RESID_DRVRDIR:
-@@ -511,7 +553,7 @@ nubus_get_functional_resource(struct nubus_board *board, int slot,
- 			   use this :-) */
- 			pr_debug("    driver directory offset: 0x%06x\n",
- 				ent.data);
--			nubus_get_block_rsrc_dir(board, &ent);
-+			nubus_get_block_rsrc_dir(board, dir.procdir, &ent);
- 			break;
- 		}
- 		case NUBUS_RESID_MINOR_BASEOS:
-@@ -523,6 +565,7 @@ nubus_get_functional_resource(struct nubus_board *board, int slot,
- 
- 			nubus_get_rsrc_mem(&base_offset, &ent, 4);
- 			pr_debug("    memory offset: 0x%08x\n", base_offset);
-+			nubus_proc_add_rsrc_mem(dir.procdir, &ent, 4);
- 			break;
- 		}
- 		case NUBUS_RESID_MINOR_LENGTH:
-@@ -532,18 +575,21 @@ nubus_get_functional_resource(struct nubus_board *board, int slot,
- 
- 			nubus_get_rsrc_mem(&length, &ent, 4);
- 			pr_debug("    memory length: 0x%08x\n", length);
-+			nubus_proc_add_rsrc_mem(dir.procdir, &ent, 4);
- 			break;
- 		}
- 		case NUBUS_RESID_FLAGS:
- 			pr_debug("    flags: 0x%06x\n", ent.data);
-+			nubus_proc_add_rsrc(dir.procdir, &ent);
- 			break;
- 		case NUBUS_RESID_HWDEVID:
- 			pr_debug("    hwdevid: 0x%06x\n", ent.data);
-+			nubus_proc_add_rsrc(dir.procdir, &ent);
- 			break;
- 		default:
- 			/* Local/Private resources have their own
- 			   function */
--			nubus_get_private_resource(dev, &ent);
-+			nubus_get_private_resource(dev, dir.procdir, &ent);
- 		}
- 	}
- 
-@@ -552,7 +598,8 @@ nubus_get_functional_resource(struct nubus_board *board, int slot,
- 
- /* This is *really* cool. */
- static int __init nubus_get_icon(struct nubus_board *board,
--				 const struct nubus_dirent *ent)
-+                                 struct proc_dir_entry *procdir,
-+                                 const struct nubus_dirent *ent)
- {
- 	/* Should be 32x32 if my memory serves me correctly */
- 	u32 icon[32];
-@@ -564,12 +611,14 @@ static int __init nubus_get_icon(struct nubus_board *board,
- 		pr_debug("        %08x %08x %08x %08x\n",
- 			icon[i * 4 + 0], icon[i * 4 + 1],
- 			icon[i * 4 + 2], icon[i * 4 + 3]);
-+	nubus_proc_add_rsrc_mem(procdir, ent, 128);
- 
+@@ -502,24 +500,25 @@ static int __init nubus_get_private_resource(struct nubus_dev *dev,
  	return 0;
  }
  
- static int __init nubus_get_vendorinfo(struct nubus_board *board,
--				       const struct nubus_dirent *parent)
-+                                       struct proc_dir_entry *procdir,
-+                                       const struct nubus_dirent *parent)
+-static struct nubus_dev * __init
++static struct nubus_rsrc * __init
+ nubus_get_functional_resource(struct nubus_board *board, int slot,
+ 			      const struct nubus_dirent *parent)
  {
  	struct nubus_dir dir;
  	struct nubus_dirent ent;
-@@ -578,15 +627,18 @@ static int __init nubus_get_vendorinfo(struct nubus_board *board,
+-	struct nubus_dev *dev;
++	struct nubus_rsrc *fres;
  
- 	pr_debug("    vendor info:\n");
+ 	pr_debug("  Functional resource 0x%02x:\n", parent->type);
  	nubus_get_subdir(parent, &dir);
-+	dir.procdir = nubus_proc_add_rsrc_dir(procdir, parent, board);
+ 	dir.procdir = nubus_proc_add_rsrc_dir(board->procdir, parent, board);
  
- 	while (nubus_readdir(&dir, &ent) != -1) {
- 		char name[64];
-+		unsigned int len;
- 
- 		/* These are all strings, we think */
--		nubus_get_rsrc_str(name, &ent, sizeof(name));
-+		len = nubus_get_rsrc_str(name, &ent, sizeof(name));
- 		if (ent.type < 1 || ent.type > 5)
- 			ent.type = 5;
- 		pr_debug("    %s: %s\n", vendor_fields[ent.type - 1], name);
-+		nubus_proc_add_rsrc_mem(dir.procdir, &ent, len + 1);
- 	}
- 	return 0;
- }
-@@ -599,6 +651,7 @@ static int __init nubus_get_board_resource(struct nubus_board *board, int slot,
- 
- 	pr_debug("  Board resource 0x%02x:\n", parent->type);
- 	nubus_get_subdir(parent, &dir);
-+	dir.procdir = nubus_proc_add_rsrc_dir(board->procdir, parent, board);
+ 	/* Actually we should probably panic if this fails */
+-	if ((dev = kzalloc(sizeof(*dev), GFP_ATOMIC)) == NULL)
++	fres = kzalloc(sizeof(*fres), GFP_ATOMIC);
++	if (!fres)
+ 		return NULL;
+-	dev->resid = parent->type;
+-	dev->directory = dir.base;
+-	dev->board = board;
++	fres->resid = parent->type;
++	fres->directory = dir.base;
++	fres->board = board;
  
  	while (nubus_readdir(&dir, &ent) != -1) {
  		switch (ent.type) {
-@@ -614,48 +667,61 @@ static int __init nubus_get_board_resource(struct nubus_board *board, int slot,
- 			if (nbtdata[0] != 1 || nbtdata[1] != 0 ||
- 			    nbtdata[2] != 0 || nbtdata[3] != 0)
- 				pr_err("Slot %X: sResource is not a board resource!\n", slot);
-+			nubus_proc_add_rsrc_mem(dir.procdir, &ent, 8);
- 			break;
- 		}
- 		case NUBUS_RESID_NAME:
--			nubus_get_rsrc_str(board->name, &ent,
--			                   sizeof(board->name));
-+		{
-+			unsigned int len;
-+
-+			len = nubus_get_rsrc_str(board->name, &ent,
-+			                         sizeof(board->name));
- 			pr_debug("    name: %s\n", board->name);
-+			nubus_proc_add_rsrc_mem(dir.procdir, &ent, len + 1);
- 			break;
-+		}
- 		case NUBUS_RESID_ICON:
--			nubus_get_icon(board, &ent);
-+			nubus_get_icon(board, dir.procdir, &ent);
- 			break;
- 		case NUBUS_RESID_BOARDID:
- 			pr_debug("    board id: 0x%x\n", ent.data);
-+			nubus_proc_add_rsrc(dir.procdir, &ent);
- 			break;
- 		case NUBUS_RESID_PRIMARYINIT:
- 			pr_debug("    primary init offset: 0x%06x\n", ent.data);
-+			nubus_proc_add_rsrc(dir.procdir, &ent);
- 			break;
- 		case NUBUS_RESID_VENDORINFO:
--			nubus_get_vendorinfo(board, &ent);
-+			nubus_get_vendorinfo(board, dir.procdir, &ent);
- 			break;
- 		case NUBUS_RESID_FLAGS:
- 			pr_debug("    flags: 0x%06x\n", ent.data);
-+			nubus_proc_add_rsrc(dir.procdir, &ent);
- 			break;
- 		case NUBUS_RESID_HWDEVID:
- 			pr_debug("    hwdevid: 0x%06x\n", ent.data);
-+			nubus_proc_add_rsrc(dir.procdir, &ent);
- 			break;
- 		case NUBUS_RESID_SECONDINIT:
- 			pr_debug("    secondary init offset: 0x%06x\n", ent.data);
-+			nubus_proc_add_rsrc(dir.procdir, &ent);
- 			break;
- 			/* WTF isn't this in the functional resources? */
- 		case NUBUS_RESID_VIDNAMES:
- 			pr_debug("    vidnames directory offset: 0x%06x\n",
- 				ent.data);
--			nubus_get_block_rsrc_dir(board, &ent);
-+			nubus_get_block_rsrc_dir(board, dir.procdir, &ent);
- 			break;
- 			/* Same goes for this */
- 		case NUBUS_RESID_VIDMODES:
- 			pr_debug("    video mode parameter directory offset: 0x%06x\n",
- 				ent.data);
-+			nubus_proc_add_rsrc(dir.procdir, &ent);
- 			break;
+@@ -528,10 +527,10 @@ nubus_get_functional_resource(struct nubus_board *board, int slot,
+ 			unsigned short nbtdata[4];
+ 
+ 			nubus_get_rsrc_mem(nbtdata, &ent, 8);
+-			dev->category = nbtdata[0];
+-			dev->type     = nbtdata[1];
+-			dev->dr_sw    = nbtdata[2];
+-			dev->dr_hw    = nbtdata[3];
++			fres->category = nbtdata[0];
++			fres->type     = nbtdata[1];
++			fres->dr_sw    = nbtdata[2];
++			fres->dr_hw    = nbtdata[3];
+ 			pr_debug("    type: [cat 0x%x type 0x%x sw 0x%x hw 0x%x]\n",
+ 				nbtdata[0], nbtdata[1], nbtdata[2], nbtdata[3]);
+ 			nubus_proc_add_rsrc_mem(dir.procdir, &ent, 8);
+@@ -589,11 +588,11 @@ nubus_get_functional_resource(struct nubus_board *board, int slot,
  		default:
- 			pr_debug("    unknown resource 0x%02x, data 0x%06x\n",
- 				ent.type, ent.data);
-+			nubus_proc_add_rsrc_mem(dir.procdir, &ent, 0);
+ 			/* Local/Private resources have their own
+ 			   function */
+-			nubus_get_private_resource(dev, dir.procdir, &ent);
++			nubus_get_private_resource(fres, dir.procdir, &ent);
  		}
  	}
- 	return 0;
-@@ -746,6 +812,8 @@ static struct nubus_board * __init nubus_add_board(int slot, int bytelanes)
- 	if (ent.type < 1 || ent.type > 127)
- 		pr_warn("Slot %X: Board resource ID is invalid!\n", slot);
  
-+	board->procdir = nubus_proc_add_board(board);
-+
+-	return dev;
++	return fres;
+ }
+ 
+ /* This is *really* cool. */
+@@ -727,7 +726,6 @@ static int __init nubus_get_board_resource(struct nubus_board *board, int slot,
+ 	return 0;
+ }
+ 
+-/* Add a board (might be many devices) to the list */
+ static struct nubus_board * __init nubus_add_board(int slot, int bytelanes)
+ {
+ 	struct nubus_board *board;
+@@ -799,10 +797,11 @@ static struct nubus_board * __init nubus_add_board(int slot, int bytelanes)
+ 	pr_debug("Slot %X resources:\n", slot);
+ 
+ 	/* Each slot should have one board resource and any number of
+-	   functional resources.  So we'll fill in some fields in the
+-	   struct nubus_board from the board resource, then walk down
+-	   the list of functional resources, spinning out a nubus_dev
+-	   for each of them. */
++	 * functional resources.  So we'll fill in some fields in the
++	 * struct nubus_board from the board resource, then walk down
++	 * the list of functional resources, spinning out a nubus_rsrc
++	 * for each of them.
++	 */
+ 	if (nubus_readdir(&dir, &ent) == -1) {
+ 		/* We can't have this! */
+ 		pr_err("Slot %X: Board resource not found!\n", slot);
+@@ -817,32 +816,32 @@ static struct nubus_board * __init nubus_add_board(int slot, int bytelanes)
  	nubus_get_board_resource(board, slot, &ent);
  
  	while (nubus_readdir(&dir, &ent) != -1) {
-@@ -833,8 +901,8 @@ static int __init nubus_init(void)
- 	if (!MACH_IS_MAC)
- 		return 0;
+-		struct nubus_dev *dev;
+-		struct nubus_dev **devp;
++		struct nubus_rsrc *fres;
++		struct nubus_rsrc **fresp;
  
--	nubus_scan_bus();
- 	nubus_proc_init();
-+	nubus_scan_bus();
- 	return 0;
- }
+-		dev = nubus_get_functional_resource(board, slot, &ent);
+-		if (dev == NULL)
++		fres = nubus_get_functional_resource(board, slot, &ent);
++		if (fres == NULL)
+ 			continue;
  
+ 		/* Resources should appear in ascending ID order. This sanity
+ 		 * check prevents duplicate resource IDs.
+ 		 */
+-		if (dev->resid <= prev_resid) {
+-			kfree(dev);
++		if (fres->resid <= prev_resid) {
++			kfree(fres);
+ 			continue;
+ 		}
+-		prev_resid = dev->resid;
++		prev_resid = fres->resid;
+ 
+ 		/* We zeroed this out above */
+-		if (board->first_dev == NULL)
+-			board->first_dev = dev;
++		if (board->first_func_rsrc == NULL)
++			board->first_func_rsrc = fres;
+ 
+-		/* Put it on the global NuBus device chain. Keep entries in order. */
+-		for (devp = &nubus_devices; *devp != NULL;
+-		     devp = &((*devp)->next))
++		/* Put it on the func. resource list. Keep entries in order. */
++		for (fresp = &nubus_func_rsrcs; *fresp != NULL;
++		     fresp = &((*fresp)->next))
+ 			/* spin */;
+-		*devp = dev;
+-		dev->next = NULL;
++		*fresp = fres;
++		fres->next = NULL;
+ 	}
+ 
+ 	/* Put it on the global NuBus board chain. Keep entries in order. */
 diff --git a/drivers/nubus/proc.c b/drivers/nubus/proc.c
-index 41ec859bdd8b..ad8b0648a6c0 100644
+index ad8b0648a6c0..9ffaafdb3d2c 100644
 --- a/drivers/nubus/proc.c
 +++ b/drivers/nubus/proc.c
-@@ -11,24 +11,28 @@
-    structure in /proc analogous to the structure of the NuBus ROM
-    resources.
- 
--   Therefore each NuBus device is in fact a directory, which may in
--   turn contain subdirectories.  The "files" correspond to NuBus
--   resource records.  For those types of records which we know how to
--   convert to formats that are meaningful to userspace (mostly just
--   icons) these files will provide "cooked" data.  Otherwise they will
--   simply provide raw access (read-only of course) to the ROM.  */
-+   Therefore each board function gets a directory, which may in turn
-+   contain subdirectories.  Each slot resource is a file.  Unrecognized
-+   resources are empty files, since every resource ID requires a special
-+   case (e.g. if the resource ID implies a directory or block, then its
-+   value has to be interpreted as a slot ROM pointer etc.).
-+ */
- 
- #include <linux/types.h>
- #include <linux/kernel.h>
- #include <linux/nubus.h>
- #include <linux/proc_fs.h>
- #include <linux/seq_file.h>
-+#include <linux/slab.h>
- #include <linux/init.h>
- #include <linux/module.h>
--
- #include <linux/uaccess.h>
- #include <asm/byteorder.h>
- 
-+/*
-+ * /proc/bus/nubus/devices stuff
-+ */
-+
+@@ -36,17 +36,14 @@
  static int
  nubus_devices_proc_show(struct seq_file *m, void *v)
  {
-@@ -61,96 +65,142 @@ static const struct file_operations nubus_devices_proc_fops = {
+-	struct nubus_dev *dev = nubus_devices;
++	struct nubus_rsrc *fres = nubus_func_rsrcs;
  
- static struct proc_dir_entry *proc_bus_nubus_dir;
- 
--static const struct file_operations nubus_proc_subdir_fops = {
--#warning Need to set some I/O handlers here
-+/*
-+ * /proc/bus/nubus/x/ stuff
-+ */
-+
-+struct proc_dir_entry *nubus_proc_add_board(struct nubus_board *board)
-+{
-+	char name[2];
-+
-+	if (!proc_bus_nubus_dir)
-+		return NULL;
-+	snprintf(name, sizeof(name), "%x", board->slot);
-+	return proc_mkdir(name, proc_bus_nubus_dir);
-+}
-+
-+/* The PDE private data for any directory under /proc/bus/nubus/x/
-+ * is the bytelanes value for the board in slot x.
-+ */
-+
-+struct proc_dir_entry *nubus_proc_add_rsrc_dir(struct proc_dir_entry *procdir,
-+                                               const struct nubus_dirent *ent,
-+                                               struct nubus_board *board)
-+{
-+	char name[9];
-+	int lanes = board->lanes;
-+
-+	if (!procdir)
-+		return NULL;
-+	snprintf(name, sizeof(name), "%x", ent->type);
-+	return proc_mkdir_data(name, S_IRUGO | S_IXUGO, procdir,
-+	                       (void *)lanes);
-+}
-+
-+/* The PDE private data for a file under /proc/bus/nubus/x/ is a pointer to
-+ * an instance of the following structure, which gives the location and size
-+ * of the resource data in the slot ROM. For slot resources which hold only a
-+ * small integer, this integer value is stored directly and size is set to 0.
-+ * A NULL private data pointer indicates an unrecognized resource.
-+ */
-+
-+struct nubus_proc_pde_data {
-+	unsigned char *res_ptr;
-+	unsigned int res_size;
- };
- 
--static void nubus_proc_subdir(struct nubus_dev* dev,
--			      struct proc_dir_entry* parent,
--			      struct nubus_dir* dir)
-+static struct nubus_proc_pde_data *
-+nubus_proc_alloc_pde_data(unsigned char *ptr, unsigned int size)
- {
--	struct nubus_dirent ent;
--
--	/* Some of these are directories, others aren't */
--	while (nubus_readdir(dir, &ent) != -1) {
--		char name[9];
--		struct proc_dir_entry* e;
--		
--		snprintf(name, sizeof(name), "%x", ent.type);
--		e = proc_create(name, S_IFREG | S_IRUGO | S_IWUSR, parent,
--				&nubus_proc_subdir_fops);
--		if (!e)
--			return;
--	}
-+	struct nubus_proc_pde_data *pde_data;
-+
-+	pde_data = kmalloc(sizeof(*pde_data), GFP_KERNEL);
-+	if (!pde_data)
-+		return NULL;
-+
-+	pde_data->res_ptr = ptr;
-+	pde_data->res_size = size;
-+	return pde_data;
- }
- 
--/* Can't do this recursively since the root directory is structured
--   somewhat differently from the subdirectories */
--static void nubus_proc_populate(struct nubus_dev* dev,
--				struct proc_dir_entry* parent,
--				struct nubus_dir* root)
-+static int nubus_proc_rsrc_show(struct seq_file *m, void *v)
- {
--	struct nubus_dirent ent;
--
--	/* We know these are all directories (board resource + one or
--	   more functional resources) */
--	while (nubus_readdir(root, &ent) != -1) {
--		char name[9];
--		struct proc_dir_entry* e;
--		struct nubus_dir dir;
--		
--		snprintf(name, sizeof(name), "%x", ent.type);
--		e = proc_mkdir(name, parent);
--		if (!e) return;
--
--		/* And descend */
--		if (nubus_get_subdir(&ent, &dir) == -1) {
--			/* This shouldn't happen */
--			printk(KERN_ERR "NuBus root directory node %x:%x has no subdir!\n",
--			       dev->board->slot, ent.type);
--			continue;
--		} else {
--			nubus_proc_subdir(dev, e, &dir);
--		}
-+	struct inode *inode = m->private;
-+	struct nubus_proc_pde_data *pde_data;
-+
-+	pde_data = PDE_DATA(inode);
-+	if (!pde_data)
-+		return 0;
-+
-+	if (pde_data->res_size > m->size)
-+		return -EFBIG;
-+
-+	if (pde_data->res_size) {
-+		int lanes = (int)proc_get_parent_data(inode);
-+		struct nubus_dirent ent;
-+
-+		if (!lanes)
-+			return 0;
-+
-+		ent.mask = lanes;
-+		ent.base = pde_data->res_ptr;
-+		ent.data = 0;
-+		nubus_seq_write_rsrc_mem(m, &ent, pde_data->res_size);
-+	} else {
-+		unsigned int data = (unsigned int)pde_data->res_ptr;
-+
-+		seq_putc(m, data >> 16);
-+		seq_putc(m, data >> 8);
-+		seq_putc(m, data >> 0);
+-	while (dev) {
++	while (fres) {
+ 		seq_printf(m, "%x\t%04x %04x %04x %04x",
+-			      dev->board->slot,
+-			      dev->category,
+-			      dev->type,
+-			      dev->dr_sw,
+-			      dev->dr_hw);
+-		seq_printf(m, "\t%08lx\n", dev->board->slot_addr);
+-		dev = dev->next;
++		           fres->board->slot, fres->category, fres->type,
++		           fres->dr_sw, fres->dr_hw);
++		seq_printf(m, "\t%08lx\n", fres->board->slot_addr);
++		fres = fres->next;
  	}
-+	return 0;
+ 	return 0;
  }
- 
--int nubus_proc_attach_device(struct nubus_dev *dev)
-+static int nubus_proc_rsrc_open(struct inode *inode, struct file *file)
-+{
-+	return single_open(file, nubus_proc_rsrc_show, inode);
-+}
-+
-+static const struct file_operations nubus_proc_rsrc_fops = {
-+	.open		= nubus_proc_rsrc_open,
-+	.read		= seq_read,
-+	.llseek		= seq_lseek,
-+	.release	= single_release,
-+};
-+
-+void nubus_proc_add_rsrc_mem(struct proc_dir_entry *procdir,
-+                             const struct nubus_dirent *ent,
-+                             unsigned int size)
+diff --git a/drivers/video/fbdev/macfb.c b/drivers/video/fbdev/macfb.c
+index cda7587cbc86..e86a2796e3d9 100644
+--- a/drivers/video/fbdev/macfb.c
++++ b/drivers/video/fbdev/macfb.c
+@@ -556,7 +556,7 @@ static void __init iounmap_macfb(void)
+ static int __init macfb_init(void)
  {
--	struct proc_dir_entry *e;
--	struct nubus_dir root;
- 	char name[9];
-+	struct nubus_proc_pde_data *pde_data;
+ 	int video_cmap_len, video_is_nubus = 0;
+-	struct nubus_dev* ndev = NULL;
++	struct nubus_rsrc *ndev = NULL;
+ 	char *option = NULL;
+ 	int err;
  
--	if (dev == NULL) {
--		printk(KERN_ERR
--		       "NULL pointer in nubus_proc_attach_device, shoot the programmer!\n");
--		return -1;
--	}
--		
--	if (dev->board == NULL) {
--		printk(KERN_ERR
--		       "NULL pointer in nubus_proc_attach_device, shoot the programmer!\n");
--		printk("dev = %p, dev->board = %p\n", dev, dev->board);
--		return -1;
--	}
--		
--	if (dev->board->procdir)
--		return 0;
-+	if (!procdir)
-+		return;
- 
--	/* Create a directory */
--	snprintf(name, sizeof(name), "%x", dev->board->slot);
--	e = proc_mkdir(name, proc_bus_nubus_dir);
--	dev->board->procdir = e;
--	if (!e)
--		return -ENOMEM;
-+	snprintf(name, sizeof(name), "%x", ent->type);
-+	if (size)
-+		pde_data = nubus_proc_alloc_pde_data(nubus_dirptr(ent), size);
-+	else
-+		pde_data = NULL;
-+	proc_create_data(name, S_IFREG | S_IRUGO, procdir,
-+	                 &nubus_proc_rsrc_fops, pde_data);
-+}
- 
--	/* Now recursively populate it with files */
--	nubus_get_root_dir(dev->board, &root);
--	nubus_proc_populate(dev, e, &root);
-+void nubus_proc_add_rsrc(struct proc_dir_entry *procdir,
-+                         const struct nubus_dirent *ent)
-+{
-+	char name[9];
-+	unsigned char *data = (unsigned char *)ent->data;
- 
--	return 0;
-+	if (!procdir)
-+		return;
-+
-+	snprintf(name, sizeof(name), "%x", ent->type);
-+	proc_create_data(name, S_IFREG | S_IRUGO, procdir,
-+	                 &nubus_proc_rsrc_fops,
-+	                 nubus_proc_alloc_pde_data(data, 0));
- }
--EXPORT_SYMBOL(nubus_proc_attach_device);
- 
- /*
-  * /proc/nubus stuff
-@@ -219,18 +269,11 @@ static const struct file_operations nubus_proc_fops = {
- 	.release	= seq_release,
- };
- 
--void __init proc_bus_nubus_add_devices(void)
--{
--	struct nubus_dev *dev;
--	
--	for(dev = nubus_devices; dev; dev = dev->next)
--		nubus_proc_attach_device(dev);
--}
--
- void __init nubus_proc_init(void)
- {
- 	proc_create("nubus", 0, NULL, &nubus_proc_fops);
- 	proc_bus_nubus_dir = proc_mkdir("bus/nubus", NULL);
-+	if (!proc_bus_nubus_dir)
-+		return;
- 	proc_create("devices", 0, proc_bus_nubus_dir, &nubus_devices_proc_fops);
--	proc_bus_nubus_add_devices();
- }
 diff --git a/include/linux/nubus.h b/include/linux/nubus.h
-index 84f2e0fa1898..0e40c9d6b977 100644
+index 0e40c9d6b977..8a40505a52ef 100644
 --- a/include/linux/nubus.h
 +++ b/include/linux/nubus.h
-@@ -13,11 +13,15 @@
- #include <asm/nubus.h>
- #include <uapi/linux/nubus.h>
+@@ -33,7 +33,7 @@ struct nubus_dirent {
  
-+struct proc_dir_entry;
-+struct seq_file;
-+
- struct nubus_dir {
- 	unsigned char *base;
- 	unsigned char *ptr;
- 	int done;
- 	int mask;
-+	struct proc_dir_entry *procdir;
+ struct nubus_board {
+ 	struct nubus_board *next;
+-	struct nubus_dev *first_dev;
++	struct nubus_rsrc *first_func_rsrc;
+ 
+ 	/* Only 9-E actually exist, though 0-8 are also theoretically
+ 	   possible, and 0 is a special case which represents the
+@@ -62,11 +62,11 @@ struct nubus_board {
+ 	struct proc_dir_entry *procdir;
  };
  
- struct nubus_dirent {
-@@ -84,12 +88,33 @@ extern struct nubus_board *nubus_boards;
+-struct nubus_dev {
+-	/* Next link in device list */
+-	struct nubus_dev *next;
++struct nubus_rsrc {
++	/* Next link in list */
++	struct nubus_rsrc *next;
  
- /* Generic NuBus interface functions, modelled after the PCI interface */
- #ifdef CONFIG_PROC_FS
--extern void nubus_proc_init(void);
-+void nubus_proc_init(void);
-+struct proc_dir_entry *nubus_proc_add_board(struct nubus_board *board);
-+struct proc_dir_entry *nubus_proc_add_rsrc_dir(struct proc_dir_entry *procdir,
-+                                               const struct nubus_dirent *ent,
-+                                               struct nubus_board *board);
-+void nubus_proc_add_rsrc_mem(struct proc_dir_entry *procdir,
-+                             const struct nubus_dirent *ent,
-+                             unsigned int size);
-+void nubus_proc_add_rsrc(struct proc_dir_entry *procdir,
-+                         const struct nubus_dirent *ent);
- #else
- static inline void nubus_proc_init(void) {}
-+static inline
-+struct proc_dir_entry *nubus_proc_add_board(struct nubus_board *board)
-+{ return NULL; }
-+static inline
-+struct proc_dir_entry *nubus_proc_add_rsrc_dir(struct proc_dir_entry *procdir,
-+                                               const struct nubus_dirent *ent,
-+                                               struct nubus_board *board)
-+{ return NULL; }
-+static inline void nubus_proc_add_rsrc_mem(struct proc_dir_entry *procdir,
-+                                           const struct nubus_dirent *ent,
-+                                           unsigned int size) {}
-+static inline void nubus_proc_add_rsrc(struct proc_dir_entry *procdir,
-+                                       const struct nubus_dirent *ent) {}
+-	/* The functional resource ID of this device */
++	/* The functional resource ID */
+ 	unsigned char resid;
+ 	/* These are mostly here for convenience; we could always read
+ 	   them from the ROMs if we wanted to */
+@@ -81,8 +81,8 @@ struct nubus_dev {
+ 	struct nubus_board *board;
+ };
+ 
+-/* This is all NuBus devices (used to find devices later on) */
+-extern struct nubus_dev *nubus_devices;
++/* This is all NuBus functional resources (used to find devices later on) */
++extern struct nubus_rsrc *nubus_func_rsrcs;
+ /* This is all NuBus cards */
+ extern struct nubus_board *nubus_boards;
+ 
+@@ -115,13 +115,12 @@ static inline void nubus_proc_add_rsrc(struct proc_dir_entry *procdir,
+                                        const struct nubus_dirent *ent) {}
  #endif
  
--int nubus_proc_attach_device(struct nubus_dev *dev);
- /* If we need more precision we can add some more of these */
- struct nubus_dev *nubus_find_type(unsigned short category,
- 				  unsigned short type,
-@@ -125,8 +150,12 @@ int nubus_get_subdir(const struct nubus_dirent *ent,
- 		     struct nubus_dir *dir);
- void nubus_get_rsrc_mem(void *dest, const struct nubus_dirent *dirent,
-                         unsigned int len);
--void nubus_get_rsrc_str(char *dest, const struct nubus_dirent *dirent,
--                        unsigned int maxlen);
-+unsigned int nubus_get_rsrc_str(char *dest, const struct nubus_dirent *dirent,
-+                                unsigned int len);
-+void nubus_seq_write_rsrc_mem(struct seq_file *m,
-+                              const struct nubus_dirent *dirent,
-+                              unsigned int len);
-+unsigned char *nubus_dirptr(const struct nubus_dirent *nd);
+-/* If we need more precision we can add some more of these */
+-struct nubus_dev *nubus_find_type(unsigned short category,
+-				  unsigned short type,
+-				  const struct nubus_dev *from);
+-/* Might have more than one device in a slot, you know... */
+-struct nubus_dev *nubus_find_slot(unsigned int slot,
+-				  const struct nubus_dev *from);
++struct nubus_rsrc *nubus_find_type(unsigned short category,
++                                   unsigned short type,
++                                   const struct nubus_rsrc *from);
++
++struct nubus_rsrc *nubus_find_slot(unsigned int slot,
++                                   const struct nubus_rsrc *from);
  
- /* Returns a pointer to the "standard" slot space. */
- static inline void *nubus_slot_addr(int slot)
+ /* These are somewhat more NuBus-specific.  They all return 0 for
+    success and -1 for failure, as you'd expect. */
+@@ -134,8 +133,7 @@ int nubus_get_root_dir(const struct nubus_board *board,
+ int nubus_get_board_dir(const struct nubus_board* board,
+ 			struct nubus_dir* dir);
+ /* The functional directory */
+-int nubus_get_func_dir(const struct nubus_dev *dev,
+-		       struct nubus_dir *dir);
++int nubus_get_func_dir(const struct nubus_rsrc *fres, struct nubus_dir *dir);
+ 
+ /* These work on any directory gotten via the above */
+ int nubus_readdir(struct nubus_dir *dir,
 -- 
 2.13.6
