@@ -1,192 +1,269 @@
 From: Finn Thain <fthain@telegraphics.com.au>
-Subject: [PATCH v3 07/14] nubus: Remove redundant code
+Subject: [PATCH v3 12/14] nubus: Adopt standard linked list implementation
 Date: Tue,  5 Dec 2017 01:20:02 -0500 (EST)
-Message-ID: <22b4284ea37836256007e663d6658852a85d285f.1512454057.git.fthain@telegraphics.com.au>
+Message-ID: <7b1f483782e215b88dbd8945838e3b2d9a4a1dc1.1512454057.git.fthain@telegraphics.com.au>
 References: <cover.1512454057.git.fthain@telegraphics.com.au>
 Return-path: <linux-kernel-owner@vger.kernel.org>
 In-Reply-To: <cover.1512454057.git.fthain@telegraphics.com.au>
 Sender: linux-kernel-owner@vger.kernel.org
 To: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: linux-m68k@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc: linux-m68k@vger.kernel.org, linux-kernel@vger.kernel.org, Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>, netdev@vger.kernel.org, linux-fbdev@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
 
-Eliminate unused values from struct nubus_dev to save wasted memory
-(a Radius PrecisionColor 24X card has about 95 functional resources
-and up to six such cards may be fitted). Also remove redundant static
-variable initialization, an unreachable !MACH_IS_MAC conditional,
-the unused nubus_find_device() function, the bogus get_nubus_list()
-prototype and the pointless card_present temporary variable.
+This increases code re-use and improves readability.
 
-Tested-by: Stan Johnson <userm57@yahoo.com>
+Cc: Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>
 Signed-off-by: Finn Thain <fthain@telegraphics.com.au>
+Tested-by: Stan Johnson <userm57@yahoo.com>
 ---
- drivers/nubus/nubus.c | 57 ++++++++++++++++++++-------------------------------
- drivers/nubus/proc.c  |  2 --
- include/linux/nubus.h | 17 +--------------
- 3 files changed, 23 insertions(+), 53 deletions(-)
+ drivers/net/ethernet/8390/mac8390.c     |  7 +++--
+ drivers/net/ethernet/cirrus/mac89x0.c   |  6 +++--
+ drivers/net/ethernet/natsemi/macsonic.c |  8 +++---
+ drivers/nubus/nubus.c                   | 45 ++++++++-------------------------
+ drivers/nubus/proc.c                    | 11 +++-----
+ drivers/video/fbdev/macfb.c             |  8 +++---
+ include/linux/nubus.h                   | 15 +++++------
+ 7 files changed, 40 insertions(+), 60 deletions(-)
 
+diff --git a/drivers/net/ethernet/8390/mac8390.c b/drivers/net/ethernet/8390/mac8390.c
+index 929ff6419621..2f91ce8dc614 100644
+--- a/drivers/net/ethernet/8390/mac8390.c
++++ b/drivers/net/ethernet/8390/mac8390.c
+@@ -416,8 +416,11 @@ struct net_device * __init mac8390_probe(int unit)
+ 	if (unit >= 0)
+ 		sprintf(dev->name, "eth%d", unit);
+ 
+-	while ((ndev = nubus_find_type(NUBUS_CAT_NETWORK, NUBUS_TYPE_ETHERNET,
+-				       ndev))) {
++	for_each_func_rsrc(ndev) {
++		if (ndev->category != NUBUS_CAT_NETWORK ||
++		    ndev->type != NUBUS_TYPE_ETHERNET)
++			continue;
++
+ 		/* Have we seen it already? */
+ 		if (slots & (1 << ndev->board->slot))
+ 			continue;
+diff --git a/drivers/net/ethernet/cirrus/mac89x0.c b/drivers/net/ethernet/cirrus/mac89x0.c
+index f910f0f386d6..977d4c2c759d 100644
+--- a/drivers/net/ethernet/cirrus/mac89x0.c
++++ b/drivers/net/ethernet/cirrus/mac89x0.c
+@@ -187,6 +187,7 @@ struct net_device * __init mac89x0_probe(int unit)
+ 	unsigned long ioaddr;
+ 	unsigned short sig;
+ 	int err = -ENODEV;
++	struct nubus_rsrc *fres;
+ 
+ 	if (!MACH_IS_MAC)
+ 		return ERR_PTR(-ENODEV);
+@@ -207,8 +208,9 @@ struct net_device * __init mac89x0_probe(int unit)
+ 	/* We might have to parameterize this later */
+ 	slot = 0xE;
+ 	/* Get out now if there's a real NuBus card in slot E */
+-	if (nubus_find_slot(slot, NULL) != NULL)
+-		goto out;
++	for_each_func_rsrc(fres)
++		if (fres->board->slot == slot)
++			goto out;
+ 
+ 	/* The pseudo-ISA bits always live at offset 0x300 (gee,
+            wonder why...) */
+diff --git a/drivers/net/ethernet/natsemi/macsonic.c b/drivers/net/ethernet/natsemi/macsonic.c
+index 14f3fb50dc21..313fe5e0184b 100644
+--- a/drivers/net/ethernet/natsemi/macsonic.c
++++ b/drivers/net/ethernet/natsemi/macsonic.c
+@@ -464,9 +464,11 @@ static int mac_nubus_sonic_probe(struct net_device *dev)
+ 	int reg_offset, dma_bitmode;
+ 
+ 	/* Find the first SONIC that hasn't been initialized already */
+-	while ((ndev = nubus_find_type(NUBUS_CAT_NETWORK,
+-				       NUBUS_TYPE_ETHERNET, ndev)) != NULL)
+-	{
++	for_each_func_rsrc(ndev) {
++		if (ndev->category != NUBUS_CAT_NETWORK ||
++		    ndev->type != NUBUS_TYPE_ETHERNET)
++			continue;
++
+ 		/* Have we seen it already? */
+ 		if (slots & (1<<ndev->board->slot))
+ 			continue;
 diff --git a/drivers/nubus/nubus.c b/drivers/nubus/nubus.c
-index 2919a5c7321a..041c2be7407f 100644
+index 324f6e4407c8..380f320c050f 100644
 --- a/drivers/nubus/nubus.c
 +++ b/drivers/nubus/nubus.c
-@@ -282,23 +282,6 @@ EXPORT_SYMBOL(nubus_rewinddir);
+@@ -32,7 +32,7 @@
+ 
+ /* Globals */
+ 
+-struct nubus_rsrc *nubus_func_rsrcs;
++LIST_HEAD(nubus_func_rsrcs);
+ struct nubus_board *nubus_boards;
+ 
+ /* Meaning of "bytelanes":
+@@ -305,33 +305,20 @@ EXPORT_SYMBOL(nubus_rewinddir);
+ 
  /* Driver interface functions, more or less like in pci.c */
  
- struct nubus_dev*
--nubus_find_device(unsigned short category, unsigned short type,
--		  unsigned short dr_hw, unsigned short dr_sw,
--		  const struct nubus_dev *from)
--{
--	struct nubus_dev *itor = from ? from->next : nubus_devices;
+-struct nubus_rsrc *nubus_find_type(unsigned short category, unsigned short type,
+-                                   const struct nubus_rsrc *from)
++struct nubus_rsrc *nubus_first_rsrc_or_null(void)
+ {
+-	struct nubus_rsrc *itor = from ? from->next : nubus_func_rsrcs;
 -
 -	while (itor) {
--		if (itor->category == category && itor->type == type &&
--		    itor->dr_hw == dr_hw && itor->dr_sw == dr_sw)
+-		if (itor->category == category && itor->type == type)
 -			return itor;
 -		itor = itor->next;
 -	}
 -	return NULL;
--}
--EXPORT_SYMBOL(nubus_find_device);
--
--struct nubus_dev*
- nubus_find_type(unsigned short category, unsigned short type,
- 		const struct nubus_dev *from)
++	return list_first_entry_or_null(&nubus_func_rsrcs, struct nubus_rsrc,
++	                                list);
+ }
+-EXPORT_SYMBOL(nubus_find_type);
++EXPORT_SYMBOL(nubus_first_rsrc_or_null);
+ 
+-struct nubus_rsrc *nubus_find_slot(unsigned int slot,
+-                                   const struct nubus_rsrc *from)
++struct nubus_rsrc *nubus_next_rsrc_or_null(struct nubus_rsrc *from)
  {
-@@ -469,8 +452,10 @@ nubus_get_functional_resource(struct nubus_board *board, int slot,
- 		}
- 		case NUBUS_RESID_NAME:
- 		{
--			nubus_get_rsrc_str(dev->name, &ent, sizeof(dev->name));
--			pr_debug("    name: %s\n", dev->name);
-+			char name[64];
-+
-+			nubus_get_rsrc_str(name, &ent, sizeof(name));
-+			pr_debug("    name: %s\n", name);
- 			break;
- 		}
- 		case NUBUS_RESID_DRVRDIR:
-@@ -479,32 +464,39 @@ nubus_get_functional_resource(struct nubus_board *board, int slot,
- 			   use this :-) */
- 			struct nubus_dir drvr_dir;
- 			struct nubus_dirent drvr_ent;
-+			unsigned char *driver;
- 
- 			nubus_get_subdir(&ent, &drvr_dir);
- 			nubus_readdir(&drvr_dir, &drvr_ent);
--			dev->driver = nubus_dirptr(&drvr_ent);
--			pr_debug("    driver at: 0x%p\n", dev->driver);
-+			driver = nubus_dirptr(&drvr_ent);
-+			pr_debug("    driver at: 0x%p\n", driver);
- 			break;
- 		}
- 		case NUBUS_RESID_MINOR_BASEOS:
-+		{
- 			/* We will need this in order to support
- 			   multiple framebuffers.  It might be handy
- 			   for Ethernet as well */
--			nubus_get_rsrc_mem(&dev->iobase, &ent, 4);
--			pr_debug("    memory offset: 0x%08lx\n", dev->iobase);
-+			u32 base_offset;
-+
-+			nubus_get_rsrc_mem(&base_offset, &ent, 4);
-+			pr_debug("    memory offset: 0x%08x\n", base_offset);
- 			break;
-+		}
- 		case NUBUS_RESID_MINOR_LENGTH:
-+		{
- 			/* Ditto */
--			nubus_get_rsrc_mem(&dev->iosize, &ent, 4);
--			pr_debug("    memory length: 0x%08lx\n", dev->iosize);
-+			u32 length;
-+
-+			nubus_get_rsrc_mem(&length, &ent, 4);
-+			pr_debug("    memory length: 0x%08x\n", length);
- 			break;
-+		}
- 		case NUBUS_RESID_FLAGS:
--			dev->flags = ent.data;
--			pr_debug("    flags: 0x%06x\n", dev->flags);
-+			pr_debug("    flags: 0x%06x\n", ent.data);
- 			break;
- 		case NUBUS_RESID_HWDEVID:
--			dev->hwdevid = ent.data;
--			pr_debug("    hwdevid: 0x%06x\n", dev->hwdevid);
-+			pr_debug("    hwdevid: 0x%06x\n", ent.data);
- 			break;
- 		default:
- 			/* Local/Private resources have their own
-@@ -796,11 +788,8 @@ static void __init nubus_probe_slot(int slot)
- 
- 	rp = nubus_rom_addr(slot);
- 	for (i = 4; i; i--) {
--		int card_present;
+-	struct nubus_rsrc *itor = from ? from->next : nubus_func_rsrcs;
 -
- 		rp--;
--		card_present = hwreg_present(rp);
--		if (!card_present)
-+		if (!hwreg_present(rp))
- 			continue;
+-	while (itor) {
+-		if (itor->board->slot == slot)
+-			return itor;
+-		itor = itor->next;
+-	}
+-	return NULL;
++	if (list_is_last(&from->list, &nubus_func_rsrcs))
++		return NULL;
++	return list_next_entry(from, list);
+ }
+-EXPORT_SYMBOL(nubus_find_slot);
++EXPORT_SYMBOL(nubus_next_rsrc_or_null);
  
- 		dp = *rp;
-@@ -837,8 +826,6 @@ static int __init nubus_init(void)
- 	if (!MACH_IS_MAC)
- 		return 0;
+ int
+ nubus_find_rsrc(struct nubus_dir *dir, unsigned char rsrc_type,
+@@ -817,7 +804,6 @@ static struct nubus_board * __init nubus_add_board(int slot, int bytelanes)
  
--	nubus_devices = NULL;
--	nubus_boards = NULL;
- 	nubus_scan_bus();
- 	nubus_proc_init();
- 	return 0;
+ 	while (nubus_readdir(&dir, &ent) != -1) {
+ 		struct nubus_rsrc *fres;
+-		struct nubus_rsrc **fresp;
+ 
+ 		fres = nubus_get_functional_resource(board, slot, &ent);
+ 		if (fres == NULL)
+@@ -832,16 +818,7 @@ static struct nubus_board * __init nubus_add_board(int slot, int bytelanes)
+ 		}
+ 		prev_resid = fres->resid;
+ 
+-		/* We zeroed this out above */
+-		if (board->first_func_rsrc == NULL)
+-			board->first_func_rsrc = fres;
+-
+-		/* Put it on the func. resource list. Keep entries in order. */
+-		for (fresp = &nubus_func_rsrcs; *fresp != NULL;
+-		     fresp = &((*fresp)->next))
+-			/* spin */;
+-		*fresp = fres;
+-		fres->next = NULL;
++		list_add_tail(&fres->list, &nubus_func_rsrcs);
+ 	}
+ 
+ 	/* Put it on the global NuBus board chain. Keep entries in order. */
 diff --git a/drivers/nubus/proc.c b/drivers/nubus/proc.c
-index 91211192f36f..41ec859bdd8b 100644
+index 9ffaafdb3d2c..ccaaec4ed291 100644
 --- a/drivers/nubus/proc.c
 +++ b/drivers/nubus/proc.c
-@@ -230,8 +230,6 @@ void __init proc_bus_nubus_add_devices(void)
- void __init nubus_proc_init(void)
+@@ -36,15 +36,12 @@
+ static int
+ nubus_devices_proc_show(struct seq_file *m, void *v)
  {
- 	proc_create("nubus", 0, NULL, &nubus_proc_fops);
--	if (!MACH_IS_MAC)
--		return;
- 	proc_bus_nubus_dir = proc_mkdir("bus/nubus", NULL);
- 	proc_create("devices", 0, proc_bus_nubus_dir, &nubus_devices_proc_fops);
- 	proc_bus_nubus_add_devices();
+-	struct nubus_rsrc *fres = nubus_func_rsrcs;
++	struct nubus_rsrc *fres;
+ 
+-	while (fres) {
+-		seq_printf(m, "%x\t%04x %04x %04x %04x",
++	for_each_func_rsrc(fres)
++		seq_printf(m, "%x\t%04x %04x %04x %04x\t%08lx\n",
+ 		           fres->board->slot, fres->category, fres->type,
+-		           fres->dr_sw, fres->dr_hw);
+-		seq_printf(m, "\t%08lx\n", fres->board->slot_addr);
+-		fres = fres->next;
+-	}
++		           fres->dr_sw, fres->dr_hw, fres->board->slot_addr);
+ 	return 0;
+ }
+ 
+diff --git a/drivers/video/fbdev/macfb.c b/drivers/video/fbdev/macfb.c
+index e86a2796e3d9..e707e617bf1c 100644
+--- a/drivers/video/fbdev/macfb.c
++++ b/drivers/video/fbdev/macfb.c
+@@ -670,15 +670,17 @@ static int __init macfb_init(void)
+ 	 * code is really broken :-)
+ 	 */
+ 
+-	while ((ndev = nubus_find_type(NUBUS_CAT_DISPLAY,
+-				       NUBUS_TYPE_VIDEO, ndev)))
+-	{
++	for_each_func_rsrc(ndev) {
+ 		unsigned long base = ndev->board->slot_addr;
+ 
+ 		if (mac_bi_data.videoaddr < base ||
+ 		    mac_bi_data.videoaddr - base > 0xFFFFFF)
+ 			continue;
+ 
++		if (ndev->category != NUBUS_CAT_DISPLAY ||
++		    ndev->type != NUBUS_TYPE_VIDEO)
++			continue;
++
+ 		video_is_nubus = 1;
+ 		slot_addr = (unsigned char *)base;
+ 
 diff --git a/include/linux/nubus.h b/include/linux/nubus.h
-index 474f304485ec..46e4d983feac 100644
+index 8a40505a52ef..aee7c50e9a2e 100644
 --- a/include/linux/nubus.h
 +++ b/include/linux/nubus.h
-@@ -70,16 +70,6 @@ struct nubus_dev {
- 	unsigned short type;
- 	unsigned short dr_sw;
- 	unsigned short dr_hw;
--	/* This is the device's name rather than the board's.
--	   Sometimes they are different.  Usually the board name is
--	   more correct. */
--	char name[64];
--	/* MacOS driver (I kid you not) */
--	unsigned char* driver;
--	/* Actually this is an offset */
--	unsigned long iobase;
--	unsigned long iosize;
--	unsigned char flags, hwdevid;
- 	
- 	/* Functional directory */
- 	unsigned char* directory;
-@@ -98,14 +88,9 @@ extern void nubus_proc_init(void);
- #else
- static inline void nubus_proc_init(void) {}
+@@ -33,7 +33,6 @@ struct nubus_dirent {
+ 
+ struct nubus_board {
+ 	struct nubus_board *next;
+-	struct nubus_rsrc *first_func_rsrc;
+ 
+ 	/* Only 9-E actually exist, though 0-8 are also theoretically
+ 	   possible, and 0 is a special case which represents the
+@@ -63,8 +62,7 @@ struct nubus_board {
+ };
+ 
+ struct nubus_rsrc {
+-	/* Next link in list */
+-	struct nubus_rsrc *next;
++	struct list_head list;
+ 
+ 	/* The functional resource ID */
+ 	unsigned char resid;
+@@ -82,7 +80,7 @@ struct nubus_rsrc {
+ };
+ 
+ /* This is all NuBus functional resources (used to find devices later on) */
+-extern struct nubus_rsrc *nubus_func_rsrcs;
++extern struct list_head nubus_func_rsrcs;
+ /* This is all NuBus cards */
+ extern struct nubus_board *nubus_boards;
+ 
+@@ -115,12 +113,11 @@ static inline void nubus_proc_add_rsrc(struct proc_dir_entry *procdir,
+                                        const struct nubus_dirent *ent) {}
  #endif
--int get_nubus_list(char *buf);
-+
- int nubus_proc_attach_device(struct nubus_dev *dev);
- /* If we need more precision we can add some more of these */
--struct nubus_dev* nubus_find_device(unsigned short category,
--				    unsigned short type,
--				    unsigned short dr_hw,
--				    unsigned short dr_sw,
--				    const struct nubus_dev* from);
- struct nubus_dev* nubus_find_type(unsigned short category,
- 				  unsigned short type,
- 				  const struct nubus_dev* from);
+ 
+-struct nubus_rsrc *nubus_find_type(unsigned short category,
+-                                   unsigned short type,
+-                                   const struct nubus_rsrc *from);
++struct nubus_rsrc *nubus_first_rsrc_or_null(void);
++struct nubus_rsrc *nubus_next_rsrc_or_null(struct nubus_rsrc *from);
+ 
+-struct nubus_rsrc *nubus_find_slot(unsigned int slot,
+-                                   const struct nubus_rsrc *from);
++#define for_each_func_rsrc(f) \
++	for (f = nubus_first_rsrc_or_null(); f; f = nubus_next_rsrc_or_null(f))
+ 
+ /* These are somewhat more NuBus-specific.  They all return 0 for
+    success and -1 for failure, as you'd expect. */
 -- 
 2.13.6
