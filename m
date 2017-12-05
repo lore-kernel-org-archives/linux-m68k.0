@@ -1,46 +1,63 @@
-From: Greg Ungerer <gregungerer@westnet.com.au>
-Subject: Re: [PATCH] m68k/defconfig: fix stmark2 broken local compilation
-Date: Mon, 4 Dec 2017 23:25:02 +1000
-Message-ID: <9f309cf5-7a8a-0d0d-ad34-62511a470ea2@westnet.com.au>
-References: <20171204101940.7bztuju66aj5xa3d@jerusalem>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
+From: Finn Thain <fthain@telegraphics.com.au>
+Subject: [PATCH v3 03/14] nubus: Use static functions where possible
+Date: Tue,  5 Dec 2017 01:20:01 -0500 (EST)
+Message-ID: <5609e54a107c8ec9b42ecd9dbd8d33cca8f45901.1512454057.git.fthain@telegraphics.com.au>
+References: <cover.1512454057.git.fthain@telegraphics.com.au>
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from icp-osb-irony-out6.external.iinet.net.au ([203.59.1.106]:49703
-        "EHLO icp-osb-irony-out6.external.iinet.net.au" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1753648AbdLDNZG (ORCPT
-        <rfc822;linux-m68k@vger.kernel.org>); Mon, 4 Dec 2017 08:25:06 -0500
-In-Reply-To: <20171204101940.7bztuju66aj5xa3d@jerusalem>
-Content-Language: en-US
+Received: from kvm5.telegraphics.com.au ([98.124.60.144]:50850 "EHLO
+        kvm5.telegraphics.com.au" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1752138AbdLEGUC (ORCPT
+        <rfc822;linux-m68k@vger.kernel.org>); Tue, 5 Dec 2017 01:20:02 -0500
+In-Reply-To: <cover.1512454057.git.fthain@telegraphics.com.au>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Angelo Dureghello <angelo@sysam.it>, linux-m68k@vger.kernel.org
+To: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: linux-m68k@vger.kernel.org, linux-kernel@vger.kernel.org
 
-Hi Angelo,
+This fixes a couple of warnings from 'make W=1':
+drivers/nubus/nubus.c:790: warning: no previous prototype for 'nubus_probe_slot'
+drivers/nubus/nubus.c:824: warning: no previous prototype for 'nubus_scan_bus'
 
-On 04/12/17 20:19, Angelo Dureghello wrote:
-> Signed-off-by: Angelo Dureghello <angelo@sysam.it>
+Tested-by: Stan Johnson <userm57@yahoo.com>
+Signed-off-by: Finn Thain <fthain@telegraphics.com.au>
+---
+ drivers/nubus/nubus.c | 4 ++--
+ include/linux/nubus.h | 1 -
+ 2 files changed, 2 insertions(+), 3 deletions(-)
 
-Thanks, that should do the trick.
-
-Regards
-Greg
-
-
->   arch/m68k/configs/stmark2_defconfig | 1 -
->   1 file changed, 1 deletion(-)
-> 
-> diff --git a/arch/m68k/configs/stmark2_defconfig b/arch/m68k/configs/stmark2_defconfig
-> index 55e55dbc2fb6..3d07b1de7eb0 100644
-> --- a/arch/m68k/configs/stmark2_defconfig
-> +++ b/arch/m68k/configs/stmark2_defconfig
-> @@ -5,7 +5,6 @@ CONFIG_SYSVIPC=y
->   CONFIG_LOG_BUF_SHIFT=14
->   CONFIG_NAMESPACES=y
->   CONFIG_BLK_DEV_INITRD=y
-> -CONFIG_INITRAMFS_SOURCE="../uClinux-dist/romfs"
->   # CONFIG_RD_BZIP2 is not set
->   # CONFIG_RD_LZMA is not set
->   # CONFIG_RD_XZ is not set
-> 
+diff --git a/drivers/nubus/nubus.c b/drivers/nubus/nubus.c
+index 566dc563e7e8..3c1d386a4640 100644
+--- a/drivers/nubus/nubus.c
++++ b/drivers/nubus/nubus.c
+@@ -793,7 +793,7 @@ static struct nubus_board * __init nubus_add_board(int slot, int bytelanes)
+ 	return board;
+ }
+ 
+-void __init nubus_probe_slot(int slot)
++static void __init nubus_probe_slot(int slot)
+ {
+ 	unsigned char dp;
+ 	unsigned char *rp;
+@@ -827,7 +827,7 @@ void __init nubus_probe_slot(int slot)
+ 	}
+ }
+ 
+-void __init nubus_scan_bus(void)
++static void __init nubus_scan_bus(void)
+ {
+ 	int slot;
+ 
+diff --git a/include/linux/nubus.h b/include/linux/nubus.h
+index a6edf7838e22..bffd09a07326 100644
+--- a/include/linux/nubus.h
++++ b/include/linux/nubus.h
+@@ -92,7 +92,6 @@ extern struct nubus_dev* nubus_devices;
+ extern struct nubus_board* nubus_boards;
+ 
+ /* Generic NuBus interface functions, modelled after the PCI interface */
+-void nubus_scan_bus(void);
+ #ifdef CONFIG_PROC_FS
+ extern void nubus_proc_init(void);
+ #else
+-- 
+2.13.6
