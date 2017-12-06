@@ -1,40 +1,57 @@
-From: Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>
-Subject: Re: [PATCH v3 12/14] nubus: Adopt standard linked list
- implementation
-Date: Tue, 05 Dec 2017 14:51:19 +0100
-Message-ID: <2055799.vQuQORffXy@amdc3058>
-References: <cover.1512454057.git.fthain@telegraphics.com.au>
-        <CGME20171205062005epcas1p192e7c295d64034067554997825ab6539@epcas1p1.samsung.com>
-        <7b1f483782e215b88dbd8945838e3b2d9a4a1dc1.1512454057.git.fthain@telegraphics.com.au>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: [PATCH] m68k/bitops: Always include <asm-generic/bitops/find.h>
+Date: Wed,  6 Dec 2017 11:40:16 +0100
+Message-ID: <1512556816-28627-1-git-send-email-geert__26958.4153699272$1512561796$gmane$org@linux-m68k.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7Bit
-Return-path: <netdev-owner@vger.kernel.org>
-In-reply-to: <7b1f483782e215b88dbd8945838e3b2d9a4a1dc1.1512454057.git.fthain@telegraphics.com.au>
-Sender: netdev-owner@vger.kernel.org
-To: Finn Thain <fthain@telegraphics.com.au>
-Cc: Geert Uytterhoeven <geert@linux-m68k.org>, linux-m68k@vger.kernel.org, linux-kernel@vger.kernel.org, netdev@vger.kernel.org, linux-fbdev@vger.kernel.org
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+Return-path: <linux-m68k-owner@vger.kernel.org>
+Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
+To: Clement Courbet <courbet@google.com>, Andrew Morton <akpm@linux-foundation.org>
+Cc: linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org, Geert Uytterhoeven <geert@linux-m68k.org>
 
-On Tuesday, December 05, 2017 01:20:02 AM Finn Thain wrote:
-> This increases code re-use and improves readability.
-> 
-> Cc: Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>
-> Signed-off-by: Finn Thain <fthain@telegraphics.com.au>
-> Tested-by: Stan Johnson <userm57@yahoo.com>
+Currently <asm/bitops.h> only includes <asm-generic/bitops/find.h> if
+CONFIG_CPU_HAS_NO_BITFIELDS=y.  This used to be fine, as the code for
+CONFIG_CPU_HAS_NO_BITFIELDS=n implemented everything provided by
+<asm-generic/bitops/find.h>.
 
-Acked-by: Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>
+However, commit e49c614e6b37254b ("lib: optimize cpumask_next_and()")
+added find_next_and_bit(), which is now not available if
+CONFIG_CPU_HAS_NO_BITFIELDS=y:
 
-for fbdev part
+    lib/find_bit_benchmark.c: In function ‘test_find_next_and_bit’:
+    lib/find_bit_benchmark.c:115: error: implicit declaration of function ‘find_next_and_bit’
 
-> ---
->  drivers/net/ethernet/8390/mac8390.c     |  7 +++--
->  drivers/net/ethernet/cirrus/mac89x0.c   |  6 +++--
->  drivers/net/ethernet/natsemi/macsonic.c |  8 +++---
->  drivers/nubus/nubus.c                   | 45 ++++++++-------------------------
->  drivers/nubus/proc.c                    | 11 +++-----
->  drivers/video/fbdev/macfb.c             |  8 +++---
->  include/linux/nubus.h                   | 15 +++++------
->  7 files changed, 40 insertions(+), 60 deletions(-)
+Move the inclusion of <asm-generic/bitops/find.h> outside the #ifdef to
+fix this.
 
-Best regards,
+Reported-by: kbuild test robot <fengguang.wu@intel.com>
+Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
+---
+ arch/m68k/include/asm/bitops.h | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/arch/m68k/include/asm/bitops.h b/arch/m68k/include/asm/bitops.h
+index dda58cfe8c22a3ec..93b47b1f6fb420a1 100644
+--- a/arch/m68k/include/asm/bitops.h
++++ b/arch/m68k/include/asm/bitops.h
+@@ -311,7 +311,6 @@ static inline int bfchg_mem_test_and_change_bit(int nr,
+  *	functions.
+  */
+ #if defined(CONFIG_CPU_HAS_NO_BITFIELDS)
+-#include <asm-generic/bitops/find.h>
+ #include <asm-generic/bitops/ffz.h>
+ #else
+ 
+@@ -441,6 +440,8 @@ static inline unsigned long ffz(unsigned long word)
+ 
+ #endif
+ 
++#include <asm-generic/bitops/find.h>
++
+ #ifdef __KERNEL__
+ 
+ #if defined(CONFIG_CPU_HAS_NO_BITFIELDS)
+-- 
+2.7.4
