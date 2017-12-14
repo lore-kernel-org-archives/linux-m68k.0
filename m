@@ -1,72 +1,174 @@
-From: Philippe Ombredanne <pombredanne@nexb.com>
-Subject: Re: [PATCH v3 14/14] nubus: Add support for the driver model
-Date: Sun, 10 Dec 2017 13:08:11 +0100
-Message-ID: <CAOFm3uGAqHpc0YmZiCUeSiMSmOE06b026P4NPM5iwBKTEYtNkQ@mail.gmail.com>
-References: <cover.1512454057.git.fthain@telegraphics.com.au>
- <5c71aa72f8c6192ca472b103555cad7441974f71.1512454057.git.fthain@telegraphics.com.au>
- <CAOFm3uGWw0_Dvt0k533g8ovVyz0ehHZi6fSXC4jSpq3JjQCyAg@mail.gmail.com> <alpine.LNX.2.21.1712102042340.3@nippy.intranet>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from mail-wr0-f194.google.com ([209.85.128.194]:38467 "EHLO
-        mail-wr0-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1751765AbdLJMIx (ORCPT
-        <rfc822;linux-m68k@vger.kernel.org>); Sun, 10 Dec 2017 07:08:53 -0500
-Received: by mail-wr0-f194.google.com with SMTP id o2so14815351wro.5
-        for <linux-m68k@vger.kernel.org>; Sun, 10 Dec 2017 04:08:52 -0800 (PST)
-In-Reply-To: <alpine.LNX.2.21.1712102042340.3@nippy.intranet>
-Sender: linux-m68k-owner@vger.kernel.org
+From: Finn Thain <fthain@telegraphics.com.au>
+Subject: [PATCH v4 01/14] nubus: Avoid array underflow and overflow
+Date: Wed, 13 Dec 2017 22:16:30 -0500 (EST)
+Message-ID: <d6a25f299d790742fce5fd11baa0aab7e97c67e6.1513220582.git.fthain@telegraphics.com.au>
+References: <cover.1513220582.git.fthain@telegraphics.com.au>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <cover.1513220582.git.fthain@telegraphics.com.au>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: linux-m68k@vger.kernel.org, linux-kernel@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Finn Thain <fthain@telegraphics.com.au>
-Cc: Geert Uytterhoeven <geert@linux-m68k.org>, linux-m68k@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-Finn,
+Check array indices. Avoid sprintf. Use buffers of sufficient size.
+Use appropriate types for array length parameters.
 
-On Sun, Dec 10, 2017 at 11:03 AM, Finn Thain <fthain@telegraphics.com.au> wrote:
-> On Thu, 7 Dec 2017, Philippe Ombredanne wrote:
->
->> > diff --git a/drivers/nubus/bus.c b/drivers/nubus/bus.c
->> > new file mode 100644
->> > index 000000000000..b5045e639b4d
->> > --- /dev/null
->> > +++ b/drivers/nubus/bus.c
->> > @@ -0,0 +1,119 @@
->> > +/*
->> > + * Bus implementation for the NuBus subsystem.
->> > + *
->> > + * Copyright (C) 2017 Finn Thain
->> > + *
->> > + * SPDX-License-Identifier: GPL-2.0
->> > + */
->>
->> I think the SPDX id should be on the first line using C++-style // comments.
->
-> Sure, why not.
->
-> Since Linus has explicitly allowed conversion of the entire block comment
-> to C++ style, I think I may prefer that as being less ugly than the
-> mixture of styles (though fwiw this will always read like top posting to
-> me).
->
->> See tglx's doc patches
->
-> I didn't find any mention of SPDX under Documentation...
->
->> and Linus posts explaining why he wants it this way!
->>
->
-> I suspect that you are referring to his posts in this thread (?)
-> https://lkml.org/lkml/2017/11/2/728
+Tested-by: Stan Johnson <userm57@yahoo.com>
+Signed-off-by: Finn Thain <fthain@telegraphics.com.au>
+---
+ drivers/nubus/nubus.c | 29 +++++++++++++++++------------
+ drivers/nubus/proc.c  | 12 ++++++------
+ include/linux/nubus.h | 10 ++++------
+ 3 files changed, 27 insertions(+), 24 deletions(-)
 
-Actually this is patch series: https://lkml.org/lkml/2017/12/4/934
-And possibly some minor fixes pending, based on Heiko eagle eye review
-and some of my nits.
-
+diff --git a/drivers/nubus/nubus.c b/drivers/nubus/nubus.c
+index b793727cd4f7..566dc563e7e8 100644
+--- a/drivers/nubus/nubus.c
++++ b/drivers/nubus/nubus.c
+@@ -161,7 +161,7 @@ static unsigned char *nubus_dirptr(const struct nubus_dirent *nd)
+    pointed to with offsets) out of the card ROM. */
+ 
+ void nubus_get_rsrc_mem(void *dest, const struct nubus_dirent *dirent,
+-			int len)
++                        unsigned int len)
+ {
+ 	unsigned char *t = (unsigned char *)dest;
+ 	unsigned char *p = nubus_dirptr(dirent);
+@@ -173,18 +173,22 @@ void nubus_get_rsrc_mem(void *dest, const struct nubus_dirent *dirent,
+ }
+ EXPORT_SYMBOL(nubus_get_rsrc_mem);
+ 
+-void nubus_get_rsrc_str(void *dest, const struct nubus_dirent *dirent,
+-			int len)
++void nubus_get_rsrc_str(char *dest, const struct nubus_dirent *dirent,
++                        unsigned int len)
+ {
+-	unsigned char *t = (unsigned char *)dest;
++	char *t = dest;
+ 	unsigned char *p = nubus_dirptr(dirent);
+ 
+-	while (len) {
+-		*t = nubus_get_rom(&p, 1, dirent->mask);
+-		if (!*t++)
++	while (len > 1) {
++		unsigned char c = nubus_get_rom(&p, 1, dirent->mask);
++
++		if (!c)
+ 			break;
++		*t++ = c;
+ 		len--;
+ 	}
++	if (len > 0)
++		*t = '\0';
+ }
+ EXPORT_SYMBOL(nubus_get_rsrc_str);
+ 
+@@ -468,7 +472,7 @@ nubus_get_functional_resource(struct nubus_board *board, int slot,
+ 		}
+ 		case NUBUS_RESID_NAME:
+ 		{
+-			nubus_get_rsrc_str(dev->name, &ent, 64);
++			nubus_get_rsrc_str(dev->name, &ent, sizeof(dev->name));
+ 			pr_info("    name: %s\n", dev->name);
+ 			break;
+ 		}
+@@ -528,7 +532,7 @@ static int __init nubus_get_vidnames(struct nubus_board *board,
+ 		/* Don't know what this is yet */
+ 		u16 id;
+ 		/* Longest one I've seen so far is 26 characters */
+-		char name[32];
++		char name[36];
+ 	};
+ 
+ 	pr_info("    video modes supported:\n");
+@@ -598,8 +602,8 @@ static int __init nubus_get_vendorinfo(struct nubus_board *board,
+ 		char name[64];
+ 
+ 		/* These are all strings, we think */
+-		nubus_get_rsrc_str(name, &ent, 64);
+-		if (ent.type > 5)
++		nubus_get_rsrc_str(name, &ent, sizeof(name));
++		if (ent.type < 1 || ent.type > 5)
+ 			ent.type = 5;
+ 		pr_info("    %s: %s\n", vendor_fields[ent.type - 1], name);
+ 	}
+@@ -633,7 +637,8 @@ static int __init nubus_get_board_resource(struct nubus_board *board, int slot,
+ 			break;
+ 		}
+ 		case NUBUS_RESID_NAME:
+-			nubus_get_rsrc_str(board->name, &ent, 64);
++			nubus_get_rsrc_str(board->name, &ent,
++			                   sizeof(board->name));
+ 			pr_info("    name: %s\n", board->name);
+ 			break;
+ 		case NUBUS_RESID_ICON:
+diff --git a/drivers/nubus/proc.c b/drivers/nubus/proc.c
+index 004a122ac0ff..fc20dbcd3b9a 100644
+--- a/drivers/nubus/proc.c
++++ b/drivers/nubus/proc.c
+@@ -73,10 +73,10 @@ static void nubus_proc_subdir(struct nubus_dev* dev,
+ 
+ 	/* Some of these are directories, others aren't */
+ 	while (nubus_readdir(dir, &ent) != -1) {
+-		char name[8];
++		char name[9];
+ 		struct proc_dir_entry* e;
+ 		
+-		sprintf(name, "%x", ent.type);
++		snprintf(name, sizeof(name), "%x", ent.type);
+ 		e = proc_create(name, S_IFREG | S_IRUGO | S_IWUSR, parent,
+ 				&nubus_proc_subdir_fops);
+ 		if (!e)
+@@ -95,11 +95,11 @@ static void nubus_proc_populate(struct nubus_dev* dev,
+ 	/* We know these are all directories (board resource + one or
+ 	   more functional resources) */
+ 	while (nubus_readdir(root, &ent) != -1) {
+-		char name[8];
++		char name[9];
+ 		struct proc_dir_entry* e;
+ 		struct nubus_dir dir;
+ 		
+-		sprintf(name, "%x", ent.type);
++		snprintf(name, sizeof(name), "%x", ent.type);
+ 		e = proc_mkdir(name, parent);
+ 		if (!e) return;
+ 
+@@ -119,7 +119,7 @@ int nubus_proc_attach_device(struct nubus_dev *dev)
+ {
+ 	struct proc_dir_entry *e;
+ 	struct nubus_dir root;
+-	char name[8];
++	char name[9];
+ 
+ 	if (dev == NULL) {
+ 		printk(KERN_ERR
+@@ -135,7 +135,7 @@ int nubus_proc_attach_device(struct nubus_dev *dev)
+ 	}
+ 		
+ 	/* Create a directory */
+-	sprintf(name, "%x", dev->board->slot);
++	snprintf(name, sizeof(name), "%x", dev->board->slot);
+ 	e = dev->procdir = proc_mkdir(name, proc_bus_nubus_dir);
+ 	if (!e)
+ 		return -ENOMEM;
+diff --git a/include/linux/nubus.h b/include/linux/nubus.h
+index 11ce6b1117a8..18c300222362 100644
+--- a/include/linux/nubus.h
++++ b/include/linux/nubus.h
+@@ -126,10 +126,8 @@ int nubus_rewinddir(struct nubus_dir* dir);
+ /* Things to do with directory entries */
+ int nubus_get_subdir(const struct nubus_dirent* ent,
+ 		     struct nubus_dir* dir);
+-void nubus_get_rsrc_mem(void* dest,
+-			const struct nubus_dirent *dirent,
+-			int len);
+-void nubus_get_rsrc_str(void* dest,
+-			const struct nubus_dirent *dirent,
+-			int maxlen);
++void nubus_get_rsrc_mem(void *dest, const struct nubus_dirent *dirent,
++                        unsigned int len);
++void nubus_get_rsrc_str(char *dest, const struct nubus_dirent *dirent,
++                        unsigned int maxlen);
+ #endif /* LINUX_NUBUS_H */
 -- 
-Cordially
-Philippe Ombredanne
-
-+1 650 799 0949 | pombredanne@nexB.com
-DejaCode - What's in your code?! - http://www.dejacode.com
-AboutCode - Open source for open source - https://www.aboutcode.org
-nexB Inc. - http://www.nexb.com
+2.13.6
