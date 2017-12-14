@@ -1,25 +1,37 @@
-From: Michael Schmitz <schmitzmic@gmail.com>
+From: Vainikka Tuomas <tuomas.vainikka@aalto.fi>
 Subject: Re: m68k v3.16 status update
-Date: Thu, 14 Dec 2017 17:47:52 +1300
-Message-ID: <68e92278-86e7-faef-f5b2-fbc514c27464@gmail.com>
+Date: Thu, 14 Dec 2017 12:07:57 +0000
+Message-ID: <4403d779c1664692ae5a7ef5b69ec888@aalto.fi>
 References: <CAMuHMdXodxq=Z8rQAZ7UUdzUzoPfQLFCSTkJziVeAsq8MMQxmQ@mail.gmail.com>
  <53E48C84.9090709@gmail.com> <53E4DDF1.9060701@kopteri.net>
- <53E54E6C.2040806@gmail.com> <53E5C3A7.3040106@kopteri.net>
+ <53E54E6C.2040806@gmail.com>
+ <53E5C3A7.3040106@kopteri.net>,<68e92278-86e7-faef-f5b2-fbc514c27464@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 8BIT
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from mail-pg0-f52.google.com ([74.125.83.52]:36306 "EHLO
-        mail-pg0-f52.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1752243AbdLNEr6 (ORCPT
-        <rfc822;linux-m68k@vger.kernel.org>); Wed, 13 Dec 2017 23:47:58 -0500
-Received: by mail-pg0-f52.google.com with SMTP id k134so2693308pga.3
-        for <linux-m68k@vger.kernel.org>; Wed, 13 Dec 2017 20:47:58 -0800 (PST)
-In-Reply-To: <53E5C3A7.3040106@kopteri.net>
+Received: from smtp.aalto.fi ([130.233.228.121]:53436 "EHLO
+        smtp-out-02.aalto.fi" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1751538AbdLNMNE (ORCPT
+        <rfc822;linux-m68k@vger.kernel.org>); Thu, 14 Dec 2017 07:13:04 -0500
+In-Reply-To: <68e92278-86e7-faef-f5b2-fbc514c27464@gmail.com>
+Content-Language: en-GB
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Tuomas Vainikka <tuomas.vainikka@kopteri.net>
+To: Michael Schmitz <schmitzmic@gmail.com>
 Cc: Geert Uytterhoeven <geert@linux-m68k.org>, linux-m68k <linux-m68k@vger.kernel.org>
+
+Hello,
+
+I do have the hardware, but unfortunately I do not have the time to test it.
+
+-Tuomas
+________________________________________
+From: linux-m68k-owner@vger.kernel.org <linux-m68k-owner@vger.kernel.org> on behalf of Michael Schmitz <schmitzmic@gmail.com>
+Sent: 14 December 2017 06:47
+To: Tuomas Vainikka
+Cc: Geert Uytterhoeven; linux-m68k
+Subject: Re: m68k v3.16 status update
 
 Tuomas,
 
@@ -37,7 +49,7 @@ bug happened in the first place.
 
 Cheers,
 
-	Michael
+        Michael
 
 Am 09.08.2014 um 18:45 schrieb Tuomas Vainikka:
 > On 09.08.2014 01:25, Michael Schmitz wrote:
@@ -65,18 +77,18 @@ Am 09.08.2014 um 18:45 schrieb Tuomas Vainikka:
 > but it occurred to me that it is not enough to enable some chip features
 > by flipping bits. The code in esp_scsi would need to be modified to
 > handle the behaviour of these enabled features also.
-> 
+>
 > So, rethinking the code in esp_scsi would be one option.
-> 
+>
 > The second possibility is that I have a buggy chip in my setup. Removing
 > a sticker from my SCSI-board revealed the chip to be an AMD AM53CF94.
 > There are different versions of the SCSI-boards out there with different
 > chips; NCR, AMD, and QLogic, so if we had more people testing the driver
 > we would find out if the chip is actually the problem. (Is anyone even
 > testing the ISA/PCI cards that use esp_scsi?)
-> 
+>
 > Those are my suggestions at the TCQ problem.
-> 
+>
 > But do we really need TCQ?
-> 
+>
 > -Tuomas
