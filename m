@@ -1,7 +1,7 @@
 From: Finn Thain <fthain@telegraphics.com.au>
-Subject: [PATCH v4 03/14] nubus: Use static functions where possible
+Subject: [PATCH v4 02/14] nubus: Fix up header split
 Date: Wed, 13 Dec 2017 22:16:30 -0500 (EST)
-Message-ID: <9441134a5974776eb0701ebdaf5fd153feab3913.1513220582.git.fthain@telegraphics.com.au>
+Message-ID: <db14a4bac24e9d24e98659e36f6bb81443b1964d.1513220582.git.fthain@telegraphics.com.au>
 References: <cover.1513220582.git.fthain@telegraphics.com.au>
 Return-path: <linux-kernel-owner@vger.kernel.org>
 In-Reply-To: <cover.1513220582.git.fthain@telegraphics.com.au>
@@ -10,50 +10,99 @@ To: Geert Uytterhoeven <geert@linux-m68k.org>
 Cc: linux-m68k@vger.kernel.org, linux-kernel@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
 
-This fixes a couple of warnings from 'make W=1':
-drivers/nubus/nubus.c:790: warning: no previous prototype for 'nubus_probe_slot'
-drivers/nubus/nubus.c:824: warning: no previous prototype for 'nubus_scan_bus'
+Due to the '#ifdef __KERNEL__' being located in the wrong place, some
+definitions from the kernel API were placed in the UAPI header during
+the scripted header split. Fix this. Also, remove the duplicate comment
+which is only relevant to the UAPI header.
 
+Fixes: 607ca46e97a1 ("UAPI: (Scripted) Disintegrate include/linux")
 Tested-by: Stan Johnson <userm57@yahoo.com>
 Signed-off-by: Finn Thain <fthain@telegraphics.com.au>
 ---
- drivers/nubus/nubus.c | 4 ++--
- include/linux/nubus.h | 1 -
- 2 files changed, 2 insertions(+), 3 deletions(-)
+ include/linux/nubus.h      | 27 +++++++++++++++++++++++----
+ include/uapi/linux/nubus.h | 23 -----------------------
+ 2 files changed, 23 insertions(+), 27 deletions(-)
 
-diff --git a/drivers/nubus/nubus.c b/drivers/nubus/nubus.c
-index 566dc563e7e8..3c1d386a4640 100644
---- a/drivers/nubus/nubus.c
-+++ b/drivers/nubus/nubus.c
-@@ -793,7 +793,7 @@ static struct nubus_board * __init nubus_add_board(int slot, int bytelanes)
- 	return board;
- }
- 
--void __init nubus_probe_slot(int slot)
-+static void __init nubus_probe_slot(int slot)
- {
- 	unsigned char dp;
- 	unsigned char *rp;
-@@ -827,7 +827,7 @@ void __init nubus_probe_slot(int slot)
- 	}
- }
- 
--void __init nubus_scan_bus(void)
-+static void __init nubus_scan_bus(void)
- {
- 	int slot;
- 
 diff --git a/include/linux/nubus.h b/include/linux/nubus.h
-index a6edf7838e22..bffd09a07326 100644
+index 18c300222362..a6edf7838e22 100644
 --- a/include/linux/nubus.h
 +++ b/include/linux/nubus.h
-@@ -92,7 +92,6 @@ extern struct nubus_dev* nubus_devices;
- extern struct nubus_board* nubus_boards;
+@@ -5,16 +5,28 @@
+   Originally written by Alan Cox.
  
- /* Generic NuBus interface functions, modelled after the PCI interface */
--void nubus_scan_bus(void);
- #ifdef CONFIG_PROC_FS
- extern void nubus_proc_init(void);
- #else
+   Hacked to death by C. Scott Ananian and David Huggins-Daines.
+-  
+-  Some of the constants in here are from the corresponding
+-  NetBSD/OpenBSD header file, by Allen Briggs.  We figured out the
+-  rest of them on our own. */
++*/
++
+ #ifndef LINUX_NUBUS_H
+ #define LINUX_NUBUS_H
+ 
+ #include <asm/nubus.h>
+ #include <uapi/linux/nubus.h>
+ 
++struct nubus_dir {
++	unsigned char *base;
++	unsigned char *ptr;
++	int done;
++	int mask;
++};
++
++struct nubus_dirent {
++	unsigned char *base;
++	unsigned char type;
++	__u32 data;	/* Actually 24 bits used */
++	int mask;
++};
++
+ struct nubus_board {
+ 	struct nubus_board* next;
+ 	struct nubus_dev* first_dev;
+@@ -130,4 +142,11 @@ void nubus_get_rsrc_mem(void *dest, const struct nubus_dirent *dirent,
+                         unsigned int len);
+ void nubus_get_rsrc_str(char *dest, const struct nubus_dirent *dirent,
+                         unsigned int maxlen);
++
++/* Returns a pointer to the "standard" slot space. */
++static inline void *nubus_slot_addr(int slot)
++{
++	return (void *)(0xF0000000 | (slot << 24));
++}
++
+ #endif /* LINUX_NUBUS_H */
+diff --git a/include/uapi/linux/nubus.h b/include/uapi/linux/nubus.h
+index f3776cc80f4d..48031e7858f1 100644
+--- a/include/uapi/linux/nubus.h
++++ b/include/uapi/linux/nubus.h
+@@ -221,27 +221,4 @@ enum nubus_display_res_id {
+ 	NUBUS_RESID_SIXTHMODE   = 0x0085
+ };
+ 
+-struct nubus_dir
+-{
+-	unsigned char *base;
+-	unsigned char *ptr;
+-	int done;
+-	int mask;
+-};
+-
+-struct nubus_dirent
+-{
+-	unsigned char *base;
+-	unsigned char type;
+-	__u32 data;	/* Actually 24bits used */
+-	int mask;
+-};
+-
+-
+-/* We'd like to get rid of this eventually.  Only daynaport.c uses it now. */
+-static inline void *nubus_slot_addr(int slot)
+-{
+-	return (void *)(0xF0000000|(slot<<24));
+-}
+-
+ #endif /* _UAPILINUX_NUBUS_H */
 -- 
 2.13.6
