@@ -1,99 +1,49 @@
-From: Finn Thain <fthain@telegraphics.com.au>
-Subject: zorro_esp, was Re: m68k v3.16 status update
-Date: Wed, 20 Dec 2017 09:06:50 +1100 (AEDT)
-Message-ID: <alpine.LNX.2.21.1712191835410.3@nippy.intranet>
-References: <CAMuHMdXodxq=Z8rQAZ7UUdzUzoPfQLFCSTkJziVeAsq8MMQxmQ@mail.gmail.com> <53E48C84.9090709@gmail.com> <53E4DDF1.9060701@kopteri.net> <53E54E6C.2040806@gmail.com> <53E5C3A7.3040106@kopteri.net> <68e92278-86e7-faef-f5b2-fbc514c27464@gmail.com>
- <4403d779c1664692ae5a7ef5b69ec888@aalto.fi> <CAOmrzkJJXZb153ig=d=Cywr59hid7X3UJvUD-wgtYtZm7KsCuQ@mail.gmail.com> <alpine.LNX.2.21.1712151039050.3@nippy.intranet> <CAOmrzkKgHEO8BY-z5hXKoJFgb7SpZF55jjkeo-9v34PkqsYt_Q@mail.gmail.com> <alpine.LNX.2.21.1712191358160.3@nippy.intranet>
- <d5f920dd-6678-d3a7-d823-e6524f3611cd@gmail.com>
+From: Vineet Gupta <Vineet.Gupta1@synopsys.com>
+Subject: Re: [PATCH] bug.h: Work around GCC PR82365 in BUG()
+Date: Tue, 19 Dec 2017 14:38:21 -0800
+Message-ID: <f31caa9b-89f0-4168-04bf-14a98595865e__49219.6846557364$1513723014$gmane$org@synopsys.com>
+References: <20171219114112.939391-1-arnd@arndb.de>
+ <8e42a1de-f619-7a4e-6d58-f90f53f5f38f@synopsys.com>
+ <CAK8P3a2fXQHCN7gqNL9j7AeZqy7NXAMW1bqyFJs3G1M_M4BQ4A@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Transfer-Encoding: 8bit
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from kvm5.telegraphics.com.au ([98.124.60.144]:55116 "EHLO
-        kvm5.telegraphics.com.au" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1750859AbdLSWGw (ORCPT
-        <rfc822;linux-m68k@vger.kernel.org>); Tue, 19 Dec 2017 17:06:52 -0500
-In-Reply-To: <d5f920dd-6678-d3a7-d823-e6524f3611cd@gmail.com>
+In-Reply-To: <CAK8P3a2fXQHCN7gqNL9j7AeZqy7NXAMW1bqyFJs3G1M_M4BQ4A@mail.gmail.com>
+Content-Language: en-US
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Michael Schmitz <schmitzmic@gmail.com>
-Cc: Vainikka Tuomas <tuomas.vainikka@aalto.fi>, Geert Uytterhoeven <geert@linux-m68k.org>, linux-m68k <linux-m68k@vger.kernel.org>
+To: Arnd Bergmann <arnd@arndb.de>
+Cc: "linux-arch@vger.kernel.org" <linux-arch@vger.kernel.org>, Andrew Morton <akpm@linux-foundation.org>, "linux-kbuild@vger.kernel.org" <linux-kbuild@vger.kernel.org>, Mikael Starvik <starvik@axis.com>, Jesper Nilsson <jesper.nilsson@axis.com>, Tony Luck <tony.luck@intel.com>, Fenghua Yu <fenghua.yu@intel.com>, Geert Uytterhoeven <geert@linux-m68k.org>, "David S. Miller" <davem@davemloft.net>, Christopher Li <sparse@chrisli.org>, Thomas Gleixner <tglx@linutronix.de>, Peter Zijlstra <peterz@infradead.org>, Kees Cook <keescook@chromium.org>, Ingo Molnar <mingo@kernel.org>, Josh Poimboeuf <jpoimboe@redhat.com>, Will Deacon <will.deacon@arm.com>, "Steven Rostedt (VMware)" <rostedt@goodmis.org>, Mark Rutland <mark.rutland@arm.com>, linux-s
 
-On Tue, 19 Dec 2017, Michael Schmitz wrote:
+On 12/19/2017 12:13 PM, Arnd Bergmann wrote:
+>
+>> I suppose BUG() implies "dead end" like semantics - which ARC was lacking
+>> before ?
+> Correct. Using __builtin_trap() here avoids the 'control reaches end of non-void
+> function' warnings, but then makes us run into the stack size problem that
+> I work around with the barrier_before_unreachable().
+>
+> It would be good if you could give this a quick test to see if you get sensible
+> output from the __builtin_trap();
 
-> > 
-> > > Contrary to the Mac driver, esp->command_block and 
-> > > esp->command_block_dma are not identical addresses on Amiga.
-> > 
-> > Why not make them identical, depending on the length of the tranfer? 
-> > (Then choose PIO or DMA by testing for the same threshold.)
-> 
-> esp->command_block_dma is mapped at driver init time so we don't get to 
-> chose at command submission time.
+It does, added a BUG() arbit, hits an abort()
 
-You could set esp->command_block_dma to an address like 0xffffffff. Then 
-when zorro_esp's ops->send_dma_cmd method is to do a DMA to or from that 
-address, check the transfer length. If the length is small, use 
-esp->command_block as the address for a PIO transfer. Otherwise, use the 
-mapped esp->command_block (which you saved somewhere at driver init time) 
-for a DMA transfer.
+...
+ISA Extn    : atomic ll64 unalign (not used)
+         : mpy[opt 9] div_rem norm barrel-shift swap minmax swape
+BPU        : partial match, cache:2048, Predict Table:16384
+BUG: failure at ../arch/arc/mm/tlb.c:827/arc_mmu_init()!
 
-This is a hack, of course. Perhaps we can avoid the hack if we pass the 
-virtual address as an argument to ops->send_dma_cmd.
 
-(Or *sg could be passed, if we cook up a couple of scattergather structs 
-to replace ent->sense_ptr and esp->command_block. This might allow for the 
-elimination of ops->map_single and ops->unmap_single altogether...)
+Tested-by: Vineet Gupta <vgupta@synopsys.com>
 
-> > 
-> > > (I can use esp->command_block in the reconnect message special case 
-> > > but not otherwise ...)
-> > 
-> > Maybe something like this...
-> > 
-> > 	struct esp_cmd_entry *ent = esp->active_cmd;
-> > 	struct esp_cmd_priv *spriv = ESP_CMD_PRIV(ent->cmd);
-> > 	struct scatterlist *sg = spriv->cur_sg;
-> > 	unsigned long addr = sg_page(sg) + sg->offset;
-> > 
-> > but that doesn't work for the esp_autosense() case, which doesn't 
-> > involve esp->ops->map_sg...
-> > 
-> > HTH
-> 
-> I'll give that a try to see if this works for regular transfers.
-> 
-> Will look at ways to identify autosense as well (do sense data fit into 
-> the ESP FIFO usually?)
+FWIW newer ARC gcc actually implements the builtin so we get a trap 5 instruction 
+now, vs., abort() calls before.
 
-You can identify the autosense case easily enough,
+BTW I missed reading the hunk of your changelog where this addresses the long 
+standing mystery with ARC builds and numerous -Wreturn-type warnings. I always 
+wondered why they were not fixed upstream already, being too lazy to investigate 
+myself, and turns out this was due to this BUG() thingy. phew !
 
-	struct esp_cmd_entry *ent = esp->active_cmd;
-	struct esp_cmd_priv *spriv = ESP_CMD_PRIV(ent->cmd);
-	unsigned long addr;
-
-	if (ent->flags & ESP_CMD_FLAG_AUTOSENSE)
-		addr = spriv->sense_ptr;
-	else {
-		struct scatterlist *sg = spriv->cur_sg;
-
-		addr = sg_page(sg) + sg->offset;
-	}
-
-But that still leaves the command_block case unhandled (I don't think we 
-can use spriv->cur_sg for that, so we'd need a hack like the one above). 
-
-All this complexity doesn't really belong in the ops->send_dma_cmd method, 
-so I think we are back to passing in the virtual pointer as a parameter. 
-
-That change would touch every esp driver. But it could improve mac_esp, 
-since mac_esp would no longer have to do any fake dma mapping. Maybe I 
-should do a patch for this?
-
--- 
-
-> 
-> Cheers,
-> 
-> 	Michael
-> 
-> 
+-Vineet
