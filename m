@@ -1,49 +1,48 @@
-From: Vineet Gupta <Vineet.Gupta1@synopsys.com>
-Subject: Re: [PATCH] bug.h: Work around GCC PR82365 in BUG()
-Date: Tue, 19 Dec 2017 14:38:21 -0800
-Message-ID: <f31caa9b-89f0-4168-04bf-14a98595865e__49219.6846557364$1513723014$gmane$org@synopsys.com>
-References: <20171219114112.939391-1-arnd@arndb.de>
- <8e42a1de-f619-7a4e-6d58-f90f53f5f38f@synopsys.com>
- <CAK8P3a2fXQHCN7gqNL9j7AeZqy7NXAMW1bqyFJs3G1M_M4BQ4A@mail.gmail.com>
+From: Finn Thain <fthain@telegraphics.com.au>
+Subject: Re: m68k v3.16 status update
+Date: Wed, 20 Dec 2017 10:01:35 +1100 (AEDT)
+Message-ID: <alpine.LNX.2.21.1712200935490.3@nippy.intranet>
+References: <CAMuHMdXodxq=Z8rQAZ7UUdzUzoPfQLFCSTkJziVeAsq8MMQxmQ@mail.gmail.com> <53E48C84.9090709@gmail.com> <53E4DDF1.9060701@kopteri.net> <53E54E6C.2040806@gmail.com> <53E5C3A7.3040106@kopteri.net> <68e92278-86e7-faef-f5b2-fbc514c27464@gmail.com>
+ <4403d779c1664692ae5a7ef5b69ec888@aalto.fi> <CAOmrzkJJXZb153ig=d=Cywr59hid7X3UJvUD-wgtYtZm7KsCuQ@mail.gmail.com> <alpine.LNX.2.21.1712151039050.3@nippy.intranet> <CAOmrzkKgHEO8BY-z5hXKoJFgb7SpZF55jjkeo-9v34PkqsYt_Q@mail.gmail.com> <alpine.LNX.2.21.1712191358160.3@nippy.intranet>
+ <d5f920dd-6678-d3a7-d823-e6524f3611cd@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
 Return-path: <linux-m68k-owner@vger.kernel.org>
-In-Reply-To: <CAK8P3a2fXQHCN7gqNL9j7AeZqy7NXAMW1bqyFJs3G1M_M4BQ4A@mail.gmail.com>
-Content-Language: en-US
+Received: from kvm5.telegraphics.com.au ([98.124.60.144]:55740 "EHLO
+        kvm5.telegraphics.com.au" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1752361AbdLSXBi (ORCPT
+        <rfc822;linux-m68k@vger.kernel.org>); Tue, 19 Dec 2017 18:01:38 -0500
+In-Reply-To: <d5f920dd-6678-d3a7-d823-e6524f3611cd@gmail.com>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Arnd Bergmann <arnd@arndb.de>
-Cc: "linux-arch@vger.kernel.org" <linux-arch@vger.kernel.org>, Andrew Morton <akpm@linux-foundation.org>, "linux-kbuild@vger.kernel.org" <linux-kbuild@vger.kernel.org>, Mikael Starvik <starvik@axis.com>, Jesper Nilsson <jesper.nilsson@axis.com>, Tony Luck <tony.luck@intel.com>, Fenghua Yu <fenghua.yu@intel.com>, Geert Uytterhoeven <geert@linux-m68k.org>, "David S. Miller" <davem@davemloft.net>, Christopher Li <sparse@chrisli.org>, Thomas Gleixner <tglx@linutronix.de>, Peter Zijlstra <peterz@infradead.org>, Kees Cook <keescook@chromium.org>, Ingo Molnar <mingo@kernel.org>, Josh Poimboeuf <jpoimboe@redhat.com>, Will Deacon <will.deacon@arm.com>, "Steven Rostedt (VMware)" <rostedt@goodmis.org>, Mark Rutland <mark.rutland@arm.com>, linux-s
+To: Michael Schmitz <schmitzmic@gmail.com>
+Cc: Vainikka Tuomas <tuomas.vainikka@aalto.fi>, Geert Uytterhoeven <geert@linux-m68k.org>, linux-m68k <linux-m68k@vger.kernel.org>
 
-On 12/19/2017 12:13 PM, Arnd Bergmann wrote:
->
->> I suppose BUG() implies "dead end" like semantics - which ARC was lacking
->> before ?
-> Correct. Using __builtin_trap() here avoids the 'control reaches end of non-void
-> function' warnings, but then makes us run into the stack size problem that
-> I work around with the barrier_before_unreachable().
->
-> It would be good if you could give this a quick test to see if you get sensible
-> output from the __builtin_trap();
+On Tue, 19 Dec 2017, Michael Schmitz wrote:
 
-It does, added a BUG() arbit, hits an abort()
+> 
+> esp->command_block_dma is mapped at driver init time so we don't get to 
+> chose at command submission time.
 
-...
-ISA Extn    : atomic ll64 unalign (not used)
-         : mpy[opt 9] div_rem norm barrel-shift swap minmax swape
-BPU        : partial match, cache:2048, Predict Table:16384
-BUG: failure at ../arch/arc/mm/tlb.c:827/arc_mmu_init()!
+When the command is submitted, ops->send_dma_cmd() can do something like 
+this,
 
+static void zorro_esp_send_dma_cmd(struct esp *esp, u32 dma_addr, u32 esp_count,
+                                   u32 dma_count, int write, u8 cmd);
+{
+	if ((dma_addr_t)dma_addr == esp->command_block_dma && esp_count < 4) {
+		zorro_esp_send_pio_cmd(esp, (u32)esp->command_block, esp_count,
+		                       dma_count, write, cmd);
+		return;
+	}
 
-Tested-by: Vineet Gupta <vgupta@synopsys.com>
+	/* do the usual DMA... */
+}
 
-FWIW newer ARC gcc actually implements the builtin so we get a trap 5 instruction 
-now, vs., abort() calls before.
+This logic completely ignores data transfers (including sense transfers) 
+but it is simple and self-contained and should get the job done.
 
-BTW I missed reading the hunk of your changelog where this addresses the long 
-standing mystery with ARC builds and numerous -Wreturn-type warnings. I always 
-wondered why they were not fixed upstream already, being too lazy to investigate 
-myself, and turns out this was due to this BUG() thingy. phew !
+>From what you said, I think you already arrived at this code (or something 
+equivalent). Is there a problem? Do we have to do PIO data transfers too?
 
--Vineet
+-- 
