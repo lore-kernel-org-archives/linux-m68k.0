@@ -1,69 +1,69 @@
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: Re: zorro_esp, was: Re: m68k v3.16 status update
-Date: Wed, 20 Dec 2017 09:13:09 +0100
-Message-ID: <CAMuHMdWbb98LeN_Z2EzwctXXGtxwh_H0L8Lwf5RXWfpxMNjSkw@mail.gmail.com>
-References: <CAMuHMdXodxq=Z8rQAZ7UUdzUzoPfQLFCSTkJziVeAsq8MMQxmQ@mail.gmail.com>
- <53E48C84.9090709@gmail.com> <53E4DDF1.9060701@kopteri.net>
- <53E54E6C.2040806@gmail.com> <53E5C3A7.3040106@kopteri.net>
- <68e92278-86e7-faef-f5b2-fbc514c27464@gmail.com> <4403d779c1664692ae5a7ef5b69ec888@aalto.fi>
- <CAOmrzkJJXZb153ig=d=Cywr59hid7X3UJvUD-wgtYtZm7KsCuQ@mail.gmail.com>
- <alpine.LNX.2.21.1712151039050.3@nippy.intranet> <CAOmrzkKgHEO8BY-z5hXKoJFgb7SpZF55jjkeo-9v34PkqsYt_Q@mail.gmail.com>
- <CAMuHMdXJtTqpWsftPMgmPOmJYYNRO2ZNRVDDak3Vy-WtC24zZw@mail.gmail.com> <95e9c39f-dd85-9353-6947-3ec740b8bbd4@gmail.com>
+From: Arnd Bergmann <arnd@arndb.de>
+Subject: Re: [PATCH] bug.h: Work around GCC PR82365 in BUG()
+Date: Wed, 20 Dec 2017 10:01:27 +0100
+Message-ID: <CAK8P3a25RgC0qPCrGfutSnLHr77NqK74dW2g0m7fcMnm5Ou8yg@mail.gmail.com>
+References: <20171219114112.939391-1-arnd@arndb.de> <8e42a1de-f619-7a4e-6d58-f90f53f5f38f@synopsys.com>
+ <CAK8P3a2fXQHCN7gqNL9j7AeZqy7NXAMW1bqyFJs3G1M_M4BQ4A@mail.gmail.com> <f31caa9b-89f0-4168-04bf-14a98595865e@synopsys.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="UTF-8"
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from mail-qk0-f181.google.com ([209.85.220.181]:37483 "EHLO
-        mail-qk0-f181.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1753626AbdLTINL (ORCPT
-        <rfc822;linux-m68k@vger.kernel.org>); Wed, 20 Dec 2017 03:13:11 -0500
-Received: by mail-qk0-f181.google.com with SMTP id p13so9645509qke.4
-        for <linux-m68k@vger.kernel.org>; Wed, 20 Dec 2017 00:13:10 -0800 (PST)
-In-Reply-To: <95e9c39f-dd85-9353-6947-3ec740b8bbd4@gmail.com>
+In-Reply-To: <f31caa9b-89f0-4168-04bf-14a98595865e@synopsys.com>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Michael Schmitz <schmitzmic@gmail.com>
-Cc: Finn Thain <fthain@telegraphics.com.au>, Vainikka Tuomas <tuomas.vainikka@aalto.fi>, linux-m68k <linux-m68k@vger.kernel.org>
+To: Vineet Gupta <Vineet.Gupta1@synopsys.com>
+Cc: "linux-arch@vger.kernel.org" <linux-arch@vger.kernel.org>, Andrew Morton <akpm@linux-foundation.org>, "linux-kbuild@vger.kernel.org" <linux-kbuild@vger.kernel.org>, Mikael Starvik <starvik@axis.com>, Jesper Nilsson <jesper.nilsson@axis.com>, Tony Luck <tony.luck@intel.com>, Fenghua Yu <fenghua.yu@intel.com>, Geert Uytterhoeven <geert@linux-m68k.org>, "David S. Miller" <davem@davemloft.net>, Christopher Li <sparse@chrisli.org>, Thomas Gleixner <tglx@linutronix.de>, Peter Zijlstra <peterz@infradead.org>, Kees Cook <keescook@chromium.org>, Ingo Molnar <mingo@kernel.org>, Josh Poimboeuf <jpoimboe@redhat.com>, Will Deacon <will.deacon@arm.com>, "Steven Rostedt (VMware)" <rostedt@goodmis.org>, Mark Rutland <mark.rutland@arm.com>, linux-snps-arc@li
 
-Hi Michael,
-
-On Wed, Dec 20, 2017 at 8:33 AM, Michael Schmitz <schmitzmic@gmail.com> wrote:
-> Am 19.12.2017 um 21:19 schrieb Geert Uytterhoeven:
->> On Tue, Dec 19, 2017 at 1:40 AM, Michael Schmitz <schmitzmic@gmail.com> wrote:
->>> Contrary to the Mac driver, esp->command_block and
->>> esp->command_block_dma are not identical addresses on Amiga. Is there
->>> a generic way to map a DMA address (i.e., physical address AFAIK) to a
->>> kernel virtual one? (I can use esp->command_block in the reconnect
->>> message special case but not otherwise ...)
+On Tue, Dec 19, 2017 at 11:38 PM, Vineet Gupta
+<Vineet.Gupta1@synopsys.com> wrote:
+> On 12/19/2017 12:13 PM, Arnd Bergmann wrote:
 >>
->> The only generic way is to use the virtual and DMA addresses as returned
->> by the dma_map_*() functions.
+>>
+>>> I suppose BUG() implies "dead end" like semantics - which ARC was lacking
+>>> before ?
+>>
+>> Correct. Using __builtin_trap() here avoids the 'control reaches end of
+>> non-void
+>> function' warnings, but then makes us run into the stack size problem that
+>> I work around with the barrier_before_unreachable().
+>>
+>> It would be good if you could give this a quick test to see if you get
+>> sensible
+>> output from the __builtin_trap();
 >
-> Yes, but there is no way to find the mapped virtual address given the
-> DMA handle (=physical address). I suppose that would mean walking the
-> page tables, looking for a mapping that bears the hallmarks of a DMA
-> mapping?
-
-Right. Not taking into account that some regions (e.g. Zorro II) may be mapped
-using a fixed large mapping.
-
-That'w why you should keep the DMA address returned by dma_map_*().
-
->> There may be some platform-specific legacy conversion routines around...
 >
-> phys_to_virt() does return _a_ mapping but it is not the DMA virtual
-> mapping itself. Since we are doing PIO, the cache bits in the mapping
-> may not matter at all here so this may be safe in general. It's a hack I
-> would not want to submit for review though.
+> It does, added a BUG() arbit, hits an abort()
+>
+> ...
+> ISA Extn    : atomic ll64 unalign (not used)
+>         : mpy[opt 9] div_rem norm barrel-shift swap minmax swape
+> BPU        : partial match, cache:2048, Predict Table:16384
+> BUG: failure at ../arch/arc/mm/tlb.c:827/arc_mmu_init()!
+>
+>
+> Tested-by: Vineet Gupta <vgupta@synopsys.com>
 
-That's meant for RAM mapped by the kernel.
+I meant whether it prints the right registers and stack trace, but I
+assume you tested that and just did not list it above.
 
-Gr{oetje,eeting}s,
+> FWIW newer ARC gcc actually implements the builtin so we get a trap 5
+> instruction now, vs., abort() calls before.
+>
+> BTW I missed reading the hunk of your changelog where this addresses the
+> long standing mystery with ARC builds and numerous -Wreturn-type warnings. I
+> always wondered why they were not fixed upstream already, being too lazy to
+> investigate myself, and turns out this was due to this BUG() thingy. phew !
 
-                        Geert
+Hmm, so with the new definition of abort(),
 
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
++__weak void abort(void)
++{
++   BUG();
++
++   /* if that doesn't kill us, halt */
++   panic("Oops failed to kill thread");
++}
 
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+won't that run into an endless recursion? Or do you then override abort()
+for ARC?
+
+         Arnd
