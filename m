@@ -1,69 +1,55 @@
-From: Arnd Bergmann <arnd@arndb.de>
-Subject: Re: [PATCH] bug.h: Work around GCC PR82365 in BUG()
-Date: Wed, 20 Dec 2017 10:01:27 +0100
-Message-ID: <CAK8P3a25RgC0qPCrGfutSnLHr77NqK74dW2g0m7fcMnm5Ou8yg@mail.gmail.com>
-References: <20171219114112.939391-1-arnd@arndb.de> <8e42a1de-f619-7a4e-6d58-f90f53f5f38f@synopsys.com>
- <CAK8P3a2fXQHCN7gqNL9j7AeZqy7NXAMW1bqyFJs3G1M_M4BQ4A@mail.gmail.com> <f31caa9b-89f0-4168-04bf-14a98595865e@synopsys.com>
+From: 53226720@mylife.unisa.ac.za
+Subject: Hallo mein lieber Freund,
+Date: Fri, 22 Dec 2017 08:01:35 +0530
+Message-ID: <AM5PR0102MB277115B61190E3CE95D7EE5FBA020@AM5PR0102MB2771.eurprd01.prod.exchangelabs.com>
+Reply-To: verahollin88@gmail.com
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <linux-m68k-owner@vger.kernel.org>
-In-Reply-To: <f31caa9b-89f0-4168-04bf-14a98595865e@synopsys.com>
+Content-Description: Mail message body
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Vineet Gupta <Vineet.Gupta1@synopsys.com>
-Cc: "linux-arch@vger.kernel.org" <linux-arch@vger.kernel.org>, Andrew Morton <akpm@linux-foundation.org>, "linux-kbuild@vger.kernel.org" <linux-kbuild@vger.kernel.org>, Mikael Starvik <starvik@axis.com>, Jesper Nilsson <jesper.nilsson@axis.com>, Tony Luck <tony.luck@intel.com>, Fenghua Yu <fenghua.yu@intel.com>, Geert Uytterhoeven <geert@linux-m68k.org>, "David S. Miller" <davem@davemloft.net>, Christopher Li <sparse@chrisli.org>, Thomas Gleixner <tglx@linutronix.de>, Peter Zijlstra <peterz@infradead.org>, Kees Cook <keescook@chromium.org>, Ingo Molnar <mingo@kernel.org>, Josh Poimboeuf <jpoimboe@redhat.com>, Will Deacon <will.deacon@arm.com>, "Steven Rostedt (VMware)" <rostedt@goodmis.org>, Mark Rutland <mark.rutland@arm.com>, linux-snps-arc@li
+To: Recipients <53226720@mylife.unisa.ac.za>
 
-On Tue, Dec 19, 2017 at 11:38 PM, Vineet Gupta
-<Vineet.Gupta1@synopsys.com> wrote:
-> On 12/19/2017 12:13 PM, Arnd Bergmann wrote:
->>
->>
->>> I suppose BUG() implies "dead end" like semantics - which ARC was lacking
->>> before ?
->>
->> Correct. Using __builtin_trap() here avoids the 'control reaches end of
->> non-void
->> function' warnings, but then makes us run into the stack size problem that
->> I work around with the barrier_before_unreachable().
->>
->> It would be good if you could give this a quick test to see if you get
->> sensible
->> output from the __builtin_trap();
->
->
-> It does, added a BUG() arbit, hits an abort()
->
-> ...
-> ISA Extn    : atomic ll64 unalign (not used)
->         : mpy[opt 9] div_rem norm barrel-shift swap minmax swape
-> BPU        : partial match, cache:2048, Predict Table:16384
-> BUG: failure at ../arch/arc/mm/tlb.c:827/arc_mmu_init()!
->
->
-> Tested-by: Vineet Gupta <vgupta@synopsys.com>
+Hallo mein lieber Freund,
 
-I meant whether it prints the right registers and stack trace, but I
-assume you tested that and just did not list it above.
+Ich schreibe dir diese Post mit schweren Tr=E4nen In meinen Augen und gro=
+=DFem Kummer in meinem Herzen, Mein Name ist Vera Hollin Kvan, und ich kont=
+aktiere dich aus meinem Land Indien Ich m=F6chte dir das sagen, weil ich ke=
+ine habe Eine andere M=F6glichkeit, als Ihnen zu sagen, wie ich ber=FChrt w=
+ar, um Sie zu =F6ffnen, heiratete ich mit Herrn Hollin Kvan, der f=FCr neun=
+ Jahre mit der tunesischen Botschaft in Madrid Spanien arbeitete, bevor er =
+im Jahr 2005 starb. Wir waren elf Jahre ohne verheiratet Kind.
 
-> FWIW newer ARC gcc actually implements the builtin so we get a trap 5
-> instruction now, vs., abort() calls before.
->
-> BTW I missed reading the hunk of your changelog where this addresses the
-> long standing mystery with ARC builds and numerous -Wreturn-type warnings. I
-> always wondered why they were not fixed upstream already, being too lazy to
-> investigate myself, and turns out this was due to this BUG() thingy. phew !
+Er starb nach einer kurzen Krankheit, die nur f=FCnf Tage dauerte. Seit sei=
+nem Tod entschied ich mich, nicht wieder zu heiraten. Als mein verstorbener=
+ Mann noch am Leben war, hinterlegte er die Summe von $ 4.850.000,00USD (Vi=
+er Millionen achthundertundf=FCnfzigtausend Dollar) in einer Bank hier in I=
+ndien Neu-Delhi, der Hauptstadt Indiens, gegenw=E4rtig dieses Geld ist imme=
+r noch in der Bank.
 
-Hmm, so with the new definition of abort(),
+Er stellte dieses Geld f=FCr den Export von Gold aus dem Minenfactory in Ma=
+drid Spanien zur Verf=FCgung. In letzter Zeit sagte mir mein Doktor, dass i=
+ch wegen der Krebserkrankung f=FCr die Dauer von sieben Monaten nicht =FCbe=
+rleben w=FCrde. Derjenige, der mich am meisten st=F6rt, ist meine Schlaganf=
+all-Krankheit. Nachdem ich meinen Zustand gekannt habe, habe ich beschlosse=
+n, dir dieses Geld auszuh=E4ndigen, um auf die weniger privilegierten Mensc=
+hen aufzupassen, du wirst dieses Geld auf die Art und Weise benutzen, wie i=
+ch es hier unterrichten werde.
 
-+__weak void abort(void)
-+{
-+   BUG();
-+
-+   /* if that doesn't kill us, halt */
-+   panic("Oops failed to kill thread");
-+}
+Ich m=F6chte, dass Sie 30 Prozent des gesamten Geldes f=FCr Ihren pers=F6nl=
+ichen Gebrauch aufwenden, w=E4hrend 70% des Geldes an wohlt=E4tige Zwecke g=
+ehen, Menschen auf der Stra=DFe und dem Waisenhaus helfen. Ich bin als Wais=
+e aufgewachsen und habe keinen K=F6rper als mein Familienmitglied, nur um z=
+u beenden, dass das Haus Gottes auch erhalten wird. Mache dies, damit Gott =
+meine S=FCnden vergibt und meine Seele akzeptiert, weil diese Krankheiten m=
+ich so sehr leiden. Sobald ich Ihre Antwort erhalten habe, werde ich Ihnen =
+den Kontakt der Bank hier in Delhi Indien geben und ich werde auch den Bank=
+manager beauftragen, Ihnen einen Vollmachtenbrief auszustellen, der Ihnen d=
+en gegenw=E4rtigen Beg=FCnstigten des Geldes in der Bank beweisen wird, wen=
+n Sie versichern mir, dass Sie entsprechend handeln werden, wie ich hier an=
+gegeben habe.
 
-won't that run into an endless recursion? Or do you then override abort()
-for ARC?
-
-         Arnd
+Ich hoffe auf Ihre Antwort.
+Von Vera Hollin kVan
