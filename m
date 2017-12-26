@@ -1,48 +1,40 @@
-From: HDIAMOND <etinmayoreeghe@gmail.com>
-Subject: DONATION
-Date: Sun, 24 Dec 2017 14:58:53 -0800
-Message-ID: <CALJp5DmY6=rMmoym909ak+HOgg3D-BdQJXz+c+MrbmQR8HKiOQ@mail.gmail.com>
+From: Angelo Dureghello <angelo@sysam.it>
+Subject: [RFC] ColdFire mcf5441x eDMA driver
+Date: Tue, 26 Dec 2017 19:32:13 +0100
+Message-ID: <20171226183212.GA6375@jerusalem>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
 Return-path: <linux-m68k-owner@vger.kernel.org>
+Received: from ec2-18-194-220-216.eu-central-1.compute.amazonaws.com ([18.194.220.216]:43524
+        "EHLO sysam.it" rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1750822AbdLZScQ (ORCPT <rfc822;linux-m68k@vger.kernel.org>);
+        Tue, 26 Dec 2017 13:32:16 -0500
+Received: from localhost (localhost [127.0.0.1])
+        by sysam.it (Postfix) with ESMTP id 38A70202CB
+        for <linux-m68k@vger.kernel.org>; Tue, 26 Dec 2017 18:32:15 +0000 (UTC)
+Received: from sysam.it ([127.0.0.1])
+        by localhost (sysam.it [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id HiBR5enMwMm0 for <linux-m68k@vger.kernel.org>;
+        Tue, 26 Dec 2017 18:32:14 +0000 (UTC)
+Received: from jerusalem (host14-171-dynamic.50-82-r.retail.telecomitalia.it [82.50.171.14])
+        by sysam.it (Postfix) with ESMTPSA id 22170202C5
+        for <linux-m68k@vger.kernel.org>; Tue, 26 Dec 2017 18:32:14 +0000 (UTC)
+Content-Disposition: inline
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
+To: linux-m68k@vger.kernel.org
 
-Mil=C3=A1 milovan=C3=A1
+Hi all,
 
-Zdrav=C3=ADm, jsem pan Harold Diamond. 83 let od
-Wurtsboro, New York, vyhr=C3=A1l jsem Mega Millions jacjpot $ 326,000,000.0=
-0
-Mili=C3=B3ny 4. listopadu 2015 byla moje velk=C3=A1 cena darem od Boha
-j=C3=A1 a mou rodinu jsem souhlasil, =C5=BEe budu =C4=8Dinit Bo=C5=BE=C3=AD=
- v=C5=AFli. Mo=C5=BEn=C3=A1 nev=C3=ADm
-ty, ale v=C4=9B=C5=99=C3=ADm, =C5=BEe jsi B=C5=AFh vybral, abychom p=C5=99i=
-jali na=C5=A1e dary
-$ 40,000,000.00 USD, proto=C5=BEe mus=C3=ADte b=C3=BDt jednotlivec strach z=
- Boha.
-Bylo mi to =C5=99e=C4=8Deno
-M=C5=AFj p=C5=99edch=C5=AFdce semit semeno do sv=C4=9Bta kv=C5=AFli =C5=A1p=
-atn=C3=A9mu zdrav=C3=AD m=C3=A9 =C5=BEeny.
+was looking inside mcf54415 eDMA support, and just seen that the available 
+fsl-edma.c driver is not suitable for this CPU. The hw module is quite similar
+but register positions and channels available are different.
 
-Budu v=C3=A1m velmi vd=C4=9B=C4=8Dn=C3=BD za jak=C3=BDkoli z=C3=A1jem.
+So, seems a good chance to add a mcf-edma.c driver, starting/looking from 
+fsl-edma.c. What do you think ? Is there anything already done about, maybe ?
+In case i would like to try to write an initial version of this driver.
 
-Nebojte se rizika, proto=C5=BEe to jsou na=C5=A1e pen=C3=ADze. V=C3=ADce o =
-m=C4=9B m=C5=AF=C5=BEete p=C5=99e=C4=8D=C3=ADst
-Prohl=C3=AD=C5=BEen=C3=AD t=C3=A9to webov=C3=A9 str=C3=A1nky:
+And Merry Christmas time to all.
 
-Http: / / www.nydailynews.com/new-york/retired-new-york-principal-wins-326m=
--mega-millons-jackpot-=C4=8Dl=C3=A1nku-1.2074880
-
-Http://www.timesunion.com/news/article/Lottery-Retired-principal-wins-326M-=
-jackpot-6009653.php
-
-M=C3=A1te-li z=C3=A1jem, pros=C3=ADm, napi=C5=A1te mi v m=C3=A9 osobn=C3=AD=
- podob=C4=9B
-e-mail: hdiamond480@gmail.com Dal=C5=A1=C3=AD informace o tom, jak v=C3=A1m=
- m=C5=AF=C5=BEe darovat
-
-P=C5=99eji v=C3=A1m v=C4=9B=C4=8Dn=C3=BD poklad Krista
-
-D=C4=9Bkuji
-Harold Diamond
+Regards,
+Angelo Dureghello
