@@ -1,213 +1,158 @@
-From: Christoph Hellwig <hch@lst.de>
-Subject: [PATCH 01/67] x86: remove X86_PPRO_FENCE
-Date: Fri, 29 Dec 2017 09:18:05 +0100
-Message-ID: <20171229081911.2802-2-hch__20663.8386277065$1514536763$gmane$org@lst.de>
-References: <20171229081911.2802-1-hch@lst.de>
+From: Michael Schmitz <schmitzmic@gmail.com>
+Subject: Re: m68k v3.16 status update
+Date: Fri, 29 Dec 2017 22:09:56 +1300
+Message-ID: <4d17b971-2f42-6d37-1498-79863b3b8f13@gmail.com>
+References: <CAMuHMdXodxq=Z8rQAZ7UUdzUzoPfQLFCSTkJziVeAsq8MMQxmQ@mail.gmail.com>
+ <53E48C84.9090709@gmail.com> <53E4DDF1.9060701@kopteri.net>
+ <53E54E6C.2040806@gmail.com> <53E5C3A7.3040106@kopteri.net>
+ <68e92278-86e7-faef-f5b2-fbc514c27464@gmail.com>
+ <4403d779c1664692ae5a7ef5b69ec888@aalto.fi>
+ <CAOmrzkJJXZb153ig=d=Cywr59hid7X3UJvUD-wgtYtZm7KsCuQ@mail.gmail.com>
+ <alpine.LNX.2.21.1712151039050.3@nippy.intranet>
+ <CAOmrzkKgHEO8BY-z5hXKoJFgb7SpZF55jjkeo-9v34PkqsYt_Q@mail.gmail.com>
+ <alpine.LNX.2.21.1712191358160.3@nippy.intranet>
+ <d5f920dd-6678-d3a7-d823-e6524f3611cd@gmail.com>
+ <alpine.LNX.2.21.1712200935490.3@nippy.intranet>
+ <118e7cd3-dd10-2f41-0515-480fff370f4e@gmail.com>
+ <alpine.LNX.2.21.1712290945330.3@nippy.intranet>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-15
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-m68k-owner@vger.kernel.org>
-In-Reply-To: <20171229081911.2802-1-hch@lst.de>
+Received: from mail-pl0-f41.google.com ([209.85.160.41]:40073 "EHLO
+        mail-pl0-f41.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1755385AbdL2JKE (ORCPT
+        <rfc822;linux-m68k@vger.kernel.org>); Fri, 29 Dec 2017 04:10:04 -0500
+Received: by mail-pl0-f41.google.com with SMTP id 62so21253189pld.7
+        for <linux-m68k@vger.kernel.org>; Fri, 29 Dec 2017 01:10:04 -0800 (PST)
+In-Reply-To: <alpine.LNX.2.21.1712290945330.3@nippy.intranet>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: iommu@lists.linux-foundation.org
-Cc: linux-alpha@vger.kernel.org, linux-snps-arc@lists.infradead.org, linux-arm-kernel@lists.infradead.org, adi-buildroot-devel@lists.sourceforge.net, linux-c6x-dev@linux-c6x.org, linux-cris-kernel@axis.com, linux-hexagon@vger.kernel.org, linux-ia64@vger.kernel.org, linux-m68k@lists.linux-m68k.org, linux-metag@vger.kernel.org, Michal Simek <monstr@monstr.eu>, linux-mips@linux-mips.org, linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, patches@groups.riscv.org, linux-s390@vger.kernel.org, linux-sh@vger.kernel.org, sparclinux@vger.kernel.org, Guan Xuetao <gxt@mprc.pku.edu.cn>, x86@kernel.org, linux-arch@vger.kernel.org, linux-kernel@vger.kernel.org
+To: Finn Thain <fthain@telegraphics.com.au>
+Cc: Vainikka Tuomas <tuomas.vainikka@aalto.fi>, Geert Uytterhoeven <geert@linux-m68k.org>, linux-m68k <linux-m68k@vger.kernel.org>
 
-There were only a few Pentium Pro multiprocessors systems where this
-errata applied. They are more than 20 years old now, and we've slowly
-dropped places where put the workarounds in and discuraged anyone
-from enabling the workaround.
+Hi Finn,
 
-Get rid of it for good.
+Am 29.12.2017 um 13:02 schrieb Finn Thain:
+> On Thu, 28 Dec 2017, Michael Schmitz wrote:
+> 
+>>
+>> Oddly enough, this does not quite work. Due to my settings in the 
+>> adapter probe function (I don't set the ESP_FLAG_DISABLE_SYNC flag), the 
+>> ESP core uses 'select with attention and stop' instead of the normal 
+>> select with attention command,
+> 
+> I don't know why the driver would need to use ESP_CMD_SELAS over 
+> ESP_CMD_SA3. It might be interesting to bypass the ESP_FLAG_DOING_SLOWCMD 
+> test entirely.
 
-Signed-off-by: Christoph Hellwig <hch@lst.de>
----
- arch/x86/Kconfig.cpu                        | 13 -------------
- arch/x86/entry/vdso/vdso32/vclock_gettime.c |  2 --
- arch/x86/include/asm/barrier.h              | 30 -----------------------------
- arch/x86/include/asm/io.h                   | 15 ---------------
- arch/x86/kernel/pci-nommu.c                 | 19 ------------------
- arch/x86/um/asm/barrier.h                   |  4 ----
- 6 files changed, 83 deletions(-)
+As far as I understand the code, this is done when sync transfer
+parameters or wide transfer hasn't been negotiated for a target yet. A
+precaution, IOW.
 
-diff --git a/arch/x86/Kconfig.cpu b/arch/x86/Kconfig.cpu
-index 65a9a4716e34..f0c5ef578153 100644
---- a/arch/x86/Kconfig.cpu
-+++ b/arch/x86/Kconfig.cpu
-@@ -315,19 +315,6 @@ config X86_L1_CACHE_SHIFT
- 	default "4" if MELAN || M486 || MGEODEGX1
- 	default "5" if MWINCHIP3D || MWINCHIPC6 || MCRUSOE || MEFFICEON || MCYRIXIII || MK6 || MPENTIUMIII || MPENTIUMII || M686 || M586MMX || M586TSC || M586 || MVIAC3_2 || MGEODE_LX
- 
--config X86_PPRO_FENCE
--	bool "PentiumPro memory ordering errata workaround"
--	depends on M686 || M586MMX || M586TSC || M586 || M486 || MGEODEGX1
--	---help---
--	  Old PentiumPro multiprocessor systems had errata that could cause
--	  memory operations to violate the x86 ordering standard in rare cases.
--	  Enabling this option will attempt to work around some (but not all)
--	  occurrences of this problem, at the cost of much heavier spinlock and
--	  memory barrier operations.
--
--	  If unsure, say n here. Even distro kernels should think twice before
--	  enabling this: there are few systems, and an unlikely bug.
--
- config X86_F00F_BUG
- 	def_bool y
- 	depends on M586MMX || M586TSC || M586 || M486
-diff --git a/arch/x86/entry/vdso/vdso32/vclock_gettime.c b/arch/x86/entry/vdso/vdso32/vclock_gettime.c
-index 7780bbfb06ef..9242b28418d5 100644
---- a/arch/x86/entry/vdso/vdso32/vclock_gettime.c
-+++ b/arch/x86/entry/vdso/vdso32/vclock_gettime.c
-@@ -5,8 +5,6 @@
- #undef CONFIG_OPTIMIZE_INLINING
- #endif
- 
--#undef CONFIG_X86_PPRO_FENCE
--
- #ifdef CONFIG_X86_64
- 
- /*
-diff --git a/arch/x86/include/asm/barrier.h b/arch/x86/include/asm/barrier.h
-index 7fb336210e1b..aa0f7449d4a4 100644
---- a/arch/x86/include/asm/barrier.h
-+++ b/arch/x86/include/asm/barrier.h
-@@ -24,11 +24,7 @@
- #define wmb()	asm volatile("sfence" ::: "memory")
- #endif
- 
--#ifdef CONFIG_X86_PPRO_FENCE
--#define dma_rmb()	rmb()
--#else
- #define dma_rmb()	barrier()
--#endif
- #define dma_wmb()	barrier()
- 
- #ifdef CONFIG_X86_32
-@@ -40,30 +36,6 @@
- #define __smp_wmb()	barrier()
- #define __smp_store_mb(var, value) do { (void)xchg(&var, value); } while (0)
- 
--#if defined(CONFIG_X86_PPRO_FENCE)
--
--/*
-- * For this option x86 doesn't have a strong TSO memory
-- * model and we should fall back to full barriers.
-- */
--
--#define __smp_store_release(p, v)					\
--do {									\
--	compiletime_assert_atomic_type(*p);				\
--	__smp_mb();							\
--	WRITE_ONCE(*p, v);						\
--} while (0)
--
--#define __smp_load_acquire(p)						\
--({									\
--	typeof(*p) ___p1 = READ_ONCE(*p);				\
--	compiletime_assert_atomic_type(*p);				\
--	__smp_mb();							\
--	___p1;								\
--})
--
--#else /* regular x86 TSO memory ordering */
--
- #define __smp_store_release(p, v)					\
- do {									\
- 	compiletime_assert_atomic_type(*p);				\
-@@ -79,8 +51,6 @@ do {									\
- 	___p1;								\
- })
- 
--#endif
--
- /* Atomic operations are already serializing on x86 */
- #define __smp_mb__before_atomic()	barrier()
- #define __smp_mb__after_atomic()	barrier()
-diff --git a/arch/x86/include/asm/io.h b/arch/x86/include/asm/io.h
-index 95e948627fd0..f6e5b9375d8c 100644
---- a/arch/x86/include/asm/io.h
-+++ b/arch/x86/include/asm/io.h
-@@ -232,21 +232,6 @@ extern void set_iounmap_nonlazy(void);
-  */
- #define __ISA_IO_base ((char __iomem *)(PAGE_OFFSET))
- 
--/*
-- *	Cache management
-- *
-- *	This needed for two cases
-- *	1. Out of order aware processors
-- *	2. Accidentally out of order processors (PPro errata #51)
-- */
--
--static inline void flush_write_buffers(void)
--{
--#if defined(CONFIG_X86_PPRO_FENCE)
--	asm volatile("lock; addl $0,0(%%esp)": : :"memory");
--#endif
--}
--
- #endif /* __KERNEL__ */
- 
- extern void native_io_delay(void);
-diff --git a/arch/x86/kernel/pci-nommu.c b/arch/x86/kernel/pci-nommu.c
-index b0caae27e1b7..c78df78b5ccd 100644
---- a/arch/x86/kernel/pci-nommu.c
-+++ b/arch/x86/kernel/pci-nommu.c
-@@ -37,7 +37,6 @@ static dma_addr_t nommu_map_page(struct device *dev, struct page *page,
- 	WARN_ON(size == 0);
- 	if (!check_addr("map_single", dev, bus, size))
- 		return NOMMU_MAPPING_ERROR;
--	flush_write_buffers();
- 	return bus;
- }
- 
-@@ -72,25 +71,9 @@ static int nommu_map_sg(struct device *hwdev, struct scatterlist *sg,
- 			return 0;
- 		s->dma_length = s->length;
- 	}
--	flush_write_buffers();
- 	return nents;
- }
- 
--static void nommu_sync_single_for_device(struct device *dev,
--			dma_addr_t addr, size_t size,
--			enum dma_data_direction dir)
--{
--	flush_write_buffers();
--}
--
--
--static void nommu_sync_sg_for_device(struct device *dev,
--			struct scatterlist *sg, int nelems,
--			enum dma_data_direction dir)
--{
--	flush_write_buffers();
--}
--
- static int nommu_mapping_error(struct device *dev, dma_addr_t dma_addr)
- {
- 	return dma_addr == NOMMU_MAPPING_ERROR;
-@@ -101,8 +84,6 @@ const struct dma_map_ops nommu_dma_ops = {
- 	.free			= dma_generic_free_coherent,
- 	.map_sg			= nommu_map_sg,
- 	.map_page		= nommu_map_page,
--	.sync_single_for_device = nommu_sync_single_for_device,
--	.sync_sg_for_device	= nommu_sync_sg_for_device,
- 	.is_phys		= 1,
- 	.mapping_error		= nommu_mapping_error,
- 	.dma_supported		= x86_dma_supported,
-diff --git a/arch/x86/um/asm/barrier.h b/arch/x86/um/asm/barrier.h
-index b7d73400ea29..f31e5d903161 100644
---- a/arch/x86/um/asm/barrier.h
-+++ b/arch/x86/um/asm/barrier.h
-@@ -30,11 +30,7 @@
- 
- #endif /* CONFIG_X86_32 */
- 
--#ifdef CONFIG_X86_PPRO_FENCE
--#define dma_rmb()	rmb()
--#else /* CONFIG_X86_PPRO_FENCE */
- #define dma_rmb()	barrier()
--#endif /* CONFIG_X86_PPRO_FENCE */
- #define dma_wmb()	barrier()
- 
- #include <asm-generic/barrier.h>
--- 
-2.14.2
+> 
+>> which attempts to send just a single byte IDENTIFY message, and defers 
+>> sending tag bytes to a later separate message out phase. The PIO routine 
+>> I lifted from the Mac ESP driver apparently does not sucessfully send 
+>> such a short message (or the select with attention and stop command 
+>> requires special handshake).
+>>
+> 
+> That routine does not expect esp->ireg & ~ESP_INTR_BSERV when sending. But 
+> with ESP_CMD_SELAS, you'll get ESP_INTR_FDONE | ESP_INTR_BSERV. One 
+> datasheet says,
+> 
+>         Select with ATN and Stop
+> 
+>         This command should be used in place of [Select with ATN] when 
+>         multiple message phase bytes are to be sent. The command will 
+>         select a target with ATN asserted, send one message byte, and 
+>         generate bus service and function complete interrupts, and stop.
+> 
+> A different datasheet (probably a more appropriate one) says,
+> 
+>         The Select with ATN and Stop Steps Command is used by the 
+>         Initiator to send messages with lengths other than 1 or 3 bytes. 
+>         When this command is issued, the device executes the Selection 
+>         process, transfers the first message byte, then STOPS the 
+>         sequence. ATN is not deasserted at this time, allowing the 
+>         Initiator to send additional message bytes after the ID message. 
+>         To send these additional bytes, the Initiator must write the 
+>         transfer counter with the number of bytes which will follow, then 
+>         issue an information transfer command. (Note: the Target is still 
+>         in the message out phase when this command is issued). ATN will 
+>         remain asserted until the transfer counter decrements to zero.
+> 
+> This suggests to me that the interrupt needs to be cleared and handled 
+> before the transfer of the extra message bytes.
+
+Yes, I had seen that in the data sheet. Changing the interrupt mask to
+ignore ESP_INTR_FDONE in PIO read (i.e. message out) to account for
+ESP_CMD_SELAS does still not give a working selection. I might have to
+clear the interrupt some way.
+
+>> Setting the ESP_FLAG_DISABLE_SYNC avoids triggering this behaviour.
+>>
+>> You should be able to reproduce this on Mac by omitting the 
+>> ESP_FLAG_DISABLE_SYNC in the PIO case (just for testing - I don't 
+>> advocate letting the driver negotiate sync transfers that PIO can't 
+>> actually handle).
+>>
+> 
+> My Quadras aren't here with me at the moment. But I have some esp_scsi 
+> debug logs that Stan captured on his Mac (I have a script to decode 
+> these):
+> 
+> scsi host0: cmd[01 = ESP_CMD_FLUSH]
+> scsi host0: cmd[c3 = ESP_CMD_SELAS ESP_CMD_DMA]
+
+Yes, that's the one.
+
+> scsi host0: intr        sreg[96 = ESP_STAT_TCNT ESP_STAT_INTR ESP_MOP]  seqreg[91]      sreg2[00 =]     ireg[18 = ESP_INTR_FDONE ESP_INTR_BSERV]
+
+And that's the interrupt conditions expected. I think I had seqreg c3,
+can't remember the ireg values. Kernel log messages are not captured in
+syslog on elgar at the moment so I haven't got a saved log.
+
+> scsi host0: cmd[00 = ESP_CMD_NULL]
+> scsi host0: cmd[01 = ESP_CMD_FLUSH]
+> scsi host0: event[0d = ESP_EVENT_CHECK_PHASE]   phase[06 = ESP_MOP]
+> scsi host0: event[09 = ESP_EVENT_MSGOUT]        phase[06 = ESP_MOP]
+> scsi host0: cmd[01 = ESP_CMD_FLUSH]
+> ESP: Sending message [
+> 01
+> 03
+> 01
+> 4c
+> 0f
+> ]
+> scsi host0: cmd[01 = ESP_CMD_FLUSH]
+> scsi host0: cmd[90 = ESP_CMD_TI ESP_CMD_DMA]
+> 
+> I can't see why that wouldn't work in the PIO case. The interrupt flags 
+> would have been cleared well before ESP_EVENT_MSGOUT.
+
+I can't see why either. Works OK in the DMA case (as in the PDMA case,
+on Mac).
+
+> Perhaps ESP_FLAG_DOING_SLOWCMD never happens on Quadras.
+
+I think it doesn't happen on PIO Macs because esp->flags has
+ESP_FLAG_DISABLE_SYNC set, suppressing sync negotiation (and wide
+negotiation can't happen).
+
+> 
+>> I think I'll give up on trying to make PIO transfers work in the general 
+>> case on Amiga, at least for now.
+> 
+> Yes, I agree. AFAICT we can't handle the general case without core driver 
+> concerns leaking into the wrapper driver (which harms modularity), unless
+> we refactor all of the wrapper drivers (mac_esp, jazz_esp, am53c974 etc).
+
+Best not go there - all known ESP boards support DMA, or PIO out of the
+box as in the Mac case. (Making sure PIO drivers use the identity
+mapping as DMA mapping as you do on Mac might still be a way out though).
+
+Cheers,
+
+	Michael
