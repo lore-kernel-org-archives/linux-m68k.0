@@ -1,7 +1,7 @@
 From: Christoph Hellwig <hch@lst.de>
-Subject: [PATCH 51/67] set_memory.h: provide set_memory_{en,de}crypted stubs
-Date: Fri, 29 Dec 2017 09:18:55 +0100
-Message-ID: <20171229081911.2802-52-hch__15228.9617377848$1514535986$gmane$org@lst.de>
+Subject: [PATCH 47/67] swiotlb: wire up ->dma_supported in swiotlb_dma_ops
+Date: Fri, 29 Dec 2017 09:18:51 +0100
+Message-ID: <20171229081911.2802-48-hch__3580.53009626946$1514536000$gmane$org@lst.de>
 References: <20171229081911.2802-1-hch@lst.de>
 Return-path: <linux-m68k-owner@vger.kernel.org>
 In-Reply-To: <20171229081911.2802-1-hch@lst.de>
@@ -10,31 +10,24 @@ List-Id: linux-m68k@vger.kernel.org
 To: iommu@lists.linux-foundation.org
 Cc: linux-alpha@vger.kernel.org, linux-snps-arc@lists.infradead.org, linux-arm-kernel@lists.infradead.org, adi-buildroot-devel@lists.sourceforge.net, linux-c6x-dev@linux-c6x.org, linux-cris-kernel@axis.com, linux-hexagon@vger.kernel.org, linux-ia64@vger.kernel.org, linux-m68k@lists.linux-m68k.org, linux-metag@vger.kernel.org, Michal Simek <monstr@monstr.eu>, linux-mips@linux-mips.org, linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, patches@groups.riscv.org, linux-s390@vger.kernel.org, linux-sh@vger.kernel.org, sparclinux@vger.kernel.org, Guan Xuetao <gxt@mprc.pku.edu.cn>, x86@kernel.org, linux-arch@vger.kernel.org, linux-kernel@vger.kernel.org
 
+To properly reject too small DMA masks based on the addressability of the
+bounce buffer.
+
 Signed-off-by: Christoph Hellwig <hch@lst.de>
 ---
- include/linux/set_memory.h | 12 ++++++++++++
- 1 file changed, 12 insertions(+)
+ lib/swiotlb.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/include/linux/set_memory.h b/include/linux/set_memory.h
-index e5140648f638..da5178216da5 100644
---- a/include/linux/set_memory.h
-+++ b/include/linux/set_memory.h
-@@ -17,4 +17,16 @@ static inline int set_memory_x(unsigned long addr,  int numpages) { return 0; }
- static inline int set_memory_nx(unsigned long addr, int numpages) { return 0; }
- #endif
- 
-+#ifndef CONFIG_ARCH_HAS_MEM_ENCRYPT
-+static inline int set_memory_encrypted(unsigned long addr, int numpages)
-+{
-+	return 0;
-+}
-+
-+static inline int set_memory_decrypted(unsigned long addr, int numpages)
-+{
-+	return 0;
-+}
-+#endif /* CONFIG_ARCH_HAS_MEM_ENCRYPT */
-+
- #endif /* _LINUX_SET_MEMORY_H_ */
+diff --git a/lib/swiotlb.c b/lib/swiotlb.c
+index 9c100f0173bf..e0b8980334c3 100644
+--- a/lib/swiotlb.c
++++ b/lib/swiotlb.c
+@@ -1125,5 +1125,6 @@ const struct dma_map_ops swiotlb_dma_ops = {
+ 	.unmap_sg		= swiotlb_unmap_sg_attrs,
+ 	.map_page		= swiotlb_map_page,
+ 	.unmap_page		= swiotlb_unmap_page,
++	.dma_supported		= swiotlb_dma_supported,
+ };
+ #endif /* CONFIG_DMA_DIRECT_OPS */
 -- 
 2.14.2
