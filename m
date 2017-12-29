@@ -1,7 +1,7 @@
 From: Christoph Hellwig <hch@lst.de>
-Subject: [PATCH 38/67] x86/amd_gart: clean up gart_alloc_coherent
-Date: Fri, 29 Dec 2017 09:18:42 +0100
-Message-ID: <20171229081911.2802-39-hch__5008.59097014672$1514536141$gmane$org@lst.de>
+Subject: [PATCH 40/67] iommu/intel-iommu: use dma_direct_* helpers for the direct mapping case
+Date: Fri, 29 Dec 2017 09:18:44 +0100
+Message-ID: <20171229081911.2802-41-hch__12485.7240975418$1514536151$gmane$org@lst.de>
 References: <20171229081911.2802-1-hch@lst.de>
 Return-path: <linux-m68k-owner@vger.kernel.org>
 In-Reply-To: <20171229081911.2802-1-hch@lst.de>
@@ -10,62 +10,69 @@ List-Id: linux-m68k@vger.kernel.org
 To: iommu@lists.linux-foundation.org
 Cc: linux-alpha@vger.kernel.org, linux-snps-arc@lists.infradead.org, linux-arm-kernel@lists.infradead.org, adi-buildroot-devel@lists.sourceforge.net, linux-c6x-dev@linux-c6x.org, linux-cris-kernel@axis.com, linux-hexagon@vger.kernel.org, linux-ia64@vger.kernel.org, linux-m68k@lists.linux-m68k.org, linux-metag@vger.kernel.org, Michal Simek <monstr@monstr.eu>, linux-mips@linux-mips.org, linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, patches@groups.riscv.org, linux-s390@vger.kernel.org, linux-sh@vger.kernel.org, sparclinux@vger.kernel.org, Guan Xuetao <gxt@mprc.pku.edu.cn>, x86@kernel.org, linux-arch@vger.kernel.org, linux-kernel@vger.kernel.org
 
-Don't rely on the gfp mask from dma_alloc_coherent_gfp_flags to make the
-fallback decision, and streamline the code flow a bit.
+This simplifies the code a bit, and prepares for future cleanups.
 
 Signed-off-by: Christoph Hellwig <hch@lst.de>
 ---
- arch/x86/kernel/amd_gart_64.c | 36 ++++++++++++++++++------------------
- 1 file changed, 18 insertions(+), 18 deletions(-)
+ drivers/iommu/Kconfig       |  1 +
+ drivers/iommu/intel-iommu.c | 17 ++++++++---------
+ 2 files changed, 9 insertions(+), 9 deletions(-)
 
-diff --git a/arch/x86/kernel/amd_gart_64.c b/arch/x86/kernel/amd_gart_64.c
-index 52e3abcf3e70..92054815023e 100644
---- a/arch/x86/kernel/amd_gart_64.c
-+++ b/arch/x86/kernel/amd_gart_64.c
-@@ -484,26 +484,26 @@ gart_alloc_coherent(struct device *dev, size_t size, dma_addr_t *dma_addr,
- 	unsigned long align_mask;
- 	struct page *page;
+diff --git a/drivers/iommu/Kconfig b/drivers/iommu/Kconfig
+index dc7c1914645d..df171cb85822 100644
+--- a/drivers/iommu/Kconfig
++++ b/drivers/iommu/Kconfig
+@@ -143,6 +143,7 @@ config DMAR_TABLE
+ config INTEL_IOMMU
+ 	bool "Support for Intel IOMMU using DMA Remapping Devices"
+ 	depends on PCI_MSI && ACPI && (X86 || IA64_GENERIC)
++	select DMA_DIRECT_OPS
+ 	select IOMMU_API
+ 	select IOMMU_IOVA
+ 	select DMAR_TABLE
+diff --git a/drivers/iommu/intel-iommu.c b/drivers/iommu/intel-iommu.c
+index 921caf4f0c3e..0de8bfe89061 100644
+--- a/drivers/iommu/intel-iommu.c
++++ b/drivers/iommu/intel-iommu.c
+@@ -31,6 +31,7 @@
+ #include <linux/pci.h>
+ #include <linux/dmar.h>
+ #include <linux/dma-mapping.h>
++#include <linux/dma-direct.h>
+ #include <linux/mempool.h>
+ #include <linux/memory.h>
+ #include <linux/cpu.h>
+@@ -3712,17 +3713,12 @@ static void *intel_alloc_coherent(struct device *dev, size_t size,
+ 	struct page *page = NULL;
+ 	int order;
  
--	if (force_iommu && !(flag & GFP_DMA)) {
--		flag &= ~(__GFP_DMA | __GFP_HIGHMEM | __GFP_DMA32);
--		page = alloc_pages(flag | __GFP_ZERO, get_order(size));
--		if (!page)
--			return NULL;
++	if (iommu_no_mapping(dev))
++		return dma_direct_alloc(dev, size, dma_handle, flags, attrs);
++
+ 	size = PAGE_ALIGN(size);
+ 	order = get_order(size);
 -
--		align_mask = (1UL << get_order(size)) - 1;
--		paddr = dma_map_area(dev, page_to_phys(page), size,
--				     DMA_BIDIRECTIONAL, align_mask);
--
--		flush_gart();
--		if (paddr != bad_dma_addr) {
--			*dma_addr = paddr;
--			return page_address(page);
--		}
--		__free_pages(page, get_order(size));
--	} else
-+	if (!force_iommu || dev->coherent_dma_mask <= DMA_BIT_MASK(24))
- 		return dma_direct_alloc(dev, size, dma_addr, flag, attrs);
+-	if (!iommu_no_mapping(dev))
+-		flags &= ~(GFP_DMA | GFP_DMA32);
+-	else if (dev->coherent_dma_mask < dma_get_required_mask(dev)) {
+-		if (dev->coherent_dma_mask < DMA_BIT_MASK(32))
+-			flags |= GFP_DMA;
+-		else
+-			flags |= GFP_DMA32;
+-	}
++	flags &= ~(GFP_DMA | GFP_DMA32);
  
--	return NULL;
-+	flag &= ~(__GFP_DMA | __GFP_HIGHMEM | __GFP_DMA32);
-+	page = alloc_pages(flag | __GFP_ZERO, get_order(size));
-+	if (!page)
-+		return NULL;
-+
-+	align_mask = (1UL << get_order(size)) - 1;
-+	paddr = dma_map_area(dev, page_to_phys(page), size, DMA_BIDIRECTIONAL,
-+			align_mask);
-+
-+	flush_gart();
-+	if (unlikely(paddr == bad_dma_addr)) {
-+		__free_pages(page, get_order(size));
-+		return NULL;
-+	}
-+
-+	*dma_addr = paddr;
-+	return page_address(page);
- }
+ 	if (gfpflags_allow_blocking(flags)) {
+ 		unsigned int count = size >> PAGE_SHIFT;
+@@ -3758,6 +3754,9 @@ static void intel_free_coherent(struct device *dev, size_t size, void *vaddr,
+ 	int order;
+ 	struct page *page = virt_to_page(vaddr);
  
- /* free a coherent mapping */
++	if (iommu_no_mapping(dev))
++		return dma_direct_free(dev, size, vaddr, dma_handle, attrs);
++
+ 	size = PAGE_ALIGN(size);
+ 	order = get_order(size);
+ 
 -- 
 2.14.2
