@@ -1,7 +1,7 @@
 From: Christoph Hellwig <hch@lst.de>
-Subject: [PATCH 44/67] powerpc: rename swiotlb_dma_ops
-Date: Fri, 29 Dec 2017 09:18:48 +0100
-Message-ID: <20171229081911.2802-45-hch__5557.35862949422$1514536106$gmane$org@lst.de>
+Subject: [PATCH 41/67] x86: remove dma_alloc_coherent_gfp_flags
+Date: Fri, 29 Dec 2017 09:18:45 +0100
+Message-ID: <20171229081911.2802-42-hch__42144.0393118702$1514536141$gmane$org@lst.de>
 References: <20171229081911.2802-1-hch@lst.de>
 Return-path: <linux-m68k-owner@vger.kernel.org>
 In-Reply-To: <20171229081911.2802-1-hch@lst.de>
@@ -10,76 +10,121 @@ List-Id: linux-m68k@vger.kernel.org
 To: iommu@lists.linux-foundation.org
 Cc: linux-alpha@vger.kernel.org, linux-snps-arc@lists.infradead.org, linux-arm-kernel@lists.infradead.org, adi-buildroot-devel@lists.sourceforge.net, linux-c6x-dev@linux-c6x.org, linux-cris-kernel@axis.com, linux-hexagon@vger.kernel.org, linux-ia64@vger.kernel.org, linux-m68k@lists.linux-m68k.org, linux-metag@vger.kernel.org, Michal Simek <monstr@monstr.eu>, linux-mips@linux-mips.org, linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, patches@groups.riscv.org, linux-s390@vger.kernel.org, linux-sh@vger.kernel.org, sparclinux@vger.kernel.org, Guan Xuetao <gxt@mprc.pku.edu.cn>, x86@kernel.org, linux-arch@vger.kernel.org, linux-kernel@vger.kernel.org
 
-We'll need that name for a generic implementation soon.
+All dma_ops implementations used on x86 now take care of setting their own
+required GFP_ masks for the allocation.  And given that the common code
+now clears harmful flags itself that means we can stop the flags in all
+the iommu implementations as well.
 
 Signed-off-by: Christoph Hellwig <hch@lst.de>
 ---
- arch/powerpc/include/asm/swiotlb.h | 2 +-
- arch/powerpc/kernel/dma-swiotlb.c  | 4 ++--
- arch/powerpc/kernel/dma.c          | 2 +-
- arch/powerpc/sysdev/fsl_pci.c      | 2 +-
- 4 files changed, 5 insertions(+), 5 deletions(-)
+ arch/x86/include/asm/dma-mapping.h | 11 -----------
+ arch/x86/kernel/amd_gart_64.c      |  1 -
+ arch/x86/kernel/pci-calgary_64.c   |  2 --
+ arch/x86/kernel/pci-dma.c          |  2 --
+ arch/x86/mm/mem_encrypt.c          |  7 -------
+ drivers/iommu/amd_iommu.c          |  1 -
+ drivers/iommu/intel-iommu.c        |  1 -
+ 7 files changed, 25 deletions(-)
 
-diff --git a/arch/powerpc/include/asm/swiotlb.h b/arch/powerpc/include/asm/swiotlb.h
-index 9341ee804d19..f65ecf57b66c 100644
---- a/arch/powerpc/include/asm/swiotlb.h
-+++ b/arch/powerpc/include/asm/swiotlb.h
-@@ -13,7 +13,7 @@
+diff --git a/arch/x86/include/asm/dma-mapping.h b/arch/x86/include/asm/dma-mapping.h
+index df9816b385eb..89ce4bfd241f 100644
+--- a/arch/x86/include/asm/dma-mapping.h
++++ b/arch/x86/include/asm/dma-mapping.h
+@@ -36,15 +36,4 @@ int arch_dma_supported(struct device *dev, u64 mask);
+ bool arch_dma_alloc_attrs(struct device **dev, gfp_t *gfp);
+ #define arch_dma_alloc_attrs arch_dma_alloc_attrs
  
- #include <linux/swiotlb.h>
- 
--extern const struct dma_map_ops swiotlb_dma_ops;
-+extern const struct dma_map_ops powerpc_swiotlb_dma_ops;
- 
- extern unsigned int ppc_swiotlb_enable;
- int __init swiotlb_setup_bus_notifier(void);
-diff --git a/arch/powerpc/kernel/dma-swiotlb.c b/arch/powerpc/kernel/dma-swiotlb.c
-index f1e99b9cee97..506ac4fafac5 100644
---- a/arch/powerpc/kernel/dma-swiotlb.c
-+++ b/arch/powerpc/kernel/dma-swiotlb.c
-@@ -46,7 +46,7 @@ static u64 swiotlb_powerpc_get_required(struct device *dev)
-  * map_page, and unmap_page on highmem, use normal dma_ops
-  * for everything else.
-  */
--const struct dma_map_ops swiotlb_dma_ops = {
-+const struct dma_map_ops powerpc_swiotlb_dma_ops = {
- 	.alloc = __dma_nommu_alloc_coherent,
- 	.free = __dma_nommu_free_coherent,
- 	.mmap = dma_nommu_mmap_coherent,
-@@ -89,7 +89,7 @@ static int ppc_swiotlb_bus_notify(struct notifier_block *nb,
- 
- 	/* May need to bounce if the device can't address all of DRAM */
- 	if ((dma_get_mask(dev) + 1) < memblock_end_of_DRAM())
--		set_dma_ops(dev, &swiotlb_dma_ops);
-+		set_dma_ops(dev, &powerpc_swiotlb_dma_ops);
- 
- 	return NOTIFY_DONE;
- }
-diff --git a/arch/powerpc/kernel/dma.c b/arch/powerpc/kernel/dma.c
-index 1723001d5de1..b787692b91ee 100644
---- a/arch/powerpc/kernel/dma.c
-+++ b/arch/powerpc/kernel/dma.c
-@@ -33,7 +33,7 @@ static u64 __maybe_unused get_pfn_limit(struct device *dev)
- 	struct dev_archdata __maybe_unused *sd = &dev->archdata;
- 
- #ifdef CONFIG_SWIOTLB
--	if (sd->max_direct_dma_addr && dev->dma_ops == &swiotlb_dma_ops)
-+	if (sd->max_direct_dma_addr && dev->dma_ops == &powerpc_swiotlb_dma_ops)
- 		pfn = min_t(u64, pfn, sd->max_direct_dma_addr >> PAGE_SHIFT);
+-static inline gfp_t dma_alloc_coherent_gfp_flags(struct device *dev, gfp_t gfp)
+-{
+-	if (dev->coherent_dma_mask <= DMA_BIT_MASK(24))
+-		gfp |= GFP_DMA;
+-#ifdef CONFIG_X86_64
+-	if (dev->coherent_dma_mask <= DMA_BIT_MASK(32) && !(gfp & GFP_DMA))
+-		gfp |= GFP_DMA32;
+-#endif
+-       return gfp;
+-}
+-
  #endif
+diff --git a/arch/x86/kernel/amd_gart_64.c b/arch/x86/kernel/amd_gart_64.c
+index 92054815023e..7466dd458e0f 100644
+--- a/arch/x86/kernel/amd_gart_64.c
++++ b/arch/x86/kernel/amd_gart_64.c
+@@ -487,7 +487,6 @@ gart_alloc_coherent(struct device *dev, size_t size, dma_addr_t *dma_addr,
+ 	if (!force_iommu || dev->coherent_dma_mask <= DMA_BIT_MASK(24))
+ 		return dma_direct_alloc(dev, size, dma_addr, flag, attrs);
  
-diff --git a/arch/powerpc/sysdev/fsl_pci.c b/arch/powerpc/sysdev/fsl_pci.c
-index e4d0133bbeeb..61e07c78d64f 100644
---- a/arch/powerpc/sysdev/fsl_pci.c
-+++ b/arch/powerpc/sysdev/fsl_pci.c
-@@ -118,7 +118,7 @@ static void setup_swiotlb_ops(struct pci_controller *hose)
- {
- 	if (ppc_swiotlb_enable) {
- 		hose->controller_ops.dma_dev_setup = pci_dma_dev_setup_swiotlb;
--		set_pci_dma_ops(&swiotlb_dma_ops);
-+		set_pci_dma_ops(&powerpc_swiotlb_dma_ops);
- 	}
- }
- #else
+-	flag &= ~(__GFP_DMA | __GFP_HIGHMEM | __GFP_DMA32);
+ 	page = alloc_pages(flag | __GFP_ZERO, get_order(size));
+ 	if (!page)
+ 		return NULL;
+diff --git a/arch/x86/kernel/pci-calgary_64.c b/arch/x86/kernel/pci-calgary_64.c
+index 5647853053bd..bbfc8b1e9104 100644
+--- a/arch/x86/kernel/pci-calgary_64.c
++++ b/arch/x86/kernel/pci-calgary_64.c
+@@ -446,8 +446,6 @@ static void* calgary_alloc_coherent(struct device *dev, size_t size,
+ 	npages = size >> PAGE_SHIFT;
+ 	order = get_order(size);
+ 
+-	flag &= ~(__GFP_DMA | __GFP_HIGHMEM | __GFP_DMA32);
+-
+ 	/* alloc enough pages (and possibly more) */
+ 	ret = (void *)__get_free_pages(flag, order);
+ 	if (!ret)
+diff --git a/arch/x86/kernel/pci-dma.c b/arch/x86/kernel/pci-dma.c
+index db0b88ea8d1b..14437116ffea 100644
+--- a/arch/x86/kernel/pci-dma.c
++++ b/arch/x86/kernel/pci-dma.c
+@@ -82,8 +82,6 @@ bool arch_dma_alloc_attrs(struct device **dev, gfp_t *gfp)
+ 	if (!*dev)
+ 		*dev = &x86_dma_fallback_dev;
+ 
+-	*gfp = dma_alloc_coherent_gfp_flags(*dev, *gfp);
+-
+ 	if (!is_device_dma_capable(*dev))
+ 		return false;
+ 	return true;
+diff --git a/arch/x86/mm/mem_encrypt.c b/arch/x86/mm/mem_encrypt.c
+index 479586b8ca9b..1c786e751b49 100644
+--- a/arch/x86/mm/mem_encrypt.c
++++ b/arch/x86/mm/mem_encrypt.c
+@@ -208,13 +208,6 @@ static void *sev_alloc(struct device *dev, size_t size, dma_addr_t *dma_handle,
+ 	void *vaddr = NULL;
+ 
+ 	order = get_order(size);
+-
+-	/*
+-	 * Memory will be memset to zero after marking decrypted, so don't
+-	 * bother clearing it before.
+-	 */
+-	gfp &= ~__GFP_ZERO;
+-
+ 	page = alloc_pages_node(dev_to_node(dev), gfp, order);
+ 	if (page) {
+ 		dma_addr_t addr;
+diff --git a/drivers/iommu/amd_iommu.c b/drivers/iommu/amd_iommu.c
+index a2ad149ab0bf..51ce6db86fdd 100644
+--- a/drivers/iommu/amd_iommu.c
++++ b/drivers/iommu/amd_iommu.c
+@@ -2600,7 +2600,6 @@ static void *alloc_coherent(struct device *dev, size_t size,
+ 	dma_dom   = to_dma_ops_domain(domain);
+ 	size	  = PAGE_ALIGN(size);
+ 	dma_mask  = dev->coherent_dma_mask;
+-	flag     &= ~(__GFP_DMA | __GFP_HIGHMEM | __GFP_DMA32);
+ 	flag     |= __GFP_ZERO;
+ 
+ 	page = alloc_pages(flag | __GFP_NOWARN,  get_order(size));
+diff --git a/drivers/iommu/intel-iommu.c b/drivers/iommu/intel-iommu.c
+index 0de8bfe89061..6c9df0773b78 100644
+--- a/drivers/iommu/intel-iommu.c
++++ b/drivers/iommu/intel-iommu.c
+@@ -3718,7 +3718,6 @@ static void *intel_alloc_coherent(struct device *dev, size_t size,
+ 
+ 	size = PAGE_ALIGN(size);
+ 	order = get_order(size);
+-	flags &= ~(GFP_DMA | GFP_DMA32);
+ 
+ 	if (gfpflags_allow_blocking(flags)) {
+ 		unsigned int count = size >> PAGE_SHIFT;
 -- 
 2.14.2
