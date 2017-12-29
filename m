@@ -1,7 +1,7 @@
 From: Christoph Hellwig <hch@lst.de>
-Subject: [PATCH 18/67] microblaze: remove dma_nommu_dma_supported
-Date: Fri, 29 Dec 2017 09:18:22 +0100
-Message-ID: <20171229081911.2802-19-hch__20071.6968546205$1514536510$gmane$org@lst.de>
+Subject: [PATCH 15/67] hexagon: use the generic dma_capable helper
+Date: Fri, 29 Dec 2017 09:18:19 +0100
+Message-ID: <20171229081911.2802-16-hch__6937.74308679185$1514536560$gmane$org@lst.de>
 References: <20171229081911.2802-1-hch@lst.de>
 Return-path: <linux-m68k-owner@vger.kernel.org>
 In-Reply-To: <20171229081911.2802-1-hch@lst.de>
@@ -10,69 +10,39 @@ List-Id: linux-m68k@vger.kernel.org
 To: iommu@lists.linux-foundation.org
 Cc: linux-alpha@vger.kernel.org, linux-snps-arc@lists.infradead.org, linux-arm-kernel@lists.infradead.org, adi-buildroot-devel@lists.sourceforge.net, linux-c6x-dev@linux-c6x.org, linux-cris-kernel@axis.com, linux-hexagon@vger.kernel.org, linux-ia64@vger.kernel.org, linux-m68k@lists.linux-m68k.org, linux-metag@vger.kernel.org, Michal Simek <monstr@monstr.eu>, linux-mips@linux-mips.org, linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, patches@groups.riscv.org, linux-s390@vger.kernel.org, linux-sh@vger.kernel.org, sparclinux@vger.kernel.org, Guan Xuetao <gxt@mprc.pku.edu.cn>, x86@kernel.org, linux-arch@vger.kernel.org, linux-kernel@vger.kernel.org
 
-Always returning 1 is the same behavior as not supplying a method at all.
-
 Signed-off-by: Christoph Hellwig <hch@lst.de>
 ---
- arch/microblaze/kernel/dma.c | 6 ------
- arch/parisc/kernel/pci-dma.c | 7 -------
- 2 files changed, 13 deletions(-)
+ arch/hexagon/include/asm/dma-mapping.h | 7 -------
+ arch/hexagon/kernel/dma.c              | 1 +
+ 2 files changed, 1 insertion(+), 7 deletions(-)
 
-diff --git a/arch/microblaze/kernel/dma.c b/arch/microblaze/kernel/dma.c
-index 364b0ac41452..49b09648679b 100644
---- a/arch/microblaze/kernel/dma.c
-+++ b/arch/microblaze/kernel/dma.c
-@@ -89,11 +89,6 @@ static int dma_nommu_map_sg(struct device *dev, struct scatterlist *sgl,
- 	return nents;
+diff --git a/arch/hexagon/include/asm/dma-mapping.h b/arch/hexagon/include/asm/dma-mapping.h
+index 5208de242e79..263f6acbfb0f 100644
+--- a/arch/hexagon/include/asm/dma-mapping.h
++++ b/arch/hexagon/include/asm/dma-mapping.h
+@@ -37,11 +37,4 @@ static inline const struct dma_map_ops *get_arch_dma_ops(struct bus_type *bus)
+ 	return dma_ops;
  }
  
--static int dma_nommu_dma_supported(struct device *dev, u64 mask)
+-static inline bool dma_capable(struct device *dev, dma_addr_t addr, size_t size)
 -{
--	return 1;
+-	if (!dev->dma_mask)
+-		return 0;
+-	return addr + size - 1 <= *dev->dma_mask;
 -}
 -
- static inline dma_addr_t dma_nommu_map_page(struct device *dev,
- 					     struct page *page,
- 					     unsigned long offset,
-@@ -209,7 +204,6 @@ const struct dma_map_ops dma_nommu_ops = {
- 	.free			= dma_nommu_free_coherent,
- 	.mmap			= dma_nommu_mmap_coherent,
- 	.map_sg			= dma_nommu_map_sg,
--	.dma_supported		= dma_nommu_dma_supported,
- 	.map_page		= dma_nommu_map_page,
- 	.unmap_page		= dma_nommu_unmap_page,
- 	.sync_single_for_cpu	= dma_nommu_sync_single_for_cpu,
-diff --git a/arch/parisc/kernel/pci-dma.c b/arch/parisc/kernel/pci-dma.c
-index 6ad9aed3d025..2a05457f7aab 100644
---- a/arch/parisc/kernel/pci-dma.c
-+++ b/arch/parisc/kernel/pci-dma.c
-@@ -75,11 +75,6 @@ void dump_resmap(void)
- static inline void dump_resmap(void) {;}
  #endif
+diff --git a/arch/hexagon/kernel/dma.c b/arch/hexagon/kernel/dma.c
+index 3683bb9c05a2..c1d24e37807c 100644
+--- a/arch/hexagon/kernel/dma.c
++++ b/arch/hexagon/kernel/dma.c
+@@ -19,6 +19,7 @@
+  */
  
--static int pa11_dma_supported( struct device *dev, u64 mask)
--{
--	return 1;
--}
--
- static inline int map_pte_uncached(pte_t * pte,
- 		unsigned long vaddr,
- 		unsigned long size, unsigned long *paddr_ptr)
-@@ -579,7 +574,6 @@ static void pa11_dma_cache_sync(struct device *dev, void *vaddr, size_t size,
- }
- 
- const struct dma_map_ops pcxl_dma_ops = {
--	.dma_supported =	pa11_dma_supported,
- 	.alloc =		pa11_dma_alloc,
- 	.free =			pa11_dma_free,
- 	.map_page =		pa11_dma_map_page,
-@@ -617,7 +611,6 @@ static void pcx_dma_free(struct device *dev, size_t size, void *vaddr,
- }
- 
- const struct dma_map_ops pcx_dma_ops = {
--	.dma_supported =	pa11_dma_supported,
- 	.alloc =		pcx_dma_alloc,
- 	.free =			pcx_dma_free,
- 	.map_page =		pa11_dma_map_page,
+ #include <linux/dma-mapping.h>
++#include <linux/dma-direct.h>
+ #include <linux/bootmem.h>
+ #include <linux/genalloc.h>
+ #include <asm/dma-mapping.h>
 -- 
 2.14.2
