@@ -1,15 +1,43 @@
-From: foundation@gmail.com
-Subject: =?utf-8?q?Spende_von_=E2=82=AC_3=2E400=2E000=2C00_EUR?=
-Date: Tue, 02 Jan 2018 20:02:45 +0200
-Message-ID: <20180102182335.A11BF2709593@wsbmail01.wsb.wroclaw.pl>
-Reply-To: roycockrumpovertyfoundation@gmail.com
+From: Michael Ellerman <mpe@ellerman.id.au>
+Subject: Re: [PATCH 16/67] powerpc: rename dma_direct_ to dma_nommu_
+Date: Wed, 03 Jan 2018 17:24:02 +1100
+Message-ID: <87h8s3cvel.fsf@concordia.ellerman.id.au>
+References: <20171229081911.2802-1-hch@lst.de> <20171229081911.2802-17-hch@lst.de> <878tdgtwzp.fsf@concordia.ellerman.id.au> <CAMuHMdWWus2kNSOzS94k-3678826W1YjKwCWTquu3hBLZ80cvw@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Content-Description: Mail message body
+In-Reply-To: <CAMuHMdWWus2kNSOzS94k-3678826W1YjKwCWTquu3hBLZ80cvw@mail.gmail.com>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Recipients <foundation@gmail.com>
+To: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: Christoph Hellwig <hch@lst.de>, iommu@lists.linux-foundation.org, Linux MIPS Mailing List <linux-mips@linux-mips.org>, linux-ia64@vger.kernel.org, Linux-sh list <linux-sh@vger.kernel.org>, sparclinux <sparclinux@vger.kernel.org>, Guan Xuetao <gxt@mprc.pku.edu.cn>, Linux-Arch <linux-arch@vger.kernel.org>, linux-s390 <linux-s390@vger.kernel.org>, linux-c6x-dev@linux-c6x.org, "open list:QUALCOMM HEXAGON..." <linux-hexagon@vger.kernel.org>, the arch/x86 maintainers <x86@kernel.org>, arcml <linux-snps-arc@lists.infradead.org>, adi-buildroot-devel@lists.sourceforge.net, linux-m68k <linux-m68k@lists.linux-m68k.org>, patches@groups.riscv.org, "open list:METAG ARCHITECTURE" <linux-metag@vger.kernel.org>, linux-arm-kernel@lists.infradead.org, Michal
 
-Hallo, ich Roy Cockrum, 58, aus Knoxville, Tennessee Vereinigte Staaten von Amerika, du hast eine Wohltätigkeitsspende von € 3.400.000,00 EUR, ich gewann die America Lotterie in Amerika im Wert von $ 259,9 Millionen, und ich gebe einen Teil davon Zu fünf glücklichen Leuten und Wohltätigkeitshäusern in Gelübde, um die Armut vor dieser Welt zu beseitigen, ich kämpfe gegen die Armut. Kontaktieren Sie mich für weitere Details: roycockrumpovertyfoundation@gmail.com
+Geert Uytterhoeven <geert@linux-m68k.org> writes:
+
+> On Tue, Jan 2, 2018 at 10:45 AM, Michael Ellerman <mpe@ellerman.id.au> wrote:
+>> Christoph Hellwig <hch@lst.de> writes:
+>>
+>>> We want to use the dma_direct_ namespace for a generic implementation,
+>>> so rename powerpc to the second best choice: dma_nommu_.
+>>
+>> I'm not a fan of "nommu". Some of the users of direct ops *are* using an
+>> IOMMU, they're just setting up a 1:1 mapping once at init time, rather
+>> than mapping dynamically.
+>>
+>> Though I don't have a good idea for a better name, maybe "1to1",
+>> "linear", "premapped" ?
+>
+> "identity"?
+
+I think that would be wrong, but thanks for trying to help :)
+
+The address on the device side is sometimes (often?) offset from the CPU
+address. So eg. the device can DMA to RAM address 0x0 using address
+0x800000000000000.
+
+Identity would imply 0 == 0 etc.
+
+I think "bijective" is the correct term, but that's probably a bit
+esoteric.
+
+cheers
