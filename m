@@ -1,24 +1,22 @@
 From: Christoph Hellwig <hch@lst.de>
-Subject: Re: [PATCH 17/67] microblaze: rename dma_direct to dma_microblaze
-Date: Thu, 4 Jan 2018 09:45:33 +0100
-Message-ID: <20180104084533.GA3135@lst.de>
-References: <20171229081911.2802-1-hch@lst.de> <20171229081911.2802-18-hch@lst.de> <CAGRGNgW1qwLcCAvU2Jc=3_7b-0Bu016to3cQUgVsc+ca0No_6g@mail.gmail.com>
+Subject: Re: [PATCH 16/67] powerpc: rename dma_direct_ to dma_nommu_
+Date: Thu, 4 Jan 2018 09:48:28 +0100
+Message-ID: <20180104084828.GA3251__33071.9325379052$1515055598$gmane$org@lst.de>
+References: <20171229081911.2802-1-hch@lst.de> <20171229081911.2802-17-hch@lst.de> <878tdgtwzp.fsf@concordia.ellerman.id.au> <CAMuHMdWWus2kNSOzS94k-3678826W1YjKwCWTquu3hBLZ80cvw@mail.gmail.com> <87h8s3cvel.fsf@concordia.ellerman.id.au> <CAMuHMdWYDz_jHNxQ-B8944520R-myzHkjkL1rKWUjA38inU7cw@mail.gmail.com> <CAGRGNgV+DnZAAtiE5oe8rxp4=_JHJrtSQc8F5jrgN0rgYKfwjA@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Return-path: <linux-m68k-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <CAGRGNgW1qwLcCAvU2Jc=3_7b-0Bu016to3cQUgVsc+ca0No_6g@mail.gmail.com>
+In-Reply-To: <CAGRGNgV+DnZAAtiE5oe8rxp4=_JHJrtSQc8F5jrgN0rgYKfwjA@mail.gmail.com>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
 To: Julian Calaby <julian.calaby@gmail.com>
-Cc: Christoph Hellwig <hch@lst.de>, iommu@lists.linux-foundation.org, linux-alpha@vger.kernel.org, linux-snps-arc@lists.infradead.org, "Mailing List, Arm" <linux-arm-kernel@lists.infradead.org>, adi-buildroot-devel@lists.sourceforge.net, linux-c6x-dev@linux-c6x.org, linux-cris-kernel@axis.com, linux-hexagon@vger.kernel.org, linux-ia64@vger.kernel.org, linux-m68k@lists.linux-m68k.org, linux-metag@vger.kernel.org, Michal Simek <monstr@monstr.eu>, linux-mips@linux-mips.org, linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, patches@groups.riscv.org, linux-s390@vger.kernel.org, linux-sh@vger.kernel.org, sparclinux <sparclinux@vger.kernel.org>, Guan Xuetao <gxt@mprc.pku.edu.cn>, x86@kernel.org, linux-arch@vger.kernel.org, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.or>
+Cc: Geert Uytterhoeven <geert@linux-m68k.org>, Michael Ellerman <mpe@ellerman.id.au>, Christoph Hellwig <hch@lst.de>, iommu@lists.linux-foundation.org, Linux MIPS Mailing List <linux-mips@linux-mips.org>, linux-ia64@vger.kernel.org, Linux-sh list <linux-sh@vger.kernel.org>, sparclinux <sparclinux@vger.kernel.org>, Guan Xuetao <gxt@mprc.pku.edu.cn>, Linux-Arch <linux-arch@vger.kernel.org>, linux-s390 <linux-s390@vger.kernel.org>, linux-c6x-dev@linux-c6x.org, "open list:QUALCOMM HEXAGON..." <linux-hexagon@vger.kernel.org>, the arch/x86 maintainers <x86@kernel.org>, arcml <linux-snps-arc@lists.infradead.org>, adi-buildroot-devel@lists.sourceforge.net, linux-m68k <linux-m68k@lists.linux-m68k.org>, patches@groups.riscv.org, open list:METAG ARCHITECTU
 
-On Fri, Dec 29, 2017 at 09:11:56PM +1100, Julian Calaby wrote:
-> Hi Christoph,
-> 
-> On Fri, Dec 29, 2017 at 7:18 PM, Christoph Hellwig <hch@lst.de> wrote:
-> > This frees the dma_direct_* namespace for a generic implementation.
-> 
-> Don't you mean "dma_nommu" not "dma_microblaze" in the subject line?
+On Wed, Jan 03, 2018 at 07:19:46PM +1100, Julian Calaby wrote:
+> If this is indeed a linear mapping, can we just remove this and
+> replace it with the new "generic" mapping being introduced by this
+> patchset?
 
-Yes, thanks.
+That is the long-term plan.  But as the powerpc one includes support
+for non-coherent DMA it will have to wait for the next batch.
