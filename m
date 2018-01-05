@@ -1,22 +1,19 @@
-From: "Peter Deng" <peterddeng2000@securemailer.com>
-Subject: Business Possibility
-Date: Thu, 4 Jan 2018 16:13:56 +0000
-Message-ID: <25324064617523273411253@nadneaa2>
-Reply-To: peterddeng2000@secsuremailer.com
+From: JB <zhaopin@cmpbook.com>
+Subject: Invest Loan
+Date: Fri, 5 Jan 2018 04:32:21 +0200
+Message-ID: <8afcbf14-4998-4145-8b73-b566716025c3@ad.cmpbook.com>
+Reply-To: <jb927707@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain
-Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain; charset="Windows-1251"
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-m68k-owner@vger.kernel.org>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: linux-m68k@lists.linux-m68k.org
 
-Hello there, My name is Peter Deng a South African citizen and a friend to Mrs Mugabe sister . I got your contact through Korean business online directory. I represent the interest of Mrs Mugabe who wishes to move a total amount of $19 million  into a safe account owns by a trusted business man who is capable of accommodating such volume of funds with absolute trust & confidentiality.
+Hello Sir,
 
-We are willing to give 5-10 percent of the total money for this efforts . A non disclosure non circumvent agreement will be signed before the eventual transfer of funds. It is important for to know that the fund owner is going through a period of political turmoil and she is in a precarious position, so this transaction has to be highly secretive & very confidential.
+In need of loan to start business, finance your project or expand your business  Write back if you are interested for further details.
 
-Kindly respond back to me if this is what you can handle .
+Regards
 
-Regards,
-
-Peter.
+Jack
