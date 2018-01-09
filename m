@@ -1,62 +1,49 @@
-From: Finn Thain <fthain@telegraphics.com.au>
-Subject: Re: [PATCH v4 00/14] Modernization and fixes for NuBus subsystem
-Date: Mon, 8 Jan 2018 13:58:06 +1100 (AEDT)
-Message-ID: <alpine.LNX.2.21.1801081107500.3@nippy.intranet>
-References: <cover.1513220582.git.fthain@telegraphics.com.au> <CAMuHMdX1Z0y2u1nkj3GqF5N3jYBYvfjM9_jJKH0zM23DBNjhOw@mail.gmail.com> <alpine.LNX.2.21.1801060823160.3@nippy.intranet> <CAMuHMdWnSTLAq+Ec6Ogoqfg-EdkjKzNkBMtL2h0wXUCy9ChFXg@mail.gmail.com>
+From: Richard Kuo <rkuo@codeaurora.org>
+Subject: Re: [PATCH 06/67] hexagon: remove unused flush_write_buffers
+ definition
+Date: Mon, 8 Jan 2018 21:13:39 -0600
+Message-ID: <20180109031339.GA4196__48071.8770799742$1515467520$gmane$org@codeaurora.org>
+References: <20171229081911.2802-1-hch@lst.de>
+ <20171229081911.2802-7-hch@lst.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <CAMuHMdWnSTLAq+Ec6Ogoqfg-EdkjKzNkBMtL2h0wXUCy9ChFXg@mail.gmail.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: Linux/m68k <linux-m68k@vger.kernel.org>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-m68k-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <20171229081911.2802-7-hch@lst.de>
+Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
+To: Christoph Hellwig <hch@lst.de>
+Cc: iommu@lists.linux-foundation.org, linux-alpha@vger.kernel.org, linux-snps-arc@lists.infradead.org, linux-arm-kernel@lists.infradead.org, adi-buildroot-devel@lists.sourceforge.net, linux-c6x-dev@linux-c6x.org, linux-cris-kernel@axis.com, linux-hexagon@vger.kernel.org, linux-ia64@vger.kernel.org, linux-m68k@lists.linux-m68k.org, linux-metag@vger.kernel.org, Michal Simek <monstr@monstr.eu>, linux-mips@linux-mips.org, linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, patches@groups.riscv.org, linux-s390@vger.kernel.org, linux-sh@vger.kernel.org, sparclinux@vger.kernel.org, Guan Xuetao <gxt@mprc.pku.edu.cn>, x86@kernel.org, linux-arch@vger.kernel.org, linux-kernel@vger.kernel.org
 
-On Sun, 7 Jan 2018, Geert Uytterhoeven wrote:
-
-> it does complain when using spaces only ("please, no spaces at the 
-> _start_ of a line").
+On Fri, Dec 29, 2017 at 09:18:10AM +0100, Christoph Hellwig wrote:
+> Signed-off-by: Christoph Hellwig <hch@lst.de>
+> ---
+>  arch/hexagon/include/asm/io.h | 2 --
+>  1 file changed, 2 deletions(-)
+> 
+> diff --git a/arch/hexagon/include/asm/io.h b/arch/hexagon/include/asm/io.h
+> index 66f5e9a61efc..9e8621d94ee9 100644
+> --- a/arch/hexagon/include/asm/io.h
+> +++ b/arch/hexagon/include/asm/io.h
+> @@ -330,8 +330,6 @@ static inline void outsl(unsigned long port, const void *buffer, int count)
+>  	}
+>  }
+>  
+> -#define flush_write_buffers() do { } while (0)
+> -
+>  #endif /* __KERNEL__ */
+>  
+>  #endif
+> -- 
+> 2.14.2
 > 
 
-Checkpatch accepts this tab:
+For Hexagon:
 
-int map(struct mm_id * mm_idp, unsigned long virt, unsigned long len, int prot,
-	int phys_fd, unsigned long long offset, int done, void **data)
+Acked-by: Richard Kuo <rkuo@codeaurora.org>
 
-and this one:
-
-int unlz4(unsigned char *inbuf, long len,
-	long (*fill)(void*, unsigned long),
-
-and this combination of tabs and spaces:
-
-void sort(void *base, size_t num, size_t size,
-	  int (*cmp_func)(const void *, const void *),
-
-We have no declarations of identifiers shorter than "map" in the kernel, 
-as yet, as luck would have it. This would be a violation:
-
-int eq(long __and_complicated_type parameter_a,
-       long __and_complicated_type parameter_b,
-
-Unfortunately I don't have a better style checker to offer. So I won't go 
-on about simplistic rules or the effect of excess tabs on refactoring, 
-readability and re-usability. Suffice it to say that there seems to be 
-room for maintainer discretion.
-
-> Do you want to assume maintainership for nubus?
-> 
-
-I do intend to take responsibility for any regressions so I might as well 
-assume maintainership too. If future patches continue to go through your 
-tree, and given there are so few committers, it's just a formality, I 
-think.
-
-> check your TABs and spaces again
-> 
-
-Will comply.
-
-Thanks.
 
 -- 
+Employee of Qualcomm Innovation Center, Inc.
+Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum, 
+a Linux Foundation Collaborative Project
