@@ -1,44 +1,66 @@
-From: Christoph Hellwig <hch@lst.de>
-Subject: consolidate direct dma mapping V3
-Date: Wed, 10 Jan 2018 08:59:54 +0100
-Message-ID: <20180110080027.13879-1-hch__34052.055682014$1515572329$gmane$org@lst.de>
+From: Vladimir Murzin <vladimir.murzin@arm.com>
+Subject: Re: [PATCH 11/33] dma-mapping: move swiotlb arch helpers to a new
+ header
+Date: Wed, 10 Jan 2018 09:31:45 +0000
+Message-ID: <b2bd6f4b-a932-5251-517b-83bbccfe7c53__20307.8593629927$1515576617$gmane$org@arm.com>
+References: <20180110080027.13879-1-hch@lst.de>
+ <20180110080027.13879-12-hch@lst.de>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-m68k-owner@vger.kernel.org>
+In-Reply-To: <20180110080027.13879-12-hch@lst.de>
+Content-Language: en-GB
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: iommu@lists.linux-foundation.org
-Cc: Konrad Rzeszutek Wilk <konrad@darnok.org>, linux-alpha@vger.kernel.org, linux-snps-arc@lists.infradead.org, linux-arm-kernel@lists.infradead.org, linux-c6x-dev@linux-c6x.org, linux-cris-kernel@axis.com, linux-hexagon@vger.kernel.org, linux-ia64@vger.kernel.org, linux-m68k@lists.linux-m68k.org, linux-metag@vger.kernel.org, Michal Simek <monstr@monstr.eu>, linux-mips@linux-mips.org, linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, patches@groups.riscv.org, linux-s390@vger.kernel.org, linux-sh@vger.kernel.org, sparclinux@vger.kernel.org, Guan Xuetao <gxt@mprc.pku.edu.cn>, x86@kernel.org, linux-arch@vger.kernel.org, linux-kernel@vger.kernel.org
+To: Christoph Hellwig <hch@lst.de>, iommu@lists.linux-foundation.org
+Cc: linux-mips@linux-mips.org, linux-ia64@vger.kernel.org, linux-sh@vger.kernel.org, sparclinux@vger.kernel.org, Guan Xuetao <gxt@mprc.pku.edu.cn>, linux-arch@vger.kernel.org, linux-s390@vger.kernel.org, linux-c6x-dev@linux-c6x.org, linux-hexagon@vger.kernel.org, x86@kernel.org, Konrad Rzeszutek Wilk <konrad@darnok.org>, linux-snps-arc@lists.infradead.org, linux-m68k@lists.linux-m68k.org, patches@groups.riscv.org, linux-metag@vger.kernel.org, linux-arm-kernel@lists.infradead.org, Michal Simek <monstr@monstr.eu>, linux-parisc@vger.kernel.org, linux-cris-kernel@axis.com, linux-kernel@vger.kernel.org, linux-alpha@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
 
-Almost every architecture supports a direct dma mapping implementation,
-where no iommu is used and the device dma address is a 1:1 mapping to
-the physical address or has a simple linear offset.  Currently the
-code for this implementation is most duplicated over the architectures,
-and the duplicated again in the swiotlb code, and then duplicated again
-for special cases like the x86 memory encryption DMA ops.
+On 10/01/18 08:00, Christoph Hellwig wrote:
+> index 9110988b92a1..f00833acb626 100644
+> --- a/arch/mips/include/asm/mach-cavium-octeon/dma-coherence.h
+> +++ b/arch/mips/include/asm/mach-cavium-octeon/dma-coherence.h
+> @@ -61,6 +61,14 @@ static inline void plat_post_dma_flush(struct device *dev)
+>  {
+>  }
+>  
+> +static inline bool dma_capable(struct device *dev, dma_addr_t addr, size_t size)
+> +{
+> +	if (!dev->dma_mask)
+> +		return false;
+> +
+> +	return addr + size <= *dev->dma_mask;
+> +}
+> +
 
-This series takes the existing very simple dma-noop dma mapping
-implementation, enhances it with all the x86 features and quirks, and
-creates a common set of architecture hooks for it and the swiotlb code.
+I know it is copy&paste, but it seems it has off by one error and it should be
 
-It then switches a number of architectures to this generic
-direct map implemention.
+return addr + size - 1 <= *dev->dma_mask;
 
-Note that for now this only handles architectures that do cache coherent
-DMA, but a similar consolidation for non-coherent architectures is in the
-work for later merge windows.
 
-A git tree is also available:
+>  dma_addr_t phys_to_dma(struct device *dev, phys_addr_t paddr);
+>  phys_addr_t dma_to_phys(struct device *dev, dma_addr_t daddr);
+>  
 
-   git://git.infradead.org/users/hch/misc.git dma-direct.3
+snip...
 
-Gitweb:
+> diff --git a/arch/mips/include/asm/mach-loongson64/dma-coherence.h b/arch/mips/include/asm/mach-loongson64/dma-coherence.h
+> index 1602a9e9e8c2..5cfda8f893e9 100644
+> --- a/arch/mips/include/asm/mach-loongson64/dma-coherence.h
+> +++ b/arch/mips/include/asm/mach-loongson64/dma-coherence.h
+> @@ -17,6 +17,14 @@
+>  
+>  struct device;
+>  
+> +static inline bool dma_capable(struct device *dev, dma_addr_t addr, size_t size)
+> +{
+> +	if (!dev->dma_mask)
+> +		return false;
+> +
+> +	return addr + size <= *dev->dma_mask;
 
-   http://git.infradead.org/users/hch/misc.git/shortlog/refs/heads/dma-direct.3
 
-Changes since V1:
- - fixed a few patch description typos
- - fixed a few printk formats
- - fixed an off by one in dma_coherent_ok
- - add a few Reviewed-by/Acked-by tags.
- - moved the swiotlb consolidation to a new series
- - dropped a few patches for now to not overwhelem the x86
-   maintainers.  They will be resubmitted in the next merge window
+ditto
+
+Cheers
+Vladimir
