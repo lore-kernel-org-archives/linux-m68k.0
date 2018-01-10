@@ -1,7 +1,7 @@
 From: Christoph Hellwig <hch@lst.de>
-Subject: [PATCH 01/33] alpha: mark jensen as broken
-Date: Wed, 10 Jan 2018 08:59:55 +0100
-Message-ID: <20180110080027.13879-2-hch__40139.4833498218$1515572304$gmane$org@lst.de>
+Subject: [PATCH 03/33] m32r: remove unused flush_write_buffers definition
+Date: Wed, 10 Jan 2018 08:59:57 +0100
+Message-ID: <20180110080027.13879-4-hch__12247.1080198467$1515572306$gmane$org@lst.de>
 References: <20180110080027.13879-1-hch@lst.de>
 Return-path: <linux-m68k-owner@vger.kernel.org>
 In-Reply-To: <20180110080027.13879-1-hch@lst.de>
@@ -10,25 +10,23 @@ List-Id: linux-m68k@vger.kernel.org
 To: iommu@lists.linux-foundation.org
 Cc: Konrad Rzeszutek Wilk <konrad@darnok.org>, linux-alpha@vger.kernel.org, linux-snps-arc@lists.infradead.org, linux-arm-kernel@lists.infradead.org, linux-c6x-dev@linux-c6x.org, linux-cris-kernel@axis.com, linux-hexagon@vger.kernel.org, linux-ia64@vger.kernel.org, linux-m68k@lists.linux-m68k.org, linux-metag@vger.kernel.org, Michal Simek <monstr@monstr.eu>, linux-mips@linux-mips.org, linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, patches@groups.riscv.org, linux-s390@vger.kernel.org, linux-sh@vger.kernel.org, sparclinux@vger.kernel.org, Guan Xuetao <gxt@mprc.pku.edu.cn>, x86@kernel.org, linux-arch@vger.kernel.org, linux-kernel@vger.kernel.org
 
-CONFIG_ALPHA_JENSEN has failed to compile since commit 6aca0503
-("alpha/dma: use common noop dma ops"), so mark it as broken.
-
 Signed-off-by: Christoph Hellwig <hch@lst.de>
 ---
- arch/alpha/Kconfig | 1 +
- 1 file changed, 1 insertion(+)
+ arch/m32r/include/asm/io.h | 2 --
+ 1 file changed, 2 deletions(-)
 
-diff --git a/arch/alpha/Kconfig b/arch/alpha/Kconfig
-index b31b974a03cb..e96adcbcab41 100644
---- a/arch/alpha/Kconfig
-+++ b/arch/alpha/Kconfig
-@@ -209,6 +209,7 @@ config ALPHA_EIGER
+diff --git a/arch/m32r/include/asm/io.h b/arch/m32r/include/asm/io.h
+index 1b653bb16f9a..a4272d8f0d9c 100644
+--- a/arch/m32r/include/asm/io.h
++++ b/arch/m32r/include/asm/io.h
+@@ -191,8 +191,6 @@ static inline void _writel(unsigned long l, unsigned long addr)
  
- config ALPHA_JENSEN
- 	bool "Jensen"
-+	depends on BROKEN
- 	help
- 	  DEC PC 150 AXP (aka Jensen): This is a very old Digital system - one
- 	  of the first-generation Alpha systems. A number of these systems
+ #define mmiowb()
+ 
+-#define flush_write_buffers() do { } while (0)  /* M32R_FIXME */
+-
+ static inline void
+ memset_io(volatile void __iomem *addr, unsigned char val, int count)
+ {
 -- 
 2.14.2
