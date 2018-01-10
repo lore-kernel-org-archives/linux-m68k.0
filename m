@@ -1,7 +1,7 @@
 From: Christoph Hellwig <hch@lst.de>
-Subject: [PATCH 07/33] riscv: remove the unused dma_capable helper
-Date: Wed, 10 Jan 2018 09:00:01 +0100
-Message-ID: <20180110080027.13879-8-hch__12011.4420228221$1515572284$gmane$org@lst.de>
+Subject: [PATCH 04/33] powerpc: remove unused flush_write_buffers definition
+Date: Wed, 10 Jan 2018 08:59:58 +0100
+Message-ID: <20180110080027.13879-5-hch__46870.8421256908$1515572293$gmane$org@lst.de>
 References: <20180110080027.13879-1-hch@lst.de>
 Return-path: <linux-m68k-owner@vger.kernel.org>
 In-Reply-To: <20180110080027.13879-1-hch@lst.de>
@@ -12,25 +12,22 @@ Cc: Konrad Rzeszutek Wilk <konrad@darnok.org>, linux-alpha@vger.kernel.org, linu
 
 Signed-off-by: Christoph Hellwig <hch@lst.de>
 ---
- arch/riscv/include/asm/dma-mapping.h | 8 --------
- 1 file changed, 8 deletions(-)
+ arch/powerpc/include/asm/dma-mapping.h | 3 ---
+ 1 file changed, 3 deletions(-)
 
-diff --git a/arch/riscv/include/asm/dma-mapping.h b/arch/riscv/include/asm/dma-mapping.h
-index 3eec1000196d..73849e2cc761 100644
---- a/arch/riscv/include/asm/dma-mapping.h
-+++ b/arch/riscv/include/asm/dma-mapping.h
-@@ -27,12 +27,4 @@ static inline const struct dma_map_ops *get_arch_dma_ops(struct bus_type *bus)
- 	return &dma_noop_ops;
+diff --git a/arch/powerpc/include/asm/dma-mapping.h b/arch/powerpc/include/asm/dma-mapping.h
+index 5a6cbe11db6f..592c7f418aa0 100644
+--- a/arch/powerpc/include/asm/dma-mapping.h
++++ b/arch/powerpc/include/asm/dma-mapping.h
+@@ -107,9 +107,6 @@ static inline void set_dma_offset(struct device *dev, dma_addr_t off)
+ 		dev->archdata.dma_offset = off;
  }
  
--static inline bool dma_capable(struct device *dev, dma_addr_t addr, size_t size)
--{
--	if (!dev->dma_mask)
--		return false;
+-/* this will be removed soon */
+-#define flush_write_buffers()
 -
--	return addr + size - 1 <= *dev->dma_mask;
--}
--
- #endif	/* __ASM_RISCV_DMA_MAPPING_H */
+ #define HAVE_ARCH_DMA_SET_MASK 1
+ extern int dma_set_mask(struct device *dev, u64 dma_mask);
+ 
 -- 
 2.14.2
