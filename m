@@ -1,7 +1,7 @@
 From: Christoph Hellwig <hch@lst.de>
-Subject: [PATCH 17/34] microblaze: remove dma_nommu_dma_supported
-Date: Fri, 12 Jan 2018 09:42:15 +0100
-Message-ID: <20180112084232.2857-18-hch__15666.6946634234$1515746904$gmane$org@lst.de>
+Subject: [PATCH 20/34] dma-mapping: warn when there is no coherent_dma_mask
+Date: Fri, 12 Jan 2018 09:42:18 +0100
+Message-ID: <20180112084232.2857-21-hch__34733.8071711876$1515746914$gmane$org@lst.de>
 References: <20180112084232.2857-1-hch@lst.de>
 Return-path: <linux-m68k-owner@vger.kernel.org>
 In-Reply-To: <20180112084232.2857-1-hch@lst.de>
@@ -10,69 +10,27 @@ List-Id: linux-m68k@vger.kernel.org
 To: iommu@lists.linux-foundation.org
 Cc: Konrad Rzeszutek Wilk <konrad@darnok.org>, linux-alpha@vger.kernel.org, linux-snps-arc@lists.infradead.org, linux-arm-kernel@lists.infradead.org, linux-c6x-dev@linux-c6x.org, linux-cris-kernel@axis.com, linux-hexagon@vger.kernel.org, linux-ia64@vger.kernel.org, linux-m68k@lists.linux-m68k.org, linux-metag@vger.kernel.org, Michal Simek <monstr@monstr.eu>, linux-mips@linux-mips.org, linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, patches@groups.riscv.org, linux-s390@vger.kernel.org, linux-sh@vger.kernel.org, sparclinux@vger.kernel.org, Guan Xuetao <gxt@mprc.pku.edu.cn>, x86@kernel.org, linux-arch@vger.kernel.org, linux-kernel@vger.kernel.org
 
-Always returning 1 is the same behavior as not supplying a method at all.
+These days all devices should have a DMA coherent mask, and most dma_ops
+implementations rely on that fact.  But just to be sure add an assert to
+ring the warning bell if that is not the case.
 
 Signed-off-by: Christoph Hellwig <hch@lst.de>
+Reviewed-by: Vladimir Murzin <vladimir.murzin@arm.com>
 ---
- arch/microblaze/kernel/dma.c | 6 ------
- arch/parisc/kernel/pci-dma.c | 7 -------
- 2 files changed, 13 deletions(-)
+ include/linux/dma-mapping.h | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/arch/microblaze/kernel/dma.c b/arch/microblaze/kernel/dma.c
-index 450803e5731a..b45d8f8967af 100644
---- a/arch/microblaze/kernel/dma.c
-+++ b/arch/microblaze/kernel/dma.c
-@@ -89,11 +89,6 @@ static int dma_nommu_map_sg(struct device *dev, struct scatterlist *sgl,
- 	return nents;
- }
+diff --git a/include/linux/dma-mapping.h b/include/linux/dma-mapping.h
+index d84951865be7..9f28b2fa329e 100644
+--- a/include/linux/dma-mapping.h
++++ b/include/linux/dma-mapping.h
+@@ -513,6 +513,7 @@ static inline void *dma_alloc_attrs(struct device *dev, size_t size,
+ 	void *cpu_addr;
  
--static int dma_nommu_dma_supported(struct device *dev, u64 mask)
--{
--	return 1;
--}
--
- static inline dma_addr_t dma_nommu_map_page(struct device *dev,
- 					     struct page *page,
- 					     unsigned long offset,
-@@ -209,7 +204,6 @@ const struct dma_map_ops dma_nommu_ops = {
- 	.free			= dma_nommu_free_coherent,
- 	.mmap			= dma_nommu_mmap_coherent,
- 	.map_sg			= dma_nommu_map_sg,
--	.dma_supported		= dma_nommu_dma_supported,
- 	.map_page		= dma_nommu_map_page,
- 	.unmap_page		= dma_nommu_unmap_page,
- 	.sync_single_for_cpu	= dma_nommu_sync_single_for_cpu,
-diff --git a/arch/parisc/kernel/pci-dma.c b/arch/parisc/kernel/pci-dma.c
-index c0dfd892f70c..91bc0cac03a1 100644
---- a/arch/parisc/kernel/pci-dma.c
-+++ b/arch/parisc/kernel/pci-dma.c
-@@ -75,11 +75,6 @@ void dump_resmap(void)
- static inline void dump_resmap(void) {;}
- #endif
+ 	BUG_ON(!ops);
++	WARN_ON_ONCE(!dev->coherent_dma_mask);
  
--static int pa11_dma_supported( struct device *dev, u64 mask)
--{
--	return 1;
--}
--
- static inline int map_pte_uncached(pte_t * pte,
- 		unsigned long vaddr,
- 		unsigned long size, unsigned long *paddr_ptr)
-@@ -579,7 +574,6 @@ static void pa11_dma_cache_sync(struct device *dev, void *vaddr, size_t size,
- }
- 
- const struct dma_map_ops pcxl_dma_ops = {
--	.dma_supported =	pa11_dma_supported,
- 	.alloc =		pa11_dma_alloc,
- 	.free =			pa11_dma_free,
- 	.map_page =		pa11_dma_map_page,
-@@ -616,7 +610,6 @@ static void pcx_dma_free(struct device *dev, size_t size, void *vaddr,
- }
- 
- const struct dma_map_ops pcx_dma_ops = {
--	.dma_supported =	pa11_dma_supported,
- 	.alloc =		pcx_dma_alloc,
- 	.free =			pcx_dma_free,
- 	.map_page =		pa11_dma_map_page,
+ 	if (dma_alloc_from_dev_coherent(dev, size, dma_handle, &cpu_addr))
+ 		return cpu_addr;
 -- 
 2.14.2
