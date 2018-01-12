@@ -1,7 +1,7 @@
 From: Christoph Hellwig <hch@lst.de>
-Subject: [PATCH 08/34] s390: remove the unused dma_capable helper
-Date: Fri, 12 Jan 2018 09:42:06 +0100
-Message-ID: <20180112084232.2857-9-hch__10672.940061386$1515747065$gmane$org@lst.de>
+Subject: [PATCH 06/34] m32r: remove the unused dma_capable helper
+Date: Fri, 12 Jan 2018 09:42:04 +0100
+Message-ID: <20180112084232.2857-7-hch__35532.716572243$1515747081$gmane$org@lst.de>
 References: <20180112084232.2857-1-hch@lst.de>
 Return-path: <linux-m68k-owner@vger.kernel.org>
 In-Reply-To: <20180112084232.2857-1-hch@lst.de>
@@ -12,14 +12,14 @@ Cc: Konrad Rzeszutek Wilk <konrad@darnok.org>, linux-alpha@vger.kernel.org, linu
 
 Signed-off-by: Christoph Hellwig <hch@lst.de>
 ---
- arch/s390/include/asm/dma-mapping.h | 7 -------
+ arch/m32r/include/asm/dma-mapping.h | 7 -------
  1 file changed, 7 deletions(-)
 
-diff --git a/arch/s390/include/asm/dma-mapping.h b/arch/s390/include/asm/dma-mapping.h
-index eaf490f9c5bc..2ec7240c1ada 100644
---- a/arch/s390/include/asm/dma-mapping.h
-+++ b/arch/s390/include/asm/dma-mapping.h
-@@ -16,11 +16,4 @@ static inline const struct dma_map_ops *get_arch_dma_ops(struct bus_type *bus)
+diff --git a/arch/m32r/include/asm/dma-mapping.h b/arch/m32r/include/asm/dma-mapping.h
+index 336ffe60814b..8967fb659691 100644
+--- a/arch/m32r/include/asm/dma-mapping.h
++++ b/arch/m32r/include/asm/dma-mapping.h
+@@ -14,11 +14,4 @@ static inline const struct dma_map_ops *get_arch_dma_ops(struct bus_type *bus)
  	return &dma_noop_ops;
  }
  
@@ -30,6 +30,6 @@ index eaf490f9c5bc..2ec7240c1ada 100644
 -	return addr + size - 1 <= *dev->dma_mask;
 -}
 -
- #endif /* _ASM_S390_DMA_MAPPING_H */
+ #endif /* _ASM_M32R_DMA_MAPPING_H */
 -- 
 2.14.2
