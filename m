@@ -1,32 +1,44 @@
-From: Christoph Hellwig <hch@lst.de>
-Subject: [PATCH 02/34] hexagon: remove unused flush_write_buffers definition
-Date: Fri, 12 Jan 2018 09:42:00 +0100
-Message-ID: <20180112084232.2857-3-hch__18444.2276404754$1515747191$gmane$org@lst.de>
-References: <20180112084232.2857-1-hch@lst.de>
+From: Konrad Rzeszutek Wilk <konrad@darnok.org>
+Subject: Re: [PATCH 19/33] dma-mapping: warn when there is no
+ coherent_dma_mask
+Date: Fri, 12 Jan 2018 08:16:48 -0500
+Message-ID: <20180112131646.GA26900__219.70735765553$1515762912$gmane$org@localhost.localdomain>
+References: <20180110080027.13879-1-hch@lst.de>
+ <20180110080027.13879-20-hch@lst.de>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
 Return-path: <linux-m68k-owner@vger.kernel.org>
-In-Reply-To: <20180112084232.2857-1-hch@lst.de>
+Content-Disposition: inline
+In-Reply-To: <20180110080027.13879-20-hch@lst.de>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: iommu@lists.linux-foundation.org
-Cc: Konrad Rzeszutek Wilk <konrad@darnok.org>, linux-alpha@vger.kernel.org, linux-snps-arc@lists.infradead.org, linux-arm-kernel@lists.infradead.org, linux-c6x-dev@linux-c6x.org, linux-cris-kernel@axis.com, linux-hexagon@vger.kernel.org, linux-ia64@vger.kernel.org, linux-m68k@lists.linux-m68k.org, linux-metag@vger.kernel.org, Michal Simek <monstr@monstr.eu>, linux-mips@linux-mips.org, linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, patches@groups.riscv.org, linux-s390@vger.kernel.org, linux-sh@vger.kernel.org, sparclinux@vger.kernel.org, Guan Xuetao <gxt@mprc.pku.edu.cn>, x86@kernel.org, linux-arch@vger.kernel.org, linux-kernel@vger.kernel.org
+To: Christoph Hellwig <hch@lst.de>
+Cc: iommu@lists.linux-foundation.org, linux-alpha@vger.kernel.org, linux-snps-arc@lists.infradead.org, linux-arm-kernel@lists.infradead.org, linux-c6x-dev@linux-c6x.org, linux-cris-kernel@axis.com, linux-hexagon@vger.kernel.org, linux-ia64@vger.kernel.org, linux-m68k@lists.linux-m68k.org, linux-metag@vger.kernel.org, Michal Simek <monstr@monstr.eu>, linux-mips@linux-mips.org, linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, patches@groups.riscv.org, linux-s390@vger.kernel.org, linux-sh@vger.kernel.org, sparclinux@vger.kernel.org, Guan Xuetao <gxt@mprc.pku.edu.cn>, x86@kernel.org, linux-arch@vger.kernel.org, linux-kernel@vger.kernel.org
 
-Signed-off-by: Christoph Hellwig <hch@lst.de>
----
- arch/hexagon/include/asm/io.h | 2 --
- 1 file changed, 2 deletions(-)
+On Wed, Jan 10, 2018 at 09:00:13AM +0100, Christoph Hellwig wrote:
+> These days all devices should have a DMA coherent mask, and most dma_ops
+> implementations rely on that fact.  But just to be sure add an assert to
+> ring the warning bell if that is not the case.
+> 
+> Signed-off-by: Christoph Hellwig <hch@lst.de>
 
-diff --git a/arch/hexagon/include/asm/io.h b/arch/hexagon/include/asm/io.h
-index 66f5e9a61efc..9e8621d94ee9 100644
---- a/arch/hexagon/include/asm/io.h
-+++ b/arch/hexagon/include/asm/io.h
-@@ -330,8 +330,6 @@ static inline void outsl(unsigned long port, const void *buffer, int count)
- 	}
- }
- 
--#define flush_write_buffers() do { } while (0)
--
- #endif /* __KERNEL__ */
- 
- #endif
--- 
-2.14.2
+Reviewed-by: Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>
+> ---
+>  include/linux/dma-mapping.h | 1 +
+>  1 file changed, 1 insertion(+)
+> 
+> diff --git a/include/linux/dma-mapping.h b/include/linux/dma-mapping.h
+> index d84951865be7..9f28b2fa329e 100644
+> --- a/include/linux/dma-mapping.h
+> +++ b/include/linux/dma-mapping.h
+> @@ -513,6 +513,7 @@ static inline void *dma_alloc_attrs(struct device *dev, size_t size,
+>  	void *cpu_addr;
+>  
+>  	BUG_ON(!ops);
+> +	WARN_ON_ONCE(!dev->coherent_dma_mask);
+>  
+>  	if (dma_alloc_from_dev_coherent(dev, size, dma_handle, &cpu_addr))
+>  		return cpu_addr;
+> -- 
+> 2.14.2
+> 
