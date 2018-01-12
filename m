@@ -1,7 +1,7 @@
 From: Christoph Hellwig <hch@lst.de>
-Subject: [PATCH 10/34] arm64: don't override dma_max_pfn
-Date: Fri, 12 Jan 2018 09:42:08 +0100
-Message-ID: <20180112084232.2857-11-hch__3530.47316098145$1515746994$gmane$org@lst.de>
+Subject: [PATCH 09/34] dma-mapping: take dma_pfn_offset into account in dma_max_pfn
+Date: Fri, 12 Jan 2018 09:42:07 +0100
+Message-ID: <20180112084232.2857-10-hch__20208.5644974888$1515747055$gmane$org@lst.de>
 References: <20180112084232.2857-1-hch@lst.de>
 Return-path: <linux-m68k-owner@vger.kernel.org>
 In-Reply-To: <20180112084232.2857-1-hch@lst.de>
@@ -10,33 +10,27 @@ List-Id: linux-m68k@vger.kernel.org
 To: iommu@lists.linux-foundation.org
 Cc: Konrad Rzeszutek Wilk <konrad@darnok.org>, linux-alpha@vger.kernel.org, linux-snps-arc@lists.infradead.org, linux-arm-kernel@lists.infradead.org, linux-c6x-dev@linux-c6x.org, linux-cris-kernel@axis.com, linux-hexagon@vger.kernel.org, linux-ia64@vger.kernel.org, linux-m68k@lists.linux-m68k.org, linux-metag@vger.kernel.org, Michal Simek <monstr@monstr.eu>, linux-mips@linux-mips.org, linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, patches@groups.riscv.org, linux-s390@vger.kernel.org, linux-sh@vger.kernel.org, sparclinux@vger.kernel.org, Guan Xuetao <gxt@mprc.pku.edu.cn>, x86@kernel.org, linux-arch@vger.kernel.org, linux-kernel@vger.kernel.org
 
-The generic version now takes dma_pfn_offset into account, so there is no
-more need for an architecture override.
+This makes sure the generic version can be used with architectures /
+devices that have a DMA offset in the direct mapping.
 
 Signed-off-by: Christoph Hellwig <hch@lst.de>
 Reviewed-by: Robin Murphy <robin.murphy@arm.com>
 ---
- arch/arm64/include/asm/dma-mapping.h | 9 ---------
- 1 file changed, 9 deletions(-)
+ include/linux/dma-mapping.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/arch/arm64/include/asm/dma-mapping.h b/arch/arm64/include/asm/dma-mapping.h
-index 0df756b24863..eada887a93bf 100644
---- a/arch/arm64/include/asm/dma-mapping.h
-+++ b/arch/arm64/include/asm/dma-mapping.h
-@@ -76,14 +76,5 @@ static inline void dma_mark_clean(void *addr, size_t size)
+diff --git a/include/linux/dma-mapping.h b/include/linux/dma-mapping.h
+index 81ed9b2d84dc..d84951865be7 100644
+--- a/include/linux/dma-mapping.h
++++ b/include/linux/dma-mapping.h
+@@ -692,7 +692,7 @@ static inline int dma_set_seg_boundary(struct device *dev, unsigned long mask)
+ #ifndef dma_max_pfn
+ static inline unsigned long dma_max_pfn(struct device *dev)
  {
+-	return *dev->dma_mask >> PAGE_SHIFT;
++	return (*dev->dma_mask >> PAGE_SHIFT) + dev->dma_pfn_offset;
  }
+ #endif
  
--/* Override for dma_max_pfn() */
--static inline unsigned long dma_max_pfn(struct device *dev)
--{
--	dma_addr_t dma_max = (dma_addr_t)*dev->dma_mask;
--
--	return (ulong)dma_to_phys(dev, dma_max) >> PAGE_SHIFT;
--}
--#define dma_max_pfn(dev) dma_max_pfn(dev)
--
- #endif	/* __KERNEL__ */
- #endif	/* __ASM_DMA_MAPPING_H */
 -- 
 2.14.2
