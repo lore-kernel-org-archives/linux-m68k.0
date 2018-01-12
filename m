@@ -1,7 +1,7 @@
 From: Christoph Hellwig <hch@lst.de>
-Subject: [PATCH 03/34] m32r: remove unused flush_write_buffers definition
-Date: Fri, 12 Jan 2018 09:42:01 +0100
-Message-ID: <20180112084232.2857-4-hch__31502.5415774018$1515746469$gmane$org@lst.de>
+Subject: [PATCH 07/34] riscv: remove the unused dma_capable helper
+Date: Fri, 12 Jan 2018 09:42:05 +0100
+Message-ID: <20180112084232.2857-8-hch__19068.081471096$1515746481$gmane$org@lst.de>
 References: <20180112084232.2857-1-hch@lst.de>
 Return-path: <linux-m68k-owner@vger.kernel.org>
 In-Reply-To: <20180112084232.2857-1-hch@lst.de>
@@ -12,21 +12,25 @@ Cc: Konrad Rzeszutek Wilk <konrad@darnok.org>, linux-alpha@vger.kernel.org, linu
 
 Signed-off-by: Christoph Hellwig <hch@lst.de>
 ---
- arch/m32r/include/asm/io.h | 2 --
- 1 file changed, 2 deletions(-)
+ arch/riscv/include/asm/dma-mapping.h | 8 --------
+ 1 file changed, 8 deletions(-)
 
-diff --git a/arch/m32r/include/asm/io.h b/arch/m32r/include/asm/io.h
-index 1b653bb16f9a..a4272d8f0d9c 100644
---- a/arch/m32r/include/asm/io.h
-+++ b/arch/m32r/include/asm/io.h
-@@ -191,8 +191,6 @@ static inline void _writel(unsigned long l, unsigned long addr)
+diff --git a/arch/riscv/include/asm/dma-mapping.h b/arch/riscv/include/asm/dma-mapping.h
+index 3eec1000196d..73849e2cc761 100644
+--- a/arch/riscv/include/asm/dma-mapping.h
++++ b/arch/riscv/include/asm/dma-mapping.h
+@@ -27,12 +27,4 @@ static inline const struct dma_map_ops *get_arch_dma_ops(struct bus_type *bus)
+ 	return &dma_noop_ops;
+ }
  
- #define mmiowb()
- 
--#define flush_write_buffers() do { } while (0)  /* M32R_FIXME */
+-static inline bool dma_capable(struct device *dev, dma_addr_t addr, size_t size)
+-{
+-	if (!dev->dma_mask)
+-		return false;
 -
- static inline void
- memset_io(volatile void __iomem *addr, unsigned char val, int count)
- {
+-	return addr + size - 1 <= *dev->dma_mask;
+-}
+-
+ #endif	/* __ASM_RISCV_DMA_MAPPING_H */
 -- 
 2.14.2
