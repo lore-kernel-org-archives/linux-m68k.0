@@ -1,7 +1,7 @@
 From: Finn Thain <fthain@telegraphics.com.au>
-Subject: [PATCH v5 01/14] nubus: Avoid array underflow and overflow
+Subject: [PATCH v5 02/14] nubus: Fix up header split
 Date: Sat, 13 Jan 2018 17:37:13 -0500 (EST)
-Message-ID: <c0816c85c42ccf793f192495f457ce091f314038.1515814167.git.fthain@telegraphics.com.au>
+Message-ID: <3d9aa29fd598623437b28f8611b89e7d0d5aad04.1515814167.git.fthain@telegraphics.com.au>
 References: <cover.1515814167.git.fthain@telegraphics.com.au>
 Return-path: <linux-kernel-owner@vger.kernel.org>
 In-Reply-To: <cover.1515814167.git.fthain@telegraphics.com.au>
@@ -10,165 +10,99 @@ To: Geert Uytterhoeven <geert@linux-m68k.org>
 Cc: linux-m68k@vger.kernel.org, linux-kernel@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
 
-Check array indices. Avoid sprintf. Use buffers of sufficient size.
-Use appropriate types for array length parameters.
+Due to the '#ifdef __KERNEL__' being located in the wrong place, some
+definitions from the kernel API were placed in the UAPI header during
+the scripted header split. Fix this. Also, remove the duplicate comment
+which is only relevant to the UAPI header.
 
+Fixes: 607ca46e97a1 ("UAPI: (Scripted) Disintegrate include/linux")
 Tested-by: Stan Johnson <userm57@yahoo.com>
 Signed-off-by: Finn Thain <fthain@telegraphics.com.au>
 ---
- drivers/nubus/nubus.c | 29 +++++++++++++++++------------
- drivers/nubus/proc.c  | 12 ++++++------
- include/linux/nubus.h | 10 ++++------
- 3 files changed, 27 insertions(+), 24 deletions(-)
+ include/linux/nubus.h      | 27 +++++++++++++++++++++++----
+ include/uapi/linux/nubus.h | 23 -----------------------
+ 2 files changed, 23 insertions(+), 27 deletions(-)
 
-diff --git a/drivers/nubus/nubus.c b/drivers/nubus/nubus.c
-index b793727cd4f7..b6c97e07f15e 100644
---- a/drivers/nubus/nubus.c
-+++ b/drivers/nubus/nubus.c
-@@ -161,7 +161,7 @@ static unsigned char *nubus_dirptr(const struct nubus_dirent *nd)
-    pointed to with offsets) out of the card ROM. */
- 
- void nubus_get_rsrc_mem(void *dest, const struct nubus_dirent *dirent,
--			int len)
-+			unsigned int len)
- {
- 	unsigned char *t = (unsigned char *)dest;
- 	unsigned char *p = nubus_dirptr(dirent);
-@@ -173,18 +173,22 @@ void nubus_get_rsrc_mem(void *dest, const struct nubus_dirent *dirent,
- }
- EXPORT_SYMBOL(nubus_get_rsrc_mem);
- 
--void nubus_get_rsrc_str(void *dest, const struct nubus_dirent *dirent,
--			int len)
-+void nubus_get_rsrc_str(char *dest, const struct nubus_dirent *dirent,
-+			unsigned int len)
- {
--	unsigned char *t = (unsigned char *)dest;
-+	char *t = dest;
- 	unsigned char *p = nubus_dirptr(dirent);
- 
--	while (len) {
--		*t = nubus_get_rom(&p, 1, dirent->mask);
--		if (!*t++)
-+	while (len > 1) {
-+		unsigned char c = nubus_get_rom(&p, 1, dirent->mask);
-+
-+		if (!c)
- 			break;
-+		*t++ = c;
- 		len--;
- 	}
-+	if (len > 0)
-+		*t = '\0';
- }
- EXPORT_SYMBOL(nubus_get_rsrc_str);
- 
-@@ -468,7 +472,7 @@ nubus_get_functional_resource(struct nubus_board *board, int slot,
- 		}
- 		case NUBUS_RESID_NAME:
- 		{
--			nubus_get_rsrc_str(dev->name, &ent, 64);
-+			nubus_get_rsrc_str(dev->name, &ent, sizeof(dev->name));
- 			pr_info("    name: %s\n", dev->name);
- 			break;
- 		}
-@@ -528,7 +532,7 @@ static int __init nubus_get_vidnames(struct nubus_board *board,
- 		/* Don't know what this is yet */
- 		u16 id;
- 		/* Longest one I've seen so far is 26 characters */
--		char name[32];
-+		char name[36];
- 	};
- 
- 	pr_info("    video modes supported:\n");
-@@ -598,8 +602,8 @@ static int __init nubus_get_vendorinfo(struct nubus_board *board,
- 		char name[64];
- 
- 		/* These are all strings, we think */
--		nubus_get_rsrc_str(name, &ent, 64);
--		if (ent.type > 5)
-+		nubus_get_rsrc_str(name, &ent, sizeof(name));
-+		if (ent.type < 1 || ent.type > 5)
- 			ent.type = 5;
- 		pr_info("    %s: %s\n", vendor_fields[ent.type - 1], name);
- 	}
-@@ -633,7 +637,8 @@ static int __init nubus_get_board_resource(struct nubus_board *board, int slot,
- 			break;
- 		}
- 		case NUBUS_RESID_NAME:
--			nubus_get_rsrc_str(board->name, &ent, 64);
-+			nubus_get_rsrc_str(board->name, &ent,
-+					   sizeof(board->name));
- 			pr_info("    name: %s\n", board->name);
- 			break;
- 		case NUBUS_RESID_ICON:
-diff --git a/drivers/nubus/proc.c b/drivers/nubus/proc.c
-index 004a122ac0ff..fc20dbcd3b9a 100644
---- a/drivers/nubus/proc.c
-+++ b/drivers/nubus/proc.c
-@@ -73,10 +73,10 @@ static void nubus_proc_subdir(struct nubus_dev* dev,
- 
- 	/* Some of these are directories, others aren't */
- 	while (nubus_readdir(dir, &ent) != -1) {
--		char name[8];
-+		char name[9];
- 		struct proc_dir_entry* e;
- 		
--		sprintf(name, "%x", ent.type);
-+		snprintf(name, sizeof(name), "%x", ent.type);
- 		e = proc_create(name, S_IFREG | S_IRUGO | S_IWUSR, parent,
- 				&nubus_proc_subdir_fops);
- 		if (!e)
-@@ -95,11 +95,11 @@ static void nubus_proc_populate(struct nubus_dev* dev,
- 	/* We know these are all directories (board resource + one or
- 	   more functional resources) */
- 	while (nubus_readdir(root, &ent) != -1) {
--		char name[8];
-+		char name[9];
- 		struct proc_dir_entry* e;
- 		struct nubus_dir dir;
- 		
--		sprintf(name, "%x", ent.type);
-+		snprintf(name, sizeof(name), "%x", ent.type);
- 		e = proc_mkdir(name, parent);
- 		if (!e) return;
- 
-@@ -119,7 +119,7 @@ int nubus_proc_attach_device(struct nubus_dev *dev)
- {
- 	struct proc_dir_entry *e;
- 	struct nubus_dir root;
--	char name[8];
-+	char name[9];
- 
- 	if (dev == NULL) {
- 		printk(KERN_ERR
-@@ -135,7 +135,7 @@ int nubus_proc_attach_device(struct nubus_dev *dev)
- 	}
- 		
- 	/* Create a directory */
--	sprintf(name, "%x", dev->board->slot);
-+	snprintf(name, sizeof(name), "%x", dev->board->slot);
- 	e = dev->procdir = proc_mkdir(name, proc_bus_nubus_dir);
- 	if (!e)
- 		return -ENOMEM;
 diff --git a/include/linux/nubus.h b/include/linux/nubus.h
-index 11ce6b1117a8..d8d63370a28c 100644
+index d8d63370a28c..55b9a4569a69 100644
 --- a/include/linux/nubus.h
 +++ b/include/linux/nubus.h
-@@ -126,10 +126,8 @@ int nubus_rewinddir(struct nubus_dir* dir);
- /* Things to do with directory entries */
- int nubus_get_subdir(const struct nubus_dirent* ent,
- 		     struct nubus_dir* dir);
--void nubus_get_rsrc_mem(void* dest,
--			const struct nubus_dirent *dirent,
--			int len);
--void nubus_get_rsrc_str(void* dest,
--			const struct nubus_dirent *dirent,
--			int maxlen);
-+void nubus_get_rsrc_mem(void *dest, const struct nubus_dirent *dirent,
-+			unsigned int len);
-+void nubus_get_rsrc_str(char *dest, const struct nubus_dirent *dirent,
-+			unsigned int maxlen);
+@@ -5,16 +5,28 @@
+   Originally written by Alan Cox.
+ 
+   Hacked to death by C. Scott Ananian and David Huggins-Daines.
+-  
+-  Some of the constants in here are from the corresponding
+-  NetBSD/OpenBSD header file, by Allen Briggs.  We figured out the
+-  rest of them on our own. */
++*/
++
+ #ifndef LINUX_NUBUS_H
+ #define LINUX_NUBUS_H
+ 
+ #include <asm/nubus.h>
+ #include <uapi/linux/nubus.h>
+ 
++struct nubus_dir {
++	unsigned char *base;
++	unsigned char *ptr;
++	int done;
++	int mask;
++};
++
++struct nubus_dirent {
++	unsigned char *base;
++	unsigned char type;
++	__u32 data;	/* Actually 24 bits used */
++	int mask;
++};
++
+ struct nubus_board {
+ 	struct nubus_board* next;
+ 	struct nubus_dev* first_dev;
+@@ -130,4 +142,11 @@ void nubus_get_rsrc_mem(void *dest, const struct nubus_dirent *dirent,
+ 			unsigned int len);
+ void nubus_get_rsrc_str(char *dest, const struct nubus_dirent *dirent,
+ 			unsigned int maxlen);
++
++/* Returns a pointer to the "standard" slot space. */
++static inline void *nubus_slot_addr(int slot)
++{
++	return (void *)(0xF0000000 | (slot << 24));
++}
++
  #endif /* LINUX_NUBUS_H */
+diff --git a/include/uapi/linux/nubus.h b/include/uapi/linux/nubus.h
+index f3776cc80f4d..48031e7858f1 100644
+--- a/include/uapi/linux/nubus.h
++++ b/include/uapi/linux/nubus.h
+@@ -221,27 +221,4 @@ enum nubus_display_res_id {
+ 	NUBUS_RESID_SIXTHMODE   = 0x0085
+ };
+ 
+-struct nubus_dir
+-{
+-	unsigned char *base;
+-	unsigned char *ptr;
+-	int done;
+-	int mask;
+-};
+-
+-struct nubus_dirent
+-{
+-	unsigned char *base;
+-	unsigned char type;
+-	__u32 data;	/* Actually 24bits used */
+-	int mask;
+-};
+-
+-
+-/* We'd like to get rid of this eventually.  Only daynaport.c uses it now. */
+-static inline void *nubus_slot_addr(int slot)
+-{
+-	return (void *)(0xF0000000|(slot<<24));
+-}
+-
+ #endif /* _UAPILINUX_NUBUS_H */
 -- 
 2.13.6
