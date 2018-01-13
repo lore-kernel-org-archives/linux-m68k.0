@@ -1,78 +1,59 @@
 From: Finn Thain <fthain@telegraphics.com.au>
-Subject: [PATCH v5 00/14] Modernization and fixes for NuBus subsystem
+Subject: [PATCH v5 03/14] nubus: Use static functions where possible
 Date: Sat, 13 Jan 2018 17:37:13 -0500 (EST)
-Message-ID: <cover.1515814167.git.fthain@telegraphics.com.au>
-Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from kvm5.telegraphics.com.au ([98.124.60.144]:43790 "EHLO
-        kvm5.telegraphics.com.au" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1753170AbeAMWhO (ORCPT
-        <rfc822;linux-m68k@vger.kernel.org>); Sat, 13 Jan 2018 17:37:14 -0500
-Sender: linux-m68k-owner@vger.kernel.org
-List-Id: linux-m68k@vger.kernel.org
+Message-ID: <d7e94b9834f0e5e3981295dc836484fbc598bd2c.1515814167.git.fthain@telegraphics.com.au>
+References: <cover.1515814167.git.fthain@telegraphics.com.au>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <cover.1515814167.git.fthain@telegraphics.com.au>
+Sender: linux-kernel-owner@vger.kernel.org
 To: Geert Uytterhoeven <geert@linux-m68k.org>
 Cc: linux-m68k@vger.kernel.org, linux-kernel@vger.kernel.org
+List-Id: linux-m68k@vger.kernel.org
 
-This series begins with cleanups and fixes for the NuBus subsystem and
-finishes with a patch to add support for the Linux Driver Model.
-A separate series (which requires this one) modernizes NuBus drivers.
+This fixes a couple of warnings from 'make W=1':
+drivers/nubus/nubus.c:790: warning: no previous prototype for 'nubus_probe_slot'
+drivers/nubus/nubus.c:824: warning: no previous prototype for 'nubus_scan_bus'
 
-Changes since v1:
-- Added the missing NULL check in nubus_device_remove().
-- Squashed the two /proc/bus/nubus/s/ patches into one patch.
-- Combined the two sets of /proc/bus/nubus file operations into one set.
-- Used the name 'nubus_rsrc' instead of 'nubus_functional_resource'.
-- Used the name 'nubus_device_register' instead of 'nubus_device_add'.
-- Dropped the unused EXPORT_SYMBOL(nubus_seq_write_rsrc_mem).
-- Replaced licensing text in the new file with SPDX-License-Identifier.
+Tested-by: Stan Johnson <userm57@yahoo.com>
+Signed-off-by: Finn Thain <fthain@telegraphics.com.au>
+---
+ drivers/nubus/nubus.c | 4 ++--
+ include/linux/nubus.h | 1 -
+ 2 files changed, 2 insertions(+), 3 deletions(-)
 
-Changes since v2:
-- Implemented an idiomatic device release function for nubus boards.
-- Removed the global nubus_boards linked list.
-- Removed nubus_board pointer from proc dir entry private data to improve
-  modularity.
-- Adopted the standard linked list implementation.
-- Disambiguated unrecognized and empty resources under /proc/bus/nubus.
-- Reduced redundancy in proc dir entry private data to save some memory.
-- Replaced /proc/nubus custom seq file ops with single_open().
-
-Changes since v3:
-- Added Acked-by and Reviewed-by tags.
-- Moved the SPDX tag in bus.c to the first line of the file.
-
-Changes since v4:
-- Addressed some code style issues.
-
-
-Finn Thain (14):
-  nubus: Avoid array underflow and overflow
-  nubus: Fix up header split
-  nubus: Use static functions where possible
-  nubus: Fix log spam
-  nubus: Validate slot resource IDs
-  nubus: Call proc_mkdir() not more than once per slot directory
-  nubus: Remove redundant code
-  nubus: Clean up whitespace
-  nubus: Generalize block resource handling
-  nubus: Rework /proc/bus/nubus/s/ implementation
-  nubus: Rename struct nubus_dev
-  nubus: Adopt standard linked list implementation
-  nubus: Add expansion_type values for various Mac models
-  nubus: Add support for the driver model
-
- arch/m68k/include/asm/macintosh.h       |   9 +-
- arch/m68k/mac/config.c                  | 110 +++----
- drivers/net/ethernet/8390/mac8390.c     |  33 +-
- drivers/net/ethernet/cirrus/mac89x0.c   |   6 +-
- drivers/net/ethernet/natsemi/macsonic.c |  38 ++-
- drivers/nubus/Makefile                  |   2 +-
- drivers/nubus/bus.c                     | 117 +++++++
- drivers/nubus/nubus.c                   | 542 +++++++++++++++++---------------
- drivers/nubus/proc.c                    | 281 ++++++++---------
- drivers/video/fbdev/macfb.c             |  10 +-
- include/linux/nubus.h                   | 189 +++++++----
- include/uapi/linux/nubus.h              |  23 --
- 12 files changed, 762 insertions(+), 598 deletions(-)
- create mode 100644 drivers/nubus/bus.c
-
+diff --git a/drivers/nubus/nubus.c b/drivers/nubus/nubus.c
+index b6c97e07f15e..35056cee94b1 100644
+--- a/drivers/nubus/nubus.c
++++ b/drivers/nubus/nubus.c
+@@ -793,7 +793,7 @@ static struct nubus_board * __init nubus_add_board(int slot, int bytelanes)
+ 	return board;
+ }
+ 
+-void __init nubus_probe_slot(int slot)
++static void __init nubus_probe_slot(int slot)
+ {
+ 	unsigned char dp;
+ 	unsigned char *rp;
+@@ -827,7 +827,7 @@ void __init nubus_probe_slot(int slot)
+ 	}
+ }
+ 
+-void __init nubus_scan_bus(void)
++static void __init nubus_scan_bus(void)
+ {
+ 	int slot;
+ 
+diff --git a/include/linux/nubus.h b/include/linux/nubus.h
+index 55b9a4569a69..e525669f1991 100644
+--- a/include/linux/nubus.h
++++ b/include/linux/nubus.h
+@@ -92,7 +92,6 @@ extern struct nubus_dev* nubus_devices;
+ extern struct nubus_board* nubus_boards;
+ 
+ /* Generic NuBus interface functions, modelled after the PCI interface */
+-void nubus_scan_bus(void);
+ #ifdef CONFIG_PROC_FS
+ extern void nubus_proc_init(void);
+ #else
 -- 
 2.13.6
