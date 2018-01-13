@@ -1,108 +1,413 @@
 From: Finn Thain <fthain@telegraphics.com.au>
-Subject: [PATCH v5 02/14] nubus: Fix up header split
-Date: Sat, 13 Jan 2018 17:37:13 -0500 (EST)
-Message-ID: <3d9aa29fd598623437b28f8611b89e7d0d5aad04.1515814167.git.fthain@telegraphics.com.au>
+Subject: [PATCH v5 14/14] nubus: Add support for the driver model
+Date: Sat, 13 Jan 2018 17:37:14 -0500 (EST)
+Message-ID: <e400cd5514d7625c7d71fa49e94e583316842b7a.1515814167.git.fthain@telegraphics.com.au>
 References: <cover.1515814167.git.fthain@telegraphics.com.au>
 Return-path: <linux-kernel-owner@vger.kernel.org>
 In-Reply-To: <cover.1515814167.git.fthain@telegraphics.com.au>
 Sender: linux-kernel-owner@vger.kernel.org
 To: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: linux-m68k@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc: linux-m68k@vger.kernel.org, linux-kernel@vger.kernel.org, Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 List-Id: linux-m68k@vger.kernel.org
 
-Due to the '#ifdef __KERNEL__' being located in the wrong place, some
-definitions from the kernel API were placed in the UAPI header during
-the scripted header split. Fix this. Also, remove the duplicate comment
-which is only relevant to the UAPI header.
+This patch brings basic support for the Linux Driver Model to the
+NuBus subsystem.
 
-Fixes: 607ca46e97a1 ("UAPI: (Scripted) Disintegrate include/linux")
+For flexibility, the matching of boards with drivers is left up to the
+drivers. This is also the approach taken by NetBSD. A board may have
+many functions, and drivers may have to consider many functional
+resources and board resources in order to match a device.
+
+This implementation does not bind drivers to resources (nor does it bind
+many drivers to the same board). Apple's NuBus declaration ROM design
+is flexible enough to allow that, but I don't see a need to support it
+as we don't use the "slot zero" resources (in the main logic board ROM).
+
+Eliminate the global nubus_boards linked list by rewriting the procfs
+board iterator around bus_for_each_dev(). Hence the nubus device refcount
+can be used to determine the lifespan of board objects.
+
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Reviewed-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Tested-by: Stan Johnson <userm57@yahoo.com>
 Signed-off-by: Finn Thain <fthain@telegraphics.com.au>
----
- include/linux/nubus.h      | 27 +++++++++++++++++++++++----
- include/uapi/linux/nubus.h | 23 -----------------------
- 2 files changed, 23 insertions(+), 27 deletions(-)
 
+---
+The conversion of Mac network drivers from the Space.c convention to
+the Driver Model takes place in a separate patch series, archived at
+https://lkml.org/lkml/2017/11/11/25
+That series motivates parts of this design, such as the definition of
+'for_each_board_func_rsrc'.
+
+Changes since v3:
+- Added Reviewed-by tag.
+- Moved the SPDX tag in bus.c to the first line of the file.
+---
+ drivers/nubus/Makefile |   2 +-
+ drivers/nubus/bus.c    | 117 +++++++++++++++++++++++++++++++++++++++++++++++++
+ drivers/nubus/nubus.c  |  24 +++++-----
+ drivers/nubus/proc.c   |  55 +----------------------
+ include/linux/nubus.h  |  33 ++++++++++++--
+ 5 files changed, 161 insertions(+), 70 deletions(-)
+ create mode 100644 drivers/nubus/bus.c
+
+diff --git a/drivers/nubus/Makefile b/drivers/nubus/Makefile
+index 21bda2031e7e..6d063cde39d1 100644
+--- a/drivers/nubus/Makefile
++++ b/drivers/nubus/Makefile
+@@ -2,6 +2,6 @@
+ # Makefile for the nubus specific drivers.
+ #
+ 
+-obj-y   := nubus.o
++obj-y := nubus.o bus.o
+ 
+ obj-$(CONFIG_PROC_FS) += proc.o
+diff --git a/drivers/nubus/bus.c b/drivers/nubus/bus.c
+new file mode 100644
+index 000000000000..d306c348c857
+--- /dev/null
++++ b/drivers/nubus/bus.c
+@@ -0,0 +1,117 @@
++// SPDX-License-Identifier: GPL-2.0
++//
++// Bus implementation for the NuBus subsystem.
++//
++// Copyright (C) 2017 Finn Thain
++
++#include <linux/device.h>
++#include <linux/list.h>
++#include <linux/nubus.h>
++#include <linux/seq_file.h>
++#include <linux/slab.h>
++
++#define to_nubus_board(d)       container_of(d, struct nubus_board, dev)
++#define to_nubus_driver(d)      container_of(d, struct nubus_driver, driver)
++
++static int nubus_bus_match(struct device *dev, struct device_driver *driver)
++{
++	return 1;
++}
++
++static int nubus_device_probe(struct device *dev)
++{
++	struct nubus_driver *ndrv = to_nubus_driver(dev->driver);
++	int err = -ENODEV;
++
++	if (ndrv->probe)
++		err = ndrv->probe(to_nubus_board(dev));
++	return err;
++}
++
++static int nubus_device_remove(struct device *dev)
++{
++	struct nubus_driver *ndrv = to_nubus_driver(dev->driver);
++	int err = -ENODEV;
++
++	if (dev->driver && ndrv->remove)
++		err = ndrv->remove(to_nubus_board(dev));
++	return err;
++}
++
++struct bus_type nubus_bus_type = {
++	.name		= "nubus",
++	.match		= nubus_bus_match,
++	.probe		= nubus_device_probe,
++	.remove		= nubus_device_remove,
++};
++EXPORT_SYMBOL(nubus_bus_type);
++
++int nubus_driver_register(struct nubus_driver *ndrv)
++{
++	ndrv->driver.bus = &nubus_bus_type;
++	return driver_register(&ndrv->driver);
++}
++EXPORT_SYMBOL(nubus_driver_register);
++
++void nubus_driver_unregister(struct nubus_driver *ndrv)
++{
++	driver_unregister(&ndrv->driver);
++}
++EXPORT_SYMBOL(nubus_driver_unregister);
++
++static struct device nubus_parent = {
++	.init_name	= "nubus",
++};
++
++int __init nubus_bus_register(void)
++{
++	int err;
++
++	err = device_register(&nubus_parent);
++	if (err)
++		return err;
++
++	err = bus_register(&nubus_bus_type);
++	if (!err)
++		return 0;
++
++	device_unregister(&nubus_parent);
++	return err;
++}
++
++static void nubus_device_release(struct device *dev)
++{
++	struct nubus_board *board = to_nubus_board(dev);
++	struct nubus_rsrc *fres, *tmp;
++
++	list_for_each_entry_safe(fres, tmp, &nubus_func_rsrcs, list)
++		if (fres->board == board) {
++			list_del(&fres->list);
++			kfree(fres);
++		}
++	kfree(board);
++}
++
++int nubus_device_register(struct nubus_board *board)
++{
++	board->dev.parent = &nubus_parent;
++	board->dev.release = nubus_device_release;
++	board->dev.bus = &nubus_bus_type;
++	dev_set_name(&board->dev, "slot.%X", board->slot);
++	return device_register(&board->dev);
++}
++
++static int nubus_print_device_name_fn(struct device *dev, void *data)
++{
++	struct nubus_board *board = to_nubus_board(dev);
++	struct seq_file *m = data;
++
++	seq_printf(m, "Slot %X: %s\n", board->slot, board->name);
++	return 0;
++}
++
++int nubus_proc_show(struct seq_file *m, void *data)
++{
++	return bus_for_each_dev(&nubus_bus_type, NULL, m,
++				nubus_print_device_name_fn);
++}
+diff --git a/drivers/nubus/nubus.c b/drivers/nubus/nubus.c
+index 0bb54ccd7a1a..4621ff98138c 100644
+--- a/drivers/nubus/nubus.c
++++ b/drivers/nubus/nubus.c
+@@ -33,7 +33,6 @@
+ /* Globals */
+ 
+ LIST_HEAD(nubus_func_rsrcs);
+-struct nubus_board *nubus_boards;
+ 
+ /* Meaning of "bytelanes":
+ 
+@@ -715,10 +714,9 @@ static int __init nubus_get_board_resource(struct nubus_board *board, int slot,
+ 	return 0;
+ }
+ 
+-static struct nubus_board * __init nubus_add_board(int slot, int bytelanes)
++static void __init nubus_add_board(int slot, int bytelanes)
+ {
+ 	struct nubus_board *board;
+-	struct nubus_board **boardp;
+ 	unsigned char *rp;
+ 	unsigned long dpat;
+ 	struct nubus_dir dir;
+@@ -731,7 +729,7 @@ static struct nubus_board * __init nubus_add_board(int slot, int bytelanes)
+ 
+ 	/* Actually we should probably panic if this fails */
+ 	if ((board = kzalloc(sizeof(*board), GFP_ATOMIC)) == NULL)
+-		return NULL;
++		return;
+ 	board->fblock = rp;
+ 
+ 	/* Dump the format block for debugging purposes */
+@@ -794,7 +792,8 @@ static struct nubus_board * __init nubus_add_board(int slot, int bytelanes)
+ 	if (nubus_readdir(&dir, &ent) == -1) {
+ 		/* We can't have this! */
+ 		pr_err("Slot %X: Board resource not found!\n", slot);
+-		return NULL;
++		kfree(board);
++		return;
+ 	}
+ 
+ 	if (ent.type < 1 || ent.type > 127)
+@@ -823,14 +822,8 @@ static struct nubus_board * __init nubus_add_board(int slot, int bytelanes)
+ 		list_add_tail(&fres->list, &nubus_func_rsrcs);
+ 	}
+ 
+-	/* Put it on the global NuBus board chain. Keep entries in order. */
+-	for (boardp = &nubus_boards; *boardp != NULL;
+-	     boardp = &((*boardp)->next))
+-		/* spin */;
+-	*boardp = board;
+-	board->next = NULL;
+-
+-	return board;
++	if (nubus_device_register(board))
++		put_device(&board->dev);
+ }
+ 
+ static void __init nubus_probe_slot(int slot)
+@@ -876,10 +869,15 @@ static void __init nubus_scan_bus(void)
+ 
+ static int __init nubus_init(void)
+ {
++	int err;
++
+ 	if (!MACH_IS_MAC)
+ 		return 0;
+ 
+ 	nubus_proc_init();
++	err = nubus_bus_register();
++	if (err)
++		return err;
+ 	nubus_scan_bus();
+ 	return 0;
+ }
+diff --git a/drivers/nubus/proc.c b/drivers/nubus/proc.c
+index 60c0f40b4d5e..c2e5a7e6bd3e 100644
+--- a/drivers/nubus/proc.c
++++ b/drivers/nubus/proc.c
+@@ -198,68 +198,17 @@ void nubus_proc_add_rsrc(struct proc_dir_entry *procdir,
+ /*
+  * /proc/nubus stuff
+  */
+-static int nubus_proc_show(struct seq_file *m, void *v)
+-{
+-	const struct nubus_board *board = v;
+-
+-	/* Display header on line 1 */
+-	if (v == SEQ_START_TOKEN)
+-		seq_puts(m, "Nubus devices found:\n");
+-	else
+-		seq_printf(m, "Slot %X: %s\n", board->slot, board->name);
+-	return 0;
+-}
+-
+-static void *nubus_proc_start(struct seq_file *m, loff_t *_pos)
+-{
+-	struct nubus_board *board;
+-	unsigned pos;
+-
+-	if (*_pos > LONG_MAX)
+-		return NULL;
+-	pos = *_pos;
+-	if (pos == 0)
+-		return SEQ_START_TOKEN;
+-	for (board = nubus_boards; board; board = board->next)
+-		if (--pos == 0)
+-			break;
+-	return board;
+-}
+-
+-static void *nubus_proc_next(struct seq_file *p, void *v, loff_t *_pos)
+-{
+-	/* Walk the list of NuBus boards */
+-	struct nubus_board *board = v;
+-
+-	++*_pos;
+-	if (v == SEQ_START_TOKEN)
+-		board = nubus_boards;
+-	else if (board)
+-		board = board->next;
+-	return board;
+-}
+-
+-static void nubus_proc_stop(struct seq_file *p, void *v)
+-{
+-}
+-
+-static const struct seq_operations nubus_proc_seqops = {
+-	.start	= nubus_proc_start,
+-	.next	= nubus_proc_next,
+-	.stop	= nubus_proc_stop,
+-	.show	= nubus_proc_show,
+-};
+ 
+ static int nubus_proc_open(struct inode *inode, struct file *file)
+ {
+-	return seq_open(file, &nubus_proc_seqops);
++	return single_open(file, nubus_proc_show, NULL);
+ }
+ 
+ static const struct file_operations nubus_proc_fops = {
+ 	.open		= nubus_proc_open,
+ 	.read		= seq_read,
+ 	.llseek		= seq_lseek,
+-	.release	= seq_release,
++	.release	= single_release,
+ };
+ 
+ void __init nubus_proc_init(void)
 diff --git a/include/linux/nubus.h b/include/linux/nubus.h
-index d8d63370a28c..55b9a4569a69 100644
+index 2cbc7a199bca..6e8200215321 100644
 --- a/include/linux/nubus.h
 +++ b/include/linux/nubus.h
-@@ -5,16 +5,28 @@
-   Originally written by Alan Cox.
- 
-   Hacked to death by C. Scott Ananian and David Huggins-Daines.
--  
--  Some of the constants in here are from the corresponding
--  NetBSD/OpenBSD header file, by Allen Briggs.  We figured out the
--  rest of them on our own. */
-+*/
-+
+@@ -10,6 +10,7 @@
  #ifndef LINUX_NUBUS_H
  #define LINUX_NUBUS_H
  
++#include <linux/device.h>
  #include <asm/nubus.h>
  #include <uapi/linux/nubus.h>
  
-+struct nubus_dir {
-+	unsigned char *base;
-+	unsigned char *ptr;
-+	int done;
-+	int mask;
-+};
-+
-+struct nubus_dirent {
-+	unsigned char *base;
-+	unsigned char type;
-+	__u32 data;	/* Actually 24 bits used */
-+	int mask;
-+};
-+
- struct nubus_board {
- 	struct nubus_board* next;
- 	struct nubus_dev* first_dev;
-@@ -130,4 +142,11 @@ void nubus_get_rsrc_mem(void *dest, const struct nubus_dirent *dirent,
- 			unsigned int len);
- void nubus_get_rsrc_str(char *dest, const struct nubus_dirent *dirent,
- 			unsigned int maxlen);
-+
-+/* Returns a pointer to the "standard" slot space. */
-+static inline void *nubus_slot_addr(int slot)
-+{
-+	return (void *)(0xF0000000 | (slot << 24));
-+}
-+
- #endif /* LINUX_NUBUS_H */
-diff --git a/include/uapi/linux/nubus.h b/include/uapi/linux/nubus.h
-index f3776cc80f4d..48031e7858f1 100644
---- a/include/uapi/linux/nubus.h
-+++ b/include/uapi/linux/nubus.h
-@@ -221,27 +221,4 @@ enum nubus_display_res_id {
- 	NUBUS_RESID_SIXTHMODE   = 0x0085
+@@ -32,7 +33,7 @@ struct nubus_dirent {
  };
  
--struct nubus_dir
--{
--	unsigned char *base;
--	unsigned char *ptr;
--	int done;
--	int mask;
--};
--
--struct nubus_dirent
--{
--	unsigned char *base;
--	unsigned char type;
--	__u32 data;	/* Actually 24bits used */
--	int mask;
--};
--
--
--/* We'd like to get rid of this eventually.  Only daynaport.c uses it now. */
--static inline void *nubus_slot_addr(int slot)
--{
--	return (void *)(0xF0000000|(slot<<24));
--}
--
- #endif /* _UAPILINUX_NUBUS_H */
+ struct nubus_board {
+-	struct nubus_board *next;
++	struct device dev;
+ 
+ 	/* Only 9-E actually exist, though 0-8 are also theoretically
+ 	   possible, and 0 is a special case which represents the
+@@ -81,8 +82,14 @@ struct nubus_rsrc {
+ 
+ /* This is all NuBus functional resources (used to find devices later on) */
+ extern struct list_head nubus_func_rsrcs;
+-/* This is all NuBus cards */
+-extern struct nubus_board *nubus_boards;
++
++struct nubus_driver {
++	struct device_driver driver;
++	int (*probe)(struct nubus_board *board);
++	int (*remove)(struct nubus_board *board);
++};
++
++extern struct bus_type nubus_bus_type;
+ 
+ /* Generic NuBus interface functions, modelled after the PCI interface */
+ #ifdef CONFIG_PROC_FS
+@@ -119,6 +126,9 @@ struct nubus_rsrc *nubus_next_rsrc_or_null(struct nubus_rsrc *from);
+ #define for_each_func_rsrc(f) \
+ 	for (f = nubus_first_rsrc_or_null(); f; f = nubus_next_rsrc_or_null(f))
+ 
++#define for_each_board_func_rsrc(b, f) \
++	for_each_func_rsrc(f) if (f->board != b) {} else
++
+ /* These are somewhat more NuBus-specific.  They all return 0 for
+    success and -1 for failure, as you'd expect. */
+ 
+@@ -152,6 +162,23 @@ void nubus_seq_write_rsrc_mem(struct seq_file *m,
+ 			      unsigned int len);
+ unsigned char *nubus_dirptr(const struct nubus_dirent *nd);
+ 
++/* Declarations relating to driver model objects */
++int nubus_bus_register(void);
++int nubus_device_register(struct nubus_board *board);
++int nubus_driver_register(struct nubus_driver *ndrv);
++void nubus_driver_unregister(struct nubus_driver *ndrv);
++int nubus_proc_show(struct seq_file *m, void *data);
++
++static inline void nubus_set_drvdata(struct nubus_board *board, void *data)
++{
++	dev_set_drvdata(&board->dev, data);
++}
++
++static inline void *nubus_get_drvdata(struct nubus_board *board)
++{
++	return dev_get_drvdata(&board->dev);
++}
++
+ /* Returns a pointer to the "standard" slot space. */
+ static inline void *nubus_slot_addr(int slot)
+ {
 -- 
 2.13.6
