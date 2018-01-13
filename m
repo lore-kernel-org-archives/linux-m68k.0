@@ -1,196 +1,118 @@
 From: Finn Thain <fthain@telegraphics.com.au>
-Subject: [PATCH v5 07/14] nubus: Remove redundant code
+Subject: [PATCH v5 06/14] nubus: Call proc_mkdir() not more than once per slot
+ directory
 Date: Sat, 13 Jan 2018 17:37:13 -0500 (EST)
-Message-ID: <1c5afcdeeccedae82022c075cd526b8cc6b70c66.1515814167.git.fthain@telegraphics.com.au>
+Message-ID: <b240de568499923f92306d6383c57f16b367ad94.1515814167.git.fthain@telegraphics.com.au>
 References: <cover.1515814167.git.fthain@telegraphics.com.au>
-Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from kvm5.telegraphics.com.au ([98.124.60.144]:43806 "EHLO
-        kvm5.telegraphics.com.au" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1753953AbeAMWhP (ORCPT
-        <rfc822;linux-m68k@vger.kernel.org>); Sat, 13 Jan 2018 17:37:15 -0500
+Return-path: <linux-kernel-owner@vger.kernel.org>
 In-Reply-To: <cover.1515814167.git.fthain@telegraphics.com.au>
-Sender: linux-m68k-owner@vger.kernel.org
-List-Id: linux-m68k@vger.kernel.org
+Sender: linux-kernel-owner@vger.kernel.org
 To: Geert Uytterhoeven <geert@linux-m68k.org>
 Cc: linux-m68k@vger.kernel.org, linux-kernel@vger.kernel.org
+List-Id: linux-m68k@vger.kernel.org
 
-Eliminate unused values from struct nubus_dev to save wasted memory
-(a Radius PrecisionColor 24X card has about 95 functional resources
-and up to six such cards may be fitted). Also remove redundant static
-variable initialization, an unreachable !MACH_IS_MAC conditional,
-the unused nubus_find_device() function, the bogus get_nubus_list()
-prototype and the pointless card_present temporary variable.
+This patch fixes the following WARNING.
+
+proc_dir_entry 'nubus/a' already registered
+Modules linked in:
+CPU: 0 PID: 1 Comm: swapper Tainted: G        W       4.13.0-00036-gd57552077387 #1
+Stack from 01c1bd9c:
+        01c1bd9c 003c2c8b 01c1bdc0 0001b0fe 00000000 00322f4a 01c43a20 01c43b0c
+        01c8c420 01c1bde8 0001b1b8 003a4ac3 00000148 000faa26 00000009 00000000
+        01c1bde0 003a4b6c 01c1bdfc 01c1be20 000faa26 003a4ac3 00000148 003a4b6c
+        01c43a71 01c8c471 01c10000 00326430 0043d00c 00000005 01c71a00 0020bce0
+        00322964 01c1be38 000fac04 01c43a20 01c8c420 01c1bee0 01c8c420 01c1be50
+        000fac4c 01c1bee0 00000000 01c43a20 00000000 01c1bee8 0020bd26 01c1bee0
+Call Trace: [<0001b0fe>] __warn+0xae/0xde
+ [<00322f4a>] memcmp+0x0/0x5c
+ [<0001b1b8>] warn_slowpath_fmt+0x2e/0x36
+ [<000faa26>] proc_register+0xbe/0xd8
+ [<000faa26>] proc_register+0xbe/0xd8
+ [<00326430>] sprintf+0x0/0x20
+ [<0020bce0>] nubus_proc_attach_device+0x0/0x1b8
+ [<00322964>] strcpy+0x0/0x22
+ [<000fac04>] proc_mkdir_data+0x64/0x96
+ [<000fac4c>] proc_mkdir+0x16/0x1c
+ [<0020bd26>] nubus_proc_attach_device+0x46/0x1b8
+ [<0020bce0>] nubus_proc_attach_device+0x0/0x1b8
+ [<00322964>] strcpy+0x0/0x22
+ [<00001ba6>] kernel_pg_dir+0xba6/0x1000
+ [<004339a2>] proc_bus_nubus_add_devices+0x1a/0x2e
+ [<000faa40>] proc_create_data+0x0/0xf2
+ [<0003297c>] parse_args+0x0/0x2d4
+ [<00433a08>] nubus_proc_init+0x52/0x5a
+ [<00433944>] nubus_init+0x0/0x44
+ [<00433982>] nubus_init+0x3e/0x44
+ [<000020dc>] do_one_initcall+0x38/0x196
+ [<000020a4>] do_one_initcall+0x0/0x196
+ [<0003297c>] parse_args+0x0/0x2d4
+ [<00322964>] strcpy+0x0/0x22
+ [<00040004>] __up_read+0xe/0x40
+ [<004231d4>] repair_env_string+0x0/0x7a
+ [<0042312e>] kernel_init_freeable+0xee/0x194
+ [<00423146>] kernel_init_freeable+0x106/0x194
+ [<00433944>] nubus_init+0x0/0x44
+ [<000a6000>] kfree+0x0/0x156
+ [<0032768c>] kernel_init+0x0/0xda
+ [<00327698>] kernel_init+0xc/0xda
+ [<0032768c>] kernel_init+0x0/0xda
+ [<00002a90>] ret_from_kernel_thread+0xc/0x14
+---[ end trace 14a6d619908ea253 ]---
+------------[ cut here ]------------
+
+This gets repeated with each additional functional reasource.
+
+The problem here is the call to proc_mkdir() when the directory already
+exists. Each nubus_board gets a directory, such as /proc/bus/nubus/s/
+where s is the hex slot number. Therefore, store the 'procdir' pointer
+in struct nubus_board instead of struct nubus_dev.
 
 Tested-by: Stan Johnson <userm57@yahoo.com>
 Signed-off-by: Finn Thain <fthain@telegraphics.com.au>
 ---
- drivers/nubus/nubus.c | 57 ++++++++++++++++++++-------------------------------
- drivers/nubus/proc.c  |  2 --
- include/linux/nubus.h | 17 +--------------
- 3 files changed, 23 insertions(+), 53 deletions(-)
+ drivers/nubus/proc.c  | 6 +++++-
+ include/linux/nubus.h | 5 +++--
+ 2 files changed, 8 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/nubus/nubus.c b/drivers/nubus/nubus.c
-index e7c7e49a074a..4ae5c420f13f 100644
---- a/drivers/nubus/nubus.c
-+++ b/drivers/nubus/nubus.c
-@@ -282,23 +282,6 @@ EXPORT_SYMBOL(nubus_rewinddir);
- /* Driver interface functions, more or less like in pci.c */
- 
- struct nubus_dev*
--nubus_find_device(unsigned short category, unsigned short type,
--		  unsigned short dr_hw, unsigned short dr_sw,
--		  const struct nubus_dev *from)
--{
--	struct nubus_dev *itor = from ? from->next : nubus_devices;
--
--	while (itor) {
--		if (itor->category == category && itor->type == type &&
--		    itor->dr_hw == dr_hw && itor->dr_sw == dr_sw)
--			return itor;
--		itor = itor->next;
--	}
--	return NULL;
--}
--EXPORT_SYMBOL(nubus_find_device);
--
--struct nubus_dev*
- nubus_find_type(unsigned short category, unsigned short type,
- 		const struct nubus_dev *from)
- {
-@@ -469,8 +452,10 @@ nubus_get_functional_resource(struct nubus_board *board, int slot,
- 		}
- 		case NUBUS_RESID_NAME:
- 		{
--			nubus_get_rsrc_str(dev->name, &ent, sizeof(dev->name));
--			pr_debug("    name: %s\n", dev->name);
-+			char name[64];
-+
-+			nubus_get_rsrc_str(name, &ent, sizeof(name));
-+			pr_debug("    name: %s\n", name);
- 			break;
- 		}
- 		case NUBUS_RESID_DRVRDIR:
-@@ -479,32 +464,39 @@ nubus_get_functional_resource(struct nubus_board *board, int slot,
- 			   use this :-) */
- 			struct nubus_dir drvr_dir;
- 			struct nubus_dirent drvr_ent;
-+			unsigned char *driver;
- 
- 			nubus_get_subdir(&ent, &drvr_dir);
- 			nubus_readdir(&drvr_dir, &drvr_ent);
--			dev->driver = nubus_dirptr(&drvr_ent);
--			pr_debug("    driver at: 0x%p\n", dev->driver);
-+			driver = nubus_dirptr(&drvr_ent);
-+			pr_debug("    driver at: 0x%p\n", driver);
- 			break;
- 		}
- 		case NUBUS_RESID_MINOR_BASEOS:
-+		{
- 			/* We will need this in order to support
- 			   multiple framebuffers.  It might be handy
- 			   for Ethernet as well */
--			nubus_get_rsrc_mem(&dev->iobase, &ent, 4);
--			pr_debug("    memory offset: 0x%08lx\n", dev->iobase);
-+			u32 base_offset;
-+
-+			nubus_get_rsrc_mem(&base_offset, &ent, 4);
-+			pr_debug("    memory offset: 0x%08x\n", base_offset);
- 			break;
-+		}
- 		case NUBUS_RESID_MINOR_LENGTH:
-+		{
- 			/* Ditto */
--			nubus_get_rsrc_mem(&dev->iosize, &ent, 4);
--			pr_debug("    memory length: 0x%08lx\n", dev->iosize);
-+			u32 length;
-+
-+			nubus_get_rsrc_mem(&length, &ent, 4);
-+			pr_debug("    memory length: 0x%08x\n", length);
- 			break;
-+		}
- 		case NUBUS_RESID_FLAGS:
--			dev->flags = ent.data;
--			pr_debug("    flags: 0x%06x\n", dev->flags);
-+			pr_debug("    flags: 0x%06x\n", ent.data);
- 			break;
- 		case NUBUS_RESID_HWDEVID:
--			dev->hwdevid = ent.data;
--			pr_debug("    hwdevid: 0x%06x\n", dev->hwdevid);
-+			pr_debug("    hwdevid: 0x%06x\n", ent.data);
- 			break;
- 		default:
- 			/* Local/Private resources have their own
-@@ -798,11 +790,8 @@ static void __init nubus_probe_slot(int slot)
- 
- 	rp = nubus_rom_addr(slot);
- 	for (i = 4; i; i--) {
--		int card_present;
--
- 		rp--;
--		card_present = hwreg_present(rp);
--		if (!card_present)
-+		if (!hwreg_present(rp))
- 			continue;
- 
- 		dp = *rp;
-@@ -839,8 +828,6 @@ static int __init nubus_init(void)
- 	if (!MACH_IS_MAC)
- 		return 0;
- 
--	nubus_devices = NULL;
--	nubus_boards = NULL;
- 	nubus_scan_bus();
- 	nubus_proc_init();
- 	return 0;
 diff --git a/drivers/nubus/proc.c b/drivers/nubus/proc.c
-index 91211192f36f..41ec859bdd8b 100644
+index fc20dbcd3b9a..91211192f36f 100644
 --- a/drivers/nubus/proc.c
 +++ b/drivers/nubus/proc.c
-@@ -230,8 +230,6 @@ void __init proc_bus_nubus_add_devices(void)
- void __init nubus_proc_init(void)
- {
- 	proc_create("nubus", 0, NULL, &nubus_proc_fops);
--	if (!MACH_IS_MAC)
--		return;
- 	proc_bus_nubus_dir = proc_mkdir("bus/nubus", NULL);
- 	proc_create("devices", 0, proc_bus_nubus_dir, &nubus_devices_proc_fops);
- 	proc_bus_nubus_add_devices();
+@@ -134,9 +134,13 @@ int nubus_proc_attach_device(struct nubus_dev *dev)
+ 		return -1;
+ 	}
+ 		
++	if (dev->board->procdir)
++		return 0;
++
+ 	/* Create a directory */
+ 	snprintf(name, sizeof(name), "%x", dev->board->slot);
+-	e = dev->procdir = proc_mkdir(name, proc_bus_nubus_dir);
++	e = proc_mkdir(name, proc_bus_nubus_dir);
++	dev->board->procdir = e;
+ 	if (!e)
+ 		return -ENOMEM;
+ 
 diff --git a/include/linux/nubus.h b/include/linux/nubus.h
-index 2245430e1357..3c7b236074b3 100644
+index e525669f1991..2245430e1357 100644
 --- a/include/linux/nubus.h
 +++ b/include/linux/nubus.h
-@@ -70,16 +70,6 @@ struct nubus_dev {
- 	unsigned short type;
- 	unsigned short dr_sw;
- 	unsigned short dr_hw;
--	/* This is the device's name rather than the board's.
--	   Sometimes they are different.  Usually the board name is
--	   more correct. */
--	char name[64];
--	/* MacOS driver (I kid you not) */
--	unsigned char* driver;
--	/* Actually this is an offset */
--	unsigned long iobase;
--	unsigned long iosize;
--	unsigned char flags, hwdevid;
- 	
- 	/* Functional directory */
- 	unsigned char* directory;
-@@ -98,14 +88,9 @@ extern void nubus_proc_init(void);
- #else
- static inline void nubus_proc_init(void) {}
- #endif
--int get_nubus_list(char *buf);
+@@ -53,13 +53,14 @@ struct nubus_board {
+ 	unsigned char rev;
+ 	unsigned char format;
+ 	unsigned char lanes;
 +
- int nubus_proc_attach_device(struct nubus_dev *dev);
- /* If we need more precision we can add some more of these */
--struct nubus_dev* nubus_find_device(unsigned short category,
--				    unsigned short type,
--				    unsigned short dr_hw,
--				    unsigned short dr_sw,
--				    const struct nubus_dev* from);
- struct nubus_dev* nubus_find_type(unsigned short category,
- 				  unsigned short type,
- 				  const struct nubus_dev* from);
++	/* Directory entry in /proc/bus/nubus */
++	struct proc_dir_entry *procdir;
+ };
+ 
+ struct nubus_dev {
+ 	/* Next link in device list */
+ 	struct nubus_dev* next;
+-	/* Directory entry in /proc/bus/nubus */
+-	struct proc_dir_entry* procdir;
+ 
+ 	/* The functional resource ID of this device */
+ 	unsigned char resid;
 -- 
 2.13.6
