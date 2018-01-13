@@ -1,120 +1,78 @@
-From: Konrad Rzeszutek Wilk <konrad@darnok.org>
-Subject: Re: [PATCH 21/33] dma-mapping: add an arch_dma_supported hook
-Date: Fri, 12 Jan 2018 08:17:28 -0500
-Message-ID: <20180112131727.GB26900__23106.9616078914$1515762952$gmane$org@localhost.localdomain>
-References: <20180110080027.13879-1-hch@lst.de>
- <20180110080027.13879-22-hch@lst.de>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+From: Finn Thain <fthain@telegraphics.com.au>
+Subject: [PATCH v5 00/14] Modernization and fixes for NuBus subsystem
+Date: Sat, 13 Jan 2018 17:37:13 -0500 (EST)
+Message-ID: <cover.1515814167.git.fthain@telegraphics.com.au>
 Return-path: <linux-m68k-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <20180110080027.13879-22-hch@lst.de>
+Received: from kvm5.telegraphics.com.au ([98.124.60.144]:43790 "EHLO
+        kvm5.telegraphics.com.au" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1753170AbeAMWhO (ORCPT
+        <rfc822;linux-m68k@vger.kernel.org>); Sat, 13 Jan 2018 17:37:14 -0500
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Christoph Hellwig <hch@lst.de>
-Cc: iommu@lists.linux-foundation.org, linux-alpha@vger.kernel.org, linux-snps-arc@lists.infradead.org, linux-arm-kernel@lists.infradead.org, linux-c6x-dev@linux-c6x.org, linux-cris-kernel@axis.com, linux-hexagon@vger.kernel.org, linux-ia64@vger.kernel.org, linux-m68k@lists.linux-m68k.org, linux-metag@vger.kernel.org, Michal Simek <monstr@monstr.eu>, linux-mips@linux-mips.org, linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, patches@groups.riscv.org, linux-s390@vger.kernel.org, linux-sh@vger.kernel.org, sparclinux@vger.kernel.org, Guan Xuetao <gxt@mprc.pku.edu.cn>, x86@kernel.org, linux-arch@vger.kernel.org, linux-kernel@vger.kernel.org
+To: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: linux-m68k@vger.kernel.org, linux-kernel@vger.kernel.org
 
-On Wed, Jan 10, 2018 at 09:00:15AM +0100, Christoph Hellwig wrote:
-> To implement the x86 forbid_dac and iommu_sac_force we want an arch hook
-> so that it can apply the global options across all dma_map_ops
-> implementations.
-> 
-> Signed-off-by: Christoph Hellwig <hch@lst.de>
+This series begins with cleanups and fixes for the NuBus subsystem and
+finishes with a patch to add support for the Linux Driver Model.
+A separate series (which requires this one) modernizes NuBus drivers.
 
-Reviewed-by: Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>
-> ---
->  arch/x86/include/asm/dma-mapping.h |  3 +++
->  arch/x86/kernel/pci-dma.c          | 19 ++++++++++++-------
->  include/linux/dma-mapping.h        | 11 +++++++++++
->  3 files changed, 26 insertions(+), 7 deletions(-)
-> 
-> diff --git a/arch/x86/include/asm/dma-mapping.h b/arch/x86/include/asm/dma-mapping.h
-> index dfdc9357a349..6277c83c0eb1 100644
-> --- a/arch/x86/include/asm/dma-mapping.h
-> +++ b/arch/x86/include/asm/dma-mapping.h
-> @@ -30,6 +30,9 @@ static inline const struct dma_map_ops *get_arch_dma_ops(struct bus_type *bus)
->  	return dma_ops;
->  }
->  
-> +int arch_dma_supported(struct device *dev, u64 mask);
-> +#define arch_dma_supported arch_dma_supported
-> +
->  bool arch_dma_alloc_attrs(struct device **dev, gfp_t *gfp);
->  #define arch_dma_alloc_attrs arch_dma_alloc_attrs
->  
-> diff --git a/arch/x86/kernel/pci-dma.c b/arch/x86/kernel/pci-dma.c
-> index 61a8f1cb3829..df7ab02f959f 100644
-> --- a/arch/x86/kernel/pci-dma.c
-> +++ b/arch/x86/kernel/pci-dma.c
-> @@ -215,7 +215,7 @@ static __init int iommu_setup(char *p)
->  }
->  early_param("iommu", iommu_setup);
->  
-> -int x86_dma_supported(struct device *dev, u64 mask)
-> +int arch_dma_supported(struct device *dev, u64 mask)
->  {
->  #ifdef CONFIG_PCI
->  	if (mask > 0xffffffff && forbid_dac > 0) {
-> @@ -224,12 +224,6 @@ int x86_dma_supported(struct device *dev, u64 mask)
->  	}
->  #endif
->  
-> -	/* Copied from i386. Doesn't make much sense, because it will
-> -	   only work for pci_alloc_coherent.
-> -	   The caller just has to use GFP_DMA in this case. */
-> -	if (mask < DMA_BIT_MASK(24))
-> -		return 0;
-> -
->  	/* Tell the device to use SAC when IOMMU force is on.  This
->  	   allows the driver to use cheaper accesses in some cases.
->  
-> @@ -249,6 +243,17 @@ int x86_dma_supported(struct device *dev, u64 mask)
->  
->  	return 1;
->  }
-> +EXPORT_SYMBOL(arch_dma_supported);
-> +
-> +int x86_dma_supported(struct device *dev, u64 mask)
-> +{
-> +	/* Copied from i386. Doesn't make much sense, because it will
-> +	   only work for pci_alloc_coherent.
-> +	   The caller just has to use GFP_DMA in this case. */
-> +	if (mask < DMA_BIT_MASK(24))
-> +		return 0;
-> +	return 1;
-> +}
->  
->  static int __init pci_iommu_init(void)
->  {
-> diff --git a/include/linux/dma-mapping.h b/include/linux/dma-mapping.h
-> index 88bcb1a8211d..d67742dad904 100644
-> --- a/include/linux/dma-mapping.h
-> +++ b/include/linux/dma-mapping.h
-> @@ -576,6 +576,14 @@ static inline int dma_mapping_error(struct device *dev, dma_addr_t dma_addr)
->  	return 0;
->  }
->  
-> +/*
-> + * This is a hack for the legacy x86 forbid_dac and iommu_sac_force. Please
-> + * don't use this is new code.
-> + */
-> +#ifndef arch_dma_supported
-> +#define arch_dma_supported(dev, mask)	(1)
-> +#endif
-> +
->  static inline void dma_check_mask(struct device *dev, u64 mask)
->  {
->  	if (sme_active() && (mask < (((u64)sme_get_me_mask() << 1) - 1)))
-> @@ -588,6 +596,9 @@ static inline int dma_supported(struct device *dev, u64 mask)
->  
->  	if (!ops)
->  		return 0;
-> +	if (!arch_dma_supported(dev, mask))
-> +		return 0;
-> +
->  	if (!ops->dma_supported)
->  		return 1;
->  	return ops->dma_supported(dev, mask);
-> -- 
-> 2.14.2
-> 
+Changes since v1:
+- Added the missing NULL check in nubus_device_remove().
+- Squashed the two /proc/bus/nubus/s/ patches into one patch.
+- Combined the two sets of /proc/bus/nubus file operations into one set.
+- Used the name 'nubus_rsrc' instead of 'nubus_functional_resource'.
+- Used the name 'nubus_device_register' instead of 'nubus_device_add'.
+- Dropped the unused EXPORT_SYMBOL(nubus_seq_write_rsrc_mem).
+- Replaced licensing text in the new file with SPDX-License-Identifier.
+
+Changes since v2:
+- Implemented an idiomatic device release function for nubus boards.
+- Removed the global nubus_boards linked list.
+- Removed nubus_board pointer from proc dir entry private data to improve
+  modularity.
+- Adopted the standard linked list implementation.
+- Disambiguated unrecognized and empty resources under /proc/bus/nubus.
+- Reduced redundancy in proc dir entry private data to save some memory.
+- Replaced /proc/nubus custom seq file ops with single_open().
+
+Changes since v3:
+- Added Acked-by and Reviewed-by tags.
+- Moved the SPDX tag in bus.c to the first line of the file.
+
+Changes since v4:
+- Addressed some code style issues.
+
+
+Finn Thain (14):
+  nubus: Avoid array underflow and overflow
+  nubus: Fix up header split
+  nubus: Use static functions where possible
+  nubus: Fix log spam
+  nubus: Validate slot resource IDs
+  nubus: Call proc_mkdir() not more than once per slot directory
+  nubus: Remove redundant code
+  nubus: Clean up whitespace
+  nubus: Generalize block resource handling
+  nubus: Rework /proc/bus/nubus/s/ implementation
+  nubus: Rename struct nubus_dev
+  nubus: Adopt standard linked list implementation
+  nubus: Add expansion_type values for various Mac models
+  nubus: Add support for the driver model
+
+ arch/m68k/include/asm/macintosh.h       |   9 +-
+ arch/m68k/mac/config.c                  | 110 +++----
+ drivers/net/ethernet/8390/mac8390.c     |  33 +-
+ drivers/net/ethernet/cirrus/mac89x0.c   |   6 +-
+ drivers/net/ethernet/natsemi/macsonic.c |  38 ++-
+ drivers/nubus/Makefile                  |   2 +-
+ drivers/nubus/bus.c                     | 117 +++++++
+ drivers/nubus/nubus.c                   | 542 +++++++++++++++++---------------
+ drivers/nubus/proc.c                    | 281 ++++++++---------
+ drivers/video/fbdev/macfb.c             |  10 +-
+ include/linux/nubus.h                   | 189 +++++++----
+ include/uapi/linux/nubus.h              |  23 --
+ 12 files changed, 762 insertions(+), 598 deletions(-)
+ create mode 100644 drivers/nubus/bus.c
+
+-- 
+2.13.6
