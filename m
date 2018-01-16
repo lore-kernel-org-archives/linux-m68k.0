@@ -1,40 +1,16 @@
-From: Finn Thain <fthain@telegraphics.com.au>
-Subject: [PATCH] MAINTAINERS: Add NuBus subsystem entry
-Date: Sun, 14 Jan 2018 22:41:13 -0500 (EST)
-Message-ID: <a3359f6905dae1beac9e88e0eb68387ca8400d78.1515925759.git.fthain@telegraphics.com.au>
+From: Tom Crist <tomaskova@novybydzov.cz>
+Subject: =?utf-8?Q?Neujahrsspende_von_4.800.000_=E2=82=AC?=
+Date: Tue, 16 Jan 2018 01:35:34 +0100 (CET)
+Message-ID: <19957809.41327.1516062934665.JavaMail.zimbra@novybydzov.cz>
+Reply-To: Tom Crist <tomcrist2009@gmail.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8BIT
 Return-path: <linux-m68k-owner@vger.kernel.org>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org
 
-This is legacy code but it might as well have an official maintainer.
 
-Cc: linux-m68k@lists.linux-m68k.org
-Signed-off-by: Finn Thain <fthain@telegraphics.com.au>
----
- MAINTAINERS | 9 +++++++++
- 1 file changed, 9 insertions(+)
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 2811a211632c..2bf5a5aee278 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -9652,6 +9652,15 @@ S:	Supported
- F:	Documentation/filesystems/ntfs.txt
- F:	fs/ntfs/
- 
-+NUBUS SUBSYSTEM
-+M:	Finn Thain <fthain@telegraphics.com.au>
-+L:	linux-m68k@lists.linux-m68k.org
-+S:	Maintained
-+F:	arch/*/include/asm/nubus.h
-+F:	drivers/nubus/
-+F:	include/linux/nubus.h
-+F:	include/uapi/linux/nubus.h
-+
- NVIDIA (rivafb and nvidiafb) FRAMEBUFFER DRIVER
- M:	Antonino Daplas <adaplas@gmail.com>
- L:	linux-fbdev@vger.kernel.org
 -- 
-2.13.6
+ Hallo, Sie haben eine Spende von 4.800.000,00 Euro, ich habe die America Lottery in Amerika im Wert von 40 Millionen Dollar gewonnen und ich gebe einen Teil davon an fünf glückliche Menschen und Wohltätigkeits-Häuser in Erinnerung an meine verstorbene Frau, die an Krebs gestorben ist. Kontaktieren Sie mich für weitere Details:(tomcrist2009@gmail.com)
