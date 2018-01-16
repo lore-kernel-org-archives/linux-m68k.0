@@ -1,16 +1,19 @@
-From: Tom Crist <tomaskova@novybydzov.cz>
-Subject: =?utf-8?Q?Neujahrsspende_von_4.800.000_=E2=82=AC?=
-Date: Tue, 16 Jan 2018 01:35:34 +0100 (CET)
-Message-ID: <19957809.41327.1516062934665.JavaMail.zimbra@novybydzov.cz>
-Reply-To: Tom Crist <tomcrist2009@gmail.com>
+From: Christoph Hellwig <hch@infradead.org>
+Subject: Re: consolidate direct dma mapping V4
+Date: Mon, 15 Jan 2018 23:52:43 -0800
+Message-ID: <20180116075243.GA12693__7978.26699349589$1516089066$gmane$org@infradead.org>
+References: <20180112084232.2857-1-hch@lst.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain; charset=us-ascii
 Return-path: <linux-m68k-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <20180112084232.2857-1-hch@lst.de>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
+To: Christoph Hellwig <hch@lst.de>
+Cc: iommu@lists.linux-foundation.org, linux-mips@linux-mips.org, linux-ia64@vger.kernel.org, linux-sh@vger.kernel.org, sparclinux@vger.kernel.org, Guan Xuetao <gxt@mprc.pku.edu.cn>, linux-arch@vger.kernel.org, linux-s390@vger.kernel.org, linux-c6x-dev@linux-c6x.org, linux-hexagon@vger.kernel.org, x86@kernel.org, Konrad Rzeszutek Wilk <konrad@darnok.org>, linux-snps-arc@lists.infradead.org, linux-m68k@lists.linux-m68k.org, patches@groups.riscv.org, linux-metag@vger.kernel.org, linux-arm-kernel@lists.infradead.org, Michal Simek <monstr@monstr.eu>, linux-parisc@vger.kernel.org, linux-cris-kernel@axis.com, linux-kernel@vger.kernel.org, linux-alpha@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
 
-
-
--- 
- Hallo, Sie haben eine Spende von 4.800.000,00 Euro, ich habe die America Lottery in Amerika im Wert von 40 Millionen Dollar gewonnen und ich gebe einen Teil davon an fünf glückliche Menschen und Wohltätigkeits-Häuser in Erinnerung an meine verstorbene Frau, die an Krebs gestorben ist. Kontaktieren Sie mich für weitere Details:(tomcrist2009@gmail.com)
+I've pulled this into the dma-mapping for-next branch so that we get
+a few days exposure before then end of the merge window.  If there is
+anything important (e.g. the powerpc naming issue) please send
+incremental patches.
