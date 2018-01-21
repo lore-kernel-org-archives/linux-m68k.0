@@ -1,16 +1,16 @@
-From: Andrew <zhaopin@cmpbook.com>
-Subject: Reply
-Date: Tue, 23 Jan 2018 16:53:35 +0200
-Message-ID: <20b88155-55aa-46ac-9e73-f6c2cb1fae63@ad.cmpbook.com>
-Reply-To: <andrewwetkas@gmail.com>
+From: defina@ipb.ac.id
+Subject: Darlehen
+Date: Sun, 21 Jan 2018 22:35:19 +0530
+Message-ID: <20180121170437.AF24F2BC889D@mail.ipb.ac.id>
+Reply-To: alexgrtz5@gmail.com
 Mime-Version: 1.0
-Content-Type: text/plain; charset="Windows-1251"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <linux-m68k-owner@vger.kernel.org>
+Content-Description: Mail message body
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
+To: Recipients <defina@ipb.ac.id>
 
-Dear Sir,
-I am Andrew Wetkas.Personal Assistant to a former Governor in Nigeria.  We need your assistance to  invest a huge sum in your country. I will give you further details once I hear from you.
-Regards
-Andrew
+Ben=F6tigen Sie Privat- oder Gesch=E4ftskredite ohne Stress und schnelle Zu=
+stimmung? Wenn ja, kontaktieren Sie uns bitte alexgrtz5@gmail.com
