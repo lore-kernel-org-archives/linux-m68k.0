@@ -1,35 +1,16 @@
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: Re: [PATCH] MAINTAINERS: Add NuBus subsystem entry
-Date: Tue, 16 Jan 2018 19:11:21 +0100
-Message-ID: <CAMuHMdW9DqagSSDjA1dUf322u+1eiK5DymSLAddvidXfRkcU_w__21658.0940330916$1516126227$gmane$org@mail.gmail.com>
-References: <a3359f6905dae1beac9e88e0eb68387ca8400d78.1515925759.git.fthain@telegraphics.com.au>
+From: Andrew <zhaopin@cmpbook.com>
+Subject: Reply
+Date: Tue, 23 Jan 2018 16:53:35 +0200
+Message-ID: <20b88155-55aa-46ac-9e73-f6c2cb1fae63@ad.cmpbook.com>
+Reply-To: <andrewwetkas@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset="Windows-1251"
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-m68k-owner@vger.kernel.org>
-In-Reply-To: <a3359f6905dae1beac9e88e0eb68387ca8400d78.1515925759.git.fthain@telegraphics.com.au>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Finn Thain <fthain@telegraphics.com.au>
-Cc: linux-m68k <linux-m68k@lists.linux-m68k.org>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
 
-Hi Finn,
-
-On Mon, Jan 15, 2018 at 4:41 AM, Finn Thain <fthain@telegraphics.com.au> wrote:
-> This is legacy code but it might as well have an official maintainer.
->
-> Cc: linux-m68k@lists.linux-m68k.org
-> Signed-off-by: Finn Thain <fthain@telegraphics.com.au>
-
-Thanks for stepping up!
-Applied and queued for v4.16.
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+Dear Sir,
+I am Andrew Wetkas.Personal Assistant to a former Governor in Nigeria.  We need your assistance to  invest a huge sum in your country. I will give you further details once I hear from you.
+Regards
+Andrew
