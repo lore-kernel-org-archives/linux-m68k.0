@@ -1,38 +1,32 @@
-From: Peter Schuster <femi.ageuh@gmail.com>
-Subject: =?UTF-8?Q?Darlehen_Geld_f=C3=BCr_Einzelpersonen_und_Fachleute_in_w?=
-        =?UTF-8?Q?eniger_als_72_Stunden?=
-Date: Fri, 26 Jan 2018 08:22:47 +0100
-Message-ID: <CACKcKZ-YTVoO8xO=VcRR-F_91T=fQ=MZa2wBTk_EaRT7GRz52Q__19688.0235955634$1516951322$gmane$org@mail.gmail.com>
-Reply-To: klaus.peterschuster@outlook.de
+From: mustapha ali <mustaphaali0001@gmail.com>
+Subject: GREETINGS FROM MR.MUSTAPHA ALI.
+Date: Sat, 27 Jan 2018 09:30:01 +0100
+Message-ID: <CAFK+uu=SfEmhP7gwajLYGHWu5zk4Lnh=pZAtefhukKwLr-5Yqg__30487.6682501801$1517041759$gmane$org@mail.gmail.com>
+Reply-To: mustaphaali7911@gmail.com
 Mime-Version: 1.0
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 Return-path: <linux-m68k-owner@vger.kernel.org>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
 
-Hallo,
+My Dear Friend.
 
-Sind Sie in einer schwierigen Situation, f=C3=BCr die Sie sich f=C3=BCr ein
-Darlehen suchen? Ben=C3=B6tigen Sie eine Finanzierung, um eine Schuld zu
-begleichen oder eine Aktivit=C3=A4t zu finanzieren? Haben Sie einen
-Verbraucherkredit, eine Hypothek, einen pers=C3=B6nlichen Kredit, eine
-Hypothek, Investition Darlehen, Schuldenkonsolidierung Darlehen oder
-andere braucht?
+I am Mr. Mustapha  Ali  a banker in Bank of Africa Burkina Faso West
+Africa, Please i want to transfer an abandoned sum of 13.5 millions
+USD to your account.50% will be for you and 50% for me.
 
-Ich bin ein einzelner Investor. I zur Verf=C3=BCgung stellen die Kredit
-kurz-, mittel- und langfristige. Ihr Finanzierungsbedingungen sind
-sehr einfach und meine Zinssatz betr=C3=A4gt 3% pro Jahr.
+No risk involved. Respond back to me if you are interested along with
+your personal information needed below for more details.
 
-F=C3=BCr alle Anfragen, bleibe ich zur Verf=C3=BCgung, um Ihre Fragen zu be=
-antworten.
+1. Full name:.........
+2. Current Address:.........
+3. Phone.............
+4. Occupation:.............
+5. Age:............
+6. Country:........
+7. Sex........
+8. Your Passport or ID card or Driving License
 
-Danke, dass Sie mir per E-Mail an Sie von  :   klaus.peterschuster@outlook.=
-de
+Thanks.
 
-Mit freundlichen Gr=C3=BC=C3=9Fen.
-
-Peter Schuster
-
-Financial Bank
-https://firstfinancialsa.com/de
+Mr. Mustapha  Ali
