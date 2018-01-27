@@ -1,85 +1,182 @@
 From: Finn Thain <fthain@telegraphics.com.au>
-Subject: [PATCH] m68k/mac: Fix apparent race condition in Baboon interrupt
- dispatch
+Subject: [PATCH] macintosh/via-pmu68k: Initialize PMU driver with setup_arch
+ and arch_initcall
 Date: Sat, 27 Jan 2018 18:51:40 -0500 (EST)
-Message-ID: <20180127235140.CBFF12962D__1166.65222817591$1517097030$gmane$org@kvm5.telegraphics.com.au>
+Message-ID: <20180127235140.EA71C296D4__39573.8182393417$1517097035$gmane$org@kvm5.telegraphics.com.au>
 Return-path: <linux-m68k-owner@vger.kernel.org>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org
+To: Benjamin Herrenschmidt <benh@kernel.crashing.org>
+Cc: Geert Uytterhoeven <geert@linux-m68k.org>, linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
 
-The algorithm used in baboon_irq() appears to be subject to a race
-condition: an IRQ flag could be lost if asserted between the MOV
-instructions from and to the interrupt flag register. However,
-testing shows that the write to the flag register has no effect.
-Rewrite this loop to remove the apparent race condition.
+The PMU watchdog will power down the system if the kernel is slow
+to start up, e.g. due to unpacking a large initrd. The powerpc
+version of this driver (via-pmu.c) has a solution for the same
+problem. It uses this call sequence:
 
-No-one seems to know how to clear Baboon IRQ flags, or whether
-that's even possible, so add a comment about this.
+setup_arch
+	find_via_pmu
+		init_pmu
+...
+arch_initcall
+	via_pmu_start
 
+Bring via-pmu68k.c into line with via-pmu.c to fix this issue.
+
+Cc: Geert Uytterhoeven <geert@linux-m68k.org>
 Tested-by: Stan Johnson <userm57@yahoo.com>
 Signed-off-by: Finn Thain <fthain@telegraphics.com.au>
 ---
- arch/m68k/mac/baboon.c | 27 ++++++++-------------------
- 1 file changed, 8 insertions(+), 19 deletions(-)
+ arch/m68k/mac/config.c         |  4 ++
+ drivers/macintosh/via-pmu68k.c | 89 +++++++++++++++++++++++++++++-------------
+ 2 files changed, 65 insertions(+), 28 deletions(-)
 
-diff --git a/arch/m68k/mac/baboon.c b/arch/m68k/mac/baboon.c
-index c7ea6475ef9b..a7d280220662 100644
---- a/arch/m68k/mac/baboon.c
-+++ b/arch/m68k/mac/baboon.c
-@@ -18,10 +18,6 @@
- int baboon_present;
- static volatile struct baboon *baboon;
+diff --git a/arch/m68k/mac/config.c b/arch/m68k/mac/config.c
+index 95d548d8cc8a..17d9380aa7e6 100644
+--- a/arch/m68k/mac/config.c
++++ b/arch/m68k/mac/config.c
+@@ -26,6 +26,7 @@
+ #include <linux/platform_device.h>
+ #include <linux/adb.h>
+ #include <linux/cuda.h>
++#include <linux/pmu.h>
+ #include <linux/rtc.h>
  
--#if 0
--extern int macide_ack_intr(struct ata_channel *);
--#endif
--
- /*
-  * Baboon initialization.
-  */
-@@ -41,33 +37,26 @@ void __init baboon_init(void)
+ #include <asm/setup.h>
+@@ -906,6 +907,9 @@ static void __init mac_identify(void)
+ #ifdef CONFIG_ADB_CUDA
+ 	find_via_cuda();
+ #endif
++#ifdef CONFIG_ADB_PMU68K
++	find_via_pmu();
++#endif
  }
  
- /*
-- * Baboon interrupt handler. This works a lot like a VIA.
-+ * Baboon interrupt handler.
-+ * XXX how do you clear a pending IRQ? is it even necessary?
-  */
+ static void __init mac_report_hardware(void)
+diff --git a/drivers/macintosh/via-pmu68k.c b/drivers/macintosh/via-pmu68k.c
+index 25465fb91ec9..7d9c4baf8c11 100644
+--- a/drivers/macintosh/via-pmu68k.c
++++ b/drivers/macintosh/via-pmu68k.c
+@@ -109,6 +109,7 @@ static int pmu_autopoll(int devs);
+ void pmu_poll(void);
+ static int pmu_reset_bus(void);
  
- static void baboon_irq(struct irq_desc *desc)
++static int init_pmu(void);
+ static void pmu_start(void);
+ static void send_byte(int x);
+ static void recv_byte(void);
+@@ -171,23 +172,76 @@ static s8 pmu_data_len[256][2] = {
+ /*f8*/	{-1,-1},{-1,-1},{-1,-1},{-1,-1},{-1,-1},{-1,-1},{-1,-1},{-1,-1},
+ };
+ 
+-int pmu_probe(void)
++int __init find_via_pmu(void)
  {
--	int irq_bit, irq_num;
--	unsigned char events;
-+	short events, irq_bit;
-+	int irq_num;
+-	if (macintosh_config->adb_type == MAC_ADB_PB1) {
++	switch (macintosh_config->adb_type) {
++	case MAC_ADB_PB1:
+ 		pmu_kind = PMU_68K_V1;
+-	} else if (macintosh_config->adb_type == MAC_ADB_PB2) {
++		break;
++	case MAC_ADB_PB2:
+ 		pmu_kind = PMU_68K_V2;
+-	} else {
++		break;
++	default:
++		pmu_kind = PMU_UNKNOWN;
+ 		return -ENODEV;
+ 	}
  
- 	events = baboon->mb_ifr & 0x07;
--	if (!events)
--		return;
--
- 	irq_num = IRQ_BABOON_0;
- 	irq_bit = 1;
- 	do {
--	        if (events & irq_bit) {
--			baboon->mb_ifr &= ~irq_bit;
-+		if (events & irq_bit) {
-+			events &= ~irq_bit;
- 			generic_handle_irq(irq_num);
- 		}
-+		++irq_num;
- 		irq_bit <<= 1;
--		irq_num++;
--	} while(events >= irq_bit);
--#if 0
--	if (baboon->mb_ifr & 0x02) macide_ack_intr(NULL);
--	/* for now we need to smash all interrupts */
--	baboon->mb_ifr &= ~events;
--#endif
-+	} while (events);
+ 	pmu_state = idle;
+ 
++	if (!init_pmu())
++		goto fail_init;
++
++	pr_info("adb: PMU 68K driver v0.5 for Unified ADB\n");
++
++	return 1;
++
++fail_init:
++	pmu_kind = PMU_UNKNOWN;
+ 	return 0;
  }
  
- /*
+-static int 
+-pmu_init(void)
++static int pmu_probe(void)
++{
++	if (pmu_kind == PMU_UNKNOWN)
++		return -ENODEV;
++	return 0;
++}
++
++static int pmu_init(void)
++{
++	if (pmu_kind == PMU_UNKNOWN)
++		return -ENODEV;
++	return 0;
++}
++
++static int __init via_pmu_start(void)
++{
++	if (pmu_kind == PMU_UNKNOWN)
++		return -ENODEV;
++
++	if (request_irq(IRQ_MAC_ADB_SR, pmu_interrupt, 0, "PMU_SR",
++			pmu_interrupt)) {
++		pr_err("%s: can't get SR irq\n", __func__);
++		return -ENODEV;
++	}
++	if (request_irq(IRQ_MAC_ADB_CL, pmu_interrupt, 0, "PMU_CL",
++			pmu_interrupt)) {
++		pr_err("%s: can't get CL irq\n", __func__);
++		free_irq(IRQ_MAC_ADB_SR, pmu_interrupt);
++		return -ENODEV;
++	}
++
++	pmu_fully_inited = 1;
++
++	/* Enable backlight */
++	pmu_enable_backlight(1);
++
++	return 0;
++}
++
++arch_initcall(via_pmu_start);
++
++static int __init init_pmu(void)
+ {
+ 	int timeout;
+ 	volatile struct adb_request req;
+@@ -238,28 +292,7 @@ pmu_init(void)
+ 	bright_req_2.complete = 1;
+ 	bright_req_3.complete = 1;
+ 
+-	if (request_irq(IRQ_MAC_ADB_SR, pmu_interrupt, 0, "pmu-shift",
+-			pmu_interrupt)) {
+-		printk(KERN_ERR "pmu_init: can't get irq %d\n",
+-			IRQ_MAC_ADB_SR);
+-		return -EAGAIN;
+-	}
+-	if (request_irq(IRQ_MAC_ADB_CL, pmu_interrupt, 0, "pmu-clock",
+-			pmu_interrupt)) {
+-		printk(KERN_ERR "pmu_init: can't get irq %d\n",
+-			IRQ_MAC_ADB_CL);
+-		free_irq(IRQ_MAC_ADB_SR, pmu_interrupt);
+-		return -EAGAIN;
+-	}
+-
+-	pmu_fully_inited = 1;
+-	
+-	/* Enable backlight */
+-	pmu_enable_backlight(1);
+-
+-	printk("adb: PMU 68K driver v0.5 for Unified ADB.\n");
+-
+-	return 0;
++	return 1;
+ }
+ 
+ int
 -- 
 2.13.6
