@@ -1,47 +1,85 @@
 From: Finn Thain <fthain@telegraphics.com.au>
-Subject: [PATCH] m68k/mac: Enable PDMA support for PowerBook 190
+Subject: [PATCH] m68k/mac: Fix apparent race condition in Baboon interrupt
+ dispatch
 Date: Sat, 27 Jan 2018 18:51:40 -0500 (EST)
-Message-ID: <20180127235140.D559728CE0__25625.8618705489$1517097027$gmane$org@kvm5.telegraphics.com.au>
+Message-ID: <20180127235140.CBFF12962D__1166.65222817591$1517097030$gmane$org@kvm5.telegraphics.com.au>
 Return-path: <linux-m68k-owner@vger.kernel.org>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
 To: Geert Uytterhoeven <geert@linux-m68k.org>
 Cc: linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org
 
-Stan's tests showed that PDMA improves sequential read performance by
-a factor of 5 on a PowerBook 190. Last time I tried this on a
-PowerBook 520 it didn't work, so let's not enable it there until
-it can be tested with the present mac_scsi driver.
+The algorithm used in baboon_irq() appears to be subject to a race
+condition: an IRQ flag could be lost if asserted between the MOV
+instructions from and to the interrupt flag register. However,
+testing shows that the write to the flag register has no effect.
+Rewrite this loop to remove the apparent race condition.
+
+No-one seems to know how to clear Baboon IRQ flags, or whether
+that's even possible, so add a comment about this.
 
 Tested-by: Stan Johnson <userm57@yahoo.com>
 Signed-off-by: Finn Thain <fthain@telegraphics.com.au>
 ---
- arch/m68k/mac/config.c | 6 ++----
- 1 file changed, 2 insertions(+), 4 deletions(-)
+ arch/m68k/mac/baboon.c | 27 ++++++++-------------------
+ 1 file changed, 8 insertions(+), 19 deletions(-)
 
-diff --git a/arch/m68k/mac/config.c b/arch/m68k/mac/config.c
-index 16cd5cea5207..95d548d8cc8a 100644
---- a/arch/m68k/mac/config.c
-+++ b/arch/m68k/mac/config.c
-@@ -713,7 +713,7 @@ static struct mac_model mac_data_table[] = {
- 		.name		= "PowerBook 190",
- 		.adb_type	= MAC_ADB_PB2,
- 		.via_type	= MAC_VIA_QUADRA,
--		.scsi_type	= MAC_SCSI_LATE,
-+		.scsi_type	= MAC_SCSI_OLD,
- 		.ide_type	= MAC_IDE_BABOON,
- 		.scc_type	= MAC_SCC_QUADRA,
- 		.nubus_type	= MAC_NUBUS,
-@@ -1077,9 +1077,7 @@ int __init mac_platform_init(void)
- 			mac_scsi_old_rsrc, ARRAY_SIZE(mac_scsi_old_rsrc));
- 		break;
- 	case MAC_SCSI_LATE:
--		/* PDMA logic in 68040 PowerBooks is somehow different to
--		 * '030 models. It's probably more like Quadras (see mac_esp).
--		 */
-+		/* XXX PDMA support for PowerBook 500 series needs testing */
- 		platform_device_register_simple("mac_scsi", 0,
- 			mac_scsi_late_rsrc, ARRAY_SIZE(mac_scsi_late_rsrc));
- 		break;
+diff --git a/arch/m68k/mac/baboon.c b/arch/m68k/mac/baboon.c
+index c7ea6475ef9b..a7d280220662 100644
+--- a/arch/m68k/mac/baboon.c
++++ b/arch/m68k/mac/baboon.c
+@@ -18,10 +18,6 @@
+ int baboon_present;
+ static volatile struct baboon *baboon;
+ 
+-#if 0
+-extern int macide_ack_intr(struct ata_channel *);
+-#endif
+-
+ /*
+  * Baboon initialization.
+  */
+@@ -41,33 +37,26 @@ void __init baboon_init(void)
+ }
+ 
+ /*
+- * Baboon interrupt handler. This works a lot like a VIA.
++ * Baboon interrupt handler.
++ * XXX how do you clear a pending IRQ? is it even necessary?
+  */
+ 
+ static void baboon_irq(struct irq_desc *desc)
+ {
+-	int irq_bit, irq_num;
+-	unsigned char events;
++	short events, irq_bit;
++	int irq_num;
+ 
+ 	events = baboon->mb_ifr & 0x07;
+-	if (!events)
+-		return;
+-
+ 	irq_num = IRQ_BABOON_0;
+ 	irq_bit = 1;
+ 	do {
+-	        if (events & irq_bit) {
+-			baboon->mb_ifr &= ~irq_bit;
++		if (events & irq_bit) {
++			events &= ~irq_bit;
+ 			generic_handle_irq(irq_num);
+ 		}
++		++irq_num;
+ 		irq_bit <<= 1;
+-		irq_num++;
+-	} while(events >= irq_bit);
+-#if 0
+-	if (baboon->mb_ifr & 0x02) macide_ack_intr(NULL);
+-	/* for now we need to smash all interrupts */
+-	baboon->mb_ifr &= ~events;
+-#endif
++	} while (events);
+ }
+ 
+ /*
 -- 
 2.13.6
