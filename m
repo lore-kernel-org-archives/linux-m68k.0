@@ -1,182 +1,69 @@
-From: Finn Thain <fthain@telegraphics.com.au>
-Subject: [PATCH] macintosh/via-pmu68k: Initialize PMU driver with setup_arch
- and arch_initcall
-Date: Sat, 27 Jan 2018 18:51:40 -0500 (EST)
-Message-ID: <20180127235140.EA71C296D4__39573.8182393417$1517097035$gmane$org@kvm5.telegraphics.com.au>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: Re: [PATCH] m68k/mac: Enable PDMA support for PowerBook 190
+Date: Mon, 29 Jan 2018 09:51:07 +0100
+Message-ID: <CAMuHMdUiiPNV=CcxMJ3ZDjF0EV=voh_azEozWiGXni-CUbwEwg@mail.gmail.com>
+References: <20180127235140.D559728CE0@kvm5.telegraphics.com.au>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="UTF-8"
 Return-path: <linux-m68k-owner@vger.kernel.org>
+In-Reply-To: <20180127235140.D559728CE0@kvm5.telegraphics.com.au>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Benjamin Herrenschmidt <benh@kernel.crashing.org>
-Cc: Geert Uytterhoeven <geert@linux-m68k.org>, linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
+To: Finn Thain <fthain@telegraphics.com.au>
+Cc: linux-m68k <linux-m68k@lists.linux-m68k.org>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
 
-The PMU watchdog will power down the system if the kernel is slow
-to start up, e.g. due to unpacking a large initrd. The powerpc
-version of this driver (via-pmu.c) has a solution for the same
-problem. It uses this call sequence:
+Hi Finn,
 
-setup_arch
-	find_via_pmu
-		init_pmu
-...
-arch_initcall
-	via_pmu_start
+On Sun, Jan 28, 2018 at 12:51 AM, Finn Thain <fthain@telegraphics.com.au> wrote:
+> Stan's tests showed that PDMA improves sequential read performance by
+> a factor of 5 on a PowerBook 190. Last time I tried this on a
+> PowerBook 520 it didn't work, so let's not enable it there until
+> it can be tested with the present mac_scsi driver.
+>
+> Tested-by: Stan Johnson <userm57@yahoo.com>
+> Signed-off-by: Finn Thain <fthain@telegraphics.com.au>
 
-Bring via-pmu68k.c into line with via-pmu.c to fix this issue.
+Thanks for your patch!
 
-Cc: Geert Uytterhoeven <geert@linux-m68k.org>
-Tested-by: Stan Johnson <userm57@yahoo.com>
-Signed-off-by: Finn Thain <fthain@telegraphics.com.au>
----
- arch/m68k/mac/config.c         |  4 ++
- drivers/macintosh/via-pmu68k.c | 89 +++++++++++++++++++++++++++++-------------
- 2 files changed, 65 insertions(+), 28 deletions(-)
+Anyone with a PB520 who can check if it works now with scsi_type =
+MAC_SCSI_OLD?
 
-diff --git a/arch/m68k/mac/config.c b/arch/m68k/mac/config.c
-index 95d548d8cc8a..17d9380aa7e6 100644
---- a/arch/m68k/mac/config.c
-+++ b/arch/m68k/mac/config.c
-@@ -26,6 +26,7 @@
- #include <linux/platform_device.h>
- #include <linux/adb.h>
- #include <linux/cuda.h>
-+#include <linux/pmu.h>
- #include <linux/rtc.h>
- 
- #include <asm/setup.h>
-@@ -906,6 +907,9 @@ static void __init mac_identify(void)
- #ifdef CONFIG_ADB_CUDA
- 	find_via_cuda();
- #endif
-+#ifdef CONFIG_ADB_PMU68K
-+	find_via_pmu();
-+#endif
- }
- 
- static void __init mac_report_hardware(void)
-diff --git a/drivers/macintosh/via-pmu68k.c b/drivers/macintosh/via-pmu68k.c
-index 25465fb91ec9..7d9c4baf8c11 100644
---- a/drivers/macintosh/via-pmu68k.c
-+++ b/drivers/macintosh/via-pmu68k.c
-@@ -109,6 +109,7 @@ static int pmu_autopoll(int devs);
- void pmu_poll(void);
- static int pmu_reset_bus(void);
- 
-+static int init_pmu(void);
- static void pmu_start(void);
- static void send_byte(int x);
- static void recv_byte(void);
-@@ -171,23 +172,76 @@ static s8 pmu_data_len[256][2] = {
- /*f8*/	{-1,-1},{-1,-1},{-1,-1},{-1,-1},{-1,-1},{-1,-1},{-1,-1},{-1,-1},
- };
- 
--int pmu_probe(void)
-+int __init find_via_pmu(void)
- {
--	if (macintosh_config->adb_type == MAC_ADB_PB1) {
-+	switch (macintosh_config->adb_type) {
-+	case MAC_ADB_PB1:
- 		pmu_kind = PMU_68K_V1;
--	} else if (macintosh_config->adb_type == MAC_ADB_PB2) {
-+		break;
-+	case MAC_ADB_PB2:
- 		pmu_kind = PMU_68K_V2;
--	} else {
-+		break;
-+	default:
-+		pmu_kind = PMU_UNKNOWN;
- 		return -ENODEV;
- 	}
- 
- 	pmu_state = idle;
- 
-+	if (!init_pmu())
-+		goto fail_init;
-+
-+	pr_info("adb: PMU 68K driver v0.5 for Unified ADB\n");
-+
-+	return 1;
-+
-+fail_init:
-+	pmu_kind = PMU_UNKNOWN;
- 	return 0;
- }
- 
--static int 
--pmu_init(void)
-+static int pmu_probe(void)
-+{
-+	if (pmu_kind == PMU_UNKNOWN)
-+		return -ENODEV;
-+	return 0;
-+}
-+
-+static int pmu_init(void)
-+{
-+	if (pmu_kind == PMU_UNKNOWN)
-+		return -ENODEV;
-+	return 0;
-+}
-+
-+static int __init via_pmu_start(void)
-+{
-+	if (pmu_kind == PMU_UNKNOWN)
-+		return -ENODEV;
-+
-+	if (request_irq(IRQ_MAC_ADB_SR, pmu_interrupt, 0, "PMU_SR",
-+			pmu_interrupt)) {
-+		pr_err("%s: can't get SR irq\n", __func__);
-+		return -ENODEV;
-+	}
-+	if (request_irq(IRQ_MAC_ADB_CL, pmu_interrupt, 0, "PMU_CL",
-+			pmu_interrupt)) {
-+		pr_err("%s: can't get CL irq\n", __func__);
-+		free_irq(IRQ_MAC_ADB_SR, pmu_interrupt);
-+		return -ENODEV;
-+	}
-+
-+	pmu_fully_inited = 1;
-+
-+	/* Enable backlight */
-+	pmu_enable_backlight(1);
-+
-+	return 0;
-+}
-+
-+arch_initcall(via_pmu_start);
-+
-+static int __init init_pmu(void)
- {
- 	int timeout;
- 	volatile struct adb_request req;
-@@ -238,28 +292,7 @@ pmu_init(void)
- 	bright_req_2.complete = 1;
- 	bright_req_3.complete = 1;
- 
--	if (request_irq(IRQ_MAC_ADB_SR, pmu_interrupt, 0, "pmu-shift",
--			pmu_interrupt)) {
--		printk(KERN_ERR "pmu_init: can't get irq %d\n",
--			IRQ_MAC_ADB_SR);
--		return -EAGAIN;
--	}
--	if (request_irq(IRQ_MAC_ADB_CL, pmu_interrupt, 0, "pmu-clock",
--			pmu_interrupt)) {
--		printk(KERN_ERR "pmu_init: can't get irq %d\n",
--			IRQ_MAC_ADB_CL);
--		free_irq(IRQ_MAC_ADB_SR, pmu_interrupt);
--		return -EAGAIN;
--	}
--
--	pmu_fully_inited = 1;
--	
--	/* Enable backlight */
--	pmu_enable_backlight(1);
--
--	printk("adb: PMU 68K driver v0.5 for Unified ADB.\n");
--
--	return 0;
-+	return 1;
- }
- 
- int
--- 
-2.13.6
+> ---
+>  arch/m68k/mac/config.c | 6 ++----
+>  1 file changed, 2 insertions(+), 4 deletions(-)
+>
+> diff --git a/arch/m68k/mac/config.c b/arch/m68k/mac/config.c
+> index 16cd5cea5207..95d548d8cc8a 100644
+> --- a/arch/m68k/mac/config.c
+> +++ b/arch/m68k/mac/config.c
+> @@ -713,7 +713,7 @@ static struct mac_model mac_data_table[] = {
+>                 .name           = "PowerBook 190",
+>                 .adb_type       = MAC_ADB_PB2,
+>                 .via_type       = MAC_VIA_QUADRA,
+> -               .scsi_type      = MAC_SCSI_LATE,
+> +               .scsi_type      = MAC_SCSI_OLD,
+>                 .ide_type       = MAC_IDE_BABOON,
+>                 .scc_type       = MAC_SCC_QUADRA,
+>                 .nubus_type     = MAC_NUBUS,
+> @@ -1077,9 +1077,7 @@ int __init mac_platform_init(void)
+>                         mac_scsi_old_rsrc, ARRAY_SIZE(mac_scsi_old_rsrc));
+>                 break;
+>         case MAC_SCSI_LATE:
+> -               /* PDMA logic in 68040 PowerBooks is somehow different to
+> -                * '030 models. It's probably more like Quadras (see mac_esp).
+> -                */
+> +               /* XXX PDMA support for PowerBook 500 series needs testing */
+>                 platform_device_register_simple("mac_scsi", 0,
+>                         mac_scsi_late_rsrc, ARRAY_SIZE(mac_scsi_late_rsrc));
+>                 break;
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
