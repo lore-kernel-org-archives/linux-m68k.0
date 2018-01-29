@@ -1,69 +1,95 @@
 From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: Re: [PATCH] m68k/mac: Enable PDMA support for PowerBook 190
-Date: Mon, 29 Jan 2018 09:51:07 +0100
-Message-ID: <CAMuHMdUiiPNV=CcxMJ3ZDjF0EV=voh_azEozWiGXni-CUbwEwg@mail.gmail.com>
-References: <20180127235140.D559728CE0@kvm5.telegraphics.com.au>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
+Subject: [git pull] m68k updates for 4.16
+Date: Mon, 29 Jan 2018 10:18:02 +0100
+Message-ID: <1517217482-18026-1-git-send-email-geert@linux-m68k.org>
 Return-path: <linux-m68k-owner@vger.kernel.org>
-In-Reply-To: <20180127235140.D559728CE0@kvm5.telegraphics.com.au>
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Finn Thain <fthain@telegraphics.com.au>
-Cc: linux-m68k <linux-m68k@lists.linux-m68k.org>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+To: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: Andrew Morton <akpm@linux-foundation.org>, Greg Ungerer <gerg@linux-m68k.org>, linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org, Geert Uytterhoeven <geert@linux-m68k.org>
 
-Hi Finn,
+	Hi Linus,
 
-On Sun, Jan 28, 2018 at 12:51 AM, Finn Thain <fthain@telegraphics.com.au> wrote:
-> Stan's tests showed that PDMA improves sequential read performance by
-> a factor of 5 on a PowerBook 190. Last time I tried this on a
-> PowerBook 520 it didn't work, so let's not enable it there until
-> it can be tested with the present mac_scsi driver.
->
-> Tested-by: Stan Johnson <userm57@yahoo.com>
-> Signed-off-by: Finn Thain <fthain@telegraphics.com.au>
+The following changes since commit 4fbd8d194f06c8a3fd2af1ce560ddb31f7ec8323:
 
-Thanks for your patch!
+  Linux 4.15-rc1 (2017-11-26 16:01:47 -0800)
 
-Anyone with a PB520 who can check if it works now with scsi_type =
-MAC_SCSI_OLD?
+are available in the git repository at:
 
-> ---
->  arch/m68k/mac/config.c | 6 ++----
->  1 file changed, 2 insertions(+), 4 deletions(-)
->
-> diff --git a/arch/m68k/mac/config.c b/arch/m68k/mac/config.c
-> index 16cd5cea5207..95d548d8cc8a 100644
-> --- a/arch/m68k/mac/config.c
-> +++ b/arch/m68k/mac/config.c
-> @@ -713,7 +713,7 @@ static struct mac_model mac_data_table[] = {
->                 .name           = "PowerBook 190",
->                 .adb_type       = MAC_ADB_PB2,
->                 .via_type       = MAC_VIA_QUADRA,
-> -               .scsi_type      = MAC_SCSI_LATE,
-> +               .scsi_type      = MAC_SCSI_OLD,
->                 .ide_type       = MAC_IDE_BABOON,
->                 .scc_type       = MAC_SCC_QUADRA,
->                 .nubus_type     = MAC_NUBUS,
-> @@ -1077,9 +1077,7 @@ int __init mac_platform_init(void)
->                         mac_scsi_old_rsrc, ARRAY_SIZE(mac_scsi_old_rsrc));
->                 break;
->         case MAC_SCSI_LATE:
-> -               /* PDMA logic in 68040 PowerBooks is somehow different to
-> -                * '030 models. It's probably more like Quadras (see mac_esp).
-> -                */
-> +               /* XXX PDMA support for PowerBook 500 series needs testing */
->                 platform_device_register_simple("mac_scsi", 0,
->                         mac_scsi_late_rsrc, ARRAY_SIZE(mac_scsi_late_rsrc));
->                 break;
+  git://git.kernel.org/pub/scm/linux/kernel/git/geert/linux-m68k.git tags/m68k-for-v4.16-tag1
+
+for you to fetch changes up to 2334b1ac1235934fc196f2d25bae7f348d3bf42e:
+
+  MAINTAINERS: Add NuBus subsystem entry (2018-01-16 16:55:39 +0100)
+
+----------------------------------------------------------------
+m68k updates for 4.16
+
+  - First part of an overhaul of the NuBus subsystem, to bring it up to
+    modern driver model standards,
+  - A race condition fix for Mac,
+  - Defconfig updates.
+
+Thanks for pulling!
+
+----------------------------------------------------------------
+Finn Thain (16):
+      nubus: Avoid array underflow and overflow
+      nubus: Fix up header split
+      nubus: Use static functions where possible
+      nubus: Fix log spam
+      nubus: Validate slot resource IDs
+      nubus: Call proc_mkdir() not more than once per slot directory
+      nubus: Remove redundant code
+      nubus: Clean up whitespace
+      nubus: Generalize block resource handling
+      nubus: Rework /proc/bus/nubus/s/ implementation
+      nubus: Rename struct nubus_dev
+      nubus: Adopt standard linked list implementation
+      nubus: Add expansion_type values for various Mac models
+      nubus: Add support for the driver model
+      m68k/mac: Fix race conditions in OSS interrupt dispatch
+      MAINTAINERS: Add NuBus subsystem entry
+
+Geert Uytterhoeven (1):
+      m68k/defconfig: Update defconfigs for v4.15-rc1
+
+ MAINTAINERS                             |   9 +
+ arch/m68k/configs/amiga_defconfig       |   4 +-
+ arch/m68k/configs/apollo_defconfig      |   4 +-
+ arch/m68k/configs/atari_defconfig       |   4 +-
+ arch/m68k/configs/bvme6000_defconfig    |   4 +-
+ arch/m68k/configs/hp300_defconfig       |   4 +-
+ arch/m68k/configs/mac_defconfig         |   4 +-
+ arch/m68k/configs/multi_defconfig       |   4 +-
+ arch/m68k/configs/mvme147_defconfig     |   4 +-
+ arch/m68k/configs/mvme16x_defconfig     |   4 +-
+ arch/m68k/configs/q40_defconfig         |   4 +-
+ arch/m68k/configs/sun3_defconfig        |   4 +-
+ arch/m68k/configs/sun3x_defconfig       |   4 +-
+ arch/m68k/include/asm/macintosh.h       |   9 +-
+ arch/m68k/mac/config.c                  | 110 +++----
+ arch/m68k/mac/oss.c                     |  67 ++--
+ drivers/net/ethernet/8390/mac8390.c     |  33 +-
+ drivers/net/ethernet/cirrus/mac89x0.c   |   6 +-
+ drivers/net/ethernet/natsemi/macsonic.c |  38 ++-
+ drivers/nubus/Makefile                  |   2 +-
+ drivers/nubus/bus.c                     | 117 +++++++
+ drivers/nubus/nubus.c                   | 542 +++++++++++++++++---------------
+ drivers/nubus/proc.c                    | 281 ++++++++---------
+ drivers/video/fbdev/macfb.c             |  10 +-
+ include/linux/nubus.h                   | 189 +++++++----
+ include/uapi/linux/nubus.h              |  23 --
+ 26 files changed, 833 insertions(+), 651 deletions(-)
+ create mode 100644 drivers/nubus/bus.c
 
 Gr{oetje,eeting}s,
 
-                        Geert
+						Geert
 
 --
 Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
 In personal conversations with technical people, I call myself a hacker. But
 when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+							    -- Linus Torvalds
