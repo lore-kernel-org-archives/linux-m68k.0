@@ -1,33 +1,32 @@
-From: Finn Thain <fthain@telegraphics.com.au>
-Subject: Re: [PATCH] m68k/mac: Enable PDMA support for PowerBook 190
-Date: Tue, 30 Jan 2018 13:52:38 +1100 (AEDT)
-Message-ID: <alpine.LNX.2.21.1801301316110.3__35090.2820857756$1517280681$gmane$org@nippy.intranet>
-References: <20180127235140.D559728CE0@kvm5.telegraphics.com.au> <CAMuHMdUiiPNV=CcxMJ3ZDjF0EV=voh_azEozWiGXni-CUbwEwg@mail.gmail.com>
+From: 60736828@mylife.unisa.ac.za
+Subject: Kreditangebot,
+Date: Fri, 02 Feb 2018 15:38:08 +0530
+Message-ID: <VI1PR01MB1342BA928728EF4D7511F202B9F90@VI1PR01MB1342.eurprd01.prod.exchangelabs.com>
+Reply-To: david.loanfirm09@gmail.com
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <linux-m68k-owner@vger.kernel.org>
-In-Reply-To: <CAMuHMdUiiPNV=CcxMJ3ZDjF0EV=voh_azEozWiGXni-CUbwEwg@mail.gmail.com>
+Content-Description: Mail message body
 Sender: linux-m68k-owner@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
-To: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: linux-m68k <linux-m68k@lists.linux-m68k.org>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+To: Recipients <60736828@mylife.unisa.ac.za>
 
-On Mon, 29 Jan 2018, Geert Uytterhoeven wrote:
+Sch=C3=B6nen Tag,
 
-> 
-> Anyone with a PB520 who can check if it works now with scsi_type = 
-> MAC_SCSI_OLD?
-> 
+Sie ben=C3=B6tigen einen echten Kredit online Ihre Rechnungen zu sichern?
+Startet ein neues Unternehmen? Sie ben=C3=B6tigen einen pers=C3=B6nlichen K=
+redit
+oder Business-Darlehen? Wir bieten ein Darlehen von =E2=82=AC 10.000 bis =
+=E2=82=AC
+500,000.000.00 mit 2% Zinsen pro Jahr und auch mit einem
+erschwinglichen R=C3=BCckzahlungsbedingungen und Zustand. Ich suche f=C3=BCr
+Darlehen und Projektinvestmentfonds ? Wir halten professionelle
+Exzellenz, unsere Definition von Exzellenz liegt in hervorragenden
+Kundenservice, erschwingliche Zahlung und R=C3=BCckzahlung Pl=C3=A4ne, schn=
+ell
+und einfach-Prozess.
+Hochachtungsvoll....
 
-The PB520 and PB540 have a flawed early-revision 68LC040 processor* which 
-makes it unlikely that these machines are running Linux (or NetBSD). A few 
-have had backyard CPU upgrades, like my own. I'll test MAC_SCSI_OLD at 
-some point, but I don't know when that will be.
-
-The PB550 doesn't have the 68LC040 problem but it was only available in 
-Japan. These machines may have Linux or NetBSD on them, but they are rare 
-and their owners may not be found on these lists.
-
-* http://mac.linux-m68k.org/docs/faq.php#sec-4.5
-
--- 
+Freundliche Gr=C3=BC=C3=9Fe,
+Herr David Williams
