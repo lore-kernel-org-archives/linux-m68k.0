@@ -1,86 +1,60 @@
 From: Finn Thain <fthain@telegraphics.com.au>
-Subject: [PATCH net v4 05/13] net/mac89x0: Remove dead or unreachable code
+Subject: [PATCH net v4 04/13] net/macmace: Fix and clean up log messages
 Date: Sun, 11 Feb 2018 22:08:43 -0500 (EST)
-Message-ID: <6b7aee29e4458fdb07fd9586f600809ca941b28c.1518397634.git.fthain@telegraphics.com.au>
+Message-ID: <4ed518005058fb81e67be8408d94698a7ad9b593.1518397634.git.fthain@telegraphics.com.au>
 References: <cover.1518397634.git.fthain@telegraphics.com.au>
-Return-path: <netdev-owner@vger.kernel.org>
+Return-path: <linux-kernel-owner@vger.kernel.org>
 In-Reply-To: <cover.1518397634.git.fthain@telegraphics.com.au>
-Sender: netdev-owner@vger.kernel.org
+Sender: linux-kernel-owner@vger.kernel.org
 To: "David S. Miller" <davem@davemloft.net>
 Cc: netdev@vger.kernel.org, linux-m68k@vger.kernel.org, linux-kernel@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
 
+Don't log the unexpanded "eth%d" format string.
+Log the chip revision in the probe message (consistent with mace.c).
+Drop redundant debug messages for FIFO events recorded in the
+interface statistics (also consistent with mace.c).
+
+Tested-by: Stan Johnson <userm57@yahoo.com>
 Signed-off-by: Finn Thain <fthain@telegraphics.com.au>
 ---
- drivers/net/ethernet/cirrus/mac89x0.c | 32 --------------------------------
- 1 file changed, 32 deletions(-)
+ drivers/net/ethernet/apple/macmace.c | 9 +++------
+ 1 file changed, 3 insertions(+), 6 deletions(-)
 
-diff --git a/drivers/net/ethernet/cirrus/mac89x0.c b/drivers/net/ethernet/cirrus/mac89x0.c
-index 977d4c2c759d..4fe0ae93ab36 100644
---- a/drivers/net/ethernet/cirrus/mac89x0.c
-+++ b/drivers/net/ethernet/cirrus/mac89x0.c
-@@ -115,14 +115,9 @@ struct net_local {
- 	int rx_mode;
- 	int curr_rx_cfg;
-         int send_underrun;      /* keep track of how many underruns in a row we get */
--	struct sk_buff *skb;
- };
+diff --git a/drivers/net/ethernet/apple/macmace.c b/drivers/net/ethernet/apple/macmace.c
+index f17a160dbff2..cfd8f3d8a94c 100644
+--- a/drivers/net/ethernet/apple/macmace.c
++++ b/drivers/net/ethernet/apple/macmace.c
+@@ -247,8 +247,8 @@ static int mace_probe(struct platform_device *pdev)
+ 	dev->netdev_ops		= &mace_netdev_ops;
+ 	dev->watchdog_timeo	= TX_TIMEOUT;
  
- /* Index to functions, as function prototypes. */
--
--#if 0
--extern void reset_chip(struct net_device *dev);
--#endif
- static int net_open(struct net_device *dev);
- static int net_send_packet(struct sk_buff *skb, struct net_device *dev);
- static irqreturn_t net_interrupt(int irq, void *dev_id);
-@@ -132,10 +127,6 @@ static int net_close(struct net_device *dev);
- static struct net_device_stats *net_get_stats(struct net_device *dev);
- static int set_mac_address(struct net_device *dev, void *addr);
+-	printk(KERN_INFO "%s: 68K MACE, hardware address %pM\n",
+-	       dev->name, dev->dev_addr);
++	pr_info("Onboard MACE, hardware address %pM, chip revision 0x%04X\n",
++		dev->dev_addr, mp->chipid);
  
--
--/* Example routines you must write ;->. */
--#define tx_done(dev) 1
--
- /* For reading/writing registers ISA-style */
- static inline int
- readreg_io(struct net_device *dev, int portno)
-@@ -297,24 +288,6 @@ struct net_device * __init mac89x0_probe(int unit)
- 	return ERR_PTR(err);
- }
+ 	err = register_netdev(dev);
+ 	if (!err)
+@@ -589,7 +589,6 @@ static irqreturn_t mace_interrupt(int irq, void *dev_id)
+ 			else if (fs & (UFLO|LCOL|RTRY)) {
+ 				++dev->stats.tx_aborted_errors;
+ 				if (mb->xmtfs & UFLO) {
+-					printk(KERN_ERR "%s: DMA underrun.\n", dev->name);
+ 					dev->stats.tx_fifo_errors++;
+ 					mace_txdma_reset(dev);
+ 				}
+@@ -644,10 +643,8 @@ static void mace_dma_rx_frame(struct net_device *dev, struct mace_frame *mf)
  
--#if 0
--/* This is useful for something, but I don't know what yet. */
--void __init reset_chip(struct net_device *dev)
--{
--	int reset_start_time;
--
--	writereg(dev, PP_SelfCTL, readreg(dev, PP_SelfCTL) | POWER_ON_RESET);
--
--	/* wait 30 ms */
--	msleep_interruptible(30);
--
--	/* Wait until the chip is reset */
--	reset_start_time = jiffies;
--	while( (readreg(dev, PP_SelfST) & INIT_DONE) == 0 && jiffies - reset_start_time < 2)
--		;
--}
--#endif
--
- /* Open/initialize the board.  This is called (in the current kernel)
-    sometime after booting when the 'ifconfig' program is run.
- 
-@@ -416,11 +389,6 @@ static irqreturn_t net_interrupt(int irq, void *dev_id)
- 	struct net_local *lp;
- 	int ioaddr, status;
- 
--	if (dev == NULL) {
--		printk ("net_interrupt(): irq %d for unknown device.\n", irq);
--		return IRQ_NONE;
--	}
--
- 	ioaddr = dev->base_addr;
- 	lp = netdev_priv(dev);
- 
+ 	if (frame_status & (RS_OFLO | RS_CLSN | RS_FRAMERR | RS_FCSERR)) {
+ 		dev->stats.rx_errors++;
+-		if (frame_status & RS_OFLO) {
+-			printk(KERN_DEBUG "%s: fifo overflow.\n", dev->name);
++		if (frame_status & RS_OFLO)
+ 			dev->stats.rx_fifo_errors++;
+-		}
+ 		if (frame_status & RS_CLSN)
+ 			dev->stats.collisions++;
+ 		if (frame_status & RS_FRAMERR)
 -- 
 2.13.6
