@@ -1,60 +1,50 @@
 From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: Re: [PATCH net v4 06/13] net/mac89x0: Convert to platform_driver
-Date: Mon, 12 Feb 2018 09:25:56 +0100
-Message-ID: <CAMuHMdWEcTipfQNFgMmcRQL+eavdc26-SqLrqscOy=K1+YW98g@mail.gmail.com>
-References: <cover.1518397634.git.fthain@telegraphics.com.au> <2ce948e1e6c0ef2476f57600b429b24355871eb8.1518397634.git.fthain@telegraphics.com.au>
+Subject: Re: [PATCH net v4 09/13] net/mac8390: Convert to nubus_driver
+Date: Mon, 12 Feb 2018 09:29:11 +0100
+Message-ID: <CAMuHMdUoiVhA5BxVpxJ81VxZ5Y_n1DBugqPxhABE5Z8eL1Bd3w@mail.gmail.com>
+References: <cover.1518397634.git.fthain@telegraphics.com.au> <219b4da3972b28307c599f7d340e613303de7ed7.1518397634.git.fthain@telegraphics.com.au>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="UTF-8"
-Return-path: <linux-m68k-owner@vger.kernel.org>
-Received: from mail-qk0-f196.google.com ([209.85.220.196]:45940 "EHLO
-        mail-qk0-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S932561AbeBLIZ5 (ORCPT
-        <rfc822;linux-m68k@vger.kernel.org>); Mon, 12 Feb 2018 03:25:57 -0500
-In-Reply-To: <2ce948e1e6c0ef2476f57600b429b24355871eb8.1518397634.git.fthain@telegraphics.com.au>
-Sender: linux-m68k-owner@vger.kernel.org
-List-Id: linux-m68k@vger.kernel.org
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <219b4da3972b28307c599f7d340e613303de7ed7.1518397634.git.fthain@telegraphics.com.au>
+Sender: linux-kernel-owner@vger.kernel.org
 To: Finn Thain <fthain@telegraphics.com.au>
-Cc: "David S. Miller" <davem@davemloft.net>, netdev <netdev@vger.kernel.org>, Linux/m68k <linux-m68k@vger.kernel.org>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, linux-m68k <linux-m68k@lists.linux-m68k.org>
+Cc: "David S. Miller" <davem@davemloft.net>, netdev <netdev@vger.kernel.org>, Linux/m68k <linux-m68k@vger.kernel.org>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+List-Id: linux-m68k@vger.kernel.org
 
 On Mon, Feb 12, 2018 at 4:08 AM, Finn Thain <fthain@telegraphics.com.au> wrote:
-> Apparently these Dayna cards don't have a pseudoslot declaration ROM
-> which means they can't be probed like NuBus cards.
+> This resolves an old bug that constrained this driver to no more than
+> one card.
 >
-> Cc: Geert Uytterhoeven <geert@linux-m68k.org>
+> Tested-by: Stan Johnson <userm57@yahoo.com>
 > Signed-off-by: Finn Thain <fthain@telegraphics.com.au>
-> ---
->  arch/m68k/mac/config.c                |  4 ++
->  drivers/net/Space.c                   |  3 --
->  drivers/net/ethernet/cirrus/mac89x0.c | 69 ++++++++++++++++-------------------
->  include/net/Space.h                   |  1 -
->  4 files changed, 35 insertions(+), 42 deletions(-)
 
-For the m68k part:
-Acked-by: Geert Uytterhoeven <geert@linux-m68k.org>
+> --- a/drivers/net/ethernet/8390/mac8390.c
+> +++ b/drivers/net/ethernet/8390/mac8390.c
 
-> --- a/drivers/net/ethernet/cirrus/mac89x0.c
-> +++ b/drivers/net/ethernet/cirrus/mac89x0.c
-
-> @@ -167,10 +172,9 @@ static const struct net_device_ops mac89x0_netdev_ops = {
+> @@ -390,86 +389,86 @@ static bool __init mac8390_init(struct net_device *dev,
+>         return true;
+>  }
 >
->  /* Probe for the CS8900 card in slot E.  We won't bother looking
->     anywhere else until we have a really good reason to do so. */
-> -struct net_device * __init mac89x0_probe(int unit)
-> +static int mac89x0_device_probe(struct platform_device *pdev)
+> -struct net_device * __init mac8390_probe(int unit)
+> +static int mac8390_device_probe(struct nubus_board *board)
 >  {
 >         struct net_device *dev;
-> -       static int once_is_enough;
->         struct net_local *lp;
->         static unsigned version_printed;
->         int i, slot;
-> @@ -181,20 +185,13 @@ struct net_device * __init mac89x0_probe(int unit)
->         struct nubus_rsrc *fres;
+> -       struct nubus_rsrc *ndev = NULL;
+>         int err = -ENODEV;
+> -       static unsigned int slots;
+> -
+> -       enum mac8390_type cardtype;
+> -
+> -       /* probably should check for Nubus instead */
+> +       struct nubus_rsrc *fres;
+> +       enum mac8390_type cardtype = MAC8390_NONE;
 >
 >         if (!MACH_IS_MAC)
 > -               return ERR_PTR(-ENODEV);
 > +               return -ENODEV;
 
-I think this check can be removed completely, as the platform device will
+I think this check can be removed completely, as the nubus_board will
 exist on suitable Macs only.
 
 Gr{oetje,eeting}s,
