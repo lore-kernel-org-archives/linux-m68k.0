@@ -1,70 +1,43 @@
-From: Philippe Ombredanne <pombredanne@nexb.com>
-Subject: Re: [PATCH] ata: add Amiga Gayle PATA controller driver
-Date: Mon, 12 Feb 2018 15:18:44 +0100
-Message-ID: <CAOFm3uFP8bot3b6zRq5WBUxvr-u8TFbPfn4o5rOgRf4duSbOkQ__6387.4248452068$1518445066$gmane$org@mail.gmail.com>
-References: <CGME20180212134949epcas2p37f0bdae15608340bc21dbb2358db8df3@epcas2p3.samsung.com>
- <2188399.T539WJDZNr@amdc3058>
+From: David Miller <davem@davemloft.net>
+Subject: Re: [PATCH net v4 02/13] net/8390: Fix msg_enable patch snafu
+Date: Mon, 12 Feb 2018 10:39:56 -0500 (EST)
+Message-ID: <20180212.103956.1262868827217051631.davem@davemloft.net>
+References: <cover.1518397634.git.fthain@telegraphics.com.au>
+        <f697da2b2513e025688f6c48088536060575a249.1518397634.git.fthain@telegraphics.com.au>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Return-path: <linux-m68k-owner@vger.kernel.org>
-In-Reply-To: <2188399.T539WJDZNr@amdc3058>
-Sender: linux-m68k-owner@vger.kernel.org
+Content-Type: Text/Plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <f697da2b2513e025688f6c48088536060575a249.1518397634.git.fthain@telegraphics.com.au>
+Sender: linux-kernel-owner@vger.kernel.org
+To: fthain@telegraphics.com.au
+Cc: netdev@vger.kernel.org, linux-m68k@vger.kernel.org, linux-kernel@vger.kernel.org, linux@armlinux.org.uk, linux-arm-kernel@lists.infradead.org
 List-Id: linux-m68k@vger.kernel.org
-To: Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>
-Cc: Tejun Heo <tj@kernel.org>, John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>, Michael Schmitz <schmitzmic@gmail.com>, Geert Uytterhoeven <geert@linux-m68k.org>, linux-ide@vger.kernel.org, linux-m68k@lists.linux-m68k.org, LKML <linux-kernel@vger.kernel.org>
 
-On Mon, Feb 12, 2018 at 2:49 PM, Bartlomiej Zolnierkiewicz
-<b.zolnierkie@samsung.com> wrote:
-> Add Amiga Gayle PATA controller driver. It enables libata support
-> for the on-board IDE interfaces on some Amiga models (A600, A1200,
-> A4000 and A4000T) and also for IDE interfaces on the Zorro expansion
-> bus (M-Tech E-Matrix 530 expansion card).
->
-> Thanks to John Paul Adrian Glaubitz and Michael Schmitz for help
-> with testing the driver.
->
-> Tested-by: John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
-> Cc: Michael Schmitz <schmitzmic@gmail.com>
-> Cc: Geert Uytterhoeven <geert@linux-m68k.org>
-> Signed-off-by: Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>
+From: Finn Thain <fthain@telegraphics.com.au>
+Date: Sun, 11 Feb 2018 22:08:43 -0500 (EST)
 
-<snip>
-> + *
-> + * This file is subject to the terms and conditions of the GNU General Public
-> + * License.  See the file "COPYING" in the main directory of this archive
-> + * for more details.
-> + */
+> The lib8390 module parameter 'msg_enable' doesn't do anything useful:
+> it causes an ancient version string to be logged.
 
-Do you mind using the new SDPX ids? (well not so new anymore). [1]
+Not true.
 
-<snip>
-> +
-> +MODULE_AUTHOR("Bartlomiej Zolnierkiewicz");
-> +MODULE_DESCRIPTION("low-level driver for Amiga Gayle PATA");
-> +MODULE_LICENSE("GPL");
-> +MODULE_ALIAS("platform:amiga-gayle-ide");
-> +MODULE_VERSION(DRV_VERSION);
->
+You need to look at the various netif_*() et al. message logging
+interfaces, they check "p->msg_enable" to determine which messages to
+print.
 
-.... and while doing it please make sure your MODULE_LICENSE matches
-the license.
-Here for instance it is not clear to me if this a GPL-2.0 or a GPL-2.0+
+I'm not applying this, sorry.
 
+Just for the record, I consider these kinds of ancient driver cleanups
+painful to review, and unless they allow some ugly global kernel API
+to be improved or removed such changes have very little gain.
 
-Thanks!
-[1] https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/Documentation/process/license-rules.rst
--- 
-Cordially
-Philippe Ombredanne
+In fact, most of them have a good chance to break things.
 
-+1 650 799 0949 | pombredanne@nexB.com
-DejaCode - What's in your code?! - http://www.dejacode.com
-AboutCode - Open source for open source - https://www.aboutcode.org
-nexB Inc. - http://www.nexb.com
+It is especially a dubious sequence when you cluster so many of these
+things together into a large patch series.
 
-CONFIDENTIALITY NOTICE:  This e-mail (including attachments) may
-contain information that is proprietary or confidential. If you are
-not the intended recipient or a person responsible for its delivery to
-the intended recipient, do not copy or distribute it. Please
-permanently delete the e-mail and any attachments, and notify us
-immediately at (650) 799 0949.
+If you are really serious about fixing real bugs, post these one at a
+time, very slowly, for us to review properly and apply.
+
+Thank you.
