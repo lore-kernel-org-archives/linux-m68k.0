@@ -1,117 +1,159 @@
 From: Finn Thain <fthain@telegraphics.com.au>
-Subject: [PATCH net v4 10/13] net/mac8390: Fix log messages
+Subject: [PATCH net v4 08/13] net/mac89x0: Replace custom debug logging with
+ netif_* calls
 Date: Sun, 11 Feb 2018 22:08:43 -0500 (EST)
-Message-ID: <08b0c1c8cd2622ec0b35bae44708c5f9217c5bbd.1518397634.git.fthain@telegraphics.com.au>
+Message-ID: <cfb28c8916059d1596b27607a3e84781a1e41aa9.1518397634.git.fthain@telegraphics.com.au>
 References: <cover.1518397634.git.fthain@telegraphics.com.au>
-Return-path: <linux-kernel-owner@vger.kernel.org>
+Return-path: <linux-m68k-owner@vger.kernel.org>
+Received: from kvm5.telegraphics.com.au ([98.124.60.144]:56838 "EHLO
+        kvm5.telegraphics.com.au" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S932551AbeBLDIp (ORCPT
+        <rfc822;linux-m68k@vger.kernel.org>); Sun, 11 Feb 2018 22:08:45 -0500
 In-Reply-To: <cover.1518397634.git.fthain@telegraphics.com.au>
-Sender: linux-kernel-owner@vger.kernel.org
+Sender: linux-m68k-owner@vger.kernel.org
+List-Id: linux-m68k@vger.kernel.org
 To: "David S. Miller" <davem@davemloft.net>
 Cc: netdev@vger.kernel.org, linux-m68k@vger.kernel.org, linux-kernel@vger.kernel.org
-List-Id: linux-m68k@vger.kernel.org
 
-Use dev_foo() to log the slot number instead of the unexpanded "eth%d"
-format string.
-Disambiguate the two identical "Card type %s is unsupported" messages.
+Adopt the conventional style of debug logging because it is both
+shorter and more flexible.
 
-Tested-by: Stan Johnson <userm57@yahoo.com>
 Signed-off-by: Finn Thain <fthain@telegraphics.com.au>
 ---
- drivers/net/ethernet/8390/mac8390.c | 36 +++++++++++++++++-------------------
- 1 file changed, 17 insertions(+), 19 deletions(-)
+ drivers/net/ethernet/cirrus/mac89x0.c | 47 +++++++++++------------------------
+ 1 file changed, 15 insertions(+), 32 deletions(-)
 
-diff --git a/drivers/net/ethernet/8390/mac8390.c b/drivers/net/ethernet/8390/mac8390.c
-index 1113add733b6..44b20bce554e 100644
---- a/drivers/net/ethernet/8390/mac8390.c
-+++ b/drivers/net/ethernet/8390/mac8390.c
-@@ -308,14 +308,14 @@ static bool mac8390_rsrc_init(struct net_device *dev,
- 	 */
+diff --git a/drivers/net/ethernet/cirrus/mac89x0.c b/drivers/net/ethernet/cirrus/mac89x0.c
+index 9cc8d4cf2785..165ea3c6be04 100644
+--- a/drivers/net/ethernet/cirrus/mac89x0.c
++++ b/drivers/net/ethernet/cirrus/mac89x0.c
+@@ -61,18 +61,6 @@
+ static const char version[] =
+ "cs89x0.c:v1.02 11/26/96 Russell Nelson <nelson@crynwr.com>\n";
  
- 	if (nubus_get_func_dir(fres, &dir) == -1) {
--		pr_err("%s: Unable to get Nubus functional directory for slot %X!\n",
--		       dev->name, board->slot);
-+		dev_err(&board->dev,
-+			"Unable to get Nubus functional directory\n");
- 		return false;
- 	}
+-/* ======================= configure the driver here ======================= */
+-
+-/* use 0 for production, 1 for verification, >2 for debug */
+-#ifndef NET_DEBUG
+-#define NET_DEBUG 0
+-#endif
+-
+-/* ======================= end of configuration ======================= */
+-
+-
+-/* Always include 'config.h' first in case the user wants to turn on
+-   or override something. */
+ #include <linux/module.h>
  
- 	/* Get the MAC address */
- 	if (nubus_find_rsrc(&dir, NUBUS_RESID_MAC_ADDRESS, &ent) == -1) {
--		pr_info("%s: Couldn't get MAC address!\n", dev->name);
-+		dev_info(&board->dev, "MAC address resource not found\n");
- 		return false;
- 	}
+ /*
+@@ -108,14 +96,13 @@ static const char version[] =
  
-@@ -325,8 +325,8 @@ static bool mac8390_rsrc_init(struct net_device *dev,
- 		nubus_rewinddir(&dir);
- 		if (nubus_find_rsrc(&dir, NUBUS_RESID_MINOR_BASEOS,
- 				    &ent) == -1) {
--			pr_err("%s: Memory offset resource for slot %X not found!\n",
--			       dev->name, board->slot);
-+			dev_err(&board->dev,
-+				"Memory offset resource not found\n");
- 			return false;
- 		}
- 		nubus_get_rsrc_mem(&offset, &ent, 4);
-@@ -336,8 +336,8 @@ static bool mac8390_rsrc_init(struct net_device *dev,
- 		nubus_rewinddir(&dir);
- 		if (nubus_find_rsrc(&dir, NUBUS_RESID_MINOR_LENGTH,
- 				    &ent) == -1) {
--			pr_info("%s: Memory length resource for slot %X not found, probing\n",
--				dev->name, board->slot);
-+			dev_info(&board->dev,
-+				 "Memory length resource not found, probing\n");
- 			offset = mac8390_memsize(dev->mem_start);
- 		} else {
- 			nubus_get_rsrc_mem(&offset, &ent, 4);
-@@ -380,8 +380,8 @@ static bool mac8390_rsrc_init(struct net_device *dev,
- 			break;
+ #include "cs89x0.h"
  
- 		default:
--			pr_err("Card type %s is unsupported, sorry\n",
--			       board->name);
-+			dev_err(&board->dev,
-+				"No known base address for card type\n");
- 			return false;
- 		}
- 	}
-@@ -536,7 +536,8 @@ static int mac8390_initdev(struct net_device *dev, struct nubus_board *board,
- 	case MAC8390_APPLE:
- 		switch (mac8390_testio(dev->mem_start)) {
- 		case ACCESS_UNKNOWN:
--			pr_err("Don't know how to access card memory!\n");
-+			dev_err(&board->dev,
-+				"Don't know how to access card memory\n");
- 			return -ENODEV;
+-static int debug;
++static int debug = -1;
+ module_param(debug, int, 0);
+-MODULE_PARM_DESC(debug, "CS89[02]0 debug level (0-5)");
+-
+-static unsigned int net_debug = NET_DEBUG;
++MODULE_PARM_DESC(debug, "debug message level");
  
- 		case ACCESS_16:
-@@ -602,21 +603,18 @@ static int mac8390_initdev(struct net_device *dev, struct nubus_board *board,
- 		break;
- 
- 	default:
--		pr_err("Card type %s is unsupported, sorry\n",
--		       board->name);
-+		dev_err(&board->dev, "Unsupported card type\n");
+ /* Information that need to be kept for each board. */
+ struct net_local {
++	int msg_enable;
+ 	int chip_type;		/* one of: CS8900, CS8920, CS8920M */
+ 	char chip_revision;	/* revision letter of the chip ('A'...) */
+ 	int send_cmd;		/* the propercommand used to send a packet. */
+@@ -178,7 +165,6 @@ static int mac89x0_device_probe(struct platform_device *pdev)
+ {
+ 	struct net_device *dev;
+ 	struct net_local *lp;
+-	static unsigned version_printed;
+ 	int i, slot;
+ 	unsigned rev_type = 0;
+ 	unsigned long ioaddr;
+@@ -189,8 +175,6 @@ static int mac89x0_device_probe(struct platform_device *pdev)
+ 	if (!MACH_IS_MAC)
  		return -ENODEV;
- 	}
  
- 	__NS8390_init(dev, 0);
+-	net_debug = debug;
+-
+ 	dev = alloc_etherdev(sizeof(struct net_local));
+ 	if (!dev)
+ 		return -ENOMEM;
+@@ -225,6 +209,8 @@ static int mac89x0_device_probe(struct platform_device *pdev)
+ 	/* Initialize the net_device structure. */
+ 	lp = netdev_priv(dev);
  
- 	/* Good, done, now spit out some messages */
--	pr_info("%s: %s in slot %X (type %s)\n",
--		dev->name, board->name, board->slot,
--		cardname[type]);
--	pr_info("MAC %pM IRQ %d, %d KB shared memory at %#lx, %d-bit access.\n",
--		dev->dev_addr, dev->irq,
--		(unsigned int)(dev->mem_end - dev->mem_start) >> 10,
--		dev->mem_start, access_bitmode ? 32 : 16);
-+	dev_info(&board->dev, "%s (type %s)\n", board->name, cardname[type]);
-+	dev_info(&board->dev, "MAC %pM, IRQ %d, %d KB shared memory at %#lx, %d-bit access.\n",
-+		 dev->dev_addr, dev->irq,
-+		 (unsigned int)(dev->mem_end - dev->mem_start) >> 10,
-+		 dev->mem_start, access_bitmode ? 32 : 16);
- 	return 0;
- }
++	lp->msg_enable = netif_msg_init(debug, 0);
++
+ 	/* Fill in the 'dev' fields. */
+ 	dev->base_addr = ioaddr;
+ 	dev->mem_start = (unsigned long)
+@@ -247,8 +233,7 @@ static int mac89x0_device_probe(struct platform_device *pdev)
+ 	if (lp->chip_type != CS8900 && lp->chip_revision >= 'C')
+ 		lp->send_cmd = TX_NOW;
  
+-	if (net_debug && version_printed++ == 0)
+-		printk(version);
++	netif_dbg(lp, drv, dev, "%s", version);
+ 
+ 	pr_info("cs89%c0%s rev %c found at %#8lx\n",
+ 		lp->chip_type == CS8900 ? '0' : '2',
+@@ -348,11 +333,9 @@ net_send_packet(struct sk_buff *skb, struct net_device *dev)
+ 	struct net_local *lp = netdev_priv(dev);
+ 	unsigned long flags;
+ 
+-	if (net_debug > 3)
+-		printk("%s: sent %d byte packet of type %x\n",
+-		       dev->name, skb->len,
+-		       (skb->data[ETH_ALEN+ETH_ALEN] << 8)
+-		       | skb->data[ETH_ALEN+ETH_ALEN+1]);
++	netif_dbg(lp, tx_queued, dev, "sent %d byte packet of type %x\n",
++		  skb->len, skb->data[ETH_ALEN + ETH_ALEN] << 8 |
++		  skb->data[ETH_ALEN + ETH_ALEN + 1]);
+ 
+ 	/* keep the upload from being interrupted, since we
+ 	   ask the chip to start transmitting before the
+@@ -401,7 +384,7 @@ static irqreturn_t net_interrupt(int irq, void *dev_id)
+            faster than you can read them off, you're screwed.  Hasta la
+            vista, baby!  */
+ 	while ((status = swab16(nubus_readw(dev->base_addr + ISQ_PORT)))) {
+-		if (net_debug > 4)printk("%s: event=%04x\n", dev->name, status);
++		netif_dbg(lp, intr, dev, "status=%04x\n", status);
+ 		switch(status & ISQ_EVENT_MASK) {
+ 		case ISQ_RECEIVER_EVENT:
+ 			/* Got a packet(s). */
+@@ -431,7 +414,7 @@ static irqreturn_t net_interrupt(int irq, void *dev_id)
+ 				netif_wake_queue(dev);
+ 			}
+ 			if (status & TX_UNDERRUN) {
+-				if (net_debug > 0) printk("%s: transmit underrun\n", dev->name);
++				netif_dbg(lp, tx_err, dev, "transmit underrun\n");
+                                 lp->send_underrun++;
+                                 if (lp->send_underrun == 3) lp->send_cmd = TX_AFTER_381;
+                                 else if (lp->send_underrun == 6) lp->send_cmd = TX_AFTER_ALL;
+@@ -452,6 +435,7 @@ static irqreturn_t net_interrupt(int irq, void *dev_id)
+ static void
+ net_rx(struct net_device *dev)
+ {
++	struct net_local *lp = netdev_priv(dev);
+ 	struct sk_buff *skb;
+ 	int status, length;
+ 
+@@ -483,10 +467,9 @@ net_rx(struct net_device *dev)
+ 	skb_copy_to_linear_data(skb, (void *)(dev->mem_start + PP_RxFrame),
+ 				length);
+ 
+-	if (net_debug > 3)printk("%s: received %d byte packet of type %x\n",
+-                                 dev->name, length,
+-                                 (skb->data[ETH_ALEN+ETH_ALEN] << 8)
+-				 | skb->data[ETH_ALEN+ETH_ALEN+1]);
++	netif_dbg(lp, rx_status, dev, "received %d byte packet of type %x\n",
++		  length, skb->data[ETH_ALEN + ETH_ALEN] << 8 |
++		  skb->data[ETH_ALEN + ETH_ALEN + 1]);
+ 
+         skb->protocol=eth_type_trans(skb,dev);
+ 	netif_rx(skb);
 -- 
 2.13.6
