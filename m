@@ -1,62 +1,29 @@
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: Re: [PATCH] m68k/mm: Stop printing the virtual memory layout
-Date: Tue, 13 Feb 2018 08:34:37 +0100
-Message-ID: <CAMuHMdXjUCR0CxNiF7quz0dmM3K_6ocMJ0-mwBi4Y5KbFY=3FQ@mail.gmail.com>
-References: <1518425633-19803-1-git-send-email-geert@linux-m68k.org> <alpine.LNX.2.21.1802131143320.8@nippy.intranet>
+From: David Miller <davem@davemloft.net>
+Subject: Re: [PATCH net v4 02/13] net/8390: Fix msg_enable patch snafu
+Date: Tue, 13 Feb 2018 09:58:20 -0500 (EST)
+Message-ID: <20180213.095820.761578588685460710.davem@davemloft.net>
+References: <f697da2b2513e025688f6c48088536060575a249.1518397634.git.fthain@telegraphics.com.au>
+        <20180212.103956.1262868827217051631.davem@davemloft.net>
+        <alpine.LNX.2.21.1802131419540.8@nippy.intranet>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Return-path: <linux-m68k-owner@vger.kernel.org>
-In-Reply-To: <alpine.LNX.2.21.1802131143320.8@nippy.intranet>
-Sender: linux-m68k-owner@vger.kernel.org
+Content-Type: Text/Plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
+Return-path: <netdev-owner@vger.kernel.org>
+In-Reply-To: <alpine.LNX.2.21.1802131419540.8@nippy.intranet>
+Sender: netdev-owner@vger.kernel.org
+To: fthain@telegraphics.com.au
+Cc: netdev@vger.kernel.org, linux-m68k@vger.kernel.org, linux-kernel@vger.kernel.org, linux@armlinux.org.uk, linux-arm-kernel@lists.infradead.org
 List-Id: linux-m68k@vger.kernel.org
-To: Finn Thain <fthain@telegraphics.com.au>
-Cc: linux-m68k <linux-m68k@lists.linux-m68k.org>, Greg Ungerer <gerg@linux-m68k.org>, Kees Cook <keescook@chromium.org>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
 
-Hi Finn,
+From: Finn Thain <fthain@telegraphics.com.au>
+Date: Tue, 13 Feb 2018 16:03:09 +1100 (AEDT)
 
-On Tue, Feb 13, 2018 at 1:48 AM, Finn Thain <fthain@telegraphics.com.au> wrote:
-> On Mon, 12 Feb 2018, Geert Uytterhoeven wrote:
->> Since commit ad67b74d2469d9b8 ("printk: hash addresses printed with
->> %p"), the virtual memory layout printed during boot up contains "ptrval"
->> instead of actual addresses:
->>
->>     Memory: 268040K/276480K available (2979K kernel code, 310K rwdata, 784K rodata, 144K init, 172K bss, 8440K reserved, 0K cma-reserved)
->>     Virtual kernel memory layout:
->>       vector  : 0x003d2e74 - 0x003d3274   (   1 KiB)
->>       kmap    : 0xd0000000 - 0xf0000000   ( 512 MiB)
->>       vmalloc : 0x11800000 - 0xd0000000   (3048 MiB)
->>       lowmem  : 0x00000000 - 0x11000000   ( 272 MiB)
->>         .init : 0x(ptrval) - 0x(ptrval)   ( 144 KiB)
->>         .text : 0x(ptrval) - 0x(ptrval)   (2980 KiB)
->>         .data : 0x(ptrval) - 0x(ptrval)   (1095 KiB)
->>         .bss  : 0x(ptrval) - 0x(ptrval)   ( 173 KiB)
->>
->> Instead of changing the printing to "%px", and leaking virtual memory
->> layout information again,
->>
->> just remove the printing completely, cfr. e.g.
->> commit 071929dbdd865f77 ("arm64: Stop printing the virtual memory
->> layout").
->>
->> All interesting information (actual section sizes) is already printed by
->> mem_init_print_info() just above anyway.
->
-> Or maybe revert to %lx with pr_debug instead of pr_notice. Just a thought;
+> I think you have overlooked those modules which offer no way to set 
+> p->msg_enable, i.e. ax88796, axnet_cs, etherh, hydra, mac8390, mcf8390, 
+> pcnet_cs and zorro8390.
 
-(%px prints unhashed pointers, no need for %lx and cast)
+Then that's a bug, we have a very simple easy to implement interface
+for setting this (ethtool).
 
-> I don't have any preference.
-
-Dynamic debug is hot these days, so that may be enabled by distros,
-still leaking the info.
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+And by adding the simple hook, you will make these older drivers
+easier to debug for the few people still using them.
