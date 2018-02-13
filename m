@@ -1,21 +1,90 @@
-From: Anni Ccet <78-483y@ono.com>
-Subject: I Am Interested In You.
-Date: Tue, 13 Feb 2018 06:39:12 +0100 (CET)
-Message-ID: <26845264.2783811518500352057.JavaMail.defaultUser__32825.6780900576$1518496611$gmane$org@defaultHost>
-Reply-To: aniccet100@gmail.com
+From: Finn Thain <fthain@telegraphics.com.au>
+Subject: Re: [PATCH net v4 02/13] net/8390: Fix msg_enable patch snafu
+Date: Tue, 13 Feb 2018 16:03:09 +1100 (AEDT)
+Message-ID: <alpine.LNX.2.21.1802131419540.8@nippy.intranet>
+References: <cover.1518397634.git.fthain@telegraphics.com.au>        <f697da2b2513e025688f6c48088536060575a249.1518397634.git.fthain@telegraphics.com.au> <20180212.103956.1262868827217051631.davem@davemloft.net>
 Mime-Version: 1.0
-Content-Type: text/plain;charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-m68k-owner@vger.kernel.org>
-Sender: linux-m68k-owner@vger.kernel.org
+Content-Type: text/plain; charset=US-ASCII
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20180212.103956.1262868827217051631.davem@davemloft.net>
+Sender: linux-kernel-owner@vger.kernel.org
+To: David Miller <davem@davemloft.net>
+Cc: netdev@vger.kernel.org, linux-m68k@vger.kernel.org, linux-kernel@vger.kernel.org, linux@armlinux.org.uk, linux-arm-kernel@lists.infradead.org
 List-Id: linux-m68k@vger.kernel.org
 
-Greeting to you and how is your family? sorry for my way of approach to 
-you, it  is because i do not have choice. I am Aniccet Ibrahim From 
-Ivory Coast. My story is  connected to the fight with the Republican 
-Forces. I have a business proposals for you. If your interested i want 
-you to reply me with your private telephone number i will give you more 
-details about myself. i shall be waiting for your reply soon.
+On Mon, 12 Feb 2018, David Miller wrote:
 
-My regards
-Miss Aniccet Ibrahim
+> From: Finn Thain <fthain@telegraphics.com.au>
+> Date: Sun, 11 Feb 2018 22:08:43 -0500 (EST)
+> 
+> > The lib8390 module parameter 'msg_enable' doesn't do anything useful:
+> > it causes an ancient version string to be logged.
+> 
+> Not true.
+> 
+> You need to look at the various netif_*() et al. message logging
+> interfaces, they check "p->msg_enable" to determine which messages to
+> print.
+> 
+
+I think you have overlooked those modules which offer no way to set 
+p->msg_enable, i.e. ax88796, axnet_cs, etherh, hydra, mac8390, mcf8390, 
+pcnet_cs and zorro8390.
+
+The apne, ne, ne2k-pci, smc-ultra, stnic, and wd modules are not at issue 
+here because they define their own msg_enable parameters and they also 
+assign p->msg_enable accordingly.
+
+> I'm not applying this, sorry.
+> 
+
+Please take another look.
+
+> Just for the record, I consider these kinds of ancient driver cleanups 
+> painful to review, and unless they allow some ugly global kernel API to 
+> be improved or removed such changes have very little gain.
+> 
+
+OK. When there are no users, I'll send you no patches.
+
+But even then, I may continue to send patches to other maintainers who may 
+be open to the possibility of unforeseen future uses of the body of 
+contributed code under their care.
+
+> In fact, most of them have a good chance to break things.
+> 
+
+You saw the tested-by tags, right? Anyway, if you consider my previous 
+work, I believe you'll find that I've fixed more bugs than I've 
+introduced.
+
+> It is especially a dubious sequence when you cluster so many of these 
+> things together into a large patch series.
+> 
+
+Sorry if that gave the wrong impression. Doing that made my workflow 
+easier.
+
+> If you are really serious about fixing real bugs, post these one at a 
+> time, very slowly, for us to review properly and apply.
+> 
+> Thank you.
+
+Please don't feel like I'm trying to pressure you to expedite this.
+
+FWIW, this submission was arranged so that you might cherry-pick the first 
+N patches, for some satisfactory value of N.
+
+I will split up this series by driver (8390, sonic, etc) so it's more 
+clear which patches are independent and which patches can be reviewed 
+together.
+
+Thanks.
+
+-- 
+
+> --
+> To unsubscribe from this list: send the line "unsubscribe linux-m68k" in
+> the body of a message to majordomo@vger.kernel.org
+> More majordomo info at  http://vger.kernel.org/majordomo-info.html
+> 
