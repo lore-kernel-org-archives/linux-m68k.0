@@ -1,74 +1,122 @@
-From: Andy Duan <fugang.duan@nxp.com>
-Subject: RE: [PATCH] net: fec: set dma_coherent_mask
-Date: Wed, 28 Mar 2018 03:04:17 +0000
-Message-ID: <AM4PR0401MB2260558919012AC2D190DCD6FFA30@AM4PR0401MB2260.eurprd04.prod.outlook.com>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: Re: [PATCH] net: fec: set dma_coherent_mask
+Date: Wed, 28 Mar 2018 09:06:55 +0200
+Message-ID: <CAMuHMdWSKxRdWXMOK_iqFShYKXphEUvKRMsoPP5xQAdi1x5NiQ@mail.gmail.com>
 References: <1522071386-29743-1-git-send-email-gerg@linux-m68k.org>
- <CAMuHMdW_ZmN9aptLoSK7JYLVaLyErkFyGU2sb2f564uCUeBh6w@mail.gmail.com>
+ <CAMuHMdW_ZmN9aptLoSK7JYLVaLyErkFyGU2sb2f564uCUeBh6w@mail.gmail.com> <AM4PR0401MB2260558919012AC2D190DCD6FFA30@AM4PR0401MB2260.eurprd04.prod.outlook.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netdev-owner@vger.kernel.org>
-In-Reply-To: <CAMuHMdW_ZmN9aptLoSK7JYLVaLyErkFyGU2sb2f564uCUeBh6w@mail.gmail.com>
-Content-Language: en-US
+In-Reply-To: <AM4PR0401MB2260558919012AC2D190DCD6FFA30@AM4PR0401MB2260.eurprd04.prod.outlook.com>
 Sender: netdev-owner@vger.kernel.org
-To: Geert Uytterhoeven <geert@linux-m68k.org>, Greg Ungerer <gerg@linux-m68k.org>
-Cc: netdev <netdev@vger.kernel.org>, Linux/m68k <linux-m68k@vger.kernel.org>
+To: Andy Duan <fugang.duan@nxp.com>
+Cc: Greg Ungerer <gerg@linux-m68k.org>, netdev <netdev@vger.kernel.org>, Linux/m68k <linux-m68k@vger.kernel.org>
 List-Id: linux-m68k@vger.kernel.org
 
-RnJvbTogR2VlcnQgVXl0dGVyaG9ldmVuIDxnZWVydEBsaW51eC1tNjhrLm9yZz4gU2VudDogMjAx
-OOW5tDPmnIgyN+aXpSAyMDo1OQ0KPiBIaSBHcmVnLA0KPiANCj4gT24gTW9uLCBNYXIgMjYsIDIw
-MTggYXQgMzozNiBQTSwgR3JlZyBVbmdlcmVyIDxnZXJnQGxpbnV4LW02OGsub3JnPiB3cm90ZToN
-Cj4gPiBBcyBvZiBjb21taXQgMjA1ZTFiN2Y1MWU0ICgiZG1hLW1hcHBpbmc6IHdhcm4gd2hlbiB0
-aGVyZSBpcyBubw0KPiA+IGNvaGVyZW50X2RtYV9tYXNrIikgdGhlIEZyZWVzY2FsZSBGRUMgZHJp
-dmVyIGlzIGlzc3VpbmcgdGhlIGZvbGxvd2luZw0KPiA+IHdhcm5pbmcgb24gZHJpdmVyIGluaXRp
-YWxpemF0aW9uIG9uIENvbGRGaXJlIHN5c3RlbXM6DQo+ID4NCj4gPiBXQVJOSU5HOiBDUFU6IDAg
-UElEOiAxIGF0IC4vaW5jbHVkZS9saW51eC9kbWEtbWFwcGluZy5oOjUxNiAweDQwMTU5ZTIwDQo+
-ID4gTW9kdWxlcyBsaW5rZWQgaW46DQo+ID4gQ1BVOiAwIFBJRDogMSBDb21tOiBzd2FwcGVyIE5v
-dCB0YWludGVkIDQuMTYuMC1yYzctZGlydHkgIzQgU3RhY2sgZnJvbQ0KPiA+IDQxODMzZGQ4Og0K
-PiA+ICAgICAgICAgNDE4MzNkZDggNDAyNTljNTMgNDAwMjU1MzQgNDAyNzllMjYgMDAwMDAwMDMg
-MDAwMDAwMDANCj4gNDAwNGU1MTQgNDE4MjcwMDANCj4gPiAgICAgICAgIDQwMDI1NWRlIDQwMjQ0
-ZTQyIDAwMDAwMjA0IDQwMTU5ZTIwIDAwMDAwMDA5IDAwMDAwMDAwDQo+IDAwMDAwMDAwIDQwMjQ1
-MzFkDQo+ID4gICAgICAgICA0MDE1OWUyMCA0MDI0NGU0MiAwMDAwMDIwNCAwMDAwMDAwMCAwMDAw
-MDAwMCAwMDAwMDAwMA0KPiAwMDAwMDAwNyAwMDAwMDAwMA0KPiA+ICAgICAgICAgMDAwMDAwMDAg
-NDAyNzllMjYgNDAyOGQwNDAgNDAyMjY1NzYgNDAwM2FlODggNDAyNzllMjYNCj4gNDE4MjczZjYg
-NDE4MzNlZjgNCj4gPiAgICAgICAgIDdmZmZmZmZmIDQxODI3M2YyIDQxODY3MDI4IDQwMDNjOWEy
-IDQxODBhYzZjIDAwMDAwMDA0IDQxODMzZjhjDQo+IDQwMTNlNzFjDQo+ID4gICAgICAgICA0MDI3
-OWUxYyA0MDI3OWUyNiA0MDIyNmMxNiA0MDEzY2VkMiA0MDI3OWUyNiA0MDI3OWU1OA0KPiA0MDI4
-ZDA0MA0KPiA+IDAwMDAwMDAwIENhbGwgVHJhY2U6DQo+ID4gICAgICAgICBbPDQwMDI1NTM0Pl0g
-MHg0MDAyNTUzNA0KPiA+ICBbPDQwMDRlNTE0Pl0gMHg0MDA0ZTUxNA0KPiA+ICBbPDQwMDI1NWRl
-Pl0gMHg0MDAyNTVkZQ0KPiA+ICBbPDQwMTU5ZTIwPl0gMHg0MDE1OWUyMA0KPiA+ICBbPDQwMTU5
-ZTIwPl0gMHg0MDE1OWUyMA0KPiA+DQo+ID4gSXQgaXMgbm90IGZhdGFsLCB0aGUgZHJpdmVyIGFu
-ZCB0aGUgc3lzdGVtIGNvbnRpbnVlIHRvIGZ1bmN0aW9uIG5vcm1hbGx5Lg0KPiA+DQo+ID4gQXMg
-cGVyIHRoZSB3YXJuaW5nIHRoZSBjb2hlcmVudF9kbWFfbWFzayBpcyBub3Qgc2V0IG9uIHRoaXMg
-ZGV2aWNlLg0KPiA+IFRoZXJlIGlzIG5vdGhpbmcgc3BlY2lhbCBhYm91dCB0aGUgRE1BIG1lbW9y
-eSBjb2hlcmVuY3kgb24gdGhpcw0KPiA+IGhhcmR3YXJlIHNvIHdlIGNhbiBqdXN0IHNldCB0aGUg
-bWFzayB0byAzMmJpdHMgZHVyaW5nIHByb2JlLg0KPiA+DQo+ID4gU2lnbmVkLW9mZi1ieTogR3Jl
-ZyBVbmdlcmVyIDxnZXJnQGxpbnV4LW02OGsub3JnPg0KPiANCj4gVGhhbmtzIGZvciB5b3VyIHBh
-dGNoIQ0KPiANCj4gPiAtLS0NCj4gPiAgZHJpdmVycy9uZXQvZXRoZXJuZXQvZnJlZXNjYWxlL2Zl
-Y19tYWluLmMgfCAyICsrDQo+ID4gIDEgZmlsZSBjaGFuZ2VkLCAyIGluc2VydGlvbnMoKykNCj4g
-Pg0KPiA+IElzIHRoaXMgdGhlIGJlc3Qgd2F5IHRvIGhhbmRsZSB0aGlzIHByb2JsZW0/DQo+ID4g
-Q29tbWVudHMgd2VsY29tZS4uLg0KPiA+DQo+ID4gZGlmZiAtLWdpdCBhL2RyaXZlcnMvbmV0L2V0
-aGVybmV0L2ZyZWVzY2FsZS9mZWNfbWFpbi5jDQo+ID4gYi9kcml2ZXJzL25ldC9ldGhlcm5ldC9m
-cmVlc2NhbGUvZmVjX21haW4uYw0KPiA+IGluZGV4IGQ0NjA0YmMuLjNjYjEzMGEgMTAwNjQ0DQo+
-ID4gLS0tIGEvZHJpdmVycy9uZXQvZXRoZXJuZXQvZnJlZXNjYWxlL2ZlY19tYWluLmMNCj4gPiAr
-KysgYi9kcml2ZXJzL25ldC9ldGhlcm5ldC9mcmVlc2NhbGUvZmVjX21haW4uYw0KPiA+IEBAIC0y
-NzAyLDYgKzI3MDIsOCBAQCBzdGF0aWMgaW50IGZlY19lbmV0X2FsbG9jX3F1ZXVlKHN0cnVjdCBu
-ZXRfZGV2aWNlDQo+ICpuZGV2KQ0KPiA+ICAgICAgICAgaW50IHJldCA9IDA7DQo+ID4gICAgICAg
-ICBzdHJ1Y3QgZmVjX2VuZXRfcHJpdl90eF9xICp0eHE7DQo+ID4NCj4gPiArICAgICAgIGRtYV9z
-ZXRfY29oZXJlbnRfbWFzaygmZmVwLT5wZGV2LT5kZXYsIERNQV9CSVRfTUFTSygzMikpOw0KPiA+
-ICsNCj4gPiAgICAgICAgIGZvciAoaSA9IDA7IGkgPCBmZXAtPm51bV90eF9xdWV1ZXM7IGkrKykg
-ew0KPiA+ICAgICAgICAgICAgICAgICB0eHEgPSBremFsbG9jKHNpemVvZigqdHhxKSwgR0ZQX0tF
-Uk5FTCk7DQo+ID4gICAgICAgICAgICAgICAgIGlmICghdHhxKSB7DQo+IA0KPiBBcyBwZXIgeW91
-ciBvdGhlciBlbWFpbCwgdGhpcyBkb2VzIG5vdCB0cmlnZ2VyIG9uIGlNWCBzeXN0ZW1zIHVzaW5n
-IERULg0KPiBIZW5jZSBJJ20gd29uZGVyaW5nIGlmIHRoZSBDb2xkZmlyZSBwbGF0Zm9ybSBjb2Rl
-IHNob3VsZG4ndCBqdXN0IGRvIHRoZSBzYW1lIHdoYXQNCj4gZHJpdmVycy9vZi9kZXZpY2UuYyBk
-b2VzLCBjZnIuDQo+IGh0dHBzOi8vZW1lYTAxLnNhZmVsaW5rcy5wcm90ZWN0aW9uLm91dGxvb2su
-Y29tLz91cmw9aHR0cHMlM0ElMkYlMkZ3d3cucw0KPiBwaW5pY3MubmV0JTJGbGlzdHMlMkZsaW51
-eC1tNjhrJTJGbXNnMTA5MjkuaHRtbCZkYXRhPTAyJTdDMDElN0NmdWdhbg0KPiBnLmR1YW4lNDBu
-eHAuY29tJTdDM2RiMmRiYWRmMTE1NDk2NTM3MDYwOGQ1OTNlMjk0YjIlN0M2ODZlYTFkMw0KPiBi
-YzJiNGM2ZmE5MmNkOTljNWMzMDE2MzUlN0MwJTdDMCU3QzYzNjU3NzUyMzc1NjE4NTk5NSZzZGF0
-YT1ic08NCj4gRiUyQm5TZVhUUDdDJTJGNTVKTE8zUHY4WXliUGFoTWFaRHlxQjE2Zjl5U0ElM0Qm
-cmVzZXJ2ZWQ9MD8NCj4gDQo+IEdye29ldGplLGVldGluZ31zLA0KPiANCj4gICAgICAgICAgICAg
-ICAgICAgICAgICAgR2VlcnQNCj4gDQpJdCBpcyBiZXR0ZXIgdG8gdXNlIG9mX2RtYV9jb25maWd1
-cmUoJnBkZXYtPmRldiwgbnApLCBpdCBpb21tdSBzdXBwb3J0LCBkZXZpY2UgYWxzbyBjYW4gYWxs
-b2NhdGUgbWVtb3J5IGZyb20gNjRiaXQgc3BhY2UuDQoNCkFuZHkNCg==
+Hi Andy,
+
+On Wed, Mar 28, 2018 at 5:04 AM, Andy Duan <fugang.duan@nxp.com> wrote:
+> From: Geert Uytterhoeven <geert@linux-m68k.org> Sent: 2018=E5=B9=B43=E6=
+=9C=8827=E6=97=A5 20:59
+>> On Mon, Mar 26, 2018 at 3:36 PM, Greg Ungerer <gerg@linux-m68k.org> wrot=
+e:
+>> > As of commit 205e1b7f51e4 ("dma-mapping: warn when there is no
+>> > coherent_dma_mask") the Freescale FEC driver is issuing the following
+>> > warning on driver initialization on ColdFire systems:
+>> >
+>> > WARNING: CPU: 0 PID: 1 at ./include/linux/dma-mapping.h:516 0x40159e20
+>> > Modules linked in:
+>> > CPU: 0 PID: 1 Comm: swapper Not tainted 4.16.0-rc7-dirty #4 Stack from
+>> > 41833dd8:
+>> >         41833dd8 40259c53 40025534 40279e26 00000003 00000000
+>> 4004e514 41827000
+>> >         400255de 40244e42 00000204 40159e20 00000009 00000000
+>> 00000000 4024531d
+>> >         40159e20 40244e42 00000204 00000000 00000000 00000000
+>> 00000007 00000000
+>> >         00000000 40279e26 4028d040 40226576 4003ae88 40279e26
+>> 418273f6 41833ef8
+>> >         7fffffff 418273f2 41867028 4003c9a2 4180ac6c 00000004 41833f8c
+>> 4013e71c
+>> >         40279e1c 40279e26 40226c16 4013ced2 40279e26 40279e58
+>> 4028d040
+>> > 00000000 Call Trace:
+>> >         [<40025534>] 0x40025534
+>> >  [<4004e514>] 0x4004e514
+>> >  [<400255de>] 0x400255de
+>> >  [<40159e20>] 0x40159e20
+>> >  [<40159e20>] 0x40159e20
+>> >
+>> > It is not fatal, the driver and the system continue to function normal=
+ly.
+>> >
+>> > As per the warning the coherent_dma_mask is not set on this device.
+>> > There is nothing special about the DMA memory coherency on this
+>> > hardware so we can just set the mask to 32bits during probe.
+>> >
+>> > Signed-off-by: Greg Ungerer <gerg@linux-m68k.org>
+>>
+>> Thanks for your patch!
+>>
+>> > ---
+>> >  drivers/net/ethernet/freescale/fec_main.c | 2 ++
+>> >  1 file changed, 2 insertions(+)
+>> >
+>> > Is this the best way to handle this problem?
+>> > Comments welcome...
+>> >
+>> > diff --git a/drivers/net/ethernet/freescale/fec_main.c
+>> > b/drivers/net/ethernet/freescale/fec_main.c
+>> > index d4604bc..3cb130a 100644
+>> > --- a/drivers/net/ethernet/freescale/fec_main.c
+>> > +++ b/drivers/net/ethernet/freescale/fec_main.c
+>> > @@ -2702,6 +2702,8 @@ static int fec_enet_alloc_queue(struct net_devic=
+e
+>> *ndev)
+>> >         int ret =3D 0;
+>> >         struct fec_enet_priv_tx_q *txq;
+>> >
+>> > +       dma_set_coherent_mask(&fep->pdev->dev, DMA_BIT_MASK(32));
+>> > +
+>> >         for (i =3D 0; i < fep->num_tx_queues; i++) {
+>> >                 txq =3D kzalloc(sizeof(*txq), GFP_KERNEL);
+>> >                 if (!txq) {
+>>
+>> As per your other email, this does not trigger on iMX systems using DT.
+>> Hence I'm wondering if the Coldfire platform code shouldn't just do the =
+same what
+>> drivers/of/device.c does, cfr.
+>> https://emea01.safelinks.protection.outlook.com/?url=3Dhttps%3A%2F%2Fwww=
+.s
+>> pinics.net%2Flists%2Flinux-m68k%2Fmsg10929.html&data=3D02%7C01%7Cfugan
+>> g.duan%40nxp.com%7C3db2dbadf1154965370608d593e294b2%7C686ea1d3
+>> bc2b4c6fa92cd99c5c301635%7C0%7C0%7C636577523756185995&sdata=3DbsO
+>> F%2BnSeXTP7C%2F55JLO3Pv8YybPahMaZDyqB16f9ySA%3D&reserved=3D0?
+>>
+>> Gr{oetje,eeting}s,
+>>
+>>                         Geert
+>>
+> It is better to use of_dma_configure(&pdev->dev, np), it iommu support, d=
+evice also can allocate memory from 64bit space.
+
+At first sight, it indeed looks like of_dma_configure() would do the
+right thing,
+even on platforms without DT like Coldfire.
+
+Unfortunately of_dma_configure() is replaced by a dummy if !CONFIG_OF.
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
+--=20
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k=
+.org
+
+In personal conversations with technical people, I call myself a hacker. Bu=
+t
+when I'm talking to journalists I just say "programmer" or something like t=
+hat.
+                                -- Linus Torvalds
