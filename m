@@ -1,112 +1,101 @@
-From: Greg Ungerer <gerg@linux-m68k.org>
-Subject: Re: [PATCH] net: fec: set dma_coherent_mask
-Date: Wed, 28 Mar 2018 22:29:36 +1000
-Message-ID: <d00139ba-113a-9846-3b85-4d015901fbbb@linux-m68k.org>
-References: <1522071386-29743-1-git-send-email-gerg@linux-m68k.org>
- <CAMuHMdW_ZmN9aptLoSK7JYLVaLyErkFyGU2sb2f564uCUeBh6w@mail.gmail.com>
- <d0824715-a5bb-3f19-fc47-6ae9ca94c080@linux-m68k.org>
- <CAMuHMdXzySkpAi+kS+XCXR8kjY_AsV4h6t+XsuXx4o_0u2GSEA@mail.gmail.com>
+From: Eugene Syromiatnikov <esyr@redhat.com>
+Subject: Re: [GIT PULL] siginfo fix for v4.16-rc5
+Date: Sat, 31 Mar 2018 12:56:58 +0200
+Message-ID: <20180331105658.GA4332@asgard.redhat.com>
+References: <87woypy8zc.fsf@xmission.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Return-path: <netdev-owner@vger.kernel.org>
-In-Reply-To: <CAMuHMdXzySkpAi+kS+XCXR8kjY_AsV4h6t+XsuXx4o_0u2GSEA@mail.gmail.com>
-Content-Language: en-US
-Sender: netdev-owner@vger.kernel.org
-To: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: netdev <netdev@vger.kernel.org>, Linux/m68k <linux-m68k@vger.kernel.org>
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <87woypy8zc.fsf@xmission.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: "Eric W. Biederman" <ebiederm@xmission.com>
+Cc: Linus Torvalds <torvalds@linux-foundation.org>, linux-kernel@vger.kernel.org, linux-m68k@vger.kernel.org
 List-Id: linux-m68k@vger.kernel.org
 
-Hi Geert,
-
-On 28/03/18 17:57, Geert Uytterhoeven wrote:
-[skip]
->> [PATCH] m68k: set dma and coherent masks for platform FEC ethernets
->>
->> As of commit 205e1b7f51e4 ("dma-mapping: warn when there is no
->> coherent_dma_mask") the Freescale FEC driver is issuing the following
->> warning on driver initialization on ColdFire systems:
->>
->> WARNING: CPU: 0 PID: 1 at ./include/linux/dma-mapping.h:516 0x40159e20
->> Modules linked in:
->> CPU: 0 PID: 1 Comm: swapper Not tainted 4.16.0-rc7-dirty #4
->> Stack from 41833dd8:
->>          41833dd8 40259c53 40025534 40279e26 00000003 00000000 4004e514 41827000
->>          400255de 40244e42 00000204 40159e20 00000009 00000000 00000000 4024531d
->>          40159e20 40244e42 00000204 00000000 00000000 00000000 00000007 00000000
->>          00000000 40279e26 4028d040 40226576 4003ae88 40279e26 418273f6 41833ef8
->>          7fffffff 418273f2 41867028 4003c9a2 4180ac6c 00000004 41833f8c 4013e71c
->>          40279e1c 40279e26 40226c16 4013ced2 40279e26 40279e58 4028d040 00000000
->> Call Trace:
->>          [<40025534>] 0x40025534
->>   [<4004e514>] 0x4004e514
->>   [<400255de>] 0x400255de
->>   [<40159e20>] 0x40159e20
->>   [<40159e20>] 0x40159e20
->>
->> It is not fatal, the driver and the system continue to function normally.
->>
->> As per the warning the coherent_dma_mask is not set on this device.
->> There is nothing special about the DMA memory coherency on this hardware
->> so we can just set the mask to 32bits in the platform data for the FEC
->> ethernet devices.
->>
->> Signed-off-by: Greg Ungerer <gerg@linux-m68k.org>
->> ---
->>   arch/m68k/coldfire/device.c | 14 ++++++++++++--
->>   1 file changed, 12 insertions(+), 2 deletions(-)
->>
->> diff --git a/arch/m68k/coldfire/device.c b/arch/m68k/coldfire/device.c
->> index 84938fd..f93e0e5 100644
->> --- a/arch/m68k/coldfire/device.c
->> +++ b/arch/m68k/coldfire/device.c
->> @@ -130,12 +130,18 @@
->>          },
->>   };
->>
->> +static u64 mcf_dma_mask = DMA_BIT_MASK(32);
->> +
->>   static struct platform_device mcf_fec0 = {
->>          .name                   = FEC_NAME,
->>          .id                     = 0,
->>          .num_resources          = ARRAY_SIZE(mcf_fec0_resources),
->>          .resource               = mcf_fec0_resources,
->> -       .dev.platform_data      = FEC_PDATA,
->> +       .dev = {
->> +               .dma_mask               = &mcf_dma_mask,
+On Tue, Mar 06, 2018 at 01:11:03AM -0600, Eric W. Biederman wrote:
+> Linus,
 > 
-> Can you make this &mcf_fec0.dev.coherent_dma_mask, removing the need for
-> mcf_dma_mask, or doesn't C allow that?
-
-Yes, sure can. Looks like some other architectures do that too.
-I'll change it. Thanks.
-
-Regards
-Greg
-
-
-
->> +               .coherent_dma_mask      = DMA_BIT_MASK(32),
->> +               .platform_data          = FEC_PDATA,
->> +       }
->>   };
->>
->>   #ifdef MCFFEC_BASE1
->> @@ -167,7 +173,11 @@
->>          .id                     = 1,
->>          .num_resources          = ARRAY_SIZE(mcf_fec1_resources),
->>          .resource               = mcf_fec1_resources,
->> -       .dev.platform_data      = FEC_PDATA,
->> +       .dev = {
->> +               .dma_mask               = &mcf_dma_mask,
+> Please pull the siginfo-linus branch from the git tree:
 > 
-> Likewise.
+>    git://git.kernel.org/pub/scm/linux/kernel/git/ebiederm/user-namespace.git siginfo-linus
 > 
->> +               .coherent_dma_mask      = DMA_BIT_MASK(32),
->> +               .platform_data          = FEC_PDATA,
->> +       }
+>    HEAD: f6a015498dcaee72f80283cb7873d88deb07129c signal/x86: Include the field offsets in the build time checks
 > 
-> Gr{oetje,eeting}s,
+> The kbuild test robot found that I accidentally moved si_pkey when I was
+> cleaning up siginfo_t.  A short followed by an int with the int having 8
+> byte alignment.  Sheesh siginfo_t is a weird structure.
 > 
->                          Geert
+> I have now corrected it and added build time checks that with a little
+> luck will catch any similar future mistakes.  The build time checks were
+> sufficient for me to verify the bug and to verify my fix.  So they are
+> at least useful this once.
+> 
+> Eric W. Biederman (2):
+>       signal: Correct the offset of si_pkey in struct siginfo
+
+Looks like this commit changes layout of the siginfo struct on m68k:
+
+pts/0, esyr@fedora: /tmp % cat si.c
+#include <stddef.h>
+#include "linux/signal.h"
+
+static const size_t lower_offset = offsetof(struct siginfo, si_lower);
+pts/0, esyr@fedora: /tmp % m68k-linux-gnu-gcc -Ikhdr-v4.16-rc1\~159\^2\~20/include -g -c si.c -o si-orig.o
+pts/0, esyr@fedora: /tmp % m68k-linux-gnu-gcc -Ikhdr-v4.16-rc3\~17\^2/include -g -c si.c -o si-1.o
+pts/0, esyr@fedora: /tmp % m68k-linux-gnu-gcc -Ikhdr-v4.16-rc7-194-g29d9d38/include -g -c si.c -o si-2.o
+pts/0, esyr@fedora: /tmp % for i in si-orig.o si-1.o si-2.o; do echo -------- $i; objdump -t -j .rodata $i; objdump -s -j .rodata $i; done
+-------- si-orig.o
+
+si-orig.o:     file format elf32-big
+
+SYMBOL TABLE:
+00000000 l    d  .rodata	00000000 .rodata
+00000000 l     O .rodata	00000004 lower_offset
+
+
+
+si-orig.o:     file format elf32-big
+
+Contents of section .rodata:
+ 0000 00000012                             ....            
+-------- si-1.o
+
+si-1.o:     file format elf32-big
+
+SYMBOL TABLE:
+00000000 l    d  .rodata	00000000 .rodata
+00000000 l     O .rodata	00000004 lower_offset
+
+
+
+si-1.o:     file format elf32-big
+
+Contents of section .rodata:
+ 0000 00000012                             ....            
+-------- si-2.o
+
+si-2.o:     file format elf32-big
+
+SYMBOL TABLE:
+00000000 l    d  .rodata	00000000 .rodata
+00000000 l     O .rodata	00000004 lower_offset
+
+
+
+si-2.o:     file format elf32-big
+
+Contents of section .rodata:
+ 0000 00000014                             ....        
+
+So, the offset of the si_lower field is 20 at the current HEAD and was 18 at
+commits v4.16-rc3~17^2 and v4.16-rc1~159^2~20.  I believe this is due to
+the fact that m68k uses 2-byte default alignment and not 4-byte.
+
+>       signal/x86: Include the field offsets in the build time checks
+> 
+>  arch/x86/kernel/signal_compat.c    | 65 ++++++++++++++++++++++++++++++++++++++
+>  include/linux/compat.h             |  4 +--
+>  include/uapi/asm-generic/siginfo.h |  4 +--
+>  3 files changed, 69 insertions(+), 4 deletions(-)
 > 
