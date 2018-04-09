@@ -1,53 +1,45 @@
-From: Andreas Schwab <schwab@linux-m68k.org>
-Subject: Re: [GIT PULL] siginfo fix for v4.16-rc5
-Date: Tue, 03 Apr 2018 19:26:54 +0200
-Message-ID: <87y3i442w1.fsf@linux-m68k.org>
-References: <87woypy8zc.fsf@xmission.com>
-        <20180331105658.GA4332@asgard.redhat.com>
-        <87woxpz7k9.fsf@xmission.com>
-        <CAMuHMdVtbhGJ=nGbB21O73DcYM-4csyuJbx2NksN379ww6c1Gw@mail.gmail.com>
-        <87in98xt4p.fsf@xmission.com>
-        <4A16C7EF-B8B7-457C-B49C-829B44F12FFE@gmail.com>
+From: Greg Ungerer <gerg@linux-m68k.org>
+Subject: [git pull] m68knommu changes for v4.17
+Date: Mon, 9 Apr 2018 11:17:05 +1000
+Message-ID: <f7e92f49-9ad9-ae33-2298-f55957d374fa@linux-m68k.org>
 Mime-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <4A16C7EF-B8B7-457C-B49C-829B44F12FFE@gmail.com> (Josh Juran's
-        message of "Tue, 3 Apr 2018 11:24:58 -0400")
+Content-Language: en-US
 Sender: linux-kernel-owner@vger.kernel.org
-To: Josh Juran <jjuran@gmail.com>
-Cc: "Eric W. Biederman" <ebiederm@xmission.com>, Geert Uytterhoeven <geert@linux-m68k.org>, Eugene Syromiatnikov <esyr@redhat.com>, Linus Torvalds <torvalds@linux-foundation.org>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, Linux/m68k <linux-m68k@vger.kernel.org>
+To: torvalds@linux-foundation.org
+Cc: "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Linux/m68k <linux-m68k@vger.kernel.org>, Geert Uytterhoeven <geert@linux-m68k.org>
 List-Id: linux-m68k@vger.kernel.org
 
-On Apr 03 2018, Josh Juran <jjuran@gmail.com> wrote:
+Hi Linus,
 
-> On Apr 3, 2018, at 10:27 AM, Eric W. Biederman <ebiederm@xmission.com> wrote:
->
->> Geert Uytterhoeven <geert@linux-m68k.org> writes:
->> 
->>> On Mon, Apr 2, 2018 at 10:17 PM, Eric W. Biederman <ebiederm@xmission.com> wrote:
->>> 
->>>> A 2-byte alignment for 4 byte pointers.  That is a new one to me.
->>> 
->>> Not just for pointers, also for int and long.
->> 
->> The smallest I have seen previously has been 64bit integers having
->> 32bit alignment.  32bit entities having only 16bit alignment on a 32bit
->> arch was simply a surprise.  Even when it works there tend to be good
->> reasons not to do that by default.
->
-> The 68K architecture began as 16-bit with the 68000.  Rather than tightening requirements, the 68020 not only maintained compatibility with 16-bit alignment, but also forgave byte-misaligned data accesses (albeit with a performance penalty).  Jumping to an odd address is still an error, though.
+Can you please pull the m68knommu git tree, for-next branch.
 
-The m68k-linux gcc port started as a clone of the Sun3 port, which has a
-history dating back to the 68000, which is why it has a maximum of
-16-bit alignment.  When I implemented ELF support for m68k-linux I
-wanted to follow the SVR4 ABI (which has 32-bit alignment), but there
-were too many UAPI structures (esp. struct stat) that would have become
-incompatible (it would have made it impossible to run ELF binaries on an
-a.out kernel or vice-versa), so I had to keep the historical mistake.
+Only a single fix to set the DMA masks in the ColdFire FEC platform
+data structure. Stops the warning from dma-mapping.h coming out at
+boot time.
 
-Andreas.
+Regards
+Greg
 
--- 
-Andreas Schwab, schwab@linux-m68k.org
-GPG Key fingerprint = 58CA 54C7 6D53 942B 1756  01D3 44D5 214B 8276 4ED5
-"And now for something completely different."
+
+
+The following changes since commit 3eb2ce825ea1ad89d20f7a3b5780df850e4be274:
+
+  Linux 4.16-rc7 (2018-03-25 12:44:30 -1000)
+
+are available in the git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/gerg/m68knommu.git for-next
+
+for you to fetch changes up to f61e64310b75733d782e930d1fb404b84699eed6:
+
+  m68k: set dma and coherent masks for platform FEC ethernets (2018-03-28 22:27:09 +1000)
+
+----------------------------------------------------------------
+Greg Ungerer (1):
+      m68k: set dma and coherent masks for platform FEC ethernets
+
+ arch/m68k/coldfire/device.c | 12 ++++++++++--
+ 1 file changed, 10 insertions(+), 2 deletions(-)
