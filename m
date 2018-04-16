@@ -1,45 +1,60 @@
-From: Greg Ungerer <gerg@linux-m68k.org>
-Subject: [git pull] m68knommu changes for v4.17
-Date: Mon, 9 Apr 2018 11:17:05 +1000
-Message-ID: <f7e92f49-9ad9-ae33-2298-f55957d374fa@linux-m68k.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Language: en-US
-Sender: linux-kernel-owner@vger.kernel.org
-To: torvalds@linux-foundation.org
-Cc: "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Linux/m68k <linux-m68k@vger.kernel.org>, Geert Uytterhoeven <geert@linux-m68k.org>
+From: Michael Schmitz <schmitzmic@gmail.com>
+Subject: [PATCH 00/10] New network driver for Amiga X-Surf 100 (m68k)
+Date: Tue, 17 Apr 2018 10:04:35 +1200
+Message-ID: <1523916285-6057-1-git-send-email-schmitzmic@gmail.com>
+Return-path: <netdev-owner@vger.kernel.org>
+Sender: netdev-owner@vger.kernel.org
+To: netdev@vger.kernel.org
+Cc: linux-m68k@vger.kernel.org, Michael.Karcher@fu-berlin.de
 List-Id: linux-m68k@vger.kernel.org
 
-Hi Linus,
+This patch series adds support for the Individual Computers X-Surf 100
+network card for m68k Amiga, a network adapter based on the AX88796 chip set.
 
-Can you please pull the m68knommu git tree, for-next branch.
+The driver was originally written for kernel version 3.19 by Michael Karcher
+(see CC:), and adapted to 4.16 for submission to netdev by me. Questions  
+regarding motivation for some of the changes are probably best directed at
+Michael Karcher.
 
-Only a single fix to set the DMA masks in the ColdFire FEC platform
-data structure. Stops the warning from dma-mapping.h coming out at
-boot time.
+The driver has been tested by Adrian <glaubitz@physik.fu-berlin.de> who will
+send his Tested-by tag separately.
 
-Regards
-Greg
+A few changes to the ax88796 driver were required:
+- to read the MAC address, some setup of the ax99796 chip must be done,
+- attach to the MII bus only on device open to allow module unloading,
+- allow to supersede ax_block_input/ax_block_output by card-specific
+  optimized code,
+- use an optional interrupt status callback to allow easier sharing of the
+  card interrupt,
+- set IRQF_SHARED if platform IRQ resource is marked shareable,
+- add a dummy control register write to MII reset code so back-to-back
+  reset requests work.
 
+Some additional cleanup:
+- do not attempt to free IRQ in ax_remove (complements 82533ad9a1c),
+- unregister and free mdiobus resources in ax_mii_init error path,
+- clear platform drvdata on probe fail and module remove.
 
+The patch series, in order:
 
-The following changes since commit 3eb2ce825ea1ad89d20f7a3b5780df850e4be274:
+01/10 net: ax88796: Fix MAC address reading
+02/10 net: ax88796: Attach MII bus only when open
+03/10 net: ax88796: Do not free IRQ in ax_remove() (already freed in ax_close()).
+04/10 net: ax88796: Add block_input/output hooks to ax_plat_data
+05/10 net: ax88796: add interrupt status callback to platform data
+06/10 net: ax88796: set IRQF_SHARED flag when IRQ resource is marked as shareable
+07/10 net: ax88796: unregister mdiobus on ax_mii_init() fail
+08/10 net: ax88796: Make reset more robust on AX88796B
+09/10 net: ax88796: release platform device drvdata on probe error and module remove
+10/10 net: New ax88796 platform driver for Amiga X-Surf 100 Zorro board (m68k)
 
-  Linux 4.16-rc7 (2018-03-25 12:44:30 -1000)
+ drivers/net/ethernet/8390/Kconfig    |   14 +-
+ drivers/net/ethernet/8390/Makefile   |    1 +
+ drivers/net/ethernet/8390/ax88796.c  |   66 +++++-
+ drivers/net/ethernet/8390/xsurf100.c |  411 ++++++++++++++++++++++++++++++++++
+ include/net/ax88796.h                |   14 +-
+ 5 files changed, 495 insertions(+), 11 deletions(-)
 
-are available in the git repository at:
+Cheers,
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/gerg/m68knommu.git for-next
-
-for you to fetch changes up to f61e64310b75733d782e930d1fb404b84699eed6:
-
-  m68k: set dma and coherent masks for platform FEC ethernets (2018-03-28 22:27:09 +1000)
-
-----------------------------------------------------------------
-Greg Ungerer (1):
-      m68k: set dma and coherent masks for platform FEC ethernets
-
- arch/m68k/coldfire/device.c | 12 ++++++++++--
- 1 file changed, 10 insertions(+), 2 deletions(-)
+	Michael Schmitz
