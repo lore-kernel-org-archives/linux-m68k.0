@@ -1,7 +1,7 @@
 From: Michael Schmitz <schmitzmic@gmail.com>
-Subject: [PATCH 05/10] net: ax88796: add interrupt status callback to platform data
-Date: Tue, 17 Apr 2018 10:04:40 +1200
-Message-ID: <1523916285-6057-6-git-send-email-schmitzmic@gmail.com>
+Subject: [PATCH 10/10] net: New ax88796 platform driver for Amiga X-Surf 100 Zorro board (m68k)
+Date: Tue, 17 Apr 2018 10:04:45 +1200
+Message-ID: <1523916285-6057-11-git-send-email-schmitzmic@gmail.com>
 References: <1523916285-6057-1-git-send-email-schmitzmic@gmail.com>
 Return-path: <netdev-owner@vger.kernel.org>
 In-Reply-To: <1523916285-6057-1-git-send-email-schmitzmic@gmail.com>
@@ -10,81 +10,478 @@ To: netdev@vger.kernel.org
 Cc: linux-m68k@vger.kernel.org, Michael.Karcher@fu-berlin.de, Michael Schmitz <schmitzmic@gmail.com>, Michael Karcher <kernel@mkarcher.dialup.fu-berlin.de>
 List-Id: linux-m68k@vger.kernel.org
 
-To be able to tell the ax88796 driver whether it is sensible to enter
-the 8390 interrupt handler, an "is this interrupt caused by the 88796"
-callback has been added to the ax_plat_data structure (with NULL being
-compatible to the previous behaviour).
+Add platform device driver to populate the ax88796 platform data from
+information provided by the XSurf100 zorro device driver.
+This driver will have to be loaded before loading the ax88796 module,
+or compiled as built-in.
 
 Signed-off-by: Michael Karcher <kernel@mkarcher.dialup.fu-berlin.de>
 Signed-off-by: Michael Schmitz <schmitzmic@gmail.com>
 ---
- drivers/net/ethernet/8390/ax88796.c |   23 +++++++++++++++++++++--
- include/net/ax88796.h               |    5 +++++
- 2 files changed, 26 insertions(+), 2 deletions(-)
+ drivers/net/ethernet/8390/Kconfig    |   14 +-
+ drivers/net/ethernet/8390/Makefile   |    1 +
+ drivers/net/ethernet/8390/xsurf100.c |  411 ++++++++++++++++++++++++++++++++++
+ 3 files changed, 425 insertions(+), 1 deletions(-)
+ create mode 100644 drivers/net/ethernet/8390/xsurf100.c
 
-diff --git a/drivers/net/ethernet/8390/ax88796.c b/drivers/net/ethernet/8390/ax88796.c
-index 9159235..b6d5bec 100644
---- a/drivers/net/ethernet/8390/ax88796.c
-+++ b/drivers/net/ethernet/8390/ax88796.c
-@@ -167,6 +167,21 @@ static void ax_reset_8390(struct net_device *dev)
- 	ei_outb(ENISR_RESET, addr + EN0_ISR);	/* Ack intr. */
- }
+diff --git a/drivers/net/ethernet/8390/Kconfig b/drivers/net/ethernet/8390/Kconfig
+index fdc6734..0cadd45 100644
+--- a/drivers/net/ethernet/8390/Kconfig
++++ b/drivers/net/ethernet/8390/Kconfig
+@@ -30,7 +30,7 @@ config PCMCIA_AXNET
  
-+/* Wrapper for __ei_interrupt for platforms that have a platform-specific
-+ * way to find out whether the interrupt request might be caused by
-+ * the ax88796 chip.
+ config AX88796
+ 	tristate "ASIX AX88796 NE2000 clone support"
+-	depends on (ARM || MIPS || SUPERH)
++	depends on (ARM || MIPS || SUPERH || AMIGA)
+ 	select CRC32
+ 	select PHYLIB
+ 	select MDIO_BITBANG
+@@ -45,6 +45,18 @@ config AX88796_93CX6
+ 	---help---
+ 	  Select this if your platform comes with an external 93CX6 eeprom.
+ 
++config XSURF100
++	tristate "Amiga XSurf 100 AX88796/NE2000 clone support"
++	depends on ZORRO
++	depends on AX88796
++	---help---
++	  This driver is for the Individual Computers X-Surf 100 Ethernet
++	  card (based on the Asix AX88796 chip). If you have such a card,
++	  say Y. Otherwise, say N.
++
++	  To compile this driver as a module, choose M here: the module
++	  will be called xsurf100.
++
+ config HYDRA
+ 	tristate "Hydra support"
+ 	depends on ZORRO
+diff --git a/drivers/net/ethernet/8390/Makefile b/drivers/net/ethernet/8390/Makefile
+index f975c2f..3715f8d 100644
+--- a/drivers/net/ethernet/8390/Makefile
++++ b/drivers/net/ethernet/8390/Makefile
+@@ -16,4 +16,5 @@ obj-$(CONFIG_PCMCIA_PCNET) += pcnet_cs.o 8390.o
+ obj-$(CONFIG_STNIC) += stnic.o 8390.o
+ obj-$(CONFIG_ULTRA) += smc-ultra.o 8390.o
+ obj-$(CONFIG_WD80x3) += wd.o 8390.o
++obj-$(CONFIG_XSURF100) += xsurf100.o
+ obj-$(CONFIG_ZORRO8390) += zorro8390.o 8390.o
+diff --git a/drivers/net/ethernet/8390/xsurf100.c b/drivers/net/ethernet/8390/xsurf100.c
+new file mode 100644
+index 0000000..3caece0
+--- /dev/null
++++ b/drivers/net/ethernet/8390/xsurf100.c
+@@ -0,0 +1,411 @@
++#include <linux/module.h>
++#include <linux/netdevice.h>
++#include <linux/platform_device.h>
++#include <linux/zorro.h>
++#include <net/ax88796.h>
++#include <asm/amigaints.h>
++
++#define ZORRO_PROD_INDIVIDUAL_COMPUTERS_X_SURF100 \
++		ZORRO_ID(INDIVIDUAL_COMPUTERS, 0x64, 0)
++
++#define XS100_IRQSTATUS_BASE 0x40
++#define XS100_8390_BASE 0x800
++
++/* Longword-access area. Translated to 2 16-bit access cycles by the
++ * X-Surf 100 FPGA
 + */
-+static irqreturn_t ax_ei_interrupt_filtered(int irq, void *dev_id)
++#define XS100_8390_DATA32_BASE 0x8000
++#define XS100_8390_DATA32_SIZE 0x2000
++/* Sub-Areas for fast data register access; addresses relative to area begin */
++#define XS100_8390_DATA_READ32_BASE 0x0880
++#define XS100_8390_DATA_WRITE32_BASE 0x0C80
++#define XS100_8390_DATA_AREA_SIZE 0x80
++
++#define __NS8390_init ax_NS8390_init
++
++/* force unsigned long back to 'void __iomem *' */
++#define ax_convert_addr(_a) ((void __force __iomem *)(_a))
++
++#define ei_inb(_a) z_readb(ax_convert_addr(_a))
++#define ei_outb(_v, _a) z_writeb(_v, ax_convert_addr(_a))
++
++#define ei_inw(_a) z_readw(ax_convert_addr(_a))
++#define ei_outw(_v, _a) z_writew(_v, ax_convert_addr(_a))
++
++#define ei_inb_p(_a) ei_inb(_a)
++#define ei_outb_p(_v, _a) ei_outb(_v, _a)
++
++/* define EI_SHIFT() to take into account our register offsets */
++#define EI_SHIFT(x) (ei_local->reg_offset[(x)])
++
++/* Ensure we have our RCR base value */
++#define AX88796_PLATFORM
++
++static unsigned char version[] =
++		"ax88796.c: Copyright 2005,2007 Simtec Electronics\n";
++
++#include "lib8390.c"
++
++/* from ne.c */
++#define NE_CMD		EI_SHIFT(0x00)
++#define NE_RESET	EI_SHIFT(0x1f)
++#define NE_DATAPORT	EI_SHIFT(0x10)
++
++/* Hard reset the card. This used to pause for the same period that a
++ * 8390 reset command required, but that shouldn't be necessary.
++ */
++static void ax_reset_8390(struct net_device *dev)
 +{
-+	struct net_device *dev = dev_id;
-+	struct ax_device *ax = to_ax_dev(dev);
-+	struct platform_device *pdev = to_platform_device(dev->dev.parent);
++	struct ei_device *ei_local = netdev_priv(dev);
++	unsigned long reset_start_time = jiffies;
++	void __iomem *addr = (void __iomem *)dev->base_addr;
 +
-+	if (!ax->plat->check_irq(pdev))
-+		return IRQ_NONE;
++	netif_dbg(ei_local, hw, dev, "resetting the 8390 t=%ld...\n", jiffies);
 +
-+	return ax_ei_interrupt(irq, dev_id);
++	ei_outb(ei_inb(addr + NE_RESET), addr + NE_RESET);
++
++	ei_local->txing = 0;
++	ei_local->dmaing = 0;
++
++	/* This check _should_not_ be necessary, omit eventually. */
++	while ((ei_inb(addr + EN0_ISR) & ENISR_RESET) == 0) {
++		if (time_after(jiffies, reset_start_time + 2 * HZ / 100)) {
++			netdev_warn(dev, "%s: did not complete.\n", __func__);
++			break;
++		}
++	}
++
++	ei_outb(ENISR_RESET, addr + EN0_ISR);	/* Ack intr. */
 +}
- 
- static void ax_get_8390_hdr(struct net_device *dev, struct e8390_pkt_hdr *hdr,
- 			    int ring_page)
-@@ -402,8 +417,12 @@ static int ax_open(struct net_device *dev)
- 	if (ret)
- 		goto failed_request_irq;
- 
--	ret = request_irq(dev->irq, ax_ei_interrupt, ax->irqflags,
--			  dev->name, dev);
-+	if (ax->plat->check_irq)
-+		ret = request_irq(dev->irq, ax_ei_interrupt_filtered,
-+				  ax->irqflags, dev->name, dev);
-+	else
-+		ret = request_irq(dev->irq, ax_ei_interrupt, ax->irqflags,
-+				  dev->name, dev);
- 	if (ret)
- 		goto failed_request_irq;
- 
-diff --git a/include/net/ax88796.h b/include/net/ax88796.h
-index 26cc459..26412cd 100644
---- a/include/net/ax88796.h
-+++ b/include/net/ax88796.h
-@@ -12,6 +12,7 @@
- #define __NET_AX88796_PLAT_H
- 
- struct net_device;
-+struct platform_device;
- 
- #define AXFLG_HAS_EEPROM		(1<<0)
- #define AXFLG_MAC_FROMDEV		(1<<1)	/* device already has MAC */
-@@ -33,6 +34,10 @@ struct ax_plat_data {
- 			const unsigned char *buf, int star_page);
- 	void (*block_input)(struct net_device *dev, int count,
- 			struct sk_buff *skb, int ring_offset);
-+	/* returns nonzero if a pending interrupt request might by caused by
-+	 * the ax88786. Handles all interrupts if set to NULL
++
++struct xsurf100_ax_plat_data {
++	struct ax_plat_data ax;
++	void __iomem *base_regs;
++	void __iomem *data_area;
++};
++
++static int is_xsurf100_network_irq(struct platform_device *pdev)
++{
++	struct xsurf100_ax_plat_data *xs100 = dev_get_platdata(&pdev->dev);
++
++	return (readw(xs100->base_regs + XS100_IRQSTATUS_BASE) & 0xaaaa) != 0;
++}
++
++/* These functions guarantee that the iomem is accessed with 32 bit
++ * cycles only. z_memcpy_fromio / z_memcpy_toio don't
++ */
++static void z_memcpy_fromio32(void *dst, const void __iomem *src, size_t bytes)
++{
++	while (bytes > 32) {
++		asm __volatile__
++		   ("movem.l (%0)+,%%d0-%%d7\n"
++		    "movem.l %%d0-%%d7,(%1)\n"
++		    "adda.l #32,%1" : "=a"(src), "=a"(dst)
++		    : "0"(src), "1"(dst) : "d0", "d1", "d2", "d3", "d4",
++					   "d5", "d6", "d7", "memory");
++		bytes -= 32;
++	}
++	while (bytes) {
++		*(uint32_t *)dst = z_readl(src);
++		src += 4;
++		dst += 4;
++		bytes -= 4;
++	}
++}
++
++static void z_memcpy_toio32(void __iomem *dst, const void *src, size_t bytes)
++{
++	while (bytes) {
++		z_writel(*(const uint32_t *)src, dst);
++		src += 4;
++		dst += 4;
++		bytes -= 4;
++	}
++}
++
++static void xs100_write(struct net_device *dev, const void *src,
++			unsigned int count)
++{
++	struct ei_device *ei_local = netdev_priv(dev);
++	struct platform_device *pdev = to_platform_device(dev->dev.parent);
++	struct xsurf100_ax_plat_data *xs100 = dev_get_platdata(&pdev->dev);
++
++	/* copy whole blocks */
++	while (count > XS100_8390_DATA_AREA_SIZE) {
++		z_memcpy_toio32(xs100->data_area +
++				XS100_8390_DATA_WRITE32_BASE, src,
++				XS100_8390_DATA_AREA_SIZE);
++		src += XS100_8390_DATA_AREA_SIZE;
++		count -= XS100_8390_DATA_AREA_SIZE;
++	}
++	/* copy whole dwords */
++	z_memcpy_toio32(xs100->data_area + XS100_8390_DATA_WRITE32_BASE,
++			src, count & ~3);
++	src += count & ~3;
++	if (count & 2) {
++		ei_outw(*(uint16_t *)src, ei_local->mem + NE_DATAPORT);
++		src += 2;
++	}
++	if (count & 1)
++		ei_outb(*(uint8_t *)src, ei_local->mem + NE_DATAPORT);
++}
++
++static void xs100_read(struct net_device *dev, void *dst, unsigned int count)
++{
++	struct ei_device *ei_local = netdev_priv(dev);
++	struct platform_device *pdev = to_platform_device(dev->dev.parent);
++	struct xsurf100_ax_plat_data *xs100 = dev_get_platdata(&pdev->dev);
++
++	/* copy whole blocks */
++	while (count > XS100_8390_DATA_AREA_SIZE) {
++		z_memcpy_fromio32(dst, xs100->data_area +
++				  XS100_8390_DATA_READ32_BASE,
++				  XS100_8390_DATA_AREA_SIZE);
++		dst += XS100_8390_DATA_AREA_SIZE;
++		count -= XS100_8390_DATA_AREA_SIZE;
++	}
++	/* copy whole dwords */
++	z_memcpy_fromio32(dst, xs100->data_area + XS100_8390_DATA_READ32_BASE,
++			  count & ~3);
++	dst += count & ~3;
++	if (count & 2) {
++		*(uint16_t *)dst = ei_inw(ei_local->mem + NE_DATAPORT);
++		dst += 2;
++	}
++	if (count & 1)
++		*(uint8_t *)dst = ei_inb(ei_local->mem + NE_DATAPORT);
++}
++
++/* Block input and output, similar to the Crynwr packet driver. If
++ * you are porting to a new ethercard, look at the packet driver
++ * source for hints. The NEx000 doesn't share the on-board packet
++ * memory -- you have to put the packet out through the "remote DMA"
++ * dataport using ei_outb.
++ */
++static void xs100_block_input(struct net_device *dev, int count,
++			      struct sk_buff *skb, int ring_offset)
++{
++	struct ei_device *ei_local = netdev_priv(dev);
++	void __iomem *nic_base = ei_local->mem;
++	char *buf = skb->data;
++
++	if (ei_local->dmaing) {
++		netdev_err(dev,
++			   "DMAing conflict in %s "
++			   "[DMAstat:%d][irqlock:%d].\n",
++			   __func__,
++			   ei_local->dmaing, ei_local->irqlock);
++		return;
++	}
++
++	ei_local->dmaing |= 0x01;
++
++	ei_outb(E8390_NODMA + E8390_PAGE0 + E8390_START, nic_base + NE_CMD);
++	ei_outb(count & 0xff, nic_base + EN0_RCNTLO);
++	ei_outb(count >> 8, nic_base + EN0_RCNTHI);
++	ei_outb(ring_offset & 0xff, nic_base + EN0_RSARLO);
++	ei_outb(ring_offset >> 8, nic_base + EN0_RSARHI);
++	ei_outb(E8390_RREAD + E8390_START, nic_base + NE_CMD);
++
++	xs100_read(dev, buf, count);
++
++	ei_local->dmaing &= ~1;
++}
++
++static void xs100_block_output(struct net_device *dev, int count,
++			       const unsigned char *buf, const int start_page)
++{
++	struct ei_device *ei_local = netdev_priv(dev);
++	void __iomem *nic_base = ei_local->mem;
++	unsigned long dma_start;
++
++	/* Round the count up for word writes. Do we need to do this?
++	 * What effect will an odd byte count have on the 8390?  I
++	 * should check someday.
 +	 */
-+	int (*check_irq)(struct platform_device *pdev);
- };
- 
- #endif /* __NET_AX88796_PLAT_H */
++	if (ei_local->word16 && (count & 0x01))
++		count++;
++
++	/* This *shouldn't* happen. If it does, it's the last thing
++	 * you'll see
++	 */
++	if (ei_local->dmaing) {
++		netdev_err(dev, "DMAing conflict in %s "
++			"[DMAstat:%d][irqlock:%d]\n",
++			__func__,
++		       ei_local->dmaing, ei_local->irqlock);
++		return;
++	}
++
++	ei_local->dmaing |= 0x01;
++	/* We should already be in page 0, but to be safe... */
++	ei_outb(E8390_PAGE0 + E8390_START + E8390_NODMA, nic_base + NE_CMD);
++
++	ei_outb(ENISR_RDC, nic_base + EN0_ISR);
++
++	/* Now the normal output. */
++	ei_outb(count & 0xff, nic_base + EN0_RCNTLO);
++	ei_outb(count >> 8, nic_base + EN0_RCNTHI);
++	ei_outb(0x00, nic_base + EN0_RSARLO);
++	ei_outb(start_page, nic_base + EN0_RSARHI);
++
++	ei_outb(E8390_RWRITE + E8390_START, nic_base + NE_CMD);
++
++	xs100_write(dev, buf, count);
++
++	dma_start = jiffies;
++
++	while ((ei_inb(nic_base + EN0_ISR) & ENISR_RDC) == 0) {
++		if (jiffies - dma_start > 2 * HZ / 100) {	/* 20ms */
++			netdev_warn(dev, "timeout waiting for Tx RDC.\n");
++			ax_reset_8390(dev);
++			ax_NS8390_init(dev, 1);
++			break;
++		}
++	}
++
++	ei_outb(ENISR_RDC, nic_base + EN0_ISR);	/* Ack intr. */
++	ei_local->dmaing &= ~0x01;
++}
++
++static int xsurf100_probe(struct zorro_dev *zdev,
++			  const struct zorro_device_id *ent)
++{
++	struct platform_device *pdev;
++	struct xsurf100_ax_plat_data ax88796_data;
++	struct resource res[2] = {
++		DEFINE_RES_NAMED(IRQ_AMIGA_PORTS, 1, NULL,
++				 IORESOURCE_IRQ | IORESOURCE_IRQ_SHAREABLE),
++		DEFINE_RES_MEM(zdev->resource.start + XS100_8390_BASE,
++			       4 * 0x20)
++	};
++	int reg;
++	/* This table is referenced in the device structure, so it must
++	 * outlive the scope of xsurf100_probe.
++	 */
++	static u32 reg_offsets[32];
++	int ret = 0;
++
++	/* X-Surf 100 control and 32 bit ring buffer data access areas.
++	 * These resources are not used by the ax88796 driver, so must
++	 * be requested here and passed via platform data.
++	 */
++
++	if (!request_mem_region(zdev->resource.start, 0x100, zdev->name)) {
++		dev_err(&zdev->dev, "cannot reserve X-Surf 100 control registers\n");
++		return -ENXIO;
++	}
++
++	if (!request_mem_region(zdev->resource.start +
++				XS100_8390_DATA32_BASE,
++				XS100_8390_DATA32_SIZE,
++				"X-Surf 100 32-bit data access")) {
++		dev_err(&zdev->dev, "cannot reserve 32-bit area\n");
++		ret = -ENXIO;
++		goto exit_req;
++	}
++
++	for (reg = 0; reg < 0x20; reg++)
++		reg_offsets[reg] = 4 * reg;
++
++	memset(&ax88796_data, 0, sizeof(ax88796_data));
++	ax88796_data.ax.flags = AXFLG_HAS_EEPROM;
++	ax88796_data.ax.wordlength = 2;
++	ax88796_data.ax.dcr_val = 0x48;
++	ax88796_data.ax.rcr_val = 0x40;
++	ax88796_data.ax.reg_offsets = reg_offsets;
++	ax88796_data.ax.check_irq = is_xsurf100_network_irq;
++	ax88796_data.base_regs = ioremap(zdev->resource.start, 0x100);
++
++	/* error handling for ioremap regs */
++	if (!ax88796_data.base_regs) {
++		dev_err(&zdev->dev, "Cannot ioremap area %p (registers)\n",
++			(void *)zdev->resource.start);
++
++		ret = -ENXIO;
++		goto exit_req2;
++	}
++
++	ax88796_data.data_area = ioremap(zdev->resource.start +
++			XS100_8390_DATA32_BASE, XS100_8390_DATA32_SIZE);
++
++	/* error handling for ioremap data */
++	if (!ax88796_data.data_area) {
++		dev_err(&zdev->dev, "Cannot ioremap area %p (32-bit access)\n",
++			(void *)zdev->resource.start + XS100_8390_DATA32_BASE);
++
++		ret = -ENXIO;
++		goto exit_mem;
++	}
++
++	ax88796_data.ax.block_output = xs100_block_output;
++	ax88796_data.ax.block_input = xs100_block_input;
++
++	pdev = platform_device_register_resndata(&zdev->dev, "ax88796",
++						 zdev->slotaddr, res, 2,
++						 &ax88796_data,
++						 sizeof(ax88796_data));
++
++	if (IS_ERR(pdev)) {
++		dev_err(&zdev->dev, "cannot register platform device\n");
++		ret = -ENXIO;
++		goto exit_mem2;
++	}
++
++	zorro_set_drvdata(zdev, pdev);
++
++	if (!ret)
++		return 0;
++
++ exit_mem2:
++	iounmap(ax88796_data.data_area);
++
++ exit_mem:
++	iounmap(ax88796_data.base_regs);
++
++ exit_req2:
++	release_mem_region(zdev->resource.start + XS100_8390_DATA32_BASE,
++			   XS100_8390_DATA32_SIZE);
++
++ exit_req:
++	release_mem_region(zdev->resource.start, 0x100);
++
++	return ret;
++}
++
++static void xsurf100_remove(struct zorro_dev *zdev)
++{
++	struct platform_device *pdev;
++	struct xsurf100_ax_plat_data *xs100;
++
++	pdev = zorro_get_drvdata(zdev);
++	xs100 = dev_get_platdata(&pdev->dev);
++
++	platform_device_unregister(pdev);
++
++	iounmap(xs100->base_regs);
++	release_mem_region(zdev->resource.start, 0x100);
++	iounmap(xs100->data_area);
++	release_mem_region(zdev->resource.start + XS100_8390_DATA32_BASE,
++			   XS100_8390_DATA32_SIZE);
++}
++
++static const struct zorro_device_id xsurf100_zorro_tbl[] = {
++	{ ZORRO_PROD_INDIVIDUAL_COMPUTERS_X_SURF100, },
++	{ 0 }
++};
++
++MODULE_DEVICE_TABLE(zorro, xsurf100_zorro_tbl);
++
++static struct zorro_driver xsurf100_driver = {
++	.name           = "xsurf100",
++	.id_table       = xsurf100_zorro_tbl,
++	.probe          = xsurf100_probe,
++	.remove         = xsurf100_remove,
++};
++
++module_driver(xsurf100_driver, zorro_register_driver, zorro_unregister_driver);
++
++MODULE_DESCRIPTION("X-Surf 100 driver");
++MODULE_AUTHOR("Michael Karcher <kernel@mkarcher.dialup.fu-berlin.de>");
++MODULE_LICENSE("GPL v2");
 -- 
 1.7.0.4
