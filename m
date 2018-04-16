@@ -1,60 +1,73 @@
 From: Michael Schmitz <schmitzmic@gmail.com>
-Subject: [PATCH 00/10] New network driver for Amiga X-Surf 100 (m68k)
-Date: Tue, 17 Apr 2018 10:04:35 +1200
-Message-ID: <1523916285-6057-1-git-send-email-schmitzmic@gmail.com>
+Subject: [PATCH 02/10] net: ax88796: Attach MII bus only when open
+Date: Tue, 17 Apr 2018 10:04:37 +1200
+Message-ID: <1523916285-6057-3-git-send-email-schmitzmic@gmail.com>
+References: <1523916285-6057-1-git-send-email-schmitzmic@gmail.com>
 Return-path: <netdev-owner@vger.kernel.org>
+In-Reply-To: <1523916285-6057-1-git-send-email-schmitzmic@gmail.com>
 Sender: netdev-owner@vger.kernel.org
 To: netdev@vger.kernel.org
-Cc: linux-m68k@vger.kernel.org, Michael.Karcher@fu-berlin.de
+Cc: linux-m68k@vger.kernel.org, Michael.Karcher@fu-berlin.de, Michael Karcher <debian@mkarcher.dialup.fu-berlin.de>, Michael Karcher <kernel@mkarcher.dialup.fu-berlin.de>, Michael Schmitz <schmitzmic@gmail.com>
 List-Id: linux-m68k@vger.kernel.org
 
-This patch series adds support for the Individual Computers X-Surf 100
-network card for m68k Amiga, a network adapter based on the AX88796 chip set.
+From: Michael Karcher <debian@mkarcher.dialup.fu-berlin.de>
 
-The driver was originally written for kernel version 3.19 by Michael Karcher
-(see CC:), and adapted to 4.16 for submission to netdev by me. Questions  
-regarding motivation for some of the changes are probably best directed at
-Michael Karcher.
+Call ax_mii_init in ax_open(), and unregister/remove mdiobus resources
+in ax_close().
 
-The driver has been tested by Adrian <glaubitz@physik.fu-berlin.de> who will
-send his Tested-by tag separately.
+This is needed to be able to unload the module, as the module is busy
+while the MII bus is attached.
 
-A few changes to the ax88796 driver were required:
-- to read the MAC address, some setup of the ax99796 chip must be done,
-- attach to the MII bus only on device open to allow module unloading,
-- allow to supersede ax_block_input/ax_block_output by card-specific
-  optimized code,
-- use an optional interrupt status callback to allow easier sharing of the
-  card interrupt,
-- set IRQF_SHARED if platform IRQ resource is marked shareable,
-- add a dummy control register write to MII reset code so back-to-back
-  reset requests work.
+Signed-off-by: Michael Karcher <kernel@mkarcher.dialup.fu-berlin.de>
+Signed-off-by: Michael Schmitz <schmitzmic@gmail.com>
+---
+ drivers/net/ethernet/8390/ax88796.c |   13 +++++++++----
+ 1 files changed, 9 insertions(+), 4 deletions(-)
 
-Some additional cleanup:
-- do not attempt to free IRQ in ax_remove (complements 82533ad9a1c),
-- unregister and free mdiobus resources in ax_mii_init error path,
-- clear platform drvdata on probe fail and module remove.
-
-The patch series, in order:
-
-01/10 net: ax88796: Fix MAC address reading
-02/10 net: ax88796: Attach MII bus only when open
-03/10 net: ax88796: Do not free IRQ in ax_remove() (already freed in ax_close()).
-04/10 net: ax88796: Add block_input/output hooks to ax_plat_data
-05/10 net: ax88796: add interrupt status callback to platform data
-06/10 net: ax88796: set IRQF_SHARED flag when IRQ resource is marked as shareable
-07/10 net: ax88796: unregister mdiobus on ax_mii_init() fail
-08/10 net: ax88796: Make reset more robust on AX88796B
-09/10 net: ax88796: release platform device drvdata on probe error and module remove
-10/10 net: New ax88796 platform driver for Amiga X-Surf 100 Zorro board (m68k)
-
- drivers/net/ethernet/8390/Kconfig    |   14 +-
- drivers/net/ethernet/8390/Makefile   |    1 +
- drivers/net/ethernet/8390/ax88796.c  |   66 +++++-
- drivers/net/ethernet/8390/xsurf100.c |  411 ++++++++++++++++++++++++++++++++++
- include/net/ax88796.h                |   14 +-
- 5 files changed, 495 insertions(+), 11 deletions(-)
-
-Cheers,
-
-	Michael Schmitz
+diff --git a/drivers/net/ethernet/8390/ax88796.c b/drivers/net/ethernet/8390/ax88796.c
+index 2a256aa..f7b8911 100644
+--- a/drivers/net/ethernet/8390/ax88796.c
++++ b/drivers/net/ethernet/8390/ax88796.c
+@@ -79,6 +79,8 @@
+ 
+ static u32 ax_msg_enable;
+ 
++static int ax_mii_init(struct net_device *dev);
++
+ /* device private data */
+ 
+ struct ax_device {
+@@ -396,6 +398,10 @@ static int ax_open(struct net_device *dev)
+ 
+ 	netdev_dbg(dev, "open\n");
+ 
++	ret = ax_mii_init(dev);
++	if (ret)
++		goto failed_request_irq;
++
+ 	ret = request_irq(dev->irq, ax_ei_interrupt, ax->irqflags,
+ 			  dev->name, dev);
+ 	if (ret)
+@@ -442,6 +448,9 @@ static int ax_close(struct net_device *dev)
+ 	phy_disconnect(dev->phydev);
+ 
+ 	free_irq(dev->irq, dev);
++
++	mdiobus_unregister(ax->mii_bus);
++	free_mdio_bitbang(ax->mii_bus);
+ 	return 0;
+ }
+ 
+@@ -758,10 +767,6 @@ static int ax_init_dev(struct net_device *dev)
+ 	dev->netdev_ops = &ax_netdev_ops;
+ 	dev->ethtool_ops = &ax_ethtool_ops;
+ 
+-	ret = ax_mii_init(dev);
+-	if (ret)
+-		goto err_out;
+-
+ 	ax_NS8390_init(dev, 0);
+ 
+ 	ret = register_netdev(dev);
+-- 
+1.7.0.4
