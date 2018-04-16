@@ -1,48 +1,66 @@
-From: Michael Schmitz <schmitzmic@gmail.com>
-Subject: [PATCH 07/10] net: ax88796: unregister mdiobus on ax_mii_init() fail
-Date: Tue, 17 Apr 2018 10:04:42 +1200
-Message-ID: <1523916285-6057-8-git-send-email-schmitzmic@gmail.com>
+From: Andrew Lunn <andrew@lunn.ch>
+Subject: Re: [PATCH 02/10] net: ax88796: Attach MII bus only when open
+Date: Tue, 17 Apr 2018 00:59:00 +0200
+Message-ID: <20180416225900.GA23474@lunn.ch>
 References: <1523916285-6057-1-git-send-email-schmitzmic@gmail.com>
+ <1523916285-6057-3-git-send-email-schmitzmic@gmail.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
 Return-path: <netdev-owner@vger.kernel.org>
-In-Reply-To: <1523916285-6057-1-git-send-email-schmitzmic@gmail.com>
+Content-Disposition: inline
+In-Reply-To: <1523916285-6057-3-git-send-email-schmitzmic@gmail.com>
 Sender: netdev-owner@vger.kernel.org
-To: netdev@vger.kernel.org
-Cc: linux-m68k@vger.kernel.org, Michael.Karcher@fu-berlin.de, Michael Schmitz <schmitz@debian.org>, Michael Karcher <kernel@mkarcher.dialup.fu-berlin.de>, Michael Schmitz <schmitzmic@gmail.com>
+To: Michael Schmitz <schmitzmic@gmail.com>
+Cc: netdev@vger.kernel.org, linux-m68k@vger.kernel.org, Michael.Karcher@fu-berlin.de, Michael Karcher <debian@mkarcher.dialup.fu-berlin.de>, Michael Karcher <kernel@mkarcher.dialup.fu-berlin.de>
 List-Id: linux-m68k@vger.kernel.org
 
-From: Michael Schmitz <schmitz@debian.org>
+On Tue, Apr 17, 2018 at 10:04:37AM +1200, Michael Schmitz wrote:
+> From: Michael Karcher <debian@mkarcher.dialup.fu-berlin.de>
+> 
+> Call ax_mii_init in ax_open(), and unregister/remove mdiobus resources
+> in ax_close().
+> 
+> This is needed to be able to unload the module, as the module is busy
+> while the MII bus is attached.
+> 
+> Signed-off-by: Michael Karcher <kernel@mkarcher.dialup.fu-berlin.de>
+> Signed-off-by: Michael Schmitz <schmitzmic@gmail.com>
+> ---
+>  drivers/net/ethernet/8390/ax88796.c |   13 +++++++++----
+>  1 files changed, 9 insertions(+), 4 deletions(-)
+> 
+> diff --git a/drivers/net/ethernet/8390/ax88796.c b/drivers/net/ethernet/8390/ax88796.c
+> index 2a256aa..f7b8911 100644
+> --- a/drivers/net/ethernet/8390/ax88796.c
+> +++ b/drivers/net/ethernet/8390/ax88796.c
+> @@ -79,6 +79,8 @@
+>  
+>  static u32 ax_msg_enable;
+>  
+> +static int ax_mii_init(struct net_device *dev);
 
-Unregister and free up mdiobus resources if ax_mii_init() failed.
+Hi Michael
 
-Signed-off-by: Michael Karcher <kernel@mkarcher.dialup.fu-berlin.de>
-Signed-off-by: Michael Schmitz <schmitzmic@gmail.com>
----
- drivers/net/ethernet/8390/ax88796.c |    6 +++++-
- 1 files changed, 5 insertions(+), 1 deletions(-)
+We try to avoid forward declarations. Please can you move
+ax_mii_init() so this is not needed.
 
-diff --git a/drivers/net/ethernet/8390/ax88796.c b/drivers/net/ethernet/8390/ax88796.c
-index b09cdc6..6af9aca 100644
---- a/drivers/net/ethernet/8390/ax88796.c
-+++ b/drivers/net/ethernet/8390/ax88796.c
-@@ -415,7 +415,7 @@ static int ax_open(struct net_device *dev)
- 
- 	ret = ax_mii_init(dev);
- 	if (ret)
--		goto failed_request_irq;
-+		goto failed_mii;
- 
- 	if (ax->plat->check_irq)
- 		ret = request_irq(dev->irq, ax_ei_interrupt_filtered,
-@@ -448,6 +448,10 @@ static int ax_open(struct net_device *dev)
- 	ax_phy_switch(dev, 0);
- 	free_irq(dev->irq, dev);
-  failed_request_irq:
-+	/* unregister mdiobus */
-+	mdiobus_unregister(ax->mii_bus);
-+	free_mdio_bitbang(ax->mii_bus);
-+ failed_mii:
- 	return ret;
- }
- 
--- 
-1.7.0.4
+> +
+>  /* device private data */
+>  
+>  struct ax_device {
+> @@ -396,6 +398,10 @@ static int ax_open(struct net_device *dev)
+>  
+>  	netdev_dbg(dev, "open\n");
+>  
+> +	ret = ax_mii_init(dev);
+> +	if (ret)
+> +		goto failed_request_irq;
+> +
+>  	ret = request_irq(dev->irq, ax_ei_interrupt, ax->irqflags,
+>  			  dev->name, dev);
+>  	if (ret)
+
+You are missing some cleanup on error at the end of ax_open().
+It was also missing before.
+
+   Andrew
