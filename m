@@ -1,76 +1,45 @@
-From: Michael Schmitz <schmitzmic@gmail.com>
-Subject: [PATCH v2 4/8] net: ax88796: Add block_input/output hooks to ax_plat_data
-Date: Tue, 17 Apr 2018 14:08:11 +1200
-Message-ID: <1523930895-6973-5-git-send-email-schmitzmic@gmail.com>
+From: "Michael Karcher" <michael.karcher@fu-berlin.de>
+Subject: Re: [PATCH 08/10] net: ax88796: Make reset more robust on AX88796B
+Date: Tue, 17 Apr 2018 07:18:10 +0200
+Message-ID: <58605.92.192.176.127.1523942290.webmail@webmail.zedat.fu-berlin.de>
 References: <1523916285-6057-1-git-send-email-schmitzmic@gmail.com>
+    <1523916285-6057-9-git-send-email-schmitzmic@gmail.com>
+    <20180416231223.GB23474@lunn.ch>
+    <CAOmrzkKoPwNRf5Nq=GN8ktP-9B5dNyGggFsrJ-Tr3D-z=Jj2rQ@mail.gmail.com>
+    <20180417013225.GA27583@lunn.ch>
+Mime-Version: 1.0
+Content-Type: text/plain;charset=utf-8
+Content-Transfer-Encoding: 8bit
 Return-path: <netdev-owner@vger.kernel.org>
-In-Reply-To: <1523916285-6057-1-git-send-email-schmitzmic@gmail.com>
+In-Reply-To: <20180417013225.GA27583@lunn.ch>
 Sender: netdev-owner@vger.kernel.org
-To: netdev@vger.kernel.org
-Cc: andrew@lunn.ch, linux-m68k@vger.kernel.org, Michael.Karcher@fu-berlin.de, Michael Schmitz <schmitzmic@gmail.com>, Michael Karcher <kernel@mkarcher.dialup.fu-berlin.de>
+To: Andrew Lunn <andrew@lunn.ch>
+Cc: Michael Schmitz <schmitzmic@gmail.com>, netdev@vger.kernel.org, Linux/m68k <linux-m68k@vger.kernel.org>, Michael Karcher <michael.karcher@fu-berlin.de>, John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>, Michael Karcher <kernel@mkarcher.dialup.fu-berlin.de>
 List-Id: linux-m68k@vger.kernel.org
 
-Add platform specific hooks for block transfer reads/writes of packet
-buffer data, superseding the default provided ax_block_input/output.
-Currently used for m68k Amiga XSurf100.
+[Andrew, sorry for the dup. I did hit reply-to-auhor instead of
+reply-to-all first.]
 
-Signed-off-by: Michael Karcher <kernel@mkarcher.dialup.fu-berlin.de>
-Signed-off-by: Michael Schmitz <schmitzmic@gmail.com>
----
- drivers/net/ethernet/8390/ax88796.c |   10 ++++++++--
- include/net/ax88796.h               |    9 ++++++++-
- 2 files changed, 16 insertions(+), 3 deletions(-)
+Andrew Lunn schrieb:
+>> > This should really be fixed in the PHY driver, not the MAC.
+>>
+>> OK - do you want this separate, or as part of this series? Might have
+>> a few side effects on more commonly used hardware, perhaps?
+>
+> Hi Michael
+>
+> What PHY driver is used?
+The ax88796b comes with its own integrated (buggy) PHY needing this
+workaround. This PHY has its own ID which is not known by Linux, so it is
+using the genphy driver as fallback.
 
-diff --git a/drivers/net/ethernet/8390/ax88796.c b/drivers/net/ethernet/8390/ax88796.c
-index ecf104c..29cde38 100644
---- a/drivers/net/ethernet/8390/ax88796.c
-+++ b/drivers/net/ethernet/8390/ax88796.c
-@@ -760,8 +760,14 @@ static int ax_init_dev(struct net_device *dev)
- #endif
- 
- 	ei_local->reset_8390 = &ax_reset_8390;
--	ei_local->block_input = &ax_block_input;
--	ei_local->block_output = &ax_block_output;
-+	if (ax->plat->block_input)
-+		ei_local->block_input = ax->plat->block_input;
-+	else
-+		ei_local->block_input = &ax_block_input;
-+	if (ax->plat->block_output)
-+		ei_local->block_output = ax->plat->block_output;
-+	else
-+		ei_local->block_output = &ax_block_output;
- 	ei_local->get_8390_hdr = &ax_get_8390_hdr;
- 	ei_local->priv = 0;
- 	ei_local->msg_enable = ax_msg_enable;
-diff --git a/include/net/ax88796.h b/include/net/ax88796.h
-index b9a3bec..26cc459 100644
---- a/include/net/ax88796.h
-+++ b/include/net/ax88796.h
-@@ -8,10 +8,11 @@
-  * published by the Free Software Foundation.
-  *
- */
--
- #ifndef __NET_AX88796_PLAT_H
- #define __NET_AX88796_PLAT_H
- 
-+struct net_device;
-+
- #define AXFLG_HAS_EEPROM		(1<<0)
- #define AXFLG_MAC_FROMDEV		(1<<1)	/* device already has MAC */
- #define AXFLG_HAS_93CX6			(1<<2)	/* use eeprom_93cx6 driver */
-@@ -26,6 +27,12 @@ struct ax_plat_data {
- 	u32		*reg_offsets;	/* register offsets */
- 	u8		*mac_addr;	/* MAC addr (only used when
- 					   AXFLG_MAC_FROMPLATFORM is used */
-+
-+	/* uses default ax88796 buffer if set to NULL */
-+	void (*block_output)(struct net_device *dev, int count,
-+			const unsigned char *buf, int star_page);
-+	void (*block_input)(struct net_device *dev, int count,
-+			struct sk_buff *skb, int ring_offset);
- };
- 
- #endif /* __NET_AX88796_PLAT_H */
--- 
-1.7.0.4
+> In the driver you can implement a .soft_reset
+> function which first does the dummy write, and then uses
+> genphy_soft_reset() to do the actual reset.
+We could do that - but I dont't see the point in creating a PHY driver
+that is only ever used by this MAC driver, just to add a single line to
+the genphy driver. If the same PHY might be used with a different MAC,
+you definitely would have a point there, though.
+
+Kind regards,
+  Michael Karcher
