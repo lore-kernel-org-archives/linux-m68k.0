@@ -1,259 +1,76 @@
 From: Michael Schmitz <schmitzmic@gmail.com>
-Subject: [PATCH v2 2/8] net: ax88796: Attach MII bus only when open
-Date: Tue, 17 Apr 2018 14:08:09 +1200
-Message-ID: <1523930895-6973-3-git-send-email-schmitzmic@gmail.com>
+Subject: [PATCH v2 4/8] net: ax88796: Add block_input/output hooks to ax_plat_data
+Date: Tue, 17 Apr 2018 14:08:11 +1200
+Message-ID: <1523930895-6973-5-git-send-email-schmitzmic@gmail.com>
 References: <1523916285-6057-1-git-send-email-schmitzmic@gmail.com>
 Return-path: <netdev-owner@vger.kernel.org>
 In-Reply-To: <1523916285-6057-1-git-send-email-schmitzmic@gmail.com>
 Sender: netdev-owner@vger.kernel.org
 To: netdev@vger.kernel.org
-Cc: andrew@lunn.ch, linux-m68k@vger.kernel.org, Michael.Karcher@fu-berlin.de, Michael Karcher <debian@mkarcher.dialup.fu-berlin.de>, Michael Karcher <kernel@mkarcher.dialup.fu-berlin.de>, Michael Schmitz <schmitzmic@gmail.com>
+Cc: andrew@lunn.ch, linux-m68k@vger.kernel.org, Michael.Karcher@fu-berlin.de, Michael Schmitz <schmitzmic@gmail.com>, Michael Karcher <kernel@mkarcher.dialup.fu-berlin.de>
 List-Id: linux-m68k@vger.kernel.org
 
-From: Michael Karcher <debian@mkarcher.dialup.fu-berlin.de>
-
-Call ax_mii_init in ax_open(), and unregister/remove mdiobus resources
-in ax_close().
-
-This is needed to be able to unload the module, as the module is busy
-while the MII bus is attached.
+Add platform specific hooks for block transfer reads/writes of packet
+buffer data, superseding the default provided ax_block_input/output.
+Currently used for m68k Amiga XSurf100.
 
 Signed-off-by: Michael Karcher <kernel@mkarcher.dialup.fu-berlin.de>
 Signed-off-by: Michael Schmitz <schmitzmic@gmail.com>
 ---
- drivers/net/ethernet/8390/ax88796.c |  183 ++++++++++++++++++-----------------
- 1 files changed, 95 insertions(+), 88 deletions(-)
+ drivers/net/ethernet/8390/ax88796.c |   10 ++++++++--
+ include/net/ax88796.h               |    9 ++++++++-
+ 2 files changed, 16 insertions(+), 3 deletions(-)
 
 diff --git a/drivers/net/ethernet/8390/ax88796.c b/drivers/net/ethernet/8390/ax88796.c
-index 2a256aa..83e59ae 100644
+index ecf104c..29cde38 100644
 --- a/drivers/net/ethernet/8390/ax88796.c
 +++ b/drivers/net/ethernet/8390/ax88796.c
-@@ -389,6 +389,90 @@ static void ax_phy_switch(struct net_device *dev, int on)
- 	ei_outb(reg_gpoc, ei_local->mem + EI_SHIFT(0x17));
- }
- 
-+static void ax_bb_mdc(struct mdiobb_ctrl *ctrl, int level)
-+{
-+	struct ax_device *ax = container_of(ctrl, struct ax_device, bb_ctrl);
-+
-+	if (level)
-+		ax->reg_memr |= AX_MEMR_MDC;
-+	else
-+		ax->reg_memr &= ~AX_MEMR_MDC;
-+
-+	ei_outb(ax->reg_memr, ax->addr_memr);
-+}
-+
-+static void ax_bb_dir(struct mdiobb_ctrl *ctrl, int output)
-+{
-+	struct ax_device *ax = container_of(ctrl, struct ax_device, bb_ctrl);
-+
-+	if (output)
-+		ax->reg_memr &= ~AX_MEMR_MDIR;
-+	else
-+		ax->reg_memr |= AX_MEMR_MDIR;
-+
-+	ei_outb(ax->reg_memr, ax->addr_memr);
-+}
-+
-+static void ax_bb_set_data(struct mdiobb_ctrl *ctrl, int value)
-+{
-+	struct ax_device *ax = container_of(ctrl, struct ax_device, bb_ctrl);
-+
-+	if (value)
-+		ax->reg_memr |= AX_MEMR_MDO;
-+	else
-+		ax->reg_memr &= ~AX_MEMR_MDO;
-+
-+	ei_outb(ax->reg_memr, ax->addr_memr);
-+}
-+
-+static int ax_bb_get_data(struct mdiobb_ctrl *ctrl)
-+{
-+	struct ax_device *ax = container_of(ctrl, struct ax_device, bb_ctrl);
-+	int reg_memr = ei_inb(ax->addr_memr);
-+
-+	return reg_memr & AX_MEMR_MDI ? 1 : 0;
-+}
-+
-+static const struct mdiobb_ops bb_ops = {
-+	.owner = THIS_MODULE,
-+	.set_mdc = ax_bb_mdc,
-+	.set_mdio_dir = ax_bb_dir,
-+	.set_mdio_data = ax_bb_set_data,
-+	.get_mdio_data = ax_bb_get_data,
-+};
-+
-+static int ax_mii_init(struct net_device *dev)
-+{
-+	struct platform_device *pdev = to_platform_device(dev->dev.parent);
-+	struct ei_device *ei_local = netdev_priv(dev);
-+	struct ax_device *ax = to_ax_dev(dev);
-+	int err;
-+
-+	ax->bb_ctrl.ops = &bb_ops;
-+	ax->addr_memr = ei_local->mem + AX_MEMR;
-+	ax->mii_bus = alloc_mdio_bitbang(&ax->bb_ctrl);
-+	if (!ax->mii_bus) {
-+		err = -ENOMEM;
-+		goto out;
-+	}
-+
-+	ax->mii_bus->name = "ax88796_mii_bus";
-+	ax->mii_bus->parent = dev->dev.parent;
-+	snprintf(ax->mii_bus->id, MII_BUS_ID_SIZE, "%s-%x",
-+		pdev->name, pdev->id);
-+
-+	err = mdiobus_register(ax->mii_bus);
-+	if (err)
-+		goto out_free_mdio_bitbang;
-+
-+	return 0;
-+
-+ out_free_mdio_bitbang:
-+	free_mdio_bitbang(ax->mii_bus);
-+ out:
-+	return err;
-+}
-+
- static int ax_open(struct net_device *dev)
- {
- 	struct ax_device *ax = to_ax_dev(dev);
-@@ -396,6 +480,10 @@ static int ax_open(struct net_device *dev)
- 
- 	netdev_dbg(dev, "open\n");
- 
-+	ret = ax_mii_init(dev);
-+	if (ret)
-+		goto failed_mii;
-+
- 	ret = request_irq(dev->irq, ax_ei_interrupt, ax->irqflags,
- 			  dev->name, dev);
- 	if (ret)
-@@ -423,6 +511,10 @@ static int ax_open(struct net_device *dev)
- 	ax_phy_switch(dev, 0);
- 	free_irq(dev->irq, dev);
-  failed_request_irq:
-+	/* unregister mdiobus */
-+	mdiobus_unregister(ax->mii_bus);
-+	free_mdio_bitbang(ax->mii_bus);
-+ failed_mii:
- 	return ret;
- }
- 
-@@ -442,6 +534,9 @@ static int ax_close(struct net_device *dev)
- 	phy_disconnect(dev->phydev);
- 
- 	free_irq(dev->irq, dev);
-+
-+	mdiobus_unregister(ax->mii_bus);
-+	free_mdio_bitbang(ax->mii_bus);
- 	return 0;
- }
- 
-@@ -541,92 +636,8 @@ static void ax_eeprom_register_write(struct eeprom_93cx6 *eeprom)
+@@ -760,8 +760,14 @@ static int ax_init_dev(struct net_device *dev)
  #endif
+ 
+ 	ei_local->reset_8390 = &ax_reset_8390;
+-	ei_local->block_input = &ax_block_input;
+-	ei_local->block_output = &ax_block_output;
++	if (ax->plat->block_input)
++		ei_local->block_input = ax->plat->block_input;
++	else
++		ei_local->block_input = &ax_block_input;
++	if (ax->plat->block_output)
++		ei_local->block_output = ax->plat->block_output;
++	else
++		ei_local->block_output = &ax_block_output;
+ 	ei_local->get_8390_hdr = &ax_get_8390_hdr;
+ 	ei_local->priv = 0;
+ 	ei_local->msg_enable = ax_msg_enable;
+diff --git a/include/net/ax88796.h b/include/net/ax88796.h
+index b9a3bec..26cc459 100644
+--- a/include/net/ax88796.h
++++ b/include/net/ax88796.h
+@@ -8,10 +8,11 @@
+  * published by the Free Software Foundation.
+  *
+ */
+-
+ #ifndef __NET_AX88796_PLAT_H
+ #define __NET_AX88796_PLAT_H
+ 
++struct net_device;
++
+ #define AXFLG_HAS_EEPROM		(1<<0)
+ #define AXFLG_MAC_FROMDEV		(1<<1)	/* device already has MAC */
+ #define AXFLG_HAS_93CX6			(1<<2)	/* use eeprom_93cx6 driver */
+@@ -26,6 +27,12 @@ struct ax_plat_data {
+ 	u32		*reg_offsets;	/* register offsets */
+ 	u8		*mac_addr;	/* MAC addr (only used when
+ 					   AXFLG_MAC_FROMPLATFORM is used */
++
++	/* uses default ax88796 buffer if set to NULL */
++	void (*block_output)(struct net_device *dev, int count,
++			const unsigned char *buf, int star_page);
++	void (*block_input)(struct net_device *dev, int count,
++			struct sk_buff *skb, int ring_offset);
  };
  
--static void ax_bb_mdc(struct mdiobb_ctrl *ctrl, int level)
--{
--	struct ax_device *ax = container_of(ctrl, struct ax_device, bb_ctrl);
--
--	if (level)
--		ax->reg_memr |= AX_MEMR_MDC;
--	else
--		ax->reg_memr &= ~AX_MEMR_MDC;
--
--	ei_outb(ax->reg_memr, ax->addr_memr);
--}
--
--static void ax_bb_dir(struct mdiobb_ctrl *ctrl, int output)
--{
--	struct ax_device *ax = container_of(ctrl, struct ax_device, bb_ctrl);
--
--	if (output)
--		ax->reg_memr &= ~AX_MEMR_MDIR;
--	else
--		ax->reg_memr |= AX_MEMR_MDIR;
--
--	ei_outb(ax->reg_memr, ax->addr_memr);
--}
--
--static void ax_bb_set_data(struct mdiobb_ctrl *ctrl, int value)
--{
--	struct ax_device *ax = container_of(ctrl, struct ax_device, bb_ctrl);
--
--	if (value)
--		ax->reg_memr |= AX_MEMR_MDO;
--	else
--		ax->reg_memr &= ~AX_MEMR_MDO;
--
--	ei_outb(ax->reg_memr, ax->addr_memr);
--}
--
--static int ax_bb_get_data(struct mdiobb_ctrl *ctrl)
--{
--	struct ax_device *ax = container_of(ctrl, struct ax_device, bb_ctrl);
--	int reg_memr = ei_inb(ax->addr_memr);
--
--	return reg_memr & AX_MEMR_MDI ? 1 : 0;
--}
--
--static const struct mdiobb_ops bb_ops = {
--	.owner = THIS_MODULE,
--	.set_mdc = ax_bb_mdc,
--	.set_mdio_dir = ax_bb_dir,
--	.set_mdio_data = ax_bb_set_data,
--	.get_mdio_data = ax_bb_get_data,
--};
--
- /* setup code */
- 
--static int ax_mii_init(struct net_device *dev)
--{
--	struct platform_device *pdev = to_platform_device(dev->dev.parent);
--	struct ei_device *ei_local = netdev_priv(dev);
--	struct ax_device *ax = to_ax_dev(dev);
--	int err;
--
--	ax->bb_ctrl.ops = &bb_ops;
--	ax->addr_memr = ei_local->mem + AX_MEMR;
--	ax->mii_bus = alloc_mdio_bitbang(&ax->bb_ctrl);
--	if (!ax->mii_bus) {
--		err = -ENOMEM;
--		goto out;
--	}
--
--	ax->mii_bus->name = "ax88796_mii_bus";
--	ax->mii_bus->parent = dev->dev.parent;
--	snprintf(ax->mii_bus->id, MII_BUS_ID_SIZE, "%s-%x",
--		pdev->name, pdev->id);
--
--	err = mdiobus_register(ax->mii_bus);
--	if (err)
--		goto out_free_mdio_bitbang;
--
--	return 0;
--
-- out_free_mdio_bitbang:
--	free_mdio_bitbang(ax->mii_bus);
-- out:
--	return err;
--}
--
- static void ax_initial_setup(struct net_device *dev, struct ei_device *ei_local)
- {
- 	void __iomem *ioaddr = ei_local->mem;
-@@ -758,10 +769,6 @@ static int ax_init_dev(struct net_device *dev)
- 	dev->netdev_ops = &ax_netdev_ops;
- 	dev->ethtool_ops = &ax_ethtool_ops;
- 
--	ret = ax_mii_init(dev);
--	if (ret)
--		goto err_out;
--
- 	ax_NS8390_init(dev, 0);
- 
- 	ret = register_netdev(dev);
+ #endif /* __NET_AX88796_PLAT_H */
 -- 
 1.7.0.4
