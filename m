@@ -1,35 +1,29 @@
-From: Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>
-Subject: Re: [PATCH 03/10] net: ax88796: Do not free IRQ in ax_remove()
+From: John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
+Subject: Re: [PATCH v2 3/8] net: ax88796: Do not free IRQ in ax_remove()
  (already freed in ax_close()).
-Date: Tue, 17 Apr 2018 12:15:00 +0300
-Message-ID: <9a3b70fd-f781-4f6a-2f34-61f86ef2c4bc@cogentembedded.com>
+Date: Tue, 17 Apr 2018 13:40:52 +0200
+Message-ID: <dcbec8cb-8fc9-ffe6-a005-b04bbd30cd59@physik.fu-berlin.de>
 References: <1523916285-6057-1-git-send-email-schmitzmic@gmail.com>
- <1523916285-6057-4-git-send-email-schmitzmic@gmail.com>
+ <1523930895-6973-4-git-send-email-schmitzmic@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 7bit
 Return-path: <netdev-owner@vger.kernel.org>
-In-Reply-To: <1523916285-6057-4-git-send-email-schmitzmic@gmail.com>
+In-Reply-To: <1523930895-6973-4-git-send-email-schmitzmic@gmail.com>
 Content-Language: en-US
 Sender: netdev-owner@vger.kernel.org
 To: Michael Schmitz <schmitzmic@gmail.com>, netdev@vger.kernel.org
-Cc: linux-m68k@vger.kernel.org, Michael.Karcher@fu-berlin.de, John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>, Michael Karcher <kernel@mkarcher.dialup.fu-berlin.de>
+Cc: andrew@lunn.ch, linux-m68k@vger.kernel.org, Michael.Karcher@fu-berlin.de, Michael Karcher <kernel@mkarcher.dialup.fu-berlin.de>
 List-Id: linux-m68k@vger.kernel.org
 
-Hello!
-
-On 4/17/2018 1:04 AM, Michael Schmitz wrote:
-
+On 04/17/2018 04:08 AM, Michael Schmitz wrote:
 > From: John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
-> 
-> This complements the fix in 82533ad9a1c that removed the free_irq
+This should be:
 
-    You also need to specify the commit's summary line enclosed in ("").
+From: Michael Karcher <debian@mkarcher.dialup.fu-berlin.de>
 
-> call in the error path of probe, to also not call free_irq when
-> remove is called to revert the effects of probe.
-> 
-> Signed-off-by: Michael Karcher <kernel@mkarcher.dialup.fu-berlin.de>
-[...]
-
-MBR, Sergei
+-- 
+  .''`.  John Paul Adrian Glaubitz
+: :' :  Debian Developer - glaubitz@debian.org
+`. `'   Freie Universitaet Berlin - glaubitz@physik.fu-berlin.de
+   `-    GPG: 62FF 8A75 84E0 2956 9546  0006 7426 3B37 F5B5 F913
