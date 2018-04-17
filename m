@@ -1,231 +1,59 @@
 From: Michael Schmitz <schmitzmic@gmail.com>
-Subject: Re: [PATCH 10/10] net: New ax88796 platform driver for Amiga X-Surf
+Subject: Re: [PATCH v2 8/8] net: New ax88796 platform driver for Amiga X-Surf
  100 Zorro board (m68k)
-Date: Wed, 18 Apr 2018 10:35:43 +1200
-Message-ID: <CAOmrzkJVPn+zpaJTGhCpc=sSSZhBtbO_2BTGaVDpmNVm+VzAEg@mail.gmail.com>
+Date: Wed, 18 Apr 2018 11:00:05 +1200
+Message-ID: <CAOmrzkK0grWvCx44WRspVZPUhO=fnK9SyvL=sejkn5dUyNfwFg@mail.gmail.com>
 References: <1523916285-6057-1-git-send-email-schmitzmic@gmail.com>
- <1523916285-6057-11-git-send-email-schmitzmic@gmail.com> <CAMuHMdUnonyL93AmF3TdPcUPj5ZEuTb59ZgArH5BjLjcx8LcvA@mail.gmail.com>
+ <1523930895-6973-9-git-send-email-schmitzmic@gmail.com> <20180417132625.GI2591@lunn.ch>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="UTF-8"
 Return-path: <netdev-owner@vger.kernel.org>
-In-Reply-To: <CAMuHMdUnonyL93AmF3TdPcUPj5ZEuTb59ZgArH5BjLjcx8LcvA@mail.gmail.com>
+In-Reply-To: <20180417132625.GI2591@lunn.ch>
 Sender: netdev-owner@vger.kernel.org
-To: Geert Uytterhoeven <geert@linux-m68k.org>
+To: Andrew Lunn <andrew@lunn.ch>
 Cc: netdev <netdev@vger.kernel.org>, Linux/m68k <linux-m68k@vger.kernel.org>, Michael Karcher <Michael.Karcher@fu-berlin.de>, Michael Karcher <kernel@mkarcher.dialup.fu-berlin.de>
 List-Id: linux-m68k@vger.kernel.org
 
-Hi Geert,
+Hi Andrew,
 
-thanks for your suggestions!
-
-On Wed, Apr 18, 2018 at 1:53 AM, Geert Uytterhoeven
-<geert@linux-m68k.org> wrote:
-> Hi Michael,
->
-> Thanks for your patch!
->
-> On Tue, Apr 17, 2018 at 12:04 AM, Michael Schmitz <schmitzmic@gmail.com> wrote:
+On Wed, Apr 18, 2018 at 1:26 AM, Andrew Lunn <andrew@lunn.ch> wrote:
+> On Tue, Apr 17, 2018 at 02:08:15PM +1200, Michael Schmitz wrote:
 >> Add platform device driver to populate the ax88796 platform data from
 >> information provided by the XSurf100 zorro device driver.
 >> This driver will have to be loaded before loading the ax88796 module,
 >> or compiled as built-in.
->
-> Is that really true? The platform device should be probed when both the
-> device and driver have been registered, but order shouldn't matter.
-
-Loading the xsurf100 module will pull in the ax88796 module, so order
-does not matter. I'll drop that.
-
->
+>>
 >> Signed-off-by: Michael Karcher <kernel@mkarcher.dialup.fu-berlin.de>
->
-> Missing "From: Michael Karcher ..."?
-
-Fixed the authorship now - probably got mangled when squashing in my
-local edits.
-
->
 >> Signed-off-by: Michael Schmitz <schmitzmic@gmail.com>
->
+>> ---
+>>  drivers/net/ethernet/8390/Kconfig    |   14 +-
+>>  drivers/net/ethernet/8390/Makefile   |    1 +
+>>  drivers/net/ethernet/8390/xsurf100.c |  411 ++++++++++++++++++++++++++++++++++
+>>  3 files changed, 425 insertions(+), 1 deletions(-)
+>>  create mode 100644 drivers/net/ethernet/8390/xsurf100.c
+>>
+>> diff --git a/drivers/net/ethernet/8390/Kconfig b/drivers/net/ethernet/8390/Kconfig
+>> index fdc6734..0cadd45 100644
 >> --- a/drivers/net/ethernet/8390/Kconfig
 >> +++ b/drivers/net/ethernet/8390/Kconfig
 >> @@ -30,7 +30,7 @@ config PCMCIA_AXNET
 >>
 >>  config AX88796
->>         tristate "ASIX AX88796 NE2000 clone support"
->> -       depends on (ARM || MIPS || SUPERH)
->> +       depends on (ARM || MIPS || SUPERH || AMIGA)
+>>       tristate "ASIX AX88796 NE2000 clone support"
+>> -     depends on (ARM || MIPS || SUPERH)
+>> +     depends on (ARM || MIPS || SUPERH || AMIGA)
 >
-> s/AMIGA/ZORRO/, for consistency with the below.
+> Hi Michael
+>
+> Will it compile on other platforms? If so, it is a good idea to add
+> COMPILE_TEST as well.
 
-Will do.
-
->
->>         select CRC32
->>         select PHYLIB
->>         select MDIO_BITBANG
->> @@ -45,6 +45,18 @@ config AX88796_93CX6
->>         ---help---
->>           Select this if your platform comes with an external 93CX6 eeprom.
->>
->> +config XSURF100
->> +       tristate "Amiga XSurf 100 AX88796/NE2000 clone support"
->> +       depends on ZORRO
->> +       depends on AX88796
->
-> It's a bit unfortunate the user has to enable _two_ config options to enable
-> this driver.
->
-> I see two solutions for that:
->
-> 1) Hide the XSURF100 symbol, so it gets enabled automatically if AX88796 is
->    enabled on a Zorro bus system:
->
->     config XSURF100
->             tristate
->             depends on ZORRO
->             default AX88796
->
-> 2) Hide the AX88796 symbol, and let it be selected by XSURF100:
->
->     config AX88796
->             tristate "ASIX AX88796 NE2000 clone support" if !ZORRO
->             depends on ARM || MIPS || SUPERH || ZORRO
->             ...
->
->     config XSURF100
->             tristate "Amiga XSurf 100 AX88796/NE2000 clone support"
->             depends on ZORRO
->             select AX88796
-
-I'll use the latter -
-
->> --- /dev/null
->> +++ b/drivers/net/ethernet/8390/xsurf100.c
->> @@ -0,0 +1,411 @@
->> +#include <linux/module.h>
->> +#include <linux/netdevice.h>
->> +#include <linux/platform_device.h>
->> +#include <linux/zorro.h>
->> +#include <net/ax88796.h>
->> +#include <asm/amigaints.h>
->> +
->> +#define ZORRO_PROD_INDIVIDUAL_COMPUTERS_X_SURF100 \
->> +               ZORRO_ID(INDIVIDUAL_COMPUTERS, 0x64, 0)
->
-> Another long define to get rid of? ;-)
->
->> +/* Hard reset the card. This used to pause for the same period that a
->> + * 8390 reset command required, but that shouldn't be necessary.
->> + */
->> +static void ax_reset_8390(struct net_device *dev)
->> +{
->> +       struct ei_device *ei_local = netdev_priv(dev);
->> +       unsigned long reset_start_time = jiffies;
->> +       void __iomem *addr = (void __iomem *)dev->base_addr;
->> +
->> +       netif_dbg(ei_local, hw, dev, "resetting the 8390 t=%ld...\n", jiffies);
->> +
->> +       ei_outb(ei_inb(addr + NE_RESET), addr + NE_RESET);
->> +
->> +       ei_local->txing = 0;
->> +       ei_local->dmaing = 0;
->> +
->> +       /* This check _should_not_ be necessary, omit eventually. */
->> +       while ((ei_inb(addr + EN0_ISR) & ENISR_RESET) == 0) {
->> +               if (time_after(jiffies, reset_start_time + 2 * HZ / 100)) {
->> +                       netdev_warn(dev, "%s: did not complete.\n", __func__);
->> +                       break;
->> +               }
->
-> cpu_relax()?
->
-> How long does this usually take? If > 1 ms, you can use e.g. msleep(1)
-> instead of cpu_relax().
-
-No idea how long this will take - the reset function is lifted
-straight out of ax88796.c with no modifications whatsoever.
-
-Come to think of it - it's exported as ei_local->reset_8390 there, so
-there is no good reason for even duplicating the code that I can see.
-I'lll drop it.
-
->
->> +       }
->> +
->> +       ei_outb(ENISR_RESET, addr + EN0_ISR);   /* Ack intr. */
->> +}
->
->> +       if (ei_local->dmaing) {
->> +               netdev_err(dev,
->> +                          "DMAing conflict in %s "
->> +                          "[DMAstat:%d][irqlock:%d].\n",
->
-> Please don't split error messages, as that makes it more difficult to
-> grep for them.
-
-Again, found like that in ax88796.c. Will fix here (and eventually in
-ax88796.c).
-
->> +                          __func__,
->> +                          ei_local->dmaing, ei_local->irqlock);
->> +               return;
->
->> +static int xsurf100_probe(struct zorro_dev *zdev,
->> +                         const struct zorro_device_id *ent)
->> +{
->
->> +       /* error handling for ioremap regs */
->> +       if (!ax88796_data.base_regs) {
->> +               dev_err(&zdev->dev, "Cannot ioremap area %p (registers)\n",
->> +                       (void *)zdev->resource.start);
->
-> Please use %pR to format struct resource.
-> Documentation/core-api/printk-formats.rst
-
-The driver uses ioremap to map two subsections of the mem resource for
-two different purposes - control register access, and ring buffer
-access. The output of %pR may be misleading here (wrong size), and
-even more so below.
-
->
->> +       /* error handling for ioremap data */
->> +       if (!ax88796_data.data_area) {
->> +               dev_err(&zdev->dev, "Cannot ioremap area %p (32-bit access)\n",
->> +                       (void *)zdev->resource.start + XS100_8390_DATA32_BASE);
->
-> %pR
-
-I've added the offset into the mem resource here to clarify what we've
-tried to map.
-
->
->> +static void xsurf100_remove(struct zorro_dev *zdev)
->> +{
->> +       struct platform_device *pdev;
->> +       struct xsurf100_ax_plat_data *xs100;
->> +
->> +       pdev = zorro_get_drvdata(zdev);
->> +       xs100 = dev_get_platdata(&pdev->dev);
->
-> struct platform_device *pdev = pdev = zorro_get_drvdata(zdev);
-> struct xsurf100_ax_plat_data *xs100 = dev_get_platdata(&pdev->dev);
-
-Of course.
+I suppose it will - nothing in there that wouldn't be portable. Well,
+let's find out, shall we?
 
 Cheers,
 
   Michael
 
-
 >
-> Gr{oetje,eeting}s,
->
->                         Geert
->
-> --
-> Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
->
-> In personal conversations with technical people, I call myself a hacker. But
-> when I'm talking to journalists I just say "programmer" or something like that.
->                                 -- Linus Torvalds
+>              Andrew
