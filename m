@@ -1,29 +1,56 @@
-From: John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
-Subject: Re: [PATCH v2 6/8] net: ax88796: set IRQF_SHARED flag when IRQ
- resource is marked as shareable
-Date: Tue, 17 Apr 2018 13:40:55 +0200
-Message-ID: <7143e598-97cb-7168-2b23-911026f35d69@physik.fu-berlin.de>
+From: Andrew Lunn <andrew@lunn.ch>
+Subject: Re: [PATCH 08/10] net: ax88796: Make reset more robust on AX88796B
+Date: Tue, 17 Apr 2018 15:01:06 +0200
+Message-ID: <20180417130106.GG2591@lunn.ch>
 References: <1523916285-6057-1-git-send-email-schmitzmic@gmail.com>
- <1523930895-6973-7-git-send-email-schmitzmic@gmail.com>
+ <1523916285-6057-9-git-send-email-schmitzmic@gmail.com>
+ <20180416231223.GB23474@lunn.ch>
+ <CAOmrzkKoPwNRf5Nq=GN8ktP-9B5dNyGggFsrJ-Tr3D-z=Jj2rQ@mail.gmail.com>
+ <20180417013225.GA27583@lunn.ch>
+ <58605.92.192.176.127.1523942290.webmail@webmail.zedat.fu-berlin.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
 Return-path: <netdev-owner@vger.kernel.org>
-In-Reply-To: <1523930895-6973-7-git-send-email-schmitzmic@gmail.com>
-Content-Language: en-US
+Content-Disposition: inline
+In-Reply-To: <58605.92.192.176.127.1523942290.webmail@webmail.zedat.fu-berlin.de>
 Sender: netdev-owner@vger.kernel.org
-To: Michael Schmitz <schmitzmic@gmail.com>, netdev@vger.kernel.org
-Cc: andrew@lunn.ch, linux-m68k@vger.kernel.org, Michael.Karcher@fu-berlin.de, Michael Karcher <kernel@mkarcher.dialup.fu-berlin.de>
+To: Michael Karcher <michael.karcher@fu-berlin.de>, Florian Fainelli <f.fainelli@gmail.com>
+Cc: Michael Schmitz <schmitzmic@gmail.com>, netdev@vger.kernel.org, Linux/m68k <linux-m68k@vger.kernel.org>, John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>, Michael Karcher <kernel@mkarcher.dialup.fu-berlin.de>
 List-Id: linux-m68k@vger.kernel.org
 
-On 04/17/2018 04:08 AM, Michael Schmitz wrote:
-> From: John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
-This should be:
+On Tue, Apr 17, 2018 at 07:18:10AM +0200, Michael Karcher wrote:
+> [Andrew, sorry for the dup. I did hit reply-to-auhor instead of
+> reply-to-all first.]
+> 
+> Andrew Lunn schrieb:
+> >> > This should really be fixed in the PHY driver, not the MAC.
+> >>
+> >> OK - do you want this separate, or as part of this series? Might have
+> >> a few side effects on more commonly used hardware, perhaps?
+> >
+> > Hi Michael
+> >
+> > What PHY driver is used?
+> The ax88796b comes with its own integrated (buggy) PHY needing this
+> workaround. This PHY has its own ID which is not known by Linux, so it is
+> using the genphy driver as fallback.
+> 
+> > In the driver you can implement a .soft_reset
+> > function which first does the dummy write, and then uses
+> > genphy_soft_reset() to do the actual reset.
+> We could do that - but I dont't see the point in creating a PHY driver
+> that is only ever used by this MAC driver, just to add a single line to
+> the genphy driver. If the same PHY might be used with a different MAC,
+> you definitely would have a point there, though.
 
-From: Michael Karcher <debian@mkarcher.dialup.fu-berlin.de>
 
--- 
-  .''`.  John Paul Adrian Glaubitz
-: :' :  Debian Developer - glaubitz@debian.org
-`. `'   Freie Universitaet Berlin - glaubitz@physik.fu-berlin.de
-   `-    GPG: 62FF 8A75 84E0 2956 9546  0006 7426 3B37 F5B5 F913
+Hi Michael
+
+We try to keep the core code clean, and put all workarounds for buggy
+hardware in drivers specific to them. It just helps keep the core code
+maintainable.
+
+I would prefer a driver specific to this PHY with the workaround. But
+lets see what Florian says.
+
+     Andrew
