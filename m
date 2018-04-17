@@ -1,49 +1,30 @@
-From: Andrew Lunn <andrew@lunn.ch>
-Subject: Re: [PATCH v2 8/8] net: New ax88796 platform driver for Amiga X-Surf
- 100 Zorro board (m68k)
-Date: Tue, 17 Apr 2018 15:26:25 +0200
-Message-ID: <20180417132625.GI2591@lunn.ch>
+From: David Miller <davem@davemloft.net>
+Subject: Re: [PATCH v2 3/8] net: ax88796: Do not free IRQ in ax_remove()
+ (already freed in ax_close()).
+Date: Tue, 17 Apr 2018 09:51:15 -0400 (EDT)
+Message-ID: <20180417.095115.87630263190451622.davem@davemloft.net>
 References: <1523916285-6057-1-git-send-email-schmitzmic@gmail.com>
- <1523930895-6973-9-git-send-email-schmitzmic@gmail.com>
+        <1523930895-6973-4-git-send-email-schmitzmic@gmail.com>
+        <CAMuHMdUZa31pbmyieoqyh-RnsRtFKPOVbrzC9DveV8h0sZh_qw@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: Text/Plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 Return-path: <netdev-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <1523930895-6973-9-git-send-email-schmitzmic@gmail.com>
+In-Reply-To: <CAMuHMdUZa31pbmyieoqyh-RnsRtFKPOVbrzC9DveV8h0sZh_qw@mail.gmail.com>
 Sender: netdev-owner@vger.kernel.org
-To: Michael Schmitz <schmitzmic@gmail.com>
-Cc: netdev@vger.kernel.org, linux-m68k@vger.kernel.org, Michael.Karcher@fu-berlin.de, Michael Karcher <kernel@mkarcher.dialup.fu-berlin.de>
+To: geert@linux-m68k.org
+Cc: schmitzmic@gmail.com, glaubitz@physik.fu-berlin.de, netdev@vger.kernel.org, andrew@lunn.ch, linux-m68k@vger.kernel.org, Michael.Karcher@fu-berlin.de, kernel@mkarcher.dialup.fu-berlin.de
 List-Id: linux-m68k@vger.kernel.org
 
-On Tue, Apr 17, 2018 at 02:08:15PM +1200, Michael Schmitz wrote:
-> Add platform device driver to populate the ax88796 platform data from
-> information provided by the XSurf100 zorro device driver.
-> This driver will have to be loaded before loading the ax88796 module,
-> or compiled as built-in.
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Date: Tue, 17 Apr 2018 10:20:25 +0200
+
+> BTW, I have a git alias for that:
 > 
-> Signed-off-by: Michael Karcher <kernel@mkarcher.dialup.fu-berlin.de>
-> Signed-off-by: Michael Schmitz <schmitzmic@gmail.com>
-> ---
->  drivers/net/ethernet/8390/Kconfig    |   14 +-
->  drivers/net/ethernet/8390/Makefile   |    1 +
->  drivers/net/ethernet/8390/xsurf100.c |  411 ++++++++++++++++++++++++++++++++++
->  3 files changed, 425 insertions(+), 1 deletions(-)
->  create mode 100644 drivers/net/ethernet/8390/xsurf100.c
-> 
-> diff --git a/drivers/net/ethernet/8390/Kconfig b/drivers/net/ethernet/8390/Kconfig
-> index fdc6734..0cadd45 100644
-> --- a/drivers/net/ethernet/8390/Kconfig
-> +++ b/drivers/net/ethernet/8390/Kconfig
-> @@ -30,7 +30,7 @@ config PCMCIA_AXNET
->  
->  config AX88796
->  	tristate "ASIX AX88796 NE2000 clone support"
-> -	depends on (ARM || MIPS || SUPERH)
-> +	depends on (ARM || MIPS || SUPERH || AMIGA)
+> $ git help fixes
+> `git fixes' is aliased to `show --format='Fixes: %h ("%s")' -s'
+> $ git fixes 82533ad9a1c
+> Fixes: 82533ad9a1c ("net: ethernet: ax88796: don't call free_irq
+> without request_irq first")
 
-Hi Michael
-
-Will it compile on other platforms? If so, it is a good idea to add
-COMPILE_TEST as well.
-
-	     Andrew
+Thanks for sharing :)
