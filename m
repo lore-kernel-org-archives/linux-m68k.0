@@ -1,40 +1,42 @@
-From: Michael Schmitz <schmitzmic@gmail.com>
+From: John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
 Subject: Re: [PATCH v2 3/8] net: ax88796: Do not free IRQ in ax_remove()
  (already freed in ax_close()).
-Date: Wed, 18 Apr 2018 08:36:19 +1200
-Message-ID: <CAOmrzkJzzOtmV3H1fTV1VBjpgS66HbO+Mw7_ZgDAwHYM_nTX8w@mail.gmail.com>
+Date: Tue, 17 Apr 2018 22:42:25 +0200
+Message-ID: <045ca332-a22a-a55e-a5c7-9fee3f162434@physik.fu-berlin.de>
 References: <1523916285-6057-1-git-send-email-schmitzmic@gmail.com>
- <1523930895-6973-4-git-send-email-schmitzmic@gmail.com> <CAMuHMdUZa31pbmyieoqyh-RnsRtFKPOVbrzC9DveV8h0sZh_qw@mail.gmail.com>
- <20180417.095115.87630263190451622.davem@davemloft.net>
+ <1523930895-6973-4-git-send-email-schmitzmic@gmail.com>
+ <dcbec8cb-8fc9-ffe6-a005-b04bbd30cd59@physik.fu-berlin.de>
+ <CAOmrzk+uE_ouXCmmd78j0zG4QrqT=TvXNhMOQxtt5KWg8KS_cQ@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
 Return-path: <netdev-owner@vger.kernel.org>
-In-Reply-To: <20180417.095115.87630263190451622.davem@davemloft.net>
+In-Reply-To: <CAOmrzk+uE_ouXCmmd78j0zG4QrqT=TvXNhMOQxtt5KWg8KS_cQ@mail.gmail.com>
+Content-Language: en-US
 Sender: netdev-owner@vger.kernel.org
-To: David Miller <davem@davemloft.net>
-Cc: Geert Uytterhoeven <geert@linux-m68k.org>, John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>, netdev@vger.kernel.org, Andrew Lunn <andrew@lunn.ch>, Linux/m68k <linux-m68k@vger.kernel.org>, Michael Karcher <kernel@mkarcher.dialup.fu-berlin.de>
+To: Michael Schmitz <schmitzmic@gmail.com>
+Cc: netdev@vger.kernel.org, Andrew Lunn <andrew@lunn.ch>, Linux/m68k <linux-m68k@vger.kernel.org>, Michael Karcher <Michael.Karcher@fu-berlin.de>, Michael Karcher <kernel@mkarcher.dialup.fu-berlin.de>
 List-Id: linux-m68k@vger.kernel.org
 
-Thanks Geert, I'll fix that.
+On 04/17/2018 10:32 PM, Michael Schmitz wrote:
+>> From: Michael Karcher <debian@mkarcher.dialup.fu-berlin.de>
+> 
+> I haven't found a way to change that in my tree yet, sorry. Unless
+> someone has a simple way to fix patch authorship after a merge, I may
+> have to reimport from scratch.
 
-I see my v2 series shows up as new series on patchwork - do I need to
-do something different when tagging the next version, Dave?
+I guess you'll have to re-import then, sorry :(.
 
-Cheers,
+The correct mail address is:
 
-  Michael
+Michael Karcher <kernel@mkarcher.dialup.fu-berlin.de>
 
+which Michael uses for all his kernel work.
 
-On Wed, Apr 18, 2018 at 1:51 AM, David Miller <davem@davemloft.net> wrote:
-> From: Geert Uytterhoeven <geert@linux-m68k.org>
-> Date: Tue, 17 Apr 2018 10:20:25 +0200
->
->> BTW, I have a git alias for that:
->>
->> $ git help fixes
->> `git fixes' is aliased to `show --format='Fixes: %h ("%s")' -s'
->> $ git fixes 82533ad9a1c
->> Fixes: 82533ad9a1c ("net: ethernet: ax88796: don't call free_irq
->> without request_irq first")
->
-> Thanks for sharing :)
+Adrian
+
+-- 
+ .''`.  John Paul Adrian Glaubitz
+: :' :  Debian Developer - glaubitz@debian.org
+`. `'   Freie Universitaet Berlin - glaubitz@physik.fu-berlin.de
+  `-    GPG: 62FF 8A75 84E0 2956 9546  0006 7426 3B37 F5B5 F913
