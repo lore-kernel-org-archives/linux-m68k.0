@@ -1,15 +1,15 @@
 From: John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
-Subject: Re: [PATCH v2 3/8] net: ax88796: Do not free IRQ in ax_remove()
- (already freed in ax_close()).
-Date: Tue, 17 Apr 2018 13:40:52 +0200
-Message-ID: <dcbec8cb-8fc9-ffe6-a005-b04bbd30cd59@physik.fu-berlin.de>
+Subject: Re: [PATCH v2 6/8] net: ax88796: set IRQF_SHARED flag when IRQ
+ resource is marked as shareable
+Date: Tue, 17 Apr 2018 13:40:55 +0200
+Message-ID: <7143e598-97cb-7168-2b23-911026f35d69@physik.fu-berlin.de>
 References: <1523916285-6057-1-git-send-email-schmitzmic@gmail.com>
- <1523930895-6973-4-git-send-email-schmitzmic@gmail.com>
+ <1523930895-6973-7-git-send-email-schmitzmic@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 7bit
 Return-path: <netdev-owner@vger.kernel.org>
-In-Reply-To: <1523930895-6973-4-git-send-email-schmitzmic@gmail.com>
+In-Reply-To: <1523930895-6973-7-git-send-email-schmitzmic@gmail.com>
 Content-Language: en-US
 Sender: netdev-owner@vger.kernel.org
 To: Michael Schmitz <schmitzmic@gmail.com>, netdev@vger.kernel.org
