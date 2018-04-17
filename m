@@ -1,39 +1,63 @@
 From: Michael Schmitz <schmitzmic@gmail.com>
-Subject: [PATCH v2 6/8] net: ax88796: set IRQF_SHARED flag when IRQ resource is marked as shareable
-Date: Tue, 17 Apr 2018 14:08:13 +1200
-Message-ID: <1523930895-6973-7-git-send-email-schmitzmic@gmail.com>
+Subject: [PATCH v2 0/8] New network driver for Amiga X-Surf 100 (m68k)
+Date: Tue, 17 Apr 2018 14:08:07 +1200
+Message-ID: <1523930895-6973-1-git-send-email-schmitzmic@gmail.com>
 References: <1523916285-6057-1-git-send-email-schmitzmic@gmail.com>
 Return-path: <netdev-owner@vger.kernel.org>
 In-Reply-To: <1523916285-6057-1-git-send-email-schmitzmic@gmail.com>
 Sender: netdev-owner@vger.kernel.org
 To: netdev@vger.kernel.org
-Cc: andrew@lunn.ch, linux-m68k@vger.kernel.org, Michael.Karcher@fu-berlin.de, John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>, Michael Karcher <kernel@mkarcher.dialup.fu-berlin.de>, Michael Schmitz <schmitzmic@gmail.com>
+Cc: andrew@lunn.ch, linux-m68k@vger.kernel.org, Michael.Karcher@fu-berlin.de
 List-Id: linux-m68k@vger.kernel.org
 
-From: John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
+This patch series adds support for the Individual Computers X-Surf 100
+network card for m68k Amiga, a network adapter based on the AX88796 chip set.
 
-On the Amiga X-Surf100, the network card interrupt is shared with many
-other interrupt sources, so requires the IRQF_SHARED flag to register.
+The driver was originally written for kernel version 3.19 by Michael Karcher
+(see CC:), and adapted to 4.16 for submission to netdev by me. Questions 
+regarding motivation for some of the changes are probably best directed at
+Michael Karcher.
 
-Signed-off-by: Michael Karcher <kernel@mkarcher.dialup.fu-berlin.de>
-Signed-off-by: Michael Schmitz <schmitzmic@gmail.com>
----
- drivers/net/ethernet/8390/ax88796.c |    3 +++
- 1 files changed, 3 insertions(+), 0 deletions(-)
+The driver has been tested by Adrian <glaubitz@physik.fu-berlin.de> who will
+send his Tested-by tag separately.
 
-diff --git a/drivers/net/ethernet/8390/ax88796.c b/drivers/net/ethernet/8390/ax88796.c
-index c799441..a72dfbc 100644
---- a/drivers/net/ethernet/8390/ax88796.c
-+++ b/drivers/net/ethernet/8390/ax88796.c
-@@ -875,6 +875,9 @@ static int ax_probe(struct platform_device *pdev)
- 	dev->irq = irq->start;
- 	ax->irqflags = irq->flags & IRQF_TRIGGER_MASK;
- 
-+	if (irq->flags &  IORESOURCE_IRQ_SHAREABLE)
-+		ax->irqflags |= IRQF_SHARED;
-+
- 	mem = platform_get_resource(pdev, IORESOURCE_MEM, 0);
- 	if (!mem) {
- 		dev_err(&pdev->dev, "no MEM specified\n");
--- 
-1.7.0.4
+A few changes to the ax88796 driver were required:
+- to read the MAC address, some setup of the ax99796 chip must be done,
+- attach to the MII bus only on device open to allow module unloading,
+- allow to supersede ax_block_input/ax_block_output by card-specific
+  optimized code,
+- use an optional interrupt status callback to allow easier sharing of the
+  card interrupt,
+- set IRQF_SHARED if platform IRQ resource is marked shareable,
+
+Some additional cleanup:
+- do not attempt to free IRQ in ax_remove (complements 82533ad9a1c),
+- clear platform drvdata on probe fail and module remove.
+
+Changes since v1:
+
+Raised in review by Andrew Lunn:
+- move MII code around to avoid need for forward declaration
+- combine patches 2 and 7 to add cleanup in error path
+
+The patch series, in order:
+
+1/8 net: ax88796: Fix MAC address reading
+2/8 net: ax88796: Attach MII bus only when open
+3/8 net: ax88796: Do not free IRQ in ax_remove() (already freed in ax_close()).
+4/8 net: ax88796: Add block_input/output hooks to ax_plat_data
+5/8 net: ax88796: add interrupt status callback to platform data
+6/8 net: ax88796: set IRQF_SHARED flag when IRQ resource is marked as shareable
+7/8 net: ax88796: release platform device drvdata on probe error and module remove
+8/8 net: New ax88796 platform driver for Amiga X-Surf 100 Zorro board (m68k)
+
+ drivers/net/ethernet/8390/Kconfig    |   14 +-
+ drivers/net/ethernet/8390/Makefile   |    1 +
+ drivers/net/ethernet/8390/ax88796.c  |  228 +++++++++++--------
+ drivers/net/ethernet/8390/xsurf100.c |  411 ++++++++++++++++++++++++++++++++++
+ include/net/ax88796.h                |   14 +-
+ 5 files changed, 573 insertions(+), 95 deletions(-)
+
+Cheers,
+
+  Michael
