@@ -1,7 +1,7 @@
 From: Michael Schmitz <schmitzmic@gmail.com>
-Subject: [PATCH v3 7/9] net: ax88796: set IRQF_SHARED flag when IRQ resource is marked as shareable
-Date: Wed, 18 Apr 2018 16:26:54 +1200
-Message-ID: <1524025616-3722-8-git-send-email-schmitzmic@gmail.com>
+Subject: [PATCH v3 6/9] net: ax88796: add interrupt status callback to platform data
+Date: Wed, 18 Apr 2018 16:26:53 +1200
+Message-ID: <1524025616-3722-7-git-send-email-schmitzmic@gmail.com>
 References: <1523930895-6973-1-git-send-email-schmitzmic@gmail.com>
 Return-path: <netdev-owner@vger.kernel.org>
 In-Reply-To: <1523930895-6973-1-git-send-email-schmitzmic@gmail.com>
@@ -12,28 +12,81 @@ List-Id: linux-m68k@vger.kernel.org
 
 From: Michael Karcher <kernel@mkarcher.dialup.fu-berlin.de>
 
-On the Amiga X-Surf100, the network card interrupt is shared with many
-other interrupt sources, so requires the IRQF_SHARED flag to register.
+To be able to tell the ax88796 driver whether it is sensible to enter
+the 8390 interrupt handler, an "is this interrupt caused by the 88796"
+callback has been added to the ax_plat_data structure (with NULL being
+compatible to the previous behaviour).
 
 Signed-off-by: Michael Karcher <kernel@mkarcher.dialup.fu-berlin.de>
 Signed-off-by: Michael Schmitz <schmitzmic@gmail.com>
 ---
- drivers/net/ethernet/8390/ax88796.c |    3 +++
- 1 files changed, 3 insertions(+), 0 deletions(-)
+ drivers/net/ethernet/8390/ax88796.c |   23 +++++++++++++++++++++--
+ include/net/ax88796.h               |    5 +++++
+ 2 files changed, 26 insertions(+), 2 deletions(-)
 
 diff --git a/drivers/net/ethernet/8390/ax88796.c b/drivers/net/ethernet/8390/ax88796.c
-index c799441..a72dfbc 100644
+index 29cde38..c799441 100644
 --- a/drivers/net/ethernet/8390/ax88796.c
 +++ b/drivers/net/ethernet/8390/ax88796.c
-@@ -875,6 +875,9 @@ static int ax_probe(struct platform_device *pdev)
- 	dev->irq = irq->start;
- 	ax->irqflags = irq->flags & IRQF_TRIGGER_MASK;
+@@ -165,6 +165,21 @@ static void ax_reset_8390(struct net_device *dev)
+ 	ei_outb(ENISR_RESET, addr + EN0_ISR);	/* Ack intr. */
+ }
  
-+	if (irq->flags &  IORESOURCE_IRQ_SHAREABLE)
-+		ax->irqflags |= IRQF_SHARED;
++/* Wrapper for __ei_interrupt for platforms that have a platform-specific
++ * way to find out whether the interrupt request might be caused by
++ * the ax88796 chip.
++ */
++static irqreturn_t ax_ei_interrupt_filtered(int irq, void *dev_id)
++{
++	struct net_device *dev = dev_id;
++	struct ax_device *ax = to_ax_dev(dev);
++	struct platform_device *pdev = to_platform_device(dev->dev.parent);
 +
- 	mem = platform_get_resource(pdev, IORESOURCE_MEM, 0);
- 	if (!mem) {
- 		dev_err(&pdev->dev, "no MEM specified\n");
++	if (!ax->plat->check_irq(pdev))
++		return IRQ_NONE;
++
++	return ax_ei_interrupt(irq, dev_id);
++}
+ 
+ static void ax_get_8390_hdr(struct net_device *dev, struct e8390_pkt_hdr *hdr,
+ 			    int ring_page)
+@@ -484,8 +499,12 @@ static int ax_open(struct net_device *dev)
+ 	if (ret)
+ 		goto failed_mii;
+ 
+-	ret = request_irq(dev->irq, ax_ei_interrupt, ax->irqflags,
+-			  dev->name, dev);
++	if (ax->plat->check_irq)
++		ret = request_irq(dev->irq, ax_ei_interrupt_filtered,
++				  ax->irqflags, dev->name, dev);
++	else
++		ret = request_irq(dev->irq, ax_ei_interrupt, ax->irqflags,
++				  dev->name, dev);
+ 	if (ret)
+ 		goto failed_request_irq;
+ 
+diff --git a/include/net/ax88796.h b/include/net/ax88796.h
+index 363b0ca..84b3785 100644
+--- a/include/net/ax88796.h
++++ b/include/net/ax88796.h
+@@ -14,6 +14,7 @@
+ 
+ struct sk_buff;
+ struct net_device;
++struct platform_device;
+ 
+ #define AXFLG_HAS_EEPROM		(1<<0)
+ #define AXFLG_MAC_FROMDEV		(1<<1)	/* device already has MAC */
+@@ -35,6 +36,10 @@ struct ax_plat_data {
+ 			const unsigned char *buf, int star_page);
+ 	void (*block_input)(struct net_device *dev, int count,
+ 			struct sk_buff *skb, int ring_offset);
++	/* returns nonzero if a pending interrupt request might by caused by
++	 * the ax88786. Handles all interrupts if set to NULL
++	 */
++	int (*check_irq)(struct platform_device *pdev);
+ };
+ 
+ #endif /* __NET_AX88796_PLAT_H */
 -- 
 1.7.0.4
