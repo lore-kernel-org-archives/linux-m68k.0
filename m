@@ -1,164 +1,475 @@
 From: Michael Schmitz <schmitzmic@gmail.com>
-Subject: [PATCH v3 1/9] net: phy: new Asix Electronics PHY driver
-Date: Wed, 18 Apr 2018 16:26:48 +1200
-Message-ID: <1524025616-3722-2-git-send-email-schmitzmic@gmail.com>
+Subject: [PATCH v3 9/9] net: New ax88796 platform driver for Amiga X-Surf 100 Zorro board (m68k)
+Date: Wed, 18 Apr 2018 16:26:56 +1200
+Message-ID: <1524025616-3722-10-git-send-email-schmitzmic@gmail.com>
 References: <1523930895-6973-1-git-send-email-schmitzmic@gmail.com>
 Return-path: <netdev-owner@vger.kernel.org>
 In-Reply-To: <1523930895-6973-1-git-send-email-schmitzmic@gmail.com>
 Sender: netdev-owner@vger.kernel.org
 To: netdev@vger.kernel.org
-Cc: andrew@lunn.ch, fthain@telegraphics.com.au, geert@linux-m68k.org, f.fainelli@gmail.com, linux-m68k@vger.kernel.org, Michael.Karcher@fu-berlin.de, Michael Schmitz <schmitzmic@gmail.com>
+Cc: andrew@lunn.ch, fthain@telegraphics.com.au, geert@linux-m68k.org, f.fainelli@gmail.com, linux-m68k@vger.kernel.org, Michael.Karcher@fu-berlin.de, Michael Karcher <kernel@mkarcher.dialup.fu-berlin.de>, Michael Schmitz <schmitzmic@gmail.com>
 List-Id: linux-m68k@vger.kernel.org
 
-The Asix Electronics PHY found on the X-Surf 100 Amiga Zorro network
-card by Individual Computers is buggy, and needs the reset bit toggled
-as workaround to make a PHY soft reset succed.
+From: Michael Karcher <kernel@mkarcher.dialup.fu-berlin.de>
 
-Add workaround driver just for this special case. Export phy_poll_reset()
-from core phy_device driver to avoid code duplication.
+Add platform device driver to populate the ax88796 platform data from
+information provided by the XSurf100 zorro device driver. The ax88796
+module will be loaded through this module's probe function.
 
+Signed-off-by: Michael Karcher <kernel@mkarcher.dialup.fu-berlin.de>
 Signed-off-by: Michael Schmitz <schmitzmic@gmail.com>
----
- drivers/net/phy/Kconfig      |    6 ++++
- drivers/net/phy/Makefile     |    1 +
- drivers/net/phy/asix.c       |   65 ++++++++++++++++++++++++++++++++++++++++++
- drivers/net/phy/phy_device.c |    3 +-
- include/linux/phy.h          |    1 +
- 5 files changed, 75 insertions(+), 1 deletions(-)
- create mode 100644 drivers/net/phy/asix.c
 
-diff --git a/drivers/net/phy/Kconfig b/drivers/net/phy/Kconfig
-index bdfbabb..f5b484c 100644
---- a/drivers/net/phy/Kconfig
-+++ b/drivers/net/phy/Kconfig
-@@ -218,6 +218,12 @@ config AQUANTIA_PHY
- 	---help---
- 	  Currently supports the Aquantia AQ1202, AQ2104, AQR105, AQR405
+---
+
+Changes in v3:
+Suggested by Geert Uytterhoeven:
+- use ei_local->reset_8390() instead of duplicating ax_reset_8390()
+- use %pR to format struct resource pointers
+- assign pdev and xs100 pointers in declaration
+- don't split error messages
+- change Kconfig logic to only require XSURF100 set on Amiga
+
+Suggested by Andrew Lunn:
+- add COMPILE_TEST to ax88796 Kconfig options
+- use new Asix PHY driver for X-Surf 100
+---
+ drivers/net/ethernet/8390/Kconfig    |   17 ++-
+ drivers/net/ethernet/8390/Makefile   |    1 +
+ drivers/net/ethernet/8390/xsurf100.c |  381 ++++++++++++++++++++++++++++++++++
+ 3 files changed, 397 insertions(+), 2 deletions(-)
+ create mode 100644 drivers/net/ethernet/8390/xsurf100.c
+
+diff --git a/drivers/net/ethernet/8390/Kconfig b/drivers/net/ethernet/8390/Kconfig
+index fdc6734..607dc00 100644
+--- a/drivers/net/ethernet/8390/Kconfig
++++ b/drivers/net/ethernet/8390/Kconfig
+@@ -29,8 +29,8 @@ config PCMCIA_AXNET
+ 	  called axnet_cs.  If unsure, say N.
  
-+config ASIX_PHY
-+	tristate "Asix PHYs"
+ config AX88796
+-	tristate "ASIX AX88796 NE2000 clone support"
+-	depends on (ARM || MIPS || SUPERH)
++	tristate "ASIX AX88796 NE2000 clone support" if !ZORRO
++	depends on (ARM || MIPS || SUPERH || ZORRO || COMPILE_TEST)
+ 	select CRC32
+ 	select PHYLIB
+ 	select MDIO_BITBANG
+@@ -45,6 +45,19 @@ config AX88796_93CX6
+ 	---help---
+ 	  Select this if your platform comes with an external 93CX6 eeprom.
+ 
++config XSURF100
++	tristate "Amiga XSurf 100 AX88796/NE2000 clone support"
++	depends on ZORRO
++	select AX88796
++	select ASIX_PHY
 +	---help---
-+	  Currently supports the Asix Electronics PHY found in the X-Surf 100
-+	  AX88796 package.
++	  This driver is for the Individual Computers X-Surf 100 Ethernet
++	  card (based on the Asix AX88796 chip). If you have such a card,
++	  say Y. Otherwise, say N.
 +
- config AT803X_PHY
- 	tristate "AT803X PHYs"
- 	---help---
-diff --git a/drivers/net/phy/Makefile b/drivers/net/phy/Makefile
-index 01acbcb..701ca0b 100644
---- a/drivers/net/phy/Makefile
-+++ b/drivers/net/phy/Makefile
-@@ -45,6 +45,7 @@ obj-y				+= $(sfp-obj-y) $(sfp-obj-m)
- 
- obj-$(CONFIG_AMD_PHY)		+= amd.o
- obj-$(CONFIG_AQUANTIA_PHY)	+= aquantia.o
-+obj-$(CONFIG_ASIX_PHY)		+= asix.o
- obj-$(CONFIG_AT803X_PHY)	+= at803x.o
- obj-$(CONFIG_BCM63XX_PHY)	+= bcm63xx.o
- obj-$(CONFIG_BCM7XXX_PHY)	+= bcm7xxx.o
-diff --git a/drivers/net/phy/asix.c b/drivers/net/phy/asix.c
++	  To compile this driver as a module, choose M here: the module
++	  will be called xsurf100.
++
+ config HYDRA
+ 	tristate "Hydra support"
+ 	depends on ZORRO
+diff --git a/drivers/net/ethernet/8390/Makefile b/drivers/net/ethernet/8390/Makefile
+index f975c2f..3715f8d 100644
+--- a/drivers/net/ethernet/8390/Makefile
++++ b/drivers/net/ethernet/8390/Makefile
+@@ -16,4 +16,5 @@ obj-$(CONFIG_PCMCIA_PCNET) += pcnet_cs.o 8390.o
+ obj-$(CONFIG_STNIC) += stnic.o 8390.o
+ obj-$(CONFIG_ULTRA) += smc-ultra.o 8390.o
+ obj-$(CONFIG_WD80x3) += wd.o 8390.o
++obj-$(CONFIG_XSURF100) += xsurf100.o
+ obj-$(CONFIG_ZORRO8390) += zorro8390.o 8390.o
+diff --git a/drivers/net/ethernet/8390/xsurf100.c b/drivers/net/ethernet/8390/xsurf100.c
 new file mode 100644
-index 0000000..15e8a0e
+index 0000000..7ab5ca0
 --- /dev/null
-+++ b/drivers/net/phy/asix.c
-@@ -0,0 +1,65 @@
-+/*
-+ * Driver for Asix PHYs
-+ *
-+ * Author: Michael Schmitz <schmitzmic@gmail.com>
-+ *
-+ * This program is free software; you can redistribute  it and/or modify it
-+ * under  the terms of  the GNU General  Public License as published by the
-+ * Free Software Foundation;  either version 2 of the  License, or (at your
-+ * option) any later version.
-+ *
-+ */
-+#include <linux/kernel.h>
-+#include <linux/errno.h>
-+#include <linux/init.h>
++++ b/drivers/net/ethernet/8390/xsurf100.c
+@@ -0,0 +1,381 @@
 +#include <linux/module.h>
-+#include <linux/mii.h>
-+#include <linux/phy.h>
++#include <linux/netdevice.h>
++#include <linux/platform_device.h>
++#include <linux/zorro.h>
++#include <net/ax88796.h>
++#include <asm/amigaints.h>
 +
-+#define PHY_ID_ASIX		0x003b1841
++#define ZORRO_PROD_INDIVIDUAL_COMPUTERS_X_SURF100 \
++		ZORRO_ID(INDIVIDUAL_COMPUTERS, 0x64, 0)
 +
-+MODULE_DESCRIPTION("Asix PHY driver");
-+MODULE_AUTHOR("Michael Schmitz <schmitzmic@gmail.com>");
-+MODULE_LICENSE("GPL");
++#define XS100_IRQSTATUS_BASE 0x40
++#define XS100_8390_BASE 0x800
 +
-+/**
-+ * asix_soft_reset - software reset the PHY via BMCR_RESET bit
-+ * @phydev: target phy_device struct
-+ *
-+ * Description: Perform a software PHY reset using the standard
-+ * BMCR_RESET bit and poll for the reset bit to be cleared.
-+ * Toggle BMCR_RESET bit off to accomodate broken PHY implementations
-+ * such as used on the Individual Computers' X-Surf 100 Zorro card.
-+ *
-+ * Returns: 0 on success, < 0 on failure
++/* Longword-access area. Translated to 2 16-bit access cycles by the
++ * X-Surf 100 FPGA
 + */
-+static int asix_soft_reset(struct phy_device *phydev)
-+{
-+	int ret;
++#define XS100_8390_DATA32_BASE 0x8000
++#define XS100_8390_DATA32_SIZE 0x2000
++/* Sub-Areas for fast data register access; addresses relative to area begin */
++#define XS100_8390_DATA_READ32_BASE 0x0880
++#define XS100_8390_DATA_WRITE32_BASE 0x0C80
++#define XS100_8390_DATA_AREA_SIZE 0x80
 +
-+	/* Asix PHY won't reset unless reset bit toggles */
-+	ret = phy_write(phydev, MII_BMCR, 0);
-+	if (ret < 0)
-+		return ret;
++#define __NS8390_init ax_NS8390_init
 +
-+	phy_write(phydev, MII_BMCR, BMCR_RESET);
++/* force unsigned long back to 'void __iomem *' */
++#define ax_convert_addr(_a) ((void __force __iomem *)(_a))
 +
-+	return phy_poll_reset(phydev);
-+}
++#define ei_inb(_a) z_readb(ax_convert_addr(_a))
++#define ei_outb(_v, _a) z_writeb(_v, ax_convert_addr(_a))
 +
-+static struct phy_driver asix_driver[] = { {
-+	.phy_id		= PHY_ID_ASIX,
-+	.name		= "Asix Electronics",
-+	.phy_id_mask	= 0xfffffff0,
-+	.features	= PHY_BASIC_FEATURES,
-+	.soft_reset	= asix_soft_reset,
-+} };
++#define ei_inw(_a) z_readw(ax_convert_addr(_a))
++#define ei_outw(_v, _a) z_writew(_v, ax_convert_addr(_a))
 +
-+module_phy_driver(asix_driver);
++#define ei_inb_p(_a) ei_inb(_a)
++#define ei_outb_p(_v, _a) ei_outb(_v, _a)
 +
-+static struct mdio_device_id __maybe_unused asix_tbl[] = {
-+	{ PHY_ID_ASIX, 0xfffffff0 },
-+	{ }
++/* define EI_SHIFT() to take into account our register offsets */
++#define EI_SHIFT(x) (ei_local->reg_offset[(x)])
++
++/* Ensure we have our RCR base value */
++#define AX88796_PLATFORM
++
++static unsigned char version[] =
++		"ax88796.c: Copyright 2005,2007 Simtec Electronics\n";
++
++#include "lib8390.c"
++
++/* from ne.c */
++#define NE_CMD		EI_SHIFT(0x00)
++#define NE_RESET	EI_SHIFT(0x1f)
++#define NE_DATAPORT	EI_SHIFT(0x10)
++
++struct xsurf100_ax_plat_data {
++	struct ax_plat_data ax;
++	void __iomem *base_regs;
++	void __iomem *data_area;
 +};
 +
-+MODULE_DEVICE_TABLE(mdio, asix_tbl);
-diff --git a/drivers/net/phy/phy_device.c b/drivers/net/phy/phy_device.c
-index 777912b..fb8c13b 100644
---- a/drivers/net/phy/phy_device.c
-+++ b/drivers/net/phy/phy_device.c
-@@ -833,7 +833,7 @@ void phy_disconnect(struct phy_device *phydev)
-  *   standard phy_init_hw() which will zero all the other bits in the BMCR
-  *   and reapply all driver-specific and board-specific fixups.
-  */
--static int phy_poll_reset(struct phy_device *phydev)
-+int phy_poll_reset(struct phy_device *phydev)
- {
- 	/* Poll until the reset bit clears (50ms per retry == 0.6 sec) */
- 	unsigned int retries = 12;
-@@ -854,6 +854,7 @@ static int phy_poll_reset(struct phy_device *phydev)
- 	msleep(1);
- 	return 0;
- }
-+EXPORT_SYMBOL(phy_poll_reset);
- 
- int phy_init_hw(struct phy_device *phydev)
- {
-diff --git a/include/linux/phy.h b/include/linux/phy.h
-index 7c4c237..fa0c4fd 100644
---- a/include/linux/phy.h
-+++ b/include/linux/phy.h
-@@ -980,6 +980,7 @@ void phy_attached_print(struct phy_device *phydev, const char *fmt, ...)
- int genphy_resume(struct phy_device *phydev);
- int genphy_loopback(struct phy_device *phydev, bool enable);
- int genphy_soft_reset(struct phy_device *phydev);
-+int phy_poll_reset(struct phy_device *phydev);
- static inline int genphy_no_soft_reset(struct phy_device *phydev)
- {
- 	return 0;
++static int is_xsurf100_network_irq(struct platform_device *pdev)
++{
++	struct xsurf100_ax_plat_data *xs100 = dev_get_platdata(&pdev->dev);
++
++	return (readw(xs100->base_regs + XS100_IRQSTATUS_BASE) & 0xaaaa) != 0;
++}
++
++/* These functions guarantee that the iomem is accessed with 32 bit
++ * cycles only. z_memcpy_fromio / z_memcpy_toio don't
++ */
++static void z_memcpy_fromio32(void *dst, const void __iomem *src, size_t bytes)
++{
++	while (bytes > 32) {
++		asm __volatile__
++		   ("movem.l (%0)+,%%d0-%%d7\n"
++		    "movem.l %%d0-%%d7,(%1)\n"
++		    "adda.l #32,%1" : "=a"(src), "=a"(dst)
++		    : "0"(src), "1"(dst) : "d0", "d1", "d2", "d3", "d4",
++					   "d5", "d6", "d7", "memory");
++		bytes -= 32;
++	}
++	while (bytes) {
++		*(uint32_t *)dst = z_readl(src);
++		src += 4;
++		dst += 4;
++		bytes -= 4;
++	}
++}
++
++static void z_memcpy_toio32(void __iomem *dst, const void *src, size_t bytes)
++{
++	while (bytes) {
++		z_writel(*(const uint32_t *)src, dst);
++		src += 4;
++		dst += 4;
++		bytes -= 4;
++	}
++}
++
++static void xs100_write(struct net_device *dev, const void *src,
++			unsigned int count)
++{
++	struct ei_device *ei_local = netdev_priv(dev);
++	struct platform_device *pdev = to_platform_device(dev->dev.parent);
++	struct xsurf100_ax_plat_data *xs100 = dev_get_platdata(&pdev->dev);
++
++	/* copy whole blocks */
++	while (count > XS100_8390_DATA_AREA_SIZE) {
++		z_memcpy_toio32(xs100->data_area +
++				XS100_8390_DATA_WRITE32_BASE, src,
++				XS100_8390_DATA_AREA_SIZE);
++		src += XS100_8390_DATA_AREA_SIZE;
++		count -= XS100_8390_DATA_AREA_SIZE;
++	}
++	/* copy whole dwords */
++	z_memcpy_toio32(xs100->data_area + XS100_8390_DATA_WRITE32_BASE,
++			src, count & ~3);
++	src += count & ~3;
++	if (count & 2) {
++		ei_outw(*(uint16_t *)src, ei_local->mem + NE_DATAPORT);
++		src += 2;
++	}
++	if (count & 1)
++		ei_outb(*(uint8_t *)src, ei_local->mem + NE_DATAPORT);
++}
++
++static void xs100_read(struct net_device *dev, void *dst, unsigned int count)
++{
++	struct ei_device *ei_local = netdev_priv(dev);
++	struct platform_device *pdev = to_platform_device(dev->dev.parent);
++	struct xsurf100_ax_plat_data *xs100 = dev_get_platdata(&pdev->dev);
++
++	/* copy whole blocks */
++	while (count > XS100_8390_DATA_AREA_SIZE) {
++		z_memcpy_fromio32(dst, xs100->data_area +
++				  XS100_8390_DATA_READ32_BASE,
++				  XS100_8390_DATA_AREA_SIZE);
++		dst += XS100_8390_DATA_AREA_SIZE;
++		count -= XS100_8390_DATA_AREA_SIZE;
++	}
++	/* copy whole dwords */
++	z_memcpy_fromio32(dst, xs100->data_area + XS100_8390_DATA_READ32_BASE,
++			  count & ~3);
++	dst += count & ~3;
++	if (count & 2) {
++		*(uint16_t *)dst = ei_inw(ei_local->mem + NE_DATAPORT);
++		dst += 2;
++	}
++	if (count & 1)
++		*(uint8_t *)dst = ei_inb(ei_local->mem + NE_DATAPORT);
++}
++
++/* Block input and output, similar to the Crynwr packet driver. If
++ * you are porting to a new ethercard, look at the packet driver
++ * source for hints. The NEx000 doesn't share the on-board packet
++ * memory -- you have to put the packet out through the "remote DMA"
++ * dataport using ei_outb.
++ */
++static void xs100_block_input(struct net_device *dev, int count,
++			      struct sk_buff *skb, int ring_offset)
++{
++	struct ei_device *ei_local = netdev_priv(dev);
++	void __iomem *nic_base = ei_local->mem;
++	char *buf = skb->data;
++
++	if (ei_local->dmaing) {
++		netdev_err(dev,
++			   "DMAing conflict in %s [DMAstat:%d][irqlock:%d]\n",
++			   __func__,
++			   ei_local->dmaing, ei_local->irqlock);
++		return;
++	}
++
++	ei_local->dmaing |= 0x01;
++
++	ei_outb(E8390_NODMA + E8390_PAGE0 + E8390_START, nic_base + NE_CMD);
++	ei_outb(count & 0xff, nic_base + EN0_RCNTLO);
++	ei_outb(count >> 8, nic_base + EN0_RCNTHI);
++	ei_outb(ring_offset & 0xff, nic_base + EN0_RSARLO);
++	ei_outb(ring_offset >> 8, nic_base + EN0_RSARHI);
++	ei_outb(E8390_RREAD + E8390_START, nic_base + NE_CMD);
++
++	xs100_read(dev, buf, count);
++
++	ei_local->dmaing &= ~1;
++}
++
++static void xs100_block_output(struct net_device *dev, int count,
++			       const unsigned char *buf, const int start_page)
++{
++	struct ei_device *ei_local = netdev_priv(dev);
++	void __iomem *nic_base = ei_local->mem;
++	unsigned long dma_start;
++
++	/* Round the count up for word writes. Do we need to do this?
++	 * What effect will an odd byte count have on the 8390?  I
++	 * should check someday.
++	 */
++	if (ei_local->word16 && (count & 0x01))
++		count++;
++
++	/* This *shouldn't* happen. If it does, it's the last thing
++	 * you'll see
++	 */
++	if (ei_local->dmaing) {
++		netdev_err(dev, 
++			   "DMAing conflict in %s [DMAstat:%d][irqlock:%d]\n",
++			   __func__,
++			   ei_local->dmaing, ei_local->irqlock);
++		return;
++	}
++
++	ei_local->dmaing |= 0x01;
++	/* We should already be in page 0, but to be safe... */
++	ei_outb(E8390_PAGE0 + E8390_START + E8390_NODMA, nic_base + NE_CMD);
++
++	ei_outb(ENISR_RDC, nic_base + EN0_ISR);
++
++	/* Now the normal output. */
++	ei_outb(count & 0xff, nic_base + EN0_RCNTLO);
++	ei_outb(count >> 8, nic_base + EN0_RCNTHI);
++	ei_outb(0x00, nic_base + EN0_RSARLO);
++	ei_outb(start_page, nic_base + EN0_RSARHI);
++
++	ei_outb(E8390_RWRITE + E8390_START, nic_base + NE_CMD);
++
++	xs100_write(dev, buf, count);
++
++	dma_start = jiffies;
++
++	while ((ei_inb(nic_base + EN0_ISR) & ENISR_RDC) == 0) {
++		if (jiffies - dma_start > 2 * HZ / 100) {	/* 20ms */
++			netdev_warn(dev, "timeout waiting for Tx RDC.\n");
++			ei_local->reset_8390(dev);
++			ax_NS8390_init(dev, 1);
++			break;
++		}
++	}
++
++	ei_outb(ENISR_RDC, nic_base + EN0_ISR);	/* Ack intr. */
++	ei_local->dmaing &= ~0x01;
++}
++
++static int xsurf100_probe(struct zorro_dev *zdev,
++			  const struct zorro_device_id *ent)
++{
++	struct platform_device *pdev;
++	struct xsurf100_ax_plat_data ax88796_data;
++	struct resource res[2] = {
++		DEFINE_RES_NAMED(IRQ_AMIGA_PORTS, 1, NULL,
++				 IORESOURCE_IRQ | IORESOURCE_IRQ_SHAREABLE),
++		DEFINE_RES_MEM(zdev->resource.start + XS100_8390_BASE,
++			       4 * 0x20)
++	};
++	int reg;
++	/* This table is referenced in the device structure, so it must
++	 * outlive the scope of xsurf100_probe.
++	 */
++	static u32 reg_offsets[32];
++	int ret = 0;
++
++	/* X-Surf 100 control and 32 bit ring buffer data access areas.
++	 * These resources are not used by the ax88796 driver, so must
++	 * be requested here and passed via platform data.
++	 */
++
++	if (!request_mem_region(zdev->resource.start, 0x100, zdev->name)) {
++		dev_err(&zdev->dev, "cannot reserve X-Surf 100 control registers\n");
++		return -ENXIO;
++	}
++
++	if (!request_mem_region(zdev->resource.start +
++				XS100_8390_DATA32_BASE,
++				XS100_8390_DATA32_SIZE,
++				"X-Surf 100 32-bit data access")) {
++		dev_err(&zdev->dev, "cannot reserve 32-bit area\n");
++		ret = -ENXIO;
++		goto exit_req;
++	}
++
++	for (reg = 0; reg < 0x20; reg++)
++		reg_offsets[reg] = 4 * reg;
++
++	memset(&ax88796_data, 0, sizeof(ax88796_data));
++	ax88796_data.ax.flags = AXFLG_HAS_EEPROM;
++	ax88796_data.ax.wordlength = 2;
++	ax88796_data.ax.dcr_val = 0x48;
++	ax88796_data.ax.rcr_val = 0x40;
++	ax88796_data.ax.reg_offsets = reg_offsets;
++	ax88796_data.ax.check_irq = is_xsurf100_network_irq;
++	ax88796_data.base_regs = ioremap(zdev->resource.start, 0x100);
++
++	/* error handling for ioremap regs */
++	if (!ax88796_data.base_regs) {
++		dev_err(&zdev->dev, "Cannot ioremap area %pR (registers)\n",
++			&zdev->resource);
++
++		ret = -ENXIO;
++		goto exit_req2;
++	}
++
++	ax88796_data.data_area = ioremap(zdev->resource.start +
++			XS100_8390_DATA32_BASE, XS100_8390_DATA32_SIZE);
++
++	/* error handling for ioremap data */
++	if (!ax88796_data.data_area) {
++		dev_err(&zdev->dev, 
++			"Cannot ioremap area %pR offset %x (32-bit access)\n",
++			&zdev->resource,  XS100_8390_DATA32_BASE);
++
++		ret = -ENXIO;
++		goto exit_mem;
++	}
++
++	ax88796_data.ax.block_output = xs100_block_output;
++	ax88796_data.ax.block_input = xs100_block_input;
++
++	pdev = platform_device_register_resndata(&zdev->dev, "ax88796",
++						 zdev->slotaddr, res, 2,
++						 &ax88796_data,
++						 sizeof(ax88796_data));
++
++	if (IS_ERR(pdev)) {
++		dev_err(&zdev->dev, "cannot register platform device\n");
++		ret = -ENXIO;
++		goto exit_mem2;
++	}
++
++	zorro_set_drvdata(zdev, pdev);
++
++	if (!ret)
++		return 0;
++
++ exit_mem2:
++	iounmap(ax88796_data.data_area);
++
++ exit_mem:
++	iounmap(ax88796_data.base_regs);
++
++ exit_req2:
++	release_mem_region(zdev->resource.start + XS100_8390_DATA32_BASE,
++			   XS100_8390_DATA32_SIZE);
++
++ exit_req:
++	release_mem_region(zdev->resource.start, 0x100);
++
++	return ret;
++}
++
++static void xsurf100_remove(struct zorro_dev *zdev)
++{
++	struct platform_device *pdev = zorro_get_drvdata(zdev);
++	struct xsurf100_ax_plat_data *xs100 = dev_get_platdata(&pdev->dev);
++
++	platform_device_unregister(pdev);
++
++	iounmap(xs100->base_regs);
++	release_mem_region(zdev->resource.start, 0x100);
++	iounmap(xs100->data_area);
++	release_mem_region(zdev->resource.start + XS100_8390_DATA32_BASE,
++			   XS100_8390_DATA32_SIZE);
++}
++
++static const struct zorro_device_id xsurf100_zorro_tbl[] = {
++	{ ZORRO_PROD_INDIVIDUAL_COMPUTERS_X_SURF100, },
++	{ 0 }
++};
++
++MODULE_DEVICE_TABLE(zorro, xsurf100_zorro_tbl);
++
++static struct zorro_driver xsurf100_driver = {
++	.name           = "xsurf100",
++	.id_table       = xsurf100_zorro_tbl,
++	.probe          = xsurf100_probe,
++	.remove         = xsurf100_remove,
++};
++
++module_driver(xsurf100_driver, zorro_register_driver, zorro_unregister_driver);
++
++MODULE_DESCRIPTION("X-Surf 100 driver");
++MODULE_AUTHOR("Michael Karcher <kernel@mkarcher.dialup.fu-berlin.de>");
++MODULE_LICENSE("GPL v2");
 -- 
 1.7.0.4
