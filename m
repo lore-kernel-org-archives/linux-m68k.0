@@ -1,7 +1,7 @@
 From: Michael Schmitz <schmitzmic@gmail.com>
-Subject: [PATCH v4 4/9] net-next: ax88796: Do not free IRQ in ax_remove() (already freed in ax_close()).
-Date: Thu, 19 Apr 2018 14:05:21 +1200
-Message-ID: <1524103526-12240-5-git-send-email-schmitzmic@gmail.com>
+Subject: [PATCH v4 5/9] net-next: ax88796: Add block_input/output hooks to ax_plat_data
+Date: Thu, 19 Apr 2018 14:05:22 +1200
+Message-ID: <1524103526-12240-6-git-send-email-schmitzmic@gmail.com>
 References: <1524025616-3722-1-git-send-email-schmitzmic@gmail.com>
 Return-path: <netdev-owner@vger.kernel.org>
 In-Reply-To: <1524025616-3722-1-git-send-email-schmitzmic@gmail.com>
@@ -12,30 +12,72 @@ List-Id: linux-m68k@vger.kernel.org
 
 From: Michael Karcher <kernel@mkarcher.dialup.fu-berlin.de>
 
-This complements the fix in 82533ad9a1c ("net: ethernet: ax88796:
-don't call free_irq without request_irq first") that removed the
-free_irq call in the error path of probe, to also not call free_irq
-when remove is called to revert the effects of probe.
+Add platform specific hooks for block transfer reads/writes of packet
+buffer data, superseding the default provided ax_block_input/output.
+Currently used for m68k Amiga XSurf100.
 
-Fixes: 82533ad9a1c (net: ethernet: ax88796: don't call free_irq without request_irq first)
 Signed-off-by: Michael Karcher <kernel@mkarcher.dialup.fu-berlin.de>
 Signed-off-by: Michael Schmitz <schmitzmic@gmail.com>
-Reviewed-by: Geert Uytterhoeven <geert@linux-m68k.org>
+
 ---
- drivers/net/ethernet/8390/ax88796.c |    1 -
- 1 files changed, 0 insertions(+), 1 deletions(-)
+
+Changes in v3:
+
+Suggested by Andrew Lunn/Finn Thain:
+- declare struct sk_buff in ax88796.h
+- correct whitespace error in ax88796.h
+---
+ drivers/net/ethernet/8390/ax88796.c |   10 ++++++++--
+ include/net/ax88796.h               |    9 +++++++++
+ 2 files changed, 17 insertions(+), 2 deletions(-)
 
 diff --git a/drivers/net/ethernet/8390/ax88796.c b/drivers/net/ethernet/8390/ax88796.c
-index ab020e6..d3f30f1 100644
+index d3f30f1..939a572 100644
 --- a/drivers/net/ethernet/8390/ax88796.c
 +++ b/drivers/net/ethernet/8390/ax88796.c
-@@ -790,7 +790,6 @@ static int ax_remove(struct platform_device *pdev)
- 	struct resource *mem;
+@@ -758,8 +758,14 @@ static int ax_init_dev(struct net_device *dev)
+ #endif
  
- 	unregister_netdev(dev);
--	free_irq(dev->irq, dev);
+ 	ei_local->reset_8390 = &ax_reset_8390;
+-	ei_local->block_input = &ax_block_input;
+-	ei_local->block_output = &ax_block_output;
++	if (ax->plat->block_input)
++		ei_local->block_input = ax->plat->block_input;
++	else
++		ei_local->block_input = &ax_block_input;
++	if (ax->plat->block_output)
++		ei_local->block_output = ax->plat->block_output;
++	else
++		ei_local->block_output = &ax_block_output;
+ 	ei_local->get_8390_hdr = &ax_get_8390_hdr;
+ 	ei_local->priv = 0;
  
- 	iounmap(ei_local->mem);
- 	mem = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+diff --git a/include/net/ax88796.h b/include/net/ax88796.h
+index b9a3bec..363b0ca 100644
+--- a/include/net/ax88796.h
++++ b/include/net/ax88796.h
+@@ -12,6 +12,9 @@
+ #ifndef __NET_AX88796_PLAT_H
+ #define __NET_AX88796_PLAT_H
+ 
++struct sk_buff;
++struct net_device;
++
+ #define AXFLG_HAS_EEPROM		(1<<0)
+ #define AXFLG_MAC_FROMDEV		(1<<1)	/* device already has MAC */
+ #define AXFLG_HAS_93CX6			(1<<2)	/* use eeprom_93cx6 driver */
+@@ -26,6 +29,12 @@ struct ax_plat_data {
+ 	u32		*reg_offsets;	/* register offsets */
+ 	u8		*mac_addr;	/* MAC addr (only used when
+ 					   AXFLG_MAC_FROMPLATFORM is used */
++
++	/* uses default ax88796 buffer if set to NULL */
++	void (*block_output)(struct net_device *dev, int count,
++			const unsigned char *buf, int star_page);
++	void (*block_input)(struct net_device *dev, int count,
++			struct sk_buff *skb, int ring_offset);
+ };
+ 
+ #endif /* __NET_AX88796_PLAT_H */
 -- 
 1.7.0.4
