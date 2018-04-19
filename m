@@ -1,73 +1,41 @@
 From: Michael Schmitz <schmitzmic@gmail.com>
-Subject: Re: [PATCH v3 1/9] net: phy: new Asix Electronics PHY driver
-Date: Thu, 19 Apr 2018 10:26:14 +1200
-Message-ID: <CAOmrzkJ1TXehJH-gOtiL3zTr8a8=ZRmx2wzCE3PGZY-LWbc7ZA@mail.gmail.com>
-References: <1523930895-6973-1-git-send-email-schmitzmic@gmail.com>
- <1524025616-3722-2-git-send-email-schmitzmic@gmail.com> <20180418121356.GA31643@lunn.ch>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
+Subject: [PATCH v4 4/9] net-next: ax88796: Do not free IRQ in ax_remove() (already freed in ax_close()).
+Date: Thu, 19 Apr 2018 14:05:21 +1200
+Message-ID: <1524103526-12240-5-git-send-email-schmitzmic@gmail.com>
+References: <1524025616-3722-1-git-send-email-schmitzmic@gmail.com>
 Return-path: <netdev-owner@vger.kernel.org>
-In-Reply-To: <20180418121356.GA31643@lunn.ch>
+In-Reply-To: <1524025616-3722-1-git-send-email-schmitzmic@gmail.com>
 Sender: netdev-owner@vger.kernel.org
-To: Andrew Lunn <andrew@lunn.ch>
-Cc: netdev <netdev@vger.kernel.org>, Finn Thain <fthain@telegraphics.com.au>, Geert Uytterhoeven <geert@linux-m68k.org>, Florian Fainelli <f.fainelli@gmail.com>, Linux/m68k <linux-m68k@vger.kernel.org>, Michael Karcher <Michael.Karcher@fu-berlin.de>
+To: netdev@vger.kernel.org
+Cc: andrew@lunn.ch, fthain@telegraphics.com.au, geert@linux-m68k.org, f.fainelli@gmail.com, linux-m68k@vger.kernel.org, Michael.Karcher@fu-berlin.de, Michael Karcher <kernel@mkarcher.dialup.fu-berlin.de>, Michael Schmitz <schmitzmic@gmail.com>
 List-Id: linux-m68k@vger.kernel.org
 
-Hi Andrew,
+From: Michael Karcher <kernel@mkarcher.dialup.fu-berlin.de>
 
-I agree, that's much better. I had something like that in mind before
-I got distracted...
+This complements the fix in 82533ad9a1c ("net: ethernet: ax88796:
+don't call free_irq without request_irq first") that removed the
+free_irq call in the error path of probe, to also not call free_irq
+when remove is called to revert the effects of probe.
 
-/me looking for brown paper bag now.
+Fixes: 82533ad9a1c (net: ethernet: ax88796: don't call free_irq without request_irq first)
+Signed-off-by: Michael Karcher <kernel@mkarcher.dialup.fu-berlin.de>
+Signed-off-by: Michael Schmitz <schmitzmic@gmail.com>
+Reviewed-by: Geert Uytterhoeven <geert@linux-m68k.org>
+---
+ drivers/net/ethernet/8390/ax88796.c |    1 -
+ 1 files changed, 0 insertions(+), 1 deletions(-)
 
-Cheers,
-
-  Michael
-
-
-On Thu, Apr 19, 2018 at 12:13 AM, Andrew Lunn <andrew@lunn.ch> wrote:
->> +
->> +/**
->> + * asix_soft_reset - software reset the PHY via BMCR_RESET bit
->> + * @phydev: target phy_device struct
->> + *
->> + * Description: Perform a software PHY reset using the standard
->> + * BMCR_RESET bit and poll for the reset bit to be cleared.
->> + * Toggle BMCR_RESET bit off to accomodate broken PHY implementations
->> + * such as used on the Individual Computers' X-Surf 100 Zorro card.
->> + *
->> + * Returns: 0 on success, < 0 on failure
->> + */
->> +static int asix_soft_reset(struct phy_device *phydev)
->> +{
->> +     int ret;
->> +
->> +     /* Asix PHY won't reset unless reset bit toggles */
->> +     ret = phy_write(phydev, MII_BMCR, 0);
->> +     if (ret < 0)
->> +             return ret;
->> +
->> +     phy_write(phydev, MII_BMCR, BMCR_RESET);
->> +
->> +     return phy_poll_reset(phydev);
->> +}
->
-> Why not simply:
->
-> static int asix_soft_reset(struct phy_device *phydev)
-> {
->         int ret;
->
->         /* Asix PHY won't reset unless reset bit toggles */
->         ret = phy_write(phydev, MII_BMCR, 0);
->         if (ret < 0)
->                 return ret;
->
->         return genphy_soft_reset(phydev);
-> }
->
->         Andrew
-> --
-> To unsubscribe from this list: send the line "unsubscribe linux-m68k" in
-> the body of a message to majordomo@vger.kernel.org
-> More majordomo info at  http://vger.kernel.org/majordomo-info.html
+diff --git a/drivers/net/ethernet/8390/ax88796.c b/drivers/net/ethernet/8390/ax88796.c
+index ab020e6..d3f30f1 100644
+--- a/drivers/net/ethernet/8390/ax88796.c
++++ b/drivers/net/ethernet/8390/ax88796.c
+@@ -790,7 +790,6 @@ static int ax_remove(struct platform_device *pdev)
+ 	struct resource *mem;
+ 
+ 	unregister_netdev(dev);
+-	free_irq(dev->irq, dev);
+ 
+ 	iounmap(ei_local->mem);
+ 	mem = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+-- 
+1.7.0.4
