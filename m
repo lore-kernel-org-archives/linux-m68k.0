@@ -1,32 +1,68 @@
-From: Michael Schmitz <schmitzmic@gmail.com>
-Subject: Re: [PATCH v4 00/10] New network driver for Amiga X-Surf 100 (m68k)
-Date: Fri, 20 Apr 2018 09:36:13 +1200
-Message-ID: <CAOmrzk+mKB_-OQfE_+3tmk4jkCqEam-3qYXo1qXfjPYivjw6vg@mail.gmail.com>
-References: <1524025616-3722-1-git-send-email-schmitzmic@gmail.com>
- <1524103526-12240-1-git-send-email-schmitzmic@gmail.com> <20180419.161138.825724439328248224.davem@davemloft.net>
+From: David Sterba <dsterba@suse.cz>
+Subject: Re: moving affs + RDB partition support to staging?
+Date: Thu, 26 Apr 2018 12:59:40 +0200
+Message-ID: <20180426105940.smn3447igebe5r34@twin.jikos.cz>
+References: <20180425154602.GA8546@bombadil.infradead.org>
+ <20180425203029.GQ21272@twin.jikos.cz>
+ <20180426025717.GA32430@bombadil.infradead.org>
+ <1613268.lKBQxPXt8J@merkaba>
+ <76ca15e2-7b43-8b02-43e1-9ee65ab85356@physik.fu-berlin.de>
+Reply-To: dsterba@suse.cz
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Return-path: <netdev-owner@vger.kernel.org>
-In-Reply-To: <20180419.161138.825724439328248224.davem@davemloft.net>
-Sender: netdev-owner@vger.kernel.org
-To: David Miller <davem@davemloft.net>
-Cc: netdev <netdev@vger.kernel.org>, Andrew Lunn <andrew@lunn.ch>, Finn Thain <fthain@telegraphics.com.au>, Geert Uytterhoeven <geert@linux-m68k.org>, Florian Fainelli <f.fainelli@gmail.com>, Linux/m68k <linux-m68k@vger.kernel.org>, Michael Karcher <Michael.Karcher@fu-berlin.de>
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <76ca15e2-7b43-8b02-43e1-9ee65ab85356@physik.fu-berlin.de>
+Sender: linux-kernel-owner@vger.kernel.org
+To: John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
+Cc: Martin Steigerwald <martin@lichtvoll.de>, Matthew Wilcox <willy@infradead.org>, dsterba@suse.cz, linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org, Jens Axboe <axboe@kernel.dk>, linux-m68k@vger.kernel.org, Debian m68k <debian-68k@lists.debian.org>
 List-Id: linux-m68k@vger.kernel.org
 
-Thanks Dave!
+On Thu, Apr 26, 2018 at 12:45:41PM +0200, John Paul Adrian Glaubitz wrote:
+> (adding debian-68k)
+> 
+> Hi Matthew!
+> 
+> On 04/26/2018 12:28 PM, Martin Steigerwald wrote:
+> > You probably put your stick into a cave with ancient sleeping dragons :)
+> 
+> Indeed.
+> 
+> > Added in linux-m68k mailing list, as they likely have an opinion on how
+> > to treat affs + RDB partition support. Also added in Jens Axboe about
+> > patching that RDB support broken with 2 TB or larger harddisks issue
+> > which had been in Linux kernel for 6 years while a patch exists that to
+> > my testing back then solves the issue.
+> 
+> The answer is that we are still very much actively using RDB and AFFS
+> supoort in the Linux kernel and if you were to remove it, you would
+> directly hit users.
 
-And many thanks to all the reviewers and testers!
+Based on that I think removing affs will not happen, but the upstream
+maintenance status should be updated accordingly.
 
-Cheers,
+> I know it may sound crazy, but the Linux/m68k port (Atari, Mac, Amiga etc)
+> is a very actively used and maintained port which just recently received
+> three new drivers:
+> 
+> > https://git.kernel.org/pub/scm/linux/kernel/git/mkp/scsi.git/commit/?h=4.18/scsi-queue&id=3109e5ae0311e937d49a5325134e50b742ac5f4a
+> > https://git.kernel.org/pub/scm/linux/kernel/git/davem/net-next.git/commit/?id=861928f4e60e826cd8871c0c37f4b3d825b8d81d
+> > https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/drivers/ata/pata_gayle.c?id=9ab27d1d35fda0c5fce624083e92546a8545e7e5
+> 
+> The community around the m68k CPU is constantly developing new hardware
+> (new accelerator boards, networking cards, IDE controllers etc for the
+> Amiga and so on). So, the community and the port are anything but dead.
+> 
+> > > Yeah, it's pretty sad how few commits some of these filesystems have
+> > > had in recent years.  One can argue that they're stable and don't need
+> > > to be fixed because they aren't broken, but I find it hard to believe
+> > > that any of them were better-implemented than ext2 which still sees
+> > > regular bugfixes.
+> 
+> Exactly. It works fine as is:
+...
+> There is nothing at the moment that needs fixing.
 
-  Michael
-
-
-On Fri, Apr 20, 2018 at 8:11 AM, David Miller <davem@davemloft.net> wrote:
-> From: Michael Schmitz <schmitzmic@gmail.com>
-> Date: Thu, 19 Apr 2018 14:05:17 +1200
->
->> This patch series adds support for the Individual Computers X-Surf 100
->> network card for m68k Amiga, a network adapter based on the AX88796 chip set.
->
-> Series applied, thank you.
+So, I'm willing to act as upstream maintainer for affs, send pull
+requests with fixes if you ever need that (unless you find someone
+else).
