@@ -1,52 +1,52 @@
-From: Michael Schmitz <schmitzmic@gmail.com>
-Subject: Re: [parted-devel] Atari label false positives
-Date: Sun, 13 May 2018 07:22:17 +1200
-Message-ID: <fc99627f-ebb7-d556-2f69-72b4f5a557ef@gmail.com>
-References: <2d6f5455-963d-b044-a64d-67634df46071@ubuntu.com>
- <35ad9889-bc13-56bd-7831-f7bb3eea2d1e@physik.fu-berlin.de>
- <874bf955-d5bc-5d9c-0f87-445da67f3bdd@ubuntu.com>
- <80a28dd6-ce19-e6ed-fc7a-c5561fecf989@gmail.com>
- <82528a79-31d5-e8c9-08db-253462619197@physik.fu-berlin.de>
- <c1bf0748-f7e0-b109-8c9e-26f8a2c70bf3@gmail.com>
- <fee352b1-4dbc-b02e-65b1-f138e84a6042@physik.fu-berlin.de>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-Return-path: <bounce-debian-68k=debian-68k=m.gmane.org@lists.debian.org>
-In-Reply-To: <fee352b1-4dbc-b02e-65b1-f138e84a6042@physik.fu-berlin.de>
-Resent-Message-ID: <vWHKNDgfsNB.A._-G.U8z9aB@bendel>
-List-URL: <https://lists.debian.org/debian-68k/>
-List-Post: <mailto:debian-68k@lists.debian.org>
-List-Help: <mailto:debian-68k-request@lists.debian.org?subject=help>
-List-Subscribe: <mailto:debian-68k-request@lists.debian.org?subject=subscribe>
-List-Unsubscribe: <mailto:debian-68k-request@lists.debian.org?subject=unsubscribe>
-List-Archive: https://lists.debian.org/msgid-search/fc99627f-ebb7-d556-2f69-72b4f5a557ef@gmail.com
-To: John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>, Phillip Susi <psusi@ubuntu.com>
-Cc: Debian m68k <debian-68k@lists.debian.org>, Linux/m68k <linux-m68k@vger.kernel.org>, Parted development <parted-devel@lists.alioth.debian.org>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: [PATCH] mtd: nand: Fix return type of __DIVIDE() when called with 32-bit
+Date: Mon, 14 May 2018 12:49:37 +0200
+Message-ID: <1526294977-32303-1-git-send-email-geert@linux-m68k.org>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Boris Brezillon <boris.brezillon@bootlin.com>, Richard Weinberger <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>, Brian Norris <computersforpeace@gmail.com>, Marek Vasut <marek.vasut@gmail.com>
+Cc: Miquel Raynal <miquel.raynal@bootlin.com>, linux-mtd@lists.infradead.org, linux-m68k@vger.kernel.org, linux-kernel@vger.kernel.org, Geert Uytterhoeven <geert@linux-m68k.org>
 List-Id: linux-m68k@vger.kernel.org
 
-Hi Adrian,
+The __DIVIDE() macro checks whether it is called with a 32-bit or 64-bit
+dividend, to select the appropriate divide-and-round-up routine.
+As the check uses the ternary operator, the result will always be
+promoted to a type that can hold both results, i.e. unsigned long long.
 
-Am 12.05.2018 um 23:24 schrieb John Paul Adrian Glaubitz:
-> On 05/12/2018 10:41 AM, Michael Schmitz wrote:
->>>> Do you have a dump of the root sector (plus additional eventual
->>>> extended
->>>> partition root sector) from these bugs?
->>>
->>> This is a very good point. We should have a look at the probing code in
->>> the kernel because apparently the problem doesn't exist there.
->>
->> It may not exist because the MSDOS partition detection is specific
->> enough to reject Atari partition tables. But still, compare the kernel
->> partition parsers to see what may be missing.
-> 
-> Which would mean that the kernel probes for DOS partition tables before
-> Atari partition tables, wouldn't it?
+When using this result in a division on a 32-bit system, this may lead
+to link errors like:
 
-Yes, it does (as I had stated earlier - block/partitions/checks.c has
-only a few rather more specific formats listed before MSDOS. Sorry if
-that wasn't clear.).
+    ERROR: "__udivdi3" [drivers/mtd/nand/raw/nand.ko] undefined!
 
-> 
-> Adrian
-> 
+Fix this by casting the result of the 64-bit division to the type of the
+dividend.
+
+Fixes: 8878b126df769831 ("mtd: nand: add ->exec_op() implementation")
+Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
+---
+This fixes the root cause of the link failure seen with
+m68k/allmodconfig since commit 3057fcef385348fe ("mtd: rawnand: Make
+sure we wait tWB before polling the STATUS reg").
+
+An alternative mitigation was posted as "[PATCH] m68k: Implement
+ndelay() as an inline function to force type checking/casting"
+(https://lkml.org/lkml/2018/5/13/102).
+---
+ include/linux/mtd/rawnand.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/include/linux/mtd/rawnand.h b/include/linux/mtd/rawnand.h
+index 5dad59b312440a9c..d06dc428ea0102ae 100644
+--- a/include/linux/mtd/rawnand.h
++++ b/include/linux/mtd/rawnand.h
+@@ -871,7 +871,7 @@ struct nand_op_instr {
+ #define __DIVIDE(dividend, divisor) ({					\
+ 	sizeof(dividend) == sizeof(u32) ?				\
+ 		DIV_ROUND_UP(dividend, divisor) :			\
+-		DIV_ROUND_UP_ULL(dividend, divisor);			\
++		(__typeof__(dividend))DIV_ROUND_UP_ULL(dividend, divisor); \
+ 		})
+ #define PSEC_TO_NSEC(x) __DIVIDE(x, 1000)
+ #define PSEC_TO_MSEC(x) __DIVIDE(x, 1000000000)
+-- 
+2.7.4
