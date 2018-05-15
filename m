@@ -1,88 +1,225 @@
-From: Phillip Susi <psusi-GeWIH/nMZzLQT0dZR+AlfA@public.gmane.org>
-Subject: Re: Atari label false positives
-Date: Mon, 14 May 2018 09:02:40 -0400
-Message-ID: <88a568e0-2707-65c8-fc78-a2da11d187e1@ubuntu.com>
-References: <2d6f5455-963d-b044-a64d-67634df46071@ubuntu.com>
- <35ad9889-bc13-56bd-7831-f7bb3eea2d1e@physik.fu-berlin.de>
- <874bf955-d5bc-5d9c-0f87-445da67f3bdd@ubuntu.com>
- <80a28dd6-ce19-e6ed-fc7a-c5561fecf989@gmail.com>
- <82528a79-31d5-e8c9-08db-253462619197@physik.fu-berlin.de>
- <c1bf0748-f7e0-b109-8c9e-26f8a2c70bf3@gmail.com>
+From: Boris Brezillon <boris.brezillon@bootlin.com>
+Subject: Re: [PATCH] mtd: nand: Fix return type of __DIVIDE() when called
+ with 32-bit
+Date: Tue, 15 May 2018 11:12:44 +0200
+Message-ID: <20180515111244.12a9dd2c@bbrezillon>
+References: <1526294977-32303-1-git-send-email-geert@linux-m68k.org>
+        <20180514132324.595b63eb@bbrezillon>
+        <CAMuHMdUSHc2o5zXbZje89jo2dxTYv8pzcVSz-gYWh7KdZKwQeA@mail.gmail.com>
+        <20180514134607.5dfb8d51@bbrezillon>
+        <CAMuHMdVhAAGiGjGMCe26kyLAPqrvTfukADhipd8apk8UNBAXiA@mail.gmail.com>
+        <20180514141339.43a09786@bbrezillon>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature";
- boundary="84ivEmeTDx9YTIOSjfyqfbMT5LhNWRQyG"
-Return-path: <parted-devel-bounces+gcgpd-parted-devel=m.gmane.org-wVTzQnVv9Y8Rm1jG9FmulZdwIE86Xf0q@public.gmane.org>
-In-Reply-To: <c1bf0748-f7e0-b109-8c9e-26f8a2c70bf3-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
-List-Unsubscribe: <https://alioth-lists.debian.net/cgi-bin/mailman/options/parted-devel>,
- <mailto:parted-devel-request-wVTzQnVv9Y8Rm1jG9FmulZdwIE86Xf0q@public.gmane.org?subject=unsubscribe>
-List-Archive: <http://alioth-lists.debian.net/pipermail/parted-devel/>
-List-Post: <mailto:parted-devel-wVTzQnVv9Y8Rm1jG9FmulZdwIE86Xf0q@public.gmane.org>
-List-Help: <mailto:parted-devel-request-wVTzQnVv9Y8Rm1jG9FmulZdwIE86Xf0q@public.gmane.org?subject=help>
-List-Subscribe: <https://alioth-lists.debian.net/cgi-bin/mailman/listinfo/parted-devel>,
- <mailto:parted-devel-request-wVTzQnVv9Y8Rm1jG9FmulZdwIE86Xf0q@public.gmane.org?subject=subscribe>
-Errors-To: parted-devel-bounces+gcgpd-parted-devel=m.gmane.org-wVTzQnVv9Y8Rm1jG9FmulZdwIE86Xf0q@public.gmane.org
-Sender: "parted-devel"
- <parted-devel-bounces+gcgpd-parted-devel=m.gmane.org-wVTzQnVv9Y8Rm1jG9FmulZdwIE86Xf0q@public.gmane.org>
-To: Michael Schmitz <schmitzmic-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, John Paul Adrian Glaubitz <glaubitz-1Olz3AKvcsuAKZTfuerNgRvVK+yQ3ZXh@public.gmane.org>
-Cc: Parted development <parted-devel-XbBxUvOt3X2LieD7tvxI8l/i77bcL1HB@public.gmane.org>, Linux/m68k <linux-m68k-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, Debian m68k <debian-68k-0aAXYlwwYIJuHlm7Suoebg@public.gmane.org>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20180514141339.43a09786@bbrezillon>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Geert Uytterhoeven <geert@linux-m68k.org>, MTD Maling List <linux-mtd@lists.infradead.org>
+Cc: Linux/m68k <linux-m68k@vger.kernel.org>, Richard Weinberger <richard@nod.at>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, Marek Vasut <marek.vasut@gmail.com>, Miquel Raynal <miquel.raynal@bootlin.com>, Brian Norris <computersforpeace@gmail.com>, David Woodhouse <dwmw2@infradead.org>
 List-Id: linux-m68k@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---84ivEmeTDx9YTIOSjfyqfbMT5LhNWRQyG
-Content-Type: multipart/mixed; boundary="6SZZDQPqpWISVj1zKlzR4SpPvFbRxGoPL";
- protected-headers="v1"
-From: Phillip Susi <psusi-GeWIH/nMZzLQT0dZR+AlfA@public.gmane.org>
-To: Michael Schmitz <schmitzmic-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>,
- John Paul Adrian Glaubitz <glaubitz-1Olz3AKvcsuAKZTfuerNgRvVK+yQ3ZXh@public.gmane.org>
-Cc: Debian m68k <debian-68k-0aAXYlwwYIJuHlm7Suoebg@public.gmane.org>,
- Linux/m68k <linux-m68k-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>,
- Parted development <parted-devel-XbBxUvOt3X2LieD7tvxI8l/i77bcL1HB@public.gmane.org>
-Message-ID: <88a568e0-2707-65c8-fc78-a2da11d187e1-GeWIH/nMZzLQT0dZR+AlfA@public.gmane.org>
-Subject: Re: [parted-devel] Atari label false positives
-References: <2d6f5455-963d-b044-a64d-67634df46071-GeWIH/nMZzLQT0dZR+AlfA@public.gmane.org>
- <35ad9889-bc13-56bd-7831-f7bb3eea2d1e-1Olz3AKvcsuAKZTfuerNgRvVK+yQ3ZXh@public.gmane.org>
- <874bf955-d5bc-5d9c-0f87-445da67f3bdd-GeWIH/nMZzLQT0dZR+AlfA@public.gmane.org>
- <80a28dd6-ce19-e6ed-fc7a-c5561fecf989-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
- <82528a79-31d5-e8c9-08db-253462619197-1Olz3AKvcsuAKZTfuerNgRvVK+yQ3ZXh@public.gmane.org>
- <c1bf0748-f7e0-b109-8c9e-26f8a2c70bf3-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
-In-Reply-To: <c1bf0748-f7e0-b109-8c9e-26f8a2c70bf3-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
+On Mon, 14 May 2018 14:13:39 +0200
+Boris Brezillon <boris.brezillon@bootlin.com> wrote:
 
---6SZZDQPqpWISVj1zKlzR4SpPvFbRxGoPL
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: quoted-printable
+> On Mon, 14 May 2018 14:00:19 +0200
+> Geert Uytterhoeven <geert@linux-m68k.org> wrote:
+> 
+> > Hi Boris,
+> > 
+> > On Mon, May 14, 2018 at 1:46 PM, Boris Brezillon
+> > <boris.brezillon@bootlin.com> wrote:  
+> > > On Mon, 14 May 2018 13:32:30 +0200
+> > > Geert Uytterhoeven <geert@linux-m68k.org> wrote:    
+> > >> On Mon, May 14, 2018 at 1:23 PM, Boris Brezillon
+> > >> <boris.brezillon@bootlin.com> wrote:    
+> > >> > On Mon, 14 May 2018 12:49:37 +0200
+> > >> > Geert Uytterhoeven <geert@linux-m68k.org> wrote:    
+> > >> >> The __DIVIDE() macro checks whether it is called with a 32-bit or 64-bit
+> > >> >> dividend, to select the appropriate divide-and-round-up routine.
+> > >> >> As the check uses the ternary operator, the result will always be
+> > >> >> promoted to a type that can hold both results, i.e. unsigned long long.
+> > >> >>
+> > >> >> When using this result in a division on a 32-bit system, this may lead
+> > >> >> to link errors like:
+> > >> >>
+> > >> >>     ERROR: "__udivdi3" [drivers/mtd/nand/raw/nand.ko] undefined!
+> > >> >>
+> > >> >> Fix this by casting the result of the 64-bit division to the type of the
+> > >> >> dividend.
+> > >> >>
+> > >> >> Fixes: 8878b126df769831 ("mtd: nand: add ->exec_op() implementation")
+> > >> >> Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
+> > >> >> ---
+> > >> >> This fixes the root cause of the link failure seen with
+> > >> >> m68k/allmodconfig since commit 3057fcef385348fe ("mtd: rawnand: Make
+> > >> >> sure we wait tWB before polling the STATUS reg").
+> > >> >>
+> > >> >> An alternative mitigation was posted as "[PATCH] m68k: Implement
+> > >> >> ndelay() as an inline function to force type checking/casting"
+> > >> >> (https://lkml.org/lkml/2018/5/13/102).
+> > >> >> ---
+> > >> >>  include/linux/mtd/rawnand.h | 2 +-
+> > >> >>  1 file changed, 1 insertion(+), 1 deletion(-)
+> > >> >>
+> > >> >> diff --git a/include/linux/mtd/rawnand.h b/include/linux/mtd/rawnand.h
+> > >> >> index 5dad59b312440a9c..d06dc428ea0102ae 100644
+> > >> >> --- a/include/linux/mtd/rawnand.h
+> > >> >> +++ b/include/linux/mtd/rawnand.h
+> > >> >> @@ -871,7 +871,7 @@ struct nand_op_instr {
+> > >> >>  #define __DIVIDE(dividend, divisor) ({                                       \
+> > >> >>       sizeof(dividend) == sizeof(u32) ?                               \
+> > >> >>               DIV_ROUND_UP(dividend, divisor) :                       \
+> > >> >> -             DIV_ROUND_UP_ULL(dividend, divisor);                    \
+> > >> >> +             (__typeof__(dividend))DIV_ROUND_UP_ULL(dividend, divisor); \    
+> > >> >
+> > >> > Hm, it's a bit hard to follow when you place the cast here. One could
+> > >> > wonder why a cast to (__typeof__(dividend)) is needed since
+> > >> > DIV_ROUND_UP_ULL() already returns a (__typeof__(dividend)) type.    
+> > >>
+> > >> DIV_ROUND_UP_ULL() does not return __typeof__(dividend), but
+> > >> unsigned long long.    
+> > >
+> > > Except if you entered this branch, that means you passed an unsigned
+> > > long long dividend (AKA u64), otherwise you would go in DIV_ROUND_UP().
+> > > Am I missing something?    
+> > 
+> > Sure, inside that branch, it does.
+> > But the compiler considers the whole ternary operator construction, i.e.
+> > both branches.  
+> 
+> Yes, and that's my point. The (__typeof__(dividend)) when placed like
+> you did is ambiguous. It looks like you're doing a useless cast, while
+> what you're actually fixing is the case where dividend is an u32 (AKA
+> unsigned long), and from the reader PoV, the code you're fixing
+> shouldn't even be reached. Hence my suggestion to move the case one
+> level up and add a comment ;-).
+> 
+> >   
+> > >> > How about:
+> > >> >
+> > >> >         /*
+> > >> >          * Cast to type of dividend is needed here to guarantee that the
+> > >> >          * result won't be an unsigned long long when the dividend is an
+> > >> >          * unsigned long, which is what the compiler does when it sees a    
+> > >>
+> > >> s/an unsigned long/32-bit/
+> > >>    
+> > >> >          * ternary operator with 2 different return types.
+> > >> >          */
+> > >> >         (__typeof__(dividend))(sizeof(dividend) == sizeof(u32) ?        \    
+> > >
+> > > To be completely safe and handle cases where dividend is an unsigned
+> > > short or an unsigned, we should probably have:
+> > >
+> > >         (__typeof__(dividend))(sizeof(dividend) == sizeof(unsigned long long) ? \    
+> >   
+> > "> sizeof(u32)"?    
+> > 
+> > /me starts to think about uint128_t...  
+> 
+> 	sizeof(dividend) <= sizeof(unsigned long) ?
+> 	DIV_ROUND_UP(dividend, divisor) :
+> 	DIV_ROUND_UP_ULL(dividend, divisor);
+> 
+> Problem solved :-).
+> 
+> > 
+> >   
+> > >                                DIV_ROUND_UP_ULL(dividend, divisor) :
+> > >                                DIV_ROUND_UP(dividend, divisor));
+> > >    
+> > >> >                                DIV_ROUND_UP(dividend, divisor) :        \
+> > >> >                                DIV_ROUND_UP_ULL(dividend, divisor));    
+> > >>
+> > >> Looks fine to me, too.
+> > >>    
+> > >> > Actually, I'm not even sure we care about the truncation that could
+> > >> > happen on an unsigned long long -> unsigned long cast because the
+> > >> > delays we express here will anyway be hundreds of nanosecs/millisecs,
+> > >> > so nothing close to the billions of nanosecs/millisecs you can express
+> > >> > with an unsigned long.
+> > >> >
+> > >> > So, maybe we should just do:
+> > >> >
+> > >> >         (unsigned long)(sizeof(dividend) == sizeof(u32) ?               \
+> > >> >                         DIV_ROUND_UP(dividend, divisor) :               \
+> > >> >                         DIV_ROUND_UP_ULL(dividend, divisor));
+> > >> >
+> > >> > to make things more readable.    
+> > >>
+> > >> That would break callers who pass a 64-bit dividend, and expect to receive
+> > >> a 64-bit quotient back (on 32-bit systems).
+> > >> Calling e.g. PSEC_TO_NSEC(1000000000000ULL) is valid, passing the
+> > >> result to ndelay() isn't ;-)    
+> > >
+> > > Well, theoretically, yes it's possible, in practice, we only ever pass
+> > > u32 types to PSEC_TO_NSEC() and u64 types to PSEC_TO_MSEC(), so why
+> > > bother.    
+> > 
+> > True. But __DIVIDE() sounds too generic to add such unobvious limitations.
+> >   
+> 
+> Is the following version okay?
+> 
+> --->8---  
+> From 59160e26383e1aca1eafc7078d858b91dd0074ce Mon Sep 17 00:00:00 2001
+> From: Geert Uytterhoeven <geert@linux-m68k.org>
+> Date: Mon, 14 May 2018 12:49:37 +0200
+> Subject: [PATCH] mtd: nand: Fix return type of __DIVIDE() when called with
+>  32-bit
+> 
+> The __DIVIDE() macro checks whether it is called with a 32-bit or 64-bit
+> dividend, to select the appropriate divide-and-round-up routine.
+> As the check uses the ternary operator, the result will always be
+> promoted to a type that can hold both results, i.e. unsigned long long.
+> 
+> When using this result in a division on a 32-bit system, this may lead
+> to link errors like:
+> 
+>     ERROR: "__udivdi3" [drivers/mtd/nand/raw/nand.ko] undefined!
+> 
+> Fix this by casting the result of the division to the type of the
+> dividend.
+> 
+> Fixes: 8878b126df769831 ("mtd: nand: add ->exec_op() implementation")
+> Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
+> Signed-off-by: Boris Brezillon <boris.brezillon@bootlin.com>
+> ---
+>  include/linux/mtd/rawnand.h | 16 +++++++++++-----
+>  1 file changed, 11 insertions(+), 5 deletions(-)
+> 
+> diff --git a/include/linux/mtd/rawnand.h b/include/linux/mtd/rawnand.h
+> index 5dad59b31244..17c919436f48 100644
+> --- a/include/linux/mtd/rawnand.h
+> +++ b/include/linux/mtd/rawnand.h
+> @@ -867,12 +867,18 @@ struct nand_op_instr {
+>   * tBERS (during an erase) which all of them are u64 values that cannot be
+>   * divided by usual kernel macros and must be handled with the special
+>   * DIV_ROUND_UP_ULL() macro.
+> + *
+> + * Cast to type of dividend is needed here to guarantee that the result won't
+> + * be an unsigned long long when the dividend is an unsigned long (or smaller),
+> + * which is what the compiler does when it sees ternary operator with 2
+> + * different return types (picks the largest type to make sure there's no
+> + * loss).
+>   */
+> -#define __DIVIDE(dividend, divisor) ({					\
+> -	sizeof(dividend) == sizeof(u32) ?				\
+> -		DIV_ROUND_UP(dividend, divisor) :			\
+> -		DIV_ROUND_UP_ULL(dividend, divisor);			\
+> -		})
+> +#define __DIVIDE(dividend, divisor) ({						\
+> +	(__typeof__(dividend))(sizeof(dividend) <= sizeof(unsigned long) ?	\
+> +			       DIV_ROUND_UP(dividend, divisor) :		\
+> +			       DIV_ROUND_UP_ULL(dividend, divisor)); 		\
+> +	})
+>  #define PSEC_TO_NSEC(x) __DIVIDE(x, 1000)
+>  #define PSEC_TO_MSEC(x) __DIVIDE(x, 1000000000)
+>  
 
-On 5/12/2018 4:41 AM, Michael Schmitz wrote:
-> I had that the wrong way - link order is not what matters here, the
-> checks order has msdos before atari in fact.
+Applied this version.
 
-Ok, I was going to say the dos table requires the 55AA signature that is
-not expected to be found in an atari table.
+Thanks,
 
-One other thing I thought of is the atari table lists the size of the
-disk.  Right now it just has to be less than or equal to the actual disk
-size.  What if it was required to be strictly equal?
-
-
-
---6SZZDQPqpWISVj1zKlzR4SpPvFbRxGoPL--
-
---84ivEmeTDx9YTIOSjfyqfbMT5LhNWRQyG
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQEcBAEBCAAGBQJa+Yj5AAoJENsuw7lhAP6EdpIIAIH/e33hOv8zvVxb8ZUR5nlV
-Wr1z8zZvnol9A4iQOb4zYGwE6lV0fE1s7WOt4DyKuA/zJTp6SKQ0RR1iz+ShllL9
-ZAkbPVUlpXGAveeSABLL9Y3dWVPCmeBZ02jd3selUwDheiCOqDYr8RwktYoKPUyy
-/oPTZH+hDsS3cAY2goOGm1yfmQxomh/Iq0GJoDcEAiHmOhxV60IW7/u0u1wLpZs4
-3/S4ZMjZFQx13azwehrQARVfAPxLEGcO3MRjtV+IGq+poZGijlLo0HsFBAei54iC
-6sskDyUYS5ru5BqAe+Wuxbzv0bVJQVB+CUIZ9jRC3HinY3M60UNCAqHZ7d8LEdY=
-=hnxG
------END PGP SIGNATURE-----
-
---84ivEmeTDx9YTIOSjfyqfbMT5LhNWRQyG--
+Boris
