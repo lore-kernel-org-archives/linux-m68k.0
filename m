@@ -1,225 +1,76 @@
-From: Boris Brezillon <boris.brezillon@bootlin.com>
-Subject: Re: [PATCH] mtd: nand: Fix return type of __DIVIDE() when called
- with 32-bit
-Date: Tue, 15 May 2018 11:12:44 +0200
-Message-ID: <20180515111244.12a9dd2c@bbrezillon>
-References: <1526294977-32303-1-git-send-email-geert@linux-m68k.org>
-        <20180514132324.595b63eb@bbrezillon>
-        <CAMuHMdUSHc2o5zXbZje89jo2dxTYv8pzcVSz-gYWh7KdZKwQeA@mail.gmail.com>
-        <20180514134607.5dfb8d51@bbrezillon>
-        <CAMuHMdVhAAGiGjGMCe26kyLAPqrvTfukADhipd8apk8UNBAXiA@mail.gmail.com>
-        <20180514141339.43a09786@bbrezillon>
+From: Greg Ungerer <gerg@linux-m68k.org>
+Subject: [git pull] m68knommu changes for v4.18
+Date: Tue, 5 Jun 2018 14:32:05 +1000
+Message-ID: <98b130d0-e129-fe79-57fc-bcff8a5a8fea@linux-m68k.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 7bit
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20180514141339.43a09786@bbrezillon>
+Content-Language: en-US
 Sender: linux-kernel-owner@vger.kernel.org
-To: Geert Uytterhoeven <geert@linux-m68k.org>, MTD Maling List <linux-mtd@lists.infradead.org>
-Cc: Linux/m68k <linux-m68k@vger.kernel.org>, Richard Weinberger <richard@nod.at>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, Marek Vasut <marek.vasut@gmail.com>, Miquel Raynal <miquel.raynal@bootlin.com>, Brian Norris <computersforpeace@gmail.com>, David Woodhouse <dwmw2@infradead.org>
+To: torvalds@linux-foundation.org
+Cc: "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Linux/m68k <linux-m68k@vger.kernel.org>, Geert Uytterhoeven <geert@linux-m68k.org>
 List-Id: linux-m68k@vger.kernel.org
 
-On Mon, 14 May 2018 14:13:39 +0200
-Boris Brezillon <boris.brezillon@bootlin.com> wrote:
+Hi Linus,
 
-> On Mon, 14 May 2018 14:00:19 +0200
-> Geert Uytterhoeven <geert@linux-m68k.org> wrote:
-> 
-> > Hi Boris,
-> > 
-> > On Mon, May 14, 2018 at 1:46 PM, Boris Brezillon
-> > <boris.brezillon@bootlin.com> wrote:  
-> > > On Mon, 14 May 2018 13:32:30 +0200
-> > > Geert Uytterhoeven <geert@linux-m68k.org> wrote:    
-> > >> On Mon, May 14, 2018 at 1:23 PM, Boris Brezillon
-> > >> <boris.brezillon@bootlin.com> wrote:    
-> > >> > On Mon, 14 May 2018 12:49:37 +0200
-> > >> > Geert Uytterhoeven <geert@linux-m68k.org> wrote:    
-> > >> >> The __DIVIDE() macro checks whether it is called with a 32-bit or 64-bit
-> > >> >> dividend, to select the appropriate divide-and-round-up routine.
-> > >> >> As the check uses the ternary operator, the result will always be
-> > >> >> promoted to a type that can hold both results, i.e. unsigned long long.
-> > >> >>
-> > >> >> When using this result in a division on a 32-bit system, this may lead
-> > >> >> to link errors like:
-> > >> >>
-> > >> >>     ERROR: "__udivdi3" [drivers/mtd/nand/raw/nand.ko] undefined!
-> > >> >>
-> > >> >> Fix this by casting the result of the 64-bit division to the type of the
-> > >> >> dividend.
-> > >> >>
-> > >> >> Fixes: 8878b126df769831 ("mtd: nand: add ->exec_op() implementation")
-> > >> >> Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
-> > >> >> ---
-> > >> >> This fixes the root cause of the link failure seen with
-> > >> >> m68k/allmodconfig since commit 3057fcef385348fe ("mtd: rawnand: Make
-> > >> >> sure we wait tWB before polling the STATUS reg").
-> > >> >>
-> > >> >> An alternative mitigation was posted as "[PATCH] m68k: Implement
-> > >> >> ndelay() as an inline function to force type checking/casting"
-> > >> >> (https://lkml.org/lkml/2018/5/13/102).
-> > >> >> ---
-> > >> >>  include/linux/mtd/rawnand.h | 2 +-
-> > >> >>  1 file changed, 1 insertion(+), 1 deletion(-)
-> > >> >>
-> > >> >> diff --git a/include/linux/mtd/rawnand.h b/include/linux/mtd/rawnand.h
-> > >> >> index 5dad59b312440a9c..d06dc428ea0102ae 100644
-> > >> >> --- a/include/linux/mtd/rawnand.h
-> > >> >> +++ b/include/linux/mtd/rawnand.h
-> > >> >> @@ -871,7 +871,7 @@ struct nand_op_instr {
-> > >> >>  #define __DIVIDE(dividend, divisor) ({                                       \
-> > >> >>       sizeof(dividend) == sizeof(u32) ?                               \
-> > >> >>               DIV_ROUND_UP(dividend, divisor) :                       \
-> > >> >> -             DIV_ROUND_UP_ULL(dividend, divisor);                    \
-> > >> >> +             (__typeof__(dividend))DIV_ROUND_UP_ULL(dividend, divisor); \    
-> > >> >
-> > >> > Hm, it's a bit hard to follow when you place the cast here. One could
-> > >> > wonder why a cast to (__typeof__(dividend)) is needed since
-> > >> > DIV_ROUND_UP_ULL() already returns a (__typeof__(dividend)) type.    
-> > >>
-> > >> DIV_ROUND_UP_ULL() does not return __typeof__(dividend), but
-> > >> unsigned long long.    
-> > >
-> > > Except if you entered this branch, that means you passed an unsigned
-> > > long long dividend (AKA u64), otherwise you would go in DIV_ROUND_UP().
-> > > Am I missing something?    
-> > 
-> > Sure, inside that branch, it does.
-> > But the compiler considers the whole ternary operator construction, i.e.
-> > both branches.  
-> 
-> Yes, and that's my point. The (__typeof__(dividend)) when placed like
-> you did is ambiguous. It looks like you're doing a useless cast, while
-> what you're actually fixing is the case where dividend is an u32 (AKA
-> unsigned long), and from the reader PoV, the code you're fixing
-> shouldn't even be reached. Hence my suggestion to move the case one
-> level up and add a comment ;-).
-> 
-> >   
-> > >> > How about:
-> > >> >
-> > >> >         /*
-> > >> >          * Cast to type of dividend is needed here to guarantee that the
-> > >> >          * result won't be an unsigned long long when the dividend is an
-> > >> >          * unsigned long, which is what the compiler does when it sees a    
-> > >>
-> > >> s/an unsigned long/32-bit/
-> > >>    
-> > >> >          * ternary operator with 2 different return types.
-> > >> >          */
-> > >> >         (__typeof__(dividend))(sizeof(dividend) == sizeof(u32) ?        \    
-> > >
-> > > To be completely safe and handle cases where dividend is an unsigned
-> > > short or an unsigned, we should probably have:
-> > >
-> > >         (__typeof__(dividend))(sizeof(dividend) == sizeof(unsigned long long) ? \    
-> >   
-> > "> sizeof(u32)"?    
-> > 
-> > /me starts to think about uint128_t...  
-> 
-> 	sizeof(dividend) <= sizeof(unsigned long) ?
-> 	DIV_ROUND_UP(dividend, divisor) :
-> 	DIV_ROUND_UP_ULL(dividend, divisor);
-> 
-> Problem solved :-).
-> 
-> > 
-> >   
-> > >                                DIV_ROUND_UP_ULL(dividend, divisor) :
-> > >                                DIV_ROUND_UP(dividend, divisor));
-> > >    
-> > >> >                                DIV_ROUND_UP(dividend, divisor) :        \
-> > >> >                                DIV_ROUND_UP_ULL(dividend, divisor));    
-> > >>
-> > >> Looks fine to me, too.
-> > >>    
-> > >> > Actually, I'm not even sure we care about the truncation that could
-> > >> > happen on an unsigned long long -> unsigned long cast because the
-> > >> > delays we express here will anyway be hundreds of nanosecs/millisecs,
-> > >> > so nothing close to the billions of nanosecs/millisecs you can express
-> > >> > with an unsigned long.
-> > >> >
-> > >> > So, maybe we should just do:
-> > >> >
-> > >> >         (unsigned long)(sizeof(dividend) == sizeof(u32) ?               \
-> > >> >                         DIV_ROUND_UP(dividend, divisor) :               \
-> > >> >                         DIV_ROUND_UP_ULL(dividend, divisor));
-> > >> >
-> > >> > to make things more readable.    
-> > >>
-> > >> That would break callers who pass a 64-bit dividend, and expect to receive
-> > >> a 64-bit quotient back (on 32-bit systems).
-> > >> Calling e.g. PSEC_TO_NSEC(1000000000000ULL) is valid, passing the
-> > >> result to ndelay() isn't ;-)    
-> > >
-> > > Well, theoretically, yes it's possible, in practice, we only ever pass
-> > > u32 types to PSEC_TO_NSEC() and u64 types to PSEC_TO_MSEC(), so why
-> > > bother.    
-> > 
-> > True. But __DIVIDE() sounds too generic to add such unobvious limitations.
-> >   
-> 
-> Is the following version okay?
-> 
-> --->8---  
-> From 59160e26383e1aca1eafc7078d858b91dd0074ce Mon Sep 17 00:00:00 2001
-> From: Geert Uytterhoeven <geert@linux-m68k.org>
-> Date: Mon, 14 May 2018 12:49:37 +0200
-> Subject: [PATCH] mtd: nand: Fix return type of __DIVIDE() when called with
->  32-bit
-> 
-> The __DIVIDE() macro checks whether it is called with a 32-bit or 64-bit
-> dividend, to select the appropriate divide-and-round-up routine.
-> As the check uses the ternary operator, the result will always be
-> promoted to a type that can hold both results, i.e. unsigned long long.
-> 
-> When using this result in a division on a 32-bit system, this may lead
-> to link errors like:
-> 
->     ERROR: "__udivdi3" [drivers/mtd/nand/raw/nand.ko] undefined!
-> 
-> Fix this by casting the result of the division to the type of the
-> dividend.
-> 
-> Fixes: 8878b126df769831 ("mtd: nand: add ->exec_op() implementation")
-> Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
-> Signed-off-by: Boris Brezillon <boris.brezillon@bootlin.com>
-> ---
->  include/linux/mtd/rawnand.h | 16 +++++++++++-----
->  1 file changed, 11 insertions(+), 5 deletions(-)
-> 
-> diff --git a/include/linux/mtd/rawnand.h b/include/linux/mtd/rawnand.h
-> index 5dad59b31244..17c919436f48 100644
-> --- a/include/linux/mtd/rawnand.h
-> +++ b/include/linux/mtd/rawnand.h
-> @@ -867,12 +867,18 @@ struct nand_op_instr {
->   * tBERS (during an erase) which all of them are u64 values that cannot be
->   * divided by usual kernel macros and must be handled with the special
->   * DIV_ROUND_UP_ULL() macro.
-> + *
-> + * Cast to type of dividend is needed here to guarantee that the result won't
-> + * be an unsigned long long when the dividend is an unsigned long (or smaller),
-> + * which is what the compiler does when it sees ternary operator with 2
-> + * different return types (picks the largest type to make sure there's no
-> + * loss).
->   */
-> -#define __DIVIDE(dividend, divisor) ({					\
-> -	sizeof(dividend) == sizeof(u32) ?				\
-> -		DIV_ROUND_UP(dividend, divisor) :			\
-> -		DIV_ROUND_UP_ULL(dividend, divisor);			\
-> -		})
-> +#define __DIVIDE(dividend, divisor) ({						\
-> +	(__typeof__(dividend))(sizeof(dividend) <= sizeof(unsigned long) ?	\
-> +			       DIV_ROUND_UP(dividend, divisor) :		\
-> +			       DIV_ROUND_UP_ULL(dividend, divisor)); 		\
-> +	})
->  #define PSEC_TO_NSEC(x) __DIVIDE(x, 1000)
->  #define PSEC_TO_MSEC(x) __DIVIDE(x, 1000000000)
->  
+Can you please pull the m68knommu git tree, for-next branch.
 
-Applied this version.
+These changes all relate to converting the IO access functions for the
+ColdFire (and all other non-MMU m68k) platforms to use asm-generic IO
+instead. This makes the IO support the same on all ColdFire (regardless
+of MMU enabled or not) and means we can now support PCI in non-MMU mode.
+As a bonus these changes remove more code than they add.
 
-Thanks,
+Regards
+Greg
 
-Boris
+
+
+The following changes since commit b04e217704b7f879c6b91222b066983a44a7a09f:
+
+   Linux 4.17-rc7 (2018-05-27 13:01:47 -0700)
+
+are available in the Git repository at:
+
+   git://git.kernel.org/pub/scm/linux/kernel/git/gerg/m68knommu.git for-next
+
+for you to fetch changes up to 082f55c459845088c3fee99c3a88ee117c148218:
+
+   m68k: fix ColdFire PCI config reads and writes (2018-05-28 09:45:27 
++1000)
+
+----------------------------------------------------------------
+Greg Ungerer (14):
+       m68k: move *_relaxed macros into io_no.h and io_mm.h
+       m68k: put definition guards around virt_to_phys and phys_to_virt
+       m68k: use asm-generic/io.h for non-MMU io access functions
+       m68k: rework raw access macros for the non-MMU case
+       m68k: group io mapping definitions and functions
+       m68k: setup PCI support code in io_no.h
+       m68k: use io_no.h for MMU and non-MMU enabled ColdFire
+       m68k: remove old ColdFire IO access support code
+       m68k: don't redefine access functions if we have PCI
+       m68k: fix read/write multi-byte IO for PCI on ColdFire
+       m68k: fix ioremapping for internal ColdFire peripherals
+       m68k: allow ColdFire PCI bus on MMU and non-MMU configuration
+       m68k: introduce iomem() macro for __iomem conversions
+       m68k: fix ColdFire PCI config reads and writes
+
+  arch/m68k/Kconfig.bus               |   8 +-
+  arch/m68k/coldfire/pci.c            | 114 +---------------
+  arch/m68k/include/asm/atarihw.h     |   1 +
+  arch/m68k/include/asm/io.h          |  10 +-
+  arch/m68k/include/asm/io_mm.h       |  98 ++------------
+  arch/m68k/include/asm/io_no.h       | 253 
++++++++++++++++---------------------
+  arch/m68k/include/asm/kmap.h        |  80 ++++++++++++
+  arch/m68k/include/asm/nubus.h       |   1 +
+  arch/m68k/include/asm/q40_master.h  |   2 +-
+  arch/m68k/include/asm/raw_io.h      |  14 --
+  arch/m68k/include/asm/vga.h         |   9 ++
+  arch/m68k/include/asm/virtconvert.h |   2 +
+  arch/m68k/include/asm/zorro.h       |   1 +
+  arch/m68k/mm/kmap.c                 |   8 ++
+  14 files changed, 230 insertions(+), 371 deletions(-)
+  create mode 100644 arch/m68k/include/asm/kmap.h
