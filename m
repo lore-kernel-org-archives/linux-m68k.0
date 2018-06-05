@@ -1,58 +1,72 @@
-From: John Paul Adrian Glaubitz <glaubitz-1Olz3AKvcsuAKZTfuerNgRvVK+yQ3ZXh@public.gmane.org>
+From: Phillip Susi <psusi@ubuntu.com>
 Subject: Re: [PATCH] Fix atari label false positives
-Date: Tue, 5 Jun 2018 16:35:39 +0200
-Message-ID: <c21f382d-e788-a449-9865-23f50baf991a@physik.fu-berlin.de>
+Date: Tue, 5 Jun 2018 10:40:38 -0400
+Message-ID: <208fded9-0bfc-0578-7a57-98b5c3af78dc@ubuntu.com>
 References: <20180605143045.23875-1-psusi@ubuntu.com>
+ <c21f382d-e788-a449-9865-23f50baf991a@physik.fu-berlin.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-Return-path: <parted-devel-bounces+gcgpd-parted-devel=m.gmane.org-wVTzQnVv9Y8Rm1jG9FmulZdwIE86Xf0q@public.gmane.org>
-In-Reply-To: <20180605143045.23875-1-psusi-GeWIH/nMZzLQT0dZR+AlfA@public.gmane.org>
-Content-Language: en-US
-List-Unsubscribe: <https://alioth-lists.debian.net/cgi-bin/mailman/options/parted-devel>,
- <mailto:parted-devel-request-wVTzQnVv9Y8Rm1jG9FmulZdwIE86Xf0q@public.gmane.org?subject=unsubscribe>
-List-Archive: <http://alioth-lists.debian.net/pipermail/parted-devel/>
-List-Post: <mailto:parted-devel-wVTzQnVv9Y8Rm1jG9FmulZdwIE86Xf0q@public.gmane.org>
-List-Help: <mailto:parted-devel-request-wVTzQnVv9Y8Rm1jG9FmulZdwIE86Xf0q@public.gmane.org?subject=help>
-List-Subscribe: <https://alioth-lists.debian.net/cgi-bin/mailman/listinfo/parted-devel>,
- <mailto:parted-devel-request-wVTzQnVv9Y8Rm1jG9FmulZdwIE86Xf0q@public.gmane.org?subject=subscribe>
-Errors-To: parted-devel-bounces+gcgpd-parted-devel=m.gmane.org-wVTzQnVv9Y8Rm1jG9FmulZdwIE86Xf0q@public.gmane.org
-Sender: "parted-devel"
- <parted-devel-bounces+gcgpd-parted-devel=m.gmane.org-wVTzQnVv9Y8Rm1jG9FmulZdwIE86Xf0q@public.gmane.org>
-To: Phillip Susi <psusi-GeWIH/nMZzLQT0dZR+AlfA@public.gmane.org>
-Cc: debian-68k-0aAXYlwwYIJuHlm7Suoebg@public.gmane.org, linux-m68k-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, parted-devel-XbBxUvOt3X2LieD7tvxI8l/i77bcL1HB@public.gmane.org
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature";
+ boundary="oA2S4yvu6Z890hDinSeqO0ZgcLLCccSbP"
+Return-path: <bounce-debian-68k=debian-68k=m.gmane.org@lists.debian.org>
+In-Reply-To: <c21f382d-e788-a449-9865-23f50baf991a@physik.fu-berlin.de>
+Resent-Message-ID: <jNE7U7uC0IC.A.hwH.NEqFbB@bendel>
+List-URL: <https://lists.debian.org/debian-68k/>
+List-Post: <mailto:debian-68k@lists.debian.org>
+List-Help: <mailto:debian-68k-request@lists.debian.org?subject=help>
+List-Subscribe: <mailto:debian-68k-request@lists.debian.org?subject=subscribe>
+List-Unsubscribe: <mailto:debian-68k-request@lists.debian.org?subject=unsubscribe>
+List-Archive: https://lists.debian.org/msgid-search/208fded9-0bfc-0578-7a57-98b5c3af78dc@ubuntu.com
+To: John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
+Cc: parted-devel@lists.alioth.debian.org, linux-m68k@vger.kernel.org, debian-68k@lists.debian.org
 List-Id: linux-m68k@vger.kernel.org
 
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--oA2S4yvu6Z890hDinSeqO0ZgcLLCccSbP
+Content-Type: multipart/mixed; boundary="Zb67onaREBSahwwVKD4pvmbhDRBvr2s52";
+ protected-headers="v1"
+From: Phillip Susi <psusi@ubuntu.com>
+To: John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
+Cc: parted-devel@lists.alioth.debian.org, linux-m68k@vger.kernel.org,
+ debian-68k@lists.debian.org
+Message-ID: <208fded9-0bfc-0578-7a57-98b5c3af78dc@ubuntu.com>
+Subject: Re: [PATCH] Fix atari label false positives
+References: <20180605143045.23875-1-psusi@ubuntu.com>
+ <c21f382d-e788-a449-9865-23f50baf991a@physik.fu-berlin.de>
+In-Reply-To: <c21f382d-e788-a449-9865-23f50baf991a@physik.fu-berlin.de>
+
+--Zb67onaREBSahwwVKD4pvmbhDRBvr2s52
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: quoted-printable
+
+On 6/5/2018 10:35 AM, John Paul Adrian Glaubitz wrote:
+> Is that the reversed patch? I thought you wanted to move the atari
+> probing to the bottom?
+
+No; the order they are probed in is the reverse of the order they are
+initialized in because the fs registration puts the new one on the head
+and slides the previously registered ones further down.
 
 
-On 06/05/2018 04:30 PM, Phillip Susi wrote:
-> diff --git a/libparted/libparted.c b/libparted/libparted.c
-> index d855d0e6..e864d1b3 100644
-> --- a/libparted/libparted.c
-> +++ b/libparted/libparted.c
-> @@ -85,7 +85,7 @@ init_disk_types ()
->  #if defined __s390__ || defined __s390x__
->  	ped_disk_dasd_init();
->  #endif
-> -
-> +	ped_disk_atari_init ();
->  	ped_disk_sun_init ();
->  #ifdef ENABLE_PC98
->  	ped_disk_pc98_init ();
-> @@ -97,7 +97,6 @@ init_disk_types ()
->  	ped_disk_bsd_init ();
->  	ped_disk_amiga_init ();
->  	ped_disk_aix_init ();
-> -	ped_disk_atari_init ();
->  }
 
-Is that the reversed patch? I thought you wanted to move the atari
-probing to the bottom?
+--Zb67onaREBSahwwVKD4pvmbhDRBvr2s52--
 
-Adrian
+--oA2S4yvu6Z890hDinSeqO0ZgcLLCccSbP
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
 
--- 
- .''`.  John Paul Adrian Glaubitz
-: :' :  Debian Developer - glaubitz-8fiUuRrzOP0dnm+yROfE0A@public.gmane.org
-`. `'   Freie Universitaet Berlin - glaubitz-1Olz3AKvcsuAKZTfuerNgRvVK+yQ3ZXh@public.gmane.org
-  `-    GPG: 62FF 8A75 84E0 2956 9546  0006 7426 3B37 F5B5 F913
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQEcBAEBCAAGBQJbFqDsAAoJENsuw7lhAP6EEawIAJVlp/XFkG8dUyWiWbSGj/TT
+HQvbcY7itj8qIv0em5TG49G2+Vy/iIdPmU37q9eWbwNbXMb8bKTvho54XVMFMIDj
+GHYR3mrvWJjtm2y0qtnpDJXxRG6Kba2RHIprAoKC9g5+YgGzAZ3S6dFvg/tPCsuZ
+oLJ7kN9A7/Na85a1mdOkVjJXOYzRlDgOTr3odJ+jtIwdPUSiy+cO7U5trzGc98oa
+Ne0WQSQbsCsZFj3E7Gfqx283ALZebeEklktwka3+sHor9wXBXEgawpYJyr5OaJkq
+DciykPCgp+XJ+aYc4XrHLJC13C5A7dFzze8HEsJ3SL/Nb2hCwiRn4OyyRlVcA+8=
+=Qcu5
+-----END PGP SIGNATURE-----
+
+--oA2S4yvu6Z890hDinSeqO0ZgcLLCccSbP--
