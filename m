@@ -1,7 +1,7 @@
 From: Michael Schmitz <schmitzmic@gmail.com>
-Subject: [RFC PATCH 2/2] net-next: xsurf100: drop include of lib8390.c
-Date: Sat,  9 Jun 2018 17:57:49 +1200
-Message-ID: <1528523869-3403-3-git-send-email-schmitzmic@gmail.com>
+Subject: [RFC PATCH 1/2] net-next: ax88796: export ax_NS8390_init() hook
+Date: Sat,  9 Jun 2018 17:57:48 +1200
+Message-ID: <1528523869-3403-2-git-send-email-schmitzmic@gmail.com>
 References: <CAMuHMdWsibY4h5zwBC4qs8ZLq_1-627qjpeDLGzVjaGjG_A4PA@mail.gmail.com>
 Return-path: <netdev-owner@vger.kernel.org>
 In-Reply-To: <CAMuHMdWsibY4h5zwBC4qs8ZLq_1-627qjpeDLGzVjaGjG_A4PA@mail.gmail.com>
@@ -10,43 +10,29 @@ To: netdev@vger.kernel.org
 Cc: linux-m68k@vger.kernel.org, andrew@lunn.ch, geert@linux-m68k.org, fthain@telegraphics.com.au, Michael Schmitz <schmitzmic@gmail.com>
 List-Id: linux-m68k@vger.kernel.org
 
-Now that ax88796.c exports the ax_NS8390_init() symbol, we can
-include 8390.h instead of lib8390.c, avoiding duplication of that
-function and killing a few compile warnings in the bargain.
+The block I/O code for the new X-Surf 100 ax88796 driver needs
+ax_NS8390_init() for error fixup in its block_output function.
+
+Export this function so we can lose the lib8380.c include in the
+X-Surf 100 driver.
 
 Signed-off-by: Michael Schmitz <schmitzmic@gmail.com>
 ---
- drivers/net/ethernet/8390/xsurf100.c |   10 +++-------
- 1 files changed, 3 insertions(+), 7 deletions(-)
+ drivers/net/ethernet/8390/ax88796.c |    2 ++
+ 1 files changed, 2 insertions(+), 0 deletions(-)
 
-diff --git a/drivers/net/ethernet/8390/xsurf100.c b/drivers/net/ethernet/8390/xsurf100.c
-index 4c6f9cb..32caa5e 100644
---- a/drivers/net/ethernet/8390/xsurf100.c
-+++ b/drivers/net/ethernet/8390/xsurf100.c
-@@ -33,8 +33,6 @@
- #define HW_CHIPID		0x70
- #define HW_SCRATCH		0x78
+diff --git a/drivers/net/ethernet/8390/ax88796.c b/drivers/net/ethernet/8390/ax88796.c
+index 2a0ddec..470142f 100644
+--- a/drivers/net/ethernet/8390/ax88796.c
++++ b/drivers/net/ethernet/8390/ax88796.c
+@@ -62,6 +62,8 @@
  
--#define __NS8390_init ax_NS8390_init
--
- /* force unsigned long back to 'void __iomem *' */
- #define ax_convert_addr(_a) ((void __force __iomem *)(_a))
+ #include "lib8390.c"
  
-@@ -80,12 +78,10 @@ static void reg_write16(void __iomem *base, u16 reg, u16 val)
- 	writew(val, base + reg*4);
- }
++EXPORT_SYMBOL_GPL(ax_NS8390_init);
++
+ #define DRV_NAME "ax88796"
+ #define DRV_VERSION "1.00"
  
-+#define NS8390_CORE
-+#include "8390.h"
- 
--
--static unsigned char version[] =
--		"ax88796.c: Copyright 2005,2007 Simtec Electronics\n";
--
--#include "lib8390.c"
-+extern void ax_NS8390_init(struct net_device *dev, int startp);
- 
- /* from ne.c */
- #define NE_CMD		EI_SHIFT(0x00)
 -- 
 1.7.0.4
