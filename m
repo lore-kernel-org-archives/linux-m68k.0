@@ -1,55 +1,44 @@
-From: Benjamin Herrenschmidt <benh@kernel.crashing.org>
-Subject: Re: [PATCH v2 08/12] macintosh/via-pmu68k: Don't load driver on
- unsupported hardware
-Date: Sun, 10 Jun 2018 16:55:14 +1000
-Message-ID: <3490f7d6f45ec2586858e4547e97474d93bd2d4d.camel@kernel.crashing.org>
-References: <cover.1528423341.git.fthain@telegraphics.com.au>
-         <d9d626ca4e7ac9c7e81b24a34f5fbcae9d1d5046.1528423341.git.fthain@telegraphics.com.au>
-         <9f015684-4d91-70e4-d2a4-89fe167ff8ab@gmail.com>
-         <m2h8mc4ejw.fsf@linux-m68k.org>
-         <e1006b0a-a429-4744-7525-203cb91f1d5f@gmail.com>
-         <alpine.LNX.2.21.1806092140410.26@nippy.intranet>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: Re: [PATCH 1/2] net-next: ax88796: export ax_NS8390_init() hook
+Date: Sun, 10 Jun 2018 11:34:17 +0200
+Message-ID: <CAMuHMdX1QFB9T55odM--hFBER2UwBC_+9GW4ynj5EKh5i62tSQ@mail.gmail.com>
+References: <CAMuHMdVfjE=+YiqCrPfGObeYYkQwKGiQEWyprQr-n9z7J9-X-A@mail.gmail.com>
+ <1528604559-972-2-git-send-email-schmitzmic@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <alpine.LNX.2.21.1806092140410.26@nippy.intranet>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Finn Thain <fthain@telegraphics.com.au>, Michael Schmitz <schmitzmic@gmail.com>
-Cc: Andreas Schwab <schwab@linux-m68k.org>, linuxppc-dev@lists.ozlabs.org, linux-m68k@vger.kernel.org, linux-kernel@vger.kernel.org, Geert Uytterhoeven <geert@linux-m68k.org>
+Return-path: <netdev-owner@vger.kernel.org>
+In-Reply-To: <1528604559-972-2-git-send-email-schmitzmic@gmail.com>
+Sender: netdev-owner@vger.kernel.org
+To: Michael Schmitz <schmitzmic@gmail.com>
+Cc: netdev <netdev@vger.kernel.org>, Linux/m68k <linux-m68k@vger.kernel.org>, Andrew Lunn <andrew@lunn.ch>, Finn Thain <fthain@telegraphics.com.au>, Michael Karcher <kernel@mkarcher.dialup.fu-berlin.de>
 List-Id: linux-m68k@vger.kernel.org
 
-On Sat, 2018-06-09 at 22:21 +1000, Finn Thain wrote:
-> In anycase, the "v1" and "v2" scheme is obviously inadequate when you 
-> consider the range of m68k powerbook models. Also, consider the 
-> out-of-tree adaptation of via-pmu by the Nubus-PMac project, which has 
-> this ABI break:
-> 
-> diff --git a/include/linux/pmu.h b/include/linux/pmu.h
-> index cafe98d9694..9882a185a52 100644
-> --- a/include/linux/pmu.h
-> +++ b/include/linux/pmu.h
-> @@ -90,6 +90,7 @@ enum {
->          PMU_HEATHROW_BASED,     /* PowerBook G3 series */
->          PMU_PADDINGTON_BASED,   /* 1999 PowerBook G3 */
->          PMU_KEYLARGO_BASED,     /* Core99 motherboard (PMU99) */
-> +        PMU_NUBUS_BASED,        /* 1400, 2300, 5300 */
->          PMU_68K_V1,             /* 68K PMU, version 1 */
->          PMU_68K_V2,             /* 68K PMU, version 2 */
->  };
-> 
-> (BTW, these powerbooks are not "nubus based", they are "pre-PCI", so I 
-> wouldn't want this to go upstream in this form. It could be that 
-> PMU_NUBUS_BASED should be PMU_UNKNOWN too.)
+Hi Michael,
 
-Pre-PCI is basically "NUBUS" based even in absence of an actual NuBus
-slot :-) It has to do with the internal HW architecture. The only ones
-that aren't are the even older designs (the 68000 based ones).
+Thanks for the update!
 
-What's the situation with those NuBus things ? What do they use as a
-bootloader ? The old Apple one or BootX ? We should merge that port of
-it's maintained.
+On Sun, Jun 10, 2018 at 6:22 AM Michael Schmitz <schmitzmic@gmail.com> wrote:
+> The block I/O code for the new X-Surf 100 ax88796 driver needs
+> ax_NS8390_init() for error fixup in its block_output function.
+>
+> Export this static function through the ax_NS8390_reinit()
+> wrapper so we can lose the lib8380.c include in the X-Surf 100
+> driver.
+>
+> Fixes: 861928f4e60e826c ("net-next: New ax88796 platform
+> driver for Amiga X-Surf 100 Zorro board (m68k)")
+>
+> Signed-off-by: Michael Schmitz <schmitzmic@gmail.com>
 
-Cheers,
-Ben.
- 
+Reviewed-by: Geert Uytterhoeven <geert@linux-m68k.org>
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
+-- 
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
