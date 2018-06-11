@@ -1,49 +1,57 @@
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: Re: [PATCH] microblaze: Remove architecture heart beat code
-Date: Mon, 11 Jun 2018 10:52:04 +0200
-Message-ID: <CAMuHMdVfYWrhvhDDgHanMq6LpnruBiRZYRdAbMj5WiJJKvJ+Tw@mail.gmail.com>
-References: <84075652e978661247d71f84de46efd827869948.1528697370.git.michal.simek@xilinx.com>
- <CACRpkdb=Vfs6R+576+Wjh1cOh8ti-8jkGhj7Pw8zXdOxvHKOCg@mail.gmail.com>
+From: Finn Thain <fthain@telegraphics.com.au>
+Subject: Re: [PATCH v2 08/12] macintosh/via-pmu68k: Don't load driver on
+ unsupported hardware
+Date: Tue, 12 Jun 2018 09:47:06 +1000 (AEST)
+Message-ID: <alpine.LNX.2.21.1806120911370.34@nippy.intranet>
+References: <cover.1528423341.git.fthain@telegraphics.com.au>         <d9d626ca4e7ac9c7e81b24a34f5fbcae9d1d5046.1528423341.git.fthain@telegraphics.com.au>         <9f015684-4d91-70e4-d2a4-89fe167ff8ab@gmail.com>         <m2h8mc4ejw.fsf@linux-m68k.org>     
+    <e1006b0a-a429-4744-7525-203cb91f1d5f@gmail.com>         <alpine.LNX.2.21.1806092140410.26@nippy.intranet> <3490f7d6f45ec2586858e4547e97474d93bd2d4d.camel@kernel.crashing.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <CACRpkdb=Vfs6R+576+Wjh1cOh8ti-8jkGhj7Pw8zXdOxvHKOCg@mail.gmail.com>
+In-Reply-To: <3490f7d6f45ec2586858e4547e97474d93bd2d4d.camel@kernel.crashing.org>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Linus Walleij <linus.walleij@linaro.org>
-Cc: Michal Simek <michal.simek@xilinx.com>, Linux/m68k <linux-m68k@vger.kernel.org>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, Michal Simek <monstr@monstr.eu>, Rob Herring <robh@kernel.org>, Thomas Gleixner <tglx@linutronix.de>, Philippe Ombredanne <pombredanne@nexb.com>, U-Boot Mailing List <u-boot@lists.denx.de>, Neil Armstrong <narmstrong@baylibre.com>, Kate Stewart <kstewart@linuxfoundation.org>, Greg KH <gregkh@linuxfoundation.org>, Matthias Brugger <matthias.bgg@gmail.com>, Daniel Lezcano <daniel.lezcano@linaro.org>
+To: Benjamin Herrenschmidt <benh@kernel.crashing.org>
+Cc: Michael Schmitz <schmitzmic@gmail.com>, Andreas Schwab <schwab@linux-m68k.org>, linuxppc-dev@lists.ozlabs.org, linux-m68k@vger.kernel.org, linux-kernel@vger.kernel.org, Geert Uytterhoeven <geert@linux-m68k.org>, Laurent Vivier <lvivier@redhat.com>
 List-Id: linux-m68k@vger.kernel.org
 
-Hi Linus,
+On Sun, 10 Jun 2018, Benjamin Herrenschmidt wrote:
 
-On Mon, Jun 11, 2018 at 10:47 AM Linus Walleij <linus.walleij@linaro.org> wrote:
-> On Mon, Jun 11, 2018 at 8:09 AM, Michal Simek <michal.simek@xilinx.com> wrote:
-> > There is no reason to keep this gpio based code in architecture. Use
-> > ledtrig-heartbeat.c instead which is much more flexible then this
-> > ancient code.
-> >
-> > Signed-off-by: Michal Simek <michal.simek@xilinx.com>
->
-> Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
->
-> Maybe the arch maintainers will complain that the corresponding
-> new heartbeat code is not put in place in the same patch, but I
-> think the change is so much overdue that I don't see why they
-> can't do that themselves if they have interest in it.
->
-> BTW: m68k has the same kind of luggage, in the middle of it
-> timekeeping code:
-> arch/m68k/kernel/time.c
+> Pre-PCI is basically "NUBUS" based even in absence of an actual NuBus 
+> slot :-) It has to do with the internal HW architecture. The only ones 
+> that aren't are the even older designs (the 68000 based ones).
+> 
 
-Fixing that means converting m68k to GPIO first, which would take lots of
-heartbeats ;-)
+There is already some disagreement in the comments in the nubus-pmac code 
+about the suitability of "PMU_NUBUS_BASED" as opposed to e.g. 
+"PMU_WHITNEY_BASED".
 
-Gr{oetje,eeting}s,
+Point is, the PMU driver doesn't care about the expansion slots or 
+architecture (Whitney-based PMU appears on m68k and powerpc). So NuBus vs. 
+PCI is a red herring here. The pmu_kind relates to backlight, buttons and 
+battery.
 
-                        Geert
+(Leaving aside the PMU driver, if a pre-OpenFirmware Mac has a "slot zero" 
+ROM, one can argue that it is actually a NuBus machine, regardless of any 
+actual expansion slots.)
+
+> What's the situation with those NuBus things ? What do they use as a 
+> bootloader ? The old Apple one or BootX ? We should merge that port of 
+> it's maintained.
+> 
+
+I agree that this code should not languish out-of-tree. But it would need 
+more work before it could reasonably be submitted to reviewers.
+
+I do have some nubus-pmac hardware but I also have more mac/68k driver 
+work to do before I can tackle another architecture.
+
+I don't know what the bootloader situation is, but it looks messy...
+http://nubus-pmac.sourceforge.net/#booters
+
+Laurent, does Emile work on these machines?
 
 -- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+> Cheers,
+> Ben.
+>  
