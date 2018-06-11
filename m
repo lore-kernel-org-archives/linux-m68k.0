@@ -1,96 +1,35 @@
-From: Michael Schmitz <schmitzmic@gmail.com>
-Subject: Re: [PATCH v2 08/12] macintosh/via-pmu68k: Don't load driver on
- unsupported hardware
-Date: Mon, 11 Jun 2018 13:45:40 +1200
-Message-ID: <CAOmrzkLGWgY44puwim7bJPpkpE5cmyMEf3S+fHHMJYU6FC-tCw@mail.gmail.com>
-References: <cover.1528423341.git.fthain@telegraphics.com.au>
- <d9d626ca4e7ac9c7e81b24a34f5fbcae9d1d5046.1528423341.git.fthain@telegraphics.com.au>
- <9f015684-4d91-70e4-d2a4-89fe167ff8ab@gmail.com> <m2h8mc4ejw.fsf@linux-m68k.org>
- <e1006b0a-a429-4744-7525-203cb91f1d5f@gmail.com> <alpine.LNX.2.21.1806092140410.26@nippy.intranet>
- <CAMuHMdUHnFKzhe3x3=bG63HwnM7psu7AA=nba8q+nTDnxBAryw@mail.gmail.com>
- <3187b544-e265-dfd9-e0e3-e2a742c190d5@gmail.com> <22a505e0f094352b9cb883935fae9f494fb2cb0b.camel@kernel.crashing.org>
+From: Linus Walleij <linus.walleij@linaro.org>
+Subject: Re: [PATCH] microblaze: Remove architecture heart beat code
+Date: Mon, 11 Jun 2018 10:46:59 +0200
+Message-ID: <CACRpkdb=Vfs6R+576+Wjh1cOh8ti-8jkGhj7Pw8zXdOxvHKOCg@mail.gmail.com>
+References: <84075652e978661247d71f84de46efd827869948.1528697370.git.michal.simek@xilinx.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="UTF-8"
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <22a505e0f094352b9cb883935fae9f494fb2cb0b.camel@kernel.crashing.org>
+In-Reply-To: <84075652e978661247d71f84de46efd827869948.1528697370.git.michal.simek@xilinx.com>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Benjamin Herrenschmidt <benh@kernel.crashing.org>
-Cc: Geert Uytterhoeven <geert@linux-m68k.org>, Finn Thain <fthain@telegraphics.com.au>, Andreas Schwab <schwab@linux-m68k.org>, linuxppc-dev <linuxppc-dev@lists.ozlabs.org>, linux-m68k <linux-m68k@vger.kernel.org>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+To: Michal Simek <michal.simek@xilinx.com>, linux-m68k@vger.kernel.org
+Cc: "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Michal Simek <monstr@monstr.eu>, Rob Herring <robh@kernel.org>, Thomas Gleixner <tglx@linutronix.de>, Philippe Ombredanne <pombredanne@nexb.com>, U-Boot Mailing List <u-boot@lists.denx.de>, Neil Armstrong <narmstrong@baylibre.com>, Kate Stewart <kstewart@linuxfoundation.org>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Matthias Brugger <matthias.bgg@gmail.com>, Daniel Lezcano <daniel.lezcano@linaro.org>
 List-Id: linux-m68k@vger.kernel.org
 
-Hi Ben,
+On Mon, Jun 11, 2018 at 8:09 AM, Michal Simek <michal.simek@xilinx.com> wrote:
 
-I'm glad Finn is caring enough to keep this 20 year old bike shed in
-good repair, but this may be overdoing it a little indeed. My bad.
-
-A comment on the V1 PMU entry everyone should be OK with, I hope.
-
-Cheers,
-
-  Michael
-
-
-
-On Mon, Jun 11, 2018 at 12:05 PM, Benjamin Herrenschmidt
-<benh@kernel.crashing.org> wrote:
-> On Sun, 2018-06-10 at 21:12 +1200, Michael Schmitz wrote:
->> Hi Geert,
+> There is no reason to keep this gpio based code in architecture. Use
+> ledtrig-heartbeat.c instead which is much more flexible then this
+> ancient code.
 >
-> Top posting, sorry ...
->
-> We are painting that bike shed with way too many coats..
->
-> We can keep the existing definitions, stick a comment on them stating
-> "obsolete" and use new number if/when needed.
->
-> Ben.
->
->
->> Am 10.06.2018 um 20:29 schrieb Geert Uytterhoeven:
->> > Hi Finn,
->> >
->> > On Sat, Jun 9, 2018 at 2:20 PM Finn Thain <fthain@telegraphics.com.au> wrote:
->> > > > > > Is this enum used by any user space code? If so, perhaps rather
->> > > > > > leave the PMU_68K_V1 in there to avoid upsetting that?
->> > > > >
->> > > > > It also changes the value of PMU_68K_V2, which is an ABI break.
->> > > >
->> > > > Yes, that's what I worry about - but do we know of any users of that
->> > > > particular interface?
->> > >
->> > > There is no ABI issue AFAIK. The value of pmu_kind is visible to userland
->> > > only on powerpc. /dev/pmu and /proc/pmu/* do not exist on m68k. This patch
->> > > series will make these UAPIs available on m68k, and for that reason I've
->> > > chosen the value PMU_UNKNOWN for pmu_kind.
->> >
->> > While /dev/pmu and /proc/pmu/* may not exist on m68k, definitions in
->> > include/uapi/linux/pmu.h are part of the ABI, and cannot be changed or removed,
->> > unless we are 100% sure there are no users.
->> >
->> > If I would write a program interfacing with /dev/pmu and /proc/pmu/*, and
->> > needing to check the PMU type, it would have a switch() statement with
->> > all existing values defined in <linux/pmu.h>. So that would become broken
->> > by your change.
->> >
->> > Hence the enum is append-only.
->>
->> The PMU type from pmu.h was never exposed to user space on m68k via
->> /proc/pmu/*, and /dev/pmu is used for ioctls to the PMU driver on
->> powerpc only (the 68k PMU driver doesn't have ioctl support). No way
->> that I can see for user space to make use of the PMU type definition
->> from pmu.h, so I suppose we can be sure there are no users.
->>
->> The m68k PMU types cannot be said to be exposed on powerpc either (which
->> has ioctl support to interrogate the PMU type), as these only return
->> values up to PMU_KEYLARGO_BASED.
->>
->> Applications like pbbuttonsd or pmud don't use the kernel PMU type at
->> all, but go straight to the PMU via the ADB bus to interrogate the
->> hardware type, so won't be affected either.
->>
->> Is there any other way besides procfs and ioctl for user space to
->> interrogate the PMU type that I'm missing here?
->>
->> (I understand that breaking the ABI should not be done as a rule, but
->> this may be a case where we can successfully argue the definitions were
->> never in use, so the rules may be bent a little).
+> Signed-off-by: Michal Simek <michal.simek@xilinx.com>
+
+Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
+
+Maybe the arch maintainers will complain that the corresponding
+new heartbeat code is not put in place in the same patch, but I
+think the change is so much overdue that I don't see why they
+can't do that themselves if they have interest in it.
+
+BTW: m68k has the same kind of luggage, in the middle of it
+timekeeping code:
+arch/m68k/kernel/time.c
+
+Yours,
+Linus Walleij
