@@ -1,47 +1,49 @@
-From: Michael Schmitz <schmitzmic@gmail.com>
-Subject: Re: [PATCH v2 08/12] macintosh/via-pmu68k: Don't load driver on
- unsupported hardware
-Date: Wed, 13 Jun 2018 08:12:48 +1200
-Message-ID: <CAOmrzkLwv0aWna_Puru6QHvRRDO5y5v9jSvoZ+mwBh7XbJ=t7A@mail.gmail.com>
-References: <cover.1528423341.git.fthain@telegraphics.com.au>
- <d9d626ca4e7ac9c7e81b24a34f5fbcae9d1d5046.1528423341.git.fthain@telegraphics.com.au>
- <9f015684-4d91-70e4-d2a4-89fe167ff8ab@gmail.com> <m2h8mc4ejw.fsf@linux-m68k.org>
- <e1006b0a-a429-4744-7525-203cb91f1d5f@gmail.com> <alpine.LNX.2.21.1806092140410.26@nippy.intranet>
- <3490f7d6f45ec2586858e4547e97474d93bd2d4d.camel@kernel.crashing.org>
- <alpine.LNX.2.21.1806120911370.34@nippy.intranet> <6c1205cb-7d65-8b30-c4df-59a0ed041313@redhat.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
+From: Greg Ungerer <gerg@linux-m68k.org>
+Subject: [PATCH] m68k: fix "bad page state" oops on ColdFire boot
+Date: Mon, 18 Jun 2018 16:04:26 +1000
+Message-ID: <20180618060426.24497-1-gerg@linux-m68k.org>
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <6c1205cb-7d65-8b30-c4df-59a0ed041313@redhat.com>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Laurent Vivier <lvivier@redhat.com>
-Cc: Finn Thain <fthain@telegraphics.com.au>, Benjamin Herrenschmidt <benh@kernel.crashing.org>, Andreas Schwab <schwab@linux-m68k.org>, linuxppc-dev <linuxppc-dev@lists.ozlabs.org>, Linux/m68k <linux-m68k@vger.kernel.org>, Linux Kernel Development <linux-kernel@vger.kernel.org>, Geert Uytterhoeven <geert@linux-m68k.org>
+To: mawilcox@microsoft.com, linux-m68k@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc: Greg Ungerer <gerg@linux-m68k.org>
 List-Id: linux-m68k@vger.kernel.org
 
-Hi,
+Booting a ColdFire m68k core with MMU enabled causes a "bad page state"
+oops since commit 1d40a5ea01d5 ("mm: mark pages in use for page tables"):
 
-On Tue, Jun 12, 2018 at 6:53 PM, Laurent Vivier <lvivier@redhat.com> wrote:
-> On 12/06/2018 01:47, Finn Thain wrote:
->> On Sun, 10 Jun 2018, Benjamin Herrenschmidt wrote:
-> ...
->> I don't know what the bootloader situation is, but it looks messy...
->> http://nubus-pmac.sourceforge.net/#booters
->>
->> Laurent, does Emile work on these machines?
->>
->
-> No, Emile doesn't work on pmac-nubus, I tried to implement the switch
-> from m68k to ppc, but it has never worked.
+ BUG: Bad page state in process sh  pfn:01ce2
+ page:004fefc8 count:0 mapcount:-1024 mapping:00000000 index:0x0
+ flags: 0x0()
+ raw: 00000000 00000000 00000000 fffffbff 00000000 00000100 00000200 00000000
+ raw: 039c4000
+ page dumped because: nonzero mapcount
+ Modules linked in:
+ CPU: 0 PID: 22 Comm: sh Not tainted 4.17.0-07461-g1d40a5ea01d5 #13
 
-On the PowerMac 6100 that I installed Linux on many years ago, I'm
-pretty sure I used Apple's mkLinux boot loader.
+Fix by calling pgtable_page_dtor() in our __pte_free_tlb() code path,
+so that the PG_table flag is cleared before we free the pte page.
 
-Not sure how that would work with modern kernels and initrds though.
-Haven't got that hardware anymore so no way try.
+Signed-off-by: Greg Ungerer <gerg@linux-m68k.org>
+CC: Matthew Wilcox <mawilcox@microsoft.com>
+---
+ arch/m68k/include/asm/mcf_pgalloc.h | 1 +
+ 1 file changed, 1 insertion(+)
 
-Cheers,
+Matthew: I came across this thread at https://lkml.org/lkml/2018/6/17/163
+         about a similar problem with openrisc. Based on that I came up
+         with this fix for m68k/ColdFire. Fixes the issue for me.
 
-  Michael
-
->
-> Laurent
+diff --git a/arch/m68k/include/asm/mcf_pgalloc.h b/arch/m68k/include/asm/mcf_pgalloc.h
+index 8b707c249026..8c441eb57b80 100644
+--- a/arch/m68k/include/asm/mcf_pgalloc.h
++++ b/arch/m68k/include/asm/mcf_pgalloc.h
+@@ -44,6 +44,7 @@ extern inline pmd_t *pmd_alloc_kernel(pgd_t *pgd, unsigned long address)
+ static inline void __pte_free_tlb(struct mmu_gather *tlb, pgtable_t page,
+ 				  unsigned long address)
+ {
++	pgtable_page_dtor(page);
+ 	__free_page(page);
+ }
+ 
+-- 
+2.17.1
