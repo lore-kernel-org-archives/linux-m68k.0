@@ -1,44 +1,95 @@
-From: Greg Ungerer <gerg@linux-m68k.org>
-Subject: [git pull] m68knommu fixes for v4.18
-Date: Tue, 3 Jul 2018 11:06:34 +1000
-Message-ID: <c166ef5e-89a9-1078-6a82-53c506c26f6e@linux-m68k.org>
+From: Arnd Bergmann <arnd@arndb.de>
+Subject: Re: [PATCH 1/3] [v2] powerpc: mac: fix rtc read/write
+	functions
+Date: Mon, 9 Jul 2018 23:31:21 +0200
+Message-ID: <CAK8P3a29rNtWCcgKeJK57C5CPPi74wc1o1cnPJM=Qe+eMKFYjw@mail.gmail.com>
+References: <20180619140229.3615110-1-arnd@arndb.de>
+ <CA+7wUsyN_gru4rW0y3ZzXzYwhfaA=uHKaOG=z5bprnYq6oVfMg@mail.gmail.com>
+ <alpine.LRH.2.21.1807011844470.19761@math.ut.ee>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Language: en-US
-Sender: linux-kernel-owner@vger.kernel.org
-To: torvalds@linux-foundation.org
-Cc: "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Linux/m68k <linux-m68k@vger.kernel.org>, Geert Uytterhoeven <geert@linux-m68k.org>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <y2038-bounces@lists.linaro.org>
+In-Reply-To: <alpine.LRH.2.21.1807011844470.19761@math.ut.ee>
+List-Unsubscribe: <https://lists.linaro.org/mailman/options/y2038>,
+ <mailto:y2038-request@lists.linaro.org?subject=unsubscribe>
+List-Archive: <http://lists.linaro.org/pipermail/y2038/>
+List-Post: <mailto:y2038@lists.linaro.org>
+List-Help: <mailto:y2038-request@lists.linaro.org?subject=help>
+List-Subscribe: <https://lists.linaro.org/mailman/listinfo/y2038>,
+ <mailto:y2038-request@lists.linaro.org?subject=subscribe>
+Errors-To: y2038-bounces@lists.linaro.org
+Sender: "Y2038" <y2038-bounces@lists.linaro.org>
+To: Meelis Roos <mroos@linux.ee>
+Cc: linux-m68k@vger.kernel.org, Mathieu Malaterre <malat@debian.org>, Michael Ellerman <mpe@ellerman.id.au>, Andreas Schwab <schwab@linux-m68k.org>, LKML <linux-kernel@vger.kernel.org>, y2038 Mailman List <y2038@lists.linaro.org>, Paul Mackerras <paulus@samba.org>, Benjamin Herrenschmidt <benh@kernel.crashing.org>, Geert Uytterhoeven <geert@linux-m68k.org>, linuxppc-dev <linuxppc-dev@lists.ozlabs.org>, Greg Ungerer <gerg@linux-m68k.org>, Joshua Thompson <funaho@jurai.org>
 List-Id: linux-m68k@vger.kernel.org
 
-Hi Linus,
-
-Can you please pull the m68knommu git tree, for-linus branch.
-
-It contains a single fix, for breakage introduced in 4.18-rc1.
-
-Regards
-Greg
-
-
-
-
-The following changes since commit 021c91791a5e7e85c567452f1be3e4c2c6cb6063:
-
-   Linux 4.18-rc3 (2018-07-01 16:04:53 -0700)
-
-are available in the Git repository at:
-
-   git://git.kernel.org/pub/scm/linux/kernel/git/gerg/m68knommu.git for-linus
-
-for you to fetch changes up to ecd60532e060e45c63c57ecf1c8549b1d656d34d:
-
-   m68k: fix "bad page state" oops on ColdFire boot (2018-07-02 10:05:13 +1000)
-
-----------------------------------------------------------------
-Greg Ungerer (1):
-       m68k: fix "bad page state" oops on ColdFire boot
-
-  arch/m68k/include/asm/mcf_pgalloc.h | 4 +++-
-  1 file changed, 3 insertions(+), 1 deletion(-)
+T24gU3VuLCBKdWwgMSwgMjAxOCBhdCA1OjQ3IFBNLCBNZWVsaXMgUm9vcyA8bXJvb3NAbGludXgu
+ZWU+IHdyb3RlOgo+IEEgcGF0Y2ggZm9yIHRoZSBzdWJqZWN0IGlzIG5vdyB1cHN0cmVhbS4gVGhh
+dCBtYWRlIG1lIGZpbmFsbHkgdGFrZSBzb21lCj4gdGltZSB0byB0ZXN0IGl0IG9uIG15IFBvd2Vy
+TWFjIEc0LiBUaGEgZGF0ZSBpcyBPSyBidXQgSSBnZXQgdHdvIHdhcm5pbmdzCj4gd2l0aCBiYWNr
+dHJhY2Ugb24gYm9vdHVwLiBGdWxsIGRtZXNnIGJlbG93LgoKVGhhbmtzIGZvciB0ZXN0aW5nIHRo
+aXMsIGFuZCBzb3JyeSBmb3IgdGhlIHNsb3cgcmVwbHkuCgo+IFsgICAgNC4wMjY0OTBdIFdBUk5J
+Tkc6IENQVTogMCBQSUQ6IDEgYXQgYXJjaC9wb3dlcnBjL3BsYXRmb3Jtcy9wb3dlcm1hYy90aW1l
+LmM6MTU0IHBtdV9nZXRfdGltZSsweDdjLzB4YzgKPiBbICAgIDQuMDMyMjYxXSBNb2R1bGVzIGxp
+bmtlZCBpbjoKPiBbICAgIDQuMDM3ODc4XSBDUFU6IDAgUElEOiAxIENvbW06IHN3YXBwZXIgVGFp
+bnRlZDogRyAgICAgICAgVyAgICAgICAgIDQuMTguMC1yYzItMDAyMjMtZzE5MDQxNDhhMzYxYSAj
+ODgKPiBbICAgIDQuMDQzNzUwXSBOSVA6ICBjMDAyMTM1NCBMUjogYzAwMjEzMDggQ1RSOiAwMDAw
+MDAwMAo+IFsgICAgNC4wNDk1ODVdIFJFR1M6IGVmMDQ3Y2QwIFRSQVA6IDA3MDAgICBUYWludGVk
+OiBHICAgICAgICBXICAgICAgICAgICg0LjE4LjAtcmMyLTAwMjIzLWcxOTA0MTQ4YTM2MWEpCj4g
+WyAgICA0LjA1NTU3Ml0gTVNSOiAgMDAwMjkwMzIgPEVFLE1FLElSLERSLFJJPiAgQ1I6IDQ0MDAw
+MjIyICBYRVI6IDIwMDAwMDAwCj4gWyAgICA0LjA2MTYyMF0KPiAgICAgICAgICAgICAgICBHUFIw
+MDogYzAwMjEzMDggZWYwNDdkODAgZWYwNDgwMDAgMDAwMDAwMDAgMDBkNzAyOWMgMDAwMDAwMDQg
+MDAwMDAwMDEgMDAwMDAwOWMKPiAgICAgICAgICAgICAgICBHUFIwODogMDBkNzAwMDAgMDAwMDAw
+MDEgMDAwMDAyMDAgYzA2YTAwMDAgMjQwMDAyMjggMDAwMDAwMDAgYzAwMDRjOWMgMDAwMDAwMDAK
+PiAgICAgICAgICAgICAgICBHUFIxNjogMDAwMDAwMDAgMDAwMDAwMDAgMDAwMDAwMDAgMDAwMDAw
+MDAgMDAwMDAwMDAgMDAwMDAwMDAgYzA2NzAwMDAgYzA2MDFhMzgKPiAgICAgICAgICAgICAgICBH
+UFIyNDogMDAwMDAwMDggYzA2MzBmMTggYzA2MmE0MGMgYzA1ZmMxMGMgZWYwNDdlNTAgZWYyNzM4
+MDAgZWYwNDdlNTAgZWYwNDdlNTAKPiBbICAgIDQuMDkyMzkzXSBOSVAgW2MwMDIxMzU0XSBwbXVf
+Z2V0X3RpbWUrMHg3Yy8weGM4Cj4gWyAgICA0LjA5ODU5Nl0gTFIgW2MwMDIxMzA4XSBwbXVfZ2V0
+X3RpbWUrMHgzMC8weGM4CgpJIGRvbid0IHNlZSBob3cgdGhlIFdBUk5fT04oKSB0cmlnZ2VyZWQg
+dW5sZXNzIHRoZSBQTVUgdGltZSBpcwphY3R1YWxseSBiZWZvcmUgMTk3MC4KCj4gWyAgICA0LjEw
+NDc3OV0gQ2FsbCBUcmFjZToKPiBbICAgIDQuMTEwOTA5XSBbZWYwNDdkODBdIFtjMDAyMTMwOF0g
+cG11X2dldF90aW1lKzB4MzAvMHhjOCAodW5yZWxpYWJsZSkKPiBbICAgIDQuMTE3MjA5XSBbZWYw
+NDdkZjBdIFtjMDAyMTNlOF0gcG1hY19nZXRfcnRjX3RpbWUrMHgyOC8weDQwCj4gWyAgICA0LjEy
+MzQ3MF0gW2VmMDQ3ZTAwXSBbYzAwMGJjMDRdIHJ0Y19nZW5lcmljX2dldF90aW1lKzB4MjAvMHgz
+NAo+IFsgICAgNC4xMjk3NzBdIFtlZjA0N2UxMF0gW2MwM2FjYTM0XSBfX3J0Y19yZWFkX3RpbWUr
+MHg1Yy8weGUwCj4gWyAgICA0LjEzNjA2MF0gW2VmMDQ3ZTIwXSBbYzAzYWNhZmNdIHJ0Y19yZWFk
+X3RpbWUrMHg0NC8weDdjCj4gWyAgICA0LjE0MjM1Nl0gW2VmMDQ3ZTQwXSBbYzA2MWUwMDBdIHJ0
+Y19oY3Rvc3lzKzB4NjQvMHgxMWMKPiBbICAgIDQuMTQ4NjE2XSBbZWYwNDdlYTBdIFtjMDAwNGFh
+NF0gZG9fb25lX2luaXRjYWxsKzB4NGMvMHgxYTgKPiBbICAgIDQuMTU0ODY2XSBbZWYwNDdmMDBd
+IFtjMDYwMjJmMF0ga2VybmVsX2luaXRfZnJlZWFibGUrMHgxMmMvMHgxZjQKPiBbICAgIDQuMTYx
+MTIzXSBbZWYwNDdmMzBdIFtjMDAwNGNiNF0ga2VybmVsX2luaXQrMHgxOC8weDEzMAo+IFsgICAg
+NC4xNjczNTldIFtlZjA0N2Y0MF0gW2MwMDEyMWM0XSByZXRfZnJvbV9rZXJuZWxfdGhyZWFkKzB4
+MTQvMHgxYwo+IFsgICAgNC4xNzM2MTBdIEluc3RydWN0aW9uIGR1bXA6Cj4gWyAgICA0LjE3OTc2
+Nl0gODk0MTAwMmUgNTQ4NGMwMGUgNTUwODgwMWUgODhlMTAwMmYgN2M4NDQyMTQgNTU0YTQwMmUg
+N2M4NDUyMTQgN2M4NDNhMTQKPiBbICAgIDQuMTg2MDc2XSA3ZDI0NDgxMCA3ZDI5NDkxMCA3ZDI5
+NDhmOCA1NTI5MDdmZSA8MGYwOTAwMDA+IDNkMjA4M2RhIDgwMDEwMDc0IDM4MjEwMDcwCj4gWyAg
+ICA0LjE5MjM4OF0gLS0tWyBlbmQgdHJhY2UgMmUwMWFkOTMzN2ZlMDhmZCBdLS0tCj4gWyAgICA0
+LjE5ODY0M10gcnRjLWdlbmVyaWMgcnRjLWdlbmVyaWM6IGhjdG9zeXM6IHVuYWJsZSB0byByZWFk
+IHRoZSBoYXJkd2FyZSBjbG9jawoKVGhlIGxhc3QgbWVzc2FnZSBoZXJlIGhhcHBlbnMgZXhhY3Rs
+eSBpbiB0aGF0IGNhc2UgYXMgd2VsbDogdG1feWVhciBpcyBiZWZvcmUKMTk3MDoKCmludCBydGNf
+dmFsaWRfdG0oc3RydWN0IHJ0Y190aW1lICp0bSkKewogICAgICAgIGlmICh0bS0+dG1feWVhciA8
+IDcwCiAgICAgICAgICAgICAgICB8fCAoKHVuc2lnbmVkKXRtLT50bV9tb24pID49IDEyCiAgICAg
+ICAgICAgICAgICB8fCB0bS0+dG1fbWRheSA8IDEKICAgICAgICAgICAgICAgIHx8IHRtLT50bV9t
+ZGF5ID4gcnRjX21vbnRoX2RheXModG0tPnRtX21vbiwgdG0tPnRtX3llYXIgKyAxOTAwKQogICAg
+ICAgICAgICAgICAgfHwgKCh1bnNpZ25lZCl0bS0+dG1faG91cikgPj0gMjQKICAgICAgICAgICAg
+ICAgIHx8ICgodW5zaWduZWQpdG0tPnRtX21pbikgPj0gNjAKICAgICAgICAgICAgICAgIHx8ICgo
+dW5zaWduZWQpdG0tPnRtX3NlYykgPj0gNjApCiAgICAgICAgICAgICAgICByZXR1cm4gLUVJTlZB
+TDsKCiAgICAgICAgcmV0dXJuIDA7Cn0KClRoZSBtb3N0IGxpa2VseSBleHBsYW5hdGlvbiBJIGhh
+dmUgaGVyZSBpcyB0aGF0IHRoZSBSVEMgd2FzIGluZGVlZCBzZXQgdG8gYW4KaW5jb3JyZWN0IGRh
+dGUsIGVpdGhlciBiZWNhdXNlIG9mIGEgZGVwbGV0ZWQgYmF0dGVyeSAobm90IHVubGlrZWx5IGZv
+cgphIH4xNSB5ZWFyCm9sZCBib3gpIG9yIGJlY2F1c2UgaXQgd2FzIHByZXZpb3VzbHkgc3RvcmVk
+IGluY29ycmVjdGx5LiBZb3Ugc2F5IHRoYXQgdGhlCnRpbWUgaXMgY29ycmVjdCwgYnV0IHRoYXQg
+Y291bGQgYWxzbyBiZSB0aGUgY2FzZSBpZiB0aGUgbWFjaGluZSBpcyBjb25uZWN0ZWQgdG8KdGhl
+IG5ldHdvcmsgYW5kIHN5bmNocm9uaXplZCB1c2luZyBOVFAuIEl0IHNob3VsZCBub3QgaGF2ZSBn
+b3R0ZW4gdGhlCnRpbWUgZnJvbSB0aGUgUlRDIGFmdGVyIHRoYXQgZXJyb3IuCgpJZiB5b3UgaGF2
+ZSB0aGUgdGltZSB0byBkbyBhbm90aGVyIHRlc3QsIGNhbiB5b3UgYm9vdCB0aGUgbWFjaGluZSB3
+aXRoCml0cyBuZXR3b3JrIGRpc2Nvbm5lY3RlZCwgc2VlIGlmIHRoZSB3YXJuaW5nIHBlcnNpc3Rz
+IChpdCBtYXkgaGF2ZSBiZWVuCnJlcGFpcmVkIGFmdGVyIHRoZSBjb3JyZWN0IHRpbWUgZ290IHdy
+aXR0ZW4gaW50byB0aGUgUlRDIGR1cmluZyBzaHV0ZG93biksCndoYXQgdGhlIG91dHB1dCBvZiAn
+c3VkbyBod2Nsb2NrJyBpcywgYW5kIHdoZXRoZXIgYW55dGhpbmcgY2hhbmdlcyBhZnRlcgp5b3Ug
+c2V0IHRoZSBjb3JyZWN0IHRpbWUgdXNpbmcgJ2h3Y2xvY2sgLS1zeXN0b2hjJyBhbmQgcmVib290
+PwoKICAgICAgICAgQXJuZApfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fXwpZMjAzOCBtYWlsaW5nIGxpc3QKWTIwMzhAbGlzdHMubGluYXJvLm9yZwpodHRwczov
+L2xpc3RzLmxpbmFyby5vcmcvbWFpbG1hbi9saXN0aW5mby95MjAzOAo=
