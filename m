@@ -1,48 +1,42 @@
-From: Finn Thain <fthain@telegraphics.com.au>
-Subject: Re: [PATCH 1/3] [v2] powerpc: mac: fix rtc read/write
-	functions
-Date: Tue, 10 Jul 2018 11:18:34 +1000 (AEST)
-Message-ID: <alpine.LNX.2.21.1807101105130.12@nippy.intranet>
-References: <20180619140229.3615110-1-arnd@arndb.de>
- <CA+7wUsyN_gru4rW0y3ZzXzYwhfaA=uHKaOG=z5bprnYq6oVfMg@mail.gmail.com>
- <alpine.LRH.2.21.1807011844470.19761@math.ut.ee>
- <CAK8P3a29rNtWCcgKeJK57C5CPPi74wc1o1cnPJM=Qe+eMKFYjw@mail.gmail.com>
+From: "Kord" <rpkw5735-RuTGJwh49Ls+Va1GwOuvDg@public.gmane.org>
+Subject: =?windows-1251?B?W3J1YWJdIFJlOiAoMikgbGludXgtcGNpQHZn?=
+ =?windows-1251?B?ZXIua2VybmVsLm9yZyBUaGUgYmFzZSBvZiBi?=
+ =?windows-1251?B?dXNpbmVzc21lbiBmcm9tIGFsbCBvdmVyIHRo?=
+ =?windows-1251?B?ZSB3b3JsZC4gLyDB4OfgIOHo5+3l8ezl7e7i?=
+ =?windows-1251?B?IPHuIOLx5ePuIMzo8OAu?=
+Date: Mon, 16 Jul 2018 17:32:03 +0400
+Message-ID: <6D68DE8D86527F5C8085CC3BBFFF8971@netvigator.com>
+Reply-To: Kord <lauravinet-1tsiiZ//OF9QFI55V6+gNQ@public.gmane.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
+Content-Type: text/plain; charset="cp1251"
 Content-Transfer-Encoding: base64
-Return-path: <y2038-bounces@lists.linaro.org>
-In-Reply-To: <CAK8P3a29rNtWCcgKeJK57C5CPPi74wc1o1cnPJM=Qe+eMKFYjw@mail.gmail.com>
-List-Unsubscribe: <https://lists.linaro.org/mailman/options/y2038>,
- <mailto:y2038-request@lists.linaro.org?subject=unsubscribe>
-List-Archive: <http://lists.linaro.org/pipermail/y2038/>
-List-Post: <mailto:y2038@lists.linaro.org>
-List-Help: <mailto:y2038-request@lists.linaro.org?subject=help>
-List-Subscribe: <https://lists.linaro.org/mailman/listinfo/y2038>,
- <mailto:y2038-request@lists.linaro.org?subject=subscribe>
-Errors-To: y2038-bounces@lists.linaro.org
-Sender: "Y2038" <y2038-bounces@lists.linaro.org>
-To: Arnd Bergmann <arnd@arndb.de>
-Cc: linux-m68k@vger.kernel.org, Mathieu Malaterre <malat@debian.org>, Michael Ellerman <mpe@ellerman.id.au>, Meelis Roos <mroos@linux.ee>, LKML <linux-kernel@vger.kernel.org>, y2038 Mailman List <y2038@lists.linaro.org>, Paul Mackerras <paulus@samba.org>, Benjamin Herrenschmidt <benh@kernel.crashing.org>, Andreas Schwab <schwab@linux-m68k.org>, Geert Uytterhoeven <geert@linux-m68k.org>, linuxppc-dev <linuxppc-dev@lists.ozlabs.org>, Greg Ungerer <gerg@linux-m68k.org>, Joshua Thompson <funaho@jurai.org>
+Return-path: <linux-nvdimm-bounces-hn68Rpc1hR1g9hUCZPvPmw@public.gmane.org>
+List-Unsubscribe: <https://lists.01.org/mailman/options/linux-nvdimm>,
+ <mailto:linux-nvdimm-request-hn68Rpc1hR1g9hUCZPvPmw@public.gmane.org?subject=unsubscribe>
+List-Archive: <http://lists.01.org/pipermail/linux-nvdimm/>
+List-Post: <mailto:linux-nvdimm-hn68Rpc1hR1g9hUCZPvPmw@public.gmane.org>
+List-Help: <mailto:linux-nvdimm-request-hn68Rpc1hR1g9hUCZPvPmw@public.gmane.org?subject=help>
+List-Subscribe: <https://lists.01.org/mailman/listinfo/linux-nvdimm>,
+ <mailto:linux-nvdimm-request-hn68Rpc1hR1g9hUCZPvPmw@public.gmane.org?subject=subscribe>
+Errors-To: linux-nvdimm-bounces-hn68Rpc1hR1g9hUCZPvPmw@public.gmane.org
+Sender: "Linux-nvdimm" <linux-nvdimm-bounces-hn68Rpc1hR1g9hUCZPvPmw@public.gmane.org>
+To: linux-pci-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-pci-jyMamyUUXNJG4ohzP4jBZS1Fcj925eT/@public.gmane.org, linux-parisc-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-omap-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-nvdimm-hn68Rpc1hR1g9hUCZPvPmw@public.gmane.org, linux-numa-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-ntb-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org, linux-nfs-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, public-linux-nfs-u79uwxl29ty76z2rm5mhxa-wOFGN7rlS/M9smdsby/KFg@public.gmane.org, linux-nfc-hn68Rpc1hR1g9hUCZPvPmw@public.gmane.org, linux-mac68k-/52nH5gJgTCRv+LV9MX5uipxlwaOVQ5f@public.gmane.org, linux-m68k-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-m68k-digest-OTeZEUNBIkde4xh82S9ftw@public.gmane.org, linux-lvm-H+wXaHxf7aLQT0dZR+AlfA@public.gmane.org, linux-leds-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
 List-Id: linux-m68k@vger.kernel.org
 
-T24gTW9uLCA5IEp1bCAyMDE4LCBBcm5kIEJlcmdtYW5uIHdyb3RlOgoKPiAKPiBUaGUgbW9zdCBs
-aWtlbHkgZXhwbGFuYXRpb24gSSBoYXZlIGhlcmUgaXMgdGhhdCB0aGUgUlRDIHdhcyBpbmRlZWQg
-c2V0IAo+IHRvIGFuIGluY29ycmVjdCBkYXRlLCBlaXRoZXIgYmVjYXVzZSBvZiBhIGRlcGxldGVk
-IGJhdHRlcnkgKG5vdCB1bmxpa2VseSAKPiBmb3IgYSB+MTUgeWVhciBvbGQgYm94KSBvciBiZWNh
-dXNlIGl0IHdhcyBwcmV2aW91c2x5IHN0b3JlZCBpbmNvcnJlY3RseS4KClRoZSBQb3dlck1hYyBz
-dG9yZXMgdGhlIEdNVCBvZmZzZXQgaW4gTlZSQU0sIGFuZCB0aGlzIGdldHMgdXNlZCB0byAKaW5p
-dGlhbGl6ZSB0aW1lem9uZV9vZmZzZXQuCgpJZiB0aW1lem9uZV9vZmZzZXQgd2FzIG5lZ2F0aXZl
-IGFuZCBub3cudHZfc2VjIHdhcyB6ZXJvLCBJIHRoaW5rIHRoaXMgCmNvdWxkIHN0b3JlIGEgMTk2
-OSBkYXRlIGluIHRoZSBSVEM6CgppbnQgdXBkYXRlX3BlcnNpc3RlbnRfY2xvY2s2NChzdHJ1Y3Qg
-dGltZXNwZWM2NCBub3cpCnsKICAgICAgICBzdHJ1Y3QgcnRjX3RpbWUgdG07CgogICAgICAgIGlm
-ICghcHBjX21kLnNldF9ydGNfdGltZSkKICAgICAgICAgICAgICAgIHJldHVybiAtRU5PREVWOwoK
-ICAgICAgICBydGNfdGltZTY0X3RvX3RtKG5vdy50dl9zZWMgKyAxICsgdGltZXpvbmVfb2Zmc2V0
-LCAmdG0pOwoKICAgICAgICByZXR1cm4gcHBjX21kLnNldF9ydGNfdGltZSgmdG0pOwp9CgpCdXQg
-bWF5YmUgbm93LnR2X3NlYyBjYW4gYmUgc2hvd24gdG8gYmUgZ3JlYXRlciB0aGFuIHRpbWV6b25l
-X29mZnNldC4KClRoZW4sIHdoYXQgd291bGQgaGFwcGVuIHdoZW4gdGhlIHRpbWV6b25lIGluIC9l
-dGMvbG9jYWx0aW1lIGRpc2FncmVlcyB3aXRoIAp0aGUgdGltZXpvbmVfb2Zmc2V0IHN0b3JlZCBp
-biBOVlJBTSAoUFJBTSk/CgpCZXNpZGVzIHRoYXQsIGlmIHRoZSBiYXR0ZXJ5IHdlbnQgZmxhdCwg
-d2hhdCB1c2UgaXMgYSBiYWNrdHJhY2U/IFdoeSBub3QgCnNjcmFwIHRoZSBXQVJOX09OKCk/Cgot
-LSAKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KWTIwMzgg
-bWFpbGluZyBsaXN0ClkyMDM4QGxpc3RzLmxpbmFyby5vcmcKaHR0cHM6Ly9saXN0cy5saW5hcm8u
-b3JnL21haWxtYW4vbGlzdGluZm8veTIwMzgK
+T25seSBmb3IgeW91IGxpbnV4LXBjaUB2Z2VyLmtlcm5lbC5vcmdbbmhtbmhdIApBbmQgb25seSB3
+ZSBoYXZlIG9ubHkgYSBmZXcgZGF5cyFbbXF4cHR4aGVdIApBIHVuaXF1ZSBiYXNlIG9mIGJ1c2lu
+ZXNzbWVuIGZyb20gMTcwIGNvdW50cmllcyBvZiB0aGUgd29ybGRbZXpqaHNyY2ddIAphdCBhIHN5
+bWJvbGljIHByaWNlIG9mIG9ubHkgJDUwMCArIGJhcmdhaW5pbmcuW3N0a2FwcW9dIApUaGUgZGF0
+YWJhc2UgY29udGFpbnMgMjU1IG1pbGxpb24gZS1tYWlsIGFkZHJlc3Nlcy5beXp1ZmR5XQpXcml0
+ZSB0byB1cy4gV2UgYWdyZWUuIGFuZHJleTEwMDA3N0BnbWFpbC5jb20gW254cm9rXSAKV2l0aCBy
+ZXNwZWN0IHRvIHlvdS5bbHNpaHR5XSAKQnVzaW5lc3MgZ3JvdXBzLiBbeXRwaGd2XSAKW3JxaWZ1
+d2FvXSAKW3hrbGJqXSAK0u7r/OruIOTr/yDC4PEgbGludXgtcGNpQHZnZXIua2VybmVsLm9yZyBb
+ZGZrcWddIArIIPLu6/zq7iDzIO3g8SDoIPLu6/zq7iDt5fHq7uv86u4g5O3l6SFbZnlwZGNwXSAK
+0+3o6uDr/O3g/yDh4OfgIOHo5+3l8ezl7e7iIPHuIDE3MCDx8vDg7SDM6PDgW25uaWV2c25dIArv
+7iDx6Ozi7uvo9+Xx6u7pIPbl7eUg4vHl4+4g5+AgJDUwMCArIPLu8OMuW2RvcnFpXSAKweDn4CDx
+7uTl8Obo8iAyNTXs6Ovr6O7t7uIgZS1tYWlsIODk8OXx7uIuW3NvY25qXQrP6Pjo8uUg7eDsLiDE
+7uPu4u7w6Ozx/y4gYW5kcmV5MTAwMDc3QGdtYWlsLmNvbVtmeHpncm1dIArRIPPi4Obl7ejl7CDq
+IMLg7C5bYWltYmF3bF0gCsHo5+3l8SDj8PPv7y5bZm5yeGFwc10gIApfX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpMaW51eC1udmRpbW0gbWFpbGluZyBsaXN0
+CkxpbnV4LW52ZGltbUBsaXN0cy4wMS5vcmcKaHR0cHM6Ly9saXN0cy4wMS5vcmcvbWFpbG1hbi9s
+aXN0aW5mby9saW51eC1udmRpbW0K
