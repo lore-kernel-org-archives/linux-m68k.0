@@ -1,42 +1,48 @@
-From: "Kord" <rpkw5735-RuTGJwh49Ls+Va1GwOuvDg@public.gmane.org>
-Subject: =?windows-1251?B?W3J1YWJdIFJlOiAoMikgbGludXgtcGNpQHZn?=
- =?windows-1251?B?ZXIua2VybmVsLm9yZyBUaGUgYmFzZSBvZiBi?=
- =?windows-1251?B?dXNpbmVzc21lbiBmcm9tIGFsbCBvdmVyIHRo?=
- =?windows-1251?B?ZSB3b3JsZC4gLyDB4OfgIOHo5+3l8ezl7e7i?=
- =?windows-1251?B?IPHuIOLx5ePuIMzo8OAu?=
-Date: Mon, 16 Jul 2018 17:32:03 +0400
-Message-ID: <6D68DE8D86527F5C8085CC3BBFFF8971@netvigator.com>
-Reply-To: Kord <lauravinet-1tsiiZ//OF9QFI55V6+gNQ@public.gmane.org>
+From: John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
+Subject: strip is running out of memory on m68k (Haskell)
+Date: Tue, 31 Jul 2018 14:42:23 +0200
+Message-ID: <26510258-0207-9e43-0815-f6a56b8f38c3@physik.fu-berlin.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="cp1251"
-Content-Transfer-Encoding: base64
-Return-path: <linux-nvdimm-bounces-hn68Rpc1hR1g9hUCZPvPmw@public.gmane.org>
-List-Unsubscribe: <https://lists.01.org/mailman/options/linux-nvdimm>,
- <mailto:linux-nvdimm-request-hn68Rpc1hR1g9hUCZPvPmw@public.gmane.org?subject=unsubscribe>
-List-Archive: <http://lists.01.org/pipermail/linux-nvdimm/>
-List-Post: <mailto:linux-nvdimm-hn68Rpc1hR1g9hUCZPvPmw@public.gmane.org>
-List-Help: <mailto:linux-nvdimm-request-hn68Rpc1hR1g9hUCZPvPmw@public.gmane.org?subject=help>
-List-Subscribe: <https://lists.01.org/mailman/listinfo/linux-nvdimm>,
- <mailto:linux-nvdimm-request-hn68Rpc1hR1g9hUCZPvPmw@public.gmane.org?subject=subscribe>
-Errors-To: linux-nvdimm-bounces-hn68Rpc1hR1g9hUCZPvPmw@public.gmane.org
-Sender: "Linux-nvdimm" <linux-nvdimm-bounces-hn68Rpc1hR1g9hUCZPvPmw@public.gmane.org>
-To: linux-pci-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-pci-jyMamyUUXNJG4ohzP4jBZS1Fcj925eT/@public.gmane.org, linux-parisc-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-omap-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-nvdimm-hn68Rpc1hR1g9hUCZPvPmw@public.gmane.org, linux-numa-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-ntb-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org, linux-nfs-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, public-linux-nfs-u79uwxl29ty76z2rm5mhxa-wOFGN7rlS/M9smdsby/KFg@public.gmane.org, linux-nfc-hn68Rpc1hR1g9hUCZPvPmw@public.gmane.org, linux-mac68k-/52nH5gJgTCRv+LV9MX5uipxlwaOVQ5f@public.gmane.org, linux-m68k-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-m68k-digest-OTeZEUNBIkde4xh82S9ftw@public.gmane.org, linux-lvm-H+wXaHxf7aLQT0dZR+AlfA@public.gmane.org, linux-leds-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
+Return-path: <bounce-debian-68k=debian-68k=m.gmane.org@lists.debian.org>
+Content-Language: en-US
+Resent-Message-ID: <NnWZMLMKR_B.A.qYF.ClFYbB@bendel>
+List-URL: <https://lists.debian.org/debian-68k/>
+List-Post: <mailto:debian-68k@lists.debian.org>
+List-Help: <mailto:debian-68k-request@lists.debian.org?subject=help>
+List-Subscribe: <mailto:debian-68k-request@lists.debian.org?subject=subscribe>
+List-Unsubscribe: <mailto:debian-68k-request@lists.debian.org?subject=unsubscribe>
+List-Archive: https://lists.debian.org/msgid-search/26510258-0207-9e43-0815-f6a56b8f38c3@physik.fu-berlin.de
+To: Debian m68k <debian-68k@lists.debian.org>
+Cc: Linux/m68k <linux-m68k@vger.kernel.org>
 List-Id: linux-m68k@vger.kernel.org
 
-T25seSBmb3IgeW91IGxpbnV4LXBjaUB2Z2VyLmtlcm5lbC5vcmdbbmhtbmhdIApBbmQgb25seSB3
-ZSBoYXZlIG9ubHkgYSBmZXcgZGF5cyFbbXF4cHR4aGVdIApBIHVuaXF1ZSBiYXNlIG9mIGJ1c2lu
-ZXNzbWVuIGZyb20gMTcwIGNvdW50cmllcyBvZiB0aGUgd29ybGRbZXpqaHNyY2ddIAphdCBhIHN5
-bWJvbGljIHByaWNlIG9mIG9ubHkgJDUwMCArIGJhcmdhaW5pbmcuW3N0a2FwcW9dIApUaGUgZGF0
-YWJhc2UgY29udGFpbnMgMjU1IG1pbGxpb24gZS1tYWlsIGFkZHJlc3Nlcy5beXp1ZmR5XQpXcml0
-ZSB0byB1cy4gV2UgYWdyZWUuIGFuZHJleTEwMDA3N0BnbWFpbC5jb20gW254cm9rXSAKV2l0aCBy
-ZXNwZWN0IHRvIHlvdS5bbHNpaHR5XSAKQnVzaW5lc3MgZ3JvdXBzLiBbeXRwaGd2XSAKW3JxaWZ1
-d2FvXSAKW3hrbGJqXSAK0u7r/OruIOTr/yDC4PEgbGludXgtcGNpQHZnZXIua2VybmVsLm9yZyBb
-ZGZrcWddIArIIPLu6/zq7iDzIO3g8SDoIPLu6/zq7iDt5fHq7uv86u4g5O3l6SFbZnlwZGNwXSAK
-0+3o6uDr/O3g/yDh4OfgIOHo5+3l8ezl7e7iIPHuIDE3MCDx8vDg7SDM6PDgW25uaWV2c25dIArv
-7iDx6Ozi7uvo9+Xx6u7pIPbl7eUg4vHl4+4g5+AgJDUwMCArIPLu8OMuW2RvcnFpXSAKweDn4CDx
-7uTl8Obo8iAyNTXs6Ovr6O7t7uIgZS1tYWlsIODk8OXx7uIuW3NvY25qXQrP6Pjo8uUg7eDsLiDE
-7uPu4u7w6Ozx/y4gYW5kcmV5MTAwMDc3QGdtYWlsLmNvbVtmeHpncm1dIArRIPPi4Obl7ejl7CDq
-IMLg7C5bYWltYmF3bF0gCsHo5+3l8SDj8PPv7y5bZm5yeGFwc10gIApfX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpMaW51eC1udmRpbW0gbWFpbGluZyBsaXN0
-CkxpbnV4LW52ZGltbUBsaXN0cy4wMS5vcmcKaHR0cHM6Ly9saXN0cy4wMS5vcmcvbWFpbG1hbi9s
-aXN0aW5mby9saW51eC1udmRpbW0K
+Hi!
+
+We have recently made lots of progress fixing bugs on m68k both in various
+as well as QEMU. This has lead to the list of successfully built packages
+to over 11.500 - Debian/m68k never built so many packages before.
+
+Now, there are a few things that still need to work and one of them is
+binutils' strip command which is bailing out for a very low number of
+Haskell packages [1]:
+
+debian/hlibrary.setup copy --builddir=dist-ghc --destdir=debian/tmp-inst-ghc
+Installing library in debian/tmp-inst-ghc/usr/lib/haskell-packages/ghc/lib/m68k-linux-ghc-8.2.2/criterion-1.3.0.0-CVIsDHnXrrBAzasYPdPd4j
+Installing executable criterion-report in debian/tmp-inst-ghc/usr/bin
+Warning: The directory debian/tmp-inst-ghc/usr/bin is not in the system search
+path.
+/usr/bin/strip:debian/tmp-inst-ghc/usr/bin/criterion-report: memory exhausted
+make: *** [/usr/share/cdbs/1/class/hlibrary.mk:188: debian/tmp-inst-ghc] Error 1
+dpkg-buildpackage: error: fakeroot debian/rules binary-arch subprocess returned exit status 2
+
+Since I don't think that we have any actual memory limitations on qemu-user (as
+compared to qemu-system), this issue might be a result of strip having a hardwired
+maximum buffer size for stripping binaries.
+
+Does anyone know more? If yes, could we patch strip to allow larger binaries?
+
+Adrian
+
+> [1] https://buildd.debian.org/status/fetch.php?pkg=haskell-criterion&arch=m68k&ver=1.3.0.0-1&stamp=1533028852&raw=0
