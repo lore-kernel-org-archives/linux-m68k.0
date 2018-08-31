@@ -1,7 +1,7 @@
-From: "H. Peter Anvin" <hpa@zytor.com>
+From: Nick Desaulniers <ndesaulniers@google.com>
 Subject: Re: [PATCH] treewide: remove current_text_addr
-Date: Mon, 27 Aug 2018 06:33:27 -0700
-Message-ID: <4d1a8f35-e2fc-70d2-ca0e-44b8574c86f1@zytor.com>
+Date: Fri, 31 Aug 2018 09:48:56 -0700
+Message-ID: <CAKwvOdmXhRZJ5bQw+W0Ro+oeWSTRJzG1UAJnjyjciR1JFs+ubA@mail.gmail.com>
 References: <20180821202900.208417-1-ndesaulniers@google.com>
  <207784db-4fcc-85e7-a0b2-fec26b7dab81@gmx.de>
  <c62e4e00-fb8f-19a6-f3eb-bde60118cb1a@zytor.com>
@@ -13,12 +13,12 @@ References: <20180821202900.208417-1-ndesaulniers@google.com>
  <20180827073358.GV24124@hirez.programming.kicks-ass.net>
  <f9896d68-4a49-e666-cea5-a9c0522f1658@zytor.com>
  <20180827131103.GD24124@hirez.programming.kicks-ass.net>
+ <4d1a8f35-e2fc-70d2-ca0e-44b8574c86f1@zytor.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <linux-snps-arc-bounces+gla-linux-snps-arc=m.gmane.org@lists.infradead.org>
-In-Reply-To: <20180827131103.GD24124@hirez.programming.kicks-ass.net>
-Content-Language: en-US
+In-Reply-To: <4d1a8f35-e2fc-70d2-ca0e-44b8574c86f1@zytor.com>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-snps-arc>,
  <mailto:linux-snps-arc-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-snps-arc/>
@@ -28,38 +28,48 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-snps-arc>,
  <mailto:linux-snps-arc-request@lists.infradead.org?subject=subscribe>
 Sender: "linux-snps-arc" <linux-snps-arc-bounces@lists.infradead.org>
 Errors-To: linux-snps-arc-bounces+gla-linux-snps-arc=m.gmane.org@lists.infradead.org
-To: Peter Zijlstra <peterz@infradead.org>
-Cc: nicolas.pitre@linaro.org, linux-mips@linux-mips.org, linux-sh@vger.kernel.org, benh@kernel.crashing.org, Will Deacon <will.deacon@arm.com>, paulus@samba.org, mpe@ellerman.id.au, jejb@parisc-linux.org, Geert Uytterhoeven <geert@linux-m68k.org>, Catalin Marinas <catalin.marinas@arm.com>, gor@linux.vnet.ibm.com, mattst88@gmail.com, uclinux-h8-devel@lists.sourceforge.jp, Marc Zyngier <marc.zyngier@arm.com>, linuxram@us.ibm.com, linux-um@lists.infradead.org, Nicholas Piggin <npiggin@gmail.com>, luto@kernel.org, shannon.nelson@oracle.com, Thomas Gleixner <tglx@linutronix.de>, alex.bennee@linaro.org, rth@twiddle.net, jkosina@suse.cz, Nick Desaulniers <ndesaulniers@google.com>, LKML <linux-kernel@vger.kernel.org>, ralf@linux-mips.org, rkuo@codeaurora.org, paul.burton@mips.com, aneesh.kumar@linux.vnet.ibm.com, Greg KH <gregkh@linuxfoundation.org>, Andrew Morton <akpm@linux-found>
+To: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: Nicolas Pitre <nicolas.pitre@linaro.org>, linux-mips@linux-mips.org, linux-sh@vger.kernel.org, benh@kernel.crashing.org, Will Deacon <will.deacon@arm.com>, paulus@samba.org, mpe@ellerman.id.au, jejb@parisc-linux.org, Geert Uytterhoeven <geert@linux-m68k.org>, Catalin Marinas <catalin.marinas@arm.com>, gor@linux.vnet.ibm.com, Matt Turner <mattst88@gmail.com>, uclinux-h8-devel@lists.sourceforge.jp, Marc Zyngier <marc.zyngier@arm.com>, linuxram@us.ibm.com, linux-um@lists.infradead.org, Nicholas Piggin <npiggin@gmail.com>, luto@kernel.org, shannon.nelson@oracle.com, Thomas Gleixner <tglx@linutronix.de>, =?UTF-8?B?QWxleCBCZW5uw6ll?= <alex.bennee@linaro.org>, rth@twiddle.net, jkosina@suse.cz, LKML <linux-kernel@vger.kernel.org>, ralf@linux-mips.org, rkuo@codeaurora.org, paul.burton@mips.com, aneesh.kumar@linux.vnet.ibm.com, Greg KH <gregkh@linuxfoundation.org>, Andrew
 List-Id: linux-m68k@vger.kernel.org
 
-On 08/27/18 06:11, Peter Zijlstra wrote:
-> On Mon, Aug 27, 2018 at 05:26:53AM -0700, H. Peter Anvin wrote:
-> 
->> _THIS_IP_, however, is completely ill-defined, other than being an
->> address *somewhere* in the same global function (not even necessarily
->> the same function if the function is static!)  As my experiment show, in
->> many (nearly) cases gcc will hoist the address all the way to the top of
->> the function, at least for the current generic implementation.
-> 
-> It seems to have mostly worked so far... did anything change?
-> 
+On Mon, Aug 27, 2018 at 6:34 AM H. Peter Anvin <hpa@zytor.com> wrote:
+>
+> On 08/27/18 06:11, Peter Zijlstra wrote:
+> > On Mon, Aug 27, 2018 at 05:26:53AM -0700, H. Peter Anvin wrote:
+> >
+> >> _THIS_IP_, however, is completely ill-defined, other than being an
+> >> address *somewhere* in the same global function (not even necessarily
+> >> the same function if the function is static!)  As my experiment show, in
+> >> many (nearly) cases gcc will hoist the address all the way to the top of
+> >> the function, at least for the current generic implementation.
+> >
+> > It seems to have mostly worked so far... did anything change?
+> >
+>
+> Most likely because the major architectures contain a arch-specific
+> assembly implementation.  The generic implementation used in some places
+> is completely broken, as my experiments show.
+>
+> >> For the case where _THIS_IP_ is passed to an out-of-line function in all
+> >> cases, it is extra pointless because all it does is increase the
+> >> footprint of every caller: _RET_IP_ is inherently passed to the function
+> >> anyway, and with tailcall protection it will uniquely identify a callsite.
+> >
+> > So I think we can convert many of the lockdep _THIS_IP_ calls to
+> > _RET_IP_ on the other side, with a wee bit of care.
+> >
+> > A little something like so perhaps...
+>
+> I don't have time to look at this right now (I'm on sabbatical, and I'm
+> dealing with personal legal stuff right at the moment), but I think it
+> is the right direction.
+>
+>         -hpa
 
-Most likely because the major architectures contain a arch-specific
-assembly implementation.  The generic implementation used in some places
-is completely broken, as my experiments show.
+Linus,
+Can this patch please be merged?  Then we can polish off Peter's
+change to lockdep to not even use _THIS_IP_.
 
->> For the case where _THIS_IP_ is passed to an out-of-line function in all
->> cases, it is extra pointless because all it does is increase the
->> footprint of every caller: _RET_IP_ is inherently passed to the function
->> anyway, and with tailcall protection it will uniquely identify a callsite.
-> 
-> So I think we can convert many of the lockdep _THIS_IP_ calls to
-> _RET_IP_ on the other side, with a wee bit of care.
-> 
-> A little something like so perhaps...
-
-I don't have time to look at this right now (I'm on sabbatical, and I'm
-dealing with personal legal stuff right at the moment), but I think it
-is the right direction.
-
-	-hpa
+-- 
+Thanks,
+~Nick Desaulniers
