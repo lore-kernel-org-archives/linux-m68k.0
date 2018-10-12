@@ -1,93 +1,46 @@
-From: Mike Rapoport <rppt@linux.vnet.ibm.com>
-Subject: Re: [PATCH] memblock: stop using implicit alignement to
- SMP_CACHE_BYTES
-Date: Thu, 11 Oct 2018 09:08:50 +0300
-Message-ID: <20181011060850.GA19822@rapoport-lnx>
-References: <1538687224-17535-1-git-send-email-rppt@linux.vnet.ibm.com>
- <20181005151934.87226fa92825c3002a475413@linux-foundation.org>
+From: Julia Lawall <julia.lawall@lip6.fr>
+Subject: Re: [PATCH v2 1/2] treewide: remove unused address argument from
+ pte_alloc functions
+Date: Fri, 12 Oct 2018 18:38:57 +0200 (CEST)
+Message-ID: <alpine.DEB.2.20.1810121838180.4366@hadrien>
+References: <20181012013756.11285-1-joel@joelfernandes.org>
+ <594fc952-5e87-3162-b2f9-963479d16eb3@kot-begemot.co.uk>
+ <20181012163433.GA223066@joelaf.mtv.corp.google.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <20181005151934.87226fa92825c3002a475413@linux-foundation.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Andrew Morton <akpm@linux-foundation.org>
-Cc: linux-mm@kvack.org, Catalin Marinas <catalin.marinas@arm.com>, Chris Zankel <chris@zankel.net>, Geert Uytterhoeven <geert@linux-m68k.org>, Guan Xuetao <gxt@pku.edu.cn>, Ingo Molnar <mingo@redhat.com>, Matt Turner <mattst88@gmail.com>, Michael Ellerman <mpe@ellerman.id.au>, Michal Hocko <mhocko@suse.com>, Michal Simek <monstr@monstr.eu>, Paul Burton <paul.burton@mips.com>, Richard Weinberger <richard@nod.at>, Russell King <linux@armlinux.org.uk>, Thomas Gleixner <tglx@linutronix.de>, Tony Luck <tony.luck@intel.com>, linux-alpha@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-ia64@vger.kernel.org, linux-kernel@vger.kernel.org, linux-m68k@vger.kernel.org, linux-mips@linux-mips.org, linuxppc-dev@lists.ozlabs.org, linux-um@lists.infradead.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-snps-arc-bounces+gla-linux-snps-arc=m.gmane.org@lists.infradead.org>
+In-Reply-To: <20181012163433.GA223066@joelaf.mtv.corp.google.com>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-snps-arc>,
+ <mailto:linux-snps-arc-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-snps-arc/>
+List-Post: <mailto:linux-snps-arc@lists.infradead.org>
+List-Help: <mailto:linux-snps-arc-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-snps-arc>,
+ <mailto:linux-snps-arc-request@lists.infradead.org?subject=subscribe>
+Sender: "linux-snps-arc" <linux-snps-arc-bounces@lists.infradead.org>
+Errors-To: linux-snps-arc-bounces+gla-linux-snps-arc=m.gmane.org@lists.infradead.org
+To: Joel Fernandes <joel@joelfernandes.org>
+Cc: linux-mips@linux-mips.org, linux-m68k@vger.kernel.org, Rich Felker <dalias@libc.org>, linux-ia64@vger.kernel.org, linux-sh@vger.kernel.org, Peter Zijlstra <peterz@infradead.org>, Catalin Marinas <catalin.marinas@arm.com>, Dave Hansen <dave.hansen@linux.intel.com>, Will Deacon <will.deacon@arm.com>, Michal Hocko <mhocko@kernel.org>, linux-mm@kvack.org, lokeshgidra@google.com, sparclinux@vger.kernel.org, linux-riscv@lists.infradead.org, elfring@users.sourceforge.net, Jonas Bonn <jonas@southpole.se>, linux-s390@vger.kernel.org, dancol@google.com, Yoshinori Sato <ysato@users.sourceforge.jp>, Max Filippov <jcmvbkbc@gmail.com>, linux-hexagon@vger.kernel.org, Helge Deller <deller@gmx.de>, "maintainer:X86 ARCHITECTURE 32-BIT AND 64-BIT" <x86@kernel.org>, hughd@google.com, "James E.J. Bottomley" <jejb@parisc-linux.org>, kasan-dev@googlegroups.com, Anton Ivanov <anton.ivanov@kot-b>
 List-Id: linux-m68k@vger.kernel.org
 
-On Fri, Oct 05, 2018 at 03:19:34PM -0700, Andrew Morton wrote:
-> On Fri,  5 Oct 2018 00:07:04 +0300 Mike Rapoport <rppt@linux.vnet.ibm.com> wrote:
-> 
-> > When a memblock allocation APIs are called with align = 0, the alignment is
-> > implicitly set to SMP_CACHE_BYTES.
-> > 
-> > Replace all such uses of memblock APIs with the 'align' parameter explicitly
-> > set to SMP_CACHE_BYTES and stop implicit alignment assignment in the
-> > memblock internal allocation functions.
-> > 
-> > For the case when memblock APIs are used via helper functions, e.g. like
-> > iommu_arena_new_node() in Alpha, the helper functions were detected with
-> > Coccinelle's help and then manually examined and updated where appropriate.
-> > 
-> > ...
-> >
-> > --- a/mm/memblock.c
-> > +++ b/mm/memblock.c
-> > @@ -1298,9 +1298,6 @@ static phys_addr_t __init memblock_alloc_range_nid(phys_addr_t size,
-> >  {
-> >  	phys_addr_t found;
-> >  
-> > -	if (!align)
-> > -		align = SMP_CACHE_BYTES;
-> > -
-> 
-> Can we add a WARN_ON_ONCE(!align) here?  To catch unconverted code
-> which sneaks in later on.
+> I wrote something like this as below but it failed to compile, Julia any
+> suggestions on how to express this?
+>
+> @pte_alloc_func_proto depends on patch exists@
+> type T1, T2, T3, T4;
+> identifier fn =~
+> "^(__pte_alloc|pte_alloc_one|pte_alloc|__pte_alloc_kernel|pte_alloc_one_kernel)$";
+> @@
+>
+> (
+> - T3 fn(T1, T2);
+> + T3 fn(T1);
+> |
+> - T3 fn(T1, T2, T4);
+> + T3 fn(T1, T2);
+> )
 
-Here it goes:
+What goes wrong?  It seems fine to me.
 
->From baec825c58e8bc11371433d3a4b20b2216877a50 Mon Sep 17 00:00:00 2001
-From: Mike Rapoport <rppt@linux.vnet.ibm.com>
-Date: Mon, 8 Oct 2018 11:22:10 +0300
-Subject: [PATCH] memblock: warn if zero alignment was requested
-
-After update of all memblock users to explicitly specify SMP_CACHE_BYTES
-alignment rather than use 0, it is still possible that uncovered users
-may sneak in. Add a WARN_ON_ONCE for such cases.
-
-Signed-off-by: Mike Rapoport <rppt@linux.vnet.ibm.com>
----
- mm/memblock.c | 6 ++++++
- 1 file changed, 6 insertions(+)
-
-diff --git a/mm/memblock.c b/mm/memblock.c
-index 0bbae56..5fefc70 100644
---- a/mm/memblock.c
-+++ b/mm/memblock.c
-@@ -1298,6 +1298,9 @@ static phys_addr_t __init memblock_alloc_range_nid(phys_addr_t size,
- {
- 	phys_addr_t found;
- 
-+	if (WARN_ON_ONCE(!align))
-+		align = SMP_CACHE_BYTES;
-+
- 	found = memblock_find_in_range_node(size, align, start, end, nid,
- 					    flags);
- 	if (found && !memblock_reserve(found, size)) {
-@@ -1420,6 +1423,9 @@ static void * __init memblock_alloc_internal(
- 	if (WARN_ON_ONCE(slab_is_available()))
- 		return kzalloc_node(size, GFP_NOWAIT, nid);
- 
-+	if (WARN_ON_ONCE(!align))
-+		align = SMP_CACHE_BYTES;
-+
- 	if (max_addr > memblock.current_limit)
- 		max_addr = memblock.current_limit;
- again:
--- 
-2.7.4
-
-
--- 
-Sincerely yours,
-Mike.
+julia
