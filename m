@@ -1,46 +1,47 @@
-From: Michael Schmitz <schmitzmic@gmail.com>
-Subject: Re: [PATCH net-next] Amiga PCMCIA 100 MBit card support
-Date: Fri, 4 Jan 2019 13:41:36 +1300
-Message-ID: <201e7069-a8c3-191f-501a-44fc6c46ae94@gmail.com>
-References: <20181219222427.GA78871@MacBook.fritz.box>
- <20181220.161053.1268735869147094096.davem@davemloft.net>
- <2a960bfa-000a-eb14-814b-476da5c1f5df@gmail.com>
- <20181228.124330.1798799446491889384.davem@davemloft.net>
- <6b725e37-4223-cef8-5430-aa05ddafb551@gmail.com>
- <20181231104725.GA3239@lunn.ch>
+From: Thomas Gleixner <tglx@linutronix.de>
+Subject: Re: [v4,1/9] net-next: phy: new Asix Electronics PHY driver
+Date: Fri, 18 Jan 2019 11:22:39 +0100 (CET)
+Message-ID: <alpine.DEB.2.21.1901181121101.1647@nanos.tec.linutronix.de>
+References: <1524103526-12240-2-git-send-email-schmitzmic@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Return-path: <netdev-owner@vger.kernel.org>
-In-Reply-To: <20181231104725.GA3239@lunn.ch>
-Content-Language: en-US
-Sender: netdev-owner@vger.kernel.org
-To: Andrew Lunn <andrew@lunn.ch>
-Cc: David Miller <davem@davemloft.net>, alex@kazik.de, netdev@vger.kernel.org, linux-m68k@vger.kernel.org, rolf.anders@physik.uni-augsburg.de
+Content-Type: text/plain; charset=US-ASCII
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <1524103526-12240-2-git-send-email-schmitzmic@gmail.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Michael Schmitz <schmitzmic@gmail.com>
+Cc: netdev@vger.kernel.org, andrew@lunn.ch, fthain@telegraphics.com.au, geert@linux-m68k.org, f.fainelli@gmail.com, linux-m68k@vger.kernel.org, Michael.Karcher@fu-berlin.de, LKML <linux-kernel@vger.kernel.org>, Greg KH <gregkh@linuxfoundation.org>, Kate Stewart <kstewart@linuxfoundation.org>
 List-Id: linux-m68k@vger.kernel.org
 
-Hi Andrew,
+Michael,
 
-On 31/12/18 11:47 PM, Andrew Lunn wrote:
->>> Having so many front end drivers for a chipset should be done in a
->>> more modular manner, so that in fact they could all coexist if
->>> necessary.
->> Not sure I follow your meaning ... are you suggesting to allow the back end
->> driver to use run-time selectable IO accessors and other generic helper
->> functions, so the drivers currenlty including lib8390.c directly could use
->> the core code from the 8390 module instead?
-> Yes, David is suggesting you abstract the code so it can be built once
-> to support all the different interfaces and architectures.
+On Thu, 19 Apr 2018, Michael Schmitz wrote:
 
-Thanks for clarifying - I'll see what I can come up with.
+> --- /dev/null
+> +++ b/drivers/net/phy/asix.c
+> @@ -0,0 +1,63 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +/* Driver for Asix PHYs
+> + *
+> + * Author: Michael Schmitz <schmitzmic@gmail.com>
+> + *
+> + * This program is free software; you can redistribute  it and/or modify it
+> + * under  the terms of  the GNU General  Public License as published by the
+> + * Free Software Foundation;  either version 2 of the  License, or (at your
+> + * option) any later version.
+> + *
+> + */
 
-I can only test on ne.c and xsurf100.c though.
+This license information is broken. The SPDX license identifier and the
+boiler plate text are contradicting. The SPDX id is GPL v2 only and the
+boiler plate says v2 or later.
 
-Cheers,
+Please decide which version you want and fix ASAP. If you fix that up
+please add a Fixes: tag and cc stable. While at it please remove the boiler
+plate text as the SPDX id is sufficient and the boiler plate is redundant
+information.
 
-     Michael
+See Documentation/process/license-rules.txt
 
+Thanks,
 
-
-
->     Andrew
+        tglx
