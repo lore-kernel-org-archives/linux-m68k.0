@@ -1,39 +1,50 @@
-From: Dennis Clarke <dclarke@blastwave.org>
-Subject: Re: [PATCH v2 00/29] y2038: add time64 syscalls
-Date: Fri, 18 Jan 2019 11:57:24 -0500
-Message-ID: <be3863ae-d903-8e9e-5e6c-e4a58fac189d__35607.1969880306$1547856463$gmane$org@blastwave.org>
-References: <20190118161835.2259170-1-arnd@arndb.de>
+From: Andrew Lunn <andrew@lunn.ch>
+Subject: Re: [v4,1/9] net-next: phy: new Asix Electronics PHY driver
+Date: Sun, 20 Jan 2019 18:43:12 +0100
+Message-ID: <20190120174312.GC15048@lunn.ch>
+References: <1524103526-12240-2-git-send-email-schmitzmic@gmail.com>
+ <alpine.DEB.2.21.1901181121101.1647@nanos.tec.linutronix.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Return-path: <linuxppc-dev-bounces+glppe-linuxppc-embedded-2=m.gmane.org@lists.ozlabs.org>
-In-Reply-To: <20190118161835.2259170-1-arnd@arndb.de>
-Content-Language: en-US
-List-Unsubscribe: <https://lists.ozlabs.org/options/linuxppc-dev>,
- <mailto:linuxppc-dev-request@lists.ozlabs.org?subject=unsubscribe>
-List-Archive: <http://lists.ozlabs.org/pipermail/linuxppc-dev/>
-List-Post: <mailto:linuxppc-dev@lists.ozlabs.org>
-List-Help: <mailto:linuxppc-dev-request@lists.ozlabs.org?subject=help>
-List-Subscribe: <https://lists.ozlabs.org/listinfo/linuxppc-dev>,
- <mailto:linuxppc-dev-request@lists.ozlabs.org?subject=subscribe>
-Errors-To: linuxppc-dev-bounces+glppe-linuxppc-embedded-2=m.gmane.org@lists.ozlabs.org
-Sender: "Linuxppc-dev"
- <linuxppc-dev-bounces+glppe-linuxppc-embedded-2=m.gmane.org@lists.ozlabs.org>
-To: Arnd Bergmann <arnd@arndb.de>, y2038@lists.linaro.org, linux-api@vger.kernel.org, linux-kernel@vger.kernel.org, linux-arch@vger.kernel.org
-Cc: linux-m68k@vger.kernel.org, dalias@libc.org, linux-ia64@vger.kernel.org, linux-sh@vger.kernel.org, catalin.marinas@arm.com, heiko.carstens@de.ibm.com, jcmvbkbc@gmail.com, deepa.kernel@gmail.com, hpa@zytor.com, sparclinux@vger.kernel.org, linux-s390@vger.kernel.org, deller@gmx.de, x86@kernel.org, linux@armlinux.org.uk, mingo@redhat.com, geert@linux-m68k.org, firoz.khan@linaro.org, mattst88@gmail.com, fenghua.yu@intel.com, will.deacon@arm.com, linux-fsdevel@vger.kernel.org, luto@kernel.org, tglx@linutronix.de, linux-arm-kernel@lists.infradead.org, monstr@monstr.eu, tony.luck@intel.com, linux-parisc@vger.kernel.org, netdev@vger.kernel.org, linux-mips@vger.kernel.org, paul.burton@mips.com, ebiederm@xmission.com, linux-alpha@vger.kernel.org, schwidefsky@de.ibm.com, akpm@linux-foundation.org, linuxppc-dev@lists.ozlabs.org, davem@davemloft.net
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <alpine.DEB.2.21.1901181121101.1647@nanos.tec.linutronix.de>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Thomas Gleixner <tglx@linutronix.de>
+Cc: Michael Schmitz <schmitzmic@gmail.com>, netdev@vger.kernel.org, fthain@telegraphics.com.au, geert@linux-m68k.org, f.fainelli@gmail.com, linux-m68k@vger.kernel.org, Michael.Karcher@fu-berlin.de, LKML <linux-kernel@vger.kernel.org>, Greg KH <gregkh@linuxfoundation.org>, Kate Stewart <kstewart@linuxfoundation.org>
 List-Id: linux-m68k@vger.kernel.org
 
-On 1/18/19 11:18 AM, Arnd Bergmann wrote:
-> This is a minor update of the patches I posted last week, I
-> would like to add this into linux-next now, but would still do
-> changes if there are concerns about the contents. The first
-> version did not see a lot of replies, which could mean that
-> either everyone is happy with it, or that it was largely ignored.
+On Fri, Jan 18, 2019 at 11:22:39AM +0100, Thomas Gleixner wrote:
+> Michael,
 > 
-> See also the article at https://lwn.net/Articles/776435/.
+> On Thu, 19 Apr 2018, Michael Schmitz wrote:
+> 
+> > --- /dev/null
+> > +++ b/drivers/net/phy/asix.c
+> > @@ -0,0 +1,63 @@
+> > +// SPDX-License-Identifier: GPL-2.0
+> > +/* Driver for Asix PHYs
+> > + *
+> > + * Author: Michael Schmitz <schmitzmic@gmail.com>
+> > + *
+> > + * This program is free software; you can redistribute  it and/or modify it
+> > + * under  the terms of  the GNU General  Public License as published by the
+> > + * Free Software Foundation;  either version 2 of the  License, or (at your
+> > + * option) any later version.
+> > + *
+> > + */
+> 
+> This license information is broken. The SPDX license identifier and the
+> boiler plate text are contradicting. The SPDX id is GPL v2 only and the
+> boiler plate says v2 or later.
 
-I would be happy to read "Approaching the kernel year-2038 end game"
-however it is behind a pay wall.  Perhaps it may be best to just
-host interesting articles about open source idea elsewhere.
+Hi Thomas
 
-Dennis Clarke
+Please see:
+
+https://www.spinics.net/lists/netdev/msg544312.html
+
+The first two patches are simple SPDX converstions. Then it gets
+interesting trying to sort out license inconsistencies.
+
+	Andrew
