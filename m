@@ -1,66 +1,43 @@
-From: Michael Schmitz <schmitzmic@gmail.com>
-Subject: Re: [v4,1/9] net-next: phy: new Asix Electronics PHY driver
-Date: Mon, 21 Jan 2019 11:44:45 +1300
-Message-ID: <68512084-2ba5-9b58-38b5-0052fddce734@gmail.com>
-References: <1524103526-12240-2-git-send-email-schmitzmic@gmail.com>
- <alpine.DEB.2.21.1901181121101.1647@nanos.tec.linutronix.de>
- <20190120174312.GC15048@lunn.ch>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: [PATCH 0/4] fbdev: atafb: Fix after kexec, misc. cleanups
+Date: Fri, 15 Feb 2019 09:58:57 +0100
+Message-ID: <20190215085901.21479-1-geert@linux-m68k.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20190120174312.GC15048@lunn.ch>
-Content-Language: en-US
-Sender: linux-kernel-owner@vger.kernel.org
-To: Andrew Lunn <andrew@lunn.ch>, Thomas Gleixner <tglx@linutronix.de>
-Cc: netdev@vger.kernel.org, fthain@telegraphics.com.au, geert@linux-m68k.org, f.fainelli@gmail.com, linux-m68k@vger.kernel.org, Michael.Karcher@fu-berlin.de, LKML <linux-kernel@vger.kernel.org>, Greg KH <gregkh@linuxfoundation.org>, Kate Stewart <kstewart@linuxfoundation.org>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <dri-devel-bounces@lists.freedesktop.org>
+List-Unsubscribe: <https://lists.freedesktop.org/mailman/options/dri-devel>,
+ <mailto:dri-devel-request@lists.freedesktop.org?subject=unsubscribe>
+List-Archive: <https://lists.freedesktop.org/archives/dri-devel>
+List-Post: <mailto:dri-devel@lists.freedesktop.org>
+List-Help: <mailto:dri-devel-request@lists.freedesktop.org?subject=help>
+List-Subscribe: <https://lists.freedesktop.org/mailman/listinfo/dri-devel>,
+ <mailto:dri-devel-request@lists.freedesktop.org?subject=subscribe>
+Errors-To: dri-devel-bounces@lists.freedesktop.org
+Sender: "dri-devel" <dri-devel-bounces@lists.freedesktop.org>
+To: Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>, Michael Schmitz <schmitzmic@gmail.com>
+Cc: Paul Gortmaker <paul.gortmaker@windriver.com>, linux-fbdev@vger.kernel.org, Geert Uytterhoeven <geert@linux-m68k.org>, linux-m68k@vger.kernel.org, dri-devel@lists.freedesktop.org
 List-Id: linux-m68k@vger.kernel.org
 
-Hi Andrew,
-
-no objection for you to pick this up as part as a larger cleanup. I've 
-tried to reconstruct how this happened (i.e. what other phy driver file 
-I used as a 'template' for asix.c) - all I can say is that the 2.0+ 
-boiler plate text was in my initial commit, and the incorrect SPDX tag 
-was added in response to checkpath complaints. So 2.0+ would be correct.
-
-Thomas: does that suit your purpose?
-
-Cheers,
-
-     Michael
-
-
-On 21/01/19 6:43 AM, Andrew Lunn wrote:
-> On Fri, Jan 18, 2019 at 11:22:39AM +0100, Thomas Gleixner wrote:
->> Michael,
->>
->> On Thu, 19 Apr 2018, Michael Schmitz wrote:
->>
->>> --- /dev/null
->>> +++ b/drivers/net/phy/asix.c
->>> @@ -0,0 +1,63 @@
->>> +// SPDX-License-Identifier: GPL-2.0
->>> +/* Driver for Asix PHYs
->>> + *
->>> + * Author: Michael Schmitz <schmitzmic@gmail.com>
->>> + *
->>> + * This program is free software; you can redistribute  it and/or modify it
->>> + * under  the terms of  the GNU General  Public License as published by the
->>> + * Free Software Foundation;  either version 2 of the  License, or (at your
->>> + * option) any later version.
->>> + *
->>> + */
->> This license information is broken. The SPDX license identifier and the
->> boiler plate text are contradicting. The SPDX id is GPL v2 only and the
->> boiler plate says v2 or later.
-> Hi Thomas
->
-> Please see:
->
-> https://www.spinics.net/lists/netdev/msg544312.html
->
-> The first two patches are simple SPDX converstions. Then it gets
-> interesting trying to sort out license inconsistencies.
->
-> 	Andrew
+CUhpIGFsbCwKClRoaXMgcGF0Y2ggc2VyaWVzIGZpeGVzIHRoZSBmcmFtZSBidWZmZXIgb24gQXRh
+cmkgRmFsY29uIHdoZW4gdXNpbmcKa2V4ZWMgd2hpbGUgYmxhbmtlZCwgYW5kIGRvZXMgc29tZSBt
+aXNjZWxsYW5lb3VzIGNsZWFudXBzLgoKVGhpcyBoYXMgYmVlbiB0ZXN0ZWQgb24gQVJBbnlNLgoK
+VGhhbmtzIQoKR2VlcnQgVXl0dGVyaG9ldmVuICg0KToKICBmYmRldjogYXRhZmI6IFN0b3AgcHJp
+bnRpbmcgdmlydHVhbCBzY3JlZW5fYmFzZQogIGZiZGV2OiBhdGFmYjogUmVtb3ZlIG9ic29sZXRl
+IG1vZHVsZSBzdXBwb3J0CiAgZmJkZXY6IGF0YWZiOiBGaXggYnJva2VuIGZyYW1lIGJ1ZmZlciBh
+ZnRlciBrZXhlYwogIGZiZGV2OiBhdGFmYjogTW9kZXJuaXplIHByaW50aW5nIG9mIGtlcm5lbCBt
+ZXNzYWdlcwoKIGRyaXZlcnMvdmlkZW8vZmJkZXYvYXRhZmIuYyAgICAgICAgICB8IDY3ICsrKysr
+KysrKysrKysrKysrLS0tLS0tLS0tLS0KIGRyaXZlcnMvdmlkZW8vZmJkZXYvYXRhZmJfaXBsYW4y
+cDIuYyB8IDIzIC0tLS0tLS0tLS0KIGRyaXZlcnMvdmlkZW8vZmJkZXYvYXRhZmJfaXBsYW4ycDQu
+YyB8IDIzIC0tLS0tLS0tLS0KIGRyaXZlcnMvdmlkZW8vZmJkZXYvYXRhZmJfaXBsYW4ycDguYyB8
+IDIzIC0tLS0tLS0tLS0KIGRyaXZlcnMvdmlkZW8vZmJkZXYvYXRhZmJfbWZiLmMgICAgICB8IDIz
+IC0tLS0tLS0tLS0KIDUgZmlsZXMgY2hhbmdlZCwgNDAgaW5zZXJ0aW9ucygrKSwgMTE5IGRlbGV0
+aW9ucygtKQoKLS0gCjIuMTcuMQoKR3J7b2V0amUsZWV0aW5nfXMsCgoJCQkJCQlHZWVydAoKLS0K
+R2VlcnQgVXl0dGVyaG9ldmVuIC0tIFRoZXJlJ3MgbG90cyBvZiBMaW51eCBiZXlvbmQgaWEzMiAt
+LSBnZWVydEBsaW51eC1tNjhrLm9yZwoKSW4gcGVyc29uYWwgY29udmVyc2F0aW9ucyB3aXRoIHRl
+Y2huaWNhbCBwZW9wbGUsIEkgY2FsbCBteXNlbGYgYSBoYWNrZXIuIEJ1dAp3aGVuIEknbSB0YWxr
+aW5nIHRvIGpvdXJuYWxpc3RzIEkganVzdCBzYXkgInByb2dyYW1tZXIiIG9yIHNvbWV0aGluZyBs
+aWtlIHRoYXQuCgkJCQkJCQkgICAgLS0gTGludXMgVG9ydmFsZHMKX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX18KZHJpLWRldmVsIG1haWxpbmcgbGlzdApkcmkt
+ZGV2ZWxAbGlzdHMuZnJlZWRlc2t0b3Aub3JnCmh0dHBzOi8vbGlzdHMuZnJlZWRlc2t0b3Aub3Jn
+L21haWxtYW4vbGlzdGluZm8vZHJpLWRldmVs
