@@ -1,41 +1,43 @@
 From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: [PATCH 1/4] fbdev: atafb: Stop printing virtual screen_base
-Date: Fri, 15 Feb 2019 09:58:58 +0100
-Message-ID: <20190215085901.21479-2-geert@linux-m68k.org>
-References: <20190215085901.21479-1-geert@linux-m68k.org>
+Subject: Re: [RFC PATCH 08/20] m68k: io: Remove useless definition of mmiowb()
+Date: Mon, 25 Feb 2019 10:25:52 +0100
+Message-ID: <CAMuHMdXq5N1e+=dTPUu+AtSgh4QzuDzmhBowG_HFoVHwmndvkg@mail.gmail.com>
+References: <20190222185026.10973-1-will.deacon@arm.com> <20190222185026.10973-9-will.deacon@arm.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <dri-devel-bounces@lists.freedesktop.org>
-In-Reply-To: <20190215085901.21479-1-geert@linux-m68k.org>
-List-Unsubscribe: <https://lists.freedesktop.org/mailman/options/dri-devel>,
- <mailto:dri-devel-request@lists.freedesktop.org?subject=unsubscribe>
-List-Archive: <https://lists.freedesktop.org/archives/dri-devel>
-List-Post: <mailto:dri-devel@lists.freedesktop.org>
-List-Help: <mailto:dri-devel-request@lists.freedesktop.org?subject=help>
-List-Subscribe: <https://lists.freedesktop.org/mailman/listinfo/dri-devel>,
- <mailto:dri-devel-request@lists.freedesktop.org?subject=subscribe>
-Errors-To: dri-devel-bounces@lists.freedesktop.org
-Sender: "dri-devel" <dri-devel-bounces@lists.freedesktop.org>
-To: Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>, Michael Schmitz <schmitzmic@gmail.com>
-Cc: Paul Gortmaker <paul.gortmaker@windriver.com>, linux-fbdev@vger.kernel.org, Geert Uytterhoeven <geert@linux-m68k.org>, linux-m68k@vger.kernel.org, dri-devel@lists.freedesktop.org
+Content-Type: text/plain; charset="UTF-8"
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20190222185026.10973-9-will.deacon@arm.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Will Deacon <will.deacon@arm.com>
+Cc: Linux-Arch <linux-arch@vger.kernel.org>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, "Paul E. McKenney" <paulmck@linux.ibm.com>, Benjamin Herrenschmidt <benh@kernel.crashing.org>, Michael Ellerman <mpe@ellerman.id.au>, Arnd Bergmann <arnd@arndb.de>, Peter Zijlstra <peterz@infradead.org>, Andrea Parri <andrea.parri@amarulasolutions.com>, Palmer Dabbelt <palmer@sifive.com>, Daniel Lustig <dlustig@nvidia.com>, David Howells <dhowells@redhat.com>, Alan Stern <stern@rowland.harvard.edu>, Linus Torvalds <torvalds@linux-foundation.org>, "Maciej W. Rozycki" <macro@linux-mips.org>, Paul Burton <paul.burton@mips.com>, Ingo Molnar <mingo@kernel.org>, Yoshinori Sato <ysato@users.sourceforge.jp>, Rich Felker <dalias@libc.org>, Tony Luck <tony.luck@i>
 List-Id: linux-m68k@vger.kernel.org
 
-UHJpbnRpbmcgKGhhc2hlZCkgdmlydHVhbCBhZGRyZXNzZXMgaXMgdXNlbGVzcy4KClNpZ25lZC1v
-ZmYtYnk6IEdlZXJ0IFV5dHRlcmhvZXZlbiA8Z2VlcnRAbGludXgtbTY4ay5vcmc+Ci0tLQogZHJp
-dmVycy92aWRlby9mYmRldi9hdGFmYi5jIHwgNCArKy0tCiAxIGZpbGUgY2hhbmdlZCwgMiBpbnNl
-cnRpb25zKCspLCAyIGRlbGV0aW9ucygtKQoKZGlmZiAtLWdpdCBhL2RyaXZlcnMvdmlkZW8vZmJk
-ZXYvYXRhZmIuYyBiL2RyaXZlcnMvdmlkZW8vZmJkZXYvYXRhZmIuYwppbmRleCBmY2QyZGQ2NzBh
-NjU4ZmUzLi5lOWQzMWE0Mjk5ZWU5OTAxIDEwMDY0NAotLS0gYS9kcml2ZXJzL3ZpZGVvL2ZiZGV2
-L2F0YWZiLmMKKysrIGIvZHJpdmVycy92aWRlby9mYmRldi9hdGFmYi5jCkBAIC0zMTc1LDggKzMx
-NzUsOCBAQCBpbnQgX19pbml0IGF0YWZiX2luaXQodm9pZCkKIAkJCWtlcm5lbF9zZXRfY2FjaGVt
-b2RlKHNjcmVlbl9iYXNlLCBzY3JlZW5fbGVuLAogCQkJCQkgICAgIElPTUFQX1dSSVRFVEhST1VH
-SCk7CiAJCX0KLQkJcHJpbnRrKCJhdGFmYjogc2NyZWVuX2Jhc2UgJXAgcGh5c19zY3JlZW5fYmFz
-ZSAlbHggc2NyZWVuX2xlbiAlZFxuIiwKLQkJCXNjcmVlbl9iYXNlLCBwaHlzX3NjcmVlbl9iYXNl
-LCBzY3JlZW5fbGVuKTsKKwkJcHJpbnRrKCJhdGFmYjogcGh5c19zY3JlZW5fYmFzZSAlbHggc2Ny
-ZWVuX2xlbiAlZFxuIiwKKwkJICAgICAgIHBoeXNfc2NyZWVuX2Jhc2UsIHNjcmVlbl9sZW4pOwog
-I2lmZGVmIEFUQUZCX0VYVAogCX0gZWxzZSB7CiAJCS8qIE1hcCB0aGUgdmlkZW8gbWVtb3J5IChw
-aHlzaWNhbCBhZGRyZXNzIGdpdmVuKSB0byBzb21ld2hlcmUKLS0gCjIuMTcuMQoKX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KZHJpLWRldmVsIG1haWxpbmcg
-bGlzdApkcmktZGV2ZWxAbGlzdHMuZnJlZWRlc2t0b3Aub3JnCmh0dHBzOi8vbGlzdHMuZnJlZWRl
-c2t0b3Aub3JnL21haWxtYW4vbGlzdGluZm8vZHJpLWRldmVs
+Hi Will,
+
+On Fri, Feb 22, 2019 at 7:51 PM Will Deacon <will.deacon@arm.com> wrote:
+> m68k includes asm-generic/io.h, which provides a dummy definition of
+> mmiowb() if one isn't already provided by the architecture.
+>
+> Remove the useless definition.
+>
+> Cc: Geert Uytterhoeven <geert@linux-m68k.org>
+> Signed-off-by: Will Deacon <will.deacon@arm.com>
+
+Thanks!
+Reviewed-by: Geert Uytterhoeven <geert@linux-m68k.org>
+
+Do you want me to queue this in the m68k tree for v5.2, or would
+you prefer to apply the whole series?
+In case of the latter:
+Acked-by: Geert Uytterhoeven <geert@linux-m68k.org>
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
+-- 
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
