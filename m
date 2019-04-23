@@ -1,44 +1,109 @@
-From: Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>
-Subject: Re: [PATCH 0/4] fbdev: atafb: Fix after kexec, misc. cleanups
-Date: Mon, 1 Apr 2019 13:59:32 +0200
-Message-ID: <819fd7b8-20d0-1adf-ce8c-8104994901ff@samsung.com>
-References: <CGME20190215085951epcas3p184e61f75bec825fb68681a36867da7f1@epcas3p1.samsung.com>
- <20190215085901.21479-1-geert@linux-m68k.org>
+From: Kees Cook <keescook@chromium.org>
+Subject: Re: [PATCH 2/2] lib: Introduce test_stackinit module
+Date: Tue, 23 Apr 2019 15:42:46 -0700
+Message-ID: <CAGXu5jL-J=VTmG4SnnXxFod4G=AxNL5mdeshEKs4yNWb4aYsFw@mail.gmail.com>
+References: <20190212180441.15340-1-keescook@chromium.org> <20190212180441.15340-3-keescook@chromium.org>
+ <CAMuHMdW6N40+0gGQ+LSrN64Mo4A0-ELAm0pR3gWQ0mNanyBuUQ@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <dri-devel-bounces@lists.freedesktop.org>
-In-Reply-To: <20190215085901.21479-1-geert@linux-m68k.org>
-List-Unsubscribe: <https://lists.freedesktop.org/mailman/options/dri-devel>,
- <mailto:dri-devel-request@lists.freedesktop.org?subject=unsubscribe>
-List-Archive: <https://lists.freedesktop.org/archives/dri-devel>
-List-Post: <mailto:dri-devel@lists.freedesktop.org>
-List-Help: <mailto:dri-devel-request@lists.freedesktop.org?subject=help>
-List-Subscribe: <https://lists.freedesktop.org/mailman/listinfo/dri-devel>,
- <mailto:dri-devel-request@lists.freedesktop.org?subject=subscribe>
-Errors-To: dri-devel-bounces@lists.freedesktop.org
-Sender: "dri-devel" <dri-devel-bounces@lists.freedesktop.org>
+Content-Type: text/plain; charset="UTF-8"
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <CAMuHMdW6N40+0gGQ+LSrN64Mo4A0-ELAm0pR3gWQ0mNanyBuUQ@mail.gmail.com>
+Sender: linux-kernel-owner@vger.kernel.org
 To: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: Michael Schmitz <schmitzmic@gmail.com>, Paul Gortmaker <paul.gortmaker@windriver.com>, linux-fbdev@vger.kernel.org, linux-m68k@vger.kernel.org, dri-devel@lists.freedesktop.org
+Cc: Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, Emese Revfy <re.emese@gmail.com>, Alexander Popov <alex.popov@linux.com>, Ard Biesheuvel <ard.biesheuvel@linaro.org>, Laura Abbott <labbott@redhat.com>, Jann Horn <jannh@google.com>, Alexander Potapenko <glider@google.com>, Kernel Hardening <kernel-hardening@lists.openwall.com>, Linux/m68k <linux-m68k@vger.kernel.org>
 List-Id: linux-m68k@vger.kernel.org
 
-Ck9uIDAyLzE1LzIwMTkgMDk6NTggQU0sIEdlZXJ0IFV5dHRlcmhvZXZlbiB3cm90ZToKPiAJSGkg
-YWxsLAo+IAo+IFRoaXMgcGF0Y2ggc2VyaWVzIGZpeGVzIHRoZSBmcmFtZSBidWZmZXIgb24gQXRh
-cmkgRmFsY29uIHdoZW4gdXNpbmcKPiBrZXhlYyB3aGlsZSBibGFua2VkLCBhbmQgZG9lcyBzb21l
-IG1pc2NlbGxhbmVvdXMgY2xlYW51cHMuCj4gCj4gVGhpcyBoYXMgYmVlbiB0ZXN0ZWQgb24gQVJB
-bnlNLgo+IAo+IFRoYW5rcyEKPiAKPiBHZWVydCBVeXR0ZXJob2V2ZW4gKDQpOgo+ICAgZmJkZXY6
-IGF0YWZiOiBTdG9wIHByaW50aW5nIHZpcnR1YWwgc2NyZWVuX2Jhc2UKPiAgIGZiZGV2OiBhdGFm
-YjogUmVtb3ZlIG9ic29sZXRlIG1vZHVsZSBzdXBwb3J0Cj4gICBmYmRldjogYXRhZmI6IEZpeCBi
-cm9rZW4gZnJhbWUgYnVmZmVyIGFmdGVyIGtleGVjCj4gICBmYmRldjogYXRhZmI6IE1vZGVybml6
-ZSBwcmludGluZyBvZiBrZXJuZWwgbWVzc2FnZXMKPiAKPiAgZHJpdmVycy92aWRlby9mYmRldi9h
-dGFmYi5jICAgICAgICAgIHwgNjcgKysrKysrKysrKysrKysrKystLS0tLS0tLS0tLQo+ICBkcml2
-ZXJzL3ZpZGVvL2ZiZGV2L2F0YWZiX2lwbGFuMnAyLmMgfCAyMyAtLS0tLS0tLS0tCj4gIGRyaXZl
-cnMvdmlkZW8vZmJkZXYvYXRhZmJfaXBsYW4ycDQuYyB8IDIzIC0tLS0tLS0tLS0KPiAgZHJpdmVy
-cy92aWRlby9mYmRldi9hdGFmYl9pcGxhbjJwOC5jIHwgMjMgLS0tLS0tLS0tLQo+ICBkcml2ZXJz
-L3ZpZGVvL2ZiZGV2L2F0YWZiX21mYi5jICAgICAgfCAyMyAtLS0tLS0tLS0tCj4gIDUgZmlsZXMg
-Y2hhbmdlZCwgNDAgaW5zZXJ0aW9ucygrKSwgMTE5IGRlbGV0aW9ucygtKQoKUGF0Y2hlcyAjMS00
-IHF1ZXVlZCBmb3IgdjUuMiwgdGhhbmtzLgoKQmVzdCByZWdhcmRzLAotLQpCYXJ0bG9taWVqIFpv
-bG5pZXJraWV3aWN6ClNhbXN1bmcgUiZEIEluc3RpdHV0ZSBQb2xhbmQKU2Ftc3VuZyBFbGVjdHJv
-bmljcwpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpkcmkt
-ZGV2ZWwgbWFpbGluZyBsaXN0CmRyaS1kZXZlbEBsaXN0cy5mcmVlZGVza3RvcC5vcmcKaHR0cHM6
-Ly9saXN0cy5mcmVlZGVza3RvcC5vcmcvbWFpbG1hbi9saXN0aW5mby9kcmktZGV2ZWw=
+On Mon, Mar 11, 2019 at 3:52 AM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
+>
+> Hi Kees,
+>
+> On Tue, Feb 12, 2019 at 7:08 PM Kees Cook <keescook@chromium.org> wrote:
+> > Adds test for stack initialization coverage. We have several build options
+> > that control the level of stack variable initialization. This test lets us
+> > visualize which options cover which cases, and provide tests for some of
+> > the pathological padding conditions the compiler will sometimes fail to
+> > initialize.
+>
+> With current upstream, using gcc Ubuntu 8.2.0-1ubuntu2~18.04, I get
+> on m68k:
+
+Thanks for testing this on other architectures!
+
+> test_stackinit: u8_zero: stack fill missed target!?
+
+Hmpf. That's frustrating. That implies that the leaf function is
+assembled in such a way that the "leaking" memory address and the
+"controlled" memory address on the stack end up in different
+locations. I had a lot of problems with this before I unified my leaf
+function. I wonder if some inlining is happening with the m68k
+compiler that I haven't accounted for?
+
+> Any idea what is wrong? I find the test code a bit hard to understand...
+
+Yeah, there was a lot of repetition, so I tried to save my sanity and
+build macros. The particular problem above is with the "test_..."'s
+call of the "leaf_..." functions:
+
+        /* Fill stack with 0xFF. */                             \
+        ignored = leaf_ ##name((unsigned long)&ignored, 1,      \
+                                FETCH_ARG_ ## which(zero));     \
+        /* Clear entire check buffer for later bit tests. */    \
+        memset(check_buf, 0x00, sizeof(check_buf));             \
+        /* Extract stack-defined variable contents. */          \
+        ignored = leaf_ ##name((unsigned long)&ignored, 0,      \
+                                FETCH_ARG_ ## which(zero));     \
+
+those two leaf_* invocations should produce stack variables at the
+same location on the stack:
+
+        var_type var INIT_ ## which ## _ ## init_level;         \
+                                                                \
+        target_start = &var;                                    \
+        target_size = sizeof(var);                              \
+        /*                                                      \
+         * Keep this buffer around to make sure we've got a     \
+         * stack frame of SOME kind...                          \
+         */                                                     \
+        memset(buf, (char)(sp && 0xff), sizeof(buf));           \
+        /* Fill variable with 0xFF. */                          \
+        if (fill) {                                             \
+                fill_start = &var;                              \
+                fill_size = sizeof(var);                        \
+
+(note "target_start" and "fill_start" being assigned the location of
+(in theory) the same stack location)
+
+This gets checked later:
+
+        /* Validate that compiler lined up fill and target. */  \
+        if (!range_contains(fill_start, fill_size,              \
+                            target_start, target_size)) {       \
+                pr_err(#name ": stack fill missed target!?\n"); \
+                pr_err(#name ": fill %zu wide\n", fill_size);   \
+                pr_err(#name ": target offset by %d\n", \
+                        (int)((ssize_t)(uintptr_t)fill_start -  \
+                        (ssize_t)(uintptr_t)target_start));     \
+                return 1;                                       \
+
+which is where you're seeing the report.
+
+> Also, I see comments making assumptions that are not true:
+>
+>     struct test_small_hole {
+>             size_t one;
+>             char two;
+>             /* 3 byte padding hole here. */
+>             int three;
+>             unsigned long four;
+>     };
+>
+> On m68k (and a few other architectures), integrals of 16-bit and larger
+> are aligned to a 2-byte address, so the padding may be only a single byte.
+
+Ah! Good point. I can update the comments, but the test should still
+be valid (it just has a smaller hole).
+
+Thanks again!
+
+-- 
+Kees Cook
