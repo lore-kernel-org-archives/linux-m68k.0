@@ -1,109 +1,90 @@
-From: Kees Cook <keescook@chromium.org>
-Subject: Re: [PATCH 2/2] lib: Introduce test_stackinit module
-Date: Tue, 23 Apr 2019 15:42:46 -0700
-Message-ID: <CAGXu5jL-J=VTmG4SnnXxFod4G=AxNL5mdeshEKs4yNWb4aYsFw@mail.gmail.com>
-References: <20190212180441.15340-1-keescook@chromium.org> <20190212180441.15340-3-keescook@chromium.org>
- <CAMuHMdW6N40+0gGQ+LSrN64Mo4A0-ELAm0pR3gWQ0mNanyBuUQ@mail.gmail.com>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: Re: endianness swapped
+Date: Sun, 28 Apr 2019 10:46:03 +0200
+Message-ID: <CAMuHMdXNCxHP=BWPOy70LjNJoMH+zy7yYOHj29gYt79_5=4ffg@mail.gmail.com>
+References: <20190427153222.GA9613@jerusalem> <20190427202150.GB9613@jerusalem>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="UTF-8"
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <CAMuHMdW6N40+0gGQ+LSrN64Mo4A0-ELAm0pR3gWQ0mNanyBuUQ@mail.gmail.com>
+In-Reply-To: <20190427202150.GB9613@jerusalem>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, Emese Revfy <re.emese@gmail.com>, Alexander Popov <alex.popov@linux.com>, Ard Biesheuvel <ard.biesheuvel@linaro.org>, Laura Abbott <labbott@redhat.com>, Jann Horn <jannh@google.com>, Alexander Potapenko <glider@google.com>, Kernel Hardening <kernel-hardening@lists.openwall.com>, Linux/m68k <linux-m68k@vger.kernel.org>
+To: Angelo Dureghello <angelo@sysam.it>
+Cc: Logan Gunthorpe <logang@deltatee.com>, Thomas Gleixner <tglx@linutronix.de>, Kate Stewart <kstewart@linuxfoundation.org>, Philippe Ombredanne <pombredanne@nexb.com>, Greg KH <gregkh@linuxfoundation.org>, Arnd Bergmann <arnd@arndb.de>, Linux/m68k <linux-m68k@vger.kernel.org>, Linux-Arch <linux-arch@vger.kernel.org>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
 List-Id: linux-m68k@vger.kernel.org
 
-On Mon, Mar 11, 2019 at 3:52 AM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
+Hi Angelo,
+
+CC commit relations
+
+On Sat, Apr 27, 2019 at 10:22 PM Angelo Dureghello <angelo@sysam.it> wrote:
+> On Sat, Apr 27, 2019 at 05:32:22PM +0200, Angelo Dureghello wrote:
+> > as you may know, i am working on mcf5441x.
+> > Sorry for not following carefully all the threads, but from a certain
+> > kernel version (likely 4.19 or near there), seems ioread32be
+> > reads the bytes swapped in endianness (mcf-edma dma driver not working
+> > anymore).
+> >
+> > Has there been a change about this in the architecture I/O access ?
+> > How should i proceed now ? Fixing the DMA driver read/write, or what ?
+
+> looks like the reason of my ioread32be now swapped is:
 >
-> Hi Kees,
+> https://patchwork.kernel.org/patch/10766673/
 >
-> On Tue, Feb 12, 2019 at 7:08 PM Kees Cook <keescook@chromium.org> wrote:
-> > Adds test for stack initialization coverage. We have several build options
-> > that control the level of stack variable initialization. This test lets us
-> > visualize which options cover which cases, and provide tests for some of
-> > the pathological padding conditions the compiler will sometimes fail to
-> > initialize.
->
-> With current upstream, using gcc Ubuntu 8.2.0-1ubuntu2~18.04, I get
-> on m68k:
+> Trying to figure out what to do now.
 
-Thanks for testing this on other architectures!
+This is commit aecc787c06f4300f ("iomap: Use non-raw io functions for
+io{read|write}XXbe"):
 
-> test_stackinit: u8_zero: stack fill missed target!?
+--- a/lib/iomap.c
++++ b/lib/iomap.c
+@@ -65,8 +65,8 @@ static void bad_io_access(unsigned long port, const
+char *access)
+ #endif
 
-Hmpf. That's frustrating. That implies that the leaf function is
-assembled in such a way that the "leaking" memory address and the
-"controlled" memory address on the stack end up in different
-locations. I had a lot of problems with this before I unified my leaf
-function. I wonder if some inlining is happening with the m68k
-compiler that I haven't accounted for?
+ #ifndef mmio_read16be
+-#define mmio_read16be(addr) be16_to_cpu(__raw_readw(addr))
+-#define mmio_read32be(addr) be32_to_cpu(__raw_readl(addr))
++#define mmio_read16be(addr) swab16(readw(addr))
++#define mmio_read32be(addr) swab32(readl(addr))
+ #endif
 
-> Any idea what is wrong? I find the test code a bit hard to understand...
+ unsigned int ioread8(void __iomem *addr)
+@@ -106,8 +106,8 @@ EXPORT_SYMBOL(ioread32be);
+ #endif
 
-Yeah, there was a lot of repetition, so I tried to save my sanity and
-build macros. The particular problem above is with the "test_..."'s
-call of the "leaf_..." functions:
+ #ifndef mmio_write16be
+-#define mmio_write16be(val,port) __raw_writew(be16_to_cpu(val),port)
+-#define mmio_write32be(val,port) __raw_writel(be32_to_cpu(val),port)
++#define mmio_write16be(val,port) writew(swab16(val),port)
++#define mmio_write32be(val,port) writel(swab32(val),port)
 
-        /* Fill stack with 0xFF. */                             \
-        ignored = leaf_ ##name((unsigned long)&ignored, 1,      \
-                                FETCH_ARG_ ## which(zero));     \
-        /* Clear entire check buffer for later bit tests. */    \
-        memset(check_buf, 0x00, sizeof(check_buf));             \
-        /* Extract stack-defined variable contents. */          \
-        ignored = leaf_ ##name((unsigned long)&ignored, 0,      \
-                                FETCH_ARG_ ## which(zero));     \
+On big endian, the raw accessors are assumed to be non-swapping,
+while non-raw accessors are assumed to be swapping.
+The latter is not true for Coldfire internal registers, cfr.
+arch/m68k/include/asm/io_no.h:
 
-those two leaf_* invocations should produce stack variables at the
-same location on the stack:
+static inline u16 readw(const volatile void __iomem *addr)
+{
+        if (cf_internalio(addr))
+                return __raw_readw(addr);
+        return __le16_to_cpu(__raw_readw(addr));
+}
 
-        var_type var INIT_ ## which ## _ ## init_level;         \
-                                                                \
-        target_start = &var;                                    \
-        target_size = sizeof(var);                              \
-        /*                                                      \
-         * Keep this buffer around to make sure we've got a     \
-         * stack frame of SOME kind...                          \
-         */                                                     \
-        memset(buf, (char)(sp && 0xff), sizeof(buf));           \
-        /* Fill variable with 0xFF. */                          \
-        if (fill) {                                             \
-                fill_start = &var;                              \
-                fill_size = sizeof(var);                        \
+Orthogonal to how Coldfire's read[wl]() should be fixed, I find it a bit
+questionable to swap data twice on big endian architectures.
 
-(note "target_start" and "fill_start" being assigned the location of
-(in theory) the same stack location)
+Fortunately we can avoid that by defining our own
+mmio_{read,write}{16,32}be()...
 
-This gets checked later:
+Gr{oetje,eeting}s,
 
-        /* Validate that compiler lined up fill and target. */  \
-        if (!range_contains(fill_start, fill_size,              \
-                            target_start, target_size)) {       \
-                pr_err(#name ": stack fill missed target!?\n"); \
-                pr_err(#name ": fill %zu wide\n", fill_size);   \
-                pr_err(#name ": target offset by %d\n", \
-                        (int)((ssize_t)(uintptr_t)fill_start -  \
-                        (ssize_t)(uintptr_t)target_start));     \
-                return 1;                                       \
+                        Geert
 
-which is where you're seeing the report.
 
-> Also, I see comments making assumptions that are not true:
->
->     struct test_small_hole {
->             size_t one;
->             char two;
->             /* 3 byte padding hole here. */
->             int three;
->             unsigned long four;
->     };
->
-> On m68k (and a few other architectures), integrals of 16-bit and larger
-> are aligned to a 2-byte address, so the padding may be only a single byte.
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
-Ah! Good point. I can update the comments, but the test should still
-be valid (it just has a smaller hole).
-
-Thanks again!
-
--- 
-Kees Cook
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
