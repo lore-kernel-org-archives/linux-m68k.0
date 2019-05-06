@@ -1,7 +1,7 @@
 From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: [PATCH] Documentation/features: Mark m68k ok
-Date: Mon,  6 May 2019 10:53:02 +0200
-Message-ID: <20190506085302.1334-1-geert@linux-m68k.org>
+Subject: [PATCH v2] Documentation/features/time: Mark m68k having modern-timekeeping
+Date: Mon,  6 May 2019 11:00:46 +0200
+Message-ID: <20190506090046.3016-1-geert@linux-m68k.org>
 Return-path: <linux-kernel-owner@vger.kernel.org>
 Sender: linux-kernel-owner@vger.kernel.org
 To: Finn Thain <fthain@telegraphics.com.au>
@@ -12,6 +12,9 @@ M68k no longer uses arch_gettimeoffset.
 
 Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
 ---
+v2:
+  - Enhance one-line summary.
+
 Queueing in m68k-for-v5.2, on top of the clocksource conversion.
 Sorry for missing this before.
 
