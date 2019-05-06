@@ -1,46 +1,35 @@
-From: Arnd Bergmann <arnd@arndb.de>
-Subject: Re: endianness swapped
-Date: Mon, 29 Apr 2019 13:13:32 +0200
-Message-ID: <CAK8P3a0gex0ffvX9zQDV=N7g6q7UAxxYRn2PeAbbAgrd1wTvQg@mail.gmail.com>
-References: <20190427153222.GA9613@jerusalem> <20190427202150.GB9613@jerusalem>
- <CAMuHMdXNCxHP=BWPOy70LjNJoMH+zy7yYOHj29gYt79_5=4ffg@mail.gmail.com>
- <CAK8P3a2F6KW3M7ZaK=WL8429j_z=y_wXrx6rthxni8vBmsMPyg@mail.gmail.com>
- <c75092d5-0bbf-cd8e-d0a2-ff1384ac5a48@linux-m68k.org> <CAMuHMdUC6zXH5SUEChDNHHJL2=Aq6XfRebFWK0JtH5zDWMSVgQ@mail.gmail.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: [PATCH] Documentation/features: Mark m68k ok
+Date: Mon,  6 May 2019 10:53:02 +0200
+Message-ID: <20190506085302.1334-1-geert@linux-m68k.org>
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <CAMuHMdUC6zXH5SUEChDNHHJL2=Aq6XfRebFWK0JtH5zDWMSVgQ@mail.gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: Greg Ungerer <gerg@linux-m68k.org>, Angelo Dureghello <angelo@sysam.it>, Logan Gunthorpe <logang@deltatee.com>, Thomas Gleixner <tglx@linutronix.de>, Kate Stewart <kstewart@linuxfoundation.org>, Philippe Ombredanne <pombredanne@nexb.com>, Greg KH <gregkh@linuxfoundation.org>, Linux/m68k <linux-m68k@vger.kernel.org>, Linux-Arch <linux-arch@vger.kernel.org>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+To: Finn Thain <fthain@telegraphics.com.au>
+Cc: Jonathan Corbet <corbet@lwn.net>, Guo Ren <ren_guo@c-sky.com>, Andrea Parri <andrea.parri@amarulasolutions.com>, linux-doc@vger.kernel.org, linux-m68k@vger.kernel.org, linux-kernel@vger.kernel.org, Geert Uytterhoeven <geert@linux-m68k.org>
 List-Id: linux-m68k@vger.kernel.org
 
-On Mon, Apr 29, 2019 at 10:44 AM Geert Uytterhoeven
-<geert@linux-m68k.org> wrote:
-> On Sun, Apr 28, 2019 at 3:59 PM Greg Ungerer <gerg@linux-m68k.org> wrote:
-> > On 28/4/19 7:21 pm, Arnd Bergmann wrote:
-> > > On Sun, Apr 28, 2019 at 10:46 AM Geert Uytterhoeven
-> > > <geert@linux-m68k.org> wrote:
-> > >>
-> > >> Orthogonal to how Coldfire's read[wl]() should be fixed, I find it a bit
-> > >> questionable to swap data twice on big endian architectures.
-> > >
-> > > I would expect that the compiler is capable of detecting a double
-> > > swap and optimize it out. Even if it can't, there are not that many
-> > > instances of io{read,write}{16,32}be in the kernel, so the increase
-> > > in kernel image size from a double swap should be limited to a
-> > > few extra instructions, and the runtime overhead should be
-> > > negligible compared to the bus access.
->
-> Probably the overhead is not negligible on old m68k...
+M68k no longer uses arch_gettimeoffset.
 
-Maybe the I/O devices are faster than I expected then. I was guessing
-that there is still a factor of 100x or more between going to an on-chip
-bus and single byterev register-to-register instruction.
+Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
+---
+Queueing in m68k-for-v5.2, on top of the clocksource conversion.
+Sorry for missing this before.
 
-I did notice that __arch_swab32() is an inline assembly, so the
-compiler has no way of eliminating the double swap, but
-setting CONFIG_ARCH_USE_BUILTIN_BSWAP makes it
-do the right thing.
+ Documentation/features/time/modern-timekeeping/arch-support.txt | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-      Arnd
+diff --git a/Documentation/features/time/modern-timekeeping/arch-support.txt b/Documentation/features/time/modern-timekeeping/arch-support.txt
+index 2855dfe2464d4a34..1d46da165b75e127 100644
+--- a/Documentation/features/time/modern-timekeeping/arch-support.txt
++++ b/Documentation/features/time/modern-timekeeping/arch-support.txt
+@@ -15,7 +15,7 @@
+     |       h8300: |  ok  |
+     |     hexagon: |  ok  |
+     |        ia64: |  ok  |
+-    |        m68k: | TODO |
++    |        m68k: |  ok  |
+     |  microblaze: |  ok  |
+     |        mips: |  ok  |
+     |       nds32: |  ok  |
+-- 
+2.17.1
