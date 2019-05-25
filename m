@@ -1,38 +1,44 @@
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: [PATCH v2] Documentation/features/time: Mark m68k having modern-timekeeping
-Date: Mon,  6 May 2019 11:00:46 +0200
-Message-ID: <20190506090046.3016-1-geert@linux-m68k.org>
+From: Andrew Morton <akpm@linux-foundation.org>
+Subject: Re: [PATCH] binfmt_flat: make load_flat_shared_library() work
+Date: Sat, 25 May 2019 14:43:04 -0700
+Message-ID: <20190525144304.e2b9475a18a1f78a964c5640@linux-foundation.org>
+References: <20190524201817.16509-1-jannh@google.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20190524201817.16509-1-jannh@google.com>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Finn Thain <fthain@telegraphics.com.au>
-Cc: Jonathan Corbet <corbet@lwn.net>, Guo Ren <ren_guo@c-sky.com>, Andrea Parri <andrea.parri@amarulasolutions.com>, linux-doc@vger.kernel.org, linux-m68k@vger.kernel.org, linux-kernel@vger.kernel.org, Geert Uytterhoeven <geert@linux-m68k.org>
+To: Jann Horn <jannh@google.com>
+Cc: Alexander Viro <viro@zeniv.linux.org.uk>, linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org, Kees Cook <keescook@chromium.org>, Nicolas Pitre <nicolas.pitre@linaro.org>, Arnd Bergmann <arnd@arndb.de>, Geert Uytterhoeven <geert@linux-m68k.org>, linux-m68k@vger.kernel.org, Russell King <linux@armlinux.org.uk>, linux-arm-kernel@lists.infradead.org
 List-Id: linux-m68k@vger.kernel.org
 
-M68k no longer uses arch_gettimeoffset.
+On Fri, 24 May 2019 22:18:17 +0200 Jann Horn <jannh@google.com> wrote:
 
-Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
----
-v2:
-  - Enhance one-line summary.
+> load_flat_shared_library() is broken: It only calls load_flat_file() if
+> prepare_binprm() returns zero, but prepare_binprm() returns the number of
+> bytes read - so this only happens if the file is empty.
 
-Queueing in m68k-for-v5.2, on top of the clocksource conversion.
-Sorry for missing this before.
+ouch.
 
- Documentation/features/time/modern-timekeeping/arch-support.txt | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+> Instead, call into load_flat_file() if the number of bytes read is
+> non-negative. (Even if the number of bytes is zero - in that case,
+> load_flat_file() will see nullbytes and return a nice -ENOEXEC.)
+> 
+> In addition, remove the code related to bprm creds and stop using
+> prepare_binprm() - this code is loading a library, not a main executable,
+> and it only actually uses the members "buf", "file" and "filename" of the
+> linux_binprm struct. Instead, call kernel_read() directly.
+> 
+> Cc: stable@vger.kernel.org
+> Fixes: 287980e49ffc ("remove lots of IS_ERR_VALUE abuses")
+> Signed-off-by: Jann Horn <jannh@google.com>
+> ---
+> I only found the bug by looking at the code, I have not verified its
+> existence at runtime.
+> Also, this patch is compile-tested only.
+> It would be nice if someone who works with nommu Linux could have a
+> look at this patch.
 
-diff --git a/Documentation/features/time/modern-timekeeping/arch-support.txt b/Documentation/features/time/modern-timekeeping/arch-support.txt
-index 2855dfe2464d4a34..1d46da165b75e127 100644
---- a/Documentation/features/time/modern-timekeeping/arch-support.txt
-+++ b/Documentation/features/time/modern-timekeeping/arch-support.txt
-@@ -15,7 +15,7 @@
-     |       h8300: |  ok  |
-     |     hexagon: |  ok  |
-     |        ia64: |  ok  |
--    |        m68k: | TODO |
-+    |        m68k: |  ok  |
-     |  microblaze: |  ok  |
-     |        mips: |  ok  |
-     |       nds32: |  ok  |
--- 
-2.17.1
+287980e49ffc was three years ago!  Has it really been broken for all
+that time?  If so, it seems a good source of freed disk space...
