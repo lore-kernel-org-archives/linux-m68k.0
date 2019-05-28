@@ -1,7 +1,7 @@
-From: Greg Ungerer <gregungerer@westnet.com.au>
+From: Greg Ungerer <gerg@linux-m68k.org>
 Subject: Re: [PATCH] binfmt_flat: make load_flat_shared_library() work
-Date: Tue, 28 May 2019 20:56:23 +1000
-Message-ID: <aa7f66ad-dab5-f0b6-ade9-7d3698d509a9@westnet.com.au>
+Date: Tue, 28 May 2019 20:56:37 +1000
+Message-ID: <6956cfe5-90d4-aad4-48e3-66b0ece91fed@linux-m68k.org>
 References: <20190524201817.16509-1-jannh@google.com>
  <20190525144304.e2b9475a18a1f78a964c5640@linux-foundation.org>
  <CAG48ez36xJ9UA8gWef3+1rHQwob5nb8WP3RqnbT8GEOV9Z38jA@mail.gmail.com>
