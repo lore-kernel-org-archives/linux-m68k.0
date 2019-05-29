@@ -1,20 +1,19 @@
 From: Arnd Bergmann <arnd@arndb.de>
 Subject: Re: [PATCH] binfmt_flat: make load_flat_shared_library() work
-Date: Wed, 29 May 2019 13:52:02 +0200
-Message-ID: <CAK8P3a2wA4R-V-W1+pPTaqVP7Dr=170G2a76AzASpx1xtRWj0Q@mail.gmail.com>
+Date: Wed, 29 May 2019 14:05:21 +0200
+Message-ID: <CAK8P3a0b7MBn+84jh0Y2zhFLLAqZ2tMvFDFF9Kw=breRLH4Utg@mail.gmail.com>
 References: <20190524201817.16509-1-jannh@google.com> <20190525144304.e2b9475a18a1f78a964c5640@linux-foundation.org>
- <CAG48ez36xJ9UA8gWef3+1rHQwob5nb8WP3RqnbT8GEOV9Z38jA@mail.gmail.com> <aa7f66ad-dab5-f0b6-ade9-7d3698d509a9@westnet.com.au>
+ <CAG48ez36xJ9UA8gWef3+1rHQwob5nb8WP3RqnbT8GEOV9Z38jA@mail.gmail.com> <6956cfe5-90d4-aad4-48e3-66b0ece91fed@linux-m68k.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="UTF-8"
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <aa7f66ad-dab5-f0b6-ade9-7d3698d509a9@westnet.com.au>
+In-Reply-To: <6956cfe5-90d4-aad4-48e3-66b0ece91fed@linux-m68k.org>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Greg Ungerer <gregungerer@westnet.com.au>
-Cc: Jann Horn <jannh@google.com>, Andrew Morton <akpm@linux-foundation.org>, Alexander Viro <viro@zeniv.linux.org.uk>, linux-fsdevel <linux-fsdevel@vger.kernel.org>, kernel list <linux-kernel@vger.kernel.org>, Kees Cook <keescook@chromium.org>, Nicolas Pitre <nicolas.pitre@linaro.org>, Geert Uytterhoeven <geert@linux-m68k.org>, Linux/m68k <linux-m68k@vger.kernel.org>, Russell King <linux@armlinux.org.uk>, Linux ARM <linux-arm-kernel@lists.infradead.org>
+To: Greg Ungerer <gerg@linux-m68k.org>
+Cc: Jann Horn <jannh@google.com>, Andrew Morton <akpm@linux-foundation.org>, Alexander Viro <viro@zeniv.linux.org.uk>, linux-fsdevel <linux-fsdevel@vger.kernel.org>, kernel list <linux-kernel@vger.kernel.org>, Kees Cook <keescook@chromium.org>, Nicolas Pitre <nicolas.pitre@linaro.org>, Geert Uytterhoeven <geert@linux-m68k.org>, Linux/m68k <linux-m68k@vger.kernel.org>, Russell King <linux@armlinux.org.uk>, Linux ARM <linux-arm-kernel@lists.infradead.org>, Sergei Poselenov <sposelenov@emcraft.com>
 List-Id: linux-m68k@vger.kernel.org
 
-On Tue, May 28, 2019 at 12:56 PM Greg Ungerer
-<gregungerer@westnet.com.au> wrote:
+On Tue, May 28, 2019 at 12:56 PM Greg Ungerer <gerg@linux-m68k.org> wrote:
 > On 27/5/19 11:38 pm, Jann Horn wrote:
 > > On Sat, May 25, 2019 at 11:43 PM Andrew Morton
 > > <akpm@linux-foundation.org> wrote:
@@ -22,6 +21,8 @@ On Tue, May 28, 2019 at 12:56 PM Greg Ungerer
 > >>> load_flat_shared_library() is broken: It only calls load_flat_file() if
 > >>> prepare_binprm() returns zero, but prepare_binprm() returns the number of
 > >>> bytes read - so this only happens if the file is empty.
+> >>
+> >> ouch.
 > >>
 > >>> Instead, call into load_flat_file() if the number of bytes read is
 > >>> non-negative. (Even if the number of bytes is zero - in that case,
@@ -50,9 +51,19 @@ On Tue, May 28, 2019 at 12:56 PM Greg Ungerer
 >
 > I have not used shared libraries on m68k non-mmu setups for
 > a very long time. At least 10 years I would think.
->
-> Regards
-> Greg
->
->
->
+
+I think Emcraft have a significant customer base running ARM NOMMU
+Linux, I wonder whether they would have run into this (adding
+Sergei to Cc).
+My suspicion is that they use only binfmt-elf-fdpic, not binfmt-flat.
+
+The only architectures I see that enable binfmt-flat are sh, xtensa
+and h8300, but only arch/sh uses CONFIG_BINFMT_SHARED_FLAT
+for a few machine specific configurations, and I'm in turn fairly sure
+those machines have not run a recent kernel in many years.
+
+The one SH nommu platform likely to have users is j2, and that is
+probably always used with musl-libc with elf-fdpic (given that
+Rich Felker maintains both the kernel port and the library).
+
+      Arnd
