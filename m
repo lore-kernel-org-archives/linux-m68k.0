@@ -1,38 +1,45 @@
-From: John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
+From: Arnd Bergmann <arnd@arndb.de>
 Subject: Re: [PATCH] binfmt_flat: make load_flat_shared_library() work
-Date: Wed, 29 May 2019 15:18:14 +0200
-Message-ID: <f6a74765-8eb8-6170-1f75-1a8ef5835427@physik.fu-berlin.de>
-References: <20190524201817.16509-1-jannh@google.com>
- <20190525144304.e2b9475a18a1f78a964c5640@linux-foundation.org>
+Date: Wed, 29 May 2019 15:41:31 +0200
+Message-ID: <CAK8P3a0zj126XSGjMbiDJDkY8sF+6JNWH0VsJEUAga6OGHV0vg@mail.gmail.com>
+References: <20190524201817.16509-1-jannh@google.com> <20190525144304.e2b9475a18a1f78a964c5640@linux-foundation.org>
  <CAG48ez36xJ9UA8gWef3+1rHQwob5nb8WP3RqnbT8GEOV9Z38jA@mail.gmail.com>
- <6956cfe5-90d4-aad4-48e3-66b0ece91fed@linux-m68k.org>
- <7cac8be1-1667-6b6e-d2b8-d6ec5dc6da09@physik.fu-berlin.de>
- <mvma7f5bdu1.fsf@linux-m68k.org>
+ <6956cfe5-90d4-aad4-48e3-66b0ece91fed@linux-m68k.org> <CAK8P3a0b7MBn+84jh0Y2zhFLLAqZ2tMvFDFF9Kw=breRLH4Utg@mail.gmail.com>
+ <889fc718-b662-8235-5d60-9d330e77cf18@linux-m68k.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="UTF-8"
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <mvma7f5bdu1.fsf@linux-m68k.org>
-Content-Language: en-US
+In-Reply-To: <889fc718-b662-8235-5d60-9d330e77cf18@linux-m68k.org>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Andreas Schwab <schwab@linux-m68k.org>
-Cc: Greg Ungerer <gerg@linux-m68k.org>, Jann Horn <jannh@google.com>, Andrew Morton <akpm@linux-foundation.org>, Alexander Viro <viro@zeniv.linux.org.uk>, linux-fsdevel <linux-fsdevel@vger.kernel.org>, kernel list <linux-kernel@vger.kernel.org>, Kees Cook <keescook@chromium.org>, Nicolas Pitre <nicolas.pitre@linaro.org>, Arnd Bergmann <arnd@arndb.de>, Geert Uytterhoeven <geert@linux-m68k.org>, linux-m68k@vger.kernel.org, Russell King <linux@armlinux.org.uk>, linux-arm-kernel@lists.infradead.org
+To: Greg Ungerer <gregungerer00@gmail.com>
+Cc: Jann Horn <jannh@google.com>, Andrew Morton <akpm@linux-foundation.org>, Alexander Viro <viro@zeniv.linux.org.uk>, linux-fsdevel <linux-fsdevel@vger.kernel.org>, kernel list <linux-kernel@vger.kernel.org>, Kees Cook <keescook@chromium.org>, Nicolas Pitre <nicolas.pitre@linaro.org>, Geert Uytterhoeven <geert@linux-m68k.org>, Linux/m68k <linux-m68k@vger.kernel.org>, Russell King <linux@armlinux.org.uk>, Linux ARM <linux-arm-kernel@lists.infradead.org>, Sergei Poselenov <sposelenov@emcraft.com>
 List-Id: linux-m68k@vger.kernel.org
 
-On 5/29/19 3:16 PM, Andreas Schwab wrote:
->>> I have not used shared libraries on m68k non-mmu setups for
->>> a very long time. At least 10 years I would think.
->> We use shared libraries in Debian on m68k and Andreas Schwab uses them
->> on openSUSE/m68k.
-> 
-> Nope, I don't use non-mmu.
+On Wed, May 29, 2019 at 2:29 PM Greg Ungerer <gregungerer00@gmail.com> wrote:
+> On 29/5/19 10:05 pm, Arnd Bergmann wrote:
+> > On Tue, May 28, 2019 at 12:56 PM Greg Ungerer <gerg@linux-m68k.org> wrote:
+> >> On 27/5/19 11:38 pm, Jann Horn wrote:
+> >>> On Sat, May 25, 2019 at 11:43 PM Andrew Morton
+> >>> <akpm@linux-foundation.org> wrote:
+> >>> Maybe... but I didn't want to rip it out without having one of the
+> >>> maintainers confirm that this really isn't likely to be used anymore.
+> >>
+> >> I have not used shared libraries on m68k non-mmu setups for
+> >> a very long time. At least 10 years I would think.
+> >
+> > I think Emcraft have a significant customer base running ARM NOMMU
+> > Linux, I wonder whether they would have run into this (adding
+> > Sergei to Cc).
+> > My suspicion is that they use only binfmt-elf-fdpic, not binfmt-flat.
+> >
+> > The only architectures I see that enable binfmt-flat are sh, xtensa
+> > and h8300, but only arch/sh uses CONFIG_BINFMT_SHARED_FLAT
+>
+> m68k uses enables it too. It is the only binary format supported
+> when running no-mmu on m68k. (You can use it with MMU enabled too
+> if you really want too).
 
-Sorry, I missed the "non-mmu" part in Greg's mail :).
+My mistake, I meant to write 'the only architectures /other than m68k/",
+which you had already mentioned above.
 
-Adrian
-
--- 
- .''`.  John Paul Adrian Glaubitz
-: :' :  Debian Developer - glaubitz@debian.org
-`. `'   Freie Universitaet Berlin - glaubitz@physik.fu-berlin.de
-  `-    GPG: 62FF 8A75 84E0 2956 9546  0006 7426 3B37 F5B5 F913
+    Arnd
