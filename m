@@ -1,39 +1,55 @@
-From: John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
+From: Max Staudt <max@enpas.org>
 Subject: Re: [PATCH v3] ata/pata_buddha: Probe via modalias instead of
  initcall
-Date: Mon, 29 Jul 2019 14:20:34 +0200
-Message-ID: <2fd27e50-8462-45e0-f158-72425ff648ac@physik.fu-berlin.de>
+Date: Mon, 29 Jul 2019 16:31:36 +0200
+Message-ID: <b7473bd6-650d-f0b6-0d30-99e3b6b942b5@enpas.org>
 References: <20190725180825.31508-1-max@enpas.org>
  <CAMuHMdURm-9nazOBTL8uRH8WMt7gi=QUYy0qr9kaxzczCr+ujg@mail.gmail.com>
  <9cde6e79-52da-e0c0-f452-6afc2e5fa5ee@enpas.org>
+ <CAMuHMdUGsfzQg8xy2OqWfuo09MxwZ5OJz=t5CARJp+A1ZVtqaA@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 7bit
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <9cde6e79-52da-e0c0-f452-6afc2e5fa5ee@enpas.org>
+In-Reply-To: <CAMuHMdUGsfzQg8xy2OqWfuo09MxwZ5OJz=t5CARJp+A1ZVtqaA@mail.gmail.com>
 Content-Language: en-US
 Sender: linux-kernel-owner@vger.kernel.org
-To: Max Staudt <max@enpas.org>, Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>, Jens Axboe <axboe@kernel.dk>, Michael Schmitz <schmitzmic@gmail.com>, linux-ide@vger.kernel.org, Linux/m68k <linux-m68k@vger.kernel.org>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+To: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>, Jens Axboe <axboe@kernel.dk>, John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>, Michael Schmitz <schmitzmic@gmail.com>, linux-ide@vger.kernel.org, Linux/m68k <linux-m68k@vger.kernel.org>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
 List-Id: linux-m68k@vger.kernel.org
 
-Hi Max!
+On 07/29/2019 01:30 PM, Geert Uytterhoeven wrote:
+>> What shall I do? Maybe as a stop-gap measure, we could hard-code a
+>> module_init() again, just for X-Surf? It's been good enough until a
+>> few weeks ago, so what could go wrong ;)
+> 
+> In the short run: keep on using drivers/ide/buddha.c?
 
-On 7/29/19 1:09 PM, Max Staudt wrote:
-> Unfortunately, I don't have any MFD hardware other than a single Buddha to test this with. I especially don't have an X-Surf, hence no good way of testing this other than the two IDE channels on my Buddha. WinUAE doesn't seem to emulate the IDE controller either.
+See Bartlomiej's reply to your email: It suffers from the same problem. Building it in will result in the Buddha not being recognised, as the IDE driver scans for it before Zorro si initialised.
 
-I have both an X-Surf100 and a Buddha and would be happy to provide an
-account on the Amiga with that hardware for you. You can run any
-tests you like and install any kernel you want.
+@Bartlomiej: You're not missing anything, the problem has gone unnoticed for ages ;)
+However, using ide/buddha would work exactly as it has before: When loaded as a module after Zorro has been initialised, it works just fine.
 
-If you need an older X-Surf version, you could always ask the guys on
-the a1k.org forum. They are usually very kind to loan hardware for these
-purposes.
+We *could* also temporarily split off a pata_buddha_xsurf driver: pata_buddha would be auto-probed by the new framework, and pata_buddha_xsurf would do the old module_init() dance.
+That is, until the MFD conversion happens.
 
-Adrian
 
--- 
- .''`.  John Paul Adrian Glaubitz
-: :' :  Debian Developer - glaubitz@debian.org
-`. `'   Freie Universitaet Berlin - glaubitz@physik.fu-berlin.de
-  `-    GPG: 62FF 8A75 84E0 2956 9546  0006 7426 3B37 F5B5 F913
+> Your single Buddha should be sufficient to convert pata_buddha.c from
+> a plain Zorro driver to an MFD cell driver, and test it.
+> I expect the buddha-mfd.c MFD driver from my zorro-mfd branch to
+> work as-is, or with very minor changes.
+> 
+> However, to keep X-Surf working, this needs to be synchronized with
+> a Zorro MFD conversion of the zorro8390 driver, too.
+
+Yeah, this second part is where I get caught up. I'd really like to test this with a real X-Surf, or have someone test it, before sending it upstream.
+
+
+> Yes, the clockport could be added as an extra MFD cell.  Later, drivers can
+> be written to bind against the clockport cell.
+
+Yes, but how can we assign specific drivers to specific clockports? As they are non-enumerable (are they?), we can't auto-probe them.
+
+
+
+Max
