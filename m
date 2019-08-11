@@ -1,78 +1,317 @@
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: Re: [PATCH v3] ata/pata_buddha: Probe via modalias instead of initcall
-Date: Mon, 29 Jul 2019 17:41:11 +0200
-Message-ID: <CAMuHMdXwWHz9pkOKf4NiPF=GXS-vTU20Hu9QNni9ZWVds2bWGw@mail.gmail.com>
-References: <20190725180825.31508-1-max@enpas.org> <CAMuHMdURm-9nazOBTL8uRH8WMt7gi=QUYy0qr9kaxzczCr+ujg@mail.gmail.com>
- <9cde6e79-52da-e0c0-f452-6afc2e5fa5ee@enpas.org> <CAMuHMdUGsfzQg8xy2OqWfuo09MxwZ5OJz=t5CARJp+A1ZVtqaA@mail.gmail.com>
- <b7473bd6-650d-f0b6-0d30-99e3b6b942b5@enpas.org> <CAMuHMdXVzX6cm4uTe7OipAuR4viye32yKuHWJBzuLpR_wqyRhQ@mail.gmail.com>
- <7a6f887f-b674-4db7-a09a-a028219ebce0@enpas.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
+From: Max Staudt <max@enpas.org>
+Subject: [PATCH] i2c/busses: Add i2c-icy for I2C on m68k/Amiga
+Date: Sun, 11 Aug 2019 06:32:53 +0200
+Message-ID: <20190811043253.24938-1-max@enpas.org>
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <7a6f887f-b674-4db7-a09a-a028219ebce0@enpas.org>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Max <max@enpas.org>
-Cc: Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>, Jens Axboe <axboe@kernel.dk>, John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>, Michael Schmitz <schmitzmic@gmail.com>, linux-ide@vger.kernel.org, Linux/m68k <linux-m68k@vger.kernel.org>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+To: linux-i2c@vger.kernel.org, Wolfram Sang <wsa+renesas@sang-engineering.com>
+Cc: linux-m68k@vger.kernel.org, linux-kernel@vger.kernel.org, glaubitz@physik.fu-berlin.de, Max Staudt <max@enpas.org>
 List-Id: linux-m68k@vger.kernel.org
 
-Hi Max,
+This is the i2c-icy driver for the ICY board for Amiga computers.
+It connects a PCF8584 I2C controller to the Zorro bus, providing I2C
+connectivity. The original documentation can be found on Aminet:
 
-On Mon, Jul 29, 2019 at 5:38 PM Max <max@enpas.org> wrote:
-> On 07/29/2019 05:26 PM, Geert Uytterhoeven wrote:
-> >> We *could* also temporarily split off a pata_buddha_xsurf driver: pata_buddha would be auto-probed by the new framework, and pata_buddha_xsurf would do the old module_init() dance.
-> >> That is, until the MFD conversion happens.
-> >
-> > Or add temporarily a late_initcall() to find all X-Surf boards using
-> > zorro_find_device(), create fake zorro_device_id entries, and pass both
-> > to pata_buddha_probe()?  A big ugly, but that should work.
->
-> Sounds good, and it replaces modile_init() at the same time. I'll implement this.
+https://aminet.net/package/docs/hard/icy
 
-Thanks!
+Since the 2019 a1k.org community re-print of these PCBs sports an
+LTC2990 hwmon chip as an example use case, this driver autoprobes for
+that as well. If it is present, modprobing ltc2990 is sufficient.
 
-> >>> Your single Buddha should be sufficient to convert pata_buddha.c from
-> >>> a plain Zorro driver to an MFD cell driver, and test it.
-> >>> I expect the buddha-mfd.c MFD driver from my zorro-mfd branch to
-> >>> work as-is, or with very minor changes.
-> >>>
-> >>> However, to keep X-Surf working, this needs to be synchronized with
-> >>> a Zorro MFD conversion of the zorro8390 driver, too.
-> >>
-> >> Yeah, this second part is where I get caught up. I'd really like to test this with a real X-Surf, or have someone test it, before sending it upstream.
-> >
-> > Of course it should be tested ;-)
-> > Converting zorro8390.c from a zorro driver to an MFD cell driver should
-> > not require that many changes, most bugs should be caught by code review.
-> > I already have a skeleton 8390-cell.c driver in my zorro-mfd branch.
->
-> Honestly, at this point I'd rather do the hack above and keep the MFD stuff for later. Let's take it step by step. I'd prefer not to touch 8390 for now, unless I can get my hands on an X-Surf. I'd like to help with the MFD stuff as a way to enable the clockport and my SilverSurfer on it, but for the moment I'd rather move that further down the road.
+IRQ support is currently not implemented, as i2c-algo-pcf is built for
+the ISA bus and a straight implementation of the same stack locks up a
+Zorro machine.
 
-OK, fine for me, of course.
+Tested-by: Max Staudt <max@enpas.org>
+Signed-off-by: Max Staudt <max@enpas.org>
+---
+ MAINTAINERS                  |   6 ++
+ drivers/i2c/busses/Kconfig   |  11 +++
+ drivers/i2c/busses/Makefile  |   1 +
+ drivers/i2c/busses/i2c-icy.c | 224 +++++++++++++++++++++++++++++++++++++++++++
+ 4 files changed, 242 insertions(+)
+ create mode 100644 drivers/i2c/busses/i2c-icy.c
 
-> >>> Yes, the clockport could be added as an extra MFD cell.  Later, drivers can
-> >>> be written to bind against the clockport cell.
-> >>
-> >> Yes, but how can we assign specific drivers to specific clockports? As they are non-enumerable (are they?), we can't auto-probe them.
-> >
-> > That's something the user has to configure.
-> > The Buddha MFD driver registers an "a1200-clockport" cell, which is
-> > really a separate platform device.
-> > The user writes the name of the actual driver to use to the device's
-> > driver_override file in sysfs, after which the driver is bound
-> > automatically.  See Documentation/ABI/testing/sysfs-bus-platform,
->
-> That sounds just like what I was hoping for, thanks.
-
-I'm happy you like it ;-)
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
+diff --git a/MAINTAINERS b/MAINTAINERS
+index 1be025959..70336c083 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -7705,6 +7705,12 @@ S:	Maintained
+ F:	drivers/mfd/lpc_ich.c
+ F:	drivers/gpio/gpio-ich.c
+ 
++ICY I2C DRIVER
++M:	Max Staudt <max@enpas.org>
++L:	linux-i2c@vger.kernel.org
++S:	Maintained
++F:	drivers/i2c/busses/i2c-icy.c
++
+ IDE SUBSYSTEM
+ M:	"David S. Miller" <davem@davemloft.net>
+ L:	linux-ide@vger.kernel.org
+diff --git a/drivers/i2c/busses/Kconfig b/drivers/i2c/busses/Kconfig
+index ee5dfb5ae..e798b8517 100644
+--- a/drivers/i2c/busses/Kconfig
++++ b/drivers/i2c/busses/Kconfig
+@@ -1300,6 +1300,17 @@ config I2C_ELEKTOR
+ 	  This support is also available as a module.  If so, the module
+ 	  will be called i2c-elektor.
+ 
++config I2C_ICY
++	tristate "ICY Zorro card"
++	depends on ZORRO && BROKEN_ON_SMP
++	select I2C_ALGOPCF
++	help
++	  This supports the PCF8584 Zorro bus I2C adapter, known as ICY.
++	  Say Y if you own such an adapter.
++
++	  This support is also available as a module.  If so, the module
++	  will be called i2c-icy.
++
+ config I2C_MLXCPLD
+ 	tristate "Mellanox I2C driver"
+ 	depends on X86_64
+diff --git a/drivers/i2c/busses/Makefile b/drivers/i2c/busses/Makefile
+index a3245231b..d0e1c3d4e 100644
+--- a/drivers/i2c/busses/Makefile
++++ b/drivers/i2c/busses/Makefile
+@@ -139,6 +139,7 @@ obj-$(CONFIG_I2C_BCM_KONA)	+= i2c-bcm-kona.o
+ obj-$(CONFIG_I2C_BRCMSTB)	+= i2c-brcmstb.o
+ obj-$(CONFIG_I2C_CROS_EC_TUNNEL)	+= i2c-cros-ec-tunnel.o
+ obj-$(CONFIG_I2C_ELEKTOR)	+= i2c-elektor.o
++obj-$(CONFIG_I2C_ICY)		+= i2c-icy.o
+ obj-$(CONFIG_I2C_MLXCPLD)	+= i2c-mlxcpld.o
+ obj-$(CONFIG_I2C_OPAL)		+= i2c-opal.o
+ obj-$(CONFIG_I2C_PCA_ISA)	+= i2c-pca-isa.o
+diff --git a/drivers/i2c/busses/i2c-icy.c b/drivers/i2c/busses/i2c-icy.c
+new file mode 100644
+index 000000000..037fdfe32
+--- /dev/null
++++ b/drivers/i2c/busses/i2c-icy.c
+@@ -0,0 +1,224 @@
++// SPDX-License-Identifier: GPL-2.0
++/*
++ * I2C driver for stand-alone PCF8584 style adapters on Zorro cards
++ *
++ * Original ICY documentation can be found on Aminet:
++ * https://aminet.net/package/docs/hard/icy
++ *
++ * There has been a modern community re-print of this design in 2019:
++ * https://www.a1k.org/forum/index.php?threads/70106/
++ *
++ * The card is basically a Philips PCF8584 connected straight to the
++ * beginning of the AutoConfig'd address space (register S1 on base+2),
++ * with /INT on /INT2 on the Zorro bus.
++ *
++ * Copyright (c) 2019 Max Staudt <max@enpas.org>
++ *
++ * This is heavily based on i2c-elektor.c and thanks go to:
++ *
++ * Simon G. Vogl
++ * Hans Berglund
++ * Kyosti Malkki <kmalkki@cc.hut.fi>
++ * Frodo Looijaard <frodol@dds.nl>
++ * Oleg I. Vdovikin
++ *
++ *
++ * IRQ support is currently not implemented.
++ *
++ * As it turns out, i2c-algo-pcf is really written with i2c-elektor's
++ * edge-triggered ISA interrupts in mind, while the Amiga's Zorro bus has
++ * level-triggered interrupts. This means that once an interrupt occurs, we
++ * have to tell the PCF8584 to shut up immediately, or it will keep the
++ * interrupt line busy and cause an IRQ storm.
++
++ * However, because of the PCF8584's host-side protocol, there is no good
++ * way to just quieten it without side effects. Rather, we have to perform
++ * the next read/write operation straight away, which will reset the /INT
++ * pin. This entails re-designing the core of i2c-algo-pcf in the future.
++ * For now, we never request an IRQ from the PCF8584, and poll it instead.
++ */
++
++#include <linux/kernel.h>
++#include <linux/ioport.h>
++#include <linux/module.h>
++#include <linux/delay.h>
++#include <linux/init.h>
++
++#include <linux/i2c.h>
++#include <linux/i2c-algo-pcf.h>
++#include <linux/io.h>
++
++#include <asm/amigaints.h>
++#include <linux/zorro.h>
++
++#include "../algos/i2c-algo-pcf.h"
++
++
++static int clock = 0x1c;
++module_param(clock, int, 0444);
++
++
++
++struct icy_i2c {
++	struct i2c_adapter adapter;
++
++	void __iomem *reg_s0;
++	void __iomem *reg_s1;
++	struct i2c_client *client_ltc2990;
++};
++
++
++
++/*
++ * Functions called by i2c-algo-pcf
++ */
++static void icy_pcf_setbyte(void *data, int ctl, int val)
++{
++	struct icy_i2c *i2c = (struct icy_i2c *)data;
++
++	u8 __iomem *address = ctl ? i2c->reg_s1 : i2c->reg_s0;
++
++	iowrite8(val, address);
++}
++
++static int icy_pcf_getbyte(void *data, int ctl)
++{
++	struct icy_i2c *i2c = (struct icy_i2c *)data;
++
++	u8 __iomem *address = ctl ? i2c->reg_s1 : i2c->reg_s0;
++	int val = ioread8(address);
++
++	return val;
++}
++
++static int icy_pcf_getown(void *data)
++{
++	return 0x55;
++}
++
++static int icy_pcf_getclock(void *data)
++{
++	return clock;
++}
++
++static void icy_pcf_waitforpin(void *data)
++{
++	udelay(100);
++}
++
++
++
++/*
++ * Main i2c-icy part
++ */
++static struct i2c_board_info icy_ltc2990_info = {
++	I2C_BOARD_INFO("ltc2990", 0x4c),
++};
++
++static unsigned short const icy_ltc2990_addresses[] = {0x4c, I2C_CLIENT_END};
++
++
++static int icy_probe(struct zorro_dev *z,
++			 const struct zorro_device_id *ent)
++{
++	struct icy_i2c *i2c;
++	struct i2c_algo_pcf_data *algo_data;
++
++
++	i2c = devm_kzalloc(&z->dev, sizeof(*i2c), GFP_KERNEL);
++	if (!i2c)
++		return -ENOMEM;
++
++	algo_data = devm_kzalloc(&z->dev, sizeof(*algo_data), GFP_KERNEL);
++	if (!algo_data)
++		return -ENOMEM;
++
++	dev_set_drvdata(&z->dev, i2c);
++	i2c->adapter.dev.parent = &z->dev;
++	i2c->adapter.owner = THIS_MODULE;
++	i2c->adapter.class = I2C_CLASS_DEPRECATED;
++	/* i2c->adapter.algo assigned by i2c_pcf_add_bus() */
++	i2c->adapter.algo_data = algo_data;
++	strlcpy(i2c->adapter.name, "ICY I2C Zorro adapter",
++		sizeof(i2c->adapter.name));
++
++	if (!devm_request_mem_region(&z->dev,
++				     z->resource.start,
++				     4, i2c->adapter.name))
++		return -ENXIO;
++
++	/* Driver private data */
++	i2c->reg_s0 = ZTWO_VADDR(z->resource.start);
++	i2c->reg_s1 = ZTWO_VADDR(z->resource.start + 2);
++
++	algo_data->data = (void *)i2c;
++	algo_data->setpcf     = icy_pcf_setbyte;
++	algo_data->getpcf     = icy_pcf_getbyte;
++	algo_data->getown     = icy_pcf_getown;
++	algo_data->getclock   = icy_pcf_getclock;
++	algo_data->waitforpin = icy_pcf_waitforpin;
++
++	if (i2c_pcf_add_bus(&i2c->adapter)) {
++		dev_err(&z->dev, "i2c_pcf_add_bus() failed\n");
++		return -ENXIO;
++	}
++
++	dev_info(&z->dev, "ICY I2C controller at %#x, IRQ not implemented\n",
++		 z->resource.start);
++
++	/*
++	 * The 2019 a1k.org PCBs have an LTC2990 at 0x4c, so start
++	 * it automatically once ltc2990 is modprobed.
++	 *
++	 * in0 is the voltage of the internal 5V power supply.
++	 * temp1 is the temperature inside the chip.
++	 *
++	 * Configuration 0x18 enables all sensors on this PCB:
++	 *  # modprobe i2c-dev
++	 *  # i2cset 0 0x4c 1 0x18
++	 *  # modprobe ltc2990
++	 * in1 will be the voltage of the 5V rail, divided by 2.
++	 * in2 will be the voltage of the 12V rail, divided by 4.
++	 * temp3 will be measured using a PCB loop next the chip.
++	 */
++	i2c->client_ltc2990 = i2c_new_probed_device(&i2c->adapter,
++						    &icy_ltc2990_info,
++						    icy_ltc2990_addresses,
++						    NULL);
++
++	return 0;
++}
++
++static void icy_remove(struct zorro_dev *z)
++{
++	struct icy_i2c *i2c = dev_get_drvdata(&z->dev);
++
++	i2c_unregister_device(i2c->client_ltc2990);
++
++	i2c_del_adapter(&i2c->adapter);
++}
++
++
++
++static const struct zorro_device_id icy_zorro_tbl[] = {
++	{ ZORRO_ID(VMC, 15, 0), },
++	{ 0 }
++};
++
++MODULE_DEVICE_TABLE(zorro, icy_zorro_tbl);
++
++static struct zorro_driver icy_driver = {
++	.name           = "i2c-icy",
++	.id_table       = icy_zorro_tbl,
++	.probe          = icy_probe,
++	.remove         = icy_remove,
++};
++
++module_driver(icy_driver,
++	      zorro_register_driver,
++	      zorro_unregister_driver);
++
++
++MODULE_AUTHOR("Max Staudt <max@enpas.org>");
++MODULE_DESCRIPTION("I2C bus via PCF8584 on ICY Zorro card");
++MODULE_LICENSE("GPL");
 -- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+2.11.0
