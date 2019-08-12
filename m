@@ -1,78 +1,42 @@
 From: Max Staudt <max@enpas.org>
-Subject: Re: [PATCH] i2c/busses: Add i2c-icy for I2C on m68k/Amiga
-Date: Mon, 12 Aug 2019 12:43:34 +0200
-Message-ID: <fe5cf25f-1804-dc45-7010-01e602b3f3e5@enpas.org>
-References: <20190811043253.24938-1-max@enpas.org>
- <CAMuHMdVJJxjH-gPraW==smrkOOMcGYPKB8BPzrYPU4bstASX3A@mail.gmail.com>
+Subject: Re: [PATCH v4] ata/pata_buddha: Probe via modalias instead of
+ initcall
+Date: Mon, 12 Aug 2019 12:55:05 +0200
+Message-ID: <27f3bb2f-e4b8-cfc9-26da-d0984f1bf37b@enpas.org>
+References: <20190811153643.12029-1-max@enpas.org>
+ <CGME20190811192838epcas1p16ec0d26fc6282e92da6aa82cdea330a5@epcas1p1.samsung.com>
+ <d9fa8aca-62a4-5d4a-b63f-bdd628e6b304@enpas.org>
+ <4729c030-549e-8797-f947-1620cd61d516@samsung.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 7bit
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <CAMuHMdVJJxjH-gPraW==smrkOOMcGYPKB8BPzrYPU4bstASX3A@mail.gmail.com>
+In-Reply-To: <4729c030-549e-8797-f947-1620cd61d516@samsung.com>
 Content-Language: en-US
 Sender: linux-kernel-owner@vger.kernel.org
-To: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: Linux I2C <linux-i2c@vger.kernel.org>, Wolfram Sang <wsa+renesas@sang-engineering.com>, Linux/m68k <linux-m68k@vger.kernel.org>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
+To: Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>
+Cc: axboe@kernel.dk, linux-ide@vger.kernel.org, linux-m68k@vger.kernel.org, linux-kernel@vger.kernel.org, glaubitz@physik.fu-berlin.de, schmitzmic@gmail.com, geert@linux-m68k.org
 List-Id: linux-m68k@vger.kernel.org
 
-Hi Geert,
+Hi Bartlomiej,
 
 Thanks for your feedback!
-Replies below.
-
-On 08/12/2019 11:37 AM, Geert Uytterhoeven wrote:
-> What about the RTC? The schematics show both a ds1620 and pcf8583.
-
-Oh no! I missed those in the original project, in my mind it didn't have any extra hardware at all.
-
-I only own the new board with the LTC2990, and I'm pretty sure there are more of these in circulation than the original board. So if it's okay, I'll skip the DS1620 and PCF8583.
 
 
->> +static void icy_pcf_setbyte(void *data, int ctl, int val)
+On 08/12/2019 12:42 PM, Bartlomiej Zolnierkiewicz wrote:
 > 
-> icy_pcf_setpcf(), to match the callback name?
-
-Fair. I kept the name when I cloned i2c-elektor.c.
-
-
-> zorro_request_device()?
-> Ah, there's no devm_*() variant yet. OK.
-
-Also, I only wanted to reserve the first 4 bytes. Thinking about it now, it makes more sense to reserve the whole AutoConfig'd space, as I don't know whether the bus GAL maps the PCF8584 across the whole 64k repeatedly.
-
-
->> +       /*
->> +        * The 2019 a1k.org PCBs have an LTC2990 at 0x4c, so start
->> +        * it automatically once ltc2990 is modprobed.
->> +        *
->> +        * in0 is the voltage of the internal 5V power supply.
->> +        * temp1 is the temperature inside the chip.
->> +        *
->> +        * Configuration 0x18 enables all sensors on this PCB:
->> +        *  # modprobe i2c-dev
->> +        *  # i2cset 0 0x4c 1 0x18
+> ide/buddha driver cannot be unloaded currently (it lacks module_exit()).
 > 
-> What's the reason for the i2cset command?
-
-It sets the sensor modes in the LTC2990 and enables the three sensors listed below. I should have clarified this.
-
-I tried to integrate this in the driver, but ltc2990 only allows reading this configuration out of a device tree. Is there a good way to fake a DT entry in the init function?
-
-
+> [... snip ...]
 > 
->> +        *  # modprobe ltc2990
->> +        * in1 will be the voltage of the 5V rail, divided by 2.
->> +        * in2 will be the voltage of the 12V rail, divided by 4.
->> +        * temp3 will be measured using a PCB loop next the chip.
->> +        */
->> +       i2c->client_ltc2990 = i2c_new_probed_device(&i2c->adapter,
->> +                                                   &icy_ltc2990_info,
->> +                                                   icy_ltc2990_addresses,
->> +                                                   NULL);
->> +
->> +       return 0;
->> +}
+> It should work exactly like the old code in case of X-Surf,
+> what do we need to release?
 
 
-Thanks for your feedback,
+So what shall I do? Once an X-Surf has been detected, we refuse to unload, and therefore we never have to release X-Surf resources? That would simplify things a lot.
+
+What's a good way to do that, given that we now have module_exit() defined and an exit function is void?
+
+
+Thanks,
 Max
