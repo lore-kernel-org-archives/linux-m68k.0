@@ -1,70 +1,45 @@
-From: Max Staudt <max@enpas.org>
-Subject: [PATCH v2 4/4] i2c/busses/i2c-icy: Add platform_data for LTC2990
-Date: Tue, 13 Aug 2019 01:52:37 +0200
-Message-ID: <20190812235237.21797-4-max@enpas.org>
-References: <20190812235237.21797-1-max@enpas.org>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: Re: [PATCH] i2c/busses: Add i2c-icy for I2C on m68k/Amiga
+Date: Tue, 13 Aug 2019 08:53:14 +0200
+Message-ID: <CAMuHMdWr8VNBBVjgcu9wtdby-0pznEtg=GeVmAcrk78Of7gwNA@mail.gmail.com>
+References: <20190811043253.24938-1-max@enpas.org> <CAMuHMdVJJxjH-gPraW==smrkOOMcGYPKB8BPzrYPU4bstASX3A@mail.gmail.com>
+ <0d61e12f-5fc5-7cb6-755f-298ebf4c935f@enpas.org>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="UTF-8"
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20190812235237.21797-1-max@enpas.org>
+In-Reply-To: <0d61e12f-5fc5-7cb6-755f-298ebf4c935f@enpas.org>
 Sender: linux-kernel-owner@vger.kernel.org
-To: linux-i2c@vger.kernel.org, linux-hwmon@vger.kernel.org, Wolfram Sang <wsa+renesas@sang-engineering.com>, Jean Delvare <jdelvare@suse.com>, Guenter Roeck <linux@roeck-us.net>
-Cc: linux-m68k@vger.kernel.org, linux-kernel@vger.kernel.org, glaubitz@physik.fu-berlin.de, Max Staudt <max@enpas.org>
+To: Max Staudt <max@enpas.org>
+Cc: Linux I2C <linux-i2c@vger.kernel.org>, Wolfram Sang <wsa+renesas@sang-engineering.com>, Linux/m68k <linux-m68k@vger.kernel.org>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
 List-Id: linux-m68k@vger.kernel.org
 
-This enables the three additional inputs available on the 2019 a1k.org
-reprint of the ICY board:
+Hi Max,
 
-  in1 will be the voltage of the 5V rail, divided by 2.
-  in2 will be the voltage of the 12V rail, divided by 4.
-  temp3 will be measured using a PCB loop next the chip.
+On Tue, Aug 13, 2019 at 12:21 AM Max Staudt <max@enpas.org> wrote:
+> On 08/12/2019 11:37 AM, Geert Uytterhoeven wrote:
+> >> +       iowrite8(val, address);
+> >
+> > As this is on a Zorro bus, z_writeb()?
+>
+> I forgot to ask about this.
+>
+> What is the reasoning behind having a separate z_writeb() for Zorro?
+> As far as I can see in arch/m68k/include/asm this maps 1:1 to a direct memory access, and it prohibits cross-arch code as in i2c-elektor.
 
-Signed-off-by: Max Staudt <max@enpas.org>
----
- drivers/i2c/busses/i2c-icy.c | 18 +++++++++++++++++-
- 1 file changed, 17 insertions(+), 1 deletion(-)
+write*() and friends are intended for PCI, and thus little endian, while
+the Zorro bus is big endian. For byte accesses this doesn't matter,
+obviously.
 
-diff --git a/drivers/i2c/busses/i2c-icy.c b/drivers/i2c/busses/i2c-icy.c
-index 8125683c5..6ad9910a0 100644
---- a/drivers/i2c/busses/i2c-icy.c
-+++ b/drivers/i2c/busses/i2c-icy.c
-@@ -42,6 +42,7 @@
- 
- #include <linux/i2c.h>
- #include <linux/i2c-algo-pcf.h>
-+#include <linux/platform_data/ltc2990.h>
- 
- #include <asm/amigaints.h>
- #include <linux/zorro.h>
-@@ -106,8 +107,21 @@ static void icy_pcf_waitforpin(void *data)
- /*
-  * Main i2c-icy part
-  */
-+static struct ltc2990_platform_data icy_ltc2990_platform_data = {
-+	/*
-+	 * Additional sensors exposed by this platform data:
-+	 *
-+	 * in1 will be the voltage of the 5V rail, divided by 2.
-+	 * in2 will be the voltage of the 12V rail, divided by 4.
-+	 * temp3 will be measured using a PCB loop next the chip.
-+	 */
-+	.meas_mode = {0, 3},
-+};
-+
- static struct i2c_board_info icy_ltc2990_info = {
--	I2C_BOARD_INFO("ltc2990", 0x4c),
-+	.type		= "ltc2990",
-+	.addr		= 0x4c,
-+	.platform_data	= &icy_ltc2990_platform_data,
- };
- 
- static unsigned short const icy_ltc2990_addresses[] = {0x4c, I2C_CLIENT_END};
-@@ -167,6 +181,8 @@ static int icy_probe(struct zorro_dev *z,
- 	 *
- 	 * in0 is the voltage of the internal 5V power supply.
- 	 * temp1 is the temperature inside the chip.
-+	 *
-+	 * See platform data above for in1, in2, temp3.
- 	 */
- 	i2c->client_ltc2990 = i2c_new_probed_device(&i2c->adapter,
- 						    &icy_ltc2990_info,
+Note that this predates iowrite*(), which does have *be variants.
+If you want to add compile-testing to your driver, using iowrite*() is fine.
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
 -- 
-2.11.0
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
