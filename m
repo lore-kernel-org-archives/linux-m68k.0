@@ -1,33 +1,40 @@
-From: Markus Elfring <Markus.Elfring@web.de>
-Subject: Re: [v2 08/10] scripts: Coccinelle script for namespace
-	dependencies
-Date: Wed, 14 Aug 2019 14:00:23 +0200
-Message-ID: <d3c852b2-0e41-1a7e-2f98-d8fd23cb8c1a@web.de>
-References: <20190813121733.52480-9-maennich@google.com>
+From: Max Staudt <max@enpas.org>
+Subject: Re: [PATCH v2 3/4] hwmon/ltc2990: Add platform_data support
+Date: Wed, 14 Aug 2019 20:11:22 +0200
+Message-ID: <a35b87c2-6bcd-fc27-ceb5-6a18c06f5cc2@enpas.org>
+References: <20190812235237.21797-1-max@enpas.org>
+ <20190812235237.21797-3-max@enpas.org> <20190813080237.GA29986@roeck-us.net>
+ <6912362a-1f58-a9d6-f86b-d16930aa359c@enpas.org>
+ <275c42b3-9a91-a73a-0696-3c5a0a344509@roeck-us.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 7bit
-Return-path: <cocci-bounces@systeme.lip6.fr>
-In-Reply-To: <20190813121733.52480-9-maennich@google.com>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <275c42b3-9a91-a73a-0696-3c5a0a344509@roeck-us.net>
 Content-Language: en-US
-List-Unsubscribe: <https://systeme.lip6.fr/mailman/options/cocci>,
- <mailto:cocci-request@systeme.lip6.fr?subject=unsubscribe>
-List-Archive: <https://systeme.lip6.fr/pipermail/cocci>
-List-Post: <mailto:cocci@systeme.lip6.fr>
-List-Help: <mailto:cocci-request@systeme.lip6.fr?subject=help>
-List-Subscribe: <https://systeme.lip6.fr/mailman/listinfo/cocci>,
- <mailto:cocci-request@systeme.lip6.fr?subject=subscribe>
-Sender: cocci-bounces@systeme.lip6.fr
-Errors-To: cocci-bounces@systeme.lip6.fr
-To: Matthias Maennich <maennich@google.com>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Julia Lawall <Julia.Lawall@lip6.fr>, Martijn Coenen <maco@android.com>, Himanshu Jha <himanshujha199640@gmail.com>, cocci@systeme.lip6.fr, kernel-janitors@vger.kernel.org
-Cc: Kate Stewart <kstewart@linuxfoundation.org>, linux-m68k@vger.kernel.org, Oliver Neukum <oneukum@suse.com>, Mauro Carvalho Chehab <mchehab+samsung@kernel.org>, usb-storage@lists.one-eyed-alien.net, "H. Peter Anvin" <hpa@zytor.com>, Joel Fernandes <joel@joelfernandes.org>, Sam Ravnborg <sam@ravnborg.org>, linux-arch@vger.kernel.org, linux-scsi@vger.kernel.org, x86@kernel.org, Lucas De Marchi <lucas.de.marchi@gmail.com>, Ingo Molnar <mingo@redhat.com>, Alan Stern <stern@rowland.harvard.edu>, Geert Uytterhoeven <geert@linux-m68k.org>, kernel-team@android.com, ",
- linux-kernel"@vger.kernel.org, Sandeep Patil <sspatil@google.com>, Arnd Bergmann <arnd@arndb.de>, linux-kbuild@vger.kernel.org, Philippe Ombredanne <pombredanne@nexb.com>, Nicolas Palix <nicolas.palix@imag.fr>, Jonatha
+Sender: linux-kernel-owner@vger.kernel.org
+To: Guenter Roeck <linux@roeck-us.net>
+Cc: linux-i2c@vger.kernel.org, linux-hwmon@vger.kernel.org, Wolfram Sang <wsa+renesas@sang-engineering.com>, Jean Delvare <jdelvare@suse.com>, linux-m68k@vger.kernel.org, linux-kernel@vger.kernel.org, glaubitz@physik.fu-berlin.de
 List-Id: linux-m68k@vger.kernel.org
 
-+# This script requires at least spatch
-+# version 1.0.4.
+Hi Guenter,
 
-How do you think about to avoid the duplicate specification of this identification?
+Thanks for your feedback!
+Reply below.
 
-Regards,
-Markus
+
+On 08/13/2019 03:24 PM, Guenter Roeck wrote:
+> Sorry, I don't understand. Why exactly can't you replace of_property_read_u32_array()
+> with device_property_read_u32_array() and use fwnode_create_software_node()
+> in the calling code to set the properties ?
+
+Thanks for this hint.
+
+Turns out wcove is the only user of fwnode_create_software_node(), and intel_cht_int33fe is the only other driver to contain the string "software_node". Please bear with us if we didn't know about this handy trick yet. And handy it is!
+
+device_property_read_*() is also really helpful to know about, as it covers both the DT case, as well as other firmware interfaces - thanks for the hint. Is there any reason to ever use of_property_read_*() anymore?
+
+I've applied your suggested changes, and will send another patch round soon (I want to try one last thing). Please let me/us know what you think once it's on the list.
+
+
+Max
