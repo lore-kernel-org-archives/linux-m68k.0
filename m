@@ -1,40 +1,68 @@
-From: Max Staudt <max@enpas.org>
-Subject: Re: [PATCH v2 3/4] hwmon/ltc2990: Add platform_data support
-Date: Wed, 14 Aug 2019 20:11:22 +0200
-Message-ID: <a35b87c2-6bcd-fc27-ceb5-6a18c06f5cc2@enpas.org>
+From: Wolfram Sang <wsa@the-dreams.de>
+Subject: Re: [PATCH v2 1/4] i2c/busses: Add i2c-icy for I2C on m68k/Amiga
+Date: Wed, 14 Aug 2019 21:47:14 +0200
+Message-ID: <20190814194714.GB9756@kunai>
 References: <20190812235237.21797-1-max@enpas.org>
- <20190812235237.21797-3-max@enpas.org> <20190813080237.GA29986@roeck-us.net>
- <6912362a-1f58-a9d6-f86b-d16930aa359c@enpas.org>
- <275c42b3-9a91-a73a-0696-3c5a0a344509@roeck-us.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="cvVnyQ+4j833TQvp"
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <275c42b3-9a91-a73a-0696-3c5a0a344509@roeck-us.net>
-Content-Language: en-US
+Content-Disposition: inline
+In-Reply-To: <20190812235237.21797-1-max@enpas.org>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Guenter Roeck <linux@roeck-us.net>
-Cc: linux-i2c@vger.kernel.org, linux-hwmon@vger.kernel.org, Wolfram Sang <wsa+renesas@sang-engineering.com>, Jean Delvare <jdelvare@suse.com>, linux-m68k@vger.kernel.org, linux-kernel@vger.kernel.org, glaubitz@physik.fu-berlin.de
+To: Max Staudt <max@enpas.org>
+Cc: linux-i2c@vger.kernel.org, linux-hwmon@vger.kernel.org, Wolfram Sang <wsa+renesas@sang-engineering.com>, Jean Delvare <jdelvare@suse.com>, Guenter Roeck <linux@roeck-us.net>, linux-m68k@vger.kernel.org, linux-kernel@vger.kernel.org, glaubitz@physik.fu-berlin.de
 List-Id: linux-m68k@vger.kernel.org
 
-Hi Guenter,
 
-Thanks for your feedback!
-Reply below.
+--cvVnyQ+4j833TQvp
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
+Hi,
 
-On 08/13/2019 03:24 PM, Guenter Roeck wrote:
-> Sorry, I don't understand. Why exactly can't you replace of_property_read_u32_array()
-> with device_property_read_u32_array() and use fwnode_create_software_node()
-> in the calling code to set the properties ?
+Thanks for the patch. It looks mostly good.
 
-Thanks for this hint.
+> +static int clock = 0x1c;
+> +module_param(clock, int, 0444);
 
-Turns out wcove is the only user of fwnode_create_software_node(), and intel_cht_int33fe is the only other driver to contain the string "software_node". Please bear with us if we didn't know about this handy trick yet. And handy it is!
+'clock' determines the bus speed?
 
-device_property_read_*() is also really helpful to know about, as it covers both the DT case, as well as other firmware interfaces - thanks for the hint. Is there any reason to ever use of_property_read_*() anymore?
+> +	i2c->adapter.class = I2C_CLASS_DEPRECATED;
 
-I've applied your suggested changes, and will send another patch round soon (I want to try one last thing). Please let me/us know what you think once it's on the list.
+This is only needed for drivers which used to have a class and decided
+to drop it. You can leave it empty.
 
+> +	algo_data->data = (void *)i2c;
 
-Max
+You don't need the cast, do you?
+
+> +MODULE_LICENSE("GPL");
+
+Your SPDX header says GPL 2.0 only.
+
+Kind regards,
+
+   Wolfram
+
+--cvVnyQ+4j833TQvp
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAl1UZUIACgkQFA3kzBSg
+KbY8mxAAsWO7FshbNWxce6/Ayk6ygTA3Mk2nG3PbYUCIZAWV5pj//O8wuhX/DKSy
+J+11DapytlncEORT/c/V9upMPb4ojyoJCaXNgAjfzTkUYywLSa3IAgAighJge5yb
+B8N0MfTfw/zUKzw/HSXgZU7OWSO4HRgeGQ/QzUky4CC7J02jfqTkD5itJyu5te2k
+d6R2g1b1o+Bby86zmk899QlELXqULx7g6hphljH/sbEFqwK4RpqWmyfkp+VBN49L
+RDY1BtnqWeS9lwLmDerWrSgCy7MDMa9d84YH0L1S+rQzdITVSKx4NqFZ21Jzcar9
+fvaqB4Oga4LKiBwfc6p2st7WTTKgxRoG1qfNY4am+8cxTIBWwfhECcbV/uRL88Qd
+knbCilRYm0+MoXqHIlhpwhJI7CqwKsFoqw/Yx5zT6XCDV0iif1mQ6gzoNJ8PDNm9
+9kyK7penhj558f9W56CIWVNMvmlBmoeQv4xL4j/pFRBZA09YNrcvPfhk7wWebHDx
+lbcCyDqulyyV1/OHCQ+/UwCCbm2EUc5sAAISfaZflbtq1W208VoOPyxyhNV7RJXL
+6mju5RemtxU8JtFTDF79Vtm4/TaPGscoYkKuRqpfgWDdb7jQ++7b5q7kOMJ9bJOg
+d0a9Jk8tPOZV6jXlsYCmxUn7WlTyCOh6mrHwvbxhFjaEpSPGGdc=
+=gqvS
+-----END PGP SIGNATURE-----
+
+--cvVnyQ+4j833TQvp--
