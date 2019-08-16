@@ -1,50 +1,52 @@
 From: Max Staudt <max@enpas.org>
-Subject: Re: [PATCH v3 2/3] hwmon/ltc2990: Generalise DT to fwnode support
-Date: Fri, 16 Aug 2019 10:37:30 +0200
-Message-ID: <5b9b4383-c1e9-91a6-8ab6-8f831b362dca@enpas.org>
-References: <20190815125802.16500-1-max@enpas.org>
- <20190815125802.16500-2-max@enpas.org>
- <6920f2da-3139-6fc8-b02c-3678cc17912e@enpas.org>
- <20190815224341.GA12420@roeck-us.net>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
+Subject: [PATCH] hwmon/ltc2990: Generalise DT to fwnode support
+Date: Fri, 16 Aug 2019 11:07:31 +0200
+Message-ID: <20190816090731.12809-1-max@enpas.org>
+References: <5b9b4383-c1e9-91a6-8ab6-8f831b362dca@enpas.org>
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20190815224341.GA12420@roeck-us.net>
-Content-Language: en-US
+In-Reply-To: <5b9b4383-c1e9-91a6-8ab6-8f831b362dca@enpas.org>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Guenter Roeck <linux@roeck-us.net>
-Cc: linux-i2c@vger.kernel.org, linux-hwmon@vger.kernel.org, Wolfram Sang <wsa+renesas@sang-engineering.com>, Jean Delvare <jdelvare@suse.com>, linux-m68k@vger.kernel.org, linux-kernel@vger.kernel.org, glaubitz@physik.fu-berlin.de
+To: linux-i2c@vger.kernel.org, linux-hwmon@vger.kernel.org, Wolfram Sang <wsa+renesas@sang-engineering.com>, Jean Delvare <jdelvare@suse.com>, Guenter Roeck <linux@roeck-us.net>
+Cc: linux-m68k@vger.kernel.org, linux-kernel@vger.kernel.org, glaubitz@physik.fu-berlin.de, Max Staudt <max@enpas.org>
 List-Id: linux-m68k@vger.kernel.org
 
-On 08/16/2019 12:43 AM, Guenter Roeck wrote:
-> On Fri, Aug 16, 2019 at 12:19:42AM +0200, Max Staudt wrote:
->> On 08/15/2019 02:58 PM, Max Staudt wrote:
->>> -	if (of_node) {
->>> -		ret = of_property_read_u32_array(of_node, "lltc,meas-mode",
->>> -						 data->mode, 2);
->>> +	if (i2c->dev.of_node || i2c->dev.fwnode) {
->>
->> One more idea, would it be better here to do the following?
->>
->> 	if (device_property_present(i2c->dev, "lltc,meas-mode")) {
->> 		ret = of_property_read_u32_array(of_node, "lltc,meas-mode",
->> 						 data->mode, 2);
->> 	}
->>
->> I'm happy to prepare a patch if you wish to have this in - just let me know whether it should be on top of the last one, or instead of it.
-> 
-> That would be semantically different. The property is currently mandatory.
-> The above code would make it optional. This might work:
-> 
-> 	if (dev_fwnode(&i2c->dev)) {
-> 		ret = device_property_read_u32_array(...);
-> 		...
-> 	}
+ltc2990 will now use device_property_read_u32_array() instead of
+of_property_read_u32_array() - allowing the use of software nodes
+via fwnode_create_software_node().
 
-Fair point. The semantic change was part of my question, but the more I think about it, the less I want to open this can of worms. We can still make the property optional later on, while it's not as easy to make it mandatory.
+This allows code using i2c_new_device() to specify a default
+measurement mode for the LTC2990 via fwnode_create_software_node().
 
-I'll send a patch with your suggestion.
+Signed-off-by: Max Staudt <max@enpas.org>
+---
+ drivers/hwmon/ltc2990.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-Thanks!
-Max
+diff --git a/drivers/hwmon/ltc2990.c b/drivers/hwmon/ltc2990.c
+index f9431ad43..ff11189ea 100644
+--- a/drivers/hwmon/ltc2990.c
++++ b/drivers/hwmon/ltc2990.c
+@@ -206,7 +206,6 @@ static int ltc2990_i2c_probe(struct i2c_client *i2c,
+ 	int ret;
+ 	struct device *hwmon_dev;
+ 	struct ltc2990_data *data;
+-	struct device_node *of_node = i2c->dev.of_node;
+ 
+ 	if (!i2c_check_functionality(i2c->adapter, I2C_FUNC_SMBUS_BYTE_DATA |
+ 				     I2C_FUNC_SMBUS_WORD_DATA))
+@@ -218,9 +217,10 @@ static int ltc2990_i2c_probe(struct i2c_client *i2c,
+ 
+ 	data->i2c = i2c;
+ 
+-	if (of_node) {
+-		ret = of_property_read_u32_array(of_node, "lltc,meas-mode",
+-						 data->mode, 2);
++	if (dev_fwnode(&i2c->dev)) {
++		ret = device_property_read_u32_array(&i2c->dev,
++						     "lltc,meas-mode",
++						     data->mode, 2);
+ 		if (ret < 0)
+ 			return ret;
+ 
+-- 
+2.11.0
