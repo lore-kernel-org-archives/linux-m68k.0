@@ -1,147 +1,75 @@
-From: Max Staudt <max@enpas.org>
-Subject: [PATCH v4 3/3] i2c/busses/i2c-icy: Add LTC2990 present on 2019 board revision
-Date: Fri, 16 Aug 2019 15:43:30 +0200
-Message-ID: <20190816134330.7727-3-max@enpas.org>
-References: <20190816134330.7727-1-max@enpas.org>
+From: Wolfram Sang <wsa@the-dreams.de>
+Subject: Re: [PATCH v3 3/3] i2c/busses/i2c-icy: Add LTC2990 present on 2019
+ board revision
+Date: Fri, 16 Aug 2019 18:09:16 +0200
+Message-ID: <20190816160916.GA5858@kunai>
+References: <20190815125802.16500-1-max@enpas.org>
+ <20190815125802.16500-3-max@enpas.org>
+ <20190816115112.GA3507@kunai>
+ <513d49dd-70fc-a226-fdfd-598aadcfec05@enpas.org>
+Mime-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="AhhlLboLdkugWU4S"
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20190816134330.7727-1-max@enpas.org>
+Content-Disposition: inline
+In-Reply-To: <513d49dd-70fc-a226-fdfd-598aadcfec05@enpas.org>
 Sender: linux-kernel-owner@vger.kernel.org
-To: linux-i2c@vger.kernel.org, linux-hwmon@vger.kernel.org, Wolfram Sang <wsa+renesas@sang-engineering.com>, Jean Delvare <jdelvare@suse.com>, Guenter Roeck <linux@roeck-us.net>
-Cc: linux-m68k@vger.kernel.org, linux-kernel@vger.kernel.org, glaubitz@physik.fu-berlin.de, Max Staudt <max@enpas.org>
+To: Max Staudt <max@enpas.org>
+Cc: linux-i2c@vger.kernel.org, linux-hwmon@vger.kernel.org, Wolfram Sang <wsa+renesas@sang-engineering.com>, Jean Delvare <jdelvare@suse.com>, Guenter Roeck <linux@roeck-us.net>, linux-m68k@vger.kernel.org, linux-kernel@vger.kernel.org, glaubitz@physik.fu-berlin.de
 List-Id: linux-m68k@vger.kernel.org
 
-Since the 2019 a1k.org community re-print of these PCBs sports an
-LTC2990 hwmon chip as an example use case, let this driver autoprobe
-for that as well. If it is present, modprobing ltc2990 is sufficient.
 
-The property_entry enables the three additional inputs available on
-this particular board:
+--AhhlLboLdkugWU4S
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-  in1 will be the voltage of the 5V rail, divided by 2.
-  in2 will be the voltage of the 12V rail, divided by 4.
-  temp3 will be measured using a PCB loop next the chip.
 
-v4: Style
-    Added other possible addresses for LTC2990.
+> > Braces for both blocks. Did you run checkpatch?
+>=20
+> I did, and it didn't say anything.
 
-v3: Merged with initial LTC2990 support on ICY.
-    Moved defaults from platform_data to swnode.
-    Added note to Kconfig.
+Hmm, strange, does is complain when you use '--strict'?
 
-Signed-off-by: Max Staudt <max@enpas.org>
----
- drivers/i2c/busses/Kconfig   |  3 +++
- drivers/i2c/busses/i2c-icy.c | 58 ++++++++++++++++++++++++++++++++++++++++++++
- 2 files changed, 61 insertions(+)
+> Turns out I misremembered the CodingStyle as having a corner case
+> where it doesn't. I'll fix the style - I dislike the above, too ;)
 
-diff --git a/drivers/i2c/busses/Kconfig b/drivers/i2c/busses/Kconfig
-index 9e57e1101..a311d07f3 100644
---- a/drivers/i2c/busses/Kconfig
-+++ b/drivers/i2c/busses/Kconfig
-@@ -1311,6 +1311,9 @@ config I2C_ICY
- 	  This support is also available as a module.  If so, the module
- 	  will be called i2c-icy.
- 
-+	  If you have a 2019 edition board with an LTC2990 sensor at address
-+	  0x4c, loading the module 'ltc2990' is sufficient to enable it.
-+
- config I2C_MLXCPLD
- 	tristate "Mellanox I2C driver"
- 	depends on X86_64
-diff --git a/drivers/i2c/busses/i2c-icy.c b/drivers/i2c/busses/i2c-icy.c
-index edac515da..c30431653 100644
---- a/drivers/i2c/busses/i2c-icy.c
-+++ b/drivers/i2c/busses/i2c-icy.c
-@@ -54,6 +54,8 @@ struct icy_i2c {
- 
- 	void __iomem *reg_s0;
- 	void __iomem *reg_s1;
-+	struct fwnode_handle *ltc2990_fwnode;
-+	struct i2c_client *ltc2990_client;
- };
- 
- 
-@@ -100,11 +102,35 @@ static void icy_pcf_waitforpin(void *data)
- /*
-  * Main i2c-icy part
-  */
-+static unsigned short const icy_ltc2990_addresses[] = {
-+	0x4c, 0x4d, 0x4e, 0x4f, I2C_CLIENT_END
-+};
-+
-+/*
-+ * Additional sensors exposed once this property is applied:
-+ *
-+ * in1 will be the voltage of the 5V rail, divided by 2.
-+ * in2 will be the voltage of the 12V rail, divided by 4.
-+ * temp3 will be measured using a PCB loop next the chip.
-+ */
-+static const u32 icy_ltc2990_meas_mode[] = {0, 3};
-+
-+static const struct property_entry icy_ltc2990_props[] = {
-+	PROPERTY_ENTRY_U32_ARRAY("lltc,meas-mode", icy_ltc2990_meas_mode),
-+	{ }
-+};
-+
-+
- static int icy_probe(struct zorro_dev *z,
- 			 const struct zorro_device_id *ent)
- {
- 	struct icy_i2c *i2c;
- 	struct i2c_algo_pcf_data *algo_data;
-+	struct fwnode_handle *new_fwnode;
-+	struct i2c_board_info ltc2990_info = {
-+		.type		= "ltc2990",
-+		.addr		= 0x4c,
-+	};
- 
- 
- 	i2c = devm_kzalloc(&z->dev, sizeof(*i2c), GFP_KERNEL);
-@@ -147,6 +173,35 @@ static int icy_probe(struct zorro_dev *z,
- 	dev_info(&z->dev, "ICY I2C controller at %pa, IRQ not implemented\n",
- 		 &z->resource.start);
- 
-+	/*
-+	 * The 2019 a1k.org PCBs have an LTC2990 at 0x4c, so start
-+	 * it automatically once ltc2990 is modprobed.
-+	 *
-+	 * in0 is the voltage of the internal 5V power supply.
-+	 * temp1 is the temperature inside the chip.
-+	 *
-+	 * See property_entry above for in1, in2, temp3.
-+	 */
-+	new_fwnode = fwnode_create_software_node(icy_ltc2990_props, NULL);
-+	if (IS_ERR(new_fwnode)) {
-+		dev_info(&z->dev, "Failed to create fwnode for LTC2990, error: %ld\n",
-+			 PTR_ERR(new_fwnode));
-+	} else {
-+		/*
-+		 * Store the fwnode so we can destroy it on .remove().
-+		 * Only store it on success, as fwnode_remove_software_node()
-+		 * is NULL safe, but not PTR_ERR safe.
-+		 */
-+		i2c->ltc2990_fwnode = new_fwnode;
-+		ltc2990_info.fwnode = new_fwnode;
-+
-+		i2c->ltc2990_client =
-+			i2c_new_probed_device(&i2c->adapter,
-+					      &ltc2990_info,
-+					      icy_ltc2990_addresses,
-+					      NULL);
-+	}
-+
- 	return 0;
- }
- 
-@@ -154,6 +209,9 @@ static void icy_remove(struct zorro_dev *z)
- {
- 	struct icy_i2c *i2c = dev_get_drvdata(&z->dev);
- 
-+	i2c_unregister_device(i2c->ltc2990_client);
-+	fwnode_remove_software_node(i2c->ltc2990_fwnode);
-+
- 	i2c_del_adapter(&i2c->adapter);
- }
- 
--- 
-2.11.0
+Thanks!
+
+> Yes and no. Now that you mention it - the LTC2990 can be at four
+> addresses (0x4c - 0x4f), and there are jumpers (solder pads) on the
+> PCB to select its address. Shall I add all 4 addresses to the array?
+
+Yes, please.
+
+> It's also possible that there is no LTC2990 at all (because it's hard
+> to solder at home), and that's why we need to probe for it first. I
+> believe i2c_new[_client]_device doesn't do probing, but rather assumes
+> the device to be there. Correct?
+
+Correct. I assumed the sensor is always there. But it is not and can be
+at multiple addresses, so updating the array of addresses is the right
+thing to do(tm).
+
+
+--AhhlLboLdkugWU4S
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAl1W1SQACgkQFA3kzBSg
+Kbb15Q/9Fxje8eCVKx3e/loxQhqvd9xaHapbEZXDrB6fF77czkPwsNASNvz/Coyl
+Ru5qKJn3AErr8VyUSOXUDDnHDGqqdYzZwQY3uoaV6aN4xza0u29e7PokP7XeA/I6
+zYMK5mIcC7D0Sk+0/biF/Xi3mjpy7pVMeYgOa/xo7Pv8QW0zEITd4u/if2EBzw6n
+q8MCJDwZnqKQicmjdUMaYMl9yDDkEPrCI6HEYGkB0hgffYSwoxpxbeBbT3yhDqZO
+bruA80sIcu3vOa6+kN7jmogcAq8Kg5CUTNWUbINsXMyxqUfJxxKrH4IhrgjjvarY
+1FvmQOihKmkfE2Lp4NMR7tSciWQdRDlgW5gHrQqurr6msCRZ10E9Ylx/ABJ/hOvI
+dJontetvx06hz6JV8nVDLpk7Im6EtT4wU5kzirdpY4un9lgVe4/fm++hwFgHADbO
+ReUC6TBaqe38eVHJh2j1bYCgkMy42iNdwfRv4iDHsxk87diGRiJLIV69qlhxIWeD
+ynGdwgxnBlF110mwyyHwzXwQ8Gi+tW5NVWWOTL4ibfjCUH4KYUU/iT0N4UkgNDfm
+Yy+2u16Fe3GOLc6t15AuWmFFtP/lju6SaY+ngE6rArla1G4Iy/8jMdPEQn1ntTNr
+vtoE4oH4ckD1aEbF39uTzGz6jTUvJPnl5vmgT+fmf1R/trrR/zQ=
+=QAlX
+-----END PGP SIGNATURE-----
+
+--AhhlLboLdkugWU4S--
