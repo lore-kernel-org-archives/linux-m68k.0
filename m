@@ -1,37 +1,67 @@
 From: Max Staudt <max@enpas.org>
-Subject: Re: [PATCH v5 2/3] hwmon/ltc2990: Generalise DT to fwnode support
-Date: Tue, 20 Aug 2019 17:08:38 +0200
-Message-ID: <5aebf319-c958-da62-a232-c3851f8b47b9@enpas.org>
-References: <20190819121618.16557-1-max@enpas.org>
- <20190819121618.16557-2-max@enpas.org> <20190820150735.GA12198@roeck-us.net>
+Subject: Re: [PATCH v5] ata/pata_buddha: Probe via modalias instead of
+ initcall
+Date: Tue, 20 Aug 2019 17:59:47 +0200
+Message-ID: <89894d50-0e3c-4d43-37b2-ff5be407e58c@enpas.org>
+References: <CGME20190812164840epcas2p4b88d3ebaf313f0c99ccb693047bce04c@epcas2p4.samsung.com>
+ <20190812164830.16244-1-max@enpas.org>
+ <9966f79c-278b-5ec9-3c4b-e1de55af55f0@samsung.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 7bit
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20190820150735.GA12198@roeck-us.net>
+In-Reply-To: <9966f79c-278b-5ec9-3c4b-e1de55af55f0@samsung.com>
 Content-Language: en-US
 Sender: linux-kernel-owner@vger.kernel.org
-To: Guenter Roeck <linux@roeck-us.net>
-Cc: linux-i2c@vger.kernel.org, linux-hwmon@vger.kernel.org, Wolfram Sang <wsa+renesas@sang-engineering.com>, Jean Delvare <jdelvare@suse.com>, linux-m68k@vger.kernel.org, linux-kernel@vger.kernel.org, glaubitz@physik.fu-berlin.de
+To: Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>
+Cc: axboe@kernel.dk, linux-ide@vger.kernel.org, linux-m68k@vger.kernel.org, linux-kernel@vger.kernel.org, glaubitz@physik.fu-berlin.de, schmitzmic@gmail.com, geert@linux-m68k.org
 List-Id: linux-m68k@vger.kernel.org
 
-On 08/20/2019 05:07 PM, Guenter Roeck wrote:
-> On Mon, Aug 19, 2019 at 02:16:17PM +0200, Max Staudt wrote:
->> ltc2990 will now use device_property_read_u32_array() instead of
->> of_property_read_u32_array() - allowing the use of software nodes
->> via fwnode_create_software_node().
->>
->> This allows code using i2c_new_device() to specify a default
->> measurement mode for the LTC2990 via fwnode_create_software_node().
->>
->> Signed-off-by: Max Staudt <max@enpas.org>
->> Reviewed-by: Geert Uytterhoeven <geert@linux-m68k.org>
-> 
-> Applied to hwmon-next.
-> 
-> Thanks,
-> Guenter
+Hi Bartlomiej,
 
-Thanks for your help, reviewing, and applying!
+Thank you very much for your review!
+
+Question below.
+
+
+On 08/20/2019 02:06 PM, Bartlomiej Zolnierkiewicz wrote:
+>> +	/* Workaround for X-Surf: Save drvdata in case zorro8390 has set it */
+>> +	old_drvdata = dev_get_drvdata(&z->dev);
+> 
+> This should be done only for type == BOARD_XSURF.
+
+Agreed, as I want to keep unloading functional for Buddha/Catweasel - see below.
+
+
+>> +static struct zorro_driver pata_buddha_driver = {
+>> +	.name           = "pata_buddha",
+>> +	.id_table       = pata_buddha_zorro_tbl,
+>> +	.probe          = pata_buddha_probe,
+>> +	.remove         = pata_buddha_remove,
+> 
+> I think that we should also add:
+> 
+> 	.driver  = {
+> 		.suppress_bind_attrs = true,
+> 	},
+> 
+> to prevent the device from being unbinded (and thus ->remove called)
+> from the driver using sysfs interface.
+
+Interesting idea - here's my question now:
+
+My intention is to allow remove() for boards where we support IDE only (Buddha, Catweasel) - these are autoprobed via zorro_register_driver().
+This shouldn't affect the X-Surf case, as it's not autoprobed in this way anyway - and thus pata_buddha_driver isn't even used.
+
+Am I missing something? We want to inhibit module unloading (hence no module_exit()), but driver unbinding for Buddha/Catweasel should be fine to remain, right?
+
+
+> Please also always check your patches with scripts/checkpatch.pl and
+> fix the reported issues:
+
+Apologies, must've been something in my coffee. I will.
+
+
+Thanks for the review, I'll send a new patch once my question above is resolved.
 
 Max
