@@ -1,275 +1,424 @@
-From: Max Staudt <max@enpas.org>
-Subject: [PATCH] i2c/busses: Add i2c-icy for I2C on m68k/Amiga
-Date: Tue, 20 Aug 2019 11:27:39 +0200
-Message-ID: <20190820092739.7213-1-max@enpas.org>
-References: <3F017C0B-44D6-4E63-A908-DDAA5586D67C@enpas.org>
+From: Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>
+Subject: Re: [PATCH v5] ata/pata_buddha: Probe via modalias instead of
+ initcall
+Date: Tue, 20 Aug 2019 14:06:15 +0200
+Message-ID: <9966f79c-278b-5ec9-3c4b-e1de55af55f0@samsung.com>
+References: <CGME20190812164840epcas2p4b88d3ebaf313f0c99ccb693047bce04c@epcas2p4.samsung.com>
+        <20190812164830.16244-1-max@enpas.org>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <3F017C0B-44D6-4E63-A908-DDAA5586D67C@enpas.org>
+In-Reply-To: <20190812164830.16244-1-max@enpas.org>
+Content-Language: en-US
 Sender: linux-kernel-owner@vger.kernel.org
-To: linux-i2c@vger.kernel.org, linux-hwmon@vger.kernel.org, Wolfram Sang <wsa+renesas@sang-engineering.com>, Jean Delvare <jdelvare@suse.com>, Guenter Roeck <linux@roeck-us.net>
-Cc: linux-m68k@vger.kernel.org, linux-kernel@vger.kernel.org, glaubitz@physik.fu-berlin.de, Max Staudt <max@enpas.org>
+To: Max Staudt <max@enpas.org>
+Cc: axboe@kernel.dk, linux-ide@vger.kernel.org, linux-m68k@vger.kernel.org, linux-kernel@vger.kernel.org, glaubitz@physik.fu-berlin.de, schmitzmic@gmail.com, geert@linux-m68k.org
 List-Id: linux-m68k@vger.kernel.org
 
-This is the i2c-icy driver for the ICY board for Amiga computers.
-It connects a PCF8584 I2C controller to the Zorro bus, providing I2C
-connectivity. The original documentation can be found on Aminet:
 
-https://aminet.net/package/docs/hard/icy
+Hi Max,
 
-IRQ support is currently not implemented, as i2c-algo-pcf is built for
-the ISA bus and a straight implementation of the same stack locks up a
-Zorro machine.
+Few more review comments below.
 
-v5: usleep_range() instead of udelay()
-    Style
+On 8/12/19 6:48 PM, Max Staudt wrote:
+> Up until now, the pata_buddha driver would only check for cards on
+> initcall time. Now, the kernel will call its probe function as soon
+> as a compatible card is detected.
+> 
+> v5: Remove module_exit(): There's no good way to handle the X-Surf hack.
+>     Also include a workaround to save X-Surf's drvdata in case zorro8390
+>     is active.
+> 
+> v4: Clean up pata_buddha_probe() by using ent->driver_data.
+>     Support X-Surf via late_initcall()
+> 
+> v3: Clean up devm_*, implement device removal.
+> 
+> v2: Rename 'zdev' to 'z' to make the patch easy to analyse with
+>     git diff --ignore-space-change
+> 
+> Signed-off-by: Max Staudt <max@enpas.org>
+> ---
+>  drivers/ata/pata_buddha.c | 234 +++++++++++++++++++++++++++-------------------
+>  1 file changed, 140 insertions(+), 94 deletions(-)
+> 
+> diff --git a/drivers/ata/pata_buddha.c b/drivers/ata/pata_buddha.c
+> index 11a8044ff..6014befc9 100644
+> --- a/drivers/ata/pata_buddha.c
+> +++ b/drivers/ata/pata_buddha.c
+> @@ -18,7 +18,9 @@
+>  #include <linux/kernel.h>
+>  #include <linux/libata.h>
+>  #include <linux/mm.h>
+> +#include <linux/mod_devicetable.h>
+>  #include <linux/module.h>
+> +#include <linux/types.h>
+>  #include <linux/zorro.h>
+>  #include <scsi/scsi_cmnd.h>
+>  #include <scsi/scsi_host.h>
+> @@ -29,7 +31,7 @@
+>  #include <asm/setup.h>
+>  
+>  #define DRV_NAME "pata_buddha"
+> -#define DRV_VERSION "0.1.0"
+> +#define DRV_VERSION "0.1.1"
+>  
+>  #define BUDDHA_BASE1	0x800
+>  #define BUDDHA_BASE2	0xa00
+> @@ -47,11 +49,11 @@ enum {
+>  	BOARD_XSURF
+>  };
+>  
+> -static unsigned int buddha_bases[3] __initdata = {
+> +static unsigned int buddha_bases[3] = {
+>  	BUDDHA_BASE1, BUDDHA_BASE2, BUDDHA_BASE3
+>  };
+>  
+> -static unsigned int xsurf_bases[2] __initdata = {
+> +static unsigned int xsurf_bases[2] = {
+>  	XSURF_BASE1, XSURF_BASE2
+>  };
+>  
+> @@ -145,111 +147,155 @@ static struct ata_port_operations pata_xsurf_ops = {
+>  	.set_mode	= pata_buddha_set_mode,
+>  };
+>  
+> -static int __init pata_buddha_init_one(void)
+> +static int pata_buddha_probe(struct zorro_dev *z,
+> +			     const struct zorro_device_id *ent)
+>  {
+> -	struct zorro_dev *z = NULL;
+> -
+> -	while ((z = zorro_find_device(ZORRO_WILDCARD, z))) {
+> -		static const char *board_name[]
+> -			= { "Buddha", "Catweasel", "X-Surf" };
+> -		struct ata_host *host;
+> -		void __iomem *buddha_board;
+> -		unsigned long board;
+> -		unsigned int type, nr_ports = 2;
+> -		int i;
+> -
+> -		if (z->id == ZORRO_PROD_INDIVIDUAL_COMPUTERS_BUDDHA) {
+> -			type = BOARD_BUDDHA;
+> -		} else if (z->id == ZORRO_PROD_INDIVIDUAL_COMPUTERS_CATWEASEL) {
+> -			type = BOARD_CATWEASEL;
+> -			nr_ports++;
+> -		} else if (z->id == ZORRO_PROD_INDIVIDUAL_COMPUTERS_X_SURF) {
+> -			type = BOARD_XSURF;
+> -		} else
+> -			continue;
+> -
+> -		dev_info(&z->dev, "%s IDE controller\n", board_name[type]);
+> -
+> -		board = z->resource.start;
+> +	static const char * const board_name[]
+> +		= { "Buddha", "Catweasel", "X-Surf" };
+> +	struct ata_host *host;
+> +	void __iomem *buddha_board;
+> +	unsigned long board;
+> +	unsigned int type = ent->driver_data;
+> +	unsigned int nr_ports = (type == BOARD_CATWEASEL) ? 3 : 2;
+> +	void *old_drvdata;
+> +	int i;
+> +
+> +	dev_info(&z->dev, "%s IDE controller\n", board_name[type]);
+> +
+> +	board = z->resource.start;
+> +
+> +	if (type != BOARD_XSURF) {
+> +		if (!devm_request_mem_region(&z->dev,
+> +					     board + BUDDHA_BASE1,
+> +					     0x800, DRV_NAME))
+> +			return -ENXIO;
+> +	} else {
+> +		if (!devm_request_mem_region(&z->dev,
+> +					     board + XSURF_BASE1,
+> +					     0x1000, DRV_NAME))
+> +			return -ENXIO;
+> +		if (!devm_request_mem_region(&z->dev,
+> +					     board + XSURF_BASE2,
+> +					     0x1000, DRV_NAME)) {
+> +		}
+> +	}
+> +
+> +	/* Workaround for X-Surf: Save drvdata in case zorro8390 has set it */
+> +	old_drvdata = dev_get_drvdata(&z->dev);
 
-v3: Fixed %pa format string
-    Dropped adapter class.
-    Clarified licence.
-    Removed clock parameter.
+This should be done only for type == BOARD_XSURF.
 
-v2: Matched function names to callbacks from i2c-algo-pcf
-    Used z_readb()/z_writeb()
-    Removed BROKEN_ON_SMP in Kconfig
-    Moved LTC2990 to a separate commit
+> +	/* allocate host */
+> +	host = ata_host_alloc(&z->dev, nr_ports);
+> +	dev_set_drvdata(&z->dev, old_drvdata);
 
-Signed-off-by: Max Staudt <max@enpas.org>
----
- MAINTAINERS                  |   6 ++
- drivers/i2c/busses/Kconfig   |  11 +++
- drivers/i2c/busses/Makefile  |   1 +
- drivers/i2c/busses/i2c-icy.c | 172 +++++++++++++++++++++++++++++++++++++++++++
- 4 files changed, 190 insertions(+)
- create mode 100644 drivers/i2c/busses/i2c-icy.c
+ditto
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 1be025959..70336c083 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -7705,6 +7705,12 @@ S:	Maintained
- F:	drivers/mfd/lpc_ich.c
- F:	drivers/gpio/gpio-ich.c
- 
-+ICY I2C DRIVER
-+M:	Max Staudt <max@enpas.org>
-+L:	linux-i2c@vger.kernel.org
-+S:	Maintained
-+F:	drivers/i2c/busses/i2c-icy.c
-+
- IDE SUBSYSTEM
- M:	"David S. Miller" <davem@davemloft.net>
- L:	linux-ide@vger.kernel.org
-diff --git a/drivers/i2c/busses/Kconfig b/drivers/i2c/busses/Kconfig
-index ee5dfb5ae..9e57e1101 100644
---- a/drivers/i2c/busses/Kconfig
-+++ b/drivers/i2c/busses/Kconfig
-@@ -1300,6 +1300,17 @@ config I2C_ELEKTOR
- 	  This support is also available as a module.  If so, the module
- 	  will be called i2c-elektor.
- 
-+config I2C_ICY
-+	tristate "ICY Zorro card"
-+	depends on ZORRO
-+	select I2C_ALGOPCF
-+	help
-+	  This supports the PCF8584 Zorro bus I2C adapter, known as ICY.
-+	  Say Y if you own such an adapter.
-+
-+	  This support is also available as a module.  If so, the module
-+	  will be called i2c-icy.
-+
- config I2C_MLXCPLD
- 	tristate "Mellanox I2C driver"
- 	depends on X86_64
-diff --git a/drivers/i2c/busses/Makefile b/drivers/i2c/busses/Makefile
-index a3245231b..d0e1c3d4e 100644
---- a/drivers/i2c/busses/Makefile
-+++ b/drivers/i2c/busses/Makefile
-@@ -139,6 +139,7 @@ obj-$(CONFIG_I2C_BCM_KONA)	+= i2c-bcm-kona.o
- obj-$(CONFIG_I2C_BRCMSTB)	+= i2c-brcmstb.o
- obj-$(CONFIG_I2C_CROS_EC_TUNNEL)	+= i2c-cros-ec-tunnel.o
- obj-$(CONFIG_I2C_ELEKTOR)	+= i2c-elektor.o
-+obj-$(CONFIG_I2C_ICY)		+= i2c-icy.o
- obj-$(CONFIG_I2C_MLXCPLD)	+= i2c-mlxcpld.o
- obj-$(CONFIG_I2C_OPAL)		+= i2c-opal.o
- obj-$(CONFIG_I2C_PCA_ISA)	+= i2c-pca-isa.o
-diff --git a/drivers/i2c/busses/i2c-icy.c b/drivers/i2c/busses/i2c-icy.c
-new file mode 100644
-index 000000000..7b7083da8
---- /dev/null
-+++ b/drivers/i2c/busses/i2c-icy.c
-@@ -0,0 +1,172 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * I2C driver for stand-alone PCF8584 style adapters on Zorro cards
-+ *
-+ * Original ICY documentation can be found on Aminet:
-+ * https://aminet.net/package/docs/hard/icy
-+ *
-+ * There has been a modern community re-print of this design in 2019:
-+ * https://www.a1k.org/forum/index.php?threads/70106/
-+ *
-+ * The card is basically a Philips PCF8584 connected straight to the
-+ * beginning of the AutoConfig'd address space (register S1 on base+2),
-+ * with /INT on /INT2 on the Zorro bus.
-+ *
-+ * Copyright (c) 2019 Max Staudt <max@enpas.org>
-+ *
-+ * This started as a fork of i2c-elektor.c and has evolved since.
-+ * Thanks go to its authors for providing a base to grow on.
-+ *
-+ *
-+ * IRQ support is currently not implemented.
-+ *
-+ * As it turns out, i2c-algo-pcf is really written with i2c-elektor's
-+ * edge-triggered ISA interrupts in mind, while the Amiga's Zorro bus has
-+ * level-triggered interrupts. This means that once an interrupt occurs, we
-+ * have to tell the PCF8584 to shut up immediately, or it will keep the
-+ * interrupt line busy and cause an IRQ storm.
-+
-+ * However, because of the PCF8584's host-side protocol, there is no good
-+ * way to just quieten it without side effects. Rather, we have to perform
-+ * the next read/write operation straight away, which will reset the /INT
-+ * pin. This entails re-designing the core of i2c-algo-pcf in the future.
-+ * For now, we never request an IRQ from the PCF8584, and poll it instead.
-+ */
-+
-+#include <linux/delay.h>
-+#include <linux/init.h>
-+#include <linux/io.h>
-+#include <linux/ioport.h>
-+#include <linux/kernel.h>
-+#include <linux/module.h>
-+
-+#include <linux/i2c.h>
-+#include <linux/i2c-algo-pcf.h>
-+
-+#include <asm/amigaints.h>
-+#include <linux/zorro.h>
-+
-+#include "../algos/i2c-algo-pcf.h"
-+
-+struct icy_i2c {
-+	struct i2c_adapter adapter;
-+
-+	void __iomem *reg_s0;
-+	void __iomem *reg_s1;
-+};
-+
-+/*
-+ * Functions called by i2c-algo-pcf
-+ */
-+static void icy_pcf_setpcf(void *data, int ctl, int val)
-+{
-+	struct icy_i2c *i2c = (struct icy_i2c *)data;
-+
-+	u8 __iomem *address = ctl ? i2c->reg_s1 : i2c->reg_s0;
-+
-+	z_writeb(val, address);
-+}
-+
-+static int icy_pcf_getpcf(void *data, int ctl)
-+{
-+	struct icy_i2c *i2c = (struct icy_i2c *)data;
-+
-+	u8 __iomem *address = ctl ? i2c->reg_s1 : i2c->reg_s0;
-+	return z_readb(address);
-+}
-+
-+static int icy_pcf_getown(void *data)
-+{
-+	return 0x55;
-+}
-+
-+static int icy_pcf_getclock(void *data)
-+{
-+	return 0x1c;
-+}
-+
-+static void icy_pcf_waitforpin(void *data)
-+{
-+	usleep_range(50, 150);
-+}
-+
-+/*
-+ * Main i2c-icy part
-+ */
-+static int icy_probe(struct zorro_dev *z,
-+		     const struct zorro_device_id *ent)
-+{
-+	struct icy_i2c *i2c;
-+	struct i2c_algo_pcf_data *algo_data;
-+
-+	i2c = devm_kzalloc(&z->dev, sizeof(*i2c), GFP_KERNEL);
-+	if (!i2c)
-+		return -ENOMEM;
-+
-+	algo_data = devm_kzalloc(&z->dev, sizeof(*algo_data), GFP_KERNEL);
-+	if (!algo_data)
-+		return -ENOMEM;
-+
-+	dev_set_drvdata(&z->dev, i2c);
-+	i2c->adapter.dev.parent = &z->dev;
-+	i2c->adapter.owner = THIS_MODULE;
-+	/* i2c->adapter.algo assigned by i2c_pcf_add_bus() */
-+	i2c->adapter.algo_data = algo_data;
-+	strlcpy(i2c->adapter.name, "ICY I2C Zorro adapter",
-+		sizeof(i2c->adapter.name));
-+
-+	if (!devm_request_mem_region(&z->dev,
-+				     z->resource.start,
-+				     4, i2c->adapter.name))
-+		return -ENXIO;
-+
-+	/* Driver private data */
-+	i2c->reg_s0 = ZTWO_VADDR(z->resource.start);
-+	i2c->reg_s1 = ZTWO_VADDR(z->resource.start + 2);
-+
-+	algo_data->data = i2c;
-+	algo_data->setpcf     = icy_pcf_setpcf;
-+	algo_data->getpcf     = icy_pcf_getpcf;
-+	algo_data->getown     = icy_pcf_getown;
-+	algo_data->getclock   = icy_pcf_getclock;
-+	algo_data->waitforpin = icy_pcf_waitforpin;
-+
-+	if (i2c_pcf_add_bus(&i2c->adapter)) {
-+		dev_err(&z->dev, "i2c_pcf_add_bus() failed\n");
-+		return -ENXIO;
-+	}
-+
-+	dev_info(&z->dev, "ICY I2C controller at %pa, IRQ not implemented\n",
-+		 &z->resource.start);
-+
-+	return 0;
-+}
-+
-+static void icy_remove(struct zorro_dev *z)
-+{
-+	struct icy_i2c *i2c = dev_get_drvdata(&z->dev);
-+
-+	i2c_del_adapter(&i2c->adapter);
-+}
-+
-+static const struct zorro_device_id icy_zorro_tbl[] = {
-+	{ ZORRO_ID(VMC, 15, 0), },
-+	{ 0 }
-+};
-+
-+MODULE_DEVICE_TABLE(zorro, icy_zorro_tbl);
-+
-+static struct zorro_driver icy_driver = {
-+	.name           = "i2c-icy",
-+	.id_table       = icy_zorro_tbl,
-+	.probe          = icy_probe,
-+	.remove         = icy_remove,
-+};
-+
-+module_driver(icy_driver,
-+	      zorro_register_driver,
-+	      zorro_unregister_driver);
-+
-+MODULE_AUTHOR("Max Staudt <max@enpas.org>");
-+MODULE_DESCRIPTION("I2C bus via PCF8584 on ICY Zorro card");
-+MODULE_LICENSE("GPL v2");
--- 
-2.11.0
+> +	if (!host)
+> +		return -ENXIO;
+> +
+> +
+> +	buddha_board = ZTWO_VADDR(board);
+> +
+> +	/* enable the board IRQ on Buddha/Catweasel */
+> +	if (type != BOARD_XSURF)
+> +		z_writeb(0, buddha_board + BUDDHA_IRQ_MR);
+> +
+> +	for (i = 0; i < nr_ports; i++) {
+> +		struct ata_port *ap = host->ports[i];
+> +		void __iomem *base, *irqport;
+> +		unsigned long ctl = 0;
+>  
+>  		if (type != BOARD_XSURF) {
+> -			if (!devm_request_mem_region(&z->dev,
+> -						     board + BUDDHA_BASE1,
+> -						     0x800, DRV_NAME))
+> -				continue;
+> +			ap->ops = &pata_buddha_ops;
+> +			base = buddha_board + buddha_bases[i];
+> +			ctl = BUDDHA_CONTROL;
+> +			irqport = buddha_board + BUDDHA_IRQ + i * 0x40;
+>  		} else {
+> -			if (!devm_request_mem_region(&z->dev,
+> -						     board + XSURF_BASE1,
+> -						     0x1000, DRV_NAME))
+> -				continue;
+> -			if (!devm_request_mem_region(&z->dev,
+> -						     board + XSURF_BASE2,
+> -						     0x1000, DRV_NAME))
+> -				continue;
+> +			ap->ops = &pata_xsurf_ops;
+> +			base = buddha_board + xsurf_bases[i];
+> +			/* X-Surf has no CS1* (Control/AltStat) */
+> +			irqport = buddha_board + XSURF_IRQ;
+>  		}
+>  
+> -		/* allocate host */
+> -		host = ata_host_alloc(&z->dev, nr_ports);
+> -		if (!host)
+> -			continue;
+> -
+> -		buddha_board = ZTWO_VADDR(board);
+> -
+> -		/* enable the board IRQ on Buddha/Catweasel */
+> -		if (type != BOARD_XSURF)
+> -			z_writeb(0, buddha_board + BUDDHA_IRQ_MR);
+> -
+> -		for (i = 0; i < nr_ports; i++) {
+> -			struct ata_port *ap = host->ports[i];
+> -			void __iomem *base, *irqport;
+> -			unsigned long ctl = 0;
+> -
+> -			if (type != BOARD_XSURF) {
+> -				ap->ops = &pata_buddha_ops;
+> -				base = buddha_board + buddha_bases[i];
+> -				ctl = BUDDHA_CONTROL;
+> -				irqport = buddha_board + BUDDHA_IRQ + i * 0x40;
+> -			} else {
+> -				ap->ops = &pata_xsurf_ops;
+> -				base = buddha_board + xsurf_bases[i];
+> -				/* X-Surf has no CS1* (Control/AltStat) */
+> -				irqport = buddha_board + XSURF_IRQ;
+> -			}
+> -
+> -			ap->pio_mask = ATA_PIO4;
+> -			ap->flags |= ATA_FLAG_SLAVE_POSS | ATA_FLAG_NO_IORDY;
+> -
+> -			ap->ioaddr.data_addr		= base;
+> -			ap->ioaddr.error_addr		= base + 2 + 1 * 4;
+> -			ap->ioaddr.feature_addr		= base + 2 + 1 * 4;
+> -			ap->ioaddr.nsect_addr		= base + 2 + 2 * 4;
+> -			ap->ioaddr.lbal_addr		= base + 2 + 3 * 4;
+> -			ap->ioaddr.lbam_addr		= base + 2 + 4 * 4;
+> -			ap->ioaddr.lbah_addr		= base + 2 + 5 * 4;
+> -			ap->ioaddr.device_addr		= base + 2 + 6 * 4;
+> -			ap->ioaddr.status_addr		= base + 2 + 7 * 4;
+> -			ap->ioaddr.command_addr		= base + 2 + 7 * 4;
+> -
+> -			if (ctl) {
+> -				ap->ioaddr.altstatus_addr = base + ctl;
+> -				ap->ioaddr.ctl_addr	  = base + ctl;
+> -			}
+> -
+> -			ap->private_data = (void *)irqport;
+> -
+> -			ata_port_desc(ap, "cmd 0x%lx ctl 0x%lx", board,
+> -				      ctl ? board + buddha_bases[i] + ctl : 0);
+> +		ap->pio_mask = ATA_PIO4;
+> +		ap->flags |= ATA_FLAG_SLAVE_POSS | ATA_FLAG_NO_IORDY;
+> +
+> +		ap->ioaddr.data_addr		= base;
+> +		ap->ioaddr.error_addr		= base + 2 + 1 * 4;
+> +		ap->ioaddr.feature_addr		= base + 2 + 1 * 4;
+> +		ap->ioaddr.nsect_addr		= base + 2 + 2 * 4;
+> +		ap->ioaddr.lbal_addr		= base + 2 + 3 * 4;
+> +		ap->ioaddr.lbam_addr		= base + 2 + 4 * 4;
+> +		ap->ioaddr.lbah_addr		= base + 2 + 5 * 4;
+> +		ap->ioaddr.device_addr		= base + 2 + 6 * 4;
+> +		ap->ioaddr.status_addr		= base + 2 + 7 * 4;
+> +		ap->ioaddr.command_addr		= base + 2 + 7 * 4;
+> +
+> +		if (ctl) {
+> +			ap->ioaddr.altstatus_addr = base + ctl;
+> +			ap->ioaddr.ctl_addr	  = base + ctl;
+>  		}
+>  
+> -		ata_host_activate(host, IRQ_AMIGA_PORTS, ata_sff_interrupt,
+> -				  IRQF_SHARED, &pata_buddha_sht);
+> +		ap->private_data = (void *)irqport;
+>  
+> +		ata_port_desc(ap, "cmd 0x%lx ctl 0x%lx", board,
+> +			      ctl ? board + buddha_bases[i] + ctl : 0);
+>  	}
+>  
+> +	ata_host_activate(host, IRQ_AMIGA_PORTS, ata_sff_interrupt,
+> +			  IRQF_SHARED, &pata_buddha_sht);
+> +
+> +
+>  	return 0;
+>  }
+>  
+> -module_init(pata_buddha_init_one);
+> +static void pata_buddha_remove(struct zorro_dev *z)
+> +{
+> +	struct ata_host *host = dev_get_drvdata(&z->dev);
+> +
+> +	ata_host_detach(host);
+> +}
+> +
+> +static const struct zorro_device_id pata_buddha_zorro_tbl[] = {
+> +	{ ZORRO_PROD_INDIVIDUAL_COMPUTERS_BUDDHA, BOARD_BUDDHA},
+> +	{ ZORRO_PROD_INDIVIDUAL_COMPUTERS_CATWEASEL, BOARD_CATWEASEL},
+> +	/* { ZORRO_PROD_INDIVIDUAL_COMPUTERS_X_SURF, BOARD_XSURF}, */
+
+Commented out code should be removed.
+
+> +	{ 0 }
+> +};
+> +
+
+Extra newline, please remove it.
+
+> +MODULE_DEVICE_TABLE(zorro, pata_buddha_zorro_tbl);
+> +
+> +static struct zorro_driver pata_buddha_driver = {
+> +	.name           = "pata_buddha",
+> +	.id_table       = pata_buddha_zorro_tbl,
+> +	.probe          = pata_buddha_probe,
+> +	.remove         = pata_buddha_remove,
+
+I think that we should also add:
+
+	.driver  = {
+		.suppress_bind_attrs = true,
+	},
+
+to prevent the device from being unbinded (and thus ->remove called)
+from the driver using sysfs interface.
+
+> +};
+> +
+
+Extra newline, please remove it.
+
+> +
+
+ditto
+
+> +
+> +/*
+> + * We cannot have a modalias for X-Surf boards, as it competes with the
+> + * zorro8390 network driver. As a stopgap measure until we have proper
+> + * MFC support for this board, we manually attach to it late after Zorro
+
+s/MFC/MFD/
+
+> + * has enumerated its boards.
+> + */
+> +static int __init pata_buddha_late_init(void)
+> +{
+> +        struct zorro_dev *z = NULL;
+> +
+> +	pr_info("pata_buddha: Scanning for stand-alone IDE controllers...\n");
+
+I think that there is no need for being extra verbose,
+please remove it.
+
+> +	zorro_register_driver(&pata_buddha_driver);
+> +
+> +	pr_info("pata_buddha: Scanning for X-Surf boards...\n");
+
+ditto
+
+> +        while ((z = zorro_find_device(ZORRO_PROD_INDIVIDUAL_COMPUTERS_X_SURF, z))) {
+> +		static struct zorro_device_id xsurf_ent =
+> +			{ ZORRO_PROD_INDIVIDUAL_COMPUTERS_X_SURF, BOARD_XSURF};
+> +
+> +		pata_buddha_probe(z, &xsurf_ent);
+> +        }
+> +
+> +        return 0;
+> +}
+> +
+> +late_initcall(pata_buddha_late_init);
+> +
+
+Extra newline, please remove it.
+
+>  
+>  MODULE_AUTHOR("Bartlomiej Zolnierkiewicz");
+>  MODULE_DESCRIPTION("low-level driver for Buddha/Catweasel/X-Surf PATA");
+
+Please also always check your patches with scripts/checkpatch.pl and
+fix the reported issues:
+
+ERROR: code indent should use tabs where possible
+#348: FILE: drivers/ata/pata_buddha.c:281:
++        struct zorro_dev *z = NULL;$
+
+WARNING: please, no spaces at the start of a line
+#348: FILE: drivers/ata/pata_buddha.c:281:
++        struct zorro_dev *z = NULL;$
+
+WARNING: line over 80 characters
+#354: FILE: drivers/ata/pata_buddha.c:287:
++        while ((z = zorro_find_device(ZORRO_PROD_INDIVIDUAL_COMPUTERS_X_SURF, z))) {
+
+ERROR: code indent should use tabs where possible
+#354: FILE: drivers/ata/pata_buddha.c:287:
++        while ((z = zorro_find_device(ZORRO_PROD_INDIVIDUAL_COMPUTERS_X_SURF, z))) {$
+
+WARNING: please, no spaces at the start of a line
+#354: FILE: drivers/ata/pata_buddha.c:287:
++        while ((z = zorro_find_device(ZORRO_PROD_INDIVIDUAL_COMPUTERS_X_SURF, z))) {$
+
+ERROR: that open brace { should be on the previous line
+#356: FILE: drivers/ata/pata_buddha.c:289:
++               static struct zorro_device_id xsurf_ent =
++                       { ZORRO_PROD_INDIVIDUAL_COMPUTERS_X_SURF, BOARD_XSURF};
+
+ERROR: code indent should use tabs where possible
+#359: FILE: drivers/ata/pata_buddha.c:292:
++        }$
+
+WARNING: please, no spaces at the start of a line
+#359: FILE: drivers/ata/pata_buddha.c:292:
++        }$
+
+ERROR: code indent should use tabs where possible
+#361: FILE: drivers/ata/pata_buddha.c:294:
++        return 0;$
+
+WARNING: please, no spaces at the start of a line
+#361: FILE: drivers/ata/pata_buddha.c:294:
++        return 0;$
+
+total: 5 errors, 6 warnings, 276 lines checked
+
+
+Otherwise the patch looks fine.
+
+Best regards,
+--
+Bartlomiej Zolnierkiewicz
+Samsung R&D Institute Poland
+Samsung Electronics
