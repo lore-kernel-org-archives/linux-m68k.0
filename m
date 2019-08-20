@@ -1,424 +1,71 @@
-From: Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>
-Subject: Re: [PATCH v5] ata/pata_buddha: Probe via modalias instead of
- initcall
-Date: Tue, 20 Aug 2019 14:06:15 +0200
-Message-ID: <9966f79c-278b-5ec9-3c4b-e1de55af55f0@samsung.com>
-References: <CGME20190812164840epcas2p4b88d3ebaf313f0c99ccb693047bce04c@epcas2p4.samsung.com>
-        <20190812164830.16244-1-max@enpas.org>
+From: Guenter Roeck <linux@roeck-us.net>
+Subject: Re: [PATCH v5 2/3] hwmon/ltc2990: Generalise DT to fwnode support
+Date: Tue, 20 Aug 2019 08:07:35 -0700
+Message-ID: <20190820150735.GA12198@roeck-us.net>
+References: <20190819121618.16557-1-max@enpas.org>
+ <20190819121618.16557-2-max@enpas.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20190812164830.16244-1-max@enpas.org>
-Content-Language: en-US
+Content-Disposition: inline
+In-Reply-To: <20190819121618.16557-2-max@enpas.org>
 Sender: linux-kernel-owner@vger.kernel.org
 To: Max Staudt <max@enpas.org>
-Cc: axboe@kernel.dk, linux-ide@vger.kernel.org, linux-m68k@vger.kernel.org, linux-kernel@vger.kernel.org, glaubitz@physik.fu-berlin.de, schmitzmic@gmail.com, geert@linux-m68k.org
+Cc: linux-i2c@vger.kernel.org, linux-hwmon@vger.kernel.org, Wolfram Sang <wsa+renesas@sang-engineering.com>, Jean Delvare <jdelvare@suse.com>, linux-m68k@vger.kernel.org, linux-kernel@vger.kernel.org, glaubitz@physik.fu-berlin.de
 List-Id: linux-m68k@vger.kernel.org
 
-
-Hi Max,
-
-Few more review comments below.
-
-On 8/12/19 6:48 PM, Max Staudt wrote:
-> Up until now, the pata_buddha driver would only check for cards on
-> initcall time. Now, the kernel will call its probe function as soon
-> as a compatible card is detected.
+On Mon, Aug 19, 2019 at 02:16:17PM +0200, Max Staudt wrote:
+> ltc2990 will now use device_property_read_u32_array() instead of
+> of_property_read_u32_array() - allowing the use of software nodes
+> via fwnode_create_software_node().
 > 
-> v5: Remove module_exit(): There's no good way to handle the X-Surf hack.
->     Also include a workaround to save X-Surf's drvdata in case zorro8390
->     is active.
-> 
-> v4: Clean up pata_buddha_probe() by using ent->driver_data.
->     Support X-Surf via late_initcall()
-> 
-> v3: Clean up devm_*, implement device removal.
-> 
-> v2: Rename 'zdev' to 'z' to make the patch easy to analyse with
->     git diff --ignore-space-change
+> This allows code using i2c_new_device() to specify a default
+> measurement mode for the LTC2990 via fwnode_create_software_node().
 > 
 > Signed-off-by: Max Staudt <max@enpas.org>
+> Reviewed-by: Geert Uytterhoeven <geert@linux-m68k.org>
+
+Applied to hwmon-next.
+
+Thanks,
+Guenter
+
 > ---
->  drivers/ata/pata_buddha.c | 234 +++++++++++++++++++++++++++-------------------
->  1 file changed, 140 insertions(+), 94 deletions(-)
+>  drivers/hwmon/ltc2990.c | 10 +++++-----
+>  1 file changed, 5 insertions(+), 5 deletions(-)
 > 
-> diff --git a/drivers/ata/pata_buddha.c b/drivers/ata/pata_buddha.c
-> index 11a8044ff..6014befc9 100644
-> --- a/drivers/ata/pata_buddha.c
-> +++ b/drivers/ata/pata_buddha.c
-> @@ -18,7 +18,9 @@
+> diff --git a/drivers/hwmon/ltc2990.c b/drivers/hwmon/ltc2990.c
+> index f9431ad43..53ff50517 100644
+> --- a/drivers/hwmon/ltc2990.c
+> +++ b/drivers/hwmon/ltc2990.c
+> @@ -13,7 +13,7 @@
+>  #include <linux/i2c.h>
 >  #include <linux/kernel.h>
->  #include <linux/libata.h>
->  #include <linux/mm.h>
-> +#include <linux/mod_devicetable.h>
 >  #include <linux/module.h>
-> +#include <linux/types.h>
->  #include <linux/zorro.h>
->  #include <scsi/scsi_cmnd.h>
->  #include <scsi/scsi_host.h>
-> @@ -29,7 +31,7 @@
->  #include <asm/setup.h>
+> -#include <linux/of.h>
+> +#include <linux/property.h>
 >  
->  #define DRV_NAME "pata_buddha"
-> -#define DRV_VERSION "0.1.0"
-> +#define DRV_VERSION "0.1.1"
+>  #define LTC2990_STATUS	0x00
+>  #define LTC2990_CONTROL	0x01
+> @@ -206,7 +206,6 @@ static int ltc2990_i2c_probe(struct i2c_client *i2c,
+>  	int ret;
+>  	struct device *hwmon_dev;
+>  	struct ltc2990_data *data;
+> -	struct device_node *of_node = i2c->dev.of_node;
 >  
->  #define BUDDHA_BASE1	0x800
->  #define BUDDHA_BASE2	0xa00
-> @@ -47,11 +49,11 @@ enum {
->  	BOARD_XSURF
->  };
+>  	if (!i2c_check_functionality(i2c->adapter, I2C_FUNC_SMBUS_BYTE_DATA |
+>  				     I2C_FUNC_SMBUS_WORD_DATA))
+> @@ -218,9 +217,10 @@ static int ltc2990_i2c_probe(struct i2c_client *i2c,
 >  
-> -static unsigned int buddha_bases[3] __initdata = {
-> +static unsigned int buddha_bases[3] = {
->  	BUDDHA_BASE1, BUDDHA_BASE2, BUDDHA_BASE3
->  };
+>  	data->i2c = i2c;
 >  
-> -static unsigned int xsurf_bases[2] __initdata = {
-> +static unsigned int xsurf_bases[2] = {
->  	XSURF_BASE1, XSURF_BASE2
->  };
+> -	if (of_node) {
+> -		ret = of_property_read_u32_array(of_node, "lltc,meas-mode",
+> -						 data->mode, 2);
+> +	if (dev_fwnode(&i2c->dev)) {
+> +		ret = device_property_read_u32_array(&i2c->dev,
+> +						     "lltc,meas-mode",
+> +						     data->mode, 2);
+>  		if (ret < 0)
+>  			return ret;
 >  
-> @@ -145,111 +147,155 @@ static struct ata_port_operations pata_xsurf_ops = {
->  	.set_mode	= pata_buddha_set_mode,
->  };
->  
-> -static int __init pata_buddha_init_one(void)
-> +static int pata_buddha_probe(struct zorro_dev *z,
-> +			     const struct zorro_device_id *ent)
->  {
-> -	struct zorro_dev *z = NULL;
-> -
-> -	while ((z = zorro_find_device(ZORRO_WILDCARD, z))) {
-> -		static const char *board_name[]
-> -			= { "Buddha", "Catweasel", "X-Surf" };
-> -		struct ata_host *host;
-> -		void __iomem *buddha_board;
-> -		unsigned long board;
-> -		unsigned int type, nr_ports = 2;
-> -		int i;
-> -
-> -		if (z->id == ZORRO_PROD_INDIVIDUAL_COMPUTERS_BUDDHA) {
-> -			type = BOARD_BUDDHA;
-> -		} else if (z->id == ZORRO_PROD_INDIVIDUAL_COMPUTERS_CATWEASEL) {
-> -			type = BOARD_CATWEASEL;
-> -			nr_ports++;
-> -		} else if (z->id == ZORRO_PROD_INDIVIDUAL_COMPUTERS_X_SURF) {
-> -			type = BOARD_XSURF;
-> -		} else
-> -			continue;
-> -
-> -		dev_info(&z->dev, "%s IDE controller\n", board_name[type]);
-> -
-> -		board = z->resource.start;
-> +	static const char * const board_name[]
-> +		= { "Buddha", "Catweasel", "X-Surf" };
-> +	struct ata_host *host;
-> +	void __iomem *buddha_board;
-> +	unsigned long board;
-> +	unsigned int type = ent->driver_data;
-> +	unsigned int nr_ports = (type == BOARD_CATWEASEL) ? 3 : 2;
-> +	void *old_drvdata;
-> +	int i;
-> +
-> +	dev_info(&z->dev, "%s IDE controller\n", board_name[type]);
-> +
-> +	board = z->resource.start;
-> +
-> +	if (type != BOARD_XSURF) {
-> +		if (!devm_request_mem_region(&z->dev,
-> +					     board + BUDDHA_BASE1,
-> +					     0x800, DRV_NAME))
-> +			return -ENXIO;
-> +	} else {
-> +		if (!devm_request_mem_region(&z->dev,
-> +					     board + XSURF_BASE1,
-> +					     0x1000, DRV_NAME))
-> +			return -ENXIO;
-> +		if (!devm_request_mem_region(&z->dev,
-> +					     board + XSURF_BASE2,
-> +					     0x1000, DRV_NAME)) {
-> +		}
-> +	}
-> +
-> +	/* Workaround for X-Surf: Save drvdata in case zorro8390 has set it */
-> +	old_drvdata = dev_get_drvdata(&z->dev);
-
-This should be done only for type == BOARD_XSURF.
-
-> +	/* allocate host */
-> +	host = ata_host_alloc(&z->dev, nr_ports);
-> +	dev_set_drvdata(&z->dev, old_drvdata);
-
-ditto
-
-> +	if (!host)
-> +		return -ENXIO;
-> +
-> +
-> +	buddha_board = ZTWO_VADDR(board);
-> +
-> +	/* enable the board IRQ on Buddha/Catweasel */
-> +	if (type != BOARD_XSURF)
-> +		z_writeb(0, buddha_board + BUDDHA_IRQ_MR);
-> +
-> +	for (i = 0; i < nr_ports; i++) {
-> +		struct ata_port *ap = host->ports[i];
-> +		void __iomem *base, *irqport;
-> +		unsigned long ctl = 0;
->  
->  		if (type != BOARD_XSURF) {
-> -			if (!devm_request_mem_region(&z->dev,
-> -						     board + BUDDHA_BASE1,
-> -						     0x800, DRV_NAME))
-> -				continue;
-> +			ap->ops = &pata_buddha_ops;
-> +			base = buddha_board + buddha_bases[i];
-> +			ctl = BUDDHA_CONTROL;
-> +			irqport = buddha_board + BUDDHA_IRQ + i * 0x40;
->  		} else {
-> -			if (!devm_request_mem_region(&z->dev,
-> -						     board + XSURF_BASE1,
-> -						     0x1000, DRV_NAME))
-> -				continue;
-> -			if (!devm_request_mem_region(&z->dev,
-> -						     board + XSURF_BASE2,
-> -						     0x1000, DRV_NAME))
-> -				continue;
-> +			ap->ops = &pata_xsurf_ops;
-> +			base = buddha_board + xsurf_bases[i];
-> +			/* X-Surf has no CS1* (Control/AltStat) */
-> +			irqport = buddha_board + XSURF_IRQ;
->  		}
->  
-> -		/* allocate host */
-> -		host = ata_host_alloc(&z->dev, nr_ports);
-> -		if (!host)
-> -			continue;
-> -
-> -		buddha_board = ZTWO_VADDR(board);
-> -
-> -		/* enable the board IRQ on Buddha/Catweasel */
-> -		if (type != BOARD_XSURF)
-> -			z_writeb(0, buddha_board + BUDDHA_IRQ_MR);
-> -
-> -		for (i = 0; i < nr_ports; i++) {
-> -			struct ata_port *ap = host->ports[i];
-> -			void __iomem *base, *irqport;
-> -			unsigned long ctl = 0;
-> -
-> -			if (type != BOARD_XSURF) {
-> -				ap->ops = &pata_buddha_ops;
-> -				base = buddha_board + buddha_bases[i];
-> -				ctl = BUDDHA_CONTROL;
-> -				irqport = buddha_board + BUDDHA_IRQ + i * 0x40;
-> -			} else {
-> -				ap->ops = &pata_xsurf_ops;
-> -				base = buddha_board + xsurf_bases[i];
-> -				/* X-Surf has no CS1* (Control/AltStat) */
-> -				irqport = buddha_board + XSURF_IRQ;
-> -			}
-> -
-> -			ap->pio_mask = ATA_PIO4;
-> -			ap->flags |= ATA_FLAG_SLAVE_POSS | ATA_FLAG_NO_IORDY;
-> -
-> -			ap->ioaddr.data_addr		= base;
-> -			ap->ioaddr.error_addr		= base + 2 + 1 * 4;
-> -			ap->ioaddr.feature_addr		= base + 2 + 1 * 4;
-> -			ap->ioaddr.nsect_addr		= base + 2 + 2 * 4;
-> -			ap->ioaddr.lbal_addr		= base + 2 + 3 * 4;
-> -			ap->ioaddr.lbam_addr		= base + 2 + 4 * 4;
-> -			ap->ioaddr.lbah_addr		= base + 2 + 5 * 4;
-> -			ap->ioaddr.device_addr		= base + 2 + 6 * 4;
-> -			ap->ioaddr.status_addr		= base + 2 + 7 * 4;
-> -			ap->ioaddr.command_addr		= base + 2 + 7 * 4;
-> -
-> -			if (ctl) {
-> -				ap->ioaddr.altstatus_addr = base + ctl;
-> -				ap->ioaddr.ctl_addr	  = base + ctl;
-> -			}
-> -
-> -			ap->private_data = (void *)irqport;
-> -
-> -			ata_port_desc(ap, "cmd 0x%lx ctl 0x%lx", board,
-> -				      ctl ? board + buddha_bases[i] + ctl : 0);
-> +		ap->pio_mask = ATA_PIO4;
-> +		ap->flags |= ATA_FLAG_SLAVE_POSS | ATA_FLAG_NO_IORDY;
-> +
-> +		ap->ioaddr.data_addr		= base;
-> +		ap->ioaddr.error_addr		= base + 2 + 1 * 4;
-> +		ap->ioaddr.feature_addr		= base + 2 + 1 * 4;
-> +		ap->ioaddr.nsect_addr		= base + 2 + 2 * 4;
-> +		ap->ioaddr.lbal_addr		= base + 2 + 3 * 4;
-> +		ap->ioaddr.lbam_addr		= base + 2 + 4 * 4;
-> +		ap->ioaddr.lbah_addr		= base + 2 + 5 * 4;
-> +		ap->ioaddr.device_addr		= base + 2 + 6 * 4;
-> +		ap->ioaddr.status_addr		= base + 2 + 7 * 4;
-> +		ap->ioaddr.command_addr		= base + 2 + 7 * 4;
-> +
-> +		if (ctl) {
-> +			ap->ioaddr.altstatus_addr = base + ctl;
-> +			ap->ioaddr.ctl_addr	  = base + ctl;
->  		}
->  
-> -		ata_host_activate(host, IRQ_AMIGA_PORTS, ata_sff_interrupt,
-> -				  IRQF_SHARED, &pata_buddha_sht);
-> +		ap->private_data = (void *)irqport;
->  
-> +		ata_port_desc(ap, "cmd 0x%lx ctl 0x%lx", board,
-> +			      ctl ? board + buddha_bases[i] + ctl : 0);
->  	}
->  
-> +	ata_host_activate(host, IRQ_AMIGA_PORTS, ata_sff_interrupt,
-> +			  IRQF_SHARED, &pata_buddha_sht);
-> +
-> +
->  	return 0;
->  }
->  
-> -module_init(pata_buddha_init_one);
-> +static void pata_buddha_remove(struct zorro_dev *z)
-> +{
-> +	struct ata_host *host = dev_get_drvdata(&z->dev);
-> +
-> +	ata_host_detach(host);
-> +}
-> +
-> +static const struct zorro_device_id pata_buddha_zorro_tbl[] = {
-> +	{ ZORRO_PROD_INDIVIDUAL_COMPUTERS_BUDDHA, BOARD_BUDDHA},
-> +	{ ZORRO_PROD_INDIVIDUAL_COMPUTERS_CATWEASEL, BOARD_CATWEASEL},
-> +	/* { ZORRO_PROD_INDIVIDUAL_COMPUTERS_X_SURF, BOARD_XSURF}, */
-
-Commented out code should be removed.
-
-> +	{ 0 }
-> +};
-> +
-
-Extra newline, please remove it.
-
-> +MODULE_DEVICE_TABLE(zorro, pata_buddha_zorro_tbl);
-> +
-> +static struct zorro_driver pata_buddha_driver = {
-> +	.name           = "pata_buddha",
-> +	.id_table       = pata_buddha_zorro_tbl,
-> +	.probe          = pata_buddha_probe,
-> +	.remove         = pata_buddha_remove,
-
-I think that we should also add:
-
-	.driver  = {
-		.suppress_bind_attrs = true,
-	},
-
-to prevent the device from being unbinded (and thus ->remove called)
-from the driver using sysfs interface.
-
-> +};
-> +
-
-Extra newline, please remove it.
-
-> +
-
-ditto
-
-> +
-> +/*
-> + * We cannot have a modalias for X-Surf boards, as it competes with the
-> + * zorro8390 network driver. As a stopgap measure until we have proper
-> + * MFC support for this board, we manually attach to it late after Zorro
-
-s/MFC/MFD/
-
-> + * has enumerated its boards.
-> + */
-> +static int __init pata_buddha_late_init(void)
-> +{
-> +        struct zorro_dev *z = NULL;
-> +
-> +	pr_info("pata_buddha: Scanning for stand-alone IDE controllers...\n");
-
-I think that there is no need for being extra verbose,
-please remove it.
-
-> +	zorro_register_driver(&pata_buddha_driver);
-> +
-> +	pr_info("pata_buddha: Scanning for X-Surf boards...\n");
-
-ditto
-
-> +        while ((z = zorro_find_device(ZORRO_PROD_INDIVIDUAL_COMPUTERS_X_SURF, z))) {
-> +		static struct zorro_device_id xsurf_ent =
-> +			{ ZORRO_PROD_INDIVIDUAL_COMPUTERS_X_SURF, BOARD_XSURF};
-> +
-> +		pata_buddha_probe(z, &xsurf_ent);
-> +        }
-> +
-> +        return 0;
-> +}
-> +
-> +late_initcall(pata_buddha_late_init);
-> +
-
-Extra newline, please remove it.
-
->  
->  MODULE_AUTHOR("Bartlomiej Zolnierkiewicz");
->  MODULE_DESCRIPTION("low-level driver for Buddha/Catweasel/X-Surf PATA");
-
-Please also always check your patches with scripts/checkpatch.pl and
-fix the reported issues:
-
-ERROR: code indent should use tabs where possible
-#348: FILE: drivers/ata/pata_buddha.c:281:
-+        struct zorro_dev *z = NULL;$
-
-WARNING: please, no spaces at the start of a line
-#348: FILE: drivers/ata/pata_buddha.c:281:
-+        struct zorro_dev *z = NULL;$
-
-WARNING: line over 80 characters
-#354: FILE: drivers/ata/pata_buddha.c:287:
-+        while ((z = zorro_find_device(ZORRO_PROD_INDIVIDUAL_COMPUTERS_X_SURF, z))) {
-
-ERROR: code indent should use tabs where possible
-#354: FILE: drivers/ata/pata_buddha.c:287:
-+        while ((z = zorro_find_device(ZORRO_PROD_INDIVIDUAL_COMPUTERS_X_SURF, z))) {$
-
-WARNING: please, no spaces at the start of a line
-#354: FILE: drivers/ata/pata_buddha.c:287:
-+        while ((z = zorro_find_device(ZORRO_PROD_INDIVIDUAL_COMPUTERS_X_SURF, z))) {$
-
-ERROR: that open brace { should be on the previous line
-#356: FILE: drivers/ata/pata_buddha.c:289:
-+               static struct zorro_device_id xsurf_ent =
-+                       { ZORRO_PROD_INDIVIDUAL_COMPUTERS_X_SURF, BOARD_XSURF};
-
-ERROR: code indent should use tabs where possible
-#359: FILE: drivers/ata/pata_buddha.c:292:
-+        }$
-
-WARNING: please, no spaces at the start of a line
-#359: FILE: drivers/ata/pata_buddha.c:292:
-+        }$
-
-ERROR: code indent should use tabs where possible
-#361: FILE: drivers/ata/pata_buddha.c:294:
-+        return 0;$
-
-WARNING: please, no spaces at the start of a line
-#361: FILE: drivers/ata/pata_buddha.c:294:
-+        return 0;$
-
-total: 5 errors, 6 warnings, 276 lines checked
-
-
-Otherwise the patch looks fine.
-
-Best regards,
---
-Bartlomiej Zolnierkiewicz
-Samsung R&D Institute Poland
-Samsung Electronics
