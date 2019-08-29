@@ -1,71 +1,35 @@
-From: Wolfram Sang <wsa@the-dreams.de>
-Subject: Re: [PATCH v5 3/3] i2c/busses/i2c-icy: Add LTC2990 present on 2019
- board revision
-Date: Thu, 29 Aug 2019 21:06:39 +0200
-Message-ID: <20190829190639.GH3740@ninjato>
-References: <20190819121618.16557-1-max@enpas.org>
- <20190819121618.16557-3-max@enpas.org>
+From: Max Staudt <max@enpas.org>
+Subject: Re: [PATCH] i2c/busses: Add i2c-icy for I2C on m68k/Amiga
+Date: Thu, 29 Aug 2019 21:17:37 +0200
+Message-ID: <e80a6ccb-ca88-a46f-74c7-ae03ab681977@enpas.org>
+References: <3F017C0B-44D6-4E63-A908-DDAA5586D67C@enpas.org>
+ <20190820092739.7213-1-max@enpas.org> <20190829190014.GG3740@ninjato>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="kHRd/tpU31Zn62xO"
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <20190819121618.16557-3-max@enpas.org>
+In-Reply-To: <20190829190014.GG3740@ninjato>
+Content-Language: en-US
 Sender: linux-kernel-owner@vger.kernel.org
-To: Max Staudt <max@enpas.org>
+To: Wolfram Sang <wsa@the-dreams.de>
 Cc: linux-i2c@vger.kernel.org, linux-hwmon@vger.kernel.org, Wolfram Sang <wsa+renesas@sang-engineering.com>, Jean Delvare <jdelvare@suse.com>, Guenter Roeck <linux@roeck-us.net>, linux-m68k@vger.kernel.org, linux-kernel@vger.kernel.org, glaubitz@physik.fu-berlin.de
 List-Id: linux-m68k@vger.kernel.org
 
+On 08/29/2019 09:00 PM, Wolfram Sang wrote:
+> Thanks for the changelog; it should go below the '---' line, however.
 
---kHRd/tpU31Zn62xO
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-On Mon, Aug 19, 2019 at 02:16:18PM +0200, Max Staudt wrote:
-> Since the 2019 a1k.org community re-print of these PCBs sports an
-> LTC2990 hwmon chip as an example use case, let this driver autoprobe
-> for that as well. If it is present, modprobing ltc2990 is sufficient.
->=20
-> The property_entry enables the three additional inputs available on
-> this particular board:
->=20
->   in1 will be the voltage of the 5V rail, divided by 2.
->   in2 will be the voltage of the 12V rail, divided by 4.
->   temp3 will be measured using a PCB loop next the chip.
->=20
-> v5: Style
->=20
-> v4: Style
->     Added other possible addresses for LTC2990.
->=20
-> v3: Merged with initial LTC2990 support on ICY.
->     Moved defaults from platform_data to swnode.
->     Added note to Kconfig.
->=20
-> Signed-off-by: Max Staudt <max@enpas.org>
-
-Applied to for-next, thanks!
+Thanks if you fixed it up!
 
 
---kHRd/tpU31Zn62xO
-Content-Type: application/pgp-signature; name="signature.asc"
+> Fixed a freshly introduced checkpatch warning for you.
 
------BEGIN PGP SIGNATURE-----
+Ditto.
 
-iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAl1oIj8ACgkQFA3kzBSg
-KbYTIg//aO1FrBTmT/QfrKtesFvAvdPu7gvw0MG4I219fbET8QCNiv0qj66cmeru
-By6FNeH7UIuOAABpKfsJfnQX35VEs758AzrGwD8A47xE7TO/aN94nuhQ9QYK1GJB
-0mxAIkuQ0rkFp/+elWzyRAyALjad4lI+vZRYkgZnGLr3j0FGg6ObEdRccn8OnmdS
-B/Jn2+5DhDKj4gNX/xHCxl8vmnYFiXOIZp4XKxblYqu/HY9KM7BgdNV6eonpN6ZD
-OXScHi+J6CKVg+pOoI/PWvoyB+vPFo+0DZwtGKLxDkAoGmqKtIK5AFZbWQnzw0uz
-S8WqmH0AbVi1A8aXb0YfxgunL96L5rqHaIZx3i3jUi5W9GGA3PTRCHdhMzzDt1DX
-iJW72OyuU7fWlOl0nTKzOTeIpthboTcolH8d3vnFFhpi0hYiYwrP9rI0KP+t6in6
-91F1WkZDHK1ukp9+LjUkeLcmfIzNFc+UMsUeocUu2WL49hwQWN5O+4O1w9DqvR9v
-yb8oNZO5PnBzpaPM2iQV8cfPe2/weJiGfBs+K65NCbmOn8KvlKGzPL4eMCGc62ZL
-cPop+da0XRBAWGo2diN9BkhzTtXWSPTMJDZUAC5mLaRXWD/8AEU81J9JSdpWMvi6
-J9K2b6hUzqINpzVYh+TGVyXZSy+j8MljaAswUTrAHjjRnXDI/XA=
-=7zkG
------END PGP SIGNATURE-----
 
---kHRd/tpU31Zn62xO--
+> But most importantly, applied to for-next, thanks!
+
+Thank you too for taking this, and Geert for the extra reviews.
+
+
+
+Max
