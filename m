@@ -1,30 +1,78 @@
-From: Max Staudt <max@enpas.org>
-Subject: Re: [PATCH v7] ata/pata_buddha: Probe via modalias instead of
- initcall
-Date: Fri, 23 Aug 2019 15:03:35 +0200
-Message-ID: <9e20397a-debb-c8d0-ef0a-cf576aae0ad0@enpas.org>
-References: <20190823104911.6840-1-max@enpas.org>
- <875526ec-e514-362a-8730-6424bd10b517@kernel.dk>
+From: Wolfram Sang <wsa@the-dreams.de>
+Subject: Re: [PATCH] i2c/busses: Add i2c-icy for I2C on m68k/Amiga
+Date: Thu, 29 Aug 2019 21:00:14 +0200
+Message-ID: <20190829190014.GG3740@ninjato>
+References: <3F017C0B-44D6-4E63-A908-DDAA5586D67C@enpas.org>
+ <20190820092739.7213-1-max@enpas.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="Cp3Cp8fzgozWLBWL"
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <875526ec-e514-362a-8730-6424bd10b517@kernel.dk>
-Content-Language: en-US
+Content-Disposition: inline
+In-Reply-To: <20190820092739.7213-1-max@enpas.org>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Jens Axboe <axboe@kernel.dk>, b.zolnierkie@samsung.com, geert@linux-m68k.org
-Cc: linux-ide@vger.kernel.org, linux-m68k@vger.kernel.org, linux-kernel@vger.kernel.org, glaubitz@physik.fu-berlin.de, schmitzmic@gmail.com
+To: Max Staudt <max@enpas.org>
+Cc: linux-i2c@vger.kernel.org, linux-hwmon@vger.kernel.org, Wolfram Sang <wsa+renesas@sang-engineering.com>, Jean Delvare <jdelvare@suse.com>, Guenter Roeck <linux@roeck-us.net>, linux-m68k@vger.kernel.org, linux-kernel@vger.kernel.org, glaubitz@physik.fu-berlin.de
 List-Id: linux-m68k@vger.kernel.org
 
-On 08/23/2019 02:59 PM, Jens Axboe wrote:
-> On 8/23/19 4:49 AM, Max Staudt wrote:
->> Up until now, the pata_buddha driver would only check for cards on
->> initcall time. Now, the kernel will call its probe function as soon
->> as a compatible card is detected.
-> 
-> Applied for 5.4, thanks everyone.
 
-Thanks Jens and Bartlomiej, and if I may: Thanks Geert for reviewing almost every single one of my m68k patches. This is a warm welcome to a new field.
+--Cp3Cp8fzgozWLBWL
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+On Tue, Aug 20, 2019 at 11:27:39AM +0200, Max Staudt wrote:
+> This is the i2c-icy driver for the ICY board for Amiga computers.
+> It connects a PCF8584 I2C controller to the Zorro bus, providing I2C
+> connectivity. The original documentation can be found on Aminet:
+>=20
+> https://aminet.net/package/docs/hard/icy
+>=20
+> IRQ support is currently not implemented, as i2c-algo-pcf is built for
+> the ISA bus and a straight implementation of the same stack locks up a
+> Zorro machine.
+>=20
+> v5: usleep_range() instead of udelay()
+>     Style
+>=20
+> v3: Fixed %pa format string
+>     Dropped adapter class.
+>     Clarified licence.
+>     Removed clock parameter.
+>=20
+> v2: Matched function names to callbacks from i2c-algo-pcf
+>     Used z_readb()/z_writeb()
+>     Removed BROKEN_ON_SMP in Kconfig
+>     Moved LTC2990 to a separate commit
+
+Thanks for the changelog; it should go below the '---' line, however.
+
+>=20
+> Signed-off-by: Max Staudt <max@enpas.org>
+
+Fixed a freshly introduced checkpatch warning for you.
+
+But most importantly, applied to for-next, thanks!
 
 
-Max
+--Cp3Cp8fzgozWLBWL
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAl1oIL4ACgkQFA3kzBSg
+KbaIlQ/+KKet9VcY+M8pjIHgWGbP2wcEex6N0ARbClkez48OAeie4CbCpz0PGQHj
+0GaJZXsnat80+rQzajZqGCue5iktKEJL6YuN9j7PdSfGZk2zgIGLm742yMDzBWXT
+iKgggKkn+jh1QZoHbXZzBY8gs0EEphunYPsFjDgxXn9Oj5rkt8lAy7U26pwOiCCW
+9RQ3byci5bFpp0dE45BgsDAvH74lDzztYJ1c/xjL48M/cdGCUASFlDDxoT+8A9/R
+YtzRaYl1+LtsKK7APGXigvAnUNXR3iMZeHHhcecBzraWyU9ZLHIMLqEOlOGXcqG0
+SNzB+DQVsS6bqtgf2rbaVDU+N1sT+xADNsyyrr1AzmYHFy4YjLQJTkfw6yqMKa1y
+vyvZBAG7DpmyZYn5Guug068u+7VkX3Vdq7wZ5W5IlbML7mQNqN/cTg9UrFuTH2gj
+Up5tagvkjn01tSUidd1+EAkmQzJRTzT3hUabe7d5kG0fbJrws0BRcK6K3d/nIyJs
+kUAx+Pq5SKCGaCCP4XGVeJddMmFoqrfZbN/5vgab+225yNq832vpGu+RanGn5L6h
+d+l778bj57TO4DvAQ3XgfVnPbaYtlO0B6XPLlh0bR6AK+TLGlvNpLFZPDjGmWBSB
+796nA/Wy5PwTWkTxSmLZ8u5H+WT3OuFQG4yM4Na7Trpv8iiU2lM=
+=WJlR
+-----END PGP SIGNATURE-----
+
+--Cp3Cp8fzgozWLBWL--
