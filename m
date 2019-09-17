@@ -1,35 +1,46 @@
-From: Max Staudt <max@enpas.org>
-Subject: Re: [PATCH] i2c/busses: Add i2c-icy for I2C on m68k/Amiga
-Date: Thu, 29 Aug 2019 21:17:37 +0200
-Message-ID: <e80a6ccb-ca88-a46f-74c7-ae03ab681977@enpas.org>
-References: <3F017C0B-44D6-4E63-A908-DDAA5586D67C@enpas.org>
- <20190820092739.7213-1-max@enpas.org> <20190829190014.GG3740@ninjato>
+From: Greg Ungerer <gerg@linux-m68k.org>
+Subject: [git pull] m68knommu changes for v5.4
+Date: Tue, 17 Sep 2019 13:38:17 +1000
+Message-ID: <a6d7c0bc-a6df-62be-ed2b-944551def5af@linux-m68k.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 7bit
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20190829190014.GG3740@ninjato>
 Content-Language: en-US
 Sender: linux-kernel-owner@vger.kernel.org
-To: Wolfram Sang <wsa@the-dreams.de>
-Cc: linux-i2c@vger.kernel.org, linux-hwmon@vger.kernel.org, Wolfram Sang <wsa+renesas@sang-engineering.com>, Jean Delvare <jdelvare@suse.com>, Guenter Roeck <linux@roeck-us.net>, linux-m68k@vger.kernel.org, linux-kernel@vger.kernel.org, glaubitz@physik.fu-berlin.de
+To: torvalds@linux-foundation.org
+Cc: "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Linux/m68k <linux-m68k@vger.kernel.org>, Geert Uytterhoeven <geert@linux-m68k.org>
 List-Id: linux-m68k@vger.kernel.org
 
-On 08/29/2019 09:00 PM, Wolfram Sang wrote:
-> Thanks for the changelog; it should go below the '---' line, however.
 
-Thanks if you fixed it up!
+Hi Linus,
 
+Can you please pull the m68knommu git tree, for-next branch.
 
-> Fixed a freshly introduced checkpatch warning for you.
+Only a single change, fix up header include in ColdFire specific GPIO
+handling code.
 
-Ditto.
-
-
-> But most importantly, applied to for-next, thanks!
-
-Thank you too for taking this, and Geert for the extra reviews.
+Regards
+Greg
 
 
 
-Max
+
+The following changes since commit f74c2bb98776e2de508f4d607cd519873065118e:
+
+   Linux 5.3-rc8 (2019-09-08 13:33:15 -0700)
+
+are available in the Git repository at:
+
+   git://git.kernel.org/pub/scm/linux/kernel/git/gerg/m68knommu.git for-next
+
+for you to fetch changes up to 372ea263b3d9cdeb70f8cffa025b2e0875e51b62:
+
+   m68k: coldfire: Include the GPIO driver header (2019-09-09 09:32:32 +1000)
+
+----------------------------------------------------------------
+Linus Walleij (1):
+       m68k: coldfire: Include the GPIO driver header
+
+  arch/m68k/coldfire/gpio.c | 1 +
+  1 file changed, 1 insertion(+)
