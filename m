@@ -4,70 +4,72 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-0.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
-	autolearn=no autolearn_force=no version=3.4.0
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 35598CA9EA0
-	for <linux-m68k@archiver.kernel.org>; Mon, 28 Oct 2019 06:58:01 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A6301CA9EA0
+	for <linux-m68k@archiver.kernel.org>; Mon, 28 Oct 2019 07:03:52 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id EE48D20873
-	for <linux-m68k@archiver.kernel.org>; Mon, 28 Oct 2019 06:58:00 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 709DF20679
+	for <linux-m68k@archiver.kernel.org>; Mon, 28 Oct 2019 07:03:52 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="qCmfpddr"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="uhyE5/6k"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730675AbfJ1G6A (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Mon, 28 Oct 2019 02:58:00 -0400
-Received: from mail-pg1-f169.google.com ([209.85.215.169]:39264 "EHLO
-        mail-pg1-f169.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726182AbfJ1G6A (ORCPT
-        <rfc822;linux-m68k@vger.kernel.org>); Mon, 28 Oct 2019 02:58:00 -0400
-Received: by mail-pg1-f169.google.com with SMTP id p12so6252958pgn.6
-        for <linux-m68k@vger.kernel.org>; Sun, 27 Oct 2019 23:58:00 -0700 (PDT)
+        id S1732088AbfJ1HDw (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Mon, 28 Oct 2019 03:03:52 -0400
+Received: from mail-pg1-f180.google.com ([209.85.215.180]:43091 "EHLO
+        mail-pg1-f180.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730616AbfJ1HDw (ORCPT
+        <rfc822;linux-m68k@vger.kernel.org>); Mon, 28 Oct 2019 03:03:52 -0400
+Received: by mail-pg1-f180.google.com with SMTP id l24so6245746pgh.10;
+        Mon, 28 Oct 2019 00:03:51 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=subject:to:references:cc:from:message-id:date:user-agent
          :mime-version:in-reply-to:content-transfer-encoding;
-        bh=iIIrq6hWcK6aIcAc6gwsRbOGt2hw/V5MfI3qLwaylo4=;
-        b=qCmfpddrWiwjz1LDRo0IEz47mP5Rr59bYC2icjlIx1rorK1VKVvoO8KY6NAc48L7L4
-         0V//pPaSeDZb1t/PR6TZapXcRJpx7hEMKxFpRwz1lJLN1Bz+q7b+0dSqxfJTeqf4EJl+
-         +GetPC9YmF25mSPBhht/sDGel9wp40/5ohfsAswsbDXIYO4mueect7BUnCAQj11YOUES
-         EMpKQCcUve1+dKN6Y1CH2gQGPIy3eVtKn+MZJ/V/Co9B7lfoqtykThX2wIwfABXZZQMF
-         Bq+ienyz+0jiHnhLsY9VUm+xfPblZG4122wWzp0Jls96jBXHUKqSrYoieNHqdYg8l7IL
-         Ed2Q==
+        bh=jERAWE+x1BLl4MJgyCXD41+1uwdaxk3zhMq+FdsMEoo=;
+        b=uhyE5/6kk9SqnBowemsq4djl7IltU9qAtQXsCbxUn74nB5h4edCkmdNMcSiaWjg1va
+         K7yGmPpTAtnatESunXXNga01Y/05cGPtd76FiWKRyggBWQwVn4CfffQyr9J9NgtzkujN
+         dl6Y7TQ9CNbnROZBdh4Ysoc76lYlPpRXsAJHZZwUq+b8W65kI+F5Cld19/BF3hrzBiyb
+         klGltOaiYLxYobbJk9S03ZWAtPCaT9Qq9qXRTa3sJnFOIekR7OMR7odTQrccFPt05X0k
+         vyxGS8rayOy9HMZE9JF0wdvqw3wd68O8AkcQI4cFEJXPOmQQjMoBSquL1WDtnKo0BDNl
+         l0Lw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:subject:to:references:cc:from:message-id:date
          :user-agent:mime-version:in-reply-to:content-transfer-encoding;
-        bh=iIIrq6hWcK6aIcAc6gwsRbOGt2hw/V5MfI3qLwaylo4=;
-        b=BW8FHuQ3CI5WRDt0Lz1zrBZ4Vbk1uzz7dPIVRHeh2NUox25dwFxM72lDdAMP3u+5Ys
-         VgX2V3gkP8G33NNEku0AIGHLlLpjyWYsGrpnJb9Lbj43vQm63zGq9Z0lBOxaNFZwqegj
-         ma9VHXSzXkE6BbXZG+H2R3+Lwb2AYQ9EoAh99exZumbGZlTrql+/6zLQKrV3VMYnLif0
-         PBVwr1u3VEalhfZhVm8UHCZaUedW32LVRLG02/qgCXBX8V9u1bIVf6z1aEJK0zLPJj32
-         ka/decVUrRIYUbLpoN/pWrqSELHBjj6kBVwelCORlf4nyaRiqwU1NsZi3tXCnDwwo1Q9
-         EHuQ==
-X-Gm-Message-State: APjAAAWnlOfAIieNEDqTPtM+5MobmxWIVFT+5qDHKoQONe+1/Ik4zlCe
-        GYuPkU6MRMg+qOy3Pi2FUSg/7Zdb
-X-Google-Smtp-Source: APXvYqyNCnpMhKAwd3q1q6XyKurIy3Q1IQQfEgnOPIB9dClQ20bw+9mKmfj/4luYJqFWgPhD+fpzQw==
-X-Received: by 2002:a63:6d8b:: with SMTP id i133mr18998154pgc.241.1572245879471;
-        Sun, 27 Oct 2019 23:57:59 -0700 (PDT)
+        bh=jERAWE+x1BLl4MJgyCXD41+1uwdaxk3zhMq+FdsMEoo=;
+        b=mFKRsG0/W/GZ6rJSn1OkgKi8aic0qi6VZ22swFqEO43TqI5+Nulr/TxjdtpA3b/uAE
+         cGSVn4cdDJAYA38yIFpOJWAJ/6EOgky7fsZ7b34Tl0K8cz6j3U4I4vGlpiyhWCquFgXl
+         D71cvxb2X6w7x+I3EZUoaNXbDwqo0U9crBerY12Aj/hNsKZw5s9TwM1NNw+ZH1ied9bf
+         urcLGDQ1N3vNxRbKM29Vzd+aywk6kKLJT9M9HW/BX6BDyDBprar0H/NbkC451B+K9fer
+         GHdNxJnHiV79sl9rHupAtohC/XGn7nxR537mF3KA3JreK7gcLYWog5Jfton8h9BmrfEO
+         VxAg==
+X-Gm-Message-State: APjAAAUYq7MFaTH91qZj2El7GaqH8m28HGtTJOk8pSgs4Mw+JnB3n8LF
+        XVOCq2wVmKdecgX5bpngGNo=
+X-Google-Smtp-Source: APXvYqz0uc5lgj/j+WvNQTmWEyMcxhFioHMxCOjS99LUnqTWr5n7aResCKHxNPGvMpQHKT/4rQD9cA==
+X-Received: by 2002:a17:90a:9f94:: with SMTP id o20mr20764126pjp.76.1572246231207;
+        Mon, 28 Oct 2019 00:03:51 -0700 (PDT)
 Received: from [192.168.1.101] (122-58-182-39-adsl.sparkbb.co.nz. [122.58.182.39])
-        by smtp.gmail.com with ESMTPSA id c12sm5323017pfp.178.2019.10.27.23.57.57
+        by smtp.gmail.com with ESMTPSA id u68sm10147307pfu.39.2019.10.28.00.03.47
         (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Sun, 27 Oct 2019 23:57:58 -0700 (PDT)
-Subject: Re: Amiga PCMCIA network card support
-To:     Kars de Jong <jongk@linux-m68k.org>,
-        Andreas 'count' Kotes 
-        <count-vger.kernel.org+linux-m68k@flatline.de>
-References: <7d87adfd-4373-950d-fc94-3bbdcce9e798@flatline.de>
- <CACz-3rgbLHbQf7kSbyH7NP5SUcMt1hJ=FiU+SGpTT8ZecuLYVQ@mail.gmail.com>
-Cc:     linux-m68k <linux-m68k@vger.kernel.org>
+        Mon, 28 Oct 2019 00:03:50 -0700 (PDT)
+Subject: Re: [PATCH RESEND v2 0/2] Convert Atari Falcon IDE driver to platform
+ device
+To:     Geert Uytterhoeven <geert@linux-m68k.org>,
+        Jens Axboe <axboe@kernel.dk>
+References: <1569470064-3977-1-git-send-email-schmitzmic@gmail.com>
+ <7bd80760-0d46-3b3d-16e7-41cbc9169822@kernel.dk>
+ <CAMuHMdWFoC8YUbmW8J7tJSsq4b67WkjyRzhkW=yfrEEJJmsZKQ@mail.gmail.com>
+Cc:     Linux/m68k <linux-m68k@vger.kernel.org>, linux-ide@vger.kernel.org,
+        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>
 From:   Michael Schmitz <schmitzmic@gmail.com>
-Message-ID: <abf16e20-1f80-76da-691e-e4e041ac955e@gmail.com>
-Date:   Mon, 28 Oct 2019 19:57:54 +1300
+Message-ID: <edb1ab21-9b60-4a25-b18c-76173ae6b28f@gmail.com>
+Date:   Mon, 28 Oct 2019 20:03:46 +1300
 User-Agent: Mozilla/5.0 (X11; Linux ppc; rv:45.0) Gecko/20100101
  Icedove/45.4.0
 MIME-Version: 1.0
-In-Reply-To: <CACz-3rgbLHbQf7kSbyH7NP5SUcMt1hJ=FiU+SGpTT8ZecuLYVQ@mail.gmail.com>
+In-Reply-To: <CAMuHMdWFoC8YUbmW8J7tJSsq4b67WkjyRzhkW=yfrEEJJmsZKQ@mail.gmail.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 7bit
 Sender: linux-m68k-owner@vger.kernel.org
@@ -75,39 +77,38 @@ Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-Kars,
+Hi Geert,
 
-Am 25.10.2019 um 20:25 schrieb Kars de Jong:
-
-> 2) Rework <asm/io.h> so inb()/inw()/inl(), outb()/outw()/outl(),
-> insb()/insw()/insl() and outsb()/outsw()/outsl() "just work" for
-> PCMCIA address space without having to create ugly hacks in the
-> generic drivers. This is not trivial because of the strange memory
-> mapping of the Amiga PCMCIA slot.
-
-If you can come up with a way to achieve that (somehow selecting between 
-8 bit and 16 bit mode at run time), I'd love to hear about it. I've 
-experimented a bit with the ne.c driver to allow for run time selection 
-of the correct IO access functions, but never came up with something 
-that I'd expect to get past the netdev folks.
-
-> 3) ...
-> 4) Profit!
+Am 27.10.2019 um 07:17 schrieb Geert Uytterhoeven:
+>>
+>> Who's going to pick this one up? I can do it, but it'd be nice to have
+>> m68k on patch 1 first.
 >
-> Oh, the 3c589_cs driver needed an ugly hack because some of the
-> registers just didn't read out properly on the Amiga with 16-bit
-> access. That issue is also described in the source code for the
-> AmigaOS driver.
+> Sorry for the late reply.  I'll have a closer look after ELC-E, and will apply
+> to the m68k tree if it passes.
+>
+> BTW, I believe v1 of both patches has been acked by Bartlomiej?
 
-Precisely, and this is the main reason why we can currently compile the 
-driver for either 8 bit or 16 bit access, but not both.
+Correct - on July 3rd. I totally forgot about that, and didn't add his 
+Acked-by in v2, sorry.
 
-@Andreas: I've sent a rough draft of a isp1763 driver to Adrian Glaubitz 
-and Michael Karcher a few months ago. Doesn't do anything useful yet, 
-and needs someone debugging where it goes wrong carefully.
-That was based on 4.18, but shouldn't be hard to get ported to 5.x. I 
-can resend that if there's any interest.
+Message-IDs are <89366005-c1f1-4a0c-9917-720bb9e9e100@samsung.com> and
+<69dd2d85-c9f2-23b9-b45c-34147e4dab86@samsung.com> FWIW.
 
 Cheers,
 
 	Michael
+
+>
+> Gr{oetje,eeting}s,
+>
+>                         Geert
+>
+>
+> --
+> Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+>
+> In personal conversations with technical people, I call myself a hacker. But
+> when I'm talking to journalists I just say "programmer" or something like that.
+>                                 -- Linus Torvalds
+>
