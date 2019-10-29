@@ -5,59 +5,58 @@ X-Spam-Level:
 X-Spam-Status: No, score=-2.3 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
 	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
+	USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E5096CA9EAE
-	for <linux-m68k@archiver.kernel.org>; Tue, 29 Oct 2019 20:17:04 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 35A4BCA9EAE
+	for <linux-m68k@archiver.kernel.org>; Tue, 29 Oct 2019 20:20:49 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id B39192054F
-	for <linux-m68k@archiver.kernel.org>; Tue, 29 Oct 2019 20:17:04 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 002892054F
+	for <linux-m68k@archiver.kernel.org>; Tue, 29 Oct 2019 20:20:48 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="WBBwHPmb"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="lFQi/6YU"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726346AbfJ2URE (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Tue, 29 Oct 2019 16:17:04 -0400
-Received: from mail-pg1-f182.google.com ([209.85.215.182]:41910 "EHLO
-        mail-pg1-f182.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725840AbfJ2URE (ORCPT
-        <rfc822;linux-m68k@vger.kernel.org>); Tue, 29 Oct 2019 16:17:04 -0400
-Received: by mail-pg1-f182.google.com with SMTP id l3so10383886pgr.8
-        for <linux-m68k@vger.kernel.org>; Tue, 29 Oct 2019 13:17:04 -0700 (PDT)
+        id S1726346AbfJ2UUs (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Tue, 29 Oct 2019 16:20:48 -0400
+Received: from mail-pf1-f170.google.com ([209.85.210.170]:37084 "EHLO
+        mail-pf1-f170.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725951AbfJ2UUs (ORCPT
+        <rfc822;linux-m68k@vger.kernel.org>); Tue, 29 Oct 2019 16:20:48 -0400
+Received: by mail-pf1-f170.google.com with SMTP id u9so5700623pfn.4
+        for <linux-m68k@vger.kernel.org>; Tue, 29 Oct 2019 13:20:48 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=subject:to:cc:references:from:message-id:date:user-agent
          :mime-version:in-reply-to:content-transfer-encoding:content-language;
-        bh=hEDItDG+Z/cbIg/LKYBv0MdNlT67xSB/CNDZwhZ0LXg=;
-        b=WBBwHPmb77VoVwq/POFV3kvsY731XCOH7i0ih7KINhKwO8AmOMgz7emlhuj4x5Pj9G
-         BfZarGkch2KxcE8u4tKaoc31EZlGrruEp2xFw8SXwc1sDu8LDwPZQ7AOqMD+N0HCoH5j
-         bmdHiyNfQ8wo7qrcsDpvSkuF7dWXol9UOLVztxGr+TJofv+erVqO3I6ErpuN78SsYF1l
-         CU1mc8pCbRRQNnNewbvPZEc+3fEo29NAM3poGCgpNKLzfP8TFF7b1z0xsLGvHg3SALTj
-         k5KyDQ1zw5rBd6UZuUgIqr/6x3b3HUkMI/+QVFcNBGvT2KjKhS8FfAZ/3bWAxLFCdEa7
-         M7KA==
+        bh=W2qU+fUUEZXfL+n65CDRg7ffVeO+t5HF4vLpTlse5CE=;
+        b=lFQi/6YUoUVswyDqY5F+uzIqsB2WdWZoiViAK4g+nolrwu3dM/2/mzP5pOww3JTU/V
+         zYxzZWCTPE2owQXwzAueVMzmq+58RyG+ixEtqffuriduFhxBmN4Rw2mrMMXSikGbZDD3
+         LnMgwRN3eSectxUEbNGhUPX8BQgqAJc8hCEFTEhREIYzIPx5fgcJy0AoYLojKuhyJqil
+         yXyO2QcWCszALSBZoSv7X6celF/giWnljF2IhvkfON6j1XsdaFo1IKrDhcSKTs7Knhsp
+         LTWDls94MC0Xwhm90FEO2SmNSCLl241tb5xmcJAbpQdGNe8XKD9rhnraKKk1nIw61gZ3
+         sNpw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:subject:to:cc:references:from:message-id:date
          :user-agent:mime-version:in-reply-to:content-transfer-encoding
          :content-language;
-        bh=hEDItDG+Z/cbIg/LKYBv0MdNlT67xSB/CNDZwhZ0LXg=;
-        b=ONglU25yd4EP9RgqiqAbHrtzD0ji2za078xHgf2EWdWx0/hIFq8ix5fpIW5+PkUTMz
-         fdqSWbuAeeETeZlzZI5JrgYAFamPN6Wr8DzD5kt1iXrnUQPI43PPOTKw0d/yKbs9j9uG
-         iczpkAV9O2+n1tV6DrRQa7qUcPomu1kL68LrKKBmMKCu1trMOUN+BYNVik3D4vMB0P25
-         oxOrA5dH48V3ooLakc5nIYvch4KFDn/VY196iD9VEbIpqjzP6RZOW6Xb+u0Ww3WbL0zJ
-         l6XZpWr98ZATvO7/wORnllykl+hVeiWWjyHmhOBAK2deCSlEXDbdPLkwz3AgIyM3Fw3E
-         EgKA==
-X-Gm-Message-State: APjAAAVZfOCZzKcRja3crD4cZDOwz/ySf7sN1W4TdYEXJH0atjYSizGs
-        UShU8mudCQFls+OMaI7PSbOJfLdJ
-X-Google-Smtp-Source: APXvYqyPuxzZ71cAkfyzBntASRh0lArRalmkI4+0YjGROpH/31FlC91rjqjSw+tKkQKJ5y5HOgTN2w==
-X-Received: by 2002:a17:90a:2326:: with SMTP id f35mr9099110pje.134.1572380223432;
-        Tue, 29 Oct 2019 13:17:03 -0700 (PDT)
+        bh=W2qU+fUUEZXfL+n65CDRg7ffVeO+t5HF4vLpTlse5CE=;
+        b=ISIByMZCf/zXAKNHqStQXhvLsgN9ZTz2x3dBRPeHxyJNFcwLk0/9iDPxcOhL6SDCje
+         1RBCjwD5QQPkYMYTMBJEgHTJ5ysRgTrGwa7FQT0DsEwWmeUnPdXga1c8g+DFYJvipjOu
+         nJxQgACaKswzQOWbvMFORz0irTaPXfPn6/vTjuPVLTCNSOfpW7WUZinER+pBd6ncTvGx
+         4hhi9K9EETX7eljsB9S6DZh1heiIKRwrEzaYR9JR6u9KDfod+7ZVtVtaujPp1SoKJEGP
+         iCho+GVdg18Ho3Qv/QcEFIZNW6Z7ia1g63nZdjvm00tx9RfexQjbAthw6ZDlusvSaLZE
+         3ANQ==
+X-Gm-Message-State: APjAAAVhZ8+HAt3Seblw77Lxd1opF6izY1HhiUi1Sc5KRjTT2C8fvlC1
+        uCvKv3qAJGmQtF04kRI4w+4wqrVF
+X-Google-Smtp-Source: APXvYqxNl0gJpRS5N3j2c1Mq8PG/5vkD8U/LJg6+t8rpWdi/mnCh0tCnrKsfEGSAcE+1nKlNesc+jw==
+X-Received: by 2002:a62:75c5:: with SMTP id q188mr27338224pfc.132.1572380447217;
+        Tue, 29 Oct 2019 13:20:47 -0700 (PDT)
 Received: from ?IPv6:2001:df0:0:200c:11df:7631:1f59:7f58? ([2001:df0:0:200c:11df:7631:1f59:7f58])
-        by smtp.gmail.com with ESMTPSA id z2sm74183pgo.13.2019.10.29.13.17.00
+        by smtp.gmail.com with ESMTPSA id o27sm75191pgn.12.2019.10.29.13.20.45
         (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 29 Oct 2019 13:17:02 -0700 (PDT)
+        Tue, 29 Oct 2019 13:20:46 -0700 (PDT)
 Subject: Re: ESP SCSI driver
-To:     Kars de Jong <jongk@linux-m68k.org>,
-        Finn Thain <fthain@telegraphics.com.au>
+To:     Kars de Jong <jongk@linux-m68k.org>
 Cc:     John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
         linux-m68k <linux-m68k@vger.kernel.org>
 References: <7d87adfd-4373-950d-fc94-3bbdcce9e798@flatline.de>
@@ -68,15 +67,15 @@ References: <7d87adfd-4373-950d-fc94-3bbdcce9e798@flatline.de>
  <CACz-3riuHWhRXQsdaphDnhLM6zz6eKkc5YrT9=iUk5of+411wA@mail.gmail.com>
  <a2f35ec5-4dd3-b9b2-5f0c-25258296d9db@physik.fu-berlin.de>
  <CACz-3rjsk_A++yGi8agNZQYsn+rtkFJVfrhOAVUFvr=zCe0Dbg@mail.gmail.com>
- <alpine.LNX.2.21.1910291030480.49@nippy.intranet>
- <CACz-3riDMqySQ-uMjpfn-GeQyD0CjyeAMk2ZpcpAqAekGn7UTA@mail.gmail.com>
+ <CAOmrzk+SNfmS0-H6C29Lqbebm3Bkpm-kQO9rfdve_ojy2a6Kcw@mail.gmail.com>
+ <CACz-3rh9ZCyU1825yU8xxty5BGrwFhpbjKNoWnn0mGiv_h2Kag@mail.gmail.com>
 From:   Michael Schmitz <schmitzmic@gmail.com>
-Message-ID: <13e30170-4e73-1391-3060-73b86476e571@gmail.com>
-Date:   Wed, 30 Oct 2019 09:16:58 +1300
+Message-ID: <dd2b77c1-3f91-c616-d80c-fba0ab055d06@gmail.com>
+Date:   Wed, 30 Oct 2019 09:20:43 +1300
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
  Thunderbird/60.6.1
 MIME-Version: 1.0
-In-Reply-To: <CACz-3riDMqySQ-uMjpfn-GeQyD0CjyeAMk2ZpcpAqAekGn7UTA@mail.gmail.com>
+In-Reply-To: <CACz-3rh9ZCyU1825yU8xxty5BGrwFhpbjKNoWnn0mGiv_h2Kag@mail.gmail.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 8bit
 Content-Language: en-US
@@ -87,38 +86,58 @@ X-Mailing-List: linux-m68k@vger.kernel.org
 
 Hi Kars,
 
-On 30/10/19 12:52 AM, Kars de Jong wrote:
-> Hi Finn,
+On 29/10/19 10:37 PM, Kars de Jong wrote:
+> Hi Michael,
 >
-> Op di 29 okt. 2019 om 00:38 schreef Finn Thain <fthain@telegraphics.com.au>:
->> On Mon, 28 Oct 2019, Kars de Jong wrote:
->>> It probably uses a different chip. The text and images show it's a
->>> QLogic FAS216 (which is the same as a FAS236, FAS236 is the differential
->>> variant). The type should more accurately be presented as "FAS2x6" since
->>> you can't tell which type it is in software.
+> Op ma 28 okt. 2019 om 19:32 schreef Michael Schmitz <schmitzmic@gmail.com>:
+>> Don't mess with CONFIG3 - we've tried all that, and in the end had to
+>> use PIO to transfer message bytes. Problems with tagged queueing in
+>> the ESP driver are usually all due to the DMA not transferring single
+>> bytes on Amiga. The additional message byte required to see a reselect
+>> for a tagged command complete remains stuck in the ESP fifo. Can't see
+>> how this would be affected by the driver mis-identifying the chip as
+>> FAS100A.
+> And yet that was exactly what caused the issue. It was setting bit 1
+> of CONFIG3 - ESP_CONFIG3_FAST (FAS100A) instead of bit 3 -
+> ESP_CONFIG3_FCLK (FAS236 and also FSC). Bit 1 means ESP_CONFIG3_ADMA
+
+I'd expect chip config settings to go awry if the chip version is not 
+detected correctly. What I meant to say, attempts at somehow enabling 
+additonal SCSI features in CONFIG3 haven't got us anywhere with the 
+reselection interrupt issue.
+
+Your hang may be due to something entirely different yet.
+
+> on the FSC, and having bit 0 cleared and bit 1 set is actually an
+> illegal combination on the FSC (marked "Reserved" in the data manual).
+>
+>> Regardig mis-detection of the chip revision - can you print the
+>> 'version' and 'family_code' variables in the esp->rev == FAST branch
+>> of esp_reset_esp() please?
+> Family code 0x14, version 2. That's what was also used in the old driver.
+Family code 0x14 would imply version 0xa2 (or possibly 0xa0). That's 
+revision 'fsc' in the old driver?
+>
+>>> I will try out some things this evening, I naively added the FSC to
+>>> the end of the enum, but the code does things like "if (esp->rev >=
+>>> FAS100A)" which break horribly then.
 >>>
->> FWIW, the old driver, removed in commit a2c6ef71364e ("[SCSI] NCR53C9x:
->> remove driver", has this:
->>
->> -               if(family_code == 0x02) {
->> -                       if ((version & 7) == 2)
->> -                               esp->erev = fas216;
->> -                        else
->> -                               esp->erev = fas236;
-> The fas236 type was from the original Sun-only esp driver (I guess the
-> only Suns with a FAS2x6 had differential variants hence the name). I
-> got a confirmation for the detection of the FAS216 from someone with a
-> Cyberstorm board, so that one was added then (including the specific
-> match on version). Since the NCR53C9x driver was never used on a Sun,
-> this was never confirmed for the FAS236.
+>>> It looks like it might work if I add my chip type between FAS236 and
+>>> FAS100A in the esp_rev enum.
+> And that indeed fixed it. I ran "fsck -n" on both partitions on the
+> SCSI disk without issues.
+> I also want to enable Active Negation and perhaps also "Back-to-Back
+> Transfer Enable" in CONFIG4 for this chip (see also the data manual
+> http://www.bitsavers.org/components/ncr/scsi/53CF94_96-2_Fast_SCSI_Controller_Data_Manual_Apr1993.pdf
+> if you are interested, at home I have an even newer one for the
+> Symbios Logic version).
+>
+> I will prepare a patch. Oh, I also noticed some issues in the comments
+> in the driver, I'll see if I can fix those too.
 
-Do we need to distinguish between fas216 and fas236 at all? From the old 
-driver code, they would seem to behave just the same.
-
-Making use of the distinction between fsc and fas236 for enabling active 
-negation would not require figuring out the SCSI bus mode (differential 
-or single-ended) from my reading of the data book. Enabling back to back 
-transfers might requrire more work on the driver.
+By all means, go ahead with a patch. My knowledge of the Amiga ESP 
+boards is limited to what I could glean from the old driver source. I 
+haven't seen an Amiga computer in over a decade.
 
 Cheers,
 
