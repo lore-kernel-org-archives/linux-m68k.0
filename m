@@ -6,30 +6,30 @@ X-Spam-Status: No, score=-2.2 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1
 	autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 861DACA9EAE
-	for <linux-m68k@archiver.kernel.org>; Tue, 29 Oct 2019 09:12:25 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 0808DCA9EAE
+	for <linux-m68k@archiver.kernel.org>; Tue, 29 Oct 2019 09:14:04 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 6148120717
-	for <linux-m68k@archiver.kernel.org>; Tue, 29 Oct 2019 09:12:25 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id DAA3620717
+	for <linux-m68k@archiver.kernel.org>; Tue, 29 Oct 2019 09:14:03 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727658AbfJ2JMZ (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Tue, 29 Oct 2019 05:12:25 -0400
-Received: from outpost1.zedat.fu-berlin.de ([130.133.4.66]:52935 "EHLO
+        id S1726104AbfJ2JOD (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Tue, 29 Oct 2019 05:14:03 -0400
+Received: from outpost1.zedat.fu-berlin.de ([130.133.4.66]:57513 "EHLO
         outpost1.zedat.fu-berlin.de" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726071AbfJ2JMY (ORCPT
+        by vger.kernel.org with ESMTP id S1729876AbfJ2JOD (ORCPT
         <rfc822;linux-m68k@vger.kernel.org>);
-        Tue, 29 Oct 2019 05:12:24 -0400
+        Tue, 29 Oct 2019 05:14:03 -0400
 Received: from inpost2.zedat.fu-berlin.de ([130.133.4.69])
           by outpost.zedat.fu-berlin.de (Exim 4.85)
           with esmtps (TLSv1.2:ECDHE-RSA-AES256-GCM-SHA384:256)
           (envelope-from <glaubitz@physik.fu-berlin.de>)
-          id <1iPNY6-001enV-A1>; Tue, 29 Oct 2019 10:12:22 +0100
+          id <1iPNZh-001fXr-7j>; Tue, 29 Oct 2019 10:14:01 +0100
 Received: from p5b13a09a.dip0.t-ipconnect.de ([91.19.160.154] helo=[192.168.179.22])
           by inpost2.zedat.fu-berlin.de (Exim 4.85)
           with esmtpsa (TLSv1.2:ECDHE-RSA-AES128-GCM-SHA256:128)
           (envelope-from <glaubitz@physik.fu-berlin.de>)
-          id <1iPNY5-003Q8T-So>; Tue, 29 Oct 2019 10:12:22 +0100
-Subject: Re: Amiga PCMCIA network card support
+          id <1iPNZg-003QOP-VP>; Tue, 29 Oct 2019 10:14:01 +0100
+Subject: Re: FOSDEM (was: Re: Amiga PCMCIA network card support)
 To:     Geert Uytterhoeven <geert@linux-m68k.org>,
         Kars de Jong <jongk@linux-m68k.org>
 Cc:     Andreas 'count' Kotes 
@@ -39,7 +39,9 @@ References: <7d87adfd-4373-950d-fc94-3bbdcce9e798@flatline.de>
  <CACz-3rgbLHbQf7kSbyH7NP5SUcMt1hJ=FiU+SGpTT8ZecuLYVQ@mail.gmail.com>
  <5531fcb0-687d-7186-a4b5-f2f9349d334a@flatline.de>
  <CACz-3riJHfuhkFMyPbUCz8Q9Mbu6T+CFz5gMwAKzMeg0tjM4Hg@mail.gmail.com>
- <CAMuHMdWdvHZ97Wh4PBfdO-Lz4QM3_ZoGah5p0SBJr8V-EcULGA@mail.gmail.com>
+ <1989702b-16ca-b376-c33d-9e04e6de2ca3@physik.fu-berlin.de>
+ <CACz-3riuHWhRXQsdaphDnhLM6zz6eKkc5YrT9=iUk5of+411wA@mail.gmail.com>
+ <CAMuHMdWER-r-oFM_17kggVPDb7y2XupLViUPubqTZSQYWjgoqQ@mail.gmail.com>
 From:   John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
 Autocrypt: addr=glaubitz@physik.fu-berlin.de; keydata=
  mQINBE3JE9wBEADMrYGNfz3oz6XLw9XcWvuIxIlPWoTyw9BxTicfGAv0d87wngs9U+d52t/R
@@ -85,12 +87,12 @@ Autocrypt: addr=glaubitz@physik.fu-berlin.de; keydata=
  jEF9ImTPcYZpw5vhdyPwBdXW2lSjV3EAqknWujRgcsm84nycuJnImwJptR481EWmtuH6ysj5
  YhRVGbQPfdsjVUQfZdRdkEv4CZ90pdscBi1nRqcqANtzC+WQFwekDzk2lGqNRDg56s+q0KtY
  scOkTAZQGVpD/8AaLH4v1w==
-Message-ID: <0711e1c1-889f-614d-556f-250d1f6173f1@physik.fu-berlin.de>
-Date:   Tue, 29 Oct 2019 10:12:20 +0100
+Message-ID: <7738673a-1195-3b95-489e-c5b659881d09@physik.fu-berlin.de>
+Date:   Tue, 29 Oct 2019 10:13:59 +0100
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.1.2
 MIME-Version: 1.0
-In-Reply-To: <CAMuHMdWdvHZ97Wh4PBfdO-Lz4QM3_ZoGah5p0SBJr8V-EcULGA@mail.gmail.com>
+In-Reply-To: <CAMuHMdWER-r-oFM_17kggVPDb7y2XupLViUPubqTZSQYWjgoqQ@mail.gmail.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -100,25 +102,20 @@ Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-On 10/29/19 10:00 AM, Geert Uytterhoeven wrote:
->> I've dusted it off and powered it on this weekend. It still works (RTC
->> needs a new battery though), and the 2.6.18 kernel that I modified
->> many years ago still works fine with the pcnet_cs driver and my
->> Dynalink L10C card.
+On 10/29/19 9:56 AM, Geert Uytterhoeven wrote:
+>> Would be cool... Last time I went to something like that was the
+>> Oldenburg meeting of 1998 ;-)
 > 
-> You may want to have a close look at the electrolytic capacitors.
-> A few months ago I had to repair some of the damage done by
-> a leaking capacitor.  Fortunately I don't need the signals on the
-> parallel port, but I do use the serial console, and thus had to fix
-> the eaten RXD trace.
+> Time to broaden your playfield again ;-)
+> 
+> Note that there will be a retro-computing devroom, for which a talk about
+> e.g. not letting die Linux on m68k may be a suitable topic.
+> 
+> https://fosdem.org/2020/news/2019-10-01-accepted-developer-rooms/
 
-In the worst case, you can just buy a new A1200 board off eBay for 70 Euros:
+Nice. We could also point to the Bountysource campaign for gcc there:
 
-> https://www.ebay.de/itm/123936094940
-
-Just involves some soldering but people are building new A1200s successfully:
-
-> https://www.a1k.org/forum/index.php?threads/70854/
+> https://www.bountysource.com/issues/80706251-m68k-convert-the-backend-to-mode_cc-so-it-can-be-kept-in-future-releases
 
 Adrian
 
