@@ -6,49 +6,47 @@ X-Spam-Status: No, score=-0.8 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=no
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 5DCF8CA9EAE
-	for <linux-m68k@archiver.kernel.org>; Tue, 29 Oct 2019 08:57:01 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 3988ACA9EAE
+	for <linux-m68k@archiver.kernel.org>; Tue, 29 Oct 2019 09:00:43 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 2A7CF20830
-	for <linux-m68k@archiver.kernel.org>; Tue, 29 Oct 2019 08:57:01 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 1961D20830
+	for <linux-m68k@archiver.kernel.org>; Tue, 29 Oct 2019 09:00:43 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730261AbfJ2I5A (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Tue, 29 Oct 2019 04:57:00 -0400
-Received: from mail-ot1-f65.google.com ([209.85.210.65]:43382 "EHLO
-        mail-ot1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730258AbfJ2I5A (ORCPT
-        <rfc822;linux-m68k@vger.kernel.org>); Tue, 29 Oct 2019 04:57:00 -0400
-Received: by mail-ot1-f65.google.com with SMTP id b19so6740115otq.10
-        for <linux-m68k@vger.kernel.org>; Tue, 29 Oct 2019 01:57:00 -0700 (PDT)
+        id S1730390AbfJ2JAm (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Tue, 29 Oct 2019 05:00:42 -0400
+Received: from mail-oi1-f175.google.com ([209.85.167.175]:46567 "EHLO
+        mail-oi1-f175.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730295AbfJ2JAl (ORCPT
+        <rfc822;linux-m68k@vger.kernel.org>); Tue, 29 Oct 2019 05:00:41 -0400
+Received: by mail-oi1-f175.google.com with SMTP id c2so8257835oic.13
+        for <linux-m68k@vger.kernel.org>; Tue, 29 Oct 2019 02:00:41 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=Z2IzA2GZseCJB9RaBV7v/IZaQBkyl5Wllud5Tv4Cqno=;
-        b=dXHlOIBaErTOh0YbrRZ9mfSGU4G5cw39N2KLUHah5febxn44eRw26VtbPeHm2bag6H
-         pReiXOAtfT2D9HJ0Or8y98vfWHAJZOzhGqxPQ4OAvXoQNUEZ6hVncPVUk1YRqw+m8tCo
-         gmLxbk0Y819AQFnEuSWdiXRq1zW8zY2GUDFSZgd/rJVCyRed1sLWLH4XkO2uwEtfXzfP
-         QGqQjmuoKTvdWFf+c0e9DkJJC8DvIHOevBCIhLi+jBFsfU2Me94PTNMXbNmC07bbJrUw
-         1JHnOVa5DlhRsvCiO9Lqa0eNLAW8MCAGG+7PNuR/CZa0/e2z/YjK2FGb49aGDlX9MVlT
-         DmUQ==
-X-Gm-Message-State: APjAAAWbhPSsq9wZZXHvyy3ryJ07md8C5esoiI/jaScRDBczAesCJGdy
-        S+stomS+zDYTBdXBQYN4q8nOxlPvd0U9+n+ct/tE9reJ
-X-Google-Smtp-Source: APXvYqw+HhBvF3EkKUIv2//IijlnNyn95CnvwNI8eXX6SoxcHIac9a5Wac7DzGBjmKnskBGzy9r0OOuNv0QgV9sWz9U=
-X-Received: by 2002:a05:6830:20d2:: with SMTP id z18mr430017otq.297.1572339419668;
- Tue, 29 Oct 2019 01:56:59 -0700 (PDT)
+        bh=0mysURtq+A1cDD5JAJdCBFs1vb89zZ8nki4EKstGErs=;
+        b=ipUcldFSy01Z9+rf1dZU7v28PTwJGlHyGFqkNEnbcsFnSXMh1vWQcuFlr3ACMrrNp7
+         woEPPXEmO7UmU7HaikBEGWBn2AMFXkB8L61ratjaaD3A35WE5G31hP/Ik7GqDgsY4YQm
+         dMq5GDmSL9z26sgiJe8K0ZcEeEHvJIAKQLVo9SFp+mF5BjmHZCl4NzxnKidFHGdzHtWu
+         Hx8OCz4NGupbpjv+Z+0k6Yeewd3w9bSFbS0dMpwCbssbHJSwEuPCFFTlTHr0AmKDr5hz
+         j/sUEH6rtw6rqLFg4xNxbtjSFJ4U4dwqAN5tZnc8Vx39VNNM6Pa5nHc0t9XOIkNAg4s4
+         E1AQ==
+X-Gm-Message-State: APjAAAWAhz7YqodAoKLopohdTMCAQ2JAnHZDWNWwGrBmwYUZc0UTB5eP
+        Pbb9rK55ih26Tspys8uz6biRj7mjjZPng37T1txl0IkS
+X-Google-Smtp-Source: APXvYqzPdUu4kq9oY447w8TKA3hvNJsJMqcUbuUd6rLF4LBF9g38Z3gOqtTM7o0LfNZLFsK0zOGISgAZQncPVxX9zJ0=
+X-Received: by 2002:aca:4ac5:: with SMTP id x188mr299049oia.148.1572339640814;
+ Tue, 29 Oct 2019 02:00:40 -0700 (PDT)
 MIME-Version: 1.0
 References: <7d87adfd-4373-950d-fc94-3bbdcce9e798@flatline.de>
  <CACz-3rgbLHbQf7kSbyH7NP5SUcMt1hJ=FiU+SGpTT8ZecuLYVQ@mail.gmail.com>
  <5531fcb0-687d-7186-a4b5-f2f9349d334a@flatline.de> <CACz-3riJHfuhkFMyPbUCz8Q9Mbu6T+CFz5gMwAKzMeg0tjM4Hg@mail.gmail.com>
- <1989702b-16ca-b376-c33d-9e04e6de2ca3@physik.fu-berlin.de> <CACz-3riuHWhRXQsdaphDnhLM6zz6eKkc5YrT9=iUk5of+411wA@mail.gmail.com>
-In-Reply-To: <CACz-3riuHWhRXQsdaphDnhLM6zz6eKkc5YrT9=iUk5of+411wA@mail.gmail.com>
+In-Reply-To: <CACz-3riJHfuhkFMyPbUCz8Q9Mbu6T+CFz5gMwAKzMeg0tjM4Hg@mail.gmail.com>
 From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Tue, 29 Oct 2019 09:56:48 +0100
-Message-ID: <CAMuHMdWER-r-oFM_17kggVPDb7y2XupLViUPubqTZSQYWjgoqQ@mail.gmail.com>
-Subject: FOSDEM (was: Re: Amiga PCMCIA network card support)
+Date:   Tue, 29 Oct 2019 10:00:29 +0100
+Message-ID: <CAMuHMdWdvHZ97Wh4PBfdO-Lz4QM3_ZoGah5p0SBJr8V-EcULGA@mail.gmail.com>
+Subject: Re: Amiga PCMCIA network card support
 To:     Kars de Jong <jongk@linux-m68k.org>
-Cc:     John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
-        "Andreas 'count' Kotes" 
+Cc:     "Andreas 'count' Kotes" 
         <count-vger.kernel.org+linux-m68k@flatline.de>,
         linux-m68k <linux-m68k@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
@@ -57,27 +55,32 @@ Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-Hi all,
+ Hi Kars,
 
-On Mon, Oct 28, 2019 at 9:27 PM Kars de Jong <jongk@linux-m68k.org> wrote:
-> Op ma 28 okt. 2019 om 12:08 schreef John Paul Adrian Glaubitz
-> <glaubitz@physik.fu-berlin.de>:
-> > But I will be attending FOSDEM and Geert is coming as well (at least he
-> > has been to every FOSDEM so far ;)), so we can maybe have a small m68k
-
-Yes, I plan to be there.
-
-> > meeting. I'm coming with two friends who are also Linux hackers.
+On Mon, Oct 28, 2019 at 8:02 PM Kars de Jong <jongk@linux-m68k.org> wrote:
+> Op vr 25 okt. 2019 om 13:49 schreef Andreas 'count' Kotes
+> <count-vger.kernel.org+linux-m68k@flatline.de>:
+> > On 25.10.19 09:25, Kars de Jong wrote:
+> > > Op do 24 okt. 2019 om 22:56 schreef Andreas 'count' Kotes
+> > > <count-vger.kernel.org+linux-
+> > >> What needs to happen for stable, reliable support for existing PCMCIA
+> > >> network cards people already have? How can we unblock those possible
+> > >> Linux users?
+> > > ...
+> > > Then Real Life happened and I didn't touch my Amiga for 10+ years...
+> >
+> > .. hmm, is this something that's likely to change? ;)
 >
-> Would be cool... Last time I went to something like that was the
-> Oldenburg meeting of 1998 ;-)
+> I've dusted it off and powered it on this weekend. It still works (RTC
+> needs a new battery though), and the 2.6.18 kernel that I modified
+> many years ago still works fine with the pcnet_cs driver and my
+> Dynalink L10C card.
 
-Time to broaden your playfield again ;-)
-
-Note that there will be a retro-computing devroom, for which a talk about
-e.g. not letting die Linux on m68k may be a suitable topic.
-
-https://fosdem.org/2020/news/2019-10-01-accepted-developer-rooms/
+You may want to have a close look at the electrolytic capacitors.
+A few months ago I had to repair some of the damage done by
+a leaking capacitor.  Fortunately I don't need the signals on the
+parallel port, but I do use the serial console, and thus had to fix
+the eaten RXD trace.
 
 Gr{oetje,eeting}s,
 
