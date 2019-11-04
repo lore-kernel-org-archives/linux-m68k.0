@@ -1,58 +1,105 @@
-Return-Path: <SRS0=Ls/8=YX=vger.kernel.org=linux-m68k-owner@kernel.org>
+Return-Path: <SRS0=raBa=Y4=vger.kernel.org=linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-0.8 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=no
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-3.7 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
+	MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
+	autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D977FCA9EC7
-	for <linux-m68k@archiver.kernel.org>; Wed, 30 Oct 2019 23:15:20 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 58126CA9ECF
+	for <linux-m68k@archiver.kernel.org>; Mon,  4 Nov 2019 07:43:22 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id B48A120873
-	for <linux-m68k@archiver.kernel.org>; Wed, 30 Oct 2019 23:15:20 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 34A5D21D71
+	for <linux-m68k@archiver.kernel.org>; Mon,  4 Nov 2019 07:43:22 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726584AbfJ3XPU (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Wed, 30 Oct 2019 19:15:20 -0400
-Received: from kvm5.telegraphics.com.au ([98.124.60.144]:41668 "EHLO
-        kvm5.telegraphics.com.au" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726411AbfJ3XPU (ORCPT
-        <rfc822;linux-m68k@vger.kernel.org>); Wed, 30 Oct 2019 19:15:20 -0400
-Received: from localhost (localhost.localdomain [127.0.0.1])
-        by kvm5.telegraphics.com.au (Postfix) with ESMTP id 7AA6829BDE;
-        Wed, 30 Oct 2019 19:15:17 -0400 (EDT)
-Date:   Thu, 31 Oct 2019 10:15:15 +1100 (AEDT)
-From:   Finn Thain <fthain@telegraphics.com.au>
-To:     Kars de Jong <jongk@linux-m68k.org>
-cc:     linux-m68k@vger.kernel.org, Michael Schmitz <schmitzmic@gmail.com>
-Subject: Re: [PATCH] esp_scsi: Add support for FSC chip
-In-Reply-To: <CACz-3rhp4qsY=JMdxrEqSxZj6VamSrvGH8Jr+FxHZN71-6Spkw@mail.gmail.com>
-Message-ID: <alpine.LNX.2.21.1910310959460.8@nippy.intranet>
-References: <CACz-3rh9ZCyU1825yU8xxty5BGrwFhpbjKNoWnn0mGiv_h2Kag@mail.gmail.com> <20191029220503.7553-1-jongk@linux-m68k.org> <alpine.LNX.2.21.1910301109060.8@nippy.intranet> <CACz-3rhp4qsY=JMdxrEqSxZj6VamSrvGH8Jr+FxHZN71-6Spkw@mail.gmail.com>
+        id S1726891AbfKDHnV (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Mon, 4 Nov 2019 02:43:21 -0500
+Received: from mail-ot1-f66.google.com ([209.85.210.66]:43730 "EHLO
+        mail-ot1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726441AbfKDHnV (ORCPT
+        <rfc822;linux-m68k@vger.kernel.org>); Mon, 4 Nov 2019 02:43:21 -0500
+Received: by mail-ot1-f66.google.com with SMTP id u4so2628654otq.10;
+        Sun, 03 Nov 2019 23:43:19 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=KnN2X+Z56m8inPVIEyg78tY9xFg8wm5xX3rrWjSXm00=;
+        b=Zs+asvGapBjCMN1e7WYqb7tZs1Ov7yAqLSp32wMWodWJ2u3LV8jwfW2hGfUxzqHpJa
+         Jt2f9qv0hHfUPuQLUr7B5KEzNKlaSQc47e/Cz5TLKYRpwnvE2PQKOx15ka9x9D71fgjp
+         Qj7/W5gbvtRie9BlwvJDsU2rrpqbQR0y/Sx88qLi9YxdStjqSnYIr4GAWGjTGXdOtaEB
+         oFJZ4Hgw1y6b7jOYIINC4Mb4RhW0ih6Se3p3vsOvmZ86bedY1mLSI22CHkMxJS1IsTJQ
+         M0c6NENOOazhR41B8MnwMtWbHD1CK2bMm1OlKxQ0lTgA32oiPdCYUFH+ulE4FIYwWkPk
+         +wKA==
+X-Gm-Message-State: APjAAAV41P5CRZvgjNjnucG5FBq4f62ppA/3GsFCggZr1Xt+mYyy4wZm
+        EhNHnAcDGo/5aZqF34onCOUzTFOLT8xfn4tOHqc=
+X-Google-Smtp-Source: APXvYqym9VCu2o7HdGZJ4onW/M0U57nIZAzdSu2nWmiH9jlxJelFjPY7QurfIWeAM7vQ6DoHtaIviAs1Q+0ScdiDkkI=
+X-Received: by 2002:a05:6830:210e:: with SMTP id i14mr3502735otc.250.1572853399036;
+ Sun, 03 Nov 2019 23:43:19 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+References: <20190927094708.11563-1-geert@linux-m68k.org>
+In-Reply-To: <20190927094708.11563-1-geert@linux-m68k.org>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Mon, 4 Nov 2019 08:43:07 +0100
+Message-ID: <CAMuHMdW7fkPjqppQYESDf4ZLKcCrxhMUyCn0=tm6kxPSxf5mGA@mail.gmail.com>
+Subject: Re: [PATCH v2] fbdev: c2p: Fix link failure on non-inlining
+To:     Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
+        Andrew Morton <akpm@linux-foundation.org>
+Cc:     Nick Desaulniers <ndesaulniers@google.com>,
+        Masahiro Yamada <yamada.masahiro@socionext.com>,
+        DRI Development <dri-devel@lists.freedesktop.org>,
+        Linux Fbdev development list <linux-fbdev@vger.kernel.org>,
+        "Linux/m68k" <linux-m68k@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-m68k-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-On Wed, 30 Oct 2019, Kars de Jong wrote:
+Hi Bartlomiej, Andrew,
 
-> 
-> Actually, I think the PCSCSI value is also at the wrong position in the 
-> list, its CONFIG3 (called CNTLREG3 in the data manual 
-> http://bitsavers.trailing-edge.com/components/amd/_dataSheets/1993_53c974_PCscsi.pdf) 
-> has pretty much the same layout as the FAS236 and FSC, so it would 
-> probably have the same issue as me at high synchronous speeds...
-> 
+On Fri, Sep 27, 2019 at 11:47 AM Geert Uytterhoeven
+<geert@linux-m68k.org> wrote:
+> When the compiler decides not to inline the Chunky-to-Planar core
+> functions, the build fails with:
+>
+>     c2p_planar.c:(.text+0xd6): undefined reference to `c2p_unsupported'
+>     c2p_planar.c:(.text+0x1dc): undefined reference to `c2p_unsupported'
+>     c2p_iplan2.c:(.text+0xc4): undefined reference to `c2p_unsupported'
+>     c2p_iplan2.c:(.text+0x150): undefined reference to `c2p_unsupported'
+>
+> Fix this by marking the functions __always_inline.
+>
+> While this could be triggered before by manually enabling both
+> CONFIG_OPTIMIZE_INLINING and CONFIG_CC_OPTIMIZE_FOR_SIZE, it was exposed
+> in the m68k defconfig by commit ac7c3e4ff401b304 ("compiler: enable
+> CONFIG_OPTIMIZE_INLINING forcibly").
+>
+> Fixes: 9012d011660ea5cf ("compiler: allow all arches to enable CONFIG_OPTIMIZE_INLINING")
+> Reported-by: noreply@ellerman.id.au
+> Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
+> Reviewed-by: Masahiro Yamada <yamada.masahiro@socionext.com>
+> ---
+> This is a fix for v5.4-rc1.
 
-The PCSCSI driver (drivers/scsi/am53c974.c) is maintained by its author, 
-Hannes Reinecke. He would need to review changes to the core driver 
-relating to this chip.
+Can you please apply this for v5.4?
+This is one of the 4 remaining build regressions, compared to v5.3.
+
+Thanks!
+
+> v2:
+>   - Add Reviewed-by,
+>   - Fix Fixes,
+>   - Add more explanation.
+
+Gr{oetje,eeting}s,
+
+                        Geert
 
 -- 
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
-> Kind regards,
-> 
-> Kars.
-> 
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
