@@ -2,125 +2,383 @@ Return-Path: <SRS0=Ae7f=Y5=vger.kernel.org=linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-0.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
-	autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-17.4 required=3.0 tests=DKIMWL_WL_MED,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT,
+	USER_IN_DEF_DKIM_WL autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3BA33C5DF60
-	for <linux-m68k@archiver.kernel.org>; Tue,  5 Nov 2019 14:58:34 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 0158FC5DF60
+	for <linux-m68k@archiver.kernel.org>; Tue,  5 Nov 2019 19:28:11 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 0FF3F21A4A
-	for <linux-m68k@archiver.kernel.org>; Tue,  5 Nov 2019 14:58:34 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 8966E217F5
+	for <linux-m68k@archiver.kernel.org>; Tue,  5 Nov 2019 19:28:10 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="BezCicS6"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="VErl8XtE"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389766AbfKEO6d (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Tue, 5 Nov 2019 09:58:33 -0500
-Received: from mail-ed1-f65.google.com ([209.85.208.65]:39942 "EHLO
-        mail-ed1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2389764AbfKEO6d (ORCPT
+        id S2390445AbfKET2K (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Tue, 5 Nov 2019 14:28:10 -0500
+Received: from mail-wr1-f73.google.com ([209.85.221.73]:45831 "EHLO
+        mail-wr1-f73.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2389691AbfKET2K (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Tue, 5 Nov 2019 09:58:33 -0500
-Received: by mail-ed1-f65.google.com with SMTP id p59so16368537edp.7
-        for <linux-m68k@lists.linux-m68k.org>; Tue, 05 Nov 2019 06:58:32 -0800 (PST)
+        Tue, 5 Nov 2019 14:28:10 -0500
+Received: by mail-wr1-f73.google.com with SMTP id y3so5898886wrm.12
+        for <linux-m68k@lists.linux-m68k.org>; Tue, 05 Nov 2019 11:28:06 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+        d=google.com; s=20161025;
+        h=date:in-reply-to:message-id:mime-version:references:subject:from:to
          :cc;
-        bh=OsGNCpli0aKylNdzfXqGGNk51dXTucSwdxTJSWlZuDo=;
-        b=BezCicS6Hxs25abhx2HqWWKnW19usdAdHbmmOP2sbmgjL77FDHp8bVN1/AT3xOfj5+
-         udDjWeZ3lJXPL/opmkrCC4myrHN06gDmaHa523NqDfpz5IWjUEzLlxhae2YuPl3gkiB+
-         kNwA63wA7d6kdzUFZgXFaIqreDChdIkHhupc7Uc9B5JCVgc213itt0UrYqYTwcLwPH4B
-         um7GQlSM1wSTKphTjpiFXqJeX7zoaW07rIO/oTIoIuOKL5MtNTXRZj19NUfYDTFskpxq
-         vhNOs547ShZK42QJR3kMK0VllmNCguEZD7l4pdtAWQUZbwx5iwspibI+9d19FoEKKs4F
-         Gj3g==
+        bh=E+oDLnvIU7ENQAAPOrl1GRNeFvZb4Uwtj09d81ZI488=;
+        b=VErl8XtEJEmYa0mmi0nMARpyworR+b/H1/iZm+TmNqbcDcZ+Rwdfs4986J141qrhsm
+         G3orYKTxARu//JawK6hb4rgoFPjZsqj+Kdffe9VlPBP86gEIEcaY+b/k/u5eCd3YVJL+
+         OMuzT9ga5d1K7DgVyTqSThWNMa755G2mCbW2QvpfcHEOk9cSWRT10dI20dJj3ZWGpXIU
+         BjFEeMiVhES9MzJiI7niINcwOhiTiVrxWbJn7qGdT69NOOs1c1mKUFUAvHYkwyoIe39r
+         bkil/z7WXT6LH4uNNNaKtOs6GhdNTFbb1mDlktMxJvf5yacaAaHyzV3zCC5c3jmAkdyR
+         rGpw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=OsGNCpli0aKylNdzfXqGGNk51dXTucSwdxTJSWlZuDo=;
-        b=pv7UkJ/CXXsMKzhg0mLBOxtlB5QmbIKCZYevdOUmhsMdxgCgPxLHhOrrY0wA8A4YHn
-         RXXnHOkLA0jLyOIp9Cdjivw2H+pcN8+UNR7T2Tffezqub6LlSKcMsHcKnrZ0oHfc0ulg
-         2WBZFYM14//QcMd3e5Z/dyDJIDFDTHrZqodYlTpqUfLUTrqR/NJUVpdOcwNeHQ7oFd0f
-         Y/GRC92LR1LaeITQTzfetctVHO2LvdacMuMK081rAMYQPQahkROpspJ87Rye8QHBkIEq
-         MiGnXKLtH19csfG9ISur4tHHlxh00xUL7d7tXwzm8IbRXObHkBBXqQv1C70dUi+cOwSh
-         dS4w==
-X-Gm-Message-State: APjAAAULtQxq5Fwc7FVRqHOQ/SplkpORUs+Hbl0ZAhVgBNcLEAfHEAL1
-        9Fmph64MdX6/0/Qeb0lno2MK5UDkW9PLOoASYBk=
-X-Google-Smtp-Source: APXvYqy43mMHO0/x0G5HbHOwDOkgrETQbEGRexxUmLoW5TvTDXB/Ovve31RulrcR4/womJ50Dbe66S9RauKfI3+xvyk=
-X-Received: by 2002:a17:906:529a:: with SMTP id c26mr5331884ejm.69.1572965911324;
- Tue, 05 Nov 2019 06:58:31 -0800 (PST)
-MIME-Version: 1.0
-References: <1572938135-31886-1-git-send-email-rppt@kernel.org>
-In-Reply-To: <1572938135-31886-1-git-send-email-rppt@kernel.org>
-From:   Anatoly Pugachev <matorola@gmail.com>
-Date:   Tue, 5 Nov 2019 17:58:20 +0300
-Message-ID: <CADxRZqyJewYKn_juVPrxm9KVQjZQngnig-FYf1q3G6wc=oawYQ@mail.gmail.com>
-Subject: Re: [PATCH v4 00/13] mm: remove __ARCH_HAS_4LEVEL_HACK
-To:     Mike Rapoport <rppt@kernel.org>
-Cc:     linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>,
-        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        "David S. Miller" <davem@davemloft.net>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Greentime Hu <green.hu@gmail.com>,
-        Greg Ungerer <gerg@linux-m68k.org>,
-        Helge Deller <deller@gmx.de>,
-        "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
-        Jeff Dike <jdike@addtoit.com>,
-        "Kirill A. Shutemov" <kirill@shutemov.name>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Mark Salter <msalter@redhat.com>,
-        Matt Turner <mattst88@gmail.com>,
-        Michal Simek <monstr@monstr.eu>, Peter Rosin <peda@axentia.se>,
-        Richard Weinberger <richard@nod.at>,
-        Rolf Eike Beer <eike-kernel@sf-tec.de>,
-        Russell King <linux@armlinux.org.uk>,
-        Sam Creasey <sammy@sammy.net>,
-        Vincent Chen <deanbo422@gmail.com>,
-        Vineet Gupta <Vineet.Gupta1@synopsys.com>,
-        linux-alpha@vger.kernel.org, linux-arch@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-c6x-dev@linux-c6x.org,
-        Linux Kernel list <linux-kernel@vger.kernel.org>,
-        linux-m68k@lists.linux-m68k.org, linux-parisc@vger.kernel.org,
-        linux-um@lists.infradead.org,
-        Sparc kernel list <sparclinux@vger.kernel.org>,
-        Mike Rapoport <rppt@linux.ibm.com>
+        h=x-gm-message-state:date:in-reply-to:message-id:mime-version
+         :references:subject:from:to:cc;
+        bh=E+oDLnvIU7ENQAAPOrl1GRNeFvZb4Uwtj09d81ZI488=;
+        b=gUfMqcd19o96Omt5RrJBS3LRD3cA2yuoLfejM/MP8Fcqjw/vFK/uAVcorEqLzJcKyG
+         ksObBarmezV4jc/vdjOnxbq1lQABiqk/fDh4eI+W8NKe3Pum31JetZYCsvefhk1y27mN
+         zoD2EGUCnaTz6WAXtkZ68sBX667icJlrvSextQNTrYKiCdOhfPfYnjGAVdGHCy3xo9Xz
+         6ta/vQP2u0f00TeRjFbRiyWIWJNXv6izG29N8kAb9CeP1pmMp6002Vt6uPvDVkmVbM3o
+         08Ju6PQQ8gli48CzJOMXC2awxF3pX61lfsdr+13wFn/zdbB50jY6mrhg0U4ph8xcP4PD
+         Vs3A==
+X-Gm-Message-State: APjAAAUstJpbZDeFSRbT7eD0GBjvDSSR9WhZWjeVKwX6oKZ4thcdapCd
+        EtEC6PEyq1igkxejRuMTqcpOoX4J+ZvS
+X-Google-Smtp-Source: APXvYqxsgD3FEIfPCc7Ih+WXaIat3cU89p7LOm8i2xB6ZJoiozIfgzitb+ZL/xu0IcF3kRfh24HlkiAfkr0X
+X-Received: by 2002:a5d:5091:: with SMTP id a17mr28815974wrt.249.1572982085767;
+ Tue, 05 Nov 2019 11:28:05 -0800 (PST)
+Date:   Tue,  5 Nov 2019 19:27:49 +0000
+In-Reply-To: <CAMuHMdUm+s4UaBrtxvXaLg1EUmsoYYG=6JvnWzC0ivbyzdMBZw@mail.gmail.com>
+Message-Id: <20191105192749.67533-1-pterjan@google.com>
+Mime-Version: 1.0
+References: <CAMuHMdUm+s4UaBrtxvXaLg1EUmsoYYG=6JvnWzC0ivbyzdMBZw@mail.gmail.com>
+X-Mailer: git-send-email 2.24.0.rc1.363.gb1bccd3e3d-goog
+Subject: [PATCH v4] Remove every trace of SERIAL_MAGIC
+From:   Pascal Terjan <pterjan@google.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jiri Slaby <jslaby@suse.com>
+Cc:     Pascal Terjan <pterjan@google.com>, linux-serial@vger.kernel.org,
+        linux-m68k@lists.linux-m68k.org,
+        Geert Uytterhoeven <geert@linux-m68k.org>
 Content-Type: text/plain; charset="UTF-8"
 Sender: linux-m68k-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-On Tue, Nov 5, 2019 at 10:16 AM Mike Rapoport <rppt@kernel.org> wrote:
->
-> From: Mike Rapoport <rppt@linux.ibm.com>
->
-> Hi,
->
-> These patches convert several architectures to use page table folding and
-> remove __ARCH_HAS_4LEVEL_HACK along with include/asm-generic/4level-fixup.h.
->
-> For the nommu configurations the folding is already implemented by the
-> generic code so the only change was to use the appropriate header file.
->
-> As for the rest, the changes are mostly about mechanical replacement of
-> pgd accessors with pud/pmd ones and the addition of higher levels to page
-> table traversals.
->
-> With Vineet's patches from "elide extraneous generated code for folded
-> p4d/pud/pmd" series [1] there is a small shrink of the kernel size of about
-> -0.01% for the defconfig builds.
->
-> The set is boot-tested on UML, qemu-{alpha,sparc} and aranym.
->
-> v4 changes:
-> * m68k: fix sun3x_defconfig build and reorder ifdefs as per Geert's
->   suggestion
+This means removing support for checking magic in amiserial.c
+(SERIAL_PARANOIA_CHECK option), which was checking a magic field which
+doesn't currently exist in the struct. That code hasn't built at least
+since git.
 
+Removing the definition from the header is safe anyway as that code was
+from another driver and not including it.
 
-Mike,
+Signed-off-by: Pascal Terjan <pterjan@google.com>
+Reviewed-by: Geert Uytterhoeven <geert@linux-m68k.org>
+---
+v4 removes the now empty comment block listing configuration options as
+suggested.
 
-tested your patch series on a debian sid/unstable sparc64 LDOM running
-on a T5-2 sparc server - it boots for me.
+ Documentation/process/magic-number.rst        |  1 -
+ .../it_IT/process/magic-number.rst            |  1 -
+ .../zh_CN/process/magic-number.rst            |  1 -
+ drivers/net/wan/z85230.h                      |  2 -
+ drivers/tty/amiserial.c                       | 84 -------------------
+ 5 files changed, 89 deletions(-)
+
+diff --git a/Documentation/process/magic-number.rst b/Documentation/process/magic-number.rst
+index 547bbf28e615..eee9b44553b3 100644
+--- a/Documentation/process/magic-number.rst
++++ b/Documentation/process/magic-number.rst
+@@ -81,7 +81,6 @@ FF_MAGIC              0x4646           fc_info                  ``drivers/net/ip
+ ISICOM_MAGIC          0x4d54           isi_port                 ``include/linux/isicom.h``
+ PTY_MAGIC             0x5001                                    ``drivers/char/pty.c``
+ PPP_MAGIC             0x5002           ppp                      ``include/linux/if_pppvar.h``
+-SERIAL_MAGIC          0x5301           async_struct             ``include/linux/serial.h``
+ SSTATE_MAGIC          0x5302           serial_state             ``include/linux/serial.h``
+ SLIP_MAGIC            0x5302           slip                     ``drivers/net/slip.h``
+ STRIP_MAGIC           0x5303           strip                    ``drivers/net/strip.c``
+diff --git a/Documentation/translations/it_IT/process/magic-number.rst b/Documentation/translations/it_IT/process/magic-number.rst
+index ed1121d0ba84..783e0de314a0 100644
+--- a/Documentation/translations/it_IT/process/magic-number.rst
++++ b/Documentation/translations/it_IT/process/magic-number.rst
+@@ -87,7 +87,6 @@ FF_MAGIC              0x4646           fc_info                  ``drivers/net/ip
+ ISICOM_MAGIC          0x4d54           isi_port                 ``include/linux/isicom.h``
+ PTY_MAGIC             0x5001                                    ``drivers/char/pty.c``
+ PPP_MAGIC             0x5002           ppp                      ``include/linux/if_pppvar.h``
+-SERIAL_MAGIC          0x5301           async_struct             ``include/linux/serial.h``
+ SSTATE_MAGIC          0x5302           serial_state             ``include/linux/serial.h``
+ SLIP_MAGIC            0x5302           slip                     ``drivers/net/slip.h``
+ STRIP_MAGIC           0x5303           strip                    ``drivers/net/strip.c``
+diff --git a/Documentation/translations/zh_CN/process/magic-number.rst b/Documentation/translations/zh_CN/process/magic-number.rst
+index 15c592518194..e4c225996af0 100644
+--- a/Documentation/translations/zh_CN/process/magic-number.rst
++++ b/Documentation/translations/zh_CN/process/magic-number.rst
+@@ -70,7 +70,6 @@ FF_MAGIC              0x4646           fc_info                  ``drivers/net/ip
+ ISICOM_MAGIC          0x4d54           isi_port                 ``include/linux/isicom.h``
+ PTY_MAGIC             0x5001                                    ``drivers/char/pty.c``
+ PPP_MAGIC             0x5002           ppp                      ``include/linux/if_pppvar.h``
+-SERIAL_MAGIC          0x5301           async_struct             ``include/linux/serial.h``
+ SSTATE_MAGIC          0x5302           serial_state             ``include/linux/serial.h``
+ SLIP_MAGIC            0x5302           slip                     ``drivers/net/slip.h``
+ STRIP_MAGIC           0x5303           strip                    ``drivers/net/strip.c``
+diff --git a/drivers/net/wan/z85230.h b/drivers/net/wan/z85230.h
+index 32ae710d4f40..1081d171e477 100644
+--- a/drivers/net/wan/z85230.h
++++ b/drivers/net/wan/z85230.h
+@@ -421,8 +421,6 @@ extern struct z8530_irqhandler z8530_sync, z8530_async, z8530_nop;
+  *	Asynchronous Interfacing
+  */
+ 
+-#define SERIAL_MAGIC 0x5301
+-
+ /*
+  * The size of the serial xmit buffer is 1 page, or 4096 bytes
+  */
+diff --git a/drivers/tty/amiserial.c b/drivers/tty/amiserial.c
+index 8330fd809a05..13f63c01c589 100644
+--- a/drivers/tty/amiserial.c
++++ b/drivers/tty/amiserial.c
+@@ -22,18 +22,8 @@
+  *
+  */
+ 
+-/*
+- * Serial driver configuration section.  Here are the various options:
+- *
+- * SERIAL_PARANOIA_CHECK
+- * 		Check the magic number for the async_structure where
+- * 		ever possible.
+- */
+-
+ #include <linux/delay.h>
+ 
+-#undef SERIAL_PARANOIA_CHECK
+-
+ /* Set of debugging defines */
+ 
+ #undef SERIAL_DEBUG_INTR
+@@ -132,28 +122,6 @@ static struct serial_state rs_table[1];
+ 
+ #define serial_isroot()	(capable(CAP_SYS_ADMIN))
+ 
+-
+-static inline int serial_paranoia_check(struct serial_state *info,
+-					char *name, const char *routine)
+-{
+-#ifdef SERIAL_PARANOIA_CHECK
+-	static const char *badmagic =
+-		"Warning: bad magic number for serial struct (%s) in %s\n";
+-	static const char *badinfo =
+-		"Warning: null async_struct for (%s) in %s\n";
+-
+-	if (!info) {
+-		printk(badinfo, name, routine);
+-		return 1;
+-	}
+-	if (info->magic != SERIAL_MAGIC) {
+-		printk(badmagic, name, routine);
+-		return 1;
+-	}
+-#endif
+-	return 0;
+-}
+-
+ /* some serial hardware definitions */
+ #define SDR_OVRUN   (1<<15)
+ #define SDR_RBF     (1<<14)
+@@ -189,9 +157,6 @@ static void rs_stop(struct tty_struct *tty)
+ 	struct serial_state *info = tty->driver_data;
+ 	unsigned long flags;
+ 
+-	if (serial_paranoia_check(info, tty->name, "rs_stop"))
+-		return;
+-
+ 	local_irq_save(flags);
+ 	if (info->IER & UART_IER_THRI) {
+ 		info->IER &= ~UART_IER_THRI;
+@@ -209,9 +174,6 @@ static void rs_start(struct tty_struct *tty)
+ 	struct serial_state *info = tty->driver_data;
+ 	unsigned long flags;
+ 
+-	if (serial_paranoia_check(info, tty->name, "rs_start"))
+-		return;
+-
+ 	local_irq_save(flags);
+ 	if (info->xmit.head != info->xmit.tail
+ 	    && info->xmit.buf
+@@ -783,9 +745,6 @@ static int rs_put_char(struct tty_struct *tty, unsigned char ch)
+ 
+ 	info = tty->driver_data;
+ 
+-	if (serial_paranoia_check(info, tty->name, "rs_put_char"))
+-		return 0;
+-
+ 	if (!info->xmit.buf)
+ 		return 0;
+ 
+@@ -808,9 +767,6 @@ static void rs_flush_chars(struct tty_struct *tty)
+ 	struct serial_state *info = tty->driver_data;
+ 	unsigned long flags;
+ 
+-	if (serial_paranoia_check(info, tty->name, "rs_flush_chars"))
+-		return;
+-
+ 	if (info->xmit.head == info->xmit.tail
+ 	    || tty->stopped
+ 	    || tty->hw_stopped
+@@ -833,9 +789,6 @@ static int rs_write(struct tty_struct * tty, const unsigned char *buf, int count
+ 	struct serial_state *info = tty->driver_data;
+ 	unsigned long flags;
+ 
+-	if (serial_paranoia_check(info, tty->name, "rs_write"))
+-		return 0;
+-
+ 	if (!info->xmit.buf)
+ 		return 0;
+ 
+@@ -878,8 +831,6 @@ static int rs_write_room(struct tty_struct *tty)
+ {
+ 	struct serial_state *info = tty->driver_data;
+ 
+-	if (serial_paranoia_check(info, tty->name, "rs_write_room"))
+-		return 0;
+ 	return CIRC_SPACE(info->xmit.head, info->xmit.tail, SERIAL_XMIT_SIZE);
+ }
+ 
+@@ -887,8 +838,6 @@ static int rs_chars_in_buffer(struct tty_struct *tty)
+ {
+ 	struct serial_state *info = tty->driver_data;
+ 
+-	if (serial_paranoia_check(info, tty->name, "rs_chars_in_buffer"))
+-		return 0;
+ 	return CIRC_CNT(info->xmit.head, info->xmit.tail, SERIAL_XMIT_SIZE);
+ }
+ 
+@@ -897,8 +846,6 @@ static void rs_flush_buffer(struct tty_struct *tty)
+ 	struct serial_state *info = tty->driver_data;
+ 	unsigned long flags;
+ 
+-	if (serial_paranoia_check(info, tty->name, "rs_flush_buffer"))
+-		return;
+ 	local_irq_save(flags);
+ 	info->xmit.head = info->xmit.tail = 0;
+ 	local_irq_restore(flags);
+@@ -914,9 +861,6 @@ static void rs_send_xchar(struct tty_struct *tty, char ch)
+ 	struct serial_state *info = tty->driver_data;
+         unsigned long flags;
+ 
+-	if (serial_paranoia_check(info, tty->name, "rs_send_xchar"))
+-		return;
+-
+ 	info->x_char = ch;
+ 	if (ch) {
+ 		/* Make sure transmit interrupts are on */
+@@ -952,9 +896,6 @@ static void rs_throttle(struct tty_struct * tty)
+ 	printk("throttle %s ....\n", tty_name(tty));
+ #endif
+ 
+-	if (serial_paranoia_check(info, tty->name, "rs_throttle"))
+-		return;
+-
+ 	if (I_IXOFF(tty))
+ 		rs_send_xchar(tty, STOP_CHAR(tty));
+ 
+@@ -974,9 +915,6 @@ static void rs_unthrottle(struct tty_struct * tty)
+ 	printk("unthrottle %s ....\n", tty_name(tty));
+ #endif
+ 
+-	if (serial_paranoia_check(info, tty->name, "rs_unthrottle"))
+-		return;
+-
+ 	if (I_IXOFF(tty)) {
+ 		if (info->x_char)
+ 			info->x_char = 0;
+@@ -1109,8 +1047,6 @@ static int rs_tiocmget(struct tty_struct *tty)
+ 	unsigned char control, status;
+ 	unsigned long flags;
+ 
+-	if (serial_paranoia_check(info, tty->name, "rs_ioctl"))
+-		return -ENODEV;
+ 	if (tty_io_error(tty))
+ 		return -EIO;
+ 
+@@ -1131,8 +1067,6 @@ static int rs_tiocmset(struct tty_struct *tty, unsigned int set,
+ 	struct serial_state *info = tty->driver_data;
+ 	unsigned long flags;
+ 
+-	if (serial_paranoia_check(info, tty->name, "rs_ioctl"))
+-		return -ENODEV;
+ 	if (tty_io_error(tty))
+ 		return -EIO;
+ 
+@@ -1155,12 +1089,8 @@ static int rs_tiocmset(struct tty_struct *tty, unsigned int set,
+  */
+ static int rs_break(struct tty_struct *tty, int break_state)
+ {
+-	struct serial_state *info = tty->driver_data;
+ 	unsigned long flags;
+ 
+-	if (serial_paranoia_check(info, tty->name, "rs_break"))
+-		return -EINVAL;
+-
+ 	local_irq_save(flags);
+ 	if (break_state == -1)
+ 	  custom.adkcon = AC_SETCLR | AC_UARTBRK;
+@@ -1212,9 +1142,6 @@ static int rs_ioctl(struct tty_struct *tty,
+ 	DEFINE_WAIT(wait);
+ 	int ret;
+ 
+-	if (serial_paranoia_check(info, tty->name, "rs_ioctl"))
+-		return -ENODEV;
+-
+ 	if ((cmd != TIOCSERCONFIG) &&
+ 	    (cmd != TIOCMIWAIT) && (cmd != TIOCGICOUNT)) {
+ 		if (tty_io_error(tty))
+@@ -1333,9 +1260,6 @@ static void rs_close(struct tty_struct *tty, struct file * filp)
+ 	struct serial_state *state = tty->driver_data;
+ 	struct tty_port *port = &state->tport;
+ 
+-	if (serial_paranoia_check(state, tty->name, "rs_close"))
+-		return;
+-
+ 	if (tty_port_close_start(port, tty, filp) == 0)
+ 		return;
+ 
+@@ -1379,9 +1303,6 @@ static void rs_wait_until_sent(struct tty_struct *tty, int timeout)
+ 	unsigned long orig_jiffies, char_time;
+ 	int lsr;
+ 
+-	if (serial_paranoia_check(info, tty->name, "rs_wait_until_sent"))
+-		return;
+-
+ 	if (info->xmit_fifo_size == 0)
+ 		return; /* Just in case.... */
+ 
+@@ -1440,9 +1361,6 @@ static void rs_hangup(struct tty_struct *tty)
+ {
+ 	struct serial_state *info = tty->driver_data;
+ 
+-	if (serial_paranoia_check(info, tty->name, "rs_hangup"))
+-		return;
+-
+ 	rs_flush_buffer(tty);
+ 	shutdown(tty, info);
+ 	info->tport.count = 0;
+@@ -1467,8 +1385,6 @@ static int rs_open(struct tty_struct *tty, struct file * filp)
+ 	port->tty = tty;
+ 	tty->driver_data = info;
+ 	tty->port = port;
+-	if (serial_paranoia_check(info, tty->name, "rs_open"))
+-		return -ENODEV;
+ 
+ 	port->low_latency = (port->flags & ASYNC_LOW_LATENCY) ? 1 : 0;
+ 
+-- 
+2.24.0.rc1.363.gb1bccd3e3d-goog
+
