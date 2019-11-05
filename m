@@ -2,383 +2,107 @@ Return-Path: <SRS0=Ae7f=Y5=vger.kernel.org=linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-17.4 required=3.0 tests=DKIMWL_WL_MED,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT,
-	USER_IN_DEF_DKIM_WL autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-7.2 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
+	MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,
+	USER_AGENT_SANE_1 autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 0158FC5DF60
-	for <linux-m68k@archiver.kernel.org>; Tue,  5 Nov 2019 19:28:11 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 27A54C5DF60
+	for <linux-m68k@archiver.kernel.org>; Tue,  5 Nov 2019 20:36:28 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 8966E217F5
-	for <linux-m68k@archiver.kernel.org>; Tue,  5 Nov 2019 19:28:10 +0000 (UTC)
-Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="VErl8XtE"
+	by mail.kernel.org (Postfix) with ESMTP id E33A5217F5
+	for <linux-m68k@archiver.kernel.org>; Tue,  5 Nov 2019 20:36:27 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390445AbfKET2K (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Tue, 5 Nov 2019 14:28:10 -0500
-Received: from mail-wr1-f73.google.com ([209.85.221.73]:45831 "EHLO
-        mail-wr1-f73.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2389691AbfKET2K (ORCPT
+        id S1729724AbfKEUg1 (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Tue, 5 Nov 2019 15:36:27 -0500
+Received: from cynthia.allandria.com ([50.242.82.17]:51581 "EHLO
+        cynthia.allandria.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726608AbfKEUg1 (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Tue, 5 Nov 2019 14:28:10 -0500
-Received: by mail-wr1-f73.google.com with SMTP id y3so5898886wrm.12
-        for <linux-m68k@lists.linux-m68k.org>; Tue, 05 Nov 2019 11:28:06 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:in-reply-to:message-id:mime-version:references:subject:from:to
-         :cc;
-        bh=E+oDLnvIU7ENQAAPOrl1GRNeFvZb4Uwtj09d81ZI488=;
-        b=VErl8XtEJEmYa0mmi0nMARpyworR+b/H1/iZm+TmNqbcDcZ+Rwdfs4986J141qrhsm
-         G3orYKTxARu//JawK6hb4rgoFPjZsqj+Kdffe9VlPBP86gEIEcaY+b/k/u5eCd3YVJL+
-         OMuzT9ga5d1K7DgVyTqSThWNMa755G2mCbW2QvpfcHEOk9cSWRT10dI20dJj3ZWGpXIU
-         BjFEeMiVhES9MzJiI7niINcwOhiTiVrxWbJn7qGdT69NOOs1c1mKUFUAvHYkwyoIe39r
-         bkil/z7WXT6LH4uNNNaKtOs6GhdNTFbb1mDlktMxJvf5yacaAaHyzV3zCC5c3jmAkdyR
-         rGpw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:in-reply-to:message-id:mime-version
-         :references:subject:from:to:cc;
-        bh=E+oDLnvIU7ENQAAPOrl1GRNeFvZb4Uwtj09d81ZI488=;
-        b=gUfMqcd19o96Omt5RrJBS3LRD3cA2yuoLfejM/MP8Fcqjw/vFK/uAVcorEqLzJcKyG
-         ksObBarmezV4jc/vdjOnxbq1lQABiqk/fDh4eI+W8NKe3Pum31JetZYCsvefhk1y27mN
-         zoD2EGUCnaTz6WAXtkZ68sBX667icJlrvSextQNTrYKiCdOhfPfYnjGAVdGHCy3xo9Xz
-         6ta/vQP2u0f00TeRjFbRiyWIWJNXv6izG29N8kAb9CeP1pmMp6002Vt6uPvDVkmVbM3o
-         08Ju6PQQ8gli48CzJOMXC2awxF3pX61lfsdr+13wFn/zdbB50jY6mrhg0U4ph8xcP4PD
-         Vs3A==
-X-Gm-Message-State: APjAAAUstJpbZDeFSRbT7eD0GBjvDSSR9WhZWjeVKwX6oKZ4thcdapCd
-        EtEC6PEyq1igkxejRuMTqcpOoX4J+ZvS
-X-Google-Smtp-Source: APXvYqxsgD3FEIfPCc7Ih+WXaIat3cU89p7LOm8i2xB6ZJoiozIfgzitb+ZL/xu0IcF3kRfh24HlkiAfkr0X
-X-Received: by 2002:a5d:5091:: with SMTP id a17mr28815974wrt.249.1572982085767;
- Tue, 05 Nov 2019 11:28:05 -0800 (PST)
-Date:   Tue,  5 Nov 2019 19:27:49 +0000
-In-Reply-To: <CAMuHMdUm+s4UaBrtxvXaLg1EUmsoYYG=6JvnWzC0ivbyzdMBZw@mail.gmail.com>
-Message-Id: <20191105192749.67533-1-pterjan@google.com>
-Mime-Version: 1.0
-References: <CAMuHMdUm+s4UaBrtxvXaLg1EUmsoYYG=6JvnWzC0ivbyzdMBZw@mail.gmail.com>
-X-Mailer: git-send-email 2.24.0.rc1.363.gb1bccd3e3d-goog
-Subject: [PATCH v4] Remove every trace of SERIAL_MAGIC
-From:   Pascal Terjan <pterjan@google.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jiri Slaby <jslaby@suse.com>
-Cc:     Pascal Terjan <pterjan@google.com>, linux-serial@vger.kernel.org,
-        linux-m68k@lists.linux-m68k.org,
-        Geert Uytterhoeven <geert@linux-m68k.org>
-Content-Type: text/plain; charset="UTF-8"
+        Tue, 5 Nov 2019 15:36:27 -0500
+Received: from flar by cynthia.allandria.com with local (Exim 4.84_2)
+        (envelope-from <flar@allandria.com>)
+        id 1iS5Yr-0003WE-2t; Tue, 05 Nov 2019 12:36:21 -0800
+Date:   Tue, 5 Nov 2019 12:36:21 -0800
+From:   Brad Boyer <flar@allandria.com>
+To:     Finn Thain <fthain@telegraphics.com.au>
+Cc:     John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Max Staudt <max@enpas.org>,
+        linux-m68k <linux-m68k@lists.linux-m68k.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-ide@vger.kernel.org
+Subject: Re: [PATCH] m68k: defconfig: Update defconfigs for v5.4-rc1
+Message-ID: <20191105203620.GA12862@allandria.com>
+References: <20191001073539.4488-1-geert@linux-m68k.org>
+ <7fa02d50-6092-5f59-5018-c5b425a30726@enpas.org>
+ <CAMuHMdX3+-JO68LGE-NuT9axRUj3=bbtpDZ8E3v5UNoj5ctLHg@mail.gmail.com>
+ <640d4fd8-b879-3cfd-e522-1acc3cbd323a@physik.fu-berlin.de>
+ <20191105005318.GA29558@allandria.com>
+ <alpine.LNX.2.21.1.1911051318590.160@nippy.intranet>
+ <20191105031946.GA31507@allandria.com>
+ <alpine.LNX.2.21.1.1911051444570.160@nippy.intranet>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <alpine.LNX.2.21.1.1911051444570.160@nippy.intranet>
+User-Agent: Mutt/1.5.23 (2014-03-12)
 Sender: linux-m68k-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-This means removing support for checking magic in amiserial.c
-(SERIAL_PARANOIA_CHECK option), which was checking a magic field which
-doesn't currently exist in the struct. That code hasn't built at least
-since git.
+On Tue, Nov 05, 2019 at 03:13:31PM +1100, Finn Thain wrote:
+> On Mon, 4 Nov 2019, Brad Boyer wrote:
+> > I'll try the PB190 first anyway. It should be easier due to not needing 
+> > to setup a monitor. 
+> 
+> I think you can put the 630 into a standard VESA video mode (with MacOS or 
+> Linux) given the right adapter/cable. I have a pin-out somewhere.
 
-Removing the definition from the header is safe anyway as that code was
-from another driver and not including it.
+I have an adapter. I also own several official Apple monitors of various
+styles and capabilities. The problem is desk space. I need to clean before
+I have enough room to setup anything bigger than a laptop.
 
-Signed-off-by: Pascal Terjan <pterjan@google.com>
-Reviewed-by: Geert Uytterhoeven <geert@linux-m68k.org>
----
-v4 removes the now empty comment block listing configuration options as
-suggested.
+> > I just took a look at the macide driver, and it appears to do basically
+> > nothing other than pass a list of addresses into the core ide code. It's
+> > one of the smallest drivers I've ever seen.
+> > 
+> 
+> The fly in the ointment is interrupt handling. There is a theoretical bug. 
+> (Though it doesn't seem to hurt in practice.)
+> 
+> AFAIK the hardware is publicly undocumented and so we need to do 
+> experiments like this:
+> https://github.com/fthain/linux/commit/01405199e8d05500bf458df690027655f526a7fd
+> 
+> My suspicion is that macide_clear_irq() does nothing useful. It's not 
+> called on a Powerbook 190. Maybe it is needed on a PowerBook 150 and 
+> Performa 630, maybe not...
 
- Documentation/process/magic-number.rst        |  1 -
- .../it_IT/process/magic-number.rst            |  1 -
- .../zh_CN/process/magic-number.rst            |  1 -
- drivers/net/wan/z85230.h                      |  2 -
- drivers/tty/amiserial.c                       | 84 -------------------
- 5 files changed, 89 deletions(-)
+My understanding has always been that Apple was really sloppy with how
+the hardware handled interrupts. On many models, you can't actually
+block interrupts in a sane fashion. Because of that, you usually have
+to shut up the interrupts by talking to the actual device.
 
-diff --git a/Documentation/process/magic-number.rst b/Documentation/process/magic-number.rst
-index 547bbf28e615..eee9b44553b3 100644
---- a/Documentation/process/magic-number.rst
-+++ b/Documentation/process/magic-number.rst
-@@ -81,7 +81,6 @@ FF_MAGIC              0x4646           fc_info                  ``drivers/net/ip
- ISICOM_MAGIC          0x4d54           isi_port                 ``include/linux/isicom.h``
- PTY_MAGIC             0x5001                                    ``drivers/char/pty.c``
- PPP_MAGIC             0x5002           ppp                      ``include/linux/if_pppvar.h``
--SERIAL_MAGIC          0x5301           async_struct             ``include/linux/serial.h``
- SSTATE_MAGIC          0x5302           serial_state             ``include/linux/serial.h``
- SLIP_MAGIC            0x5302           slip                     ``drivers/net/slip.h``
- STRIP_MAGIC           0x5303           strip                    ``drivers/net/strip.c``
-diff --git a/Documentation/translations/it_IT/process/magic-number.rst b/Documentation/translations/it_IT/process/magic-number.rst
-index ed1121d0ba84..783e0de314a0 100644
---- a/Documentation/translations/it_IT/process/magic-number.rst
-+++ b/Documentation/translations/it_IT/process/magic-number.rst
-@@ -87,7 +87,6 @@ FF_MAGIC              0x4646           fc_info                  ``drivers/net/ip
- ISICOM_MAGIC          0x4d54           isi_port                 ``include/linux/isicom.h``
- PTY_MAGIC             0x5001                                    ``drivers/char/pty.c``
- PPP_MAGIC             0x5002           ppp                      ``include/linux/if_pppvar.h``
--SERIAL_MAGIC          0x5301           async_struct             ``include/linux/serial.h``
- SSTATE_MAGIC          0x5302           serial_state             ``include/linux/serial.h``
- SLIP_MAGIC            0x5302           slip                     ``drivers/net/slip.h``
- STRIP_MAGIC           0x5303           strip                    ``drivers/net/strip.c``
-diff --git a/Documentation/translations/zh_CN/process/magic-number.rst b/Documentation/translations/zh_CN/process/magic-number.rst
-index 15c592518194..e4c225996af0 100644
---- a/Documentation/translations/zh_CN/process/magic-number.rst
-+++ b/Documentation/translations/zh_CN/process/magic-number.rst
-@@ -70,7 +70,6 @@ FF_MAGIC              0x4646           fc_info                  ``drivers/net/ip
- ISICOM_MAGIC          0x4d54           isi_port                 ``include/linux/isicom.h``
- PTY_MAGIC             0x5001                                    ``drivers/char/pty.c``
- PPP_MAGIC             0x5002           ppp                      ``include/linux/if_pppvar.h``
--SERIAL_MAGIC          0x5301           async_struct             ``include/linux/serial.h``
- SSTATE_MAGIC          0x5302           serial_state             ``include/linux/serial.h``
- SLIP_MAGIC            0x5302           slip                     ``drivers/net/slip.h``
- STRIP_MAGIC           0x5303           strip                    ``drivers/net/strip.c``
-diff --git a/drivers/net/wan/z85230.h b/drivers/net/wan/z85230.h
-index 32ae710d4f40..1081d171e477 100644
---- a/drivers/net/wan/z85230.h
-+++ b/drivers/net/wan/z85230.h
-@@ -421,8 +421,6 @@ extern struct z8530_irqhandler z8530_sync, z8530_async, z8530_nop;
-  *	Asynchronous Interfacing
-  */
- 
--#define SERIAL_MAGIC 0x5301
--
- /*
-  * The size of the serial xmit buffer is 1 page, or 4096 bytes
-  */
-diff --git a/drivers/tty/amiserial.c b/drivers/tty/amiserial.c
-index 8330fd809a05..13f63c01c589 100644
---- a/drivers/tty/amiserial.c
-+++ b/drivers/tty/amiserial.c
-@@ -22,18 +22,8 @@
-  *
-  */
- 
--/*
-- * Serial driver configuration section.  Here are the various options:
-- *
-- * SERIAL_PARANOIA_CHECK
-- * 		Check the magic number for the async_structure where
-- * 		ever possible.
-- */
--
- #include <linux/delay.h>
- 
--#undef SERIAL_PARANOIA_CHECK
--
- /* Set of debugging defines */
- 
- #undef SERIAL_DEBUG_INTR
-@@ -132,28 +122,6 @@ static struct serial_state rs_table[1];
- 
- #define serial_isroot()	(capable(CAP_SYS_ADMIN))
- 
--
--static inline int serial_paranoia_check(struct serial_state *info,
--					char *name, const char *routine)
--{
--#ifdef SERIAL_PARANOIA_CHECK
--	static const char *badmagic =
--		"Warning: bad magic number for serial struct (%s) in %s\n";
--	static const char *badinfo =
--		"Warning: null async_struct for (%s) in %s\n";
--
--	if (!info) {
--		printk(badinfo, name, routine);
--		return 1;
--	}
--	if (info->magic != SERIAL_MAGIC) {
--		printk(badmagic, name, routine);
--		return 1;
--	}
--#endif
--	return 0;
--}
--
- /* some serial hardware definitions */
- #define SDR_OVRUN   (1<<15)
- #define SDR_RBF     (1<<14)
-@@ -189,9 +157,6 @@ static void rs_stop(struct tty_struct *tty)
- 	struct serial_state *info = tty->driver_data;
- 	unsigned long flags;
- 
--	if (serial_paranoia_check(info, tty->name, "rs_stop"))
--		return;
--
- 	local_irq_save(flags);
- 	if (info->IER & UART_IER_THRI) {
- 		info->IER &= ~UART_IER_THRI;
-@@ -209,9 +174,6 @@ static void rs_start(struct tty_struct *tty)
- 	struct serial_state *info = tty->driver_data;
- 	unsigned long flags;
- 
--	if (serial_paranoia_check(info, tty->name, "rs_start"))
--		return;
--
- 	local_irq_save(flags);
- 	if (info->xmit.head != info->xmit.tail
- 	    && info->xmit.buf
-@@ -783,9 +745,6 @@ static int rs_put_char(struct tty_struct *tty, unsigned char ch)
- 
- 	info = tty->driver_data;
- 
--	if (serial_paranoia_check(info, tty->name, "rs_put_char"))
--		return 0;
--
- 	if (!info->xmit.buf)
- 		return 0;
- 
-@@ -808,9 +767,6 @@ static void rs_flush_chars(struct tty_struct *tty)
- 	struct serial_state *info = tty->driver_data;
- 	unsigned long flags;
- 
--	if (serial_paranoia_check(info, tty->name, "rs_flush_chars"))
--		return;
--
- 	if (info->xmit.head == info->xmit.tail
- 	    || tty->stopped
- 	    || tty->hw_stopped
-@@ -833,9 +789,6 @@ static int rs_write(struct tty_struct * tty, const unsigned char *buf, int count
- 	struct serial_state *info = tty->driver_data;
- 	unsigned long flags;
- 
--	if (serial_paranoia_check(info, tty->name, "rs_write"))
--		return 0;
--
- 	if (!info->xmit.buf)
- 		return 0;
- 
-@@ -878,8 +831,6 @@ static int rs_write_room(struct tty_struct *tty)
- {
- 	struct serial_state *info = tty->driver_data;
- 
--	if (serial_paranoia_check(info, tty->name, "rs_write_room"))
--		return 0;
- 	return CIRC_SPACE(info->xmit.head, info->xmit.tail, SERIAL_XMIT_SIZE);
- }
- 
-@@ -887,8 +838,6 @@ static int rs_chars_in_buffer(struct tty_struct *tty)
- {
- 	struct serial_state *info = tty->driver_data;
- 
--	if (serial_paranoia_check(info, tty->name, "rs_chars_in_buffer"))
--		return 0;
- 	return CIRC_CNT(info->xmit.head, info->xmit.tail, SERIAL_XMIT_SIZE);
- }
- 
-@@ -897,8 +846,6 @@ static void rs_flush_buffer(struct tty_struct *tty)
- 	struct serial_state *info = tty->driver_data;
- 	unsigned long flags;
- 
--	if (serial_paranoia_check(info, tty->name, "rs_flush_buffer"))
--		return;
- 	local_irq_save(flags);
- 	info->xmit.head = info->xmit.tail = 0;
- 	local_irq_restore(flags);
-@@ -914,9 +861,6 @@ static void rs_send_xchar(struct tty_struct *tty, char ch)
- 	struct serial_state *info = tty->driver_data;
-         unsigned long flags;
- 
--	if (serial_paranoia_check(info, tty->name, "rs_send_xchar"))
--		return;
--
- 	info->x_char = ch;
- 	if (ch) {
- 		/* Make sure transmit interrupts are on */
-@@ -952,9 +896,6 @@ static void rs_throttle(struct tty_struct * tty)
- 	printk("throttle %s ....\n", tty_name(tty));
- #endif
- 
--	if (serial_paranoia_check(info, tty->name, "rs_throttle"))
--		return;
--
- 	if (I_IXOFF(tty))
- 		rs_send_xchar(tty, STOP_CHAR(tty));
- 
-@@ -974,9 +915,6 @@ static void rs_unthrottle(struct tty_struct * tty)
- 	printk("unthrottle %s ....\n", tty_name(tty));
- #endif
- 
--	if (serial_paranoia_check(info, tty->name, "rs_unthrottle"))
--		return;
--
- 	if (I_IXOFF(tty)) {
- 		if (info->x_char)
- 			info->x_char = 0;
-@@ -1109,8 +1047,6 @@ static int rs_tiocmget(struct tty_struct *tty)
- 	unsigned char control, status;
- 	unsigned long flags;
- 
--	if (serial_paranoia_check(info, tty->name, "rs_ioctl"))
--		return -ENODEV;
- 	if (tty_io_error(tty))
- 		return -EIO;
- 
-@@ -1131,8 +1067,6 @@ static int rs_tiocmset(struct tty_struct *tty, unsigned int set,
- 	struct serial_state *info = tty->driver_data;
- 	unsigned long flags;
- 
--	if (serial_paranoia_check(info, tty->name, "rs_ioctl"))
--		return -ENODEV;
- 	if (tty_io_error(tty))
- 		return -EIO;
- 
-@@ -1155,12 +1089,8 @@ static int rs_tiocmset(struct tty_struct *tty, unsigned int set,
-  */
- static int rs_break(struct tty_struct *tty, int break_state)
- {
--	struct serial_state *info = tty->driver_data;
- 	unsigned long flags;
- 
--	if (serial_paranoia_check(info, tty->name, "rs_break"))
--		return -EINVAL;
--
- 	local_irq_save(flags);
- 	if (break_state == -1)
- 	  custom.adkcon = AC_SETCLR | AC_UARTBRK;
-@@ -1212,9 +1142,6 @@ static int rs_ioctl(struct tty_struct *tty,
- 	DEFINE_WAIT(wait);
- 	int ret;
- 
--	if (serial_paranoia_check(info, tty->name, "rs_ioctl"))
--		return -ENODEV;
--
- 	if ((cmd != TIOCSERCONFIG) &&
- 	    (cmd != TIOCMIWAIT) && (cmd != TIOCGICOUNT)) {
- 		if (tty_io_error(tty))
-@@ -1333,9 +1260,6 @@ static void rs_close(struct tty_struct *tty, struct file * filp)
- 	struct serial_state *state = tty->driver_data;
- 	struct tty_port *port = &state->tport;
- 
--	if (serial_paranoia_check(state, tty->name, "rs_close"))
--		return;
--
- 	if (tty_port_close_start(port, tty, filp) == 0)
- 		return;
- 
-@@ -1379,9 +1303,6 @@ static void rs_wait_until_sent(struct tty_struct *tty, int timeout)
- 	unsigned long orig_jiffies, char_time;
- 	int lsr;
- 
--	if (serial_paranoia_check(info, tty->name, "rs_wait_until_sent"))
--		return;
--
- 	if (info->xmit_fifo_size == 0)
- 		return; /* Just in case.... */
- 
-@@ -1440,9 +1361,6 @@ static void rs_hangup(struct tty_struct *tty)
- {
- 	struct serial_state *info = tty->driver_data;
- 
--	if (serial_paranoia_check(info, tty->name, "rs_hangup"))
--		return;
--
- 	rs_flush_buffer(tty);
- 	shutdown(tty, info);
- 	info->tport.count = 0;
-@@ -1467,8 +1385,6 @@ static int rs_open(struct tty_struct *tty, struct file * filp)
- 	port->tty = tty;
- 	tty->driver_data = info;
- 	tty->port = port;
--	if (serial_paranoia_check(info, tty->name, "rs_open"))
--		return -ENODEV;
- 
- 	port->low_latency = (port->flags & ASYNC_LOW_LATENCY) ? 1 : 0;
- 
--- 
-2.24.0.rc1.363.gb1bccd3e3d-goog
+I would not be surprised in the slightest to see that register write
+do absolutely nothing. It might be more interesting to just disable
+the clear function for all models and see if it still works. I don't
+have a PB 150 to test that style, but I do have the other two.
+
+> > > But watch out for leaking capacitors and batteries...
+> > 
+> > I should pull out every machine in my collection and look for those 
+> > sorts of issues. None of them have been checked in at least 5 or 6 
+> > years.
+> > 
+> 
+> None of the machines in my collection have any batteries now. Desoldering 
+> the Ni-Cd PRAM battery from a Powerbook 14x/16x/170/180 is difficult but 
+> necessary. Powerbook 150 and 190 are easier (no desoldering needed).
+
+That makes sense. I need to do the same. It's just a pain since a few
+models won't boot without a battery.
+
+	Brad Boyer
+	flar@allandria.com
 
