@@ -7,37 +7,37 @@ X-Spam-Status: No, score=-10.1 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 691BECA9EDA
-	for <linux-m68k@archiver.kernel.org>; Tue,  5 Nov 2019 07:16:10 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id DFC44CA9ED9
+	for <linux-m68k@archiver.kernel.org>; Tue,  5 Nov 2019 07:16:19 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 3B4F921D6C
-	for <linux-m68k@archiver.kernel.org>; Tue,  5 Nov 2019 07:16:10 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id B81992084D
+	for <linux-m68k@archiver.kernel.org>; Tue,  5 Nov 2019 07:16:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=default; t=1572938170;
-	bh=oG08x38Bw8t//MmcsXiMwfmG8dPNjLcnVisdmtiKgLI=;
+	s=default; t=1572938179;
+	bh=p11JZ/878S75pE68Mq2TwTFjvlVsPceSwhIak764zRU=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-ID:From;
-	b=lXfTjhLVyEStWlcmY6OKqe48GTJzRHfJ0oiDPuq/7I7bnQcFV3/tA/Bq8SMwFXW4z
-	 bRARlEBYk86THmswcQxFP5XewDq+exp057OEkAdKX4KWtrgbobRsuzWpwtB5lMFpYR
-	 EVR3oN84aKw/XfAIv8yknhfP9JPD6s6+88hHM+/E=
+	b=Zi6JlvlJOR5fmE3J5hmvkwLg2Aygl/3NzBJWz8uUc0Emj6BQSXqIOP0ahKiSHv875
+	 kDymsCKFlL0WjDY1hZ4MIPlPTV4Tn5xIKE0c7UdO0lJjpsbbwbFfVeyOTu1R5Ir18O
+	 4v0DHR27XYpTBXhB9apclgQGueiZOqVCq08UlEtg=
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387590AbfKEHQK (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Tue, 5 Nov 2019 02:16:10 -0500
-Received: from mail.kernel.org ([198.145.29.99]:34888 "EHLO mail.kernel.org"
+        id S2387781AbfKEHQT (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Tue, 5 Nov 2019 02:16:19 -0500
+Received: from mail.kernel.org ([198.145.29.99]:35148 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2387715AbfKEHQJ (ORCPT <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Tue, 5 Nov 2019 02:16:09 -0500
+        id S2387776AbfKEHQS (ORCPT <rfc822;linux-m68k@lists.linux-m68k.org>);
+        Tue, 5 Nov 2019 02:16:18 -0500
 Received: from aquarius.haifa.ibm.com (nesher1.haifa.il.ibm.com [195.110.40.7])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id CCFA821929;
-        Tue,  5 Nov 2019 07:16:00 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id BE63C21A4A;
+        Tue,  5 Nov 2019 07:16:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1572938169;
-        bh=oG08x38Bw8t//MmcsXiMwfmG8dPNjLcnVisdmtiKgLI=;
+        s=default; t=1572938178;
+        bh=p11JZ/878S75pE68Mq2TwTFjvlVsPceSwhIak764zRU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=NrFkPfQBPsYp2BCE4Maa/kBX1vynrLKPPCrRUyCMwSQMmv52DallpkCp5VQjmhnQW
-         gfwjRKIwDT/W2jOEZNbnF0y1sA35YxmA1PQRye/CUWxIFTXLu+jm3dHTxaNTw1OdEm
-         D4i+idATtuSOx17jcO+/lVnSa4lho6geXRzVFqtI=
+        b=pIjOW76kqg0bbZMlBKplrKUeF7C5oqmYI7BFZNMka/tnwTF3W7X/eVzjZL7ApKqUD
+         bd4ykNr8yzMPnkgwUz4shN6ipOJ6zbEEHlkuN6pY2ToR8WIWQujtmyaev2+JGI9ahN
+         BzTjnfH3EGfr345FQ7+A06ZsRVKnIJCgVQx0Gfs4=
 From:   Mike Rapoport <rppt@kernel.org>
 To:     linux-mm@kvack.org
 Cc:     Andrew Morton <akpm@linux-foundation.org>,
@@ -67,9 +67,9 @@ Cc:     Andrew Morton <akpm@linux-foundation.org>,
         linux-m68k@lists.linux-m68k.org, linux-parisc@vger.kernel.org,
         linux-um@lists.infradead.org, sparclinux@vger.kernel.org,
         Mike Rapoport <rppt@linux.ibm.com>
-Subject: [PATCH v4 02/13] arm: nommu: use pgtable-nopud instead of 4level-fixup
-Date:   Tue,  5 Nov 2019 09:15:24 +0200
-Message-Id: <1572938135-31886-3-git-send-email-rppt@kernel.org>
+Subject: [PATCH v4 03/13] c6x: use pgtable-nopud instead of 4level-fixup
+Date:   Tue,  5 Nov 2019 09:15:25 +0200
+Message-Id: <1572938135-31886-4-git-send-email-rppt@kernel.org>
 X-Mailer: git-send-email 2.7.4
 In-Reply-To: <1572938135-31886-1-git-send-email-rppt@kernel.org>
 References: <1572938135-31886-1-git-send-email-rppt@kernel.org>
@@ -80,31 +80,31 @@ X-Mailing-List: linux-m68k@vger.kernel.org
 
 From: Mike Rapoport <rppt@linux.ibm.com>
 
-The generic nommu implementation of page table manipulation takes care of
-folding of the upper levels and does not require fixups.
+c6x is a nommu architecture and does not require fixup for upper layers of
+the page tables because it is already handled by the generic nommu
+implementation.
 
-Simply replace of include/asm-generic/4level-fixup.h with
-include/asm-generic/pgtable-nopud.h.
+Replace usage of include/asm-generic/4level-fixup.h with
+include/asm-generic/pgtable-nopud.h
 
 Signed-off-by: Mike Rapoport <rppt@linux.ibm.com>
-Acked-by: Russell King <rmk+kernel@armlinux.org.uk>
 ---
- arch/arm/include/asm/pgtable.h | 2 +-
+ arch/c6x/include/asm/pgtable.h | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/arch/arm/include/asm/pgtable.h b/arch/arm/include/asm/pgtable.h
-index 3ae120c..eabcb48 100644
---- a/arch/arm/include/asm/pgtable.h
-+++ b/arch/arm/include/asm/pgtable.h
-@@ -12,7 +12,7 @@
- 
- #ifndef CONFIG_MMU
+diff --git a/arch/c6x/include/asm/pgtable.h b/arch/c6x/include/asm/pgtable.h
+index 0b6919c..197c473 100644
+--- a/arch/c6x/include/asm/pgtable.h
++++ b/arch/c6x/include/asm/pgtable.h
+@@ -8,7 +8,7 @@
+ #ifndef _ASM_C6X_PGTABLE_H
+ #define _ASM_C6X_PGTABLE_H
  
 -#include <asm-generic/4level-fixup.h>
 +#include <asm-generic/pgtable-nopud.h>
- #include <asm/pgtable-nommu.h>
  
- #else
+ #include <asm/setup.h>
+ #include <asm/page.h>
 -- 
 2.7.4
 
