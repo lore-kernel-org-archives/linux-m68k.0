@@ -2,93 +2,107 @@ Return-Path: <SRS0=kyu6=Y6=vger.kernel.org=linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-0.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-2.3 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 7EC70C5DF60
-	for <linux-m68k@archiver.kernel.org>; Wed,  6 Nov 2019 01:13:13 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id BC9C7C5DF60
+	for <linux-m68k@archiver.kernel.org>; Wed,  6 Nov 2019 01:34:31 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 28E3421D6C
-	for <linux-m68k@archiver.kernel.org>; Wed,  6 Nov 2019 01:13:13 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=default; t=1573002793;
-	bh=F8oZBAZiUgNBGiV+WdUohtNWYyfzETDe01QBSwwnbUE=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:List-ID:From;
-	b=mzINAXMXJAzbcNeNJqR+ZqPXB6OKgTxlB8TrxVQRt1aeFyb4mrv/fkNJ9Ej5vmrM2
-	 ud5TbQpP679STK7X7/0tDx6o/wnOKtvxorbEhwNTDGECuUjae77XQeqw5J4OkeVxiv
-	 QaI8RQEwXLS1O9Qlzh4RZBsc4vResO3euMMaQVWU=
+	by mail.kernel.org (Postfix) with ESMTP id 6EB5521A49
+	for <linux-m68k@archiver.kernel.org>; Wed,  6 Nov 2019 01:34:31 +0000 (UTC)
+Authentication-Results: mail.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="BEh9JxVA"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729882AbfKFBNN (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Tue, 5 Nov 2019 20:13:13 -0500
-Received: from mail.kernel.org ([198.145.29.99]:40906 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729614AbfKFBNM (ORCPT <rfc822;linux-m68k@vger.kernel.org>);
-        Tue, 5 Nov 2019 20:13:12 -0500
-Received: from localhost.localdomain (c-73-231-172-41.hsd1.ca.comcast.net [73.231.172.41])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 7CB1721A49;
-        Wed,  6 Nov 2019 01:13:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1573002791;
-        bh=F8oZBAZiUgNBGiV+WdUohtNWYyfzETDe01QBSwwnbUE=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=LnltnbcoEvw0zudUzaix987ZKsj6MqDuFqsZC0+IjmxZ0XpTcoy82THWXKyrYQ0Ye
-         mv5Z8zeYgtccYtyRipnP9TZaP3/JrnK54F4aJa9wN2ypZkOFNbFlBBd661zaIpobQL
-         OZchQhXSAp1sAaj7ISlI/bn8Ev4MXWgPMnouR5wE=
-Date:   Tue, 5 Nov 2019 17:13:09 -0800
-From:   Andrew Morton <akpm@linux-foundation.org>
-To:     Mike Rapoport <rppt@kernel.org>
-Cc:     linux-mm@kvack.org, Anton Ivanov <anton.ivanov@cambridgegreys.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        "David S. Miller" <davem@davemloft.net>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Greentime Hu <green.hu@gmail.com>,
-        Greg Ungerer <gerg@linux-m68k.org>,
-        Helge Deller <deller@gmx.de>,
-        "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
-        Jeff Dike <jdike@addtoit.com>,
-        "Kirill A. Shutemov" <kirill@shutemov.name>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Mark Salter <msalter@redhat.com>,
-        Matt Turner <mattst88@gmail.com>,
-        Michal Simek <monstr@monstr.eu>, Peter Rosin <peda@axentia.se>,
-        Richard Weinberger <richard@nod.at>,
-        Rolf Eike Beer <eike-kernel@sf-tec.de>,
-        Russell King <linux@armlinux.org.uk>,
-        Sam Creasey <sammy@sammy.net>,
-        Vincent Chen <deanbo422@gmail.com>,
-        Vineet Gupta <Vineet.Gupta1@synopsys.com>,
-        linux-alpha@vger.kernel.org, linux-arch@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-c6x-dev@linux-c6x.org,
-        linux-kernel@vger.kernel.org, linux-m68k@vger.kernel.org,
-        linux-parisc@vger.kernel.org, linux-um@lists.infradead.org,
-        sparclinux@vger.kernel.org, Mike Rapoport <rppt@linux.ibm.com>
-Subject: Re: [PATCH v4 13/13] mm: remove __ARCH_HAS_4LEVEL_HACK and
- include/asm-generic/4level-fixup.h
-Message-Id: <20191105171309.9a5ccf9cf14d7288f7adf198@linux-foundation.org>
-In-Reply-To: <1572938135-31886-14-git-send-email-rppt@kernel.org>
-References: <1572938135-31886-1-git-send-email-rppt@kernel.org>
-        <1572938135-31886-14-git-send-email-rppt@kernel.org>
-X-Mailer: Sylpheed 3.5.1 (GTK+ 2.24.31; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        id S1730478AbfKFBeb (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Tue, 5 Nov 2019 20:34:31 -0500
+Received: from mail-pf1-f193.google.com ([209.85.210.193]:34366 "EHLO
+        mail-pf1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730125AbfKFBea (ORCPT
+        <rfc822;linux-m68k@vger.kernel.org>); Tue, 5 Nov 2019 20:34:30 -0500
+Received: by mail-pf1-f193.google.com with SMTP id n13so5839205pff.1;
+        Tue, 05 Nov 2019 17:34:30 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:from:to:cc:references:message-id:date:user-agent
+         :mime-version:in-reply-to:content-transfer-encoding:content-language;
+        bh=72ZZvSEcVH/hwuHhCzZSqSBw1/nm9IeJfjkeex8kPRI=;
+        b=BEh9JxVAKr+hBDoq/V5bApxFiaGyfTxcqRMeEQLtc3OXIPawnysCmhn/JIsYr3btTi
+         RcBkXwLICty3AJ2R3F/c9obFFEVSTj4Bc5lj5610AGp2K2+zlcsEp02RIa7iq9NxteAZ
+         qBtM/RwmCYGy6v2uf+mSRYsAqTN9Ot4hahq5ABKp8ja6+07zXdPvg1yoTDh0v/TZHmN4
+         kq8i66PR5iDpanFo5egK5HX1FcSUjtgvPweZkUqlR9tbLK2uHkeU8H18dQx6zcEak5Yn
+         VfJk8Z/vvTaCmZ7pQ+PZp1Ytc6Z2PHjmenpM5Cy0H8F/a2CNl/Zb5Uifu8F+yN7UUd8E
+         MsBQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:from:to:cc:references:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=72ZZvSEcVH/hwuHhCzZSqSBw1/nm9IeJfjkeex8kPRI=;
+        b=gZ7rKTQ8XouNglPKpOwbQEPl9tw0AivoKTDpIVKcrwlFuTW0EXs7teyuQPIYpBmp/7
+         duhmQfzCmGAwAf49dHCwBTntlFmyc0LCTvyCinfhTChCHlW/MFA188mFbW0wlsj+S7e+
+         1h14HVDkWbjvFNRRBxltAVERxWVgE5nK4ELol6QFPqk71cpa9YLYUlm+31GqT2iHvDLb
+         er2Z3WWKZ24dtsuglwtE6pWxa1mRCDuMikuo03bnMcbOQs6vCO38ykpr8v5YfbCNZ9ck
+         6/CeGbJoopSSmMiusoIZgucgVFSNTuuBxP6J+QmEOgFCWZfl2XkI2/IrnHfaiXzFOj8P
+         hGZA==
+X-Gm-Message-State: APjAAAXscEZJ/GUUou/PUHjfDsLGWsVN3AeKBeCK3Nxb+uV1CsUbIFMt
+        gQUOqGCm9Z1lSXFyhQrY2Vg=
+X-Google-Smtp-Source: APXvYqy696PuuuyOXxfVuAVYGPULke2pQdufjpYPZEIacPrbZSzlfODF7IX0LstpudKMjlqxaeuJGg==
+X-Received: by 2002:a62:1c08:: with SMTP id c8mr24827pfc.212.1573004069206;
+        Tue, 05 Nov 2019 17:34:29 -0800 (PST)
+Received: from ?IPv6:2001:df0:0:200c:8d0b:8375:2a32:c157? ([2001:df0:0:200c:8d0b:8375:2a32:c157])
+        by smtp.gmail.com with ESMTPSA id a25sm4644273pff.50.2019.11.05.17.34.26
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+        Tue, 05 Nov 2019 17:34:28 -0800 (PST)
+Subject: Re: [PATCH RESEND v2 0/2] Convert Atari Falcon IDE driver to platform
+ device
+From:   Michael Schmitz <schmitzmic@gmail.com>
+To:     John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
+        Geert Uytterhoeven <geert@linux-m68k.org>
+Cc:     Linux/m68k <linux-m68k@vger.kernel.org>, linux-ide@vger.kernel.org,
+        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>
+References: <1569470064-3977-1-git-send-email-schmitzmic@gmail.com>
+ <7bd80760-0d46-3b3d-16e7-41cbc9169822@kernel.dk>
+ <CAMuHMdWFoC8YUbmW8J7tJSsq4b67WkjyRzhkW=yfrEEJJmsZKQ@mail.gmail.com>
+ <edb1ab21-9b60-4a25-b18c-76173ae6b28f@gmail.com>
+ <CAMuHMdU6mcW_EcmE3bCTRGVCdouFPDoawTVyyGJP50oGES=duA@mail.gmail.com>
+ <db487366-b0d7-d65d-70b5-261aa439298b@gmail.com>
+ <f02faa63-83bd-6be1-e014-e400d180e10c@physik.fu-berlin.de>
+ <6a5e4644-ba7a-079d-d49d-73509bc1cf65@gmail.com>
+ <317f3b1e-20a8-65eb-3a26-3bb79dc22786@physik.fu-berlin.de>
+ <6fb6c69f-ef48-1b35-bbb2-011c12bb02b6@gmail.com>
+Message-ID: <db2838b7-4862-785b-3a1d-3bf09811340a@gmail.com>
+Date:   Wed, 6 Nov 2019 14:34:24 +1300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.6.1
+MIME-Version: 1.0
+In-Reply-To: <6fb6c69f-ef48-1b35-bbb2-011c12bb02b6@gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Sender: linux-m68k-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-On Tue,  5 Nov 2019 09:15:35 +0200 Mike Rapoport <rppt@kernel.org> wrote:
+Hi Adrian,
 
-> There are no architectures that use include/asm-generic/4level-fixup.h
-> therefore it can be removed along with __ARCH_HAS_4LEVEL_HACK define.
+On 5/11/19 7:57 PM, Michael Schmitz wrote:
+>
+>
+> I'd have to test both the impact of missing IDE interrupt support, and 
+> that of code size when using either the old 
 
-Conflicts a bit with Vineet's "asm-generic/tlb: stub out pud_free_tlb()
-if nopud ...", from
-http://lkml.kernel.org/r/20191016162400.14796-2-vgupta@synopsys.com
+Code size comparison (replacing legacy IDE by libata): Total: 
+Before=2979865, After=3101692, chg +4.09%
 
-I fixed it up by removing include/asm-generic/4level-fixup.h anyway and
-removing the removal of "#ifndef __ARCH_HAS_4LEVEL_HAC" from
-include/asm-generic/tlb.h.
+120k increase is a little much for me to want to try with my current RAM 
+size. I regularly get processes kicked off by the OOM reaper when doing 
+a bit of IO loading as is.
+
+Cheers,
+
+     Michael
+
+
