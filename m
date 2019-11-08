@@ -2,53 +2,50 @@ Return-Path: <SRS0=gNPH=ZA=vger.kernel.org=linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-0.8 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-3.8 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
+	MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS autolearn=no
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 54968C5DF60
-	for <linux-m68k@archiver.kernel.org>; Fri,  8 Nov 2019 08:32:40 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 41FE7C5DF60
+	for <linux-m68k@archiver.kernel.org>; Fri,  8 Nov 2019 08:35:44 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 2F00E2178F
-	for <linux-m68k@archiver.kernel.org>; Fri,  8 Nov 2019 08:32:40 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 1190A2178F
+	for <linux-m68k@archiver.kernel.org>; Fri,  8 Nov 2019 08:35:44 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727016AbfKHIck (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Fri, 8 Nov 2019 03:32:40 -0500
-Received: from mail-ot1-f67.google.com ([209.85.210.67]:36950 "EHLO
-        mail-ot1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726149AbfKHIcj (ORCPT
+        id S1730538AbfKHIfn (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Fri, 8 Nov 2019 03:35:43 -0500
+Received: from mail-oi1-f196.google.com ([209.85.167.196]:33570 "EHLO
+        mail-oi1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730463AbfKHIfn (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Fri, 8 Nov 2019 03:32:39 -0500
-Received: by mail-ot1-f67.google.com with SMTP id d5so4533925otp.4
-        for <linux-m68k@lists.linux-m68k.org>; Fri, 08 Nov 2019 00:32:38 -0800 (PST)
+        Fri, 8 Nov 2019 03:35:43 -0500
+Received: by mail-oi1-f196.google.com with SMTP id m193so4584326oig.0
+        for <linux-m68k@lists.linux-m68k.org>; Fri, 08 Nov 2019 00:35:43 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=Mb8MvPT80CBr0Al9ctm+EN0Y96m3kmKlyXiJXBeWesc=;
-        b=aE4hGTGb/kQ1gERE6NuIBLpXmnxcmcY2iMB4IB5KbGUFuQ3J4vE61gW1cCkNam5nx2
-         5YqOOGxyd77Ihn+VoOfWygaBAh+7idQ20PZqkuqzTRaEPBMgPOd0LyFZGSWrPutsMz9E
-         NT8amNqXV5oKsR1dMQ5gxKMYDuVrXLZF9Azr4c6AUxcTgctAVIWv8D6u7QPhetuAb29S
-         cb3bNSWnzngTbFdDT53yYdT9TsnlaQXRwxPUhh2tMXZDx3zNlTqWNSXviZes6HMkAjR/
-         +kaEGsjmAeMzV9TrwFy3E5er8HO1yLUgaOiGtGzw+3B2CfTDuXAnLUeE9+ufh1CAIJsV
-         nOgw==
-X-Gm-Message-State: APjAAAUY6bKui+SrujSJ5OI+3ArMYFdfofznvducfP3q42AuwGjD+m2y
-        61aAZaAmBaLb3LqYxZBffAWsoD5lIoaul4J+wv4=
-X-Google-Smtp-Source: APXvYqw+43SGPSED0AJZnzsx4nEcpKNktTl/12Rw+DSczrLXTnm64tHUPqVN8uYM7eIOKZWrtAAa7/8vyyyqFua3Kw4=
-X-Received: by 2002:a05:6830:2363:: with SMTP id r3mr7709762oth.39.1573201958505;
- Fri, 08 Nov 2019 00:32:38 -0800 (PST)
+        bh=h1uMs1sJfEiNP+XnwLWOA56bVLhvU2oQuJJbSb2fF04=;
+        b=oyuJMilYc6jAFm/SUZ5nraMldnteBylCMJX/wEWbfQyJOPK/VtmY5wlGGqGw2FUZVL
+         JBHOT2UDIYsekkrwabiI0dHXdxjgt0UlX1Jh7Hbq5ALAcgVzNivy5UJax2dKMxlukBUF
+         3NgbNbD9VcJY0gtnBwEMy1StPwTo4ZDim8MS3gkL8gucBJio1LN0YIpxy+PgHpIbLYX6
+         Y274njGweDEdqu0FgPRn0uXSjZwGfHd3xnXXJ17sJVpI7Lhf4xCdyWbFzzz17DqTVhRA
+         9MO3gpexZMnlFTgf6M602JOcO8DvfR5h2qNhTdxYHJp8INij75Q148z2TM6jlpRvZf1J
+         IgRw==
+X-Gm-Message-State: APjAAAUeQNhC9koKS38OiuZ+RRZLsIk8z0xH39TLxK62QdPCDGBYZE6l
+        e9QJoRlueWnO4Xof0ayuSjBJkrfWqgW5EJZai8E=
+X-Google-Smtp-Source: APXvYqxOUOr/TBH5H/Et++6eJWrvXzscFQJINZxRtWaYCdbXL4E/D5dDGUqtPMP+MwKaU6AtU89yWbI44eh67jVJ2zk=
+X-Received: by 2002:aca:3a86:: with SMTP id h128mr8105952oia.131.1573202142533;
+ Fri, 08 Nov 2019 00:35:42 -0800 (PST)
 MIME-Version: 1.0
-References: <1572850587-20314-1-git-send-email-rppt@kernel.org>
- <1572850587-20314-6-git-send-email-rppt@kernel.org> <CAMuHMdUG3V7uxzhbetw75vVeobeP0-bQySb3r=0V5XujUF123g@mail.gmail.com>
- <20191104094748.GB23288@rapoport-lnx> <CAMuHMdVHsNyLxhaxZcVdLvQ1PUnb=2_+ECPWVD0234V+qu+kOw@mail.gmail.com>
- <3d908bbf-0469-c53b-dd86-87df98f40ee7@gmail.com>
-In-Reply-To: <3d908bbf-0469-c53b-dd86-87df98f40ee7@gmail.com>
+References: <1572938135-31886-1-git-send-email-rppt@kernel.org> <1572938135-31886-6-git-send-email-rppt@kernel.org>
+In-Reply-To: <1572938135-31886-6-git-send-email-rppt@kernel.org>
 From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Fri, 8 Nov 2019 09:32:27 +0100
-Message-ID: <CAMuHMdVe-7=587nMWK_FcHzsm1TLckwTY9JxKHM_Gg8+ogZsgA@mail.gmail.com>
-Subject: Re: [PATCH v3 05/13] m68k: mm: use pgtable-nopXd instead of 4level-fixup
-To:     Michael Schmitz <schmitzmic@gmail.com>
-Cc:     Mike Rapoport <rppt@kernel.org>, Linux MM <linux-mm@kvack.org>,
+Date:   Fri, 8 Nov 2019 09:35:31 +0100
+Message-ID: <CAMuHMdXqaw_k=XiY0RYvvR+smE-5tbTBzWiAZOFev731vR3q3A@mail.gmail.com>
+Subject: Re: [PATCH v4 05/13] m68k: mm: use pgtable-nopXd instead of 4level-fixup
+To:     Mike Rapoport <rppt@kernel.org>
+Cc:     Linux MM <linux-mm@kvack.org>,
         Andrew Morton <akpm@linux-foundation.org>,
         Anton Ivanov <anton.ivanov@cambridgegreys.com>,
         Arnd Bergmann <arnd@arndb.de>,
@@ -85,22 +82,60 @@ Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-Hi Michael,
+Hi Mike,
 
-On Fri, Nov 8, 2019 at 5:30 AM Michael Schmitz <schmitzmic@gmail.com> wrote:
-> Am 04.11.2019 um 22:53 schrieb Geert Uytterhoeven:
-> >>> This indeed boots fine on ARAnyM, which emulates on 68040.
-> >>> It would be good to have some boot testing on '020/030, too.
-> >>
-> >> To be honest, I have no idea how to to that :)
-> >
-> > Sure. This was more a request for the fellow m68k users.
-> > But don't worry too much about it.  If it breaks '020/'030, we can fix
-> > that later.
+On Tue, Nov 5, 2019 at 8:16 AM Mike Rapoport <rppt@kernel.org> wrote:
+> From: Mike Rapoport <rppt@linux.ibm.com>
 >
-> Boots fine on 030, too.
+> m68k has two or three levels of page tables and can use appropriate
+> pgtable-nopXd and folding of the upper layers.
+>
+> Replace usage of include/asm-generic/4level-fixup.h and explicit
+> definitions of __PAGETABLE_PxD_FOLDED in m68k with
+> include/asm-generic/pgtable-nopmd.h for two-level configurations and with
+> include/asm-generic/pgtable-nopud.h for three-lelve configurations and
+> adjust page table manipulation macros and functions accordingly.
+>
+> Signed-off-by: Mike Rapoport <rppt@linux.ibm.com>
+> Acked-by: Greg Ungerer <gerg@linux-m68k.org>
 
-Thanks a lot for testing!
+Acked-by: Geert Uytterhoeven <geert@linux-m68k.org>
+
+One forgotten error message update below.
+
+> --- a/arch/m68k/mm/kmap.c
+> +++ b/arch/m68k/mm/kmap.c
+> @@ -258,18 +265,23 @@ void __iounmap(void *addr, unsigned long size)
+>  {
+>         unsigned long virtaddr = (unsigned long)addr;
+>         pgd_t *pgd_dir;
+> +       p4d_t *p4d_dir;
+> +       pud_t *pud_dir;
+>         pmd_t *pmd_dir;
+>         pte_t *pte_dir;
+>
+>         while ((long)size > 0) {
+>                 pgd_dir = pgd_offset_k(virtaddr);
+> -               if (pgd_bad(*pgd_dir)) {
+> -                       printk("iounmap: bad pgd(%08lx)\n", pgd_val(*pgd_dir));
+> -                       pgd_clear(pgd_dir);
+> +               p4d_dir = p4d_offset(pgd_dir, virtaddr);
+> +               pud_dir = pud_offset(p4d_dir, virtaddr);
+> +               if (pud_bad(*pud_dir)) {
+> +                       printk("iounmap: bad pgd(%08lx)\n", pud_val(*pud_dir));
+
+bad pud
+
+> +                       pud_clear(pud_dir);
+>                         return;
+>                 }
+> -               pmd_dir = pmd_offset(pgd_dir, virtaddr);
+> +               pmd_dir = pmd_offset(pud_dir, virtaddr);
+>
+> +#if CONFIG_PGTABLE_LEVELS == 3
+>                 if (CPU_IS_020_OR_030) {
+>                         int pmd_off = (virtaddr/PTRTREESIZE) & 15;
+>                         int pmd_type = pmd_dir->pmd[pmd_off] & _DESCTYPE_MASK;
 
 Gr{oetje,eeting}s,
 
