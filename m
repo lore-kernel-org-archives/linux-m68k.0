@@ -1,73 +1,95 @@
-Return-Path: <SRS0=kyu6=Y6=vger.kernel.org=linux-m68k-owner@kernel.org>
+Return-Path: <SRS0=gNPH=ZA=vger.kernel.org=linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.2 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=no
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-0.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 21461C5DF63
-	for <linux-m68k@archiver.kernel.org>; Wed,  6 Nov 2019 18:29:01 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C0B02C5DF60
+	for <linux-m68k@archiver.kernel.org>; Fri,  8 Nov 2019 19:39:20 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id E357120869
-	for <linux-m68k@archiver.kernel.org>; Wed,  6 Nov 2019 18:29:00 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 83FA3206C3
+	for <linux-m68k@archiver.kernel.org>; Fri,  8 Nov 2019 19:39:20 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=default; t=1573241960;
+	bh=ZAG84ge+L09XKgou0cB1i9iO9e81rb3QTPdTqxlkr0M=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:List-ID:From;
+	b=oJ7mDbEbM9RspDQvWuqx/uUMXc1kCx4MGFjw0YCVY2cZN2SjVBDXheMQQKk3Tf2AH
+	 1cXpLnf5Mwu8ducH9XBc/jXF2/cvV+GilGW411eZZpQy1kkNzKvxCxpuzggkEUpE0v
+	 fsFmuQPopNn27GPFceYNapC3ib5VHqjXn/JXWSSk=
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728746AbfKFS3A (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Wed, 6 Nov 2019 13:29:00 -0500
-Received: from verein.lst.de ([213.95.11.211]:52705 "EHLO verein.lst.de"
+        id S2387662AbfKHTjU (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Fri, 8 Nov 2019 14:39:20 -0500
+Received: from mail.kernel.org ([198.145.29.99]:57976 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727026AbfKFS3A (ORCPT <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Wed, 6 Nov 2019 13:29:00 -0500
-Received: by verein.lst.de (Postfix, from userid 2407)
-        id B095A68AFE; Wed,  6 Nov 2019 19:28:57 +0100 (CET)
-Date:   Wed, 6 Nov 2019 19:28:57 +0100
-From:   Christoph Hellwig <hch@lst.de>
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     Palmer Dabbelt <palmer@dabbelt.com>,
-        Christoph Hellwig <hch@lst.de>,
-        "linux-ia64@vger.kernel.org" <linux-ia64@vger.kernel.org>,
-        Linux-sh list <linux-sh@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Guo Ren <guoren@kernel.org>,
-        sparclinux <sparclinux@vger.kernel.org>,
-        linux-riscv@lists.infradead.org,
-        Vincent Chen <deanbo422@gmail.com>,
-        Linux-Arch <linux-arch@vger.kernel.org>,
-        linux-s390 <linux-s390@vger.kernel.org>,
-        "open list:QUALCOMM HEXAGON..." <linux-hexagon@vger.kernel.org>,
-        the arch/x86 maintainers <x86@kernel.org>,
-        arcml <linux-snps-arc@lists.infradead.org>,
-        linux-xtensa@linux-xtensa.org, Arnd Bergmann <arnd@arndb.de>,
-        linux-m68k <linux-m68k@lists.linux-m68k.org>,
-        Openrisc <openrisc@lists.librecores.org>,
+        id S1727233AbfKHTjU (ORCPT <rfc822;linux-m68k@vger.kernel.org>);
+        Fri, 8 Nov 2019 14:39:20 -0500
+Received: from localhost.localdomain (c-73-231-172-41.hsd1.ca.comcast.net [73.231.172.41])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id D217D206A3;
+        Fri,  8 Nov 2019 19:39:17 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1573241958;
+        bh=ZAG84ge+L09XKgou0cB1i9iO9e81rb3QTPdTqxlkr0M=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=oOxy4Wdb4vPsF8JbCZye3J9lKbP/LMOZJElWEhVMQVaYL7+6B1J0BGc9MF2bWwzIe
+         hJQ4mkhDTLCWz1YMTNy3sdABtaukOID5braecKND/vaunUuII+0rvnF1cM4tNsnIHJ
+         g/+gXCN4sGzLG0kAmdQW86n+ifO0YSktrgbS0Gu8=
+Date:   Fri, 8 Nov 2019 11:39:17 -0800
+From:   Andrew Morton <akpm@linux-foundation.org>
+To:     Mike Rapoport <rppt@kernel.org>
+Cc:     linux-mm@kvack.org, Anton Ivanov <anton.ivanov@cambridgegreys.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        "David S. Miller" <davem@davemloft.net>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
         Greentime Hu <green.hu@gmail.com>,
-        MTD Maling List <linux-mtd@lists.infradead.org>,
-        Guan Xuetao <gxt@pku.edu.cn>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Michal Simek <monstr@monstr.eu>,
-        Parisc List <linux-parisc@vger.kernel.org>,
-        linux-mips@vger.kernel.org, alpha <linux-alpha@vger.kernel.org>,
-        nios2-dev@lists.rocketboards.org
-Subject: Re: [PATCH 11/21] asm-generic: don't provide ioremap for CONFIG_MMU
-Message-ID: <20191106182857.GA21062@lst.de>
-References: <20191029064834.23438-12-hch@lst.de> <mhng-33ea9141-2440-4a2d-8133-62094486fc48@palmer-si-x1c4> <CAMuHMdVuDp_8UDeWv8tdPAH5JS84=-yfwZjOk-YQcoYKM9za+w@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAMuHMdVuDp_8UDeWv8tdPAH5JS84=-yfwZjOk-YQcoYKM9za+w@mail.gmail.com>
-User-Agent: Mutt/1.5.17 (2007-11-01)
+        Greg Ungerer <gerg@linux-m68k.org>,
+        Helge Deller <deller@gmx.de>,
+        "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
+        Jeff Dike <jdike@addtoit.com>,
+        "Kirill A. Shutemov" <kirill@shutemov.name>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Mark Salter <msalter@redhat.com>,
+        Matt Turner <mattst88@gmail.com>,
+        Michal Simek <monstr@monstr.eu>, Peter Rosin <peda@axentia.se>,
+        Richard Weinberger <richard@nod.at>,
+        Rolf Eike Beer <eike-kernel@sf-tec.de>,
+        Russell King <linux@armlinux.org.uk>,
+        Sam Creasey <sammy@sammy.net>,
+        Vincent Chen <deanbo422@gmail.com>,
+        Vineet Gupta <Vineet.Gupta1@synopsys.com>,
+        linux-alpha@vger.kernel.org, linux-arch@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-c6x-dev@linux-c6x.org,
+        linux-kernel@vger.kernel.org, linux-m68k@vger.kernel.org,
+        linux-parisc@vger.kernel.org, linux-um@lists.infradead.org,
+        sparclinux@vger.kernel.org, Mike Rapoport <rppt@linux.ibm.com>
+Subject: Re: [PATCH v4 05/13] m68k: mm: use pgtable-nopXd instead of
+ 4level-fixup
+Message-Id: <20191108113917.a9c6ebb8373cc95fd684b734@linux-foundation.org>
+In-Reply-To: <1572938135-31886-6-git-send-email-rppt@kernel.org>
+References: <1572938135-31886-1-git-send-email-rppt@kernel.org>
+        <1572938135-31886-6-git-send-email-rppt@kernel.org>
+X-Mailer: Sylpheed 3.5.1 (GTK+ 2.24.31; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Sender: linux-m68k-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-On Wed, Nov 06, 2019 at 07:16:38PM +0100, Geert Uytterhoeven wrote:
-> > shouldn't they all just be that first one?  In other words, wouldn't it be
-> > better to always provide the generic ioremap prototype and unify the ports
-> > instead?
-> 
-> Agreed. But I'd go for the second one.
+On Tue,  5 Nov 2019 09:15:27 +0200 Mike Rapoport <rppt@kernel.org> wrote:
 
-Eventually we should unify it and only have a single prototype.
-But we have lots of implementations including inline functions, so
-this will take a few more steps.
+> m68k has two or three levels of page tables and can use appropriate
+> pgtable-nopXd and folding of the upper layers.
+> 
+> Replace usage of include/asm-generic/4level-fixup.h and explicit
+> definitions of __PAGETABLE_PxD_FOLDED in m68k with
+> include/asm-generic/pgtable-nopmd.h for two-level configurations and with
+> include/asm-generic/pgtable-nopud.h for three-lelve configurations and
+> adjust page table manipulation macros and functions accordingly.
+
+This one was messed up by linux-next changes in arch/m68k/mm/kmap.c. 
+Can you please take a look?
