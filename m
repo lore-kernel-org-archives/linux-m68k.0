@@ -2,137 +2,94 @@ Return-Path: <SRS0=NQ8B=ZC=vger.kernel.org=linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-7.6 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=unavailable
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-0.8 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B1B76C43331
-	for <linux-m68k@archiver.kernel.org>; Sun, 10 Nov 2019 08:41:53 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 82CC0C43331
+	for <linux-m68k@archiver.kernel.org>; Sun, 10 Nov 2019 09:01:49 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 8221C206BB
-	for <linux-m68k@archiver.kernel.org>; Sun, 10 Nov 2019 08:41:53 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=default; t=1573375313;
-	bh=VivvRZF7S/gADzD3po2D0GMBa+a0TZ5FLEfZj0Cja2I=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:List-ID:From;
-	b=lX281NQiQ8Y/95c6WI7+QKj9KXcCUSDCFbrD4lnBpKaFrzEi9EVGp3d/o1NpmthjR
-	 TxL6dCHuior9txITdG/GaR2aQgA1ip803IHesvsE4C37pTfcgK84LZj6iHFAHka+I4
-	 CmdFw48hr7BhSnVE3oTTd5AHPxmDb/6XW0IlgQU0=
+	by mail.kernel.org (Postfix) with ESMTP id 4C27A20679
+	for <linux-m68k@archiver.kernel.org>; Sun, 10 Nov 2019 09:01:49 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726622AbfKJIlk (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Sun, 10 Nov 2019 03:41:40 -0500
-Received: from mail.kernel.org ([198.145.29.99]:39564 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726586AbfKJIlk (ORCPT <rfc822;linux-m68k@vger.kernel.org>);
-        Sun, 10 Nov 2019 03:41:40 -0500
-Received: from rapoport-lnx (nesher1.haifa.il.ibm.com [195.110.40.7])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 2045B2077C;
-        Sun, 10 Nov 2019 08:41:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1573375299;
-        bh=VivvRZF7S/gADzD3po2D0GMBa+a0TZ5FLEfZj0Cja2I=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=MhQPa5FrV+cprfH5LgO2ngz5WqWHYxNnhtlF8+EWWiR3YG5Vr0xkKzXyZ33AQdepy
-         Y53SeeHSS15YwGONO0eTs1D0QPsAGRYcPqxFn365q39QPKS3BXz4WP3RSRENNf6l8i
-         sUwJM9yFWuX0jXXhjx2/CnlEYW9BRJ1kjfyDrNEs=
-Date:   Sun, 10 Nov 2019 10:41:26 +0200
-From:   Mike Rapoport <rppt@kernel.org>
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Linux MM <linux-mm@kvack.org>,
-        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        "David S. Miller" <davem@davemloft.net>,
-        Greentime Hu <green.hu@gmail.com>,
-        Greg Ungerer <gerg@linux-m68k.org>,
-        Helge Deller <deller@gmx.de>,
-        "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
-        Jeff Dike <jdike@addtoit.com>,
-        "Kirill A. Shutemov" <kirill@shutemov.name>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Mark Salter <msalter@redhat.com>,
-        Matt Turner <mattst88@gmail.com>,
-        Michal Simek <monstr@monstr.eu>, Peter Rosin <peda@axentia.se>,
-        Richard Weinberger <richard@nod.at>,
-        Rolf Eike Beer <eike-kernel@sf-tec.de>,
-        Russell King <linux@armlinux.org.uk>,
-        Sam Creasey <sammy@sammy.net>,
-        Vincent Chen <deanbo422@gmail.com>,
-        Vineet Gupta <Vineet.Gupta1@synopsys.com>,
-        alpha <linux-alpha@vger.kernel.org>,
-        Linux-Arch <linux-arch@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        linux-c6x-dev@linux-c6x.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux/m68k <linux-m68k@vger.kernel.org>,
-        Parisc List <linux-parisc@vger.kernel.org>,
-        linux-um@lists.infradead.org,
-        sparclinux <sparclinux@vger.kernel.org>,
-        Mike Rapoport <rppt@linux.ibm.com>
-Subject: Re: [PATCH v4 05/13] m68k: mm: use pgtable-nopXd instead of
- 4level-fixup
-Message-ID: <20191110084125.GA9494@rapoport-lnx>
-References: <1572938135-31886-1-git-send-email-rppt@kernel.org>
- <1572938135-31886-6-git-send-email-rppt@kernel.org>
- <20191108113917.a9c6ebb8373cc95fd684b734@linux-foundation.org>
- <CAMuHMdXdoFSVno4WT=F6Q1UwEaZ6AQJmhNUqPpYHJm6uh165iw@mail.gmail.com>
+        id S1726616AbfKJJBs (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Sun, 10 Nov 2019 04:01:48 -0500
+Received: from smtpq3.tb.mail.iss.as9143.net ([212.54.42.166]:34314 "EHLO
+        smtpq3.tb.mail.iss.as9143.net" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726612AbfKJJBs (ORCPT
+        <rfc822;linux-m68k@vger.kernel.org>);
+        Sun, 10 Nov 2019 04:01:48 -0500
+Received: from [212.54.42.110] (helo=smtp7.tb.mail.iss.as9143.net)
+        by smtpq3.tb.mail.iss.as9143.net with esmtps (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.90_1)
+        (envelope-from <jongk@linux-m68k.org>)
+        id 1iTj6Q-0007eX-7D; Sun, 10 Nov 2019 10:01:46 +0100
+Received: from mail-wm1-f47.google.com ([209.85.128.47])
+        by smtp7.tb.mail.iss.as9143.net with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.90_1)
+        (envelope-from <jongk@linux-m68k.org>)
+        id 1iTj6Q-0001M6-3L; Sun, 10 Nov 2019 10:01:46 +0100
+Received: by mail-wm1-f47.google.com with SMTP id c17so10280096wmk.2;
+        Sun, 10 Nov 2019 01:01:45 -0800 (PST)
+X-Gm-Message-State: APjAAAVTeSzHmryaI+wLoepgkrvQggIuUMLM2Zfh4+5eZqFDoimnZ7nD
+        h5wuqq07u+sJbhnczDvR13KChMiwAGw+yP+vzSQ=
+X-Google-Smtp-Source: APXvYqwuC6GaN6ATcqRAZjZ70igl0t9NjQ0rLMv5v8s70pHp/vIDO18KiEYxFjaudcG3+bQNsnQ6XF4FCIXpcpWZf+k=
+X-Received: by 2002:a7b:c84b:: with SMTP id c11mr14347252wml.158.1573376505832;
+ Sun, 10 Nov 2019 01:01:45 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAMuHMdXdoFSVno4WT=F6Q1UwEaZ6AQJmhNUqPpYHJm6uh165iw@mail.gmail.com>
-User-Agent: Mutt/1.5.24 (2015-08-30)
+References: <CACz-3rh9ZCyU1825yU8xxty5BGrwFhpbjKNoWnn0mGiv_h2Kag@mail.gmail.com>
+ <20191109191400.8999-1-jongk@linux-m68k.org> <1573330351.3650.4.camel@linux.ibm.com>
+ <6b914b12-cbc7-6fe6-7cba-3e89b2f6f19b@gmail.com>
+In-Reply-To: <6b914b12-cbc7-6fe6-7cba-3e89b2f6f19b@gmail.com>
+From:   Kars de Jong <jongk@linux-m68k.org>
+Date:   Sun, 10 Nov 2019 10:01:58 +0100
+X-Gmail-Original-Message-ID: <CACz-3rjUh8tcShX5OPi+37JvF8PqG-8AEf5uMQHjMynSaVa1gw@mail.gmail.com>
+Message-ID: <CACz-3rjUh8tcShX5OPi+37JvF8PqG-8AEf5uMQHjMynSaVa1gw@mail.gmail.com>
+Subject: Re: [PATCH] zorro_esp: increase maximum dma length to 65536 bytes
+To:     Michael Schmitz <schmitzmic@gmail.com>
+Cc:     James Bottomley <jejb@linux.ibm.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        linux-scsi@vger.kernel.org, linux-m68k@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+X-SourceIP: 209.85.128.47
+X-Authenticated-Sender: karsdejong@home.nl (via SMTP)
+X-Ziggo-spambar: /
+X-Ziggo-spamscore: 0.0
+X-Ziggo-spamreport: CMAE Analysis: v=2.3 cv=cPSeTWWN c=1 sm=1 tr=0 a=9+rZDBEiDlHhcck0kWbJtElFXBc=:19 a=jpOVt7BSZ2e4Z31A5e1TngXxSK0=:19 a=IkcTkHD0fZMA:10 a=MeAgGD-zjQ4A:10 a=pGLkceISAAAA:8 a=JbkMkhRZQ_9swjeIGgcA:9 a=W5WeqUbvGoA5kzlh:21 a=4r4QAPJ9YRGA_bOO:21 a=QEXdDO2ut3YA:10
+X-Ziggo-Spam-Status: No
 Sender: linux-m68k-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-Hi Andrew,
+Hi Michael,
 
-On Sat, Nov 09, 2019 at 03:26:29PM +0100, Geert Uytterhoeven wrote:
-> Hi Andrew,
-> 
-> On Fri, Nov 8, 2019 at 8:39 PM Andrew Morton <akpm@linux-foundation.org> wrote:
-> > On Tue,  5 Nov 2019 09:15:27 +0200 Mike Rapoport <rppt@kernel.org> wrote:
-> > > m68k has two or three levels of page tables and can use appropriate
-> > > pgtable-nopXd and folding of the upper layers.
-> > >
-> > > Replace usage of include/asm-generic/4level-fixup.h and explicit
-> > > definitions of __PAGETABLE_PxD_FOLDED in m68k with
-> > > include/asm-generic/pgtable-nopmd.h for two-level configurations and with
-> > > include/asm-generic/pgtable-nopud.h for three-lelve configurations and
-> > > adjust page table manipulation macros and functions accordingly.
-> >
-> > This one was messed up by linux-next changes in arch/m68k/mm/kmap.c.
-> > Can you please take a look?
+Op zo 10 nov. 2019 om 03:36 schreef Michael Schmitz <schmitzmic@gmail.com>:
+> All of the old board-specific drivers used a max transfer length of
+> 0x1000000, only the fastlane driver used 0xfffc.
 
-Can you please elaborate what was the problem?
+Yes, I also found this when checking the old drivers.
 
-The patch applies cleanly to v5.4-rc6-mmots-2019-11-08-16-23 (from
-github.com/hnaz/linux-mm) and all the page table traversals in
-arch/m68k/mm/kmap.c look Ok.
+> That lower limit might
+> be due to a DMA limitation on the fastlane board. We could accommodate
+> the different limit for this board by using a board-specific
+> dma_length_limit() callback...
 
-I've build atari_defconfig and it boots fine on aranym.
- 
-> You mean due to the rename and move of __iounmap() to __free_io_area()
-> in commit aa3a1664285d0bec ("m68k: rename __iounmap and mark it static")?
-> 
-> Commit 42d6c83d6180f800 ("m68k: mm: use pgtable-nopXd instead of
-> 4level-fixup") in next-20191108 looks good to me.
-> 
-> Gr{oetje,eeting}s,
-> 
->                         Geert
-> 
-> --
-> Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-> 
-> In personal conversations with technical people, I call myself a hacker. But
-> when I'm talking to journalists I just say "programmer" or something like that.
->                                 -- Linus Torvalds
+Yes, I think that's the best idea for now. Oktagon also used to have a
+different limit but that was never ported to the new ESP core.
 
--- 
-Sincerely yours,
-Mike.
+> > case for any of the cards the zorro_esp drives, it might be better to
+> > lower the max length to 61440 (64k-4k) so the residual is a page.
+>
+> For the benefit of keeping the code simple, and avoid retesting the
+> fastlane board, that might indeed be the better solution.
+
+But it's slower... :-P
+
+Also, I may be adding another board-specific version for the Blizzard
+12x0 IV to enable 24-bit transfers, like the am53c974 driver does, in
+a later patch.
+
+Kind regards,
+
+Kars.
