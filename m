@@ -1,149 +1,128 @@
-Return-Path: <SRS0=gNPH=ZA=vger.kernel.org=linux-m68k-owner@kernel.org>
+Return-Path: <SRS0=YN9G=ZD=vger.kernel.org=linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.8 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
-	MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS autolearn=no
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-0.8 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 41FE7C5DF60
-	for <linux-m68k@archiver.kernel.org>; Fri,  8 Nov 2019 08:35:44 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E04ADC43331
+	for <linux-m68k@archiver.kernel.org>; Mon, 11 Nov 2019 10:09:24 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 1190A2178F
-	for <linux-m68k@archiver.kernel.org>; Fri,  8 Nov 2019 08:35:44 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id BA038214E0
+	for <linux-m68k@archiver.kernel.org>; Mon, 11 Nov 2019 10:09:24 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730538AbfKHIfn (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Fri, 8 Nov 2019 03:35:43 -0500
-Received: from mail-oi1-f196.google.com ([209.85.167.196]:33570 "EHLO
-        mail-oi1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730463AbfKHIfn (ORCPT
+        id S1726804AbfKKKJY (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Mon, 11 Nov 2019 05:09:24 -0500
+Received: from mout.kundenserver.de ([212.227.17.13]:44745 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726768AbfKKKJY (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Fri, 8 Nov 2019 03:35:43 -0500
-Received: by mail-oi1-f196.google.com with SMTP id m193so4584326oig.0
-        for <linux-m68k@lists.linux-m68k.org>; Fri, 08 Nov 2019 00:35:43 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=h1uMs1sJfEiNP+XnwLWOA56bVLhvU2oQuJJbSb2fF04=;
-        b=oyuJMilYc6jAFm/SUZ5nraMldnteBylCMJX/wEWbfQyJOPK/VtmY5wlGGqGw2FUZVL
-         JBHOT2UDIYsekkrwabiI0dHXdxjgt0UlX1Jh7Hbq5ALAcgVzNivy5UJax2dKMxlukBUF
-         3NgbNbD9VcJY0gtnBwEMy1StPwTo4ZDim8MS3gkL8gucBJio1LN0YIpxy+PgHpIbLYX6
-         Y274njGweDEdqu0FgPRn0uXSjZwGfHd3xnXXJ17sJVpI7Lhf4xCdyWbFzzz17DqTVhRA
-         9MO3gpexZMnlFTgf6M602JOcO8DvfR5h2qNhTdxYHJp8INij75Q148z2TM6jlpRvZf1J
-         IgRw==
-X-Gm-Message-State: APjAAAUeQNhC9koKS38OiuZ+RRZLsIk8z0xH39TLxK62QdPCDGBYZE6l
-        e9QJoRlueWnO4Xof0ayuSjBJkrfWqgW5EJZai8E=
-X-Google-Smtp-Source: APXvYqxOUOr/TBH5H/Et++6eJWrvXzscFQJINZxRtWaYCdbXL4E/D5dDGUqtPMP+MwKaU6AtU89yWbI44eh67jVJ2zk=
-X-Received: by 2002:aca:3a86:: with SMTP id h128mr8105952oia.131.1573202142533;
- Fri, 08 Nov 2019 00:35:42 -0800 (PST)
+        Mon, 11 Nov 2019 05:09:24 -0500
+Received: from mail-qt1-f170.google.com ([209.85.160.170]) by
+ mrelayeu.kundenserver.de (mreue107 [212.227.15.145]) with ESMTPSA (Nemesis)
+ id 1M8xwu-1ia8m439Ko-0064Sy for <linux-m68k@lists.linux-m68k.org>; Mon, 11
+ Nov 2019 11:09:22 +0100
+Received: by mail-qt1-f170.google.com with SMTP id n4so10462933qte.2
+        for <linux-m68k@lists.linux-m68k.org>; Mon, 11 Nov 2019 02:09:22 -0800 (PST)
+X-Gm-Message-State: APjAAAXgfSwSPIBRfCf3qDLlF9vmQeUYRB/1SSyT1515ZRikXWszC6mx
+        1jLrrBe2Y4hecjVbFzOvw2DShL50hg14fDNCrEg=
+X-Google-Smtp-Source: APXvYqwUFI9CNnIwrAVKasmsTd09tLHKshCq1NYJLSrtULcDmOA+h22x7/m2tzlDDqS3Yhkmt+6zqdhU/D75oBqf0Ro=
+X-Received: by 2002:aed:3e41:: with SMTP id m1mr16150881qtf.142.1573466961656;
+ Mon, 11 Nov 2019 02:09:21 -0800 (PST)
 MIME-Version: 1.0
-References: <1572938135-31886-1-git-send-email-rppt@kernel.org> <1572938135-31886-6-git-send-email-rppt@kernel.org>
-In-Reply-To: <1572938135-31886-6-git-send-email-rppt@kernel.org>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Fri, 8 Nov 2019 09:35:31 +0100
-Message-ID: <CAMuHMdXqaw_k=XiY0RYvvR+smE-5tbTBzWiAZOFev731vR3q3A@mail.gmail.com>
-Subject: Re: [PATCH v4 05/13] m68k: mm: use pgtable-nopXd instead of 4level-fixup
-To:     Mike Rapoport <rppt@kernel.org>
-Cc:     Linux MM <linux-mm@kvack.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        "David S. Miller" <davem@davemloft.net>,
+References: <20191029064834.23438-1-hch@lst.de> <20191029064834.23438-11-hch@lst.de>
+In-Reply-To: <20191029064834.23438-11-hch@lst.de>
+From:   Arnd Bergmann <arnd@arndb.de>
+Date:   Mon, 11 Nov 2019 11:09:05 +0100
+X-Gmail-Original-Message-ID: <CAK8P3a2o4R+E2hTrHrmNy7K1ki3_98aWE5a-fjkQ_NWW=xd_gQ@mail.gmail.com>
+Message-ID: <CAK8P3a2o4R+E2hTrHrmNy7K1ki3_98aWE5a-fjkQ_NWW=xd_gQ@mail.gmail.com>
+Subject: Re: [PATCH 10/21] asm-generic: ioremap_uc should behave the same with
+ and without MMU
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     Guo Ren <guoren@kernel.org>, Michal Simek <monstr@monstr.eu>,
         Greentime Hu <green.hu@gmail.com>,
-        Greg Ungerer <gerg@linux-m68k.org>,
-        Helge Deller <deller@gmx.de>,
-        "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
-        Jeff Dike <jdike@addtoit.com>,
-        "Kirill A. Shutemov" <kirill@shutemov.name>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Mark Salter <msalter@redhat.com>,
-        Matt Turner <mattst88@gmail.com>,
-        Michal Simek <monstr@monstr.eu>, Peter Rosin <peda@axentia.se>,
-        Richard Weinberger <richard@nod.at>,
-        Rolf Eike Beer <eike-kernel@sf-tec.de>,
-        Russell King <linux@armlinux.org.uk>,
-        Sam Creasey <sammy@sammy.net>,
         Vincent Chen <deanbo422@gmail.com>,
-        Vineet Gupta <Vineet.Gupta1@synopsys.com>,
+        Guan Xuetao <gxt@pku.edu.cn>,
+        "the arch/x86 maintainers" <x86@kernel.org>,
         alpha <linux-alpha@vger.kernel.org>,
-        Linux-Arch <linux-arch@vger.kernel.org>,
+        "open list:SYNOPSYS ARC ARCHITECTURE" 
+        <linux-snps-arc@lists.infradead.org>,
         Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        linux-c6x-dev@linux-c6x.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "open list:QUALCOMM HEXAGON..." <linux-hexagon@vger.kernel.org>,
+        linux-ia64@vger.kernel.org,
         linux-m68k <linux-m68k@lists.linux-m68k.org>,
+        linux-mips@vger.kernel.org,
+        "moderated list:NIOS2 ARCHITECTURE" 
+        <nios2-dev@lists.rocketboards.org>, openrisc@lists.librecores.org,
         Parisc List <linux-parisc@vger.kernel.org>,
-        linux-um@lists.infradead.org,
+        linux-riscv@lists.infradead.org,
+        linux-s390 <linux-s390@vger.kernel.org>,
+        Linux-sh list <linux-sh@vger.kernel.org>,
         sparclinux <sparclinux@vger.kernel.org>,
-        Mike Rapoport <rppt@linux.ibm.com>
+        linux-xtensa@linux-xtensa.org,
+        linux-mtd <linux-mtd@lists.infradead.org>,
+        linux-arch <linux-arch@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
+X-Provags-ID: V03:K1:AtvPekmsKLd/QQDHhkQCRgR5zxx6SnWdsFef7PC/fqHDZFg3hYD
+ 3Igy3OZ88AlXAumsMeMcC+2iT7Ae2a9ZtqXYPc0eWnWSuzUJzcYN+bSLZdsgJLx68JFqHit
+ 7F86haepKrHb/02UrYgWY861vb0y6qCdKf9w+vgHtiKQgEUH+jdm3jarvVjywarHqccL241
+ eZPI70jLLn3Bi+AAxagxQ==
+X-UI-Out-Filterresults: notjunk:1;V03:K0:P17D9ce5xeA=:IGbpGmZOBybO9XnE8xP23z
+ /u/MQoASxBBhcu9l6mNCFu4NJ17brinuEbp4HIaiK6FIJCoJp+xk5x6oX3147K1Mc5SkFLFPk
+ qXGR26KcoKgAtYe053AmKd3XSIztOSh0YzS3C2ZI0dg4lweu0Gm6gOKwuxhgcTi/BRFTDbaCv
+ 18uvJlEjceVmcsiUyyP8Qc5YfH88aIZnEmZRNBWGOym24ezdoaUVac9nPjAdbBgZO/Wgm33JI
+ cyrO6ZujpGjGFpN4OOSJyivxeeNbm2K5GuLGRFI72M79aoKk3BCm3yRFGv397My2/2n2hNNbD
+ Rptv31C+QJUyREtCghIOpji9QotkXS0hXoFkxSvRT8qwp0ORfadDfee8NUnKd1CG60pTmsGpI
+ sD/G3Oynwv/bg0czzW9QHwNEL/QCmmthH4U4p04VKw4C9NyLA0AaqZMpWwrjYw8gY24L/B8wM
+ ZOVNz9LavbvonXsH/shlz5RKm7HUnlxHXCclehfKEG0P1qqMYZ3t169ZUtstQ943fDKJOZP6/
+ C8bQOCgrfzjd9gtPMkFBASt08iiQv59AaoABIJKNml3ERnPGsNJb6+pPluu4Tu9a3xT+dlU+O
+ Q6KDnyWpuzaPkCXAUfuFrzVhYel+xpS+nVdAfpB3YVuf55CmU97iPg+Sr0EKUcmwTqPBxqbdt
+ 8cUI9f1YCWXc1Y8lNFOsNxRVUjp2SVkdGsYfJ9g1jxrnFfoIAC1bMAEIJfDi4tUo//GegUW/5
+ TUqxivmDQmEyrG8LkNxH9EuXibR5X+En9Hv8ZwAAhrwXM+JbryftedbP8/IrAlTTXUNxzM7UJ
+ Q15tmYeMxI1rXUdepnTS2OH1ESBlQf1LwZR1fDLz1OPFpAnRhxCit4F34WcYkiFi7mh8GinnV
+ IelQrvHeuFbhZUJ9S8jA==
 Sender: linux-m68k-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-Hi Mike,
-
-On Tue, Nov 5, 2019 at 8:16 AM Mike Rapoport <rppt@kernel.org> wrote:
-> From: Mike Rapoport <rppt@linux.ibm.com>
+On Tue, Oct 29, 2019 at 7:49 AM Christoph Hellwig <hch@lst.de> wrote:
 >
-> m68k has two or three levels of page tables and can use appropriate
-> pgtable-nopXd and folding of the upper layers.
->
-> Replace usage of include/asm-generic/4level-fixup.h and explicit
-> definitions of __PAGETABLE_PxD_FOLDED in m68k with
-> include/asm-generic/pgtable-nopmd.h for two-level configurations and with
-> include/asm-generic/pgtable-nopud.h for three-lelve configurations and
-> adjust page table manipulation macros and functions accordingly.
->
-> Signed-off-by: Mike Rapoport <rppt@linux.ibm.com>
-> Acked-by: Greg Ungerer <gerg@linux-m68k.org>
+> Whatever reason there is for the existence of ioremap_uc, and the fact
+> that it returns NULL by default on architectures with an MMU applies
+> equally to nommu architectures, so don't provide different defaults.
 
-Acked-by: Geert Uytterhoeven <geert@linux-m68k.org>
+Makes sense.
 
-One forgotten error message update below.
+> In practice the difference is meaningless as the only portable driver
+> that uses ioremap_uc is atyfb which probably doesn't show up on nommu
+> devices.
 
-> --- a/arch/m68k/mm/kmap.c
-> +++ b/arch/m68k/mm/kmap.c
-> @@ -258,18 +265,23 @@ void __iounmap(void *addr, unsigned long size)
->  {
->         unsigned long virtaddr = (unsigned long)addr;
->         pgd_t *pgd_dir;
-> +       p4d_t *p4d_dir;
-> +       pud_t *pud_dir;
->         pmd_t *pmd_dir;
->         pte_t *pte_dir;
->
->         while ((long)size > 0) {
->                 pgd_dir = pgd_offset_k(virtaddr);
-> -               if (pgd_bad(*pgd_dir)) {
-> -                       printk("iounmap: bad pgd(%08lx)\n", pgd_val(*pgd_dir));
-> -                       pgd_clear(pgd_dir);
-> +               p4d_dir = p4d_offset(pgd_dir, virtaddr);
-> +               pud_dir = pud_offset(p4d_dir, virtaddr);
-> +               if (pud_bad(*pud_dir)) {
-> +                       printk("iounmap: bad pgd(%08lx)\n", pud_val(*pud_dir));
 
-bad pud
 
-> +                       pud_clear(pud_dir);
->                         return;
->                 }
-> -               pmd_dir = pmd_offset(pgd_dir, virtaddr);
-> +               pmd_dir = pmd_offset(pud_dir, virtaddr);
->
-> +#if CONFIG_PGTABLE_LEVELS == 3
->                 if (CPU_IS_020_OR_030) {
->                         int pmd_off = (virtaddr/PTRTREESIZE) & 15;
->                         int pmd_type = pmd_dir->pmd[pmd_off] & _DESCTYPE_MASK;
+> +/*
+> + * ioremap_uc is special in that we do require an explicit architecture
+> + * implementation.  In general you do now want to use this function in a
+> + * driver and use plain ioremap, which is uncached by default.  Similarly
+> + * architectures should not implement it unless they have a very good
+> + * reason.
+> + */
+> +#ifndef ioremap_uc
+> +#define ioremap_uc ioremap_uc
+> +static inline void __iomem *ioremap_uc(phys_addr_t offset, size_t size)
+> +{
+> +       return NULL;
+> +}
+> +#endif
 
-Gr{oetje,eeting}s,
+Maybe we could move the definition into the atyfb driver itself?
 
-                        Geert
+As I understand it, the difference between ioremap()/ioremap_nocache()
+and ioremap_uc() only exists on pre-PAT x86-32 systems (i.e. 486, P5,
+Ppro, PII, K6, VIA C3), while on more modern systems (all non-x86,
+PentiumIII, Athlon, VIA C7)  those three are meant to be synonyms
+anyway.
 
--- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+      Arnd
