@@ -2,111 +2,80 @@ Return-Path: <SRS0=YN9G=ZD=vger.kernel.org=linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-6.9 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
+X-Spam-Status: No, score=-3.8 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
+	MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS autolearn=no
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B5219C43331
-	for <linux-m68k@archiver.kernel.org>; Mon, 11 Nov 2019 17:22:06 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2E340C43331
+	for <linux-m68k@archiver.kernel.org>; Mon, 11 Nov 2019 18:10:45 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 8940320656
-	for <linux-m68k@archiver.kernel.org>; Mon, 11 Nov 2019 17:22:06 +0000 (UTC)
-Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="Nm8mqSYz"
+	by mail.kernel.org (Postfix) with ESMTP id 0A687206C3
+	for <linux-m68k@archiver.kernel.org>; Mon, 11 Nov 2019 18:10:45 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727167AbfKKRWG (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Mon, 11 Nov 2019 12:22:06 -0500
-Received: from mail-pg1-f196.google.com ([209.85.215.196]:32912 "EHLO
-        mail-pg1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726897AbfKKRWE (ORCPT
+        id S1726903AbfKKSKo (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Mon, 11 Nov 2019 13:10:44 -0500
+Received: from mail-oi1-f196.google.com ([209.85.167.196]:44593 "EHLO
+        mail-oi1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726763AbfKKSKo (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Mon, 11 Nov 2019 12:22:04 -0500
-Received: by mail-pg1-f196.google.com with SMTP id h27so9874760pgn.0
-        for <linux-m68k@lists.linux-m68k.org>; Mon, 11 Nov 2019 09:22:02 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
-        bh=pqogoWx5m1B/3lE5KZVv4DafwpAuy45MHrtjmUfNbcI=;
-        b=Nm8mqSYzBtksad+d15VDCUxV23KogboujhWU4b1Ax4N7eS9d1k5c4alCNCDBHvB4H/
-         tVrcOE8hdbRwjpu2Q92RIEjBjoNpPW0GgEEggYGL9VWjV/samS6kUULXUxOmbOh+9hCd
-         Bd2cdE/5TNwCRdwW/wWNoXM0AahNpeOr/9CZU=
+        Mon, 11 Nov 2019 13:10:44 -0500
+Received: by mail-oi1-f196.google.com with SMTP id s71so12284994oih.11
+        for <linux-m68k@lists.linux-m68k.org>; Mon, 11 Nov 2019 10:10:44 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition;
-        bh=pqogoWx5m1B/3lE5KZVv4DafwpAuy45MHrtjmUfNbcI=;
-        b=CIPTzaZKkjjy1riWSLDI5H2yBFxk4mXglze4qokLoNDZdKIZVEES/vpINNZrCmWFVj
-         AcYOmZkCXshCd0zy6Vy7P2ti1k55InKTgZdlkiBHlvxh/Dw5veqO8SRJarWeW+ugXBaO
-         RPQwg5KfXctRkt2DE1Twe3m7avAxVLKWHS1EZhyyDwm93bVV2Nglg4eP/xWmPFrtfIt8
-         KQYK72AC2W52G025Pjzb6l2hUs2HrLgQHCJTBHj4UiqomopDdpYNLQ4Ebu8/BCXnMDtk
-         93cb8ebL6NxR0yPgufKI/ui6qrCiWEyi3k/+pbzKeUBFdgkP5HfneGi2eN6rtQ+wnerp
-         p9eg==
-X-Gm-Message-State: APjAAAXfuPLuRwxsW2oa+jy2WekSBz6UHK+pcByx8xxcO6W+0GN22xLv
-        SL+wfEX9+G+Nn9nqQSvbpibDww==
-X-Google-Smtp-Source: APXvYqw6i+HKkrhCfsmAGZPUXdi7v0AusuCR/HRg/FG9ckSgWnWiws7AvVKgK3oDRZQNIJMh6I+9sA==
-X-Received: by 2002:a62:5b83:: with SMTP id p125mr31460834pfb.237.1573492922081;
-        Mon, 11 Nov 2019 09:22:02 -0800 (PST)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id y138sm16517953pfb.174.2019.11.11.09.22.01
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 11 Nov 2019 09:22:01 -0800 (PST)
-Date:   Mon, 11 Nov 2019 09:22:00 -0800
-From:   Kees Cook <keescook@chromium.org>
-To:     Borislav Petkov <bp@suse.de>
-Cc:     Geert Uytterhoeven <geert@linux-m68k.org>,
-        linux-kernel@vger.kernel.org, linux-m68k@lists.linux-m68k.org
-Subject: [PATCH] m68k: Convert missed RODATA to RO_DATA
-Message-ID: <201911110920.5840E9AF1@keescook>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=U0dm5D6eillHbo+SYeBB7f0hErK0a+Kk33c8eTHG8H4=;
+        b=Pm0FpgtfiFzamisgovSZovNYSjJYA9ivp3rz5GyCi9Sa+85avbDZy2Iipb/hkOVCLr
+         /SpCMJ86fyZg0Q0GG6TP2gmBn4mkImdt4p63RLblyhl4t5sMRnLZmViHln5oXJgNMJ9M
+         b4Oe4Fi2FYj1igiIbIChM4H/q3jZlWvFZ4dxb1kFvvxfWA1nm0SiscvT6tDHaaxGYzVJ
+         xxr1VOx5oFpIVaG6Tt+IICKOlOaPxDV2FDwOVIuIVWkBKRzc/2OxEp27poLOD7Etu2fJ
+         aUoamnmEtOmXRGJQMOJgc81GcELo4HRKSZVbzgNZ8SHxXZ997SdiO5dNw6OFXEwGRWgw
+         sVVQ==
+X-Gm-Message-State: APjAAAXkqlEE3l0CI9fo6MYSZ4NZC/FcP1nc/eV/rsGb3BhoSZkaZOr/
+        D7o1j4QFSE2dDgjFc/jJxEcceqdy31/aACGAKoY=
+X-Google-Smtp-Source: APXvYqy5+K5Ca70nfdLzLpsHL1LP47SJMH7uBNWJHVoxDJt89nuKEY13OiKJzKEWbKRlo+wgCcXId9NnMQPQFowaWfc=
+X-Received: by 2002:aca:882:: with SMTP id 124mr284378oii.54.1573495843776;
+ Mon, 11 Nov 2019 10:10:43 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+References: <201911110920.5840E9AF1@keescook>
+In-Reply-To: <201911110920.5840E9AF1@keescook>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Mon, 11 Nov 2019 19:10:32 +0100
+Message-ID: <CAMuHMdX_EM0e=fN6udZsPfa-YGX7KkNEgCQtdC0M51LGmWOxzA@mail.gmail.com>
+Subject: Re: [PATCH] m68k: Convert missed RODATA to RO_DATA
+To:     Kees Cook <keescook@chromium.org>
+Cc:     Borislav Petkov <bp@suse.de>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-m68k <linux-m68k@lists.linux-m68k.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-m68k-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-I missed two instances of the old RODATA macro (seems I was searching
-for vmlinux.lds* not vmlinux*lds*). Fix both instances and double-check
-the entire tree for other "RODATA" instances in linker scripts.
+On Mon, Nov 11, 2019 at 6:22 PM Kees Cook <keescook@chromium.org> wrote:
+> I missed two instances of the old RODATA macro (seems I was searching
+> for vmlinux.lds* not vmlinux*lds*). Fix both instances and double-check
+> the entire tree for other "RODATA" instances in linker scripts.
+>
+> Reported-by: Geert Uytterhoeven <geert@linux-m68k.org>
+> Fixes: c82318254d15 ("vmlinux.lds.h: Replace RODATA with RO_DATA")
+> Signed-off-by: Kees Cook <keescook@chromium.org>
+> ---
+>  arch/m68k/kernel/vmlinux-std.lds  | 2 +-
+>  arch/m68k/kernel/vmlinux-sun3.lds | 2 +-
+>  2 files changed, 2 insertions(+), 2 deletions(-)
 
-Reported-by: Geert Uytterhoeven <geert@linux-m68k.org>
-Fixes: c82318254d15 ("vmlinux.lds.h: Replace RODATA with RO_DATA")
-Signed-off-by: Kees Cook <keescook@chromium.org>
----
- arch/m68k/kernel/vmlinux-std.lds  | 2 +-
- arch/m68k/kernel/vmlinux-sun3.lds | 2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
+Acked-by: Geert Uytterhoeven <geert@linux-m68k.org>
 
-diff --git a/arch/m68k/kernel/vmlinux-std.lds b/arch/m68k/kernel/vmlinux-std.lds
-index 6e7eb49ed985..4d33da4e7106 100644
---- a/arch/m68k/kernel/vmlinux-std.lds
-+++ b/arch/m68k/kernel/vmlinux-std.lds
-@@ -31,7 +31,7 @@ SECTIONS
- 
-   _sdata = .;			/* Start of data section */
- 
--  RODATA
-+  RO_DATA(4096)
- 
-   RW_DATA(16, PAGE_SIZE, THREAD_SIZE)
- 
-diff --git a/arch/m68k/kernel/vmlinux-sun3.lds b/arch/m68k/kernel/vmlinux-sun3.lds
-index 1a0ad6b6dd8c..87d9f4d08f65 100644
---- a/arch/m68k/kernel/vmlinux-sun3.lds
-+++ b/arch/m68k/kernel/vmlinux-sun3.lds
-@@ -24,7 +24,7 @@ SECTIONS
- 	*(.fixup)
- 	*(.gnu.warning)
- 	} :text = 0x4e75
--	RODATA
-+	RO_DATA(4096)
- 
-   _etext = .;			/* End of text section */
- 
--- 
-2.17.1
+Gr{oetje,eeting}s,
 
+                        Geert
 
 -- 
-Kees Cook
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
