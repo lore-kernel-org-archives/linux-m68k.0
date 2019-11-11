@@ -1,109 +1,105 @@
-Return-Path: <SRS0=NQ8B=ZC=vger.kernel.org=linux-m68k-owner@kernel.org>
+Return-Path: <SRS0=YN9G=ZD=vger.kernel.org=linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.3 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_2 autolearn=no
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-0.8 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 7393AC43331
-	for <linux-m68k@archiver.kernel.org>; Sun, 10 Nov 2019 19:35:26 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 52E5DC43331
+	for <linux-m68k@archiver.kernel.org>; Mon, 11 Nov 2019 08:47:24 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 4833C2077C
-	for <linux-m68k@archiver.kernel.org>; Sun, 10 Nov 2019 19:35:26 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 27B9B20869
+	for <linux-m68k@archiver.kernel.org>; Mon, 11 Nov 2019 08:47:24 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726800AbfKJTfZ (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Sun, 10 Nov 2019 14:35:25 -0500
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:41334 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726778AbfKJTfZ (ORCPT
+        id S1726845AbfKKIrX (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Mon, 11 Nov 2019 03:47:23 -0500
+Received: from smtpq4.tb.mail.iss.as9143.net ([212.54.42.167]:33998 "EHLO
+        smtpq4.tb.mail.iss.as9143.net" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726939AbfKKIrX (ORCPT
         <rfc822;linux-m68k@vger.kernel.org>);
-        Sun, 10 Nov 2019 14:35:25 -0500
-Received: from pps.filterd (m0098393.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.27/8.16.0.27) with SMTP id xAAJWegn062982;
-        Sun, 10 Nov 2019 14:35:17 -0500
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 2w6be838yw-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Sun, 10 Nov 2019 14:35:17 -0500
-Received: from m0098393.ppops.net (m0098393.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.27/8.16.0.27) with SMTP id xAAJXEfi064039;
-        Sun, 10 Nov 2019 14:35:16 -0500
-Received: from ppma02dal.us.ibm.com (a.bd.3ea9.ip4.static.sl-reverse.com [169.62.189.10])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 2w6be838yn-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Sun, 10 Nov 2019 14:35:16 -0500
-Received: from pps.filterd (ppma02dal.us.ibm.com [127.0.0.1])
-        by ppma02dal.us.ibm.com (8.16.0.27/8.16.0.27) with SMTP id xAAJP597011453;
-        Sun, 10 Nov 2019 19:35:15 GMT
-Received: from b01cxnp22036.gho.pok.ibm.com (b01cxnp22036.gho.pok.ibm.com [9.57.198.26])
-        by ppma02dal.us.ibm.com with ESMTP id 2w5n35j5x2-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Sun, 10 Nov 2019 19:35:15 +0000
-Received: from b01ledav004.gho.pok.ibm.com (b01ledav004.gho.pok.ibm.com [9.57.199.109])
-        by b01cxnp22036.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id xAAJZFbC36897122
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Sun, 10 Nov 2019 19:35:15 GMT
-Received: from b01ledav004.gho.pok.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id F0CC6112062;
-        Sun, 10 Nov 2019 19:35:14 +0000 (GMT)
-Received: from b01ledav004.gho.pok.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 20BA7112063;
-        Sun, 10 Nov 2019 19:35:14 +0000 (GMT)
-Received: from jarvis.ext.hansenpartnership.com (unknown [9.85.190.120])
-        by b01ledav004.gho.pok.ibm.com (Postfix) with ESMTP;
-        Sun, 10 Nov 2019 19:35:13 +0000 (GMT)
-Message-ID: <1573414513.3230.4.camel@linux.ibm.com>
-Subject: Re: [PATCH] zorro_esp: increase maximum dma length to 65536 bytes
-From:   James Bottomley <jejb@linux.ibm.com>
-To:     Michael Schmitz <schmitzmic@gmail.com>,
-        Kars de Jong <jongk@linux-m68k.org>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>
-Cc:     linux-scsi@vger.kernel.org, linux-m68k@vger.kernel.org
-Date:   Sun, 10 Nov 2019 11:35:13 -0800
-In-Reply-To: <6b914b12-cbc7-6fe6-7cba-3e89b2f6f19b@gmail.com>
+        Mon, 11 Nov 2019 03:47:23 -0500
+Received: from [212.54.42.137] (helo=smtp6.tb.mail.iss.as9143.net)
+        by smtpq4.tb.mail.iss.as9143.net with esmtps (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.90_1)
+        (envelope-from <jongk@linux-m68k.org>)
+        id 1iU5M1-0001mH-3w; Mon, 11 Nov 2019 09:47:21 +0100
+Received: from mail-wr1-f45.google.com ([209.85.221.45])
+        by smtp6.tb.mail.iss.as9143.net with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.90_1)
+        (envelope-from <jongk@linux-m68k.org>)
+        id 1iU5M0-0001uS-W9; Mon, 11 Nov 2019 09:47:21 +0100
+Received: by mail-wr1-f45.google.com with SMTP id z10so8316903wrs.12;
+        Mon, 11 Nov 2019 00:47:20 -0800 (PST)
+X-Gm-Message-State: APjAAAVdkduD1YyplcDfELa+cQEQJ4THU49SR+rkwsevBTlZZn5dOknh
+        zxsh1WrQkB7G2O62jHIJaAYCOlCRPxIbdhNg1Bo=
+X-Google-Smtp-Source: APXvYqxytncLcfi7aeYlcB1IxU7tMFvoLFaFecX1/Na+heYEi6TijmtyvmgPz9vDvICRH+4e7UxekGqVxzWn/OJPiJE=
+X-Received: by 2002:a5d:4146:: with SMTP id c6mr18862537wrq.250.1573462040680;
+ Mon, 11 Nov 2019 00:47:20 -0800 (PST)
+MIME-Version: 1.0
 References: <CACz-3rh9ZCyU1825yU8xxty5BGrwFhpbjKNoWnn0mGiv_h2Kag@mail.gmail.com>
-         <20191109191400.8999-1-jongk@linux-m68k.org>
-         <1573330351.3650.4.camel@linux.ibm.com>
-         <6b914b12-cbc7-6fe6-7cba-3e89b2f6f19b@gmail.com>
+ <20191109191400.8999-1-jongk@linux-m68k.org> <1573330351.3650.4.camel@linux.ibm.com>
+ <6b914b12-cbc7-6fe6-7cba-3e89b2f6f19b@gmail.com> <CACz-3rjUh8tcShX5OPi+37JvF8PqG-8AEf5uMQHjMynSaVa1gw@mail.gmail.com>
+ <8c356175-e490-68c0-6114-5192eedc3a4f@gmail.com>
+In-Reply-To: <8c356175-e490-68c0-6114-5192eedc3a4f@gmail.com>
+From:   Kars de Jong <jongk@linux-m68k.org>
+Date:   Mon, 11 Nov 2019 09:47:09 +0100
+X-Gmail-Original-Message-ID: <CACz-3riZcAUEawL7BaDrVbzUh5VzsXmYSazRTju5_U=LhO6c3g@mail.gmail.com>
+Message-ID: <CACz-3riZcAUEawL7BaDrVbzUh5VzsXmYSazRTju5_U=LhO6c3g@mail.gmail.com>
+Subject: Re: [PATCH] zorro_esp: increase maximum dma length to 65536 bytes
+To:     Michael Schmitz <schmitzmic@gmail.com>
+Cc:     James Bottomley <jejb@linux.ibm.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        linux-scsi@vger.kernel.org, linux-m68k@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.26.6 
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:,, definitions=2019-11-10_05:,,
- signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
- malwarescore=0 suspectscore=0 phishscore=0 bulkscore=0 spamscore=0
- clxscore=1015 lowpriorityscore=0 mlxscore=0 impostorscore=0
- mlxlogscore=828 adultscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.0.1-1910280000 definitions=main-1911100194
+X-SourceIP: 209.85.221.45
+X-Authenticated-Sender: karsdejong@home.nl (via SMTP)
+X-Ziggo-spambar: /
+X-Ziggo-spamscore: 0.0
+X-Ziggo-spamreport: CMAE Analysis: v=2.3 cv=WMwBoUkR c=1 sm=1 tr=0 a=9+rZDBEiDlHhcck0kWbJtElFXBc=:19 a=jpOVt7BSZ2e4Z31A5e1TngXxSK0=:19 a=IkcTkHD0fZMA:10 a=MeAgGD-zjQ4A:10 a=pGLkceISAAAA:8 a=xNf9USuDAAAA:8 a=hJ9ZtYj-RI1EAQISWCsA:9 a=EE2vHBecVcuu-u5a:21 a=SQQkrWvguoklZZ3D:21 a=QEXdDO2ut3YA:10 a=SEwjQc04WA-l_NiBhQ7s:22
+X-Ziggo-Spam-Status: No
 Sender: linux-m68k-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-On Sun, 2019-11-10 at 15:36 +1300, Michael Schmitz wrote:
-> All of the old board-specific drivers used a max transfer length of 
-> 0x1000000, only the fastlane driver used 0xfffc. That lower limit
-> might be due to a DMA limitation on the fastlane board. We could
-> accommodate  the different limit for this board by using a board-
-> specific  dma_length_limit() callback...
+Hi Michael,
 
-Sure, that implies the minimum dma burst length is 4 bytes ...
+Op zo 10 nov. 2019 om 20:26 schreef Michael Schmitz <schmitzmic@gmail.com>:
+> >>> case for any of the cards the zorro_esp drives, it might be better to
+> >>> lower the max length to 61440 (64k-4k) so the residual is a page.
+> >> For the benefit of keeping the code simple, and avoid retesting the
+> >> fastlane board, that might indeed be the better solution.
+> >
+> > But it's slower... :-P
+> >
+> I wonder what max. transfer size had been used so far, in the majority
+> of cases. I hadn't observed this bug in my tests of the ESP driver on
+> elgar. So it might not matter so much in practice.
 
-> > case for any of the cards the zorro_esp drives, it might be better
-> > to lower the max length to 61440 (64k-4k) so the residual is a
-> > page.
-> 
-> For the benefit of keeping the code simple, and avoid retesting the 
-> fastlane board, that might indeed be the better solution.
+Does Elgar indeed have a Blizzard 2060 as
+https://wiki.debian.org/M68k/Autobuilder says?
+If it does, it does surprise me that it works, since the DMA engine
+appears to be very much like the one
+of the Blizzard 1230 (including the >> 1 of the address).
+Even when just loading bash on my system, there were many
+65535-and-then-1 byte transfers.
+It may of course depend on how fragmented your disk is.
 
-... which means you don't have to lower the limit by 4k as I suggested,
- because I was being incredibly conservative about what the dma burst
-length might be, just use 0xfffc as the default.  I think raising to
-0x1000000 for boards which can support it is fine too if you want to
-add the extra logic to the driver.
+> > Also, I may be adding another board-specific version for the Blizzard
+> > 12x0 IV to enable 24-bit transfers, like the am53c974 driver does, in
+> > a later patch.
+>
+> If we can differentiate between the Mark IV board and the Mark II board
+> in a reliable way, fine. I can't remember whether I've had a report on
+> that ever.
 
-James
+They have a different Zorro ID, so that should not be a problem.
+By the way, do you remember why you chose to not use the full Zorro
+IDs for the various SCSI boards asdefined in zorro_ids.h but only
+the manufacturer defines?
 
+
+Kind regards,
+
+Kars.
