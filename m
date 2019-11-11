@@ -6,38 +6,38 @@ X-Spam-Status: No, score=-3.8 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
 	MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS autolearn=no
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 03438C43331
-	for <linux-m68k@archiver.kernel.org>; Mon, 11 Nov 2019 10:34:10 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id EAC24C43331
+	for <linux-m68k@archiver.kernel.org>; Mon, 11 Nov 2019 10:36:41 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id D72D9214DB
-	for <linux-m68k@archiver.kernel.org>; Mon, 11 Nov 2019 10:34:09 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id C5CA920856
+	for <linux-m68k@archiver.kernel.org>; Mon, 11 Nov 2019 10:36:41 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726791AbfKKKeJ (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Mon, 11 Nov 2019 05:34:09 -0500
-Received: from mout.kundenserver.de ([212.227.126.187]:40081 "EHLO
+        id S1726889AbfKKKgl (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Mon, 11 Nov 2019 05:36:41 -0500
+Received: from mout.kundenserver.de ([212.227.126.134]:52971 "EHLO
         mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726770AbfKKKeJ (ORCPT
+        with ESMTP id S1726768AbfKKKgl (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Mon, 11 Nov 2019 05:34:09 -0500
-Received: from mail-qk1-f182.google.com ([209.85.222.182]) by
+        Mon, 11 Nov 2019 05:36:41 -0500
+Received: from mail-qv1-f54.google.com ([209.85.219.54]) by
  mrelayeu.kundenserver.de (mreue009 [212.227.15.129]) with ESMTPSA (Nemesis)
- id 1M4Je5-1iTpuD02zp-000KnL for <linux-m68k@lists.linux-m68k.org>; Mon, 11
- Nov 2019 11:34:08 +0100
-Received: by mail-qk1-f182.google.com with SMTP id 205so10730370qkk.1
-        for <linux-m68k@lists.linux-m68k.org>; Mon, 11 Nov 2019 02:34:07 -0800 (PST)
-X-Gm-Message-State: APjAAAWzMJYbndcKlwOfgNUKdqiHCe+J592haZESVZqXoc/K5i2RKIur
-        EKEezPKQ0JCkrWQCeN/nLFWDOcTUZEM0odYE+fE=
-X-Google-Smtp-Source: APXvYqzESzY62F14rsigxKLBXM91nKVjfO+E517KtV1rTG3fdeRCW+MOilAesC4Pz85XDKVkv4qCW/mxeD7p5CII2Ks=
-X-Received: by 2002:a37:4f13:: with SMTP id d19mr9320005qkb.138.1573468446947;
- Mon, 11 Nov 2019 02:34:06 -0800 (PST)
+ id 1N1wdd-1hjnpO3MuP-012JBt for <linux-m68k@lists.linux-m68k.org>; Mon, 11
+ Nov 2019 11:36:40 +0100
+Received: by mail-qv1-f54.google.com with SMTP id x14so4663368qvu.0
+        for <linux-m68k@lists.linux-m68k.org>; Mon, 11 Nov 2019 02:36:39 -0800 (PST)
+X-Gm-Message-State: APjAAAV9EZ536I13EMplKppg44NHBn6LCLyj/aTmjxnQwB8D8U6Y7WqK
+        G5SGwBIWGh7QlrlwsIvO0tMGpYa5Xbz+LeKgkiY=
+X-Google-Smtp-Source: APXvYqwG9UjDI7BT4/zArLXJROi41Jfl0ozvIqGD8Z6sQp9Psd5jWuuWMeGtnWBnULPRq767xF7AmE4x/PyrFGraS9U=
+X-Received: by 2002:a0c:a9cc:: with SMTP id c12mr4580319qvb.222.1573468598676;
+ Mon, 11 Nov 2019 02:36:38 -0800 (PST)
 MIME-Version: 1.0
-References: <20191029064834.23438-1-hch@lst.de> <20191029064834.23438-2-hch@lst.de>
-In-Reply-To: <20191029064834.23438-2-hch@lst.de>
+References: <20191029064834.23438-1-hch@lst.de> <20191029064834.23438-4-hch@lst.de>
+In-Reply-To: <20191029064834.23438-4-hch@lst.de>
 From:   Arnd Bergmann <arnd@arndb.de>
-Date:   Mon, 11 Nov 2019 11:33:50 +0100
-X-Gmail-Original-Message-ID: <CAK8P3a3xk-mQic84Cv7CYhm2DqDCyu69+qH=i8M=JoE3xkpM=g@mail.gmail.com>
-Message-ID: <CAK8P3a3xk-mQic84Cv7CYhm2DqDCyu69+qH=i8M=JoE3xkpM=g@mail.gmail.com>
-Subject: Re: [PATCH 01/21] arm: remove ioremap_cached
+Date:   Mon, 11 Nov 2019 11:36:22 +0100
+X-Gmail-Original-Message-ID: <CAK8P3a3k2KRyhCy4OWJkToNBiw_mw0e_A=Ta6UANMMF3EXnhmA@mail.gmail.com>
+Message-ID: <CAK8P3a3k2KRyhCy4OWJkToNBiw_mw0e_A=Ta6UANMMF3EXnhmA@mail.gmail.com>
+Subject: Re: [PATCH 03/21] ia64: rename ioremap_nocache to ioremap_uc
 To:     Christoph Hellwig <hch@lst.de>
 Cc:     Guo Ren <guoren@kernel.org>, Michal Simek <monstr@monstr.eu>,
         Greentime Hu <green.hu@gmail.com>,
@@ -64,24 +64,24 @@ Cc:     Guo Ren <guoren@kernel.org>, Michal Simek <monstr@monstr.eu>,
         linux-arch <linux-arch@vger.kernel.org>,
         "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
-X-Provags-ID: V03:K1:xka6P2PSJXySnLWy14QzUx4XSXVAKQy3BBCItgnM2v6hwnXfoMa
- 5GqwSIbl+QNynMeWIXJCnrLIHfwSa25TrtOy+FuLojSU1PnLndpUpbhjpUSkvM+VSC9UMNh
- 3X7aP8bUc+9jxuDqlCrmC1J6nL6HDYLbz2sXVZO8zYEkCdN7huNfkRV1TQEezKzJ6oB/weg
- uNPk2GRJ7NLXipCp5Nb2g==
-X-UI-Out-Filterresults: notjunk:1;V03:K0:zNEE5yesyQI=:FJSCVuK3JOEWi5ZiWGGsOf
- o54A6diUGDVuje8dVw0MIEzcHKwGuyOU+OM2qgMkwLSsuHCV8YsJUC6Q8W0eesdpZ+zxqfJRx
- KcDgufs0hbEyJHsRmW3KNIT1fdoT2zIZTQtBnHSCTuJayU5C4WEdo1nNEhSN6gORyuaerql4v
- qcv6dTRWhqxX7KwG2rXMpbcvdrE6Lffnh6FjwZ047s4OXNamSfqSUpnMRzGmwqKun0GSvee1e
- Ee6CHGOefrlm1otWVIJnshCofO8oREPbIpk8sVNy13htX5Bgxbnee8urOmyVpwHz47jAYyx0u
- D0hl9su3OSERDlEj9xEhkM8dlgxXlGtv2iDgw+S5fhxpp1co13Z9JOurex9Sp8ab371LthOhZ
- 5RM/XhyhGgF3U1GEXd7ZwstOYHj9Ful/iQELJwWvvw3Nbws/wL9NnhlHBFXYvL/Mys21HHHRH
- f5tMSztb+xaauDM8UoWpPxZw9e7T+yDw61h9vDhQSkqwcQiVaS0l19Xc4uIEp84rImi33rAo9
- xnYD0DunGpkZEydt1QeGDTNU5C+bRlOtGkgjEhtk2emont/xGsuoMbZu2yKws/EuvFD9hUHN0
- aGFg84lBx/pGTvxLGVnT+5fJ5oz7pulZdm4YSVv6onesbwD+p4MPi7pIx+n6Xp7Q3UREdIDlS
- JkQhnk3WqDHmguOu4VlqKo4eUu3LX9zDHnoFfdGuVL/5JzQUAHpEvcWWIcuaGsmJRik7La6qb
- Q+rljYSvVYomljq26fxSbpmPHeuvedNn3z4Uddv2v+12fHev8H9JExaC+uCZKGsWdT+adEWTs
- KIFAilV6xizxGhQzpX0AP1ErwEGQ6F1zxyHRGlLs7yUum1mp1bgCsGMW5HhM+tqyO9stHH7Fk
- M6FjVRFw7XM/JahkCTPw==
+X-Provags-ID: V03:K1:w1jGn7lHZkqiLgxhFnkWq+Jjl7ZmkYaHXTcmg5Rdnib/W0MyHf7
+ KEwCcsyqqxZMox2GxPeWWcJhvFY9cAOt12VFnRmuQpjjq6bfBme9w87tFHPrSMD+8Tn7yZE
+ AakZtegx8I5kSgUzjiD/ufKNaVIW3mLGtyTi8VtztKLlX+EyaQ5xePBmPXe3NR8y2YJX5L+
+ /4x2s9TbSziNZFKorZBdA==
+X-UI-Out-Filterresults: notjunk:1;V03:K0:w5djahVRi2s=:352epw0sn0X7T4lZoZpU83
+ s4d7FGS7hOpznr+o0erkbQ1M6U+Fh2xziN2boGmurZboOKw2Td4T6Zt7FDKTZBGC6tykpeF8Q
+ n+npsGxTEs+4nWDyvm/C3g2OYU6xh05bIl7WjT4gTob9JZVSATEDAz0XeO1Dyj5r2zqPs3KAh
+ BMSLPP5jkqPd/klsiehmAPXLFFf99aB0iBkUFQw8qeC0qy4E2j4fpTRwOS36pWRnvA6Gl6SZ2
+ rlMyv/t6rRlf0QfQlhyJOQL9D9zx+rnzqu3OjjANDhEVYf6yDdTJ8A2K95+FAM9R020ir/+//
+ brBMyHsa325J3rZyzhgnNPvUB8Nu9yZ/iDMjAexIqG3l5/dgr9tqL+EEHWW0Fwtr4qBtTchXr
+ 5j79/Lvpg6CuYnm1rQwuyprXW16qK67wtMTpKb4aV9XH+qGx5DLO+2QdrEqIRUTwfOfszF5IL
+ WZbHewRpEASYkSGpa8buIKU4oxSQY7GZLU9XrN3R2b9a4QuzaFxqau+chTNvj2+70ZSYzZFs9
+ 0W+yb997HyB8iDB4LX0znGL0l9nMYz8OYTP9oGGoQ2qp1sLzUAeq+znsAOadlqhKJfNh4dpWe
+ hM58FOQY5nOuznOj8IvyoslliEkBM8ueUbkNuARbJxZURep8P1QmMaebj3IkCqHibELuUN1G4
+ N57oXmgHCWJyng0QnEmoISK1aGBD7Vfqdi/iyr4ZXrfvUpVHsaThmEZ/4b2gXaIX2ilgoo/GU
+ N3emVHO8J/u5Vo3sXTZpSzeGFAIfL348afJKDF9crP2yOVz6jRamS5Xe+GX81qTos3HpUrB44
+ XqPhYWoOfybizN67nrt178DALTIS29pe25Ad1LdxiNWC89PTtDklBYz4thxG9FL/CEgG89+uh
+ vTDAUmSkzYnb9Lpk8gpw==
 Sender: linux-m68k-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
@@ -89,8 +89,18 @@ X-Mailing-List: linux-m68k@vger.kernel.org
 
 On Tue, Oct 29, 2019 at 7:48 AM Christoph Hellwig <hch@lst.de> wrote:
 >
-> No users of ioremap_cached are left, remove it.
+> On ia64 ioremap_nocache fails if attributes don't match.  Not other
+> architectures does this, and we plan to get rid of ioremap_nocache.
+> So get rid of the special semantics and define ioremap_nocache in
+> terms of ioremap as no portable driver could rely on the behavior
+> anyway.
+>
+> However x86 implements ioremap_uc in a similar way as the ia64
+> version of ioremap_nocache, in that it ignores the firmware tables.
+> Switch ia64 to override ioremap_uc instead.
 >
 > Signed-off-by: Christoph Hellwig <hch@lst.de>
+
+Good idea,
 
 Reviewed-by: Arnd Bergmann <arnd@arndb.de>
