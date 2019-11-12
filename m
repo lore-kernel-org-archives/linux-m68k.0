@@ -2,185 +2,248 @@ Return-Path: <SRS0=Rs50=ZE=vger.kernel.org=linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.8 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,
-	URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-6.7 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 22112C43331
-	for <linux-m68k@archiver.kernel.org>; Tue, 12 Nov 2019 18:58:45 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A411AC43331
+	for <linux-m68k@archiver.kernel.org>; Tue, 12 Nov 2019 08:52:09 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 021F62067B
-	for <linux-m68k@archiver.kernel.org>; Tue, 12 Nov 2019 18:58:45 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 732ED21783
+	for <linux-m68k@archiver.kernel.org>; Tue, 12 Nov 2019 08:52:09 +0000 (UTC)
+Authentication-Results: mail.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="PF/S6iWT"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727143AbfKLS6o (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Tue, 12 Nov 2019 13:58:44 -0500
-Received: from mail-wm1-f68.google.com ([209.85.128.68]:55338 "EHLO
-        mail-wm1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726981AbfKLS6o (ORCPT
-        <rfc822;linux-m68k@vger.kernel.org>); Tue, 12 Nov 2019 13:58:44 -0500
-Received: by mail-wm1-f68.google.com with SMTP id b11so4411633wmb.5;
-        Tue, 12 Nov 2019 10:58:42 -0800 (PST)
+        id S1727108AbfKLIwJ (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Tue, 12 Nov 2019 03:52:09 -0500
+Received: from mail-qv1-f67.google.com ([209.85.219.67]:44248 "EHLO
+        mail-qv1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727126AbfKLIwI (ORCPT
+        <rfc822;linux-m68k@lists.linux-m68k.org>);
+        Tue, 12 Nov 2019 03:52:08 -0500
+Received: by mail-qv1-f67.google.com with SMTP id d3so4466334qvs.11
+        for <linux-m68k@lists.linux-m68k.org>; Tue, 12 Nov 2019 00:52:08 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=cROzNmdYxisqWoueYc9W+eIG2Mx3qlHP7NfXN3GI/FQ=;
+        b=PF/S6iWT4CYos5f/Qxiyrj819yA9DztoVnQngjCM7ST0A6/xHzOKuFza6aEAOEIHFD
+         IRs3g/sDkmOZsVUg5BfLLNbhxSMsVVb1DEnttjxKmX81P3vu2Wx0WRs/PKqDolQ/IqMK
+         uPtjTNahNUl/KH+yjsZZF+CoOeh+jZqwG7uXGo3nhOFae7Ampy0721WlrVLudKDpbQ6w
+         Ne05cDDAK3nINRCW8InLefN68zNgFYrAuL9YQ5NnpKcJktjb30Vy1+p0A29rUFLtn67e
+         CyPwRK92ARrt+aagj3u2Ed/rcJMFZLBJNDyZ8A+QOoxqRdIwXIhdl4nE8zBZgMbMWl9y
+         KZDA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references;
-        bh=3OO4WZGCZydRNY1ypOCAAzcwVcARXrif87wftoOPaKA=;
-        b=k6nqT8lTKfLX9fjRZ3Fbl5urH/2EB2d557CiA5v+srIT4Em9V6tD36Vk6KKT8sQlNm
-         qwjwtgwhKxEm0uURBmkpTmlfs2/YXfQcnZw7opJJfK36BMNEM8gAtpDR+DQp3GAe5sOU
-         vKHKj6KAK+OitC+pip2i1upENuzlMUzv/0TWPvmt4v8+k6p5iE/PLTtupymUhdN+aOTx
-         wHOWzYiCuYIKZoIXZxbKVRjErnJLCGhpGz3knDhE4jjgtPYHwGu7/GszFHMVetH1Fwkw
-         cA3a1JmPH65PFBHksq7SnXqD2GNhzh2r4F6EHBdLORFrpMRUeFzEkLm4frRMzeXX1TUL
-         SCoA==
-X-Gm-Message-State: APjAAAU9khfKADCxTYVSLX1DUCzS9JAM9vAj/3zdz5zZ7jdon3tuL9/b
-        m6VK94L2PyLNv50q2oTXhGM=
-X-Google-Smtp-Source: APXvYqyMtt0axZ54QJC9QkJXeZoqWjWgwFymqOD5FM9j/gcoPTqaTS3rsnEjZujbgdaTyoPjJ98u2w==
-X-Received: by 2002:a05:600c:2909:: with SMTP id i9mr5295474wmd.39.1573585121320;
-        Tue, 12 Nov 2019 10:58:41 -0800 (PST)
-Received: from localhost.localdomain (82-75-169-199.cable.dynamic.v4.ziggo.nl. [82.75.169.199])
-        by smtp.gmail.com with ESMTPSA id u18sm13017109wrp.14.2019.11.12.10.58.40
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 12 Nov 2019 10:58:40 -0800 (PST)
-From:   Kars de Jong <jongk@linux-m68k.org>
-To:     "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Hannes Reinecke <hare@suse.com>
-Cc:     linux-scsi@vger.kernel.org, linux-m68k@vger.kernel.org,
-        schmitzmic@gmail.com, fthain@telegraphics.com.au,
-        Kars de Jong <jongk@linux-m68k.org>
-Subject: [PATCH 2/2] esp_scsi: Add support for FSC chip
-Date:   Tue, 12 Nov 2019 19:57:10 +0100
-Message-Id: <20191112185710.23988-3-jongk@linux-m68k.org>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20191112185710.23988-1-jongk@linux-m68k.org>
-References: <20191029220503.7553-1-jongk@linux-m68k.org>
- <20191112185710.23988-1-jongk@linux-m68k.org>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=cROzNmdYxisqWoueYc9W+eIG2Mx3qlHP7NfXN3GI/FQ=;
+        b=g+mcYZu3jkxaP1FCnjL0WhssuDlbZPMQlEFPxLw2eBlzZefvJ73CNrd12/7rkKZN+n
+         HKNFX9RoesLBS2otd/6pA6v6+1IpoBKpJcH+fa2V2MiuXG2cG6NxKZb8KWaXAp6MhlPT
+         pGeYVHV8klIe4Ecx3JH03LxF9x0hW4e4vUMfZw21JkFqKL8Ck229dpt0/Z8RgXWgoIOL
+         /Is/DLn1KXKI1RjQuyh0h+V0rpfv5kLZLuPoZut/RbqU18NFNagh/q/d/SeQ6dv/6lrU
+         nU5k7Q0LPqkstEfIpxM1WhGLl/fJBUaH/RB7CRN5gtWuevv4CMfnD5zXNXfVmMWNEoso
+         cThw==
+X-Gm-Message-State: APjAAAXOFQk/um3WJZDSuS8mquZ7+a+BxFS4G1t56EVCWln4wGfNEGz7
+        i60z1E9K5zmfPNaXKO8tw0zyUkH5G99pcUX96t0=
+X-Google-Smtp-Source: APXvYqx6NKc2ScCo7khfKTbduCZ3tXXPnpOsLDXFoJ5p/wlTm7Nj9aXW2BAPakV8QIjz95Uh9EuSyoZxwk73743by2g=
+X-Received: by 2002:a0c:d0e1:: with SMTP id b30mr27967066qvh.197.1573548727413;
+ Tue, 12 Nov 2019 00:52:07 -0800 (PST)
+MIME-Version: 1.0
+References: <20191029064834.23438-1-hch@lst.de> <20191029064834.23438-20-hch@lst.de>
+In-Reply-To: <20191029064834.23438-20-hch@lst.de>
+From:   Greentime Hu <green.hu@gmail.com>
+Date:   Tue, 12 Nov 2019 16:51:29 +0800
+Message-ID: <CAEbi=3c58Pb=Q3BqeTLhEK8OsdTpbD5tAe6VcGOC7JBWbTjetQ@mail.gmail.com>
+Subject: Re: [PATCH 19/21] nds32: use generic ioremap
+To:     Christoph Hellwig <hch@lst.de>, Nickhu <nickhu@andestech.com>,
+        alankao@andestech.com
+Cc:     Arnd Bergmann <arnd@arndb.de>, Guo Ren <guoren@kernel.org>,
+        Michal Simek <monstr@monstr.eu>,
+        Vincent Chen <deanbo422@gmail.com>,
+        Guan Xuetao <gxt@pku.edu.cn>, x86@kernel.org,
+        linux-alpha@vger.kernel.org, linux-snps-arc@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-hexagon@vger.kernel.org, linux-ia64@vger.kernel.org,
+        linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org,
+        nios2-dev@lists.rocketboards.org, openrisc@lists.librecores.org,
+        linux-parisc@vger.kernel.org, linux-riscv@lists.infradead.org,
+        linux-s390 <linux-s390@vger.kernel.org>,
+        linux-sh@vger.kernel.org, sparclinux <sparclinux@vger.kernel.org>,
+        linux-xtensa@linux-xtensa.org, linux-mtd@lists.infradead.org,
+        linux-arch <linux-arch@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-m68k-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-The FSC (NCR53CF9x-2 / SYM53CF9x-2) has a different family code than QLogic
-or Emulex parts. This caused it to be detected as a FAS100A.
+Hi,
 
-Unforunately, this meant the configuration of the CONFIG3 register was
-incorrect. This causes data transfer issues with FAST-SCSI targets.
+Christoph Hellwig <hch@lst.de> =E6=96=BC 2019=E5=B9=B410=E6=9C=8829=E6=97=
+=A5 =E9=80=B1=E4=BA=8C =E4=B8=8B=E5=8D=882:49=E5=AF=AB=E9=81=93=EF=BC=9A
+>
+> Use the generic ioremap_prot and iounmap helpers.
+>
+> Note that the io.h include in pgtable.h had to be removed to not create
+> an include loop.  As far as I can tell there was no need for it to
+> start with.
+>
+> Signed-off-by: Christoph Hellwig <hch@lst.de>
+> ---
+>  arch/nds32/Kconfig               |  1 +
+>  arch/nds32/include/asm/io.h      |  3 +-
+>  arch/nds32/include/asm/pgtable.h |  4 ++-
+>  arch/nds32/mm/Makefile           |  3 +-
+>  arch/nds32/mm/ioremap.c          | 62 --------------------------------
+>  5 files changed, 6 insertions(+), 67 deletions(-)
+>  delete mode 100644 arch/nds32/mm/ioremap.c
+>
+> diff --git a/arch/nds32/Kconfig b/arch/nds32/Kconfig
+> index fbd68329737f..12c06a833b7c 100644
+> --- a/arch/nds32/Kconfig
+> +++ b/arch/nds32/Kconfig
+> @@ -20,6 +20,7 @@ config NDS32
+>         select GENERIC_CLOCKEVENTS
+>         select GENERIC_IRQ_CHIP
+>         select GENERIC_IRQ_SHOW
+> +       select GENERIC_IOREMAP
+>         select GENERIC_LIB_ASHLDI3
+>         select GENERIC_LIB_ASHRDI3
+>         select GENERIC_LIB_CMPDI2
+> diff --git a/arch/nds32/include/asm/io.h b/arch/nds32/include/asm/io.h
+> index fb0e8a24c7af..e57378d04006 100644
+> --- a/arch/nds32/include/asm/io.h
+> +++ b/arch/nds32/include/asm/io.h
+> @@ -6,8 +6,6 @@
+>
+>  #include <linux/types.h>
+>
+> -void __iomem *ioremap(phys_addr_t phys_addr, size_t size);
+> -extern void iounmap(volatile void __iomem *addr);
+>  #define __raw_writeb __raw_writeb
+>  static inline void __raw_writeb(u8 val, volatile void __iomem *addr)
+>  {
+> @@ -80,6 +78,7 @@ static inline u32 __raw_readl(const volatile void __iom=
+em *addr)
+>  #define writeb(v,c)    ({ __iowmb(); writeb_relaxed((v),(c)); })
+>  #define writew(v,c)    ({ __iowmb(); writew_relaxed((v),(c)); })
+>  #define writel(v,c)    ({ __iowmb(); writel_relaxed((v),(c)); })
+> +
+>  #include <asm-generic/io.h>
+>
+>  #endif /* __ASM_NDS32_IO_H */
+> diff --git a/arch/nds32/include/asm/pgtable.h b/arch/nds32/include/asm/pg=
+table.h
+> index 0588ec99725c..6fbf251cfc26 100644
+> --- a/arch/nds32/include/asm/pgtable.h
+> +++ b/arch/nds32/include/asm/pgtable.h
+> @@ -12,7 +12,6 @@
+>  #include <asm/nds32.h>
+>  #ifndef __ASSEMBLY__
+>  #include <asm/fixmap.h>
+> -#include <asm/io.h>
+>  #include <nds32_intrinsic.h>
+>  #endif
+>
+> @@ -130,6 +129,9 @@ extern void __pgd_error(const char *file, int line, u=
+nsigned long val);
+>  #define _PAGE_CACHE            _PAGE_C_MEM_WB
+>  #endif
+>
+> +#define _PAGE_IOREMAP \
+> +       (_PAGE_V | _PAGE_M_KRW | _PAGE_D | _PAGE_G | _PAGE_C_DEV)
+> +
+>  /*
+>   * + Level 1 descriptor (PMD)
+>   */
+> diff --git a/arch/nds32/mm/Makefile b/arch/nds32/mm/Makefile
+> index bd360e4583b5..897ecaf5cf54 100644
+> --- a/arch/nds32/mm/Makefile
+> +++ b/arch/nds32/mm/Makefile
+> @@ -1,6 +1,5 @@
+>  # SPDX-License-Identifier: GPL-2.0-only
+> -obj-y                          :=3D extable.o tlb.o \
+> -                                  fault.o init.o ioremap.o mmap.o \
+> +obj-y                          :=3D extable.o tlb.o fault.o init.o mmap.=
+o \
+>                                     mm-nds32.o cacheflush.o proc.o
+>
+>  obj-$(CONFIG_ALIGNMENT_TRAP)   +=3D alignment.o
+> diff --git a/arch/nds32/mm/ioremap.c b/arch/nds32/mm/ioremap.c
+> deleted file mode 100644
+> index 690140bb23a2..000000000000
+> --- a/arch/nds32/mm/ioremap.c
+> +++ /dev/null
+> @@ -1,62 +0,0 @@
+> -// SPDX-License-Identifier: GPL-2.0
+> -// Copyright (C) 2005-2017 Andes Technology Corporation
+> -
+> -#include <linux/vmalloc.h>
+> -#include <linux/io.h>
+> -#include <linux/mm.h>
+> -#include <asm/pgtable.h>
+> -
+> -void __iomem *ioremap(phys_addr_t phys_addr, size_t size);
+> -
+> -static void __iomem *__ioremap_caller(phys_addr_t phys_addr, size_t size=
+,
+> -                                     void *caller)
+> -{
+> -       struct vm_struct *area;
+> -       unsigned long addr, offset, last_addr;
+> -       pgprot_t prot;
+> -
+> -       /* Don't allow wraparound or zero size */
+> -       last_addr =3D phys_addr + size - 1;
+> -       if (!size || last_addr < phys_addr)
+> -               return NULL;
+> -
+> -       /*
+> -        * Mappings have to be page-aligned
+> -        */
+> -       offset =3D phys_addr & ~PAGE_MASK;
+> -       phys_addr &=3D PAGE_MASK;
+> -       size =3D PAGE_ALIGN(last_addr + 1) - phys_addr;
+> -
+> -       /*
+> -        * Ok, go for it..
+> -        */
+> -       area =3D get_vm_area_caller(size, VM_IOREMAP, caller);
+> -       if (!area)
+> -               return NULL;
+> -
+> -       area->phys_addr =3D phys_addr;
+> -       addr =3D (unsigned long)area->addr;
+> -       prot =3D __pgprot(_PAGE_V | _PAGE_M_KRW | _PAGE_D |
+> -                       _PAGE_G | _PAGE_C_DEV);
+> -       if (ioremap_page_range(addr, addr + size, phys_addr, prot)) {
+> -               vunmap((void *)addr);
+> -               return NULL;
+> -       }
+> -       return (__force void __iomem *)(offset + (char *)addr);
+> -
+> -}
+> -
+> -void __iomem *ioremap(phys_addr_t phys_addr, size_t size)
+> -{
+> -       return __ioremap_caller(phys_addr, size,
+> -                               __builtin_return_address(0));
+> -}
+> -
+> -EXPORT_SYMBOL(ioremap);
+> -
+> -void iounmap(volatile void __iomem * addr)
+> -{
+> -       vunmap((void *)(PAGE_MASK & (unsigned long)addr));
+> -}
+> -
+> -EXPORT_SYMBOL(iounmap);
 
-The FSC also has the CONFIG4 register. It can be used to enable a feature
-called Active Negation which should always be enabled according to the data
-manual.
-
-Signed-off-by: Kars de Jong <jongk@linux-m68k.org>
----
- drivers/scsi/esp_scsi.c | 20 +++++++++++++-------
- drivers/scsi/esp_scsi.h | 25 +++++++++++++++++--------
- 2 files changed, 30 insertions(+), 15 deletions(-)
-
-diff --git a/drivers/scsi/esp_scsi.c b/drivers/scsi/esp_scsi.c
-index 4fc3eee3138b..cef1b0cb5ee6 100644
---- a/drivers/scsi/esp_scsi.c
-+++ b/drivers/scsi/esp_scsi.c
-@@ -243,7 +243,7 @@ static void esp_set_all_config3(struct esp *esp, u8 val)
- /* Reset the ESP chip, _not_ the SCSI bus. */
- static void esp_reset_esp(struct esp *esp)
- {
--	u8 family_code, version;
-+	u8 family_code, uid;
- 
- 	/* Now reset the ESP chip */
- 	scsi_esp_cmd(esp, ESP_CMD_RC);
-@@ -257,13 +257,17 @@ static void esp_reset_esp(struct esp *esp)
- 	 */
- 	esp->max_period = ((35 * esp->ccycle) / 1000);
- 	if (esp->rev == FAST) {
--		version = esp_read8(ESP_UID);
--		family_code = (version & 0xf8) >> 3;
--		if (family_code == 0x02)
-+		uid = esp_read8(ESP_UID);
-+		family_code = ESP_FAMILY(uid);
-+		if (family_code == ESP_UID_F236)
- 			esp->rev = FAS236;
--		else if (family_code == 0x0a)
-+		else if (family_code == ESP_UID_HME)
- 			esp->rev = FASHME; /* Version is usually '5'. */
--		else
-+		else if (family_code == ESP_UID_FSC) {
-+			esp->rev = FSC;
-+			/* Enable Active Negation */
-+			esp_write8(ESP_CONFIG4_RADE, ESP_CFG4);
-+		} else
- 			esp->rev = FAS100A;
- 		esp->min_period = ((4 * esp->ccycle) / 1000);
- 	} else {
-@@ -308,7 +312,8 @@ static void esp_reset_esp(struct esp *esp)
- 
- 	case FAS236:
- 	case PCSCSI:
--		/* Fast 236, AM53c974 or HME */
-+	case FSC:
-+		/* Fast 236, AM53c974, FSC or HME */
- 		esp_write8(esp->config2, ESP_CFG2);
- 		if (esp->rev == FASHME) {
- 			u8 cfg3 = esp->target[0].esp_config3;
-@@ -2374,6 +2379,7 @@ static const char *esp_chip_names[] = {
- 	"ESP236",
- 	"FAS236",
- 	"AM53C974",
-+	"FSC",
- 	"FAS100A",
- 	"FAST",
- 	"FASHME",
-diff --git a/drivers/scsi/esp_scsi.h b/drivers/scsi/esp_scsi.h
-index b96cbda03d2d..95f2b27e8d6c 100644
---- a/drivers/scsi/esp_scsi.h
-+++ b/drivers/scsi/esp_scsi.h
-@@ -78,12 +78,14 @@
- #define ESP_CONFIG3_IMS       0x80     /* ID msg chk'ng        (esp/fas236)  */
- #define ESP_CONFIG3_OBPUSH    0x80     /* Push odd-byte to dma (hme)         */
- 
--/* ESP config register 4 read-write, found only on am53c974 chips */
--#define ESP_CONFIG4_RADE      0x04     /* Active negation */
--#define ESP_CONFIG4_RAE       0x08     /* Active negation on REQ and ACK */
--#define ESP_CONFIG4_PWD       0x20     /* Reduced power feature */
--#define ESP_CONFIG4_GE0       0x40     /* Glitch eater bit 0 */
--#define ESP_CONFIG4_GE1       0x80     /* Glitch eater bit 1 */
-+/* ESP config register 4 read-write, found on am53c974 and FSC chips */
-+#define ESP_CONFIG4_BBTE      0x01     /* Back-to-back transfers     (fsc)   */
-+#define ESP_CONGIG4_TEST      0x02     /* Transfer counter test mode (fsc)   */
-+#define ESP_CONFIG4_RADE      0x04     /* Active negation   (am53c974/fsc)   */
-+#define ESP_CONFIG4_RAE       0x08     /* Act. negation REQ/ACK (am53c974)   */
-+#define ESP_CONFIG4_PWD       0x20     /* Reduced power feature (am53c974)   */
-+#define ESP_CONFIG4_GE0       0x40     /* Glitch eater bit 0    (am53c974)   */
-+#define ESP_CONFIG4_GE1       0x80     /* Glitch eater bit 1    (am53c974)   */
- 
- #define ESP_CONFIG_GE_12NS    (0)
- #define ESP_CONFIG_GE_25NS    (ESP_CONFIG_GE1)
-@@ -209,10 +211,16 @@
- #define ESP_TEST_TS           0x04     /* Tristate test mode */
- 
- /* ESP unique ID register read-only, found on fas236+fas100a only */
-+#define ESP_UID_REV           0x07     /* ESP revision bitmask */
-+#define ESP_UID_FAM           0xf8     /* ESP family bitmask */
-+
-+#define ESP_FAMILY(uid) (((uid) & ESP_UID_FAM) >> 3)
-+
-+/* Values for the ESP family */
- #define ESP_UID_F100A         0x00     /* ESP FAS100A  */
- #define ESP_UID_F236          0x02     /* ESP FAS236   */
--#define ESP_UID_REV           0x07     /* ESP revision */
--#define ESP_UID_FAM           0xf8     /* ESP family   */
-+#define ESP_UID_HME           0x0a     /* FAS HME      */
-+#define ESP_UID_FSC           0x14     /* NCR/Symbios Logic FSC */
- 
- /* ESP fifo flags register read-only */
- /* Note that the following implies a 16 byte FIFO on the ESP. */
-@@ -265,6 +273,7 @@ enum esp_rev {
- 	/* Chips below this line use ESP_CONFIG3_FSCSI to enable FAST SCSI */
- 	FAS236,
- 	PCSCSI,  /* AM53c974 */
-+	FSC,     /* NCR/Symbios Logic FSC */
- 	/* Chips below this line use ESP_CONFIG3_FAST to enable FAST SCSI */
- 	FAS100A,
- 	FAST,
--- 
-2.17.1
-
+Acked-by: Greentime Hu <green.hu@gmail.com>
+Looks good to me.
