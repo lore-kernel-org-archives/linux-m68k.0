@@ -2,81 +2,195 @@ Return-Path: <SRS0=Rs50=ZE=vger.kernel.org=linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-0.8 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=no
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-0.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id EF420C43331
-	for <linux-m68k@archiver.kernel.org>; Tue, 12 Nov 2019 09:34:42 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id DA1A1C43331
+	for <linux-m68k@archiver.kernel.org>; Tue, 12 Nov 2019 14:50:41 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id C8BD420650
-	for <linux-m68k@archiver.kernel.org>; Tue, 12 Nov 2019 09:34:42 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 9CC412067B
+	for <linux-m68k@archiver.kernel.org>; Tue, 12 Nov 2019 14:50:41 +0000 (UTC)
+Authentication-Results: mail.kernel.org;
+	dkim=pass (1024-bit key) header.d=teoenmingcorp.onmicrosoft.com header.i=@teoenmingcorp.onmicrosoft.com header.b="MlZvu0Pa"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727319AbfKLJem (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Tue, 12 Nov 2019 04:34:42 -0500
-Received: from smtpq3.tb.mail.iss.as9143.net ([212.54.42.166]:48802 "EHLO
-        smtpq3.tb.mail.iss.as9143.net" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725899AbfKLJem (ORCPT
-        <rfc822;linux-m68k@vger.kernel.org>);
-        Tue, 12 Nov 2019 04:34:42 -0500
-Received: from [212.54.42.137] (helo=smtp6.tb.mail.iss.as9143.net)
-        by smtpq3.tb.mail.iss.as9143.net with esmtps (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.90_1)
-        (envelope-from <jongk@linux-m68k.org>)
-        id 1iUSZL-0004OE-LD; Tue, 12 Nov 2019 10:34:39 +0100
-Received: from mail-wm1-f44.google.com ([209.85.128.44])
-        by smtp6.tb.mail.iss.as9143.net with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.90_1)
-        (envelope-from <jongk@linux-m68k.org>)
-        id 1iUSZL-00073o-GZ; Tue, 12 Nov 2019 10:34:39 +0100
-Received: by mail-wm1-f44.google.com with SMTP id t26so2140487wmi.4;
-        Tue, 12 Nov 2019 01:34:39 -0800 (PST)
-X-Gm-Message-State: APjAAAWPl1M6P3Ho1wxbFoRTuSoOncpry6Mv+sGamUe8Hj+IcfoDEFJv
-        VGbeRvkz9debmcKKtVaFdwUDmSAVd1M3Zfouono=
-X-Google-Smtp-Source: APXvYqzdttmBjRlX1gAWVSosaygJJWgRFNozXjRXYPOGlvyv5xsLCvnbLoHljnkAnbGSASAQxrEcuoDngPBviisl+ZA=
-X-Received: by 2002:a1c:720b:: with SMTP id n11mr2774106wmc.60.1573551279260;
- Tue, 12 Nov 2019 01:34:39 -0800 (PST)
+        id S1726697AbfKLOul (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Tue, 12 Nov 2019 09:50:41 -0500
+Received: from mail-eopbgr1310070.outbound.protection.outlook.com ([40.107.131.70]:42720
+        "EHLO APC01-SG2-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726388AbfKLOul (ORCPT <rfc822;linux-m68k@vger.kernel.org>);
+        Tue, 12 Nov 2019 09:50:41 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=bIHhRgcnuYWLBMX94HdcRLlSsHC2xFPD+u6b6jqQp3c3VHDoNNEB4btZfoy8L9VZXXLvr7k+/kAlqAbOYAEQHme3w0X4x6gUk/KchkhUTQcPFMDz/8yqTNSHEJwkgurjiEURN0kFO41NCnALv5PLxTN/8uQcZ4Ujmh+5llw+1Cx7Jhh5aKJT6tBSys9muig9257iBUV7QKS8p1rroDn3a6J5Sb4JHUi11YdUcSX3ytPQo7s7RFJBH33Fg6X+pvBBWrmmlXob+kAqSFbZmYKG2QRPVKbmb0x1s2yTOxUkXZ2DIDxBY7prTivBoJGFeBMAmijL9TFNRm7uyUnjV74uvw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=IJk0GU250nrR5/HeqLoiSSgrZSiNRxwQgrPt8ZNvfv8=;
+ b=B7g/jrJMveRFT/a0nbFkkAy3EgKx21KQM8EIgaQ0WoiR036PU6JdEi3/JwmqN/keAor11X8NkLSV7dEVvjqXla3r1J3vnssO/OSnqQteV5hieH01J7h6gUiZT1t1Bokjt1cq1oda6pZoYtRKrbposm8eE6Rf5Zrol/41O1b/lwWjarKX/Bw6MMmaCfNoxLYA5Qw3Um8FGrwAwtSUT+LD906iF5VrlKV2fXr2dfVz0tjiyOh+lBQy5ApoHNpvj/OnlZrsl3bs7RNvFlVfSVRtXKJ5RTj5oWz0ZnMv/WHlUslBUjzbtDItqPuwL4dVFwG8/tdzlCYrTx9xuY0ZghgvRA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=teo-en-ming-corp.com; dmarc=pass action=none
+ header.from=teo-en-ming-corp.com; dkim=pass header.d=teo-en-ming-corp.com;
+ arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=teoenmingcorp.onmicrosoft.com; s=selector2-teoenmingcorp-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=IJk0GU250nrR5/HeqLoiSSgrZSiNRxwQgrPt8ZNvfv8=;
+ b=MlZvu0Pai8aIQeDwU+m+x2P6gOzS44oTY/mak94+5FhT4+qxQM1yaSe+9bWa0VtCQbsMieVMxVxoBUWk4R42fVtnj0kVt323F0C1YzQNjWP+PSQiFC4lGGN9lF8DLPph2Q3xHpMTFXDN4yj2GuJCZLj+UEqY5EmCmrAkZY5MptA=
+Received: from SG2PR01MB2141.apcprd01.prod.exchangelabs.com (10.170.143.19) by
+ SG2PR01MB2014.apcprd01.prod.exchangelabs.com (52.133.138.151) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.2430.22; Tue, 12 Nov 2019 14:50:35 +0000
+Received: from SG2PR01MB2141.apcprd01.prod.exchangelabs.com
+ ([fe80::49d4:fc70:bde2:c3a]) by SG2PR01MB2141.apcprd01.prod.exchangelabs.com
+ ([fe80::49d4:fc70:bde2:c3a%2]) with mapi id 15.20.2430.027; Tue, 12 Nov 2019
+ 14:50:35 +0000
+From:   Turritopsis Dohrnii Teo En Ming <ceo@teo-en-ming-corp.com>
+To:     "linux-m68k@vger.kernel.org" <linux-m68k@vger.kernel.org>
+CC:     Turritopsis Dohrnii Teo En Ming <ceo@teo-en-ming-corp.com>
+Subject: I just got to know another 2 Singaporeans who were denied/refused
+ government jobs because of their remarks on the Singapore Government
+Thread-Topic: I just got to know another 2 Singaporeans who were
+ denied/refused government jobs because of their remarks on the Singapore
+ Government
+Thread-Index: AdWZaIJc1Ug/jsDPRpig+NagWJvknA==
+Date:   Tue, 12 Nov 2019 14:50:35 +0000
+Message-ID: <SG2PR01MB2141B27101106BEA70B8729387770@SG2PR01MB2141.apcprd01.prod.exchangelabs.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: spf=none (sender IP is )
+ smtp.mailfrom=ceo@teo-en-ming-corp.com; 
+x-originating-ip: [118.189.211.120]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: bbe9ab27-88a9-4c2e-5a61-08d7677fad05
+x-ms-traffictypediagnostic: SG2PR01MB2014:
+x-ms-exchange-purlcount: 4
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <SG2PR01MB2014FC719290C00B72F6F15487770@SG2PR01MB2014.apcprd01.prod.exchangelabs.com>
+x-ms-oob-tlc-oobclassifiers: OLM:10000;
+x-forefront-prvs: 021975AE46
+x-forefront-antispam-report: SFV:NSPM;SFS:(10009020)(39830400003)(136003)(376002)(346002)(366004)(396003)(199004)(189003)(33656002)(81166006)(14454004)(6116002)(64756008)(316002)(66476007)(2906002)(66556008)(76116006)(3846002)(66946007)(966005)(99286004)(25786009)(8676002)(8936002)(81156014)(508600001)(66446008)(2501003)(4326008)(6436002)(6306002)(6916009)(476003)(5640700003)(9686003)(7696005)(14444005)(256004)(186003)(26005)(6506007)(71190400001)(71200400001)(305945005)(74316002)(7736002)(107886003)(52536014)(2351001)(5660300002)(66066001)(486006)(55016002)(86362001)(102836004);DIR:OUT;SFP:1101;SCL:1;SRVR:SG2PR01MB2014;H:SG2PR01MB2141.apcprd01.prod.exchangelabs.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;A:1;MX:1;
+received-spf: None (protection.outlook.com: teo-en-ming-corp.com does not
+ designate permitted sender hosts)
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: DMVMi+1JGKPlorpqLKVeAHWbVHmOhutfEQVq4syobCMX1s4eVABmMvzD7Epd7J5+RE4/cZ17Lj5r7H3KSEMV8xSZ5llz0STQ9/NatC/fXdsHx3QRIzx8u2uU4fRUzkQgUAjGi6TkDSl8QPSAE2bpXKaLhkXQVUW2SC9w/UC6tZyvKSRTcPR+1SCAZAYcquT1djKifUmsQcgHrUT0ZEKB6z/TW1nZM8Vy6UtF3n7nkYoWCa/KXLOzZwW+kygXfmeo1A8Iv0fJ+FORYfZT71s6ojTu9m0PqfG6EC1kgz1FbIVU1bh/u+S7hQQQBCQbo81fZnYq8uzLu9uIfPVcV494jdn009pTCLjQsjQa53tr2IoNd+sskJqwTmy5tzCKV4S1MMmXVx/w8HbKF+cSwp6VL36WM17tWp1dsG7B6Dtry2x2ZGKQpVcTK8lEVAZOryomhgyI2JnA35I9+M5huoIw+MROh25KeisQbD68K+CUMfk=
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-References: <CACz-3rh9ZCyU1825yU8xxty5BGrwFhpbjKNoWnn0mGiv_h2Kag@mail.gmail.com>
- <20191109191400.8999-1-jongk@linux-m68k.org> <1573330351.3650.4.camel@linux.ibm.com>
- <6b914b12-cbc7-6fe6-7cba-3e89b2f6f19b@gmail.com>
-In-Reply-To: <6b914b12-cbc7-6fe6-7cba-3e89b2f6f19b@gmail.com>
-From:   Kars de Jong <jongk@linux-m68k.org>
-Date:   Tue, 12 Nov 2019 10:34:28 +0100
-X-Gmail-Original-Message-ID: <CACz-3rgkdiFxTPd9gJ6Sebmuv7gG23wgZ6v9Fx4p_xg-_emr_g@mail.gmail.com>
-Message-ID: <CACz-3rgkdiFxTPd9gJ6Sebmuv7gG23wgZ6v9Fx4p_xg-_emr_g@mail.gmail.com>
-Subject: Re: [PATCH] zorro_esp: increase maximum dma length to 65536 bytes
-To:     Michael Schmitz <schmitzmic@gmail.com>
-Cc:     James Bottomley <jejb@linux.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        linux-scsi@vger.kernel.org, linux-m68k@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-X-SourceIP: 209.85.128.44
-X-Authenticated-Sender: karsdejong@home.nl (via SMTP)
-X-Ziggo-spambar: /
-X-Ziggo-spamscore: 0.0
-X-Ziggo-spamreport: CMAE Analysis: v=2.3 cv=WMwBoUkR c=1 sm=1 tr=0 a=9+rZDBEiDlHhcck0kWbJtElFXBc=:19 a=jpOVt7BSZ2e4Z31A5e1TngXxSK0=:19 a=IkcTkHD0fZMA:10 a=MeAgGD-zjQ4A:10 a=pGLkceISAAAA:8 a=1UFXjjYtAAAA:8 a=G3ydgQW_W0eQeUwnF44A:9 a=QEXdDO2ut3YA:10 a=vgRaD6Luq-vJqV3RfsKp:22
-X-Ziggo-Spam-Status: No
+X-OriginatorOrg: teo-en-ming-corp.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: bbe9ab27-88a9-4c2e-5a61-08d7677fad05
+X-MS-Exchange-CrossTenant-originalarrivaltime: 12 Nov 2019 14:50:35.7071
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 23b3f6ae-c453-4b93-aec9-f17508e5885c
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: ocIhX0uHXXfOTIuYFqtRcZk6fl+sMiAAf/7U6VdcwR0OyCBaL8z5BTl2hHvGaKWybVHfD0kOYOPrx/kvdX/dSnyXcY2EqUzrzp6TMOMnECE=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SG2PR01MB2014
 Sender: linux-m68k-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-Hi Michael,
+Subject: I just got to know another 2 Singaporeans who were denied/refused =
+government jobs because of their remarks on the Singapore Government
 
-Op zo 10 nov. 2019 om 03:36 schreef Michael Schmitz <schmitzmic@gmail.com>:
-> I need to confirm this from a data book of the older (pre-fast)
-> revisions of this chip family. but since as Kars also states, the core
-> driver default for the 16 bit transfer size is 64k as well, I very much
-> suspect the same behaviour for the older revisions.
+Today, 12 November 2019 Tuesday Singapore Time, I got to know another 2 Sin=
+gaporeans who were denied/refused government jobs because of their remarks =
+on the Singapore Government.
 
-According to ftp://bitsavers.informatik.uni-stuttgart.de/components/ncr/scsi/NCR53C90ab.pdf,
-on the NCR 53C90A programming the transfer counter to 0 also means
-64k. That's the oldest data book I could find.
-But the Zorro driver assumes a fast variant of the chip anyway (the
-clock frequency is hard coded to 40 MHz), so this point is a little
-moot.
+Donald Trump (not his real name of course), who is a recruitment consultant=
+ at job agency Nanotechnology Infocomms (not the real name of the job agenc=
+y of course) in Singapore, communicated to me he is aware of another 2 Sing=
+aporeans who were denied/refused government jobs because of their remarks o=
+n the Singapore Government.
 
-Kind regards,
+According to Donald Trump, the 1st Singaporean passed the first round of se=
+curity clearance but failed the second round of security clearance. On furt=
+her thoughts, the 1st Singaporean thought he may have been denied/refused t=
+he government job because of his remarks on the Singapore Government.
 
-Kars.
+According to Donald Trump, the 2nd Singaporean was working in a semi-govern=
+ment job involving classified information of government ministers in Singap=
+ore. According to Donald Trump, the 2nd Singaporean refused to sign Non-Dis=
+closure Agreement (NDA) because he argued that government ministers in Sing=
+apore are public figures. The 2nd Singaporean was subsequently forced to re=
+sign or terminated from employment.
+
+Due to privacy laws in Singapore (Personal Data Protection Act (PDPA)), Don=
+ald Trump cannot reveal the names of the two Singaporean Targeted Individua=
+ls to me. Privacy laws also exist in the European Union and the United Stat=
+es.
+
+The General Data Protection Regulation (EU) 2016/679 (GDPR) is a regulation=
+ in EU law on data protection and privacy for all individual citizens of th=
+e European Union (EU) and the European Economic Area (EEA). It also address=
+es the transfer of personal data outside the EU and EEA areas. The GDPR aim=
+s primarily to give control to individuals over their personal data and to =
+simplify the regulatory environment for international business by unifying =
+the regulation within the EU.[1] Superseding the Data Protection Directive =
+95/46/EC, the regulation contains provisions and requirements related to th=
+e processing of personal data of individuals (formally called data subjects=
+ in the GDPR) inside the EEA, and applies to any enterprise established in =
+the EEA or-regardless of its location and the data subjects' citizenship-th=
+at is processing the personal information of data subjects inside the EEA.
+
+The Privacy Act of 1974 (Pub.L. 93-579, 88 Stat. 1896, enacted December 31,=
+ 1974, Title 5 United States Code Section =A7 552a), a United States federa=
+l law, establishes a Code of Fair Information Practice that governs the col=
+lection, maintenance, use, and dissemination of personally identifiable inf=
+ormation about individuals that is maintained in systems of records by fede=
+ral agencies. A system of records is a group of records under the control o=
+f an agency from which information is retrieved by the name of the individu=
+al or by some identifier assigned to the individual. The Privacy Act requir=
+es that agencies give the public notice of their systems of records by publ=
+ication in the Federal Register. The Privacy Act prohibits the disclosure o=
+f information from a system of records absent of the written consent of the=
+ subject individual, unless the disclosure is pursuant to one of twelve sta=
+tutory exceptions. The Act also provides individuals with a means by which =
+to seek access to and amendment of their records and sets forth various age=
+ncy record-keeping requirements. Additionally, with people granted the righ=
+t to review what was documented with their name, they are also able to find=
+ out if the "records have been disclosed".. and are also given the rights t=
+o make corrections.[1]
+
+I am now aware I am definitely not alone and I am definitely not the only T=
+argeted Individual (TI) in Singapore. So far Donald Trump is the only recru=
+itment consultant from only one job agency in Singapore whom I have spoken =
+to. Hence there could be a lot more Targeted Individuals out there in Singa=
+pore whom I am not aware of yet.
+
+
+
+
+
+
+
+-----BEGIN EMAIL SIGNATURE-----
+
+The Gospel for all Targeted Individuals (TIs):
+
+[The New York Times] Microwave Weapons Are Prime Suspect in Ills of
+U.S. Embassy Workers
+
+Link:=A0https://www.nytimes.com/2018/09/01/science/sonic-attack-cuba-microw=
+ave.html
+
+***************************************************************************=
+*****************
+
+Singaporean Mr. Turritopsis Dohrnii Teo En Ming's Academic
+Qualifications as at 14 Feb 2019 and refugee seeking attempts at the
+United Nations Refugee Agency Bangkok (21 Mar 2017) and in Taiwan (5
+Aug 2019):
+
+[1]=A0https://tdtemcerts.wordpress.com/
+
+[2]=A0https://tdtemcerts.blogspot.sg/
+
+[3]=A0https://www.scribd.com/user/270125049/Teo-En-Ming
+
+-----END EMAIL SIGNATURE-----
+
