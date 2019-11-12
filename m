@@ -2,116 +2,96 @@ Return-Path: <SRS0=Rs50=ZE=vger.kernel.org=linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.8 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,
-	URIBL_BLOCKED,USER_AGENT_GIT autolearn=unavailable autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-3.8 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=no
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 07E26C43331
-	for <linux-m68k@archiver.kernel.org>; Tue, 12 Nov 2019 17:55:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 90CDFC43331
+	for <linux-m68k@archiver.kernel.org>; Tue, 12 Nov 2019 18:58:37 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id E18852084E
-	for <linux-m68k@archiver.kernel.org>; Tue, 12 Nov 2019 17:55:38 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 6964D2067B
+	for <linux-m68k@archiver.kernel.org>; Tue, 12 Nov 2019 18:58:37 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727166AbfKLRzi (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Tue, 12 Nov 2019 12:55:38 -0500
-Received: from mail-wr1-f67.google.com ([209.85.221.67]:34798 "EHLO
-        mail-wr1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725997AbfKLRzi (ORCPT
-        <rfc822;linux-m68k@vger.kernel.org>); Tue, 12 Nov 2019 12:55:38 -0500
-Received: by mail-wr1-f67.google.com with SMTP id e6so19622689wrw.1;
-        Tue, 12 Nov 2019 09:55:36 -0800 (PST)
+        id S1726965AbfKLS6h (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Tue, 12 Nov 2019 13:58:37 -0500
+Received: from mail-wm1-f65.google.com ([209.85.128.65]:38206 "EHLO
+        mail-wm1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726718AbfKLS6g (ORCPT
+        <rfc822;linux-m68k@vger.kernel.org>); Tue, 12 Nov 2019 13:58:36 -0500
+Received: by mail-wm1-f65.google.com with SMTP id z19so4136303wmk.3;
+        Tue, 12 Nov 2019 10:58:35 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references;
-        bh=PKqltzNuj9+V9K/S4mkpmqKkAX19ynUBErL0SLJsqZs=;
-        b=b9mqxNVW7eA3ZPer+6ZW85xiC+6m2223omOhpaR+qIVF8D3+bvy9CdNeNzinyU7gEU
-         Bc/qPwjm9qSJuKDeMfCp6088PeKwY47P3BiWUYol2yxUUx9vgxhD4CC2o9I7m7WTCIWC
-         ZyoVgVf218/rgoFiVGJ5teRJXa1kXJm6oqrlRiWrnvFywbGK2gSL4DFkxUour3QrFFkw
-         ugCXRrCm1TC4OoHGSkA6e/oAvIUcbdUimbkzGv7jbFm6wZYHN9pcnnAJvMV0w3ql6uMe
-         xDEKf4mw5Yo4wGXY9zPrCPJknTwFgA6P7gd10tCEpODBNbV8cmBbFaO7zMMGQaXZWJHW
-         aRIA==
-X-Gm-Message-State: APjAAAUYKeRkxNZS+aVg/pomvCmW3+P6f/5Itx78azG8tPf7DnAgxyKA
-        t4ugIpMxY6+ohrvEd2zcwLg=
-X-Google-Smtp-Source: APXvYqxLiPDWnqkcjTCaRSjaKyoD44ZA0f5SKqdVCMWFCU45LZWQ10JagIAJdQGDMjlZn5wYhdgF6Q==
-X-Received: by 2002:a5d:6412:: with SMTP id z18mr26462034wru.30.1573581335747;
-        Tue, 12 Nov 2019 09:55:35 -0800 (PST)
+        bh=2OdOpykLsnzEhklgJ8BjBEIsUVROm20WmbImz3r38Rk=;
+        b=qD1e/8cyjxwpbPSHczSXIaOekW7n7WcXndDSQ6w4Lhnrmh2GWe6vWgI13k1z9Ullt6
+         AfZL2JF0TOqBZKUaoESYvkyMoOrpa7MYUHmQBjoP06JVlIT7Jskkc+ybpZm626Lh7q6+
+         gpl9wN2KqO4JtZOcl6fgFGTbnhcH1e6mGsWEwES98k/9YXvnukgzgyTFkptIAcJX2FgL
+         HqKFLNfqhUTohHfF9U1jKqnj3zSyfYDD29oRPreV/MlbfR3HsNelZdLIN0hLHgnZRBeJ
+         a1poFZRR9Dzw4+ONvWvcem2H8L3jyONITepgr8rOrQFGrZRrhNrvvvJfRdsa1S07Orx0
+         XAuA==
+X-Gm-Message-State: APjAAAVRW10y2NF57hbEQ+aIk1qpHca6mJkBS7KO2giZIAcFjzEUNQAw
+        MtZQ1eEiLbAX/OI3s+WEODxUNsXD8jk=
+X-Google-Smtp-Source: APXvYqzmWL9o2tasgjDQDMSea79AMfBCZ4NvuUGBmkxmdVNHGl/WslUNxLqX8+C88/8I5OdpvHgFgQ==
+X-Received: by 2002:a1c:b404:: with SMTP id d4mr5757803wmf.9.1573585114766;
+        Tue, 12 Nov 2019 10:58:34 -0800 (PST)
 Received: from localhost.localdomain (82-75-169-199.cable.dynamic.v4.ziggo.nl. [82.75.169.199])
-        by smtp.gmail.com with ESMTPSA id a8sm4229125wme.11.2019.11.12.09.55.34
+        by smtp.gmail.com with ESMTPSA id u18sm13017109wrp.14.2019.11.12.10.58.33
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 12 Nov 2019 09:55:35 -0800 (PST)
+        Tue, 12 Nov 2019 10:58:34 -0800 (PST)
 From:   Kars de Jong <jongk@linux-m68k.org>
-To:     "James E.J. Bottomley" <jejb@linux.ibm.com>
-Cc:     linux-scsi@vger.kernel.org, linux-m68k@vger.kernel.org,
+To:     "James E.J. Bottomley" <jejb@linux.ibm.com>,
         "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Hannes Reinecke <hare@suse.com>
+Cc:     linux-scsi@vger.kernel.org, linux-m68k@vger.kernel.org,
         schmitzmic@gmail.com, fthain@telegraphics.com.au,
         Kars de Jong <jongk@linux-m68k.org>
-Subject: [PATCH v2] zorro_esp: Limit DMA transfers to 65536 bytes (except on Fastlane)
-Date:   Tue, 12 Nov 2019 18:55:23 +0100
-Message-Id: <20191112175523.23145-1-jongk@linux-m68k.org>
+Subject: [PATCH 0/2] Some esp_scsi updates
+Date:   Tue, 12 Nov 2019 19:57:08 +0100
+Message-Id: <20191112185710.23988-1-jongk@linux-m68k.org>
 X-Mailer: git-send-email 2.17.1
-In-Reply-To: <1573414513.3230.4.camel@linux.ibm.com>
-References: <1573414513.3230.4.camel@linux.ibm.com>
+In-Reply-To: <20191029220503.7553-1-jongk@linux-m68k.org>
+References: <20191029220503.7553-1-jongk@linux-m68k.org>
 Sender: linux-m68k-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-When using this driver on a Blizzard 1260, there were failures whenever
-DMA transfers from the SCSI bus to memory of 65535 bytes were followed by a
-DMA transfer of 1 byte. This caused the byte at offset 65535 to be
-overwritten with 0xff. The Blizzard hardware can't handle single byte DMA
-transfers.
+When trying kernel 5.4.0-rc5 on my Amiga, I experienced data transfer failures
+when reading from my FAST-10 SCSI disk. I have a Blizzard 12x0 IV SCSI
+controller which uses a Symbios Logic SYM53CF94-2 "FSC" chip.
 
-Besides this issue, limiting the DMA length to something that is not a
-multiple of the page size is very inefficient on most file systems.
+This used to work with the old generic NCR53C9x driver, so I investigated the
+issue.
 
-It seems this limit was chosen because the DMA transfer counter of the ESP
-by default is 16 bits wide, thus limiting the length to 65535 bytes.
-However, the value 0 means 65536 bytes, which is handled by the ESP and the
-Blizzard just fine. It is also the default maximum used by esp_scsi when
-drivers don't provide their own dma_length_limit() function.
+It turned out to be caused by lacking detection of FSC silicon in the new
+driver.
 
-The limit of 65536 bytes can be used by all boards except the Fastlane. The
-old driver used a limit of 65532 bytes (0xfffc), which is reintroduced in
-this patch.
+The second patch in this series adds support for the FSC.
 
-Fixes: b7ded0e8b0d1 ("scsi: zorro_esp: Limit DMA transfers to 65535 bytes")
-Signed-off-by: Kars de Jong <jongk@linux-m68k.org>
----
- drivers/scsi/zorro_esp.c | 11 +++++++++--
- 1 file changed, 9 insertions(+), 2 deletions(-)
+When adding support for the chip, I found out the hard way that the esp_rev
+enum is ordered (I just added it to the end of the enum).
 
-diff --git a/drivers/scsi/zorro_esp.c b/drivers/scsi/zorro_esp.c
-index ca8e3abeb2c7..a23a8e5794f5 100644
---- a/drivers/scsi/zorro_esp.c
-+++ b/drivers/scsi/zorro_esp.c
-@@ -218,7 +218,14 @@ static int fastlane_esp_irq_pending(struct esp *esp)
- static u32 zorro_esp_dma_length_limit(struct esp *esp, u32 dma_addr,
- 					u32 dma_len)
- {
--	return dma_len > 0xFFFF ? 0xFFFF : dma_len;
-+	return dma_len > (1U << 16) ? (1U << 16) : dma_len;
-+}
-+
-+static u32 fastlane_esp_dma_length_limit(struct esp *esp, u32 dma_addr,
-+					u32 dma_len)
-+{
-+	/* The old driver used 0xfffc as limit, so do that here too */
-+	return dma_len > 0xfffc ? 0xfffc : dma_len;
- }
- 
- static void zorro_esp_reset_dma(struct esp *esp)
-@@ -604,7 +611,7 @@ static const struct esp_driver_ops fastlane_esp_ops = {
- 	.esp_write8		= zorro_esp_write8,
- 	.esp_read8		= zorro_esp_read8,
- 	.irq_pending		= fastlane_esp_irq_pending,
--	.dma_length_limit	= zorro_esp_dma_length_limit,
-+	.dma_length_limit	= fastlane_esp_dma_length_limit,
- 	.reset_dma		= zorro_esp_reset_dma,
- 	.dma_drain		= zorro_esp_dma_drain,
- 	.dma_invalidate		= fastlane_esp_dma_invalidate,
+Then I also discovered that the definition for the PCSCSI chip was in the wrong
+place of the enum. It will probably have issues with FAST-10 SCSI targets,
+because its CONFIG3 settings are wrong.
+
+The first patch fixes this, and adds comments to the enum to hopefully prevent
+this from happening again.
+
+When discussing this on the Linux/m68k mailing list, it was suggested to
+perhaps replace the dependency on ordering of the esp_rev enum by feature flags.
+I did not implement this for now.
+
+Kars de Jong (2):
+  esp_scsi: Correct ordering of PCSCSI definition in esp_rev enum
+  esp_scsi: Add support for FSC chip
+
+ drivers/scsi/esp_scsi.c | 22 +++++++++++++--------
+ drivers/scsi/esp_scsi.h | 44 ++++++++++++++++++++++++++---------------
+ 2 files changed, 42 insertions(+), 24 deletions(-)
+
 -- 
 2.17.1
 
