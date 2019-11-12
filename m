@@ -2,113 +2,101 @@ Return-Path: <SRS0=Rs50=ZE=vger.kernel.org=linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-11.8 required=3.0
-	tests=HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-	autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-6.8 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,
+	URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 38D7FC43331
-	for <linux-m68k@archiver.kernel.org>; Tue, 12 Nov 2019 09:25:37 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 9C529C17448
+	for <linux-m68k@archiver.kernel.org>; Tue, 12 Nov 2019 22:46:11 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 16FFA20818
-	for <linux-m68k@archiver.kernel.org>; Tue, 12 Nov 2019 09:25:37 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 7D86921783
+	for <linux-m68k@archiver.kernel.org>; Tue, 12 Nov 2019 22:46:11 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727113AbfKLJZg (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Tue, 12 Nov 2019 04:25:36 -0500
-Received: from Galois.linutronix.de ([193.142.43.55]:32931 "EHLO
-        Galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725944AbfKLJZg (ORCPT
-        <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Tue, 12 Nov 2019 04:25:36 -0500
-Received: from [5.158.153.53] (helo=tip-bot2.lab.linutronix.de)
-        by Galois.linutronix.de with esmtpsa (TLS1.2:DHE_RSA_AES_256_CBC_SHA256:256)
-        (Exim 4.80)
-        (envelope-from <tip-bot2@linutronix.de>)
-        id 1iUSQQ-0006xt-PU; Tue, 12 Nov 2019 10:25:26 +0100
-Received: from [127.0.1.1] (localhost [IPv6:::1])
-        by tip-bot2.lab.linutronix.de (Postfix) with ESMTP id 5ADC41C0084;
-        Tue, 12 Nov 2019 10:25:26 +0100 (CET)
-Date:   Tue, 12 Nov 2019 09:25:26 -0000
-From:   "tip-bot2 for Kees Cook" <tip-bot2@linutronix.de>
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: x86/build] m68k: Convert missed RODATA to RO_DATA
-Cc:     Geert Uytterhoeven <geert@linux-m68k.org>,
-        Kees Cook <keescook@chromium.org>,
-        Borislav Petkov <bp@suse.de>,
-        Heiko Carstens <heiko.carstens@de.ibm.com>,
-        linux-m68k@lists.linux-m68k.org, Sam Creasey <sammy@sammy.net>,
-        Ingo Molnar <mingo@kernel.org>, Borislav Petkov <bp@alien8.de>,
-        linux-kernel@vger.kernel.org
-In-Reply-To: <201911110920.5840E9AF1@keescook>
-References: <201911110920.5840E9AF1@keescook>
+        id S1727249AbfKLWqL (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Tue, 12 Nov 2019 17:46:11 -0500
+Received: from kvm5.telegraphics.com.au ([98.124.60.144]:59654 "EHLO
+        kvm5.telegraphics.com.au" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726932AbfKLWqK (ORCPT
+        <rfc822;linux-m68k@vger.kernel.org>); Tue, 12 Nov 2019 17:46:10 -0500
+Received: from localhost (localhost.localdomain [127.0.0.1])
+        by kvm5.telegraphics.com.au (Postfix) with ESMTP id 4C4712A6B4;
+        Tue, 12 Nov 2019 17:46:07 -0500 (EST)
+Date:   Wed, 13 Nov 2019 09:46:10 +1100 (AEDT)
+From:   Finn Thain <fthain@telegraphics.com.au>
+To:     Kars de Jong <jongk@linux-m68k.org>
+cc:     "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        linux-scsi@vger.kernel.org, linux-m68k@vger.kernel.org,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        schmitzmic@gmail.com
+Subject: Re: [PATCH v2] zorro_esp: Limit DMA transfers to 65536 bytes (except
+ on Fastlane)
+In-Reply-To: <20191112175523.23145-1-jongk@linux-m68k.org>
+Message-ID: <alpine.LNX.2.21.1.1911130945480.13@nippy.intranet>
+References: <1573414513.3230.4.camel@linux.ibm.com> <20191112175523.23145-1-jongk@linux-m68k.org>
 MIME-Version: 1.0
-Message-ID: <157355072603.29376.646015580479750741.tip-bot2@tip-bot2>
-X-Mailer: tip-git-log-daemon
-Robot-ID: <tip-bot2.linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Linutronix-Spam-Score: -1.0
-X-Linutronix-Spam-Level: -
-X-Linutronix-Spam-Status: No , -1.0 points, 5.0 required,  ALL_TRUSTED=-1,SHORTCIRCUIT=-0.0001
+Content-Type: text/plain; charset=US-ASCII
 Sender: linux-m68k-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-The following commit has been merged into the x86/build branch of tip:
+On Tue, 12 Nov 2019, Kars de Jong wrote:
 
-Commit-ID:     de7156689d69e9861d9ddc54a9dea623c25020c5
-Gitweb:        https://git.kernel.org/tip/de7156689d69e9861d9ddc54a9dea623c25020c5
-Author:        Kees Cook <keescook@chromium.org>
-AuthorDate:    Mon, 11 Nov 2019 09:22:00 -08:00
-Committer:     Borislav Petkov <bp@suse.de>
-CommitterDate: Tue, 12 Nov 2019 09:56:51 +01:00
+> When using this driver on a Blizzard 1260, there were failures whenever
+> DMA transfers from the SCSI bus to memory of 65535 bytes were followed by a
+> DMA transfer of 1 byte. This caused the byte at offset 65535 to be
+> overwritten with 0xff. The Blizzard hardware can't handle single byte DMA
+> transfers.
+> 
+> Besides this issue, limiting the DMA length to something that is not a
+> multiple of the page size is very inefficient on most file systems.
+> 
+> It seems this limit was chosen because the DMA transfer counter of the ESP
+> by default is 16 bits wide, thus limiting the length to 65535 bytes.
+> However, the value 0 means 65536 bytes, which is handled by the ESP and the
+> Blizzard just fine. It is also the default maximum used by esp_scsi when
+> drivers don't provide their own dma_length_limit() function.
+> 
+> The limit of 65536 bytes can be used by all boards except the Fastlane. The
+> old driver used a limit of 65532 bytes (0xfffc), which is reintroduced in
+> this patch.
+> 
+> Fixes: b7ded0e8b0d1 ("scsi: zorro_esp: Limit DMA transfers to 65535 bytes")
+> Signed-off-by: Kars de Jong <jongk@linux-m68k.org>
 
-m68k: Convert missed RODATA to RO_DATA
+Reviewed-by: Finn Thain <fthain@telegraphics.com.au>
 
-I missed two instances of the old RODATA macro (seems I was searching
-for vmlinux.lds* not vmlinux*lds*). Fix both instances and double-check
-the entire tree for other "RODATA" instances in linker scripts.
-
-Fixes: c82318254d15 ("vmlinux.lds.h: Replace RODATA with RO_DATA")
-Reported-by: Geert Uytterhoeven <geert@linux-m68k.org>
-Signed-off-by: Kees Cook <keescook@chromium.org>
-Signed-off-by: Borislav Petkov <bp@suse.de>
-Acked-by: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: Heiko Carstens <heiko.carstens@de.ibm.com>
-Cc: linux-m68k@lists.linux-m68k.org
-Cc: Sam Creasey <sammy@sammy.net>
-Link: https://lkml.kernel.org/r/201911110920.5840E9AF1@keescook
----
- arch/m68k/kernel/vmlinux-std.lds  | 2 +-
- arch/m68k/kernel/vmlinux-sun3.lds | 2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/arch/m68k/kernel/vmlinux-std.lds b/arch/m68k/kernel/vmlinux-std.lds
-index 6e7eb49..4d33da4 100644
---- a/arch/m68k/kernel/vmlinux-std.lds
-+++ b/arch/m68k/kernel/vmlinux-std.lds
-@@ -31,7 +31,7 @@ SECTIONS
- 
-   _sdata = .;			/* Start of data section */
- 
--  RODATA
-+  RO_DATA(4096)
- 
-   RW_DATA(16, PAGE_SIZE, THREAD_SIZE)
- 
-diff --git a/arch/m68k/kernel/vmlinux-sun3.lds b/arch/m68k/kernel/vmlinux-sun3.lds
-index 1a0ad6b..87d9f4d 100644
---- a/arch/m68k/kernel/vmlinux-sun3.lds
-+++ b/arch/m68k/kernel/vmlinux-sun3.lds
-@@ -24,7 +24,7 @@ SECTIONS
- 	*(.fixup)
- 	*(.gnu.warning)
- 	} :text = 0x4e75
--	RODATA
-+	RO_DATA(4096)
- 
-   _etext = .;			/* End of text section */
- 
+> ---
+>  drivers/scsi/zorro_esp.c | 11 +++++++++--
+>  1 file changed, 9 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/scsi/zorro_esp.c b/drivers/scsi/zorro_esp.c
+> index ca8e3abeb2c7..a23a8e5794f5 100644
+> --- a/drivers/scsi/zorro_esp.c
+> +++ b/drivers/scsi/zorro_esp.c
+> @@ -218,7 +218,14 @@ static int fastlane_esp_irq_pending(struct esp *esp)
+>  static u32 zorro_esp_dma_length_limit(struct esp *esp, u32 dma_addr,
+>  					u32 dma_len)
+>  {
+> -	return dma_len > 0xFFFF ? 0xFFFF : dma_len;
+> +	return dma_len > (1U << 16) ? (1U << 16) : dma_len;
+> +}
+> +
+> +static u32 fastlane_esp_dma_length_limit(struct esp *esp, u32 dma_addr,
+> +					u32 dma_len)
+> +{
+> +	/* The old driver used 0xfffc as limit, so do that here too */
+> +	return dma_len > 0xfffc ? 0xfffc : dma_len;
+>  }
+>  
+>  static void zorro_esp_reset_dma(struct esp *esp)
+> @@ -604,7 +611,7 @@ static const struct esp_driver_ops fastlane_esp_ops = {
+>  	.esp_write8		= zorro_esp_write8,
+>  	.esp_read8		= zorro_esp_read8,
+>  	.irq_pending		= fastlane_esp_irq_pending,
+> -	.dma_length_limit	= zorro_esp_dma_length_limit,
+> +	.dma_length_limit	= fastlane_esp_dma_length_limit,
+>  	.reset_dma		= zorro_esp_reset_dma,
+>  	.dma_drain		= zorro_esp_dma_drain,
+>  	.dma_invalidate		= fastlane_esp_dma_invalidate,
+> 
