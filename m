@@ -2,97 +2,116 @@ Return-Path: <SRS0=9xw0=ZF=vger.kernel.org=linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-0.9 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
-	SPF_HELO_NONE,SPF_PASS,UNPARSEABLE_RELAY autolearn=no autolearn_force=no
+X-Spam-Status: No, score=-0.8 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D94D2C17441
-	for <linux-m68k@archiver.kernel.org>; Wed, 13 Nov 2019 02:27:32 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 0F19CC17449
+	for <linux-m68k@archiver.kernel.org>; Wed, 13 Nov 2019 08:01:02 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id B2A5C222D4
-	for <linux-m68k@archiver.kernel.org>; Wed, 13 Nov 2019 02:27:32 +0000 (UTC)
-Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="fIg0/UHb"
+	by mail.kernel.org (Postfix) with ESMTP id E5B1C222CD
+	for <linux-m68k@archiver.kernel.org>; Wed, 13 Nov 2019 08:01:01 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727774AbfKMC1b (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Tue, 12 Nov 2019 21:27:31 -0500
-Received: from userp2120.oracle.com ([156.151.31.85]:36402 "EHLO
-        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727556AbfKMC1a (ORCPT
-        <rfc822;linux-m68k@vger.kernel.org>); Tue, 12 Nov 2019 21:27:30 -0500
-Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
-        by userp2120.oracle.com (8.16.0.27/8.16.0.27) with SMTP id xAD2PAsN040558;
-        Wed, 13 Nov 2019 02:27:22 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=to : cc : subject :
- from : references : date : in-reply-to : message-id : mime-version :
- content-type; s=corp-2019-08-05;
- bh=IgQK/jgcaBafwKBfKW4igsisY1VK1bwzHjPq8iG4ra4=;
- b=fIg0/UHbhZ5D5dw1UucEUyqtCwpnG7xOWcN/8Mi6dNU1liyTWxQkg07nghGoaNkjXIQ6
- KaCmFX6CV43uVA+DYhZgXtpz/bbhzEersxdmbk7P7VwbadSWqQPBa1d5d+cQYzTXw1Eo
- kYt+ZPfG5yN49bYjEslgsNE/75D2LfpCrJ0hR3ElLPauA5aBTZituBiSuYNjNDrgm4mO
- fjeQEOaQ/scacvW+fPCfj7mJNJQJ5aLJ8DzmqxbLZPaS4YMdiBwRuYEiUK8A7rhJlcqb
- +11WpXrff52+7saIxaxnowOLXt8HSjtbDEqML4+K2NcOKlC3gjFBihynjK/PJI91yDKG gw== 
-Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
-        by userp2120.oracle.com with ESMTP id 2w5p3qrvq5-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 13 Nov 2019 02:27:21 +0000
-Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
-        by userp3030.oracle.com (8.16.0.27/8.16.0.27) with SMTP id xAD2MlAn190431;
-        Wed, 13 Nov 2019 02:27:21 GMT
-Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
-        by userp3030.oracle.com with ESMTP id 2w7khmf6be-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 13 Nov 2019 02:27:21 +0000
-Received: from abhmp0001.oracle.com (abhmp0001.oracle.com [141.146.116.7])
-        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id xAD2RFBE025245;
-        Wed, 13 Nov 2019 02:27:15 GMT
-Received: from ca-mkp.ca.oracle.com (/10.159.214.123)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Tue, 12 Nov 2019 18:27:15 -0800
-To:     Kars de Jong <jongk@linux-m68k.org>
-Cc:     "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        linux-scsi@vger.kernel.org, linux-m68k@vger.kernel.org,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        schmitzmic@gmail.com, fthain@telegraphics.com.au
-Subject: Re: [PATCH v2] zorro_esp: Limit DMA transfers to 65536 bytes (except on Fastlane)
-From:   "Martin K. Petersen" <martin.petersen@oracle.com>
-Organization: Oracle Corporation
-References: <1573414513.3230.4.camel@linux.ibm.com>
-        <20191112175523.23145-1-jongk@linux-m68k.org>
-Date:   Tue, 12 Nov 2019 21:27:12 -0500
-In-Reply-To: <20191112175523.23145-1-jongk@linux-m68k.org> (Kars de Jong's
-        message of "Tue, 12 Nov 2019 18:55:23 +0100")
-Message-ID: <yq17e44qznj.fsf@oracle.com>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1.92 (gnu/linux)
+        id S1725966AbfKMIBA (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Wed, 13 Nov 2019 03:01:00 -0500
+Received: from smtpq3.tb.mail.iss.as9143.net ([212.54.42.166]:51324 "EHLO
+        smtpq3.tb.mail.iss.as9143.net" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725996AbfKMIBA (ORCPT
+        <rfc822;linux-m68k@vger.kernel.org>);
+        Wed, 13 Nov 2019 03:01:00 -0500
+Received: from [212.54.42.110] (helo=smtp7.tb.mail.iss.as9143.net)
+        by smtpq3.tb.mail.iss.as9143.net with esmtps (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.90_1)
+        (envelope-from <jongk@linux-m68k.org>)
+        id 1iUnaD-0001lL-9q; Wed, 13 Nov 2019 09:00:57 +0100
+Received: from mail-wm1-f54.google.com ([209.85.128.54])
+        by smtp7.tb.mail.iss.as9143.net with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.90_1)
+        (envelope-from <jongk@linux-m68k.org>)
+        id 1iUnaD-0001R2-5g; Wed, 13 Nov 2019 09:00:57 +0100
+Received: by mail-wm1-f54.google.com with SMTP id f3so874403wmc.5;
+        Wed, 13 Nov 2019 00:00:57 -0800 (PST)
+X-Gm-Message-State: APjAAAUQ8CAwphUNvS77OGtDsA78wRkKONHa4P8LD+yh7un5mO0drXoU
+        y6DS/D6jPU+E/v2zwLRbs4L/HxgLKEsUBg1sEa4=
+X-Google-Smtp-Source: APXvYqxMhw+PeGdjj5M0GDOk1bCpolr5G5nV3qn6IQYxmHmW303SVxxwJmTj/1msYDy6LAywOnebHPtBoaCRo6qg948=
+X-Received: by 2002:a05:600c:c3:: with SMTP id u3mr1350271wmm.35.1573632056846;
+ Wed, 13 Nov 2019 00:00:56 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9439 signatures=668685
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 malwarescore=0
- phishscore=0 bulkscore=0 spamscore=0 mlxscore=0 mlxlogscore=856
- adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.0.1-1910280000 definitions=main-1911130018
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9439 signatures=668685
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 malwarescore=0
- suspectscore=0 phishscore=0 bulkscore=0 spamscore=0 clxscore=1011
- lowpriorityscore=0 mlxscore=0 impostorscore=0 mlxlogscore=928 adultscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.0.1-1910280000
- definitions=main-1911130018
+References: <20191029220503.7553-1-jongk@linux-m68k.org> <20191112185710.23988-1-jongk@linux-m68k.org>
+ <20191112185710.23988-2-jongk@linux-m68k.org> <alpine.LNX.2.21.1.1911130946410.13@nippy.intranet>
+In-Reply-To: <alpine.LNX.2.21.1.1911130946410.13@nippy.intranet>
+From:   Kars de Jong <jongk@linux-m68k.org>
+Date:   Wed, 13 Nov 2019 09:00:45 +0100
+X-Gmail-Original-Message-ID: <CACz-3rhWQgCXXCXcd-=+r09+WOPLs3FrcqcdYd3g=dYrci=ucw@mail.gmail.com>
+Message-ID: <CACz-3rhWQgCXXCXcd-=+r09+WOPLs3FrcqcdYd3g=dYrci=ucw@mail.gmail.com>
+Subject: Re: [PATCH 1/2] esp_scsi: Correct ordering of PCSCSI definition in
+ esp_rev enum
+To:     Finn Thain <fthain@telegraphics.com.au>
+Cc:     "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Hannes Reinecke <hare@suse.com>, linux-scsi@vger.kernel.org,
+        linux-m68k@vger.kernel.org, schmitzmic@gmail.com
+Content-Type: text/plain; charset="UTF-8"
+X-SourceIP: 209.85.128.54
+X-Authenticated-Sender: karsdejong@home.nl (via SMTP)
+X-Ziggo-spambar: /
+X-Ziggo-spamscore: 0.0
+X-Ziggo-spamreport: CMAE Analysis: v=2.3 cv=cPSeTWWN c=1 sm=1 tr=0 a=9+rZDBEiDlHhcck0kWbJtElFXBc=:19 a=jpOVt7BSZ2e4Z31A5e1TngXxSK0=:19 a=IkcTkHD0fZMA:10 a=MeAgGD-zjQ4A:10 a=8981fWPbAAAA:8 a=pX--W2Stih7kB7ROB2sA:9 a=QEXdDO2ut3YA:10 a=o72u2rHnfW5qNJ_4I8LD:22
+X-Ziggo-Spam-Status: No
 Sender: linux-m68k-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
+Hi Finn,
 
-Kars,
+Thanks for your review!
 
-> When using this driver on a Blizzard 1260, there were failures
-> whenever DMA transfers from the SCSI bus to memory of 65535 bytes were
-> followed by a DMA transfer of 1 byte. This caused the byte at offset
-> 65535 to be overwritten with 0xff. The Blizzard hardware can't handle
-> single byte DMA transfers.
+Op wo 13 nov. 2019 om 00:07 schreef Finn Thain <fthain@telegraphics.com.au>:
+> On Tue, 12 Nov 2019, Kars de Jong wrote:
+> > Finally, move the PCSCSI definition to the right place in the enum. In its
+> > previous location, at the end of the enum, the wrong values are written to
+> > the CONFIG3 register when used with FAST-SCSI targets. Add comments to the
+> > enum explaining this.
+> >
+> >  enum esp_rev {
+> > -     ESP100     = 0x00,  /* NCR53C90 - very broken */
+> > -     ESP100A    = 0x01,  /* NCR53C90A */
+> > -     ESP236     = 0x02,
+> > -     FAS236     = 0x03,
+> > -     FAS100A    = 0x04,
+> > -     FAST       = 0x05,
+> > -     FASHME     = 0x06,
+> > -     PCSCSI     = 0x07,  /* AM53c974 */
+> > +     ESP100,  /* NCR53C90 - very broken */
+> > +     ESP100A, /* NCR53C90A */
+> > +     ESP236,
+> > +     /* Chips below this line use ESP_CONFIG3_FSCSI to enable FAST SCSI */
+> > +     FAS236,
+> > +     PCSCSI,  /* AM53c974 */
+> > +     /* Chips below this line use ESP_CONFIG3_FAST to enable FAST SCSI */
+> > +     FAS100A,
+> > +     FAST,
+> > +     FASHME,
+> >  };
+> >
+> >  struct esp_cmd_entry {
+> >
+>
+> FAS100A, FAST and FASHME are below both lines, which is a bit confusing.
 
-Applied to 5.5/scsi-queue, thanks!
+Hmm, you're right. But I don't really know how to solve that. But if
+you think the initial comment is enough to trigger people to
+investigate the algorithm, I can remove them.
 
--- 
-Martin K. Petersen	Oracle Linux Engineering
+> In general, I don't like to see comments that merely re-state the explicit
+> logic in the algorithm. Such comments add no value.
+>
+> (At best this redundancy creates a maintenance burden and at worst the
+> commentary becomes neglected until it creates contradictions.)
+
+Unfortunately the algorithm isn't very obvious here (well, not to me at least).
+
+Kind regards,
+
+Kars.
