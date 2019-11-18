@@ -2,114 +2,125 @@ Return-Path: <SRS0=v12+=ZK=vger.kernel.org=linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.2 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1
-	autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-3.8 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
+	MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS autolearn=no
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id BE46AC432C3
-	for <linux-m68k@archiver.kernel.org>; Mon, 18 Nov 2019 09:41:38 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 55BAFC432C0
+	for <linux-m68k@archiver.kernel.org>; Mon, 18 Nov 2019 13:27:54 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 9B3742071B
-	for <linux-m68k@archiver.kernel.org>; Mon, 18 Nov 2019 09:41:38 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 32E4C206D4
+	for <linux-m68k@archiver.kernel.org>; Mon, 18 Nov 2019 13:27:54 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726539AbfKRJli (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Mon, 18 Nov 2019 04:41:38 -0500
-Received: from outpost1.zedat.fu-berlin.de ([130.133.4.66]:42111 "EHLO
-        outpost1.zedat.fu-berlin.de" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726461AbfKRJli (ORCPT
+        id S1726898AbfKRN1x (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Mon, 18 Nov 2019 08:27:53 -0500
+Received: from smtpq4.tb.mail.iss.as9143.net ([212.54.42.167]:42798 "EHLO
+        smtpq4.tb.mail.iss.as9143.net" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726284AbfKRN1x (ORCPT
         <rfc822;linux-m68k@vger.kernel.org>);
-        Mon, 18 Nov 2019 04:41:38 -0500
-Received: from inpost2.zedat.fu-berlin.de ([130.133.4.69])
-          by outpost.zedat.fu-berlin.de (Exim 4.85)
-          with esmtps (TLSv1.2:ECDHE-RSA-AES256-GCM-SHA384:256)
-          (envelope-from <glaubitz@physik.fu-berlin.de>)
-          id <1iWdXK-003L45-KH>; Mon, 18 Nov 2019 10:41:34 +0100
-Received: from suse-laptop.physik.fu-berlin.de ([160.45.32.140])
-          by inpost2.zedat.fu-berlin.de (Exim 4.85)
-          with esmtpsa (TLSv1.2:ECDHE-RSA-AES128-GCM-SHA256:128)
-          (envelope-from <glaubitz@physik.fu-berlin.de>)
-          id <1iWdXK-003xyj-Bi>; Mon, 18 Nov 2019 10:41:34 +0100
-Subject: Re: [PATCH v3] m68k/atari: convert legacy Falcon IDE driver to
- platform driver
-To:     Geert Uytterhoeven <geert@linux-m68k.org>,
-        Michael Schmitz <schmitzmic@gmail.com>
-Cc:     linux-ide@vger.kernel.org, Linux/m68k <linux-m68k@vger.kernel.org>,
-        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
-        Jens Axboe <axboe@kernel.dk>
-References: <1569470064-3977-1-git-send-email-schmitzmic@gmail.com>
- <1573008449-8226-1-git-send-email-schmitzmic@gmail.com>
- <CAMuHMdU0QvQELB27tZ4LG-X5sAGD1aAoqRHQ310PYO9FCDnUUw@mail.gmail.com>
-From:   John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
-Autocrypt: addr=glaubitz@physik.fu-berlin.de; keydata=
- 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
- scOkTAZQGVpD/8AaLH4v1w==
-Message-ID: <fb82e6cb-7de0-fb8a-172b-4c44e923e37b@physik.fu-berlin.de>
-Date:   Mon, 18 Nov 2019 10:41:34 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.2.1
+        Mon, 18 Nov 2019 08:27:53 -0500
+Received: from [212.54.42.110] (helo=smtp7.tb.mail.iss.as9143.net)
+        by smtpq4.tb.mail.iss.as9143.net with esmtps (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.90_1)
+        (envelope-from <jongk@linux-m68k.org>)
+        id 1iWh4J-0001NH-TA; Mon, 18 Nov 2019 14:27:51 +0100
+Received: from mail-wr1-f46.google.com ([209.85.221.46])
+        by smtp7.tb.mail.iss.as9143.net with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.90_1)
+        (envelope-from <jongk@linux-m68k.org>)
+        id 1iWh4J-0004tQ-Ok; Mon, 18 Nov 2019 14:27:51 +0100
+Received: by mail-wr1-f46.google.com with SMTP id i12so19480992wro.5;
+        Mon, 18 Nov 2019 05:27:51 -0800 (PST)
+X-Gm-Message-State: APjAAAXZmfW6OajiuzpYYJWS3DzkQqWvJJbVLsTuob6cqw+daLBfFtwz
+        qa7vBXo2fv+svkaHp4Oion5gIUNxPgjkjypDLMI=
+X-Google-Smtp-Source: APXvYqw7WMp0wWz0+U3gAPLJ3Fu9KAqqkBh2u2i2BKxP+wUYRI/5cMl7EzjcQf7cmnE+WcptNtu/Dvw9MQsWQtvsCXM=
+X-Received: by 2002:a05:6000:14a:: with SMTP id r10mr19311305wrx.310.1574083671481;
+ Mon, 18 Nov 2019 05:27:51 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <CAMuHMdU0QvQELB27tZ4LG-X5sAGD1aAoqRHQ310PYO9FCDnUUw@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: 160.45.32.140
+References: <20191114215956.21767-1-jongk@linux-m68k.org> <20191114222518.2441-1-jongk@linux-m68k.org>
+ <20191114222518.2441-3-jongk@linux-m68k.org> <alpine.LNX.2.21.1.1911151212001.9@nippy.intranet>
+In-Reply-To: <alpine.LNX.2.21.1.1911151212001.9@nippy.intranet>
+From:   Kars de Jong <jongk@linux-m68k.org>
+Date:   Mon, 18 Nov 2019 14:27:40 +0100
+X-Gmail-Original-Message-ID: <CACz-3rgx4ftrm0JaBq=X13x_3YdcT5zfjcAq0KZtR+hT6CHmow@mail.gmail.com>
+Message-ID: <CACz-3rgx4ftrm0JaBq=X13x_3YdcT5zfjcAq0KZtR+hT6CHmow@mail.gmail.com>
+Subject: Re: [PATCH v3 2/2] esp_scsi: Add support for FSC chip
+To:     Finn Thain <fthain@telegraphics.com.au>
+Cc:     "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Hannes Reinecke <hare@suse.com>, linux-scsi@vger.kernel.org,
+        linux-m68k@vger.kernel.org, schmitzmic@gmail.com
+Content-Type: text/plain; charset="UTF-8"
+X-SourceIP: 209.85.221.46
+X-Authenticated-Sender: karsdejong@home.nl (via SMTP)
+X-Ziggo-spambar: /
+X-Ziggo-spamscore: 0.0
+X-Ziggo-spamreport: CMAE Analysis: v=2.3 cv=cPSeTWWN c=1 sm=1 tr=0 a=9+rZDBEiDlHhcck0kWbJtElFXBc=:19 a=jpOVt7BSZ2e4Z31A5e1TngXxSK0=:19 a=IkcTkHD0fZMA:10 a=MeAgGD-zjQ4A:10 a=8981fWPbAAAA:8 a=tBb2bbeoAAAA:8 a=E4AfsrIfWqNCM_Q_kVwA:9 a=QEXdDO2ut3YA:10 a=o72u2rHnfW5qNJ_4I8LD:22 a=Oj-tNtZlA1e06AYgeCfH:22
+X-Ziggo-Spam-Status: No
 Sender: linux-m68k-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-On 11/18/19 10:20 AM, Geert Uytterhoeven wrote:
-> Thanks, applied as "m68k/atari: Convert Falcon IDE drivers to platform
-> drivers", and queued for v5.5.
+Hi Finn,
 
-Great. So this should finally resolve the issue that debian-installer won't
-load the ATA drivers on Aranym automatically during installation.
+Thanks again for the review!
 
-Adrian
+Op vr 15 nov. 2019 om 03:09 schreef Finn Thain <fthain@telegraphics.com.au>:
+> On Thu, 14 Nov 2019, Kars de Jong wrote:
+>
+> > The FSC (NCR53CF9x-2 / SYM53CF9x-2) has a different family code than QLogic
+> > or Emulex parts. This caused it to be detected as a FAS100A.
+> >
+> > Unforunately, this meant the configuration of the CONFIG3 register was
+> > incorrect. This causes data transfer issues with FAST-SCSI targets.
+> >
+> > The FSC also has the CONFIG4 register. It can be used to enable a feature
+> > called Active Negation which should always be enabled according to the data
+> > manual.
+> >
+> > Signed-off-by: Kars de Jong <jongk@linux-m68k.org>
+>
+> Reviewed-by: Finn Thain <fthain@telegraphics.com.au>
+>
+> This is not the best scope for this variable. You have to touch both lines
+> (declaration and initialization) anyway, so you can easily improve this.
 
--- 
- .''`.  John Paul Adrian Glaubitz
-: :' :  Debian Developer - glaubitz@debian.org
-`. `'   Freie Universitaet Berlin - glaubitz@physik.fu-berlin.de
-  `-    GPG: 62FF 8A75 84E0 2956 9546  0006 7426 3B37 F5B5 F913
+Good point, I will move it to inside the  "if (esp->rev) == FAST) {" block.
+
+> > -             /* Fast 236, AM53c974 or HME */
+> > +     case FSC:
+> > +             /* Fast 236, AM53c974, FSC or HME */
+>
+> This comment merely re-states the logic in the case labels. If you don't
+> delete the comment, it has to be maintained along with the case labels.
+> Consequently this patch is longer than it needs to be.
+
+Yes, I agree. I'll remove the comment.
+
+>
+> You've added "(FSC)" and "(am53c974)" here, which is fine but you've
+> repeated yourself in the comment, "found on am53c974 and FSC chips". The
+> DRY principle applies here too (Don't Repeat Yourself).
+
+I'll also remove that comment.
+
+> > @@ -264,6 +271,7 @@ enum esp_rev {
+> >       ESP236,
+> >       FAS236,
+> >       PCSCSI,  /* AM53c974 */
+> > +     FSC,     /* NCR/Symbios Logic FSC */
+>
+> Is there a difference between "FSC" and "NCR/Symbios Logic FSC"?
+
+No, the respective data manuals all name these variants as "FSC".
+
+> The reader has to infer that not all "FSC" chips are equivalent and that the
+> brand name is significant. Whereas, there is real value in putting a part
+> code here (as in the line above).
+
+Agreed, I'll add the part code instead.
+
+Kind regards,
+
+Kars.
