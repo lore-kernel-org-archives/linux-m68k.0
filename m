@@ -1,173 +1,146 @@
-Return-Path: <SRS0=fyZN=ZL=vger.kernel.org=linux-m68k-owner@kernel.org>
+Return-Path: <SRS0=SSse=ZQ=vger.kernel.org=linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-6.8 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
+X-Spam-Status: No, score=-9.7 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,
-	URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.0
+	URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 77546C432C0
-	for <linux-m68k@archiver.kernel.org>; Tue, 19 Nov 2019 23:04:00 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C5C38C432C0
+	for <linux-m68k@archiver.kernel.org>; Sun, 24 Nov 2019 19:52:47 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 547C32071F
-	for <linux-m68k@archiver.kernel.org>; Tue, 19 Nov 2019 23:04:00 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 9EBF6207FD
+	for <linux-m68k@archiver.kernel.org>; Sun, 24 Nov 2019 19:52:47 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727222AbfKSXEA (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Tue, 19 Nov 2019 18:04:00 -0500
-Received: from kvm5.telegraphics.com.au ([98.124.60.144]:34688 "EHLO
-        kvm5.telegraphics.com.au" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727194AbfKSXD7 (ORCPT
-        <rfc822;linux-m68k@vger.kernel.org>); Tue, 19 Nov 2019 18:03:59 -0500
-Received: from localhost (localhost.localdomain [127.0.0.1])
-        by kvm5.telegraphics.com.au (Postfix) with ESMTP id 5D18128627;
-        Tue, 19 Nov 2019 18:03:55 -0500 (EST)
-Date:   Wed, 20 Nov 2019 10:03:54 +1100 (AEDT)
-From:   Finn Thain <fthain@telegraphics.com.au>
-To:     Kars de Jong <jongk@linux-m68k.org>
-cc:     "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Hannes Reinecke <hare@suse.com>, linux-scsi@vger.kernel.org,
-        linux-m68k@vger.kernel.org, schmitzmic@gmail.com
-Subject: Re: [PATCH v5 2/2] esp_scsi: Add support for FSC chip
-In-Reply-To: <20191119202021.28720-3-jongk@linux-m68k.org>
-Message-ID: <alpine.LNX.2.21.1.1911200956070.8@nippy.intranet>
-References: <20191119202021.28720-1-jongk@linux-m68k.org> <20191119202021.28720-3-jongk@linux-m68k.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+        id S1726833AbfKXTwr (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Sun, 24 Nov 2019 14:52:47 -0500
+Received: from mail-wr1-f66.google.com ([209.85.221.66]:34536 "EHLO
+        mail-wr1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726803AbfKXTwr (ORCPT
+        <rfc822;linux-m68k@vger.kernel.org>); Sun, 24 Nov 2019 14:52:47 -0500
+Received: by mail-wr1-f66.google.com with SMTP id t2so15008430wrr.1;
+        Sun, 24 Nov 2019 11:52:45 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=nAjjktBsryRv/PVaxm3tkWTCzqkwFEjwFqTsY62waUM=;
+        b=r0guWQb+8Sf8kZQQFlfojCnX7kjlj0Cs4J4P6Ysmgn4S78Wf8z5rw96Lo/4J1IRQmy
+         YpC1EDFoP+zke+u1N+roOiaVqYjLh5A/TdL7PNLsepYi+5Ci4UMd8TwM5Mp7w00wcw/T
+         vO1otmEjb1gZOUxcCVWUcfmeRg/sBwQZkX6AwAI3qUfoL0bi8/BzuSReeCEVRx9oYE/+
+         0rQNxFjC9h930TXaZTVKKfPtl8q9j0SEdW03LfIHepMwDKGO7VG01XJj7rpNrn+AkSzf
+         jpDyTWwiT/2jsgG4IZTYTpOsPvRUM4J+Z4vz/00Q5IhIV2S2D0+PT4ZzU2fAYWHp4Ipp
+         6y0Q==
+X-Gm-Message-State: APjAAAWkyYIDCycqCpdPHXRszWwPD6dX6FW/yekxIhW+U/3LenI2zLVn
+        xYYZZ7stEf+MKc99MTnGgv6BQFXiHhE=
+X-Google-Smtp-Source: APXvYqzLJqeKFX6DyEuA160m+YBl7o+fydNwXxhs4kSJD352hs7vVgA+RYTAgDTXLjPL8do5xNGcjQ==
+X-Received: by 2002:adf:9124:: with SMTP id j33mr7915726wrj.357.1574625164352;
+        Sun, 24 Nov 2019 11:52:44 -0800 (PST)
+Received: from localhost.localdomain (2001-1c06-18c6-e000-94a8-bf38-d78b-3abb.cable.dynamic.v6.ziggo.nl. [2001:1c06:18c6:e000:94a8:bf38:d78b:3abb])
+        by smtp.gmail.com with ESMTPSA id i127sm6265844wma.35.2019.11.24.11.52.43
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 24 Nov 2019 11:52:43 -0800 (PST)
+From:   Kars de Jong <jongk@linux-m68k.org>
+To:     Geert Uytterhoeven <geert@linux-m68k.org>
+Cc:     linux-kernel@vger.kernel.org, Kars de Jong <jongk@linux-m68k.org>,
+        linux-m68k@vger.kernel.org
+Subject: [PATCH] m68k: Wire up clone3() syscall
+Date:   Sun, 24 Nov 2019 20:52:25 +0100
+Message-Id: <20191124195225.31230-1-jongk@linux-m68k.org>
+X-Mailer: git-send-email 2.17.1
 Sender: linux-m68k-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-On Tue, 19 Nov 2019, Kars de Jong wrote:
+Wire up the clone3() syscall for m68k. The special entry point is done in
+assembler as was done for clone() as well. This is needed because all
+registers need to be saved. The C wrapper then calls the generic
+sys_clone3() with the correct arguments.
 
-> The FSC (NCR53CF9x-2 / SYM53CF9x-2) has a different family code than QLogic
-> or Emulex parts. This caused it to be detected as a FAS100A.
-> 
-> Unforunately, this meant the configuration of the CONFIG3 register was
-> incorrect. This causes data transfer issues with FAST-SCSI targets.
-> 
-> The FSC also has the CONFIG4 register. It can be used to enable a feature
-> called Active Negation which should always be enabled according to the data
-> manual.
-> 
-> Signed-off-by: Kars de Jong <jongk@linux-m68k.org>
+Tested on A1200 using the simple test program from:
 
-Reviewed-by: Finn Thain <fthain@telegraphics.com.au>
+  https://lore.kernel.org/lkml/20190716130631.tohj4ub54md25dys@brauner.io/
 
-Thanks for making those trivial changes I suggested.
+Cc: linux-m68k@vger.kernel.org
+Signed-off-by: Kars de Jong <jongk@linux-m68k.org>
+---
+ arch/m68k/include/asm/unistd.h        |  1 +
+ arch/m68k/kernel/entry.S              |  7 +++++++
+ arch/m68k/kernel/process.c            | 13 ++++++++++++-
+ arch/m68k/kernel/syscalls/syscall.tbl |  2 +-
+ 4 files changed, 21 insertions(+), 2 deletions(-)
 
+diff --git a/arch/m68k/include/asm/unistd.h b/arch/m68k/include/asm/unistd.h
+index 2e0047cf86f8..4ae52414cd9d 100644
+--- a/arch/m68k/include/asm/unistd.h
++++ b/arch/m68k/include/asm/unistd.h
+@@ -30,5 +30,6 @@
+ #define __ARCH_WANT_SYS_SIGPROCMASK
+ #define __ARCH_WANT_SYS_FORK
+ #define __ARCH_WANT_SYS_VFORK
++#define __ARCH_WANT_SYS_CLONE3
+ 
+ #endif /* _ASM_M68K_UNISTD_H_ */
+diff --git a/arch/m68k/kernel/entry.S b/arch/m68k/kernel/entry.S
+index 97cd3ea5f10b..9dd76fbb7c6b 100644
+--- a/arch/m68k/kernel/entry.S
++++ b/arch/m68k/kernel/entry.S
+@@ -69,6 +69,13 @@ ENTRY(__sys_vfork)
+ 	lea     %sp@(24),%sp
+ 	rts
+ 
++ENTRY(__sys_clone3)
++	SAVE_SWITCH_STACK
++	pea	%sp@(SWITCH_STACK_SIZE)
++	jbsr	m68k_clone3
++	lea	%sp@(28),%sp
++	rts
++
+ ENTRY(sys_sigreturn)
+ 	SAVE_SWITCH_STACK
+ 	movel	%sp,%sp@-		  | switch_stack pointer
+diff --git a/arch/m68k/kernel/process.c b/arch/m68k/kernel/process.c
+index 4e77a06735c1..22e6b8f4f958 100644
+--- a/arch/m68k/kernel/process.c
++++ b/arch/m68k/kernel/process.c
+@@ -30,8 +30,9 @@
+ #include <linux/init_task.h>
+ #include <linux/mqueue.h>
+ #include <linux/rcupdate.h>
+-
++#include <linux/syscalls.h>
+ #include <linux/uaccess.h>
++
+ #include <asm/traps.h>
+ #include <asm/machdep.h>
+ #include <asm/setup.h>
+@@ -119,6 +120,16 @@ asmlinkage int m68k_clone(struct pt_regs *regs)
+ 		       (int __user *)regs->d3, (int __user *)regs->d4);
+ }
+ 
++/*
++ * Because extra registers are saved on the stack after the sys_clone3()
++ * arguments, this C wrapper extracts them from pt_regs * and then calls the
++ * generic sys_clone3() implementation.
++ */
++asmlinkage int m68k_clone3(struct pt_regs *regs)
++{
++	return sys_clone3((struct clone_args __user *)regs->d1, regs->d2);
++}
++
+ int copy_thread(unsigned long clone_flags, unsigned long usp,
+ 		 unsigned long arg, struct task_struct *p)
+ {
+diff --git a/arch/m68k/kernel/syscalls/syscall.tbl b/arch/m68k/kernel/syscalls/syscall.tbl
+index a88a285a0e5f..a00a5d0db602 100644
+--- a/arch/m68k/kernel/syscalls/syscall.tbl
++++ b/arch/m68k/kernel/syscalls/syscall.tbl
+@@ -434,4 +434,4 @@
+ 432	common	fsmount				sys_fsmount
+ 433	common	fspick				sys_fspick
+ 434	common	pidfd_open			sys_pidfd_open
+-# 435 reserved for clone3
++435	common	clone3				__sys_clone3
 -- 
+2.17.1
 
-> ---
->  drivers/scsi/esp_scsi.c | 20 ++++++++++++--------
->  drivers/scsi/esp_scsi.h | 24 ++++++++++++++++--------
->  2 files changed, 28 insertions(+), 16 deletions(-)
-> 
-> diff --git a/drivers/scsi/esp_scsi.c b/drivers/scsi/esp_scsi.c
-> index 4fc3eee3138b..89afa31e33cb 100644
-> --- a/drivers/scsi/esp_scsi.c
-> +++ b/drivers/scsi/esp_scsi.c
-> @@ -243,8 +243,6 @@ static void esp_set_all_config3(struct esp *esp, u8 val)
->  /* Reset the ESP chip, _not_ the SCSI bus. */
->  static void esp_reset_esp(struct esp *esp)
->  {
-> -	u8 family_code, version;
-> -
->  	/* Now reset the ESP chip */
->  	scsi_esp_cmd(esp, ESP_CMD_RC);
->  	scsi_esp_cmd(esp, ESP_CMD_NULL | ESP_CMD_DMA);
-> @@ -257,14 +255,19 @@ static void esp_reset_esp(struct esp *esp)
->  	 */
->  	esp->max_period = ((35 * esp->ccycle) / 1000);
->  	if (esp->rev == FAST) {
-> -		version = esp_read8(ESP_UID);
-> -		family_code = (version & 0xf8) >> 3;
-> -		if (family_code == 0x02)
-> +		u8 family_code = ESP_FAMILY(esp_read8(ESP_UID));
-> +
-> +		if (family_code == ESP_UID_F236) {
->  			esp->rev = FAS236;
-> -		else if (family_code == 0x0a)
-> +		} else if (family_code == ESP_UID_HME) {
->  			esp->rev = FASHME; /* Version is usually '5'. */
-> -		else
-> +		} else if (family_code == ESP_UID_FSC) {
-> +			esp->rev = FSC;
-> +			/* Enable Active Negation */
-> +			esp_write8(ESP_CONFIG4_RADE, ESP_CFG4);
-> +		} else {
->  			esp->rev = FAS100A;
-> +		}
->  		esp->min_period = ((4 * esp->ccycle) / 1000);
->  	} else {
->  		esp->min_period = ((5 * esp->ccycle) / 1000);
-> @@ -308,7 +311,7 @@ static void esp_reset_esp(struct esp *esp)
->  
->  	case FAS236:
->  	case PCSCSI:
-> -		/* Fast 236, AM53c974 or HME */
-> +	case FSC:
->  		esp_write8(esp->config2, ESP_CFG2);
->  		if (esp->rev == FASHME) {
->  			u8 cfg3 = esp->target[0].esp_config3;
-> @@ -2374,6 +2377,7 @@ static const char *esp_chip_names[] = {
->  	"ESP236",
->  	"FAS236",
->  	"AM53C974",
-> +	"53CF9x-2",
->  	"FAS100A",
->  	"FAST",
->  	"FASHME",
-> diff --git a/drivers/scsi/esp_scsi.h b/drivers/scsi/esp_scsi.h
-> index f764d64e1f25..446a3d18c022 100644
-> --- a/drivers/scsi/esp_scsi.h
-> +++ b/drivers/scsi/esp_scsi.h
-> @@ -78,12 +78,14 @@
->  #define ESP_CONFIG3_IMS       0x80     /* ID msg chk'ng        (esp/fas236)  */
->  #define ESP_CONFIG3_OBPUSH    0x80     /* Push odd-byte to dma (hme)         */
->  
-> -/* ESP config register 4 read-write, found only on am53c974 chips */
-> -#define ESP_CONFIG4_RADE      0x04     /* Active negation */
-> -#define ESP_CONFIG4_RAE       0x08     /* Active negation on REQ and ACK */
-> -#define ESP_CONFIG4_PWD       0x20     /* Reduced power feature */
-> -#define ESP_CONFIG4_GE0       0x40     /* Glitch eater bit 0 */
-> -#define ESP_CONFIG4_GE1       0x80     /* Glitch eater bit 1 */
-> +/* ESP config register 4 read-write */
-> +#define ESP_CONFIG4_BBTE      0x01     /* Back-to-back transfers     (fsc)   */
-> +#define ESP_CONGIG4_TEST      0x02     /* Transfer counter test mode (fsc)   */
-> +#define ESP_CONFIG4_RADE      0x04     /* Active negation   (am53c974/fsc)   */
-> +#define ESP_CONFIG4_RAE       0x08     /* Act. negation REQ/ACK (am53c974)   */
-> +#define ESP_CONFIG4_PWD       0x20     /* Reduced power feature (am53c974)   */
-> +#define ESP_CONFIG4_GE0       0x40     /* Glitch eater bit 0    (am53c974)   */
-> +#define ESP_CONFIG4_GE1       0x80     /* Glitch eater bit 1    (am53c974)   */
->  
->  #define ESP_CONFIG_GE_12NS    (0)
->  #define ESP_CONFIG_GE_25NS    (ESP_CONFIG_GE1)
-> @@ -209,10 +211,15 @@
->  #define ESP_TEST_TS           0x04     /* Tristate test mode */
->  
->  /* ESP unique ID register read-only, found on fas236+fas100a only */
-> +#define ESP_UID_FAM           0xf8     /* ESP family bitmask */
-> +
-> +#define ESP_FAMILY(uid) (((uid) & ESP_UID_FAM) >> 3)
-> +
-> +/* Values for the ESP family bits */
->  #define ESP_UID_F100A         0x00     /* ESP FAS100A  */
->  #define ESP_UID_F236          0x02     /* ESP FAS236   */
-> -#define ESP_UID_REV           0x07     /* ESP revision */
-> -#define ESP_UID_FAM           0xf8     /* ESP family   */
-> +#define ESP_UID_HME           0x0a     /* FAS HME      */
-> +#define ESP_UID_FSC           0x14     /* NCR/Symbios Logic 53CF9x-2 */
->  
->  /* ESP fifo flags register read-only */
->  /* Note that the following implies a 16 byte FIFO on the ESP. */
-> @@ -264,6 +271,7 @@ enum esp_rev {
->  	ESP236,
->  	FAS236,
->  	PCSCSI,  /* AM53c974 */
-> +	FSC,     /* NCR/Symbios Logic 53CF9x-2 */
->  	FAS100A,
->  	FAST,
->  	FASHME,
-> 
