@@ -1,129 +1,113 @@
-Return-Path: <SRS0=yABL=ZM=vger.kernel.org=linux-m68k-owner@kernel.org>
+Return-Path: <SRS0=xAHT=ZR=vger.kernel.org=linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-10.1 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-13.8 required=3.0
+	tests=HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PULL_REQUEST,MAILING_LIST_MULTI,
+	MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 39BE6C432C3
-	for <linux-m68k@archiver.kernel.org>; Wed, 20 Nov 2019 13:37:27 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id EE3BDC43215
+	for <linux-m68k@archiver.kernel.org>; Mon, 25 Nov 2019 09:33:29 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 0F4D6224EB
-	for <linux-m68k@archiver.kernel.org>; Wed, 20 Nov 2019 13:37:27 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=default; t=1574257047;
-	bh=5ctZbnZNrSnZgv1IWKJ5Sx/tVIqjKHrJKdyG0qSaZPM=;
-	h=From:To:Cc:Subject:Date:List-ID:From;
-	b=kchMG+QLC2pKuG1ISMeGDNxw4gZbk+HLjhnGs+p5A4HY3uLyWp48OJIu9XhOTzE1P
-	 eQytBY5Xl0Dt6VM9FLwltFZuzcQhy/pzPh9oUlJSYie8dee590I0fx++8UHrfrR5iq
-	 D3ovK2uHF+c/HkFfyshSEdWxdVKMeiBJqWJvuN5g=
+	by mail.kernel.org (Postfix) with ESMTP id CD0042071E
+	for <linux-m68k@archiver.kernel.org>; Mon, 25 Nov 2019 09:33:29 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730902AbfKTNh0 (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Wed, 20 Nov 2019 08:37:26 -0500
-Received: from mail.kernel.org ([198.145.29.99]:44280 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730898AbfKTNhZ (ORCPT <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Wed, 20 Nov 2019 08:37:25 -0500
-Received: from localhost.localdomain (unknown [118.189.143.39])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id BEE7921939;
-        Wed, 20 Nov 2019 13:37:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1574257044;
-        bh=5ctZbnZNrSnZgv1IWKJ5Sx/tVIqjKHrJKdyG0qSaZPM=;
-        h=From:To:Cc:Subject:Date:From;
-        b=Fhq9RmcrWonFtRRJ/pxpZRmlxHDuAosA25qdpTrk7EEvDB6l0DT1UzcPhq40dtJkv
-         NmIya/wH6xZkWXvSSoqaL1M/97yVNl2j/r/Ijdf2xWl7phlTUwyRtZtqLGL8j14ykL
-         gMGQM5eVoKfBZ4dzXb16SIZdgOSYYAe/INJOxGzI=
-From:   Krzysztof Kozlowski <krzk@kernel.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Krzysztof Kozlowski <krzk@kernel.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        linux-m68k@lists.linux-m68k.org
-Subject: [PATCH] m68k: Fix Kconfig indentation
-Date:   Wed, 20 Nov 2019 21:37:21 +0800
-Message-Id: <20191120133721.12178-1-krzk@kernel.org>
+        id S1725793AbfKYJd3 (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Mon, 25 Nov 2019 04:33:29 -0500
+Received: from xavier.telenet-ops.be ([195.130.132.52]:49722 "EHLO
+        xavier.telenet-ops.be" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727336AbfKYJd3 (ORCPT
+        <rfc822;linux-m68k@lists.linux-m68k.org>);
+        Mon, 25 Nov 2019 04:33:29 -0500
+Received: from ramsan ([84.195.182.253])
+        by xavier.telenet-ops.be with bizsmtp
+        id W9ZT2100D5USYZQ019ZTVL; Mon, 25 Nov 2019 10:33:27 +0100
+Received: from rox.of.borg ([192.168.97.57])
+        by ramsan with esmtp (Exim 4.90_1)
+        (envelope-from <geert@linux-m68k.org>)
+        id 1iZAkJ-0007Vh-1n; Mon, 25 Nov 2019 10:33:27 +0100
+Received: from geert by rox.of.borg with local (Exim 4.90_1)
+        (envelope-from <geert@linux-m68k.org>)
+        id 1iZAkI-0003KK-Vo; Mon, 25 Nov 2019 10:33:26 +0100
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Greg Ungerer <gerg@linux-m68k.org>,
+        linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org,
+        Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: [GIT PULL] m68k updates for 5.5
+Date:   Mon, 25 Nov 2019 10:33:20 +0100
+Message-Id: <20191125093320.12738-1-geert@linux-m68k.org>
 X-Mailer: git-send-email 2.17.1
 Sender: linux-m68k-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-Adjust indentation from spaces to tab (+optional two spaces) as in
-coding style with command like:
-	$ sed -e 's/^        /\t/' -i */Kconfig
+	Hi Linus,
 
-Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
-Acked-by: Geert Uytterhoeven <geert@linux-m68k.org>
----
- arch/m68k/Kconfig.bus     |  2 +-
- arch/m68k/Kconfig.debug   | 16 ++++++++--------
- arch/m68k/Kconfig.machine |  8 ++++----
- 3 files changed, 13 insertions(+), 13 deletions(-)
+The following changes since commit 54ecb8f7028c5eb3d740bb82b0f1d90f2df63c5c:
 
-diff --git a/arch/m68k/Kconfig.bus b/arch/m68k/Kconfig.bus
-index 9d0a3a23d50e..f1be832e2b74 100644
---- a/arch/m68k/Kconfig.bus
-+++ b/arch/m68k/Kconfig.bus
-@@ -66,6 +66,6 @@ endif
- if !MMU
- 
- config ISA_DMA_API
--        def_bool !M5272
-+	def_bool !M5272
- 
- endif
-diff --git a/arch/m68k/Kconfig.debug b/arch/m68k/Kconfig.debug
-index f43643111eaf..11b306bdd788 100644
---- a/arch/m68k/Kconfig.debug
-+++ b/arch/m68k/Kconfig.debug
-@@ -12,16 +12,16 @@ config EARLY_PRINTK
- 	bool "Early printk"
- 	depends on !(SUN3 || M68000 || COLDFIRE)
- 	help
--          Write kernel log output directly to a serial port.
--          Where implemented, output goes to the framebuffer as well.
--          PROM console functionality on Sun 3x is not affected by this option.
-+	  Write kernel log output directly to a serial port.
-+	  Where implemented, output goes to the framebuffer as well.
-+	  PROM console functionality on Sun 3x is not affected by this option.
- 
--          Pass "earlyprintk" on the kernel command line to get a
--          boot console.
-+	  Pass "earlyprintk" on the kernel command line to get a
-+	  boot console.
- 
--          This is useful for kernel debugging when your machine crashes very
--          early, i.e. before the normal console driver is loaded.
--          You should normally say N here, unless you want to debug such a crash.
-+	  This is useful for kernel debugging when your machine crashes very
-+	  early, i.e. before the normal console driver is loaded.
-+	  You should normally say N here, unless you want to debug such a crash.
- 
- if !MMU
- 
-diff --git a/arch/m68k/Kconfig.machine b/arch/m68k/Kconfig.machine
-index c01e103492fd..b23a66bac77f 100644
---- a/arch/m68k/Kconfig.machine
-+++ b/arch/m68k/Kconfig.machine
-@@ -269,10 +269,10 @@ config AMCORE
- 	  Support for the Sysam AMCORE open-hardware generic board.
- 
- config STMARK2
--        bool "Sysam stmark2 board support"
--        depends on M5441x
--        help
--          Support for the Sysam stmark2 open-hardware generic board.
-+	bool "Sysam stmark2 board support"
-+	depends on M5441x
-+	help
-+	  Support for the Sysam stmark2 open-hardware generic board.
- 
- config FIREBEE
- 	bool "FireBee board support"
--- 
-2.17.1
+  Linux 5.4-rc1 (2019-09-30 10:35:40 -0700)
 
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/geert/linux-m68k.git tags/m68k-for-v5.5-tag1
+
+for you to fetch changes up to 5ed0794cde59365d4d5895b89bb2f7ef7ffdbd55:
+
+  m68k/atari: Convert Falcon IDE drivers to platform drivers (2019-11-18 10:18:59 +0100)
+
+----------------------------------------------------------------
+m68k updates for v5.5
+
+  - Atari Falcon IDE platform driver conversion for module autoload,
+  - Defconfig updates (incl. enablement of Amiga ICY I2C),
+  - Small fixes and cleanups.
+
+----------------------------------------------------------------
+Fuqian Huang (1):
+      m68k: q40: Fix info-leak in rtc_ioctl
+
+Geert Uytterhoeven (2):
+      m68k: defconfig: Update defconfigs for v5.4-rc1
+      m68k: defconfig: Enable ICY I2C and LTC2990 on Amiga
+
+Himanshu Jha (1):
+      nubus: Remove cast to void pointer
+
+Michael Schmitz (1):
+      m68k/atari: Convert Falcon IDE drivers to platform drivers
+
+ arch/m68k/atari/config.c             | 27 ++++++++++++++++
+ arch/m68k/configs/amiga_defconfig    | 14 ++++-----
+ arch/m68k/configs/apollo_defconfig   |  8 ++---
+ arch/m68k/configs/atari_defconfig    |  8 ++---
+ arch/m68k/configs/bvme6000_defconfig |  8 ++---
+ arch/m68k/configs/hp300_defconfig    |  8 ++---
+ arch/m68k/configs/mac_defconfig      |  8 ++---
+ arch/m68k/configs/multi_defconfig    | 14 ++++-----
+ arch/m68k/configs/mvme147_defconfig  |  8 ++---
+ arch/m68k/configs/mvme16x_defconfig  |  8 ++---
+ arch/m68k/configs/q40_defconfig      |  8 ++---
+ arch/m68k/configs/sun3_defconfig     |  8 ++---
+ arch/m68k/configs/sun3x_defconfig    |  8 ++---
+ arch/m68k/q40/config.c               |  1 +
+ drivers/ata/pata_falcon.c            | 42 ++++++++++++++++---------
+ drivers/ide/falconide.c              | 60 ++++++++++++++++++++++++------------
+ drivers/nubus/nubus.c                |  2 +-
+ 17 files changed, 131 insertions(+), 109 deletions(-)
+
+Thanks for pulling!
+
+Gr{oetje,eeting}s,
+
+						Geert
+
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+							    -- Linus Torvalds
