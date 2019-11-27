@@ -1,71 +1,73 @@
-Return-Path: <SRS0=i0dL=ZS=vger.kernel.org=linux-m68k-owner@kernel.org>
+Return-Path: <SRS0=SmLQ=ZT=vger.kernel.org=linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-6.1 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,
-	SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-2.0 required=3.0 tests=DKIM_INVALID,DKIM_SIGNED,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 72C84C432C0
-	for <linux-m68k@archiver.kernel.org>; Tue, 26 Nov 2019 02:15:15 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 43499C432C0
+	for <linux-m68k@archiver.kernel.org>; Wed, 27 Nov 2019 01:27:12 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 4E30E2080F
-	for <linux-m68k@archiver.kernel.org>; Tue, 26 Nov 2019 02:15:15 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=default; t=1574734515;
-	bh=fUTixOUXgX4xQyp7iS+tzjyjkV5MbzkvlYm2t91QnxY=;
-	h=Subject:From:In-Reply-To:References:Date:To:Cc:List-ID:From;
-	b=pRAfrZUNYv4DkzaWvdAI+KAiyl24xMkz1WplxZWObHyTZSZ+j8fVeNfgssckg6IQu
-	 ObmwUuU6NBCiJLp0/6mpqqNV7qmhvdKZcsg+BWQX3KCMJwFLegTZdC7WiupUXcctiM
-	 tWx1HK3X/7umQoodjd10KCi5QT8vd0/9U1SukruI=
+	by mail.kernel.org (Postfix) with ESMTP id 16AD12075C
+	for <linux-m68k@archiver.kernel.org>; Wed, 27 Nov 2019 01:27:12 +0000 (UTC)
+Authentication-Results: mail.kernel.org;
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="VM//JCOW"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727943AbfKZCPN (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Mon, 25 Nov 2019 21:15:13 -0500
-Received: from mail.kernel.org ([198.145.29.99]:53212 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727936AbfKZCPM (ORCPT <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Mon, 25 Nov 2019 21:15:12 -0500
-Subject: Re: [GIT PULL] m68k updates for 5.5
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1574734511;
-        bh=fUTixOUXgX4xQyp7iS+tzjyjkV5MbzkvlYm2t91QnxY=;
-        h=From:In-Reply-To:References:Date:To:Cc:From;
-        b=kRnheX/tCUAIa9PdoN8mo4711Exv83krvTlPv5zl+AxUz/wuRjxyM1AISn9am2duh
-         wWn/jt4NZ33DXvyRISSMx25HKElCkrHpNfgX2QHXqBDkK4TJsE9WoWagVRakqxFySB
-         KJfVizEiC8MDKacGyU3ofx2m6Wcpim8YHCex6OTY=
-From:   pr-tracker-bot@kernel.org
-In-Reply-To: <20191125093320.12738-1-geert@linux-m68k.org>
-References: <20191125093320.12738-1-geert@linux-m68k.org>
-X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <20191125093320.12738-1-geert@linux-m68k.org>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/geert/linux-m68k.git
- tags/m68k-for-v5.5-tag1
-X-PR-Tracked-Commit-Id: 5ed0794cde59365d4d5895b89bb2f7ef7ffdbd55
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 5ef30d74232ed204a461a5dbd0309718d63abd01
-Message-Id: <157473451137.11733.638944916333266059.pr-tracker-bot@kernel.org>
-Date:   Tue, 26 Nov 2019 02:15:11 +0000
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Greg Ungerer <gerg@linux-m68k.org>,
-        linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org,
-        Geert Uytterhoeven <geert@linux-m68k.org>
+        id S1727059AbfK0B1L (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Tue, 26 Nov 2019 20:27:11 -0500
+Received: from bombadil.infradead.org ([198.137.202.133]:41212 "EHLO
+        bombadil.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726118AbfK0B1L (ORCPT
+        <rfc822;linux-m68k@lists.linux-m68k.org>);
+        Tue, 26 Nov 2019 20:27:11 -0500
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20170209; h=Content-Transfer-Encoding:
+        Content-Type:MIME-Version:Date:Message-ID:Subject:From:To:Sender:Reply-To:Cc:
+        Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
+        Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+         bh=ks8+NJHBfsPY3+JLhd/+2xG48ybtFps79bejbZJBn6w=; b=VM//JCOWuc5p7lONPOW3Oqp+X
+        QCo+PObYUymI+92e5PEAjfv7QoaWLm9glA0CUVQ+pAIvGWP63KzP5j7xvUInggrd+6caJGOsIzQpA
+        yUJgzwKLI9Nip9u4cszMbs/0pXYHLpZQcDEo/09eVG3crrEuH+qWjPelatvmftY30BdD/1YgRRpOA
+        RH7U8iQvIauvJm0hWc1+nFzDNSfgxSZjXJTcK4W8/axASdIfEBEd036UTIU3It4vDlgAwshwDoRFD
+        a+prhKxg//kMM2OgfWhKFhN7B7QZEbgcCvBQmcIeefvvqA3A7/iq3FDtauqx6Sryzvmew+R2AJCD5
+        13tK0CRjg==;
+Received: from [2603:3004:32:9a00::f45c]
+        by bombadil.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1iZm6o-0001e3-Bp; Wed, 27 Nov 2019 01:27:10 +0000
+To:     Geert Uytterhoeven <geert@linux-m68k.org>,
+        linux-m68k@lists.linux-m68k.org,
+        LKML <linux-kernel@vger.kernel.org>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Subject: m68k Kconfig warning
+Message-ID: <021330b6-67a2-0b74-c129-5c725dd23810@infradead.org>
+Date:   Tue, 26 Nov 2019 17:27:09 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.2.1
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-m68k-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-The pull request you sent on Mon, 25 Nov 2019 10:33:20 +0100:
+Hi Geert,
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/geert/linux-m68k.git tags/m68k-for-v5.5-tag1
+Just noticed this.  I don't know what the right fix is.
+Would you take care of it, please?
 
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/5ef30d74232ed204a461a5dbd0309718d63abd01
+on Linux 5.4, m68k allmodconfig:
 
-Thank you!
+WARNING: unmet direct dependencies detected for NEED_MULTIPLE_NODES
+  Depends on [n]: DISCONTIGMEM [=n] || NUMA
+  Selected by [y]:
+  - SINGLE_MEMORY_CHUNK [=y] && MMU [=y]
 
+
+thanks.
 -- 
-Deet-doot-dot, I am a bot.
-https://korg.wiki.kernel.org/userdoc/prtracker
+~Randy
+Reported-by: Randy Dunlap <rdunlap@infradead.org>
