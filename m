@@ -1,81 +1,103 @@
-Return-Path: <SRS0=SmLQ=ZT=vger.kernel.org=linux-m68k-owner@kernel.org>
+Return-Path: <SRS0=KSh8=ZY=vger.kernel.org=linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-0.7 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=no
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-0.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D2A59C432C0
-	for <linux-m68k@archiver.kernel.org>; Wed, 27 Nov 2019 07:13:06 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 69223C432C0
+	for <linux-m68k@archiver.kernel.org>; Mon,  2 Dec 2019 12:05:43 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id AD5DD20656
-	for <linux-m68k@archiver.kernel.org>; Wed, 27 Nov 2019 07:13:06 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 3B618215E5
+	for <linux-m68k@archiver.kernel.org>; Mon,  2 Dec 2019 12:05:43 +0000 (UTC)
+Authentication-Results: mail.kernel.org;
+	dkim=pass (2048-bit key) header.d=home.nl header.i=@home.nl header.b="Qeyz9euu"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726181AbfK0HNG (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Wed, 27 Nov 2019 02:13:06 -0500
-Received: from mail-oi1-f181.google.com ([209.85.167.181]:43672 "EHLO
-        mail-oi1-f181.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725861AbfK0HNG (ORCPT
+        id S1726149AbfLBMFm (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Mon, 2 Dec 2019 07:05:42 -0500
+Received: from smtpq4.tb.mail.iss.as9143.net ([212.54.42.167]:50532 "EHLO
+        smtpq4.tb.mail.iss.as9143.net" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727362AbfLBMFm (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Wed, 27 Nov 2019 02:13:06 -0500
-Received: by mail-oi1-f181.google.com with SMTP id l20so19161172oie.10
-        for <linux-m68k@lists.linux-m68k.org>; Tue, 26 Nov 2019 23:13:05 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=k+iy+I2ql514V3Li/xFx77FCnKZwhQ5z9HPShasnZfo=;
-        b=AyZbiwjwrhLzXEcPqNtiZ9f7hr20GWjC9fRelV2Zta9Ej0wqnECn8O4wHKmU3lY8tT
-         4Xme18/cpEpFNPtU3qVgk4z0ofXMILopnsXP6I4srphh7WOqcNijOar3N+T4yrEUKbah
-         3WCcYZdy88fVxOaKgyPdnsXk2mUXJUBLo5GlWB3Q8vtHic0SPZFxv0oe4kSWxKjjRAzy
-         x1bbq9FmwaVa56QiECBYxhxBVfiPs8Tnm6XeGiyTx9rDodEn2dbjUaYisLfk7/ZP6bwl
-         XWFA3bmghGzlnoop5xmaKPO/UZF33lyOIUl/sjnwUisVzL12bpW785DauYy+u0e9zmrc
-         n9qQ==
-X-Gm-Message-State: APjAAAU6OOAf1XXAxmXnulSg9WQ1o72zFqv70DrLreYFwCHH4EBc6Ie0
-        AEE0AdcoKxy+yOoOjKZa6eKaDE5vhjNfypiaCvM=
-X-Google-Smtp-Source: APXvYqyZ2w8lOKLiT2FaBfylkCaKfdFRizjqdBv4MizQEgr6Ph9CvBqOrFucHbN3CAOeySC9FQyUe7DaaT4gxgMOhJY=
-X-Received: by 2002:aca:fdd0:: with SMTP id b199mr2649178oii.153.1574838785251;
- Tue, 26 Nov 2019 23:13:05 -0800 (PST)
+        Mon, 2 Dec 2019 07:05:42 -0500
+X-Greylist: delayed 1401 seconds by postgrey-1.27 at vger.kernel.org; Mon, 02 Dec 2019 07:05:41 EST
+Received: from [212.54.42.137] (helo=smtp6.tb.mail.iss.as9143.net)
+        by smtpq4.tb.mail.iss.as9143.net with esmtps (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.90_1)
+        (envelope-from <karsdejong@home.nl>)
+        id 1ibk5q-0005mZ-Tg
+        for linux-m68k@lists.linux-m68k.org; Mon, 02 Dec 2019 12:42:18 +0100
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=home.nl;
+        s=201809corplgsmtpnl; h=To:Subject:Date:From;
+        bh=YLXC0XBbzlwCAGXJDXKrvYIocVCl4uJewEHmpw/A/Xg=; b=Qeyz9euu5PUo2yiYsI0e02mHAK
+        A/onbgBUpQpLbVD5NFfcAE2SulZ3YalcVU0bEz9bsnMTFTZMTgM/EfNjA+pFxOa1Wh/Y3+g5ZJ0N9
+        TUxWeLJmm0C/LK1jae3MzdeQaUzpk7/bewGPp4WSfMOPLQLlHo15EOUaRPdZQe1KxUGACU/bzO5eD
+        N5gPN/4CzYf1fpwQkilDU6VpFejJX7Wu73Fax26ASw0Iuu8zKofWNHRr7KINRp46Qzmm2as0xom2u
+        tndeoww+nFmqe7gj66l9xHoWNA2kfKeNl1VnJjJYkMoa793iSvz0QzVA+FwM2hnmpb2WsBkxzcXKb
+        d9MrWn5A==;
+Received: from mail-wr1-f43.google.com ([209.85.221.43])
+        by smtp6.tb.mail.iss.as9143.net with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.90_1)
+        (envelope-from <karsdejong@home.nl>)
+        id 1ibk5q-00029N-P9
+        for linux-m68k@lists.linux-m68k.org; Mon, 02 Dec 2019 12:42:18 +0100
+Received: by mail-wr1-f43.google.com with SMTP id a15so43828145wrf.9
+        for <linux-m68k@lists.linux-m68k.org>; Mon, 02 Dec 2019 03:42:18 -0800 (PST)
+X-Gm-Message-State: APjAAAWm3WRq3bZb6Qpy9/gmvLFj5f6QnwvrPyzNZGLK77ecq4mCGm0m
+        u7NcBzBXorfZYQNTDdl6lIX7eooEBGTVqolnkBs=
+X-Google-Smtp-Source: APXvYqz7beAF7NVKzbZBeYsQhk6HkVllb6e0glkpL5bjyQ+026De230D24PuabZGNA1S9X13vvdS040AL9ds4Hlfc24=
+X-Received: by 2002:a5d:51c6:: with SMTP id n6mr21525943wrv.250.1575286938367;
+ Mon, 02 Dec 2019 03:42:18 -0800 (PST)
 MIME-Version: 1.0
-References: <021330b6-67a2-0b74-c129-5c725dd23810@infradead.org>
-In-Reply-To: <021330b6-67a2-0b74-c129-5c725dd23810@infradead.org>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Wed, 27 Nov 2019 08:12:54 +0100
-Message-ID: <CAMuHMdVLusDDB5G1R7=-53sK1bd2+3=s42hr9xkgPtWyjOrozg@mail.gmail.com>
+References: <021330b6-67a2-0b74-c129-5c725dd23810@infradead.org> <CAMuHMdVLusDDB5G1R7=-53sK1bd2+3=s42hr9xkgPtWyjOrozg@mail.gmail.com>
+In-Reply-To: <CAMuHMdVLusDDB5G1R7=-53sK1bd2+3=s42hr9xkgPtWyjOrozg@mail.gmail.com>
+From:   Kars de Jong <karsdejong@home.nl>
+Date:   Mon, 2 Dec 2019 12:42:07 +0100
+X-Gmail-Original-Message-ID: <CACz-3rjOPg_rMt_FbJ5_nKLpjTK-Bv=amGsJpXwqbTBNX4YA7w@mail.gmail.com>
+Message-ID: <CACz-3rjOPg_rMt_FbJ5_nKLpjTK-Bv=amGsJpXwqbTBNX4YA7w@mail.gmail.com>
 Subject: Re: m68k Kconfig warning
-To:     Randy Dunlap <rdunlap@infradead.org>
-Cc:     linux-m68k <linux-m68k@lists.linux-m68k.org>,
+To:     Geert Uytterhoeven <geert@linux-m68k.org>
+Cc:     Randy Dunlap <rdunlap@infradead.org>,
+        linux-m68k <linux-m68k@lists.linux-m68k.org>,
         LKML <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
+X-SourceIP: 209.85.221.43
+X-Authenticated-Sender: karsdejong@home.nl (via SMTP)
+X-Ziggo-spambar: /
+X-Ziggo-spamscore: 0.0
+X-Ziggo-spamreport: CMAE Analysis: v=2.3 cv=ZLepZkzb c=1 sm=1 tr=0 a=9+rZDBEiDlHhcck0kWbJtElFXBc=:19 a=jpOVt7BSZ2e4Z31A5e1TngXxSK0=:19 a=IkcTkHD0fZMA:10 a=pxVhFHJ0LMsA:10 a=tBb2bbeoAAAA:8 a=JfrnYn6hAAAA:8 a=_nT3hX5ytRn4k0QMb7MA:9 a=QEXdDO2ut3YA:10 a=Oj-tNtZlA1e06AYgeCfH:22 a=1CNFftbPRP8L7MoqJWF3:22
+X-Ziggo-Spam-Status: No
 Sender: linux-m68k-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-Hi Randy,
+Hi Geert & Randy,
 
-On Wed, Nov 27, 2019 at 2:27 AM Randy Dunlap <rdunlap@infradead.org> wrote:
-> Just noticed this.  I don't know what the right fix is.
-> Would you take care of it, please?
+Op wo 27 nov. 2019 om 08:12 schreef Geert Uytterhoeven <geert@linux-m68k.org>:
+> On Wed, Nov 27, 2019 at 2:27 AM Randy Dunlap <rdunlap@infradead.org> wrote:
+> > Just noticed this.  I don't know what the right fix is.
+> > Would you take care of it, please?
+> >
+> > on Linux 5.4, m68k allmodconfig:
+> >
+> > WARNING: unmet direct dependencies detected for NEED_MULTIPLE_NODES
+> >   Depends on [n]: DISCONTIGMEM [=n] || NUMA
+> >   Selected by [y]:
+> >   - SINGLE_MEMORY_CHUNK [=y] && MMU [=y]
 >
-> on Linux 5.4, m68k allmodconfig:
->
-> WARNING: unmet direct dependencies detected for NEED_MULTIPLE_NODES
->   Depends on [n]: DISCONTIGMEM [=n] || NUMA
->   Selected by [y]:
->   - SINGLE_MEMORY_CHUNK [=y] && MMU [=y]
+> This has been basically there forever, but working.
 
-This has been basically there forever, but working.
+The reason for SINGLE_MEMORY_CHUNK depending on NEED_MULTIPLE_NODES is
+historic due to the way it is implemented.
+I played with it this weekend and I got a working version of FLATMEM,
+which can replace SINGLE_MEMORY_CHUNK.
 
-Gr{oetje,eeting}s,
+I'll clean it up and send a patch later this week. A possible next
+step might be to replace DISCONTIGMEM with SPARSEMEM (since
+DISCONTIGMEM has been deprecated).
 
-                        Geert
+Kind regards,
 
-
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+Kars.
