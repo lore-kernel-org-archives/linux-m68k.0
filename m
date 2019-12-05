@@ -2,85 +2,68 @@ Return-Path: <SRS0=9mC5=Z3=vger.kernel.org=linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-12.2 required=3.0
-	tests=HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PULL_REQUEST,MAILING_LIST_MULTI,
-	MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=ham
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-6.1 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,
+	SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D2741C43603
-	for <linux-m68k@archiver.kernel.org>; Thu,  5 Dec 2019 19:43:34 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4B9E1C43603
+	for <linux-m68k@archiver.kernel.org>; Thu,  5 Dec 2019 20:45:48 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id ABD25224F8
-	for <linux-m68k@archiver.kernel.org>; Thu,  5 Dec 2019 19:43:34 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 203B624670
+	for <linux-m68k@archiver.kernel.org>; Thu,  5 Dec 2019 20:45:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=default; t=1575578748;
+	bh=0d1nPJ+cKdSm3/7vHy9vhIOX/dHiQ+A9pNOLhUV3ZY8=;
+	h=Subject:From:In-Reply-To:References:Date:To:Cc:List-ID:From;
+	b=dTM/a6GBQxkp3nzQP/XM9z/uQHaY7QPZFZ0Rzd5AMFIUiOrLj3ybyXTY7CRauMmHI
+	 jT6J0L0nzTAuo6auwWlNsFfsfOq9NPA7Fo4oV2uDcuT0S1nkiZaqTTNuhPcHyjlbNT
+	 bo1ySdLyriR7AvOLaPrifibuqAwyMoo8IjONjonc=
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726589AbfLETne (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Thu, 5 Dec 2019 14:43:34 -0500
-Received: from icp-osb-irony-out9.external.iinet.net.au ([203.59.1.226]:52977
-        "EHLO icp-osb-irony-out9.external.iinet.net.au" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726028AbfLETne (ORCPT
-        <rfc822;linux-m68k@vger.kernel.org>); Thu, 5 Dec 2019 14:43:34 -0500
-X-Greylist: delayed 557 seconds by postgrey-1.27 at vger.kernel.org; Thu, 05 Dec 2019 14:43:32 EST
-X-IronPort-Anti-Spam-Filtered: true
-X-IronPort-Anti-Spam-Result: =?us-ascii?q?A2D5AABIW+ld/zXSMGcNWBwBAQEBAQc?=
- =?us-ascii?q?BAREBBAQBAYF+gwyBMYQrj2YGiyCRRAkBAQEBAQEBAQEjFAEBhECCOTgTAhA?=
- =?us-ascii?q?BAQEEAQEBAQEFAwGFWEyFYScVQSgNAiYCbAgBAYMeAYJSrmB1gTIaiGmBSIE?=
- =?us-ascii?q?OKIFlikx5gQeBOIc8gQSCQ4JeBI0wiUGXWQiCMIcfjjUhgkGHboQsA4tIqn6?=
- =?us-ascii?q?BejMaCCgIgycJR5YShVFijyeCQQEB?=
-X-IPAS-Result: =?us-ascii?q?A2D5AABIW+ld/zXSMGcNWBwBAQEBAQcBAREBBAQBAYF+g?=
- =?us-ascii?q?wyBMYQrj2YGiyCRRAkBAQEBAQEBAQEjFAEBhECCOTgTAhABAQEEAQEBAQEFA?=
- =?us-ascii?q?wGFWEyFYScVQSgNAiYCbAgBAYMeAYJSrmB1gTIaiGmBSIEOKIFlikx5gQeBO?=
- =?us-ascii?q?Ic8gQSCQ4JeBI0wiUGXWQiCMIcfjjUhgkGHboQsA4tIqn6BejMaCCgIgycJR?=
- =?us-ascii?q?5YShVFijyeCQQEB?=
-X-IronPort-AV: E=Sophos;i="5.69,282,1571673600"; 
-   d="scan'208";a="216494522"
-Received: from unknown (HELO [10.44.0.192]) ([103.48.210.53])
-  by icp-osb-irony-out9.iinet.net.au with ESMTP; 06 Dec 2019 03:34:11 +0800
-From:   Greg Ungerer <gerg@linux-m68k.org>
-Subject: [git pull] m68knommu changes for v5.5
-To:     torvalds@linux-foundation.org
-Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        id S1730239AbfLEUpn (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Thu, 5 Dec 2019 15:45:43 -0500
+Received: from mail.kernel.org ([198.145.29.99]:43564 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1730189AbfLEUpe (ORCPT <rfc822;linux-m68k@vger.kernel.org>);
+        Thu, 5 Dec 2019 15:45:34 -0500
+Subject: Re: [git pull] m68knommu changes for v5.5
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1575578734;
+        bh=0d1nPJ+cKdSm3/7vHy9vhIOX/dHiQ+A9pNOLhUV3ZY8=;
+        h=From:In-Reply-To:References:Date:To:Cc:From;
+        b=GpFba8ffmPFuf8Pknj7+qs8sqe3ygSPPGDQNBrV7V589JjldRPU2WcsChoN2W1xby
+         B9f6Pa5EVHUQV7cBVA9WHr8jXNXNyAWjq8CRKPsOa9eDLJpqT4o3HSLZkyZRsbfF36
+         TYXOUr508sIpZkgDaBBNag3ufLM8iOyHSDOnJedA=
+From:   pr-tracker-bot@kernel.org
+In-Reply-To: <b0a3cf1a-940e-f4e0-7102-acee10248048@linux-m68k.org>
+References: <b0a3cf1a-940e-f4e0-7102-acee10248048@linux-m68k.org>
+X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
+X-PR-Tracked-Message-Id: <b0a3cf1a-940e-f4e0-7102-acee10248048@linux-m68k.org>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/gerg/m68knommu.git for-next
+X-PR-Tracked-Commit-Id: 3ad3cbe305b5a23d829d3723b60be59c36713992
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: 25cfb0c7de3f14e283a43dcd6de903657f9f98c7
+Message-Id: <157557873430.26858.3527075994340860808.pr-tracker-bot@kernel.org>
+Date:   Thu, 05 Dec 2019 20:45:34 +0000
+To:     Greg Ungerer <gerg@linux-m68k.org>
+Cc:     torvalds@linux-foundation.org,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
         Linux/m68k <linux-m68k@vger.kernel.org>,
         Geert Uytterhoeven <geert@linux-m68k.org>
-Message-ID: <b0a3cf1a-940e-f4e0-7102-acee10248048@linux-m68k.org>
-Date:   Fri, 6 Dec 2019 05:34:06 +1000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.2.1
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
 Sender: linux-m68k-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
+The pull request you sent on Fri, 6 Dec 2019 05:34:06 +1000:
 
-Hi Linus,
+> git://git.kernel.org/pub/scm/linux/kernel/git/gerg/m68knommu.git for-next
 
-Can you please pull the m68knommu git tree, for-next branch.
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/25cfb0c7de3f14e283a43dcd6de903657f9f98c7
 
-Only a single change, to enable coldfire preemption entry code for all
-preemption types.
+Thank you!
 
-Regards
-Greg
-
-
-The following changes since commit 31f4f5b495a62c9a8b15b1c3581acd5efeb9af8c:
-
-   Linux 5.4-rc7 (2019-11-10 16:17:15 -0800)
-
-are available in the Git repository at:
-
-   git://git.kernel.org/pub/scm/linux/kernel/git/gerg/m68knommu.git for-next
-
-for you to fetch changes up to 3ad3cbe305b5a23d829d3723b60be59c36713992:
-
-   m68k/coldfire: Use CONFIG_PREEMPTION (2019-11-11 10:54:40 +1000)
-
-----------------------------------------------------------------
-Thomas Gleixner (1):
-       m68k/coldfire: Use CONFIG_PREEMPTION
-
-  arch/m68k/coldfire/entry.S | 2 +-
-  1 file changed, 1 insertion(+), 1 deletion(-)
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.wiki.kernel.org/userdoc/prtracker
