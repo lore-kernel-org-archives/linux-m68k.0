@@ -1,103 +1,86 @@
-Return-Path: <SRS0=ZTxP=Z2=vger.kernel.org=linux-m68k-owner@kernel.org>
+Return-Path: <SRS0=9mC5=Z3=vger.kernel.org=linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-0.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-12.2 required=3.0
+	tests=HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PULL_REQUEST,MAILING_LIST_MULTI,
+	MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 67460C43603
-	for <linux-m68k@archiver.kernel.org>; Wed,  4 Dec 2019 11:59:14 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D2741C43603
+	for <linux-m68k@archiver.kernel.org>; Thu,  5 Dec 2019 19:43:34 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 059B020833
-	for <linux-m68k@archiver.kernel.org>; Wed,  4 Dec 2019 11:59:14 +0000 (UTC)
-Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=home.nl header.i=@home.nl header.b="SaRSN727"
+	by mail.kernel.org (Postfix) with ESMTP id ABD25224F8
+	for <linux-m68k@archiver.kernel.org>; Thu,  5 Dec 2019 19:43:34 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727552AbfLDL7N (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Wed, 4 Dec 2019 06:59:13 -0500
-Received: from smtpq3.tb.mail.iss.as9143.net ([212.54.42.166]:60242 "EHLO
-        smtpq3.tb.mail.iss.as9143.net" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727472AbfLDL7N (ORCPT
-        <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Wed, 4 Dec 2019 06:59:13 -0500
-Received: from [212.54.42.110] (helo=smtp7.tb.mail.iss.as9143.net)
-        by smtpq3.tb.mail.iss.as9143.net with esmtps (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.90_1)
-        (envelope-from <karsdejong@home.nl>)
-        id 1icTJG-0005MT-FR
-        for linux-m68k@lists.linux-m68k.org; Wed, 04 Dec 2019 12:59:10 +0100
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=home.nl;
-        s=201809corplgsmtpnl; h=To:Subject:Date:From;
-        bh=ctsngSql8V/68u90oqG+vBHrsckbJGiTkA3lBY91vOI=; b=SaRSN727nU5S+gxITtR6+2S+ul
-        KFyuhCD/6cjLU22oc+vGCQkP1mjLN97ofITwZzKvgCZio9r74GCzFu85IDBle1S7mJLe8PG7gDgCv
-        qyTgeHdDnQCODZ3QlxeOaIdUBH46nIXNhXAoYIPg+CqV4pnJTaxfqQP3kKvzleQV3ElFBUx1Wl3g9
-        uBP5XP/E+y7GLKh3By7EEzIzP3o1PTkaYv28xS7Kd2i+Iz1rNiws5V0pYxNjisC8HcVNc0f3GkvXc
-        puDj49B/GZoIT1LoGx5g9EmfTa4nh9M8oypIr2zND52vyGuUpw2P/ZztqcUucL1fOErZXgLgFEUGD
-        HnORmc8Q==;
-Received: from mail-wm1-f46.google.com ([209.85.128.46])
-        by smtp7.tb.mail.iss.as9143.net with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.90_1)
-        (envelope-from <karsdejong@home.nl>)
-        id 1icTJG-0007h3-Aq
-        for linux-m68k@lists.linux-m68k.org; Wed, 04 Dec 2019 12:59:10 +0100
-Received: by mail-wm1-f46.google.com with SMTP id t14so7578736wmi.5
-        for <linux-m68k@lists.linux-m68k.org>; Wed, 04 Dec 2019 03:59:10 -0800 (PST)
-X-Gm-Message-State: APjAAAXat7kQ31PuaEskYxrdvP2en0O/xmDY5EcqyV0Oi1X0X+ZoPwsF
-        5Lr8ky9dh/4NAtbOxwfq1tkkNOzcq2qcVGcnQQg=
-X-Google-Smtp-Source: APXvYqzoOGNqo/C6gUey7nH9NPOkmtnUbyrg2K//qgNr7vxg1TRx1SLn451bLnlEPnxZn5lZKJYvmIVOtPF2pKSgGQI=
-X-Received: by 2002:a7b:cc0c:: with SMTP id f12mr39417372wmh.5.1575460750071;
- Wed, 04 Dec 2019 03:59:10 -0800 (PST)
+        id S1726589AbfLETne (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Thu, 5 Dec 2019 14:43:34 -0500
+Received: from icp-osb-irony-out9.external.iinet.net.au ([203.59.1.226]:52977
+        "EHLO icp-osb-irony-out9.external.iinet.net.au" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726028AbfLETne (ORCPT
+        <rfc822;linux-m68k@vger.kernel.org>); Thu, 5 Dec 2019 14:43:34 -0500
+X-Greylist: delayed 557 seconds by postgrey-1.27 at vger.kernel.org; Thu, 05 Dec 2019 14:43:32 EST
+X-IronPort-Anti-Spam-Filtered: true
+X-IronPort-Anti-Spam-Result: =?us-ascii?q?A2D5AABIW+ld/zXSMGcNWBwBAQEBAQc?=
+ =?us-ascii?q?BAREBBAQBAYF+gwyBMYQrj2YGiyCRRAkBAQEBAQEBAQEjFAEBhECCOTgTAhA?=
+ =?us-ascii?q?BAQEEAQEBAQEFAwGFWEyFYScVQSgNAiYCbAgBAYMeAYJSrmB1gTIaiGmBSIE?=
+ =?us-ascii?q?OKIFlikx5gQeBOIc8gQSCQ4JeBI0wiUGXWQiCMIcfjjUhgkGHboQsA4tIqn6?=
+ =?us-ascii?q?BejMaCCgIgycJR5YShVFijyeCQQEB?=
+X-IPAS-Result: =?us-ascii?q?A2D5AABIW+ld/zXSMGcNWBwBAQEBAQcBAREBBAQBAYF+g?=
+ =?us-ascii?q?wyBMYQrj2YGiyCRRAkBAQEBAQEBAQEjFAEBhECCOTgTAhABAQEEAQEBAQEFA?=
+ =?us-ascii?q?wGFWEyFYScVQSgNAiYCbAgBAYMeAYJSrmB1gTIaiGmBSIEOKIFlikx5gQeBO?=
+ =?us-ascii?q?Ic8gQSCQ4JeBI0wiUGXWQiCMIcfjjUhgkGHboQsA4tIqn6BejMaCCgIgycJR?=
+ =?us-ascii?q?5YShVFijyeCQQEB?=
+X-IronPort-AV: E=Sophos;i="5.69,282,1571673600"; 
+   d="scan'208";a="216494522"
+Received: from unknown (HELO [10.44.0.192]) ([103.48.210.53])
+  by icp-osb-irony-out9.iinet.net.au with ESMTP; 06 Dec 2019 03:34:11 +0800
+From:   Greg Ungerer <gerg@linux-m68k.org>
+Subject: [git pull] m68knommu changes for v5.5
+To:     torvalds@linux-foundation.org
+Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Linux/m68k <linux-m68k@vger.kernel.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>
+Message-ID: <b0a3cf1a-940e-f4e0-7102-acee10248048@linux-m68k.org>
+Date:   Fri, 6 Dec 2019 05:34:06 +1000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.2.1
 MIME-Version: 1.0
-References: <021330b6-67a2-0b74-c129-5c725dd23810@infradead.org>
- <CAMuHMdVLusDDB5G1R7=-53sK1bd2+3=s42hr9xkgPtWyjOrozg@mail.gmail.com>
- <CACz-3rjOPg_rMt_FbJ5_nKLpjTK-Bv=amGsJpXwqbTBNX4YA7w@mail.gmail.com>
- <CAMuHMdW1iqNkmCztAv93W4eLR5ooxh5m+vRLJHJmCfrjsOmc5g@mail.gmail.com> <20191202160101.GB17203@linux.ibm.com>
-In-Reply-To: <20191202160101.GB17203@linux.ibm.com>
-From:   Kars de Jong <karsdejong@home.nl>
-Date:   Wed, 4 Dec 2019 12:58:59 +0100
-X-Gmail-Original-Message-ID: <CACz-3riEr_HFAxQV8aorSqSwCyX9ZutwUqRR0qK8DuWg8ZWsJg@mail.gmail.com>
-Message-ID: <CACz-3riEr_HFAxQV8aorSqSwCyX9ZutwUqRR0qK8DuWg8ZWsJg@mail.gmail.com>
-Subject: Re: m68k Kconfig warning
-To:     Mike Rapoport <rppt@linux.ibm.com>
-Cc:     Geert Uytterhoeven <geert@linux-m68k.org>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        linux-m68k <linux-m68k@lists.linux-m68k.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-X-SourceIP: 209.85.128.46
-X-Authenticated-Sender: karsdejong@home.nl (via SMTP)
-X-Ziggo-spambar: /
-X-Ziggo-spamscore: 0.0
-X-Ziggo-spamreport: CMAE Analysis: v=2.3 cv=J/PUEzvS c=1 sm=1 tr=0 a=9+rZDBEiDlHhcck0kWbJtElFXBc=:19 a=jpOVt7BSZ2e4Z31A5e1TngXxSK0=:19 a=IkcTkHD0fZMA:10 a=pxVhFHJ0LMsA:10 a=VnNF1IyMAAAA:8 a=OLL_FvSJAAAA:8 a=jEDXOZ2Y3Er59CGDZ9IA:9 a=QEXdDO2ut3YA:10 a=SJ0VGiGEqQ4A:10 a=q0Gla3feQdIA:10 a=oIrB72frpwYPwTMnlWqB:22
-X-Ziggo-Spam-Status: No
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-m68k-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-Hi Mike!
 
-Op ma 2 dec. 2019 om 17:01 schreef Mike Rapoport <rppt@linux.ibm.com>:
-> The patches are here:
-> https://www.spinics.net/lists/linux-m68k/msg13588.html
->
-> Aside from some technicalities we had troubles deciding what should be the
-> section size. With larger section size we might end up with wasted memory
-> for memory maps and with smaller section size we'll have to limit the
-> addressable physical memory...
+Hi Linus,
 
-I read through that thread. I believe our current page->flags needs 22
-bits for the normal FLAGS and 2 bits for the ZONES, which leaves 8
-bits for the SECTION. This is what Geert found out (it worked with
-MAX_PHYSMEM_BITS = 30 and SECTION_SIZE_BITS = 22).
-I think we can reduces ZONES to a single bit. We currently put all
-memory in ZONE_DMA, so I think we might just as well put it in
-ZONE_NORMAL and disable ZONE_DMA.
+Can you please pull the m68knommu git tree, for-next branch.
 
-That would enable us to have 8 MB sections and use the full 32-bit
-address space, correct? That may be a working compromise?
+Only a single change, to enable coldfire preemption entry code for all
+preemption types.
 
-Kind regards,
+Regards
+Greg
 
-Kars.
+
+The following changes since commit 31f4f5b495a62c9a8b15b1c3581acd5efeb9af8c:
+
+   Linux 5.4-rc7 (2019-11-10 16:17:15 -0800)
+
+are available in the Git repository at:
+
+   git://git.kernel.org/pub/scm/linux/kernel/git/gerg/m68knommu.git for-next
+
+for you to fetch changes up to 3ad3cbe305b5a23d829d3723b60be59c36713992:
+
+   m68k/coldfire: Use CONFIG_PREEMPTION (2019-11-11 10:54:40 +1000)
+
+----------------------------------------------------------------
+Thomas Gleixner (1):
+       m68k/coldfire: Use CONFIG_PREEMPTION
+
+  arch/m68k/coldfire/entry.S | 2 +-
+  1 file changed, 1 insertion(+), 1 deletion(-)
