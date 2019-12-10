@@ -1,97 +1,459 @@
-Return-Path: <SRS0=T0KM=Z7=vger.kernel.org=linux-m68k-owner@kernel.org>
+Return-Path: <SRS0=YPiE=2A=vger.kernel.org=linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-0.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
-	SPF_HELO_NONE,SPF_PASS,UNPARSEABLE_RELAY autolearn=no autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-9.0 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,
+	UPPERCASE_50_75,USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D8F5DC43603
-	for <linux-m68k@archiver.kernel.org>; Mon,  9 Dec 2019 23:15:58 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4E06CC43603
+	for <linux-m68k@archiver.kernel.org>; Tue, 10 Dec 2019 08:58:46 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id AD3122068E
-	for <linux-m68k@archiver.kernel.org>; Mon,  9 Dec 2019 23:15:58 +0000 (UTC)
-Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="Uvc4ao3U"
+	by mail.kernel.org (Postfix) with ESMTP id 1818020663
+	for <linux-m68k@archiver.kernel.org>; Tue, 10 Dec 2019 08:58:46 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727213AbfLIXP6 (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Mon, 9 Dec 2019 18:15:58 -0500
-Received: from aserp2120.oracle.com ([141.146.126.78]:38682 "EHLO
-        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726743AbfLIXP6 (ORCPT
-        <rfc822;linux-m68k@vger.kernel.org>); Mon, 9 Dec 2019 18:15:58 -0500
-Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
-        by aserp2120.oracle.com (8.16.0.27/8.16.0.27) with SMTP id xB9NEXAt192736;
-        Mon, 9 Dec 2019 23:15:46 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=to : cc : subject :
- from : references : date : in-reply-to : message-id : mime-version :
- content-type; s=corp-2019-08-05;
- bh=nVMKkNRVusSAquMj4+OPkuKnOWiU08LDTPsMrN1zdc4=;
- b=Uvc4ao3Uxp9DQj4U+2D/kblKFQG977g6XHvoB2V2fCq0J2QalegHh+YbjcIO8qA26e7Y
- Ar9LfyXrDrI5M8T4Qj30fqe7lZEqFDJ5jt0KL+pz8dtnL+5fcbG9Edz4c7JBpD2aw2Yf
- AQAwZKOscuiYJMF/eUvUN3WyZSO32+ttI89kVq3UPfL+M2e8PWnBKQAAUj63IpbuDMEc
- QfsUKmlZGCd13auuWWeGyRy1vUhI2ZkLgKg/35nd7k4HYmbid8h6pP2jT/g4/brSSR4P
- TONw60wL3b5KllzctJKm0FsPMEqODYZIoB1SqpO2pigHcMusVMTlqjLoZMMQaj2UUPLK PA== 
-Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
-        by aserp2120.oracle.com with ESMTP id 2wr41q2rrs-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 09 Dec 2019 23:15:46 +0000
-Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
-        by aserp3030.oracle.com (8.16.0.27/8.16.0.27) with SMTP id xB9NEk2D160118;
-        Mon, 9 Dec 2019 23:15:46 GMT
-Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
-        by aserp3030.oracle.com with ESMTP id 2wsru823tp-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 09 Dec 2019 23:15:46 +0000
-Received: from abhmp0001.oracle.com (abhmp0001.oracle.com [141.146.116.7])
-        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id xB9NFi9Z002004;
-        Mon, 9 Dec 2019 23:15:44 GMT
-Received: from ca-mkp.ca.oracle.com (/10.159.214.123)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Mon, 09 Dec 2019 15:15:44 -0800
-To:     Kars de Jong <jongk@linux-m68k.org>
-Cc:     "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Hannes Reinecke <hare@suse.com>, linux-scsi@vger.kernel.org,
-        linux-m68k@vger.kernel.org, schmitzmic@gmail.com,
-        fthain@telegraphics.com.au
-Subject: Re: [PATCH v5 0/2] Some esp_scsi updates
-From:   "Martin K. Petersen" <martin.petersen@oracle.com>
-Organization: Oracle Corporation
-References: <20191119202021.28720-1-jongk@linux-m68k.org>
-Date:   Mon, 09 Dec 2019 18:15:42 -0500
-In-Reply-To: <20191119202021.28720-1-jongk@linux-m68k.org> (Kars de Jong's
-        message of "Tue, 19 Nov 2019 21:20:19 +0100")
-Message-ID: <yq1k175qee9.fsf@oracle.com>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1.92 (gnu/linux)
-MIME-Version: 1.0
-Content-Type: text/plain
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9466 signatures=668685
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 malwarescore=0
- phishscore=0 bulkscore=0 spamscore=0 mlxscore=0 mlxlogscore=718
- adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.0.1-1911140001 definitions=main-1912090183
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9466 signatures=668685
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 malwarescore=0
- suspectscore=0 phishscore=0 bulkscore=0 spamscore=0 clxscore=1015
- lowpriorityscore=0 mlxscore=0 impostorscore=0 mlxlogscore=799 adultscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.0.1-1911140001
- definitions=main-1912090183
+        id S1726957AbfLJI6p (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Tue, 10 Dec 2019 03:58:45 -0500
+Received: from andre.telenet-ops.be ([195.130.132.53]:34024 "EHLO
+        andre.telenet-ops.be" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726847AbfLJI6p (ORCPT
+        <rfc822;linux-m68k@lists.linux-m68k.org>);
+        Tue, 10 Dec 2019 03:58:45 -0500
+Received: from ramsan ([84.195.182.253])
+        by andre.telenet-ops.be with bizsmtp
+        id c8yf2100Z5USYZQ018yf1y; Tue, 10 Dec 2019 09:58:39 +0100
+Received: from rox.of.borg ([192.168.97.57])
+        by ramsan with esmtp (Exim 4.90_1)
+        (envelope-from <geert@linux-m68k.org>)
+        id 1iebLr-0006CU-Hx; Tue, 10 Dec 2019 09:58:39 +0100
+Received: from geert by rox.of.borg with local (Exim 4.90_1)
+        (envelope-from <geert@linux-m68k.org>)
+        id 1iebLr-0006Gt-FC; Tue, 10 Dec 2019 09:58:39 +0100
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+To:     linux-m68k@lists.linux-m68k.org
+Cc:     linux-kernel@vger.kernel.org,
+        Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: [PATCH] m68k: defconfig: Update defconfigs for v5.5-rc1
+Date:   Tue, 10 Dec 2019 09:58:38 +0100
+Message-Id: <20191210085838.24066-1-geert@linux-m68k.org>
+X-Mailer: git-send-email 2.17.1
 Sender: linux-m68k-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
+  - Enable modular build of new crypto algorithms:
+      - CONFIG_CRYPTO_BLAKE2B=m,
+      - CONFIG_CRYPTO_BLAKE2S=m,
+      - CONFIG_CRYPTO_CURVE25519=m,
+      - CONFIG_CRYPTO_LIB_BLAKE2S=m,
+      - CONFIG_CRYPTO_LIB_CHACHA20POLY1305=m,
+      - CONFIG_CRYPTO_LIB_CURVE25519=m.
+  - Remove CONFIG_CRYPTO_XXHASH=m (auto-selected by BTRFS_FS since
+    commit 3951e7f050ac6a38 ("btrfs: add xxhash64 to checksumming
+    algorithms").
+	-CONFIG_CRYPTO_XXHASH=m
 
-Kars,
+Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
+---
+ arch/m68k/configs/amiga_defconfig    | 7 ++++++-
+ arch/m68k/configs/apollo_defconfig   | 7 ++++++-
+ arch/m68k/configs/atari_defconfig    | 7 ++++++-
+ arch/m68k/configs/bvme6000_defconfig | 7 ++++++-
+ arch/m68k/configs/hp300_defconfig    | 7 ++++++-
+ arch/m68k/configs/mac_defconfig      | 7 ++++++-
+ arch/m68k/configs/multi_defconfig    | 7 ++++++-
+ arch/m68k/configs/mvme147_defconfig  | 7 ++++++-
+ arch/m68k/configs/mvme16x_defconfig  | 7 ++++++-
+ arch/m68k/configs/q40_defconfig      | 7 ++++++-
+ arch/m68k/configs/sun3_defconfig     | 7 ++++++-
+ arch/m68k/configs/sun3x_defconfig    | 7 ++++++-
+ 12 files changed, 72 insertions(+), 12 deletions(-)
 
-> When trying kernel 5.4.0-rc5 on my Amiga, I experienced data transfer
-> failures when reading from my FAST-10 SCSI disk. I have a Blizzard
-> 12x0 IV SCSI controller which uses a Symbios Logic SYM53CF94-2 "FSC"
-> chip.
-
-Applied to 5.6/scsi-queue, thanks!
-
+diff --git a/arch/m68k/configs/amiga_defconfig b/arch/m68k/configs/amiga_defconfig
+index 619d30d663a2f515..998c6b8c2747da84 100644
+--- a/arch/m68k/configs/amiga_defconfig
++++ b/arch/m68k/configs/amiga_defconfig
+@@ -562,6 +562,7 @@ CONFIG_CRYPTO_RSA=m
+ CONFIG_CRYPTO_DH=m
+ CONFIG_CRYPTO_ECDH=m
+ CONFIG_CRYPTO_ECRDSA=m
++CONFIG_CRYPTO_CURVE25519=m
+ CONFIG_CRYPTO_CHACHA20POLY1305=m
+ CONFIG_CRYPTO_AEGIS128=m
+ CONFIG_CRYPTO_CFB=m
+@@ -574,7 +575,8 @@ CONFIG_CRYPTO_KEYWRAP=m
+ CONFIG_CRYPTO_ADIANTUM=m
+ CONFIG_CRYPTO_XCBC=m
+ CONFIG_CRYPTO_VMAC=m
+-CONFIG_CRYPTO_XXHASH=m
++CONFIG_CRYPTO_BLAKE2B=m
++CONFIG_CRYPTO_BLAKE2S=m
+ CONFIG_CRYPTO_MICHAEL_MIC=m
+ CONFIG_CRYPTO_RMD128=m
+ CONFIG_CRYPTO_RMD160=m
+@@ -612,6 +614,9 @@ CONFIG_CRYPTO_USER_API_HASH=m
+ CONFIG_CRYPTO_USER_API_SKCIPHER=m
+ CONFIG_CRYPTO_USER_API_RNG=m
+ CONFIG_CRYPTO_USER_API_AEAD=m
++CONFIG_CRYPTO_LIB_BLAKE2S=m
++CONFIG_CRYPTO_LIB_CURVE25519=m
++CONFIG_CRYPTO_LIB_CHACHA20POLY1305=m
+ # CONFIG_CRYPTO_HW is not set
+ CONFIG_CRC32_SELFTEST=m
+ CONFIG_CRC64=m
+diff --git a/arch/m68k/configs/apollo_defconfig b/arch/m68k/configs/apollo_defconfig
+index caa0558abcdbdeb3..5b9c1fd92714141c 100644
+--- a/arch/m68k/configs/apollo_defconfig
++++ b/arch/m68k/configs/apollo_defconfig
+@@ -518,6 +518,7 @@ CONFIG_CRYPTO_RSA=m
+ CONFIG_CRYPTO_DH=m
+ CONFIG_CRYPTO_ECDH=m
+ CONFIG_CRYPTO_ECRDSA=m
++CONFIG_CRYPTO_CURVE25519=m
+ CONFIG_CRYPTO_CHACHA20POLY1305=m
+ CONFIG_CRYPTO_AEGIS128=m
+ CONFIG_CRYPTO_CFB=m
+@@ -530,7 +531,8 @@ CONFIG_CRYPTO_KEYWRAP=m
+ CONFIG_CRYPTO_ADIANTUM=m
+ CONFIG_CRYPTO_XCBC=m
+ CONFIG_CRYPTO_VMAC=m
+-CONFIG_CRYPTO_XXHASH=m
++CONFIG_CRYPTO_BLAKE2B=m
++CONFIG_CRYPTO_BLAKE2S=m
+ CONFIG_CRYPTO_MICHAEL_MIC=m
+ CONFIG_CRYPTO_RMD128=m
+ CONFIG_CRYPTO_RMD160=m
+@@ -568,6 +570,9 @@ CONFIG_CRYPTO_USER_API_HASH=m
+ CONFIG_CRYPTO_USER_API_SKCIPHER=m
+ CONFIG_CRYPTO_USER_API_RNG=m
+ CONFIG_CRYPTO_USER_API_AEAD=m
++CONFIG_CRYPTO_LIB_BLAKE2S=m
++CONFIG_CRYPTO_LIB_CURVE25519=m
++CONFIG_CRYPTO_LIB_CHACHA20POLY1305=m
+ # CONFIG_CRYPTO_HW is not set
+ CONFIG_CRC32_SELFTEST=m
+ CONFIG_CRC64=m
+diff --git a/arch/m68k/configs/atari_defconfig b/arch/m68k/configs/atari_defconfig
+index e6c9b760802996e2..a2cb5010a9e49401 100644
+--- a/arch/m68k/configs/atari_defconfig
++++ b/arch/m68k/configs/atari_defconfig
+@@ -551,6 +551,7 @@ CONFIG_CRYPTO_RSA=m
+ CONFIG_CRYPTO_DH=m
+ CONFIG_CRYPTO_ECDH=m
+ CONFIG_CRYPTO_ECRDSA=m
++CONFIG_CRYPTO_CURVE25519=m
+ CONFIG_CRYPTO_CHACHA20POLY1305=m
+ CONFIG_CRYPTO_AEGIS128=m
+ CONFIG_CRYPTO_CFB=m
+@@ -563,7 +564,8 @@ CONFIG_CRYPTO_KEYWRAP=m
+ CONFIG_CRYPTO_ADIANTUM=m
+ CONFIG_CRYPTO_XCBC=m
+ CONFIG_CRYPTO_VMAC=m
+-CONFIG_CRYPTO_XXHASH=m
++CONFIG_CRYPTO_BLAKE2B=m
++CONFIG_CRYPTO_BLAKE2S=m
+ CONFIG_CRYPTO_MICHAEL_MIC=m
+ CONFIG_CRYPTO_RMD128=m
+ CONFIG_CRYPTO_RMD160=m
+@@ -601,6 +603,9 @@ CONFIG_CRYPTO_USER_API_HASH=m
+ CONFIG_CRYPTO_USER_API_SKCIPHER=m
+ CONFIG_CRYPTO_USER_API_RNG=m
+ CONFIG_CRYPTO_USER_API_AEAD=m
++CONFIG_CRYPTO_LIB_BLAKE2S=m
++CONFIG_CRYPTO_LIB_CURVE25519=m
++CONFIG_CRYPTO_LIB_CHACHA20POLY1305=m
+ # CONFIG_CRYPTO_HW is not set
+ CONFIG_CRC32_SELFTEST=m
+ CONFIG_CRC64=m
+diff --git a/arch/m68k/configs/bvme6000_defconfig b/arch/m68k/configs/bvme6000_defconfig
+index 4ffc1e5646d5139d..a8bba75a8eafc1a1 100644
+--- a/arch/m68k/configs/bvme6000_defconfig
++++ b/arch/m68k/configs/bvme6000_defconfig
+@@ -511,6 +511,7 @@ CONFIG_CRYPTO_RSA=m
+ CONFIG_CRYPTO_DH=m
+ CONFIG_CRYPTO_ECDH=m
+ CONFIG_CRYPTO_ECRDSA=m
++CONFIG_CRYPTO_CURVE25519=m
+ CONFIG_CRYPTO_CHACHA20POLY1305=m
+ CONFIG_CRYPTO_AEGIS128=m
+ CONFIG_CRYPTO_CFB=m
+@@ -523,7 +524,8 @@ CONFIG_CRYPTO_KEYWRAP=m
+ CONFIG_CRYPTO_ADIANTUM=m
+ CONFIG_CRYPTO_XCBC=m
+ CONFIG_CRYPTO_VMAC=m
+-CONFIG_CRYPTO_XXHASH=m
++CONFIG_CRYPTO_BLAKE2B=m
++CONFIG_CRYPTO_BLAKE2S=m
+ CONFIG_CRYPTO_MICHAEL_MIC=m
+ CONFIG_CRYPTO_RMD128=m
+ CONFIG_CRYPTO_RMD160=m
+@@ -561,6 +563,9 @@ CONFIG_CRYPTO_USER_API_HASH=m
+ CONFIG_CRYPTO_USER_API_SKCIPHER=m
+ CONFIG_CRYPTO_USER_API_RNG=m
+ CONFIG_CRYPTO_USER_API_AEAD=m
++CONFIG_CRYPTO_LIB_BLAKE2S=m
++CONFIG_CRYPTO_LIB_CURVE25519=m
++CONFIG_CRYPTO_LIB_CHACHA20POLY1305=m
+ # CONFIG_CRYPTO_HW is not set
+ CONFIG_CRC32_SELFTEST=m
+ CONFIG_CRC64=m
+diff --git a/arch/m68k/configs/hp300_defconfig b/arch/m68k/configs/hp300_defconfig
+index 806da3d97ca4e939..e43008bccb19c5be 100644
+--- a/arch/m68k/configs/hp300_defconfig
++++ b/arch/m68k/configs/hp300_defconfig
+@@ -520,6 +520,7 @@ CONFIG_CRYPTO_RSA=m
+ CONFIG_CRYPTO_DH=m
+ CONFIG_CRYPTO_ECDH=m
+ CONFIG_CRYPTO_ECRDSA=m
++CONFIG_CRYPTO_CURVE25519=m
+ CONFIG_CRYPTO_CHACHA20POLY1305=m
+ CONFIG_CRYPTO_AEGIS128=m
+ CONFIG_CRYPTO_CFB=m
+@@ -532,7 +533,8 @@ CONFIG_CRYPTO_KEYWRAP=m
+ CONFIG_CRYPTO_ADIANTUM=m
+ CONFIG_CRYPTO_XCBC=m
+ CONFIG_CRYPTO_VMAC=m
+-CONFIG_CRYPTO_XXHASH=m
++CONFIG_CRYPTO_BLAKE2B=m
++CONFIG_CRYPTO_BLAKE2S=m
+ CONFIG_CRYPTO_MICHAEL_MIC=m
+ CONFIG_CRYPTO_RMD128=m
+ CONFIG_CRYPTO_RMD160=m
+@@ -570,6 +572,9 @@ CONFIG_CRYPTO_USER_API_HASH=m
+ CONFIG_CRYPTO_USER_API_SKCIPHER=m
+ CONFIG_CRYPTO_USER_API_RNG=m
+ CONFIG_CRYPTO_USER_API_AEAD=m
++CONFIG_CRYPTO_LIB_BLAKE2S=m
++CONFIG_CRYPTO_LIB_CURVE25519=m
++CONFIG_CRYPTO_LIB_CHACHA20POLY1305=m
+ # CONFIG_CRYPTO_HW is not set
+ CONFIG_CRC32_SELFTEST=m
+ CONFIG_CRC64=m
+diff --git a/arch/m68k/configs/mac_defconfig b/arch/m68k/configs/mac_defconfig
+index 250da20e291c83e0..4e6d99040afa0906 100644
+--- a/arch/m68k/configs/mac_defconfig
++++ b/arch/m68k/configs/mac_defconfig
+@@ -542,6 +542,7 @@ CONFIG_CRYPTO_RSA=m
+ CONFIG_CRYPTO_DH=m
+ CONFIG_CRYPTO_ECDH=m
+ CONFIG_CRYPTO_ECRDSA=m
++CONFIG_CRYPTO_CURVE25519=m
+ CONFIG_CRYPTO_CHACHA20POLY1305=m
+ CONFIG_CRYPTO_AEGIS128=m
+ CONFIG_CRYPTO_CFB=m
+@@ -554,7 +555,8 @@ CONFIG_CRYPTO_KEYWRAP=m
+ CONFIG_CRYPTO_ADIANTUM=m
+ CONFIG_CRYPTO_XCBC=m
+ CONFIG_CRYPTO_VMAC=m
+-CONFIG_CRYPTO_XXHASH=m
++CONFIG_CRYPTO_BLAKE2B=m
++CONFIG_CRYPTO_BLAKE2S=m
+ CONFIG_CRYPTO_MICHAEL_MIC=m
+ CONFIG_CRYPTO_RMD128=m
+ CONFIG_CRYPTO_RMD160=m
+@@ -592,6 +594,9 @@ CONFIG_CRYPTO_USER_API_HASH=m
+ CONFIG_CRYPTO_USER_API_SKCIPHER=m
+ CONFIG_CRYPTO_USER_API_RNG=m
+ CONFIG_CRYPTO_USER_API_AEAD=m
++CONFIG_CRYPTO_LIB_BLAKE2S=m
++CONFIG_CRYPTO_LIB_CURVE25519=m
++CONFIG_CRYPTO_LIB_CHACHA20POLY1305=m
+ # CONFIG_CRYPTO_HW is not set
+ CONFIG_CRC32_SELFTEST=m
+ CONFIG_CRC64=m
+diff --git a/arch/m68k/configs/multi_defconfig b/arch/m68k/configs/multi_defconfig
+index b764a0368a568be5..9dc979672b2913cc 100644
+--- a/arch/m68k/configs/multi_defconfig
++++ b/arch/m68k/configs/multi_defconfig
+@@ -628,6 +628,7 @@ CONFIG_CRYPTO_RSA=m
+ CONFIG_CRYPTO_DH=m
+ CONFIG_CRYPTO_ECDH=m
+ CONFIG_CRYPTO_ECRDSA=m
++CONFIG_CRYPTO_CURVE25519=m
+ CONFIG_CRYPTO_CHACHA20POLY1305=m
+ CONFIG_CRYPTO_AEGIS128=m
+ CONFIG_CRYPTO_CFB=m
+@@ -640,7 +641,8 @@ CONFIG_CRYPTO_KEYWRAP=m
+ CONFIG_CRYPTO_ADIANTUM=m
+ CONFIG_CRYPTO_XCBC=m
+ CONFIG_CRYPTO_VMAC=m
+-CONFIG_CRYPTO_XXHASH=m
++CONFIG_CRYPTO_BLAKE2B=m
++CONFIG_CRYPTO_BLAKE2S=m
+ CONFIG_CRYPTO_MICHAEL_MIC=m
+ CONFIG_CRYPTO_RMD128=m
+ CONFIG_CRYPTO_RMD160=m
+@@ -678,6 +680,9 @@ CONFIG_CRYPTO_USER_API_HASH=m
+ CONFIG_CRYPTO_USER_API_SKCIPHER=m
+ CONFIG_CRYPTO_USER_API_RNG=m
+ CONFIG_CRYPTO_USER_API_AEAD=m
++CONFIG_CRYPTO_LIB_BLAKE2S=m
++CONFIG_CRYPTO_LIB_CURVE25519=m
++CONFIG_CRYPTO_LIB_CHACHA20POLY1305=m
+ # CONFIG_CRYPTO_HW is not set
+ CONFIG_CRC32_SELFTEST=m
+ CONFIG_CRC64=m
+diff --git a/arch/m68k/configs/mvme147_defconfig b/arch/m68k/configs/mvme147_defconfig
+index 7800d3a8d46e3e59..617c331c56bfa0d2 100644
+--- a/arch/m68k/configs/mvme147_defconfig
++++ b/arch/m68k/configs/mvme147_defconfig
+@@ -510,6 +510,7 @@ CONFIG_CRYPTO_RSA=m
+ CONFIG_CRYPTO_DH=m
+ CONFIG_CRYPTO_ECDH=m
+ CONFIG_CRYPTO_ECRDSA=m
++CONFIG_CRYPTO_CURVE25519=m
+ CONFIG_CRYPTO_CHACHA20POLY1305=m
+ CONFIG_CRYPTO_AEGIS128=m
+ CONFIG_CRYPTO_CFB=m
+@@ -522,7 +523,8 @@ CONFIG_CRYPTO_KEYWRAP=m
+ CONFIG_CRYPTO_ADIANTUM=m
+ CONFIG_CRYPTO_XCBC=m
+ CONFIG_CRYPTO_VMAC=m
+-CONFIG_CRYPTO_XXHASH=m
++CONFIG_CRYPTO_BLAKE2B=m
++CONFIG_CRYPTO_BLAKE2S=m
+ CONFIG_CRYPTO_MICHAEL_MIC=m
+ CONFIG_CRYPTO_RMD128=m
+ CONFIG_CRYPTO_RMD160=m
+@@ -560,6 +562,9 @@ CONFIG_CRYPTO_USER_API_HASH=m
+ CONFIG_CRYPTO_USER_API_SKCIPHER=m
+ CONFIG_CRYPTO_USER_API_RNG=m
+ CONFIG_CRYPTO_USER_API_AEAD=m
++CONFIG_CRYPTO_LIB_BLAKE2S=m
++CONFIG_CRYPTO_LIB_CURVE25519=m
++CONFIG_CRYPTO_LIB_CHACHA20POLY1305=m
+ # CONFIG_CRYPTO_HW is not set
+ CONFIG_CRC32_SELFTEST=m
+ CONFIG_CRC64=m
+diff --git a/arch/m68k/configs/mvme16x_defconfig b/arch/m68k/configs/mvme16x_defconfig
+index c32dc2d2058d32bf..43984f89bf1f3602 100644
+--- a/arch/m68k/configs/mvme16x_defconfig
++++ b/arch/m68k/configs/mvme16x_defconfig
+@@ -511,6 +511,7 @@ CONFIG_CRYPTO_RSA=m
+ CONFIG_CRYPTO_DH=m
+ CONFIG_CRYPTO_ECDH=m
+ CONFIG_CRYPTO_ECRDSA=m
++CONFIG_CRYPTO_CURVE25519=m
+ CONFIG_CRYPTO_CHACHA20POLY1305=m
+ CONFIG_CRYPTO_AEGIS128=m
+ CONFIG_CRYPTO_CFB=m
+@@ -523,7 +524,8 @@ CONFIG_CRYPTO_KEYWRAP=m
+ CONFIG_CRYPTO_ADIANTUM=m
+ CONFIG_CRYPTO_XCBC=m
+ CONFIG_CRYPTO_VMAC=m
+-CONFIG_CRYPTO_XXHASH=m
++CONFIG_CRYPTO_BLAKE2B=m
++CONFIG_CRYPTO_BLAKE2S=m
+ CONFIG_CRYPTO_MICHAEL_MIC=m
+ CONFIG_CRYPTO_RMD128=m
+ CONFIG_CRYPTO_RMD160=m
+@@ -561,6 +563,9 @@ CONFIG_CRYPTO_USER_API_HASH=m
+ CONFIG_CRYPTO_USER_API_SKCIPHER=m
+ CONFIG_CRYPTO_USER_API_RNG=m
+ CONFIG_CRYPTO_USER_API_AEAD=m
++CONFIG_CRYPTO_LIB_BLAKE2S=m
++CONFIG_CRYPTO_LIB_CURVE25519=m
++CONFIG_CRYPTO_LIB_CHACHA20POLY1305=m
+ # CONFIG_CRYPTO_HW is not set
+ CONFIG_CRC32_SELFTEST=m
+ CONFIG_CRC64=m
+diff --git a/arch/m68k/configs/q40_defconfig b/arch/m68k/configs/q40_defconfig
+index bf0a65ce57e0606d..acf8ba47f641ff32 100644
+--- a/arch/m68k/configs/q40_defconfig
++++ b/arch/m68k/configs/q40_defconfig
+@@ -529,6 +529,7 @@ CONFIG_CRYPTO_RSA=m
+ CONFIG_CRYPTO_DH=m
+ CONFIG_CRYPTO_ECDH=m
+ CONFIG_CRYPTO_ECRDSA=m
++CONFIG_CRYPTO_CURVE25519=m
+ CONFIG_CRYPTO_CHACHA20POLY1305=m
+ CONFIG_CRYPTO_AEGIS128=m
+ CONFIG_CRYPTO_CFB=m
+@@ -541,7 +542,8 @@ CONFIG_CRYPTO_KEYWRAP=m
+ CONFIG_CRYPTO_ADIANTUM=m
+ CONFIG_CRYPTO_XCBC=m
+ CONFIG_CRYPTO_VMAC=m
+-CONFIG_CRYPTO_XXHASH=m
++CONFIG_CRYPTO_BLAKE2B=m
++CONFIG_CRYPTO_BLAKE2S=m
+ CONFIG_CRYPTO_MICHAEL_MIC=m
+ CONFIG_CRYPTO_RMD128=m
+ CONFIG_CRYPTO_RMD160=m
+@@ -579,6 +581,9 @@ CONFIG_CRYPTO_USER_API_HASH=m
+ CONFIG_CRYPTO_USER_API_SKCIPHER=m
+ CONFIG_CRYPTO_USER_API_RNG=m
+ CONFIG_CRYPTO_USER_API_AEAD=m
++CONFIG_CRYPTO_LIB_BLAKE2S=m
++CONFIG_CRYPTO_LIB_CURVE25519=m
++CONFIG_CRYPTO_LIB_CHACHA20POLY1305=m
+ # CONFIG_CRYPTO_HW is not set
+ CONFIG_CRC32_SELFTEST=m
+ CONFIG_CRC64=m
+diff --git a/arch/m68k/configs/sun3_defconfig b/arch/m68k/configs/sun3_defconfig
+index 5f3cfa2926d22960..835b55d616b2d3aa 100644
+--- a/arch/m68k/configs/sun3_defconfig
++++ b/arch/m68k/configs/sun3_defconfig
+@@ -513,6 +513,7 @@ CONFIG_CRYPTO_RSA=m
+ CONFIG_CRYPTO_DH=m
+ CONFIG_CRYPTO_ECDH=m
+ CONFIG_CRYPTO_ECRDSA=m
++CONFIG_CRYPTO_CURVE25519=m
+ CONFIG_CRYPTO_CHACHA20POLY1305=m
+ CONFIG_CRYPTO_AEGIS128=m
+ CONFIG_CRYPTO_CFB=m
+@@ -525,7 +526,8 @@ CONFIG_CRYPTO_KEYWRAP=m
+ CONFIG_CRYPTO_ADIANTUM=m
+ CONFIG_CRYPTO_XCBC=m
+ CONFIG_CRYPTO_VMAC=m
+-CONFIG_CRYPTO_XXHASH=m
++CONFIG_CRYPTO_BLAKE2B=m
++CONFIG_CRYPTO_BLAKE2S=m
+ CONFIG_CRYPTO_MICHAEL_MIC=m
+ CONFIG_CRYPTO_RMD128=m
+ CONFIG_CRYPTO_RMD160=m
+@@ -563,6 +565,9 @@ CONFIG_CRYPTO_USER_API_HASH=m
+ CONFIG_CRYPTO_USER_API_SKCIPHER=m
+ CONFIG_CRYPTO_USER_API_RNG=m
+ CONFIG_CRYPTO_USER_API_AEAD=m
++CONFIG_CRYPTO_LIB_BLAKE2S=m
++CONFIG_CRYPTO_LIB_CURVE25519=m
++CONFIG_CRYPTO_LIB_CHACHA20POLY1305=m
+ # CONFIG_CRYPTO_HW is not set
+ CONFIG_CRC32_SELFTEST=m
+ CONFIG_CRC64=m
+diff --git a/arch/m68k/configs/sun3x_defconfig b/arch/m68k/configs/sun3x_defconfig
+index 58354d2018d5151e..0e09561d13f4b334 100644
+--- a/arch/m68k/configs/sun3x_defconfig
++++ b/arch/m68k/configs/sun3x_defconfig
+@@ -512,6 +512,7 @@ CONFIG_CRYPTO_RSA=m
+ CONFIG_CRYPTO_DH=m
+ CONFIG_CRYPTO_ECDH=m
+ CONFIG_CRYPTO_ECRDSA=m
++CONFIG_CRYPTO_CURVE25519=m
+ CONFIG_CRYPTO_CHACHA20POLY1305=m
+ CONFIG_CRYPTO_AEGIS128=m
+ CONFIG_CRYPTO_CFB=m
+@@ -524,7 +525,8 @@ CONFIG_CRYPTO_KEYWRAP=m
+ CONFIG_CRYPTO_ADIANTUM=m
+ CONFIG_CRYPTO_XCBC=m
+ CONFIG_CRYPTO_VMAC=m
+-CONFIG_CRYPTO_XXHASH=m
++CONFIG_CRYPTO_BLAKE2B=m
++CONFIG_CRYPTO_BLAKE2S=m
+ CONFIG_CRYPTO_MICHAEL_MIC=m
+ CONFIG_CRYPTO_RMD128=m
+ CONFIG_CRYPTO_RMD160=m
+@@ -562,6 +564,9 @@ CONFIG_CRYPTO_USER_API_HASH=m
+ CONFIG_CRYPTO_USER_API_SKCIPHER=m
+ CONFIG_CRYPTO_USER_API_RNG=m
+ CONFIG_CRYPTO_USER_API_AEAD=m
++CONFIG_CRYPTO_LIB_BLAKE2S=m
++CONFIG_CRYPTO_LIB_CURVE25519=m
++CONFIG_CRYPTO_LIB_CHACHA20POLY1305=m
+ # CONFIG_CRYPTO_HW is not set
+ CONFIG_CRC32_SELFTEST=m
+ CONFIG_CRC64=m
 -- 
-Martin K. Petersen	Oracle Linux Engineering
+2.17.1
+
