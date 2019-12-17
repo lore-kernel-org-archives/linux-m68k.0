@@ -2,68 +2,118 @@ Return-Path: <SRS0=T4dA=2H=vger.kernel.org=linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-0.8 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-2.2 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=no
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3FCFEC3F68F
-	for <linux-m68k@archiver.kernel.org>; Tue, 17 Dec 2019 00:26:24 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 30A42C43603
+	for <linux-m68k@archiver.kernel.org>; Tue, 17 Dec 2019 00:56:47 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 1888B24655
-	for <linux-m68k@archiver.kernel.org>; Tue, 17 Dec 2019 00:26:24 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 10D3A24673
+	for <linux-m68k@archiver.kernel.org>; Tue, 17 Dec 2019 00:56:47 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727708AbfLQA0X (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Mon, 16 Dec 2019 19:26:23 -0500
-Received: from kvm5.telegraphics.com.au ([98.124.60.144]:56758 "EHLO
-        kvm5.telegraphics.com.au" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726734AbfLQA0X (ORCPT
-        <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Mon, 16 Dec 2019 19:26:23 -0500
-Received: from localhost (localhost.localdomain [127.0.0.1])
-        by kvm5.telegraphics.com.au (Postfix) with ESMTP id 6D86B22D73;
-        Mon, 16 Dec 2019 19:26:19 -0500 (EST)
-Date:   Tue, 17 Dec 2019 11:26:09 +1100 (AEDT)
-From:   Finn Thain <fthain@telegraphics.com.au>
+        id S1728019AbfLQA4p (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Mon, 16 Dec 2019 19:56:45 -0500
+Received: from mail.kernel.org ([198.145.29.99]:44128 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727256AbfLQA4p (ORCPT <rfc822;linux-m68k@lists.linux-m68k.org>);
+        Mon, 16 Dec 2019 19:56:45 -0500
+Received: from [10.44.0.22] (unknown [103.48.210.53])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id A48BE206D3;
+        Tue, 17 Dec 2019 00:56:42 +0000 (UTC)
+Subject: Re: Build regressions/improvements in v5.5-rc2
 To:     Geert Uytterhoeven <geert@linux-m68k.org>
-cc:     Brad Boyer <flar@allandria.com>,
-        John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
-        linux-m68k <linux-m68k@lists.linux-m68k.org>,
-        Debian m68k <debian-68k@lists.debian.org>
-Subject: Re: Using more than 1 GB in qemu-m68k-system
-In-Reply-To: <CAMuHMdW26v_j=ADaisMN-FqC2v+YYRs3W0J0jy2+sgO_YCxYOw@mail.gmail.com>
-Message-ID: <alpine.LNX.2.21.1.1912171054150.11@nippy.intranet>
-References: <b95c70fe-aca0-faf7-4ff7-e71d8db3d149@physik.fu-berlin.de> <alpine.LNX.2.21.1.1912150919080.8@nippy.intranet> <20191215014133.GA2084@allandria.com> <CAMuHMdW26v_j=ADaisMN-FqC2v+YYRs3W0J0jy2+sgO_YCxYOw@mail.gmail.com>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-m68k <linux-m68k@lists.linux-m68k.org>
+References: <20191216083658.21386-1-geert@linux-m68k.org>
+ <CAMuHMdUaRdyRigwS+fdju1_PQCahONVFPKu0DbX6hhb7=JXmLA@mail.gmail.com>
+From:   Greg Ungerer <gerg@linux-m68k.org>
+Message-ID: <cfc86b96-9d28-eebc-c7f7-1ed9a1e28458@linux-m68k.org>
+Date:   Tue, 17 Dec 2019 10:56:39 +1000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.2.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+In-Reply-To: <CAMuHMdUaRdyRigwS+fdju1_PQCahONVFPKu0DbX6hhb7=JXmLA@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-m68k-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-On Sun, 15 Dec 2019, Geert Uytterhoeven wrote:
+Hi Geert,
 
-> Hi Brad,
+On 16/12/19 6:49 pm, Geert Uytterhoeven wrote:
+> Hi Greg,
 > 
-> On Sun, Dec 15, 2019 at 3:19 AM Brad Boyer <flar@allandria.com> wrote:
-> > We could probably emulate a fake NuBus card in qemu that is just 
-> > memory in the super slot space for that card. Can a regular driver add 
-> > RAM, or would we have to detect that in the core code somewhere?
+> On Mon, Dec 16, 2019 at 9:38 AM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
+>> Below is the list of build error/warning regressions/improvements in
+>> v5.5-rc2[1] compared to v5.4[2].
 > 
-> I think a regular driver can do that, if CONFIG_MEMORY_HOTPLUG=y. 
-> However, the latter depends on CONFIG_SPARSEMEM.
+>> [1] http://kisskb.ellerman.id.au/kisskb/branch/linus/head/d1eef1c619749b2a57e514a3fa67d9a516ffa919/ (all 232 configs)
+>> [2] http://kisskb.ellerman.id.au/kisskb/branch/linus/head/219d54332a09e8d8741c1e1982f5eae56099de85/ (all 232 configs)
 > 
-> The early core code can just call memblock_add(), though.
+>>    + /kisskb/src/arch/m68k/include/asm/string.h: warning: '__builtin_memcpy' forming offset [3, 4] is out of the bounds [0, 2] of object '__gu_val' with type 'short unsigned int' [-Warray-bounds]:  => 72:25
 > 
+> The upgrade from gcc 4.6.3 to 81.0 seems to have revealed a potential
+> issue in get_user() in arch/m68k/include/asm/uaccess_no.h.
+> 
+>          #define get_user(x, ptr)                                        \
+>          ({                                                              \
+>              int __gu_err = 0;                                           \
+>              typeof(x) __gu_val = 0;                                     \
+>              ^^^^^^^^^
+>              This is the type of the destination
+> 
+>              switch (sizeof(*(ptr))) {                                   \
+>              case 1:                                                     \
+>                  __get_user_asm(__gu_err, __gu_val, ptr, b, "=d");       \
+>                  break;                                                  \
+>              case 2:                                                     \
+>                  __get_user_asm(__gu_err, __gu_val, ptr, w, "=r");       \
+>                  break;                                                  \
+>              case 4:                                                     \
+>                  __get_user_asm(__gu_err, __gu_val, ptr, l, "=r");       \
+>                  break;                                                  \
+>              case 8:                                                     \
+>                  memcpy((void *) &__gu_val, ptr, sizeof (*(ptr)));       \
+>                  break;                                                  \
+>              default:                                                    \
+>                  __gu_val = 0;                                           \
+>                  __gu_err = __get_user_bad();                            \
+>                  break;                                                  \
+>              }                                                           \
+>              (x) = (typeof(*(ptr))) __gu_val;                            \
+>              __gu_err;                                                   \
+>          })
+> 
+> ext2_ioctl() calls this like
+> 
+>          unsigned short rsv_window_size;
+>          if (get_user(rsv_window_size, (int __user *)arg)) { ... }
+> 
+> So a 32-bit value is being copied to an unsigned short value, leading
+> to the warning (for the memcpy() in the non-taken "case 8" branch).
+> 
+> Fortunately the compiler emits a register move for this, so no real harm
+> is done:
+> 
+>          | fs/ext2/ioctl.c:123:          if (get_user(rsv_window_size,
+> (int __user *)arg))
+>                  move.l 48(%sp),%a0      | arg,
+>          #APP
+>          | 123 "fs/ext2/ioctl.c" 1
+>                  movel (%a0),%d2 | *arg.32_43, __gu_val
+> 
+> The corresponding code in arch/m68k/include/asm/uaccess_mm.h
+> uses a temporary __gu_val of the right sized type based on the source
+> type to avoid this.
 
-The nubus subsystem isn't available during early boot. The regular driver 
-option might be the best option.
+Yeah, your right. I will put a change together to fix.
 
-BTW, the Nubus memory mapping done in arch/m68k/kernel/head.S (0xf8000000 
-through 0xffffffff) covers the standard slot space but not the super slot 
-space.
+Regards
+Greg
 
-> Gr{oetje,eeting}s,
-> 
->                         Geert
-> 
-> 
