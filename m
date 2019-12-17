@@ -2,118 +2,171 @@ Return-Path: <SRS0=T4dA=2H=vger.kernel.org=linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.2 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=no
+X-Spam-Status: No, score=-3.8 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=no
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 30A42C43603
-	for <linux-m68k@archiver.kernel.org>; Tue, 17 Dec 2019 00:56:47 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8FA7FC43603
+	for <linux-m68k@archiver.kernel.org>; Tue, 17 Dec 2019 06:40:30 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 10D3A24673
-	for <linux-m68k@archiver.kernel.org>; Tue, 17 Dec 2019 00:56:47 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 6AAF52176D
+	for <linux-m68k@archiver.kernel.org>; Tue, 17 Dec 2019 06:40:30 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728019AbfLQA4p (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Mon, 16 Dec 2019 19:56:45 -0500
-Received: from mail.kernel.org ([198.145.29.99]:44128 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727256AbfLQA4p (ORCPT <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Mon, 16 Dec 2019 19:56:45 -0500
-Received: from [10.44.0.22] (unknown [103.48.210.53])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        id S1726876AbfLQGka (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Tue, 17 Dec 2019 01:40:30 -0500
+Received: from mout-p-101.mailbox.org ([80.241.56.151]:53790 "EHLO
+        mout-p-101.mailbox.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726704AbfLQGka (ORCPT
+        <rfc822;linux-m68k@lists.linux-m68k.org>);
+        Tue, 17 Dec 2019 01:40:30 -0500
+Received: from smtp1.mailbox.org (smtp1.mailbox.org [80.241.60.240])
+        (using TLSv1.2 with cipher ECDHE-RSA-CHACHA20-POLY1305 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id A48BE206D3;
-        Tue, 17 Dec 2019 00:56:42 +0000 (UTC)
-Subject: Re: Build regressions/improvements in v5.5-rc2
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-m68k <linux-m68k@lists.linux-m68k.org>
-References: <20191216083658.21386-1-geert@linux-m68k.org>
- <CAMuHMdUaRdyRigwS+fdju1_PQCahONVFPKu0DbX6hhb7=JXmLA@mail.gmail.com>
-From:   Greg Ungerer <gerg@linux-m68k.org>
-Message-ID: <cfc86b96-9d28-eebc-c7f7-1ed9a1e28458@linux-m68k.org>
-Date:   Tue, 17 Dec 2019 10:56:39 +1000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.2.2
+        by mout-p-101.mailbox.org (Postfix) with ESMTPS id 47cT6M2DP7zKmbN;
+        Tue, 17 Dec 2019 07:40:27 +0100 (CET)
+X-Virus-Scanned: amavisd-new at heinlein-support.de
+Received: from smtp1.mailbox.org ([80.241.60.240])
+        by spamfilter06.heinlein-hosting.de (spamfilter06.heinlein-hosting.de [80.241.56.125]) (amavisd-new, port 10030)
+        with ESMTP id AVgNK5XsT0lw; Tue, 17 Dec 2019 07:40:19 +0100 (CET)
+Date:   Tue, 17 Dec 2019 17:39:50 +1100
+From:   Aleksa Sarai <cyphar@cyphar.com>
+To:     Florian Weimer <fweimer@redhat.com>
+Cc:     Al Viro <viro@zeniv.linux.org.uk>,
+        Jeff Layton <jlayton@kernel.org>,
+        "J. Bruce Fields" <bfields@fieldses.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        David Howells <dhowells@redhat.com>,
+        Shuah Khan <shuah@kernel.org>,
+        Shuah Khan <skhan@linuxfoundation.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Andrii Nakryiko <andriin@fb.com>,
+        Jonathan Corbet <corbet@lwn.net>, linux-ia64@vger.kernel.org,
+        linux-doc@vger.kernel.org,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        sparclinux@vger.kernel.org, linux-api@vger.kernel.org,
+        Jiri Olsa <jolsa@redhat.com>, linux-arch@vger.kernel.org,
+        linux-s390@vger.kernel.org, linux-sh@vger.kernel.org,
+        David Drysdale <drysdale@google.com>,
+        linux-arm-kernel@lists.infradead.org, linux-mips@vger.kernel.org,
+        linux-xtensa@linux-xtensa.org, Kees Cook <keescook@chromium.org>,
+        Jann Horn <jannh@google.com>, linuxppc-dev@lists.ozlabs.org,
+        dev@opencontainers.org, Andy Lutomirski <luto@kernel.org>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        libc-alpha@sourceware.org, linux-parisc@vger.kernel.org,
+        linux-m68k@lists.linux-m68k.org, netdev@vger.kernel.org,
+        Chanho Min <chanho.min@lge.com>,
+        Oleg Nesterov <oleg@redhat.com>,
+        Eric Biederman <ebiederm@xmission.com>,
+        linux-alpha@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        bpf@vger.kernel.org,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        containers@lists.linux-foundation.org
+Subject: Re: [PATCH v18 11/13] open: introduce openat2(2) syscall
+Message-ID: <20191217063950.5oqwwqz5p3bu7t2x@yavin.dot.cyphar.com>
+References: <20191206141338.23338-1-cyphar@cyphar.com>
+ <20191206141338.23338-12-cyphar@cyphar.com>
+ <20191216192158.B9F19832924A@oldenburg2.str.redhat.com>
 MIME-Version: 1.0
-In-Reply-To: <CAMuHMdUaRdyRigwS+fdju1_PQCahONVFPKu0DbX6hhb7=JXmLA@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="vzwczu2ztdefrrfu"
+Content-Disposition: inline
+In-Reply-To: <20191216192158.B9F19832924A@oldenburg2.str.redhat.com>
 Sender: linux-m68k-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-Hi Geert,
 
-On 16/12/19 6:49 pm, Geert Uytterhoeven wrote:
-> Hi Greg,
-> 
-> On Mon, Dec 16, 2019 at 9:38 AM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
->> Below is the list of build error/warning regressions/improvements in
->> v5.5-rc2[1] compared to v5.4[2].
-> 
->> [1] http://kisskb.ellerman.id.au/kisskb/branch/linus/head/d1eef1c619749b2a57e514a3fa67d9a516ffa919/ (all 232 configs)
->> [2] http://kisskb.ellerman.id.au/kisskb/branch/linus/head/219d54332a09e8d8741c1e1982f5eae56099de85/ (all 232 configs)
-> 
->>    + /kisskb/src/arch/m68k/include/asm/string.h: warning: '__builtin_memcpy' forming offset [3, 4] is out of the bounds [0, 2] of object '__gu_val' with type 'short unsigned int' [-Warray-bounds]:  => 72:25
-> 
-> The upgrade from gcc 4.6.3 to 81.0 seems to have revealed a potential
-> issue in get_user() in arch/m68k/include/asm/uaccess_no.h.
-> 
->          #define get_user(x, ptr)                                        \
->          ({                                                              \
->              int __gu_err = 0;                                           \
->              typeof(x) __gu_val = 0;                                     \
->              ^^^^^^^^^
->              This is the type of the destination
-> 
->              switch (sizeof(*(ptr))) {                                   \
->              case 1:                                                     \
->                  __get_user_asm(__gu_err, __gu_val, ptr, b, "=d");       \
->                  break;                                                  \
->              case 2:                                                     \
->                  __get_user_asm(__gu_err, __gu_val, ptr, w, "=r");       \
->                  break;                                                  \
->              case 4:                                                     \
->                  __get_user_asm(__gu_err, __gu_val, ptr, l, "=r");       \
->                  break;                                                  \
->              case 8:                                                     \
->                  memcpy((void *) &__gu_val, ptr, sizeof (*(ptr)));       \
->                  break;                                                  \
->              default:                                                    \
->                  __gu_val = 0;                                           \
->                  __gu_err = __get_user_bad();                            \
->                  break;                                                  \
->              }                                                           \
->              (x) = (typeof(*(ptr))) __gu_val;                            \
->              __gu_err;                                                   \
->          })
-> 
-> ext2_ioctl() calls this like
-> 
->          unsigned short rsv_window_size;
->          if (get_user(rsv_window_size, (int __user *)arg)) { ... }
-> 
-> So a 32-bit value is being copied to an unsigned short value, leading
-> to the warning (for the memcpy() in the non-taken "case 8" branch).
-> 
-> Fortunately the compiler emits a register move for this, so no real harm
-> is done:
-> 
->          | fs/ext2/ioctl.c:123:          if (get_user(rsv_window_size,
-> (int __user *)arg))
->                  move.l 48(%sp),%a0      | arg,
->          #APP
->          | 123 "fs/ext2/ioctl.c" 1
->                  movel (%a0),%d2 | *arg.32_43, __gu_val
-> 
-> The corresponding code in arch/m68k/include/asm/uaccess_mm.h
-> uses a temporary __gu_val of the right sized type based on the source
-> type to avoid this.
+--vzwczu2ztdefrrfu
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Yeah, your right. I will put a change together to fix.
+On 2019-12-16, Florian Weimer <fweimer@redhat.com> wrote:
+> > diff --git a/include/uapi/linux/fcntl.h b/include/uapi/linux/fcntl.h
+> > index 1d338357df8a..58c3a0e543c6 100644
+> > --- a/include/uapi/linux/fcntl.h
+> > +++ b/include/uapi/linux/fcntl.h
+> > @@ -93,5 +93,40 @@
+> > =20
+> >  #define AT_RECURSIVE		0x8000	/* Apply to the entire subtree */
+> > =20
+> > +/*
+> > + * Arguments for how openat2(2) should open the target path. If @resol=
+ve is
+> > + * zero, then openat2(2) operates very similarly to openat(2).
+> > + *
+> > + * However, unlike openat(2), unknown bits in @flags result in -EINVAL=
+ rather
+> > + * than being silently ignored. @mode must be zero unless one of {O_CR=
+EAT,
+> > + * O_TMPFILE} are set.
+> > + *
+> > + * @flags: O_* flags.
+> > + * @mode: O_CREAT/O_TMPFILE file mode.
+> > + * @resolve: RESOLVE_* flags.
+> > + */
+> > +struct open_how {
+> > +	__aligned_u64 flags;
+> > +	__u16 mode;
+> > +	__u16 __padding[3]; /* must be zeroed */
+> > +	__aligned_u64 resolve;
+> > +};
+> > +
+> > +#define OPEN_HOW_SIZE_VER0	24 /* sizeof first published struct */
+> > +#define OPEN_HOW_SIZE_LATEST	OPEN_HOW_SIZE_VER0
+> > +
+> > +/* how->resolve flags for openat2(2). */
+> > +#define RESOLVE_NO_XDEV		0x01 /* Block mount-point crossings
+> > +					(includes bind-mounts). */
+> > +#define RESOLVE_NO_MAGICLINKS	0x02 /* Block traversal through procfs-s=
+tyle
+> > +					"magic-links". */
+> > +#define RESOLVE_NO_SYMLINKS	0x04 /* Block traversal through all symlin=
+ks
+> > +					(implies OEXT_NO_MAGICLINKS) */
+> > +#define RESOLVE_BENEATH		0x08 /* Block "lexical" trickery like
+> > +					"..", symlinks, and absolute
+> > +					paths which escape the dirfd. */
+> > +#define RESOLVE_IN_ROOT		0x10 /* Make all jumps to "/" and ".."
+> > +					be scoped inside the dirfd
+> > +					(similar to chroot(2)). */
+> > =20
+> >  #endif /* _UAPI_LINUX_FCNTL_H */
+>=20
+> Would it be possible to move these to a new UAPI header?
+>=20
+> In glibc, we currently do not #include <linux/fcntl.h>.  We need some of
+> the AT_* constants in POSIX mode, and the header is not necessarily
+> namespace-clean.  If there was a separate header for openat2 support, we
+> could use that easily, and we would only have to maintain the baseline
+> definitions (which never change).
 
-Regards
-Greg
+Sure, (assuming nobody objects) I can move it to "linux/openat2.h".
 
+--=20
+Aleksa Sarai
+Senior Software Engineer (Containers)
+SUSE Linux GmbH
+<https://www.cyphar.com/>
+
+--vzwczu2ztdefrrfu
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQSxZm6dtfE8gxLLfYqdlLljIbnQEgUCXfh4MQAKCRCdlLljIbnQ
+EvJ/AP9e+RbEhnKlfXeue8RftgpgyUu8To5+ZOcmuoKfUFVefgEAmch0tDU0glq6
+a0g2iw25N8tzxhAIzQpE/p2HRuzcPgo=
+=p/bo
+-----END PGP SIGNATURE-----
+
+--vzwczu2ztdefrrfu--
