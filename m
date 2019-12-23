@@ -1,85 +1,254 @@
-Return-Path: <SRS0=e2Ej=2L=vger.kernel.org=linux-m68k-owner@kernel.org>
+Return-Path: <SRS0=ubcR=2N=vger.kernel.org=linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.8 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
-	MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS autolearn=no
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-9.8 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,
+	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id BFC0EC43603
-	for <linux-m68k@archiver.kernel.org>; Sat, 21 Dec 2019 05:54:30 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 330DEC2D0C0
+	for <linux-m68k@archiver.kernel.org>; Mon, 23 Dec 2019 10:30:28 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 94D202070B
-	for <linux-m68k@archiver.kernel.org>; Sat, 21 Dec 2019 05:54:30 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id EF0E3206CB
+	for <linux-m68k@archiver.kernel.org>; Mon, 23 Dec 2019 10:30:27 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725848AbfLUFyZ (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Sat, 21 Dec 2019 00:54:25 -0500
-Received: from shards.monkeyblade.net ([23.128.96.9]:57076 "EHLO
-        shards.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725773AbfLUFyZ (ORCPT
-        <rfc822;linux-m68k@vger.kernel.org>); Sat, 21 Dec 2019 00:54:25 -0500
-Received: from localhost (unknown [IPv6:2601:601:9f00:1c3::3d5])
-        (using TLSv1 with cipher AES256-SHA (256/256 bits))
-        (Client did not present a certificate)
-        (Authenticated sender: davem-davemloft)
-        by shards.monkeyblade.net (Postfix) with ESMTPSA id 6537F153DA517;
-        Fri, 20 Dec 2019 21:54:24 -0800 (PST)
-Date:   Fri, 20 Dec 2019 21:54:23 -0800 (PST)
-Message-Id: <20191220.215423.1490110825809704417.davem@davemloft.net>
-To:     geert@linux-m68k.org
-Cc:     hannes@stressinduktion.org, mkubecek@suse.cz,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-m68k@vger.kernel.org
-Subject: Re: [PATCH] net: dst: Force 4-byte alignment of dst_metrics
-From:   David Miller <davem@davemloft.net>
-In-Reply-To: <20191220133140.5684-1-geert@linux-m68k.org>
-References: <20191220133140.5684-1-geert@linux-m68k.org>
-X-Mailer: Mew version 6.8 on Emacs 26.1
-Mime-Version: 1.0
-Content-Type: Text/Plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
-X-Greylist: Sender succeeded SMTP AUTH, not delayed by milter-greylist-4.5.12 (shards.monkeyblade.net [149.20.54.216]); Fri, 20 Dec 2019 21:54:24 -0800 (PST)
+        id S1726709AbfLWKa1 (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Mon, 23 Dec 2019 05:30:27 -0500
+Received: from michel.telenet-ops.be ([195.130.137.88]:36922 "EHLO
+        michel.telenet-ops.be" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726150AbfLWKa1 (ORCPT
+        <rfc822;linux-m68k@lists.linux-m68k.org>);
+        Mon, 23 Dec 2019 05:30:27 -0500
+Received: from ramsan ([84.195.182.253])
+        by michel.telenet-ops.be with bizsmtp
+        id hNWP2100E5USYZQ06NWPRd; Mon, 23 Dec 2019 11:30:23 +0100
+Received: from rox.of.borg ([192.168.97.57])
+        by ramsan with esmtp (Exim 4.90_1)
+        (envelope-from <geert@linux-m68k.org>)
+        id 1ijKyl-0000x0-C6; Mon, 23 Dec 2019 11:30:23 +0100
+Received: from geert by rox.of.borg with local (Exim 4.90_1)
+        (envelope-from <geert@linux-m68k.org>)
+        id 1ijKyl-0002RX-Ad; Mon, 23 Dec 2019 11:30:23 +0100
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+To:     linux-m68k@lists.linux-m68k.org
+Cc:     linux-kernel@vger.kernel.org,
+        Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: [PATCH] m68k: defconfig: Update defconfigs for v5.5-rc3
+Date:   Mon, 23 Dec 2019 11:30:22 +0100
+Message-Id: <20191223103022.9350-1-geert@linux-m68k.org>
+X-Mailer: git-send-email 2.17.1
 Sender: linux-m68k-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Date: Fri, 20 Dec 2019 14:31:40 +0100
+  - Move CONFIG_EARLY_PRINTK.
 
-> When storing a pointer to a dst_metrics structure in dst_entry._metrics,
-> two flags are added in the least significant bits of the pointer value.
-> Hence this assumes all pointers to dst_metrics structures have at least
-> 4-byte alignment.
-> 
-> However, on m68k, the minimum alignment of 32-bit values is 2 bytes, not
-> 4 bytes.  Hence in some kernel builds, dst_default_metrics may be only
-> 2-byte aligned, leading to obscure boot warnings like:
-> 
->     WARNING: CPU: 0 PID: 7 at lib/refcount.c:28 refcount_warn_saturate+0x44/0x9a
->     refcount_t: underflow; use-after-free.
->     Modules linked in:
->     CPU: 0 PID: 7 Comm: ksoftirqd/0 Tainted: G        W         5.5.0-rc2-atari-01448-g114a1a1038af891d-dirty #261
->     Stack from 10835e6c:
-> 	    10835e6c 0038134f 00023fa6 00394b0f 0000001c 00000009 00321560 00023fea
-> 	    00394b0f 0000001c 001a70f8 00000009 00000000 10835eb4 00000001 00000000
-> 	    04208040 0000000a 00394b4a 10835ed4 00043aa8 001a70f8 00394b0f 0000001c
-> 	    00000009 00394b4a 0026aba8 003215a4 00000003 00000000 0026d5a8 00000001
-> 	    003215a4 003a4361 003238d6 000001f0 00000000 003215a4 10aa3b00 00025e84
-> 	    003ddb00 10834000 002416a8 10aa3b00 00000000 00000080 000aa038 0004854a
->     Call Trace: [<00023fa6>] __warn+0xb2/0xb4
->      [<00023fea>] warn_slowpath_fmt+0x42/0x64
->      [<001a70f8>] refcount_warn_saturate+0x44/0x9a
->      [<00043aa8>] printk+0x0/0x18
->      [<001a70f8>] refcount_warn_saturate+0x44/0x9a
->      [<0026aba8>] refcount_sub_and_test.constprop.73+0x38/0x3e
->      [<0026d5a8>] ipv4_dst_destroy+0x5e/0x7e
->      [<00025e84>] __local_bh_enable_ip+0x0/0x8e
->      [<002416a8>] dst_destroy+0x40/0xae
-> 
-> Fix this by forcing 4-byte alignment of all dst_metrics structures.
-> 
-> Fixes: e5fd387ad5b30ca3 ("ipv6: do not overwrite inetpeer metrics prematurely")
-> Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
+Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
+---
+To be combined with "m68k: defconfig: Update defconfigs for v5.5-rc1"
+and "m68k: defconfig: Update defconfigs for v5.5-rc2".
+---
+ arch/m68k/configs/amiga_defconfig    | 2 +-
+ arch/m68k/configs/apollo_defconfig   | 2 +-
+ arch/m68k/configs/atari_defconfig    | 2 +-
+ arch/m68k/configs/bvme6000_defconfig | 2 +-
+ arch/m68k/configs/hp300_defconfig    | 2 +-
+ arch/m68k/configs/mac_defconfig      | 2 +-
+ arch/m68k/configs/multi_defconfig    | 2 +-
+ arch/m68k/configs/mvme147_defconfig  | 2 +-
+ arch/m68k/configs/mvme16x_defconfig  | 2 +-
+ arch/m68k/configs/q40_defconfig      | 2 +-
+ arch/m68k/configs/sun3x_defconfig    | 2 +-
+ 11 files changed, 11 insertions(+), 11 deletions(-)
 
-Applied.
+diff --git a/arch/m68k/configs/amiga_defconfig b/arch/m68k/configs/amiga_defconfig
+index 0a6ba8e5a39ac342..e1134c3e0b69d5d3 100644
+--- a/arch/m68k/configs/amiga_defconfig
++++ b/arch/m68k/configs/amiga_defconfig
+@@ -624,6 +624,7 @@ CONFIG_STRING_SELFTEST=m
+ # CONFIG_SECTION_MISMATCH_WARN_ONLY is not set
+ CONFIG_MAGIC_SYSRQ=y
+ CONFIG_WW_MUTEX_SELFTEST=m
++CONFIG_EARLY_PRINTK=y
+ CONFIG_TEST_LIST_SORT=m
+ CONFIG_TEST_SORT=m
+ CONFIG_REED_SOLOMON_TEST=m
+@@ -655,4 +656,3 @@ CONFIG_TEST_KMOD=m
+ CONFIG_TEST_MEMCAT_P=m
+ CONFIG_TEST_STACKINIT=m
+ CONFIG_TEST_MEMINIT=m
+-CONFIG_EARLY_PRINTK=y
+diff --git a/arch/m68k/configs/apollo_defconfig b/arch/m68k/configs/apollo_defconfig
+index 6d9fa08ef6d0e35c..484cb1643df1719d 100644
+--- a/arch/m68k/configs/apollo_defconfig
++++ b/arch/m68k/configs/apollo_defconfig
+@@ -580,6 +580,7 @@ CONFIG_STRING_SELFTEST=m
+ # CONFIG_SECTION_MISMATCH_WARN_ONLY is not set
+ CONFIG_MAGIC_SYSRQ=y
+ CONFIG_WW_MUTEX_SELFTEST=m
++CONFIG_EARLY_PRINTK=y
+ CONFIG_TEST_LIST_SORT=m
+ CONFIG_TEST_SORT=m
+ CONFIG_REED_SOLOMON_TEST=m
+@@ -611,4 +612,3 @@ CONFIG_TEST_KMOD=m
+ CONFIG_TEST_MEMCAT_P=m
+ CONFIG_TEST_STACKINIT=m
+ CONFIG_TEST_MEMINIT=m
+-CONFIG_EARLY_PRINTK=y
+diff --git a/arch/m68k/configs/atari_defconfig b/arch/m68k/configs/atari_defconfig
+index 65bd096f89e7ee04..c372f00c4a1f0797 100644
+--- a/arch/m68k/configs/atari_defconfig
++++ b/arch/m68k/configs/atari_defconfig
+@@ -614,6 +614,7 @@ CONFIG_STRING_SELFTEST=m
+ # CONFIG_SECTION_MISMATCH_WARN_ONLY is not set
+ CONFIG_MAGIC_SYSRQ=y
+ CONFIG_WW_MUTEX_SELFTEST=m
++CONFIG_EARLY_PRINTK=y
+ CONFIG_TEST_LIST_SORT=m
+ CONFIG_TEST_SORT=m
+ CONFIG_REED_SOLOMON_TEST=m
+@@ -645,4 +646,3 @@ CONFIG_TEST_KMOD=m
+ CONFIG_TEST_MEMCAT_P=m
+ CONFIG_TEST_STACKINIT=m
+ CONFIG_TEST_MEMINIT=m
+-CONFIG_EARLY_PRINTK=y
+diff --git a/arch/m68k/configs/bvme6000_defconfig b/arch/m68k/configs/bvme6000_defconfig
+index 789cad50f64ab334..bee9263a409c4e18 100644
+--- a/arch/m68k/configs/bvme6000_defconfig
++++ b/arch/m68k/configs/bvme6000_defconfig
+@@ -573,6 +573,7 @@ CONFIG_STRING_SELFTEST=m
+ # CONFIG_SECTION_MISMATCH_WARN_ONLY is not set
+ CONFIG_MAGIC_SYSRQ=y
+ CONFIG_WW_MUTEX_SELFTEST=m
++CONFIG_EARLY_PRINTK=y
+ CONFIG_TEST_LIST_SORT=m
+ CONFIG_TEST_SORT=m
+ CONFIG_REED_SOLOMON_TEST=m
+@@ -604,4 +605,3 @@ CONFIG_TEST_KMOD=m
+ CONFIG_TEST_MEMCAT_P=m
+ CONFIG_TEST_STACKINIT=m
+ CONFIG_TEST_MEMINIT=m
+-CONFIG_EARLY_PRINTK=y
+diff --git a/arch/m68k/configs/hp300_defconfig b/arch/m68k/configs/hp300_defconfig
+index aa4a8e0a18389b35..c8847a8bcbd6d23f 100644
+--- a/arch/m68k/configs/hp300_defconfig
++++ b/arch/m68k/configs/hp300_defconfig
+@@ -582,6 +582,7 @@ CONFIG_STRING_SELFTEST=m
+ # CONFIG_SECTION_MISMATCH_WARN_ONLY is not set
+ CONFIG_MAGIC_SYSRQ=y
+ CONFIG_WW_MUTEX_SELFTEST=m
++CONFIG_EARLY_PRINTK=y
+ CONFIG_TEST_LIST_SORT=m
+ CONFIG_TEST_SORT=m
+ CONFIG_REED_SOLOMON_TEST=m
+@@ -613,4 +614,3 @@ CONFIG_TEST_KMOD=m
+ CONFIG_TEST_MEMCAT_P=m
+ CONFIG_TEST_STACKINIT=m
+ CONFIG_TEST_MEMINIT=m
+-CONFIG_EARLY_PRINTK=y
+diff --git a/arch/m68k/configs/mac_defconfig b/arch/m68k/configs/mac_defconfig
+index 5172398c38047f1e..303ffafd9cad0d60 100644
+--- a/arch/m68k/configs/mac_defconfig
++++ b/arch/m68k/configs/mac_defconfig
+@@ -604,6 +604,7 @@ CONFIG_STRING_SELFTEST=m
+ # CONFIG_SECTION_MISMATCH_WARN_ONLY is not set
+ CONFIG_MAGIC_SYSRQ=y
+ CONFIG_WW_MUTEX_SELFTEST=m
++CONFIG_EARLY_PRINTK=y
+ CONFIG_TEST_LIST_SORT=m
+ CONFIG_TEST_SORT=m
+ CONFIG_REED_SOLOMON_TEST=m
+@@ -635,4 +636,3 @@ CONFIG_TEST_KMOD=m
+ CONFIG_TEST_MEMCAT_P=m
+ CONFIG_TEST_STACKINIT=m
+ CONFIG_TEST_MEMINIT=m
+-CONFIG_EARLY_PRINTK=y
+diff --git a/arch/m68k/configs/multi_defconfig b/arch/m68k/configs/multi_defconfig
+index 14c31ca056417625..89a704226cd9e4e5 100644
+--- a/arch/m68k/configs/multi_defconfig
++++ b/arch/m68k/configs/multi_defconfig
+@@ -690,6 +690,7 @@ CONFIG_STRING_SELFTEST=m
+ # CONFIG_SECTION_MISMATCH_WARN_ONLY is not set
+ CONFIG_MAGIC_SYSRQ=y
+ CONFIG_WW_MUTEX_SELFTEST=m
++CONFIG_EARLY_PRINTK=y
+ CONFIG_TEST_LIST_SORT=m
+ CONFIG_TEST_SORT=m
+ CONFIG_REED_SOLOMON_TEST=m
+@@ -721,4 +722,3 @@ CONFIG_TEST_KMOD=m
+ CONFIG_TEST_MEMCAT_P=m
+ CONFIG_TEST_STACKINIT=m
+ CONFIG_TEST_MEMINIT=m
+-CONFIG_EARLY_PRINTK=y
+diff --git a/arch/m68k/configs/mvme147_defconfig b/arch/m68k/configs/mvme147_defconfig
+index f68287e5c0d83f3e..f62c1f4d03a0330e 100644
+--- a/arch/m68k/configs/mvme147_defconfig
++++ b/arch/m68k/configs/mvme147_defconfig
+@@ -572,6 +572,7 @@ CONFIG_STRING_SELFTEST=m
+ # CONFIG_SECTION_MISMATCH_WARN_ONLY is not set
+ CONFIG_MAGIC_SYSRQ=y
+ CONFIG_WW_MUTEX_SELFTEST=m
++CONFIG_EARLY_PRINTK=y
+ CONFIG_TEST_LIST_SORT=m
+ CONFIG_TEST_SORT=m
+ CONFIG_REED_SOLOMON_TEST=m
+@@ -603,4 +604,3 @@ CONFIG_TEST_KMOD=m
+ CONFIG_TEST_MEMCAT_P=m
+ CONFIG_TEST_STACKINIT=m
+ CONFIG_TEST_MEMINIT=m
+-CONFIG_EARLY_PRINTK=y
+diff --git a/arch/m68k/configs/mvme16x_defconfig b/arch/m68k/configs/mvme16x_defconfig
+index da79ec7b77ae1fe1..58dcad26a7513222 100644
+--- a/arch/m68k/configs/mvme16x_defconfig
++++ b/arch/m68k/configs/mvme16x_defconfig
+@@ -573,6 +573,7 @@ CONFIG_STRING_SELFTEST=m
+ # CONFIG_SECTION_MISMATCH_WARN_ONLY is not set
+ CONFIG_MAGIC_SYSRQ=y
+ CONFIG_WW_MUTEX_SELFTEST=m
++CONFIG_EARLY_PRINTK=y
+ CONFIG_TEST_LIST_SORT=m
+ CONFIG_TEST_SORT=m
+ CONFIG_REED_SOLOMON_TEST=m
+@@ -604,4 +605,3 @@ CONFIG_TEST_KMOD=m
+ CONFIG_TEST_MEMCAT_P=m
+ CONFIG_TEST_STACKINIT=m
+ CONFIG_TEST_MEMINIT=m
+-CONFIG_EARLY_PRINTK=y
+diff --git a/arch/m68k/configs/q40_defconfig b/arch/m68k/configs/q40_defconfig
+index d93bd23d0e735e41..5d3c28d1d545b4a0 100644
+--- a/arch/m68k/configs/q40_defconfig
++++ b/arch/m68k/configs/q40_defconfig
+@@ -591,6 +591,7 @@ CONFIG_STRING_SELFTEST=m
+ # CONFIG_SECTION_MISMATCH_WARN_ONLY is not set
+ CONFIG_MAGIC_SYSRQ=y
+ CONFIG_WW_MUTEX_SELFTEST=m
++CONFIG_EARLY_PRINTK=y
+ CONFIG_TEST_LIST_SORT=m
+ CONFIG_TEST_SORT=m
+ CONFIG_REED_SOLOMON_TEST=m
+@@ -622,4 +623,3 @@ CONFIG_TEST_KMOD=m
+ CONFIG_TEST_MEMCAT_P=m
+ CONFIG_TEST_STACKINIT=m
+ CONFIG_TEST_MEMINIT=m
+-CONFIG_EARLY_PRINTK=y
+diff --git a/arch/m68k/configs/sun3x_defconfig b/arch/m68k/configs/sun3x_defconfig
+index bf96a6a15ec4d684..22e1accc60a3e110 100644
+--- a/arch/m68k/configs/sun3x_defconfig
++++ b/arch/m68k/configs/sun3x_defconfig
+@@ -574,6 +574,7 @@ CONFIG_STRING_SELFTEST=m
+ # CONFIG_SECTION_MISMATCH_WARN_ONLY is not set
+ CONFIG_MAGIC_SYSRQ=y
+ CONFIG_WW_MUTEX_SELFTEST=m
++CONFIG_EARLY_PRINTK=y
+ CONFIG_TEST_LIST_SORT=m
+ CONFIG_TEST_SORT=m
+ CONFIG_REED_SOLOMON_TEST=m
+@@ -605,4 +606,3 @@ CONFIG_TEST_KMOD=m
+ CONFIG_TEST_MEMCAT_P=m
+ CONFIG_TEST_STACKINIT=m
+ CONFIG_TEST_MEMINIT=m
+-CONFIG_EARLY_PRINTK=y
+-- 
+2.17.1
+
