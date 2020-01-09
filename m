@@ -1,254 +1,226 @@
-Return-Path: <SRS0=ubcR=2N=vger.kernel.org=linux-m68k-owner@kernel.org>
+Return-Path: <SRS0=aRi6=26=vger.kernel.org=linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.8 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,
-	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-0.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
+	autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 330DEC2D0C0
-	for <linux-m68k@archiver.kernel.org>; Mon, 23 Dec 2019 10:30:28 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id DF442C282DD
+	for <linux-m68k@archiver.kernel.org>; Thu,  9 Jan 2020 15:33:59 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id EF0E3206CB
-	for <linux-m68k@archiver.kernel.org>; Mon, 23 Dec 2019 10:30:27 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id A88322064C
+	for <linux-m68k@archiver.kernel.org>; Thu,  9 Jan 2020 15:33:59 +0000 (UTC)
+Authentication-Results: mail.kernel.org;
+	dkim=pass (1024-bit key) header.d=teoenmingcorp.onmicrosoft.com header.i=@teoenmingcorp.onmicrosoft.com header.b="Ksc5t3c+"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726709AbfLWKa1 (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Mon, 23 Dec 2019 05:30:27 -0500
-Received: from michel.telenet-ops.be ([195.130.137.88]:36922 "EHLO
-        michel.telenet-ops.be" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726150AbfLWKa1 (ORCPT
-        <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Mon, 23 Dec 2019 05:30:27 -0500
-Received: from ramsan ([84.195.182.253])
-        by michel.telenet-ops.be with bizsmtp
-        id hNWP2100E5USYZQ06NWPRd; Mon, 23 Dec 2019 11:30:23 +0100
-Received: from rox.of.borg ([192.168.97.57])
-        by ramsan with esmtp (Exim 4.90_1)
-        (envelope-from <geert@linux-m68k.org>)
-        id 1ijKyl-0000x0-C6; Mon, 23 Dec 2019 11:30:23 +0100
-Received: from geert by rox.of.borg with local (Exim 4.90_1)
-        (envelope-from <geert@linux-m68k.org>)
-        id 1ijKyl-0002RX-Ad; Mon, 23 Dec 2019 11:30:23 +0100
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-To:     linux-m68k@lists.linux-m68k.org
-Cc:     linux-kernel@vger.kernel.org,
-        Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: [PATCH] m68k: defconfig: Update defconfigs for v5.5-rc3
-Date:   Mon, 23 Dec 2019 11:30:22 +0100
-Message-Id: <20191223103022.9350-1-geert@linux-m68k.org>
-X-Mailer: git-send-email 2.17.1
+        id S1726048AbgAIPd7 (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Thu, 9 Jan 2020 10:33:59 -0500
+Received: from mail-eopbgr1300050.outbound.protection.outlook.com ([40.107.130.50]:40619
+        "EHLO APC01-HK2-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1728098AbgAIPd7 (ORCPT <rfc822;linux-m68k@vger.kernel.org>);
+        Thu, 9 Jan 2020 10:33:59 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=TGUhXl2GkLz6FynMOfT/NHlmOtkCEBQtTQsFBTn7ZPxqTwR/FeeZPQRvB1Ywib1LeIkxclbu/p4AF2VMLzUopLQbwLfypTpfBXfw+Spq3btJoevOmxTE2M+vjWPmwvYWs9CV83aGxEdpzcKY7rLrFwFSafSKOZ6dtvCCGlwYiQ+e9tXd6i7SWP1Jdr6vQA9GBXZ8giKmdw1HdPP/net8Cz1DQT10pv49kAaZgg89irbAtVRQR8Or+e86eogBeYZHWKBm2Wr7R04ZPIBziYNtWNtBPad5ZmgCMAI2o1Q/vQbu5+PqFbVPcmLAAzuNJGkexQ2ekvRzDvv+8y/PPPCqLQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=zkC7wY334/PuMEgerBeWKWnU8lmu8c46b4WPaw0WM5I=;
+ b=HVZltZ4kge5qo8iNgbsawHqqNENO4+jEeI9C/OJEOPJJ8yMPX1c4oZp28r+M3/MgVAsNF+0Sz5Dd4eHlkLbPIycJWK4lxhN53szOWHLgZbdDp6OTT6luTk3lzCrEDNmIy8N4ISKKAWr8Y583Dr5HK3il/8iRxC7GhK+svjAQbUD4QJCUvZUpXiTJLcGsFXzf+RXFTPVioH1Cu1g1f2G7xXymHJURYnQNHe5PW0pUhL/vfAueJFSwvjinZs3UzOklVeo0IXacLXYbCspEkqReMAewHxJFldDj3OtLITlAK84bNvQnfjChEt5MBEdtw8dMnpWHiHxfy8fpbKdddWPN8g==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=teo-en-ming-corp.com; dmarc=pass action=none
+ header.from=teo-en-ming-corp.com; dkim=pass header.d=teo-en-ming-corp.com;
+ arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=teoenmingcorp.onmicrosoft.com; s=selector2-teoenmingcorp-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=zkC7wY334/PuMEgerBeWKWnU8lmu8c46b4WPaw0WM5I=;
+ b=Ksc5t3c+HoNbuqANvq3xMG4sCUxilSrYysupuxhKG194tawFO4NEhGMOEnl9+6ZmIJEslAZYkdLpGGXyX6EfOLYD6gt6XdeN7QK/h/HjRvfQqCO2oFDwSBUNl6SkDNQj8iHSUDudGLaz9xxiuF7jp6NwznvPtfGoVfHN9SzE/xI=
+Received: from KU1PR01MB2134.apcprd01.prod.exchangelabs.com (10.170.174.138)
+ by KU1PR01MB1894.apcprd01.prod.exchangelabs.com (10.170.173.138) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2602.12; Thu, 9 Jan
+ 2020 15:33:53 +0000
+Received: from KU1PR01MB2134.apcprd01.prod.exchangelabs.com
+ ([fe80::8122:ca17:cba6:19aa]) by KU1PR01MB2134.apcprd01.prod.exchangelabs.com
+ ([fe80::8122:ca17:cba6:19aa%5]) with mapi id 15.20.2623.010; Thu, 9 Jan 2020
+ 15:33:53 +0000
+From:   Turritopsis Dohrnii Teo En Ming <ceo@teo-en-ming-corp.com>
+To:     "linux-m68k@vger.kernel.org" <linux-m68k@vger.kernel.org>
+CC:     Turritopsis Dohrnii Teo En Ming <ceo@teo-en-ming-corp.com>
+Subject: Singapore Citizen Mr. Teo En Ming's Refugee Seeking Attempts as at 9
+ Jan 2020 Thursday
+Thread-Topic: Singapore Citizen Mr. Teo En Ming's Refugee Seeking Attempts as
+ at 9 Jan 2020 Thursday
+Thread-Index: AdXHAiJJ8kPXVsr3QEuGRpR7BE45eA==
+Date:   Thu, 9 Jan 2020 15:33:52 +0000
+Message-ID: <KU1PR01MB21341499E4FFA2BD9C2BA88687390@KU1PR01MB2134.apcprd01.prod.exchangelabs.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: spf=none (sender IP is )
+ smtp.mailfrom=ceo@teo-en-ming-corp.com; 
+x-originating-ip: [2401:7400:c802:de67:f1ab:6fde:d925:5c0c]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: b0e6e342-23df-4897-ef33-08d795195569
+x-ms-traffictypediagnostic: KU1PR01MB1894:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <KU1PR01MB1894DC70BEF00AA76432F3FD87390@KU1PR01MB1894.apcprd01.prod.exchangelabs.com>
+x-ms-oob-tlc-oobclassifiers: OLM:5797;
+x-forefront-prvs: 02778BF158
+x-forefront-antispam-report: SFV:NSPM;SFS:(10009020)(376002)(136003)(346002)(39830400003)(366004)(396003)(199004)(189003)(66556008)(66476007)(66946007)(76116006)(81166006)(81156014)(2906002)(33656002)(64756008)(66446008)(8676002)(316002)(508600001)(6506007)(4000180100002)(107886003)(71200400001)(4326008)(7696005)(55016002)(5660300002)(6916009)(186003)(52536014)(86362001)(966005)(8936002)(9686003);DIR:OUT;SFP:1101;SCL:1;SRVR:KU1PR01MB1894;H:KU1PR01MB2134.apcprd01.prod.exchangelabs.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;A:1;MX:1;
+received-spf: None (protection.outlook.com: teo-en-ming-corp.com does not
+ designate permitted sender hosts)
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: FrluvnQ8gzRGwCnvSFGfvTJBj+9RX2Izb8UxqmZJpA6sVo1J7aGLvBxXu3A9g8gQnM0Em4mgB3b4No4bzfDh4QGMUjJgY+43ENr0lioF5mUA7zpUwrLKxzhRtegiIBNdjV3W/srh0y2AGnSfl45JkZji8RE+JwFylXrBCpUg3sQUHqF3scE/MfCTd25UWFmVfejdEYilyZo31jaYpHFAEYUqS6TxQwftfPhwWXLpeD45AnirFAq0yg8wH1gQT8bUhHKogIibOQsDIfyFPvUprxc3pD/c7Z77Pkob6Q78byj3IWU6C/qBm4T5oQ3FnLkCnlFLJWiuxnjG+364jbOSYuNyyzY6et7IzNnchlRP7RtDP/CBycW0+o2JPbg+4iwicibpRVq/mUPA3TKeajoeaXvFq77FFYrKNIkExCq0irc8BgdN8VNznncvTTF4vDFRKOWl+ygQmTFe1M4iNY9PNj0nhvutXUfye8PRYCXaeg0/x2Z8SpTrcUWT+d56iaCGPBtf0M3atUgU4j+mULWNVQ==
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+X-OriginatorOrg: teo-en-ming-corp.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: b0e6e342-23df-4897-ef33-08d795195569
+X-MS-Exchange-CrossTenant-originalarrivaltime: 09 Jan 2020 15:33:53.3712
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 23b3f6ae-c453-4b93-aec9-f17508e5885c
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: LixDgyPfCV/lJgUEttumRmagY5JBDcXUf9nODWTeyHsFZnho38LqRERXdM+kLO80aWpHsiZ26vcq695kpsfJO18wazFn8PlcbKFC+yUdooo=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: KU1PR01MB1894
 Sender: linux-m68k-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-  - Move CONFIG_EARLY_PRINTK.
+SUBJECT: Singapore Citizen Mr. Teo En Ming's Refugee Seeking Attempts as at=
+ 9 Jan 2020 Thursday
 
-Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
----
-To be combined with "m68k: defconfig: Update defconfigs for v5.5-rc1"
-and "m68k: defconfig: Update defconfigs for v5.5-rc2".
----
- arch/m68k/configs/amiga_defconfig    | 2 +-
- arch/m68k/configs/apollo_defconfig   | 2 +-
- arch/m68k/configs/atari_defconfig    | 2 +-
- arch/m68k/configs/bvme6000_defconfig | 2 +-
- arch/m68k/configs/hp300_defconfig    | 2 +-
- arch/m68k/configs/mac_defconfig      | 2 +-
- arch/m68k/configs/multi_defconfig    | 2 +-
- arch/m68k/configs/mvme147_defconfig  | 2 +-
- arch/m68k/configs/mvme16x_defconfig  | 2 +-
- arch/m68k/configs/q40_defconfig      | 2 +-
- arch/m68k/configs/sun3x_defconfig    | 2 +-
- 11 files changed, 11 insertions(+), 11 deletions(-)
+In reverse chronological order:
 
-diff --git a/arch/m68k/configs/amiga_defconfig b/arch/m68k/configs/amiga_defconfig
-index 0a6ba8e5a39ac342..e1134c3e0b69d5d3 100644
---- a/arch/m68k/configs/amiga_defconfig
-+++ b/arch/m68k/configs/amiga_defconfig
-@@ -624,6 +624,7 @@ CONFIG_STRING_SELFTEST=m
- # CONFIG_SECTION_MISMATCH_WARN_ONLY is not set
- CONFIG_MAGIC_SYSRQ=y
- CONFIG_WW_MUTEX_SELFTEST=m
-+CONFIG_EARLY_PRINTK=y
- CONFIG_TEST_LIST_SORT=m
- CONFIG_TEST_SORT=m
- CONFIG_REED_SOLOMON_TEST=m
-@@ -655,4 +656,3 @@ CONFIG_TEST_KMOD=m
- CONFIG_TEST_MEMCAT_P=m
- CONFIG_TEST_STACKINIT=m
- CONFIG_TEST_MEMINIT=m
--CONFIG_EARLY_PRINTK=y
-diff --git a/arch/m68k/configs/apollo_defconfig b/arch/m68k/configs/apollo_defconfig
-index 6d9fa08ef6d0e35c..484cb1643df1719d 100644
---- a/arch/m68k/configs/apollo_defconfig
-+++ b/arch/m68k/configs/apollo_defconfig
-@@ -580,6 +580,7 @@ CONFIG_STRING_SELFTEST=m
- # CONFIG_SECTION_MISMATCH_WARN_ONLY is not set
- CONFIG_MAGIC_SYSRQ=y
- CONFIG_WW_MUTEX_SELFTEST=m
-+CONFIG_EARLY_PRINTK=y
- CONFIG_TEST_LIST_SORT=m
- CONFIG_TEST_SORT=m
- CONFIG_REED_SOLOMON_TEST=m
-@@ -611,4 +612,3 @@ CONFIG_TEST_KMOD=m
- CONFIG_TEST_MEMCAT_P=m
- CONFIG_TEST_STACKINIT=m
- CONFIG_TEST_MEMINIT=m
--CONFIG_EARLY_PRINTK=y
-diff --git a/arch/m68k/configs/atari_defconfig b/arch/m68k/configs/atari_defconfig
-index 65bd096f89e7ee04..c372f00c4a1f0797 100644
---- a/arch/m68k/configs/atari_defconfig
-+++ b/arch/m68k/configs/atari_defconfig
-@@ -614,6 +614,7 @@ CONFIG_STRING_SELFTEST=m
- # CONFIG_SECTION_MISMATCH_WARN_ONLY is not set
- CONFIG_MAGIC_SYSRQ=y
- CONFIG_WW_MUTEX_SELFTEST=m
-+CONFIG_EARLY_PRINTK=y
- CONFIG_TEST_LIST_SORT=m
- CONFIG_TEST_SORT=m
- CONFIG_REED_SOLOMON_TEST=m
-@@ -645,4 +646,3 @@ CONFIG_TEST_KMOD=m
- CONFIG_TEST_MEMCAT_P=m
- CONFIG_TEST_STACKINIT=m
- CONFIG_TEST_MEMINIT=m
--CONFIG_EARLY_PRINTK=y
-diff --git a/arch/m68k/configs/bvme6000_defconfig b/arch/m68k/configs/bvme6000_defconfig
-index 789cad50f64ab334..bee9263a409c4e18 100644
---- a/arch/m68k/configs/bvme6000_defconfig
-+++ b/arch/m68k/configs/bvme6000_defconfig
-@@ -573,6 +573,7 @@ CONFIG_STRING_SELFTEST=m
- # CONFIG_SECTION_MISMATCH_WARN_ONLY is not set
- CONFIG_MAGIC_SYSRQ=y
- CONFIG_WW_MUTEX_SELFTEST=m
-+CONFIG_EARLY_PRINTK=y
- CONFIG_TEST_LIST_SORT=m
- CONFIG_TEST_SORT=m
- CONFIG_REED_SOLOMON_TEST=m
-@@ -604,4 +605,3 @@ CONFIG_TEST_KMOD=m
- CONFIG_TEST_MEMCAT_P=m
- CONFIG_TEST_STACKINIT=m
- CONFIG_TEST_MEMINIT=m
--CONFIG_EARLY_PRINTK=y
-diff --git a/arch/m68k/configs/hp300_defconfig b/arch/m68k/configs/hp300_defconfig
-index aa4a8e0a18389b35..c8847a8bcbd6d23f 100644
---- a/arch/m68k/configs/hp300_defconfig
-+++ b/arch/m68k/configs/hp300_defconfig
-@@ -582,6 +582,7 @@ CONFIG_STRING_SELFTEST=m
- # CONFIG_SECTION_MISMATCH_WARN_ONLY is not set
- CONFIG_MAGIC_SYSRQ=y
- CONFIG_WW_MUTEX_SELFTEST=m
-+CONFIG_EARLY_PRINTK=y
- CONFIG_TEST_LIST_SORT=m
- CONFIG_TEST_SORT=m
- CONFIG_REED_SOLOMON_TEST=m
-@@ -613,4 +614,3 @@ CONFIG_TEST_KMOD=m
- CONFIG_TEST_MEMCAT_P=m
- CONFIG_TEST_STACKINIT=m
- CONFIG_TEST_MEMINIT=m
--CONFIG_EARLY_PRINTK=y
-diff --git a/arch/m68k/configs/mac_defconfig b/arch/m68k/configs/mac_defconfig
-index 5172398c38047f1e..303ffafd9cad0d60 100644
---- a/arch/m68k/configs/mac_defconfig
-+++ b/arch/m68k/configs/mac_defconfig
-@@ -604,6 +604,7 @@ CONFIG_STRING_SELFTEST=m
- # CONFIG_SECTION_MISMATCH_WARN_ONLY is not set
- CONFIG_MAGIC_SYSRQ=y
- CONFIG_WW_MUTEX_SELFTEST=m
-+CONFIG_EARLY_PRINTK=y
- CONFIG_TEST_LIST_SORT=m
- CONFIG_TEST_SORT=m
- CONFIG_REED_SOLOMON_TEST=m
-@@ -635,4 +636,3 @@ CONFIG_TEST_KMOD=m
- CONFIG_TEST_MEMCAT_P=m
- CONFIG_TEST_STACKINIT=m
- CONFIG_TEST_MEMINIT=m
--CONFIG_EARLY_PRINTK=y
-diff --git a/arch/m68k/configs/multi_defconfig b/arch/m68k/configs/multi_defconfig
-index 14c31ca056417625..89a704226cd9e4e5 100644
---- a/arch/m68k/configs/multi_defconfig
-+++ b/arch/m68k/configs/multi_defconfig
-@@ -690,6 +690,7 @@ CONFIG_STRING_SELFTEST=m
- # CONFIG_SECTION_MISMATCH_WARN_ONLY is not set
- CONFIG_MAGIC_SYSRQ=y
- CONFIG_WW_MUTEX_SELFTEST=m
-+CONFIG_EARLY_PRINTK=y
- CONFIG_TEST_LIST_SORT=m
- CONFIG_TEST_SORT=m
- CONFIG_REED_SOLOMON_TEST=m
-@@ -721,4 +722,3 @@ CONFIG_TEST_KMOD=m
- CONFIG_TEST_MEMCAT_P=m
- CONFIG_TEST_STACKINIT=m
- CONFIG_TEST_MEMINIT=m
--CONFIG_EARLY_PRINTK=y
-diff --git a/arch/m68k/configs/mvme147_defconfig b/arch/m68k/configs/mvme147_defconfig
-index f68287e5c0d83f3e..f62c1f4d03a0330e 100644
---- a/arch/m68k/configs/mvme147_defconfig
-+++ b/arch/m68k/configs/mvme147_defconfig
-@@ -572,6 +572,7 @@ CONFIG_STRING_SELFTEST=m
- # CONFIG_SECTION_MISMATCH_WARN_ONLY is not set
- CONFIG_MAGIC_SYSRQ=y
- CONFIG_WW_MUTEX_SELFTEST=m
-+CONFIG_EARLY_PRINTK=y
- CONFIG_TEST_LIST_SORT=m
- CONFIG_TEST_SORT=m
- CONFIG_REED_SOLOMON_TEST=m
-@@ -603,4 +604,3 @@ CONFIG_TEST_KMOD=m
- CONFIG_TEST_MEMCAT_P=m
- CONFIG_TEST_STACKINIT=m
- CONFIG_TEST_MEMINIT=m
--CONFIG_EARLY_PRINTK=y
-diff --git a/arch/m68k/configs/mvme16x_defconfig b/arch/m68k/configs/mvme16x_defconfig
-index da79ec7b77ae1fe1..58dcad26a7513222 100644
---- a/arch/m68k/configs/mvme16x_defconfig
-+++ b/arch/m68k/configs/mvme16x_defconfig
-@@ -573,6 +573,7 @@ CONFIG_STRING_SELFTEST=m
- # CONFIG_SECTION_MISMATCH_WARN_ONLY is not set
- CONFIG_MAGIC_SYSRQ=y
- CONFIG_WW_MUTEX_SELFTEST=m
-+CONFIG_EARLY_PRINTK=y
- CONFIG_TEST_LIST_SORT=m
- CONFIG_TEST_SORT=m
- CONFIG_REED_SOLOMON_TEST=m
-@@ -604,4 +605,3 @@ CONFIG_TEST_KMOD=m
- CONFIG_TEST_MEMCAT_P=m
- CONFIG_TEST_STACKINIT=m
- CONFIG_TEST_MEMINIT=m
--CONFIG_EARLY_PRINTK=y
-diff --git a/arch/m68k/configs/q40_defconfig b/arch/m68k/configs/q40_defconfig
-index d93bd23d0e735e41..5d3c28d1d545b4a0 100644
---- a/arch/m68k/configs/q40_defconfig
-+++ b/arch/m68k/configs/q40_defconfig
-@@ -591,6 +591,7 @@ CONFIG_STRING_SELFTEST=m
- # CONFIG_SECTION_MISMATCH_WARN_ONLY is not set
- CONFIG_MAGIC_SYSRQ=y
- CONFIG_WW_MUTEX_SELFTEST=m
-+CONFIG_EARLY_PRINTK=y
- CONFIG_TEST_LIST_SORT=m
- CONFIG_TEST_SORT=m
- CONFIG_REED_SOLOMON_TEST=m
-@@ -622,4 +623,3 @@ CONFIG_TEST_KMOD=m
- CONFIG_TEST_MEMCAT_P=m
- CONFIG_TEST_STACKINIT=m
- CONFIG_TEST_MEMINIT=m
--CONFIG_EARLY_PRINTK=y
-diff --git a/arch/m68k/configs/sun3x_defconfig b/arch/m68k/configs/sun3x_defconfig
-index bf96a6a15ec4d684..22e1accc60a3e110 100644
---- a/arch/m68k/configs/sun3x_defconfig
-+++ b/arch/m68k/configs/sun3x_defconfig
-@@ -574,6 +574,7 @@ CONFIG_STRING_SELFTEST=m
- # CONFIG_SECTION_MISMATCH_WARN_ONLY is not set
- CONFIG_MAGIC_SYSRQ=y
- CONFIG_WW_MUTEX_SELFTEST=m
-+CONFIG_EARLY_PRINTK=y
- CONFIG_TEST_LIST_SORT=m
- CONFIG_TEST_SORT=m
- CONFIG_REED_SOLOMON_TEST=m
-@@ -605,4 +606,3 @@ CONFIG_TEST_KMOD=m
- CONFIG_TEST_MEMCAT_P=m
- CONFIG_TEST_STACKINIT=m
- CONFIG_TEST_MEMINIT=m
--CONFIG_EARLY_PRINTK=y
--- 
-2.17.1
+[1] Application for Offshore Refugee/Humanitarian Visa to Australia, 25 Dec=
+ 2019 (Christmas) to 9 Jan 2020
+
+Photo #1: Page 1 of Form 842 Application for an Offshore Humanitarian visa,=
+ Refugee and Humanitarian (Class XB) visa
+
+Photo #2: Front of DHL Express plastic envelope (yellow)
+
+Photo #3: Back of DHL Express plastic envelope (white)
+
+Photo #4: DHL Express Shipment Waybill
+
+Photo #5: DHL Express Shipment Tracking Online Page, showing that my applic=
+ation for offshore refugee visa to Australia=20
+was picked up at 1619 hours on 25 Dec 2019 in Singapore and delivered to Ca=
+nberra - Braddon - Australia
+on 30 Dec 2019 at 11:10 AM Braddon, Australian Capital Territory (ACT) Time
+
+Photo #6: DHL Express Electronic Proof of Delivery, showing that my applica=
+tion for offshore refugee visa to Australia=20
+was received and signed by staff Mohsin Mahmood at the Special Humanitarian=
+ Processing Center,=20
+3 Lonsdale Street, Braddon, Australian Capital Territory (ACT) 2612, Canber=
+ra, Australia.
+
+Photo #7: Page 5 of Form 842 Application for an Offshore Humanitarian visa,=
+ Refugee and Humanitarian (Class XB) visa, bearing the=20
+official stamp of the Australian Government Department of Home Affairs at N=
+ew South Wales (NSW):=20
+"COURIER RECEIVED; HOME AFFAIRS; NSW; 27 DEC 2019" and=20
+"HOME AFFAIRS; NSW; 27 DEC 2019" at the bottom.
+
+References:
+
+For the above-mentioned seven photos, please refer to my RAID 1 mirroring r=
+edundant Blogger and Wordpress blogs at
+
+https://tdtemcerts.blogspot.sg/
+
+https://tdtemcerts.wordpress.com/
+
+
+
+[2] Petition to the Government of Taiwan for Refugee Status, 5th
+August 2019 Monday
+
+Photo #1: At the building of the National Immigration Agency, Ministry
+of the Interior, Taipei, Taiwan, 5th August 2019
+
+Photo #2: Queue ticket no. 515 at the National Immigration Agency,
+Ministry of the Interior, Taipei, Taiwan, 5th August 2019
+
+Photo #3: Submission of documents/petition to the National Immigration
+Agency, Ministry of the Interior, Taipei, Taiwan, 5th August 2019
+
+Photos #4 and #5: Acknowledgement of Receipt (no. 03142) for the
+submission of documents/petition from the National Immigration Agency,
+Ministry of the Interior, Taipei, Taiwan, 5th August 2019, 10:00 AM
+
+References:
+
+(a) Petition to the Government of Taiwan for Refugee Status, 5th
+August 2019 Monday (Blogger blog)
+
+Link: https://tdtemcerts.blogspot.sg/2019/08/petition-to-government-of-taiw=
+an-for.html
+
+(b) Petition to the Government of Taiwan for Refugee Status, 5th
+August 2019 Monday (Wordpress blog)
+
+Link: https://tdtemcerts.wordpress.com/2019/08/23/petition-to-the-governmen=
+t-of-taiwan-for-refugee-status/
+
+
+
+[3] Application for Refugee Status at the United Nations High Commissioner =
+for Refugees (UNHCR),=20
+Bangkok, Thailand, 21st March 2017 Tuesday
+
+References:
+
+(a) [YOUTUBE] Vlog: The Road to Application for Refugee Status at the
+United Nations High Commissioner for Refugees (UNHCR), Bangkok
+
+Link: https://www.youtube.com/watch?v=3DutpuAa1eUNI
+
+YouTube video Published on March 22nd, 2017
+
+Views as at 9 Jan 2020: 659
+
+YouTube Channel: Turritopsis Dohrnii Teo En Ming
+Subscribers as at 9 Jan 2020: 3.14K
+Link: https://www.youtube.com/channel/UC__F2hzlqNEEGx-IXxQi3hA
+
+
+
+
+
+
+
+-----BEGIN EMAIL SIGNATURE-----
+
+The Gospel for all Targeted Individuals (TIs):
+
+[The New York Times] Microwave Weapons Are Prime Suspect in Ills of
+U.S. Embassy Workers
+
+Link:=A0https://www.nytimes.com/2018/09/01/science/sonic-attack-cuba-microw=
+ave.html
+
+***************************************************************************=
+*****************
+
+Singaporean Mr. Turritopsis Dohrnii Teo En Ming's Academic
+Qualifications as at 14 Feb 2019 and refugee seeking attempts at the
+United Nations Refugee Agency Bangkok (21 Mar 2017) and in Taiwan (5
+Aug 2019):
+
+[1]=A0https://tdtemcerts.wordpress.com/
+
+[2]=A0https://tdtemcerts.blogspot.sg/
+
+[3]=A0https://www.scribd.com/user/270125049/Teo-En-Ming
+
+-----END EMAIL SIGNATURE-----
 
