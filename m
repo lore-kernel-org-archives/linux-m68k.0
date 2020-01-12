@@ -4,72 +4,71 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-9.8 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,
-	USER_AGENT_GIT autolearn=unavailable autolearn_force=no version=3.4.0
+	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 49436C33CA2
-	for <linux-m68k@archiver.kernel.org>; Sun, 12 Jan 2020 16:50:14 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2C076C33CA2
+	for <linux-m68k@archiver.kernel.org>; Sun, 12 Jan 2020 16:56:18 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 14956214D8
-	for <linux-m68k@archiver.kernel.org>; Sun, 12 Jan 2020 16:50:14 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 05E7C2080D
+	for <linux-m68k@archiver.kernel.org>; Sun, 12 Jan 2020 16:56:18 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733098AbgALQtw (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Sun, 12 Jan 2020 11:49:52 -0500
-Received: from andre.telenet-ops.be ([195.130.132.53]:32998 "EHLO
-        andre.telenet-ops.be" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732654AbgALQtw (ORCPT
-        <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Sun, 12 Jan 2020 11:49:52 -0500
+        id S1733116AbgALQ4R (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Sun, 12 Jan 2020 11:56:17 -0500
+Received: from laurent.telenet-ops.be ([195.130.137.89]:41942 "EHLO
+        laurent.telenet-ops.be" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1732651AbgALQ4R (ORCPT
+        <rfc822;linux-m68k@vger.kernel.org>); Sun, 12 Jan 2020 11:56:17 -0500
 Received: from ramsan ([84.195.182.253])
-        by andre.telenet-ops.be with bizsmtp
-        id pUpr210055USYZQ01UprH8; Sun, 12 Jan 2020 17:49:51 +0100
+        by laurent.telenet-ops.be with bizsmtp
+        id pUwG2100B5USYZQ01UwGad; Sun, 12 Jan 2020 17:56:16 +0100
 Received: from rox.of.borg ([192.168.97.57])
         by ramsan with esmtp (Exim 4.90_1)
         (envelope-from <geert@linux-m68k.org>)
-        id 1iqgQw-0007yI-Um; Sun, 12 Jan 2020 17:49:50 +0100
+        id 1iqgXA-00082w-6V; Sun, 12 Jan 2020 17:56:16 +0100
 Received: from geert by rox.of.borg with local (Exim 4.90_1)
         (envelope-from <geert@linux-m68k.org>)
-        id 1iqgQw-0005Gm-Tv; Sun, 12 Jan 2020 17:49:50 +0100
+        id 1iqgXA-0005Su-5P; Sun, 12 Jan 2020 17:56:16 +0100
 From:   Geert Uytterhoeven <geert@linux-m68k.org>
-To:     linux-m68k@lists.linux-m68k.org
-Cc:     linux-kernel@vger.kernel.org,
+To:     Philip Blundell <philb@gnu.org>
+Cc:     linux-m68k@vger.kernel.org, linux-kernel@vger.kernel.org,
         Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: [PATCH 3/5] zorro: Use zorro_match_device() helper in zorro_bus_match()
-Date:   Sun, 12 Jan 2020 17:49:47 +0100
-Message-Id: <20200112164949.20196-4-geert@linux-m68k.org>
+Subject: [PATCH 2/3] dio: Fix dio_bus_match() kerneldoc
+Date:   Sun, 12 Jan 2020 17:56:12 +0100
+Message-Id: <20200112165613.20960-3-geert@linux-m68k.org>
 X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200112164949.20196-1-geert@linux-m68k.org>
-References: <20200112164949.20196-1-geert@linux-m68k.org>
+In-Reply-To: <20200112165613.20960-1-geert@linux-m68k.org>
+References: <20200112165613.20960-1-geert@linux-m68k.org>
 Sender: linux-m68k-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-Make zorro_bus_match() use the existing zorro_match_device() helper,
-instead of open-coding the same operation.
+The kerneldoc for dio_bus_match() was obviously copied from
+dio_match_device(), but wasnt't updated for the different calling
+context and semantics.
 
 Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
 ---
- drivers/zorro/zorro-driver.c | 7 +------
- 1 file changed, 1 insertion(+), 6 deletions(-)
+ drivers/dio/dio-driver.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/zorro/zorro-driver.c b/drivers/zorro/zorro-driver.c
-index 67e68880554245e1..0dd7cbcec2b0d478 100644
---- a/drivers/zorro/zorro-driver.c
-+++ b/drivers/zorro/zorro-driver.c
-@@ -133,12 +133,7 @@ static int zorro_bus_match(struct device *dev, struct device_driver *drv)
- 	if (!ids)
- 		return 0;
+diff --git a/drivers/dio/dio-driver.c b/drivers/dio/dio-driver.c
+index daf87e214a7794c2..69c46935ffc78cef 100644
+--- a/drivers/dio/dio-driver.c
++++ b/drivers/dio/dio-driver.c
+@@ -105,9 +105,9 @@ void dio_unregister_driver(struct dio_driver *drv)
+  *  @dev: the DIO device structure to match against
+  *  @drv: the &device_driver that points to the array of DIO device id structures to search
+  *
+- *  Used by a driver to check whether a DIO device present in the
+- *  system is in its list of supported devices. Returns the matching
+- *  dio_device_id structure or %NULL if there is no match.
++ *  Used by the driver core to check whether a DIO device present in the
++ *  system is in a driver's list of supported devices. Returns 1 if supported,
++ *  and 0 if there is no match.
+  */
  
--	while (ids->id) {
--		if (ids->id == ZORRO_WILDCARD || ids->id == z->id)
--			return 1;
--		ids++;
--	}
--	return 0;
-+	return !!zorro_match_device(ids, z);
- }
- 
- static int zorro_uevent(struct device *dev, struct kobj_uevent_env *env)
+ static int dio_bus_match(struct device *dev, struct device_driver *drv)
 -- 
 2.17.1
 
