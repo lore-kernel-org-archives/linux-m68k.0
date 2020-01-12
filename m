@@ -2,78 +2,67 @@ Return-Path: <SRS0=AmHP=3B=vger.kernel.org=linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.8 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
-	MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS autolearn=no
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-9.8 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,
+	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 16293C33CA2
-	for <linux-m68k@archiver.kernel.org>; Sun, 12 Jan 2020 16:07:03 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A536DC33CA2
+	for <linux-m68k@archiver.kernel.org>; Sun, 12 Jan 2020 16:32:16 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id E0DE6206ED
-	for <linux-m68k@archiver.kernel.org>; Sun, 12 Jan 2020 16:07:02 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 7C0CF214AF
+	for <linux-m68k@archiver.kernel.org>; Sun, 12 Jan 2020 16:32:16 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733030AbgALQHC (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Sun, 12 Jan 2020 11:07:02 -0500
-Received: from mail-ot1-f68.google.com ([209.85.210.68]:37158 "EHLO
-        mail-ot1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1733064AbgALQHC (ORCPT
-        <rfc822;linux-m68k@vger.kernel.org>); Sun, 12 Jan 2020 11:07:02 -0500
-Received: by mail-ot1-f68.google.com with SMTP id k14so6749213otn.4;
-        Sun, 12 Jan 2020 08:07:02 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=lQ5vtysxDL6sgYaa5aaCu9p8HghnbmaEzIcF8ye2OLw=;
-        b=k8LHPfUiARJiLAuk6kdGiHQSULve3jPl3oIaWlm8Dar9qn5hSf9DI/dWfiV7+mXI+x
-         YZZI3dnZ3Lt95WEyYAoFilFny0BjE42KGEwRZYA33caX95TQWMXEHc6bOZYzEDF/Ehbg
-         IqyuEkvZt8Ed3xqPotZWh4xdqu02OBQNuGW+xko6auRtQK2VjZ+JlCgrl8c7xheNaX9U
-         Jpl+8m8ZvNs+xQqXLB2ohTs6lT46pssm3faY8W2H9Q7axqBcF1snzRE5QpMQdenuBfUT
-         +349tXywnmmjIB0rPw6KtS8YoQu7t5YfOFfxERhMQXK5RSKIJvADdMGNXmCw14jZO1Xc
-         PBkg==
-X-Gm-Message-State: APjAAAUR5TsqP/EPfDnH0LVc5yRmyKGNbfOX6LC1RLWSW1K/HDli1gJv
-        N87sTFLDwwOGILcCTMd5kCm/oRH8RJ3HU6JFmGzEPA==
-X-Google-Smtp-Source: APXvYqzvloJjp3XHq1vsiQmJvm8y2syjgxKLF39BbFe7uXQTQwag0Qn/G3r3tMPu/POQkH3j8ksBEt18SOkHidC4RGk=
-X-Received: by 2002:a9d:8f1:: with SMTP id 104mr9556402otf.107.1578845221843;
- Sun, 12 Jan 2020 08:07:01 -0800 (PST)
-MIME-Version: 1.0
-References: <20191124195225.31230-1-jongk@linux-m68k.org>
-In-Reply-To: <20191124195225.31230-1-jongk@linux-m68k.org>
+        id S1729828AbgALQcP (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Sun, 12 Jan 2020 11:32:15 -0500
+Received: from xavier.telenet-ops.be ([195.130.132.52]:50622 "EHLO
+        xavier.telenet-ops.be" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729018AbgALQcP (ORCPT
+        <rfc822;linux-m68k@vger.kernel.org>); Sun, 12 Jan 2020 11:32:15 -0500
+Received: from ramsan ([84.195.182.253])
+        by xavier.telenet-ops.be with bizsmtp
+        id pUYC2100o5USYZQ01UYDvz; Sun, 12 Jan 2020 17:32:13 +0100
+Received: from rox.of.borg ([192.168.97.57])
+        by ramsan with esmtp (Exim 4.90_1)
+        (envelope-from <geert@linux-m68k.org>)
+        id 1iqg9s-0007mR-RZ; Sun, 12 Jan 2020 17:32:12 +0100
+Received: from geert by rox.of.borg with local (Exim 4.90_1)
+        (envelope-from <geert@linux-m68k.org>)
+        id 1iqg9s-0004lo-Op; Sun, 12 Jan 2020 17:32:12 +0100
 From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Sun, 12 Jan 2020 17:06:49 +0100
-Message-ID: <CAMuHMdXQAbw_Skj99q_PWXKn77bzVbJf60n38Etmq-zhOoHsHQ@mail.gmail.com>
-Subject: Re: [PATCH] m68k: Wire up clone3() syscall
-To:     Kars de Jong <jongk@linux-m68k.org>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "Linux/m68k" <linux-m68k@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+To:     "David S . Miller" <davem@davemloft.net>
+Cc:     netdev@vger.kernel.org, linux-m68k@vger.kernel.org,
+        Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: [PATCH] net: amd: a2065: Kill Sun LANCE relics
+Date:   Sun, 12 Jan 2020 17:32:11 +0100
+Message-Id: <20200112163211.18295-1-geert@linux-m68k.org>
+X-Mailer: git-send-email 2.17.1
 Sender: linux-m68k-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-On Sun, Nov 24, 2019 at 8:52 PM Kars de Jong <jongk@linux-m68k.org> wrote:
-> Wire up the clone3() syscall for m68k. The special entry point is done in
-> assembler as was done for clone() as well. This is needed because all
-> registers need to be saved. The C wrapper then calls the generic
-> sys_clone3() with the correct arguments.
->
-> Tested on A1200 using the simple test program from:
->
->   https://lore.kernel.org/lkml/20190716130631.tohj4ub54md25dys@brauner.io/
->
-> Cc: linux-m68k@vger.kernel.org
-> Signed-off-by: Kars de Jong <jongk@linux-m68k.org>
+Remove unused fields, copied from the Sun LANCE driver eons ago.
 
-Thanks, applied and queued for v5.6.
+Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
+---
+ drivers/net/ethernet/amd/a2065.c | 4 ----
+ 1 file changed, 4 deletions(-)
 
-Gr{oetje,eeting}s,
-
-                        Geert
-
+diff --git a/drivers/net/ethernet/amd/a2065.c b/drivers/net/ethernet/amd/a2065.c
+index 212fe72a190bcca6..1b025a33b4642f8b 100644
+--- a/drivers/net/ethernet/amd/a2065.c
++++ b/drivers/net/ethernet/amd/a2065.c
+@@ -118,10 +118,6 @@ struct lance_private {
+ 	int auto_select;	      /* cable-selection by carrier */
+ 	unsigned short busmaster_regval;
+ 
+-#ifdef CONFIG_SUNLANCE
+-	struct Linux_SBus_DMA *ledma; /* if set this points to ledma and arch=4m */
+-	int burst_sizes;	      /* ledma SBus burst sizes */
+-#endif
+ 	struct timer_list         multicast_timer;
+ 	struct net_device	  *dev;
+ };
 -- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+2.17.1
 
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
