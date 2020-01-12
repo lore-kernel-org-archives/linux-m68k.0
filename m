@@ -2,69 +2,114 @@ Return-Path: <SRS0=AmHP=3B=vger.kernel.org=linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.8 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=no
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-9.8 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,
+	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 542FBC3F68F
-	for <linux-m68k@archiver.kernel.org>; Sun, 12 Jan 2020 16:56:25 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 25C0CC33CA2
+	for <linux-m68k@archiver.kernel.org>; Sun, 12 Jan 2020 17:15:27 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 3661121556
-	for <linux-m68k@archiver.kernel.org>; Sun, 12 Jan 2020 16:56:25 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 049F02084D
+	for <linux-m68k@archiver.kernel.org>; Sun, 12 Jan 2020 17:15:26 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733153AbgALQ4V (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Sun, 12 Jan 2020 11:56:21 -0500
-Received: from xavier.telenet-ops.be ([195.130.132.52]:57816 "EHLO
-        xavier.telenet-ops.be" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1733105AbgALQ4S (ORCPT
-        <rfc822;linux-m68k@vger.kernel.org>); Sun, 12 Jan 2020 11:56:18 -0500
+        id S1732888AbgALRP0 (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Sun, 12 Jan 2020 12:15:26 -0500
+Received: from baptiste.telenet-ops.be ([195.130.132.51]:60280 "EHLO
+        baptiste.telenet-ops.be" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1732827AbgALRP0 (ORCPT
+        <rfc822;linux-m68k@vger.kernel.org>); Sun, 12 Jan 2020 12:15:26 -0500
 Received: from ramsan ([84.195.182.253])
-        by xavier.telenet-ops.be with bizsmtp
-        id pUwG210045USYZQ01UwG3F; Sun, 12 Jan 2020 17:56:16 +0100
+        by baptiste.telenet-ops.be with bizsmtp
+        id pVFN2100D5USYZQ01VFNDa; Sun, 12 Jan 2020 18:15:24 +0100
 Received: from rox.of.borg ([192.168.97.57])
         by ramsan with esmtp (Exim 4.90_1)
         (envelope-from <geert@linux-m68k.org>)
-        id 1iqgXA-00082s-5Q; Sun, 12 Jan 2020 17:56:16 +0100
+        id 1iqgpe-0008HY-Ab; Sun, 12 Jan 2020 18:15:22 +0100
 Received: from geert by rox.of.borg with local (Exim 4.90_1)
         (envelope-from <geert@linux-m68k.org>)
-        id 1iqgXA-0005Sq-36; Sun, 12 Jan 2020 17:56:16 +0100
+        id 1iqgpe-0005qj-9J; Sun, 12 Jan 2020 18:15:22 +0100
 From:   Geert Uytterhoeven <geert@linux-m68k.org>
-To:     Philip Blundell <philb@gnu.org>
-Cc:     linux-m68k@vger.kernel.org, linux-kernel@vger.kernel.org,
+To:     Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>
+Cc:     Masahiro Yamada <yamada.masahiro@socionext.com>,
+        dri-devel@lists.freedesktop.org, linux-fbdev@vger.kernel.org,
+        linux-m68k@vger.kernel.org,
         Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: [PATCH 0/3] dio: Miscellaneous cleanups
-Date:   Sun, 12 Jan 2020 17:56:10 +0100
-Message-Id: <20200112165613.20960-1-geert@linux-m68k.org>
+Subject: [PATCH] fbdev: c2p: Use BUILD_BUG() instead of custom solution
+Date:   Sun, 12 Jan 2020 18:15:21 +0100
+Message-Id: <20200112171521.22443-1-geert@linux-m68k.org>
 X-Mailer: git-send-email 2.17.1
 Sender: linux-m68k-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-	Hi all,
+Replace the call to the custom non-existing function by a standard
+BUILD_BUG() invocation.
 
-This patch series contains miscellaneous cleanups for the Zorro bus
-code.
+Suggested-by: Masahiro Yamada <yamada.masahiro@socionext.com>
+Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
+---
+ drivers/video/fbdev/c2p_core.h | 12 ++++++------
+ 1 file changed, 6 insertions(+), 6 deletions(-)
 
-Geert Uytterhoeven (3):
-  dio: Make dio_match_device() static
-  dio: Fix dio_bus_match() kerneldoc
-  dio: Remove unused dio_dev_driver()
-
- drivers/dio/dio-driver.c | 9 ++++-----
- include/linux/dio.h      | 5 -----
- 2 files changed, 4 insertions(+), 10 deletions(-)
-
+diff --git a/drivers/video/fbdev/c2p_core.h b/drivers/video/fbdev/c2p_core.h
+index 45a6d895a7d7208e..cf5f1ebce65e6afd 100644
+--- a/drivers/video/fbdev/c2p_core.h
++++ b/drivers/video/fbdev/c2p_core.h
+@@ -12,6 +12,8 @@
+  *  for more details.
+  */
+ 
++#include <linux/build_bug.h>
++
+ 
+     /*
+      *  Basic transpose step
+@@ -27,8 +29,6 @@ static inline void _transp(u32 d[], unsigned int i1, unsigned int i2,
+ }
+ 
+ 
+-extern void c2p_unsupported(void);
+-
+ static __always_inline u32 get_mask(unsigned int n)
+ {
+ 	switch (n) {
+@@ -48,7 +48,7 @@ static __always_inline u32 get_mask(unsigned int n)
+ 		return 0x0000ffff;
+ 	}
+ 
+-	c2p_unsupported();
++	BUILD_BUG();
+ 	return 0;
+ }
+ 
+@@ -91,7 +91,7 @@ static __always_inline void transp8(u32 d[], unsigned int n, unsigned int m)
+ 		return;
+ 	}
+ 
+-	c2p_unsupported();
++	BUILD_BUG();
+ }
+ 
+ 
+@@ -118,7 +118,7 @@ static __always_inline void transp4(u32 d[], unsigned int n, unsigned int m)
+ 		return;
+ 	}
+ 
+-	c2p_unsupported();
++	BUILD_BUG();
+ }
+ 
+ 
+@@ -138,7 +138,7 @@ static __always_inline void transp4x(u32 d[], unsigned int n, unsigned int m)
+ 		return;
+ 	}
+ 
+-	c2p_unsupported();
++	BUILD_BUG();
+ }
+ 
+ 
 -- 
 2.17.1
 
-Gr{oetje,eeting}s,
-
-						Geert
-
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-							    -- Linus Torvalds
