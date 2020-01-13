@@ -1,105 +1,61 @@
-Return-Path: <SRS0=AmHP=3B=vger.kernel.org=linux-m68k-owner@kernel.org>
+Return-Path: <SRS0=881o=3C=vger.kernel.org=linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.8 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,
-	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-3.6 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,
+	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 12D16C33CA2
-	for <linux-m68k@archiver.kernel.org>; Sun, 12 Jan 2020 17:48:58 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E8BC3C33CA9
+	for <linux-m68k@archiver.kernel.org>; Mon, 13 Jan 2020 00:22:38 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id EA6B0214AF
-	for <linux-m68k@archiver.kernel.org>; Sun, 12 Jan 2020 17:48:57 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id B9DA121556
+	for <linux-m68k@archiver.kernel.org>; Mon, 13 Jan 2020 00:22:38 +0000 (UTC)
+Authentication-Results: mail.kernel.org;
+	dkim=pass (1024-bit key) header.d=wp.pl header.i=@wp.pl header.b="g/m+35tG"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733143AbgALRs5 (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Sun, 12 Jan 2020 12:48:57 -0500
-Received: from baptiste.telenet-ops.be ([195.130.132.51]:52506 "EHLO
-        baptiste.telenet-ops.be" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1733124AbgALRs5 (ORCPT
-        <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Sun, 12 Jan 2020 12:48:57 -0500
-Received: from ramsan ([84.195.182.253])
-        by baptiste.telenet-ops.be with bizsmtp
-        id pVov210015USYZQ01Vov0H; Sun, 12 Jan 2020 18:48:55 +0100
-Received: from rox.of.borg ([192.168.97.57])
-        by ramsan with esmtp (Exim 4.90_1)
-        (envelope-from <geert@linux-m68k.org>)
-        id 1iqhM7-0000EV-10; Sun, 12 Jan 2020 18:48:55 +0100
-Received: from geert by rox.of.borg with local (Exim 4.90_1)
-        (envelope-from <geert@linux-m68k.org>)
-        id 1iqhM6-0000ik-Up; Sun, 12 Jan 2020 18:48:54 +0100
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-To:     Greg Ungerer <gerg@linux-m68k.org>
-Cc:     linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org,
-        Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: [PATCH] m68k: Switch to asm-generic/hardirq.h
-Date:   Sun, 12 Jan 2020 18:48:54 +0100
-Message-Id: <20200112174854.2726-1-geert@linux-m68k.org>
-X-Mailer: git-send-email 2.17.1
+        id S2387514AbgAMAWi (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Sun, 12 Jan 2020 19:22:38 -0500
+Received: from mx3.wp.pl ([212.77.101.9]:9548 "EHLO mx3.wp.pl"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2387460AbgAMAWi (ORCPT <rfc822;linux-m68k@vger.kernel.org>);
+        Sun, 12 Jan 2020 19:22:38 -0500
+Received: (wp-smtpd smtp.wp.pl 26221 invoked from network); 13 Jan 2020 01:22:36 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=wp.pl; s=1024a;
+          t=1578874956; bh=S7dYIstzYUkNSmEPOPGUZNxmFX8xxOKBsDPBLO3oxCY=;
+          h=From:To:Cc:Subject;
+          b=g/m+35tGn6TygzwqoXdkTzgvuKePEdgQnhAq8dKKD1x+oqWsO5c1kPQNxt62zF/3g
+           ZuF3FreYlexcMv+uvXJ6MQzl2OmIIzpisOPHrcoXGP80+MNyE32MhkijDrZrMvaDY9
+           5EKJp2XCaiBDPlQZ8Fo6QkBor58XB/E2KFc/SdR0=
+Received: from c-73-93-4-247.hsd1.ca.comcast.net (HELO cakuba) (kubakici@wp.pl@[73.93.4.247])
+          (envelope-sender <kubakici@wp.pl>)
+          by smtp.wp.pl (WP-SMTPD) with ECDHE-RSA-AES256-GCM-SHA384 encrypted SMTP
+          for <geert@linux-m68k.org>; 13 Jan 2020 01:22:36 +0100
+Date:   Sun, 12 Jan 2020 16:22:31 -0800
+From:   Jakub Kicinski <kubakici@wp.pl>
+To:     Geert Uytterhoeven <geert@linux-m68k.org>
+Cc:     "David S . Miller" <davem@davemloft.net>, netdev@vger.kernel.org,
+        linux-m68k@vger.kernel.org
+Subject: Re: [PATCH] net: amd: a2065: Use print_hex_dump_debug() helper
+Message-ID: <20200112162231.187e84ce@cakuba>
+In-Reply-To: <20200112163354.18505-1-geert@linux-m68k.org>
+References: <20200112163354.18505-1-geert@linux-m68k.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-WP-MailID: d3d5d3c381236083fcc6deeed849005c
+X-WP-AV: skaner antywirusowy Poczty Wirtualnej Polski
+X-WP-SPAM: NO 000000A [EcPk]                               
 Sender: linux-m68k-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-Classic m68k with MMU was converted to generic hardirqs a long time ago,
-and there are no longer include dependency issues preventing the direct
-use of asm-generic/hardirq.h.
+On Sun, 12 Jan 2020 17:33:54 +0100, Geert Uytterhoeven wrote:
+> Use the print_hex_dump_debug() helper, instead of open-coding the same
+> operations.
+> 
+> Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
 
-Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
----
- arch/m68k/include/asm/Kbuild    |  1 +
- arch/m68k/include/asm/hardirq.h | 29 -----------------------------
- 2 files changed, 1 insertion(+), 29 deletions(-)
- delete mode 100644 arch/m68k/include/asm/hardirq.h
-
-diff --git a/arch/m68k/include/asm/Kbuild b/arch/m68k/include/asm/Kbuild
-index 591d53b763b71b27..63f12afc48749c96 100644
---- a/arch/m68k/include/asm/Kbuild
-+++ b/arch/m68k/include/asm/Kbuild
-@@ -8,6 +8,7 @@ generic-y += emergency-restart.h
- generic-y += exec.h
- generic-y += extable.h
- generic-y += futex.h
-+generic-y += hardirq.h
- generic-y += hw_irq.h
- generic-y += irq_regs.h
- generic-y += irq_work.h
-diff --git a/arch/m68k/include/asm/hardirq.h b/arch/m68k/include/asm/hardirq.h
-deleted file mode 100644
-index 11793165445df45a..0000000000000000
---- a/arch/m68k/include/asm/hardirq.h
-+++ /dev/null
-@@ -1,29 +0,0 @@
--/* SPDX-License-Identifier: GPL-2.0 */
--#ifndef __M68K_HARDIRQ_H
--#define __M68K_HARDIRQ_H
--
--#include <linux/threads.h>
--#include <linux/cache.h>
--#include <asm/irq.h>
--
--#ifdef CONFIG_MMU
--
--static inline void ack_bad_irq(unsigned int irq)
--{
--	pr_crit("unexpected IRQ trap at vector %02x\n", irq);
--}
--
--/* entry.S is sensitive to the offsets of these fields */
--typedef struct {
--	unsigned int __softirq_pending;
--} ____cacheline_aligned irq_cpustat_t;
--
--#include <linux/irq_cpustat.h>	/* Standard mappings for irq_cpustat_t above */
--
--#else
--
--#include <asm-generic/hardirq.h>
--
--#endif /* !CONFIG_MMU */
--
--#endif
--- 
-2.17.1
-
+Applied to net-next, thank you!
