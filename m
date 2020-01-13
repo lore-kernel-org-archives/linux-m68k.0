@@ -2,90 +2,140 @@ Return-Path: <SRS0=881o=3C=vger.kernel.org=linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.2 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
-	MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1
-	autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-9.8 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,
+	USER_AGENT_GIT autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E7B80C33CAD
-	for <linux-m68k@archiver.kernel.org>; Mon, 13 Jan 2020 10:17:18 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id AF92FC33CAF
+	for <linux-m68k@archiver.kernel.org>; Mon, 13 Jan 2020 10:30:47 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id BAD512080D
-	for <linux-m68k@archiver.kernel.org>; Mon, 13 Jan 2020 10:17:18 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 30C90207E0
+	for <linux-m68k@archiver.kernel.org>; Mon, 13 Jan 2020 10:30:47 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726127AbgAMKRS (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Mon, 13 Jan 2020 05:17:18 -0500
-Received: from youngberry.canonical.com ([91.189.89.112]:36615 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726336AbgAMKRS (ORCPT
-        <rfc822;linux-m68k@vger.kernel.org>); Mon, 13 Jan 2020 05:17:18 -0500
-Received: from ip5f5bd663.dynamic.kabel-deutschland.de ([95.91.214.99] helo=wittgenstein)
-        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <christian.brauner@ubuntu.com>)
-        id 1iqwmZ-0006e1-T4; Mon, 13 Jan 2020 10:17:16 +0000
-Date:   Mon, 13 Jan 2020 11:17:15 +0100
-From:   Christian Brauner <christian.brauner@ubuntu.com>
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     Kars de Jong <jongk@linux-m68k.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux/m68k <linux-m68k@vger.kernel.org>,
-        Amanieu d'Antras <amanieu@gmail.com>
-Subject: Re: [PATCH] m68k: Wire up clone3() syscall
-Message-ID: <20200113101714.75v5gmg3rb5tlhze@wittgenstein>
-References: <20191124195225.31230-1-jongk@linux-m68k.org>
- <CAMuHMdXQAbw_Skj99q_PWXKn77bzVbJf60n38Etmq-zhOoHsHQ@mail.gmail.com>
- <CAMuHMdU9hu+EAAnBD5dH3+LS5pNi9fOjFNesv3eFSCoqbW3CCA@mail.gmail.com>
- <20200113091813.zkye72cubpfhemww@wittgenstein>
- <CAMuHMdXTqjPQN4UbH5a1BGjFTNLRrwDu97B=JxDii2VCoRjorA@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <CAMuHMdXTqjPQN4UbH5a1BGjFTNLRrwDu97B=JxDii2VCoRjorA@mail.gmail.com>
-User-Agent: NeoMutt/20180716
+        id S1727286AbgAMKar (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Mon, 13 Jan 2020 05:30:47 -0500
+Received: from michel.telenet-ops.be ([195.130.137.88]:37316 "EHLO
+        michel.telenet-ops.be" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726804AbgAMKaq (ORCPT
+        <rfc822;linux-m68k@lists.linux-m68k.org>);
+        Mon, 13 Jan 2020 05:30:46 -0500
+Received: from ramsan ([84.195.182.253])
+        by michel.telenet-ops.be with bizsmtp
+        id pmWi210035USYZQ06mWi1z; Mon, 13 Jan 2020 11:30:44 +0100
+Received: from rox.of.borg ([192.168.97.57])
+        by ramsan with esmtp (Exim 4.90_1)
+        (envelope-from <geert@linux-m68k.org>)
+        id 1iqwzZ-0000aP-SZ; Mon, 13 Jan 2020 11:30:41 +0100
+Received: from geert by rox.of.borg with local (Exim 4.90_1)
+        (envelope-from <geert@linux-m68k.org>)
+        id 1iqwzZ-0006AN-Pz; Mon, 13 Jan 2020 11:30:41 +0100
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+To:     Greg Ungerer <gerg@linux-m68k.org>
+Cc:     Amanieu d'Antras <amanieu@gmail.com>,
+        Christian Brauner <christian@brauner.io>,
+        Kars de Jong <jongk@linux-m68k.org>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org,
+        linux-next@vger.kernel.org,
+        Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: [PATCH] m68k: Implement copy_thread_tls()
+Date:   Mon, 13 Jan 2020 11:30:40 +0100
+Message-Id: <20200113103040.23661-1-geert@linux-m68k.org>
+X-Mailer: git-send-email 2.17.1
 Sender: linux-m68k-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-On Mon, Jan 13, 2020 at 10:34:35AM +0100, Geert Uytterhoeven wrote:
-> Hi Christian,
-> 
-> On Mon, Jan 13, 2020 at 10:18 AM Christian Brauner
-> <christian.brauner@ubuntu.com> wrote:
-> > On Mon, Jan 13, 2020 at 10:10:26AM +0100, Geert Uytterhoeven wrote:
-> > > On Sun, Jan 12, 2020 at 5:06 PM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
-> > > > On Sun, Nov 24, 2019 at 8:52 PM Kars de Jong <jongk@linux-m68k.org> wrote:
-> > > > > Wire up the clone3() syscall for m68k. The special entry point is done in
-> > > > > assembler as was done for clone() as well. This is needed because all
-> > > > > registers need to be saved. The C wrapper then calls the generic
-> > > > > sys_clone3() with the correct arguments.
-> > > > >
-> > > > > Tested on A1200 using the simple test program from:
-> > > > >
-> > > > >   https://lore.kernel.org/lkml/20190716130631.tohj4ub54md25dys@brauner.io/
-> > > > >
-> > > > > Cc: linux-m68k@vger.kernel.org
-> > > > > Signed-off-by: Kars de Jong <jongk@linux-m68k.org>
-> > > >
-> > > > Thanks, applied and queued for v5.6.
-> > >
-> > > Which is now broken because of commit dd499f7a7e342702 ("clone3: ensure
-> > > copy_thread_tls is implemented") in v5.5-rc6 :-(
-> >
-> > Sorry, just for clarification what and how is it broken by
-> > dd499f7a7e342702 ("clone3: ensure > copy_thread_tls is implemented")
-> > ?
-> 
-> Because m68k does not implement copy_thread_tls() yet, and doesn't
-> select HAVE_COPY_THREAD_TLS yet.
+This is required for clone3(), which passes the TLS value through a
+struct rather than a register.
 
-Oh right, sorry. I forgot that m68k has a patchset to enable clone3() up
-for merging. I should've remembered that and warned you that we will
-have to require copy_thread_tls() going forward. I hope the merge is
-explanatory enough why we're doing it this way.
+As do_fork() is only available if CONFIG_HAVE_COPY_THREAD_TLS is set,
+m68k_clone() must be changed to call _do_fork() directly.
 
-> 
-> Looking into fixing that...
+Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
+---
+This is a dependency for the combination of commits
+e8bb2a2a1d51511e ("m68k: Wire up clone3() syscall") in m68k/for-next,
+dd499f7a7e342702 ("clone3: ensure copy_thread_tls is implemented") in
+v5.5-rc6.
+---
+ arch/m68k/Kconfig          |  1 +
+ arch/m68k/kernel/process.c | 31 ++++++++++++++++++++++---------
+ 2 files changed, 23 insertions(+), 9 deletions(-)
 
-Thank you! Much appreciated!
-Christian
+diff --git a/arch/m68k/Kconfig b/arch/m68k/Kconfig
+index 6663f1741798e83f..6ad6cdac74b3dc42 100644
+--- a/arch/m68k/Kconfig
++++ b/arch/m68k/Kconfig
+@@ -14,6 +14,7 @@ config M68K
+ 	select HAVE_AOUT if MMU
+ 	select HAVE_ASM_MODVERSIONS
+ 	select HAVE_DEBUG_BUGVERBOSE
++	select HAVE_COPY_THREAD_TLS
+ 	select GENERIC_IRQ_SHOW
+ 	select GENERIC_ATOMIC64
+ 	select HAVE_UID16
+diff --git a/arch/m68k/kernel/process.c b/arch/m68k/kernel/process.c
+index 22e6b8f4f9582aa4..8f0d9140700f09ad 100644
+--- a/arch/m68k/kernel/process.c
++++ b/arch/m68k/kernel/process.c
+@@ -108,16 +108,28 @@ void flush_thread(void)
+  * on top of pt_regs, which means that sys_clone() arguments would be
+  * buried.  We could, of course, copy them, but it's too costly for no
+  * good reason - generic clone() would have to copy them *again* for
+- * do_fork() anyway.  So in this case it's actually better to pass pt_regs *
+- * and extract arguments for do_fork() from there.  Eventually we might
+- * go for calling do_fork() directly from the wrapper, but only after we
+- * are finished with do_fork() prototype conversion.
++ * _do_fork() anyway.  So in this case it's actually better to pass pt_regs *
++ * and extract arguments for _do_fork() from there.  Eventually we might
++ * go for calling _do_fork() directly from the wrapper, but only after we
++ * are finished with _do_fork() prototype conversion.
+  */
+ asmlinkage int m68k_clone(struct pt_regs *regs)
+ {
+ 	/* regs will be equal to current_pt_regs() */
+-	return do_fork(regs->d1, regs->d2, 0,
+-		       (int __user *)regs->d3, (int __user *)regs->d4);
++	struct kernel_clone_args args = {
++		.flags		= regs->d1 & ~CSIGNAL,
++		.pidfd		= (int __user *)regs->d3,
++		.child_tid	= (int __user *)regs->d4,
++		.parent_tid	= (int __user *)regs->d3,
++		.exit_signal	= regs->d1 & CSIGNAL,
++		.stack		= regs->d2,
++		.tls		= regs->d5,
++	};
++
++	if (!legacy_clone_args_valid(&args))
++		return -EINVAL;
++
++	return _do_fork(&args);
+ }
+ 
+ /*
+@@ -130,8 +142,9 @@ asmlinkage int m68k_clone3(struct pt_regs *regs)
+ 	return sys_clone3((struct clone_args __user *)regs->d1, regs->d2);
+ }
+ 
+-int copy_thread(unsigned long clone_flags, unsigned long usp,
+-		 unsigned long arg, struct task_struct *p)
++int copy_thread_tls(unsigned long clone_flags, unsigned long usp,
++		    unsigned long arg, struct task_struct *p,
++		    unsigned long tls)
+ {
+ 	struct fork_frame {
+ 		struct switch_stack sw;
+@@ -166,7 +179,7 @@ int copy_thread(unsigned long clone_flags, unsigned long usp,
+ 	p->thread.usp = usp ?: rdusp();
+ 
+ 	if (clone_flags & CLONE_SETTLS)
+-		task_thread_info(p)->tp_value = frame->regs.d5;
++		task_thread_info(p)->tp_value = tls;
+ 
+ #ifdef CONFIG_FPU
+ 	if (!FPU_IS_EMU) {
+-- 
+2.17.1
+
