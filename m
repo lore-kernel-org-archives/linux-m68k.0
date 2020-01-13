@@ -2,89 +2,81 @@ Return-Path: <SRS0=881o=3C=vger.kernel.org=linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.8 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
-	MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS autolearn=no
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-5.2 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
+	MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 1BDFDC33CA8
-	for <linux-m68k@archiver.kernel.org>; Mon, 13 Jan 2020 09:10:59 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 68775C33CA8
+	for <linux-m68k@archiver.kernel.org>; Mon, 13 Jan 2020 09:18:17 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id E43A7206D7
-	for <linux-m68k@archiver.kernel.org>; Mon, 13 Jan 2020 09:10:58 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 4464F2080D
+	for <linux-m68k@archiver.kernel.org>; Mon, 13 Jan 2020 09:18:17 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726804AbgAMJK6 (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Mon, 13 Jan 2020 04:10:58 -0500
-Received: from mail-oi1-f194.google.com ([209.85.167.194]:41072 "EHLO
-        mail-oi1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725815AbgAMJK6 (ORCPT
-        <rfc822;linux-m68k@vger.kernel.org>); Mon, 13 Jan 2020 04:10:58 -0500
-Received: by mail-oi1-f194.google.com with SMTP id i1so7557554oie.8;
-        Mon, 13 Jan 2020 01:10:57 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=j6gZhw224Esa/F9sYWDsm6MZRd7GWVp77Xi2oOVzj7I=;
-        b=V7wnikmOZLN603li5YBHQakodO0LzwZktqTdHO95ymRSP5Waavyv0rP2z8fCLsECfY
-         UEMExC/6/WuaW977AI66Et8vDSYzw/3TSdiL7gR7PczdgFp4q/G+1/x0M3zRvQElCSQC
-         3NqFzDR6mqKoFMlh5wRr4WAA02z9sau4Lt1J7BVFn67biQeHUTNJ+H6OdtLSBfGFni4g
-         wkcLXna5yUe1h0Vvbxsc0PoTkyojhWXEPsaoFQzBMzUvFLimPqcqBA6m7QxDqKGXvFUW
-         Aj2IQxrRx2AmMq0BXSBInF1msExPPQ14GsurT9+9VKzH+zmIKXp0hnlJcUm9ZpPWDamz
-         XmnA==
-X-Gm-Message-State: APjAAAVBkKUnr2qqC0Rtof6hqAmNUgr2Mr0OjEmf8niiyJRdw0WQrcJ/
-        cVsARoLBhbSv+d96ZbCjpzfQ7i0hig5ypPykou0=
-X-Google-Smtp-Source: APXvYqwxP5TUTn30AonNUa0Qc77P4zv+kJkUuwsv4y7LcQg2Yk9B+2R4a6oHO1XnIuST8PjVuXdYuOG9TUI9CaDqClk=
-X-Received: by 2002:a05:6808:292:: with SMTP id z18mr11350725oic.131.1578906657627;
- Mon, 13 Jan 2020 01:10:57 -0800 (PST)
-MIME-Version: 1.0
-References: <20191124195225.31230-1-jongk@linux-m68k.org> <CAMuHMdXQAbw_Skj99q_PWXKn77bzVbJf60n38Etmq-zhOoHsHQ@mail.gmail.com>
-In-Reply-To: <CAMuHMdXQAbw_Skj99q_PWXKn77bzVbJf60n38Etmq-zhOoHsHQ@mail.gmail.com>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Mon, 13 Jan 2020 10:10:26 +0100
-Message-ID: <CAMuHMdU9hu+EAAnBD5dH3+LS5pNi9fOjFNesv3eFSCoqbW3CCA@mail.gmail.com>
+        id S1726236AbgAMJSQ (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Mon, 13 Jan 2020 04:18:16 -0500
+Received: from youngberry.canonical.com ([91.189.89.112]:35018 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725978AbgAMJSQ (ORCPT
+        <rfc822;linux-m68k@vger.kernel.org>); Mon, 13 Jan 2020 04:18:16 -0500
+Received: from ip5f5bd663.dynamic.kabel-deutschland.de ([95.91.214.99] helo=wittgenstein)
+        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.86_2)
+        (envelope-from <christian.brauner@ubuntu.com>)
+        id 1iqvrT-0001U2-Eu; Mon, 13 Jan 2020 09:18:15 +0000
+Date:   Mon, 13 Jan 2020 10:18:14 +0100
+From:   Christian Brauner <christian.brauner@ubuntu.com>
+To:     Geert Uytterhoeven <geert@linux-m68k.org>
+Cc:     Kars de Jong <jongk@linux-m68k.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux/m68k <linux-m68k@vger.kernel.org>,
+        Amanieu d'Antras <amanieu@gmail.com>
 Subject: Re: [PATCH] m68k: Wire up clone3() syscall
-To:     Kars de Jong <jongk@linux-m68k.org>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "Linux/m68k" <linux-m68k@vger.kernel.org>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        "Amanieu d'Antras" <amanieu@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+Message-ID: <20200113091813.zkye72cubpfhemww@wittgenstein>
+References: <20191124195225.31230-1-jongk@linux-m68k.org>
+ <CAMuHMdXQAbw_Skj99q_PWXKn77bzVbJf60n38Etmq-zhOoHsHQ@mail.gmail.com>
+ <CAMuHMdU9hu+EAAnBD5dH3+LS5pNi9fOjFNesv3eFSCoqbW3CCA@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <CAMuHMdU9hu+EAAnBD5dH3+LS5pNi9fOjFNesv3eFSCoqbW3CCA@mail.gmail.com>
+User-Agent: NeoMutt/20180716
 Sender: linux-m68k-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-On Sun, Jan 12, 2020 at 5:06 PM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
-> On Sun, Nov 24, 2019 at 8:52 PM Kars de Jong <jongk@linux-m68k.org> wrote:
-> > Wire up the clone3() syscall for m68k. The special entry point is done in
-> > assembler as was done for clone() as well. This is needed because all
-> > registers need to be saved. The C wrapper then calls the generic
-> > sys_clone3() with the correct arguments.
+On Mon, Jan 13, 2020 at 10:10:26AM +0100, Geert Uytterhoeven wrote:
+> On Sun, Jan 12, 2020 at 5:06 PM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
+> > On Sun, Nov 24, 2019 at 8:52 PM Kars de Jong <jongk@linux-m68k.org> wrote:
+> > > Wire up the clone3() syscall for m68k. The special entry point is done in
+> > > assembler as was done for clone() as well. This is needed because all
+> > > registers need to be saved. The C wrapper then calls the generic
+> > > sys_clone3() with the correct arguments.
+> > >
+> > > Tested on A1200 using the simple test program from:
+> > >
+> > >   https://lore.kernel.org/lkml/20190716130631.tohj4ub54md25dys@brauner.io/
+> > >
+> > > Cc: linux-m68k@vger.kernel.org
+> > > Signed-off-by: Kars de Jong <jongk@linux-m68k.org>
 > >
-> > Tested on A1200 using the simple test program from:
-> >
-> >   https://lore.kernel.org/lkml/20190716130631.tohj4ub54md25dys@brauner.io/
-> >
-> > Cc: linux-m68k@vger.kernel.org
-> > Signed-off-by: Kars de Jong <jongk@linux-m68k.org>
->
-> Thanks, applied and queued for v5.6.
+> > Thanks, applied and queued for v5.6.
+> 
+> Which is now broken because of commit dd499f7a7e342702 ("clone3: ensure
+> copy_thread_tls is implemented") in v5.5-rc6 :-(
 
-Which is now broken because of commit dd499f7a7e342702 ("clone3: ensure
-copy_thread_tls is implemented") in v5.5-rc6 :-(
+Sorry, just for clarification what and how is it broken by 
+dd499f7a7e342702 ("clone3: ensure > copy_thread_tls is implemented")
+?
 
-BTW, was this the reason for the failures at the end of
-https://lore.kernel.org/lkml/CACz-3rhmUfxbfhznvA6NOF69SR49NDZwnkZ=Bmhw_cf4SkiadQ@mail.gmail.com/?
+> 
+> BTW, was this the reason for the failures at the end of
+> https://lore.kernel.org/lkml/CACz-3rhmUfxbfhznvA6NOF69SR49NDZwnkZ=Bmhw_cf4SkiadQ@mail.gmail.com/?
+
+Unlikely since CLONE_SETTLS is currently not covered by the
+clone3()/process creation test suite because it is highly arch
+dependent on how to retrieve the tls pointer. But we're going to add
+tests soon I hope.
 
 Thanks!
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
--- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+Christian
