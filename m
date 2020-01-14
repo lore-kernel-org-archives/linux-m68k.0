@@ -2,151 +2,173 @@ Return-Path: <SRS0=eHIt=3D=vger.kernel.org=linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.2 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,
-	USER_AGENT_SANE_1 autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-5.8 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
+	MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3292CC33CAE
-	for <linux-m68k@archiver.kernel.org>; Tue, 14 Jan 2020 01:55:13 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B543DC33CA9
+	for <linux-m68k@archiver.kernel.org>; Tue, 14 Jan 2020 05:12:44 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 1490E20CC7
-	for <linux-m68k@archiver.kernel.org>; Tue, 14 Jan 2020 01:55:13 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 94D2A2075B
+	for <linux-m68k@archiver.kernel.org>; Tue, 14 Jan 2020 05:12:44 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729331AbgANBzM (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Mon, 13 Jan 2020 20:55:12 -0500
-Received: from mail.kernel.org ([198.145.29.99]:47496 "EHLO mail.kernel.org"
+        id S1725842AbgANFMo (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Tue, 14 Jan 2020 00:12:44 -0500
+Received: from mga17.intel.com ([192.55.52.151]:63901 "EHLO mga17.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729287AbgANBzM (ORCPT <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Mon, 13 Jan 2020 20:55:12 -0500
-Received: from [10.44.0.22] (unknown [103.48.210.53])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B5259207FF;
-        Tue, 14 Jan 2020 01:55:09 +0000 (UTC)
-Subject: Re: [PATCH] m68k: Implement copy_thread_tls()
+        id S1725306AbgANFMo (ORCPT <rfc822;linux-m68k@lists.linux-m68k.org>);
+        Tue, 14 Jan 2020 00:12:44 -0500
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 13 Jan 2020 21:12:43 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.69,431,1571727600"; 
+   d="scan'208";a="247065742"
+Received: from lkp-server01.sh.intel.com (HELO lkp-server01) ([10.239.97.150])
+  by fmsmga001.fm.intel.com with ESMTP; 13 Jan 2020 21:12:42 -0800
+Received: from kbuild by lkp-server01 with local (Exim 4.89)
+        (envelope-from <lkp@intel.com>)
+        id 1irEVN-000EC9-VL; Tue, 14 Jan 2020 13:12:41 +0800
+Date:   Tue, 14 Jan 2020 13:12:09 +0800
+From:   kbuild test robot <lkp@intel.com>
 To:     Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     Amanieu d'Antras <amanieu@gmail.com>,
-        Christian Brauner <christian@brauner.io>,
-        Kars de Jong <jongk@linux-m68k.org>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org,
-        linux-next@vger.kernel.org
-References: <20200113103040.23661-1-geert@linux-m68k.org>
-From:   Greg Ungerer <gerg@linux-m68k.org>
-Message-ID: <f744a139-f2ae-a07f-e7e7-a1aaca946f8c@linux-m68k.org>
-Date:   Tue, 14 Jan 2020 11:55:06 +1000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.2.2
+Cc:     linux-m68k@lists.linux-m68k.org
+Subject: [m68k:master] BUILD SUCCESS
+ 3ca9dbc825eacce4fea44e6850ebb8c53e672d5b
+Message-ID: <5e1d4da9.rasPx/nmglHUJYXg%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
-In-Reply-To: <20200113103040.23661-1-geert@linux-m68k.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
+Content-Type: text/plain; charset=us-ascii
 Content-Transfer-Encoding: 7bit
 Sender: linux-m68k-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-Hi Geert,
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/geert/linux-m68k.git  master
+branch HEAD: 3ca9dbc825eacce4fea44e6850ebb8c53e672d5b  m68k: Wire up clone3() syscall
 
-On 13/1/20 8:30 pm, Geert Uytterhoeven wrote:
-> This is required for clone3(), which passes the TLS value through a
-> struct rather than a register.
-> 
-> As do_fork() is only available if CONFIG_HAVE_COPY_THREAD_TLS is set,
-> m68k_clone() must be changed to call _do_fork() directly.
-> 
-> Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
+elapsed time: 2008m
 
-Looks good for ColdFire too. I compiled for both MMU and non-MMU
-targets and no regressions (I did not test clone3() itself though).
+configs tested: 112
 
-Acked-by: Greg Ungerer <gerg@linux-m68k.org>
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
-Regards
-Greg
+x86_64                              fedora-25
+x86_64                                  kexec
+x86_64                                    lkp
+x86_64                                   rhel
+x86_64                               rhel-7.6
+mips                           32r2_defconfig
+mips                         64r6el_defconfig
+mips                             allmodconfig
+mips                              allnoconfig
+mips                             allyesconfig
+mips                      fuloong2e_defconfig
+mips                      malta_kvm_defconfig
+i386                 randconfig-a003-20200112
+x86_64               randconfig-a002-20200112
+x86_64               randconfig-a001-20200112
+i386                 randconfig-a002-20200112
+i386                 randconfig-a001-20200112
+x86_64               randconfig-a003-20200112
+s390                             alldefconfig
+s390                             allmodconfig
+s390                              allnoconfig
+s390                             allyesconfig
+s390                          debug_defconfig
+s390                                defconfig
+s390                       zfcpdump_defconfig
+i386                              allnoconfig
+i386                                defconfig
+i386                             allyesconfig
+i386                             alldefconfig
+c6x                              allyesconfig
+c6x                        evmc6678_defconfig
+nios2                         10m50_defconfig
+nios2                         3c120_defconfig
+openrisc                    or1ksim_defconfig
+openrisc                 simple_smp_defconfig
+xtensa                       common_defconfig
+xtensa                          iss_defconfig
+h8300                     edosk2674_defconfig
+h8300                    h8300h-sim_defconfig
+h8300                       h8s-sim_defconfig
+m68k                             allmodconfig
+m68k                       m5475evb_defconfig
+m68k                          multi_defconfig
+m68k                           sun3_defconfig
+arm                              allmodconfig
+arm                               allnoconfig
+arm                              allyesconfig
+arm                         at91_dt_defconfig
+arm                           efm32_defconfig
+arm                          exynos_defconfig
+arm                        multi_v5_defconfig
+arm                        multi_v7_defconfig
+arm                        shmobile_defconfig
+arm                           sunxi_defconfig
+arm64                            allmodconfig
+arm64                             allnoconfig
+arm64                            allyesconfig
+arm64                               defconfig
+ia64                             allmodconfig
+ia64                              allnoconfig
+ia64                             allyesconfig
+ia64                                defconfig
+ia64                             alldefconfig
+alpha                               defconfig
+csky                                defconfig
+nds32                             allnoconfig
+nds32                               defconfig
+mips                 randconfig-a001-20200112
+riscv                randconfig-a001-20200112
+parisc               randconfig-a001-20200112
+alpha                randconfig-a001-20200112
+m68k                 randconfig-a001-20200112
+nds32                randconfig-a001-20200112
+sparc64                          allmodconfig
+sparc                            allyesconfig
+sparc64                          allyesconfig
+sparc                               defconfig
+sparc64                           allnoconfig
+sparc64                             defconfig
+riscv                            allmodconfig
+riscv                             allnoconfig
+riscv                            allyesconfig
+riscv                               defconfig
+riscv                    nommu_virt_defconfig
+riscv                          rv32_defconfig
+parisc                            allnoconfig
+parisc                            allyesonfig
+parisc                         b180_defconfig
+parisc                        c3000_defconfig
+parisc                              defconfig
+arc                              allyesconfig
+arc                                 defconfig
+microblaze                      mmu_defconfig
+microblaze                    nommu_defconfig
+powerpc                           allnoconfig
+powerpc                             defconfig
+powerpc                       ppc64_defconfig
+powerpc                          rhel-kconfig
+um                                  defconfig
+um                             i386_defconfig
+um                           x86_64_defconfig
+arc                  randconfig-a001-20200112
+arm                  randconfig-a001-20200112
+arm64                randconfig-a001-20200112
+ia64                 randconfig-a001-20200112
+powerpc              randconfig-a001-20200112
+sparc                randconfig-a001-20200112
+sh                               allmodconfig
+sh                                allnoconfig
+sh                          rsk7269_defconfig
+sh                  sh7785lcr_32bit_defconfig
+sh                            titan_defconfig
 
-
-> ---
-> This is a dependency for the combination of commits
-> e8bb2a2a1d51511e ("m68k: Wire up clone3() syscall") in m68k/for-next,
-> dd499f7a7e342702 ("clone3: ensure copy_thread_tls is implemented") in
-> v5.5-rc6.
-> ---
->   arch/m68k/Kconfig          |  1 +
->   arch/m68k/kernel/process.c | 31 ++++++++++++++++++++++---------
->   2 files changed, 23 insertions(+), 9 deletions(-)
-> 
-> diff --git a/arch/m68k/Kconfig b/arch/m68k/Kconfig
-> index 6663f1741798e83f..6ad6cdac74b3dc42 100644
-> --- a/arch/m68k/Kconfig
-> +++ b/arch/m68k/Kconfig
-> @@ -14,6 +14,7 @@ config M68K
->   	select HAVE_AOUT if MMU
->   	select HAVE_ASM_MODVERSIONS
->   	select HAVE_DEBUG_BUGVERBOSE
-> +	select HAVE_COPY_THREAD_TLS
->   	select GENERIC_IRQ_SHOW
->   	select GENERIC_ATOMIC64
->   	select HAVE_UID16
-> diff --git a/arch/m68k/kernel/process.c b/arch/m68k/kernel/process.c
-> index 22e6b8f4f9582aa4..8f0d9140700f09ad 100644
-> --- a/arch/m68k/kernel/process.c
-> +++ b/arch/m68k/kernel/process.c
-> @@ -108,16 +108,28 @@ void flush_thread(void)
->    * on top of pt_regs, which means that sys_clone() arguments would be
->    * buried.  We could, of course, copy them, but it's too costly for no
->    * good reason - generic clone() would have to copy them *again* for
-> - * do_fork() anyway.  So in this case it's actually better to pass pt_regs *
-> - * and extract arguments for do_fork() from there.  Eventually we might
-> - * go for calling do_fork() directly from the wrapper, but only after we
-> - * are finished with do_fork() prototype conversion.
-> + * _do_fork() anyway.  So in this case it's actually better to pass pt_regs *
-> + * and extract arguments for _do_fork() from there.  Eventually we might
-> + * go for calling _do_fork() directly from the wrapper, but only after we
-> + * are finished with _do_fork() prototype conversion.
->    */
->   asmlinkage int m68k_clone(struct pt_regs *regs)
->   {
->   	/* regs will be equal to current_pt_regs() */
-> -	return do_fork(regs->d1, regs->d2, 0,
-> -		       (int __user *)regs->d3, (int __user *)regs->d4);
-> +	struct kernel_clone_args args = {
-> +		.flags		= regs->d1 & ~CSIGNAL,
-> +		.pidfd		= (int __user *)regs->d3,
-> +		.child_tid	= (int __user *)regs->d4,
-> +		.parent_tid	= (int __user *)regs->d3,
-> +		.exit_signal	= regs->d1 & CSIGNAL,
-> +		.stack		= regs->d2,
-> +		.tls		= regs->d5,
-> +	};
-> +
-> +	if (!legacy_clone_args_valid(&args))
-> +		return -EINVAL;
-> +
-> +	return _do_fork(&args);
->   }
->   
->   /*
-> @@ -130,8 +142,9 @@ asmlinkage int m68k_clone3(struct pt_regs *regs)
->   	return sys_clone3((struct clone_args __user *)regs->d1, regs->d2);
->   }
->   
-> -int copy_thread(unsigned long clone_flags, unsigned long usp,
-> -		 unsigned long arg, struct task_struct *p)
-> +int copy_thread_tls(unsigned long clone_flags, unsigned long usp,
-> +		    unsigned long arg, struct task_struct *p,
-> +		    unsigned long tls)
->   {
->   	struct fork_frame {
->   		struct switch_stack sw;
-> @@ -166,7 +179,7 @@ int copy_thread(unsigned long clone_flags, unsigned long usp,
->   	p->thread.usp = usp ?: rdusp();
->   
->   	if (clone_flags & CLONE_SETTLS)
-> -		task_thread_info(p)->tp_value = frame->regs.d5;
-> +		task_thread_info(p)->tp_value = tls;
->   
->   #ifdef CONFIG_FPU
->   	if (!FPU_IS_EMU) {
-> 
+---
+0-DAY kernel test infrastructure                 Open Source Technology Center
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org Intel Corporation
