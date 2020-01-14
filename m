@@ -1,53 +1,55 @@
-Return-Path: <SRS0=881o=3C=vger.kernel.org=linux-m68k-owner@kernel.org>
+Return-Path: <SRS0=eHIt=3D=vger.kernel.org=linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.2 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
-	MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1
-	autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-8.2 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,
+	USER_AGENT_SANE_1 autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 8DB9BC33CAD
-	for <linux-m68k@archiver.kernel.org>; Mon, 13 Jan 2020 10:39:43 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 3292CC33CAE
+	for <linux-m68k@archiver.kernel.org>; Tue, 14 Jan 2020 01:55:13 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 6F12620661
-	for <linux-m68k@archiver.kernel.org>; Mon, 13 Jan 2020 10:39:43 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 1490E20CC7
+	for <linux-m68k@archiver.kernel.org>; Tue, 14 Jan 2020 01:55:13 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727286AbgAMKjj (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Mon, 13 Jan 2020 05:39:39 -0500
-Received: from youngberry.canonical.com ([91.189.89.112]:37057 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726133AbgAMKjj (ORCPT
-        <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Mon, 13 Jan 2020 05:39:39 -0500
-Received: from ip5f5bd663.dynamic.kabel-deutschland.de ([95.91.214.99] helo=wittgenstein)
-        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <christian.brauner@ubuntu.com>)
-        id 1iqx6U-0001L5-7A; Mon, 13 Jan 2020 10:37:50 +0000
-Date:   Mon, 13 Jan 2020 11:37:49 +0100
-From:   Christian Brauner <christian.brauner@ubuntu.com>
+        id S1729331AbgANBzM (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Mon, 13 Jan 2020 20:55:12 -0500
+Received: from mail.kernel.org ([198.145.29.99]:47496 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729287AbgANBzM (ORCPT <rfc822;linux-m68k@lists.linux-m68k.org>);
+        Mon, 13 Jan 2020 20:55:12 -0500
+Received: from [10.44.0.22] (unknown [103.48.210.53])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id B5259207FF;
+        Tue, 14 Jan 2020 01:55:09 +0000 (UTC)
+Subject: Re: [PATCH] m68k: Implement copy_thread_tls()
 To:     Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     Greg Ungerer <gerg@linux-m68k.org>,
-        Amanieu d'Antras <amanieu@gmail.com>,
+Cc:     Amanieu d'Antras <amanieu@gmail.com>,
         Christian Brauner <christian@brauner.io>,
         Kars de Jong <jongk@linux-m68k.org>,
         Al Viro <viro@zeniv.linux.org.uk>,
         linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org,
         linux-next@vger.kernel.org
-Subject: Re: [PATCH] m68k: Implement copy_thread_tls()
-Message-ID: <20200113103748.cmuqknofpdis7kqy@wittgenstein>
 References: <20200113103040.23661-1-geert@linux-m68k.org>
+From:   Greg Ungerer <gerg@linux-m68k.org>
+Message-ID: <f744a139-f2ae-a07f-e7e7-a1aaca946f8c@linux-m68k.org>
+Date:   Tue, 14 Jan 2020 11:55:06 +1000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.2.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 In-Reply-To: <20200113103040.23661-1-geert@linux-m68k.org>
-User-Agent: NeoMutt/20180716
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-m68k-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-On Mon, Jan 13, 2020 at 11:30:40AM +0100, Geert Uytterhoeven wrote:
+Hi Geert,
+
+On 13/1/20 8:30 pm, Geert Uytterhoeven wrote:
 > This is required for clone3(), which passes the TLS value through a
 > struct rather than a register.
 > 
@@ -56,5 +58,95 @@ On Mon, Jan 13, 2020 at 11:30:40AM +0100, Geert Uytterhoeven wrote:
 > 
 > Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
 
-Thanks!
-Acked-by: Christian Brauner <christian.brauner@ubuntu.com>
+Looks good for ColdFire too. I compiled for both MMU and non-MMU
+targets and no regressions (I did not test clone3() itself though).
+
+Acked-by: Greg Ungerer <gerg@linux-m68k.org>
+
+Regards
+Greg
+
+
+> ---
+> This is a dependency for the combination of commits
+> e8bb2a2a1d51511e ("m68k: Wire up clone3() syscall") in m68k/for-next,
+> dd499f7a7e342702 ("clone3: ensure copy_thread_tls is implemented") in
+> v5.5-rc6.
+> ---
+>   arch/m68k/Kconfig          |  1 +
+>   arch/m68k/kernel/process.c | 31 ++++++++++++++++++++++---------
+>   2 files changed, 23 insertions(+), 9 deletions(-)
+> 
+> diff --git a/arch/m68k/Kconfig b/arch/m68k/Kconfig
+> index 6663f1741798e83f..6ad6cdac74b3dc42 100644
+> --- a/arch/m68k/Kconfig
+> +++ b/arch/m68k/Kconfig
+> @@ -14,6 +14,7 @@ config M68K
+>   	select HAVE_AOUT if MMU
+>   	select HAVE_ASM_MODVERSIONS
+>   	select HAVE_DEBUG_BUGVERBOSE
+> +	select HAVE_COPY_THREAD_TLS
+>   	select GENERIC_IRQ_SHOW
+>   	select GENERIC_ATOMIC64
+>   	select HAVE_UID16
+> diff --git a/arch/m68k/kernel/process.c b/arch/m68k/kernel/process.c
+> index 22e6b8f4f9582aa4..8f0d9140700f09ad 100644
+> --- a/arch/m68k/kernel/process.c
+> +++ b/arch/m68k/kernel/process.c
+> @@ -108,16 +108,28 @@ void flush_thread(void)
+>    * on top of pt_regs, which means that sys_clone() arguments would be
+>    * buried.  We could, of course, copy them, but it's too costly for no
+>    * good reason - generic clone() would have to copy them *again* for
+> - * do_fork() anyway.  So in this case it's actually better to pass pt_regs *
+> - * and extract arguments for do_fork() from there.  Eventually we might
+> - * go for calling do_fork() directly from the wrapper, but only after we
+> - * are finished with do_fork() prototype conversion.
+> + * _do_fork() anyway.  So in this case it's actually better to pass pt_regs *
+> + * and extract arguments for _do_fork() from there.  Eventually we might
+> + * go for calling _do_fork() directly from the wrapper, but only after we
+> + * are finished with _do_fork() prototype conversion.
+>    */
+>   asmlinkage int m68k_clone(struct pt_regs *regs)
+>   {
+>   	/* regs will be equal to current_pt_regs() */
+> -	return do_fork(regs->d1, regs->d2, 0,
+> -		       (int __user *)regs->d3, (int __user *)regs->d4);
+> +	struct kernel_clone_args args = {
+> +		.flags		= regs->d1 & ~CSIGNAL,
+> +		.pidfd		= (int __user *)regs->d3,
+> +		.child_tid	= (int __user *)regs->d4,
+> +		.parent_tid	= (int __user *)regs->d3,
+> +		.exit_signal	= regs->d1 & CSIGNAL,
+> +		.stack		= regs->d2,
+> +		.tls		= regs->d5,
+> +	};
+> +
+> +	if (!legacy_clone_args_valid(&args))
+> +		return -EINVAL;
+> +
+> +	return _do_fork(&args);
+>   }
+>   
+>   /*
+> @@ -130,8 +142,9 @@ asmlinkage int m68k_clone3(struct pt_regs *regs)
+>   	return sys_clone3((struct clone_args __user *)regs->d1, regs->d2);
+>   }
+>   
+> -int copy_thread(unsigned long clone_flags, unsigned long usp,
+> -		 unsigned long arg, struct task_struct *p)
+> +int copy_thread_tls(unsigned long clone_flags, unsigned long usp,
+> +		    unsigned long arg, struct task_struct *p,
+> +		    unsigned long tls)
+>   {
+>   	struct fork_frame {
+>   		struct switch_stack sw;
+> @@ -166,7 +179,7 @@ int copy_thread(unsigned long clone_flags, unsigned long usp,
+>   	p->thread.usp = usp ?: rdusp();
+>   
+>   	if (clone_flags & CLONE_SETTLS)
+> -		task_thread_info(p)->tp_value = frame->regs.d5;
+> +		task_thread_info(p)->tp_value = tls;
+>   
+>   #ifdef CONFIG_FPU
+>   	if (!FPU_IS_EMU) {
+> 
