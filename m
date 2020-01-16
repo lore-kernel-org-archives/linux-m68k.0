@@ -4,52 +4,52 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-10.1 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	DKIM_VALID,DKIM_VALID_AU,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
-	version=3.4.0
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 61879C33CAF
-	for <linux-m68k@archiver.kernel.org>; Thu, 16 Jan 2020 17:25:58 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5262CC3F68F
+	for <linux-m68k@archiver.kernel.org>; Thu, 16 Jan 2020 17:55:30 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 3234F24687
-	for <linux-m68k@archiver.kernel.org>; Thu, 16 Jan 2020 17:25:58 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 2D9482073A
+	for <linux-m68k@archiver.kernel.org>; Thu, 16 Jan 2020 17:55:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=default; t=1579195558;
-	bh=jR/5byXskUvahHVd1bI135uHEUVjk2mooftVxDZf/uw=;
+	s=default; t=1579197330;
+	bh=ece1MduIGLf0VL1T4CTx4Z0+HhcdtrzP5JPqdRX2BWk=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-ID:From;
-	b=s6lN8M1gKPriLS9/5fPgmnNODuU3dPAkErwwsIYheS2FCV1JO6RGNKtV4YCqkQ0pB
-	 91XZP1FYLf3mlTaTo81Nbm5EIeNE9WxBy9J2QNdWHhK4srN7VZuF9ChRhUYOcV7T4C
-	 yA3ch1ke4R1dnuePb4ifHZTaBwMNV4NPt/2pbA7Q=
+	b=tzv8cLAKVcVwDbYOCiZnUEpllCcPsgKbiiHiPxTLW9cyb5qjUBaH3QME963RIyUJW
+	 lutyQJTIv9BffMs90yO3f6U+x0/0lRDv1WuIh/jd5T3eFQ1612pwgRVkYHWxRR+4QE
+	 6ni3LD2o086VE0mvVfsVsOL6IFOrqRoN90ZvWEtw=
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392196AbgAPRZ5 (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Thu, 16 Jan 2020 12:25:57 -0500
-Received: from mail.kernel.org ([198.145.29.99]:34162 "EHLO mail.kernel.org"
+        id S2394139AbgAPRoV (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Thu, 16 Jan 2020 12:44:21 -0500
+Received: from mail.kernel.org ([198.145.29.99]:35214 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2392183AbgAPRZ5 (ORCPT <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Thu, 16 Jan 2020 12:25:57 -0500
+        id S2394132AbgAPRoU (ORCPT <rfc822;linux-m68k@lists.linux-m68k.org>);
+        Thu, 16 Jan 2020 12:44:20 -0500
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 194BA246AF;
-        Thu, 16 Jan 2020 17:25:55 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id A94B42475F;
+        Thu, 16 Jan 2020 17:44:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1579195555;
-        bh=jR/5byXskUvahHVd1bI135uHEUVjk2mooftVxDZf/uw=;
+        s=default; t=1579196659;
+        bh=ece1MduIGLf0VL1T4CTx4Z0+HhcdtrzP5JPqdRX2BWk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=AYfcgD01+NLcCu+qRAncBq7gi7OqAx5lzMll+UQx31IKY3Ft4S4HLM7jS7QX1ni74
-         gkkMyU4tft3/PV1Ty5MrM8FHhfvXZbGDnZbqwft5kwLNiXwYX31ZNqLrqrTMMFVydf
-         opcSm+0A54GnoiGjVw7I13BzQDX/SjEya1OgRmCU=
+        b=ClAmYH0IgPrWmHzNn1St/UtSuLaorJFs96a9Z6MCENSSJqM7W+QOKR1H1/0S4tkLA
+         ZtOgVolXNhh9D41ilIFjiI7K/pNH9intIMDOHUiSOGwgbhKlLaR5Jmiaiv797yZLEH
+         NEAxWjXJLfTg4nB0wbctFvEtFLa7AgL/nlGWkcTw=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
 Cc:     Finn Thain <fthain@telegraphics.com.au>,
         Geert Uytterhoeven <geert@linux-m68k.org>,
         Sasha Levin <sashal@kernel.org>,
         linux-m68k@lists.linux-m68k.org
-Subject: [PATCH AUTOSEL 4.14 144/371] m68k: mac: Fix VIA timer counter accesses
-Date:   Thu, 16 Jan 2020 12:20:16 -0500
-Message-Id: <20200116172403.18149-87-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 4.4 064/174] m68k: mac: Fix VIA timer counter accesses
+Date:   Thu, 16 Jan 2020 12:41:01 -0500
+Message-Id: <20200116174251.24326-64-sashal@kernel.org>
 X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20200116172403.18149-1-sashal@kernel.org>
-References: <20200116172403.18149-1-sashal@kernel.org>
+In-Reply-To: <20200116174251.24326-1-sashal@kernel.org>
+References: <20200116174251.24326-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
@@ -77,10 +77,10 @@ Signed-off-by: Sasha Levin <sashal@kernel.org>
  1 file changed, 53 insertions(+), 49 deletions(-)
 
 diff --git a/arch/m68k/mac/via.c b/arch/m68k/mac/via.c
-index 9f59a662ace5..7334245abf26 100644
+index ce56e04386e7..2d687518c76f 100644
 --- a/arch/m68k/mac/via.c
 +++ b/arch/m68k/mac/via.c
-@@ -54,16 +54,6 @@ static __u8 rbv_clear;
+@@ -53,16 +53,6 @@ static __u8 rbv_clear;
  
  static int gIER,gIFR,gBufA,gBufB;
  
@@ -97,7 +97,7 @@ index 9f59a662ace5..7334245abf26 100644
  /*
   * On Macs with a genuine VIA chip there is no way to mask an individual slot
   * interrupt. This limitation also seems to apply to VIA clone logic cores in
-@@ -278,22 +268,6 @@ void __init via_init(void)
+@@ -277,22 +267,6 @@ void __init via_init(void)
  	}
  }
  
@@ -120,7 +120,7 @@ index 9f59a662ace5..7334245abf26 100644
  /*
   * Debugging dump, used in various places to see what's going on.
   */
-@@ -321,29 +295,6 @@ void via_debug_dump(void)
+@@ -320,29 +294,6 @@ void via_debug_dump(void)
  	}
  }
  
@@ -150,7 +150,7 @@ index 9f59a662ace5..7334245abf26 100644
  /*
   * Flush the L2 cache on Macs that have it by flipping
   * the system into 24-bit mode for an instant.
-@@ -612,3 +563,56 @@ int via2_scsi_drq_pending(void)
+@@ -619,3 +570,56 @@ int via2_scsi_drq_pending(void)
  	return via2[gIFR] & (1 << IRQ_IDX(IRQ_MAC_SCSIDRQ));
  }
  EXPORT_SYMBOL(via2_scsi_drq_pending);
