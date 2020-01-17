@@ -2,107 +2,164 @@ Return-Path: <SRS0=t/Qt=3G=vger.kernel.org=linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.8 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,
-	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-5.8 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
+	MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9CE1DC33CB1
-	for <linux-m68k@archiver.kernel.org>; Fri, 17 Jan 2020 07:20:25 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id CFC54C33CB1
+	for <linux-m68k@archiver.kernel.org>; Fri, 17 Jan 2020 09:08:15 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 6E84920748
-	for <linux-m68k@archiver.kernel.org>; Fri, 17 Jan 2020 07:20:25 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id ACAB320728
+	for <linux-m68k@archiver.kernel.org>; Fri, 17 Jan 2020 09:08:15 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729138AbgAQHUZ (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Fri, 17 Jan 2020 02:20:25 -0500
-Received: from mail.kernel.org ([198.145.29.99]:42358 "EHLO mail.kernel.org"
+        id S1727018AbgAQJIP (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Fri, 17 Jan 2020 04:08:15 -0500
+Received: from mga05.intel.com ([192.55.52.43]:50251 "EHLO mga05.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729121AbgAQHUZ (ORCPT <rfc822;linux-m68k@vger.kernel.org>);
-        Fri, 17 Jan 2020 02:20:25 -0500
-Received: from goober.digi.com (acc1027289.lnk.telstra.net [149.135.16.88])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 84C962073A;
-        Fri, 17 Jan 2020 07:20:23 +0000 (UTC)
-From:   gerg@linux-m68k.org
-To:     linux-m68k@vger.kernel.org
-Cc:     Greg Ungerer <gerg@linux-m68k.org>
-Subject: [PATCH] m68knommu: fix memcpy() out of bounds warning in get_user()
-Date:   Fri, 17 Jan 2020 17:20:05 +1000
-Message-Id: <20200117072005.13923-1-gerg@linux-m68k.org>
-X-Mailer: git-send-email 2.17.1
+        id S1726897AbgAQJIP (ORCPT <rfc822;linux-m68k@lists.linux-m68k.org>);
+        Fri, 17 Jan 2020 04:08:15 -0500
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 17 Jan 2020 01:08:14 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.70,329,1574150400"; 
+   d="scan'208";a="306172934"
+Received: from lkp-server01.sh.intel.com (HELO lkp-server01) ([10.239.97.150])
+  by orsmga001.jf.intel.com with ESMTP; 17 Jan 2020 01:08:13 -0800
+Received: from kbuild by lkp-server01 with local (Exim 4.89)
+        (envelope-from <lkp@intel.com>)
+        id 1isNbw-0007Cc-RN; Fri, 17 Jan 2020 17:08:12 +0800
+Date:   Fri, 17 Jan 2020 17:07:20 +0800
+From:   kbuild test robot <lkp@intel.com>
+To:     Geert Uytterhoeven <geert@linux-m68k.org>
+Cc:     linux-m68k@lists.linux-m68k.org
+Subject: [m68k:master] BUILD INCOMPLETE
+ 38fa928bc577a49b0f89cfd736a7c9c073018a4e
+Message-ID: <5e217948.17yznLAnsU1TInpP%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 Sender: linux-m68k-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-From: Greg Ungerer <gerg@linux-m68k.org>
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/geert/linux-m68k.git  master
+branch HEAD: 38fa928bc577a49b0f89cfd736a7c9c073018a4e  Merge tag 'v5.5-rc6'
 
-Newer versions of gcc are giving warnings in the non-MMU m68k version
-of the get_user() macro:
+TIMEOUT after 2882m
 
-    ./arch/m68k/include/asm/string.h:72:25: warning: ‘__builtin_memcpy’ forming offset [3, 4] is out of the bounds [0, 2] of object ‘__gu_val’ with type ‘short unsigned int’ [-Warray-bounds]
 
-The warnings are generated when smaller sized variables are used as the
-result of user space pointers to larger values. For example a
-short/2-byte variable stores the result of a user space int (4-byte)
-pointer. The warning is in the 8-byte branch of get_user() - even
-though that branch is not the taken branch in the warning cases.
+Sorry we cannot finish the testset for your branch within a reasonable time.
+It's our fault -- either some build server is down or some build worker is busy
+doing bisects for _other_ trees. The branch will get more complete coverage and
+possible error reports when our build infrastructure is restored or catches up.
+There will be no more build success notification for this branch head, but you
+can expect reasonably good test coverage after waiting for 1 day.
 
-Refactor the 8-byte branch of get_user() so that it uses a correctly
-formed union type to read and write the source and destination objects.
-Keep using the memcpy() just in case the user space pointer is not
-naturaly aligned.
+configs timed out: 83
 
-Signed-off-by: Greg Ungerer <gerg@linux-m68k.org>
+alpha                               defconfig
+arc                              allyesconfig
+arc                                 defconfig
+arm                              allmodconfig
+arm                               allnoconfig
+arm                              allyesconfig
+arm                         at91_dt_defconfig
+arm                           efm32_defconfig
+arm                          exynos_defconfig
+arm                        multi_v5_defconfig
+arm                        multi_v7_defconfig
+arm                        shmobile_defconfig
+arm                           sunxi_defconfig
+arm64                            allmodconfig
+arm64                             allnoconfig
+arm64                            allyesconfig
+arm64                               defconfig
+csky                                defconfig
+h8300                     edosk2674_defconfig
+h8300                    h8300h-sim_defconfig
+h8300                       h8s-sim_defconfig
+i386                             alldefconfig
+i386                              allnoconfig
+i386                             allyesconfig
+i386                                defconfig
+ia64                             alldefconfig
+ia64                             allmodconfig
+ia64                              allnoconfig
+ia64                             allyesconfig
+ia64                                defconfig
+m68k                             allmodconfig
+m68k                       m5475evb_defconfig
+m68k                          multi_defconfig
+m68k                           sun3_defconfig
+microblaze                      mmu_defconfig
+microblaze                    nommu_defconfig
+mips                           32r2_defconfig
+mips                         64r6el_defconfig
+mips                             allmodconfig
+mips                              allnoconfig
+mips                             allyesconfig
+mips                      fuloong2e_defconfig
+mips                      malta_kvm_defconfig
+nds32                             allnoconfig
+nds32                               defconfig
+parisc                            allnoconfig
+parisc                            allyesonfig
+parisc                         b180_defconfig
+parisc                        c3000_defconfig
+parisc                              defconfig
+powerpc                           allnoconfig
+powerpc                             defconfig
+powerpc                       ppc64_defconfig
+powerpc                          rhel-kconfig
+riscv                            allmodconfig
+riscv                             allnoconfig
+riscv                            allyesconfig
+riscv                               defconfig
+riscv                    nommu_virt_defconfig
+riscv                          rv32_defconfig
+s390                             alldefconfig
+s390                             allmodconfig
+s390                              allnoconfig
+s390                             allyesconfig
+s390                          debug_defconfig
+s390                                defconfig
+s390                       zfcpdump_defconfig
+sh                               allmodconfig
+sh                                allnoconfig
+sh                          rsk7269_defconfig
+sh                  sh7785lcr_32bit_defconfig
+sh                            titan_defconfig
+sparc                            allyesconfig
+sparc                               defconfig
+sparc64                          allmodconfig
+sparc64                           allnoconfig
+sparc64                          allyesconfig
+sparc64                             defconfig
+x86_64                              fedora-25
+x86_64                                  kexec
+x86_64                                    lkp
+x86_64                                   rhel
+x86_64                               rhel-7.6
+
+configs tested: 11
+configs skipped: 0
+
+um                           x86_64_defconfig
+um                             i386_defconfig
+um                                  defconfig
+xtensa                       common_defconfig
+openrisc                    or1ksim_defconfig
+nios2                         3c120_defconfig
+xtensa                          iss_defconfig
+c6x                        evmc6678_defconfig
+c6x                              allyesconfig
+nios2                         10m50_defconfig
+openrisc                 simple_smp_defconfig
+
 ---
- arch/m68k/include/asm/uaccess_no.h | 19 +++++++++++--------
- 1 file changed, 11 insertions(+), 8 deletions(-)
-
-diff --git a/arch/m68k/include/asm/uaccess_no.h b/arch/m68k/include/asm/uaccess_no.h
-index 0134008bf539..6bc80c35726d 100644
---- a/arch/m68k/include/asm/uaccess_no.h
-+++ b/arch/m68k/include/asm/uaccess_no.h
-@@ -71,26 +71,29 @@ extern int __put_user_bad(void);
- #define get_user(x, ptr)					\
- ({								\
-     int __gu_err = 0;						\
--    typeof(x) __gu_val = 0;					\
-     switch (sizeof(*(ptr))) {					\
-     case 1:							\
--	__get_user_asm(__gu_err, __gu_val, ptr, b, "=d");	\
-+	__get_user_asm(__gu_err, x, ptr, b, "=d");		\
- 	break;							\
-     case 2:							\
--	__get_user_asm(__gu_err, __gu_val, ptr, w, "=r");	\
-+	__get_user_asm(__gu_err, x, ptr, w, "=r");		\
- 	break;							\
-     case 4:							\
--	__get_user_asm(__gu_err, __gu_val, ptr, l, "=r");	\
-+	__get_user_asm(__gu_err, x, ptr, l, "=r");		\
- 	break;							\
--    case 8:							\
--	memcpy((void *) &__gu_val, ptr, sizeof (*(ptr)));	\
-+    case 8: {							\
-+	union {							\
-+	    u64 l;						\
-+	    __typeof__(*(ptr)) t;				\
-+	} __gu_val;						\
-+	memcpy(&__gu_val.l, ptr, sizeof(__gu_val.l));		\
-+	(x) = __gu_val.t;					\
- 	break;							\
-+    }								\
-     default:							\
--	__gu_val = 0;						\
- 	__gu_err = __get_user_bad();				\
- 	break;							\
-     }								\
--    (x) = (typeof(*(ptr))) __gu_val;				\
-     __gu_err;							\
- })
- #define __get_user(x, ptr) get_user(x, ptr)
--- 
-2.17.1
-
+0-DAY kernel test infrastructure                 Open Source Technology Center
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org Intel Corporation
