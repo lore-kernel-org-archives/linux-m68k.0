@@ -1,62 +1,227 @@
-Return-Path: <SRS0=hGEk=3J=vger.kernel.org=linux-m68k-owner@kernel.org>
+Return-Path: <SRS0=GIcN=3K=vger.kernel.org=linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.2 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=no
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-5.7 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
+	MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E1243C2D0DB
-	for <linux-m68k@archiver.kernel.org>; Mon, 20 Jan 2020 17:58:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 34D62C32771
+	for <linux-m68k@archiver.kernel.org>; Tue, 21 Jan 2020 01:13:52 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id C17D022314
-	for <linux-m68k@archiver.kernel.org>; Mon, 20 Jan 2020 17:58:39 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 07E2824125
+	for <linux-m68k@archiver.kernel.org>; Tue, 21 Jan 2020 01:13:51 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726642AbgATR6j (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Mon, 20 Jan 2020 12:58:39 -0500
-Received: from mx2.suse.de ([195.135.220.15]:48638 "EHLO mx2.suse.de"
+        id S1728765AbgAUBNv (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Mon, 20 Jan 2020 20:13:51 -0500
+Received: from mga18.intel.com ([134.134.136.126]:61726 "EHLO mga18.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726901AbgATR6j (ORCPT <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Mon, 20 Jan 2020 12:58:39 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id 6B209AD5B;
-        Mon, 20 Jan 2020 17:58:37 +0000 (UTC)
-Date:   Mon, 20 Jan 2020 09:51:44 -0800
-From:   Davidlohr Bueso <dave@stgolabs.net>
+        id S1727009AbgAUBNv (ORCPT <rfc822;linux-m68k@lists.linux-m68k.org>);
+        Mon, 20 Jan 2020 20:13:51 -0500
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by orsmga106.jf.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 20 Jan 2020 17:13:48 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.70,344,1574150400"; 
+   d="scan'208";a="425328942"
+Received: from lkp-server01.sh.intel.com (HELO lkp-server01) ([10.239.97.150])
+  by fmsmga005.fm.intel.com with ESMTP; 20 Jan 2020 17:13:47 -0800
+Received: from kbuild by lkp-server01 with local (Exim 4.89)
+        (envelope-from <lkp@intel.com>)
+        id 1iti70-00062p-MF; Tue, 21 Jan 2020 09:13:46 +0800
+Date:   Tue, 21 Jan 2020 09:12:57 +0800
+From:   kbuild test robot <lkp@intel.com>
 To:     Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Davidlohr Bueso <dbueso@suse.de>,
-        "Jason A. Donenfeld" <Jason@zx2c4.com>,
-        linux-m68k <linux-m68k@lists.linux-m68k.org>
-Subject: Re: [PATCH] lib/rbtree: avoid pointless rb_node alignment
-Message-ID: <20200120175144.67625skg6eiprpsa@linux-p48b>
-References: <20200110215429.30360-1-dave@stgolabs.net>
- <CAMuHMdXeZvJ0X6Ah2CpLRoQJm+YhxAWBt-rUpxoyfOLTcHp+0g@mail.gmail.com>
+Cc:     linux-m68k@lists.linux-m68k.org
+Subject: [m68k:m68k-queue] BUILD SUCCESS
+ 579b624c58daf20f04e2481118d9c0e61315451f
+Message-ID: <5e265019.nfT/sMs0Z4uebMig%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Disposition: inline
-In-Reply-To: <CAMuHMdXeZvJ0X6Ah2CpLRoQJm+YhxAWBt-rUpxoyfOLTcHp+0g@mail.gmail.com>
-User-Agent: NeoMutt/20180716
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 Sender: linux-m68k-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-On Mon, 20 Jan 2020, Geert Uytterhoeven wrote:
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/geert/linux-m68k.git  m68k-queue
+branch HEAD: 579b624c58daf20f04e2481118d9c0e61315451f  fat: Use correct logical sector size for Atari GEMDOS FAT
 
->timerqueue_del() uses rbtree, and
->
->    #define rb_parent(r)   ((struct rb_node *)((r)->__rb_parent_color & ~3))
->
->relies on all objects being 4-byte aligned.  But your patch broke that
->assumption on m68k, where the default alignment is 2-byte.
->
->Andrew: please drop this patch.
+elapsed time: 635m
 
-Yeah that's too bad. I'll send a patch improving the comment around the alignment
-once the patch is dropped.
+configs tested: 164
+configs skipped: 0
 
-Thanks,
-Davidlohr
+The following configs have been built successfully.
+More configs may be tested in the coming days.
+
+m68k                          multi_defconfig
+m68k                       m5475evb_defconfig
+h8300                    h8300h-sim_defconfig
+h8300                     edosk2674_defconfig
+m68k                           sun3_defconfig
+h8300                       h8s-sim_defconfig
+m68k                             allmodconfig
+um                                  defconfig
+um                             i386_defconfig
+um                           x86_64_defconfig
+i386                             alldefconfig
+i386                              allnoconfig
+i386                             allyesconfig
+i386                                defconfig
+x86_64               randconfig-d001-20200121
+x86_64               randconfig-d002-20200121
+x86_64               randconfig-d003-20200121
+i386                 randconfig-d001-20200121
+i386                 randconfig-d002-20200121
+i386                 randconfig-d003-20200121
+ia64                                defconfig
+powerpc                             defconfig
+mips                           32r2_defconfig
+mips                         64r6el_defconfig
+mips                             allmodconfig
+mips                              allnoconfig
+mips                             allyesconfig
+mips                      fuloong2e_defconfig
+mips                      malta_kvm_defconfig
+alpha                randconfig-a001-20200121
+m68k                 randconfig-a001-20200121
+mips                 randconfig-a001-20200121
+nds32                randconfig-a001-20200121
+parisc               randconfig-a001-20200121
+riscv                randconfig-a001-20200121
+x86_64               randconfig-g001-20200121
+x86_64               randconfig-g002-20200121
+x86_64               randconfig-g003-20200121
+i386                 randconfig-g001-20200121
+i386                 randconfig-g002-20200121
+i386                 randconfig-g003-20200121
+x86_64                              fedora-25
+x86_64                                  kexec
+x86_64                                    lkp
+x86_64                                   rhel
+x86_64                               rhel-7.6
+x86_64               randconfig-a001-20200121
+x86_64               randconfig-a002-20200121
+x86_64               randconfig-a003-20200121
+i386                 randconfig-a001-20200121
+i386                 randconfig-a002-20200121
+i386                 randconfig-a003-20200121
+arm                              allmodconfig
+arm                               allnoconfig
+arm                              allyesconfig
+arm                         at91_dt_defconfig
+arm                           efm32_defconfig
+arm                          exynos_defconfig
+arm                        multi_v5_defconfig
+arm                        multi_v7_defconfig
+arm                        shmobile_defconfig
+arm                           sunxi_defconfig
+arm64                            allmodconfig
+arm64                             allnoconfig
+arm64                            allyesconfig
+arm64                               defconfig
+arc                              allyesconfig
+arc                                 defconfig
+microblaze                      mmu_defconfig
+microblaze                    nommu_defconfig
+powerpc                           allnoconfig
+powerpc                       ppc64_defconfig
+powerpc                          rhel-kconfig
+s390                             alldefconfig
+s390                             allmodconfig
+s390                              allnoconfig
+s390                             allyesconfig
+s390                          debug_defconfig
+s390                                defconfig
+s390                       zfcpdump_defconfig
+ia64                             alldefconfig
+ia64                             allmodconfig
+ia64                              allnoconfig
+ia64                             allyesconfig
+sh                               allmodconfig
+sh                                allnoconfig
+sh                          rsk7269_defconfig
+sh                  sh7785lcr_32bit_defconfig
+sh                            titan_defconfig
+csky                 randconfig-a001-20200121
+openrisc             randconfig-a001-20200121
+s390                 randconfig-a001-20200121
+sh                   randconfig-a001-20200121
+xtensa               randconfig-a001-20200121
+nds32                               defconfig
+alpha                               defconfig
+csky                                defconfig
+nds32                             allnoconfig
+sparc                            allyesconfig
+x86_64               randconfig-b001-20200121
+x86_64               randconfig-b002-20200121
+x86_64               randconfig-b003-20200121
+i386                 randconfig-b001-20200121
+i386                 randconfig-b002-20200121
+i386                 randconfig-b003-20200121
+arc                  randconfig-a001-20200121
+arm                  randconfig-a001-20200121
+arm64                randconfig-a001-20200121
+ia64                 randconfig-a001-20200121
+powerpc              randconfig-a001-20200121
+sparc                randconfig-a001-20200121
+x86_64               randconfig-c001-20200121
+x86_64               randconfig-c002-20200121
+x86_64               randconfig-c003-20200121
+i386                 randconfig-c001-20200121
+i386                 randconfig-c002-20200121
+i386                 randconfig-c003-20200121
+x86_64               randconfig-h001-20200121
+x86_64               randconfig-h002-20200121
+x86_64               randconfig-h003-20200121
+i386                 randconfig-h001-20200121
+i386                 randconfig-h002-20200121
+i386                 randconfig-h003-20200121
+x86_64               randconfig-e001-20200121
+x86_64               randconfig-e002-20200121
+x86_64               randconfig-e003-20200121
+i386                 randconfig-e001-20200121
+i386                 randconfig-e002-20200121
+i386                 randconfig-e003-20200121
+riscv                            allmodconfig
+riscv                             allnoconfig
+riscv                            allyesconfig
+riscv                               defconfig
+riscv                    nommu_virt_defconfig
+riscv                          rv32_defconfig
+parisc                            allnoconfig
+parisc                            allyesonfig
+parisc                         b180_defconfig
+parisc                        c3000_defconfig
+parisc                              defconfig
+x86_64               randconfig-f001-20200121
+x86_64               randconfig-f002-20200121
+x86_64               randconfig-f003-20200121
+i386                 randconfig-f001-20200121
+i386                 randconfig-f002-20200121
+i386                 randconfig-f003-20200121
+c6x                              allyesconfig
+c6x                        evmc6678_defconfig
+nios2                         10m50_defconfig
+nios2                         3c120_defconfig
+openrisc                    or1ksim_defconfig
+openrisc                 simple_smp_defconfig
+xtensa                       common_defconfig
+xtensa                          iss_defconfig
+c6x                  randconfig-a001-20200121
+h8300                randconfig-a001-20200121
+microblaze           randconfig-a001-20200121
+nios2                randconfig-a001-20200121
+sparc64              randconfig-a001-20200121
+sparc                               defconfig
+sparc64                          allmodconfig
+sparc64                           allnoconfig
+sparc64                          allyesconfig
+sparc64                             defconfig
+
+---
+0-DAY kernel test infrastructure                 Open Source Technology Center
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org Intel Corporation
