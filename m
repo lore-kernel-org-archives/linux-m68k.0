@@ -1,82 +1,106 @@
-Return-Path: <SRS0=pfoz=3M=vger.kernel.org=linux-m68k-owner@kernel.org>
+Return-Path: <SRS0=ZEWD=3Q=vger.kernel.org=linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.6 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-13.7 required=3.0
+	tests=HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PULL_REQUEST,MAILING_LIST_MULTI,
+	MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 8F512C2D0DB
-	for <linux-m68k@archiver.kernel.org>; Thu, 23 Jan 2020 14:29:24 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 1DE6EC32771
+	for <linux-m68k@archiver.kernel.org>; Mon, 27 Jan 2020 09:54:16 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 58ED82087E
-	for <linux-m68k@archiver.kernel.org>; Thu, 23 Jan 2020 14:29:24 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=default; t=1579789764;
-	bh=ez/6JX2xGbOJsnIuQVPOf4+j+91L5ey1MQH6rdwQxkE=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:List-ID:From;
-	b=kEgy+wa+QdadHe+Jpv8HypR7ahQQweUByh7bjPZbA3+hkRyGQrt7KdaJ8gFXMmooG
-	 fuEOvIFzNWJbpOoXEco6X+FD6DIOupV3Kto0uL0oKHvJu9bP8f9qUurb9aThLvCio3
-	 ohHe/sYObLxNNMAQweVqxKz0ziv9JIXi5P5uBoVE=
+	by mail.kernel.org (Postfix) with ESMTP id E6996214AF
+	for <linux-m68k@archiver.kernel.org>; Mon, 27 Jan 2020 09:54:15 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727590AbgAWO3Y (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Thu, 23 Jan 2020 09:29:24 -0500
-Received: from mail.kernel.org ([198.145.29.99]:33516 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727307AbgAWO3X (ORCPT <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Thu, 23 Jan 2020 09:29:23 -0500
-Received: from localhost (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 2B1802077C;
-        Thu, 23 Jan 2020 14:29:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1579789763;
-        bh=ez/6JX2xGbOJsnIuQVPOf4+j+91L5ey1MQH6rdwQxkE=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=faslfbwzBXBUjetdZ/tFitSEXFA8mssSeblKbisXfD3QOEDYM4bstH4QzWKYtayQJ
-         nx77Rjj5TokMdEAqBD4FBcjRqCsaz8Dmu71oi7NQLhletqMfc3UFsoZ+cDAy1nAkVI
-         GEfEcYaXT6Gm/cbR+agA6MPeA3Jz1pHQVCCz2v4w=
-Date:   Thu, 23 Jan 2020 09:29:22 -0500
-From:   Sasha Levin <sashal@kernel.org>
-To:     Finn Thain <fthain@telegraphics.com.au>
-Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        linux-m68k@lists.linux-m68k.org
-Subject: Re: [PATCH AUTOSEL 4.4 064/174] m68k: mac: Fix VIA timer counter
- accesses
-Message-ID: <20200123142922.GF1706@sasha-vm>
-References: <20200116174251.24326-1-sashal@kernel.org>
- <20200116174251.24326-64-sashal@kernel.org>
- <alpine.LNX.2.21.1.2001170929550.255@nippy.intranet>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Disposition: inline
-In-Reply-To: <alpine.LNX.2.21.1.2001170929550.255@nippy.intranet>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+        id S1726164AbgA0JyP (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Mon, 27 Jan 2020 04:54:15 -0500
+Received: from albert.telenet-ops.be ([195.130.137.90]:55922 "EHLO
+        albert.telenet-ops.be" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726101AbgA0JyP (ORCPT
+        <rfc822;linux-m68k@lists.linux-m68k.org>);
+        Mon, 27 Jan 2020 04:54:15 -0500
+Received: from ramsan ([84.195.182.253])
+        by albert.telenet-ops.be with bizsmtp
+        id vMuD210045USYZQ06MuDBF; Mon, 27 Jan 2020 10:54:13 +0100
+Received: from rox.of.borg ([192.168.97.57])
+        by ramsan with esmtp (Exim 4.90_1)
+        (envelope-from <geert@linux-m68k.org>)
+        id 1iw15w-0003l6-Un; Mon, 27 Jan 2020 10:54:12 +0100
+Received: from geert by rox.of.borg with local (Exim 4.90_1)
+        (envelope-from <geert@linux-m68k.org>)
+        id 1iw15w-0000x1-Qq; Mon, 27 Jan 2020 10:54:12 +0100
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Greg Ungerer <gerg@linux-m68k.org>,
+        linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org,
+        Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: [GIT PULL] m68k updates for 5.6
+Date:   Mon, 27 Jan 2020 10:54:10 +0100
+Message-Id: <20200127095410.3611-1-geert@linux-m68k.org>
+X-Mailer: git-send-email 2.17.1
 Sender: linux-m68k-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-On Fri, Jan 17, 2020 at 10:21:26AM +1100, Finn Thain wrote:
->
->On Thu, 16 Jan 2020, Sasha Levin wrote:
->
->> From: Finn Thain <fthain@telegraphics.com.au>
->>
->> [ Upstream commit 0ca7ce7db771580433bf24454f7a1542bd326078 ]
->>
->
->This commit has been selected for 4.4, 4.9, 4.14 and 4.19. But this commit
->has questionable value without it's parent, commit 1efdd4bd2543 ("m68k:
->Call timer_interrupt() with interrupts disabled").
->
->For all stable branches, I'd prefer you selected both commits or neither,
->because I periodically backport to a branch based on stable/linux-4.14.y.
+	Hi Linus,
 
-I've queued up 1efdd4bd2543 for all branches, thanks.
+The following changes since commit 46cf053efec6a3a5f343fead837777efe8252a46:
 
--- 
-Thanks,
-Sasha
+  Linux 5.5-rc3 (2019-12-22 17:02:23 -0800)
+
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/geert/linux-m68k.git tags/m68k-for-v5.6-tag1
+
+for you to fetch changes up to 6aabc1facdb24e837cfea755ba46a6be22a8860f:
+
+  m68k: Implement copy_thread_tls() (2020-01-14 10:43:38 +0100)
+
+----------------------------------------------------------------
+m68k updates for v5.6
+
+  - Wire up clone3() syscall,
+  - Defconfig updates.
+
+Thanks for pulling!
+
+----------------------------------------------------------------
+Geert Uytterhoeven (2):
+      m68k: defconfig: Update defconfigs for v5.5-rc3
+      m68k: Implement copy_thread_tls()
+
+Kars de Jong (1):
+      m68k: Wire up clone3() syscall
+
+ arch/m68k/Kconfig                     |  1 +
+ arch/m68k/configs/amiga_defconfig     |  8 +++++--
+ arch/m68k/configs/apollo_defconfig    |  8 +++++--
+ arch/m68k/configs/atari_defconfig     |  8 +++++--
+ arch/m68k/configs/bvme6000_defconfig  |  8 +++++--
+ arch/m68k/configs/hp300_defconfig     |  8 +++++--
+ arch/m68k/configs/mac_defconfig       |  8 +++++--
+ arch/m68k/configs/multi_defconfig     |  8 +++++--
+ arch/m68k/configs/mvme147_defconfig   |  8 +++++--
+ arch/m68k/configs/mvme16x_defconfig   |  8 +++++--
+ arch/m68k/configs/q40_defconfig       |  8 +++++--
+ arch/m68k/configs/sun3_defconfig      |  6 ++++-
+ arch/m68k/configs/sun3x_defconfig     |  8 +++++--
+ arch/m68k/include/asm/unistd.h        |  1 +
+ arch/m68k/kernel/entry.S              |  7 ++++++
+ arch/m68k/kernel/process.c            | 44 +++++++++++++++++++++++++++--------
+ arch/m68k/kernel/syscalls/syscall.tbl |  2 +-
+ 17 files changed, 115 insertions(+), 34 deletions(-)
+
+Gr{oetje,eeting}s,
+
+						Geert
+
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+							    -- Linus Torvalds
