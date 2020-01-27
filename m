@@ -2,105 +2,70 @@ Return-Path: <SRS0=ZEWD=3Q=vger.kernel.org=linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-13.7 required=3.0
-	tests=HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PULL_REQUEST,MAILING_LIST_MULTI,
-	MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
-	autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-6.1 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,
+	SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 1DE6EC32771
-	for <linux-m68k@archiver.kernel.org>; Mon, 27 Jan 2020 09:54:16 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 16A7CC2D0DB
+	for <linux-m68k@archiver.kernel.org>; Mon, 27 Jan 2020 17:35:20 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id E6996214AF
-	for <linux-m68k@archiver.kernel.org>; Mon, 27 Jan 2020 09:54:15 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id E4E50207FD
+	for <linux-m68k@archiver.kernel.org>; Mon, 27 Jan 2020 17:35:19 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=default; t=1580146520;
+	bh=AmfVE4V8tGDC8S23WoS+eywZvpCJjXRP5KDuglGSH9I=;
+	h=Subject:From:In-Reply-To:References:Date:To:Cc:List-ID:From;
+	b=ylbspcb8ehU4KfrJwMP1Pu31d5uUBn+T+Z19PZcwf9/URq/svfTrEMg1Mz9xR5LzD
+	 LaPZBtKE5iyxj5RaBo0Srm76OJX+iLi7XyE1DiD6+rOU92w9qADeguWnjyuI3bc1TI
+	 gyqbeKiTiZcde93S0gGF/ST46cx4JTEEj10BLseM=
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726164AbgA0JyP (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Mon, 27 Jan 2020 04:54:15 -0500
-Received: from albert.telenet-ops.be ([195.130.137.90]:55922 "EHLO
-        albert.telenet-ops.be" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726101AbgA0JyP (ORCPT
-        <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Mon, 27 Jan 2020 04:54:15 -0500
-Received: from ramsan ([84.195.182.253])
-        by albert.telenet-ops.be with bizsmtp
-        id vMuD210045USYZQ06MuDBF; Mon, 27 Jan 2020 10:54:13 +0100
-Received: from rox.of.borg ([192.168.97.57])
-        by ramsan with esmtp (Exim 4.90_1)
-        (envelope-from <geert@linux-m68k.org>)
-        id 1iw15w-0003l6-Un; Mon, 27 Jan 2020 10:54:12 +0100
-Received: from geert by rox.of.borg with local (Exim 4.90_1)
-        (envelope-from <geert@linux-m68k.org>)
-        id 1iw15w-0000x1-Qq; Mon, 27 Jan 2020 10:54:12 +0100
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        id S1728238AbgA0RfF (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Mon, 27 Jan 2020 12:35:05 -0500
+Received: from mail.kernel.org ([198.145.29.99]:36246 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727441AbgA0RfF (ORCPT <rfc822;linux-m68k@lists.linux-m68k.org>);
+        Mon, 27 Jan 2020 12:35:05 -0500
+Subject: Re: [GIT PULL] m68k updates for 5.6
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1580146504;
+        bh=AmfVE4V8tGDC8S23WoS+eywZvpCJjXRP5KDuglGSH9I=;
+        h=From:In-Reply-To:References:Date:To:Cc:From;
+        b=huF5d6OtpG4Xu0++NSlbIQA4Obb52FB4TNan7Ypgs1MKQ5CDB32kCC55yRYHUkVaO
+         pwrEnUHJJ2I0ibfFmBJcGAgfZlx17PIfwRNGTJBcfr0hEt3E1J8oB+thDDFV0b8DCB
+         gswXL0UXNTmv7MqknAvW1qVXxdT6d/JLAiZYGDb4=
+From:   pr-tracker-bot@kernel.org
+In-Reply-To: <20200127095410.3611-1-geert@linux-m68k.org>
+References: <20200127095410.3611-1-geert@linux-m68k.org>
+X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
+X-PR-Tracked-Message-Id: <20200127095410.3611-1-geert@linux-m68k.org>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/geert/linux-m68k.git
+ tags/m68k-for-v5.6-tag1
+X-PR-Tracked-Commit-Id: 6aabc1facdb24e837cfea755ba46a6be22a8860f
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: f11ba7de156558ac5e78e285dbf9e9af60ceb2a8
+Message-Id: <158014650473.9177.2184027400030400580.pr-tracker-bot@kernel.org>
+Date:   Mon, 27 Jan 2020 17:35:04 +0000
+To:     Geert Uytterhoeven <geert@linux-m68k.org>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
         Greg Ungerer <gerg@linux-m68k.org>,
         linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org,
         Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: [GIT PULL] m68k updates for 5.6
-Date:   Mon, 27 Jan 2020 10:54:10 +0100
-Message-Id: <20200127095410.3611-1-geert@linux-m68k.org>
-X-Mailer: git-send-email 2.17.1
 Sender: linux-m68k-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-	Hi Linus,
+The pull request you sent on Mon, 27 Jan 2020 10:54:10 +0100:
 
-The following changes since commit 46cf053efec6a3a5f343fead837777efe8252a46:
+> git://git.kernel.org/pub/scm/linux/kernel/git/geert/linux-m68k.git tags/m68k-for-v5.6-tag1
 
-  Linux 5.5-rc3 (2019-12-22 17:02:23 -0800)
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/f11ba7de156558ac5e78e285dbf9e9af60ceb2a8
 
-are available in the Git repository at:
+Thank you!
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/geert/linux-m68k.git tags/m68k-for-v5.6-tag1
-
-for you to fetch changes up to 6aabc1facdb24e837cfea755ba46a6be22a8860f:
-
-  m68k: Implement copy_thread_tls() (2020-01-14 10:43:38 +0100)
-
-----------------------------------------------------------------
-m68k updates for v5.6
-
-  - Wire up clone3() syscall,
-  - Defconfig updates.
-
-Thanks for pulling!
-
-----------------------------------------------------------------
-Geert Uytterhoeven (2):
-      m68k: defconfig: Update defconfigs for v5.5-rc3
-      m68k: Implement copy_thread_tls()
-
-Kars de Jong (1):
-      m68k: Wire up clone3() syscall
-
- arch/m68k/Kconfig                     |  1 +
- arch/m68k/configs/amiga_defconfig     |  8 +++++--
- arch/m68k/configs/apollo_defconfig    |  8 +++++--
- arch/m68k/configs/atari_defconfig     |  8 +++++--
- arch/m68k/configs/bvme6000_defconfig  |  8 +++++--
- arch/m68k/configs/hp300_defconfig     |  8 +++++--
- arch/m68k/configs/mac_defconfig       |  8 +++++--
- arch/m68k/configs/multi_defconfig     |  8 +++++--
- arch/m68k/configs/mvme147_defconfig   |  8 +++++--
- arch/m68k/configs/mvme16x_defconfig   |  8 +++++--
- arch/m68k/configs/q40_defconfig       |  8 +++++--
- arch/m68k/configs/sun3_defconfig      |  6 ++++-
- arch/m68k/configs/sun3x_defconfig     |  8 +++++--
- arch/m68k/include/asm/unistd.h        |  1 +
- arch/m68k/kernel/entry.S              |  7 ++++++
- arch/m68k/kernel/process.c            | 44 +++++++++++++++++++++++++++--------
- arch/m68k/kernel/syscalls/syscall.tbl |  2 +-
- 17 files changed, 115 insertions(+), 34 deletions(-)
-
-Gr{oetje,eeting}s,
-
-						Geert
-
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-							    -- Linus Torvalds
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.wiki.kernel.org/userdoc/prtracker
