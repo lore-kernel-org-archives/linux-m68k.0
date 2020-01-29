@@ -7,109 +7,155 @@ X-Spam-Status: No, score=-3.1 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	SPF_PASS,URIBL_BLOCKED,URIBL_DBL_ABUSE_MALW,USER_AGENT_SANE_1 autolearn=no
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 67E51C35240
-	for <linux-m68k@archiver.kernel.org>; Wed, 29 Jan 2020 12:12:04 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 3EBFDC33CB2
+	for <linux-m68k@archiver.kernel.org>; Wed, 29 Jan 2020 12:18:02 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 3D4D120716
-	for <linux-m68k@archiver.kernel.org>; Wed, 29 Jan 2020 12:12:04 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 146012071E
+	for <linux-m68k@archiver.kernel.org>; Wed, 29 Jan 2020 12:18:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=default; t=1580299924;
-	bh=zniqdCZxaIJn3f/xGVHfAtC3ydz67Kil2D8QuNxdBn4=;
+	s=default; t=1580300282;
+	bh=djniQwpAmOkXiqKoYRepG4IzFpRTfrhyZnnTKzmOSYs=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:List-ID:From;
-	b=pHezEoaqvi3QYgiC3Qd+XggIRRsAG4L618Y38HCMNSS/kmExk6U5wyZdl6S+fTc3h
-	 G/Q7/oYK/GM6zVsHLBnJLTqLDv5DOZsQ6Dn0NbmietId1SF27wGdL65qsFCFBaNxim
-	 5xIzYUEHofV4BtZbXc//GQTKxQ0NH9BK/eQ92afw=
+	b=MK5+jmBSed4ycGSrVb4zLBnyXy9bJL4Ehvr9x/ana2cGulLb1xsObC0nRtrg/VHOS
+	 gxCmcRNH6++VkLTuqlWZpjYProut+ubZx0py02t+ufNkKis+PzCfVnBCPgJfcf9tVa
+	 4NMG8356I1AQqtUTDdEqqZpU2rwOZ3WMgotpdVuM=
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726858AbgA2MLz (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Wed, 29 Jan 2020 07:11:55 -0500
-Received: from mail.kernel.org ([198.145.29.99]:53780 "EHLO mail.kernel.org"
+        id S1726801AbgA2MR6 (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Wed, 29 Jan 2020 07:17:58 -0500
+Received: from mail.kernel.org ([198.145.29.99]:59394 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726837AbgA2MLz (ORCPT <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Wed, 29 Jan 2020 07:11:55 -0500
+        id S1726791AbgA2MR6 (ORCPT <rfc822;linux-m68k@lists.linux-m68k.org>);
+        Wed, 29 Jan 2020 07:17:58 -0500
 Received: from willie-the-truck (236.31.169.217.in-addr.arpa [217.169.31.236])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 74DF520716;
-        Wed, 29 Jan 2020 12:11:53 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 60B2E2071E;
+        Wed, 29 Jan 2020 12:17:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1580299914;
-        bh=zniqdCZxaIJn3f/xGVHfAtC3ydz67Kil2D8QuNxdBn4=;
+        s=default; t=1580300277;
+        bh=djniQwpAmOkXiqKoYRepG4IzFpRTfrhyZnnTKzmOSYs=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=lDkcL9hdZPJzN/cfFXh6NdRjVCewejSuzjbp8fmzj7BjJjBWktcL4dv9A8v7qXdnH
-         nZSfs7DPwfatIEuvORGPc6XOpsc5JwcMTjDmiDFzwT081PbeLH26gPK8prOSz7xGO+
-         mOEPB+zBwMnqnYoSwvqo/nPWAbTsB/RsRvSvXUlU=
-Date:   Wed, 29 Jan 2020 12:11:50 +0000
+        b=R7DckY2edL+G1YkQB/jXviAq1y7oMqWOu1VCCTYBH8mofjDZikpzgpKYKmKtiko9y
+         1+nQQQPt9ucxk0Zd0K8zMzfhzTzKiNVQMfSS/RZTPfIfS9hzNCL+l5XkkdLQ6vnXqw
+         5yduSf0orhMf4HyNk6SgTvu3MZbVoPkNfI89LLcU=
+Date:   Wed, 29 Jan 2020 12:17:53 +0000
 From:   Will Deacon <will@kernel.org>
 To:     Peter Zijlstra <peterz@infradead.org>
 Cc:     Geert Uytterhoeven <geert@linux-m68k.org>,
         linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 3/5] m68k,mm: Use table allocator for pgtables
-Message-ID: <20200129121149.GA31582@willie-the-truck>
+Subject: Re: [PATCH 4/5] m68k,mm: Extend table allocator for multiple sizes
+Message-ID: <20200129121752.GB31582@willie-the-truck>
 References: <20200129103941.304769381@infradead.org>
- <20200129104345.434705552@infradead.org>
+ <20200129104345.491163937@infradead.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200129104345.434705552@infradead.org>
+In-Reply-To: <20200129104345.491163937@infradead.org>
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-m68k-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-On Wed, Jan 29, 2020 at 11:39:44AM +0100, Peter Zijlstra wrote:
-> With the new page-table layout, using full (4k) pages for (256 byte)
-> pte-tables is immensely wastefull. Move the pte-tables over to the
-> same allocator already used for the (512 byte) higher level tables
-> (pgd/pmd).
+On Wed, Jan 29, 2020 at 11:39:45AM +0100, Peter Zijlstra wrote:
+> In addition to the PGD/PMD table size (128*4) add a PTE table size
+> (64*4) to the table allocator. This completely removes the pte-table
+> overhead compared to the old code, even for dense tables.
 > 
-> This reduces the pte-table waste from 15x to 2x.
+> Notes:
 > 
-> Due to no longer being bound to 16 consecutive tables, this might
-> actually already be more efficient than the old code for sparse
-> tables.
+>  - the allocator gained __flush_page_to_ram(), since the old
+>    page-based allocator had that.
+> 
+>  - the allocator gained a list_empty() check to deal with there not
+>    being any pages at all.
+> 
+>  - the free mask is extended to cover more than the 8 bits required
+>    for the (512 byte) PGD/PMD tables.
+> 
+>  - NR_PAGETABLE accounting is restored.
 > 
 > Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
 > ---
->  arch/m68k/include/asm/motorola_pgalloc.h |   54 ++++++-------------------------
->  arch/m68k/include/asm/motorola_pgtable.h |    8 ++++
->  arch/m68k/include/asm/page.h             |    2 -
->  3 files changed, 19 insertions(+), 45 deletions(-)
+>  arch/m68k/include/asm/motorola_pgalloc.h |   24 +++++-----
+>  arch/m68k/mm/init.c                      |    6 +-
+>  arch/m68k/mm/memory.c                    |   70 ++++++++++++++++++++-----------
+>  3 files changed, 61 insertions(+), 39 deletions(-)
 > 
 > --- a/arch/m68k/include/asm/motorola_pgalloc.h
 > +++ b/arch/m68k/include/asm/motorola_pgalloc.h
-> @@ -10,60 +10,28 @@ extern int free_pointer_table(pmd_t *);
+> @@ -5,61 +5,61 @@
+>  #include <asm/tlb.h>
+>  #include <asm/tlbflush.h>
 >  
->  static inline pte_t *pte_alloc_one_kernel(struct mm_struct *mm)
+> -extern pmd_t *get_pointer_table(void);
+> -extern int free_pointer_table(pmd_t *);
+> +extern void *get_pointer_table(int type);
+
+Could be prettier/obfuscated with an enum type?
+
+> --- a/arch/m68k/mm/memory.c
+> +++ b/arch/m68k/mm/memory.c
+> @@ -27,24 +27,34 @@
+>     arch/sparc/mm/srmmu.c ... */
+>  
+>  typedef struct list_head ptable_desc;
+> -static LIST_HEAD(ptable_list);
+> +
+> +static struct list_head ptable_list[2] = {
+> +	LIST_HEAD_INIT(ptable_list[0]),
+> +	LIST_HEAD_INIT(ptable_list[1]),
+> +};
+>  
+>  #define PD_PTABLE(page) ((ptable_desc *)&(virt_to_page(page)->lru))
+>  #define PD_PAGE(ptable) (list_entry(ptable, struct page, lru))
+> -#define PD_MARKBITS(dp) (*(unsigned char *)&PD_PAGE(dp)->index)
+> +#define PD_MARKBITS(dp) (*(unsigned int *)&PD_PAGE(dp)->index)
+> +
+> +static const int ptable_shift[2] = {
+> +	7+2, /* PGD, PMD */
+> +	6+2, /* PTE */
+> +};
+>  
+> -#define PTABLE_SIZE (PTRS_PER_PMD * sizeof(pmd_t))
+> +#define ptable_size(type) (1U << ptable_shift[type])
+> +#define ptable_mask(type) ((1U << (PAGE_SIZE / ptable_size(type))) - 1)
+>  
+> -void __init init_pointer_table(unsigned long ptable)
+> +void __init init_pointer_table(unsigned long ptable, int type)
 >  {
-> -	pte_t *pte;
-> -
-> -	pte = (pte_t *)__get_free_page(GFP_KERNEL|__GFP_ZERO);
-> -	if (pte) {
-> -		__flush_page_to_ram(pte);
-> -		flush_tlb_kernel_page(pte);
-> -		nocache_page(pte);
-> -	}
-> -
-> -	return pte;
-> +	return (pte_t *)get_pointer_table();
+>  	ptable_desc *dp;
+>  	unsigned long page = ptable & PAGE_MASK;
+> -	unsigned char mask = 1 << ((ptable - page)/PTABLE_SIZE);
+> +	unsigned int mask = 1U << ((ptable - page)/ptable_size(type));
+>  
+>  	dp = PD_PTABLE(page);
+>  	if (!(PD_MARKBITS(dp) & mask)) {
+> -		PD_MARKBITS(dp) = 0xff;
+> -		list_add(dp, &ptable_list);
+> +		PD_MARKBITS(dp) = ptable_mask(type);
+> +		list_add(dp, &ptable_list[type]);
+>  	}
+>  
+>  	PD_MARKBITS(dp) &= ~mask;
+> @@ -57,12 +67,10 @@ void __init init_pointer_table(unsigned
+>  	return;
+>  }
+>  
+> -pmd_t *get_pointer_table (void)
+> +void *get_pointer_table (int type)
+>  {
+> -	ptable_desc *dp = ptable_list.next;
+> -	unsigned char mask = PD_MARKBITS (dp);
+> -	unsigned char tmp;
+> -	unsigned int off;
+> +	ptable_desc *dp = ptable_list[type].next;
+> +	unsigned int mask, tmp, off;
 
-Weirdly, get_pointer_table() seems to elide the __flush_page_to_ram()
-call, so you're missing that for ptes with this change. I think it's
-probably needed for the higher levels too (and kernel_page_table()
-does it for example) so I'd be inclined to add it unconditionally
-rather than predicate it on the allocation type introduced by your later
-patch.
+nit, but if you do:
 
-> --- a/arch/m68k/include/asm/page.h
-> +++ b/arch/m68k/include/asm/page.h
-> @@ -30,7 +30,7 @@ typedef struct { unsigned long pmd; } pm
->  typedef struct { unsigned long pte; } pte_t;
->  typedef struct { unsigned long pgd; } pgd_t;
->  typedef struct { unsigned long pgprot; } pgprot_t;
-> -typedef struct page *pgtable_t;
-> +typedef pte_t *pgtable_t;
+	unsigned int mask = list_empty(&ptable_list[type]) ? 0 : PD_MARKBITS(dp);
 
-Urgh, this is a big (cross-arch) mess that we should fix later.
+then you can leave the existing mask logic as-is.
 
 Will
