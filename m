@@ -2,326 +2,118 @@ Return-Path: <SRS0=o3Zs=3S=vger.kernel.org=linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-1.0 required=3.0 tests=DKIM_INVALID,DKIM_SIGNED,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,
-	SPF_PASS,URIBL_BLOCKED,URIBL_DBL_ABUSE_MALW autolearn=no autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-2.2 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1
+	autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 5D9A4C33CB2
-	for <linux-m68k@archiver.kernel.org>; Wed, 29 Jan 2020 10:45:32 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A94EAC33CB2
+	for <linux-m68k@archiver.kernel.org>; Wed, 29 Jan 2020 10:49:17 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 1C075207FD
-	for <linux-m68k@archiver.kernel.org>; Wed, 29 Jan 2020 10:45:32 +0000 (UTC)
-Authentication-Results: mail.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="qac8stnl"
+	by mail.kernel.org (Postfix) with ESMTP id 8034A20720
+	for <linux-m68k@archiver.kernel.org>; Wed, 29 Jan 2020 10:49:17 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726271AbgA2KpO (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Wed, 29 Jan 2020 05:45:14 -0500
-Received: from bombadil.infradead.org ([198.137.202.133]:59032 "EHLO
-        bombadil.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726184AbgA2KpO (ORCPT
+        id S1726091AbgA2KtR (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Wed, 29 Jan 2020 05:49:17 -0500
+Received: from outpost1.zedat.fu-berlin.de ([130.133.4.66]:60137 "EHLO
+        outpost1.zedat.fu-berlin.de" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726067AbgA2KtR (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Wed, 29 Jan 2020 05:45:14 -0500
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20170209; h=Content-Type:MIME-Version:References:
-        Subject:Cc:To:From:Date:Message-Id:Sender:Reply-To:Content-Transfer-Encoding:
-        Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
-        Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:List-Id:List-Help:
-        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=5frOrssk50zd7j0cykjQNlB4hyTCdivtF9YQgSUjvHs=; b=qac8stnld6ZZvrLb4aWF4GCgnW
-        LTgIi43I3+J0kp0pNhYHbynHOWjJArzl5waLrlABwEVPHr/b+zluWjmmoddQ6U+guCoourt6EJPKz
-        iC1v/JRGBWFqt+j2QrZWKLke33cSNYNrGgTytD8G9bhWqp3EBwe8jtpQ4P8UjRpCAGu9vsUGHgMLN
-        Qq96pzZ/1yoWUJxCBrBL9JmR57vZFcranp//VJH+ulTu3OGEKAJca+REMsFUKG9nMDL5Z45TL3Nr/
-        jNyxOf57fndppxP9dRH1FGrlqd76g2VuXrZu0xeLeJfPYwEVM8CbKI23RVvdn+RRZHVBYIVxKhe/x
-        wT8USpLA==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by bombadil.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1iwkqM-0001Cz-PU; Wed, 29 Jan 2020 10:45:11 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id C492F30600B;
-        Wed, 29 Jan 2020 11:43:24 +0100 (CET)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 0)
-        id 801C2203C0A05; Wed, 29 Jan 2020 11:45:07 +0100 (CET)
-Message-Id: <20200129104345.321146759@infradead.org>
-User-Agent: quilt/0.65
-Date:   Wed, 29 Jan 2020 11:39:42 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
+        Wed, 29 Jan 2020 05:49:17 -0500
+Received: from inpost2.zedat.fu-berlin.de ([130.133.4.69])
+          by outpost.zedat.fu-berlin.de (Exim 4.85)
+          with esmtps (TLSv1.2:ECDHE-RSA-AES256-GCM-SHA384:256)
+          (envelope-from <glaubitz@physik.fu-berlin.de>)
+          id <1iwkuH-0012fo-SZ>; Wed, 29 Jan 2020 11:49:13 +0100
+Received: from suse-laptop.physik.fu-berlin.de ([160.45.32.140])
+          by inpost2.zedat.fu-berlin.de (Exim 4.85)
+          with esmtpsa (TLSv1.2:ECDHE-RSA-AES128-GCM-SHA256:128)
+          (envelope-from <glaubitz@physik.fu-berlin.de>)
+          id <1iwkuH-001wmT-N8>; Wed, 29 Jan 2020 11:49:13 +0100
+Subject: Re: [PATCH 0/5] Rewrite Motorola MMU page-table layout
+To:     Peter Zijlstra <peterz@infradead.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>
 Cc:     linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org,
         Will Deacon <will@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>
-Subject: [PATCH 1/5] m68k,mm: Restructure motorola mmu page-table layout
+        Michael Schmitz <schmitzmic@gmail.com>
 References: <20200129103941.304769381@infradead.org>
+From:   John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
+Autocrypt: addr=glaubitz@physik.fu-berlin.de; keydata=
+ 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
+ scOkTAZQGVpD/8AaLH4v1w==
+Message-ID: <bbdb9596-583e-5d26-ac1c-4775440059b9@physik.fu-berlin.de>
+Date:   Wed, 29 Jan 2020 11:49:13 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.4.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+In-Reply-To: <20200129103941.304769381@infradead.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: 160.45.32.140
 Sender: linux-m68k-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-The Motorola 68xxx MMUs, 040 (and later) have a fixed 7,7,{5,6}
-page-table setup, where the last depends on the page-size selected (8k
-vs 4k resp.), and head.S selects 4K pages. For 030 (and earlier) we
-explicitly program 7,7,6 and 4K pages in %tc.
+Hi Peter!
 
-However, the current code implements this mightily weird. What it does
-is group 16 of those (6 bit) pte tables into one 4k page to not waste
-space. The down-side is that that forces pmd_t to be a 16-tuple
-pointing to consecutive pte tables.
+On 1/29/20 11:39 AM, Peter Zijlstra wrote:
+> It would be very good if someone can either test or tell us what emulator to
+> use for 020/030.
 
-This breaks the generic code which assumes READ_ONCE(*pmd) will be
-word sized.
+If possible, please also test on qemu-system, see [1] for a how-to.
 
-Therefore implement a straight forward 7,7,6 3 level page-table setup,
-with the addition (for 020/030) of (partial) large-page support. For
-now this increases the memory footprint for pte-tables 15 fold.
+I can test the patches on a real machine, Michael Schmitz could maybe
+include them in one of his next test builds which we are running on one
+of the Amigas I have.
 
-Tested with ARAnyM/68040 emulation.
+Adrian
 
-Suggested-by: Will Deacon <will@kernel.org>
-Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
----
- arch/m68k/include/asm/motorola_pgtable.h |   15 +-----------
- arch/m68k/include/asm/page.h             |    6 ++---
- arch/m68k/include/asm/pgtable_mm.h       |   10 ++++----
- arch/m68k/mm/kmap.c                      |   36 +++++++++++++------------------
- arch/m68k/mm/motorola.c                  |   28 +++++++++++-------------
- 5 files changed, 39 insertions(+), 56 deletions(-)
+> [1] https://wiki.debian.org/M68k/QemuSystemM68k
 
---- a/arch/m68k/include/asm/motorola_pgtable.h
-+++ b/arch/m68k/include/asm/motorola_pgtable.h
-@@ -108,13 +108,7 @@ static inline pte_t pte_modify(pte_t pte
- 
- static inline void pmd_set(pmd_t *pmdp, pte_t *ptep)
- {
--	unsigned long ptbl = virt_to_phys(ptep) | _PAGE_TABLE | _PAGE_ACCESSED;
--	unsigned long *ptr = pmdp->pmd;
--	short i = 16;
--	while (--i >= 0) {
--		*ptr++ = ptbl;
--		ptbl += (sizeof(pte_t)*PTRS_PER_PTE/16);
--	}
-+	pmd_val(*pmdp) = virt_to_phys(ptep) | _PAGE_TABLE | _PAGE_ACCESSED;
- }
- 
- static inline void pud_set(pud_t *pudp, pmd_t *pmdp)
-@@ -138,12 +132,7 @@ static inline void pud_set(pud_t *pudp,
- #define pmd_none(pmd)		(!pmd_val(pmd))
- #define pmd_bad(pmd)		((pmd_val(pmd) & _DESCTYPE_MASK) != _PAGE_TABLE)
- #define pmd_present(pmd)	(pmd_val(pmd) & _PAGE_TABLE)
--#define pmd_clear(pmdp) ({			\
--	unsigned long *__ptr = pmdp->pmd;	\
--	short __i = 16;				\
--	while (--__i >= 0)			\
--		*__ptr++ = 0;			\
--})
-+#define pmd_clear(pmdp)		({ pmd_val(*pmdp) = 0; })
- #define pmd_page(pmd)		virt_to_page(__va(pmd_val(pmd)))
- 
- 
---- a/arch/m68k/include/asm/page.h
-+++ b/arch/m68k/include/asm/page.h
-@@ -22,9 +22,9 @@
-  * These are used to make use of C type-checking..
-  */
- #if !defined(CONFIG_MMU) || CONFIG_PGTABLE_LEVELS == 3
--typedef struct { unsigned long pmd[16]; } pmd_t;
--#define pmd_val(x)	((&x)->pmd[0])
--#define __pmd(x)	((pmd_t) { { (x) }, })
-+typedef struct { unsigned long pmd; } pmd_t;
-+#define pmd_val(x)	((&x)->pmd)
-+#define __pmd(x)	((pmd_t) { (x) } )
- #endif
- 
- typedef struct { unsigned long pte; } pte_t;
---- a/arch/m68k/include/asm/pgtable_mm.h
-+++ b/arch/m68k/include/asm/pgtable_mm.h
-@@ -36,7 +36,7 @@
- 
- /* PMD_SHIFT determines the size of the area a second-level page table can map */
- #if CONFIG_PGTABLE_LEVELS == 3
--#define PMD_SHIFT	22
-+#define PMD_SHIFT	18
- #endif
- #define PMD_SIZE	(1UL << PMD_SHIFT)
- #define PMD_MASK	(~(PMD_SIZE-1))
-@@ -67,8 +67,8 @@
- #define PTRS_PER_PMD	1
- #define PTRS_PER_PGD	1024
- #else
--#define PTRS_PER_PTE	1024
--#define PTRS_PER_PMD	8
-+#define PTRS_PER_PTE	64
-+#define PTRS_PER_PMD	128
- #define PTRS_PER_PGD	128
- #endif
- #define USER_PTRS_PER_PGD	(TASK_SIZE/PGDIR_SIZE)
-@@ -76,8 +76,8 @@
- 
- /* Virtual address region for use by kernel_map() */
- #ifdef CONFIG_SUN3
--#define KMAP_START     0x0DC00000
--#define KMAP_END       0x0E000000
-+#define KMAP_START	0x0dc00000
-+#define KMAP_END	0x0e000000
- #elif defined(CONFIG_COLDFIRE)
- #define KMAP_START	0xe0000000
- #define KMAP_END	0xf0000000
---- a/arch/m68k/mm/kmap.c
-+++ b/arch/m68k/mm/kmap.c
-@@ -24,8 +24,6 @@
- 
- #undef DEBUG
- 
--#define PTRTREESIZE	(256*1024)
--
- /*
-  * For 040/060 we can use the virtual memory area like other architectures,
-  * but for 020/030 we want to use early termination page descriptors and we
-@@ -50,7 +48,7 @@ static inline void free_io_area(void *ad
- 
- #else
- 
--#define IO_SIZE		(256*1024)
-+#define IO_SIZE		PMD_SIZE
- 
- static struct vm_struct *iolist;
- 
-@@ -81,14 +79,13 @@ static void __free_io_area(void *addr, u
- 
- #if CONFIG_PGTABLE_LEVELS == 3
- 		if (CPU_IS_020_OR_030) {
--			int pmd_off = (virtaddr/PTRTREESIZE) & 15;
--			int pmd_type = pmd_dir->pmd[pmd_off] & _DESCTYPE_MASK;
-+			int pmd_type = pmd_val(*pmd_dir) & _DESCTYPE_MASK;
- 
- 			if (pmd_type == _PAGE_PRESENT) {
--				pmd_dir->pmd[pmd_off] = 0;
--				virtaddr += PTRTREESIZE;
--				size -= PTRTREESIZE;
--				continue;
-+				pmd_clear(pmd_dir);
-+				virtaddr += PMD_SIZE;
-+				size -= PMD_SIZE;
-+
- 			} else if (pmd_type == 0)
- 				continue;
- 		}
-@@ -249,7 +246,7 @@ void __iomem *__ioremap(unsigned long ph
- 
- 	while ((long)size > 0) {
- #ifdef DEBUG
--		if (!(virtaddr & (PTRTREESIZE-1)))
-+		if (!(virtaddr & (PMD_SIZE-1)))
- 			printk ("\npa=%#lx va=%#lx ", physaddr, virtaddr);
- #endif
- 		pgd_dir = pgd_offset_k(virtaddr);
-@@ -263,10 +260,10 @@ void __iomem *__ioremap(unsigned long ph
- 
- #if CONFIG_PGTABLE_LEVELS == 3
- 		if (CPU_IS_020_OR_030) {
--			pmd_dir->pmd[(virtaddr/PTRTREESIZE) & 15] = physaddr;
--			physaddr += PTRTREESIZE;
--			virtaddr += PTRTREESIZE;
--			size -= PTRTREESIZE;
-+			pmd_val(*pmd_dir) = physaddr;
-+			physaddr += PMD_SIZE;
-+			virtaddr += PMD_SIZE;
-+			size -= PMD_SIZE;
- 		} else
- #endif
- 		{
-@@ -367,13 +364,12 @@ void kernel_set_cachemode(void *addr, un
- 
- #if CONFIG_PGTABLE_LEVELS == 3
- 		if (CPU_IS_020_OR_030) {
--			int pmd_off = (virtaddr/PTRTREESIZE) & 15;
-+			unsigned long pmd = pmd_val(*pmd_dir);
- 
--			if ((pmd_dir->pmd[pmd_off] & _DESCTYPE_MASK) == _PAGE_PRESENT) {
--				pmd_dir->pmd[pmd_off] = (pmd_dir->pmd[pmd_off] &
--							 _CACHEMASK040) | cmode;
--				virtaddr += PTRTREESIZE;
--				size -= PTRTREESIZE;
-+			if ((pmd & _DESCTYPE_MASK) == _PAGE_PRESENT) {
-+				*pmd_dir = __pmd((pmd & _CACHEMASK040) | cmode);
-+				virtaddr += PMD_SIZE;
-+				size -= PMD_SIZE;
- 				continue;
- 			}
- 		}
---- a/arch/m68k/mm/motorola.c
-+++ b/arch/m68k/mm/motorola.c
-@@ -116,8 +116,6 @@ static pmd_t * __init kernel_ptr_table(v
- 
- static void __init map_node(int node)
- {
--#define PTRTREESIZE (256*1024)
--#define ROOTTREESIZE (32*1024*1024)
- 	unsigned long physaddr, virtaddr, size;
- 	pgd_t *pgd_dir;
- 	p4d_t *p4d_dir;
-@@ -135,21 +133,21 @@ static void __init map_node(int node)
- 
- 	while (size > 0) {
- #ifdef DEBUG
--		if (!(virtaddr & (PTRTREESIZE-1)))
-+		if (!(virtaddr & (PMD_SIZE-1)))
- 			printk ("\npa=%#lx va=%#lx ", physaddr & PAGE_MASK,
- 				virtaddr);
- #endif
- 		pgd_dir = pgd_offset_k(virtaddr);
- 		if (virtaddr && CPU_IS_020_OR_030) {
--			if (!(virtaddr & (ROOTTREESIZE-1)) &&
--			    size >= ROOTTREESIZE) {
-+			if (!(virtaddr & (PGDIR_SIZE-1)) &&
-+			    size >= PGDIR_SIZE) {
- #ifdef DEBUG
- 				printk ("[very early term]");
- #endif
- 				pgd_val(*pgd_dir) = physaddr;
--				size -= ROOTTREESIZE;
--				virtaddr += ROOTTREESIZE;
--				physaddr += ROOTTREESIZE;
-+				size -= PGDIR_SIZE;
-+				virtaddr += PGDIR_SIZE;
-+				physaddr += PGDIR_SIZE;
- 				continue;
- 			}
- 		}
-@@ -169,8 +167,8 @@ static void __init map_node(int node)
- #ifdef DEBUG
- 				printk ("[early term]");
- #endif
--				pmd_dir->pmd[(virtaddr/PTRTREESIZE) & 15] = physaddr;
--				physaddr += PTRTREESIZE;
-+				pmd_val(*pmd_dir) = physaddr;
-+				physaddr += PMD_SIZE;
- 			} else {
- 				int i;
- #ifdef DEBUG
-@@ -178,15 +176,15 @@ static void __init map_node(int node)
- #endif
- 				zero_pgtable = kernel_ptr_table();
- 				pte_dir = (pte_t *)zero_pgtable;
--				pmd_dir->pmd[0] = virt_to_phys(pte_dir) |
--					_PAGE_TABLE | _PAGE_ACCESSED;
-+				pmd_set(pmd_dir, pte_dir);
-+
- 				pte_val(*pte_dir++) = 0;
- 				physaddr += PAGE_SIZE;
--				for (i = 1; i < 64; physaddr += PAGE_SIZE, i++)
-+				for (i = 1; i < PTRS_PER_PTE; physaddr += PAGE_SIZE, i++)
- 					pte_val(*pte_dir++) = physaddr;
- 			}
--			size -= PTRTREESIZE;
--			virtaddr += PTRTREESIZE;
-+			size -= PMD_SIZE;
-+			virtaddr += PMD_SIZE;
- 		} else {
- 			if (!pmd_present(*pmd_dir)) {
- #ifdef DEBUG
-
-
+-- 
+ .''`.  John Paul Adrian Glaubitz
+: :' :  Debian Developer - glaubitz@debian.org
+`. `'   Freie Universitaet Berlin - glaubitz@physik.fu-berlin.de
+  `-    GPG: 62FF 8A75 84E0 2956 9546  0006 7426 3B37 F5B5 F913
