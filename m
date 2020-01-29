@@ -7,52 +7,52 @@ X-Spam-Status: No, score=-1.0 required=3.0 tests=DKIM_INVALID,DKIM_SIGNED,
 	SPF_PASS,URIBL_BLOCKED,URIBL_DBL_ABUSE_MALW autolearn=no autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C8F73C33CB2
-	for <linux-m68k@archiver.kernel.org>; Wed, 29 Jan 2020 10:45:16 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B25F2C35246
+	for <linux-m68k@archiver.kernel.org>; Wed, 29 Jan 2020 10:45:25 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 92D3520732
-	for <linux-m68k@archiver.kernel.org>; Wed, 29 Jan 2020 10:45:16 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 85606207FD
+	for <linux-m68k@archiver.kernel.org>; Wed, 29 Jan 2020 10:45:25 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="T38JVOu3"
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="yNtSuSdW"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726564AbgA2KpQ (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Wed, 29 Jan 2020 05:45:16 -0500
-Received: from bombadil.infradead.org ([198.137.202.133]:59034 "EHLO
-        bombadil.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726558AbgA2KpP (ORCPT
+        id S1726659AbgA2KpR (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Wed, 29 Jan 2020 05:45:17 -0500
+Received: from merlin.infradead.org ([205.233.59.134]:48216 "EHLO
+        merlin.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726632AbgA2KpR (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Wed, 29 Jan 2020 05:45:15 -0500
+        Wed, 29 Jan 2020 05:45:17 -0500
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20170209; h=Content-Type:MIME-Version:References:
+        d=infradead.org; s=merlin.20170209; h=Content-Type:MIME-Version:References:
         Subject:Cc:To:From:Date:Message-Id:Sender:Reply-To:Content-Transfer-Encoding:
         Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
         Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:List-Id:List-Help:
         List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=mF2/nIbJW7qxp6R2cN7YamxVRNWJgRj+uf5uunTthjs=; b=T38JVOu3u3AssuCrrnxPGLdw1q
-        E+/WTNKiLQ47jzdVvDhzzwp7124Az2KHNKWxpKaMLAosRP0BEkeLgXYOLzjw0BbuHF2qyxhBIufR+
-        ETFL5OyYJHbnCGWN6qyWbkaBlidWSRXYJ8hSFYdUleZcOoMGgf06LO8+K/EjYyjmlkD9xsTHtiyr7
-        jzBDH+LQ3rBJPENe5zbezoFDWFzvnuwzMP5ucwYYipwHHgaO9ALUhYzKnzMkrEKGQmcntOTYT9nnn
-        bodxPtvnOpAkkEJHd5l0F9Ta23gwSg5YTeKM6ryjutaV7bUBzs0AlTOuyK4UenaroTb1PhK2ijlYG
-        d6hNFj5A==;
+        bh=cKWDLyH34lsKGUb78B0klmtcz2u9EuKcQCo74I6jyeE=; b=yNtSuSdW1EumY55qZ6YMz7b987
+        mWMEH0KDZu8DoDXe3Gu3e0al84S8oNCypo5p6puul3Q/Ri3RVPA5FsBuAadOflGHC+nCqrhh5VBzR
+        QVXEmmaJT/UQcO3ALJJchukTm8pUkLxgAnMmSeNBeSng4rZi0NennmQCdYyJVQgIJ4UAQicolxyHi
+        9awjiXtBnRFhZpDpPprBfKuSTmcnMUb44Gb2wjwZ0TAowt/kr0/hiwjoZ8HOM3SfarINvL6CPBs0y
+        jPfUvpLiCgpaHNZeZ5v1XFJ9tAS2QVzSBZ3LjTTHfRILDhgADQHWkBPDZTnnxf8zT8MTXD2LHEWso
+        kOb82pxA==;
 Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by bombadil.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1iwkqM-0001BS-PZ; Wed, 29 Jan 2020 10:45:11 +0000
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1iwkqN-0001OI-8O; Wed, 29 Jan 2020 10:45:11 +0000
 Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id CF610306368;
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id C795A30607E;
         Wed, 29 Jan 2020 11:43:24 +0100 (CET)
 Received: by hirez.programming.kicks-ass.net (Postfix, from userid 0)
-        id 8E10E2B2E7F41; Wed, 29 Jan 2020 11:45:07 +0100 (CET)
-Message-Id: <20200129104345.491163937@infradead.org>
+        id 8266F2B2E7F3D; Wed, 29 Jan 2020 11:45:07 +0100 (CET)
+Message-Id: <20200129104345.378213302@infradead.org>
 User-Agent: quilt/0.65
-Date:   Wed, 29 Jan 2020 11:39:45 +0100
+Date:   Wed, 29 Jan 2020 11:39:43 +0100
 From:   Peter Zijlstra <peterz@infradead.org>
 To:     Geert Uytterhoeven <geert@linux-m68k.org>
 Cc:     linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org,
         Will Deacon <will@kernel.org>,
         Peter Zijlstra <peterz@infradead.org>
-Subject: [PATCH 4/5] m68k,mm: Extend table allocator for multiple sizes
+Subject: [PATCH 2/5] m68k,mm: Improve kernel_page_table()
 References: <20200129103941.304769381@infradead.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -61,275 +61,176 @@ Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-In addition to the PGD/PMD table size (128*4) add a PTE table size
-(64*4) to the table allocator. This completely removes the pte-table
-overhead compared to the old code, even for dense tables.
+With the PTE-tables now only being 256 bytes, allocating a full page
+for them is a giant waste. Start by improving the boot time allocator
+such that init_mm initialization will at least have optimal memory
+density.
+
+Much thanks to Will Deacon in help with debugging and ferreting out
+lost information on these dusty MMUs.
 
 Notes:
 
- - the allocator gained __flush_page_to_ram(), since the old
-   page-based allocator had that.
+ - _TABLE_MASK is reduced to account for the shorter (256 byte)
+   alignment of pte-tables, per the manual, table entries should only
+   ever have state in the low 4 bits (Used,WrProt,Desc1,Desc0) so it is
+   still longer than strictly required. (Thanks Will!!!)
 
- - the allocator gained a list_empty() check to deal with there not
-   being any pages at all.
-
- - the free mask is extended to cover more than the 8 bits required
-   for the (512 byte) PGD/PMD tables.
-
- - NR_PAGETABLE accounting is restored.
+ - Also use kernel_page_table() for the 020/030 zero_pgtable case and
+   consequently remove the zero_pgtable init hack (will fix up later).
 
 Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
 ---
- arch/m68k/include/asm/motorola_pgalloc.h |   24 +++++-----
- arch/m68k/mm/init.c                      |    6 +-
- arch/m68k/mm/memory.c                    |   70 ++++++++++++++++++++-----------
- 3 files changed, 61 insertions(+), 39 deletions(-)
+ arch/m68k/include/asm/motorola_pgtable.h |   13 ++++++
+ arch/m68k/mm/init.c                      |    5 --
+ arch/m68k/mm/motorola.c                  |   61 +++++++++++++++++--------------
+ 3 files changed, 46 insertions(+), 33 deletions(-)
 
---- a/arch/m68k/include/asm/motorola_pgalloc.h
-+++ b/arch/m68k/include/asm/motorola_pgalloc.h
-@@ -5,61 +5,61 @@
- #include <asm/tlb.h>
- #include <asm/tlbflush.h>
+--- a/arch/m68k/include/asm/motorola_pgtable.h
++++ b/arch/m68k/include/asm/motorola_pgtable.h
+@@ -23,7 +23,18 @@
+ #define _DESCTYPE_MASK	0x003
  
--extern pmd_t *get_pointer_table(void);
--extern int free_pointer_table(pmd_t *);
-+extern void *get_pointer_table(int type);
-+extern int free_pointer_table(void *table, int type);
+ #define _CACHEMASK040	(~0x060)
+-#define _TABLE_MASK	(0xfffffe00)
++
++/*
++ * Currently set to the minimum alignment of table pointers (256 bytes).
++ * The hardware only uses the low 4 bits for state:
++ *
++ *    3 - Used
++ *    2 - Write Protected
++ *  0,1 - Desciptor Type
++ *
++ * and has the rest of the bits reserved.
++ */
++#define _TABLE_MASK	(0xffffff00)
  
- static inline pte_t *pte_alloc_one_kernel(struct mm_struct *mm)
- {
--	return (pte_t *)get_pointer_table();
-+	return get_pointer_table(1);
- }
- 
- static inline void pte_free_kernel(struct mm_struct *mm, pte_t *pte)
- {
--	free_pointer_table((void *)pte);
-+	free_pointer_table(pte, 1);
- }
- 
- static inline pgtable_t pte_alloc_one(struct mm_struct *mm)
- {
--	return (pte_t *)get_pointer_table();
-+	return get_pointer_table(1);
- }
- 
- static inline void pte_free(struct mm_struct *mm, pgtable_t pgtable)
- {
--	free_pointer_table((void *)pgtable);
-+	free_pointer_table(pgtable, 1);
- }
- 
- static inline void __pte_free_tlb(struct mmu_gather *tlb, pgtable_t pgtable,
- 				  unsigned long address)
- {
--	free_pointer_table((void *)pgtable);
-+	free_pointer_table(pgtable, 1);
- }
- 
- 
- static inline pmd_t *pmd_alloc_one(struct mm_struct *mm, unsigned long address)
- {
--	return get_pointer_table();
-+	return get_pointer_table(0);
- }
- 
- static inline int pmd_free(struct mm_struct *mm, pmd_t *pmd)
- {
--	return free_pointer_table(pmd);
-+	return free_pointer_table(pmd, 0);
- }
- 
- static inline int __pmd_free_tlb(struct mmu_gather *tlb, pmd_t *pmd,
- 				 unsigned long address)
- {
--	return free_pointer_table(pmd);
-+	return free_pointer_table(pmd, 0);
- }
- 
- 
- static inline void pgd_free(struct mm_struct *mm, pgd_t *pgd)
- {
--	pmd_free(mm, (pmd_t *)pgd);
-+	free_pointer_table(pgd, 0);
- }
- 
- static inline pgd_t *pgd_alloc(struct mm_struct *mm)
- {
--	return (pgd_t *)get_pointer_table();
-+	return get_pointer_table(0);
- }
- 
- 
+ #define _PAGE_TABLE	(_PAGE_SHORT)
+ #define _PAGE_CHG_MASK  (PAGE_MASK | _PAGE_ACCESSED | _PAGE_DIRTY | _PAGE_NOCACHE)
 --- a/arch/m68k/mm/init.c
 +++ b/arch/m68k/mm/init.c
-@@ -41,7 +41,7 @@ void *empty_zero_page;
- EXPORT_SYMBOL(empty_zero_page);
+@@ -42,7 +42,6 @@ EXPORT_SYMBOL(empty_zero_page);
  
  #if !defined(CONFIG_SUN3) && !defined(CONFIG_COLDFIRE)
--extern void init_pointer_table(unsigned long ptable);
-+extern void init_pointer_table(unsigned long ptable, int type);
+ extern void init_pointer_table(unsigned long ptable);
+-extern pmd_t *zero_pgtable;
  #endif
  
  #ifdef CONFIG_MMU
-@@ -127,12 +127,12 @@ static inline void init_pointer_tables(v
- 	int i;
- 
- 	/* insert pointer tables allocated so far into the tablelist */
--	init_pointer_table((unsigned long)kernel_pg_dir);
-+	init_pointer_table((unsigned long)kernel_pg_dir, 0);
- 	for (i = 0; i < PTRS_PER_PGD; i++) {
- 		pud_t *pud = (pud_t *)(&kernel_pg_dir[i]);
- 
+@@ -135,10 +134,6 @@ static inline void init_pointer_tables(v
  		if (pud_present(*pud))
--			init_pointer_table(pgd_page_vaddr(kernel_pg_dir[i]));
-+			init_pointer_table(pgd_page_vaddr(kernel_pg_dir[i]), 0);
+ 			init_pointer_table(pgd_page_vaddr(kernel_pg_dir[i]));
  	}
+-
+-	/* insert also pointer table that we used to unmap the zero page */
+-	if (zero_pgtable)
+-		init_pointer_table((unsigned long)zero_pgtable);
  #endif
  }
---- a/arch/m68k/mm/memory.c
-+++ b/arch/m68k/mm/memory.c
-@@ -27,24 +27,34 @@
-    arch/sparc/mm/srmmu.c ... */
  
- typedef struct list_head ptable_desc;
--static LIST_HEAD(ptable_list);
+--- a/arch/m68k/mm/motorola.c
++++ b/arch/m68k/mm/motorola.c
+@@ -50,29 +50,37 @@ extern __initdata unsigned long m68k_ini
+ 
+ extern unsigned long availmem;
+ 
++static pte_t *last_pte_table __initdata = NULL;
 +
-+static struct list_head ptable_list[2] = {
-+	LIST_HEAD_INIT(ptable_list[0]),
-+	LIST_HEAD_INIT(ptable_list[1]),
-+};
- 
- #define PD_PTABLE(page) ((ptable_desc *)&(virt_to_page(page)->lru))
- #define PD_PAGE(ptable) (list_entry(ptable, struct page, lru))
--#define PD_MARKBITS(dp) (*(unsigned char *)&PD_PAGE(dp)->index)
-+#define PD_MARKBITS(dp) (*(unsigned int *)&PD_PAGE(dp)->index)
+ static pte_t * __init kernel_page_table(void)
+ {
+-	pte_t *ptablep;
++	pte_t *pte_table = last_pte_table;
 +
-+static const int ptable_shift[2] = {
-+	7+2, /* PGD, PMD */
-+	6+2, /* PTE */
-+};
- 
--#define PTABLE_SIZE (PTRS_PER_PMD * sizeof(pmd_t))
-+#define ptable_size(type) (1U << ptable_shift[type])
-+#define ptable_mask(type) ((1U << (PAGE_SIZE / ptable_size(type))) - 1)
- 
--void __init init_pointer_table(unsigned long ptable)
-+void __init init_pointer_table(unsigned long ptable, int type)
- {
- 	ptable_desc *dp;
- 	unsigned long page = ptable & PAGE_MASK;
--	unsigned char mask = 1 << ((ptable - page)/PTABLE_SIZE);
-+	unsigned int mask = 1U << ((ptable - page)/ptable_size(type));
- 
- 	dp = PD_PTABLE(page);
- 	if (!(PD_MARKBITS(dp) & mask)) {
--		PD_MARKBITS(dp) = 0xff;
--		list_add(dp, &ptable_list);
-+		PD_MARKBITS(dp) = ptable_mask(type);
-+		list_add(dp, &ptable_list[type]);
- 	}
- 
- 	PD_MARKBITS(dp) &= ~mask;
-@@ -57,12 +67,10 @@ void __init init_pointer_table(unsigned
- 	return;
- }
- 
--pmd_t *get_pointer_table (void)
-+void *get_pointer_table (int type)
- {
--	ptable_desc *dp = ptable_list.next;
--	unsigned char mask = PD_MARKBITS (dp);
--	unsigned char tmp;
--	unsigned int off;
-+	ptable_desc *dp = ptable_list[type].next;
-+	unsigned int mask, tmp, off;
- 
- 	/*
- 	 * For a pointer table for a user process address space, a
-@@ -70,38 +78,50 @@ pmd_t *get_pointer_table (void)
- 	 * page can hold 8 pointer tables.  The page is remapped in
- 	 * virtual address space to be noncacheable.
- 	 */
--	if (mask == 0) {
-+	if (list_empty(&ptable_list[type]) || PD_MARKBITS(dp) == 0) {
- 		void *page;
- 		ptable_desc *new;
- 
- 		if (!(page = (void *)get_zeroed_page(GFP_KERNEL)))
- 			return NULL;
- 
-+		if (type) {
-+			/*
-+			 * m68k doesn't have SPLIT_PTE_PTLOCKS for not having
-+			 * SMP.
-+			 */
-+			pgtable_pte_page_ctor(virt_to_page(page));
++	if (((unsigned long)last_pte_table & ~PAGE_MASK) == 0) {
++		pte_table = (pte_t *)memblock_alloc_low(PAGE_SIZE, PAGE_SIZE);
++		if (!pte_table) {
++			panic("%s: Failed to allocate %lu bytes align=%lx\n",
++					__func__, PAGE_SIZE, PAGE_SIZE);
 +		}
 +
-+		__flush_page_to_ram(page);
- 		flush_tlb_kernel_page(page);
- 		nocache_page(page);
- 
- 		new = PD_PTABLE(page);
--		PD_MARKBITS(new) = 0xfe;
-+		PD_MARKBITS(new) = ptable_mask(type) - 1;
- 		list_add_tail(new, dp);
- 
- 		return (pmd_t *)page;
- 	}
- 
--	for (tmp = 1, off = 0; (mask & tmp) == 0; tmp <<= 1, off += PTABLE_SIZE)
-+	mask = PD_MARKBITS(dp);
-+	for (tmp = 1, off = 0; (mask & tmp) == 0; tmp <<= 1, off += ptable_size(type))
- 		;
--	PD_MARKBITS(dp) = mask & ~tmp;
--	if (!PD_MARKBITS(dp)) {
-+	mask &= ~tmp;
-+	PD_MARKBITS(dp) = mask;
-+	if (!mask) {
- 		/* move to end of list */
--		list_move_tail(dp, &ptable_list);
-+		list_move_tail(dp, &ptable_list[type]);
- 	}
--	return (pmd_t *) (page_address(PD_PAGE(dp)) + off);
++		clear_page(pte_table);
++		__flush_page_to_ram(pte_table);
++		flush_tlb_kernel_page(pte_table);
++		nocache_page(pte_table);
 +
-+	return page_address(PD_PAGE(dp)) + off;
++		last_pte_table = pte_table;
++	}
+ 
+-	ptablep = (pte_t *)memblock_alloc_low(PAGE_SIZE, PAGE_SIZE);
+-	if (!ptablep)
+-		panic("%s: Failed to allocate %lu bytes align=%lx\n",
+-		      __func__, PAGE_SIZE, PAGE_SIZE);
+-
+-	clear_page(ptablep);
+-	__flush_page_to_ram(ptablep);
+-	flush_tlb_kernel_page(ptablep);
+-	nocache_page(ptablep);
++	last_pte_table += PTRS_PER_PTE;
+ 
+-	return ptablep;
++	return pte_table;
  }
  
--int free_pointer_table (pmd_t *ptable)
-+int free_pointer_table (void *ptable, int type)
+-static pmd_t *last_pgtable __initdata = NULL;
+-pmd_t *zero_pgtable __initdata = NULL;
++static pmd_t *last_pmd_table __initdata = NULL;
+ 
+ static pmd_t * __init kernel_ptr_table(void)
  {
- 	ptable_desc *dp;
- 	unsigned long page = (unsigned long)ptable & PAGE_MASK;
--	unsigned char mask = 1 << (((unsigned long)ptable - page)/PTABLE_SIZE);
-+	unsigned int mask = 1U << (((unsigned long)ptable - page)/ptable_size(type));
+-	if (!last_pgtable) {
++	if (!last_pmd_table) {
+ 		unsigned long pmd, last;
+ 		int i;
  
- 	dp = PD_PTABLE(page);
- 	if (PD_MARKBITS (dp) & mask)
-@@ -109,18 +129,20 @@ int free_pointer_table (pmd_t *ptable)
+@@ -91,27 +99,27 @@ static pmd_t * __init kernel_ptr_table(v
+ 				last = pmd;
+ 		}
  
- 	PD_MARKBITS (dp) |= mask;
- 
--	if (PD_MARKBITS(dp) == 0xff) {
-+	if (PD_MARKBITS(dp) == ptable_mask(type)) {
- 		/* all tables in page are free, free page */
- 		list_del(dp);
- 		cache_page((void *)page);
-+		if (type)
-+			pgtable_pte_page_dtor(virt_to_page(page));
- 		free_page (page);
- 		return 1;
--	} else if (ptable_list.next != dp) {
-+	} else if (ptable_list[type].next != dp) {
- 		/*
- 		 * move this descriptor to the front of the list, since
- 		 * it has one or more free tables.
- 		 */
--		list_move(dp, &ptable_list);
-+		list_move(dp, &ptable_list[type]);
+-		last_pgtable = (pmd_t *)last;
++		last_pmd_table = (pmd_t *)last;
+ #ifdef DEBUG
+-		printk("kernel_ptr_init: %p\n", last_pgtable);
++		printk("kernel_ptr_init: %p\n", last_pmd_table);
+ #endif
  	}
- 	return 0;
+ 
+-	last_pgtable += PTRS_PER_PMD;
+-	if (((unsigned long)last_pgtable & ~PAGE_MASK) == 0) {
+-		last_pgtable = (pmd_t *)memblock_alloc_low(PAGE_SIZE,
++	last_pmd_table += PTRS_PER_PMD;
++	if (((unsigned long)last_pmd_table & ~PAGE_MASK) == 0) {
++		last_pmd_table = (pmd_t *)memblock_alloc_low(PAGE_SIZE,
+ 							   PAGE_SIZE);
+-		if (!last_pgtable)
++		if (!last_pmd_table)
+ 			panic("%s: Failed to allocate %lu bytes align=%lx\n",
+ 			      __func__, PAGE_SIZE, PAGE_SIZE);
+ 
+-		clear_page(last_pgtable);
+-		__flush_page_to_ram(last_pgtable);
+-		flush_tlb_kernel_page(last_pgtable);
+-		nocache_page(last_pgtable);
++		clear_page(last_pmd_table);
++		__flush_page_to_ram(last_pmd_table);
++		flush_tlb_kernel_page(last_pmd_table);
++		nocache_page(last_pmd_table);
+ 	}
+ 
+-	return last_pgtable;
++	return last_pmd_table;
  }
+ 
+ static void __init map_node(int node)
+@@ -174,8 +182,7 @@ static void __init map_node(int node)
+ #ifdef DEBUG
+ 				printk ("[zero map]");
+ #endif
+-				zero_pgtable = kernel_ptr_table();
+-				pte_dir = (pte_t *)zero_pgtable;
++				pte_dir = kernel_page_table();
+ 				pmd_set(pmd_dir, pte_dir);
+ 
+ 				pte_val(*pte_dir++) = 0;
 
 
