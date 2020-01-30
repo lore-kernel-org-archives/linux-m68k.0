@@ -2,107 +2,225 @@ Return-Path: <SRS0=Lit3=3T=vger.kernel.org=linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.0 required=3.0 tests=DKIM_INVALID,DKIM_SIGNED,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+X-Spam-Status: No, score=0.2 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_DBL_ABUSE_MALW,
 	USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 71302C35240
-	for <linux-m68k@archiver.kernel.org>; Thu, 30 Jan 2020 08:16:29 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 842B0C2D0DB
+	for <linux-m68k@archiver.kernel.org>; Thu, 30 Jan 2020 15:07:13 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 47AE0206F0
-	for <linux-m68k@archiver.kernel.org>; Thu, 30 Jan 2020 08:16:29 +0000 (UTC)
-Authentication-Results: mail.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="KtcHvisD"
+	by mail.kernel.org (Postfix) with ESMTP id 54EA220678
+	for <linux-m68k@archiver.kernel.org>; Thu, 30 Jan 2020 15:07:13 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726865AbgA3IQ2 (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Thu, 30 Jan 2020 03:16:28 -0500
-Received: from bombadil.infradead.org ([198.137.202.133]:46344 "EHLO
-        bombadil.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726863AbgA3IQ2 (ORCPT
-        <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Thu, 30 Jan 2020 03:16:28 -0500
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20170209; h=In-Reply-To:Content-Type:MIME-Version
-        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-         bh=TCsQ3GzavAe26bRtqfddchOtZ1YoWhMpGMKjZxM60vI=; b=KtcHvisDsABiHx64Iuvyz6yaB
-        X07tpTx9cNQomPHTclUK8DQVorusdFctcSZoMQgOUd77/FH5pTTe2VacSPBXFXU4NVnbmaaZI1JaO
-        914ynMtjZMtxIcliWLkqqu1cgy/+rt14w69YJnSkfcLDCu8gQfpfJePnfJocKNngud26WUUobBTW5
-        /f5KPthpaEi9byvQIifLgw3Qhp28h24Cx3EtF0m7we9PcOB7EfHcunkvE8MaluUR3GAYk0Z67sWW3
-        gFm+pW5G7wCZtoQU8EdS+n9G87ooGZi7w9d+9ErttwPCMGGSg4Vu8ki7jNHgxmC9TutETsihaM696
-        EFGmwzEhA==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by bombadil.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1ix4zx-0001t8-S7; Thu, 30 Jan 2020 08:16:26 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 710D03011DD;
-        Thu, 30 Jan 2020 09:14:40 +0100 (CET)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 9B9522B7334D2; Thu, 30 Jan 2020 09:16:23 +0100 (CET)
-Date:   Thu, 30 Jan 2020 09:16:23 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Michael Schmitz <schmitzmic@gmail.com>
-Cc:     John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
+        id S1727197AbgA3PHM (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Thu, 30 Jan 2020 10:07:12 -0500
+Received: from foss.arm.com ([217.140.110.172]:54232 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727191AbgA3PHM (ORCPT <rfc822;linux-m68k@lists.linux-m68k.org>);
+        Thu, 30 Jan 2020 10:07:12 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id F1FEA31B;
+        Thu, 30 Jan 2020 07:07:11 -0800 (PST)
+Received: from [192.168.0.129] (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id F053F3F68E;
+        Thu, 30 Jan 2020 07:06:51 -0800 (PST)
+From:   Anshuman Khandual <anshuman.khandual@arm.com>
+Subject: Re: [PATCH V12] mm/debug: Add tests validating architecture page
+ table helpers
+To:     linux-mm@kvack.org, linux-alpha@vger.kernel.org,
+        Richard Henderson <rth@twiddle.net>,
+        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
+        Matt Turner <mattst88@gmail.com>, linux-c6x-dev@linux-c6x.org,
+        Mark Salter <msalter@redhat.com>,
+        Aurelien Jacquiot <jacquiot.aurelien@gmail.com>,
+        uclinux-h8-devel@lists.sourceforge.jp,
+        Yoshinori Sato <ysato@users.sourceforge.jp>,
+        linux-hexagon@vger.kernel.org, Brian Cain <bcain@codeaurora.org>,
+        linux-m68k@lists.linux-m68k.org,
         Geert Uytterhoeven <geert@linux-m68k.org>,
-        Linux/m68k <linux-m68k@lists.linux-m68k.org>,
-        Linux Kernel Development <linux-kernel@vger.kernel.org>,
-        Will Deacon <will@kernel.org>
-Subject: Re: [PATCH 0/5] Rewrite Motorola MMU page-table layout
-Message-ID: <20200130081623.GW14879@hirez.programming.kicks-ass.net>
-References: <20200129103941.304769381@infradead.org>
- <bbdb9596-583e-5d26-ac1c-4775440059b9@physik.fu-berlin.de>
- <20200129115412.GN14914@hirez.programming.kicks-ass.net>
- <CAOmrzkJ8dsuSnomcE7uhyY9ip6T9ADLT7LhjydvY-hizpikBiA@mail.gmail.com>
- <20200129193109.GS14914@hirez.programming.kicks-ass.net>
- <b72358cc-ddd2-52d6-7eed-c88bab46e6f1@gmail.com>
+        Michal Simek <monstr@monstr.eu>,
+        linux-riscv@lists.infradead.org,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Guan Xuetao <gxt@pku.edu.cn>, linux-xtensa@linux-xtensa.org,
+        Chris Zankel <chris@zankel.net>,
+        Max Filippov <jcmvbkbc@gmail.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Mike Rapoport <rppt@linux.vnet.ibm.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Mark Brown <broonie@kernel.org>,
+        Steven Price <Steven.Price@arm.com>,
+        Ard Biesheuvel <ard.biesheuvel@linaro.org>,
+        Masahiro Yamada <yamada.masahiro@socionext.com>,
+        Kees Cook <keescook@chromium.org>,
+        Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
+        Matthew Wilcox <willy@infradead.org>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Russell King - ARM Linux <linux@armlinux.org.uk>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Paul Mackerras <paulus@samba.org>,
+        Martin Schwidefsky <schwidefsky@de.ibm.com>,
+        Heiko Carstens <heiko.carstens@de.ibm.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Vineet Gupta <vgupta@synopsys.com>,
+        James Hogan <jhogan@kernel.org>,
+        Paul Burton <paul.burton@mips.com>,
+        Ralf Baechle <ralf@linux-mips.org>,
+        "Kirill A . Shutemov" <kirill@shutemov.name>,
+        Gerald Schaefer <gerald.schaefer@de.ibm.com>,
+        Christophe Leroy <christophe.leroy@c-s.fr>,
+        Ingo Molnar <mingo@kernel.org>,
+        linux-snps-arc@lists.infradead.org, linux-mips@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-ia64@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, linux-s390@vger.kernel.org,
+        linux-sh@vger.kernel.org, sparclinux@vger.kernel.org,
+        x86@kernel.org, linux-kernel@vger.kernel.org
+References: <1580174873-18117-1-git-send-email-anshuman.khandual@arm.com>
+Message-ID: <fe26671a-7f26-17d7-402b-5e01fdca773e@arm.com>
+Date:   Thu, 30 Jan 2020 20:36:47 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:52.0) Gecko/20100101
+ Thunderbird/52.9.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <b72358cc-ddd2-52d6-7eed-c88bab46e6f1@gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <1580174873-18117-1-git-send-email-anshuman.khandual@arm.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-m68k-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-
-Hi Michael,
-
-On Thu, Jan 30, 2020 at 08:31:13PM +1300, Michael Schmitz wrote:
-
-> Not much difference:
+On 01/28/2020 06:57 AM, Anshuman Khandual wrote:
+> This adds tests which will validate architecture page table helpers and
+> other accessors in their compliance with expected generic MM semantics.
+> This will help various architectures in validating changes to existing
+> page table helpers or addition of new ones.
 > 
->              total       used       free     shared    buffers     cached
-> Mem:         10712      10120        592          0       1860       2276
-> -/+ buffers/cache:       5984       4728
-> Swap:      2097144       1552    2095592
+> This test covers basic page table entry transformations including but not
+> limited to old, young, dirty, clean, write, write protect etc at various
+> level along with populating intermediate entries with next page table page
+> and validating them.
 > 
+> Test page table pages are allocated from system memory with required size
+> and alignments. The mapped pfns at page table levels are derived from a
+> real pfn representing a valid kernel text symbol. This test gets called
+> right after page_alloc_init_late().
 > 
-> vs. vanilla 5.5rc5:
->              total       used       free     shared    buffers     cached
-> Mem:         10716      10104        612          0       1588       2544
-> -/+ buffers/cache:       5972       4744
-> Swap:      2097144       1296    2095848
+> This gets build and run when CONFIG_DEBUG_VM_PGTABLE is selected along with
+> CONFIG_VM_DEBUG. Architectures willing to subscribe this test also need to
+> select CONFIG_ARCH_HAS_DEBUG_VM_PGTABLE which for now is limited to x86 and
+> arm64. Going forward, other architectures too can enable this after fixing
+> build or runtime problems (if any) with their page table helpers.
 > 
-> By sheer coincidence, the boot with your patch series happened to run a full
-> filesystem check on the root filesystem, so I'd say it got a good workout
-> re: paging and swapping (even though it's just a paltry 4 GB).
+> Folks interested in making sure that a given platform's page table helpers
+> conform to expected generic MM semantics should enable the above config
+> which will just trigger this test during boot. Any non conformity here will
+> be reported as an warning which would need to be fixed. This test will help
+> catch any changes to the agreed upon semantics expected from generic MM and
+> enable platforms to accommodate it thereafter.
+> 
+> Cc: Andrew Morton <akpm@linux-foundation.org>
+> Cc: Vlastimil Babka <vbabka@suse.cz>
+> Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> Cc: Thomas Gleixner <tglx@linutronix.de>
+> Cc: Mike Rapoport <rppt@linux.vnet.ibm.com>
+> Cc: Jason Gunthorpe <jgg@ziepe.ca>
+> Cc: Dan Williams <dan.j.williams@intel.com>
+> Cc: Peter Zijlstra <peterz@infradead.org>
+> Cc: Michal Hocko <mhocko@kernel.org>
+> Cc: Mark Rutland <mark.rutland@arm.com>
+> Cc: Mark Brown <broonie@kernel.org>
+> Cc: Steven Price <Steven.Price@arm.com>
+> Cc: Ard Biesheuvel <ard.biesheuvel@linaro.org>
+> Cc: Masahiro Yamada <yamada.masahiro@socionext.com>
+> Cc: Kees Cook <keescook@chromium.org>
+> Cc: Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>
+> Cc: Matthew Wilcox <willy@infradead.org>
+> Cc: Sri Krishna chowdary <schowdary@nvidia.com>
+> Cc: Dave Hansen <dave.hansen@intel.com>
+> Cc: Russell King - ARM Linux <linux@armlinux.org.uk>
+> Cc: Michael Ellerman <mpe@ellerman.id.au>
+> Cc: Paul Mackerras <paulus@samba.org>
+> Cc: Martin Schwidefsky <schwidefsky@de.ibm.com>
+> Cc: Heiko Carstens <heiko.carstens@de.ibm.com>
+> Cc: "David S. Miller" <davem@davemloft.net>
+> Cc: Vineet Gupta <vgupta@synopsys.com>
+> Cc: James Hogan <jhogan@kernel.org>
+> Cc: Paul Burton <paul.burton@mips.com>
+> Cc: Ralf Baechle <ralf@linux-mips.org>
+> Cc: Kirill A. Shutemov <kirill@shutemov.name>
+> Cc: Gerald Schaefer <gerald.schaefer@de.ibm.com>
+> Cc: Christophe Leroy <christophe.leroy@c-s.fr>
+> Cc: Ingo Molnar <mingo@kernel.org>
+> Cc: linux-snps-arc@lists.infradead.org
+> Cc: linux-mips@vger.kernel.org
+> Cc: linux-arm-kernel@lists.infradead.org
+> Cc: linux-ia64@vger.kernel.org
+> Cc: linuxppc-dev@lists.ozlabs.org
+> Cc: linux-s390@vger.kernel.org
+> Cc: linux-sh@vger.kernel.org
+> Cc: sparclinux@vger.kernel.org
+> Cc: x86@kernel.org
+> Cc: linux-kernel@vger.kernel.org
 
-Sweet!, can I translate this into a Tested-by: from you?
+I should have included mailing lists for all missing platforms here.
+Will add them in the patch next time around but for now just adding
+them here explicitly so that hopefully in case some of them can build
+and run the test successfully on respective platforms.
 
-> Haven't tried any VM stress testing yet (not sure what to do for that; it's
-> been years since I tried that sort of stuff).
+ALPHA:
 
-I think, this not being SMP, doing what you just did tickled just about
-everything there is.
++ linux-alpha@vger.kernel.org
++ Richard Henderson <rth@twiddle.net>
++ Ivan Kokshaysky <ink@jurassic.park.msu.ru>
++ Matt Turner <mattst88@gmail.com>
 
-There is one more potential issue with MMU-gather / TLB invalidate on
-m68k (and a whole bunch of other archs) and I have patches for that
-(although I now need to redo the m68k one.
+C6X:
 
-Meanwhile the build robot gifted me with a build issue, and Will had
-some nitpicks, so I'll go respin and repost these patches.
++ linux-c6x-dev@linux-c6x.org
++ Mark Salter <msalter@redhat.com>
++ Aurelien Jacquiot <jacquiot.aurelien@gmail.com>
+
+H8300:
+
++ uclinux-h8-devel@lists.sourceforge.jp
++ Yoshinori Sato <ysato@users.sourceforge.jp>
+
+HEXAGON:
+
++ linux-hexagon@vger.kernel.org
++ Brian Cain <bcain@codeaurora.org>
+
+M68K:
+
++ linux-m68k@lists.linux-m68k.org
++ Geert Uytterhoeven <geert@linux-m68k.org>
+
+MICROBLAZE:
+
++ Michal Simek <monstr@monstr.eu>
+
+RISCV:
+
++ linux-riscv@lists.infradead.org
++ Paul Walmsley <paul.walmsley@sifive.com>
++ Palmer Dabbelt <palmer@dabbelt.com>
+
+UNICORE32:
+
++ Guan Xuetao <gxt@pku.edu.cn>
+
+XTENSA:
+
++ linux-xtensa@linux-xtensa.org
++ Chris Zankel <chris@zankel.net>
++ Max Filippov <jcmvbkbc@gmail.com>
+
+Please feel free to add others if I have missed.
