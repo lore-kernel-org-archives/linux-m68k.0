@@ -1,135 +1,108 @@
 Return-Path: <SRS0=Lit3=3T=vger.kernel.org=linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
-X-Spam-Level: *
-X-Spam-Status: No, score=1.9 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.0 required=3.0 tests=DKIM_INVALID,DKIM_SIGNED,
 	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	URIBL_DBL_ABUSE_MALW autolearn=no autolearn_force=no version=3.4.0
+	USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id AB8F6C33C9E
-	for <linux-m68k@archiver.kernel.org>; Thu, 30 Jan 2020 07:31:20 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 71302C35240
+	for <linux-m68k@archiver.kernel.org>; Thu, 30 Jan 2020 08:16:29 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 66BC0206D5
-	for <linux-m68k@archiver.kernel.org>; Thu, 30 Jan 2020 07:31:20 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 47AE0206F0
+	for <linux-m68k@archiver.kernel.org>; Thu, 30 Jan 2020 08:16:29 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Fp1c8UWq"
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="KtcHvisD"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725923AbgA3HbU (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Thu, 30 Jan 2020 02:31:20 -0500
-Received: from mail-pg1-f196.google.com ([209.85.215.196]:42564 "EHLO
-        mail-pg1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725873AbgA3HbT (ORCPT
+        id S1726865AbgA3IQ2 (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Thu, 30 Jan 2020 03:16:28 -0500
+Received: from bombadil.infradead.org ([198.137.202.133]:46344 "EHLO
+        bombadil.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726863AbgA3IQ2 (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Thu, 30 Jan 2020 02:31:19 -0500
-Received: by mail-pg1-f196.google.com with SMTP id s64so1180091pgb.9
-        for <linux-m68k@lists.linux-m68k.org>; Wed, 29 Jan 2020 23:31:19 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:references:cc:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-transfer-encoding;
-        bh=ADHXjKY+wZDM9guKVG7zd0Mm0y/rFvUhm90KVH/W/To=;
-        b=Fp1c8UWqKSduatMedNJg0JXB/cDi6eI2Wrbfrp6MJ5KJRNA0LWiRIaqH76kSGfRNXA
-         jmHuaJCmIhoo2Ke+TactuJKRkD5y0q1dMAC1GAx17HOz7T1HFXlFTBeH88btIzU1UZ8B
-         Xy7mH3LMmlaNF+2H8DfVx4Tj3WSs99RPke1B/lyDIW1JSQ/SrKlvBDN38QWmUFU2Ece9
-         Gm0x0tIjIMRFQXPI3kJwgdYnoyTnpRh7O3HiQExPmOLecfwBBSy1sTPJb8NCkH/XwSsT
-         XRSXFYdLPZ+nVEc43gAJQx58khG781NfrLBfs0rq0fxDNzK0ZJsGRMnhGpFwg3aH9Qls
-         AA0Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:references:cc:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding;
-        bh=ADHXjKY+wZDM9guKVG7zd0Mm0y/rFvUhm90KVH/W/To=;
-        b=t2O/39dNnJndC06zUa2k/svfelY7ctfGkZiExplD6RAcjxk0jRWILJAf6M4KFYkObY
-         AYrLawvYn7zkkOx1jsM/nMhUHXwX1mUypdEZ0MMysJeopX7XxgzHYyWuSJdL5yfod843
-         41Cw40A+8Oe7rEbZj+vcoGwFV5FLltuprlIxqlnqMdZvjzOkB5+peES5UxtWLu9Vn9IL
-         7szkVHlJb9+c2xMqCBWxJuRQlBTYHU3WX+7PPtl1Iom3LYKyDCBoJlBl93RB7aHXddwT
-         2z5qf13v3ZgsPth7H5E5bB0au7Fqv72F10dwcCsl5GFmlZHN4xzpOM04Pg8hCkErcH0j
-         tqiA==
-X-Gm-Message-State: APjAAAVWvn8NTNCDFZ0QJh9TcaZ54ZPXx0h1Su8uU8LzxYtHRIV8Tm1P
-        0ffPZ3WnZu+on2mQgoPRIhI=
-X-Google-Smtp-Source: APXvYqxjoJ9Bt62qy3k/p7zxSkSmzSaWakYmKUL1JcNAS98p04iHIga/jET0K3QPiSkPdlsLy/6VaA==
-X-Received: by 2002:a63:30c:: with SMTP id 12mr3264019pgd.276.1580369479261;
-        Wed, 29 Jan 2020 23:31:19 -0800 (PST)
-Received: from [192.168.1.101] (122-58-182-19-adsl.sparkbb.co.nz. [122.58.182.19])
-        by smtp.gmail.com with ESMTPSA id v7sm5102910pfn.61.2020.01.29.23.31.15
-        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Wed, 29 Jan 2020 23:31:18 -0800 (PST)
-Subject: Re: [PATCH 0/5] Rewrite Motorola MMU page-table layout
-To:     Peter Zijlstra <peterz@infradead.org>
-References: <20200129103941.304769381@infradead.org>
- <bbdb9596-583e-5d26-ac1c-4775440059b9@physik.fu-berlin.de>
- <20200129115412.GN14914@hirez.programming.kicks-ass.net>
- <CAOmrzkJ8dsuSnomcE7uhyY9ip6T9ADLT7LhjydvY-hizpikBiA@mail.gmail.com>
- <20200129193109.GS14914@hirez.programming.kicks-ass.net>
+        Thu, 30 Jan 2020 03:16:28 -0500
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20170209; h=In-Reply-To:Content-Type:MIME-Version
+        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+         bh=TCsQ3GzavAe26bRtqfddchOtZ1YoWhMpGMKjZxM60vI=; b=KtcHvisDsABiHx64Iuvyz6yaB
+        X07tpTx9cNQomPHTclUK8DQVorusdFctcSZoMQgOUd77/FH5pTTe2VacSPBXFXU4NVnbmaaZI1JaO
+        914ynMtjZMtxIcliWLkqqu1cgy/+rt14w69YJnSkfcLDCu8gQfpfJePnfJocKNngud26WUUobBTW5
+        /f5KPthpaEi9byvQIifLgw3Qhp28h24Cx3EtF0m7we9PcOB7EfHcunkvE8MaluUR3GAYk0Z67sWW3
+        gFm+pW5G7wCZtoQU8EdS+n9G87ooGZi7w9d+9ErttwPCMGGSg4Vu8ki7jNHgxmC9TutETsihaM696
+        EFGmwzEhA==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by bombadil.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1ix4zx-0001t8-S7; Thu, 30 Jan 2020 08:16:26 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 710D03011DD;
+        Thu, 30 Jan 2020 09:14:40 +0100 (CET)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 9B9522B7334D2; Thu, 30 Jan 2020 09:16:23 +0100 (CET)
+Date:   Thu, 30 Jan 2020 09:16:23 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Michael Schmitz <schmitzmic@gmail.com>
 Cc:     John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
         Geert Uytterhoeven <geert@linux-m68k.org>,
         Linux/m68k <linux-m68k@lists.linux-m68k.org>,
         Linux Kernel Development <linux-kernel@vger.kernel.org>,
         Will Deacon <will@kernel.org>
-From:   Michael Schmitz <schmitzmic@gmail.com>
-Message-ID: <b72358cc-ddd2-52d6-7eed-c88bab46e6f1@gmail.com>
-Date:   Thu, 30 Jan 2020 20:31:13 +1300
-User-Agent: Mozilla/5.0 (X11; Linux ppc; rv:45.0) Gecko/20100101
- Icedove/45.4.0
+Subject: Re: [PATCH 0/5] Rewrite Motorola MMU page-table layout
+Message-ID: <20200130081623.GW14879@hirez.programming.kicks-ass.net>
+References: <20200129103941.304769381@infradead.org>
+ <bbdb9596-583e-5d26-ac1c-4775440059b9@physik.fu-berlin.de>
+ <20200129115412.GN14914@hirez.programming.kicks-ass.net>
+ <CAOmrzkJ8dsuSnomcE7uhyY9ip6T9ADLT7LhjydvY-hizpikBiA@mail.gmail.com>
+ <20200129193109.GS14914@hirez.programming.kicks-ass.net>
+ <b72358cc-ddd2-52d6-7eed-c88bab46e6f1@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20200129193109.GS14914@hirez.programming.kicks-ass.net>
-Content-Type: text/plain; charset=windows-1252; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <b72358cc-ddd2-52d6-7eed-c88bab46e6f1@gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-m68k-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-Peter,
 
-Am 30.01.2020 um 08:31 schrieb Peter Zijlstra:
-> On Thu, Jan 30, 2020 at 07:52:11AM +1300, Michael Schmitz wrote:
->> Peter,
->>
->> On Thu, Jan 30, 2020 at 12:54 AM Peter Zijlstra <peterz@infradead.org> wrote:
->>>
->>> On Wed, Jan 29, 2020 at 11:49:13AM +0100, John Paul Adrian Glaubitz wrote:
->>>
->>>>> [1] https://wiki.debian.org/M68k/QemuSystemM68k
->>>
->>> Now, if only debian would actually ship that :/
->>>
->>> AFAICT that emulates a q800 which is another 68040 and should thus not
->>> differ from ARAnyM.
->>>
->>> I'm fairly confident in the 040 bits, it's the 020/030 things that need
->>> coverage.
->>
->> I'll take a look - unless this eats up way more kernel memory for page
->> tables, it should still boot on my Falcon.
->
-> It should actually be better in most cases I think, since we no longer
-> require all 16 pte-tables to map consecutive (virtual) memory.
+Hi Michael,
 
-Not much difference:
+On Thu, Jan 30, 2020 at 08:31:13PM +1300, Michael Schmitz wrote:
 
-              total       used       free     shared    buffers     cached
-Mem:         10712      10120        592          0       1860       2276
--/+ buffers/cache:       5984       4728
-Swap:      2097144       1552    2095592
+> Not much difference:
+> 
+>              total       used       free     shared    buffers     cached
+> Mem:         10712      10120        592          0       1860       2276
+> -/+ buffers/cache:       5984       4728
+> Swap:      2097144       1552    2095592
+> 
+> 
+> vs. vanilla 5.5rc5:
+>              total       used       free     shared    buffers     cached
+> Mem:         10716      10104        612          0       1588       2544
+> -/+ buffers/cache:       5972       4744
+> Swap:      2097144       1296    2095848
+> 
+> By sheer coincidence, the boot with your patch series happened to run a full
+> filesystem check on the root filesystem, so I'd say it got a good workout
+> re: paging and swapping (even though it's just a paltry 4 GB).
 
+Sweet!, can I translate this into a Tested-by: from you?
 
-vs. vanilla 5.5rc5:
-              total       used       free     shared    buffers     cached
-Mem:         10716      10104        612          0       1588       2544
--/+ buffers/cache:       5972       4744
-Swap:      2097144       1296    2095848
+> Haven't tried any VM stress testing yet (not sure what to do for that; it's
+> been years since I tried that sort of stuff).
 
-By sheer coincidence, the boot with your patch series happened to run a 
-full filesystem check on the root filesystem, so I'd say it got a good 
-workout re: paging and swapping (even though it's just a paltry 4 GB).
+I think, this not being SMP, doing what you just did tickled just about
+everything there is.
 
-Haven't tried any VM stress testing yet (not sure what to do for that; 
-it's been years since I tried that sort of stuff).
+There is one more potential issue with MMU-gather / TLB invalidate on
+m68k (and a whole bunch of other archs) and I have patches for that
+(although I now need to redo the m68k one.
 
-Cheers,
-
-	Michael
-
-
+Meanwhile the build robot gifted me with a build issue, and Will had
+some nitpicks, so I'll go respin and repost these patches.
