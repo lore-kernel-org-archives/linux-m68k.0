@@ -2,130 +2,176 @@ Return-Path: <SRS0=Lit3=3T=vger.kernel.org=linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.1 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-10.1 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 56B65C33CB3
-	for <linux-m68k@archiver.kernel.org>; Thu, 30 Jan 2020 19:12:33 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C5AD2C33CB3
+	for <linux-m68k@archiver.kernel.org>; Thu, 30 Jan 2020 19:25:27 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 2D63C206D3
-	for <linux-m68k@archiver.kernel.org>; Thu, 30 Jan 2020 19:12:33 +0000 (UTC)
-Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="q6SkCaC8"
+	by mail.kernel.org (Postfix) with ESMTP id 9E8C1214AF
+	for <linux-m68k@archiver.kernel.org>; Thu, 30 Jan 2020 19:25:27 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=default; t=1580412327;
+	bh=5fNT68kPy8RNwnjQLwz5EOoO7buIik390o24nm066/0=;
+	h=From:To:Cc:Subject:Date:List-ID:From;
+	b=b5gaPTbwg7CrPhs+r3BbL80JVJZpltvwja86Vah36v9kaopV6xThUpetVsPIzWwjd
+	 Hx86wxZfG/3goZWsG6SQpY9FAJhwITjG0pFD+NL1ql3WVDNIG7sEfikDoINc4K9QZY
+	 Zab01f0i0khy/Ht1lJsLHN//BzVWFSq3XLlVsqtw=
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727579AbgA3TMa (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Thu, 30 Jan 2020 14:12:30 -0500
-Received: from mail-pl1-f195.google.com ([209.85.214.195]:37067 "EHLO
-        mail-pl1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727516AbgA3TMa (ORCPT
-        <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Thu, 30 Jan 2020 14:12:30 -0500
-Received: by mail-pl1-f195.google.com with SMTP id c23so1709796plz.4
-        for <linux-m68k@lists.linux-m68k.org>; Thu, 30 Jan 2020 11:12:30 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-transfer-encoding:content-language;
-        bh=Xi1otSyD3nUiREFcsX3WomP4ANVRxh8JOt8EQSGwhSA=;
-        b=q6SkCaC8jxep5Pr2qCOlaJdwrspZ5LewaxnL26u3jsX+2b24208BAXcvhBz4lK4+9f
-         AVqiOwPCBQXnpPLdHytifoGtqT0NSJHwhzGj32GLJIl4WFyE8PqUEXeSQfV6hFoeEByh
-         Ld51OqFq3baghqTx1OsLyH1nwWKC66a6C+jEy7OF0rPg+3MLxD8YjfdOsk2s02bOLLki
-         v+lNIWWY/ImGvd8yAPAkdQKpFzgURVoJtmwRmIEnWJHJXdm1YwtdhPb5BkSSSUz+2DvX
-         5A0vl44SAn7nUd/vVWsQ3boQLtgTkNrTjmDA6+9lzQI7n2sxnznq+u8ZQpQ9K0hoYrWP
-         NNEg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=Xi1otSyD3nUiREFcsX3WomP4ANVRxh8JOt8EQSGwhSA=;
-        b=d+o3TpEj1Yb20UJZyXToF6kjdIwABdSKN3uChfMNUkjBS81R+UGG6ERIBsNNv8wszZ
-         e8Jk0NEzulN68GMApGtetliN5548SdyIy1DqVV+lvufArPGnQ1gockzLvZM03MsayTzl
-         Ncuzp33iZJEnC7fa/e+lHRnM7m3G6lN1V4OIbTwD96EU9kZS5A5mT7ycy/iTWtP3qhnU
-         HDLCLCvdI0Le2V/VixaZEjfauetqlo5GaGz30767OelfpPFkN64HY40HdjAIRK4lhALb
-         NRgRwtsabpno8GRKdcpIekqarMshIAQ4uM0fMuBfpCfOYsEHrder2D3kA5O3KzcOzMTR
-         fm5Q==
-X-Gm-Message-State: APjAAAXG9+tttTYlNvV6Ua/vUFWX8cXCs4NJ/h3u4xz/DtMfYq0OoDl9
-        JLFbMRMcGgBUYwphG/eI/bU=
-X-Google-Smtp-Source: APXvYqzsYVe5dvCSon0un7A9gVj8k/TL7s5MfjVudCTxJYWSypYZZMkeb/Q26sTji8CcJtqRG0hreA==
-X-Received: by 2002:a17:90a:e397:: with SMTP id b23mr7458573pjz.135.1580411549672;
-        Thu, 30 Jan 2020 11:12:29 -0800 (PST)
-Received: from ?IPv6:2001:df0:0:200c:24a0:dd2f:5dc3:c66a? ([2001:df0:0:200c:24a0:dd2f:5dc3:c66a])
-        by smtp.gmail.com with ESMTPSA id a195sm7496505pfa.120.2020.01.30.11.12.26
-        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 30 Jan 2020 11:12:28 -0800 (PST)
-Subject: Re: [PATCH 0/5] Rewrite Motorola MMU page-table layout
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Linux/m68k <linux-m68k@lists.linux-m68k.org>,
-        Linux Kernel Development <linux-kernel@vger.kernel.org>,
-        Will Deacon <will@kernel.org>
-References: <20200129103941.304769381@infradead.org>
- <bbdb9596-583e-5d26-ac1c-4775440059b9@physik.fu-berlin.de>
- <20200129115412.GN14914@hirez.programming.kicks-ass.net>
- <CAOmrzkJ8dsuSnomcE7uhyY9ip6T9ADLT7LhjydvY-hizpikBiA@mail.gmail.com>
- <20200129193109.GS14914@hirez.programming.kicks-ass.net>
- <b72358cc-ddd2-52d6-7eed-c88bab46e6f1@gmail.com>
- <20200130081623.GW14879@hirez.programming.kicks-ass.net>
-From:   Michael Schmitz <schmitzmic@gmail.com>
-Message-ID: <c4d3efbe-2d91-c5e4-aa9e-680ffd0d5c89@gmail.com>
-Date:   Fri, 31 Jan 2020 08:12:23 +1300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.6.1
-MIME-Version: 1.0
-In-Reply-To: <20200130081623.GW14879@hirez.programming.kicks-ass.net>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
+        id S1727438AbgA3TZ1 (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Thu, 30 Jan 2020 14:25:27 -0500
+Received: from mail.kernel.org ([198.145.29.99]:47814 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727495AbgA3TZ0 (ORCPT <rfc822;linux-m68k@lists.linux-m68k.org>);
+        Thu, 30 Jan 2020 14:25:26 -0500
+Received: from localhost.localdomain (unknown [194.230.155.229])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 2AA2F206D3;
+        Thu, 30 Jan 2020 19:25:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1580412325;
+        bh=5fNT68kPy8RNwnjQLwz5EOoO7buIik390o24nm066/0=;
+        h=From:To:Cc:Subject:Date:From;
+        b=QQ+/36ZMxzLyi4WPwTlbwS3NoGe14JcjXcXOHTa4iukPqTaFm++fNoO1VZthUYnp7
+         zPgyU/qvFoAk/0fKvZ7bOIqbpiOoRzGc4OokpE5UJO+O4WC5Y7xVruiZkHplqiXe9D
+         7nbUvaIDweb1vae60rRsva2Ky0fo7j+tVss97IJM=
+From:   Krzysztof Kozlowski <krzk@kernel.org>
+To:     Geert Uytterhoeven <geert@linux-m68k.org>,
+        linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org
+Cc:     Krzysztof Kozlowski <krzk@kernel.org>
+Subject: [PATCH] m68k: configs: Cleanup old Kconfig IO scheduler options
+Date:   Thu, 30 Jan 2020 20:25:20 +0100
+Message-Id: <20200130192520.3202-1-krzk@kernel.org>
+X-Mailer: git-send-email 2.17.1
 Sender: linux-m68k-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-Peter,
+CONFIG_IOSCHED_DEADLINE and CONFIG_IOSCHED_CFQ are gone since
+commit f382fb0bcef4 ("block: remove legacy IO schedulers").
 
-On 30/01/20 9:16 PM, Peter Zijlstra wrote:
-> Hi Michael,
->
-> On Thu, Jan 30, 2020 at 08:31:13PM +1300, Michael Schmitz wrote:
->
->> Not much difference:
->>
->>               total       used       free     shared    buffers     cached
->> Mem:         10712      10120        592          0       1860       2276
->> -/+ buffers/cache:       5984       4728
->> Swap:      2097144       1552    2095592
->>
->>
->> vs. vanilla 5.5rc5:
->>               total       used       free     shared    buffers     cached
->> Mem:         10716      10104        612          0       1588       2544
->> -/+ buffers/cache:       5972       4744
->> Swap:      2097144       1296    2095848
->>
->> By sheer coincidence, the boot with your patch series happened to run a full
->> filesystem check on the root filesystem, so I'd say it got a good workout
->> re: paging and swapping (even though it's just a paltry 4 GB).
-> Sweet!, can I translate this into a Tested-by: from you?
+The IOSCHED_DEADLINE was replaced by MQ_IOSCHED_DEADLINE and it will be
+now enabled by default (along with MQ_IOSCHED_KYBER).
 
-If the test coverage is sufficient, you may certainly do that.
+Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
+---
+ arch/m68k/configs/amcore_defconfig   | 1 -
+ arch/m68k/configs/m5208evb_defconfig | 2 --
+ arch/m68k/configs/m5249evb_defconfig | 2 --
+ arch/m68k/configs/m5272c3_defconfig  | 2 --
+ arch/m68k/configs/m5275evb_defconfig | 2 --
+ arch/m68k/configs/m5307c3_defconfig  | 2 --
+ arch/m68k/configs/m5407c3_defconfig  | 2 --
+ arch/m68k/configs/m5475evb_defconfig | 2 --
+ 8 files changed, 15 deletions(-)
 
-Cheers,
+diff --git a/arch/m68k/configs/amcore_defconfig b/arch/m68k/configs/amcore_defconfig
+index d5e683dd885d..3a84f24d41c8 100644
+--- a/arch/m68k/configs/amcore_defconfig
++++ b/arch/m68k/configs/amcore_defconfig
+@@ -13,7 +13,6 @@ CONFIG_EMBEDDED=y
+ # CONFIG_SLUB_DEBUG is not set
+ # CONFIG_COMPAT_BRK is not set
+ # CONFIG_BLK_DEV_BSG is not set
+-# CONFIG_IOSCHED_CFQ is not set
+ # CONFIG_MMU is not set
+ CONFIG_M5307=y
+ CONFIG_AMCORE=y
+diff --git a/arch/m68k/configs/m5208evb_defconfig b/arch/m68k/configs/m5208evb_defconfig
+index a3102ff7e5ed..0ee3079f6ca9 100644
+--- a/arch/m68k/configs/m5208evb_defconfig
++++ b/arch/m68k/configs/m5208evb_defconfig
+@@ -10,8 +10,6 @@ CONFIG_EXPERT=y
+ # CONFIG_VM_EVENT_COUNTERS is not set
+ # CONFIG_COMPAT_BRK is not set
+ # CONFIG_BLK_DEV_BSG is not set
+-# CONFIG_IOSCHED_DEADLINE is not set
+-# CONFIG_IOSCHED_CFQ is not set
+ # CONFIG_MMU is not set
+ # CONFIG_4KSTACKS is not set
+ CONFIG_RAMBASE=0x40000000
+diff --git a/arch/m68k/configs/m5249evb_defconfig b/arch/m68k/configs/m5249evb_defconfig
+index f7bb9ed3efa8..f84f68c04065 100644
+--- a/arch/m68k/configs/m5249evb_defconfig
++++ b/arch/m68k/configs/m5249evb_defconfig
+@@ -10,8 +10,6 @@ CONFIG_EXPERT=y
+ # CONFIG_VM_EVENT_COUNTERS is not set
+ # CONFIG_SLUB_DEBUG is not set
+ # CONFIG_BLK_DEV_BSG is not set
+-# CONFIG_IOSCHED_DEADLINE is not set
+-# CONFIG_IOSCHED_CFQ is not set
+ # CONFIG_MMU is not set
+ CONFIG_M5249=y
+ CONFIG_M5249C3=y
+diff --git a/arch/m68k/configs/m5272c3_defconfig b/arch/m68k/configs/m5272c3_defconfig
+index 1e679f6a400f..eca65020aae3 100644
+--- a/arch/m68k/configs/m5272c3_defconfig
++++ b/arch/m68k/configs/m5272c3_defconfig
+@@ -10,8 +10,6 @@ CONFIG_EXPERT=y
+ # CONFIG_VM_EVENT_COUNTERS is not set
+ # CONFIG_SLUB_DEBUG is not set
+ # CONFIG_BLK_DEV_BSG is not set
+-# CONFIG_IOSCHED_DEADLINE is not set
+-# CONFIG_IOSCHED_CFQ is not set
+ # CONFIG_MMU is not set
+ CONFIG_M5272=y
+ CONFIG_M5272C3=y
+diff --git a/arch/m68k/configs/m5275evb_defconfig b/arch/m68k/configs/m5275evb_defconfig
+index d2987b40423e..9402c7a3e9c7 100644
+--- a/arch/m68k/configs/m5275evb_defconfig
++++ b/arch/m68k/configs/m5275evb_defconfig
+@@ -10,8 +10,6 @@ CONFIG_EXPERT=y
+ # CONFIG_VM_EVENT_COUNTERS is not set
+ # CONFIG_SLUB_DEBUG is not set
+ # CONFIG_BLK_DEV_BSG is not set
+-# CONFIG_IOSCHED_DEADLINE is not set
+-# CONFIG_IOSCHED_CFQ is not set
+ # CONFIG_MMU is not set
+ CONFIG_M5275=y
+ # CONFIG_4KSTACKS is not set
+diff --git a/arch/m68k/configs/m5307c3_defconfig b/arch/m68k/configs/m5307c3_defconfig
+index 97a78c99eeee..bb8b0eb4bdfc 100644
+--- a/arch/m68k/configs/m5307c3_defconfig
++++ b/arch/m68k/configs/m5307c3_defconfig
+@@ -10,8 +10,6 @@ CONFIG_EXPERT=y
+ # CONFIG_VM_EVENT_COUNTERS is not set
+ # CONFIG_SLUB_DEBUG is not set
+ # CONFIG_BLK_DEV_BSG is not set
+-# CONFIG_IOSCHED_DEADLINE is not set
+-# CONFIG_IOSCHED_CFQ is not set
+ # CONFIG_MMU is not set
+ CONFIG_M5307=y
+ CONFIG_M5307C3=y
+diff --git a/arch/m68k/configs/m5407c3_defconfig b/arch/m68k/configs/m5407c3_defconfig
+index 766a97f39a3a..ce9ccf13c7c0 100644
+--- a/arch/m68k/configs/m5407c3_defconfig
++++ b/arch/m68k/configs/m5407c3_defconfig
+@@ -11,8 +11,6 @@ CONFIG_EXPERT=y
+ CONFIG_MODULES=y
+ CONFIG_MODULE_UNLOAD=y
+ # CONFIG_BLK_DEV_BSG is not set
+-# CONFIG_IOSCHED_DEADLINE is not set
+-# CONFIG_IOSCHED_CFQ is not set
+ # CONFIG_MMU is not set
+ CONFIG_M5407=y
+ CONFIG_M5407C3=y
+diff --git a/arch/m68k/configs/m5475evb_defconfig b/arch/m68k/configs/m5475evb_defconfig
+index 579fd98afed6..93f7c7a07553 100644
+--- a/arch/m68k/configs/m5475evb_defconfig
++++ b/arch/m68k/configs/m5475evb_defconfig
+@@ -11,8 +11,6 @@ CONFIG_LOG_BUF_SHIFT=14
+ CONFIG_EMBEDDED=y
+ CONFIG_MODULES=y
+ # CONFIG_BLK_DEV_BSG is not set
+-# CONFIG_IOSCHED_DEADLINE is not set
+-# CONFIG_IOSCHED_CFQ is not set
+ CONFIG_COLDFIRE=y
+ # CONFIG_4KSTACKS is not set
+ CONFIG_RAMBASE=0x0
+-- 
+2.17.1
 
-     Michael
-
->
->> Haven't tried any VM stress testing yet (not sure what to do for that; it's
->> been years since I tried that sort of stuff).
-> I think, this not being SMP, doing what you just did tickled just about
-> everything there is.
->
-> There is one more potential issue with MMU-gather / TLB invalidate on
-> m68k (and a whole bunch of other archs) and I have patches for that
-> (although I now need to redo the m68k one.
->
-> Meanwhile the build robot gifted me with a build issue, and Will had
-> some nitpicks, so I'll go respin and repost these patches.
