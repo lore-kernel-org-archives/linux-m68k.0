@@ -2,85 +2,89 @@ Return-Path: <SRS0=EGad=3U=vger.kernel.org=linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.0 required=3.0 tests=DKIM_INVALID,DKIM_SIGNED,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+X-Spam-Status: No, score=-2.6 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
 	USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D7857C33CB2
-	for <linux-m68k@archiver.kernel.org>; Fri, 31 Jan 2020 11:31:44 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 71D25C33CB2
+	for <linux-m68k@archiver.kernel.org>; Fri, 31 Jan 2020 11:43:33 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id A098D206F0
-	for <linux-m68k@archiver.kernel.org>; Fri, 31 Jan 2020 11:31:44 +0000 (UTC)
-Authentication-Results: mail.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="qqlgqm81"
+	by mail.kernel.org (Postfix) with ESMTP id 45E8D20705
+	for <linux-m68k@archiver.kernel.org>; Fri, 31 Jan 2020 11:43:33 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=default; t=1580471013;
+	bh=YUFEVwCNlddvIgP4Qt2+V8mNS/hMbmBZNY+3hypDBV0=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:List-ID:From;
+	b=KWPi4fotJ7COX+Dz6gsxgozHzQSEKsKXio0utVCzdnEHtwWPlk8EydptCsMWCwz1D
+	 90RvGtPEubTSeJW0XytUL9zuTaTi/TgQJmM76n9qWnkjs0XbJul8cEQlfWXrzKVLX4
+	 gfvtGgaqWuBCfcjPcLwh41GqvcbUTctW1TaHtJ3I=
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728389AbgAaLbo (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Fri, 31 Jan 2020 06:31:44 -0500
-Received: from bombadil.infradead.org ([198.137.202.133]:58626 "EHLO
-        bombadil.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728325AbgAaLbo (ORCPT
-        <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Fri, 31 Jan 2020 06:31:44 -0500
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20170209; h=In-Reply-To:Content-Type:MIME-Version
-        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-         bh=KaRO3eBKc7wPtdVbBvuSCUvQxXSj5ql+XaahWnA3gzo=; b=qqlgqm81+2ljXypV4gygK9XSt
-        lzMGytgW6z9Nw25aMB+6Ykzru03UBI14L7otvyJr8lk/rWte1zhkmlaFQqqJQEo47ynod90QWCjre
-        2BRn+PVmDLp9vXB27Obgz0Hspk/CLS1uO052EfYusT3pWJuUv5tJ374s90ziWzcQZvG8lU8FZw6h1
-        U/vKuPsm0QdVYWDWDxWvbRlcEt4D/I0t35t4RzuA8CJIZPvyhE4PPoydBDApmxzEI8CMqsqihHHGM
-        8WTFo2qaXOlRn5h6ldW05kaONzXwXaEaXXPSA4D6r8CTe0P98WljDkABY9sHbgWnvMm/vcSuWwYpZ
-        96TM659mQ==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by bombadil.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1ixUWU-0003g6-Mh; Fri, 31 Jan 2020 11:31:42 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        id S1728428AbgAaLnd (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Fri, 31 Jan 2020 06:43:33 -0500
+Received: from mail.kernel.org ([198.145.29.99]:35870 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728387AbgAaLnc (ORCPT <rfc822;linux-m68k@lists.linux-m68k.org>);
+        Fri, 31 Jan 2020 06:43:32 -0500
+Received: from willie-the-truck (236.31.169.217.in-addr.arpa [217.169.31.236])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 693B73007F2;
-        Fri, 31 Jan 2020 12:29:55 +0100 (CET)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 7253C203A5C79; Fri, 31 Jan 2020 12:31:39 +0100 (CET)
-Date:   Fri, 31 Jan 2020 12:31:39 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Will Deacon <will@kernel.org>
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 360FE206F0;
+        Fri, 31 Jan 2020 11:43:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1580471012;
+        bh=YUFEVwCNlddvIgP4Qt2+V8mNS/hMbmBZNY+3hypDBV0=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=jW4AoN2X6dGPfIaw14g6qm7SO5ds6Xpe3ahdMQc74ts03Pw78P56dLgB+YVAAUZyE
+         VROLZcQcq/SFvgav0mP3RRoXqxQ0in99t7On5kpNK/t553bMkNLc6BUEfImq9AxWiL
+         sjpa5jnjYHH9utuJEy/wMS0VOlhqNy57JQxnTxpc=
+Date:   Fri, 31 Jan 2020 11:43:27 +0000
+From:   Will Deacon <will@kernel.org>
+To:     Peter Zijlstra <peterz@infradead.org>
 Cc:     Greg Ungerer <gerg@linux-m68k.org>,
         Geert Uytterhoeven <geert@linux-m68k.org>,
         linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org
 Subject: Re: [PATCH 0/5] Rewrite Motorola MMU page-table layout
-Message-ID: <20200131113139.GC14914@hirez.programming.kicks-ass.net>
+Message-ID: <20200131114327.GB4298@willie-the-truck>
 References: <20200129103941.304769381@infradead.org>
  <8a81e075-d3bd-80c1-d869-9935fdd73162@linux-m68k.org>
  <20200131093813.GA3938@willie-the-truck>
  <20200131102239.GB14914@hirez.programming.kicks-ass.net>
  <20200131111459.GO14946@hirez.programming.kicks-ass.net>
  <20200131111824.GA4298@willie-the-truck>
+ <20200131113139.GC14914@hirez.programming.kicks-ass.net>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200131111824.GA4298@willie-the-truck>
+In-Reply-To: <20200131113139.GC14914@hirez.programming.kicks-ass.net>
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-m68k-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-On Fri, Jan 31, 2020 at 11:18:24AM +0000, Will Deacon wrote:
-> > > > +static inline pgtable_t pte_alloc_one(struct mm_struct *mm)
-> > > >  {
-> > > >  	struct page *page = alloc_pages(GFP_DMA, 0);
-> > > >  	pte_t *pte;
+On Fri, Jan 31, 2020 at 12:31:39PM +0100, Peter Zijlstra wrote:
+> On Fri, Jan 31, 2020 at 11:18:24AM +0000, Will Deacon wrote:
+> > > > > +static inline pgtable_t pte_alloc_one(struct mm_struct *mm)
+> > > > >  {
+> > > > >  	struct page *page = alloc_pages(GFP_DMA, 0);
+> > > > >  	pte_t *pte;
+> 
+> > Does that mean we can drop the GFP_DMA too? If so, this all ends up
+> > looking very similar to the sun3 code wrt alloc/free and they could
+> > probably use the same implementation (since the generic code doesn't
+> > like out pgtable_t definition).
+> 
+> Many software TLB archs have limits on what memory the TLB miss handler
+> itself can access (chicken-egg issues), it might be this is where the
+> GFP_DMA comes from.
 
-> Does that mean we can drop the GFP_DMA too? If so, this all ends up
-> looking very similar to the sun3 code wrt alloc/free and they could
-> probably use the same implementation (since the generic code doesn't
-> like out pgtable_t definition).
+Fair enough, that sounds plausible.
 
-Many software TLB archs have limits on what memory the TLB miss handler
-itself can access (chicken-egg issues), it might be this is where the
-GFP_DMA comes from.
+> I can't quickly find this in the CFV4e docs, but I'm not really reading
+> it carefully either.
 
-I can't quickly find this in the CFV4e docs, but I'm not really reading
-it carefully either.
+I can't find any code under arch/m68k/ which suggests it, but for now
+I guess we should stick with the old pgtable_t definition for sun3 with
+a comment (and keep the GFP_DMA in for coldfire).
+
+Will
