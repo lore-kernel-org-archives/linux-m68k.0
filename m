@@ -1,177 +1,97 @@
-Return-Path: <SRS0=Lit3=3T=vger.kernel.org=linux-m68k-owner@kernel.org>
+Return-Path: <SRS0=EGad=3U=vger.kernel.org=linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-10.1 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
+X-Spam-Status: No, score=-2.2 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=no
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C5AD2C33CB3
-	for <linux-m68k@archiver.kernel.org>; Thu, 30 Jan 2020 19:25:27 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 0C4F7C35240
+	for <linux-m68k@archiver.kernel.org>; Fri, 31 Jan 2020 06:31:55 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 9E8C1214AF
-	for <linux-m68k@archiver.kernel.org>; Thu, 30 Jan 2020 19:25:27 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=default; t=1580412327;
-	bh=5fNT68kPy8RNwnjQLwz5EOoO7buIik390o24nm066/0=;
-	h=From:To:Cc:Subject:Date:List-ID:From;
-	b=b5gaPTbwg7CrPhs+r3BbL80JVJZpltvwja86Vah36v9kaopV6xThUpetVsPIzWwjd
-	 Hx86wxZfG/3goZWsG6SQpY9FAJhwITjG0pFD+NL1ql3WVDNIG7sEfikDoINc4K9QZY
-	 Zab01f0i0khy/Ht1lJsLHN//BzVWFSq3XLlVsqtw=
+	by mail.kernel.org (Postfix) with ESMTP id D6A85206A2
+	for <linux-m68k@archiver.kernel.org>; Fri, 31 Jan 2020 06:31:54 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727438AbgA3TZ1 (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Thu, 30 Jan 2020 14:25:27 -0500
-Received: from mail.kernel.org ([198.145.29.99]:47814 "EHLO mail.kernel.org"
+        id S1725815AbgAaGby (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Fri, 31 Jan 2020 01:31:54 -0500
+Received: from mail.kernel.org ([198.145.29.99]:41844 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727495AbgA3TZ0 (ORCPT <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Thu, 30 Jan 2020 14:25:26 -0500
-Received: from localhost.localdomain (unknown [194.230.155.229])
+        id S1726086AbgAaGby (ORCPT <rfc822;linux-m68k@lists.linux-m68k.org>);
+        Fri, 31 Jan 2020 01:31:54 -0500
+Received: from [10.44.0.22] (unknown [103.48.210.53])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 2AA2F206D3;
-        Thu, 30 Jan 2020 19:25:24 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1580412325;
-        bh=5fNT68kPy8RNwnjQLwz5EOoO7buIik390o24nm066/0=;
-        h=From:To:Cc:Subject:Date:From;
-        b=QQ+/36ZMxzLyi4WPwTlbwS3NoGe14JcjXcXOHTa4iukPqTaFm++fNoO1VZthUYnp7
-         zPgyU/qvFoAk/0fKvZ7bOIqbpiOoRzGc4OokpE5UJO+O4WC5Y7xVruiZkHplqiXe9D
-         7nbUvaIDweb1vae60rRsva2Ky0fo7j+tVss97IJM=
-From:   Krzysztof Kozlowski <krzk@kernel.org>
-To:     Geert Uytterhoeven <geert@linux-m68k.org>,
-        linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org
-Cc:     Krzysztof Kozlowski <krzk@kernel.org>
-Subject: [PATCH] m68k: configs: Cleanup old Kconfig IO scheduler options
-Date:   Thu, 30 Jan 2020 20:25:20 +0100
-Message-Id: <20200130192520.3202-1-krzk@kernel.org>
-X-Mailer: git-send-email 2.17.1
+        by mail.kernel.org (Postfix) with ESMTPSA id CBB9B20674;
+        Fri, 31 Jan 2020 06:31:51 +0000 (UTC)
+Subject: Re: [PATCH 0/5] Rewrite Motorola MMU page-table layout
+To:     Peter Zijlstra <peterz@infradead.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>
+Cc:     linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org,
+        Will Deacon <will@kernel.org>
+References: <20200129103941.304769381@infradead.org>
+From:   Greg Ungerer <gerg@linux-m68k.org>
+Message-ID: <8a81e075-d3bd-80c1-d869-9935fdd73162@linux-m68k.org>
+Date:   Fri, 31 Jan 2020 16:31:48 +1000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.4.1
+MIME-Version: 1.0
+In-Reply-To: <20200129103941.304769381@infradead.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Sender: linux-m68k-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-CONFIG_IOSCHED_DEADLINE and CONFIG_IOSCHED_CFQ are gone since
-commit f382fb0bcef4 ("block: remove legacy IO schedulers").
+Hi Peter,
 
-The IOSCHED_DEADLINE was replaced by MQ_IOSCHED_DEADLINE and it will be
-now enabled by default (along with MQ_IOSCHED_KYBER).
+On 29/1/20 8:39 pm, Peter Zijlstra wrote:
+> Hi!
+> 
+> In order to faciliate Will's READ_ONCE() patches:
+> 
+>    https://lkml.kernel.org/r/20200123153341.19947-1-will@kernel.org
+> 
+> we need to fix m68k/motorola to not have a giant pmd_t. These patches do so and
+> are tested using ARAnyM/68040.
+> 
+> It would be very good if someone can either test or tell us what emulator to
+> use for 020/030.
 
-Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
----
- arch/m68k/configs/amcore_defconfig   | 1 -
- arch/m68k/configs/m5208evb_defconfig | 2 --
- arch/m68k/configs/m5249evb_defconfig | 2 --
- arch/m68k/configs/m5272c3_defconfig  | 2 --
- arch/m68k/configs/m5275evb_defconfig | 2 --
- arch/m68k/configs/m5307c3_defconfig  | 2 --
- arch/m68k/configs/m5407c3_defconfig  | 2 --
- arch/m68k/configs/m5475evb_defconfig | 2 --
- 8 files changed, 15 deletions(-)
+This series breaks compilation for the ColdFire (with MMU) variant of
+the m68k family:
 
-diff --git a/arch/m68k/configs/amcore_defconfig b/arch/m68k/configs/amcore_defconfig
-index d5e683dd885d..3a84f24d41c8 100644
---- a/arch/m68k/configs/amcore_defconfig
-+++ b/arch/m68k/configs/amcore_defconfig
-@@ -13,7 +13,6 @@ CONFIG_EMBEDDED=y
- # CONFIG_SLUB_DEBUG is not set
- # CONFIG_COMPAT_BRK is not set
- # CONFIG_BLK_DEV_BSG is not set
--# CONFIG_IOSCHED_CFQ is not set
- # CONFIG_MMU is not set
- CONFIG_M5307=y
- CONFIG_AMCORE=y
-diff --git a/arch/m68k/configs/m5208evb_defconfig b/arch/m68k/configs/m5208evb_defconfig
-index a3102ff7e5ed..0ee3079f6ca9 100644
---- a/arch/m68k/configs/m5208evb_defconfig
-+++ b/arch/m68k/configs/m5208evb_defconfig
-@@ -10,8 +10,6 @@ CONFIG_EXPERT=y
- # CONFIG_VM_EVENT_COUNTERS is not set
- # CONFIG_COMPAT_BRK is not set
- # CONFIG_BLK_DEV_BSG is not set
--# CONFIG_IOSCHED_DEADLINE is not set
--# CONFIG_IOSCHED_CFQ is not set
- # CONFIG_MMU is not set
- # CONFIG_4KSTACKS is not set
- CONFIG_RAMBASE=0x40000000
-diff --git a/arch/m68k/configs/m5249evb_defconfig b/arch/m68k/configs/m5249evb_defconfig
-index f7bb9ed3efa8..f84f68c04065 100644
---- a/arch/m68k/configs/m5249evb_defconfig
-+++ b/arch/m68k/configs/m5249evb_defconfig
-@@ -10,8 +10,6 @@ CONFIG_EXPERT=y
- # CONFIG_VM_EVENT_COUNTERS is not set
- # CONFIG_SLUB_DEBUG is not set
- # CONFIG_BLK_DEV_BSG is not set
--# CONFIG_IOSCHED_DEADLINE is not set
--# CONFIG_IOSCHED_CFQ is not set
- # CONFIG_MMU is not set
- CONFIG_M5249=y
- CONFIG_M5249C3=y
-diff --git a/arch/m68k/configs/m5272c3_defconfig b/arch/m68k/configs/m5272c3_defconfig
-index 1e679f6a400f..eca65020aae3 100644
---- a/arch/m68k/configs/m5272c3_defconfig
-+++ b/arch/m68k/configs/m5272c3_defconfig
-@@ -10,8 +10,6 @@ CONFIG_EXPERT=y
- # CONFIG_VM_EVENT_COUNTERS is not set
- # CONFIG_SLUB_DEBUG is not set
- # CONFIG_BLK_DEV_BSG is not set
--# CONFIG_IOSCHED_DEADLINE is not set
--# CONFIG_IOSCHED_CFQ is not set
- # CONFIG_MMU is not set
- CONFIG_M5272=y
- CONFIG_M5272C3=y
-diff --git a/arch/m68k/configs/m5275evb_defconfig b/arch/m68k/configs/m5275evb_defconfig
-index d2987b40423e..9402c7a3e9c7 100644
---- a/arch/m68k/configs/m5275evb_defconfig
-+++ b/arch/m68k/configs/m5275evb_defconfig
-@@ -10,8 +10,6 @@ CONFIG_EXPERT=y
- # CONFIG_VM_EVENT_COUNTERS is not set
- # CONFIG_SLUB_DEBUG is not set
- # CONFIG_BLK_DEV_BSG is not set
--# CONFIG_IOSCHED_DEADLINE is not set
--# CONFIG_IOSCHED_CFQ is not set
- # CONFIG_MMU is not set
- CONFIG_M5275=y
- # CONFIG_4KSTACKS is not set
-diff --git a/arch/m68k/configs/m5307c3_defconfig b/arch/m68k/configs/m5307c3_defconfig
-index 97a78c99eeee..bb8b0eb4bdfc 100644
---- a/arch/m68k/configs/m5307c3_defconfig
-+++ b/arch/m68k/configs/m5307c3_defconfig
-@@ -10,8 +10,6 @@ CONFIG_EXPERT=y
- # CONFIG_VM_EVENT_COUNTERS is not set
- # CONFIG_SLUB_DEBUG is not set
- # CONFIG_BLK_DEV_BSG is not set
--# CONFIG_IOSCHED_DEADLINE is not set
--# CONFIG_IOSCHED_CFQ is not set
- # CONFIG_MMU is not set
- CONFIG_M5307=y
- CONFIG_M5307C3=y
-diff --git a/arch/m68k/configs/m5407c3_defconfig b/arch/m68k/configs/m5407c3_defconfig
-index 766a97f39a3a..ce9ccf13c7c0 100644
---- a/arch/m68k/configs/m5407c3_defconfig
-+++ b/arch/m68k/configs/m5407c3_defconfig
-@@ -11,8 +11,6 @@ CONFIG_EXPERT=y
- CONFIG_MODULES=y
- CONFIG_MODULE_UNLOAD=y
- # CONFIG_BLK_DEV_BSG is not set
--# CONFIG_IOSCHED_DEADLINE is not set
--# CONFIG_IOSCHED_CFQ is not set
- # CONFIG_MMU is not set
- CONFIG_M5407=y
- CONFIG_M5407C3=y
-diff --git a/arch/m68k/configs/m5475evb_defconfig b/arch/m68k/configs/m5475evb_defconfig
-index 579fd98afed6..93f7c7a07553 100644
---- a/arch/m68k/configs/m5475evb_defconfig
-+++ b/arch/m68k/configs/m5475evb_defconfig
-@@ -11,8 +11,6 @@ CONFIG_LOG_BUF_SHIFT=14
- CONFIG_EMBEDDED=y
- CONFIG_MODULES=y
- # CONFIG_BLK_DEV_BSG is not set
--# CONFIG_IOSCHED_DEADLINE is not set
--# CONFIG_IOSCHED_CFQ is not set
- CONFIG_COLDFIRE=y
- # CONFIG_4KSTACKS is not set
- CONFIG_RAMBASE=0x0
--- 
-2.17.1
+   CC      arch/m68k/kernel/sys_m68k.o
+In file included from ./arch/m68k/include/asm/pgalloc.h:12,
+                  from ./include/asm-generic/tlb.h:16,
+                  from ./arch/m68k/include/asm/tlb.h:5,
+                  from arch/m68k/kernel/sys_m68k.c:35:
+./arch/m68k/include/asm/mcf_pgalloc.h: In function ‘__pte_free_tlb’:
+./arch/m68k/include/asm/mcf_pgalloc.h:41:24: error: passing argument 1 of ‘pgtable_pte_page_dtor’ from incompatible pointer type [-Werror=incompatible-pointer-types]
+   pgtable_pte_page_dtor(page);
+                         ^~~~
+In file included from arch/m68k/kernel/sys_m68k.c:13:
+./include/linux/mm.h:1949:55: note: expected ‘struct page *’ but argument is of type ‘pgtable_t’ {aka ‘struct <anonymous> *’}
+  static inline void pgtable_pte_page_dtor(struct page *page)
+                                           ~~~~~~~~~~~~~^~~~
+In file included from ./include/linux/mm.h:10,
+                  from arch/m68k/kernel/sys_m68k.c:13:
+./include/linux/gfp.h:577:40: error: passing argument 1 of ‘__free_pages’ from incompatible pointer type [-Werror=incompatible-pointer-types]
+  #define __free_page(page) __free_pages((page), 0)
+                                         ^~~~~~
+./arch/m68k/include/asm/mcf_pgalloc.h:42:2: note: in expansion of macro ‘__free_page’
+   __free_page(page);
+   ^~~~~~~~~~~
+./include/linux/gfp.h:566:39: note: expected ‘struct page *’ but argument is of type ‘pgtable_t’ {aka ‘struct <anonymous> *’}
+  extern void __free_pages(struct page *page, unsigned int order);
+                           ~~~~~~~~~~~~~^~~~
+cc1: some warnings being treated as errors
+scripts/Makefile.build:265: recipe for target 'arch/m68k/kernel/sys_m68k.o' failed
+
+
+Easy to reproduce. Build for the m5475evb_defconfig.
+
+Regards
+Greg
 
