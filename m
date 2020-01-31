@@ -2,89 +2,223 @@ Return-Path: <SRS0=EGad=3U=vger.kernel.org=linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.6 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-1.0 required=3.0 tests=DKIM_INVALID,DKIM_SIGNED,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,
+	SPF_PASS,URIBL_BLOCKED,URIBL_DBL_ABUSE_MALW autolearn=no autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 71D25C33CB2
-	for <linux-m68k@archiver.kernel.org>; Fri, 31 Jan 2020 11:43:33 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id BEBC8C33CB2
+	for <linux-m68k@archiver.kernel.org>; Fri, 31 Jan 2020 12:56:05 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 45E8D20705
-	for <linux-m68k@archiver.kernel.org>; Fri, 31 Jan 2020 11:43:33 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=default; t=1580471013;
-	bh=YUFEVwCNlddvIgP4Qt2+V8mNS/hMbmBZNY+3hypDBV0=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:List-ID:From;
-	b=KWPi4fotJ7COX+Dz6gsxgozHzQSEKsKXio0utVCzdnEHtwWPlk8EydptCsMWCwz1D
-	 90RvGtPEubTSeJW0XytUL9zuTaTi/TgQJmM76n9qWnkjs0XbJul8cEQlfWXrzKVLX4
-	 gfvtGgaqWuBCfcjPcLwh41GqvcbUTctW1TaHtJ3I=
+	by mail.kernel.org (Postfix) with ESMTP id 924F620705
+	for <linux-m68k@archiver.kernel.org>; Fri, 31 Jan 2020 12:56:05 +0000 (UTC)
+Authentication-Results: mail.kernel.org;
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="PiXr0TMK"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728428AbgAaLnd (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Fri, 31 Jan 2020 06:43:33 -0500
-Received: from mail.kernel.org ([198.145.29.99]:35870 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728387AbgAaLnc (ORCPT <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Fri, 31 Jan 2020 06:43:32 -0500
-Received: from willie-the-truck (236.31.169.217.in-addr.arpa [217.169.31.236])
+        id S1728514AbgAaM4F (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Fri, 31 Jan 2020 07:56:05 -0500
+Received: from bombadil.infradead.org ([198.137.202.133]:53356 "EHLO
+        bombadil.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728511AbgAaM4F (ORCPT
+        <rfc822;linux-m68k@lists.linux-m68k.org>);
+        Fri, 31 Jan 2020 07:56:05 -0500
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20170209; h=Content-Type:MIME-Version:References:
+        Subject:Cc:To:From:Date:Message-Id:Sender:Reply-To:Content-Transfer-Encoding:
+        Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
+        Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:List-Id:List-Help:
+        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=n6RhCQHsHSyTTjZawIUQRIGp0UsjTpUD7uRgGAuTt9A=; b=PiXr0TMKBYgO1KuaqgBFJjOPAJ
+        jsw+p5rUo36Dm+/CFm2tZ4siWZ254oxNJxdEqOfpzB4jEH/UhKKmw0fuf9KV261tj7yFZ+3lsVPVZ
+        r2ysWQwFFvo34sOzbTY3Op04SYS2dFAvyn5OkjQdxK0dwPv8aRd2UthCr8rF0amWRlUIv7dLeb8wV
+        QqmyHqNODbxGQujpXWQO6LDfdtSaRghDzFvdfBxXF+OQPSDOuvLuDmk1WIp1PS8hWCmY+DHPUXqLr
+        Ql1j4CrA5ofiQim4yVy47OunCuO0gTkQOlSP0lfWkEHB5h7l7ZoLY8k98mkbPphB0WJNqvy6oAG0A
+        JxRLjLKA==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by bombadil.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1ixVq7-0001ZA-2D; Fri, 31 Jan 2020 12:56:03 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 360FE206F0;
-        Fri, 31 Jan 2020 11:43:31 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1580471012;
-        bh=YUFEVwCNlddvIgP4Qt2+V8mNS/hMbmBZNY+3hypDBV0=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=jW4AoN2X6dGPfIaw14g6qm7SO5ds6Xpe3ahdMQc74ts03Pw78P56dLgB+YVAAUZyE
-         VROLZcQcq/SFvgav0mP3RRoXqxQ0in99t7On5kpNK/t553bMkNLc6BUEfImq9AxWiL
-         sjpa5jnjYHH9utuJEy/wMS0VOlhqNy57JQxnTxpc=
-Date:   Fri, 31 Jan 2020 11:43:27 +0000
-From:   Will Deacon <will@kernel.org>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Greg Ungerer <gerg@linux-m68k.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 0/5] Rewrite Motorola MMU page-table layout
-Message-ID: <20200131114327.GB4298@willie-the-truck>
-References: <20200129103941.304769381@infradead.org>
- <8a81e075-d3bd-80c1-d869-9935fdd73162@linux-m68k.org>
- <20200131093813.GA3938@willie-the-truck>
- <20200131102239.GB14914@hirez.programming.kicks-ass.net>
- <20200131111459.GO14946@hirez.programming.kicks-ass.net>
- <20200131111824.GA4298@willie-the-truck>
- <20200131113139.GC14914@hirez.programming.kicks-ass.net>
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 3C2B43011E8;
+        Fri, 31 Jan 2020 13:54:17 +0100 (CET)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 0)
+        id E25142B4C4271; Fri, 31 Jan 2020 13:56:00 +0100 (CET)
+Message-Id: <20200131125403.597688427@infradead.org>
+User-Agent: quilt/0.65
+Date:   Fri, 31 Jan 2020 13:45:34 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Geert Uytterhoeven <geert@linux-m68k.org>
+Cc:     linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org,
+        Will Deacon <will@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Michael Schmitz <schmitzmic@gmail.com>,
+        Greg Ungerer <gerg@linux-m68k.org>
+Subject: [PATCH -v2 03/10] m68k,mm: Unify Motorola MMU page setup
+References: <20200131124531.623136425@infradead.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200131113139.GC14914@hirez.programming.kicks-ass.net>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain; charset=UTF-8
 Sender: linux-m68k-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-On Fri, Jan 31, 2020 at 12:31:39PM +0100, Peter Zijlstra wrote:
-> On Fri, Jan 31, 2020 at 11:18:24AM +0000, Will Deacon wrote:
-> > > > > +static inline pgtable_t pte_alloc_one(struct mm_struct *mm)
-> > > > >  {
-> > > > >  	struct page *page = alloc_pages(GFP_DMA, 0);
-> > > > >  	pte_t *pte;
-> 
-> > Does that mean we can drop the GFP_DMA too? If so, this all ends up
-> > looking very similar to the sun3 code wrt alloc/free and they could
-> > probably use the same implementation (since the generic code doesn't
-> > like out pgtable_t definition).
-> 
-> Many software TLB archs have limits on what memory the TLB miss handler
-> itself can access (chicken-egg issues), it might be this is where the
-> GFP_DMA comes from.
+Seeing how there are 5 copies of this magic code, one of which is
+unexplainably different, unify and document things.
 
-Fair enough, that sounds plausible.
+Suggested-by: Will Deacon <will@kernel.org>
+Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+---
+ arch/m68k/include/asm/motorola_pgalloc.h |   23 ++++++++++-------------
+ arch/m68k/mm/memory.c                    |    5 ++---
+ arch/m68k/mm/motorola.c                  |   30 ++++++++++++++++++++++++------
+ 3 files changed, 36 insertions(+), 22 deletions(-)
 
-> I can't quickly find this in the CFV4e docs, but I'm not really reading
-> it carefully either.
+--- a/arch/m68k/include/asm/motorola_pgalloc.h
++++ b/arch/m68k/include/asm/motorola_pgalloc.h
+@@ -5,6 +5,9 @@
+ #include <asm/tlb.h>
+ #include <asm/tlbflush.h>
+ 
++extern void mmu_page_ctor(void *page);
++extern void mmu_page_dtor(void *page);
++
+ extern pmd_t *get_pointer_table(void);
+ extern int free_pointer_table(pmd_t *);
+ 
+@@ -13,25 +16,21 @@ static inline pte_t *pte_alloc_one_kerne
+ 	pte_t *pte;
+ 
+ 	pte = (pte_t *)__get_free_page(GFP_KERNEL|__GFP_ZERO);
+-	if (pte) {
+-		__flush_page_to_ram(pte);
+-		flush_tlb_kernel_page(pte);
+-		nocache_page(pte);
+-	}
++	if (pte)
++		mmu_page_ctor(pte);
+ 
+ 	return pte;
+ }
+ 
+ static inline void pte_free_kernel(struct mm_struct *mm, pte_t *pte)
+ {
+-	cache_page(pte);
++	mmu_page_dtor(pte);
+ 	free_page((unsigned long) pte);
+ }
+ 
+ static inline pgtable_t pte_alloc_one(struct mm_struct *mm)
+ {
+ 	struct page *page;
+-	pte_t *pte;
+ 
+ 	page = alloc_pages(GFP_KERNEL|__GFP_ZERO, 0);
+ 	if(!page)
+@@ -41,18 +40,16 @@ static inline pgtable_t pte_alloc_one(st
+ 		return NULL;
+ 	}
+ 
+-	pte = kmap(page);
+-	__flush_page_to_ram(pte);
+-	flush_tlb_kernel_page(pte);
+-	nocache_page(pte);
++	mmu_page_ctor(kmap(page));
+ 	kunmap(page);
++
+ 	return page;
+ }
+ 
+ static inline void pte_free(struct mm_struct *mm, pgtable_t page)
+ {
+ 	pgtable_pte_page_dtor(page);
+-	cache_page(kmap(page));
++	mmu_page_dtor(kmap(page));
+ 	kunmap(page);
+ 	__free_page(page);
+ }
+@@ -61,7 +58,7 @@ static inline void __pte_free_tlb(struct
+ 				  unsigned long address)
+ {
+ 	pgtable_pte_page_dtor(page);
+-	cache_page(kmap(page));
++	mmu_page_dtor(kmap(page));
+ 	kunmap(page);
+ 	__free_page(page);
+ }
+--- a/arch/m68k/mm/memory.c
++++ b/arch/m68k/mm/memory.c
+@@ -77,8 +77,7 @@ pmd_t *get_pointer_table (void)
+ 		if (!(page = (void *)get_zeroed_page(GFP_KERNEL)))
+ 			return NULL;
+ 
+-		flush_tlb_kernel_page(page);
+-		nocache_page(page);
++		mmu_page_ctor(page);
+ 
+ 		new = PD_PTABLE(page);
+ 		PD_MARKBITS(new) = 0xfe;
+@@ -112,7 +111,7 @@ int free_pointer_table (pmd_t *ptable)
+ 	if (PD_MARKBITS(dp) == 0xff) {
+ 		/* all tables in page are free, free page */
+ 		list_del(dp);
+-		cache_page((void *)page);
++		mmu_page_dtor((void *)page);
+ 		free_page (page);
+ 		return 1;
+ 	} else if (ptable_list.next != dp) {
+--- a/arch/m68k/mm/motorola.c
++++ b/arch/m68k/mm/motorola.c
+@@ -45,6 +45,28 @@ unsigned long mm_cachebits;
+ EXPORT_SYMBOL(mm_cachebits);
+ #endif
+ 
++
++/*
++ * Motorola 680x0 user's manual recommends using uncached memory for address
++ * translation tables.
++ *
++ * Seeing how the MMU can be external on (some of) these chips, that seems like
++ * a very important recommendation to follow. Provide some helpers to combat
++ * 'variation' amongst the users of this.
++ */
++
++void mmu_page_ctor(void *page)
++{
++	__flush_page_to_ram(page);
++	flush_tlb_kernel_page(page);
++	nocache_page(page);
++}
++
++void mmu_page_dtor(void *page)
++{
++	cache_page(page);
++}
++
+ /* size of memory already mapped in head.S */
+ extern __initdata unsigned long m68k_init_mapped_size;
+ 
+@@ -60,9 +82,7 @@ static pte_t * __init kernel_page_table(
+ 		      __func__, PAGE_SIZE, PAGE_SIZE);
+ 
+ 	clear_page(ptablep);
+-	__flush_page_to_ram(ptablep);
+-	flush_tlb_kernel_page(ptablep);
+-	nocache_page(ptablep);
++	mmu_page_ctor(ptablep);
+ 
+ 	return ptablep;
+ }
+@@ -106,9 +126,7 @@ static pmd_t * __init kernel_ptr_table(v
+ 			      __func__, PAGE_SIZE, PAGE_SIZE);
+ 
+ 		clear_page(last_pgtable);
+-		__flush_page_to_ram(last_pgtable);
+-		flush_tlb_kernel_page(last_pgtable);
+-		nocache_page(last_pgtable);
++		mmu_page_ctor(last_pgtable);
+ 	}
+ 
+ 	return last_pgtable;
 
-I can't find any code under arch/m68k/ which suggests it, but for now
-I guess we should stick with the old pgtable_t definition for sun3 with
-a comment (and keep the GFP_DMA in for coldfire).
 
-Will
