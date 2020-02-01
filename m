@@ -1,105 +1,122 @@
-Return-Path: <SRS0=EGad=3U=vger.kernel.org=linux-m68k-owner@kernel.org>
+Return-Path: <SRS0=KI6D=3V=vger.kernel.org=linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.2 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=no
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-0.6 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
+	autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id CE8BAC33CB2
-	for <linux-m68k@archiver.kernel.org>; Fri, 31 Jan 2020 13:20:03 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 414E3C33C9E
+	for <linux-m68k@archiver.kernel.org>; Sat,  1 Feb 2020 08:07:42 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id AA804205F4
-	for <linux-m68k@archiver.kernel.org>; Fri, 31 Jan 2020 13:20:03 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 12C0020679
+	for <linux-m68k@archiver.kernel.org>; Sat,  1 Feb 2020 08:07:42 +0000 (UTC)
+Authentication-Results: mail.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="hRi0IFDa"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728603AbgAaNUD (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Fri, 31 Jan 2020 08:20:03 -0500
-Received: from icp-osb-irony-out8.external.iinet.net.au ([203.59.1.225]:21499
-        "EHLO icp-osb-irony-out8.external.iinet.net.au" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728598AbgAaNUD (ORCPT
+        id S1726197AbgBAIHl (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Sat, 1 Feb 2020 03:07:41 -0500
+Received: from mail-pj1-f66.google.com ([209.85.216.66]:38141 "EHLO
+        mail-pj1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725992AbgBAIHl (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Fri, 31 Jan 2020 08:20:03 -0500
-X-IronPort-Anti-Spam-Filtered: true
-X-IronPort-Anti-Spam-Result: =?us-ascii?q?A2AlAACzKDRe/zXSMGcNWBoBAQEBAQE?=
- =?us-ascii?q?BAQEDAQEBAREBAQECAgEBAQGBe4F9gRiBMYQUj1kBAQEBAQEGgRIliW+RSQk?=
- =?us-ascii?q?BAQEBAQEBAQErDAEBhEACglQ4EwIQAQEBBAEBAQEBBQMBhVhMhXIBAQEBAgE?=
- =?us-ascii?q?jFUEFCwsNCwICJgICVwYBDAYCAQGDIgGCVgUvrCh1gTIahBsBgRSDOIE4BoE?=
- =?us-ascii?q?OKoFlilV5gQeBOAyCYD6HWYJeBI1diVqYKQiCPYdFhUeJLSGCSIgNhDUDi3i?=
- =?us-ascii?q?OYIhnlEKBejMaCCgIgycTPY9pAQiHV4VRYgIBjkYBAQ?=
-X-IPAS-Result: =?us-ascii?q?A2AlAACzKDRe/zXSMGcNWBoBAQEBAQEBAQEDAQEBAREBA?=
- =?us-ascii?q?QECAgEBAQGBe4F9gRiBMYQUj1kBAQEBAQEGgRIliW+RSQkBAQEBAQEBAQErD?=
- =?us-ascii?q?AEBhEACglQ4EwIQAQEBBAEBAQEBBQMBhVhMhXIBAQEBAgEjFUEFCwsNCwICJ?=
- =?us-ascii?q?gICVwYBDAYCAQGDIgGCVgUvrCh1gTIahBsBgRSDOIE4BoEOKoFlilV5gQeBO?=
- =?us-ascii?q?AyCYD6HWYJeBI1diVqYKQiCPYdFhUeJLSGCSIgNhDUDi3iOYIhnlEKBejMaC?=
- =?us-ascii?q?CgIgycTPY9pAQiHV4VRYgIBjkYBAQ?=
-X-IronPort-AV: E=Sophos;i="5.70,385,1574092800"; 
-   d="scan'208";a="280751624"
-Received: from unknown (HELO [10.44.0.192]) ([103.48.210.53])
-  by icp-osb-irony-out8.iinet.net.au with ESMTP; 31 Jan 2020 21:19:59 +0800
+        Sat, 1 Feb 2020 03:07:41 -0500
+Received: by mail-pj1-f66.google.com with SMTP id j17so4064022pjz.3
+        for <linux-m68k@lists.linux-m68k.org>; Sat, 01 Feb 2020 00:07:41 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:references:cc:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-transfer-encoding;
+        bh=5nTO1YAVmPYSrJV28ycJBVRQxudQyA//ln8alpueGps=;
+        b=hRi0IFDaZn1lUYPec0qzmBKxfP6Dp5z1ASVzko/oGim4N6t0iTqI+Rq5GJ79UGsZk4
+         jIRbBfvCFm83PIOe/5646uAh8jt4ocQYU7CEHv9EaZyOIkDfQJ9B0eKkb/7GfYVLo1ZC
+         oT3GwN2WPDGuMq08oWbz6KJEkiqFMhXvoyPFKdSfX4BqTu3KPBWk8GM7IravPiATD710
+         u1Ky4J0jaFm2nfXfZQ7BdWnQ99puOsxnndHxi1tGJGEDuIzRsHT9SvDlkLH8dC8h4P04
+         jCjbN95qHqHt8huMtBcMIA+bc+hjyvdgw8SpcIWGUvLa8yXcIadvVzgWnZPdbi6GUbDb
+         ItuQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:references:cc:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding;
+        bh=5nTO1YAVmPYSrJV28ycJBVRQxudQyA//ln8alpueGps=;
+        b=ZBSNiRt7ZNNrN888Ti833hbUbCjdxzkz1LlVypUQHw/LimN1mL5t++y4T4Y4sKDe/z
+         EZOBCLmwOGKcNLRVU/Bkys5SSbRPtF04hc95Tpz5hivsiI76Ut5w0V2LG2gtIH1pkDzU
+         3/Nzhq7SU+D4K/naiCT5XEYrXOPvCtLpxzem3aJ4FTkl9XAxRVpM+EAiber3EsuMMq6o
+         kFQNqucIBU+xvbYu9SQB1D9PQewkMbq8U/IVBQIQY4EOo0oyr3mul5jm0mr6FYvEFTka
+         JMOzj4gu8YFJ/6UNgd/oAsFofjlOZV15LJGZPRJ9n1gX0W7JozCkvqtPmth4dlR3fK1H
+         xSig==
+X-Gm-Message-State: APjAAAWGgKE0OsjfzKTbLLAKFz0xSRlXnX9e5++4a9G5RIiE/4UFyns+
+        YYyf5gaJVteh91p4F2u2EKM=
+X-Google-Smtp-Source: APXvYqwaEPljKf+Uny3oyoHTmu8YcqVO19suYZDZeuOPA9IUPKs3vW0aZ/6hfDDv6IKxZBH9yVyBcg==
+X-Received: by 2002:a17:902:a514:: with SMTP id s20mr13995193plq.300.1580544460768;
+        Sat, 01 Feb 2020 00:07:40 -0800 (PST)
+Received: from [192.168.1.101] (122-58-182-19-adsl.sparkbb.co.nz. [122.58.182.19])
+        by smtp.gmail.com with ESMTPSA id x132sm12731750pfc.148.2020.02.01.00.07.36
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+        Sat, 01 Feb 2020 00:07:40 -0800 (PST)
 Subject: Re: [PATCH -v2 00/10] Rewrite Motorola MMU page-table layout
 To:     Peter Zijlstra <peterz@infradead.org>,
         Geert Uytterhoeven <geert@linux-m68k.org>
+References: <20200131124531.623136425@infradead.org>
 Cc:     linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org,
         Will Deacon <will@kernel.org>,
-        Michael Schmitz <schmitzmic@gmail.com>
-References: <20200131124531.623136425@infradead.org>
-From:   Greg Ungerer <gerg@linux-m68k.org>
-Message-ID: <9fe6925a-52e5-7104-dae6-3ad97c4bbecc@linux-m68k.org>
-Date:   Fri, 31 Jan 2020 23:19:58 +1000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.4.1
+        Greg Ungerer <gerg@linux-m68k.org>
+From:   Michael Schmitz <schmitzmic@gmail.com>
+Message-ID: <415a1105-f971-5513-bd41-fbd2ec4e1cd7@gmail.com>
+Date:   Sat, 1 Feb 2020 21:07:34 +1300
+User-Agent: Mozilla/5.0 (X11; Linux ppc; rv:45.0) Gecko/20100101
+ Icedove/45.4.0
 MIME-Version: 1.0
 In-Reply-To: <20200131124531.623136425@infradead.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
+Content-Type: text/plain; charset=iso-8859-15; format=flowed
 Content-Transfer-Encoding: 7bit
 Sender: linux-m68k-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-Hi Peter,
+Peter,
 
-On 31/1/20 10:45 pm, Peter Zijlstra wrote:
+this version tested OK on 030, so
+
+Tested-by; Michael Schmitz <schmitzmic@gmail.com>
+
+Am 01.02.2020 um 01:45 schrieb Peter Zijlstra:
+> Hi!
+>
 > In order to faciliate Will's READ_ONCE() patches:
-> 
->    https://lkml.kernel.org/r/20200123153341.19947-1-will@kernel.org
-> 
+>
+>   https://lkml.kernel.org/r/20200123153341.19947-1-will@kernel.org
+>
 > we need to fix m68k/motorola to not have a giant pmd_t. These patches do so and
 > are tested using ARAnyM/68040.
-> 
+>
 > Michael tested the previous version on his Atari Falcon/68030.
-> 
+>
 > Build tested for sun3/coldfire.
-
-Thanks for the quick turn around. Build looks good for me too with
-this new series. I will test on real hardware on Monday.
-
-Regards
-Greg
-
-
+>
 > Please consider!
-> 
+>
 > Changes since -v1:
->   - fixed sun3/coldfire build issues
->   - unified motorola mmu page setup
->   - added enum to table allocator
->   - moved pointer table allocator to motorola.c
->   - converted coldfire pgtable_t
->   - fixed coldfire pgd_alloc
->   - fixed coldfire nocache
-> 
+>  - fixed sun3/coldfire build issues
+>  - unified motorola mmu page setup
+>  - added enum to table allocator
+>  - moved pointer table allocator to motorola.c
+>  - converted coldfire pgtable_t
+>  - fixed coldfire pgd_alloc
+>  - fixed coldfire nocache
+>
 > ---
->   arch/m68k/include/asm/mcf_pgalloc.h      |  31 ++---
->   arch/m68k/include/asm/motorola_pgalloc.h |  74 ++++------
->   arch/m68k/include/asm/motorola_pgtable.h |  36 +++--
->   arch/m68k/include/asm/page.h             |  16 ++-
->   arch/m68k/include/asm/pgtable_mm.h       |  10 +-
->   arch/m68k/mm/init.c                      |  34 +++--
->   arch/m68k/mm/kmap.c                      |  36 +++--
->   arch/m68k/mm/memory.c                    | 103 --------------
->   arch/m68k/mm/motorola.c                  | 228 +++++++++++++++++++++++++------
->   9 files changed, 302 insertions(+), 266 deletions(-)
-> 
-> 
+>  arch/m68k/include/asm/mcf_pgalloc.h      |  31 ++---
+>  arch/m68k/include/asm/motorola_pgalloc.h |  74 ++++------
+>  arch/m68k/include/asm/motorola_pgtable.h |  36 +++--
+>  arch/m68k/include/asm/page.h             |  16 ++-
+>  arch/m68k/include/asm/pgtable_mm.h       |  10 +-
+>  arch/m68k/mm/init.c                      |  34 +++--
+>  arch/m68k/mm/kmap.c                      |  36 +++--
+>  arch/m68k/mm/memory.c                    | 103 --------------
+>  arch/m68k/mm/motorola.c                  | 228 +++++++++++++++++++++++++------
+>  9 files changed, 302 insertions(+), 266 deletions(-)
+>
+>
