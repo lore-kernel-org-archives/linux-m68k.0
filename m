@@ -2,113 +2,141 @@ Return-Path: <SRS0=/w+O=33=vger.kernel.org=linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.7 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
-	MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-	autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-5.0 required=3.0 tests=DKIM_INVALID,DKIM_SIGNED,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,
+	SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 91FB0C352A3
-	for <linux-m68k@archiver.kernel.org>; Fri,  7 Feb 2020 10:58:59 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id BFA35C352A2
+	for <linux-m68k@archiver.kernel.org>; Fri,  7 Feb 2020 11:34:22 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 7344920838
-	for <linux-m68k@archiver.kernel.org>; Fri,  7 Feb 2020 10:58:59 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 9228F20726
+	for <linux-m68k@archiver.kernel.org>; Fri,  7 Feb 2020 11:34:22 +0000 (UTC)
+Authentication-Results: mail.kernel.org;
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="pZVR7t9Z"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727028AbgBGK66 (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Fri, 7 Feb 2020 05:58:58 -0500
-Received: from mail-oi1-f195.google.com ([209.85.167.195]:40558 "EHLO
-        mail-oi1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726587AbgBGK66 (ORCPT
+        id S1726827AbgBGLeW (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Fri, 7 Feb 2020 06:34:22 -0500
+Received: from bombadil.infradead.org ([198.137.202.133]:40200 "EHLO
+        bombadil.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726798AbgBGLeW (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Fri, 7 Feb 2020 05:58:58 -0500
-Received: by mail-oi1-f195.google.com with SMTP id a142so1557935oii.7
-        for <linux-m68k@lists.linux-m68k.org>; Fri, 07 Feb 2020 02:58:56 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=xlWmAKNVj5dvuafMqzMVgnMvFP7XXln5tSxgE2a8QTA=;
-        b=sMoay/rLW21OE/Uj/lKgluoLEusOHfacUBgZ0eYEOaaL25hKYt+QPXgZMxeQbvRJro
-         2/yx+jWECgoeT2FV+bGXX5qPXaEyunLYAT+/e4ZDhA20Pemao3Rpq4xvoHpX7aI9dKtX
-         YPGiD9CAswmpGgs8HiU8LD6tGAN8wu5ofwllx8uhjiHG4CHFoNyFJYFMEZ1j+GjFXh1T
-         BB132S5NIg8Mts+tf3lSTj3UrefAX1bvgwgi2MN9ARQ6K+SesbHyLJePxoaHJqgO2JnB
-         yyA4z7pDM25PvedXXoagxY++/4/zpK54u/E3QFeM4sQlGjYdv9pdJgFuXjhb/2x6hzt/
-         ZlXg==
-X-Gm-Message-State: APjAAAWsM46/9FVU0YVGU7IK2YP5eWJf1heuq1GBLxqP18CJwydOwXPi
-        D0+bgMRtmw6C5LI59anEfYfL+NhXPlZZcwPZ6KJzRhbL
-X-Google-Smtp-Source: APXvYqw314+cwlH3iHyW2XWK9TYYfJ+GcZAJnc1R38slc6frr4UWK+8kpOFhkF35Ez/ZDEfz7vki8eTJf9/YOKQ3c3U=
-X-Received: by 2002:aca:48cd:: with SMTP id v196mr1728279oia.102.1581073136290;
- Fri, 07 Feb 2020 02:58:56 -0800 (PST)
-MIME-Version: 1.0
-References: <20200131124531.623136425@infradead.org> <20200131125403.938797587@infradead.org>
-In-Reply-To: <20200131125403.938797587@infradead.org>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Fri, 7 Feb 2020 11:58:42 +0100
-Message-ID: <CAMuHMdUxwz4X+SYCCWCMNAw2nNTMUXWPWrxJ+X9mYC_tirvN=A@mail.gmail.com>
-Subject: Re: [PATCH -v2 09/10] m68k,mm: Fully initialize the page-table allocator
-To:     Peter Zijlstra <peterz@infradead.org>
+        Fri, 7 Feb 2020 06:34:22 -0500
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20170209; h=In-Reply-To:Content-Type:MIME-Version
+        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=bbNKqLeBKsalj59oA0t74eb1uCjNw+Eae9shIiQnYSM=; b=pZVR7t9ZswIQ+reQ+UqSSSsGpZ
+        Bl0E03/gHDRzaQbHInHmqGGsgGQofoVGrYsygmCQYgKmn+yRXWl0HkrjY1BLPmTFn6PHkVJWOdJSg
+        bFugaTUxEyHxufAQ0YSpy1tSNTva9rnpykalor+N/OSZ91+2pQyUib8EkxqjEUHouXBKan3mX2TEb
+        J3WC6WfYcgolhBfoHKLE4X1Dv4Bpht3s00rLaAcm9UxTfJ+zDEK25fP7vAE29PVnpLYU/HEMBnbLO
+        wsKHxPJNCbr+JeYrs7/47wazpH25cDIg2FQpmIsDfw6oVlHmrOARZOlSklN27rjMWyXVTIqT/9sDp
+        Z+/cxTkw==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by bombadil.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1j01ts-0008Jr-5R; Fri, 07 Feb 2020 11:34:20 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id C5D843011E8;
+        Fri,  7 Feb 2020 12:32:30 +0100 (CET)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 951CC2B879078; Fri,  7 Feb 2020 12:34:17 +0100 (CET)
+Date:   Fri, 7 Feb 2020 12:34:17 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Geert Uytterhoeven <geert@linux-m68k.org>
 Cc:     linux-m68k <linux-m68k@lists.linux-m68k.org>,
         Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
         Will Deacon <will@kernel.org>,
         Michael Schmitz <schmitzmic@gmail.com>,
         Greg Ungerer <gerg@linux-m68k.org>
-Content-Type: text/plain; charset="UTF-8"
+Subject: Re: [PATCH -v2 08/10] m68k,mm: Extend table allocator for multiple
+ sizes
+Message-ID: <20200207113417.GG14914@hirez.programming.kicks-ass.net>
+References: <20200131124531.623136425@infradead.org>
+ <20200131125403.882175409@infradead.org>
+ <CAMuHMdWa8R=3fHLV7W_ni8An_1CwOoJxErnnDA3t4rq2XN+QzA@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAMuHMdWa8R=3fHLV7W_ni8An_1CwOoJxErnnDA3t4rq2XN+QzA@mail.gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-m68k-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-Hoi Peter,
+On Fri, Feb 07, 2020 at 11:56:40AM +0100, Geert Uytterhoeven wrote:
+> Hoi Peter,
+> 
+> On Fri, Jan 31, 2020 at 1:56 PM Peter Zijlstra <peterz@infradead.org> wrote:
+> > In addition to the PGD/PMD table size (128*4) add a PTE table size
+> > (64*4) to the table allocator. This completely removes the pte-table
+> > overhead compared to the old code, even for dense tables.
+> 
+> Thanks for your patch!
+> 
+> > Notes:
+> >
+> >  - the allocator gained a list_empty() check to deal with there not
+> >    being any pages at all.
+> >
+> >  - the free mask is extended to cover more than the 8 bits required
+> >    for the (512 byte) PGD/PMD tables.
+> 
+> Being an mm-illiterate, I don't understand the relation between the number
+> of bits and the size (see below).
 
-Thanks for your patch!
+If the table translates 7 bits of the address, it will have 1<<7 entries.
 
-On Fri, Jan 31, 2020 at 1:56 PM Peter Zijlstra <peterz@infradead.org> wrote:
-> Also iterate the PMD tables to populate the PTE table allocator. This
-> also fully replaces the previous zero_pgtable hack.
+> >  - NR_PAGETABLE accounting is restored.
+> >
+> > Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+> 
+> WARNING: Missing Signed-off-by: line by nominal patch author 'Peter
+> Zijlstra <peterz@infradead.org>'
+> (in all patches)
+> 
+> I can fix that (the From?) up while applying.
 
-As no code is being removed in this patch, does this mean this case was
-broken since "[PATCH 06/10] m68k,mm: Improve kernel_page_table()"?
+I'm not sure where that warning comes from, but if you feel it needs
+fixing, sure. I normally only add the (Intel) thing to the SoB. I've so
+far never had complaints about that.
 
-> Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-> ---
->  arch/m68k/mm/init.c |   13 ++++++++++++-
->  1 file changed, 12 insertions(+), 1 deletion(-)
->
-> --- a/arch/m68k/mm/init.c
-> +++ b/arch/m68k/mm/init.c
-> @@ -120,7 +120,7 @@ void free_initmem(void)
->  static inline void init_pointer_tables(void)
->  {
->  #if defined(CONFIG_MMU) && !defined(CONFIG_SUN3) && !defined(CONFIG_COLDFIRE)
-> -       int i;
-> +       int i, j;
->
->         /* insert pointer tables allocated so far into the tablelist */
->         init_pointer_table(kernel_pg_dir, TABLE_PGD);
-> @@ -133,6 +133,17 @@ static inline void init_pointer_tables(v
->
->                 pmd_dir = (pmd_t *)pgd_page_vaddr(kernel_pg_dir[i]);
->                 init_pointer_table(pmd_dir, TABLE_PMD);
-> +
-> +               for (j = 0; j < PTRS_PER_PMD; j++) {
-> +                       pmd_t *pmd = &pmd_dir[j];
-> +                       pte_t *pte_dir;
-> +
-> +                       if (!pmd_present(*pmd))
-> +                               continue;
-> +
-> +                       pte_dir = (pte_t *)__pmd_page(*pmd);
-> +                       init_pointer_table(pte_dir, TABLE_PTE);
-> +               }
->         }
->  #endif
->  }
+> > --- a/arch/m68k/mm/motorola.c
+> > +++ b/arch/m68k/mm/motorola.c
+> > @@ -72,24 +72,35 @@ void mmu_page_dtor(void *page)
+> >     arch/sparc/mm/srmmu.c ... */
+> >
+> >  typedef struct list_head ptable_desc;
+> > -static LIST_HEAD(ptable_list);
+> > +
+> > +static struct list_head ptable_list[2] = {
+> > +       LIST_HEAD_INIT(ptable_list[0]),
+> > +       LIST_HEAD_INIT(ptable_list[1]),
+> > +};
+> >
+> >  #define PD_PTABLE(page) ((ptable_desc *)&(virt_to_page(page)->lru))
+> >  #define PD_PAGE(ptable) (list_entry(ptable, struct page, lru))
+> > -#define PD_MARKBITS(dp) (*(unsigned char *)&PD_PAGE(dp)->index)
+> > +#define PD_MARKBITS(dp) (*(unsigned int *)&PD_PAGE(dp)->index)
+> > +
+> > +static const int ptable_shift[2] = {
+> > +       7+2, /* PGD, PMD */
+> > +       6+2, /* PTE */
+> > +};
+> >
+> > -#define PTABLE_SIZE (PTRS_PER_PMD * sizeof(pmd_t))
+> > +#define ptable_size(type) (1U << ptable_shift[type])
+> > +#define ptable_mask(type) ((1U << (PAGE_SIZE / ptable_size(type))) - 1)
+> 
+> So this is 0xff for PGD and PMD, like before, and 0xffff for PTE.
+> Why the latter value?
 
-Gr{oetje,eeting}s,
+The PGD/PMD being 7 bits are sizeof(unsigned long) << 7, or 512 bytes
+big. In one 4k page, there fit 8 such entries. 0xFF is 8 bits set, one
+for each of the 8 512 byte fragments.
 
-                        Geert
+For the PTE tables, which are 6 bit and of sizeof(unsigned long) << 6,
+or 256 bytes, we can fit 16 in one 4k page, resulting in 0xFFFF.
 
--- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
