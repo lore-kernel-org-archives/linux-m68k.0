@@ -1,202 +1,428 @@
-Return-Path: <SRS0=t7t/=35=vger.kernel.org=linux-m68k-owner@kernel.org>
+Return-Path: <SRS0=gnDg=36=vger.kernel.org=linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-6.8 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS
-	autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-9.0 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,
+	UPPERCASE_50_75,USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 5EFE0C2BA83
-	for <linux-m68k@archiver.kernel.org>; Sun,  9 Feb 2020 18:25:33 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 99B78C352A4
+	for <linux-m68k@archiver.kernel.org>; Mon, 10 Feb 2020 09:39:23 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 353E3207FF
-	for <linux-m68k@archiver.kernel.org>; Sun,  9 Feb 2020 18:25:33 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 5DB772080C
+	for <linux-m68k@archiver.kernel.org>; Mon, 10 Feb 2020 09:39:23 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727777AbgBISZc (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Sun, 9 Feb 2020 13:25:32 -0500
-Received: from smtprelay0056.hostedemail.com ([216.40.44.56]:49149 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1727397AbgBISZc (ORCPT
+        id S1726961AbgBJJjX (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Mon, 10 Feb 2020 04:39:23 -0500
+Received: from michel.telenet-ops.be ([195.130.137.88]:47256 "EHLO
+        michel.telenet-ops.be" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726118AbgBJJjX (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Sun, 9 Feb 2020 13:25:32 -0500
-Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay07.hostedemail.com (Postfix) with ESMTP id 39301181D3026;
-        Sun,  9 Feb 2020 18:25:31 +0000 (UTC)
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-HE-Tag: death76_6a32f430d9727
-X-Filterd-Recvd-Size: 5793
-Received: from XPS-9350.home (unknown [47.151.143.254])
-        (Authenticated sender: joe@perches.com)
-        by omf08.hostedemail.com (Postfix) with ESMTPA;
-        Sun,  9 Feb 2020 18:25:29 +0000 (UTC)
-Message-ID: <3f8a8a2f89bfd2d4cca9ac176ef41abf3a0ed4ab.camel@perches.com>
-Subject: Re: Checkpatch being daft, Was: [PATCH -v2 08/10] m68k,mm: Extend
- table allocator for multiple sizes
-From:   Joe Perches <joe@perches.com>
-To:     Peter Zijlstra <peterz@infradead.org>,
+        Mon, 10 Feb 2020 04:39:23 -0500
+Received: from ramsan ([84.195.182.253])
+        by michel.telenet-ops.be with bizsmtp
+        id 0xfL2200G5USYZQ06xfLcQ; Mon, 10 Feb 2020 10:39:20 +0100
+Received: from rox.of.borg ([192.168.97.57])
+        by ramsan with esmtp (Exim 4.90_1)
+        (envelope-from <geert@linux-m68k.org>)
+        id 1j15XE-00028x-Lw; Mon, 10 Feb 2020 10:39:20 +0100
+Received: from geert by rox.of.borg with local (Exim 4.90_1)
+        (envelope-from <geert@linux-m68k.org>)
+        id 1j15XE-0001vO-Jq; Mon, 10 Feb 2020 10:39:20 +0100
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+To:     linux-m68k@lists.linux-m68k.org
+Cc:     linux-kernel@vger.kernel.org,
         Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     linux-m68k <linux-m68k@lists.linux-m68k.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Will Deacon <will@kernel.org>,
-        Michael Schmitz <schmitzmic@gmail.com>,
-        Greg Ungerer <gerg@linux-m68k.org>,
-        sean.j.christopherson@intel.com
-Date:   Sun, 09 Feb 2020 10:24:15 -0800
-In-Reply-To: <20200207123334.GT14946@hirez.programming.kicks-ass.net>
-References: <20200131124531.623136425@infradead.org>
-         <20200131125403.882175409@infradead.org>
-         <CAMuHMdWa8R=3fHLV7W_ni8An_1CwOoJxErnnDA3t4rq2XN+QzA@mail.gmail.com>
-         <20200207113417.GG14914@hirez.programming.kicks-ass.net>
-         <CAMuHMdW8hWpSsf31P0hC=b23GCx4oFwfaVYKQ1qrZfwFCPK5-Q@mail.gmail.com>
-         <20200207123035.GI14914@hirez.programming.kicks-ass.net>
-         <20200207123334.GT14946@hirez.programming.kicks-ass.net>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.34.1-2 
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Subject: [PATCH] m68k: defconfig: Update defconfigs for v5.6-rc1
+Date:   Mon, 10 Feb 2020 10:39:19 +0100
+Message-Id: <20200210093919.7357-1-geert@linux-m68k.org>
+X-Mailer: git-send-email 2.17.1
 Sender: linux-m68k-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-On Fri, 2020-02-07 at 13:33 +0100, Peter Zijlstra wrote:
-> On Fri, Feb 07, 2020 at 01:30:35PM +0100, Peter Zijlstra wrote:
-> > On Fri, Feb 07, 2020 at 01:11:54PM +0100, Geert Uytterhoeven wrote:
-> > > On Fri, Feb 7, 2020 at 12:34 PM Peter Zijlstra <peterz@infradead.org> wrote:
-> > > > On Fri, Feb 07, 2020 at 11:56:40AM +0100, Geert Uytterhoeven wrote:
-> > > > > WARNING: Missing Signed-off-by: line by nominal patch author 'Peter
-> > > > > Zijlstra <peterz@infradead.org>'
-> > > > > (in all patches)
-> > > > > 
-> > > > > I can fix that (the From?) up while applying.
-> > > > 
-> > > > I'm not sure where that warning comes from, but if you feel it needs
-> > > > fixing, sure. I normally only add the (Intel) thing to the SoB. I've so
-> > > > far never had complaints about that.
-> > > 
-> > > Checkpatch doesn't like this.
-> > 
-> > Ooh, I see, that's a relatively new warning, pretty daft if you ask me.
-> > 
-> > Now I have to rediscover how I went about teaching checkpatch to STFU ;-)
-> > 
-> > Joe, should that '$email eq $author' not ignore rfc822 comments? That
-> 
-> Argh, that's me hitting on the wrong 'nominal' in checkpatch.pl, same
-> difference though.
-> 
-> > is:
-> > 
-> > 	Peter Zijlstra <peterz@infradead.org>
-> > 
-> > and:
-> > 
-> > 	Peter Zijlstra (Intel) <peterz@infradead.org>
-> > 
-> > are, in actual fact, the same.
+  - Disable CONFIG_BOOT_CONFIG (should default to n),
+  - Enable modular build of the WireGuard secure network tunnel,
+  - Drop CONFIG_CRYPTO_LIB_{BLAKE2S,CHACHA20POLY1305,CURVE25519}=m
+    (auto-enabled by CONFIG_WIREGUARD).
 
-Maybe this?
+Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
 ---
- scripts/checkpatch.pl | 39 +++++++++++++++++++++++++++++----------
- 1 file changed, 29 insertions(+), 10 deletions(-)
+ arch/m68k/configs/amiga_defconfig    | 5 ++---
+ arch/m68k/configs/apollo_defconfig   | 5 ++---
+ arch/m68k/configs/atari_defconfig    | 5 ++---
+ arch/m68k/configs/bvme6000_defconfig | 5 ++---
+ arch/m68k/configs/hp300_defconfig    | 5 ++---
+ arch/m68k/configs/mac_defconfig      | 5 ++---
+ arch/m68k/configs/multi_defconfig    | 5 ++---
+ arch/m68k/configs/mvme147_defconfig  | 5 ++---
+ arch/m68k/configs/mvme16x_defconfig  | 5 ++---
+ arch/m68k/configs/q40_defconfig      | 5 ++---
+ arch/m68k/configs/sun3_defconfig     | 5 ++---
+ arch/m68k/configs/sun3x_defconfig    | 5 ++---
+ 12 files changed, 24 insertions(+), 36 deletions(-)
 
-diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
-index f3b8434..17637d0 100755
---- a/scripts/checkpatch.pl
-+++ b/scripts/checkpatch.pl
-@@ -1132,6 +1132,7 @@ sub parse_email {
- 	my ($formatted_email) = @_;
- 
- 	my $name = "";
-+	my $name_comment = "";
- 	my $address = "";
- 	my $comment = "";
- 
-@@ -1164,6 +1165,10 @@ sub parse_email {
- 
- 	$name = trim($name);
- 	$name =~ s/^\"|\"$//g;
-+	$name =~ s/(\s*\([^\)]+\))\s*//;
-+	if (defined($1)) {
-+		$name_comment = trim($1);
-+	}
- 	$address = trim($address);
- 	$address =~ s/^\<|\>$//g;
- 
-@@ -1172,7 +1177,7 @@ sub parse_email {
- 		$name = "\"$name\"";
- 	}
- 
--	return ($name, $address, $comment);
-+	return ($name, $name_comment, $address, $comment);
- }
- 
- sub format_email {
-@@ -1198,6 +1203,23 @@ sub format_email {
- 	return $formatted_email;
- }
- 
-+sub reformat_email {
-+	my ($email) = @_;
-+
-+	my ($email_name, $name_comment, $email_address, $comment) = parse_email($email);
-+	return format_email($email_name, $email_address);
-+}
-+
-+sub same_email_addresses {
-+	my ($email1, $email2) = @_;
-+
-+	my ($email1_name, $name1_comment, $email1_address, $comment1) = parse_email($email1);
-+	my ($email2_name, $name2_comment, $email2_address, $comment2) = parse_email($email2);
-+
-+	return $email1_name eq $email2_name &&
-+	       $email1_address eq $email2_address;
-+}
-+
- sub which {
- 	my ($bin) = @_;
- 
-@@ -2618,17 +2640,16 @@ sub process {
- 			$author = $1;
- 			$author = encode("utf8", $author) if ($line =~ /=\?utf-8\?/i);
- 			$author =~ s/"//g;
-+			$author = reformat_email($author);
- 		}
- 
- # Check the patch for a signoff:
--		if ($line =~ /^\s*signed-off-by:/i) {
-+		if ($line =~ /^\s*signed-off-by:\s*(.*)/i) {
- 			$signoff++;
- 			$in_commit_log = 0;
- 			if ($author ne '') {
--				my $l = $line;
--				$l =~ s/"//g;
--				if ($l =~ /^\s*signed-off-by:\s*\Q$author\E/i) {
--				    $authorsignoff = 1;
-+				if (same_email_addresses($1, $author)) {
-+					$authorsignoff = 1;
- 				}
- 			}
- 		}
-@@ -2678,7 +2699,7 @@ sub process {
- 				}
- 			}
- 
--			my ($email_name, $email_address, $comment) = parse_email($email);
-+			my ($email_name, $name_comment, $email_address, $comment) = parse_email($email);
- 			my $suggested_email = format_email(($email_name, $email_address));
- 			if ($suggested_email eq "") {
- 				ERROR("BAD_SIGN_OFF",
-@@ -2689,9 +2710,7 @@ sub process {
- 				$dequoted =~ s/" </ </;
- 				# Don't force email to have quotes
- 				# Allow just an angle bracketed address
--				if ("$dequoted$comment" ne $email &&
--				    "<$email_address>$comment" ne $email &&
--				    "$suggested_email$comment" ne $email) {
-+				if (!same_email_addresses($email, $suggested_email)) {
- 					WARN("BAD_SIGN_OFF",
- 					     "email address '$email' might be better as '$suggested_email$comment'\n" . $herecurr);
- 				}
-
+diff --git a/arch/m68k/configs/amiga_defconfig b/arch/m68k/configs/amiga_defconfig
+index e1134c3e0b69d5d3..e470027050cfafa5 100644
+--- a/arch/m68k/configs/amiga_defconfig
++++ b/arch/m68k/configs/amiga_defconfig
+@@ -9,6 +9,7 @@ CONFIG_LOG_BUF_SHIFT=16
+ # CONFIG_PID_NS is not set
+ # CONFIG_NET_NS is not set
+ CONFIG_BLK_DEV_INITRD=y
++# CONFIG_BOOT_CONFIG is not set
+ CONFIG_CC_OPTIMIZE_FOR_SIZE=y
+ CONFIG_USERFAULTFD=y
+ CONFIG_SLAB=y
+@@ -369,6 +370,7 @@ CONFIG_TCM_FILEIO=m
+ CONFIG_TCM_PSCSI=m
+ CONFIG_NETDEVICES=y
+ CONFIG_DUMMY=m
++CONFIG_WIREGUARD=m
+ CONFIG_EQUALIZER=m
+ CONFIG_NET_TEAM=m
+ CONFIG_NET_TEAM_MODE_BROADCAST=m
+@@ -613,9 +615,6 @@ CONFIG_CRYPTO_USER_API_HASH=m
+ CONFIG_CRYPTO_USER_API_SKCIPHER=m
+ CONFIG_CRYPTO_USER_API_RNG=m
+ CONFIG_CRYPTO_USER_API_AEAD=m
+-CONFIG_CRYPTO_LIB_BLAKE2S=m
+-CONFIG_CRYPTO_LIB_CURVE25519=m
+-CONFIG_CRYPTO_LIB_CHACHA20POLY1305=m
+ # CONFIG_CRYPTO_HW is not set
+ CONFIG_CRC32_SELFTEST=m
+ CONFIG_CRC64=m
+diff --git a/arch/m68k/configs/apollo_defconfig b/arch/m68k/configs/apollo_defconfig
+index 484cb1643df1719d..afdd8fd472ede19b 100644
+--- a/arch/m68k/configs/apollo_defconfig
++++ b/arch/m68k/configs/apollo_defconfig
+@@ -9,6 +9,7 @@ CONFIG_LOG_BUF_SHIFT=16
+ # CONFIG_PID_NS is not set
+ # CONFIG_NET_NS is not set
+ CONFIG_BLK_DEV_INITRD=y
++# CONFIG_BOOT_CONFIG is not set
+ CONFIG_CC_OPTIMIZE_FOR_SIZE=y
+ CONFIG_USERFAULTFD=y
+ CONFIG_SLAB=y
+@@ -348,6 +349,7 @@ CONFIG_TCM_FILEIO=m
+ CONFIG_TCM_PSCSI=m
+ CONFIG_NETDEVICES=y
+ CONFIG_DUMMY=m
++CONFIG_WIREGUARD=m
+ CONFIG_EQUALIZER=m
+ CONFIG_NET_TEAM=m
+ CONFIG_NET_TEAM_MODE_BROADCAST=m
+@@ -569,9 +571,6 @@ CONFIG_CRYPTO_USER_API_HASH=m
+ CONFIG_CRYPTO_USER_API_SKCIPHER=m
+ CONFIG_CRYPTO_USER_API_RNG=m
+ CONFIG_CRYPTO_USER_API_AEAD=m
+-CONFIG_CRYPTO_LIB_BLAKE2S=m
+-CONFIG_CRYPTO_LIB_CURVE25519=m
+-CONFIG_CRYPTO_LIB_CHACHA20POLY1305=m
+ # CONFIG_CRYPTO_HW is not set
+ CONFIG_CRC32_SELFTEST=m
+ CONFIG_CRC64=m
+diff --git a/arch/m68k/configs/atari_defconfig b/arch/m68k/configs/atari_defconfig
+index c372f00c4a1f0797..a354a540046a9b9b 100644
+--- a/arch/m68k/configs/atari_defconfig
++++ b/arch/m68k/configs/atari_defconfig
+@@ -9,6 +9,7 @@ CONFIG_LOG_BUF_SHIFT=16
+ # CONFIG_PID_NS is not set
+ # CONFIG_NET_NS is not set
+ CONFIG_BLK_DEV_INITRD=y
++# CONFIG_BOOT_CONFIG is not set
+ CONFIG_CC_OPTIMIZE_FOR_SIZE=y
+ CONFIG_USERFAULTFD=y
+ CONFIG_SLAB=y
+@@ -364,6 +365,7 @@ CONFIG_TCM_FILEIO=m
+ CONFIG_TCM_PSCSI=m
+ CONFIG_NETDEVICES=y
+ CONFIG_DUMMY=m
++CONFIG_WIREGUARD=m
+ CONFIG_EQUALIZER=m
+ CONFIG_NET_TEAM=m
+ CONFIG_NET_TEAM_MODE_BROADCAST=m
+@@ -602,9 +604,6 @@ CONFIG_CRYPTO_USER_API_HASH=m
+ CONFIG_CRYPTO_USER_API_SKCIPHER=m
+ CONFIG_CRYPTO_USER_API_RNG=m
+ CONFIG_CRYPTO_USER_API_AEAD=m
+-CONFIG_CRYPTO_LIB_BLAKE2S=m
+-CONFIG_CRYPTO_LIB_CURVE25519=m
+-CONFIG_CRYPTO_LIB_CHACHA20POLY1305=m
+ # CONFIG_CRYPTO_HW is not set
+ CONFIG_CRC32_SELFTEST=m
+ CONFIG_CRC64=m
+diff --git a/arch/m68k/configs/bvme6000_defconfig b/arch/m68k/configs/bvme6000_defconfig
+index bee9263a409c4e18..520260d921b6a1e1 100644
+--- a/arch/m68k/configs/bvme6000_defconfig
++++ b/arch/m68k/configs/bvme6000_defconfig
+@@ -9,6 +9,7 @@ CONFIG_LOG_BUF_SHIFT=16
+ # CONFIG_PID_NS is not set
+ # CONFIG_NET_NS is not set
+ CONFIG_BLK_DEV_INITRD=y
++# CONFIG_BOOT_CONFIG is not set
+ CONFIG_CC_OPTIMIZE_FOR_SIZE=y
+ CONFIG_USERFAULTFD=y
+ CONFIG_SLAB=y
+@@ -346,6 +347,7 @@ CONFIG_TCM_FILEIO=m
+ CONFIG_TCM_PSCSI=m
+ CONFIG_NETDEVICES=y
+ CONFIG_DUMMY=m
++CONFIG_WIREGUARD=m
+ CONFIG_EQUALIZER=m
+ CONFIG_NET_TEAM=m
+ CONFIG_NET_TEAM_MODE_BROADCAST=m
+@@ -562,9 +564,6 @@ CONFIG_CRYPTO_USER_API_HASH=m
+ CONFIG_CRYPTO_USER_API_SKCIPHER=m
+ CONFIG_CRYPTO_USER_API_RNG=m
+ CONFIG_CRYPTO_USER_API_AEAD=m
+-CONFIG_CRYPTO_LIB_BLAKE2S=m
+-CONFIG_CRYPTO_LIB_CURVE25519=m
+-CONFIG_CRYPTO_LIB_CHACHA20POLY1305=m
+ # CONFIG_CRYPTO_HW is not set
+ CONFIG_CRC32_SELFTEST=m
+ CONFIG_CRC64=m
+diff --git a/arch/m68k/configs/hp300_defconfig b/arch/m68k/configs/hp300_defconfig
+index c8847a8bcbd6d23f..1956a36a0b0b8d5c 100644
+--- a/arch/m68k/configs/hp300_defconfig
++++ b/arch/m68k/configs/hp300_defconfig
+@@ -9,6 +9,7 @@ CONFIG_LOG_BUF_SHIFT=16
+ # CONFIG_PID_NS is not set
+ # CONFIG_NET_NS is not set
+ CONFIG_BLK_DEV_INITRD=y
++# CONFIG_BOOT_CONFIG is not set
+ CONFIG_CC_OPTIMIZE_FOR_SIZE=y
+ CONFIG_USERFAULTFD=y
+ CONFIG_SLAB=y
+@@ -347,6 +348,7 @@ CONFIG_TCM_FILEIO=m
+ CONFIG_TCM_PSCSI=m
+ CONFIG_NETDEVICES=y
+ CONFIG_DUMMY=m
++CONFIG_WIREGUARD=m
+ CONFIG_EQUALIZER=m
+ CONFIG_NET_TEAM=m
+ CONFIG_NET_TEAM_MODE_BROADCAST=m
+@@ -571,9 +573,6 @@ CONFIG_CRYPTO_USER_API_HASH=m
+ CONFIG_CRYPTO_USER_API_SKCIPHER=m
+ CONFIG_CRYPTO_USER_API_RNG=m
+ CONFIG_CRYPTO_USER_API_AEAD=m
+-CONFIG_CRYPTO_LIB_BLAKE2S=m
+-CONFIG_CRYPTO_LIB_CURVE25519=m
+-CONFIG_CRYPTO_LIB_CHACHA20POLY1305=m
+ # CONFIG_CRYPTO_HW is not set
+ CONFIG_CRC32_SELFTEST=m
+ CONFIG_CRC64=m
+diff --git a/arch/m68k/configs/mac_defconfig b/arch/m68k/configs/mac_defconfig
+index 303ffafd9cad0d60..681f66f1c66d393a 100644
+--- a/arch/m68k/configs/mac_defconfig
++++ b/arch/m68k/configs/mac_defconfig
+@@ -9,6 +9,7 @@ CONFIG_LOG_BUF_SHIFT=16
+ # CONFIG_PID_NS is not set
+ # CONFIG_NET_NS is not set
+ CONFIG_BLK_DEV_INITRD=y
++# CONFIG_BOOT_CONFIG is not set
+ CONFIG_CC_OPTIMIZE_FOR_SIZE=y
+ CONFIG_USERFAULTFD=y
+ CONFIG_SLAB=y
+@@ -363,6 +364,7 @@ CONFIG_INPUT_ADBHID=y
+ CONFIG_MAC_EMUMOUSEBTN=y
+ CONFIG_NETDEVICES=y
+ CONFIG_DUMMY=m
++CONFIG_WIREGUARD=m
+ CONFIG_EQUALIZER=m
+ CONFIG_NET_TEAM=m
+ CONFIG_NET_TEAM_MODE_BROADCAST=m
+@@ -593,9 +595,6 @@ CONFIG_CRYPTO_USER_API_HASH=m
+ CONFIG_CRYPTO_USER_API_SKCIPHER=m
+ CONFIG_CRYPTO_USER_API_RNG=m
+ CONFIG_CRYPTO_USER_API_AEAD=m
+-CONFIG_CRYPTO_LIB_BLAKE2S=m
+-CONFIG_CRYPTO_LIB_CURVE25519=m
+-CONFIG_CRYPTO_LIB_CHACHA20POLY1305=m
+ # CONFIG_CRYPTO_HW is not set
+ CONFIG_CRC32_SELFTEST=m
+ CONFIG_CRC64=m
+diff --git a/arch/m68k/configs/multi_defconfig b/arch/m68k/configs/multi_defconfig
+index 89a704226cd9e4e5..114ef55692427e0c 100644
+--- a/arch/m68k/configs/multi_defconfig
++++ b/arch/m68k/configs/multi_defconfig
+@@ -9,6 +9,7 @@ CONFIG_LOG_BUF_SHIFT=16
+ # CONFIG_PID_NS is not set
+ # CONFIG_NET_NS is not set
+ CONFIG_BLK_DEV_INITRD=y
++# CONFIG_BOOT_CONFIG is not set
+ CONFIG_CC_OPTIMIZE_FOR_SIZE=y
+ CONFIG_USERFAULTFD=y
+ CONFIG_SLAB=y
+@@ -407,6 +408,7 @@ CONFIG_INPUT_ADBHID=y
+ CONFIG_MAC_EMUMOUSEBTN=y
+ CONFIG_NETDEVICES=y
+ CONFIG_DUMMY=m
++CONFIG_WIREGUARD=m
+ CONFIG_EQUALIZER=m
+ CONFIG_NET_TEAM=m
+ CONFIG_NET_TEAM_MODE_BROADCAST=m
+@@ -679,9 +681,6 @@ CONFIG_CRYPTO_USER_API_HASH=m
+ CONFIG_CRYPTO_USER_API_SKCIPHER=m
+ CONFIG_CRYPTO_USER_API_RNG=m
+ CONFIG_CRYPTO_USER_API_AEAD=m
+-CONFIG_CRYPTO_LIB_BLAKE2S=m
+-CONFIG_CRYPTO_LIB_CURVE25519=m
+-CONFIG_CRYPTO_LIB_CHACHA20POLY1305=m
+ # CONFIG_CRYPTO_HW is not set
+ CONFIG_CRC32_SELFTEST=m
+ CONFIG_CRC64=m
+diff --git a/arch/m68k/configs/mvme147_defconfig b/arch/m68k/configs/mvme147_defconfig
+index f62c1f4d03a0330e..505a0ac80b3b041f 100644
+--- a/arch/m68k/configs/mvme147_defconfig
++++ b/arch/m68k/configs/mvme147_defconfig
+@@ -9,6 +9,7 @@ CONFIG_LOG_BUF_SHIFT=16
+ # CONFIG_PID_NS is not set
+ # CONFIG_NET_NS is not set
+ CONFIG_BLK_DEV_INITRD=y
++# CONFIG_BOOT_CONFIG is not set
+ CONFIG_CC_OPTIMIZE_FOR_SIZE=y
+ CONFIG_USERFAULTFD=y
+ CONFIG_SLAB=y
+@@ -345,6 +346,7 @@ CONFIG_TCM_FILEIO=m
+ CONFIG_TCM_PSCSI=m
+ CONFIG_NETDEVICES=y
+ CONFIG_DUMMY=m
++CONFIG_WIREGUARD=m
+ CONFIG_EQUALIZER=m
+ CONFIG_NET_TEAM=m
+ CONFIG_NET_TEAM_MODE_BROADCAST=m
+@@ -561,9 +563,6 @@ CONFIG_CRYPTO_USER_API_HASH=m
+ CONFIG_CRYPTO_USER_API_SKCIPHER=m
+ CONFIG_CRYPTO_USER_API_RNG=m
+ CONFIG_CRYPTO_USER_API_AEAD=m
+-CONFIG_CRYPTO_LIB_BLAKE2S=m
+-CONFIG_CRYPTO_LIB_CURVE25519=m
+-CONFIG_CRYPTO_LIB_CHACHA20POLY1305=m
+ # CONFIG_CRYPTO_HW is not set
+ CONFIG_CRC32_SELFTEST=m
+ CONFIG_CRC64=m
+diff --git a/arch/m68k/configs/mvme16x_defconfig b/arch/m68k/configs/mvme16x_defconfig
+index 58dcad26a7513222..0376deba137f6bd7 100644
+--- a/arch/m68k/configs/mvme16x_defconfig
++++ b/arch/m68k/configs/mvme16x_defconfig
+@@ -9,6 +9,7 @@ CONFIG_LOG_BUF_SHIFT=16
+ # CONFIG_PID_NS is not set
+ # CONFIG_NET_NS is not set
+ CONFIG_BLK_DEV_INITRD=y
++# CONFIG_BOOT_CONFIG is not set
+ CONFIG_CC_OPTIMIZE_FOR_SIZE=y
+ CONFIG_USERFAULTFD=y
+ CONFIG_SLAB=y
+@@ -346,6 +347,7 @@ CONFIG_TCM_FILEIO=m
+ CONFIG_TCM_PSCSI=m
+ CONFIG_NETDEVICES=y
+ CONFIG_DUMMY=m
++CONFIG_WIREGUARD=m
+ CONFIG_EQUALIZER=m
+ CONFIG_NET_TEAM=m
+ CONFIG_NET_TEAM_MODE_BROADCAST=m
+@@ -562,9 +564,6 @@ CONFIG_CRYPTO_USER_API_HASH=m
+ CONFIG_CRYPTO_USER_API_SKCIPHER=m
+ CONFIG_CRYPTO_USER_API_RNG=m
+ CONFIG_CRYPTO_USER_API_AEAD=m
+-CONFIG_CRYPTO_LIB_BLAKE2S=m
+-CONFIG_CRYPTO_LIB_CURVE25519=m
+-CONFIG_CRYPTO_LIB_CHACHA20POLY1305=m
+ # CONFIG_CRYPTO_HW is not set
+ CONFIG_CRC32_SELFTEST=m
+ CONFIG_CRC64=m
+diff --git a/arch/m68k/configs/q40_defconfig b/arch/m68k/configs/q40_defconfig
+index 5d3c28d1d545b4a0..b205f86b1d11a3ea 100644
+--- a/arch/m68k/configs/q40_defconfig
++++ b/arch/m68k/configs/q40_defconfig
+@@ -9,6 +9,7 @@ CONFIG_LOG_BUF_SHIFT=16
+ # CONFIG_PID_NS is not set
+ # CONFIG_NET_NS is not set
+ CONFIG_BLK_DEV_INITRD=y
++# CONFIG_BOOT_CONFIG is not set
+ CONFIG_CC_OPTIMIZE_FOR_SIZE=y
+ CONFIG_USERFAULTFD=y
+ CONFIG_SLAB=y
+@@ -353,6 +354,7 @@ CONFIG_TCM_FILEIO=m
+ CONFIG_TCM_PSCSI=m
+ CONFIG_NETDEVICES=y
+ CONFIG_DUMMY=m
++CONFIG_WIREGUARD=m
+ CONFIG_EQUALIZER=m
+ CONFIG_NET_TEAM=m
+ CONFIG_NET_TEAM_MODE_BROADCAST=m
+@@ -580,9 +582,6 @@ CONFIG_CRYPTO_USER_API_HASH=m
+ CONFIG_CRYPTO_USER_API_SKCIPHER=m
+ CONFIG_CRYPTO_USER_API_RNG=m
+ CONFIG_CRYPTO_USER_API_AEAD=m
+-CONFIG_CRYPTO_LIB_BLAKE2S=m
+-CONFIG_CRYPTO_LIB_CURVE25519=m
+-CONFIG_CRYPTO_LIB_CHACHA20POLY1305=m
+ # CONFIG_CRYPTO_HW is not set
+ CONFIG_CRC32_SELFTEST=m
+ CONFIG_CRC64=m
+diff --git a/arch/m68k/configs/sun3_defconfig b/arch/m68k/configs/sun3_defconfig
+index 5ef9e17dcd51788a..82f2da175b5412a4 100644
+--- a/arch/m68k/configs/sun3_defconfig
++++ b/arch/m68k/configs/sun3_defconfig
+@@ -9,6 +9,7 @@ CONFIG_LOG_BUF_SHIFT=16
+ # CONFIG_PID_NS is not set
+ # CONFIG_NET_NS is not set
+ CONFIG_BLK_DEV_INITRD=y
++# CONFIG_BOOT_CONFIG is not set
+ CONFIG_CC_OPTIMIZE_FOR_SIZE=y
+ CONFIG_USERFAULTFD=y
+ CONFIG_SLAB=y
+@@ -343,6 +344,7 @@ CONFIG_TCM_FILEIO=m
+ CONFIG_TCM_PSCSI=m
+ CONFIG_NETDEVICES=y
+ CONFIG_DUMMY=m
++CONFIG_WIREGUARD=m
+ CONFIG_EQUALIZER=m
+ CONFIG_NET_TEAM=m
+ CONFIG_NET_TEAM_MODE_BROADCAST=m
+@@ -564,9 +566,6 @@ CONFIG_CRYPTO_USER_API_HASH=m
+ CONFIG_CRYPTO_USER_API_SKCIPHER=m
+ CONFIG_CRYPTO_USER_API_RNG=m
+ CONFIG_CRYPTO_USER_API_AEAD=m
+-CONFIG_CRYPTO_LIB_BLAKE2S=m
+-CONFIG_CRYPTO_LIB_CURVE25519=m
+-CONFIG_CRYPTO_LIB_CHACHA20POLY1305=m
+ # CONFIG_CRYPTO_HW is not set
+ CONFIG_CRC32_SELFTEST=m
+ CONFIG_CRC64=m
+diff --git a/arch/m68k/configs/sun3x_defconfig b/arch/m68k/configs/sun3x_defconfig
+index 22e1accc60a3e110..2cdc17b9ee8eb184 100644
+--- a/arch/m68k/configs/sun3x_defconfig
++++ b/arch/m68k/configs/sun3x_defconfig
+@@ -9,6 +9,7 @@ CONFIG_LOG_BUF_SHIFT=16
+ # CONFIG_PID_NS is not set
+ # CONFIG_NET_NS is not set
+ CONFIG_BLK_DEV_INITRD=y
++# CONFIG_BOOT_CONFIG is not set
+ CONFIG_CC_OPTIMIZE_FOR_SIZE=y
+ CONFIG_USERFAULTFD=y
+ CONFIG_SLAB=y
+@@ -343,6 +344,7 @@ CONFIG_TCM_FILEIO=m
+ CONFIG_TCM_PSCSI=m
+ CONFIG_NETDEVICES=y
+ CONFIG_DUMMY=m
++CONFIG_WIREGUARD=m
+ CONFIG_EQUALIZER=m
+ CONFIG_NET_TEAM=m
+ CONFIG_NET_TEAM_MODE_BROADCAST=m
+@@ -563,9 +565,6 @@ CONFIG_CRYPTO_USER_API_HASH=m
+ CONFIG_CRYPTO_USER_API_SKCIPHER=m
+ CONFIG_CRYPTO_USER_API_RNG=m
+ CONFIG_CRYPTO_USER_API_AEAD=m
+-CONFIG_CRYPTO_LIB_BLAKE2S=m
+-CONFIG_CRYPTO_LIB_CURVE25519=m
+-CONFIG_CRYPTO_LIB_CHACHA20POLY1305=m
+ # CONFIG_CRYPTO_HW is not set
+ CONFIG_CRC32_SELFTEST=m
+ CONFIG_CRC64=m
+-- 
+2.17.1
 
