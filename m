@@ -2,150 +2,314 @@ Return-Path: <SRS0=R5AG=4A=vger.kernel.org=linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.8 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
-	MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS autolearn=no
+X-Spam-Status: No, score=-5.8 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
+	MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 72DC3C2BA83
-	for <linux-m68k@archiver.kernel.org>; Wed, 12 Feb 2020 09:57:55 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E0D1CC2BA83
+	for <linux-m68k@archiver.kernel.org>; Wed, 12 Feb 2020 16:32:16 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 4C69220675
-	for <linux-m68k@archiver.kernel.org>; Wed, 12 Feb 2020 09:57:55 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id A135120714
+	for <linux-m68k@archiver.kernel.org>; Wed, 12 Feb 2020 16:32:16 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728745AbgBLJ5y (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Wed, 12 Feb 2020 04:57:54 -0500
-Received: from mail-ot1-f65.google.com ([209.85.210.65]:41007 "EHLO
-        mail-ot1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728938AbgBLJ5w (ORCPT
-        <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Wed, 12 Feb 2020 04:57:52 -0500
-Received: by mail-ot1-f65.google.com with SMTP id r27so1309753otc.8
-        for <linux-m68k@lists.linux-m68k.org>; Wed, 12 Feb 2020 01:57:51 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=eeNTMzOet6YbJZM6KBXk+480ZyC+Oan10p6vM7BqSvg=;
-        b=HDSf7snHx/KxG1snRdpkViI0OF528SaLNs3UjYygqHf9owxBxLKA0aZ4stzffffhm+
-         Z9f5nLSqGDcS5HFTJPSjAY/89pQnnXEv638gwtO5fvRn4NNVOdLIJJTcfCjZ1p7MFgA/
-         CUr941ia5iO3GOxMetB+pywLymCaH1Qfc3v2KBib+8FKmy9ESUc1NfgOEmoQouzFjs3W
-         b1fxTi4P0TgUAWri7XdrF4WOoi5Q9HXYJikJmFbQjYY6mMeMuSiFWcz000GTb7EgcA+q
-         377+xU4wzvgKNJ+YnVFZdiY+EGQyP+SsWB4oLf06lPlu3t/M5pghY00LhY/ozmxhZBZD
-         UX4w==
-X-Gm-Message-State: APjAAAVJLGP9wYBRO/K4iB24vaOaEu5VQvmxlO74JkejDhZ0HWk69D/h
-        O/CeSrnGXl7rmE2vNkSosrafw7SgrHgRW6TZhXw=
-X-Google-Smtp-Source: APXvYqxMDwVz0mamGWk/u7qbUkHdewv3+BvLrju7oQjjc9kcCPfjwC7rRallUsgMAYlyjHnrBSwrbGBRblWAlqXOwe8=
-X-Received: by 2002:a9d:7984:: with SMTP id h4mr8766923otm.297.1581501470937;
- Wed, 12 Feb 2020 01:57:50 -0800 (PST)
+        id S1727264AbgBLQcQ (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Wed, 12 Feb 2020 11:32:16 -0500
+Received: from mga09.intel.com ([134.134.136.24]:22410 "EHLO mga09.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727007AbgBLQcQ (ORCPT <rfc822;linux-m68k@lists.linux-m68k.org>);
+        Wed, 12 Feb 2020 11:32:16 -0500
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by orsmga102.jf.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 12 Feb 2020 08:32:14 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.70,433,1574150400"; 
+   d="scan'208";a="226916598"
+Received: from lkp-server01.sh.intel.com (HELO lkp-server01) ([10.239.97.150])
+  by orsmga008.jf.intel.com with ESMTP; 12 Feb 2020 08:32:13 -0800
+Received: from kbuild by lkp-server01 with local (Exim 4.89)
+        (envelope-from <lkp@intel.com>)
+        id 1j1uvs-000INW-Ti; Thu, 13 Feb 2020 00:32:12 +0800
+Date:   Thu, 13 Feb 2020 00:31:55 +0800
+From:   kbuild test robot <lkp@intel.com>
+To:     Geert Uytterhoeven <geert@linux-m68k.org>
+Cc:     linux-m68k@lists.linux-m68k.org
+Subject: [m68k:master] BUILD SUCCESS
+ dba5c2db0431a6ac1019ace40545ec8d5d13cc06
+Message-ID: <5e44287b.9kXgdEg7CNsLOniw%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
-References: <dcdd615f77dacf8a98e18950b66fb5a675277f38.1581498987.git.michal.simek@xilinx.com>
- <CAMo8BfLYM-_SbqmMUCVjwqL7MpA2W7toTg_F6HTY4Sg5QxGzfw@mail.gmail.com>
- <CAMuHMdUZ_e9JsF0fuLxBwdoy7YVLarH6E98z5nKUZ2CccSkV-Q@mail.gmail.com>
- <6128aa3a-a99c-2ab0-82d1-d5c419e4f5b9@xilinx.com> <CAMuHMdX3O6aL_yGSfqrbdfPf-HHqqdkMwPHS=Y0WxMRTYOtJ4w@mail.gmail.com>
- <1d006656-bd48-0b8e-b893-cddaa5f8f8bc@xilinx.com> <CAMuHMdXaOD5kL+Cg0L=YeX_DqdVgUJXEA8LF-NiHbmkMuXKTaA@mail.gmail.com>
- <d93646fa-c844-693c-07a7-7075d0fcf2c9@xilinx.com>
-In-Reply-To: <d93646fa-c844-693c-07a7-7075d0fcf2c9@xilinx.com>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Wed, 12 Feb 2020 10:57:39 +0100
-Message-ID: <CAMuHMdXQqEYsL4KfDb4EkS+P+6qW=E4m3wunx_LXZddXVZMd4g@mail.gmail.com>
-Subject: Re: [PATCH v2] asm-generic: Fix unistd_32.h generation format
-To:     Michal Simek <michal.simek@xilinx.com>
-Cc:     Max Filippov <jcmvbkbc@gmail.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Michal Simek <monstr@monstr.eu>, git@xilinx.com,
-        Arnd Bergmann <arnd@arndb.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Stefan Asserhall <stefan.asserhall@xilinx.com>,
-        Chris Zankel <chris@zankel.net>,
-        "David S. Miller" <davem@davemloft.net>,
-        Fenghua Yu <fenghua.yu@intel.com>,
-        Helge Deller <deller@gmx.de>,
-        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
-        "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
-        Matt Turner <mattst88@gmail.com>,
-        Rich Felker <dalias@libc.org>,
-        Richard Henderson <rth@twiddle.net>,
-        Tony Luck <tony.luck@intel.com>,
-        Yoshinori Sato <ysato@users.sourceforge.jp>,
-        "open list:ALPHA PORT" <linux-alpha@vger.kernel.org>,
-        "open list:IA64 (Itanium) PL..." <linux-ia64@vger.kernel.org>,
-        "open list:M68K ARCHITECTURE" <linux-m68k@lists.linux-m68k.org>,
-        "open list:PARISC ARCHITECTURE" <linux-parisc@vger.kernel.org>,
-        "open list:SUPERH" <linux-sh@vger.kernel.org>,
-        "open list:TENSILICA XTENSA PORT (xtensa)" 
-        <linux-xtensa@linux-xtensa.org>,
-        "open list:SPARC + UltraSPAR..." <sparclinux@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 Sender: linux-m68k-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-Hi Michal,
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/geert/linux-m68k.git  master
+branch HEAD: dba5c2db0431a6ac1019ace40545ec8d5d13cc06  m68k: Switch to asm-generic/hardirq.h
 
-On Wed, Feb 12, 2020 at 10:42 AM Michal Simek <michal.simek@xilinx.com> wrote:
-> On 12. 02. 20 10:40, Geert Uytterhoeven wrote:
-> > On Wed, Feb 12, 2020 at 10:38 AM Michal Simek <michal.simek@xilinx.com> wrote:
-> >> On 12. 02. 20 10:32, Geert Uytterhoeven wrote:
-> >>> On Wed, Feb 12, 2020 at 10:27 AM Michal Simek <michal.simek@xilinx.com> wrote:
-> >>>> On 12. 02. 20 10:25, Geert Uytterhoeven wrote:
-> >>>>> On Wed, Feb 12, 2020 at 10:23 AM Max Filippov <jcmvbkbc@gmail.com> wrote:
-> >>>>>> On Wed, Feb 12, 2020 at 1:16 AM Michal Simek <michal.simek@xilinx.com> wrote:
-> >>>>>>>
-> >>>>>>> Generated files are also checked by sparse that's why add newline
-> >>>>>>> to remove sparse (C=1) warning.
-> >>>>>>>
-> >>>>>>> The issue was found on Microblaze and reported like this:
-> >>>>>>> ./arch/microblaze/include/generated/uapi/asm/unistd_32.h:438:45:
-> >>>>>>> warning: no newline at end of file
-> >>>>>>>
-> >>>>>>> Signed-off-by: Michal Simek <michal.simek@xilinx.com>
-> >>>>>>> Reviewed-by: Stefan Asserhall <stefan.asserhall@xilinx.com>
-> >>>>>
-> >>>>>>> --- a/arch/m68k/kernel/syscalls/syscallhdr.sh
-> >>>>>>> +++ b/arch/m68k/kernel/syscalls/syscallhdr.sh
-> >>>>>>> @@ -33,4 +33,5 @@ grep -E "^[0-9A-Fa-fXx]+[[:space:]]+${my_abis}" "$in" | sort -n | (
-> >>>>>>>         printf "#endif\n"
-> >>>>>>>         printf "\n"
-> >>>>>>>         printf "#endif /* %s */\n" "${fileguard}"
-> >>>>>>
-> >>>>>> Here there's already \n at the end, so no need for another one?
-> >>>>>
-> >>>>> Thanks! I completely missed that.
-> >>>>> So I did fix the original while applying ;-)
-> >>>>
-> >>>> I can drop m68k or align with with others. I would prefer to have the
-> >>>> same solution in all these scripts.
-> >>>
-> >>> Yeah, it makes sense to align as much as possible.
-> >>> IIRC, the original plan was to consolidate more later.
-> >>>
-> >>> Note that all other lines are terminated with a "\n" at the end.
-> >>> The separate 'printf "\n"' is an extra blank line, not the terminator for the
-> >>> previous line.
-> >>
-> >> Should we also get rid of 'printf "\n"' lines or just keep them as they
-> >> are today?
-> >
-> > Usually there is a blank line above the include guard terminator, so IMHO
-> > it makes sense to have that in generated files, too.
->
-> I meant more not to get rid of \n just include them in current prints.
-> It means like this 'printf "\n#endif /* %s */\n" "${fileguard}"'
+elapsed time: 2908m
 
-I think having a "\n" at the start of a string makes the code harder to read.
+configs tested: 252
+configs skipped: 0
 
-You could move it to the end of the previous string, but that is not always
-possible (e.g. after the loop), so I'd keep the separate prints for blank
-lines.
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
-Gr{oetje,eeting}s,
+arm                              allmodconfig
+arm                               allnoconfig
+arm                              allyesconfig
+arm                         at91_dt_defconfig
+arm                           efm32_defconfig
+arm                          exynos_defconfig
+arm                        multi_v5_defconfig
+arm                        multi_v7_defconfig
+arm                        shmobile_defconfig
+arm                           sunxi_defconfig
+arm64                            allmodconfig
+arm64                             allnoconfig
+arm64                            allyesconfig
+arm64                               defconfig
+sparc                            allyesconfig
+nds32                             allnoconfig
+riscv                               defconfig
+s390                          debug_defconfig
+s390                             allyesconfig
+powerpc                             defconfig
+alpha                               defconfig
+m68k                       m5475evb_defconfig
+um                           x86_64_defconfig
+powerpc                           allnoconfig
+m68k                           sun3_defconfig
+ia64                             allyesconfig
+i386                             alldefconfig
+m68k                          multi_defconfig
+um                                  defconfig
+microblaze                      mmu_defconfig
+sh                          rsk7269_defconfig
+sparc64                             defconfig
+sh                               allmodconfig
+h8300                       h8s-sim_defconfig
+mips                              allnoconfig
+riscv                            allyesconfig
+parisc                              defconfig
+s390                                defconfig
+i386                              allnoconfig
+microblaze                    nommu_defconfig
+s390                       zfcpdump_defconfig
+nds32                               defconfig
+mips                      malta_kvm_defconfig
+openrisc                 simple_smp_defconfig
+riscv                             allnoconfig
+i386                             allyesconfig
+i386                                defconfig
+ia64                             alldefconfig
+ia64                             allmodconfig
+ia64                              allnoconfig
+ia64                                defconfig
+c6x                              allyesconfig
+c6x                        evmc6678_defconfig
+nios2                         10m50_defconfig
+nios2                         3c120_defconfig
+openrisc                    or1ksim_defconfig
+xtensa                       common_defconfig
+xtensa                          iss_defconfig
+csky                                defconfig
+h8300                     edosk2674_defconfig
+h8300                    h8300h-sim_defconfig
+m68k                             allmodconfig
+arc                              allyesconfig
+arc                                 defconfig
+powerpc                       ppc64_defconfig
+powerpc                          rhel-kconfig
+mips                           32r2_defconfig
+mips                         64r6el_defconfig
+mips                             allmodconfig
+mips                             allyesconfig
+mips                      fuloong2e_defconfig
+parisc                            allnoconfig
+parisc                           allyesconfig
+parisc                         b180_defconfig
+parisc                        c3000_defconfig
+x86_64               randconfig-a001-20200212
+x86_64               randconfig-a002-20200212
+x86_64               randconfig-a003-20200212
+i386                 randconfig-a001-20200212
+i386                 randconfig-a002-20200212
+i386                 randconfig-a003-20200212
+x86_64               randconfig-a001-20200211
+x86_64               randconfig-a002-20200211
+x86_64               randconfig-a003-20200211
+i386                 randconfig-a001-20200211
+i386                 randconfig-a002-20200211
+i386                 randconfig-a003-20200211
+alpha                randconfig-a001-20200212
+m68k                 randconfig-a001-20200212
+nds32                randconfig-a001-20200212
+parisc               randconfig-a001-20200212
+riscv                randconfig-a001-20200212
+alpha                randconfig-a001-20200210
+m68k                 randconfig-a001-20200210
+mips                 randconfig-a001-20200210
+nds32                randconfig-a001-20200210
+parisc               randconfig-a001-20200210
+riscv                randconfig-a001-20200210
+alpha                randconfig-a001-20200211
+m68k                 randconfig-a001-20200211
+mips                 randconfig-a001-20200211
+nds32                randconfig-a001-20200211
+parisc               randconfig-a001-20200211
+riscv                randconfig-a001-20200211
+c6x                  randconfig-a001-20200211
+sparc64              randconfig-a001-20200211
+h8300                randconfig-a001-20200211
+nios2                randconfig-a001-20200211
+c6x                  randconfig-a001-20200212
+h8300                randconfig-a001-20200212
+microblaze           randconfig-a001-20200212
+nios2                randconfig-a001-20200212
+sparc64              randconfig-a001-20200212
+microblaze           randconfig-a001-20200211
+csky                 randconfig-a001-20200211
+openrisc             randconfig-a001-20200211
+s390                 randconfig-a001-20200211
+sh                   randconfig-a001-20200211
+xtensa               randconfig-a001-20200211
+csky                 randconfig-a001-20200212
+openrisc             randconfig-a001-20200212
+s390                 randconfig-a001-20200212
+sh                   randconfig-a001-20200212
+xtensa               randconfig-a001-20200212
+x86_64               randconfig-b001-20200212
+x86_64               randconfig-b002-20200212
+x86_64               randconfig-b003-20200212
+i386                 randconfig-b001-20200212
+i386                 randconfig-b002-20200212
+i386                 randconfig-b003-20200212
+x86_64               randconfig-b001-20200211
+x86_64               randconfig-b002-20200211
+x86_64               randconfig-b003-20200211
+i386                 randconfig-b001-20200211
+i386                 randconfig-b002-20200211
+i386                 randconfig-b003-20200211
+x86_64               randconfig-c001-20200211
+x86_64               randconfig-c002-20200211
+x86_64               randconfig-c003-20200211
+i386                 randconfig-c001-20200211
+i386                 randconfig-c002-20200211
+i386                 randconfig-c003-20200211
+x86_64               randconfig-c001-20200212
+x86_64               randconfig-c002-20200212
+x86_64               randconfig-c003-20200212
+i386                 randconfig-c001-20200212
+i386                 randconfig-c002-20200212
+i386                 randconfig-c003-20200212
+x86_64               randconfig-c001-20200210
+x86_64               randconfig-c002-20200210
+x86_64               randconfig-c003-20200210
+i386                 randconfig-c001-20200210
+i386                 randconfig-c002-20200210
+i386                 randconfig-c003-20200210
+x86_64               randconfig-d001-20200211
+x86_64               randconfig-d002-20200211
+x86_64               randconfig-d003-20200211
+i386                 randconfig-d001-20200211
+i386                 randconfig-d002-20200211
+i386                 randconfig-d003-20200211
+x86_64               randconfig-d001-20200212
+x86_64               randconfig-d002-20200212
+x86_64               randconfig-d003-20200212
+i386                 randconfig-d001-20200212
+i386                 randconfig-d002-20200212
+i386                 randconfig-d003-20200212
+x86_64               randconfig-e001-20200212
+x86_64               randconfig-e002-20200212
+x86_64               randconfig-e003-20200212
+i386                 randconfig-e001-20200212
+i386                 randconfig-e002-20200212
+i386                 randconfig-e003-20200212
+x86_64               randconfig-e001-20200211
+x86_64               randconfig-e002-20200211
+x86_64               randconfig-e003-20200211
+i386                 randconfig-e001-20200211
+i386                 randconfig-e002-20200211
+i386                 randconfig-e003-20200211
+x86_64               randconfig-f001-20200212
+x86_64               randconfig-f002-20200212
+x86_64               randconfig-f003-20200212
+i386                 randconfig-f001-20200212
+i386                 randconfig-f002-20200212
+i386                 randconfig-f003-20200212
+x86_64               randconfig-f001-20200211
+x86_64               randconfig-f002-20200211
+x86_64               randconfig-f003-20200211
+i386                 randconfig-f001-20200211
+i386                 randconfig-f002-20200211
+i386                 randconfig-f003-20200211
+x86_64               randconfig-g001-20200212
+x86_64               randconfig-g002-20200212
+x86_64               randconfig-g003-20200212
+i386                 randconfig-g001-20200212
+i386                 randconfig-g002-20200212
+i386                 randconfig-g003-20200212
+x86_64               randconfig-g001-20200211
+x86_64               randconfig-g002-20200211
+x86_64               randconfig-g003-20200211
+i386                 randconfig-g001-20200211
+i386                 randconfig-g002-20200211
+i386                 randconfig-g003-20200211
+x86_64               randconfig-h001-20200212
+x86_64               randconfig-h002-20200212
+x86_64               randconfig-h003-20200212
+i386                 randconfig-h001-20200212
+i386                 randconfig-h002-20200212
+i386                 randconfig-h003-20200212
+x86_64               randconfig-h001-20200211
+x86_64               randconfig-h002-20200211
+x86_64               randconfig-h003-20200211
+i386                 randconfig-h001-20200211
+i386                 randconfig-h002-20200211
+i386                 randconfig-h003-20200211
+arc                  randconfig-a001-20200211
+arm                  randconfig-a001-20200211
+arm64                randconfig-a001-20200211
+ia64                 randconfig-a001-20200211
+powerpc              randconfig-a001-20200211
+sparc                randconfig-a001-20200211
+arc                  randconfig-a001-20200212
+arm                  randconfig-a001-20200212
+arm64                randconfig-a001-20200212
+ia64                 randconfig-a001-20200212
+powerpc              randconfig-a001-20200212
+sparc                randconfig-a001-20200212
+arc                  randconfig-a001-20200210
+arm                  randconfig-a001-20200210
+arm64                randconfig-a001-20200210
+ia64                 randconfig-a001-20200210
+powerpc              randconfig-a001-20200210
+sparc                randconfig-a001-20200210
+riscv                            allmodconfig
+riscv                    nommu_virt_defconfig
+riscv                          rv32_defconfig
+s390                             alldefconfig
+s390                             allmodconfig
+s390                              allnoconfig
+sh                                allnoconfig
+sh                  sh7785lcr_32bit_defconfig
+sh                            titan_defconfig
+sparc                               defconfig
+sparc64                          allmodconfig
+sparc64                           allnoconfig
+sparc64                          allyesconfig
+um                             i386_defconfig
+x86_64                              fedora-25
+x86_64                                  kexec
+x86_64                                    lkp
+x86_64                                   rhel
+x86_64                         rhel-7.2-clear
+x86_64                               rhel-7.6
 
-                        Geert
-
--- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
