@@ -2,314 +2,249 @@ Return-Path: <SRS0=R5AG=4A=vger.kernel.org=linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.8 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
-	MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS autolearn=ham
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-6.8 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 64267C2BA83
-	for <linux-m68k@archiver.kernel.org>; Wed, 12 Feb 2020 16:33:29 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5F581C3B187
+	for <linux-m68k@archiver.kernel.org>; Wed, 12 Feb 2020 22:25:30 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 3083420714
-	for <linux-m68k@archiver.kernel.org>; Wed, 12 Feb 2020 16:33:29 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 36B0F21569
+	for <linux-m68k@archiver.kernel.org>; Wed, 12 Feb 2020 22:25:30 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727264AbgBLQd2 (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Wed, 12 Feb 2020 11:33:28 -0500
-Received: from mga11.intel.com ([192.55.52.93]:18806 "EHLO mga11.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728544AbgBLQd2 (ORCPT <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Wed, 12 Feb 2020 11:33:28 -0500
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 12 Feb 2020 08:33:22 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.70,433,1574150400"; 
-   d="scan'208";a="222336042"
-Received: from lkp-server01.sh.intel.com (HELO lkp-server01) ([10.239.97.150])
-  by orsmga007.jf.intel.com with ESMTP; 12 Feb 2020 08:33:21 -0800
-Received: from kbuild by lkp-server01 with local (Exim 4.89)
-        (envelope-from <lkp@intel.com>)
-        id 1j1uwy-0004dx-Qy; Thu, 13 Feb 2020 00:33:20 +0800
-Date:   Thu, 13 Feb 2020 00:32:31 +0800
-From:   kbuild test robot <lkp@intel.com>
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     linux-m68k@lists.linux-m68k.org
-Subject: [m68k:m68k-queue] BUILD SUCCESS
- 988e84709500ec738f48e6df0e791325b8eed053
-Message-ID: <5e44289f.kDJewaEAXC6i+Xpp%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+        id S1729254AbgBLWZ0 (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Wed, 12 Feb 2020 17:25:26 -0500
+Received: from kvm5.telegraphics.com.au ([98.124.60.144]:44532 "EHLO
+        kvm5.telegraphics.com.au" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727791AbgBLWZX (ORCPT
+        <rfc822;linux-m68k@lists.linux-m68k.org>);
+        Wed, 12 Feb 2020 17:25:23 -0500
+Received: from localhost (localhost.localdomain [127.0.0.1])
+        by kvm5.telegraphics.com.au (Postfix) with ESMTP id CE6B929AAE;
+        Wed, 12 Feb 2020 17:25:19 -0500 (EST)
+Date:   Thu, 13 Feb 2020 09:25:19 +1100 (AEDT)
+From:   Finn Thain <fthain@telegraphics.com.au>
+To:     afzal mohammed <afzal.mohd.ma@gmail.com>
+cc:     linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org,
+        Greg Ungerer <gerg@linux-m68k.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: Re: [PATCH 06/18] m68k: Replace setup_irq() by request_irq()
+In-Reply-To: <1941c51a3237c4e9df6d9a5b87615cd1bba572dc.1581478324.git.afzal.mohd.ma@gmail.com>
+Message-ID: <alpine.LNX.2.22.394.2002130912140.8@nippy.intranet>
+References: <cover.1581478323.git.afzal.mohd.ma@gmail.com> <1941c51a3237c4e9df6d9a5b87615cd1bba572dc.1581478324.git.afzal.mohd.ma@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=US-ASCII
 Sender: linux-m68k-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/geert/linux-m68k.git  m68k-queue
-branch HEAD: 988e84709500ec738f48e6df0e791325b8eed053  fat: Use correct logical sector size for Atari GEMDOS FAT
+On Wed, 12 Feb 2020, afzal mohammed wrote:
 
-elapsed time: 2912m
+> request_irq() is preferred over setup_irq(). Existing callers of
+> setup_irq() reached mostly via 'init_IRQ()' & 'time_init()', while
+> memory allocators are ready by 'mm_init()'.
+> 
+> Per tglx[1], setup_irq() existed in olden days when allocators were not
+> ready by the time early interrupts were initialized.
+> 
+> Hence replace setup_irq() by request_irq().
+> 
+> Seldom remove_irq() usage has been observed coupled with setup_irq(),
+> wherever that has been found, it too has been replaced by free_irq().
+> 
+> [1] https://lkml.kernel.org/r/alpine.DEB.2.20.1710191609480.1971@nanos
+> 
+> Signed-off-by: afzal mohammed <afzal.mohd.ma@gmail.com>
+> ---
+> 
+> Since cc'ing cover letter to all maintainers/reviewers would be too
+> many, refer for cover letter,
+>  https://lkml.kernel.org/r/cover.1581478323.git.afzal.mohd.ma@gmail.com
+> 
+>  arch/m68k/68000/timers.c      |  9 ++-------
+>  arch/m68k/coldfire/pit.c      |  9 ++-------
+>  arch/m68k/coldfire/sltimers.c | 19 +++++--------------
+>  arch/m68k/coldfire/timers.c   | 19 +++++--------------
+>  4 files changed, 14 insertions(+), 42 deletions(-)
+> 
+> diff --git a/arch/m68k/68000/timers.c b/arch/m68k/68000/timers.c
+> index 71ddb4c98726..7a55d664592e 100644
+> --- a/arch/m68k/68000/timers.c
+> +++ b/arch/m68k/68000/timers.c
+> @@ -68,12 +68,6 @@ static irqreturn_t hw_tick(int irq, void *dummy)
+>  
+>  /***************************************************************************/
+>  
+> -static struct irqaction m68328_timer_irq = {
+> -	.name	 = "timer",
+> -	.flags	 = IRQF_TIMER,
+> -	.handler = hw_tick,
+> -};
+> -
+>  /***************************************************************************/
+>  
+>  static u64 m68328_read_clk(struct clocksource *cs)
+> @@ -106,7 +100,8 @@ void hw_timer_init(irq_handler_t handler)
+>  	TCTL = 0;
+>  
+>  	/* set ISR */
+> -	setup_irq(TMR_IRQ_NUM, &m68328_timer_irq);
+> +	if (request_irq(TMR_IRQ_NUM, hw_tick, IRQF_TIMER, "timer", NULL))
+> +		pr_err("request_irq() on %s failed\n", "timer");
 
-configs tested: 252
-configs skipped: 0
+"request_irq() on timer failed" is bad grammar and doesn't convey what 
+went wrong. It could be taken to mean that request_irq() was called 
+because a timer went off.
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+Have you considered,
 
-arm                              allmodconfig
-arm                               allnoconfig
-arm                              allyesconfig
-arm                         at91_dt_defconfig
-arm                           efm32_defconfig
-arm                          exynos_defconfig
-arm                        multi_v5_defconfig
-arm                        multi_v7_defconfig
-arm                        shmobile_defconfig
-arm                           sunxi_defconfig
-arm64                            allmodconfig
-arm64                             allnoconfig
-arm64                            allyesconfig
-arm64                               defconfig
-sparc                            allyesconfig
-nds32                             allnoconfig
-nds32                               defconfig
-riscv                          rv32_defconfig
-s390                             allyesconfig
-sh                          rsk7269_defconfig
-sh                            titan_defconfig
-riscv                               defconfig
-powerpc                             defconfig
-alpha                               defconfig
-powerpc                           allnoconfig
-microblaze                      mmu_defconfig
-s390                                defconfig
-m68k                       m5475evb_defconfig
-ia64                             allyesconfig
-s390                             alldefconfig
-ia64                                defconfig
-um                           x86_64_defconfig
-i386                             alldefconfig
-m68k                             allmodconfig
-m68k                          multi_defconfig
-um                                  defconfig
-parisc                              defconfig
-s390                              allnoconfig
-sh                               allmodconfig
-h8300                       h8s-sim_defconfig
-mips                              allnoconfig
-sparc64                           allnoconfig
-mips                      malta_kvm_defconfig
-sparc64                             defconfig
-m68k                           sun3_defconfig
-nios2                         10m50_defconfig
-riscv                             allnoconfig
-i386                              allnoconfig
-i386                             allyesconfig
-i386                                defconfig
-ia64                             alldefconfig
-ia64                             allmodconfig
-ia64                              allnoconfig
-c6x                              allyesconfig
-c6x                        evmc6678_defconfig
-nios2                         3c120_defconfig
-openrisc                    or1ksim_defconfig
-openrisc                 simple_smp_defconfig
-xtensa                       common_defconfig
-xtensa                          iss_defconfig
-csky                                defconfig
-h8300                     edosk2674_defconfig
-h8300                    h8300h-sim_defconfig
-arc                              allyesconfig
-arc                                 defconfig
-microblaze                    nommu_defconfig
-powerpc                       ppc64_defconfig
-powerpc                          rhel-kconfig
-mips                           32r2_defconfig
-mips                         64r6el_defconfig
-mips                             allmodconfig
-mips                             allyesconfig
-mips                      fuloong2e_defconfig
-parisc                            allnoconfig
-parisc                           allyesconfig
-parisc                         b180_defconfig
-parisc                        c3000_defconfig
-x86_64               randconfig-a001-20200211
-x86_64               randconfig-a002-20200211
-x86_64               randconfig-a003-20200211
-i386                 randconfig-a001-20200211
-i386                 randconfig-a002-20200211
-i386                 randconfig-a003-20200211
-x86_64               randconfig-a001-20200212
-x86_64               randconfig-a002-20200212
-x86_64               randconfig-a003-20200212
-i386                 randconfig-a001-20200212
-i386                 randconfig-a002-20200212
-i386                 randconfig-a003-20200212
-alpha                randconfig-a001-20200211
-m68k                 randconfig-a001-20200211
-mips                 randconfig-a001-20200211
-nds32                randconfig-a001-20200211
-parisc               randconfig-a001-20200211
-riscv                randconfig-a001-20200211
-alpha                randconfig-a001-20200212
-m68k                 randconfig-a001-20200212
-nds32                randconfig-a001-20200212
-parisc               randconfig-a001-20200212
-riscv                randconfig-a001-20200212
-alpha                randconfig-a001-20200210
-m68k                 randconfig-a001-20200210
-mips                 randconfig-a001-20200210
-nds32                randconfig-a001-20200210
-parisc               randconfig-a001-20200210
-riscv                randconfig-a001-20200210
-c6x                  randconfig-a001-20200212
-h8300                randconfig-a001-20200212
-microblaze           randconfig-a001-20200212
-nios2                randconfig-a001-20200212
-sparc64              randconfig-a001-20200212
-c6x                  randconfig-a001-20200211
-h8300                randconfig-a001-20200211
-microblaze           randconfig-a001-20200211
-nios2                randconfig-a001-20200211
-sparc64              randconfig-a001-20200211
-sh                   randconfig-a001-20200211
-s390                 randconfig-a001-20200211
-xtensa               randconfig-a001-20200211
-openrisc             randconfig-a001-20200211
-csky                 randconfig-a001-20200211
-csky                 randconfig-a001-20200212
-openrisc             randconfig-a001-20200212
-s390                 randconfig-a001-20200212
-sh                   randconfig-a001-20200212
-xtensa               randconfig-a001-20200212
-x86_64               randconfig-b001-20200211
-x86_64               randconfig-b002-20200211
-x86_64               randconfig-b003-20200211
-i386                 randconfig-b001-20200211
-i386                 randconfig-b002-20200211
-i386                 randconfig-b003-20200211
-x86_64               randconfig-b001-20200212
-x86_64               randconfig-b002-20200212
-x86_64               randconfig-b003-20200212
-i386                 randconfig-b001-20200212
-i386                 randconfig-b002-20200212
-i386                 randconfig-b003-20200212
-x86_64               randconfig-c001-20200212
-x86_64               randconfig-c002-20200212
-x86_64               randconfig-c003-20200212
-i386                 randconfig-c001-20200212
-i386                 randconfig-c002-20200212
-i386                 randconfig-c003-20200212
-x86_64               randconfig-c001-20200211
-x86_64               randconfig-c002-20200211
-x86_64               randconfig-c003-20200211
-i386                 randconfig-c001-20200211
-i386                 randconfig-c002-20200211
-i386                 randconfig-c003-20200211
-x86_64               randconfig-c001-20200210
-x86_64               randconfig-c002-20200210
-x86_64               randconfig-c003-20200210
-i386                 randconfig-c001-20200210
-i386                 randconfig-c002-20200210
-i386                 randconfig-c003-20200210
-x86_64               randconfig-d001-20200211
-x86_64               randconfig-d002-20200211
-x86_64               randconfig-d003-20200211
-i386                 randconfig-d001-20200211
-i386                 randconfig-d002-20200211
-i386                 randconfig-d003-20200211
-x86_64               randconfig-d001-20200212
-x86_64               randconfig-d002-20200212
-x86_64               randconfig-d003-20200212
-i386                 randconfig-d001-20200212
-i386                 randconfig-d002-20200212
-i386                 randconfig-d003-20200212
-x86_64               randconfig-e001-20200211
-x86_64               randconfig-e002-20200211
-x86_64               randconfig-e003-20200211
-i386                 randconfig-e001-20200211
-i386                 randconfig-e002-20200211
-i386                 randconfig-e003-20200211
-x86_64               randconfig-e001-20200212
-x86_64               randconfig-e002-20200212
-x86_64               randconfig-e003-20200212
-i386                 randconfig-e001-20200212
-i386                 randconfig-e002-20200212
-i386                 randconfig-e003-20200212
-x86_64               randconfig-f001-20200211
-x86_64               randconfig-f002-20200211
-x86_64               randconfig-f003-20200211
-i386                 randconfig-f001-20200211
-i386                 randconfig-f002-20200211
-i386                 randconfig-f003-20200211
-x86_64               randconfig-f001-20200212
-x86_64               randconfig-f002-20200212
-x86_64               randconfig-f003-20200212
-i386                 randconfig-f001-20200212
-i386                 randconfig-f002-20200212
-i386                 randconfig-f003-20200212
-x86_64               randconfig-g001-20200211
-x86_64               randconfig-g002-20200211
-x86_64               randconfig-g003-20200211
-i386                 randconfig-g001-20200211
-i386                 randconfig-g002-20200211
-i386                 randconfig-g003-20200211
-x86_64               randconfig-g001-20200212
-x86_64               randconfig-g002-20200212
-x86_64               randconfig-g003-20200212
-i386                 randconfig-g001-20200212
-i386                 randconfig-g002-20200212
-i386                 randconfig-g003-20200212
-x86_64               randconfig-h001-20200211
-x86_64               randconfig-h002-20200211
-x86_64               randconfig-h003-20200211
-i386                 randconfig-h001-20200211
-i386                 randconfig-h002-20200211
-i386                 randconfig-h003-20200211
-x86_64               randconfig-h001-20200212
-x86_64               randconfig-h002-20200212
-x86_64               randconfig-h003-20200212
-i386                 randconfig-h001-20200212
-i386                 randconfig-h002-20200212
-i386                 randconfig-h003-20200212
-arc                  randconfig-a001-20200211
-arm                  randconfig-a001-20200211
-arm64                randconfig-a001-20200211
-ia64                 randconfig-a001-20200211
-powerpc              randconfig-a001-20200211
-sparc                randconfig-a001-20200211
-arc                  randconfig-a001-20200212
-arm                  randconfig-a001-20200212
-arm64                randconfig-a001-20200212
-ia64                 randconfig-a001-20200212
-powerpc              randconfig-a001-20200212
-sparc                randconfig-a001-20200212
-arc                  randconfig-a001-20200210
-arm                  randconfig-a001-20200210
-arm64                randconfig-a001-20200210
-ia64                 randconfig-a001-20200210
-powerpc              randconfig-a001-20200210
-sparc                randconfig-a001-20200210
-riscv                            allmodconfig
-riscv                            allyesconfig
-riscv                    nommu_virt_defconfig
-s390                             allmodconfig
-s390                          debug_defconfig
-s390                       zfcpdump_defconfig
-sh                                allnoconfig
-sh                  sh7785lcr_32bit_defconfig
-sparc                               defconfig
-sparc64                          allmodconfig
-sparc64                          allyesconfig
-um                             i386_defconfig
-x86_64                              fedora-25
-x86_64                                  kexec
-x86_64                                    lkp
-x86_64                                   rhel
-x86_64                         rhel-7.2-clear
-x86_64                               rhel-7.6
+		pr_err("%s: request_irq() failed\n", "timer");
 
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+I think that would be more typical of error messages on UNIX. E.g.
+
+$ grep x -- /tmp/foo
+grep: /tmp/foo: No such file or directory
+
+>  
+>  	/* Restart mode, Enable int, Set clock source */
+>  	TCTL = TCTL_OM | TCTL_IRQEN | CLOCK_SOURCE;
+> diff --git a/arch/m68k/coldfire/pit.c b/arch/m68k/coldfire/pit.c
+> index eb6f16b0e2e6..d09e253abe5a 100644
+> --- a/arch/m68k/coldfire/pit.c
+> +++ b/arch/m68k/coldfire/pit.c
+> @@ -111,12 +111,6 @@ static irqreturn_t pit_tick(int irq, void *dummy)
+>  
+>  /***************************************************************************/
+>  
+> -static struct irqaction pit_irq = {
+> -	.name	 = "timer",
+> -	.flags	 = IRQF_TIMER,
+> -	.handler = pit_tick,
+> -};
+> -
+>  /***************************************************************************/
+>  
+>  static u64 pit_read_clk(struct clocksource *cs)
+> @@ -156,7 +150,8 @@ void hw_timer_init(irq_handler_t handler)
+>  	cf_pit_clockevent.min_delta_ticks = 0x3f;
+>  	clockevents_register_device(&cf_pit_clockevent);
+>  
+> -	setup_irq(MCF_IRQ_PIT1, &pit_irq);
+> +	if (request_irq(MCF_IRQ_PIT1, pit_tick, IRQF_TIMER, "timer", NULL))
+> +		pr_err("request_irq() on %s failed\n", "timer");
+>  
+
+Same here.
+
+>  	clocksource_register_hz(&pit_clk, FREQ);
+>  }
+> diff --git a/arch/m68k/coldfire/sltimers.c b/arch/m68k/coldfire/sltimers.c
+> index 1b11e7bacab3..2188a21e5413 100644
+> --- a/arch/m68k/coldfire/sltimers.c
+> +++ b/arch/m68k/coldfire/sltimers.c
+> @@ -50,18 +50,14 @@ irqreturn_t mcfslt_profile_tick(int irq, void *dummy)
+>  	return IRQ_HANDLED;
+>  }
+>  
+> -static struct irqaction mcfslt_profile_irq = {
+> -	.name	 = "profile timer",
+> -	.flags	 = IRQF_TIMER,
+> -	.handler = mcfslt_profile_tick,
+> -};
+> -
+>  void mcfslt_profile_init(void)
+>  {
+>  	printk(KERN_INFO "PROFILE: lodging TIMER 1 @ %dHz as profile timer\n",
+>  	       PROFILEHZ);
+>  
+> -	setup_irq(MCF_IRQ_PROFILER, &mcfslt_profile_irq);
+> +	if (request_irq(MCF_IRQ_PROFILER, mcfslt_profile_tick, IRQF_TIMER,
+> +			"profile timer", NULL))
+> +		pr_err("request_irq() on %s failed\n", "profile timer");
+>  
+
+And here.
+
+>  	/* Set up TIMER 2 as high speed profile clock */
+>  	__raw_writel(MCF_BUSCLK / PROFILEHZ - 1, PA(MCFSLT_STCNT));
+> @@ -92,12 +88,6 @@ static irqreturn_t mcfslt_tick(int irq, void *dummy)
+>  	return timer_interrupt(irq, dummy);
+>  }
+>  
+> -static struct irqaction mcfslt_timer_irq = {
+> -	.name	 = "timer",
+> -	.flags	 = IRQF_TIMER,
+> -	.handler = mcfslt_tick,
+> -};
+> -
+>  static u64 mcfslt_read_clk(struct clocksource *cs)
+>  {
+>  	unsigned long flags;
+> @@ -140,7 +130,8 @@ void hw_timer_init(irq_handler_t handler)
+>  	mcfslt_cnt = mcfslt_cycles_per_jiffy;
+>  
+>  	timer_interrupt = handler;
+> -	setup_irq(MCF_IRQ_TIMER, &mcfslt_timer_irq);
+> +	if (request_irq(MCF_IRQ_TIMER, mcfslt_tick, IRQF_TIMER, "timer", NULL))
+> +		pr_err("request_irq() on %s failed\n", "timer");
+>  
+
+And so on.
+
+>  	clocksource_register_hz(&mcfslt_clk, MCF_BUSCLK);
+>  
+> diff --git a/arch/m68k/coldfire/timers.c b/arch/m68k/coldfire/timers.c
+> index 227aa5d13709..f384e92d8b1c 100644
+> --- a/arch/m68k/coldfire/timers.c
+> +++ b/arch/m68k/coldfire/timers.c
+> @@ -82,12 +82,6 @@ static irqreturn_t mcftmr_tick(int irq, void *dummy)
+>  
+>  /***************************************************************************/
+>  
+> -static struct irqaction mcftmr_timer_irq = {
+> -	.name	 = "timer",
+> -	.flags	 = IRQF_TIMER,
+> -	.handler = mcftmr_tick,
+> -};
+> -
+>  /***************************************************************************/
+>  
+>  static u64 mcftmr_read_clk(struct clocksource *cs)
+> @@ -134,7 +128,8 @@ void hw_timer_init(irq_handler_t handler)
+>  
+>  	timer_interrupt = handler;
+>  	init_timer_irq();
+> -	setup_irq(MCF_IRQ_TIMER, &mcftmr_timer_irq);
+> +	if (request_irq(MCF_IRQ_TIMER, mcftmr_tick, IRQF_TIMER, "timer", NULL))
+> +		pr_err("request_irq() on %s failed\n", "timer");
+>  
+>  #ifdef CONFIG_HIGHPROFILE
+>  	coldfire_profile_init();
+> @@ -170,12 +165,6 @@ irqreturn_t coldfire_profile_tick(int irq, void *dummy)
+>  
+>  /***************************************************************************/
+>  
+> -static struct irqaction coldfire_profile_irq = {
+> -	.name	 = "profile timer",
+> -	.flags	 = IRQF_TIMER,
+> -	.handler = coldfire_profile_tick,
+> -};
+> -
+>  void coldfire_profile_init(void)
+>  {
+>  	printk(KERN_INFO "PROFILE: lodging TIMER2 @ %dHz as profile timer\n",
+> @@ -188,7 +177,9 @@ void coldfire_profile_init(void)
+>  	__raw_writew(MCFTIMER_TMR_ENORI | MCFTIMER_TMR_CLK16 |
+>  		MCFTIMER_TMR_RESTART | MCFTIMER_TMR_ENABLE, PA(MCFTIMER_TMR));
+>  
+> -	setup_irq(MCF_IRQ_PROFILER, &coldfire_profile_irq);
+> +	if (request_irq(MCF_IRQ_PROFILER, coldfire_profile_tick, IRQF_TIMER,
+> +			"profile timer", NULL))
+> +		pr_err("request_irq() on %s failed\n", "profile timer");
+>  }
+>  
+>  /***************************************************************************/
+> 
+
