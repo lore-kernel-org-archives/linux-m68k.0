@@ -1,139 +1,133 @@
-Return-Path: <SRS0=Yfdo=37=vger.kernel.org=linux-m68k-owner@kernel.org>
+Return-Path: <SRS0=R5AG=4A=vger.kernel.org=linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.4 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1
-	autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-8.8 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
+	MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B4602C352A3
-	for <linux-m68k@archiver.kernel.org>; Tue, 11 Feb 2020 10:59:44 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 24CC4C352A4
+	for <linux-m68k@archiver.kernel.org>; Wed, 12 Feb 2020 08:01:12 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 8861220842
-	for <linux-m68k@archiver.kernel.org>; Tue, 11 Feb 2020 10:59:44 +0000 (UTC)
-Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=samsung.com header.i=@samsung.com header.b="ZeVBad9C"
+	by mail.kernel.org (Postfix) with ESMTP id 0645620661
+	for <linux-m68k@archiver.kernel.org>; Wed, 12 Feb 2020 08:01:12 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727988AbgBKK7o (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Tue, 11 Feb 2020 05:59:44 -0500
-Received: from mailout1.w1.samsung.com ([210.118.77.11]:54892 "EHLO
-        mailout1.w1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727860AbgBKK7o (ORCPT
-        <rfc822;linux-m68k@vger.kernel.org>); Tue, 11 Feb 2020 05:59:44 -0500
-Received: from eucas1p2.samsung.com (unknown [182.198.249.207])
-        by mailout1.w1.samsung.com (KnoxPortal) with ESMTP id 20200211105942euoutp01a5d4835b0f9976c852c00496a6dd51b0~yVAD4O4sV1244512445euoutp01d
-        for <linux-m68k@vger.kernel.org>; Tue, 11 Feb 2020 10:59:42 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.w1.samsung.com 20200211105942euoutp01a5d4835b0f9976c852c00496a6dd51b0~yVAD4O4sV1244512445euoutp01d
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1581418782;
-        bh=Fa5qQmls/H/6geRZzZYQg6CEy4kHzChnR5WF2V9XkI4=;
-        h=Subject:To:Cc:From:Date:In-Reply-To:References:From;
-        b=ZeVBad9Cun7E32XoCcUl46nzAHUUDsBg9xTKzgLgv5+KNQl/cdNFd8T/ptYFwFBu3
-         jOYa0XpGt+SWcCKATcDpLHYCUqw7NGqRkXxZu47VBo1KhYgF1E4gdWzYBB7XwxavUR
-         aJkeMbt0gcsJci+qwL62oYYCw4JIJAkbJwCfDTk0=
-Received: from eusmges1new.samsung.com (unknown [203.254.199.242]) by
-        eucas1p2.samsung.com (KnoxPortal) with ESMTP id
-        20200211105942eucas1p22fe3192cb50e942e15b6923a9812ad0c~yVADv1uBE2835828358eucas1p2A;
-        Tue, 11 Feb 2020 10:59:42 +0000 (GMT)
-Received: from eucas1p1.samsung.com ( [182.198.249.206]) by
-        eusmges1new.samsung.com (EUCPMTA) with SMTP id 36.D3.61286.E19824E5; Tue, 11
-        Feb 2020 10:59:42 +0000 (GMT)
-Received: from eusmtrp1.samsung.com (unknown [182.198.249.138]) by
-        eucas1p1.samsung.com (KnoxPortal) with ESMTPA id
-        20200211105941eucas1p1a4b93e3561fe7537e3945c5e84bdbbb0~yVADbuV762125021250eucas1p14;
-        Tue, 11 Feb 2020 10:59:41 +0000 (GMT)
-Received: from eusmgms1.samsung.com (unknown [182.198.249.179]) by
-        eusmtrp1.samsung.com (KnoxPortal) with ESMTP id
-        20200211105941eusmtrp1609c71ae576a69dae32f18ae9f761e11~yVADbLqLe1096010960eusmtrp1U;
-        Tue, 11 Feb 2020 10:59:41 +0000 (GMT)
-X-AuditID: cbfec7f2-f0bff7000001ef66-be-5e42891ee2c6
-Received: from eusmtip2.samsung.com ( [203.254.199.222]) by
-        eusmgms1.samsung.com (EUCPMTA) with SMTP id 8A.FD.08375.D19824E5; Tue, 11
-        Feb 2020 10:59:41 +0000 (GMT)
-Received: from [106.120.51.71] (unknown [106.120.51.71]) by
-        eusmtip2.samsung.com (KnoxPortal) with ESMTPA id
-        20200211105940eusmtip280802aeec1ff9b4ebcd07b93192b6b8b~yVACnruOy2260322603eusmtip2h;
-        Tue, 11 Feb 2020 10:59:40 +0000 (GMT)
-Subject: Re: [PATCH] fbdev: c2p: Use BUILD_BUG() instead of custom solution
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     Masahiro Yamada <yamada.masahiro@socionext.com>,
-        DRI Development <dri-devel@lists.freedesktop.org>,
-        Linux Fbdev development list <linux-fbdev@vger.kernel.org>,
-        Linux/m68k <linux-m68k@vger.kernel.org>
-From:   Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>
-Message-ID: <09dba4da-5fd7-cafb-22a3-4baffb12c155@samsung.com>
-Date:   Tue, 11 Feb 2020 11:59:40 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
-        Thunderbird/60.8.0
+        id S1728192AbgBLIBL (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Wed, 12 Feb 2020 03:01:11 -0500
+Received: from mail-oi1-f193.google.com ([209.85.167.193]:37769 "EHLO
+        mail-oi1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728109AbgBLIBK (ORCPT
+        <rfc822;linux-m68k@lists.linux-m68k.org>);
+        Wed, 12 Feb 2020 03:01:10 -0500
+Received: by mail-oi1-f193.google.com with SMTP id q84so1194155oic.4
+        for <linux-m68k@lists.linux-m68k.org>; Wed, 12 Feb 2020 00:01:08 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=KZX62Ncm7BRBCAe4drc/sfEHJXd9NYa0w9qMKq0PjM8=;
+        b=O3/fp7pTwmAHzFeucgEX08VzoHgloFTBq+paitPgBaHsnhwltpFV5DgcEalVzW0yAx
+         ecjd7UXjMnqYgj9dHstGpyme3vIY12I3Cgi8egxfq2F3nVZIfmKfCQccbx5fc00hMww0
+         POj16M6/jycINdZvGZ85ggt7SonM2WQ19G25QtotQFDzxMn6NNcilGhQV8v3V2DaMztj
+         tgKyCTVST/SQQ4Z00aFh+B8VzJZkr6m1lh1o7inLbqEXH94Ow2Z3HA4U+P3pC/3JutPp
+         ww7oWBl+D/rwyWPvpFa6/TdvAYGBFyaKQYOXksF6WD/obNwSBVSDrCxqPtUMCxAb3oyh
+         pMbA==
+X-Gm-Message-State: APjAAAW2rWZxJC1PVKSDEU5t7ReI2N+hSzt0nm8x99Ue46TNbmz3l0mI
+        oeEZa0hQL+3cn7fq9ekQ+MtLI/yjc58KNBpGEsw=
+X-Google-Smtp-Source: APXvYqxIAWciXgX8Kg/NU7BBZdipTfk2Iit3VO6zsFrUPVMgKeeaRMICqmTEeOvyNcdispn7Re4fuSGTerOY5ooQ4Qk=
+X-Received: by 2002:a54:4707:: with SMTP id k7mr5186800oik.153.1581494468476;
+ Wed, 12 Feb 2020 00:01:08 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <CAMuHMdWgGyt8w4zG-rf-b9uyfEx1aHV-CoLz4h_T3MpvzdniWQ@mail.gmail.com>
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFprLKsWRmVeSWpSXmKPExsWy7djPc7pynU5xBguvcFhc+fqezeLZrb1M
-        Fif6PrBa7H5/n9Fi773PjA6sHocOdzB63O8+zuRxYvp3Fo/Pm+QCWKK4bFJSczLLUov07RK4
-        Ms6eeMBUsIut4kXDeeYGxpWsXYycHBICJhKfT8xm7mLk4hASWMEo8W3JRTYI5wujxMGv/9gh
-        nM+MEs9fL2aEabm6eTsrRGI5o8TOA80sEM5bRonLb84xgVQJC3hL7OtaB9TOwSEioCsx5ycT
-        SA2zwHlGift3PoMtZxOwkpjYvgpsKq+AncT7hUdYQGwWAVWJ+ScbwOKiAhESnx4cZoWoEZQ4
-        OfMJWA2nQKDE7rUX2EBsZgFxiVtP5jNB2PIS29/OAXtIQmAeu8Sl1mlQZ7tITNn0iRnCFpZ4
-        dXwLO4QtI3F6cg8LRMM6Rom/HS+gurczSiyf/I8Nospa4s65X2wg7zALaEqs36UPEXaUaFl9
-        hxUkLCHAJ3HjrSDEEXwSk7ZNZ4YI80p0tAlBVKtJbFi2gQ1mbdfOlcwTGJVmIXltFpJ3ZiF5
-        ZxbC3gWMLKsYxVNLi3PTU4sN81LL9YoTc4tL89L1kvNzNzECE83pf8c/7WD8einpEKMAB6MS
-        D29FoGOcEGtiWXFl7iFGCQ5mJRFeS2mgEG9KYmVValF+fFFpTmrxIUZpDhYlcV7jRS9jhQTS
-        E0tSs1NTC1KLYLJMHJxSDYxmv+OKmrPPPD3Hun/u9MI1cjY5Hexeu+5ePXY2a3bprx88GefW
-        3J8x3/2cfNXnzZwrfk8JOruiqWCtm8KKb07NMSWNlZ5PJ63f37p1Y4W5S6v3bOXvp/xZTXPL
-        n3DfDix83Hnm/hOe47PP7ZhRcsi+54bocm67nkd71Vitl6aK/uDIWhv/LZ5XiaU4I9FQi7mo
-        OBEA0rLJUDADAAA=
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFlrHIsWRmVeSWpSXmKPExsVy+t/xe7qynU5xBosO61lc+fqezeLZrb1M
-        Fif6PrBa7H5/n9Fi773PjA6sHocOdzB63O8+zuRxYvp3Fo/Pm+QCWKL0bIryS0tSFTLyi0ts
-        laINLYz0DC0t9IxMLPUMjc1jrYxMlfTtbFJSczLLUov07RL0Ms6eeMBUsIut4kXDeeYGxpWs
-        XYycHBICJhJXN28Hsrk4hASWMkrsuzqbrYuRAyghI3F8fRlEjbDEn2tdbBA1rxklnm68zwyS
-        EBbwltjXtY4dpF5EQFdizk8mkBpmgYuMEts2vIIaOptJYuqnpUwgDWwCVhIT21cxgti8AnYS
-        7xceYQGxWQRUJeafbACLiwpESBzeMQuqRlDi5MwnYDWcAoESu9deYAOxmQXUJf7Mu8QMYYtL
-        3HoynwnClpfY/nYO8wRGoVlI2mchaZmFpGUWkpYFjCyrGEVSS4tz03OLDfWKE3OLS/PS9ZLz
-        czcxAuNq27Gfm3cwXtoYfIhRgINRiYe3ItAxTog1say4MvcQowQHs5IIr6U0UIg3JbGyKrUo
-        P76oNCe1+BCjKdBzE5mlRJPzgTGfVxJvaGpobmFpaG5sbmxmoSTO2yFwMEZIID2xJDU7NbUg
-        tQimj4mDU6qB0TT9yfbmXYsPXn4Sfde6Zvt3n0cW/6+fEXdk3yv79U/ZrN29B82Fr77/KBnm
-        xn2/j7/+4RSHyQwbHoTbvr7KEiDRnBc/zXrFcZ/O67wFG0qy5k7QtGkRnFVZue398hwpgwuq
-        v88lvOTkCZZk54z5U+E1YafGRO8C9kbhXSekPW4fkt20K3LZHyWW4oxEQy3mouJEAOGBuvPB
-        AgAA
-X-CMS-MailID: 20200211105941eucas1p1a4b93e3561fe7537e3945c5e84bdbbb0
-X-Msg-Generator: CA
-Content-Type: text/plain; charset="utf-8"
-X-RootMTR: 20200211084935eucas1p2f151e2ea9157c4e6b0766bf1f7cf2f84
-X-EPHeader: CA
-CMS-TYPE: 201P
-X-CMS-RootMailID: 20200211084935eucas1p2f151e2ea9157c4e6b0766bf1f7cf2f84
-References: <20200112171521.22443-1-geert@linux-m68k.org>
-        <CAMuHMdX9M25O9MOQ5tb-cLs36E8qCf1M4YCbYN9BU+h1N3n0MQ@mail.gmail.com>
-        <CGME20200211084935eucas1p2f151e2ea9157c4e6b0766bf1f7cf2f84@eucas1p2.samsung.com>
-        <CAMuHMdWgGyt8w4zG-rf-b9uyfEx1aHV-CoLz4h_T3MpvzdniWQ@mail.gmail.com>
+References: <20200211174126.GA29960@embeddedor>
+In-Reply-To: <20200211174126.GA29960@embeddedor>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Wed, 12 Feb 2020 09:00:57 +0100
+Message-ID: <CAMuHMdV3DY1X3s7fvZz8MpxvqsUZAOivc18f40Ca8kHiZqfqKw@mail.gmail.com>
+Subject: Re: [PATCH] treewide: Replace zero-length arrays with flexible-array member
+To:     "Gustavo A. R. Silva" <gustavo@embeddedor.com>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Greg KH <gregkh@linuxfoundation.org>,
+        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
+        netdev <netdev@vger.kernel.org>,
+        USB list <linux-usb@vger.kernel.org>,
+        linux-m68k <linux-m68k@lists.linux-m68k.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-m68k-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
+Hi Gustavo,
 
-On 2/11/20 9:49 AM, Geert Uytterhoeven wrote:
-> On Mon, Feb 10, 2020 at 12:16 PM Geert Uytterhoeven
-> <geert@linux-m68k.org> wrote:
->> On Sun, Jan 12, 2020 at 6:15 PM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
->>> Replace the call to the custom non-existing function by a standard
->>> BUILD_BUG() invocation.
->>>
->>> Suggested-by: Masahiro Yamada <yamada.masahiro@socionext.com>
->>> Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
->>
->> Thanks, applied and queued for v5.7.
-> 
-> Sorry, this is fbdev-material, not m68k-material.
-> If you mind, I can drop it from the m68k for-v5.7 branch again.
+On Tue, Feb 11, 2020 at 10:49 PM Gustavo A. R. Silva
+<gustavo@embeddedor.com> wrote:
+> The current codebase makes use of the zero-length array language
+> extension to the C90 standard, but the preferred mechanism to declare
+> variable-length types such as these ones is a flexible array member[1][2],
+> introduced in C99:
+>
+> struct foo {
+>         int stuff;
+>         struct boo array[];
+> };
+>
+> By making use of the mechanism above, we will get a compiler warning
+> in case the flexible array does not occur last in the structure, which
+> will help us prevent some kind of undefined behavior bugs from being
+> unadvertenly introduced[3] to the codebase from now on.
+>
+> All these instances of code were found with the help of the following
+> Coccinelle script:
+>
+> @@
+> identifier S, member, array;
+> type T1, T2;
+> @@
+>
+> struct S {
+>   ...
+>   T1 member;
+>   T2 array[
+> - 0
+>   ];
+> };
+>
+> [1] https://gcc.gnu.org/onlinedocs/gcc/Zero-Length.html
+> [2] https://github.com/KSPP/linux/issues/21
+> [3] commit 76497732932f ("cxgb3/l2t: Fix undefined behaviour")
+>
+> NOTE: I'll carry this in my -next tree for the v5.6 merge window.
+>
+> Signed-off-by: Gustavo A. R. Silva <gustavo@embeddedor.com>
 
-I don't mind, lets keep it m68k tree (it should not cause any
-conflicts with other fbdev changes).
+Thanks!
 
-Best regards,
---
-Bartlomiej Zolnierkiewicz
-Samsung R&D Institute Poland
-Samsung Electronics
+> --- a/arch/m68k/tools/amiga/dmesg.c
+> +++ b/arch/m68k/tools/amiga/dmesg.c
+> @@ -34,7 +34,7 @@ struct savekmsg {
+>      u_long magic2;     /* SAVEKMSG_MAGIC2 */
+>      u_long magicptr;   /* address of magic1 */
+>      u_long size;
+> -    char data[0];
+> +       char data[];
+>  };
+
+JFTR, this file is not really part of the kernel, but supposed to be compiled
+by an AmigaOS compiler, which may predate the introduction of support
+for flexible array members.
+
+Well, even if you keep it included, I guess the rare users can manage ;-)
+My binary dates back to 1996, and I have no plans to recompile it.
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
+-- 
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
