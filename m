@@ -1,122 +1,51 @@
-Return-Path: <SRS0=tS98=4C=vger.kernel.org=linux-m68k-owner@kernel.org>
+Return-Path: <SRS0=LQjU=4D=vger.kernel.org=linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.1 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS,USER_AGENT_SANE_1 autolearn=unavailable autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-0.5 required=3.0 tests=FREEMAIL_REPLYTO_END_DIGIT,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
+	autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9E00AC3B199
-	for <linux-m68k@archiver.kernel.org>; Fri, 14 Feb 2020 13:07:16 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 36AACC35242
+	for <linux-m68k@archiver.kernel.org>; Sat, 15 Feb 2020 01:31:32 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 75496222C2
-	for <linux-m68k@archiver.kernel.org>; Fri, 14 Feb 2020 13:07:16 +0000 (UTC)
-Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="OuPmM2Zt"
+	by mail.kernel.org (Postfix) with ESMTP id 0DD992067D
+	for <linux-m68k@archiver.kernel.org>; Sat, 15 Feb 2020 01:31:32 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726191AbgBNNHP (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Fri, 14 Feb 2020 08:07:15 -0500
-Received: from mail-pg1-f194.google.com ([209.85.215.194]:44083 "EHLO
-        mail-pg1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728121AbgBNNHP (ORCPT
-        <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Fri, 14 Feb 2020 08:07:15 -0500
-Received: by mail-pg1-f194.google.com with SMTP id g3so4812036pgs.11
-        for <linux-m68k@lists.linux-m68k.org>; Fri, 14 Feb 2020 05:07:14 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=sWFS4TNhJKgHZrDSECdzXUZNDwqr6aFn1S5mWIDwQBk=;
-        b=OuPmM2ZtbzcJifbGfpmNJkAMu7JOjVo8qf78dtwRyCp6R9h4aGUAY238tzIDq/PZTJ
-         2mad+QBySu6AOzjHTA3LsQibYqLqm4Vc+2OJOKxeojb5tVv9XGGIJuxUYLcAA3PlEwf7
-         MhSVK7TgpSzcdtwZ5CsJzDSyYcfK8Y/vovIrhknpUE3Oh9Y1ZNlvo7JhSEPO8uMCN2S/
-         OyiR/czzDgBCUJ8WTd6mO5iSsv/JoMX0r00Ne4BP6HmsW9ZaeACbBMekiupO5Fmg3ANC
-         h8IUY4bbld8TPM65KUSCLv6r/d4DirfpiLyn2ede9FFO5516l4akjhv8Iw2rmGMqLfXR
-         O+Xg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=sWFS4TNhJKgHZrDSECdzXUZNDwqr6aFn1S5mWIDwQBk=;
-        b=KEzjid0whVNS97UHJnMSKBRAN7VWNsoauC+MmxCdEvPMuwm16f9pS02nk/d35Suhay
-         ywpeOM687NMSg8QM4rNs/RrCXIj1YId52cpTTTGSrLfa4npHpBPlbs/OLyCd2XhJwQRw
-         Q5yvNwItq3YEWOzeuJSQEiAPfwY7MV08eeSApHnu5W9hKQg+7tSY+Z7JZ5u82dUKnres
-         MbHLeChci7cGPfKpnIk+Lg/z31kGv+a3mbg9qZ7Ffv7H27DjOHag0KP6sRiGhipbIZZN
-         VUWFURZ7SmadVsRwtdhR+S1OkSfrYAInTqaSyDxCw5LqjGM4njYRhBrwfSjjE9KX+0by
-         bXgQ==
-X-Gm-Message-State: APjAAAW1R6tx95JyCiOGc3twamWRg2WsZXIMRT4z2pp8XKiiRDyeAHUI
-        LlfDhMHT5stEdALdXVZBXLI=
-X-Google-Smtp-Source: APXvYqw3lNsRSUEHDuHqCpxq1u9xqLkNp7mqqa6f68ukq8YcUBTUSvo7LiRC6M0bWJpLzU4kVuHp6A==
-X-Received: by 2002:a63:691:: with SMTP id 139mr3563463pgg.325.1581685634099;
-        Fri, 14 Feb 2020 05:07:14 -0800 (PST)
-Received: from localhost ([106.51.232.35])
-        by smtp.gmail.com with ESMTPSA id s13sm12576162pjp.1.2020.02.14.05.07.13
-        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
-        Fri, 14 Feb 2020 05:07:13 -0800 (PST)
-Date:   Fri, 14 Feb 2020 18:37:10 +0530
-From:   afzal mohammed <afzal.mohd.ma@gmail.com>
-To:     Greg Ungerer <gerg@linux-m68k.org>
-Cc:     linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Julia Lawall <Julia.Lawall@lip6.fr>
-Subject: Re: [PATCH 06/18] m68k: Replace setup_irq() by request_irq()
-Message-ID: <20200214130710.GA5675@afzalpc>
-References: <cover.1581478323.git.afzal.mohd.ma@gmail.com>
- <1941c51a3237c4e9df6d9a5b87615cd1bba572dc.1581478324.git.afzal.mohd.ma@gmail.com>
- <bfb9c0bb-0c16-5516-d788-bbd2ca86fc58@linux-m68k.org>
+        id S1727602AbgBOBbb convert rfc822-to-8bit (ORCPT
+        <rfc822;linux-m68k@archiver.kernel.org>);
+        Fri, 14 Feb 2020 20:31:31 -0500
+Received: from l37-192-35-170.novotelecom.ru ([37.192.35.170]:11860 "EHLO
+        glpak.ru" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1727572AbgBOBbb (ORCPT <rfc822;linux-m68k@lists.linux-m68k.org>);
+        Fri, 14 Feb 2020 20:31:31 -0500
+X-Greylist: delayed 1128 seconds by postgrey-1.27 at vger.kernel.org; Fri, 14 Feb 2020 20:31:30 EST
+Received: from alex.glpak.ru (localhost [127.0.0.1])
+        by glpak.ru (Postfix) with ESMTP id CA1CBA3DB98
+        for <linux-m68k@lists.linux-m68k.org>; Sat, 15 Feb 2020 08:07:40 +0700 (NOVT)
+X-Virus-Scanned: amavisd-new at glpak.ru
+Received: from glpak.ru ([127.0.0.1])
+        by alex.glpak.ru (glpak.ru [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id z5TmmSNIQ89v for <linux-m68k@lists.linux-m68k.org>;
+        Sat, 15 Feb 2020 08:07:40 +0700 (NOVT)
+Received: from [192.168.88.250] (unknown [185.248.13.181])
+        by glpak.ru (Postfix) with ESMTPA id 30879A3DBB8
+        for <linux-m68k@lists.linux-m68k.org>; Sat, 15 Feb 2020 08:07:40 +0700 (NOVT)
+Content-Type: text/plain; charset="iso-8859-1"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <bfb9c0bb-0c16-5516-d788-bbd2ca86fc58@linux-m68k.org>
-User-Agent: Mutt/1.9.3 (2018-01-21)
+Content-Transfer-Encoding: 8BIT
+Content-Description: Mail message body
+Subject: zionitld3@gmail.com
+To:     linux-m68k@lists.linux-m68k.org
+From:   anna@glpak.ru
+Date:   Fri, 14 Feb 2020 17:09:24 -0800
+Reply-To: zionitld3@gmail.com
+X-Antivirus: Avast (VPS 200214-0, 02/14/2020), Outbound message
+X-Antivirus-Status: Clean
+Message-Id: <20200215010740.CA1CBA3DB98@glpak.ru>
 Sender: linux-m68k-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-Hi Greg,
-
-On Thu, Feb 13, 2020 at 05:11:17PM +1000, Greg Ungerer wrote:
-> On 12/2/20 6:03 pm, afzal mohammed wrote:
-
-> > diff --git a/arch/m68k/68000/timers.c b/arch/m68k/68000/timers.c
-> > index 71ddb4c98726..7a55d664592e 100644
-> > --- a/arch/m68k/68000/timers.c
-> > +++ b/arch/m68k/68000/timers.c
-> > @@ -68,12 +68,6 @@ static irqreturn_t hw_tick(int irq, void *dummy)
-> >   /***************************************************************************/
-> > -static struct irqaction m68328_timer_irq = {
-> > -	.name	 = "timer",
-> > -	.flags	 = IRQF_TIMER,
-> > -	.handler = hw_tick,
-> > -};
-> > -
-> >   /***************************************************************************/
-
-> Remove this comment line as well. Nothing left to separate
-> between those comment lines with the struct initialization removed.
-
-i will remove above as well as the similar ones.
-
-Because  you mentioned, i checked cocci o/p (change above was provided
-as is by running cocci). Cocci by default removes the comment line you
-mentioned. Initially that was the way cocci was run, but then it was
-observed that in another file in addition to removing associated
-comments, it was swallowing other unrelated comments that were living
-together. Also sometimes associated comments had to be retained, just
-that it had to be relocated near added code (that is not applicable in
-this case). So i ran cocci w/ "--keep-comments" option & decided to
-manually handle comment related, in this file i failed noticing the
-unneeded comment line during self review.
-
-> I tested this out on ColdFire hardware I have, worked fine.
-> All defconfigs still compiled too.
-
-Thanks for testing
-
-Regards
-afzal
+Hello, We from Zion Finance Group currently offers loans to customers at a low interest rate of 3%. This is an opportunity that you cannot miss. We have a few questions to ask; Do you have debts? Do you want to pay off your debts? Do you want to be financially equipped? If so, request a loan today from Zion Finance Group. Interested, customers are expected to contact zionitld3@gmail.com for more information. We wish to assist you with a loan. Greetings, Mr. Bernard.
