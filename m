@@ -1,280 +1,254 @@
-Return-Path: <SRS0=dLdR=4N=vger.kernel.org=linux-m68k-owner@kernel.org>
+Return-Path: <SRS0=gJ3H=4O=vger.kernel.org=linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.8 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
-	MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-	autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-8.3 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,
+	USER_AGENT_SANE_1 autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 6EDF8C35DEE
-	for <linux-m68k@archiver.kernel.org>; Tue, 25 Feb 2020 00:40:30 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 05072C4BA09
+	for <linux-m68k@archiver.kernel.org>; Wed, 26 Feb 2020 00:42:08 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 427772072D
-	for <linux-m68k@archiver.kernel.org>; Tue, 25 Feb 2020 00:40:30 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id CD75B21D7E
+	for <linux-m68k@archiver.kernel.org>; Wed, 26 Feb 2020 00:42:07 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728235AbgBYAka (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Mon, 24 Feb 2020 19:40:30 -0500
-Received: from mga07.intel.com ([134.134.136.100]:20400 "EHLO mga07.intel.com"
+        id S1728865AbgBZAmH (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Tue, 25 Feb 2020 19:42:07 -0500
+Received: from mail.kernel.org ([198.145.29.99]:54346 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728011AbgBYAk3 (ORCPT <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Mon, 24 Feb 2020 19:40:29 -0500
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by orsmga105.jf.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 24 Feb 2020 16:40:28 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.70,482,1574150400"; 
-   d="scan'208";a="350036558"
-Received: from lkp-server01.sh.intel.com (HELO lkp-server01) ([10.239.97.150])
-  by fmsmga001.fm.intel.com with ESMTP; 24 Feb 2020 16:40:27 -0800
-Received: from kbuild by lkp-server01 with local (Exim 4.89)
-        (envelope-from <lkp@intel.com>)
-        id 1j6OGw-000491-KV; Tue, 25 Feb 2020 08:40:26 +0800
-Date:   Tue, 25 Feb 2020 08:39:45 +0800
-From:   kbuild test robot <lkp@intel.com>
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     linux-m68k@lists.linux-m68k.org
-Subject: [m68k:m68k-queue] BUILD SUCCESS
- 0ff0384f9fdb2193372e7fed837aa7962160cdb4
-Message-ID: <5e546cd1.XHU6EI4yb1nq6kLb%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+        id S1729081AbgBZAmH (ORCPT <rfc822;linux-m68k@lists.linux-m68k.org>);
+        Tue, 25 Feb 2020 19:42:07 -0500
+Received: from [10.44.0.22] (unknown [103.48.210.53])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id F07E82082F;
+        Wed, 26 Feb 2020 00:42:03 +0000 (UTC)
+Subject: Re: [PATCH v2 06/18] m68k: Replace setup_irq() by request_irq()
+To:     afzal mohammed <afzal.mohd.ma@gmail.com>,
+        linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Finn Thain <fthain@telegraphics.com.au>
+References: <cover.1582471508.git.afzal.mohd.ma@gmail.com>
+ <00b0bf964278dd0bb3e093283994399ff796cca5.1582471508.git.afzal.mohd.ma@gmail.com>
+From:   Greg Ungerer <gerg@linux-m68k.org>
+Message-ID: <73c3ad08-963d-fea2-91d7-b06e4ef8d3ef@linux-m68k.org>
+Date:   Wed, 26 Feb 2020 10:42:00 +1000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.4.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <00b0bf964278dd0bb3e093283994399ff796cca5.1582471508.git.afzal.mohd.ma@gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Sender: linux-m68k-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/geert/linux-m68k.git  m68k-queue
-branch HEAD: 0ff0384f9fdb2193372e7fed837aa7962160cdb4  fat: Use correct logical sector size for Atari GEMDOS FAT
+Hi Afzal,
 
-elapsed time: 604m
+On 24/2/20 10:50 am, afzal mohammed wrote:
+> request_irq() is preferred over setup_irq(). The early boot setup_irq()
+> invocations happen either via 'init_IRQ()' or 'time_init()', while
+> memory allocators are ready by 'mm_init()'.
+> 
+> Per tglx[1], setup_irq() existed in olden days when allocators were not
+> ready by the time early interrupts were initialized.
+> 
+> Hence replace setup_irq() by request_irq().
+> 
+> Seldom remove_irq() usage has been observed coupled with setup_irq(),
+> wherever that has been found, it too has been replaced by free_irq().
+> 
+> [1] https://lkml.kernel.org/r/alpine.DEB.2.20.1710191609480.1971@nanos
+> 
+> Signed-off-by: afzal mohammed <afzal.mohd.ma@gmail.com>
+> Tested-by: Greg Ungerer <gerg@linux-m68k.org> # ColdFire
+> ---
+> 
+> v2:
+>   * Replace pr_err("request_irq() on %s failed" by
+>             pr_err("%s: request_irq() failed"
+>   * Commit message massage
+>   * remove now irrelevant comment lines at 3 places
+> 
+>   arch/m68k/68000/timers.c      | 11 ++---------
+>   arch/m68k/coldfire/pit.c      | 11 ++---------
+>   arch/m68k/coldfire/sltimers.c | 19 +++++--------------
+>   arch/m68k/coldfire/timers.c   | 21 +++++----------------
+>   4 files changed, 14 insertions(+), 48 deletions(-)
+> 
+> diff --git a/arch/m68k/68000/timers.c b/arch/m68k/68000/timers.c
+> index 71ddb4c98726..55a76a2d3d58 100644
+> --- a/arch/m68k/68000/timers.c
+> +++ b/arch/m68k/68000/timers.c
+> @@ -68,14 +68,6 @@ static irqreturn_t hw_tick(int irq, void *dummy)
+>   
+>   /***************************************************************************/
+>   
+> -static struct irqaction m68328_timer_irq = {
+> -	.name	 = "timer",
+> -	.flags	 = IRQF_TIMER,
+> -	.handler = hw_tick,
+> -};
+> -
+> -/***************************************************************************/
+> -
+>   static u64 m68328_read_clk(struct clocksource *cs)
+>   {
+>   	unsigned long flags;
+> @@ -106,7 +98,8 @@ void hw_timer_init(irq_handler_t handler)
+>   	TCTL = 0;
+>   
+>   	/* set ISR */
+> -	setup_irq(TMR_IRQ_NUM, &m68328_timer_irq);
+> +	if (request_irq(TMR_IRQ_NUM, hw_tick, IRQF_TIMER, "timer", NULL))
+> +		pr_err("%s: request_irq() failed\n", "timer");
 
-configs tested: 217
-configs skipped: 0
+Why not just:
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+                 pr_err("timer: request_irq() failed\n");
 
-arm                              allmodconfig
-arm                               allnoconfig
-arm                              allyesconfig
-arm64                            allmodconfig
-arm64                             allnoconfig
-arm64                            allyesconfig
-arm                           efm32_defconfig
-arm                         at91_dt_defconfig
-arm                        shmobile_defconfig
-arm64                               defconfig
-arm                          exynos_defconfig
-arm                        multi_v5_defconfig
-arm                           sunxi_defconfig
-arm                        multi_v7_defconfig
-sparc                            allyesconfig
-sh                  sh7785lcr_32bit_defconfig
-h8300                     edosk2674_defconfig
-s390                             allyesconfig
-riscv                    nommu_virt_defconfig
-ia64                                defconfig
-i386                                defconfig
-powerpc                           allnoconfig
-xtensa                          iss_defconfig
-sh                                allnoconfig
-i386                              allnoconfig
-i386                             allyesconfig
-i386                             alldefconfig
-ia64                             allmodconfig
-ia64                              allnoconfig
-ia64                             allyesconfig
-ia64                             alldefconfig
-nios2                         3c120_defconfig
-nios2                         10m50_defconfig
-c6x                        evmc6678_defconfig
-c6x                              allyesconfig
-xtensa                       common_defconfig
-openrisc                 simple_smp_defconfig
-openrisc                    or1ksim_defconfig
-nds32                               defconfig
-nds32                             allnoconfig
-csky                                defconfig
-alpha                               defconfig
-h8300                       h8s-sim_defconfig
-m68k                       m5475evb_defconfig
-m68k                             allmodconfig
-h8300                    h8300h-sim_defconfig
-m68k                           sun3_defconfig
-m68k                          multi_defconfig
-arc                              allyesconfig
-arc                                 defconfig
-microblaze                      mmu_defconfig
-microblaze                    nommu_defconfig
-powerpc                             defconfig
-powerpc                       ppc64_defconfig
-powerpc                          rhel-kconfig
-mips                      fuloong2e_defconfig
-mips                      malta_kvm_defconfig
-mips                             allyesconfig
-mips                         64r6el_defconfig
-mips                              allnoconfig
-mips                           32r2_defconfig
-mips                             allmodconfig
-parisc                            allnoconfig
-parisc                           allyesconfig
-parisc                generic-32bit_defconfig
-parisc                generic-64bit_defconfig
-x86_64               randconfig-a001-20200225
-x86_64               randconfig-a002-20200225
-x86_64               randconfig-a003-20200225
-i386                 randconfig-a001-20200225
-i386                 randconfig-a002-20200225
-i386                 randconfig-a003-20200225
-x86_64               randconfig-a001-20200224
-x86_64               randconfig-a002-20200224
-x86_64               randconfig-a003-20200224
-i386                 randconfig-a001-20200224
-i386                 randconfig-a002-20200224
-i386                 randconfig-a003-20200224
-alpha                randconfig-a001-20200225
-m68k                 randconfig-a001-20200225
-mips                 randconfig-a001-20200225
-nds32                randconfig-a001-20200225
-parisc               randconfig-a001-20200225
-riscv                randconfig-a001-20200225
-nds32                randconfig-a001-20200224
-mips                 randconfig-a001-20200224
-riscv                randconfig-a001-20200224
-parisc               randconfig-a001-20200224
-alpha                randconfig-a001-20200224
-m68k                 randconfig-a001-20200224
-c6x                  randconfig-a001-20200225
-h8300                randconfig-a001-20200225
-microblaze           randconfig-a001-20200225
-nios2                randconfig-a001-20200225
-sparc64              randconfig-a001-20200225
-nios2                randconfig-a001-20200224
-c6x                  randconfig-a001-20200224
-sparc64              randconfig-a001-20200224
-microblaze           randconfig-a001-20200224
-h8300                randconfig-a001-20200224
-openrisc             randconfig-a001-20200224
-sh                   randconfig-a001-20200224
-s390                 randconfig-a001-20200224
-xtensa               randconfig-a001-20200224
-csky                 randconfig-a001-20200224
-x86_64               randconfig-b001-20200225
-x86_64               randconfig-b002-20200225
-x86_64               randconfig-b003-20200225
-i386                 randconfig-b001-20200225
-i386                 randconfig-b002-20200225
-i386                 randconfig-b003-20200225
-x86_64               randconfig-b001-20200224
-i386                 randconfig-b002-20200224
-x86_64               randconfig-b003-20200224
-i386                 randconfig-b003-20200224
-i386                 randconfig-b001-20200224
-x86_64               randconfig-b002-20200224
-x86_64               randconfig-c001-20200225
-x86_64               randconfig-c002-20200225
-x86_64               randconfig-c003-20200225
-i386                 randconfig-c001-20200225
-i386                 randconfig-c002-20200225
-i386                 randconfig-c003-20200225
-x86_64               randconfig-c001-20200224
-x86_64               randconfig-c002-20200224
-x86_64               randconfig-c003-20200224
-i386                 randconfig-c001-20200224
-i386                 randconfig-c002-20200224
-i386                 randconfig-c003-20200224
-i386                 randconfig-d002-20200224
-x86_64               randconfig-d002-20200224
-x86_64               randconfig-d003-20200224
-i386                 randconfig-d001-20200224
-x86_64               randconfig-d001-20200224
-i386                 randconfig-d003-20200224
-x86_64               randconfig-d001-20200225
-x86_64               randconfig-d002-20200225
-x86_64               randconfig-d003-20200225
-i386                 randconfig-d001-20200225
-i386                 randconfig-d002-20200225
-i386                 randconfig-d003-20200225
-x86_64               randconfig-e002-20200224
-i386                 randconfig-e001-20200224
-x86_64               randconfig-e003-20200224
-x86_64               randconfig-e001-20200224
-i386                 randconfig-e003-20200224
-i386                 randconfig-e002-20200224
-x86_64               randconfig-e001-20200225
-x86_64               randconfig-e002-20200225
-x86_64               randconfig-e003-20200225
-i386                 randconfig-e001-20200225
-i386                 randconfig-e002-20200225
-i386                 randconfig-e003-20200225
-x86_64               randconfig-f001-20200224
-x86_64               randconfig-f002-20200224
-x86_64               randconfig-f003-20200224
-i386                 randconfig-f001-20200224
-i386                 randconfig-f002-20200224
-i386                 randconfig-f003-20200224
-x86_64               randconfig-g001-20200225
-x86_64               randconfig-g002-20200225
-x86_64               randconfig-g003-20200225
-i386                 randconfig-g001-20200225
-i386                 randconfig-g002-20200225
-i386                 randconfig-g003-20200225
-x86_64               randconfig-h001-20200225
-x86_64               randconfig-h002-20200225
-x86_64               randconfig-h003-20200225
-i386                 randconfig-h001-20200225
-i386                 randconfig-h002-20200225
-i386                 randconfig-h003-20200225
-i386                 randconfig-h003-20200224
-i386                 randconfig-h002-20200224
-x86_64               randconfig-h002-20200224
-x86_64               randconfig-h003-20200224
-i386                 randconfig-h001-20200224
-x86_64               randconfig-h001-20200224
-arm64                randconfig-a001-20200224
-ia64                 randconfig-a001-20200224
-powerpc              randconfig-a001-20200224
-arm                  randconfig-a001-20200224
-arc                  randconfig-a001-20200224
-sparc                randconfig-a001-20200224
-arc                  randconfig-a001-20200225
-arm                  randconfig-a001-20200225
-arm64                randconfig-a001-20200225
-ia64                 randconfig-a001-20200225
-powerpc              randconfig-a001-20200225
-sparc                randconfig-a001-20200225
-riscv                            allyesconfig
-riscv                             allnoconfig
-riscv                               defconfig
-riscv                          rv32_defconfig
-riscv                            allmodconfig
-s390                       zfcpdump_defconfig
-s390                          debug_defconfig
-s390                              allnoconfig
-s390                             allmodconfig
-s390                             alldefconfig
-s390                                defconfig
-sh                          rsk7269_defconfig
-sh                               allmodconfig
-sh                            titan_defconfig
-sparc                               defconfig
-sparc64                          allmodconfig
-sparc64                           allnoconfig
-sparc64                          allyesconfig
-sparc64                             defconfig
-um                           x86_64_defconfig
-um                             i386_defconfig
-um                                  defconfig
-x86_64                                   rhel
-x86_64                               rhel-7.6
-x86_64                         rhel-7.2-clear
-x86_64                                    lkp
-x86_64                              fedora-25
-x86_64                                  kexec
+And maybe would it be useful to print out the error return code from a
+failed request_irq()?  What about displaying the requested IRQ number as well?
+Just a thought.
 
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+Regards
+Greg
+
+
+>   	/* Restart mode, Enable int, Set clock source */
+>   	TCTL = TCTL_OM | TCTL_IRQEN | CLOCK_SOURCE;
+> diff --git a/arch/m68k/coldfire/pit.c b/arch/m68k/coldfire/pit.c
+> index eb6f16b0e2e6..604acd658dec 100644
+> --- a/arch/m68k/coldfire/pit.c
+> +++ b/arch/m68k/coldfire/pit.c
+> @@ -111,14 +111,6 @@ static irqreturn_t pit_tick(int irq, void *dummy)
+>   
+>   /***************************************************************************/
+>   
+> -static struct irqaction pit_irq = {
+> -	.name	 = "timer",
+> -	.flags	 = IRQF_TIMER,
+> -	.handler = pit_tick,
+> -};
+> -
+> -/***************************************************************************/
+> -
+>   static u64 pit_read_clk(struct clocksource *cs)
+>   {
+>   	unsigned long flags;
+> @@ -156,7 +148,8 @@ void hw_timer_init(irq_handler_t handler)
+>   	cf_pit_clockevent.min_delta_ticks = 0x3f;
+>   	clockevents_register_device(&cf_pit_clockevent);
+>   
+> -	setup_irq(MCF_IRQ_PIT1, &pit_irq);
+> +	if (request_irq(MCF_IRQ_PIT1, pit_tick, IRQF_TIMER, "timer", NULL))
+> +		pr_err("%s: request_irq() failed\n", "timer");
+>   
+>   	clocksource_register_hz(&pit_clk, FREQ);
+>   }
+> diff --git a/arch/m68k/coldfire/sltimers.c b/arch/m68k/coldfire/sltimers.c
+> index 1b11e7bacab3..c5d5862e1d2b 100644
+> --- a/arch/m68k/coldfire/sltimers.c
+> +++ b/arch/m68k/coldfire/sltimers.c
+> @@ -50,18 +50,14 @@ irqreturn_t mcfslt_profile_tick(int irq, void *dummy)
+>   	return IRQ_HANDLED;
+>   }
+>   
+> -static struct irqaction mcfslt_profile_irq = {
+> -	.name	 = "profile timer",
+> -	.flags	 = IRQF_TIMER,
+> -	.handler = mcfslt_profile_tick,
+> -};
+> -
+>   void mcfslt_profile_init(void)
+>   {
+>   	printk(KERN_INFO "PROFILE: lodging TIMER 1 @ %dHz as profile timer\n",
+>   	       PROFILEHZ);
+>   
+> -	setup_irq(MCF_IRQ_PROFILER, &mcfslt_profile_irq);
+> +	if (request_irq(MCF_IRQ_PROFILER, mcfslt_profile_tick, IRQF_TIMER,
+> +			"profile timer", NULL))
+> +		pr_err("%s: request_irq() failed\n", "profile timer");
+>   
+>   	/* Set up TIMER 2 as high speed profile clock */
+>   	__raw_writel(MCF_BUSCLK / PROFILEHZ - 1, PA(MCFSLT_STCNT));
+> @@ -92,12 +88,6 @@ static irqreturn_t mcfslt_tick(int irq, void *dummy)
+>   	return timer_interrupt(irq, dummy);
+>   }
+>   
+> -static struct irqaction mcfslt_timer_irq = {
+> -	.name	 = "timer",
+> -	.flags	 = IRQF_TIMER,
+> -	.handler = mcfslt_tick,
+> -};
+> -
+>   static u64 mcfslt_read_clk(struct clocksource *cs)
+>   {
+>   	unsigned long flags;
+> @@ -140,7 +130,8 @@ void hw_timer_init(irq_handler_t handler)
+>   	mcfslt_cnt = mcfslt_cycles_per_jiffy;
+>   
+>   	timer_interrupt = handler;
+> -	setup_irq(MCF_IRQ_TIMER, &mcfslt_timer_irq);
+> +	if (request_irq(MCF_IRQ_TIMER, mcfslt_tick, IRQF_TIMER, "timer", NULL))
+> +		pr_err("%s: request_irq() failed\n", "timer");
+>   
+>   	clocksource_register_hz(&mcfslt_clk, MCF_BUSCLK);
+>   
+> diff --git a/arch/m68k/coldfire/timers.c b/arch/m68k/coldfire/timers.c
+> index 227aa5d13709..52294c1f01f8 100644
+> --- a/arch/m68k/coldfire/timers.c
+> +++ b/arch/m68k/coldfire/timers.c
+> @@ -82,14 +82,6 @@ static irqreturn_t mcftmr_tick(int irq, void *dummy)
+>   
+>   /***************************************************************************/
+>   
+> -static struct irqaction mcftmr_timer_irq = {
+> -	.name	 = "timer",
+> -	.flags	 = IRQF_TIMER,
+> -	.handler = mcftmr_tick,
+> -};
+> -
+> -/***************************************************************************/
+> -
+>   static u64 mcftmr_read_clk(struct clocksource *cs)
+>   {
+>   	unsigned long flags;
+> @@ -134,7 +126,8 @@ void hw_timer_init(irq_handler_t handler)
+>   
+>   	timer_interrupt = handler;
+>   	init_timer_irq();
+> -	setup_irq(MCF_IRQ_TIMER, &mcftmr_timer_irq);
+> +	if (request_irq(MCF_IRQ_TIMER, mcftmr_tick, IRQF_TIMER, "timer", NULL))
+> +		pr_err("%s: request_irq() failed\n", "timer");
+>   
+>   #ifdef CONFIG_HIGHPROFILE
+>   	coldfire_profile_init();
+> @@ -170,12 +163,6 @@ irqreturn_t coldfire_profile_tick(int irq, void *dummy)
+>   
+>   /***************************************************************************/
+>   
+> -static struct irqaction coldfire_profile_irq = {
+> -	.name	 = "profile timer",
+> -	.flags	 = IRQF_TIMER,
+> -	.handler = coldfire_profile_tick,
+> -};
+> -
+>   void coldfire_profile_init(void)
+>   {
+>   	printk(KERN_INFO "PROFILE: lodging TIMER2 @ %dHz as profile timer\n",
+> @@ -188,7 +175,9 @@ void coldfire_profile_init(void)
+>   	__raw_writew(MCFTIMER_TMR_ENORI | MCFTIMER_TMR_CLK16 |
+>   		MCFTIMER_TMR_RESTART | MCFTIMER_TMR_ENABLE, PA(MCFTIMER_TMR));
+>   
+> -	setup_irq(MCF_IRQ_PROFILER, &coldfire_profile_irq);
+> +	if (request_irq(MCF_IRQ_PROFILER, coldfire_profile_tick, IRQF_TIMER,
+> +			"profile timer", NULL))
+> +		pr_err("%s: request_irq() failed\n", "profile timer");
+>   }
+>   
+>   /***************************************************************************/
+> 
