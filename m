@@ -2,171 +2,105 @@ Return-Path: <SRS0=gJ3H=4O=vger.kernel.org=linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.3 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,
-	USER_AGENT_SANE_1 autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-0.8 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C72D1C4BA06
-	for <linux-m68k@archiver.kernel.org>; Wed, 26 Feb 2020 02:11:58 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2DD16C4BA0A
+	for <linux-m68k@archiver.kernel.org>; Wed, 26 Feb 2020 06:40:02 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id A8C622467F
-	for <linux-m68k@archiver.kernel.org>; Wed, 26 Feb 2020 02:11:58 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 0768B206E2
+	for <linux-m68k@archiver.kernel.org>; Wed, 26 Feb 2020 06:40:02 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730008AbgBZCL5 (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Tue, 25 Feb 2020 21:11:57 -0500
-Received: from mail.kernel.org ([198.145.29.99]:40972 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730154AbgBZCL5 (ORCPT <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Tue, 25 Feb 2020 21:11:57 -0500
-Received: from [10.44.0.22] (unknown [103.48.210.53])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 030E521744;
-        Wed, 26 Feb 2020 02:11:50 +0000 (UTC)
-Subject: Re: [PATCH v2 06/18] m68k: Replace setup_irq() by request_irq()
-To:     Finn Thain <fthain@telegraphics.com.au>
-Cc:     afzal mohammed <afzal.mohd.ma@gmail.com>,
+        id S1726112AbgBZGkB (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Wed, 26 Feb 2020 01:40:01 -0500
+Received: from kvm5.telegraphics.com.au ([98.124.60.144]:35270 "EHLO
+        kvm5.telegraphics.com.au" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725890AbgBZGkB (ORCPT
+        <rfc822;linux-m68k@lists.linux-m68k.org>);
+        Wed, 26 Feb 2020 01:40:01 -0500
+Received: from localhost (localhost.localdomain [127.0.0.1])
+        by kvm5.telegraphics.com.au (Postfix) with ESMTP id E158C29E93;
+        Wed, 26 Feb 2020 01:39:55 -0500 (EST)
+Date:   Wed, 26 Feb 2020 17:39:57 +1100 (AEDT)
+From:   Finn Thain <fthain@telegraphics.com.au>
+To:     Greg Ungerer <gerg@linux-m68k.org>
+cc:     afzal mohammed <afzal.mohd.ma@gmail.com>,
         linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org,
         Thomas Gleixner <tglx@linutronix.de>,
         Geert Uytterhoeven <geert@linux-m68k.org>
-References: <cover.1582471508.git.afzal.mohd.ma@gmail.com>
- <00b0bf964278dd0bb3e093283994399ff796cca5.1582471508.git.afzal.mohd.ma@gmail.com>
- <73c3ad08-963d-fea2-91d7-b06e4ef8d3ef@linux-m68k.org>
- <alpine.LNX.2.22.394.2002261151220.9@nippy.intranet>
-From:   Greg Ungerer <gerg@linux-m68k.org>
-Message-ID: <caa5686a-5be3-5848-fdee-36f54237ccb6@linux-m68k.org>
-Date:   Wed, 26 Feb 2020 12:11:38 +1000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.4.1
+Subject: Re: [PATCH v2 06/18] m68k: Replace setup_irq() by request_irq()
+In-Reply-To: <caa5686a-5be3-5848-fdee-36f54237ccb6@linux-m68k.org>
+Message-ID: <alpine.LNX.2.22.394.2002261637400.8@nippy.intranet>
+References: <cover.1582471508.git.afzal.mohd.ma@gmail.com> <00b0bf964278dd0bb3e093283994399ff796cca5.1582471508.git.afzal.mohd.ma@gmail.com> <73c3ad08-963d-fea2-91d7-b06e4ef8d3ef@linux-m68k.org> <alpine.LNX.2.22.394.2002261151220.9@nippy.intranet>
+ <caa5686a-5be3-5848-fdee-36f54237ccb6@linux-m68k.org>
 MIME-Version: 1.0
-In-Reply-To: <alpine.LNX.2.22.394.2002261151220.9@nippy.intranet>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=US-ASCII
 Sender: linux-m68k-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
+On Wed, 26 Feb 2020, Greg Ungerer wrote:
 
-On 26/2/20 11:11 am, Finn Thain wrote:
-> On Wed, 26 Feb 2020, Greg Ungerer wrote:
->> On 24/2/20 10:50 am, afzal mohammed wrote:
->>> request_irq() is preferred over setup_irq(). The early boot setup_irq()
->>> invocations happen either via 'init_IRQ()' or 'time_init()', while
->>> memory allocators are ready by 'mm_init()'.
->>>
->>> Per tglx[1], setup_irq() existed in olden days when allocators were not
->>> ready by the time early interrupts were initialized.
->>>
->>> Hence replace setup_irq() by request_irq().
->>>
->>> Seldom remove_irq() usage has been observed coupled with setup_irq(),
->>> wherever that has been found, it too has been replaced by free_irq().
->>>
->>> [1] https://lkml.kernel.org/r/alpine.DEB.2.20.1710191609480.1971@nanos
->>>
->>> Signed-off-by: afzal mohammed <afzal.mohd.ma@gmail.com>
->>> Tested-by: Greg Ungerer <gerg@linux-m68k.org> # ColdFire
->>> ---
->>>
->>> v2:
->>>    * Replace pr_err("request_irq() on %s failed" by
->>>              pr_err("%s: request_irq() failed"
->>>    * Commit message massage
->>>    * remove now irrelevant comment lines at 3 places
->>>
->>>    arch/m68k/68000/timers.c      | 11 ++---------
->>>    arch/m68k/coldfire/pit.c      | 11 ++---------
->>>    arch/m68k/coldfire/sltimers.c | 19 +++++--------------
->>>    arch/m68k/coldfire/timers.c   | 21 +++++----------------
->>>    4 files changed, 14 insertions(+), 48 deletions(-)
->>>
->>> diff --git a/arch/m68k/68000/timers.c b/arch/m68k/68000/timers.c
->>> index 71ddb4c98726..55a76a2d3d58 100644
->>> --- a/arch/m68k/68000/timers.c
->>> +++ b/arch/m68k/68000/timers.c
->>> @@ -68,14 +68,6 @@ static irqreturn_t hw_tick(int irq, void *dummy)
->>>      /***************************************************************************/
->>>    -static struct irqaction m68328_timer_irq = {
->>> -	.name	 = "timer",
->>> -	.flags	 = IRQF_TIMER,
->>> -	.handler = hw_tick,
->>> -};
->>> -
->>>
->>> -/***************************************************************************/
->>> -
->>>    static u64 m68328_read_clk(struct clocksource *cs)
->>>    {
->>>    	unsigned long flags;
->>> @@ -106,7 +98,8 @@ void hw_timer_init(irq_handler_t handler)
->>>    	TCTL = 0;
->>>      	/* set ISR */
->>> -	setup_irq(TMR_IRQ_NUM, &m68328_timer_irq);
->>> +	if (request_irq(TMR_IRQ_NUM, hw_tick, IRQF_TIMER, "timer", NULL))
->>> +		pr_err("%s: request_irq() failed\n", "timer");
->>
->> Why not just:
->>
->>                  pr_err("timer: request_irq() failed\n");
->>
+> > That error would almost always be -EBUSY, right?
 > 
-> I believe that the compiler would coalesce the two "timer" string
-> constants in the patch from Afzal (as per my suggestion).>
-> I suspect that your version costs a few extra bytes everywhere it appears
-> (but I didn't check).
+> I expect it will never fail this early in boot. 
 
-Maybe. It costs some extra code for another argument push and a bunch
-of cycles to process the %s at run time though (if triggered).
+If so, it suggests to me that tweaking the error message string is just 
+bikeshedding and that adding these error messages across the tree is just 
+bloat.
 
-The profile timer setup is not commonly used, so in most typical
-builds there is no scope for coalescing the same string. So in the end
-most builds will be a few bytes larger with the separated strings.
-
-But really that is not the point. It just seems simpler and clearer to
-me to put the string in place - all in one.
-
-
->> And maybe would it be useful to print out the error return code from a
->> failed request_irq()?  What about displaying the requested IRQ number as
->> well? Just a thought.
->>
+> But how will you know if it really is EBUSY if you don't print it out?
 > 
-> That error would almost always be -EBUSY, right?
-
-I expect it will never fail this early in boot.
-But how will you know if it really is EBUSY if you don't print it out?
-
-
-> Moreover, compare this change,
+> > Moreover, compare this change,
+> > 
+> > -	setup_irq(TMR_IRQ_NUM, &m68328_timer_irq);
+> > +	request_irq(TMR_IRQ_NUM, hw_tick, IRQF_TIMER, "timer", NULL);
+> > 
+> > with this change,
+> > 
+> > +	int err;
+> > 
+> > -	setup_irq(TMR_IRQ_NUM, &m68328_timer_irq);
+> > +	err = request_irq(TMR_IRQ_NUM, hw_tick, IRQF_TIMER, "timer", NULL);
+> > +	if (err)
+> > +		return err;
+> > 
+> > Isn't the latter change the more common pattern? It prints nothing.
 > 
-> -	setup_irq(TMR_IRQ_NUM, &m68328_timer_irq);
-> +	request_irq(TMR_IRQ_NUM, hw_tick, IRQF_TIMER, "timer", NULL);
+> Hmm, in my experience the much more common pattern is:
 > 
-> with this change,
+> > +	int err;
+> > 
+> > -	setup_irq(TMR_IRQ_NUM, &m68328_timer_irq);
+> > +	err = request_irq(TMR_IRQ_NUM, hw_tick, IRQF_TIMER, "timer", NULL);
+> > +	if (err) {
+> > +             pr_err("timer: request_irq() failed with err=%d\n", err);
+> > +		return err;
+> > +     }
 > 
-> +	int err;
+> Where the pr_err() could be one of pr_err, printk, dev_err, ...
 > 
-> -	setup_irq(TMR_IRQ_NUM, &m68328_timer_irq);
-> +	err = request_irq(TMR_IRQ_NUM, hw_tick, IRQF_TIMER, "timer", NULL);
-> +	if (err)
-> +		return err;
-> 
-> Isn't the latter change the more common pattern? It prints nothing.
 
-Hmm, in my experience the much more common pattern is:
+A rough poll using 'git grep' seems to agree with your assessment.
 
-> +	int err;
-> 
-> -	setup_irq(TMR_IRQ_NUM, &m68328_timer_irq);
-> +	err = request_irq(TMR_IRQ_NUM, hw_tick, IRQF_TIMER, "timer", NULL);
-> +	if (err) {
-> +             pr_err("timer: request_irq() failed with err=%d\n", err);
-> +		return err;
-> +     }
+If -EBUSY means the end user has misconfigured something, printing 
+"request_irq failed" would be helpful. But does that still happen?
 
-Where the pr_err() could be one of pr_err, printk, dev_err, ...
+Printing any error message for -ENOMEM is frowned upon, and printing -12 
+is really unhelpful. So the most popular pattern isn't that great, though 
+it is usually less verbose than the example you've given.
 
-Regards
-Greg
+Besides, introducing local variables and altering control flow seems well 
+out-of-scope for this kind of refactoring, right?
+
+Anyway, if you're going to add an error message,
+pr_err("%s: request_irq failed", foo) is unavoidable whenever foo isn't a 
+string constant, so one can't expect to grep the source code for the 
+literal error message from the log.
+
+BTW, one of the benefits of "%s: request_irq failed" is that a compilation 
+unit with multiple request_irq calls permits the compiler to coalesce all 
+duplicated format strings. Whereas, that's not possible with
+"foo: request_irq failed" and "bar: request_irq failed".
