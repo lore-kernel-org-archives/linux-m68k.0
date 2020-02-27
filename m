@@ -2,129 +2,92 @@ Return-Path: <SRS0=xmTe=4P=vger.kernel.org=linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-13.1 required=3.0 tests=DKIM_INVALID,DKIM_SIGNED,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1
-	autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-0.8 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id CA0D9C11D3D
-	for <linux-m68k@archiver.kernel.org>; Thu, 27 Feb 2020 18:55:42 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 640CBC3F2C4
+	for <linux-m68k@archiver.kernel.org>; Thu, 27 Feb 2020 22:20:11 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id A072E2067C
-	for <linux-m68k@archiver.kernel.org>; Thu, 27 Feb 2020 18:55:42 +0000 (UTC)
-Authentication-Results: mail.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=embeddedor.com header.i=@embeddedor.com header.b="RddKp6yX"
+	by mail.kernel.org (Postfix) with ESMTP id 389232469F
+	for <linux-m68k@archiver.kernel.org>; Thu, 27 Feb 2020 22:20:11 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730027AbgB0Szm (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Thu, 27 Feb 2020 13:55:42 -0500
-Received: from gateway32.websitewelcome.com ([192.185.145.184]:43719 "EHLO
-        gateway32.websitewelcome.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1729564AbgB0Szm (ORCPT
+        id S1729735AbgB0WUL (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Thu, 27 Feb 2020 17:20:11 -0500
+Received: from kvm5.telegraphics.com.au ([98.124.60.144]:32994 "EHLO
+        kvm5.telegraphics.com.au" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729718AbgB0WUK (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Thu, 27 Feb 2020 13:55:42 -0500
-X-Greylist: delayed 1242 seconds by postgrey-1.27 at vger.kernel.org; Thu, 27 Feb 2020 13:55:41 EST
-Received: from cm10.websitewelcome.com (cm10.websitewelcome.com [100.42.49.4])
-        by gateway32.websitewelcome.com (Postfix) with ESMTP id E9895ADF85
-        for <linux-m68k@lists.linux-m68k.org>; Thu, 27 Feb 2020 12:34:58 -0600 (CST)
-Received: from gator4166.hostgator.com ([108.167.133.22])
-        by cmsmtp with SMTP
-        id 7NzujU6l5Efyq7NzujZdrW; Thu, 27 Feb 2020 12:34:58 -0600
-X-Authority-Reason: nr=8
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=embeddedor.com; s=default; h=Content-Type:MIME-Version:Message-ID:Subject:
-        Cc:To:From:Date:Sender:Reply-To:Content-Transfer-Encoding:Content-ID:
-        Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-        :Resent-Message-ID:In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:
-        List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=bhPHK/N4A61h2syo2X1zezBye6MjYEOpxj4W5r7wBqY=; b=RddKp6yXbkYhCmwlzNx0Qcs63N
-        XgKcp0ytO5RIJ8YbLV6LYBaQ989L68llzybq70zyj+kBG0Tv2IGAKL0d+0oY7nwAiu2c3Bl8XMtTC
-        82FjXN4/dgGQwoFgxBI9/sXlwm3Hv0UE40tTENGqxMfGIuOaAs3yWffnVN2F7v5O+gVnJSoR95FQz
-        oiVF/4tlzzMWCtoY/+kAmPVQj9h1efYbcCTRYVqGReOOCjNmI+SQ8b5u89Ge/93MZTG6JKVdt+RZJ
-        9KgHCnGbMsWs1DwxG6I51EvexKUuXkam14x9YKlYPC+qtIQuBcF5vtXimZto/ICv+9gXCmIrYgOLl
-        yPioBx3A==;
-Received: from [201.162.168.186] (port=21630 helo=embeddedor)
-        by gator4166.hostgator.com with esmtpa (Exim 4.92)
-        (envelope-from <gustavo@embeddedor.com>)
-        id 1j7Nzs-003vAP-Gq; Thu, 27 Feb 2020 12:34:56 -0600
-Date:   Thu, 27 Feb 2020 12:37:48 -0600
-From:   "Gustavo A. R. Silva" <gustavo@embeddedor.com>
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org,
-        "Gustavo A. R. Silva" <gustavo@embeddedor.com>
-Subject: [PATCH] zorro: Replace zero-length array with flexible-array member
-Message-ID: <20200227183748.GA31018@embeddedor>
+        Thu, 27 Feb 2020 17:20:10 -0500
+Received: from localhost (localhost.localdomain [127.0.0.1])
+        by kvm5.telegraphics.com.au (Postfix) with ESMTP id C9BB02A160;
+        Thu, 27 Feb 2020 17:20:07 -0500 (EST)
+Date:   Fri, 28 Feb 2020 09:19:29 +1100 (AEDT)
+From:   Finn Thain <fthain@telegraphics.com.au>
+To:     Greg Ungerer <gerg@linux-m68k.org>
+cc:     afzal mohammed <afzal.mohd.ma@gmail.com>,
+        linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: Re: [PATCH v2 06/18] m68k: Replace setup_irq() by request_irq()
+In-Reply-To: <1a16c680-2bbe-eb24-6ea3-4b50d0c3e377@linux-m68k.org>
+Message-ID: <alpine.LNX.2.22.394.2002280902070.8@nippy.intranet>
+References: <cover.1582471508.git.afzal.mohd.ma@gmail.com> <00b0bf964278dd0bb3e093283994399ff796cca5.1582471508.git.afzal.mohd.ma@gmail.com> <73c3ad08-963d-fea2-91d7-b06e4ef8d3ef@linux-m68k.org> <alpine.LNX.2.22.394.2002261151220.9@nippy.intranet>
+ <caa5686a-5be3-5848-fdee-36f54237ccb6@linux-m68k.org> <alpine.LNX.2.22.394.2002261637400.8@nippy.intranet> <a682c89d-baf2-3d3c-647f-a07b2a146c9f@linux-m68k.org> <alpine.LNX.2.22.394.2002270908380.8@nippy.intranet>
+ <1a16c680-2bbe-eb24-6ea3-4b50d0c3e377@linux-m68k.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
-X-AntiAbuse: Primary Hostname - gator4166.hostgator.com
-X-AntiAbuse: Original Domain - lists.linux-m68k.org
-X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
-X-AntiAbuse: Sender Address Domain - embeddedor.com
-X-BWhitelist: no
-X-Source-IP: 201.162.168.186
-X-Source-L: No
-X-Exim-ID: 1j7Nzs-003vAP-Gq
-X-Source: 
-X-Source-Args: 
-X-Source-Dir: 
-X-Source-Sender: (embeddedor) [201.162.168.186]:21630
-X-Source-Auth: gustavo@embeddedor.com
-X-Email-Count: 2
-X-Source-Cap: Z3V6aWRpbmU7Z3V6aWRpbmU7Z2F0b3I0MTY2Lmhvc3RnYXRvci5jb20=
-X-Local-Domain: yes
+Content-Type: text/plain; charset=US-ASCII
 Sender: linux-m68k-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-The current codebase makes use of the zero-length array language
-extension to the C90 standard, but the preferred mechanism to declare
-variable-length types such as these ones is a flexible array member[1][2],
-introduced in C99:
+On Thu, 27 Feb 2020, Greg Ungerer wrote:
 
-struct foo {
-        int stuff;
-        struct boo array[];
-};
+> On 27/2/20 8:31 am, Finn Thain wrote:
+> 
+> >>>
+> >>> BTW, one of the benefits of "%s: request_irq failed" is that a 
+> >>> compilation unit with multiple request_irq calls permits the 
+> >>> compiler to coalesce all duplicated format strings. Whereas, that's 
+> >>> not possible with "foo: request_irq failed" and "bar: request_irq 
+> >>> failed".
+> >>
+> >> Given the wide variety of message text used with failed request_irq() 
+> >> calls it would be shear luck that this matched anything else. A quick 
+> >> grep shows that "%s: request_irq() failed\n" has no other exact 
+> >> matches in the current kernel source.
+> > 
+> > You are overlooking the patches in this series that produce multiple 
+> > identical format strings.
+> 
+> No I didn't :-)  None of these will end up compiled in at the same time. 
+> The various ColdFire SoC parts have a single timer hardware module - and 
+> only the required one will be compiled in, not all of them.
+> 
 
-By making use of the mechanism above, we will get a compiler warning
-in case the flexible array does not occur last in the structure, which
-will help us prevent some kind of undefined behavior bugs from being
-inadvertently introduced[3] to the codebase from now on.
+I was referring to e.g. [PATCH v2 08/18] MIPS: Replace setup_irq() by 
+request_irq(), in which you can find this:
 
-Also, notice that, dynamic memory allocations won't be affected by
-this change:
-
-"Flexible array members have incomplete type, and so the sizeof operator
-may not be applied. As a quirk of the original implementation of
-zero-length arrays, sizeof evaluates to zero."[1]
-
-This issue was found with the help of Coccinelle.
-
-[1] https://gcc.gnu.org/onlinedocs/gcc/Zero-Length.html
-[2] https://github.com/KSPP/linux/issues/21
-[3] commit 76497732932f ("cxgb3/l2t: Fix undefined behaviour")
-
-Signed-off-by: Gustavo A. R. Silva <gustavo@embeddedor.com>
----
- drivers/zorro/zorro.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/zorro/zorro.c b/drivers/zorro/zorro.c
-index 8eeb84c239db..47c733817903 100644
---- a/drivers/zorro/zorro.c
-+++ b/drivers/zorro/zorro.c
-@@ -41,7 +41,7 @@ struct zorro_dev *zorro_autocon;
+@@ -116,8 +110,16 @@ static void __init ar7_irq_init(int base)
+                                                 handle_level_irq);
+        }
  
- struct zorro_bus {
- 	struct device dev;
--	struct zorro_dev devices[0];
-+	struct zorro_dev devices[];
- };
+-       setup_irq(2, &ar7_cascade_action);
+-       setup_irq(ar7_irq_base, &ar7_cascade_action);
++       if (request_irq(2, no_action, IRQF_NO_THREAD, "AR7 cascade interrupt",
++                       NULL)) {
++               pr_err("%s: request_irq() failed\n",
++                      "AR7 cascade interrupt");
++       }
++       if (request_irq(ar7_irq_base, no_action, IRQF_NO_THREAD,
++                       "AR7 cascade interrupt", NULL)) {
++               pr_err("%s: request_irq() failed\n",
++                      "AR7 cascade interrupt");
++       }
+        set_c0_status(IE_IRQ0);
+ }
  
- 
--- 
-2.25.0
-
+BTW, I think that deduplication of string constants can happen during LTO, 
+so the benefit of consistency need not be confined to a compilation unit. 
+I don't think this is relevant to kernel builds.
