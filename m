@@ -2,106 +2,226 @@ Return-Path: <SRS0=xmTe=4P=vger.kernel.org=linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.3 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=no
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-2.3 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	DKIM_VALID_AU,FAKE_REPLY_C,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E5C3AC4BA24
-	for <linux-m68k@archiver.kernel.org>; Thu, 27 Feb 2020 06:37:22 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2FBE4C4BA24
+	for <linux-m68k@archiver.kernel.org>; Thu, 27 Feb 2020 08:18:14 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id C11052467F
-	for <linux-m68k@archiver.kernel.org>; Thu, 27 Feb 2020 06:37:22 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id F07FF2467F
+	for <linux-m68k@archiver.kernel.org>; Thu, 27 Feb 2020 08:18:13 +0000 (UTC)
+Authentication-Results: mail.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="R17iC+ca"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727388AbgB0GhL (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Thu, 27 Feb 2020 01:37:11 -0500
-Received: from mail.kernel.org ([198.145.29.99]:59072 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726602AbgB0GhK (ORCPT <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Thu, 27 Feb 2020 01:37:10 -0500
-Received: from [10.44.0.22] (unknown [103.48.210.53])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id AAF3F24672;
-        Thu, 27 Feb 2020 06:37:07 +0000 (UTC)
-Subject: Re: [PATCH v2 06/18] m68k: Replace setup_irq() by request_irq()
-To:     Finn Thain <fthain@telegraphics.com.au>
-Cc:     afzal mohammed <afzal.mohd.ma@gmail.com>,
-        linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org,
+        id S1728504AbgB0ISN (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Thu, 27 Feb 2020 03:18:13 -0500
+Received: from mail-pj1-f65.google.com ([209.85.216.65]:50237 "EHLO
+        mail-pj1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726999AbgB0ISL (ORCPT
+        <rfc822;linux-m68k@lists.linux-m68k.org>);
+        Thu, 27 Feb 2020 03:18:11 -0500
+Received: by mail-pj1-f65.google.com with SMTP id r67so815581pjb.0
+        for <linux-m68k@lists.linux-m68k.org>; Thu, 27 Feb 2020 00:18:09 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:mime-version:content-disposition
+         :in-reply-to:user-agent;
+        bh=XIli+BijBA/J5DkqhUYlYKRGLbW/H23q9FTVuH80Vus=;
+        b=R17iC+caUcopb4JLd3Ac4ljtNkDrLWPnu+xj4NNF0iVROFyj5Ci4RFFyIZA3CI2ent
+         LdXEbsp23CRgG9PCRjBzKeAksOcf5YGhMPtGhCPRKkvcByS5ucvGmVUtS1Sa9uNb6uUj
+         0mXojotf/f4tQkUkYQPXPhbWJtWCrLkl2u9DYZHMmJwwEiQnrvO9o3Slx428L+KAfQXw
+         RBXqzceYia14Kg7oxcpoxbfNShV8AG6LMy+vswKJ3QJEcBdJlx+7EveAywzaFe97T6+Z
+         JTrMbLTcOiUJe7vU3U0X7zm/+g/+zEKE571BVN1hxXybXn3nLyWSNZxdFTNJNrRy42AX
+         KgdQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=XIli+BijBA/J5DkqhUYlYKRGLbW/H23q9FTVuH80Vus=;
+        b=bjQuIVXPKXOXhKAGQ882eVhaWNWo4cjsGDAKb9hGRK065O0W2uqEq6ZI4xSHwdKcGh
+         v3kfMYrWoWCMDmmJTo2KKn3A6TAmoKy3OceyI9dVDygwoSmTUR9pBC9SvJZ4slM3SXay
+         6JN12psRYzvClb/BZR/yGAWRBp0hqdO8jr+Z+bVQ/41TbKVPHteEKAWzMKk1TwDJ6ut7
+         xLQ4nSG/680W80/3dr4g2XFgQn4fWx/SW6RxgtG1xcXUnemjd9BZR7wISYyUrL96tp1u
+         Cu1AIrMC80GI7oDaNxSqrw1yxLfvjz/tMJNuMY7UvBFaj/lla9wG1AP0bvhVWF6A/00f
+         EEDg==
+X-Gm-Message-State: APjAAAVFw3qC8a6eThtBHG8rKDGfaMEyogJLy0QiGKpjhEmtI23H7fHh
+        C1efGOeaU3ef7arYB2BTxz8=
+X-Google-Smtp-Source: APXvYqymLmsSYQqjVPxQTDDjL8cx4m65wBUByVxVHjjchClXsz7CHLnshuIN6jQ37s9SFgh6pD9cNw==
+X-Received: by 2002:a17:90a:b318:: with SMTP id d24mr3812101pjr.142.1582791488574;
+        Thu, 27 Feb 2020 00:18:08 -0800 (PST)
+Received: from localhost ([106.51.232.35])
+        by smtp.gmail.com with ESMTPSA id t189sm5835686pfd.168.2020.02.27.00.18.07
+        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
+        Thu, 27 Feb 2020 00:18:07 -0800 (PST)
+Date:   Thu, 27 Feb 2020 13:48:05 +0530
+From:   afzal mohammed <afzal.mohd.ma@gmail.com>
+To:     Greg Ungerer <gerg@linux-m68k.org>,
+        Finn Thain <fthain@telegraphics.com.au>
+Cc:     linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org,
         Thomas Gleixner <tglx@linutronix.de>,
         Geert Uytterhoeven <geert@linux-m68k.org>
-References: <cover.1582471508.git.afzal.mohd.ma@gmail.com>
- <00b0bf964278dd0bb3e093283994399ff796cca5.1582471508.git.afzal.mohd.ma@gmail.com>
- <73c3ad08-963d-fea2-91d7-b06e4ef8d3ef@linux-m68k.org>
- <alpine.LNX.2.22.394.2002261151220.9@nippy.intranet>
- <caa5686a-5be3-5848-fdee-36f54237ccb6@linux-m68k.org>
- <alpine.LNX.2.22.394.2002261637400.8@nippy.intranet>
- <a682c89d-baf2-3d3c-647f-a07b2a146c9f@linux-m68k.org>
- <alpine.LNX.2.22.394.2002270908380.8@nippy.intranet>
-From:   Greg Ungerer <gerg@linux-m68k.org>
-Message-ID: <1a16c680-2bbe-eb24-6ea3-4b50d0c3e377@linux-m68k.org>
-Date:   Thu, 27 Feb 2020 16:37:04 +1000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.4.1
+Subject: Re: [PATCH v2 06/18] m68k: Replace setup_irq() by request_irq()
+Message-ID: <20200227081805.GA5746@afzalpc>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 In-Reply-To: <alpine.LNX.2.22.394.2002270908380.8@nippy.intranet>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+ <a682c89d-baf2-3d3c-647f-a07b2a146c9f@linux-m68k.org>
+ <alpine.LNX.2.22.394.2002261637400.8@nippy.intranet>
+ <caa5686a-5be3-5848-fdee-36f54237ccb6@linux-m68k.org>
+ <alpine.LNX.2.22.394.2002261151220.9@nippy.intranet>
+ <73c3ad08-963d-fea2-91d7-b06e4ef8d3ef@linux-m68k.org>
+User-Agent: Mutt/1.9.3 (2018-01-21)
 Sender: linux-m68k-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
 
-On 27/2/20 8:31 am, Finn Thain wrote:
-> On Wed, 26 Feb 2020, Greg Ungerer wrote:
+Hi Greg & Finn,
+
+On Wed, Feb 26, 2020 at 10:42:00AM +1000, Greg Ungerer wrote:
+
+> > -	setup_irq(TMR_IRQ_NUM, &m68328_timer_irq);
+> > +	if (request_irq(TMR_IRQ_NUM, hw_tick, IRQF_TIMER, "timer", NULL))
+> > +		pr_err("%s: request_irq() failed\n", "timer");
 > 
->> On 26/2/20 4:39 pm, Finn Thain wrote:
->>>
->>> If -EBUSY means the end user has misconfigured something, printing
->>> "request_irq failed" would be helpful. But does that still happen?
->>
->> I have seen it many times. Its not at all difficult to get interrupt
->> assignments wrong, duplicated, or otherwise mistaken when creating
->> device trees. Not so much m68k/coldfire platforms where they are most
->> commonly hard coded.
->>
+> Why not just:
 > 
-> I was thinking of end users and production builds. You seem to be
-> concerned about developers. Catering to developers argues for pr_debug()
-> here, if anything.
+>                 pr_err("timer: request_irq() failed\n");
 
-Perhaps. But most of the kernel boot output as it stands today
-is more debug (or maybe notice) than useful.
+The reason to use %s was that it could be automated by cocci script &
+the o/p didn't look bad. Second arg to pr_err is what cocci
+presents me & there is wide variation in the name across the tree as
+Finn noted.
 
+Excerpts from v1 cover letter [1], 
 
-> You say you've seen -16 errors "many times". Have you also seen -22? Did
-> the ability to distinguish these values help you to fix your device tree?
+- setup_irq(E1,&act);
++ if (request_irq(E1,f_handler,f_flags,f_name,f_dev_id))
++ 	pr_err("request_irq() on %s failed\n", f_name);
 
-Probably not. But the real difficulty is trying to diagnose other
-peoples problems with just console trace output. The more information
-there the better.
+[ don't get mislead by string contents used, this was for v1, just to
+ show how the result was obtained. To take care of Finn's suggesstion,
+ instead of modifying cocci & then making changes other changes over
+ that (i could not fully automate w/ cocci, and Julia said my script
+ is fine as is), it was easier to run sed over the v1  patches ]
 
+> And maybe would it be useful to print out the error return code from a
+> failed request_irq()?
 
->>> ...
->>>
->>> BTW, one of the benefits of "%s: request_irq failed" is that a
->>> compilation unit with multiple request_irq calls permits the compiler
->>> to coalesce all duplicated format strings. Whereas, that's not
->>> possible with "foo: request_irq failed" and "bar: request_irq failed".
->>
->> Given the wide variety of message text used with failed request_irq()
->> calls it would be shear luck that this matched anything else. A quick
->> grep shows that "%s: request_irq() failed\n" has no other exact matches
->> in the current kernel source.
->>
+Since most of the existing setup_irq() didn't even check & handle
+error return, my first thought was just s/setup_irq/request_irq, it
+was easier from scripting pointing of view. i felt uncomfortable doing
+nothing in case of error. Also noted that request_irq() definition has
+a "__much_check", so decided to add it.
+
+And there is a wide variation in the way return value is handled by
+the caller, some already have a local variable, some don't. Moreover
+in many cases caller cannot return any value, i.e. void, so what
+to be done with return value was another issue, in some cases in
+addition to printing error value, the error value can't be returned,
+while some others it can.
+
+> What about displaying the requested IRQ number as well?
+> Just a thought.
+
+i initially did the cocci to display IRQ number as the 3rd arg to
+pr_err, but then it was observed that most of the those lines were
+exceeding 80 chars, though cocci could align args properly in next
+line, it could not put flower braces to the preceeding
+'if request_irq()' & in next line (though it is a single C statement
+inside 'if', per kernel coding style, flower brace had to be put for a
+single statement that spans multiple lines ], else it had to be
+manually added treewide.
+
+On Wed, Feb 26, 2020 at 12:11:55PM +1100, Finn Thain wrote:
+
+> Moreover, compare this change,
 > 
-> You are overlooking the patches in this series that produce multiple
-> identical format strings.
+> -	setup_irq(TMR_IRQ_NUM, &m68328_timer_irq);
+> +	request_irq(TMR_IRQ_NUM, hw_tick, IRQF_TIMER, "timer", NULL);
+> 
+> with this change,
+> 
+> +	int err;
+> 
+> -	setup_irq(TMR_IRQ_NUM, &m68328_timer_irq);
+> +	err = request_irq(TMR_IRQ_NUM, hw_tick, IRQF_TIMER, "timer", NULL);
+> +	if (err)
+> +		return err;
+> 
+> Isn't the latter change the more common pattern? It prints nothing.
+> 
+> And arguably, the former example is actually the change that's described 
+> in the commit description.
+> 
+> This patch seems to be making two orthogonal changes but I'll leave that 
+> question to the maintainer. (I'm not really trying to NAK this patch.)
 
-No I didn't :-)  None of these will end up compiled in at the same time.
-The various ColdFire SoC parts have a single timer hardware module -
-and only the required one will be compiled in, not all of them.
+Instead of not checking the error value as in the existing cases &
+mechanically replace w/ request_irq(), thought of at least giving user
+the indication by way of pr_err (but i think most of the use is for
+tick timer, if it fails, in most cases, system would not even boot)
+due to the reasons mentioned above.
+
+On Wed, Feb 26, 2020 at 12:11:38PM +1000, Greg Ungerer wrote:
+
+> Hmm, in my experience the much more common pattern is:
+> 
+> > +	int err;
+> > 
+> > -	setup_irq(TMR_IRQ_NUM, &m68328_timer_irq);
+> > +	err = request_irq(TMR_IRQ_NUM, hw_tick, IRQF_TIMER, "timer", NULL);
+> > +	if (err) {
+> > +             pr_err("timer: request_irq() failed with err=%d\n", err);
+> > +		return err;
+> > +     }
+
+This is my preferred style, but note that returning error is not
+possible in many of these cases as callers are void return type.
+
+On Wed, Feb 26, 2020 at 05:39:57PM +1100, Finn Thain wrote:
+
+> Besides, introducing local variables and altering control flow seems well 
+> out-of-scope for this kind of refactoring, right?
+
+To make changes perfect, it would be required to get into context of
+each case (>150), and do it manually as there is wide variation like
+whether caller can return error code, whether already a local integer
+is defined to catch the error, whether it returns error after a goto,
+whether we should allow it to proceed if it fails and so on.
+
+And handling manually all the cases tree wide would be more error
+prone & time consuming. i was relieved that there was only one build
+error reported by test robot (i had done build & boot test only on ARM
+& x86_64), given the amount of manual changes i had to do on top of
+cocci generated ones.
+
+At the same time, i didn't want to just mechanically replace & wanted
+to add some value to the existing setup, which resulted in this patch.
+
+My thought process was to do treewide removal of setup_irq() and
+possibly low hanging cleanup's at the places where setup_irq() lives
+to make sure that surrounding situation will be better than or at
+least equal to the current.
+
+But if the consensus is that all these situations have to be taken
+care, let me know.
+
+On Wed, Feb 26, 2020 at 10:26:55PM +1000, Greg Ungerer wrote:
+
+> A quick grep shows
+> that "%s: request_irq() failed\n" has no other exact matches in the current
+> kernel source.
+
+git grep -n '%s: request_irq' gives a few somewhat similar ones, i
+remember it because searching this string after my changes to verify
+gave more than that i added :)
 
 Regards
-Greg
+afzal
+
+[1] https://lkml.kernel.org/r/cover.1581478323.git.afzal.mohd.ma@gmail.com
