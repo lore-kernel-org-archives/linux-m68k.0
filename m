@@ -6,35 +6,35 @@ X-Spam-Status: No, score=-0.8 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 640CBC3F2C4
-	for <linux-m68k@archiver.kernel.org>; Thu, 27 Feb 2020 22:20:11 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 19DCAC3F2C6
+	for <linux-m68k@archiver.kernel.org>; Thu, 27 Feb 2020 22:38:32 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 389232469F
-	for <linux-m68k@archiver.kernel.org>; Thu, 27 Feb 2020 22:20:11 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id E22ED246A2
+	for <linux-m68k@archiver.kernel.org>; Thu, 27 Feb 2020 22:38:31 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729735AbgB0WUL (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Thu, 27 Feb 2020 17:20:11 -0500
-Received: from kvm5.telegraphics.com.au ([98.124.60.144]:32994 "EHLO
+        id S1730193AbgB0Wib (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Thu, 27 Feb 2020 17:38:31 -0500
+Received: from kvm5.telegraphics.com.au ([98.124.60.144]:33544 "EHLO
         kvm5.telegraphics.com.au" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729718AbgB0WUK (ORCPT
+        with ESMTP id S1730023AbgB0Wib (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Thu, 27 Feb 2020 17:20:10 -0500
+        Thu, 27 Feb 2020 17:38:31 -0500
 Received: from localhost (localhost.localdomain [127.0.0.1])
-        by kvm5.telegraphics.com.au (Postfix) with ESMTP id C9BB02A160;
-        Thu, 27 Feb 2020 17:20:07 -0500 (EST)
-Date:   Fri, 28 Feb 2020 09:19:29 +1100 (AEDT)
+        by kvm5.telegraphics.com.au (Postfix) with ESMTP id 67C4E2A160;
+        Thu, 27 Feb 2020 17:38:28 -0500 (EST)
+Date:   Fri, 28 Feb 2020 09:38:20 +1100 (AEDT)
 From:   Finn Thain <fthain@telegraphics.com.au>
-To:     Greg Ungerer <gerg@linux-m68k.org>
-cc:     afzal mohammed <afzal.mohd.ma@gmail.com>,
-        linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Geert Uytterhoeven <geert@linux-m68k.org>
+To:     afzal mohammed <afzal.mohd.ma@gmail.com>
+cc:     Geert Uytterhoeven <geert@linux-m68k.org>,
+        Greg Ungerer <gerg@linux-m68k.org>,
+        linux-m68k <linux-m68k@lists.linux-m68k.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>
 Subject: Re: [PATCH v2 06/18] m68k: Replace setup_irq() by request_irq()
-In-Reply-To: <1a16c680-2bbe-eb24-6ea3-4b50d0c3e377@linux-m68k.org>
-Message-ID: <alpine.LNX.2.22.394.2002280902070.8@nippy.intranet>
-References: <cover.1582471508.git.afzal.mohd.ma@gmail.com> <00b0bf964278dd0bb3e093283994399ff796cca5.1582471508.git.afzal.mohd.ma@gmail.com> <73c3ad08-963d-fea2-91d7-b06e4ef8d3ef@linux-m68k.org> <alpine.LNX.2.22.394.2002261151220.9@nippy.intranet>
- <caa5686a-5be3-5848-fdee-36f54237ccb6@linux-m68k.org> <alpine.LNX.2.22.394.2002261637400.8@nippy.intranet> <a682c89d-baf2-3d3c-647f-a07b2a146c9f@linux-m68k.org> <alpine.LNX.2.22.394.2002270908380.8@nippy.intranet>
- <1a16c680-2bbe-eb24-6ea3-4b50d0c3e377@linux-m68k.org>
+In-Reply-To: <20200227120618.GA6312@afzalpc>
+Message-ID: <alpine.LNX.2.22.394.2002280927130.8@nippy.intranet>
+References: <alpine.LNX.2.22.394.2002270908380.8@nippy.intranet> <a682c89d-baf2-3d3c-647f-a07b2a146c9f@linux-m68k.org> <alpine.LNX.2.22.394.2002261637400.8@nippy.intranet> <caa5686a-5be3-5848-fdee-36f54237ccb6@linux-m68k.org> <alpine.LNX.2.22.394.2002261151220.9@nippy.intranet>
+ <73c3ad08-963d-fea2-91d7-b06e4ef8d3ef@linux-m68k.org> <20200227081805.GA5746@afzalpc> <CAMuHMdWVVWaoHA1Tie5APYBq3Pa3s4BAoWN1jAACAZZS65UA7w@mail.gmail.com> <20200227120618.GA6312@afzalpc>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Sender: linux-m68k-owner@vger.kernel.org
@@ -42,52 +42,40 @@ Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-On Thu, 27 Feb 2020, Greg Ungerer wrote:
+On Thu, 27 Feb 2020, afzal mohammed wrote:
 
-> On 27/2/20 8:31 am, Finn Thain wrote:
-> 
-> >>>
-> >>> BTW, one of the benefits of "%s: request_irq failed" is that a 
-> >>> compilation unit with multiple request_irq calls permits the 
-> >>> compiler to coalesce all duplicated format strings. Whereas, that's 
-> >>> not possible with "foo: request_irq failed" and "bar: request_irq 
-> >>> failed".
-> >>
-> >> Given the wide variety of message text used with failed request_irq() 
-> >> calls it would be shear luck that this matched anything else. A quick 
-> >> grep shows that "%s: request_irq() failed\n" has no other exact 
-> >> matches in the current kernel source.
+> On Thu, Feb 27, 2020 at 09:32:46AM +0100, Geert Uytterhoeven wrote:
+> > On Thu, Feb 27, 2020 at 9:18 AM afzal mohammed <afzal.mohd.ma@gmail.com> wrote:
+
+> > > Since most of the existing setup_irq() didn't even check & handle 
+> > > error return, my first thought was just s/setup_irq/request_irq, it 
+> > > was easier from scripting pointing of view. i felt uncomfortable 
+> > > doing nothing in case of error. Also noted that request_irq() 
+> > > definition has a "__much_check", so decided to add it.
 > > 
-> > You are overlooking the patches in this series that produce multiple 
-> > identical format strings.
+> > Most (all?) of the code calling setup_irq() is very old, and most of 
+> > the calls happen very early, so any such failures are hard failures 
+> > that prevent the system from booting at all.  Hence printing a message 
+> > may be futile, as it may happen before the console has been 
+> > initialized (modulo early-printk).
 > 
-> No I didn't :-)  None of these will end up compiled in at the same time. 
-> The various ColdFire SoC parts have a single timer hardware module - and 
-> only the required one will be compiled in, not all of them.
+> The main reason to at least acknowledge the return value was due to 
+> __much_check in request_irq() definition, though w/ the compiler that i 
+> used, there were no warnings, i feared that it might warn w/ some other 
+> compilers & in some cases (may be W=[1-3] ?).
 > 
 
-I was referring to e.g. [PATCH v2 08/18] MIPS: Replace setup_irq() by 
-request_irq(), in which you can find this:
+This isn't new code, so I'd assume it's been "checked" in the sense of 
+"reviewed and tested".
 
-@@ -116,8 +110,16 @@ static void __init ar7_irq_init(int base)
-                                                 handle_level_irq);
-        }
- 
--       setup_irq(2, &ar7_cascade_action);
--       setup_irq(ar7_irq_base, &ar7_cascade_action);
-+       if (request_irq(2, no_action, IRQF_NO_THREAD, "AR7 cascade interrupt",
-+                       NULL)) {
-+               pr_err("%s: request_irq() failed\n",
-+                      "AR7 cascade interrupt");
-+       }
-+       if (request_irq(ar7_irq_base, no_action, IRQF_NO_THREAD,
-+                       "AR7 cascade interrupt", NULL)) {
-+               pr_err("%s: request_irq() failed\n",
-+                      "AR7 cascade interrupt");
-+       }
-        set_c0_status(IE_IRQ0);
- }
- 
-BTW, I think that deduplication of string constants can happen during LTO, 
-so the benefit of consistency need not be confined to a compilation unit. 
-I don't think this is relevant to kernel builds.
+So the lack of an error message could be taken to mean that there's no 
+need for an error message.
+
+If you want to stop the compiler complaining about an unchecked return 
+value, assuming that it does so, please consider using
+
+	if (request_irq(...))
+		pr_debug(...);
+
+That way there is no penalty paid for adding error messages that the 
+original author apparently did not want.
