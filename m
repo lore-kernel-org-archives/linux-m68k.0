@@ -6,113 +6,88 @@ X-Spam-Status: No, score=-0.8 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 88E59C4BA24
-	for <linux-m68k@archiver.kernel.org>; Thu, 27 Feb 2020 08:33:00 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 721B4C4BA24
+	for <linux-m68k@archiver.kernel.org>; Thu, 27 Feb 2020 10:31:32 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 5783324683
-	for <linux-m68k@archiver.kernel.org>; Thu, 27 Feb 2020 08:33:00 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 53D2324697
+	for <linux-m68k@archiver.kernel.org>; Thu, 27 Feb 2020 10:31:32 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728440AbgB0Ic7 convert rfc822-to-8bit (ORCPT
-        <rfc822;linux-m68k@archiver.kernel.org>);
-        Thu, 27 Feb 2020 03:32:59 -0500
-Received: from mail-ot1-f66.google.com ([209.85.210.66]:40247 "EHLO
-        mail-ot1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728537AbgB0Ic7 (ORCPT
+        id S1728806AbgB0Kbb (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Thu, 27 Feb 2020 05:31:31 -0500
+Received: from Galois.linutronix.de ([193.142.43.55]:33892 "EHLO
+        Galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728680AbgB0Kbb (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Thu, 27 Feb 2020 03:32:59 -0500
-Received: by mail-ot1-f66.google.com with SMTP id i6so2151247otr.7
-        for <linux-m68k@lists.linux-m68k.org>; Thu, 27 Feb 2020 00:32:58 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=OeGtTXktVcqacz7cYnWdrEZYsOucMfq/ZWYQMhH1UAI=;
-        b=WoHEpj5Gr/IrS43eff0OWte187utDGd+NAfu8SCIdx1Qmy6qVKKzsUM7ydTwDV2SOY
-         eSoh0dhKQgNKFVBV7pHaohV8OzPJGY8WABdvqaiMBQ94ZUV2dtuWhhl1FJVb6m+yez/y
-         NNi/1sqqH9vCR2KEgOahAVgIPs1nwSbgOokDKqlDGEfSJTGzW9I55vNqie3hgYlrFIni
-         KCo74PbpBDsri1AO5yCVxb2aax0kYymjgMviYKiYvOn6Bz8Q8IwkQIEDd//1B0XhEXEM
-         PFWFt+WHQzWOLvm6dfOFqdXYYVge8wmPbKBLsbg2G+KTW0+M8ZxbmSuxyi/FErsWXJ6v
-         18vA==
-X-Gm-Message-State: APjAAAUrjuAknZLgnjuoqKK2Jbozq+kFPgy6ISvChqS055MaYOjte0uH
-        A3sdz+oFBRLeqGqDcwPQd8EvKAcuDOV9PUs3PIU=
-X-Google-Smtp-Source: APXvYqzdoCVOtrlrzUXT8HEP1lYZ4KzJVPdQN1Q3Woonf40gMgnK+NC4wo5cm8aEXvQipTsQHhdVLVpRzTFU+2KkZBw=
-X-Received: by 2002:a05:6830:10e:: with SMTP id i14mr2360889otp.39.1582792377824;
- Thu, 27 Feb 2020 00:32:57 -0800 (PST)
+        Thu, 27 Feb 2020 05:31:31 -0500
+Received: from p5de0bf0b.dip0.t-ipconnect.de ([93.224.191.11] helo=nanos.tec.linutronix.de)
+        by Galois.linutronix.de with esmtpsa (TLS1.2:DHE_RSA_AES_256_CBC_SHA256:256)
+        (Exim 4.80)
+        (envelope-from <tglx@linutronix.de>)
+        id 1j7GRn-0007Oi-T2; Thu, 27 Feb 2020 11:31:15 +0100
+Received: by nanos.tec.linutronix.de (Postfix, from userid 1000)
+        id 4CE0E10409C; Thu, 27 Feb 2020 11:31:15 +0100 (CET)
+From:   Thomas Gleixner <tglx@linutronix.de>
+To:     afzal mohammed <afzal.mohd.ma@gmail.com>,
+        linux-kernel@vger.kernel.org, linux-rpi-kernel@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-samsung-soc@vger.kernel.org, x86@kernel.org,
+        linux-sh@vger.kernel.org, linux-s390@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, linux-parisc@vger.kernel.org,
+        linux-mips@vger.kernel.org, linux-m68k@lists.linux-m68k.org,
+        linux-ia64@vger.kernel.org, linux-hexagon@vger.kernel.org,
+        linux-c6x-dev@linux-c6x.org, linux-omap@vger.kernel.org,
+        linux-alpha@vger.kernel.org
+Cc:     Julia Lawall <Julia.Lawall@lip6.fr>,
+        Gilles Muller <Gilles.Muller@lip6.fr>,
+        Nicolas Palix <nicolas.palix@imag.fr>,
+        Michal Marek <michal.lkml@markovi.net>
+Subject: Re: [PATCH 00/18] genirq: Remove setup_irq()
+In-Reply-To: <cover.1581478323.git.afzal.mohd.ma@gmail.com>
+References: <cover.1581478323.git.afzal.mohd.ma@gmail.com>
+Date:   Thu, 27 Feb 2020 11:31:15 +0100
+Message-ID: <87y2somido.fsf@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-References: <alpine.LNX.2.22.394.2002270908380.8@nippy.intranet>
- <a682c89d-baf2-3d3c-647f-a07b2a146c9f@linux-m68k.org> <alpine.LNX.2.22.394.2002261637400.8@nippy.intranet>
- <caa5686a-5be3-5848-fdee-36f54237ccb6@linux-m68k.org> <alpine.LNX.2.22.394.2002261151220.9@nippy.intranet>
- <73c3ad08-963d-fea2-91d7-b06e4ef8d3ef@linux-m68k.org> <20200227081805.GA5746@afzalpc>
-In-Reply-To: <20200227081805.GA5746@afzalpc>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Thu, 27 Feb 2020 09:32:46 +0100
-Message-ID: <CAMuHMdWVVWaoHA1Tie5APYBq3Pa3s4BAoWN1jAACAZZS65UA7w@mail.gmail.com>
-Subject: Re: [PATCH v2 06/18] m68k: Replace setup_irq() by request_irq()
-To:     afzal mohammed <afzal.mohd.ma@gmail.com>
-Cc:     Greg Ungerer <gerg@linux-m68k.org>,
-        Finn Thain <fthain@telegraphics.com.au>,
-        linux-m68k <linux-m68k@lists.linux-m68k.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain
+X-Linutronix-Spam-Score: -1.0
+X-Linutronix-Spam-Level: -
+X-Linutronix-Spam-Status: No , -1.0 points, 5.0 required,  ALL_TRUSTED=-1,SHORTCIRCUIT=-0.0001
 Sender: linux-m68k-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-Hi Afzal,
+Afzal,
 
-On Thu, Feb 27, 2020 at 9:18 AM afzal mohammed <afzal.mohd.ma@gmail.com> wrote:
-> On Wed, Feb 26, 2020 at 10:42:00AM +1000, Greg Ungerer wrote:
-> > > -   setup_irq(TMR_IRQ_NUM, &m68328_timer_irq);
-> > > +   if (request_irq(TMR_IRQ_NUM, hw_tick, IRQF_TIMER, "timer", NULL))
-> > > +           pr_err("%s: request_irq() failed\n", "timer");
-> >
-> > Why not just:
-> >
-> >                 pr_err("timer: request_irq() failed\n");
+afzal mohammed <afzal.mohd.ma@gmail.com> writes:
+
+> While trying to understand internals of irq handling, came across a
+> thread [1] in which tglx was referring to avoid usage of setup_irq().
+> Existing callers of setup_irq() reached mostly via 'init_IRQ()' &
+> 'time_init()', while memory allocators are ready by 'mm_init()'.
 >
-> The reason to use %s was that it could be automated by cocci script &
-> the o/p didn't look bad. Second arg to pr_err is what cocci
-> presents me & there is wide variation in the name across the tree as
-> Finn noted.
+> Hence instances of setup_irq() is replaced by request_irq() &
+> setup_irq() (along with remove_irq()) definition deleted in the last
+> patch.
 >
-> Excerpts from v1 cover letter [1],
->
-> - setup_irq(E1,&act);
-> + if (request_irq(E1,f_handler,f_flags,f_name,f_dev_id))
-> +       pr_err("request_irq() on %s failed\n", f_name);
->
-> [ don't get mislead by string contents used, this was for v1, just to
->  show how the result was obtained. To take care of Finn's suggesstion,
->  instead of modifying cocci & then making changes other changes over
->  that (i could not fully automate w/ cocci, and Julia said my script
->  is fine as is), it was easier to run sed over the v1  patches ]
->
-> > And maybe would it be useful to print out the error return code from a
-> > failed request_irq()?
->
-> Since most of the existing setup_irq() didn't even check & handle
-> error return, my first thought was just s/setup_irq/request_irq, it
-> was easier from scripting pointing of view. i felt uncomfortable doing
-> nothing in case of error. Also noted that request_irq() definition has
-> a "__much_check", so decided to add it.
+> Seldom remove_irq() usage has been observed coupled with setup_irq(),
+> wherever that has been found, it too has been replaced by free_irq().
 
-Most (all?) of the code calling setup_irq() is very old, and most of the calls
-happen very early, so any such failures are hard failures that prevent the
-system from booting at all.  Hence printing a message may be futile, as it
-may happen before the console has been initialized (modulo early-printk).
+thanks a lot for tackling this!
 
-Just my 2 €c.
+Vs. merging this series, I suggest the following approach:
 
-Gr{oetje,eeting}s,
+   - Resubmit the individual changes as single patches or small series
+     to the relevant maintainers and subsystem mailing lists. They have
+     no dependency on a core change and can be applied where they belong
+     to.
 
-                        Geert
+   - After 5.6-rc6, verify which parts have made their way into
+     linux-next and resubmit the ignored ones as a series to me along
+     with the removal of the core parts.
 
--- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+That way we can avoid conflicting changes between subsystems and the tip
+irq/core branch as much as possible.
 
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+Thanks,
+
+        tglx
