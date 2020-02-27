@@ -7,55 +7,55 @@ X-Spam-Status: No, score=-9.9 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
 	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 89BF1C35DF9
-	for <linux-m68k@archiver.kernel.org>; Thu, 27 Feb 2020 18:24:41 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 966D5C35E15
+	for <linux-m68k@archiver.kernel.org>; Thu, 27 Feb 2020 18:24:47 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 5DA7B246AA
-	for <linux-m68k@archiver.kernel.org>; Thu, 27 Feb 2020 18:24:41 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 732FC246AA
+	for <linux-m68k@archiver.kernel.org>; Thu, 27 Feb 2020 18:24:47 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=samsung.com header.i=@samsung.com header.b="ks1ZGpw+"
+	dkim=pass (1024-bit key) header.d=samsung.com header.i=@samsung.com header.b="jaB5UAr6"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731066AbgB0SYf (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Thu, 27 Feb 2020 13:24:35 -0500
-Received: from mailout2.w1.samsung.com ([210.118.77.12]:59046 "EHLO
+        id S1731097AbgB0SYn (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Thu, 27 Feb 2020 13:24:43 -0500
+Received: from mailout2.w1.samsung.com ([210.118.77.12]:59034 "EHLO
         mailout2.w1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730873AbgB0SWm (ORCPT
+        with ESMTP id S1730862AbgB0SWm (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
         Thu, 27 Feb 2020 13:22:42 -0500
-Received: from eucas1p2.samsung.com (unknown [182.198.249.207])
-        by mailout2.w1.samsung.com (KnoxPortal) with ESMTP id 20200227182241euoutp02efff70399e343d3a931a0b1cfacf7501~3VXZrlyGP0716607166euoutp02g
-        for <linux-m68k@lists.linux-m68k.org>; Thu, 27 Feb 2020 18:22:41 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.w1.samsung.com 20200227182241euoutp02efff70399e343d3a931a0b1cfacf7501~3VXZrlyGP0716607166euoutp02g
+Received: from eucas1p1.samsung.com (unknown [182.198.249.206])
+        by mailout2.w1.samsung.com (KnoxPortal) with ESMTP id 20200227182240euoutp0236d8973b7214e099feec8ebd4e83bef6~3VXZage7v0820908209euoutp02K
+        for <linux-m68k@lists.linux-m68k.org>; Thu, 27 Feb 2020 18:22:40 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.w1.samsung.com 20200227182240euoutp0236d8973b7214e099feec8ebd4e83bef6~3VXZage7v0820908209euoutp02K
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1582827761;
-        bh=SD29ru+XPRj8/MpkvAn2nNtxS7lNQ61UJF7W2WDfjqI=;
+        s=mail20170921; t=1582827760;
+        bh=IdmCUBxgFlf//TBu/Br//NY1ssaROzxlh9KlCCrWTcA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ks1ZGpw+lgJDqyK+IQwC+zvEiBAkWi8NkoAVyszZOtZOcJ5YG0+6wzwOmQkFYaJA8
-         OZs2ZAJuvKsPpI73mt5JJXzC4SQHZKkQrfR/XhM7OUsVHgB6+XuT1PSDts7a+q62TQ
-         sBAnrQzfQc90v3qiElfSEv9KuPxFT+8xLGQsoqbw=
+        b=jaB5UAr6DMZ7FbWSEPTUuEXwDKnU/TM/6yfELobnoif8Q5PfXcS/4dsy5tDoHVAFP
+         3Xbqo6P2WJJ/YVbDi+ZPWb9w+dK95MhjrQFaeEA0c7V6IScbF0QWn1TXaykxApptAO
+         /DLoLEWOtlJRIfmGKg5/4gsh3fGUKuuMTmWVau4E=
 Received: from eusmges1new.samsung.com (unknown [203.254.199.242]) by
-        eucas1p1.samsung.com (KnoxPortal) with ESMTP id
-        20200227182240eucas1p1016739a86fa86f0213df0574c648fda5~3VXZh6xf40931609316eucas1p1_;
+        eucas1p2.samsung.com (KnoxPortal) with ESMTP id
+        20200227182240eucas1p2bde1c559fc03fbe46dba86a909cbdb71~3VXZJdJqp2012220122eucas1p2a;
         Thu, 27 Feb 2020 18:22:40 +0000 (GMT)
 Received: from eucas1p1.samsung.com ( [182.198.249.206]) by
-        eusmges1new.samsung.com (EUCPMTA) with SMTP id D2.5F.61286.0F8085E5; Thu, 27
+        eusmges1new.samsung.com (EUCPMTA) with SMTP id 42.5F.61286.0F8085E5; Thu, 27
         Feb 2020 18:22:40 +0000 (GMT)
 Received: from eusmtrp2.samsung.com (unknown [182.198.249.139]) by
         eucas1p2.samsung.com (KnoxPortal) with ESMTPA id
-        20200227182240eucas1p272bac5df6668bbb7fee7638b4022a7b1~3VXZPXMzJ3194731947eucas1p2E;
-        Thu, 27 Feb 2020 18:22:40 +0000 (GMT)
+        20200227182239eucas1p2fe76dcb686bea8f0a527461807b9292e~3VXYX-46p3194731947eucas1p2B;
+        Thu, 27 Feb 2020 18:22:39 +0000 (GMT)
 Received: from eusmgms1.samsung.com (unknown [182.198.249.179]) by
         eusmtrp2.samsung.com (KnoxPortal) with ESMTP id
-        20200227182240eusmtrp24ca19a2ef3fc04694fdbb80b4039de39~3VXZO2_aG1813218132eusmtrp2i;
-        Thu, 27 Feb 2020 18:22:40 +0000 (GMT)
-X-AuditID: cbfec7f2-ef1ff7000001ef66-5c-5e5808f082c0
+        20200227182239eusmtrp23f318807369de237dd6f81a56feb9368~3VXYTPAUx1813218132eusmtrp2g;
+        Thu, 27 Feb 2020 18:22:39 +0000 (GMT)
+X-AuditID: cbfec7f2-ef1ff7000001ef66-5a-5e5808f00413
 Received: from eusmtip2.samsung.com ( [203.254.199.222]) by
-        eusmgms1.samsung.com (EUCPMTA) with SMTP id 8C.B1.08375.0F8085E5; Thu, 27
-        Feb 2020 18:22:40 +0000 (GMT)
+        eusmgms1.samsung.com (EUCPMTA) with SMTP id DB.B1.08375.FE8085E5; Thu, 27
+        Feb 2020 18:22:39 +0000 (GMT)
 Received: from AMDC3058.digital.local (unknown [106.120.51.71]) by
         eusmtip2.samsung.com (KnoxPortal) with ESMTPA id
-        20200227182240eusmtip27751114e671c0a6097b397184342df9d~3VXYzf5Ze0595905959eusmtip2j;
-        Thu, 27 Feb 2020 18:22:40 +0000 (GMT)
+        20200227182239eusmtip29abd9271ce91f4f82a4c8f9841b5152c~3VXX2ah3a0595905959eusmtip2i;
+        Thu, 27 Feb 2020 18:22:39 +0000 (GMT)
 From:   Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>
 To:     Jens Axboe <axboe@kernel.dk>
 Cc:     Michael Schmitz <schmitzmic@gmail.com>,
@@ -63,94 +63,113 @@ Cc:     Michael Schmitz <schmitzmic@gmail.com>,
         Christoph Hellwig <hch@lst.de>, linux-ide@vger.kernel.org,
         linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org,
         b.zolnierkie@samsung.com
-Subject: [PATCH v3 04/27] sata_promise: use ata_cable_sata()
-Date:   Thu, 27 Feb 2020 19:22:03 +0100
-Message-Id: <20200227182226.19188-5-b.zolnierkie@samsung.com>
+Subject: [PATCH v3 02/27] ata: expose ncq_enable_prio sysfs attribute only
+ on NCQ capable hosts
+Date:   Thu, 27 Feb 2020 19:22:01 +0100
+Message-Id: <20200227182226.19188-3-b.zolnierkie@samsung.com>
 X-Mailer: git-send-email 2.24.1
 In-Reply-To: <20200227182226.19188-1-b.zolnierkie@samsung.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFlrHKsWRmVeSWpSXmKPExsWy7djPc7ofOCLiDKZvtbJYfbefzWLjjPWs
-        Fs9u7WWyWLn6KJPFsR2PmCwu75rDZrH8yVpmi7mt09kdODx2zrrL7nH5bKnHocMdjB4nW7+x
-        eOy+2cDm0bdlFaPH501yAexRXDYpqTmZZalF+nYJXBlNn3YwF2zkrpjx5zB7A+Nhzi5GTg4J
-        AROJ+ZeOsXYxcnEICaxglNh35Dg7hPOFUWLyp8tMEM5nRomeWeuYYVoWf+phhEgsZ5RYsXov
-        E1zLuRenWUCq2ASsJCa2r2IEsUUEFCR6fq9kAyliFngP1DFpL1iRsICNxP/+ZUwgNouAqsS3
-        m9fBGngFbCWurz8KtU5eYuu3T6wgNqeAncSNvu1sEDWCEidnPgGbwwxU07x1NjPIAgmBVewS
-        X7f/AxrEAeS4SJy4LQ0xR1ji1fEt7BC2jMT/nfOZIOrXMUr87XgB1bydUWL55H9sEFXWEnfO
-        /WIDGcQsoCmxfpc+RNhR4t7aaWwQ8/kkbrwVhLiBT2LStunMEGFeiY42IYhqNYkNyzawwazt
-        2rkS6i0PifanL5knMCrOQvLNLCTfzELYu4CReRWjeGppcW56arFhXmq5XnFibnFpXrpecn7u
-        JkZgKjr97/inHYxfLyUdYhTgYFTi4V2wIzxOiDWxrLgy9xCjBAezkgjvxq+hcUK8KYmVValF
-        +fFFpTmpxYcYpTlYlMR5jRe9jBUSSE8sSc1OTS1ILYLJMnFwSjUwZpct8mk8N0WHn7nXemZ3
-        kmzEQqco5s2b478JuE7W/ytqOGnvmvss7zZG6tyYsnfFJY5rjI0fHArvFr0PvLPM+efzorNF
-        DI+F/cpfHtVfeNBIOawiWf3Yhh0SNx4Lnlln9O6gjciC02tndxbcntJi8+7VF/OsDpeq2X6b
-        vj7fVdMs3s378Ck/nxJLcUaioRZzUXEiAB5rRzdBAwAA
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFprNIsWRmVeSWpSXmKPExsVy+t/xe7ofOCLiDK4fULNYfbefzWLjjPWs
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFlrHKsWRmVeSWpSXmKPExsWy7djPc7ofOCLiDH418VisvtvPZrFxxnpW
+        i2e39jJZrFx9lMni2I5HTBaXd81hs1j+ZC2zxdzW6ewOHB47Z91l97h8ttTj0OEORo+Trd9Y
+        PHbfbGDz6NuyitHj8ya5APYoLpuU1JzMstQifbsErozmvv0sBT/4K5Y1f2JuYDzE28XIySEh
+        YCLx7dBEti5GLg4hgRWMEvf/XYVyvjBKrNm2hgnC+cwo8fTZKSaYljWP70ElljNKvLw3nQWu
+        pXF1B1gVm4CVxMT2VYwgtoiAgkTP75Vgc5kF3jNKrJi0lwUkISyQKHH6yg2gBAcHi4CqxPFF
+        6iBhXgFbidkvzrBBbJOX2PrtEyuIzSlgJ3GjbzsbRI2gxMmZT8DGMAPVNG+dzQwyX0JgFbvE
+        o/dzoJpdJB7deMAKYQtLvDq+hR3ClpH4v3M+E0TDOkaJvx0voLq3M0osn/wPqtta4s65X2DX
+        MQtoSqzfpQ8RdpSY8GUDWFhCgE/ixltBiCP4JCZtm84MEeaV6GgTgqhWk9iwbAMbzNqunSuZ
+        IWwPidu9l9kmMCrOQvLOLCTvzELYu4CReRWjeGppcW56arFhXmq5XnFibnFpXrpecn7uJkZg
+        Kjr97/inHYxfLyUdYhTgYFTi4V2wIzxOiDWxrLgy9xCjBAezkgjvxq+hcUK8KYmVValF+fFF
+        pTmpxYcYpTlYlMR5jRe9jBUSSE8sSc1OTS1ILYLJMnFwSjUwRs2y0N28Ytve8p6zPd6L/Xbn
+        Z97TbrN9YBc5edIVbtOEE/0vdilv/Oe0T+bSgYq23xz3GFU5ZoZpVbrpceQc/N3dsP7k9Iai
+        N1+szwiYKkmd2iOzu/zjn/NVTqd7PgXrPOmxYzn3c+quGWfupYtai9hYHghXndFRXcmifUCF
+        N4H13a6XfjvqlViKMxINtZiLihMBo43BB0EDAAA=
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFprJIsWRmVeSWpSXmKPExsVy+t/xe7rvOSLiDO5+UbFYfbefzWLjjPWs
         Fs9u7WWyWLn6KJPFsR2PmCwu75rDZrH8yVpmi7mt09kdODx2zrrL7nH5bKnHocMdjB4nW7+x
         eOy+2cDm0bdlFaPH501yAexRejZF+aUlqQoZ+cUltkrRhhZGeoaWFnpGJpZ6hsbmsVZGpkr6
-        djYpqTmZZalF+nYJehlNn3YwF2zkrpjx5zB7A+Nhzi5GTg4JAROJxZ96GLsYuTiEBJYySlxf
-        tJapi5EDKCEjcXx9GUSNsMSfa11sEDWfGCWWbPrHBJJgE7CSmNi+ihHEFhFQkOj5vRKsiFng
-        K6PE0kndzCAJYQEbif/9y8AaWARUJb7dvA7WwCtgK3F9/VFmiA3yElu/fWIFsTkF7CRu9G1n
-        A7GFgGq6Op5C1QtKnJz5hAXEZgaqb946m3kCo8AsJKlZSFILGJlWMYqklhbnpucWG+oVJ+YW
-        l+al6yXn525iBEbMtmM/N+9gvLQx+BCjAAejEg/vgh3hcUKsiWXFlbmHGCU4mJVEeDd+DY0T
-        4k1JrKxKLcqPLyrNSS0+xGgK9MREZinR5HxgNOeVxBuaGppbWBqaG5sbm1koifN2CByMERJI
-        TyxJzU5NLUgtgulj4uCUamC031RtL/tHnu/0nowVUVc+aCz+1OfmVrQr36L1vH2RTGJXx0HN
-        F0V3922+yFkjeDY67sKt8B+rT/9refWjvERiht2GmQePZG+S/KU6+e7epXWKsss1mRuzDquq
-        HDA7mRZTVK0V75sjeOEho42J9rYJ2+N+nZBKl3ZTX8i22enX7UNP70T/75+kxFKckWioxVxU
-        nAgA9EzTaK4CAAA=
-X-CMS-MailID: 20200227182240eucas1p272bac5df6668bbb7fee7638b4022a7b1
+        djYpqTmZZalF+nYJehnNfftZCn7wVyxr/sTcwHiIt4uRk0NCwERizeN7TF2MXBxCAksZJfoX
+        vmHuYuQASshIHF9fBlEjLPHnWhcbRM0nRoldy+YzgyTYBKwkJravYgSxRQQUJHp+rwQrYhb4
+        yiixdFI32CBhgXiJMzPiQEwWAVWJ44vUQcp5BWwlZr84wwYxX15i67dPrCA2p4CdxI2+7WBx
+        IaCaro6njBD1ghInZz5hAbGZgeqbt85mnsAoMAtJahaS1AJGplWMIqmlxbnpucWGesWJucWl
+        eel6yfm5mxiB0bLt2M/NOxgvbQw+xCjAwajEw7tgR3icEGtiWXFl7iFGCQ5mJRHejV9D44R4
+        UxIrq1KL8uOLSnNSiw8xmgL9MJFZSjQ5HxjJeSXxhqaG5haWhubG5sZmFkrivB0CB2OEBNIT
+        S1KzU1MLUotg+pg4OKUaGJsvekwKq3r26IHqowmPmnTkrHNEFkmeNHN4c/eSzDL7Ox6ldjKp
+        r9Wv3D8x59vqylbDLZ+1zk7/urc9sl0gwGVW08ULwonNEoaL1LSSHq4z0UpO0z8esnX/fPPY
+        xMq5E/Zt+t/Ic9dK6etlQZMkUfmPm9qfL5gl1fh+04ZtV16fmr5jnvCGmt1KLMUZiYZazEXF
+        iQAjtKByrAIAAA==
+X-CMS-MailID: 20200227182239eucas1p2fe76dcb686bea8f0a527461807b9292e
 X-Msg-Generator: CA
 Content-Type: text/plain; charset="utf-8"
-X-RootMTR: 20200227182240eucas1p272bac5df6668bbb7fee7638b4022a7b1
+X-RootMTR: 20200227182239eucas1p2fe76dcb686bea8f0a527461807b9292e
 X-EPHeader: CA
 CMS-TYPE: 201P
-X-CMS-RootMailID: 20200227182240eucas1p272bac5df6668bbb7fee7638b4022a7b1
+X-CMS-RootMailID: 20200227182239eucas1p2fe76dcb686bea8f0a527461807b9292e
 References: <20200227182226.19188-1-b.zolnierkie@samsung.com>
-        <CGME20200227182240eucas1p272bac5df6668bbb7fee7638b4022a7b1@eucas1p2.samsung.com>
+        <CGME20200227182239eucas1p2fe76dcb686bea8f0a527461807b9292e@eucas1p2.samsung.com>
 Sender: linux-m68k-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-Use core helper instead of open-coding it.
+There is no point in exposing ncq_enable_prio sysfs attribute for
+devices on PATA and non-NCQ capable SATA hosts so:
+
+* remove dev_attr_ncq_prio_enable from ata_common_sdev_attrs[]
+
+* add ata_ncq_sdev_attrs[]
+
+* update ATA_NCQ_SHT() macro to use ata_ncq_sdev_attrs[]
 
 Signed-off-by: Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>
 ---
- drivers/ata/sata_promise.c | 8 +-------
- 1 file changed, 1 insertion(+), 7 deletions(-)
+ drivers/ata/libata-scsi.c | 8 +++++++-
+ include/linux/libata.h    | 2 ++
+ 2 files changed, 9 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/ata/sata_promise.c b/drivers/ata/sata_promise.c
-index c451d7d1c817..8729f78cef5f 100644
---- a/drivers/ata/sata_promise.c
-+++ b/drivers/ata/sata_promise.c
-@@ -157,7 +157,6 @@ static int pdc_sata_hardreset(struct ata_link *link, unsigned int *class,
- static void pdc_error_handler(struct ata_port *ap);
- static void pdc_post_internal_cmd(struct ata_queued_cmd *qc);
- static int pdc_pata_cable_detect(struct ata_port *ap);
--static int pdc_sata_cable_detect(struct ata_port *ap);
+diff --git a/drivers/ata/libata-scsi.c b/drivers/ata/libata-scsi.c
+index 11eb25b6e2cd..161e5d84bd82 100644
+--- a/drivers/ata/libata-scsi.c
++++ b/drivers/ata/libata-scsi.c
+@@ -462,11 +462,17 @@ EXPORT_SYMBOL_GPL(dev_attr_sw_activity);
  
- static struct scsi_host_template pdc_ata_sht = {
- 	ATA_BASE_SHT(DRV_NAME),
-@@ -183,7 +182,7 @@ static const struct ata_port_operations pdc_common_ops = {
+ struct device_attribute *ata_common_sdev_attrs[] = {
+ 	&dev_attr_unload_heads,
+-	&dev_attr_ncq_prio_enable,
+ 	NULL
+ };
+ EXPORT_SYMBOL_GPL(ata_common_sdev_attrs);
  
- static struct ata_port_operations pdc_sata_ops = {
- 	.inherits		= &pdc_common_ops,
--	.cable_detect		= pdc_sata_cable_detect,
-+	.cable_detect		= ata_cable_sata,
- 	.freeze			= pdc_sata_freeze,
- 	.thaw			= pdc_sata_thaw,
- 	.scr_read		= pdc_sata_scr_read,
-@@ -459,11 +458,6 @@ static int pdc_pata_cable_detect(struct ata_port *ap)
- 	return ATA_CBL_PATA80;
- }
++struct device_attribute *ata_ncq_sdev_attrs[] = {
++	&dev_attr_unload_heads,
++	&dev_attr_ncq_prio_enable,
++	NULL
++};
++EXPORT_SYMBOL_GPL(ata_ncq_sdev_attrs);
++
+ /**
+  *	ata_std_bios_param - generic bios head/sector/cylinder calculator used by sd.
+  *	@sdev: SCSI device for which BIOS geometry is to be determined
+diff --git a/include/linux/libata.h b/include/linux/libata.h
+index 2ca9b7056a82..df8f20a2a305 100644
+--- a/include/linux/libata.h
++++ b/include/linux/libata.h
+@@ -1336,6 +1336,7 @@ extern int ata_link_nr_enabled(struct ata_link *link);
+ extern const struct ata_port_operations ata_base_port_ops;
+ extern const struct ata_port_operations sata_port_ops;
+ extern struct device_attribute *ata_common_sdev_attrs[];
++extern struct device_attribute *ata_ncq_sdev_attrs[];
  
--static int pdc_sata_cable_detect(struct ata_port *ap)
--{
--	return ATA_CBL_SATA;
--}
--
- static int pdc_sata_scr_read(struct ata_link *link,
- 			     unsigned int sc_reg, u32 *val)
- {
+ /*
+  * All sht initializers (BASE, PIO, BMDMA, NCQ) must be instantiated
+@@ -1362,6 +1363,7 @@ extern struct device_attribute *ata_common_sdev_attrs[];
+ 
+ #define ATA_NCQ_SHT(drv_name)					\
+ 	ATA_BASE_SHT(drv_name),					\
++	.sdev_attrs		= ata_ncq_sdev_attrs,		\
+ 	.change_queue_depth	= ata_scsi_change_queue_depth
+ 
+ /*
 -- 
 2.24.1
 
