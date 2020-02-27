@@ -1,81 +1,107 @@
-Return-Path: <SRS0=gJ3H=4O=vger.kernel.org=linux-m68k-owner@kernel.org>
+Return-Path: <SRS0=xmTe=4P=vger.kernel.org=linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-0.8 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-2.3 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=no
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 51872C4BA24
-	for <linux-m68k@archiver.kernel.org>; Wed, 26 Feb 2020 22:31:45 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E5C3AC4BA24
+	for <linux-m68k@archiver.kernel.org>; Thu, 27 Feb 2020 06:37:22 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 238ED24653
-	for <linux-m68k@archiver.kernel.org>; Wed, 26 Feb 2020 22:31:45 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id C11052467F
+	for <linux-m68k@archiver.kernel.org>; Thu, 27 Feb 2020 06:37:22 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727841AbgBZWbo (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Wed, 26 Feb 2020 17:31:44 -0500
-Received: from kvm5.telegraphics.com.au ([98.124.60.144]:45528 "EHLO
-        kvm5.telegraphics.com.au" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727781AbgBZWbo (ORCPT
-        <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Wed, 26 Feb 2020 17:31:44 -0500
-Received: from localhost (localhost.localdomain [127.0.0.1])
-        by kvm5.telegraphics.com.au (Postfix) with ESMTP id 2482A2A0A1;
-        Wed, 26 Feb 2020 17:31:42 -0500 (EST)
-Date:   Thu, 27 Feb 2020 09:31:44 +1100 (AEDT)
-From:   Finn Thain <fthain@telegraphics.com.au>
-To:     Greg Ungerer <gerg@linux-m68k.org>
-cc:     afzal mohammed <afzal.mohd.ma@gmail.com>,
+        id S1727388AbgB0GhL (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Thu, 27 Feb 2020 01:37:11 -0500
+Received: from mail.kernel.org ([198.145.29.99]:59072 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726602AbgB0GhK (ORCPT <rfc822;linux-m68k@lists.linux-m68k.org>);
+        Thu, 27 Feb 2020 01:37:10 -0500
+Received: from [10.44.0.22] (unknown [103.48.210.53])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id AAF3F24672;
+        Thu, 27 Feb 2020 06:37:07 +0000 (UTC)
+Subject: Re: [PATCH v2 06/18] m68k: Replace setup_irq() by request_irq()
+To:     Finn Thain <fthain@telegraphics.com.au>
+Cc:     afzal mohammed <afzal.mohd.ma@gmail.com>,
         linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org,
         Thomas Gleixner <tglx@linutronix.de>,
         Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: Re: [PATCH v2 06/18] m68k: Replace setup_irq() by request_irq()
-In-Reply-To: <a682c89d-baf2-3d3c-647f-a07b2a146c9f@linux-m68k.org>
-Message-ID: <alpine.LNX.2.22.394.2002270908380.8@nippy.intranet>
-References: <cover.1582471508.git.afzal.mohd.ma@gmail.com> <00b0bf964278dd0bb3e093283994399ff796cca5.1582471508.git.afzal.mohd.ma@gmail.com> <73c3ad08-963d-fea2-91d7-b06e4ef8d3ef@linux-m68k.org> <alpine.LNX.2.22.394.2002261151220.9@nippy.intranet>
- <caa5686a-5be3-5848-fdee-36f54237ccb6@linux-m68k.org> <alpine.LNX.2.22.394.2002261637400.8@nippy.intranet> <a682c89d-baf2-3d3c-647f-a07b2a146c9f@linux-m68k.org>
+References: <cover.1582471508.git.afzal.mohd.ma@gmail.com>
+ <00b0bf964278dd0bb3e093283994399ff796cca5.1582471508.git.afzal.mohd.ma@gmail.com>
+ <73c3ad08-963d-fea2-91d7-b06e4ef8d3ef@linux-m68k.org>
+ <alpine.LNX.2.22.394.2002261151220.9@nippy.intranet>
+ <caa5686a-5be3-5848-fdee-36f54237ccb6@linux-m68k.org>
+ <alpine.LNX.2.22.394.2002261637400.8@nippy.intranet>
+ <a682c89d-baf2-3d3c-647f-a07b2a146c9f@linux-m68k.org>
+ <alpine.LNX.2.22.394.2002270908380.8@nippy.intranet>
+From:   Greg Ungerer <gerg@linux-m68k.org>
+Message-ID: <1a16c680-2bbe-eb24-6ea3-4b50d0c3e377@linux-m68k.org>
+Date:   Thu, 27 Feb 2020 16:37:04 +1000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.4.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+In-Reply-To: <alpine.LNX.2.22.394.2002270908380.8@nippy.intranet>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-m68k-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-On Wed, 26 Feb 2020, Greg Ungerer wrote:
 
-> On 26/2/20 4:39 pm, Finn Thain wrote:
-> > 
-> > If -EBUSY means the end user has misconfigured something, printing
-> > "request_irq failed" would be helpful. But does that still happen?
+On 27/2/20 8:31 am, Finn Thain wrote:
+> On Wed, 26 Feb 2020, Greg Ungerer wrote:
 > 
-> I have seen it many times. Its not at all difficult to get interrupt 
-> assignments wrong, duplicated, or otherwise mistaken when creating 
-> device trees. Not so much m68k/coldfire platforms where they are most 
-> commonly hard coded.
+>> On 26/2/20 4:39 pm, Finn Thain wrote:
+>>>
+>>> If -EBUSY means the end user has misconfigured something, printing
+>>> "request_irq failed" would be helpful. But does that still happen?
+>>
+>> I have seen it many times. Its not at all difficult to get interrupt
+>> assignments wrong, duplicated, or otherwise mistaken when creating
+>> device trees. Not so much m68k/coldfire platforms where they are most
+>> commonly hard coded.
+>>
 > 
+> I was thinking of end users and production builds. You seem to be
+> concerned about developers. Catering to developers argues for pr_debug()
+> here, if anything.
 
-I was thinking of end users and production builds. You seem to be 
-concerned about developers. Catering to developers argues for pr_debug() 
-here, if anything.
+Perhaps. But most of the kernel boot output as it stands today
+is more debug (or maybe notice) than useful.
 
-You say you've seen -16 errors "many times". Have you also seen -22? Did 
-the ability to distinguish these values help you to fix your device tree?
 
-> > ...
-> > 
-> > BTW, one of the benefits of "%s: request_irq failed" is that a 
-> > compilation unit with multiple request_irq calls permits the compiler 
-> > to coalesce all duplicated format strings. Whereas, that's not 
-> > possible with "foo: request_irq failed" and "bar: request_irq failed".
+> You say you've seen -16 errors "many times". Have you also seen -22? Did
+> the ability to distinguish these values help you to fix your device tree?
+
+Probably not. But the real difficulty is trying to diagnose other
+peoples problems with just console trace output. The more information
+there the better.
+
+
+>>> ...
+>>>
+>>> BTW, one of the benefits of "%s: request_irq failed" is that a
+>>> compilation unit with multiple request_irq calls permits the compiler
+>>> to coalesce all duplicated format strings. Whereas, that's not
+>>> possible with "foo: request_irq failed" and "bar: request_irq failed".
+>>
+>> Given the wide variety of message text used with failed request_irq()
+>> calls it would be shear luck that this matched anything else. A quick
+>> grep shows that "%s: request_irq() failed\n" has no other exact matches
+>> in the current kernel source.
+>>
 > 
-> Given the wide variety of message text used with failed request_irq() 
-> calls it would be shear luck that this matched anything else. A quick 
-> grep shows that "%s: request_irq() failed\n" has no other exact matches 
-> in the current kernel source.
-> 
+> You are overlooking the patches in this series that produce multiple
+> identical format strings.
 
-You are overlooking the patches in this series that produce multiple 
-identical format strings.
+No I didn't :-)  None of these will end up compiled in at the same time.
+The various ColdFire SoC parts have a single timer hardware module -
+and only the required one will be compiled in, not all of them.
 
-And the present lack of consistency isn't a great argument for more 
-inconsistency IMO.
+Regards
+Greg
