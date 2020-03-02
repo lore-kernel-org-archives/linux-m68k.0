@@ -2,105 +2,173 @@ Return-Path: <SRS0=oGM/=4T=vger.kernel.org=linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-0.8 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-3.8 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=no
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 293AEC3F2D1
-	for <linux-m68k@archiver.kernel.org>; Mon,  2 Mar 2020 06:27:22 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 45547C3F2D2
+	for <linux-m68k@archiver.kernel.org>; Mon,  2 Mar 2020 06:48:00 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 0718A246B4
-	for <linux-m68k@archiver.kernel.org>; Mon,  2 Mar 2020 06:27:22 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 196B3246B4
+	for <linux-m68k@archiver.kernel.org>; Mon,  2 Mar 2020 06:48:00 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726889AbgCBG1R (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Mon, 2 Mar 2020 01:27:17 -0500
-Received: from kvm5.telegraphics.com.au ([98.124.60.144]:56250 "EHLO
-        kvm5.telegraphics.com.au" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726300AbgCBG0X (ORCPT
-        <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Mon, 2 Mar 2020 01:26:23 -0500
-Received: from localhost (localhost.localdomain [127.0.0.1])
-        by kvm5.telegraphics.com.au (Postfix) with ESMTP id 3091929E8B;
-        Mon,  2 Mar 2020 01:26:20 -0500 (EST)
-Date:   Mon, 2 Mar 2020 17:26:17 +1100 (AEDT)
-From:   Finn Thain <fthain@telegraphics.com.au>
-To:     afzal mohammed <afzal.mohd.ma@gmail.com>
-cc:     linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org,
-        Greg Ungerer <gerg@linux-m68k.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: Re: [PATCH v2 06/18] m68k: Replace setup_irq() by request_irq()
-In-Reply-To: <20200301061327.GA5229@afzalpc>
-Message-ID: <alpine.LNX.2.22.394.2003021717150.8@nippy.intranet>
-References: <cover.1582471508.git.afzal.mohd.ma@gmail.com> <00b0bf964278dd0bb3e093283994399ff796cca5.1582471508.git.afzal.mohd.ma@gmail.com> <20200229131553.GA4985@afzalpc> <alpine.LNX.2.22.394.2003010958170.8@nippy.intranet> <20200301010511.GA5195@afzalpc>
- <alpine.LNX.2.22.394.2003011337590.15@nippy.intranet> <20200301061327.GA5229@afzalpc>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+        id S1726621AbgCBGr7 (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Mon, 2 Mar 2020 01:47:59 -0500
+Received: from foss.arm.com ([217.140.110.172]:56682 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725911AbgCBGr7 (ORCPT <rfc822;linux-m68k@lists.linux-m68k.org>);
+        Mon, 2 Mar 2020 01:47:59 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id D730AFEC;
+        Sun,  1 Mar 2020 22:47:58 -0800 (PST)
+Received: from p8cg001049571a15.arm.com (unknown [10.163.1.119])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 7EB443F6CF;
+        Sun,  1 Mar 2020 22:51:45 -0800 (PST)
+From:   Anshuman Khandual <anshuman.khandual@arm.com>
+To:     linux-mm@kvack.org
+Cc:     Anshuman Khandual <anshuman.khandual@arm.com>,
+        linux-alpha@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-snps-arc@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org, linux-c6x-dev@linux-c6x.org,
+        uclinux-h8-devel@lists.sourceforge.jp,
+        linux-hexagon@vger.kernel.org, linux-ia64@vger.kernel.org,
+        linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org,
+        nios2-dev@lists.rocketboards.org, openrisc@lists.librecores.org,
+        linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org,
+        linux-sh@vger.kernel.org, sparclinux@vger.kernel.org,
+        linux-um@lists.infradead.org, linux-xtensa@linux-xtensa.org
+Subject: [RFC 0/3] mm/vma: some new flags and helpers
+Date:   Mon,  2 Mar 2020 12:17:43 +0530
+Message-Id: <1583131666-15531-1-git-send-email-anshuman.khandual@arm.com>
+X-Mailer: git-send-email 2.7.4
 Sender: linux-m68k-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-On Sun, 1 Mar 2020, afzal mohammed wrote:
+The motivation here is to consolidate VMA flag combinations commonly used
+across platforms and reduce code duplication while making it uncluttered
+in general.
 
-> Hi,
-> 
-> On Sun, Mar 01, 2020 at 02:26:33PM +1100, Finn Thain wrote:
-> 
-> > BTW, how do you distinguish between "new code" and "legacy code"?
-> 
-> setup_irq() was used in olden days, nowadays request_irq(). Though there 
-> are exceptions of trying to use setup_irq() even recently, but there has 
-> been pushback when people notice it like Thomas had done [1], and i saw 
-> recently one in mips smp support series & suggested not to use it (that 
-> code iiuc they had it out of upstream for a long time).
-> 
-> So existence of setup_irq() in general i have considered to be legacy 
-> code.
-> 
+This first introduces a default VM_DATA_DEFAULT_FLAGS which platforms can
+easily fall back on without requiring to define any similar data flag
+combinations as they currently do. This also adds some more common data
+flag combinations which are generally used when the platforms decide to
+override the default.
 
-I see. You're defining "legacy code" in this case to mean code that uses a 
-deprecated API, that needs to be modernized.
+The second patch consolidates VM_READ, VM_WRITE, VM_EXEC as VM_ACCESS_FLAGS
+extending the existing VMA accessibility concept via vma_is_accessibility().
+VM_ACCESS_FLAGS replaces many other instances which used check all three
+VMA access flags simultaneously.
 
-> > And why would you choose to do that when you are writing a tree-wide 
-> > semantic patch?
-> 
-> The way i came up with this series is that while trying to understand 
-> irq internals, came across [1], so then decided to do cleanup and i 
-> thought scripting it would make it easy & also had been wanting to get 
-> familiar w/ cocci, so decided to try it, but also realized that i cannot 
-> fully automate it (Julia said my patch is okay, so i felt cocci cannot 
-> fully automate w/o investing considerable effort in cocci), so even w/ 
-> this v2, there are lot of manual changes, though cocci made it easier.
-> 
-> > I took Geert's comments to be architecture agnostic but perhaps I 
-> > misunderstood.
-> 
-> And Thomas suggested to make improvements over script generated o/p [2] 
-> and only consider scripting as an initial first step. So the way i am 
-> making changes now is to take suggestions from Thomas to be applied 
-> treewide, at the same time also take care of suggestions from 
-> arch/subsytem maintainer/mailing list in the relevant patches, since 
-> arch maintainers are the ones owning it.
-> 
+While here, this also adds some more special VMA flag based helpers which
+wraps around similar checks at various places thus improving readability.
+This series intentionally limits these new helpers which are applicable 
+only for special purpose VM flags than the more common ones like VM_READ,
+VM_WRITE, VM_EXEC, VM_SHARED etc just to limit code churn. But if there is
+common agreement that every flag should have it's own wrapper here, we can
+do that as well. Otherwise if this patch seems really unnecessary with much
+code churn, will be happy to drop it.
 
-Thanks for the detailed explanation.
+Reviews, comments, suggestions and concerns welcome. Thank you.
 
-I had assumed that your intention was to find a consensus so that the 
-whole tree could be consistently and automatically improved. My mistake.
+This series is based on v5.6-r4 after applying these patches.
 
-> Sometimes had a feeling as though the changes in this series is akin to 
-> cutting the foot to fit the shoe ;), but still went ahead as it was 
-> legacy code, easier & less error prone. But now based on the overall 
-> feedback, to proceed, i had to change.
-> 
+1. https://patchwork.kernel.org/cover/11399319/
+2. https://patchwork.kernel.org/patch/11399379/
 
-Not based on feedback from me I hope -- I have no veto in this case, as 
-you can see from MAINTAINERS.
+This series is build tested across multiple architectures but boot tested
+only on arm64 and x86 platforms.
 
-> Regards
-> afzal
-> 
-> [1] https://lkml.kernel.org/r/alpine.DEB.2.20.1710191609480.1971@nanos
-> [2] https://lore.kernel.org/lkml/87sgiwma3x.fsf@nanos.tec.linutronix.de/
-> 
+Cc: linux-alpha@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org
+Cc: linux-snps-arc@lists.infradead.org
+Cc: linux-arm-kernel@lists.infradead.org
+Cc: linux-c6x-dev@linux-c6x.org
+Cc: uclinux-h8-devel@lists.sourceforge.jp
+Cc: linux-hexagon@vger.kernel.org
+Cc: linux-ia64@vger.kernel.org
+Cc: linux-m68k@lists.linux-m68k.org
+Cc: linux-mips@vger.kernel.org
+Cc: nios2-dev@lists.rocketboards.org
+Cc: openrisc@lists.librecores.org
+Cc: linux-parisc@vger.kernel.org
+Cc: linuxppc-dev@lists.ozlabs.org
+Cc: linux-riscv@lists.infradead.org
+Cc: linux-s390@vger.kernel.org
+Cc: linux-sh@vger.kernel.org
+Cc: sparclinux@vger.kernel.org
+Cc: linux-um@lists.infradead.org
+Cc: linux-xtensa@linux-xtensa.org
+Cc: linux-mm@kvack.org
+
+Anshuman Khandual (3):
+  mm/vma: Define a default value for VM_DATA_DEFAULT_FLAGS
+  mm/vma: Introduce VM_ACCESS_FLAGS
+  mm/vma: Introduce some more VMA flag wrappers
+
+ arch/alpha/include/asm/page.h        |  3 --
+ arch/arc/include/asm/page.h          |  2 +-
+ arch/arm/include/asm/page.h          |  4 +-
+ arch/arm/mm/fault.c                  |  2 +-
+ arch/arm64/include/asm/page.h        |  4 +-
+ arch/arm64/mm/fault.c                |  2 +-
+ arch/c6x/include/asm/page.h          |  5 +--
+ arch/c6x/include/asm/processor.h     |  2 +-
+ arch/csky/include/asm/page.h         |  3 --
+ arch/h8300/include/asm/page.h        |  2 -
+ arch/hexagon/include/asm/page.h      |  3 +-
+ arch/ia64/include/asm/page.h         |  5 +--
+ arch/m68k/include/asm/page.h         |  3 --
+ arch/microblaze/include/asm/page.h   |  2 -
+ arch/mips/include/asm/page.h         |  5 +--
+ arch/nds32/include/asm/page.h        |  3 --
+ arch/nds32/mm/fault.c                |  2 +-
+ arch/nios2/include/asm/page.h        |  3 +-
+ arch/nios2/include/asm/processor.h   |  2 +-
+ arch/openrisc/include/asm/page.h     |  5 ---
+ arch/parisc/include/asm/page.h       |  3 --
+ arch/powerpc/include/asm/page.h      |  9 +----
+ arch/powerpc/include/asm/page_64.h   |  7 +---
+ arch/powerpc/mm/book3s64/pkeys.c     |  2 +-
+ arch/riscv/include/asm/page.h        |  3 +-
+ arch/s390/include/asm/page.h         |  3 +-
+ arch/s390/mm/fault.c                 |  2 +-
+ arch/sh/include/asm/page.h           |  3 --
+ arch/sh/include/asm/processor_64.h   |  2 +-
+ arch/sparc/include/asm/mman.h        |  2 +-
+ arch/sparc/include/asm/page_32.h     |  3 --
+ arch/sparc/include/asm/page_64.h     |  3 --
+ arch/unicore32/include/asm/page.h    |  3 --
+ arch/unicore32/mm/fault.c            |  2 +-
+ arch/x86/include/asm/page_types.h    |  4 +-
+ arch/x86/mm/pkeys.c                  |  2 +-
+ arch/x86/um/asm/vm-flags.h           | 10 +----
+ arch/xtensa/include/asm/page.h       |  3 --
+ drivers/staging/gasket/gasket_core.c |  2 +-
+ fs/binfmt_elf.c                      |  2 +-
+ fs/proc/task_mmu.c                   | 14 +++----
+ include/linux/huge_mm.h              |  4 +-
+ include/linux/mm.h                   | 58 +++++++++++++++++++++++++++-
+ kernel/events/core.c                 |  2 +-
+ kernel/events/uprobes.c              |  2 +-
+ mm/gup.c                             |  2 +-
+ mm/huge_memory.c                     |  6 +--
+ mm/hugetlb.c                         |  4 +-
+ mm/ksm.c                             |  8 ++--
+ mm/madvise.c                         |  4 +-
+ mm/memory.c                          |  4 +-
+ mm/migrate.c                         |  4 +-
+ mm/mlock.c                           |  4 +-
+ mm/mmap.c                            | 20 +++++-----
+ mm/mprotect.c                        |  9 ++---
+ mm/mremap.c                          |  4 +-
+ mm/msync.c                           |  3 +-
+ mm/rmap.c                            |  6 +--
+ mm/shmem.c                           |  8 ++--
+ 59 files changed, 140 insertions(+), 158 deletions(-)
+
+-- 
+2.20.1
+
