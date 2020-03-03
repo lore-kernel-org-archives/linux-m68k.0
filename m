@@ -2,106 +2,172 @@ Return-Path: <SRS0=/voU=4U=vger.kernel.org=linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.8 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
-	MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS
-	autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-8.3 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,
+	USER_AGENT_SANE_1 autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 15738C3F2CD
-	for <linux-m68k@archiver.kernel.org>; Tue,  3 Mar 2020 09:57:32 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 3E10AC3F2D1
+	for <linux-m68k@archiver.kernel.org>; Tue,  3 Mar 2020 17:25:24 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id EA348214D8
-	for <linux-m68k@archiver.kernel.org>; Tue,  3 Mar 2020 09:57:31 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 1CC4220866
+	for <linux-m68k@archiver.kernel.org>; Tue,  3 Mar 2020 17:25:24 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728189AbgCCJ5b (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Tue, 3 Mar 2020 04:57:31 -0500
-Received: from mail-oi1-f195.google.com ([209.85.167.195]:43531 "EHLO
-        mail-oi1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727823AbgCCJ5b (ORCPT
-        <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Tue, 3 Mar 2020 04:57:31 -0500
-Received: by mail-oi1-f195.google.com with SMTP id p125so2370938oif.10
-        for <linux-m68k@lists.linux-m68k.org>; Tue, 03 Mar 2020 01:57:30 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=9YqxdQa1ilWOSiLraQPjm7TPTEifD+tyJWNIlA8bYpk=;
-        b=PPXiCo4cMOq8FhjLwmeYdvtdch6wsfBKzfV1DC5Q5mOiqbKUogfEX9SkTdXPPVPXXq
-         geyiPOgUjyaWaGRxKWdpi+XhfAfN8zr+wOYl9OgU2PXucTlHo+UHGyXtVtowP/iKBwlY
-         CN2RitoZ6r/u6tRfWxuR9wr9X/vlJqwecfAzzVHEOhv3Drlk20M9JeJkTXb1GpVffgPQ
-         6Qcb71EZ3gTjbMJaH3RqRc0y4MEk2f2u+ayrLOguJGPn4L/QVtfM9kYjn72SrW4WE6K1
-         52m3evNb9R4c4jmExF8hc3OMrCKteCh6/kERctsdX5cWZ62Inzq3ygU55ClFoabGw91E
-         0yPQ==
-X-Gm-Message-State: ANhLgQ3w/H9a9FdIbxuIXwnz2V4CnuywunUMobxblNLwaQGl2i3GMSa5
-        Nxy9mamfH1RMnKBc5JXMQGD8vaWyQa1FjHNFlE4=
-X-Google-Smtp-Source: ADFU+vs9z4mBtCuZweCHY2/aqnLaygT4ej9HMxCl8wm4hVja8W8jGcq442xFYlOU/W0oazaGHEEdSqsMhYOZ6MqTl2M=
-X-Received: by 2002:aca:cdd1:: with SMTP id d200mr1781294oig.153.1583229450514;
- Tue, 03 Mar 2020 01:57:30 -0800 (PST)
+        id S1729801AbgCCRZX (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Tue, 3 Mar 2020 12:25:23 -0500
+Received: from mx2.suse.de ([195.135.220.15]:41140 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728560AbgCCRZX (ORCPT <rfc822;linux-m68k@lists.linux-m68k.org>);
+        Tue, 3 Mar 2020 12:25:23 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx2.suse.de (Postfix) with ESMTP id BED26ACB8;
+        Tue,  3 Mar 2020 17:25:16 +0000 (UTC)
+Subject: Re: [RFC 1/3] mm/vma: Define a default value for
+ VM_DATA_DEFAULT_FLAGS
+To:     Anshuman Khandual <anshuman.khandual@arm.com>, linux-mm@kvack.org
+Cc:     Richard Henderson <rth@twiddle.net>,
+        Vineet Gupta <vgupta@synopsys.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Mark Salter <msalter@redhat.com>, Guo Ren <guoren@kernel.org>,
+        Yoshinori Sato <ysato@users.sourceforge.jp>,
+        Brian Cain <bcain@codeaurora.org>,
+        Tony Luck <tony.luck@intel.com>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Michal Simek <monstr@monstr.eu>,
+        Ralf Baechle <ralf@linux-mips.org>,
+        Paul Burton <paulburton@kernel.org>,
+        Nick Hu <nickhu@andestech.com>,
+        Ley Foon Tan <ley.foon.tan@intel.com>,
+        Jonas Bonn <jonas@southpole.se>,
+        "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Heiko Carstens <heiko.carstens@de.ibm.com>,
+        Rich Felker <dalias@libc.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Guan Xuetao <gxt@pku.edu.cn>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Jeff Dike <jdike@addtoit.com>, Chris Zankel <chris@zankel.net>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        linux-alpha@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-snps-arc@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org, linux-c6x-dev@linux-c6x.org,
+        uclinux-h8-devel@lists.sourceforge.jp,
+        linux-hexagon@vger.kernel.org, linux-ia64@vger.kernel.org,
+        linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org,
+        nios2-dev@lists.rocketboards.org, openrisc@lists.librecores.org,
+        linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org,
+        linux-sh@vger.kernel.org, sparclinux@vger.kernel.org,
+        linux-um@lists.infradead.org, linux-xtensa@linux-xtensa.org
+References: <1583131666-15531-1-git-send-email-anshuman.khandual@arm.com>
+ <1583131666-15531-2-git-send-email-anshuman.khandual@arm.com>
+From:   Vlastimil Babka <vbabka@suse.cz>
+Message-ID: <b243be54-7b5e-c6e9-fb68-46369d7d7aa4@suse.cz>
+Date:   Tue, 3 Mar 2020 18:25:06 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.5.0
 MIME-Version: 1.0
-References: <20200227183748.GA31018@embeddedor>
-In-Reply-To: <20200227183748.GA31018@embeddedor>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Tue, 3 Mar 2020 10:57:19 +0100
-Message-ID: <CAMuHMdXCWtgGKM1Uqtps4CYbGsfBZtoQ8e4t8VrMoL29nP4V3w@mail.gmail.com>
-Subject: Re: [PATCH] zorro: Replace zero-length array with flexible-array member
-To:     "Gustavo A. R. Silva" <gustavo@embeddedor.com>
-Cc:     linux-m68k <linux-m68k@lists.linux-m68k.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <1583131666-15531-2-git-send-email-anshuman.khandual@arm.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-m68k-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-Hi Gustavo,
+On 3/2/20 7:47 AM, Anshuman Khandual wrote:
+> There are many platforms with exact same value for VM_DATA_DEFAULT_FLAGS
+> This creates a default value for VM_DATA_DEFAULT_FLAGS in line with the
+> existing VM_STACK_DEFAULT_FLAGS. While here, also define some more macros
+> with standard VMA access flag combinations that are used frequently across
+> many platforms. Apart from simplification, this reduces code duplication
+> as well.
+> 
+> Cc: Richard Henderson <rth@twiddle.net>
+> Cc: Vineet Gupta <vgupta@synopsys.com>
+> Cc: Russell King <linux@armlinux.org.uk>
+> Cc: Catalin Marinas <catalin.marinas@arm.com>
+> Cc: Mark Salter <msalter@redhat.com>
+> Cc: Guo Ren <guoren@kernel.org>
+> Cc: Yoshinori Sato <ysato@users.sourceforge.jp>
+> Cc: Brian Cain <bcain@codeaurora.org>
+> Cc: Tony Luck <tony.luck@intel.com>
+> Cc: Geert Uytterhoeven <geert@linux-m68k.org>
+> Cc: Michal Simek <monstr@monstr.eu>
+> Cc: Ralf Baechle <ralf@linux-mips.org>
+> Cc: Paul Burton <paulburton@kernel.org>
+> Cc: Nick Hu <nickhu@andestech.com>
+> Cc: Ley Foon Tan <ley.foon.tan@intel.com>
+> Cc: Jonas Bonn <jonas@southpole.se>
+> Cc: "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>
+> Cc: Michael Ellerman <mpe@ellerman.id.au>
+> Cc: Paul Walmsley <paul.walmsley@sifive.com>
+> Cc: Heiko Carstens <heiko.carstens@de.ibm.com>
+> Cc: Rich Felker <dalias@libc.org>
+> Cc: "David S. Miller" <davem@davemloft.net>
+> Cc: Guan Xuetao <gxt@pku.edu.cn>
+> Cc: Thomas Gleixner <tglx@linutronix.de>
+> Cc: Jeff Dike <jdike@addtoit.com>
+> Cc: Chris Zankel <chris@zankel.net>
+> Cc: Andrew Morton <akpm@linux-foundation.org>
+> Cc: linux-alpha@vger.kernel.org
+> Cc: linux-kernel@vger.kernel.org
+> Cc: linux-snps-arc@lists.infradead.org
+> Cc: linux-arm-kernel@lists.infradead.org
+> Cc: linux-c6x-dev@linux-c6x.org
+> Cc: uclinux-h8-devel@lists.sourceforge.jp
+> Cc: linux-hexagon@vger.kernel.org
+> Cc: linux-ia64@vger.kernel.org
+> Cc: linux-m68k@lists.linux-m68k.org
+> Cc: linux-mips@vger.kernel.org
+> Cc: nios2-dev@lists.rocketboards.org
+> Cc: openrisc@lists.librecores.org
+> Cc: linux-parisc@vger.kernel.org
+> Cc: linuxppc-dev@lists.ozlabs.org
+> Cc: linux-riscv@lists.infradead.org
+> Cc: linux-s390@vger.kernel.org
+> Cc: linux-sh@vger.kernel.org
+> Cc: sparclinux@vger.kernel.org
+> Cc: linux-um@lists.infradead.org
+> Cc: linux-xtensa@linux-xtensa.org
+> Cc: linux-mm@kvack.org
+> Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com
+Reviewed-by: Vlastimil Babka <vbabka@suse.cz>
 
-Thanks for your patch!
+Nit:
 
-On Thu, Feb 27, 2020 at 7:35 PM Gustavo A. R. Silva
-<gustavo@embeddedor.com> wrote:
-> The current codebase makes use of the zero-length array language
-> extension to the C90 standard, but the preferred mechanism to declare
-> variable-length types such as these ones is a flexible array member[1][2],
-> introduced in C99:
->
-> struct foo {
->         int stuff;
->         struct boo array[];
-> };
->
-> By making use of the mechanism above, we will get a compiler warning
-> in case the flexible array does not occur last in the structure, which
-> will help us prevent some kind of undefined behavior bugs from being
-> inadvertently introduced[3] to the codebase from now on.
->
-> Also, notice that, dynamic memory allocations won't be affected by
-> this change:
->
-> "Flexible array members have incomplete type, and so the sizeof operator
-> may not be applied. As a quirk of the original implementation of
-> zero-length arrays, sizeof evaluates to zero."[1]
->
-> This issue was found with the help of Coccinelle.
->
-> [1] https://gcc.gnu.org/onlinedocs/gcc/Zero-Length.html
-> [2] https://github.com/KSPP/linux/issues/21
-> [3] commit 76497732932f ("cxgb3/l2t: Fix undefined behaviour")
+> diff --git a/include/linux/mm.h b/include/linux/mm.h
+> index b0e53ef13ff1..7a764ae6ab68 100644
+> --- a/include/linux/mm.h
+> +++ b/include/linux/mm.h
+> @@ -342,6 +342,21 @@ extern unsigned int kobjsize(const void *objp);
+>  /* Bits set in the VMA until the stack is in its final location */
+>  #define VM_STACK_INCOMPLETE_SETUP	(VM_RAND_READ | VM_SEQ_READ)
+>  
+> +#define TASK_EXEC ((current->personality & READ_IMPLIES_EXEC) ? VM_EXEC : 0)
+> +
+> +/* Common data flag combinations */
+> +#define VM_DATA_FLAGS_TSK_EXEC	(VM_READ | VM_WRITE | TASK_EXEC | \
+> +				 VM_MAYREAD | VM_MAYWRITE | VM_MAYEXEC)
+> +#define VM_DATA_FLAGS_NON_EXEC	(VM_READ | VM_WRITE | VM_MAYREAD | \
+> +				 VM_MAYWRITE | VM_MAYEXEC)
+> +#define VM_DATA_FLAGS_EXEC	(VM_READ | VM_WRITE | VM_EXEC | \
+> +				 VM_MAYREAD | VM_MAYWRITE | VM_MAYEXEC)
+> +
+> +#ifndef VM_DATA_DEFAULT_FLAGS		/* arch can override this */
+> +#define VM_DATA_DEFAULT_FLAGS	(VM_READ | VM_WRITE | VM_EXEC | \
+> +				 VM_MAYREAD | VM_MAYWRITE | VM_MAYEXEC)
 
-Note that in practice, this "undefined behavior" may lead to corrupting
-the next member, when the zero-length array is written to.
+Should you use VM_DATA_FLAGS_EXEC here? Yeah one more macro to expand, but it's
+right above this.
 
-> Signed-off-by: Gustavo A. R. Silva <gustavo@embeddedor.com>
+> +#endif
+> +
+>  #ifndef VM_STACK_DEFAULT_FLAGS		/* arch can override this */
+>  #define VM_STACK_DEFAULT_FLAGS VM_DATA_DEFAULT_FLAGS
+>  #endif
+> 
 
-Reviewed-by: Geert Uytterhoeven <geert@linux-m68k.org>
-i.e. will queue in the m68k for-v5.7 branch.
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
--- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
