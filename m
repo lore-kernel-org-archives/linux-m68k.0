@@ -5,107 +5,113 @@ X-Spam-Level:
 X-Spam-Status: No, score=-2.3 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
 	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
+	URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 738A5C3F2C6
-	for <linux-m68k@archiver.kernel.org>; Wed,  4 Mar 2020 01:24:15 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E3E18C3F2D1
+	for <linux-m68k@archiver.kernel.org>; Wed,  4 Mar 2020 01:37:16 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 47D952072A
-	for <linux-m68k@archiver.kernel.org>; Wed,  4 Mar 2020 01:24:15 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id BB4A920828
+	for <linux-m68k@archiver.kernel.org>; Wed,  4 Mar 2020 01:37:16 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="P4Q+2KJA"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="VxsZeNI3"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727725AbgCDBYO (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Tue, 3 Mar 2020 20:24:14 -0500
-Received: from mail-pg1-f195.google.com ([209.85.215.195]:36441 "EHLO
-        mail-pg1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727985AbgCDBYM (ORCPT
+        id S1727958AbgCDBhQ (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Tue, 3 Mar 2020 20:37:16 -0500
+Received: from mail-pl1-f193.google.com ([209.85.214.193]:37088 "EHLO
+        mail-pl1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728317AbgCDBhP (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Tue, 3 Mar 2020 20:24:12 -0500
-Received: by mail-pg1-f195.google.com with SMTP id d9so177775pgu.3
-        for <linux-m68k@lists.linux-m68k.org>; Tue, 03 Mar 2020 17:24:12 -0800 (PST)
+        Tue, 3 Mar 2020 20:37:15 -0500
+Received: by mail-pl1-f193.google.com with SMTP id b8so260513plx.4
+        for <linux-m68k@lists.linux-m68k.org>; Tue, 03 Mar 2020 17:37:14 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to:user-agent;
-        bh=Rt8TtTL2J2teY8pg3mAMBDxFdn/EEgf4y2xMHvWn/v8=;
-        b=P4Q+2KJAFjMZOlZOparRgmdpjak5uoAJFTD5Y90LErx3JpfK0UNQGBOM5TQsh4lxw0
-         vnAjLQe0ENDCo0ZQ5hnkkRawhWxRuF3wImszc6mqaZAUmf32J23Y36c3qL2LATOSc2h2
-         tVfjBltn2QrYuDOibSBHTKVxQDmRfLH3BblY27gzz8VkF8PU1bMMY3k4FqUDkcmeaj0i
-         6J+nMb2iMJxcPnvOlMcFlR69jl/RqmbOoafXTX2H0o6QwLhM6dM9YHoCSaA6FUK7qgHW
-         08QwM9aaL559yyLm5RkZljBckbvwIlaynPPEOZ1GlwrypPVsFAsDcc4ElsCiDKbYgt+y
-         C6mA==
+        bh=CpYmXvRb3X1IttU7A8yHjd4RhEypbmbgRIYWPYo+DqM=;
+        b=VxsZeNI3Syj7iboIQxJxZI9ybRfCz86rYEwBbH1AsDXtFfX6/zyIGMedLNsnkEEtEi
+         ApEJBn+OvT/x4NTMeMvxGPUjhyJg+AOswN3Vd0Ghej2tDGLiNgnHbkvqumwGTZ2CvBBM
+         fcurnqvi1KQOouFysKBEbtE0qTmVqJfS9acQQ6pllC2CPSL4RhQQWM29zyn+zGvSTqXO
+         /KJbEXinbuwavgh+yjvFodofL+vUNOsMdZfuugssjtWHOAHNbojkQPRpWH9XlexLR72h
+         W7uKDGA0A3njS3lXpEFDnZYWU8UZa6oKsGhEzwOMJVjT5+Uqj77mV2nrt03EvaRf+Ptl
+         YsXg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=Rt8TtTL2J2teY8pg3mAMBDxFdn/EEgf4y2xMHvWn/v8=;
-        b=KECVEKeJj1lijXr/GHxYlOJxJ+GtrbVbkUgDFTK4ZDF3JsRg6ImApNbsJjxHImEpW0
-         XxF2mECRrDSlHLeIjoK+qNHQPcwfFyf2e5uMqEVBUDLIdywd0ihWFpV92Ir6frS3+wii
-         wSFeO/QP9P3XzoM9EG7QB7BSjQOHhkLIKuT80EnVXOxAiIWdZEfD/tyekZI2erIy5hQz
-         sDdpYsRNIfZsuTUVMBDAd93K55+TY0RRN/bMdIbQqW8rDBNUh3FKvcx778Eribt6xGzM
-         f4mf5AHCumxUvGG7Ou1RARTCNkKP96Q0ADSrZOlqwqDZjReKOQoEsVAEyxt2/VJW2mgy
-         CV6A==
-X-Gm-Message-State: ANhLgQ3jSKvc1S2OfN6qv2wScXYz+C1aBQMYDUKfn2A7/mZpvRn8JEcE
-        htb5wHQlkuwx9weclH8iMWE=
-X-Google-Smtp-Source: ADFU+vsn8BpgZ0uD9Kj8MicwFBE3Bv2NWVCEbUXbGCPpouGZIfn6QZU1OP0ZBgg8Au4qQWr8+E19nA==
-X-Received: by 2002:a62:1682:: with SMTP id 124mr550487pfw.107.1583285051211;
-        Tue, 03 Mar 2020 17:24:11 -0800 (PST)
+        bh=CpYmXvRb3X1IttU7A8yHjd4RhEypbmbgRIYWPYo+DqM=;
+        b=c7tmfdwlNHjAiLhh8ZXxSdKa/XLZtkL5t4zpiNxSashXJspyIGVjEIH6GVyj/zqiZF
+         iv04IeQx6YuclmHLRcl2zatqMzEqSfFYUIrj/VsU0e5bf4ri8KIa+KGDcii+dN1mRReP
+         eJL/80caeabrKCFixXdD/iUIv3NFPAgO2Vo+X23tMNq3RHECs/8VxXJSkammoPvpdpXr
+         yIGTSJKsJTBCiewOetttLv1NuCYm5eFQOfR1IsuVSLTO+lSIm/pWAhtZyBZPAGghoFaw
+         gb8ikdI7k/234k3RUF5vcj2y3VZtmJkQrq5+xLj1VSdBy3yyDN42pDpuV7/cTfuYUpPG
+         PBDQ==
+X-Gm-Message-State: ANhLgQ0oJH5IKAY4lpPw65zpPHnnfjuZz3RjVpnV27Mz+qPgHSq56SCk
+        CkkW53BnDgT3wM4Ky5sCeoo=
+X-Google-Smtp-Source: ADFU+vvLcB3AURPRZa98YpmFbW3Y/I3fKBg0YZYrNUt5ritj0guLOxr9Lnw95nWASTeKyRGdwNKLdQ==
+X-Received: by 2002:a17:902:9a06:: with SMTP id v6mr760458plp.304.1583285834188;
+        Tue, 03 Mar 2020 17:37:14 -0800 (PST)
 Received: from localhost ([106.51.232.35])
-        by smtp.gmail.com with ESMTPSA id z13sm26175369pge.29.2020.03.03.17.24.09
+        by smtp.gmail.com with ESMTPSA id c3sm26006283pfb.85.2020.03.03.17.37.13
         (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
-        Tue, 03 Mar 2020 17:24:10 -0800 (PST)
-Date:   Wed, 4 Mar 2020 06:54:08 +0530
+        Tue, 03 Mar 2020 17:37:13 -0800 (PST)
+Date:   Wed, 4 Mar 2020 07:07:11 +0530
 From:   afzal mohammed <afzal.mohd.ma@gmail.com>
-To:     Finn Thain <fthain@telegraphics.com.au>
+To:     Greg Ungerer <gerg@linux-m68k.org>
 Cc:     linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org,
-        Greg Ungerer <gerg@linux-m68k.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: Re: [PATCH v2 06/18] m68k: Replace setup_irq() by request_irq()
-Message-ID: <20200304012408.GA5014@afzalpc>
-References: <cover.1582471508.git.afzal.mohd.ma@gmail.com>
- <00b0bf964278dd0bb3e093283994399ff796cca5.1582471508.git.afzal.mohd.ma@gmail.com>
- <20200229131553.GA4985@afzalpc>
- <alpine.LNX.2.22.394.2003010958170.8@nippy.intranet>
- <20200301010511.GA5195@afzalpc>
- <alpine.LNX.2.22.394.2003011337590.15@nippy.intranet>
- <20200301061327.GA5229@afzalpc>
- <alpine.LNX.2.22.394.2003021717150.8@nippy.intranet>
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Finn Thain <fthain@telegraphics.com.au>
+Subject: Re: [PATCH v5] m68k: Replace setup_irq() by request_irq()
+Message-ID: <20200304013711.GA5470@afzalpc>
+References: <20200229153406.GA32479@afzalpc>
+ <20200301012655.GA6035@afzalpc>
+ <c2c04a29-4fc8-7cb5-6cc6-5bc3b125d047@linux-m68k.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <alpine.LNX.2.22.394.2003021717150.8@nippy.intranet>
+In-Reply-To: <c2c04a29-4fc8-7cb5-6cc6-5bc3b125d047@linux-m68k.org>
 User-Agent: Mutt/1.9.3 (2018-01-21)
 Sender: linux-m68k-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-Hi Finn,
+Hi Greg,
 
-On Mon, Mar 02, 2020 at 05:26:17PM +1100, Finn Thain wrote:
+On Mon, Mar 02, 2020 at 11:32:53AM +1000, Greg Ungerer wrote:
 
-> I had assumed that your intention was to find a consensus so that the 
-> whole tree could be consistently and automatically improved
-
-Yeah, my main goal was to get rid of setup_irq(), other things were
-secondary and proceeded to achieve the removal by hook or crook, but was
-caught red handed :)
-
-> > Sometimes had a feeling as though the changes in this series is akin to 
-> > cutting the foot to fit the shoe ;), but still went ahead as it was 
-> > legacy code, easier & less error prone. But now based on the overall 
-> > feedback, to proceed, i had to change.
-> > 
+> I have retested and everything works as expected, so:
 > 
-> Not based on feedback from me I hope -- I have no veto in this case, as 
-> you can see from MAINTAINERS.
+>   Tested-by: Greg Ungerer <gerg@linux-m68k.org>
+> 
+> I have applied this to the m68knommu git tree, for next branch.
 
-i don't know what to say, i attempted to accomodate the reviews as
-much as possible, some times when opinions are conflicting i had to
-take a call one way or the other, with more importance to maintainer's
-view.
+Thanks
+
+> >   void hw_timer_init(irq_handler_t handler)
+> >   {
+> > +	int r;
+> 
+> You used 'r' here as the error return value holder.
+> But in the previous cases you used 'ret'.
+> I would have used the same name everywhere ('ret' probably being the
+> most commonly used in the kernel).
+
+That was a circus to dodge 80 char limit, i did think about it while
+making the changes whether to do or not. If 'ret' is used request_irq()
+line had to be split to two, slightly affecting the readability and
+since 'r' was a local variable (though conventionally 'ret' or 'err'
+is used) went ahead that way. Even if 're' is used as the local
+variable, it would be 81 chars ;)
+
+Let me know if you want to change it.
 
 Regards
 afzal
+
+> > -	setup_irq(MCF_IRQ_TIMER, &mcfslt_timer_irq);
+> > +	r = request_irq(MCF_IRQ_TIMER, mcfslt_tick, IRQF_TIMER, "timer", NULL);
+> > +	if (r) {
+> > +		pr_err("Failed to request irq %d (timer): %pe\n", MCF_IRQ_TIMER,
+> > +		       ERR_PTR(r));
+> > +	}
