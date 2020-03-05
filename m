@@ -1,185 +1,236 @@
-Return-Path: <SRS0=mMk4=4V=vger.kernel.org=linux-m68k-owner@kernel.org>
+Return-Path: <SRS0=RMM9=4W=vger.kernel.org=linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.2 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,
-	URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=unavailable autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-5.8 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
+	MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 04FBAC3F2CD
-	for <linux-m68k@archiver.kernel.org>; Wed,  4 Mar 2020 05:19:33 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 1C2BEC3F2D1
+	for <linux-m68k@archiver.kernel.org>; Thu,  5 Mar 2020 05:46:07 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id D7A1A2146E
-	for <linux-m68k@archiver.kernel.org>; Wed,  4 Mar 2020 05:19:32 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id E70072146E
+	for <linux-m68k@archiver.kernel.org>; Thu,  5 Mar 2020 05:46:06 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725795AbgCDFTc (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Wed, 4 Mar 2020 00:19:32 -0500
-Received: from foss.arm.com ([217.140.110.172]:55916 "EHLO foss.arm.com"
+        id S1726009AbgCEFqG (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Thu, 5 Mar 2020 00:46:06 -0500
+Received: from mga14.intel.com ([192.55.52.115]:30997 "EHLO mga14.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725791AbgCDFTc (ORCPT <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Wed, 4 Mar 2020 00:19:32 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 3EE0E31B;
-        Tue,  3 Mar 2020 21:19:31 -0800 (PST)
-Received: from [10.163.1.88] (unknown [10.163.1.88])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 5DDBA3F6CF;
-        Tue,  3 Mar 2020 21:19:16 -0800 (PST)
-Subject: Re: [RFC 1/3] mm/vma: Define a default value for
- VM_DATA_DEFAULT_FLAGS
-To:     Vlastimil Babka <vbabka@suse.cz>, linux-mm@kvack.org
-Cc:     Richard Henderson <rth@twiddle.net>,
-        Vineet Gupta <vgupta@synopsys.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Mark Salter <msalter@redhat.com>, Guo Ren <guoren@kernel.org>,
-        Yoshinori Sato <ysato@users.sourceforge.jp>,
-        Brian Cain <bcain@codeaurora.org>,
-        Tony Luck <tony.luck@intel.com>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Michal Simek <monstr@monstr.eu>,
-        Ralf Baechle <ralf@linux-mips.org>,
-        Paul Burton <paulburton@kernel.org>,
-        Nick Hu <nickhu@andestech.com>,
-        Ley Foon Tan <ley.foon.tan@intel.com>,
-        Jonas Bonn <jonas@southpole.se>,
-        "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Heiko Carstens <heiko.carstens@de.ibm.com>,
-        Rich Felker <dalias@libc.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Guan Xuetao <gxt@pku.edu.cn>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Jeff Dike <jdike@addtoit.com>, Chris Zankel <chris@zankel.net>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        linux-alpha@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-snps-arc@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, linux-c6x-dev@linux-c6x.org,
-        uclinux-h8-devel@lists.sourceforge.jp,
-        linux-hexagon@vger.kernel.org, linux-ia64@vger.kernel.org,
-        linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org,
-        nios2-dev@lists.rocketboards.org, openrisc@lists.librecores.org,
-        linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org,
-        linux-sh@vger.kernel.org, sparclinux@vger.kernel.org,
-        linux-um@lists.infradead.org, linux-xtensa@linux-xtensa.org
-References: <1583131666-15531-1-git-send-email-anshuman.khandual@arm.com>
- <1583131666-15531-2-git-send-email-anshuman.khandual@arm.com>
- <b243be54-7b5e-c6e9-fb68-46369d7d7aa4@suse.cz>
-From:   Anshuman Khandual <anshuman.khandual@arm.com>
-Message-ID: <8b0f4c1b-f693-e139-4f66-ee4e1e88b95c@arm.com>
-Date:   Wed, 4 Mar 2020 10:49:13 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:52.0) Gecko/20100101
- Thunderbird/52.9.1
+        id S1725844AbgCEFqG (ORCPT <rfc822;linux-m68k@lists.linux-m68k.org>);
+        Thu, 5 Mar 2020 00:46:06 -0500
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 04 Mar 2020 21:46:05 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.70,516,1574150400"; 
+   d="scan'208";a="229578302"
+Received: from lkp-server01.sh.intel.com (HELO lkp-server01) ([10.239.97.150])
+  by orsmga007.jf.intel.com with ESMTP; 04 Mar 2020 21:46:03 -0800
+Received: from kbuild by lkp-server01 with local (Exim 4.89)
+        (envelope-from <lkp@intel.com>)
+        id 1j9jKc-000HZ2-UQ; Thu, 05 Mar 2020 13:46:02 +0800
+Date:   Thu, 05 Mar 2020 13:45:00 +0800
+From:   kbuild test robot <lkp@intel.com>
+To:     Geert Uytterhoeven <geert@linux-m68k.org>
+Cc:     linux-m68k@lists.linux-m68k.org
+Subject: [m68k:master] BUILD SUCCESS
+ e64dab7d50487ce4ca6b68635d3a83d2dca26cd4
+Message-ID: <5e6091dc.vyQcPmy8q5Z33yBy%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
-In-Reply-To: <b243be54-7b5e-c6e9-fb68-46369d7d7aa4@suse.cz>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
+Content-Type: text/plain; charset=us-ascii
 Content-Transfer-Encoding: 7bit
 Sender: linux-m68k-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/geert/linux-m68k.git  master
+branch HEAD: e64dab7d50487ce4ca6b68635d3a83d2dca26cd4  Merge tag 'v5.6-rc4'
 
+elapsed time: 4087m
 
-On 03/03/2020 10:55 PM, Vlastimil Babka wrote:
-> On 3/2/20 7:47 AM, Anshuman Khandual wrote:
->> There are many platforms with exact same value for VM_DATA_DEFAULT_FLAGS
->> This creates a default value for VM_DATA_DEFAULT_FLAGS in line with the
->> existing VM_STACK_DEFAULT_FLAGS. While here, also define some more macros
->> with standard VMA access flag combinations that are used frequently across
->> many platforms. Apart from simplification, this reduces code duplication
->> as well.
->>
->> Cc: Richard Henderson <rth@twiddle.net>
->> Cc: Vineet Gupta <vgupta@synopsys.com>
->> Cc: Russell King <linux@armlinux.org.uk>
->> Cc: Catalin Marinas <catalin.marinas@arm.com>
->> Cc: Mark Salter <msalter@redhat.com>
->> Cc: Guo Ren <guoren@kernel.org>
->> Cc: Yoshinori Sato <ysato@users.sourceforge.jp>
->> Cc: Brian Cain <bcain@codeaurora.org>
->> Cc: Tony Luck <tony.luck@intel.com>
->> Cc: Geert Uytterhoeven <geert@linux-m68k.org>
->> Cc: Michal Simek <monstr@monstr.eu>
->> Cc: Ralf Baechle <ralf@linux-mips.org>
->> Cc: Paul Burton <paulburton@kernel.org>
->> Cc: Nick Hu <nickhu@andestech.com>
->> Cc: Ley Foon Tan <ley.foon.tan@intel.com>
->> Cc: Jonas Bonn <jonas@southpole.se>
->> Cc: "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>
->> Cc: Michael Ellerman <mpe@ellerman.id.au>
->> Cc: Paul Walmsley <paul.walmsley@sifive.com>
->> Cc: Heiko Carstens <heiko.carstens@de.ibm.com>
->> Cc: Rich Felker <dalias@libc.org>
->> Cc: "David S. Miller" <davem@davemloft.net>
->> Cc: Guan Xuetao <gxt@pku.edu.cn>
->> Cc: Thomas Gleixner <tglx@linutronix.de>
->> Cc: Jeff Dike <jdike@addtoit.com>
->> Cc: Chris Zankel <chris@zankel.net>
->> Cc: Andrew Morton <akpm@linux-foundation.org>
->> Cc: linux-alpha@vger.kernel.org
->> Cc: linux-kernel@vger.kernel.org
->> Cc: linux-snps-arc@lists.infradead.org
->> Cc: linux-arm-kernel@lists.infradead.org
->> Cc: linux-c6x-dev@linux-c6x.org
->> Cc: uclinux-h8-devel@lists.sourceforge.jp
->> Cc: linux-hexagon@vger.kernel.org
->> Cc: linux-ia64@vger.kernel.org
->> Cc: linux-m68k@lists.linux-m68k.org
->> Cc: linux-mips@vger.kernel.org
->> Cc: nios2-dev@lists.rocketboards.org
->> Cc: openrisc@lists.librecores.org
->> Cc: linux-parisc@vger.kernel.org
->> Cc: linuxppc-dev@lists.ozlabs.org
->> Cc: linux-riscv@lists.infradead.org
->> Cc: linux-s390@vger.kernel.org
->> Cc: linux-sh@vger.kernel.org
->> Cc: sparclinux@vger.kernel.org
->> Cc: linux-um@lists.infradead.org
->> Cc: linux-xtensa@linux-xtensa.org
->> Cc: linux-mm@kvack.org
->> Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com
-> Reviewed-by: Vlastimil Babka <vbabka@suse.cz>
-> 
-> Nit:
-> 
->> diff --git a/include/linux/mm.h b/include/linux/mm.h
->> index b0e53ef13ff1..7a764ae6ab68 100644
->> --- a/include/linux/mm.h
->> +++ b/include/linux/mm.h
->> @@ -342,6 +342,21 @@ extern unsigned int kobjsize(const void *objp);
->>  /* Bits set in the VMA until the stack is in its final location */
->>  #define VM_STACK_INCOMPLETE_SETUP	(VM_RAND_READ | VM_SEQ_READ)
->>  
->> +#define TASK_EXEC ((current->personality & READ_IMPLIES_EXEC) ? VM_EXEC : 0)
->> +
->> +/* Common data flag combinations */
->> +#define VM_DATA_FLAGS_TSK_EXEC	(VM_READ | VM_WRITE | TASK_EXEC | \
->> +				 VM_MAYREAD | VM_MAYWRITE | VM_MAYEXEC)
->> +#define VM_DATA_FLAGS_NON_EXEC	(VM_READ | VM_WRITE | VM_MAYREAD | \
->> +				 VM_MAYWRITE | VM_MAYEXEC)
->> +#define VM_DATA_FLAGS_EXEC	(VM_READ | VM_WRITE | VM_EXEC | \
->> +				 VM_MAYREAD | VM_MAYWRITE | VM_MAYEXEC)
->> +
->> +#ifndef VM_DATA_DEFAULT_FLAGS		/* arch can override this */
->> +#define VM_DATA_DEFAULT_FLAGS	(VM_READ | VM_WRITE | VM_EXEC | \
->> +				 VM_MAYREAD | VM_MAYWRITE | VM_MAYEXEC)
-> 
-> Should you use VM_DATA_FLAGS_EXEC here? Yeah one more macro to expand, but it's
-> right above this.
+configs tested: 173
+configs skipped: 0
 
-Sure, can do that.
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
-> 
->> +#endif
->> +
->>  #ifndef VM_STACK_DEFAULT_FLAGS		/* arch can override this */
->>  #define VM_STACK_DEFAULT_FLAGS VM_DATA_DEFAULT_FLAGS
->>  #endif
->>
-> 
-> 
-> 
+arm64                            allyesconfig
+arm                              allyesconfig
+arm64                            allmodconfig
+arm                              allmodconfig
+arm64                             allnoconfig
+arm                               allnoconfig
+arm                         at91_dt_defconfig
+arm                           efm32_defconfig
+arm                          exynos_defconfig
+arm                        multi_v5_defconfig
+arm                        multi_v7_defconfig
+arm                        shmobile_defconfig
+arm                           sunxi_defconfig
+arm64                               defconfig
+sparc                            allyesconfig
+s390                             alldefconfig
+s390                          debug_defconfig
+parisc                            allnoconfig
+sparc64                          allyesconfig
+parisc                generic-32bit_defconfig
+s390                             allyesconfig
+sparc64                             defconfig
+um                             i386_defconfig
+i386                             allyesconfig
+riscv                            allmodconfig
+openrisc                    or1ksim_defconfig
+xtensa                          iss_defconfig
+i386                              allnoconfig
+i386                             alldefconfig
+i386                                defconfig
+ia64                             alldefconfig
+ia64                             allmodconfig
+ia64                              allnoconfig
+ia64                             allyesconfig
+ia64                                defconfig
+c6x                              allyesconfig
+openrisc                 simple_smp_defconfig
+nios2                         3c120_defconfig
+nios2                         10m50_defconfig
+c6x                        evmc6678_defconfig
+xtensa                       common_defconfig
+nds32                               defconfig
+nds32                             allnoconfig
+csky                                defconfig
+alpha                               defconfig
+h8300                     edosk2674_defconfig
+h8300                    h8300h-sim_defconfig
+h8300                       h8s-sim_defconfig
+m68k                           sun3_defconfig
+m68k                             allmodconfig
+m68k                       m5475evb_defconfig
+m68k                          multi_defconfig
+arc                              allyesconfig
+arc                                 defconfig
+microblaze                      mmu_defconfig
+microblaze                    nommu_defconfig
+powerpc                           allnoconfig
+powerpc                             defconfig
+powerpc                       ppc64_defconfig
+powerpc                          rhel-kconfig
+mips                           32r2_defconfig
+mips                         64r6el_defconfig
+mips                             allmodconfig
+mips                              allnoconfig
+mips                             allyesconfig
+mips                      fuloong2e_defconfig
+mips                      malta_kvm_defconfig
+parisc                           allyesconfig
+parisc                generic-64bit_defconfig
+x86_64               randconfig-a001-20200302
+x86_64               randconfig-a003-20200302
+i386                 randconfig-a002-20200302
+i386                 randconfig-a003-20200302
+alpha                randconfig-a001-20200302
+m68k                 randconfig-a001-20200302
+mips                 randconfig-a001-20200302
+nds32                randconfig-a001-20200302
+parisc               randconfig-a001-20200302
+riscv                randconfig-a001-20200302
+c6x                  randconfig-a001-20200302
+h8300                randconfig-a001-20200302
+microblaze           randconfig-a001-20200302
+nios2                randconfig-a001-20200302
+sparc64              randconfig-a001-20200302
+csky                 randconfig-a001-20200302
+s390                 randconfig-a001-20200302
+sh                   randconfig-a001-20200302
+openrisc             randconfig-a001-20200302
+xtensa               randconfig-a001-20200302
+x86_64               randconfig-b001-20200302
+x86_64               randconfig-b002-20200302
+x86_64               randconfig-b003-20200302
+i386                 randconfig-b001-20200302
+i386                 randconfig-b002-20200302
+i386                 randconfig-b003-20200302
+x86_64               randconfig-c001-20200302
+x86_64               randconfig-c002-20200302
+x86_64               randconfig-c003-20200302
+i386                 randconfig-c001-20200302
+i386                 randconfig-c002-20200302
+i386                 randconfig-c003-20200302
+x86_64               randconfig-d001-20200302
+x86_64               randconfig-d002-20200302
+x86_64               randconfig-d003-20200302
+i386                 randconfig-d001-20200302
+i386                 randconfig-d002-20200302
+i386                 randconfig-d003-20200302
+x86_64               randconfig-e001-20200302
+x86_64               randconfig-e002-20200302
+x86_64               randconfig-e003-20200302
+i386                 randconfig-e003-20200302
+i386                 randconfig-e001-20200302
+i386                 randconfig-e002-20200302
+x86_64               randconfig-f001-20200302
+x86_64               randconfig-f002-20200302
+x86_64               randconfig-f003-20200302
+i386                 randconfig-f001-20200302
+i386                 randconfig-f002-20200302
+i386                 randconfig-f003-20200302
+i386                 randconfig-g003-20200302
+i386                 randconfig-g001-20200302
+x86_64               randconfig-g003-20200302
+x86_64               randconfig-g001-20200302
+x86_64               randconfig-g002-20200302
+i386                 randconfig-g002-20200302
+x86_64               randconfig-g001-20200301
+x86_64               randconfig-g002-20200301
+x86_64               randconfig-g003-20200301
+i386                 randconfig-g001-20200301
+i386                 randconfig-g002-20200301
+i386                 randconfig-g003-20200301
+i386                 randconfig-h001-20200302
+x86_64               randconfig-h002-20200302
+x86_64               randconfig-h001-20200302
+x86_64               randconfig-h003-20200302
+i386                 randconfig-h003-20200302
+i386                 randconfig-h002-20200302
+arc                  randconfig-a001-20200301
+sparc                randconfig-a001-20200301
+ia64                 randconfig-a001-20200301
+arm                  randconfig-a001-20200301
+arm64                randconfig-a001-20200301
+arc                  randconfig-a001-20200302
+arm                  randconfig-a001-20200302
+arm64                randconfig-a001-20200302
+ia64                 randconfig-a001-20200302
+powerpc              randconfig-a001-20200302
+sparc                randconfig-a001-20200302
+riscv                            allyesconfig
+riscv                    nommu_virt_defconfig
+riscv                             allnoconfig
+riscv                               defconfig
+riscv                          rv32_defconfig
+s390                             allmodconfig
+s390                              allnoconfig
+s390                                defconfig
+s390                       zfcpdump_defconfig
+sh                                allnoconfig
+sh                  sh7785lcr_32bit_defconfig
+sh                            titan_defconfig
+sh                               allmodconfig
+sh                          rsk7269_defconfig
+sparc                               defconfig
+sparc64                           allnoconfig
+sparc64                          allmodconfig
+um                           x86_64_defconfig
+um                                  defconfig
+x86_64                              fedora-25
+x86_64                                  kexec
+x86_64                                    lkp
+x86_64                                   rhel
+x86_64                         rhel-7.2-clear
+x86_64                               rhel-7.6
+
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
