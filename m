@@ -2,235 +2,146 @@ Return-Path: <SRS0=RMM9=4W=vger.kernel.org=linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.8 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
-	MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-	autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-3.8 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
+	autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 1C2BEC3F2D1
-	for <linux-m68k@archiver.kernel.org>; Thu,  5 Mar 2020 05:46:07 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id F0746C3F2D7
+	for <linux-m68k@archiver.kernel.org>; Thu,  5 Mar 2020 06:50:39 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id E70072146E
-	for <linux-m68k@archiver.kernel.org>; Thu,  5 Mar 2020 05:46:06 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id D39562146E
+	for <linux-m68k@archiver.kernel.org>; Thu,  5 Mar 2020 06:50:39 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726009AbgCEFqG (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Thu, 5 Mar 2020 00:46:06 -0500
-Received: from mga14.intel.com ([192.55.52.115]:30997 "EHLO mga14.intel.com"
+        id S1726222AbgCEGuh (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Thu, 5 Mar 2020 01:50:37 -0500
+Received: from foss.arm.com ([217.140.110.172]:43778 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725844AbgCEFqG (ORCPT <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Thu, 5 Mar 2020 00:46:06 -0500
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 04 Mar 2020 21:46:05 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.70,516,1574150400"; 
-   d="scan'208";a="229578302"
-Received: from lkp-server01.sh.intel.com (HELO lkp-server01) ([10.239.97.150])
-  by orsmga007.jf.intel.com with ESMTP; 04 Mar 2020 21:46:03 -0800
-Received: from kbuild by lkp-server01 with local (Exim 4.89)
-        (envelope-from <lkp@intel.com>)
-        id 1j9jKc-000HZ2-UQ; Thu, 05 Mar 2020 13:46:02 +0800
-Date:   Thu, 05 Mar 2020 13:45:00 +0800
-From:   kbuild test robot <lkp@intel.com>
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     linux-m68k@lists.linux-m68k.org
-Subject: [m68k:master] BUILD SUCCESS
- e64dab7d50487ce4ca6b68635d3a83d2dca26cd4
-Message-ID: <5e6091dc.vyQcPmy8q5Z33yBy%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+        id S1725839AbgCEGuh (ORCPT <rfc822;linux-m68k@lists.linux-m68k.org>);
+        Thu, 5 Mar 2020 01:50:37 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 0A9561FB;
+        Wed,  4 Mar 2020 22:50:36 -0800 (PST)
+Received: from p8cg001049571a15.arm.com (unknown [10.163.1.88])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id E134A3F534;
+        Wed,  4 Mar 2020 22:54:23 -0800 (PST)
+From:   Anshuman Khandual <anshuman.khandual@arm.com>
+To:     linux-mm@kvack.org
+Cc:     hughd@google.com, vbabka@suse.cz,
+        Anshuman Khandual <anshuman.khandual@arm.com>,
+        linux-alpha@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-snps-arc@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org, linux-c6x-dev@linux-c6x.org,
+        uclinux-h8-devel@lists.sourceforge.jp,
+        linux-hexagon@vger.kernel.org, linux-ia64@vger.kernel.org,
+        linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org,
+        nios2-dev@lists.rocketboards.org, openrisc@lists.librecores.org,
+        linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org,
+        linux-sh@vger.kernel.org, sparclinux@vger.kernel.org,
+        linux-um@lists.infradead.org, linux-xtensa@linux-xtensa.org
+Subject: [PATCH 0/2]  mm/vma: some new flags
+Date:   Thu,  5 Mar 2020 12:20:12 +0530
+Message-Id: <1583391014-8170-1-git-send-email-anshuman.khandual@arm.com>
+X-Mailer: git-send-email 2.7.4
 Sender: linux-m68k-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/geert/linux-m68k.git  master
-branch HEAD: e64dab7d50487ce4ca6b68635d3a83d2dca26cd4  Merge tag 'v5.6-rc4'
+The motivation here is to consolidate VMA flag combinations commonly used
+across platforms and reduce code duplication while making it uncluttered
+in general.
 
-elapsed time: 4087m
+This first introduces a default VM_DATA_DEFAULT_FLAGS which platforms can
+easily fall back on without requiring to define any similar data flag
+combinations as they currently do. This also adds some more common data
+flag combinations which are generally used when the platforms decide to
+override the default.
 
-configs tested: 173
-configs skipped: 0
+The second patch consolidates VM_READ, VM_WRITE, VM_EXEC as VM_ACCESS_FLAGS
+extending the existing VMA accessibility concept via vma_is_accessibility().
+VM_ACCESS_FLAGS replaces many other instances which used check all three
+VMA access flags simultaneously.
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+This series is based on v5.6-rc4 after applying these.
 
-arm64                            allyesconfig
-arm                              allyesconfig
-arm64                            allmodconfig
-arm                              allmodconfig
-arm64                             allnoconfig
-arm                               allnoconfig
-arm                         at91_dt_defconfig
-arm                           efm32_defconfig
-arm                          exynos_defconfig
-arm                        multi_v5_defconfig
-arm                        multi_v7_defconfig
-arm                        shmobile_defconfig
-arm                           sunxi_defconfig
-arm64                               defconfig
-sparc                            allyesconfig
-s390                             alldefconfig
-s390                          debug_defconfig
-parisc                            allnoconfig
-sparc64                          allyesconfig
-parisc                generic-32bit_defconfig
-s390                             allyesconfig
-sparc64                             defconfig
-um                             i386_defconfig
-i386                             allyesconfig
-riscv                            allmodconfig
-openrisc                    or1ksim_defconfig
-xtensa                          iss_defconfig
-i386                              allnoconfig
-i386                             alldefconfig
-i386                                defconfig
-ia64                             alldefconfig
-ia64                             allmodconfig
-ia64                              allnoconfig
-ia64                             allyesconfig
-ia64                                defconfig
-c6x                              allyesconfig
-openrisc                 simple_smp_defconfig
-nios2                         3c120_defconfig
-nios2                         10m50_defconfig
-c6x                        evmc6678_defconfig
-xtensa                       common_defconfig
-nds32                               defconfig
-nds32                             allnoconfig
-csky                                defconfig
-alpha                               defconfig
-h8300                     edosk2674_defconfig
-h8300                    h8300h-sim_defconfig
-h8300                       h8s-sim_defconfig
-m68k                           sun3_defconfig
-m68k                             allmodconfig
-m68k                       m5475evb_defconfig
-m68k                          multi_defconfig
-arc                              allyesconfig
-arc                                 defconfig
-microblaze                      mmu_defconfig
-microblaze                    nommu_defconfig
-powerpc                           allnoconfig
-powerpc                             defconfig
-powerpc                       ppc64_defconfig
-powerpc                          rhel-kconfig
-mips                           32r2_defconfig
-mips                         64r6el_defconfig
-mips                             allmodconfig
-mips                              allnoconfig
-mips                             allyesconfig
-mips                      fuloong2e_defconfig
-mips                      malta_kvm_defconfig
-parisc                           allyesconfig
-parisc                generic-64bit_defconfig
-x86_64               randconfig-a001-20200302
-x86_64               randconfig-a003-20200302
-i386                 randconfig-a002-20200302
-i386                 randconfig-a003-20200302
-alpha                randconfig-a001-20200302
-m68k                 randconfig-a001-20200302
-mips                 randconfig-a001-20200302
-nds32                randconfig-a001-20200302
-parisc               randconfig-a001-20200302
-riscv                randconfig-a001-20200302
-c6x                  randconfig-a001-20200302
-h8300                randconfig-a001-20200302
-microblaze           randconfig-a001-20200302
-nios2                randconfig-a001-20200302
-sparc64              randconfig-a001-20200302
-csky                 randconfig-a001-20200302
-s390                 randconfig-a001-20200302
-sh                   randconfig-a001-20200302
-openrisc             randconfig-a001-20200302
-xtensa               randconfig-a001-20200302
-x86_64               randconfig-b001-20200302
-x86_64               randconfig-b002-20200302
-x86_64               randconfig-b003-20200302
-i386                 randconfig-b001-20200302
-i386                 randconfig-b002-20200302
-i386                 randconfig-b003-20200302
-x86_64               randconfig-c001-20200302
-x86_64               randconfig-c002-20200302
-x86_64               randconfig-c003-20200302
-i386                 randconfig-c001-20200302
-i386                 randconfig-c002-20200302
-i386                 randconfig-c003-20200302
-x86_64               randconfig-d001-20200302
-x86_64               randconfig-d002-20200302
-x86_64               randconfig-d003-20200302
-i386                 randconfig-d001-20200302
-i386                 randconfig-d002-20200302
-i386                 randconfig-d003-20200302
-x86_64               randconfig-e001-20200302
-x86_64               randconfig-e002-20200302
-x86_64               randconfig-e003-20200302
-i386                 randconfig-e003-20200302
-i386                 randconfig-e001-20200302
-i386                 randconfig-e002-20200302
-x86_64               randconfig-f001-20200302
-x86_64               randconfig-f002-20200302
-x86_64               randconfig-f003-20200302
-i386                 randconfig-f001-20200302
-i386                 randconfig-f002-20200302
-i386                 randconfig-f003-20200302
-i386                 randconfig-g003-20200302
-i386                 randconfig-g001-20200302
-x86_64               randconfig-g003-20200302
-x86_64               randconfig-g001-20200302
-x86_64               randconfig-g002-20200302
-i386                 randconfig-g002-20200302
-x86_64               randconfig-g001-20200301
-x86_64               randconfig-g002-20200301
-x86_64               randconfig-g003-20200301
-i386                 randconfig-g001-20200301
-i386                 randconfig-g002-20200301
-i386                 randconfig-g003-20200301
-i386                 randconfig-h001-20200302
-x86_64               randconfig-h002-20200302
-x86_64               randconfig-h001-20200302
-x86_64               randconfig-h003-20200302
-i386                 randconfig-h003-20200302
-i386                 randconfig-h002-20200302
-arc                  randconfig-a001-20200301
-sparc                randconfig-a001-20200301
-ia64                 randconfig-a001-20200301
-arm                  randconfig-a001-20200301
-arm64                randconfig-a001-20200301
-arc                  randconfig-a001-20200302
-arm                  randconfig-a001-20200302
-arm64                randconfig-a001-20200302
-ia64                 randconfig-a001-20200302
-powerpc              randconfig-a001-20200302
-sparc                randconfig-a001-20200302
-riscv                            allyesconfig
-riscv                    nommu_virt_defconfig
-riscv                             allnoconfig
-riscv                               defconfig
-riscv                          rv32_defconfig
-s390                             allmodconfig
-s390                              allnoconfig
-s390                                defconfig
-s390                       zfcpdump_defconfig
-sh                                allnoconfig
-sh                  sh7785lcr_32bit_defconfig
-sh                            titan_defconfig
-sh                               allmodconfig
-sh                          rsk7269_defconfig
-sparc                               defconfig
-sparc64                           allnoconfig
-sparc64                          allmodconfig
-um                           x86_64_defconfig
-um                                  defconfig
-x86_64                              fedora-25
-x86_64                                  kexec
-x86_64                                    lkp
-x86_64                                   rhel
-x86_64                         rhel-7.2-clear
-x86_64                               rhel-7.6
+1. https://patchwork.kernel.org/cover/11399319/
+2. https://patchwork.kernel.org/patch/11399379/
 
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+Changes in V1:
+
+- Dropped the [PATCH 3/3] which was adding more vma_is_* wrappers
+- Used VM_DATA_FLAGS_EXEC for VM_DATA_DEFAULT_FLAGS instead per Vlastimil
+- Dropped init use cases for VM_ACCESS_FLAGS as suggested by Vlastimil
+
+Changes in RFC: (https://patchwork.kernel.org/project/linux-mm/list/?series=249733)
+
+Cc: linux-alpha@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org
+Cc: linux-snps-arc@lists.infradead.org
+Cc: linux-arm-kernel@lists.infradead.org
+Cc: linux-c6x-dev@linux-c6x.org
+Cc: uclinux-h8-devel@lists.sourceforge.jp
+Cc: linux-hexagon@vger.kernel.org
+Cc: linux-ia64@vger.kernel.org
+Cc: linux-m68k@lists.linux-m68k.org
+Cc: linux-mips@vger.kernel.org
+Cc: nios2-dev@lists.rocketboards.org
+Cc: openrisc@lists.librecores.org
+Cc: linux-parisc@vger.kernel.org
+Cc: linuxppc-dev@lists.ozlabs.org
+Cc: linux-riscv@lists.infradead.org
+Cc: linux-s390@vger.kernel.org
+Cc: linux-sh@vger.kernel.org
+Cc: sparclinux@vger.kernel.org
+Cc: linux-um@lists.infradead.org
+Cc: linux-xtensa@linux-xtensa.org
+Cc: linux-mm@kvack.org
+
+Anshuman Khandual (2):
+  mm/vma: Define a default value for VM_DATA_DEFAULT_FLAGS
+  mm/vma: Introduce VM_ACCESS_FLAGS
+
+ arch/alpha/include/asm/page.h        |  3 ---
+ arch/arc/include/asm/page.h          |  2 +-
+ arch/arm/include/asm/page.h          |  4 +---
+ arch/arm/mm/fault.c                  |  2 +-
+ arch/arm64/include/asm/page.h        |  4 +---
+ arch/arm64/mm/fault.c                |  2 +-
+ arch/c6x/include/asm/page.h          |  5 +----
+ arch/csky/include/asm/page.h         |  3 ---
+ arch/h8300/include/asm/page.h        |  2 --
+ arch/hexagon/include/asm/page.h      |  3 +--
+ arch/ia64/include/asm/page.h         |  5 +----
+ arch/m68k/include/asm/page.h         |  3 ---
+ arch/microblaze/include/asm/page.h   |  2 --
+ arch/mips/include/asm/page.h         |  5 +----
+ arch/nds32/include/asm/page.h        |  3 ---
+ arch/nds32/mm/fault.c                |  2 +-
+ arch/nios2/include/asm/page.h        |  3 +--
+ arch/openrisc/include/asm/page.h     |  5 -----
+ arch/parisc/include/asm/page.h       |  3 ---
+ arch/powerpc/include/asm/page.h      |  9 ++-------
+ arch/powerpc/include/asm/page_64.h   |  7 ++-----
+ arch/powerpc/mm/book3s64/pkeys.c     |  2 +-
+ arch/riscv/include/asm/page.h        |  3 +--
+ arch/s390/include/asm/page.h         |  3 +--
+ arch/s390/mm/fault.c                 |  2 +-
+ arch/sh/include/asm/page.h           |  3 ---
+ arch/sparc/include/asm/page_32.h     |  3 ---
+ arch/sparc/include/asm/page_64.h     |  3 ---
+ arch/unicore32/include/asm/page.h    |  3 ---
+ arch/unicore32/mm/fault.c            |  2 +-
+ arch/x86/include/asm/page_types.h    |  4 +---
+ arch/x86/mm/pkeys.c                  |  2 +-
+ arch/x86/um/asm/vm-flags.h           | 10 ++--------
+ arch/xtensa/include/asm/page.h       |  3 ---
+ drivers/staging/gasket/gasket_core.c |  2 +-
+ include/linux/mm.h                   | 20 +++++++++++++++++++-
+ mm/mmap.c                            |  2 +-
+ mm/mprotect.c                        |  4 ++--
+ 38 files changed, 47 insertions(+), 101 deletions(-)
+
+-- 
+2.20.1
+
