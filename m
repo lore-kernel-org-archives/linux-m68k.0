@@ -2,93 +2,93 @@ Return-Path: <SRS0=oCAD=42=vger.kernel.org=linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.8 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
-	MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS autolearn=ham
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-5.6 required=3.0 tests=DKIM_INVALID,DKIM_SIGNED,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,
+	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 27D11C18E5A
-	for <linux-m68k@archiver.kernel.org>; Mon,  9 Mar 2020 10:15:47 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 1D3BBC10F27
+	for <linux-m68k@archiver.kernel.org>; Mon,  9 Mar 2020 11:46:50 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 0166C2072A
-	for <linux-m68k@archiver.kernel.org>; Mon,  9 Mar 2020 10:15:46 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id E5F7220409
+	for <linux-m68k@archiver.kernel.org>; Mon,  9 Mar 2020 11:46:49 +0000 (UTC)
+Authentication-Results: mail.kernel.org;
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="bgLfa2jP"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726368AbgCIKPq (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Mon, 9 Mar 2020 06:15:46 -0400
-Received: from mail-ot1-f68.google.com ([209.85.210.68]:46405 "EHLO
-        mail-ot1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726217AbgCIKPp (ORCPT
+        id S1726467AbgCILqt (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Mon, 9 Mar 2020 07:46:49 -0400
+Received: from bombadil.infradead.org ([198.137.202.133]:55572 "EHLO
+        bombadil.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726464AbgCILqt (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Mon, 9 Mar 2020 06:15:45 -0400
-Received: by mail-ot1-f68.google.com with SMTP id 111so4631461oth.13
-        for <linux-m68k@lists.linux-m68k.org>; Mon, 09 Mar 2020 03:15:43 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=bmfuuzmTFi4k79NsaDmZHy6xnZN1vJQHvghwYzN+k7w=;
-        b=pEwEBV3EOYzJoPpCMTHKOKlxSQc+oO7m0IUji+ryyfSdpA2Tfmekyvx5mZj2GSSK1k
-         aT0YIMhzCvJYKqeYir7c0DNL37Ujjn0xKmyOLfbNNSJhx90kFzEx/v677zSpbGHVSfAN
-         zj7LS9W4gFtKHFa5BHmbJ5UtuzD0ZUN52MBTdCq73Qf/seyCVrM/U5pxbDMyGw7O/ERZ
-         +nFda0JbB6msCdng4YLBqk42bBs3/1nc6hjzP0WZ4v2Jk4K8FQLBi9uJTt/8vTtbR/rH
-         JAQyKQUu0SqINjKsXNoLif0o5rzAYJEQCc5yUAaOUfmouuCG47p98cQbgNM833dpUQC9
-         6ypw==
-X-Gm-Message-State: ANhLgQ0i4xqGOX5oldvjmztcX6N5VH0ZkB6jtnXsbvGK3l1bcxS88jjA
-        NVe/fw7QdKcGfyHRbux1ajc2InyaNsDtrqVzlqU=
-X-Google-Smtp-Source: ADFU+vv/0Man9LaI0hn/iw6+xcPTW+sOqC1GF04v4Opz3X6BiKISx73z+nqXV7DAZQidRgIZTYsmkCfgsETHH8jL5jE=
-X-Received: by 2002:a9d:b89:: with SMTP id 9mr12549687oth.297.1583748943084;
- Mon, 09 Mar 2020 03:15:43 -0700 (PDT)
-MIME-Version: 1.0
-References: <20200131124531.623136425@infradead.org> <CAMuHMdX-Vj-ewD7Kh+d5FdRs16eebwtM6hykZH62ha0Wq8dukQ@mail.gmail.com>
-In-Reply-To: <CAMuHMdX-Vj-ewD7Kh+d5FdRs16eebwtM6hykZH62ha0Wq8dukQ@mail.gmail.com>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Mon, 9 Mar 2020 11:15:31 +0100
-Message-ID: <CAMuHMdWz7BZ4_mbSRFbb0iDW7wMFcALD5NvHFHKX_nAoE+sHQQ@mail.gmail.com>
-Subject: Re: [PATCH -v2 00/10] Rewrite Motorola MMU page-table layout
-To:     Peter Zijlstra <peterz@infradead.org>,
-        Will Deacon <will@kernel.org>
-Cc:     linux-m68k <linux-m68k@lists.linux-m68k.org>,
+        Mon, 9 Mar 2020 07:46:49 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20170209; h=In-Reply-To:Content-Type:MIME-Version
+        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=Zl0Sz0Q18LtoA4qBTOE/SgoGN85ceLUha/oEOfM3Njc=; b=bgLfa2jPgTpBDYmEXhvrY0xma2
+        t4W53a5sbVulwUw6a1rLRy4lvucVv7LUVePBkQ6gycBw/MemdfJuTLI30OV7WogTex0JgVj29dOn1
+        jFyFjSAF/mUuZgN7LV7fYIZrDYBxs259gj9oSqOzLZyWNvOydrQH76HDlCVNOio7iKWKbBHv4leQe
+        uAbzU8BuHMv6m/1wHxWOJztLYtNJdXZ68vBopPTLAjFd3GBHHn5fYyVB/tN3NxAiC0htooS0lEJEf
+        ELxmEZXIkJTD3oyxmU9jWeaaMq0iZxvc0CWbcvopXP2ASNK+go4nwFycwQHUlGHxvaQGjLckGblTt
+        MXlzmQMQ==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by bombadil.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1jBGrv-00039P-0v; Mon, 09 Mar 2020 11:46:48 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 1F37F3013A4;
+        Mon,  9 Mar 2020 12:46:45 +0100 (CET)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 1766B20286A0C; Mon,  9 Mar 2020 12:46:45 +0100 (CET)
+Date:   Mon, 9 Mar 2020 12:46:45 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Geert Uytterhoeven <geert@linux-m68k.org>
+Cc:     Will Deacon <will@kernel.org>,
+        linux-m68k <linux-m68k@lists.linux-m68k.org>,
         Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
         Michael Schmitz <schmitzmic@gmail.com>,
         Greg Ungerer <gerg@linux-m68k.org>
-Content-Type: text/plain; charset="UTF-8"
+Subject: Re: [PATCH -v2 00/10] Rewrite Motorola MMU page-table layout
+Message-ID: <20200309114645.GH12561@hirez.programming.kicks-ass.net>
+References: <20200131124531.623136425@infradead.org>
+ <CAMuHMdX-Vj-ewD7Kh+d5FdRs16eebwtM6hykZH62ha0Wq8dukQ@mail.gmail.com>
+ <CAMuHMdWz7BZ4_mbSRFbb0iDW7wMFcALD5NvHFHKX_nAoE+sHQQ@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAMuHMdWz7BZ4_mbSRFbb0iDW7wMFcALD5NvHFHKX_nAoE+sHQQ@mail.gmail.com>
 Sender: linux-m68k-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-Hi Peter, Will
-
-On Mon, Feb 10, 2020 at 12:16 PM Geert Uytterhoeven
-<geert@linux-m68k.org> wrote:
-> On Fri, Jan 31, 2020 at 1:56 PM Peter Zijlstra <peterz@infradead.org> wrote:
-> > In order to faciliate Will's READ_ONCE() patches:
+On Mon, Mar 09, 2020 at 11:15:31AM +0100, Geert Uytterhoeven wrote:
+> Hi Peter, Will
+> 
+> On Mon, Feb 10, 2020 at 12:16 PM Geert Uytterhoeven
+> <geert@linux-m68k.org> wrote:
+> > On Fri, Jan 31, 2020 at 1:56 PM Peter Zijlstra <peterz@infradead.org> wrote:
+> > > In order to faciliate Will's READ_ONCE() patches:
+> > >
+> > >   https://lkml.kernel.org/r/20200123153341.19947-1-will@kernel.org
+> > >
+> > > we need to fix m68k/motorola to not have a giant pmd_t. These patches do so and
+> > > are tested using ARAnyM/68040.
+> > >
+> > > Michael tested the previous version on his Atari Falcon/68030.
+> > >
+> > > Build tested for sun3/coldfire.
+> > >
+> > > Please consider!
 > >
-> >   https://lkml.kernel.org/r/20200123153341.19947-1-will@kernel.org
+> > Thanks, applied and queued for v5.7, using an immutable branch named
+> > pgtable-layout-rewrite.
 > >
-> > we need to fix m68k/motorola to not have a giant pmd_t. These patches do so and
-> > are tested using ARAnyM/68040.
-> >
-> > Michael tested the previous version on his Atari Falcon/68030.
-> >
-> > Build tested for sun3/coldfire.
-> >
-> > Please consider!
->
-> Thanks, applied and queued for v5.7, using an immutable branch named
-> pgtable-layout-rewrite.
->
-> https://git.kernel.org/pub/scm/linux/kernel/git/geert/linux-m68k.git/log/?h=pgtable-layout-rewrite
+> > https://git.kernel.org/pub/scm/linux/kernel/git/geert/linux-m68k.git/log/?h=pgtable-layout-rewrite
+> 
+> Any plans to use this? Looks like it's still part of linux-next through the m68k
+> tree only.
 
-Any plans to use this? Looks like it's still part of linux-next through the m68k
-tree only.
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
--- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+Argh, yes. So we ran into sparc32 also need fixups, and both me and Will
+seem to have stalled on fixing that. I'll try and get back to that.
