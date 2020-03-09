@@ -1,97 +1,86 @@
-Return-Path: <SRS0=b3SA=4Z=vger.kernel.org=linux-m68k-owner@kernel.org>
+Return-Path: <SRS0=oCAD=42=vger.kernel.org=linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-0.8 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-5.8 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
+	MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C1FEFC10DCE
-	for <linux-m68k@archiver.kernel.org>; Sun,  8 Mar 2020 10:36:31 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 27D11C18E5A
+	for <linux-m68k@archiver.kernel.org>; Mon,  9 Mar 2020 10:15:47 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 988962072A
-	for <linux-m68k@archiver.kernel.org>; Sun,  8 Mar 2020 10:36:31 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 0166C2072A
+	for <linux-m68k@archiver.kernel.org>; Mon,  9 Mar 2020 10:15:46 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726260AbgCHKgb (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Sun, 8 Mar 2020 06:36:31 -0400
-Received: from mail-oi1-f194.google.com ([209.85.167.194]:40726 "EHLO
-        mail-oi1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726259AbgCHKga (ORCPT
+        id S1726368AbgCIKPq (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Mon, 9 Mar 2020 06:15:46 -0400
+Received: from mail-ot1-f68.google.com ([209.85.210.68]:46405 "EHLO
+        mail-ot1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726217AbgCIKPp (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Sun, 8 Mar 2020 06:36:30 -0400
-Received: by mail-oi1-f194.google.com with SMTP id y71so1902937oia.7
-        for <linux-m68k@lists.linux-m68k.org>; Sun, 08 Mar 2020 03:36:29 -0700 (PDT)
+        Mon, 9 Mar 2020 06:15:45 -0400
+Received: by mail-ot1-f68.google.com with SMTP id 111so4631461oth.13
+        for <linux-m68k@lists.linux-m68k.org>; Mon, 09 Mar 2020 03:15:43 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=ALocsRugLESrfqaeY7o9fk9Y9WY+G+T4XXSyz17qGNc=;
-        b=KhDo809PbtTrbVheJiPGmEP2K1CrfbeGMA18nJOK9Vk/YMLqvvEO2NzgOrIl1UTEHt
-         aBsZRx3iEvOBpoCdbXYH0zeXIXbSCEvrXkGzlPJLg74i41EAoLOvahvZMFGRauCPX6gI
-         7egFwUdJBsEQAxG6DMSa5ThVf7SOIymolmuwT5rwEIMPqMaMu1KZjO/ygQoGT8uEkQH/
-         yKY1ql6qKrbR82SeiPu/1L+bAKFSAa0sD6xa8PIFcRx2NNqUSthIWUhxhiFvcqL56d6R
-         VjZtQoQkhF0tt1KU5Thw+veea34qlsGyCeYNm/HPaUifiFkqEM304Qc4o8yyqeu9okxZ
-         LgaQ==
-X-Gm-Message-State: ANhLgQ00fpFa3XlQR6Ff4TPolHV6YiB2GF+RE9HbU1+UCplhA/8NFnQH
-        mj66L/ohPzO24hPCrp5vRkYETYnQ0Dk7fNF7J/M=
-X-Google-Smtp-Source: ADFU+vuxA+3UlakFkepcHa8KeTe6SwkUdLC8QlU1h4aLR+ZxzZEGyJqNvkWXED0LRNgJbQXeaPb6jlludWZpK7nb+ss=
-X-Received: by 2002:aca:cdd1:: with SMTP id d200mr7822346oig.153.1583663788706;
- Sun, 08 Mar 2020 03:36:28 -0700 (PDT)
+        bh=bmfuuzmTFi4k79NsaDmZHy6xnZN1vJQHvghwYzN+k7w=;
+        b=pEwEBV3EOYzJoPpCMTHKOKlxSQc+oO7m0IUji+ryyfSdpA2Tfmekyvx5mZj2GSSK1k
+         aT0YIMhzCvJYKqeYir7c0DNL37Ujjn0xKmyOLfbNNSJhx90kFzEx/v677zSpbGHVSfAN
+         zj7LS9W4gFtKHFa5BHmbJ5UtuzD0ZUN52MBTdCq73Qf/seyCVrM/U5pxbDMyGw7O/ERZ
+         +nFda0JbB6msCdng4YLBqk42bBs3/1nc6hjzP0WZ4v2Jk4K8FQLBi9uJTt/8vTtbR/rH
+         JAQyKQUu0SqINjKsXNoLif0o5rzAYJEQCc5yUAaOUfmouuCG47p98cQbgNM833dpUQC9
+         6ypw==
+X-Gm-Message-State: ANhLgQ0i4xqGOX5oldvjmztcX6N5VH0ZkB6jtnXsbvGK3l1bcxS88jjA
+        NVe/fw7QdKcGfyHRbux1ajc2InyaNsDtrqVzlqU=
+X-Google-Smtp-Source: ADFU+vv/0Man9LaI0hn/iw6+xcPTW+sOqC1GF04v4Opz3X6BiKISx73z+nqXV7DAZQidRgIZTYsmkCfgsETHH8jL5jE=
+X-Received: by 2002:a9d:b89:: with SMTP id 9mr12549687oth.297.1583748943084;
+ Mon, 09 Mar 2020 03:15:43 -0700 (PDT)
 MIME-Version: 1.0
-References: <2bde25bc-ce82-8442-92ae-629aaac91935@physik.fu-berlin.de>
-In-Reply-To: <2bde25bc-ce82-8442-92ae-629aaac91935@physik.fu-berlin.de>
+References: <20200131124531.623136425@infradead.org> <CAMuHMdX-Vj-ewD7Kh+d5FdRs16eebwtM6hykZH62ha0Wq8dukQ@mail.gmail.com>
+In-Reply-To: <CAMuHMdX-Vj-ewD7Kh+d5FdRs16eebwtM6hykZH62ha0Wq8dukQ@mail.gmail.com>
 From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Sun, 8 Mar 2020 11:36:16 +0100
-Message-ID: <CAMuHMdVN_v4bp7w2LhqXcnEE05BiswfimK=pVdep5=j31o-jbA@mail.gmail.com>
-Subject: Re: BigRAMPlus seems to be detected now
-To:     John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
+Date:   Mon, 9 Mar 2020 11:15:31 +0100
+Message-ID: <CAMuHMdWz7BZ4_mbSRFbb0iDW7wMFcALD5NvHFHKX_nAoE+sHQQ@mail.gmail.com>
+Subject: Re: [PATCH -v2 00/10] Rewrite Motorola MMU page-table layout
+To:     Peter Zijlstra <peterz@infradead.org>,
+        Will Deacon <will@kernel.org>
 Cc:     linux-m68k <linux-m68k@lists.linux-m68k.org>,
-        Debian m68k <debian-68k@lists.debian.org>
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Michael Schmitz <schmitzmic@gmail.com>,
+        Greg Ungerer <gerg@linux-m68k.org>
 Content-Type: text/plain; charset="UTF-8"
 Sender: linux-m68k-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-Hi Adrian,
+Hi Peter, Will
 
-On Sat, Mar 7, 2020 at 10:01 PM John Paul Adrian Glaubitz
-<glaubitz@physik.fu-berlin.de> wrote:
-> There is one user in the #debian-68k IRC channel who has tried installing Debian
-> on his A4000 with a A3660 and a BigRAMPlus installed and while the user is currently
-> running into problems with the kernel being stuck, to my surprise, the kernel seems
-> to be able to use and detect the extra memory from the BigRAMPlus (see below).
-
-Good!
-
-> The kernel is reporting an address conflict though:
+On Mon, Feb 10, 2020 at 12:16 PM Geert Uytterhoeven
+<geert@linux-m68k.org> wrote:
+> On Fri, Jan 31, 2020 at 1:56 PM Peter Zijlstra <peterz@infradead.org> wrote:
+> > In order to faciliate Will's READ_ONCE() patches:
+> >
+> >   https://lkml.kernel.org/r/20200123153341.19947-1-will@kernel.org
+> >
+> > we need to fix m68k/motorola to not have a giant pmd_t. These patches do so and
+> > are tested using ARAnyM/68040.
+> >
+> > Michael tested the previous version on his Atari Falcon/68030.
+> >
+> > Build tested for sun3/coldfire.
+> >
+> > Please consider!
 >
-> [    6.140000] Zorro: Probing AutoConfig expansion devices: 3 devices
-> [    6.150000]  zorro: Address space collision on device Zorro device 12128600 (Individual Computers) [??? 0x50000000-]
+> Thanks, applied and queued for v5.7, using an immutable branch named
+> pgtable-layout-rewrite.
+>
+> https://git.kernel.org/pub/scm/linux/kernel/git/geert/linux-m68k.git/log/?h=pgtable-layout-rewrite
 
-That is expected: the address space reported by the BRP Zorro device
-is already in use, as it is part of system RAM. The message is harmless
-in this case.
-
-We could skip registering the resource if z->rom.er_Type & ERTF_MEMLIST,
-which is a hint for AmigaOS to link the board's RAM into the free memory
-list, but that may cause issues with Zorro II RAM excluded in a memfile.
-So perhaps it's best to just skip printing that message if ERTF_MEMLIST
-is set?
-
-> The question whether the lock up is caused by the BRP. But since this Amiga has only
-> 16 MB FAST RAM, the user hasn't tested to boot without the BRP yet.
-
-Just booting the kernel with the BRP disabled (through a memfile, or
-through mem=16M), would give very valuable information.
-As well as trying to boot it with the BRP as primary memory (BRP first
-in memfile) or sole memory (motherboard RAM disabled in memfile).
-
-> I will dig out my BRP tomorrow and see if it's actually detected in my A4000
-> as well with current kernel versions.
-
-Looking forward to these results!
-Thanks!
+Any plans to use this? Looks like it's still part of linux-next through the m68k
+tree only.
 
 Gr{oetje,eeting}s,
 
