@@ -1,126 +1,166 @@
-Return-Path: <SRS0=y+yz=45=vger.kernel.org=linux-m68k-owner@kernel.org>
+Return-Path: <SRS0=AzVV=5B=vger.kernel.org=linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.3 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-9.9 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 0037EC10DCE
-	for <linux-m68k@archiver.kernel.org>; Thu, 12 Mar 2020 14:09:25 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 80912C18E5B
+	for <linux-m68k@archiver.kernel.org>; Mon, 16 Mar 2020 14:41:01 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id C83E920663
-	for <linux-m68k@archiver.kernel.org>; Thu, 12 Mar 2020 14:09:25 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 55D032051A
+	for <linux-m68k@archiver.kernel.org>; Mon, 16 Mar 2020 14:41:01 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel-dk.20150623.gappssmtp.com header.i=@kernel-dk.20150623.gappssmtp.com header.b="OVlESagn"
+	dkim=pass (2048-bit key) header.d=arista.com header.i=@arista.com header.b="KQUXQLXO"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727401AbgCLOJZ (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Thu, 12 Mar 2020 10:09:25 -0400
-Received: from mail-io1-f68.google.com ([209.85.166.68]:36990 "EHLO
-        mail-io1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727392AbgCLOJZ (ORCPT
+        id S1731755AbgCPOlA (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Mon, 16 Mar 2020 10:41:00 -0400
+Received: from mail-pf1-f196.google.com ([209.85.210.196]:42399 "EHLO
+        mail-pf1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731592AbgCPOlA (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Thu, 12 Mar 2020 10:09:25 -0400
-Received: by mail-io1-f68.google.com with SMTP id k4so5813299ior.4
-        for <linux-m68k@lists.linux-m68k.org>; Thu, 12 Mar 2020 07:09:25 -0700 (PDT)
+        Mon, 16 Mar 2020 10:41:00 -0400
+Received: by mail-pf1-f196.google.com with SMTP id x2so9689352pfn.9
+        for <linux-m68k@lists.linux-m68k.org>; Mon, 16 Mar 2020 07:41:00 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=k3m1ZZ5KE4cBxywTfMXaeVKmgrv47iIDbm51HIwX8Uw=;
-        b=OVlESagnp4ojIJRJriwYXrPnVIsWAOoYHX/CrkD/VjcZYBrFeXHS5XRYzyC1tV6gPQ
-         CDFqQsGk0ekObOVIDy/Ot5fw3IananZAmnm9APvjqSumZvd4vcHbH834bL+TtV50PAxT
-         nMun4kBwXRAu/9emKRjXJTZ49bYpkEMENM4hWPg73KfCIgSYLvKy5QwKtT2ZGeurp65d
-         QnZFipFM1volevqcXv3LWKtORSUn7daQEdd1FQlu52RGFxSuosBYH0p+DM2Sf2/bp1FA
-         RA9WnsnZa8DDNcHlrLKVBM0W9Kp8qZ7l99Nk8dhK1yIVPHmMbV6O88mRFxFD6POfo7Nq
-         xA5w==
+        d=arista.com; s=googlenew;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=PD9vWH4pmGXRoWmrHB2KwNyUqP3FLoo/089yaMrT3N0=;
+        b=KQUXQLXOQvMQyf4Ccx3GTVjn+r9/iijnHj1Xdo7shGj5aCA6s13n7BwTpU/sdgVlN3
+         Pg0peZy3dD5xzz6CRbAUzAkmyLK2C9ToKV3HjEF/fpUVF9yhufAAeEuOBp9HJbIqgNVR
+         8QcOTpVxa5GRkhkEzowTjimGMDoUxEgjbf6z+UO1Cu+bFk/ccbsd96zo1aOs3tiRPaAW
+         mc0SjUhq4FzaTX18fbXRPKfFJtaeFgpKE3LbDiX3YrQwd/xrqDfhpZYFA8sGL4DObwZR
+         bPx6EuGp7linLPKg4u6TFbBMk8ep0uQSj37MIitGG/fxgPL9C8ElU2wMHrawk17o0Rdd
+         meBg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=k3m1ZZ5KE4cBxywTfMXaeVKmgrv47iIDbm51HIwX8Uw=;
-        b=ZjZw7sid82acq/5rTHN9qJTpSKKLFjewAbeceCN7C5JhvlhG6r351r/H/s3d7g1qCa
-         TYf+DtKmzw0nhxZa8bIBdYVJroRe9sCqQ/s3z0xmDvNh/kZBTvVl52tUW0yHF110rMOd
-         eQQ3Yc5xyQ+hKGYkXyOT36rIRE+989TjVJgth17EWmbqtaOxVZqBJIZGfvkFdMbTPGJO
-         nbnyDXY0IXuCsZeoNTfXnden5F5ovYCoVF3NH0jMsltPbw9BBS4veWlv5NB1OewU/JuT
-         6ZgOwlRdTmsjsIMxFpsPBwVjMXRi8rL2IKkQeRdR2ECtjZD+Ax8/ttNQiA0wsto325Rp
-         xLUA==
-X-Gm-Message-State: ANhLgQ33pM3ReEMJE1J0U1dxCCR6UszTlGEDdQCaLJSg0LD9Q4erEvqM
-        M/BRR44LMkSryF08KZrMp9L9aw==
-X-Google-Smtp-Source: ADFU+vu8mIZ3dryskTJJJ+eUV8Cy1B45VJpNeJP6fVYvi0bdzYaLtASGIj33VlCxs310Srt1uDk9hg==
-X-Received: by 2002:a05:6602:1217:: with SMTP id y23mr8104806iot.34.1584022164604;
-        Thu, 12 Mar 2020 07:09:24 -0700 (PDT)
-Received: from [192.168.1.159] ([65.144.74.34])
-        by smtp.gmail.com with ESMTPSA id f12sm15073840iog.46.2020.03.12.07.09.22
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 12 Mar 2020 07:09:23 -0700 (PDT)
-Subject: Re: [PATCH v3 00/27] ata: optimize core code size on PATA only setups
-To:     Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>
-Cc:     Michael Schmitz <schmitzmic@gmail.com>,
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=PD9vWH4pmGXRoWmrHB2KwNyUqP3FLoo/089yaMrT3N0=;
+        b=TYjcGIU03a6nD2ln8UzOnu9sHUqRSF0d07leKTMtWf6dtSo9dn158VpB+VDPEIU0QZ
+         AlPXYeIV1M6G1M8s4/0/ATAitqAwi961m8z03tWeZNQXsjvytYY9G2drhOFPPr0vhbaY
+         Y9b9iu5n+Rl3VzhYfkifcVQ8CSkKKK0B0brwoX83s4oiXxHaybIvz5cw/T+WkgAaXnbY
+         cU+oV2UsX1ycZockBqL+lVEgZ7lGg37RPW1fJAC/G1bg40NTj7wHHlhfndi1n8CQg+LO
+         aOZCnV1D21Q+YDm6RDm9xbcuWNy7T6rKQkJJzgReP8vuQzctVyLD7Ws8zhAAmX+/6VZJ
+         +FFg==
+X-Gm-Message-State: ANhLgQ2Y5kSfAU0OoUtEcNg185c/cj0CT2WOb5kGbqWnvieHRbtSsCDW
+        LPc82GJSoSabWUDZoI4uYIh8lw==
+X-Google-Smtp-Source: ADFU+vvYib/OOnoFWwvbz78WVlxQygqEel6SrERqeuVAiLWE+FarQ8FhQHfnbgpW6qVo2Ia6K93jYQ==
+X-Received: by 2002:a63:8ec9:: with SMTP id k192mr152583pge.293.1584369659566;
+        Mon, 16 Mar 2020 07:40:59 -0700 (PDT)
+Received: from Mindolluin.aristanetworks.com ([2a02:8084:e84:2480:228:f8ff:fe6f:83a8])
+        by smtp.gmail.com with ESMTPSA id i2sm81524pjs.21.2020.03.16.07.40.55
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 16 Mar 2020 07:40:58 -0700 (PDT)
+From:   Dmitry Safonov <dima@arista.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     Dmitry Safonov <0x7f454c46@gmail.com>,
+        Dmitry Safonov <dima@arista.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Ingo Molnar <mingo@kernel.org>, Jiri Slaby <jslaby@suse.com>,
+        Petr Mladek <pmladek@suse.com>,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>,
         Geert Uytterhoeven <geert@linux-m68k.org>,
-        Christoph Hellwig <hch@lst.de>, linux-ide@vger.kernel.org,
-        linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org
-References: <CGME20200227182238eucas1p1a4a5546e46b2385057f41528bd759aea@eucas1p1.samsung.com>
- <20200227182226.19188-1-b.zolnierkie@samsung.com>
-From:   Jens Axboe <axboe@kernel.dk>
-Message-ID: <15a1618d-a2fe-8911-764f-0d7204895ddb@kernel.dk>
-Date:   Thu, 12 Mar 2020 08:09:22 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.4.1
+        linux-m68k@lists.linux-m68k.org
+Subject: [PATCHv2 17/50] m68k: Add show_stack_loglvl()
+Date:   Mon, 16 Mar 2020 14:38:43 +0000
+Message-Id: <20200316143916.195608-18-dima@arista.com>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20200316143916.195608-1-dima@arista.com>
+References: <20200316143916.195608-1-dima@arista.com>
 MIME-Version: 1.0
-In-Reply-To: <20200227182226.19188-1-b.zolnierkie@samsung.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Sender: linux-m68k-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-On 2/27/20 11:21 AM, Bartlomiej Zolnierkiewicz wrote:
-> Hi,
-> 
-> There have been reports in the past of libata core code size
-> being a problem in migration from deprecated IDE subsystem on
-> legacy PATA only systems, i.e.:
-> 
-> https://lore.kernel.org/linux-ide/db2838b7-4862-785b-3a1d-3bf09811340a@gmail.com/
-> 
-> This patchset re-organizes libata core code to exclude SATA
-> specific code from being built for PATA only setups.
-> 
-> The end result is up to 24% (by 23949 bytes, from 101769 bytes to
-> 77820 bytes) smaller libata core code size (as measured for m68k
-> arch using modified atari_defconfig) on affected setups.
-> 
-> I've tested this patchset using pata_falcon driver under ARAnyM
-> emulator.
-> 
-> 
-> patches #1-11 are general fixes/cleanups done in the process of
-> making the patchset (there should be no inter-dependencies between
-> them except patch #10 which depends on patch #9)
-> 
-> patch #12 separates PATA timings code to libata-pata-timings.c file
-> 
-> patches #13-15 let compiler optimize out SATA specific code on
-> non-SATA hosts by adding !IS_ENABLED(CONFIG_SATA_HOST) instances
-> 
-> patches #16-22 separate SATA only code from libata-core.c file to
-> libata-sata.c one
-> 
-> patches #23-24 separate SATA only code from libata-scsi.c file to
-> libata-sata.c one
-> 
-> patches #25-26 separate SATA only code from libata-eh.c file to
-> libata-sata.c one
-> 
-> patch #27 makes "libata.force" kernel parameter optional
+Currently, the log-level of show_stack() depends on a platform
+realization. It creates situations where the headers are printed with
+lower log level or higher than the stacktrace (depending on
+a platform or user).
 
-Bart, patch #2 seemed to have an issue, are you going to resend
-this patchset?
+Furthermore, it forces the logic decision from user to an architecture
+side. In result, some users as sysrq/kdb/etc are doing tricks with
+temporary rising console_loglevel while printing their messages.
+And in result it not only may print unwanted messages from other CPUs,
+but also omit printing at all in the unlucky case where the printk()
+was deferred.
 
+Introducing log-level parameter and KERN_UNSUPPRESSED [1] seems
+an easier approach than introducing more printk buffers.
+Also, it will consolidate printings with headers.
+
+Introduce show_stack_loglvl(), that eventually will substitute
+show_stack().
+
+Cc: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: linux-m68k@lists.linux-m68k.org
+[1]: https://lore.kernel.org/lkml/20190528002412.1625-1-dima@arista.com/T/#u
+Signed-off-by: Dmitry Safonov <dima@arista.com>
+---
+ arch/m68k/kernel/traps.c | 16 +++++++++++-----
+ 1 file changed, 11 insertions(+), 5 deletions(-)
+
+diff --git a/arch/m68k/kernel/traps.c b/arch/m68k/kernel/traps.c
+index 344f93d36a9a..ffcc5ec4fac3 100644
+--- a/arch/m68k/kernel/traps.c
++++ b/arch/m68k/kernel/traps.c
+@@ -811,13 +811,13 @@ asmlinkage void buserr_c(struct frame *fp)
+ 
+ static int kstack_depth_to_print = 48;
+ 
+-void show_trace(unsigned long *stack)
++static void show_trace(unsigned long *stack, const char *loglvl)
+ {
+ 	unsigned long *endstack;
+ 	unsigned long addr;
+ 	int i;
+ 
+-	pr_info("Call Trace:");
++	printk("%sCall Trace:", loglvl);
+ 	addr = (unsigned long)stack + THREAD_SIZE - 1;
+ 	endstack = (unsigned long *)(addr & -THREAD_SIZE);
+ 	i = 0;
+@@ -935,7 +935,8 @@ void show_registers(struct pt_regs *regs)
+ 	pr_cont("\n");
+ }
+ 
+-void show_stack(struct task_struct *task, unsigned long *stack)
++void show_stack_loglvl(struct task_struct *task, unsigned long *stack,
++		       const char *loglvl)
+ {
+ 	unsigned long *p;
+ 	unsigned long *endstack;
+@@ -949,7 +950,7 @@ void show_stack(struct task_struct *task, unsigned long *stack)
+ 	}
+ 	endstack = (unsigned long *)(((unsigned long)stack + THREAD_SIZE - 1) & -THREAD_SIZE);
+ 
+-	pr_info("Stack from %08lx:", (unsigned long)stack);
++	printk("%sStack from %08lx:", loglvl, (unsigned long)stack);
+ 	p = stack;
+ 	for (i = 0; i < kstack_depth_to_print; i++) {
+ 		if (p + 1 > endstack)
+@@ -959,7 +960,12 @@ void show_stack(struct task_struct *task, unsigned long *stack)
+ 		pr_cont(" %08lx", *p++);
+ 	}
+ 	pr_cont("\n");
+-	show_trace(stack);
++	show_trace(stack, loglvl);
++}
++
++void show_stack(struct task_struct *task, unsigned long *stack)
++{
++	show_stack_loglvl(task, stack, KERN_INFO);
+ }
+ 
+ /*
 -- 
-Jens Axboe
+2.25.1
 
