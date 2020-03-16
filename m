@@ -6,41 +6,41 @@ X-Spam-Status: No, score=-5.8 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
 	MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 8E76CC18E5B
-	for <linux-m68k@archiver.kernel.org>; Mon, 16 Mar 2020 19:15:22 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 50368C0044D
+	for <linux-m68k@archiver.kernel.org>; Mon, 16 Mar 2020 22:37:25 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 65F83206C0
-	for <linux-m68k@archiver.kernel.org>; Mon, 16 Mar 2020 19:15:22 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 1BDFF20663
+	for <linux-m68k@archiver.kernel.org>; Mon, 16 Mar 2020 22:37:24 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732424AbgCPTPW (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Mon, 16 Mar 2020 15:15:22 -0400
-Received: from mga17.intel.com ([192.55.52.151]:29741 "EHLO mga17.intel.com"
+        id S1732836AbgCPWhY (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Mon, 16 Mar 2020 18:37:24 -0400
+Received: from mga01.intel.com ([192.55.52.88]:47990 "EHLO mga01.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732298AbgCPTPV (ORCPT <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Mon, 16 Mar 2020 15:15:21 -0400
-IronPort-SDR: t1Ez28soXSHAApev2BkCuCNCBfqXBBiEz2NEjquATQ7B/A0vIu8hodyX58+++tcKUhQc6lNpgG
- N8eixJk4FxyA==
+        id S1732739AbgCPWhY (ORCPT <rfc822;linux-m68k@lists.linux-m68k.org>);
+        Mon, 16 Mar 2020 18:37:24 -0400
+IronPort-SDR: WSVyVau+p2k+Zi91muNH6cNt2b/bNdQwA7fUYrh5dPgD5tNJQ1P7m9kpqNy7UpPkJgdHBacF7i
+ YXbGNCnaVaDw==
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Mar 2020 12:15:20 -0700
-IronPort-SDR: WCqGHdnnaTn+JSzyA+toC6T+aERPn4ed+w++BXcqGOBpegJrOz6rZIQr6PiyGhYluNXUTajcF/
- IESd43JxErFQ==
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Mar 2020 15:37:23 -0700
+IronPort-SDR: Gx4aUfFVCQeQu4uF35MU8TFzDNnDXbsg72oVkEr32+ibMELYGiwwMUGxfRgrvCUdrJe+yS+MD/
+ dId1ps8vBJ5Q==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.70,561,1574150400"; 
-   d="scan'208";a="236111117"
+   d="scan'208";a="355181841"
 Received: from lkp-server01.sh.intel.com (HELO lkp-server01) ([10.239.97.150])
-  by fmsmga007.fm.intel.com with ESMTP; 16 Mar 2020 12:15:19 -0700
+  by fmsmga001.fm.intel.com with ESMTP; 16 Mar 2020 15:37:22 -0700
 Received: from kbuild by lkp-server01 with local (Exim 4.89)
         (envelope-from <lkp@intel.com>)
-        id 1jDvCo-0003Rq-U4; Tue, 17 Mar 2020 03:15:18 +0800
-Date:   Tue, 17 Mar 2020 03:14:53 +0800
+        id 1jDyML-0006E5-Pw; Tue, 17 Mar 2020 06:37:21 +0800
+Date:   Tue, 17 Mar 2020 06:37:02 +0800
 From:   kbuild test robot <lkp@intel.com>
 To:     Geert Uytterhoeven <geert@linux-m68k.org>
 Cc:     linux-m68k@lists.linux-m68k.org
-Subject: [m68k:m68k-queue] BUILD SUCCESS
- c785eb5d551c890a977fc00ec2908c45fa51039b
-Message-ID: <5e6fd02d.sRWFUNYu2O7udToi%lkp@intel.com>
+Subject: [m68k:master] BUILD SUCCESS
+ 5597d9464ed7f4a207d8fccbe3aa575e5709ff8c
+Message-ID: <5e6fff8e.Es0+4s4zGCxkNlQv%lkp@intel.com>
 User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
@@ -50,13 +50,13 @@ Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/geert/linux-m68k.git  m68k-queue
-branch HEAD: c785eb5d551c890a977fc00ec2908c45fa51039b  fat: Use correct logical sector size for Atari GEMDOS FAT
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/geert/linux-m68k.git  master
+branch HEAD: 5597d9464ed7f4a207d8fccbe3aa575e5709ff8c  Merge tag 'v5.6-rc6'
 
-elapsed time: 548m
+elapsed time: 750m
 
-configs tested: 162
-configs skipped: 3
+configs tested: 146
+configs skipped: 0
 
 The following configs have been built successfully.
 More configs may be tested in the coming days.
@@ -85,9 +85,7 @@ parisc                           allyesconfig
 sh                            titan_defconfig
 powerpc                       ppc64_defconfig
 sparc                               defconfig
-um                             i386_defconfig
 powerpc                           allnoconfig
-h8300                     edosk2674_defconfig
 i386                              allnoconfig
 i386                             alldefconfig
 i386                             allyesconfig
@@ -109,6 +107,7 @@ alpha                               defconfig
 csky                                defconfig
 nds32                             allnoconfig
 nds32                               defconfig
+h8300                     edosk2674_defconfig
 h8300                    h8300h-sim_defconfig
 h8300                       h8s-sim_defconfig
 m68k                             allmodconfig
@@ -128,12 +127,6 @@ mips                      fuloong2e_defconfig
 parisc                            allnoconfig
 parisc                generic-32bit_defconfig
 parisc                generic-64bit_defconfig
-x86_64               randconfig-a001-20200316
-x86_64               randconfig-a002-20200316
-x86_64               randconfig-a003-20200316
-i386                 randconfig-a001-20200316
-i386                 randconfig-a002-20200316
-i386                 randconfig-a003-20200316
 alpha                randconfig-a001-20200316
 m68k                 randconfig-a001-20200316
 mips                 randconfig-a001-20200316
@@ -150,18 +143,6 @@ openrisc             randconfig-a001-20200316
 s390                 randconfig-a001-20200316
 sh                   randconfig-a001-20200316
 xtensa               randconfig-a001-20200316
-x86_64               randconfig-b001-20200316
-x86_64               randconfig-b002-20200316
-x86_64               randconfig-b003-20200316
-i386                 randconfig-b001-20200316
-i386                 randconfig-b002-20200316
-i386                 randconfig-b003-20200316
-x86_64               randconfig-c001-20200316
-x86_64               randconfig-c002-20200316
-x86_64               randconfig-c003-20200316
-i386                 randconfig-c001-20200316
-i386                 randconfig-c002-20200316
-i386                 randconfig-c003-20200316
 x86_64               randconfig-d001-20200316
 x86_64               randconfig-d002-20200316
 x86_64               randconfig-d003-20200316
@@ -217,6 +198,9 @@ sparc64                          allmodconfig
 sparc64                           allnoconfig
 sparc64                          allyesconfig
 sparc64                             defconfig
+um                           x86_64_defconfig
+um                             i386_defconfig
+um                                  defconfig
 x86_64                              fedora-25
 x86_64                                  kexec
 x86_64                                    lkp
