@@ -2,155 +2,152 @@ Return-Path: <SRS0=p+uc=5C=vger.kernel.org=linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.9 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
-	autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-8.3 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,
+	USER_AGENT_SANE_2 autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 6A16AC18E5B
-	for <linux-m68k@archiver.kernel.org>; Tue, 17 Mar 2020 14:45:42 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 595F0C10F29
+	for <linux-m68k@archiver.kernel.org>; Tue, 17 Mar 2020 14:57:15 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 3FD4F20735
-	for <linux-m68k@archiver.kernel.org>; Tue, 17 Mar 2020 14:45:42 +0000 (UTC)
-Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=samsung.com header.i=@samsung.com header.b="rOTupMd5"
+	by mail.kernel.org (Postfix) with ESMTP id 38916206EC
+	for <linux-m68k@archiver.kernel.org>; Tue, 17 Mar 2020 14:57:15 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726564AbgCQOpl (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Tue, 17 Mar 2020 10:45:41 -0400
-Received: from mailout2.w1.samsung.com ([210.118.77.12]:40356 "EHLO
-        mailout2.w1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726777AbgCQOno (ORCPT
+        id S1726541AbgCQO5O (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Tue, 17 Mar 2020 10:57:14 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:48184 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726484AbgCQO5O (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Tue, 17 Mar 2020 10:43:44 -0400
-Received: from eucas1p2.samsung.com (unknown [182.198.249.207])
-        by mailout2.w1.samsung.com (KnoxPortal) with ESMTP id 20200317144343euoutp0285d48deba7dae16c277dd9bb3e2826bd~9HopTt7Yk1539915399euoutp02M
-        for <linux-m68k@lists.linux-m68k.org>; Tue, 17 Mar 2020 14:43:43 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.w1.samsung.com 20200317144343euoutp0285d48deba7dae16c277dd9bb3e2826bd~9HopTt7Yk1539915399euoutp02M
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1584456223;
-        bh=SD29ru+XPRj8/MpkvAn2nNtxS7lNQ61UJF7W2WDfjqI=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=rOTupMd5v3nBClpACH0hcXL1p2OSYXh78pP4ySS4riI+cCdfnH0cODjfbcdqOiqH0
-         +/X180prE7ku5dbBAjt+pBsT6zhf0BtJP6Q89RhudGnPV63cTE5AFzRjwXaKLWJmDl
-         NEOuxMdMaK/mO4ku8SxYWh9neNay8NHKpvpXAfL4=
-Received: from eusmges1new.samsung.com (unknown [203.254.199.242]) by
-        eucas1p1.samsung.com (KnoxPortal) with ESMTP id
-        20200317144343eucas1p1d564b887d8bff2e1a7dca6bc5dc46881~9HopKmVqW1084010840eucas1p1W;
-        Tue, 17 Mar 2020 14:43:43 +0000 (GMT)
-Received: from eucas1p2.samsung.com ( [182.198.249.207]) by
-        eusmges1new.samsung.com (EUCPMTA) with SMTP id 6B.D3.61286.F12E07E5; Tue, 17
-        Mar 2020 14:43:43 +0000 (GMT)
-Received: from eusmtrp2.samsung.com (unknown [182.198.249.139]) by
-        eucas1p2.samsung.com (KnoxPortal) with ESMTPA id
-        20200317144342eucas1p2fd5c2e6ff69f8e10496d0468f01f5601~9Hoo2GOVe3190831908eucas1p2e;
-        Tue, 17 Mar 2020 14:43:42 +0000 (GMT)
-Received: from eusmgms1.samsung.com (unknown [182.198.249.179]) by
-        eusmtrp2.samsung.com (KnoxPortal) with ESMTP id
-        20200317144342eusmtrp21efe315c8d408ca7ded35e026d0e0220~9Hoo1jatv0147801478eusmtrp2y;
-        Tue, 17 Mar 2020 14:43:42 +0000 (GMT)
-X-AuditID: cbfec7f2-f0bff7000001ef66-1e-5e70e21f08ef
-Received: from eusmtip1.samsung.com ( [203.254.199.221]) by
-        eusmgms1.samsung.com (EUCPMTA) with SMTP id 59.D4.08375.E12E07E5; Tue, 17
-        Mar 2020 14:43:42 +0000 (GMT)
-Received: from AMDC3058.digital.local (unknown [106.120.51.71]) by
-        eusmtip1.samsung.com (KnoxPortal) with ESMTPA id
-        20200317144342eusmtip112aedb345ff113b8f392a881c8d5b260~9HooZ7mjh1029210292eusmtip1B;
-        Tue, 17 Mar 2020 14:43:42 +0000 (GMT)
-From:   Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>
-To:     Jens Axboe <axboe@kernel.dk>
+        Tue, 17 Mar 2020 10:57:14 -0400
+Received: from pps.filterd (m0098421.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 02HEv6wU121755;
+        Tue, 17 Mar 2020 10:57:10 -0400
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 2ytb21j7js-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 17 Mar 2020 10:57:10 -0400
+Received: from m0098421.ppops.net (m0098421.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 02HEv89R121841;
+        Tue, 17 Mar 2020 10:57:08 -0400
+Received: from ppma05wdc.us.ibm.com (1b.90.2fa9.ip4.static.sl-reverse.com [169.47.144.27])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 2ytb21j7ef-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 17 Mar 2020 10:57:08 -0400
+Received: from pps.filterd (ppma05wdc.us.ibm.com [127.0.0.1])
+        by ppma05wdc.us.ibm.com (8.16.0.27/8.16.0.27) with SMTP id 02HEsKfH020816;
+        Tue, 17 Mar 2020 14:56:00 GMT
+Received: from b01cxnp23033.gho.pok.ibm.com (b01cxnp23033.gho.pok.ibm.com [9.57.198.28])
+        by ppma05wdc.us.ibm.com with ESMTP id 2yrpw68xw6-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 17 Mar 2020 14:56:00 +0000
+Received: from b01ledav004.gho.pok.ibm.com (b01ledav004.gho.pok.ibm.com [9.57.199.109])
+        by b01cxnp23033.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 02HEu0SO48628190
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 17 Mar 2020 14:56:00 GMT
+Received: from b01ledav004.gho.pok.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 43BF9112063;
+        Tue, 17 Mar 2020 14:56:00 +0000 (GMT)
+Received: from b01ledav004.gho.pok.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 21BA3112061;
+        Tue, 17 Mar 2020 14:55:58 +0000 (GMT)
+Received: from jarvis.ext.hansenpartnership.com (unknown [9.85.150.164])
+        by b01ledav004.gho.pok.ibm.com (Postfix) with ESMTP;
+        Tue, 17 Mar 2020 14:55:57 +0000 (GMT)
+Message-ID: <1584456957.4545.7.camel@linux.ibm.com>
+Subject: Re: [PATCH v4 03/27] ata: make SATA_PMP option selectable only if
+ any SATA host driver is enabled
+From:   James Bottomley <jejb@linux.ibm.com>
+To:     Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
+        Jens Axboe <axboe@kernel.dk>
 Cc:     Michael Schmitz <schmitzmic@gmail.com>,
         Geert Uytterhoeven <geert@linux-m68k.org>,
         Christoph Hellwig <hch@lst.de>, linux-ide@vger.kernel.org,
         linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org,
-        b.zolnierkie@samsung.com
-Subject: [PATCH v4 04/27] sata_promise: use ata_cable_sata()
-Date:   Tue, 17 Mar 2020 15:43:10 +0100
-Message-Id: <20200317144333.2904-5-b.zolnierkie@samsung.com>
-X-Mailer: git-send-email 2.24.1
-In-Reply-To: <20200317144333.2904-1-b.zolnierkie@samsung.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFlrLKsWRmVeSWpSXmKPExsWy7djP87ryjwriDJpPslqsvtvPZrFxxnpW
-        i2e39jJZrFx9lMni2I5HTBaXd81hs1j+ZC2zxdzW6ewOHB47Z91l97h8ttTj0OEORo+Trd9Y
-        PHbfbGDz6NuyitHj8ya5APYoLpuU1JzMstQifbsEroymTzuYCzZyV8z4c5i9gfEwZxcjJ4eE
-        gInExS3trF2MXBxCAisYJe53fGeBcL4wStyYeR3K+cwocXX+Q0aYlvn9LcwQieWMEl3nPrDD
-        tdxc/pcZpIpNwEpiYvsqsA4RAQWJnt8r2UCKmAXeM0qsmLSXBSQhLGAjMX3OGSCbg4NFQFWi
-        tYELJMwLFL6xaCUrxDZ5ia3fPoHZnAK2EtcO/2ODqBGUODnzCdgYZqCa5q2zwS6SEFjGLvG8
-        +wEbyEwJAReJ0xd0IOYIS7w6voUdwpaR+L9zPhNE/TpGib8dL6CatzNKLJ8MsUFCwFrizrlf
-        YIOYBTQl1u/Shwg7SnydNIkFYj6fxI23ghA38ElM2jadGSLMK9HRJgRRrSaxYdkGNpi1XTtX
-        MkPYHhL967rYJjAqzkLyzSwk38xC2LuAkXkVo3hqaXFuemqxYV5quV5xYm5xaV66XnJ+7iZG
-        YCI6/e/4px2MXy8lHWIU4GBU4uHl2FAQJ8SaWFZcmXuIUYKDWUmEd3FhfpwQb0piZVVqUX58
-        UWlOavEhRmkOFiVxXuNFL2OFBNITS1KzU1MLUotgskwcnFINjOKcgrHbc5P8taPW6W997Op2
-        Irn3Osej8u+aaXVHI4LTN4jt/PLkZmBJzC3DcouMGVrb26a8Lnt/rP5Ry37Bicvv+iv//D1r
-        5Zrjkz63tkZz9B8Tfca8e+ffS1pNxwXvbVH60Fi9ccKntxlPU7qK085ddDK86HakXkWpZkLU
-        /LVLjJ7OuDXXl12JpTgj0VCLuag4EQAXXdvJQAMAAA==
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFprFIsWRmVeSWpSXmKPExsVy+t/xu7pyjwriDM7cNbJYfbefzWLjjPWs
-        Fs9u7WWyWLn6KJPFsR2PmCwu75rDZrH8yVpmi7mt09kdODx2zrrL7nH5bKnHocMdjB4nW7+x
-        eOy+2cDm0bdlFaPH501yAexRejZF+aUlqQoZ+cUltkrRhhZGeoaWFnpGJpZ6hsbmsVZGpkr6
-        djYpqTmZZalF+nYJehlNn3YwF2zkrpjx5zB7A+Nhzi5GTg4JAROJ+f0tzF2MXBxCAksZJc5e
-        eQzkcAAlZCSOry+DqBGW+HOtiw2i5hOjRNvVG0wgCTYBK4mJ7asYQWwRAQWJnt8rwYqYBb4y
-        Siyd1M0MkhAWsJGYPucMC8hQFgFVidYGLpAwL1D4xqKVrBAL5CW2fvsEZnMK2EpcO/yPDcQW
-        Aqp58eY/E0S9oMTJmU9YQGxmoPrmrbOZJzAKzEKSmoUktYCRaRWjSGppcW56brGhXnFibnFp
-        Xrpecn7uJkZgvGw79nPzDsZLG4MPMQpwMCrx8HJsKIgTYk0sK67MPcQowcGsJMK7uDA/Tog3
-        JbGyKrUoP76oNCe1+BCjKdAPE5mlRJPzgbGcVxJvaGpobmFpaG5sbmxmoSTO2yFwMEZIID2x
-        JDU7NbUgtQimj4mDU6qBsaLc+KFxcfek6tNnwjfpCF//m39IWHDRm1erWvZsnt9102xN36tX
-        TzIZy1bfedsjJLw+/s9c3Y6Sgnl2e4wNpeOYtBZPirDZsDrRtbFaXudl0BHxgpar0yeGPM9K
-        lPjqwXL4VofIhcbFXRt/Z3QbiXUWL15jvzFcLz/+kd2e7wUnjK9OFONWV2Ipzkg01GIuKk4E
-        AIk72rutAgAA
-X-CMS-MailID: 20200317144342eucas1p2fd5c2e6ff69f8e10496d0468f01f5601
-X-Msg-Generator: CA
-Content-Type: text/plain; charset="utf-8"
-X-RootMTR: 20200317144342eucas1p2fd5c2e6ff69f8e10496d0468f01f5601
-X-EPHeader: CA
-CMS-TYPE: 201P
-X-CMS-RootMailID: 20200317144342eucas1p2fd5c2e6ff69f8e10496d0468f01f5601
+        "Martin K . Petersen" <martin.petersen@oracle.com>
+Date:   Tue, 17 Mar 2020 07:55:57 -0700
+In-Reply-To: <20200317144333.2904-4-b.zolnierkie@samsung.com>
 References: <20200317144333.2904-1-b.zolnierkie@samsung.com>
-        <CGME20200317144342eucas1p2fd5c2e6ff69f8e10496d0468f01f5601@eucas1p2.samsung.com>
+         <CGME20200317144342eucas1p2d73deadcdb4cee860dd610f9f8e26bda@eucas1p2.samsung.com>
+         <20200317144333.2904-4-b.zolnierkie@samsung.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.26.6 
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.138,18.0.645
+ definitions=2020-03-17_05:2020-03-17,2020-03-17 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
+ spamscore=0 mlxlogscore=999 phishscore=0 impostorscore=0 bulkscore=0
+ clxscore=1011 malwarescore=0 priorityscore=1501 suspectscore=0
+ adultscore=0 mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2003020000 definitions=main-2003170061
 Sender: linux-m68k-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-Use core helper instead of open-coding it.
+On Tue, 2020-03-17 at 15:43 +0100, Bartlomiej Zolnierkiewicz wrote:
+> There is no reason to expose SATA_PMP config option when no SATA
+> host drivers are enabled. To fix it add SATA_HOST config option,
+> make all SATA host drivers select it and finally make SATA_PMP
+> config options depend on it.
+> 
+> This also serves as preparation for the future changes which
+> optimize libata core code size on PATA only setups.
+> 
+> CC: "James E.J. Bottomley" <jejb@linux.ibm.com>
+> Reviewed-by: Martin K. Petersen <martin.petersen@oracle.com> # for
+> SCSI bits
+> Signed-off-by: Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>
+> ---
+>  drivers/ata/Kconfig         | 40
+> +++++++++++++++++++++++++++++++++++++
+>  drivers/scsi/Kconfig        |  1 +
+>  drivers/scsi/libsas/Kconfig |  1 +
+>  3 files changed, 42 insertions(+)
+> 
+> diff --git a/drivers/ata/Kconfig b/drivers/ata/Kconfig
+> index a6beb2c5a692..ad7760656f71 100644
+> --- a/drivers/ata/Kconfig
+> +++ b/drivers/ata/Kconfig
+> @@ -34,6 +34,9 @@ if ATA
+>  config ATA_NONSTANDARD
+>         bool
+>  
+> +config SATA_HOST
+> +	bool
+> +
+>  config ATA_VERBOSE_ERROR
+>  	bool "Verbose ATA error reporting"
+>  	default y
+> @@ -73,6 +76,7 @@ config SATA_ZPODD
+>  
+>  config SATA_PMP
+>  	bool "SATA Port Multiplier support"
+> +	depends on SATA_HOST
+>  	default y
+>  	help
+>  	  This option adds support for SATA Port Multipliers
+> @@ -85,6 +89,7 @@ comment "Controllers with non-SFF native interface"
+>  config SATA_AHCI
+>  	tristate "AHCI SATA support"
+>  	depends on PCI
+> +	select SATA_HOST
+>  	help
+>  	  This option enables support for AHCI Serial ATA.
 
-Signed-off-by: Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>
----
- drivers/ata/sata_promise.c | 8 +-------
- 1 file changed, 1 insertion(+), 7 deletions(-)
+This is a bit fragile and not the way Kconfig should be done.  The
+fragility comes because anyone adding a new host has also to remember
+to add the select, and there will be no real consequences for not doing
+so.  The way to get rid of the fragility is to make SATA_HOST a
+menuconfig option enclosing all the hosts, which makes the patch much
+smaller as well.  The hint implies you want to separate out all the
+PATA drivers, which also makes a menuconfig sound like the better
+option.
 
-diff --git a/drivers/ata/sata_promise.c b/drivers/ata/sata_promise.c
-index c451d7d1c817..8729f78cef5f 100644
---- a/drivers/ata/sata_promise.c
-+++ b/drivers/ata/sata_promise.c
-@@ -157,7 +157,6 @@ static int pdc_sata_hardreset(struct ata_link *link, unsigned int *class,
- static void pdc_error_handler(struct ata_port *ap);
- static void pdc_post_internal_cmd(struct ata_queued_cmd *qc);
- static int pdc_pata_cable_detect(struct ata_port *ap);
--static int pdc_sata_cable_detect(struct ata_port *ap);
- 
- static struct scsi_host_template pdc_ata_sht = {
- 	ATA_BASE_SHT(DRV_NAME),
-@@ -183,7 +182,7 @@ static const struct ata_port_operations pdc_common_ops = {
- 
- static struct ata_port_operations pdc_sata_ops = {
- 	.inherits		= &pdc_common_ops,
--	.cable_detect		= pdc_sata_cable_detect,
-+	.cable_detect		= ata_cable_sata,
- 	.freeze			= pdc_sata_freeze,
- 	.thaw			= pdc_sata_thaw,
- 	.scr_read		= pdc_sata_scr_read,
-@@ -459,11 +458,6 @@ static int pdc_pata_cable_detect(struct ata_port *ap)
- 	return ATA_CBL_PATA80;
- }
- 
--static int pdc_sata_cable_detect(struct ata_port *ap)
--{
--	return ATA_CBL_SATA;
--}
--
- static int pdc_sata_scr_read(struct ata_link *link,
- 			     unsigned int sc_reg, u32 *val)
- {
--- 
-2.24.1
+I've also got to say that the problem doesn't seem to be one ... even
+if some raving lunatic disables all SATA hosts and then enables PMP it
+doesn't cause any problems does it?
+
+James
 
