@@ -1,221 +1,119 @@
-Return-Path: <SRS0=80v1=5E=vger.kernel.org=linux-m68k-owner@kernel.org>
+Return-Path: <SRS0=BlFA=5F=vger.kernel.org=linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.4 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1
-	autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-2.2 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=no
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3609CC4332B
-	for <linux-m68k@archiver.kernel.org>; Thu, 19 Mar 2020 16:15:13 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E77F0C4332D
+	for <linux-m68k@archiver.kernel.org>; Fri, 20 Mar 2020 08:46:13 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id DF7D72072C
-	for <linux-m68k@archiver.kernel.org>; Thu, 19 Mar 2020 16:15:12 +0000 (UTC)
-Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=samsung.com header.i=@samsung.com header.b="vcvcXvtZ"
+	by mail.kernel.org (Postfix) with ESMTP id C2ED120774
+	for <linux-m68k@archiver.kernel.org>; Fri, 20 Mar 2020 08:46:13 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727792AbgCSQPM (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Thu, 19 Mar 2020 12:15:12 -0400
-Received: from mailout2.w1.samsung.com ([210.118.77.12]:53968 "EHLO
-        mailout2.w1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727462AbgCSQPM (ORCPT
+        id S1726778AbgCTIqN (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Fri, 20 Mar 2020 04:46:13 -0400
+Received: from outpost1.zedat.fu-berlin.de ([130.133.4.66]:33539 "EHLO
+        outpost1.zedat.fu-berlin.de" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726657AbgCTIqN (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Thu, 19 Mar 2020 12:15:12 -0400
-Received: from eucas1p2.samsung.com (unknown [182.198.249.207])
-        by mailout2.w1.samsung.com (KnoxPortal) with ESMTP id 20200319161510euoutp029fb06d0425db90a63f50468c2f1ebaec~9wLDyTN-11224312243euoutp02B
-        for <linux-m68k@lists.linux-m68k.org>; Thu, 19 Mar 2020 16:15:10 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.w1.samsung.com 20200319161510euoutp029fb06d0425db90a63f50468c2f1ebaec~9wLDyTN-11224312243euoutp02B
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1584634510;
-        bh=PH4XpAvDTqRnnkexutJQDHffmNTuPS+R8AFy6ym3OEM=;
-        h=Subject:To:Cc:From:Date:In-Reply-To:References:From;
-        b=vcvcXvtZ0abSCDV5pqEpaQzKGOi4w1noRZh0iJRinft5n6kAqAlxXeZgVyNZNjsmA
-         ed3OGumeWAuvn7Z8znSPwkrekb0c0snAq91g02c0u7v6HQtoSjNEc+zblGICeEnxiv
-         bobP1n0GEg7f/drPlw1Fuyi1peRrm/73pXqJTpvQ=
-Received: from eusmges3new.samsung.com (unknown [203.254.199.245]) by
-        eucas1p2.samsung.com (KnoxPortal) with ESMTP id
-        20200319161509eucas1p2afddab88cb58d0c9e5010bb10f3f84ce~9wLDnhj6C0339903399eucas1p27;
-        Thu, 19 Mar 2020 16:15:09 +0000 (GMT)
-Received: from eucas1p1.samsung.com ( [182.198.249.206]) by
-        eusmges3new.samsung.com (EUCPMTA) with SMTP id 23.E1.60698.D8A937E5; Thu, 19
-        Mar 2020 16:15:09 +0000 (GMT)
-Received: from eusmtrp1.samsung.com (unknown [182.198.249.138]) by
-        eucas1p1.samsung.com (KnoxPortal) with ESMTPA id
-        20200319161509eucas1p168ca3c148f341f23e29d4637a538e17c~9wLDQWr5P0720007200eucas1p1R;
-        Thu, 19 Mar 2020 16:15:09 +0000 (GMT)
-Received: from eusmgms2.samsung.com (unknown [182.198.249.180]) by
-        eusmtrp1.samsung.com (KnoxPortal) with ESMTP id
-        20200319161509eusmtrp1c6b0b994825553f20d23c3288fa585dd~9wLDPrUl80891708917eusmtrp1U;
-        Thu, 19 Mar 2020 16:15:09 +0000 (GMT)
-X-AuditID: cbfec7f5-a29ff7000001ed1a-65-5e739a8d0b35
-Received: from eusmtip2.samsung.com ( [203.254.199.222]) by
-        eusmgms2.samsung.com (EUCPMTA) with SMTP id 7A.08.07950.D8A937E5; Thu, 19
-        Mar 2020 16:15:09 +0000 (GMT)
-Received: from [106.120.51.71] (unknown [106.120.51.71]) by
-        eusmtip2.samsung.com (KnoxPortal) with ESMTPA id
-        20200319161509eusmtip273a87bca46d0e365c4c4666d945b2d29~9wLCxGxdz1186411864eusmtip2i;
-        Thu, 19 Mar 2020 16:15:08 +0000 (GMT)
-Subject: Re: [PATCH v4 03/27] ata: make SATA_PMP option selectable only if
- any SATA host driver is enabled
-To:     James Bottomley <jejb@linux.ibm.com>
-Cc:     Jens Axboe <axboe@kernel.dk>,
-        Michael Schmitz <schmitzmic@gmail.com>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Christoph Hellwig <hch@lst.de>, linux-ide@vger.kernel.org,
-        linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org,
-        "Martin K . Petersen" <martin.petersen@oracle.com>
-From:   Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>
-Message-ID: <8b77928f-5985-046c-f760-b50625dbeeb4@samsung.com>
-Date:   Thu, 19 Mar 2020 17:15:07 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
-        Thunderbird/60.8.0
+        Fri, 20 Mar 2020 04:46:13 -0400
+Received: from inpost2.zedat.fu-berlin.de ([130.133.4.69])
+          by outpost.zedat.fu-berlin.de (Exim 4.93)
+          with esmtps (TLS1.2)
+          tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+          (envelope-from <glaubitz@physik.fu-berlin.de>)
+          id 1jFDIA-001UvB-2e; Fri, 20 Mar 2020 09:46:10 +0100
+Received: from p5b13a155.dip0.t-ipconnect.de ([91.19.161.85] helo=[192.168.178.139])
+          by inpost2.zedat.fu-berlin.de (Exim 4.93)
+          with esmtpsa (TLS1.2)
+          tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+          (envelope-from <glaubitz@physik.fu-berlin.de>)
+          id 1jFDI9-0028NV-R7; Fri, 20 Mar 2020 09:46:10 +0100
+To:     linux-m68k <linux-m68k@lists.linux-m68k.org>
+Cc:     Debian m68k <debian-68k@lists.debian.org>,
+        Helge Deller <deller@gmx.de>
+From:   John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
+Subject: Seccomp support for linux-m68k
+Autocrypt: addr=glaubitz@physik.fu-berlin.de; keydata=
+ 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
+ scOkTAZQGVpD/8AaLH4v1w==
+Message-ID: <cd3ff9a1-030e-1e34-3950-99088ef81be0@physik.fu-berlin.de>
+Date:   Fri, 20 Mar 2020 09:46:09 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.5.0
 MIME-Version: 1.0
-In-Reply-To: <1584456957.4545.7.camel@linux.ibm.com>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-Brightmail-Tracker: H4sIAAAAAAAAA01SbUhTYRTu3b279244uc7FDhZGw6IMtZjlxUKMgu6vDPoTgtbUy9R0yq5a
-        +kejTBtFpsZwKJaBuqn5kfkVikzcEMtEf2TL+dX6UFpkVpqotO0q+e85z3mec84Dh8LkQ+Ig
-        Kk2Xw+l1mgwVIcW7bH/Hwh6Y+MTj01Y10+R8SDCfHf0ixtw0LGLqprpEjK1nQcRM9lUTTIOr
-        BWMa7FsipqbYSMZK2F6Tk2Qn3+Sy1qFSxJbVDSJ2pPgPzr56X0Swy58cOLvSEXyJipeeSeEy
-        0vI4fUTMNWnqyq0fWLYz+KZlVF+EusGAJBTQkTDzYhY3ICklpxsRPG1ux4TiF4KN8VWxUKwg
-        sHUaxTsWY4uNFBoNCNz9PdsWN4KRwUrSqwqkM6C5thL3YgV9BLrX55FXhNFmETwb/ugTEXQ0
-        PCqxIC+W0THgmqv3GXD6EHwfLPHhvfQV+Dk3JBY0ATBS5fLxEs8ZlrV5zIsxWgkOV61IwAeg
-        213tuwjoCRJer1Z7FlCe4jxsfUsTIgTCkr2TFPB+GK24jwv65wg2S79um7sRNFRsEYLqNEyP
-        rRPeQRh9FFr7IgT6LHQ0bpLCfH+YcgcIN/hDeZcRE2gZlN6VC+rD0FbfRuysNfSasTKkMu1K
-        ZtqVxrQrjen/3icItyAll8tnajlereNuhPOaTD5Xpw1PzsrsQJ7XGt2y/+5BAxtJVkRTSOUn
-        i73DJ8rFmjw+P9OKgMJUClmY1kPJUjT5BZw+66o+N4PjrWgfhauUMnXdYoKc1mpyuOscl83p
-        d7oiShJUhBKwwuykcqwufdwRQrrVF3XtjStRoaXWHt7JOCHE4LwXV/UyTqp6nGhclM7ET7xV
-        LBTGX/7SyyvssRfWXP3v0nPshqhCNuLcxp7K6E2zMoRsTx3Q8rVT+tsF2dONNZHV5EjrsXSF
-        fHhp+VT8rE1S+8GPUB6UJQcV5Z9cDFbhfKrmRCim5zX/ANwXbrNWAwAA
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFrrKIsWRmVeSWpSXmKPExsVy+t/xe7q9s4rjDM6skrVYfbefzeLZrb1M
-        FitXH2WyWHRjG5PFsR2PmCwu75rDZrH8yVpmi+XH/zFZzG2dzu7A6bFz1l12j8tnSz0OHe5g
-        9Jiw6ACjx8nWbyweu282sHl8fHqLxePzJrkAjig9m6L80pJUhYz84hJbpWhDCyM9Q0sLPSMT
-        Sz1DY/NYKyNTJX07m5TUnMyy1CJ9uwS9jM+NH5gL7spVrDpd1MC4XaKLkZNDQsBEYvraY+xd
-        jFwcQgJLGSWufbjP0sXIAZSQkTi+vgyiRljiz7UuNoia14wSExe8YAZJCAvkSNy8+YEFxBYR
-        0JDY/ushI0gRs8BKJok3W55CdbxllGjp/gLWwSZgJTGxfRUjiM0rYCfx5MEysG4WAVWJdwfa
-        wWxRgQiJwztmQdUISpyc+QQszgl06qofD8HmMAuoS/yZdwnKFpe49WQ+E4QtL7H97RzmCYxC
-        s5C0z0LSMgtJyywkLQsYWVYxiqSWFuem5xYb6RUn5haX5qXrJefnbmIERum2Yz+37GDsehd8
-        iFGAg1GJh3dGW3GcEGtiWXFl7iFGCQ5mJRFe3XSgEG9KYmVValF+fFFpTmrxIUZToOcmMkuJ
-        JucDE0heSbyhqaG5haWhubG5sZmFkjhvh8DBGCGB9MSS1OzU1ILUIpg+Jg5OqQbGbcqCVQoL
-        ufc33RO1EnZWSi8R6jJbbrhtRpNTi3uh66vjYkw8ZzrWnPvbwGreYOs69bbRCl7WvzGH27WU
-        +XxfOU384aB/SKlwwa/HJ3SEtmgstRbutmUrmep77FfV3+zOFbEt1+ZPn2Tz4qie+uamjNn+
-        Zkf/MuxKXu/iwXuHa4+Uz5N7qR+VWIozEg21mIuKEwEFGdgb6AIAAA==
-X-CMS-MailID: 20200319161509eucas1p168ca3c148f341f23e29d4637a538e17c
-X-Msg-Generator: CA
-Content-Type: text/plain; charset="utf-8"
-X-RootMTR: 20200317144342eucas1p2d73deadcdb4cee860dd610f9f8e26bda
-X-EPHeader: CA
-CMS-TYPE: 201P
-X-CMS-RootMailID: 20200317144342eucas1p2d73deadcdb4cee860dd610f9f8e26bda
-References: <20200317144333.2904-1-b.zolnierkie@samsung.com>
-        <CGME20200317144342eucas1p2d73deadcdb4cee860dd610f9f8e26bda@eucas1p2.samsung.com>
-        <20200317144333.2904-4-b.zolnierkie@samsung.com>
-        <1584456957.4545.7.camel@linux.ibm.com>
+X-Originating-IP: 91.19.161.85
 Sender: linux-m68k-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
+Hi!
 
-On 3/17/20 3:55 PM, James Bottomley wrote:
-> On Tue, 2020-03-17 at 15:43 +0100, Bartlomiej Zolnierkiewicz wrote:
->> There is no reason to expose SATA_PMP config option when no SATA
->> host drivers are enabled. To fix it add SATA_HOST config option,
->> make all SATA host drivers select it and finally make SATA_PMP
->> config options depend on it.
->>
->> This also serves as preparation for the future changes which
->> optimize libata core code size on PATA only setups.
->>
->> CC: "James E.J. Bottomley" <jejb@linux.ibm.com>
->> Reviewed-by: Martin K. Petersen <martin.petersen@oracle.com> # for
->> SCSI bits
->> Signed-off-by: Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>
->> ---
->>  drivers/ata/Kconfig         | 40
->> +++++++++++++++++++++++++++++++++++++
->>  drivers/scsi/Kconfig        |  1 +
->>  drivers/scsi/libsas/Kconfig |  1 +
->>  3 files changed, 42 insertions(+)
->>
->> diff --git a/drivers/ata/Kconfig b/drivers/ata/Kconfig
->> index a6beb2c5a692..ad7760656f71 100644
->> --- a/drivers/ata/Kconfig
->> +++ b/drivers/ata/Kconfig
->> @@ -34,6 +34,9 @@ if ATA
->>  config ATA_NONSTANDARD
->>         bool
->>  
->> +config SATA_HOST
->> +	bool
->> +
->>  config ATA_VERBOSE_ERROR
->>  	bool "Verbose ATA error reporting"
->>  	default y
->> @@ -73,6 +76,7 @@ config SATA_ZPODD
->>  
->>  config SATA_PMP
->>  	bool "SATA Port Multiplier support"
->> +	depends on SATA_HOST
->>  	default y
->>  	help
->>  	  This option adds support for SATA Port Multipliers
->> @@ -85,6 +89,7 @@ comment "Controllers with non-SFF native interface"
->>  config SATA_AHCI
->>  	tristate "AHCI SATA support"
->>  	depends on PCI
->> +	select SATA_HOST
->>  	help
->>  	  This option enables support for AHCI Serial ATA.
-> 
-> This is a bit fragile and not the way Kconfig should be done.  The
-> fragility comes because anyone adding a new host has also to remember
-> to add the select, and there will be no real consequences for not doing
+Would it be possible to add seccomp support for m68k in the kernel?
 
-People adding the new host driver usually look at the existing Kconfig
-entries before introducing the new one (most probably just copy and then
-modify existing entry) so they should notice that the existing entries
-contain the select.
+There are some packages like kscreensaver in Debian that require
+libseccomp-dev and it would therefore be desirable if we could 
+that library on Linux/m68k as well.
 
-Also we shouldn't have problem in catching potential select omissions
-during the code review.
+From what I have learned from Helge Deller who added seccomp for
+hppa, it doesn't seem much that is necessary to get seccomp working
+on an architecture.
 
-Not to mention that the addition of the new ATA host driver is quite
-a rare event nowadays.. ;)
+So, if anyone could work on the kernel part, I could do the work on
+libseccomp.
 
-> so.  The way to get rid of the fragility is to make SATA_HOST a
-> menuconfig option enclosing all the hosts, which makes the patch much
-> smaller as well.  The hint implies you want to separate out all the
-> PATA drivers, which also makes a menuconfig sound like the better
-> option.
-SATA_HOST is not for grouping SATA hosts, it is for core libata
-code to enable SATA support (please see patches #13-26 for details,
-maybe it should have been named ATA_SATA?) and menuconfig usage in
-this case is problematic:
+Thanks,
+Adrian
 
-- we have host drivers supporting both SATA and PATA (i.e. ata_piix)
-
-- we have currently host drivers sorted in Kconfig by different 
-  criteria than SATA or PATA support
-
-- I would prefer to avoid making users to have explicitly select
-  SATA_HOST option (right now it gets auto-selected when needed)
-
-- SCSI_SAS_ATA (which also needs to select SATA_HOST) lives in
-  drivers/scsi/libsas/Kconfig so menuconfig will not cover it
-
-> I've also got to say that the problem doesn't seem to be one ... even
-> if some raving lunatic disables all SATA hosts and then enables PMP it
-> doesn't cause any problems does it?
-
-It doesn't cause any real problems (just some dead code being present
-in the kernel image) but this patch is a prerequisite for patches #13-26
-(patch description mentions that this change is needed for the future
-changes which optimize libata core code size on PATA only setups).
-
-Best regards,
---
-Bartlomiej Zolnierkiewicz
-Samsung R&D Institute Poland
-Samsung Electronics
+-- 
+ .''`.  John Paul Adrian Glaubitz
+: :' :  Debian Developer - glaubitz@debian.org
+`. `'   Freie Universitaet Berlin - glaubitz@physik.fu-berlin.de
+  `-    GPG: 62FF 8A75 84E0 2956 9546  0006 7426 3B37 F5B5 F913
