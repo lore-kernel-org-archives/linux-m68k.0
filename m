@@ -1,50 +1,118 @@
-Return-Path: <SRS0=BlFA=5F=vger.kernel.org=linux-m68k-owner@kernel.org>
+Return-Path: <SRS0=RUr3=5G=vger.kernel.org=linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-0.8 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-2.3 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 51199C4332B
-	for <linux-m68k@archiver.kernel.org>; Fri, 20 Mar 2020 23:08:46 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7A284C4332D
+	for <linux-m68k@archiver.kernel.org>; Sat, 21 Mar 2020 17:43:12 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 33AAD2072C
-	for <linux-m68k@archiver.kernel.org>; Fri, 20 Mar 2020 23:08:46 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 4C91920732
+	for <linux-m68k@archiver.kernel.org>; Sat, 21 Mar 2020 17:43:12 +0000 (UTC)
+Authentication-Results: mail.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="UXIHaUBh"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727550AbgCTXIp (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Fri, 20 Mar 2020 19:08:45 -0400
-Received: from kvm5.telegraphics.com.au ([98.124.60.144]:42494 "EHLO
-        kvm5.telegraphics.com.au" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726997AbgCTXIp (ORCPT
+        id S1727197AbgCURnL (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Sat, 21 Mar 2020 13:43:11 -0400
+Received: from mail-pf1-f193.google.com ([209.85.210.193]:34349 "EHLO
+        mail-pf1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727192AbgCURnL (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Fri, 20 Mar 2020 19:08:45 -0400
-Received: from localhost (localhost.localdomain [127.0.0.1])
-        by kvm5.telegraphics.com.au (Postfix) with ESMTP id 063EE29E83;
-        Fri, 20 Mar 2020 19:08:44 -0400 (EDT)
-Date:   Sat, 21 Mar 2020 10:08:50 +1100 (AEDT)
-From:   Finn Thain <fthain@telegraphics.com.au>
-To:     John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
-cc:     linux-m68k <linux-m68k@lists.linux-m68k.org>,
-        Debian m68k <debian-68k@lists.debian.org>,
-        Helge Deller <deller@gmx.de>
-Subject: Re: Seccomp support for linux-m68k
-In-Reply-To: <4b2815bb-1eaf-d0a3-0ab4-5db473dfaa05@physik.fu-berlin.de>
-Message-ID: <alpine.LNX.2.22.394.2003211002210.8@nippy.intranet>
-References: <cd3ff9a1-030e-1e34-3950-99088ef81be0@physik.fu-berlin.de> <alpine.LNX.2.22.394.2003210904040.8@nippy.intranet> <4b2815bb-1eaf-d0a3-0ab4-5db473dfaa05@physik.fu-berlin.de>
+        Sat, 21 Mar 2020 13:43:11 -0400
+Received: by mail-pf1-f193.google.com with SMTP id 23so5101838pfj.1
+        for <linux-m68k@lists.linux-m68k.org>; Sat, 21 Mar 2020 10:43:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=3fStVl9rL3YRgIiAf/TzVVtMNrh3VX50fi0qgiiuA8o=;
+        b=UXIHaUBhFEcnW+OMHvNaZ8x6pk7Kw7xSi1XSqUQ/ypXJwX+/0kjbU9/UcI39UYrFww
+         L4SWYiuz/x5ZDo+euy1EVFm6/xEfsJuGVNtbr58w1aJIyLLbxr5Zvw2YV6+Jz2IFJLx1
+         hSKDnD+ugCfCtYPbwa0qtQZzvaVCFI/U0Hh49Bh/9v4+8cPYNZpxmxPxHCL/ucL4FfPB
+         t55wM9/sifQrsJ2x7qaYOUyTwSXOMqFFX7kbT5BvfLIkW8EyaBXHAHAACDZSlA65LB0e
+         +oYG1mMj2pkG+negyyMWiq2E57sl6r93kYgmOlv5Tvke5FfWZ2pC2/wfVUCgtyT6TaL9
+         9P/Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=3fStVl9rL3YRgIiAf/TzVVtMNrh3VX50fi0qgiiuA8o=;
+        b=UpNx3Tsn/sHOBQ9+7lwXFyLLZlF4/NnmQRGtRbloGKgsw4tR1zIwSj643kDZlzXCJY
+         lM0OwMDdN6Hr7UDpEsrC8gh2y9b1gN5hOL1VOf4STHXADhXm6nmselOSDtBKny2BFONF
+         SWOgrsw1XVXm+rTuiKSqGF7RWal93SL6cjUxGksewkLOgy3cnP263AdTF0lnHcd+f258
+         akovozghrsle0ugExbpvQ39TN96Dj+SHMWYLwfSr1cja5+927PheNMaTTZIIq9jZ0uE7
+         zZ71g1GmMCZ4gN1DLt+vA3ATDUli/91rmOIhNO/kwMA0nNYJ757M8gJ9ufnckWa/2X9u
+         anKw==
+X-Gm-Message-State: ANhLgQ1knPEZT3p1QSQfykZXesiWXOxYYWVZTvGGPuhon2usnBmcAxZj
+        YubPdmUQcc35hR9XTTpKbwA=
+X-Google-Smtp-Source: ADFU+vtSB9sj3T3LCfhecLdyVMoQimjNCV0Ow3ys209048E+VImdKW1kqpUYGGvxT4nwaYSYvsoI7Q==
+X-Received: by 2002:a63:e856:: with SMTP id a22mr1215468pgk.283.1584812590871;
+        Sat, 21 Mar 2020 10:43:10 -0700 (PDT)
+Received: from localhost ([49.207.51.24])
+        by smtp.gmail.com with ESMTPSA id f127sm8973833pfa.9.2020.03.21.10.43.09
+        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
+        Sat, 21 Mar 2020 10:43:10 -0700 (PDT)
+Date:   Sat, 21 Mar 2020 23:13:03 +0530
+From:   afzal mohammed <afzal.mohd.ma@gmail.com>
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     linux-kernel@vger.kernel.org, linux-rpi-kernel@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-samsung-soc@vger.kernel.org, x86@kernel.org,
+        linux-sh@vger.kernel.org, linux-s390@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, linux-parisc@vger.kernel.org,
+        linux-mips@vger.kernel.org, linux-m68k@lists.linux-m68k.org,
+        linux-ia64@vger.kernel.org, linux-hexagon@vger.kernel.org,
+        linux-c6x-dev@linux-c6x.org, linux-omap@vger.kernel.org,
+        linux-alpha@vger.kernel.org, Julia Lawall <Julia.Lawall@lip6.fr>,
+        Gilles Muller <Gilles.Muller@lip6.fr>,
+        Nicolas Palix <nicolas.palix@imag.fr>,
+        Michal Marek <michal.lkml@markovi.net>
+Subject: Re: [PATCH 00/18] genirq: Remove setup_irq()
+Message-ID: <20200321174303.GA7930@afzalpc>
+References: <cover.1581478323.git.afzal.mohd.ma@gmail.com>
+ <87y2somido.fsf@nanos.tec.linutronix.de>
+ <20200227110713.GA5708@afzalpc>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200227110713.GA5708@afzalpc>
+User-Agent: Mutt/1.9.3 (2018-01-21)
 Sender: linux-m68k-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
+Hi Thomas,
 
-On Fri, 20 Mar 2020, John Paul Adrian Glaubitz wrote:
+On Thu, Feb 27, 2020 at 04:37:13PM +0530, afzal mohammed wrote:
+> On Thu, Feb 27, 2020 at 11:31:15AM +0100, Thomas Gleixner wrote:
 
-> The question is how many of these 17 architectures are actually 
-> supported by Debian.
+> > Vs. merging this series, I suggest the following approach:
+> > 
+> >    - Resubmit the individual changes as single patches or small series
+> >      to the relevant maintainers and subsystem mailing lists. They have
+> >      no dependency on a core change and can be applied where they belong
+> >      to.
+> > 
+> >    - After 5.6-rc6, verify which parts have made their way into
+> >      linux-next and resubmit the ignored ones as a series to me along
+> >      with the removal of the core parts.
+> > 
+> > That way we can avoid conflicting changes between subsystems and the tip
+> > irq/core branch as much as possible.
 > 
+> Okay, i will do accordingly.
 
-I don't see how this issue relates to any particular distro. Perhaps we 
-can drop the upstream Cc.
+i am on it, is delayed due to the reason as mentioned at,
+
+https://lkml.kernel.org/r/20200321172626.GA6323@afzalpc
+
+[ not repeating contents here since other mail was sent just now,
+  cc'ing you ]
+
+Regards
+afzal
+
