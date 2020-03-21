@@ -2,117 +2,113 @@ Return-Path: <SRS0=RUr3=5G=vger.kernel.org=linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.3 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-3.8 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
+	MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS autolearn=no
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 7A284C4332D
-	for <linux-m68k@archiver.kernel.org>; Sat, 21 Mar 2020 17:43:12 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 898DEC4332B
+	for <linux-m68k@archiver.kernel.org>; Sat, 21 Mar 2020 19:29:01 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 4C91920732
-	for <linux-m68k@archiver.kernel.org>; Sat, 21 Mar 2020 17:43:12 +0000 (UTC)
-Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="UXIHaUBh"
+	by mail.kernel.org (Postfix) with ESMTP id 5E6CE20732
+	for <linux-m68k@archiver.kernel.org>; Sat, 21 Mar 2020 19:29:01 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727197AbgCURnL (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Sat, 21 Mar 2020 13:43:11 -0400
-Received: from mail-pf1-f193.google.com ([209.85.210.193]:34349 "EHLO
-        mail-pf1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727192AbgCURnL (ORCPT
+        id S1727296AbgCUT3B (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Sat, 21 Mar 2020 15:29:01 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:39274 "EHLO
+        Galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727264AbgCUT3B (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Sat, 21 Mar 2020 13:43:11 -0400
-Received: by mail-pf1-f193.google.com with SMTP id 23so5101838pfj.1
-        for <linux-m68k@lists.linux-m68k.org>; Sat, 21 Mar 2020 10:43:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=3fStVl9rL3YRgIiAf/TzVVtMNrh3VX50fi0qgiiuA8o=;
-        b=UXIHaUBhFEcnW+OMHvNaZ8x6pk7Kw7xSi1XSqUQ/ypXJwX+/0kjbU9/UcI39UYrFww
-         L4SWYiuz/x5ZDo+euy1EVFm6/xEfsJuGVNtbr58w1aJIyLLbxr5Zvw2YV6+Jz2IFJLx1
-         hSKDnD+ugCfCtYPbwa0qtQZzvaVCFI/U0Hh49Bh/9v4+8cPYNZpxmxPxHCL/ucL4FfPB
-         t55wM9/sifQrsJ2x7qaYOUyTwSXOMqFFX7kbT5BvfLIkW8EyaBXHAHAACDZSlA65LB0e
-         +oYG1mMj2pkG+negyyMWiq2E57sl6r93kYgmOlv5Tvke5FfWZ2pC2/wfVUCgtyT6TaL9
-         9P/Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=3fStVl9rL3YRgIiAf/TzVVtMNrh3VX50fi0qgiiuA8o=;
-        b=UpNx3Tsn/sHOBQ9+7lwXFyLLZlF4/NnmQRGtRbloGKgsw4tR1zIwSj643kDZlzXCJY
-         lM0OwMDdN6Hr7UDpEsrC8gh2y9b1gN5hOL1VOf4STHXADhXm6nmselOSDtBKny2BFONF
-         SWOgrsw1XVXm+rTuiKSqGF7RWal93SL6cjUxGksewkLOgy3cnP263AdTF0lnHcd+f258
-         akovozghrsle0ugExbpvQ39TN96Dj+SHMWYLwfSr1cja5+927PheNMaTTZIIq9jZ0uE7
-         zZ71g1GmMCZ4gN1DLt+vA3ATDUli/91rmOIhNO/kwMA0nNYJ757M8gJ9ufnckWa/2X9u
-         anKw==
-X-Gm-Message-State: ANhLgQ1knPEZT3p1QSQfykZXesiWXOxYYWVZTvGGPuhon2usnBmcAxZj
-        YubPdmUQcc35hR9XTTpKbwA=
-X-Google-Smtp-Source: ADFU+vtSB9sj3T3LCfhecLdyVMoQimjNCV0Ow3ys209048E+VImdKW1kqpUYGGvxT4nwaYSYvsoI7Q==
-X-Received: by 2002:a63:e856:: with SMTP id a22mr1215468pgk.283.1584812590871;
-        Sat, 21 Mar 2020 10:43:10 -0700 (PDT)
-Received: from localhost ([49.207.51.24])
-        by smtp.gmail.com with ESMTPSA id f127sm8973833pfa.9.2020.03.21.10.43.09
-        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
-        Sat, 21 Mar 2020 10:43:10 -0700 (PDT)
-Date:   Sat, 21 Mar 2020 23:13:03 +0530
-From:   afzal mohammed <afzal.mohd.ma@gmail.com>
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     linux-kernel@vger.kernel.org, linux-rpi-kernel@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-samsung-soc@vger.kernel.org, x86@kernel.org,
-        linux-sh@vger.kernel.org, linux-s390@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, linux-parisc@vger.kernel.org,
-        linux-mips@vger.kernel.org, linux-m68k@lists.linux-m68k.org,
-        linux-ia64@vger.kernel.org, linux-hexagon@vger.kernel.org,
-        linux-c6x-dev@linux-c6x.org, linux-omap@vger.kernel.org,
-        linux-alpha@vger.kernel.org, Julia Lawall <Julia.Lawall@lip6.fr>,
-        Gilles Muller <Gilles.Muller@lip6.fr>,
-        Nicolas Palix <nicolas.palix@imag.fr>,
-        Michal Marek <michal.lkml@markovi.net>
-Subject: Re: [PATCH 00/18] genirq: Remove setup_irq()
-Message-ID: <20200321174303.GA7930@afzalpc>
-References: <cover.1581478323.git.afzal.mohd.ma@gmail.com>
- <87y2somido.fsf@nanos.tec.linutronix.de>
- <20200227110713.GA5708@afzalpc>
+        Sat, 21 Mar 2020 15:29:01 -0400
+Received: from p5de0bf0b.dip0.t-ipconnect.de ([93.224.191.11] helo=nanos.tec.linutronix.de)
+        by Galois.linutronix.de with esmtpsa (TLS1.2:DHE_RSA_AES_256_CBC_SHA256:256)
+        (Exim 4.80)
+        (envelope-from <tglx@linutronix.de>)
+        id 1jFjnY-0008Uo-OD; Sat, 21 Mar 2020 20:28:44 +0100
+Received: by nanos.tec.linutronix.de (Postfix, from userid 1000)
+        id 1657D1040D4; Sat, 21 Mar 2020 20:28:43 +0100 (CET)
+From:   Thomas Gleixner <tglx@linutronix.de>
+To:     kbuild test robot <lkp@intel.com>,
+        "Peter Zijlstra \(Intel\)" <peterz@infradead.org>
+Cc:     kbuild-all@lists.01.org, linux-kernel@vger.kernel.org,
+        x86@kernel.org, Greg Ungerer <gerg@linux-m68k.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        linux-m68k@lists.linux-m68k.org
+Subject: Re: [tip:locking/core 19/28] include/linux/fs.h:1422:29: error: array type has incomplete element type 'struct percpu_rw_semaphore'
+In-Reply-To: <202003220209.CjthuGEA%lkp@intel.com>
+References: <202003220209.CjthuGEA%lkp@intel.com>
+Date:   Sat, 21 Mar 2020 20:28:43 +0100
+Message-ID: <87fte1qzh0.fsf@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200227110713.GA5708@afzalpc>
-User-Agent: Mutt/1.9.3 (2018-01-21)
+Content-Type: text/plain
+X-Linutronix-Spam-Score: -1.0
+X-Linutronix-Spam-Level: -
+X-Linutronix-Spam-Status: No , -1.0 points, 5.0 required,  ALL_TRUSTED=-1,SHORTCIRCUIT=-0.0001
 Sender: linux-m68k-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-Hi Thomas,
+kbuild test robot <lkp@intel.com> writes:
+> All errors (new ones prefixed by >>):
+>
+>    In file included from include/linux/huge_mm.h:8,
+>                     from include/linux/mm.h:567,
+>                     from arch/m68k/include/asm/uaccess_no.h:8,
+>                     from arch/m68k/include/asm/uaccess.h:3,
+>                     from include/linux/uaccess.h:11,
+>                     from include/linux/sched/task.h:11,
+>                     from include/linux/sched/signal.h:9,
+>                     from include/linux/rcuwait.h:6,
+>                     from include/linux/percpu-rwsem.h:7,
+>                     from kernel/locking/percpu-rwsem.c:6:
+>>> include/linux/fs.h:1422:29: error: array type has incomplete element type 'struct percpu_rw_semaphore'
+>     1422 |  struct percpu_rw_semaphore rw_sem[SB_FREEZE_LEVELS];
+>          |                             ^~~~~~
 
-On Thu, Feb 27, 2020 at 04:37:13PM +0530, afzal mohammed wrote:
-> On Thu, Feb 27, 2020 at 11:31:15AM +0100, Thomas Gleixner wrote:
+Same problem as in the other architectures and same cure.
 
-> > Vs. merging this series, I suggest the following approach:
-> > 
-> >    - Resubmit the individual changes as single patches or small series
-> >      to the relevant maintainers and subsystem mailing lists. They have
-> >      no dependency on a core change and can be applied where they belong
-> >      to.
-> > 
-> >    - After 5.6-rc6, verify which parts have made their way into
-> >      linux-next and resubmit the ignored ones as a series to me along
-> >      with the removal of the core parts.
-> > 
-> > That way we can avoid conflicting changes between subsystems and the tip
-> > irq/core branch as much as possible.
-> 
-> Okay, i will do accordingly.
+Thanks,
 
-i am on it, is delayed due to the reason as mentioned at,
+        tglx
+---
+Subject: m68knommu: Remove mm.h include from uaccess_no.h
+From: Thomas Gleixner <tglx@linutronix.de>
+Date: Sat, 21 Mar 2020 20:22:10 +0100
 
-https://lkml.kernel.org/r/20200321172626.GA6323@afzalpc
+In file included
+  from include/linux/huge_mm.h:8,
+  from include/linux/mm.h:567,
+  from arch/m68k/include/asm/uaccess_no.h:8,
+  from arch/m68k/include/asm/uaccess.h:3,
+  from include/linux/uaccess.h:11,
+  from include/linux/sched/task.h:11,
+  from include/linux/sched/signal.h:9,
+  from include/linux/rcuwait.h:6,
+  from include/linux/percpu-rwsem.h:7,
+  from kernel/locking/percpu-rwsem.c:6:
+ include/linux/fs.h:1422:29: error: array type has incomplete element type 'struct percpu_rw_semaphore'
+    1422 |  struct percpu_rw_semaphore rw_sem[SB_FREEZE_LEVELS];
 
-[ not repeating contents here since other mail was sent just now,
-  cc'ing you ]
+Removing the include of linux/mm.h from the uaccess header solves the problem
+and various build tests of nommu configurations still work.
 
-Regards
-afzal
+Fixes: 80fbaf1c3f29 ("rcuwait: Add @state argument to rcuwait_wait_event()")
+Reported-by: kbuild test robot <lkp@intel.com>
+Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+Cc: Greg Ungerer <gerg@linux-m68k.org>
+Cc: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: linux-m68k@lists.linux-m68k.org
+---
+ arch/m68k/include/asm/uaccess_no.h |    1 -
+ 1 file changed, 1 deletion(-)
 
+--- a/arch/m68k/include/asm/uaccess_no.h
++++ b/arch/m68k/include/asm/uaccess_no.h
+@@ -5,7 +5,6 @@
+ /*
+  * User space memory access functions
+  */
+-#include <linux/mm.h>
+ #include <linux/string.h>
+ 
+ #include <asm/segment.h>
