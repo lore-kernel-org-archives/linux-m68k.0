@@ -6,32 +6,33 @@ X-Spam-Status: No, score=-7.2 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
 	MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,
 	USER_AGENT_SANE_1 autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A830AC4332D
-	for <linux-m68k@archiver.kernel.org>; Sat, 21 Mar 2020 22:48:08 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C9702C4332B
+	for <linux-m68k@archiver.kernel.org>; Sat, 21 Mar 2020 23:01:53 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 7E61720754
-	for <linux-m68k@archiver.kernel.org>; Sat, 21 Mar 2020 22:48:08 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 9783820754
+	for <linux-m68k@archiver.kernel.org>; Sat, 21 Mar 2020 23:01:53 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727296AbgCUWsI (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Sat, 21 Mar 2020 18:48:08 -0400
-Received: from outpost1.zedat.fu-berlin.de ([130.133.4.66]:41109 "EHLO
+        id S1726997AbgCUXBx (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Sat, 21 Mar 2020 19:01:53 -0400
+Received: from outpost1.zedat.fu-berlin.de ([130.133.4.66]:59355 "EHLO
         outpost1.zedat.fu-berlin.de" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727915AbgCUWsI (ORCPT
+        by vger.kernel.org with ESMTP id S1726755AbgCUXBx (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Sat, 21 Mar 2020 18:48:08 -0400
+        Sat, 21 Mar 2020 19:01:53 -0400
 Received: from inpost2.zedat.fu-berlin.de ([130.133.4.69])
           by outpost.zedat.fu-berlin.de (Exim 4.93)
           with esmtps (TLS1.2)
           tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
           (envelope-from <glaubitz@physik.fu-berlin.de>)
-          id 1jFmuS-00374Y-HM; Sat, 21 Mar 2020 23:48:04 +0100
+          id 1jFn7m-00393m-0Q; Sun, 22 Mar 2020 00:01:50 +0100
 Received: from p5b13a155.dip0.t-ipconnect.de ([91.19.161.85] helo=[192.168.178.139])
           by inpost2.zedat.fu-berlin.de (Exim 4.93)
           with esmtpsa (TLS1.2)
           tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
           (envelope-from <glaubitz@physik.fu-berlin.de>)
-          id 1jFmuS-001OoF-AJ; Sat, 21 Mar 2020 23:48:04 +0100
+          id 1jFn7l-001RRP-Jc; Sun, 22 Mar 2020 00:01:49 +0100
 Subject: Re: Seccomp support for linux-m68k
+From:   John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
 To:     Michael Schmitz <schmitzmic@gmail.com>,
         Finn Thain <fthain@telegraphics.com.au>
 Cc:     linux-m68k <linux-m68k@lists.linux-m68k.org>,
@@ -41,7 +42,7 @@ References: <cd3ff9a1-030e-1e34-3950-99088ef81be0@physik.fu-berlin.de>
  <alpine.LNX.2.22.394.2003210904040.8@nippy.intranet>
  <4b2815bb-1eaf-d0a3-0ab4-5db473dfaa05@physik.fu-berlin.de>
  <c1e0c86d-fb71-f203-b66b-9645107a270f@gmail.com>
-From:   John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
+ <5f91b09f-30ff-c658-b2a5-2d4b4efb6372@physik.fu-berlin.de>
 Autocrypt: addr=glaubitz@physik.fu-berlin.de; keydata=
  mQINBE3JE9wBEADMrYGNfz3oz6XLw9XcWvuIxIlPWoTyw9BxTicfGAv0d87wngs9U+d52t/R
  EggPePf34gb7/k8FBY1IgyxnZEB5NxUb1WtW0M3GUxpPx6gBZqOm7SK1ZW3oSORw+T7Aezl3
@@ -86,12 +87,12 @@ Autocrypt: addr=glaubitz@physik.fu-berlin.de; keydata=
  jEF9ImTPcYZpw5vhdyPwBdXW2lSjV3EAqknWujRgcsm84nycuJnImwJptR481EWmtuH6ysj5
  YhRVGbQPfdsjVUQfZdRdkEv4CZ90pdscBi1nRqcqANtzC+WQFwekDzk2lGqNRDg56s+q0KtY
  scOkTAZQGVpD/8AaLH4v1w==
-Message-ID: <5f91b09f-30ff-c658-b2a5-2d4b4efb6372@physik.fu-berlin.de>
-Date:   Sat, 21 Mar 2020 23:48:03 +0100
+Message-ID: <1da68113-4a9a-d88a-0ead-26b83cef61e4@physik.fu-berlin.de>
+Date:   Sun, 22 Mar 2020 00:01:48 +0100
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.5.0
 MIME-Version: 1.0
-In-Reply-To: <c1e0c86d-fb71-f203-b66b-9645107a270f@gmail.com>
+In-Reply-To: <5f91b09f-30ff-c658-b2a5-2d4b4efb6372@physik.fu-berlin.de>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -101,42 +102,24 @@ Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-On 3/21/20 11:18 PM, Michael Schmitz wrote:
-> Am 21.03.2020 um 11:59 schrieb John Paul Adrian Glaubitz:
->> On 3/20/20 11:49 PM, Finn Thain wrote:
->>> I suspect (without evidence) that many m68k systems are actually virtual
->>> machines. And the need for container hosting on m68k seems negligible.
->>
->> It isn't about security. It's about being able to build more packages
->> as some packages have started to make libseccomp support mandatory.
+On 3/21/20 11:48 PM, John Paul Adrian Glaubitz wrote:
+> It doesn't seem to be much that's necessary:
 > 
-> Is there a good technical reason for this decision? I suppose most of these packages are not about VM or container hosting?
-
-I don't know but I don't think I have a good case arguing against that
-as multiple upstream projects are using it.
-
-> What about checking at runtime for availability of the library, and disabling VM related functionality if it wasn't possible to load?
+>> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=c90f06943e05519a87140dc407cf589c220aeedf
 > 
-> In the event that kernel support can't be avoided: I suppose there a git commit for Helge's hppa changes that would help gauge the effort required for implementing such support?
+>> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=910cd32e552ea09caa89cdbe328e468979b030dd
+> 
+> Other architectures are similarly minimal:
+> 
+>> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=8855d608c145c1ca0e26f4da00741080bb49d80d
+> 
+>> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=d218af78492a36a4ae607c08fedfb59258440314
+> 
+> So, I think it's feasible to add minimal seccomp support for m68k.
 
-It doesn't seem to be much that's necessary:
+The commit for TILE also seems to be interesting:
 
-> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=c90f06943e05519a87140dc407cf589c220aeedf
-
-> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=910cd32e552ea09caa89cdbe328e468979b030dd
-
-Other architectures are similarly minimal:
-
-> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=8855d608c145c1ca0e26f4da00741080bb49d80d
-
-> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=d218af78492a36a4ae607c08fedfb59258440314
-
-So, I think it's feasible to add minimal seccomp support for m68k.
-
-PS: I'm going to set up the Amiga 500 with the xsurf500 soonish. Got all hardware
-    that I need now.
-
-Adrian
+> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=a0ddef81f4aeeeec3326f6b6a255d8ea13b41908
 
 -- 
  .''`.  John Paul Adrian Glaubitz
