@@ -2,124 +2,144 @@ Return-Path: <SRS0=RUr3=5G=vger.kernel.org=linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-0.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
-	autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-7.2 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
+	MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,
+	USER_AGENT_SANE_1 autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 770E1C4332B
-	for <linux-m68k@archiver.kernel.org>; Sat, 21 Mar 2020 22:18:33 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A830AC4332D
+	for <linux-m68k@archiver.kernel.org>; Sat, 21 Mar 2020 22:48:08 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 47C7B20663
-	for <linux-m68k@archiver.kernel.org>; Sat, 21 Mar 2020 22:18:33 +0000 (UTC)
-Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Fmo8TK6P"
+	by mail.kernel.org (Postfix) with ESMTP id 7E61720754
+	for <linux-m68k@archiver.kernel.org>; Sat, 21 Mar 2020 22:48:08 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728026AbgCUWSc (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Sat, 21 Mar 2020 18:18:32 -0400
-Received: from mail-pf1-f195.google.com ([209.85.210.195]:45216 "EHLO
-        mail-pf1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727258AbgCUWSc (ORCPT
+        id S1727296AbgCUWsI (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Sat, 21 Mar 2020 18:48:08 -0400
+Received: from outpost1.zedat.fu-berlin.de ([130.133.4.66]:41109 "EHLO
+        outpost1.zedat.fu-berlin.de" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727915AbgCUWsI (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Sat, 21 Mar 2020 18:18:32 -0400
-Received: by mail-pf1-f195.google.com with SMTP id j10so5358553pfi.12
-        for <linux-m68k@lists.linux-m68k.org>; Sat, 21 Mar 2020 15:18:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:references:cc:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-transfer-encoding;
-        bh=GZwpiXFKdWuIMRN8W/3GUjCMTFj3rPd8CIE9BNZqwhs=;
-        b=Fmo8TK6PJ2+E/1n0zu5jGOHU3fOuS0jELIvzTESWBPRJib3RNhbkq8aAfY9/Pu+TXL
-         OvKrr/oYX1bKTX6TOba0sbMEx/M4F5wPe1z9RaLRvhIWVxLccPtmZIcgKHIFEqWC0j1l
-         IxaeLikzDRKjk15JNtbm85KgtJsKeBe+xIHQkRzzh86B5B3EZz8Wd6j3wknWIB+uvnNG
-         +R/sxMND+ENmWLErf6ihGOJjI/dt/Wxr1iAQQ/7m5tvbyIs3QKUnX3KeO1R4Mj+Rjqlc
-         n4oXKqPjIupk4sRzVUc0C81ExqWip+awiI8NF9gwfZO56QGNtOn8ohODE6ivDpgkcfg3
-         r+4Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:references:cc:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding;
-        bh=GZwpiXFKdWuIMRN8W/3GUjCMTFj3rPd8CIE9BNZqwhs=;
-        b=dyD5hf+yNBKEwgzW942QD0s/z6+m0UVloZgzu2SeYMRDSUKE2ktCRooRs9S7YTUaKd
-         5X5Z8Q6W1UEG0mVO/01fdX7iWsKkFIrXX4SygdkW77xX1UGu5d76Bi5Pf9twb7+pd8Hh
-         Mir+EZ8Q0Wy7i/WpS4PCvZzGPOldsSRfbLQU6z5WUeiUHLfnt+23cewi1yJHhB0/pH1s
-         GV/ieLiumQKk6MbjA3ePKY11kH1aeOq6/e0F1ZFS+XrLuaL77EwcfsQ9/394qc+Qt9QA
-         pa+ixeMcbqo0qMkTxr2ZhM1L0rGIEIhldqUsbguiICKjcm01ByySPbFZd8xBU1Ro16E6
-         egPQ==
-X-Gm-Message-State: ANhLgQ1mToIa3iD1KH5/RoC2lobHfbUN3gFizk9KmLaKzcI/vZBkUOe9
-        EsJLby5raYYE+b2ufk7/Fd4=
-X-Google-Smtp-Source: ADFU+vvx3/oCptBDPZVWZTbXt3tTAPsdrZN/03/w1+oRVHbDAWL9SGZTN4pR66Ipv0J9FVDQd7/9WA==
-X-Received: by 2002:a65:4c88:: with SMTP id m8mr9027990pgt.192.1584829110359;
-        Sat, 21 Mar 2020 15:18:30 -0700 (PDT)
-Received: from [192.168.1.101] (122-58-181-188-adsl.sparkbb.co.nz. [122.58.181.188])
-        by smtp.gmail.com with ESMTPSA id y15sm9309990pfc.206.2020.03.21.15.18.26
-        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Sat, 21 Mar 2020 15:18:29 -0700 (PDT)
+        Sat, 21 Mar 2020 18:48:08 -0400
+Received: from inpost2.zedat.fu-berlin.de ([130.133.4.69])
+          by outpost.zedat.fu-berlin.de (Exim 4.93)
+          with esmtps (TLS1.2)
+          tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+          (envelope-from <glaubitz@physik.fu-berlin.de>)
+          id 1jFmuS-00374Y-HM; Sat, 21 Mar 2020 23:48:04 +0100
+Received: from p5b13a155.dip0.t-ipconnect.de ([91.19.161.85] helo=[192.168.178.139])
+          by inpost2.zedat.fu-berlin.de (Exim 4.93)
+          with esmtpsa (TLS1.2)
+          tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+          (envelope-from <glaubitz@physik.fu-berlin.de>)
+          id 1jFmuS-001OoF-AJ; Sat, 21 Mar 2020 23:48:04 +0100
 Subject: Re: Seccomp support for linux-m68k
-To:     John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
+To:     Michael Schmitz <schmitzmic@gmail.com>,
         Finn Thain <fthain@telegraphics.com.au>
-References: <cd3ff9a1-030e-1e34-3950-99088ef81be0@physik.fu-berlin.de>
- <alpine.LNX.2.22.394.2003210904040.8@nippy.intranet>
- <4b2815bb-1eaf-d0a3-0ab4-5db473dfaa05@physik.fu-berlin.de>
 Cc:     linux-m68k <linux-m68k@lists.linux-m68k.org>,
         Debian m68k <debian-68k@lists.debian.org>,
         Helge Deller <deller@gmx.de>
-From:   Michael Schmitz <schmitzmic@gmail.com>
-Message-ID: <c1e0c86d-fb71-f203-b66b-9645107a270f@gmail.com>
-Date:   Sun, 22 Mar 2020 11:18:18 +1300
-User-Agent: Mozilla/5.0 (X11; Linux ppc; rv:45.0) Gecko/20100101
- Icedove/45.4.0
+References: <cd3ff9a1-030e-1e34-3950-99088ef81be0@physik.fu-berlin.de>
+ <alpine.LNX.2.22.394.2003210904040.8@nippy.intranet>
+ <4b2815bb-1eaf-d0a3-0ab4-5db473dfaa05@physik.fu-berlin.de>
+ <c1e0c86d-fb71-f203-b66b-9645107a270f@gmail.com>
+From:   John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
+Autocrypt: addr=glaubitz@physik.fu-berlin.de; keydata=
+ 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
+ scOkTAZQGVpD/8AaLH4v1w==
+Message-ID: <5f91b09f-30ff-c658-b2a5-2d4b4efb6372@physik.fu-berlin.de>
+Date:   Sat, 21 Mar 2020 23:48:03 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.5.0
 MIME-Version: 1.0
-In-Reply-To: <4b2815bb-1eaf-d0a3-0ab4-5db473dfaa05@physik.fu-berlin.de>
-Content-Type: text/plain; charset=utf-8; format=flowed
+In-Reply-To: <c1e0c86d-fb71-f203-b66b-9645107a270f@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
+X-Originating-IP: 91.19.161.85
 Sender: linux-m68k-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-Adrian,
+On 3/21/20 11:18 PM, Michael Schmitz wrote:
+> Am 21.03.2020 um 11:59 schrieb John Paul Adrian Glaubitz:
+>> On 3/20/20 11:49 PM, Finn Thain wrote:
+>>> I suspect (without evidence) that many m68k systems are actually virtual
+>>> machines. And the need for container hosting on m68k seems negligible.
+>>
+>> It isn't about security. It's about being able to build more packages
+>> as some packages have started to make libseccomp support mandatory.
+> 
+> Is there a good technical reason for this decision? I suppose most of these packages are not about VM or container hosting?
 
-Am 21.03.2020 um 11:59 schrieb John Paul Adrian Glaubitz:
-> On 3/20/20 11:49 PM, Finn Thain wrote:
->> I suspect (without evidence) that many m68k systems are actually virtual
->> machines. And the need for container hosting on m68k seems negligible.
->
-> It isn't about security. It's about being able to build more packages
-> as some packages have started to make libseccomp support mandatory.
+I don't know but I don't think I have a good case arguing against that
+as multiple upstream projects are using it.
 
-Is there a good technical reason for this decision? I suppose most of 
-these packages are not about VM or container hosting?
+> What about checking at runtime for availability of the library, and disabling VM related functionality if it wasn't possible to load?
+> 
+> In the event that kernel support can't be avoided: I suppose there a git commit for Helge's hppa changes that would help gauge the effort required for implementing such support?
 
-What about checking at runtime for availability of the library, and 
-disabling VM related functionality if it wasn't possible to load?
+It doesn't seem to be much that's necessary:
 
-In the event that kernel support can't be avoided: I suppose there a git 
-commit for Helge's hppa changes that would help gauge the effort 
-required for implementing such support?
+> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=c90f06943e05519a87140dc407cf589c220aeedf
 
-Cheers,
+> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=910cd32e552ea09caa89cdbe328e468979b030dd
 
-	Michael
+Other architectures are similarly minimal:
 
+> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=8855d608c145c1ca0e26f4da00741080bb49d80d
 
->
->> Therefore, there doesn't seem to be a lot of actual benefit from seccomp.
->
-> I disagree for the aforementioned reasons.
->
->> There are 17 architectures (out of 25) lacking seccomp support. This
->> suggests that the portability issue around this missing feature can't
->> easily be pinned on m68k.
->
-> The question is how many of these 17 architectures are actually supported
-> by Debian.
->
-> If you look at the build results for libseccomp in Debian, you can see that
-> alpha, ia64, m68k, sh and sparc64 are missing the feature, everyone else
-> supports it [1].
->
-> Adrian
->
->> [1] https://buildd.debian.org/status/package.php?p=libseccomp&suite=sid
->
+> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=d218af78492a36a4ae607c08fedfb59258440314
+
+So, I think it's feasible to add minimal seccomp support for m68k.
+
+PS: I'm going to set up the Amiga 500 with the xsurf500 soonish. Got all hardware
+    that I need now.
+
+Adrian
+
+-- 
+ .''`.  John Paul Adrian Glaubitz
+: :' :  Debian Developer - glaubitz@debian.org
+`. `'   Freie Universitaet Berlin - glaubitz@physik.fu-berlin.de
+  `-    GPG: 62FF 8A75 84E0 2956 9546  0006 7426 3B37 F5B5 F913
