@@ -2,106 +2,101 @@ Return-Path: <SRS0=yY8W=5N=vger.kernel.org=linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-0.6 required=3.0 tests=DKIM_INVALID,DKIM_SIGNED,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
-	autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-2.3 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 7319DC2D0ED
-	for <linux-m68k@archiver.kernel.org>; Sat, 28 Mar 2020 02:49:00 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 44742C43331
+	for <linux-m68k@archiver.kernel.org>; Sat, 28 Mar 2020 07:32:58 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 46F952076B
-	for <linux-m68k@archiver.kernel.org>; Sat, 28 Mar 2020 02:49:00 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 0D44820714
+	for <linux-m68k@archiver.kernel.org>; Sat, 28 Mar 2020 07:32:58 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=mg.codeaurora.org header.i=@mg.codeaurora.org header.b="kNLf+dqu"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="jl9qdfm3"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727115AbgC1Cs7 (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Fri, 27 Mar 2020 22:48:59 -0400
-Received: from mail26.static.mailgun.info ([104.130.122.26]:53494 "EHLO
-        mail26.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727121AbgC1Cs7 (ORCPT
+        id S1725865AbgC1Hc5 (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Sat, 28 Mar 2020 03:32:57 -0400
+Received: from mail-pj1-f66.google.com ([209.85.216.66]:34934 "EHLO
+        mail-pj1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725810AbgC1Hc5 (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Fri, 27 Mar 2020 22:48:59 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1585363739; h=Content-Transfer-Encoding: Content-Type:
- MIME-Version: Message-ID: Date: Subject: In-Reply-To: References: Cc:
- To: From: Reply-To: Sender;
- bh=+WpPnB0uFYRHxbJdTSXbZ3CsA3rPO9kHVEIdO35S7As=; b=kNLf+dquLdf0VM8WY3WlpIQEYIyLTpbi9Q96fiVxMWC2U32hZul+Pjwk+Hi+K8rnpP1lnbk4
- bLPar+8i79oU6SptM6EJbBYWfWS4+7akXVuNgJJ6MofnO/S9du4MvAtCAe9n5csTm02h1807
- IH0FCC2GM38ZTI1pI5nibZn0LRA=
-X-Mailgun-Sending-Ip: 104.130.122.26
-X-Mailgun-Sid: WyIzNWIyNSIsICJsaW51eC1tNjhrQGxpc3RzLmxpbnV4LW02OGsub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171])
- by mxa.mailgun.org with ESMTP id 5e7ebb0a.7fec77ce9df8-smtp-out-n01;
- Sat, 28 Mar 2020 02:48:42 -0000 (UTC)
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 19A49C4478F; Sat, 28 Mar 2020 02:48:42 +0000 (UTC)
-Received: from BCAIN (104-54-226-75.lightspeed.austtx.sbcglobal.net [104.54.226.75])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: bcain)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id A7892C433F2;
-        Sat, 28 Mar 2020 02:48:39 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org A7892C433F2
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=bcain@codeaurora.org
-Reply-To: <bcain@codeaurora.org>
-From:   "Brian Cain" <bcain@codeaurora.org>
-To:     "'afzal mohammed'" <afzal.mohd.ma@gmail.com>,
-        "'Thomas Gleixner'" <tglx@linutronix.de>
-Cc:     <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-samsung-soc@vger.kernel.org>, <x86@kernel.org>,
-        <linux-sh@vger.kernel.org>, <linux-s390@vger.kernel.org>,
-        <linuxppc-dev@lists.ozlabs.org>, <linux-parisc@vger.kernel.org>,
-        <linux-mips@vger.kernel.org>, <linux-m68k@lists.linux-m68k.org>,
-        <linux-ia64@vger.kernel.org>, <linux-hexagon@vger.kernel.org>,
-        <linux-c6x-dev@linux-c6x.org>, <linux-omap@vger.kernel.org>,
-        <linux-alpha@vger.kernel.org>
-References: <20200321174303.GA7930@afzalpc> <cover.1585320721.git.afzal.mohd.ma@gmail.com>
-In-Reply-To: <cover.1585320721.git.afzal.mohd.ma@gmail.com>
-Subject: RE: [PATCH 0/6] Kill setup_irq()
-Date:   Fri, 27 Mar 2020 21:48:38 -0500
-Message-ID: <059b01d604ab$637355b0$2a5a0110$@codeaurora.org>
+        Sat, 28 Mar 2020 03:32:57 -0400
+Received: by mail-pj1-f66.google.com with SMTP id g9so4784649pjp.0
+        for <linux-m68k@lists.linux-m68k.org>; Sat, 28 Mar 2020 00:32:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=+lojOXOS3R1T9zdX8YSaUVNPC+Uk4217Q9UeUwGqUmA=;
+        b=jl9qdfm3jYBUJpt5JTOg0fpX+frk2U8CDB7NHla700eqbFzeaU5ddRrnkF9ulMws0I
+         c9g6XZd+U1YMZF9/3LdLKd5v8wOHCvTpOK+41v0dC3rQjbl2zkCOwiKzOqyresW/3Mhq
+         BcOd0bkAnUi+Zs7kVOtOgih+P95QQehDeut+bVNmK8w/pAqzhJa2/sY/cLipp5Rtomn+
+         y0jJ0Kfcg23Own5fnZnDcgXrP0oJy8MDqN1sdD4UE300VgF+beh9dCTKovy8+8QPgJF7
+         tM2KC+Uqrh6IJRCMsJf7pzvSFnZ37F703JjyJuB4ywUQrA0N8cjQpQZ/4AufrBOA8und
+         kRiA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=+lojOXOS3R1T9zdX8YSaUVNPC+Uk4217Q9UeUwGqUmA=;
+        b=iTHVLkNUjWsaVBragOB+oPyOxworfjGa1FMbsqfU/j5AO6y1f9NkFj2C47hU4mrumk
+         h0SDjNCQlZ1UqI+OmrhWt1w9Iu/zRvSY4PeJCU9r1QZsOEfVvO9HrR0zvUuYhPTL8S5C
+         KrNaU4Yacb78BigAX9lLvIV7qkvHBxeTJEl938MepZajvXsVvmloFBZbubLHzU6x5DQF
+         oUs+pYj1WjB+S40AhMVJ+GS6cx2yEc2KOTEWxGoA+NT/oWOGBR25HiAmzc+H5Ve939rL
+         1rGUNh3hegOxiCsBjSbkhsEkECWaBYjWUVxubaXgEqdmXJSI7ytu58o7HCIW5yd/DdzI
+         KELw==
+X-Gm-Message-State: ANhLgQ216styY5ZaaSby5c0sxGi3+z7Xcx9pnLH4X0RPL6q9OyU47wVl
+        GFa8z6nZvEDwvWyi1uISScc=
+X-Google-Smtp-Source: ADFU+vvZAKeuGMHdxTRxMDuAgPAhSOtHeclFmaO/lZBPjDGm3MtGtV8wn85/n9JVZFDDDkLW/Z1SiA==
+X-Received: by 2002:a17:90b:4906:: with SMTP id kr6mr3699363pjb.13.1585380776339;
+        Sat, 28 Mar 2020 00:32:56 -0700 (PDT)
+Received: from localhost ([49.205.220.152])
+        by smtp.gmail.com with ESMTPSA id 132sm5624219pfc.183.2020.03.28.00.32.55
+        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
+        Sat, 28 Mar 2020 00:32:55 -0700 (PDT)
+Date:   Sat, 28 Mar 2020 13:02:53 +0530
+From:   afzal mohammed <afzal.mohd.ma@gmail.com>
+To:     Brian Cain <bcain@codeaurora.org>
+Cc:     'Thomas Gleixner' <tglx@linutronix.de>,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-samsung-soc@vger.kernel.org, x86@kernel.org,
+        linux-sh@vger.kernel.org, linux-s390@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, linux-parisc@vger.kernel.org,
+        linux-mips@vger.kernel.org, linux-m68k@lists.linux-m68k.org,
+        linux-ia64@vger.kernel.org, linux-hexagon@vger.kernel.org,
+        linux-c6x-dev@linux-c6x.org, linux-omap@vger.kernel.org,
+        linux-alpha@vger.kernel.org
+Subject: Re: [PATCH 0/6] Kill setup_irq()
+Message-ID: <20200328073253.GA5250@afzalpc>
+References: <20200321174303.GA7930@afzalpc>
+ <cover.1585320721.git.afzal.mohd.ma@gmail.com>
+ <059b01d604ab$637355b0$2a5a0110$@codeaurora.org>
 MIME-Version: 1.0
-Content-Type: text/plain;
-        charset="US-ASCII"
-Content-Transfer-Encoding: 7bit
-X-Mailer: Microsoft Outlook 16.0
-Content-Language: en-us
-Thread-Index: AQH+2owB65JuA03jeOLwO39OK5TmSwJQWNztp/kerbA=
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <059b01d604ab$637355b0$2a5a0110$@codeaurora.org>
+User-Agent: Mutt/1.9.3 (2018-01-21)
 Sender: linux-m68k-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-> -----Original Message-----
-> From: linux-hexagon-owner@vger.kernel.org <linux-hexagon-
-> owner@vger.kernel.org> On Behalf Of afzal mohammed
-> Sent: Friday, March 27, 2020 11:08 AM
-> To: Thomas Gleixner <tglx@linutronix.de>
-> Cc: linux-kernel@vger.kernel.org; linux-arm-kernel@lists.infradead.org;
-> linux-samsung-soc@vger.kernel.org; x86@kernel.org; linux-
-> sh@vger.kernel.org; linux-s390@vger.kernel.org; linuxppc-
-> dev@lists.ozlabs.org; linux-parisc@vger.kernel.org; linux-
-> mips@vger.kernel.org; linux-m68k@lists.linux-m68k.org; linux-
-> ia64@vger.kernel.org; linux-hexagon@vger.kernel.org; linux-c6x-dev@linux-
-> c6x.org; linux-omap@vger.kernel.org; linux-alpha@vger.kernel.org
-> Subject: [PATCH 0/6] Kill setup_irq()
-...
-> Note 1: sh toolchain is available, but that will not make the  relevant
-changes
-> compile as it has dependency of 64bit arch toolchain,  did try a Kconfig
-hack
-> to make it compile w/ 32bit sh toolchain, but it  failed due to other
-reasons
-> (unknown operands), so gave up on that.
-> Note 2: hexagon final image creation fails even w/o my patch, but it  has
-> been ensured that w/ my changes relevant object files are getting  built
-w/o
-> warnings.
+Hi Brian,
 
-Afzal,
+On Fri, Mar 27, 2020 at 09:48:38PM -0500, Brian Cain wrote:
 
-	What's the nature of the failure in "Note 2"?
+> > Note 2: hexagon final image creation fails even w/o my patch
 
--Brian
+> 	What's the nature of the failure in "Note 2"?
+
+drivers/base/firmware_loader/main.o: In function `fw_is_builtin_firmware':
+/devel/src/kernel6/drivers/base/firmware_loader/main.c:132:(.text+0xc8): relocation truncated to fit: R_HEX_16_X against symbol `__start_builtin_fw' defined in .modinfo section in .tmp_vmlinux1
+Makefile:1077: recipe for target 'vmlinux' failed
+make: *** [vmlinux] Error 1
+
+[ i had deleted the toolchain earlier, since you asked, download again &
+checked ]
+
+Regards
+afzal
