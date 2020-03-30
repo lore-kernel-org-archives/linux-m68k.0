@@ -1,102 +1,160 @@
-Return-Path: <SRS0=yY8W=5N=vger.kernel.org=linux-m68k-owner@kernel.org>
+Return-Path: <SRS0=H1tR=5P=vger.kernel.org=linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.3 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-13.8 required=3.0
+	tests=HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PULL_REQUEST,MAILING_LIST_MULTI,
+	MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 44742C43331
-	for <linux-m68k@archiver.kernel.org>; Sat, 28 Mar 2020 07:32:58 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 1FE4AC43331
+	for <linux-m68k@archiver.kernel.org>; Mon, 30 Mar 2020 10:05:40 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 0D44820714
-	for <linux-m68k@archiver.kernel.org>; Sat, 28 Mar 2020 07:32:58 +0000 (UTC)
-Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="jl9qdfm3"
+	by mail.kernel.org (Postfix) with ESMTP id EF04C206E6
+	for <linux-m68k@archiver.kernel.org>; Mon, 30 Mar 2020 10:05:39 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725865AbgC1Hc5 (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Sat, 28 Mar 2020 03:32:57 -0400
-Received: from mail-pj1-f66.google.com ([209.85.216.66]:34934 "EHLO
-        mail-pj1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725810AbgC1Hc5 (ORCPT
+        id S1728383AbgC3KFj (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Mon, 30 Mar 2020 06:05:39 -0400
+Received: from baptiste.telenet-ops.be ([195.130.132.51]:35626 "EHLO
+        baptiste.telenet-ops.be" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727522AbgC3KFj (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Sat, 28 Mar 2020 03:32:57 -0400
-Received: by mail-pj1-f66.google.com with SMTP id g9so4784649pjp.0
-        for <linux-m68k@lists.linux-m68k.org>; Sat, 28 Mar 2020 00:32:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=+lojOXOS3R1T9zdX8YSaUVNPC+Uk4217Q9UeUwGqUmA=;
-        b=jl9qdfm3jYBUJpt5JTOg0fpX+frk2U8CDB7NHla700eqbFzeaU5ddRrnkF9ulMws0I
-         c9g6XZd+U1YMZF9/3LdLKd5v8wOHCvTpOK+41v0dC3rQjbl2zkCOwiKzOqyresW/3Mhq
-         BcOd0bkAnUi+Zs7kVOtOgih+P95QQehDeut+bVNmK8w/pAqzhJa2/sY/cLipp5Rtomn+
-         y0jJ0Kfcg23Own5fnZnDcgXrP0oJy8MDqN1sdD4UE300VgF+beh9dCTKovy8+8QPgJF7
-         tM2KC+Uqrh6IJRCMsJf7pzvSFnZ37F703JjyJuB4ywUQrA0N8cjQpQZ/4AufrBOA8und
-         kRiA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=+lojOXOS3R1T9zdX8YSaUVNPC+Uk4217Q9UeUwGqUmA=;
-        b=iTHVLkNUjWsaVBragOB+oPyOxworfjGa1FMbsqfU/j5AO6y1f9NkFj2C47hU4mrumk
-         h0SDjNCQlZ1UqI+OmrhWt1w9Iu/zRvSY4PeJCU9r1QZsOEfVvO9HrR0zvUuYhPTL8S5C
-         KrNaU4Yacb78BigAX9lLvIV7qkvHBxeTJEl938MepZajvXsVvmloFBZbubLHzU6x5DQF
-         oUs+pYj1WjB+S40AhMVJ+GS6cx2yEc2KOTEWxGoA+NT/oWOGBR25HiAmzc+H5Ve939rL
-         1rGUNh3hegOxiCsBjSbkhsEkECWaBYjWUVxubaXgEqdmXJSI7ytu58o7HCIW5yd/DdzI
-         KELw==
-X-Gm-Message-State: ANhLgQ216styY5ZaaSby5c0sxGi3+z7Xcx9pnLH4X0RPL6q9OyU47wVl
-        GFa8z6nZvEDwvWyi1uISScc=
-X-Google-Smtp-Source: ADFU+vvZAKeuGMHdxTRxMDuAgPAhSOtHeclFmaO/lZBPjDGm3MtGtV8wn85/n9JVZFDDDkLW/Z1SiA==
-X-Received: by 2002:a17:90b:4906:: with SMTP id kr6mr3699363pjb.13.1585380776339;
-        Sat, 28 Mar 2020 00:32:56 -0700 (PDT)
-Received: from localhost ([49.205.220.152])
-        by smtp.gmail.com with ESMTPSA id 132sm5624219pfc.183.2020.03.28.00.32.55
-        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
-        Sat, 28 Mar 2020 00:32:55 -0700 (PDT)
-Date:   Sat, 28 Mar 2020 13:02:53 +0530
-From:   afzal mohammed <afzal.mohd.ma@gmail.com>
-To:     Brian Cain <bcain@codeaurora.org>
-Cc:     'Thomas Gleixner' <tglx@linutronix.de>,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-samsung-soc@vger.kernel.org, x86@kernel.org,
-        linux-sh@vger.kernel.org, linux-s390@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, linux-parisc@vger.kernel.org,
-        linux-mips@vger.kernel.org, linux-m68k@lists.linux-m68k.org,
-        linux-ia64@vger.kernel.org, linux-hexagon@vger.kernel.org,
-        linux-c6x-dev@linux-c6x.org, linux-omap@vger.kernel.org,
-        linux-alpha@vger.kernel.org
-Subject: Re: [PATCH 0/6] Kill setup_irq()
-Message-ID: <20200328073253.GA5250@afzalpc>
-References: <20200321174303.GA7930@afzalpc>
- <cover.1585320721.git.afzal.mohd.ma@gmail.com>
- <059b01d604ab$637355b0$2a5a0110$@codeaurora.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <059b01d604ab$637355b0$2a5a0110$@codeaurora.org>
-User-Agent: Mutt/1.9.3 (2018-01-21)
+        Mon, 30 Mar 2020 06:05:39 -0400
+Received: from ramsan ([84.195.182.253])
+        by baptiste.telenet-ops.be with bizsmtp
+        id La5c2200X5USYZQ01a5cqJ; Mon, 30 Mar 2020 12:05:37 +0200
+Received: from rox.of.borg ([192.168.97.57])
+        by ramsan with esmtp (Exim 4.90_1)
+        (envelope-from <geert@linux-m68k.org>)
+        id 1jIrIW-0004JP-Rw; Mon, 30 Mar 2020 12:05:36 +0200
+Received: from geert by rox.of.borg with local (Exim 4.90_1)
+        (envelope-from <geert@linux-m68k.org>)
+        id 1jIrIW-0001Iv-P7; Mon, 30 Mar 2020 12:05:36 +0200
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Greg Ungerer <gerg@linux-m68k.org>,
+        linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org,
+        Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: [GIT PULL] m68k updates for 5.7
+Date:   Mon, 30 Mar 2020 12:05:35 +0200
+Message-Id: <20200330100535.4967-1-geert@linux-m68k.org>
+X-Mailer: git-send-email 2.17.1
 Sender: linux-m68k-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-Hi Brian,
+	Hi Linus,
 
-On Fri, Mar 27, 2020 at 09:48:38PM -0500, Brian Cain wrote:
+The following changes since commit 98d54f81e36ba3bf92172791eba5ca5bd813989b:
 
-> > Note 2: hexagon final image creation fails even w/o my patch
+  Linux 5.6-rc4 (2020-03-01 16:38:46 -0600)
 
-> 	What's the nature of the failure in "Note 2"?
+are available in the Git repository at:
 
-drivers/base/firmware_loader/main.o: In function `fw_is_builtin_firmware':
-/devel/src/kernel6/drivers/base/firmware_loader/main.c:132:(.text+0xc8): relocation truncated to fit: R_HEX_16_X against symbol `__start_builtin_fw' defined in .modinfo section in .tmp_vmlinux1
-Makefile:1077: recipe for target 'vmlinux' failed
-make: *** [vmlinux] Error 1
+  git://git.kernel.org/pub/scm/linux/kernel/git/geert/linux-m68k.git m68k-for-v5.7-tag1
 
-[ i had deleted the toolchain earlier, since you asked, download again &
-checked ]
+for you to fetch changes up to 86cded5fc52567774b596827544874499532b8ae:
 
-Regards
-afzal
+  m68k: defconfig: Update defconfigs for v5.6-rc4 (2020-03-09 11:12:29 +0100)
+
+----------------------------------------------------------------
+m68k updates for v5.7
+
+  - Pagetable layout rewrite, to facilitate global READ_ONCE() rework,
+  - Zorro (Amiga) and DIO (HP 9000/300) bus cleanups,
+  - Defconfig updates,
+  - Minor cleanups and fixes.
+
+Thanks for pulling!
+
+Note that:
+  - The pagetable layout rewrite has its own immutable branch, but it
+    was not pulled by Peter/Will yet.  The READ_ONCE() rework on top was
+    postponed, due to newly discovered issues on sparc32 that need
+    fixing first.
+  - The base is v5.6-rc4, due to late Kconfig changes impacting the
+    defconfigs.
+
+----------------------------------------------------------------
+Geert Uytterhoeven (12):
+      Merge branch 'pgtable-layout-rewrite' into for-v5.7
+      zorro: Make zorro_match_device() static
+      zorro: Fix zorro_bus_match() kerneldoc
+      zorro: Use zorro_match_device() helper in zorro_bus_match()
+      zorro: Remove unused zorro_dev_driver()
+      zorro: Move zorro_bus_type to bus-private header file
+      dio: Make dio_match_device() static
+      dio: Fix dio_bus_match() kerneldoc
+      dio: Remove unused dio_dev_driver()
+      fbdev: c2p: Use BUILD_BUG() instead of custom solution
+      m68k: Switch to asm-generic/hardirq.h
+      m68k: defconfig: Update defconfigs for v5.6-rc4
+
+Gustavo A. R. Silva (1):
+      zorro: Replace zero-length array with flexible-array member
+
+Krzysztof Kozlowski (1):
+      m68k: Fix Kconfig indentation
+
+Peter Zijlstra (8):
+      m68k: mm: Remove stray nocache in ColdFire pgalloc
+      m68k: mm: Unify Motorola MMU page setup
+      m68k: mm: Move the pointer table allocator to motorola.c
+      m68k: mm: Restructure Motorola MMU page-table layout
+      m68k: mm: Improve kernel_page_table()
+      m68k: mm: Use table allocator for pgtables
+      m68k: mm: Extend table allocator for multiple sizes
+      m68k: mm: Fully initialize the page-table allocator
+
+Will Deacon (2):
+      m68k: mm: Fix ColdFire pgd_alloc()
+      m68k: mm: Change ColdFire pgtable_t
+
+ arch/m68k/Kconfig.bus                    |   2 +-
+ arch/m68k/Kconfig.debug                  |  16 +--
+ arch/m68k/Kconfig.machine                |   8 +-
+ arch/m68k/configs/amiga_defconfig        |   5 +-
+ arch/m68k/configs/apollo_defconfig       |   5 +-
+ arch/m68k/configs/atari_defconfig        |   5 +-
+ arch/m68k/configs/bvme6000_defconfig     |   5 +-
+ arch/m68k/configs/hp300_defconfig        |   5 +-
+ arch/m68k/configs/mac_defconfig          |   5 +-
+ arch/m68k/configs/multi_defconfig        |   5 +-
+ arch/m68k/configs/mvme147_defconfig      |   5 +-
+ arch/m68k/configs/mvme16x_defconfig      |   5 +-
+ arch/m68k/configs/q40_defconfig          |   5 +-
+ arch/m68k/configs/sun3_defconfig         |   5 +-
+ arch/m68k/configs/sun3x_defconfig        |   5 +-
+ arch/m68k/include/asm/Kbuild             |   1 +
+ arch/m68k/include/asm/hardirq.h          |  29 ----
+ arch/m68k/include/asm/mcf_pgalloc.h      |  31 ++---
+ arch/m68k/include/asm/motorola_pgalloc.h |  74 ++++------
+ arch/m68k/include/asm/motorola_pgtable.h |  36 +++--
+ arch/m68k/include/asm/page.h             |  16 ++-
+ arch/m68k/include/asm/pgtable_mm.h       |  10 +-
+ arch/m68k/mm/init.c                      |  34 +++--
+ arch/m68k/mm/kmap.c                      |  36 +++--
+ arch/m68k/mm/memory.c                    | 103 --------------
+ arch/m68k/mm/motorola.c                  | 228 +++++++++++++++++++++++++------
+ drivers/dio/dio-driver.c                 |   9 +-
+ drivers/video/fbdev/c2p_core.h           |  12 +-
+ drivers/zorro/zorro-driver.c             |  16 +--
+ drivers/zorro/zorro.c                    |   2 +-
+ drivers/zorro/zorro.h                    |   7 +
+ include/linux/dio.h                      |   5 -
+ include/linux/zorro.h                    |  12 --
+ 33 files changed, 351 insertions(+), 396 deletions(-)
+ delete mode 100644 arch/m68k/include/asm/hardirq.h
+
+Gr{oetje,eeting}s,
+
+						Geert
+
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+							    -- Linus Torvalds
