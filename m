@@ -6,51 +6,46 @@ X-Spam-Status: No, score=-0.8 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D7C14C43331
-	for <linux-m68k@archiver.kernel.org>; Tue, 31 Mar 2020 07:02:22 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E743EC43331
+	for <linux-m68k@archiver.kernel.org>; Tue, 31 Mar 2020 07:12:29 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id B112220578
-	for <linux-m68k@archiver.kernel.org>; Tue, 31 Mar 2020 07:02:22 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id C41B0206F6
+	for <linux-m68k@archiver.kernel.org>; Tue, 31 Mar 2020 07:12:29 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726397AbgCaHCW (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Tue, 31 Mar 2020 03:02:22 -0400
-Received: from mail-oi1-f182.google.com ([209.85.167.182]:45573 "EHLO
-        mail-oi1-f182.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726299AbgCaHCW (ORCPT
+        id S1726174AbgCaHM3 (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Tue, 31 Mar 2020 03:12:29 -0400
+Received: from mail-ot1-f68.google.com ([209.85.210.68]:42529 "EHLO
+        mail-ot1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726001AbgCaHM3 (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Tue, 31 Mar 2020 03:02:22 -0400
-Received: by mail-oi1-f182.google.com with SMTP id l22so18007640oii.12
-        for <linux-m68k@lists.linux-m68k.org>; Tue, 31 Mar 2020 00:02:21 -0700 (PDT)
+        Tue, 31 Mar 2020 03:12:29 -0400
+Received: by mail-ot1-f68.google.com with SMTP id z5so20756558oth.9
+        for <linux-m68k@lists.linux-m68k.org>; Tue, 31 Mar 2020 00:12:29 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=NrZdqqPJMaCzyHpom7Q0BfP5gkkjvlNXcgZccBCbXYA=;
-        b=XrSkCzWrBH/7OiuDFv2wHn2A7fzeh+3watM2Lg4LnbUFW4odbZ6Q+/imHdFUkwMStu
-         Y1P55p8moOtI/siLFWWdVAs5bbH0rj7Js++zIFwYRavm5/3lcICuOVL29sz2kQg6+yAD
-         Q15rUSvgvbuPfd7Hi9oAex9MWqUhK8T9hmjCxXhPhBASllmGUqXQO1pGGs7B7kkDPJiX
-         eMzuJzQHFjjr5YWSkz52roNbbU1+pGChNFJMTnKAOqThvf4d9K5HhzhGthc88f9QxCP0
-         kcz7u2LRH1qc/UlfGR2cPtw2k39Xyzspm3MQI3um/M+/7jMruD/ajUWy4uCyWGrMOzPd
-         Zmug==
-X-Gm-Message-State: ANhLgQ1soL1mQ8LTVbsTOBvKe8x86iv1NMxU1rLl2wsGyFjNvq1ghjvP
-        hdbJPZxDNvnBOtYNIRfOubYiho4MW7PeGO+XmCQ=
-X-Google-Smtp-Source: ADFU+vugw+80GJ/lFZqvZ6pJMFh8Hm3UmZ0lwQVhcid8GeI+cihW7RIiERyThm5kOzDmc+tF1/rJC7koyiyQoQfpqnQ=
-X-Received: by 2002:aca:4e57:: with SMTP id c84mr1103474oib.148.1585638141027;
- Tue, 31 Mar 2020 00:02:21 -0700 (PDT)
+        bh=Uk7pDFf4OJ/SfCsEm+dqXVOk4+D6YmmUT6C1znTIzgk=;
+        b=gpu+YhdIpDr/+zdft8+k2EBFEfPMBdy0nBXpQYPSUzhXzf4njedxol5x7mvQi9zAcG
+         Z4giMS2TwdnoezDlU1VFDlXn7GLcduuE84a0OexaF9iuDCG4JP6nIdWeLH1k7994SnZU
+         GKYC+KYiHyMjZe0HBrtF0qVnOLWWO50GMtUlhD5MWlYP/xnp4+G73A0smUGeGR0PDLRN
+         D7jeGxHpxndxDx5OMXO1ZsMuoyTQePaIcT7lZzoNOncMcFDywM70cbfmp9OnVMleLheI
+         oUBgTtZ5Z9ldATimW/w2GTlionDIVtWvglLM1sTwAoYIRbO1qts1AlgldOhf21tHNewP
+         tn2A==
+X-Gm-Message-State: ANhLgQ1+yFhbeAQu6j6AjYyEm+BaSNkXf9pcCx4QHInlAPgsUVGzziri
+        RgZ3IqskTusu0HRT8mtYvG0SajtMGKFqJfYJQlQ=
+X-Google-Smtp-Source: ADFU+vtfpWc7zK/1g/c/0ZjuRXEBRIB9XmSK5Mt6yYXmA8bNZ3M8h4gs6MVFd6ez/g/vormgzgtHZtvhNrXOxTxm3e8=
+X-Received: by 2002:a05:6830:15c2:: with SMTP id j2mr11353456otr.107.1585638748720;
+ Tue, 31 Mar 2020 00:12:28 -0700 (PDT)
 MIME-Version: 1.0
-References: <2bde25bc-ce82-8442-92ae-629aaac91935@physik.fu-berlin.de>
- <CAMuHMdVN_v4bp7w2LhqXcnEE05BiswfimK=pVdep5=j31o-jbA@mail.gmail.com>
- <CABq5eXG6VdWxVCX3da3nkwJ_Cha34gK_D+X5MYpYxSh5cZWZAA@mail.gmail.com>
- <CAMuHMdUCh8G3PGBMFoNn=c98kDbBW7501UuTeV+MnW+Jb7pqjw@mail.gmail.com> <CABq5eXGFiiLYkBJB-sv+nnFzM0U5i9_Kk50EvcLy-W3CxoAUYw@mail.gmail.com>
-In-Reply-To: <CABq5eXGFiiLYkBJB-sv+nnFzM0U5i9_Kk50EvcLy-W3CxoAUYw@mail.gmail.com>
+References: <CABq5eXG0=2H7N-BvXftudRb9Jv=8Ybbw9T+=zKMw=nyawTEQWA@mail.gmail.com>
+In-Reply-To: <CABq5eXG0=2H7N-BvXftudRb9Jv=8Ybbw9T+=zKMw=nyawTEQWA@mail.gmail.com>
 From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Tue, 31 Mar 2020 09:02:09 +0200
-Message-ID: <CAMuHMdXf3q79hpLcv6mcj0LaGJEmNym_XOyNBOJ99QKrUP2DuQ@mail.gmail.com>
-Subject: Re: BigRAMPlus seems to be detected now
+Date:   Tue, 31 Mar 2020 09:12:17 +0200
+Message-ID: <CAMuHMdWCr5kBAYfywvSosMDYp-U4TiUtmi+pZLStLzLatRguBg@mail.gmail.com>
+Subject: Re: kernel memory corruption in private_data
 To:     Stefan Reinauer <stefan.k.reinauer@gmail.com>
-Cc:     John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
-        linux-m68k <linux-m68k@lists.linux-m68k.org>,
-        Debian m68k <debian-68k@lists.debian.org>
+Cc:     linux-m68k <linux-m68k@lists.linux-m68k.org>
 Content-Type: text/plain; charset="UTF-8"
 Sender: linux-m68k-owner@vger.kernel.org
 Precedence: bulk
@@ -59,72 +54,66 @@ X-Mailing-List: linux-m68k@vger.kernel.org
 
 Hi Stefan,
 
-On Tue, Mar 31, 2020 at 7:07 AM Stefan Reinauer
+On Tue, Mar 31, 2020 at 8:07 AM Stefan Reinauer
 <stefan.k.reinauer@gmail.com> wrote:
-> On Tue, Mar 10, 2020 at 1:15 AM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
-> > On Tue, Mar 10, 2020 at 4:06 AM Stefan Reinauer
-> > <stefan.k.reinauer@gmail.com> wrote:
-> > > On Sun, Mar 8, 2020 at 3:43 AM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
-> > > > As well as trying to boot it with the BRP as primary memory (BRP first
-> > > > in memfile) or sole memory (motherboard RAM disabled in memfile).
-> > >
-> > > With BigramPlus as sole memory the system can't seem to deal with the
-> > > initramfs (see log)
-> >
-> > However, according to this log you have both enabled:
-> >
-> > > On node 0 totalpages: 4096
-> > >   DMA zone: 40 pages used for memmap
-> > >   DMA zone: 0 pages reserved
-> > >   DMA zone: 4096 pages, LIFO batch:0
-> >
-> > 16 MiB
-> >
-> > > On node 1 totalpages: 65536
-> > >   DMA zone: 640 pages used for memmap
-> > >   DMA zone: 0 pages reserved
-> > >   DMA zone: 65536 pages, LIFO batch:15
-> >
-> > 256 MiB
-> >
-> > > SLUB: Unable to allocate memory from node 0
-> > > SLUB: Allocating a useless per node structure in order to be able to continue
-> > > SLUB: HWalign=16, Order=0-3, MinObjects=0, CPUs=1, Nodes=8
-> >
-> > Probably the 16 MiB in the first chunk is too small to allocate
-> > page tables from, especially if it contains the initramfs.
-> >
-> > What happens if you put the BRP first in the memfile?
+> My Linux system is now booting and I am trying to write a driver for
+> the MNT ZZ9000 graphics card (and network adapter and USB port).
+
+Happy to hear that!
+
+> One of them is that my block device disk structure's private data gets
+> partly overwritten (only the pointer to the structures that have the
+> pointers to my ioremapped device memory:
 >
-> Before chipram?
-> ---------------------------------
-> 0x50000000 268435456
-> 2097152
+> The pointer reads back as 0x13f484b9 (instead of e781c9cc where the
+> struct really lives.
+> (See code and log below: ZZ9000 log)
 
-No, as the first FastRAM chunk.
-ChipRAM must always be first ;-)
+Sounds like the obfuscated pointer issue: %p does not print the real
+pointer value, %px does.
 
-> This one works:
-> ---------------------------------
-> 2097152
-> 0x50000000 268435456
-> 0x07000000 16777216
-> ---------------------------------
+Cfr. commit ad67b74d2469d9b8 ("printk: hash addresses printed with %p").
 
-OK, that's what I meant.
+> [  329.480000] Serial: 8250/16550 driver, 4 ports, IRQ sharing disabled
+> [  329.500000] Unable to handle kernel NULL pointer dereference at
+> virtual address 13f484b9
 
-> Same as only using the bigram (and I got into the OS just fine, but I
-> had to do the installation through qemu)
+This pointer value is obfuscated.
 
-Yeah, that won't make much of a difference, as it may take a while
-before it actually starts using the on-board RAM.
+The values below are un-obssucated.
 
-Does the initramfs start working if you restrict the amount of RAM used,
-by adding e.g. mem=16M or mem=64M to the kernel command line?
-If there is a limitation on memory size somewhere in the code, that may
-help identifying it.
+> [  329.500000] Oops: 00000000
+> [  329.500000] Modules linked in: 8250(O+) 8250_base(O) zz9000(O) affs
+> ext4 crc16 mbcache jbd2 crc32c_generic ide_cd_mod cdrom ide_gd_me
+> [  329.500000] PC: [<1088fb92>] io_serial_in+0x22/0x36 [8250_base]
 
-Thanks!
+Hence if you look at the code at 1088fb92, you can identify which registers
+are used to do the bad access, and look up their values below.
+
+Or remove the hashing from lib/vsprintf.c:__ptr_to_hashval() if you're
+debugging all the time.
+
+> [  329.500000] SR: 2714  SP: 15fb5dcc  a2: 0dcb1ac0
+> [  329.500000] d0: 00000000    d1: ffffffff    d2: 00000000    d3: 0dca120a
+> [  329.500000] d4: 10891ca4    d5: 0e192010    a0: 00000000    a1: 00000000
+> [  329.500000] Process insmod (pid: 143, task=c63d20d6)
+> [  329.500000] Frame format=4 fault addr=00000000 fslw=01450200
+> [  329.500000] Stack from 0f50fd50:
+> [  329.500000]         1089120a 10853338 00000001 00000000 0dca120a
+> 0dd5ec7e 0e199140 00000013
+> [  329.500000]         000007f8 10853338 0dd5ec00 10853178 002e247e
+> 1085301c 001d6eb0 001d6ef8
+> [  329.500000]         10853338 00000001 00000000 0dca120a 0013ce68
+> 00051862 10853397 001d6d94
+> [  329.500000]         0f50fe78 0dca1200 0e19aef0 0002f740 0f50fe78
+> 0f50fdd8 0f50fe78 001e584c
+> [  329.500000]         0dca120a 001e58b0 0dca120a 00000000 00000000
+> 0013ce68 0e199140 00051862
+> [  329.500000]         0e19aef0 1087935a 10853178 10853338 00000002
+> 00000000 10879216 0e19aef0
+> [  329.500000] Call Trace: [<1089120a>]
+> serial8250_config_port+0x70/0x8d4 [8250_base]
+> [  329.500000]  [<002e247e>] mutex_lock+0x0/0x34
 
 Gr{oetje,eeting}s,
 
