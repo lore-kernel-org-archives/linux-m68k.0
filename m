@@ -2,99 +2,96 @@ Return-Path: <SRS0=pOFX=5S=vger.kernel.org=linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-0.6 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+X-Spam-Status: No, score=-0.6 required=3.0 tests=DKIM_INVALID,DKIM_SIGNED,
 	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
 	autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id DB980C43331
-	for <linux-m68k@archiver.kernel.org>; Thu,  2 Apr 2020 02:09:53 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5668BC43331
+	for <linux-m68k@archiver.kernel.org>; Thu,  2 Apr 2020 15:03:40 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id ADA0E20719
-	for <linux-m68k@archiver.kernel.org>; Thu,  2 Apr 2020 02:09:53 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 25FAF206CC
+	for <linux-m68k@archiver.kernel.org>; Thu,  2 Apr 2020 15:03:40 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="kc99WtLa"
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=mg.codeaurora.org header.i=@mg.codeaurora.org header.b="QdeZOa0W"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733311AbgDBCJx (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Wed, 1 Apr 2020 22:09:53 -0400
-Received: from mail-wm1-f68.google.com ([209.85.128.68]:38042 "EHLO
-        mail-wm1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1733270AbgDBCJx (ORCPT
+        id S2389108AbgDBPDj (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Thu, 2 Apr 2020 11:03:39 -0400
+Received: from mail26.static.mailgun.info ([104.130.122.26]:54858 "EHLO
+        mail26.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2389100AbgDBPDj (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Wed, 1 Apr 2020 22:09:53 -0400
-Received: by mail-wm1-f68.google.com with SMTP id f6so1898141wmj.3
-        for <linux-m68k@lists.linux-m68k.org>; Wed, 01 Apr 2020 19:09:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=vex2V7U5egqEowLQvfzwIWrY5jYlwVVJlu6Yrfo90zo=;
-        b=kc99WtLafuneZD+XNev1KTgPBPFXQ8QTqlByQwtAgimjlxpPYyO+w2wrW+z/e6xLDK
-         2grI8oIebmAQsdMHZ5OQxhHfY7v/DaT4e9aY84jbn6EpR414Fyf8hA4PyAdf0chL84EH
-         z7n4eqTciBRDhmYvJLjE8pgt78NWaj0/hRRdxmfhJP/+AEYoPhk4M/SRY+odyypSCYWI
-         mxQ0yTl4iBYu65UIHplz8DCMDiBIKurkxKK5pvAHapouCwRW8DzZYKJ11G/cnuQ/Rr5M
-         GfF2cUTykCkgmNQ49dlKsObEWAGsI3iVanbJLY7GeV6HvX4eqnmqhBvzSU212dMEY16k
-         aF4w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=vex2V7U5egqEowLQvfzwIWrY5jYlwVVJlu6Yrfo90zo=;
-        b=d/BChD/ugAHyi/4nvV9weG8nCSgLOrTqiwYzWyDeQCduG7pL5v8YEH68TVz8rE5BHT
-         Ic75LzleP5ZDmoganCaqtT8WUr0duxWyq61hjLy6NnUqw8CFeh0CZUYWnGCB1vy9U1XK
-         amZ6W36h1ofxMzD5PWjGRCOkj3jX4hh7Eq8LDEv5lz94QUS3fQnBToegLNw2jGTRvhE3
-         xGqmtIx85S9OBhpfWAV3/95Mas+mmMYGr4QOf1l+NLrySY09hPDWysa6u2T/fs5qEFrO
-         cT58womQqPlVGaPnrFcQZUSxmYoJHybk009EWDLedWQGr4tfQjyUEXrsV+59HBF7tDEb
-         4Rpw==
-X-Gm-Message-State: AGi0PuY9tRGyBGvih5Hikz+gcXxjNl/bCyIXCYmxedQdeVqv5coMLsna
-        /1oMyN5rW8DK2gqZP+FEPW1HZ4V7OK059qlY11A=
-X-Google-Smtp-Source: APiQypKiBEdEeR/SNNjmsFK17mnw1atHhdNjkSRCA+yg8Ro+OTJz+gqQX0hxZqddI6Ja+gYYfd6unYKeME/wUG7PLMY=
-X-Received: by 2002:a1c:23c8:: with SMTP id j191mr920253wmj.117.1585793390177;
- Wed, 01 Apr 2020 19:09:50 -0700 (PDT)
+        Thu, 2 Apr 2020 11:03:39 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1585839819; h=Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Message-ID: Date: Subject: In-Reply-To: References: Cc:
+ To: From: Reply-To: Sender;
+ bh=MFdcBokfw79s+7lRCHgLw9NzMSmYZr6xzGhOl6ZSO68=; b=QdeZOa0WiMT7UUWv/l0rC/7p44a3k/7CfDWfyyXgQesdieWurOXFgoyaZOIzjo3rkwJbWMwk
+ 2Mu01GNltiS02WmhXaB9Am2VBzUwMrC/oRbkX7f7KuGiNd1CdvBlQjVjlLvA/FKw0ru1ysez
+ fET5XaiAoYfGSh1dxPKGvEcJN8c=
+X-Mailgun-Sending-Ip: 104.130.122.26
+X-Mailgun-Sid: WyIzNWIyNSIsICJsaW51eC1tNjhrQGxpc3RzLmxpbnV4LW02OGsub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171])
+ by mxa.mailgun.org with ESMTP id 5e85fec4.7f08bdf38030-smtp-out-n05;
+ Thu, 02 Apr 2020 15:03:32 -0000 (UTC)
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 4322FC4478C; Thu,  2 Apr 2020 15:03:31 +0000 (UTC)
+Received: from BCAIN (104-54-226-75.lightspeed.austtx.sbcglobal.net [104.54.226.75])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: bcain)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 866DFC43636;
+        Thu,  2 Apr 2020 15:03:29 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 866DFC43636
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=bcain@codeaurora.org
+Reply-To: <bcain@codeaurora.org>
+From:   "Brian Cain" <bcain@codeaurora.org>
+To:     "'afzal mohammed'" <afzal.mohd.ma@gmail.com>
+Cc:     "'Thomas Gleixner'" <tglx@linutronix.de>,
+        <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-samsung-soc@vger.kernel.org>, <x86@kernel.org>,
+        <linux-sh@vger.kernel.org>, <linux-s390@vger.kernel.org>,
+        <linuxppc-dev@lists.ozlabs.org>, <linux-parisc@vger.kernel.org>,
+        <linux-mips@vger.kernel.org>, <linux-m68k@lists.linux-m68k.org>,
+        <linux-ia64@vger.kernel.org>, <linux-hexagon@vger.kernel.org>,
+        <linux-c6x-dev@linux-c6x.org>, <linux-omap@vger.kernel.org>,
+        <linux-alpha@vger.kernel.org>
+References: <20200321174303.GA7930@afzalpc> <cover.1585320721.git.afzal.mohd.ma@gmail.com> <059b01d604ab$637355b0$2a5a0110$@codeaurora.org> <20200328073253.GA5250@afzalpc>
+In-Reply-To: <20200328073253.GA5250@afzalpc>
+Subject: RE: [PATCH 0/6] Kill setup_irq()
+Date:   Thu, 2 Apr 2020 10:03:28 -0500
+Message-ID: <0fc601d608ff$df0ea550$9d2beff0$@codeaurora.org>
 MIME-Version: 1.0
-References: <CABq5eXHOfryyKL9qmE15=wXW0urGnO3D58Jj0qPPbPoDsLfwkw@mail.gmail.com>
- <alpine.LNX.2.22.394.2004021007280.8@nippy.intranet>
-In-Reply-To: <alpine.LNX.2.22.394.2004021007280.8@nippy.intranet>
-From:   Stefan Reinauer <stefan.k.reinauer@gmail.com>
-Date:   Wed, 1 Apr 2020 19:09:38 -0700
-Message-ID: <CABq5eXEinp5xy2vKSAcHoE8_3esVAAwcNxBNpQDY0JkHX_DZRA@mail.gmail.com>
-Subject: Re: Amiga: Writes to Zorro III cards
-To:     Finn Thain <fthain@telegraphics.com.au>
-Cc:     linux-m68k <linux-m68k@lists.linux-m68k.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain;
+        charset="US-ASCII"
+Content-Transfer-Encoding: 7bit
+X-Mailer: Microsoft Outlook 16.0
+Content-Language: en-us
+Thread-Index: AQH+2owB65JuA03jeOLwO39OK5TmSwJQWNztApEZe3IB1U/c2KfelGEA
 Sender: linux-m68k-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-On Wed, Apr 1, 2020 at 4:19 PM Finn Thain <fthain@telegraphics.com.au> wrote:
->
-> On Wed, 1 Apr 2020, Stefan Reinauer wrote:
->
-> > When it fails/works, it fails/works consistently across several
-> > rmmod/insmod cycles.
->
-> That implies incomplete hardware initialization or some other bug in the
-> driver initialization code.
->
-> > (I see arp requests coming in on the Amiga in tcpdump, but they are
-> > never answered)
->
-> If packets are arriving at the interface but the kernel ignores them, it
-> suggests that the packets are corrupt (e.g. invalid frame checksum).
->
-> You can check for corrupted packets with a network analyzer like
-> Wireshark. On a small system I would capture some traffic with 'tcpdump -i
-> eth0 -s0 -w traffic.pcap' and then move the pcap file to a host
-> with Wireshark installed.
+> -----Original Message-----
+> From: linux-hexagon-owner@vger.kernel.org <linux-hexagon-
+> owner@vger.kernel.org> On Behalf Of afzal mohammed
+...
+> On Fri, Mar 27, 2020 at 09:48:38PM -0500, Brian Cain wrote:
+> 
+> > > Note 2: hexagon final image creation fails even w/o my patch
+> 
+> > 	What's the nature of the failure in "Note 2"?
+> 
+> drivers/base/firmware_loader/main.o: In function `fw_is_builtin_firmware':
+> /devel/src/kernel6/drivers/base/firmware_loader/main.c:132:(.text+0xc8):
+> relocation truncated to fit: R_HEX_16_X against symbol
+`__start_builtin_fw'
+> defined in .modinfo section in .tmp_vmlinux1
+> Makefile:1077: recipe for target 'vmlinux' failed
+> make: *** [vmlinux] Error 1
 
-Good news here (where's the brown paper bag); This fixes the network driver.
+Thanks for reporting it -- I will make a patch to fix it.
 
-@@ -307,7 +307,7 @@ static void zz9000_eth_setup(struct net_device *dev)
-        ether_setup(dev);
-
-        dev->netdev_ops = &zz9000_netdev_ops;
--       dev->flags |= IFF_NOARP;
-+       //dev->flags |= IFF_NOARP;
-        dev->irq = IRQ_AMIGA_EXTER;
-        memcpy(dev->dev_addr, zz9000_mac_addr, MAC_ADDR_LEN);
+-Brian
