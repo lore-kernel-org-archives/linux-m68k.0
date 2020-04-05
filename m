@@ -1,97 +1,170 @@
-Return-Path: <SRS0=pOFX=5S=vger.kernel.org=linux-m68k-owner@kernel.org>
+Return-Path: <SRS0=eDfy=5V=vger.kernel.org=linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-0.6 required=3.0 tests=DKIM_INVALID,DKIM_SIGNED,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
-	autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-4.1 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	URIBL_BLOCKED,USER_AGENT_GIT autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 5668BC43331
-	for <linux-m68k@archiver.kernel.org>; Thu,  2 Apr 2020 15:03:40 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 0262DC2BA16
+	for <linux-m68k@archiver.kernel.org>; Sun,  5 Apr 2020 02:51:27 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 25FAF206CC
-	for <linux-m68k@archiver.kernel.org>; Thu,  2 Apr 2020 15:03:40 +0000 (UTC)
-Authentication-Results: mail.kernel.org;
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=mg.codeaurora.org header.i=@mg.codeaurora.org header.b="QdeZOa0W"
+	by mail.kernel.org (Postfix) with ESMTP id C773A2076E
+	for <linux-m68k@archiver.kernel.org>; Sun,  5 Apr 2020 02:51:26 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=default; t=1586055086;
+	bh=428hrrLxGizYnfH4HkarazHDCjrvG1Td0mnE3ucsAuY=;
+	h=From:To:Cc:Subject:Date:List-ID:From;
+	b=DXqQXQIkMIcv+yut5Uqj3lyk45cBhAAFDxo+mOHytJ55bgxk83jYag+4kZzaMqGk5
+	 mYqEtLxk9pryhWO2A7X+IZygVY0mU5cnRCwd6rdqJKmJtVW1r1Pqf4WZtnop15acjU
+	 sE+kJlqWiNFR8a/eA+6yCHaj25R6pl8y+g7wMChE=
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389108AbgDBPDj (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Thu, 2 Apr 2020 11:03:39 -0400
-Received: from mail26.static.mailgun.info ([104.130.122.26]:54858 "EHLO
-        mail26.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2389100AbgDBPDj (ORCPT
-        <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Thu, 2 Apr 2020 11:03:39 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1585839819; h=Content-Transfer-Encoding: Content-Type:
- MIME-Version: Message-ID: Date: Subject: In-Reply-To: References: Cc:
- To: From: Reply-To: Sender;
- bh=MFdcBokfw79s+7lRCHgLw9NzMSmYZr6xzGhOl6ZSO68=; b=QdeZOa0WiMT7UUWv/l0rC/7p44a3k/7CfDWfyyXgQesdieWurOXFgoyaZOIzjo3rkwJbWMwk
- 2Mu01GNltiS02WmhXaB9Am2VBzUwMrC/oRbkX7f7KuGiNd1CdvBlQjVjlLvA/FKw0ru1ysez
- fET5XaiAoYfGSh1dxPKGvEcJN8c=
-X-Mailgun-Sending-Ip: 104.130.122.26
-X-Mailgun-Sid: WyIzNWIyNSIsICJsaW51eC1tNjhrQGxpc3RzLmxpbnV4LW02OGsub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171])
- by mxa.mailgun.org with ESMTP id 5e85fec4.7f08bdf38030-smtp-out-n05;
- Thu, 02 Apr 2020 15:03:32 -0000 (UTC)
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 4322FC4478C; Thu,  2 Apr 2020 15:03:31 +0000 (UTC)
-Received: from BCAIN (104-54-226-75.lightspeed.austtx.sbcglobal.net [104.54.226.75])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        id S1726352AbgDECv0 (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Sat, 4 Apr 2020 22:51:26 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44722 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726300AbgDECv0 (ORCPT <rfc822;linux-m68k@lists.linux-m68k.org>);
+        Sat, 4 Apr 2020 22:51:26 -0400
+Received: from mail.kernel.org (unknown [104.132.0.74])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        (Authenticated sender: bcain)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 866DFC43636;
-        Thu,  2 Apr 2020 15:03:29 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 866DFC43636
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=bcain@codeaurora.org
-Reply-To: <bcain@codeaurora.org>
-From:   "Brian Cain" <bcain@codeaurora.org>
-To:     "'afzal mohammed'" <afzal.mohd.ma@gmail.com>
-Cc:     "'Thomas Gleixner'" <tglx@linutronix.de>,
-        <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-samsung-soc@vger.kernel.org>, <x86@kernel.org>,
-        <linux-sh@vger.kernel.org>, <linux-s390@vger.kernel.org>,
-        <linuxppc-dev@lists.ozlabs.org>, <linux-parisc@vger.kernel.org>,
-        <linux-mips@vger.kernel.org>, <linux-m68k@lists.linux-m68k.org>,
-        <linux-ia64@vger.kernel.org>, <linux-hexagon@vger.kernel.org>,
-        <linux-c6x-dev@linux-c6x.org>, <linux-omap@vger.kernel.org>,
-        <linux-alpha@vger.kernel.org>
-References: <20200321174303.GA7930@afzalpc> <cover.1585320721.git.afzal.mohd.ma@gmail.com> <059b01d604ab$637355b0$2a5a0110$@codeaurora.org> <20200328073253.GA5250@afzalpc>
-In-Reply-To: <20200328073253.GA5250@afzalpc>
-Subject: RE: [PATCH 0/6] Kill setup_irq()
-Date:   Thu, 2 Apr 2020 10:03:28 -0500
-Message-ID: <0fc601d608ff$df0ea550$9d2beff0$@codeaurora.org>
+        by mail.kernel.org (Postfix) with ESMTPSA id EBA4A20672;
+        Sun,  5 Apr 2020 02:51:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1586055084;
+        bh=428hrrLxGizYnfH4HkarazHDCjrvG1Td0mnE3ucsAuY=;
+        h=From:To:Cc:Subject:Date:From;
+        b=Bc7UTDRuEj52rjnEs57bgWoC+e2mCZiOxvX0KNY8ZEJPxGk8GcwIKASqSyHqkJJqQ
+         MsuQuLU82GKZJHqo7c9US+ROPKQ6vM9fcMvFqd67YMmQ90Xq3ga0Xa/Sl2G9umEFNb
+         A+I9rRoQoBfN74UrcFzf5/gfxqmzgezvAE2cBP0c=
+From:   Stephen Boyd <sboyd@kernel.org>
+To:     Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, linux-clk@vger.kernel.org,
+        Alexander Shiyan <shc_work@mail.ru>,
+        =?UTF-8?q?Andreas=20F=C3=A4rber?= <afaerber@suse.de>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Aurelien Jacquiot <jacquiot.aurelien@gmail.com>,
+        Catalin Marinas <catalin.marinas@arm.com>, chenhc@lemote.com,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Guan Xuetao <gxt@pku.edu.cn>,
+        Jiaxun Yang <jiaxun.yang@flygoat.com>,
+        linux-arm-kernel@lists.infradead.org, linux-c6x-dev@linux-c6x.org,
+        linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org,
+        linux-sh@vger.kernel.org, Lubomir Rintel <lkundrak@v3.sk>,
+        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
+        Mark Brown <broonie@kernel.org>,
+        Mark Salter <msalter@redhat.com>,
+        Paul Burton <paulburton@kernel.org>,
+        Paul Walmsley <paul@pwsan.com>, Rich Felker <dalias@libc.org>,
+        Russell King <linux@armlinux.org.uk>,
+        Thierry Reding <treding@nvidia.com>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Tony Prisk <linux@prisktech.co.nz>,
+        uclinux-h8-devel@lists.sourceforge.jp,
+        Will Deacon <will@kernel.org>,
+        Yoshinori Sato <ysato@users.sourceforge.jp>
+Subject: [PATCH 0/9] Allow COMMON_CLK to be selectable
+Date:   Sat,  4 Apr 2020 19:51:14 -0700
+Message-Id: <20200405025123.154688-1-sboyd@kernel.org>
+X-Mailer: git-send-email 2.26.0.292.g33ef6b2f38-goog
 MIME-Version: 1.0
-Content-Type: text/plain;
-        charset="US-ASCII"
-Content-Transfer-Encoding: 7bit
-X-Mailer: Microsoft Outlook 16.0
-Content-Language: en-us
-Thread-Index: AQH+2owB65JuA03jeOLwO39OK5TmSwJQWNztApEZe3IB1U/c2KfelGEA
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Sender: linux-m68k-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-> -----Original Message-----
-> From: linux-hexagon-owner@vger.kernel.org <linux-hexagon-
-> owner@vger.kernel.org> On Behalf Of afzal mohammed
-...
-> On Fri, Mar 27, 2020 at 09:48:38PM -0500, Brian Cain wrote:
-> 
-> > > Note 2: hexagon final image creation fails even w/o my patch
-> 
-> > 	What's the nature of the failure in "Note 2"?
-> 
-> drivers/base/firmware_loader/main.o: In function `fw_is_builtin_firmware':
-> /devel/src/kernel6/drivers/base/firmware_loader/main.c:132:(.text+0xc8):
-> relocation truncated to fit: R_HEX_16_X against symbol
-`__start_builtin_fw'
-> defined in .modinfo section in .tmp_vmlinux1
-> Makefile:1077: recipe for target 'vmlinux' failed
-> make: *** [vmlinux] Error 1
+This patch series cleans up a handful of selects that were redundant and
+deletes presumably dead code with the goal of making it possible to add
+kunit tests for the CCF in the future. To do that, we introduce a
+"legacy" clk Kconfig option to mark code that hasn't migrated to the
+common clk framework and then make the COMMON_CLK config option visible
+in the menuconfig as long as that legacy option isn't enabled. I've also
+included a couple patches at the end that may be more controversial but
+helped me consolidate all this logic/code.
 
-Thanks for reporting it -- I will make a patch to fix it.
+I haven't done more than compile test a few configs for arm, arm64,
+h8300, and mips. More testing is welcome.
 
--Brian
+The plan is that I'll just merge the whole pile through the clk tree. If
+the first five patches or the last three patches are better going
+through another tree like arm-soc or architecture trees that's fine too,
+but there are potential conflicts between trees so maybe it's better to
+just leave it all in one tree.
+
+Stephen Boyd (9):
+  ARM: Remove redundant COMMON_CLK selects
+  ARM: Remove redundant CLKDEV_LOOKUP selects
+  arm64: tegra: Remove redundant CLKDEV_LOOKUP selects
+  h8300: Remove redundant CLKDEV_LOOKUP selects
+  MIPS: Remove redundant CLKDEV_LOOKUP selects
+  clk: Allow the common clk framework to be selectable
+  ARM: mmp: Remove legacy clk code
+  MIPS: Loongson64: Drop asm/clock.h include
+  clk: Move HAVE_CLK config out of architecture layer
+
+Cc: Alexander Shiyan <shc_work@mail.ru>
+Cc: "Andreas Färber" <afaerber@suse.de>
+Cc: Arnd Bergmann <arnd@arndb.de>
+Cc: Aurelien Jacquiot <jacquiot.aurelien@gmail.com>
+Cc: Catalin Marinas <catalin.marinas@arm.com>
+Cc: <chenhc@lemote.com>
+Cc: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: Guan Xuetao <gxt@pku.edu.cn>
+Cc: Jiaxun Yang <jiaxun.yang@flygoat.com>
+Cc: <linux-arm-kernel@lists.infradead.org>
+Cc: <linux-c6x-dev@linux-c6x.org>
+Cc: <linux-m68k@lists.linux-m68k.org>
+Cc: <linux-mips@vger.kernel.org>
+Cc: <linux-sh@vger.kernel.org>
+Cc: Lubomir Rintel <lkundrak@v3.sk>
+Cc: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+Cc: Mark Brown <broonie@kernel.org>
+Cc: Mark Salter <msalter@redhat.com>
+Cc: Paul Burton <paulburton@kernel.org>
+Cc: Paul Walmsley <paul@pwsan.com>
+Cc: Rich Felker <dalias@libc.org>
+Cc: Russell King <linux@armlinux.org.uk>
+Cc: Thierry Reding <treding@nvidia.com>
+Cc: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+Cc: Tony Prisk <linux@prisktech.co.nz>
+Cc: uclinux-h8-devel@lists.sourceforge.jp
+Cc: Will Deacon <will@kernel.org>
+Cc: Yoshinori Sato <ysato@users.sourceforge.jp>
+
+ arch/Kconfig                     |   6 --
+ arch/arm/Kconfig                 |   5 +-
+ arch/arm/mach-actions/Kconfig    |   1 -
+ arch/arm/mach-clps711x/Kconfig   |   1 -
+ arch/arm/mach-mmp/Kconfig        |   1 -
+ arch/arm/mach-mmp/Makefile       |   6 --
+ arch/arm/mach-mmp/clock-mmp2.c   | 114 -------------------------------
+ arch/arm/mach-mmp/clock-pxa168.c |  94 -------------------------
+ arch/arm/mach-mmp/clock-pxa910.c |  70 -------------------
+ arch/arm/mach-mmp/clock.c        | 105 ----------------------------
+ arch/arm/mach-mmp/clock.h        |  65 ------------------
+ arch/arm/mach-vt8500/Kconfig     |   1 -
+ arch/arm64/Kconfig.platforms     |   1 -
+ arch/c6x/Kconfig                 |   1 +
+ arch/h8300/Kconfig               |   1 -
+ arch/m68k/Kconfig.cpu            |   2 +-
+ arch/mips/Kconfig                |   8 +--
+ arch/mips/loongson2ef/Kconfig    |   2 +-
+ arch/mips/loongson64/smp.c       |   1 -
+ arch/sh/boards/Kconfig           |   5 ++
+ arch/unicore32/Kconfig           |   2 +-
+ drivers/clk/Kconfig              |  23 +++++--
+ 22 files changed, 34 insertions(+), 481 deletions(-)
+ delete mode 100644 arch/arm/mach-mmp/clock-mmp2.c
+ delete mode 100644 arch/arm/mach-mmp/clock-pxa168.c
+ delete mode 100644 arch/arm/mach-mmp/clock-pxa910.c
+ delete mode 100644 arch/arm/mach-mmp/clock.c
+ delete mode 100644 arch/arm/mach-mmp/clock.h
+
+
+base-commit: 7111951b8d4973bda27ff663f2cf18b663d15b48
+-- 
+Sent by a computer, using git, on the internet
+
