@@ -1,141 +1,91 @@
-Return-Path: <SRS0=fS14=5X=vger.kernel.org=linux-m68k-owner@kernel.org>
+Return-Path: <SRS0=K7iR=5Z=vger.kernel.org=linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-0.7 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=no
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-12.3 required=3.0
+	tests=HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PULL_REQUEST,MAILING_LIST_MULTI,
+	MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 567A5C2BB1D
-	for <linux-m68k@archiver.kernel.org>; Tue,  7 Apr 2020 07:08:11 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 22676C2BA1A
+	for <linux-m68k@archiver.kernel.org>; Thu,  9 Apr 2020 03:25:29 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 371A1206F5
-	for <linux-m68k@archiver.kernel.org>; Tue,  7 Apr 2020 07:08:11 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id F187C2087E
+	for <linux-m68k@archiver.kernel.org>; Thu,  9 Apr 2020 03:25:28 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726767AbgDGHIK (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Tue, 7 Apr 2020 03:08:10 -0400
-Received: from mail-oi1-f194.google.com ([209.85.167.194]:45076 "EHLO
-        mail-oi1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726393AbgDGHIJ (ORCPT
-        <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Tue, 7 Apr 2020 03:08:09 -0400
-Received: by mail-oi1-f194.google.com with SMTP id l22so593718oii.12
-        for <linux-m68k@lists.linux-m68k.org>; Tue, 07 Apr 2020 00:08:07 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=9KPwW6gv1QSgTyaBqvuvuccR22yt8OHERtZtZ45QV20=;
-        b=a+adZMDvx4lua40Jp3MDzZBMWXobH+MYVHlUKsuRMEtExEwX+O+ArZfc56eSnREBOY
-         wzwhz7g3ul5Bj9DuGiD8lX/rf1PRnFLRwQ0vuPT86UTKVjwiyBXQ3+M1OP2F1ZNkHxa7
-         SntB+AsH6P1sFC+OxQZBtvJZYtPVvRe7qWE4g/gKVdG8or2HNLUaWWC1IkBmTsvTJmrb
-         aL5E4GdTjWYh3zaREsUQuli0whB3+n+V9HKUilSC3jd3vPeciE+ReDnMy8SvXBsyUJFw
-         5H/v6wyvHtSDZFf9xumB8BpUDuy5JfnRlW0ByP5X6tpI74SqhDGylGV1xD7Rsf/XIztU
-         WOwA==
-X-Gm-Message-State: AGi0Pua33xNyH671tLtFj90zy9GaMel9Q8FIbDcVjhc9WhAhP3sOqnnk
-        w38RFiBAtMN7J/BGXlooLaNrB4bb89aussSDRHQ=
-X-Google-Smtp-Source: APiQypJUPzMxv/4MrgNefdxeLOoU32bKKGVhjV9FcAL8pAgR+GgzTWByrZ8jvfBkCgjZ21+HvYrOL/5ps9Lu0L/nTBE=
-X-Received: by 2002:aca:cdd1:: with SMTP id d200mr591205oig.153.1586243287374;
- Tue, 07 Apr 2020 00:08:07 -0700 (PDT)
+        id S1726536AbgDIDZ1 (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Wed, 8 Apr 2020 23:25:27 -0400
+Received: from icp-osb-irony-out3.external.iinet.net.au ([203.59.1.153]:52414
+        "EHLO icp-osb-irony-out3.external.iinet.net.au" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726534AbgDIDZ1 (ORCPT
+        <rfc822;linux-m68k@vger.kernel.org>); Wed, 8 Apr 2020 23:25:27 -0400
+X-Greylist: delayed 635 seconds by postgrey-1.27 at vger.kernel.org; Wed, 08 Apr 2020 23:25:27 EDT
+X-SMTP-MATCH: 0
+X-IronPort-Anti-Spam-Filtered: true
+X-IronPort-Anti-Spam-Result: =?us-ascii?q?A2A4AADQko5e/zXSMGcNWR0BAQEJARE?=
+ =?us-ascii?q?FBQGBaQYBCwGDFIExhByPUgEBBoEKCIojj1CBewoBAQEBAQEBAQEjFAQBAYR?=
+ =?us-ascii?q?Egi02Bw4CEAEBAQUBAQEBAQUDAYV3TIV/JxVBKAUIAiYCSyEIAQGDIgGCV69?=
+ =?us-ascii?q?0dYEyGoksgUCBDioBgWSKaHmBB4E4DIg2gkWCXgSODoolmQUIgkCHeI88I4J?=
+ =?us-ascii?q?PiD6ETQOMM61zCoF/MxoIKAiDJAlHmk6FU2KPQQEB?=
+X-IPAS-Result: =?us-ascii?q?A2A4AADQko5e/zXSMGcNWR0BAQEJAREFBQGBaQYBCwGDF?=
+ =?us-ascii?q?IExhByPUgEBBoEKCIojj1CBewoBAQEBAQEBAQEjFAQBAYREgi02Bw4CEAEBA?=
+ =?us-ascii?q?QUBAQEBAQUDAYV3TIV/JxVBKAUIAiYCSyEIAQGDIgGCV690dYEyGoksgUCBD?=
+ =?us-ascii?q?ioBgWSKaHmBB4E4DIg2gkWCXgSODoolmQUIgkCHeI88I4JPiD6ETQOMM61zC?=
+ =?us-ascii?q?oF/MxoIKAiDJAlHmk6FU2KPQQEB?=
+X-IronPort-AV: E=Sophos;i="5.72,361,1580745600"; 
+   d="scan'208";a="253499226"
+Received: from unknown (HELO [10.44.0.192]) ([103.48.210.53])
+  by icp-osb-irony-out3.iinet.net.au with ESMTP; 09 Apr 2020 11:14:11 +0800
+From:   Greg Ungerer <gerg@linux-m68k.org>
+Subject: [git pull] m68knommu changes for v5.7
+To:     torvalds@linux-foundation.org
+Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Linux/m68k <linux-m68k@vger.kernel.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>
+Message-ID: <ea2d2b5c-a164-7318-3dcf-3c30098364f2@linux-m68k.org>
+Date:   Thu, 9 Apr 2020 13:14:08 +1000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.4.1
 MIME-Version: 1.0
-References: <20200405025123.154688-1-sboyd@kernel.org> <20200405025123.154688-7-sboyd@kernel.org>
- <CAK8P3a2M54quhRNK4xvwjz9O9oZwgrobc_wtkGaeA2PMYwOUdg@mail.gmail.com>
- <158614207114.88454.6776609424163493475@swboyd.mtv.corp.google.com>
- <CAK8P3a3Yt2woG2LMcQ0jNPGuHdMtFbBmLvtBbrWFQ4J6x3v9aQ@mail.gmail.com> <8a2a142a-106a-4241-fca5-5ef12e66cd41@linux-m68k.org>
-In-Reply-To: <8a2a142a-106a-4241-fca5-5ef12e66cd41@linux-m68k.org>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Tue, 7 Apr 2020 09:07:56 +0200
-Message-ID: <CAMuHMdV=rqpfmxtS+_kFeSiPs7cg6h2nTw4YmBKb=4kn0PuGgg@mail.gmail.com>
-Subject: Re: [PATCH 6/9] clk: Allow the common clk framework to be selectable
-To:     Greg Ungerer <gerg@linux-m68k.org>
-Cc:     Arnd Bergmann <arnd@arndb.de>, Stephen Boyd <sboyd@kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        linux-clk <linux-clk@vger.kernel.org>,
-        Mark Brown <broonie@kernel.org>,
-        Mark Salter <msalter@redhat.com>,
-        Aurelien Jacquiot <jacquiot.aurelien@gmail.com>,
-        Jiaxun Yang <jiaxun.yang@flygoat.com>,
-        Guan Xuetao <gxt@pku.edu.cn>,
-        Russell King <linux@armlinux.org.uk>,
-        Yoshinori Sato <ysato@users.sourceforge.jp>,
-        Rich Felker <dalias@libc.org>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        "open list:BROADCOM NVRAM DRIVER" <linux-mips@vger.kernel.org>,
-        linux-c6x-dev@linux-c6x.org,
-        linux-m68k <linux-m68k@lists.linux-m68k.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux-sh list <linux-sh@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-m68k-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-Hi Greg,
 
-On Tue, Apr 7, 2020 at 6:57 AM Greg Ungerer <gerg@linux-m68k.org> wrote:
-> On 6/4/20 5:35 pm, Arnd Bergmann wrote:
-> > On Mon, Apr 6, 2020 at 5:01 AM Stephen Boyd <sboyd@kernel.org> wrote:
-> >> Quoting Arnd Bergmann (2020-04-05 05:45:20)
-> >>> On Sun, Apr 5, 2020 at 4:51 AM Stephen Boyd <sboyd@kernel.org> wrote:
-> >>>> There's one snag with doing this, and that's making sure that randconfig
-> >>>> builds don't select this option when some architecture or platform
-> >>>> implements 'struct clk' outside of the common clk framework. Introduce a
-> >>>> new config option 'HAVE_LEGACY_CLK' to indicate those platforms that
-> >>>> haven't migrated to the common clk framework and therefore shouldn't be
-> >>>> allowed to select this new config option. Also add a note that we hope
-> >>>> one day to remove this config entirely.
+Hi Linus,
 
-> >>>> --- a/arch/m68k/Kconfig.cpu
-> >>>> +++ b/arch/m68k/Kconfig.cpu
-> >>>
-> >>>     text    data     bss     dec     hex filename
-> >>> 1934726 263616   83284 2281626 22d09a obj/vmlinux-before
-> >>> 1971989 266192   83308 2321489 236c51 obj/vmlinux-after
-> >>>
-> >>> The coldfire clock implementation looks rather simple compared
-> >>> to chips from the 2010s: most chips have only fixed clocks,
-> >>> and three of them have one of two registers of clock gates.
-> >>>
-> >>> It shouldn't be hard to convert, but enabling common-clk will
-> >>> cause a noticeable kernel size increase on the fairly limited
-> >>> hardware.
-> >>>
-> >>> Simply enabling COMMON_CLK in m5475evb_defconfig
-> >>> results in a 1.7% or 40KB growth in kernel size, plus there
-> >>> would be additional dynamic memory usage:
-> >> There could certainly be some work done to reduce the code size of the
-> >> CCF. I haven't looked but perhaps we could save some memory by making
-> >> the basic types selectable too and then push a bunch of kconfig updates
-> >> through for that.
-> >
-> > Right, that might help. Another possibility would be to support both
-> > the common clk layer and the custom clk implementation on coldfire
-> > until we remove the other custom implementations, by which point
-> > even fewer people will care about coldfire.
-> >
-> > Let's see what Geert and Greg think would be the best path for coldfire,
-> > maybe the added 40KB is less of a problem after all.
->
-> Losing another 40k is not ideal, but not the end of the world.
-> It would not stop me running it on any platforms I regularly
-> run on. For sure some of the really old hardware just doesn't
-> have the RAM to spare.
->
-> Any way, I say we have to move forward and and move to using
-> the common clock framework for ColdFire sooner than later.
+Can you please pull the m68knommu git tree, for-next branch.
 
-Fine for me.
+Only a single commit, to remove all use of the obsolete setup_irq()
+calls within the m68knommu architecture code.
 
-Gr{oetje,eeting}s,
-
-                        Geert
+Regards
+Greg
 
 
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+The following changes since commit 16fbf79b0f83bc752cee8589279f1ebfe57b3b6e:
+
+   Linux 5.6-rc7 (2020-03-22 18:31:56 -0700)
+
+are available in the Git repository at:
+
+   git://git.kernel.org/pub/scm/linux/kernel/git/gerg/m68knommu.git for-next
+
+for you to fetch changes up to ba000760eb0f182e6ef04faca70bb9737a9674b4:
+
+   m68k: Replace setup_irq() by request_irq() (2020-03-23 12:01:19 +1000)
+
+----------------------------------------------------------------
+afzal mohammed (1):
+       m68k: Replace setup_irq() by request_irq()
+
+  arch/m68k/68000/timers.c      | 16 +++++++---------
+  arch/m68k/coldfire/pit.c      | 16 +++++++---------
+  arch/m68k/coldfire/sltimers.c | 29 +++++++++++++++--------------
+  arch/m68k/coldfire/timers.c   | 31 +++++++++++++++----------------
+  4 files changed, 44 insertions(+), 48 deletions(-)
