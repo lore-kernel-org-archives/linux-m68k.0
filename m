@@ -2,103 +2,68 @@ Return-Path: <SRS0=K7iR=5Z=vger.kernel.org=linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.6 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-6.1 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,
+	SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 09557C2BA2B
-	for <linux-m68k@archiver.kernel.org>; Thu,  9 Apr 2020 10:53:50 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7C455C2BB55
+	for <linux-m68k@archiver.kernel.org>; Thu,  9 Apr 2020 18:10:37 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id CFE6C208FE
-	for <linux-m68k@archiver.kernel.org>; Thu,  9 Apr 2020 10:53:49 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 54443208FE
+	for <linux-m68k@archiver.kernel.org>; Thu,  9 Apr 2020 18:10:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=default; t=1586429629;
-	bh=BZVpag0qQETEDSuxALqBEW3mh5PAYg0YPSQ6u6hT+os=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:List-ID:From;
-	b=PuaYD923+F5HFmV7/aw3j2053ByqAKV/IQ74fRY6YfRGSIPVNRZX7ZWWct0ojSDWV
-	 efP/e7KZSR7Kx+kWNSeyi6bKxASRTaCg3wmLtjaxv7S82r7mFL2JqfLQtXfyAzdUsG
-	 Fqbv4GbctZypkz1I7ot6595W2LEdvMp8ODbQIxvs=
+	s=default; t=1586455837;
+	bh=1dJJZJJ0gp3X2gtKKb8ovGaXFPD1aGuFpdqfFVI6GNk=;
+	h=Subject:From:In-Reply-To:References:Date:To:Cc:List-ID:From;
+	b=s3sqvd4ZWfk5PY1eZD2mBn/53jVK4X00rWxTZDoSbSuE/AUS5IdBvxS/HcqxGpnCh
+	 JkqkWYArAk+lQW/UoMvOFq7xffbwzcFozx6cOKVcG8DcSwmE+NAcPv0yGt6X+1nD4p
+	 mrcCtvW56VKvtlN1biFA8HkH3bV/Xx+otswA8Aps=
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726470AbgDIKxs (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Thu, 9 Apr 2020 06:53:48 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36264 "EHLO mail.kernel.org"
+        id S1726632AbgDISK0 (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Thu, 9 Apr 2020 14:10:26 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54998 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725972AbgDIKxs (ORCPT <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Thu, 9 Apr 2020 06:53:48 -0400
-Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 29C1320857;
-        Thu,  9 Apr 2020 10:53:48 +0000 (UTC)
+        id S1725970AbgDISK0 (ORCPT <rfc822;linux-m68k@vger.kernel.org>);
+        Thu, 9 Apr 2020 14:10:26 -0400
+Subject: Re: [git pull] m68knommu changes for v5.7
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1586429628;
-        bh=BZVpag0qQETEDSuxALqBEW3mh5PAYg0YPSQ6u6hT+os=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=tTiZNE4MZTrKG51Y9OasNhBTM4o2bQLbPf4Wf7/YAQELzNOT+AZAkgn2K0xhT4IA2
-         HuyI4p0Y0c92dYiCkVqvymJQgjD6EbHBHAoaHwPXk/+7v+O7zifx1qUnqixV55VStn
-         4PNGjE29VSHGt8vR/xAWJjchP4WQ81ol1wBUKig8=
-Date:   Thu, 9 Apr 2020 11:53:46 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     Stephen Boyd <sboyd@kernel.org>
-Cc:     Michael Turquette <mturquette@baylibre.com>,
-        linux-kernel@vger.kernel.org, linux-clk@vger.kernel.org,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Mark Salter <msalter@redhat.com>,
-        Aurelien Jacquiot <jacquiot.aurelien@gmail.com>,
-        Jiaxun Yang <jiaxun.yang@flygoat.com>,
-        Guan Xuetao <gxt@pku.edu.cn>,
-        Russell King <linux@armlinux.org.uk>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Yoshinori Sato <ysato@users.sourceforge.jp>,
-        Rich Felker <dalias@libc.org>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        linux-mips@vger.kernel.org, linux-c6x-dev@linux-c6x.org,
-        linux-m68k@lists.linux-m68k.org,
-        linux-arm-kernel@lists.infradead.org, linux-sh@vger.kernel.org
-Subject: Re: [PATCH v2 07/10] clk: Allow the common clk framework to be
- selectable
-Message-ID: <20200409105346.GC5399@sirena.org.uk>
-References: <20200409064416.83340-1-sboyd@kernel.org>
- <20200409064416.83340-8-sboyd@kernel.org>
-MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="8X7/QrJGcKSMr1RN"
-Content-Disposition: inline
-In-Reply-To: <20200409064416.83340-8-sboyd@kernel.org>
-X-Cookie: HUGH BEAUMONT died in 1982!!
-User-Agent: Mutt/1.10.1 (2018-07-13)
+        s=default; t=1586455826;
+        bh=1dJJZJJ0gp3X2gtKKb8ovGaXFPD1aGuFpdqfFVI6GNk=;
+        h=From:In-Reply-To:References:Date:To:Cc:From;
+        b=Yf8l+zm17SlcIV0vTZr8SC4pS6rZy16n78exWP2AXCIPyZwCVwIt35v8SyED1UJv7
+         kw4v7zmL9C54F7trw2NwNYYfFccxgfquJ0BljYY5UljGhb0bQ0BgvJyGnz5z8NC113
+         eV1TuQ2JA+m0EfEkuCLcxdd1Vm/F5raDJ3Kcxj2E=
+From:   pr-tracker-bot@kernel.org
+In-Reply-To: <ea2d2b5c-a164-7318-3dcf-3c30098364f2@linux-m68k.org>
+References: <ea2d2b5c-a164-7318-3dcf-3c30098364f2@linux-m68k.org>
+X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
+X-PR-Tracked-Message-Id: <ea2d2b5c-a164-7318-3dcf-3c30098364f2@linux-m68k.org>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/gerg/m68knommu.git for-next
+X-PR-Tracked-Commit-Id: ba000760eb0f182e6ef04faca70bb9737a9674b4
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: 6cff4821c0856cbf310601c849047fbd666216ea
+Message-Id: <158645582682.26793.2224835724753474663.pr-tracker-bot@kernel.org>
+Date:   Thu, 09 Apr 2020 18:10:26 +0000
+To:     Greg Ungerer <gerg@linux-m68k.org>
+Cc:     torvalds@linux-foundation.org,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Linux/m68k <linux-m68k@vger.kernel.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>
 Sender: linux-m68k-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
+The pull request you sent on Thu, 9 Apr 2020 13:14:08 +1000:
 
---8X7/QrJGcKSMr1RN
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+> git://git.kernel.org/pub/scm/linux/kernel/git/gerg/m68knommu.git for-next
 
-On Wed, Apr 08, 2020 at 11:44:13PM -0700, Stephen Boyd wrote:
-> Enable build testing and configuration control of the common clk
-> framework so that more code coverage and testing can be done on the
-> common clk framework across various architectures. This also nicely
-> removes the requirement that architectures must select the framework
-> when they don't use it in architecture code.
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/6cff4821c0856cbf310601c849047fbd666216ea
 
-Reviwed-by: Mark Brown <broonie@kernel.org>
+Thank you!
 
---8X7/QrJGcKSMr1RN
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl6O/rkACgkQJNaLcl1U
-h9C8bAf/SJkvvbTRmpOunw3fAHei1NkJ2RUZ/Ax5l+NwzvC+fSezjkGHKH+2LVOV
-6vTimPH4EKoGc/4RRBVRSrlp20QY/mz4/7+/Ojsrfp9KsWdcH167Zd26sYP3kSy2
-8jxnHBccoWJ8B9p9YVYslrMb0+y1mjnfLOsBioILN1wa6R2vuv7/JXuu1FmaeYLl
-geaZWL7Aw8Knj421ywLqEbg57Zd7M/2ei5gI/plDWIS+UoeuPPPhsUCVkza76DOE
-pyvpA21x2ceFOmCTq0O5O2a/WlM8xwfklNLML6wx3NSS02WWiqnAbMS3sZ9Adk50
-k7m1LMdfWu/q1CQwp58kVOsZJVWZ4g==
-=+bDI
------END PGP SIGNATURE-----
-
---8X7/QrJGcKSMr1RN--
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.wiki.kernel.org/userdoc/prtracker
