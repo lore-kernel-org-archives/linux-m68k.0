@@ -1,78 +1,78 @@
-Return-Path: <SRS0=EBDC=52=vger.kernel.org=linux-m68k-owner@kernel.org>
+Return-Path: <SRS0=6pxz=53=vger.kernel.org=linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.2 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=no
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-2.2 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 23295C2BA2B
-	for <linux-m68k@archiver.kernel.org>; Fri, 10 Apr 2020 14:54:36 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 9070BC2D0EC
+	for <linux-m68k@archiver.kernel.org>; Sat, 11 Apr 2020 00:45:08 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 007B82078E
-	for <linux-m68k@archiver.kernel.org>; Fri, 10 Apr 2020 14:54:35 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 4E7BC20787
+	for <linux-m68k@archiver.kernel.org>; Sat, 11 Apr 2020 00:45:08 +0000 (UTC)
+Authentication-Results: mail.kernel.org;
+	dkim=pass (2048-bit key) header.d=landley-net.20150623.gappssmtp.com header.i=@landley-net.20150623.gappssmtp.com header.b="GKV9+eEK"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726145AbgDJOyf (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Fri, 10 Apr 2020 10:54:35 -0400
-Received: from relay2-d.mail.gandi.net ([217.70.183.194]:53653 "EHLO
-        relay2-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726142AbgDJOye (ORCPT
-        <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Fri, 10 Apr 2020 10:54:34 -0400
-X-Originating-IP: 92.76.86.40
-Received: from winslow.earth.sol (dslb-092-076-086-040.092.076.pools.vodafone-ip.de [92.76.86.40])
-        (Authenticated sender: cts@steigies.net)
-        by relay2-d.mail.gandi.net (Postfix) with ESMTPSA id D70054000A;
-        Fri, 10 Apr 2020 14:54:32 +0000 (UTC)
-Received: from cts by winslow.earth.sol with local (Exim 4.92)
-        (envelope-from <cts@winslow.earth.sol>)
-        id 1jMv3A-0000i1-7W; Fri, 10 Apr 2020 16:54:32 +0200
-Date:   Fri, 10 Apr 2020 16:54:32 +0200
-From:   "Christian T. Steigies" <cts@debian.org>
-To:     John Alexander <acontractornow@yahoo.co.uk>
-Cc:     Carsten Strotmann <cas@strotmann.de>,
-        linux-m68k <linux-m68k@lists.linux-m68k.org>,
-        Debian m68k <debian-68k@lists.debian.org>,
-        John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
-Subject: Re: Planning a Debian/Linux m68k Meeting in 2020
-Message-ID: <20200410145431.GA22380@winslow.earth.sol>
-Mail-Followup-To: John Alexander <acontractornow@yahoo.co.uk>,
-        Carsten Strotmann <cas@strotmann.de>,
-        linux-m68k <linux-m68k@lists.linux-m68k.org>,
-        Debian m68k <debian-68k@lists.debian.org>,
-        John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
-References: <86wo6nwytz.fsf@emacs.strotmann.de>
- <e6625b99-0d32-3dad-d1a6-e3ea0958d8f1@physik.fu-berlin.de>
- <1802398089.6357995.1586526646576@mail.yahoo.com>
+        id S1726736AbgDKApH (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Fri, 10 Apr 2020 20:45:07 -0400
+Received: from mail-oi1-f182.google.com ([209.85.167.182]:37078 "EHLO
+        mail-oi1-f182.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726648AbgDKApH (ORCPT
+        <rfc822;linux-m68k@vger.kernel.org>); Fri, 10 Apr 2020 20:45:07 -0400
+Received: by mail-oi1-f182.google.com with SMTP id u20so2784412oic.4
+        for <linux-m68k@vger.kernel.org>; Fri, 10 Apr 2020 17:45:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=landley-net.20150623.gappssmtp.com; s=20150623;
+        h=to:from:subject:message-id:date:user-agent:mime-version
+         :content-language:content-transfer-encoding;
+        bh=9NTj+9RJ8go1IrEaz/7RJtlbGnU3Z6YHkUpffCG/6v4=;
+        b=GKV9+eEKdgqX7rlsrtEd7VvFiKGrkrMtf6jp+JSRdGtxHQP/XSGHpNgWZDgRFCrh5J
+         3k6UT9WOpykQ+AxBs0Sr8xG6oXx8lWMlaakP9UjkgidHyo03lkukgNDwht+XxDCzV7FR
+         9HfGkhwObQtzNSPwZAbtc0m8++aVBGcNOfhxsd4YJJJAffxCVviuz4r8MkwyW6AlOWCm
+         35/oeNjfVqUizxNzwhnKNeniSB9dwtZ+D/tPsq/w5Cncdgtv21n02+wmCd154Sj0d7HA
+         g04zL9jQ6Odgdy6dD1248ia59h3mTZh2AsphSj6SzJWtalpwBwJjPhF2Zc3HUkX6d9MQ
+         3H+Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:to:from:subject:message-id:date:user-agent
+         :mime-version:content-language:content-transfer-encoding;
+        bh=9NTj+9RJ8go1IrEaz/7RJtlbGnU3Z6YHkUpffCG/6v4=;
+        b=alM56cKX4J2d064SvfwlOAdCp8Vcle5bcBgls8F0pmTNS56agq9JQXTqDkvHajLV/N
+         FFdZDNwaiohk9nPd9D8DfMuyzn+AwHLYQn+zMeBMoT8DnCOCskg5I9mHI5ObIIn3hmaD
+         C7dA1lTL/fqgREMtQ4W2oA6Caffy044H6sZyWhRYJsYwLx1GszilJU8DH+HscBrUPiho
+         jSEmyYphTNkdZFBKJorocc0iI/xAeyuKeLFIMP3p5p6W8bXU/F+wuJ3VC8vSXy1/hc1U
+         J2uIH4X6h4aJ4j8zvetY5TsJZvE+Yu0W6XedQ4LWR5lZ8a/vEFFWwoSwfSiKru0iOciR
+         C1sg==
+X-Gm-Message-State: AGi0PubrCrbCNcrmp2QMCg5ICztHPWcbNEl0uY1cuZI8m2aKM5nZO/+O
+        cVK3eVascbFzB2IhVip+JkVL0uHc5nA=
+X-Google-Smtp-Source: APiQypLZjZmG1hLpK1+h1YCfBO1lD8Nw1LMnd0X6d/Iy1CSskVAIev7gEfkiBrWRz4mlheZsGSAi/w==
+X-Received: by 2002:aca:e189:: with SMTP id y131mr3475806oig.98.1586565906658;
+        Fri, 10 Apr 2020 17:45:06 -0700 (PDT)
+Received: from [192.168.86.21] ([136.62.4.88])
+        by smtp.googlemail.com with ESMTPSA id t11sm2289588oov.1.2020.04.10.17.45.05
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 10 Apr 2020 17:45:05 -0700 (PDT)
+To:     linux-m68k@vger.kernel.org, Laurent Vivier <Laurent@Vivier.EU>
+From:   Rob Landley <rob@landley.net>
+Subject: Running m68k on qemu with external initramfs?
+Message-ID: <b1e930f3-7775-6955-860e-a2886627caa8@landley.net>
+Date:   Fri, 10 Apr 2020 19:50:59 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.4.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <1802398089.6357995.1586526646576@mail.yahoo.com>
-X-Info: Nach Paragraph 28 Abs. 3 Bundesdatenschutzgesetz widerspreche ich der
- Nutzung oder Uebermittlung meiner Daten fuer Werbezwecke oder fuer die
- Markt- oder Meinungsforschung.
-X-No-CC: I subscribe to this list; please do not CC me on replies. 
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-m68k-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-On Fri, Apr 10, 2020 at 01:50:46PM +0000, John Alexander wrote:
->  Hi there I like the idea of Jitsi as it's much more open but from the use we have had with local LUGs we  have found it to be problematic with a larger number of clients particularly 
-> low bandwidth clients essentially bringing the server into a bad state. 
-> 
-> The sessions run on Zoom work much better.. I can gain access to both platforms to both platforms and we can try them out together and let you make up your own minds. 
+I'm adding m68k support to toybox's "make root" target and I have a kernel and a
+rootfs.cpio.gz, but qemu's -initrd option doesn't put the rootfs image somewhere
+the m68k kernel can find it.
 
-Please no zoom. It's been all over the news...
+Is this a "modify qemu" problem or a "modify kernel" problem?
 
-We use BigBlueButton for teaching now, I had a successful meeting with more
-than 180 participants (no camera, no mike for the participants). A session
-with 12 parallel video streams also worked fined. The server has a 1Gbit/s
-connection, I have a simple DSL connection.
-
-In case somebody has time to waste, you can help packaging it for Debian:
-https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=956252
-
-Christian
+Rob
