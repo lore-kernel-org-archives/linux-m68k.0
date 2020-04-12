@@ -1,116 +1,126 @@
-Return-Path: <SRS0=6pxz=53=vger.kernel.org=linux-m68k-owner@kernel.org>
+Return-Path: <SRS0=j0Rh=54=vger.kernel.org=linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.2 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=no
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-7.2 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C775AC2BBC7
-	for <linux-m68k@archiver.kernel.org>; Sat, 11 Apr 2020 12:28:19 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 815E2C2D0EC
+	for <linux-m68k@archiver.kernel.org>; Sun, 12 Apr 2020 03:31:02 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id AB2BA206A1
-	for <linux-m68k@archiver.kernel.org>; Sat, 11 Apr 2020 12:28:19 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 4429620739
+	for <linux-m68k@archiver.kernel.org>; Sun, 12 Apr 2020 03:31:02 +0000 (UTC)
+Authentication-Results: mail.kernel.org;
+	dkim=pass (2048-bit key) header.d=landley-net.20150623.gappssmtp.com header.i=@landley-net.20150623.gappssmtp.com header.b="zlrya/p+"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726787AbgDKM2S (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Sat, 11 Apr 2020 08:28:18 -0400
-Received: from outpost1.zedat.fu-berlin.de ([130.133.4.66]:58493 "EHLO
-        outpost1.zedat.fu-berlin.de" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727515AbgDKMM5 (ORCPT
-        <rfc822;linux-m68k@vger.kernel.org>);
-        Sat, 11 Apr 2020 08:12:57 -0400
-Received: from inpost2.zedat.fu-berlin.de ([130.133.4.69])
-          by outpost.zedat.fu-berlin.de (Exim 4.93)
-          with esmtps (TLS1.2)
-          tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-          (envelope-from <glaubitz@zedat.fu-berlin.de>)
-          id 1jNF0I-000nBz-J0; Sat, 11 Apr 2020 14:12:54 +0200
-Received: from p5b13a881.dip0.t-ipconnect.de ([91.19.168.129] helo=[192.168.178.139])
-          by inpost2.zedat.fu-berlin.de (Exim 4.93)
-          with esmtpsa (TLS1.2)
-          tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-          (envelope-from <glaubitz@physik.fu-berlin.de>)
-          id 1jNF0I-002hhz-B4; Sat, 11 Apr 2020 14:12:54 +0200
+        id S1726689AbgDLDbB (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Sat, 11 Apr 2020 23:31:01 -0400
+Received: from mail-ot1-f65.google.com ([209.85.210.65]:41416 "EHLO
+        mail-ot1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726565AbgDLDbB (ORCPT
+        <rfc822;linux-m68k@vger.kernel.org>); Sat, 11 Apr 2020 23:31:01 -0400
+Received: by mail-ot1-f65.google.com with SMTP id f52so5852055otf.8
+        for <linux-m68k@vger.kernel.org>; Sat, 11 Apr 2020 20:31:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=landley-net.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=He4QKdvXsWLamPjOPXt0a0W67Ip4i0qTohz/9LTrXi0=;
+        b=zlrya/p+nerQ/QBgnkql7xQ0OcJIiQfoB9B+EA3wPbfO+Lne5EcvUQZkXgUxCZRNe0
+         jzfG58+8vnZnD/m+k1tawAAK9YEffuKMCZXf3BcExpcPhmVvzyAMfOD/8sHHKLHUh8+q
+         idgokE9QOyoCroeuQ3ju2cg1eOjUeTf8o3Gl5XhMS9xHSeWD8R3JB7y1BzJHCfIfbjt0
+         8+7nxpmeHyPV3rKdNlsP5kQuJfxgBAhAdQR5SX10kj5WGTipd7l0+9LRSA2NAwMTEWZI
+         zinook9zfK1tcEyl7QwsSIAA1ulaowP9W3YDzAnrrawMDcs3DD0d4QgXltCkPzIb+4ad
+         mU+g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=He4QKdvXsWLamPjOPXt0a0W67Ip4i0qTohz/9LTrXi0=;
+        b=P5MPc7Z+1lWsR7bkT15Mj3a3tHA8q41gjPvR/QWi7TNuDoCXMmlolwxNqqLT2+k704
+         kVZt94hBMNY6PQyIhmyRnhDCKNWYYtE7CFytvVSglMLAhWBdvAXtR+iMXCAjZBZD6w6u
+         KwTeiisBLV3IaSRv97eV3h3Kr68ESC0wVF4wJh7vPHHsnWKSUiMYNCJ4wMJgFy1K3WYH
+         0WWHECpp3uipTb70jPcFvcEdrf7mVxXm+ToFrnxCo8HcQ8CqUbqcrflehWrE5aW2t+4l
+         ebK9YHG97AhMBZY5m3uwkKdoip3T1rQUy9c75IlVrPdbVKdMl8IzVVnDS+Zf5BEbGjfF
+         U9Wg==
+X-Gm-Message-State: AGi0PubHitB29aKuMc6YIRN0lg8on0dvxxnYxvcVMlMvTyogrSOHsx1g
+        SuOw3/OeaR4IOdbr8DUC0sVpLF67D30=
+X-Google-Smtp-Source: APiQypIEVGSkpFO5b5qZTttcdR9VrBMpQ67C0WlePuQaV8Sjjf40SE/xx0ILwBSVhxbiMbPPkDzmFg==
+X-Received: by 2002:a05:6830:1104:: with SMTP id w4mr10348838otq.54.1586662260788;
+        Sat, 11 Apr 2020 20:31:00 -0700 (PDT)
+Received: from [192.168.86.21] ([136.62.4.88])
+        by smtp.googlemail.com with ESMTPSA id l20sm3803860oih.40.2020.04.11.20.30.59
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 11 Apr 2020 20:31:00 -0700 (PDT)
 Subject: Re: Running m68k on qemu with external initramfs?
-To:     Rob Landley <rob@landley.net>, linux-m68k@vger.kernel.org,
-        Laurent Vivier <Laurent@Vivier.EU>
+To:     Finn Thain <fthain@telegraphics.com.au>
+Cc:     linux-m68k@vger.kernel.org, Laurent Vivier <Laurent@Vivier.EU>
 References: <b1e930f3-7775-6955-860e-a2886627caa8@landley.net>
-From:   John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
-Autocrypt: addr=glaubitz@physik.fu-berlin.de; keydata=
- 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
- scOkTAZQGVpD/8AaLH4v1w==
-Message-ID: <c4a784d9-2fef-ee90-9ff3-b1d8487e8a8b@physik.fu-berlin.de>
-Date:   Sat, 11 Apr 2020 14:12:51 +0200
+ <alpine.LNX.2.22.394.2004111608380.43@nippy.intranet>
+From:   Rob Landley <rob@landley.net>
+Message-ID: <0e69cfc4-3bcd-25c3-0d32-665ef50f815c@landley.net>
+Date:   Sat, 11 Apr 2020 22:36:54 -0500
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.6.0
+ Thunderbird/68.4.1
 MIME-Version: 1.0
-In-Reply-To: <b1e930f3-7775-6955-860e-a2886627caa8@landley.net>
+In-Reply-To: <alpine.LNX.2.22.394.2004111608380.43@nippy.intranet>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-Original-Sender: glaubitz@physik.fu-berlin.de
-X-Originating-IP: 91.19.168.129
 Sender: linux-m68k-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-Hi Rob!
+On 4/11/20 1:12 AM, Finn Thain wrote:
+> On Fri, 10 Apr 2020, Rob Landley wrote:
+> 
+>> I'm adding m68k support to toybox's "make root" target and I have a 
+>> kernel and a rootfs.cpio.gz, but qemu's -initrd option doesn't put the 
+>> rootfs image somewhere the m68k kernel can find it.
+>>
+>> Is this a "modify qemu" problem or a "modify kernel" problem?
+> 
+> It sounds more like a "modify kernel .config" problem. But it could be a 
+> regression; what versions of qemu and kernel did you try?
 
-On 4/11/20 2:50 AM, Rob Landley wrote:
-> I'm adding m68k support to toybox's "make root" target and I have a kernel and a
-> rootfs.cpio.gz, but qemu's -initrd option doesn't put the rootfs image somewhere
-> the m68k kernel can find it.
+"Works for me", got it. I'll keep digging.
 
-Can you try whether this guide works for you with your version of qemu?
+QEMU is the one Laurent Vivier maintains that's been out of tree for something
+like 12 years now, the default branch claims to be "q800-dev" and the last
+commit was in december. It still runs my old aboriginal linux system image from
+2014 (boots to a shell prompt).
 
-> https://wiki.debian.org/M68k/QemuSystemM68k
+Kernel is vanilla v5.6 with the arch configured with:
 
-Adrian
+QEMU="m68k -M q800" KARCH=m68k KARGS=ttyS0 VMLINUX=vmlinux
+KCONF=MMU,M68040,M68KFPU_EMU,MAC,SCSI_MAC_ESP,MACINTOSH_DRIVERS,ADB,ADB_MACII,NET_CORE,MACSONIC,SERIAL_PMACZILOG,SERIAL_PMACZILOG_TTYS,SERIAL_PMACZILOG_CONSOLE
 
--- 
- .''`.  John Paul Adrian Glaubitz
-: :' :  Debian Developer - glaubitz@debian.org
-`. `'   Freie Universitaet Berlin - glaubitz@physik.fu-berlin.de
-  `-    GPG: 62FF 8A75 84E0 2956 9546  0006 7426 3B37 F5B5 F913
+Which is top of:
+
+BASE=EARLY_PRINTK,BINFMT_ELF,BINFMT_SCRIPT,NO_HZ,HIGH_RES_TIMERS,BLK_DEV,BLK_DEV_INITRD,RD_GZIP,BLK_DEV_LOOP,EXT4_FS,EXT4_USE_FOR_EXT2,VFAT_FS,FAT_DEFAULT_UTF8,MISC_FILESYSTEMS,SQUASHFS,SQUASHFS_XATTR,SQUASHFS_ZLIB,DEVTMPFS,DEVTMPFS_MOUNT,TMPFS,TMPFS_POSIX_ACL,NET,PACKET,UNIX,INET,IPV6,NETDEVICES,NET_CORE,NETCONSOLE,ETHERNET
+
+As interpreted by:
+
+  sed -E '/^$/d;s/([^,]*)($|,)/CONFIG_\1=y\n/g' <<< "$BASE,$KCONF > mini.conf
+  make ARCH=$KARCH allnoconfig KCONFIG_ALLCONFIG=mini.conf
+  make ARCH=$KARCH CROSS_COMPILE="$CROSS_COMPILE" -j $(nproc)
+
+Plus of course:
+
+  echo "qemu-system-$QEMU" '"$@"' -nographic -no-reboot -m 256 \
+       "-kernel $(basename "$VMLINUX") -initrd root.cpio.gz" \
+       "-append \"quiet panic=1 HOST=$TARGET console=$KARGS \$KARGS\"" \
+       ${DTB:+-dtb "$(basename "$DTB")"} > "$OUTPUT/qemu-$TARGET.sh"
+
+I.E. the usual. (I'm trying to add m68k support to
+https://github.com/landley/toybox/blob/master/scripts/mkroot.sh which already
+boots armv5l, armv7l, aarch64, i486, i686, x86_64, mips, mipsel, powerpc, s390x,
+and sh4 to a shell prompt under qemu, although you still have to
+KARGS=rdinit=/bin/sh because I haven't QUITE got my new shell making it through
+the end of the init script. Should do in another couple days.)
+
+Rob
