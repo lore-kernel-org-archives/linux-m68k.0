@@ -2,122 +2,146 @@ Return-Path: <SRS0=j0Rh=54=vger.kernel.org=linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.2 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-7.2 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D149AC2D0EC
-	for <linux-m68k@archiver.kernel.org>; Sun, 12 Apr 2020 21:45:50 +0000 (UTC)
-X-Greylist: delayed 162 seconds by postgrey-1.34 at mail.kernel.org; Sun, 12 Apr 2020 21:45:50 UTC
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 838B0C2D0EC
+	for <linux-m68k@archiver.kernel.org>; Sun, 12 Apr 2020 21:50:21 +0000 (UTC)
+Received: from vger.kernel.org (unknown [209.132.180.67])
+	by mail.kernel.org (Postfix) with ESMTP id 3F58F206E5
+	for <linux-m68k@archiver.kernel.org>; Sun, 12 Apr 2020 21:50:21 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=landley-net.20150623.gappssmtp.com header.i=@landley-net.20150623.gappssmtp.com header.b="fShpm8gM"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 615F5206E5
+	dkim=pass (2048-bit key) header.d=landley-net.20150623.gappssmtp.com header.i=@landley-net.20150623.gappssmtp.com header.b="vruZVoGC"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 3F58F206E5
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=landley.net
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-m68k-owner@vger.kernel.org
-Received: from vger.kernel.org (unknown [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 615F5206E5
-	for <linux-m68k@archiver.kernel.org>; Sun, 12 Apr 2020 21:45:50 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728358AbgDLVnH (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Sun, 12 Apr 2020 17:43:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.18]:50482 "EHLO
+        id S1727426AbgDLVuU (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Sun, 12 Apr 2020 17:50:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.18]:51656 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727388AbgDLVnH (ORCPT
-        <rfc822;linux-m68k@vger.kernel.org>); Sun, 12 Apr 2020 17:43:07 -0400
-Received: from mail-ot1-x342.google.com (mail-ot1-x342.google.com [IPv6:2607:f8b0:4864:20::342])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C7695C0A3BF5
-        for <linux-m68k@vger.kernel.org>; Sun, 12 Apr 2020 14:43:05 -0700 (PDT)
-Received: by mail-ot1-x342.google.com with SMTP id x11so7398159otp.6
-        for <linux-m68k@vger.kernel.org>; Sun, 12 Apr 2020 14:43:05 -0700 (PDT)
+        with ESMTP id S1727388AbgDLVuU (ORCPT
+        <rfc822;linux-m68k@vger.kernel.org>); Sun, 12 Apr 2020 17:50:20 -0400
+Received: from mail-ot1-x343.google.com (mail-ot1-x343.google.com [IPv6:2607:f8b0:4864:20::343])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F166BC0A88B5
+        for <linux-m68k@vger.kernel.org>; Sun, 12 Apr 2020 14:50:18 -0700 (PDT)
+Received: by mail-ot1-x343.google.com with SMTP id w12so6512615otm.13
+        for <linux-m68k@vger.kernel.org>; Sun, 12 Apr 2020 14:50:18 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=landley-net.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=X4JN3I4RgQet+c6zSx+5jOf5qNuQLa/qnprYVfo8x5o=;
-        b=fShpm8gMMD16i/Q133LgL1W10TJ9/XNKwDn2l043zykz/8n6liGI7HxIiYL3wl4lni
-         DijItgvDjQdaZQ/qH30Ujpd5bDdLFBWljS7tMBXbiNforQVfFBcXQQqzfCLPMTGj74tX
-         ORCwpL3KQKYbDRPVp+z9VuZXNWCE/nb/XQ8CqL0nw4jjwfpS+k9V24acrVweqOZ4vUKT
-         C2VXPmnqeiK3NllFR2Cz8P2GNdMWWLGoIz6Hv4w8DpuEPRAxZT/YD71qcJYymU0MKsWl
-         X3b5AYs3XZ8w4F5Wr369qlE+IoB5UMLB0FhfYeis1YYTf6N+gQYJkv9VkljD2ZwSezIc
-         9ihQ==
+        h=subject:to:references:from:message-id:date:user-agent:mime-version
+         :in-reply-to:content-language:content-transfer-encoding;
+        bh=l9A6Flx8D3zXbQAVkeFgXL5/aghYEKkuzKxKTUMERJM=;
+        b=vruZVoGC95ld0x83qs5NWNCygkWXcaTDg2VDlZ4R8yywNoKnr4frburHYpo9eTGJLH
+         IF9NrfwxdH8C/ZcVSTrEfBu3Wu8Nwt9jRfawTxfDM+WppvRQqEXZKrYE98p/rUhYzzuB
+         EafbvZY3X7ypLE0KDXRuQpLzGlf5r6QZ+GVaiHPlefsBQQkhy+YpJkEpZHMoSZUvGItt
+         IBciSDkjxVy5VzlwBhFFWfzdQr6qxDcRX1jVmumBBa2xKG/kNNcLLjukrkX5eq9F28hv
+         22We89umKA371fxnlDDi14LPbC4ibgLESZ5RQq5kAzViY1E0SCKDhOTpn+QqePNDcLhZ
+         b9IA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+        h=x-gm-message-state:subject:to:references:from:message-id:date
          :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=X4JN3I4RgQet+c6zSx+5jOf5qNuQLa/qnprYVfo8x5o=;
-        b=eVFI6IzjX433CO9M++5sqClaWSg+oTkntTiYFlvqg+th3pu46s8FSWF7/p16BynVyG
-         NBhU1ar6G+rWJAQJdopvaqirDKAOZEZGCtBQ2MT/L5VedzNJvxUtdduK2w6zaWxJSohN
-         /qDwJAxXtt2iMYqalUs4QagqjOiGl5+TDhfRVFS9ona5flcuk5CXVo7Rb8ORK12bBB/3
-         4ok9OqWUyMY8Mtkyr8d03K+ntsA5GcKM+xcDRcGzTJZ9DNQ6KDHXzR/fKUJlK3okh4bO
-         oIklVvm1HeWyn0nQ5zwsgVrgQdM6IozmiaYYWu5juGOXVcE7sgWSVyp9w50V27Wc0TcM
-         r76Q==
-X-Gm-Message-State: AGi0PuYbiPdQaDQRFs6A4PFwgaoMWHJjAcbakwoLLeKVCZylWA5EApE7
-        En20ydcOnrozrDU9z6iENrQMvrwIvw4=
-X-Google-Smtp-Source: APiQypILJphTi7Dc+UaGIB/OXzvQoqfultJirHtOjftHJ6HhQ4sQac3KhmKHweqUb6Y8Tts2fY9XJA==
-X-Received: by 2002:a4a:d746:: with SMTP id h6mr12015040oot.21.1586727784566;
-        Sun, 12 Apr 2020 14:43:04 -0700 (PDT)
+        bh=l9A6Flx8D3zXbQAVkeFgXL5/aghYEKkuzKxKTUMERJM=;
+        b=INDvW+CkcfRhaIPhTmoPfXER9Yf+nCsH+t9Slhqg0Zb7MF5ceSWEfNo9hmrE/E19G1
+         pq8DzC0+HxZsHpUDBZC+wDHpddiS7yTRKG9uScRTKECcB2r8mUEheRGX8ZZ+t4nTnoTU
+         6BiakKGgIISoJJs1bqG0+MAKmOW0Y3yILfjzGELGnnAdXE9gy9WmFaBZoIE45jB92S9+
+         igZjZkvfsw+mRZMWkBdatftZJZm8FD6TGv0/LlTjn//Yb/cUZPTrsIOKnjSIGDdqfXce
+         vaBjI+BbK3KIgfG+qx1PTM7T/0IUjzMZ8SHZwvGcslE3cIhOrASMtDTEyHkyJpRkZP/D
+         8zqQ==
+X-Gm-Message-State: AGi0PuYlrQ7zttGRcKKvGorG/DJNP6vtRq7Vdv5yL9VhjYDQJlce7tSK
+        C2VYySJQhH+1AGlgTBMf94gi3Q==
+X-Google-Smtp-Source: APiQypKWOxg/LgTFmCGLr222pAv/7dMLjYFjOtCgCQT6tfJvl2ToWpf0XCswWPWA+yEveq5gj/3a0g==
+X-Received: by 2002:a05:6830:1d4:: with SMTP id r20mr3788941ota.11.1586728218248;
+        Sun, 12 Apr 2020 14:50:18 -0700 (PDT)
 Received: from [192.168.86.21] ([136.62.4.88])
-        by smtp.googlemail.com with ESMTPSA id l186sm4339825oia.46.2020.04.12.14.43.03
+        by smtp.googlemail.com with ESMTPSA id a131sm4336053oii.30.2020.04.12.14.50.17
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 12 Apr 2020 14:43:03 -0700 (PDT)
+        Sun, 12 Apr 2020 14:50:17 -0700 (PDT)
 Subject: Re: Running m68k on qemu with external initramfs?
-To:     Laurent Vivier <laurent@vivier.eu>,
-        John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
-Cc:     Finn Thain <fthain@telegraphics.com.au>, linux-m68k@vger.kernel.org
-References: <0e69cfc4-3bcd-25c3-0d32-665ef50f815c@landley.net>
- <08DCD73D-7BC1-4F38-87DE-ED4DBD5978DA@physik.fu-berlin.de>
- <f1f62d19-bee9-537d-5641-8435567fb380@vivier.eu>
+To:     John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
+        linux-m68k@vger.kernel.org, Laurent Vivier <Laurent@Vivier.EU>
+References: <b1e930f3-7775-6955-860e-a2886627caa8@landley.net>
+ <c4a784d9-2fef-ee90-9ff3-b1d8487e8a8b@physik.fu-berlin.de>
+ <238ea76c-fa8e-0134-667b-3864938d9a78@landley.net>
+ <32e46b0f-9071-b48e-92f1-f3aa34a17dd8@physik.fu-berlin.de>
 From:   Rob Landley <rob@landley.net>
-Message-ID: <e0d7b1eb-c577-88ba-e318-a6b3b41f875c@landley.net>
-Date:   Sun, 12 Apr 2020 16:48:58 -0500
+Message-ID: <96b81b61-b468-2182-cfb6-87953d4ccd9a@landley.net>
+Date:   Sun, 12 Apr 2020 16:56:12 -0500
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.4.1
 MIME-Version: 1.0
-In-Reply-To: <f1f62d19-bee9-537d-5641-8435567fb380@vivier.eu>
+In-Reply-To: <32e46b0f-9071-b48e-92f1-f3aa34a17dd8@physik.fu-berlin.de>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Sender: linux-m68k-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-On 4/12/20 3:31 AM, Laurent Vivier wrote:
->>> QEMU is the one Laurent Vivier maintains that's been out of tree for something
->>> like 12 years now, the default branch claims to be "q800-dev" and the last
->>> commit was in december. It still runs my old aboriginal linux system image from
->>> 2014 (boots to a shell prompt).
->>
->> I think most of these things should be merged upstream these days but Laurent probably needs to correct me on what’s missing.
+On 4/12/20 8:02 AM, John Paul Adrian Glaubitz wrote:
+> On 4/12/20 2:48 PM, Rob Landley wrote:
+>> Install debian to a block device to see why initramfs isn't working?
 > 
-> Yes, all is merged in QEMU master for Q800 emulation.
-> 
-> What stays in q800-dev are dev patches needed to run MacOS ROM but
-> nothing works for the moment.
+> d-i uses a ramdisk so I assume that should be similar to what you are
+> using.
 
-I confirmed that upstream qemu is Doing The Thing. Thanks and congratulations.
-(It had been so long I stopped checking -git when my last vanilla build wasn't
-doing it.)
+Ah, I'd missed that part. (I did the debian cross-setup for arm and powerpc a
+couple years back, but hadn't tried it for m68k.)
 
-What I've hit now is either a compiler bug or a subtle enough stack corruption
-it doesn't manifest on any other platform and I haven't spotted it. I can fix it
-by adding a NOP function call right before the segfault, but for the moment I'm
-just punting worrying about it until after the next toybox release.
+> So, do I understand correctly that this is buildroot with musl?
 
-I checked in what I've got though. It builds a kernel and userspace for m68k,
-and the _kernel_ seems to work.
+It's mkroot, not buildroot. My current system builder is a single bash script,
+currently 231 lines long:
+
+  https://github.com/landley/toybox/blob/master/scripts/mkroot.sh
+
+Adding m68k support to it was 3 lines, which thunderbird does NOT want to indent
+properly:
+
++elif [ "$TARGET" == m68k ]; then
++QEMU="m68k -M q800" KARCH=m68k KARGS=ttyS0 VMLINUX=vmlinux
++KCONF=MMU,M68040,M68KFPU_EMU,MAC,SCSI_MAC_ESP,MACINTOSH_DRIVERS,ADB,ADB_MACII,NET_CORE,MACSONIC,SERIAL_PMACZILOG,SERIAL_PMACZILOG_TTYS,SERIAL_PMACZILOG_CONSOLE
+
+It uses an externally supplied cross compiler, and I'm currently trying to
+support every target musl supports using musl-cross-make. (It also works with
+the devuan host toolchain (glibc). I made a separate script to build all the
+musl-cross-make targets although in theory you could just use the prebuilt
+binary ones on https://musl.cc/ and at one point I had it working with the
+Android NDK (bionic) although that was several releases back and I haven't
+regression tested recently. Toybox gets regression tested against llvm by the
+android guys, but building the kernel with llvm was fiddly.)
+
+To build all supported targets, you do something like:
+
+  git clone https://github.com/landley/musl-cross-make
+  git clone https://github.com/landley/toybox
+  cd musl-cross-make
+  sed -Ei 's/(BINUTILS_VER =).*/\1 2.32/;s/(LINUX_VER =).*/\1 4.19.90/' Makefile
+  ../toybox/scripts/mcm-buildall.sh
+  cd ../toybox
+  ln -s ccc ../musl-cross-make/ccc
+  make defconfig
+  make menuconfig # switch on sh and route in pending/
+  make root CROSS=all LINUX=~/linux ALL=1
+
+(That last ALL=1 tells it to continue to the next architecture instead of
+stopping for build breaks. I haven't got kernel configs and QEMU invocations for
+the armv7r and such.)
+
+Then booting one under qemu is just:
+
+  (cd root/sh4; ./qemu-*.sh)
+
+Except I'm still implementing the shell so it doesn't QUITE make it through the
+init script, so to get a prompt you need to:
+
+  (cd root/sh4; KARGS=rdinit=/bin/sh ./qemu-*.sh)
+
+*shrug* Working on it...
 
 Rob
-
-P.S. I should poke Rich Felker again about fixing his kernel headers. He's
-switched the default in musl-cross-make to use an out of tree kernel header
-package from the sabotage project, which doesn't have s390x or m68k directories.
-I'm just going "oh goddess, I fought this war 15 years ago with Mariusz Mazur's
-headers package and I REALLY dowanna go back". He acknowledged the breakage last
-month, but it seems to have fallen through the cracks. That's what the sed LINUX
-is for in the toolchain build part of the reproduction sequence. The binutils
-version change is because https://marc.info/?l=linux-sh&m=158544749818664&w=2
-which ALSO still hasn't made it upstream, but hey, at least the kernel guys
-added an SPDX license identifier to the .gitignore file, so they've got their
-priorities.
