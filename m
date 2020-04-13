@@ -2,44 +2,66 @@ Return-Path: <SRS0=0yiB=55=vger.kernel.org=linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.3 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=no
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-2.3 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9C13DC2BA19
-	for <linux-m68k@archiver.kernel.org>; Mon, 13 Apr 2020 07:41:12 +0000 (UTC)
-Received: from vger.kernel.org (unknown [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 4580F20735
-	for <linux-m68k@archiver.kernel.org>; Mon, 13 Apr 2020 07:41:12 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 4580F20735
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=physik.fu-berlin.de
-Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=linux-m68k-owner@vger.kernel.org
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D3E96C352B6
+	for <linux-m68k@archiver.kernel.org>; Mon, 13 Apr 2020 08:35:24 +0000 (UTC)
+Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
+	by mail.kernel.org (Postfix) with ESMTP id B23EF20737
+	for <linux-m68k@archiver.kernel.org>; Mon, 13 Apr 2020 08:35:24 +0000 (UTC)
+Authentication-Results: mail.kernel.org;
+	dkim=pass (2048-bit key) header.d=landley-net.20150623.gappssmtp.com header.i=@landley-net.20150623.gappssmtp.com header.b="N2c6Xy+J"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727674AbgDMHlL (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Mon, 13 Apr 2020 03:41:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.18]:34670 "EHLO
+        id S1728145AbgDMIV5 (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Mon, 13 Apr 2020 04:21:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.18]:43296 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727480AbgDMHlL (ORCPT
-        <rfc822;linux-m68k@vger.kernel.org>); Mon, 13 Apr 2020 03:41:11 -0400
-Received: from outpost1.zedat.fu-berlin.de (outpost1.zedat.fu-berlin.de [130.133.4.66])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 083D8C008651
-        for <linux-m68k@vger.kernel.org>; Mon, 13 Apr 2020 00:41:11 -0700 (PDT)
-Received: from inpost2.zedat.fu-berlin.de ([130.133.4.69])
-          by outpost.zedat.fu-berlin.de (Exim 4.93)
-          with esmtps (TLS1.2)
-          tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-          (envelope-from <glaubitz@zedat.fu-berlin.de>)
-          id 1jNtiO-0044Nw-IR; Mon, 13 Apr 2020 09:41:08 +0200
-Received: from x590ca218.dyn.telefonica.de ([89.12.162.24] helo=[192.168.1.6])
-          by inpost2.zedat.fu-berlin.de (Exim 4.93)
-          with esmtpsa (TLS1.2)
-          tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-          (envelope-from <glaubitz@physik.fu-berlin.de>)
-          id 1jNtiO-000XEI-Ay; Mon, 13 Apr 2020 09:41:08 +0200
+        with ESMTP id S1727971AbgDMIV4 (ORCPT
+        <rfc822;linux-m68k@vger.kernel.org>); Mon, 13 Apr 2020 04:21:56 -0400
+Received: from mail-ot1-x343.google.com (mail-ot1-x343.google.com [IPv6:2607:f8b0:4864:20::343])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9D34FC014CDB
+        for <linux-m68k@vger.kernel.org>; Mon, 13 Apr 2020 01:21:56 -0700 (PDT)
+Received: by mail-ot1-x343.google.com with SMTP id g14so148986otg.10
+        for <linux-m68k@vger.kernel.org>; Mon, 13 Apr 2020 01:21:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=landley-net.20150623.gappssmtp.com; s=20150623;
+        h=subject:from:to:cc:references:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=9oJLimYT04wat0ldE/jP7eY5kMxM5ik3YHX/lTX8cOc=;
+        b=N2c6Xy+JYseHVrzLpgH+hq9zulBwy/QsYjBlqVq0C3DLTAoFOjuw7sYGGci7gpD0rI
+         A9n6s2GaQg6bYqJmimVa3QivaMWZzOsLm7Y03cmtuP/IdGgID9XG0qurphSTCIrpdC7G
+         vdQJMyYnS7awO28fBKWl8iAf6QeEmVfFWsqPRCdeolGGCe7SabggQrwLF3azCh/o6UWY
+         PEHPFJm2/Fy9A0V2TIULw+k94D+UPZh2yaURLT6kTJfiY5iw0FVA761qde8LAeJEdLBm
+         SvOW3mdn6PV4sj2Ktid64G92Te40p0IXQBO8XlHhzIuJ3qQi7jZ+MIoNrrOObEVl26nT
+         z5SA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:from:to:cc:references:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=9oJLimYT04wat0ldE/jP7eY5kMxM5ik3YHX/lTX8cOc=;
+        b=rshWWAFPORjaPdPOliQQr75hYhRTB4sHBmEaSfaEJql+HTxtkKYCMPzDv1zzrky9Tz
+         A3SMUXlCkgtiOMuToFAN7aq82H9MpIr8s/tQ9egjBIsm5mG4Ce+vQ5CL1+Csb5JG4a9i
+         AvWMpyy1ILNnoRR9ArxHhkV4hT/RfZF+yDbE7leyDsoIyy/kAFwXNvKW0s9G5pQLcOIE
+         4yKjFAXh08W6suJjFM1SwMY7e6LHx77p/KNy6aAuH7Z+ceNqP9QHI16EnNalOzctdhgR
+         52X/NRYBbX9aGyPqX2/f2aMKXmKJwkOv5FWjRfgOKBB1D7xFpDXkkJG1ZHF+1g/KWY18
+         OsTA==
+X-Gm-Message-State: AGi0PuaOZwChf05s61Ndt6VuUwsn8uosX6XTJU/bETHlr6EIcYMrMDuu
+        mr8Jncw4XLmINL373R7ACBDLgA==
+X-Google-Smtp-Source: APiQypI6Nw3oedhzWowLBuPxAo3hOAKkbOVyIok2/NltmOi9rk3+SQb/6tXRAbLHU+51HJbBTf100A==
+X-Received: by 2002:a4a:1882:: with SMTP id 124mr13527417ooo.60.1586766115928;
+        Mon, 13 Apr 2020 01:21:55 -0700 (PDT)
+Received: from [192.168.86.21] ([136.62.4.88])
+        by smtp.googlemail.com with ESMTPSA id s73sm204494oih.14.2020.04.13.01.21.55
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 13 Apr 2020 01:21:55 -0700 (PDT)
 Subject: Re: GCC?, was Re: Running m68k on qemu with external initramfs?
-To:     Rob Landley <rob@landley.net>,
-        Finn Thain <fthain@telegraphics.com.au>
-Cc:     linux-m68k@vger.kernel.org, Laurent Vivier <Laurent@Vivier.EU>
+From:   Rob Landley <rob@landley.net>
+To:     Finn Thain <fthain@telegraphics.com.au>
+Cc:     John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
+        linux-m68k@vger.kernel.org, Laurent Vivier <Laurent@Vivier.EU>
 References: <b1e930f3-7775-6955-860e-a2886627caa8@landley.net>
  <c4a784d9-2fef-ee90-9ff3-b1d8487e8a8b@physik.fu-berlin.de>
  <238ea76c-fa8e-0134-667b-3864938d9a78@landley.net>
@@ -47,82 +69,35 @@ References: <b1e930f3-7775-6955-860e-a2886627caa8@landley.net>
  <7a9ada44-e0d4-6743-3819-92dc44f3f156@landley.net>
  <alpine.LNX.2.22.394.2004131146180.15@nippy.intranet>
  <eb942a46-515f-9e1e-eeab-22c50b56e07c@landley.net>
-From:   John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
-Autocrypt: addr=glaubitz@physik.fu-berlin.de; keydata=
- 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
- scOkTAZQGVpD/8AaLH4v1w==
-Message-ID: <78fbcc17-4b66-bf43-13fe-15b18effa86d@physik.fu-berlin.de>
-Date:   Mon, 13 Apr 2020 09:41:07 +0200
+Message-ID: <29e2cf8a-35fa-b24a-bce2-84e05e54d4c5@landley.net>
+Date:   Mon, 13 Apr 2020 03:27:50 -0500
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.6.0
+ Thunderbird/68.4.1
 MIME-Version: 1.0
 In-Reply-To: <eb942a46-515f-9e1e-eeab-22c50b56e07c@landley.net>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-Original-Sender: glaubitz@physik.fu-berlin.de
-X-Originating-IP: 89.12.162.24
 Sender: linux-m68k-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-On 4/13/20 9:07 AM, Rob Landley wrote:
-> It was. -O2 still segfaults the same way, but -O1 runs fine.
-> (...)
-> Did I mention I'm really done with gcc development ever since they decided to
-> rewrite everything in C++? Sigh. [grind grind grind...]
+On 4/13/20 2:07 AM, Rob Landley wrote:
+>> It would be great to have a minimal reproducer from toysh. Getting that 
+>> from the python build looks hard, even with creduce.
+>> https://embed.cs.utah.edu/creduce/
 > 
-> CFLAGS='-fgcse'
-> 
-> That's the one.
-You should try gcc-10 where the m68k backend has seen a large overhaul.
+> Oh it's not hard, it's just tedious.
 
-Adrian
+Did you know that if you disable optimizations you can get _more_ warnings?
 
--- 
- .''`.  John Paul Adrian Glaubitz
-: :' :  Debian Developer - glaubitz@debian.org
-`. `'   Freie Universitaet Berlin - glaubitz@physik.fu-berlin.de
-  `-    GPG: 62FF 8A75 84E0 2956 9546  0006 7426 3B37 F5B5 F913
+_disabling_ the gcse optimization triggered one of those "may be used
+uninitialized but is a false positive 99% of the time" which in this case,
+turned out to have a path that could trigger in a function I added last week,
+which which was called in an else case 5 lines down. (Yes, when it DIDN'T
+segfault, it gave me the warning.)
+
+My bad,
+
+Rob
