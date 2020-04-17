@@ -2,49 +2,43 @@ Return-Path: <SRS0=9AVM=6B=vger.kernel.org=linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-0.7 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=no
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-0.5 required=3.0 tests=DKIM_INVALID,DKIM_SIGNED,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id CA877C352BE
-	for <linux-m68k@archiver.kernel.org>; Fri, 17 Apr 2020 07:28:31 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 771B5C38A2C
+	for <linux-m68k@archiver.kernel.org>; Fri, 17 Apr 2020 11:12:42 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id B60F322201
-	for <linux-m68k@archiver.kernel.org>; Fri, 17 Apr 2020 07:28:31 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 4F6BC221EC
+	for <linux-m68k@archiver.kernel.org>; Fri, 17 Apr 2020 11:12:42 +0000 (UTC)
+Authentication-Results: mail.kernel.org;
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="YYrgq/hv"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728419AbgDQH23 (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Fri, 17 Apr 2020 03:28:29 -0400
-Received: from mail-ot1-f68.google.com ([209.85.210.68]:34637 "EHLO
-        mail-ot1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728591AbgDQH20 (ORCPT
+        id S1730091AbgDQLMl (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Fri, 17 Apr 2020 07:12:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32972 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1729846AbgDQLMl (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Fri, 17 Apr 2020 03:28:26 -0400
-Received: by mail-ot1-f68.google.com with SMTP id m2so716591otr.1
-        for <linux-m68k@lists.linux-m68k.org>; Fri, 17 Apr 2020 00:28:26 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=CAlxRW45me+SFTqp2fMa5KvZpf6cMRTo76EH5fkTTvc=;
-        b=cGvM/V2+NPiiIE/6NZI3U8rTR7kFxnl0DQFZjdv+igElT8xsRK7SWH+HiWRlK7MfSk
-         8lflR5wFpOznit867JeeNUDOCR687HwZpDt5SKjqzDMVb9HGLiaIO8RrSdlc/iAFpreq
-         fv5XDwreGRb4YoiHvx0+zUU3yfNCEK77tk1P5oz39qS2t/tG73G9/Gk6C0Se3EdUCrro
-         Cv9cfDWQWcviEi7OFrgduJIIPmLOT6kDK13XJKDnvxKuNobdTV+TUbXN2+8hHfvP/O9b
-         OsJzAABbLiEULiEx8r+znLKFSUOZqz24dejD1mHVO87HB5fTHuS2fUUizUWgPn8yqHin
-         ieVg==
-X-Gm-Message-State: AGi0PubG5Sf4nyKL/QHAhZoqdeQa5uQ7rg8RZEWCE9A2GQwJ9le80+vL
-        DAMDqkz9/i0bCkYMmRwBa019TDH/aiuE1ZTy53o=
-X-Google-Smtp-Source: APiQypK7KuRAoPktsLMQh2Me8mfNzHEYpwL9p+AMo7Mc+i20vMVMtApNzN65ngvXei2FszcvDlo15xrOTNLy+/p43Ec=
-X-Received: by 2002:a9d:7590:: with SMTP id s16mr1548442otk.250.1587108505576;
- Fri, 17 Apr 2020 00:28:25 -0700 (PDT)
-MIME-Version: 1.0
-References: <20200416220130.13343-1-willy@infradead.org>
-In-Reply-To: <20200416220130.13343-1-willy@infradead.org>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Fri, 17 Apr 2020 09:28:14 +0200
-Message-ID: <CAMuHMdWxhVoPCZ5+=Pf1LFpdE9vPv9GGTqTYMQP9oFz7eCxDaQ@mail.gmail.com>
-Subject: Re: [PATCH v3 00/11] Make PageWriteback use the PageLocked optimisation
-To:     Matthew Wilcox <willy@infradead.org>
+        Fri, 17 Apr 2020 07:12:41 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 05544C061A0C;
+        Fri, 17 Apr 2020 04:12:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20170209; h=In-Reply-To:Content-Type:MIME-Version
+        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=8sFIV+/8fWUY1Zbo7nie6mENpkyN/bnZv7/UFlj2FCU=; b=YYrgq/hvPgReVdxVWoGhcDq5OH
+        bTtip9uQNfhfbbmBEukbzi+TjuaHGEoFqG47UgzsbLv240p6s/vtR8k6s1thPihwHGajzkKlVVXpb
+        nTTfBMJZn8WTuTDH4+oh/r6SS4ofu22zRjXRhVOqlSJKl6Mz6q3qvnI+JsCN1nx3obijkON7+ZOYG
+        5B53aEmaqbpH41A0CRp9eYifRtoWPLrLG/9sLsiac6odvXQ9wBPqGH5QZSR6Ui9lTNY5WmIpcj0Oc
+        RVS1FKCoO8b2LZuXy4Lj1EXODCGwav1Un8/U+rzwjHrv5kedEqM/tsdpghQBno3bTfzS/+mjkfCm7
+        Z6SzouSw==;
+Received: from willy by bombadil.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1jPOvB-0006uy-Fk; Fri, 17 Apr 2020 11:12:33 +0000
+Date:   Fri, 17 Apr 2020 04:12:33 -0700
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Geert Uytterhoeven <geert@linux-m68k.org>
 Cc:     Linux MM <linux-mm@kvack.org>,
         Linux FS Devel <linux-fsdevel@vger.kernel.org>,
         linux-s390 <linux-s390@vger.kernel.org>,
@@ -53,52 +47,42 @@ Cc:     Linux MM <linux-mm@kvack.org>,
         linux-m68k <linux-m68k@lists.linux-m68k.org>,
         alpha <linux-alpha@vger.kernel.org>,
         linux-riscv@lists.infradead.org
-Content-Type: text/plain; charset="UTF-8"
+Subject: Re: [PATCH v3 00/11] Make PageWriteback use the PageLocked
+ optimisation
+Message-ID: <20200417111233.GL5820@bombadil.infradead.org>
+References: <20200416220130.13343-1-willy@infradead.org>
+ <CAMuHMdWxhVoPCZ5+=Pf1LFpdE9vPv9GGTqTYMQP9oFz7eCxDaQ@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAMuHMdWxhVoPCZ5+=Pf1LFpdE9vPv9GGTqTYMQP9oFz7eCxDaQ@mail.gmail.com>
 Sender: linux-m68k-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-Hi Matthew,
+On Fri, Apr 17, 2020 at 09:28:14AM +0200, Geert Uytterhoeven wrote:
+> On Fri, Apr 17, 2020 at 12:01 AM Matthew Wilcox <willy@infradead.org> wrote:
+> > v3:
+> >  - Added implementations of clear_bit_unlock_is_negative_byte()
+> >    to architectures which need it
+> 
+> I have two questions here?
+>   1. Why not implement arch_clear_bit_unlock_is_negative_byte()
+>      instead, so the kasan check in asm-generic is used everywhere?
 
-On Fri, Apr 17, 2020 at 12:01 AM Matthew Wilcox <willy@infradead.org> wrote:
-> From: "Matthew Wilcox (Oracle)" <willy@infradead.org>
-> PageWaiters is used by PageWriteback and PageLocked (and no other page
-> flags), so it makes sense to use the same codepaths that have already been
-> optimised for PageLocked, even if there's probably no real performance
-> benefit to be had.
->
-> Unfortunately, clear_bit_unlock_is_negative_byte() isn't present on every
-> architecture, and the default implementation is only available in filemap.c
-> while I want to use it in page-writeback.c.  Rather than move the default
-> implementation to a header file, I've done optimised implementations for
-> alpha and ia64.  I can't figure out optimised implementations for m68k,
-> mips, riscv and s390, so I've just replicated the effect of the generic
-> implementation in them.  I leave it to the experts to fix that (... or
-> convert over to using asm-generic/bitops/lock.h ...)
->
-> v3:
->  - Added implementations of clear_bit_unlock_is_negative_byte()
->    to architectures which need it
+That would be a larger change.  As I understand it (and I may misunderstand
+it), I would need to rename all the clear_bit(), __clear_bit(), change_bit(),
+... functions to have an 'arch_' prefix and then include instrumented-lock.h
 
-I have two questions here?
-  1. Why not implement arch_clear_bit_unlock_is_negative_byte()
-     instead, so the kasan check in asm-generic is used everywhere?
-  2. Why not add the default implementation to
-     include/asm-generic/bitops/instrumented-lock.h, in case an arch_*()
-     variant is not provided yet?
+>   2. Why not add the default implementation to
+>      include/asm-generic/bitops/instrumented-lock.h, in case an arch_*()
+>      variant is not provided yet?
+> 
+> Note that you did 1 for s390.
 
-Note that you did 1 for s390.
-Thanks!
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
-
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+Well, s390 already uses instrumented-lock.h so I followed along with
+what they're doing.  I don't think instrumented-lock.h is used at all on
+these other architectures, but the whole bitops header files are such a
+mess that I could easily have built a completely wrong mental model of
+what's going on.
