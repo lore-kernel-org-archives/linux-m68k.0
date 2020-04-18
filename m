@@ -1,88 +1,73 @@
-Return-Path: <SRS0=9AVM=6B=vger.kernel.org=linux-m68k-owner@kernel.org>
+Return-Path: <SRS0=06O8=6C=vger.kernel.org=linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-0.5 required=3.0 tests=DKIM_INVALID,DKIM_SIGNED,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-9.8 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,
+	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 771B5C38A2C
-	for <linux-m68k@archiver.kernel.org>; Fri, 17 Apr 2020 11:12:42 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id BB7E9C2BA19
+	for <linux-m68k@archiver.kernel.org>; Sat, 18 Apr 2020 07:07:57 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 4F6BC221EC
-	for <linux-m68k@archiver.kernel.org>; Fri, 17 Apr 2020 11:12:42 +0000 (UTC)
-Authentication-Results: mail.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="YYrgq/hv"
+	by mail.kernel.org (Postfix) with ESMTP id 7EB2521D82
+	for <linux-m68k@archiver.kernel.org>; Sat, 18 Apr 2020 07:07:57 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730091AbgDQLMl (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Fri, 17 Apr 2020 07:12:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32972 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1729846AbgDQLMl (ORCPT
+        id S1725858AbgDRHH5 (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Sat, 18 Apr 2020 03:07:57 -0400
+Received: from smtp06.smtpout.orange.fr ([80.12.242.128]:53188 "EHLO
+        smtp.smtpout.orange.fr" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725849AbgDRHH4 (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Fri, 17 Apr 2020 07:12:41 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 05544C061A0C;
-        Fri, 17 Apr 2020 04:12:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20170209; h=In-Reply-To:Content-Type:MIME-Version
-        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=8sFIV+/8fWUY1Zbo7nie6mENpkyN/bnZv7/UFlj2FCU=; b=YYrgq/hvPgReVdxVWoGhcDq5OH
-        bTtip9uQNfhfbbmBEukbzi+TjuaHGEoFqG47UgzsbLv240p6s/vtR8k6s1thPihwHGajzkKlVVXpb
-        nTTfBMJZn8WTuTDH4+oh/r6SS4ofu22zRjXRhVOqlSJKl6Mz6q3qvnI+JsCN1nx3obijkON7+ZOYG
-        5B53aEmaqbpH41A0CRp9eYifRtoWPLrLG/9sLsiac6odvXQ9wBPqGH5QZSR6Ui9lTNY5WmIpcj0Oc
-        RVS1FKCoO8b2LZuXy4Lj1EXODCGwav1Un8/U+rzwjHrv5kedEqM/tsdpghQBno3bTfzS/+mjkfCm7
-        Z6SzouSw==;
-Received: from willy by bombadil.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1jPOvB-0006uy-Fk; Fri, 17 Apr 2020 11:12:33 +0000
-Date:   Fri, 17 Apr 2020 04:12:33 -0700
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     Linux MM <linux-mm@kvack.org>,
-        Linux FS Devel <linux-fsdevel@vger.kernel.org>,
-        linux-s390 <linux-s390@vger.kernel.org>,
-        "linux-ia64@vger.kernel.org" <linux-ia64@vger.kernel.org>,
-        "open list:BROADCOM NVRAM DRIVER" <linux-mips@vger.kernel.org>,
-        linux-m68k <linux-m68k@lists.linux-m68k.org>,
-        alpha <linux-alpha@vger.kernel.org>,
-        linux-riscv@lists.infradead.org
-Subject: Re: [PATCH v3 00/11] Make PageWriteback use the PageLocked
- optimisation
-Message-ID: <20200417111233.GL5820@bombadil.infradead.org>
-References: <20200416220130.13343-1-willy@infradead.org>
- <CAMuHMdWxhVoPCZ5+=Pf1LFpdE9vPv9GGTqTYMQP9oFz7eCxDaQ@mail.gmail.com>
+        Sat, 18 Apr 2020 03:07:56 -0400
+Received: from localhost.localdomain ([90.126.162.40])
+        by mwinf5d11 with ME
+        id U77s2200G0scBcy0377tWl; Sat, 18 Apr 2020 09:07:54 +0200
+X-ME-Helo: localhost.localdomain
+X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
+X-ME-Date: Sat, 18 Apr 2020 09:07:54 +0200
+X-ME-IP: 90.126.162.40
+From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+To:     gerg@linux-m68k.org, geert@linux-m68k.org, bhelgaas@google.com,
+        lorenzo.pieralisi@arm.com
+Cc:     linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org,
+        kernel-janitors@vger.kernel.org,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Subject: [PATCH] m68k/PCI: Fix a memory leak in an error handling path
+Date:   Sat, 18 Apr 2020 09:07:51 +0200
+Message-Id: <20200418070751.25420-1-christophe.jaillet@wanadoo.fr>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAMuHMdWxhVoPCZ5+=Pf1LFpdE9vPv9GGTqTYMQP9oFz7eCxDaQ@mail.gmail.com>
+Content-Transfer-Encoding: 8bit
 Sender: linux-m68k-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-On Fri, Apr 17, 2020 at 09:28:14AM +0200, Geert Uytterhoeven wrote:
-> On Fri, Apr 17, 2020 at 12:01 AM Matthew Wilcox <willy@infradead.org> wrote:
-> > v3:
-> >  - Added implementations of clear_bit_unlock_is_negative_byte()
-> >    to architectures which need it
-> 
-> I have two questions here?
->   1. Why not implement arch_clear_bit_unlock_is_negative_byte()
->      instead, so the kasan check in asm-generic is used everywhere?
+If 'ioremap' fails, we must free 'bridge', as done in other error handling
+path bellow.
 
-That would be a larger change.  As I understand it (and I may misunderstand
-it), I would need to rename all the clear_bit(), __clear_bit(), change_bit(),
-... functions to have an 'arch_' prefix and then include instrumented-lock.h
+Fixes: 19cc4c843f40 ("m68k/PCI: Replace pci_fixup_irqs() call with host bridge IRQ mapping hooks")
+Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+---
+ arch/m68k/coldfire/pci.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
->   2. Why not add the default implementation to
->      include/asm-generic/bitops/instrumented-lock.h, in case an arch_*()
->      variant is not provided yet?
-> 
-> Note that you did 1 for s390.
+diff --git a/arch/m68k/coldfire/pci.c b/arch/m68k/coldfire/pci.c
+index 62b0eb6cf69a..84eab0f5e00a 100644
+--- a/arch/m68k/coldfire/pci.c
++++ b/arch/m68k/coldfire/pci.c
+@@ -216,8 +216,10 @@ static int __init mcf_pci_init(void)
+ 
+ 	/* Keep a virtual mapping to IO/config space active */
+ 	iospace = (unsigned long) ioremap(PCI_IO_PA, PCI_IO_SIZE);
+-	if (iospace == 0)
++	if (iospace == 0) {
++		pci_free_host_bridge(bridge);
+ 		return -ENODEV;
++	}
+ 	pr_info("Coldfire: PCI IO/config window mapped to 0x%x\n",
+ 		(u32) iospace);
+ 
+-- 
+2.20.1
 
-Well, s390 already uses instrumented-lock.h so I followed along with
-what they're doing.  I don't think instrumented-lock.h is used at all on
-these other architectures, but the whole bitops header files are such a
-mess that I could easily have built a completely wrong mental model of
-what's going on.
