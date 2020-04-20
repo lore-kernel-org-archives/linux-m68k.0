@@ -1,93 +1,79 @@
-Return-Path: <SRS0=06O8=6C=vger.kernel.org=linux-m68k-owner@kernel.org>
+Return-Path: <SRS0=gqU9=6E=vger.kernel.org=linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-7.2 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
-	MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,
-	USER_AGENT_SANE_1 autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-3.8 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
+	MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS autolearn=no
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A8A58C38A30
-	for <linux-m68k@archiver.kernel.org>; Sat, 18 Apr 2020 20:55:14 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2A995C3815B
+	for <linux-m68k@archiver.kernel.org>; Mon, 20 Apr 2020 07:09:12 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 924DD22209
-	for <linux-m68k@archiver.kernel.org>; Sat, 18 Apr 2020 20:55:14 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 071632078E
+	for <linux-m68k@archiver.kernel.org>; Mon, 20 Apr 2020 07:09:12 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728193AbgDRUzK (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Sat, 18 Apr 2020 16:55:10 -0400
-Received: from smtp10.smtpout.orange.fr ([80.12.242.132]:24129 "EHLO
-        smtp.smtpout.orange.fr" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726807AbgDRUzK (ORCPT
+        id S1726200AbgDTHJL (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Mon, 20 Apr 2020 03:09:11 -0400
+Received: from mail-oi1-f196.google.com ([209.85.167.196]:35047 "EHLO
+        mail-oi1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726100AbgDTHJL (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Sat, 18 Apr 2020 16:55:10 -0400
-Received: from [192.168.1.41] ([90.126.162.40])
-        by mwinf5d33 with ME
-        id ULv22200V0scBcy03Lv3qd; Sat, 18 Apr 2020 22:55:06 +0200
-X-ME-Helo: [192.168.1.41]
-X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
-X-ME-Date: Sat, 18 Apr 2020 22:55:06 +0200
-X-ME-IP: 90.126.162.40
-Subject: Re: [PATCH] m68k/PCI: Fix a memory leak in an error handling path
-To:     Markus Elfring <Markus.Elfring@web.de>,
-        linux-m68k@lists.linux-m68k.org
-Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Greg Ungerer <gerg@linux-m68k.org>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
-Newsgroups: gmane.linux.ports.m68k,gmane.linux.kernel.janitors,gmane.linux.kernel
-References: <2e00c1f1-8faa-5045-ddf5-2bf943f714f2@web.de>
-From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Message-ID: <ea3d9b35-4409-fb86-8855-0ddb73989829@wanadoo.fr>
-Date:   Sat, 18 Apr 2020 22:55:00 +0200
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+        Mon, 20 Apr 2020 03:09:11 -0400
+Received: by mail-oi1-f196.google.com with SMTP id o7so6171030oif.2
+        for <linux-m68k@lists.linux-m68k.org>; Mon, 20 Apr 2020 00:09:11 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=VqzgTPsqGqTG082KlFRd2nLB+TsOjdtbh8/Iv4M7mXY=;
+        b=qhniDweWAhY6Z69GQamBc+i8NLmwdlka7+fSSSGVtg7b4oiqjZglpcgXhEWO9lNRTk
+         ncXUtYrVLjEo4C6TZWBHFJ53VCB/gDwRwClX7SYJYevd3BpfqJfcyLtuR4XcFyKXGoKb
+         xGkPNpqyVFVJOsgfaCMJjyQhG9EylvEyuxEHh16Q8fJsDeatL7UgCFbTAM31EoFmtjW/
+         Fz3U2lUbtGVHFLtaghihHPfoxPTU+ULmjI4vuPyoctq+NBEtOKRS8JzT3brECgHCFnnF
+         MB6Z+hwtjJusXLwWLIS9YonbT0kD0E2HDDAULEnmULvMkVqY6nbin1mGLs0Aoctk7Tgu
+         kc0g==
+X-Gm-Message-State: AGi0PubXtJSjzcpRkYVlvYJTZ+mptI0p1InMb6A+ya0YXONq964Fbi/e
+        GuUiGll6K3u2bMZpjepYOWwu5tBA1vFJDutw0+U=
+X-Google-Smtp-Source: APiQypKGHCQK5p6sv+gc747Hng/rlsT/C7m3rCTyS0eq9olqr91xBNYEDwUpFysdhr4rAeuomxGpe2n/QxOaYd1MVVY=
+X-Received: by 2002:aca:d50f:: with SMTP id m15mr3273957oig.54.1587366550697;
+ Mon, 20 Apr 2020 00:09:10 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <2e00c1f1-8faa-5045-ddf5-2bf943f714f2@web.de>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
+References: <20200418070751.25420-1-christophe.jaillet@wanadoo.fr>
+In-Reply-To: <20200418070751.25420-1-christophe.jaillet@wanadoo.fr>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Mon, 20 Apr 2020 09:08:58 +0200
+Message-ID: <CAMuHMdUDO_rTzZbtOsMvH=uFG1oytTYDdJY_WSE7+70EERDNSw@mail.gmail.com>
+Subject: Re: [PATCH] m68k/PCI: Fix a memory leak in an error handling path
+To:     Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Cc:     Greg Ungerer <gerg@linux-m68k.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        linux-m68k <linux-m68k@lists.linux-m68k.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        kernel-janitors@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-m68k-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-Le 18/04/2020 à 22:00, Markus Elfring a écrit :
->> If 'ioremap' fails, we must free 'bridge', as done in other error handling
->> path bellow.
-> I suggest to improve this change description.
-
-I suggest you stop proposing over and over useless comments.
-Please just ignore my proposals as I do for your boring, never 
-constructing, replies.
-
-
-> * Please avoid a typo.
+On Sat, Apr 18, 2020 at 9:07 AM Christophe JAILLET
+<christophe.jaillet@wanadoo.fr> wrote:
+> If 'ioremap' fails, we must free 'bridge', as done in other error handling
+> path bellow.
 >
-> * Is an imperative wording preferred?
->
-* is Melissa still around?
+> Fixes: 19cc4c843f40 ("m68k/PCI: Replace pci_fixup_irqs() call with host bridge IRQ mapping hooks")
+> Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
 
-> …
->> +++ b/arch/m68k/coldfire/pci.c
->> @@ -216,8 +216,10 @@ static int __init mcf_pci_init(void)
-> …
->
-> I propose to move the pci_free_host_bridge() call for the desired
+Reviewed-by: Geert Uytterhoeven <geert@linux-m68k.org>
 
-I propose to let patch submitter and maintainer decide about it.
-I don't need your point of view. I guess that maintainers don't either.
+Gr{oetje,eeting}s,
 
-No need to waste time trying to engage any discussion with me.
-This is the first and very last exchange we will ever have.
+                        Geert
 
-Best regards,
-CJ
+-- 
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
-
-> exception handling to the end of this function implementation.
-> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/Documentation/process/coding-style.rst?id=c0d73a868d9b411bd2d0c8e5ff9d98bfa8563cb1#n450
->
-> Regards,
-> Markus
->
-
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
