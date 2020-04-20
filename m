@@ -6,66 +6,79 @@ X-Spam-Status: No, score=-3.8 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
 	MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS autolearn=no
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 2A995C3815B
-	for <linux-m68k@archiver.kernel.org>; Mon, 20 Apr 2020 07:09:12 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 9958AC54FCC
+	for <linux-m68k@archiver.kernel.org>; Mon, 20 Apr 2020 07:17:28 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 071632078E
-	for <linux-m68k@archiver.kernel.org>; Mon, 20 Apr 2020 07:09:12 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 7AC642078A
+	for <linux-m68k@archiver.kernel.org>; Mon, 20 Apr 2020 07:17:28 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726200AbgDTHJL (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Mon, 20 Apr 2020 03:09:11 -0400
-Received: from mail-oi1-f196.google.com ([209.85.167.196]:35047 "EHLO
-        mail-oi1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726100AbgDTHJL (ORCPT
+        id S1726017AbgDTHR2 convert rfc822-to-8bit (ORCPT
+        <rfc822;linux-m68k@archiver.kernel.org>);
+        Mon, 20 Apr 2020 03:17:28 -0400
+Received: from mail-ot1-f68.google.com ([209.85.210.68]:38859 "EHLO
+        mail-ot1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725994AbgDTHR2 (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Mon, 20 Apr 2020 03:09:11 -0400
-Received: by mail-oi1-f196.google.com with SMTP id o7so6171030oif.2
-        for <linux-m68k@lists.linux-m68k.org>; Mon, 20 Apr 2020 00:09:11 -0700 (PDT)
+        Mon, 20 Apr 2020 03:17:28 -0400
+Received: by mail-ot1-f68.google.com with SMTP id q9so586794otf.5
+        for <linux-m68k@lists.linux-m68k.org>; Mon, 20 Apr 2020 00:17:27 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=VqzgTPsqGqTG082KlFRd2nLB+TsOjdtbh8/Iv4M7mXY=;
-        b=qhniDweWAhY6Z69GQamBc+i8NLmwdlka7+fSSSGVtg7b4oiqjZglpcgXhEWO9lNRTk
-         ncXUtYrVLjEo4C6TZWBHFJ53VCB/gDwRwClX7SYJYevd3BpfqJfcyLtuR4XcFyKXGoKb
-         xGkPNpqyVFVJOsgfaCMJjyQhG9EylvEyuxEHh16Q8fJsDeatL7UgCFbTAM31EoFmtjW/
-         Fz3U2lUbtGVHFLtaghihHPfoxPTU+ULmjI4vuPyoctq+NBEtOKRS8JzT3brECgHCFnnF
-         MB6Z+hwtjJusXLwWLIS9YonbT0kD0E2HDDAULEnmULvMkVqY6nbin1mGLs0Aoctk7Tgu
-         kc0g==
-X-Gm-Message-State: AGi0PubXtJSjzcpRkYVlvYJTZ+mptI0p1InMb6A+ya0YXONq964Fbi/e
-        GuUiGll6K3u2bMZpjepYOWwu5tBA1vFJDutw0+U=
-X-Google-Smtp-Source: APiQypKGHCQK5p6sv+gc747Hng/rlsT/C7m3rCTyS0eq9olqr91xBNYEDwUpFysdhr4rAeuomxGpe2n/QxOaYd1MVVY=
-X-Received: by 2002:aca:d50f:: with SMTP id m15mr3273957oig.54.1587366550697;
- Mon, 20 Apr 2020 00:09:10 -0700 (PDT)
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=G3napZOIiOeELwzchvRdOdrsSpD1AM8O7v/VEufzELY=;
+        b=OUg68jJ5d+U+vHDSkiqZTHFtWOcadQCcA7iBg7HrhN0zpSwFXELcgwqGai+JmjWU4G
+         rOVzUWGG6bVHuZKkQcwBCzsg24CEpYe94HRNWwbu8dHkfkPyU4b+YMmqXqzSS/pBedc/
+         vNAvyyhjyKksZ7/G7bn1RsLMDUfK41vdOp33Lc6e1lJ7ZpDtCyaxuO7sVZC9V1MHccha
+         ugygcIPDN7zQOxKqzFoNvmnjLtpJ01KEEIV7iKg4exFVQfzSEJsvihOn5vnJADQTDotJ
+         GOuNMb4cqHe9gW5eJ0Yz2q1IUygUgPKWcF4ZizxNaTaYBmeaeKqQjWtEx7wnbqQmx7ew
+         JC6g==
+X-Gm-Message-State: AGi0PuY7CGzTILKjKGvCF4gf7pDqRIDSCOpf9NV/YbUUBNt5QCjO0IMu
+        bcsOHopDZcUK6Tg3Zb/dk6XUhoIUYuHlUwmCh6U=
+X-Google-Smtp-Source: APiQypL3yJvEJ1ORa0rBSqiAogEf52f1uzA/DePnuFLo6bfN15Rej0ftXMj/yihJTMnfOzKrMkt869r6j631tPhZOKY=
+X-Received: by 2002:a05:6830:3104:: with SMTP id b4mr4938576ots.250.1587367047061;
+ Mon, 20 Apr 2020 00:17:27 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200418070751.25420-1-christophe.jaillet@wanadoo.fr>
-In-Reply-To: <20200418070751.25420-1-christophe.jaillet@wanadoo.fr>
+References: <cover.1585264062.git.gustavo@embeddedor.com> <14ff577604d25243c8a897f851b436ba87ae87cb.1585264062.git.gustavo@embeddedor.com>
+In-Reply-To: <14ff577604d25243c8a897f851b436ba87ae87cb.1585264062.git.gustavo@embeddedor.com>
 From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Mon, 20 Apr 2020 09:08:58 +0200
-Message-ID: <CAMuHMdUDO_rTzZbtOsMvH=uFG1oytTYDdJY_WSE7+70EERDNSw@mail.gmail.com>
-Subject: Re: [PATCH] m68k/PCI: Fix a memory leak in an error handling path
-To:     Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Cc:     Greg Ungerer <gerg@linux-m68k.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        linux-m68k <linux-m68k@lists.linux-m68k.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        kernel-janitors@vger.kernel.org
+Date:   Mon, 20 Apr 2020 09:17:15 +0200
+Message-ID: <CAMuHMdW4f-sPPY9sOU-xdVJ-0zsix4wcMTxUz48GopqnWDVTAg@mail.gmail.com>
+Subject: Re: [PATCH 2/2][next] m68k: amiga: config: Mark expected switch fall-through
+To:     "Gustavo A. R. Silva" <gustavo@embeddedor.com>
+Cc:     linux-m68k <linux-m68k@lists.linux-m68k.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
 Sender: linux-m68k-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-On Sat, Apr 18, 2020 at 9:07 AM Christophe JAILLET
-<christophe.jaillet@wanadoo.fr> wrote:
-> If 'ioremap' fails, we must free 'bridge', as done in other error handling
-> path bellow.
+On Fri, Mar 27, 2020 at 12:25 AM Gustavo A. R. Silva
+<gustavo@embeddedor.com> wrote:
+> Mark switch cases where we are expecting to fall through.
 >
-> Fixes: 19cc4c843f40 ("m68k/PCI: Replace pci_fixup_irqs() call with host bridge IRQ mapping hooks")
-> Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+> This patch fixes the following warning (Building: allmodconfig m68k):
+>
+> arch/m68k/amiga/config.c: In function ‘amiga_identify’:
+> ./arch/m68k/include/asm/amigahw.h:42:50: warning: this statement may fall through [-Wimplicit-fallthrough=]
+>  #define AMIGAHW_SET(name) (amiga_hw_present.name = 1)
+>                            ~~~~~~~~~~~~~~~~~~~~~~~^~~~
+> arch/m68k/amiga/config.c:223:3: note: in expansion of macro ‘AMIGAHW_SET’
+>    AMIGAHW_SET(PCMCIA);
+>    ^~~~~~~~~~~
+> arch/m68k/amiga/config.c:224:2: note: here
+>   case AMI_500:
+>   ^~~~
+>
+> Replace the existing /* fall through */ comments and fix the issue above
+> by using the new pseudo-keyword fallthrough;
+>
+> Signed-off-by: Gustavo A. R. Silva <gustavo@embeddedor.com>
 
 Reviewed-by: Geert Uytterhoeven <geert@linux-m68k.org>
+i.e. will queue in the m68k for-v5.8 branch.
 
 Gr{oetje,eeting}s,
 
