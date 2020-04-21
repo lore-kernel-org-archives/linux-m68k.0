@@ -2,100 +2,95 @@ Return-Path: <SRS0=Z3bl=6F=vger.kernel.org=linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.8 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
-	MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,
-	URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-8.3 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,
+	USER_AGENT_SANE_1 autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B011BC2BA19
-	for <linux-m68k@archiver.kernel.org>; Tue, 21 Apr 2020 07:06:31 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5FAC5C2BA19
+	for <linux-m68k@archiver.kernel.org>; Tue, 21 Apr 2020 07:12:44 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 8A636206A5
-	for <linux-m68k@archiver.kernel.org>; Tue, 21 Apr 2020 07:06:31 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 3C7C62087E
+	for <linux-m68k@archiver.kernel.org>; Tue, 21 Apr 2020 07:12:44 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726422AbgDUHGb (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Tue, 21 Apr 2020 03:06:31 -0400
-Received: from mail-ot1-f65.google.com ([209.85.210.65]:41062 "EHLO
-        mail-ot1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726018AbgDUHGb (ORCPT
-        <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Tue, 21 Apr 2020 03:06:31 -0400
-Received: by mail-ot1-f65.google.com with SMTP id c3so10379437otp.8
-        for <linux-m68k@lists.linux-m68k.org>; Tue, 21 Apr 2020 00:06:30 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=pUpfxDrNH3G3nD39W0HvSE2shtfsQaSA2W5+bYY8bCE=;
-        b=Mjhj86H3qABNdLcIHi2KEb5fWoglYS7L8/e67yTEy3QPOPe0zZklkp5HuFaX6knBxE
-         2OjKujDgy3dlWKStYzke+OdIOcaIziRwTKQQYH8McSfJnTURCBG7h0esFm8Hs2XVEZLY
-         QpJC0Ag4pG7CMwIyGzcvBIJgf9owR3KFl5QdGgCPIXQIhrOw1Y4XwJQ1ESeH+xFaJHhS
-         7NGkzm4pZC0cs2xIF2DBBV/U/yj6OCHK2GABARBpVIRMFDUZDRlH+Eryorc83onMMnWd
-         a/68lmwtVt/0JOSCeZDchGxRx6TXmshQN4iT/dC+RFuhavgmqsOyIl25uL49O8UmuGVH
-         APxw==
-X-Gm-Message-State: AGi0PuYddtZN6ZKqKyxx1OO3AvC8G+8CBK9q5S6SoMnsMyS3Dvywlrxm
-        FM4kpA2nAVM5od+y53Wlii5WxGbfjnpcA17VeVw=
-X-Google-Smtp-Source: APiQypLDO6mX576dsj4gDLr34JhuGAGiTxbaCkVRzIRSYyDEXiPioRacua+yZQPdyVGDqaNGqAx2kFXTxKugkS9lBA4=
-X-Received: by 2002:a05:6830:3104:: with SMTP id b4mr8902539ots.250.1587452790128;
- Tue, 21 Apr 2020 00:06:30 -0700 (PDT)
+        id S1726018AbgDUHMo (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Tue, 21 Apr 2020 03:12:44 -0400
+Received: from hfcrelay.icp-osb-irony-out1.external.iinet.net.au ([203.59.1.81]:1569
+        "EHLO hfcrelay.icp-osb-irony-out1.external.iinet.net.au"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725992AbgDUHMn (ORCPT <rfc822;linux-m68k@lists.linux-m68k.org>);
+        Tue, 21 Apr 2020 03:12:43 -0400
+X-SMTP-MATCH: 0
+X-IronPort-Anti-Spam-Filtered: true
+X-IronPort-Anti-Spam-Result: =?us-ascii?q?A2BOAQAhnJ5e/xsiIRsNWRwBAQEBAQc?=
+ =?us-ascii?q?BAREBBAQBAYF7hEeEHo9QAQEGgQotigCRTgoBAQEBAQEBAQE3BAEBhEQCgjQ?=
+ =?us-ascii?q?4EwIQAQEBBQEBAQEBBQMBhXeGSgEBAQMjFUEQCxgCAiYCAlcGAQwGAgEBgyK?=
+ =?us-ascii?q?CTAMJsC11gTKFT4J+IU6BQIEOKoxTeYEHgTiCOy4+hBWDS4JfBJhkmSMIgka?=
+ =?us-ascii?q?XayOcV49wnn+BeDMaCCgIgyRQJZFkF443YoxsgkUBAQ?=
+X-IPAS-Result: =?us-ascii?q?A2BOAQAhnJ5e/xsiIRsNWRwBAQEBAQcBAREBBAQBAYF7h?=
+ =?us-ascii?q?EeEHo9QAQEGgQotigCRTgoBAQEBAQEBAQE3BAEBhEQCgjQ4EwIQAQEBBQEBA?=
+ =?us-ascii?q?QEBBQMBhXeGSgEBAQMjFUEQCxgCAiYCAlcGAQwGAgEBgyKCTAMJsC11gTKFT?=
+ =?us-ascii?q?4J+IU6BQIEOKoxTeYEHgTiCOy4+hBWDS4JfBJhkmSMIgkaXayOcV49wnn+Be?=
+ =?us-ascii?q?DMaCCgIgyRQJZFkF443YoxsgkUBAQ?=
+X-IronPort-AV: E=Sophos;i="5.72,409,1580745600"; 
+   d="scan'208";a="288535545"
+Received: from 27-33-34-27.tpgi.com.au (HELO [192.168.0.106]) ([27.33.34.27])
+  by icp-osb-irony-out1.iinet.net.au with ESMTP; 21 Apr 2020 15:12:37 +0800
+Subject: Re: [PATCH] m68k/PCI: Fix a memory leak in an error handling path
+To:     Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+        geert@linux-m68k.org, bhelgaas@google.com,
+        lorenzo.pieralisi@arm.com
+Cc:     linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org,
+        kernel-janitors@vger.kernel.org
+References: <20200418070751.25420-1-christophe.jaillet@wanadoo.fr>
+From:   Greg Ungerer <gerg@linux-m68k.org>
+Message-ID: <3a465332-532b-00f1-bca0-4ead5228ebd9@linux-m68k.org>
+Date:   Tue, 21 Apr 2020 17:12:34 +1000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
 MIME-Version: 1.0
-References: <cover.1585264062.git.gustavo@embeddedor.com> <20200420181401.GA32172@embeddedor>
-In-Reply-To: <20200420181401.GA32172@embeddedor>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Tue, 21 Apr 2020 09:06:18 +0200
-Message-ID: <CAMuHMdXjj9=FmrMSu4BHbt05ueGYWBZCyfTds7prtN5WPXP81g@mail.gmail.com>
-Subject: Re: [PATCH RESEND 1/2][next] m68k: amiga: config: Replace zero-length
- array with flexible-array member
-To:     "Gustavo A. R. Silva" <gustavo@embeddedor.com>
-Cc:     linux-m68k <linux-m68k@lists.linux-m68k.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20200418070751.25420-1-christophe.jaillet@wanadoo.fr>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-m68k-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-On Mon, Apr 20, 2020 at 8:09 PM Gustavo A. R. Silva
-<gustavo@embeddedor.com> wrote:
-> The current codebase makes use of the zero-length array language
-> extension to the C90 standard, but the preferred mechanism to declare
-> variable-length types such as these ones is a flexible array member[1][2],
-> introduced in C99:
->
-> struct foo {
->         int stuff;
->         struct boo array[];
-> };
->
-> By making use of the mechanism above, we will get a compiler warning
-> in case the flexible array does not occur last in the structure, which
-> will help us prevent some kind of undefined behavior bugs from being
-> inadvertently introduced[3] to the codebase from now on.
->
-> Also, notice that, dynamic memory allocations won't be affected by
-> this change:
->
-> "Flexible array members have incomplete type, and so the sizeof operator
-> may not be applied. As a quirk of the original implementation of
-> zero-length arrays, sizeof evaluates to zero."[1]
->
-> This issue was found with the help of Coccinelle.
->
-> [1] https://gcc.gnu.org/onlinedocs/gcc/Zero-Length.html
-> [2] https://github.com/KSPP/linux/issues/21
-> [3] commit 76497732932f ("cxgb3/l2t: Fix undefined behaviour")
->
-> Signed-off-by: Gustavo A. R. Silva <gustavo@embeddedor.com>
+Hi Christophe,
 
-Reviewed-by: Geert Uytterhoeven <geert@linux-m68k.org>
-i.e. will queue in the m68k for-v5.8 branch.
+On 18/4/20 5:07 pm, Christophe JAILLET wrote:
+> If 'ioremap' fails, we must free 'bridge', as done in other error handling
+> path bellow.
+> 
+> Fixes: 19cc4c843f40 ("m68k/PCI: Replace pci_fixup_irqs() call with host bridge IRQ mapping hooks")
+> Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
 
-Gr{oetje,eeting}s,
+Looks good, thanks.
+I will queue this in the for-next branch of the m68knommu tree.
 
-                        Geert
+Regards
+Greg
 
--- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+> ---
+>   arch/m68k/coldfire/pci.c | 4 +++-
+>   1 file changed, 3 insertions(+), 1 deletion(-)
+> 
+> diff --git a/arch/m68k/coldfire/pci.c b/arch/m68k/coldfire/pci.c
+> index 62b0eb6cf69a..84eab0f5e00a 100644
+> --- a/arch/m68k/coldfire/pci.c
+> +++ b/arch/m68k/coldfire/pci.c
+> @@ -216,8 +216,10 @@ static int __init mcf_pci_init(void)
+>   
+>   	/* Keep a virtual mapping to IO/config space active */
+>   	iospace = (unsigned long) ioremap(PCI_IO_PA, PCI_IO_SIZE);
+> -	if (iospace == 0)
+> +	if (iospace == 0) {
+> +		pci_free_host_bridge(bridge);
+>   		return -ENODEV;
+> +	}
+>   	pr_info("Coldfire: PCI IO/config window mapped to 0x%x\n",
+>   		(u32) iospace);
+>   
+> 
