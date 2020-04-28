@@ -2,39 +2,43 @@ Return-Path: <SRS0=Nvft=6M=vger.kernel.org=linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.2 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,
-	URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=unavailable autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-0.6 required=3.0 tests=DKIM_INVALID,DKIM_SIGNED,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
+	autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id CEC00C83008
-	for <linux-m68k@archiver.kernel.org>; Tue, 28 Apr 2020 21:41:13 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 42FB5C83000
+	for <linux-m68k@archiver.kernel.org>; Tue, 28 Apr 2020 22:52:56 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id B374320731
-	for <linux-m68k@archiver.kernel.org>; Tue, 28 Apr 2020 21:41:13 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 14DA520730
+	for <linux-m68k@archiver.kernel.org>; Tue, 28 Apr 2020 22:52:56 +0000 (UTC)
+Authentication-Results: mail.kernel.org;
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="d4rtNymu"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726774AbgD1VlN (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Tue, 28 Apr 2020 17:41:13 -0400
-Received: from mga05.intel.com ([192.55.52.43]:53743 "EHLO mga05.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726256AbgD1VlK (ORCPT <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Tue, 28 Apr 2020 17:41:10 -0400
-IronPort-SDR: tzV5+wK8qPUfboUso6oonGpZjV/3p6G8TMiE6SMOuCNEo1DACKzkDU+vuehpeO696P4Dq45xiC
- 0mCU+bmAzxVw==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Apr 2020 14:41:09 -0700
-IronPort-SDR: BmShGtgPqO6g9l9TLnBaVqT0N7A8E9oYbKUmaq7A4M6HrJ//OEDzv4VauweuunA2PtV+nzwqSv
- a6P896ZIrZdQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.73,328,1583222400"; 
-   d="scan'208";a="247825303"
-Received: from iweiny-desk2.sc.intel.com ([10.3.52.147])
-  by fmsmga007.fm.intel.com with ESMTP; 28 Apr 2020 14:41:09 -0700
-Date:   Tue, 28 Apr 2020 14:41:09 -0700
-From:   Ira Weiny <ira.weiny@intel.com>
-To:     Matthew Wilcox <willy@infradead.org>
+        id S1726291AbgD1Wwz (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Tue, 28 Apr 2020 18:52:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56632 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726042AbgD1Wwz (ORCPT
+        <rfc822;linux-m68k@lists.linux-m68k.org>);
+        Tue, 28 Apr 2020 18:52:55 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8FB14C03C1AC;
+        Tue, 28 Apr 2020 15:52:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20170209; h=In-Reply-To:Content-Type:MIME-Version
+        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=F9aCSU3b/Wdv+eJFJpzYKn7Vwg6tH9sCBL5A5XUpJ4o=; b=d4rtNymuOqppTdZC6DJck2NtJL
+        kjY0+YaEI3w4ebKpcllV7qIhx/P1D+TCuaw3XpmPMqUZhgkznKZ8dv3o7HSGtFWRi35AM13gWXI2S
+        +oe/7fHyUfs7Zg1Iyx/H86z7wDagVQVC0Vw0zbn9kBL7S6XNudqlpL3qU0hLsMkj9rjjyFlJ3tmyd
+        mdxPiXctEgyIcVboBqHvfOM8AKNoZ2bC+gQC1tYQQcDHXbQf81Hgr33ITRo7Bcm44ykPAgtX6mknN
+        c3xC7RBbMjR3phdMIKElDEQ5j3uTQ4w0MWqdcEk5J8MxHaV542ZrfutfYx3ov4O5RY21sJiVzaivg
+        5RFmQQdw==;
+Received: from willy by bombadil.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1jTZ5w-0008Qz-1R; Tue, 28 Apr 2020 22:52:52 +0000
+Date:   Tue, 28 Apr 2020 15:52:51 -0700
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Ira Weiny <ira.weiny@intel.com>
 Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
         linux-arm-kernel@lists.infradead.org,
         Will Deacon <will@kernel.org>,
@@ -43,60 +47,53 @@ Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
         Geert Uytterhoeven <geert@linux-m68k.org>,
         linux-m68k@lists.linux-m68k.org
 Subject: Re: [PATCH 1/7] mm: Document x86 uses a linked list of pgds
-Message-ID: <20200428214109.GB406458@iweiny-DESK2.sc.intel.com>
+Message-ID: <20200428225251.GM29705@bombadil.infradead.org>
 References: <20200428194449.22615-1-willy@infradead.org>
  <20200428194449.22615-2-willy@infradead.org>
+ <20200428214109.GB406458@iweiny-DESK2.sc.intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200428194449.22615-2-willy@infradead.org>
-User-Agent: Mutt/1.11.1 (2018-12-01)
+In-Reply-To: <20200428214109.GB406458@iweiny-DESK2.sc.intel.com>
 Sender: linux-m68k-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-On Tue, Apr 28, 2020 at 12:44:43PM -0700, Matthew Wilcox wrote:
-> From: "Matthew Wilcox (Oracle)" <willy@infradead.org>
+On Tue, Apr 28, 2020 at 02:41:09PM -0700, Ira Weiny wrote:
+> On Tue, Apr 28, 2020 at 12:44:43PM -0700, Matthew Wilcox wrote:
+> > x86 uses page->lru of the pages used for pgds, but that's not immediately
+> > obvious to anyone looking to make changes.  Add a struct list_head to
+> > the union so it's clearly in use for pgds.
 > 
-> x86 uses page->lru of the pages used for pgds, but that's not immediately
-> obvious to anyone looking to make changes.  Add a struct list_head to
-> the union so it's clearly in use for pgds.
+> Shouldn't pgd_list_{add,del}() use this list head variable instead of lru to
+> complete the documentation?
 > 
-> Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
-> ---
->  include/linux/mm_types.h | 9 +++++++--
->  1 file changed, 7 insertions(+), 2 deletions(-)
-> 
-> diff --git a/include/linux/mm_types.h b/include/linux/mm_types.h
-> index 4aba6c0c2ba8..9bb34e2cd5a5 100644
-> --- a/include/linux/mm_types.h
-> +++ b/include/linux/mm_types.h
-> @@ -142,8 +142,13 @@ struct page {
->  			struct list_head deferred_list;
->  		};
->  		struct {	/* Page table pages */
-> -			unsigned long _pt_pad_1;	/* compound_head */
-> -			pgtable_t pmd_huge_pte; /* protected by page->ptl */
-> +			union {
-> +				struct list_head pgd_list;	/* x86 */
+> Probably the list iteration loops arch/x86/* as well?
 
-Shouldn't pgd_list_{add,del}() use this list head variable instead of lru to
-complete the documentation?
+Yes, but I felt that was out of scope for this patchset.  Untangling the
+uses of struct page is a long and messy business; if we have to fix
+everything at once, we'll never get anywhere.  There's also the slab
+users of page->lru instead of page->slab_list.
 
-Probably the list iteration loops arch/x86/* as well?
+What I actually want to get to is:
 
-Ira
+struct page {
+	unsigned long flags;
+	union {
+		struct file_page file;
+		struct anon_page anon;
+		struct pt_page pt;
+		struct slab_page slab;
+		struct tail_page tail;
+		struct rcu_head rcu;
+	};
+	union {
+		atomic_t _mapcount;
+		...
+	};
+	atomic_t refcount;
+	...
+};
 
-> +				struct {
-> +					unsigned long _pt_pad_1;
-> +					pgtable_t pmd_huge_pte;
-> +				};
-> +			};
->  			unsigned long _pt_pad_2;	/* mapping */
->  			union {
->  				struct mm_struct *pt_mm; /* x86 pgds only */
-> -- 
-> 2.26.2
-> 
-> 
+and then we can refer to page->pt.list and so on.
