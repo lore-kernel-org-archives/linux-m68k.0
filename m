@@ -7,36 +7,36 @@ X-Spam-Status: No, score=-9.6 required=3.0 tests=DKIM_INVALID,DKIM_SIGNED,
 	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=unavailable
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 10878C83004
-	for <linux-m68k@archiver.kernel.org>; Tue, 28 Apr 2020 19:45:14 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id AE2F2C83007
+	for <linux-m68k@archiver.kernel.org>; Tue, 28 Apr 2020 19:45:15 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id D78C42223E
-	for <linux-m68k@archiver.kernel.org>; Tue, 28 Apr 2020 19:45:13 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 8DE83221F6
+	for <linux-m68k@archiver.kernel.org>; Tue, 28 Apr 2020 19:45:15 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="UowjDlH2"
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="s/qXru4u"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729038AbgD1Tox (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        id S1729018AbgD1Tox (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
         Tue, 28 Apr 2020 15:44:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55348 "EHLO
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55346 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1728987AbgD1Tow (ORCPT
+        by vger.kernel.org with ESMTP id S1728986AbgD1Tow (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
         Tue, 28 Apr 2020 15:44:52 -0400
 Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 84C4AC03C1AD;
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7C2B8C03C1AC;
         Tue, 28 Apr 2020 12:44:52 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
         d=infradead.org; s=bombadil.20170209; h=Content-Transfer-Encoding:
         MIME-Version:References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender
         :Reply-To:Content-Type:Content-ID:Content-Description;
-        bh=e9r7GpMni34rexVL+NUjv1kHjasRtvd5yfzkeNOhyfU=; b=UowjDlH2w121/gEmHwnEszGwq+
-        5TNtJveqpBLGdcnzWqG75HqKQ6kvQi5Sp0qIShmLX/lDkrLHWX3fn4lVlUAW/X3/7Cvv8wIOfz5Gk
-        GKfimDkh0G7RBI8Ljhrbmo/lkfME0nTiBeJnRTuGQ1b4eZlj78wUM7bK7tMglrqtdjgRc5lGd1cm8
-        7kPCb7xPhHWncWRNejebPNAZbaZJU5VxnoHwqXDxodcNNACmYOkUCSqEk1+6KQBrX9ZcB1ETjTuRH
-        vNLzir5Va+QfnQ1i356km00VsGjf+l6TEB5Jk/CBqte1xT5cZZ5raFnbKSPUFcZP6Exp6s8Mio6sG
-        CBBxm0yA==;
+        bh=M4UWeVD1aiN0w304dAdjToeSDD+jrmpQN+yIxabjhn8=; b=s/qXru4uMFH5VaWHC1OJZxpdzW
+        KeYszvg733nHAjNHTibtOGKEAjMi6q+kRfoc0l94abgczc3N3jigTc1K+DkEC8tR3aixDaGv6kLFR
+        igyYaP+qhO2iXdjH2k4zrXSiMHg9G8r5J8gLDsf/4oY67296N/kHAOPu2tJASHR+OzUFKqB0k6+1O
+        XP7F607JbUKJESNj4gYNIKW84rMFyI+rrYhNTZIcB835hxoRMYIe2uN3ULt8mIlvdjwNEjdK1RS0/
+        Q41YqjvelbZfSnz+qEpjgp2MB0eY3qbMRWQkScZeztV7m/nl6MguX7ACoaK83UKfuQSNLW3eoaGRC
+        F8NMwPwA==;
 Received: from willy by bombadil.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1jTW9z-0005uc-0Y; Tue, 28 Apr 2020 19:44:51 +0000
+        id 1jTW9z-0005uo-43; Tue, 28 Apr 2020 19:44:51 +0000
 From:   Matthew Wilcox <willy@infradead.org>
 To:     linux-mm@kvack.org
 Cc:     "Matthew Wilcox (Oracle)" <willy@infradead.org>,
@@ -46,9 +46,9 @@ Cc:     "Matthew Wilcox (Oracle)" <willy@infradead.org>,
         Russell King <linux@armlinux.org.uk>,
         Geert Uytterhoeven <geert@linux-m68k.org>,
         linux-m68k@lists.linux-m68k.org
-Subject: [PATCH 4/7] arm64: Thread mm_struct throughout page table allocation
-Date:   Tue, 28 Apr 2020 12:44:46 -0700
-Message-Id: <20200428194449.22615-5-willy@infradead.org>
+Subject: [PATCH 7/7] mm: Set pt_mm in PMD constructor
+Date:   Tue, 28 Apr 2020 12:44:49 -0700
+Message-Id: <20200428194449.22615-8-willy@infradead.org>
 X-Mailer: git-send-email 2.21.1
 In-Reply-To: <20200428194449.22615-1-willy@infradead.org>
 References: <20200428194449.22615-1-willy@infradead.org>
@@ -61,261 +61,144 @@ X-Mailing-List: linux-m68k@vger.kernel.org
 
 From: "Matthew Wilcox (Oracle)" <willy@infradead.org>
 
-An upcoming patch will pass mm_struct to the page table constructor.
-Make sure arm64 has the appropriate mm_struct at the point it needs to
-call the constructor.
+By setting pt_mm for pages in use as page tables, we can help with
+debugging and lay the foundation for handling hardware errors in page
+tables more gracefully.  It also opens up the possibility for adding
+more sanity checks in the future.
+
+Also set and clear the PageTable bit so that we know these are page tables.
 
 Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
 ---
- arch/arm64/mm/mmu.c | 89 ++++++++++++++++++++++-----------------------
- 1 file changed, 43 insertions(+), 46 deletions(-)
+ arch/arm64/include/asm/pgalloc.h   |  2 +-
+ arch/arm64/mm/mmu.c                |  2 +-
+ arch/powerpc/mm/book3s64/pgtable.c |  2 +-
+ arch/s390/include/asm/pgalloc.h    |  2 +-
+ arch/x86/include/asm/pgalloc.h     |  2 +-
+ arch/x86/mm/pgtable.c              |  2 +-
+ include/linux/mm.h                 | 13 +++++++++++--
+ 7 files changed, 17 insertions(+), 8 deletions(-)
 
+diff --git a/arch/arm64/include/asm/pgalloc.h b/arch/arm64/include/asm/pgalloc.h
+index 172d76fa0245..920da9c5786c 100644
+--- a/arch/arm64/include/asm/pgalloc.h
++++ b/arch/arm64/include/asm/pgalloc.h
+@@ -30,7 +30,7 @@ static inline pmd_t *pmd_alloc_one(struct mm_struct *mm, unsigned long addr)
+ 	page = alloc_page(gfp);
+ 	if (!page)
+ 		return NULL;
+-	if (!pgtable_pmd_page_ctor(page)) {
++	if (!pgtable_pmd_page_ctor(page, mm)) {
+ 		__free_page(page);
+ 		return NULL;
+ 	}
 diff --git a/arch/arm64/mm/mmu.c b/arch/arm64/mm/mmu.c
-index a374e4f51a62..69ecc83c3be0 100644
+index c706bed1e496..b7bdde1990be 100644
 --- a/arch/arm64/mm/mmu.c
 +++ b/arch/arm64/mm/mmu.c
-@@ -88,7 +88,9 @@ pgprot_t phys_mem_access_prot(struct file *file, unsigned long pfn,
- }
- EXPORT_SYMBOL(phys_mem_access_prot);
+@@ -383,7 +383,7 @@ static phys_addr_t pgd_pgtable_alloc(int shift, struct mm_struct *mm)
+ 	if (shift == PAGE_SHIFT)
+ 		BUG_ON(!pgtable_pte_page_ctor(phys_to_page(pa), mm));
+ 	else if (shift == PMD_SHIFT)
+-		BUG_ON(!pgtable_pmd_page_ctor(phys_to_page(pa)));
++		BUG_ON(!pgtable_pmd_page_ctor(phys_to_page(pa), mm));
  
--static phys_addr_t __init early_pgtable_alloc(int shift)
-+typedef phys_addr_t (arm_pt_alloc_t)(int size, struct mm_struct *);
-+
-+static phys_addr_t __init early_pgtable_alloc(int shift, struct mm_struct *mm)
- {
- 	phys_addr_t phys;
- 	void *ptr;
-@@ -162,11 +164,9 @@ static void init_pte(pmd_t *pmdp, unsigned long addr, unsigned long end,
- 	pte_clear_fixmap();
+ 	return pa;
  }
- 
--static void alloc_init_cont_pte(pmd_t *pmdp, unsigned long addr,
--				unsigned long end, phys_addr_t phys,
--				pgprot_t prot,
--				phys_addr_t (*pgtable_alloc)(int),
--				int flags)
-+static void alloc_init_cont_pte(struct mm_struct *mm, pmd_t *pmdp,
-+		unsigned long addr, unsigned long end, phys_addr_t phys,
-+		pgprot_t prot, arm_pt_alloc_t pgtable_alloc, int flags)
- {
- 	unsigned long next;
- 	pmd_t pmd = READ_ONCE(*pmdp);
-@@ -175,7 +175,7 @@ static void alloc_init_cont_pte(pmd_t *pmdp, unsigned long addr,
- 	if (pmd_none(pmd)) {
- 		phys_addr_t pte_phys;
- 		BUG_ON(!pgtable_alloc);
--		pte_phys = pgtable_alloc(PAGE_SHIFT);
-+		pte_phys = pgtable_alloc(PAGE_SHIFT, mm);
- 		__pmd_populate(pmdp, pte_phys, PMD_TYPE_TABLE);
- 		pmd = READ_ONCE(*pmdp);
+diff --git a/arch/powerpc/mm/book3s64/pgtable.c b/arch/powerpc/mm/book3s64/pgtable.c
+index e0bb69c616e4..9fda5287c197 100644
+--- a/arch/powerpc/mm/book3s64/pgtable.c
++++ b/arch/powerpc/mm/book3s64/pgtable.c
+@@ -297,7 +297,7 @@ static pmd_t *__alloc_for_pmdcache(struct mm_struct *mm)
+ 	page = alloc_page(gfp);
+ 	if (!page)
+ 		return NULL;
+-	if (!pgtable_pmd_page_ctor(page)) {
++	if (!pgtable_pmd_page_ctor(page, mm)) {
+ 		__free_pages(page, 0);
+ 		return NULL;
  	}
-@@ -197,9 +197,9 @@ static void alloc_init_cont_pte(pmd_t *pmdp, unsigned long addr,
- 	} while (addr = next, addr != end);
- }
- 
--static void init_pmd(pud_t *pudp, unsigned long addr, unsigned long end,
--		     phys_addr_t phys, pgprot_t prot,
--		     phys_addr_t (*pgtable_alloc)(int), int flags)
-+static void init_pmd(struct mm_struct *mm, pud_t *pudp, unsigned long addr,
-+		unsigned long end, phys_addr_t phys, pgprot_t prot,
-+		arm_pt_alloc_t pgtable_alloc, int flags)
- {
- 	unsigned long next;
- 	pmd_t *pmdp;
-@@ -222,7 +222,7 @@ static void init_pmd(pud_t *pudp, unsigned long addr, unsigned long end,
- 			BUG_ON(!pgattr_change_is_safe(pmd_val(old_pmd),
- 						      READ_ONCE(pmd_val(*pmdp))));
- 		} else {
--			alloc_init_cont_pte(pmdp, addr, next, phys, prot,
-+			alloc_init_cont_pte(mm, pmdp, addr, next, phys, prot,
- 					    pgtable_alloc, flags);
- 
- 			BUG_ON(pmd_val(old_pmd) != 0 &&
-@@ -234,10 +234,9 @@ static void init_pmd(pud_t *pudp, unsigned long addr, unsigned long end,
- 	pmd_clear_fixmap();
- }
- 
--static void alloc_init_cont_pmd(pud_t *pudp, unsigned long addr,
--				unsigned long end, phys_addr_t phys,
--				pgprot_t prot,
--				phys_addr_t (*pgtable_alloc)(int), int flags)
-+static void alloc_init_cont_pmd(struct mm_struct *mm, pud_t *pudp,
-+		unsigned long addr, unsigned long end, phys_addr_t phys,
-+		pgprot_t prot, arm_pt_alloc_t pgtable_alloc, int flags)
- {
- 	unsigned long next;
- 	pud_t pud = READ_ONCE(*pudp);
-@@ -249,7 +248,7 @@ static void alloc_init_cont_pmd(pud_t *pudp, unsigned long addr,
- 	if (pud_none(pud)) {
- 		phys_addr_t pmd_phys;
- 		BUG_ON(!pgtable_alloc);
--		pmd_phys = pgtable_alloc(PMD_SHIFT);
-+		pmd_phys = pgtable_alloc(PMD_SHIFT, mm);
- 		__pud_populate(pudp, pmd_phys, PUD_TYPE_TABLE);
- 		pud = READ_ONCE(*pudp);
+diff --git a/arch/s390/include/asm/pgalloc.h b/arch/s390/include/asm/pgalloc.h
+index 74a352f8c0d1..bebad4e5d42a 100644
+--- a/arch/s390/include/asm/pgalloc.h
++++ b/arch/s390/include/asm/pgalloc.h
+@@ -86,7 +86,7 @@ static inline pmd_t *pmd_alloc_one(struct mm_struct *mm, unsigned long vmaddr)
+ 	if (!table)
+ 		return NULL;
+ 	crst_table_init(table, _SEGMENT_ENTRY_EMPTY);
+-	if (!pgtable_pmd_page_ctor(virt_to_page(table))) {
++	if (!pgtable_pmd_page_ctor(virt_to_page(table), mm)) {
+ 		crst_table_free(mm, table);
+ 		return NULL;
  	}
-@@ -265,7 +264,8 @@ static void alloc_init_cont_pmd(pud_t *pudp, unsigned long addr,
- 		    (flags & NO_CONT_MAPPINGS) == 0)
- 			__prot = __pgprot(pgprot_val(prot) | PTE_CONT);
- 
--		init_pmd(pudp, addr, next, phys, __prot, pgtable_alloc, flags);
-+		init_pmd(mm, pudp, addr, next, phys, __prot, pgtable_alloc,
-+				flags);
- 
- 		phys += next - addr;
- 	} while (addr = next, addr != end);
-@@ -283,10 +283,9 @@ static inline bool use_1G_block(unsigned long addr, unsigned long next,
- 	return true;
- }
- 
--static void alloc_init_pud(pgd_t *pgdp, unsigned long addr, unsigned long end,
--			   phys_addr_t phys, pgprot_t prot,
--			   phys_addr_t (*pgtable_alloc)(int),
--			   int flags)
-+static void alloc_init_pud(struct mm_struct *mm, pgd_t *pgdp,
-+		unsigned long addr, unsigned long end, phys_addr_t phys,
-+		pgprot_t prot, arm_pt_alloc_t pgtable_alloc, int flags)
- {
- 	unsigned long next;
- 	pud_t *pudp;
-@@ -295,7 +294,7 @@ static void alloc_init_pud(pgd_t *pgdp, unsigned long addr, unsigned long end,
- 	if (pgd_none(pgd)) {
- 		phys_addr_t pud_phys;
- 		BUG_ON(!pgtable_alloc);
--		pud_phys = pgtable_alloc(PUD_SHIFT);
-+		pud_phys = pgtable_alloc(PUD_SHIFT, mm);
- 		__pgd_populate(pgdp, pud_phys, PUD_TYPE_TABLE);
- 		pgd = READ_ONCE(*pgdp);
+diff --git a/arch/x86/include/asm/pgalloc.h b/arch/x86/include/asm/pgalloc.h
+index 29aa7859bdee..33514f0a9e79 100644
+--- a/arch/x86/include/asm/pgalloc.h
++++ b/arch/x86/include/asm/pgalloc.h
+@@ -96,7 +96,7 @@ static inline pmd_t *pmd_alloc_one(struct mm_struct *mm, unsigned long addr)
+ 	page = alloc_pages(gfp, 0);
+ 	if (!page)
+ 		return NULL;
+-	if (!pgtable_pmd_page_ctor(page)) {
++	if (!pgtable_pmd_page_ctor(page, mm)) {
+ 		__free_pages(page, 0);
+ 		return NULL;
  	}
-@@ -321,7 +320,7 @@ static void alloc_init_pud(pgd_t *pgdp, unsigned long addr, unsigned long end,
- 			BUG_ON(!pgattr_change_is_safe(pud_val(old_pud),
- 						      READ_ONCE(pud_val(*pudp))));
- 		} else {
--			alloc_init_cont_pmd(pudp, addr, next, phys, prot,
-+			alloc_init_cont_pmd(mm, pudp, addr, next, phys, prot,
- 					    pgtable_alloc, flags);
- 
- 			BUG_ON(pud_val(old_pud) != 0 &&
-@@ -333,11 +332,9 @@ static void alloc_init_pud(pgd_t *pgdp, unsigned long addr, unsigned long end,
- 	pud_clear_fixmap();
+diff --git a/arch/x86/mm/pgtable.c b/arch/x86/mm/pgtable.c
+index f5f46737aea0..8f4255662c5a 100644
+--- a/arch/x86/mm/pgtable.c
++++ b/arch/x86/mm/pgtable.c
+@@ -229,7 +229,7 @@ static int preallocate_pmds(struct mm_struct *mm, pmd_t *pmds[], int count)
+ 		pmd_t *pmd = (pmd_t *)__get_free_page(gfp);
+ 		if (!pmd)
+ 			failed = true;
+-		if (pmd && !pgtable_pmd_page_ctor(virt_to_page(pmd))) {
++		if (pmd && !pgtable_pmd_page_ctor(virt_to_page(pmd), mm)) {
+ 			free_page((unsigned long)pmd);
+ 			pmd = NULL;
+ 			failed = true;
+diff --git a/include/linux/mm.h b/include/linux/mm.h
+index 2a98eebeba91..e2924d900fc5 100644
+--- a/include/linux/mm.h
++++ b/include/linux/mm.h
+@@ -2216,11 +2216,14 @@ static inline spinlock_t *pmd_lockptr(struct mm_struct *mm, pmd_t *pmd)
+ 	return ptlock_ptr(pmd_to_page(pmd));
  }
  
--static void __create_pgd_mapping(pgd_t *pgdir, phys_addr_t phys,
--				 unsigned long virt, phys_addr_t size,
--				 pgprot_t prot,
--				 phys_addr_t (*pgtable_alloc)(int),
--				 int flags)
-+static void __create_pgd_mapping(struct mm_struct *mm, pgd_t *pgdir,
-+		phys_addr_t phys, unsigned long virt, phys_addr_t size,
-+		pgprot_t prot, arm_pt_alloc_t pgtable_alloc, int flags)
+-static inline bool pgtable_pmd_page_ctor(struct page *page)
++static inline
++bool pgtable_pmd_page_ctor(struct page *page, struct mm_struct *mm)
  {
- 	unsigned long addr, end, next;
- 	pgd_t *pgdp = pgd_offset_raw(pgdir, virt);
-@@ -355,13 +352,13 @@ static void __create_pgd_mapping(pgd_t *pgdir, phys_addr_t phys,
- 
- 	do {
- 		next = pgd_addr_end(addr, end);
--		alloc_init_pud(pgdp, addr, next, phys, prot, pgtable_alloc,
-+		alloc_init_pud(mm, pgdp, addr, next, phys, prot, pgtable_alloc,
- 			       flags);
- 		phys += next - addr;
- 	} while (pgdp++, addr = next, addr != end);
+ #ifdef CONFIG_TRANSPARENT_HUGEPAGE
+ 	page->pmd_huge_pte = NULL;
+ #endif
++	__SetPageTable(page);
++	page->pt_mm = mm;
+ 	return ptlock_init(page);
  }
  
--static phys_addr_t __pgd_pgtable_alloc(int shift)
-+static phys_addr_t __pgd_pgtable_alloc(int shift, struct mm_struct *mm)
- {
- 	void *ptr = (void *)__get_free_page(GFP_PGTABLE_KERNEL);
- 	BUG_ON(!ptr);
-@@ -371,9 +368,9 @@ static phys_addr_t __pgd_pgtable_alloc(int shift)
- 	return __pa(ptr);
+@@ -2229,6 +2232,8 @@ static inline void pgtable_pmd_page_dtor(struct page *page)
+ #ifdef CONFIG_TRANSPARENT_HUGEPAGE
+ 	VM_BUG_ON_PAGE(page->pmd_huge_pte, page);
+ #endif
++	__ClearPageTable(page);
++	page->pt_mm = NULL;
+ 	ptlock_free(page);
  }
  
--static phys_addr_t pgd_pgtable_alloc(int shift)
-+static phys_addr_t pgd_pgtable_alloc(int shift, struct mm_struct *mm)
- {
--	phys_addr_t pa = __pgd_pgtable_alloc(shift);
-+	phys_addr_t pa = __pgd_pgtable_alloc(shift, mm);
- 
- 	/*
- 	 * Call proper page table ctor in case later we need to
-@@ -404,8 +401,8 @@ static void __init create_mapping_noalloc(phys_addr_t phys, unsigned long virt,
- 			&phys, virt);
- 		return;
- 	}
--	__create_pgd_mapping(init_mm.pgd, phys, virt, size, prot, NULL,
--			     NO_CONT_MAPPINGS);
-+	__create_pgd_mapping(&init_mm, init_mm.pgd, phys, virt, size, prot,
-+			NULL, NO_CONT_MAPPINGS);
+@@ -2241,7 +2246,11 @@ static inline spinlock_t *pmd_lockptr(struct mm_struct *mm, pmd_t *pmd)
+ 	return &mm->page_table_lock;
  }
  
- void __init create_pgd_mapping(struct mm_struct *mm, phys_addr_t phys,
-@@ -419,7 +416,7 @@ void __init create_pgd_mapping(struct mm_struct *mm, phys_addr_t phys,
- 	if (page_mappings_only)
- 		flags = NO_BLOCK_MAPPINGS | NO_CONT_MAPPINGS;
+-static inline bool pgtable_pmd_page_ctor(struct page *page) { return true; }
++static inline
++bool pgtable_pmd_page_ctor(struct page *page, struct mm_struct *mm)
++{
++	return true;
++}
+ static inline void pgtable_pmd_page_dtor(struct page *page) {}
  
--	__create_pgd_mapping(mm->pgd, phys, virt, size, prot,
-+	__create_pgd_mapping(mm, mm->pgd, phys, virt, size, prot,
- 			     pgd_pgtable_alloc, flags);
- }
- 
-@@ -432,8 +429,8 @@ static void update_mapping_prot(phys_addr_t phys, unsigned long virt,
- 		return;
- 	}
- 
--	__create_pgd_mapping(init_mm.pgd, phys, virt, size, prot, NULL,
--			     NO_CONT_MAPPINGS);
-+	__create_pgd_mapping(&init_mm, init_mm.pgd, phys, virt, size, prot,
-+			NULL, NO_CONT_MAPPINGS);
- 
- 	/* flush the TLBs after updating live kernel mappings */
- 	flush_tlb_kernel_range(virt, virt + size);
-@@ -442,8 +439,8 @@ static void update_mapping_prot(phys_addr_t phys, unsigned long virt,
- static void __init __map_memblock(pgd_t *pgdp, phys_addr_t start,
- 				  phys_addr_t end, pgprot_t prot, int flags)
- {
--	__create_pgd_mapping(pgdp, start, __phys_to_virt(start), end - start,
--			     prot, early_pgtable_alloc, flags);
-+	__create_pgd_mapping(&init_mm, pgdp, start, __phys_to_virt(start),
-+			end - start, prot, early_pgtable_alloc, flags);
- }
- 
- void __init mark_linear_text_alias_ro(void)
-@@ -547,8 +544,8 @@ static void __init map_kernel_segment(pgd_t *pgdp, void *va_start, void *va_end,
- 	BUG_ON(!PAGE_ALIGNED(pa_start));
- 	BUG_ON(!PAGE_ALIGNED(size));
- 
--	__create_pgd_mapping(pgdp, pa_start, (unsigned long)va_start, size, prot,
--			     early_pgtable_alloc, flags);
-+	__create_pgd_mapping(&init_mm, pgdp, pa_start, (unsigned long)va_start,
-+			size, prot, early_pgtable_alloc, flags);
- 
- 	if (!(vm_flags & VM_NO_GUARD))
- 		size += PAGE_SIZE;
-@@ -591,8 +588,8 @@ static int __init map_entry_trampoline(void)
- 
- 	/* Map only the text into the trampoline page table */
- 	memset(tramp_pg_dir, 0, PGD_SIZE);
--	__create_pgd_mapping(tramp_pg_dir, pa_start, TRAMP_VALIAS, PAGE_SIZE,
--			     prot, __pgd_pgtable_alloc, 0);
-+	__create_pgd_mapping(&init_mm, tramp_pg_dir, pa_start, TRAMP_VALIAS,
-+			PAGE_SIZE, prot, __pgd_pgtable_alloc, 0);
- 
- 	/* Map both the text and data into the kernel page table */
- 	__set_fixmap(FIX_ENTRY_TRAMP_TEXT, pa_start, prot);
-@@ -1381,9 +1378,9 @@ int arch_add_memory(int nid, u64 start, u64 size,
- 	if (rodata_full || debug_pagealloc_enabled())
- 		flags = NO_BLOCK_MAPPINGS | NO_CONT_MAPPINGS;
- 
--	__create_pgd_mapping(swapper_pg_dir, start, __phys_to_virt(start),
--			     size, params->pgprot, __pgd_pgtable_alloc,
--			     flags);
-+	__create_pgd_mapping(&init_mm, swapper_pg_dir, start,
-+			__phys_to_virt(start), size, params->pgprot,
-+			__pgd_pgtable_alloc, flags);
- 
- 	memblock_clear_nomap(start, size);
- 
+ #define pmd_huge_pte(mm, pmd) ((mm)->pmd_huge_pte)
 -- 
 2.26.2
 
