@@ -4,39 +4,39 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-9.6 required=3.0 tests=DKIM_INVALID,DKIM_SIGNED,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=unavailable
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 6C605C83000
-	for <linux-m68k@archiver.kernel.org>; Tue, 28 Apr 2020 19:44:53 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 96A8AC8300B
+	for <linux-m68k@archiver.kernel.org>; Tue, 28 Apr 2020 19:45:02 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 3E1ED21973
-	for <linux-m68k@archiver.kernel.org>; Tue, 28 Apr 2020 19:44:53 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 7599021D7A
+	for <linux-m68k@archiver.kernel.org>; Tue, 28 Apr 2020 19:45:02 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="OqSmLHbu"
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="XpgKxfAG"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728991AbgD1Tox (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Tue, 28 Apr 2020 15:44:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55340 "EHLO
+        id S1728559AbgD1To4 (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Tue, 28 Apr 2020 15:44:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55356 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1728392AbgD1Tow (ORCPT
+        by vger.kernel.org with ESMTP id S1728987AbgD1Toz (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Tue, 28 Apr 2020 15:44:52 -0400
+        Tue, 28 Apr 2020 15:44:55 -0400
 Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 720B6C03C1AB;
-        Tue, 28 Apr 2020 12:44:52 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 99138C03C1AB;
+        Tue, 28 Apr 2020 12:44:55 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
         d=infradead.org; s=bombadil.20170209; h=Content-Transfer-Encoding:
         MIME-Version:References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender
         :Reply-To:Content-Type:Content-ID:Content-Description;
-        bh=mmyTjSbJYQT19h+SSwsn2alKEzL4pRfFj3gXPGGOohs=; b=OqSmLHbudpXM8xgCNaG6O6ox90
-        yQDAbSGzjOpH8T7sm/U/yRXs1ByPwe6ZMACLgLSqU/aNQqJR8NVvLI3Ae4kC4EXO2m84MGnS/9GBm
-        NrEEHOLdyXMoRHBg4CKtnNAS1pVGqqaZNfwqVXO0imN1zlRKj9A00yNxHQSi4AW6aSbNo+3C0aqW3
-        NsWQATiJyBU3vUIXBtfIbj1bSI79cQpVYPBU2sLaK1vIA5s/coVOHjfef1CyMe2n4jtmfx8aXO6Ck
-        Ss0icyHuPUGhkN01lqiveXPfF98eSNYKiiJcIag1briN8yZ6pGYpsmqoa7T/O4tMguz9e1YHVxQT1
-        mGTspBVg==;
+        bh=JHSvmroelv0sK3RJ9jDQ65/3EP5MC9zy/wCmxVX3oH0=; b=XpgKxfAGyw+vcjSHBHLQYS4gFq
+        ZASI1jIlY+ptUWLEA8L4MC9pCLzAxFZ2MZPMJoOw7F0o4eZW10bsNHCNTYpNxIor31O8a107iNszE
+        ZYMgwajQqxNCn45M8vdu0UZM2TsPrSkn1EtplDisSpfvm5BZpJnmUXDcZJNHowGpCmRMdJ4yzwGE8
+        iOwum4I8GFZ7i44lLsYCM1NLQWv1Cct3rV1JwvJDUO9Uf7CbIpDgxBZbMX5nssQt8xVWRRChLKEAv
+        cu17lVMbH4a0ED/RcRJR+FtbhaqsrHMGlB/oDFqta1JO1gQ6U8sWLqY274daPDJ10tH+cUuc27KkY
+        UJWl/p5g==;
 Received: from willy by bombadil.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1jTW9y-0005uU-UU; Tue, 28 Apr 2020 19:44:50 +0000
+        id 1jTW9z-0005ug-1e; Tue, 28 Apr 2020 19:44:51 +0000
 From:   Matthew Wilcox <willy@infradead.org>
 To:     linux-mm@kvack.org
 Cc:     "Matthew Wilcox (Oracle)" <willy@infradead.org>,
@@ -46,9 +46,9 @@ Cc:     "Matthew Wilcox (Oracle)" <willy@infradead.org>,
         Russell King <linux@armlinux.org.uk>,
         Geert Uytterhoeven <geert@linux-m68k.org>,
         linux-m68k@lists.linux-m68k.org
-Subject: [PATCH 2/7] mm: Move pt_mm within struct page
-Date:   Tue, 28 Apr 2020 12:44:44 -0700
-Message-Id: <20200428194449.22615-3-willy@infradead.org>
+Subject: [PATCH 5/7] m68k: Thread mm_struct throughout page table allocation
+Date:   Tue, 28 Apr 2020 12:44:47 -0700
+Message-Id: <20200428194449.22615-6-willy@infradead.org>
 X-Mailer: git-send-email 2.21.1
 In-Reply-To: <20200428194449.22615-1-willy@infradead.org>
 References: <20200428194449.22615-1-willy@infradead.org>
@@ -61,46 +61,75 @@ X-Mailing-List: linux-m68k@vger.kernel.org
 
 From: "Matthew Wilcox (Oracle)" <willy@infradead.org>
 
-Instead of a per-arch word within struct page, use a formerly reserved
-word.  This word is shared with page->mapping, so it must be cleared
-before being freed as it is checked in free_pages().
+An upcoming patch will pass mm_struct to the page table constructor.
+Make sure m68k has the appropriate mm_struct at the point it needs to
+call the constructor.
 
 Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
 ---
- arch/x86/mm/pgtable.c    | 1 +
- include/linux/mm_types.h | 7 ++-----
- 2 files changed, 3 insertions(+), 5 deletions(-)
+ arch/m68k/include/asm/motorola_pgalloc.h | 10 +++++-----
+ arch/m68k/mm/motorola.c                  |  2 +-
+ 2 files changed, 6 insertions(+), 6 deletions(-)
 
-diff --git a/arch/x86/mm/pgtable.c b/arch/x86/mm/pgtable.c
-index 7bd2c3a52297..f5f46737aea0 100644
---- a/arch/x86/mm/pgtable.c
-+++ b/arch/x86/mm/pgtable.c
-@@ -95,6 +95,7 @@ static inline void pgd_list_del(pgd_t *pgd)
- 	struct page *page = virt_to_page(pgd);
+diff --git a/arch/m68k/include/asm/motorola_pgalloc.h b/arch/m68k/include/asm/motorola_pgalloc.h
+index c66e42917912..dbac0c597397 100644
+--- a/arch/m68k/include/asm/motorola_pgalloc.h
++++ b/arch/m68k/include/asm/motorola_pgalloc.h
+@@ -15,12 +15,12 @@ enum m68k_table_types {
+ };
  
- 	list_del(&page->lru);
-+	page->pt_mm = NULL;
+ extern void init_pointer_table(void *table, int type);
+-extern void *get_pointer_table(int type);
++extern void *get_pointer_table(int type, struct mm_struct *mm);
+ extern int free_pointer_table(void *table, int type);
+ 
+ static inline pte_t *pte_alloc_one_kernel(struct mm_struct *mm)
+ {
+-	return get_pointer_table(TABLE_PTE);
++	return get_pointer_table(TABLE_PTE, mm);
  }
  
- #define UNSHARED_PTRS_PER_PGD				\
-diff --git a/include/linux/mm_types.h b/include/linux/mm_types.h
-index 9bb34e2cd5a5..7efa12f4626f 100644
---- a/include/linux/mm_types.h
-+++ b/include/linux/mm_types.h
-@@ -149,11 +149,8 @@ struct page {
- 					pgtable_t pmd_huge_pte;
- 				};
- 			};
--			unsigned long _pt_pad_2;	/* mapping */
--			union {
--				struct mm_struct *pt_mm; /* x86 pgds only */
--				atomic_t pt_frag_refcount; /* powerpc */
--			};
-+			struct mm_struct *pt_mm;
-+			atomic_t pt_frag_refcount; /* powerpc */
- #if ALLOC_SPLIT_PTLOCKS
- 			spinlock_t *ptl;
- #else
+ static inline void pte_free_kernel(struct mm_struct *mm, pte_t *pte)
+@@ -30,7 +30,7 @@ static inline void pte_free_kernel(struct mm_struct *mm, pte_t *pte)
+ 
+ static inline pgtable_t pte_alloc_one(struct mm_struct *mm)
+ {
+-	return get_pointer_table(TABLE_PTE);
++	return get_pointer_table(TABLE_PTE, mm);
+ }
+ 
+ static inline void pte_free(struct mm_struct *mm, pgtable_t pgtable)
+@@ -47,7 +47,7 @@ static inline void __pte_free_tlb(struct mmu_gather *tlb, pgtable_t pgtable,
+ 
+ static inline pmd_t *pmd_alloc_one(struct mm_struct *mm, unsigned long address)
+ {
+-	return get_pointer_table(TABLE_PMD);
++	return get_pointer_table(TABLE_PMD, mm);
+ }
+ 
+ static inline int pmd_free(struct mm_struct *mm, pmd_t *pmd)
+@@ -69,7 +69,7 @@ static inline void pgd_free(struct mm_struct *mm, pgd_t *pgd)
+ 
+ static inline pgd_t *pgd_alloc(struct mm_struct *mm)
+ {
+-	return get_pointer_table(TABLE_PGD);
++	return get_pointer_table(TABLE_PGD, mm);
+ }
+ 
+ 
+diff --git a/arch/m68k/mm/motorola.c b/arch/m68k/mm/motorola.c
+index fc16190ec2d6..7743480be0cf 100644
+--- a/arch/m68k/mm/motorola.c
++++ b/arch/m68k/mm/motorola.c
+@@ -113,7 +113,7 @@ void __init init_pointer_table(void *table, int type)
+ 	return;
+ }
+ 
+-void *get_pointer_table(int type)
++void *get_pointer_table(int type, struct mm_struct *mm)
+ {
+ 	ptable_desc *dp = ptable_list[type].next;
+ 	unsigned int mask = list_empty(&ptable_list[type]) ? 0 : PD_MARKBITS(dp);
 -- 
 2.26.2
 
