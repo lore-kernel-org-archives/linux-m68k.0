@@ -1,4 +1,4 @@
-Return-Path: <SRS0=MWsp=6L=vger.kernel.org=linux-m68k-owner@kernel.org>
+Return-Path: <SRS0=Nvft=6M=vger.kernel.org=linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
@@ -6,41 +6,41 @@ X-Spam-Status: No, score=-5.8 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
 	MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
 	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 94FAAC4CECC
-	for <linux-m68k@archiver.kernel.org>; Mon, 27 Apr 2020 19:38:20 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 23706C83003
+	for <linux-m68k@archiver.kernel.org>; Tue, 28 Apr 2020 02:01:55 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 7C93E205C9
-	for <linux-m68k@archiver.kernel.org>; Mon, 27 Apr 2020 19:38:20 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 01B95206E2
+	for <linux-m68k@archiver.kernel.org>; Tue, 28 Apr 2020 02:01:55 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726285AbgD0TiU (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Mon, 27 Apr 2020 15:38:20 -0400
-Received: from mga02.intel.com ([134.134.136.20]:54640 "EHLO mga02.intel.com"
+        id S1726233AbgD1CBy (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Mon, 27 Apr 2020 22:01:54 -0400
+Received: from mga14.intel.com ([192.55.52.115]:65000 "EHLO mga14.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725919AbgD0TiU (ORCPT <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Mon, 27 Apr 2020 15:38:20 -0400
-IronPort-SDR: gOXvDPrSx4kMV+vbBJbuJlSCcbaOFPIvZDvyqtJnjXF0htlTYdZRf2reHWx3uze0kAiOx2RG/P
- sZ/MU7VpJ/lA==
+        id S1726261AbgD1CBy (ORCPT <rfc822;linux-m68k@lists.linux-m68k.org>);
+        Mon, 27 Apr 2020 22:01:54 -0400
+IronPort-SDR: 9Ai8y9HFHjaAGoT/tseu3iXAQG1uKsPID65cygKmtkL1CfmO1PasHmfoF/3NX3vn997+1Zlmzh
+ bDHa9aDszhjw==
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Apr 2020 12:38:19 -0700
-IronPort-SDR: ajFsEjymkO71/LTYPUeixvhwDU+EKOzPqKqkyDBaBFYJfi7WMMt+cDsFMDe05JGIRGZ13smXtr
- EOyea+4rt0eA==
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Apr 2020 19:01:53 -0700
+IronPort-SDR: K0g/uSy1tbj+LS0Th2vc6RUzp1uPFc6DTBE9VFnpFT6Gx8Ee1fuvzspToQPNuJ9um/Atnypa3x
+ XXEFHNEOesTA==
 X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.73,325,1583222400"; 
-   d="scan'208";a="292609651"
+X-IronPort-AV: E=Sophos;i="5.73,326,1583222400"; 
+   d="scan'208";a="246350522"
 Received: from lkp-server01.sh.intel.com (HELO lkp-server01) ([10.239.97.150])
-  by fmsmga002.fm.intel.com with ESMTP; 27 Apr 2020 12:38:17 -0700
+  by orsmga007.jf.intel.com with ESMTP; 27 Apr 2020 19:01:52 -0700
 Received: from kbuild by lkp-server01 with local (Exim 4.89)
         (envelope-from <lkp@intel.com>)
-        id 1jT9a5-0000bs-8t; Tue, 28 Apr 2020 03:38:17 +0800
-Date:   Tue, 28 Apr 2020 03:37:12 +0800
+        id 1jTFZH-0003wy-DM; Tue, 28 Apr 2020 10:01:51 +0800
+Date:   Tue, 28 Apr 2020 10:01:06 +0800
 From:   kbuild test robot <lkp@intel.com>
 To:     Geert Uytterhoeven <geert@linux-m68k.org>
 Cc:     linux-m68k@lists.linux-m68k.org
-Subject: [m68k:m68k-queue] BUILD SUCCESS
- 2bb95b161a9161214bb8940f1c0d7b756c3146c9
-Message-ID: <5ea73468.FcCtghALXc4nphDI%lkp@intel.com>
+Subject: [m68k:master] BUILD SUCCESS
+ e3b946742479a65abed71ec1d2e41cd0867de0c2
+Message-ID: <5ea78e62.LXWWOuh/c3tnPAtl%lkp@intel.com>
 User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
@@ -50,12 +50,12 @@ Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/geert/linux-m68k.git  m68k-queue
-branch HEAD: 2bb95b161a9161214bb8940f1c0d7b756c3146c9  fat: Use correct logical sector size for Atari GEMDOS FAT
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/geert/linux-m68k.git  master
+branch HEAD: e3b946742479a65abed71ec1d2e41cd0867de0c2  Merge tag 'v5.7-rc3'
 
-elapsed time: 583m
+elapsed time: 964m
 
-configs tested: 171
+configs tested: 166
 configs skipped: 0
 
 The following configs have been built successfully.
@@ -76,23 +76,24 @@ arm                        multi_v5_defconfig
 arm                           sunxi_defconfig
 arm                        multi_v7_defconfig
 sparc                            allyesconfig
-riscv                            allmodconfig
+powerpc                             defconfig
+ia64                                defconfig
+i386                             alldefconfig
+h8300                    h8300h-sim_defconfig
 riscv                             allnoconfig
 riscv                          rv32_defconfig
-nios2                         3c120_defconfig
-ia64                         bigsur_defconfig
-i386                              allnoconfig
-i386                             alldefconfig
 i386                                defconfig
-i386                              debian-10.3
+i386                              allnoconfig
 i386                             allyesconfig
+i386                              debian-10.3
 ia64                             allmodconfig
-ia64                                defconfig
 ia64                              allnoconfig
 ia64                        generic_defconfig
 ia64                          tiger_defconfig
+ia64                         bigsur_defconfig
 ia64                             allyesconfig
 ia64                             alldefconfig
+nios2                         3c120_defconfig
 nios2                         10m50_defconfig
 c6x                        evmc6678_defconfig
 xtensa                          iss_defconfig
@@ -108,12 +109,10 @@ h8300                       h8s-sim_defconfig
 h8300                     edosk2674_defconfig
 m68k                       m5475evb_defconfig
 m68k                             allmodconfig
-h8300                    h8300h-sim_defconfig
 m68k                           sun3_defconfig
 m68k                          multi_defconfig
 arc                                 defconfig
 arc                              allyesconfig
-powerpc                             defconfig
 powerpc                       ppc64_defconfig
 powerpc                          rhel-kconfig
 microblaze                      mmu_defconfig
@@ -151,11 +150,6 @@ c6x                  randconfig-a001-20200427
 h8300                randconfig-a001-20200427
 sparc64              randconfig-a001-20200427
 microblaze           randconfig-a001-20200427
-nios2                randconfig-a001-20200428
-h8300                randconfig-a001-20200428
-c6x                  randconfig-a001-20200428
-sparc64              randconfig-a001-20200428
-microblaze           randconfig-a001-20200428
 sh                   randconfig-a001-20200427
 csky                 randconfig-a001-20200427
 xtensa               randconfig-a001-20200427
@@ -172,16 +166,16 @@ x86_64               randconfig-c002-20200427
 x86_64               randconfig-c001-20200427
 i386                 randconfig-c003-20200427
 x86_64               randconfig-c003-20200427
+i386                 randconfig-a003-20200427
+i386                 randconfig-a001-20200427
+i386                 randconfig-a002-20200427
+x86_64               randconfig-a002-20200427
 x86_64               randconfig-d001-20200427
 x86_64               randconfig-d002-20200427
 i386                 randconfig-d002-20200427
 i386                 randconfig-d001-20200427
 x86_64               randconfig-d003-20200427
 i386                 randconfig-d003-20200427
-i386                 randconfig-a003-20200427
-i386                 randconfig-a001-20200427
-i386                 randconfig-a002-20200427
-x86_64               randconfig-a002-20200427
 i386                 randconfig-e003-20200427
 x86_64               randconfig-e002-20200427
 x86_64               randconfig-e003-20200427
@@ -205,6 +199,7 @@ arc                  randconfig-a001-20200427
 riscv                            allyesconfig
 riscv                    nommu_virt_defconfig
 riscv                               defconfig
+riscv                            allmodconfig
 s390                       zfcpdump_defconfig
 s390                          debug_defconfig
 s390                             allyesconfig
