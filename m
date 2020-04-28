@@ -2,232 +2,105 @@ Return-Path: <SRS0=Nvft=6M=vger.kernel.org=linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.8 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
-	MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-	autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-9.6 required=3.0 tests=DKIM_INVALID,DKIM_SIGNED,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 23706C83003
-	for <linux-m68k@archiver.kernel.org>; Tue, 28 Apr 2020 02:01:55 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 6C605C83000
+	for <linux-m68k@archiver.kernel.org>; Tue, 28 Apr 2020 19:44:53 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 01B95206E2
-	for <linux-m68k@archiver.kernel.org>; Tue, 28 Apr 2020 02:01:55 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 3E1ED21973
+	for <linux-m68k@archiver.kernel.org>; Tue, 28 Apr 2020 19:44:53 +0000 (UTC)
+Authentication-Results: mail.kernel.org;
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="OqSmLHbu"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726233AbgD1CBy (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Mon, 27 Apr 2020 22:01:54 -0400
-Received: from mga14.intel.com ([192.55.52.115]:65000 "EHLO mga14.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726261AbgD1CBy (ORCPT <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Mon, 27 Apr 2020 22:01:54 -0400
-IronPort-SDR: 9Ai8y9HFHjaAGoT/tseu3iXAQG1uKsPID65cygKmtkL1CfmO1PasHmfoF/3NX3vn997+1Zlmzh
- bDHa9aDszhjw==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Apr 2020 19:01:53 -0700
-IronPort-SDR: K0g/uSy1tbj+LS0Th2vc6RUzp1uPFc6DTBE9VFnpFT6Gx8Ee1fuvzspToQPNuJ9um/Atnypa3x
- XXEFHNEOesTA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.73,326,1583222400"; 
-   d="scan'208";a="246350522"
-Received: from lkp-server01.sh.intel.com (HELO lkp-server01) ([10.239.97.150])
-  by orsmga007.jf.intel.com with ESMTP; 27 Apr 2020 19:01:52 -0700
-Received: from kbuild by lkp-server01 with local (Exim 4.89)
-        (envelope-from <lkp@intel.com>)
-        id 1jTFZH-0003wy-DM; Tue, 28 Apr 2020 10:01:51 +0800
-Date:   Tue, 28 Apr 2020 10:01:06 +0800
-From:   kbuild test robot <lkp@intel.com>
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     linux-m68k@lists.linux-m68k.org
-Subject: [m68k:master] BUILD SUCCESS
- e3b946742479a65abed71ec1d2e41cd0867de0c2
-Message-ID: <5ea78e62.LXWWOuh/c3tnPAtl%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+        id S1728991AbgD1Tox (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Tue, 28 Apr 2020 15:44:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55340 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1728392AbgD1Tow (ORCPT
+        <rfc822;linux-m68k@lists.linux-m68k.org>);
+        Tue, 28 Apr 2020 15:44:52 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 720B6C03C1AB;
+        Tue, 28 Apr 2020 12:44:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20170209; h=Content-Transfer-Encoding:
+        MIME-Version:References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender
+        :Reply-To:Content-Type:Content-ID:Content-Description;
+        bh=mmyTjSbJYQT19h+SSwsn2alKEzL4pRfFj3gXPGGOohs=; b=OqSmLHbudpXM8xgCNaG6O6ox90
+        yQDAbSGzjOpH8T7sm/U/yRXs1ByPwe6ZMACLgLSqU/aNQqJR8NVvLI3Ae4kC4EXO2m84MGnS/9GBm
+        NrEEHOLdyXMoRHBg4CKtnNAS1pVGqqaZNfwqVXO0imN1zlRKj9A00yNxHQSi4AW6aSbNo+3C0aqW3
+        NsWQATiJyBU3vUIXBtfIbj1bSI79cQpVYPBU2sLaK1vIA5s/coVOHjfef1CyMe2n4jtmfx8aXO6Ck
+        Ss0icyHuPUGhkN01lqiveXPfF98eSNYKiiJcIag1briN8yZ6pGYpsmqoa7T/O4tMguz9e1YHVxQT1
+        mGTspBVg==;
+Received: from willy by bombadil.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1jTW9y-0005uU-UU; Tue, 28 Apr 2020 19:44:50 +0000
+From:   Matthew Wilcox <willy@infradead.org>
+To:     linux-mm@kvack.org
+Cc:     "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        Will Deacon <will@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        linux-m68k@lists.linux-m68k.org
+Subject: [PATCH 2/7] mm: Move pt_mm within struct page
+Date:   Tue, 28 Apr 2020 12:44:44 -0700
+Message-Id: <20200428194449.22615-3-willy@infradead.org>
+X-Mailer: git-send-email 2.21.1
+In-Reply-To: <20200428194449.22615-1-willy@infradead.org>
+References: <20200428194449.22615-1-willy@infradead.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Sender: linux-m68k-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/geert/linux-m68k.git  master
-branch HEAD: e3b946742479a65abed71ec1d2e41cd0867de0c2  Merge tag 'v5.7-rc3'
+From: "Matthew Wilcox (Oracle)" <willy@infradead.org>
 
-elapsed time: 964m
+Instead of a per-arch word within struct page, use a formerly reserved
+word.  This word is shared with page->mapping, so it must be cleared
+before being freed as it is checked in free_pages().
 
-configs tested: 166
-configs skipped: 0
-
-The following configs have been built successfully.
-More configs may be tested in the coming days.
-
-arm64                            allyesconfig
-arm                              allyesconfig
-arm64                            allmodconfig
-arm                              allmodconfig
-arm64                             allnoconfig
-arm                               allnoconfig
-arm                           efm32_defconfig
-arm                         at91_dt_defconfig
-arm                        shmobile_defconfig
-arm64                               defconfig
-arm                          exynos_defconfig
-arm                        multi_v5_defconfig
-arm                           sunxi_defconfig
-arm                        multi_v7_defconfig
-sparc                            allyesconfig
-powerpc                             defconfig
-ia64                                defconfig
-i386                             alldefconfig
-h8300                    h8300h-sim_defconfig
-riscv                             allnoconfig
-riscv                          rv32_defconfig
-i386                                defconfig
-i386                              allnoconfig
-i386                             allyesconfig
-i386                              debian-10.3
-ia64                             allmodconfig
-ia64                              allnoconfig
-ia64                        generic_defconfig
-ia64                          tiger_defconfig
-ia64                         bigsur_defconfig
-ia64                             allyesconfig
-ia64                             alldefconfig
-nios2                         3c120_defconfig
-nios2                         10m50_defconfig
-c6x                        evmc6678_defconfig
-xtensa                          iss_defconfig
-c6x                              allyesconfig
-xtensa                       common_defconfig
-openrisc                 simple_smp_defconfig
-openrisc                    or1ksim_defconfig
-nds32                               defconfig
-nds32                             allnoconfig
-csky                                defconfig
-alpha                               defconfig
-h8300                       h8s-sim_defconfig
-h8300                     edosk2674_defconfig
-m68k                       m5475evb_defconfig
-m68k                             allmodconfig
-m68k                           sun3_defconfig
-m68k                          multi_defconfig
-arc                                 defconfig
-arc                              allyesconfig
-powerpc                       ppc64_defconfig
-powerpc                          rhel-kconfig
-microblaze                      mmu_defconfig
-microblaze                    nommu_defconfig
-powerpc                           allnoconfig
-mips                      fuloong2e_defconfig
-mips                      malta_kvm_defconfig
-mips                            ar7_defconfig
-mips                             allyesconfig
-mips                         64r6el_defconfig
-mips                              allnoconfig
-mips                           32r2_defconfig
-mips                             allmodconfig
-mips                malta_kvm_guest_defconfig
-mips                         tb0287_defconfig
-mips                       capcella_defconfig
-mips                           ip32_defconfig
-mips                  decstation_64_defconfig
-mips                      loongson3_defconfig
-mips                          ath79_defconfig
-mips                        bcm63xx_defconfig
-parisc                            allnoconfig
-parisc                generic-64bit_defconfig
-parisc                generic-32bit_defconfig
-parisc                           allyesconfig
-parisc                           allmodconfig
-parisc               randconfig-a001-20200427
-alpha                randconfig-a001-20200427
-mips                 randconfig-a001-20200427
-m68k                 randconfig-a001-20200427
-riscv                randconfig-a001-20200427
-nds32                randconfig-a001-20200427
-nios2                randconfig-a001-20200427
-c6x                  randconfig-a001-20200427
-h8300                randconfig-a001-20200427
-sparc64              randconfig-a001-20200427
-microblaze           randconfig-a001-20200427
-sh                   randconfig-a001-20200427
-csky                 randconfig-a001-20200427
-xtensa               randconfig-a001-20200427
-openrisc             randconfig-a001-20200427
-i386                 randconfig-b002-20200427
-x86_64               randconfig-b001-20200427
-i386                 randconfig-b001-20200427
-i386                 randconfig-b003-20200427
-x86_64               randconfig-b002-20200427
-x86_64               randconfig-b003-20200427
-i386                 randconfig-c002-20200427
-i386                 randconfig-c001-20200427
-x86_64               randconfig-c002-20200427
-x86_64               randconfig-c001-20200427
-i386                 randconfig-c003-20200427
-x86_64               randconfig-c003-20200427
-i386                 randconfig-a003-20200427
-i386                 randconfig-a001-20200427
-i386                 randconfig-a002-20200427
-x86_64               randconfig-a002-20200427
-x86_64               randconfig-d001-20200427
-x86_64               randconfig-d002-20200427
-i386                 randconfig-d002-20200427
-i386                 randconfig-d001-20200427
-x86_64               randconfig-d003-20200427
-i386                 randconfig-d003-20200427
-i386                 randconfig-e003-20200427
-x86_64               randconfig-e002-20200427
-x86_64               randconfig-e003-20200427
-i386                 randconfig-e002-20200427
-i386                 randconfig-e001-20200427
-x86_64               randconfig-e001-20200427
-i386                 randconfig-g003-20200427
-i386                 randconfig-g001-20200427
-x86_64               randconfig-g001-20200427
-i386                 randconfig-g002-20200427
-x86_64               randconfig-g003-20200427
-i386                 randconfig-h003-20200427
-x86_64               randconfig-h002-20200427
-i386                 randconfig-h002-20200427
-i386                 randconfig-h001-20200427
-sparc                randconfig-a001-20200427
-ia64                 randconfig-a001-20200427
-arm                  randconfig-a001-20200427
-arm64                randconfig-a001-20200427
-arc                  randconfig-a001-20200427
-riscv                            allyesconfig
-riscv                    nommu_virt_defconfig
-riscv                               defconfig
-riscv                            allmodconfig
-s390                       zfcpdump_defconfig
-s390                          debug_defconfig
-s390                             allyesconfig
-s390                              allnoconfig
-s390                             allmodconfig
-s390                             alldefconfig
-s390                                defconfig
-sh                          rsk7269_defconfig
-sh                               allmodconfig
-sh                            titan_defconfig
-sh                  sh7785lcr_32bit_defconfig
-sh                                allnoconfig
-sparc                               defconfig
-sparc64                             defconfig
-sparc64                           allnoconfig
-sparc64                          allyesconfig
-sparc64                          allmodconfig
-um                           x86_64_defconfig
-um                             i386_defconfig
-um                                  defconfig
-x86_64                                   rhel
-x86_64                               rhel-7.6
-x86_64                    rhel-7.6-kselftests
-x86_64                         rhel-7.2-clear
-x86_64                                    lkp
-x86_64                              fedora-25
-x86_64                                  kexec
-
+Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
 ---
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+ arch/x86/mm/pgtable.c    | 1 +
+ include/linux/mm_types.h | 7 ++-----
+ 2 files changed, 3 insertions(+), 5 deletions(-)
+
+diff --git a/arch/x86/mm/pgtable.c b/arch/x86/mm/pgtable.c
+index 7bd2c3a52297..f5f46737aea0 100644
+--- a/arch/x86/mm/pgtable.c
++++ b/arch/x86/mm/pgtable.c
+@@ -95,6 +95,7 @@ static inline void pgd_list_del(pgd_t *pgd)
+ 	struct page *page = virt_to_page(pgd);
+ 
+ 	list_del(&page->lru);
++	page->pt_mm = NULL;
+ }
+ 
+ #define UNSHARED_PTRS_PER_PGD				\
+diff --git a/include/linux/mm_types.h b/include/linux/mm_types.h
+index 9bb34e2cd5a5..7efa12f4626f 100644
+--- a/include/linux/mm_types.h
++++ b/include/linux/mm_types.h
+@@ -149,11 +149,8 @@ struct page {
+ 					pgtable_t pmd_huge_pte;
+ 				};
+ 			};
+-			unsigned long _pt_pad_2;	/* mapping */
+-			union {
+-				struct mm_struct *pt_mm; /* x86 pgds only */
+-				atomic_t pt_frag_refcount; /* powerpc */
+-			};
++			struct mm_struct *pt_mm;
++			atomic_t pt_frag_refcount; /* powerpc */
+ #if ALLOC_SPLIT_PTLOCKS
+ 			spinlock_t *ptl;
+ #else
+-- 
+2.26.2
+
