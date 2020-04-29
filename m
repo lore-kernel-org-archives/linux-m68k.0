@@ -2,86 +2,102 @@ Return-Path: <SRS0=uzpD=6N=vger.kernel.org=linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-0.6 required=3.0 tests=DKIM_INVALID,DKIM_SIGNED,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-3.8 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
+	MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
+	autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 1180EC83006
-	for <linux-m68k@archiver.kernel.org>; Wed, 29 Apr 2020 01:51:31 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id BC6B6C83003
+	for <linux-m68k@archiver.kernel.org>; Wed, 29 Apr 2020 07:34:15 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id CE16E2073E
-	for <linux-m68k@archiver.kernel.org>; Wed, 29 Apr 2020 01:51:30 +0000 (UTC)
-Authentication-Results: mail.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="Ul2ClHCm"
+	by mail.kernel.org (Postfix) with ESMTP id 9ABB3206D9
+	for <linux-m68k@archiver.kernel.org>; Wed, 29 Apr 2020 07:34:15 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726426AbgD2Bva (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Tue, 28 Apr 2020 21:51:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56130 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726158AbgD2Bva (ORCPT
+        id S1726420AbgD2HeP (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Wed, 29 Apr 2020 03:34:15 -0400
+Received: from mail-oi1-f196.google.com ([209.85.167.196]:43776 "EHLO
+        mail-oi1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726355AbgD2HeP (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Tue, 28 Apr 2020 21:51:30 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F324C03C1AC;
-        Tue, 28 Apr 2020 18:51:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20170209; h=In-Reply-To:Content-Type:MIME-Version
-        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=WbbJxxgU3/2bFydTDSvswBZ7GGGONTFQzERhB4EnAUc=; b=Ul2ClHCmMLDUyloGhXGz54hFzD
-        fMR+V0dNgvkNCYvShBkoTv6vBoaB8q70JyqyVLyqXTRrRx8yre3Sj8KAOfTYayVF+xLVzJwcsYB0s
-        hjurit9iWN4a5sfT/dChjGHZuP5ERi+QmDTiiNv0kCZTz8PZM16OX32LiQsN4Em+etdl3Yrc30Yxw
-        g/FLckZ/pLl7ZUy6rZCNq18s1PAAYOaxZB8Pr4KVT3AKuNvF9uNXhTJRGRiSx6zGLAYTsDr4gk9N0
-        skWVoLsycEX4MKtlyewMifsVXMO+sT7X1qmpJQJKOt9VDpJ2AVrLCslMj+PaSe2mIz9EdWa+BzpBC
-        gssJLDhA==;
-Received: from willy by bombadil.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1jTbsk-000812-Hw; Wed, 29 Apr 2020 01:51:26 +0000
-Date:   Tue, 28 Apr 2020 18:51:26 -0700
-From:   Matthew Wilcox <willy@infradead.org>
-To:     "Kirill A. Shutemov" <kirill@shutemov.name>
-Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
+        Wed, 29 Apr 2020 03:34:15 -0400
+Received: by mail-oi1-f196.google.com with SMTP id j16so956311oih.10
+        for <linux-m68k@lists.linux-m68k.org>; Wed, 29 Apr 2020 00:34:14 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=SyWquW6C3h9yYRPnL8ZX6mVqONgOMsOlS/nbLkzCvR8=;
+        b=Q7b1WloH3BNWLKrfpG7q1BWRxDDIlc4cnuGijD2OuPAT89XUyE0HqkTLAQSs0yHVY6
+         IVIg8IbL+mSskV/zWYRVBPLgAKGJba/pnwHGG38l6HYjhaOZd9rQT3Jb9V+ycK4Cl4OG
+         70UzW1J4NNlhJXUP4KHEYNG6+9wZNc+T7NNhCdjvuBypQ2tVG1QuNf3bH0mGvuKgxrqM
+         F1oruI9MJvCTy5HVDuDc9bA7UqFInRIi5T14xfXW6vgtN8sVmuaUqGhy3B8G8yR3yWKm
+         VftCjDiWrdFBATEyz80q3KhjUPKK4z53ldthPzlD+qlV/qTdeGNlOmZC70MtQXortLsY
+         1daw==
+X-Gm-Message-State: AGi0Pub2a345ncbkPH7oYCzujCMVdUHDoOAQO8g/+OrMriSDMEVrjHCP
+        74cEVjU9ILtTdu+n5djhXgGw+/6Oxar+VmQy0aY=
+X-Google-Smtp-Source: APiQypJAsZR6cJVnPhd52DhYQokiZWeX1PxL/6m2Vvtp1dgHuL2QQU2M5utJVEIEaKuPsXF6mplj99rnUrUZngmlKtw=
+X-Received: by 2002:aca:d50f:: with SMTP id m15mr810760oig.54.1588145654121;
+ Wed, 29 Apr 2020 00:34:14 -0700 (PDT)
+MIME-Version: 1.0
+References: <20200428194449.22615-1-willy@infradead.org> <20200428194449.22615-3-willy@infradead.org>
+In-Reply-To: <20200428194449.22615-3-willy@infradead.org>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Wed, 29 Apr 2020 09:34:02 +0200
+Message-ID: <CAMuHMdUw38VD8WJe5Zbaudnee74ZgLwbfhRwU8Pi9ALitre+_Q@mail.gmail.com>
+Subject: Re: [PATCH 2/7] mm: Move pt_mm within struct page
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     Linux MM <linux-mm@kvack.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
         Will Deacon <will@kernel.org>,
         Catalin Marinas <catalin.marinas@arm.com>,
         Russell King <linux@armlinux.org.uk>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        linux-m68k@lists.linux-m68k.org
-Subject: Re: [PATCH 0/7] Record the mm_struct in the page table pages
-Message-ID: <20200429015126.GP29705@bombadil.infradead.org>
-References: <20200428194449.22615-1-willy@infradead.org>
- <20200429002624.qkhb362moj6v3vtw@box>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200429002624.qkhb362moj6v3vtw@box>
+        linux-m68k <linux-m68k@lists.linux-m68k.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-m68k-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-On Wed, Apr 29, 2020 at 03:26:24AM +0300, Kirill A. Shutemov wrote:
-> On Tue, Apr 28, 2020 at 12:44:42PM -0700, Matthew Wilcox wrote:
-> > From: "Matthew Wilcox (Oracle)" <willy@infradead.org>
-> > 
-> > Pages which are in use as page tables have some space unused in struct
-> > page.  It would be handy to have a pointer to the struct mm_struct that
-> > they belong to so that we can handle uncorrectable errors in page tables
-> > more gracefully.  There are a few other things we could use it for too,
-> > such as checking that the page table entry actually belongs to the task
-> > we think it ought to.  This patch series does none of that, but does
-> > lay the groundwork for it.
-> > 
-> > Matthew Wilcox (Oracle) (7):
-> 
-> How does it work for kernel side of virtual address space?
+Hi Matthew,
 
-init_mm
+On Tue, Apr 28, 2020 at 9:44 PM Matthew Wilcox <willy@infradead.org> wrote:
+> From: "Matthew Wilcox (Oracle)" <willy@infradead.org>
+> Instead of a per-arch word within struct page, use a formerly reserved
+> word.  This word is shared with page->mapping, so it must be cleared
+> before being freed as it is checked in free_pages().
+>
+> Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
 
-> And your employer may be interested in semantics around
-> CONFIG_ARCH_WANT_HUGE_PMD_SHARE :P
+Thanks for your patch!
 
-I was thinking about that.  Right now, it's only useful for debugging
-purposes (as you point out in a later email).  I think it's OK if shared
-PMDs aren't supported as well as regular PTEs, just because there are
-so few of them that uncorrectable errors are less likely to strike in
-those pages.
+> --- a/include/linux/mm_types.h
+> +++ b/include/linux/mm_types.h
+> @@ -149,11 +149,8 @@ struct page {
+>                                         pgtable_t pmd_huge_pte;
+>                                 };
+>                         };
+> -                       unsigned long _pt_pad_2;        /* mapping */
+> -                       union {
+> -                               struct mm_struct *pt_mm; /* x86 pgds only */
+> -                               atomic_t pt_frag_refcount; /* powerpc */
+> -                       };
+> +                       struct mm_struct *pt_mm;
+> +                       atomic_t pt_frag_refcount; /* powerpc */
+
+So here is now an implicit hole on 64-bit platforms, right?
+Do we have any where alignof(long) != 8?
+
+>  #if ALLOC_SPLIT_PTLOCKS
+>                         spinlock_t *ptl;
+>  #else
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
+-- 
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
