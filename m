@@ -1,218 +1,299 @@
-Return-Path: <SRS0=uzpD=6N=vger.kernel.org=linux-m68k-owner@kernel.org>
+Return-Path: <SRS0=UvUZ=6P=vger.kernel.org=linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.3 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,
-	USER_AGENT_SANE_1 autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-6.9 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,UNWANTED_LANGUAGE_BODY,URIBL_BLOCKED,USER_AGENT_GIT
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 8B1B2C83000
-	for <linux-m68k@archiver.kernel.org>; Wed, 29 Apr 2020 18:30:48 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7D7A2C47254
+	for <linux-m68k@archiver.kernel.org>; Fri,  1 May 2020 23:54:39 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 74F272076B
-	for <linux-m68k@archiver.kernel.org>; Wed, 29 Apr 2020 18:30:48 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 528B8208DB
+	for <linux-m68k@archiver.kernel.org>; Fri,  1 May 2020 23:54:39 +0000 (UTC)
+Authentication-Results: mail.kernel.org;
+	dkim=pass (2048-bit key) header.d=timesys-com.20150623.gappssmtp.com header.i=@timesys-com.20150623.gappssmtp.com header.b="Qa4iw/Lx"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726618AbgD2Sas (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Wed, 29 Apr 2020 14:30:48 -0400
-Received: from mga05.intel.com ([192.55.52.43]:4122 "EHLO mga05.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726456AbgD2Sas (ORCPT <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Wed, 29 Apr 2020 14:30:48 -0400
-IronPort-SDR: kJVZNV+2zkdsKXqFgrYTmaF8NEY7ZgQct+IU6I7S3ZH10itFGIGLdBsyQQXc/SAVGyXtbnIE6o
- Fd8Sd4guXa9w==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Apr 2020 11:29:51 -0700
-IronPort-SDR: oML/I7b8KBGVfCUfb08bypJJC5w9NogHC19eoyXv6UC9MjcNOe479FLrDHSMdHe2ortzeOaSHp
- rWVInb7F2ncw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.73,332,1583222400"; 
-   d="scan'208";a="367889577"
-Received: from iweiny-desk2.sc.intel.com ([10.3.52.147])
-  by fmsmga001.fm.intel.com with ESMTP; 29 Apr 2020 11:29:51 -0700
-Date:   Wed, 29 Apr 2020 11:29:51 -0700
-From:   Ira Weiny <ira.weiny@intel.com>
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        Will Deacon <will@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        linux-m68k@lists.linux-m68k.org
-Subject: Re: [PATCH 1/7] mm: Document x86 uses a linked list of pgds
-Message-ID: <20200429182951.GA411423@iweiny-DESK2.sc.intel.com>
-References: <20200428194449.22615-1-willy@infradead.org>
- <20200428194449.22615-2-willy@infradead.org>
- <20200428214109.GB406458@iweiny-DESK2.sc.intel.com>
- <20200428225251.GM29705@bombadil.infradead.org>
+        id S1726565AbgEAXyj (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Fri, 1 May 2020 19:54:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36078 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726333AbgEAXyi (ORCPT
+        <rfc822;linux-m68k@vger.kernel.org>); Fri, 1 May 2020 19:54:38 -0400
+Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 29930C061A0E
+        for <linux-m68k@vger.kernel.org>; Fri,  1 May 2020 16:54:38 -0700 (PDT)
+Received: by mail-wr1-x443.google.com with SMTP id s8so3395949wrt.9
+        for <linux-m68k@vger.kernel.org>; Fri, 01 May 2020 16:54:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=timesys-com.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=vfX7XotTRbRZpU8qW6O6HOsTohRIT4UKSMXcugy5qWQ=;
+        b=Qa4iw/LxlEN1ZQnw94k6aygbsApt+5oy2zEsvEzWejoMJNJ9l/UIonwrbDpk52dq4X
+         M+uiSqfm6eeRvJCBEyzW6CPIQfP/POj1nB88vHeytjBuj3bAazfJNqzILZ320QZbB004
+         aYWiGab+wotQT1bhL5a//q9f4U8OnGFsOd4F1ZPx5u2jSPbwNKRVaOR3PChuiyDOuDWW
+         OpRUeBozviksY1asD3uiZdJqej9XW+MgJtg/kQMXefRUkeolJhXFn4m7a/7712Iuxq2G
+         +5br+V4N2vn/DcZ3PN7yfHNILvunt9ceRgcJLhA5T/nnkdhgpqGukTFW6EW9rBa6lnQy
+         HhVQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=vfX7XotTRbRZpU8qW6O6HOsTohRIT4UKSMXcugy5qWQ=;
+        b=rDFdjswQw18ycvOLm9DYQok+EO22UBpjsfwUB+jV0ghrkLCO88wo5aB98JimlqK+lz
+         ywOP9h5JF0aLVJLiwuPq7zkQm2RnDyZvfhxBjC80e8hz4y4Y1Kmn/x6mQt/zuhwTCVwP
+         R2LuI8NTO9GlRMSJ+Svka7FsSyMeDjDGQOe46MkXtoCJPWvUFpgNn5l0drjYc76Y5RAb
+         rQpS17MVinXmBa2R9RrJaZ4C5KOz8EQihdj0GoXj1KJ/oXq7vIngHzJkf/QlANPk+cxy
+         7CaASFMDBEYIhuNJuTKAIYzeRKpZ1jQOgM+Ek2+ak7vP0cDwLic0oJdTKALAlJpHe9CV
+         z/nQ==
+X-Gm-Message-State: AGi0PuY/wfJMYyReRvtTrJWUeqzyE0Hbe/jsH8GiDYmQV3xy9xEH072c
+        b923LTA29gTz/Q7AxJiJrL4vTw==
+X-Google-Smtp-Source: APiQypLhq5mv4xFO/++RArfBBACcwgbhkakj7lSQllPofKe/pwiueZnYbdKvFLg7UaQdrc13Nrd52A==
+X-Received: by 2002:adf:f282:: with SMTP id k2mr6172310wro.133.1588377276656;
+        Fri, 01 May 2020 16:54:36 -0700 (PDT)
+Received: from localhost.localdomain (host142-13-dynamic.2-87-r.retail.telecomitalia.it. [87.2.13.142])
+        by smtp.gmail.com with ESMTPSA id r20sm1495155wmh.26.2020.05.01.16.54.35
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 01 May 2020 16:54:35 -0700 (PDT)
+From:   Angelo Dureghello <angelo.dureghello@timesys.com>
+To:     adrian.hunter@intel.com
+Cc:     linux-mmc@vger.kernel.org, linux-m68k@vger.kernel.org,
+        Angelo Dureghello <angelo.dureghello@timesys.com>
+Subject: [PATCH v3 1/3] m68k: mcf5441x: add support for esdhc mmc controller
+Date:   Sat,  2 May 2020 01:59:05 +0200
+Message-Id: <20200501235907.3978-1-angelo.dureghello@timesys.com>
+X-Mailer: git-send-email 2.26.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200428225251.GM29705@bombadil.infradead.org>
-User-Agent: Mutt/1.11.1 (2018-12-01)
+Content-Transfer-Encoding: 8bit
 Sender: linux-m68k-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-On Tue, Apr 28, 2020 at 03:52:51PM -0700, Matthew Wilcox wrote:
-> On Tue, Apr 28, 2020 at 02:41:09PM -0700, Ira Weiny wrote:
-> > On Tue, Apr 28, 2020 at 12:44:43PM -0700, Matthew Wilcox wrote:
-> > > x86 uses page->lru of the pages used for pgds, but that's not immediately
-> > > obvious to anyone looking to make changes.  Add a struct list_head to
-> > > the union so it's clearly in use for pgds.
-> > 
-> > Shouldn't pgd_list_{add,del}() use this list head variable instead of lru to
-> > complete the documentation?
-> > 
-> > Probably the list iteration loops arch/x86/* as well?
-> 
-> Yes, but I felt that was out of scope for this patchset.  Untangling the
-> uses of struct page is a long and messy business; if we have to fix
-> everything at once, we'll never get anywhere.  There's also the slab
-> users of page->lru instead of page->slab_list.
+Add support for sdhci-edshc mmc controller.
 
-But doesn't changing the use of lru with this new name in the code also help to
-identify the users?
-
-> 
-> What I actually want to get to is:
-> 
-> struct page {
-> 	unsigned long flags;
-> 	union {
-> 		struct file_page file;
-> 		struct anon_page anon;
-> 		struct pt_page pt;
-> 		struct slab_page slab;
-> 		struct tail_page tail;
-> 		struct rcu_head rcu;
-> 	};
-> 	union {
-> 		atomic_t _mapcount;
-> 		...
-> 	};
-> 	atomic_t refcount;
-> 	...
-> };
-> 
-> and then we can refer to page->pt.list and so on.
-
-Then later on we know exactly where page->pt.list needs to be inserted.
-
-I'm not opposed to the patch as it is.  But as someone newer it seems like the
-following documents the use of lru as much if not more.
-
-Compile tested only but feel free to merge if you like.
-Ira
-
-From 63fa92a940fa17567ab45a64b7ac058d4d41a54d Mon Sep 17 00:00:00 2001
-From: Ira Weiny <ira.weiny@intel.com>
-Date: Wed, 29 Apr 2020 11:10:59 -0700
-Subject: [PATCH] mm: Complete documenting the use of lru for pgd_list
-
-Signed-off-by: Ira Weiny <ira.weiny@intel.com>
+Signed-off-by: Angelo Dureghello <angelo.dureghello@timesys.com>
 ---
- arch/x86/mm/fault.c          | 2 +-
- arch/x86/mm/init_64.c        | 4 ++--
- arch/x86/mm/pat/set_memory.c | 2 +-
- arch/x86/mm/pgtable.c        | 4 ++--
- arch/x86/xen/mmu_pv.c        | 4 ++--
- 5 files changed, 8 insertions(+), 8 deletions(-)
+Changes for v3:
+- removed volatile cast from clk.c
+---
+ arch/m68k/coldfire/clk.c                    | 15 ++++++++++
+ arch/m68k/coldfire/device.c                 | 33 +++++++++++++++++++--
+ arch/m68k/coldfire/m5441x.c                 | 12 +++++++-
+ arch/m68k/include/asm/m5441xsim.h           | 19 ++++++++++++
+ arch/m68k/include/asm/mcfclk.h              |  2 ++
+ include/linux/platform_data/mmc-esdhc-mcf.h | 17 +++++++++++
+ 6 files changed, 95 insertions(+), 3 deletions(-)
+ create mode 100644 include/linux/platform_data/mmc-esdhc-mcf.h
 
-diff --git a/arch/x86/mm/fault.c b/arch/x86/mm/fault.c
-index a51df516b87b..f07d477f8787 100644
---- a/arch/x86/mm/fault.c
-+++ b/arch/x86/mm/fault.c
-@@ -203,7 +203,7 @@ static void vmalloc_sync(void)
- 		struct page *page;
+diff --git a/arch/m68k/coldfire/clk.c b/arch/m68k/coldfire/clk.c
+index 7bc666e482eb..8d048a72e173 100644
+--- a/arch/m68k/coldfire/clk.c
++++ b/arch/m68k/coldfire/clk.c
+@@ -73,6 +73,21 @@ struct clk_ops clk_ops1 = {
+ #endif /* MCFPM_PPMCR1 */
+ #endif /* MCFPM_PPMCR0 */
  
- 		spin_lock(&pgd_lock);
--		list_for_each_entry(page, &pgd_list, lru) {
-+		list_for_each_entry(page, &pgd_list, pgd_list) {
- 			spinlock_t *pgt_lock;
- 
- 			/* the pgt_lock only for Xen */
-diff --git a/arch/x86/mm/init_64.c b/arch/x86/mm/init_64.c
-index 3b289c2f75cd..e2ae3618a65d 100644
---- a/arch/x86/mm/init_64.c
-+++ b/arch/x86/mm/init_64.c
-@@ -140,7 +140,7 @@ static void sync_global_pgds_l5(unsigned long start, unsigned long end)
- 			continue;
- 
- 		spin_lock(&pgd_lock);
--		list_for_each_entry(page, &pgd_list, lru) {
-+		list_for_each_entry(page, &pgd_list, pgd_list) {
- 			pgd_t *pgd;
- 			spinlock_t *pgt_lock;
- 
-@@ -181,7 +181,7 @@ static void sync_global_pgds_l4(unsigned long start, unsigned long end)
- 			continue;
- 
- 		spin_lock(&pgd_lock);
--		list_for_each_entry(page, &pgd_list, lru) {
-+		list_for_each_entry(page, &pgd_list, pgd_list) {
- 			pgd_t *pgd;
- 			p4d_t *p4d;
- 			spinlock_t *pgt_lock;
-diff --git a/arch/x86/mm/pat/set_memory.c b/arch/x86/mm/pat/set_memory.c
-index 59eca6a94ce7..a1edfc593141 100644
---- a/arch/x86/mm/pat/set_memory.c
-+++ b/arch/x86/mm/pat/set_memory.c
-@@ -723,7 +723,7 @@ static void __set_pmd_pte(pte_t *kpte, unsigned long address, pte_t pte)
- 	if (!SHARED_KERNEL_PMD) {
- 		struct page *page;
- 
--		list_for_each_entry(page, &pgd_list, lru) {
-+		list_for_each_entry(page, &pgd_list, pgd_list) {
- 			pgd_t *pgd;
- 			p4d_t *p4d;
- 			pud_t *pud;
-diff --git a/arch/x86/mm/pgtable.c b/arch/x86/mm/pgtable.c
-index 8f4255662c5a..28ea8cc3f3a2 100644
---- a/arch/x86/mm/pgtable.c
-+++ b/arch/x86/mm/pgtable.c
-@@ -87,14 +87,14 @@ static inline void pgd_list_add(pgd_t *pgd)
++static void __clk_enable2(struct clk *clk)
++{
++	__set_bit(clk->slot, MCFSDHC_CLK);
++}
++
++static void __clk_disable2(struct clk *clk)
++{
++	__clear_bit(clk->slot, MCFSDHC_CLK);
++}
++
++struct clk_ops clk_ops2 = {
++	.enable		= __clk_enable2,
++	.disable	= __clk_disable2,
++};
++
+ struct clk *clk_get(struct device *dev, const char *id)
  {
- 	struct page *page = virt_to_page(pgd);
+ 	const char *clk_name = dev ? dev_name(dev) : id ? id : NULL;
+diff --git a/arch/m68k/coldfire/device.c b/arch/m68k/coldfire/device.c
+index b4103b6bfdeb..9ef4ec0aea00 100644
+--- a/arch/m68k/coldfire/device.c
++++ b/arch/m68k/coldfire/device.c
+@@ -22,6 +22,7 @@
+ #include <asm/mcfqspi.h>
+ #include <linux/platform_data/edma.h>
+ #include <linux/platform_data/dma-mcf-edma.h>
++#include <linux/platform_data/mmc-esdhc-mcf.h>
  
--	list_add(&page->lru, &pgd_list);
-+	list_add(&page->pgd_list, &pgd_list);
+ /*
+  *	All current ColdFire parts contain from 2, 3, 4 or 10 UARTS.
+@@ -551,9 +552,35 @@ static struct platform_device mcf_edma = {
+ 		.platform_data = &mcf_edma_data,
+ 	}
+ };
+-
+ #endif /* IS_ENABLED(CONFIG_MCF_EDMA) */
+ 
++#if IS_ENABLED(CONFIG_MMC)
++static struct mcf_esdhc_platform_data mcf_esdhc_data = {
++	.max_bus_width = 4,
++	.cd_type = ESDHC_CD_NONE,
++};
++
++static struct resource mcf_esdhc_resources[] = {
++	{
++		.start = MCFSDHC_BASE,
++		.end = MCFSDHC_BASE + MCFSDHC_SIZE - 1,
++		.flags = IORESOURCE_MEM,
++	}, {
++		.start = MCF_IRQ_SDHC,
++		.end = MCF_IRQ_SDHC,
++		.flags = IORESOURCE_IRQ,
++	},
++};
++
++static struct platform_device mcf_esdhc = {
++	.name			= "sdhci-esdhc-mcf",
++	.id			= 0,
++	.num_resources		= ARRAY_SIZE(mcf_esdhc_resources),
++	.resource		= mcf_esdhc_resources,
++	.dev.platform_data	= &mcf_esdhc_data,
++};
++#endif /* IS_ENABLED(CONFIG_MMC) */
++
+ static struct platform_device *mcf_devices[] __initdata = {
+ 	&mcf_uart,
+ #if IS_ENABLED(CONFIG_FEC)
+@@ -586,6 +613,9 @@ static struct platform_device *mcf_devices[] __initdata = {
+ #if IS_ENABLED(CONFIG_MCF_EDMA)
+ 	&mcf_edma,
+ #endif
++#if IS_ENABLED(CONFIG_MMC)
++	&mcf_esdhc,
++#endif
+ };
+ 
+ /*
+@@ -614,4 +644,3 @@ static int __init mcf_init_devices(void)
  }
  
- static inline void pgd_list_del(pgd_t *pgd)
- {
- 	struct page *page = virt_to_page(pgd);
+ arch_initcall(mcf_init_devices);
+-
+diff --git a/arch/m68k/coldfire/m5441x.c b/arch/m68k/coldfire/m5441x.c
+index 5bd24c9b865d..ffa02de1a3fb 100644
+--- a/arch/m68k/coldfire/m5441x.c
++++ b/arch/m68k/coldfire/m5441x.c
+@@ -52,7 +52,7 @@ DEFINE_CLK(0, "mcfssi.0", 47, MCF_CLK);
+ DEFINE_CLK(0, "pll.0", 48, MCF_CLK);
+ DEFINE_CLK(0, "mcfrng.0", 49, MCF_CLK);
+ DEFINE_CLK(0, "mcfssi.1", 50, MCF_CLK);
+-DEFINE_CLK(0, "mcfsdhc.0", 51, MCF_CLK);
++DEFINE_CLK(0, "sdhci-esdhc-mcf.0", 51, MCF_CLK);
+ DEFINE_CLK(0, "enet-fec.0", 53, MCF_CLK);
+ DEFINE_CLK(0, "enet-fec.1", 54, MCF_CLK);
+ DEFINE_CLK(0, "switch.0", 55, MCF_CLK);
+@@ -74,6 +74,10 @@ DEFINE_CLK(1, "mcfpwm.0", 34, MCF_BUSCLK);
+ DEFINE_CLK(1, "sys.0", 36, MCF_BUSCLK);
+ DEFINE_CLK(1, "gpio.0", 37, MCF_BUSCLK);
  
--	list_del(&page->lru);
-+	list_del(&page->pgd_list);
- 	page->pt_mm = NULL;
- }
++DEFINE_CLK(2, "ipg.0", 0, MCF_CLK);
++DEFINE_CLK(2, "ahb.0", 1, MCF_CLK);
++DEFINE_CLK(2, "per.0", 2, MCF_CLK);
++
+ struct clk *mcf_clks[] = {
+ 	&__clk_0_2,
+ 	&__clk_0_8,
+@@ -131,6 +135,11 @@ struct clk *mcf_clks[] = {
+ 	&__clk_1_34,
+ 	&__clk_1_36,
+ 	&__clk_1_37,
++
++	&__clk_2_0,
++	&__clk_2_1,
++	&__clk_2_2,
++
+ 	NULL,
+ };
  
-diff --git a/arch/x86/xen/mmu_pv.c b/arch/x86/xen/mmu_pv.c
-index bbba8b17829a..df6592be3208 100644
---- a/arch/x86/xen/mmu_pv.c
-+++ b/arch/x86/xen/mmu_pv.c
-@@ -844,7 +844,7 @@ void xen_mm_pin_all(void)
+@@ -151,6 +160,7 @@ static struct clk * const enable_clks[] __initconst = {
+ 	&__clk_0_33, /* pit.1 */
+ 	&__clk_0_37, /* eport */
+ 	&__clk_0_48, /* pll */
++	&__clk_0_51, /* esdhc */
  
- 	spin_lock(&pgd_lock);
+ 	&__clk_1_36, /* CCM/reset module/Power management */
+ 	&__clk_1_37, /* gpio */
+diff --git a/arch/m68k/include/asm/m5441xsim.h b/arch/m68k/include/asm/m5441xsim.h
+index 4892f314ff38..750555a6fa87 100644
+--- a/arch/m68k/include/asm/m5441xsim.h
++++ b/arch/m68k/include/asm/m5441xsim.h
+@@ -278,6 +278,17 @@
+ #define MCFGPIO_IRQ_VECBASE	(MCFINT_VECBASE - MCFGPIO_IRQ_MIN)
+ #define MCFGPIO_PIN_MAX		87
  
--	list_for_each_entry(page, &pgd_list, lru) {
-+	list_for_each_entry(page, &pgd_list, pgd_list) {
- 		if (!PagePinned(page)) {
- 			__xen_pgd_pin(&init_mm, (pgd_t *)page_address(page));
- 			SetPageSavePinned(page);
-@@ -963,7 +963,7 @@ void xen_mm_unpin_all(void)
++/*********************************************************************
++ *
++ * Phase Locked Loop (PLL)
++ *
++ *********************************************************************/
++
++/* Register read/write macros */
++#define MCF_PLL_CR		0xFC0C0000
++#define MCF_PLL_DR		0xFC0C0004
++#define MCF_PLL_SR		0xFC0C0008
++
+ /*
+  *  DSPI module.
+  */
+@@ -298,5 +309,13 @@
+ #define MCFEDMA_IRQ_INTR16	(MCFINT1_VECBASE + MCFEDMA_EDMA_INTR16)
+ #define MCFEDMA_IRQ_INTR56	(MCFINT2_VECBASE + MCFEDMA_EDMA_INTR56)
+ #define MCFEDMA_IRQ_ERR	(MCFINT0_VECBASE + MCFINT0_EDMA_ERR)
++/*
++ *  esdhc module.
++ */
++#define MCFSDHC_BASE		0xfc0cc000
++#define MCFSDHC_SIZE		256
++#define MCFINT2_SDHC		31
++#define MCF_IRQ_SDHC		(MCFINT2_VECBASE + MCFINT2_SDHC)
++#define MCFSDHC_CLK		(MCFSDHC_BASE + 0x2c)
  
- 	spin_lock(&pgd_lock);
+ #endif /* m5441xsim_h */
+diff --git a/arch/m68k/include/asm/mcfclk.h b/arch/m68k/include/asm/mcfclk.h
+index 0aca504fae31..722627e06d66 100644
+--- a/arch/m68k/include/asm/mcfclk.h
++++ b/arch/m68k/include/asm/mcfclk.h
+@@ -30,6 +30,8 @@ extern struct clk_ops clk_ops0;
+ extern struct clk_ops clk_ops1;
+ #endif /* MCFPM_PPMCR1 */
  
--	list_for_each_entry(page, &pgd_list, lru) {
-+	list_for_each_entry(page, &pgd_list, pgd_list) {
- 		if (PageSavePinned(page)) {
- 			BUG_ON(!PagePinned(page));
- 			__xen_pgd_unpin(&init_mm, (pgd_t *)page_address(page));
++extern struct clk_ops clk_ops2;
++
+ #define DEFINE_CLK(clk_bank, clk_name, clk_slot, clk_rate) \
+ static struct clk __clk_##clk_bank##_##clk_slot = { \
+ 	.name = clk_name, \
+diff --git a/include/linux/platform_data/mmc-esdhc-mcf.h b/include/linux/platform_data/mmc-esdhc-mcf.h
+new file mode 100644
+index 000000000000..85cb786a62fe
+--- /dev/null
++++ b/include/linux/platform_data/mmc-esdhc-mcf.h
+@@ -0,0 +1,17 @@
++/* SPDX-License-Identifier: GPL-2.0 */
++
++#ifndef __LINUX_PLATFORM_DATA_MCF_ESDHC_H__
++#define __LINUX_PLATFORM_DATA_MCF_ESDHC_H__
++
++enum cd_types {
++	ESDHC_CD_NONE,		/* no CD, neither controller nor gpio */
++	ESDHC_CD_CONTROLLER,	/* mmc controller internal CD */
++	ESDHC_CD_PERMANENT,	/* no CD, card permanently wired to host */
++};
++
++struct mcf_esdhc_platform_data {
++	int max_bus_width;
++	int cd_type;
++};
++
++#endif /* __LINUX_PLATFORM_DATA_MCF_ESDHC_H__ */
 -- 
-2.25.1
+2.26.0
 
