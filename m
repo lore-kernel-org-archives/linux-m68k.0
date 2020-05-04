@@ -6,41 +6,41 @@ X-Spam-Status: No, score=-5.8 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
 	MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A3B4FC47247
-	for <linux-m68k@archiver.kernel.org>; Mon,  4 May 2020 22:09:20 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 1F32AC47258
+	for <linux-m68k@archiver.kernel.org>; Mon,  4 May 2020 22:09:22 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 8D72820746
-	for <linux-m68k@archiver.kernel.org>; Mon,  4 May 2020 22:09:20 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 0518820735
+	for <linux-m68k@archiver.kernel.org>; Mon,  4 May 2020 22:09:22 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728125AbgEDWJU (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Mon, 4 May 2020 18:09:20 -0400
-Received: from mga05.intel.com ([192.55.52.43]:42722 "EHLO mga05.intel.com"
+        id S1728128AbgEDWJV (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Mon, 4 May 2020 18:09:21 -0400
+Received: from mga03.intel.com ([134.134.136.65]:65470 "EHLO mga03.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727903AbgEDWJT (ORCPT <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Mon, 4 May 2020 18:09:19 -0400
-IronPort-SDR: EvZnJgZPb8d7Sbu7KwRaH0B6P2Fo0Mw2+finJ1yKe3nqWeGOzAfhAVlh4oK6gmy7Eo2j7dEbPb
- ifNImlYtxkFQ==
+        id S1727903AbgEDWJV (ORCPT <rfc822;linux-m68k@lists.linux-m68k.org>);
+        Mon, 4 May 2020 18:09:21 -0400
+IronPort-SDR: FR92w0qqVpL1MBJO0Genhp+CUeS2Rq9gvSZGS3CWmZy7kXK97L1J3sg+mMvqVMb5azLOzdKdcn
+ /y+F6x8j/LlA==
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 May 2020 15:09:19 -0700
-IronPort-SDR: xA2AJnLJvp34mEbwJiGxbZuzdIyx3Df8DubGlFSEJ+DVu9psO0Wl23i9D4oll4jWtgPEbvU/VY
- TNteUOAvR54w==
+Received: from fmsmga006.fm.intel.com ([10.253.24.20])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 May 2020 15:09:19 -0700
+IronPort-SDR: /jDt/haWTal89T9DArGPraNYYVZE1ZQj0+zBA8jwIcMrg0Rx6bo81HaS+CRC6i3F2UE4BHosJA
+ Ks8ulyXafKuA==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.73,353,1583222400"; 
-   d="scan'208";a="250730630"
+   d="scan'208";a="461162489"
 Received: from lkp-server01.sh.intel.com (HELO lkp-server01) ([10.239.97.150])
-  by fmsmga008.fm.intel.com with ESMTP; 04 May 2020 15:09:18 -0700
+  by fmsmga006.fm.intel.com with ESMTP; 04 May 2020 15:09:17 -0700
 Received: from kbuild by lkp-server01 with local (Exim 4.89)
         (envelope-from <lkp@intel.com>)
-        id 1jVjH3-0003ED-Cm; Tue, 05 May 2020 06:09:17 +0800
-Date:   Tue, 05 May 2020 06:08:49 +0800
+        id 1jVjH3-0003D0-7F; Tue, 05 May 2020 06:09:17 +0800
+Date:   Tue, 05 May 2020 06:08:52 +0800
 From:   kbuild test robot <lkp@intel.com>
 To:     Geert Uytterhoeven <geert@linux-m68k.org>
 Cc:     linux-m68k@lists.linux-m68k.org
-Subject: [m68k:master] BUILD SUCCESS
- ae41e8e24714a9b6ea76bdb909528d57faf1dc4b
-Message-ID: <5eb09271.VMhf0v877flCOhFb%lkp@intel.com>
+Subject: [m68k:m68k-queue] BUILD SUCCESS
+ 1ef462ea683704f4e39cc5ef5d3eecdc63d3c6ce
+Message-ID: <5eb09274.JgYQ+mTOORsi2vR3%lkp@intel.com>
 User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
@@ -50,12 +50,12 @@ Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/geert/linux-m68k.git  master
-branch HEAD: ae41e8e24714a9b6ea76bdb909528d57faf1dc4b  Merge tag 'v5.7-rc4'
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/geert/linux-m68k.git  m68k-queue
+branch HEAD: 1ef462ea683704f4e39cc5ef5d3eecdc63d3c6ce  fat: Use correct logical sector size for Atari GEMDOS FAT
 
-elapsed time: 485m
+elapsed time: 488m
 
-configs tested: 184
+configs tested: 189
 configs skipped: 0
 
 The following configs have been built successfully.
@@ -76,7 +76,7 @@ arm                        multi_v5_defconfig
 arm                           sunxi_defconfig
 arm                        multi_v7_defconfig
 sparc                            allyesconfig
-arc                              allyesconfig
+powerpc                             defconfig
 ia64                        generic_defconfig
 riscv                             allnoconfig
 parisc                           allmodconfig
@@ -113,6 +113,7 @@ xtensa                          iss_defconfig
 h8300                    h8300h-sim_defconfig
 xtensa                       common_defconfig
 arc                                 defconfig
+arc                              allyesconfig
 microblaze                      mmu_defconfig
 microblaze                    nommu_defconfig
 mips                      fuloong2e_defconfig
@@ -136,7 +137,6 @@ parisc                generic-64bit_defconfig
 parisc                generic-32bit_defconfig
 parisc                           allyesconfig
 powerpc                      chrp32_defconfig
-powerpc                             defconfig
 powerpc                       holly_defconfig
 powerpc                       ppc64_defconfig
 powerpc                          rhel-kconfig
@@ -153,27 +153,27 @@ nds32                randconfig-a001-20200503
 alpha                randconfig-a001-20200503
 parisc               randconfig-a001-20200503
 riscv                randconfig-a001-20200503
-m68k                 randconfig-a001-20200502
-mips                 randconfig-a001-20200502
-nds32                randconfig-a001-20200502
-alpha                randconfig-a001-20200502
-parisc               randconfig-a001-20200502
-riscv                randconfig-a001-20200502
+m68k                 randconfig-a001-20200505
+mips                 randconfig-a001-20200505
+nds32                randconfig-a001-20200505
+parisc               randconfig-a001-20200505
+alpha                randconfig-a001-20200505
+riscv                randconfig-a001-20200505
 h8300                randconfig-a001-20200503
 nios2                randconfig-a001-20200503
 microblaze           randconfig-a001-20200503
 c6x                  randconfig-a001-20200503
 sparc64              randconfig-a001-20200503
+h8300                randconfig-a001-20200504
+nios2                randconfig-a001-20200504
+microblaze           randconfig-a001-20200504
+c6x                  randconfig-a001-20200504
+sparc64              randconfig-a001-20200504
 s390                 randconfig-a001-20200504
 xtensa               randconfig-a001-20200504
 sh                   randconfig-a001-20200504
 openrisc             randconfig-a001-20200504
 csky                 randconfig-a001-20200504
-s390                 randconfig-a001-20200505
-xtensa               randconfig-a001-20200505
-sh                   randconfig-a001-20200505
-openrisc             randconfig-a001-20200505
-csky                 randconfig-a001-20200505
 xtensa               randconfig-a001-20200503
 openrisc             randconfig-a001-20200503
 csky                 randconfig-a001-20200503
@@ -182,12 +182,22 @@ xtensa               randconfig-a001-20200430
 csky                 randconfig-a001-20200430
 openrisc             randconfig-a001-20200430
 sh                   randconfig-a001-20200430
-i386                 randconfig-b003-20200503
-x86_64               randconfig-b002-20200503
-i386                 randconfig-b001-20200503
-x86_64               randconfig-b003-20200503
-x86_64               randconfig-b001-20200503
-i386                 randconfig-b002-20200503
+s390                 randconfig-a001-20200502
+xtensa               randconfig-a001-20200502
+sh                   randconfig-a001-20200502
+openrisc             randconfig-a001-20200502
+csky                 randconfig-a001-20200502
+x86_64               randconfig-a003-20200505
+x86_64               randconfig-a001-20200505
+i386                 randconfig-a001-20200505
+i386                 randconfig-a003-20200505
+i386                 randconfig-a002-20200505
+x86_64               randconfig-d001-20200503
+i386                 randconfig-d003-20200503
+x86_64               randconfig-d003-20200503
+i386                 randconfig-d001-20200503
+x86_64               randconfig-d002-20200503
+i386                 randconfig-d002-20200503
 x86_64               randconfig-e003-20200503
 x86_64               randconfig-e002-20200503
 i386                 randconfig-e003-20200503
@@ -198,11 +208,6 @@ i386                 randconfig-f003-20200503
 x86_64               randconfig-f002-20200503
 i386                 randconfig-f001-20200503
 i386                 randconfig-f002-20200503
-i386                 randconfig-f003-20200505
-x86_64               randconfig-f001-20200505
-x86_64               randconfig-f003-20200505
-i386                 randconfig-f001-20200505
-i386                 randconfig-f002-20200505
 ia64                 randconfig-a001-20200503
 arm64                randconfig-a001-20200503
 arc                  randconfig-a001-20200503
