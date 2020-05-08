@@ -7,37 +7,37 @@ X-Spam-Status: No, score=-9.6 required=3.0 tests=DKIM_INVALID,DKIM_SIGNED,
 	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 263B9C47257
-	for <linux-m68k@archiver.kernel.org>; Fri,  8 May 2020 16:15:45 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 95F2FC38A2A
+	for <linux-m68k@archiver.kernel.org>; Fri,  8 May 2020 16:15:58 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id E8884206B9
-	for <linux-m68k@archiver.kernel.org>; Fri,  8 May 2020 16:15:44 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 5B51521473
+	for <linux-m68k@archiver.kernel.org>; Fri,  8 May 2020 16:15:58 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="EQcZ9lcq"
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="gMI4IluX"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728372AbgEHQPo (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Fri, 8 May 2020 12:15:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36352 "EHLO
+        id S1728479AbgEHQP5 (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Fri, 8 May 2020 12:15:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36398 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728303AbgEHQPm (ORCPT
+        with ESMTP id S1728466AbgEHQP4 (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Fri, 8 May 2020 12:15:42 -0400
+        Fri, 8 May 2020 12:15:56 -0400
 Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 20E5AC05BD43;
-        Fri,  8 May 2020 09:15:42 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 94BE6C061A0C;
+        Fri,  8 May 2020 09:15:56 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
         d=infradead.org; s=bombadil.20170209; h=Content-Transfer-Encoding:
         MIME-Version:References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender
         :Reply-To:Content-Type:Content-ID:Content-Description;
-        bh=HlFUrIsXXrT3FGrj+t+2DKf1Ayrd2rUUKJZx0tnooCU=; b=EQcZ9lcqIhWgf/a/iJ5DwA6Sha
-        gf5uSVNmMUlw/jcl7YXUEXqIvr35+7/BPF/sSeZgUIasRrdGT3lJKB2He50QRRCKRH1dLZmua8m6U
-        8QtgqejzYZhRdvlnGTbjG43/Hdnmr/yTsWBMA+jTTsVn4N24woLZ6Vc2MiSoaJ6sHFGYy75Q9VGfN
-        agxyJrMo1YhMzpkn3R/wcC/3D+Pp4oswvBfwzZcGpq5Lolc/Gj3m19SLY3qHxMmkDg9TLYsrGfJkl
-        vvKoXFnApy0vHbmezAu7Iygy0vujNJDawqRbRhk+sJ6Cjd9r0hMZsACikt79mNY0/96JbqiHoHGTh
-        wQoQLnog==;
+        bh=zekiztpHAl5zTc85DlA+lKmHw2vnmnAdlN6jt1NptOQ=; b=gMI4IluXgmfUheyu/l2QveyPlK
+        i4SNHFgRBDop0ixqFR6NOfjpEaxOv7VTbmodIcu9si1cWjVBYQDG6v9N/SQKTcIDdmdtFrMHvMGq4
+        7VwLdfduY/zZm5rbNMNDbCVA2QminS5SQF2Ryon+1776Db6rJUjGBi636TvJ5LPMiPVl8OS/EGTAr
+        QXC8nd4AZMDGOG1P05uL+i5JNI1fZaFdjzwPFpAyn8sUOllj+VeSnBpVCprpcaUI+1pp00GRdNPLh
+        +byhqt7TSgqpa+lXFVFw6v5ZP2qBd37t/EdUBb1ie7tWFtfGUfQDL7IWBNU2HiGAPLQ24l4C0m8Yb
+        nElKlH3Q==;
 Received: from [2001:4bb8:180:9d3f:90d7:9df8:7cd:3504] (helo=localhost)
         by bombadil.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1jX5ex-0004dV-CD; Fri, 08 May 2020 16:15:36 +0000
+        id 1jX5fD-0004ke-Gh; Fri, 08 May 2020 16:15:52 +0000
 From:   Christoph Hellwig <hch@lst.de>
 To:     Jens Axboe <axboe@kernel.dk>
 Cc:     Jim Paris <jim@jtan.com>, Geoff Levand <geoff@infradead.org>,
@@ -51,9 +51,9 @@ Cc:     Jim Paris <jim@jtan.com>, Geoff Levand <geoff@infradead.org>,
         linux-block@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
         linux-bcache@vger.kernel.org, linux-raid@vger.kernel.org,
         linux-nvdimm@lists.01.org
-Subject: [PATCH 05/15] ps3vram: stop using ->queuedata
-Date:   Fri,  8 May 2020 18:15:07 +0200
-Message-Id: <20200508161517.252308-6-hch@lst.de>
+Subject: [PATCH 10/15] bcache: stop setting ->queuedata
+Date:   Fri,  8 May 2020 18:15:12 +0200
+Message-Id: <20200508161517.252308-11-hch@lst.de>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <20200508161517.252308-1-hch@lst.de>
 References: <20200508161517.252308-1-hch@lst.de>
@@ -67,30 +67,21 @@ X-Mailing-List: linux-m68k@vger.kernel.org
 
 Signed-off-by: Christoph Hellwig <hch@lst.de>
 ---
- drivers/block/ps3vram.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+ drivers/md/bcache/super.c | 1 -
+ 1 file changed, 1 deletion(-)
 
-diff --git a/drivers/block/ps3vram.c b/drivers/block/ps3vram.c
-index 821d4d8b1d763..5a1d1d137c724 100644
---- a/drivers/block/ps3vram.c
-+++ b/drivers/block/ps3vram.c
-@@ -587,7 +587,7 @@ static struct bio *ps3vram_do_bio(struct ps3_system_bus_device *dev,
+diff --git a/drivers/md/bcache/super.c b/drivers/md/bcache/super.c
+index d98354fa28e3e..a0fb5af2beeda 100644
+--- a/drivers/md/bcache/super.c
++++ b/drivers/md/bcache/super.c
+@@ -871,7 +871,6 @@ static int bcache_device_init(struct bcache_device *d, unsigned int block_size,
+ 		return -ENOMEM;
  
- static blk_qc_t ps3vram_make_request(struct request_queue *q, struct bio *bio)
- {
--	struct ps3_system_bus_device *dev = q->queuedata;
-+	struct ps3_system_bus_device *dev = bio->bi_disk->private_data;
- 	struct ps3vram_priv *priv = ps3_system_bus_get_drvdata(dev);
- 	int busy;
- 
-@@ -745,7 +745,6 @@ static int ps3vram_probe(struct ps3_system_bus_device *dev)
- 	}
- 
- 	priv->queue = queue;
--	queue->queuedata = dev;
- 	blk_queue_max_segments(queue, BLK_MAX_SEGMENTS);
- 	blk_queue_max_segment_size(queue, BLK_MAX_SEGMENT_SIZE);
- 	blk_queue_max_hw_sectors(queue, BLK_SAFE_MAX_SECTORS);
+ 	d->disk->queue			= q;
+-	q->queuedata			= d;
+ 	q->backing_dev_info->congested_data = d;
+ 	q->limits.max_hw_sectors	= UINT_MAX;
+ 	q->limits.max_sectors		= UINT_MAX;
 -- 
 2.26.2
 
