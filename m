@@ -1,115 +1,91 @@
-Return-Path: <SRS0=Ua3q=6X=vger.kernel.org=linux-m68k-owner@kernel.org>
+Return-Path: <SRS0=TB57=6Y=vger.kernel.org=linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-0.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
-	autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-9.6 required=3.0 tests=DKIM_INVALID,DKIM_SIGNED,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D968EC47247
-	for <linux-m68k@archiver.kernel.org>; Sat,  9 May 2020 15:07:33 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B461DC54E8A
+	for <linux-m68k@archiver.kernel.org>; Sun, 10 May 2020 07:55:33 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id BA4412184D
-	for <linux-m68k@archiver.kernel.org>; Sat,  9 May 2020 15:07:33 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 85FE2218AC
+	for <linux-m68k@archiver.kernel.org>; Sun, 10 May 2020 07:55:33 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel-com.20150623.gappssmtp.com header.i=@intel-com.20150623.gappssmtp.com header.b="bCOSwnBB"
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="WXL6M2CD"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726782AbgEIPHd (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Sat, 9 May 2020 11:07:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51770 "EHLO
+        id S1728815AbgEJHz1 (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Sun, 10 May 2020 03:55:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38144 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728065AbgEIPH1 (ORCPT
+        with ESMTP id S1725839AbgEJHz0 (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Sat, 9 May 2020 11:07:27 -0400
-Received: from mail-ej1-x62b.google.com (mail-ej1-x62b.google.com [IPv6:2a00:1450:4864:20::62b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 571FCC05BD0C
-        for <linux-m68k@lists.linux-m68k.org>; Sat,  9 May 2020 08:07:27 -0700 (PDT)
-Received: by mail-ej1-x62b.google.com with SMTP id s3so3893160eji.6
-        for <linux-m68k@lists.linux-m68k.org>; Sat, 09 May 2020 08:07:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=intel-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=yLn1AXHn00bZ+po9Vb7k6qNSHYdWGkkZ6wxI2pwtGRE=;
-        b=bCOSwnBBjfPXdvYGJ+yVECFvPTePDH1ANyISrMhvJ1qWqJvVThnHr98KsSwJqA14nC
-         yCPOxIRhJYUKs+I0Z7zlDnbc2VJgVwWpDdEA4tIPWEVVkzgs6TyhzHr/LnVPIJc5YbZe
-         /Ga31Bb5nRqdr5sF01D+4kD7nuppvALvlvKumT0LdbEKLra5xfeiNf57Wv0ExKnHb7Rg
-         DbJPWuDEL/VR1p8vve4AZ1c4iNgOcgeDoJddMOToTohvJc+NMCp5pllqs5xHvWVFoT1b
-         hZ2eMoVCvm/W3nphozJEpzuE720t10XyAVjkj8Y23QAnpJ3YgiSQvtyoRGLEW8+4DwBB
-         HlzA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=yLn1AXHn00bZ+po9Vb7k6qNSHYdWGkkZ6wxI2pwtGRE=;
-        b=q2JJ7b2YMIV+jHKUJdXxEGvCpe/TpQok4Dxs40IK1RcnuQKyEzoxTpU3b8hwYIOCBm
-         FiISVIOu9M3ovWUh5iPg8u9m1Fp+huFaH7JOeFv/kWwTh2/RF9G7o5nI5rfb6UZQas/K
-         MPIu3EVbLr7u6i8yXYAut/PdSVQU7q0s+O/A6tjhyW0LhYiaJNOVIls/uRFH86I2C5vA
-         2Ub+stYVNbvlcVuk70y9OYjPEoC1lBUffGmH2t8WBxCjTHvIIgp/jYYKvG1IfiTVbEox
-         tFaA5tameJqp/RPYqHvwcGPN0k2ZR3U12EvnC+5Xa887RbAFSMuCpxJZxXuHRgcSTUq4
-         NTCg==
-X-Gm-Message-State: AGi0PuZ765Cu++Y8grrvsNmqH1gZgJe5QDjyHEWMZJli8kuXRAYzpvOT
-        S9MQ6mDft1YXXByNV5SKaOnJFkgCg0tulXwrZs/woQ==
-X-Google-Smtp-Source: APiQypKilW3QgeYL9j+z8BH4y4sSKlWKWi60GEoJhZT78wFbACZI36hD4PovUMVH8UfEyvLbc+3je7NxPGD32jSs39Q=
-X-Received: by 2002:a17:906:855a:: with SMTP id h26mr6685025ejy.56.1589036845508;
- Sat, 09 May 2020 08:07:25 -0700 (PDT)
+        Sun, 10 May 2020 03:55:26 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 555E0C061A0C;
+        Sun, 10 May 2020 00:55:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20170209; h=Content-Transfer-Encoding:
+        MIME-Version:References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender
+        :Reply-To:Content-Type:Content-ID:Content-Description;
+        bh=3tS2yoYzMrg0UOZvWJ9XhJh/dvXLnNSqXxggBe17EKo=; b=WXL6M2CDigCoTrrOTQbYj3cAL8
+        E3deOWdrOEf/MvabJAGLRmta3cWNWwpUQLs9O9xPQTtKR/zny74Qqodf5q0i+dtZQurd7PprMP02Z
+        zCH+GTfTy8/EdSdq0QXQphF2VrBTPB2QC+j/W5SBqTyJfjF4Ir7yViug7OoflVJe01E5mkja6Zolt
+        CDsmE1SOYiKE5y3yZTdhBjekedUaYvAaMvsWqPMmtfn/Rk0vH+dbLKa5ocleIqEB79TyGBfS64OjP
+        bRL1ISrh+zpzxAAawzcuf8lAmCNy3FMHgbJZrBMAp7jiYeGkwYsrNMVSSM7ORDs4kqkCf9ABdjlfh
+        PSvEFN7g==;
+Received: from [2001:4bb8:180:9d3f:c70:4a89:bc61:2] (helo=localhost)
+        by bombadil.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1jXgnv-0007po-1j; Sun, 10 May 2020 07:55:19 +0000
+From:   Christoph Hellwig <hch@lst.de>
+To:     Andrew Morton <akpm@linux-foundation.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Roman Zippel <zippel@linux-m68k.org>
+Cc:     Jessica Yu <jeyu@kernel.org>, Michal Simek <monstr@monstr.eu>,
+        x86@kernel.org, linux-alpha@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-c6x-dev@linux-c6x.org, linux-hexagon@vger.kernel.org,
+        linux-ia64@vger.kernel.org, linux-m68k@lists.linux-m68k.org,
+        linux-mips@vger.kernel.org, openrisc@lists.librecores.org,
+        linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org,
+        linux-sh@vger.kernel.org, sparclinux@vger.kernel.org,
+        linux-arch@vger.kernel.org, linux-mm@kvack.org,
+        linux-um@lists.infradead.org, linux-xtensa@linux-xtensa.org,
+        linux-fsdevel@vger.kernel.org
+Subject: [PATCH 02/31] arm64: fix the flush_icache_range arguments in machine_kexec
+Date:   Sun, 10 May 2020 09:54:41 +0200
+Message-Id: <20200510075510.987823-3-hch@lst.de>
+X-Mailer: git-send-email 2.26.2
+In-Reply-To: <20200510075510.987823-1-hch@lst.de>
+References: <20200510075510.987823-1-hch@lst.de>
 MIME-Version: 1.0
-References: <20200508161517.252308-1-hch@lst.de> <CAPcyv4j3gVqrZWCCc2Q-6JizGAQXW0b+R1BcvWCZOvzaukGLQg@mail.gmail.com>
- <20200509082352.GB21834@lst.de>
-In-Reply-To: <20200509082352.GB21834@lst.de>
-From:   Dan Williams <dan.j.williams@intel.com>
-Date:   Sat, 9 May 2020 08:07:14 -0700
-Message-ID: <CAPcyv4ggb7_rwzGbhHNXSHd+jjSpZC=+DMEztY6Cu8Bc=ZNzag@mail.gmail.com>
-Subject: Re: remove a few uses of ->queuedata
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     Jens Axboe <axboe@kernel.dk>, Jim Paris <jim@jtan.com>,
-        Geoff Levand <geoff@infradead.org>,
-        Joshua Morris <josh.h.morris@us.ibm.com>,
-        Philip Kelleher <pjk1939@linux.ibm.com>,
-        Minchan Kim <minchan@kernel.org>,
-        Nitin Gupta <ngupta@vflare.org>,
-        Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>,
-        linux-m68k@lists.linux-m68k.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-xtensa@linux-xtensa.org, drbd-dev@lists.linbit.com,
-        linux-block@vger.kernel.org,
-        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
-        linux-bcache@vger.kernel.org,
-        linux-raid <linux-raid@vger.kernel.org>,
-        linux-nvdimm <linux-nvdimm@lists.01.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
 Sender: linux-m68k-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-On Sat, May 9, 2020 at 1:24 AM Christoph Hellwig <hch@lst.de> wrote:
->
-> On Fri, May 08, 2020 at 11:04:45AM -0700, Dan Williams wrote:
-> > On Fri, May 8, 2020 at 9:16 AM Christoph Hellwig <hch@lst.de> wrote:
-> > >
-> > > Hi all,
-> > >
-> > > various bio based drivers use queue->queuedata despite already having
-> > > set up disk->private_data, which can be used just as easily.  This
-> > > series cleans them up to only use a single private data pointer.
-> >
-> > ...but isn't the queue pretty much guaranteed to be cache hot and the
-> > gendisk cache cold? I'm not immediately seeing what else needs the
-> > gendisk in the I/O path. Is there another motivation I'm missing?
->
-> ->private_data is right next to the ->queue pointer, pat0 and part_tbl
-> which are all used in the I/O submission path (generic_make_request /
-> generic_make_request_checks).  This is mostly a prep cleanup patch to
-> also remove the pointless queue argument from ->make_request - then
-> ->queue is an extra dereference and extra churn.
+The second argument is the end "pointer", not the length.
 
-Ah ok. If the changelogs had been filled in with something like "In
-preparation for removing @q from make_request_fn, stop using
-->queuedata", I probably wouldn't have looked twice.
+Signed-off-by: Christoph Hellwig <hch@lst.de>
+---
+ arch/arm64/kernel/machine_kexec.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-For the nvdimm/ driver updates you can add:
+diff --git a/arch/arm64/kernel/machine_kexec.c b/arch/arm64/kernel/machine_kexec.c
+index 8e9c924423b4e..a0b144cfaea71 100644
+--- a/arch/arm64/kernel/machine_kexec.c
++++ b/arch/arm64/kernel/machine_kexec.c
+@@ -177,6 +177,7 @@ void machine_kexec(struct kimage *kimage)
+ 	 * the offline CPUs. Therefore, we must use the __* variant here.
+ 	 */
+ 	__flush_icache_range((uintptr_t)reboot_code_buffer,
++			     (uintptr_t)reboot_code_buffer +
+ 			     arm64_relocate_new_kernel_size);
+ 
+ 	/* Flush the kimage list and its buffers. */
+-- 
+2.26.2
 
-    Reviewed-by: Dan Williams <dan.j.williams@intel.com>
-
-...or just let me know if you want me to pick those up through the nvdimm tree.
