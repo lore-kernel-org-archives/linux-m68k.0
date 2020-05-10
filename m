@@ -7,37 +7,37 @@ X-Spam-Status: No, score=-9.6 required=3.0 tests=DKIM_INVALID,DKIM_SIGNED,
 	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 13140C54E8B
-	for <linux-m68k@archiver.kernel.org>; Sun, 10 May 2020 07:57:14 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 3884CC54E8B
+	for <linux-m68k@archiver.kernel.org>; Sun, 10 May 2020 07:57:18 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id DDF33208DB
-	for <linux-m68k@archiver.kernel.org>; Sun, 10 May 2020 07:57:13 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 15CF7208DB
+	for <linux-m68k@archiver.kernel.org>; Sun, 10 May 2020 07:57:18 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="O3pypQ0n"
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="eFIotFDG"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729364AbgEJH45 (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Sun, 10 May 2020 03:56:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38428 "EHLO
+        id S1729410AbgEJH5P (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Sun, 10 May 2020 03:57:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38438 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729347AbgEJH4x (ORCPT
+        with ESMTP id S1729361AbgEJH45 (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Sun, 10 May 2020 03:56:53 -0400
+        Sun, 10 May 2020 03:56:57 -0400
 Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD916C05BD0A;
-        Sun, 10 May 2020 00:56:53 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 35CC2C061A0C;
+        Sun, 10 May 2020 00:56:57 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
         d=infradead.org; s=bombadil.20170209; h=Content-Transfer-Encoding:
         MIME-Version:References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender
         :Reply-To:Content-Type:Content-ID:Content-Description;
-        bh=9nkBbtmLvQl1eKzV5tIp1XNxgG4m4pb8wLV/D1oxyTY=; b=O3pypQ0niCinVdaZ9ffiZU1syd
-        VXGi0lby1eDfmI0p1Pobqc7orXv9Qz0NBSCrS1uuMOYGnE9nMnyWGF0kjDhDci+MQmV/6FqdNJPC8
-        r6+FyNnal13r9CkvmViTOvbSPhitWD0divMHhTV1azIuuCQMmNaorsg+QS0DnOqnlWuAgmh6OrOWl
-        T0CfWA1ZEjgLBvUnhU1fCyOOODZEYEWMho/6IvLujtRTOT93i/8maVPwGnsZKy/R1UrTzTSOMqIRz
-        rSTKirPsEhoTM7ds36NhA4I1kvacErl7YUv4bLy5MsdM7KhxxJDUDSgBKDRExCCrcz8nKST6jvJ4/
-        kuq63P0Q==;
+        bh=4ek5EujzgHPIbdEvHkQJFfygtnYVEDi+YXEorFGRVI0=; b=eFIotFDGouc70Vrc0YBQvt3tXt
+        LpU0O3gYOtPu3VsEhuy5wQuxNPWojPeqgCFlM5dSKEEFImUpmprGSjWQZ0isM9qf0f11fe/znjQZc
+        dHP24av3IL8YSbIBVKgKGNrXTko0pMvt+QsDVILQNBIiYm4VuFQbXqFd9OEKE9mbXLFXDl7Ac8ztU
+        IXG+W0ZPOVZjUynFgojDlBd+6dx5U549BrQCjSBWN76+Cv9TTohQNUrM+o6UeGSn2P4KFxoBVDps7
+        z67jvijRstZAJtCqNA/oQIVDxN2zVd3y0Ekl61cmtoKGPPt46ywCJMoWhCt6Bt8Fgc72s1NettA9x
+        SFoo+bxg==;
 Received: from [2001:4bb8:180:9d3f:c70:4a89:bc61:2] (helo=localhost)
         by bombadil.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1jXgpF-0001HQ-95; Sun, 10 May 2020 07:56:41 +0000
+        id 1jXgpL-0001Mc-7G; Sun, 10 May 2020 07:56:47 +0000
 From:   Christoph Hellwig <hch@lst.de>
 To:     Andrew Morton <akpm@linux-foundation.org>,
         Arnd Bergmann <arnd@arndb.de>,
@@ -53,9 +53,9 @@ Cc:     Jessica Yu <jeyu@kernel.org>, Michal Simek <monstr@monstr.eu>,
         linux-arch@vger.kernel.org, linux-mm@kvack.org,
         linux-um@lists.infradead.org, linux-xtensa@linux-xtensa.org,
         linux-fsdevel@vger.kernel.org
-Subject: [PATCH 28/31] exec: use flush_icache_user_range in read_code
-Date:   Sun, 10 May 2020 09:55:07 +0200
-Message-Id: <20200510075510.987823-29-hch@lst.de>
+Subject: [PATCH 30/31] nommu: use flush_icache_user_range in brk and mmap
+Date:   Sun, 10 May 2020 09:55:09 +0200
+Message-Id: <20200510075510.987823-31-hch@lst.de>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <20200510075510.987823-1-hch@lst.de>
 References: <20200510075510.987823-1-hch@lst.de>
@@ -67,26 +67,35 @@ Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-read_code operates on user addresses.
+These obviously operate on user addresses.
 
 Signed-off-by: Christoph Hellwig <hch@lst.de>
 ---
- fs/exec.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ mm/nommu.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/fs/exec.c b/fs/exec.c
-index a4f766f296f8f..c541867316a63 100644
---- a/fs/exec.c
-+++ b/fs/exec.c
-@@ -1033,7 +1033,7 @@ ssize_t read_code(struct file *file, unsigned long addr, loff_t pos, size_t len)
- {
- 	ssize_t res = vfs_read(file, (void __user *)addr, len, &pos);
- 	if (res > 0)
--		flush_icache_range(addr, addr + len);
-+		flush_icache_user_range(addr, addr + len);
- 	return res;
+diff --git a/mm/nommu.c b/mm/nommu.c
+index 318df4e236c99..aed7acaed2383 100644
+--- a/mm/nommu.c
++++ b/mm/nommu.c
+@@ -443,7 +443,7 @@ SYSCALL_DEFINE1(brk, unsigned long, brk)
+ 	/*
+ 	 * Ok, looks good - let it rip.
+ 	 */
+-	flush_icache_range(mm->brk, brk);
++	flush_icache_user_range(mm->brk, brk);
+ 	return mm->brk = brk;
  }
- EXPORT_SYMBOL(read_code);
+ 
+@@ -1287,7 +1287,7 @@ unsigned long do_mmap(struct file *file,
+ 	/* we flush the region from the icache only when the first executable
+ 	 * mapping of it is made  */
+ 	if (vma->vm_flags & VM_EXEC && !region->vm_icache_flushed) {
+-		flush_icache_range(region->vm_start, region->vm_end);
++		flush_icache_user_range(region->vm_start, region->vm_end);
+ 		region->vm_icache_flushed = true;
+ 	}
+ 
 -- 
 2.26.2
 
