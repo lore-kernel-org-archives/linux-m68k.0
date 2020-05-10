@@ -4,40 +4,40 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-9.6 required=3.0 tests=DKIM_INVALID,DKIM_SIGNED,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
-	version=3.4.0
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B17F4C54E8C
-	for <linux-m68k@archiver.kernel.org>; Sun, 10 May 2020 07:55:58 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 44B49C54E8D
+	for <linux-m68k@archiver.kernel.org>; Sun, 10 May 2020 07:56:16 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 91AD220801
-	for <linux-m68k@archiver.kernel.org>; Sun, 10 May 2020 07:55:58 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 2436924953
+	for <linux-m68k@archiver.kernel.org>; Sun, 10 May 2020 07:56:16 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="mPKJUt58"
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="XAAsRr6E"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729051AbgEJHz6 (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Sun, 10 May 2020 03:55:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38228 "EHLO
+        id S1729148AbgEJH4N (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Sun, 10 May 2020 03:56:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38282 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729031AbgEJHzz (ORCPT
+        with ESMTP id S1729128AbgEJH4M (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Sun, 10 May 2020 03:55:55 -0400
+        Sun, 10 May 2020 03:56:12 -0400
 Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 24F4CC061A0C;
-        Sun, 10 May 2020 00:55:55 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B3613C061A0C;
+        Sun, 10 May 2020 00:56:11 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
         d=infradead.org; s=bombadil.20170209; h=Content-Transfer-Encoding:
         MIME-Version:References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender
         :Reply-To:Content-Type:Content-ID:Content-Description;
-        bh=TnbCkkwCrUJoVyKDF526uiErLGT3jwDipU5D/anO8xc=; b=mPKJUt58n7+nMzhhc54oH63pQM
-        mqLu44nHNaFJZeW4BtfL3Nszeye3rc8YHdjDEjGf8xg3xzYYrSfHCY5nbabMfTBfeDSOkMMmS35ou
-        LOq0Cm3ec2qhR34x6S9wtNGNeuufVaiFVNGQ6EA78N1lJbfLJVQOxwHBoVtXOUJ7LEM4LvpF30O3k
-        m13ERlEUD8DKFhmebKzsLwdEd7rRAmNgmGpKczfhpk/gcktxKPPvNDkPqc0zvVEDL2Y0pohvODiyy
-        vtpxm6SQgeQ2Ni9spFq2UDWdSqY4HMo95ucFjFiZLFQWqx3op44MZmPTFzx+L8rvvn5EzP4yrE2vp
-        kheYPImQ==;
+        bh=9OkRp1p3UvpvhrMloqYZ5BRhhjLRydsct9faQtkGwTk=; b=XAAsRr6EjjN3/yVHeqs8/bO7PS
+        YuqBIjDerF7M0TIVg8WyqS6VTVh0ppGXMA1Lk/vXdJQTjC+gw+bLoqvyj49cDzbCUHVjkylR5WfRC
+        W/SP8iEe3jRFW7kyY4aEdOPrqGcypYxic7RaZSoEvkTrdY0g90ZJcHVMH9Vud0s9+SczW0EqvxmmW
+        JplpkK9+vVvUCRYxaP/W791YtBayhgsNGzGcOmz+I8L8LMKeS4WJ2u1CVDeK478m53/XLI4u5CWpL
+        NSfinyVz/L1BKxtiHquQl3xYyh+8U9qIO7gb3cw3Q0hxw74WqYXAitW1agV0smLp6loKx444KAQvG
+        OMeYetgg==;
 Received: from [2001:4bb8:180:9d3f:c70:4a89:bc61:2] (helo=localhost)
         by bombadil.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1jXgoA-00085z-3P; Sun, 10 May 2020 07:55:34 +0000
+        id 1jXgoP-0008QV-Vf; Sun, 10 May 2020 07:55:50 +0000
 From:   Christoph Hellwig <hch@lst.de>
 To:     Andrew Morton <akpm@linux-foundation.org>,
         Arnd Bergmann <arnd@arndb.de>,
@@ -53,9 +53,9 @@ Cc:     Jessica Yu <jeyu@kernel.org>, Michal Simek <monstr@monstr.eu>,
         linux-arch@vger.kernel.org, linux-mm@kvack.org,
         linux-um@lists.infradead.org, linux-xtensa@linux-xtensa.org,
         linux-fsdevel@vger.kernel.org
-Subject: [PATCH 07/31] asm-generic: fix the inclusion guards for cacheflush.h
-Date:   Sun, 10 May 2020 09:54:46 +0200
-Message-Id: <20200510075510.987823-8-hch@lst.de>
+Subject: [PATCH 12/31] c6x: use asm-generic/cacheflush.h
+Date:   Sun, 10 May 2020 09:54:51 +0200
+Message-Id: <20200510075510.987823-13-hch@lst.de>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <20200510075510.987823-1-hch@lst.de>
 References: <20200510075510.987823-1-hch@lst.de>
@@ -67,33 +67,56 @@ Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-cacheflush.h uses a somewhat to generic include guard name that clashes
-with various arch files.  Use a more specific one.
+C6x needs almost no cache flushing routines of its own.  Rely on
+asm-generic/cacheflush.h for the defaults.
 
 Signed-off-by: Christoph Hellwig <hch@lst.de>
 ---
- include/asm-generic/cacheflush.h | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ arch/c6x/include/asm/cacheflush.h | 19 +------------------
+ 1 file changed, 1 insertion(+), 18 deletions(-)
 
-diff --git a/include/asm-generic/cacheflush.h b/include/asm-generic/cacheflush.h
-index cac7404b2bdd2..906277492ec59 100644
---- a/include/asm-generic/cacheflush.h
-+++ b/include/asm-generic/cacheflush.h
-@@ -1,6 +1,6 @@
- /* SPDX-License-Identifier: GPL-2.0 */
--#ifndef __ASM_CACHEFLUSH_H
--#define __ASM_CACHEFLUSH_H
-+#ifndef _ASM_GENERIC_CACHEFLUSH_H
-+#define _ASM_GENERIC_CACHEFLUSH_H
+diff --git a/arch/c6x/include/asm/cacheflush.h b/arch/c6x/include/asm/cacheflush.h
+index 4540b40475e6c..10922d528de6d 100644
+--- a/arch/c6x/include/asm/cacheflush.h
++++ b/arch/c6x/include/asm/cacheflush.h
+@@ -16,21 +16,6 @@
+ #include <asm/page.h>
+ #include <asm/string.h>
  
- /* Keep includes the same across arches.  */
- #include <linux/mm.h>
-@@ -109,4 +109,4 @@ static inline void flush_cache_vunmap(unsigned long start, unsigned long end)
- 	memcpy(dst, src, len)
- #endif
+-/*
+- * virtually-indexed cache management (our cache is physically indexed)
+- */
+-#define flush_cache_all()			do {} while (0)
+-#define flush_cache_mm(mm)			do {} while (0)
+-#define flush_cache_dup_mm(mm)			do {} while (0)
+-#define flush_cache_range(mm, start, end)	do {} while (0)
+-#define flush_cache_page(vma, vmaddr, pfn)	do {} while (0)
+-#define flush_cache_vmap(start, end)		do {} while (0)
+-#define flush_cache_vunmap(start, end)		do {} while (0)
+-#define ARCH_IMPLEMENTS_FLUSH_DCACHE_PAGE 0
+-#define flush_dcache_page(page)			do {} while (0)
+-#define flush_dcache_mmap_lock(mapping)		do {} while (0)
+-#define flush_dcache_mmap_unlock(mapping)	do {} while (0)
+-
+ /*
+  * physically-indexed cache management
+  */
+@@ -49,14 +34,12 @@ do {								  \
+ 			(unsigned long) page_address(page) + PAGE_SIZE)); \
+ } while (0)
  
--#endif /* __ASM_CACHEFLUSH_H */
-+#endif /* _ASM_GENERIC_CACHEFLUSH_H */
+-
+ #define copy_to_user_page(vma, page, vaddr, dst, src, len) \
+ do {						     \
+ 	memcpy(dst, src, len);			     \
+ 	flush_icache_range((unsigned) (dst), (unsigned) (dst) + (len)); \
+ } while (0)
+ 
+-#define copy_from_user_page(vma, page, vaddr, dst, src, len) \
+-	memcpy(dst, src, len)
++#include <asm-generic/cacheflush.h>
+ 
+ #endif /* _ASM_C6X_CACHEFLUSH_H */
 -- 
 2.26.2
 
