@@ -6,44 +6,44 @@ X-Spam-Status: No, score=-3.8 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
 	MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS autolearn=no
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 16DE5C54E8D
-	for <linux-m68k@archiver.kernel.org>; Mon, 11 May 2020 07:36:23 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 58EC1C54E8F
+	for <linux-m68k@archiver.kernel.org>; Mon, 11 May 2020 07:38:46 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 0054D208DB
-	for <linux-m68k@archiver.kernel.org>; Mon, 11 May 2020 07:36:22 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 42C3F206B9
+	for <linux-m68k@archiver.kernel.org>; Mon, 11 May 2020 07:38:46 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725790AbgEKHgW (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Mon, 11 May 2020 03:36:22 -0400
-Received: from mail-ot1-f67.google.com ([209.85.210.67]:41385 "EHLO
-        mail-ot1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728017AbgEKHgS (ORCPT
+        id S1728638AbgEKHiq (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Mon, 11 May 2020 03:38:46 -0400
+Received: from mail-ot1-f65.google.com ([209.85.210.65]:34917 "EHLO
+        mail-ot1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728573AbgEKHii (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Mon, 11 May 2020 03:36:18 -0400
-Received: by mail-ot1-f67.google.com with SMTP id c3so6760125otp.8
-        for <linux-m68k@lists.linux-m68k.org>; Mon, 11 May 2020 00:36:17 -0700 (PDT)
+        Mon, 11 May 2020 03:38:38 -0400
+Received: by mail-ot1-f65.google.com with SMTP id k110so6791906otc.2
+        for <linux-m68k@lists.linux-m68k.org>; Mon, 11 May 2020 00:38:36 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=l3VY/12wWR1zHjOHzyqluXVdqy0F7FQQDSlqPm2Zx5o=;
-        b=ZzoHxWOVRnK8VU8b9TipOmr6/qj2XFovFlYMtgr2tHHwcdxI+pT4WUhRQby/jClgeq
-         OlwG3pTC4v5an73ZfurR2TdimRrhOkVC8EqfLNuCD1WxQcZZMR/v2/kgX1Z6B0HlCXSO
-         DQwYlaFEipaZZq25tcC2URcmPoeh4bJTC/modbNEHvbrf7tRDjkElDO7VYuTQhHRerLf
-         tmYOSuwTpcWxHRhY54HkKBsk/o4YUrbyNL0q/2IpCo1VrU2w7JzczFQqZr761w9WMgP5
-         fF08hmoIvhDTZm95uf9Uo5gkj8n25M+iQSinsgPnTDdZBf7eseFPEQry+ks5PsudTlOn
-         FR/g==
-X-Gm-Message-State: AGi0PuZzw3wv8YRjqhvrmeg7rF451st8LE6k7h02dDsZ4zI1Ruoq+lyI
-        RylRJLUjWy89MHqGB3qIw+8i5RJj7XpOIqlS1P4=
-X-Google-Smtp-Source: APiQypLU+moEt/plrIiBoDJtx6y9Ecp1jwHNmsr5IHgDhGkXTabpMRQH56iYz7dU/N/BpO7atrGAmOYhZDTTv1TixAM=
-X-Received: by 2002:a9d:7990:: with SMTP id h16mr11274742otm.145.1589182577008;
- Mon, 11 May 2020 00:36:17 -0700 (PDT)
+        bh=aNoZEZ57CrI9/0G/8w94E+hwvPuAlWx38MUKzKDQBhc=;
+        b=eWUJXHUvs0mLfiiUt35hk6TMmzQEZieZb+wCpsBmMfBH/dsajsDheJf/JSvfyZ7/oW
+         FZ6XbfzwyQbsMzyPYR9IeDXgtoSoIUJCrVt+SBGzE5OaBy/XUXnoY1rag+Q9joHXF40r
+         Ul3HKcf92I8QeBF7TZbgQuXcP/LQ1vEYy7sjlFoVssMh+He4zvrZxuHx4OWv6/+aVs+r
+         XDwnzp0lhuwkEmZm3pBrP7JgH8p5z3ydmpurg2b30vMaOuJ+i/bY3FeC/J1wJTm6Knev
+         kMb1X7JTKOdKehUyXXFW0WSpklYFDPcrKSuoJB/NjPGwyWub6ztzePzZRFVTfATxeZ5L
+         6mbQ==
+X-Gm-Message-State: AGi0PubWv397Fy3Oq6nLPDsBNDRdpGXZLiml+cilpmMXVYo5ovcNGQl8
+        4EPBOKQoJDDh0FRY6bmr6t2IvKoQLlWa5cPjwAg=
+X-Google-Smtp-Source: APiQypLoBt4t5N0l098m7w2IDSx4KyTJchn19q3bmw0+va1jJpmuNmPwj2oo62ETWA1hKW2oSkbgdMOlQ069s61RJoI=
+X-Received: by 2002:a9d:63da:: with SMTP id e26mr10874719otl.107.1589182716617;
+ Mon, 11 May 2020 00:38:36 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200510075510.987823-1-hch@lst.de> <20200510075510.987823-22-hch@lst.de>
-In-Reply-To: <20200510075510.987823-22-hch@lst.de>
+References: <20200510075510.987823-1-hch@lst.de> <20200510075510.987823-27-hch@lst.de>
+In-Reply-To: <20200510075510.987823-27-hch@lst.de>
 From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Mon, 11 May 2020 09:36:05 +0200
-Message-ID: <CAMuHMdXS-ygT01KfhS0y9WcYbi9HKdQL7Q1HXgUZdayzQb_qSA@mail.gmail.com>
-Subject: Re: [PATCH 21/31] mm: rename flush_icache_user_range to flush_icache_user_page
+Date:   Mon, 11 May 2020 09:38:25 +0200
+Message-ID: <CAMuHMdUTAA_mkS-KY70ykr-n-UJxfqM09EYcVQVKA4+FSkC1Og@mail.gmail.com>
+Subject: Re: [PATCH 26/31] m68k: implement flush_icache_user_range
 To:     Christoph Hellwig <hch@lst.de>
 Cc:     Andrew Morton <akpm@linux-foundation.org>,
         Arnd Bergmann <arnd@arndb.de>,
@@ -76,14 +76,12 @@ List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
 On Sun, May 10, 2020 at 9:57 AM Christoph Hellwig <hch@lst.de> wrote:
-> The function currently known as flush_icache_user_range only operates
-> on a single page.  Rename it to flush_icache_user_page as we'll need
-> the name flush_icache_user_range for something else soon.
+> Rename the current flush_icache_range to flush_icache_user_range as
+> per commit ae92ef8a4424 ("PATCH] flush icache in correct context") there
+> seems to be an assumption that it operates on user addresses.  Add a
+> flush_icache_range around it that for now is a no-op.
 >
 > Signed-off-by: Christoph Hellwig <hch@lst.de>
-
->  arch/m68k/include/asm/cacheflush_mm.h  |  4 ++--
->  arch/m68k/mm/cache.c                   |  2 +-
 
 Acked-by: Geert Uytterhoeven <geert@linux-m68k.org>
 
