@@ -1,92 +1,99 @@
-Return-Path: <SRS0=TB57=6Y=vger.kernel.org=linux-m68k-owner@kernel.org>
+Return-Path: <SRS0=1ZKR=6Z=vger.kernel.org=linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.6 required=3.0 tests=DKIM_INVALID,DKIM_SIGNED,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
+X-Spam-Status: No, score=-3.8 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
+	MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS autolearn=no
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 95BDBC54E8B
-	for <linux-m68k@archiver.kernel.org>; Sun, 10 May 2020 07:58:29 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 16DE5C54E8D
+	for <linux-m68k@archiver.kernel.org>; Mon, 11 May 2020 07:36:23 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 645E920801
-	for <linux-m68k@archiver.kernel.org>; Sun, 10 May 2020 07:58:29 +0000 (UTC)
-Authentication-Results: mail.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="M6E6jT1v"
+	by mail.kernel.org (Postfix) with ESMTP id 0054D208DB
+	for <linux-m68k@archiver.kernel.org>; Mon, 11 May 2020 07:36:22 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728982AbgEJHzw (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Sun, 10 May 2020 03:55:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38206 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725839AbgEJHzt (ORCPT
+        id S1725790AbgEKHgW (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Mon, 11 May 2020 03:36:22 -0400
+Received: from mail-ot1-f67.google.com ([209.85.210.67]:41385 "EHLO
+        mail-ot1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728017AbgEKHgS (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Sun, 10 May 2020 03:55:49 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 080AFC061A0C;
-        Sun, 10 May 2020 00:55:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20170209; h=Content-Transfer-Encoding:
-        MIME-Version:References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender
-        :Reply-To:Content-Type:Content-ID:Content-Description;
-        bh=Z9YRs5dLpbvo98tj/Cgt22OOiGK6aHhMzE6epEWfQXc=; b=M6E6jT1vTAkcc/uqCv5rRZBqVj
-        4C9y1DKz9zmQassTsueu8yWQtNmiSAw2Hqc+MF/e1W//UGZoTW7Mkhlj5xO2Sw8y6kKhWH6Lxu081
-        RTOiKkdeaCdvxRpTIMXxDZX2l/SD61dJ1ht3dJUMAZ5fSZztKAueD6GAhmW6p58R92s+FRj6moa0W
-        MW6rCeXcQQ1sGtgtL8vI274YEWPu36qdr9qupNELF/8k4VcjiFVOld/2i3HBkugH4PB6MhS+BWh7/
-        W8A67yIAP6eHosepHe+pXuDHyaVjcFfcdRZzmDftL4nnPz9Dlr8KupBRqGGJq8mtr1f9Lr6VMYOde
-        +ETCOrfw==;
-Received: from [2001:4bb8:180:9d3f:c70:4a89:bc61:2] (helo=localhost)
-        by bombadil.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1jXgo3-0007yb-Rn; Sun, 10 May 2020 07:55:28 +0000
-From:   Christoph Hellwig <hch@lst.de>
-To:     Andrew Morton <akpm@linux-foundation.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Roman Zippel <zippel@linux-m68k.org>
-Cc:     Jessica Yu <jeyu@kernel.org>, Michal Simek <monstr@monstr.eu>,
-        x86@kernel.org, linux-alpha@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-c6x-dev@linux-c6x.org, linux-hexagon@vger.kernel.org,
-        linux-ia64@vger.kernel.org, linux-m68k@lists.linux-m68k.org,
-        linux-mips@vger.kernel.org, openrisc@lists.librecores.org,
-        linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org,
-        linux-sh@vger.kernel.org, sparclinux@vger.kernel.org,
-        linux-arch@vger.kernel.org, linux-mm@kvack.org,
-        linux-um@lists.infradead.org, linux-xtensa@linux-xtensa.org,
-        linux-fsdevel@vger.kernel.org
-Subject: [PATCH 05/31] powerpc: unexport flush_icache_user_range
-Date:   Sun, 10 May 2020 09:54:44 +0200
-Message-Id: <20200510075510.987823-6-hch@lst.de>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200510075510.987823-1-hch@lst.de>
-References: <20200510075510.987823-1-hch@lst.de>
+        Mon, 11 May 2020 03:36:18 -0400
+Received: by mail-ot1-f67.google.com with SMTP id c3so6760125otp.8
+        for <linux-m68k@lists.linux-m68k.org>; Mon, 11 May 2020 00:36:17 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=l3VY/12wWR1zHjOHzyqluXVdqy0F7FQQDSlqPm2Zx5o=;
+        b=ZzoHxWOVRnK8VU8b9TipOmr6/qj2XFovFlYMtgr2tHHwcdxI+pT4WUhRQby/jClgeq
+         OlwG3pTC4v5an73ZfurR2TdimRrhOkVC8EqfLNuCD1WxQcZZMR/v2/kgX1Z6B0HlCXSO
+         DQwYlaFEipaZZq25tcC2URcmPoeh4bJTC/modbNEHvbrf7tRDjkElDO7VYuTQhHRerLf
+         tmYOSuwTpcWxHRhY54HkKBsk/o4YUrbyNL0q/2IpCo1VrU2w7JzczFQqZr761w9WMgP5
+         fF08hmoIvhDTZm95uf9Uo5gkj8n25M+iQSinsgPnTDdZBf7eseFPEQry+ks5PsudTlOn
+         FR/g==
+X-Gm-Message-State: AGi0PuZzw3wv8YRjqhvrmeg7rF451st8LE6k7h02dDsZ4zI1Ruoq+lyI
+        RylRJLUjWy89MHqGB3qIw+8i5RJj7XpOIqlS1P4=
+X-Google-Smtp-Source: APiQypLU+moEt/plrIiBoDJtx6y9Ecp1jwHNmsr5IHgDhGkXTabpMRQH56iYz7dU/N/BpO7atrGAmOYhZDTTv1TixAM=
+X-Received: by 2002:a9d:7990:: with SMTP id h16mr11274742otm.145.1589182577008;
+ Mon, 11 May 2020 00:36:17 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
+References: <20200510075510.987823-1-hch@lst.de> <20200510075510.987823-22-hch@lst.de>
+In-Reply-To: <20200510075510.987823-22-hch@lst.de>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Mon, 11 May 2020 09:36:05 +0200
+Message-ID: <CAMuHMdXS-ygT01KfhS0y9WcYbi9HKdQL7Q1HXgUZdayzQb_qSA@mail.gmail.com>
+Subject: Re: [PATCH 21/31] mm: rename flush_icache_user_range to flush_icache_user_page
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Roman Zippel <zippel@linux-m68k.org>,
+        Jessica Yu <jeyu@kernel.org>, Michal Simek <monstr@monstr.eu>,
+        "the arch/x86 maintainers" <x86@kernel.org>,
+        alpha <linux-alpha@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        linux-c6x-dev@linux-c6x.org,
+        "open list:QUALCOMM HEXAGON..." <linux-hexagon@vger.kernel.org>,
+        "linux-ia64@vger.kernel.org" <linux-ia64@vger.kernel.org>,
+        linux-m68k <linux-m68k@lists.linux-m68k.org>,
+        "open list:BROADCOM NVRAM DRIVER" <linux-mips@vger.kernel.org>,
+        Openrisc <openrisc@lists.librecores.org>,
+        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
+        linux-riscv@lists.infradead.org,
+        Linux-sh list <linux-sh@vger.kernel.org>,
+        sparclinux <sparclinux@vger.kernel.org>,
+        Linux-Arch <linux-arch@vger.kernel.org>,
+        Linux MM <linux-mm@kvack.org>,
+        linux-um <linux-um@lists.infradead.org>,
+        "open list:TENSILICA XTENSA PORT (xtensa)" 
+        <linux-xtensa@linux-xtensa.org>,
+        Linux FS Devel <linux-fsdevel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-m68k-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-flush_icache_user_range is only used by copy_to_user_page, which is
-only used by core VM code.
+On Sun, May 10, 2020 at 9:57 AM Christoph Hellwig <hch@lst.de> wrote:
+> The function currently known as flush_icache_user_range only operates
+> on a single page.  Rename it to flush_icache_user_page as we'll need
+> the name flush_icache_user_range for something else soon.
+>
+> Signed-off-by: Christoph Hellwig <hch@lst.de>
 
-Signed-off-by: Christoph Hellwig <hch@lst.de>
----
- arch/powerpc/mm/mem.c | 1 -
- 1 file changed, 1 deletion(-)
+>  arch/m68k/include/asm/cacheflush_mm.h  |  4 ++--
+>  arch/m68k/mm/cache.c                   |  2 +-
 
-diff --git a/arch/powerpc/mm/mem.c b/arch/powerpc/mm/mem.c
-index 041ed7cfd341a..f0d1bf0a8e14f 100644
---- a/arch/powerpc/mm/mem.c
-+++ b/arch/powerpc/mm/mem.c
-@@ -587,7 +587,6 @@ void flush_icache_user_range(struct vm_area_struct *vma, struct page *page,
- 	flush_icache_range(maddr, maddr + len);
- 	kunmap(page);
- }
--EXPORT_SYMBOL(flush_icache_user_range);
- 
- /*
-  * System memory should not be in /proc/iomem but various tools expect it
+Acked-by: Geert Uytterhoeven <geert@linux-m68k.org>
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
 -- 
-2.26.2
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
