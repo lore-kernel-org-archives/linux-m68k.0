@@ -2,114 +2,78 @@ Return-Path: <SRS0=1ZKR=6Z=vger.kernel.org=linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.2 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,
-	USER_AGENT_SANE_1 autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-5.2 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
+	MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 73914C47255
-	for <linux-m68k@archiver.kernel.org>; Mon, 11 May 2020 11:00:25 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 6F485C54E8D
+	for <linux-m68k@archiver.kernel.org>; Mon, 11 May 2020 15:11:26 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 5493B20801
-	for <linux-m68k@archiver.kernel.org>; Mon, 11 May 2020 11:00:25 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 4EB8C20736
+	for <linux-m68k@archiver.kernel.org>; Mon, 11 May 2020 15:11:26 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729560AbgEKLAZ (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Mon, 11 May 2020 07:00:25 -0400
-Received: from foss.arm.com ([217.140.110.172]:56324 "EHLO foss.arm.com"
+        id S1726438AbgEKPL0 (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Mon, 11 May 2020 11:11:26 -0400
+Received: from verein.lst.de ([213.95.11.211]:36576 "EHLO verein.lst.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729556AbgEKLAZ (ORCPT <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Mon, 11 May 2020 07:00:25 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 4AD751FB;
-        Mon, 11 May 2020 04:00:24 -0700 (PDT)
-Received: from gaia (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id DFC143F305;
-        Mon, 11 May 2020 04:00:20 -0700 (PDT)
-Date:   Mon, 11 May 2020 12:00:14 +0100
-From:   Catalin Marinas <catalin.marinas@arm.com>
-To:     Will Deacon <will@kernel.org>
-Cc:     Christoph Hellwig <hch@lst.de>, james.morse@arm.com,
+        id S1728090AbgEKPLZ (ORCPT <rfc822;linux-m68k@lists.linux-m68k.org>);
+        Mon, 11 May 2020 11:11:25 -0400
+Received: by verein.lst.de (Postfix, from userid 2407)
+        id 2865568BFE; Mon, 11 May 2020 17:11:21 +0200 (CEST)
+Date:   Mon, 11 May 2020 17:11:20 +0200
+From:   Christoph Hellwig <hch@lst.de>
+To:     Geert Uytterhoeven <geert@linux-m68k.org>
+Cc:     Christoph Hellwig <hch@lst.de>,
         Andrew Morton <akpm@linux-foundation.org>,
         Arnd Bergmann <arnd@arndb.de>,
         Roman Zippel <zippel@linux-m68k.org>,
         Jessica Yu <jeyu@kernel.org>, Michal Simek <monstr@monstr.eu>,
-        x86@kernel.org, linux-alpha@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-c6x-dev@linux-c6x.org, linux-hexagon@vger.kernel.org,
-        linux-ia64@vger.kernel.org, linux-m68k@lists.linux-m68k.org,
-        linux-mips@vger.kernel.org, openrisc@lists.librecores.org,
-        linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org,
-        linux-sh@vger.kernel.org, sparclinux@vger.kernel.org,
-        linux-arch@vger.kernel.org, linux-mm@kvack.org,
-        linux-um@lists.infradead.org, linux-xtensa@linux-xtensa.org,
-        linux-fsdevel@vger.kernel.org
-Subject: Re: [PATCH 02/31] arm64: fix the flush_icache_range arguments in
- machine_kexec
-Message-ID: <20200511110014.GA19176@gaia>
-References: <20200510075510.987823-1-hch@lst.de>
- <20200510075510.987823-3-hch@lst.de>
- <20200511075115.GA16134@willie-the-truck>
+        the arch/x86 maintainers <x86@kernel.org>,
+        alpha <linux-alpha@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        linux-c6x-dev@linux-c6x.org,
+        "open list:QUALCOMM HEXAGON..." <linux-hexagon@vger.kernel.org>,
+        "linux-ia64@vger.kernel.org" <linux-ia64@vger.kernel.org>,
+        linux-m68k <linux-m68k@lists.linux-m68k.org>,
+        "open list:BROADCOM NVRAM DRIVER" <linux-mips@vger.kernel.org>,
+        Openrisc <openrisc@lists.librecores.org>,
+        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
+        linux-riscv@lists.infradead.org,
+        Linux-sh list <linux-sh@vger.kernel.org>,
+        sparclinux <sparclinux@vger.kernel.org>,
+        Linux-Arch <linux-arch@vger.kernel.org>,
+        Linux MM <linux-mm@kvack.org>,
+        linux-um <linux-um@lists.infradead.org>,
+        "open list:TENSILICA XTENSA PORT (xtensa)" 
+        <linux-xtensa@linux-xtensa.org>,
+        Linux FS Devel <linux-fsdevel@vger.kernel.org>
+Subject: Re: [PATCH 31/31] module: move the set_fs hack for
+ flush_icache_range to m68k
+Message-ID: <20200511151120.GA28634@lst.de>
+References: <20200510075510.987823-1-hch@lst.de> <20200510075510.987823-32-hch@lst.de> <CAMuHMdU_OxNoKfO=i903kx0mgk0-i2h4u2ase3m9_dn6oFh_5g@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200511075115.GA16134@willie-the-truck>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <CAMuHMdU_OxNoKfO=i903kx0mgk0-i2h4u2ase3m9_dn6oFh_5g@mail.gmail.com>
+User-Agent: Mutt/1.5.17 (2007-11-01)
 Sender: linux-m68k-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-On Mon, May 11, 2020 at 08:51:15AM +0100, Will Deacon wrote:
-> On Sun, May 10, 2020 at 09:54:41AM +0200, Christoph Hellwig wrote:
-> > The second argument is the end "pointer", not the length.
-> > 
+On Mon, May 11, 2020 at 09:40:39AM +0200, Geert Uytterhoeven wrote:
+> On Sun, May 10, 2020 at 9:57 AM Christoph Hellwig <hch@lst.de> wrote:
+> >
+> > flush_icache_range generally operates on kernel addresses, but for some
+> > reason m68k needed a set_fs override.  Move that into the m68k code
+> > insted of keeping it in the module loader.
+> >
 > > Signed-off-by: Christoph Hellwig <hch@lst.de>
-> > ---
-> >  arch/arm64/kernel/machine_kexec.c | 1 +
-> >  1 file changed, 1 insertion(+)
-> > 
-> > diff --git a/arch/arm64/kernel/machine_kexec.c b/arch/arm64/kernel/machine_kexec.c
-> > index 8e9c924423b4e..a0b144cfaea71 100644
-> > --- a/arch/arm64/kernel/machine_kexec.c
-> > +++ b/arch/arm64/kernel/machine_kexec.c
-> > @@ -177,6 +177,7 @@ void machine_kexec(struct kimage *kimage)
-> >  	 * the offline CPUs. Therefore, we must use the __* variant here.
-> >  	 */
-> >  	__flush_icache_range((uintptr_t)reboot_code_buffer,
-> > +			     (uintptr_t)reboot_code_buffer +
-> >  			     arm64_relocate_new_kernel_size);
 > 
-> Urgh, well spotted. It's annoyingly different from __flush_dcache_area().
-> 
-> But now I'm wondering what this code actually does... the loop condition
-> in invalidate_icache_by_line works with 64-bit arithmetic, so we could
-> spend a /very/ long time here afaict.
+> Reviewed-by: Geert Uytterhoeven <geert@linux-m68k.org>
+> Acked-by: Geert Uytterhoeven <geert@linux-m68k.org>
 
-I think it goes through the loop only once. The 'b.lo' saves us here.
-OTOH, there is no I-cache maintenance done.
-
-> It's also a bit annoying that we do a bunch of redundant D-cache
-> maintenance too. Should we use invalidate_icache_range() here instead?
-
-Since we have the __flush_dcache_area() above it for cleaning to PoC, we
-could use invalidate_icache_range() here. We probably didn't have this
-function at the time, it was added for KVM (commit 4fee94736603cd6).
-
-> (and why does that thing need to toggle uaccess)?
-
-invalidate_icache_range() doesn't need to, it works on the kernel linear
-map.
-
-__flush_icache_range() doesn't need to either, that's a side-effect of
-the fall-through implementation.
-
-Anyway, I think Christoph's patch needs to go in with a fixes tag:
-
-Fixes: d28f6df1305a ("arm64/kexec: Add core kexec support")
-Cc: <stable@vger.kernel.org> # 4.8.x-
-
-and we'll change these functions/helpers going forward for arm64.
-
-Happy to pick this up via the arm64 for-next/fixes branch.
-
--- 
-Catalin
+Btw, do you know what part of flush_icache_range relied on set_fs?
+Do any of the m68k maintainers have an idea how to handle that in
+a nicer way when we can split the implementations?
