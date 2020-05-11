@@ -2,47 +2,33 @@ Return-Path: <SRS0=1ZKR=6Z=vger.kernel.org=linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=ham autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-8.2 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,
+	USER_AGENT_SANE_1 autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 4E543C47255
-	for <linux-m68k@archiver.kernel.org>; Mon, 11 May 2020 07:51:24 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 73914C47255
+	for <linux-m68k@archiver.kernel.org>; Mon, 11 May 2020 11:00:25 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 267FA208DB
-	for <linux-m68k@archiver.kernel.org>; Mon, 11 May 2020 07:51:24 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=default; t=1589183484;
-	bh=ujV3u+dsl5PKS0aIWtuPo2XlUIWTrnZfhH9932lJ3Ck=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:List-ID:From;
-	b=FGfzOqOn+qresXMJTp4c0d9bIrGbTORTHKOCHPqYWVj2LdcEAtzQ7kJgiJhiXLgaD
-	 y2lobdF4TyiQvEuNsoS5PohgR/GWPMzxLLsGQi+pYMGXUGAwwp8o1LH1CZrjAM96/3
-	 10AtNj4jHeo4o9t4mDT2chIeEzRfQZgLP6lyvgH4=
+	by mail.kernel.org (Postfix) with ESMTP id 5493B20801
+	for <linux-m68k@archiver.kernel.org>; Mon, 11 May 2020 11:00:25 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726661AbgEKHvX (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Mon, 11 May 2020 03:51:23 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50800 "EHLO mail.kernel.org"
+        id S1729560AbgEKLAZ (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Mon, 11 May 2020 07:00:25 -0400
+Received: from foss.arm.com ([217.140.110.172]:56324 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726287AbgEKHvX (ORCPT <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Mon, 11 May 2020 03:51:23 -0400
-Received: from willie-the-truck (236.31.169.217.in-addr.arpa [217.169.31.236])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 15B2F20735;
-        Mon, 11 May 2020 07:51:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1589183483;
-        bh=ujV3u+dsl5PKS0aIWtuPo2XlUIWTrnZfhH9932lJ3Ck=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=0mQ7t5as8jZps7eSFkQLnwLtzVeQdo1iP3qe/Hftt/g3zJxfzwQVDrNcWnrxBfusE
-         WGRRbC87hk6tU7Y02J552JkiWyPKHGmHG8/2xNIIubv0rRSCeTtP6ug62nSc345L3i
-         YbZ4edSRI7cSRvmZAntksnLnC8c2Z4vBB1WMY+EY=
-Date:   Mon, 11 May 2020 08:51:15 +0100
-From:   Will Deacon <will@kernel.org>
-To:     Christoph Hellwig <hch@lst.de>, james.morse@arm.com,
-        catalin.marinas@arm.com
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        id S1729556AbgEKLAZ (ORCPT <rfc822;linux-m68k@lists.linux-m68k.org>);
+        Mon, 11 May 2020 07:00:25 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 4AD751FB;
+        Mon, 11 May 2020 04:00:24 -0700 (PDT)
+Received: from gaia (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id DFC143F305;
+        Mon, 11 May 2020 04:00:20 -0700 (PDT)
+Date:   Mon, 11 May 2020 12:00:14 +0100
+From:   Catalin Marinas <catalin.marinas@arm.com>
+To:     Will Deacon <will@kernel.org>
+Cc:     Christoph Hellwig <hch@lst.de>, james.morse@arm.com,
+        Andrew Morton <akpm@linux-foundation.org>,
         Arnd Bergmann <arnd@arndb.de>,
         Roman Zippel <zippel@linux-m68k.org>,
         Jessica Yu <jeyu@kernel.org>, Michal Simek <monstr@monstr.eu>,
@@ -58,48 +44,72 @@ Cc:     Andrew Morton <akpm@linux-foundation.org>,
         linux-fsdevel@vger.kernel.org
 Subject: Re: [PATCH 02/31] arm64: fix the flush_icache_range arguments in
  machine_kexec
-Message-ID: <20200511075115.GA16134@willie-the-truck>
+Message-ID: <20200511110014.GA19176@gaia>
 References: <20200510075510.987823-1-hch@lst.de>
  <20200510075510.987823-3-hch@lst.de>
+ <20200511075115.GA16134@willie-the-truck>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200510075510.987823-3-hch@lst.de>
+In-Reply-To: <20200511075115.GA16134@willie-the-truck>
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-m68k-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-[+James and Catalin]
-
-On Sun, May 10, 2020 at 09:54:41AM +0200, Christoph Hellwig wrote:
-> The second argument is the end "pointer", not the length.
+On Mon, May 11, 2020 at 08:51:15AM +0100, Will Deacon wrote:
+> On Sun, May 10, 2020 at 09:54:41AM +0200, Christoph Hellwig wrote:
+> > The second argument is the end "pointer", not the length.
+> > 
+> > Signed-off-by: Christoph Hellwig <hch@lst.de>
+> > ---
+> >  arch/arm64/kernel/machine_kexec.c | 1 +
+> >  1 file changed, 1 insertion(+)
+> > 
+> > diff --git a/arch/arm64/kernel/machine_kexec.c b/arch/arm64/kernel/machine_kexec.c
+> > index 8e9c924423b4e..a0b144cfaea71 100644
+> > --- a/arch/arm64/kernel/machine_kexec.c
+> > +++ b/arch/arm64/kernel/machine_kexec.c
+> > @@ -177,6 +177,7 @@ void machine_kexec(struct kimage *kimage)
+> >  	 * the offline CPUs. Therefore, we must use the __* variant here.
+> >  	 */
+> >  	__flush_icache_range((uintptr_t)reboot_code_buffer,
+> > +			     (uintptr_t)reboot_code_buffer +
+> >  			     arm64_relocate_new_kernel_size);
 > 
-> Signed-off-by: Christoph Hellwig <hch@lst.de>
-> ---
->  arch/arm64/kernel/machine_kexec.c | 1 +
->  1 file changed, 1 insertion(+)
+> Urgh, well spotted. It's annoyingly different from __flush_dcache_area().
 > 
-> diff --git a/arch/arm64/kernel/machine_kexec.c b/arch/arm64/kernel/machine_kexec.c
-> index 8e9c924423b4e..a0b144cfaea71 100644
-> --- a/arch/arm64/kernel/machine_kexec.c
-> +++ b/arch/arm64/kernel/machine_kexec.c
-> @@ -177,6 +177,7 @@ void machine_kexec(struct kimage *kimage)
->  	 * the offline CPUs. Therefore, we must use the __* variant here.
->  	 */
->  	__flush_icache_range((uintptr_t)reboot_code_buffer,
-> +			     (uintptr_t)reboot_code_buffer +
->  			     arm64_relocate_new_kernel_size);
+> But now I'm wondering what this code actually does... the loop condition
+> in invalidate_icache_by_line works with 64-bit arithmetic, so we could
+> spend a /very/ long time here afaict.
 
-Urgh, well spotted. It's annoyingly different from __flush_dcache_area().
+I think it goes through the loop only once. The 'b.lo' saves us here.
+OTOH, there is no I-cache maintenance done.
 
-But now I'm wondering what this code actually does... the loop condition
-in invalidate_icache_by_line works with 64-bit arithmetic, so we could
-spend a /very/ long time here afaict. It's also a bit annoying that we
-do a bunch of redundant D-cache maintenance too.
+> It's also a bit annoying that we do a bunch of redundant D-cache
+> maintenance too. Should we use invalidate_icache_range() here instead?
 
-Should we use invalidate_icache_range() here instead? (and why does that
-thing need to toggle uaccess)? Argh, too many questions!
+Since we have the __flush_dcache_area() above it for cleaning to PoC, we
+could use invalidate_icache_range() here. We probably didn't have this
+function at the time, it was added for KVM (commit 4fee94736603cd6).
 
-Will
+> (and why does that thing need to toggle uaccess)?
+
+invalidate_icache_range() doesn't need to, it works on the kernel linear
+map.
+
+__flush_icache_range() doesn't need to either, that's a side-effect of
+the fall-through implementation.
+
+Anyway, I think Christoph's patch needs to go in with a fixes tag:
+
+Fixes: d28f6df1305a ("arm64/kexec: Add core kexec support")
+Cc: <stable@vger.kernel.org> # 4.8.x-
+
+and we'll change these functions/helpers going forward for arm64.
+
+Happy to pick this up via the arm64 for-next/fixes branch.
+
+-- 
+Catalin
