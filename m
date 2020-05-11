@@ -2,75 +2,74 @@ Return-Path: <SRS0=1ZKR=6Z=vger.kernel.org=linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.8 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
-	MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS autolearn=no
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-0.8 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 94BA7C54E8F
-	for <linux-m68k@archiver.kernel.org>; Mon, 11 May 2020 15:24:45 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 807B1C47255
+	for <linux-m68k@archiver.kernel.org>; Mon, 11 May 2020 15:25:58 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 7C78620746
-	for <linux-m68k@archiver.kernel.org>; Mon, 11 May 2020 15:24:45 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 61BDE206D5
+	for <linux-m68k@archiver.kernel.org>; Mon, 11 May 2020 15:25:58 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730295AbgEKPYp (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Mon, 11 May 2020 11:24:45 -0400
-Received: from mail-oo1-f65.google.com ([209.85.161.65]:39214 "EHLO
-        mail-oo1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729442AbgEKPYn (ORCPT
+        id S1729771AbgEKPZ6 (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Mon, 11 May 2020 11:25:58 -0400
+Received: from mail-oi1-f196.google.com ([209.85.167.196]:33920 "EHLO
+        mail-oi1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726687AbgEKPZ5 (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Mon, 11 May 2020 11:24:43 -0400
-Received: by mail-oo1-f65.google.com with SMTP id c83so2007736oob.6
-        for <linux-m68k@lists.linux-m68k.org>; Mon, 11 May 2020 08:24:42 -0700 (PDT)
+        Mon, 11 May 2020 11:25:57 -0400
+Received: by mail-oi1-f196.google.com with SMTP id c12so14413559oic.1
+        for <linux-m68k@lists.linux-m68k.org>; Mon, 11 May 2020 08:25:57 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=cFOqYFe+JnxanB4tWXMEfN+/EOvlslN0N0IK+ztKBU4=;
-        b=HVrthcmius59x2eDniVmmfDnPG3TKhk7mBb60YAGZGCoj0EMz4duPeTtj09BSpBuU0
-         M/eFRg2qHl5wsf6eAsSEmKjZ9bUfBAFr44bRgFU//QyGEsrZ2ilxMhohomQmW5lHMWNr
-         CYzUpqBsTFSKiWNgoDRrujqJyNvK9NeJr1jTTqqB06xHgnU0bPA1kFqZ6Wd20AizZ8IR
-         Hwc4q8aeAjcr1fSsf4udI7k9ZWpzAdKc1RiSDANSb9S/nhoD+E/d0Dusw7v0mkigOMXC
-         sWoBabSglJVw+CFLvBN+R4DmMkq5xmxwmAUIltrTTt4QxYFMVOxlmMTkMv1xOsflFMeG
-         n8pQ==
-X-Gm-Message-State: AGi0PubRWs5cDFHDeGozGhASY28buTTUI7X5TvuSZaxau0AN9AUSnphT
-        Ehi96DccVn2pdPgxRfqag2WHBe4Y86rpc04d43M=
-X-Google-Smtp-Source: APiQypJasCN4yl8lWM1FRmzaz39ukL/iWbljLpcbY1TKIvOnIUfi1IKvTWCvzobh4HXgocJWo6GBkm5ORmsQ5s6pFSU=
-X-Received: by 2002:a4a:d204:: with SMTP id c4mr2380562oos.1.1589210682093;
- Mon, 11 May 2020 08:24:42 -0700 (PDT)
+        bh=TzBIrOjeonGRZOL/Fq7k9DQ5ZvmwekoG5+JYmyzDCXE=;
+        b=a8iryAVOJH6sp3A3KGv3CjFxd8f3pOTp5T+dVVfoRBFgylRqnSfilHQyagm7YXcE4O
+         s7PLeya8Y7X8bvB5KEVqAMQOAXDL0NE9KFnENh9Qf0quWtDTQ6d+2nPdaUHN6GftnWMW
+         2D1rSY/fNTeTE6suYx43VAg4fib9mMcIaZuLcw5y4pvkbMc6NfUPBj4XG0/Y58LA7eKM
+         8dqiwEJfRXzqbiL1fluhojXKT6yb+/1/KkXTw5yXHGACE/dIgQZgqPFUHaEUf8UZ0kVx
+         59/gp7UKbGDoOJyT0qxEl/XfzJb4lIowat6Fj+KkMjP6vASS/YXgt8tTnKeYLRRkuhG9
+         +L4w==
+X-Gm-Message-State: AGi0PuYLrUNqiQnMo+ptYSyzrQ4yJIAHnJgZhvgaQfd5mKtRi+IZP76x
+        HwL7sf3aMp5XM/rw4zl2wsfXiiMbUILMVeQ+/7Y=
+X-Google-Smtp-Source: APiQypLlj1mTr31cEwJB2xy6sDTZQtzFBc6S7Z09a7MvI75cUG4xFy+vj6rnOik7yeSDKBHlS8j7JE0DJYDjRznsD0s=
+X-Received: by 2002:aca:895:: with SMTP id 143mr19322774oii.153.1589210756876;
+ Mon, 11 May 2020 08:25:56 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200510075510.987823-1-hch@lst.de> <20200510075510.987823-32-hch@lst.de>
- <CAMuHMdU_OxNoKfO=i903kx0mgk0-i2h4u2ase3m9_dn6oFh_5g@mail.gmail.com> <20200511151120.GA28634@lst.de>
-In-Reply-To: <20200511151120.GA28634@lst.de>
+References: <20200510075510.987823-1-hch@lst.de> <CAMuHMdXazsBw0mjJd0uFHQud7qbb5-Uw-PTDB3+-M=huRWOfgQ@mail.gmail.com>
+ <20200511151356.GB28634@lst.de>
+In-Reply-To: <20200511151356.GB28634@lst.de>
 From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Mon, 11 May 2020 17:24:30 +0200
-Message-ID: <CAMuHMdW1S91i3x0unNcJnypHse7ifynGb4dZcVhJaemR3GH1Pg@mail.gmail.com>
-Subject: Re: [PATCH 31/31] module: move the set_fs hack for flush_icache_range
- to m68k
+Date:   Mon, 11 May 2020 17:25:45 +0200
+Message-ID: <CAMuHMdU1xAmyWysi5xRoaRL7PFurPncvEL0CcEY0V_sUz3EJPw@mail.gmail.com>
+Subject: Re: sort out the flush_icache_range mess
 To:     Christoph Hellwig <hch@lst.de>
 Cc:     Andrew Morton <akpm@linux-foundation.org>,
         Arnd Bergmann <arnd@arndb.de>,
         Roman Zippel <zippel@linux-m68k.org>,
-        Jessica Yu <jeyu@kernel.org>, Michal Simek <monstr@monstr.eu>,
-        "the arch/x86 maintainers" <x86@kernel.org>,
-        alpha <linux-alpha@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        linux-c6x-dev@linux-c6x.org,
-        "open list:QUALCOMM HEXAGON..." <linux-hexagon@vger.kernel.org>,
-        "linux-ia64@vger.kernel.org" <linux-ia64@vger.kernel.org>,
-        linux-m68k <linux-m68k@lists.linux-m68k.org>,
-        "open list:BROADCOM NVRAM DRIVER" <linux-mips@vger.kernel.org>,
-        Openrisc <openrisc@lists.librecores.org>,
-        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
-        linux-riscv@lists.infradead.org,
-        Linux-sh list <linux-sh@vger.kernel.org>,
-        sparclinux <sparclinux@vger.kernel.org>,
         Linux-Arch <linux-arch@vger.kernel.org>,
-        Linux MM <linux-mm@kvack.org>,
-        linux-um <linux-um@lists.infradead.org>,
         "open list:TENSILICA XTENSA PORT (xtensa)" 
-        <linux-xtensa@linux-xtensa.org>,
-        Linux FS Devel <linux-fsdevel@vger.kernel.org>
+        <linux-xtensa@linux-xtensa.org>, Michal Simek <monstr@monstr.eu>,
+        Jessica Yu <jeyu@kernel.org>,
+        "linux-ia64@vger.kernel.org" <linux-ia64@vger.kernel.org>,
+        linux-c6x-dev@linux-c6x.org,
+        Linux-sh list <linux-sh@vger.kernel.org>,
+        "open list:QUALCOMM HEXAGON..." <linux-hexagon@vger.kernel.org>,
+        "the arch/x86 maintainers" <x86@kernel.org>,
+        linux-um <linux-um@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "open list:BROADCOM NVRAM DRIVER" <linux-mips@vger.kernel.org>,
+        Linux MM <linux-mm@kvack.org>,
+        linux-m68k <linux-m68k@lists.linux-m68k.org>,
+        Openrisc <openrisc@lists.librecores.org>,
+        alpha <linux-alpha@vger.kernel.org>,
+        sparclinux <sparclinux@vger.kernel.org>,
+        Linux FS Devel <linux-fsdevel@vger.kernel.org>,
+        linux-riscv@lists.infradead.org,
+        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>
 Content-Type: text/plain; charset="UTF-8"
 Sender: linux-m68k-owner@vger.kernel.org
 Precedence: bulk
@@ -79,30 +78,29 @@ X-Mailing-List: linux-m68k@vger.kernel.org
 
 Hi Christoph,
 
-On Mon, May 11, 2020 at 5:11 PM Christoph Hellwig <hch@lst.de> wrote:
-> On Mon, May 11, 2020 at 09:40:39AM +0200, Geert Uytterhoeven wrote:
-> > On Sun, May 10, 2020 at 9:57 AM Christoph Hellwig <hch@lst.de> wrote:
-> > >
-> > > flush_icache_range generally operates on kernel addresses, but for some
-> > > reason m68k needed a set_fs override.  Move that into the m68k code
-> > > insted of keeping it in the module loader.
-> > >
-> > > Signed-off-by: Christoph Hellwig <hch@lst.de>
+On Mon, May 11, 2020 at 5:14 PM Christoph Hellwig <hch@lst.de> wrote:
+> On Mon, May 11, 2020 at 09:46:17AM +0200, Geert Uytterhoeven wrote:
+> > On Sun, May 10, 2020 at 9:55 AM Christoph Hellwig <hch@lst.de> wrote:
+> > > none of which really are used by a typical MMU enabled kernel, as a.out can
+> > > only be build for alpha and m68k to start with.
 > >
-> > Reviewed-by: Geert Uytterhoeven <geert@linux-m68k.org>
-> > Acked-by: Geert Uytterhoeven <geert@linux-m68k.org>
+> > Quoting myself:
+> > "I think it's safe to assume no one still runs a.out binaries on m68k."
+> > http://lore.kernel.org/r/CAMuHMdW+m0Q+j3rsQdMXnrEPm+XB5Y2AQrxW5sD1mZAKgmEqoA@mail.gmail.com
 >
-> Btw, do you know what part of flush_icache_range relied on set_fs?
-> Do any of the m68k maintainers have an idea how to handle that in
-> a nicer way when we can split the implementations?
+> Do you want to drop the:
+>
+>     select HAVE_AOUT if MMU
+>
+> for m68k then?
 
-arch/m68k/mm/cache.c:virt_to_phys_slow()
+If that helps to reduce maintenance, it's fine for me.
+That leaves alpha as the sole user?
 
-All instructions that look up addresses in the page tables look at the
-source/destination function codes (SFC/DFC) to know if they have to use
-the supervisor or user page tables.
-So the actual implementation is the same: set_fs() merely configures
-SFC/DFC, to select the address space to use.
+> Note that we'll still need flush_icache_user_range for m68k with mmu,
+> as it also allows binfmt_flat for mmu configs.
+
+Understood.
 
 Gr{oetje,eeting}s,
 
