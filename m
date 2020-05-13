@@ -2,59 +2,120 @@ Return-Path: <SRS0=cCzT=63=vger.kernel.org=linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.2 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=no
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-3.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 1164BC2D0F8
-	for <linux-m68k@archiver.kernel.org>; Wed, 13 May 2020 06:23:23 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8D6FCC2D0FD
+	for <linux-m68k@archiver.kernel.org>; Wed, 13 May 2020 11:59:49 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id ECE00206F5
-	for <linux-m68k@archiver.kernel.org>; Wed, 13 May 2020 06:23:22 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 6C91123127
+	for <linux-m68k@archiver.kernel.org>; Wed, 13 May 2020 11:59:49 +0000 (UTC)
+Authentication-Results: mail.kernel.org;
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="dFf/OB1L"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728927AbgEMGXW (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Wed, 13 May 2020 02:23:22 -0400
-Received: from verein.lst.de ([213.95.11.211]:44434 "EHLO verein.lst.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728498AbgEMGXW (ORCPT <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Wed, 13 May 2020 02:23:22 -0400
-Received: by verein.lst.de (Postfix, from userid 2407)
-        id E27C468C65; Wed, 13 May 2020 08:23:18 +0200 (CEST)
-Date:   Wed, 13 May 2020 08:23:18 +0200
-From:   Christoph Hellwig <hch@lst.de>
-To:     Palmer Dabbelt <palmer@dabbelt.com>
-Cc:     Christoph Hellwig <hch@lst.de>, akpm@linux-foundation.org,
-        Arnd Bergmann <arnd@arndb.de>, zippel@linux-m68k.org,
-        linux-arch@vger.kernel.org, linux-xtensa@linux-xtensa.org,
-        monstr@monstr.eu, jeyu@kernel.org, linux-ia64@vger.kernel.org,
-        linux-c6x-dev@linux-c6x.org, linux-sh@vger.kernel.org,
-        linux-hexagon@vger.kernel.org, x86@kernel.org,
-        linux-um@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-mips@vger.kernel.org, linux-mm@kvack.org,
-        linux-m68k@lists.linux-m68k.org, openrisc@lists.librecores.org,
-        linux-alpha@vger.kernel.org, sparclinux@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-riscv@lists.infradead.org,
-        linuxppc-dev@lists.ozlabs.org, linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH 19/31] riscv: use asm-generic/cacheflush.h
-Message-ID: <20200513062318.GA24133@lst.de>
-References: <20200510075510.987823-20-hch@lst.de> <mhng-8adbedbc-0f91-4291-9471-2df5eb7b802b@palmerdabbelt-glaptop1>
+        id S1732340AbgEML7s (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Wed, 13 May 2020 07:59:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41252 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729271AbgEML7r (ORCPT
+        <rfc822;linux-m68k@vger.kernel.org>); Wed, 13 May 2020 07:59:47 -0400
+Received: from mail-ua1-x942.google.com (mail-ua1-x942.google.com [IPv6:2607:f8b0:4864:20::942])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8D94EC061A0C
+        for <linux-m68k@vger.kernel.org>; Wed, 13 May 2020 04:59:47 -0700 (PDT)
+Received: by mail-ua1-x942.google.com with SMTP id y10so5950119uao.8
+        for <linux-m68k@vger.kernel.org>; Wed, 13 May 2020 04:59:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=aKC3e9/aFqEyQsi12nQO5SZTFP347yzWMoN1Uw5P0XQ=;
+        b=dFf/OB1LlPqedz0aREfzsOdKso/hLi6bsb9ljL0ID5x7NfxheZ4plN4kDvtTFqBmJj
+         ftyzA1yRF1oTq6+Vws4q6Dx3Q4vh7jjFKXqRSBigEBdZs4N+X1HY1KbMfUAWtuj+BMcS
+         hCQaECK9o+YX7iZ/aISrMhW5inwFdzFrSCkhkhq7KbIdBW5uScuDf5yqQ9+DyMgYhQu1
+         MuZxs62XSeTKguK5HDeSINt/r6yA9PwLigqJQDWxPt13oQ0KmeI6UgydFnsfl/0492Hg
+         JxpNHPTjZNhX2ofF86U6ES9rqm5dWwKpE0nBTP2PyJRrxcDzift9UG30X+y2Bm38Mu0M
+         cdmw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=aKC3e9/aFqEyQsi12nQO5SZTFP347yzWMoN1Uw5P0XQ=;
+        b=aaQd7xiJmlnOqtEzH6HkgAzHYa1qNyGLK0E5qMjd2kW/GPVBbFmkFfMoAR+2mTau3o
+         nxgQ/VpyJHhtU2RTGj06dD+jatTUOM/2ZJgOuOdyS8jpSSO60nuqmQsyXGoPBTMVmzVg
+         oWNXcg6OduK5F3Bjp8glcNgzkRnhG0Qn/MsoioNmmEEQGGDahJbxlv9s8QXAdEyy5pav
+         TeQ8gZiuVri0wCIc90gzXtd3MnV7sMlKX5lOADWwU24mshX/PgyNrO+mMjS/YU4RDeTx
+         z/8t6kkd+tRt6jv1D0kgzhiJ+dTqFaMt+fMpnmAvElKdOG8vlAF3QCYOrWRMMee9kIF3
+         fd1Q==
+X-Gm-Message-State: AGi0PubqZl0KgpWYf+sYrCd9RXeJvmH5HLSO8zmhn22lQx3ieE8xWlvI
+        Nbv55ho2kUPr4MDhw59Z7aS5owxR4BIXeU1f/w+Spg==
+X-Google-Smtp-Source: APiQypKquxL983aiOC1tqFBK1O0zfe8L4/l43OGtnDQgDfiBulRzZUqGmA95yyD1TqedEmzM8ovER+L2jUxyHzOwBOo=
+X-Received: by 2002:ab0:544a:: with SMTP id o10mr18877138uaa.15.1589371186638;
+ Wed, 13 May 2020 04:59:46 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <mhng-8adbedbc-0f91-4291-9471-2df5eb7b802b@palmerdabbelt-glaptop1>
-User-Agent: Mutt/1.5.17 (2007-11-01)
+References: <20200501235907.3978-1-angelo.dureghello@timesys.com>
+ <CAPDyKFoLpMTQD+3SnXBNnqVLBMKDf6y=3X+MoPep42SCiQ6+TQ@mail.gmail.com> <bde7080c-298d-c28b-5986-dbabc95985bf@westnet.com.au>
+In-Reply-To: <bde7080c-298d-c28b-5986-dbabc95985bf@westnet.com.au>
+From:   Ulf Hansson <ulf.hansson@linaro.org>
+Date:   Wed, 13 May 2020 13:59:10 +0200
+Message-ID: <CAPDyKFqdGGfCurSRG8poO2aCbOmRb9so7-zarKEb1yUnBP=GXA@mail.gmail.com>
+Subject: Re: [PATCH v3 1/3] m68k: mcf5441x: add support for esdhc mmc controller
+To:     Greg Ungerer <gregungerer@westnet.com.au>,
+        Angelo Dureghello <angelo.dureghello@timesys.com>
+Cc:     Geert Uytterhoeven <geert@linux-m68k.org>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>,
+        linux-m68k@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-m68k-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-On Tue, May 12, 2020 at 04:00:26PM -0700, Palmer Dabbelt wrote:
-> Reviewed-by: Palmer Dabbelt <palmerdabbelt@google.com>
-> Acked-by: Palmer Dabbelt <palmerdabbelt@google.com>
+On Tue, 12 May 2020 at 17:09, Greg Ungerer <gregungerer@westnet.com.au> wrote:
 >
-> Were you trying to get these all in at once, or do you want me to take it into
-> my tree?
+> Hi Ulf,
+>
+> On 7/5/20 7:13 pm, Ulf Hansson wrote:
+> > + Geert
+> >
+> > On Sat, 2 May 2020 at 01:54, Angelo Dureghello
+> > <angelo.dureghello@timesys.com> wrote:
+> >>
+> >> Add support for sdhci-edshc mmc controller.
+> >>
+> >> Signed-off-by: Angelo Dureghello <angelo.dureghello@timesys.com>
+> >> ---
+> >> Changes for v3:
+> >> - removed volatile cast from clk.c
+> >> ---
+> >>   arch/m68k/coldfire/clk.c                    | 15 ++++++++++
+> >>   arch/m68k/coldfire/device.c                 | 33 +++++++++++++++++++--
+> >>   arch/m68k/coldfire/m5441x.c                 | 12 +++++++-
+> >>   arch/m68k/include/asm/m5441xsim.h           | 19 ++++++++++++
+> >>   arch/m68k/include/asm/mcfclk.h              |  2 ++
+> >>   include/linux/platform_data/mmc-esdhc-mcf.h | 17 +++++++++++
+> >>   6 files changed, 95 insertions(+), 3 deletions(-)
+> >>   create mode 100644 include/linux/platform_data/mmc-esdhc-mcf.h
+> >
+> > Not sure what's the best way to deal with this patch. I looped in
+> > Geert to get some input.
+> >
+> > If it looks okay and the risk is minimal for conflicts, I can carry it
+> > via my tree, but then I need an ack from Geert.
+>
+> I can carry just this patch in the m68knommu git tree it you prefer.
+> Should be no conflicts that way. But really if you want to carry it
+> with all the others I don't have a problem with that either.
 
-Except for the small fixups at the beginning of the series this needs
-to go in together.  I'll have to do at least another resend, and after
-that I hope Andrew is going to pick it up.
+It looks like the new platform data header file is being used by the
+mmc patch in 3/3, so it's probably easiest if I take them all via my
+mmc tree.
+
+Anyway, I will wait for a v4 from Angelo to address the comments.
+
+[...]
+
+Kind regards
+Uffe
