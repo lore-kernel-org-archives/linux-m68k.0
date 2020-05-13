@@ -2,120 +2,106 @@ Return-Path: <SRS0=cCzT=63=vger.kernel.org=linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-5.2 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
+	MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 8D6FCC2D0FD
-	for <linux-m68k@archiver.kernel.org>; Wed, 13 May 2020 11:59:49 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id CDC22CA90AF
+	for <linux-m68k@archiver.kernel.org>; Wed, 13 May 2020 12:24:23 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 6C91123127
-	for <linux-m68k@archiver.kernel.org>; Wed, 13 May 2020 11:59:49 +0000 (UTC)
-Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="dFf/OB1L"
+	by mail.kernel.org (Postfix) with ESMTP id AAC872312A
+	for <linux-m68k@archiver.kernel.org>; Wed, 13 May 2020 12:24:23 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732340AbgEML7s (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Wed, 13 May 2020 07:59:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41252 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729271AbgEML7r (ORCPT
-        <rfc822;linux-m68k@vger.kernel.org>); Wed, 13 May 2020 07:59:47 -0400
-Received: from mail-ua1-x942.google.com (mail-ua1-x942.google.com [IPv6:2607:f8b0:4864:20::942])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8D94EC061A0C
-        for <linux-m68k@vger.kernel.org>; Wed, 13 May 2020 04:59:47 -0700 (PDT)
-Received: by mail-ua1-x942.google.com with SMTP id y10so5950119uao.8
-        for <linux-m68k@vger.kernel.org>; Wed, 13 May 2020 04:59:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=aKC3e9/aFqEyQsi12nQO5SZTFP347yzWMoN1Uw5P0XQ=;
-        b=dFf/OB1LlPqedz0aREfzsOdKso/hLi6bsb9ljL0ID5x7NfxheZ4plN4kDvtTFqBmJj
-         ftyzA1yRF1oTq6+Vws4q6Dx3Q4vh7jjFKXqRSBigEBdZs4N+X1HY1KbMfUAWtuj+BMcS
-         hCQaECK9o+YX7iZ/aISrMhW5inwFdzFrSCkhkhq7KbIdBW5uScuDf5yqQ9+DyMgYhQu1
-         MuZxs62XSeTKguK5HDeSINt/r6yA9PwLigqJQDWxPt13oQ0KmeI6UgydFnsfl/0492Hg
-         JxpNHPTjZNhX2ofF86U6ES9rqm5dWwKpE0nBTP2PyJRrxcDzift9UG30X+y2Bm38Mu0M
-         cdmw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=aKC3e9/aFqEyQsi12nQO5SZTFP347yzWMoN1Uw5P0XQ=;
-        b=aaQd7xiJmlnOqtEzH6HkgAzHYa1qNyGLK0E5qMjd2kW/GPVBbFmkFfMoAR+2mTau3o
-         nxgQ/VpyJHhtU2RTGj06dD+jatTUOM/2ZJgOuOdyS8jpSSO60nuqmQsyXGoPBTMVmzVg
-         oWNXcg6OduK5F3Bjp8glcNgzkRnhG0Qn/MsoioNmmEEQGGDahJbxlv9s8QXAdEyy5pav
-         TeQ8gZiuVri0wCIc90gzXtd3MnV7sMlKX5lOADWwU24mshX/PgyNrO+mMjS/YU4RDeTx
-         z/8t6kkd+tRt6jv1D0kgzhiJ+dTqFaMt+fMpnmAvElKdOG8vlAF3QCYOrWRMMee9kIF3
-         fd1Q==
-X-Gm-Message-State: AGi0PubqZl0KgpWYf+sYrCd9RXeJvmH5HLSO8zmhn22lQx3ieE8xWlvI
-        Nbv55ho2kUPr4MDhw59Z7aS5owxR4BIXeU1f/w+Spg==
-X-Google-Smtp-Source: APiQypKquxL983aiOC1tqFBK1O0zfe8L4/l43OGtnDQgDfiBulRzZUqGmA95yyD1TqedEmzM8ovER+L2jUxyHzOwBOo=
-X-Received: by 2002:ab0:544a:: with SMTP id o10mr18877138uaa.15.1589371186638;
- Wed, 13 May 2020 04:59:46 -0700 (PDT)
-MIME-Version: 1.0
-References: <20200501235907.3978-1-angelo.dureghello@timesys.com>
- <CAPDyKFoLpMTQD+3SnXBNnqVLBMKDf6y=3X+MoPep42SCiQ6+TQ@mail.gmail.com> <bde7080c-298d-c28b-5986-dbabc95985bf@westnet.com.au>
-In-Reply-To: <bde7080c-298d-c28b-5986-dbabc95985bf@westnet.com.au>
-From:   Ulf Hansson <ulf.hansson@linaro.org>
-Date:   Wed, 13 May 2020 13:59:10 +0200
-Message-ID: <CAPDyKFqdGGfCurSRG8poO2aCbOmRb9so7-zarKEb1yUnBP=GXA@mail.gmail.com>
-Subject: Re: [PATCH v3 1/3] m68k: mcf5441x: add support for esdhc mmc controller
-To:     Greg Ungerer <gregungerer@westnet.com.au>,
+        id S1731309AbgEMMYX (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Wed, 13 May 2020 08:24:23 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34002 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1731271AbgEMMYX (ORCPT <rfc822;linux-m68k@vger.kernel.org>);
+        Wed, 13 May 2020 08:24:23 -0400
+Received: from [10.44.0.192] (unknown [103.48.210.53])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 8CCC423126;
+        Wed, 13 May 2020 12:24:20 +0000 (UTC)
+Subject: Re: [PATCH v3 1/3] m68k: mcf5441x: add support for esdhc mmc
+ controller
+To:     Ulf Hansson <ulf.hansson@linaro.org>,
         Angelo Dureghello <angelo.dureghello@timesys.com>
 Cc:     Geert Uytterhoeven <geert@linux-m68k.org>,
         Adrian Hunter <adrian.hunter@intel.com>,
         "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>,
         linux-m68k@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+References: <20200501235907.3978-1-angelo.dureghello@timesys.com>
+ <CAPDyKFoLpMTQD+3SnXBNnqVLBMKDf6y=3X+MoPep42SCiQ6+TQ@mail.gmail.com>
+ <bde7080c-298d-c28b-5986-dbabc95985bf@westnet.com.au>
+ <CAPDyKFqdGGfCurSRG8poO2aCbOmRb9so7-zarKEb1yUnBP=GXA@mail.gmail.com>
+From:   Greg Ungerer <gerg@linux-m68k.org>
+Message-ID: <37824363-3769-d0ad-99ba-610e5f5b6562@linux-m68k.org>
+Date:   Wed, 13 May 2020 22:24:16 +1000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
+MIME-Version: 1.0
+In-Reply-To: <CAPDyKFqdGGfCurSRG8poO2aCbOmRb9so7-zarKEb1yUnBP=GXA@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-m68k-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-On Tue, 12 May 2020 at 17:09, Greg Ungerer <gregungerer@westnet.com.au> wrote:
->
-> Hi Ulf,
->
-> On 7/5/20 7:13 pm, Ulf Hansson wrote:
-> > + Geert
-> >
-> > On Sat, 2 May 2020 at 01:54, Angelo Dureghello
-> > <angelo.dureghello@timesys.com> wrote:
-> >>
-> >> Add support for sdhci-edshc mmc controller.
-> >>
-> >> Signed-off-by: Angelo Dureghello <angelo.dureghello@timesys.com>
-> >> ---
-> >> Changes for v3:
-> >> - removed volatile cast from clk.c
-> >> ---
-> >>   arch/m68k/coldfire/clk.c                    | 15 ++++++++++
-> >>   arch/m68k/coldfire/device.c                 | 33 +++++++++++++++++++--
-> >>   arch/m68k/coldfire/m5441x.c                 | 12 +++++++-
-> >>   arch/m68k/include/asm/m5441xsim.h           | 19 ++++++++++++
-> >>   arch/m68k/include/asm/mcfclk.h              |  2 ++
-> >>   include/linux/platform_data/mmc-esdhc-mcf.h | 17 +++++++++++
-> >>   6 files changed, 95 insertions(+), 3 deletions(-)
-> >>   create mode 100644 include/linux/platform_data/mmc-esdhc-mcf.h
-> >
-> > Not sure what's the best way to deal with this patch. I looped in
-> > Geert to get some input.
-> >
-> > If it looks okay and the risk is minimal for conflicts, I can carry it
-> > via my tree, but then I need an ack from Geert.
->
-> I can carry just this patch in the m68knommu git tree it you prefer.
-> Should be no conflicts that way. But really if you want to carry it
-> with all the others I don't have a problem with that either.
 
-It looks like the new platform data header file is being used by the
-mmc patch in 3/3, so it's probably easiest if I take them all via my
-mmc tree.
+On 13/5/20 9:59 pm, Ulf Hansson wrote:
+> On Tue, 12 May 2020 at 17:09, Greg Ungerer <gregungerer@westnet.com.au> wrote:
+>>
+>> Hi Ulf,
+>>
+>> On 7/5/20 7:13 pm, Ulf Hansson wrote:
+>>> + Geert
+>>>
+>>> On Sat, 2 May 2020 at 01:54, Angelo Dureghello
+>>> <angelo.dureghello@timesys.com> wrote:
+>>>>
+>>>> Add support for sdhci-edshc mmc controller.
+>>>>
+>>>> Signed-off-by: Angelo Dureghello <angelo.dureghello@timesys.com>
+>>>> ---
+>>>> Changes for v3:
+>>>> - removed volatile cast from clk.c
+>>>> ---
+>>>>    arch/m68k/coldfire/clk.c                    | 15 ++++++++++
+>>>>    arch/m68k/coldfire/device.c                 | 33 +++++++++++++++++++--
+>>>>    arch/m68k/coldfire/m5441x.c                 | 12 +++++++-
+>>>>    arch/m68k/include/asm/m5441xsim.h           | 19 ++++++++++++
+>>>>    arch/m68k/include/asm/mcfclk.h              |  2 ++
+>>>>    include/linux/platform_data/mmc-esdhc-mcf.h | 17 +++++++++++
+>>>>    6 files changed, 95 insertions(+), 3 deletions(-)
+>>>>    create mode 100644 include/linux/platform_data/mmc-esdhc-mcf.h
+>>>
+>>> Not sure what's the best way to deal with this patch. I looped in
+>>> Geert to get some input.
+>>>
+>>> If it looks okay and the risk is minimal for conflicts, I can carry it
+>>> via my tree, but then I need an ack from Geert.
+>>
+>> I can carry just this patch in the m68knommu git tree it you prefer.
+>> Should be no conflicts that way. But really if you want to carry it
+>> with all the others I don't have a problem with that either.
+> 
+> It looks like the new platform data header file is being used by the
+> mmc patch in 3/3, so it's probably easiest if I take them all via my
+> mmc tree.
+> 
+> Anyway, I will wait for a v4 from Angelo to address the comments.
 
-Anyway, I will wait for a v4 from Angelo to address the comments.
+Ok, no problem.
 
-[...]
+Regards
+Greg
 
-Kind regards
-Uffe
+
+> [...]
+> 
+> Kind regards
+> Uffe
+> 
