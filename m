@@ -2,29 +2,60 @@ Return-Path: <SRS0=cCzT=63=vger.kernel.org=linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.2 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
-	MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
-	USER_AGENT_SANE_1 autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-4.3 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,
+	SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 2B72CC433E0
-	for <linux-m68k@archiver.kernel.org>; Wed, 13 May 2020 18:33:11 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2B912C433E0
+	for <linux-m68k@archiver.kernel.org>; Wed, 13 May 2020 18:45:44 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id CA2CD206F5
-	for <linux-m68k@archiver.kernel.org>; Wed, 13 May 2020 18:33:11 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id CE19D205CB
+	for <linux-m68k@archiver.kernel.org>; Wed, 13 May 2020 18:45:44 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=default; t=1589395544;
+	bh=y3uf4cDEBcGin/ahVjDWwwqBbdeSBPGoaou/iCBc+Ng=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:List-ID:From;
+	b=w9ftqx5KnzOcRJhhLToGNXCOZNDYQDtG8UPmsrGLDh0WazGyIxuu5XR9y9bnnih5D
+	 RGDQ1OTycvqSn2NTJVsQ2JW4jifejeHnwYJq+ucHpQRR81EfmfRB1H916vnWs/thVX
+	 GJ30cBYdJm7XBuqysnDNA5k0anQjoGAAG6Jyw58g=
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390126AbgEMSdK (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Wed, 13 May 2020 14:33:10 -0400
-Received: from verein.lst.de ([213.95.11.211]:48073 "EHLO verein.lst.de"
+        id S2390246AbgEMSpl (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Wed, 13 May 2020 14:45:41 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56918 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2390079AbgEMSdK (ORCPT <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Wed, 13 May 2020 14:33:10 -0400
-Received: by verein.lst.de (Postfix, from userid 2407)
-        id 0F27368C65; Wed, 13 May 2020 20:33:05 +0200 (CEST)
-Date:   Wed, 13 May 2020 20:33:04 +0200
-From:   Christoph Hellwig <hch@lst.de>
-To:     Song Liu <song@kernel.org>
-Cc:     Christoph Hellwig <hch@lst.de>, Jens Axboe <axboe@kernel.dk>,
-        Jim Paris <jim@jtan.com>, Geoff Levand <geoff@infradead.org>,
+        id S1732817AbgEMSpk (ORCPT <rfc822;linux-m68k@lists.linux-m68k.org>);
+        Wed, 13 May 2020 14:45:40 -0400
+Received: from mail-lj1-f181.google.com (mail-lj1-f181.google.com [209.85.208.181])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id B9293205ED
+        for <linux-m68k@lists.linux-m68k.org>; Wed, 13 May 2020 18:45:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1589395541;
+        bh=y3uf4cDEBcGin/ahVjDWwwqBbdeSBPGoaou/iCBc+Ng=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=RLQfxHVcrn6lWhWEu0DDrnMIHIoZ+37WfrxEpZxqiKdV1WCyAtQwcUcFu2SvS2080
+         VTE5vGbKGPtkrp13IOlhl2+f6sYzR7NeAlwZhvD/+sHUP7ta5YnAY2Vdmt9jo9N04s
+         CEpGnXvJbsQIZi+fuoRT8dDY4nvc1HnFSDyGGc2w=
+Received: by mail-lj1-f181.google.com with SMTP id d21so702700ljg.9
+        for <linux-m68k@lists.linux-m68k.org>; Wed, 13 May 2020 11:45:39 -0700 (PDT)
+X-Gm-Message-State: AOAM531s1rX9dmwhQCP8DeW5hO0xdnST/UT201bnoEp+wq8JK7wR/Lw0
+        H78o106AeiqAhvQYQP9gNvuexwxFx45dtb0Xhf8=
+X-Google-Smtp-Source: ABdhPJzyHaUiiK2XwtDLa9MHZHs3wyCWyuE6aX0bNKMPXZmRZyv4SYSAs5m7n5jeU7J7JeAy2/ppnnbYCoByE6/YYa8=
+X-Received: by 2002:a2e:9258:: with SMTP id v24mr280263ljg.109.1589395538071;
+ Wed, 13 May 2020 11:45:38 -0700 (PDT)
+MIME-Version: 1.0
+References: <20200508161517.252308-1-hch@lst.de> <20200508161517.252308-13-hch@lst.de>
+ <CAPhsuW6_Y53_XLFeVxhTDpTi_PKNLqqnrXLn+M2fJW268eE6_w@mail.gmail.com> <20200513183304.GA29895@lst.de>
+In-Reply-To: <20200513183304.GA29895@lst.de>
+From:   Song Liu <song@kernel.org>
+Date:   Wed, 13 May 2020 11:45:26 -0700
+X-Gmail-Original-Message-ID: <CAPhsuW6pG+-EAa-FW96r+LEP=j1nWEK0Zqk_fJeaAu2Hn9AqeA@mail.gmail.com>
+Message-ID: <CAPhsuW6pG+-EAa-FW96r+LEP=j1nWEK0Zqk_fJeaAu2Hn9AqeA@mail.gmail.com>
+Subject: Re: [PATCH 12/15] md: stop using ->queuedata
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     Jens Axboe <axboe@kernel.dk>, Jim Paris <jim@jtan.com>,
+        Geoff Levand <geoff@infradead.org>,
         Joshua Morris <josh.h.morris@us.ibm.com>,
         Philip Kelleher <pjk1939@linux.ibm.com>,
         Minchan Kim <minchan@kernel.org>,
@@ -37,24 +68,21 @@ Cc:     Christoph Hellwig <hch@lst.de>, Jens Axboe <axboe@kernel.dk>,
         linux-bcache@vger.kernel.org,
         linux-raid <linux-raid@vger.kernel.org>,
         linux-nvdimm@lists.01.org
-Subject: Re: [PATCH 12/15] md: stop using ->queuedata
-Message-ID: <20200513183304.GA29895@lst.de>
-References: <20200508161517.252308-1-hch@lst.de> <20200508161517.252308-13-hch@lst.de> <CAPhsuW6_Y53_XLFeVxhTDpTi_PKNLqqnrXLn+M2fJW268eE6_w@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAPhsuW6_Y53_XLFeVxhTDpTi_PKNLqqnrXLn+M2fJW268eE6_w@mail.gmail.com>
-User-Agent: Mutt/1.5.17 (2007-11-01)
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-m68k-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-On Wed, May 13, 2020 at 11:29:17AM -0700, Song Liu wrote:
-> On Fri, May 8, 2020 at 9:17 AM Christoph Hellwig <hch@lst.de> wrote:
+On Wed, May 13, 2020 at 11:33 AM Christoph Hellwig <hch@lst.de> wrote:
+>
+> On Wed, May 13, 2020 at 11:29:17AM -0700, Song Liu wrote:
+> > On Fri, May 8, 2020 at 9:17 AM Christoph Hellwig <hch@lst.de> wrote:
+> > >
+> > > Signed-off-by: Christoph Hellwig <hch@lst.de>
 > >
-> > Signed-off-by: Christoph Hellwig <hch@lst.de>
-> 
-> Thanks for the cleanup. IIUC, you want this go through md tree?
+> > Thanks for the cleanup. IIUC, you want this go through md tree?
+>
+> Yes, please pick it up though the md tree.
 
-Yes, please pick it up though the md tree.
+Thanks for the clarification. Applied to md-next.
