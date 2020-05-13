@@ -2,106 +2,113 @@ Return-Path: <SRS0=cCzT=63=vger.kernel.org=linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.2 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
-	MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1
-	autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-7.3 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id CDC22CA90AF
-	for <linux-m68k@archiver.kernel.org>; Wed, 13 May 2020 12:24:23 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A321FC433DF
+	for <linux-m68k@archiver.kernel.org>; Wed, 13 May 2020 18:29:35 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id AAC872312A
-	for <linux-m68k@archiver.kernel.org>; Wed, 13 May 2020 12:24:23 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 4DF84205ED
+	for <linux-m68k@archiver.kernel.org>; Wed, 13 May 2020 18:29:36 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=default; t=1589394576;
+	bh=QRSsQMrQ74camPjAugEMwP/lQqJBw3KN+yss8wjRYVo=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:List-ID:From;
+	b=HbFdthXM9s95pFh2sqpdcI2fS3o0A6hjjroq8RGdHxrtfxF2gCh3pKlloqB3pi60g
+	 tQzZQPTi49Ylxr7LGiGoven1dV9DkbEl7GYLes2Ij/L6++osdwfb9OSPn1hJ4LF0yo
+	 ZIczm55L+lTMvv3XLY/rEbUnHpDUl9Nd2+ULafmY=
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731309AbgEMMYX (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Wed, 13 May 2020 08:24:23 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34002 "EHLO mail.kernel.org"
+        id S2390160AbgEMS3b (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Wed, 13 May 2020 14:29:31 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47034 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731271AbgEMMYX (ORCPT <rfc822;linux-m68k@vger.kernel.org>);
-        Wed, 13 May 2020 08:24:23 -0400
-Received: from [10.44.0.192] (unknown [103.48.210.53])
+        id S2390108AbgEMS3b (ORCPT <rfc822;linux-m68k@lists.linux-m68k.org>);
+        Wed, 13 May 2020 14:29:31 -0400
+Received: from mail-lf1-f48.google.com (mail-lf1-f48.google.com [209.85.167.48])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 8CCC423126;
-        Wed, 13 May 2020 12:24:20 +0000 (UTC)
-Subject: Re: [PATCH v3 1/3] m68k: mcf5441x: add support for esdhc mmc
- controller
-To:     Ulf Hansson <ulf.hansson@linaro.org>,
-        Angelo Dureghello <angelo.dureghello@timesys.com>
-Cc:     Geert Uytterhoeven <geert@linux-m68k.org>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>,
-        linux-m68k@vger.kernel.org
-References: <20200501235907.3978-1-angelo.dureghello@timesys.com>
- <CAPDyKFoLpMTQD+3SnXBNnqVLBMKDf6y=3X+MoPep42SCiQ6+TQ@mail.gmail.com>
- <bde7080c-298d-c28b-5986-dbabc95985bf@westnet.com.au>
- <CAPDyKFqdGGfCurSRG8poO2aCbOmRb9so7-zarKEb1yUnBP=GXA@mail.gmail.com>
-From:   Greg Ungerer <gerg@linux-m68k.org>
-Message-ID: <37824363-3769-d0ad-99ba-610e5f5b6562@linux-m68k.org>
-Date:   Wed, 13 May 2020 22:24:16 +1000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+        by mail.kernel.org (Postfix) with ESMTPSA id 57876207BA
+        for <linux-m68k@lists.linux-m68k.org>; Wed, 13 May 2020 18:29:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1589394571;
+        bh=QRSsQMrQ74camPjAugEMwP/lQqJBw3KN+yss8wjRYVo=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=zuYgTbgg+vneAleokfO2ukKNs/dqZRWw5cokGloCn06DRltmLMyAH0XWH7ZXE6kme
+         ad+FAFkx841tWRfGJCwJuCCrF9NfvNSBS/VNkG+/4QSbaYBUc8DgdG1PYWFgMFsatw
+         bhT63We9c1wVG6MA7eSBOs4coDppYUwq6NJFs550=
+Received: by mail-lf1-f48.google.com with SMTP id c21so379646lfb.3
+        for <linux-m68k@lists.linux-m68k.org>; Wed, 13 May 2020 11:29:30 -0700 (PDT)
+X-Gm-Message-State: AOAM531acaHm9mPyR3Ea+OkYFntdnDs+NmwBiM/Q5ISdsfA+2fzsHEK0
+        iA3JDHE3+2cwqoiA7TON/5AgUThNLk808OWNqd0=
+X-Google-Smtp-Source: ABdhPJzEel6P56V5AzdhnqpR97v3ZXYr3I1lEd0oqpxPoU0DCjvc+wX2TsHUs+/MUKk1AS+L8zGBfF+JTi024W0oARc=
+X-Received: by 2002:ac2:558e:: with SMTP id v14mr539886lfg.138.1589394568604;
+ Wed, 13 May 2020 11:29:28 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <CAPDyKFqdGGfCurSRG8poO2aCbOmRb9so7-zarKEb1yUnBP=GXA@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20200508161517.252308-1-hch@lst.de> <20200508161517.252308-13-hch@lst.de>
+In-Reply-To: <20200508161517.252308-13-hch@lst.de>
+From:   Song Liu <song@kernel.org>
+Date:   Wed, 13 May 2020 11:29:17 -0700
+X-Gmail-Original-Message-ID: <CAPhsuW6_Y53_XLFeVxhTDpTi_PKNLqqnrXLn+M2fJW268eE6_w@mail.gmail.com>
+Message-ID: <CAPhsuW6_Y53_XLFeVxhTDpTi_PKNLqqnrXLn+M2fJW268eE6_w@mail.gmail.com>
+Subject: Re: [PATCH 12/15] md: stop using ->queuedata
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     Jens Axboe <axboe@kernel.dk>, Jim Paris <jim@jtan.com>,
+        Geoff Levand <geoff@infradead.org>,
+        Joshua Morris <josh.h.morris@us.ibm.com>,
+        Philip Kelleher <pjk1939@linux.ibm.com>,
+        Minchan Kim <minchan@kernel.org>,
+        Nitin Gupta <ngupta@vflare.org>,
+        Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>,
+        linux-m68k@lists.linux-m68k.org,
+        open list <linux-kernel@vger.kernel.org>,
+        linux-xtensa@linux-xtensa.org, drbd-dev@lists.linbit.com,
+        linux-block@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        linux-bcache@vger.kernel.org,
+        linux-raid <linux-raid@vger.kernel.org>,
+        linux-nvdimm@lists.01.org
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-m68k-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
+On Fri, May 8, 2020 at 9:17 AM Christoph Hellwig <hch@lst.de> wrote:
+>
+> Signed-off-by: Christoph Hellwig <hch@lst.de>
 
-On 13/5/20 9:59 pm, Ulf Hansson wrote:
-> On Tue, 12 May 2020 at 17:09, Greg Ungerer <gregungerer@westnet.com.au> wrote:
->>
->> Hi Ulf,
->>
->> On 7/5/20 7:13 pm, Ulf Hansson wrote:
->>> + Geert
->>>
->>> On Sat, 2 May 2020 at 01:54, Angelo Dureghello
->>> <angelo.dureghello@timesys.com> wrote:
->>>>
->>>> Add support for sdhci-edshc mmc controller.
->>>>
->>>> Signed-off-by: Angelo Dureghello <angelo.dureghello@timesys.com>
->>>> ---
->>>> Changes for v3:
->>>> - removed volatile cast from clk.c
->>>> ---
->>>>    arch/m68k/coldfire/clk.c                    | 15 ++++++++++
->>>>    arch/m68k/coldfire/device.c                 | 33 +++++++++++++++++++--
->>>>    arch/m68k/coldfire/m5441x.c                 | 12 +++++++-
->>>>    arch/m68k/include/asm/m5441xsim.h           | 19 ++++++++++++
->>>>    arch/m68k/include/asm/mcfclk.h              |  2 ++
->>>>    include/linux/platform_data/mmc-esdhc-mcf.h | 17 +++++++++++
->>>>    6 files changed, 95 insertions(+), 3 deletions(-)
->>>>    create mode 100644 include/linux/platform_data/mmc-esdhc-mcf.h
->>>
->>> Not sure what's the best way to deal with this patch. I looped in
->>> Geert to get some input.
->>>
->>> If it looks okay and the risk is minimal for conflicts, I can carry it
->>> via my tree, but then I need an ack from Geert.
->>
->> I can carry just this patch in the m68knommu git tree it you prefer.
->> Should be no conflicts that way. But really if you want to carry it
->> with all the others I don't have a problem with that either.
-> 
-> It looks like the new platform data header file is being used by the
-> mmc patch in 3/3, so it's probably easiest if I take them all via my
-> mmc tree.
-> 
-> Anyway, I will wait for a v4 from Angelo to address the comments.
+Thanks for the cleanup. IIUC, you want this go through md tree?
 
-Ok, no problem.
+Otherwise,
 
-Regards
-Greg
+Acked-by: Song Liu <song@kernel.org>
 
-
-> [...]
-> 
-> Kind regards
-> Uffe
-> 
+> ---
+>  drivers/md/md.c | 3 +--
+>  1 file changed, 1 insertion(+), 2 deletions(-)
+>
+> diff --git a/drivers/md/md.c b/drivers/md/md.c
+> index 271e8a5873549..c079ecf77c564 100644
+> --- a/drivers/md/md.c
+> +++ b/drivers/md/md.c
+> @@ -466,7 +466,7 @@ static blk_qc_t md_make_request(struct request_queue *q, struct bio *bio)
+>  {
+>         const int rw = bio_data_dir(bio);
+>         const int sgrp = op_stat_group(bio_op(bio));
+> -       struct mddev *mddev = q->queuedata;
+> +       struct mddev *mddev = bio->bi_disk->private_data;
+>         unsigned int sectors;
+>
+>         if (unlikely(test_bit(MD_BROKEN, &mddev->flags)) && (rw == WRITE)) {
+> @@ -5626,7 +5626,6 @@ static int md_alloc(dev_t dev, char *name)
+>         mddev->queue = blk_alloc_queue(md_make_request, NUMA_NO_NODE);
+>         if (!mddev->queue)
+>                 goto abort;
+> -       mddev->queue->queuedata = mddev;
+>
+>         blk_set_stacking_limits(&mddev->queue->limits);
+>
+> --
+> 2.26.2
+>
