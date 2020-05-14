@@ -1,108 +1,110 @@
-Return-Path: <SRS0=cCzT=63=vger.kernel.org=linux-m68k-owner@kernel.org>
+Return-Path: <SRS0=f42/=64=vger.kernel.org=linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-0.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
-	autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-4.1 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,
+	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B457FC433DF
-	for <linux-m68k@archiver.kernel.org>; Wed, 13 May 2020 22:27:04 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id BFE01C433E2
+	for <linux-m68k@archiver.kernel.org>; Thu, 14 May 2020 19:57:13 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id B8A3C2065C
-	for <linux-m68k@archiver.kernel.org>; Wed, 13 May 2020 22:27:04 +0000 (UTC)
-Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel-com.20150623.gappssmtp.com header.i=@intel-com.20150623.gappssmtp.com header.b="qnuaqcZy"
+	by mail.kernel.org (Postfix) with ESMTP id 9BD4F20727
+	for <linux-m68k@archiver.kernel.org>; Thu, 14 May 2020 19:57:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=default; t=1589486233;
+	bh=tKWWpxgYPG4stldxvX9LV4nXlvk64bNtADCpumJxIS8=;
+	h=In-Reply-To:References:Subject:From:Cc:To:Date:List-ID:From;
+	b=CSW65vmWHBJPAfa8fAo5VK33Ua/mTCNEsOqnbsuJdpBXXZDk9vhwjqbsob31GoeHD
+	 1ddMDxj+Nx29M/Tp4l4oMdL6P8MbJRIOEgB4dHg5lMXHrxCqzN2k244IyospkWKZOU
+	 toiH1i0Q6UHbA6k/rfcbwTT8csSv7wQRYnClOWwU=
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731220AbgEMW1A (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Wed, 13 May 2020 18:27:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54880 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1731179AbgEMW07 (ORCPT
-        <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Wed, 13 May 2020 18:26:59 -0400
-Received: from mail-ej1-x634.google.com (mail-ej1-x634.google.com [IPv6:2a00:1450:4864:20::634])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E50D4C05BD0A
-        for <linux-m68k@lists.linux-m68k.org>; Wed, 13 May 2020 15:26:58 -0700 (PDT)
-Received: by mail-ej1-x634.google.com with SMTP id e2so949717eje.13
-        for <linux-m68k@lists.linux-m68k.org>; Wed, 13 May 2020 15:26:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=intel-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=5gtvWq/MeF/6oEmnw1qXQmZlv3KNk4h6BjoEUKhO/AI=;
-        b=qnuaqcZyt8F/fu6JacXR348SsoSa3Tm7AzZNuvdyRoTov1keyBvQu8pXUwf75HxiOf
-         Kp75KOKoGDVG9AVOlHoBHnEOZ+aGnlYmnNxamZckzNM5gr/kauOLnvq8RbJVSj57g1cw
-         9NN4htlh7EN6fcqVbepwUivXJDqDlyuHYUdtHPY21wxmzjXy/ZgI5w7jQM2uM22NfFtA
-         q8lS8JkKuJziplyt33amkKJeLTRetS+ezNJTjHtj9SEkChz+0OHqn2TMVceqrJ2eD/4/
-         0tsEvnEt2hykkPAkDhJ48WHxBHzBhAZBdTwTt86tywE0BQeuxSyyhNQdkXE9MGPz7xQ5
-         Snkw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=5gtvWq/MeF/6oEmnw1qXQmZlv3KNk4h6BjoEUKhO/AI=;
-        b=FsWIAibsIMBQL+/PfNSh9Ywb232yyPzhlM0fKyYHegYRSe7/M2ekro5QwCamtHM0VJ
-         IhDypBZpWyVBKHVhMjlRftExResAAJWFnNKVdLivf5Bwd3rTfnuLVD5tRsb2k2dXwpp6
-         Hn1a8WaXc6EPlHRJwDUMLg0NQ2Vz6Cr5rO4CZPUR3niTtoQuV/6UM+WAloOmP1/AP16e
-         5ODZW7AMY/8WczeaMx8nAxoPsGFjRm4T5/3V69hpzEvaByDPyeVOWFeVDUxtWi02/K8d
-         8OJY3ctTZmaXxSiml9dWvNNlRIvunVrheMadPBBBvCbC0sMVzvZfN2YTxTyqIHqQQk0w
-         GoCA==
-X-Gm-Message-State: AOAM5314Rh60OeoD1uQ7C58qoFWcfEoCYJh/Kpwr1cl8A6Pwodrzrny/
-        xxiO5roOaKN/1nybyV3Mm0jl1xmAWSTwHjwjUa6efQ==
-X-Google-Smtp-Source: ABdhPJz1YkZyiu1OaSAVXpO2AAQnxlh/qNnka1A5+jaiVwuM2r/ADoB+8k1+qusteX+AGprilg7rK2SWSnm96LhSDK4=
-X-Received: by 2002:a17:906:1f8b:: with SMTP id t11mr1180169ejr.201.1589408817417;
- Wed, 13 May 2020 15:26:57 -0700 (PDT)
+        id S1728822AbgENT5K (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Thu, 14 May 2020 15:57:10 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48628 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728811AbgENT5K (ORCPT <rfc822;linux-m68k@lists.linux-m68k.org>);
+        Thu, 14 May 2020 15:57:10 -0400
+Received: from kernel.org (unknown [104.132.0.74])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id A12BD2065C;
+        Thu, 14 May 2020 19:57:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1589486229;
+        bh=tKWWpxgYPG4stldxvX9LV4nXlvk64bNtADCpumJxIS8=;
+        h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
+        b=DnV2pqjEmRyOCXZKQIEqug66EC+hc9asFPpTuLcTnyudVx0bDXotfl7Pz5utF4cYJ
+         BX9CmERuev/Arisrw13igQHXER6LmTxuvq30R6Kl27kbGu12YpOGKNGTxasZuPMzNE
+         nS9VDd2hzL5tfWX0Gast9VuE//fzVBrUApHzS1Y4=
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-References: <20200508161517.252308-1-hch@lst.de> <CAPcyv4j3gVqrZWCCc2Q-6JizGAQXW0b+R1BcvWCZOvzaukGLQg@mail.gmail.com>
- <20200509082352.GB21834@lst.de> <CAPcyv4ggb7_rwzGbhHNXSHd+jjSpZC=+DMEztY6Cu8Bc=ZNzag@mail.gmail.com>
- <20200512080820.GA2336@lst.de>
-In-Reply-To: <20200512080820.GA2336@lst.de>
-From:   Dan Williams <dan.j.williams@intel.com>
-Date:   Wed, 13 May 2020 15:26:45 -0700
-Message-ID: <CAPcyv4iWB=ZMmpc1aWfpJabSbCdvB28dCeSp_xj7AZMfbF_rjg@mail.gmail.com>
-Subject: Re: remove a few uses of ->queuedata
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     Jens Axboe <axboe@kernel.dk>, Jim Paris <jim@jtan.com>,
-        Geoff Levand <geoff@infradead.org>,
-        Joshua Morris <josh.h.morris@us.ibm.com>,
-        Philip Kelleher <pjk1939@linux.ibm.com>,
-        Minchan Kim <minchan@kernel.org>,
-        Nitin Gupta <ngupta@vflare.org>,
-        Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>,
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20200409064416.83340-8-sboyd@kernel.org>
+References: <20200409064416.83340-1-sboyd@kernel.org> <20200409064416.83340-8-sboyd@kernel.org>
+Subject: Re: [PATCH v2 07/10] clk: Allow the common clk framework to be selectable
+From:   Stephen Boyd <sboyd@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, linux-clk@vger.kernel.org,
+        Mark Brown <broonie@kernel.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Mark Salter <msalter@redhat.com>,
+        Aurelien Jacquiot <jacquiot.aurelien@gmail.com>,
+        Jiaxun Yang <jiaxun.yang@flygoat.com>,
+        Guan Xuetao <gxt@pku.edu.cn>,
+        Russell King <linux@armlinux.org.uk>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Yoshinori Sato <ysato@users.sourceforge.jp>,
+        Rich Felker <dalias@libc.org>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        linux-mips@vger.kernel.org, linux-c6x-dev@linux-c6x.org,
         linux-m68k@lists.linux-m68k.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-xtensa@linux-xtensa.org, drbd-dev@lists.linbit.com,
-        linux-block@vger.kernel.org,
-        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
-        linux-bcache@vger.kernel.org,
-        linux-raid <linux-raid@vger.kernel.org>,
-        linux-nvdimm <linux-nvdimm@lists.01.org>
-Content-Type: text/plain; charset="UTF-8"
+        linux-arm-kernel@lists.infradead.org, linux-sh@vger.kernel.org
+To:     Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>
+Date:   Thu, 14 May 2020 12:57:08 -0700
+Message-ID: <158948622898.215346.8325812794724480286@swboyd.mtv.corp.google.com>
+User-Agent: alot/0.9
 Sender: linux-m68k-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-On Tue, May 12, 2020 at 1:08 AM Christoph Hellwig <hch@lst.de> wrote:
->
-> On Sat, May 09, 2020 at 08:07:14AM -0700, Dan Williams wrote:
-> > > which are all used in the I/O submission path (generic_make_request /
-> > > generic_make_request_checks).  This is mostly a prep cleanup patch to
-> > > also remove the pointless queue argument from ->make_request - then
-> > > ->queue is an extra dereference and extra churn.
-> >
-> > Ah ok. If the changelogs had been filled in with something like "In
-> > preparation for removing @q from make_request_fn, stop using
-> > ->queuedata", I probably wouldn't have looked twice.
-> >
-> > For the nvdimm/ driver updates you can add:
-> >
-> >     Reviewed-by: Dan Williams <dan.j.williams@intel.com>
-> >
-> > ...or just let me know if you want me to pick those up through the nvdimm tree.
->
-> I'd love you to pick them up through the nvdimm tree.  Do you want
-> to fix up the commit message yourself?
+Quoting Stephen Boyd (2020-04-08 23:44:13)
+> Enable build testing and configuration control of the common clk
+> framework so that more code coverage and testing can be done on the
+> common clk framework across various architectures. This also nicely
+> removes the requirement that architectures must select the framework
+> when they don't use it in architecture code.
+>=20
+> There's one snag with doing this, and that's making sure that randconfig
+> builds don't select this option when some architecture or platform
+> implements 'struct clk' outside of the common clk framework. Introduce a
+> new config option 'HAVE_LEGACY_CLK' to indicate those platforms that
+> haven't migrated to the common clk framework and therefore shouldn't be
+> allowed to select this new config option. Also add a note that we hope
+> one day to remove this config entirely.
+>=20
+> Based on a patch by Mark Brown <broonie@kernel.org>.
+>=20
+> Cc: Mark Brown <broonie@kernel.org>
+> Cc: Geert Uytterhoeven <geert@linux-m68k.org>
+> Cc: Mark Salter <msalter@redhat.com>
+> Cc: Aurelien Jacquiot <jacquiot.aurelien@gmail.com>
+> Cc: Jiaxun Yang <jiaxun.yang@flygoat.com>
+> Cc: Guan Xuetao <gxt@pku.edu.cn>
+> Cc: Russell King <linux@armlinux.org.uk>
+> Cc: Arnd Bergmann <arnd@arndb.de>
+> Cc: Yoshinori Sato <ysato@users.sourceforge.jp>
+> Cc: Rich Felker <dalias@libc.org>
+> Cc: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+> Cc: <linux-mips@vger.kernel.org>
+> Cc: <linux-c6x-dev@linux-c6x.org>
+> Cc: <linux-m68k@lists.linux-m68k.org>
+> Cc: <linux-arm-kernel@lists.infradead.org>
+> Cc: <linux-sh@vger.kernel.org>
+> Link: https://lore.kernel.org/r/1470915049-15249-1-git-send-email-broonie=
+@kernel.org
+> Signed-off-by: Stephen Boyd <sboyd@kernel.org>
+> ---
 
-Will do, thanks.
+Applied to clk-next
