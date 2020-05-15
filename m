@@ -4,40 +4,40 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-9.6 required=3.0 tests=DKIM_INVALID,DKIM_SIGNED,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
-	autolearn_force=no version=3.4.0
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 8C4FFC433E3
-	for <linux-m68k@archiver.kernel.org>; Fri, 15 May 2020 14:37:40 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 015FDC433E0
+	for <linux-m68k@archiver.kernel.org>; Fri, 15 May 2020 14:37:56 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 67B312075F
-	for <linux-m68k@archiver.kernel.org>; Fri, 15 May 2020 14:37:40 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id CE8FE207C4
+	for <linux-m68k@archiver.kernel.org>; Fri, 15 May 2020 14:37:55 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="Fil8zzWG"
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="mXN1xIL/"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727779AbgEOOhj (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Fri, 15 May 2020 10:37:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35660 "EHLO
+        id S1727918AbgEOOhz (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Fri, 15 May 2020 10:37:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35702 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1727082AbgEOOhh (ORCPT
+        by vger.kernel.org with ESMTP id S1726144AbgEOOhs (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Fri, 15 May 2020 10:37:37 -0400
+        Fri, 15 May 2020 10:37:48 -0400
 Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EC645C05BD09;
-        Fri, 15 May 2020 07:37:36 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A4B3C05BD0A;
+        Fri, 15 May 2020 07:37:48 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
         d=infradead.org; s=bombadil.20170209; h=Content-Transfer-Encoding:
         MIME-Version:References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender
         :Reply-To:Content-Type:Content-ID:Content-Description;
-        bh=oMznyGWmUnH+800kT8BMkDZAQHI6XtvfS5jJWouEfDQ=; b=Fil8zzWGgM7bTiLZqcGMW+YJ5z
-        KWiKqxsF9PsHBsoGTjF3M1/6BpcRcrB87gg7fSSrUKG2ViuiDFILsVXTAGiiQFvWZl7302yJv2QDp
-        2gdx1QAdET+uvFc0ze5HduS8IJ9srBZdOqL/1nqMHeCh3YBZQaMxq/bdZHgdR67JaPY2iVoS1shDo
-        6pyU9IPRQ9Q52AD4zwxw4+qQ7zeiwXt3usfWVUxDx+fAryeslEs5RvNsfp0pYwplX4l6i6toHPASG
-        mV2sWCHOlJLsWvBZ89rDzt4kZI4unFON90otMsIMyf+zqnwfQ1s79AFeTZmzqJZZ6+kGlXAlM4ASM
-        cgFW93ag==;
+        bh=+nwO03jcpqZOPZP7BRWxpcr5aqGQrWzDQhhYlZpFczM=; b=mXN1xIL/KCK7MrzsI+7Ig4BsID
+        UFxadzg6FIHkLGK7la/QdCMzj6hShPZaFvDMTmf0FJvzeiz238u8uYuWehpIhApmHuRSWA/jdlgD4
+        O6FC7je7L4zUVLOXMXlZ/R2RjmmAr9ECjQGQGLjoVnO8LNAtoi3ujQ5W2I4Ma+Ii9x7jsgzvglX1l
+        dAYzga+b7Occ0zhksgDq4SrzKkQ+edonAA/CUSwFEGdijbGAmHL6Te57qr4OspA9+5iBZQJbzALhG
+        NVDvvmVv2efYyM3fHtmuMz0b2Cs4mq6WqX2cSsoP9KeHAQI1l2PTCmVIMKwDKLcLU2rJMPXbKiEVx
+        Fkfgh21A==;
 Received: from [2001:4bb8:188:1506:c70:4a89:bc61:2] (helo=localhost)
         by bombadil.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1jZbSZ-000457-1G; Fri, 15 May 2020 14:37:11 +0000
+        id 1jZbSr-0004az-7h; Fri, 15 May 2020 14:37:29 +0000
 From:   Christoph Hellwig <hch@lst.de>
 To:     Andrew Morton <akpm@linux-foundation.org>,
         Arnd Bergmann <arnd@arndb.de>,
@@ -52,10 +52,10 @@ Cc:     Jessica Yu <jeyu@kernel.org>, Michal Simek <monstr@monstr.eu>,
         linux-sh@vger.kernel.org, sparclinux@vger.kernel.org,
         linux-arch@vger.kernel.org, linux-mm@kvack.org,
         linux-um@lists.infradead.org, linux-xtensa@linux-xtensa.org,
-        linux-fsdevel@vger.kernel.org
-Subject: [PATCH 08/29] alpha: use asm-generic/cacheflush.h
-Date:   Fri, 15 May 2020 16:36:25 +0200
-Message-Id: <20200515143646.3857579-9-hch@lst.de>
+        linux-fsdevel@vger.kernel.org, Greg Ungerer <gerg@linux-m68k.org>
+Subject: [PATCH 14/29] m68knommu: use asm-generic/cacheflush.h
+Date:   Fri, 15 May 2020 16:36:31 +0200
+Message-Id: <20200515143646.3857579-15-hch@lst.de>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <20200515143646.3857579-1-hch@lst.de>
 References: <20200515143646.3857579-1-hch@lst.de>
@@ -67,65 +67,52 @@ Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-Alpha needs almost no cache flushing routines of its own.  Rely on
+m68knommu needs almost no cache flushing routines of its own.  Rely on
 asm-generic/cacheflush.h for the defaults.
 
 Signed-off-by: Christoph Hellwig <hch@lst.de>
+Acked-by: Greg Ungerer <gerg@linux-m68k.org>
 ---
- arch/alpha/include/asm/cacheflush.h | 28 ++++++----------------------
- 1 file changed, 6 insertions(+), 22 deletions(-)
+ arch/m68k/include/asm/cacheflush_no.h | 19 ++-----------------
+ 1 file changed, 2 insertions(+), 17 deletions(-)
 
-diff --git a/arch/alpha/include/asm/cacheflush.h b/arch/alpha/include/asm/cacheflush.h
-index 89128489cb598..636d7ca0d05f6 100644
---- a/arch/alpha/include/asm/cacheflush.h
-+++ b/arch/alpha/include/asm/cacheflush.h
-@@ -4,19 +4,6 @@
+diff --git a/arch/m68k/include/asm/cacheflush_no.h b/arch/m68k/include/asm/cacheflush_no.h
+index 11e9a9dcbfb24..2731f07e7be8c 100644
+--- a/arch/m68k/include/asm/cacheflush_no.h
++++ b/arch/m68k/include/asm/cacheflush_no.h
+@@ -9,25 +9,8 @@
+ #include <asm/mcfsim.h>
  
- #include <linux/mm.h>
- 
--/* Caches aren't brain-dead on the Alpha. */
--#define flush_cache_all()			do { } while (0)
+ #define flush_cache_all()			__flush_cache_all()
 -#define flush_cache_mm(mm)			do { } while (0)
 -#define flush_cache_dup_mm(mm)			do { } while (0)
 -#define flush_cache_range(vma, start, end)	do { } while (0)
--#define flush_cache_page(vma, vmaddr, pfn)	do { } while (0)
+-#define flush_cache_page(vma, vmaddr)		do { } while (0)
+ #define flush_dcache_range(start, len)		__flush_dcache_all()
 -#define ARCH_IMPLEMENTS_FLUSH_DCACHE_PAGE 0
 -#define flush_dcache_page(page)			do { } while (0)
 -#define flush_dcache_mmap_lock(mapping)		do { } while (0)
 -#define flush_dcache_mmap_unlock(mapping)	do { } while (0)
+ #define flush_icache_range(start, len)		__flush_icache_all()
+-#define flush_icache_page(vma,pg)		do { } while (0)
+-#define flush_icache_user_range(vma,pg,adr,len)	do { } while (0)
 -#define flush_cache_vmap(start, end)		do { } while (0)
 -#define flush_cache_vunmap(start, end)		do { } while (0)
 -
- /* Note that the following two definitions are _highly_ dependent
-    on the contexts in which they are used in the kernel.  I personally
-    think it is criminal how loosely defined these macros are.  */
-@@ -59,20 +46,17 @@ flush_icache_user_range(struct vm_area_struct *vma, struct page *page,
- 			mm->context[smp_processor_id()] = 0;
- 	}
- }
--#else
-+#define flush_icache_user_range flush_icache_user_range
-+#else /* CONFIG_SMP */
- extern void flush_icache_user_range(struct vm_area_struct *vma,
- 		struct page *page, unsigned long addr, int len);
--#endif
-+#define flush_icache_user_range flush_icache_user_range
-+#endif /* CONFIG_SMP */
- 
- /* This is used only in __do_fault and do_swap_page.  */
- #define flush_icache_page(vma, page) \
--  flush_icache_user_range((vma), (page), 0, 0)
-+	flush_icache_user_range((vma), (page), 0, 0)
- 
 -#define copy_to_user_page(vma, page, vaddr, dst, src, len) \
--do { memcpy(dst, src, len); \
--     flush_icache_user_range(vma, page, vaddr, len); \
--} while (0)
+-	memcpy(dst, src, len)
 -#define copy_from_user_page(vma, page, vaddr, dst, src, len) \
 -	memcpy(dst, src, len)
-+#include <asm-generic/cacheflush.h>
  
- #endif /* _ALPHA_CACHEFLUSH_H */
+ void mcf_cache_push(void);
+ 
+@@ -98,4 +81,6 @@ static inline void cache_clear(unsigned long paddr, int len)
+ 	__clear_cache_all();
+ }
+ 
++#include <asm-generic/cacheflush.h>
++
+ #endif /* _M68KNOMMU_CACHEFLUSH_H */
 -- 
 2.26.2
 
