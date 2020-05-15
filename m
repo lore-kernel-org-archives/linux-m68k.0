@@ -1,110 +1,120 @@
-Return-Path: <SRS0=f42/=64=vger.kernel.org=linux-m68k-owner@kernel.org>
+Return-Path: <SRS0=qRXx=65=vger.kernel.org=linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-4.1 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,
-	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-8.3 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,
+	USER_AGENT_SANE_1 autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id BFE01C433E2
-	for <linux-m68k@archiver.kernel.org>; Thu, 14 May 2020 19:57:13 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 9F838C433E0
+	for <linux-m68k@archiver.kernel.org>; Fri, 15 May 2020 13:38:53 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 9BD4F20727
-	for <linux-m68k@archiver.kernel.org>; Thu, 14 May 2020 19:57:13 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=default; t=1589486233;
-	bh=tKWWpxgYPG4stldxvX9LV4nXlvk64bNtADCpumJxIS8=;
-	h=In-Reply-To:References:Subject:From:Cc:To:Date:List-ID:From;
-	b=CSW65vmWHBJPAfa8fAo5VK33Ua/mTCNEsOqnbsuJdpBXXZDk9vhwjqbsob31GoeHD
-	 1ddMDxj+Nx29M/Tp4l4oMdL6P8MbJRIOEgB4dHg5lMXHrxCqzN2k244IyospkWKZOU
-	 toiH1i0Q6UHbA6k/rfcbwTT8csSv7wQRYnClOWwU=
+	by mail.kernel.org (Postfix) with ESMTP id 8510D20657
+	for <linux-m68k@archiver.kernel.org>; Fri, 15 May 2020 13:38:53 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728822AbgENT5K (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Thu, 14 May 2020 15:57:10 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48628 "EHLO mail.kernel.org"
+        id S1726188AbgEONix (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Fri, 15 May 2020 09:38:53 -0400
+Received: from mga04.intel.com ([192.55.52.120]:60438 "EHLO mga04.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728811AbgENT5K (ORCPT <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Thu, 14 May 2020 15:57:10 -0400
-Received: from kernel.org (unknown [104.132.0.74])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id A12BD2065C;
-        Thu, 14 May 2020 19:57:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1589486229;
-        bh=tKWWpxgYPG4stldxvX9LV4nXlvk64bNtADCpumJxIS8=;
-        h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
-        b=DnV2pqjEmRyOCXZKQIEqug66EC+hc9asFPpTuLcTnyudVx0bDXotfl7Pz5utF4cYJ
-         BX9CmERuev/Arisrw13igQHXER6LmTxuvq30R6Kl27kbGu12YpOGKNGTxasZuPMzNE
-         nS9VDd2hzL5tfWX0Gast9VuE//fzVBrUApHzS1Y4=
-Content-Type: text/plain; charset="utf-8"
+        id S1726163AbgEONix (ORCPT <rfc822;linux-m68k@vger.kernel.org>);
+        Fri, 15 May 2020 09:38:53 -0400
+IronPort-SDR: 2MdteKxO0zjaZjATrhEpsNkPY1XlPe2UxN5Y9Bs032ZD/+WDjJWtfm5f+So1a7q1Clk5MNTtcw
+ hFNtrVKwWEuQ==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 May 2020 06:38:52 -0700
+IronPort-SDR: D2FrE4M9KSTHAz1IOxi3JDX/N5BklvSOm99TB8g38Bn/G/IN9EmPhNPh4GTM7SU9Ob1yO53p0D
+ ebwDarModJ7g==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.73,395,1583222400"; 
+   d="scan'208";a="281219394"
+Received: from ahunter-desktop.fi.intel.com (HELO [10.237.72.157]) ([10.237.72.157])
+  by orsmga002.jf.intel.com with ESMTP; 15 May 2020 06:38:49 -0700
+Subject: Re: [PATCH v4 2/3] mmc: sdhci: add quirks for be to le byte swapping
+To:     Angelo Dureghello <angelo.dureghello@timesys.com>,
+        ulf.hansson@linaro.org, gerg@linux-m68k.org
+Cc:     linux-mmc@vger.kernel.org, linux-m68k@vger.kernel.org
+References: <20200513204133.2540568-1-angelo.dureghello@timesys.com>
+ <20200513204133.2540568-2-angelo.dureghello@timesys.com>
+From:   Adrian Hunter <adrian.hunter@intel.com>
+Organization: Intel Finland Oy, Registered Address: PL 281, 00181 Helsinki,
+ Business Identity Code: 0357606 - 4, Domiciled in Helsinki
+Message-ID: <d1be973e-87b6-f45c-bea6-4b6660a8465c@intel.com>
+Date:   Fri, 15 May 2020 16:39:07 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <20200409064416.83340-8-sboyd@kernel.org>
-References: <20200409064416.83340-1-sboyd@kernel.org> <20200409064416.83340-8-sboyd@kernel.org>
-Subject: Re: [PATCH v2 07/10] clk: Allow the common clk framework to be selectable
-From:   Stephen Boyd <sboyd@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, linux-clk@vger.kernel.org,
-        Mark Brown <broonie@kernel.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Mark Salter <msalter@redhat.com>,
-        Aurelien Jacquiot <jacquiot.aurelien@gmail.com>,
-        Jiaxun Yang <jiaxun.yang@flygoat.com>,
-        Guan Xuetao <gxt@pku.edu.cn>,
-        Russell King <linux@armlinux.org.uk>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Yoshinori Sato <ysato@users.sourceforge.jp>,
-        Rich Felker <dalias@libc.org>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        linux-mips@vger.kernel.org, linux-c6x-dev@linux-c6x.org,
-        linux-m68k@lists.linux-m68k.org,
-        linux-arm-kernel@lists.infradead.org, linux-sh@vger.kernel.org
-To:     Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>
-Date:   Thu, 14 May 2020 12:57:08 -0700
-Message-ID: <158948622898.215346.8325812794724480286@swboyd.mtv.corp.google.com>
-User-Agent: alot/0.9
+In-Reply-To: <20200513204133.2540568-2-angelo.dureghello@timesys.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-m68k-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-Quoting Stephen Boyd (2020-04-08 23:44:13)
-> Enable build testing and configuration control of the common clk
-> framework so that more code coverage and testing can be done on the
-> common clk framework across various architectures. This also nicely
-> removes the requirement that architectures must select the framework
-> when they don't use it in architecture code.
->=20
-> There's one snag with doing this, and that's making sure that randconfig
-> builds don't select this option when some architecture or platform
-> implements 'struct clk' outside of the common clk framework. Introduce a
-> new config option 'HAVE_LEGACY_CLK' to indicate those platforms that
-> haven't migrated to the common clk framework and therefore shouldn't be
-> allowed to select this new config option. Also add a note that we hope
-> one day to remove this config entirely.
->=20
-> Based on a patch by Mark Brown <broonie@kernel.org>.
->=20
-> Cc: Mark Brown <broonie@kernel.org>
-> Cc: Geert Uytterhoeven <geert@linux-m68k.org>
-> Cc: Mark Salter <msalter@redhat.com>
-> Cc: Aurelien Jacquiot <jacquiot.aurelien@gmail.com>
-> Cc: Jiaxun Yang <jiaxun.yang@flygoat.com>
-> Cc: Guan Xuetao <gxt@pku.edu.cn>
-> Cc: Russell King <linux@armlinux.org.uk>
-> Cc: Arnd Bergmann <arnd@arndb.de>
-> Cc: Yoshinori Sato <ysato@users.sourceforge.jp>
-> Cc: Rich Felker <dalias@libc.org>
-> Cc: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-> Cc: <linux-mips@vger.kernel.org>
-> Cc: <linux-c6x-dev@linux-c6x.org>
-> Cc: <linux-m68k@lists.linux-m68k.org>
-> Cc: <linux-arm-kernel@lists.infradead.org>
-> Cc: <linux-sh@vger.kernel.org>
-> Link: https://lore.kernel.org/r/1470915049-15249-1-git-send-email-broonie=
-@kernel.org
-> Signed-off-by: Stephen Boyd <sboyd@kernel.org>
+On 13/05/20 11:41 pm, Angelo Dureghello wrote:
+> Some controller as the ColdFire eshdc may require an endianness
+> byte swap, becouse DMA read endianness is not configurable.
+> 
+> Signed-off-by: Angelo Dureghello <angelo.dureghello@timesys.com>
 > ---
+> Changes for v3:
+> - add post request callback
+> Changes for v4:
+> none
+> ---
+>  drivers/mmc/host/sdhci.c | 7 +++++++
+>  drivers/mmc/host/sdhci.h | 2 ++
+>  2 files changed, 9 insertions(+)
+> 
+> diff --git a/drivers/mmc/host/sdhci.c b/drivers/mmc/host/sdhci.c
+> index 3f716466fcfd..d3bfbb6e11d5 100644
+> --- a/drivers/mmc/host/sdhci.c
+> +++ b/drivers/mmc/host/sdhci.c
+> @@ -637,6 +637,13 @@ static int sdhci_pre_dma_transfer(struct sdhci_host *host,
+>  			sg_copy_to_buffer(data->sg, data->sg_len,
+>  					  host->bounce_buffer,
+>  					  length);
+> +
+> +			/*
+> +			 * Endianness can't be swapped in the sg list,
+> +			 * since the sg list is processed again later on.
+> +			 */
 
-Applied to clk-next
+The data in the sg list must not be changed because we don't know how
+else it might be being used.  Maybe leave out the comment.
+
+> +			if (host->ops->pre_dma_transfer)
+> +				host->ops->pre_dma_transfer(host, data);
+
+Let's make this slightly more generic i.e.
+
+			if (host->ops->copy_to_bounce_buffer) {
+				host->ops->copy_to_bounce_buffer(host, data);
+			} else {
+				sg_copy_to_buffer(data->sg, data->sg_len,
+						  host->bounce_buffer,
+						  length);
+			}
+
+
+>  		}
+>  		/* Switch ownership to the DMA */
+>  		dma_sync_single_for_device(host->mmc->parent,
+> diff --git a/drivers/mmc/host/sdhci.h b/drivers/mmc/host/sdhci.h
+> index 79dffbb731d3..076054308423 100644
+> --- a/drivers/mmc/host/sdhci.h
+> +++ b/drivers/mmc/host/sdhci.h
+> @@ -653,6 +653,8 @@ struct sdhci_ops {
+>  	void	(*voltage_switch)(struct sdhci_host *host);
+>  	void	(*adma_write_desc)(struct sdhci_host *host, void **desc,
+>  				   dma_addr_t addr, int len, unsigned int cmd);
+> +	void	(*pre_dma_transfer)(struct sdhci_host *host,
+> +				    struct mmc_data *data);
+>  	void	(*request_done)(struct sdhci_host *host,
+>  				struct mmc_request *mrq);
+>  };
+> 
+
