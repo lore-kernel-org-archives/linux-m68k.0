@@ -2,88 +2,185 @@ Return-Path: <SRS0=UZt4=7A=vger.kernel.org=linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.6 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,
-	SPF_PASS,USER_AGENT_SANE_1 autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-3.9 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
+	LONGWORDS,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS
+	autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 2ACE0C433DF
-	for <linux-m68k@archiver.kernel.org>; Mon, 18 May 2020 13:04:53 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 68B9DC433DF
+	for <linux-m68k@archiver.kernel.org>; Mon, 18 May 2020 17:35:25 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id ED108207FB
-	for <linux-m68k@archiver.kernel.org>; Mon, 18 May 2020 13:04:52 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=default; t=1589807093;
-	bh=bQOel0Owh5Jsy7D7It/KRrP7k71oDOZIFpOrOzQ9AhA=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:List-ID:From;
-	b=srcVT+61XOBakY8f75E+74QN4Y6KoyTst+kdXU5vqnDrYMJ9/6yIdXqaacWmq1sqz
-	 wDKM3bU5sNxt2cQBS60WVgDLT6qZrfNXM/ydZV3QEfrVEgMDVEYEYSxRDIFKIIio0i
-	 8I4nk9B9aVnaN05JaZyBsBBLSOXGvEEd5wPNK+jY=
+	by mail.kernel.org (Postfix) with ESMTP id 4C7E720671
+	for <linux-m68k@archiver.kernel.org>; Mon, 18 May 2020 17:35:25 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727008AbgERNEw (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Mon, 18 May 2020 09:04:52 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47380 "EHLO mail.kernel.org"
+        id S1728344AbgERRfZ (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Mon, 18 May 2020 13:35:25 -0400
+Received: from mga07.intel.com ([134.134.136.100]:64464 "EHLO mga07.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726895AbgERNEw (ORCPT <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Mon, 18 May 2020 09:04:52 -0400
-Received: from linux-8ccs.fritz.box (p57a239f2.dip0.t-ipconnect.de [87.162.57.242])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id AD592207D3;
-        Mon, 18 May 2020 13:04:47 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1589807091;
-        bh=bQOel0Owh5Jsy7D7It/KRrP7k71oDOZIFpOrOzQ9AhA=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=YqZBNW7MWDqiTSCxmly8oMsUsg4WN7C2JY9aDcakJBGzWq/UP00eyjCdLpfBridZ5
-         yEWjvi7dzrZTtKaXjd/2d6IuYc59csAsUVZSfRs5jq7Rr7rdKAsQZJF1Mc/s+At7dk
-         CA/eN9nd7O70bEOB0H0VqgRfIrUmH9kT0XamFLi8=
-Date:   Mon, 18 May 2020 15:04:44 +0200
-From:   Jessica Yu <jeyu@kernel.org>
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Roman Zippel <zippel@linux-m68k.org>,
-        Michal Simek <monstr@monstr.eu>, x86@kernel.org,
-        linux-alpha@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-c6x-dev@linux-c6x.org,
-        linux-hexagon@vger.kernel.org, linux-ia64@vger.kernel.org,
-        linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org,
-        openrisc@lists.librecores.org, linuxppc-dev@lists.ozlabs.org,
-        linux-riscv@lists.infradead.org, linux-sh@vger.kernel.org,
-        sparclinux@vger.kernel.org, linux-arch@vger.kernel.org,
-        linux-mm@kvack.org, linux-um@lists.infradead.org,
-        linux-xtensa@linux-xtensa.org, linux-fsdevel@vger.kernel.org,
-        Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: Re: [PATCH 29/29] module: move the set_fs hack for
- flush_icache_range to m68k
-Message-ID: <20200518130444.GA21096@linux-8ccs.fritz.box>
-References: <20200515143646.3857579-1-hch@lst.de>
- <20200515143646.3857579-30-hch@lst.de>
+        id S1727006AbgERRfZ (ORCPT <rfc822;linux-m68k@lists.linux-m68k.org>);
+        Mon, 18 May 2020 13:35:25 -0400
+IronPort-SDR: 3fhDF2UorceTcSRwM8nsoqesXhlWwRmW3W1xK8Dvv92lohzpzWPnVK9DSpMtlkQMSQuuh2i3tL
+ CBfvPIbg89JQ==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 May 2020 10:35:23 -0700
+IronPort-SDR: 0T+ST8jy28vjcKJF1s6V9ZexFwOFCkNKRjb1IP9ioWKpwACbpDzV2Ws4d+H4Q59idKx62GCGat
+ 9qRI59xSdVcQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.73,407,1583222400"; 
+   d="scan'208";a="267593644"
+Received: from lkp-server01.sh.intel.com (HELO lkp-server01) ([10.239.97.150])
+  by orsmga006.jf.intel.com with ESMTP; 18 May 2020 10:35:22 -0700
+Received: from kbuild by lkp-server01 with local (Exim 4.89)
+        (envelope-from <lkp@intel.com>)
+        id 1jajfd-0002bA-KE; Tue, 19 May 2020 01:35:21 +0800
+Date:   Tue, 19 May 2020 01:34:18 +0800
+From:   kbuild test robot <lkp@intel.com>
+To:     Geert Uytterhoeven <geert@linux-m68k.org>
+Cc:     linux-m68k@lists.linux-m68k.org
+Subject: [m68k:m68k-queue] BUILD SUCCESS
+ 4684d38e4d478644c6c5c9cc484d45fe747bfced
+Message-ID: <5ec2c71a.uUAY43VK+nO5pOtI%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Disposition: inline
-In-Reply-To: <20200515143646.3857579-30-hch@lst.de>
-X-OS:   Linux linux-8ccs 4.12.14-lp150.12.61-default x86_64
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 Sender: linux-m68k-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-+++ Christoph Hellwig [15/05/20 16:36 +0200]:
->flush_icache_range generally operates on kernel addresses, but for some
->reason m68k needed a set_fs override.  Move that into the m68k code
->insted of keeping it in the module loader.
->
->Signed-off-by: Christoph Hellwig <hch@lst.de>
->Reviewed-by: Geert Uytterhoeven <geert@linux-m68k.org>
->Acked-by: Geert Uytterhoeven <geert@linux-m68k.org>
->---
-> arch/m68k/mm/cache.c | 4 ++++
-> kernel/module.c      | 8 --------
-> 2 files changed, 4 insertions(+), 8 deletions(-)
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/geert/linux-m68k.git  m68k-queue
+branch HEAD: 4684d38e4d478644c6c5c9cc484d45fe747bfced  fat: Use correct logical sector size for Atari GEMDOS FAT
 
-Thanks for cleaning this up. For module.c:
+elapsed time: 485m
 
-Acked-by: Jessica Yu <jeyu@kernel.org>
+configs tested: 119
+configs skipped: 3
 
+The following configs have been built successfully.
+More configs may be tested in the coming days.
+
+arm                                 defconfig
+arm                              allyesconfig
+arm                              allmodconfig
+arm                               allnoconfig
+arm64                            allyesconfig
+arm64                               defconfig
+arm64                            allmodconfig
+arm64                             allnoconfig
+sparc                            allyesconfig
+mips                             allyesconfig
+m68k                             allyesconfig
+s390                          debug_defconfig
+sh                         ap325rxa_defconfig
+c6x                                 defconfig
+h8300                    h8300h-sim_defconfig
+arm                            u300_defconfig
+c6x                        evmc6457_defconfig
+arm                           corgi_defconfig
+mips                     cu1000-neo_defconfig
+mips                           xway_defconfig
+arm                          ixp4xx_defconfig
+arm                            mps2_defconfig
+mips                 pnx8335_stb225_defconfig
+arc                              alldefconfig
+sh                          lboxre2_defconfig
+mips                     decstation_defconfig
+arm                          iop32x_defconfig
+mips                       lemote2f_defconfig
+powerpc                      ppc44x_defconfig
+nds32                               defconfig
+arm                          moxart_defconfig
+um                               allyesconfig
+mips                          rb532_defconfig
+arm                          imote2_defconfig
+i386                              allnoconfig
+i386                             allyesconfig
+i386                                defconfig
+i386                              debian-10.3
+ia64                             allmodconfig
+ia64                                defconfig
+ia64                              allnoconfig
+ia64                             allyesconfig
+m68k                             allmodconfig
+m68k                              allnoconfig
+m68k                           sun3_defconfig
+m68k                                defconfig
+nios2                               defconfig
+nios2                            allyesconfig
+openrisc                            defconfig
+c6x                              allyesconfig
+c6x                               allnoconfig
+openrisc                         allyesconfig
+nds32                             allnoconfig
+csky                             allyesconfig
+csky                                defconfig
+alpha                               defconfig
+alpha                            allyesconfig
+xtensa                           allyesconfig
+h8300                            allyesconfig
+h8300                            allmodconfig
+xtensa                              defconfig
+arc                                 defconfig
+arc                              allyesconfig
+sh                               allmodconfig
+sh                                allnoconfig
+microblaze                        allnoconfig
+mips                              allnoconfig
+mips                             allmodconfig
+parisc                            allnoconfig
+parisc                              defconfig
+parisc                           allyesconfig
+parisc                           allmodconfig
+powerpc                             defconfig
+powerpc                          allyesconfig
+powerpc                          rhel-kconfig
+powerpc                          allmodconfig
+powerpc                           allnoconfig
+i386                 randconfig-a006-20200518
+i386                 randconfig-a005-20200518
+i386                 randconfig-a001-20200518
+i386                 randconfig-a003-20200518
+i386                 randconfig-a004-20200518
+i386                 randconfig-a002-20200518
+x86_64               randconfig-a016-20200518
+x86_64               randconfig-a012-20200518
+x86_64               randconfig-a015-20200518
+x86_64               randconfig-a013-20200518
+x86_64               randconfig-a011-20200518
+x86_64               randconfig-a014-20200518
+i386                 randconfig-a012-20200518
+i386                 randconfig-a014-20200518
+i386                 randconfig-a016-20200518
+i386                 randconfig-a011-20200518
+i386                 randconfig-a015-20200518
+i386                 randconfig-a013-20200518
+riscv                            allyesconfig
+riscv                             allnoconfig
+riscv                               defconfig
+riscv                            allmodconfig
+s390                             allyesconfig
+s390                              allnoconfig
+s390                             allmodconfig
+s390                                defconfig
+x86_64                              defconfig
+sparc                               defconfig
+sparc64                             defconfig
+sparc64                           allnoconfig
+sparc64                          allyesconfig
+sparc64                          allmodconfig
+um                               allmodconfig
+um                                allnoconfig
+um                                  defconfig
+x86_64                                   rhel
+x86_64                               rhel-7.6
+x86_64                    rhel-7.6-kselftests
+x86_64                         rhel-7.2-clear
+x86_64                                    lkp
+x86_64                              fedora-25
+x86_64                                  kexec
+
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
