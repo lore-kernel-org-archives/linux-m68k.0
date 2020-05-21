@@ -1,106 +1,65 @@
-Return-Path: <SRS0=wWUY=7D=vger.kernel.org=linux-m68k-owner@kernel.org>
+Return-Path: <SRS0=EkOe=7E=vger.kernel.org=linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-13.6 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
-	USER_AGENT_SANE_1 autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Level: **
+X-Spam-Status: No, score=2.1 required=3.0 tests=DATE_IN_FUTURE_03_06,
+	DKIM_ADSP_CUSTOM_MED,DKIM_INVALID,DKIM_SIGNED,FREEMAIL_FORGED_FROMDOMAIN,
+	FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id DEC04C433E0
-	for <linux-m68k@archiver.kernel.org>; Thu, 21 May 2020 18:52:21 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 518F9C433E1
+	for <linux-m68k@archiver.kernel.org>; Fri, 22 May 2020 05:22:38 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id C2D1D208C9
-	for <linux-m68k@archiver.kernel.org>; Thu, 21 May 2020 18:52:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=default; t=1590087141;
-	bh=22eFmN3PxHoXvV1xmhf23Ujh/olYK+FBaQOc/JWyKF4=;
-	h=Date:From:To:Cc:Subject:List-ID:From;
-	b=qM9uFw/5vV2J35H8u+BB272Mm+vUtsfPCTjhSQN3GLtz0BDmH00ddp6tXZSfd/e2B
-	 52hc+40kmvZliMlsvbRsKhd+5NGTTYE+xEpAJdje8wmVTvAUYSoH6UYWscjpq5FbrX
-	 fYqz/CNkL1exrBIGCLnOVgjurtgN1yEAGrTu2Jok=
+	by mail.kernel.org (Postfix) with ESMTP id 24B0E206B6
+	for <linux-m68k@archiver.kernel.org>; Fri, 22 May 2020 05:22:38 +0000 (UTC)
+Authentication-Results: mail.kernel.org;
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=bofchina.com header.i=@bofchina.com header.b="mtfJAN7l"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729891AbgEUSwT (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Thu, 21 May 2020 14:52:19 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46768 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729691AbgEUSwS (ORCPT <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Thu, 21 May 2020 14:52:18 -0400
-Received: from embeddedor (unknown [189.207.59.248])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 1258720823;
-        Thu, 21 May 2020 18:52:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1590087138;
-        bh=22eFmN3PxHoXvV1xmhf23Ujh/olYK+FBaQOc/JWyKF4=;
-        h=Date:From:To:Cc:Subject:From;
-        b=cyli121Xo8MCtetN7HlPeb5FuYJUdX9EgmVlj63DR/O2C7orp8cXW6DLqRFjve53v
-         W+W2DB0x35sVsAD9+RkWhZItZKXVP56Pl03+NsfVPRAUiH6yxNMoxJCO8RzHG6SO5u
-         4zKoz/fekoxxLqds3tkaBugo+C9/smGpWiVN5+1U=
-Date:   Thu, 21 May 2020 13:57:07 -0500
-From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org,
-        "Gustavo A. R. Silva" <gustavo@embeddedor.com>
-Subject: [PATCH] m68k: tools: Replace zero-length array with flexible-array
- member
-Message-ID: <20200521185707.GA3661@embeddedor>
+        id S1726798AbgEVFWh (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Fri, 22 May 2020 01:22:37 -0400
+Received: from [134.119.191.54] ([134.119.191.54]:51264 "EHLO
+        fronje545.pserver.ru" rhost-flags-FAIL-FAIL-OK-OK) by vger.kernel.org
+        with ESMTP id S1725894AbgEVFWh (ORCPT
+        <rfc822;linux-m68k@lists.linux-m68k.org>);
+        Fri, 22 May 2020 01:22:37 -0400
+X-Greylist: delayed 111307 seconds by postgrey-1.27 at vger.kernel.org; Fri, 22 May 2020 01:22:36 EDT
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=bofchina.com; s=dkim; h=Sender:Message-Id:Reply-To:Date:From:To:Subject:
+        Content-Description:Content-Transfer-Encoding:MIME-Version:Content-Type:Cc:
+        Content-ID:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:
+        Resent-Message-ID:In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:
+        List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=bS+yQnISJM2v0OdEopwaw88y7ksjIKrtL0uFXb72uxM=; b=mtfJAN7lHaYaovGbHXTc9xfE/K
+        +GjWqnkmORKRcxHOkSjOs62lN+sKq7y7KTJZydTE6imXTN2rjxi18s9TMs4+RczF3OyVZ2mGGW48r
+        2958SDdYTSRhugyAk5VNJ3NqzGsV0wrlDm8/lCZaLDRIv6vCeNRU3jRGPNxpgu6PddTg=;
+Received: from [199.119.147.4] (helo=[173.243.112.60])
+        by fronje545.pserver.ru with esmtpa (Exim 4.92.3)
+        (envelope-from <Bahu@bofchina.com>)
+        id 1jbUn4-0007tC-GB
+        for linux-m68k@lists.linux-m68k.org; Wed, 20 May 2020 21:54:10 +0200
+Content-Type: text/plain; charset="iso-8859-1"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Transfer-Encoding: quoted-printable
+Content-Description: Mail message body
+Subject: Re:
+To:     linux-m68k@lists.linux-m68k.org
+From:   "STOREBRAND" <investment@gmail.com>
+Date:   Wed, 20 May 2020 17:22:12 -0700
+Reply-To: h2.hauge@caramail.com
+Message-Id: <E1jbUn4-0007tC-GB@fronje545.pserver.ru>
 Sender: linux-m68k-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-The current codebase makes use of the zero-length array language
-extension to the C90 standard, but the preferred mechanism to declare
-variable-length types such as these ones is a flexible array member[1][2],
-introduced in C99:
+Hello,
 
-struct foo {
-        int stuff;
-        struct boo array[];
-};
+     Am Harald Hauge an Investment Manager from Norway. I wish to solicit y=
+our interest in an investment project that is currently ongoing in my compa=
+ny (Storebrand);  It is a short term investment with good returns. Simply r=
+eply for me to confirm the validity of your email so i shall give you a com=
+prehensive details about the project.
 
-By making use of the mechanism above, we will get a compiler warning
-in case the flexible array does not occur last in the structure, which
-will help us prevent some kind of undefined behavior bugs from being
-inadvertently introduced[3] to the codebase from now on.
-
-Also, notice that, dynamic memory allocations won't be affected by
-this change:
-
-"Flexible array members have incomplete type, and so the sizeof operator
-may not be applied. As a quirk of the original implementation of
-zero-length arrays, sizeof evaluates to zero."[1]
-
-This issue was found with the help of Coccinelle.
-
-[1] https://gcc.gnu.org/onlinedocs/gcc/Zero-Length.html
-[2] https://github.com/KSPP/linux/issues/21
-[3] commit 76497732932f ("cxgb3/l2t: Fix undefined behaviour")
-
-Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
----
- arch/m68k/tools/amiga/dmesg.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/arch/m68k/tools/amiga/dmesg.c b/arch/m68k/tools/amiga/dmesg.c
-index 7340f5b6cf6d..f8005a7efb0b 100644
---- a/arch/m68k/tools/amiga/dmesg.c
-+++ b/arch/m68k/tools/amiga/dmesg.c
-@@ -34,7 +34,7 @@ struct savekmsg {
-     u_long magic2;	/* SAVEKMSG_MAGIC2 */
-     u_long magicptr;	/* address of magic1 */
-     u_long size;
--    char data[0];
-+    char data[];
- };
- 
- 
--- 
-2.26.2
-
+Best Regards,
+Harald Hauge
+Business Consultant
