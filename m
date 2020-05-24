@@ -1,64 +1,98 @@
-Return-Path: <SRS0=EkOe=7E=vger.kernel.org=linux-m68k-owner@kernel.org>
+Return-Path: <SRS0=yMt1=7G=vger.kernel.org=linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.2 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
-	MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
-	USER_AGENT_SANE_1 autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-1.1 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
+	autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 6BCC1C433DF
-	for <linux-m68k@archiver.kernel.org>; Fri, 22 May 2020 15:54:34 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C6BB4C433E0
+	for <linux-m68k@archiver.kernel.org>; Sun, 24 May 2020 07:42:39 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 4DC6E20663
-	for <linux-m68k@archiver.kernel.org>; Fri, 22 May 2020 15:54:34 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 9748C2078B
+	for <linux-m68k@archiver.kernel.org>; Sun, 24 May 2020 07:42:39 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=default; t=1590306159;
+	bh=+/fFoXXRcAaUgRrF312cHC7kEgpII3DvTDA8eGvdehk=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:List-ID:From;
+	b=YlZ9JXOtIRtZKqdUyqWdFy3FsG73KDodFkwLk1ZlTr/0/eUQumkhzSYG2NxWbHQ/Q
+	 FRmAUjd0fd1qJktvQAuagu6sbozmoEc6h4cpPl6qkukMf4uiKf8SB6Eh1vR3D4T3bn
+	 8rq0nRoOMGhWxD5cTO0dghG8ogiT2QUJkY505IX4=
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730243AbgEVPye (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Fri, 22 May 2020 11:54:34 -0400
-Received: from foss.arm.com ([217.140.110.172]:38604 "EHLO foss.arm.com"
+        id S1727936AbgEXHmj (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Sun, 24 May 2020 03:42:39 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53028 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730195AbgEVPye (ORCPT <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Fri, 22 May 2020 11:54:34 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 54FBC55D;
-        Fri, 22 May 2020 08:54:33 -0700 (PDT)
-Received: from gaia (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 815553F305;
-        Fri, 22 May 2020 08:54:29 -0700 (PDT)
-Date:   Fri, 22 May 2020 16:54:27 +0100
-From:   Catalin Marinas <catalin.marinas@arm.com>
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Roman Zippel <zippel@linux-m68k.org>,
-        Jessica Yu <jeyu@kernel.org>, Michal Simek <monstr@monstr.eu>,
-        x86@kernel.org, linux-alpha@vger.kernel.org,
+        id S1726796AbgEXHmj (ORCPT <rfc822;linux-m68k@lists.linux-m68k.org>);
+        Sun, 24 May 2020 03:42:39 -0400
+Received: from kernel.org (unknown [87.71.47.117])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 26E322076C;
+        Sun, 24 May 2020 07:42:35 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1590306158;
+        bh=+/fFoXXRcAaUgRrF312cHC7kEgpII3DvTDA8eGvdehk=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=fWl1umd9MDaNFTQL8vtXp9S91lOpXqHQ9cMIrKzvtvJqxr0KCUvLsyHedTsuWhcK+
+         8p4N/kJG9k+82H1sIQsHwOKs9c4FXoHV+iXDzQ5Oe5TQpYgYs5FXHs7PZNERJRIt75
+         vZQkuQA7RKAczl+NpjOLI6H7+2WtBYbABL56OTvw=
+Date:   Sun, 24 May 2020 10:42:30 +0300
+From:   Mike Rapoport <rppt@kernel.org>
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     "Kirill A. Shutemov" <kirill@shutemov.name>, linux-mm@kvack.org,
         linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-c6x-dev@linux-c6x.org, linux-hexagon@vger.kernel.org,
-        linux-ia64@vger.kernel.org, linux-m68k@lists.linux-m68k.org,
-        linux-mips@vger.kernel.org, openrisc@lists.librecores.org,
-        linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org,
-        linux-sh@vger.kernel.org, sparclinux@vger.kernel.org,
-        linux-arch@vger.kernel.org, linux-mm@kvack.org,
-        linux-um@lists.infradead.org, linux-xtensa@linux-xtensa.org,
-        linux-fsdevel@vger.kernel.org
-Subject: Re: [PATCH 09/29] arm64: use asm-generic/cacheflush.h
-Message-ID: <20200522155426.GI26492@gaia>
-References: <20200515143646.3857579-1-hch@lst.de>
- <20200515143646.3857579-10-hch@lst.de>
+        Will Deacon <will@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        linux-m68k@lists.linux-m68k.org
+Subject: Re: [PATCH 0/7] Record the mm_struct in the page table pages
+Message-ID: <20200524074230.GM1118872@kernel.org>
+References: <20200428194449.22615-1-willy@infradead.org>
+ <20200429002624.qkhb362moj6v3vtw@box>
+ <20200429015126.GP29705@bombadil.infradead.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200515143646.3857579-10-hch@lst.de>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20200429015126.GP29705@bombadil.infradead.org>
 Sender: linux-m68k-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-On Fri, May 15, 2020 at 04:36:26PM +0200, Christoph Hellwig wrote:
-> ARM64 needs almost no cache flushing routines of its own.  Rely on
-> asm-generic/cacheflush.h for the defaults.
+On Tue, Apr 28, 2020 at 06:51:26PM -0700, Matthew Wilcox wrote:
+> On Wed, Apr 29, 2020 at 03:26:24AM +0300, Kirill A. Shutemov wrote:
+> > On Tue, Apr 28, 2020 at 12:44:42PM -0700, Matthew Wilcox wrote:
+> > > From: "Matthew Wilcox (Oracle)" <willy@infradead.org>
+> > > 
+> > > Pages which are in use as page tables have some space unused in struct
+> > > page.  It would be handy to have a pointer to the struct mm_struct that
+> > > they belong to so that we can handle uncorrectable errors in page tables
+> > > more gracefully.  There are a few other things we could use it for too,
+> > > such as checking that the page table entry actually belongs to the task
+> > > we think it ought to.  This patch series does none of that, but does
+> > > lay the groundwork for it.
+> > > 
+> > > Matthew Wilcox (Oracle) (7):
+> > 
+> > How does it work for kernel side of virtual address space?
 > 
-> Signed-off-by: Christoph Hellwig <hch@lst.de>
+> init_mm
 
-Acked-by: Catalin Marinas <catalin.marinas@arm.com>
+A note to keep in mind is that most of the kernel page tables are seen
+as PG_reserved rather than PageTable().
+
+> > And your employer may be interested in semantics around
+> > CONFIG_ARCH_WANT_HUGE_PMD_SHARE :P
+> 
+> I was thinking about that.  Right now, it's only useful for debugging
+> purposes (as you point out in a later email).  I think it's OK if shared
+> PMDs aren't supported as well as regular PTEs, just because there are
+> so few of them that uncorrectable errors are less likely to strike in
+> those pages.
+> 
+
+-- 
+Sincerely yours,
+Mike.
