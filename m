@@ -6,70 +6,70 @@ X-Spam-Status: No, score=-3.8 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
 	MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS autolearn=no
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 4F045C433E0
-	for <linux-m68k@archiver.kernel.org>; Mon, 25 May 2020 08:46:25 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id F3853C433E0
+	for <linux-m68k@archiver.kernel.org>; Mon, 25 May 2020 08:48:05 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 3B228206DD
-	for <linux-m68k@archiver.kernel.org>; Mon, 25 May 2020 08:46:25 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id DDA2F207FB
+	for <linux-m68k@archiver.kernel.org>; Mon, 25 May 2020 08:48:05 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389083AbgEYIqW (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Mon, 25 May 2020 04:46:22 -0400
-Received: from mail-oo1-f66.google.com ([209.85.161.66]:39452 "EHLO
-        mail-oo1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388945AbgEYIqW (ORCPT
+        id S2389257AbgEYIsC (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Mon, 25 May 2020 04:48:02 -0400
+Received: from mail-ot1-f66.google.com ([209.85.210.66]:38692 "EHLO
+        mail-ot1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2388800AbgEYIsB (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Mon, 25 May 2020 04:46:22 -0400
-Received: by mail-oo1-f66.google.com with SMTP id c194so1448682oob.6
-        for <linux-m68k@lists.linux-m68k.org>; Mon, 25 May 2020 01:46:21 -0700 (PDT)
+        Mon, 25 May 2020 04:48:01 -0400
+Received: by mail-ot1-f66.google.com with SMTP id o13so13335045otl.5
+        for <linux-m68k@lists.linux-m68k.org>; Mon, 25 May 2020 01:48:00 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=ubzZtv8ijyTCkjYnqGrhQi6vWDPzStF+JDYNjTjJn0I=;
-        b=kAy7n1IF0Zy2usaNekMt2R90cpoKQlYWmolNKohsqIvV9BKR4PnORg8BdWEvsL7n6W
-         IQVVClDZRgbIOehjfll44YAFJCreTDt/lbAyDs6te848/+Hcie5YhO05KVdZ3UEQQBM/
-         xrZNRk5KN25AhEMHWpg7hqYjDL4qYd03kmyUtDiDEs65Wi24lHM1xhyCMBXKD9V5VoJl
-         qUwfZAMvJqKmcDqSpN7BVd96gzzkcxmQoJ/9Hb5TqpDZl9h5x40H6VuEc/dSCGRRDd7J
-         iZQVzOgXeS+kypcwG79THs1GVa3/VScuvTS3lzahjZ0P+1E1vsNPgE9Pjr1XQT0jysAi
-         3oDg==
-X-Gm-Message-State: AOAM532VHmfCotXzapr85dkBWhfjhpaANWjciHJcOTSAXes1xPjs0QOZ
-        zc3LnqlJ2DHNuD7PSXzlmW+Mwxvumz8eT+NIjcE=
-X-Google-Smtp-Source: ABdhPJwfjprgjzv7kU2ov1BX7oUvTVQiDv6t4ZKPgak3qtmm/RWZs7QsAW2ZbhEUquXsngwLU6GQFZJOi3PiZBjoXUI=
-X-Received: by 2002:a4a:e295:: with SMTP id k21mr12605732oot.11.1590396381231;
- Mon, 25 May 2020 01:46:21 -0700 (PDT)
+        bh=yuQmz1vbzFzRiPHZ7yHORsAflnknRq9qadTHt4E+diA=;
+        b=WjZDjB9aeFNw6KUbS0oXIT3OIFOc++8mPOpo5JSJC65RIStfy8G7voVeFd8segbO0W
+         Haqp6puNtm73LFMkYfkQBaOeAI3yfFZMytwUylAOpCB82udKAj59MR8nsvWytiSxJScQ
+         SvH5UniyDFEM/L7juslSYkmntGmH0t0aac1HYImPGKebSvQSS1RLxLACcufqMwsJp5rF
+         ilqnXinV510QVwqe2zfBIgUatI9ug3vJco2eap0UEPI1sqXBsU/9EJEuoUM1OWYtuVkZ
+         w76JH/5dD5ZJl19OFIw4kosuNNuaW8l6JxyT6IWRaElbRTl7INv5HywGYbIhCowJqMBc
+         8j5g==
+X-Gm-Message-State: AOAM5311oUIFdmEktn0DOJ8NpsuGVFodM8HERTVyeigB6S2pO75SIVwp
+        F+m5WKJ2z8aNA4MuuMy/nQMUYKhFUgIi/qwsTv9W7INj
+X-Google-Smtp-Source: ABdhPJz0vqXWtlP4TqBP+DguYlkkIuMQjwehAuzaBYeQKbfXEyZ3IBH6KLbqh8kyP7GVU0jQraapJHL7dY9LsTpjna4=
+X-Received: by 2002:a05:6830:18d9:: with SMTP id v25mr19040328ote.107.1590396480166;
+ Mon, 25 May 2020 01:48:00 -0700 (PDT)
 MIME-Version: 1.0
-References: <bfbb71db52c5e162d3afa25a28fc5d535ca87138.1589949122.git.fthain@telegraphics.com.au>
-In-Reply-To: <bfbb71db52c5e162d3afa25a28fc5d535ca87138.1589949122.git.fthain@telegraphics.com.au>
+References: <20200520065750.8401-1-jasowang@redhat.com>
+In-Reply-To: <20200520065750.8401-1-jasowang@redhat.com>
 From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Mon, 25 May 2020 10:46:10 +0200
-Message-ID: <CAMuHMdWSxz98B4HcBPbGj5e3TQx+ndUCLPeNg7ggdvpTzOA54A@mail.gmail.com>
-Subject: Re: [PATCH] m68k/mac: Avoid stuck ISM IOP interrupt on Quadra 900/950
-To:     Finn Thain <fthain@telegraphics.com.au>
-Cc:     Joshua Thompson <funaho@jurai.org>,
-        linux-m68k <linux-m68k@lists.linux-m68k.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Date:   Mon, 25 May 2020 10:47:49 +0200
+Message-ID: <CAMuHMdW2jLKP_sbnphW_LguYfX8tVYTQofPUOkTkO1dfiaM6zA@mail.gmail.com>
+Subject: Re: [PATCH] m68k: add missing __user annotation in get_user()
+To:     Jason Wang <jasowang@redhat.com>
+Cc:     linux-m68k <linux-m68k@lists.linux-m68k.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        kbuild test robot <lkp@intel.com>
 Content-Type: text/plain; charset="UTF-8"
 Sender: linux-m68k-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-On Wed, May 20, 2020 at 6:41 AM Finn Thain <fthain@telegraphics.com.au> wrote:
-> On a Quadra 900/950, the ISM IOP IRQ output pin is connected to an
-> edge-triggered input on VIA2. It is theoretically possible that this
-> signal could fail to produce the expected VIA2 interrupt.
+On Wed, May 20, 2020 at 8:58 AM Jason Wang <jasowang@redhat.com> wrote:
+> The ptr is a pointer to userspace memory. So we need annotate it with
+> __user otherwise we may get sparse warnings like:
 >
-> The two IOP interrupt flags can be asserted in any order but the logic
-> in iop_ism_irq() does not allow for that. In particular, INT0 can be
-> asserted right after INT0 is checked and before INT1 is cleared.
+> drivers/vhost/vhost.c:1603:13: sparse: sparse: incorrect type in initializer (different address spaces) @@    expected void const *__gu_ptr @@    got unsigned int [noderef] [usertypvoid const *__gu_ptr @@
+> drivers/vhost/vhost.c:1603:13: sparse:    expected void const *__gu_ptr
+> drivers/vhost/vhost.c:1603:13: sparse:    got unsigned int [noderef] [usertype] <asn:1> *idxp
 >
-> Such an interrupt would produce no new edge and VIA2 would detect no
-> further interrupts from the IOP. Avoid this by looping over the INT0/1
-> handlers so an edge can be produced.
->
-> Cc: Joshua Thompson <funaho@jurai.org>
-> Tested-by: Stan Johnson <userm57@yahoo.com>
-> Signed-off-by: Finn Thain <fthain@telegraphics.com.au>
+> Cc: Geert Uytterhoeven <geert@linux-m68k.org>
+> Cc: linux-m68k@lists.linux-m68k.org
+> Cc: linux-kernel@vger.kernel.org
+> Reported-by: kbuild test robot <lkp@intel.com>
+> Signed-off-by: Jason Wang <jasowang@redhat.com>
+
+Fixes: 7124330dabe5b3cb ("m68k/uaccess: Revive 64-bit get_user()")
 
 Reviewed-by: Geert Uytterhoeven <geert@linux-m68k.org>
 i.e. will queue in the m68k for-v5.8 branch.
