@@ -2,101 +2,138 @@ Return-Path: <SRS0=WAuH=7H=vger.kernel.org=linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.8 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
-	MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS
-	autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E112DC433E0
-	for <linux-m68k@archiver.kernel.org>; Mon, 25 May 2020 08:49:14 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 0008CC433DF
+	for <linux-m68k@archiver.kernel.org>; Mon, 25 May 2020 10:17:58 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id BE5C8207FB
-	for <linux-m68k@archiver.kernel.org>; Mon, 25 May 2020 08:49:14 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id CAEF52078B
+	for <linux-m68k@archiver.kernel.org>; Mon, 25 May 2020 10:17:58 +0000 (UTC)
+Authentication-Results: mail.kernel.org;
+	dkim=pass (2048-bit key) header.d=timesys-com.20150623.gappssmtp.com header.i=@timesys-com.20150623.gappssmtp.com header.b="EQT6LeAv"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389205AbgEYItO (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Mon, 25 May 2020 04:49:14 -0400
-Received: from mail-oo1-f65.google.com ([209.85.161.65]:40029 "EHLO
-        mail-oo1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388342AbgEYItO (ORCPT
-        <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Mon, 25 May 2020 04:49:14 -0400
-Received: by mail-oo1-f65.google.com with SMTP id f39so128263ooi.7
-        for <linux-m68k@lists.linux-m68k.org>; Mon, 25 May 2020 01:49:13 -0700 (PDT)
+        id S2389480AbgEYKR6 (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Mon, 25 May 2020 06:17:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35020 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2389356AbgEYKR6 (ORCPT
+        <rfc822;linux-m68k@vger.kernel.org>); Mon, 25 May 2020 06:17:58 -0400
+Received: from mail-qk1-x743.google.com (mail-qk1-x743.google.com [IPv6:2607:f8b0:4864:20::743])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C9921C061A0E
+        for <linux-m68k@vger.kernel.org>; Mon, 25 May 2020 03:17:57 -0700 (PDT)
+Received: by mail-qk1-x743.google.com with SMTP id 205so3906075qkg.3
+        for <linux-m68k@vger.kernel.org>; Mon, 25 May 2020 03:17:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=timesys-com.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=xmqzWXeKcpGL2o7jr9BgSfqs5CcyjlGtbhwaWdaxAfA=;
+        b=EQT6LeAvuiHuF5jVSf4sQFwv36qdNoXts3+4jk4YpPXekYeciKVklgNO3nb76YdYLN
+         tVLmITtv239cqoSRA4BuELzplyoRKsmKo8BnIqzBFKu6Zaxt4faPplO8dmKN4l2Qr16Q
+         MG526CQGCWQYCClAndSLrGOep/XREjzlgetD8BBiK5OnfCyd1HrzDCQYjJZxbH8DStih
+         Gx7/LjIFFZM0BQFaMWtB/WDQAztrwfyynsyCAjf6wnQN3TtlG0LXb484WnxZkJ36k22W
+         ECcwvHbbrvP58tBXiNAw8+PPvR4sKw0NmDK+3f6yRATE32lIy/fDkasn3UHJtH8rbYYT
+         R3rQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=M+PuH/pTGAFDoL2hcME8N+/oYCZf4CIdiqezjAv2DZ0=;
-        b=ZG6/2X2hL3AtYMOvisAwcShVhhvcLWLmFnLaEpCDNoeo5yhgrLpNOQ0sSPyWokB5Vf
-         wSalF7ET0R2OXV4HPXSeEmrhAzfWgmr6g+5S2WQZixSALjeZpF5XU1zRXrJ6asTt1YT0
-         PqI/ajvVyYcxKFDTGpNR3TckUKH2onZDGJFAqREtx4UFpSEd0LZ8AqIkj7sZNqh6bKZg
-         N2r/Q3dG+eNM9vQH8RpQkeuSz8PVE5duOyXS8NxBXdHGCyDy1vpA4iYireioyfvPu2g1
-         6Gi3o5Zt4I5AmN5od625TwkSPO6hEiqwzhIqUtuFAdgHbxTDXTT7eZzY16DqU8hGfVcj
-         1ilA==
-X-Gm-Message-State: AOAM532EPGwY5AU86m/5KlEkExdHKlY86OeeZ8XsZ+IcljA02kS3VTiO
-        6q5koUrrLWzFhGoaefP6XjqzZkqhZO7WLIVHHeIpWV/E
-X-Google-Smtp-Source: ABdhPJwx++7vr09NOyjF/OrUTnNC3we2My4ZE1fNWT4N/UM+Ioatv7uIPOceNSYDHBQKEw3b7wBE7TZ7HQRP/gO1ySY=
-X-Received: by 2002:a4a:95d0:: with SMTP id p16mr12463896ooi.40.1590396553331;
- Mon, 25 May 2020 01:49:13 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=xmqzWXeKcpGL2o7jr9BgSfqs5CcyjlGtbhwaWdaxAfA=;
+        b=ong/xc1eyKa3Y3rDyMClBVZ2C0gem5qE5dCbNw5GJE7VGT/bWKadrZlIutJNMqcTqy
+         nILy2G2FHP3O+i7+3uJW8EdSGphtwnZHabdz8tkc4oBoWGlNRnG8sjJI6bLxn5rtpd/9
+         PKCRoXluSaCS2ln6F/Chdesi7n0oA0Y3f69rtih+cTpjSqOtPtMHegBj2GzlPnbUC1l/
+         tBbNASaIYE9Z/IrsEEgbGFSQU59wLnm4t4Xj+gVDrQsEYF3+ztFuc5ryAxF9R8r79V92
+         hVAtpei2yV26nDoUaj4zqM8+7objJ9a+oXaGU7atPlDbauUDGHTxmwOkweqnyOKnaA1S
+         +OXQ==
+X-Gm-Message-State: AOAM531R57mErHowDHwwQ2pOx/oH3N8cCCgTfrKsG4OCPTFILLR8TXn/
+        eZFMk1DnET3JIN5L0iMUiL0y4Q==
+X-Google-Smtp-Source: ABdhPJwJIdqHygan4azZPTufJFTn0xdHt69at/vHlBGZNdgZA7af8Fa6lgHRapZPY63ol75kQTKqhA==
+X-Received: by 2002:a37:a710:: with SMTP id q16mr16555934qke.23.1590401876888;
+        Mon, 25 May 2020 03:17:56 -0700 (PDT)
+Received: from dfj.bfc.timesys.com (host203-36-dynamic.30-79-r.retail.telecomitalia.it. [79.30.36.203])
+        by smtp.gmail.com with ESMTPSA id 99sm14407626qte.93.2020.05.25.03.17.55
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 25 May 2020 03:17:56 -0700 (PDT)
+From:   Angelo Dureghello <angelo.dureghello@timesys.com>
+To:     gerg@linux-m68k.org
+Cc:     linux-m68k@vger.kernel.org, adrian.hunter@intel.com,
+        ulf.hansson@linaro.org, linux-mmc@vger.kernel.org,
+        Angelo Dureghello <angelo.dureghello@timesys.com>
+Subject: [PATCH for-next] m68k: coldfire/clk.c: move m5441x specific code
+Date:   Mon, 25 May 2020 12:23:24 +0200
+Message-Id: <20200525102324.2723438-1-angelo.dureghello@timesys.com>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-References: <20200521185707.GA3661@embeddedor>
-In-Reply-To: <20200521185707.GA3661@embeddedor>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Mon, 25 May 2020 10:49:02 +0200
-Message-ID: <CAMuHMdUGPMrPTqypGpnhe2wdpnbtUOsdUacnrHAapBM_996F5A@mail.gmail.com>
-Subject: Re: [PATCH] m68k: tools: Replace zero-length array with
- flexible-array member
-To:     "Gustavo A. R. Silva" <gustavoars@kernel.org>
-Cc:     linux-m68k <linux-m68k@lists.linux-m68k.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "Gustavo A. R. Silva" <gustavo@embeddedor.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Sender: linux-m68k-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-On Thu, May 21, 2020 at 8:52 PM Gustavo A. R. Silva
-<gustavoars@kernel.org> wrote:
-> The current codebase makes use of the zero-length array language
-> extension to the C90 standard, but the preferred mechanism to declare
-> variable-length types such as these ones is a flexible array member[1][2],
-> introduced in C99:
->
-> struct foo {
->         int stuff;
->         struct boo array[];
-> };
->
-> By making use of the mechanism above, we will get a compiler warning
-> in case the flexible array does not occur last in the structure, which
-> will help us prevent some kind of undefined behavior bugs from being
-> inadvertently introduced[3] to the codebase from now on.
->
-> Also, notice that, dynamic memory allocations won't be affected by
-> this change:
->
-> "Flexible array members have incomplete type, and so the sizeof operator
-> may not be applied. As a quirk of the original implementation of
-> zero-length arrays, sizeof evaluates to zero."[1]
->
-> This issue was found with the help of Coccinelle.
->
-> [1] https://gcc.gnu.org/onlinedocs/gcc/Zero-Length.html
-> [2] https://github.com/KSPP/linux/issues/21
-> [3] commit 76497732932f ("cxgb3/l2t: Fix undefined behaviour")
->
-> Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+Moving specific m5441x clk-related code in more appropriate location,
+since breaking compilation for other targets.
 
-Reviewed-by: Geert Uytterhoeven <geert@linux-m68k.org>
-i.e. will queue in the m68k for-v5.8 branch.
+Signed-off-by: Angelo Dureghello <angelo.dureghello@timesys.com>
+---
+ arch/m68k/coldfire/clk.c    | 15 ---------------
+ arch/m68k/coldfire/m5441x.c | 15 +++++++++++++++
+ 2 files changed, 15 insertions(+), 15 deletions(-)
 
-Gr{oetje,eeting}s,
-
-                        Geert
-
+diff --git a/arch/m68k/coldfire/clk.c b/arch/m68k/coldfire/clk.c
+index 75a057445472..7bc666e482eb 100644
+--- a/arch/m68k/coldfire/clk.c
++++ b/arch/m68k/coldfire/clk.c
+@@ -73,21 +73,6 @@ struct clk_ops clk_ops1 = {
+ #endif /* MCFPM_PPMCR1 */
+ #endif /* MCFPM_PPMCR0 */
+ 
+-static void __clk_enable2(struct clk *clk)
+-{
+-	__raw_writel(__raw_readl(MCFSDHC_CLK) | (1 << clk->slot), MCFSDHC_CLK);
+-}
+-
+-static void __clk_disable2(struct clk *clk)
+-{
+-	__raw_writel(__raw_readl(MCFSDHC_CLK) & ~(1 << clk->slot), MCFSDHC_CLK);
+-}
+-
+-struct clk_ops clk_ops2 = {
+-	.enable		= __clk_enable2,
+-	.disable	= __clk_disable2,
+-};
+-
+ struct clk *clk_get(struct device *dev, const char *id)
+ {
+ 	const char *clk_name = dev ? dev_name(dev) : id ? id : NULL;
+diff --git a/arch/m68k/coldfire/m5441x.c b/arch/m68k/coldfire/m5441x.c
+index ffa02de1a3fb..1e5259a652d1 100644
+--- a/arch/m68k/coldfire/m5441x.c
++++ b/arch/m68k/coldfire/m5441x.c
+@@ -204,6 +204,21 @@ static struct clk * const disable_clks[] __initconst = {
+ 	&__clk_1_29, /* uart 9 */
+ };
+ 
++static void __clk_enable2(struct clk *clk)
++{
++	__raw_writel(__raw_readl(MCFSDHC_CLK) | (1 << clk->slot), MCFSDHC_CLK);
++}
++
++static void __clk_disable2(struct clk *clk)
++{
++	__raw_writel(__raw_readl(MCFSDHC_CLK) & ~(1 << clk->slot), MCFSDHC_CLK);
++}
++
++struct clk_ops clk_ops2 = {
++	.enable		= __clk_enable2,
++	.disable	= __clk_disable2,
++};
++
+ static void __init m5441x_clk_init(void)
+ {
+ 	unsigned i;
 -- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+2.26.2
 
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
