@@ -1,134 +1,151 @@
-Return-Path: <SRS0=87Xh=7I=vger.kernel.org=linux-m68k-owner@kernel.org>
+Return-Path: <SRS0=ooB5=7J=vger.kernel.org=linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-10.1 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-9.6 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C9905C433DF
-	for <linux-m68k@archiver.kernel.org>; Tue, 26 May 2020 12:48:27 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id EF4F2C433DF
+	for <linux-m68k@archiver.kernel.org>; Wed, 27 May 2020 04:36:55 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id A60262073B
-	for <linux-m68k@archiver.kernel.org>; Tue, 26 May 2020 12:48:27 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=default; t=1590497307;
-	bh=osBh4zVQIh4ah+88vINfhsb5MnXLR2rS+dPWGxjmg28=;
-	h=From:To:Cc:Subject:Date:List-ID:From;
-	b=KaCgsovFPOHJ5pt3P213t7yKJ9bAt88iPzyxWYz8ZSYxDDaw6orE8+B/2K8f61Tk+
-	 0cusgLfU/ShWMqmgGIRbwbNuI126fY5CqYr4lRCVx2qOcDw6cWngkYy1xJuTyX5wNw
-	 vF0HRqDXPKqytEzH296X0knKEootsaMeCWJT/1cM=
+	by mail.kernel.org (Postfix) with ESMTP id C0C7820776
+	for <linux-m68k@archiver.kernel.org>; Wed, 27 May 2020 04:36:55 +0000 (UTC)
+Authentication-Results: mail.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="RhgQiHKj"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727034AbgEZMs1 (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Tue, 26 May 2020 08:48:27 -0400
-Received: from condef-04.nifty.com ([202.248.20.69]:31321 "EHLO
-        condef-04.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726882AbgEZMs1 (ORCPT
+        id S1727888AbgE0Egz (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Wed, 27 May 2020 00:36:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37310 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725849AbgE0Egy (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Tue, 26 May 2020 08:48:27 -0400
-Received: from conuserg-07.nifty.com ([10.126.8.70])by condef-04.nifty.com with ESMTP id 04QCcdR1007864
-        for <linux-m68k@lists.linux-m68k.org>; Tue, 26 May 2020 21:38:39 +0900
-Received: from oscar.flets-west.jp (softbank126090202047.bbtec.net [126.90.202.47]) (authenticated)
-        by conuserg-07.nifty.com with ESMTP id 04QCcC2r029236;
-        Tue, 26 May 2020 21:38:13 +0900
-DKIM-Filter: OpenDKIM Filter v2.10.3 conuserg-07.nifty.com 04QCcC2r029236
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
-        s=dec2015msa; t=1590496693;
-        bh=muAvqASTjgzmWxG2DbaZN+wdfT+dce4XSn882r2oWRs=;
-        h=From:To:Cc:Subject:Date:From;
-        b=VJg1R87s7vS7WjizCR1Gp0bWNSYDCpcuA/7ccATL5Xk5jh5WeXB+uPZys/Ih0AkKU
-         QTr9hDlzqtDSobfOkGWJAQNG0mm1HpfIGxEpg2Yl6QHA/DKAQlhv2OoN1d8U9Ae3KV
-         4J/4nNdRm772kgfidsnariTHGQ8BPZi9bhDjbi/XFwPGrquvPBkLlH3nIkjzWEC/i1
-         Hht1NnHWvKZbRzmofO4k3Zpg35T8sVa1UzQlPiFZW05zqfX7vG2QKiX/TTouVBq0l9
-         QcANO2bY7+UgP8AR7IHL2mAjco3pZCPkl0V4yv73PuaRCmTEGToO1Iyl9etIF7fgS3
-         acTCBj3AipLDQ==
-X-Nifty-SrcIP: [126.90.202.47]
-From:   Masahiro Yamada <masahiroy@kernel.org>
-To:     Geert Uytterhoeven <geert@linux-m68k.org>,
-        linux-m68k@lists.linux-m68k.org
-Cc:     Masahiro Yamada <masahiroy@kernel.org>,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH 1/4] m68k: add arch/m68k/Kbuild
-Date:   Tue, 26 May 2020 21:38:07 +0900
-Message-Id: <20200526123810.301667-1-masahiroy@kernel.org>
-X-Mailer: git-send-email 2.25.1
+        Wed, 27 May 2020 00:36:54 -0400
+Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CFA03C03E97B
+        for <linux-m68k@lists.linux-m68k.org>; Tue, 26 May 2020 21:36:54 -0700 (PDT)
+Received: by mail-pg1-x544.google.com with SMTP id c75so11218754pga.3
+        for <linux-m68k@lists.linux-m68k.org>; Tue, 26 May 2020 21:36:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=lOpmpojWwwDKmdgvBgyDR/91akL7lsEVaaRXHGRRif0=;
+        b=RhgQiHKjSFxt0e4hdk9XFdFmwXlaqqy/oTAekflZtHFdhEKO64qFc1mpKDXZr69CPy
+         jdKKGgMYF3/PwLMQqZRA0p7MJV/Go6tkta/h4swizRoRpVhai4LlQKtDfpzOQXol3xcY
+         3TW/CBGWUO1G35QH1UIuJXs9WTI3G+E29PktRQFzMSdgmMsbx+ViIkPx4XIoQKnwHjtI
+         iuFirKyvXOkp6bKvGs8xYK3w/Dn4sctZ1lOJtxsH8Aa2nP03Bsx7PgwJODEguoGDFtQe
+         EV7yB1UHGazYqjCw0y7SPUOzeb1Rx+s20xn4YP/gkyyGkm4H/LKnhLTIPlstwN50FD9J
+         kU0w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=lOpmpojWwwDKmdgvBgyDR/91akL7lsEVaaRXHGRRif0=;
+        b=g0Tppf+c4uznjOVf/m+lTHRf/wz1uV9tYiQupUHtKlAJMuvDQosPGzNsgElNVBdBeP
+         zdRsc6/AFJdXvS/B0e1cIMpmPUI/jssSpSjrEg6UswHzCRyWbi7RK2ns5LhbAJ+8gcXf
+         6AwqAGfRNrl3q/VxpGJ99Rs4x0d1XgTxrPie73oi9I00i2vHdRw2MSd2BsxuwCQSU/MK
+         36dcSXLewYbniOyHjjvNdpZa6wqLXDbWZ7Y9SLDaDcUy6b7g+up+il9d2BToUUVVW3Ym
+         5Rb+YlrjGvBrqI0hkJG+dyH7GmddaZpYYUUA3dwEe+v123g0rgsktUL2GDrB1RelrFk2
+         oHWw==
+X-Gm-Message-State: AOAM533pYUdvwx4cugci9ul4ZxBANvwOMdWZKMa5X+QcFv/3Ggjy+4oJ
+        RVPpXvYgrpXIbnX7bjptixc=
+X-Google-Smtp-Source: ABdhPJxaG/pR1wu1n7WufrFJ+x4wcg8X7uq9rcDJKu3YRWfpwt3nhECM4aeG8mrZfzsEkO9ezvPt1w==
+X-Received: by 2002:aa7:9302:: with SMTP id 2mr2035203pfj.164.1590554214171;
+        Tue, 26 May 2020 21:36:54 -0700 (PDT)
+Received: from localhost.localdomain ([2604:1380:4111:8b00::1])
+        by smtp.gmail.com with ESMTPSA id e13sm893604pfm.103.2020.05.26.21.36.52
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 26 May 2020 21:36:53 -0700 (PDT)
+From:   Nathan Chancellor <natechancellor@gmail.com>
+To:     hch@lst.de
+Cc:     akpm@linux-foundation.org, arnd@arndb.de, jeyu@kernel.org,
+        linux-alpha@vger.kernel.org, linux-arch@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-c6x-dev@linux-c6x.org,
+        linux-fsdevel@vger.kernel.org, linux-hexagon@vger.kernel.org,
+        linux-ia64@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org,
+        linux-mm@kvack.org, linux-riscv@lists.infradead.org,
+        linux-sh@vger.kernel.org, linux-um@lists.infradead.org,
+        linux-xtensa@linux-xtensa.org, linuxppc-dev@lists.ozlabs.org,
+        monstr@monstr.eu, openrisc@lists.librecores.org,
+        sparclinux@vger.kernel.org, x86@kernel.org, zippel@linux-m68k.org,
+        Nathan Chancellor <natechancellor@gmail.com>
+Subject: [PATCH] media: omap3isp: Shuffle cacheflush.h and include mm.h
+Date:   Tue, 26 May 2020 21:34:27 -0700
+Message-Id: <20200527043426.3242439-1-natechancellor@gmail.com>
+X-Mailer: git-send-email 2.27.0.rc0
+In-Reply-To: <20200515143646.3857579-7-hch@lst.de>
+References: <20200515143646.3857579-7-hch@lst.de>
 MIME-Version: 1.0
+X-Patchwork-Bot: notify
 Content-Transfer-Encoding: 8bit
 Sender: linux-m68k-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-Use the standard obj-y form to specify the sub-directories under
-arch/m68k/. No functional change intended.
+After mm.h was removed from the asm-generic version of cacheflush.h,
+s390 allyesconfig shows several warnings of the following nature:
 
-Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
+In file included from ./arch/s390/include/generated/asm/cacheflush.h:1,
+                 from drivers/media/platform/omap3isp/isp.c:42:
+./include/asm-generic/cacheflush.h:16:42: warning: 'struct mm_struct'
+declared inside parameter list will not be visible outside of this
+definition or declaration
+
+cacheflush.h does not include mm.h nor does it include any forward
+declaration of these structures hence the warning. To avoid this,
+include mm.h explicitly in this file and shuffle cacheflush.h below it.
+
+Fixes: 19c0054597a0 ("asm-generic: don't include <linux/mm.h> in cacheflush.h")
+Signed-off-by: Nathan Chancellor <natechancellor@gmail.com>
 ---
 
- arch/m68k/Kbuild   | 19 +++++++++++++++++++
- arch/m68k/Makefile | 20 +-------------------
- 2 files changed, 20 insertions(+), 19 deletions(-)
- create mode 100644 arch/m68k/Kbuild
+I am aware the fixes tag is kind of irrelevant because that SHA will
+change in the next linux-next revision and this will probably get folded
+into the original patch anyways but still.
 
-diff --git a/arch/m68k/Kbuild b/arch/m68k/Kbuild
-new file mode 100644
-index 000000000000..7dc1398dd188
---- /dev/null
-+++ b/arch/m68k/Kbuild
-@@ -0,0 +1,19 @@
-+# SPDX-License-Identifier: GPL-2.0-only
-+obj-y				+= kernel/ mm/
-+obj-$(CONFIG_Q40)		+= q40/
-+obj-$(CONFIG_AMIGA)		+= amiga/
-+obj-$(CONFIG_ATARI)		+= atari/
-+obj-$(CONFIG_MAC)		+= mac/
-+obj-$(CONFIG_HP300)		+= hp300/
-+obj-$(CONFIG_APOLLO)		+= apollo/
-+obj-$(CONFIG_MVME147)		+= mvme147/
-+obj-$(CONFIG_MVME16x)		+= mvme16x/
-+obj-$(CONFIG_BVME6000)		+= bvme6000/
-+obj-$(CONFIG_SUN3X)		+= sun3x/ sun3/
-+obj-$(CONFIG_SUN3)		+= sun3/ sun3/prom/
-+obj-$(CONFIG_NATFEAT)		+= emu/
-+obj-$(CONFIG_M68040)		+= fpsp040/
-+obj-$(CONFIG_M68060)		+= ifpsp060/
-+obj-$(CONFIG_M68KFPU_EMU)	+= math-emu/
-+obj-$(CONFIG_M68000)		+= 68000/
-+obj-$(CONFIG_COLDFIRE)		+= coldfire/
-diff --git a/arch/m68k/Makefile b/arch/m68k/Makefile
-index 5d9288384096..88d4d8bbecd6 100644
---- a/arch/m68k/Makefile
-+++ b/arch/m68k/Makefile
-@@ -97,27 +97,9 @@ head-$(CONFIG_SUN3)		:= arch/m68k/kernel/sun3-head.o
- head-$(CONFIG_M68000)		:= arch/m68k/68000/head.o
- head-$(CONFIG_COLDFIRE)		:= arch/m68k/coldfire/head.o
+The other solution would be to add forward declarations of these structs
+to the top of cacheflush.h, I just chose to do what Christoph did in the
+original patch. I am happy to do that instead if you all feel that is
+better.
+
+ drivers/media/platform/omap3isp/isp.c | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/media/platform/omap3isp/isp.c b/drivers/media/platform/omap3isp/isp.c
+index a4ee6b86663e..54106a768e54 100644
+--- a/drivers/media/platform/omap3isp/isp.c
++++ b/drivers/media/platform/omap3isp/isp.c
+@@ -39,8 +39,6 @@
+  *	Troy Laramy <t-laramy@ti.com>
+  */
  
--core-y				+= arch/m68k/kernel/	arch/m68k/mm/
-+core-y				+= arch/m68k/
- libs-y				+= arch/m68k/lib/
- 
--core-$(CONFIG_Q40)		+= arch/m68k/q40/
--core-$(CONFIG_AMIGA)		+= arch/m68k/amiga/
--core-$(CONFIG_ATARI)		+= arch/m68k/atari/
--core-$(CONFIG_MAC)		+= arch/m68k/mac/
--core-$(CONFIG_HP300)		+= arch/m68k/hp300/
--core-$(CONFIG_APOLLO)		+= arch/m68k/apollo/
--core-$(CONFIG_MVME147)		+= arch/m68k/mvme147/
--core-$(CONFIG_MVME16x)		+= arch/m68k/mvme16x/
--core-$(CONFIG_BVME6000)		+= arch/m68k/bvme6000/
--core-$(CONFIG_SUN3X)		+= arch/m68k/sun3x/	arch/m68k/sun3/
--core-$(CONFIG_SUN3)		+= arch/m68k/sun3/	arch/m68k/sun3/prom/
--core-$(CONFIG_NATFEAT)		+= arch/m68k/emu/
--core-$(CONFIG_M68040)		+= arch/m68k/fpsp040/
--core-$(CONFIG_M68060)		+= arch/m68k/ifpsp060/
--core-$(CONFIG_M68KFPU_EMU)	+= arch/m68k/math-emu/
--core-$(CONFIG_M68000)		+= arch/m68k/68000/
--core-$(CONFIG_COLDFIRE)		+= arch/m68k/coldfire/
+-#include <asm/cacheflush.h>
 -
+ #include <linux/clk.h>
+ #include <linux/clkdev.h>
+ #include <linux/delay.h>
+@@ -49,6 +47,7 @@
+ #include <linux/i2c.h>
+ #include <linux/interrupt.h>
+ #include <linux/mfd/syscon.h>
++#include <linux/mm.h>
+ #include <linux/module.h>
+ #include <linux/omap-iommu.h>
+ #include <linux/platform_device.h>
+@@ -58,6 +57,8 @@
+ #include <linux/sched.h>
+ #include <linux/vmalloc.h>
  
- all:	zImage
- 
++#include <asm/cacheflush.h>
++
+ #ifdef CONFIG_ARM_DMA_USE_IOMMU
+ #include <asm/dma-iommu.h>
+ #endif
 -- 
-2.25.1
+2.27.0.rc0
 
