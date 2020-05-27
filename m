@@ -4,39 +4,41 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-8.2 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,
-	URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=ham autolearn_force=no version=3.4.0
+	URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=unavailable autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D7CBFC433E1
-	for <linux-m68k@archiver.kernel.org>; Wed, 27 May 2020 12:55:53 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 931EBC433E1
+	for <linux-m68k@archiver.kernel.org>; Wed, 27 May 2020 13:00:29 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id C203A20899
-	for <linux-m68k@archiver.kernel.org>; Wed, 27 May 2020 12:55:53 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 7DA7320899
+	for <linux-m68k@archiver.kernel.org>; Wed, 27 May 2020 13:00:29 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730142AbgE0Mzx (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Wed, 27 May 2020 08:55:53 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59530 "EHLO mail.kernel.org"
+        id S1730216AbgE0NA1 (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Wed, 27 May 2020 09:00:27 -0400
+Received: from mail.kernel.org ([198.145.29.99]:32964 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730153AbgE0Mzx (ORCPT <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Wed, 27 May 2020 08:55:53 -0400
-Received: from [192.168.0.106] (193-116-100-240.tpgi.com.au [193.116.100.240])
+        id S1730178AbgE0NA1 (ORCPT <rfc822;linux-m68k@lists.linux-m68k.org>);
+        Wed, 27 May 2020 09:00:27 -0400
+Received: from [10.44.0.192] (unknown [103.48.210.53])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id D8C7E2084C;
-        Wed, 27 May 2020 12:55:50 +0000 (UTC)
-Subject: Re: [PATCH 3/4] m68k: optimize cc-option calls for cpuflags-y
+        by mail.kernel.org (Postfix) with ESMTPSA id 1438220873;
+        Wed, 27 May 2020 13:00:24 +0000 (UTC)
+Subject: Re: [PATCH 4/4] m68k: pass -D options to KBUILD_CPPFLAGS instead of
+ KBUILD_{A,C}FLAGS
 To:     Masahiro Yamada <masahiroy@kernel.org>,
         Geert Uytterhoeven <geert@linux-m68k.org>,
         linux-m68k@lists.linux-m68k.org
 Cc:     linux-kernel@vger.kernel.org
 References: <20200526123810.301667-1-masahiroy@kernel.org>
- <20200526123810.301667-3-masahiroy@kernel.org>
+ <20200526123810.301667-4-masahiroy@kernel.org>
 From:   Greg Ungerer <gerg@linux-m68k.org>
-Message-ID: <c0dc228a-ab53-d2da-0211-c8597b3473df@linux-m68k.org>
-Date:   Wed, 27 May 2020 22:55:47 +1000
+Message-ID: <59d886a9-2ebd-8fab-9b42-f71808288968@linux-m68k.org>
+Date:   Wed, 27 May 2020 23:00:20 +1000
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.7.0
 MIME-Version: 1.0
-In-Reply-To: <20200526123810.301667-3-masahiroy@kernel.org>
+In-Reply-To: <20200526123810.301667-4-masahiroy@kernel.org>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -47,25 +49,9 @@ X-Mailing-List: linux-m68k@vger.kernel.org
 
 
 On 26/5/20 10:38 pm, Masahiro Yamada wrote:
-> arch/m68k/Makefile computes lots of unneeded cc-option calls.
+> Precisely, -D is a preprocessor option.
 > 
-> For example, if CONFIG_M5441x is not defined, there is not point in
-> evaluating the following compiler flag.
-> 
->   cpuflags-$(CONFIG_M5441x)      := $(call cc-option,-mcpu=54455,-mcfv4e)
-> 
-> The result is set to cpuflags-, then thrown away.
-> 
-> The right hand side of ':=' is immediately expanded. Hence, all of the
-> 16 calls for cc-option are evaluated. This is expensive since cc-option
-> invokes the compiler. This occurs even if you are not attempting to
-> build anything, like 'make ARCH=m68k help'.
-> 
-> Use '=' to expand the value _lazily_. The evaluation for cc-option is
-> delayed until $(cpuflags-y) is expanded. So, the cc-option test happens
-> just once at most.
-> 
-> This commit mimics tune-y of arch/arm/Makefile.
+> KBUILD_CPPFLAGS is passed to for compiling .c and .S files too.
 > 
 > Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
 
@@ -77,66 +63,23 @@ Greg
 
 > ---
 > 
->   arch/m68k/Makefile | 45 ++++++++++++++++++++++++---------------------
->   1 file changed, 24 insertions(+), 21 deletions(-)
+>   arch/m68k/Makefile | 5 ++---
+>   1 file changed, 2 insertions(+), 3 deletions(-)
 > 
 > diff --git a/arch/m68k/Makefile b/arch/m68k/Makefile
-> index 88d4d8bbecd6..ae6e29da3a3e 100644
+> index ae6e29da3a3e..c28f9f917ac0 100644
 > --- a/arch/m68k/Makefile
 > +++ b/arch/m68k/Makefile
-> @@ -32,30 +32,33 @@ endif
->   #	compiler cpu type flag.
->   #
->   ifndef CONFIG_M68040
-> -cpuflags-$(CONFIG_M68060)	:= -m68060
-> +cpuflags-$(CONFIG_M68060)	= -m68060
+> @@ -70,9 +70,8 @@ ifdef CONFIG_MMU
+>   KBUILD_CFLAGS += -fno-strength-reduce -ffixed-a2
+>   else
+>   # we can use a m68k-linux-gcc toolchain with these in place
+> -KBUILD_CFLAGS += -DUTS_SYSNAME=\"uClinux\"
+> -KBUILD_CFLAGS += -D__uClinux__
+> -KBUILD_AFLAGS += -D__uClinux__
+> +KBUILD_CPPFLAGS += -DUTS_SYSNAME=\"uClinux\"
+> +KBUILD_CPPFLAGS += -D__uClinux__
 >   endif
->   ifndef CONFIG_M68060
-> -cpuflags-$(CONFIG_M68040)	:= -m68040
-> +cpuflags-$(CONFIG_M68040)	= -m68040
->   endif
-> -cpuflags-$(CONFIG_M68030)	:=
-> -cpuflags-$(CONFIG_M68020)	:=
-> -cpuflags-$(CONFIG_M68000)	:= -m68000
-> -cpuflags-$(CONFIG_M5441x)	:= $(call cc-option,-mcpu=54455,-mcfv4e)
-> -cpuflags-$(CONFIG_M54xx)	:= $(call cc-option,-mcpu=5475,-m5200)
-> -cpuflags-$(CONFIG_M5407)	:= $(call cc-option,-mcpu=5407,-m5200)
-> -cpuflags-$(CONFIG_M532x)	:= $(call cc-option,-mcpu=532x,-m5307)
-> -cpuflags-$(CONFIG_M537x)	:= $(call cc-option,-mcpu=537x,-m5307)
-> -cpuflags-$(CONFIG_M5307)	:= $(call cc-option,-mcpu=5307,-m5200)
-> -cpuflags-$(CONFIG_M528x)	:= $(call cc-option,-mcpu=528x,-m5307)
-> -cpuflags-$(CONFIG_M5275)	:= $(call cc-option,-mcpu=5275,-m5307)
-> -cpuflags-$(CONFIG_M5272)	:= $(call cc-option,-mcpu=5272,-m5307)
-> -cpuflags-$(CONFIG_M5271)	:= $(call cc-option,-mcpu=5271,-m5307)
-> -cpuflags-$(CONFIG_M523x)	:= $(call cc-option,-mcpu=523x,-m5307)
-> -cpuflags-$(CONFIG_M525x)	:= $(call cc-option,-mcpu=5253,-m5200)
-> -cpuflags-$(CONFIG_M5249)	:= $(call cc-option,-mcpu=5249,-m5200)
-> -cpuflags-$(CONFIG_M520x)	:= $(call cc-option,-mcpu=5208,-m5200)
-> -cpuflags-$(CONFIG_M5206e)	:= $(call cc-option,-mcpu=5206e,-m5200)
-> -cpuflags-$(CONFIG_M5206)	:= $(call cc-option,-mcpu=5206,-m5200)
-> +cpuflags-$(CONFIG_M68030)	=
-> +cpuflags-$(CONFIG_M68020)	=
-> +cpuflags-$(CONFIG_M68000)	= -m68000
-> +cpuflags-$(CONFIG_M5441x)	= $(call cc-option,-mcpu=54455,-mcfv4e)
-> +cpuflags-$(CONFIG_M54xx)	= $(call cc-option,-mcpu=5475,-m5200)
-> +cpuflags-$(CONFIG_M5407)	= $(call cc-option,-mcpu=5407,-m5200)
-> +cpuflags-$(CONFIG_M532x)	= $(call cc-option,-mcpu=532x,-m5307)
-> +cpuflags-$(CONFIG_M537x)	= $(call cc-option,-mcpu=537x,-m5307)
-> +cpuflags-$(CONFIG_M5307)	= $(call cc-option,-mcpu=5307,-m5200)
-> +cpuflags-$(CONFIG_M528x)	= $(call cc-option,-mcpu=528x,-m5307)
-> +cpuflags-$(CONFIG_M5275)	= $(call cc-option,-mcpu=5275,-m5307)
-> +cpuflags-$(CONFIG_M5272)	= $(call cc-option,-mcpu=5272,-m5307)
-> +cpuflags-$(CONFIG_M5271)	= $(call cc-option,-mcpu=5271,-m5307)
-> +cpuflags-$(CONFIG_M523x)	= $(call cc-option,-mcpu=523x,-m5307)
-> +cpuflags-$(CONFIG_M525x)	= $(call cc-option,-mcpu=5253,-m5200)
-> +cpuflags-$(CONFIG_M5249)	= $(call cc-option,-mcpu=5249,-m5200)
-> +cpuflags-$(CONFIG_M520x)	= $(call cc-option,-mcpu=5208,-m5200)
-> +cpuflags-$(CONFIG_M5206e)	= $(call cc-option,-mcpu=5206e,-m5200)
-> +cpuflags-$(CONFIG_M5206)	= $(call cc-option,-mcpu=5206,-m5200)
-> +
-> +# Evaluate tune cc-option calls now
-> +cpuflags-y := $(cpuflags-y)
 >   
->   KBUILD_AFLAGS += $(cpuflags-y)
->   KBUILD_CFLAGS += $(cpuflags-y)
+>   KBUILD_LDFLAGS := -m m68kelf
 > 
