@@ -2,125 +2,119 @@ Return-Path: <SRS0=ooB5=7J=vger.kernel.org=linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.2 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,
-	URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-8.6 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 723E7C433E0
-	for <linux-m68k@archiver.kernel.org>; Wed, 27 May 2020 13:04:35 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 471C1C433DF
+	for <linux-m68k@archiver.kernel.org>; Wed, 27 May 2020 13:34:48 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 583EC20899
-	for <linux-m68k@archiver.kernel.org>; Wed, 27 May 2020 13:04:35 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 1B39D207D8
+	for <linux-m68k@archiver.kernel.org>; Wed, 27 May 2020 13:34:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=default; t=1590586488;
+	bh=qX8tDKwCNrMJuCf2/sY1GfVbI6T8Hbojb6verUXTvAc=;
+	h=Date:From:To:Cc:Subject:List-ID:From;
+	b=IE8POkMUIg2bspsrZZxfJq+Evu2tnR8SS120Kiliw2waj5pHP82LTSB3dfKHBLl+Y
+	 ha2jW4g9wDS2tgRLhO8ZwiotvmuudUqq62fBbeUKSNrPAObiF6ePBx0D+gh2DnlDDI
+	 VLNz8a29lKvGukLyqdIhVlMk72/7W1V+1mx45pxM=
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730175AbgE0NEf (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Wed, 27 May 2020 09:04:35 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34102 "EHLO mail.kernel.org"
+        id S2388142AbgE0Ner (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Wed, 27 May 2020 09:34:47 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42612 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730045AbgE0NEf (ORCPT <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Wed, 27 May 2020 09:04:35 -0400
-Received: from [10.44.0.192] (unknown [103.48.210.53])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        id S2387901AbgE0Ner (ORCPT <rfc822;linux-m68k@lists.linux-m68k.org>);
+        Wed, 27 May 2020 09:34:47 -0400
+Received: from embeddedor (unknown [189.207.59.248])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id D3AC620873;
-        Wed, 27 May 2020 13:04:32 +0000 (UTC)
-Subject: Re: [PATCH 1/4] m68k: add arch/m68k/Kbuild
-To:     Masahiro Yamada <masahiroy@kernel.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        linux-m68k@lists.linux-m68k.org
-Cc:     linux-kernel@vger.kernel.org
-References: <20200526123810.301667-1-masahiroy@kernel.org>
-From:   Greg Ungerer <gerg@linux-m68k.org>
-Message-ID: <03086d60-52eb-384c-da03-11c127b7132f@linux-m68k.org>
-Date:   Wed, 27 May 2020 23:04:29 +1000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+        by mail.kernel.org (Postfix) with ESMTPSA id D3302207CB;
+        Wed, 27 May 2020 13:34:46 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1590586487;
+        bh=qX8tDKwCNrMJuCf2/sY1GfVbI6T8Hbojb6verUXTvAc=;
+        h=Date:From:To:Cc:Subject:From;
+        b=VlzVQ31KmSEOR/Q+pON6KQeS6zoc1wFbJtntY2RH/c7Hb8rPbOBdV4po/w42ydsYN
+         TJp0hisRfSX+dGgL6TP6DYs+/nK0FJtmvAonHuXVi7qcV8g9zfRGTKbed5/JRiNbdi
+         CytsjKlaI+JYiLl4nmibkmHn/OSs/MjCU/nfLvGs=
+Date:   Wed, 27 May 2020 08:39:42 -0500
+From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
+To:     Geert Uytterhoeven <geert@linux-m68k.org>
+Cc:     linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org,
+        "Gustavo A. R. Silva" <gustavo@embeddedor.com>
+Subject: [PATCH] m68k: Use sizeof_field() helper
+Message-ID: <20200527133942.GA10408@embeddedor>
 MIME-Version: 1.0
-In-Reply-To: <20200526123810.301667-1-masahiroy@kernel.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-m68k-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
+Make use of the sizeof_field() helper instead of an open-coded version.
 
-On 26/5/20 10:38 pm, Masahiro Yamada wrote:
-> Use the standard obj-y form to specify the sub-directories under
-> arch/m68k/. No functional change intended.
-> 
-> Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
+Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+---
+ arch/m68k/kernel/signal.c | 32 ++++++++++++++++----------------
+ 1 file changed, 16 insertions(+), 16 deletions(-)
 
-Acked-by: Greg Ungerer <gerg@linux-m68k.org>
+diff --git a/arch/m68k/kernel/signal.c b/arch/m68k/kernel/signal.c
+index b3ff39588f36b..fc034fd19798e 100644
+--- a/arch/m68k/kernel/signal.c
++++ b/arch/m68k/kernel/signal.c
+@@ -61,25 +61,25 @@
+ #define	FMT4SIZE	0
+ #else
+ #define	FORMAT		0
+-#define	FMT4SIZE	sizeof(((struct frame *)0)->un.fmt4)
++#define	FMT4SIZE	sizeof_field(struct frame, un.fmt4)
+ #endif
+ 
+ static const int frame_size_change[16] = {
+-  [1]	= -1, /* sizeof(((struct frame *)0)->un.fmt1), */
+-  [2]	= sizeof(((struct frame *)0)->un.fmt2),
+-  [3]	= sizeof(((struct frame *)0)->un.fmt3),
++  [1]	= -1, /* sizeof_field(struct frame, un.fmt1), */
++  [2]	= sizeof_field(struct frame, un.fmt2),
++  [3]	= sizeof_field(struct frame, un.fmt3),
+   [4]	= FMT4SIZE,
+-  [5]	= -1, /* sizeof(((struct frame *)0)->un.fmt5), */
+-  [6]	= -1, /* sizeof(((struct frame *)0)->un.fmt6), */
+-  [7]	= sizeof(((struct frame *)0)->un.fmt7),
+-  [8]	= -1, /* sizeof(((struct frame *)0)->un.fmt8), */
+-  [9]	= sizeof(((struct frame *)0)->un.fmt9),
+-  [10]	= sizeof(((struct frame *)0)->un.fmta),
+-  [11]	= sizeof(((struct frame *)0)->un.fmtb),
+-  [12]	= -1, /* sizeof(((struct frame *)0)->un.fmtc), */
+-  [13]	= -1, /* sizeof(((struct frame *)0)->un.fmtd), */
+-  [14]	= -1, /* sizeof(((struct frame *)0)->un.fmte), */
+-  [15]	= -1, /* sizeof(((struct frame *)0)->un.fmtf), */
++  [5]	= -1, /* sizeof_field(struct frame, un.fmt5), */
++  [6]	= -1, /* sizeof_field(struct frame, un.fmt6), */
++  [7]	= sizeof_field(struct frame, un.fmt7),
++  [8]	= -1, /* sizeof_field(struct frame, un.fmt8), */
++  [9]	= sizeof_field(struct frame, un.fmt9),
++  [10]	= sizeof_field(struct frame, un.fmta),
++  [11]	= sizeof_field(struct frame, un.fmtb),
++  [12]	= -1, /* sizeof_field(struct frame, un.fmtc), */
++  [13]	= -1, /* sizeof_field(struct frame, un.fmtd), */
++  [14]	= -1, /* sizeof_field(struct frame, un.fmte), */
++  [15]	= -1, /* sizeof_field(struct frame, un.fmtf), */
+ };
+ 
+ static inline int frame_extra_sizes(int f)
+@@ -651,7 +651,7 @@ static int mangle_kernel_stack(struct pt_regs *regs, int formatvec,
+ 	} else {
+ 		struct switch_stack *sw = (struct switch_stack *)regs - 1;
+ 		/* yes, twice as much as max(sizeof(frame.un.fmt<x>)) */
+-		unsigned long buf[sizeof(((struct frame *)0)->un) / 2];
++		unsigned long buf[sizeof_field(struct frame, un) / 2];
+ 
+ 		/* that'll make sure that expansion won't crap over data */
+ 		if (copy_from_user(buf + fsize / 4, fp, fsize))
+-- 
+2.26.2
 
-Regards
-Greg
-
-
-
-> ---
-> 
->   arch/m68k/Kbuild   | 19 +++++++++++++++++++
->   arch/m68k/Makefile | 20 +-------------------
->   2 files changed, 20 insertions(+), 19 deletions(-)
->   create mode 100644 arch/m68k/Kbuild
-> 
-> diff --git a/arch/m68k/Kbuild b/arch/m68k/Kbuild
-> new file mode 100644
-> index 000000000000..7dc1398dd188
-> --- /dev/null
-> +++ b/arch/m68k/Kbuild
-> @@ -0,0 +1,19 @@
-> +# SPDX-License-Identifier: GPL-2.0-only
-> +obj-y				+= kernel/ mm/
-> +obj-$(CONFIG_Q40)		+= q40/
-> +obj-$(CONFIG_AMIGA)		+= amiga/
-> +obj-$(CONFIG_ATARI)		+= atari/
-> +obj-$(CONFIG_MAC)		+= mac/
-> +obj-$(CONFIG_HP300)		+= hp300/
-> +obj-$(CONFIG_APOLLO)		+= apollo/
-> +obj-$(CONFIG_MVME147)		+= mvme147/
-> +obj-$(CONFIG_MVME16x)		+= mvme16x/
-> +obj-$(CONFIG_BVME6000)		+= bvme6000/
-> +obj-$(CONFIG_SUN3X)		+= sun3x/ sun3/
-> +obj-$(CONFIG_SUN3)		+= sun3/ sun3/prom/
-> +obj-$(CONFIG_NATFEAT)		+= emu/
-> +obj-$(CONFIG_M68040)		+= fpsp040/
-> +obj-$(CONFIG_M68060)		+= ifpsp060/
-> +obj-$(CONFIG_M68KFPU_EMU)	+= math-emu/
-> +obj-$(CONFIG_M68000)		+= 68000/
-> +obj-$(CONFIG_COLDFIRE)		+= coldfire/
-> diff --git a/arch/m68k/Makefile b/arch/m68k/Makefile
-> index 5d9288384096..88d4d8bbecd6 100644
-> --- a/arch/m68k/Makefile
-> +++ b/arch/m68k/Makefile
-> @@ -97,27 +97,9 @@ head-$(CONFIG_SUN3)		:= arch/m68k/kernel/sun3-head.o
->   head-$(CONFIG_M68000)		:= arch/m68k/68000/head.o
->   head-$(CONFIG_COLDFIRE)		:= arch/m68k/coldfire/head.o
->   
-> -core-y				+= arch/m68k/kernel/	arch/m68k/mm/
-> +core-y				+= arch/m68k/
->   libs-y				+= arch/m68k/lib/
->   
-> -core-$(CONFIG_Q40)		+= arch/m68k/q40/
-> -core-$(CONFIG_AMIGA)		+= arch/m68k/amiga/
-> -core-$(CONFIG_ATARI)		+= arch/m68k/atari/
-> -core-$(CONFIG_MAC)		+= arch/m68k/mac/
-> -core-$(CONFIG_HP300)		+= arch/m68k/hp300/
-> -core-$(CONFIG_APOLLO)		+= arch/m68k/apollo/
-> -core-$(CONFIG_MVME147)		+= arch/m68k/mvme147/
-> -core-$(CONFIG_MVME16x)		+= arch/m68k/mvme16x/
-> -core-$(CONFIG_BVME6000)		+= arch/m68k/bvme6000/
-> -core-$(CONFIG_SUN3X)		+= arch/m68k/sun3x/	arch/m68k/sun3/
-> -core-$(CONFIG_SUN3)		+= arch/m68k/sun3/	arch/m68k/sun3/prom/
-> -core-$(CONFIG_NATFEAT)		+= arch/m68k/emu/
-> -core-$(CONFIG_M68040)		+= arch/m68k/fpsp040/
-> -core-$(CONFIG_M68060)		+= arch/m68k/ifpsp060/
-> -core-$(CONFIG_M68KFPU_EMU)	+= arch/m68k/math-emu/
-> -core-$(CONFIG_M68000)		+= arch/m68k/68000/
-> -core-$(CONFIG_COLDFIRE)		+= arch/m68k/coldfire/
-> -
->   
->   all:	zImage
->   
-> 
