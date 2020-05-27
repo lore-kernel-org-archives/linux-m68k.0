@@ -2,49 +2,66 @@ Return-Path: <SRS0=ooB5=7J=vger.kernel.org=linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-6.7 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,
-	URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-6.6 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 8CA0DC433E0
-	for <linux-m68k@archiver.kernel.org>; Wed, 27 May 2020 07:03:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 0865BC433E4
+	for <linux-m68k@archiver.kernel.org>; Wed, 27 May 2020 08:13:51 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 740BC207D3
-	for <linux-m68k@archiver.kernel.org>; Wed, 27 May 2020 07:03:09 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id D974F216FD
+	for <linux-m68k@archiver.kernel.org>; Wed, 27 May 2020 08:13:50 +0000 (UTC)
+Authentication-Results: mail.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="g+OBuTNL"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728830AbgE0HDF (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Wed, 27 May 2020 03:03:05 -0400
-Received: from mail-oi1-f196.google.com ([209.85.167.196]:36148 "EHLO
-        mail-oi1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728348AbgE0HDE (ORCPT
+        id S2387951AbgE0INp (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Wed, 27 May 2020 04:13:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42534 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2387949AbgE0INn (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Wed, 27 May 2020 03:03:04 -0400
-Received: by mail-oi1-f196.google.com with SMTP id x23so20917504oic.3
-        for <linux-m68k@lists.linux-m68k.org>; Wed, 27 May 2020 00:03:03 -0700 (PDT)
+        Wed, 27 May 2020 04:13:43 -0400
+Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CDE50C03E97A
+        for <linux-m68k@lists.linux-m68k.org>; Wed, 27 May 2020 01:13:43 -0700 (PDT)
+Received: by mail-pf1-x443.google.com with SMTP id b190so11492216pfg.6
+        for <linux-m68k@lists.linux-m68k.org>; Wed, 27 May 2020 01:13:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=1Pvjwk/n6XpSKsFU1yL/UyqSsSwArACV6a9IFuCvWoI=;
+        b=g+OBuTNL+ZECp7gRenSfzoC/L0SIFQs2wUNgQ5XneQ49ve7MCXLFqHyaI1J9HP8hFF
+         xZFvHdBiADmGYGqBL80SR5GtgLTUbXo9d3UfqDFFj0SLN/B5WFfGMlNyWLAR+tVbvYCz
+         C4EDVhl4IEpe78El/g9Nz+dJDWkO/ABrWAn818mbecK+TzsU4h/qWOTh9KLV22jXIyGm
+         SrUEFGzeyILWXpcIFBAIOJnIMer+3w8CniZCi5TVTCW1nLLYmDQxBwulWUNK49ca4BOt
+         f5OAT0gMgdznpvyOENVsocczF2HFLHy6Oq37nWMHgKTV2N1Nl/lqod7kwe1GiYzM7JwH
+         lhVQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=UmrgkNrS7YJyoX//CVVX8i/eCGz9CaA9GDfJeRj6hok=;
-        b=E0CaYjwTTPLZ/SI+DtFr7z9FGvprQ/swo28DpEbEvtP5/5uPnnzm7L5G8EjRwRGH85
-         oU3OOQwGr5truU8eGZAmd2spBWn4G4R4mK4UX9aHQcC6RHoriOM+ECQQAMC6Bm59HiFk
-         DC7gNdPtA7CyKfis0KOU+y9kQxmiaTfNsyrvUTEIJ3omnXSESAU6k9bHMxDqnfA+VQaF
-         /IIArZNMc6dHo01WYQhqOrz44FytvsVTxaj/N4A9bkCIeyWjH783cTQT74+Xidm/SqOD
-         vdNgBaseF5pzhzd3SkuVbusuLGhCt/lNIf6znbxmqy+LwcReM/CfTWuaBqiRou3zMzKq
-         xCnA==
-X-Gm-Message-State: AOAM533RiPXIwR190mUJLrYdmTFFVJwnZxD2gQDVJGYZOsybFQLbmvHE
-        GoVZYjdQYxymTXlim3f73AvEFbw4Qc9w2WiJZFY=
-X-Google-Smtp-Source: ABdhPJyJItgq7CbQXJlF6MFLLk/+bu/fSz/XUZ+gwTEqMYOT9P6OwO82+92+P3alNyNfXtW65E6GNWlSoFsc0hwoXsQ=
-X-Received: by 2002:a05:6808:1:: with SMTP id u1mr1778697oic.54.1590562983010;
- Wed, 27 May 2020 00:03:03 -0700 (PDT)
-MIME-Version: 1.0
-References: <20200515143646.3857579-7-hch@lst.de> <20200527043426.3242439-1-natechancellor@gmail.com>
-In-Reply-To: <20200527043426.3242439-1-natechancellor@gmail.com>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Wed, 27 May 2020 09:02:51 +0200
-Message-ID: <CAMuHMdVSduTOi5bUgF9sLQdGADwyL1+qALWsKgin1TeOLGhAKQ@mail.gmail.com>
-Subject: Re: [PATCH] media: omap3isp: Shuffle cacheflush.h and include mm.h
-To:     Nathan Chancellor <natechancellor@gmail.com>
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=1Pvjwk/n6XpSKsFU1yL/UyqSsSwArACV6a9IFuCvWoI=;
+        b=P8VQl6U9quhKFixU23aVmy4H4q02oFCJ0J37PDiQ1eeDUhjnwCFmkASS299XDeG7ta
+         FCreholjO7spPlKXr1sGliJwzveSL6gluNwkAo/qkp5KFwki6xxZDbjOlmWbL6wu/vhy
+         TAGIcX9l7WgqglaJT3kNpKYtsrogxc7Gncs0N9QBobUabOOWVZ8PVvDDSkJ52CEbNeG9
+         4x4EwMiEt+O6X98BDc/jPgVBjmQmswosXekGQ15R+w0iJsPHBy87SnmQ8/8At2o56iW8
+         oZ5zqqy57gJFyJXPf1ENQkUyeHQ5/TSnLUwQkqbD1VSChDdMXblkW/SR4GH2R88mVJDq
+         xJLg==
+X-Gm-Message-State: AOAM530m7cnT0Od48gnEQm4Fh6pOBaBR7aMpNhd6yLxGBPytIbvCM+NL
+        72Cv7CKG4FGT9Ov1Kgq6gsg=
+X-Google-Smtp-Source: ABdhPJzbLRuMmxwJUPY5sv1El/ZdSk39d9IjzJRaDZ9+OJbVht9mTOUgNcWeTP5sLyuANVdm7nAJ8g==
+X-Received: by 2002:a63:554e:: with SMTP id f14mr2850561pgm.191.1590567223153;
+        Wed, 27 May 2020 01:13:43 -0700 (PDT)
+Received: from ubuntu-s3-xlarge-x86 ([2604:1380:4111:8b00::1])
+        by smtp.gmail.com with ESMTPSA id gz19sm1568851pjb.33.2020.05.27.01.13.39
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 27 May 2020 01:13:42 -0700 (PDT)
+Date:   Wed, 27 May 2020 01:13:37 -0700
+From:   Nathan Chancellor <natechancellor@gmail.com>
+To:     Geert Uytterhoeven <geert@linux-m68k.org>
 Cc:     Christoph Hellwig <hch@lst.de>,
         "linux-ia64@vger.kernel.org" <linux-ia64@vger.kernel.org>,
         Linux-sh list <linux-sh@vger.kernel.org>,
@@ -56,7 +73,7 @@ Cc:     Christoph Hellwig <hch@lst.de>,
         Linux-Arch <linux-arch@vger.kernel.org>,
         linux-c6x-dev@linux-c6x.org,
         "open list:QUALCOMM HEXAGON..." <linux-hexagon@vger.kernel.org>,
-        "the arch/x86 maintainers" <x86@kernel.org>,
+        the arch/x86 maintainers <x86@kernel.org>,
         "open list:TENSILICA XTENSA PORT (xtensa)" 
         <linux-xtensa@linux-xtensa.org>, Arnd Bergmann <arnd@arndb.de>,
         alpha <linux-alpha@vger.kernel.org>,
@@ -71,99 +88,105 @@ Cc:     Christoph Hellwig <hch@lst.de>,
         Andrew Morton <akpm@linux-foundation.org>,
         linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
         Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-Content-Type: text/plain; charset="UTF-8"
+Subject: Re: [PATCH] media: omap3isp: Shuffle cacheflush.h and include mm.h
+Message-ID: <20200527081337.GA3506499@ubuntu-s3-xlarge-x86>
+References: <20200515143646.3857579-7-hch@lst.de>
+ <20200527043426.3242439-1-natechancellor@gmail.com>
+ <CAMuHMdVSduTOi5bUgF9sLQdGADwyL1+qALWsKgin1TeOLGhAKQ@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAMuHMdVSduTOi5bUgF9sLQdGADwyL1+qALWsKgin1TeOLGhAKQ@mail.gmail.com>
 Sender: linux-m68k-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-Hi Nathan,
+Hi Geert,
 
-CC Laurent
+On Wed, May 27, 2020 at 09:02:51AM +0200, Geert Uytterhoeven wrote:
+> Hi Nathan,
+> 
+> CC Laurent
+> 
+> On Wed, May 27, 2020 at 6:37 AM Nathan Chancellor
+> <natechancellor@gmail.com> wrote:
+> > After mm.h was removed from the asm-generic version of cacheflush.h,
+> > s390 allyesconfig shows several warnings of the following nature:
+> >
+> > In file included from ./arch/s390/include/generated/asm/cacheflush.h:1,
+> >                  from drivers/media/platform/omap3isp/isp.c:42:
+> > ./include/asm-generic/cacheflush.h:16:42: warning: 'struct mm_struct'
+> > declared inside parameter list will not be visible outside of this
+> > definition or declaration
+> >
+> > cacheflush.h does not include mm.h nor does it include any forward
+> > declaration of these structures hence the warning. To avoid this,
+> > include mm.h explicitly in this file and shuffle cacheflush.h below it.
+> >
+> > Fixes: 19c0054597a0 ("asm-generic: don't include <linux/mm.h> in cacheflush.h")
+> > Signed-off-by: Nathan Chancellor <natechancellor@gmail.com>
+> 
+> Thanks for your patch!
+> 
+> > I am aware the fixes tag is kind of irrelevant because that SHA will
+> > change in the next linux-next revision and this will probably get folded
+> > into the original patch anyways but still.
+> >
+> > The other solution would be to add forward declarations of these structs
+> > to the top of cacheflush.h, I just chose to do what Christoph did in the
+> > original patch. I am happy to do that instead if you all feel that is
+> > better.
+> 
+> That actually looks like a better solution to me, as it would address the
+> problem for all users.
+> 
+> >  drivers/media/platform/omap3isp/isp.c | 5 +++--
+> >  1 file changed, 3 insertions(+), 2 deletions(-)
+> >
+> > diff --git a/drivers/media/platform/omap3isp/isp.c b/drivers/media/platform/omap3isp/isp.c
+> > index a4ee6b86663e..54106a768e54 100644
+> > --- a/drivers/media/platform/omap3isp/isp.c
+> > +++ b/drivers/media/platform/omap3isp/isp.c
+> > @@ -39,8 +39,6 @@
+> >   *     Troy Laramy <t-laramy@ti.com>
+> >   */
+> >
+> > -#include <asm/cacheflush.h>
+> > -
+> >  #include <linux/clk.h>
+> >  #include <linux/clkdev.h>
+> >  #include <linux/delay.h>
+> > @@ -49,6 +47,7 @@
+> >  #include <linux/i2c.h>
+> >  #include <linux/interrupt.h>
+> >  #include <linux/mfd/syscon.h>
+> > +#include <linux/mm.h>
+> >  #include <linux/module.h>
+> >  #include <linux/omap-iommu.h>
+> >  #include <linux/platform_device.h>
+> > @@ -58,6 +57,8 @@
+> >  #include <linux/sched.h>
+> >  #include <linux/vmalloc.h>
+> >
+> > +#include <asm/cacheflush.h>
+> > +
+> >  #ifdef CONFIG_ARM_DMA_USE_IOMMU
+> >  #include <asm/dma-iommu.h>
+> >  #endif
+> 
+> Why does this file need <asm/cacheflush.h> at all?
+> It doesn't call any of the flush_*() functions, and seems to compile fine
+> without (on arm32).
+> 
+> Perhaps it was included at the top intentionally, to override the definitions
+> of copy_{to,from}_user_page()? Fortunately that doesn't seem to be the
+> case, from a quick look at the assembler output.
+> 
+> So let's just remove the #include instead?
 
-On Wed, May 27, 2020 at 6:37 AM Nathan Chancellor
-<natechancellor@gmail.com> wrote:
-> After mm.h was removed from the asm-generic version of cacheflush.h,
-> s390 allyesconfig shows several warnings of the following nature:
->
-> In file included from ./arch/s390/include/generated/asm/cacheflush.h:1,
->                  from drivers/media/platform/omap3isp/isp.c:42:
-> ./include/asm-generic/cacheflush.h:16:42: warning: 'struct mm_struct'
-> declared inside parameter list will not be visible outside of this
-> definition or declaration
->
-> cacheflush.h does not include mm.h nor does it include any forward
-> declaration of these structures hence the warning. To avoid this,
-> include mm.h explicitly in this file and shuffle cacheflush.h below it.
->
-> Fixes: 19c0054597a0 ("asm-generic: don't include <linux/mm.h> in cacheflush.h")
-> Signed-off-by: Nathan Chancellor <natechancellor@gmail.com>
+Sounds good to me. I can send a patch if needed or I suppose Andrew can
+just make a small fixup patch for it. Let me know what I should do.
 
-Thanks for your patch!
-
-> I am aware the fixes tag is kind of irrelevant because that SHA will
-> change in the next linux-next revision and this will probably get folded
-> into the original patch anyways but still.
->
-> The other solution would be to add forward declarations of these structs
-> to the top of cacheflush.h, I just chose to do what Christoph did in the
-> original patch. I am happy to do that instead if you all feel that is
-> better.
-
-That actually looks like a better solution to me, as it would address the
-problem for all users.
-
->  drivers/media/platform/omap3isp/isp.c | 5 +++--
->  1 file changed, 3 insertions(+), 2 deletions(-)
->
-> diff --git a/drivers/media/platform/omap3isp/isp.c b/drivers/media/platform/omap3isp/isp.c
-> index a4ee6b86663e..54106a768e54 100644
-> --- a/drivers/media/platform/omap3isp/isp.c
-> +++ b/drivers/media/platform/omap3isp/isp.c
-> @@ -39,8 +39,6 @@
->   *     Troy Laramy <t-laramy@ti.com>
->   */
->
-> -#include <asm/cacheflush.h>
-> -
->  #include <linux/clk.h>
->  #include <linux/clkdev.h>
->  #include <linux/delay.h>
-> @@ -49,6 +47,7 @@
->  #include <linux/i2c.h>
->  #include <linux/interrupt.h>
->  #include <linux/mfd/syscon.h>
-> +#include <linux/mm.h>
->  #include <linux/module.h>
->  #include <linux/omap-iommu.h>
->  #include <linux/platform_device.h>
-> @@ -58,6 +57,8 @@
->  #include <linux/sched.h>
->  #include <linux/vmalloc.h>
->
-> +#include <asm/cacheflush.h>
-> +
->  #ifdef CONFIG_ARM_DMA_USE_IOMMU
->  #include <asm/dma-iommu.h>
->  #endif
-
-Why does this file need <asm/cacheflush.h> at all?
-It doesn't call any of the flush_*() functions, and seems to compile fine
-without (on arm32).
-
-Perhaps it was included at the top intentionally, to override the definitions
-of copy_{to,from}_user_page()? Fortunately that doesn't seem to be the
-case, from a quick look at the assembler output.
-
-So let's just remove the #include instead?
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
--- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+Cheers,
+Nathan
