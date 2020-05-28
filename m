@@ -2,120 +2,113 @@ Return-Path: <SRS0=mY22=7K=vger.kernel.org=linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.6 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-2.2 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1
+	autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E20D4C433E0
-	for <linux-m68k@archiver.kernel.org>; Thu, 28 May 2020 20:25:29 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 59D18C433E0
+	for <linux-m68k@archiver.kernel.org>; Thu, 28 May 2020 22:38:43 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id BD99B2072D
-	for <linux-m68k@archiver.kernel.org>; Thu, 28 May 2020 20:25:29 +0000 (UTC)
-Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="LtUgp18i"
+	by mail.kernel.org (Postfix) with ESMTP id 3D695206F1
+	for <linux-m68k@archiver.kernel.org>; Thu, 28 May 2020 22:38:43 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2407174AbgE1UZ2 (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Thu, 28 May 2020 16:25:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41268 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2407171AbgE1UZW (ORCPT
+        id S2437219AbgE1Wim (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Thu, 28 May 2020 18:38:42 -0400
+Received: from outpost1.zedat.fu-berlin.de ([130.133.4.66]:47029 "EHLO
+        outpost1.zedat.fu-berlin.de" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2437076AbgE1Wik (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Thu, 28 May 2020 16:25:22 -0400
-Received: from mail-ej1-x643.google.com (mail-ej1-x643.google.com [IPv6:2a00:1450:4864:20::643])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E816C08C5C7
-        for <linux-m68k@lists.linux-m68k.org>; Thu, 28 May 2020 13:25:22 -0700 (PDT)
-Received: by mail-ej1-x643.google.com with SMTP id n24so1404905ejd.0
-        for <linux-m68k@lists.linux-m68k.org>; Thu, 28 May 2020 13:25:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=XQAtsk/t+fqstgbYgDtIde3vAr7su5QktZBlwp2bjhQ=;
-        b=LtUgp18i1/9YOTzZt1/pTx6ctnDjDnQj9O3AP8wClTUO+jbHVJ6UM/hRm3Dy3mFtUj
-         kScoehplRay7PttiZKj4934NMGVAYRXvE+oH2ws9OrS4gjIW9+tUfa8b+HNu98fv8DFq
-         xpKTme1gN8dtl+uOSTtdWscFVVPL8BfRaEyBfzY35RVj7j+7CKPPEqWZRSjIF8HdShAf
-         rAFeoxbQ+rJQqRja6pR9ygLhsOWyIxpjWzJ1rTqFqzJ8X4p7FieN2GDI9WK0t240LMCu
-         t1LgWv6yvPkSFTfSn9ckcJmsJ+lMLPNWDUykk7LcguxjCKWmZhefC+36SADGcrv6IU9k
-         XXsw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=XQAtsk/t+fqstgbYgDtIde3vAr7su5QktZBlwp2bjhQ=;
-        b=dpT0Mie0QOpZNXnpiSQq0xnhWCSU7XYO5PYhR38BJcBpz8kVAnwkDqGsQB7NmUoyRH
-         T85JLJZfafl9zLs3UgwNYf8fPnhp3v9pyZjm1HojulyIMdeoaiX4FNdjisp4yy3H1Tp4
-         MUFsZ1lntwjHg0zOxe8sehlNXjillH2zjo5E9doJ49J4r00YdCVDBrzWRrnJBn7FWHcv
-         ipffg3RKRiQjlWeGSALnyGqFrLTpn5TOOAjDHhhyUjPkTwV93h3A2m9ZJr4WNh9syPwx
-         aXW04NwBJYYCQi0Cw1VFHD6vyWc1+pS1EswPNlfWtv62Xk+NON9R6ODVv/l3Cshmv3CY
-         n8Yw==
-X-Gm-Message-State: AOAM531zojqmu0dpm//F4NQnGgaF3cbf4O11CfDF5i0LBmwliipOkGfd
-        mnnGpKVWTo3hI07xcl18Jpc=
-X-Google-Smtp-Source: ABdhPJyRnPmNyad+bHae/uPhbcgRV8q1YRY4dd0vf1eU5zp3Q7YYfcUR2L72QDqExSMY7jaeHi6BMA==
-X-Received: by 2002:a17:906:2a4d:: with SMTP id k13mr4867500eje.253.1590697520774;
-        Thu, 28 May 2020 13:25:20 -0700 (PDT)
-Received: from localhost.localdomain ([2a02:a03f:b7f9:7600:d98f:8461:8d2c:e59b])
-        by smtp.gmail.com with ESMTPSA id y13sm5692736ejm.107.2020.05.28.13.25.19
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 28 May 2020 13:25:20 -0700 (PDT)
-From:   Luc Van Oostenryck <luc.vanoostenryck@gmail.com>
-To:     Geert Uytterhoeven <geert@linux-m68k.org>,
-        Greg Ungerer <gerg@linux-m68k.org>
-Cc:     linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org,
-        Luc Van Oostenryck <luc.vanoostenryck@gmail.com>,
-        kbuild test robot <lkp@intel.com>
-Subject: [PATCH 2/2] m68k,nommu: fix implicit cast from __user in __{get,put}_user_asm()
-Date:   Thu, 28 May 2020 22:25:14 +0200
-Message-Id: <20200528202514.27175-3-luc.vanoostenryck@gmail.com>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200528202514.27175-1-luc.vanoostenryck@gmail.com>
-References: <20200528202514.27175-1-luc.vanoostenryck@gmail.com>
+        Thu, 28 May 2020 18:38:40 -0400
+Received: from inpost2.zedat.fu-berlin.de ([130.133.4.69])
+          by outpost.zedat.fu-berlin.de (Exim 4.93)
+          with esmtps (TLS1.2)
+          tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+          (envelope-from <glaubitz@zedat.fu-berlin.de>)
+          id 1jeRAc-000bnl-Cq; Fri, 29 May 2020 00:38:38 +0200
+Received: from p57bd9b57.dip0.t-ipconnect.de ([87.189.155.87] helo=[192.168.178.139])
+          by inpost2.zedat.fu-berlin.de (Exim 4.93)
+          with esmtpsa (TLS1.2)
+          tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+          (envelope-from <glaubitz@physik.fu-berlin.de>)
+          id 1jeRAc-003i8q-6X; Fri, 29 May 2020 00:38:38 +0200
+To:     linux-m68k <linux-m68k@lists.linux-m68k.org>
+Cc:     Debian m68k <debian-68k@lists.debian.org>
+From:   John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
+Subject: Out-of-tree support for Sharp X68000
+Autocrypt: addr=glaubitz@physik.fu-berlin.de; keydata=
+ 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
+ scOkTAZQGVpD/8AaLH4v1w==
+Message-ID: <abfd3d1a-57f8-b853-3ee7-13ad7e00bad1@physik.fu-berlin.de>
+Date:   Fri, 29 May 2020 00:38:37 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.8.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Original-Sender: glaubitz@physik.fu-berlin.de
+X-Originating-IP: 87.189.155.87
 Sender: linux-m68k-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-The assembly for __get_user_asm() & __put_user_asm() uses memcpy()
-when the size is 8.
+Hi!
 
-However, the pointer is always a __user one while memcpy() expect
-a plan one and so this cast creates a lot of warnings when using
-Sparse.
+I just stumbled across this tree by Yoshinori Sato which adds support for the
+Japanese Sharp X68000 console [1] to the Linux kernel [2].
 
-So, fix this by adding a cast to 'void __force *' at memcpy()'s
-argument.
+Would be cool if you could get this upstreamed. I have asked Sato-san whether
+he would be willing to upstream his code.
 
-Reported-by: kbuild test robot <lkp@intel.com>
-Signed-off-by: Luc Van Oostenryck <luc.vanoostenryck@gmail.com>
----
- arch/m68k/include/asm/uaccess_no.h | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+Adrian
 
-diff --git a/arch/m68k/include/asm/uaccess_no.h b/arch/m68k/include/asm/uaccess_no.h
-index 9651766a62af..f32f08a64eaa 100644
---- a/arch/m68k/include/asm/uaccess_no.h
-+++ b/arch/m68k/include/asm/uaccess_no.h
-@@ -42,7 +42,7 @@ static inline int _access_ok(unsigned long addr, unsigned long size)
- 	__put_user_asm(__pu_err, __pu_val, ptr, l);	\
- 	break;						\
-     case 8:						\
--	memcpy(ptr, &__pu_val, sizeof (*(ptr))); \
-+	memcpy((void __force*)ptr, &__pu_val, sizeof (*(ptr))); \
- 	break;						\
-     default:						\
- 	__pu_err = __put_user_bad();			\
-@@ -85,7 +85,7 @@ extern int __put_user_bad(void);
- 	    u64 l;						\
- 	    __typeof__(*(ptr)) t;				\
- 	} __gu_val;						\
--	memcpy(&__gu_val.l, ptr, sizeof(__gu_val.l));		\
-+	memcpy(&__gu_val.l, (const void __force*)ptr, sizeof(__gu_val.l));		\
- 	(x) = __gu_val.t;					\
- 	break;							\
-     }								\
+> [1] https://en.wikipedia.org/wiki/X68000
+> [2] https://osdn.net/projects/uclinux-h8/scm/git/linux/commits?branch=x68k
+
 -- 
-2.26.2
-
+ .''`.  John Paul Adrian Glaubitz
+: :' :  Debian Developer - glaubitz@debian.org
+`. `'   Freie Universitaet Berlin - glaubitz@physik.fu-berlin.de
+  `-    GPG: 62FF 8A75 84E0 2956 9546  0006 7426 3B37 F5B5 F913
