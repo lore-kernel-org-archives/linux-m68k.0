@@ -6,70 +6,106 @@ X-Spam-Status: No, score=-6.7 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,
 	URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 65FF6C433E1
-	for <linux-m68k@archiver.kernel.org>; Sat, 30 May 2020 23:21:10 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 959B7C433E1
+	for <linux-m68k@archiver.kernel.org>; Sat, 30 May 2020 23:21:13 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 4BCE92068D
-	for <linux-m68k@archiver.kernel.org>; Sat, 30 May 2020 23:21:10 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 7E8202067B
+	for <linux-m68k@archiver.kernel.org>; Sat, 30 May 2020 23:21:13 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729538AbgE3XVJ (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        id S1729544AbgE3XVJ (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
         Sat, 30 May 2020 19:21:09 -0400
-Received: from kvm5.telegraphics.com.au ([98.124.60.144]:51208 "EHLO
+Received: from kvm5.telegraphics.com.au ([98.124.60.144]:51210 "EHLO
         kvm5.telegraphics.com.au" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729544AbgE3XUe (ORCPT
+        with ESMTP id S1729524AbgE3XUe (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
         Sat, 30 May 2020 19:20:34 -0400
 Received: by kvm5.telegraphics.com.au (Postfix, from userid 502)
-        id 8E2D627FEF; Sat, 30 May 2020 19:20:34 -0400 (EDT)
+        id A111127F9B; Sat, 30 May 2020 19:20:33 -0400 (EDT)
 To:     Benjamin Herrenschmidt <benh@kernel.crashing.org>
 Cc:     Joshua Thompson <funaho@jurai.org>,
         linux-m68k@lists.linux-m68k.org, linuxppc-dev@lists.ozlabs.org,
         linux-kernel@vger.kernel.org
-Message-Id: <6991996dd4aaf0b52cfd650172bf0f6fbe37a452.1590880623.git.fthain@telegraphics.com.au>
+Message-Id: <bbe32b087c7e04d68e2425f6a2df4a414d167c32.1590880623.git.fthain@telegraphics.com.au>
 In-Reply-To: <cover.1590880623.git.fthain@telegraphics.com.au>
 References: <cover.1590880623.git.fthain@telegraphics.com.au>
 From:   Finn Thain <fthain@telegraphics.com.au>
-Subject: [PATCH 7/8] macintosh/adb-iop: Implement sending -> idle state
- transition
+Subject: [PATCH 4/8] macintosh/adb-iop: Access current_req and adb_iop_state
+ when inside lock
 Date:   Sun, 31 May 2020 09:17:03 +1000
 Sender: linux-m68k-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-On leaving the 'sending' state, proceed to the 'idle' state if no reply is
-expected. Drop redundant test for adb_iop_state == sending && current_req.
+Drop the redundant local_irq_save/restore() from adb_iop_start() because
+the caller has to do it anyway. This is the pattern used in via-macii.
 
 Cc: Joshua Thompson <funaho@jurai.org>
 Tested-by: Stan Johnson <userm57@yahoo.com>
 Signed-off-by: Finn Thain <fthain@telegraphics.com.au>
 ---
- drivers/macintosh/adb-iop.c | 7 +++----
- 1 file changed, 3 insertions(+), 4 deletions(-)
+ drivers/macintosh/adb-iop.c | 13 +++++--------
+ 1 file changed, 5 insertions(+), 8 deletions(-)
 
 diff --git a/drivers/macintosh/adb-iop.c b/drivers/macintosh/adb-iop.c
-index f22792c95d4f..8594e4f9a830 100644
+index c3089dacf2e2..7ecc41bc7358 100644
 --- a/drivers/macintosh/adb-iop.c
 +++ b/drivers/macintosh/adb-iop.c
-@@ -77,15 +77,14 @@ static void adb_iop_done(void)
+@@ -137,7 +137,6 @@ static void adb_iop_listen(struct iop_msg *msg)
  
- static void adb_iop_complete(struct iop_msg *msg)
+ static void adb_iop_start(void)
  {
--	struct adb_request *req;
- 	unsigned long flags;
+-	unsigned long flags;
+ 	struct adb_request *req;
+ 	struct adb_iopmsg amsg;
  
- 	local_irq_save(flags);
+@@ -146,8 +145,6 @@ static void adb_iop_start(void)
+ 	if (!req)
+ 		return;
  
--	req = current_req;
--	if ((adb_iop_state == sending) && req && req->reply_expected) {
-+	if (current_req->reply_expected)
- 		adb_iop_state = awaiting_reply;
--	}
-+	else
-+		adb_iop_done();
+-	local_irq_save(flags);
+-
+ 	/* The IOP takes MacII-style packets, so strip the initial
+ 	 * ADB_PACKET byte.
+ 	 */
+@@ -161,7 +158,6 @@ static void adb_iop_start(void)
  
- 	local_irq_restore(flags);
+ 	req->sent = 1;
+ 	adb_iop_state = sending;
+-	local_irq_restore(flags);
+ 
+ 	/* Now send it. The IOP manager will call adb_iop_complete
+ 	 * when the message has been sent.
+@@ -208,13 +204,13 @@ static int adb_iop_write(struct adb_request *req)
+ 		return -EINVAL;
+ 	}
+ 
+-	local_irq_save(flags);
+-
+ 	req->next = NULL;
+ 	req->sent = 0;
+ 	req->complete = 0;
+ 	req->reply_len = 0;
+ 
++	local_irq_save(flags);
++
+ 	if (current_req != 0) {
+ 		last_req->next = req;
+ 		last_req = req;
+@@ -223,10 +219,11 @@ static int adb_iop_write(struct adb_request *req)
+ 		last_req = req;
+ 	}
+ 
+-	local_irq_restore(flags);
+-
+ 	if (adb_iop_state == idle)
+ 		adb_iop_start();
++
++	local_irq_restore(flags);
++
+ 	return 0;
  }
+ 
 -- 
 2.26.2
 
