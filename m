@@ -6,111 +6,70 @@ X-Spam-Status: No, score=-6.7 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,
 	URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B9AA4C433DF
-	for <linux-m68k@archiver.kernel.org>; Sat, 30 May 2020 23:21:06 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 65FF6C433E1
+	for <linux-m68k@archiver.kernel.org>; Sat, 30 May 2020 23:21:10 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 8F7A72068D
-	for <linux-m68k@archiver.kernel.org>; Sat, 30 May 2020 23:21:06 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 4BCE92068D
+	for <linux-m68k@archiver.kernel.org>; Sat, 30 May 2020 23:21:10 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729590AbgE3XUu (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Sat, 30 May 2020 19:20:50 -0400
-Received: from kvm5.telegraphics.com.au ([98.124.60.144]:51224 "EHLO
+        id S1729538AbgE3XVJ (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Sat, 30 May 2020 19:21:09 -0400
+Received: from kvm5.telegraphics.com.au ([98.124.60.144]:51208 "EHLO
         kvm5.telegraphics.com.au" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729533AbgE3XUf (ORCPT
+        with ESMTP id S1729544AbgE3XUe (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Sat, 30 May 2020 19:20:35 -0400
+        Sat, 30 May 2020 19:20:34 -0400
 Received: by kvm5.telegraphics.com.au (Postfix, from userid 502)
-        id 3748E27FAD; Sat, 30 May 2020 19:20:33 -0400 (EDT)
+        id 8E2D627FEF; Sat, 30 May 2020 19:20:34 -0400 (EDT)
 To:     Benjamin Herrenschmidt <benh@kernel.crashing.org>
 Cc:     Joshua Thompson <funaho@jurai.org>,
         linux-m68k@lists.linux-m68k.org, linuxppc-dev@lists.ozlabs.org,
         linux-kernel@vger.kernel.org
-Message-Id: <25edf4450abd20e002b166ba3a11189dc1efa906.1590880623.git.fthain@telegraphics.com.au>
+Message-Id: <6991996dd4aaf0b52cfd650172bf0f6fbe37a452.1590880623.git.fthain@telegraphics.com.au>
 In-Reply-To: <cover.1590880623.git.fthain@telegraphics.com.au>
 References: <cover.1590880623.git.fthain@telegraphics.com.au>
 From:   Finn Thain <fthain@telegraphics.com.au>
-Subject: [PATCH 5/8] macintosh/adb-iop: Resolve static checker warnings
+Subject: [PATCH 7/8] macintosh/adb-iop: Implement sending -> idle state
+ transition
 Date:   Sun, 31 May 2020 09:17:03 +1000
 Sender: linux-m68k-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-drivers/macintosh/adb-iop.c:215:28: warning: Using plain integer as NULL pointer
-drivers/macintosh/adb-iop.c:170:5: warning: symbol 'adb_iop_probe' was not declared. Should it be static?
-drivers/macintosh/adb-iop.c:177:5: warning: symbol 'adb_iop_init' was not declared. Should it be static?
-drivers/macintosh/adb-iop.c:184:5: warning: symbol 'adb_iop_send_request' was not declared. Should it be static?
-drivers/macintosh/adb-iop.c:230:5: warning: symbol 'adb_iop_autopoll' was not declared. Should it be static?
-drivers/macintosh/adb-iop.c:236:6: warning: symbol 'adb_iop_poll' was not declared. Should it be static?
-drivers/macintosh/adb-iop.c:241:5: warning: symbol 'adb_iop_reset_bus' was not declared. Should it be static?
+On leaving the 'sending' state, proceed to the 'idle' state if no reply is
+expected. Drop redundant test for adb_iop_state == sending && current_req.
 
 Cc: Joshua Thompson <funaho@jurai.org>
 Tested-by: Stan Johnson <userm57@yahoo.com>
 Signed-off-by: Finn Thain <fthain@telegraphics.com.au>
 ---
- drivers/macintosh/adb-iop.c | 14 +++++++-------
- 1 file changed, 7 insertions(+), 7 deletions(-)
+ drivers/macintosh/adb-iop.c | 7 +++----
+ 1 file changed, 3 insertions(+), 4 deletions(-)
 
 diff --git a/drivers/macintosh/adb-iop.c b/drivers/macintosh/adb-iop.c
-index 7ecc41bc7358..a2b28e09f2ce 100644
+index f22792c95d4f..8594e4f9a830 100644
 --- a/drivers/macintosh/adb-iop.c
 +++ b/drivers/macintosh/adb-iop.c
-@@ -166,21 +166,21 @@ static void adb_iop_start(void)
- 			 adb_iop_complete);
- }
+@@ -77,15 +77,14 @@ static void adb_iop_done(void)
  
--int adb_iop_probe(void)
-+static int adb_iop_probe(void)
+ static void adb_iop_complete(struct iop_msg *msg)
  {
- 	if (!iop_ism_present)
- 		return -ENODEV;
- 	return 0;
- }
- 
--int adb_iop_init(void)
-+static int adb_iop_init(void)
- {
- 	pr_info("adb: IOP ISM driver v0.4 for Unified ADB\n");
- 	iop_listen(ADB_IOP, ADB_CHAN, adb_iop_listen, "ADB");
- 	return 0;
- }
- 
--int adb_iop_send_request(struct adb_request *req, int sync)
-+static int adb_iop_send_request(struct adb_request *req, int sync)
- {
- 	int err;
- 
-@@ -211,7 +211,7 @@ static int adb_iop_write(struct adb_request *req)
+-	struct adb_request *req;
+ 	unsigned long flags;
  
  	local_irq_save(flags);
  
--	if (current_req != 0) {
-+	if (current_req) {
- 		last_req->next = req;
- 		last_req = req;
- 	} else {
-@@ -227,18 +227,18 @@ static int adb_iop_write(struct adb_request *req)
- 	return 0;
+-	req = current_req;
+-	if ((adb_iop_state == sending) && req && req->reply_expected) {
++	if (current_req->reply_expected)
+ 		adb_iop_state = awaiting_reply;
+-	}
++	else
++		adb_iop_done();
+ 
+ 	local_irq_restore(flags);
  }
- 
--int adb_iop_autopoll(int devs)
-+static int adb_iop_autopoll(int devs)
- {
- 	/* TODO: how do we enable/disable autopoll? */
- 	return 0;
- }
- 
--void adb_iop_poll(void)
-+static void adb_iop_poll(void)
- {
- 	iop_ism_irq_poll(ADB_IOP);
- }
- 
--int adb_iop_reset_bus(void)
-+static int adb_iop_reset_bus(void)
- {
- 	struct adb_request req;
- 
 -- 
 2.26.2
 
