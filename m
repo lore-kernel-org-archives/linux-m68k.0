@@ -4,130 +4,112 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-6.7 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,
-	URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.0
+	URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 17F20C433E0
-	for <linux-m68k@archiver.kernel.org>; Sat, 30 May 2020 23:20:51 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B9AA4C433DF
+	for <linux-m68k@archiver.kernel.org>; Sat, 30 May 2020 23:21:06 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id EA9BE2068D
-	for <linux-m68k@archiver.kernel.org>; Sat, 30 May 2020 23:20:50 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 8F7A72068D
+	for <linux-m68k@archiver.kernel.org>; Sat, 30 May 2020 23:21:06 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729560AbgE3XUu (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        id S1729590AbgE3XUu (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
         Sat, 30 May 2020 19:20:50 -0400
-Received: from kvm5.telegraphics.com.au ([98.124.60.144]:51250 "EHLO
+Received: from kvm5.telegraphics.com.au ([98.124.60.144]:51224 "EHLO
         kvm5.telegraphics.com.au" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729566AbgE3XUf (ORCPT
+        with ESMTP id S1729533AbgE3XUf (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
         Sat, 30 May 2020 19:20:35 -0400
 Received: by kvm5.telegraphics.com.au (Postfix, from userid 502)
-        id A668428009; Sat, 30 May 2020 19:20:34 -0400 (EDT)
+        id 3748E27FAD; Sat, 30 May 2020 19:20:33 -0400 (EDT)
 To:     Benjamin Herrenschmidt <benh@kernel.crashing.org>
 Cc:     Joshua Thompson <funaho@jurai.org>,
-        linux-m68k@lists.linux-m68k.org,
-        "Geert Uytterhoeven" <geert@linux-m68k.org>,
-        linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
-Message-Id: <0fb7fdcd99d7820bb27faf1f27f7f6f1923914ef.1590880623.git.fthain@telegraphics.com.au>
+        linux-m68k@lists.linux-m68k.org, linuxppc-dev@lists.ozlabs.org,
+        linux-kernel@vger.kernel.org
+Message-Id: <25edf4450abd20e002b166ba3a11189dc1efa906.1590880623.git.fthain@telegraphics.com.au>
 In-Reply-To: <cover.1590880623.git.fthain@telegraphics.com.au>
 References: <cover.1590880623.git.fthain@telegraphics.com.au>
 From:   Finn Thain <fthain@telegraphics.com.au>
-Subject: [PATCH 8/8] macintosh/adb-iop: Implement SRQ autopolling
+Subject: [PATCH 5/8] macintosh/adb-iop: Resolve static checker warnings
 Date:   Sun, 31 May 2020 09:17:03 +1000
 Sender: linux-m68k-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-The adb_driver.autopoll method is needed during ADB bus scan and device
-address assignment. Implement this method so that the IOP's list of
-device addresses can be updated. When the list is empty, disable SRQ
-autopolling.
+drivers/macintosh/adb-iop.c:215:28: warning: Using plain integer as NULL pointer
+drivers/macintosh/adb-iop.c:170:5: warning: symbol 'adb_iop_probe' was not declared. Should it be static?
+drivers/macintosh/adb-iop.c:177:5: warning: symbol 'adb_iop_init' was not declared. Should it be static?
+drivers/macintosh/adb-iop.c:184:5: warning: symbol 'adb_iop_send_request' was not declared. Should it be static?
+drivers/macintosh/adb-iop.c:230:5: warning: symbol 'adb_iop_autopoll' was not declared. Should it be static?
+drivers/macintosh/adb-iop.c:236:6: warning: symbol 'adb_iop_poll' was not declared. Should it be static?
+drivers/macintosh/adb-iop.c:241:5: warning: symbol 'adb_iop_reset_bus' was not declared. Should it be static?
 
 Cc: Joshua Thompson <funaho@jurai.org>
-Cc: Geert Uytterhoeven <geert@linux-m68k.org>
 Tested-by: Stan Johnson <userm57@yahoo.com>
 Signed-off-by: Finn Thain <fthain@telegraphics.com.au>
 ---
- arch/m68k/include/asm/adb_iop.h |  1 +
- drivers/macintosh/adb-iop.c     | 32 ++++++++++++++++++++++++++------
- 2 files changed, 27 insertions(+), 6 deletions(-)
+ drivers/macintosh/adb-iop.c | 14 +++++++-------
+ 1 file changed, 7 insertions(+), 7 deletions(-)
 
-diff --git a/arch/m68k/include/asm/adb_iop.h b/arch/m68k/include/asm/adb_iop.h
-index 195d7fb1268c..6aecd020e2fc 100644
---- a/arch/m68k/include/asm/adb_iop.h
-+++ b/arch/m68k/include/asm/adb_iop.h
-@@ -29,6 +29,7 @@
- 
- #define ADB_IOP_EXPLICIT	0x80	/* nonzero if explicit command */
- #define ADB_IOP_AUTOPOLL	0x40	/* auto/SRQ polling enabled    */
-+#define ADB_IOP_SET_AUTOPOLL	0x20	/* set autopoll device list    */
- #define ADB_IOP_SRQ		0x04	/* SRQ detected                */
- #define ADB_IOP_TIMEOUT		0x02	/* nonzero if timeout          */
- 
 diff --git a/drivers/macintosh/adb-iop.c b/drivers/macintosh/adb-iop.c
-index 8594e4f9a830..f3d1a460fbce 100644
+index 7ecc41bc7358..a2b28e09f2ce 100644
 --- a/drivers/macintosh/adb-iop.c
 +++ b/drivers/macintosh/adb-iop.c
-@@ -7,10 +7,6 @@
-  * 1999-07-01 (jmt) - First implementation for new driver architecture.
-  *
-  * 1999-07-31 (jmt) - First working version.
-- *
-- * TODO:
-- *
-- * o Implement SRQ handling.
-  */
- 
- #include <linux/types.h>
-@@ -28,6 +24,7 @@
- 
- static struct adb_request *current_req;
- static struct adb_request *last_req;
-+static unsigned int autopoll_devs;
- 
- static enum adb_iop_state {
- 	idle,
-@@ -123,7 +120,7 @@ static void adb_iop_listen(struct iop_msg *msg)
- 			  amsg->flags & ADB_IOP_AUTOPOLL);
- 	}
- 
--	msg->reply[0] = ADB_IOP_AUTOPOLL;
-+	msg->reply[0] = autopoll_devs ? ADB_IOP_AUTOPOLL : 0;
- 	iop_complete_message(msg);
- 
- 	if (req_done)
-@@ -231,9 +228,32 @@ static int adb_iop_write(struct adb_request *req)
- 	return 0;
+@@ -166,21 +166,21 @@ static void adb_iop_start(void)
+ 			 adb_iop_complete);
  }
  
-+static void adb_iop_set_ap_complete(struct iop_msg *msg)
-+{
-+	struct adb_iopmsg *amsg = (struct adb_iopmsg *)msg->message;
-+
-+	autopoll_devs = (amsg->data[1] << 8) | amsg->data[0];
-+}
-+
- static int adb_iop_autopoll(int devs)
+-int adb_iop_probe(void)
++static int adb_iop_probe(void)
  {
--	/* TODO: how do we enable/disable autopoll? */
-+	struct adb_iopmsg amsg;
-+	unsigned long flags;
-+	unsigned int mask = (unsigned int)devs & 0xFFFE;
-+
-+	local_irq_save(flags);
-+
-+	amsg.flags = ADB_IOP_SET_AUTOPOLL | (mask ? ADB_IOP_AUTOPOLL : 0);
-+	amsg.count = 2;
-+	amsg.cmd = 0;
-+	amsg.data[0] = mask & 0xFF;
-+	amsg.data[1] = (mask >> 8) & 0xFF;
-+
-+	iop_send_message(ADB_IOP, ADB_CHAN, NULL, sizeof(amsg), (__u8 *)&amsg,
-+			 adb_iop_set_ap_complete);
-+
-+	local_irq_restore(flags);
-+
+ 	if (!iop_ism_present)
+ 		return -ENODEV;
  	return 0;
  }
+ 
+-int adb_iop_init(void)
++static int adb_iop_init(void)
+ {
+ 	pr_info("adb: IOP ISM driver v0.4 for Unified ADB\n");
+ 	iop_listen(ADB_IOP, ADB_CHAN, adb_iop_listen, "ADB");
+ 	return 0;
+ }
+ 
+-int adb_iop_send_request(struct adb_request *req, int sync)
++static int adb_iop_send_request(struct adb_request *req, int sync)
+ {
+ 	int err;
+ 
+@@ -211,7 +211,7 @@ static int adb_iop_write(struct adb_request *req)
+ 
+ 	local_irq_save(flags);
+ 
+-	if (current_req != 0) {
++	if (current_req) {
+ 		last_req->next = req;
+ 		last_req = req;
+ 	} else {
+@@ -227,18 +227,18 @@ static int adb_iop_write(struct adb_request *req)
+ 	return 0;
+ }
+ 
+-int adb_iop_autopoll(int devs)
++static int adb_iop_autopoll(int devs)
+ {
+ 	/* TODO: how do we enable/disable autopoll? */
+ 	return 0;
+ }
+ 
+-void adb_iop_poll(void)
++static void adb_iop_poll(void)
+ {
+ 	iop_ism_irq_poll(ADB_IOP);
+ }
+ 
+-int adb_iop_reset_bus(void)
++static int adb_iop_reset_bus(void)
+ {
+ 	struct adb_request req;
  
 -- 
 2.26.2
