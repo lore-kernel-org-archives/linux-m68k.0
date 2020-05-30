@@ -6,109 +6,132 @@ X-Spam-Status: No, score=-6.7 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,
 	URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E9F80C433E0
-	for <linux-m68k@archiver.kernel.org>; Sat, 30 May 2020 23:20:34 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 135A0C433E1
+	for <linux-m68k@archiver.kernel.org>; Sat, 30 May 2020 23:20:50 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id C34372067B
-	for <linux-m68k@archiver.kernel.org>; Sat, 30 May 2020 23:20:34 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id C30612068D
+	for <linux-m68k@archiver.kernel.org>; Sat, 30 May 2020 23:20:49 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729530AbgE3XUe (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Sat, 30 May 2020 19:20:34 -0400
-Received: from kvm5.telegraphics.com.au ([98.124.60.144]:51188 "EHLO
+        id S1729572AbgE3XUg (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Sat, 30 May 2020 19:20:36 -0400
+Received: from kvm5.telegraphics.com.au ([98.124.60.144]:51240 "EHLO
         kvm5.telegraphics.com.au" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729517AbgE3XUe (ORCPT
+        with ESMTP id S1729554AbgE3XUf (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Sat, 30 May 2020 19:20:34 -0400
+        Sat, 30 May 2020 19:20:35 -0400
 Received: by kvm5.telegraphics.com.au (Postfix, from userid 502)
-        id 5FCE927F1F; Sat, 30 May 2020 19:20:33 -0400 (EDT)
+        id 4FC8B27FE0; Sat, 30 May 2020 19:20:34 -0400 (EDT)
 To:     Benjamin Herrenschmidt <benh@kernel.crashing.org>
 Cc:     Joshua Thompson <funaho@jurai.org>,
         linux-m68k@lists.linux-m68k.org, linuxppc-dev@lists.ozlabs.org,
         linux-kernel@vger.kernel.org
-Message-Id: <996f835d2f3d90baaaf9ee954e252d06e8886c6f.1590880623.git.fthain@telegraphics.com.au>
+Message-Id: <dedcdfc62f43e85cc4c2a8d211a7e2fec7bc7c1a.1590880623.git.fthain@telegraphics.com.au>
 In-Reply-To: <cover.1590880623.git.fthain@telegraphics.com.au>
 References: <cover.1590880623.git.fthain@telegraphics.com.au>
 From:   Finn Thain <fthain@telegraphics.com.au>
-Subject: [PATCH 2/8] macintosh/adb-iop: Correct comment text
+Subject: [PATCH 6/8] macintosh/adb-iop: Implement idle -> sending state
+ transition
 Date:   Sun, 31 May 2020 09:17:03 +1000
 Sender: linux-m68k-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-This patch improves comment style and corrects some misunderstandings
-in the text.
+In the present algorithm, the 'idle' state transition does not take
+place until there's a bus timeout. Once idle, the driver does not
+automatically proceed with the next request.
+
+Change the algorithm so that queued ADB requests will be sent as soon as
+the driver becomes idle. This is to take place after the current IOP
+message is completed.
 
 Cc: Joshua Thompson <funaho@jurai.org>
 Tested-by: Stan Johnson <userm57@yahoo.com>
 Signed-off-by: Finn Thain <fthain@telegraphics.com.au>
 ---
- drivers/macintosh/adb-iop.c | 29 +++++++++++++----------------
- 1 file changed, 13 insertions(+), 16 deletions(-)
+ drivers/macintosh/adb-iop.c | 43 +++++++++++++++++++++----------------
+ 1 file changed, 24 insertions(+), 19 deletions(-)
 
 diff --git a/drivers/macintosh/adb-iop.c b/drivers/macintosh/adb-iop.c
-index ce28ff40fb9c..ca3b411b0742 100644
+index a2b28e09f2ce..f22792c95d4f 100644
 --- a/drivers/macintosh/adb-iop.c
 +++ b/drivers/macintosh/adb-iop.c
-@@ -101,11 +101,10 @@ static void adb_iop_listen(struct iop_msg *msg)
+@@ -54,13 +54,19 @@ struct adb_driver adb_iop_driver = {
+ 	.reset_bus    = adb_iop_reset_bus
+ };
  
- 	req = current_req;
+-static void adb_iop_end_req(struct adb_request *req, int state)
++static void adb_iop_done(void)
+ {
++	struct adb_request *req = current_req;
++
++	adb_iop_state = idle;
++
+ 	req->complete = 1;
+ 	current_req = req->next;
+ 	if (req->done)
+ 		(*req->done)(req);
+-	adb_iop_state = state;
++
++	if (adb_iop_state == idle)
++		adb_iop_start();
+ }
  
--	/* Handle a timeout. Timeout packets seem to occur even after */
--	/* we've gotten a valid reply to a TALK, so I'm assuming that */
--	/* a "timeout" is actually more like an "end-of-data" signal. */
--	/* We need to send back a timeout packet to the IOP to shut   */
--	/* it up, plus complete the current request, if any.          */
-+	/* Handle a timeout. Timeout packets seem to occur even after
-+	 * we've gotten a valid reply to a TALK, presumably because of
-+	 * autopolling.
-+	 */
- 
- 	if (amsg->flags & ADB_IOP_TIMEOUT) {
- 		msg->reply[0] = ADB_IOP_TIMEOUT | ADB_IOP_AUTOPOLL;
-@@ -115,9 +114,6 @@ static void adb_iop_listen(struct iop_msg *msg)
- 			adb_iop_end_req(req, idle);
- 		}
- 	} else {
--		/* TODO: is it possible for more than one chunk of data  */
--		/*       to arrive before the timeout? If so we need to */
--		/*       use reply_ptr here like the other drivers do.  */
- 		if ((adb_iop_state == awaiting_reply) &&
- 		    (amsg->flags & ADB_IOP_EXPLICIT)) {
- 			req->reply_len = amsg->count + 1;
-@@ -152,23 +148,24 @@ static void adb_iop_start(void)
+ /*
+@@ -94,37 +100,36 @@ static void adb_iop_complete(struct iop_msg *msg)
+ static void adb_iop_listen(struct iop_msg *msg)
+ {
+ 	struct adb_iopmsg *amsg = (struct adb_iopmsg *)msg->message;
+-	struct adb_request *req;
+ 	unsigned long flags;
++	bool req_done = false;
  
  	local_irq_save(flags);
  
--	/* The IOP takes MacII-style packets, so */
--	/* strip the initial ADB_PACKET byte.    */
+-	req = current_req;
 -
-+	/* The IOP takes MacII-style packets, so strip the initial
-+	 * ADB_PACKET byte.
-+	 */
- 	amsg.flags = ADB_IOP_EXPLICIT;
- 	amsg.count = req->nbytes - 2;
+ 	/* Handle a timeout. Timeout packets seem to occur even after
+ 	 * we've gotten a valid reply to a TALK, presumably because of
+ 	 * autopolling.
+ 	 */
  
--	/* amsg.data immediately follows amsg.cmd, effectively making */
--	/* amsg.cmd a pointer to the beginning of a full ADB packet.  */
-+	/* amsg.data immediately follows amsg.cmd, effectively making
-+	 * &amsg.cmd a pointer to the beginning of a full ADB packet.
-+	 */
- 	memcpy(&amsg.cmd, req->data + 1, req->nbytes - 1);
- 
- 	req->sent = 1;
- 	adb_iop_state = sending;
+-	if (amsg->flags & ADB_IOP_TIMEOUT) {
+-		msg->reply[0] = ADB_IOP_TIMEOUT | ADB_IOP_AUTOPOLL;
+-		msg->reply[1] = 0;
+-		msg->reply[2] = 0;
+-		if (req && (adb_iop_state != idle)) {
+-			adb_iop_end_req(req, idle);
+-		}
+-	} else {
+-		if ((adb_iop_state == awaiting_reply) &&
+-		    (amsg->flags & ADB_IOP_EXPLICIT)) {
++	if (amsg->flags & ADB_IOP_EXPLICIT) {
++		if (adb_iop_state == awaiting_reply) {
++			struct adb_request *req = current_req;
++
+ 			req->reply_len = amsg->count + 1;
+ 			memcpy(req->reply, &amsg->cmd, req->reply_len);
+-		} else {
+-			adb_input(&amsg->cmd, amsg->count + 1,
+-				  amsg->flags & ADB_IOP_AUTOPOLL);
++
++			req_done = true;
+ 		}
+-		memcpy(msg->reply, msg->message, IOP_MSG_LEN);
++	} else if (!(amsg->flags & ADB_IOP_TIMEOUT)) {
++		adb_input(&amsg->cmd, amsg->count + 1,
++			  amsg->flags & ADB_IOP_AUTOPOLL);
+ 	}
++
++	msg->reply[0] = ADB_IOP_AUTOPOLL;
+ 	iop_complete_message(msg);
++
++	if (req_done)
++		adb_iop_done();
++
  	local_irq_restore(flags);
- 
--	/* Now send it. The IOP manager will call adb_iop_complete */
--	/* when the packet has been sent.                          */
--
-+	/* Now send it. The IOP manager will call adb_iop_complete
-+	 * when the message has been sent.
-+	 */
- 	iop_send_message(ADB_IOP, ADB_CHAN, req, sizeof(amsg), (__u8 *)&amsg,
- 			 adb_iop_complete);
  }
+ 
 -- 
 2.26.2
 
