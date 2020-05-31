@@ -1,124 +1,92 @@
-Return-Path: <SRS0=U4C4=7M=vger.kernel.org=linux-m68k-owner@kernel.org>
+Return-Path: <SRS0=3RHc=7N=vger.kernel.org=linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-6.7 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,
-	URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-3.8 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
+	MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS autolearn=no
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 82DBDC433E2
-	for <linux-m68k@archiver.kernel.org>; Sat, 30 May 2020 23:21:14 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 1F7C3C433E0
+	for <linux-m68k@archiver.kernel.org>; Sun, 31 May 2020 08:38:17 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 61C752067B
-	for <linux-m68k@archiver.kernel.org>; Sat, 30 May 2020 23:21:14 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id F281A20707
+	for <linux-m68k@archiver.kernel.org>; Sun, 31 May 2020 08:38:16 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729534AbgE3XUe (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Sat, 30 May 2020 19:20:34 -0400
-Received: from kvm5.telegraphics.com.au ([98.124.60.144]:51178 "EHLO
-        kvm5.telegraphics.com.au" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729361AbgE3XUe (ORCPT
+        id S1725991AbgEaIiQ (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Sun, 31 May 2020 04:38:16 -0400
+Received: from mail-ot1-f66.google.com ([209.85.210.66]:41840 "EHLO
+        mail-ot1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725898AbgEaIiQ (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Sat, 30 May 2020 19:20:34 -0400
-Received: by kvm5.telegraphics.com.au (Postfix, from userid 502)
-        id 0A05327EFD; Sat, 30 May 2020 19:20:32 -0400 (EDT)
-To:     Benjamin Herrenschmidt <benh@kernel.crashing.org>
-Cc:     Joshua Thompson <funaho@jurai.org>,
-        linux-m68k@lists.linux-m68k.org, linuxppc-dev@lists.ozlabs.org,
-        linux-kernel@vger.kernel.org
-Message-Id: <7720ffb559c334504e16b24d9c2f3b8973d2d674.1590880623.git.fthain@telegraphics.com.au>
-In-Reply-To: <cover.1590880623.git.fthain@telegraphics.com.au>
-References: <cover.1590880623.git.fthain@telegraphics.com.au>
-From:   Finn Thain <fthain@telegraphics.com.au>
-Subject: [PATCH 1/8] macintosh/adb-iop: Remove dead and redundant code
-Date:   Sun, 31 May 2020 09:17:03 +1000
+        Sun, 31 May 2020 04:38:16 -0400
+Received: by mail-ot1-f66.google.com with SMTP id k15so2054184otp.8
+        for <linux-m68k@lists.linux-m68k.org>; Sun, 31 May 2020 01:38:16 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=il8HCm7VOhnKzl1XMZoe2G47NdOZUu6wpsg1d44qw+4=;
+        b=aXlYR99GQ+9ByT9aUFXPKNpiyFgpByCnP8kBIpeobYmteJGgVkhxdL3jxEuDgOVgkl
+         cARQyOhJufbnkzklucyIA06CFUjOd9ZDKARS9uf79T/bYINzQWlX/lLFd6uhfL47wJrX
+         Tkz6AYiahPbJK+yhUms+eR/X177X+Lh8lXIKJaLDe+tuAj64ePuz3qiyAneMEUYxbyPD
+         KSivvb1peEUvPqyPr9az0JUlpJRujW5ZeL7RLqPd9NSkthxFtae5uijuTPNZUJq4koT+
+         RIXo4XyLPljqphWQiTx1haMGvRrV17EE15+K5jR3jDMvu57g+eTUKzk14jHqnHREFGCt
+         y6bA==
+X-Gm-Message-State: AOAM531hiQEnBQodiUjUm6u0AUBFIMeZIsV3eY45/NLEGfiQ89LZQ6DI
+        pMkrELJTIKgvgYjyU3ijXjg9nN61+lAFLJ51ZxY=
+X-Google-Smtp-Source: ABdhPJyWAqRS0RRmaKRioJgNyQk6X8M+vph3CUcrrUDm59u0OhqrcmYDrag8OKeZfYreJFeDK2DjPdxpkmXZicd+u5A=
+X-Received: by 2002:a05:6830:141a:: with SMTP id v26mr716939otp.250.1590914295626;
+ Sun, 31 May 2020 01:38:15 -0700 (PDT)
+MIME-Version: 1.0
+References: <cover.1590880623.git.fthain@telegraphics.com.au> <0fb7fdcd99d7820bb27faf1f27f7f6f1923914ef.1590880623.git.fthain@telegraphics.com.au>
+In-Reply-To: <0fb7fdcd99d7820bb27faf1f27f7f6f1923914ef.1590880623.git.fthain@telegraphics.com.au>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Sun, 31 May 2020 10:38:04 +0200
+Message-ID: <CAMuHMdUjrFDob01EWC4e04tAkj5JTm_2Ei5WsPqN1eGDz=x3+Q@mail.gmail.com>
+Subject: Re: [PATCH 8/8] macintosh/adb-iop: Implement SRQ autopolling
+To:     Finn Thain <fthain@telegraphics.com.au>
+Cc:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Joshua Thompson <funaho@jurai.org>,
+        linux-m68k <linux-m68k@lists.linux-m68k.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-m68k-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-Cc: Joshua Thompson <funaho@jurai.org>
-Tested-by: Stan Johnson <userm57@yahoo.com>
-Signed-off-by: Finn Thain <fthain@telegraphics.com.au>
----
- drivers/macintosh/adb-iop.c | 29 -----------------------------
- 1 file changed, 29 deletions(-)
+Hi Finn,
 
-diff --git a/drivers/macintosh/adb-iop.c b/drivers/macintosh/adb-iop.c
-index fca31640e3ef..ce28ff40fb9c 100644
---- a/drivers/macintosh/adb-iop.c
-+++ b/drivers/macintosh/adb-iop.c
-@@ -18,24 +18,16 @@
- #include <linux/mm.h>
- #include <linux/delay.h>
- #include <linux/init.h>
--#include <linux/proc_fs.h>
- 
- #include <asm/macintosh.h>
- #include <asm/macints.h>
- #include <asm/mac_iop.h>
--#include <asm/mac_oss.h>
- #include <asm/adb_iop.h>
- 
- #include <linux/adb.h>
- 
--/*#define DEBUG_ADB_IOP*/
--
- static struct adb_request *current_req;
- static struct adb_request *last_req;
--#if 0
--static unsigned char reply_buff[16];
--static unsigned char *reply_ptr;
--#endif
- 
- static enum adb_iop_state {
- 	idle,
-@@ -104,22 +96,11 @@ static void adb_iop_listen(struct iop_msg *msg)
- 	struct adb_iopmsg *amsg = (struct adb_iopmsg *)msg->message;
- 	struct adb_request *req;
- 	unsigned long flags;
--#ifdef DEBUG_ADB_IOP
--	int i;
--#endif
- 
- 	local_irq_save(flags);
- 
- 	req = current_req;
- 
--#ifdef DEBUG_ADB_IOP
--	printk("adb_iop_listen %p: rcvd packet, %d bytes: %02X %02X", req,
--	       (uint)amsg->count + 2, (uint)amsg->flags, (uint)amsg->cmd);
--	for (i = 0; i < amsg->count; i++)
--		printk(" %02X", (uint)amsg->data[i]);
--	printk("\n");
--#endif
--
- 	/* Handle a timeout. Timeout packets seem to occur even after */
- 	/* we've gotten a valid reply to a TALK, so I'm assuming that */
- 	/* a "timeout" is actually more like an "end-of-data" signal. */
-@@ -163,9 +144,6 @@ static void adb_iop_start(void)
- 	unsigned long flags;
- 	struct adb_request *req;
- 	struct adb_iopmsg amsg;
--#ifdef DEBUG_ADB_IOP
--	int i;
--#endif
- 
- 	/* get the packet to send */
- 	req = current_req;
-@@ -174,13 +152,6 @@ static void adb_iop_start(void)
- 
- 	local_irq_save(flags);
- 
--#ifdef DEBUG_ADB_IOP
--	printk("adb_iop_start %p: sending packet, %d bytes:", req, req->nbytes);
--	for (i = 0; i < req->nbytes; i++)
--		printk(" %02X", (uint)req->data[i]);
--	printk("\n");
--#endif
--
- 	/* The IOP takes MacII-style packets, so */
- 	/* strip the initial ADB_PACKET byte.    */
- 
+On Sun, May 31, 2020 at 1:20 AM Finn Thain <fthain@telegraphics.com.au> wrote:
+> The adb_driver.autopoll method is needed during ADB bus scan and device
+> address assignment. Implement this method so that the IOP's list of
+> device addresses can be updated. When the list is empty, disable SRQ
+> autopolling.
+>
+> Cc: Joshua Thompson <funaho@jurai.org>
+> Cc: Geert Uytterhoeven <geert@linux-m68k.org>
+> Tested-by: Stan Johnson <userm57@yahoo.com>
+> Signed-off-by: Finn Thain <fthain@telegraphics.com.au>
+
+Thanks for your patch!
+
+Acked-by: Geert Uytterhoeven <geert@linux-m68k.org>
+
+>  arch/m68k/include/asm/adb_iop.h |  1 +
+>  drivers/macintosh/adb-iop.c     | 32 ++++++++++++++++++++++++++------
+
+As this header file is used by a single source file only, perhaps it should
+just be absorbed by the latter?
+Then you no longer need my Acked-by for future changes ;-)
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
 -- 
-2.26.2
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
