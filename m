@@ -2,81 +2,69 @@ Return-Path: <SRS0=3RHc=7N=vger.kernel.org=linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-0.8 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-2.2 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1
+	autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B662BC433DF
-	for <linux-m68k@archiver.kernel.org>; Sun, 31 May 2020 08:41:22 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 9FD2DC433DF
+	for <linux-m68k@archiver.kernel.org>; Sun, 31 May 2020 20:27:29 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 9AA8220707
-	for <linux-m68k@archiver.kernel.org>; Sun, 31 May 2020 08:41:22 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 82834204EA
+	for <linux-m68k@archiver.kernel.org>; Sun, 31 May 2020 20:27:29 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725991AbgEaIlW (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Sun, 31 May 2020 04:41:22 -0400
-Received: from mail-ot1-f65.google.com ([209.85.210.65]:42266 "EHLO
-        mail-ot1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725898AbgEaIlV (ORCPT
+        id S1727772AbgEaU13 (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Sun, 31 May 2020 16:27:29 -0400
+Received: from cynthia.allandria.com ([50.242.82.17]:54953 "EHLO
+        cynthia.allandria.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726008AbgEaU13 (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Sun, 31 May 2020 04:41:21 -0400
-Received: by mail-ot1-f65.google.com with SMTP id o7so1060429oti.9
-        for <linux-m68k@lists.linux-m68k.org>; Sun, 31 May 2020 01:41:21 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=hhhqHeZBf2NBcL6NS4/8J6McKxeRLMMjf81gIVoAbbk=;
-        b=jXRD0zFhZ5xUqw4S1f3q5pqPs3ACsEAC+93SWSlB06W1wCGka3lA8Uyd+4gLFN/dB6
-         PpdlucApkvuAKS1e3Zi3ymIoFZSken6vwDyef5zLDIybbnep0cSjcEvGf92dYNI9uoxT
-         7hkER3A2TuZUbRNVusQrTaKXs9ptZI/4+PglTjRGmhuBfqEkfqyjQ9NTm8Cq9uuKS8zu
-         1qBk9Hq0J22BJWxf8PA00wPHdkzmgJlUdOTAuYqyEHO2XB5KSZQ3aqV7svDQVtmvZygY
-         U1JIP0bTJLxEfbounUJbwYoZdBhjHLVWIJi0DXQ1SEEe3Ocw64/in8nABa9c/zeGAF4M
-         nyEg==
-X-Gm-Message-State: AOAM5323hStdYhNXtrMgbU4RhNdT6eebpmIRlWEwkniZxXpk5CQmpTCw
-        sqGt9/sIDW/qalH/pSto5m3/DUF+gVpbTCP40pYlxg==
-X-Google-Smtp-Source: ABdhPJw5XtUShQ228hZwf6/S9PJg+4GolOTeI2Cwsk00CllMO7BCEY4aPmr0oBAAJec2PsN236AWbD/9ruGqtXG7G5o=
-X-Received: by 2002:a05:6830:141a:: with SMTP id v26mr722368otp.250.1590914481117;
- Sun, 31 May 2020 01:41:21 -0700 (PDT)
-MIME-Version: 1.0
-References: <cover.1590880333.git.fthain@telegraphics.com.au>
-In-Reply-To: <cover.1590880333.git.fthain@telegraphics.com.au>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Sun, 31 May 2020 10:41:09 +0200
-Message-ID: <CAMuHMdVb2C7asip_-_zbc3JP+nqn6siKqmikOK98tM5=2BYqcQ@mail.gmail.com>
-Subject: Re: [PATCH 0/4] Mac IOP driver fixes
-To:     Finn Thain <fthain@telegraphics.com.au>
-Cc:     Joshua Thompson <funaho@jurai.org>,
+        Sun, 31 May 2020 16:27:29 -0400
+X-Greylist: delayed 1542 seconds by postgrey-1.27 at vger.kernel.org; Sun, 31 May 2020 16:27:28 EDT
+Received: from flar by cynthia.allandria.com with local (Exim 4.84_2)
+        (envelope-from <flar@allandria.com>)
+        id 1jfU9M-0007Mf-46; Sun, 31 May 2020 13:01:40 -0700
+Date:   Sun, 31 May 2020 13:01:40 -0700
+From:   Brad Boyer <flar@allandria.com>
+To:     Geert Uytterhoeven <geert@linux-m68k.org>
+Cc:     Finn Thain <fthain@telegraphics.com.au>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Joshua Thompson <funaho@jurai.org>,
         linux-m68k <linux-m68k@lists.linux-m68k.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>
+Subject: Re: [PATCH 8/8] macintosh/adb-iop: Implement SRQ autopolling
+Message-ID: <20200531200140.GA27809@allandria.com>
+References: <cover.1590880623.git.fthain@telegraphics.com.au>
+ <0fb7fdcd99d7820bb27faf1f27f7f6f1923914ef.1590880623.git.fthain@telegraphics.com.au>
+ <CAMuHMdUjrFDob01EWC4e04tAkj5JTm_2Ei5WsPqN1eGDz=x3+Q@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAMuHMdUjrFDob01EWC4e04tAkj5JTm_2Ei5WsPqN1eGDz=x3+Q@mail.gmail.com>
+User-Agent: Mutt/1.5.23 (2014-03-12)
 Sender: linux-m68k-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-Hi Finn,
+On Sun, May 31, 2020 at 10:38:04AM +0200, Geert Uytterhoeven wrote:
+> >  arch/m68k/include/asm/adb_iop.h |  1 +
+> 
+> As this header file is used by a single source file only, perhaps it should
+> just be absorbed by the latter?
+> Then you no longer need my Acked-by for future changes ;-)
 
-On Sun, May 31, 2020 at 1:16 AM Finn Thain <fthain@telegraphics.com.au> wrote:
-> This patch series has several bug fixes for the IOP driver and some
-> improvements to the debug level log messages.
+While I don't really feel involved in this specific change (although I
+was one of the testers when the driver was first written), I am a little
+curious about the current coding standards. This header is pretty much
+just a declaration of the hardware interface, of which there are many
+in this directory. Is it better to just define all the offsets and bits
+for hardware registers inside the driver? We used to always put them in
+headers like this, but is that not the current standard? Would it be
+cleaner to put such headers in the directory with the driver effectively
+making them private? I seem to see quite a bit of that as well.
 
-Thanks for your series!
+Thank you for your advice.
 
-> Geert, please consider pushing these fixes for v5.8, if not the
-> whole series.
+	Brad Boyer
+	flar@allandria.com
 
-I'm afraid it's a bit too late for that, as I expect the v5.8 merge window
-to open tonight.  Unless the fix is for a regression in v5.7.
-BTW, how does the issue being fixed manifest itself? That's not clear to
-me from the patch description.
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
--- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
