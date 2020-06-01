@@ -6,32 +6,35 @@ X-Spam-Status: No, score=-0.8 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D1FD8C433DF
-	for <linux-m68k@archiver.kernel.org>; Mon,  1 Jun 2020 23:32:35 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id DEB59C433DF
+	for <linux-m68k@archiver.kernel.org>; Mon,  1 Jun 2020 23:49:41 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id A9C27206A4
-	for <linux-m68k@archiver.kernel.org>; Mon,  1 Jun 2020 23:32:35 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id BD8A42073B
+	for <linux-m68k@archiver.kernel.org>; Mon,  1 Jun 2020 23:49:41 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725820AbgFAXcf (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Mon, 1 Jun 2020 19:32:35 -0400
-Received: from kvm5.telegraphics.com.au ([98.124.60.144]:51612 "EHLO
+        id S1726019AbgFAXtl (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Mon, 1 Jun 2020 19:49:41 -0400
+Received: from kvm5.telegraphics.com.au ([98.124.60.144]:51856 "EHLO
         kvm5.telegraphics.com.au" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725802AbgFAXcf (ORCPT
+        with ESMTP id S1725446AbgFAXtl (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Mon, 1 Jun 2020 19:32:35 -0400
+        Mon, 1 Jun 2020 19:49:41 -0400
 Received: from localhost (localhost.localdomain [127.0.0.1])
-        by kvm5.telegraphics.com.au (Postfix) with ESMTP id 3BE9129513;
-        Mon,  1 Jun 2020 19:32:30 -0400 (EDT)
-Date:   Tue, 2 Jun 2020 09:32:29 +1000 (AEST)
+        by kvm5.telegraphics.com.au (Postfix) with ESMTP id 2472C27449;
+        Mon,  1 Jun 2020 19:49:37 -0400 (EDT)
+Date:   Tue, 2 Jun 2020 09:49:36 +1000 (AEST)
 From:   Finn Thain <fthain@telegraphics.com.au>
-To:     Brad Boyer <flar@allandria.com>
-cc:     Geert Uytterhoeven <geert@linux-m68k.org>,
+To:     Geert Uytterhoeven <geert@linux-m68k.org>
+cc:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
         Joshua Thompson <funaho@jurai.org>,
-        linux-m68k <linux-m68k@lists.linux-m68k.org>
-Subject: Re: [PATCH 0/4] Mac IOP driver fixes
-In-Reply-To: <20200601060915.GA8450@allandria.com>
-Message-ID: <alpine.LNX.2.22.394.2006020922570.8@nippy.intranet>
-References: <cover.1590880333.git.fthain@telegraphics.com.au> <CAMuHMdVb2C7asip_-_zbc3JP+nqn6siKqmikOK98tM5=2BYqcQ@mail.gmail.com> <alpine.LNX.2.22.394.2006010931070.8@nippy.intranet> <20200601060915.GA8450@allandria.com>
+        linux-m68k <linux-m68k@lists.linux-m68k.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>
+Subject: Re: [PATCH 8/8] macintosh/adb-iop: Implement SRQ autopolling
+In-Reply-To: <CAMuHMdVs8ur9pWWEFbYmPLRgdH67coSSrPO0QE8RqFvKjhgyYg@mail.gmail.com>
+Message-ID: <alpine.LNX.2.22.394.2006020936430.8@nippy.intranet>
+References: <cover.1590880623.git.fthain@telegraphics.com.au> <0fb7fdcd99d7820bb27faf1f27f7f6f1923914ef.1590880623.git.fthain@telegraphics.com.au> <CAMuHMdUjrFDob01EWC4e04tAkj5JTm_2Ei5WsPqN1eGDz=x3+Q@mail.gmail.com> <alpine.LNX.2.22.394.2006011006080.8@nippy.intranet>
+ <CAMuHMdVs8ur9pWWEFbYmPLRgdH67coSSrPO0QE8RqFvKjhgyYg@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Sender: linux-m68k-owner@vger.kernel.org
@@ -39,32 +42,18 @@ Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-On Sun, 31 May 2020, Brad Boyer wrote:
+On Mon, 1 Jun 2020, Geert Uytterhoeven wrote:
 
+> >
+> > Sure, it could be absorbed by both asm/mac_iop.h and 
+> > drivers/macintosh/adb-iop.c [...]
 > 
-> The swim_iop driver was never completed. As far as I know, the data 
-> transfer code was never written. I remember testing the driver, and all 
-> it could do was detect the drives and do eject. Read and write were not 
-> working. I looked into it at the time, but it's a little messy and is 
-> much more complicated than the ADB driver. For ADB, the data is small 
-> enough that it's packed in the IOP message. That's not possible for 
-> SWIM, so it has a more complex data handling method. If you look at the 
-> code of that driver and the messages, it looks like the IOP can do DMA 
-> but it can't. The SWIM IOP message includes a buffer pointer, but the 
-> IOP chip isn't connected in a way that it can just access it (and it's 
-> getting passed a virtual address anyway). Based on some of the other 
-> information I was given, there's a separate message protocol on channel 
-> 0 (on each IOP) for bulk data transfer.
-> 
-> At the time, I had a diff to fix some bugs in the detection and handle 
-> the status update messages. However, it hardly seemed worth submitting 
-> that as a fix since the driver still wasn't useful without the bulk data 
-> transfer working. I can pass my diff along if you intend to make an 
-> attempt at a working swim_iop driver.
-> 
+> asm/mac_iop.h doesn't include asm/adb_iop.h (at least not in my tree, 
+> but perhaps you have plans to change that?), so there's only a single 
+> user.
 
-I'm hoping that the SWIM IOP can be used in bypass mode, so it could be 
-used with the swim.c driver. I haven't been able to make that work yet.
-
-You may want to send the patch to the mailing list anyway. Or maybe send 
-it to the linux-mac68k bug tracker on sourceforge.
+What I meant by "both" was that part of asm/adb_iop.h could be absorbed by 
+drivers/macintosh.adb-iop.c and the rest by asm/mac_iop.h. (And some of it 
+could be tossed out.) I suspect that much of arch/m68k/include/asm could 
+get the same treatment. But I doubt that there is any pay off, because the 
+headers rarely change where they relate to hardware characteristics.
