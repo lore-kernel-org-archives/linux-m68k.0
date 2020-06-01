@@ -3,54 +3,54 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
 X-Spam-Status: No, score=-0.8 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no
-	version=3.4.0
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=no
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 14157C433E0
-	for <linux-m68k@archiver.kernel.org>; Mon,  1 Jun 2020 09:10:23 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 695B2C433DF
+	for <linux-m68k@archiver.kernel.org>; Mon,  1 Jun 2020 09:13:06 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id E9B65206E2
-	for <linux-m68k@archiver.kernel.org>; Mon,  1 Jun 2020 09:10:22 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 440F8206E2
+	for <linux-m68k@archiver.kernel.org>; Mon,  1 Jun 2020 09:13:06 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725788AbgFAJKW (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Mon, 1 Jun 2020 05:10:22 -0400
-Received: from mail-ot1-f67.google.com ([209.85.210.67]:40282 "EHLO
-        mail-ot1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725778AbgFAJKW (ORCPT
+        id S1726218AbgFAJNG (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Mon, 1 Jun 2020 05:13:06 -0400
+Received: from mail-ot1-f66.google.com ([209.85.210.66]:37111 "EHLO
+        mail-ot1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725831AbgFAJNF (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Mon, 1 Jun 2020 05:10:22 -0400
-Received: by mail-ot1-f67.google.com with SMTP id f95so4003317otf.7
-        for <linux-m68k@lists.linux-m68k.org>; Mon, 01 Jun 2020 02:10:21 -0700 (PDT)
+        Mon, 1 Jun 2020 05:13:05 -0400
+Received: by mail-ot1-f66.google.com with SMTP id v13so609210otp.4
+        for <linux-m68k@lists.linux-m68k.org>; Mon, 01 Jun 2020 02:13:05 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=HTQ7pcyei2DeFkq5Sn+bdzrT7dJ5a3VXGPitkIthbGA=;
-        b=WvISpLUmwW79s3nv8AF/SW2yDbvIiSOubUoaQHSVtre25KofZZXrWFPlTdO6XzSroX
-         gbkhCXGY+EcYSl+hQkonWEm9sj3kPFcqLl0p8Sgktsw3iIU+RDDVJobgMOOtgz1RCkTr
-         m+C+TP05hQxCysYGpiD7qWpr+vletIIdJhfC1vzE+NPu+AgcwRt5YeB2cd5TjjCHskMd
-         /5eVptYdvXfQ59YiX5PFl1RdsIyNFFaCWoc1Zy2qlhS1SOtmA/jRvCGfpKlRlcQn17SK
-         9wevOTIIldaV59oZq3t9kRmwBwQvscM9Bi6tEukf5IcVkRbULGhG0xkOgnkmYYI77Hgg
-         nY4g==
-X-Gm-Message-State: AOAM53175CJuj9kibQF+HZFeqlvUEPx4mzqrPd/b7deDCk+WUMIRwcmT
-        IPEuWmcfierAZmGnI0LzxeOnRiK8q/C5/VAx6TU=
-X-Google-Smtp-Source: ABdhPJyj0hf8C6yXd7U8Owgk7Y+looRYu57OLr6RWX5Hh03Ougumjcw/Di4KWKaiBUX8YQZvleFNeoDUU8BTzOzAucU=
-X-Received: by 2002:a9d:c29:: with SMTP id 38mr8837128otr.107.1591002621470;
- Mon, 01 Jun 2020 02:10:21 -0700 (PDT)
+        bh=ZlOPT56h6/JCVyC/ykPNuYWjyEpIi1l0BN1rPEqbUPk=;
+        b=dIshVq9k/rMljR+e1KZiydvGgyKgBBG6E6+stjDb3E9bDYCLWiug5zGaJwQp0dQEcb
+         /E4Ci2mHV1racUyfJMI0KlH9wew+w0cz/qlDOhnAYqTY3DOAPUE0m39RRQBXkJKFIiDf
+         +x/vV/Gd2zAJpBT8n2ASN5c9SSTZxRL00txDi/ueZ3B5Hg2dXjMmxdZp8xrOQldLwMl0
+         fQnFY3v2LvDavzf2m5wUsk6NNScLWQt8AwpND+CFxOrm8y4g97d4vtPCId1VLbRRmicf
+         Czr8BCMwAjyutxC+Ic4uFtFdemFZkwN/75vCdr3xOCbpsT5iJibf4OB1OfzvutzryVHm
+         gKHg==
+X-Gm-Message-State: AOAM530IN7GKBlkuLOQYLNuBpuvKu0Y/ZbXAW/YjTbpdlRLYorVH3x1T
+        YaU7MwV7npb671C4gv0934NrmlXQfiXAZCvKYHI=
+X-Google-Smtp-Source: ABdhPJycnrO6S08ZVNAUz71DZKIbHz0tp5g1FNVtTPGR441oaBdHIHUOnsXiHZ992Gann3uIDUPazeuir0lHRiVw2fo=
+X-Received: by 2002:a9d:7e92:: with SMTP id m18mr15598801otp.145.1591002784675;
+ Mon, 01 Jun 2020 02:13:04 -0700 (PDT)
 MIME-Version: 1.0
 References: <cover.1590880623.git.fthain@telegraphics.com.au>
  <0fb7fdcd99d7820bb27faf1f27f7f6f1923914ef.1590880623.git.fthain@telegraphics.com.au>
- <CAMuHMdUjrFDob01EWC4e04tAkj5JTm_2Ei5WsPqN1eGDz=x3+Q@mail.gmail.com> <20200531200140.GA27809@allandria.com>
-In-Reply-To: <20200531200140.GA27809@allandria.com>
+ <CAMuHMdUjrFDob01EWC4e04tAkj5JTm_2Ei5WsPqN1eGDz=x3+Q@mail.gmail.com> <alpine.LNX.2.22.394.2006011006080.8@nippy.intranet>
+In-Reply-To: <alpine.LNX.2.22.394.2006011006080.8@nippy.intranet>
 From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Mon, 1 Jun 2020 11:10:10 +0200
-Message-ID: <CAMuHMdWsLH_6G3EYG=NpcMaorGnRC1uPw3O9pp=tKNYpvKe+uQ@mail.gmail.com>
+Date:   Mon, 1 Jun 2020 11:12:52 +0200
+Message-ID: <CAMuHMdVs8ur9pWWEFbYmPLRgdH67coSSrPO0QE8RqFvKjhgyYg@mail.gmail.com>
 Subject: Re: [PATCH 8/8] macintosh/adb-iop: Implement SRQ autopolling
-To:     Brad Boyer <flar@allandria.com>
-Cc:     Finn Thain <fthain@telegraphics.com.au>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+To:     Finn Thain <fthain@telegraphics.com.au>
+Cc:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
         Joshua Thompson <funaho@jurai.org>,
         linux-m68k <linux-m68k@lists.linux-m68k.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
         linuxppc-dev <linuxppc-dev@lists.ozlabs.org>
 Content-Type: text/plain; charset="UTF-8"
 Sender: linux-m68k-owner@vger.kernel.org
@@ -58,43 +58,29 @@ Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-Hi Brad,
+Hi Finn,
 
-On Sun, May 31, 2020 at 10:01 PM Brad Boyer <flar@allandria.com> wrote:
-> On Sun, May 31, 2020 at 10:38:04AM +0200, Geert Uytterhoeven wrote:
+On Mon, Jun 1, 2020 at 2:15 AM Finn Thain <fthain@telegraphics.com.au> wrote:
+> On Sun, 31 May 2020, Geert Uytterhoeven wrote:
+> > On Sun, May 31, 2020 at 1:20 AM Finn Thain <fthain@telegraphics.com.au> wrote:
 > > >  arch/m68k/include/asm/adb_iop.h |  1 +
-> > As this header file is used by a single source file only, perhaps it should
-> > just be absorbed by the latter?
-> > Then you no longer need my Acked-by for future changes ;-)
+> > >  drivers/macintosh/adb-iop.c     | 32 ++++++++++++++++++++++++++------
+> >
+> > As this header file is used by a single source file only, perhaps it
+> > should just be absorbed by the latter?
 >
-> While I don't really feel involved in this specific change (although I
-> was one of the testers when the driver was first written), I am a little
-> curious about the current coding standards. This header is pretty much
-> just a declaration of the hardware interface, of which there are many
-> in this directory. Is it better to just define all the offsets and bits
-> for hardware registers inside the driver? We used to always put them in
-> headers like this, but is that not the current standard? Would it be
-> cleaner to put such headers in the directory with the driver effectively
-> making them private? I seem to see quite a bit of that as well.
+> Sure, it could be absorbed by both asm/mac_iop.h and
+> drivers/macintosh/adb-iop.c but I don't see the point...
 
-The idea behind header files is to share definitions among multipe
-source files, right? It seems there is only one user of this header
-file, so no sharing is involved, and thus these definitions are
-de-facto private to the driver.  Hence, the hardware declarations
-could be absorbed by the driver source file.
-
-In this case having two separate files makes maintenance more
-difficult, as the two files belong to different maintainer spaces
-(drivers/macintosh/ and arch/m68k/).
-
-In general, moving header files to the driver directory is an option,
-if nothing outside the driver directory needs it.
+asm/mac_iop.h doesn't include asm/adb_iop.h (at least not in my tree,
+but perhaps you have plans to change that?), so there's only a single
+user.
 
 Gr{oetje,eeting}s,
 
                         Geert
 
---
+-- 
 Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
 In personal conversations with technical people, I call myself a hacker. But
