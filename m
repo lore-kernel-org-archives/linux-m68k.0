@@ -1,70 +1,81 @@
-Return-Path: <SRS0=3RHc=7N=vger.kernel.org=linux-m68k-owner@kernel.org>
+Return-Path: <SRS0=WB/I=7O=vger.kernel.org=linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.2 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1
-	autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-0.8 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9FD2DC433DF
-	for <linux-m68k@archiver.kernel.org>; Sun, 31 May 2020 20:27:29 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 905B0C433E0
+	for <linux-m68k@archiver.kernel.org>; Mon,  1 Jun 2020 00:05:10 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 82834204EA
-	for <linux-m68k@archiver.kernel.org>; Sun, 31 May 2020 20:27:29 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 640A1206C3
+	for <linux-m68k@archiver.kernel.org>; Mon,  1 Jun 2020 00:05:10 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727772AbgEaU13 (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Sun, 31 May 2020 16:27:29 -0400
-Received: from cynthia.allandria.com ([50.242.82.17]:54953 "EHLO
-        cynthia.allandria.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726008AbgEaU13 (ORCPT
+        id S1728445AbgFAAFJ (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Sun, 31 May 2020 20:05:09 -0400
+Received: from kvm5.telegraphics.com.au ([98.124.60.144]:52112 "EHLO
+        kvm5.telegraphics.com.au" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725860AbgFAAFJ (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Sun, 31 May 2020 16:27:29 -0400
-X-Greylist: delayed 1542 seconds by postgrey-1.27 at vger.kernel.org; Sun, 31 May 2020 16:27:28 EDT
-Received: from flar by cynthia.allandria.com with local (Exim 4.84_2)
-        (envelope-from <flar@allandria.com>)
-        id 1jfU9M-0007Mf-46; Sun, 31 May 2020 13:01:40 -0700
-Date:   Sun, 31 May 2020 13:01:40 -0700
-From:   Brad Boyer <flar@allandria.com>
+        Sun, 31 May 2020 20:05:09 -0400
+Received: from localhost (localhost.localdomain [127.0.0.1])
+        by kvm5.telegraphics.com.au (Postfix) with ESMTP id 8810C28F67;
+        Sun, 31 May 2020 20:05:06 -0400 (EDT)
+Date:   Mon, 1 Jun 2020 10:05:05 +1000 (AEST)
+From:   Finn Thain <fthain@telegraphics.com.au>
 To:     Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     Finn Thain <fthain@telegraphics.com.au>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Joshua Thompson <funaho@jurai.org>,
+cc:     Joshua Thompson <funaho@jurai.org>,
         linux-m68k <linux-m68k@lists.linux-m68k.org>,
-        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>
-Subject: Re: [PATCH 8/8] macintosh/adb-iop: Implement SRQ autopolling
-Message-ID: <20200531200140.GA27809@allandria.com>
-References: <cover.1590880623.git.fthain@telegraphics.com.au>
- <0fb7fdcd99d7820bb27faf1f27f7f6f1923914ef.1590880623.git.fthain@telegraphics.com.au>
- <CAMuHMdUjrFDob01EWC4e04tAkj5JTm_2Ei5WsPqN1eGDz=x3+Q@mail.gmail.com>
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 0/4] Mac IOP driver fixes
+In-Reply-To: <CAMuHMdVb2C7asip_-_zbc3JP+nqn6siKqmikOK98tM5=2BYqcQ@mail.gmail.com>
+Message-ID: <alpine.LNX.2.22.394.2006010931070.8@nippy.intranet>
+References: <cover.1590880333.git.fthain@telegraphics.com.au> <CAMuHMdVb2C7asip_-_zbc3JP+nqn6siKqmikOK98tM5=2BYqcQ@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAMuHMdUjrFDob01EWC4e04tAkj5JTm_2Ei5WsPqN1eGDz=x3+Q@mail.gmail.com>
-User-Agent: Mutt/1.5.23 (2014-03-12)
+Content-Type: text/plain; charset=US-ASCII
 Sender: linux-m68k-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-On Sun, May 31, 2020 at 10:38:04AM +0200, Geert Uytterhoeven wrote:
-> >  arch/m68k/include/asm/adb_iop.h |  1 +
+
+On Sun, 31 May 2020, Geert Uytterhoeven wrote:
+
+> Hi Finn,
 > 
-> As this header file is used by a single source file only, perhaps it should
-> just be absorbed by the latter?
-> Then you no longer need my Acked-by for future changes ;-)
+> On Sun, May 31, 2020 at 1:16 AM Finn Thain <fthain@telegraphics.com.au> wrote:
+> 
+> > This patch series has several bug fixes for the IOP driver and some 
+> > improvements to the debug level log messages.
+> 
+> Thanks for your series!
+> 
 
-While I don't really feel involved in this specific change (although I
-was one of the testers when the driver was first written), I am a little
-curious about the current coding standards. This header is pretty much
-just a declaration of the hardware interface, of which there are many
-in this directory. Is it better to just define all the offsets and bits
-for hardware registers inside the driver? We used to always put them in
-headers like this, but is that not the current standard? Would it be
-cleaner to put such headers in the directory with the driver effectively
-making them private? I seem to see quite a bit of that as well.
+Thanks for your review and for your diligence in the performance of all of 
+your duties as maintainer.
 
-Thank you for your advice.
+> > Geert, please consider pushing these fixes for v5.8, if not the whole 
+> > series.
+> 
+> I'm afraid it's a bit too late for that, as I expect the v5.8 merge 
+> window to open tonight.
 
-	Brad Boyer
-	flar@allandria.com
+Well, it's not that important.
 
+> Unless the fix is for a regression in v5.7.
+
+AFAICT these bugs are as old as the original driver. But I don't think 
+that disqualifies them from backporting, which I plan to do that once they 
+hit mainline.
+
+> BTW, how does the issue being fixed manifest itself? That's not clear to 
+> me from the patch description.
+> 
+
+The bugs in the iop driver were found by inspection, in the course of 
+debugging adb-iop driver failures that Stan encountered. It's possible 
+that the adb-iop driver is not badly affected by these bugs (I don't 
+know). It's possible that the iop driver bugs are among the reasons why 
+the swim_iop driver was never stabilized. That driver was removed in 
+b21a323710e7 ("[PATCH] remove the broken BLK_DEV_SWIM_IOP driver").
