@@ -2,135 +2,275 @@ Return-Path: <SRS0=aBsQ=7P=vger.kernel.org=linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.2 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1
-	autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-5.4 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 275C6C433E0
-	for <linux-m68k@archiver.kernel.org>; Tue,  2 Jun 2020 07:16:55 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E5E92C433DF
+	for <linux-m68k@archiver.kernel.org>; Tue,  2 Jun 2020 10:37:33 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 0ED57206A2
-	for <linux-m68k@archiver.kernel.org>; Tue,  2 Jun 2020 07:16:55 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id C399520679
+	for <linux-m68k@archiver.kernel.org>; Tue,  2 Jun 2020 10:37:33 +0000 (UTC)
+Authentication-Results: mail.kernel.org;
+	dkim=pass (1024-bit key) header.d=samsung.com header.i=@samsung.com header.b="M8+hQaQF"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726144AbgFBHQy (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Tue, 2 Jun 2020 03:16:54 -0400
-Received: from outpost1.zedat.fu-berlin.de ([130.133.4.66]:43699 "EHLO
-        outpost1.zedat.fu-berlin.de" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726130AbgFBHQy (ORCPT
+        id S1726380AbgFBKhd (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Tue, 2 Jun 2020 06:37:33 -0400
+Received: from mailout1.w1.samsung.com ([210.118.77.11]:58368 "EHLO
+        mailout1.w1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726217AbgFBKhc (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Tue, 2 Jun 2020 03:16:54 -0400
-Received: from inpost2.zedat.fu-berlin.de ([130.133.4.69])
-          by outpost.zedat.fu-berlin.de (Exim 4.93)
-          with esmtps (TLS1.2)
-          tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-          (envelope-from <glaubitz@zedat.fu-berlin.de>)
-          id 1jg1AK-000BJ1-AF; Tue, 02 Jun 2020 09:16:52 +0200
-Received: from p57bd9b57.dip0.t-ipconnect.de ([87.189.155.87] helo=[192.168.178.139])
-          by inpost2.zedat.fu-berlin.de (Exim 4.93)
-          with esmtpsa (TLS1.2)
-          tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-          (envelope-from <glaubitz@physik.fu-berlin.de>)
-          id 1jg1AK-0023zv-09; Tue, 02 Jun 2020 09:16:52 +0200
-Subject: Re: Planning a Debian/Linux m68k Meeting in 2020
-To:     Carsten Strotmann <carsten@strotmann.de>,
-        Carsten Strotmann <cas@strotmann.de>,
+        Tue, 2 Jun 2020 06:37:32 -0400
+Received: from eucas1p1.samsung.com (unknown [182.198.249.206])
+        by mailout1.w1.samsung.com (KnoxPortal) with ESMTP id 20200602103729euoutp010cdd0af028f2fac682648f62a7738bef~Us8ofolnK0275602756euoutp01s
+        for <linux-m68k@lists.linux-m68k.org>; Tue,  2 Jun 2020 10:37:29 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.w1.samsung.com 20200602103729euoutp010cdd0af028f2fac682648f62a7738bef~Us8ofolnK0275602756euoutp01s
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1591094249;
+        bh=4vUewRLzHeFYoroLdqGpNGuPNMeJGx5ZvKq8Qs7i8ug=;
+        h=From:Subject:To:Cc:Date:In-Reply-To:References:From;
+        b=M8+hQaQFsd3TD9YQH56v3iYt1haKgPY7V78GF/ZJ7mflbbWT8Nyg8z2xjSsUWacK6
+         XUcomYvoxwhHtdCWc7qgkhPRHttXA+iX41nj/XEW8KVebxrUpPYuZ/JJ4b+0g5WEe6
+         fyvLKxwjFEdCDMyXKg2L98n8kUVvm5gyFH5wMTV4=
+Received: from eusmges3new.samsung.com (unknown [203.254.199.245]) by
+        eucas1p1.samsung.com (KnoxPortal) with ESMTP id
+        20200602103728eucas1p1412c7a16e2c124de609493d6af81ec2c~Us8oHFc1m2606626066eucas1p1l;
+        Tue,  2 Jun 2020 10:37:28 +0000 (GMT)
+Received: from eucas1p2.samsung.com ( [182.198.249.207]) by
+        eusmges3new.samsung.com (EUCPMTA) with SMTP id 2D.FF.60698.8EB26DE5; Tue,  2
+        Jun 2020 11:37:28 +0100 (BST)
+Received: from eusmtrp2.samsung.com (unknown [182.198.249.139]) by
+        eucas1p1.samsung.com (KnoxPortal) with ESMTPA id
+        20200602103728eucas1p14557b8b4c33dbc82b0351f58e2a4140d~Us8nxlVUX1571015710eucas1p1A;
+        Tue,  2 Jun 2020 10:37:28 +0000 (GMT)
+Received: from eusmgms2.samsung.com (unknown [182.198.249.180]) by
+        eusmtrp2.samsung.com (KnoxPortal) with ESMTP id
+        20200602103728eusmtrp2f9a8f6736e923eff4bf707d32c238b35~Us8nw_IWx1363813638eusmtrp26;
+        Tue,  2 Jun 2020 10:37:28 +0000 (GMT)
+X-AuditID: cbfec7f5-a29ff7000001ed1a-0a-5ed62be82fee
+Received: from eusmtip2.samsung.com ( [203.254.199.222]) by
+        eusmgms2.samsung.com (EUCPMTA) with SMTP id 1A.29.07950.8EB26DE5; Tue,  2
+        Jun 2020 11:37:28 +0100 (BST)
+Received: from [106.120.51.71] (unknown [106.120.51.71]) by
+        eusmtip2.samsung.com (KnoxPortal) with ESMTPA id
+        20200602103727eusmtip2d2687492ceec67a96c797c4c247892d1~Us8nY_3Oj2214522145eusmtip2P;
+        Tue,  2 Jun 2020 10:37:27 +0000 (GMT)
+From:   Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>
+Subject: [PATCH 1/2] video: fbdev: amifb: remove dead APUS support
+To:     linux-fbdev@vger.kernel.org, dri-devel@lists.freedesktop.org
+Cc:     linux-kernel@vger.kernel.org,
         linux-m68k <linux-m68k@lists.linux-m68k.org>,
-        Debian m68k <debian-68k@lists.debian.org>
-References: <86wo6nwytz.fsf@emacs.strotmann.de>
- <865zcqz6lz.fsf@emacs.strotmann.de>
- <16b695c3-33f7-ecaa-80bc-066d90482bce@strotmann.de>
-From:   John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
-Autocrypt: addr=glaubitz@physik.fu-berlin.de; keydata=
- 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
- scOkTAZQGVpD/8AaLH4v1w==
-Message-ID: <7f8821a5-f179-d563-d8bd-4a38dd53d058@physik.fu-berlin.de>
-Date:   Tue, 2 Jun 2020 09:16:50 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.8.0
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Geert Uytterhoeven <geert@linux-m68k.org>
+Message-ID: <839133dd-8ed4-5fec-c311-ce9f8abf3d5f@samsung.com>
+Date:   Tue, 2 Jun 2020 12:37:27 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+        Thunderbird/60.8.0
 MIME-Version: 1.0
-In-Reply-To: <16b695c3-33f7-ecaa-80bc-066d90482bce@strotmann.de>
-Content-Type: text/plain; charset=utf-8
+In-Reply-To: <b1cf967015c5beafa475aaa30d8e21a58caff870.camel@perches.com>
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-Original-Sender: glaubitz@physik.fu-berlin.de
-X-Originating-IP: 87.189.155.87
+X-Brightmail-Tracker: H4sIAAAAAAAAA01SfyyUcRze933fe+9lTl9H80nFuqn1E01/3MoMNZ0tldpobX6cvGH5cd2h
+        +KPZSkmYXzGXIr+zye0yji10mmM4FaubWfrjGOYoh5ZF9XpZ/nue5/t8ns/z2b4MKa4RuDDx
+        SSmsMkmeIKFtqba+XyMnZo59jvBqfHNQOraySEunx98S0v787wLpaGcFLW0wN5PSkXWDwI+W
+        6XuzkWzyiYGQDWStUjKr1lWmNVuIy4Lrtj4xbEJ8Gqv09I2yjTPlzgsVBYfvWjq9MpHRNQfZ
+        MIBPwZDpJ5GDbBkxbkQwv5Ar5MkygkJjKc0TK4KXOg2xPdJi7dlyNSCYWisieWJBMNFXS3Mu
+        Gp+GwkdNKAcxjCMOgNplxMlO2A9KTAVCDpO4CkGr/ixnEWFfaHofzMkUdoeayVKSw7vxNVj6
+        1ivgsAg7wEC5meKwDQ4CXd4owcc4w7i5cgu7QbulYrMOYK0QvkzN0Vw+4HNQZkB8f0eYM7QK
+        ebwP/nRUErz/NYL17Jmt4XYEDcUbNO86AxPGtc0gEh+Blk5PXvaHoQ+zBJ9vDyaLA9/BHora
+        ykheFkH2QzHvPgSaeg29vTan4xVZgCTqHZepd1yj3nGN+v/eKkQ1IWc2VZUYy6q8k9g7Hip5
+        oio1KdbjRnKiFv37OoMbhhUd6vodrUeYQRI7kWZyLEIskKep0hP1CBhS4iQKGB6MEIti5OkZ
+        rDI5UpmawKr0aC9DSZxF3tWz4WIcK09hb7GsglVuvxKMjUsm0jlE+oQfFxy46d/oUr3LqtEN
+        hHU/KLdraAtZLbwnGw4LVSqKv65UmJpv3++/uGipyHsWFVJJPcbpQ8/rQv3nYd5YHWi0xqeX
+        qD9e8X13Va0IMkxr3LoUwcH5WVrqx3LPxNKLDLt6h5UL7rj0fKDxky6Y7Oluia67FPR0Yc/+
+        UgmlipOfPEoqVfK/qa7VBDYDAAA=
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFtrGIsWRmVeSWpSXmKPExsVy+t/xe7ovtK/FGRx8xmNx5et7Notnt/Yy
+        WZzo+8BqcXnXHDaL5U/WMluc/3uc1YHN49DhDkaP+93HmTxOtn5j8fi8Sc5j05O3TAGsUXo2
+        RfmlJakKGfnFJbZK0YYWRnqGlhZ6RiaWeobG5rFWRqZK+nY2Kak5mWWpRfp2CXoZN3resBdM
+        0Kh4u8uggfGcXBcjJ4eEgInE+s8H2LsYuTiEBJYySlz8e4C1i5EDKCEjcXx9GUSNsMSfa11s
+        EDWvGSVOL+xgA0mwCVhJTGxfxQhSLyzgJLHkCyNIWETAQWLKjQlgM5kFFjBKnG07yArRPIdR
+        YserG2ANvAJ2EquO+II0sAioSCy+P40ZxBYViJA4vGMW2CBeAUGJkzOfsIDYnAKeEjt6LzOB
+        2MwC6hJ/5l1ihrDFJW49mQ8Vl5fY/nYO8wRGoVlI2mchaZmFpGUWkpYFjCyrGEVSS4tz03OL
+        jfSKE3OLS/PS9ZLzczcxAuNs27GfW3Ywdr0LPsQowMGoxMO74f6VOCHWxLLiytxDjBIczEoi
+        vE5nT8cJ8aYkVlalFuXHF5XmpBYfYjQFem4is5Rocj4wBeSVxBuaGppbWBqaG5sbm1koifN2
+        CByMERJITyxJzU5NLUgtgulj4uCUamBUlHngcfbqER79o8Ut935HX//Fe+Z6n8iLzs+p77rq
+        ck8u3Onye5Nm214p0ak3Pqt62MWoB28r+BJhuDNJUyfYbqu48i+mmf5OB8I/NT9aeL96tSrv
+        o65bjS67pjPF2HT8b/0o0ZZereHup8PJ/Nt5pqho/8L3HXq9dxoOKFefuXqyy3BpIY8SS3FG
+        oqEWc1FxIgDIacQmyQIAAA==
+X-CMS-MailID: 20200602103728eucas1p14557b8b4c33dbc82b0351f58e2a4140d
+X-Msg-Generator: CA
+Content-Type: text/plain; charset="utf-8"
+X-RootMTR: 20200504232908eucas1p296927bc7c736ad924cefaea9a546459d
+X-EPHeader: CA
+CMS-TYPE: 201P
+X-CMS-RootMailID: 20200504232908eucas1p296927bc7c736ad924cefaea9a546459d
+References: <CGME20200504232908eucas1p296927bc7c736ad924cefaea9a546459d@eucas1p2.samsung.com>
+        <b1cf967015c5beafa475aaa30d8e21a58caff870.camel@perches.com>
 Sender: linux-m68k-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-Hi Carsten!
 
-On 6/1/20 12:50 PM, Carsten Strotmann wrote:
-> the meeting will be this coming Friday 5th June 20:00 CEST on the Jitsi
-> Videoconferencing server:
-> 
-> <https://meet.forth-ev.de/m68k>
-> 
-> There is currently password protection enabled for this server, the
-> server will be open 30 minutes before the meeting starts.
-> 
-> Topics to discuss (non exhaustive):
-> 
->  * virtual and/or in-person meeting options
->  * location
->  * date and time
->  * scope (Topics for the meeting)
->  * Agenda for meeting (Talks? Moderated Discussions? Training for new
-> project members ....)
-> 
-> If you have additions to the Agenda let me know.
+On 5/14/20 10:21 PM, Geert Uytterhoeven wrote:
 
-I would suggest adding the topic "Funding of new m68k software projects"
-(for example, the development of an M68000 backend for LLVM) [1].
+> These #ifdefs are relics from APUS (Amiga Power-Up System), which
+> added a PPC board.  APUS support was killed off a long time ago,
+> when arch/ppc/ was still king, but these #ifdefs were missed, because
+> they didn't test for CONFIG_APUS.
 
-Adrian
+Reported-by: Al Viro <viro@zeniv.linux.org.uk>
+Reported-by: Geert Uytterhoeven <geert@linux-m68k.org>
+Signed-off-by: Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>
+---
+ drivers/video/fbdev/amifb.c |   63 --------------------------------------------
+ 1 file changed, 63 deletions(-)
 
-> [1] https://www.bountysource.com/issues/90829856-llvm-complete-the-m68000-backend-so-it-can-be-merged-upstream
-
--- 
- .''`.  John Paul Adrian Glaubitz
-: :' :  Debian Developer - glaubitz@debian.org
-`. `'   Freie Universitaet Berlin - glaubitz@physik.fu-berlin.de
-  `-    GPG: 62FF 8A75 84E0 2956 9546  0006 7426 3B37 F5B5 F913
+Index: b/drivers/video/fbdev/amifb.c
+===================================================================
+--- a/drivers/video/fbdev/amifb.c
++++ b/drivers/video/fbdev/amifb.c
+@@ -576,14 +576,8 @@ static u_short maxfmode, chipset;
+ #define modx(x, v)	((v) & ((x) - 1))
+ 
+ /* if x1 is not a constant, this macro won't make real sense :-) */
+-#ifdef __mc68000__
+ #define DIVUL(x1, x2) ({int res; asm("divul %1,%2,%3": "=d" (res): \
+ 	"d" (x2), "d" ((long)((x1) / 0x100000000ULL)), "0" ((long)(x1))); res;})
+-#else
+-/* We know a bit about the numbers, so we can do it this way */
+-#define DIVUL(x1, x2) ((((long)((unsigned long long)x1 >> 8) / x2) << 8) + \
+-	((((long)((unsigned long long)x1 >> 8) % x2) << 8) / x2))
+-#endif
+ 
+ #define highw(x)	((u_long)(x)>>16 & 0xffff)
+ #define loww(x)		((u_long)(x) & 0xffff)
+@@ -1837,11 +1831,7 @@ static int ami_get_var_cursorinfo(struct
+ 				  const struct amifb_par *par)
+ {
+ 	register u_short *lspr, *sspr;
+-#ifdef __mc68000__
+ 	register u_long datawords asm ("d2");
+-#else
+-	register u_long datawords;
+-#endif
+ 	register short delta;
+ 	register u_char color;
+ 	short height, width, bits, words;
+@@ -1868,24 +1858,14 @@ static int ami_get_var_cursorinfo(struct
+ 		for (width = (short)var->width - 1; width >= 0; width--) {
+ 			if (bits == 0) {
+ 				bits = 16; --words;
+-#ifdef __mc68000__
+ 				asm volatile ("movew %1@(%3:w:2),%0 ; swap %0 ; movew %1@+,%0"
+ 					: "=d" (datawords), "=a" (lspr) : "1" (lspr), "d" (delta));
+-#else
+-				datawords = (*(lspr + delta) << 16) | (*lspr++);
+-#endif
+ 			}
+ 			--bits;
+-#ifdef __mc68000__
+ 			asm volatile (
+ 				"clrb %0 ; swap %1 ; lslw #1,%1 ; roxlb #1,%0 ; "
+ 				"swap %1 ; lslw #1,%1 ; roxlb #1,%0"
+ 				: "=d" (color), "=d" (datawords) : "1" (datawords));
+-#else
+-			color = (((datawords >> 30) & 2)
+-				 | ((datawords >> 15) & 1));
+-			datawords <<= 1;
+-#endif
+ 			put_user(color, data++);
+ 		}
+ 		if (bits > 0) {
+@@ -1893,17 +1873,8 @@ static int ami_get_var_cursorinfo(struct
+ 		}
+ 		while (--words >= 0)
+ 			++lspr;
+-#ifdef __mc68000__
+ 		asm volatile ("lea %0@(%4:w:2),%0 ; tstl %1 ; jeq 1f ; exg %0,%1\n1:"
+ 			: "=a" (lspr), "=a" (sspr) : "0" (lspr), "1" (sspr), "d" (delta));
+-#else
+-		lspr += delta;
+-		if (sspr) {
+-			u_short *tmp = lspr;
+-			lspr = sspr;
+-			sspr = tmp;
+-		}
+-#endif
+ 	}
+ 	return 0;
+ }
+@@ -1912,11 +1883,7 @@ static int ami_set_var_cursorinfo(struct
+ 				  u_char __user *data, struct amifb_par *par)
+ {
+ 	register u_short *lspr, *sspr;
+-#ifdef __mc68000__
+ 	register u_long datawords asm ("d2");
+-#else
+-	register u_long datawords;
+-#endif
+ 	register short delta;
+ 	u_short fmode;
+ 	short height, width, bits, words;
+@@ -1958,60 +1925,30 @@ static int ami_set_var_cursorinfo(struct
+ 			unsigned long tdata = 0;
+ 			get_user(tdata, data);
+ 			data++;
+-#ifdef __mc68000__
+ 			asm volatile (
+ 				"lsrb #1,%2 ; roxlw #1,%0 ; swap %0 ; "
+ 				"lsrb #1,%2 ; roxlw #1,%0 ; swap %0"
+ 				: "=d" (datawords)
+ 				: "0" (datawords), "d" (tdata));
+-#else
+-			datawords = ((datawords << 1) & 0xfffefffe);
+-			datawords |= tdata & 1;
+-			datawords |= (tdata & 2) << (16 - 1);
+-#endif
+ 			if (--bits == 0) {
+ 				bits = 16; --words;
+-#ifdef __mc68000__
+ 				asm volatile ("swap %2 ; movew %2,%0@(%3:w:2) ; swap %2 ; movew %2,%0@+"
+ 					: "=a" (lspr) : "0" (lspr), "d" (datawords), "d" (delta));
+-#else
+-				*(lspr + delta) = (u_short) (datawords >> 16);
+-				*lspr++ = (u_short) (datawords & 0xffff);
+-#endif
+ 			}
+ 		}
+ 		if (bits < 16) {
+ 			--words;
+-#ifdef __mc68000__
+ 			asm volatile (
+ 				"swap %2 ; lslw %4,%2 ; movew %2,%0@(%3:w:2) ; "
+ 				"swap %2 ; lslw %4,%2 ; movew %2,%0@+"
+ 				: "=a" (lspr) : "0" (lspr), "d" (datawords), "d" (delta), "d" (bits));
+-#else
+-			*(lspr + delta) = (u_short) (datawords >> (16 + bits));
+-			*lspr++ = (u_short) ((datawords & 0x0000ffff) >> bits);
+-#endif
+ 		}
+ 		while (--words >= 0) {
+-#ifdef __mc68000__
+ 			asm volatile ("moveql #0,%%d0 ; movew %%d0,%0@(%2:w:2) ; movew %%d0,%0@+"
+ 				: "=a" (lspr) : "0" (lspr), "d" (delta) : "d0");
+-#else
+-			*(lspr + delta) = 0;
+-			*lspr++ = 0;
+-#endif
+ 		}
+-#ifdef __mc68000__
+ 		asm volatile ("lea %0@(%4:w:2),%0 ; tstl %1 ; jeq 1f ; exg %0,%1\n1:"
+ 			: "=a" (lspr), "=a" (sspr) : "0" (lspr), "1" (sspr), "d" (delta));
+-#else
+-		lspr += delta;
+-		if (sspr) {
+-			u_short *tmp = lspr;
+-			lspr = sspr;
+-			sspr = tmp;
+-		}
+-#endif
+ 	}
+ 	par->crsr.height = var->height;
+ 	par->crsr.width = var->width;
