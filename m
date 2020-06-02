@@ -2,148 +2,84 @@ Return-Path: <SRS0=aBsQ=7P=vger.kernel.org=linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.4 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1
-	autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-3.8 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
+	MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
+	autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 52E78C433DF
-	for <linux-m68k@archiver.kernel.org>; Tue,  2 Jun 2020 11:52:21 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E644EC433E0
+	for <linux-m68k@archiver.kernel.org>; Tue,  2 Jun 2020 12:03:30 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 35BD2206E2
-	for <linux-m68k@archiver.kernel.org>; Tue,  2 Jun 2020 11:52:21 +0000 (UTC)
-Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=samsung.com header.i=@samsung.com header.b="b2ReVjeC"
+	by mail.kernel.org (Postfix) with ESMTP id CC4F620772
+	for <linux-m68k@archiver.kernel.org>; Tue,  2 Jun 2020 12:03:30 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725921AbgFBLwU (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Tue, 2 Jun 2020 07:52:20 -0400
-Received: from mailout1.w1.samsung.com ([210.118.77.11]:60234 "EHLO
-        mailout1.w1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728364AbgFBLwQ (ORCPT
+        id S1726750AbgFBMDa (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Tue, 2 Jun 2020 08:03:30 -0400
+Received: from mail-oi1-f196.google.com ([209.85.167.196]:36523 "EHLO
+        mail-oi1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725940AbgFBMDa (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Tue, 2 Jun 2020 07:52:16 -0400
-Received: from eucas1p2.samsung.com (unknown [182.198.249.207])
-        by mailout1.w1.samsung.com (KnoxPortal) with ESMTP id 20200602115214euoutp0102fb014a248c814c1cfac0b3dc14a1c5~Ut95ufSCX0221602216euoutp01c
-        for <linux-m68k@lists.linux-m68k.org>; Tue,  2 Jun 2020 11:52:14 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.w1.samsung.com 20200602115214euoutp0102fb014a248c814c1cfac0b3dc14a1c5~Ut95ufSCX0221602216euoutp01c
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1591098734;
-        bh=DFymYLd+WxEKwPEsz1W/bGa1Yq98RkN02bjpEnWFsTI=;
-        h=From:Subject:To:Cc:Date:In-Reply-To:References:From;
-        b=b2ReVjeCHIbTEYLUNo7df+Ejz6XJk0/Ccdc8vOpFl0fsiA8cUHYj/N6QTpK+TFrd5
-         gCBBAwkOtprApXI9BUNfrRBkwqJsYtAvhXeMGDNzx/Y9iCgyNh1KJ8RX5dxTzQrhhw
-         +LMqZJ82sjEL2Ce4rkhavDoCcfnjvjpJznYdUPt8=
-Received: from eusmges1new.samsung.com (unknown [203.254.199.242]) by
-        eucas1p1.samsung.com (KnoxPortal) with ESMTP id
-        20200602115214eucas1p1ba66739f7837d7083674aa6543cdb6a4~Ut95oRZM40113401134eucas1p14;
-        Tue,  2 Jun 2020 11:52:14 +0000 (GMT)
-Received: from eucas1p2.samsung.com ( [182.198.249.207]) by
-        eusmges1new.samsung.com (EUCPMTA) with SMTP id AA.39.61286.E6D36DE5; Tue,  2
-        Jun 2020 12:52:14 +0100 (BST)
-Received: from eusmtrp2.samsung.com (unknown [182.198.249.139]) by
-        eucas1p2.samsung.com (KnoxPortal) with ESMTPA id
-        20200602115213eucas1p2a9a2ebb2afccca0354cf196caf762c81~Ut95XPpzJ2114421144eucas1p2H;
-        Tue,  2 Jun 2020 11:52:13 +0000 (GMT)
-Received: from eusmgms1.samsung.com (unknown [182.198.249.179]) by
-        eusmtrp2.samsung.com (KnoxPortal) with ESMTP id
-        20200602115213eusmtrp22e94988dfefaa16a48822c76e001af9f~Ut95WrdIp2672126721eusmtrp2H;
-        Tue,  2 Jun 2020 11:52:13 +0000 (GMT)
-X-AuditID: cbfec7f2-ef1ff7000001ef66-79-5ed63d6e409c
-Received: from eusmtip1.samsung.com ( [203.254.199.221]) by
-        eusmgms1.samsung.com (EUCPMTA) with SMTP id 7D.4A.08375.D6D36DE5; Tue,  2
-        Jun 2020 12:52:13 +0100 (BST)
-Received: from [106.120.51.71] (unknown [106.120.51.71]) by
-        eusmtip1.samsung.com (KnoxPortal) with ESMTPA id
-        20200602115213eusmtip1bf6e913a99c16fcd84809478e5a5e394~Ut95AXli90275702757eusmtip1h;
-        Tue,  2 Jun 2020 11:52:13 +0000 (GMT)
-From:   Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>
-Subject: [PATCH v2 2/2] video: fbdev: amifb: add FIXMEs about
- {put,get}_user() failures
-To:     linux-fbdev@vger.kernel.org, dri-devel@lists.freedesktop.org
-Cc:     linux-kernel@vger.kernel.org,
-        linux-m68k <linux-m68k@lists.linux-m68k.org>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Geert Uytterhoeven <geert@linux-m68k.org>
-Message-ID: <380c0494-ed02-b2be-65b0-d385627fb894@samsung.com>
-Date:   Tue, 2 Jun 2020 13:52:13 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
-        Thunderbird/60.8.0
+        Tue, 2 Jun 2020 08:03:30 -0400
+Received: by mail-oi1-f196.google.com with SMTP id a137so11784591oii.3
+        for <linux-m68k@lists.linux-m68k.org>; Tue, 02 Jun 2020 05:03:29 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=ncUahkMlR8RcEuHvwU1aMqYYdzOJso8KWIzaPU8BmKE=;
+        b=Z5o1zqLb3glWcNl05GShf5yKEvZZk2vozJ6CwBJ7PxAwGidVjGGwJVVotJMvEP25Yn
+         HEjUcx+CwYgKiDHIpvAlmN5m++/DPa5oAjW/xPPJNE0AkOtVWQTur5B3kE7hv6FOKNvL
+         b7ZeHyTOv5OdbkUDixd+9VmrpInmY0Iw8ISQv+qNBcr/Ei6b0cYQLMDyoZxD/ASJLM9e
+         HL8xBxjfWgKBRRlrADCjGFzhxDQH15Sn2RbZcslVHJh5xo3ljFi/2LbZyj+0QPIYgSJH
+         SgtTzvNdElfY6guldgxjCoqQZ0liYgCkFri0IzP5s6Iyq/nvy5to38hTzWlmYY9L7nIi
+         TzYw==
+X-Gm-Message-State: AOAM533quRZiv1SlkSRrThKmQ2HcINSMyOx4/bU9PuzF7ejvYE/a+UMV
+        OIakFauJcmWQmffEu4YB1HYGk8D4c8Syac5yeQA=
+X-Google-Smtp-Source: ABdhPJzEcQPMgPom1yIf3zWleRm3zOSF/oQgx5/HyuKONRP9TVyRubZN2n1LbmblaEecYiJrxwiFTA/boKIBcGBzwjs=
+X-Received: by 2002:aca:644:: with SMTP id 65mr2609554oig.148.1591099404240;
+ Tue, 02 Jun 2020 05:03:24 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <b1cf967015c5beafa475aaa30d8e21a58caff870.camel@perches.com>
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFlrKKsWRmVeSWpSXmKPExsWy7djP87p5ttfiDL7s5ba48vU9m8WzW3uZ
-        LE70fWC1uLxrDpvF8idrmS3O/z3O6sDmcehwB6PH/e7jTB4nW7+xeHzeJOex6clbpgDWKC6b
-        lNSczLLUIn27BK6MM8cPMhUs4qyY/vsEawPjNvYuRk4OCQETiQ/nJrGB2EICKxglvr0p7WLk
-        ArK/MErsuNbGBOF8ZpRYsGwWXMe0llY2iMRyRokDT7YzQzhvGSVmv1kFVsUmYCUxsX0VI4gt
-        LBApMfFiA9gOEQEHiSk3JoDVMAssYJTYcsgZxOYVsJN4/WAfM4jNIqAicfjpEzBbVCBC4tOD
-        w6wQNYISJ2c+YQGxOQU8JXb0XmaCmCMucevJfChbXmL72zlgB0kIrGOXOHnzFdAyDiDHReLq
-        IimID4QlXh3fAvWNjMT/nfOZoOoZJf52vIBq3s4osXzyPzaIKmuJO+d+sYEMYhbQlFi/Sx8i
-        7Chx5sJLJoj5fBI33gpC3MAnMWnbdGaIMK9ER5sQRLWaxIZlG9hg1nbtXMk8gVFpFpLPZiH5
-        ZhaSb2Yh7F3AyLKKUTy1tDg3PbXYMC+1XK84Mbe4NC9dLzk/dxMjMPGc/nf80w7Gr5eSDjEK
-        cDAq8fAaGF6LE2JNLCuuzD3EKMHBrCTC63T2dJwQb0piZVVqUX58UWlOavEhRmkOFiVxXuNF
-        L2OFBNITS1KzU1MLUotgskwcnFINjOZbnVs5tvH0Wtg0MMnebKmUXvpTQDREqn1pI9c/SaPe
-        2/Lzi4N1jiUaHZzxvJXvYG/dS1bDq5W2O/MmdWwOiVvzuK9kR60bsylrQP73uRpyLCJZrEqG
-        V/g23Xl8o9a45t9nRx3PHVNZjPqcZyQJ837c5vSnOvlywqQ7D0XZ96mfWXz+laKrEktxRqKh
-        FnNRcSIAnQ8NdjgDAAA=
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFtrJIsWRmVeSWpSXmKPExsVy+t/xu7q5ttfiDHbcM7O48vU9m8WzW3uZ
-        LE70fWC1uLxrDpvF8idrmS3O/z3O6sDmcehwB6PH/e7jTB4nW7+xeHzeJOex6clbpgDWKD2b
-        ovzSklSFjPziElulaEMLIz1DSws9IxNLPUNj81grI1MlfTublNSczLLUIn27BL2MM8cPMhUs
-        4qyY/vsEawPjNvYuRk4OCQETiWktrWxdjFwcQgJLGSXuNc8CcjiAEjISx9eXQdQIS/y51gVV
-        85pR4t3v/YwgCTYBK4mJ7avAbGGBSIlXR6+xgNgiAg4SU25MYAdpYBZYwChxtu0gK0T3HEaJ
-        Ha9ugHXwCthJvH6wjxnEZhFQkTj89AmYLSoQIXF4xyyoGkGJkzOfgE3lFPCU2NF7mQnEZhZQ
-        l/gz7xIzhC0ucevJfKi4vMT2t3OYJzAKzULSPgtJyywkLbOQtCxgZFnFKJJaWpybnltsqFec
-        mFtcmpeul5yfu4kRGG3bjv3cvIPx0sbgQ4wCHIxKPLwGhtfihFgTy4orcw8xSnAwK4nwOp09
-        HSfEm5JYWZValB9fVJqTWnyI0RTouYnMUqLJ+cBEkFcSb2hqaG5haWhubG5sZqEkztshcDBG
-        SCA9sSQ1OzW1ILUIpo+Jg1OqgXHShuc1174L9Kw/2l2n2/OiSHFO45F1GVwCSU9z3u1f7Vf2
-        +bXp8wOqGxsP6OasTFmn9zP8zLnld14ev33p4qQ+nnnvLEKuV8w7z+q4KOz9olOPP1l9li/l
-        vv/Y9NeaL9t23ohae+2YyB/7UwJzX7Wd9hB55VQaL7cm+vgZvVv8T3/d2epx+ceHcCWW4oxE
-        Qy3mouJEANp7p+rMAgAA
-X-CMS-MailID: 20200602115213eucas1p2a9a2ebb2afccca0354cf196caf762c81
-X-Msg-Generator: CA
-Content-Type: text/plain; charset="utf-8"
-X-RootMTR: 20200504232908eucas1p296927bc7c736ad924cefaea9a546459d
-X-EPHeader: CA
-CMS-TYPE: 201P
-X-CMS-RootMailID: 20200504232908eucas1p296927bc7c736ad924cefaea9a546459d
 References: <CGME20200504232908eucas1p296927bc7c736ad924cefaea9a546459d@eucas1p2.samsung.com>
-        <b1cf967015c5beafa475aaa30d8e21a58caff870.camel@perches.com>
+ <b1cf967015c5beafa475aaa30d8e21a58caff870.camel@perches.com> <767d36ff-22ec-8136-7ebc-1d9d0d3ac98d@samsung.com>
+In-Reply-To: <767d36ff-22ec-8136-7ebc-1d9d0d3ac98d@samsung.com>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Tue, 2 Jun 2020 14:03:12 +0200
+Message-ID: <CAMuHMdWac+YE3qr0CTepn5K24tGZq0VHuQDGg-yUOHW1rJDbbg@mail.gmail.com>
+Subject: Re: [PATCH v2 1/2] video: fbdev: amifb: add FIXME about dead APUS support
+To:     Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>
+Cc:     Linux Fbdev development list <linux-fbdev@vger.kernel.org>,
+        DRI Development <dri-devel@lists.freedesktop.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-m68k <linux-m68k@lists.linux-m68k.org>,
+        Al Viro <viro@zeniv.linux.org.uk>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-m68k-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-Since we lack the hardware (or proper emulator setup) for
-testing needed changes add FIXMEs to document the issues
-(so at least they are not forgotten).
+On Tue, Jun 2, 2020 at 1:50 PM Bartlomiej Zolnierkiewicz
+<b.zolnierkie@samsung.com> wrote:
+> On 5/14/20 10:21 PM, Geert Uytterhoeven wrote:
+> > These #ifdefs are relics from APUS (Amiga Power-Up System), which
+> > added a PPC board.  APUS support was killed off a long time ago,
+> > when arch/ppc/ was still king, but these #ifdefs were missed, because
+> > they didn't test for CONFIG_APUS.
+>
+> Add FIXME about using the C code variants (APUS ones) in the future.
+>
+> Reported-by: Al Viro <viro@zeniv.linux.org.uk>
+> Reported-by: Geert Uytterhoeven <geert@linux-m68k.org>
+> Signed-off-by: Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>
 
-Cc: Al Viro <viro@zeniv.linux.org.uk>
-Cc: Geert Uytterhoeven <geert@linux-m68k.org>
-Signed-off-by: Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>
----
-v2:
-- rebased on top of updated patch #1/2
+Reviewed-by: Geert Uytterhoeven <geert@linux-m68k.org>
 
- drivers/video/fbdev/amifb.c |    2 ++
- 1 file changed, 2 insertions(+)
+Gr{oetje,eeting}s,
 
-Index: b/drivers/video/fbdev/amifb.c
-===================================================================
---- a/drivers/video/fbdev/amifb.c
-+++ b/drivers/video/fbdev/amifb.c
-@@ -1892,6 +1892,7 @@ static int ami_get_var_cursorinfo(struct
- 				 | ((datawords >> 15) & 1));
- 			datawords <<= 1;
- #endif
-+			/* FIXME: check the return value + test the change */
- 			put_user(color, data++);
- 		}
- 		if (bits > 0) {
-@@ -1962,6 +1963,7 @@ static int ami_set_var_cursorinfo(struct
- 		bits = 16; words = delta; datawords = 0;
- 		for (width = (short)var->width - 1; width >= 0; width--) {
- 			unsigned long tdata = 0;
-+			/* FIXME: check the return value + test the change */
- 			get_user(tdata, data);
- 			data++;
- #ifdef __mc68000__
+                        Geert
+
+-- 
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
