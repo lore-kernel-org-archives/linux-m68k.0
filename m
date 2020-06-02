@@ -2,223 +2,121 @@ Return-Path: <SRS0=aBsQ=7P=vger.kernel.org=linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.3 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1
-	autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-0.8 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id F2DA2C433E1
-	for <linux-m68k@archiver.kernel.org>; Tue,  2 Jun 2020 02:22:04 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5CA5EC433E1
+	for <linux-m68k@archiver.kernel.org>; Tue,  2 Jun 2020 03:48:29 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id DEF6C20678
-	for <linux-m68k@archiver.kernel.org>; Tue,  2 Jun 2020 02:22:04 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 3D0B3206C3
+	for <linux-m68k@archiver.kernel.org>; Tue,  2 Jun 2020 03:48:29 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726007AbgFBCWE (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Mon, 1 Jun 2020 22:22:04 -0400
-Received: from cynthia.allandria.com ([50.242.82.17]:55524 "EHLO
-        cynthia.allandria.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725826AbgFBCWE (ORCPT
+        id S1726110AbgFBDs2 (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Mon, 1 Jun 2020 23:48:28 -0400
+Received: from kvm5.telegraphics.com.au ([98.124.60.144]:56024 "EHLO
+        kvm5.telegraphics.com.au" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725850AbgFBDs1 (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Mon, 1 Jun 2020 22:22:04 -0400
-Received: from flar by cynthia.allandria.com with local (Exim 4.84_2)
-        (envelope-from <flar@allandria.com>)
-        id 1jfwYw-00012T-0H; Mon, 01 Jun 2020 19:21:58 -0700
-Date:   Mon, 1 Jun 2020 19:21:57 -0700
-From:   Brad Boyer <flar@allandria.com>
-To:     Finn Thain <fthain@telegraphics.com.au>
-Cc:     Geert Uytterhoeven <geert@linux-m68k.org>,
+        Mon, 1 Jun 2020 23:48:27 -0400
+Received: from localhost (localhost.localdomain [127.0.0.1])
+        by kvm5.telegraphics.com.au (Postfix) with ESMTP id DF1E423238;
+        Mon,  1 Jun 2020 23:48:23 -0400 (EDT)
+Date:   Tue, 2 Jun 2020 13:48:22 +1000 (AEST)
+From:   Finn Thain <fthain@telegraphics.com.au>
+To:     Brad Boyer <flar@allandria.com>
+cc:     Geert Uytterhoeven <geert@linux-m68k.org>,
         Joshua Thompson <funaho@jurai.org>,
         linux-m68k <linux-m68k@lists.linux-m68k.org>
 Subject: Re: [PATCH 0/4] Mac IOP driver fixes
-Message-ID: <20200602022157.GA3216@allandria.com>
-References: <cover.1590880333.git.fthain@telegraphics.com.au>
- <CAMuHMdVb2C7asip_-_zbc3JP+nqn6siKqmikOK98tM5=2BYqcQ@mail.gmail.com>
- <alpine.LNX.2.22.394.2006010931070.8@nippy.intranet>
- <20200601060915.GA8450@allandria.com>
- <alpine.LNX.2.22.394.2006020922570.8@nippy.intranet>
+In-Reply-To: <20200602022157.GA3216@allandria.com>
+Message-ID: <alpine.LNX.2.22.394.2006021317230.8@nippy.intranet>
+References: <cover.1590880333.git.fthain@telegraphics.com.au> <CAMuHMdVb2C7asip_-_zbc3JP+nqn6siKqmikOK98tM5=2BYqcQ@mail.gmail.com> <alpine.LNX.2.22.394.2006010931070.8@nippy.intranet> <20200601060915.GA8450@allandria.com> <alpine.LNX.2.22.394.2006020922570.8@nippy.intranet>
+ <20200602022157.GA3216@allandria.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <alpine.LNX.2.22.394.2006020922570.8@nippy.intranet>
-User-Agent: Mutt/1.5.23 (2014-03-12)
+Content-Type: text/plain; charset=US-ASCII
 Sender: linux-m68k-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-On Tue, Jun 02, 2020 at 09:32:29AM +1000, Finn Thain wrote:
-> I'm hoping that the SWIM IOP can be used in bypass mode, so it could be 
-> used with the swim.c driver. I haven't been able to make that work yet.
+On Mon, 1 Jun 2020, Brad Boyer wrote:
 
-Putting the IOP in bypass mode would have a couple issues. The obvious
-one is that it will break ADB (and because the shift register attached
-to the ADB transceiver is part of the IOP chip itself, there's not an
-easy fix for that), but there's also some strangeness in the way the
-SWIM chip is attached to the IOP chip that looks like it might break
-a few things. In particular, it looks like they only enabled using the
-SWIM chip in ISM mode and not IWM mode. The notes I have imply that
-the normal Mac floppy driver didn't work on a IIfx even in bypass mode.
-In particular, note the direct use of a GPIO line on VIA1 in swim_select
-in drivers/block/swim.c.  That won't work on an IOP based system as that
-input line to SWIM doesn't appear to be hooked up to anything that can
-be accessed directly.
+> On Tue, Jun 02, 2020 at 09:32:29AM +1000, Finn Thain wrote:
+> > I'm hoping that the SWIM IOP can be used in bypass mode, so it could 
+> > be used with the swim.c driver. I haven't been able to make that work 
+> > yet.
+> 
+> Putting the IOP in bypass mode would have a couple issues. The obvious 
+> one is that it will break ADB (and because the shift register attached 
+> to the ADB transceiver is part of the IOP chip itself, there's not an 
+> easy fix for that)
 
-Here's the way it's put in _Guide to the Macintosh Family Hardware_
-(Second Edition), on page 155:
+I see.
 
-"An IOP provides the state-control line SEL to the floppy disk drives.
-Among other functions, this line selects which of the two heads is to
-be used in a double-sided floppy disk drive."
+> but there's also some strangeness in the way the SWIM chip is attached 
+> to the IOP chip that looks like it might break a few things. In 
+> particular, it looks like they only enabled using the SWIM chip in ISM 
+> mode and not IWM mode.
 
-The bit in VIA1 register A that is normally the "vHeadSel" line is
-explicitly listed as "Reserved" on the IIfx.
+IIUC, swim.c only uses ISM mode.
 
-It's definitely possible to access and drive the SWIM chip in bypass
-mode, but that doesn't mean it's as transparent as for the SCC driver.
-Apparently this external input line is not strictly required when the
-SWIM chip is running in ISM mode. However, our driver appears to force
-the chip into ISM mode and yet still depends on this input line.
+> The notes I have imply that the normal Mac floppy driver didn't work on 
+> a IIfx even in bypass mode.
 
-> You may want to send the patch to the mailing list anyway. Or maybe send 
-> it to the linux-mac68k bug tracker on sourceforge.
+I abandoned my failed attempt to put the SWIM IOP into bypass mode when I 
+finally came across this text in the HW09 tech note:
 
-I've pasted it in here so there is a record of it. The fixes are to
-properly handle multiple drives (my IIfx has two floppy drives installed)
-and to initialize and handle the auto-polling of drive status properly.
+    "Like the processor which controls floppy disk and ADB I/O, the IIfx 
+    has another ASIC to control the SCC, but unlike the former, this 
+    processor is capable of running in a special 'IOP Bypass' mode which 
+    allows direct access to the SCC."
 
-	Brad Boyer
-	flar@allandria.com
+I suppose the problem being alluded to here is the one you mentioned: to 
+put this IOP in bypass would kill ADB functionality (for the duration).
 
---- swim_iop.c-cvs	Fri Jul 19 22:49:23 2002
-+++ swim_iop.c	Sat Jul 27 00:51:30 2002
-@@ -5,12 +5,15 @@
-  * Written by Joshua M. Thompson (funaho@jurai.org)
-  * based on the SWIM3 driver (c) 1996 by Paul Mackerras.
-  *
-+ * Misc fixes by Brad A. Boyer (flar@allandria.com)
-+ *
-  * This program is free software; you can redistribute it and/or
-  * modify it under the terms of the GNU General Public License
-  * as published by the Free Software Foundation; either version
-  * 2 of the License, or (at your option) any later version.
-  *
-  * 1999-06-12 (jmt) - Initial implementation.
-+ * 2002-07-26 (bab) - Fixed drive number storage and enabled status updates
-  */
- 
- /*
-@@ -148,6 +151,7 @@
- int swimiop_init(void)
- {
- 	volatile struct swim_iop_req req;
-+	struct swimcmd_startpoll *poll = (struct swimcmd_startpoll *) &req.command[0];
- 	struct swimcmd_status *cmd = (struct swimcmd_status *) &req.command[0];
- 	struct swim_drvstatus *ds = &cmd->status;
- 	struct floppy_state *fs;
-@@ -175,6 +179,19 @@
- 		return -EBUSY;
- 	}
- 
-+	printk(KERN_ERR "SWIM_IOP: setting up automatic notification.\n");
-+
-+	swimiop_init_request(&req);
-+	poll->code = CMD_START_POLL;
-+	if (swimiop_send_request(&req) != 0) {
-+		printk(KERN_ERR "SWIM_IOP: failed to request autonotify.\n");
-+	} else {
-+		while (!req.complete);
-+		if (cmd->error != 0) {
-+			printk(KERN_ERR "SWIM_IOP: notify setup failed.\n");
-+		}
-+	}
-+
- 	printk(KERN_ERR "SWIM_IOP: probing for installed drives.\n");
- 
- 	for (i = 0 ; i < MAX_FLOPPIES ; i++) {
-@@ -199,6 +216,7 @@
- 			ds->info.secondary? "secondary" : "primary");
- 		swimiop_status_update(floppy_count, ds);
- 		fs->state = idle;
-+		fs->drive_num = i + 1;
- 
- 		init_timer(&fs->timeout);
- 		floppy_count++;
-@@ -214,6 +232,7 @@
- {
- 	req->sent = 0;
- 	req->complete = 0;
-+	req->fs = NULL;
- 	req->done = NULL;
- }
- 
-@@ -254,6 +273,26 @@
- }
- 
- /*
-+ * Find the correct status slot for given hardware drive number
-+ *
-+ * This is only used for unsolicited messages
-+ *
-+ */
-+
-+int swimiop_find_slot(int drive_num)
-+{
-+	struct floppy_state *fs;
-+	int i;
-+
-+	for (i = 0 ; i < MAX_FLOPPIES ; i++) {
-+		fs = &floppy_states[i];
-+		if(fs->drive_num == drive_num)
-+			return i;
-+	}
-+	return -1;
-+}
-+
-+/*
-  * Receive a SWIM message from the IOP.
-  *
-  * This will be called in two cases:
-@@ -267,20 +306,32 @@
- 	struct swim_iop_req *req;
- 	struct swimmsg_status *sm;
- 	struct swim_drvstatus *ds;
-+	void	(*done)(struct swim_iop_req *);
-+	int drive_slot;
- 
- 	req = current_req;
- 
- 	switch(msg->status) {
- 		case IOP_MSGSTATUS_COMPLETE:
-+			done = req->done;
- 			memcpy(&req->command[0], &msg->reply[0], sizeof(req->command));
- 			req->complete = 1;
--			if (req->done) (*req->done)(req);
-+			if (done) done(req);
- 			current_req = NULL;
- 			break;
- 		case IOP_MSGSTATUS_UNSOL:
- 			sm = (struct swimmsg_status *) &msg->message[0];
- 			ds = &sm->status;
--			swimiop_status_update(sm->drive_num, ds);
-+			drive_slot = swimiop_find_slot(sm->drive_num);
-+			if(drive_slot >= 0) {
-+				printk(KERN_ERR "SWIM_IOP: unit %d changed.\n",
-+					drive_slot);
-+				swimiop_status_update(drive_slot, ds);
-+			} else {
-+				printk("SWIM-IOP: Bad message from drive %d\n",
-+				       sm->drive_num);
-+			}
-+			memcpy(&msg->reply[0], &msg->message[0], IOP_MSG_LEN);
- 			iop_complete_message(msg);
- 			break;
- 	}
-@@ -347,7 +398,7 @@
- 		schedule_timeout(1);
- 	}
- 	release_drive(fs);
--	return cmd->error;
-+	return cmd->error ? -ENXIO : 0;
- }
- 
- static ssize_t floppy_read(struct file *filp, char *buf,
+> In particular, note the direct use of a GPIO line on VIA1 in swim_select 
+> in drivers/block/swim.c.  That won't work on an IOP based system as that 
+> input line to SWIM doesn't appear to be hooked up to anything that can 
+> be accessed directly.
+> 
+> Here's the way it's put in _Guide to the Macintosh Family Hardware_ 
+> (Second Edition), on page 155:
+> 
+> "An IOP provides the state-control line SEL to the floppy disk drives. 
+> Among other functions, this line selects which of the two heads is to be 
+> used in a double-sided floppy disk drive."
+> 
+> The bit in VIA1 register A that is normally the "vHeadSel" line is 
+> explicitly listed as "Reserved" on the IIfx.
+> 
 
+Yes, I was aware of that issue. But the GTMFH 2ed. figure 9-14 indicates 
+that (on the IIfx) pin 12 in the drive connector is driven by the SWIM 
+HDSEL pin instead of VIA1 Port A output. So, I wrote a patch to attempt to 
+get the SWIM to drive this pin. But nothing worked because I never 
+succeeded in putting the chip into bypass mode.
+
+> It's definitely possible to access and drive the SWIM chip in bypass 
+> mode, but that doesn't mean it's as transparent as for the SCC driver. 
+
+OK.
+
+BTW, I suspect there may be an issue with swim.c because it doesn't work 
+on all models on which it should work. I know it works on Quadra 800, 650 
+and a few others.
+
+With regard to PowerBooks, we will need to power up the drive. And with 
+regard to the IIfx, the A/UX iop.h header file indicates that, in bypass 
+mode, the ISM registers have a 2-byte spacing (instead of 512-byte).
+
+But I wish I knew why the driver doesn't work on an LC III, which 
+supposedly has a SWIM 2, just like the Quadra 800.
+
+> Apparently this external input line is not strictly required when the 
+> SWIM chip is running in ISM mode. However, our driver appears to force 
+> the chip into ISM mode and yet still depends on this input line.
+> 
+
+I can't comment on that. I don't really understand the ISM or IWM logic in 
+any depth.
