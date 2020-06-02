@@ -6,77 +6,67 @@ X-Spam-Status: No, score=-3.8 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
 	MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
 	autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 08B08C433DF
-	for <linux-m68k@archiver.kernel.org>; Tue,  2 Jun 2020 12:04:00 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4799EC433DF
+	for <linux-m68k@archiver.kernel.org>; Tue,  2 Jun 2020 16:12:31 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id DE0D420772
-	for <linux-m68k@archiver.kernel.org>; Tue,  2 Jun 2020 12:03:59 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 2229720757
+	for <linux-m68k@archiver.kernel.org>; Tue,  2 Jun 2020 16:12:31 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725921AbgFBMD7 (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Tue, 2 Jun 2020 08:03:59 -0400
-Received: from mail-oi1-f193.google.com ([209.85.167.193]:39995 "EHLO
-        mail-oi1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725940AbgFBMD7 (ORCPT
+        id S1725989AbgFBQMb (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Tue, 2 Jun 2020 12:12:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46962 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725940AbgFBQMa (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Tue, 2 Jun 2020 08:03:59 -0400
-Received: by mail-oi1-f193.google.com with SMTP id t25so3878172oij.7
-        for <linux-m68k@lists.linux-m68k.org>; Tue, 02 Jun 2020 05:03:59 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=IgExh/ny3ZdfEOHfQwIXJ7oTzjh0IcO4NnZTa4lzZZg=;
-        b=dEnA4qli0eSQnGASItK4rszBiJmybNWaMi/F/S2u76jX36h19kbFkkxEh7U6C9TeSQ
-         jLI9UWujirZKjQoXONWo4I0ptgCXO6fb0WxCVNkWIYQ9MPeFWgl7xVN+hb/sMnxaP5+L
-         tznO4RVMBkXlPYbxGR63yVTg3buy5gezNycsDSkf+VQOys/LqfIO9NG4FJ2iUgd0iSGh
-         Wp6fthYa9LWRmFcpJDgvnUhCWDWlSN0cMNv6+zjoPnvdDb8efgzCXJRcEBmE0FG0z46j
-         V3ylqLsDXWIc4/OEwDVwD7UM6lQSpsiAuFzJz+m99arpMCTkFuK50SbfuNkWIUi42Aan
-         o+zQ==
-X-Gm-Message-State: AOAM532wP08/poVswn8ydhmlp4o9e5TcDAWSkWTjSTKhau9hIu/ECU+D
-        q5jp4XJMODnAWc+xjLJYdc5SSLcj4A1e3gm0kMA=
-X-Google-Smtp-Source: ABdhPJz2czAuYGYJfe62NGAvi2DIXZQZsfLZD8OxGXlID6t22QF7K8A5fIlnr/Ug64ryYGdMa83JGneje4dJWf0Q67U=
-X-Received: by 2002:aca:1a19:: with SMTP id a25mr1947756oia.54.1591099433899;
- Tue, 02 Jun 2020 05:03:53 -0700 (PDT)
-MIME-Version: 1.0
-References: <CGME20200504232908eucas1p296927bc7c736ad924cefaea9a546459d@eucas1p2.samsung.com>
- <b1cf967015c5beafa475aaa30d8e21a58caff870.camel@perches.com> <380c0494-ed02-b2be-65b0-d385627fb894@samsung.com>
-In-Reply-To: <380c0494-ed02-b2be-65b0-d385627fb894@samsung.com>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Tue, 2 Jun 2020 14:03:38 +0200
-Message-ID: <CAMuHMdVYuk9+=3OTufOo98Dd3ijXS6JBH9RqK2v+9mwogxbnXA@mail.gmail.com>
-Subject: Re: [PATCH v2 2/2] video: fbdev: amifb: add FIXMEs about
- {put,get}_user() failures
-To:     Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>
-Cc:     Linux Fbdev development list <linux-fbdev@vger.kernel.org>,
+        Tue, 2 Jun 2020 12:12:30 -0400
+Received: from ZenIV.linux.org.uk (zeniv.linux.org.uk [IPv6:2002:c35c:fd02::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8BCD8C05BD1E;
+        Tue,  2 Jun 2020 09:12:30 -0700 (PDT)
+Received: from viro by ZenIV.linux.org.uk with local (Exim 4.93 #3 (Red Hat Linux))
+        id 1jg9Wb-00219F-54; Tue, 02 Jun 2020 16:12:25 +0000
+Date:   Tue, 2 Jun 2020 17:12:25 +0100
+From:   Al Viro <viro@zeniv.linux.org.uk>
+To:     Geert Uytterhoeven <geert@linux-m68k.org>
+Cc:     Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
+        Linux Fbdev development list <linux-fbdev@vger.kernel.org>,
         DRI Development <dri-devel@lists.freedesktop.org>,
         Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-m68k <linux-m68k@lists.linux-m68k.org>,
-        Al Viro <viro@zeniv.linux.org.uk>
-Content-Type: text/plain; charset="UTF-8"
+        linux-m68k <linux-m68k@lists.linux-m68k.org>
+Subject: Re: [PATCH v2 1/2] video: fbdev: amifb: add FIXME about dead APUS
+ support
+Message-ID: <20200602161225.GJ23230@ZenIV.linux.org.uk>
+References: <CGME20200504232908eucas1p296927bc7c736ad924cefaea9a546459d@eucas1p2.samsung.com>
+ <b1cf967015c5beafa475aaa30d8e21a58caff870.camel@perches.com>
+ <767d36ff-22ec-8136-7ebc-1d9d0d3ac98d@samsung.com>
+ <CAMuHMdWac+YE3qr0CTepn5K24tGZq0VHuQDGg-yUOHW1rJDbbg@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAMuHMdWac+YE3qr0CTepn5K24tGZq0VHuQDGg-yUOHW1rJDbbg@mail.gmail.com>
 Sender: linux-m68k-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-On Tue, Jun 2, 2020 at 1:52 PM Bartlomiej Zolnierkiewicz
-<b.zolnierkie@samsung.com> wrote:
-> Since we lack the hardware (or proper emulator setup) for
-> testing needed changes add FIXMEs to document the issues
-> (so at least they are not forgotten).
->
-> Cc: Al Viro <viro@zeniv.linux.org.uk>
-> Cc: Geert Uytterhoeven <geert@linux-m68k.org>
-> Signed-off-by: Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>
+On Tue, Jun 02, 2020 at 02:03:12PM +0200, Geert Uytterhoeven wrote:
+> On Tue, Jun 2, 2020 at 1:50 PM Bartlomiej Zolnierkiewicz
+> <b.zolnierkie@samsung.com> wrote:
+> > On 5/14/20 10:21 PM, Geert Uytterhoeven wrote:
+> > > These #ifdefs are relics from APUS (Amiga Power-Up System), which
+> > > added a PPC board.  APUS support was killed off a long time ago,
+> > > when arch/ppc/ was still king, but these #ifdefs were missed, because
+> > > they didn't test for CONFIG_APUS.
+> >
+> > Add FIXME about using the C code variants (APUS ones) in the future.
+> >
+> > Reported-by: Al Viro <viro@zeniv.linux.org.uk>
+> > Reported-by: Geert Uytterhoeven <geert@linux-m68k.org>
+> > Signed-off-by: Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>
+> 
+> Reviewed-by: Geert Uytterhoeven <geert@linux-m68k.org>
 
-Reviewed-by: Geert Uytterhoeven <geert@linux-m68k.org>
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
--- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+FWIW, has anyone managed to boot m68k linux kernel on e.g. FS-UAE?
+I have done that on aranym (which is how I'd been doing all
+testing for e.g. signal-related m68k patches) and I've seen
+references to some out-of-tree qemu variant doing quadra, but
+nothing for amiga emulators...
