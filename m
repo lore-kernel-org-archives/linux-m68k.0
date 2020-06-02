@@ -2,121 +2,135 @@ Return-Path: <SRS0=aBsQ=7P=vger.kernel.org=linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-0.8 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-2.2 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1
+	autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 5CA5EC433E1
-	for <linux-m68k@archiver.kernel.org>; Tue,  2 Jun 2020 03:48:29 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 275C6C433E0
+	for <linux-m68k@archiver.kernel.org>; Tue,  2 Jun 2020 07:16:55 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 3D0B3206C3
-	for <linux-m68k@archiver.kernel.org>; Tue,  2 Jun 2020 03:48:29 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 0ED57206A2
+	for <linux-m68k@archiver.kernel.org>; Tue,  2 Jun 2020 07:16:55 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726110AbgFBDs2 (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Mon, 1 Jun 2020 23:48:28 -0400
-Received: from kvm5.telegraphics.com.au ([98.124.60.144]:56024 "EHLO
-        kvm5.telegraphics.com.au" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725850AbgFBDs1 (ORCPT
+        id S1726144AbgFBHQy (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Tue, 2 Jun 2020 03:16:54 -0400
+Received: from outpost1.zedat.fu-berlin.de ([130.133.4.66]:43699 "EHLO
+        outpost1.zedat.fu-berlin.de" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726130AbgFBHQy (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Mon, 1 Jun 2020 23:48:27 -0400
-Received: from localhost (localhost.localdomain [127.0.0.1])
-        by kvm5.telegraphics.com.au (Postfix) with ESMTP id DF1E423238;
-        Mon,  1 Jun 2020 23:48:23 -0400 (EDT)
-Date:   Tue, 2 Jun 2020 13:48:22 +1000 (AEST)
-From:   Finn Thain <fthain@telegraphics.com.au>
-To:     Brad Boyer <flar@allandria.com>
-cc:     Geert Uytterhoeven <geert@linux-m68k.org>,
-        Joshua Thompson <funaho@jurai.org>,
-        linux-m68k <linux-m68k@lists.linux-m68k.org>
-Subject: Re: [PATCH 0/4] Mac IOP driver fixes
-In-Reply-To: <20200602022157.GA3216@allandria.com>
-Message-ID: <alpine.LNX.2.22.394.2006021317230.8@nippy.intranet>
-References: <cover.1590880333.git.fthain@telegraphics.com.au> <CAMuHMdVb2C7asip_-_zbc3JP+nqn6siKqmikOK98tM5=2BYqcQ@mail.gmail.com> <alpine.LNX.2.22.394.2006010931070.8@nippy.intranet> <20200601060915.GA8450@allandria.com> <alpine.LNX.2.22.394.2006020922570.8@nippy.intranet>
- <20200602022157.GA3216@allandria.com>
+        Tue, 2 Jun 2020 03:16:54 -0400
+Received: from inpost2.zedat.fu-berlin.de ([130.133.4.69])
+          by outpost.zedat.fu-berlin.de (Exim 4.93)
+          with esmtps (TLS1.2)
+          tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+          (envelope-from <glaubitz@zedat.fu-berlin.de>)
+          id 1jg1AK-000BJ1-AF; Tue, 02 Jun 2020 09:16:52 +0200
+Received: from p57bd9b57.dip0.t-ipconnect.de ([87.189.155.87] helo=[192.168.178.139])
+          by inpost2.zedat.fu-berlin.de (Exim 4.93)
+          with esmtpsa (TLS1.2)
+          tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+          (envelope-from <glaubitz@physik.fu-berlin.de>)
+          id 1jg1AK-0023zv-09; Tue, 02 Jun 2020 09:16:52 +0200
+Subject: Re: Planning a Debian/Linux m68k Meeting in 2020
+To:     Carsten Strotmann <carsten@strotmann.de>,
+        Carsten Strotmann <cas@strotmann.de>,
+        linux-m68k <linux-m68k@lists.linux-m68k.org>,
+        Debian m68k <debian-68k@lists.debian.org>
+References: <86wo6nwytz.fsf@emacs.strotmann.de>
+ <865zcqz6lz.fsf@emacs.strotmann.de>
+ <16b695c3-33f7-ecaa-80bc-066d90482bce@strotmann.de>
+From:   John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
+Autocrypt: addr=glaubitz@physik.fu-berlin.de; keydata=
+ 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
+ scOkTAZQGVpD/8AaLH4v1w==
+Message-ID: <7f8821a5-f179-d563-d8bd-4a38dd53d058@physik.fu-berlin.de>
+Date:   Tue, 2 Jun 2020 09:16:50 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.8.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+In-Reply-To: <16b695c3-33f7-ecaa-80bc-066d90482bce@strotmann.de>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Original-Sender: glaubitz@physik.fu-berlin.de
+X-Originating-IP: 87.189.155.87
 Sender: linux-m68k-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-On Mon, 1 Jun 2020, Brad Boyer wrote:
+Hi Carsten!
 
-> On Tue, Jun 02, 2020 at 09:32:29AM +1000, Finn Thain wrote:
-> > I'm hoping that the SWIM IOP can be used in bypass mode, so it could 
-> > be used with the swim.c driver. I haven't been able to make that work 
-> > yet.
+On 6/1/20 12:50 PM, Carsten Strotmann wrote:
+> the meeting will be this coming Friday 5th June 20:00 CEST on the Jitsi
+> Videoconferencing server:
 > 
-> Putting the IOP in bypass mode would have a couple issues. The obvious 
-> one is that it will break ADB (and because the shift register attached 
-> to the ADB transceiver is part of the IOP chip itself, there's not an 
-> easy fix for that)
-
-I see.
-
-> but there's also some strangeness in the way the SWIM chip is attached 
-> to the IOP chip that looks like it might break a few things. In 
-> particular, it looks like they only enabled using the SWIM chip in ISM 
-> mode and not IWM mode.
-
-IIUC, swim.c only uses ISM mode.
-
-> The notes I have imply that the normal Mac floppy driver didn't work on 
-> a IIfx even in bypass mode.
-
-I abandoned my failed attempt to put the SWIM IOP into bypass mode when I 
-finally came across this text in the HW09 tech note:
-
-    "Like the processor which controls floppy disk and ADB I/O, the IIfx 
-    has another ASIC to control the SCC, but unlike the former, this 
-    processor is capable of running in a special 'IOP Bypass' mode which 
-    allows direct access to the SCC."
-
-I suppose the problem being alluded to here is the one you mentioned: to 
-put this IOP in bypass would kill ADB functionality (for the duration).
-
-> In particular, note the direct use of a GPIO line on VIA1 in swim_select 
-> in drivers/block/swim.c.  That won't work on an IOP based system as that 
-> input line to SWIM doesn't appear to be hooked up to anything that can 
-> be accessed directly.
+> <https://meet.forth-ev.de/m68k>
 > 
-> Here's the way it's put in _Guide to the Macintosh Family Hardware_ 
-> (Second Edition), on page 155:
+> There is currently password protection enabled for this server, the
+> server will be open 30 minutes before the meeting starts.
 > 
-> "An IOP provides the state-control line SEL to the floppy disk drives. 
-> Among other functions, this line selects which of the two heads is to be 
-> used in a double-sided floppy disk drive."
+> Topics to discuss (non exhaustive):
 > 
-> The bit in VIA1 register A that is normally the "vHeadSel" line is 
-> explicitly listed as "Reserved" on the IIfx.
+>  * virtual and/or in-person meeting options
+>  * location
+>  * date and time
+>  * scope (Topics for the meeting)
+>  * Agenda for meeting (Talks? Moderated Discussions? Training for new
+> project members ....)
 > 
+> If you have additions to the Agenda let me know.
 
-Yes, I was aware of that issue. But the GTMFH 2ed. figure 9-14 indicates 
-that (on the IIfx) pin 12 in the drive connector is driven by the SWIM 
-HDSEL pin instead of VIA1 Port A output. So, I wrote a patch to attempt to 
-get the SWIM to drive this pin. But nothing worked because I never 
-succeeded in putting the chip into bypass mode.
+I would suggest adding the topic "Funding of new m68k software projects"
+(for example, the development of an M68000 backend for LLVM) [1].
 
-> It's definitely possible to access and drive the SWIM chip in bypass 
-> mode, but that doesn't mean it's as transparent as for the SCC driver. 
+Adrian
 
-OK.
+> [1] https://www.bountysource.com/issues/90829856-llvm-complete-the-m68000-backend-so-it-can-be-merged-upstream
 
-BTW, I suspect there may be an issue with swim.c because it doesn't work 
-on all models on which it should work. I know it works on Quadra 800, 650 
-and a few others.
-
-With regard to PowerBooks, we will need to power up the drive. And with 
-regard to the IIfx, the A/UX iop.h header file indicates that, in bypass 
-mode, the ISM registers have a 2-byte spacing (instead of 512-byte).
-
-But I wish I knew why the driver doesn't work on an LC III, which 
-supposedly has a SWIM 2, just like the Quadra 800.
-
-> Apparently this external input line is not strictly required when the 
-> SWIM chip is running in ISM mode. However, our driver appears to force 
-> the chip into ISM mode and yet still depends on this input line.
-> 
-
-I can't comment on that. I don't really understand the ISM or IWM logic in 
-any depth.
+-- 
+ .''`.  John Paul Adrian Glaubitz
+: :' :  Debian Developer - glaubitz@debian.org
+`. `'   Freie Universitaet Berlin - glaubitz@physik.fu-berlin.de
+  `-    GPG: 62FF 8A75 84E0 2956 9546  0006 7426 3B37 F5B5 F913
