@@ -1,188 +1,229 @@
-Return-Path: <SRS0=lYFo=7U=vger.kernel.org=linux-m68k-owner@kernel.org>
+Return-Path: <SRS0=ZSBV=7V=vger.kernel.org=linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,UPPERCASE_50_75,USER_AGENT_GIT autolearn=ham
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-10.1 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 665F7C433E0
-	for <linux-m68k@archiver.kernel.org>; Sun,  7 Jun 2020 19:06:27 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 6826EC433E0
+	for <linux-m68k@archiver.kernel.org>; Mon,  8 Jun 2020 23:38:07 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 28F1D206D5
-	for <linux-m68k@archiver.kernel.org>; Sun,  7 Jun 2020 19:06:27 +0000 (UTC)
-Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=timesys-com.20150623.gappssmtp.com header.i=@timesys-com.20150623.gappssmtp.com header.b="dfZYJqRo"
+	by mail.kernel.org (Postfix) with ESMTP id 400852074B
+	for <linux-m68k@archiver.kernel.org>; Mon,  8 Jun 2020 23:38:07 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=default; t=1591659487;
+	bh=79748xi6A0dufc+IBvJCYaYUwhLn7bNEoXTQLa3KQPw=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-ID:From;
+	b=u3YUSGLfTLQPm+1dAU9/LOqP+zxHTy4fuFSX2Kte2Gz1wbqXYew/lsBig/kMKnw/z
+	 jJABt3g0ZHZ7I6wSTdU5xkmimWddkkrUe6feMP9vReYWi4SI8YZSS5aRF3RptJCo8i
+	 bqmqW025Dec8sRby1KknKwbpGIrFD7ysi+sCwgWM=
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726780AbgFGTG0 (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Sun, 7 Jun 2020 15:06:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58548 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726742AbgFGTG0 (ORCPT
-        <rfc822;linux-m68k@vger.kernel.org>); Sun, 7 Jun 2020 15:06:26 -0400
-Received: from mail-ed1-x542.google.com (mail-ed1-x542.google.com [IPv6:2a00:1450:4864:20::542])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5925FC061A0E
-        for <linux-m68k@vger.kernel.org>; Sun,  7 Jun 2020 12:06:26 -0700 (PDT)
-Received: by mail-ed1-x542.google.com with SMTP id g9so11592670edw.10
-        for <linux-m68k@vger.kernel.org>; Sun, 07 Jun 2020 12:06:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=timesys-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=Nb3fCsvQkquN1lMqovM+e0CARz9jizkBrvF/ujBAsg0=;
-        b=dfZYJqRoce6PnVvFj1mad4jFYbZO+3LxMnjoQvWq12hsE07DVlI1rYf9vNmNUhKQid
-         QzslPDwuFMeeRxve2igfe9ZX/EZkCFVhC5LWYWQxk3/zqIxB5HNWDtl0RktXlt/9mItv
-         jCt4u1vNC0GgqBO4HUzeSuE5iIYT0cRylYO17uaP9nV3RGSTUKhJzcXsyW7F+nDzf62v
-         e4Yn8VizfLTKL2wJ62Tp1drl2dgBcUbnxKfor3qFcNDGMVNF/nQvoJ3PppafiN8jPdtM
-         ZhBSmckhrmWfzLr1ZzkdsVfuVpVxNg5mXMF/TbFd5YDYT4n1biNRZzuligtDUC5Rj0j0
-         pqzw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=Nb3fCsvQkquN1lMqovM+e0CARz9jizkBrvF/ujBAsg0=;
-        b=Lvmo8yx2+oRyn6BNBHo8gNdnFOSH/PYZRjQNEZOfoQ6xV03yxlr6V21aRXPfsgeoFB
-         O59ERtuur0Ss3gwBXKprOS0D6AD0X6rNzMEt+2qO4e45mLiLvU8T1XZrKCjmeWu69sDC
-         7N7U2Ek5KRMikPepkf+M0wnzE403kM59l658xsqhm1QehDnREQjE5wP+ywFraP6+Z+EA
-         2fP0N43mikCCSe7sy3mPBLiCC1nlCmFqtF9467mm/mjqEPfIELa7d8TdsVlRNOC1Nv9E
-         UR+4DDHV/sO6jSYeT5uLoGnsPbPXot2B2o1xZbNCNqLQ7HPvmrZyEXVxqGVR7WwVIxUy
-         guVw==
-X-Gm-Message-State: AOAM530/WyQ5JE+2jjNtKcVALc7jTkImFsgDuiH1mOsTWcaa2PgfL+GY
-        I+bvdqBkHzAuz0ZJsZlqpBD0HVh2kVw=
-X-Google-Smtp-Source: ABdhPJyTUZp69DKf2j6tJpGWqEDd8ZAQEl07uDWEFYNJaMGAaNhzQy9gkhB1+l0gy7S622FXK+73Tw==
-X-Received: by 2002:a05:6402:393:: with SMTP id o19mr19373727edv.28.1591556783857;
-        Sun, 07 Jun 2020 12:06:23 -0700 (PDT)
-Received: from localhost.localdomain (host203-36-dynamic.30-79-r.retail.telecomitalia.it. [79.30.36.203])
-        by smtp.gmail.com with ESMTPSA id y18sm10444269edu.76.2020.06.07.12.06.21
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 07 Jun 2020 12:06:23 -0700 (PDT)
-From:   Angelo Dureghello <angelo.dureghello@timesys.com>
-To:     gerg@linux-m68k.org
-Cc:     linux-m68k@vger.kernel.org,
-        Angelo Dureghello <angelo.dureghello@timesys.com>
-Subject: [PATCH] m68k: stmark2: defconfig updates
-Date:   Sun,  7 Jun 2020 21:12:15 +0200
-Message-Id: <20200607191215.2626739-1-angelo.dureghello@timesys.com>
-X-Mailer: git-send-email 2.26.2
+        id S1731762AbgFHXiG (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Mon, 8 Jun 2020 19:38:06 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58170 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1731967AbgFHX2d (ORCPT <rfc822;linux-m68k@lists.linux-m68k.org>);
+        Mon, 8 Jun 2020 19:28:33 -0400
+Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 701D320775;
+        Mon,  8 Jun 2020 23:28:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1591658912;
+        bh=79748xi6A0dufc+IBvJCYaYUwhLn7bNEoXTQLa3KQPw=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=mtaNRuUxw4KivhdKKUyHI1IxGCZxCQN2IpwZy1AQhB0nSV49lZlphhlhnmLl41+q5
+         SP8iQxOShszPY8Dw+Kl0+tU8yM4D8CDTv0KeRciPJrpzrBmyDnpa4XnmtVOFnPpd9w
+         T9YJPnl/o0C4snHYWEPur0PMiFSJcW3GNKWoT+iA=
+From:   Sasha Levin <sashal@kernel.org>
+To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Cc:     Finn Thain <fthain@telegraphics.com.au>,
+        Stan Johnson <userm57@yahoo.com>,
+        Joshua Thompson <funaho@jurai.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Sasha Levin <sashal@kernel.org>,
+        linux-m68k@lists.linux-m68k.org
+Subject: [PATCH AUTOSEL 4.4 29/37] m68k: mac: Don't call via_flush_cache() on Mac IIfx
+Date:   Mon,  8 Jun 2020 19:27:41 -0400
+Message-Id: <20200608232750.3370747-29-sashal@kernel.org>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20200608232750.3370747-1-sashal@kernel.org>
+References: <20200608232750.3370747-1-sashal@kernel.org>
 MIME-Version: 1.0
+X-stable: review
+X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 Sender: linux-m68k-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-Some defconfig updates for stmark2 board, mainly to enable
-sdcard and mmu.
+From: Finn Thain <fthain@telegraphics.com.au>
 
-Signed-off-by: Angelo Dureghello <angelo.dureghello@timesys.com>
+[ Upstream commit bcc44f6b74106b31f0b0408b70305a40360d63b7 ]
+
+There is no VIA2 chip on the Mac IIfx, so don't call via_flush_cache().
+This avoids a boot crash which appeared in v5.4.
+
+printk: console [ttyS0] enabled
+printk: bootconsole [debug0] disabled
+printk: bootconsole [debug0] disabled
+Calibrating delay loop... 9.61 BogoMIPS (lpj=48064)
+pid_max: default: 32768 minimum: 301
+Mount-cache hash table entries: 1024 (order: 0, 4096 bytes, linear)
+Mountpoint-cache hash table entries: 1024 (order: 0, 4096 bytes, linear)
+devtmpfs: initialized
+random: get_random_u32 called from bucket_table_alloc.isra.27+0x68/0x194 with crng_init=0
+clocksource: jiffies: mask: 0xffffffff max_cycles: 0xffffffff, max_idle_ns: 19112604462750000 ns
+futex hash table entries: 256 (order: -1, 3072 bytes, linear)
+NET: Registered protocol family 16
+Data read fault at 0x00000000 in Super Data (pc=0x8a6a)
+BAD KERNEL BUSERR
+Oops: 00000000
+Modules linked in:
+PC: [<00008a6a>] via_flush_cache+0x12/0x2c
+SR: 2700  SP: 01c1fe3c  a2: 01c24000
+d0: 00001119    d1: 0000000c    d2: 00012000    d3: 0000000f
+d4: 01c06840    d5: 00033b92    a0: 00000000    a1: 00000000
+Process swapper (pid: 1, task=01c24000)
+Frame format=B ssw=0755 isc=0200 isb=fff7 daddr=00000000 dobuf=01c1fed0
+baddr=00008a6e dibuf=0000004e ver=f
+Stack from 01c1fec4:
+        01c1fed0 00007d7e 00010080 01c1fedc 0000792e 00000001 01c1fef4 00006b40
+        01c80000 00040000 00000006 00000003 01c1ff1c 004a545e 004ff200 00040000
+        00000000 00000003 01c06840 00033b92 004a5410 004b6c88 01c1ff84 000021e2
+        00000073 00000003 01c06840 00033b92 0038507a 004bb094 004b6ca8 004b6c88
+        004b6ca4 004b6c88 000021ae 00020002 00000000 01c0685d 00000000 01c1ffb4
+        0049f938 00409c85 01c06840 0045bd40 00000073 00000002 00000002 00000000
+Call Trace: [<00007d7e>] mac_cache_card_flush+0x12/0x1c
+ [<00010080>] fix_dnrm+0x2/0x18
+ [<0000792e>] cache_push+0x46/0x5a
+ [<00006b40>] arch_dma_prep_coherent+0x60/0x6e
+ [<00040000>] switched_to_dl+0x76/0xd0
+ [<004a545e>] dma_atomic_pool_init+0x4e/0x188
+ [<00040000>] switched_to_dl+0x76/0xd0
+ [<00033b92>] parse_args+0x0/0x370
+ [<004a5410>] dma_atomic_pool_init+0x0/0x188
+ [<000021e2>] do_one_initcall+0x34/0x1be
+ [<00033b92>] parse_args+0x0/0x370
+ [<0038507a>] strcpy+0x0/0x1e
+ [<000021ae>] do_one_initcall+0x0/0x1be
+ [<00020002>] do_proc_dointvec_conv+0x54/0x74
+ [<0049f938>] kernel_init_freeable+0x126/0x190
+ [<0049f94c>] kernel_init_freeable+0x13a/0x190
+ [<004a5410>] dma_atomic_pool_init+0x0/0x188
+ [<00041798>] complete+0x0/0x3c
+ [<000b9b0c>] kfree+0x0/0x20a
+ [<0038df98>] schedule+0x0/0xd0
+ [<0038d604>] kernel_init+0x0/0xda
+ [<0038d610>] kernel_init+0xc/0xda
+ [<0038d604>] kernel_init+0x0/0xda
+ [<00002d38>] ret_from_kernel_thread+0xc/0x14
+Code: 0000 2079 0048 10da 2279 0048 10c8 d3c8 <1011> 0200 fff7 1280 d1f9 0048 10c8 1010 0000 0008 1080 4e5e 4e75 4e56 0000 2039
+Disabling lock debugging due to kernel taint
+Kernel panic - not syncing: Attempted to kill init! exitcode=0x0000000b
+
+Thanks to Stan Johnson for capturing the console log and running git
+bisect.
+
+Git bisect said commit 8e3a68fb55e0 ("dma-mapping: make
+dma_atomic_pool_init self-contained") is the first "bad" commit. I don't
+know why. Perhaps mach_l2_flush first became reachable with that commit.
+
+Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
+Reported-and-tested-by: Stan Johnson <userm57@yahoo.com>
+Signed-off-by: Finn Thain <fthain@telegraphics.com.au>
+Cc: Joshua Thompson <funaho@jurai.org>
+Link: https://lore.kernel.org/r/b8bbeef197d6b3898e82ed0d231ad08f575a4b34.1589949122.git.fthain@telegraphics.com.au
+Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/m68k/configs/stmark2_defconfig | 48 ++++++++++++++++-------------
- 1 file changed, 27 insertions(+), 21 deletions(-)
+ arch/m68k/include/asm/mac_via.h |  1 +
+ arch/m68k/mac/config.c          | 21 ++-------------------
+ arch/m68k/mac/via.c             |  6 +++++-
+ 3 files changed, 8 insertions(+), 20 deletions(-)
 
-diff --git a/arch/m68k/configs/stmark2_defconfig b/arch/m68k/configs/stmark2_defconfig
-index 27fa9465d19d..d92306472fce 100644
---- a/arch/m68k/configs/stmark2_defconfig
-+++ b/arch/m68k/configs/stmark2_defconfig
-@@ -1,38 +1,33 @@
- CONFIG_LOCALVERSION="stmark2-001"
- CONFIG_DEFAULT_HOSTNAME="stmark2"
- CONFIG_SYSVIPC=y
--# CONFIG_FHANDLE is not set
- CONFIG_LOG_BUF_SHIFT=14
- CONFIG_NAMESPACES=y
- CONFIG_BLK_DEV_INITRD=y
--# CONFIG_RD_BZIP2 is not set
--# CONFIG_RD_LZMA is not set
--# CONFIG_RD_XZ is not set
--# CONFIG_RD_LZO is not set
--# CONFIG_RD_LZ4 is not set
- CONFIG_CC_OPTIMIZE_FOR_SIZE=y
-+# CONFIG_FHANDLE is not set
- # CONFIG_AIO is not set
- # CONFIG_ADVISE_SYSCALLS is not set
- # CONFIG_MEMBARRIER is not set
- CONFIG_EMBEDDED=y
- # CONFIG_VM_EVENT_COUNTERS is not set
- # CONFIG_COMPAT_BRK is not set
--# CONFIG_BLK_DEV_BSG is not set
--CONFIG_BLK_CMDLINE_PARSER=y
--# CONFIG_MMU is not set
-+CONFIG_COLDFIRE=y
- CONFIG_M5441x=y
- CONFIG_CLOCK_FREQ=240000000
- CONFIG_STMARK2=y
-+CONFIG_UBOOT=y
- CONFIG_RAMBASE=0x40000000
- CONFIG_RAMSIZE=0x8000000
- CONFIG_VECTORBASE=0x40000000
- CONFIG_KERNELBASE=0x40001000
-+# CONFIG_BLK_DEV_BSG is not set
-+CONFIG_BLK_CMDLINE_PARSER=y
- CONFIG_BINFMT_FLAT=y
-+CONFIG_BINFMT_ZFLAT=y
- CONFIG_BINFMT_MISC=y
--# CONFIG_UEVENT_HELPER is not set
- CONFIG_DEVTMPFS=y
- CONFIG_DEVTMPFS_MOUNT=y
--CONFIG_FW_LOADER_USER_HELPER_FALLBACK=y
- # CONFIG_ALLOW_DEV_COREDUMP is not set
- CONFIG_MTD=y
- CONFIG_MTD_CMDLINE_PARTS=y
-@@ -48,7 +43,6 @@ CONFIG_MTD_CFI_STAA=y
- CONFIG_MTD_ROM=y
- CONFIG_MTD_COMPLEX_MAPPINGS=y
- CONFIG_MTD_PLATRAM=y
--CONFIG_MTD_M25P80=y
- CONFIG_MTD_SPI_NOR=y
- # CONFIG_INPUT_KEYBOARD is not set
- # CONFIG_INPUT_MOUSE is not set
-@@ -66,24 +60,36 @@ CONFIG_DEBUG_GPIO=y
- CONFIG_GPIO_SYSFS=y
- CONFIG_GPIO_GENERIC_PLATFORM=y
- # CONFIG_HWMON is not set
--# CONFIG_RC_CORE is not set
- # CONFIG_HID is not set
- # CONFIG_USB_SUPPORT is not set
-+CONFIG_MMC=y
-+CONFIG_MMC_DEBUG=y
-+CONFIG_MMC_SDHCI=y
-+CONFIG_MMC_SDHCI_PLTFM=y
-+CONFIG_MMC_SDHCI_ESDHC_MCF=y
-+CONFIG_DMADEVICES=y
-+CONFIG_MCF_EDMA=y
-+CONFIG_EXT2_FS=y
-+CONFIG_EXT2_FS_XATTR=y
-+CONFIG_EXT2_FS_POSIX_ACL=y
-+CONFIG_EXT2_FS_SECURITY=y
-+CONFIG_EXT3_FS=y
-+CONFIG_EXT3_FS_POSIX_ACL=y
-+CONFIG_EXT3_FS_SECURITY=y
- # CONFIG_FILE_LOCKING is not set
- # CONFIG_DNOTIFY is not set
- # CONFIG_INOTIFY_USER is not set
-+CONFIG_OVERLAY_FS=y
- CONFIG_FSCACHE=y
- # CONFIG_PROC_SYSCTL is not set
-+CONFIG_CRAMFS=y
-+CONFIG_SQUASHFS=y
-+CONFIG_ROMFS_FS=y
-+CONFIG_CRYPTO_ANSI_CPRNG=y
-+# CONFIG_CRYPTO_HW is not set
- CONFIG_PRINTK_TIME=y
-+# CONFIG_DEBUG_BUGVERBOSE is not set
- # CONFIG_SECTION_MISMATCH_WARN_ONLY is not set
- CONFIG_SLUB_DEBUG_ON=y
- CONFIG_PANIC_ON_OOPS=y
- # CONFIG_SCHED_DEBUG is not set
--# CONFIG_DEBUG_BUGVERBOSE is not set
--CONFIG_BOOTPARAM=y
--CONFIG_BOOTPARAM_STRING="console=ttyS0,115200 root=/dev/ram0 rw rootfstype=ramfs rdinit=/bin/init devtmpfs.mount=1"
--CONFIG_CRYPTO=y
--# CONFIG_CRYPTO_ECHAINIV is not set
--CONFIG_CRYPTO_ANSI_CPRNG=y
--# CONFIG_CRYPTO_HW is not set
--CONFIG_CRC16=y
+diff --git a/arch/m68k/include/asm/mac_via.h b/arch/m68k/include/asm/mac_via.h
+index 53c632c85b03..dff6db19ae4d 100644
+--- a/arch/m68k/include/asm/mac_via.h
++++ b/arch/m68k/include/asm/mac_via.h
+@@ -256,6 +256,7 @@ extern int rbv_present,via_alt_mapping;
+ 
+ struct irq_desc;
+ 
++extern void via_l2_flush(int writeback);
+ extern void via_register_interrupts(void);
+ extern void via_irq_enable(int);
+ extern void via_irq_disable(int);
+diff --git a/arch/m68k/mac/config.c b/arch/m68k/mac/config.c
+index 689b47d292ac..c4be82cc07df 100644
+--- a/arch/m68k/mac/config.c
++++ b/arch/m68k/mac/config.c
+@@ -60,7 +60,6 @@ extern void iop_preinit(void);
+ extern void iop_init(void);
+ extern void via_init(void);
+ extern void via_init_clock(irq_handler_t func);
+-extern void via_flush_cache(void);
+ extern void oss_init(void);
+ extern void psc_init(void);
+ extern void baboon_init(void);
+@@ -131,21 +130,6 @@ int __init mac_parse_bootinfo(const struct bi_record *record)
+ 	return unknown;
+ }
+ 
+-/*
+- * Flip into 24bit mode for an instant - flushes the L2 cache card. We
+- * have to disable interrupts for this. Our IRQ handlers will crap
+- * themselves if they take an IRQ in 24bit mode!
+- */
+-
+-static void mac_cache_card_flush(int writeback)
+-{
+-	unsigned long flags;
+-
+-	local_irq_save(flags);
+-	via_flush_cache();
+-	local_irq_restore(flags);
+-}
+-
+ void __init config_mac(void)
+ {
+ 	if (!MACH_IS_MAC)
+@@ -178,9 +162,8 @@ void __init config_mac(void)
+ 	 * not.
+ 	 */
+ 
+-	if (macintosh_config->ident == MAC_MODEL_IICI
+-	    || macintosh_config->ident == MAC_MODEL_IIFX)
+-		mach_l2_flush = mac_cache_card_flush;
++	if (macintosh_config->ident == MAC_MODEL_IICI)
++		mach_l2_flush = via_l2_flush;
+ }
+ 
+ 
+diff --git a/arch/m68k/mac/via.c b/arch/m68k/mac/via.c
+index 49f9fa4529a8..b4c40ed2099a 100644
+--- a/arch/m68k/mac/via.c
++++ b/arch/m68k/mac/via.c
+@@ -299,10 +299,14 @@ void via_debug_dump(void)
+  * the system into 24-bit mode for an instant.
+  */
+ 
+-void via_flush_cache(void)
++void via_l2_flush(int writeback)
+ {
++	unsigned long flags;
++
++	local_irq_save(flags);
+ 	via2[gBufB] &= ~VIA2B_vMode32;
+ 	via2[gBufB] |= VIA2B_vMode32;
++	local_irq_restore(flags);
+ }
+ 
+ /*
 -- 
-2.26.2
+2.25.1
 
