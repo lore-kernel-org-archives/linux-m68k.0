@@ -7,37 +7,37 @@ X-Spam-Status: No, score=-10.1 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 176FEC433DF
-	for <linux-m68k@archiver.kernel.org>; Mon,  8 Jun 2020 23:46:43 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5812BC433E0
+	for <linux-m68k@archiver.kernel.org>; Mon,  8 Jun 2020 23:53:20 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id E3E6820659
-	for <linux-m68k@archiver.kernel.org>; Mon,  8 Jun 2020 23:46:42 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 3959E20659
+	for <linux-m68k@archiver.kernel.org>; Mon,  8 Jun 2020 23:53:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=default; t=1591660003;
-	bh=qSU5bk/zdU503FulCoQ5cGikvBLDwT/dO8p24RY/tnY=;
+	s=default; t=1591660400;
+	bh=zN73FYjOuVCpE39Hpy40WYKKX4v/h6XPFpZ2of1VuPU=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-ID:From;
-	b=A6DvCfdEiteT+12BW6BGh1SzXFb7qvvsLs5g2AH5oWBFdeCW7TmGOVXpCvC9PzSFz
-	 2ikOQbwGEvtnVlX7RjaGlfdI1Ne6lR2j71Bki7rDQoP49Ki5e7MdduGA/VpbZVNu6G
-	 0qmoZe3ky2iNfMtirjdxow75LJOezSRBelQqBKAc=
+	b=HX291Xaq4yGzNcIGG5csFQB8SyITe9RnA8RPei/p/RkgxTFgFv2rikMrfRzppTGQG
+	 96Hpr802DDu+vCIn7ergCR3wjjFd5WT1f6SECDa4OjtNHoQ/BZqBeMhTvc3n+v2Sd5
+	 zd9T5KW8SyEsZWNid9l/4EZCiftWqn9hPNmgF1uQ=
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387942AbgFHXqZ (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Mon, 8 Jun 2020 19:46:25 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53734 "EHLO mail.kernel.org"
+        id S1727098AbgFHXxT (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Mon, 8 Jun 2020 19:53:19 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50706 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731418AbgFHX0W (ORCPT <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Mon, 8 Jun 2020 19:26:22 -0400
+        id S1731276AbgFHXYe (ORCPT <rfc822;linux-m68k@lists.linux-m68k.org>);
+        Mon, 8 Jun 2020 19:24:34 -0400
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C52CC2068D;
-        Mon,  8 Jun 2020 23:26:20 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 9F1E120814;
+        Mon,  8 Jun 2020 23:24:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1591658781;
-        bh=qSU5bk/zdU503FulCoQ5cGikvBLDwT/dO8p24RY/tnY=;
+        s=default; t=1591658673;
+        bh=zN73FYjOuVCpE39Hpy40WYKKX4v/h6XPFpZ2of1VuPU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=dF+9HtO11XcWycpjUrJOzAV5QyXspsyjvkf3sobGLIk04WGe4GQ0roy024qiA6L6l
-         u5ENI66iFbJc/32RGMSuTEbiADFLEnvhMxV/x/zXpwh9XKZXvTcqdhl8EUNRKb7/tw
-         TMscJJSXyRD8I/G5kL+I99cDZyMvXrOWz4bfAgeA=
+        b=1Pxdl3P0Az9p06vjcmrTmDbydXXAW8FkKKka5B2F+Od4vM/2kbcU+QD3knmCbkHnm
+         rJzFn9IE4yxJv/y3cVlo2W6lcAwQVij/Yt72B1JHnVm14o4t381wWzR1HUPEIQAJQI
+         HTjt1nMU8kOHsT7nx5IbOQoXhF93adwA5UmdgkwM=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
 Cc:     Finn Thain <fthain@telegraphics.com.au>,
@@ -46,12 +46,12 @@ Cc:     Finn Thain <fthain@telegraphics.com.au>,
         Geert Uytterhoeven <geert@linux-m68k.org>,
         Sasha Levin <sashal@kernel.org>,
         linux-m68k@lists.linux-m68k.org
-Subject: [PATCH AUTOSEL 4.14 58/72] m68k: mac: Don't call via_flush_cache() on Mac IIfx
-Date:   Mon,  8 Jun 2020 19:24:46 -0400
-Message-Id: <20200608232500.3369581-58-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 4.19 085/106] m68k: mac: Don't call via_flush_cache() on Mac IIfx
+Date:   Mon,  8 Jun 2020 19:22:17 -0400
+Message-Id: <20200608232238.3368589-85-sashal@kernel.org>
 X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20200608232500.3369581-1-sashal@kernel.org>
-References: <20200608232500.3369581-1-sashal@kernel.org>
+In-Reply-To: <20200608232238.3368589-1-sashal@kernel.org>
+References: <20200608232238.3368589-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
@@ -159,7 +159,7 @@ index de1470c4d829..1149251ea58d 100644
  extern void via_irq_enable(int);
  extern void via_irq_disable(int);
 diff --git a/arch/m68k/mac/config.c b/arch/m68k/mac/config.c
-index 2004b3f72d80..3ea7450c51f2 100644
+index cd9317d53276..a4f91bea6c88 100644
 --- a/arch/m68k/mac/config.c
 +++ b/arch/m68k/mac/config.c
 @@ -61,7 +61,6 @@ extern void iop_preinit(void);
@@ -192,7 +192,7 @@ index 2004b3f72d80..3ea7450c51f2 100644
  void __init config_mac(void)
  {
  	if (!MACH_IS_MAC)
-@@ -179,9 +163,8 @@ void __init config_mac(void)
+@@ -178,9 +162,8 @@ void __init config_mac(void)
  	 * not.
  	 */
  
@@ -205,10 +205,10 @@ index 2004b3f72d80..3ea7450c51f2 100644
  
  
 diff --git a/arch/m68k/mac/via.c b/arch/m68k/mac/via.c
-index 863806e6775a..6ab6a1d54b37 100644
+index 038d5a1c4d48..8307da441a10 100644
 --- a/arch/m68k/mac/via.c
 +++ b/arch/m68k/mac/via.c
-@@ -300,10 +300,14 @@ void via_debug_dump(void)
+@@ -289,10 +289,14 @@ void via_debug_dump(void)
   * the system into 24-bit mode for an instant.
   */
  
