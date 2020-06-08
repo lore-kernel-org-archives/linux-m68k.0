@@ -4,40 +4,40 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-10.1 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	DKIM_VALID,DKIM_VALID_AU,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
-	version=3.4.0
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 6826EC433E0
-	for <linux-m68k@archiver.kernel.org>; Mon,  8 Jun 2020 23:38:07 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 0AFC1C433DF
+	for <linux-m68k@archiver.kernel.org>; Mon,  8 Jun 2020 23:41:56 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 400852074B
-	for <linux-m68k@archiver.kernel.org>; Mon,  8 Jun 2020 23:38:07 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id DC46020659
+	for <linux-m68k@archiver.kernel.org>; Mon,  8 Jun 2020 23:41:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=default; t=1591659487;
-	bh=79748xi6A0dufc+IBvJCYaYUwhLn7bNEoXTQLa3KQPw=;
+	s=default; t=1591659715;
+	bh=Z2mSk/qCvpI46ERhuMl3WEC01xeCmk5UXtIGeuXct2A=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-ID:From;
-	b=u3YUSGLfTLQPm+1dAU9/LOqP+zxHTy4fuFSX2Kte2Gz1wbqXYew/lsBig/kMKnw/z
-	 jJABt3g0ZHZ7I6wSTdU5xkmimWddkkrUe6feMP9vReYWi4SI8YZSS5aRF3RptJCo8i
-	 bqmqW025Dec8sRby1KknKwbpGIrFD7ysi+sCwgWM=
+	b=wz6D9dlpfRgX17tVGItxdVMzRX+rLWm5zLcxbM3ny931dO0zPHMdu/HBdRGdjltDo
+	 bUHNQUig7eyEPPNEl7F3ixtR9NssU2az8h4pCCVA1C1tgeIShHAdGKFesuWDSl33n6
+	 3rVQmiRwA4YygrvAoylKpkEbLXjYejhZuOPJWYvc=
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731762AbgFHXiG (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Mon, 8 Jun 2020 19:38:06 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58170 "EHLO mail.kernel.org"
+        id S1730780AbgFHXlo (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Mon, 8 Jun 2020 19:41:44 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56190 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731967AbgFHX2d (ORCPT <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Mon, 8 Jun 2020 19:28:33 -0400
+        id S1732135AbgFHX1h (ORCPT <rfc822;linux-m68k@lists.linux-m68k.org>);
+        Mon, 8 Jun 2020 19:27:37 -0400
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 701D320775;
-        Mon,  8 Jun 2020 23:28:31 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 7FE472064C;
+        Mon,  8 Jun 2020 23:27:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1591658912;
-        bh=79748xi6A0dufc+IBvJCYaYUwhLn7bNEoXTQLa3KQPw=;
+        s=default; t=1591658856;
+        bh=Z2mSk/qCvpI46ERhuMl3WEC01xeCmk5UXtIGeuXct2A=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=mtaNRuUxw4KivhdKKUyHI1IxGCZxCQN2IpwZy1AQhB0nSV49lZlphhlhnmLl41+q5
-         SP8iQxOShszPY8Dw+Kl0+tU8yM4D8CDTv0KeRciPJrpzrBmyDnpa4XnmtVOFnPpd9w
-         T9YJPnl/o0C4snHYWEPur0PMiFSJcW3GNKWoT+iA=
+        b=NXJil2xI1+NvSr7SLl0g6nLoDJX/RwMDaz0q1R7+XAb7KnoqwlZedUhvlVJ/s+UGk
+         wtGdyACc1p3RDk1qcFYMrFTsQEdOXFh9f/cUNNA/97VozvMPEBTv/6TPwLFdEA6C3+
+         Z9NeClZLCgwXfd8hm0v3qOFcRFGLy5a2kgX78Ubc=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
 Cc:     Finn Thain <fthain@telegraphics.com.au>,
@@ -46,12 +46,12 @@ Cc:     Finn Thain <fthain@telegraphics.com.au>,
         Geert Uytterhoeven <geert@linux-m68k.org>,
         Sasha Levin <sashal@kernel.org>,
         linux-m68k@lists.linux-m68k.org
-Subject: [PATCH AUTOSEL 4.4 29/37] m68k: mac: Don't call via_flush_cache() on Mac IIfx
-Date:   Mon,  8 Jun 2020 19:27:41 -0400
-Message-Id: <20200608232750.3370747-29-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 4.9 40/50] m68k: mac: Don't call via_flush_cache() on Mac IIfx
+Date:   Mon,  8 Jun 2020 19:26:30 -0400
+Message-Id: <20200608232640.3370262-40-sashal@kernel.org>
 X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20200608232750.3370747-1-sashal@kernel.org>
-References: <20200608232750.3370747-1-sashal@kernel.org>
+In-Reply-To: <20200608232640.3370262-1-sashal@kernel.org>
+References: <20200608232640.3370262-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
@@ -159,10 +159,10 @@ index 53c632c85b03..dff6db19ae4d 100644
  extern void via_irq_enable(int);
  extern void via_irq_disable(int);
 diff --git a/arch/m68k/mac/config.c b/arch/m68k/mac/config.c
-index 689b47d292ac..c4be82cc07df 100644
+index e46895316eb0..dcf18e1ca0bb 100644
 --- a/arch/m68k/mac/config.c
 +++ b/arch/m68k/mac/config.c
-@@ -60,7 +60,6 @@ extern void iop_preinit(void);
+@@ -61,7 +61,6 @@ extern void iop_preinit(void);
  extern void iop_init(void);
  extern void via_init(void);
  extern void via_init_clock(irq_handler_t func);
@@ -170,7 +170,7 @@ index 689b47d292ac..c4be82cc07df 100644
  extern void oss_init(void);
  extern void psc_init(void);
  extern void baboon_init(void);
-@@ -131,21 +130,6 @@ int __init mac_parse_bootinfo(const struct bi_record *record)
+@@ -132,21 +131,6 @@ int __init mac_parse_bootinfo(const struct bi_record *record)
  	return unknown;
  }
  
@@ -192,7 +192,7 @@ index 689b47d292ac..c4be82cc07df 100644
  void __init config_mac(void)
  {
  	if (!MACH_IS_MAC)
-@@ -178,9 +162,8 @@ void __init config_mac(void)
+@@ -179,9 +163,8 @@ void __init config_mac(void)
  	 * not.
  	 */
  
@@ -205,7 +205,7 @@ index 689b47d292ac..c4be82cc07df 100644
  
  
 diff --git a/arch/m68k/mac/via.c b/arch/m68k/mac/via.c
-index 49f9fa4529a8..b4c40ed2099a 100644
+index a435aced6e43..35382c1b563f 100644
 --- a/arch/m68k/mac/via.c
 +++ b/arch/m68k/mac/via.c
 @@ -299,10 +299,14 @@ void via_debug_dump(void)
