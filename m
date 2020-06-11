@@ -1,130 +1,89 @@
-Return-Path: <SRS0=dLa8=7X=vger.kernel.org=linux-m68k-owner@kernel.org>
+Return-Path: <SRS0=Tb2W=7Y=vger.kernel.org=linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-0.9 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
-	SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-12.2 required=3.0
+	tests=HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PULL_REQUEST,MAILING_LIST_MULTI,
+	MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C6E69C433DF
-	for <linux-m68k@archiver.kernel.org>; Wed, 10 Jun 2020 16:59:40 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 89836C433DF
+	for <linux-m68k@archiver.kernel.org>; Thu, 11 Jun 2020 05:21:37 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 9FEAB2067B
-	for <linux-m68k@archiver.kernel.org>; Wed, 10 Jun 2020 16:59:40 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=default; t=1591808380;
-	bh=fAdBqinCGHfmgrDM2PwAAQJVvSRyeEDaH7oFdg5LMuc=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:List-ID:From;
-	b=TrHOlnH4MoP+kdv7Z1gwZ6n5I4ubgc3gSU7xsUZljGH3u2eco63ibcdDh0wUV+Mwh
-	 tlKaszsR2y5Ws4hFp+TDg7n+abAo1YnsJD0FTlskBWpvgOYFwqo4A1q+UdlxzUbv/p
-	 hk8KaGb04ocWsoodvQa+LH/yO1ZaYfk5m7Lo2ZV0=
+	by mail.kernel.org (Postfix) with ESMTP id 6D8AD20812
+	for <linux-m68k@archiver.kernel.org>; Thu, 11 Jun 2020 05:21:37 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727893AbgFJQ7k (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Wed, 10 Jun 2020 12:59:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58698 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726560AbgFJQ7j (ORCPT
-        <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Wed, 10 Jun 2020 12:59:39 -0400
-Received: from mail-lj1-x243.google.com (mail-lj1-x243.google.com [IPv6:2a00:1450:4864:20::243])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E68DBC03E96B
-        for <linux-m68k@lists.linux-m68k.org>; Wed, 10 Jun 2020 09:59:37 -0700 (PDT)
-Received: by mail-lj1-x243.google.com with SMTP id a25so3397306ljp.3
-        for <linux-m68k@lists.linux-m68k.org>; Wed, 10 Jun 2020 09:59:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=PGXejVSpqx4L2PlHIfd5JVBtSOWL/TuutZfvvE958Z8=;
-        b=ZFce94Usj6EkI4Lk9l8ZbLgBKcrOaOEIKI+lsoHoWwucoH5PaFSFEUF5nSpDfmtX/m
-         zpiTKIsyT2HuVYK0uUKJl0hfSDP//4+ueTqu4gfQUH9jmW1Fx7086RKZCkNC01IFk27w
-         7I94+DibpxplQFqh0putGbec4FKBVLxsfzedA=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=PGXejVSpqx4L2PlHIfd5JVBtSOWL/TuutZfvvE958Z8=;
-        b=UtYHSiNzOJ8mUVoyRlecL/NiEt3Ks03XPBSP2t7g9s7b5tl4ejc9wu/sGwD5dbKd0q
-         SUIeg+blbEBZNBfF3th9esVqqZKPgcOAKPpu8PV9Ee5gQ4UhEVOQ2iDmm1aVGNbjAxBK
-         Rnb8jiNHlvE/Bv26no/rNiZlfZyK/DnV/gIOx0nJnCWlII7xDTqkB5McfftfGfRfhXXj
-         6NBhhYda9pdopsD1aBepjbziEZu8tTzaoiNJyYy4f6A7P563Fc+mSQW4AHyI1dJTkcr4
-         F94axVW1ZGBA2Y+x9EBJW1LLZYc12niV8iKKbynfi0ZvdvERafw//ZxymAo72AOuUAbr
-         uQsw==
-X-Gm-Message-State: AOAM530pggJbCUsUk9VSYMowQpoyEWYO9HcCEOR8SYDYxcZ65diWkMRS
-        9KsDDd71EusJEbglorrYjiX4fHql5Ig=
-X-Google-Smtp-Source: ABdhPJyvFMa+g3pvVCDcYwNqyPS4WpDhOl1Okx9SeihH2Bt+NouqxY6SXDh53Q2rsZlQrCV+YAHUXw==
-X-Received: by 2002:a2e:9804:: with SMTP id a4mr2401459ljj.369.1591808375814;
-        Wed, 10 Jun 2020 09:59:35 -0700 (PDT)
-Received: from mail-lj1-f175.google.com (mail-lj1-f175.google.com. [209.85.208.175])
-        by smtp.gmail.com with ESMTPSA id m6sm76994ljg.3.2020.06.10.09.59.35
-        for <linux-m68k@lists.linux-m68k.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 10 Jun 2020 09:59:35 -0700 (PDT)
-Received: by mail-lj1-f175.google.com with SMTP id 9so3384163ljc.8
-        for <linux-m68k@lists.linux-m68k.org>; Wed, 10 Jun 2020 09:59:35 -0700 (PDT)
-X-Received: by 2002:a2e:8991:: with SMTP id c17mr1979736lji.421.1591808045437;
- Wed, 10 Jun 2020 09:54:05 -0700 (PDT)
+        id S1726326AbgFKFVh (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Thu, 11 Jun 2020 01:21:37 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43258 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725300AbgFKFVg (ORCPT <rfc822;linux-m68k@vger.kernel.org>);
+        Thu, 11 Jun 2020 01:21:36 -0400
+Received: from [10.44.0.192] (unknown [103.48.210.53])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id DA9292074B;
+        Thu, 11 Jun 2020 05:21:34 +0000 (UTC)
+From:   Greg Ungerer <gerg@linux-m68k.org>
+Subject: [git pull] m68knommu changes for v5.8
+To:     torvalds@linux-foundation.org
+Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Linux/m68k <linux-m68k@vger.kernel.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>
+Message-ID: <3dc0ca7e-9c44-adac-a3c4-53ab6e0288e5@linux-m68k.org>
+Date:   Thu, 11 Jun 2020 15:21:29 +1000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.8.0
 MIME-Version: 1.0
-References: <20200610174811.44b94525@thinkpad>
-In-Reply-To: <20200610174811.44b94525@thinkpad>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Wed, 10 Jun 2020 09:53:49 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wgm0_0PjXaSVbrpDfgtn6UbDyWjSRnXvfdebweUYSZ+eA@mail.gmail.com>
-Message-ID: <CAHk-=wgm0_0PjXaSVbrpDfgtn6UbDyWjSRnXvfdebweUYSZ+eA@mail.gmail.com>
-Subject: Re: Possible duplicate page fault accounting on some archs after
- commit 4064b9827063
-To:     Gerald Schaefer <gerald.schaefer@de.ibm.com>
-Cc:     Peter Xu <peterx@redhat.com>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        alpha <linux-alpha@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        linux-hexagon@vger.kernel.org, linux-ia64@vger.kernel.org,
-        linux-m68k <linux-m68k@lists.linux-m68k.org>,
-        Michal Simek <monstr@monstr.eu>, linux-mips@vger.kernel.org,
-        Nick Hu <nickhu@andestech.com>,
-        Ley Foon Tan <ley.foon.tan@intel.com>,
-        openrisc@lists.librecores.org, linux-parisc@vger.kernel.org,
-        linux-riscv@lists.infradead.org,
-        Linux-sh list <linux-sh@vger.kernel.org>,
-        sparclinux@vger.kernel.org,
-        linux-um <linux-um@lists.infradead.org>,
-        Guan Xuetao <gxt@pku.edu.cn>, linux-xtensa@linux-xtensa.org,
-        Heiko Carstens <heiko.carstens@de.ibm.com>,
-        Andrea Arcangeli <aarcange@redhat.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-m68k-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-On Wed, Jun 10, 2020 at 8:48 AM Gerald Schaefer
-<gerald.schaefer@de.ibm.com> wrote:
->
-> This was found by coincidence in s390 code, and a quick check showed that
-> there are quite a lot of other architectures that seem to be affected in a
-> similar way. I'm preparing a fix for s390, by moving the accounting behind
-> the retry loop, similar to x86. It is not completely straight-forward, so
-> I leave the fix for other archs to the respective maintainers.
+Hi Linus,
 
-Hmm. I wonder if we could move the handling into  handle_mm_fault() itself.
+Please pull the m68knommu changes for v5.8.
 
-It's _fairly_ trivial to do on the arch side, just as long as you
-remember to make the VM_FAULT_MAJOR bit sticky like x86 does with that
+Regards
+Greg
 
-        major |= fault & VM_FAULT_MAJOR;
 
-right after handle_mm_fault(). But it certainly doesn't seem like it
-would be hard to move into common code in handle_mm_fault() either, by
-just not doing the accounting if it's about to return VM_FAULT_RETRY
-or VM_FAULT_ERROR.
 
-That said, we want that perf_sw_event() accounting too, so we'd have
-to pass in a 'struct regs *' as well. And it's not clear which way
-accounting should go for other callers of handle_mm_fault() (ie gup
-etc).
+The following changes since commit 9cb1fd0efd195590b828b9b865421ad345a4a145:
 
-So I guess just having architectures fix it up individually and make
-sure they don't do it for retry conditions is the right thing to do..
+   Linux 5.7-rc7 (2020-05-24 15:32:54 -0700)
 
-             Linus
+are available in the Git repository at:
+
+   git://git.kernel.org/pub/scm/linux/kernel/git/gerg/m68knommu.git tags/m68knommu-for-v5.8
+
+for you to fetch changes up to 9e2b6ed41f8f99c97b13c9d15cbef235dbd97fb6:
+
+   m68k,nommu: fix implicit cast from __user in __{get,put}_user_asm() (2020-05-30 10:55:54 +1000)
+
+----------------------------------------------------------------
+m68knommu: collection of fixes for v5.8
+
+Fixes include:
+. casting clean up in the user access macros
+. memory leak on error case fix for PCI probing
+. update of a defconfig.
+
+----------------------------------------------------------------
+Bin Meng (1):
+       m68k: Drop CONFIG_MTD_M25P80 in stmark2_defconfig
+
+Christophe JAILLET (1):
+       m68k/PCI: Fix a memory leak in an error handling path
+
+Luc Van Oostenryck (2):
+       m68k,nommu: add missing __user in uaccess' __ptr() macro
+       m68k,nommu: fix implicit cast from __user in __{get,put}_user_asm()
+
+  arch/m68k/coldfire/pci.c            | 4 +++-
+  arch/m68k/configs/stmark2_defconfig | 1 -
+  arch/m68k/include/asm/uaccess_no.h  | 6 +++---
+  3 files changed, 6 insertions(+), 5 deletions(-)
