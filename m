@@ -1,86 +1,101 @@
-Return-Path: <SRS0=oNGv=72=vger.kernel.org=linux-m68k-owner@kernel.org>
+Return-Path: <SRS0=A4BP=73=vger.kernel.org=linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-0.6 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3A65FC433DF
-	for <linux-m68k@archiver.kernel.org>; Sat, 13 Jun 2020 11:14:32 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 0A5E1C433E0
+	for <linux-m68k@archiver.kernel.org>; Sun, 14 Jun 2020 22:45:20 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 0C4782078A
-	for <linux-m68k@archiver.kernel.org>; Sat, 13 Jun 2020 11:14:32 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id BB640204EC
+	for <linux-m68k@archiver.kernel.org>; Sun, 14 Jun 2020 22:45:19 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="VLshoWME"
+	dkim=pass (2048-bit key) header.d=timesys-com.20150623.gappssmtp.com header.i=@timesys-com.20150623.gappssmtp.com header.b="FRUzd95a"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726039AbgFMLOb (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Sat, 13 Jun 2020 07:14:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48310 "EHLO
+        id S1727946AbgFNWpT (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Sun, 14 Jun 2020 18:45:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34192 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725955AbgFMLOb (ORCPT
-        <rfc822;linux-m68k@vger.kernel.org>); Sat, 13 Jun 2020 07:14:31 -0400
-Received: from mail-pj1-x1041.google.com (mail-pj1-x1041.google.com [IPv6:2607:f8b0:4864:20::1041])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 298A1C03E96F;
-        Sat, 13 Jun 2020 04:14:31 -0700 (PDT)
-Received: by mail-pj1-x1041.google.com with SMTP id ne5so4690750pjb.5;
-        Sat, 13 Jun 2020 04:14:31 -0700 (PDT)
+        with ESMTP id S1727928AbgFNWpT (ORCPT
+        <rfc822;linux-m68k@vger.kernel.org>); Sun, 14 Jun 2020 18:45:19 -0400
+Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E97D4C05BD43
+        for <linux-m68k@vger.kernel.org>; Sun, 14 Jun 2020 15:45:18 -0700 (PDT)
+Received: by mail-wr1-x444.google.com with SMTP id p5so15156828wrw.9
+        for <linux-m68k@vger.kernel.org>; Sun, 14 Jun 2020 15:45:18 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=ynzO98iVzfOWrdbiRVVAvIwjn4Ogh7xOfjXabeEMm5w=;
-        b=VLshoWMEgEFMcQG/SzlL6NXOw/1HwPkhE0XOW7TdHnRnFPi5IawHvc2QjkJszop3ZD
-         eVbGUT+sO6Aj3wo2/yCPLhPOQStr6iIgKkqwyOdRNFD1X25SmOsmX2blLJVR4eRM0rvz
-         l/zwTxiRhlOsd4/chUM0pgm6m3l/XZ9gaCP3uzOIfSOmOIOAj9HGvT8Wsz7y3qQ9QaTR
-         dRioOnUcVTN8N1LToWQr0CAPHOIrwXcXACe85x0c2lVZRK360+t/nBRAHMUjUt/9QkOm
-         0ZP+uTPyGlCAlEtAlWrqzrv8xh2xWCUBpCRQMCgyn7oXk8oGhduUoshbmlONErpqcDu5
-         wJ2g==
+        d=timesys-com.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=jOJcfTFqBnTadm27nj26UjDFJ0kier6IsF6viDXbqJI=;
+        b=FRUzd95aVXO9i/zSiYnQCVwctclLXK5hTxDP/yVzDajoju5eJw5M3E/otG0tiv+aqJ
+         bI1uLKHn+dChNsc4ztTuwRAICyBW+5UDwo3nsLrNatfbZB/sm/FIRdojtSj+P00WoP+Q
+         I0X2v0KkppeqQ6m4fgsj8im2so/wU/gdDAM7OWeefOF1m4qo9xgqqL9UGf0ZzjS3/ZVR
+         WSebtmX7crQbSJAJ6+ECc7msqGqD/aA0wkqUN143l63nJNqA7CFZG/0e3q215OCEgqHZ
+         d7cu18+/x3MD2q1i10fpuOL0SZlec91YWKmqefQ5eJD6szdc8ZtCTD3U3vMhwxyv8iy8
+         Us9w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=ynzO98iVzfOWrdbiRVVAvIwjn4Ogh7xOfjXabeEMm5w=;
-        b=NV2rz6v0VzTSrC/9S3EIpNvepLBakk4f33Xz1URavpEWL58y+Cu2YtZhhzX6f4MG/2
-         hNmcYFuSZPGLiBtFWRn5cwNVeA7PAT+qpB+dQesMFih2BL9sNyu+50Ze8qu14Dj1ZSu6
-         Q8KypaVKG2DUpGgVcDelNfByjjY5tXb8tmDPez3JayniDoUnu1Ha1juMnuAxUXlxJ8q1
-         6JOEp2CWYCkEQbYw1naOwsO9hZCdk+dl3xzxzGtYOdNP09FnkGXEWlbbFvtuDU3gC/DX
-         +1IZcd3/5Qn6Irk1ZHn0z03z6yym0Pq9a98mbVi1vskT4xnwOY9mnCuKLBLXqm1yxy3Q
-         x4dg==
-X-Gm-Message-State: AOAM530dm+WYIFv+8zH9mme6/F3lf6YDBCgqejf7dUuH0V610uAtK3oZ
-        gesQpYnR0u0TZo+BNKIdJnZAI1x6BbQqRa7KTDp4ZJZvQkM=
-X-Google-Smtp-Source: ABdhPJxFYBiyu2Z2/Ts9/OnGYZzwIMCsRrv7K+RITbpFMBiuSEfC9R53XO6nS+7g6+bKzwH0mf5uSFApzZgZ/MO7fvo=
-X-Received: by 2002:a17:90a:ac05:: with SMTP id o5mr3234020pjq.228.1592046870430;
- Sat, 13 Jun 2020 04:14:30 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=jOJcfTFqBnTadm27nj26UjDFJ0kier6IsF6viDXbqJI=;
+        b=NVVrXT5bOdddcEZ/VbpCyxJUnreWo2iAM4BvCYr4RQ1LrB2QBF1kZSZcAZPjevl5Bq
+         mU5fbckLEsR0SpFrSvRv6Wq/6lmW8vImPiKxy7nmID2BiEbyEw9n6iGfaybIGrWlGE/8
+         wI2h2UptVzYwT/yxXex09e4CFhkf5GGmlHDDYYUXL5fCQikCEqFu8XOk6DwptYaLFK4s
+         WwFHkBpXpdAR+Y2zqSNAbvqVaNa9OFLzx1PdPgUFMKWmxxUqrbvs3g5czmDEB8cCumH1
+         SP11DyLoPfMTL+dt8s1jv5Bnr2emgQCoDpHdU8sksso8FlT4D24G3V8j7opVhMKjj+ZJ
+         9diQ==
+X-Gm-Message-State: AOAM533VpUdS+q4iGoFggwdtYX59d+G67cv9ywVfjlsrUPfmzzVDh7cS
+        QpJS8zzlMWsws2iUj53ubHsui1GVx8I=
+X-Google-Smtp-Source: ABdhPJw5whBuENzZB9V480T9hUR/mHzTnX9+5fObp4lWbrddnKsAp2wBtc04PrFUMRRhkhFdKgXarA==
+X-Received: by 2002:a5d:40d0:: with SMTP id b16mr25325387wrq.218.1592174716566;
+        Sun, 14 Jun 2020 15:45:16 -0700 (PDT)
+Received: from localhost.localdomain ([79.30.36.203])
+        by smtp.gmail.com with ESMTPSA id a16sm21502596wrx.8.2020.06.14.15.45.14
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 14 Jun 2020 15:45:15 -0700 (PDT)
+From:   Angelo Dureghello <angelo.dureghello@timesys.com>
+To:     gerg@linux-m68k.org
+Cc:     linux-m68k@vger.kernel.org, rppt@linux.ibm.com,
+        Angelo Dureghello <angelo.dureghello@timesys.com>
+Subject: [PATCH] m68k: mm: fix node memblock init
+Date:   Mon, 15 Jun 2020 00:51:19 +0200
+Message-Id: <20200614225119.777702-1-angelo.dureghello@timesys.com>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-References: <20200607182812.9438-1-max@enpas.org> <20200607184604.GA12911@ninjato>
-In-Reply-To: <20200607184604.GA12911@ninjato>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Sat, 13 Jun 2020 14:14:14 +0300
-Message-ID: <CAHp75VfcZ43QJ9f9-Ph9QboVYgReLeUbOPZ=Ckk0RzSq-xmQ_Q@mail.gmail.com>
-Subject: Re: [PATCH] i2c: icy: Fix build with CONFIG_AMIGA_PCMCIA=n
-To:     Wolfram Sang <wsa+renesas@sang-engineering.com>
-Cc:     Max Staudt <max@enpas.org>, linux-i2c <linux-i2c@vger.kernel.org>,
-        linux-m68k@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
-        kernel test robot <lkp@intel.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Sender: linux-m68k-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-On Sun, Jun 7, 2020 at 9:48 PM Wolfram Sang
-<wsa+renesas@sang-engineering.com> wrote:
-> On Sun, Jun 07, 2020 at 08:28:12PM +0200, Max Staudt wrote:
+After pulling 5.7.0 (linux-next merge), mcf5441x mmu boot was
+hanging silently.
 
-> Applied to for-next (i.e. for-5.8), thanks!
+memblock_add() seems not appropriate, since using MAX_NUMNODES
+as node id, while memblock_add_node() sets up memory for node id 0.
 
-A bit of offtopic, merge window is at its end, do you have plans to
-send PR to Linus soon?
+Signed-off-by: Angelo Dureghello <angelo.dureghello@timesys.com>
+---
+ arch/m68k/mm/mcfmmu.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
+diff --git a/arch/m68k/mm/mcfmmu.c b/arch/m68k/mm/mcfmmu.c
+index 29f47923aa46..7d04210d34f0 100644
+--- a/arch/m68k/mm/mcfmmu.c
++++ b/arch/m68k/mm/mcfmmu.c
+@@ -174,7 +174,7 @@ void __init cf_bootmem_alloc(void)
+ 	m68k_memory[0].addr = _rambase;
+ 	m68k_memory[0].size = _ramend - _rambase;
+ 
+-	memblock_add(m68k_memory[0].addr, m68k_memory[0].size);
++	memblock_add_node(m68k_memory[0].addr, m68k_memory[0].size, 0);
+ 
+ 	/* compute total pages in system */
+ 	num_pages = PFN_DOWN(_ramend - _rambase);
 -- 
-With Best Regards,
-Andy Shevchenko
+2.26.2
+
