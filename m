@@ -2,202 +2,61 @@ Return-Path: <SRS0=2kwO=74=vger.kernel.org=linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.2 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,
-	USER_AGENT_SANE_1 autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-0.8 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 7D695C433E0
-	for <linux-m68k@archiver.kernel.org>; Mon, 15 Jun 2020 03:54:11 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id CE104C433E0
+	for <linux-m68k@archiver.kernel.org>; Mon, 15 Jun 2020 04:21:30 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 65BAF2078A
-	for <linux-m68k@archiver.kernel.org>; Mon, 15 Jun 2020 03:54:11 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id B1E63206F1
+	for <linux-m68k@archiver.kernel.org>; Mon, 15 Jun 2020 04:21:30 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728234AbgFODyI (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Sun, 14 Jun 2020 23:54:08 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52808 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728141AbgFODyH (ORCPT <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Sun, 14 Jun 2020 23:54:07 -0400
-Received: from [10.44.0.192] (unknown [103.48.210.53])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 291D120768;
-        Mon, 15 Jun 2020 03:53:45 +0000 (UTC)
-To:     rppt@kernel.org
-Cc:     Hoan@os.amperecomputing.com, James.Bottomley@HansenPartnership.com,
-        akpm@linux-foundation.org, bcain@codeaurora.org, bhe@redhat.com,
-        catalin.marinas@arm.com, corbet@lwn.net, dalias@libc.org,
-        davem@davemloft.net, deller@gmx.de, geert@linux-m68k.org,
-        green.hu@gmail.com, guoren@kernel.org, gxt@pku.edu.cn,
-        heiko.carstens@de.ibm.com, jcmvbkbc@gmail.com,
-        ley.foon.tan@intel.com, linux-alpha@vger.kernel.org,
-        linux-arch@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-c6x-dev@linux-c6x.org, linux-csky@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-hexagon@vger.kernel.org,
-        linux-ia64@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org,
-        linux-mm@kvack.org, linux-parisc@vger.kernel.org,
-        linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org,
-        linux-sh@vger.kernel.org, linux-snps-arc@lists.infradead.org,
-        linux-um@lists.infradead.org, linux-xtensa@linux-xtensa.org,
-        linux@armlinux.org.uk, linuxppc-dev@lists.ozlabs.org,
-        mattst88@gmail.com, mhocko@kernel.org, monstr@monstr.eu,
-        mpe@ellerman.id.au, msalter@redhat.com, nickhu@andestech.com,
-        openrisc@lists.librecores.org, paul.walmsley@sifive.com,
-        richard@nod.at, rppt@linux.ibm.com, shorne@gmail.com,
-        sparclinux@vger.kernel.org, tony.luck@intel.com,
-        tsbogend@alpha.franken.de, uclinux-h8-devel@lists.sourceforge.jp,
-        vgupta@synopsys.com, x86@kernel.org, ysato@users.sourceforge.jp
-References: <20200412194859.12663-5-rppt@kernel.org>
-Subject: Re: [PATCH 04/21] mm: free_area_init: use maximal zone PFNs rather
- than zone sizes
-From:   Greg Ungerer <gerg@linux-m68k.org>
-Message-ID: <f53e68db-ed81-6ef6-5087-c7246d010ea2@linux-m68k.org>
-Date:   Mon, 15 Jun 2020 13:53:42 +1000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.8.0
+        id S1728146AbgFOEVa (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Mon, 15 Jun 2020 00:21:30 -0400
+Received: from kvm5.telegraphics.com.au ([98.124.60.144]:39934 "EHLO
+        kvm5.telegraphics.com.au" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725648AbgFOEV3 (ORCPT
+        <rfc822;linux-m68k@lists.linux-m68k.org>);
+        Mon, 15 Jun 2020 00:21:29 -0400
+Received: from localhost (localhost.localdomain [127.0.0.1])
+        by kvm5.telegraphics.com.au (Postfix) with ESMTP id 8E4212259B;
+        Mon, 15 Jun 2020 00:21:26 -0400 (EDT)
+Date:   Mon, 15 Jun 2020 14:21:25 +1000 (AEST)
+From:   Finn Thain <fthain@telegraphics.com.au>
+To:     Josh Juran <jjuran@gmail.com>
+cc:     linux-m68k@lists.linux-m68k.org
+Subject: Re: penguin (was Re: Linux-mac68k project account maintenance)
+In-Reply-To: <0A4C54D6-956E-4E46-90DB-BA89B0ED66EB@gmail.com>
+Message-ID: <alpine.LNX.2.22.394.2006151336260.34@nippy.intranet>
+References: <alpine.LNX.2.22.394.2006151113030.17@nippy.intranet> <0A4C54D6-956E-4E46-90DB-BA89B0ED66EB@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20200412194859.12663-5-rppt@kernel.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=US-ASCII
 Sender: linux-m68k-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-Hi Mike,
+On Sun, 14 Jun 2020, Josh Juran wrote:
 
-From: Mike Rapoport <rppt@linux.ibm.com>
-> Currently, architectures that use free_area_init() to initialize memory map
-> and node and zone structures need to calculate zone and hole sizes. We can
-> use free_area_init_nodes() instead and let it detect the zone boundaries
-> while the architectures will only have to supply the possible limits for
-> the zones.
 > 
-> Signed-off-by: Mike Rapoport <rppt@linux.ibm.com>
+> As my most recent participation was co-developing Penguin, I probably 
+> don't need to be an admin. :-)
+> 
 
-This is causing some new warnings for me on boot on at least one non-MMU m68k target:
+If your sourceforge account is still a going concern I'll leave the commit 
+bit as-is -- I'd hate to discourage possible future contributions!
 
-...
-NET: Registered protocol family 17
-BUG: Bad page state in process swapper  pfn:20165
-page:41fe0ca0 refcount:0 mapcount:1 mapping:00000000 index:0x0
-flags: 0x0()
-raw: 00000000 00000100 00000122 00000000 00000000 00000000 00000000 00000000
-page dumped because: nonzero mapcount
-CPU: 0 PID: 1 Comm: swapper Not tainted 5.8.0-rc1-00001-g3a38f8a60c65-dirty #1
-Stack from 404c9ebc:
-         404c9ebc 4029ab28 4029ab28 40088470 41fe0ca0 40299e21 40299df1 404ba2a4
-         00020165 00000000 41fd2c10 402c7ba0 41fd2c04 40088504 41fe0ca0 40299e21
-         00000000 40088a12 41fe0ca0 41fe0ca4 0000020a 00000000 00000001 402ca000
-         00000000 41fe0ca0 41fd2c10 41fd2c10 00000000 00000000 402b2388 00000001
-         400a0934 40091056 404c9f44 404c9f44 40088db4 402c7ba0 00000001 41fd2c04
-         41fe0ca0 41fd2000 41fe0ca0 40089e02 4026ecf4 40089e4e 41fe0ca0 ffffffff
-Call Trace:
-         [<40088470>] 0x40088470
-  [<40088504>] 0x40088504
-  [<40088a12>] 0x40088a12
-  [<402ca000>] 0x402ca000
-  [<400a0934>] 0x400a0934
+> Let me know if there's any other information or action you need from me.  
+> I'd also be interested in any hearing about efforts to virtualize Mac OS 
+> or Mac applications on Linux/m68k, as I might be able to assist with 
+> those.
+> 
 
-         [<40091056>] 0x40091056
-  [<40088db4>] 0x40088db4
-  [<40089e02>] 0x40089e02
-  [<4026ecf4>] 0x4026ecf4
-  [<40089e4e>] 0x40089e4e
+I don't know of any MacOS virtualization efforts (kvm for linux-m68k?)
 
-         [<4008ca26>] 0x4008ca26
-  [<4004adf8>] 0x4004adf8
-  [<402701ec>] 0x402701ec
-  [<4008f25e>] 0x4008f25e
-  [<400516f4>] 0x400516f4
-
-         [<4026eec0>] 0x4026eec0
-  [<400224f0>] 0x400224f0
-  [<402ca000>] 0x402ca000
-  [<4026eeda>] 0x4026eeda
-  [<40020b00>] 0x40020b00
-...
-
-Lots more of them.
-
-...
-BUG: Bad page state in process swapper  pfn:201a0
-page:41fe1400 refcount:0 mapcount:1 mapping:00000000 index:0x0
-flags: 0x0()
-raw: 00000000 00000100 00000122 00000000 00000000 00000000 00000000 00000000
-page dumped because: nonzero mapcount
-CPU: 0 PID: 1 Comm: swapper Tainted: G    B             5.8.0-rc1-00001-g3a38f8a60c65-dirty #1
-Stack from 404c9ebc:
-         404c9ebc 4029ab28 4029ab28 40088470 41fe1400 40299e21 40299df1 404ba2a4
-         000201a0 00000000 41fd2c10 402c7ba0 41fd2c04 40088504 41fe1400 40299e21
-         00000000 40088a12 41fe1400 41fe1404 0000020a 0000003b 00000001 40340000
-         00000000 41fe1400 41fd2c10 41fd2c10 00000000 00000000 41fe13e0 40022826
-         00000044 404c9f44 404c9f44 404c9f44 40088db4 402c7ba0 00000001 41fd2c04
-         41fe1400 41fd2000 41fe1400 40089e02 4026ecf4 40089e4e 41fe1400 ffffffff
-Call Trace:
-         [<40088470>] 0x40088470
-  [<40088504>] 0x40088504
-  [<40088a12>] 0x40088a12
-  [<40022826>] 0x40022826
-  [<40088db4>] 0x40088db4
-
-         [<40089e02>] 0x40089e02
-  [<4026ecf4>] 0x4026ecf4
-  [<40089e4e>] 0x40089e4e
-  [<4008ca26>] 0x4008ca26
-  [<4004adf8>] 0x4004adf8
-
-         [<402701ec>] 0x402701ec
-  [<4008f25e>] 0x4008f25e
-  [<400516f4>] 0x400516f4
-  [<4026eec0>] 0x4026eec0
-  [<400224f0>] 0x400224f0
-
-         [<402ca000>] 0x402ca000
-  [<4026eeda>] 0x4026eeda
-  [<40020b00>] 0x40020b00
-Freeing unused kernel memory: 648K
-This architecture does not have kernel memory protection.
-Run /init as init process
-...
-
-System boots pretty much as normal through user space after this.
-Seems to be fully operational despite all those BUGONs.
-
-Specifically this is a M5208EVB target (arch/m68k/configs/m5208evb).
-
-
-[snip]
-> diff --git a/arch/m68k/mm/init.c b/arch/m68k/mm/init.c
-> index b88d510d4fe3..6d3147662ff2 100644
-> --- a/arch/m68k/mm/init.c
-> +++ b/arch/m68k/mm/init.c
-> @@ -84,7 +84,7 @@ void __init paging_init(void)
->  	 * page_alloc get different views of the world.
->  	 */
->  	unsigned long end_mem = memory_end & PAGE_MASK;
-> -	unsigned long zones_size[MAX_NR_ZONES] = { 0, };
-> +	unsigned long max_zone_pfn[MAX_NR_ZONES] = { 0, };
->  
->  	high_memory = (void *) end_mem;
->  
-> @@ -98,8 +98,8 @@ void __init paging_init(void)
->  	 */
->  	set_fs (USER_DS);
->  
-> -	zones_size[ZONE_DMA] = (end_mem - PAGE_OFFSET) >> PAGE_SHIFT;
-> -	free_area_init(zones_size);
-> +	max_zone_pfn[ZONE_DMA] = end_mem >> PAGE_SHIFT;
-> +	free_area_init(max_zone_pfn);
-
-This worries me a little. On this target PAGE_OFFSET will be non-0.
-
-Thoughts?
-
-Regards
-Greg
-
-
-
+Personally, I'd love to see EMILE ported to MacRelix, as a replacement for 
+Penguin. Reason being, there are several Penguin bugs that result in boot 
+crashes and some other bugs besides. Almost all have workarounds, but you 
+have to read the docs to find out about them (and go out of your way to 
+apply them).
