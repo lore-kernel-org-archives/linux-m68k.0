@@ -2,94 +2,120 @@ Return-Path: <SRS0=2kwO=74=vger.kernel.org=linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-0.6 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+X-Spam-Status: No, score=-3.6 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
-	autolearn=no autolearn_force=no version=3.4.0
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,
+	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 4BE56C433DF
-	for <linux-m68k@archiver.kernel.org>; Mon, 15 Jun 2020 16:55:48 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id ADEBAC433DF
+	for <linux-m68k@archiver.kernel.org>; Mon, 15 Jun 2020 20:38:53 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 2546620663
-	for <linux-m68k@archiver.kernel.org>; Mon, 15 Jun 2020 16:55:48 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 7DCE6207D3
+	for <linux-m68k@archiver.kernel.org>; Mon, 15 Jun 2020 20:38:53 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="QMBHqODT"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="nyQv9W0a"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729772AbgFOQzs (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Mon, 15 Jun 2020 12:55:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60730 "EHLO
+        id S1731512AbgFOUix (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Mon, 15 Jun 2020 16:38:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38768 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729628AbgFOQzr (ORCPT
-        <rfc822;linux-m68k@vger.kernel.org>); Mon, 15 Jun 2020 12:55:47 -0400
-Received: from mail-ej1-x641.google.com (mail-ej1-x641.google.com [IPv6:2a00:1450:4864:20::641])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5FBE6C061A0E
-        for <linux-m68k@vger.kernel.org>; Mon, 15 Jun 2020 09:55:47 -0700 (PDT)
-Received: by mail-ej1-x641.google.com with SMTP id y13so18221216eju.2
-        for <linux-m68k@vger.kernel.org>; Mon, 15 Jun 2020 09:55:47 -0700 (PDT)
+        with ESMTP id S1730152AbgFOUiw (ORCPT
+        <rfc822;linux-m68k@lists.linux-m68k.org>);
+        Mon, 15 Jun 2020 16:38:52 -0400
+Received: from mail-vs1-xe41.google.com (mail-vs1-xe41.google.com [IPv6:2607:f8b0:4864:20::e41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C913FC08C5C2
+        for <linux-m68k@lists.linux-m68k.org>; Mon, 15 Jun 2020 13:38:51 -0700 (PDT)
+Received: by mail-vs1-xe41.google.com with SMTP id o2so10172933vsr.0
+        for <linux-m68k@lists.linux-m68k.org>; Mon, 15 Jun 2020 13:38:51 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=sbM1iepNOY3Wr2Ye+m+8S5L+ZkV2zONAnJwMRHsXaFU=;
-        b=QMBHqODTvwdlvMaL4Wn2aKXNIR2f67jjxzefipRGl8i9MCZj0hJ+XV9ReKKaJ8YLF2
-         7v7bmztIR62Au1ZrVqYh8IoSSw2ploxtjUr0NGrFN7v4v9c/zTlGLrGzVQizUPwHPlUS
-         4L9bkOpeTiG2gfweg9e7k0oJBiCLbs63KOVpOtFG3lfmtwM7cLeOzB9cOzInUb3JlfW6
-         AqL2FWL850y1bddp+LYCdl5DafpJp/btm5hAuy5MIjQke2+y7OyWqQXFTBPtwgz3JDmS
-         ZLveMiBLjB7U71BS41uU7ADApDGPsYVrowAE8J2zZawB3fXDEmzxk/XtlszAn2sK4ugj
-         6HWA==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=R/Mp7iKWT7GJmgr8/QHDR53t1KgWn8P7FwKRZ54fDz4=;
+        b=nyQv9W0a7BcbzNqTfK4QHt1nuHWmFDxJhtl708ayOpYUemDeK7k75l5Bf93A91FNb6
+         baIlDVjAqMEECZ3IJ25V9nnjghtCdIDkK0QLVxt4lVZH6ALhXhDsE9fqbI1PRIR05Hie
+         5HjxZ6b5D7stefT+VAckIZlUB7XBoYTH2IPw71fkpWNYRXCOxD/o4d0Qe1q2nZ87zmdd
+         98/uCSMolaEe9jGaVGM/3MbQC8GW4GmMMaZE73Rlu15AInwdzqJQQKC1cKCqGSfys/39
+         oR2kRMx/Isi/I7sdkuJtBdnwSOsxIo/lIMbWkttPmAkuNYhdFW5+xg5b3WK6x/MZCUYE
+         Zp+A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=sbM1iepNOY3Wr2Ye+m+8S5L+ZkV2zONAnJwMRHsXaFU=;
-        b=bfihnbQaTx7w0NUptYJu8W2Dh8nendfyJsuJMHmq6kRUSaDFymDwasdCsdzbA7hMJA
-         r0kXZX0KeCGW1r9C7VuBwA8+sVOPjRTxtu9viZaojyEU73ddxFd419A3FI4BbxkVpn4/
-         bH1er0TKQYJN6m6XiqRkULgXu7AN+oA/XC1sub65Ua9+pyfDApf+IhhEKKp8vofMXv4R
-         0fQGqlakgBFHXyXnfXYJJdNqQGersq3YlQoH9noIpO0GDBccoNLJTzaLpD2Fh5Awrrol
-         2l9FY2/opZneDTQ7GYp/YvAhFIyFtQOKQ/qBuWso2oIkRTNNZRb08KA3VZ2MTd4gFy/g
-         yvXg==
-X-Gm-Message-State: AOAM53069UTioTrJRkEzKqQs2N7ZvUCJ8Hb+5VxYYy6oE1aCAhtRigs/
-        YzWZ223sy5AsV5NBp/VEZvA=
-X-Google-Smtp-Source: ABdhPJxzxiUOAwVdcHL3xIvrEjo9nxzJyOvnWY2LS2dpQyeU1TqUWduhKwAibRRCCesotSuc8YGbTw==
-X-Received: by 2002:a17:906:48d8:: with SMTP id d24mr26104154ejt.369.1592240145900;
-        Mon, 15 Jun 2020 09:55:45 -0700 (PDT)
-Received: from ltop.local ([2a02:a03f:b7f9:7600:2438:c4f9:4ba4:a33e])
-        by smtp.gmail.com with ESMTPSA id v26sm9243627ejx.25.2020.06.15.09.55.44
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 15 Jun 2020 09:55:45 -0700 (PDT)
-Date:   Mon, 15 Jun 2020 18:55:44 +0200
-From:   Luc Van Oostenryck <luc.vanoostenryck@gmail.com>
-To:     Greg Ungerer <gerg@linux-m68k.org>
-Cc:     linux-m68k@vger.kernel.org, kernel test robot <lkp@intel.com>,
-        Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: Re: [PATCH 5/5] m68knommu: fix use of cpu_to_le() on IO access
-Message-ID: <20200615165544.pndzr6ne77ns6dyo@ltop.local>
-References: <20200615071636.2598894-1-gerg@linux-m68k.org>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=R/Mp7iKWT7GJmgr8/QHDR53t1KgWn8P7FwKRZ54fDz4=;
+        b=INIXPWQFY3IoLTua05T16QaZdW8auzkAPL4z7Jdrc72dqyiC3GZAFHmDsS/ES5uWMH
+         Git7h64abG+lzg0k4PWHBiehRIBQRAGOQGWuC67mjybwo0p0hPXEzdZ9vh9ZYjOSjL+t
+         TvBuUNLmeclUDWYh5BYuuFWOgW1hKgP27nFBLb4ntnmpMP6smGNvsi30IJ6BwF1eE17x
+         sdeUetFOtk+A6uCarPWztvAbLC1Em7Ize9+n5xUmzUtUNdOq/ByuOIVHakHgqy24Q4ru
+         bl9khAIvoj5PdrkoZ2LythFsz/45TkZoweM2fwzWO8Jah6GQwoa/ZvCfEw6oFmfgjFM6
+         sV+g==
+X-Gm-Message-State: AOAM530miyTk6npaSyCvN6NJLjrgEVzeGjorsnDz9Y+6DEWF+1FRsqcJ
+        VA984wfi80Iixuaw0MGh3+aLX1rjPjPYlqvoiX4=
+X-Google-Smtp-Source: ABdhPJylTOxLG8Jwa648uPABoZk5EHApkaRAi7nl5VMQvz4nQKzBl2iyQVBq0cmqvnQMufm+VlBoYXAVYt/TWvSA0JA=
+X-Received: by 2002:a67:3291:: with SMTP id y139mr21083280vsy.37.1592253530812;
+ Mon, 15 Jun 2020 13:38:50 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200615071636.2598894-1-gerg@linux-m68k.org>
+References: <CGME20200504232908eucas1p296927bc7c736ad924cefaea9a546459d@eucas1p2.samsung.com>
+ <b1cf967015c5beafa475aaa30d8e21a58caff870.camel@perches.com> <839133dd-8ed4-5fec-c311-ce9f8abf3d5f@samsung.com>
+In-Reply-To: <839133dd-8ed4-5fec-c311-ce9f8abf3d5f@samsung.com>
+From:   Emil Velikov <emil.l.velikov@gmail.com>
+Date:   Mon, 15 Jun 2020 21:35:10 +0100
+Message-ID: <CACvgo50HieMRRb1kK3X0XWXtNmgidYi_OWW9DGCrxT+1q14RWQ@mail.gmail.com>
+Subject: Re: [PATCH 1/2] video: fbdev: amifb: remove dead APUS support
+To:     Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>
+Cc:     linux-fbdev <linux-fbdev@vger.kernel.org>,
+        ML dri-devel <dri-devel@lists.freedesktop.org>,
+        linux-m68k <linux-m68k@lists.linux-m68k.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        "Linux-Kernel@Vger. Kernel. Org" <linux-kernel@vger.kernel.org>,
+        Al Viro <viro@zeniv.linux.org.uk>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-m68k-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-On Mon, Jun 15, 2020 at 05:16:36PM +1000, Greg Ungerer wrote:
-> Due to the different data endian requirements of different buses on
-> m68knommu variants we sometimes need to byte swap results for readX()
-> or values to writeX(). Currently the code uses cpu_to_le to do this,
-> resulting in sparse warnings like:
-> 
-> arch/m68k/include/asm/io_no.h:78:16: sparse: sparse: cast to restricted __le32
-> 
-> Some casting to force __le32 types would resolve but it looks to be
-> simpler to just switch to using the underlying swab32() to resolve.
+Hi Bartlomiej,
 
-Yes indeed, since the raw accessors are supposed to be native-endian, doing:
-	native -> force cast to le32 -> le32_to_cpu() 
-doesn't seem to have any advantages over the swab32().
+On Tue, 2 Jun 2020 at 11:37, Bartlomiej Zolnierkiewicz
+<b.zolnierkie@samsung.com> wrote:
+>
+>
+> On 5/14/20 10:21 PM, Geert Uytterhoeven wrote:
+>
+> > These #ifdefs are relics from APUS (Amiga Power-Up System), which
+> > added a PPC board.  APUS support was killed off a long time ago,
+> > when arch/ppc/ was still king, but these #ifdefs were missed, because
+> > they didn't test for CONFIG_APUS.
+>
+> Reported-by: Al Viro <viro@zeniv.linux.org.uk>
+> Reported-by: Geert Uytterhoeven <geert@linux-m68k.org>
+> Signed-off-by: Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>
+> ---
+>  drivers/video/fbdev/amifb.c |   63 --------------------------------------------
+>  1 file changed, 63 deletions(-)
+>
+A quick look through my checkout (drm-misc/next aka 5.8 ish), shows
+multiple other places which check for the define.
+And a single place where it's being set - the Makefile below.
 
-Feel free to add my:
-Reviewed-y: Luc Van Oostenryck <luc.vanoostenryck@gmail.com>
+Should those be addressed as well? Or perhaps they are and I've got an old tree.
 
--- Luc
+HTH
+Emil
+
+$ git grep -c __mc68000__
+arch/m68k/Makefile:1
+drivers/block/floppy.c:2
+drivers/ide/ide-probe.c:2
+drivers/input/misc/hp_sdc_rtc.c:1
+drivers/input/serio/hp_sdc.c:3
+drivers/input/serio/hp_sdc_mlc.c:1
+drivers/net/ethernet/i825xx/82596.c:8
+drivers/tty/vt/keyboard.c:1
+drivers/video/fbdev/amifb.c:11
+include/linux/a.out.h:1
+include/linux/hp_sdc.h:1
+include/uapi/linux/a.out.h:1
+lib/fonts/fonts.c:2
+lib/mpi/longlong.h:1
