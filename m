@@ -6,41 +6,41 @@ X-Spam-Status: No, score=-3.9 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
 	LONGWORDS,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,
 	URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id AD6D5C433E0
-	for <linux-m68k@archiver.kernel.org>; Mon, 15 Jun 2020 15:56:49 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 64C39C433E0
+	for <linux-m68k@archiver.kernel.org>; Mon, 15 Jun 2020 16:01:52 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 785ED20679
-	for <linux-m68k@archiver.kernel.org>; Mon, 15 Jun 2020 15:56:49 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 4DD2A20679
+	for <linux-m68k@archiver.kernel.org>; Mon, 15 Jun 2020 16:01:52 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729776AbgFOP4t (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Mon, 15 Jun 2020 11:56:49 -0400
-Received: from mga03.intel.com ([134.134.136.65]:45743 "EHLO mga03.intel.com"
+        id S1729599AbgFOQBw (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Mon, 15 Jun 2020 12:01:52 -0400
+Received: from mga18.intel.com ([134.134.136.126]:9512 "EHLO mga18.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727785AbgFOP4s (ORCPT <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Mon, 15 Jun 2020 11:56:48 -0400
-IronPort-SDR: Pi/M+rDydD9Ruo2IJ4O1Fi4YiikFOl9Q91kiNyB/IlOBT2YWGJFhOG2o1fqi8h5nnb3ZlLM89V
- Lr7lF5vjX9Dw==
+        id S1727785AbgFOQBv (ORCPT <rfc822;linux-m68k@lists.linux-m68k.org>);
+        Mon, 15 Jun 2020 12:01:51 -0400
+IronPort-SDR: UOY5UHkGOsCW/jVKRPjx11JtWJ9/ww+jiodSXMo9owLjzZdLoKnSlmsMNlcVW6JE0D2PvmxXZR
+ aq5vCLvpWFtg==
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Jun 2020 08:56:47 -0700
-IronPort-SDR: MD4CLukifX48wAERjifNK+fpsIlRQONVnzlCpPZR3XJ1KrK2uEMMB0YoQRy7XdQ26y5KyUJqd5
- 0cSCj6cibMEg==
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Jun 2020 09:01:50 -0700
+IronPort-SDR: fhRP47Jo9OPY8gZRSAetr3QXciGaGRHAkw62zBBmwpsQ0o2gRcZUE7xxKWjK5kkS6QaH9rcqf1
+ wALdCXM1CUNA==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.73,515,1583222400"; 
-   d="scan'208";a="272817339"
+   d="scan'208";a="262756688"
 Received: from lkp-server02.sh.intel.com (HELO ec7aa6149bd9) ([10.239.97.151])
-  by orsmga003.jf.intel.com with ESMTP; 15 Jun 2020 08:56:46 -0700
+  by fmsmga008.fm.intel.com with ESMTP; 15 Jun 2020 09:01:49 -0700
 Received: from kbuild by ec7aa6149bd9 with local (Exim 4.92)
         (envelope-from <lkp@intel.com>)
-        id 1jkrTZ-00004o-Qp; Mon, 15 Jun 2020 15:56:45 +0000
-Date:   Mon, 15 Jun 2020 23:55:46 +0800
+        id 1jkrYS-000050-GA; Mon, 15 Jun 2020 16:01:48 +0000
+Date:   Tue, 16 Jun 2020 00:00:57 +0800
 From:   kernel test robot <lkp@intel.com>
 To:     Geert Uytterhoeven <geert@linux-m68k.org>
 Cc:     linux-m68k@lists.linux-m68k.org
-Subject: [m68k:m68k-queue] BUILD SUCCESS
- 6b12625aca1ff016cef6e39975e6a59f23014b91
-Message-ID: <5ee79a02.EyFeC/Y/qXarbsFX%lkp@intel.com>
+Subject: [m68k:master] BUILD SUCCESS
+ 2b114da74f3cb549e0902249436499f5e5580b6b
+Message-ID: <5ee79b39.1J7WF2LREIC2ezxc%lkp@intel.com>
 User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
@@ -50,33 +50,12 @@ Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/geert/linux-m68k.git  m68k-queue
-branch HEAD: 6b12625aca1ff016cef6e39975e6a59f23014b91  fat: Use correct logical sector size for Atari GEMDOS FAT
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/geert/linux-m68k.git  master
+branch HEAD: 2b114da74f3cb549e0902249436499f5e5580b6b  Merge tag 'v5.8-rc1'
 
-Warning in current branch:
+elapsed time: 482m
 
-drivers/usb/host/isp116x.h:370:87: note: in expansion of macro 'isa_rom_writew_raw'
-drivers/usb/host/isp116x.h:372:91: note: in expansion of macro 'isa_rom_writew'
-drivers/usb/host/isp116x.h:391:2: note: in expansion of macro 'isp_writew'
-drivers/usb/host/isp116x.h:403:2: note: in expansion of macro 'isp_raw_writew'
-
-Warning ids grouped by kconfigs:
-
-recent_errors
-|-- m68k-allmodconfig
-|   |-- drivers-usb-host-isp116x.h:note:in-expansion-of-macro-isa_rom_writew
-|   |-- drivers-usb-host-isp116x.h:note:in-expansion-of-macro-isa_rom_writew_raw
-|   |-- drivers-usb-host-isp116x.h:note:in-expansion-of-macro-isp_raw_writew
-|   `-- drivers-usb-host-isp116x.h:note:in-expansion-of-macro-isp_writew
-`-- m68k-allyesconfig
-    |-- drivers-usb-host-isp116x.h:note:in-expansion-of-macro-isa_rom_writew
-    |-- drivers-usb-host-isp116x.h:note:in-expansion-of-macro-isa_rom_writew_raw
-    |-- drivers-usb-host-isp116x.h:note:in-expansion-of-macro-isp_raw_writew
-    `-- drivers-usb-host-isp116x.h:note:in-expansion-of-macro-isp_writew
-
-elapsed time: 480m
-
-configs tested: 102
+configs tested: 103
 configs skipped: 1
 
 The following configs have been built successfully.
@@ -90,11 +69,6 @@ arm64                            allyesconfig
 arm64                               defconfig
 arm64                            allmodconfig
 arm64                             allnoconfig
-sh                   secureedge5410_defconfig
-mips                       capcella_defconfig
-sparc64                          alldefconfig
-arm                         s3c2410_defconfig
-arc                          axs103_defconfig
 arm                             pxa_defconfig
 um                           x86_64_defconfig
 mips                      pic32mzda_defconfig
@@ -152,6 +126,12 @@ i386                 randconfig-a001-20200615
 i386                 randconfig-a004-20200615
 i386                 randconfig-a005-20200615
 i386                 randconfig-a003-20200615
+x86_64               randconfig-a015-20200615
+x86_64               randconfig-a011-20200615
+x86_64               randconfig-a016-20200615
+x86_64               randconfig-a012-20200615
+x86_64               randconfig-a014-20200615
+x86_64               randconfig-a013-20200615
 i386                 randconfig-a015-20200615
 i386                 randconfig-a011-20200615
 i386                 randconfig-a014-20200615
@@ -172,10 +152,10 @@ sparc64                             defconfig
 sparc64                           allnoconfig
 sparc64                          allyesconfig
 sparc64                          allmodconfig
+um                               allmodconfig
 um                                allnoconfig
 um                               allyesconfig
 um                                  defconfig
-um                               allmodconfig
 x86_64                               rhel-7.6
 x86_64                    rhel-7.6-kselftests
 x86_64                               rhel-8.3
