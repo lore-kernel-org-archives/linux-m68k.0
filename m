@@ -2,65 +2,51 @@ Return-Path: <SRS0=2kwO=74=vger.kernel.org=linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,
-	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-3.8 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
+	MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS autolearn=no
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D7300C433E0
-	for <linux-m68k@archiver.kernel.org>; Mon, 15 Jun 2020 09:47:13 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 90E67C433E0
+	for <linux-m68k@archiver.kernel.org>; Mon, 15 Jun 2020 11:26:35 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id B35F52065F
-	for <linux-m68k@archiver.kernel.org>; Mon, 15 Jun 2020 09:47:13 +0000 (UTC)
-Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=timesys-com.20150623.gappssmtp.com header.i=@timesys-com.20150623.gappssmtp.com header.b="PYNS1k61"
+	by mail.kernel.org (Postfix) with ESMTP id 783E920663
+	for <linux-m68k@archiver.kernel.org>; Mon, 15 Jun 2020 11:26:35 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728773AbgFOJrN (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Mon, 15 Jun 2020 05:47:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50716 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728505AbgFOJrN (ORCPT
-        <rfc822;linux-m68k@vger.kernel.org>); Mon, 15 Jun 2020 05:47:13 -0400
-Received: from mail-vs1-xe42.google.com (mail-vs1-xe42.google.com [IPv6:2607:f8b0:4864:20::e42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 044F6C061A0E
-        for <linux-m68k@vger.kernel.org>; Mon, 15 Jun 2020 02:47:13 -0700 (PDT)
-Received: by mail-vs1-xe42.google.com with SMTP id y123so8966360vsb.6
-        for <linux-m68k@vger.kernel.org>; Mon, 15 Jun 2020 02:47:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=timesys-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Cs+nqZcCSpiIjVrhNu+xPaPEPCcm+f1E6a1kxm65KL8=;
-        b=PYNS1k61Ogo1lJ0iqyCNC8ZqOQJOhyzlmJ17RhL08P1wsYG+ticTIC54eX+5t8FJJa
-         9hXYESs8EZ8haMXe9aYmePU1x6aTjFvwXVNHDsXOyV5REN+Ww1WKLc7Ajtc2/VaiyufS
-         nDXZtbHd6aPutXD9N11CMjTbb+OwpqtmJdpjUP+06A3xKGNkTv7AkUzwRi6J/a8eozKJ
-         6C6B5//ZeI6OMT7KoBrtQJU9GolJBdNqj4P1KQYJLKIEj8WkkJT7zIA54/F8lR16n+AE
-         nVa8WuopUmjdvTBA1HKjrALfNPgP96wU9p45/W6R2SCV7tuA+cCwF4WNBwmkTVM6m56c
-         xbOg==
+        id S1729624AbgFOL0f (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Mon, 15 Jun 2020 07:26:35 -0400
+Received: from mail-ot1-f65.google.com ([209.85.210.65]:42760 "EHLO
+        mail-ot1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728953AbgFOL0f (ORCPT
+        <rfc822;linux-m68k@vger.kernel.org>); Mon, 15 Jun 2020 07:26:35 -0400
+Received: by mail-ot1-f65.google.com with SMTP id t6so12787298otk.9
+        for <linux-m68k@vger.kernel.org>; Mon, 15 Jun 2020 04:26:34 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=Cs+nqZcCSpiIjVrhNu+xPaPEPCcm+f1E6a1kxm65KL8=;
-        b=kz4OSs83MqZMeqWZEBxLsanA4xFoaPcyP4zCBqXL2NmfB5DPmGbIdM7IpwfbKPYBxJ
-         vMb4VMXqfX3WKc+AOSUP/u0UPO7NXzRcPXfP8kd1E0sCkhCGplg1MVSiMBb/cBgu9JQw
-         B9t/67NThhxnT70HCJWOCBV3HWSQFfdd/UQr64Mjwvh0niV8D9WveZDUQJaby5ymmhyl
-         8YowltD3QkQofmtRuKuiCq1cBWzCpRZ5v+4d1AFN6j9rhObVgVnSLe/zGThZCmZSoIuC
-         WCwUII7CSKvUaR6eSDU0ng6bgZUNOmeGZB0ckkzXnXnTxn6FhcjCNuxGMxwT4fktsg1X
-         tCHw==
-X-Gm-Message-State: AOAM530dBj13Ug69PkwZSz6rJ/bhYig2HffhAGyAPo+iPjmXDEFjoceg
-        EzUK8RT5jksQeVkOhpVjZWxc29U+T9gI5Psfh2L9rQ==
-X-Google-Smtp-Source: ABdhPJwvk3rl0YwkheOhMFmUEfH0uvxhTEqCkkkdFJl0sA4zKxG0DmmfcD5vH8Ebwqqb66BmqHnz+RbaSa4Odq7XRWA=
-X-Received: by 2002:a67:885:: with SMTP id 127mr95504vsi.182.1592214432219;
- Mon, 15 Jun 2020 02:47:12 -0700 (PDT)
+        bh=vCM632mpXZDubOsaw0vvCHNqLzS97lJqTjkLIX3LqIE=;
+        b=na+YMYoDcZXRG4p2RZ3xq2Z91LLdbkAu7LHphYH+3BU4LcENo+0I723Q+5/WlhQA4z
+         AkFVChrep7McpeTsLfgDjZZ5S05mrHqLK5fO1lrQ+uAskd6oWJl1H2FittWI0dVQ4M4V
+         283b+0vJGlODhiHf3G/cw0rPFwpqqWd3Sv/szLqOiozqyk6ZAwuW8aJFpORjudcmjblR
+         8NBO7bV2OtFji9lp+fpj0BJPn4GF/255Zts2TQA5e6JIaz4wzV+TQOCG6mypzbeOPGMZ
+         njOGTnjeI3MhnhUnWDcQWj4YB2QW5kd1oNq3VHSp0G0zS+Mi4Epge+qhlnfV3O7X/cQu
+         gR6Q==
+X-Gm-Message-State: AOAM530Cijjgm7p9EiC0ham/1POzVzAFbSjUDsHvpWBRX8IMssNAjE1K
+        BFrouvMWS7PELF2/NZ9UWtTKkrVIKT17525D1a8=
+X-Google-Smtp-Source: ABdhPJwW/mo+yxxcWXXQBn5X0Uz8FT68ClAnXDspD9sD05rMLkN4F8+mrdu9AoCbfkRmMFTzzzHF047Esf6AUkq02hg=
+X-Received: by 2002:a05:6830:141a:: with SMTP id v26mr21148154otp.250.1592220394026;
+ Mon, 15 Jun 2020 04:26:34 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200607191215.2626739-1-angelo.dureghello@timesys.com> <1e8c2220-b0db-0bd0-856c-dd560a4ad01c@linux-m68k.org>
-In-Reply-To: <1e8c2220-b0db-0bd0-856c-dd560a4ad01c@linux-m68k.org>
-From:   Angelo Dureghello <angelo.dureghello@timesys.com>
-Date:   Mon, 15 Jun 2020 11:53:12 +0200
-Message-ID: <CALJHbkBq0_CZagXQf9vOM-9L5D5tn_jMM4bCERGcdwYvvpWPTQ@mail.gmail.com>
-Subject: Re: [PATCH] m68k: stmark2: defconfig updates
+References: <20200615063508.2435061-1-gerg@linux-m68k.org>
+In-Reply-To: <20200615063508.2435061-1-gerg@linux-m68k.org>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Mon, 15 Jun 2020 13:26:23 +0200
+Message-ID: <CAMuHMdV=LORyqrFPLTuysHVBEqcKXuDydr15b883yStjaVrWZQ@mail.gmail.com>
+Subject: Re: [PATCH 1/5] m68knommu: fix overwriting of bits in ColdFire V3
+ cache control
 To:     Greg Ungerer <gerg@linux-m68k.org>
-Cc:     linux-m68k@vger.kernel.org
+Cc:     "Linux/m68k" <linux-m68k@vger.kernel.org>,
+        Joachim Dietrich <jo.dietrich@gmx.de>
 Content-Type: text/plain; charset="UTF-8"
 Sender: linux-m68k-owner@vger.kernel.org
 Precedence: bulk
@@ -69,23 +55,52 @@ X-Mailing-List: linux-m68k@vger.kernel.org
 
 Hi Greg,
 
-On Sat, Jun 13, 2020 at 9:07 AM Greg Ungerer <gerg@linux-m68k.org> wrote:
+On Mon, Jun 15, 2020 at 8:38 AM Greg Ungerer <gerg@linux-m68k.org> wrote:
+> The Cache Control Register (CACR) of the ColdFire V3 has bits that
+> control high level caching functions, and also enable/disable the use
+> of the alternate stack pointer register (the EUSP bit) to provide
+> separate supervisor and user stack pointer registers. The code as
+> it is today will blindly clear the EUSP bit on cache actions like
+> invalidation. So it is broken for this case - and that will result
+> in failed booting (interrupt entry and exit processing will be
+> completely hosed).
 >
-> Hi Angelo,
+> This only affects ColdFire V3 parts that support the alternate stack
+> register (like the 5329 for example) - generally speaking new parts do,
+> older parts don't. It has no impact on ColdFire V3 parts with the single
+> stack pointer, like the 5307 for example.
 >
-> On 8/6/20 5:12 am, Angelo Dureghello wrote:
-> > Some defconfig updates for stmark2 board, mainly to enable
-> > sdcard and mmu.
-> >
-> > Signed-off-by: Angelo Dureghello <angelo.dureghello@timesys.com>
+> Fix the cache bit defines used, so they maintain the EUSP bit when
+> carrying out cache actions through the CACR register.
 >
-> Will apply to the m68knommu git tree, for-next branch, after the
-> current merge window closes. Should show up there early next week
->
-> Regards
-> Greg
->
-thanks !!
+> Signed-off-by: Greg Ungerer <gerg@linux-m68k.org>
 
-Regards,
-angelo
+Thanks for your patch!
+
+> --- a/arch/m68k/include/asm/m53xxacr.h
+> +++ b/arch/m68k/include/asm/m53xxacr.h
+> @@ -89,9 +89,9 @@
+>   * coherency though in all cases. And for copyback caches we will need
+>   * to push cached data as well.
+>   */
+> -#define CACHE_INIT       CACR_CINVA
+> -#define CACHE_INVALIDATE  CACR_CINVA
+> -#define CACHE_INVALIDATED CACR_CINVA
+> +#define CACHE_INIT        (CACHE_MODE + CACR_CINVA)
+
+This line is different from the RFC v2 in
+https://www.spinics.net/lists/linux-m68k/msg13973.html ?
+
+> +#define CACHE_INVALIDATE  (CACHE_MODE + CACR_CINVA)
+> +#define CACHE_INVALIDATED (CACHE_MODE + CACR_CINVA)
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
+-- 
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
