@@ -2,308 +2,169 @@ Return-Path: <SRS0=2kwO=74=vger.kernel.org=linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.0 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,
-	UPPERCASE_50_75,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham autolearn_force=no
+X-Spam-Status: No, score=-7.1 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 96A96C433DF
-	for <linux-m68k@archiver.kernel.org>; Mon, 15 Jun 2020 07:55:04 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 3EA7BC433E0
+	for <linux-m68k@archiver.kernel.org>; Mon, 15 Jun 2020 08:29:47 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 705602067B
-	for <linux-m68k@archiver.kernel.org>; Mon, 15 Jun 2020 07:55:04 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 1B65A20738
+	for <linux-m68k@archiver.kernel.org>; Mon, 15 Jun 2020 08:29:47 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=default; t=1592209787;
+	bh=23TYPFpEKvNG+M9i5OGqsm7+0VGa7qmB7xwajbtz/wU=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:List-ID:From;
+	b=q6feE+FBOU3bjr0iExKoATGjfiR4+iA9mI+1EP26pNCBpoz3a5x0S9rqW29HgXlTW
+	 5eHNBo1pbUShIeXDhY2qaJOfBt8FUvbTy0OyG97QI0jJmJzkQEDyBef2PD4cEWIPaP
+	 Hw4PRouAxf9ra1m75UAkOal9Bc7qvy/Vo77gHk6A=
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728411AbgFOHzE (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Mon, 15 Jun 2020 03:55:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33400 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728368AbgFOHzE (ORCPT
-        <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Mon, 15 Jun 2020 03:55:04 -0400
-Received: from andre.telenet-ops.be (andre.telenet-ops.be [IPv6:2a02:1800:120:4::f00:15])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8E68BC05BD43
-        for <linux-m68k@lists.linux-m68k.org>; Mon, 15 Jun 2020 00:55:02 -0700 (PDT)
-Received: from ramsan ([IPv6:2a02:1810:ac12:ed20:2191:9276:807:82c1])
-        by andre.telenet-ops.be with bizsmtp
-        id rKv02200L4zira501Kv0dR; Mon, 15 Jun 2020 09:55:00 +0200
-Received: from rox.of.borg ([192.168.97.57])
-        by ramsan with esmtp (Exim 4.90_1)
-        (envelope-from <geert@linux-m68k.org>)
-        id 1jkjxM-0002D7-AE; Mon, 15 Jun 2020 09:55:00 +0200
-Received: from geert by rox.of.borg with local (Exim 4.90_1)
-        (envelope-from <geert@linux-m68k.org>)
-        id 1jkjxM-0005l0-6L; Mon, 15 Jun 2020 09:55:00 +0200
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-To:     linux-m68k@lists.linux-m68k.org
-Cc:     linux-kernel@vger.kernel.org,
-        Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: [PATCH] m68k: defconfig: Update defconfigs for v5.8-rc1
-Date:   Mon, 15 Jun 2020 09:54:58 +0200
-Message-Id: <20200615075458.22088-1-geert@linux-m68k.org>
-X-Mailer: git-send-email 2.17.1
+        id S1729058AbgFOI3q (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Mon, 15 Jun 2020 04:29:46 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43880 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728451AbgFOI3p (ORCPT <rfc822;linux-m68k@lists.linux-m68k.org>);
+        Mon, 15 Jun 2020 04:29:45 -0400
+Received: from kernel.org (unknown [87.70.26.44])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id F0A822068E;
+        Mon, 15 Jun 2020 08:29:41 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1592209784;
+        bh=23TYPFpEKvNG+M9i5OGqsm7+0VGa7qmB7xwajbtz/wU=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Flm5vp3x+Sr5xNiY+TsswHMxMMM66rFoAkf6bDLGOOmK//WbN06VBkC9RP4FMU2a5
+         qJKxQkn0M5uE/Jm/NEYcJkWZMEsbC65SPM8S9WC/pF9tXYRYufOOstFYKxjjrB1AUf
+         fwxcH6K7gdb2bGQcqv9kakRnWoneX0oeF6edxIqM=
+Date:   Mon, 15 Jun 2020 11:29:37 +0300
+From:   Mike Rapoport <rppt@kernel.org>
+To:     Greg Ungerer <gerg@linux-m68k.org>
+Cc:     akpm@linux-foundation.org, bhe@redhat.com, geert@linux-m68k.org,
+        linux-kernel@vger.kernel.org, linux-m68k@lists.linux-m68k.org,
+        linux-mm@kvack.org, rppt@linux.ibm.com
+Subject: Re: [PATCH 04/21] mm: free_area_init: use maximal zone PFNs rather
+ than zone sizes
+Message-ID: <20200615082937.GB7882@kernel.org>
+References: <20200412194859.12663-5-rppt@kernel.org>
+ <f53e68db-ed81-6ef6-5087-c7246d010ea2@linux-m68k.org>
+ <20200615062234.GA7882@kernel.org>
+ <24563231-ed19-6f4f-617e-4d6bfc7553e4@linux-m68k.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <24563231-ed19-6f4f-617e-4d6bfc7553e4@linux-m68k.org>
 Sender: linux-m68k-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-Enable modular build of prime numbers and bitops test modules.
+(reduced the spam list)
 
-Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
----
- arch/m68k/configs/amiga_defconfig    | 2 ++
- arch/m68k/configs/apollo_defconfig   | 2 ++
- arch/m68k/configs/atari_defconfig    | 2 ++
- arch/m68k/configs/bvme6000_defconfig | 2 ++
- arch/m68k/configs/hp300_defconfig    | 2 ++
- arch/m68k/configs/mac_defconfig      | 2 ++
- arch/m68k/configs/multi_defconfig    | 2 ++
- arch/m68k/configs/mvme147_defconfig  | 2 ++
- arch/m68k/configs/mvme16x_defconfig  | 2 ++
- arch/m68k/configs/q40_defconfig      | 2 ++
- arch/m68k/configs/sun3_defconfig     | 2 ++
- arch/m68k/configs/sun3x_defconfig    | 2 ++
- 12 files changed, 24 insertions(+)
+On Mon, Jun 15, 2020 at 05:17:28PM +1000, Greg Ungerer wrote:
+> Hi Mike,
+> 
+> On 15/6/20 4:22 pm, Mike Rapoport wrote:
+> > On Mon, Jun 15, 2020 at 01:53:42PM +1000, Greg Ungerer wrote:
+> > > From: Mike Rapoport <rppt@linux.ibm.com>
+> > > > Currently, architectures that use free_area_init() to initialize memory map
+> > > > and node and zone structures need to calculate zone and hole sizes. We can
+> > > > use free_area_init_nodes() instead and let it detect the zone boundaries
+> > > > while the architectures will only have to supply the possible limits for
+> > > > the zones.
+> > > > 
+> > > > Signed-off-by: Mike Rapoport <rppt@linux.ibm.com>
+> > > 
+> > > This is causing some new warnings for me on boot on at least one non-MMU m68k target:
+> > 
+> > There were a couple of changes that cause this. The free_area_init()
+> > now relies on memblock data and architectural limits for zone sizes
+> > rather than on explisit pfns calculated by the arch code. I've update
+> > motorola variant and missed coldfire. Angelo sent a fix for mcfmmu.c
+> > [1] and I've updated it to include nommu as well
+> > 
+> > [1] https://lore.kernel.org/linux-m68k/20200614225119.777702-1-angelo.dureghello@timesys.com
+> > 
+> > > From 55b8523df2a5c4565b132c0691990f0821040fec Mon Sep 17 00:00:00 2001
+> > From: Angelo Dureghello <angelo.dureghello@timesys.com>
+> > Date: Mon, 15 Jun 2020 00:51:19 +0200
+> > Subject: [PATCH] m68k: fix registration of memory regions with memblock
+> > 
+> > Commit 3f08a302f533 ("mm: remove CONFIG_HAVE_MEMBLOCK_NODE_MAP option")
+> > introduced assumption that UMA systems have their memory at node 0 and
+> > updated most of them, but it forgot nommu and coldfire variants of m68k.
+> > 
+> > The later change in free area initialization in commit fa3354e4ea39 ("mm:
+> > free_area_init: use maximal zone PFNs rather than zone sizes") exposed that
+> > and caused a lot of "BUG: Bad page state in process swapper" reports.
+> 
+> Even with this patch applied I am still seeing the same messages.
 
-diff --git a/arch/m68k/configs/amiga_defconfig b/arch/m68k/configs/amiga_defconfig
-index 888b75e7fd79071f..28831ed23a1a8918 100644
---- a/arch/m68k/configs/amiga_defconfig
-+++ b/arch/m68k/configs/amiga_defconfig
-@@ -615,6 +615,7 @@ CONFIG_CRYPTO_USER_API_SKCIPHER=m
- CONFIG_CRYPTO_USER_API_RNG=m
- CONFIG_CRYPTO_USER_API_AEAD=m
- # CONFIG_CRYPTO_HW is not set
-+CONFIG_PRIME_NUMBERS=m
- CONFIG_CRC32_SELFTEST=m
- CONFIG_CRC64=m
- CONFIG_XZ_DEC_TEST=m
-@@ -643,6 +644,7 @@ CONFIG_TEST_OVERFLOW=m
- CONFIG_TEST_RHASHTABLE=m
- CONFIG_TEST_HASH=m
- CONFIG_TEST_IDA=m
-+CONFIG_TEST_BITOPS=m
- CONFIG_TEST_VMALLOC=m
- CONFIG_TEST_USER_COPY=m
- CONFIG_TEST_BPF=m
-diff --git a/arch/m68k/configs/apollo_defconfig b/arch/m68k/configs/apollo_defconfig
-index 45303846b65950e3..821ee9afcb2d29f0 100644
---- a/arch/m68k/configs/apollo_defconfig
-+++ b/arch/m68k/configs/apollo_defconfig
-@@ -571,6 +571,7 @@ CONFIG_CRYPTO_USER_API_SKCIPHER=m
- CONFIG_CRYPTO_USER_API_RNG=m
- CONFIG_CRYPTO_USER_API_AEAD=m
- # CONFIG_CRYPTO_HW is not set
-+CONFIG_PRIME_NUMBERS=m
- CONFIG_CRC32_SELFTEST=m
- CONFIG_CRC64=m
- CONFIG_XZ_DEC_TEST=m
-@@ -599,6 +600,7 @@ CONFIG_TEST_OVERFLOW=m
- CONFIG_TEST_RHASHTABLE=m
- CONFIG_TEST_HASH=m
- CONFIG_TEST_IDA=m
-+CONFIG_TEST_BITOPS=m
- CONFIG_TEST_VMALLOC=m
- CONFIG_TEST_USER_COPY=m
- CONFIG_TEST_BPF=m
-diff --git a/arch/m68k/configs/atari_defconfig b/arch/m68k/configs/atari_defconfig
-index 62430e40e8599463..a4aec77d38086ec3 100644
---- a/arch/m68k/configs/atari_defconfig
-+++ b/arch/m68k/configs/atari_defconfig
-@@ -603,6 +603,7 @@ CONFIG_CRYPTO_USER_API_SKCIPHER=m
- CONFIG_CRYPTO_USER_API_RNG=m
- CONFIG_CRYPTO_USER_API_AEAD=m
- # CONFIG_CRYPTO_HW is not set
-+CONFIG_PRIME_NUMBERS=m
- CONFIG_CRC32_SELFTEST=m
- CONFIG_CRC64=m
- CONFIG_XZ_DEC_TEST=m
-@@ -632,6 +633,7 @@ CONFIG_TEST_OVERFLOW=m
- CONFIG_TEST_RHASHTABLE=m
- CONFIG_TEST_HASH=m
- CONFIG_TEST_IDA=m
-+CONFIG_TEST_BITOPS=m
- CONFIG_TEST_VMALLOC=m
- CONFIG_TEST_USER_COPY=m
- CONFIG_TEST_BPF=m
-diff --git a/arch/m68k/configs/bvme6000_defconfig b/arch/m68k/configs/bvme6000_defconfig
-index 071839ca6a5955a8..4ecea1bd1491b24f 100644
---- a/arch/m68k/configs/bvme6000_defconfig
-+++ b/arch/m68k/configs/bvme6000_defconfig
-@@ -564,6 +564,7 @@ CONFIG_CRYPTO_USER_API_SKCIPHER=m
- CONFIG_CRYPTO_USER_API_RNG=m
- CONFIG_CRYPTO_USER_API_AEAD=m
- # CONFIG_CRYPTO_HW is not set
-+CONFIG_PRIME_NUMBERS=m
- CONFIG_CRC32_SELFTEST=m
- CONFIG_CRC64=m
- CONFIG_XZ_DEC_TEST=m
-@@ -592,6 +593,7 @@ CONFIG_TEST_OVERFLOW=m
- CONFIG_TEST_RHASHTABLE=m
- CONFIG_TEST_HASH=m
- CONFIG_TEST_IDA=m
-+CONFIG_TEST_BITOPS=m
- CONFIG_TEST_VMALLOC=m
- CONFIG_TEST_USER_COPY=m
- CONFIG_TEST_BPF=m
-diff --git a/arch/m68k/configs/hp300_defconfig b/arch/m68k/configs/hp300_defconfig
-index 37ac7b019ec162e3..dbb561d2fd3e0af3 100644
---- a/arch/m68k/configs/hp300_defconfig
-+++ b/arch/m68k/configs/hp300_defconfig
-@@ -573,6 +573,7 @@ CONFIG_CRYPTO_USER_API_SKCIPHER=m
- CONFIG_CRYPTO_USER_API_RNG=m
- CONFIG_CRYPTO_USER_API_AEAD=m
- # CONFIG_CRYPTO_HW is not set
-+CONFIG_PRIME_NUMBERS=m
- CONFIG_CRC32_SELFTEST=m
- CONFIG_CRC64=m
- CONFIG_XZ_DEC_TEST=m
-@@ -601,6 +602,7 @@ CONFIG_TEST_OVERFLOW=m
- CONFIG_TEST_RHASHTABLE=m
- CONFIG_TEST_HASH=m
- CONFIG_TEST_IDA=m
-+CONFIG_TEST_BITOPS=m
- CONFIG_TEST_VMALLOC=m
- CONFIG_TEST_USER_COPY=m
- CONFIG_TEST_BPF=m
-diff --git a/arch/m68k/configs/mac_defconfig b/arch/m68k/configs/mac_defconfig
-index 60877986626013be..06d6fbfc4b996257 100644
---- a/arch/m68k/configs/mac_defconfig
-+++ b/arch/m68k/configs/mac_defconfig
-@@ -595,6 +595,7 @@ CONFIG_CRYPTO_USER_API_SKCIPHER=m
- CONFIG_CRYPTO_USER_API_RNG=m
- CONFIG_CRYPTO_USER_API_AEAD=m
- # CONFIG_CRYPTO_HW is not set
-+CONFIG_PRIME_NUMBERS=m
- CONFIG_CRC32_SELFTEST=m
- CONFIG_CRC64=m
- CONFIG_XZ_DEC_TEST=m
-@@ -623,6 +624,7 @@ CONFIG_TEST_OVERFLOW=m
- CONFIG_TEST_RHASHTABLE=m
- CONFIG_TEST_HASH=m
- CONFIG_TEST_IDA=m
-+CONFIG_TEST_BITOPS=m
- CONFIG_TEST_VMALLOC=m
- CONFIG_TEST_USER_COPY=m
- CONFIG_TEST_BPF=m
-diff --git a/arch/m68k/configs/multi_defconfig b/arch/m68k/configs/multi_defconfig
-index 0abb53c38c20da1e..09fd5a8c58210829 100644
---- a/arch/m68k/configs/multi_defconfig
-+++ b/arch/m68k/configs/multi_defconfig
-@@ -681,6 +681,7 @@ CONFIG_CRYPTO_USER_API_SKCIPHER=m
- CONFIG_CRYPTO_USER_API_RNG=m
- CONFIG_CRYPTO_USER_API_AEAD=m
- # CONFIG_CRYPTO_HW is not set
-+CONFIG_PRIME_NUMBERS=m
- CONFIG_CRC32_SELFTEST=m
- CONFIG_CRC64=m
- CONFIG_XZ_DEC_TEST=m
-@@ -709,6 +710,7 @@ CONFIG_TEST_OVERFLOW=m
- CONFIG_TEST_RHASHTABLE=m
- CONFIG_TEST_HASH=m
- CONFIG_TEST_IDA=m
-+CONFIG_TEST_BITOPS=m
- CONFIG_TEST_VMALLOC=m
- CONFIG_TEST_USER_COPY=m
- CONFIG_TEST_BPF=m
-diff --git a/arch/m68k/configs/mvme147_defconfig b/arch/m68k/configs/mvme147_defconfig
-index cb14c234d3adb335..487d8c3202514f5a 100644
---- a/arch/m68k/configs/mvme147_defconfig
-+++ b/arch/m68k/configs/mvme147_defconfig
-@@ -563,6 +563,7 @@ CONFIG_CRYPTO_USER_API_SKCIPHER=m
- CONFIG_CRYPTO_USER_API_RNG=m
- CONFIG_CRYPTO_USER_API_AEAD=m
- # CONFIG_CRYPTO_HW is not set
-+CONFIG_PRIME_NUMBERS=m
- CONFIG_CRC32_SELFTEST=m
- CONFIG_CRC64=m
- CONFIG_XZ_DEC_TEST=m
-@@ -591,6 +592,7 @@ CONFIG_TEST_OVERFLOW=m
- CONFIG_TEST_RHASHTABLE=m
- CONFIG_TEST_HASH=m
- CONFIG_TEST_IDA=m
-+CONFIG_TEST_BITOPS=m
- CONFIG_TEST_VMALLOC=m
- CONFIG_TEST_USER_COPY=m
- CONFIG_TEST_BPF=m
-diff --git a/arch/m68k/configs/mvme16x_defconfig b/arch/m68k/configs/mvme16x_defconfig
-index e8a1920aded799b0..ed4c8f3b5bdcc553 100644
---- a/arch/m68k/configs/mvme16x_defconfig
-+++ b/arch/m68k/configs/mvme16x_defconfig
-@@ -564,6 +564,7 @@ CONFIG_CRYPTO_USER_API_SKCIPHER=m
- CONFIG_CRYPTO_USER_API_RNG=m
- CONFIG_CRYPTO_USER_API_AEAD=m
- # CONFIG_CRYPTO_HW is not set
-+CONFIG_PRIME_NUMBERS=m
- CONFIG_CRC32_SELFTEST=m
- CONFIG_CRC64=m
- CONFIG_XZ_DEC_TEST=m
-@@ -592,6 +593,7 @@ CONFIG_TEST_OVERFLOW=m
- CONFIG_TEST_RHASHTABLE=m
- CONFIG_TEST_HASH=m
- CONFIG_TEST_IDA=m
-+CONFIG_TEST_BITOPS=m
- CONFIG_TEST_VMALLOC=m
- CONFIG_TEST_USER_COPY=m
- CONFIG_TEST_BPF=m
-diff --git a/arch/m68k/configs/q40_defconfig b/arch/m68k/configs/q40_defconfig
-index 2cbf416fc725b6ca..83b98f9aa72c8554 100644
---- a/arch/m68k/configs/q40_defconfig
-+++ b/arch/m68k/configs/q40_defconfig
-@@ -582,6 +582,7 @@ CONFIG_CRYPTO_USER_API_SKCIPHER=m
- CONFIG_CRYPTO_USER_API_RNG=m
- CONFIG_CRYPTO_USER_API_AEAD=m
- # CONFIG_CRYPTO_HW is not set
-+CONFIG_PRIME_NUMBERS=m
- CONFIG_CRC32_SELFTEST=m
- CONFIG_CRC64=m
- CONFIG_XZ_DEC_TEST=m
-@@ -610,6 +611,7 @@ CONFIG_TEST_OVERFLOW=m
- CONFIG_TEST_RHASHTABLE=m
- CONFIG_TEST_HASH=m
- CONFIG_TEST_IDA=m
-+CONFIG_TEST_BITOPS=m
- CONFIG_TEST_VMALLOC=m
- CONFIG_TEST_USER_COPY=m
- CONFIG_TEST_BPF=m
-diff --git a/arch/m68k/configs/sun3_defconfig b/arch/m68k/configs/sun3_defconfig
-index fed3cc7abcc447f5..5baadb7a98b22557 100644
---- a/arch/m68k/configs/sun3_defconfig
-+++ b/arch/m68k/configs/sun3_defconfig
-@@ -566,6 +566,7 @@ CONFIG_CRYPTO_USER_API_SKCIPHER=m
- CONFIG_CRYPTO_USER_API_RNG=m
- CONFIG_CRYPTO_USER_API_AEAD=m
- # CONFIG_CRYPTO_HW is not set
-+CONFIG_PRIME_NUMBERS=m
- CONFIG_CRC32_SELFTEST=m
- CONFIG_CRC64=m
- CONFIG_XZ_DEC_TEST=m
-@@ -593,6 +594,7 @@ CONFIG_TEST_OVERFLOW=m
- CONFIG_TEST_RHASHTABLE=m
- CONFIG_TEST_HASH=m
- CONFIG_TEST_IDA=m
-+CONFIG_TEST_BITOPS=m
- CONFIG_TEST_VMALLOC=m
- CONFIG_TEST_USER_COPY=m
- CONFIG_TEST_BPF=m
-diff --git a/arch/m68k/configs/sun3x_defconfig b/arch/m68k/configs/sun3x_defconfig
-index 0954fde256e6a5b5..3c54035283e6d5da 100644
---- a/arch/m68k/configs/sun3x_defconfig
-+++ b/arch/m68k/configs/sun3x_defconfig
-@@ -565,6 +565,7 @@ CONFIG_CRYPTO_USER_API_SKCIPHER=m
- CONFIG_CRYPTO_USER_API_RNG=m
- CONFIG_CRYPTO_USER_API_AEAD=m
- # CONFIG_CRYPTO_HW is not set
-+CONFIG_PRIME_NUMBERS=m
- CONFIG_CRC32_SELFTEST=m
- CONFIG_CRC64=m
- CONFIG_XZ_DEC_TEST=m
-@@ -593,6 +594,7 @@ CONFIG_TEST_OVERFLOW=m
- CONFIG_TEST_RHASHTABLE=m
- CONFIG_TEST_HASH=m
- CONFIG_TEST_IDA=m
-+CONFIG_TEST_BITOPS=m
- CONFIG_TEST_VMALLOC=m
- CONFIG_TEST_USER_COPY=m
- CONFIG_TEST_BPF=m
+Argh, it was to early in the morning...
+Can you please try the one below?
+
+It seems that coldfire didn't register all its physical memory with
+memblock and the pfn list was damaged because of that.
+
+
+diff --git a/arch/m68k/kernel/setup_no.c b/arch/m68k/kernel/setup_no.c
+index e779b19e0193..f66f4b1d062e 100644
+--- a/arch/m68k/kernel/setup_no.c
++++ b/arch/m68k/kernel/setup_no.c
+@@ -138,7 +138,8 @@ void __init setup_arch(char **cmdline_p)
+ 	pr_debug("MEMORY -> ROMFS=0x%p-0x%06lx MEM=0x%06lx-0x%06lx\n ",
+ 		 __bss_stop, memory_start, memory_start, memory_end);
+ 
+-	memblock_add(memory_start, memory_end - memory_start);
++	memblock_add(_rambase, memory_end - _rambase);
++	memblock_reserve(_rambase, memory_start - _rambase);
+ 
+ 	/* Keep a copy of command line */
+ 	*cmdline_p = &command_line[0];
+
+> Regards
+> Greg
+> 
+> 
+> 
+> > Using memblock_add_node() with nid = 0 to register memory banks solves the
+> > problem.
+> > 
+> > Fixes: 3f08a302f533 ("mm: remove CONFIG_HAVE_MEMBLOCK_NODE_MAP option")
+> > Fixes: fa3354e4ea39 ("mm: free_area_init: use maximal zone PFNs rather than zone sizes")
+> > Signed-off-by: Angelo Dureghello <angelo.dureghello@timesys.com>
+> > Co-developed-by: Mike Rapoport <rppt@linux.ibm.com>
+> > Signed-off-by: Mike Rapoport <rppt@linux.ibm.com>
+> > ---
+> >   arch/m68k/kernel/setup_no.c | 2 +-
+> >   arch/m68k/mm/mcfmmu.c       | 2 +-
+> >   2 files changed, 2 insertions(+), 2 deletions(-)
+> > 
+> > diff --git a/arch/m68k/kernel/setup_no.c b/arch/m68k/kernel/setup_no.c
+> > index e779b19e0193..0c4589a39ba9 100644
+> > --- a/arch/m68k/kernel/setup_no.c
+> > +++ b/arch/m68k/kernel/setup_no.c
+> > @@ -138,7 +138,7 @@ void __init setup_arch(char **cmdline_p)
+> >   	pr_debug("MEMORY -> ROMFS=0x%p-0x%06lx MEM=0x%06lx-0x%06lx\n ",
+> >   		 __bss_stop, memory_start, memory_start, memory_end);
+> > -	memblock_add(memory_start, memory_end - memory_start);
+> > +	memblock_add_node(memory_start, memory_end - memory_start, 0);
+> >   	/* Keep a copy of command line */
+> >   	*cmdline_p = &command_line[0];
+> > diff --git a/arch/m68k/mm/mcfmmu.c b/arch/m68k/mm/mcfmmu.c
+> > index 29f47923aa46..7d04210d34f0 100644
+> > --- a/arch/m68k/mm/mcfmmu.c
+> > +++ b/arch/m68k/mm/mcfmmu.c
+> > @@ -174,7 +174,7 @@ void __init cf_bootmem_alloc(void)
+> >   	m68k_memory[0].addr = _rambase;
+> >   	m68k_memory[0].size = _ramend - _rambase;
+> > -	memblock_add(m68k_memory[0].addr, m68k_memory[0].size);
+> > +	memblock_add_node(m68k_memory[0].addr, m68k_memory[0].size, 0);
+> >   	/* compute total pages in system */
+> >   	num_pages = PFN_DOWN(_ramend - _rambase);
+> > 
+
 -- 
-2.17.1
-
+Sincerely yours,
+Mike.
