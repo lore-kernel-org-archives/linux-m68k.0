@@ -4,55 +4,52 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-10.1 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	DKIM_VALID,DKIM_VALID_AU,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
-	autolearn_force=no version=3.4.0
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9EB60C433E0
-	for <linux-m68k@archiver.kernel.org>; Wed, 17 Jun 2020 03:16:13 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C31CAC433E3
+	for <linux-m68k@archiver.kernel.org>; Wed, 17 Jun 2020 06:53:50 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 6B64D2082E
-	for <linux-m68k@archiver.kernel.org>; Wed, 17 Jun 2020 03:16:13 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id A061020739
+	for <linux-m68k@archiver.kernel.org>; Wed, 17 Jun 2020 06:53:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=default; t=1592363773;
-	bh=dPIZDMG/sPkBUMh9e4hXQiXOgw67eXfGJoOGpIUReA0=;
-	h=From:To:Cc:Subject:Date:List-ID:From;
-	b=reYJN+g+Emu5R5RI0cvmZn2Ybe000NsHJUznBhPVpjYrsxHHW/OgKYf+4GOcb4hkJ
-	 WK1lGbBs6ZzirFdgaAjGYJeDXEKCV1lUgaL0vFH7VQK8VOAlPRFxto93lz6wCExezH
-	 aQov688M9hV6+5RPw84lunuWPkN9B/HxypKJY2ns=
+	s=default; t=1592376830;
+	bh=K+aokcyRYan2osdekFT7AdOlC3OZDrwrQkhmsxGCJqI=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-ID:From;
+	b=PS5jL2ZKhticW0RvO6E5SYfPyqqIs8qBYrZ3z7VRfCDdj07oflDHjL6cDbQQ/dxIr
+	 ulg2j2zfxtsfbUhP/ddukrsOFpHlrFLyiqsdmzsIg+po+BJlBqgdufR7JceqR7OFsb
+	 cerCP+wGwgJvDapDkRPr0rOmkvoU3EP+fXQn+Afo=
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726497AbgFQDQN (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Tue, 16 Jun 2020 23:16:13 -0400
-Received: from condef-06.nifty.com ([202.248.20.71]:21150 "EHLO
-        condef-06.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726253AbgFQDQN (ORCPT
-        <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Tue, 16 Jun 2020 23:16:13 -0400
-Received: from conuserg-07.nifty.com ([10.126.8.70])by condef-06.nifty.com with ESMTP id 05H3COqA032257
-        for <linux-m68k@lists.linux-m68k.org>; Wed, 17 Jun 2020 12:12:24 +0900
-Received: from oscar.flets-west.jp (softbank126090202047.bbtec.net [126.90.202.47]) (authenticated)
-        by conuserg-07.nifty.com with ESMTP id 05H3Bw20000949;
-        Wed, 17 Jun 2020 12:11:58 +0900
-DKIM-Filter: OpenDKIM Filter v2.10.3 conuserg-07.nifty.com 05H3Bw20000949
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
-        s=dec2015msa; t=1592363520;
-        bh=gK+XsFYZkU4y7SHt2/4a5PTKhsJbY3z5Jtdt+MhtyNs=;
-        h=From:To:Cc:Subject:Date:From;
-        b=AGWBhNf2ZMwPiSeTcoTfNjzwWnonzQur03c8L5CdDjHAUtwPhoVdyzlnEk1m17kkd
-         xmr7HMAPVUMeEs2+I1s1vcJJe/RYy45OGpqJYs6Vjvjl1H3qbtMlCxrVjNiudJMsTM
-         AyYXxl0pBlTumkiAQpKkTFLay4alYKkBfPqi6wut4FsaEsR32dQwiDIhqjjf1Vpkqa
-         5bmFZUlBm4ZgIKJLK72MIsQLJPBTRlRr1kl1PgZfIGg7gEEVJeI7RYPN/syRN8rZfG
-         YA2EblLjey3EF0l7yau84+OCd+WZzFU2lF8CgATDjtkpHF2ELJpTca0l5GfT5YMmYc
-         D0G35ppTNsDRA==
-X-Nifty-SrcIP: [126.90.202.47]
-From:   Masahiro Yamada <masahiroy@kernel.org>
-To:     Geert Uytterhoeven <geert@linux-m68k.org>,
-        linux-m68k@lists.linux-m68k.org
-Cc:     Masahiro Yamada <masahiroy@kernel.org>,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] m68k: use CLEAN_FILES to clean up files
-Date:   Wed, 17 Jun 2020 12:11:53 +0900
-Message-Id: <20200617031153.85858-1-masahiroy@kernel.org>
-X-Mailer: git-send-email 2.25.1
+        id S1726510AbgFQGxu (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Wed, 17 Jun 2020 02:53:50 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53876 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726497AbgFQGxu (ORCPT <rfc822;linux-m68k@lists.linux-m68k.org>);
+        Wed, 17 Jun 2020 02:53:50 -0400
+Received: from aquarius.haifa.ibm.com (nesher1.haifa.il.ibm.com [195.110.40.7])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id A6ABD208D5;
+        Wed, 17 Jun 2020 06:53:47 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1592376829;
+        bh=K+aokcyRYan2osdekFT7AdOlC3OZDrwrQkhmsxGCJqI=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=GCDE72gdgf+pFtekoOSIOsG5yPxQbo1Sogx3iVWOieB9tEHyc2B/cHUpt5b2nUxlJ
+         LLGukwMsqlVH5qOK5pwq4hgPa5Xn7EeLCYYzxppqSaXmJtq1AJHfOu4/M8m9rWqh0z
+         +b64L0AgNGHte4OMBSpXfmfJCRT7pchJUMMdlDg8=
+From:   Mike Rapoport <rppt@kernel.org>
+To:     Greg Ungerer <gerg@linux-m68k.org>
+Cc:     Geert Uytterhoeven <geert@linux-m68k.org>,
+        linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org,
+        Mike Rapoport <rppt@kernel.org>,
+        Mike Rapoport <rppt@linux.ibm.com>
+Subject: [PATCH 1/2] m68k: nommu: register start of the memory with memblock
+Date:   Wed, 17 Jun 2020 09:53:40 +0300
+Message-Id: <20200617065341.32160-2-rppt@kernel.org>
+X-Mailer: git-send-email 2.26.2
+In-Reply-To: <20200617065341.32160-1-rppt@kernel.org>
+References: <20200617065341.32160-1-rppt@kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Sender: linux-m68k-owner@vger.kernel.org
@@ -60,37 +57,57 @@ Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-The log of 'make ARCH=m68k clean' does not look nice.
+From: Mike Rapoport <rppt@linux.ibm.com>
 
-$ make ARCH=m68k clean
-  CLEAN   arch/m68k/kernel
-  [ snip ]
-  CLEAN   usr
-rm -f vmlinux.gz vmlinux.bz2
-  CLEAN   vmlinux.symvers modules.builtin modules.builtin.modinfo
+The m68k nommu setup code didn't register the beginning of the physical
+memory with memblock because it was anyway occupied by the kernel. However,
+commit fa3354e4ea39 ("mm: free_area_init: use maximal zone PFNs rather than
+zone sizes") changed zones initialization to use memblock.memory to detect
+the zone extents and this caused inconsistency between zone PFNs and the
+actual PFNs:
 
-Use CLEAN_FILES to simplify the code, and beautify the log.
+BUG: Bad page state in process swapper  pfn:20165
+page:41fe0ca0 refcount:0 mapcount:1 mapping:00000000 index:0x0 flags: 0x0()
+raw: 00000000 00000100 00000122 00000000 00000000 00000000 00000000 00000000
+page dumped because: nonzero mapcount
+CPU: 0 PID: 1 Comm: swapper Not tainted 5.8.0-rc1-00001-g3a38f8a60c65-dirty #1
+Stack from 404c9ebc:
+        404c9ebc 4029ab28 4029ab28 40088470 41fe0ca0 40299e21 40299df1 404ba2a4
+        00020165 00000000 41fd2c10 402c7ba0 41fd2c04 40088504 41fe0ca0 40299e21
+        00000000 40088a12 41fe0ca0 41fe0ca4 0000020a 00000000 00000001 402ca000
+        00000000 41fe0ca0 41fd2c10 41fd2c10 00000000 00000000 402b2388 00000001
+        400a0934 40091056 404c9f44 404c9f44 40088db4 402c7ba0 00000001 41fd2c04
+        41fe0ca0 41fd2000 41fe0ca0 40089e02 4026ecf4 40089e4e 41fe0ca0 ffffffff
+Call Trace:
+        [<40088470>] 0x40088470
+ [<40088504>] 0x40088504
+ [<40088a12>] 0x40088a12
+ [<402ca000>] 0x402ca000
+ [<400a0934>] 0x400a0934
 
-Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
+Adjust the memory registration with memblock to include the beginning of
+the physical memory and make sure that the area occupied by the kernel is
+marked as reserved.
+
+Signed-off-by: Mike Rapoport <rppt@linux.ibm.com>
 ---
+ arch/m68k/kernel/setup_no.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
- arch/m68k/Makefile | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
-
-diff --git a/arch/m68k/Makefile b/arch/m68k/Makefile
-index 24072fb99680..4d569c3ab9fd 100644
---- a/arch/m68k/Makefile
-+++ b/arch/m68k/Makefile
-@@ -140,8 +140,7 @@ else
- 	$(KBZIP2) -1c vmlinux >vmlinux.bz2
- endif
+diff --git a/arch/m68k/kernel/setup_no.c b/arch/m68k/kernel/setup_no.c
+index e779b19e0193..f66f4b1d062e 100644
+--- a/arch/m68k/kernel/setup_no.c
++++ b/arch/m68k/kernel/setup_no.c
+@@ -138,7 +138,8 @@ void __init setup_arch(char **cmdline_p)
+ 	pr_debug("MEMORY -> ROMFS=0x%p-0x%06lx MEM=0x%06lx-0x%06lx\n ",
+ 		 __bss_stop, memory_start, memory_start, memory_end);
  
--archclean:
--	rm -f vmlinux.gz vmlinux.bz2
-+CLEAN_FILES += vmlinux.gz vmlinux.bz2
+-	memblock_add(memory_start, memory_end - memory_start);
++	memblock_add(_rambase, memory_end - _rambase);
++	memblock_reserve(_rambase, memory_start - _rambase);
  
- archheaders:
- 	$(Q)$(MAKE) $(build)=arch/m68k/kernel/syscalls all
+ 	/* Keep a copy of command line */
+ 	*cmdline_p = &command_line[0];
 -- 
-2.25.1
+2.26.2
 
