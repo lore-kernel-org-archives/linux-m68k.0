@@ -7,37 +7,37 @@ X-Spam-Status: No, score=-10.1 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id CA5FEC433E1
-	for <linux-m68k@archiver.kernel.org>; Thu, 18 Jun 2020 02:04:41 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 80F97C433E0
+	for <linux-m68k@archiver.kernel.org>; Thu, 18 Jun 2020 02:24:36 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id A119C2220F
-	for <linux-m68k@archiver.kernel.org>; Thu, 18 Jun 2020 02:04:41 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 5D8B3214DB
+	for <linux-m68k@archiver.kernel.org>; Thu, 18 Jun 2020 02:24:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=default; t=1592445881;
+	s=default; t=1592447076;
 	bh=7tbR37TlDsxb2DvWezaDQ8YEVSOAqo98BHGh0rZj/rE=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-ID:From;
-	b=mQ3IYFatI9hUb0IwNHwnJIMZtYyYGXn/6litYVJ34SgYmFJC8Zx9ekIun9CKNNsuf
-	 CIIyxsk1d9xRGJ6EtP60jjRPMbxa1R5u+VCuKC0KzTmkwxH81su/hQ6gISvD8CCRNV
-	 xE/Q1GAlXWHTc58qjoDo7KTpoUpuHRFK05FGOG7I=
+	b=M2cB+fcg5rjrlg70GNJRezpy/YijezK0SpHRX3Z1H5vBHecMk2zQmlC7IwApOQQ4s
+	 h2pYZeaIXtEf+kiQCw1zFioPwwuQiTrxE8gHGg8IK9RRLABYGSWpsr3+qSSE1crI+j
+	 dqPx+eEFm4y6h7ov1WxvdMiIZXcZhI6FFNu1r5OQ=
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726981AbgFRCEk (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Wed, 17 Jun 2020 22:04:40 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56224 "EHLO mail.kernel.org"
+        id S1729059AbgFRBRn (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Wed, 17 Jun 2020 21:17:43 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48868 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730886AbgFRBW6 (ORCPT <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Wed, 17 Jun 2020 21:22:58 -0400
+        id S1729806AbgFRBRk (ORCPT <rfc822;linux-m68k@lists.linux-m68k.org>);
+        Wed, 17 Jun 2020 21:17:40 -0400
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B763A20663;
-        Thu, 18 Jun 2020 01:22:57 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id C068B21D94;
+        Thu, 18 Jun 2020 01:17:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592443378;
+        s=default; t=1592443060;
         bh=7tbR37TlDsxb2DvWezaDQ8YEVSOAqo98BHGh0rZj/rE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=pd2G8YRE7ZGoKcg0FL8BkH4lsroCH4NMZA/S5j3Ff8c6ateqYBAc+cVHki1SA4RJd
-         ifww6MRyoILcose5/WP6yEXJEgQ0DTp4+8fCQAhvIKSEtxlZrLO7HQOMEWILVvF+px
-         o74DfZj+JkBKfToHSbopp2a+VaJabDSS85y+xVtE=
+        b=Wd0AsE7A8ZKtL5f4VjZ2suFMfTbs2XikzAM67/25OI4CL3vHioR9ooZ+7pggxdCCj
+         t2T2c40F4LxdPD9WVt1aC8BgX50b4IjgqjZPvM082Cm6SrMLYGLB4AYoE5cQL8OjOg
+         zLsTBLrrPxZOk9gX6Nx9r2QJ2bih1U+1EkeRW8k0=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
 Cc:     Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
@@ -45,12 +45,12 @@ Cc:     Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
         Greg Ungerer <gerg@linux-m68k.org>,
         Sasha Levin <sashal@kernel.org>,
         linux-m68k@lists.linux-m68k.org
-Subject: [PATCH AUTOSEL 4.19 030/172] m68k/PCI: Fix a memory leak in an error handling path
-Date:   Wed, 17 Jun 2020 21:19:56 -0400
-Message-Id: <20200618012218.607130-30-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.4 051/266] m68k/PCI: Fix a memory leak in an error handling path
+Date:   Wed, 17 Jun 2020 21:12:56 -0400
+Message-Id: <20200618011631.604574-51-sashal@kernel.org>
 X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20200618012218.607130-1-sashal@kernel.org>
-References: <20200618012218.607130-1-sashal@kernel.org>
+In-Reply-To: <20200618011631.604574-1-sashal@kernel.org>
+References: <20200618011631.604574-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
