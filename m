@@ -2,102 +2,77 @@ Return-Path: <SRS0=LIUq=77=vger.kernel.org=linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.2 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,
-	URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-0.8 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 11D8AC433DF
-	for <linux-m68k@archiver.kernel.org>; Thu, 18 Jun 2020 12:26:29 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 0CCFFC433E0
+	for <linux-m68k@archiver.kernel.org>; Thu, 18 Jun 2020 18:45:41 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id E6CBF2075E
-	for <linux-m68k@archiver.kernel.org>; Thu, 18 Jun 2020 12:26:28 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id E716C208B8
+	for <linux-m68k@archiver.kernel.org>; Thu, 18 Jun 2020 18:45:40 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727094AbgFRM0V (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Thu, 18 Jun 2020 08:26:21 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45204 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728762AbgFRMZ6 (ORCPT <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Thu, 18 Jun 2020 08:25:58 -0400
-Received: from [10.44.0.192] (unknown [103.48.210.53])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        id S1729049AbgFRSpk (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Thu, 18 Jun 2020 14:45:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38310 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729046AbgFRSpk (ORCPT
+        <rfc822;linux-m68k@lists.linux-m68k.org>);
+        Thu, 18 Jun 2020 14:45:40 -0400
+Received: from smtp3.strotmann.de (smtp3.strotmann.de [IPv6:2a03:4000:2:33f::5353])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 16473C06174E
+        for <linux-m68k@lists.linux-m68k.org>; Thu, 18 Jun 2020 11:45:39 -0700 (PDT)
+Received: from smtp2.strotmann.de (unknown [IPv6:fd00::2])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 2AC26207E8;
-        Thu, 18 Jun 2020 12:25:51 +0000 (UTC)
-Subject: Re: [PATCH] m68k: mcfmmu: remove stale part of comment about
- steal_context
-To:     Mike Rapoport <rppt@kernel.org>
-Cc:     Geert Uytterhoeven <geert@linux-m68k.org>,
-        linux-m68k@lists.linux-m68k.org, Mike Rapoport <rppt@linux.ibm.com>
-References: <20200618081727.4741-1-rppt@kernel.org>
- <bb70270a-5634-f258-f144-9410e8baf068@linux-m68k.org>
- <20200618120956.GE6571@kernel.org>
-From:   Greg Ungerer <gerg@linux-m68k.org>
-Message-ID: <f7e54b32-fc11-9150-1384-6ff07f68eea7@linux-m68k.org>
-Date:   Thu, 18 Jun 2020 22:25:48 +1000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.8.0
+        by smtp3.strotmann.de (Postfix) with ESMTPS id 475F1852B2;
+        Thu, 18 Jun 2020 20:45:35 +0200 (CEST)
+Received: from emacs.strotmann.de.strotmann.de (unknown [IPv6:fd00::123])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp2.strotmann.de (Postfix) with ESMTPSA id 49nrV52N66zVM5c;
+        Thu, 18 Jun 2020 20:45:33 +0200 (CEST)
+User-agent: mu4e 1.2.0; emacs 28.0.50
+From:   Carsten Strotmann <cas@strotmann.de>
+To:     linux-m68k <linux-m68k@lists.linux-m68k.org>,
+        Debian-68k <debian-68k@lists.debian.org>
+Subject: Virtual m68k Developer Meeting 2020
+Date:   Thu, 18 Jun 2020 20:45:32 +0200
+Message-ID: <86sgeskyb7.fsf@emacs.strotmann.de>
 MIME-Version: 1.0
-In-Reply-To: <20200618120956.GE6571@kernel.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; format=flowed
 Sender: linux-m68k-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-Hi Mike
+Hi,
 
-On 18/6/20 10:09 pm, Mike Rapoport wrote:
-> On Thu, Jun 18, 2020 at 09:48:42PM +1000, Greg Ungerer wrote:
->> On 18/6/20 6:17 pm, Mike Rapoport wrote:
->>> From: Mike Rapoport <rppt@linux.ibm.com>
->>>
->>> The comment about steal_context() came from powerpc and a part of it
->>> addresses differences between powerpc variants that are not really
->>> relevant to m68k.
->>>
->>> Remove that part of the comment.
->>>
->>> Signed-off-by: Mike Rapoport <rppt@linux.ibm.com>
->>
->> Acked-by: Greg Ungerer <gerg@linux-m68k.org>
->>
->> Do you want me to carry that in my m68k (m68knommu) tree for v5.9?
-> 
-> Yes, please :)
+during a nice virtual meeting we've had on 5th of June with a 
+couple a
+people from the m68k community, the decision was made to organize 
+a
+virtual meeting for 2020 (which might be followed by a 'in person'
+meeting in 2021).
 
-Applied to for-next branch of m68knommu git tree.
+I've setup a poll to find a date (or multiple dates) in 
+Q4/2020. If you
+are interested in joining the meeting, please go to the poll and 
+fill in
+your dates:
+<https://nuudel.digitalcourage.de/sBwNfnUh2BjGWHJY>
 
-Thanks!
-Greg
+The poll will run until end of August, the date(s) for the meeting 
+will
+be announced in the first week of September.
 
+The next virtual eventing chat meeting will be on 10th of July 
+2020
+starting at 8:00pm CEST (20:00 H) on <https://meet.m68k.info> (the
+meeting page will appear until this date [famous last words]).
 
+Greetings
 
->>> ---
->>> Hi,
->>>
->>> I've found this by pure chance while grepping for pgalloc.h
->>> It's been there since 2011, but I don't think it's a stable material, so I
->>> didn't cc them.
->>>
->>>    arch/m68k/mm/mcfmmu.c | 5 -----
->>>    1 file changed, 5 deletions(-)
->>>
->>> diff --git a/arch/m68k/mm/mcfmmu.c b/arch/m68k/mm/mcfmmu.c
->>> index 29f47923aa46..cb9f8675d81b 100644
->>> --- a/arch/m68k/mm/mcfmmu.c
->>> +++ b/arch/m68k/mm/mcfmmu.c
->>> @@ -214,11 +214,6 @@ void __init cf_mmu_context_init(void)
->>>    /*
->>>     * Steal a context from a task that has one at the moment.
->>> - * This is only used on 8xx and 4xx and we presently assume that
->>> - * they don't do SMP.  If they do then thicfpgalloc.hs will have to check
->>> - * whether the MM we steal is in use.
->>> - * We also assume that this is only used on systems that don't
->>> - * use an MMU hash table - this is true for 8xx and 4xx.
->>>     * This isn't an LRU system, it just frees up each context in
->>>     * turn (sort-of pseudo-random replacement :).  This would be the
->>>     * place to implement an LRU scheme if anyone was motivated to do it.
->>>
-> 
+Carsten
