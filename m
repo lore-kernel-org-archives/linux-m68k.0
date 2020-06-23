@@ -1,182 +1,127 @@
-Return-Path: <SRS0=qvYG=AD=vger.kernel.org=linux-m68k-owner@kernel.org>
+Return-Path: <SRS0=a2Vv=AE=vger.kernel.org=linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-10.0 required=3.0
-	tests=HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
-	autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-7.5 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
+	MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
+	USER_AGENT_SANE_1 autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C9C7DC433E0
-	for <linux-m68k@archiver.kernel.org>; Mon, 22 Jun 2020 23:47:25 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 6FE19C433E0
+	for <linux-m68k@archiver.kernel.org>; Tue, 23 Jun 2020 15:34:44 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id B54D820720
-	for <linux-m68k@archiver.kernel.org>; Mon, 22 Jun 2020 23:47:25 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 52ACE20656
+	for <linux-m68k@archiver.kernel.org>; Tue, 23 Jun 2020 15:34:44 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730400AbgFVXrZ (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Mon, 22 Jun 2020 19:47:25 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:54753 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730544AbgFVXqG (ORCPT
+        id S1732885AbgFWPeo (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Tue, 23 Jun 2020 11:34:44 -0400
+Received: from outpost1.zedat.fu-berlin.de ([130.133.4.66]:44527 "EHLO
+        outpost1.zedat.fu-berlin.de" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1732738AbgFWPen (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Mon, 22 Jun 2020 19:46:06 -0400
-Received: from ip5f5af08c.dynamic.kabel-deutschland.de ([95.90.240.140] helo=wittgenstein.fritz.box)
-        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <christian.brauner@ubuntu.com>)
-        id 1jnW8Z-0005DO-Ny; Mon, 22 Jun 2020 23:46:03 +0000
-From:   Christian Brauner <christian.brauner@ubuntu.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        linux-m68k@lists.linux-m68k.org, x86@kernel.org
-Subject: [PATCH 01/17] fork: fold legacy_clone_args_valid() into _do_fork()
-Date:   Tue, 23 Jun 2020 01:43:10 +0200
-Message-Id: <20200622234326.906346-2-christian.brauner@ubuntu.com>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200622234326.906346-1-christian.brauner@ubuntu.com>
-References: <20200622234326.906346-1-christian.brauner@ubuntu.com>
+        Tue, 23 Jun 2020 11:34:43 -0400
+Received: from inpost2.zedat.fu-berlin.de ([130.133.4.69])
+          by outpost.zedat.fu-berlin.de (Exim 4.93)
+          with esmtps (TLS1.2)
+          tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+          (envelope-from <glaubitz@zedat.fu-berlin.de>)
+          id 1jnkwb-0043lB-D0; Tue, 23 Jun 2020 17:34:41 +0200
+Received: from p57bd9548.dip0.t-ipconnect.de ([87.189.149.72] helo=[192.168.178.139])
+          by inpost2.zedat.fu-berlin.de (Exim 4.93)
+          with esmtpsa (TLS1.2)
+          tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+          (envelope-from <glaubitz@physik.fu-berlin.de>)
+          id 1jnkwb-000Ost-7L; Tue, 23 Jun 2020 17:34:41 +0200
+Subject: Re: LLVM for m68k completed (but not merged)
+From:   John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
+To:     Debian m68k <debian-68k@lists.debian.org>
+Cc:     linux-m68k <linux-m68k@lists.linux-m68k.org>
+References: <7840bdc7-db9c-8638-c462-bbe03d4c5545@physik.fu-berlin.de>
+Autocrypt: addr=glaubitz@physik.fu-berlin.de; keydata=
+ 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
+ scOkTAZQGVpD/8AaLH4v1w==
+Message-ID: <131920ba-0da7-7cb7-43a4-f4e93179e5eb@physik.fu-berlin.de>
+Date:   Tue, 23 Jun 2020 17:34:40 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.9.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <7840bdc7-db9c-8638-c462-bbe03d4c5545@physik.fu-berlin.de>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Original-Sender: glaubitz@physik.fu-berlin.de
+X-Originating-IP: 87.189.149.72
 Sender: linux-m68k-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-This separate helper only existed to guarantee the mutual exclusivity of
-CLONE_PIDFD and CLONE_PARENT_SETTID for legacy clone since CLONE_PIDFD
-abuses the parent_tid field to return the pidfd. But we can actually handle
-this uniformely thus removing the helper. For legacy clone we can detect
-that CLONE_PIDFD is specified in conjunction with CLONE_PARENT_SETTID
-because they will share the same memory which is invalid and for clone3()
-setting the separate pidfd and parent_tid fields to the same memory is
-bogus as well. So fold that helper directly into _do_fork() by detecting
-this case.
+Hi!
 
-Cc: Thomas Gleixner <tglx@linutronix.de>
-Cc: Ingo Molnar <mingo@redhat.com>
-Cc: Al Viro <viro@zeniv.linux.org.uk>
-Cc: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: "Matthew Wilcox (Oracle)" <willy@infradead.org>
-Cc: "Peter Zijlstra (Intel)" <peterz@infradead.org>
-Cc: linux-m68k@lists.linux-m68k.org
-Cc: x86@kernel.org
-Signed-off-by: Christian Brauner <christian.brauner@ubuntu.com>
----
- arch/m68k/kernel/process.c |  3 ---
- arch/x86/kernel/sys_ia32.c |  3 ---
- include/linux/sched/task.h |  1 -
- kernel/fork.c              | 30 ++++++++++++++----------------
- 4 files changed, 14 insertions(+), 23 deletions(-)
+On 6/21/20 10:12 PM, John Paul Adrian Glaubitz wrote:
+> I just received the news that the m68k backend for LLVM has been finished [1].
+I have had a go at the code now and with some changes to clang, I can actually
+cross-compile "Hello World" in C now, cross-compile it with clang and get a working
+m68k executable [1].
 
-diff --git a/arch/m68k/kernel/process.c b/arch/m68k/kernel/process.c
-index 90ae376b7ab1..0608439ba452 100644
---- a/arch/m68k/kernel/process.c
-+++ b/arch/m68k/kernel/process.c
-@@ -125,9 +125,6 @@ asmlinkage int m68k_clone(struct pt_regs *regs)
- 		.tls		= regs->d5,
- 	};
- 
--	if (!legacy_clone_args_valid(&args))
--		return -EINVAL;
--
- 	return _do_fork(&args);
- }
- 
-diff --git a/arch/x86/kernel/sys_ia32.c b/arch/x86/kernel/sys_ia32.c
-index f8d65c99feb8..720cde885042 100644
---- a/arch/x86/kernel/sys_ia32.c
-+++ b/arch/x86/kernel/sys_ia32.c
-@@ -251,9 +251,6 @@ COMPAT_SYSCALL_DEFINE5(ia32_clone, unsigned long, clone_flags,
- 		.tls		= tls_val,
- 	};
- 
--	if (!legacy_clone_args_valid(&args))
--		return -EINVAL;
--
- 	return _do_fork(&args);
- }
- #endif /* CONFIG_IA32_EMULATION */
-diff --git a/include/linux/sched/task.h b/include/linux/sched/task.h
-index 38359071236a..ddce0ea515d1 100644
---- a/include/linux/sched/task.h
-+++ b/include/linux/sched/task.h
-@@ -96,7 +96,6 @@ extern void exit_files(struct task_struct *);
- extern void exit_itimers(struct signal_struct *);
- 
- extern long _do_fork(struct kernel_clone_args *kargs);
--extern bool legacy_clone_args_valid(const struct kernel_clone_args *kargs);
- extern long do_fork(unsigned long, unsigned long, unsigned long, int __user *, int __user *);
- struct task_struct *fork_idle(int);
- struct mm_struct *copy_init_mm(void);
-diff --git a/kernel/fork.c b/kernel/fork.c
-index 142b23645d82..9875aeb2ba41 100644
---- a/kernel/fork.c
-+++ b/kernel/fork.c
-@@ -2422,6 +2422,20 @@ long _do_fork(struct kernel_clone_args *args)
- 	int trace = 0;
- 	long nr;
- 
-+	/*
-+	 * For legacy clone() calls, CLONE_PIDFD uses the parent_tid argument
-+	 * to return the pidfd. Hence, CLONE_PIDFD and CLONE_PARENT_SETTID are
-+	 * mutually exclusive. With clone3() CLONE_PIDFD has grown a separate
-+	 * field in struct clone_args and it still doesn't make sense to have
-+	 * them both point at the same memory location. Performing this check
-+	 * here has the advantage that we don't need to have a separate helper
-+	 * to check for legacy clone().
-+	 */
-+	if ((args->flags & CLONE_PIDFD) &&
-+	    (args->flags & CLONE_PARENT_SETTID) &&
-+	    (args->pidfd == args->parent_tid))
-+		return -EINVAL;
-+
- 	/*
- 	 * Determine whether and which event to report to ptracer.  When
- 	 * called from kernel_thread or CLONE_UNTRACED is explicitly
-@@ -2479,16 +2493,6 @@ long _do_fork(struct kernel_clone_args *args)
- 	return nr;
- }
- 
--bool legacy_clone_args_valid(const struct kernel_clone_args *kargs)
--{
--	/* clone(CLONE_PIDFD) uses parent_tidptr to return a pidfd */
--	if ((kargs->flags & CLONE_PIDFD) &&
--	    (kargs->flags & CLONE_PARENT_SETTID))
--		return false;
--
--	return true;
--}
--
- #ifndef CONFIG_HAVE_COPY_THREAD_TLS
- /* For compatibility with architectures that call do_fork directly rather than
-  * using the syscall entry points below. */
-@@ -2508,9 +2512,6 @@ long do_fork(unsigned long clone_flags,
- 		.stack_size	= stack_size,
- 	};
- 
--	if (!legacy_clone_args_valid(&args))
--		return -EINVAL;
--
- 	return _do_fork(&args);
- }
- #endif
-@@ -2593,9 +2594,6 @@ SYSCALL_DEFINE5(clone, unsigned long, clone_flags, unsigned long, newsp,
- 		.tls		= tls,
- 	};
- 
--	if (!legacy_clone_args_valid(&args))
--		return -EINVAL;
--
- 	return _do_fork(&args);
- }
- #endif
+> glaubitz@epyc:/tmp/llvm-build> ./bin/clang -target m68k-linux-gnu ~/hello.c -o hello.m68k
+> glaubitz@epyc:/tmp/llvm-build> file hello.m68k 
+> hello.m68k: ELF 32-bit MSB executable, Motorola m68k, 68020, version 1 (SYSV), dynamically linked, interpreter /lib/ld.so.1, for GNU/Linux 3.2.0, not stripped
+> glaubitz@epyc:/tmp/llvm-build> cp -av hello.m68k /local_scratch/glaubitz/
+> 'hello.m68k' -> '/local_scratch/glaubitz/hello.m68k'
+> glaubitz@epyc:/tmp/llvm-build> schroot -c sid-m68k-sbuild
+> glaubitz@epyc:/tmp/llvm-build> uname -a
+> Linux epyc 5.6.0-2-amd64 #1 SMP Debian 5.6.14-1 (2020-05-23) m68k GNU/Linux
+> glaubitz@epyc:/tmp/llvm-build> /glaubitz/hello.m68k 
+> Hello World!
+> glaubitz@epyc:/tmp/llvm-build>
+
+Adrian
+
+> [1] https://github.com/M680x0/M680x0-mono-repo/pull/7
+
 -- 
-2.27.0
-
+ .''`.  John Paul Adrian Glaubitz
+: :' :  Debian Developer - glaubitz@debian.org
+`. `'   Freie Universitaet Berlin - glaubitz@physik.fu-berlin.de
+  `-    GPG: 62FF 8A75 84E0 2956 9546  0006 7426 3B37 F5B5 F913
