@@ -1,153 +1,144 @@
-Return-Path: <SRS0=0V5P=AH=vger.kernel.org=linux-m68k-owner@kernel.org>
+Return-Path: <SRS0=PVSu=AI=vger.kernel.org=linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-10.1 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
-	USER_AGENT_GIT autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-6.0 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
+	MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9A801C433DF
-	for <linux-m68k@archiver.kernel.org>; Fri, 26 Jun 2020 22:32:18 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 92799C433E0
+	for <linux-m68k@archiver.kernel.org>; Sat, 27 Jun 2020 12:23:38 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 74C4F20FC3
-	for <linux-m68k@archiver.kernel.org>; Fri, 26 Jun 2020 22:32:18 +0000 (UTC)
-Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="NGpj+Uqk"
+	by mail.kernel.org (Postfix) with ESMTP id 77E9921707
+	for <linux-m68k@archiver.kernel.org>; Sat, 27 Jun 2020 12:23:38 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726169AbgFZWcG (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Fri, 26 Jun 2020 18:32:06 -0400
-Received: from us-smtp-2.mimecast.com ([207.211.31.81]:38988 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726132AbgFZWbu (ORCPT
+        id S1726408AbgF0MXi (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Sat, 27 Jun 2020 08:23:38 -0400
+Received: from youngberry.canonical.com ([91.189.89.112]:33141 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725926AbgF0MXh (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Fri, 26 Jun 2020 18:31:50 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1593210708;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=lYOPBG0iFD9F9VjgENlAdm0PiHZqNHDJn1sXF2V/+vk=;
-        b=NGpj+UqkGsUie+K5D4tYjlt7dFwpIqz4POFCQ3pHUgO219KZOCEuV4wWv3gGcwlC19YSSO
-        P2s+bS/G3s8fkpXSvooLP3LC2ycjERxlNoXRNItSbWI6ZPnKHyqgqbp1TmqWBCxhqPDHM0
-        tMbpTNMsRPnQYu9eOoEs9vGZOgRlUxk=
-Received: from mail-qv1-f70.google.com (mail-qv1-f70.google.com
- [209.85.219.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-385-qkZbHhFFNKSbkNLZ6dWorg-1; Fri, 26 Jun 2020 18:31:47 -0400
-X-MC-Unique: qkZbHhFFNKSbkNLZ6dWorg-1
-Received: by mail-qv1-f70.google.com with SMTP id q5so7343704qvq.18
-        for <linux-m68k@lists.linux-m68k.org>; Fri, 26 Jun 2020 15:31:47 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=lYOPBG0iFD9F9VjgENlAdm0PiHZqNHDJn1sXF2V/+vk=;
-        b=VnlPHihSTSAtqo1vI7J6ZhiWeSM+0xD9MWj8YaR7TAy13zRTXxpLGdFMmmwUw3AgcS
-         SVHrP5r9+p8hZsD5CKQMVjLo5T2uFb+PcJD/gZFopKeHAJ3RLeG0Od1UCElBKk/2D1FV
-         Hr5xGafIBFc7wsw1y6u/+FruswClxss+6pdHsbDEkVCo2nLsoxMchoIXkCCV//NyRiLH
-         ER+lv02jBH0wCsA9Zghgn8Wa3q6ix1O2Xi0N77WDM5mklzt1CNqzvjSKYea+WR+uTx0H
-         TXzgibGmI+yatn7mCgc2BGW4TG0sp/sen/hnzFJu/nz5CRpA5YyPxh3RMgoi0fxVyN0K
-         6nTA==
-X-Gm-Message-State: AOAM533Y9ybIAxuFDYndsXWh2wILdS5HaMEVbeWUi5pzxs9+gSpk5MzC
-        Oz6/unCO7i7zD6/BcXT0gBe283oCj6u3dr3JSwe5Xa7vkjnFV538jWcF51Xo4g7JbR6i+EqeQ4U
-        wKcMa33Wco11EKKBLUS6Wr1z2IboU
-X-Received: by 2002:ac8:34b1:: with SMTP id w46mr5148300qtb.175.1593210706922;
-        Fri, 26 Jun 2020 15:31:46 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwEsH9GTqG0Uyirbf2HfHCLkouB6MqgMm+luFGWqRBdr7XED0i0wltil1GoCMm1tUaTEq60hA==
-X-Received: by 2002:ac8:34b1:: with SMTP id w46mr5148270qtb.175.1593210706647;
-        Fri, 26 Jun 2020 15:31:46 -0700 (PDT)
-Received: from xz-x1.redhat.com ([2607:9880:19c0:32::2])
-        by smtp.gmail.com with ESMTPSA id f203sm9903311qke.135.2020.06.26.15.31.45
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 26 Jun 2020 15:31:46 -0700 (PDT)
-From:   Peter Xu <peterx@redhat.com>
-To:     linux-mm@kvack.org, linux-kernel@vger.kernel.org
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Sat, 27 Jun 2020 08:23:37 -0400
+Received: from ip5f5af08c.dynamic.kabel-deutschland.de ([95.90.240.140] helo=wittgenstein)
+        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.86_2)
+        (envelope-from <christian.brauner@ubuntu.com>)
+        id 1jp9ro-0001ja-RZ; Sat, 27 Jun 2020 12:23:32 +0000
+Date:   Sat, 27 Jun 2020 14:23:32 +0200
+From:   Christian Brauner <christian.brauner@ubuntu.com>
+To:     kernel test robot <rong.a.chen@intel.com>
+Cc:     linux-kernel@vger.kernel.org,
         Linus Torvalds <torvalds@linux-foundation.org>,
-        Gerald Schaefer <gerald.schaefer@de.ibm.com>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Will Deacon <will@kernel.org>, peterx@redhat.com,
-        Michael Ellerman <mpe@ellerman.id.au>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>,
+        Al Viro <viro@zeniv.linux.org.uk>,
         Geert Uytterhoeven <geert@linux-m68k.org>,
-        linux-m68k@lists.linux-m68k.org
-Subject: [PATCH 09/26] mm/m68k: Use general page fault accounting
-Date:   Fri, 26 Jun 2020 18:31:13 -0400
-Message-Id: <20200626223130.199227-10-peterx@redhat.com>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200626223130.199227-1-peterx@redhat.com>
-References: <20200626223130.199227-1-peterx@redhat.com>
+        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        linux-m68k@lists.linux-m68k.org, x86@kernel.org, lkp@lists.01.org
+Subject: Re: [fork] 11689456e6: ltp.clone302.fail
+Message-ID: <20200627122332.ki2otaiw3v7wndbl@wittgenstein>
+References: <20200622234326.906346-2-christian.brauner@ubuntu.com>
+ <20200627082748.GM5535@shao2-debian>
 MIME-Version: 1.0
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: redhat.com
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20200627082748.GM5535@shao2-debian>
 Sender: linux-m68k-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-Use the general page fault accounting by passing regs into handle_mm_fault().
-It naturally solve the issue of multiple page fault accounting when page fault
-retry happened.
+On Sat, Jun 27, 2020 at 04:27:48PM +0800, kernel test robot wrote:
+> Greeting,
+> 
+> FYI, we noticed the following commit (built with gcc-9):
+> 
+> commit: 11689456e6df828b7917a558a36212e68fa9aa69 ("[PATCH 01/17] fork: fold legacy_clone_args_valid() into _do_fork()")
+> url: https://github.com/0day-ci/linux/commits/Christian-Brauner/arch-remove-do_fork-and-HAVE_COPY_THREAD_TLS/20200623-080105
+> base: https://git.kernel.org/cgit/linux/kernel/git/davem/sparc.git master
+> 
+> in testcase: ltp
+> with following parameters:
+> 
+> 	disk: 1HDD
+> 	fs: ext4
+> 	test: syscalls_part1
+> 
+> test-description: The LTP testsuite contains a collection of tools for testing the Linux kernel and related features.
+> test-url: http://linux-test-project.github.io/
+> 
+> 
+> on test machine: qemu-system-x86_64 -enable-kvm -cpu SandyBridge -smp 2 -m 16G
+> 
+> caused below changes (please refer to attached dmesg/kmsg for entire log/backtrace):
+> 
+> 
+> 
+> 
+> If you fix the issue, kindly add following tag
+> Reported-by: kernel test robot <rong.a.chen@intel.com>
+> 
+> 
+> <<<test_start>>>
+> tag=clone302 stime=1593153327
+> cmdline="clone302"
+> contacts=""
+> analysis=exit
+> <<<test_output>>>
+> tst_buffers.c:55: INFO: Test is using guarded buffers
+> tst_test.c:1247: INFO: Timeout per run is 0h 05m 00s
+> clone302.c:92: PASS: invalid args: clone3() failed as expected: EFAULT (14)
+> clone302.c:92: PASS: zero size: clone3() failed as expected: EINVAL (22)
+> clone302.c:92: PASS: short size: clone3() failed as expected: EINVAL (22)
+> clone302.c:92: PASS: extra size: clone3() failed as expected: EFAULT (14)
+> clone302.c:92: PASS: sighand-no-VM: clone3() failed as expected: EINVAL (22)
+> clone302.c:92: PASS: thread-no-sighand: clone3() failed as expected: EINVAL (22)
+> clone302.c:92: PASS: fs-newns: clone3() failed as expected: EINVAL (22)
+> clone302.c:92: PASS: invalid pidfd: clone3() failed as expected: EFAULT (14)
+> clone302.c:92: PASS: invalid childtid: clone3() failed as expected: EFAULT (14)
+> clone302.c:88: FAIL: invalid parenttid: clone3() should fail with EFAULT: EINVAL (22)
 
-Add the missing PERF_COUNT_SW_PAGE_FAULTS perf events too.  Note, the other two
-perf events (PERF_COUNT_SW_PAGE_FAULTS_[MAJ|MIN]) were done in handle_mm_fault().
+In short, this is a change in failure behavior for clone3() I did expect
+and am willing to risk. Here's why in the short form:
+- clone3() is extremely new
+- this failed before
+- setting both CLONE_PIDFD and CLONE_PARENT_SETTID is extremely rare
+  (haven't seen it in any codebases I know that use clone3())
+- setting both CLONE_PIDFD and CLONE_PARENT_SETTID __and__ pointing them
+  to the same adress doesn't work
+  (haven't seen it in any codebases I know that use clone3() but see
+  some more notes on that below)
+- the change makes a special case go away and simplifies multiple
+  call-sites
 
-CC: Geert Uytterhoeven <geert@linux-m68k.org>
-CC: linux-m68k@lists.linux-m68k.org
-Signed-off-by: Peter Xu <peterx@redhat.com>
----
- arch/m68k/mm/fault.c | 14 ++++----------
- 1 file changed, 4 insertions(+), 10 deletions(-)
+So a few notes about the test. I did stare at it for a while and was
+confused why you expect EFAULT to be returned when CLONE_PARENT_SETTID
+is set to an invalid memory address. Because that doesn't make sense.
+When the parent tid is written to the memory location for
+CLONE_PARENT_SETTID we're past the point of no return of process
+creation, i.e. the return value from put_user() isn't checked and can't
+be checked anymore so you'd never receive EFAULT for a bogus parent_tid
+memory address. This is not something new. This has been the case since
+the introduction of pid namespaces and specifically since commit
+30e49c263e36 ("pid namespaces: allow cloning of new namespace").
 
-diff --git a/arch/m68k/mm/fault.c b/arch/m68k/mm/fault.c
-index 2db38dfbc00c..983054d209bc 100644
---- a/arch/m68k/mm/fault.c
-+++ b/arch/m68k/mm/fault.c
-@@ -12,6 +12,7 @@
- #include <linux/interrupt.h>
- #include <linux/module.h>
- #include <linux/uaccess.h>
-+#include <linux/perf_event.h>
- 
- #include <asm/setup.h>
- #include <asm/traps.h>
-@@ -85,6 +86,8 @@ int do_page_fault(struct pt_regs *regs, unsigned long address,
- 
- 	if (user_mode(regs))
- 		flags |= FAULT_FLAG_USER;
-+
-+	perf_sw_event(PERF_COUNT_SW_PAGE_FAULTS, 1, regs, address);
- retry:
- 	down_read(&mm->mmap_sem);
- 
-@@ -135,7 +138,7 @@ int do_page_fault(struct pt_regs *regs, unsigned long address,
- 	 * the fault.
- 	 */
- 
--	fault = handle_mm_fault(vma, address, flags, NULL);
-+	fault = handle_mm_fault(vma, address, flags, regs);
- 	pr_debug("handle_mm_fault returns %x\n", fault);
- 
- 	if (fault_signal_pending(fault, regs))
-@@ -151,16 +154,7 @@ int do_page_fault(struct pt_regs *regs, unsigned long address,
- 		BUG();
- 	}
- 
--	/*
--	 * Major/minor page fault accounting is only done on the
--	 * initial attempt. If we go through a retry, it is extremely
--	 * likely that the page will be found in page cache at that point.
--	 */
- 	if (flags & FAULT_FLAG_ALLOW_RETRY) {
--		if (fault & VM_FAULT_MAJOR)
--			current->maj_flt++;
--		else
--			current->min_flt++;
- 		if (fault & VM_FAULT_RETRY) {
- 			flags |= FAULT_FLAG_TRIED;
- 
--- 
-2.26.2
+But then it dawned on me. You're setting CLONE_PIDFD |
+CLONE_PARENT_SETTID and you're pointing:
+- args->parent_tid	= <invalid-address>
+- args->pidfd		= NULL
+so the EFAULT you've seen so far in your test-suite has never been for
+CLONE_PARENT_SETTID but for CLONE_PIDFD since that value is written
+before the point of no return and consequently put_user() is checked and
+the EFAULT is surfaced. So independent of that issue here you might want
+to adapt that test so it really tests what you want. :) (And maybe it's
+worth documenting on the manpage for clone{3}() that failures for
+CLONE_PARENT_SETTID and CLONE_CHILD_SETTID are not seen.)
 
+(Also, note that for some reason, args->pidfd and pargs->parent_tid
+must've ended up pointing to the same address in your test-suite. So my
+guess is that args->pidfd pointed to garbage which got turned into a
+useable address after tst_get_bad_addr() returned &invalid_address.
+Maybe I'm missing something subtle though.)
+
+Christian
