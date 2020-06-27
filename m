@@ -2,143 +2,266 @@ Return-Path: <SRS0=PVSu=AI=vger.kernel.org=linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-6.0 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
-	MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS autolearn=ham
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-4.1 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	USER_AGENT_GIT autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 92799C433E0
-	for <linux-m68k@archiver.kernel.org>; Sat, 27 Jun 2020 12:23:38 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 864CDC433E0
+	for <linux-m68k@archiver.kernel.org>; Sat, 27 Jun 2020 14:35:12 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 77E9921707
-	for <linux-m68k@archiver.kernel.org>; Sat, 27 Jun 2020 12:23:38 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 66BC3218AC
+	for <linux-m68k@archiver.kernel.org>; Sat, 27 Jun 2020 14:35:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=default; t=1593268512;
+	bh=qu2PC/KfnpK0kWKvuL7CXpDG7X/LanYdYjS7VhuA2tc=;
+	h=From:To:Cc:Subject:Date:List-ID:From;
+	b=JqWQF0TOdJID0i6v4HavVrH93szsAqejkV/LUHRlnMzcsovD68TGraHzAAhJQQ5cz
+	 WSWVzCI1MF0BnEmGTY0o+ehqEBbG/5WO93TjV6sloc+/bu31RErSAj60Mhh+P6iA7r
+	 1o9bjViMt+c8j25XaGEcVA+9to+p37gzH8a5bzmQ=
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726408AbgF0MXi (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Sat, 27 Jun 2020 08:23:38 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:33141 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725926AbgF0MXh (ORCPT
-        <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Sat, 27 Jun 2020 08:23:37 -0400
-Received: from ip5f5af08c.dynamic.kabel-deutschland.de ([95.90.240.140] helo=wittgenstein)
-        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <christian.brauner@ubuntu.com>)
-        id 1jp9ro-0001ja-RZ; Sat, 27 Jun 2020 12:23:32 +0000
-Date:   Sat, 27 Jun 2020 14:23:32 +0200
-From:   Christian Brauner <christian.brauner@ubuntu.com>
-To:     kernel test robot <rong.a.chen@intel.com>
-Cc:     linux-kernel@vger.kernel.org,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        linux-m68k@lists.linux-m68k.org, x86@kernel.org, lkp@lists.01.org
-Subject: Re: [fork] 11689456e6: ltp.clone302.fail
-Message-ID: <20200627122332.ki2otaiw3v7wndbl@wittgenstein>
-References: <20200622234326.906346-2-christian.brauner@ubuntu.com>
- <20200627082748.GM5535@shao2-debian>
+        id S1726101AbgF0OfH (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Sat, 27 Jun 2020 10:35:07 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38804 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725854AbgF0OfG (ORCPT <rfc822;linux-m68k@lists.linux-m68k.org>);
+        Sat, 27 Jun 2020 10:35:06 -0400
+Received: from aquarius.haifa.ibm.com (nesher1.haifa.il.ibm.com [195.110.40.7])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 341C22089D;
+        Sat, 27 Jun 2020 14:34:56 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1593268505;
+        bh=qu2PC/KfnpK0kWKvuL7CXpDG7X/LanYdYjS7VhuA2tc=;
+        h=From:To:Cc:Subject:Date:From;
+        b=FBB5WzdHZCyO5w4PctPzcY7Z3LAstOygEoRUhk/Ng1G+Z4/lWOJE048kW7zjqiOhR
+         IdlIfwSDXvF8p9LDdqBSj5MmgeYKrg3f6jEZKT4anjo+p6hHbu6Ts9fIOvn7KQVkjy
+         XGJTIYBUuYdW9Ish6HFB+sclhFQo+pGzuMIA9dOg=
+From:   Mike Rapoport <rppt@kernel.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Abdul Haleem <abdhalee@linux.vnet.ibm.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Christophe Leroy <christophe.leroy@csgroup.eu>,
+        Joerg Roedel <joro@8bytes.org>,
+        Max Filippov <jcmvbkbc@gmail.com>,
+        Mike Rapoport <rppt@kernel.org>,
+        Mike Rapoport <rppt@linux.ibm.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Satheesh Rajendran <sathnaga@linux.vnet.ibm.com>,
+        Stafford Horne <shorne@gmail.com>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        linux-alpha@vger.kernel.org, linux-arch@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-csky@vger.kernel.org,
+        linux-hexagon@vger.kernel.org, linux-ia64@vger.kernel.org,
+        linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org,
+        linux-mm@kvack.org, linux-parisc@vger.kernel.org,
+        linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org,
+        linux-sh@vger.kernel.org, linux-snps-arc@lists.infradead.org,
+        linux-um@lists.infradead.org, linux-xtensa@linux-xtensa.org,
+        linuxppc-dev@lists.ozlabs.org, openrisc@lists.librecores.org,
+        sparclinux@vger.kernel.org
+Subject: [PATCH 0/8] mm: cleanup usage of <asm/pgalloc.h>
+Date:   Sat, 27 Jun 2020 17:34:45 +0300
+Message-Id: <20200627143453.31835-1-rppt@kernel.org>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20200627082748.GM5535@shao2-debian>
+Content-Transfer-Encoding: 8bit
 Sender: linux-m68k-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-On Sat, Jun 27, 2020 at 04:27:48PM +0800, kernel test robot wrote:
-> Greeting,
-> 
-> FYI, we noticed the following commit (built with gcc-9):
-> 
-> commit: 11689456e6df828b7917a558a36212e68fa9aa69 ("[PATCH 01/17] fork: fold legacy_clone_args_valid() into _do_fork()")
-> url: https://github.com/0day-ci/linux/commits/Christian-Brauner/arch-remove-do_fork-and-HAVE_COPY_THREAD_TLS/20200623-080105
-> base: https://git.kernel.org/cgit/linux/kernel/git/davem/sparc.git master
-> 
-> in testcase: ltp
-> with following parameters:
-> 
-> 	disk: 1HDD
-> 	fs: ext4
-> 	test: syscalls_part1
-> 
-> test-description: The LTP testsuite contains a collection of tools for testing the Linux kernel and related features.
-> test-url: http://linux-test-project.github.io/
-> 
-> 
-> on test machine: qemu-system-x86_64 -enable-kvm -cpu SandyBridge -smp 2 -m 16G
-> 
-> caused below changes (please refer to attached dmesg/kmsg for entire log/backtrace):
-> 
-> 
-> 
-> 
-> If you fix the issue, kindly add following tag
-> Reported-by: kernel test robot <rong.a.chen@intel.com>
-> 
-> 
-> <<<test_start>>>
-> tag=clone302 stime=1593153327
-> cmdline="clone302"
-> contacts=""
-> analysis=exit
-> <<<test_output>>>
-> tst_buffers.c:55: INFO: Test is using guarded buffers
-> tst_test.c:1247: INFO: Timeout per run is 0h 05m 00s
-> clone302.c:92: PASS: invalid args: clone3() failed as expected: EFAULT (14)
-> clone302.c:92: PASS: zero size: clone3() failed as expected: EINVAL (22)
-> clone302.c:92: PASS: short size: clone3() failed as expected: EINVAL (22)
-> clone302.c:92: PASS: extra size: clone3() failed as expected: EFAULT (14)
-> clone302.c:92: PASS: sighand-no-VM: clone3() failed as expected: EINVAL (22)
-> clone302.c:92: PASS: thread-no-sighand: clone3() failed as expected: EINVAL (22)
-> clone302.c:92: PASS: fs-newns: clone3() failed as expected: EINVAL (22)
-> clone302.c:92: PASS: invalid pidfd: clone3() failed as expected: EFAULT (14)
-> clone302.c:92: PASS: invalid childtid: clone3() failed as expected: EFAULT (14)
-> clone302.c:88: FAIL: invalid parenttid: clone3() should fail with EFAULT: EINVAL (22)
+From: Mike Rapoport <rppt@linux.ibm.com>
 
-In short, this is a change in failure behavior for clone3() I did expect
-and am willing to risk. Here's why in the short form:
-- clone3() is extremely new
-- this failed before
-- setting both CLONE_PIDFD and CLONE_PARENT_SETTID is extremely rare
-  (haven't seen it in any codebases I know that use clone3())
-- setting both CLONE_PIDFD and CLONE_PARENT_SETTID __and__ pointing them
-  to the same adress doesn't work
-  (haven't seen it in any codebases I know that use clone3() but see
-  some more notes on that below)
-- the change makes a special case go away and simplifies multiple
-  call-sites
+Hi,
 
-So a few notes about the test. I did stare at it for a while and was
-confused why you expect EFAULT to be returned when CLONE_PARENT_SETTID
-is set to an invalid memory address. Because that doesn't make sense.
-When the parent tid is written to the memory location for
-CLONE_PARENT_SETTID we're past the point of no return of process
-creation, i.e. the return value from put_user() isn't checked and can't
-be checked anymore so you'd never receive EFAULT for a bogus parent_tid
-memory address. This is not something new. This has been the case since
-the introduction of pid namespaces and specifically since commit
-30e49c263e36 ("pid namespaces: allow cloning of new namespace").
+Most architectures have very similar versions of pXd_alloc_one() and
+pXd_free_one() for intermediate levels of page table. 
+These patches add generic versions of these functions in
+<asm-generic/pgalloc.h> and enable use of the generic functions where
+appropriate.
 
-But then it dawned on me. You're setting CLONE_PIDFD |
-CLONE_PARENT_SETTID and you're pointing:
-- args->parent_tid	= <invalid-address>
-- args->pidfd		= NULL
-so the EFAULT you've seen so far in your test-suite has never been for
-CLONE_PARENT_SETTID but for CLONE_PIDFD since that value is written
-before the point of no return and consequently put_user() is checked and
-the EFAULT is surfaced. So independent of that issue here you might want
-to adapt that test so it really tests what you want. :) (And maybe it's
-worth documenting on the manpage for clone{3}() that failures for
-CLONE_PARENT_SETTID and CLONE_CHILD_SETTID are not seen.)
+In addition, functions declared and defined in <asm/pgalloc.h> headers
+are used mostly by core mm and early mm initialization in arch and there is
+no actual reason to have the <asm/pgalloc.h> included all over the place.
+The first patch in this series removes unneeded includes of <asm/pgalloc.h>
 
-(Also, note that for some reason, args->pidfd and pargs->parent_tid
-must've ended up pointing to the same address in your test-suite. So my
-guess is that args->pidfd pointed to garbage which got turned into a
-useable address after tst_get_bad_addr() returned &invalid_address.
-Maybe I'm missing something subtle though.)
+In the end it didn't work out as neatly as I hoped and moving
+pXd_alloc_track() definitions to <asm-generic/pgalloc.h> would require
+unnecessary changes to arches that have custom page table allocations, so
+I've decided to move lib/ioremap.c to mm/ and make pgalloc-track.h local to
+mm/.
 
-Christian
+Joerg Roedel (1):
+  mm: move p?d_alloc_track to separate header file
+
+Mike Rapoport (7):
+  mm: remove unneeded includes of <asm/pgalloc.h>
+  opeinrisc: switch to generic version of pte allocation
+  xtensa: switch to generic version of pte allocation
+  asm-generic: pgalloc: provide generic pmd_alloc_one() and pmd_free_one()
+  asm-generic: pgalloc: provide generic pud_alloc_one() and pud_free_one()
+  asm-generic: pgalloc: provide generic pgd_free()
+  mm: move lib/ioremap.c to mm/
+
+ arch/alpha/include/asm/pgalloc.h             | 21 +----
+ arch/alpha/include/asm/tlbflush.h            |  1 -
+ arch/alpha/kernel/core_irongate.c            |  1 -
+ arch/alpha/kernel/core_marvel.c              |  1 -
+ arch/alpha/kernel/core_titan.c               |  1 -
+ arch/alpha/kernel/machvec_impl.h             |  2 -
+ arch/alpha/kernel/smp.c                      |  1 -
+ arch/alpha/mm/numa.c                         |  1 -
+ arch/arc/mm/fault.c                          |  1 -
+ arch/arc/mm/init.c                           |  1 -
+ arch/arm/include/asm/pgalloc.h               | 12 +--
+ arch/arm/include/asm/tlb.h                   |  1 -
+ arch/arm/kernel/machine_kexec.c              |  1 -
+ arch/arm/kernel/smp.c                        |  1 -
+ arch/arm/kernel/suspend.c                    |  1 -
+ arch/arm/mach-omap2/omap-mpuss-lowpower.c    |  1 -
+ arch/arm/mm/hugetlbpage.c                    |  1 -
+ arch/arm/mm/mmu.c                            |  1 +
+ arch/arm64/include/asm/pgalloc.h             | 39 +---------
+ arch/arm64/kernel/smp.c                      |  1 -
+ arch/arm64/mm/hugetlbpage.c                  |  1 -
+ arch/arm64/mm/ioremap.c                      |  1 -
+ arch/arm64/mm/mmu.c                          |  1 +
+ arch/csky/include/asm/pgalloc.h              |  7 +-
+ arch/csky/kernel/smp.c                       |  1 -
+ arch/hexagon/include/asm/pgalloc.h           |  7 +-
+ arch/ia64/include/asm/pgalloc.h              | 24 ------
+ arch/ia64/include/asm/tlb.h                  |  1 -
+ arch/ia64/kernel/process.c                   |  1 -
+ arch/ia64/kernel/smp.c                       |  1 -
+ arch/ia64/kernel/smpboot.c                   |  1 -
+ arch/ia64/mm/contig.c                        |  1 -
+ arch/ia64/mm/discontig.c                     |  1 -
+ arch/ia64/mm/hugetlbpage.c                   |  1 -
+ arch/ia64/mm/tlb.c                           |  1 -
+ arch/m68k/include/asm/mmu_context.h          |  2 +-
+ arch/m68k/include/asm/sun3_pgalloc.h         |  7 +-
+ arch/m68k/kernel/dma.c                       |  2 +-
+ arch/m68k/kernel/traps.c                     |  3 +-
+ arch/m68k/mm/cache.c                         |  2 +-
+ arch/m68k/mm/fault.c                         |  1 -
+ arch/m68k/mm/kmap.c                          |  2 +-
+ arch/m68k/mm/mcfmmu.c                        |  1 +
+ arch/m68k/mm/memory.c                        |  1 -
+ arch/m68k/sun3x/dvma.c                       |  2 +-
+ arch/microblaze/include/asm/pgalloc.h        |  6 --
+ arch/microblaze/include/asm/tlbflush.h       |  1 -
+ arch/microblaze/kernel/process.c             |  1 -
+ arch/microblaze/kernel/signal.c              |  1 -
+ arch/mips/include/asm/pgalloc.h              | 19 +----
+ arch/mips/sgi-ip32/ip32-memory.c             |  1 -
+ arch/nds32/mm/mm-nds32.c                     |  2 +
+ arch/nios2/include/asm/pgalloc.h             |  7 +-
+ arch/openrisc/include/asm/pgalloc.h          | 33 +-------
+ arch/openrisc/include/asm/tlbflush.h         |  1 -
+ arch/openrisc/kernel/or32_ksyms.c            |  1 -
+ arch/parisc/include/asm/mmu_context.h        |  1 -
+ arch/parisc/include/asm/pgalloc.h            | 12 +--
+ arch/parisc/kernel/cache.c                   |  1 -
+ arch/parisc/kernel/pci-dma.c                 |  1 -
+ arch/parisc/kernel/process.c                 |  1 -
+ arch/parisc/kernel/signal.c                  |  1 -
+ arch/parisc/kernel/smp.c                     |  1 -
+ arch/parisc/mm/hugetlbpage.c                 |  1 -
+ arch/parisc/mm/ioremap.c                     |  2 +-
+ arch/powerpc/include/asm/tlb.h               |  1 -
+ arch/powerpc/mm/book3s64/hash_hugetlbpage.c  |  1 -
+ arch/powerpc/mm/book3s64/hash_pgtable.c      |  1 -
+ arch/powerpc/mm/book3s64/hash_tlb.c          |  1 -
+ arch/powerpc/mm/book3s64/radix_hugetlbpage.c |  1 -
+ arch/powerpc/mm/init_32.c                    |  1 -
+ arch/powerpc/mm/kasan/8xx.c                  |  1 -
+ arch/powerpc/mm/kasan/book3s_32.c            |  1 -
+ arch/powerpc/mm/mem.c                        |  1 -
+ arch/powerpc/mm/nohash/40x.c                 |  1 -
+ arch/powerpc/mm/nohash/8xx.c                 |  1 -
+ arch/powerpc/mm/nohash/fsl_booke.c           |  1 -
+ arch/powerpc/mm/nohash/kaslr_booke.c         |  1 -
+ arch/powerpc/mm/pgtable.c                    |  1 -
+ arch/powerpc/mm/pgtable_64.c                 |  1 -
+ arch/powerpc/mm/ptdump/hashpagetable.c       |  2 +-
+ arch/powerpc/mm/ptdump/ptdump.c              |  1 -
+ arch/powerpc/platforms/pseries/cmm.c         |  1 -
+ arch/riscv/include/asm/pgalloc.h             | 18 +----
+ arch/riscv/mm/fault.c                        |  1 -
+ arch/s390/include/asm/tlb.h                  |  1 -
+ arch/s390/include/asm/tlbflush.h             |  1 -
+ arch/s390/kernel/machine_kexec.c             |  1 -
+ arch/s390/kernel/ptrace.c                    |  1 -
+ arch/s390/kvm/diag.c                         |  1 -
+ arch/s390/kvm/priv.c                         |  1 -
+ arch/s390/kvm/pv.c                           |  1 -
+ arch/s390/mm/cmm.c                           |  1 -
+ arch/s390/mm/mmap.c                          |  1 -
+ arch/s390/mm/pgtable.c                       |  1 -
+ arch/sh/include/asm/pgalloc.h                |  4 +
+ arch/sh/kernel/idle.c                        |  1 -
+ arch/sh/kernel/machine_kexec.c               |  1 -
+ arch/sh/mm/cache-sh3.c                       |  1 -
+ arch/sh/mm/cache-sh7705.c                    |  1 -
+ arch/sh/mm/hugetlbpage.c                     |  1 -
+ arch/sh/mm/init.c                            |  1 +
+ arch/sh/mm/ioremap_fixed.c                   |  1 -
+ arch/sh/mm/tlb-sh3.c                         |  1 -
+ arch/sparc/include/asm/ide.h                 |  1 -
+ arch/sparc/include/asm/tlb_64.h              |  1 -
+ arch/sparc/kernel/leon_smp.c                 |  1 -
+ arch/sparc/kernel/process_32.c               |  1 -
+ arch/sparc/kernel/signal_32.c                |  1 -
+ arch/sparc/kernel/smp_32.c                   |  1 -
+ arch/sparc/kernel/smp_64.c                   |  1 +
+ arch/sparc/kernel/sun4m_irq.c                |  1 -
+ arch/sparc/mm/highmem.c                      |  1 -
+ arch/sparc/mm/io-unit.c                      |  1 -
+ arch/sparc/mm/iommu.c                        |  1 -
+ arch/sparc/mm/tlb.c                          |  1 -
+ arch/um/include/asm/pgalloc.h                |  9 +--
+ arch/um/include/asm/pgtable-3level.h         |  3 -
+ arch/um/kernel/mem.c                         | 17 -----
+ arch/x86/ia32/ia32_aout.c                    |  1 -
+ arch/x86/include/asm/mmu_context.h           |  1 -
+ arch/x86/include/asm/pgalloc.h               | 42 +---------
+ arch/x86/kernel/alternative.c                |  1 +
+ arch/x86/kernel/apic/apic.c                  |  1 -
+ arch/x86/kernel/mpparse.c                    |  1 -
+ arch/x86/kernel/traps.c                      |  1 -
+ arch/x86/mm/fault.c                          |  1 -
+ arch/x86/mm/hugetlbpage.c                    |  1 -
+ arch/x86/mm/kaslr.c                          |  1 -
+ arch/x86/mm/pgtable_32.c                     |  1 -
+ arch/x86/mm/pti.c                            |  1 -
+ arch/x86/platform/uv/bios_uv.c               |  1 +
+ arch/xtensa/include/asm/pgalloc.h            | 40 ++++------
+ arch/xtensa/kernel/xtensa_ksyms.c            |  1 -
+ arch/xtensa/mm/cache.c                       |  1 -
+ arch/xtensa/mm/fault.c                       |  1 -
+ drivers/block/xen-blkback/common.h           |  1 -
+ drivers/iommu/ipmmu-vmsa.c                   |  1 -
+ drivers/xen/balloon.c                        |  1 -
+ drivers/xen/privcmd.c                        |  1 -
+ fs/binfmt_elf_fdpic.c                        |  1 -
+ include/asm-generic/pgalloc.h                | 80 ++++++++++++++++++++
+ include/asm-generic/tlb.h                    |  1 -
+ include/linux/mm.h                           | 45 -----------
+ lib/Makefile                                 |  1 -
+ mm/Makefile                                  |  2 +-
+ mm/hugetlb.c                                 |  1 +
+ {lib => mm}/ioremap.c                        |  2 +
+ mm/pgalloc-track.h                           | 51 +++++++++++++
+ mm/sparse.c                                  |  1 -
+ mm/vmalloc.c                                 |  1 +
+ 151 files changed, 194 insertions(+), 451 deletions(-)
+ rename {lib => mm}/ioremap.c (99%)
+ create mode 100644 mm/pgalloc-track.h
+
+-- 
+2.26.2
+
