@@ -2,124 +2,111 @@ Return-Path: <SRS0=8jjU=AK=vger.kernel.org=linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.5 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,
-	USER_AGENT_SANE_1 autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-1.1 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
+	autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 355A2C433E0
-	for <linux-m68k@archiver.kernel.org>; Mon, 29 Jun 2020 18:40:21 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id DA0E0C433E0
+	for <linux-m68k@archiver.kernel.org>; Mon, 29 Jun 2020 18:45:18 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 23EC22063A
-	for <linux-m68k@archiver.kernel.org>; Mon, 29 Jun 2020 18:40:21 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id BE2772064B
+	for <linux-m68k@archiver.kernel.org>; Mon, 29 Jun 2020 18:45:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=default; t=1593456318;
+	bh=O/nZ0BxK4nESVxMtlEZ3aR9HUzEjAJ3vpNzo90oK+Gw=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:List-ID:From;
+	b=zgqyjPS3GLxUCYZDc99U0BLF9r2pDIeGJ4g2ZvOgUH8gnMIgp+TxNYZsa6GwZhdbH
+	 y0kfEPOKbb+JO7eKdRfm6PqSR+xODcLTV3EHM5w+gv2v/d99dPIhbwo2UaK0eWn0xa
+	 sHu7/5X8B6rRGKVY5zJcRGgrPcibPco81Yn+IIWU=
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728181AbgF2SkT (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Mon, 29 Jun 2020 14:40:19 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60580 "EHLO mail.kernel.org"
+        id S1729276AbgF2SpS (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Mon, 29 Jun 2020 14:45:18 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35678 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728168AbgF2SkP (ORCPT <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Mon, 29 Jun 2020 14:40:15 -0400
-Received: from [10.44.0.192] (unknown [103.48.210.53])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        id S1729265AbgF2SpP (ORCPT <rfc822;linux-m68k@lists.linux-m68k.org>);
+        Mon, 29 Jun 2020 14:45:15 -0400
+Received: from kernel.org (unknown [87.71.40.38])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id E09AB23D68;
-        Mon, 29 Jun 2020 14:03:11 +0000 (UTC)
-Subject: Re: [PATCH 1/2] m68k: nommu: register start of the memory with
- memblock
-To:     Mike Rapoport <rppt@kernel.org>
-Cc:     Geert Uytterhoeven <geert@linux-m68k.org>,
-        linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org,
-        Mike Rapoport <rppt@linux.ibm.com>
-References: <20200617065341.32160-1-rppt@kernel.org>
- <20200617065341.32160-2-rppt@kernel.org>
- <45cb9ecf-44c2-d307-4342-e66851ef67a7@linux-m68k.org>
- <4a988de6-b194-5831-9eec-3dd7417bc3c7@linux-m68k.org>
- <20200629041459.GA1492837@kernel.org>
-From:   Greg Ungerer <gerg@linux-m68k.org>
-Message-ID: <25be53bf-3ec3-490b-4f2f-1a94ba7a7700@linux-m68k.org>
-Date:   Tue, 30 Jun 2020 00:03:08 +1000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.8.0
+        by mail.kernel.org (Postfix) with ESMTPSA id 5E93025581;
+        Mon, 29 Jun 2020 15:59:25 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1593446372;
+        bh=O/nZ0BxK4nESVxMtlEZ3aR9HUzEjAJ3vpNzo90oK+Gw=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Ve2Rt8tVmffLLnlIRt4m0+FLkplbTh12wsmkxiiXh2shMIztHBj9/nk/f9S/ai5jU
+         3BFQpw5Dz/XZFCZs/y8ymsBDt+3vvNo/l/kVYqcYBemM5Bac+QbcUhusbQGI9QlPev
+         vYsxGXmlFAgYBNiTAVuThytC5RkEIP2ptiiEd7Jg=
+Date:   Mon, 29 Jun 2020 18:59:20 +0300
+From:   Mike Rapoport <rppt@kernel.org>
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     linux-kernel@vger.kernel.org,
+        Abdul Haleem <abdhalee@linux.vnet.ibm.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Christophe Leroy <christophe.leroy@csgroup.eu>,
+        Joerg Roedel <joro@8bytes.org>,
+        Max Filippov <jcmvbkbc@gmail.com>,
+        Mike Rapoport <rppt@linux.ibm.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Satheesh Rajendran <sathnaga@linux.vnet.ibm.com>,
+        Stafford Horne <shorne@gmail.com>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        linux-alpha@vger.kernel.org, linux-arch@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-csky@vger.kernel.org,
+        linux-hexagon@vger.kernel.org, linux-ia64@vger.kernel.org,
+        linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org,
+        linux-mm@kvack.org, linux-parisc@vger.kernel.org,
+        linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org,
+        linux-sh@vger.kernel.org, linux-snps-arc@lists.infradead.org,
+        linux-um@lists.infradead.org, linux-xtensa@linux-xtensa.org,
+        linuxppc-dev@lists.ozlabs.org, openrisc@lists.librecores.org,
+        sparclinux@vger.kernel.org
+Subject: Re: [PATCH 4/8] asm-generic: pgalloc: provide generic
+ pmd_alloc_one() and pmd_free_one()
+Message-ID: <20200629155920.GD1492837@kernel.org>
+References: <20200627143453.31835-1-rppt@kernel.org>
+ <20200627143453.31835-5-rppt@kernel.org>
+ <20200627190304.GG25039@casper.infradead.org>
 MIME-Version: 1.0
-In-Reply-To: <20200629041459.GA1492837@kernel.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200627190304.GG25039@casper.infradead.org>
 Sender: linux-m68k-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-Hi Mike,
-
-On 29/6/20 2:14 pm, Mike Rapoport wrote:
-> On Mon, Jun 29, 2020 at 11:10:16AM +1000, Greg Ungerer wrote:
->> On 17/6/20 10:33 pm, Greg Ungerer wrote:
->>> On 17/6/20 4:53 pm, Mike Rapoport wrote:
->>>> From: Mike Rapoport <rppt@linux.ibm.com>
->>>>
->>>> The m68k nommu setup code didn't register the beginning of the physical
->>>> memory with memblock because it was anyway occupied by the kernel. However,
->>>> commit fa3354e4ea39 ("mm: free_area_init: use maximal zone PFNs rather than
->>>> zone sizes") changed zones initialization to use memblock.memory to detect
->>>> the zone extents and this caused inconsistency between zone PFNs and the
->>>> actual PFNs:
->>>>
->>>> BUG: Bad page state in process swapper  pfn:20165
->>>> page:41fe0ca0 refcount:0 mapcount:1 mapping:00000000 index:0x0 flags: 0x0()
->>>> raw: 00000000 00000100 00000122 00000000 00000000 00000000 00000000 00000000
->>>> page dumped because: nonzero mapcount
->>>> CPU: 0 PID: 1 Comm: swapper Not tainted 5.8.0-rc1-00001-g3a38f8a60c65-dirty #1
->>>> Stack from 404c9ebc:
->>>>           404c9ebc 4029ab28 4029ab28 40088470 41fe0ca0 40299e21 40299df1 404ba2a4
->>>>           00020165 00000000 41fd2c10 402c7ba0 41fd2c04 40088504 41fe0ca0 40299e21
->>>>           00000000 40088a12 41fe0ca0 41fe0ca4 0000020a 00000000 00000001 402ca000
->>>>           00000000 41fe0ca0 41fd2c10 41fd2c10 00000000 00000000 402b2388 00000001
->>>>           400a0934 40091056 404c9f44 404c9f44 40088db4 402c7ba0 00000001 41fd2c04
->>>>           41fe0ca0 41fd2000 41fe0ca0 40089e02 4026ecf4 40089e4e 41fe0ca0 ffffffff
->>>> Call Trace:
->>>>           [<40088470>] 0x40088470
->>>>    [<40088504>] 0x40088504
->>>>    [<40088a12>] 0x40088a12
->>>>    [<402ca000>] 0x402ca000
->>>>    [<400a0934>] 0x400a0934
->>>>
->>>> Adjust the memory registration with memblock to include the beginning of
->>>> the physical memory and make sure that the area occupied by the kernel is
->>>> marked as reserved.
->>>>
->>>> Signed-off-by: Mike Rapoport <rppt@linux.ibm.com>
->>>
->>> Acked-by: Greg Ungerer <gerg@linux-m68k.org>
->>
->> What path do you anticipate this taking into mainline?
->> I see it is still broken in 5.8-rc3.
+On Sat, Jun 27, 2020 at 08:03:04PM +0100, Matthew Wilcox wrote:
+> On Sat, Jun 27, 2020 at 05:34:49PM +0300, Mike Rapoport wrote:
+> > More elaborate versions on arm64 and x86 account memory for the user page
+> > tables and call to pgtable_pmd_page_ctor() as the part of PMD page
+> > initialization.
+> > 
+> > Move the arm64 version to include/asm-generic/pgalloc.h and use the generic
+> > version on several architectures.
+> > 
+> > The pgtable_pmd_page_ctor() is a NOP when ARCH_ENABLE_SPLIT_PMD_PTLOCK is
+> > not enabled, so there is no functional change for most architectures except
+> > of the addition of __GFP_ACCOUNT for allocation of user page tables.
 > 
-> I thought it will go through m68k tree.
+> Thanks for including this line; it reminded me that we're not setting
+> the PageTable flag on the page, nor accounting it to the zone page stats.
+> Hope you don't mind me tagging a patch to do that on as 9/8.
 
-Ok, no worries, I will push them through.
-I have pushed into the for-next and for-linus branches of the m68knommu
-git tree to get the ball rolling.
+We also never set PageTable flag for early page tables and for the page
+tables allocated directly with get_free_page(), e.g PTI, KASAN.
 
-Regards
-Greg
+> We could also do with a pud_page_[cd]tor and maybe even p4d/pgd versions.
+> But that brings me to the next question -- could/should some of this
+> be moved over to asm-generic/pgalloc.h?  The ctor/dtor aren't called
+> from anywhere else, and there's value to reducing the total amount of
+> code in mm.h, but then there's also value to keeping all the ifdef
+> ARCH_ENABLE_SPLIT_PMD_PTLOCK code together too.  So I'm a bit torn.
+> What do you think?
 
-
-
->>>> ---
->>>>    arch/m68k/kernel/setup_no.c | 3 ++-
->>>>    1 file changed, 2 insertions(+), 1 deletion(-)
->>>>
->>>> diff --git a/arch/m68k/kernel/setup_no.c b/arch/m68k/kernel/setup_no.c
->>>> index e779b19e0193..f66f4b1d062e 100644
->>>> --- a/arch/m68k/kernel/setup_no.c
->>>> +++ b/arch/m68k/kernel/setup_no.c
->>>> @@ -138,7 +138,8 @@ void __init setup_arch(char **cmdline_p)
->>>>        pr_debug("MEMORY -> ROMFS=0x%p-0x%06lx MEM=0x%06lx-0x%06lx\n ",
->>>>             __bss_stop, memory_start, memory_start, memory_end);
->>>> -    memblock_add(memory_start, memory_end - memory_start);
->>>> +    memblock_add(_rambase, memory_end - _rambase);
->>>> +    memblock_reserve(_rambase, memory_start - _rambase);
->>>>        /* Keep a copy of command line */
->>>>        *cmdline_p = &command_line[0];
->>>>
-> 
+-- 
+Sincerely yours,
+Mike.
