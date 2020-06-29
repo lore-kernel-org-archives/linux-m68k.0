@@ -4,40 +4,40 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIM_INVALID,DKIM_SIGNED,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=unavailable
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 87738C433E2
-	for <linux-m68k@archiver.kernel.org>; Mon, 29 Jun 2020 19:41:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5A4CFC433E2
+	for <linux-m68k@archiver.kernel.org>; Mon, 29 Jun 2020 19:47:11 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 692FF20702
-	for <linux-m68k@archiver.kernel.org>; Mon, 29 Jun 2020 19:41:39 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 3D6692082F
+	for <linux-m68k@archiver.kernel.org>; Mon, 29 Jun 2020 19:47:11 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="ClUIhM5P"
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="B5xniw6N"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387859AbgF2Tkt (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Mon, 29 Jun 2020 15:40:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48174 "EHLO
+        id S1733127AbgF2Tqo (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Mon, 29 Jun 2020 15:46:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48146 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2387853AbgF2Tks (ORCPT
+        with ESMTP id S2387797AbgF2Tkk (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Mon, 29 Jun 2020 15:40:48 -0400
+        Mon, 29 Jun 2020 15:40:40 -0400
 Received: from casper.infradead.org (unknown [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EC52DC03E97B;
-        Mon, 29 Jun 2020 12:40:47 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 11805C03E97B;
+        Mon, 29 Jun 2020 12:40:40 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
         d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
         References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:
         Content-Type:Content-ID:Content-Description;
-        bh=+VUsfxrjDzYG99zFj0wkRp/eNVFFwqpSgTudJApaDRc=; b=ClUIhM5P87fWnhwG77qgv4ShjY
-        DPdnO0m4b9MJ04nN4PqcbgI0z5SMxykwgpOVMEcT/XLrgTjSoYwjFRVP06FH1yuM/uIfExa6QQWwY
-        TQT6gkp11h03zqvfmWXNVCto7YurF9/Uh2Hd2KxOXwdmmM+i9XbPkIyYkUkRYpkL3ZAN8ZpsQyn/C
-        I4zB805yEcbYIgxQtYH5hZNqLK7OYOBdn+9jy+pDoAUgHxN3V4miNikHoirBFpOL5dCLn6nb/+L+G
-        2Pjw4B+QypXWc4s9A5PbOHPIJwjWWl86mWmyIDuqSxeKvB8P01EbSaLvMNZf10ps9jlCd1W7PjTRN
-        hzGI6NLg==;
+        bh=pbP8zrg1Y/6opjqaCVyxx2r08m87DrQRXDirr0/HxNM=; b=B5xniw6N/Ks7z1YpV9+yP7BXgn
+        5/pt5gaOOQx1f+3IVHDShmbIhdOMyl+IqVmfsLvHrGZwPWhicBoYVvKMhbSkKNmJwYZiIbMHvUk8+
+        HbPDCb0Fvrlz4Q+puZk56OottxxAouTYgeaAczW0j8mNOpkqybQrK8MQUVcYtMHe8yNOf23xKnzCQ
+        e4OWuYvaiTUPpmUL3pzJlcYTPZI/nHHF7e/0x19bs3VTQ9x7NudNjRAcGPpGvK6Paiw+QBC6d/+2B
+        1unQ9QEgUyCUCwzriHLFslP9rfHfgngtd8yULGxrxxc6O5rgKKG1mRvnlDse+mGQk+VIk4lR5YfSE
+        xk+2C9WQ==;
 Received: from [2001:4bb8:184:76e3:fcca:c8dc:a4bf:12fa] (helo=localhost)
         by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1jpzdm-0004Pf-Ph; Mon, 29 Jun 2020 19:40:31 +0000
+        id 1jpzdi-0004Ou-F4; Mon, 29 Jun 2020 19:40:27 +0000
 From:   Christoph Hellwig <hch@lst.de>
 To:     Jens Axboe <axboe@kernel.dk>
 Cc:     dm-devel@redhat.com, linux-kernel@vger.kernel.org,
@@ -46,9 +46,9 @@ Cc:     dm-devel@redhat.com, linux-kernel@vger.kernel.org,
         linux-bcache@vger.kernel.org, linux-raid@vger.kernel.org,
         linux-nvdimm@lists.01.org, linux-nvme@lists.infradead.org,
         linux-s390@vger.kernel.org
-Subject: [PATCH 20/20] block: remove direct_make_request
-Date:   Mon, 29 Jun 2020 21:39:47 +0200
-Message-Id: <20200629193947.2705954-21-hch@lst.de>
+Subject: [PATCH 18/20] block: refator submit_bio_noacct
+Date:   Mon, 29 Jun 2020 21:39:45 +0200
+Message-Id: <20200629193947.2705954-19-hch@lst.de>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <20200629193947.2705954-1-hch@lst.de>
 References: <20200629193947.2705954-1-hch@lst.de>
@@ -60,97 +60,174 @@ Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-Now that submit_bio_noacct has a decent blk-mq fast path there is no
-more need for this bypass.
+Split out a __submit_bio_noacct helper for the actual de-recursion
+algorithm, and simplify the loop by using a continue when we can't
+enter the queue for a bio.
 
 Signed-off-by: Christoph Hellwig <hch@lst.de>
 ---
- block/blk-core.c              | 28 ----------------------------
- drivers/md/dm.c               |  5 +----
- drivers/nvme/host/multipath.c |  2 +-
- include/linux/blkdev.h        |  1 -
- 4 files changed, 2 insertions(+), 34 deletions(-)
+ block/blk-core.c | 131 +++++++++++++++++++++++++----------------------
+ 1 file changed, 71 insertions(+), 60 deletions(-)
 
 diff --git a/block/blk-core.c b/block/blk-core.c
-index 46e3c0a37cc377..f127d83c4fafa5 100644
+index 1caeb01e127768..b82f48c86e6f7a 100644
 --- a/block/blk-core.c
 +++ b/block/blk-core.c
-@@ -1206,34 +1206,6 @@ blk_qc_t submit_bio_noacct(struct bio *bio)
+@@ -1085,6 +1085,74 @@ static blk_qc_t do_make_request(struct bio *bio)
+ 	return ret;
+ }
+ 
++/*
++ * The loop in this function may be a bit non-obvious, and so deserves some
++ * explanation:
++ *
++ *  - Before entering the loop, bio->bi_next is NULL (as all callers ensure
++ *    that), so we have a list with a single bio.
++ *  - We pretend that we have just taken it off a longer list, so we assign
++ *    bio_list to a pointer to the bio_list_on_stack, thus initialising the
++ *    bio_list of new bios to be added.  ->submit_bio() may indeed add some more
++ *    bios through a recursive call to submit_bio_noacct.  If it did, we find a
++ *    non-NULL value in bio_list and re-enter the loop from the top.
++ *  - In this case we really did just take the bio of the top of the list (no
++ *    pretending) and so remove it from bio_list, and call into ->submit_bio()
++ *    again.
++ *
++ * bio_list_on_stack[0] contains bios submitted by the current ->submit_bio.
++ * bio_list_on_stack[1] contains bios that were submitted before the current
++ *	->submit_bio_bio, but that haven't been processed yet.
++ */
++static blk_qc_t __submit_bio_noacct(struct bio *bio)
++{
++	struct bio_list bio_list_on_stack[2];
++	blk_qc_t ret = BLK_QC_T_NONE;
++
++	BUG_ON(bio->bi_next);
++
++	bio_list_init(&bio_list_on_stack[0]);
++	current->bio_list = bio_list_on_stack;
++
++	do {
++		struct request_queue *q = bio->bi_disk->queue;
++		struct bio_list lower, same;
++
++		if (unlikely(bio_queue_enter(bio) != 0))
++			continue;
++
++		/*
++		 * Create a fresh bio_list for all subordinate requests.
++		 */
++		bio_list_on_stack[1] = bio_list_on_stack[0];
++		bio_list_init(&bio_list_on_stack[0]);
++
++		ret = do_make_request(bio);
++
++		/*
++		 * Sort new bios into those for a lower level and those for the
++		 * same level.
++		 */
++		bio_list_init(&lower);
++		bio_list_init(&same);
++		while ((bio = bio_list_pop(&bio_list_on_stack[0])) != NULL)
++			if (q == bio->bi_disk->queue)
++				bio_list_add(&same, bio);
++			else
++				bio_list_add(&lower, bio);
++
++		/*
++		 * Now assemble so we handle the lowest level first.
++		 */
++		bio_list_merge(&bio_list_on_stack[0], &lower);
++		bio_list_merge(&bio_list_on_stack[0], &same);
++		bio_list_merge(&bio_list_on_stack[0], &bio_list_on_stack[1]);
++	} while ((bio = bio_list_pop(&bio_list_on_stack[0])));
++
++	current->bio_list = NULL;
++	return ret;
++}
++
+ /**
+  * submit_bio_noacct - re-submit a bio to the block device layer for I/O
+  * @bio:  The bio describing the location in memory and on the device.
+@@ -1096,17 +1164,8 @@ static blk_qc_t do_make_request(struct bio *bio)
+  */
+ blk_qc_t submit_bio_noacct(struct bio *bio)
+ {
+-	/*
+-	 * bio_list_on_stack[0] contains bios submitted by the current
+-	 * ->submit_bio.
+-	 * bio_list_on_stack[1] contains bios that were submitted before the
+-	 * current ->submit_bio_bio, but that haven't been processed yet.
+-	 */
+-	struct bio_list bio_list_on_stack[2];
+-	blk_qc_t ret = BLK_QC_T_NONE;
+-
+ 	if (!submit_bio_checks(bio))
+-		goto out;
++		return BLK_QC_T_NONE;
+ 
+ 	/*
+ 	 * We only want one ->submit_bio to be active at a time, else
+@@ -1120,58 +1179,10 @@ blk_qc_t submit_bio_noacct(struct bio *bio)
+ 	 */
+ 	if (current->bio_list) {
+ 		bio_list_add(&current->bio_list[0], bio);
+-		goto out;
++		return BLK_QC_T_NONE;
+ 	}
+ 
+-	/* following loop may be a bit non-obvious, and so deserves some
+-	 * explanation.
+-	 * Before entering the loop, bio->bi_next is NULL (as all callers
+-	 * ensure that) so we have a list with a single bio.
+-	 * We pretend that we have just taken it off a longer list, so
+-	 * we assign bio_list to a pointer to the bio_list_on_stack,
+-	 * thus initialising the bio_list of new bios to be
+-	 * added.  ->submit_bio() may indeed add some more bios
+-	 * through a recursive call to submit_bio_noacct.  If it
+-	 * did, we find a non-NULL value in bio_list and re-enter the loop
+-	 * from the top.  In this case we really did just take the bio
+-	 * of the top of the list (no pretending) and so remove it from
+-	 * bio_list, and call into ->submit_bio() again.
+-	 */
+-	BUG_ON(bio->bi_next);
+-	bio_list_init(&bio_list_on_stack[0]);
+-	current->bio_list = bio_list_on_stack;
+-	do {
+-		struct request_queue *q = bio->bi_disk->queue;
+-
+-		if (likely(bio_queue_enter(bio) == 0)) {
+-			struct bio_list lower, same;
+-
+-			/* Create a fresh bio_list for all subordinate requests */
+-			bio_list_on_stack[1] = bio_list_on_stack[0];
+-			bio_list_init(&bio_list_on_stack[0]);
+-			ret = do_make_request(bio);
+-
+-			/* sort new bios into those for a lower level
+-			 * and those for the same level
+-			 */
+-			bio_list_init(&lower);
+-			bio_list_init(&same);
+-			while ((bio = bio_list_pop(&bio_list_on_stack[0])) != NULL)
+-				if (q == bio->bi_disk->queue)
+-					bio_list_add(&same, bio);
+-				else
+-					bio_list_add(&lower, bio);
+-			/* now assemble so we handle the lowest level first */
+-			bio_list_merge(&bio_list_on_stack[0], &lower);
+-			bio_list_merge(&bio_list_on_stack[0], &same);
+-			bio_list_merge(&bio_list_on_stack[0], &bio_list_on_stack[1]);
+-		}
+-		bio = bio_list_pop(&bio_list_on_stack[0]);
+-	} while (bio);
+-	current->bio_list = NULL; /* deactivate */
+-
+-out:
+-	return ret;
++	return __submit_bio_noacct(bio);
  }
  EXPORT_SYMBOL(submit_bio_noacct);
  
--/**
-- * direct_make_request - hand a buffer directly to its device driver for I/O
-- * @bio:  The bio describing the location in memory and on the device.
-- *
-- * This function behaves like submit_bio_noacct(), but does not protect
-- * against recursion.  Must only be used if the called driver is known
-- * to be blk-mq based.
-- */
--blk_qc_t direct_make_request(struct bio *bio)
--{
--	struct gendisk *disk = bio->bi_disk;
--
--	if (WARN_ON_ONCE(!disk->queue->mq_ops)) {
--		bio_io_error(bio);
--		return BLK_QC_T_NONE;
--	}
--	if (!submit_bio_checks(bio))
--		return BLK_QC_T_NONE;
--	if (unlikely(bio_queue_enter(bio)))
--		return BLK_QC_T_NONE;
--	if (!blk_crypto_bio_prep(&bio)) {
--		blk_queue_exit(disk->queue);
--		return BLK_QC_T_NONE;
--	}
--	return blk_mq_submit_bio(bio);
--}
--EXPORT_SYMBOL_GPL(direct_make_request);
--
- /**
-  * submit_bio - submit a bio to the block device layer for I/O
-  * @bio: The &struct bio which describes the I/O
-diff --git a/drivers/md/dm.c b/drivers/md/dm.c
-index b32b539dbace56..2cb33896198c4c 100644
---- a/drivers/md/dm.c
-+++ b/drivers/md/dm.c
-@@ -1302,10 +1302,7 @@ static blk_qc_t __map_bio(struct dm_target_io *tio)
- 		/* the bio has been remapped so dispatch it */
- 		trace_block_bio_remap(clone->bi_disk->queue, clone,
- 				      bio_dev(io->orig_bio), sector);
--		if (md->type == DM_TYPE_NVME_BIO_BASED)
--			ret = direct_make_request(clone);
--		else
--			ret = submit_bio_noacct(clone);
-+		ret = submit_bio_noacct(clone);
- 		break;
- 	case DM_MAPIO_KILL:
- 		free_tio(tio);
-diff --git a/drivers/nvme/host/multipath.c b/drivers/nvme/host/multipath.c
-index f07fa47c251d9d..a986ac52c4cc7f 100644
---- a/drivers/nvme/host/multipath.c
-+++ b/drivers/nvme/host/multipath.c
-@@ -314,7 +314,7 @@ blk_qc_t nvme_ns_head_submit_bio(struct bio *bio)
- 		trace_block_bio_remap(bio->bi_disk->queue, bio,
- 				      disk_devt(ns->head->disk),
- 				      bio->bi_iter.bi_sector);
--		ret = direct_make_request(bio);
-+		ret = submit_bio_noacct(bio);
- 	} else if (nvme_available_path(head)) {
- 		dev_warn_ratelimited(dev, "no usable path - requeuing I/O\n");
- 
-diff --git a/include/linux/blkdev.h b/include/linux/blkdev.h
-index b73cfa6a5141df..1cc913ffdbe21e 100644
---- a/include/linux/blkdev.h
-+++ b/include/linux/blkdev.h
-@@ -853,7 +853,6 @@ static inline void rq_flush_dcache_pages(struct request *rq)
- extern int blk_register_queue(struct gendisk *disk);
- extern void blk_unregister_queue(struct gendisk *disk);
- blk_qc_t submit_bio_noacct(struct bio *bio);
--extern blk_qc_t direct_make_request(struct bio *bio);
- extern void blk_rq_init(struct request_queue *q, struct request *rq);
- extern void blk_put_request(struct request *);
- extern struct request *blk_get_request(struct request_queue *, unsigned int op,
 -- 
 2.26.2
 
