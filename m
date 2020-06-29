@@ -2,94 +2,81 @@ Return-Path: <SRS0=8jjU=AK=vger.kernel.org=linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIM_INVALID,DKIM_SIGNED,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=unavailable
+X-Spam-Status: No, score=-1.0 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=no
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E0809C433E0
-	for <linux-m68k@archiver.kernel.org>; Mon, 29 Jun 2020 20:01:13 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 164B6C433DF
+	for <linux-m68k@archiver.kernel.org>; Mon, 29 Jun 2020 21:39:49 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id C12BB206A5
-	for <linux-m68k@archiver.kernel.org>; Mon, 29 Jun 2020 20:01:13 +0000 (UTC)
-Authentication-Results: mail.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="Ge8U7tfk"
+	by mail.kernel.org (Postfix) with ESMTP id E4C9C206A1
+	for <linux-m68k@archiver.kernel.org>; Mon, 29 Jun 2020 21:39:48 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387558AbgF2TkP (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Mon, 29 Jun 2020 15:40:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48040 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1733156AbgF2TkM (ORCPT
+        id S2388021AbgF2Vjs (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Mon, 29 Jun 2020 17:39:48 -0400
+Received: from mail-ot1-f66.google.com ([209.85.210.66]:45766 "EHLO
+        mail-ot1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728332AbgF2Vj1 (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Mon, 29 Jun 2020 15:40:12 -0400
-Received: from casper.infradead.org (unknown [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F0AEC03E97E;
-        Mon, 29 Jun 2020 12:40:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
-        References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:
-        Content-Type:Content-ID:Content-Description;
-        bh=mXzFKc+c1347jb3Dn9ppL+M5YgGcOuGfnfqDijAsZ3Y=; b=Ge8U7tfkj6TJq59wba22lmgv3c
-        aAemZb5IgwaUNQOae1JEUBdtcswQzq0bY+RkjL+cTiX7JQaRw0wKApdyej6KuRrwQcPRWgxraeMMA
-        TRAiHmd4zKY6MICuQtRpDg7hYKpnFjf/7DtIwALc7xQoNLa9rD29+80j1LO021MhBvPwrXo28MZ1f
-        ZI3vQ/ibrnOyTsGvTDFTwfsRSh+F2rdsCBmlwhrLDzZmWqXRXzrWeZZDt82bL0P7uOtvcTvpY3l6s
-        9SSEQXyks5o5YtnDn26Su7A+VbDq23m/m3Y7zWk8dcBd8mM3rtP2IpU7gNAZDnqWBedx63nIA1Il2
-        GyzjCyLQ==;
-Received: from [2001:4bb8:184:76e3:fcca:c8dc:a4bf:12fa] (helo=localhost)
-        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1jpzdB-0004Ez-KW; Mon, 29 Jun 2020 19:39:54 +0000
-From:   Christoph Hellwig <hch@lst.de>
-To:     Jens Axboe <axboe@kernel.dk>
-Cc:     dm-devel@redhat.com, linux-kernel@vger.kernel.org,
-        linux-m68k@lists.linux-m68k.org, linux-xtensa@linux-xtensa.org,
-        drbd-dev@lists.linbit.com, linuxppc-dev@lists.ozlabs.org,
-        linux-bcache@vger.kernel.org, linux-raid@vger.kernel.org,
-        linux-nvdimm@lists.01.org, linux-nvme@lists.infradead.org,
-        linux-s390@vger.kernel.org
-Subject: [PATCH 02/20] simdisk: stop using ->queuedata
-Date:   Mon, 29 Jun 2020 21:39:29 +0200
-Message-Id: <20200629193947.2705954-3-hch@lst.de>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200629193947.2705954-1-hch@lst.de>
-References: <20200629193947.2705954-1-hch@lst.de>
+        Mon, 29 Jun 2020 17:39:27 -0400
+Received: by mail-ot1-f66.google.com with SMTP id m2so16801342otr.12
+        for <linux-m68k@lists.linux-m68k.org>; Mon, 29 Jun 2020 14:39:27 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=zBbJxAzHeFyLdRCFi71uGQynNKf0vLXIcN1SXOmKrT8=;
+        b=OFb55hTruiEl3Z1E1jKVUUHG0veWZHqox7aPOJCNo1s9osWJg9EuGx6isczWDC1wtd
+         2ajgF3YFaA08B5HLbZHe5stNM19D34FpQfbNn0l2f2etJWHa8d2w/AjZvD+cLzafTfCa
+         phAEbtCxFNWBhKSqCrkDitNqb01y61NeFlmdy78fDhzlkSLpm9rUFwaIihNbsbFZAWfs
+         DJi3qix2UlII4X+D0a+MtdfgyiUJ14sxQsZ2XCTydYr++PBQVT2pnrcMpTK220xB8D+o
+         77jGsCS/8CJ0Gcp6ltsUl3PVrKVGvznzNkgqIrRo8tqG1Sm96nS9kJoCN4hxi4+rjNX5
+         RMpQ==
+X-Gm-Message-State: AOAM530C84J8jwrNyX+bYE2W7yLWPOwTO6ca1KmhI0stXA0sL67OY5RZ
+        Xd4KKpw2485zVemY0qdkFoD/rHXHoaYVxW3n+PQ=
+X-Google-Smtp-Source: ABdhPJz6OhN5KSx5Kp+XvyEP7Va5vy1Fq+Axch0lFYKWJrYB344O97OtuAZIJgD6Icc0ZowIhsZA16Hh4uG0BzkcxuE=
+X-Received: by 2002:a05:6830:1451:: with SMTP id w17mr2546318otp.250.1593466766769;
+ Mon, 29 Jun 2020 14:39:26 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
+References: <cover.1590880333.git.fthain@telegraphics.com.au> <CAMuHMdVb2C7asip_-_zbc3JP+nqn6siKqmikOK98tM5=2BYqcQ@mail.gmail.com>
+In-Reply-To: <CAMuHMdVb2C7asip_-_zbc3JP+nqn6siKqmikOK98tM5=2BYqcQ@mail.gmail.com>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Mon, 29 Jun 2020 23:39:14 +0200
+Message-ID: <CAMuHMdVOPFF-9QMYnbxDeWQVFBVVbDVxeYKV8z=cUNxL_dFOLg@mail.gmail.com>
+Subject: Re: [PATCH 0/4] Mac IOP driver fixes
+To:     Finn Thain <fthain@telegraphics.com.au>
+Cc:     Joshua Thompson <funaho@jurai.org>,
+        linux-m68k <linux-m68k@lists.linux-m68k.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-m68k-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-Instead of setting up the queuedata as well just use one private data
-field.
+On Sun, May 31, 2020 at 10:41 AM Geert Uytterhoeven
+<geert@linux-m68k.org> wrote:
+> On Sun, May 31, 2020 at 1:16 AM Finn Thain <fthain@telegraphics.com.au> wrote:
+> > This patch series has several bug fixes for the IOP driver and some
+> > improvements to the debug level log messages.
+>
+> Thanks for your series!
+>
+> > Geert, please consider pushing these fixes for v5.8, if not the
+> > whole series.
+>
+> I'm afraid it's a bit too late for that, as I expect the v5.8 merge window
+> to open tonight.  Unless the fix is for a regression in v5.7.
 
-Signed-off-by: Christoph Hellwig <hch@lst.de>
----
- arch/xtensa/platforms/iss/simdisk.c | 4 +---
- 1 file changed, 1 insertion(+), 3 deletions(-)
+Queued in the m68k for-v5.9 branch.
 
-diff --git a/arch/xtensa/platforms/iss/simdisk.c b/arch/xtensa/platforms/iss/simdisk.c
-index 49322b66cda931..31b5020077a059 100644
---- a/arch/xtensa/platforms/iss/simdisk.c
-+++ b/arch/xtensa/platforms/iss/simdisk.c
-@@ -103,7 +103,7 @@ static void simdisk_transfer(struct simdisk *dev, unsigned long sector,
- 
- static blk_qc_t simdisk_make_request(struct request_queue *q, struct bio *bio)
- {
--	struct simdisk *dev = q->queuedata;
-+	struct simdisk *dev = bio->bi_disk->private_data;
- 	struct bio_vec bvec;
- 	struct bvec_iter iter;
- 	sector_t sector = bio->bi_iter.bi_sector;
-@@ -273,8 +273,6 @@ static int __init simdisk_setup(struct simdisk *dev, int which,
- 		goto out_alloc_queue;
- 	}
- 
--	dev->queue->queuedata = dev;
--
- 	dev->gd = alloc_disk(SIMDISK_MINORS);
- 	if (dev->gd == NULL) {
- 		pr_err("alloc_disk failed\n");
+Gr{oetje,eeting}s,
+
+                        Geert
+
 -- 
-2.26.2
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
