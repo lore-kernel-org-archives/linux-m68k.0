@@ -2,111 +2,77 @@ Return-Path: <SRS0=8jjU=AK=vger.kernel.org=linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-1.1 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
-	autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-4.0 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
+	MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS autolearn=no
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id DA0E0C433E0
-	for <linux-m68k@archiver.kernel.org>; Mon, 29 Jun 2020 18:45:18 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 546F9C433E1
+	for <linux-m68k@archiver.kernel.org>; Mon, 29 Jun 2020 18:47:30 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id BE2772064B
-	for <linux-m68k@archiver.kernel.org>; Mon, 29 Jun 2020 18:45:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=default; t=1593456318;
-	bh=O/nZ0BxK4nESVxMtlEZ3aR9HUzEjAJ3vpNzo90oK+Gw=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:List-ID:From;
-	b=zgqyjPS3GLxUCYZDc99U0BLF9r2pDIeGJ4g2ZvOgUH8gnMIgp+TxNYZsa6GwZhdbH
-	 y0kfEPOKbb+JO7eKdRfm6PqSR+xODcLTV3EHM5w+gv2v/d99dPIhbwo2UaK0eWn0xa
-	 sHu7/5X8B6rRGKVY5zJcRGgrPcibPco81Yn+IIWU=
+	by mail.kernel.org (Postfix) with ESMTP id 4111E204EC
+	for <linux-m68k@archiver.kernel.org>; Mon, 29 Jun 2020 18:47:30 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729276AbgF2SpS (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Mon, 29 Jun 2020 14:45:18 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35678 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729265AbgF2SpP (ORCPT <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Mon, 29 Jun 2020 14:45:15 -0400
-Received: from kernel.org (unknown [87.71.40.38])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 5E93025581;
-        Mon, 29 Jun 2020 15:59:25 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1593446372;
-        bh=O/nZ0BxK4nESVxMtlEZ3aR9HUzEjAJ3vpNzo90oK+Gw=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Ve2Rt8tVmffLLnlIRt4m0+FLkplbTh12wsmkxiiXh2shMIztHBj9/nk/f9S/ai5jU
-         3BFQpw5Dz/XZFCZs/y8ymsBDt+3vvNo/l/kVYqcYBemM5Bac+QbcUhusbQGI9QlPev
-         vYsxGXmlFAgYBNiTAVuThytC5RkEIP2ptiiEd7Jg=
-Date:   Mon, 29 Jun 2020 18:59:20 +0300
-From:   Mike Rapoport <rppt@kernel.org>
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     linux-kernel@vger.kernel.org,
-        Abdul Haleem <abdhalee@linux.vnet.ibm.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Joerg Roedel <joro@8bytes.org>,
-        Max Filippov <jcmvbkbc@gmail.com>,
-        Mike Rapoport <rppt@linux.ibm.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Satheesh Rajendran <sathnaga@linux.vnet.ibm.com>,
-        Stafford Horne <shorne@gmail.com>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        linux-alpha@vger.kernel.org, linux-arch@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-csky@vger.kernel.org,
-        linux-hexagon@vger.kernel.org, linux-ia64@vger.kernel.org,
-        linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org,
-        linux-mm@kvack.org, linux-parisc@vger.kernel.org,
-        linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org,
-        linux-sh@vger.kernel.org, linux-snps-arc@lists.infradead.org,
-        linux-um@lists.infradead.org, linux-xtensa@linux-xtensa.org,
-        linuxppc-dev@lists.ozlabs.org, openrisc@lists.librecores.org,
-        sparclinux@vger.kernel.org
-Subject: Re: [PATCH 4/8] asm-generic: pgalloc: provide generic
- pmd_alloc_one() and pmd_free_one()
-Message-ID: <20200629155920.GD1492837@kernel.org>
-References: <20200627143453.31835-1-rppt@kernel.org>
- <20200627143453.31835-5-rppt@kernel.org>
- <20200627190304.GG25039@casper.infradead.org>
+        id S1727049AbgF2SrU (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Mon, 29 Jun 2020 14:47:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38400 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729134AbgF2Smw (ORCPT
+        <rfc822;linux-m68k@lists.linux-m68k.org>);
+        Mon, 29 Jun 2020 14:42:52 -0400
+Received: from mail-oi1-x241.google.com (mail-oi1-x241.google.com [IPv6:2607:f8b0:4864:20::241])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 18BE2C031C71
+        for <linux-m68k@lists.linux-m68k.org>; Mon, 29 Jun 2020 11:05:31 -0700 (PDT)
+Received: by mail-oi1-x241.google.com with SMTP id 12so8643986oir.4
+        for <linux-m68k@lists.linux-m68k.org>; Mon, 29 Jun 2020 11:05:31 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=rX104BbGwOQ14WsCLGGZ1Udo7R4aRoXzrV5bYBGECLY=;
+        b=lQERSX6qBi3SQkQHPgOrFJ+BMbTecIoLQ1A2vmIxPidpE48dxm+EEgN4iJYXPa4h+w
+         43hRtTiGJgBDINXIe64UVF6ni2mwaBbICXKqTZlg+8WXPPcZpARfFdDHuUCwexgYOI6i
+         QRFvwn8XdqctTbnqqnSZ10oi5kxVVy5/YLK9QQzimXczW2aorM8utN65LA1QCzEPEj4g
+         LTSdyDbS8dTGw5ISMRP8B1Fq6zzOUVduH+IRlvQDaaUAuOK69R9V71zVMrmOcoHpjsy0
+         pYFvHyioermsn6GPshrkJKYsEDtuJxmxUu4eI9I1xY1GhmcQf1cGybTk/LNBUKclDx3f
+         vMIw==
+X-Gm-Message-State: AOAM533ip8bSqkDrED+Q2aEhkdYKGVuOG+TH8ohQ99SVEpNUxukXfOnD
+        3Urz5jLO4hrMSLv/xRi4zk6gT8xsJxVVQaQP6QA=
+X-Google-Smtp-Source: ABdhPJwsvity5Fqa3Bi5hbSxakVB8FJykdbCncdXMItCKPpxk9NXvAeHCG+2YII5PZLpL5lQcwoU0I3VjdwnVcZx9k8=
+X-Received: by 2002:aca:1801:: with SMTP id h1mr8338348oih.148.1593453930463;
+ Mon, 29 Jun 2020 11:05:30 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200627190304.GG25039@casper.infradead.org>
+References: <20200527133942.GA10408@embeddedor>
+In-Reply-To: <20200527133942.GA10408@embeddedor>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Mon, 29 Jun 2020 20:05:19 +0200
+Message-ID: <CAMuHMdUXaW9PwBcLwct5S=dUduN9drpZ5nMYdB_QvpVpeK=V1Q@mail.gmail.com>
+Subject: Re: [PATCH] m68k: Use sizeof_field() helper
+To:     "Gustavo A. R. Silva" <gustavoars@kernel.org>
+Cc:     linux-m68k <linux-m68k@lists.linux-m68k.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "Gustavo A. R. Silva" <gustavo@embeddedor.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-m68k-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-On Sat, Jun 27, 2020 at 08:03:04PM +0100, Matthew Wilcox wrote:
-> On Sat, Jun 27, 2020 at 05:34:49PM +0300, Mike Rapoport wrote:
-> > More elaborate versions on arm64 and x86 account memory for the user page
-> > tables and call to pgtable_pmd_page_ctor() as the part of PMD page
-> > initialization.
-> > 
-> > Move the arm64 version to include/asm-generic/pgalloc.h and use the generic
-> > version on several architectures.
-> > 
-> > The pgtable_pmd_page_ctor() is a NOP when ARCH_ENABLE_SPLIT_PMD_PTLOCK is
-> > not enabled, so there is no functional change for most architectures except
-> > of the addition of __GFP_ACCOUNT for allocation of user page tables.
-> 
-> Thanks for including this line; it reminded me that we're not setting
-> the PageTable flag on the page, nor accounting it to the zone page stats.
-> Hope you don't mind me tagging a patch to do that on as 9/8.
+On Wed, May 27, 2020 at 3:34 PM Gustavo A. R. Silva
+<gustavoars@kernel.org> wrote:
+> Make use of the sizeof_field() helper instead of an open-coded version.
+>
+> Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
 
-We also never set PageTable flag for early page tables and for the page
-tables allocated directly with get_free_page(), e.g PTI, KASAN.
+Reviewed-by: Geert Uytterhoeven <geert@linux-m68k.org>
+i.e. will queue in the m68k for-v5.9 branch.
 
-> We could also do with a pud_page_[cd]tor and maybe even p4d/pgd versions.
-> But that brings me to the next question -- could/should some of this
-> be moved over to asm-generic/pgalloc.h?  The ctor/dtor aren't called
-> from anywhere else, and there's value to reducing the total amount of
-> code in mm.h, but then there's also value to keeping all the ifdef
-> ARCH_ENABLE_SPLIT_PMD_PTLOCK code together too.  So I'm a bit torn.
-> What do you think?
+Gr{oetje,eeting}s,
+
+                        Geert
 
 -- 
-Sincerely yours,
-Mike.
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
