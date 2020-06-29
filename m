@@ -7,37 +7,37 @@ X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIM_INVALID,DKIM_SIGNED,
 	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=unavailable
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E792FC433E0
-	for <linux-m68k@archiver.kernel.org>; Mon, 29 Jun 2020 20:00:01 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 3399EC433E1
+	for <linux-m68k@archiver.kernel.org>; Mon, 29 Jun 2020 20:00:31 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id C68BF20674
-	for <linux-m68k@archiver.kernel.org>; Mon, 29 Jun 2020 20:00:01 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 08C0620675
+	for <linux-m68k@archiver.kernel.org>; Mon, 29 Jun 2020 20:00:31 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="L1r7EY9F"
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="O9wCb3jp"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388555AbgF2T7v (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Mon, 29 Jun 2020 15:59:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48058 "EHLO
+        id S2388573AbgF2UAU (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Mon, 29 Jun 2020 16:00:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48056 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2387579AbgF2TkQ (ORCPT
+        with ESMTP id S2387578AbgF2TkQ (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
         Mon, 29 Jun 2020 15:40:16 -0400
 Received: from casper.infradead.org (unknown [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B2EE9C03E97E;
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B1AD5C03E97B;
         Mon, 29 Jun 2020 12:40:16 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
         d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
         References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:
         Content-Type:Content-ID:Content-Description;
-        bh=t6BqkN6Yxn/8o7GWQerTXSXZiT8M8tft7EnhoW3IIiE=; b=L1r7EY9FHzvyzP1GXJQq8PamRy
-        kklMB3B/Z5AAP3Qz+3yMUhnjDthIvzaMmika+09k+I9SG4WEZAz27Zc7R8q/CIaJAhDL1Vw5JTPP/
-        AZ+zHno+y/TSc0HS3BAt05sXoXJqTSDpWO5oz0rKQrhLvAp3Pmi7Fx3itzdowGp2kggIN20A8Ze1Y
-        KQtyy2SujehoRs4mDT1ZuP0yV/o/b7G/qsh2YKbGLedvrZAORnbzDSX5wU9BiGWR5fF3RMON6NxIy
-        XhSqrz6RqcUKLEkpYG9v3D+yp3TYTmJXD2arCvG0V0IFSdsIFbFgyQdmXf4PAC2OX+gRcnpXfeuLc
-        IYHHkXtA==;
+        bh=x/Lapiju/RCIeWIuz3o8sd6pkgFSKFSdWu2H7EUGYIE=; b=O9wCb3jp0iCF1CzuvdGMrrLzoB
+        hUmM9g2VqtcNKR8cGfEwWvKwAuWyep1dCkN1TGIV6QFphRYIt2ecSV1/ZQtbW+fS7r3iCmyAbN5me
+        x371kR78nTdJ8F38UoZxUFoO+t2KRh7aPoJEcdv3emVhv+ywJ1JWZOU4zoGpuqprHCnoiyUOgRPKp
+        4frQBv8ziD+bikS/0M0ZAvAvo4amoKm9b9JV2ml9PXsCnOZjCsh8saZP7ylX/hR6jVbLLYLpMldWs
+        Kx8wmm37ZbimiGJQEhj6VYGKYeoaROtCQL/LkVXhbVLbE7JrAyT+OD1jFrH6yRio4V89SD6rsVIUg
+        qU3nOTnQ==;
 Received: from [2001:4bb8:184:76e3:fcca:c8dc:a4bf:12fa] (helo=localhost)
         by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1jpzdL-0004IV-Ik; Mon, 29 Jun 2020 19:40:03 +0000
+        id 1jpzdG-0004Fv-Mp; Mon, 29 Jun 2020 19:39:59 +0000
 From:   Christoph Hellwig <hch@lst.de>
 To:     Jens Axboe <axboe@kernel.dk>
 Cc:     dm-devel@redhat.com, linux-kernel@vger.kernel.org,
@@ -46,9 +46,9 @@ Cc:     dm-devel@redhat.com, linux-kernel@vger.kernel.org,
         linux-bcache@vger.kernel.org, linux-raid@vger.kernel.org,
         linux-nvdimm@lists.01.org, linux-nvme@lists.infradead.org,
         linux-s390@vger.kernel.org
-Subject: [PATCH 08/20] zram: stop using ->queuedata
-Date:   Mon, 29 Jun 2020 21:39:35 +0200
-Message-Id: <20200629193947.2705954-9-hch@lst.de>
+Subject: [PATCH 05/20] ps3vram: stop using ->queuedata
+Date:   Mon, 29 Jun 2020 21:39:32 +0200
+Message-Id: <20200629193947.2705954-6-hch@lst.de>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <20200629193947.2705954-1-hch@lst.de>
 References: <20200629193947.2705954-1-hch@lst.de>
@@ -65,30 +65,30 @@ field.
 
 Signed-off-by: Christoph Hellwig <hch@lst.de>
 ---
- drivers/block/zram/zram_drv.c | 3 +--
+ drivers/block/ps3vram.c | 3 +--
  1 file changed, 1 insertion(+), 2 deletions(-)
 
-diff --git a/drivers/block/zram/zram_drv.c b/drivers/block/zram/zram_drv.c
-index 6e2ad90b17a376..0564e3f384089e 100644
---- a/drivers/block/zram/zram_drv.c
-+++ b/drivers/block/zram/zram_drv.c
-@@ -1586,7 +1586,7 @@ static void __zram_make_request(struct zram *zram, struct bio *bio)
-  */
- static blk_qc_t zram_make_request(struct request_queue *queue, struct bio *bio)
+diff --git a/drivers/block/ps3vram.c b/drivers/block/ps3vram.c
+index 821d4d8b1d763e..5a1d1d137c7248 100644
+--- a/drivers/block/ps3vram.c
++++ b/drivers/block/ps3vram.c
+@@ -587,7 +587,7 @@ static struct bio *ps3vram_do_bio(struct ps3_system_bus_device *dev,
+ 
+ static blk_qc_t ps3vram_make_request(struct request_queue *q, struct bio *bio)
  {
--	struct zram *zram = queue->queuedata;
-+	struct zram *zram = bio->bi_disk->private_data;
+-	struct ps3_system_bus_device *dev = q->queuedata;
++	struct ps3_system_bus_device *dev = bio->bi_disk->private_data;
+ 	struct ps3vram_priv *priv = ps3_system_bus_get_drvdata(dev);
+ 	int busy;
  
- 	if (!valid_io_request(zram, bio->bi_iter.bi_sector,
- 					bio->bi_iter.bi_size)) {
-@@ -1912,7 +1912,6 @@ static int zram_add(void)
- 	zram->disk->first_minor = device_id;
- 	zram->disk->fops = &zram_devops;
- 	zram->disk->queue = queue;
--	zram->disk->queue->queuedata = zram;
- 	zram->disk->private_data = zram;
- 	snprintf(zram->disk->disk_name, 16, "zram%d", device_id);
+@@ -745,7 +745,6 @@ static int ps3vram_probe(struct ps3_system_bus_device *dev)
+ 	}
  
+ 	priv->queue = queue;
+-	queue->queuedata = dev;
+ 	blk_queue_max_segments(queue, BLK_MAX_SEGMENTS);
+ 	blk_queue_max_segment_size(queue, BLK_MAX_SEGMENT_SIZE);
+ 	blk_queue_max_hw_sectors(queue, BLK_SAFE_MAX_SECTORS);
 -- 
 2.26.2
 
