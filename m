@@ -3,84 +3,103 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
 X-Spam-Status: No, score=-4.0 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
-	MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-	autolearn=no autolearn_force=no version=3.4.0
+	MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS autolearn=no
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 820EFC433DF
-	for <linux-m68k@archiver.kernel.org>; Mon, 29 Jun 2020 19:09:13 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 3CE83C433E0
+	for <linux-m68k@archiver.kernel.org>; Mon, 29 Jun 2020 19:17:47 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 6482F206F1
-	for <linux-m68k@archiver.kernel.org>; Mon, 29 Jun 2020 19:09:13 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 25D77206A5
+	for <linux-m68k@archiver.kernel.org>; Mon, 29 Jun 2020 19:17:47 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730491AbgF2TIs (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Mon, 29 Jun 2020 15:08:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41720 "EHLO
+        id S1731964AbgF2TRp (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Mon, 29 Jun 2020 15:17:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44310 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730510AbgF2TCm (ORCPT
+        with ESMTP id S1731900AbgF2TRn (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Mon, 29 Jun 2020 15:02:42 -0400
-Received: from mail-oi1-x244.google.com (mail-oi1-x244.google.com [IPv6:2607:f8b0:4864:20::244])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9328FC031C65
-        for <linux-m68k@lists.linux-m68k.org>; Mon, 29 Jun 2020 10:47:29 -0700 (PDT)
-Received: by mail-oi1-x244.google.com with SMTP id e4so6983990oib.1
-        for <linux-m68k@lists.linux-m68k.org>; Mon, 29 Jun 2020 10:47:29 -0700 (PDT)
+        Mon, 29 Jun 2020 15:17:43 -0400
+Received: from mail-ot1-x344.google.com (mail-ot1-x344.google.com [IPv6:2607:f8b0:4864:20::344])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A0014C0307A2
+        for <linux-m68k@lists.linux-m68k.org>; Mon, 29 Jun 2020 08:42:39 -0700 (PDT)
+Received: by mail-ot1-x344.google.com with SMTP id 76so1502514otu.9
+        for <linux-m68k@lists.linux-m68k.org>; Mon, 29 Jun 2020 08:42:39 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=VtcNAtz9+vSdyHLcpRszGSFyFltMjdYop8dTMaOzAHs=;
-        b=rhNeSaYIp8aRSp9ZP5QfQ0sjWeTC4FFzI2jW0ojfpoKeYK/KV2RasnUtO39G3IePv1
-         6P9WxEPTu5W3C8VRUt8/tzgjjTrQTOQum4TePTvf3FhvGOn2Vn/58tr82qTtSEt3LjTQ
-         qQC3AxqmWtq3KbAUcepaV1gbZ/Ib/cT3PgReJFaekqf6kPNqbtVQAc9vS2HzlWdowAnu
-         vYBAGKR67bfpw8qmsPT5MiogAwykPUxLW+6L16y5dzrpUOEmQafYrn9lB0C3HUlFcRnz
-         PEU9oaaW2vMFuQPDft9uzq3p4CawGnVa/H9nGJpkuvL7FmQ5b4kKL4Vly5spFNkwqorG
-         RVug==
-X-Gm-Message-State: AOAM530TGqcMwUqFVfTd7u2vIRJJLIS3LsjmEnW6uHlYTuQL/J1ILagj
-        mvFUGXK/SRPI27M7+p021d7arZtpzXhZ/AaG4nDtgY5W
-X-Google-Smtp-Source: ABdhPJwy+N5VhNGNhf3jn3kJBNz0G2KnR8Gv0THbhdcMWm+q0IHo+X2lnnToIDHCbdaaSCRwWcYY3UqvZoXSK7vzGBw=
-X-Received: by 2002:a05:6808:64a:: with SMTP id z10mr12577697oih.54.1593452848981;
- Mon, 29 Jun 2020 10:47:28 -0700 (PDT)
+        bh=ByBiz3Yf8Ie7OVrqv/Mz9cEMnJyRfxViWcmC4BsTpCo=;
+        b=nGSxQR5NDY+rxKliXif7y1JZUaWEczdcRNandkcl0e9Lw87H1jSkz8XU0/QQrZ7Nwc
+         OnkITJCKmMqw0RWmakAa5BN8sHksMTOIUxP0kGQGY9LXOTjNXgCZhSNdyQs2Gj2CiuSr
+         apMOD9CTaDcrE3gxl/hWNTAj7QjEMjMrhj5Tb9OAgLBjrmDr18kz92NN5QZjRiDBaQ0f
+         LziX8JG32Kz6sYNjhgeg6cpbpqlbR3sEbGt4kuOHnmSc3dJJ29h2y42uHfoa5rqX6m/P
+         a2rMB7PdE7zmrGx5kMMpqkoXMYX1VN2bfANAaJeFGCBwrMCaPHvCrGticRTk/CGBmleK
+         JhKw==
+X-Gm-Message-State: AOAM530hrys1Hb1+mSEA5R1jkbtXgRGUQcaFyz75pcZ7xJR4OE99KCAF
+        jNsxF+oEtjU5FCAGubpR7qOuITHasONGq/KHFow=
+X-Google-Smtp-Source: ABdhPJzZv9yrcqjQPIqNSuZYxDZ0MHssHdmPppPpB4X3a0jGl41oFltbqUVWyGPYv/nioiv+o7pFkroyCV6uhkj/ZSQ=
+X-Received: by 2002:a05:6830:1451:: with SMTP id w17mr1241594otp.250.1593445359003;
+ Mon, 29 Jun 2020 08:42:39 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200526123810.301667-1-masahiroy@kernel.org> <20200526123810.301667-3-masahiroy@kernel.org>
-In-Reply-To: <20200526123810.301667-3-masahiroy@kernel.org>
+References: <20200627143453.31835-1-rppt@kernel.org> <20200627143453.31835-7-rppt@kernel.org>
+In-Reply-To: <20200627143453.31835-7-rppt@kernel.org>
 From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Mon, 29 Jun 2020 19:47:17 +0200
-Message-ID: <CAMuHMdV4rvhJW2BTdxLwvVkpkRobOcTY5srEX-CR8whhnEuZ5g@mail.gmail.com>
-Subject: Re: [PATCH 3/4] m68k: optimize cc-option calls for cpuflags-y
-To:     Masahiro Yamada <masahiroy@kernel.org>
-Cc:     linux-m68k <linux-m68k@lists.linux-m68k.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Date:   Mon, 29 Jun 2020 17:42:28 +0200
+Message-ID: <CAMuHMdWP07XqvgrXjCG+n5FssH3BwdDEWA4fD9TQgvVy93uMhQ@mail.gmail.com>
+Subject: Re: [PATCH 6/8] asm-generic: pgalloc: provide generic pgd_free()
+To:     Mike Rapoport <rppt@kernel.org>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Abdul Haleem <abdhalee@linux.vnet.ibm.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Christophe Leroy <christophe.leroy@csgroup.eu>,
+        Joerg Roedel <joro@8bytes.org>,
+        Max Filippov <jcmvbkbc@gmail.com>,
+        Mike Rapoport <rppt@linux.ibm.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Satheesh Rajendran <sathnaga@linux.vnet.ibm.com>,
+        Stafford Horne <shorne@gmail.com>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        alpha <linux-alpha@vger.kernel.org>,
+        Linux-Arch <linux-arch@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        linux-csky@vger.kernel.org,
+        "open list:QUALCOMM HEXAGON..." <linux-hexagon@vger.kernel.org>,
+        "linux-ia64@vger.kernel.org" <linux-ia64@vger.kernel.org>,
+        linux-m68k <linux-m68k@lists.linux-m68k.org>,
+        "open list:BROADCOM NVRAM DRIVER" <linux-mips@vger.kernel.org>,
+        Linux MM <linux-mm@kvack.org>,
+        Parisc List <linux-parisc@vger.kernel.org>,
+        linux-riscv <linux-riscv@lists.infradead.org>,
+        linux-s390 <linux-s390@vger.kernel.org>,
+        Linux-sh list <linux-sh@vger.kernel.org>,
+        arcml <linux-snps-arc@lists.infradead.org>,
+        linux-um <linux-um@lists.infradead.org>,
+        "open list:TENSILICA XTENSA PORT (xtensa)" 
+        <linux-xtensa@linux-xtensa.org>,
+        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
+        Openrisc <openrisc@lists.librecores.org>,
+        sparclinux <sparclinux@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Sender: linux-m68k-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-On Tue, May 26, 2020 at 2:38 PM Masahiro Yamada <masahiroy@kernel.org> wrote:
-> arch/m68k/Makefile computes lots of unneeded cc-option calls.
+On Sat, Jun 27, 2020 at 4:36 PM Mike Rapoport <rppt@kernel.org> wrote:
+> From: Mike Rapoport <rppt@linux.ibm.com>
 >
-> For example, if CONFIG_M5441x is not defined, there is not point in
-> evaluating the following compiler flag.
+> Most architectures define pgd_free() as a wrapper for free_page().
 >
->  cpuflags-$(CONFIG_M5441x)      := $(call cc-option,-mcpu=54455,-mcfv4e)
+> Provide a generic version in asm-generic/pgalloc.h and enable its use for
+> most architectures.
 >
-> The result is set to cpuflags-, then thrown away.
->
-> The right hand side of ':=' is immediately expanded. Hence, all of the
-> 16 calls for cc-option are evaluated. This is expensive since cc-option
-> invokes the compiler. This occurs even if you are not attempting to
-> build anything, like 'make ARCH=m68k help'.
->
-> Use '=' to expand the value _lazily_. The evaluation for cc-option is
-> delayed until $(cpuflags-y) is expanded. So, the cc-option test happens
-> just once at most.
->
-> This commit mimics tune-y of arch/arm/Makefile.
->
-> Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
+> Signed-off-by: Mike Rapoport <rppt@linux.ibm.com>
 
-Reviewed-by: Geert Uytterhoeven <geert@linux-m68k.org>
-i.e. will queue in the m68k for-v5.9 branch.
+For the m68k part:
+Acked-by: Geert Uytterhoeven <geert@linux-m68k.org>
 
 Gr{oetje,eeting}s,
 
