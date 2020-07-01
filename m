@@ -2,182 +2,96 @@ Return-Path: <SRS0=9ylB=AM=vger.kernel.org=linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-4.2 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
-	LONGWORDS,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,
-	URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIM_INVALID,DKIM_SIGNED,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9DCD1C433DF
-	for <linux-m68k@archiver.kernel.org>; Wed,  1 Jul 2020 08:07:43 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D4D1AC433E0
+	for <linux-m68k@archiver.kernel.org>; Wed,  1 Jul 2020 08:59:54 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 855BB206A1
-	for <linux-m68k@archiver.kernel.org>; Wed,  1 Jul 2020 08:07:43 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id B6B10206A1
+	for <linux-m68k@archiver.kernel.org>; Wed,  1 Jul 2020 08:59:54 +0000 (UTC)
+Authentication-Results: mail.kernel.org;
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="EYF649Iv"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728414AbgGAIHn (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Wed, 1 Jul 2020 04:07:43 -0400
-Received: from mga14.intel.com ([192.55.52.115]:2716 "EHLO mga14.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728460AbgGAIHm (ORCPT <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Wed, 1 Jul 2020 04:07:42 -0400
-IronPort-SDR: tEBPjH0HmrkqXQfIvjYlLQ//oSp5mVKuTpx2bK8o4tMNxBfyT7ukye7YBMRBw7TBzbgfbjf1jc
- wzBgmrR0tBeA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9668"; a="145582395"
-X-IronPort-AV: E=Sophos;i="5.75,299,1589266800"; 
-   d="scan'208";a="145582395"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Jul 2020 01:07:41 -0700
-IronPort-SDR: Otz6xrYdnrgsvMeXEVfy1cAe4+cnAySwBFO3UC5fj5SkN/cJGX+4n2f3RJ8ESGtMqvTmHo/gGP
- cVEVjlxnDMDQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.75,299,1589266800"; 
-   d="scan'208";a="277695634"
-Received: from lkp-server01.sh.intel.com (HELO 28879958b202) ([10.239.97.150])
-  by orsmga003.jf.intel.com with ESMTP; 01 Jul 2020 01:07:39 -0700
-Received: from kbuild by 28879958b202 with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1jqXmN-0002mB-7o; Wed, 01 Jul 2020 08:07:39 +0000
-Date:   Wed, 01 Jul 2020 16:07:34 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     linux-m68k@lists.linux-m68k.org
-Subject: [m68k:m68k-queue] BUILD SUCCESS
- a8afa27318e19da59e4e9d02b118d8c2e3538a59
-Message-ID: <5efc4446.Vz8Hx7AQZk/7xuic%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+        id S1728961AbgGAI7y (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Wed, 1 Jul 2020 04:59:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55838 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726009AbgGAI7y (ORCPT
+        <rfc822;linux-m68k@lists.linux-m68k.org>);
+        Wed, 1 Jul 2020 04:59:54 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8EA78C061755;
+        Wed,  1 Jul 2020 01:59:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
+        References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:
+        Content-Type:Content-ID:Content-Description;
+        bh=DuKm6XIf65lTt+8cAqOIgCUPKDhwN9ycHZvv7MaSo+A=; b=EYF649IvW3U5/7Q2IsweErHngn
+        a8Uai3mUFQKukY/FPGjp5DiX+nHPTrbTYYOWEhWWUIHZ/Zyf5r1RrJVO0LxxAzHucExYVM+YrZkwS
+        v6gsIPkpIjyZxLI2CxXaFjHoVHljjz2FuKuw8qy0WBQG20RU4Cy74m4xewIkEUu9rvwhKYZeOvjbd
+        hoHgl2y8+6qkEL5Q9kx0iy3vmKCTDGUIDsCkRx0IubtnRGqdPjghuBY4CvUhwmwoOUeSnwk73oKSc
+        PPa3nKOdLDVwkuLRgPHQy3UKEt5Qnuz1usMcuJjy0QHiofa8F70Hd0Q6aIJegMzVLldGccSNlyBED
+        BMgzApPA==;
+Received: from [2001:4bb8:184:76e3:ea38:596b:3e9e:422a] (helo=localhost)
+        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1jqYas-00087O-Jv; Wed, 01 Jul 2020 08:59:51 +0000
+From:   Christoph Hellwig <hch@lst.de>
+To:     Jens Axboe <axboe@kernel.dk>
+Cc:     dm-devel@redhat.com, linux-kernel@vger.kernel.org,
+        linux-m68k@lists.linux-m68k.org, linux-xtensa@linux-xtensa.org,
+        drbd-dev@lists.linbit.com, linuxppc-dev@lists.ozlabs.org,
+        linux-bcache@vger.kernel.org, linux-raid@vger.kernel.org,
+        linux-nvdimm@lists.01.org, linux-nvme@lists.infradead.org,
+        linux-s390@vger.kernel.org,
+        Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: [PATCH 01/20] nfblock: stop using ->queuedata
+Date:   Wed,  1 Jul 2020 10:59:28 +0200
+Message-Id: <20200701085947.3354405-2-hch@lst.de>
+X-Mailer: git-send-email 2.26.2
+In-Reply-To: <20200701085947.3354405-1-hch@lst.de>
+References: <20200701085947.3354405-1-hch@lst.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
 Sender: linux-m68k-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/geert/linux-m68k.git  m68k-queue
-branch HEAD: a8afa27318e19da59e4e9d02b118d8c2e3538a59  fat: Use correct logical sector size for Atari GEMDOS FAT
+Instead of setting up the queuedata as well just use one private data
+field.
 
-elapsed time: 1825m
-
-configs tested: 113
-configs skipped: 2
-
-The following configs have been built successfully.
-More configs may be tested in the coming days.
-
-arm                                 defconfig
-arm                              allyesconfig
-arm                              allmodconfig
-arm                               allnoconfig
-arm64                            allyesconfig
-arm64                               defconfig
-arm64                            allmodconfig
-arm64                             allnoconfig
-riscv                    nommu_k210_defconfig
-i386                             alldefconfig
-mips                        vocore2_defconfig
-i386                              allnoconfig
-i386                                defconfig
-i386                              debian-10.3
-i386                             allyesconfig
-ia64                             allmodconfig
-ia64                                defconfig
-ia64                              allnoconfig
-ia64                             allyesconfig
-m68k                             allmodconfig
-m68k                              allnoconfig
-m68k                           sun3_defconfig
-m68k                                defconfig
-m68k                             allyesconfig
-nios2                               defconfig
-nios2                            allyesconfig
-openrisc                            defconfig
-c6x                              allyesconfig
-c6x                               allnoconfig
-openrisc                         allyesconfig
-nds32                               defconfig
-nds32                             allnoconfig
-csky                             allyesconfig
-csky                                defconfig
-alpha                               defconfig
-alpha                            allyesconfig
-xtensa                           allyesconfig
-h8300                            allyesconfig
-h8300                            allmodconfig
-xtensa                              defconfig
-arc                                 defconfig
-arc                              allyesconfig
-sh                               allmodconfig
-sh                                allnoconfig
-microblaze                        allnoconfig
-mips                             allyesconfig
-mips                              allnoconfig
-mips                             allmodconfig
-parisc                            allnoconfig
-parisc                              defconfig
-parisc                           allyesconfig
-parisc                           allmodconfig
-powerpc                             defconfig
-powerpc                          allyesconfig
-powerpc                          rhel-kconfig
-powerpc                          allmodconfig
-powerpc                           allnoconfig
-i386                 randconfig-a001-20200630
-i386                 randconfig-a003-20200630
-i386                 randconfig-a002-20200630
-i386                 randconfig-a004-20200630
-i386                 randconfig-a005-20200630
-i386                 randconfig-a006-20200630
-i386                 randconfig-a002-20200701
-i386                 randconfig-a001-20200701
-i386                 randconfig-a006-20200701
-i386                 randconfig-a005-20200701
-i386                 randconfig-a004-20200701
-i386                 randconfig-a003-20200701
-x86_64               randconfig-a011-20200630
-x86_64               randconfig-a014-20200630
-x86_64               randconfig-a013-20200630
-x86_64               randconfig-a015-20200630
-x86_64               randconfig-a016-20200630
-x86_64               randconfig-a012-20200630
-i386                 randconfig-a011-20200630
-i386                 randconfig-a016-20200630
-i386                 randconfig-a015-20200630
-i386                 randconfig-a012-20200630
-i386                 randconfig-a014-20200630
-i386                 randconfig-a013-20200630
-i386                 randconfig-a011-20200701
-i386                 randconfig-a015-20200701
-i386                 randconfig-a014-20200701
-i386                 randconfig-a016-20200701
-i386                 randconfig-a012-20200701
-i386                 randconfig-a013-20200701
-riscv                            allyesconfig
-riscv                             allnoconfig
-riscv                               defconfig
-riscv                            allmodconfig
-s390                             allyesconfig
-s390                              allnoconfig
-s390                             allmodconfig
-s390                                defconfig
-sparc                            allyesconfig
-sparc                               defconfig
-sparc64                             defconfig
-sparc64                           allnoconfig
-sparc64                          allyesconfig
-sparc64                          allmodconfig
-um                               allmodconfig
-um                                allnoconfig
-um                                  defconfig
-um                               allyesconfig
-x86_64                               rhel-7.6
-x86_64                    rhel-7.6-kselftests
-x86_64                               rhel-8.3
-x86_64                                  kexec
-x86_64                                   rhel
-x86_64                         rhel-7.2-clear
-x86_64                                    lkp
-x86_64                              fedora-25
-
+Signed-off-by: Christoph Hellwig <hch@lst.de>
+Reviewed-by: Geert Uytterhoeven <geert@linux-m68k.org>
+Acked-by: Geert Uytterhoeven <geert@linux-m68k.org>
 ---
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+ arch/m68k/emu/nfblock.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
+
+diff --git a/arch/m68k/emu/nfblock.c b/arch/m68k/emu/nfblock.c
+index c3a630440512e9..87e8b1700acd28 100644
+--- a/arch/m68k/emu/nfblock.c
++++ b/arch/m68k/emu/nfblock.c
+@@ -61,7 +61,7 @@ struct nfhd_device {
+ 
+ static blk_qc_t nfhd_make_request(struct request_queue *queue, struct bio *bio)
+ {
+-	struct nfhd_device *dev = queue->queuedata;
++	struct nfhd_device *dev = bio->bi_disk->private_data;
+ 	struct bio_vec bvec;
+ 	struct bvec_iter iter;
+ 	int dir, len, shift;
+@@ -122,7 +122,6 @@ static int __init nfhd_init_one(int id, u32 blocks, u32 bsize)
+ 	if (dev->queue == NULL)
+ 		goto free_dev;
+ 
+-	dev->queue->queuedata = dev;
+ 	blk_queue_logical_block_size(dev->queue, bsize);
+ 
+ 	dev->disk = alloc_disk(16);
+-- 
+2.26.2
+
