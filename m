@@ -2,42 +2,41 @@ Return-Path: <SRS0=9ylB=AM=vger.kernel.org=linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIM_INVALID,DKIM_SIGNED,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=unavailable
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-3.8 required=3.0 tests=DKIM_INVALID,DKIM_SIGNED,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	USER_AGENT_GIT autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 972BDC433DF
-	for <linux-m68k@archiver.kernel.org>; Wed,  1 Jul 2020 09:01:54 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 17591C433E0
+	for <linux-m68k@archiver.kernel.org>; Wed,  1 Jul 2020 09:02:06 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 701CA2074D
-	for <linux-m68k@archiver.kernel.org>; Wed,  1 Jul 2020 09:01:54 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id E7CBB20775
+	for <linux-m68k@archiver.kernel.org>; Wed,  1 Jul 2020 09:02:05 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="cG9uWeax"
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="QNVRM5re"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729043AbgGAI75 (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Wed, 1 Jul 2020 04:59:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55848 "EHLO
+        id S1728776AbgGAI7x (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Wed, 1 Jul 2020 04:59:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55834 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726009AbgGAI74 (ORCPT
+        with ESMTP id S1726009AbgGAI7x (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Wed, 1 Jul 2020 04:59:56 -0400
+        Wed, 1 Jul 2020 04:59:53 -0400
 Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3A0D9C061755;
-        Wed,  1 Jul 2020 01:59:56 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C9ED6C061755;
+        Wed,  1 Jul 2020 01:59:52 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
         d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
-        References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:
-        Content-Type:Content-ID:Content-Description;
-        bh=nyRpegl2g2GPLIzpDQmlwzdY5HJ2Dd3E7fu8tgbKXsw=; b=cG9uWeaxaNO/1MVPIWmhvQXLAG
-        iSkoMG+mDqCp5Fas05hxeEwDFJzbgUVjvM+qHyRdAModBVUY6niFiW0rnnavhFRNyz1pykeOhxkhZ
-        NZVGVYHrmpq04hvVgiUtI5yX1wM+7igRvEMydnCoRQeuacqPuZqBQw3s5pqynfJWw1cXYywN0/bxi
-        7SwIJoZIPt4nm/r/GiOvJKRN2dJAAkG6ZSJj5j6m8j6Tra0NHETrtGEustOMES2x9BE2MEDdvPFxf
-        /+IEWPO5yHD5avrdkfbZhwAa30i/liOzJ70LhshoWEaD5sgYOPmU7O855Wq//djMSdTtULqhfhiaU
-        2SXkVv7Q==;
+        Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
+        Content-Description:In-Reply-To:References;
+        bh=NewiNZRcUdxKIYqGEwecM2/TYLTpV46Y4ANOh3AaYeY=; b=QNVRM5re/f5qDCO18Ck/0VAKzH
+        wSFtEOqRYRAr2bGYSrHkREAU4zNfXQfT7bHNCQ642gEiZ/kD2oIal+/v8s+/P9dhOIWy3R0yRohCO
+        1rlRel/VN1zwvxCbPcrdSCwjnFAJ76DOEFzjdw8gocpKGPw9hTrlqhEXUS6jKUXBJi+aCMwwqAMKe
+        2f20Vv7rUmHhXPpFgitTXcvrBCtCToFm2VVMUejE0AlRtmsGalyDZbcSj4MUlnywB8y4rCRgOUyXf
+        uHSD35Uugs7TKYbgEQzDDD/u88xlT4LzBhG3iAS0DjZuD4LH5lXU/zccIkKtU6gfC8EQ7iU6739gJ
+        g3f6e3JA==;
 Received: from [2001:4bb8:184:76e3:ea38:596b:3e9e:422a] (helo=localhost)
         by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1jqYav-00087h-DT; Wed, 01 Jul 2020 08:59:53 +0000
+        id 1jqYar-00087G-2E; Wed, 01 Jul 2020 08:59:49 +0000
 From:   Christoph Hellwig <hch@lst.de>
 To:     Jens Axboe <axboe@kernel.dk>
 Cc:     dm-devel@redhat.com, linux-kernel@vger.kernel.org,
@@ -46,12 +45,10 @@ Cc:     dm-devel@redhat.com, linux-kernel@vger.kernel.org,
         linux-bcache@vger.kernel.org, linux-raid@vger.kernel.org,
         linux-nvdimm@lists.01.org, linux-nvme@lists.infradead.org,
         linux-s390@vger.kernel.org
-Subject: [PATCH 03/20] drbd: stop using ->queuedata
-Date:   Wed,  1 Jul 2020 10:59:30 +0200
-Message-Id: <20200701085947.3354405-4-hch@lst.de>
+Subject: rename ->make_request_fn and move it to the block_device_operations v2
+Date:   Wed,  1 Jul 2020 10:59:27 +0200
+Message-Id: <20200701085947.3354405-1-hch@lst.de>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200701085947.3354405-1-hch@lst.de>
-References: <20200701085947.3354405-1-hch@lst.de>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
@@ -60,40 +57,89 @@ Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-Instead of setting up the queuedata as well just use one private data
-field.
+Hi Jens,
 
-Signed-off-by: Christoph Hellwig <hch@lst.de>
----
- drivers/block/drbd/drbd_main.c | 1 -
- drivers/block/drbd/drbd_req.c  | 2 +-
- 2 files changed, 1 insertion(+), 2 deletions(-)
+this series moves the make_request_fn method into block_device_operations
+with the much more descriptive ->submit_bio name.  It then also gives
+generic_make_request a more descriptive name, and further optimize the
+path to issue to blk-mq, removing the need for the direct_make_request
+bypass.
 
-diff --git a/drivers/block/drbd/drbd_main.c b/drivers/block/drbd/drbd_main.c
-index 45fbd526c453bc..26f4e0aa7393b4 100644
---- a/drivers/block/drbd/drbd_main.c
-+++ b/drivers/block/drbd/drbd_main.c
-@@ -2805,7 +2805,6 @@ enum drbd_ret_code drbd_create_device(struct drbd_config_context *adm_ctx, unsig
- 	if (!q)
- 		goto out_no_q;
- 	device->rq_queue = q;
--	q->queuedata   = device;
- 
- 	disk = alloc_disk(1);
- 	if (!disk)
-diff --git a/drivers/block/drbd/drbd_req.c b/drivers/block/drbd/drbd_req.c
-index c80a2f1c3c2a73..3f09b2ab977822 100644
---- a/drivers/block/drbd/drbd_req.c
-+++ b/drivers/block/drbd/drbd_req.c
-@@ -1595,7 +1595,7 @@ void do_submit(struct work_struct *ws)
- 
- blk_qc_t drbd_make_request(struct request_queue *q, struct bio *bio)
- {
--	struct drbd_device *device = (struct drbd_device *) q->queuedata;
-+	struct drbd_device *device = bio->bi_disk->private_data;
- 	unsigned long start_jif;
- 
- 	blk_queue_split(q, &bio);
--- 
-2.26.2
+Changes since v1:
+ - fix a null pointer dereference when dispatching from bio to request
+   based drivers
+ - clean up a few more comments
 
+Diffstat:
+ Documentation/block/biodoc.rst                    |    2 
+ Documentation/block/writeback_cache_control.rst   |    2 
+ Documentation/fault-injection/fault-injection.rst |    2 
+ Documentation/trace/ftrace.rst                    |    4 
+ arch/m68k/emu/nfblock.c                           |    8 
+ arch/xtensa/platforms/iss/simdisk.c               |    9 
+ block/bio.c                                       |   14 -
+ block/blk-cgroup.c                                |    2 
+ block/blk-core.c                                  |  255 +++++++++-------------
+ block/blk-crypto-fallback.c                       |    2 
+ block/blk-crypto.c                                |    2 
+ block/blk-merge.c                                 |   23 -
+ block/blk-mq.c                                    |   12 -
+ block/blk-throttle.c                              |    4 
+ block/blk.h                                       |    5 
+ block/bounce.c                                    |    2 
+ drivers/block/brd.c                               |    5 
+ drivers/block/drbd/drbd_int.h                     |    8 
+ drivers/block/drbd/drbd_main.c                    |   12 -
+ drivers/block/drbd/drbd_receiver.c                |    2 
+ drivers/block/drbd/drbd_req.c                     |    8 
+ drivers/block/drbd/drbd_worker.c                  |    2 
+ drivers/block/null_blk_main.c                     |   19 +
+ drivers/block/pktcdvd.c                           |   15 -
+ drivers/block/ps3vram.c                           |   20 -
+ drivers/block/rsxx/dev.c                          |   14 -
+ drivers/block/umem.c                              |   11 
+ drivers/block/zram/zram_drv.c                     |   14 -
+ drivers/lightnvm/core.c                           |    8 
+ drivers/lightnvm/pblk-init.c                      |   16 -
+ drivers/lightnvm/pblk-read.c                      |    2 
+ drivers/md/bcache/bcache.h                        |    2 
+ drivers/md/bcache/btree.c                         |    2 
+ drivers/md/bcache/request.c                       |   11 
+ drivers/md/bcache/request.h                       |    4 
+ drivers/md/bcache/super.c                         |   24 +-
+ drivers/md/dm-cache-target.c                      |    6 
+ drivers/md/dm-clone-target.c                      |   10 
+ drivers/md/dm-crypt.c                             |    6 
+ drivers/md/dm-delay.c                             |    2 
+ drivers/md/dm-era-target.c                        |    2 
+ drivers/md/dm-integrity.c                         |    4 
+ drivers/md/dm-mpath.c                             |    2 
+ drivers/md/dm-raid1.c                             |    2 
+ drivers/md/dm-snap-persistent.c                   |    2 
+ drivers/md/dm-snap.c                              |    6 
+ drivers/md/dm-thin.c                              |    4 
+ drivers/md/dm-verity-target.c                     |    2 
+ drivers/md/dm-writecache.c                        |    2 
+ drivers/md/dm-zoned-target.c                      |    2 
+ drivers/md/dm.c                                   |   41 +--
+ drivers/md/md-faulty.c                            |    4 
+ drivers/md/md-linear.c                            |    4 
+ drivers/md/md-multipath.c                         |    4 
+ drivers/md/md.c                                   |    7 
+ drivers/md/raid0.c                                |    8 
+ drivers/md/raid1.c                                |   14 -
+ drivers/md/raid10.c                               |   28 +-
+ drivers/md/raid5.c                                |   10 
+ drivers/nvdimm/blk.c                              |    5 
+ drivers/nvdimm/btt.c                              |    5 
+ drivers/nvdimm/pmem.c                             |    5 
+ drivers/nvme/host/core.c                          |    1 
+ drivers/nvme/host/multipath.c                     |   18 -
+ drivers/nvme/host/nvme.h                          |    1 
+ drivers/s390/block/dcssblk.c                      |   11 
+ drivers/s390/block/xpram.c                        |    8 
+ fs/buffer.c                                       |    5 
+ include/linux/blk-mq.h                            |    2 
+ include/linux/blkdev.h                            |   12 -
+ include/linux/lightnvm.h                          |    3 
+ 71 files changed, 387 insertions(+), 408 deletions(-)
