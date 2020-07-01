@@ -7,37 +7,37 @@ X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIM_INVALID,DKIM_SIGNED,
 	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D4D1AC433E0
-	for <linux-m68k@archiver.kernel.org>; Wed,  1 Jul 2020 08:59:54 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 9B4E2C433E2
+	for <linux-m68k@archiver.kernel.org>; Wed,  1 Jul 2020 09:00:25 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id B6B10206A1
-	for <linux-m68k@archiver.kernel.org>; Wed,  1 Jul 2020 08:59:54 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 7EDC4206C3
+	for <linux-m68k@archiver.kernel.org>; Wed,  1 Jul 2020 09:00:25 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="EYF649Iv"
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="qMNQ5x4R"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728961AbgGAI7y (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Wed, 1 Jul 2020 04:59:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55838 "EHLO
+        id S1729268AbgGAJAY (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Wed, 1 Jul 2020 05:00:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55954 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726009AbgGAI7y (ORCPT
+        with ESMTP id S1729254AbgGAJAW (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Wed, 1 Jul 2020 04:59:54 -0400
+        Wed, 1 Jul 2020 05:00:22 -0400
 Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8EA78C061755;
-        Wed,  1 Jul 2020 01:59:53 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7179FC061755;
+        Wed,  1 Jul 2020 02:00:21 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
         d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
         References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:
         Content-Type:Content-ID:Content-Description;
-        bh=DuKm6XIf65lTt+8cAqOIgCUPKDhwN9ycHZvv7MaSo+A=; b=EYF649IvW3U5/7Q2IsweErHngn
-        a8Uai3mUFQKukY/FPGjp5DiX+nHPTrbTYYOWEhWWUIHZ/Zyf5r1RrJVO0LxxAzHucExYVM+YrZkwS
-        v6gsIPkpIjyZxLI2CxXaFjHoVHljjz2FuKuw8qy0WBQG20RU4Cy74m4xewIkEUu9rvwhKYZeOvjbd
-        hoHgl2y8+6qkEL5Q9kx0iy3vmKCTDGUIDsCkRx0IubtnRGqdPjghuBY4CvUhwmwoOUeSnwk73oKSc
-        PPa3nKOdLDVwkuLRgPHQy3UKEt5Qnuz1usMcuJjy0QHiofa8F70Hd0Q6aIJegMzVLldGccSNlyBED
-        BMgzApPA==;
+        bh=EAMIpv1ziuqNgf5ZNOHoxjY+dqzuD4FouWA6YFyHhkE=; b=qMNQ5x4RLz46SfC5VFJYmHu5Nx
+        xI0sjPMkrZu4JzWH34erLzcJLJaVi42hoTRxgTqPpAaZ10BnqAfleFt5C4BDjFM7Jqls0VeMH/gqf
+        JA3ksJqj7QKrohDk4U7Nu5sAUxcmERKiJBmNcC4cwjoQwwewNksjinjd1ESmGAyAqTxprSKh519+R
+        qO3AP4glQ4JIPWzLlAmJTJ/p5U8MhH7mj4rvJOfk+i3Ndn0uebCLnEpXHTGMMoRlA6B0XeegOCH4b
+        q01IOa4xLW4RLaoayu0NTlJoWxQpHxYHTgi94RpyBco2yaAblICORPz0jkVk33ytG9sq9oRItFIdp
+        U2gEkKCg==;
 Received: from [2001:4bb8:184:76e3:ea38:596b:3e9e:422a] (helo=localhost)
         by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1jqYas-00087O-Jv; Wed, 01 Jul 2020 08:59:51 +0000
+        id 1jqYbK-0008Hs-Cg; Wed, 01 Jul 2020 09:00:18 +0000
 From:   Christoph Hellwig <hch@lst.de>
 To:     Jens Axboe <axboe@kernel.dk>
 Cc:     dm-devel@redhat.com, linux-kernel@vger.kernel.org,
@@ -45,11 +45,10 @@ Cc:     dm-devel@redhat.com, linux-kernel@vger.kernel.org,
         drbd-dev@lists.linbit.com, linuxppc-dev@lists.ozlabs.org,
         linux-bcache@vger.kernel.org, linux-raid@vger.kernel.org,
         linux-nvdimm@lists.01.org, linux-nvme@lists.infradead.org,
-        linux-s390@vger.kernel.org,
-        Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: [PATCH 01/20] nfblock: stop using ->queuedata
-Date:   Wed,  1 Jul 2020 10:59:28 +0200
-Message-Id: <20200701085947.3354405-2-hch@lst.de>
+        linux-s390@vger.kernel.org
+Subject: [PATCH 19/20] block: shortcut __submit_bio_noacct for blk-mq drivers
+Date:   Wed,  1 Jul 2020 10:59:46 +0200
+Message-Id: <20200701085947.3354405-20-hch@lst.de>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <20200701085947.3354405-1-hch@lst.de>
 References: <20200701085947.3354405-1-hch@lst.de>
@@ -61,37 +60,63 @@ Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-Instead of setting up the queuedata as well just use one private data
-field.
+For blk-mq drivers bios can only be inserted for the same queue.  So
+bypass the complicated sorting logic in __submit_bio_noacct with
+a blk-mq simpler submission helper.
 
 Signed-off-by: Christoph Hellwig <hch@lst.de>
-Reviewed-by: Geert Uytterhoeven <geert@linux-m68k.org>
-Acked-by: Geert Uytterhoeven <geert@linux-m68k.org>
 ---
- arch/m68k/emu/nfblock.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+ block/blk-core.c | 30 ++++++++++++++++++++++++++++++
+ 1 file changed, 30 insertions(+)
 
-diff --git a/arch/m68k/emu/nfblock.c b/arch/m68k/emu/nfblock.c
-index c3a630440512e9..87e8b1700acd28 100644
---- a/arch/m68k/emu/nfblock.c
-+++ b/arch/m68k/emu/nfblock.c
-@@ -61,7 +61,7 @@ struct nfhd_device {
+diff --git a/block/blk-core.c b/block/blk-core.c
+index 57b5dc00d44cb1..2ff166f0d24ee3 100644
+--- a/block/blk-core.c
++++ b/block/blk-core.c
+@@ -1152,6 +1152,34 @@ static blk_qc_t __submit_bio_noacct(struct bio *bio)
+ 	return ret;
+ }
  
- static blk_qc_t nfhd_make_request(struct request_queue *queue, struct bio *bio)
- {
--	struct nfhd_device *dev = queue->queuedata;
-+	struct nfhd_device *dev = bio->bi_disk->private_data;
- 	struct bio_vec bvec;
- 	struct bvec_iter iter;
- 	int dir, len, shift;
-@@ -122,7 +122,6 @@ static int __init nfhd_init_one(int id, u32 blocks, u32 bsize)
- 	if (dev->queue == NULL)
- 		goto free_dev;
++static blk_qc_t __submit_bio_noacct_mq(struct bio *bio)
++{
++	struct gendisk *disk = bio->bi_disk;
++	struct bio_list bio_list;
++	blk_qc_t ret = BLK_QC_T_NONE;
++
++	bio_list_init(&bio_list);
++	current->bio_list = &bio_list;
++
++	do {
++		WARN_ON_ONCE(bio->bi_disk != disk);
++
++		if (unlikely(bio_queue_enter(bio) != 0))
++			continue;
++
++		if (!blk_crypto_bio_prep(&bio)) {
++			blk_queue_exit(disk->queue);
++			ret = BLK_QC_T_NONE;
++			continue;
++		}
++
++		ret = blk_mq_submit_bio(bio);
++	} while ((bio = bio_list_pop(&bio_list)));
++
++	current->bio_list = NULL;
++	return ret;
++}
++
+ /**
+  * submit_bio_noacct - re-submit a bio to the block device layer for I/O
+  * @bio:  The bio describing the location in memory and on the device.
+@@ -1177,6 +1205,8 @@ blk_qc_t submit_bio_noacct(struct bio *bio)
+ 		return BLK_QC_T_NONE;
+ 	}
  
--	dev->queue->queuedata = dev;
- 	blk_queue_logical_block_size(dev->queue, bsize);
- 
- 	dev->disk = alloc_disk(16);
++	if (!bio->bi_disk->fops->submit_bio)
++		return __submit_bio_noacct_mq(bio);
+ 	return __submit_bio_noacct(bio);
+ }
+ EXPORT_SYMBOL(submit_bio_noacct);
 -- 
 2.26.2
 
