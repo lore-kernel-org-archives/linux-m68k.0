@@ -1,114 +1,70 @@
-Return-Path: <SRS0=rKVK=AN=vger.kernel.org=linux-m68k-owner@kernel.org>
+Return-Path: <SRS0=o4Xe=AO=vger.kernel.org=linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-10.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-6.1 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,
+	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 935F1C433DF
-	for <linux-m68k@archiver.kernel.org>; Thu,  2 Jul 2020 23:46:43 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7706BC433E0
+	for <linux-m68k@archiver.kernel.org>; Fri,  3 Jul 2020 06:10:09 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 679DC20760
-	for <linux-m68k@archiver.kernel.org>; Thu,  2 Jul 2020 23:46:43 +0000 (UTC)
-Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=timesys-com.20150623.gappssmtp.com header.i=@timesys-com.20150623.gappssmtp.com header.b="UYHFRsO6"
+	by mail.kernel.org (Postfix) with ESMTP id 501F7208C7
+	for <linux-m68k@archiver.kernel.org>; Fri,  3 Jul 2020 06:10:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=default; t=1593756609;
+	bh=2vTj+W18Sohyh8VTtxWMMIYHjiQzKmvq/8qt8MjNAGg=;
+	h=Subject:From:In-Reply-To:References:Date:To:Cc:List-ID:From;
+	b=cqqSA6ldnpwQW0M3PkgEB4b6YwPbeANtBnLhtmVNVx4MEYqr7ySNMgS9bWk61TPUE
+	 5C7P//yd1DmnvPMqlh2OGNjy/3IIReuUHU6Sf9wriV2lxt7hg+mSTs+eIhQr0hu5BB
+	 wsjJOmfslIoPnbRf2zEV+H7kHcff6Ru1kKXVEg3U=
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726015AbgGBXqn (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Thu, 2 Jul 2020 19:46:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48896 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725937AbgGBXqn (ORCPT
-        <rfc822;linux-m68k@vger.kernel.org>); Thu, 2 Jul 2020 19:46:43 -0400
-Received: from mail-ej1-x641.google.com (mail-ej1-x641.google.com [IPv6:2a00:1450:4864:20::641])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8B831C08C5C1
-        for <linux-m68k@vger.kernel.org>; Thu,  2 Jul 2020 16:46:41 -0700 (PDT)
-Received: by mail-ej1-x641.google.com with SMTP id lx13so13213762ejb.4
-        for <linux-m68k@vger.kernel.org>; Thu, 02 Jul 2020 16:46:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=timesys-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=/OAWiYKGjBZ85C1fp+UQuN3Js+cOObRiIx/SUwvASJA=;
-        b=UYHFRsO619BPJ359ZwE+8ldQY80DX41TN2ldJdYKdt0+fLFSMgreuEuUeYHyqDxynj
-         j8WxpHXo/3uqeRVCH+XS7wh+BQDocIB7DDYbc/nlDzg+W8j2Kn4tlxsgNAz1CzKNS6bE
-         E1Y7h9xOxLyxWPHEV2fq6Q/VUvncH1xV9PFiVdwP7F10Ht60bdoZ3B5NCiuJTSSiS5Lk
-         mhDVBmEnaKFeve6NW1fS8spUyb/adT3gwNYEEGdoNBDQujkR+3y2VxbsrqBu/NW1XrDu
-         vx6QLfBGweYgM1JziJjP6kH8Nv2kzNOQkUda5AyfDbz+NDQHmf6fRrf5+sds7CWXIZ18
-         LPCw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=/OAWiYKGjBZ85C1fp+UQuN3Js+cOObRiIx/SUwvASJA=;
-        b=nchoXDe+vm3AZWqNdur2Nmx9QZDr7YJkxDv36Nj3ydAwweHqVfDZjcsXBxfe3A7ig5
-         K0lAXt/zqKkaLRfnGrC1xsllFfbRDduOwxttM7jcyqWGaeJhBC4rQ468TrRsWOoP7ea3
-         kRmwBz4Y07UWc66VVqkADtj1/N4RT7une20iVubBXo5775rvMjwZa4JYT5dh501a3xya
-         lcT0Y76m/tKNLTrMZpeXifGhkbtYf7OcOhbtG7383w1OJ/tQQy89P2BJsJNokesQtC+R
-         uGpNRTQRjDC1ujVS952LqZcsRWryGyduznGw95Aa8gMTsfP2QTrz2Hj1rHOM4yvo6oT3
-         9RLw==
-X-Gm-Message-State: AOAM532BHid7cGOVQU4sKFMs8oa1mzWRhc8WHKwazpFgwkMQT+5k8SEv
-        QGTnqkI2kDmGdz7L1HyPeznpWIIo7RmcGQ==
-X-Google-Smtp-Source: ABdhPJwggjPc9hGXbkWZpS2CMCyFPPAUYPsTpD5rDuGuwuAZwSifBXo8SNhExNVxfPtdK5to3eGgrQ==
-X-Received: by 2002:a17:906:2b12:: with SMTP id a18mr29293217ejg.186.1593733600190;
-        Thu, 02 Jul 2020 16:46:40 -0700 (PDT)
-Received: from localhost.localdomain (host-79-30-36-203.retail.telecomitalia.it. [79.30.36.203])
-        by smtp.gmail.com with ESMTPSA id h10sm7001962edz.31.2020.07.02.16.46.38
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 02 Jul 2020 16:46:39 -0700 (PDT)
-From:   Angelo Dureghello <angelo.dureghello@timesys.com>
-To:     gerg@linux-m68k.org
-Cc:     linux-m68k@vger.kernel.org,
-        Angelo Dureghello <angelo.dureghello@timesys.com>
-Subject: [PATCH] m68k: stmark2: enable edma support for dspi
-Date:   Fri,  3 Jul 2020 01:53:38 +0200
-Message-Id: <20200702235338.3653602-1-angelo.dureghello@timesys.com>
-X-Mailer: git-send-email 2.26.2
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        id S1725779AbgGCGKI (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Fri, 3 Jul 2020 02:10:08 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36908 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726317AbgGCGKI (ORCPT <rfc822;linux-m68k@vger.kernel.org>);
+        Fri, 3 Jul 2020 02:10:08 -0400
+Subject: Re: [git pull] m68knommu changes for v5.8-rc4
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1593756608;
+        bh=2vTj+W18Sohyh8VTtxWMMIYHjiQzKmvq/8qt8MjNAGg=;
+        h=From:In-Reply-To:References:Date:To:Cc:From;
+        b=kFZyTbFa6uZQPIDAbSz/FAil0b0MUVLAdN9HcnBMd2T60sOdb5lvMasbU30HaSNZQ
+         QM8Mp5V6qxPt+ErjmCh0701ttySIiwUo9WlINesoZ/8difpgtuWLswOnq7R4j8Qofb
+         Z5L/H1OVoO2mRWb85LAsyAkH9/p917RmLNiDw8rc=
+From:   pr-tracker-bot@kernel.org
+In-Reply-To: <85548a92-b917-08e2-e89c-833bf5cb97b4@linux-m68k.org>
+References: <85548a92-b917-08e2-e89c-833bf5cb97b4@linux-m68k.org>
+X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
+X-PR-Tracked-Message-Id: <85548a92-b917-08e2-e89c-833bf5cb97b4@linux-m68k.org>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/gerg/m68knommu.git
+ tags/m68knommu-for-v5.8-rc4
+X-PR-Tracked-Commit-Id: c43e55796dd4d13f4855971a4d7970ce2cd94db4
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: cdd3bb54332f82295ed90cd0c09c78cd0c0ee822
+Message-Id: <159375660825.4799.9904334631995485906.pr-tracker-bot@kernel.org>
+Date:   Fri, 03 Jul 2020 06:10:08 +0000
+To:     Greg Ungerer <gerg@linux-m68k.org>
+Cc:     torvalds@linux-foundation.org,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Linux/m68k <linux-m68k@vger.kernel.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>
 Sender: linux-m68k-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-Enable edma support for stmark2.
+The pull request you sent on Fri, 3 Jul 2020 08:21:59 +1000:
 
-Signed-off-by: Angelo Dureghello <angelo.dureghello@timesys.com>
----
- arch/m68k/coldfire/stmark2.c | 5 +++++
- 1 file changed, 5 insertions(+)
+> git://git.kernel.org/pub/scm/linux/kernel/git/gerg/m68knommu.git tags/m68knommu-for-v5.8-rc4
 
-diff --git a/arch/m68k/coldfire/stmark2.c b/arch/m68k/coldfire/stmark2.c
-index a8d2b3d172f9..8b5af9c83244 100644
---- a/arch/m68k/coldfire/stmark2.c
-+++ b/arch/m68k/coldfire/stmark2.c
-@@ -13,6 +13,7 @@
- #include <linux/spi/spi.h>
- #include <linux/spi/spi-fsl-dspi.h>
- #include <linux/spi/flash.h>
-+#include <linux/dma-mapping.h>
- #include <asm/mcfsim.h>
- 
- /*
-@@ -78,6 +79,8 @@ static struct resource dspi_spi0_resource[] = {
- 	},
- };
- 
-+static u64 stmark2_dspi_mask = DMA_BIT_MASK(32);
-+
- /* SPI controller, id = bus number */
- static struct platform_device dspi_spi0_device = {
- 	.name = "fsl-dspi",
-@@ -86,6 +89,8 @@ static struct platform_device dspi_spi0_device = {
- 	.resource = dspi_spi0_resource,
- 	.dev = {
- 		.platform_data = &dspi_spi0_info,
-+		.dma_mask = &stmark2_dspi_mask,
-+		.coherent_dma_mask = DMA_BIT_MASK(32),
- 	},
- };
- 
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/cdd3bb54332f82295ed90cd0c09c78cd0c0ee822
+
+Thank you!
+
 -- 
-2.26.2
-
+Deet-doot-dot, I am a bot.
+https://korg.wiki.kernel.org/userdoc/prtracker
