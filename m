@@ -1,70 +1,216 @@
-Return-Path: <SRS0=o4Xe=AO=vger.kernel.org=linux-m68k-owner@kernel.org>
+Return-Path: <SRS0=anco=AR=vger.kernel.org=linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-6.1 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,
-	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-9.8 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,
+	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 7706BC433E0
-	for <linux-m68k@archiver.kernel.org>; Fri,  3 Jul 2020 06:10:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id F2BF8C433DF
+	for <linux-m68k@archiver.kernel.org>; Mon,  6 Jul 2020 09:35:01 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 501F7208C7
-	for <linux-m68k@archiver.kernel.org>; Fri,  3 Jul 2020 06:10:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=default; t=1593756609;
-	bh=2vTj+W18Sohyh8VTtxWMMIYHjiQzKmvq/8qt8MjNAGg=;
-	h=Subject:From:In-Reply-To:References:Date:To:Cc:List-ID:From;
-	b=cqqSA6ldnpwQW0M3PkgEB4b6YwPbeANtBnLhtmVNVx4MEYqr7ySNMgS9bWk61TPUE
-	 5C7P//yd1DmnvPMqlh2OGNjy/3IIReuUHU6Sf9wriV2lxt7hg+mSTs+eIhQr0hu5BB
-	 wsjJOmfslIoPnbRf2zEV+H7kHcff6Ru1kKXVEg3U=
+	by mail.kernel.org (Postfix) with ESMTP id D41EB20724
+	for <linux-m68k@archiver.kernel.org>; Mon,  6 Jul 2020 09:35:01 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725779AbgGCGKI (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Fri, 3 Jul 2020 02:10:08 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36908 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726317AbgGCGKI (ORCPT <rfc822;linux-m68k@vger.kernel.org>);
-        Fri, 3 Jul 2020 02:10:08 -0400
-Subject: Re: [git pull] m68knommu changes for v5.8-rc4
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1593756608;
-        bh=2vTj+W18Sohyh8VTtxWMMIYHjiQzKmvq/8qt8MjNAGg=;
-        h=From:In-Reply-To:References:Date:To:Cc:From;
-        b=kFZyTbFa6uZQPIDAbSz/FAil0b0MUVLAdN9HcnBMd2T60sOdb5lvMasbU30HaSNZQ
-         QM8Mp5V6qxPt+ErjmCh0701ttySIiwUo9WlINesoZ/8difpgtuWLswOnq7R4j8Qofb
-         Z5L/H1OVoO2mRWb85LAsyAkH9/p917RmLNiDw8rc=
-From:   pr-tracker-bot@kernel.org
-In-Reply-To: <85548a92-b917-08e2-e89c-833bf5cb97b4@linux-m68k.org>
-References: <85548a92-b917-08e2-e89c-833bf5cb97b4@linux-m68k.org>
-X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <85548a92-b917-08e2-e89c-833bf5cb97b4@linux-m68k.org>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/gerg/m68knommu.git
- tags/m68knommu-for-v5.8-rc4
-X-PR-Tracked-Commit-Id: c43e55796dd4d13f4855971a4d7970ce2cd94db4
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: cdd3bb54332f82295ed90cd0c09c78cd0c0ee822
-Message-Id: <159375660825.4799.9904334631995485906.pr-tracker-bot@kernel.org>
-Date:   Fri, 03 Jul 2020 06:10:08 +0000
-To:     Greg Ungerer <gerg@linux-m68k.org>
-Cc:     torvalds@linux-foundation.org,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Linux/m68k <linux-m68k@vger.kernel.org>,
+        id S1728517AbgGFJfB (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Mon, 6 Jul 2020 05:35:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38422 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728516AbgGFJfB (ORCPT
+        <rfc822;linux-m68k@lists.linux-m68k.org>);
+        Mon, 6 Jul 2020 05:35:01 -0400
+Received: from michel.telenet-ops.be (michel.telenet-ops.be [IPv6:2a02:1800:110:4::f00:18])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 402F5C08C5DF
+        for <linux-m68k@lists.linux-m68k.org>; Mon,  6 Jul 2020 02:35:01 -0700 (PDT)
+Received: from ramsan ([IPv6:2a02:1810:ac12:ed20:e012:1552:6e81:c371])
+        by michel.telenet-ops.be with bizsmtp
+        id zlay220010tDR5Q06layLU; Mon, 06 Jul 2020 11:34:58 +0200
+Received: from rox.of.borg ([192.168.97.57])
+        by ramsan with esmtp (Exim 4.90_1)
+        (envelope-from <geert@linux-m68k.org>)
+        id 1jsNWb-0005S6-Tb; Mon, 06 Jul 2020 11:34:57 +0200
+Received: from geert by rox.of.borg with local (Exim 4.90_1)
+        (envelope-from <geert@linux-m68k.org>)
+        id 1jsNWb-000450-RT; Mon, 06 Jul 2020 11:34:57 +0200
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+To:     linux-m68k@lists.linux-m68k.org
+Cc:     linux-kernel@vger.kernel.org,
         Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: [PATCH] m68k: defconfig: Update defconfigs for v5.8-rc3
+Date:   Mon,  6 Jul 2020 11:34:56 +0200
+Message-Id: <20200706093456.15641-1-geert@linux-m68k.org>
+X-Mailer: git-send-email 2.17.1
 Sender: linux-m68k-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-The pull request you sent on Fri, 3 Jul 2020 08:21:59 +1000:
+Re-enable modular build of DES crypto algorithm (no longer auto-enabled
+since commit be01369859b8aa07 ("esp, ah: modernize the crypto algorithm
+selections")).
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/gerg/m68knommu.git tags/m68knommu-for-v5.8-rc4
+Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
+---
+To be combined with "m68k: defconfig: Update defconfigs for v5.8-rc1".
+---
+ arch/m68k/configs/amiga_defconfig    | 1 +
+ arch/m68k/configs/apollo_defconfig   | 1 +
+ arch/m68k/configs/atari_defconfig    | 1 +
+ arch/m68k/configs/bvme6000_defconfig | 1 +
+ arch/m68k/configs/hp300_defconfig    | 1 +
+ arch/m68k/configs/mac_defconfig      | 1 +
+ arch/m68k/configs/multi_defconfig    | 1 +
+ arch/m68k/configs/mvme147_defconfig  | 1 +
+ arch/m68k/configs/mvme16x_defconfig  | 1 +
+ arch/m68k/configs/q40_defconfig      | 1 +
+ arch/m68k/configs/sun3_defconfig     | 1 +
+ arch/m68k/configs/sun3x_defconfig    | 1 +
+ 12 files changed, 12 insertions(+)
 
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/cdd3bb54332f82295ed90cd0c09c78cd0c0ee822
-
-Thank you!
-
+diff --git a/arch/m68k/configs/amiga_defconfig b/arch/m68k/configs/amiga_defconfig
+index 28831ed23a1a8918..f9f4fa595e1338d2 100644
+--- a/arch/m68k/configs/amiga_defconfig
++++ b/arch/m68k/configs/amiga_defconfig
+@@ -594,6 +594,7 @@ CONFIG_CRYPTO_BLOWFISH=m
+ CONFIG_CRYPTO_CAMELLIA=m
+ CONFIG_CRYPTO_CAST5=m
+ CONFIG_CRYPTO_CAST6=m
++CONFIG_CRYPTO_DES=m
+ CONFIG_CRYPTO_FCRYPT=m
+ CONFIG_CRYPTO_KHAZAD=m
+ CONFIG_CRYPTO_SALSA20=m
+diff --git a/arch/m68k/configs/apollo_defconfig b/arch/m68k/configs/apollo_defconfig
+index 821ee9afcb2d29f0..f4828e86d547ebbf 100644
+--- a/arch/m68k/configs/apollo_defconfig
++++ b/arch/m68k/configs/apollo_defconfig
+@@ -550,6 +550,7 @@ CONFIG_CRYPTO_BLOWFISH=m
+ CONFIG_CRYPTO_CAMELLIA=m
+ CONFIG_CRYPTO_CAST5=m
+ CONFIG_CRYPTO_CAST6=m
++CONFIG_CRYPTO_DES=m
+ CONFIG_CRYPTO_FCRYPT=m
+ CONFIG_CRYPTO_KHAZAD=m
+ CONFIG_CRYPTO_SALSA20=m
+diff --git a/arch/m68k/configs/atari_defconfig b/arch/m68k/configs/atari_defconfig
+index a4aec77d38086ec3..a9d300a83d6e3d64 100644
+--- a/arch/m68k/configs/atari_defconfig
++++ b/arch/m68k/configs/atari_defconfig
+@@ -582,6 +582,7 @@ CONFIG_CRYPTO_BLOWFISH=m
+ CONFIG_CRYPTO_CAMELLIA=m
+ CONFIG_CRYPTO_CAST5=m
+ CONFIG_CRYPTO_CAST6=m
++CONFIG_CRYPTO_DES=m
+ CONFIG_CRYPTO_FCRYPT=m
+ CONFIG_CRYPTO_KHAZAD=m
+ CONFIG_CRYPTO_SALSA20=m
+diff --git a/arch/m68k/configs/bvme6000_defconfig b/arch/m68k/configs/bvme6000_defconfig
+index 4ecea1bd1491b24f..d574e438e6dbae2c 100644
+--- a/arch/m68k/configs/bvme6000_defconfig
++++ b/arch/m68k/configs/bvme6000_defconfig
+@@ -543,6 +543,7 @@ CONFIG_CRYPTO_BLOWFISH=m
+ CONFIG_CRYPTO_CAMELLIA=m
+ CONFIG_CRYPTO_CAST5=m
+ CONFIG_CRYPTO_CAST6=m
++CONFIG_CRYPTO_DES=m
+ CONFIG_CRYPTO_FCRYPT=m
+ CONFIG_CRYPTO_KHAZAD=m
+ CONFIG_CRYPTO_SALSA20=m
+diff --git a/arch/m68k/configs/hp300_defconfig b/arch/m68k/configs/hp300_defconfig
+index dbb561d2fd3e0af3..c7ce206e6138210e 100644
+--- a/arch/m68k/configs/hp300_defconfig
++++ b/arch/m68k/configs/hp300_defconfig
+@@ -552,6 +552,7 @@ CONFIG_CRYPTO_BLOWFISH=m
+ CONFIG_CRYPTO_CAMELLIA=m
+ CONFIG_CRYPTO_CAST5=m
+ CONFIG_CRYPTO_CAST6=m
++CONFIG_CRYPTO_DES=m
+ CONFIG_CRYPTO_FCRYPT=m
+ CONFIG_CRYPTO_KHAZAD=m
+ CONFIG_CRYPTO_SALSA20=m
+diff --git a/arch/m68k/configs/mac_defconfig b/arch/m68k/configs/mac_defconfig
+index 06d6fbfc4b996257..522dcf624aa509d0 100644
+--- a/arch/m68k/configs/mac_defconfig
++++ b/arch/m68k/configs/mac_defconfig
+@@ -574,6 +574,7 @@ CONFIG_CRYPTO_BLOWFISH=m
+ CONFIG_CRYPTO_CAMELLIA=m
+ CONFIG_CRYPTO_CAST5=m
+ CONFIG_CRYPTO_CAST6=m
++CONFIG_CRYPTO_DES=m
+ CONFIG_CRYPTO_FCRYPT=m
+ CONFIG_CRYPTO_KHAZAD=m
+ CONFIG_CRYPTO_SALSA20=m
+diff --git a/arch/m68k/configs/multi_defconfig b/arch/m68k/configs/multi_defconfig
+index 09fd5a8c58210829..2433409f4369d0cd 100644
+--- a/arch/m68k/configs/multi_defconfig
++++ b/arch/m68k/configs/multi_defconfig
+@@ -660,6 +660,7 @@ CONFIG_CRYPTO_BLOWFISH=m
+ CONFIG_CRYPTO_CAMELLIA=m
+ CONFIG_CRYPTO_CAST5=m
+ CONFIG_CRYPTO_CAST6=m
++CONFIG_CRYPTO_DES=m
+ CONFIG_CRYPTO_FCRYPT=m
+ CONFIG_CRYPTO_KHAZAD=m
+ CONFIG_CRYPTO_SALSA20=m
+diff --git a/arch/m68k/configs/mvme147_defconfig b/arch/m68k/configs/mvme147_defconfig
+index 487d8c3202514f5a..5568aa7d9d41d565 100644
+--- a/arch/m68k/configs/mvme147_defconfig
++++ b/arch/m68k/configs/mvme147_defconfig
+@@ -542,6 +542,7 @@ CONFIG_CRYPTO_BLOWFISH=m
+ CONFIG_CRYPTO_CAMELLIA=m
+ CONFIG_CRYPTO_CAST5=m
+ CONFIG_CRYPTO_CAST6=m
++CONFIG_CRYPTO_DES=m
+ CONFIG_CRYPTO_FCRYPT=m
+ CONFIG_CRYPTO_KHAZAD=m
+ CONFIG_CRYPTO_SALSA20=m
+diff --git a/arch/m68k/configs/mvme16x_defconfig b/arch/m68k/configs/mvme16x_defconfig
+index ed4c8f3b5bdcc553..5b1e72ce53f863c2 100644
+--- a/arch/m68k/configs/mvme16x_defconfig
++++ b/arch/m68k/configs/mvme16x_defconfig
+@@ -543,6 +543,7 @@ CONFIG_CRYPTO_BLOWFISH=m
+ CONFIG_CRYPTO_CAMELLIA=m
+ CONFIG_CRYPTO_CAST5=m
+ CONFIG_CRYPTO_CAST6=m
++CONFIG_CRYPTO_DES=m
+ CONFIG_CRYPTO_FCRYPT=m
+ CONFIG_CRYPTO_KHAZAD=m
+ CONFIG_CRYPTO_SALSA20=m
+diff --git a/arch/m68k/configs/q40_defconfig b/arch/m68k/configs/q40_defconfig
+index 83b98f9aa72c8554..c3a3dcf30fb95039 100644
+--- a/arch/m68k/configs/q40_defconfig
++++ b/arch/m68k/configs/q40_defconfig
+@@ -561,6 +561,7 @@ CONFIG_CRYPTO_BLOWFISH=m
+ CONFIG_CRYPTO_CAMELLIA=m
+ CONFIG_CRYPTO_CAST5=m
+ CONFIG_CRYPTO_CAST6=m
++CONFIG_CRYPTO_DES=m
+ CONFIG_CRYPTO_FCRYPT=m
+ CONFIG_CRYPTO_KHAZAD=m
+ CONFIG_CRYPTO_SALSA20=m
+diff --git a/arch/m68k/configs/sun3_defconfig b/arch/m68k/configs/sun3_defconfig
+index 5baadb7a98b22557..3c00e52f1bf0b75b 100644
+--- a/arch/m68k/configs/sun3_defconfig
++++ b/arch/m68k/configs/sun3_defconfig
+@@ -545,6 +545,7 @@ CONFIG_CRYPTO_BLOWFISH=m
+ CONFIG_CRYPTO_CAMELLIA=m
+ CONFIG_CRYPTO_CAST5=m
+ CONFIG_CRYPTO_CAST6=m
++CONFIG_CRYPTO_DES=m
+ CONFIG_CRYPTO_FCRYPT=m
+ CONFIG_CRYPTO_KHAZAD=m
+ CONFIG_CRYPTO_SALSA20=m
+diff --git a/arch/m68k/configs/sun3x_defconfig b/arch/m68k/configs/sun3x_defconfig
+index 3c54035283e6d5da..241242d73cbd9ddb 100644
+--- a/arch/m68k/configs/sun3x_defconfig
++++ b/arch/m68k/configs/sun3x_defconfig
+@@ -544,6 +544,7 @@ CONFIG_CRYPTO_BLOWFISH=m
+ CONFIG_CRYPTO_CAMELLIA=m
+ CONFIG_CRYPTO_CAST5=m
+ CONFIG_CRYPTO_CAST6=m
++CONFIG_CRYPTO_DES=m
+ CONFIG_CRYPTO_FCRYPT=m
+ CONFIG_CRYPTO_KHAZAD=m
+ CONFIG_CRYPTO_SALSA20=m
 -- 
-Deet-doot-dot, I am a bot.
-https://korg.wiki.kernel.org/userdoc/prtracker
+2.17.1
+
