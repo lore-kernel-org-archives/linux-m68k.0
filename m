@@ -2,90 +2,215 @@ Return-Path: <SRS0=M86Y=AS=vger.kernel.org=linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.2 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,
-	URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-3.9 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
+	LONGWORDS,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,
+	URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 2F478C433E0
-	for <linux-m68k@archiver.kernel.org>; Tue,  7 Jul 2020 00:04:12 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C2844C433DF
+	for <linux-m68k@archiver.kernel.org>; Tue,  7 Jul 2020 03:52:49 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 11452206F6
-	for <linux-m68k@archiver.kernel.org>; Tue,  7 Jul 2020 00:04:12 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id A47962053B
+	for <linux-m68k@archiver.kernel.org>; Tue,  7 Jul 2020 03:52:49 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726805AbgGGAEL (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Mon, 6 Jul 2020 20:04:11 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44302 "EHLO mail.kernel.org"
+        id S1727077AbgGGDwt (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Mon, 6 Jul 2020 23:52:49 -0400
+Received: from mga04.intel.com ([192.55.52.120]:32506 "EHLO mga04.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726729AbgGGAEL (ORCPT <rfc822;linux-m68k@vger.kernel.org>);
-        Mon, 6 Jul 2020 20:04:11 -0400
-Received: from [10.44.0.192] (unknown [103.48.210.53])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 8E13F20672;
-        Tue,  7 Jul 2020 00:04:10 +0000 (UTC)
-Subject: Re: [PATCH] m68k: stmark2: enable edma support for dspi
-To:     Angelo Dureghello <angelo.dureghello@timesys.com>
-Cc:     linux-m68k@vger.kernel.org
-References: <20200702235338.3653602-1-angelo.dureghello@timesys.com>
-From:   Greg Ungerer <gerg@linux-m68k.org>
-Message-ID: <b4b6b907-2e36-a23d-2c11-24ceec3039ad@linux-m68k.org>
-Date:   Tue, 7 Jul 2020 10:04:07 +1000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.8.0
+        id S1727791AbgGGDwt (ORCPT <rfc822;linux-m68k@lists.linux-m68k.org>);
+        Mon, 6 Jul 2020 23:52:49 -0400
+IronPort-SDR: KZKtoYlbqYDi633kqaFl+9GpXwcNJOZ0NKWg5tEk722VyL3BGNVrpiumuE+aPX2E1EyP683HN/
+ MPXWryGAEeMQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9674"; a="145034756"
+X-IronPort-AV: E=Sophos;i="5.75,321,1589266800"; 
+   d="scan'208";a="145034756"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Jul 2020 20:52:40 -0700
+IronPort-SDR: MTFLvYIU1UkHhhYIDJ7fGU8H5MzbL4k+HYP1rvno9x2AFln8tOthEn+ISfunAsyJWi0J60zK0T
+ gY0S2P3kba9Q==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.75,321,1589266800"; 
+   d="scan'208";a="268075862"
+Received: from lkp-server01.sh.intel.com (HELO f2047cb89c8e) ([10.239.97.150])
+  by fmsmga008.fm.intel.com with ESMTP; 06 Jul 2020 20:52:39 -0700
+Received: from kbuild by f2047cb89c8e with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1jseet-00003s-15; Tue, 07 Jul 2020 03:52:39 +0000
+Date:   Tue, 07 Jul 2020 11:52:20 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Geert Uytterhoeven <geert@linux-m68k.org>
+Cc:     linux-m68k@lists.linux-m68k.org
+Subject: [m68k:m68k-queue] BUILD SUCCESS
+ 60247e093fbbd52d9cab7eebdc6745996dedf64a
+Message-ID: <5f03f174.mQomsmUnGQHmLfC8%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
-In-Reply-To: <20200702235338.3653602-1-angelo.dureghello@timesys.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
+Content-Type: text/plain; charset=us-ascii
 Content-Transfer-Encoding: 7bit
 Sender: linux-m68k-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-Hi Angelo,
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/geert/linux-m68k.git  m68k-queue
+branch HEAD: 60247e093fbbd52d9cab7eebdc6745996dedf64a  fat: Use correct logical sector size for Atari GEMDOS FAT
 
-On 3/7/20 9:53 am, Angelo Dureghello wrote:
-> Enable edma support for stmark2.
-> 
-> Signed-off-by: Angelo Dureghello <angelo.dureghello@timesys.com>
+elapsed time: 720m
 
-Thanks. Pushed into the m68knommu git tree, for-next branch.
+configs tested: 146
+configs skipped: 6
 
-Regards
-Greg
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
+arm                                 defconfig
+arm                              allyesconfig
+arm                              allmodconfig
+arm                               allnoconfig
+arm64                            allyesconfig
+arm64                               defconfig
+arm64                            allmodconfig
+arm64                             allnoconfig
+arm                           corgi_defconfig
+mips                     loongson1b_defconfig
+s390                              allnoconfig
+arm                           spitz_defconfig
+arm                             ezx_defconfig
+sh                                  defconfig
+arm                      tct_hammer_defconfig
+powerpc64                           defconfig
+sh                        dreamcast_defconfig
+arm                         orion5x_defconfig
+mips                           ip22_defconfig
+riscv                    nommu_k210_defconfig
+mips                           jazz_defconfig
+sparc                            alldefconfig
+mips                  mips_paravirt_defconfig
+sh                     sh7710voipgw_defconfig
+s390                          debug_defconfig
+c6x                        evmc6457_defconfig
+arm                          gemini_defconfig
+arm                         bcm2835_defconfig
+mips                          ath79_defconfig
+mips                 decstation_r4k_defconfig
+mips                         rt305x_defconfig
+nios2                         3c120_defconfig
+arm                            hisi_defconfig
+mips                            gpr_defconfig
+arm                          pxa168_defconfig
+sparc64                          allyesconfig
+sh                               j2_defconfig
+mips                       lemote2f_defconfig
+sh                           se7780_defconfig
+arm                     davinci_all_defconfig
+arm                     eseries_pxa_defconfig
+arm                              zx_defconfig
+parisc                generic-32bit_defconfig
+xtensa                  audio_kc705_defconfig
+mips                        bcm47xx_defconfig
+sh                          rsk7269_defconfig
+m68k                        m5307c3_defconfig
+mips                         bigsur_defconfig
+arm                       versatile_defconfig
+m68k                        stmark2_defconfig
+sh                           se7705_defconfig
+xtensa                          iss_defconfig
+i386                              allnoconfig
+i386                                defconfig
+i386                              debian-10.3
+i386                             allyesconfig
+ia64                             allmodconfig
+ia64                                defconfig
+ia64                              allnoconfig
+ia64                             allyesconfig
+m68k                             allmodconfig
+m68k                              allnoconfig
+m68k                           sun3_defconfig
+m68k                                defconfig
+m68k                             allyesconfig
+nios2                               defconfig
+nios2                            allyesconfig
+openrisc                            defconfig
+c6x                              allyesconfig
+c6x                               allnoconfig
+openrisc                         allyesconfig
+nds32                               defconfig
+nds32                             allnoconfig
+csky                             allyesconfig
+csky                                defconfig
+alpha                               defconfig
+alpha                            allyesconfig
+xtensa                           allyesconfig
+h8300                            allyesconfig
+h8300                            allmodconfig
+xtensa                              defconfig
+arc                                 defconfig
+arc                              allyesconfig
+sh                               allmodconfig
+sh                                allnoconfig
+microblaze                        allnoconfig
+mips                             allyesconfig
+mips                              allnoconfig
+mips                             allmodconfig
+parisc                            allnoconfig
+parisc                              defconfig
+parisc                           allyesconfig
+parisc                           allmodconfig
+powerpc                          allyesconfig
+powerpc                          rhel-kconfig
+powerpc                          allmodconfig
+powerpc                           allnoconfig
+powerpc                             defconfig
+i386                 randconfig-a001-20200706
+i386                 randconfig-a002-20200706
+i386                 randconfig-a006-20200706
+i386                 randconfig-a004-20200706
+i386                 randconfig-a005-20200706
+i386                 randconfig-a003-20200706
+i386                 randconfig-a011-20200707
+i386                 randconfig-a014-20200707
+i386                 randconfig-a015-20200707
+i386                 randconfig-a016-20200707
+i386                 randconfig-a012-20200707
+i386                 randconfig-a013-20200707
+i386                 randconfig-a011-20200706
+i386                 randconfig-a014-20200706
+i386                 randconfig-a015-20200706
+i386                 randconfig-a016-20200706
+i386                 randconfig-a012-20200706
+i386                 randconfig-a013-20200706
+x86_64               randconfig-a001-20200706
+x86_64               randconfig-a006-20200706
+x86_64               randconfig-a002-20200706
+x86_64               randconfig-a003-20200706
+x86_64               randconfig-a004-20200706
+x86_64               randconfig-a005-20200706
+riscv                            allyesconfig
+riscv                             allnoconfig
+riscv                               defconfig
+riscv                            allmodconfig
+s390                             allyesconfig
+s390                             allmodconfig
+s390                                defconfig
+sparc                            allyesconfig
+sparc                               defconfig
+sparc64                           allnoconfig
+sparc64                          allmodconfig
+sparc64                             defconfig
+um                               allmodconfig
+um                                allnoconfig
+um                               allyesconfig
+um                                  defconfig
+x86_64                               rhel-7.6
+x86_64                    rhel-7.6-kselftests
+x86_64                               rhel-8.3
+x86_64                                  kexec
+x86_64                                   rhel
+x86_64                         rhel-7.2-clear
+x86_64                                    lkp
+x86_64                              fedora-25
 
->   arch/m68k/coldfire/stmark2.c | 5 +++++
->   1 file changed, 5 insertions(+)
-> 
-> diff --git a/arch/m68k/coldfire/stmark2.c b/arch/m68k/coldfire/stmark2.c
-> index a8d2b3d172f9..8b5af9c83244 100644
-> --- a/arch/m68k/coldfire/stmark2.c
-> +++ b/arch/m68k/coldfire/stmark2.c
-> @@ -13,6 +13,7 @@
->   #include <linux/spi/spi.h>
->   #include <linux/spi/spi-fsl-dspi.h>
->   #include <linux/spi/flash.h>
-> +#include <linux/dma-mapping.h>
->   #include <asm/mcfsim.h>
->   
->   /*
-> @@ -78,6 +79,8 @@ static struct resource dspi_spi0_resource[] = {
->   	},
->   };
->   
-> +static u64 stmark2_dspi_mask = DMA_BIT_MASK(32);
-> +
->   /* SPI controller, id = bus number */
->   static struct platform_device dspi_spi0_device = {
->   	.name = "fsl-dspi",
-> @@ -86,6 +89,8 @@ static struct platform_device dspi_spi0_device = {
->   	.resource = dspi_spi0_resource,
->   	.dev = {
->   		.platform_data = &dspi_spi0_info,
-> +		.dma_mask = &stmark2_dspi_mask,
-> +		.coherent_dma_mask = DMA_BIT_MASK(32),
->   	},
->   };
->   
-> 
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
