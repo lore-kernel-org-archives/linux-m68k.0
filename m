@@ -7,49 +7,49 @@ X-Spam-Status: No, score=-10.1 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=unavailable
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 1D56FC433DF
-	for <linux-m68k@archiver.kernel.org>; Wed,  8 Jul 2020 15:43:57 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5C48BC433E2
+	for <linux-m68k@archiver.kernel.org>; Wed,  8 Jul 2020 15:44:01 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id EB2D82080D
-	for <linux-m68k@archiver.kernel.org>; Wed,  8 Jul 2020 15:43:56 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 3BE65206DF
+	for <linux-m68k@archiver.kernel.org>; Wed,  8 Jul 2020 15:44:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=default; t=1594223037;
-	bh=45jm8z0oH/KPMCdl/hxMxI2KDUiB/6BgrBctVihFt0Y=;
+	s=default; t=1594223041;
+	bh=uLQjx18zBcbsE1m4AHgvem+iPr07ZHZcC+u/mG10a80=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-ID:From;
-	b=uWF/VLq46vULFVBYr6nPAhF+1b4c0Iu57jdoS4bGd0VLA1+6sacC6olP658tAN42m
-	 5LbhctVfn9KnLj2E40ndNAy6PD1wH6t91f85xugYvRd0p5QxBEIGtyFtQQiC/1ldv5
-	 WDSHH403Mr9SWCfCyND0KktLMCEfd2GaD0cWSR28=
+	b=S1HBk8z6Zs497lyOKIZmAv0ZYyIr8C5FvmAXWuM4hkgFeXyTDd0GlICvIo3WQxOht
+	 dcExEsyJyJKW5o6kxQwY0NCU8iaiuzGkVvOmpmUWwD1IKLrq2J0zItMxBVolMLbH1K
+	 hFD13OShDDXL7yFDbA2ZwMYtku6o5jwNREza90i8=
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730480AbgGHPlh (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Wed, 8 Jul 2020 11:41:37 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48184 "EHLO mail.kernel.org"
+        id S1730449AbgGHPoA (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Wed, 8 Jul 2020 11:44:00 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48818 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730462AbgGHPld (ORCPT <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Wed, 8 Jul 2020 11:41:33 -0400
+        id S1730551AbgGHPlr (ORCPT <rfc822;linux-m68k@lists.linux-m68k.org>);
+        Wed, 8 Jul 2020 11:41:47 -0400
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id CC8A620870;
-        Wed,  8 Jul 2020 15:41:31 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 94E1B2080D;
+        Wed,  8 Jul 2020 15:41:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1594222892;
-        bh=45jm8z0oH/KPMCdl/hxMxI2KDUiB/6BgrBctVihFt0Y=;
+        s=default; t=1594222907;
+        bh=uLQjx18zBcbsE1m4AHgvem+iPr07ZHZcC+u/mG10a80=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=xuvixON59YIyX/y2eEEdXZpF5upnYeOOiEYdwz4ee2JMOOyhLgj/DNAE3E0Mv4flG
-         5sdFe1oXwntGj83UG659QCqAvUK3zQ5cci8eA3mAya8/bSmI0bXRZ1yJgYf6YzwGm7
-         cCJJ7NJWr5mAgj7zul7JC0zESwk2lGFskjq/5Q04=
+        b=gvOT3bdo/pRFGQA9iF0+t/184T0POodoGHuLkHe6HahfQSIUR2M8759S5PokmaZ+I
+         gQfrGrZ+/jiZtVHgEZWi4orU0X8Fdj1NWgo/evoEoI80rp+Pt4tBkKkDkHl3S5lZ7L
+         +YCyIFcgC1bYirKjJg+vJcFklln36RcPoZlaln/E=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
 Cc:     Mike Rapoport <rppt@linux.ibm.com>,
         Greg Ungerer <gerg@linux-m68k.org>,
         Sasha Levin <sashal@kernel.org>,
         linux-m68k@lists.linux-m68k.org
-Subject: [PATCH AUTOSEL 5.7 12/30] m68k: nommu: register start of the memory with memblock
-Date:   Wed,  8 Jul 2020 11:40:58 -0400
-Message-Id: <20200708154116.3199728-12-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.4 09/16] m68k: nommu: register start of the memory with memblock
+Date:   Wed,  8 Jul 2020 11:41:28 -0400
+Message-Id: <20200708154135.3199907-9-sashal@kernel.org>
 X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20200708154116.3199728-1-sashal@kernel.org>
-References: <20200708154116.3199728-1-sashal@kernel.org>
+In-Reply-To: <20200708154135.3199907-1-sashal@kernel.org>
+References: <20200708154135.3199907-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
@@ -101,7 +101,7 @@ Signed-off-by: Sasha Levin <sashal@kernel.org>
  1 file changed, 2 insertions(+), 1 deletion(-)
 
 diff --git a/arch/m68k/kernel/setup_no.c b/arch/m68k/kernel/setup_no.c
-index a63483de7a422..5dacba392c74e 100644
+index 3c5def10d486e..caa260f877f24 100644
 --- a/arch/m68k/kernel/setup_no.c
 +++ b/arch/m68k/kernel/setup_no.c
 @@ -139,7 +139,8 @@ void __init setup_arch(char **cmdline_p)
