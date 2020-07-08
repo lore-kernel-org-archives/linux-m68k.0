@@ -4,53 +4,52 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-10.1 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	DKIM_VALID,DKIM_VALID_AU,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=unavailable
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 68EB8C433DF
-	for <linux-m68k@archiver.kernel.org>; Wed,  8 Jul 2020 15:43:27 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 1D56FC433DF
+	for <linux-m68k@archiver.kernel.org>; Wed,  8 Jul 2020 15:43:57 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 3AF3A20720
-	for <linux-m68k@archiver.kernel.org>; Wed,  8 Jul 2020 15:43:27 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id EB2D82080D
+	for <linux-m68k@archiver.kernel.org>; Wed,  8 Jul 2020 15:43:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=default; t=1594223007;
-	bh=XTUF+o5CIluzJxCVc/liIpiAQyJPlLkC0DzwQTYaWYY=;
+	s=default; t=1594223037;
+	bh=45jm8z0oH/KPMCdl/hxMxI2KDUiB/6BgrBctVihFt0Y=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-ID:From;
-	b=jIWrtUJ8ZQDIupn0LTCgOCHuOPi1NVrZoqFMPRJx2ZNhiWKvIKUbHkOHW+vmCWdcw
-	 dUHtRIf4UdpIoY4qxZLSMKm7aWBLE4nsuE97cl1fKUqPXnpwHSzxF2GwpDw9rsf/XH
-	 z/yFZdml53432Coda5ymG23mKVC1VquMbfVMSY/Q=
+	b=uWF/VLq46vULFVBYr6nPAhF+1b4c0Iu57jdoS4bGd0VLA1+6sacC6olP658tAN42m
+	 5LbhctVfn9KnLj2E40ndNAy6PD1wH6t91f85xugYvRd0p5QxBEIGtyFtQQiC/1ldv5
+	 WDSHH403Mr9SWCfCyND0KktLMCEfd2GaD0cWSR28=
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730269AbgGHPn0 (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Wed, 8 Jul 2020 11:43:26 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48836 "EHLO mail.kernel.org"
+        id S1730480AbgGHPlh (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Wed, 8 Jul 2020 11:41:37 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48184 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730559AbgGHPls (ORCPT <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Wed, 8 Jul 2020 11:41:48 -0400
+        id S1730462AbgGHPld (ORCPT <rfc822;linux-m68k@lists.linux-m68k.org>);
+        Wed, 8 Jul 2020 11:41:33 -0400
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B8C9D207D0;
-        Wed,  8 Jul 2020 15:41:47 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id CC8A620870;
+        Wed,  8 Jul 2020 15:41:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1594222908;
-        bh=XTUF+o5CIluzJxCVc/liIpiAQyJPlLkC0DzwQTYaWYY=;
+        s=default; t=1594222892;
+        bh=45jm8z0oH/KPMCdl/hxMxI2KDUiB/6BgrBctVihFt0Y=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=DbcTNnuK4E83N4uXKG+Gb4AI7TSBAzw+G6aweOFrHPghOA5u3aLve8pJcY/j8YHDP
-         XWOFfY+FfbHyRTIicb6K/Z3VsmHDNTJ09zhEEcO7LgxfayUinvbQXCfqWgScti4cCm
-         iXLH41rAp3IaeaFV1QGQrbAYL0JFx1lvJtJlaYfE=
+        b=xuvixON59YIyX/y2eEEdXZpF5upnYeOOiEYdwz4ee2JMOOyhLgj/DNAE3E0Mv4flG
+         5sdFe1oXwntGj83UG659QCqAvUK3zQ5cci8eA3mAya8/bSmI0bXRZ1yJgYf6YzwGm7
+         cCJJ7NJWr5mAgj7zul7JC0zESwk2lGFskjq/5Q04=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Angelo Dureghello <angelo.dureghello@timesys.com>,
-        Mike Rapoport <rppt@linux.ibm.com>,
+Cc:     Mike Rapoport <rppt@linux.ibm.com>,
         Greg Ungerer <gerg@linux-m68k.org>,
         Sasha Levin <sashal@kernel.org>,
         linux-m68k@lists.linux-m68k.org
-Subject: [PATCH AUTOSEL 5.4 10/16] m68k: mm: fix node memblock init
-Date:   Wed,  8 Jul 2020 11:41:29 -0400
-Message-Id: <20200708154135.3199907-10-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.7 12/30] m68k: nommu: register start of the memory with memblock
+Date:   Wed,  8 Jul 2020 11:40:58 -0400
+Message-Id: <20200708154116.3199728-12-sashal@kernel.org>
 X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20200708154135.3199907-1-sashal@kernel.org>
-References: <20200708154135.3199907-1-sashal@kernel.org>
+In-Reply-To: <20200708154116.3199728-1-sashal@kernel.org>
+References: <20200708154116.3199728-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
@@ -60,37 +59,61 @@ Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-From: Angelo Dureghello <angelo.dureghello@timesys.com>
+From: Mike Rapoport <rppt@linux.ibm.com>
 
-[ Upstream commit c43e55796dd4d13f4855971a4d7970ce2cd94db4 ]
+[ Upstream commit d63bd8c81d8ab64db506ffde569cc8ff197516e2 ]
 
-After pulling 5.7.0 (linux-next merge), mcf5441x mmu boot was
-hanging silently.
+The m68k nommu setup code didn't register the beginning of the physical
+memory with memblock because it was anyway occupied by the kernel. However,
+commit fa3354e4ea39 ("mm: free_area_init: use maximal zone PFNs rather than
+zone sizes") changed zones initialization to use memblock.memory to detect
+the zone extents and this caused inconsistency between zone PFNs and the
+actual PFNs:
 
-memblock_add() seems not appropriate, since using MAX_NUMNODES
-as node id, while memblock_add_node() sets up memory for node id 0.
+BUG: Bad page state in process swapper  pfn:20165
+page:41fe0ca0 refcount:0 mapcount:1 mapping:00000000 index:0x0 flags: 0x0()
+raw: 00000000 00000100 00000122 00000000 00000000 00000000 00000000 00000000
+page dumped because: nonzero mapcount
+CPU: 0 PID: 1 Comm: swapper Not tainted 5.8.0-rc1-00001-g3a38f8a60c65-dirty #1
+Stack from 404c9ebc:
+        404c9ebc 4029ab28 4029ab28 40088470 41fe0ca0 40299e21 40299df1 404ba2a4
+        00020165 00000000 41fd2c10 402c7ba0 41fd2c04 40088504 41fe0ca0 40299e21
+        00000000 40088a12 41fe0ca0 41fe0ca4 0000020a 00000000 00000001 402ca000
+        00000000 41fe0ca0 41fd2c10 41fd2c10 00000000 00000000 402b2388 00000001
+        400a0934 40091056 404c9f44 404c9f44 40088db4 402c7ba0 00000001 41fd2c04
+        41fe0ca0 41fd2000 41fe0ca0 40089e02 4026ecf4 40089e4e 41fe0ca0 ffffffff
+Call Trace:
+        [<40088470>] 0x40088470
+ [<40088504>] 0x40088504
+ [<40088a12>] 0x40088a12
+ [<402ca000>] 0x402ca000
+ [<400a0934>] 0x400a0934
 
-Signed-off-by: Angelo Dureghello <angelo.dureghello@timesys.com>
+Adjust the memory registration with memblock to include the beginning of
+the physical memory and make sure that the area occupied by the kernel is
+marked as reserved.
+
 Signed-off-by: Mike Rapoport <rppt@linux.ibm.com>
 Signed-off-by: Greg Ungerer <gerg@linux-m68k.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/m68k/mm/mcfmmu.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ arch/m68k/kernel/setup_no.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/arch/m68k/mm/mcfmmu.c b/arch/m68k/mm/mcfmmu.c
-index 6cb1e41d58d00..70a5f55ea6647 100644
---- a/arch/m68k/mm/mcfmmu.c
-+++ b/arch/m68k/mm/mcfmmu.c
-@@ -164,7 +164,7 @@ void __init cf_bootmem_alloc(void)
- 	m68k_memory[0].addr = _rambase;
- 	m68k_memory[0].size = _ramend - _rambase;
+diff --git a/arch/m68k/kernel/setup_no.c b/arch/m68k/kernel/setup_no.c
+index a63483de7a422..5dacba392c74e 100644
+--- a/arch/m68k/kernel/setup_no.c
++++ b/arch/m68k/kernel/setup_no.c
+@@ -139,7 +139,8 @@ void __init setup_arch(char **cmdline_p)
+ 	pr_debug("MEMORY -> ROMFS=0x%p-0x%06lx MEM=0x%06lx-0x%06lx\n ",
+ 		 __bss_stop, memory_start, memory_start, memory_end);
  
--	memblock_add(m68k_memory[0].addr, m68k_memory[0].size);
-+	memblock_add_node(m68k_memory[0].addr, m68k_memory[0].size, 0);
+-	memblock_add(memory_start, memory_end - memory_start);
++	memblock_add(_rambase, memory_end - _rambase);
++	memblock_reserve(_rambase, memory_start - _rambase);
  
- 	/* compute total pages in system */
- 	num_pages = PFN_DOWN(_ramend - _rambase);
+ 	/* Keep a copy of command line */
+ 	*cmdline_p = &command_line[0];
 -- 
 2.25.1
 
