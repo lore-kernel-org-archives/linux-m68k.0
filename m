@@ -4,40 +4,40 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-10.1 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	DKIM_VALID,DKIM_VALID_AU,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 2B838C433E0
-	for <linux-m68k@archiver.kernel.org>; Wed,  8 Jul 2020 15:41:38 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 15FE6C433E2
+	for <linux-m68k@archiver.kernel.org>; Wed,  8 Jul 2020 15:43:05 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 0B4E72082E
-	for <linux-m68k@archiver.kernel.org>; Wed,  8 Jul 2020 15:41:37 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id DEEC2206DF
+	for <linux-m68k@archiver.kernel.org>; Wed,  8 Jul 2020 15:43:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=default; t=1594222898;
-	bh=4HQ1Wp6eEHqKDLEe+sWSp1dpWtQpdaoDraJF8faeaCg=;
+	s=default; t=1594222985;
+	bh=wxgYB4Ga8dIT1hCDuystHs20ZPtwGYzVHZ80NqcdTa4=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-ID:From;
-	b=l5UUIJEJzo43rCiEBKCahgmYJc93SB992KSwECv+iXN1grUQoxlON/iuX/xVxwNvC
-	 NIFdVQbiDSmzSJtYacFdYjtZlTwrfCJ5eckSNBOeayeDLzM0OwvqpwCNvP+ghyQfcT
-	 RO5bFORpWK6uVvLtDQMh9ne4GQ2J2JOivIJhWM6Q=
+	b=T9ZaaW6gPP+0mwPnW3F63BegPTPvRpZccn/G6yRon6ITiV6oZe3C+uNw3KNx0S/Wy
+	 GCPmvnvabNa9Lud79atrZQNS0PfZwBqwqQfpupunZO4ykmnUJdwlmWS+AUf+jW0Ca6
+	 Vejmqnh23GxBrvaWli2kDwwdUR/cJ2W1pbV9V20k=
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730473AbgGHPlh (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Wed, 8 Jul 2020 11:41:37 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48228 "EHLO mail.kernel.org"
+        id S1730639AbgGHPmE (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Wed, 8 Jul 2020 11:42:04 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49312 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730465AbgGHPle (ORCPT <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Wed, 8 Jul 2020 11:41:34 -0400
+        id S1730634AbgGHPmC (ORCPT <rfc822;linux-m68k@lists.linux-m68k.org>);
+        Wed, 8 Jul 2020 11:42:02 -0400
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id EB51520720;
-        Wed,  8 Jul 2020 15:41:32 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id BFCDE20720;
+        Wed,  8 Jul 2020 15:42:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1594222893;
-        bh=4HQ1Wp6eEHqKDLEe+sWSp1dpWtQpdaoDraJF8faeaCg=;
+        s=default; t=1594222922;
+        bh=wxgYB4Ga8dIT1hCDuystHs20ZPtwGYzVHZ80NqcdTa4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=zBqqyTA8i+gxbFOdeTpUDdMgkWVrVaulbydfvuSxT+pPfvcaz4i/hNB4M4JmxEjpu
-         zVypcnBq0H5FSnpzUsQTF1HKwEZQurzNGs3EzLL3cQXXntXtrtPH9aEBSXEXaZ/t6/
-         tv1o01AzTvAvotIgwOsCiIJoskJQeEuMmNYL9M94=
+        b=gyQUTHGHvK61UozvqdxOl00QcHs3tts3PHCepXtQkNBf7jEQh8wr1BAYhzLh9sXbl
+         oV890aUmCcWPeEVtQ8vJ54/x959cxKTpJyojbdXcyKAzgvlatdmgla6PvXtl3+/8la
+         0rOv1h268FRhzsrWshevxEZJy0KbYEmDFahWAXH8=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
 Cc:     Angelo Dureghello <angelo.dureghello@timesys.com>,
@@ -45,12 +45,12 @@ Cc:     Angelo Dureghello <angelo.dureghello@timesys.com>,
         Greg Ungerer <gerg@linux-m68k.org>,
         Sasha Levin <sashal@kernel.org>,
         linux-m68k@lists.linux-m68k.org
-Subject: [PATCH AUTOSEL 5.7 13/30] m68k: mm: fix node memblock init
-Date:   Wed,  8 Jul 2020 11:40:59 -0400
-Message-Id: <20200708154116.3199728-13-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 4.19 4/8] m68k: mm: fix node memblock init
+Date:   Wed,  8 Jul 2020 11:41:52 -0400
+Message-Id: <20200708154157.3200116-4-sashal@kernel.org>
 X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20200708154116.3199728-1-sashal@kernel.org>
-References: <20200708154116.3199728-1-sashal@kernel.org>
+In-Reply-To: <20200708154157.3200116-1-sashal@kernel.org>
+References: <20200708154157.3200116-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
@@ -79,10 +79,10 @@ Signed-off-by: Sasha Levin <sashal@kernel.org>
  1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/arch/m68k/mm/mcfmmu.c b/arch/m68k/mm/mcfmmu.c
-index 0ea375607767c..2c57f46facc0e 100644
+index f5453d944ff5e..c5e26222979ad 100644
 --- a/arch/m68k/mm/mcfmmu.c
 +++ b/arch/m68k/mm/mcfmmu.c
-@@ -178,7 +178,7 @@ void __init cf_bootmem_alloc(void)
+@@ -160,7 +160,7 @@ void __init cf_bootmem_alloc(void)
  	m68k_memory[0].addr = _rambase;
  	m68k_memory[0].size = _ramend - _rambase;
  
