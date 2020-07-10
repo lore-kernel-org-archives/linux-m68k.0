@@ -1,119 +1,74 @@
-Return-Path: <SRS0=5rvI=AT=vger.kernel.org=linux-m68k-owner@kernel.org>
+Return-Path: <SRS0=XpS4=AV=vger.kernel.org=linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-10.1 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=unavailable
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-0.8 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 5C48BC433E2
-	for <linux-m68k@archiver.kernel.org>; Wed,  8 Jul 2020 15:44:01 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 64B88C433DF
+	for <linux-m68k@archiver.kernel.org>; Fri, 10 Jul 2020 08:18:57 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 3BE65206DF
-	for <linux-m68k@archiver.kernel.org>; Wed,  8 Jul 2020 15:44:01 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=default; t=1594223041;
-	bh=uLQjx18zBcbsE1m4AHgvem+iPr07ZHZcC+u/mG10a80=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-ID:From;
-	b=S1HBk8z6Zs497lyOKIZmAv0ZYyIr8C5FvmAXWuM4hkgFeXyTDd0GlICvIo3WQxOht
-	 dcExEsyJyJKW5o6kxQwY0NCU8iaiuzGkVvOmpmUWwD1IKLrq2J0zItMxBVolMLbH1K
-	 hFD13OShDDXL7yFDbA2ZwMYtku6o5jwNREza90i8=
+	by mail.kernel.org (Postfix) with ESMTP id 4ABE42078B
+	for <linux-m68k@archiver.kernel.org>; Fri, 10 Jul 2020 08:18:57 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730449AbgGHPoA (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Wed, 8 Jul 2020 11:44:00 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48818 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730551AbgGHPlr (ORCPT <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Wed, 8 Jul 2020 11:41:47 -0400
-Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        id S1726288AbgGJIS5 (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Fri, 10 Jul 2020 04:18:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42894 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726004AbgGJIS4 (ORCPT
+        <rfc822;linux-m68k@lists.linux-m68k.org>);
+        Fri, 10 Jul 2020 04:18:56 -0400
+Received: from smtp3.strotmann.de (smtp3.strotmann.de [IPv6:2a03:4000:2:33f::5353])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A88B9C08C5CE
+        for <linux-m68k@lists.linux-m68k.org>; Fri, 10 Jul 2020 01:18:56 -0700 (PDT)
+Received: from smtp2.strotmann.de (unknown [IPv6:fd00::2])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 94E1B2080D;
-        Wed,  8 Jul 2020 15:41:46 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1594222907;
-        bh=uLQjx18zBcbsE1m4AHgvem+iPr07ZHZcC+u/mG10a80=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=gvOT3bdo/pRFGQA9iF0+t/184T0POodoGHuLkHe6HahfQSIUR2M8759S5PokmaZ+I
-         gQfrGrZ+/jiZtVHgEZWi4orU0X8Fdj1NWgo/evoEoI80rp+Pt4tBkKkDkHl3S5lZ7L
-         +YCyIFcgC1bYirKjJg+vJcFklln36RcPoZlaln/E=
-From:   Sasha Levin <sashal@kernel.org>
-To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Mike Rapoport <rppt@linux.ibm.com>,
-        Greg Ungerer <gerg@linux-m68k.org>,
-        Sasha Levin <sashal@kernel.org>,
-        linux-m68k@lists.linux-m68k.org
-Subject: [PATCH AUTOSEL 5.4 09/16] m68k: nommu: register start of the memory with memblock
-Date:   Wed,  8 Jul 2020 11:41:28 -0400
-Message-Id: <20200708154135.3199907-9-sashal@kernel.org>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20200708154135.3199907-1-sashal@kernel.org>
-References: <20200708154135.3199907-1-sashal@kernel.org>
+        by smtp3.strotmann.de (Postfix) with ESMTPS id 81A307FF27;
+        Fri, 10 Jul 2020 10:18:51 +0200 (CEST)
+Received: from emacs.strotmann.de.strotmann.de (unknown [IPv6:fd00::123])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp2.strotmann.de (Postfix) with ESMTPSA id 4B35Xp0Pb1z1sMQ;
+        Fri, 10 Jul 2020 10:18:50 +0200 (CEST)
+References: <86sgeskyb7.fsf@emacs.strotmann.de>
+User-agent: mu4e 1.2.0; emacs 28.0.50
+From:   Carsten Strotmann <cas@strotmann.de>
+To:     linux-m68k <linux-m68k@lists.linux-m68k.org>,
+        Debian-68k <debian-68k@lists.debian.org>
+Subject: virtual eventing chat meeting today
+In-reply-to: <86sgeskyb7.fsf@emacs.strotmann.de>
+Date:   Fri, 10 Jul 2020 10:18:48 +0200
+Message-ID: <86zh87236f.fsf@emacs.strotmann.de>
 MIME-Version: 1.0
-X-stable: review
-X-Patchwork-Hint: Ignore
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; format=flowed
 Sender: linux-m68k-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-From: Mike Rapoport <rppt@linux.ibm.com>
+Hi,
 
-[ Upstream commit d63bd8c81d8ab64db506ffde569cc8ff197516e2 ]
+a short reminder of the next virtual eventing chat meeting will be 
+on
+10th of July 2020 (today) starting at 8:00pm CEST (20:00 H) on
+<https://meet.m68k.info> (the Jitsi meeting page will be online 30
+minutes before the meeting starts.
 
-The m68k nommu setup code didn't register the beginning of the physical
-memory with memblock because it was anyway occupied by the kernel. However,
-commit fa3354e4ea39 ("mm: free_area_init: use maximal zone PFNs rather than
-zone sizes") changed zones initialization to use memblock.memory to detect
-the zone extents and this caused inconsistency between zone PFNs and the
-actual PFNs:
+Based on the discussion last month I've created a prototype of an
+"planet m68k" news aggregator website (that could also be used as 
+a
+source for a monthly newsletter) containing m68k development news.
 
-BUG: Bad page state in process swapper  pfn:20165
-page:41fe0ca0 refcount:0 mapcount:1 mapping:00000000 index:0x0 flags: 0x0()
-raw: 00000000 00000100 00000122 00000000 00000000 00000000 00000000 00000000
-page dumped because: nonzero mapcount
-CPU: 0 PID: 1 Comm: swapper Not tainted 5.8.0-rc1-00001-g3a38f8a60c65-dirty #1
-Stack from 404c9ebc:
-        404c9ebc 4029ab28 4029ab28 40088470 41fe0ca0 40299e21 40299df1 404ba2a4
-        00020165 00000000 41fd2c10 402c7ba0 41fd2c04 40088504 41fe0ca0 40299e21
-        00000000 40088a12 41fe0ca0 41fe0ca4 0000020a 00000000 00000001 402ca000
-        00000000 41fe0ca0 41fd2c10 41fd2c10 00000000 00000000 402b2388 00000001
-        400a0934 40091056 404c9f44 404c9f44 40088db4 402c7ba0 00000001 41fd2c04
-        41fe0ca0 41fd2000 41fe0ca0 40089e02 4026ecf4 40089e4e 41fe0ca0 ffffffff
-Call Trace:
-        [<40088470>] 0x40088470
- [<40088504>] 0x40088504
- [<40088a12>] 0x40088a12
- [<402ca000>] 0x402ca000
- [<400a0934>] 0x400a0934
+Also, the poll for a larger m68k developers meeting in Q4/2020 is 
+still
+open (and will be open until end of August)
+<https://nuudel.digitalcourage.de/sBwNfnUh2BjGWHJY>
 
-Adjust the memory registration with memblock to include the beginning of
-the physical memory and make sure that the area occupied by the kernel is
-marked as reserved.
 
-Signed-off-by: Mike Rapoport <rppt@linux.ibm.com>
-Signed-off-by: Greg Ungerer <gerg@linux-m68k.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
- arch/m68k/kernel/setup_no.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+See you tonight
 
-diff --git a/arch/m68k/kernel/setup_no.c b/arch/m68k/kernel/setup_no.c
-index 3c5def10d486e..caa260f877f24 100644
---- a/arch/m68k/kernel/setup_no.c
-+++ b/arch/m68k/kernel/setup_no.c
-@@ -139,7 +139,8 @@ void __init setup_arch(char **cmdline_p)
- 	pr_debug("MEMORY -> ROMFS=0x%p-0x%06lx MEM=0x%06lx-0x%06lx\n ",
- 		 __bss_stop, memory_start, memory_start, memory_end);
- 
--	memblock_add(memory_start, memory_end - memory_start);
-+	memblock_add(_rambase, memory_end - _rambase);
-+	memblock_reserve(_rambase, memory_start - _rambase);
- 
- 	/* Keep a copy of command line */
- 	*cmdline_p = &command_line[0];
--- 
-2.25.1
-
+Carsten
