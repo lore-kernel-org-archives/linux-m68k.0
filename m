@@ -2,127 +2,142 @@ Return-Path: <SRS0=XpS4=AV=vger.kernel.org=linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.2 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=no
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-8.3 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
+	MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
+	USER_AGENT_SANE_1 autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9CE07C433E1
-	for <linux-m68k@archiver.kernel.org>; Fri, 10 Jul 2020 08:26:34 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 01CA8C433E4
+	for <linux-m68k@archiver.kernel.org>; Fri, 10 Jul 2020 14:23:31 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 8440C207F9
-	for <linux-m68k@archiver.kernel.org>; Fri, 10 Jul 2020 08:26:34 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id CCF7220674
+	for <linux-m68k@archiver.kernel.org>; Fri, 10 Jul 2020 14:23:30 +0000 (UTC)
+Authentication-Results: mail.kernel.org;
+	dkim=pass (1024-bit key) header.d=samsung.com header.i=@samsung.com header.b="aclDKV5U"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726912AbgGJI0c (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Fri, 10 Jul 2020 04:26:32 -0400
-Received: from outpost1.zedat.fu-berlin.de ([130.133.4.66]:46695 "EHLO
-        outpost1.zedat.fu-berlin.de" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726369AbgGJI0b (ORCPT
+        id S1728044AbgGJOXa (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Fri, 10 Jul 2020 10:23:30 -0400
+Received: from mailout1.w1.samsung.com ([210.118.77.11]:55013 "EHLO
+        mailout1.w1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727998AbgGJOXa (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Fri, 10 Jul 2020 04:26:31 -0400
-Received: from inpost2.zedat.fu-berlin.de ([130.133.4.69])
-          by outpost.zedat.fu-berlin.de (Exim 4.93)
-          with esmtps (TLS1.2)
-          tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-          (envelope-from <glaubitz@zedat.fu-berlin.de>)
-          id 1jtoMU-003I8P-6y; Fri, 10 Jul 2020 10:26:26 +0200
-Received: from p57bd93f9.dip0.t-ipconnect.de ([87.189.147.249] helo=[192.168.178.139])
-          by inpost2.zedat.fu-berlin.de (Exim 4.93)
-          with esmtpsa (TLS1.2)
-          tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-          (envelope-from <glaubitz@physik.fu-berlin.de>)
-          id 1jtoMT-0004rB-Mu; Fri, 10 Jul 2020 10:26:25 +0200
-Subject: Re: virtual eventing chat meeting today
-To:     Carsten Strotmann <cas@strotmann.de>,
+        Fri, 10 Jul 2020 10:23:30 -0400
+Received: from eucas1p2.samsung.com (unknown [182.198.249.207])
+        by mailout1.w1.samsung.com (KnoxPortal) with ESMTP id 20200710142328euoutp01e4fc260c8a2c400f9aa53f6857b6f83d~gaizWSRMR3141431414euoutp010
+        for <linux-m68k@lists.linux-m68k.org>; Fri, 10 Jul 2020 14:23:28 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.w1.samsung.com 20200710142328euoutp01e4fc260c8a2c400f9aa53f6857b6f83d~gaizWSRMR3141431414euoutp010
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1594391008;
+        bh=WkcusuUfSpmRdHA4+MoHJqGH0lyu+gdsD+U9n4i9t0k=;
+        h=From:Subject:To:Cc:Date:In-Reply-To:References:From;
+        b=aclDKV5UtbzYf4g73VawWqOhsmBfCBEq2uB/eJ9Fvya/+CrE8HuAL1gSnsxgwOMtP
+         oMCFRpEFyHoe3IlVOJMyYOdb7L0/dgSe3ZXc1yG0uZUx7GC1jc9nqkZQAIwFRldq+p
+         Tyy/0lietsV3QdAddmd177cubfx9BxrmZBBiHpqo=
+Received: from eusmges2new.samsung.com (unknown [203.254.199.244]) by
+        eucas1p2.samsung.com (KnoxPortal) with ESMTP id
+        20200710142328eucas1p2ec1735488894f3bec3d803aca8088541~gaizN3XxA2910929109eucas1p24;
+        Fri, 10 Jul 2020 14:23:28 +0000 (GMT)
+Received: from eucas1p2.samsung.com ( [182.198.249.207]) by
+        eusmges2new.samsung.com (EUCPMTA) with SMTP id DD.56.05997.0E9780F5; Fri, 10
+        Jul 2020 15:23:28 +0100 (BST)
+Received: from eusmtrp2.samsung.com (unknown [182.198.249.139]) by
+        eucas1p2.samsung.com (KnoxPortal) with ESMTPA id
+        20200710142328eucas1p2ae08e5c0fe341044248056d36a7eb239~gaiy3zM8r2122921229eucas1p23;
+        Fri, 10 Jul 2020 14:23:28 +0000 (GMT)
+Received: from eusmgms2.samsung.com (unknown [182.198.249.180]) by
+        eusmtrp2.samsung.com (KnoxPortal) with ESMTP id
+        20200710142328eusmtrp2d7784ffc41329d1a909640d305963680~gaiy3PrpD1267512675eusmtrp2M;
+        Fri, 10 Jul 2020 14:23:28 +0000 (GMT)
+X-AuditID: cbfec7f4-677ff7000000176d-2f-5f0879e0a0b4
+Received: from eusmtip2.samsung.com ( [203.254.199.222]) by
+        eusmgms2.samsung.com (EUCPMTA) with SMTP id A9.61.06017.0E9780F5; Fri, 10
+        Jul 2020 15:23:28 +0100 (BST)
+Received: from [106.120.51.71] (unknown [106.120.51.71]) by
+        eusmtip2.samsung.com (KnoxPortal) with ESMTPA id
+        20200710142327eusmtip2cc26778ca3a24b139fab77c1dd729a81~gaiygwVSF1365513655eusmtip2o;
+        Fri, 10 Jul 2020 14:23:27 +0000 (GMT)
+From:   Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>
+Subject: Re: [PATCH v2 1/2] video: fbdev: amifb: add FIXME about dead APUS
+ support
+To:     Geert Uytterhoeven <geert@linux-m68k.org>
+Cc:     Linux Fbdev development list <linux-fbdev@vger.kernel.org>,
+        DRI Development <dri-devel@lists.freedesktop.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
         linux-m68k <linux-m68k@lists.linux-m68k.org>,
-        Debian-68k <debian-68k@lists.debian.org>
-References: <86sgeskyb7.fsf@emacs.strotmann.de>
- <86zh87236f.fsf@emacs.strotmann.de>
-From:   John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
-Autocrypt: addr=glaubitz@physik.fu-berlin.de; keydata=
- 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
- scOkTAZQGVpD/8AaLH4v1w==
-Message-ID: <ba6e0cdf-fa32-2a29-bd0a-020eb8057492@physik.fu-berlin.de>
-Date:   Fri, 10 Jul 2020 10:26:24 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.9.0
+        Al Viro <viro@zeniv.linux.org.uk>
+Message-ID: <ccb3ca73-8f22-990a-b8bd-1f9c8d642f10@samsung.com>
+Date:   Fri, 10 Jul 2020 16:23:27 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+        Thunderbird/60.8.0
 MIME-Version: 1.0
-In-Reply-To: <86zh87236f.fsf@emacs.strotmann.de>
-Content-Type: text/plain; charset=utf-8
+In-Reply-To: <CAMuHMdWac+YE3qr0CTepn5K24tGZq0VHuQDGg-yUOHW1rJDbbg@mail.gmail.com>
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-Original-Sender: glaubitz@physik.fu-berlin.de
-X-Originating-IP: 87.189.147.249
+X-Brightmail-Tracker: H4sIAAAAAAAAA01SfSyUcRz3e948rs4eR/Mdqu02LQql/jgVU9O6P7NVU0s88QzlrXtQzJrM
+        y41l9KJ1bpGVc9Z5S4RuLZrzkpcia9SQG8mkvA4h7jnLf5/v5/v5fL/fz/alcYmGdKAjouM4
+        RTQbKaVERG3LUrfbcCIddOjT3f2yvvlpSjY2oMdkrTm/SVlvg5qSaYw6XNa9aiB9KXlTsxLJ
+        h7INmLwtfYGQz1bvkVcbp7Cz5CXRiVAuMiKBU3j4BIvCx15UkrHZlrey27VYCpols5AVDcxR
+        mCx9QGQhES1hShEMtjTiQjGHYH1ajwnFLIIZ/Wd8y9I5OWxuaBB0lyxQQjGF4GFqsWkwxRyD
+        vMwytIltmXOgbi3YENG0HeMG6iWTGWdSMdDVVJmmihkfyOtZM2GCcYbpj+nUJt7FBMDMcDMp
+        aGyg7bGR2MRWjD/0rTwx8ThjDwPGQkzAe6FuSm3KAEy5JXzLn7MUzvYD3eRTQsC28NNQY+ad
+        YL2+EDMbEKwqf5jddQg099coQXUcvnYtmyLgjAtUNHgI9En40DOBbdLAWMOXKRvhCGu4V/sI
+        F2gxKDMkgnofVJZUUltrs+q1eC6SqrZFU22Lo9oWR/V/bxEiypA9F89HhXG8ZzR3051no/j4
+        6DD3kJioarTxPh1rhrnXqOHv1SbE0Ei6U1zE0kESkk3gE6OaENC41E58qrPjikQcyiYmcYqY
+        IEV8JMc3IUeakNqLjxRPBEqYMDaOu85xsZxiq4vRVg4p6Ixdcmw9/x27cIDkndrfuTZeS5qe
+        H022z0k6HXBDdblT9nyEvbM4Epz27NV7XzZ3QmRUHlQWWizmawN//Vl2NGQWe/WH611CzpO+
+        iv7gqoEeC++VgreDnrv7+GTnuowdXRcXvfv0aTmlGr/RKq/5ipfeb8Zvpw2N9+aXT2j9dTVS
+        gg9nD7viCp79B8pExAA6AwAA
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFtrGIsWRmVeSWpSXmKPExsVy+t/xe7oPKjniDZY+FrG48vU9m8WzW3uZ
+        LE70fWC1uLxrDpvF8idrmS3O/z3O6sDmcehwB6PH/e7jTB4nW7+xeHzeJOex6clbpgDWKD2b
+        ovzSklSFjPziElulaEMLIz1DSws9IxNLPUNj81grI1MlfTublNSczLLUIn27BL2MZ2s2sBZ0
+        s1d0n1rJ1MD4mbWLkZNDQsBE4uzrB0xdjFwcQgJLGSU2rfzD0sXIAZSQkTi+vgyiRljiz7Uu
+        Noia14wS7XN/sYMk2ASsJCa2r2IEsYUFQiTmnJjNBtIrIqArMecnE0iYWaCFSWLxFx0QW0hg
+        BpPEms3qIDavgJ3ExAv/mEFsFgFVifcXW9lAbFGBCInDO2YxQtQISpyc+YQFxOYUCJS48nse
+        K8RMdYk/8y4xQ9jiEreezIfaJS+x/e0c5gmMQrOQtM9C0jILScssJC0LGFlWMYqklhbnpucW
+        G+kVJ+YWl+al6yXn525iBMbZtmM/t+xg7HoXfIhRgINRiYd3QSJHvBBrYllxZe4hRgkOZiUR
+        Xqezp+OEeFMSK6tSi/Lji0pzUosPMZoCPTeRWUo0OR+YAvJK4g1NDc0tLA3Njc2NzSyUxHk7
+        BA7GCAmkJ5akZqemFqQWwfQxcXBKNTDWLc7zmdnN/Vzx8JvLpjZxEa5uh50Xm995eOCuUp+5
+        7SuudrUnCow3d/zxLNyhXFSU28tz2J9h23d5VuYfrscKWMNPWjSXR/W7LYo8fFQ7WUVaUXLD
+        G40Fn82+f5KTYYn2XV4XWaYiIh4r+TGg1GjfJV6rUEddvh9mps0HL2T2b79bsCfjjBJLcUai
+        oRZzUXEiANaxOpHJAgAA
+X-CMS-MailID: 20200710142328eucas1p2ae08e5c0fe341044248056d36a7eb239
+X-Msg-Generator: CA
+Content-Type: text/plain; charset="utf-8"
+X-RootMTR: 20200504232908eucas1p296927bc7c736ad924cefaea9a546459d
+X-EPHeader: CA
+CMS-TYPE: 201P
+X-CMS-RootMailID: 20200504232908eucas1p296927bc7c736ad924cefaea9a546459d
+References: <CGME20200504232908eucas1p296927bc7c736ad924cefaea9a546459d@eucas1p2.samsung.com>
+        <b1cf967015c5beafa475aaa30d8e21a58caff870.camel@perches.com>
+        <767d36ff-22ec-8136-7ebc-1d9d0d3ac98d@samsung.com>
+        <CAMuHMdWac+YE3qr0CTepn5K24tGZq0VHuQDGg-yUOHW1rJDbbg@mail.gmail.com>
 Sender: linux-m68k-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-On 7/10/20 10:18 AM, Carsten Strotmann wrote:
-> a short reminder of the next virtual eventing chat meeting will be on
-> 10th of July 2020 (today) starting at 8:00pm CEST (20:00 H) on
-> <https://meet.m68k.info> (the Jitsi meeting page will be online 30
-> minutes before the meeting starts.
 
-Cannot promise yet whether I will be able to join since I'm receiving
-guests tonight.
+On 6/2/20 2:03 PM, Geert Uytterhoeven wrote:
+> On Tue, Jun 2, 2020 at 1:50 PM Bartlomiej Zolnierkiewicz
+> <b.zolnierkie@samsung.com> wrote:
+>> On 5/14/20 10:21 PM, Geert Uytterhoeven wrote:
+>>> These #ifdefs are relics from APUS (Amiga Power-Up System), which
+>>> added a PPC board.  APUS support was killed off a long time ago,
+>>> when arch/ppc/ was still king, but these #ifdefs were missed, because
+>>> they didn't test for CONFIG_APUS.
+>>
+>> Add FIXME about using the C code variants (APUS ones) in the future.
+>>
+>> Reported-by: Al Viro <viro@zeniv.linux.org.uk>
+>> Reported-by: Geert Uytterhoeven <geert@linux-m68k.org>
+>> Signed-off-by: Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>
+> 
+> Reviewed-by: Geert Uytterhoeven <geert@linux-m68k.org>
 
-> Based on the discussion last month I've created a prototype of an
-> "planet m68k" news aggregator website (that could also be used as a
-> source for a monthly newsletter) containing m68k development news.
+Applied to drm-misc-next tree.
 
-That's very cool! Looking forward for that site to come online.
-
-> Also, the poll for a larger m68k developers meeting in Q4/2020 is still
-> open (and will be open until end of August)
-> <https://nuudel.digitalcourage.de/sBwNfnUh2BjGWHJY>
-
-Thanks. I will look into that later today.
-
-Adrian
-
--- 
- .''`.  John Paul Adrian Glaubitz
-: :' :  Debian Developer - glaubitz@debian.org
-`. `'   Freie Universitaet Berlin - glaubitz@physik.fu-berlin.de
-  `-    GPG: 62FF 8A75 84E0 2956 9546  0006 7426 3B37 F5B5 F913
+Best regards,
+--
+Bartlomiej Zolnierkiewicz
+Samsung R&D Institute Poland
+Samsung Electronics
