@@ -2,86 +2,131 @@ Return-Path: <SRS0=jZxU=AY=vger.kernel.org=linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-13.0 required=3.0 tests=BAYES_00,
+X-Spam-Status: No, score=-13.1 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=unavailable
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 6590AC433E2
-	for <linux-m68k@archiver.kernel.org>; Mon, 13 Jul 2020 07:24:37 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id EF072C4345B
+	for <linux-m68k@archiver.kernel.org>; Mon, 13 Jul 2020 13:24:19 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 40481206F0
-	for <linux-m68k@archiver.kernel.org>; Mon, 13 Jul 2020 07:24:37 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id CE006206F0
+	for <linux-m68k@archiver.kernel.org>; Mon, 13 Jul 2020 13:24:19 +0000 (UTC)
+Authentication-Results: mail.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="n80txyCo"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727034AbgGMHYh (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Mon, 13 Jul 2020 03:24:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46878 "EHLO
+        id S1730097AbgGMNYD (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Mon, 13 Jul 2020 09:24:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47628 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725818AbgGMHYg (ORCPT
+        with ESMTP id S1730020AbgGMNXU (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Mon, 13 Jul 2020 03:24:36 -0400
-Received: from andre.telenet-ops.be (andre.telenet-ops.be [IPv6:2a02:1800:120:4::f00:15])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3212AC08C5DB
-        for <linux-m68k@lists.linux-m68k.org>; Mon, 13 Jul 2020 00:24:36 -0700 (PDT)
-Received: from ramsan ([84.195.186.194])
-        by andre.telenet-ops.be with bizsmtp
-        id 2XQX230064C55Sk01XQXlM; Mon, 13 Jul 2020 09:24:31 +0200
-Received: from rox.of.borg ([192.168.97.57])
-        by ramsan with esmtp (Exim 4.90_1)
-        (envelope-from <geert@linux-m68k.org>)
-        id 1juspD-0006Qe-3i; Mon, 13 Jul 2020 09:24:31 +0200
-Received: from geert by rox.of.borg with local (Exim 4.90_1)
-        (envelope-from <geert@linux-m68k.org>)
-        id 1juspD-0001cY-1g; Mon, 13 Jul 2020 09:24:31 +0200
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-To:     John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
-        Stefan Reinauer <stefan.k.reinauer@gmail.com>,
-        linux-m68k@lists.linux-m68k.org
-Cc:     linux-kernel@vger.kernel.org,
+        Mon, 13 Jul 2020 09:23:20 -0400
+Received: from mail-ed1-x544.google.com (mail-ed1-x544.google.com [IPv6:2a00:1450:4864:20::544])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DEA14C08C5DB
+        for <linux-m68k@lists.linux-m68k.org>; Mon, 13 Jul 2020 06:23:19 -0700 (PDT)
+Received: by mail-ed1-x544.google.com with SMTP id d18so13658610edv.6
+        for <linux-m68k@lists.linux-m68k.org>; Mon, 13 Jul 2020 06:23:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references;
+        bh=8wbmK+ya6vHJSgI+MTiDhQKWZMMzmthLgMh2OY4MZvM=;
+        b=n80txyCowMGw0agwpHO34CYMBjnaTUgBZm0NF31BEIRCoPc1JqzuQF5NChyyvnmjJv
+         EUpvNZnOiq6UM7e6uY2eMEmBZq65ptv7RYBcTij58bTpkCJzq0njvYzGReCEwrmNV5RI
+         5gtzm53oXNXlrL6ExBGPj0YysnmlxyLW4c9ytpXGynG/qwDZkUmE2y1FObO5mcUV0L/0
+         wXMj7CkivYgSB0vhRcKAC9l7aIrh8DGiSAPr8YYTB/t+l2Pe9+0FjBbrXbqkKWATAoxQ
+         Kl2j3veZd4XTP+PnTPMw3T8UA5mOfMyZf+oQlFVmZaEyzIH8DysrASAyAUCQ0M2aVWw3
+         3lyw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references;
+        bh=8wbmK+ya6vHJSgI+MTiDhQKWZMMzmthLgMh2OY4MZvM=;
+        b=St7+OvdmDHXn7d1Mn1n37VWSikty9OCFYcOjs69GWYDEDIcadkTTYYnjP0XOTN35JT
+         ADhOf/VdVt61K2po21aSoXJ7M/IlsrpKuuWr5i9EoQCulVONysZELDY2Hsw6AqAITFcu
+         cNCflE45/J2cYWm+xYhEmnRno9mUWF7mltx7u/ozirWuaOorG1jXCjAhCyWBpR2/cFfr
+         yyv+XrxGyzIXLMQ4cuKN6TKE+iJBG7sk4qptXrT6req6sTf0XHRB/uiaeqoK8d79aFSW
+         HWr0BLs43BP383CU/i6go2BXIzo5V3/KITcYZV0aDEz6lHl4mBbMZ31WO+kHqAtILJnA
+         9IzA==
+X-Gm-Message-State: AOAM531fI/EYGeJ1MhmSBmhptDX8d+fmeOspJx2nu6iNhA7c0pbj73p3
+        pC8Sk43QyYNeANArCdJOteg=
+X-Google-Smtp-Source: ABdhPJy+Hs7Ue1IFdlNyMdXk8xV3FtdPl2STdVdjCaLLSaMCCO1/ac6jRmx114IfgaO4SRqNDdJKtg==
+X-Received: by 2002:a05:6402:1ca6:: with SMTP id cz6mr70531295edb.171.1594646598609;
+        Mon, 13 Jul 2020 06:23:18 -0700 (PDT)
+Received: from net.saheed (54007186.dsl.pool.telekom.hu. [84.0.113.134])
+        by smtp.gmail.com with ESMTPSA id n9sm11806540edr.46.2020.07.13.06.23.17
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 13 Jul 2020 06:23:18 -0700 (PDT)
+From:   "Saheed O. Bolarinwa" <refactormyself@gmail.com>
+To:     helgaas@kernel.org, Greg Ungerer <gerg@linux-m68k.org>,
         Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: [PATCH] zorro: Fix address space collision message with RAM expansion boards
-Date:   Mon, 13 Jul 2020 09:24:29 +0200
-Message-Id: <20200713072429.6182-1-geert@linux-m68k.org>
-X-Mailer: git-send-email 2.17.1
+Cc:     "Saheed O. Bolarinwa" <refactormyself@gmail.com>,
+        bjorn@helgaas.com, skhan@linuxfoundation.org,
+        linux-pci@vger.kernel.org,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        linux-kernel@vger.kernel.org, linux-m68k@lists.linux-m68k.org
+Subject: [RFC PATCH 31/35] m68k: Change PCIBIOS_SUCCESSFUL to 0
+Date:   Mon, 13 Jul 2020 14:22:43 +0200
+Message-Id: <20200713122247.10985-32-refactormyself@gmail.com>
+X-Mailer: git-send-email 2.18.2
+In-Reply-To: <20200713122247.10985-1-refactormyself@gmail.com>
+References: <20200713122247.10985-1-refactormyself@gmail.com>
 Sender: linux-m68k-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-When booting Linux on an Amiga with BigRAMPlus Zorro expansion board:
+In reference to the PCI spec (Chapter 2), PCIBIOS* is an x86 concept.
+Their scope should be limited within arch/x86.
 
-    zorro: Address space collision on device Zorro device 12128600 (Individual Computers) [??? 0x50000000-]
+Change all PCIBIOS_SUCCESSFUL to 0
 
-This happens because the address space occupied by the BigRAMPlus Zorro
-device is already in use, as it is part of system RAM.  Hence the
-message is harmless.
-
-Zorro memory expansion boards have the ERTF_MEMLIST flag set, which
-tells AmigaOS to link the board's RAM into the free memory list.  While
-we could skip registering the board resource if this flag is set, that
-may cause issues with Zorro II RAM excluded in a memfile.
-
-Hence fix the issue by just ignoring the error if ERTF_MEMLIST is set.
-
-Reported-by: John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
-Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
+Signed-off-by: "Saheed O. Bolarinwa" <refactormyself@gmail.com>
 ---
- drivers/zorro/zorro.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ arch/m68k/coldfire/pci.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/zorro/zorro.c b/drivers/zorro/zorro.c
-index 47c733817903f303..1b9928648583193c 100644
---- a/drivers/zorro/zorro.c
-+++ b/drivers/zorro/zorro.c
-@@ -181,7 +181,7 @@ static int __init amiga_zorro_probe(struct platform_device *pdev)
- 		z->resource.name = z->name;
- 		r = zorro_find_parent_resource(pdev, z);
- 		error = request_resource(r, &z->resource);
--		if (error)
-+		if (error && !(z->rom.er_Type & ERTF_MEMLIST))
- 			dev_err(&bus->dev,
- 				"Address space collision on device %s %pR\n",
- 				z->name, &z->resource);
+diff --git a/arch/m68k/coldfire/pci.c b/arch/m68k/coldfire/pci.c
+index 84eab0f5e00a..ecd11a19487a 100644
+--- a/arch/m68k/coldfire/pci.c
++++ b/arch/m68k/coldfire/pci.c
+@@ -64,7 +64,7 @@ static int mcf_pci_readconfig(struct pci_bus *bus, unsigned int devfn,
+ 
+ 	if (bus->number == 0) {
+ 		if (mcf_host_slot2sid[PCI_SLOT(devfn)] == 0)
+-			return PCIBIOS_SUCCESSFUL;
++			return 0;
+ 	}
+ 
+ 	addr = mcf_mk_pcicar(bus->number, devfn, where);
+@@ -86,7 +86,7 @@ static int mcf_pci_readconfig(struct pci_bus *bus, unsigned int devfn,
+ 
+ 	__raw_writel(0, PCICAR);
+ 	__raw_readl(PCICAR);
+-	return PCIBIOS_SUCCESSFUL;
++	return 0;
+ }
+ 
+ static int mcf_pci_writeconfig(struct pci_bus *bus, unsigned int devfn,
+@@ -96,7 +96,7 @@ static int mcf_pci_writeconfig(struct pci_bus *bus, unsigned int devfn,
+ 
+ 	if (bus->number == 0) {
+ 		if (mcf_host_slot2sid[PCI_SLOT(devfn)] == 0)
+-			return PCIBIOS_SUCCESSFUL;
++			return 0;
+ 	}
+ 
+ 	addr = mcf_mk_pcicar(bus->number, devfn, where);
+@@ -118,7 +118,7 @@ static int mcf_pci_writeconfig(struct pci_bus *bus, unsigned int devfn,
+ 
+ 	__raw_writel(0, PCICAR);
+ 	__raw_readl(PCICAR);
+-	return PCIBIOS_SUCCESSFUL;
++	return 0;
+ }
+ 
+ static struct pci_ops mcf_pci_ops = {
 -- 
-2.17.1
+2.18.2
 
