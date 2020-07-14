@@ -7,44 +7,44 @@ X-Spam-Status: No, score=-7.0 required=3.0 tests=BAYES_00,
 	MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=no
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 21C49C433EA
-	for <linux-m68k@archiver.kernel.org>; Tue, 14 Jul 2020 10:31:55 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C6D3AC433F1
+	for <linux-m68k@archiver.kernel.org>; Tue, 14 Jul 2020 10:32:00 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 0826C21D80
-	for <linux-m68k@archiver.kernel.org>; Tue, 14 Jul 2020 10:31:55 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 9C45621D7B
+	for <linux-m68k@archiver.kernel.org>; Tue, 14 Jul 2020 10:32:00 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726796AbgGNKbx (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Tue, 14 Jul 2020 06:31:53 -0400
-Received: from mga14.intel.com ([192.55.52.115]:53348 "EHLO mga14.intel.com"
+        id S1726831AbgGNKcA (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Tue, 14 Jul 2020 06:32:00 -0400
+Received: from mga01.intel.com ([192.55.52.88]:59073 "EHLO mga01.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726398AbgGNKbx (ORCPT <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Tue, 14 Jul 2020 06:31:53 -0400
-IronPort-SDR: 1Jhf5vLTK6rQ+WQ2rHLAYRz06NRW/99w4gXFq+Xj3P/spuTf6jIzB/mD62ZefGkZVrYLN9srSv
- PaOwS0oo1kKw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9681"; a="147998501"
+        id S1726867AbgGNKcA (ORCPT <rfc822;linux-m68k@lists.linux-m68k.org>);
+        Tue, 14 Jul 2020 06:32:00 -0400
+IronPort-SDR: Y0eUMSYIefjl7naPWP9cZ++e/76TG9Hgs/ytn+7Qc8ASjQb+JCJU74yioEs0w5PrQQCLD7fuf9
+ /cZHhxDjyUpg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9681"; a="166962551"
 X-IronPort-AV: E=Sophos;i="5.75,350,1589266800"; 
-   d="scan'208";a="147998501"
+   d="scan'208";a="166962551"
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Jul 2020 03:31:51 -0700
-IronPort-SDR: sMozKxD+0jphSQSfM8yX8q2ar2j8GwAIbJbzBdJCtbuj2ctxQjSbdGhwvj7m/t8Xt41Sg8hbsV
- z0QiL+n8p9tg==
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Jul 2020 03:31:57 -0700
+IronPort-SDR: AztdXpRgx2xy/LkPQa8CpJMokvz1Jw2sYQ4SCoE7CtwWCD1HKASavvoDzYGfb+g9Kvd3K0R31h
+ iIm4bcl3tYGw==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.75,350,1589266800"; 
-   d="scan'208";a="485828037"
+   d="scan'208";a="459644905"
 Received: from lkp-server02.sh.intel.com (HELO 393d9bdf0d5c) ([10.239.97.151])
-  by fmsmga005.fm.intel.com with ESMTP; 14 Jul 2020 03:31:50 -0700
+  by orsmga005.jf.intel.com with ESMTP; 14 Jul 2020 03:31:56 -0700
 Received: from kbuild by 393d9bdf0d5c with local (Exim 4.92)
         (envelope-from <lkp@intel.com>)
-        id 1jvIE2-00003B-5M; Tue, 14 Jul 2020 10:31:50 +0000
-Date:   Tue, 14 Jul 2020 18:30:43 +0800
+        id 1jvIE7-000048-UY; Tue, 14 Jul 2020 10:31:55 +0000
+Date:   Tue, 14 Jul 2020 18:31:22 +0800
 From:   kernel test robot <lkp@intel.com>
 To:     Geert Uytterhoeven <geert@linux-m68k.org>
 Cc:     linux-m68k@lists.linux-m68k.org
-Subject: [m68k:master] BUILD SUCCESS
- cb9f7797a4553dfa531f41459c840bb47d13a2bb
-Message-ID: <5f0d8953.LosxWUY3PVc2SDvV%lkp@intel.com>
+Subject: [m68k:m68k-queue] BUILD SUCCESS
+ 4e906dc09434547f09e6143afeb8081890c2be14
+Message-ID: <5f0d897a.axNtVFgOjYBRHUzP%lkp@intel.com>
 User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
@@ -54,13 +54,13 @@ Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/geert/linux-m68k.git  master
-branch HEAD: cb9f7797a4553dfa531f41459c840bb47d13a2bb  Merge tag 'v5.8-rc5'
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/geert/linux-m68k.git  m68k-queue
+branch HEAD: 4e906dc09434547f09e6143afeb8081890c2be14  fat: Use correct logical sector size for Atari GEMDOS FAT
 
-elapsed time: 1276m
+elapsed time: 1279m
 
-configs tested: 110
-configs skipped: 6
+configs tested: 142
+configs skipped: 12
 
 The following configs have been built successfully.
 More configs may be tested in the coming days.
@@ -73,29 +73,43 @@ arm64                            allyesconfig
 arm64                               defconfig
 arm64                            allmodconfig
 arm64                             allnoconfig
-nios2                               defconfig
-sh                         ap325rxa_defconfig
-arc                                 defconfig
-powerpc                     powernv_defconfig
+arm                         axm55xx_defconfig
+arm                           sama5_defconfig
+sh                         apsh4a3a_defconfig
+riscv                    nommu_virt_defconfig
+m68k                                defconfig
+m68k                       m5249evb_defconfig
+m68k                         amcore_defconfig
+h8300                               defconfig
 mips                         tb0219_defconfig
 powerpc                     pq2fads_defconfig
 arm                         bcm2835_defconfig
 sh                             espt_defconfig
 ia64                        generic_defconfig
+powerpc                      mgcoge_defconfig
+m68k                        mvme16x_defconfig
+arc                            hsdk_defconfig
+arm                           h5000_defconfig
+arm                          collie_defconfig
 arm                    vt8500_v6_v7_defconfig
 powerpc                     mpc5200_defconfig
-arm                           sama5_defconfig
 mips                              allnoconfig
 sh                        apsh4ad0a_defconfig
 parisc                           alldefconfig
 ia64                      gensparse_defconfig
 sh                           se7721_defconfig
+arm                     am200epdkit_defconfig
+xtensa                       common_defconfig
+i386                              allnoconfig
+parisc                           allmodconfig
+mips                         bigsur_defconfig
+mips                           mtx1_defconfig
+sh                          sdk7786_defconfig
 xtensa                generic_kc705_defconfig
 sh                          rsk7203_defconfig
 i386                             allyesconfig
 i386                                defconfig
 i386                              debian-10.3
-i386                              allnoconfig
 ia64                             allmodconfig
 ia64                                defconfig
 ia64                              allnoconfig
@@ -103,8 +117,8 @@ ia64                             allyesconfig
 m68k                             allmodconfig
 m68k                              allnoconfig
 m68k                           sun3_defconfig
-m68k                                defconfig
 m68k                             allyesconfig
+nios2                               defconfig
 nios2                            allyesconfig
 openrisc                            defconfig
 c6x                              allyesconfig
@@ -120,6 +134,7 @@ xtensa                           allyesconfig
 h8300                            allyesconfig
 h8300                            allmodconfig
 xtensa                              defconfig
+arc                                 defconfig
 arc                              allyesconfig
 sh                               allmodconfig
 sh                                allnoconfig
@@ -129,7 +144,6 @@ mips                             allmodconfig
 parisc                            allnoconfig
 parisc                              defconfig
 parisc                           allyesconfig
-parisc                           allmodconfig
 powerpc                             defconfig
 powerpc                          allyesconfig
 powerpc                          rhel-kconfig
@@ -141,18 +155,36 @@ i386                 randconfig-a006-20200713
 i386                 randconfig-a002-20200713
 i386                 randconfig-a003-20200713
 i386                 randconfig-a004-20200713
+i386                 randconfig-a001-20200714
+i386                 randconfig-a005-20200714
+i386                 randconfig-a002-20200714
+i386                 randconfig-a006-20200714
+i386                 randconfig-a003-20200714
+i386                 randconfig-a004-20200714
 x86_64               randconfig-a005-20200713
 x86_64               randconfig-a002-20200713
 x86_64               randconfig-a006-20200713
 x86_64               randconfig-a001-20200713
 x86_64               randconfig-a003-20200713
 x86_64               randconfig-a004-20200713
+x86_64               randconfig-a012-20200714
+x86_64               randconfig-a011-20200714
+x86_64               randconfig-a016-20200714
+x86_64               randconfig-a014-20200714
+x86_64               randconfig-a013-20200714
+x86_64               randconfig-a015-20200714
 i386                 randconfig-a016-20200713
 i386                 randconfig-a015-20200713
 i386                 randconfig-a011-20200713
 i386                 randconfig-a012-20200713
 i386                 randconfig-a013-20200713
 i386                 randconfig-a014-20200713
+i386                 randconfig-a016-20200714
+i386                 randconfig-a011-20200714
+i386                 randconfig-a015-20200714
+i386                 randconfig-a012-20200714
+i386                 randconfig-a013-20200714
+i386                 randconfig-a014-20200714
 riscv                            allyesconfig
 riscv                             allnoconfig
 riscv                               defconfig
