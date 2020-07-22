@@ -1,140 +1,118 @@
-Return-Path: <SRS0=RkLn=BA=vger.kernel.org=linux-m68k-owner@kernel.org>
+Return-Path: <SRS0=1rUk=BB=vger.kernel.org=linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-10.5 required=3.0 tests=BAYES_00,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,
-	NICE_REPLY_A,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1
-	autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-10.0 required=3.0 tests=BAYES_00,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 04A53C433E8
-	for <linux-m68k@archiver.kernel.org>; Tue, 21 Jul 2020 15:13:58 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A1D25C433E3
+	for <linux-m68k@archiver.kernel.org>; Wed, 22 Jul 2020 23:50:17 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id DF7B4206E3
-	for <linux-m68k@archiver.kernel.org>; Tue, 21 Jul 2020 15:13:57 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 87D3A204EA
+	for <linux-m68k@archiver.kernel.org>; Wed, 22 Jul 2020 23:50:17 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728468AbgGUPN5 (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Tue, 21 Jul 2020 11:13:57 -0400
-Received: from outpost1.zedat.fu-berlin.de ([130.133.4.66]:57457 "EHLO
-        outpost1.zedat.fu-berlin.de" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728089AbgGUPN5 (ORCPT
+        id S1733214AbgGVXuR (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Wed, 22 Jul 2020 19:50:17 -0400
+Received: from kvm5.telegraphics.com.au ([98.124.60.144]:45134 "EHLO
+        kvm5.telegraphics.com.au" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729423AbgGVXuR (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Tue, 21 Jul 2020 11:13:57 -0400
-Received: from inpost2.zedat.fu-berlin.de ([130.133.4.69])
-          by outpost.zedat.fu-berlin.de (Exim 4.93)
-          with esmtps (TLS1.2)
-          tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-          (envelope-from <glaubitz@zedat.fu-berlin.de>)
-          id 1jxtxr-0043CO-4t; Tue, 21 Jul 2020 17:13:55 +0200
-Received: from p57bd9e19.dip0.t-ipconnect.de ([87.189.158.25] helo=[192.168.178.139])
-          by inpost2.zedat.fu-berlin.de (Exim 4.93)
-          with esmtpsa (TLS1.2)
-          tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-          (envelope-from <glaubitz@physik.fu-berlin.de>)
-          id 1jxtxq-001rgA-Tr; Tue, 21 Jul 2020 17:13:55 +0200
-Subject: Re: Seccomp support for linux-m68k
-From:   John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
-To:     linux-m68k <linux-m68k@lists.linux-m68k.org>
-Cc:     Debian m68k <debian-68k@lists.debian.org>,
-        Helge Deller <deller@gmx.de>
-References: <cd3ff9a1-030e-1e34-3950-99088ef81be0@physik.fu-berlin.de>
-Autocrypt: addr=glaubitz@physik.fu-berlin.de; keydata=
- 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
- scOkTAZQGVpD/8AaLH4v1w==
-Message-ID: <5642df4a-be8f-01eb-63c1-b5b4d75fa9d0@physik.fu-berlin.de>
-Date:   Tue, 21 Jul 2020 17:13:54 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
-MIME-Version: 1.0
-In-Reply-To: <cd3ff9a1-030e-1e34-3950-99088ef81be0@physik.fu-berlin.de>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Original-Sender: glaubitz@physik.fu-berlin.de
-X-Originating-IP: 87.189.158.25
+        Wed, 22 Jul 2020 19:50:17 -0400
+Received: by kvm5.telegraphics.com.au (Postfix, from userid 502)
+        id 613BF2A2A8; Wed, 22 Jul 2020 19:50:16 -0400 (EDT)
+To:     Geert Uytterhoeven <geert@linux-m68k.org>
+Cc:     linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org
+Message-Id: <f54e99e9bd1e25ad70a6a1d7a7ec9ab2b4e50d68.1595460351.git.fthain@telegraphics.com.au>
+From:   Finn Thain <fthain@telegraphics.com.au>
+Subject: [PATCH] m68k: Correct some typos in comments
+Date:   Thu, 23 Jul 2020 09:25:51 +1000
 Sender: linux-m68k-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-Hello!
+Signed-off-by: Finn Thain <fthain@telegraphics.com.au>
+---
+ arch/m68k/kernel/head.S | 16 ++++++++--------
+ 1 file changed, 8 insertions(+), 8 deletions(-)
 
-On 3/20/20 9:46 AM, John Paul Adrian Glaubitz wrote:
-> Would it be possible to add seccomp support for m68k in the kernel?
-> 
-> There are some packages like kscreensaver in Debian that require
-> libseccomp-dev and it would therefore be desirable if we could 
-> that library on Linux/m68k as well.
-> 
->>From what I have learned from Helge Deller who added seccomp for
-> hppa, it doesn't seem much that is necessary to get seccomp working
-> on an architecture.
-> 
-> So, if anyone could work on the kernel part, I could do the work on
-> libseccomp.
-I just had another look at the topic and it seems with just need a minimal
-patch to add SECCOMP and SECCOMP_FILTER support when looking at the changes
-for riscv64 [1].
-
-The most complex change seem to be the changes in entry.S to add some additional
-checks for syscall numbers. I think we could just do this for m68k (and SH) as
-well.
-
-The userland land part is trivial as well, I actually added SuperH support to
-libseccomp today which was rather easy but my pull request was rejected for the
-time being due to SuperH not supporting SECCOMP_FILTER yet (only basic SECCOMP).
-
-So, if someone could do the kernel pieces for m68k, I would work on the userspace
-changes in libsseccomp.
-
-Adrian
-
-> [1] https://github.com/torvalds/linux/commit/5340627e3fe08030988bdda46dd86cd5d5fb7517
-> [2] https://github.com/seccomp/libseccomp/pull/271
-
+diff --git a/arch/m68k/kernel/head.S b/arch/m68k/kernel/head.S
+index a54788458ca36..08eff92875144 100644
+--- a/arch/m68k/kernel/head.S
++++ b/arch/m68k/kernel/head.S
+@@ -57,7 +57,7 @@
+  * Of course, readability is a subjective issue, so it will never be
+  * argued that that goal was accomplished.  It was merely a goal.
+  * A key way to help make code more readable is to give good
+- * documentation.  So, the first thing you will find is exaustive
++ * documentation.  So, the first thing you will find is exhaustive
+  * write-ups on the structure of the file, and the features of the
+  * functional subroutines.
+  *
+@@ -1304,7 +1304,7 @@ L(mmu_fixup_done):
+  * mmu_engage
+  *
+  * This chunk of code performs the gruesome task of engaging the MMU.
+- * The reason its gruesome is because when the MMU becomes engaged it
++ * The reason it's gruesome is because when the MMU becomes engaged it
+  * maps logical addresses to physical addresses.  The Program Counter
+  * register is then passed through the MMU before the next instruction
+  * is fetched (the instruction following the engage MMU instruction).
+@@ -1369,7 +1369,7 @@ L(mmu_fixup_done):
+ /*
+  * After this point no new memory is allocated and
+  * the start of available memory is stored in availmem.
+- * (The bootmem allocator requires now the physicall address.)
++ * (The bootmem allocator requires now the physical address.)
+  */
+ 
+ 	movel	L(memory_start),availmem
+@@ -1547,7 +1547,7 @@ func_return	get_bi_record
+  *	seven bits of the logical address (LA) are used as an
+  *	index into the "root table."  Each entry in the root
+  *	table has a bit which specifies if it's a valid pointer to a
+- *	pointer table.  Each entry defines a 32KMeg range of memory.
++ *	pointer table.  Each entry defines a 32Meg range of memory.
+  *	If an entry is invalid then that logical range of 32M is
+  *	invalid and references to that range of memory (when the MMU
+  *	is enabled) will fault.  If the entry is valid, then it does
+@@ -1584,7 +1584,7 @@ func_return	get_bi_record
+  *		bits 17..12 - index into the Page Table
+  *		bits 11..0  - offset into a particular 4K page
+  *
+- *	The algorithms which follows do one thing: they abstract
++ *	The algorithms which follow do one thing: they abstract
+  *	the MMU hardware.  For example, there are three kinds of
+  *	cache settings that are relevant.  Either, memory is
+  *	being mapped in which case it is either Kernel Code (or
+@@ -2082,7 +2082,7 @@ func_return	mmu_map_tt
+  *	mmu_map
+  *
+  *	This routine will map a range of memory using a pointer
+- *	table and allocating the pages on the fly from the kernel.
++ *	table and allocate the pages on the fly from the kernel.
+  *	The pointer table does not have to be already linked into
+  *	the root table, this routine will do that if necessary.
+  *
+@@ -2528,7 +2528,7 @@ func_start	mmu_get_root_table_entry,%d0/%a1
+ 
+ 	/* Find the start of free memory, get_bi_record does this for us,
+ 	 * as the bootinfo structure is located directly behind the kernel
+-	 * and and we simply search for the last entry.
++	 * we simply search for the last entry.
+ 	 */
+ 	get_bi_record	BI_LAST
+ 	addw	#PAGESIZE-1,%a0
+@@ -2654,7 +2654,7 @@ func_start	mmu_get_page_table_entry,%d0/%a1
+ 	jne	2f
+ 
+ 	/* If the page table entry doesn't exist, we allocate a complete new
+-	 * page and use it as one continues big page table which can cover
++	 * page and use it as one continuous big page table which can cover
+ 	 * 4MB of memory, nearly almost all mappings have that alignment.
+ 	 */
+ 	get_new_page
 -- 
- .''`.  John Paul Adrian Glaubitz
-: :' :  Debian Developer - glaubitz@debian.org
-`. `'   Freie Universitaet Berlin - glaubitz@physik.fu-berlin.de
-  `-    GPG: 62FF 8A75 84E0 2956 9546  0006 7426 3B37 F5B5 F913
+2.26.2
+
