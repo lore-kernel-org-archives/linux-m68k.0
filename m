@@ -4,33 +4,34 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-5.8 required=3.0 tests=BAYES_00,
 	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,NICE_REPLY_A,SPF_HELO_NONE,
-	SPF_PASS,USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
+	SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=no autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 8A2D5C433DF
-	for <linux-m68k@archiver.kernel.org>; Sat, 25 Jul 2020 18:54:50 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B9CCBC433E0
+	for <linux-m68k@archiver.kernel.org>; Sat, 25 Jul 2020 22:48:06 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 61D73206D8
-	for <linux-m68k@archiver.kernel.org>; Sat, 25 Jul 2020 18:54:50 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 9E777206D8
+	for <linux-m68k@archiver.kernel.org>; Sat, 25 Jul 2020 22:48:06 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726447AbgGYSyu (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Sat, 25 Jul 2020 14:54:50 -0400
-Received: from outpost1.zedat.fu-berlin.de ([130.133.4.66]:33961 "EHLO
+        id S1726784AbgGYWsG (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Sat, 25 Jul 2020 18:48:06 -0400
+Received: from outpost1.zedat.fu-berlin.de ([130.133.4.66]:51175 "EHLO
         outpost1.zedat.fu-berlin.de" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726035AbgGYSyu (ORCPT
+        by vger.kernel.org with ESMTP id S1726686AbgGYWsG (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Sat, 25 Jul 2020 14:54:50 -0400
+        Sat, 25 Jul 2020 18:48:06 -0400
 Received: from inpost2.zedat.fu-berlin.de ([130.133.4.69])
           by outpost.zedat.fu-berlin.de (Exim 4.93)
           with esmtps (TLS1.2)
           tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
           (envelope-from <glaubitz@zedat.fu-berlin.de>)
-          id 1jzPJn-001j4o-6M; Sat, 25 Jul 2020 20:54:47 +0200
+          id 1jzSxX-002MhG-KS; Sun, 26 Jul 2020 00:48:03 +0200
 Received: from [194.181.150.198] (helo=[192.168.70.41])
           by inpost2.zedat.fu-berlin.de (Exim 4.93)
           with esmtpsa (TLS1.2)
           tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
           (envelope-from <glaubitz@physik.fu-berlin.de>)
-          id 1jzPJm-001y1b-Ub; Sat, 25 Jul 2020 20:54:47 +0200
+          id 1jzSxX-002Qpb-DT; Sun, 26 Jul 2020 00:48:03 +0200
 Subject: Re: Seccomp support for linux-m68k
 To:     Michael Schmitz <schmitzmic@gmail.com>,
         linux-m68k <linux-m68k@lists.linux-m68k.org>
@@ -84,15 +85,15 @@ Autocrypt: addr=glaubitz@physik.fu-berlin.de; keydata=
  jEF9ImTPcYZpw5vhdyPwBdXW2lSjV3EAqknWujRgcsm84nycuJnImwJptR481EWmtuH6ysj5
  YhRVGbQPfdsjVUQfZdRdkEv4CZ90pdscBi1nRqcqANtzC+WQFwekDzk2lGqNRDg56s+q0KtY
  scOkTAZQGVpD/8AaLH4v1w==
-Message-ID: <b0d75d13-e241-43a9-30a7-46330e68cf30@physik.fu-berlin.de>
-Date:   Sat, 25 Jul 2020 20:54:43 +0200
+Message-ID: <82fd4fe6-c336-fff9-3501-66737dfdb46c@physik.fu-berlin.de>
+Date:   Sun, 26 Jul 2020 00:48:01 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.10.0
 MIME-Version: 1.0
 In-Reply-To: <06f3ccd0-3567-5905-eea0-80fb18206648@gmail.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 X-Original-Sender: glaubitz@physik.fu-berlin.de
 X-Originating-IP: 194.181.150.198
 Sender: linux-m68k-owner@vger.kernel.org
@@ -100,23 +101,27 @@ Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
+Hi Michael!
+
 On 7/25/20 11:29 AM, Michael Schmitz wrote:
-> Looking at your SH patch, I see no changes to check for syscall numbers, just a check of the syscall_trace_enter() return code added? Is that all that's needed for m68k as well?
+>> So, if someone could do the kernel pieces for m68k, I would work on the userspace
+>> changes in libsseccomp.
+> 
+> My earlier patch switching m68k to use syscall_trace_enter() is incomplete, please add the return call check
+> 
+> --- a/arch/m68k/kernel/entry.S
+> +++ b/arch/m68k/kernel/entry.S
+> @@ -167,6 +167,8 @@ do_trace_entry:
+>         jbsr    syscall_trace_enter
+>         RESTORE_SWITCH_STACK
+>         addql   #4,%sp
+> +       tstb    %d0
+> +       jne     ret_from_syscall
+>         movel   %sp@(PT_OFF_ORIG_D0),%d0
+>         cmpl    #NR_syscalls,%d0
+>         jcs     syscall
 
-From my understanding, you basically check whether the syscall number is -1
-and if that's the case, you just skip to ret_from_syscall. At least that's what
-we're doing on SH in entry.S.
-
-The rest of the handling is done in C code in kernel/ptrace.c in do_syscall_trace_enter:
-
-if (secure_computing() == -1)
-		return -1;
-
-
-> What return code would we need to set on returning from an aborted syscall?
-> (Without setting a specific one, -ENOSYS will be used by default.)
-
-If we're talking about syscall_trace_enter(), it should be -1.
+Could you make a v2 of this patch which includes this change?
 
 Adrian
 
