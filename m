@@ -7,58 +7,58 @@ X-Spam-Status: No, score=-5.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,NICE_REPLY_A,SPF_HELO_NONE,
 	SPF_PASS,USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 5CB84C433E0
-	for <linux-m68k@archiver.kernel.org>; Sun, 26 Jul 2020 20:46:42 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 73C7CC433DF
+	for <linux-m68k@archiver.kernel.org>; Sun, 26 Jul 2020 21:02:18 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 25E652065F
-	for <linux-m68k@archiver.kernel.org>; Sun, 26 Jul 2020 20:46:42 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 4328A206E3
+	for <linux-m68k@archiver.kernel.org>; Sun, 26 Jul 2020 21:02:18 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="A3sKHu6F"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="RKZtxbKc"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726674AbgGZUql (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Sun, 26 Jul 2020 16:46:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43510 "EHLO
+        id S1727840AbgGZVCR (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Sun, 26 Jul 2020 17:02:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45908 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726467AbgGZUql (ORCPT
+        with ESMTP id S1726719AbgGZVCR (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Sun, 26 Jul 2020 16:46:41 -0400
-Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5EEA8C0619D2
-        for <linux-m68k@lists.linux-m68k.org>; Sun, 26 Jul 2020 13:46:41 -0700 (PDT)
-Received: by mail-pf1-x442.google.com with SMTP id a23so7943665pfk.13
-        for <linux-m68k@lists.linux-m68k.org>; Sun, 26 Jul 2020 13:46:41 -0700 (PDT)
+        Sun, 26 Jul 2020 17:02:17 -0400
+Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 750B2C0619D2
+        for <linux-m68k@lists.linux-m68k.org>; Sun, 26 Jul 2020 14:02:17 -0700 (PDT)
+Received: by mail-pf1-x441.google.com with SMTP id m8so1114024pfh.3
+        for <linux-m68k@lists.linux-m68k.org>; Sun, 26 Jul 2020 14:02:17 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=subject:to:cc:references:from:message-id:date:user-agent
          :mime-version:in-reply-to:content-transfer-encoding:content-language;
-        bh=GbAgd64scv9tZgTMM2eVC+CgT2sjVkyaYoH5vMCfD/s=;
-        b=A3sKHu6FWGa62BoL1ZP3CARUlQEI4f6oxLIIqJGS7ifLPn3fiKWZ5txW/1+sZORSAU
-         7llMgslrKYmlmfpSERkKHtClpSCrncaONl3bWcD9YkVPfNOpd8jc2oASja0trSAalZG+
-         kffgua0S6zrKuSWM4Jl/V9MgjkJnW/sT5B1YEzzZ6THSR6ioWEf555Lby6zKWvyT8Z/D
-         gjgeNPAcu9lw4XKP9WfKoMnal9cMPCTlnbRguS4RTEnN+RALLYDruIltDXxQbLbvXdXv
-         fg9MsmYoo9Z31L3E0aSvlboHDcZ/FzdSX9wLqTMunhTwk7/jjN6QKfcKk0hcRCY74oWw
-         4cpw==
+        bh=tTJgUoWcKsVpI9DdMRhbQczGRy4kf5uOISwnXUGI3B0=;
+        b=RKZtxbKcej59mL+Hoo83qA2vu/2/lQE90PmyArJZK8qaY3TgMuVu4dU1eSX25HI34T
+         /7XCNHkZ7wvMxuuoZq9ZdGBgecfe6nE6xdubiekyLL6ruJ3YUbSQXj6g5MZyEOm012Jr
+         4K4UP7ElSSqtaug9Bjk6rXRJudj8NKq6X4k0Gz2lME+YS5tcZqObFLsU7vJlzwFCJBKT
+         zqQq3TFAeGA3v/sLkk10XqucpIRFB5NI/spdPVOyLSjTCklkW7MLgz8FLEVFAFILbA/8
+         6N9Ye5/MS9umSesnRlzXOhcPf7NZd548n4bXiFFiJ0a0JzBvjq8eJXGLKroxNpEewUr5
+         r9Zw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:subject:to:cc:references:from:message-id:date
          :user-agent:mime-version:in-reply-to:content-transfer-encoding
          :content-language;
-        bh=GbAgd64scv9tZgTMM2eVC+CgT2sjVkyaYoH5vMCfD/s=;
-        b=nNmcX4yXm27Ly02G5+C5TpbojMYFCSXjv7ldsnlIMqB4//9fReeJI3VMNSsX7BoLs5
-         31+dCauM5cT1dpHvlJ2yuCOAWJ8z4cTAxhp3M4gVLVknuxLt03vGsQ8rO7/8Q9twF4n9
-         uXy531Xtr6FlZPWhvdfT8UqsoDHiL8rgjrTpDaKDfh7QNN2y1Q9Nm8mpEcQ6J1PAgK5Q
-         2kxrgujNg0LFrMZBVwth5pZOCSKR8unC92MNIjieP8eE6j4Ks/l1kB0DUkaFS1FixOZO
-         4S0uBJLjcs+GhSr6LJKR87f8KQ4x+AoNSxadxqOC6lYtXdRUoXTgd1MDf7eAF7XtmQKH
-         deiQ==
-X-Gm-Message-State: AOAM533jN07IZCkhTnXGccdG9hCW8Gun8TwJt7aqZm/9VePRMWXM8A8I
-        dGvTsdXQKK/X5kCe2DP8iBI=
-X-Google-Smtp-Source: ABdhPJwYWjZ1zExo5Puuli8/tMdC+7fILcWy8tke9mOXd3MwmBDehdP0hE6a6L3CVZkuRzQ7x9nLCw==
-X-Received: by 2002:aa7:8ec8:: with SMTP id b8mr7204051pfr.172.1595796400668;
-        Sun, 26 Jul 2020 13:46:40 -0700 (PDT)
+        bh=tTJgUoWcKsVpI9DdMRhbQczGRy4kf5uOISwnXUGI3B0=;
+        b=Bcy58KCxS25TQfoDz6AHZEO9O3c7baxKdTGEpSjmWGZNuzkegIRmBsa19la4+/GSWn
+         r+XANEPSMqEqBr7MqUs12l0LIm4sCOZJEHbjnfq495+I9Z6o2MILx8BaEjY+Q/8y9saJ
+         sMr25U7APbj/vSH4uR1UpgTLo00aF9OiaN0Ixcyn6Ap9E9pDJRWuM6nWZ+sAlFh9CfQK
+         kF+0pacR8qtYERF5tSWz6PGnEdgfDzpuKTMYMPxxKoKQfBmyPTnjSPQ7YaGwV25hkv53
+         lxZPFU72kYvF9dkc52q2UA8lM7J8IJUxZR0LCd59RRnpnOgMUK3p6UngUoHZzkuUvzD5
+         W9cw==
+X-Gm-Message-State: AOAM531XJ8J2ZKGZsA5QlJ6LnCSW8uQf2UDMto9hByyAkS7mgja4SdnU
+        I39w1nG1thKFHTIcRirnGYw=
+X-Google-Smtp-Source: ABdhPJymH95sE4eSJhXGD3sRSYoNXvKbuDJEX+eld1t9r0daSfsu9GTuHGl17/DHRYf3UdlY1wfarg==
+X-Received: by 2002:aa7:8f26:: with SMTP id y6mr17495741pfr.191.1595797336944;
+        Sun, 26 Jul 2020 14:02:16 -0700 (PDT)
 Received: from ?IPv6:2001:df0:0:200c:ec2f:8388:f010:f71a? ([2001:df0:0:200c:ec2f:8388:f010:f71a])
-        by smtp.gmail.com with ESMTPSA id y7sm12808840pfq.69.2020.07.26.13.46.32
+        by smtp.gmail.com with ESMTPSA id w18sm12085174pgj.31.2020.07.26.14.02.09
         (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Sun, 26 Jul 2020 13:46:40 -0700 (PDT)
+        Sun, 26 Jul 2020 14:02:16 -0700 (PDT)
 Subject: Re: Seccomp support for linux-m68k
 To:     Andreas Schwab <schwab@linux-m68k.org>
 Cc:     John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
@@ -67,16 +67,15 @@ Cc:     John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
         Helge Deller <deller@gmx.de>
 References: <cd3ff9a1-030e-1e34-3950-99088ef81be0@physik.fu-berlin.de>
  <5642df4a-be8f-01eb-63c1-b5b4d75fa9d0@physik.fu-berlin.de>
- <06f3ccd0-3567-5905-eea0-80fb18206648@gmail.com>
- <b0d75d13-e241-43a9-30a7-46330e68cf30@physik.fu-berlin.de>
- <ee076f6a-143a-9f6e-7bbf-51112d64ab00@gmail.com> <87sgde5yf7.fsf@igel.home>
+ <06f3ccd0-3567-5905-eea0-80fb18206648@gmail.com> <877durreph.fsf@igel.home>
+ <80cef911-af86-c49f-5ac3-1cfe7037de80@gmail.com> <87wo2q5yhx.fsf@igel.home>
 From:   Michael Schmitz <schmitzmic@gmail.com>
-Message-ID: <419f407f-b758-9dfe-699e-be9229444cc1@gmail.com>
-Date:   Mon, 27 Jul 2020 08:46:22 +1200
+Message-ID: <460261ab-8c10-d625-a4e4-a4e755413018@gmail.com>
+Date:   Mon, 27 Jul 2020 09:02:03 +1200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
  Thunderbird/60.6.1
 MIME-Version: 1.0
-In-Reply-To: <87sgde5yf7.fsf@igel.home>
+In-Reply-To: <87wo2q5yhx.fsf@igel.home>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 8bit
 Content-Language: en-US
@@ -87,28 +86,48 @@ X-Mailing-List: linux-m68k@vger.kernel.org
 
 Hi Andreas,
 
-On 26/07/20 11:05 PM, Andreas Schwab wrote:
+On 26/07/20 11:03 PM, Andreas Schwab wrote:
 > On Jul 26 2020, Michael Schmitz wrote:
 >
->> OK, that's -EPERM. Reading the comment in asm/errno.h, -ENOSYS is not a
->> legitimate return code for syscalls to use.
-> ENOSYS is the correct error number for unimplemented syscalls.
+>> No particular reason - I had seen testb used in the syscall entry code and
+> Where?  That may be bugs.
 
-Yes, but that wasn't my point. -ENOSYS is returned by the syscall 
-dispatcher in entry.S for unimplemented syscalls, but should never be 
-returned by syscalls that are implemented to avoid messing up syscall 
-detection by user code.
+Here:
 
-What I attempt to do is support syscall filtering. Returning -ENOSYS in 
-that case would run the risk of masking existing syscalls to user probe 
-code just because the user process happens to have insufficient privileges.
+ENTRY(ret_from_signal)
+         movel   %curptr@(TASK_STACK),%a1
+         tstb    %a1@(TINFO_FLAGS+2)
+         jge     1f
+         jbsr    syscall_trace_leave
+1:      RESTORE_SWITCH_STACK
+         addql   #4,%sp
+....
 
-Please correct me if that is actually the expected behaviour here.
+and here:
+
+ENTRY(system_call)
+         SAVE_ALL_SYS
+
+         GET_CURRENT(%d1)
+         movel   %d1,%a1
+
+         | save top of frame
+         movel   %sp,%curptr@(TASK_THREAD+THREAD_ESP0)
+
+         | syscall trace?
+         tstb    %a1@(TINFO_FLAGS+2)
+         jmi     do_trace_entry
+         cmpl    #NR_syscalls,%d0
+         jcc     badsys
+
+....
+
+plus when saving the FPU context on resume (the comment there suggests 
+FPUs keep 8 bits of status that must be tested, so that should be OK).
 
 Cheers,
 
      Michael
-
 
 >
 > Andreas.
