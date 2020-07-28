@@ -1,163 +1,85 @@
-Return-Path: <SRS0=QPqG=BG=vger.kernel.org=linux-m68k-owner@kernel.org>
+Return-Path: <SRS0=pQ+q=BH=vger.kernel.org=linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-6.3 required=3.0 tests=BAYES_00,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,NICE_REPLY_A,SPF_HELO_NONE,
-	SPF_PASS,USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-13.0 required=3.0 tests=BAYES_00,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=unavailable
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 1EB8FC433E0
-	for <linux-m68k@archiver.kernel.org>; Mon, 27 Jul 2020 21:09:15 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2CE1CC433EA
+	for <linux-m68k@archiver.kernel.org>; Tue, 28 Jul 2020 02:24:36 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id F1EA020786
-	for <linux-m68k@archiver.kernel.org>; Mon, 27 Jul 2020 21:09:14 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 14B5620672
+	for <linux-m68k@archiver.kernel.org>; Tue, 28 Jul 2020 02:24:36 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726278AbgG0VJO (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Mon, 27 Jul 2020 17:09:14 -0400
-Received: from outpost1.zedat.fu-berlin.de ([130.133.4.66]:46387 "EHLO
-        outpost1.zedat.fu-berlin.de" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726140AbgG0VJO (ORCPT
-        <rfc822;linux-m68k@vger.kernel.org>);
-        Mon, 27 Jul 2020 17:09:14 -0400
-Received: from inpost2.zedat.fu-berlin.de ([130.133.4.69])
-          by outpost.zedat.fu-berlin.de (Exim 4.93)
-          with esmtps (TLS1.2)
-          tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-          (envelope-from <glaubitz@zedat.fu-berlin.de>)
-          id 1k0AMx-000fKE-7D; Mon, 27 Jul 2020 23:09:11 +0200
-Received: from p57bd9e19.dip0.t-ipconnect.de ([87.189.158.25] helo=[192.168.178.139])
-          by inpost2.zedat.fu-berlin.de (Exim 4.93)
-          with esmtpsa (TLS1.2)
-          tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-          (envelope-from <glaubitz@physik.fu-berlin.de>)
-          id 1k0AMw-0046z4-Vd; Mon, 27 Jul 2020 23:09:11 +0200
-Subject: Re: [PATCH] m68k/kernel - wire up syscall_trace_enter/leave for m68k
-To:     Michael Schmitz <schmitzmic@gmail.com>, geert@linux-m68k.org
-Cc:     linux-m68k@vger.kernel.org, schwab@linux-m68k.org,
-        Greg Ungerer <gerg@linux-m68k.org>
-References: <f0c9edc0-e596-c483-b9a6-f67778bd297c@physik.fu-berlin.de>
- <1595823555-11103-1-git-send-email-schmitzmic@gmail.com>
- <13c91e87-7e26-1bc6-8ac0-68a790ee99cd@physik.fu-berlin.de>
- <5d98d276-c867-7f9b-f5b5-048e5e70ee3c@gmail.com>
-From:   John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
-Autocrypt: addr=glaubitz@physik.fu-berlin.de; keydata=
- mQINBE3JE9wBEADMrYGNfz3oz6XLw9XcWvuIxIlPWoTyw9BxTicfGAv0d87wngs9U+d52t/R
- EggPePf34gb7/k8FBY1IgyxnZEB5NxUb1WtW0M3GUxpPx6gBZqOm7SK1ZW3oSORw+T7Aezl3
- Zq4Nr4Nptqx7fnLpXfRDs5iYO/GX8WuL8fkGS/gIXtxKewd0LkTlb6jq9KKq8qn8/BN5YEKq
- JlM7jsENyA5PIe2npN3MjEg6p+qFrmrzJRuFjjdf5vvGfzskrXCAKGlNjMMA4TgZvugOFmBI
- /iSyV0IOaj0uKhes0ZNX+lQFrOB4j6I5fTBy7L/T3W/pCWo3wVkknNYa8TDYT73oIZ7Aimv+
- k7OzRfnxsSOAZT8Re1Yt8mvzr6FHVFjr/VdyTtO5JgQZ6LEmvo4Ro+2ByBmCHORCQ0NJhD1U
- 3avjGfvfslG999W0WEZLTeaGkBAN1yG/1bgGAytQQkD9NsVXqBy7S3LVv9bB844ysW5Aj1nv
- tgIz14E2WL8rbpfjJMXi7B5ha6Lxf3rFOgxpr6ZoEn+bGG4hmrO+/ReA4SerfMqwSTnjZsZv
- xMJsx2B9c8DaZE8GsA4I6lsihbJmXhw8i7Cta8Dx418wtEbXhL6m/UEk60O7QD1VBgGqDMnJ
- DFSlvKa9D+tZde/kHSNmQmLLzxtDbNgBgmR0jUlmxirijnm8bwARAQABtFRKb2huIFBhdWwg
- QWRyaWFuIEdsYXViaXR6IChGcmVpZSBVbml2ZXJzaXRhZXQgQmVybGluKSA8Z2xhdWJpdHpA
- cGh5c2lrLmZ1LWJlcmxpbi5kZT6JAlEEEwEIADsCGwMFCwkIBwMFFQoJCAsFFgIDAQACHgEC
- F4AWIQRi/4p1hOApVpVGAAZ0Jjs39bX5EwUCWhQoUgIZAQAKCRB0Jjs39bX5Ez/ID/98r9c4
- WUSgOHVPSMVcOVziMOi+zPWfF1OhOXW+atpTM4LSSp66196xOlDFHOdNNmO6kxckXAX9ptvp
- Bc0mRxa7OrC168fKzqR7P75eTsJnVaOu+uI/vvgsbUIosYdkkekCxDAbYCUwmzNotIspnFbx
- iSPMNrpw7Ud/yQkS9TDYeXnrZDhBp7p5+naWCD/yMvh7yVCA4Ea8+xDVoX+kjv6EHJrwVupO
- pMa39cGs2rKYZbWTazcflKH+bXG3FHBrwh9XRjA6A1CTeC/zTVNgGF6wvw/qT2x9tS7WeeZ1
- jvBCJub2cb07qIfuvxXiGcYGr+W4z9GuLCiWsMmoff/Gmo1aeMZDRYKLAZLGlEr6zkYh1Abt
- iz0YLqIYVbZAnf8dCjmYhuwPq77IeqSjqUqI2Cb0oOOlwRKVWDlqAeo0Bh8DrvZvBAojJf4H
- nQZ/pSz0yaRed/0FAmkVfV+1yR6BtRXhkRF6NCmguSITC96IzE26C6n5DBb43MR7Ga/mof4M
- UufnKADNG4qz57CBwENHyx6ftWJeWZNdRZq10o0NXuCJZf/iulHCWS/hFOM5ygfONq1Vsj2Z
- DSWvVpSLj+Ufd2QnmsnrCr1ZGcl72OC24AmqFWJY+IyReHWpuABEVZVeVDQooJ0K4yqucmrF
- R7HyH7oZGgR0CgYHCI+9yhrXHrQpyLkCDQRNyRQuARAArCaWhVbMXw9iHmMH0BN/TuSmeKtV
- h/+QOT5C5Uw+XJ3A+OHr9rB+SpndJEcDIhv70gLrpEuloXhZI9VYazfTv6lrkCZObXq/NgDQ
- Mnu+9E/E/PE9irqnZZOMWpurQRh41MibRii0iSr+AH2IhRL6CN2egZID6f93Cdu7US53ZqIx
- bXoguqGB2CK115bcnsswMW9YiVegFA5J9dAMsCI9/6M8li+CSYICi9gq0LdpODdsVfaxmo4+
- xYFdXoDN33b8Yyzhbh/I5gtVIRpfL+Yjfk8xAsfz78wzifSDckSB3NGPAXvs6HxKc50bvf+P
- 6t2tLpmB/KrpozlZazq16iktY97QulyEY9JWCiEgDs6EKb4wTx+lUe4yS9eo95cBV+YlL+BX
- kJSAMyxgSOy35BeBaeUSIrYqfHpbNn6/nidwDhg/nxyJs8mPlBvHiCLwotje2AhtYndDEhGQ
- KEtEaMQEhDi9MsCGHe+00QegCv3FRveHwzGphY1YlRItLjF4TcFz1SsHn30e7uLTDe/pUMZU
- Kd1xU73WWr0NlWG1g49ITyaBpwdv/cs/RQ5laYYeivnag81TcPCDbTm7zXiwo53aLQOZj4u3
- gSQvAUhgYTQUstMdkOMOn0PSIpyVAq3zrEFEYf7bNSTcdGrgwCuCBe4DgI3Vu4LOoAeI428t
- 2dj1K1EAEQEAAYkCHwQYAQgACQUCTckULgIbDAAKCRB0Jjs39bX5E683EAC1huywL4BlxTj7
- FTm7FiKd5/KEH5/oaxLQN26mn8yRkP/L3xwiqXxdd0hnrPyUe8mUOrSg7KLMul+pSRxPgaHA
- xt1I1hQZ30cJ1j/SkDIV2ImSf75Yzz5v72fPiYLq9+H3qKZwrgof9yM/s0bfsSX/GWyFatvo
- Koo+TgrE0rmtQw82vv7/cbDAYceQm1bRB8Nr8agPyGXYcjohAj7NJcra4hnu1wUw3yD05p/B
- Rntv7NvPWV3Oo7DKCWIS4RpEd6I6E+tN3GCePqROeK1nDv+FJWLkyvwLigfNaCLro6/292YK
- VMdBISNYN4s6IGPrXGGvoDwo9RVo6kBhlYEfg6+2eaPCwq40IVfKbYNwLLB2MR2ssL4yzmDo
- OR3rQFDPj+QcDvH4/0gCQ+qRpYATIegS8zU5xQ8nPL8lba9YNejaOMzw8RB80g+2oPOJ3Wzx
- oMsmw8taUmd9TIw/bJ2VO1HniiJUGUXCqoeg8homvBOQ0PmWAWIwjC6nf6CIuIM4Egu2I5Kl
- jEF9ImTPcYZpw5vhdyPwBdXW2lSjV3EAqknWujRgcsm84nycuJnImwJptR481EWmtuH6ysj5
- YhRVGbQPfdsjVUQfZdRdkEv4CZ90pdscBi1nRqcqANtzC+WQFwekDzk2lGqNRDg56s+q0KtY
- scOkTAZQGVpD/8AaLH4v1w==
-Message-ID: <a02bfdb3-95d4-4375-e069-186a95be3921@physik.fu-berlin.de>
-Date:   Mon, 27 Jul 2020 23:09:09 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1726838AbgG1CYe (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Mon, 27 Jul 2020 22:24:34 -0400
+Received: from szxga05-in.huawei.com ([45.249.212.191]:8288 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726998AbgG1CYe (ORCPT <rfc822;linux-m68k@lists.linux-m68k.org>);
+        Mon, 27 Jul 2020 22:24:34 -0400
+Received: from DGGEMS407-HUB.china.huawei.com (unknown [172.30.72.58])
+        by Forcepoint Email with ESMTP id B5932E0E1DDC06082F49;
+        Tue, 28 Jul 2020 10:24:31 +0800 (CST)
+Received: from localhost.localdomain.localdomain (10.175.113.25) by
+ DGGEMS407-HUB.china.huawei.com (10.3.19.207) with Microsoft SMTP Server id
+ 14.3.487.0; Tue, 28 Jul 2020 10:24:28 +0800
+From:   Qinglang Miao <miaoqinglang@huawei.com>
+To:     Geert Uytterhoeven <geert@linux-m68k.org>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+CC:     <linux-m68k@lists.linux-m68k.org>, <linux-kernel@vger.kernel.org>
+Subject: [PATCH -next] m68k/amiga: missing platform_device_unregister() on error in amiga_init_devices()
+Date:   Tue, 28 Jul 2020 10:27:46 +0800
+Message-ID: <20200728022746.87612-1-miaoqinglang@huawei.com>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-In-Reply-To: <5d98d276-c867-7f9b-f5b5-048e5e70ee3c@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Original-Sender: glaubitz@physik.fu-berlin.de
-X-Originating-IP: 87.189.158.25
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.113.25]
+X-CFilter-Loop: Reflected
 Sender: linux-m68k-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-On 7/27/20 10:48 PM, Michael Schmitz wrote:
-> On 27/07/20 10:03 PM, John Paul Adrian Glaubitz wrote:
->> Hi Michael!
->>
->> On 7/27/20 6:19 AM, Michael Schmitz wrote:
->>> m68k (other than Coldfire) uses syscall_trace for both trace entry
->>> and trace exit. Seccomp support requires separate entry points for
->>> trace entry and exit which are already provided for Coldfire.
->>>
->>> Replace syscall_trace by syscall_trace_enter and syscall_trace_leave
->>> in preparation for seccomp support. Check return code of
->>> syscall_trace_enter(), and skip syscall if nonzero. Return code
->>> will be left at what had been set by by ptrace or seccomp.
->> Correct me if I'm wrong, but shouldn't the skip happen when the return
->> code is -1? At least that's what we're doing on SuperH and that seems
->> to be what other architectures are doing as well.
-> 
-> What other non-zero return codes do you expect syscall_trace_enter() to set, and what should the action in entry.S be?
+Add the missing platform_device_unregister() before return
+from amiga_init_devices() in the error handling case.
 
-I just don't think we should do it any different than the other architectures
-which explicitly compare the return value against -1, i.e. RISC-V and PA-RISC.
+Signed-off-by: Qinglang Miao <miaoqinglang@huawei.com>
+---
+ arch/m68k/amiga/platform.c | 8 ++++++--
+ 1 file changed, 6 insertions(+), 2 deletions(-)
 
-> (Note that according to my reading, your SH patch does not actually do what your description says. If syscall_trace_enter() returns a positive non-zero value, that value is _not_ used as changed syscall number. SH uses r3 for the syscall number, not r0).
-
-You are right, of course. I somehow mixed that up. You're right, it checks
-the return value of syscall_trace_enter and it should skip the syscall
-if syscall_trace_enter returns -1.
-
-> As far as I can see, any non-zero return code should abort the syscall, so I just test for that (for simplicity). Our use of the tracehook_report_syscall_entry() return code (directly passed back from syscall_trace_enter()) doesn't leave much choice there, see comment in include/linux/tracehook.h.
-
-My point is to stay consistent with the other architectures.
-
-> If later on seccomp needs any specific action, it should be easy enough to change the syscall number (offset PT_OFF_ORIG_D0 on the stack) or syscall return code (offset PT_OFF_D0). There's code in kernel/ptrace.c to do that AFAICS.
-> 
-> Changing the behaviour of syscall_trace_enter() to match what other architectures do (return changed syscall number, not error code) is beyond the scope of this patch. I suspect the capability to change syscall numbers from ptrace code does predate the seccomp filter approach, and as m68k has never used it in the past, I don't see a point to add this now.
-
-Yes, I agree and my previous comment in this regard was wrong.
-
->> Also, shouldn't that part of the change not be part of the patch that
->> adds support for SECCOMP filter like in [1]? I don't think it makes
->> sense to add the return code check unless the rest of SECCOMP filter
->> has been implemented.
-> 
-> After replacing syscall_trace() by syscall_trace_enter() and syscall_trace_leave(), there is a return code provided by syscall_trace_enter() which we must check, hence I added the check at the same time as replacing syscall_trace() for non-Coldfire m68k.
-> 
-> (I note that the same check should probably be added to coldfire/entry.S.)
-Do we actually need to check the return value unless we implement SECCOMP_FILTER?
-(Which no doubt we will do ;-)). 
-
-> I can't test any of the later seccomp related stuff, so I'd rather leave that bit to someone else who can.
-
-I will work on the necessary changes for libseccomp this week, so that we can test
-whether the libseccomp live tests pass correctly on a patched kernel.
-
-Adrian
-
+diff --git a/arch/m68k/amiga/platform.c b/arch/m68k/amiga/platform.c
+index d34029d7b..afa2782c6 100644
+--- a/arch/m68k/amiga/platform.c
++++ b/arch/m68k/amiga/platform.c
+@@ -188,8 +188,10 @@ static int __init amiga_init_devices(void)
+ 			return PTR_ERR(pdev);
+ 		error = platform_device_add_data(pdev, &a1200_ide_pdata,
+ 						 sizeof(a1200_ide_pdata));
+-		if (error)
++		if (error) {
++			platform_device_unregister(pdev);
+ 			return error;
++		}
+ 	}
+ 
+ 	if (AMIGAHW_PRESENT(A4000_IDE)) {
+@@ -199,8 +201,10 @@ static int __init amiga_init_devices(void)
+ 			return PTR_ERR(pdev);
+ 		error = platform_device_add_data(pdev, &a4000_ide_pdata,
+ 						 sizeof(a4000_ide_pdata));
+-		if (error)
++		if (error) {
++			platform_device_unregister(pdev);
+ 			return error;
++		}
+ 	}
+ 
+ 
 -- 
- .''`.  John Paul Adrian Glaubitz
-: :' :  Debian Developer - glaubitz@debian.org
-`. `'   Freie Universitaet Berlin - glaubitz@physik.fu-berlin.de
-  `-    GPG: 62FF 8A75 84E0 2956 9546  0006 7426 3B37 F5B5 F913
+2.25.1
+
