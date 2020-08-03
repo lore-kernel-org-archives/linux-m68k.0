@@ -2,113 +2,127 @@ Return-Path: <SRS0=9X71=BN=vger.kernel.org=linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-13.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+X-Spam-Status: No, score=-10.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
-	autolearn=ham autolearn_force=no version=3.4.0
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C37CCC433DF
-	for <linux-m68k@archiver.kernel.org>; Mon,  3 Aug 2020 18:19:46 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 624FBC433DF
+	for <linux-m68k@archiver.kernel.org>; Mon,  3 Aug 2020 18:25:13 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 4D70720792
-	for <linux-m68k@archiver.kernel.org>; Mon,  3 Aug 2020 18:19:46 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id F258622B4E
+	for <linux-m68k@archiver.kernel.org>; Mon,  3 Aug 2020 18:25:12 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=timesys-com.20150623.gappssmtp.com header.i=@timesys-com.20150623.gappssmtp.com header.b="TcE545nB"
+	dkim=pass (2048-bit key) header.d=timesys-com.20150623.gappssmtp.com header.i=@timesys-com.20150623.gappssmtp.com header.b="tRaMMEvc"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728606AbgHCSTq (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Mon, 3 Aug 2020 14:19:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40464 "EHLO
+        id S1727078AbgHCSZN (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Mon, 3 Aug 2020 14:25:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41298 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728605AbgHCSTq (ORCPT
-        <rfc822;linux-m68k@vger.kernel.org>); Mon, 3 Aug 2020 14:19:46 -0400
-Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 362EBC06174A
-        for <linux-m68k@vger.kernel.org>; Mon,  3 Aug 2020 11:19:46 -0700 (PDT)
-Received: by mail-wm1-x342.google.com with SMTP id x5so440580wmi.2
-        for <linux-m68k@vger.kernel.org>; Mon, 03 Aug 2020 11:19:46 -0700 (PDT)
+        with ESMTP id S1726130AbgHCSZN (ORCPT
+        <rfc822;linux-m68k@vger.kernel.org>); Mon, 3 Aug 2020 14:25:13 -0400
+Received: from mail-vk1-xa41.google.com (mail-vk1-xa41.google.com [IPv6:2607:f8b0:4864:20::a41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CEB61C06174A
+        for <linux-m68k@vger.kernel.org>; Mon,  3 Aug 2020 11:25:12 -0700 (PDT)
+Received: by mail-vk1-xa41.google.com with SMTP id m12so313424vko.5
+        for <linux-m68k@vger.kernel.org>; Mon, 03 Aug 2020 11:25:12 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=timesys-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=Ffxdrbkr+RiaMgHj33hRldmIx/P3RYuPKtgFFd38ke8=;
-        b=TcE545nBvpH/dW8huTD7WaZC7UIn8PadU0dyeykxZoTrvNQ4Qq4O794cQULk1oqw6R
-         BPE8/RTssO76TdPNsdaSOdg9+1QYLSWyLGBCu3yN/nO8+tvfXKoy7/EkokqtFza2GdVd
-         Z45lIGnwdNTjJncQdtwg2vqj5i3K6u/u1oJigO6/61i6iCwqMBanEBhSjlFwAYBN8xGT
-         mFChH30gvvs1SLQ91k7yn3nYkpoojETc8dbBB/FnO5ruJOwHY9aCEqdTAivhYQmbAkOA
-         u8fnkpIDmS+QXlJXHCuPCnecoxsisz+pcFmqsuX2TlwMFzhbMGN8TI7wiHOm87XChyKi
-         KS+Q==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Cqlh4aT2HCODPWQ/yvZltUCSAbxgwRi3iyO3N/2NEyQ=;
+        b=tRaMMEvcE/T5a2YRQxHS4ubU18WBm9E37NDV9PJIbBxrjpm1nrucyovn5NTlp0089v
+         rRl+tCgK63D+Sb2aTfk6fN4kMbZqvtJchGQcdprMDB5qQ9O8pcvKuzUKn/VEs+HnZLum
+         nzo1AiVhIo5RnVxoSyok6MFf3tYc2OL1FDo7EDQbV4eAUJIBIwfOSBfnB6omT3HR9CKJ
+         zA1Jb4i8e4g+ToclkVckDWF2Ke3LlJHOu/sCdK04Y/MGnPNQM452OBpfQeVEBtaS92hr
+         T6nnWp2atXRhiUGy+KsiP8IeHdUaFS2N6A8POkShKZgUI6i0pj5fHrnQDwoJpt2IcYmd
+         Y36A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=Ffxdrbkr+RiaMgHj33hRldmIx/P3RYuPKtgFFd38ke8=;
-        b=eVClaKzrX6J8eDByQiTapAIiau4IQgUL3RrnxKmWS9BfIolnsT4DBwRMcbCeEZKemf
-         7j/fVprSy2yKJEyA6ua3Zl8M/YpxOWl1n/KJigQunpUOaudw1kRAD3y5/OaI1MUscvzW
-         RSe9rN/RvrSegfwHzF2muTEFpTPKW72zzZTelE3OAzL0ZNlzOOliS2N99yw9V+F420R0
-         PCPtdIlpVNaAW8vtAgs8Lf8tIgogCBA+x2XbpcBA9kLh7c+RLIZbEmaDxksccybqBuCZ
-         SjfmlYG8msiTjTz2cRaxBmMTXmycNz+ygwny4kGjGtbkNKz8+ZQY8TSuCn+qHpWqmu9U
-         Hkrg==
-X-Gm-Message-State: AOAM530FHLQC169Ddk/3JefXyHoppq9cNfxXatbKMfr5LzNYG/wY/qNz
-        3t/bm2p+yjZadiJbhXGF+ti1Qw==
-X-Google-Smtp-Source: ABdhPJyzHDA+J7+pdXvKqm/XeNYOdf0ys8WAi9NBzfDU06YGXZihBbXlrtTiV4f+yAfu6C0uGgVYxQ==
-X-Received: by 2002:a1c:7313:: with SMTP id d19mr374703wmb.147.1596478784962;
-        Mon, 03 Aug 2020 11:19:44 -0700 (PDT)
-Received: from localhost.localdomain (host-79-41-237-247.retail.telecomitalia.it. [79.41.237.247])
-        by smtp.gmail.com with ESMTPSA id z8sm648822wmf.10.2020.08.03.11.19.43
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 03 Aug 2020 11:19:44 -0700 (PDT)
-From:   Angelo Dureghello <angelo.dureghello@timesys.com>
-To:     gerg@linux-m68k.org
-Cc:     linux-m68k@vger.kernel.org,
-        Angelo Dureghello <angelo.dureghello@timesys.com>
-Subject: [PATCH] m68k: stmark2: enable edma support for dspi
-Date:   Mon,  3 Aug 2020 20:28:03 +0200
-Message-Id: <20200803182803.193998-1-angelo.dureghello@timesys.com>
-X-Mailer: git-send-email 2.28.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Cqlh4aT2HCODPWQ/yvZltUCSAbxgwRi3iyO3N/2NEyQ=;
+        b=squg4HemsO74P6Q21QD1i7fY6m+3UXFGbjnOUyAEmB+hFmWSPoQ7NVe8gZRAg0ikgA
+         mO48+FaWbCmkjbfNO9HBXpluY4vXDFMcKt/MTu0Huwh9OYEqJ//+4uYwWwBw3qHXqRqD
+         jSODE7hgH8WRx0okyPV6bnE8ILQZRtAyTDIblW60xUEhCBPcP2Ngo3WffcxIk8k/1f27
+         89VLjUM3SCjf+2NvgMj2VCRSP9KH7R5uhvOs9ngjbKNzBAs+Btt7bZWFhqODQfEgwzdE
+         2flQTLLOaoKTrb5vlIBBLcw5f6nh1+14R/9oisfKTVdoQyYtz4r78oddHjoiRv15L5Up
+         Irtw==
+X-Gm-Message-State: AOAM531O+fTwrjrLeRQtQ8WyS5M8NdyK5wfqmlFFBskQyQGzFTVmk238
+        qHCmfHyAQf96+9pI40kkS0TnvlMGfatSQDd6Uvuh37rT
+X-Google-Smtp-Source: ABdhPJyGzjsA6w2g/alA+Cjo/v1cHl9Vr1jCbtNXARv1G/OKCk5lh7r0dZz055+jfzy8vRPv+bpVwfhYld91GWXMLEY=
+X-Received: by 2002:a1f:5986:: with SMTP id n128mr12349592vkb.93.1596479112046;
+ Mon, 03 Aug 2020 11:25:12 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20200803182803.193998-1-angelo.dureghello@timesys.com>
+In-Reply-To: <20200803182803.193998-1-angelo.dureghello@timesys.com>
+From:   Angelo Dureghello <angelo.dureghello@timesys.com>
+Date:   Mon, 3 Aug 2020 20:32:58 +0200
+Message-ID: <CALJHbkB+U430LafZ2htODRd-czebu+0xURcN+wtJV3tEfQXZPQ@mail.gmail.com>
+Subject: Re: [PATCH] m68k: stmark2: enable edma support for dspi
+To:     Greg Ungerer <gerg@linux-m68k.org>
+Cc:     "Linux/m68k" <linux-m68k@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-m68k-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-Enable dspi edma support for stmark2.
+Hi Greg,
 
-Signed-off-by: Angelo Dureghello <angelo.dureghello@timesys.com>
----
- arch/m68k/coldfire/stmark2.c | 5 +++++
- 1 file changed, 5 insertions(+)
+just realized i double-posted this patch.
+You already added it to for-next, so please discard this patch.
 
-diff --git a/arch/m68k/coldfire/stmark2.c b/arch/m68k/coldfire/stmark2.c
-index a8d2b3d172f9..8b5af9c83244 100644
---- a/arch/m68k/coldfire/stmark2.c
-+++ b/arch/m68k/coldfire/stmark2.c
-@@ -13,6 +13,7 @@
- #include <linux/spi/spi.h>
- #include <linux/spi/spi-fsl-dspi.h>
- #include <linux/spi/flash.h>
-+#include <linux/dma-mapping.h>
- #include <asm/mcfsim.h>
- 
- /*
-@@ -78,6 +79,8 @@ static struct resource dspi_spi0_resource[] = {
- 	},
- };
- 
-+static u64 stmark2_dspi_mask = DMA_BIT_MASK(32);
-+
- /* SPI controller, id = bus number */
- static struct platform_device dspi_spi0_device = {
- 	.name = "fsl-dspi",
-@@ -86,6 +89,8 @@ static struct platform_device dspi_spi0_device = {
- 	.resource = dspi_spi0_resource,
- 	.dev = {
- 		.platform_data = &dspi_spi0_info,
-+		.dma_mask = &stmark2_dspi_mask,
-+		.coherent_dma_mask = DMA_BIT_MASK(32),
- 	},
- };
- 
+Thanks,
+angelo
+
+
+On Mon, Aug 3, 2020 at 8:19 PM Angelo Dureghello
+<angelo.dureghello@timesys.com> wrote:
+>
+> Enable dspi edma support for stmark2.
+>
+> Signed-off-by: Angelo Dureghello <angelo.dureghello@timesys.com>
+> ---
+>  arch/m68k/coldfire/stmark2.c | 5 +++++
+>  1 file changed, 5 insertions(+)
+>
+> diff --git a/arch/m68k/coldfire/stmark2.c b/arch/m68k/coldfire/stmark2.c
+> index a8d2b3d172f9..8b5af9c83244 100644
+> --- a/arch/m68k/coldfire/stmark2.c
+> +++ b/arch/m68k/coldfire/stmark2.c
+> @@ -13,6 +13,7 @@
+>  #include <linux/spi/spi.h>
+>  #include <linux/spi/spi-fsl-dspi.h>
+>  #include <linux/spi/flash.h>
+> +#include <linux/dma-mapping.h>
+>  #include <asm/mcfsim.h>
+>
+>  /*
+> @@ -78,6 +79,8 @@ static struct resource dspi_spi0_resource[] = {
+>         },
+>  };
+>
+> +static u64 stmark2_dspi_mask = DMA_BIT_MASK(32);
+> +
+>  /* SPI controller, id = bus number */
+>  static struct platform_device dspi_spi0_device = {
+>         .name = "fsl-dspi",
+> @@ -86,6 +89,8 @@ static struct platform_device dspi_spi0_device = {
+>         .resource = dspi_spi0_resource,
+>         .dev = {
+>                 .platform_data = &dspi_spi0_info,
+> +               .dma_mask = &stmark2_dspi_mask,
+> +               .coherent_dma_mask = DMA_BIT_MASK(32),
+>         },
+>  };
+>
+> --
+> 2.28.0
+>
+
+
 -- 
-2.28.0
-
+Angelo Dureghello
+Timesys
+e. angelo.dureghello@timesys.com
