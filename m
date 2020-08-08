@@ -7,37 +7,37 @@ X-Spam-Status: No, score=-13.1 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
 	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A4E16C433E0
-	for <linux-m68k@archiver.kernel.org>; Sat,  8 Aug 2020 23:41:26 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 9170FC433E0
+	for <linux-m68k@archiver.kernel.org>; Sat,  8 Aug 2020 23:42:04 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 776F42053B
-	for <linux-m68k@archiver.kernel.org>; Sat,  8 Aug 2020 23:41:26 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 6EF3520825
+	for <linux-m68k@archiver.kernel.org>; Sat,  8 Aug 2020 23:42:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=default; t=1596930086;
-	bh=ILJ+X5dFj1WuZtMu5nk3WiTKNOR+oCEncXTbKxKz0t8=;
+	s=default; t=1596930124;
+	bh=Z791Hw3g3+zFUkOer+xUwNtRyRJX1ucFG2EkH+hTXxs=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-ID:From;
-	b=P4ZkEZVj25rlVEtoH8w0XpRfwiPpZhXFEJvxrIM2UZ02OXVYYzidE59WpUz5vwsCz
-	 sGRJhC7w2PBaaVSiEWAqWBMDKfx8WD1pJsyNmqH77amUepnOAL7hWdSETgopZimm9q
-	 2B/sghvTJeObxmyyBQYsglxLUi79C0tKLDDQisTw=
+	b=FVJomKO1fydtMpOgJepyukRBKhuxOLb23AlW9xH364uwEwxFCPgYezRsW+HWJIZMk
+	 z/DeJ4j27dNIgMeVyFuuSPhzBRKnBfgNEBudJ6UkKD8M+mPFvSZq5f9EO+MQyCd1ay
+	 VgOOqLVYDdyk1tKr4AffziHP1hk10D4DYGTUuR/k=
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728100AbgHHXkp (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Sat, 8 Aug 2020 19:40:45 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56376 "EHLO mail.kernel.org"
+        id S1727932AbgHHXmE (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Sat, 8 Aug 2020 19:42:04 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55928 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728899AbgHHXkp (ORCPT <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Sat, 8 Aug 2020 19:40:45 -0400
+        id S1728821AbgHHXk0 (ORCPT <rfc822;linux-m68k@lists.linux-m68k.org>);
+        Sat, 8 Aug 2020 19:40:26 -0400
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 2610820656;
-        Sat,  8 Aug 2020 23:40:44 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 5BD062053B;
+        Sat,  8 Aug 2020 23:40:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1596930045;
-        bh=ILJ+X5dFj1WuZtMu5nk3WiTKNOR+oCEncXTbKxKz0t8=;
+        s=default; t=1596930026;
+        bh=Z791Hw3g3+zFUkOer+xUwNtRyRJX1ucFG2EkH+hTXxs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=PGz0e0L+4c/hTqnVMW4zz4jlX8edpW8iaCIg9crALDzh3cRxjpnrBO1Ar5mioT7/8
-         DPtscSoNhMdFmvBURuGG8ISe2jxGON1U6JLqyaTMxLsix1cv2TDhLI3K7BYS+BJ7sb
-         EFV9oPnpIg9YzUj7oG211BLx+LHiUWZ31Hb8Z7m8=
+        b=rfieKclrVmOGkZWxx9zTkIBka2z2EDDijKDdSsSWPQaLm4y4G8HEL5e9O7ORZzACv
+         HG448YUzmGGJaulkk29QEGEWRLhIUs3apajrQIwSBqoJo+IL67dBHuB8OQRRpyI51B
+         ep7SvdvRiKWAz/SoZo4VWGH6pAYGRzccIgTy3A4k=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
 Cc:     Finn Thain <fthain@telegraphics.com.au>,
@@ -46,12 +46,12 @@ Cc:     Finn Thain <fthain@telegraphics.com.au>,
         Geert Uytterhoeven <geert@linux-m68k.org>,
         Sasha Levin <sashal@kernel.org>,
         linux-m68k@lists.linux-m68k.org
-Subject: [PATCH AUTOSEL 4.9 4/9] m68k: mac: Don't send IOP message until channel is idle
-Date:   Sat,  8 Aug 2020 19:40:31 -0400
-Message-Id: <20200808234037.3619732-4-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 4.14 08/14] m68k: mac: Don't send IOP message until channel is idle
+Date:   Sat,  8 Aug 2020 19:40:07 -0400
+Message-Id: <20200808234013.3619541-8-sashal@kernel.org>
 X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20200808234037.3619732-1-sashal@kernel.org>
-References: <20200808234037.3619732-1-sashal@kernel.org>
+In-Reply-To: <20200808234013.3619541-1-sashal@kernel.org>
+References: <20200808234013.3619541-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
@@ -92,12 +92,12 @@ Signed-off-by: Sasha Levin <sashal@kernel.org>
  1 file changed, 3 insertions(+), 6 deletions(-)
 
 diff --git a/arch/m68k/mac/iop.c b/arch/m68k/mac/iop.c
-index 7990b6f50105b..8209a74fbdebc 100644
+index 4c1e606e7d03b..fb61af5ac4ab8 100644
 --- a/arch/m68k/mac/iop.c
 +++ b/arch/m68k/mac/iop.c
 @@ -416,7 +416,8 @@ static void iop_handle_send(uint iop_num, uint chan)
- 	iop_free_msg(msg2);
- 
+ 	msg->status = IOP_MSGSTATUS_UNUSED;
+ 	msg = msg->next;
  	iop_send_queue[iop_num][chan] = msg;
 -	if (msg) iop_do_send(msg);
 +	if (msg && iop_readb(iop, IOP_ADDR_SEND_STATE + chan) == IOP_MSG_IDLE)
@@ -105,7 +105,7 @@ index 7990b6f50105b..8209a74fbdebc 100644
  }
  
  /*
-@@ -497,16 +498,12 @@ int iop_send_message(uint iop_num, uint chan, void *privdata,
+@@ -490,16 +491,12 @@ int iop_send_message(uint iop_num, uint chan, void *privdata,
  
  	if (!(q = iop_send_queue[iop_num][chan])) {
  		iop_send_queue[iop_num][chan] = msg;
