@@ -1,69 +1,128 @@
-Return-Path: <SRS0=RlFX=BR=vger.kernel.org=linux-m68k-owner@kernel.org>
+Return-Path: <SRS0=N34l=BS=vger.kernel.org=linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.1 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,
-	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-13.1 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 12D03C433E0
-	for <linux-m68k@archiver.kernel.org>; Fri,  7 Aug 2020 17:47:43 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A46BFC433E1
+	for <linux-m68k@archiver.kernel.org>; Sat,  8 Aug 2020 23:38:05 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id E0E9322CA1
-	for <linux-m68k@archiver.kernel.org>; Fri,  7 Aug 2020 17:47:42 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 73F96208E4
+	for <linux-m68k@archiver.kernel.org>; Sat,  8 Aug 2020 23:38:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=default; t=1596822462;
-	bh=vbFNKxs/yarHbmPIwn0fg4eZYtI5E5LLEpv0lxuy/cc=;
-	h=Subject:From:In-Reply-To:References:Date:To:Cc:List-ID:From;
-	b=KV69xLC5bN3sl5siX2vZGw7vm/hesE+vmAdzvp3+/2UbUDOon/P+YnzfMHnf8xDZY
-	 +gYTnUxScioP6OXaazG2G45pFvE85jBlu89sMbq92MtjSs4B/7aOKODfOCiIKKH9IE
-	 db7fSGzjIJewjjqnSHUFa9yh5VdeeBhpfgx5EfOA=
+	s=default; t=1596929885;
+	bh=LgP2OlZL56NdcDzxmOX1Pp5E0+D4FDy8ClRGYt4r8wA=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-ID:From;
+	b=XQwnYZywYgP6wYu3yNv51zUCoWv9bfQ21yNoXJMQ28KL1K0vUXuOAJ99wBgGNry+G
+	 ASmqPITggP+4L+9U4svvFBLY/CSaGsjW8b6EV+oMB7AntnVXAtwqB6HgLkMTozAJ6p
+	 UEO+bauwl7ORr7bwaxHm83bToeyk9GdBgXIWhvuU=
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727016AbgHGRrm (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Fri, 7 Aug 2020 13:47:42 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39968 "EHLO mail.kernel.org"
+        id S1728166AbgHHXiF (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Sat, 8 Aug 2020 19:38:05 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51480 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726015AbgHGRrT (ORCPT <rfc822;linux-m68k@vger.kernel.org>);
-        Fri, 7 Aug 2020 13:47:19 -0400
-Subject: Re: [git pull] m68knommu changes for v5.9
+        id S1728163AbgHHXiA (ORCPT <rfc822;linux-m68k@lists.linux-m68k.org>);
+        Sat, 8 Aug 2020 19:38:00 -0400
+Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id D6B372073E;
+        Sat,  8 Aug 2020 23:37:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1596822439;
-        bh=vbFNKxs/yarHbmPIwn0fg4eZYtI5E5LLEpv0lxuy/cc=;
-        h=From:In-Reply-To:References:Date:To:Cc:From;
-        b=QM/DNvbbVO1fVSyPG/QX8L6HkJof2DVD/9vDI89L6z6lG2iDU3bnVg35Q1rrr2hAT
-         Mndj3NI6lom2uosWQgIt3qryK8CkQlMQw/mq2I2mNkxev3F2HxlwCDLqRYkFZs0Q+J
-         q2v/y3nWXjC4MbFegIZTDQHvOEx7ZyfryOuZ6TTE=
-From:   pr-tracker-bot@kernel.org
-In-Reply-To: <71db8f0b-0178-30a7-3871-c56eb5688432@linux-m68k.org>
-References: <71db8f0b-0178-30a7-3871-c56eb5688432@linux-m68k.org>
-X-PR-Tracked-List-Id: <linux-m68k.vger.kernel.org>
-X-PR-Tracked-Message-Id: <71db8f0b-0178-30a7-3871-c56eb5688432@linux-m68k.org>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/gerg/m68knommu.git tags/m68knommu-for-v5.9
-X-PR-Tracked-Commit-Id: fde87ebf1daa8d96e4412aa06536da4b55103e02
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 60e76bb8a4e4c5398ea9053535e1fd0c9d6bb06e
-Message-Id: <159682243948.18750.62413015728339534.pr-tracker-bot@kernel.org>
-Date:   Fri, 07 Aug 2020 17:47:19 +0000
-To:     Greg Ungerer <gerg@linux-m68k.org>
-Cc:     torvalds@linux-foundation.org,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Linux/m68k <linux-m68k@vger.kernel.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>
+        s=default; t=1596929879;
+        bh=LgP2OlZL56NdcDzxmOX1Pp5E0+D4FDy8ClRGYt4r8wA=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=dksMcNo8fujg2wYkfT/CRXdwqmLwih0zPk1VDLwaM8VW93kKVzBLUEz4gPc9QrSO2
+         gzFC3mLnjpC29R5Yq0MSZPFzyJzAOvkVLsEEjAOySYMlBTeiLSPm2X6wueWMbLKmMU
+         rwIM8Pa+OXI7WON9iuowEtp0QJi57Ua9PI8JjR3Q=
+From:   Sasha Levin <sashal@kernel.org>
+To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Cc:     Finn Thain <fthain@telegraphics.com.au>,
+        Stan Johnson <userm57@yahoo.com>,
+        Joshua Thompson <funaho@jurai.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Sasha Levin <sashal@kernel.org>,
+        linux-m68k@lists.linux-m68k.org
+Subject: [PATCH AUTOSEL 5.7 25/58] m68k: mac: Don't send IOP message until channel is idle
+Date:   Sat,  8 Aug 2020 19:36:51 -0400
+Message-Id: <20200808233724.3618168-25-sashal@kernel.org>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20200808233724.3618168-1-sashal@kernel.org>
+References: <20200808233724.3618168-1-sashal@kernel.org>
+MIME-Version: 1.0
+X-stable: review
+X-Patchwork-Hint: Ignore
+Content-Transfer-Encoding: 8bit
 Sender: linux-m68k-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-The pull request you sent on Fri, 7 Aug 2020 14:56:52 +1000:
+From: Finn Thain <fthain@telegraphics.com.au>
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/gerg/m68knommu.git tags/m68knommu-for-v5.9
+[ Upstream commit aeb445bf2194d83e12e85bf5c65baaf1f093bd8f ]
 
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/60e76bb8a4e4c5398ea9053535e1fd0c9d6bb06e
+In the following sequence of calls, iop_do_send() gets called when the
+"send" channel is not in the IOP_MSG_IDLE state:
 
-Thank you!
+	iop_ism_irq()
+		iop_handle_send()
+			(msg->handler)()
+				iop_send_message()
+			iop_do_send()
 
+Avoid this by testing the channel state before calling iop_do_send().
+
+When sending, and iop_send_queue is empty, call iop_do_send() because
+the channel is idle. If iop_send_queue is not empty, iop_do_send() will
+get called later by iop_handle_send().
+
+Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
+Signed-off-by: Finn Thain <fthain@telegraphics.com.au>
+Tested-by: Stan Johnson <userm57@yahoo.com>
+Cc: Joshua Thompson <funaho@jurai.org>
+Link: https://lore.kernel.org/r/6d667c39e53865661fa5a48f16829d18ed8abe54.1590880333.git.fthain@telegraphics.com.au
+Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
+---
+ arch/m68k/mac/iop.c | 9 +++------
+ 1 file changed, 3 insertions(+), 6 deletions(-)
+
+diff --git a/arch/m68k/mac/iop.c b/arch/m68k/mac/iop.c
+index 9bfa170157688..d8f2282978f9c 100644
+--- a/arch/m68k/mac/iop.c
++++ b/arch/m68k/mac/iop.c
+@@ -416,7 +416,8 @@ static void iop_handle_send(uint iop_num, uint chan)
+ 	msg->status = IOP_MSGSTATUS_UNUSED;
+ 	msg = msg->next;
+ 	iop_send_queue[iop_num][chan] = msg;
+-	if (msg) iop_do_send(msg);
++	if (msg && iop_readb(iop, IOP_ADDR_SEND_STATE + chan) == IOP_MSG_IDLE)
++		iop_do_send(msg);
+ }
+ 
+ /*
+@@ -490,16 +491,12 @@ int iop_send_message(uint iop_num, uint chan, void *privdata,
+ 
+ 	if (!(q = iop_send_queue[iop_num][chan])) {
+ 		iop_send_queue[iop_num][chan] = msg;
++		iop_do_send(msg);
+ 	} else {
+ 		while (q->next) q = q->next;
+ 		q->next = msg;
+ 	}
+ 
+-	if (iop_readb(iop_base[iop_num],
+-	    IOP_ADDR_SEND_STATE + chan) == IOP_MSG_IDLE) {
+-		iop_do_send(msg);
+-	}
+-
+ 	return 0;
+ }
+ 
 -- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/prtracker.html
+2.25.1
+
