@@ -7,37 +7,37 @@ X-Spam-Status: No, score=-13.1 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
 	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C5DDCC433E3
-	for <linux-m68k@archiver.kernel.org>; Sat,  8 Aug 2020 23:41:17 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5AAC0C433DF
+	for <linux-m68k@archiver.kernel.org>; Sat,  8 Aug 2020 23:41:25 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id A30E820658
-	for <linux-m68k@archiver.kernel.org>; Sat,  8 Aug 2020 23:41:17 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 3A1E92053B
+	for <linux-m68k@archiver.kernel.org>; Sat,  8 Aug 2020 23:41:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=default; t=1596930077;
-	bh=o9Sn3xaHKCAzMTdqGvBWLQH5M6n1P9EPHhFgTTMgUTA=;
+	s=default; t=1596930085;
+	bh=07OtW7d5134FkJsRUqn7e/OAUYC/AtgYEEoc7+iC8Os=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-ID:From;
-	b=zyI6McRV8k9W+Cf/QZyAGjSVXRc735INDH7zLSbKMkfh4k2wz3PSNrQRXxVJd26zq
-	 szhmnHvKdJ8NMP29aKu+i6s4RXDnF3pRn/d9KYka8V2MGFouIZODbGhZ8yXbDw22tz
-	 NoJaHxGxMAnakV27r703zN4J0DN8QObi1U41tD5g=
+	b=0RSkOptd0Wj84niqhaLz09HOKDyRhOLM2IokOZv0poj6AU20QUWBhaaqZikZMAH43
+	 kwbIxub+ipiD6aSMNIx4nnpSfwkZAdMuVO3MmLJxkhDSNfGq/csDLy65KwKk6giqUl
+	 myVK6NDUIg0o7/6jv2gyh8heF1mPranG3Ly7azV8=
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728954AbgHHXlJ (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Sat, 8 Aug 2020 19:41:09 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56856 "EHLO mail.kernel.org"
+        id S1728910AbgHHXku (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Sat, 8 Aug 2020 19:40:50 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56438 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728955AbgHHXlD (ORCPT <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Sat, 8 Aug 2020 19:41:03 -0400
+        id S1728898AbgHHXkt (ORCPT <rfc822;linux-m68k@lists.linux-m68k.org>);
+        Sat, 8 Aug 2020 19:40:49 -0400
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 8A4E720656;
-        Sat,  8 Aug 2020 23:41:02 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id A9EC520656;
+        Sat,  8 Aug 2020 23:40:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1596930063;
-        bh=o9Sn3xaHKCAzMTdqGvBWLQH5M6n1P9EPHhFgTTMgUTA=;
+        s=default; t=1596930048;
+        bh=07OtW7d5134FkJsRUqn7e/OAUYC/AtgYEEoc7+iC8Os=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=TWz/9HNFkrx519oE+T1hBtVRvihqt6dwtfzrVNAAYHawkJP9Mcf55r+6J75Qeswcl
-         sKMfIqeHyWYbhdQhUDVIT3hacD7TVjC+fZtFkuNFZ7TI2whFbZYf9S/aVjpPcB0j5l
-         hvxyW3kPJWg05w4YG8lJ0OJbsW5mjNo7GIJSe29U=
+        b=DhWHbNtHkanpytKos/YLfTJoLOGn1OlM1NcKwmKNrw+ekys1ZppOXaF9WcLHNREQP
+         OjXUZXOcvmPDjrgrju3tWYTd2IIb6uzIVv0N6XBYOr+m62BAvBO48t3N/zpdt/0PYw
+         +DB+EBCZvqPVZ9Pmz1TI/eIpIaR20hGHFy5tAO+E=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
 Cc:     Finn Thain <fthain@telegraphics.com.au>,
@@ -46,12 +46,12 @@ Cc:     Finn Thain <fthain@telegraphics.com.au>,
         Geert Uytterhoeven <geert@linux-m68k.org>,
         Sasha Levin <sashal@kernel.org>,
         linux-m68k@lists.linux-m68k.org
-Subject: [PATCH AUTOSEL 4.4 3/5] m68k: mac: Fix IOP status/control register writes
-Date:   Sat,  8 Aug 2020 19:40:51 -0400
-Message-Id: <20200808234054.3619873-3-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 4.9 5/9] m68k: mac: Fix IOP status/control register writes
+Date:   Sat,  8 Aug 2020 19:40:32 -0400
+Message-Id: <20200808234037.3619732-5-sashal@kernel.org>
 X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20200808234054.3619873-1-sashal@kernel.org>
-References: <20200808234054.3619873-1-sashal@kernel.org>
+In-Reply-To: <20200808234037.3619732-1-sashal@kernel.org>
+References: <20200808234037.3619732-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
@@ -87,7 +87,7 @@ Signed-off-by: Sasha Levin <sashal@kernel.org>
  1 file changed, 3 insertions(+), 9 deletions(-)
 
 diff --git a/arch/m68k/mac/iop.c b/arch/m68k/mac/iop.c
-index c89ed66908f91..358ca965cf824 100644
+index 8209a74fbdebc..cb516cacc819b 100644
 --- a/arch/m68k/mac/iop.c
 +++ b/arch/m68k/mac/iop.c
 @@ -173,7 +173,7 @@ static __inline__ void iop_writeb(volatile struct mac_iop *iop, __u16 addr, __u8
