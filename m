@@ -7,37 +7,37 @@ X-Spam-Status: No, score=-13.1 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
 	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 2A715C433E0
-	for <linux-m68k@archiver.kernel.org>; Sat,  8 Aug 2020 23:43:05 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 863E5C433DF
+	for <linux-m68k@archiver.kernel.org>; Sat,  8 Aug 2020 23:44:38 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id F3CA322BEF
-	for <linux-m68k@archiver.kernel.org>; Sat,  8 Aug 2020 23:43:04 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 5E1692053B
+	for <linux-m68k@archiver.kernel.org>; Sat,  8 Aug 2020 23:44:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=default; t=1596930185;
+	s=default; t=1596930278;
 	bh=LgP2OlZL56NdcDzxmOX1Pp5E0+D4FDy8ClRGYt4r8wA=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-ID:From;
-	b=Ex2UUu1FYX5YutAhLg6t7Rb5uZyUQH2XFU9IYFkGp6qtCRYCJZAa++77KkCZ2skU7
-	 erOChAQYeW9tqeMTAl3zOrIdjQCiX3v2V6i/4sd/ppR41EXXExxIbIpUWikBqRGd77
-	 E7GlJRzvV7Cg6CP7qHKroINFKKlJnoDY9rTDtL8w=
+	b=x1OMOidNOtxP3JdeGynezQYw0W4qfzlqJw01OBwFyXyAhaM/34IPq5oHhqE2u5zp9
+	 X5iETKAGkQtwXDLakgJYCeXfSK6GDGF8PoaX6b2fOl6lZgI6xdqRH/H1PNZ5TyEO+R
+	 8mAjFOLB5AOU130cIK+FpGKgF6USIRm4eJrmE0qg=
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728715AbgHHXm7 (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Sat, 8 Aug 2020 19:42:59 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55218 "EHLO mail.kernel.org"
+        id S1728492AbgHHXjN (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Sat, 8 Aug 2020 19:39:13 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53738 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728700AbgHHXkB (ORCPT <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Sat, 8 Aug 2020 19:40:01 -0400
+        id S1728488AbgHHXjK (ORCPT <rfc822;linux-m68k@lists.linux-m68k.org>);
+        Sat, 8 Aug 2020 19:39:10 -0400
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id BC0DA20716;
-        Sat,  8 Aug 2020 23:39:59 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 1F4E420791;
+        Sat,  8 Aug 2020 23:39:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1596930000;
+        s=default; t=1596929950;
         bh=LgP2OlZL56NdcDzxmOX1Pp5E0+D4FDy8ClRGYt4r8wA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=k5YPoEIpLjRHDZ2PRSZr1qA755aBJUx5RwvpZkViw8C1AjXKZ6mxhO9QBaJMA+VbB
-         HG0EwNj1sICl3Yze58QIoxqGx1AuBuoxWOnxWrRPJZm48jdMZQNz5QB2XlOnxkeaVN
-         lSveMP0P8/oDLVL5d1qa+lN3bHG6pLNoZA+rAVwo=
+        b=1rdwpfeTyjRiQ36hAEcJMwPtjrqBuLMw3IBzbSmQ2uQNVg4CArBJrBvOL+HTleNAH
+         1M3PghZVJoiIg3bMr2Yqhi0glRy0GZ/g7SVQXL4/Hipkg69kYzMkaNjui3Sa8hQp76
+         /T/h+7J+lwAgVZFErV7ATkwMUVuD+YClWP9Db7w0=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
 Cc:     Finn Thain <fthain@telegraphics.com.au>,
@@ -46,12 +46,12 @@ Cc:     Finn Thain <fthain@telegraphics.com.au>,
         Geert Uytterhoeven <geert@linux-m68k.org>,
         Sasha Levin <sashal@kernel.org>,
         linux-m68k@lists.linux-m68k.org
-Subject: [PATCH AUTOSEL 4.19 13/21] m68k: mac: Don't send IOP message until channel is idle
-Date:   Sat,  8 Aug 2020 19:39:33 -0400
-Message-Id: <20200808233941.3619277-13-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.4 17/40] m68k: mac: Don't send IOP message until channel is idle
+Date:   Sat,  8 Aug 2020 19:38:21 -0400
+Message-Id: <20200808233844.3618823-17-sashal@kernel.org>
 X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20200808233941.3619277-1-sashal@kernel.org>
-References: <20200808233941.3619277-1-sashal@kernel.org>
+In-Reply-To: <20200808233844.3618823-1-sashal@kernel.org>
+References: <20200808233844.3618823-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
