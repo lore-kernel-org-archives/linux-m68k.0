@@ -1,80 +1,94 @@
-Return-Path: <SRS0=xXxx=BW=vger.kernel.org=linux-m68k-owner@kernel.org>
+Return-Path: <SRS0=r/MV=BX=vger.kernel.org=linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-10.5 required=3.0 tests=BAYES_00,
+X-Spam-Status: No, score=-9.0 required=3.0 tests=BAYES_00,FROM_LOCAL_HEX,
 	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=ham autolearn_force=no
-	version=3.4.0
+	SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 5B2C2C433E0
-	for <linux-m68k@archiver.kernel.org>; Wed, 12 Aug 2020 09:54:59 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id DCDDFC433E3
+	for <linux-m68k@archiver.kernel.org>; Thu, 13 Aug 2020 03:57:14 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 3E911206DA
-	for <linux-m68k@archiver.kernel.org>; Wed, 12 Aug 2020 09:54:59 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id C644C206A4
+	for <linux-m68k@archiver.kernel.org>; Thu, 13 Aug 2020 03:57:14 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727032AbgHLJy6 (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Wed, 12 Aug 2020 05:54:58 -0400
-Received: from scenergy.dfmk.hu ([193.224.143.38]:51405 "EHLO scenergy.dfmk.hu"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726712AbgHLJy6 (ORCPT <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Wed, 12 Aug 2020 05:54:58 -0400
-Received: by scenergy.dfmk.hu (Postfix, from userid 1000)
-        id E0963800F2A; Wed, 12 Aug 2020 11:54:56 +0200 (CEST)
-Received: from localhost (localhost [127.0.0.1])
-        by scenergy.dfmk.hu (Postfix) with ESMTP id C714E8000E3;
-        Wed, 12 Aug 2020 11:54:56 +0200 (CEST)
-Date:   Wed, 12 Aug 2020 11:54:56 +0200 (CEST)
-From:   "Karoly Balogh (Charlie/SGR)" <charlie@scenergy.dfmk.hu>
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-cc:     Carsten Strotmann <cas@strotmann.de>,
-        Debian m68k <debian-68k@lists.debian.org>,
-        emutos-devel@lists.sourceforge.net, amigaml@freelists.org,
-        linux-m68k <linux-m68k@lists.linux-m68k.org>
-Subject: Re: m68k chat 21st Aug 2020 - "the Amitari - EmuTOS and Atari Software
- on the Amiga"
-In-Reply-To: <CAMuHMdU=nV_f80aiZQ_EeDOtBE8mWmsQWCS9hau6BhUf5Gv2tw@mail.gmail.com>
-Message-ID: <alpine.DEB.2.02.2008121149040.3100@scenergy.dfmk.hu>
-References: <86v9hoffcd.fsf@emacs.strotmann.de> <CAMuHMdWThu9QW-HAQ84TBi4ZGUmzpDw4t=WN37uwAoec7ynsvA@mail.gmail.com> <CAMuHMdU=nV_f80aiZQ_EeDOtBE8mWmsQWCS9hau6BhUf5Gv2tw@mail.gmail.com>
-User-Agent: Alpine 2.02 (DEB 1266 2009-07-14)
+        id S1726131AbgHMD5N (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Wed, 12 Aug 2020 23:57:13 -0400
+Received: from mail-il1-f197.google.com ([209.85.166.197]:44782 "EHLO
+        mail-il1-f197.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726740AbgHMD5F (ORCPT
+        <rfc822;linux-m68k@lists.linux-m68k.org>);
+        Wed, 12 Aug 2020 23:57:05 -0400
+Received: by mail-il1-f197.google.com with SMTP id z15so3428804ile.11
+        for <linux-m68k@lists.linux-m68k.org>; Wed, 12 Aug 2020 20:57:04 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
+         :from:to;
+        bh=818BGdNc1wvnUSaZirTtzYWcZvgSsVpOYq9GYar7pzo=;
+        b=DbrqMXvi+78eo+YyQcV5AXWWmH5gqR9YT7SF+XY/WP5hmtH4i1Y3LmRisQeWaLgIue
+         Kx6C1LOkLEpz/Cby93NSNyszTIVnmvtw57AA1npHTRK3OFqD5b4X9KqoUctRFywuQ3kL
+         Ma9w7mKTv33srq1IyJmLlDuWgjA6GHCoon+G/kJpVMPerggv8qTRiaE6xr1ngFH420Pt
+         YGiqPyybn1fxsTGn01nlfrbk10lDOvelNh0Pvk+gGpazNgONkq/i5/Hsm2dBuSkvWJD5
+         EpeYX1+oeoPcDuCVR9eMjRsMAR1OdDEE1uKDB8OpTpOdJcNPQG24OhhF42asg5bhK1ZU
+         7uMA==
+X-Gm-Message-State: AOAM533cNwbxNQWpmkXaECG6cPiYHf9EriQPfALnbVB63wItx3KCb5G4
+        dVuK0B3pDJLKyXMXHHgKMCkVAgUbFx0TtiOTKkjrvkvgYRBl
+X-Google-Smtp-Source: ABdhPJxyW2a+ykA+fUEC8D6mFHSlTwIHpmNmLpjhnj+1O5R02Uizom5WTc4bNxK6AVfdyCvjg+GBZ9zseGC71qHLHgVFHLNbJAN8
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+X-Received: by 2002:a92:874a:: with SMTP id d10mr2849478ilm.273.1597291024427;
+ Wed, 12 Aug 2020 20:57:04 -0700 (PDT)
+Date:   Wed, 12 Aug 2020 20:57:04 -0700
+In-Reply-To: <00000000000084b59f05abe928ee@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000001d3cbb05acba4cc2@google.com>
+Subject: Re: INFO: task hung in pipe_release (2)
+From:   syzbot <syzbot+61acc40a49a3e46e25ea@syzkaller.appspotmail.com>
+To:     James.Bottomley@HansenPartnership.com, amanieu@gmail.com,
+        arnd@arndb.de, benh@kernel.crashing.org, bfields@fieldses.org,
+        borntraeger@de.ibm.com, bp@alien8.de, catalin.marinas@arm.com,
+        chris@zankel.net, christian@brauner.io, corbet@lwn.net,
+        cyphar@cyphar.com, dalias@libc.org, davem@davemloft.net,
+        deller@gmx.de, dvyukov@google.com, fenghua.yu@intel.com,
+        geert@linux-m68k.org, gor@linux.ibm.com, heiko.carstens@de.ibm.com,
+        hpa@zytor.com, ink@jurassic.park.msu.ru, jcmvbkbc@gmail.com,
+        jhogan@kernel.org, jlayton@kernel.org, kvalo@codeaurora.org,
+        linux-alpha@vger.kernel.org, linux-api@vger.kernel.org,
+        linux-arch@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-fsdevel@vger.kernel.org, linux-ia64@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-m68k@lists.linux-m68k.org,
+        linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org,
+        linux-s390@vger.kernel.org, linux-sh@vger.kernel.org,
+        linux-xtensa@linux-xtensa.org, linux@armlinux.org.uk,
+        linux@dominikbrodowski.net, linuxppc-dev@lists.ozlabs.org,
+        luis.f.correia@gmail.com, luto@kernel.org, martink@posteo.de,
+        mattst88@gmail.com, ming.lei@canonical.com, ming.lei@redhat.com,
+        mingo@redhat.com, monstr@monstr.eu
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-m68k-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-Hi,
+syzbot has bisected this issue to:
 
-On Wed, 12 Aug 2020, Geert Uytterhoeven wrote:
+commit fddb5d430ad9fa91b49b1d34d0202ffe2fa0e179
+Author: Aleksa Sarai <cyphar@cyphar.com>
+Date:   Sat Jan 18 12:07:59 2020 +0000
 
-> > There did exist a small AmigaOS emulator for Amiga UNIX, basically
-> > implementing a hunk loader and a few exec.library and dos.library calls.
-> > This was rumored to be sufficient to run e.g. the SAS C compiler.
-> > I tried it once on Linux/m68k, and it could run a simple Hello World.
-> >
-> > The only entrypoint you need to provide to run AmigaOS binaries is a
-> > pointer to ExecBase at address 4.  If TOS doesn't use that location for
-> > something else, you can implement AmigaOS support.
-> >
-> > Good luck! ;-)
->
-> FTR:
->
-> https://web.archive.org/web/20000304080628/http://www.cs.kuleuven.ac.be/~geert/bin/ados_linux.tar.gz
+    open: introduce openat2(2) syscall
 
-There's also vamos, which even sports a 68k emulator (it has Musashi
-built in), so you can run SAS/C and similar command line Amiga software on
-non-68k hardware.
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=164e716a900000
+start commit:   6ba1b005 Merge tag 'asm-generic-fixes-5.8' of git://git.ke..
+git tree:       upstream
+final oops:     https://syzkaller.appspot.com/x/report.txt?x=154e716a900000
+console output: https://syzkaller.appspot.com/x/log.txt?x=114e716a900000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=84f076779e989e69
+dashboard link: https://syzkaller.appspot.com/bug?extid=61acc40a49a3e46e25ea
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=142ae224900000
 
-It's in this repo, mixed up with a bunch of other interesting tools, like
-an RDB disk image creator, etc:
+Reported-by: syzbot+61acc40a49a3e46e25ea@syzkaller.appspotmail.com
+Fixes: fddb5d430ad9 ("open: introduce openat2(2) syscall")
 
-https://github.com/cnvogelg/amitools
-
-If I get it right it's somehow written in Python, which sounds scary, but
-I've seen it in action and it looked like it's working. Never tried it
-myself tho', but I tried other software from the same repo, and they
-worked nicely.
-
-Charlie
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
