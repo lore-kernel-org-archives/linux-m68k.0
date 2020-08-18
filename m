@@ -7,24 +7,24 @@ X-Spam-Status: No, score=-12.8 required=3.0 tests=BAYES_00,
 	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=unavailable
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 35494C433DF
-	for <linux-m68k@archiver.kernel.org>; Tue, 18 Aug 2020 17:34:47 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 0DB9FC433DF
+	for <linux-m68k@archiver.kernel.org>; Tue, 18 Aug 2020 17:35:18 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 1089B20738
-	for <linux-m68k@archiver.kernel.org>; Tue, 18 Aug 2020 17:34:47 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id EF06B20674
+	for <linux-m68k@archiver.kernel.org>; Tue, 18 Aug 2020 17:35:17 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728709AbgHRRel (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        id S1728706AbgHRRel (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
         Tue, 18 Aug 2020 13:34:41 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:52427 "EHLO
+Received: from youngberry.canonical.com ([91.189.89.112]:52420 "EHLO
         youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728622AbgHRRed (ORCPT
+        with ESMTP id S1728528AbgHRReb (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Tue, 18 Aug 2020 13:34:33 -0400
+        Tue, 18 Aug 2020 13:34:31 -0400
 Received: from ip5f5af70b.dynamic.kabel-deutschland.de ([95.90.247.11] helo=wittgenstein.fritz.box)
         by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
         (Exim 4.86_2)
         (envelope-from <christian.brauner@ubuntu.com>)
-        id 1k85VG-0003E9-B8; Tue, 18 Aug 2020 17:34:30 +0000
+        id 1k85VE-0003E9-UJ; Tue, 18 Aug 2020 17:34:29 +0000
 From:   Christian Brauner <christian.brauner@ubuntu.com>
 To:     Christoph Hewllig <hch@infradead.org>,
         linux-kernel@vger.kernel.org,
@@ -57,9 +57,9 @@ Cc:     Jonathan Corbet <corbet@lwn.net>,
         kgdb-bugreport@lists.sourceforge.net,
         linux-kselftest@vger.kernel.org,
         Christian Brauner <christian.brauner@ubuntu.com>
-Subject: [PATCH 07/11] x86: switch to kernel_clone()
-Date:   Tue, 18 Aug 2020 19:34:07 +0200
-Message-Id: <20200818173411.404104-8-christian.brauner@ubuntu.com>
+Subject: [PATCH 06/11] sparc: switch to kernel_clone()
+Date:   Tue, 18 Aug 2020 19:34:06 +0200
+Message-Id: <20200818173411.404104-7-christian.brauner@ubuntu.com>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200818173411.404104-1-christian.brauner@ubuntu.com>
 References: <20200818173411.404104-1-christian.brauner@ubuntu.com>
@@ -73,27 +73,44 @@ X-Mailing-List: linux-m68k@vger.kernel.org
 The old _do_fork() helper is removed in favor of the new kernel_clone() helper.
 The latter adheres to naming conventions for kernel internal syscall helpers.
 
-Cc: Thomas Gleixner <tglx@linutronix.de>
-Cc: Ingo Molnar <mingo@redhat.com>
-Cc: Borislav Petkov <bp@alien8.de>
-Cc: x86@kernel.org
+Cc: "David S. Miller" <davem@davemloft.net>
+Cc: sparclinux@vger.kernel.org
 Signed-off-by: Christian Brauner <christian.brauner@ubuntu.com>
 ---
- arch/x86/kernel/sys_ia32.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ arch/sparc/kernel/process.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/arch/x86/kernel/sys_ia32.c b/arch/x86/kernel/sys_ia32.c
-index 720cde885042..6cf65397d225 100644
---- a/arch/x86/kernel/sys_ia32.c
-+++ b/arch/x86/kernel/sys_ia32.c
-@@ -251,6 +251,6 @@ COMPAT_SYSCALL_DEFINE5(ia32_clone, unsigned long, clone_flags,
- 		.tls		= tls_val,
+diff --git a/arch/sparc/kernel/process.c b/arch/sparc/kernel/process.c
+index 5234b5ccc0b9..0442ab00518d 100644
+--- a/arch/sparc/kernel/process.c
++++ b/arch/sparc/kernel/process.c
+@@ -25,7 +25,7 @@ asmlinkage long sparc_fork(struct pt_regs *regs)
+ 		.stack		= regs->u_regs[UREG_FP],
  	};
  
--	return _do_fork(&args);
-+	return kernel_clone(&args);
- }
- #endif /* CONFIG_IA32_EMULATION */
+-	ret = _do_fork(&args);
++	ret = kernel_clone(&args);
+ 
+ 	/* If we get an error and potentially restart the system
+ 	 * call, we're screwed because copy_thread() clobbered
+@@ -50,7 +50,7 @@ asmlinkage long sparc_vfork(struct pt_regs *regs)
+ 		.stack		= regs->u_regs[UREG_FP],
+ 	};
+ 
+-	ret = _do_fork(&args);
++	ret = kernel_clone(&args);
+ 
+ 	/* If we get an error and potentially restart the system
+ 	 * call, we're screwed because copy_thread() clobbered
+@@ -96,7 +96,7 @@ asmlinkage long sparc_clone(struct pt_regs *regs)
+ 	else
+ 		args.stack = regs->u_regs[UREG_FP];
+ 
+-	ret = _do_fork(&args);
++	ret = kernel_clone(&args);
+ 
+ 	/* If we get an error and potentially restart the system
+ 	 * call, we're screwed because copy_thread() clobbered
 -- 
 2.28.0
 
