@@ -2,260 +2,107 @@ Return-Path: <SRS0=ojQn=B4=vger.kernel.org=linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.8 required=3.0 tests=BAYES_00,
+X-Spam-Status: No, score=-12.8 required=3.0 tests=BAYES_00,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable autolearn_force=no
-	version=3.4.0
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=unavailable
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B29A5C433E1
-	for <linux-m68k@archiver.kernel.org>; Tue, 18 Aug 2020 07:45:10 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A233BC433DF
+	for <linux-m68k@archiver.kernel.org>; Tue, 18 Aug 2020 17:34:38 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 929E4207FB
-	for <linux-m68k@archiver.kernel.org>; Tue, 18 Aug 2020 07:45:10 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 848C420674
+	for <linux-m68k@archiver.kernel.org>; Tue, 18 Aug 2020 17:34:38 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726513AbgHRHpG (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Tue, 18 Aug 2020 03:45:06 -0400
-Received: from kvm5.telegraphics.com.au ([98.124.60.144]:47640 "EHLO
-        kvm5.telegraphics.com.au" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726043AbgHRHpG (ORCPT
+        id S1728691AbgHRReg (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Tue, 18 Aug 2020 13:34:36 -0400
+Received: from youngberry.canonical.com ([91.189.89.112]:52410 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727773AbgHRRe3 (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Tue, 18 Aug 2020 03:45:06 -0400
-Received: by kvm5.telegraphics.com.au (Postfix, from userid 502)
-        id F043629A1F; Tue, 18 Aug 2020 03:45:03 -0400 (EDT)
-To:     "David S. Miller" <davem@davemloft.net>
-Cc:     "Bartlomiej Zolnierkiewicz" <b.zolnierkie@samsung.com>,
-        "Geert Uytterhoeven" <geert@linux-m68k.org>,
-        "Joshua Thompson" <funaho@jurai.org>,
-        linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org,
-        linux-ide@vger.kernel.org
-Message-Id: <00ee44fe6ecdce1c783c3cc3b1b9a62b498dcdb2.1597736545.git.fthain@telegraphics.com.au>
-From:   Finn Thain <fthain@telegraphics.com.au>
-Subject: [PATCH] ide/macide: Convert Mac IDE driver to platform driver
-Date:   Tue, 18 Aug 2020 17:42:25 +1000
+        Tue, 18 Aug 2020 13:34:29 -0400
+Received: from ip5f5af70b.dynamic.kabel-deutschland.de ([95.90.247.11] helo=wittgenstein.fritz.box)
+        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.86_2)
+        (envelope-from <christian.brauner@ubuntu.com>)
+        id 1k85VA-0003E9-T8; Tue, 18 Aug 2020 17:34:25 +0000
+From:   Christian Brauner <christian.brauner@ubuntu.com>
+To:     Christoph Hewllig <hch@infradead.org>,
+        linux-kernel@vger.kernel.org,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        linux-arch@vger.kernel.org
+Cc:     Jonathan Corbet <corbet@lwn.net>,
+        Yoshinori Sato <ysato@users.sourceforge.jp>,
+        Tony Luck <tony.luck@intel.com>,
+        Fenghua Yu <fenghua.yu@intel.com>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Ley Foon Tan <ley.foon.tan@intel.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, Arnd Bergmann <arnd@arndb.de>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Stafford Horne <shorne@gmail.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Kars de Jong <jongk@linux-m68k.org>,
+        Kees Cook <keescook@chromium.org>,
+        Greentime Hu <green.hu@gmail.com>,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        Alexandre Chartre <alexandre.chartre@oracle.com>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Tom Zanussi <zanussi@kernel.org>,
+        Xiao Yang <yangx.jy@cn.fujitsu.com>, linux-doc@vger.kernel.org,
+        uclinux-h8-devel@lists.sourceforge.jp, linux-ia64@vger.kernel.org,
+        linux-m68k@lists.linux-m68k.org, sparclinux@vger.kernel.org,
+        kgdb-bugreport@lists.sourceforge.net,
+        linux-kselftest@vger.kernel.org,
+        Christian Brauner <christian.brauner@ubuntu.com>
+Subject: [PATCH 03/11] ia64: switch to kernel_clone()
+Date:   Tue, 18 Aug 2020 19:34:03 +0200
+Message-Id: <20200818173411.404104-4-christian.brauner@ubuntu.com>
+X-Mailer: git-send-email 2.28.0
+In-Reply-To: <20200818173411.404104-1-christian.brauner@ubuntu.com>
+References: <20200818173411.404104-1-christian.brauner@ubuntu.com>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Sender: linux-m68k-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-Add platform devices for the Mac IDE controller variants. Convert the
-macide module into a platform driver to support two of those variants.
-For the third, use a generic "pata_platform" driver instead.
-This enables automatic loading of the appropriate module and begins
-the process of replacing the driver with libata alternatives.
+The old _do_fork() helper is removed in favor of the new kernel_clone() helper.
+The latter adheres to naming conventions for kernel internal syscall helpers.
 
-Cc: Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>
-Cc: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: Joshua Thompson <funaho@jurai.org>
-References: commit 5ed0794cde593 ("m68k/atari: Convert Falcon IDE drivers to platform drivers")
-References: commit 7ad19a99ad431 ("ide: officially deprecated the legacy IDE driver")
-Tested-by: Stan Johnson <userm57@yahoo.com>
-Signed-off-by: Finn Thain <fthain@telegraphics.com.au>
+Cc: Tony Luck <tony.luck@intel.com>
+Cc: Fenghua Yu <fenghua.yu@intel.com>
+Cc: linux-ia64@vger.kernel.org
+Signed-off-by: Christian Brauner <christian.brauner@ubuntu.com>
 ---
-This patch was tested successfully on a Powerbook 190 (MAC_IDE_BABOON)
-using both pata_platform and ide_platform drivers.
-The next step will be to try using these generic drivers with the other
-IDE controller variants (MAC_IDE_QUADRA or MAC_IDE_PB) so that the macide
-driver can be entirely replaced with libata drivers.
----
- arch/m68k/mac/config.c | 65 +++++++++++++++++++++++++++++++++++++++
- drivers/ide/macide.c   | 70 ++++++++++++++++++++++++++++--------------
- 2 files changed, 112 insertions(+), 23 deletions(-)
+ arch/ia64/kernel/process.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/arch/m68k/mac/config.c b/arch/m68k/mac/config.c
-index 5c9f3a2d65388..9ad3a0d3481b1 100644
---- a/arch/m68k/mac/config.c
-+++ b/arch/m68k/mac/config.c
-@@ -24,6 +24,7 @@
- #include <linux/init.h>
- #include <linux/vt_kern.h>
- #include <linux/platform_device.h>
-+#include <linux/ata_platform.h>
- #include <linux/adb.h>
- #include <linux/cuda.h>
- #include <linux/pmu.h>
-@@ -940,6 +941,50 @@ static const struct resource mac_scsi_ccl_rsrc[] __initconst = {
- 	},
- };
+diff --git a/arch/ia64/kernel/process.c b/arch/ia64/kernel/process.c
+index f19cb97c0098..126f72490ec7 100644
+--- a/arch/ia64/kernel/process.c
++++ b/arch/ia64/kernel/process.c
+@@ -310,7 +310,7 @@ ia64_load_extra (struct task_struct *task)
+  *
+  *	<clone syscall>	        <some kernel call frames>
+  *	sys_clone		   :
+- *	_do_fork		_do_fork
++ *	kernel_clone		kernel_clone
+  *	copy_thread		copy_thread
+  *
+  * This means that the stack layout is as follows:
+@@ -455,7 +455,7 @@ asmlinkage long ia64_clone(unsigned long clone_flags, unsigned long stack_start,
+ 		.tls		= tls,
+ 	};
  
-+static const struct resource mac_ide_quadra_rsrc[] __initconst = {
-+	{
-+		.flags = IORESOURCE_MEM,
-+		.start = 0x50F1A000,
-+		.end   = 0x50F1A103,
-+	}, {
-+		.flags = IORESOURCE_IRQ,
-+		.start = IRQ_NUBUS_F,
-+		.end   = IRQ_NUBUS_F,
-+	},
-+};
-+
-+static const struct resource mac_ide_pb_rsrc[] __initconst = {
-+	{
-+		.flags = IORESOURCE_MEM,
-+		.start = 0x50F1A000,
-+		.end   = 0x50F1A103,
-+	}, {
-+		.flags = IORESOURCE_IRQ,
-+		.start = IRQ_NUBUS_C,
-+		.end   = IRQ_NUBUS_C,
-+	},
-+};
-+
-+static const struct resource mac_pata_baboon_rsrc[] __initconst = {
-+	{
-+		.flags = IORESOURCE_MEM,
-+		.start = 0x50F1A000,
-+		.end   = 0x50F1A037,
-+	}, {
-+		.flags = IORESOURCE_MEM,
-+		.start = 0x50F1A038,
-+		.end   = 0x50F1A03B,
-+	}, {
-+		.flags = IORESOURCE_IRQ | IORESOURCE_IRQ_SHAREABLE,
-+		.start = IRQ_BABOON_1,
-+		.end   = IRQ_BABOON_1,
-+	},
-+};
-+
-+static const struct pata_platform_info mac_pata_baboon_data __initconst = {
-+	.ioport_shift  = 2,
-+};
-+
- int __init mac_platform_init(void)
- {
- 	phys_addr_t swim_base = 0;
-@@ -1048,6 +1093,26 @@ int __init mac_platform_init(void)
- 		break;
- 	}
- 
-+	/*
-+	 * IDE device
-+	 */
-+
-+	switch (macintosh_config->ide_type) {
-+	case MAC_IDE_QUADRA:
-+		platform_device_register_simple("mac_ide", -1,
-+			mac_ide_quadra_rsrc, ARRAY_SIZE(mac_ide_quadra_rsrc));
-+		break;
-+	case MAC_IDE_PB:
-+		platform_device_register_simple("mac_ide", -1,
-+			mac_ide_pb_rsrc, ARRAY_SIZE(mac_ide_pb_rsrc));
-+		break;
-+	case MAC_IDE_BABOON:
-+		platform_device_register_resndata(NULL, "pata_platform", -1,
-+			mac_pata_baboon_rsrc, ARRAY_SIZE(mac_pata_baboon_rsrc),
-+			&mac_pata_baboon_data, sizeof(mac_pata_baboon_data));
-+		break;
-+	}
-+
- 	/*
- 	 * Ethernet device
- 	 */
-diff --git a/drivers/ide/macide.c b/drivers/ide/macide.c
-index 3c6bb8599303b..e16877ce719e9 100644
---- a/drivers/ide/macide.c
-+++ b/drivers/ide/macide.c
-@@ -18,10 +18,11 @@
- #include <linux/delay.h>
- #include <linux/ide.h>
- #include <linux/module.h>
-+#include <linux/platform_device.h>
- 
- #include <asm/macintosh.h>
--#include <asm/macints.h>
--#include <asm/mac_baboon.h>
-+
-+#define DRV_NAME "mac_ide"
- 
- #define IDE_BASE 0x50F1A000	/* Base address of IDE controller */
- 
-@@ -109,42 +110,65 @@ static const char *mac_ide_name[] =
-  * Probe for a Macintosh IDE interface
-  */
- 
--static int __init macide_init(void)
-+static int mac_ide_probe(struct platform_device *pdev)
- {
--	unsigned long base;
--	int irq;
-+	struct resource *mem, *irq;
- 	struct ide_hw hw, *hws[] = { &hw };
- 	struct ide_port_info d = macide_port_info;
-+	struct ide_host *host;
-+	int rc;
- 
- 	if (!MACH_IS_MAC)
- 		return -ENODEV;
- 
--	switch (macintosh_config->ide_type) {
--	case MAC_IDE_QUADRA:
--		base = IDE_BASE;
--		irq = IRQ_NUBUS_F;
--		break;
--	case MAC_IDE_PB:
--		base = IDE_BASE;
--		irq = IRQ_NUBUS_C;
--		break;
--	case MAC_IDE_BABOON:
--		base = BABOON_BASE;
--		d.port_ops = NULL;
--		irq = IRQ_BABOON_1;
--		break;
--	default:
-+	mem = platform_get_resource(pdev, IORESOURCE_MEM, 0);
-+	if (!mem)
-+		return -ENODEV;
-+
-+	irq = platform_get_resource(pdev, IORESOURCE_IRQ, 0);
-+	if (!irq)
- 		return -ENODEV;
-+
-+	if (!devm_request_mem_region(&pdev->dev, mem->start,
-+				     resource_size(mem), DRV_NAME)) {
-+		dev_err(&pdev->dev, "resources busy\n");
-+		return -EBUSY;
- 	}
- 
- 	printk(KERN_INFO "ide: Macintosh %s IDE controller\n",
- 			 mac_ide_name[macintosh_config->ide_type - 1]);
- 
--	macide_setup_ports(&hw, base, irq);
-+	macide_setup_ports(&hw, mem->start, irq->start);
-+
-+	rc = ide_host_add(&d, hws, 1, &host);
-+	if (rc)
-+		goto release_mem;
-+
-+	platform_set_drvdata(pdev, host);
-+	return 0;
-+
-+release_mem:
-+	release_mem_region(mem->start, resource_size(mem));
-+	return rc;
-+}
-+
-+static int mac_ide_remove(struct platform_device *pdev)
-+{
-+	struct ide_host *host = dev_get_drvdata(&pdev->dev);
- 
--	return ide_host_add(&d, hws, 1, NULL);
-+	ide_host_remove(host);
-+	return 0;
+-	return _do_fork(&args);
++	return kernel_clone(&args);
  }
  
--module_init(macide_init);
-+static struct platform_driver mac_ide_driver = {
-+	.driver = {
-+		.name = DRV_NAME,
-+	},
-+	.probe  = mac_ide_probe,
-+	.remove = mac_ide_remove,
-+};
-+
-+module_platform_driver(mac_ide_driver);
- 
-+MODULE_ALIAS("platform:" DRV_NAME);
- MODULE_LICENSE("GPL");
+ static void
 -- 
-2.26.2
+2.28.0
 
