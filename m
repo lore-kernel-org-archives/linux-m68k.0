@@ -4,27 +4,27 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-12.7 required=3.0 tests=BAYES_00,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=unavailable
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D5988C433E1
-	for <linux-m68k@archiver.kernel.org>; Wed, 19 Aug 2020 10:49:57 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 039AAC433DF
+	for <linux-m68k@archiver.kernel.org>; Wed, 19 Aug 2020 10:50:07 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id B6250206B5
-	for <linux-m68k@archiver.kernel.org>; Wed, 19 Aug 2020 10:49:57 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id DDAD1206B5
+	for <linux-m68k@archiver.kernel.org>; Wed, 19 Aug 2020 10:50:06 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728139AbgHSKtk (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Wed, 19 Aug 2020 06:49:40 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:53992 "EHLO
+        id S1728176AbgHSKuA (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Wed, 19 Aug 2020 06:50:00 -0400
+Received: from youngberry.canonical.com ([91.189.89.112]:53981 "EHLO
         youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727877AbgHSKrf (ORCPT
+        with ESMTP id S1727827AbgHSKrc (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Wed, 19 Aug 2020 06:47:35 -0400
+        Wed, 19 Aug 2020 06:47:32 -0400
 Received: from ip5f5af70b.dynamic.kabel-deutschland.de ([95.90.247.11] helo=wittgenstein.fritz.box)
         by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
         (Exim 4.86_2)
         (envelope-from <christian.brauner@ubuntu.com>)
-        id 1k8Lcz-0006IE-7a; Wed, 19 Aug 2020 10:47:33 +0000
+        id 1k8Lcv-0006IE-4i; Wed, 19 Aug 2020 10:47:29 +0000
 From:   Christian Brauner <christian.brauner@ubuntu.com>
 To:     linux-arch@vger.kernel.org, linux-kernel@vger.kernel.org
 Cc:     Jonathan Corbet <corbet@lwn.net>,
@@ -57,9 +57,9 @@ Cc:     Jonathan Corbet <corbet@lwn.net>,
         Christoph Hewllig <hch@infradead.org>,
         Matthew Wilcox <willy@infradead.org>,
         Christian Brauner <christian.brauner@ubuntu.com>
-Subject: [PATCH v2 07/11] x86: switch to kernel_clone()
-Date:   Wed, 19 Aug 2020 12:46:51 +0200
-Message-Id: <20200819104655.436656-8-christian.brauner@ubuntu.com>
+Subject: [PATCH v2 04/11] m68k: switch to kernel_clone()
+Date:   Wed, 19 Aug 2020 12:46:48 +0200
+Message-Id: <20200819104655.436656-5-christian.brauner@ubuntu.com>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200819104655.436656-1-christian.brauner@ubuntu.com>
 References: <20200819104655.436656-1-christian.brauner@ubuntu.com>
@@ -73,30 +73,45 @@ X-Mailing-List: linux-m68k@vger.kernel.org
 The old _do_fork() helper is removed in favor of the new kernel_clone() helper.
 The latter adheres to naming conventions for kernel internal syscall helpers.
 
-Cc: Thomas Gleixner <tglx@linutronix.de>
-Cc: Ingo Molnar <mingo@redhat.com>
-Cc: Borislav Petkov <bp@alien8.de>
-Cc: x86@kernel.org
+Acked-by: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: Kars de Jong <jongk@linux-m68k.org>
+Cc: linux-m68k@lists.linux-m68k.org
 Signed-off-by: Christian Brauner <christian.brauner@ubuntu.com>
 ---
 /* v2 */
 unchanged
 ---
- arch/x86/kernel/sys_ia32.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ arch/m68k/kernel/process.c | 10 +++++-----
+ 1 file changed, 5 insertions(+), 5 deletions(-)
 
-diff --git a/arch/x86/kernel/sys_ia32.c b/arch/x86/kernel/sys_ia32.c
-index 720cde885042..6cf65397d225 100644
---- a/arch/x86/kernel/sys_ia32.c
-+++ b/arch/x86/kernel/sys_ia32.c
-@@ -251,6 +251,6 @@ COMPAT_SYSCALL_DEFINE5(ia32_clone, unsigned long, clone_flags,
- 		.tls		= tls_val,
+diff --git a/arch/m68k/kernel/process.c b/arch/m68k/kernel/process.c
+index 6492a2c54dbc..08359a6e058f 100644
+--- a/arch/m68k/kernel/process.c
++++ b/arch/m68k/kernel/process.c
+@@ -107,10 +107,10 @@ void flush_thread(void)
+  * on top of pt_regs, which means that sys_clone() arguments would be
+  * buried.  We could, of course, copy them, but it's too costly for no
+  * good reason - generic clone() would have to copy them *again* for
+- * _do_fork() anyway.  So in this case it's actually better to pass pt_regs *
+- * and extract arguments for _do_fork() from there.  Eventually we might
+- * go for calling _do_fork() directly from the wrapper, but only after we
+- * are finished with _do_fork() prototype conversion.
++ * kernel_clone() anyway.  So in this case it's actually better to pass pt_regs *
++ * and extract arguments for kernel_clone() from there.  Eventually we might
++ * go for calling kernel_clone() directly from the wrapper, but only after we
++ * are finished with kernel_clone() prototype conversion.
+  */
+ asmlinkage int m68k_clone(struct pt_regs *regs)
+ {
+@@ -125,7 +125,7 @@ asmlinkage int m68k_clone(struct pt_regs *regs)
+ 		.tls		= regs->d5,
  	};
  
 -	return _do_fork(&args);
 +	return kernel_clone(&args);
  }
- #endif /* CONFIG_IA32_EMULATION */
+ 
+ /*
 -- 
 2.28.0
 
