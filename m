@@ -2,217 +2,103 @@ Return-Path: <SRS0=k2IZ=B5=vger.kernel.org=linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.8 required=3.0 tests=BAYES_00,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-3.5 required=3.0 tests=BAYES_00,DKIM_INVALID,
+	DKIM_SIGNED,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 20DFFC433DF
-	for <linux-m68k@archiver.kernel.org>; Wed, 19 Aug 2020 00:49:21 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8FE0DC433E1
+	for <linux-m68k@archiver.kernel.org>; Wed, 19 Aug 2020 07:44:25 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 0297F20657
-	for <linux-m68k@archiver.kernel.org>; Wed, 19 Aug 2020 00:49:21 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 64D7A20738
+	for <linux-m68k@archiver.kernel.org>; Wed, 19 Aug 2020 07:44:25 +0000 (UTC)
+Authentication-Results: mail.kernel.org;
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="GSbjxZPV"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726600AbgHSAtU (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Tue, 18 Aug 2020 20:49:20 -0400
-Received: from mga11.intel.com ([192.55.52.93]:24166 "EHLO mga11.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726410AbgHSAtS (ORCPT <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Tue, 18 Aug 2020 20:49:18 -0400
-IronPort-SDR: 0JMzLgJC2DvzBiCLHx84bkJ7ZnjYNtSbePA46FXrwsKFBqAjeUKvwwYUV489cSikrbtxAFUUnE
- Ld6ti0yJqbDA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9717"; a="152646905"
-X-IronPort-AV: E=Sophos;i="5.76,329,1592895600"; 
-   d="scan'208";a="152646905"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Aug 2020 17:49:09 -0700
-IronPort-SDR: A2sTAf0oGuCwu+2a5zR7ipWVAgt8fTBdEGxvLFyZqIjXvG28coFkh/iiAYimK6a1HyUkXbRwnd
- xSmfBPXmsNgw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.76,329,1592895600"; 
-   d="scan'208";a="400662686"
-Received: from lkp-server02.sh.intel.com (HELO 2f0d8b563e65) ([10.239.97.151])
-  by fmsmga001.fm.intel.com with ESMTP; 18 Aug 2020 17:49:08 -0700
-Received: from kbuild by 2f0d8b563e65 with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1k8CHs-0001Vn-5Z; Wed, 19 Aug 2020 00:49:08 +0000
-Date:   Wed, 19 Aug 2020 08:48:07 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     linux-m68k@lists.linux-m68k.org
-Subject: [m68k:m68k-queue] BUILD SUCCESS
- b82e743d09fba36330735bec28733b0682f8ed4c
-Message-ID: <5f3c76c7.mGDnO7ons5szbp/a%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+        id S1726841AbgHSHoW (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Wed, 19 Aug 2020 03:44:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44048 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726187AbgHSHoU (ORCPT
+        <rfc822;linux-m68k@lists.linux-m68k.org>);
+        Wed, 19 Aug 2020 03:44:20 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 97393C061389;
+        Wed, 19 Aug 2020 00:44:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=J4VLIDE+jMck3vXa9rHkkbq93VX4dA7h042aAl3zgek=; b=GSbjxZPVDWY9S2GcrIk8B4gIZK
+        j92/xIYVxtuoQcdVQihAza5CL3O+d/4dVnYCOtqcw95X6MI1MCZZSH6hwnnNv59Rv6M/0DxxfI85Z
+        UetDLZWdWsUi0gxQgyvX8fGCj5GmxgkNMNSwgrePOzzo081IyNCOy8gMqm/f6tWnpCOgk7R6crldh
+        OlQrG9icVQmb7q55F07IEfNtZO5gIevhdDF5gCkOdzt7019673F7x8Bn8IOD8fbZrRBUSRYhjoZpr
+        mvZYw/yBuHHrZ3B/X+3SaSMawrw2fW9khhY7o7saT7DmXZNOoFnK3Bqb3KZy6UsHyVp/CwyDsiZsC
+        KS6aDo8Q==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1k8Il4-0004Sk-Ty; Wed, 19 Aug 2020 07:43:44 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 033743003E1;
+        Wed, 19 Aug 2020 09:43:40 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id D771C21A87267; Wed, 19 Aug 2020 09:43:40 +0200 (CEST)
+Date:   Wed, 19 Aug 2020 09:43:40 +0200
+From:   peterz@infradead.org
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     Christian Brauner <christian.brauner@ubuntu.com>,
+        Christoph Hewllig <hch@infradead.org>,
+        linux-kernel@vger.kernel.org,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        linux-arch@vger.kernel.org, Jonathan Corbet <corbet@lwn.net>,
+        Yoshinori Sato <ysato@users.sourceforge.jp>,
+        Tony Luck <tony.luck@intel.com>,
+        Fenghua Yu <fenghua.yu@intel.com>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Ley Foon Tan <ley.foon.tan@intel.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, Arnd Bergmann <arnd@arndb.de>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Stafford Horne <shorne@gmail.com>,
+        Kars de Jong <jongk@linux-m68k.org>,
+        Kees Cook <keescook@chromium.org>,
+        Greentime Hu <green.hu@gmail.com>,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        Alexandre Chartre <alexandre.chartre@oracle.com>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Tom Zanussi <zanussi@kernel.org>,
+        Xiao Yang <yangx.jy@cn.fujitsu.com>, linux-doc@vger.kernel.org,
+        uclinux-h8-devel@lists.sourceforge.jp, linux-ia64@vger.kernel.org,
+        linux-m68k@lists.linux-m68k.org, sparclinux@vger.kernel.org,
+        kgdb-bugreport@lists.sourceforge.net,
+        linux-kselftest@vger.kernel.org
+Subject: Re: [PATCH 00/11] Introduce kernel_clone(), kill _do_fork()
+Message-ID: <20200819074340.GW2674@hirez.programming.kicks-ass.net>
+References: <20200818173411.404104-1-christian.brauner@ubuntu.com>
+ <20200818174447.GV17456@casper.infradead.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+In-Reply-To: <20200818174447.GV17456@casper.infradead.org>
 Sender: linux-m68k-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/geert/linux-m68k.git  m68k-queue
-branch HEAD: b82e743d09fba36330735bec28733b0682f8ed4c  fat: Use correct logical sector size for Atari GEMDOS FAT
+On Tue, Aug 18, 2020 at 06:44:47PM +0100, Matthew Wilcox wrote:
+> On Tue, Aug 18, 2020 at 07:34:00PM +0200, Christian Brauner wrote:
+> > The only remaining function callable outside of kernel/fork.c is
+> > _do_fork(). It doesn't really follow the naming of kernel-internal
+> > syscall helpers as Christoph righly pointed out. Switch all callers and
+> > references to kernel_clone() and remove _do_fork() once and for all.
+> 
+> My only concern is around return type.  long, int, pid_t ... can we
+> choose one and stick to it?  pid_t is probably the right return type
+> within the kernel, despite the return type of clone3().  It'll save us
+> some work if we ever go through the hassle of growing pid_t beyond 31-bit.
 
-elapsed time: 2067m
-
-configs tested: 147
-configs skipped: 12
-
-The following configs have been built successfully.
-More configs may be tested in the coming days.
-
-arm                                 defconfig
-arm64                            allyesconfig
-arm64                               defconfig
-arm                              allyesconfig
-arm                              allmodconfig
-nios2                            alldefconfig
-sh                          polaris_defconfig
-powerpc                       ppc64_defconfig
-sh                           se7343_defconfig
-mips                   sb1250_swarm_defconfig
-sh                        apsh4ad0a_defconfig
-arm                            hisi_defconfig
-ia64                             allyesconfig
-riscv                    nommu_k210_defconfig
-powerpc                       holly_defconfig
-arm                          collie_defconfig
-m68k                        stmark2_defconfig
-powerpc                         ps3_defconfig
-h8300                     edosk2674_defconfig
-sh                          urquell_defconfig
-ia64                        generic_defconfig
-ia64                          tiger_defconfig
-csky                                defconfig
-sh                               allmodconfig
-mips                           rs90_defconfig
-powerpc                      ppc64e_defconfig
-sh                         ecovec24_defconfig
-m68k                          amiga_defconfig
-ia64                             alldefconfig
-powerpc                    adder875_defconfig
-mips                          rb532_defconfig
-powerpc                     mpc83xx_defconfig
-mips                      malta_kvm_defconfig
-sparc                            alldefconfig
-mips                       capcella_defconfig
-powerpc                      ppc6xx_defconfig
-arm                             mxs_defconfig
-mips                        omega2p_defconfig
-mips                       rbtx49xx_defconfig
-mips                         cobalt_defconfig
-mips                malta_kvm_guest_defconfig
-mips                malta_qemu_32r6_defconfig
-arm                          pcm027_defconfig
-ia64                            zx1_defconfig
-m68k                          hp300_defconfig
-arm                        clps711x_defconfig
-mips                      pic32mzda_defconfig
-mips                      maltasmvp_defconfig
-arm                           sunxi_defconfig
-powerpc                      tqm8xx_defconfig
-mips                        nlm_xlr_defconfig
-sh                          lboxre2_defconfig
-arm                      footbridge_defconfig
-microblaze                      mmu_defconfig
-arm                        oxnas_v6_defconfig
-sh                          kfr2r09_defconfig
-sh                          sdk7786_defconfig
-arm                           spitz_defconfig
-powerpc                        cell_defconfig
-powerpc                      ppc44x_defconfig
-m68k                       m5208evb_defconfig
-arm                   milbeaut_m10v_defconfig
-c6x                        evmc6472_defconfig
-sh                           sh2007_defconfig
-mips                        nlm_xlp_defconfig
-ia64                             allmodconfig
-ia64                                defconfig
-m68k                             allmodconfig
-m68k                                defconfig
-m68k                             allyesconfig
-nios2                               defconfig
-arc                              allyesconfig
-nds32                             allnoconfig
-c6x                              allyesconfig
-nds32                               defconfig
-nios2                            allyesconfig
-alpha                               defconfig
-alpha                            allyesconfig
-xtensa                           allyesconfig
-h8300                            allyesconfig
-arc                                 defconfig
-parisc                              defconfig
-s390                             allyesconfig
-parisc                           allyesconfig
-s390                                defconfig
-i386                             allyesconfig
-sparc                            allyesconfig
-sparc                               defconfig
-i386                                defconfig
-mips                             allyesconfig
-mips                             allmodconfig
-powerpc                             defconfig
-powerpc                          allyesconfig
-powerpc                          allmodconfig
-powerpc                           allnoconfig
-i386                 randconfig-a005-20200817
-i386                 randconfig-a001-20200817
-i386                 randconfig-a002-20200817
-i386                 randconfig-a003-20200817
-i386                 randconfig-a006-20200817
-i386                 randconfig-a004-20200817
-i386                 randconfig-a005-20200818
-i386                 randconfig-a002-20200818
-i386                 randconfig-a001-20200818
-i386                 randconfig-a006-20200818
-i386                 randconfig-a003-20200818
-i386                 randconfig-a004-20200818
-x86_64               randconfig-a013-20200818
-x86_64               randconfig-a016-20200818
-x86_64               randconfig-a012-20200818
-x86_64               randconfig-a011-20200818
-x86_64               randconfig-a014-20200818
-x86_64               randconfig-a015-20200818
-x86_64               randconfig-a006-20200817
-x86_64               randconfig-a001-20200817
-x86_64               randconfig-a005-20200817
-x86_64               randconfig-a003-20200817
-x86_64               randconfig-a002-20200817
-x86_64               randconfig-a004-20200817
-i386                 randconfig-a016-20200817
-i386                 randconfig-a011-20200817
-i386                 randconfig-a013-20200817
-i386                 randconfig-a015-20200817
-i386                 randconfig-a014-20200817
-i386                 randconfig-a012-20200817
-i386                 randconfig-a016-20200818
-i386                 randconfig-a011-20200818
-i386                 randconfig-a015-20200818
-i386                 randconfig-a013-20200818
-i386                 randconfig-a012-20200818
-i386                 randconfig-a014-20200818
-x86_64               randconfig-a006-20200819
-x86_64               randconfig-a001-20200819
-x86_64               randconfig-a003-20200819
-x86_64               randconfig-a005-20200819
-x86_64               randconfig-a004-20200819
-x86_64               randconfig-a002-20200819
-riscv                            allyesconfig
-riscv                             allnoconfig
-riscv                               defconfig
-riscv                            allmodconfig
-x86_64                                   rhel
-x86_64                           allyesconfig
-x86_64                    rhel-7.6-kselftests
-x86_64                              defconfig
-x86_64                               rhel-8.3
-x86_64                                  kexec
-
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+We have at least the futex ABI restricting PID space to 30 bits.
