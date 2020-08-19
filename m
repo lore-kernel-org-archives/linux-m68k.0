@@ -2,44 +2,37 @@ Return-Path: <SRS0=k2IZ=B5=vger.kernel.org=linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.5 required=3.0 tests=BAYES_00,DKIM_INVALID,
-	DKIM_SIGNED,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-3.7 required=3.0 tests=BAYES_00,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 0E43AC433E1
-	for <linux-m68k@archiver.kernel.org>; Wed, 19 Aug 2020 11:19:16 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id F1A94C433DF
+	for <linux-m68k@archiver.kernel.org>; Wed, 19 Aug 2020 13:36:53 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id DBFB4206DA
-	for <linux-m68k@archiver.kernel.org>; Wed, 19 Aug 2020 11:19:15 +0000 (UTC)
-Authentication-Results: mail.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="PqH95VsK"
+	by mail.kernel.org (Postfix) with ESMTP id D9DCA204EC
+	for <linux-m68k@archiver.kernel.org>; Wed, 19 Aug 2020 13:36:53 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728040AbgHSLTK (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Wed, 19 Aug 2020 07:19:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48940 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727807AbgHSLTB (ORCPT
+        id S1728684AbgHSNgp (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Wed, 19 Aug 2020 09:36:45 -0400
+Received: from out02.mta.xmission.com ([166.70.13.232]:58478 "EHLO
+        out02.mta.xmission.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728582AbgHSNgn (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Wed, 19 Aug 2020 07:19:01 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 13242C061757;
-        Wed, 19 Aug 2020 04:19:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=S3ViV7VOxKoiTfVgrvw4ZTEB3xmhm4rVfkGYugjh9Xc=; b=PqH95VsKVPNJwI5a/Er+qYg1YE
-        2cP0Ceuh2EDSbznFUi6KCJU7M7Tnu1YxtinWU5IogRZ5X49Svh2ING9dG/X8+rguc0s8CNSZJSVjz
-        sraZ7CGNbsDhWzRg8+UC6yH+tcPq9EXMZaDIgh2vnz9pMYTUAJGAn4dbA7FDtXtyG0dgROnOxjecF
-        HOVDUZCBr76yq9h8gCFemMaMo2+mPHghmOxYz2YkVf+ANSqWMa0srF34jYala3pRYzPD19EoNJfdq
-        Ood3xlpgoQ1+iBy6EacDpMR9Obz0ZXPuj8jDYzWyRwFWRGHSlTe43zBy51TCIlPCVr09ikGje2dIK
-        +jtFq6ig==;
-Received: from willy by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1k8M7H-00015G-Od; Wed, 19 Aug 2020 11:18:51 +0000
-Date:   Wed, 19 Aug 2020 12:18:51 +0100
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Christian Brauner <christian.brauner@ubuntu.com>
-Cc:     peterz@infradead.org, Christoph Hewllig <hch@infradead.org>,
+        Wed, 19 Aug 2020 09:36:43 -0400
+Received: from in02.mta.xmission.com ([166.70.13.52])
+        by out02.mta.xmission.com with esmtps  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.93)
+        (envelope-from <ebiederm@xmission.com>)
+        id 1k8OGa-0050Ds-A0; Wed, 19 Aug 2020 07:36:36 -0600
+Received: from ip68-227-160-95.om.om.cox.net ([68.227.160.95] helo=x220.xmission.com)
+        by in02.mta.xmission.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.87)
+        (envelope-from <ebiederm@xmission.com>)
+        id 1k8OGZ-00033s-EG; Wed, 19 Aug 2020 07:36:36 -0600
+From:   ebiederm@xmission.com (Eric W. Biederman)
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     Christian Brauner <christian.brauner@ubuntu.com>,
+        peterz@infradead.org, Christoph Hewllig <hch@infradead.org>,
         linux-kernel@vger.kernel.org,
         Linus Torvalds <torvalds@linux-foundation.org>,
         linux-arch@vger.kernel.org, Jonathan Corbet <corbet@lwn.net>,
@@ -57,7 +50,6 @@ Cc:     peterz@infradead.org, Christoph Hewllig <hch@infradead.org>,
         Kars de Jong <jongk@linux-m68k.org>,
         Kees Cook <keescook@chromium.org>,
         Greentime Hu <green.hu@gmail.com>,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
         Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
         Alexandre Chartre <alexandre.chartre@oracle.com>,
         Masami Hiramatsu <mhiramat@kernel.org>,
@@ -67,49 +59,72 @@ Cc:     peterz@infradead.org, Christoph Hewllig <hch@infradead.org>,
         linux-m68k@lists.linux-m68k.org, sparclinux@vger.kernel.org,
         kgdb-bugreport@lists.sourceforge.net,
         linux-kselftest@vger.kernel.org
-Subject: Re: [PATCH 00/11] Introduce kernel_clone(), kill _do_fork()
-Message-ID: <20200819111851.GY17456@casper.infradead.org>
 References: <20200818173411.404104-1-christian.brauner@ubuntu.com>
- <20200818174447.GV17456@casper.infradead.org>
- <20200819074340.GW2674@hirez.programming.kicks-ass.net>
- <20200819084556.im5zfpm2iquzvzws@wittgenstein>
+        <20200818174447.GV17456@casper.infradead.org>
+        <20200819074340.GW2674@hirez.programming.kicks-ass.net>
+        <20200819084556.im5zfpm2iquzvzws@wittgenstein>
+        <20200819111851.GY17456@casper.infradead.org>
+Date:   Wed, 19 Aug 2020 08:32:59 -0500
+In-Reply-To: <20200819111851.GY17456@casper.infradead.org> (Matthew Wilcox's
+        message of "Wed, 19 Aug 2020 12:18:51 +0100")
+Message-ID: <87a6yq222c.fsf@x220.int.ebiederm.org>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200819084556.im5zfpm2iquzvzws@wittgenstein>
+Content-Type: text/plain
+X-XM-SPF: eid=1k8OGZ-00033s-EG;;;mid=<87a6yq222c.fsf@x220.int.ebiederm.org>;;;hst=in02.mta.xmission.com;;;ip=68.227.160.95;;;frm=ebiederm@xmission.com;;;spf=neutral
+X-XM-AID: U2FsdGVkX1/396JhySI4Q4/s/q4z9fmXeBaBg1QpuKc=
+X-SA-Exim-Connect-IP: 68.227.160.95
+X-SA-Exim-Mail-From: ebiederm@xmission.com
+Subject: Re: [PATCH 00/11] Introduce kernel_clone(), kill _do_fork()
+X-SA-Exim-Version: 4.2.1 (built Thu, 05 May 2016 13:38:54 -0600)
+X-SA-Exim-Scanned: Yes (on in02.mta.xmission.com)
 Sender: linux-m68k-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-On Wed, Aug 19, 2020 at 10:45:56AM +0200, Christian Brauner wrote:
-> On Wed, Aug 19, 2020 at 09:43:40AM +0200, peterz@infradead.org wrote:
-> > On Tue, Aug 18, 2020 at 06:44:47PM +0100, Matthew Wilcox wrote:
-> > > On Tue, Aug 18, 2020 at 07:34:00PM +0200, Christian Brauner wrote:
-> > > > The only remaining function callable outside of kernel/fork.c is
-> > > > _do_fork(). It doesn't really follow the naming of kernel-internal
-> > > > syscall helpers as Christoph righly pointed out. Switch all callers and
-> > > > references to kernel_clone() and remove _do_fork() once and for all.
-> > > 
-> > > My only concern is around return type.  long, int, pid_t ... can we
-> > > choose one and stick to it?  pid_t is probably the right return type
-> > > within the kernel, despite the return type of clone3().  It'll save us
-> > > some work if we ever go through the hassle of growing pid_t beyond 31-bit.
-> > 
-> > We have at least the futex ABI restricting PID space to 30 bits.
-> 
-> Ok, looking into kernel/futex.c I see 
-> 
-> pid_t pid = uval & FUTEX_TID_MASK;
-> 
-> which is probably what this referes to and /proc/sys/kernel/threads-max
-> is restricted to FUTEX_TID_MASK.
-> 
-> Afaict, that doesn't block switching kernel_clone() to return pid_t. It
-> can't create anything > FUTEX_TID_MASK anyway without yelling EAGAIN at
-> userspace. But it means that _if_ we were to change the size of pid_t
-> we'd likely need a new futex API. 
+Matthew Wilcox <willy@infradead.org> writes:
 
-Yes, there would be a lot of work to do to increase the size of pid_t.
-I'd just like to not do anything to make that harder _now_.  Stick to
-using pid_t within the kernel.
+> On Wed, Aug 19, 2020 at 10:45:56AM +0200, Christian Brauner wrote:
+>> On Wed, Aug 19, 2020 at 09:43:40AM +0200, peterz@infradead.org wrote:
+>> > On Tue, Aug 18, 2020 at 06:44:47PM +0100, Matthew Wilcox wrote:
+>> > > On Tue, Aug 18, 2020 at 07:34:00PM +0200, Christian Brauner wrote:
+>> > > > The only remaining function callable outside of kernel/fork.c is
+>> > > > _do_fork(). It doesn't really follow the naming of kernel-internal
+>> > > > syscall helpers as Christoph righly pointed out. Switch all callers and
+>> > > > references to kernel_clone() and remove _do_fork() once and for all.
+>> > > 
+>> > > My only concern is around return type.  long, int, pid_t ... can we
+>> > > choose one and stick to it?  pid_t is probably the right return type
+>> > > within the kernel, despite the return type of clone3().  It'll save us
+>> > > some work if we ever go through the hassle of growing pid_t beyond 31-bit.
+>> > 
+>> > We have at least the futex ABI restricting PID space to 30 bits.
+>> 
+>> Ok, looking into kernel/futex.c I see 
+>> 
+>> pid_t pid = uval & FUTEX_TID_MASK;
+>> 
+>> which is probably what this referes to and /proc/sys/kernel/threads-max
+>> is restricted to FUTEX_TID_MASK.
+>> 
+>> Afaict, that doesn't block switching kernel_clone() to return pid_t. It
+>> can't create anything > FUTEX_TID_MASK anyway without yelling EAGAIN at
+>> userspace. But it means that _if_ we were to change the size of pid_t
+>> we'd likely need a new futex API. 
+>
+> Yes, there would be a lot of work to do to increase the size of pid_t.
+> I'd just like to not do anything to make that harder _now_.  Stick to
+> using pid_t within the kernel.
+
+Just so people are aware.  If you look in include/linux/threads.h you
+can see that the maximum value of PID_MAX_LIMIT limits pids to 22 bits.
+
+Further the design decisions of pids keeps us densly using pids.  So I
+expect it will be a while before we even come close to using 30 bits of
+pid space.
+
+At the same time I do agree that it makes sense to use a consistent type
+in the kernel to make it easier to read and update the code.
+
+Eric
