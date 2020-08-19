@@ -2,28 +2,29 @@ Return-Path: <SRS0=k2IZ=B5=vger.kernel.org=linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-6.7 required=3.0 tests=BAYES_00,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	URIBL_BLOCKED,USER_AGENT_GIT autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-12.7 required=3.0 tests=BAYES_00,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=unavailable
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 69566C433E3
-	for <linux-m68k@archiver.kernel.org>; Wed, 19 Aug 2020 10:48:59 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id F34C1C433DF
+	for <linux-m68k@archiver.kernel.org>; Wed, 19 Aug 2020 10:49:19 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 4E4A9206B5
-	for <linux-m68k@archiver.kernel.org>; Wed, 19 Aug 2020 10:48:59 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id D040B206B5
+	for <linux-m68k@archiver.kernel.org>; Wed, 19 Aug 2020 10:49:19 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727926AbgHSKrj (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Wed, 19 Aug 2020 06:47:39 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:53968 "EHLO
+        id S1728092AbgHSKs7 (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Wed, 19 Aug 2020 06:48:59 -0400
+Received: from youngberry.canonical.com ([91.189.89.112]:54011 "EHLO
         youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726919AbgHSKra (ORCPT
+        with ESMTP id S1727888AbgHSKrk (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Wed, 19 Aug 2020 06:47:30 -0400
+        Wed, 19 Aug 2020 06:47:40 -0400
 Received: from ip5f5af70b.dynamic.kabel-deutschland.de ([95.90.247.11] helo=wittgenstein.fritz.box)
         by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
         (Exim 4.86_2)
         (envelope-from <christian.brauner@ubuntu.com>)
-        id 1k8Lco-0006IE-NK; Wed, 19 Aug 2020 10:47:22 +0000
+        id 1k8Ld1-0006IE-W5; Wed, 19 Aug 2020 10:47:36 +0000
 From:   Christian Brauner <christian.brauner@ubuntu.com>
 To:     linux-arch@vger.kernel.org, linux-kernel@vger.kernel.org
 Cc:     Jonathan Corbet <corbet@lwn.net>,
@@ -55,11 +56,17 @@ Cc:     Jonathan Corbet <corbet@lwn.net>,
         Linus Torvalds <torvalds@linux-foundation.org>,
         Christoph Hewllig <hch@infradead.org>,
         Matthew Wilcox <willy@infradead.org>,
-        Christian Brauner <christian.brauner@ubuntu.com>
-Subject: [PATCH v2 00/11] Introduce kernel_clone(), kill _do_fork()
-Date:   Wed, 19 Aug 2020 12:46:44 +0200
-Message-Id: <20200819104655.436656-1-christian.brauner@ubuntu.com>
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        Douglas Anderson <dianders@chromium.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Daniel Thompson <daniel.thompson@linaro.org>,
+        Jason Wessel <jason.wessel@windriver.com>
+Subject: [PATCH v2 09/11] kgdbts: switch to kernel_clone()
+Date:   Wed, 19 Aug 2020 12:46:53 +0200
+Message-Id: <20200819104655.436656-10-christian.brauner@ubuntu.com>
 X-Mailer: git-send-email 2.28.0
+In-Reply-To: <20200819104655.436656-1-christian.brauner@ubuntu.com>
+References: <20200819104655.436656-1-christian.brauner@ubuntu.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Sender: linux-m68k-owner@vger.kernel.org
@@ -67,78 +74,158 @@ Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-Hey everyone,
+The old _do_fork() helper is removed in favor of the new kernel_clone() helper.
+The latter adheres to naming conventions for kernel internal syscall helpers.
 
-This is a follow-up to the fork-related cleanup. It's based on a brief
-discussion after the initial series was merged.
-Last cycle we removed copy_thread_tls() and the associated Kconfig
-option for each architecture. Now we are only left with copy_thread().
-Part of this work was removing the old do_fork() legacy clone()-style
-calling convention in favor of the new struct kernel_clone args calling
-convention.
-The only remaining function callable outside of kernel/fork.c is
-_do_fork(). It doesn't really follow the naming of kernel-internal
-syscall helpers as Christoph righly pointed out. Switch all callers and
-references to kernel_clone() and remove _do_fork() once and for all also
-switching the return value for kernel_clone() from long to pid_t since
-that's what we use in all other places where we're dealing with process
-identifiers.
+Cc: Douglas Anderson <dianders@chromium.org>
+Cc: Arnd Bergmann <arnd@arndb.de>
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc: Daniel Thompson <daniel.thompson@linaro.org>
+Cc: Jason Wessel <jason.wessel@windriver.com>
+Cc: kgdb-bugreport@lists.sourceforge.net
+Signed-off-by: Christian Brauner <christian.brauner@ubuntu.com>
+---
+/* v2 */
+unchanged
+---
+ drivers/misc/kgdbts.c | 48 +++++++++++++++++++++----------------------
+ 1 file changed, 24 insertions(+), 24 deletions(-)
 
-For all architectures I have done a full git rebase v5.9-rc1 -x "make
--j31". There were no built failures and the changes were fairly
-mechanical.
-
-The only helpers we have left now are kernel_thread() and kernel_clone()
-where kernel_thread() just calls kernel_clone().
-
-Thanks!
-Christian
-
-Christian Brauner (11):
-  fork: introduce kernel_clone()
-  h8300: switch to kernel_clone()
-  ia64: switch to kernel_clone()
-  m68k: switch to kernel_clone()
-  nios2: switch to kernel_clone()
-  sparc: switch to kernel_clone()
-  x86: switch to kernel_clone()
-  kprobes: switch to kernel_clone()
-  kgdbts: switch to kernel_clone()
-  tracing: switch to kernel_clone()
-  sched: remove _do_fork()
-
- Documentation/trace/histogram.rst             |  4 +-
- arch/h8300/kernel/process.c                   |  2 +-
- arch/ia64/kernel/process.c                    |  4 +-
- arch/m68k/kernel/process.c                    | 10 ++--
- arch/nios2/kernel/process.c                   |  2 +-
- arch/sparc/kernel/process.c                   |  6 +--
- arch/x86/kernel/sys_ia32.c                    |  2 +-
- drivers/misc/kgdbts.c                         | 48 +++++++++----------
- include/linux/sched/task.h                    |  2 +-
- kernel/fork.c                                 | 16 +++----
- samples/kprobes/kprobe_example.c              |  6 +--
- samples/kprobes/kretprobe_example.c           |  4 +-
- .../test.d/dynevent/add_remove_kprobe.tc      |  2 +-
- .../test.d/dynevent/clear_select_events.tc    |  2 +-
- .../test.d/dynevent/generic_clear_event.tc    |  2 +-
- .../test.d/ftrace/func-filter-stacktrace.tc   |  4 +-
- .../ftrace/test.d/kprobe/add_and_remove.tc    |  2 +-
- .../ftrace/test.d/kprobe/busy_check.tc        |  2 +-
- .../ftrace/test.d/kprobe/kprobe_args.tc       |  4 +-
- .../ftrace/test.d/kprobe/kprobe_args_comm.tc  |  2 +-
- .../test.d/kprobe/kprobe_args_string.tc       |  4 +-
- .../test.d/kprobe/kprobe_args_symbol.tc       | 10 ++--
- .../ftrace/test.d/kprobe/kprobe_args_type.tc  |  2 +-
- .../ftrace/test.d/kprobe/kprobe_ftrace.tc     | 14 +++---
- .../ftrace/test.d/kprobe/kprobe_multiprobe.tc |  2 +-
- .../test.d/kprobe/kprobe_syntax_errors.tc     | 12 ++---
- .../ftrace/test.d/kprobe/kretprobe_args.tc    |  4 +-
- .../selftests/ftrace/test.d/kprobe/profile.tc |  2 +-
- 28 files changed, 88 insertions(+), 88 deletions(-)
-
-
-base-commit: 9123e3a74ec7b934a4a099e98af6a61c2f80bbf5
+diff --git a/drivers/misc/kgdbts.c b/drivers/misc/kgdbts.c
+index d5d2af4d10e6..945701bce553 100644
+--- a/drivers/misc/kgdbts.c
++++ b/drivers/misc/kgdbts.c
+@@ -33,16 +33,16 @@
+  * You can also specify optional tests:
+  * N## = Go to sleep with interrupts of for ## seconds
+  *       to test the HW NMI watchdog
+- * F## = Break at do_fork for ## iterations
++ * F## = Break at kernel_clone for ## iterations
+  * S## = Break at sys_open for ## iterations
+  * I## = Run the single step test ## iterations
+  *
+- * NOTE: that the do_fork and sys_open tests are mutually exclusive.
++ * NOTE: that the kernel_clone and sys_open tests are mutually exclusive.
+  *
+  * To invoke the kgdb test suite from boot you use a kernel start
+  * argument as follows:
+  * 	kgdbts=V1 kgdbwait
+- * Or if you wanted to perform the NMI test for 6 seconds and do_fork
++ * Or if you wanted to perform the NMI test for 6 seconds and kernel_clone
+  * test for 100 forks, you could use:
+  * 	kgdbts=V1N6F100 kgdbwait
+  *
+@@ -74,7 +74,7 @@
+  * echo kgdbts=V1S10000 > /sys/module/kgdbts/parameters/kgdbts
+  * fg # and hit control-c
+  * fg # and hit control-c
+- * ## This tests break points on do_fork
++ * ## This tests break points on kernel_clone
+  * while [ 1 ] ; do date > /dev/null ; done &
+  * while [ 1 ] ; do date > /dev/null ; done &
+  * echo kgdbts=V1F1000 > /sys/module/kgdbts/parameters/kgdbts
+@@ -209,8 +209,8 @@ static unsigned long lookup_addr(char *arg)
+ 		addr = (unsigned long)kgdbts_break_test;
+ 	else if (!strcmp(arg, "sys_open"))
+ 		addr = (unsigned long)do_sys_open;
+-	else if (!strcmp(arg, "do_fork"))
+-		addr = (unsigned long)_do_fork;
++	else if (!strcmp(arg, "kernel_clone"))
++		addr = (unsigned long)kernel_clone;
+ 	else if (!strcmp(arg, "hw_break_val"))
+ 		addr = (unsigned long)&hw_break_val;
+ 	addr = (unsigned long) dereference_function_descriptor((void *)addr);
+@@ -310,7 +310,7 @@ static int check_and_rewind_pc(char *put_str, char *arg)
+ 
+ 	if (arch_needs_sstep_emulation && sstep_addr &&
+ 	    ip + offset == sstep_addr &&
+-	    ((!strcmp(arg, "sys_open") || !strcmp(arg, "do_fork")))) {
++	    ((!strcmp(arg, "sys_open") || !strcmp(arg, "kernel_clone")))) {
+ 		/* This is special case for emulated single step */
+ 		v2printk("Emul: rewind hit single step bp\n");
+ 		restart_from_top_after_write = 1;
+@@ -596,19 +596,19 @@ static struct test_struct singlestep_break_test[] = {
+ };
+ 
+ /*
+- * Test for hitting a breakpoint at do_fork for what ever the number
++ * Test for hitting a breakpoint at kernel_clone for what ever the number
+  * of iterations required by the variable repeat_test.
+  */
+-static struct test_struct do_fork_test[] = {
++static struct test_struct do_kernel_clone_test[] = {
+ 	{ "?", "S0*" }, /* Clear break points */
+-	{ "do_fork", "OK", sw_break, }, /* set sw breakpoint */
++	{ "kernel_clone", "OK", sw_break, }, /* set sw breakpoint */
+ 	{ "c", "T0*", NULL, get_thread_id_continue }, /* Continue */
+-	{ "do_fork", "OK", sw_rem_break }, /*remove breakpoint */
+-	{ "g", "do_fork", NULL, check_and_rewind_pc }, /* check location */
++	{ "kernel_clone", "OK", sw_rem_break }, /*remove breakpoint */
++	{ "g", "kernel_clone", NULL, check_and_rewind_pc }, /* check location */
+ 	{ "write", "OK", write_regs, emul_reset }, /* Write registers */
+ 	{ "s", "T0*", emul_sstep_get, emul_sstep_put }, /* Single step */
+-	{ "g", "do_fork", NULL, check_single_step },
+-	{ "do_fork", "OK", sw_break, }, /* set sw breakpoint */
++	{ "g", "kernel_clone", NULL, check_single_step },
++	{ "kernel_clone", "OK", sw_break, }, /* set sw breakpoint */
+ 	{ "7", "T0*", skip_back_repeat_test }, /* Loop based on repeat_test */
+ 	{ "D", "OK", NULL, final_ack_set }, /* detach and unregister I/O */
+ 	{ "", "", get_cont_catch, put_cont_catch },
+@@ -935,11 +935,11 @@ static void run_bad_read_test(void)
+ 	kgdb_breakpoint();
+ }
+ 
+-static void run_do_fork_test(void)
++static void run_kernel_clone_test(void)
+ {
+ 	init_simple_test();
+-	ts.tst = do_fork_test;
+-	ts.name = "do_fork_test";
++	ts.tst = do_kernel_clone_test;
++	ts.name = "do_kernel_clone_test";
+ 	/* Activate test with initial breakpoint */
+ 	kgdb_breakpoint();
+ }
+@@ -967,7 +967,7 @@ static void run_singlestep_break_test(void)
+ static void kgdbts_run_tests(void)
+ {
+ 	char *ptr;
+-	int fork_test = 0;
++	int clone_test = 0;
+ 	int do_sys_open_test = 0;
+ 	int sstep_test = 1000;
+ 	int nmi_sleep = 0;
+@@ -981,7 +981,7 @@ static void kgdbts_run_tests(void)
+ 
+ 	ptr = strchr(config, 'F');
+ 	if (ptr)
+-		fork_test = simple_strtol(ptr + 1, NULL, 10);
++		clone_test = simple_strtol(ptr + 1, NULL, 10);
+ 	ptr = strchr(config, 'S');
+ 	if (ptr)
+ 		do_sys_open_test = simple_strtol(ptr + 1, NULL, 10);
+@@ -1025,16 +1025,16 @@ static void kgdbts_run_tests(void)
+ 		run_nmi_sleep_test(nmi_sleep);
+ 	}
+ 
+-	/* If the do_fork test is run it will be the last test that is
++	/* If the kernel_clone test is run it will be the last test that is
+ 	 * executed because a kernel thread will be spawned at the very
+ 	 * end to unregister the debug hooks.
+ 	 */
+-	if (fork_test) {
+-		repeat_test = fork_test;
+-		printk(KERN_INFO "kgdbts:RUN do_fork for %i breakpoints\n",
++	if (clone_test) {
++		repeat_test = clone_test;
++		printk(KERN_INFO "kgdbts:RUN kernel_clone for %i breakpoints\n",
+ 			repeat_test);
+ 		kthread_run(kgdbts_unreg_thread, NULL, "kgdbts_unreg");
+-		run_do_fork_test();
++		run_kernel_clone_test();
+ 		return;
+ 	}
+ 
 -- 
 2.28.0
 
