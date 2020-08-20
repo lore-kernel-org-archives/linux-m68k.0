@@ -5,50 +5,50 @@ X-Spam-Level:
 X-Spam-Status: No, score=-13.1 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,INCLUDES_PATCH,MAILING_LIST_MULTI,
 	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
-	autolearn=ham autolearn_force=no version=3.4.0
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 5F488C433E1
-	for <linux-m68k@archiver.kernel.org>; Thu, 20 Aug 2020 00:05:52 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D6044C433DF
+	for <linux-m68k@archiver.kernel.org>; Thu, 20 Aug 2020 00:06:50 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 31A2C208C7
-	for <linux-m68k@archiver.kernel.org>; Thu, 20 Aug 2020 00:05:52 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id B0656208C7
+	for <linux-m68k@archiver.kernel.org>; Thu, 20 Aug 2020 00:06:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=default; t=1597881952;
-	bh=6aHggL1RkTAzBEHv4FvfQ9+Mk3/6PJyf2EJjPbmIUQE=;
+	s=default; t=1597882010;
+	bh=cBWRrPXAZq+OpXD8QP6SeV0mkgjHFxpB8eaf/FyXlsA=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-ID:From;
-	b=iEpEP6+a3kyoAc5rEz5zdbTZhxByAyJYpc1DnwjICpMSeKOdf2UoIxsDPL1Uws8Im
-	 aullVuCBf9LEQA/QewFYn64YZTytYG3HJRI8M73ahu0lMm6prVDPTMX4U7k1A5vtJJ
-	 We6W+mQg/foeV5+1GWgCrDfxaIxOAspSab2jMBzI=
+	b=PRw8s8rq8JVSTxROQXOeoXGwLDQXe0taYUiMPpO1JtO9Hsnw47sldJEIsSSGCFBH1
+	 gXgO9FCuU0+BovTW9c/AcyCNS37klaCZ11nfOnN63jrka7oySgpa1KEi4gHvJQvK/T
+	 HJhPzVI9NYwMok5tVRY/QT83OPObLGzbxzezMez0=
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728488AbgHTAFt (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Wed, 19 Aug 2020 20:05:49 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34004 "EHLO mail.kernel.org"
+        id S1728329AbgHTAGt (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Wed, 19 Aug 2020 20:06:49 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33454 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728384AbgHTAD5 (ORCPT <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Wed, 19 Aug 2020 20:03:57 -0400
+        id S1728310AbgHTADh (ORCPT <rfc822;linux-m68k@lists.linux-m68k.org>);
+        Wed, 19 Aug 2020 20:03:37 -0400
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C297A21741;
-        Thu, 20 Aug 2020 00:03:55 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 8A8C421741;
+        Thu, 20 Aug 2020 00:03:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597881836;
-        bh=6aHggL1RkTAzBEHv4FvfQ9+Mk3/6PJyf2EJjPbmIUQE=;
+        s=default; t=1597881817;
+        bh=cBWRrPXAZq+OpXD8QP6SeV0mkgjHFxpB8eaf/FyXlsA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=v5ApYHW1lE/j6tYQiH4gQyF98ZbS47tNzxvOCZO4+CfDzag5iX0nr2dc+bCi0QJ5k
-         CPGH0P8N79+z4vihztWAT5Y1jxpIhzYyOiEFAYhrxn2J1z+sPtEaMMmnd+/3VLxOBW
-         J+EIli+Xlk2PWwMY7DCBMQSm/KDxj8l+3jM4hWSA=
+        b=DIIKamd7ji30+lUlvJA8TqK7MGzth24+F1HAMrMTACwJuPJoMyYf7DAQhWxlnn95w
+         NH7nyJ1rDJIdF559bkF+vEFMAqPdZcw61nWTbTxFlOwJaKZ/ZDADqB6nc5G+K1yGPj
+         /MUr9JqV3x1aTWykWGRfjKz5P6o++4UJZxtIiGME=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
 Cc:     Greg Ungerer <gerg@linux-m68k.org>,
         Sasha Levin <sashal@kernel.org>,
         linux-m68k@lists.linux-m68k.org
-Subject: [PATCH AUTOSEL 4.9 05/11] m68knommu: fix overwriting of bits in ColdFire V3 cache control
-Date:   Wed, 19 Aug 2020 20:03:42 -0400
-Message-Id: <20200820000348.215911-5-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 4.14 06/13] m68knommu: fix overwriting of bits in ColdFire V3 cache control
+Date:   Wed, 19 Aug 2020 20:03:21 -0400
+Message-Id: <20200820000328.215755-6-sashal@kernel.org>
 X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20200820000348.215911-1-sashal@kernel.org>
-References: <20200820000348.215911-1-sashal@kernel.org>
+In-Reply-To: <20200820000328.215755-1-sashal@kernel.org>
+References: <20200820000328.215755-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
@@ -86,10 +86,10 @@ Signed-off-by: Sasha Levin <sashal@kernel.org>
  1 file changed, 3 insertions(+), 3 deletions(-)
 
 diff --git a/arch/m68k/include/asm/m53xxacr.h b/arch/m68k/include/asm/m53xxacr.h
-index 3177ce8331d69..baee0c77b9818 100644
+index 9138a624c5c81..692f90e7fecc1 100644
 --- a/arch/m68k/include/asm/m53xxacr.h
 +++ b/arch/m68k/include/asm/m53xxacr.h
-@@ -88,9 +88,9 @@
+@@ -89,9 +89,9 @@
   * coherency though in all cases. And for copyback caches we will need
   * to push cached data as well.
   */
