@@ -1,73 +1,107 @@
-Return-Path: <SRS0=k2IZ=B5=vger.kernel.org=linux-m68k-owner@kernel.org>
+Return-Path: <SRS0=riIg=B6=vger.kernel.org=linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-6.7 required=3.0 tests=BAYES_00,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,
-	SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-13.1 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 245C3C433E1
-	for <linux-m68k@archiver.kernel.org>; Wed, 19 Aug 2020 20:02:29 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A679AC433E3
+	for <linux-m68k@archiver.kernel.org>; Thu, 20 Aug 2020 00:05:04 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id EF0D6207FF
-	for <linux-m68k@archiver.kernel.org>; Wed, 19 Aug 2020 20:02:28 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 7912722B47
+	for <linux-m68k@archiver.kernel.org>; Thu, 20 Aug 2020 00:05:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=default; t=1597881904;
+	bh=6aHggL1RkTAzBEHv4FvfQ9+Mk3/6PJyf2EJjPbmIUQE=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-ID:From;
+	b=TQ6W53IOksmXbGizoD5HFILNbZ8Oe3IcJRiVFMAUO1kNdeXWPG3dXZIji2i+euuCu
+	 8Lp1ZSs1AAR1n5uNrpzHIJnf/BQm1VV1yzGxy/NitZRev27wdMhEq8x2e1gkxEDaUl
+	 CZfYnPYV1bflbLxb0/SphxAU4yCCAv9Jh8iX/Qio=
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726707AbgHSUC2 (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Wed, 19 Aug 2020 16:02:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45564 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726617AbgHSUC1 (ORCPT
-        <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Wed, 19 Aug 2020 16:02:27 -0400
-Received: from shards.monkeyblade.net (shards.monkeyblade.net [IPv6:2620:137:e000::1:9])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8A1A1C061383
-        for <linux-m68k@lists.linux-m68k.org>; Wed, 19 Aug 2020 13:02:26 -0700 (PDT)
-Received: from localhost (unknown [IPv6:2601:601:9f00:477::3d5])
-        (using TLSv1 with cipher AES256-SHA (256/256 bits))
-        (Client did not present a certificate)
-        (Authenticated sender: davem-davemloft)
-        by shards.monkeyblade.net (Postfix) with ESMTPSA id 32B9F11E45763;
-        Wed, 19 Aug 2020 12:45:37 -0700 (PDT)
-Date:   Wed, 19 Aug 2020 13:02:22 -0700 (PDT)
-Message-Id: <20200819.130222.1915954815957844234.davem@davemloft.net>
-To:     christian.brauner@ubuntu.com
-Cc:     linux-arch@vger.kernel.org, linux-kernel@vger.kernel.org,
-        corbet@lwn.net, ysato@users.sourceforge.jp, tony.luck@intel.com,
-        fenghua.yu@intel.com, geert@linux-m68k.org, ley.foon.tan@intel.com,
-        tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, x86@kernel.org,
-        arnd@arndb.de, rostedt@goodmis.org, shorne@gmail.com,
-        peterz@infradead.org, jongk@linux-m68k.org, keescook@chromium.org,
-        green.hu@gmail.com, ebiederm@xmission.com,
-        mchehab+huawei@kernel.org, alexandre.chartre@oracle.com,
-        mhiramat@kernel.org, zanussi@kernel.org, yangx.jy@cn.fujitsu.com,
-        linux-doc@vger.kernel.org, uclinux-h8-devel@lists.sourceforge.jp,
-        linux-ia64@vger.kernel.org, linux-m68k@lists.linux-m68k.org,
-        sparclinux@vger.kernel.org, kgdb-bugreport@lists.sourceforge.net,
-        linux-kselftest@vger.kernel.org, torvalds@linux-foundation.org,
-        hch@infradead.org, willy@infradead.org
-Subject: Re: [PATCH v2 06/11] sparc: switch to kernel_clone()
-From:   David Miller <davem@davemloft.net>
-In-Reply-To: <20200819104655.436656-7-christian.brauner@ubuntu.com>
-References: <20200819104655.436656-1-christian.brauner@ubuntu.com>
-        <20200819104655.436656-7-christian.brauner@ubuntu.com>
-X-Mailer: Mew version 6.8 on Emacs 26.3
-Mime-Version: 1.0
-Content-Type: Text/Plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
-X-Greylist: Sender succeeded SMTP AUTH, not delayed by milter-greylist-4.5.12 (shards.monkeyblade.net [149.20.54.216]); Wed, 19 Aug 2020 12:45:38 -0700 (PDT)
+        id S1728498AbgHTAEn (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Wed, 19 Aug 2020 20:04:43 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34494 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728422AbgHTAEM (ORCPT <rfc822;linux-m68k@lists.linux-m68k.org>);
+        Wed, 19 Aug 2020 20:04:12 -0400
+Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id AD3C7208E4;
+        Thu, 20 Aug 2020 00:04:11 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1597881852;
+        bh=6aHggL1RkTAzBEHv4FvfQ9+Mk3/6PJyf2EJjPbmIUQE=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=SiSS5mPYZR6/l1bLpcOJc+6qvXxOb4m22vuNXD2GMyDa8mVXE7hoU40K6H87jaXFc
+         4lA2nGY8P8v49YQthk1oecgW4kVGrDOkgO7xuN3jNZfAe3gZZS0RZc0AMPi3gY2EXc
+         kALgFi9jbSXr85fAo09VICwB8NooTXpgfGeo3P9Y=
+From:   Sasha Levin <sashal@kernel.org>
+To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Cc:     Greg Ungerer <gerg@linux-m68k.org>,
+        Sasha Levin <sashal@kernel.org>,
+        linux-m68k@lists.linux-m68k.org
+Subject: [PATCH AUTOSEL 4.4 04/10] m68knommu: fix overwriting of bits in ColdFire V3 cache control
+Date:   Wed, 19 Aug 2020 20:04:00 -0400
+Message-Id: <20200820000406.216050-4-sashal@kernel.org>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20200820000406.216050-1-sashal@kernel.org>
+References: <20200820000406.216050-1-sashal@kernel.org>
+MIME-Version: 1.0
+X-stable: review
+X-Patchwork-Hint: Ignore
+Content-Transfer-Encoding: 8bit
 Sender: linux-m68k-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-From: Christian Brauner <christian.brauner@ubuntu.com>
-Date: Wed, 19 Aug 2020 12:46:50 +0200
+From: Greg Ungerer <gerg@linux-m68k.org>
 
-> The old _do_fork() helper is removed in favor of the new kernel_clone() helper.
-> The latter adheres to naming conventions for kernel internal syscall helpers.
-> 
-> Cc: "David S. Miller" <davem@davemloft.net>
-> Cc: sparclinux@vger.kernel.org
-> Signed-off-by: Christian Brauner <christian.brauner@ubuntu.com>
+[ Upstream commit bdee0e793cea10c516ff48bf3ebb4ef1820a116b ]
 
-Acked-by: David S. Miller <davem@davemloft.net>
+The Cache Control Register (CACR) of the ColdFire V3 has bits that
+control high level caching functions, and also enable/disable the use
+of the alternate stack pointer register (the EUSP bit) to provide
+separate supervisor and user stack pointer registers. The code as
+it is today will blindly clear the EUSP bit on cache actions like
+invalidation. So it is broken for this case - and that will result
+in failed booting (interrupt entry and exit processing will be
+completely hosed).
+
+This only affects ColdFire V3 parts that support the alternate stack
+register (like the 5329 for example) - generally speaking new parts do,
+older parts don't. It has no impact on ColdFire V3 parts with the single
+stack pointer, like the 5307 for example.
+
+Fix the cache bit defines used, so they maintain the EUSP bit when
+carrying out cache actions through the CACR register.
+
+Signed-off-by: Greg Ungerer <gerg@linux-m68k.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
+---
+ arch/m68k/include/asm/m53xxacr.h | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/arch/m68k/include/asm/m53xxacr.h b/arch/m68k/include/asm/m53xxacr.h
+index 3177ce8331d69..baee0c77b9818 100644
+--- a/arch/m68k/include/asm/m53xxacr.h
++++ b/arch/m68k/include/asm/m53xxacr.h
+@@ -88,9 +88,9 @@
+  * coherency though in all cases. And for copyback caches we will need
+  * to push cached data as well.
+  */
+-#define CACHE_INIT	  CACR_CINVA
+-#define CACHE_INVALIDATE  CACR_CINVA
+-#define CACHE_INVALIDATED CACR_CINVA
++#define CACHE_INIT        (CACHE_MODE + CACR_CINVA - CACR_EC)
++#define CACHE_INVALIDATE  (CACHE_MODE + CACR_CINVA)
++#define CACHE_INVALIDATED (CACHE_MODE + CACR_CINVA)
+ 
+ #define ACR0_MODE	((CONFIG_RAMBASE & 0xff000000) + \
+ 			 (0x000f0000) + \
+-- 
+2.25.1
+
