@@ -7,57 +7,57 @@ X-Spam-Status: No, score=-5.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,NICE_REPLY_A,SPF_HELO_NONE,
 	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 5036CC433E1
-	for <linux-m68k@archiver.kernel.org>; Fri, 21 Aug 2020 20:58:52 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 1D43AC433DF
+	for <linux-m68k@archiver.kernel.org>; Fri, 21 Aug 2020 23:27:33 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 127FD20738
-	for <linux-m68k@archiver.kernel.org>; Fri, 21 Aug 2020 20:58:52 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id E8B77207C3
+	for <linux-m68k@archiver.kernel.org>; Fri, 21 Aug 2020 23:27:32 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Esi9UiWZ"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="t9SrU8TQ"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725916AbgHUU6v (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Fri, 21 Aug 2020 16:58:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48364 "EHLO
+        id S1726541AbgHUX1c (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Fri, 21 Aug 2020 19:27:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43040 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725767AbgHUU6v (ORCPT
+        with ESMTP id S1726697AbgHUX12 (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Fri, 21 Aug 2020 16:58:51 -0400
-Received: from mail-pj1-x1043.google.com (mail-pj1-x1043.google.com [IPv6:2607:f8b0:4864:20::1043])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F00F7C061573
-        for <linux-m68k@lists.linux-m68k.org>; Fri, 21 Aug 2020 13:58:48 -0700 (PDT)
-Received: by mail-pj1-x1043.google.com with SMTP id q93so1362926pjq.0
-        for <linux-m68k@lists.linux-m68k.org>; Fri, 21 Aug 2020 13:58:48 -0700 (PDT)
+        Fri, 21 Aug 2020 19:27:28 -0400
+Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3D3D0C061573
+        for <linux-m68k@lists.linux-m68k.org>; Fri, 21 Aug 2020 16:27:28 -0700 (PDT)
+Received: by mail-pg1-x541.google.com with SMTP id v15so1699392pgh.6
+        for <linux-m68k@lists.linux-m68k.org>; Fri, 21 Aug 2020 16:27:28 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=subject:to:references:cc:from:message-id:date:user-agent
          :mime-version:in-reply-to:content-transfer-encoding;
-        bh=aUQxINW3eBpT1z9YQ0yEktTnLvU639RGUaumxH0whmw=;
-        b=Esi9UiWZfhq/m9Oj8Oq8sfJk6nPrHCpF5GnRBqnIlCjE9AqlbVmSildCuWAqC8KFtY
-         j2CAjdqM/3a5EvS4061C2Xzz3DU8yp74qhNcS7lj6AosrxpqigBDr3nRes7ikqzfNnn2
-         Bce1K+K7hEJWKNqnRYGWNSYiPJTiOMHujW4qcRMQ4363ffb7ZDhkRkYsW3eyivsjbV35
-         0cpVxbWM+V+mbyfrWVlD2QXy5Vv362P5/B04mNh53ZDNcbCz6sZ60ynHfdjbSwA7VkIc
-         gGiwQMb/mTDPRBybjdo5uJgJMHyZ1xBl36ukOTVDgso5AIDbOs2/zNBfJMx4V5c9gqtJ
-         WKQQ==
+        bh=LrzFV+zyiXUGWg4TlpkH53h9k/IWj23O83vzi07w/Xs=;
+        b=t9SrU8TQUGdWcJrg4l7K37TXEANo41bVO6fomHt9fbWci458id1vNZH+Jb9iZC55ib
+         XKw/yZZQ0Jm/hi4VYoir0CRhrqPLpYwUE6A6nOnjASkM6M0Ja6Qv3ZdbpU+b7RJ1H5IO
+         11Bklon3sJbXo+vX+2RdYuV2aKTWIgI1LMNXYXXpFZ4+gf6Jpyzxq5UefoarKFebyUiI
+         8xFTDMRtDIRL8YbwB9o9ctuY9waIkwpbds49Lny9AiSrJ5OmA0d6I8szhkxSWATfqj4I
+         anPHs4e4OnBJpOBzoPciOFIhRQLdNY+WZcu2tavl09NN9EgLQZsPeNpgeSjDV+v0jjpO
+         kJfg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:subject:to:references:cc:from:message-id:date
          :user-agent:mime-version:in-reply-to:content-transfer-encoding;
-        bh=aUQxINW3eBpT1z9YQ0yEktTnLvU639RGUaumxH0whmw=;
-        b=C6VZOkYOds4tgdpoLVSRfTLYN2pbkxJcr9fnFwHftXTCbng7z2Poms2OXn5+DWwmnK
-         ywlilYbSN0FX9dsHUhzAAUHMwDIvgEeMZHZwaSge/sHzjV673KXWw6CJ8heEuvzJSJgw
-         uSJWX1cEeou1gZBEcguSmTAiZCayXn1ZLx3mQpVPPzooadyOVILM/pbziE//LUpDSNVK
-         z8Juh+R2TeMOgUTIZ5rznOEPifdX+hnAWFU+J04dDJ0T7ibaXMcnWehuOBkqjsMYmp0i
-         hCh43pniR5Hej2kLfKQnNwx2pTE1WJ0WVwrMs5MApSAu+Ulhft3CaO07rqL4wrzEfzV6
-         2KiQ==
-X-Gm-Message-State: AOAM532PcoxSF4XuVf9J8JElfRI9Dif1BADbo69jZ7+X2Yi7XOyaOYhs
-        4FuIOaIMJgWwn3SOYbESw4A=
-X-Google-Smtp-Source: ABdhPJybtmJ/Lpw8Il0HbRzkV9ynkSHEGdk7OWWRu//P/191EBsZX94aom8DgMMY5++iqv3nRcYn2g==
-X-Received: by 2002:a17:90a:ba05:: with SMTP id s5mr2551749pjr.114.1598043528125;
-        Fri, 21 Aug 2020 13:58:48 -0700 (PDT)
+        bh=LrzFV+zyiXUGWg4TlpkH53h9k/IWj23O83vzi07w/Xs=;
+        b=uWaDqbrwnRQ0VB6pIAYnMYvNdyYJnKPUJ+DqrmnfQqlsjs7VseglSXjw3aqgk8WXeP
+         VKaRRtK7wgUbLhfPHBjKPiiw2cn2Zk9aaGMVEjt4DP1njly6t4tgTL+cInKMbXoz4dUe
+         XSGiJFUX1bvah4kIqEuvhiB2aDTv+rUjtuBkQ4wrzXd0B3GJ04eIFXm776GIlz2jp+6p
+         RfbM6lVi3CTwLoP7rGcRIg2Tlh3aRpZ2b3umNtHV8tsUntwuIUCcpYgCInsWYe6hLQyZ
+         0Diguq96IGvDpV5FoqVd0rGpVHL1YRwSsZGmGg3hSyOr3OK7emKBzTeP0nVHHDCfooqR
+         7AsA==
+X-Gm-Message-State: AOAM532TCnE4/lpuMZdlIXWSgeUG0WZYc3HQgeNtocKPIY5CzvH6mH+Q
+        57T2+ZrbtrA8t5n3rwiMYHw=
+X-Google-Smtp-Source: ABdhPJzLw9foW5I8EFg+l2eyu6Goo5wQ3R7oWrfjTrerld408AR7hD8g8Vt7cQRDKSm2hzNpajontA==
+X-Received: by 2002:a63:5952:: with SMTP id j18mr3750255pgm.361.1598052447394;
+        Fri, 21 Aug 2020 16:27:27 -0700 (PDT)
 Received: from [192.168.1.101] (122-58-181-132-adsl.sparkbb.co.nz. [122.58.181.132])
-        by smtp.gmail.com with ESMTPSA id d13sm2803827pjz.3.2020.08.21.13.58.42
+        by smtp.gmail.com with ESMTPSA id f17sm2855895pjp.46.2020.08.21.16.27.20
         (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Fri, 21 Aug 2020 13:58:47 -0700 (PDT)
+        Fri, 21 Aug 2020 16:27:26 -0700 (PDT)
 Subject: Re: [PATCH v3 0/3] m68k/mm: switch from DISCONTIGMEM to SPARSEMEM
 To:     Mike Rapoport <rppt@kernel.org>
 References: <20200718162651.26538-1-rppt@kernel.org>
@@ -72,8 +72,8 @@ Cc:     linux-m68k@lists.linux-m68k.org,
         John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
         Mike Rapoport <rppt@linux.ibm.com>
 From:   Michael Schmitz <schmitzmic@gmail.com>
-Message-ID: <b422a5ba-80ed-1ff0-0868-252037abe1a4@gmail.com>
-Date:   Sat, 22 Aug 2020 08:58:34 +1200
+Message-ID: <9ea389e1-bd86-953b-8ae2-40278506e30a@gmail.com>
+Date:   Sat, 22 Aug 2020 11:27:18 +1200
 User-Agent: Mozilla/5.0 (X11; Linux ppc; rv:45.0) Gecko/20100101
  Icedove/45.4.0
 MIME-Version: 1.0
@@ -86,6 +86,18 @@ List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
 Hi Mike,
+
+only tested on ARAnyM, but appears to work (after adding sparsemem.h and 
+changing memblocks_present() to non-static).
+
+20 kB more total memory with sparsemem. Less memory used when booting to 
+FastRAM, more used when booting to ST-RAM (checked right after boot on 
+an idle system). The latter probably isn't significant.
+
+Cheers,
+
+	Michael
+
 
 Am 21.08.2020 um 19:56 schrieb Mike Rapoport:
 > On Fri, Aug 21, 2020 at 10:29:13AM +1200, Michael Schmitz wrote:
@@ -120,16 +132,6 @@ Am 21.08.2020 um 19:56 schrieb Mike Rapoport:
 >> a prerequisite here?
 >
 > Argh, I forgot to 'git add asm/sparsemem.h'.
-
-OK, that should be easy enough to overcome. I'll try setting the section 
-size bits according to the 16 MB section size, and test with that for now.
-
-Cheers,
-
-	Michael
-
-
-
 > I'll resend a refreshed version in a couple of days.
 >
 >> Cheers,
