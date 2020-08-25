@@ -2,78 +2,68 @@ Return-Path: <SRS0=bIMu=CD=vger.kernel.org=linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-15.3 required=3.0 tests=BAYES_00,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PULL_REQUEST,MAILING_LIST_MULTI,
-	MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=ham
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-10.1 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,
+	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 7A1B3C433DF
-	for <linux-m68k@archiver.kernel.org>; Tue, 25 Aug 2020 13:41:02 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 70920C433DF
+	for <linux-m68k@archiver.kernel.org>; Tue, 25 Aug 2020 19:16:26 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 6067E204EA
-	for <linux-m68k@archiver.kernel.org>; Tue, 25 Aug 2020 13:41:02 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 5B7982071E
+	for <linux-m68k@archiver.kernel.org>; Tue, 25 Aug 2020 19:16:26 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=default; t=1598382986;
+	bh=ccl2PxpjV71b6R3oiNJ1mYGPWMxjhVotgiPqHQonsfU=;
+	h=Subject:From:In-Reply-To:References:Date:To:Cc:List-ID:From;
+	b=KrddEqjUsLup3hIS1u0GHHHM+pZw6qbxNb4U8BLM6W1Q8Qgl/4/73HLlQoU1/B812
+	 5aQycbRuHpfiS6b79Bt3VtiQvJShWCe0OSMR3QHuYic2qQCGD0Btg5/LXqcf+KlfPt
+	 3qKnFi5pazMI2qWIt1+kLneVxPZVpHjwcTZm+nUQ=
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726371AbgHYNk5 (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Tue, 25 Aug 2020 09:40:57 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54162 "EHLO mail.kernel.org"
+        id S1726839AbgHYTQX (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Tue, 25 Aug 2020 15:16:23 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46562 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726158AbgHYNks (ORCPT <rfc822;linux-m68k@vger.kernel.org>);
-        Tue, 25 Aug 2020 09:40:48 -0400
-Received: from [10.44.0.192] (unknown [103.48.210.53])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 3F0772076C;
-        Tue, 25 Aug 2020 13:40:45 +0000 (UTC)
-From:   Greg Ungerer <gerg@linux-m68k.org>
-Subject: [git pull] m68knommu changes for v5.9-rc3
-To:     torvalds@linux-foundation.org
-Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        id S1726471AbgHYTQW (ORCPT <rfc822;linux-m68k@vger.kernel.org>);
+        Tue, 25 Aug 2020 15:16:22 -0400
+Subject: Re: [git pull] m68knommu changes for v5.9-rc3
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1598382981;
+        bh=ccl2PxpjV71b6R3oiNJ1mYGPWMxjhVotgiPqHQonsfU=;
+        h=From:In-Reply-To:References:Date:To:Cc:From;
+        b=ZZkkW1EjyBFU7XK2Nmwn6EwJiTBSt7iEkT/IYG6ZYx41I2LH4Q0Jsw1p3bkQ4NB7g
+         PKuZJyIGxrRsckt9F3kat8WCxITXLUNpLa+djm8waCf3KJX8+MzQ6m+lRU1TChSmsH
+         otJoZzcCGFS2W6963B2HBB16Rq2S3egNzAkvVsaI=
+From:   pr-tracker-bot@kernel.org
+In-Reply-To: <97069a5f-fd94-8a75-3fc6-3e50f7e3ec3a@linux-m68k.org>
+References: <97069a5f-fd94-8a75-3fc6-3e50f7e3ec3a@linux-m68k.org>
+X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
+X-PR-Tracked-Message-Id: <97069a5f-fd94-8a75-3fc6-3e50f7e3ec3a@linux-m68k.org>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/gerg/m68knommu.git tags/m68knommu-for-v5.9-rc3
+X-PR-Tracked-Commit-Id: 2217b982624680d19a80ebb4600d05c8586c4f96
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: abb3438d69fb6dd5baa4ae23eafbf5b87945eff1
+Message-Id: <159838298188.30843.12096079475236397075.pr-tracker-bot@kernel.org>
+Date:   Tue, 25 Aug 2020 19:16:21 +0000
+To:     Greg Ungerer <gerg@linux-m68k.org>
+Cc:     torvalds@linux-foundation.org,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
         Linux/m68k <linux-m68k@vger.kernel.org>,
         Geert Uytterhoeven <geert@linux-m68k.org>
-Message-ID: <97069a5f-fd94-8a75-3fc6-3e50f7e3ec3a@linux-m68k.org>
-Date:   Tue, 25 Aug 2020 23:40:42 +1000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
 Sender: linux-m68k-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-Hi Linus,
+The pull request you sent on Tue, 25 Aug 2020 23:40:42 +1000:
 
-Please pull the m68knommu changes for v5.9-rc3.
-Only a single fix for the binfmt_flat loader (reverting a recent change).
+> git://git.kernel.org/pub/scm/linux/kernel/git/gerg/m68knommu.git tags/m68knommu-for-v5.9-rc3
 
-Regards
-Greg
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/abb3438d69fb6dd5baa4ae23eafbf5b87945eff1
 
+Thank you!
 
-
-The following changes since commit d012a7190fc1fd72ed48911e77ca97ba4521bccd:
-
-   Linux 5.9-rc2 (2020-08-23 14:08:43 -0700)
-
-are available in the Git repository at:
-
-   git://git.kernel.org/pub/scm/linux/kernel/git/gerg/m68knommu.git tags/m68knommu-for-v5.9-rc3
-
-for you to fetch changes up to 2217b982624680d19a80ebb4600d05c8586c4f96:
-
-   binfmt_flat: revert "binfmt_flat: don't offset the data start" (2020-08-24 08:49:13 +1000)
-
-----------------------------------------------------------------
-m68knommu: fixes for 5.9-rc3
-
-Fixes include:
-. revert binfmt_flat data offset removal
-
-----------------------------------------------------------------
-Max Filippov (1):
-       binfmt_flat: revert "binfmt_flat: don't offset the data start"
-
-  fs/binfmt_flat.c | 20 ++++++++++++--------
-  1 file changed, 12 insertions(+), 8 deletions(-)
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/prtracker.html
