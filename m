@@ -6,48 +6,45 @@ X-Spam-Status: No, score=-6.8 required=3.0 tests=BAYES_00,
 	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,
 	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A4A65C433E1
-	for <linux-m68k@archiver.kernel.org>; Wed, 26 Aug 2020 11:31:20 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id F3323C433E3
+	for <linux-m68k@archiver.kernel.org>; Wed, 26 Aug 2020 11:31:31 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 89C8F206EB
-	for <linux-m68k@archiver.kernel.org>; Wed, 26 Aug 2020 11:31:20 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id D268A206EB
+	for <linux-m68k@archiver.kernel.org>; Wed, 26 Aug 2020 11:31:31 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728984AbgHZLbJ (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Wed, 26 Aug 2020 07:31:09 -0400
-Received: from mail-oi1-f194.google.com ([209.85.167.194]:45843 "EHLO
-        mail-oi1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728944AbgHZL3W (ORCPT
+        id S1728956AbgHZLb3 (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Wed, 26 Aug 2020 07:31:29 -0400
+Received: from mail-oo1-f66.google.com ([209.85.161.66]:33564 "EHLO
+        mail-oo1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728918AbgHZL3W (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
         Wed, 26 Aug 2020 07:29:22 -0400
-Received: by mail-oi1-f194.google.com with SMTP id d189so750644oig.12
-        for <linux-m68k@lists.linux-m68k.org>; Wed, 26 Aug 2020 04:29:00 -0700 (PDT)
+Received: by mail-oo1-f66.google.com with SMTP id h4so142776oop.0
+        for <linux-m68k@lists.linux-m68k.org>; Wed, 26 Aug 2020 04:28:49 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=1FLY0eW4GFuoR8mTu1lJlREb+UEGmC42E+5Rra5UznE=;
-        b=Eklu7SXAkMc1dOlzz2t9NKJIeA8hBzbGVI341uJANi6cZPJUObn8Hmc+Rj78ZJjXng
-         HhxSw7+lD6KRiwucijIO7oIkiBtXftfj66xPkE6zxq9dXiVloa6+/pdncI8sqbcK/1Bp
-         wbZTCxX6IYGP5gvFDaXWSRdsejl+ty87F/vZTNg9BSd3ocKKBEF7BOUuJtkssnbl1uhL
-         T3Pz4A/Vq5k3Dfza2tKKqJiNbHHrJ3CFIdYvzg4DTsBJlwYW47dp1dbRoGPH9PoUi3nh
-         iNh5TUxFAPVxTwB2rAe83k74+xNHOJGyHdwtPIJSPVHNwQmdLlEbq9rhdJMEw98Wi+NA
-         S4Zg==
-X-Gm-Message-State: AOAM532k+Oy7A4cqdxxx2nCowC5sTJ7fFpcY/vcFMK2nzLhrpbwAgN2n
-        2dgi76tvLv0F6Z+yHu2a3YNV1uKsvcI11nvSj0k=
-X-Google-Smtp-Source: ABdhPJx7jX+qSl6hSkIJjjuVHvApPexAU/jsCaAJ1qdjT3qf5oCZgY38PO9ALloX5AEO8e8WFaJLeRawU/yp8PkK28E=
-X-Received: by 2002:aca:b742:: with SMTP id h63mr3423281oif.148.1598441339761;
- Wed, 26 Aug 2020 04:28:59 -0700 (PDT)
+        bh=QjVGS0HGbRfs0Re2eYmvuj93KRF7GbcoDgHD74CvDp8=;
+        b=d76XtgeKl5NEnWGB/rvXy4hQkNqk/JFDiNaRlPi+zn2LAH9opSXgG+peKd3mjRiU/U
+         3J3o6elQZYNo5z4amk/4gLFmyv3IpkSI3U8OL0RpgMmvRwGInrNHG3ApPBBR5KjvNbZl
+         PY7Iy58m4wjWUMTKN7PCmfNb6GnF4xBthCzVFUotECH+9+1A9uFv14QbuFzmiJ6pBwyC
+         v+gE7TbTII1QsoEFiUASqA8hNckuTqNZcwb4pdhL93P7VzFGOLTMlNyrE5pNp1CvGC5+
+         ywZqcX/jhN+8aNXQ7Xu61t2giwfxu33IjUxSk7UZ43NSRfYNb11wMn+IACVGmkJeao6y
+         1Waw==
+X-Gm-Message-State: AOAM530ThhdaMQGma1DGkjhQBlJHXWUE0TXY5qhnvm+rqxHRiknUBP8X
+        TmppxpT7Et7kJUPU/gev0lGEblRRppp6gS9aVAsuqHnA
+X-Google-Smtp-Source: ABdhPJxmbNmsTV+R1Umjsvz30EeXTsekhqFvAQXgtdz2jvKrQiOSnzIYQdzEZQRT4NEV7snJoFtg+IW4pNVW9ZE5vdQ=
+X-Received: by 2002:a4a:6c13:: with SMTP id q19mr10489990ooc.11.1598441328710;
+ Wed, 26 Aug 2020 04:28:48 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200713072429.6182-1-geert@linux-m68k.org>
-In-Reply-To: <20200713072429.6182-1-geert@linux-m68k.org>
+References: <20200112171705.22600-1-geert@linux-m68k.org>
+In-Reply-To: <20200112171705.22600-1-geert@linux-m68k.org>
 From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Wed, 26 Aug 2020 13:28:48 +0200
-Message-ID: <CAMuHMdXWfLa8dCZPF6jSQYuowGBR4dJnS1hx_rN1kDpPFZnVGg@mail.gmail.com>
-Subject: Re: [PATCH] zorro: Fix address space collision message with RAM
- expansion boards
-To:     John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
-        Stefan Reinauer <stefan.k.reinauer@gmail.com>,
-        linux-m68k <linux-m68k@lists.linux-m68k.org>
+Date:   Wed, 26 Aug 2020 13:28:37 +0200
+Message-ID: <CAMuHMdVZRnO7r-ihx4LiW2Jt+aG5jWnkjQJxCZ=JurtM_-ayXA@mail.gmail.com>
+Subject: Re: [PATCH] m68k: amiga: Fix Denise detection on OCS
+To:     linux-m68k <linux-m68k@lists.linux-m68k.org>
 Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Sender: linux-m68k-owner@vger.kernel.org
@@ -55,23 +52,15 @@ Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-On Mon, Jul 13, 2020 at 9:24 AM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
-> When booting Linux on an Amiga with BigRAMPlus Zorro expansion board:
+On Sun, Jan 12, 2020 at 6:17 PM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
+> The "default" statement for detecting an original Denise chip seems to
+> be misplaced, causing original Denise chips not being detected.
 >
->     zorro: Address space collision on device Zorro device 12128600 (Individual Computers) [??? 0x50000000-]
+> Fix this by moving it from the outer to the inner "switch" statement.
 >
-> This happens because the address space occupied by the BigRAMPlus Zorro
-> device is already in use, as it is part of system RAM.  Hence the
-> message is harmless.
+> Fortunately no code relies on this, but the detected version is printed
+> during boot, and available through /proc/hardware.
 >
-> Zorro memory expansion boards have the ERTF_MEMLIST flag set, which
-> tells AmigaOS to link the board's RAM into the free memory list.  While
-> we could skip registering the board resource if this flag is set, that
-> may cause issues with Zorro II RAM excluded in a memfile.
->
-> Hence fix the issue by just ignoring the error if ERTF_MEMLIST is set.
->
-> Reported-by: John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
 > Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
 
 Applied, and queued in the m68k for-v5.10 branch.
