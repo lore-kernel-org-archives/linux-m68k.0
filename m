@@ -2,44 +2,44 @@ Return-Path: <SRS0=i6Xs=CE=vger.kernel.org=linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-12.5 required=3.0 tests=BAYES_00,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,
-	NICE_REPLY_A,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=ham
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-10.5 required=3.0 tests=BAYES_00,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,NICE_REPLY_A,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 1C57BC433E1
-	for <linux-m68k@archiver.kernel.org>; Wed, 26 Aug 2020 11:33:28 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A4BE3C433DF
+	for <linux-m68k@archiver.kernel.org>; Wed, 26 Aug 2020 11:35:29 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 02E3C2087D
-	for <linux-m68k@archiver.kernel.org>; Wed, 26 Aug 2020 11:33:28 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 845D82083B
+	for <linux-m68k@archiver.kernel.org>; Wed, 26 Aug 2020 11:35:29 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729015AbgHZLcN (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Wed, 26 Aug 2020 07:32:13 -0400
-Received: from outpost1.zedat.fu-berlin.de ([130.133.4.66]:53777 "EHLO
+        id S1728980AbgHZLfY (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Wed, 26 Aug 2020 07:35:24 -0400
+Received: from outpost1.zedat.fu-berlin.de ([130.133.4.66]:55723 "EHLO
         outpost1.zedat.fu-berlin.de" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728605AbgHZLb6 (ORCPT
-        <rfc822;linux-m68k@vger.kernel.org>);
-        Wed, 26 Aug 2020 07:31:58 -0400
+        by vger.kernel.org with ESMTP id S1729026AbgHZLed (ORCPT
+        <rfc822;linux-m68k@lists.linux-m68k.org>);
+        Wed, 26 Aug 2020 07:34:33 -0400
 Received: from inpost2.zedat.fu-berlin.de ([130.133.4.69])
           by outpost.zedat.fu-berlin.de (Exim 4.93)
           with esmtps (TLS1.2)
           tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
           (envelope-from <glaubitz@zedat.fu-berlin.de>)
-          id 1kAtaR-002U5d-Qp; Wed, 26 Aug 2020 13:27:27 +0200
+          id 1kAtgn-002WZ3-Li; Wed, 26 Aug 2020 13:34:01 +0200
 Received: from suse-laptop.physik.fu-berlin.de ([160.45.32.140])
           by inpost2.zedat.fu-berlin.de (Exim 4.93)
           with esmtpsa (TLS1.2)
           tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
           (envelope-from <glaubitz@physik.fu-berlin.de>)
-          id 1kAtaR-002KDC-L8; Wed, 26 Aug 2020 13:27:27 +0200
-Subject: Re: [PATCH] m68k/kernel - wire up syscall_trace_enter/leave for m68k
+          id 1kAtgn-002L6k-Eh; Wed, 26 Aug 2020 13:34:01 +0200
+Subject: Re: [PATCH] zorro: Fix address space collision message with RAM
+ expansion boards
 To:     Geert Uytterhoeven <geert@linux-m68k.org>,
-        Michael Schmitz <schmitzmic@gmail.com>
-Cc:     Linux/m68k <linux-m68k@vger.kernel.org>,
-        Andreas Schwab <schwab@linux-m68k.org>
-References: <f0c9edc0-e596-c483-b9a6-f67778bd297c@physik.fu-berlin.de>
- <1595823555-11103-1-git-send-email-schmitzmic@gmail.com>
- <CAMuHMdVNqgG_6LSSuzMZekE1q7i_V4YisDJQUsjptLDejNGaRw@mail.gmail.com>
+        Stefan Reinauer <stefan.k.reinauer@gmail.com>,
+        linux-m68k <linux-m68k@lists.linux-m68k.org>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+References: <20200713072429.6182-1-geert@linux-m68k.org>
+ <CAMuHMdXWfLa8dCZPF6jSQYuowGBR4dJnS1hx_rN1kDpPFZnVGg@mail.gmail.com>
 From:   John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
 Autocrypt: addr=glaubitz@physik.fu-berlin.de; keydata=
  mQINBE3JE9wBEADMrYGNfz3oz6XLw9XcWvuIxIlPWoTyw9BxTicfGAv0d87wngs9U+d52t/R
@@ -85,12 +85,12 @@ Autocrypt: addr=glaubitz@physik.fu-berlin.de; keydata=
  jEF9ImTPcYZpw5vhdyPwBdXW2lSjV3EAqknWujRgcsm84nycuJnImwJptR481EWmtuH6ysj5
  YhRVGbQPfdsjVUQfZdRdkEv4CZ90pdscBi1nRqcqANtzC+WQFwekDzk2lGqNRDg56s+q0KtY
  scOkTAZQGVpD/8AaLH4v1w==
-Message-ID: <01c270ec-cd73-1d7e-0d1a-4ccde66e9d1b@physik.fu-berlin.de>
-Date:   Wed, 26 Aug 2020 13:27:27 +0200
+Message-ID: <8a94e52c-4b29-5013-3ea4-af4223abda46@physik.fu-berlin.de>
+Date:   Wed, 26 Aug 2020 13:34:01 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.11.0
 MIME-Version: 1.0
-In-Reply-To: <CAMuHMdVNqgG_6LSSuzMZekE1q7i_V4YisDJQUsjptLDejNGaRw@mail.gmail.com>
+In-Reply-To: <CAMuHMdXWfLa8dCZPF6jSQYuowGBR4dJnS1hx_rN1kDpPFZnVGg@mail.gmail.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -101,37 +101,30 @@ Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-Hi Geert!
-
-On 8/26/20 1:23 PM, Geert Uytterhoeven wrote:
->> Changes from RFC v1:
+On 8/26/20 1:28 PM, Geert Uytterhoeven wrote:
+> On Mon, Jul 13, 2020 at 9:24 AM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
+>> When booting Linux on an Amiga with BigRAMPlus Zorro expansion board:
 >>
->> - add return code check in do_trace_entry branch to enable syscall
->>   filtering (will return -EPERM)
->> - change to use testl for return code check (suggested by Andreas Schwab)
+>>     zorro: Address space collision on device Zorro device 12128600 (Individual Computers) [??? 0x50000000-]
 >>
->> Changes from RFC v2:
+>> This happens because the address space occupied by the BigRAMPlus Zorro
+>> device is already in use, as it is part of system RAM.  Hence the
+>> message is harmless.
 >>
->> - don't set return code of filtered syscall - seccomp may want to set
->>   that for use by calling process.
+>> Zorro memory expansion boards have the ERTF_MEMLIST flag set, which
+>> tells AmigaOS to link the board's RAM into the free memory list.  While
+>> we could skip registering the board resource if this flag is set, that
+>> may cause issues with Zorro II RAM excluded in a memfile.
+>>
+>> Hence fix the issue by just ignoring the error if ERTF_MEMLIST is set.
+>>
+>> Reported-by: John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
+>> Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
 > 
-> As your email subject didn't contain "v3", b4[*] insists on picking up
-> RFC v2, and refuses to pick up the latest version, even when forced
-> (msgid not present)...
-> 
-> The patch itself looks good to me. Does it make sense to apply it before
-> we have real seccomp support?
+> Applied, and queued in the m68k for-v5.10 branch.
 
-Adding SECCOMP support itself doesn't take much:
-
-> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/arch/sh?id=c4637d475170ca0d99973efd07df727012db6cd1
-> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/arch/sh?id=0bb605c2c7f2b4b314b91510810b226de7f34fa1
-
-Once syscall_trace_entry/leave have been made available, we just need to
-add some Kconfig bits and the part which checks the return code of
-syscall_trace_enter.
-
-The rest is done by arch-agnostic code.
+Oh, that reminds me. I should dig out the Big-RAM-Plus again. I still haven't
+found it after my last move but I know where to find it (hopefully ;-)).
 
 Adrian
 
