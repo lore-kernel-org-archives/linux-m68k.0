@@ -2,107 +2,81 @@ Return-Path: <SRS0=i6Xs=CE=vger.kernel.org=linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-12.7 required=3.0 tests=BAYES_00,
+X-Spam-Status: No, score=-12.8 required=3.0 tests=BAYES_00,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,UPPERCASE_50_75,USER_AGENT_GIT autolearn=ham
-	autolearn_force=no version=3.4.0
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id CB5E9C433DF
-	for <linux-m68k@archiver.kernel.org>; Wed, 26 Aug 2020 12:53:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id F2829C433DF
+	for <linux-m68k@archiver.kernel.org>; Wed, 26 Aug 2020 13:01:11 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id A9560214F1
-	for <linux-m68k@archiver.kernel.org>; Wed, 26 Aug 2020 12:53:09 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id CB03720707
+	for <linux-m68k@archiver.kernel.org>; Wed, 26 Aug 2020 13:01:11 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729891AbgHZMxI (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Wed, 26 Aug 2020 08:53:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43482 "EHLO
+        id S1729369AbgHZNBK (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Wed, 26 Aug 2020 09:01:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44722 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729501AbgHZMxC (ORCPT
+        with ESMTP id S1730052AbgHZNBI (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Wed, 26 Aug 2020 08:53:02 -0400
-Received: from baptiste.telenet-ops.be (baptiste.telenet-ops.be [IPv6:2a02:1800:120:4::f00:13])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 89F87C061757
-        for <linux-m68k@lists.linux-m68k.org>; Wed, 26 Aug 2020 05:53:01 -0700 (PDT)
+        Wed, 26 Aug 2020 09:01:08 -0400
+Received: from andre.telenet-ops.be (andre.telenet-ops.be [IPv6:2a02:1800:120:4::f00:15])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0C690C061574
+        for <linux-m68k@lists.linux-m68k.org>; Wed, 26 Aug 2020 06:01:07 -0700 (PDT)
 Received: from ramsan ([84.195.186.194])
-        by baptiste.telenet-ops.be with bizsmtp
-        id LCt0230024C55Sk01Ct0Tn; Wed, 26 Aug 2020 14:53:00 +0200
+        by andre.telenet-ops.be with bizsmtp
+        id LD142300V4C55Sk01D14Ge; Wed, 26 Aug 2020 15:01:04 +0200
 Received: from rox.of.borg ([192.168.97.57])
         by ramsan with esmtp (Exim 4.90_1)
         (envelope-from <geert@linux-m68k.org>)
-        id 1kAuvE-00082s-2F; Wed, 26 Aug 2020 14:53:00 +0200
+        id 1kAv32-0008Ah-Ke; Wed, 26 Aug 2020 15:01:04 +0200
 Received: from geert by rox.of.borg with local (Exim 4.90_1)
         (envelope-from <geert@linux-m68k.org>)
-        id 1kAuvE-0006Gw-0N; Wed, 26 Aug 2020 14:53:00 +0200
+        id 1kAv32-0006c8-Ib; Wed, 26 Aug 2020 15:01:04 +0200
 From:   Geert Uytterhoeven <geert@linux-m68k.org>
 To:     linux-m68k@lists.linux-m68k.org
-Cc:     linux-kernel@vger.kernel.org,
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        linux-kernel@vger.kernel.org,
         Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: [PATCH] m68k: Sort selects in main Kconfig
-Date:   Wed, 26 Aug 2020 14:52:59 +0200
-Message-Id: <20200826125259.24069-1-geert@linux-m68k.org>
+Subject: [PATCH] m68k: mm: Use PAGE_ALIGNED() helper
+Date:   Wed, 26 Aug 2020 15:01:03 +0200
+Message-Id: <20200826130103.25381-1-geert@linux-m68k.org>
 X-Mailer: git-send-email 2.17.1
 Sender: linux-m68k-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-Sort the list of select statements in the main Kconfig file for the m68k
-architecture, to avoid conflicts when modifying this list.
+Use the existing PAGE_ALIGNED() helper instead of open-coding the same
+operation.
 
 Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
 ---
- arch/m68k/Kconfig | 24 ++++++++++++------------
- 1 file changed, 12 insertions(+), 12 deletions(-)
+ arch/m68k/mm/motorola.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/arch/m68k/Kconfig b/arch/m68k/Kconfig
-index 6f2f38d05772ab55..93bbb74ea876d6f2 100644
---- a/arch/m68k/Kconfig
-+++ b/arch/m68k/Kconfig
-@@ -6,32 +6,32 @@ config M68K
- 	select ARCH_HAS_BINFMT_FLAT
- 	select ARCH_HAS_DMA_PREP_COHERENT if HAS_DMA && MMU && !COLDFIRE
- 	select ARCH_HAS_SYNC_DMA_FOR_DEVICE if HAS_DMA
-+	select ARCH_HAVE_NMI_SAFE_CMPXCHG if RMW_INSNS
- 	select ARCH_MIGHT_HAVE_PC_PARPORT if ISA
- 	select ARCH_NO_PREEMPT if !COLDFIRE
-+	select ARCH_WANT_IPC_PARSE_VERSION
- 	select BINFMT_FLAT_ARGVP_ENVP_ON_STACK
- 	select DMA_DIRECT_REMAP if HAS_DMA && MMU && !COLDFIRE
--	select HAVE_IDE
--	select HAVE_AOUT if MMU
--	select HAVE_ASM_MODVERSIONS
--	select HAVE_DEBUG_BUGVERBOSE
--	select GENERIC_IRQ_SHOW
- 	select GENERIC_ATOMIC64
--	select NO_DMA if !MMU && !COLDFIRE
--	select HAVE_UID16
--	select VIRT_TO_BUS
--	select ARCH_HAVE_NMI_SAFE_CMPXCHG if RMW_INSNS
- 	select GENERIC_CPU_DEVICES
- 	select GENERIC_IOMAP
-+	select GENERIC_IRQ_SHOW
- 	select GENERIC_STRNCPY_FROM_USER if MMU
- 	select GENERIC_STRNLEN_USER if MMU
--	select ARCH_WANT_IPC_PARSE_VERSION
-+	select HAVE_AOUT if MMU
-+	select HAVE_ASM_MODVERSIONS
-+	select HAVE_DEBUG_BUGVERBOSE
- 	select HAVE_FUTEX_CMPXCHG if MMU && FUTEX
-+	select HAVE_IDE
- 	select HAVE_MOD_ARCH_SPECIFIC
-+	select HAVE_UID16
-+	select MMU_GATHER_NO_RANGE if MMU
- 	select MODULES_USE_ELF_REL
- 	select MODULES_USE_ELF_RELA
--	select OLD_SIGSUSPEND3
-+	select NO_DMA if !MMU && !COLDFIRE
- 	select OLD_SIGACTION
--	select MMU_GATHER_NO_RANGE if MMU
-+	select OLD_SIGSUSPEND3
-+	select VIRT_TO_BUS
+diff --git a/arch/m68k/mm/motorola.c b/arch/m68k/mm/motorola.c
+index 2bb006bdc31cd644..a9bdde54ca350197 100644
+--- a/arch/m68k/mm/motorola.c
++++ b/arch/m68k/mm/motorola.c
+@@ -226,7 +226,7 @@ static pte_t * __init kernel_page_table(void)
+ {
+ 	pte_t *pte_table = last_pte_table;
  
- config CPU_BIG_ENDIAN
- 	def_bool y
+-	if (((unsigned long)last_pte_table & ~PAGE_MASK) == 0) {
++	if (PAGE_ALIGNED(last_pte_table)) {
+ 		pte_table = (pte_t *)memblock_alloc_low(PAGE_SIZE, PAGE_SIZE);
+ 		if (!pte_table) {
+ 			panic("%s: Failed to allocate %lu bytes align=%lx\n",
+@@ -274,7 +274,7 @@ static pmd_t * __init kernel_ptr_table(void)
+ 	}
+ 
+ 	last_pmd_table += PTRS_PER_PMD;
+-	if (((unsigned long)last_pmd_table & ~PAGE_MASK) == 0) {
++	if (PAGE_ALIGNED(last_pmd_table)) {
+ 		last_pmd_table = (pmd_t *)memblock_alloc_low(PAGE_SIZE,
+ 							   PAGE_SIZE);
+ 		if (!last_pmd_table)
 -- 
 2.17.1
 
