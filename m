@@ -2,72 +2,151 @@ Return-Path: <SRS0=i6Xs=CE=vger.kernel.org=linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-7.7 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-9.8 required=3.0 tests=BAYES_00,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 68AC4C433E1
-	for <linux-m68k@archiver.kernel.org>; Wed, 26 Aug 2020 08:19:25 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8042FC433E1
+	for <linux-m68k@archiver.kernel.org>; Wed, 26 Aug 2020 08:50:48 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 45047206FA
-	for <linux-m68k@archiver.kernel.org>; Wed, 26 Aug 2020 08:19:25 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=default; t=1598429965;
-	bh=9j9S6jD3DxMEcFAPuQIscdiwN8igL/aMRjgg1A+PMWI=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:List-ID:From;
-	b=DqAEZse6kwnboD8lPcugSBngGPke6B3d0+yKZjlPAmHBTAxueV14GUZWuIvyf0LiM
-	 rMmHttXzgy21OiQRgCzMWxAR9i1bI9YuZ5oAj64EbO6cgubIylXhMWrxLlVvZ3338x
-	 rlsVKiqx/+bm3EfoKJg93pIQLb+pY0qcZZRQhgYY=
+	by mail.kernel.org (Postfix) with ESMTP id 5F5E12071E
+	for <linux-m68k@archiver.kernel.org>; Wed, 26 Aug 2020 08:50:48 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726867AbgHZITY (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Wed, 26 Aug 2020 04:19:24 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40434 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726717AbgHZITX (ORCPT <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Wed, 26 Aug 2020 04:19:23 -0400
-Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 8967920678;
-        Wed, 26 Aug 2020 08:19:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598429963;
-        bh=9j9S6jD3DxMEcFAPuQIscdiwN8igL/aMRjgg1A+PMWI=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=SliejojpEfe07Yb7llCML/KuFhBA5CuWaOBDnXAAuPeT3RDbeIfq1yH2O5BjAzo8w
-         a5nquc6gurtWUlvgN+T+jgYb/QeWe7fMbZukCpYy+G7IdeDRSl8huUt845/IHyWu4d
-         PgM9pcoqPOBnu9HjvJc2vL3l3xZMzULh+6pTnPs8=
-Date:   Wed, 26 Aug 2020 10:19:38 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     Jens Axboe <axboe@kernel.dk>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Denis Efremov <efremov@linux.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Song Liu <song@kernel.org>, Al Viro <viro@zeniv.linux.org.uk>,
-        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-ide@vger.kernel.org, linux-raid@vger.kernel.org,
-        linux-scsi@vger.kernel.org, linux-m68k@lists.linux-m68k.org
-Subject: Re: [PATCH 02/19] block: merge drivers/base/map.c into block/genhd.c
-Message-ID: <20200826081938.GC1796103@kroah.com>
-References: <20200826062446.31860-1-hch@lst.de>
- <20200826062446.31860-3-hch@lst.de>
+        id S1727091AbgHZIus (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Wed, 26 Aug 2020 04:50:48 -0400
+Received: from mail-ot1-f68.google.com ([209.85.210.68]:43268 "EHLO
+        mail-ot1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727056AbgHZIur (ORCPT
+        <rfc822;linux-m68k@lists.linux-m68k.org>);
+        Wed, 26 Aug 2020 04:50:47 -0400
+Received: by mail-ot1-f68.google.com with SMTP id l13so880441otp.10
+        for <linux-m68k@lists.linux-m68k.org>; Wed, 26 Aug 2020 01:50:46 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=GFL0RQvsbwNq/jNgvdCnq2KliIm214CoTcSzUtJeq4o=;
+        b=jkfquSy+EaPv1nllS6W/e5WI8XLMango7/kKFnxP8y14zGQ4PXEdrVh6GUOHYNZqgk
+         VSVod7a6iirldE6bce0BK2tKhhLR0Dkuxkkn5pVYtDo/wvkJOlF7MpbudHZlqtXpOjkK
+         KLNnODVXOuJfMNI/ez8rw9tE1v0Qdp6wXXH7hCMjRMm2hWmem3sCIAIQNg2Tvju4mZCw
+         NqnhAbe/ElbCYPP6FX2C44fL7zopcMei7cPqwOqs/uKFgZZvFFAV4sb4zJK4rmtADg9q
+         7JFIUwg30U+jPUUs/bhocThssG5KW5DVnj1baLeepCfUoNGpJJd61bmoQ4uMDwMjrAiC
+         bClw==
+X-Gm-Message-State: AOAM5339AtZXsWRWUXybMLlGizkPOuoZIAoZoVxYZ4VSaCkmK+evFf7N
+        7M4Wg2xfkNrJ0qJzD7CfXg2/KGx4zcS8S6WodOA=
+X-Google-Smtp-Source: ABdhPJzYj54zL9tqZab8zYtNItCMN1v1gv+UQD2bCa2fdGjgaqsTHspRhX2PZpPJXSKizGFjTi8wbYnn4VPGHc4B9Vk=
+X-Received: by 2002:a9d:7d8c:: with SMTP id j12mr9531749otn.250.1598431846220;
+ Wed, 26 Aug 2020 01:50:46 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200826062446.31860-3-hch@lst.de>
+References: <20200717184240.79799-1-grandmaster@al2klimov.de>
+In-Reply-To: <20200717184240.79799-1-grandmaster@al2klimov.de>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Wed, 26 Aug 2020 10:50:34 +0200
+Message-ID: <CAMuHMdV=gy1F2dX0+eURB=hubnbPUGbokrT_9kZXtk_ruAofSg@mail.gmail.com>
+Subject: Re: [PATCH] m68k: Replace HTTP links with HTTPS ones
+To:     "Alexander A. Klimov" <grandmaster@al2klimov.de>
+Cc:     Joshua Thompson <funaho@jurai.org>,
+        Finn Thain <fthain@telegraphics.com.au>,
+        linux-m68k <linux-m68k@lists.linux-m68k.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-m68k-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-On Wed, Aug 26, 2020 at 08:24:29AM +0200, Christoph Hellwig wrote:
-> Now that there is just a single user of the kobj_map functionality left,
-> merge it into the user to prepare for additional simplications.
-> 
-> Signed-off-by: Christoph Hellwig <hch@lst.de>
+Hi Alexander,
 
-YES!!!
+Thanks for your patch!
 
-Reviewed-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+On Fri, Jul 17, 2020 at 8:42 PM Alexander A. Klimov
+<grandmaster@al2klimov.de> wrote:
+> Rationale:
+> Reduces attack surface on kernel devs opening the links for MITM
+> as HTTPS traffic is much harder to manipulate.
+>
+> Deterministic algorithm:
+> For each file:
+>   If not .svg:
+>     For each line:
+>       If doesn't contain `\bxmlns\b`:
+>         For each link, `\bhttp://[^# \t\r\n]*(?:\w|/)`:
+>           If neither `\bgnu\.org/license`, nor `\bmozilla\.org/MPL\b`:
+>             If both the HTTP and HTTPS versions
+>             return 200 OK and serve the same content:
+
+Something must be wrong with your script, as several of them return
+"301 Moved Permanently" instead of "200 OK".
+
+>               Replace HTTP with HTTPS.
+>
+> Signed-off-by: Alexander A. Klimov <grandmaster@al2klimov.de>
+
+> --- a/arch/m68k/include/asm/mac_via.h
+> +++ b/arch/m68k/include/asm/mac_via.h
+> @@ -30,7 +30,7 @@
+>   *      http://www.rs6000.ibm.com/resource/technology/chrpio/via5.mak.html
+>   *      ftp://ftp.austin.ibm.com/pub/technology/spec/chrp/inwork/CHRP_IORef_1.0.pdf
+>   *
+> - * also, http://developer.apple.com/technotes/hw/hw_09.html claims the
+> + * also, https://developer.apple.com/technotes/hw/hw_09.html claims the
+
+No longer contains the original content.  Perhaps it should be replaced by
+https://web.archive.org/web/20041012040104/http://developer.apple.com/technotes/hw/hw_09.html
+instead?
+
+>   * following changes for IIfx:
+>   * VIA1A_vSccWrReq not available and that VIA1A_vSync has moved to an IOP.
+>   * Also, "All of the functionality of VIA2 has been moved to other chips".
+> @@ -178,7 +178,7 @@
+>                                  * on others, 0=disable processor's instruction
+>                                  * and data caches. */
+>
+> -/* Apple sez: http://developer.apple.com/technotes/ov/ov_04.html
+> +/* Apple sez: https://developer.apple.com/technotes/ov/ov_04.html
+
+Probably the same, didn't bother to dive into web.archive.org.
+
+>   * Another example of a valid function that has no ROM support is the use
+>   * of the alternate video page for page-flipping animation. Since there
+>   * is no ROM call to flip pages, it is necessary to go play with the
+> diff --git a/arch/m68k/mac/config.c b/arch/m68k/mac/config.c
+> index 5c9f3a2d6538..6f2eb1dcfc0c 100644
+> --- a/arch/m68k/mac/config.c
+> +++ b/arch/m68k/mac/config.c
+> @@ -240,7 +240,7 @@ static struct mac_model mac_data_table[] = {
+>          * Weirdified Mac II hardware - all subtly different. Gee thanks
+>          * Apple. All these boxes seem to have VIA2 in a different place to
+>          * the Mac II (+1A000 rather than +4000)
+> -        * CSA: see http://developer.apple.com/technotes/hw/hw_09.html
+> +        * CSA: see https://developer.apple.com/technotes/hw/hw_09.html
+
+Same as above.
+
+>          */
+>
+>         {
+> diff --git a/arch/m68k/mac/macboing.c b/arch/m68k/mac/macboing.c
+> index 388780797f7d..a904146dc4e6 100644
+> --- a/arch/m68k/mac/macboing.c
+> +++ b/arch/m68k/mac/macboing.c
+> @@ -116,7 +116,7 @@ static void mac_init_asc( void )
+>                          *   support 16-bit stereo output, but only mono input."
+>                          *
+>                          *   Technical Information Library (TIL) article number 16405.
+> -                        *   http://support.apple.com/kb/TA32601
+> +                        *   https://support.apple.com/kb/TA32601
+
+This change is fine. Actually the old URL returns 301 to point to the
+new URL ;-)
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
+-- 
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
