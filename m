@@ -6,46 +6,49 @@ X-Spam-Status: No, score=-6.8 required=3.0 tests=BAYES_00,
 	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,
 	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 1618DC433E1
-	for <linux-m68k@archiver.kernel.org>; Wed, 26 Aug 2020 08:55:35 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 79543C433E1
+	for <linux-m68k@archiver.kernel.org>; Wed, 26 Aug 2020 09:07:30 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id E75FF206E3
-	for <linux-m68k@archiver.kernel.org>; Wed, 26 Aug 2020 08:55:34 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 5C17B206FA
+	for <linux-m68k@archiver.kernel.org>; Wed, 26 Aug 2020 09:07:30 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727888AbgHZIz3 (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Wed, 26 Aug 2020 04:55:29 -0400
-Received: from mail-oi1-f195.google.com ([209.85.167.195]:36666 "EHLO
-        mail-oi1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727792AbgHZIz0 (ORCPT
+        id S1727972AbgHZJHa (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Wed, 26 Aug 2020 05:07:30 -0400
+Received: from mail-ot1-f65.google.com ([209.85.210.65]:39267 "EHLO
+        mail-ot1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727971AbgHZJH2 (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Wed, 26 Aug 2020 04:55:26 -0400
-Received: by mail-oi1-f195.google.com with SMTP id b9so891883oiy.3
-        for <linux-m68k@lists.linux-m68k.org>; Wed, 26 Aug 2020 01:55:25 -0700 (PDT)
+        Wed, 26 Aug 2020 05:07:28 -0400
+Received: by mail-ot1-f65.google.com with SMTP id r8so923002ota.6
+        for <linux-m68k@lists.linux-m68k.org>; Wed, 26 Aug 2020 02:07:27 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=YZeUK8THxl3gGFBaWshaAnlIvnsQJXffWHqOKGUSxHI=;
-        b=UcQgkX1VnoLnUfu21MBlY8Q/nPNhP8CFHdH0tGhHq+pwYhg7MPwqTGjNzxc04lGXnv
-         P4dPIrl7IdsPX+SwbJMSTqCYi/cCcsnKxAlGkFlxhMtPrq6+DNZXWNJRF54o59bS69QV
-         051Xukk7+0QyCxaGHZ1Q0ms4VDQwY1dP7syEIRxjnP1crGSeRToZu58mHNu98pmuBgZk
-         iWU8o3FhD492iYcB9FDsQF6i05UphZ7B3yyzmTk6RwtqGAkgDfUrN6OWv/C4HVnCxtBd
-         ZQeapRY7f1zDQLbdQ24Xt0yVNquzA2xRJbEqJkUAWODZIwjOVTkketSA+vWEYvZ/VD7t
-         R89Q==
-X-Gm-Message-State: AOAM53362tjDnjuwmidP3Mjv7ESH1BDjMW9CiLm5Khk8PEQHcUrtn8al
-        rB30CJMsoLotmSpKU+rUzvcJImUvcpi1sgRViiU=
-X-Google-Smtp-Source: ABdhPJwrNm2flNDJyw4eAZDbk6R3tk8xpETILVv/y1XJ6PQKJxNXuttGBthgrUPeYDfaEMI314g0ojPmuoIcn6dFdUY=
-X-Received: by 2002:aca:3402:: with SMTP id b2mr790853oia.153.1598432125496;
- Wed, 26 Aug 2020 01:55:25 -0700 (PDT)
+        bh=NCgdszg+UDbPAT++dmMRAeFSvMyoZiAg0p8cGDxBeXA=;
+        b=UWEWtL1NcHGPWgfuLbSafSxHqvQYSRAqL2cSmaC8mOqzMjMZR3iogNMXYjPYvOJ6ms
+         8V09Kf2cMNqSNEnrrc9AHSczw4uqOEM2ELEZNpmXQFF6cn9Wce9se1Y1jRPwl5ZbTlBZ
+         6oDN7B91m9AeG4139b5FNT3QZ6rfzQ00+CuJm0llAB6RsMygcPJeJJ+XcCS0N239QDa2
+         8rvQI+xE+eyTAdDKr5sSyXmRqCCr6Sm/F1JVW9zzwt4iWnkKriLjfQOXsOxcjLEyMSIq
+         RDKsXdzSYgrt+s9A46YbvACYbH8L8BYuRqoBLylr99cE/mngBLepVN1jnKbj2gLUg8wM
+         Q9ZA==
+X-Gm-Message-State: AOAM532QiCkMu0JmyFOyWgItIdnAO4mUrQSFh0wBiymZYO2/b82dwdYL
+        S7PDpDXG8JMW+bgTMY7P224y8ymVxqR7kbNmEuM=
+X-Google-Smtp-Source: ABdhPJz/V9TF3DtKRsO706Gjnv1cdrtKt4MphsCq88tyd7IS2DJEHZObzq9y6iSw60e6ZK0QgK+6jiW4XNaNSxOHEEs=
+X-Received: by 2002:a9d:32e5:: with SMTP id u92mr8650513otb.107.1598432847127;
+ Wed, 26 Aug 2020 02:07:27 -0700 (PDT)
 MIME-Version: 1.0
-References: <f54e99e9bd1e25ad70a6a1d7a7ec9ab2b4e50d68.1595460351.git.fthain@telegraphics.com.au>
-In-Reply-To: <f54e99e9bd1e25ad70a6a1d7a7ec9ab2b4e50d68.1595460351.git.fthain@telegraphics.com.au>
+References: <20200728022746.87612-1-miaoqinglang@huawei.com>
+In-Reply-To: <20200728022746.87612-1-miaoqinglang@huawei.com>
 From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Wed, 26 Aug 2020 10:55:13 +0200
-Message-ID: <CAMuHMdW7eWtkUURxvAwAz6cAHABLBk4qs4bLUXR3wuowQbn5Fw@mail.gmail.com>
-Subject: Re: [PATCH] m68k: Correct some typos in comments
-To:     Finn Thain <fthain@telegraphics.com.au>
-Cc:     linux-m68k <linux-m68k@lists.linux-m68k.org>,
+Date:   Wed, 26 Aug 2020 11:07:15 +0200
+Message-ID: <CAMuHMdWfqh_AKyE+od_0yVPP6Lkv8LUAR1dWf8Df94W7b4qxLA@mail.gmail.com>
+Subject: Re: [PATCH -next] m68k/amiga: missing platform_device_unregister() on
+ error in amiga_init_devices()
+To:     Qinglang Miao <miaoqinglang@huawei.com>
+Cc:     Stephen Rothwell <sfr@canb.auug.org.au>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-m68k <linux-m68k@lists.linux-m68k.org>,
         Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Sender: linux-m68k-owner@vger.kernel.org
@@ -53,44 +56,51 @@ Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-Hi Finn,
+Hi Qinglang,
 
-On Thu, Jul 23, 2020 at 1:50 AM Finn Thain <fthain@telegraphics.com.au> wrote:
-> Signed-off-by: Finn Thain <fthain@telegraphics.com.au>
+On Tue, Jul 28, 2020 at 4:24 AM Qinglang Miao <miaoqinglang@huawei.com> wrote:
+> Add the missing platform_device_unregister() before return
+> from amiga_init_devices() in the error handling case.
+>
+> Signed-off-by: Qinglang Miao <miaoqinglang@huawei.com>
 
 Thanks for your patch!
 
-> --- a/arch/m68k/kernel/head.S
-> +++ b/arch/m68k/kernel/head.S
+> --- a/arch/m68k/amiga/platform.c
+> +++ b/arch/m68k/amiga/platform.c
+> @@ -188,8 +188,10 @@ static int __init amiga_init_devices(void)
+>                         return PTR_ERR(pdev);
+>                 error = platform_device_add_data(pdev, &a1200_ide_pdata,
+>                                                  sizeof(a1200_ide_pdata));
 
-> @@ -1547,7 +1547,7 @@ func_return       get_bi_record
->   *     seven bits of the logical address (LA) are used as an
->   *     index into the "root table."  Each entry in the root
->   *     table has a bit which specifies if it's a valid pointer to a
-> - *     pointer table.  Each entry defines a 32KMeg range of memory.
-> + *     pointer table.  Each entry defines a 32Meg range of memory.
->   *     If an entry is invalid then that logical range of 32M is
+The only reason why platform_device_add_data() can fail is because the
+system ran out of memory.  If that's the case this early, the whole
+system will fail to work anyway, and it doesn't matter that the IDE
+driver will crash later due to missing platform data.
 
-Ah, lots of opportunities to switch to SI prefixes (MiB) ;-)
+So I don't think it helps to increase kernel size by adding more error
+handling.
 
->   *     invalid and references to that range of memory (when the MMU
->   *     is enabled) will fault.  If the entry is valid, then it does
-
-> @@ -2654,7 +2654,7 @@ func_start        mmu_get_page_table_entry,%d0/%a1
->         jne     2f
+> -               if (error)
+> +               if (error) {
+> +                       platform_device_unregister(pdev);
+>                         return error;
+> +               }
+>         }
 >
->         /* If the page table entry doesn't exist, we allocate a complete new
-> -        * page and use it as one continues big page table which can cover
-> +        * page and use it as one continuous big page table which can cover
+>         if (AMIGAHW_PRESENT(A4000_IDE)) {
+> @@ -199,8 +201,10 @@ static int __init amiga_init_devices(void)
+>                         return PTR_ERR(pdev);
+>                 error = platform_device_add_data(pdev, &a4000_ide_pdata,
+>                                                  sizeof(a4000_ide_pdata));
+> -               if (error)
+> +               if (error) {
+> +                       platform_device_unregister(pdev);
 
-Usually I use "contiguous", but the dictionary seems to permit both.
+Likewise.
 
->          * 4MB of memory, nearly almost all mappings have that alignment.
->          */
->         get_new_page
-
-Reviewed-by: Geert Uytterhoeven <geert@linux-m68k.org>
-i.e. will queue in the m68k for-v5.10 branch.
+>                         return error;
+> +               }
 
 Gr{oetje,eeting}s,
 
