@@ -2,226 +2,458 @@ Return-Path: <SRS0=i6Xs=CE=vger.kernel.org=linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-16.2 required=3.0 tests=BAYES_00,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1
-	autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-9.8 required=3.0 tests=BAYES_00,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 39FAAC433DF
-	for <linux-m68k@archiver.kernel.org>; Wed, 26 Aug 2020 14:22:22 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 34583C433E1
+	for <linux-m68k@archiver.kernel.org>; Wed, 26 Aug 2020 14:52:07 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 16D97221E2
-	for <linux-m68k@archiver.kernel.org>; Wed, 26 Aug 2020 14:22:21 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 1162A2177B
+	for <linux-m68k@archiver.kernel.org>; Wed, 26 Aug 2020 14:52:07 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728060AbgHZOWV (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Wed, 26 Aug 2020 10:22:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57396 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728053AbgHZOWU (ORCPT
-        <rfc822;linux-m68k@vger.kernel.org>); Wed, 26 Aug 2020 10:22:20 -0400
-Received: from baptiste.telenet-ops.be (baptiste.telenet-ops.be [IPv6:2a02:1800:120:4::f00:13])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0EADDC061574
-        for <linux-m68k@vger.kernel.org>; Wed, 26 Aug 2020 07:22:19 -0700 (PDT)
-Received: from ramsan ([84.195.186.194])
-        by baptiste.telenet-ops.be with bizsmtp
-        id LENG2300j4C55Sk01ENHpL; Wed, 26 Aug 2020 16:22:17 +0200
-Received: from geert (helo=localhost)
-        by ramsan with local-esmtp (Exim 4.90_1)
-        (envelope-from <geert@linux-m68k.org>)
-        id 1kAwJc-0000ts-SE; Wed, 26 Aug 2020 16:22:16 +0200
-Date:   Wed, 26 Aug 2020 16:22:16 +0200 (CEST)
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
+        id S1728074AbgHZOwC (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Wed, 26 Aug 2020 10:52:02 -0400
+Received: from smtprelay0247.hostedemail.com ([216.40.44.247]:57352 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1728063AbgHZOv6 (ORCPT
+        <rfc822;linux-m68k@lists.linux-m68k.org>);
+        Wed, 26 Aug 2020 10:51:58 -0400
+Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay08.hostedemail.com (Postfix) with ESMTP id 6E608182CF66C;
+        Wed, 26 Aug 2020 14:51:50 +0000 (UTC)
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-HE-Tag: spy71_140719227065
+X-Filterd-Recvd-Size: 11777
+Received: from XPS-9350.home (unknown [47.151.133.149])
+        (Authenticated sender: joe@perches.com)
+        by omf11.hostedemail.com (Postfix) with ESMTPA;
+        Wed, 26 Aug 2020 14:51:47 +0000 (UTC)
+Message-ID: <b88538f92386f41b938c502ae2daec5800a85dcf.camel@perches.com>
+Subject: Re: [PATCH 17/19] z2ram: reindent
+From:   Joe Perches <joe@perches.com>
 To:     John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
-cc:     Michael Schmitz <schmitzmic@gmail.com>,
-        Linux/m68k <linux-m68k@vger.kernel.org>,
-        Andreas Schwab <schwab@linux-m68k.org>,
-        Michael Karcher <kernel@mkarcher.dialup.fu-berlin.de>
-Subject: Re: [PATCH] m68k/kernel - wire up syscall_trace_enter/leave for
- m68k
-In-Reply-To: <266db1b5-c470-4f94-264a-577673dd902f@physik.fu-berlin.de>
-Message-ID: <alpine.DEB.2.21.2008261612360.2926@ramsan.of.borg>
-References: <f0c9edc0-e596-c483-b9a6-f67778bd297c@physik.fu-berlin.de> <1595823555-11103-1-git-send-email-schmitzmic@gmail.com> <CAMuHMdVNqgG_6LSSuzMZekE1q7i_V4YisDJQUsjptLDejNGaRw@mail.gmail.com> <01c270ec-cd73-1d7e-0d1a-4ccde66e9d1b@physik.fu-berlin.de>
- <alpine.DEB.2.21.2008261430460.30022@ramsan.of.borg> <db3aaa13-1cc5-232d-102a-ef89a3304065@physik.fu-berlin.de> <CAMuHMdVH6OtTMzM7jbhnwvhUtag217PTYghLwd3iVAchXEn2xw@mail.gmail.com> <266db1b5-c470-4f94-264a-577673dd902f@physik.fu-berlin.de>
-User-Agent: Alpine 2.21 (DEB 202 2017-01-01)
+Cc:     Christoph Hellwig <hch@lst.de>, Jens Axboe <axboe@kernel.dk>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Denis Efremov <efremov@linux.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Song Liu <song@kernel.org>, Al Viro <viro@zeniv.linux.org.uk>,
+        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-ide@vger.kernel.org, linux-raid@vger.kernel.org,
+        linux-scsi@vger.kernel.org, linux-m68k@lists.linux-m68k.org
+Date:   Wed, 26 Aug 2020 07:51:46 -0700
+In-Reply-To: <EF673A30-F88D-4E4E-8A2B-E942153830AC@physik.fu-berlin.de>
+References: <8570915f668159f93ba2eb845a3bbc05f8ee3a99.camel@perches.com>
+         <EF673A30-F88D-4E4E-8A2B-E942153830AC@physik.fu-berlin.de>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.36.4-0ubuntu1 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII; format=flowed
+Content-Transfer-Encoding: 8bit
 Sender: linux-m68k-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
- 	Hi Adrian,
+On Wed, 2020-08-26 at 11:49 +0200, John Paul Adrian Glaubitz wrote:
+> > On Aug 26, 2020, at 11:21 AM, Joe Perches <joe@perches.com> wrote:
+> > 
+> > ﻿On Wed, 2020-08-26 at 08:24 +0200, Christoph Hellwig wrote:
+> > > reindent the driver using Lident as the code style was far away from
+> > > normal Linux code.
+> > 
+> > Why?  Does anyone use this anymore?
+> 
+> Yes, the Amiga and Linux/m68k is very well and alive.
 
-On Wed, 26 Aug 2020, John Paul Adrian Glaubitz wrote:
-> On 8/26/20 2:38 PM, Geert Uytterhoeven wrote:
->>> That part is outdated. It was removed in the second commit I posted, see:
->>>
->>>> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/arch/sh?id=0bb605c2c7f2b4b314b91510810b226de7f34fa1
->>
->> That's the part which adds seccomp filter support.
->>
->>> Do you have the check of the return value already in syscall_trace_entry?
->>>
->>> It should check for "-1" and jump to syscall_exit if true.
->>
->> No, as that's needed only for seccomp filter support, AFAIU.
->>
->> Have a look at arm, where seccomp filter support is optional, depending on ABI.
->
-> As far as I know, filter support is mandatory these days. At least for SH, libseccomp
-> sent me away with my PR and told me to come back until the kernel has filter support.
+That's fine.  My question was why ancient code should be modified
+if it's not in use.
 
-OK.
+>  There is new hardware being developed and new drivers being developed and so on.
 
-> Maybe I'm missing something but let's put Michael Karcher in the loop, he knows better
-> as he helped me with the kernel parts of SECCOMP on SH.
+OK, fine.
 
-More work on top of the previous patch. It starts to look better:
+btw:
 
-    -FAILED: 13 / 86 tests passed.
-    +FAILED: 35 / 86 tests passed.
-
-But there are still fishy failures.  Most popular one is:
-
-     Test exited normally instead of by signal (code: 0)
-
-And things like:
-
-     Expected 0 (0) == syscall(__NR_getpid) (705)
-     Expected 0 (-270272472) == ptrace(PTRACE_GETREGS, tracee, 0, &regs) (0)
-
-
-
-From 1ae515061575024081af930f4e5f9283910648de Mon Sep 17 00:00:00 2001
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Date: Wed, 26 Aug 2020 16:11:35 +0200
-Subject: [PATCH] [WIP] seccomp filter support
-
-Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
+If style only changes are to be done on this code then
+I believe these changes on top should also be made done
+for style:
 ---
-  arch/m68k/68000/entry.S         |  2 ++
-  arch/m68k/Kconfig               |  1 +
-  arch/m68k/coldfire/entry.S      |  2 ++
-  arch/m68k/include/asm/syscall.h | 41 +++++++++++++++++++++++++++++++++
-  arch/m68k/kernel/ptrace.c       |  3 ++-
-  5 files changed, 48 insertions(+), 1 deletion(-)
+From 0eb1b25575abe52415ecb0139e14ae57ba4f57cb Mon Sep 17 00:00:00 2001
+Message-Id: <0eb1b25575abe52415ecb0139e14ae57ba4f57cb.1598453361.git.joe@perches.com>
+From: Joe Perches <joe@perches.com>
+Date: Wed, 26 Aug 2020 02:20:14 -0700
+Subject: [PATCH] z2ram: Use more current coding style
 
-diff --git a/arch/m68k/68000/entry.S b/arch/m68k/68000/entry.S
-index 259b3661b614168f..3526970e3c10535f 100644
---- a/arch/m68k/68000/entry.S
-+++ b/arch/m68k/68000/entry.S
-@@ -47,6 +47,8 @@ do_trace:
-  	jbsr	syscall_trace_enter
-  	RESTORE_SWITCH_STACK
-  	addql	#4,%sp
-+	tstl	%d0
-+	jne	ret_from_exception
-  	movel	%sp@(PT_OFF_ORIG_D0),%d1
-  	movel	#-ENOSYS,%d0
-  	cmpl	#NR_syscalls,%d1
-diff --git a/arch/m68k/Kconfig b/arch/m68k/Kconfig
-index 29ab228a9a721939..2166c9d84794a969 100644
---- a/arch/m68k/Kconfig
-+++ b/arch/m68k/Kconfig
-@@ -19,6 +19,7 @@ config M68K
-  	select GENERIC_STRNCPY_FROM_USER if MMU
-  	select GENERIC_STRNLEN_USER if MMU
-  	select HAVE_AOUT if MMU
-+	select HAVE_ARCH_SECCOMP_FILTER
-  	select HAVE_ASM_MODVERSIONS
-  	select HAVE_DEBUG_BUGVERBOSE
-  	select HAVE_FUTEX_CMPXCHG if MMU && FUTEX
-diff --git a/arch/m68k/coldfire/entry.S b/arch/m68k/coldfire/entry.S
-index d43a02795a4a445e..13bf787968273165 100644
---- a/arch/m68k/coldfire/entry.S
-+++ b/arch/m68k/coldfire/entry.S
-@@ -92,6 +92,8 @@ ENTRY(system_call)
-  	jbsr	syscall_trace_enter
-  	RESTORE_SWITCH_STACK
-  	addql	#4,%sp
-+	tstl	%d0
-+	jne	ret_from_exception
-  	movel	%d3,%a0
-  	jbsr	%a0@
-  	movel	%d0,%sp@(PT_OFF_D0)		/* save the return value */
-diff --git a/arch/m68k/include/asm/syscall.h b/arch/m68k/include/asm/syscall.h
-index 465ac039be09a1b8..ac0f5d997be63b07 100644
---- a/arch/m68k/include/asm/syscall.h
-+++ b/arch/m68k/include/asm/syscall.h
-@@ -4,6 +4,47 @@
+Use pr_fmt and pr_<level>, continue, and remove tests against NULL.
+Use more typical brace styles, add and remove them as appropriate.
+Simplify logic in z2_open, rename err_out label to out, unindent a
+large block by reversing the test and using goto.
 
-  #include <uapi/linux/audit.h>
+Signed-off-by: Joe Perches <joe@perches.com>
+---
+ drivers/block/z2ram.c | 261 +++++++++++++++++++-----------------------
+ 1 file changed, 118 insertions(+), 143 deletions(-)
 
-+static inline long syscall_get_nr(struct task_struct *tsk,
-+				  struct pt_regs *regs)
-+{
-+	return regs->orig_d0;
-+}
+diff --git a/drivers/block/z2ram.c b/drivers/block/z2ram.c
+index 566c653399d8..ea490fe4417e 100644
+--- a/drivers/block/z2ram.c
++++ b/drivers/block/z2ram.c
+@@ -1,7 +1,7 @@
+ /*
+ ** z2ram - Amiga pseudo-driver to access 16bit-RAM in ZorroII space
+ **         as a block device, to be used as a RAM disk or swap space
+-** 
++**
+ ** Copyright (C) 1994 by Ingo Wilken (Ingo.Wilken@informatik.uni-oldenburg.de)
+ **
+ ** ++Geert: support for zorro_unused_z2ram, better range checking
+@@ -25,6 +25,8 @@
+ ** implied warranty.
+ */
+ 
++#define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
 +
-+static inline void syscall_rollback(struct task_struct *task,
-+				    struct pt_regs *regs)
-+{
-+	regs->d0 = regs->orig_d0;
-+}
+ #define DEVICE_NAME "Z2RAM"
+ 
+ #include <linux/major.h>
+@@ -75,7 +77,7 @@ static blk_status_t z2_queue_rq(struct blk_mq_hw_ctx *hctx,
+ 	blk_mq_start_request(req);
+ 
+ 	if (start + len > z2ram_size) {
+-		pr_err(DEVICE_NAME ": bad access: block=%llu, count=%u\n",
++		pr_err("bad access: block=%llu, count=%u\n",
+ 		       (unsigned long long)blk_rq_pos(req),
+ 		       blk_rq_cur_sectors(req));
+ 		return BLK_STS_IOERR;
+@@ -109,34 +111,28 @@ static void get_z2ram(void)
+ 	int i;
+ 
+ 	for (i = 0; i < Z2RAM_SIZE / Z2RAM_CHUNKSIZE; i++) {
+-		if (test_bit(i, zorro_unused_z2ram)) {
+-			z2_count++;
+-			z2ram_map[z2ram_size++] =
+-			    (unsigned long)ZTWO_VADDR(Z2RAM_START) +
+-			    (i << Z2RAM_CHUNKSHIFT);
+-			clear_bit(i, zorro_unused_z2ram);
+-		}
++		if (!test_bit(i, zorro_unused_z2ram))
++			continue;
++		z2_count++;
++		z2ram_map[z2ram_size++] =
++			(unsigned long)ZTWO_VADDR(Z2RAM_START) +
++			(i << Z2RAM_CHUNKSHIFT);
++		clear_bit(i, zorro_unused_z2ram);
+ 	}
+-
+-	return;
+ }
+ 
+ static void get_chipram(void)
+ {
+-
+ 	while (amiga_chip_avail() > (Z2RAM_CHUNKSIZE * 4)) {
+ 		chip_count++;
+ 		z2ram_map[z2ram_size] =
+ 		    (u_long) amiga_chip_alloc(Z2RAM_CHUNKSIZE, "z2ram");
+ 
+-		if (z2ram_map[z2ram_size] == 0) {
++		if (z2ram_map[z2ram_size] == 0)
+ 			break;
+-		}
+ 
+ 		z2ram_size++;
+ 	}
+-
+-	return;
+ }
+ 
+ static int z2_open(struct block_device *bdev, fmode_t mode)
+@@ -152,144 +148,127 @@ static int z2_open(struct block_device *bdev, fmode_t mode)
+ 	mutex_lock(&z2ram_mutex);
+ 	if (current_device != -1 && current_device != device) {
+ 		rc = -EBUSY;
+-		goto err_out;
++		goto out;
+ 	}
+ 
+-	if (current_device == -1) {
+-		z2_count = 0;
+-		chip_count = 0;
+-		list_count = 0;
+-		z2ram_size = 0;
+-
+-		/* Use a specific list entry. */
+-		if (device >= Z2MINOR_MEMLIST1 && device <= Z2MINOR_MEMLIST4) {
+-			int index = device - Z2MINOR_MEMLIST1 + 1;
+-			unsigned long size, paddr, vaddr;
+-
+-			if (index >= m68k_realnum_memory) {
+-				printk(KERN_ERR DEVICE_NAME
+-				       ": no such entry in z2ram_map\n");
+-				goto err_out;
+-			}
++	if (current_device != -1) {
++		rc = 0;
++		goto out;
++	}
+ 
+-			paddr = m68k_memory[index].addr;
+-			size = m68k_memory[index].size & ~(Z2RAM_CHUNKSIZE - 1);
++	z2_count = 0;
++	chip_count = 0;
++	list_count = 0;
++	z2ram_size = 0;
+ 
+-#ifdef __powerpc__
+-			/*
+-			 * FIXME: ioremap doesn't build correct memory tables.
+-			 */
+-			vfree(vmalloc(size));
+-			vaddr = (unsigned long)ioremap_wt(paddr, size);
++	/* Use a specific list entry. */
++	if (device >= Z2MINOR_MEMLIST1 && device <= Z2MINOR_MEMLIST4) {
++		int index = device - Z2MINOR_MEMLIST1 + 1;
++		unsigned long size, paddr, vaddr;
 +
-+static inline long syscall_get_return_value(struct task_struct *task,
-+					    struct pt_regs *regs)
-+{
-+	return regs->d0;
-+}
++		if (index >= m68k_realnum_memory) {
++			pr_err("no such entry in z2ram_map\n");
++			goto out;
++		}
+ 
++		paddr = m68k_memory[index].addr;
++		size = m68k_memory[index].size & ~(Z2RAM_CHUNKSIZE - 1);
 +
-+static inline void syscall_set_return_value(struct task_struct *task,
-+					    struct pt_regs *regs,
-+					    int error, long val)
-+{
-+	regs->d0 = error ?: val;
-+}
++#ifdef __powerpc__
++		/*
++		 * FIXME: ioremap doesn't build correct memory tables.
++		 */
++		vfree(vmalloc(size));
++		vaddr = (unsigned long)ioremap_wt(paddr, size);
+ #else
+-			vaddr =
+-			    (unsigned long)z_remap_nocache_nonser(paddr, size);
++		vaddr = (unsigned long)z_remap_nocache_nonser(paddr, size);
+ #endif
+-			z2ram_map =
+-			    kmalloc_array(size / Z2RAM_CHUNKSIZE,
++		z2ram_map = kmalloc_array(size / Z2RAM_CHUNKSIZE,
+ 					  sizeof(z2ram_map[0]), GFP_KERNEL);
+-			if (z2ram_map == NULL) {
+-				printk(KERN_ERR DEVICE_NAME
+-				       ": cannot get mem for z2ram_map\n");
+-				goto err_out;
++		if (!z2ram_map) {
++			pr_err("cannot get mem for z2ram_map\n");
++			goto out;
++		}
 +
-+static inline void syscall_get_arguments(struct task_struct *tsk,
-+					 struct pt_regs *regs,
-+					 unsigned long *args)
-+{
-+	memcpy(args, &regs->d1, 6 * sizeof(args[0]));
-+}
++		while (size) {
++			z2ram_map[z2ram_size++] = vaddr;
++			size -= Z2RAM_CHUNKSIZE;
++			vaddr += Z2RAM_CHUNKSIZE;
++			list_count++;
++		}
 +
-+static inline void syscall_set_arguments(struct task_struct *task,
-+					 struct pt_regs *regs,
-+					 unsigned int i, unsigned int n,
-+					 const unsigned long *args)
-+{
-+	BUG_ON(i + n > 6);
-+	memcpy(&regs->d1 + i, args, n * sizeof(args[0]));
-+}
++		if (z2ram_size != 0)
++			pr_info("using %iK List Entry %d Memory\n",
++				list_count * Z2RAM_CHUNK1024, index);
++	} else {
++		switch (device) {
++		case Z2MINOR_COMBINED:
++			z2ram_map = kmalloc(max_z2_map + max_chip_map,
++					    GFP_KERNEL);
++			if (!z2ram_map) {
++				pr_err("cannot get mem for z2ram_map\n");
++				goto out;
+ 			}
+ 
+-			while (size) {
+-				z2ram_map[z2ram_size++] = vaddr;
+-				size -= Z2RAM_CHUNKSIZE;
+-				vaddr += Z2RAM_CHUNKSIZE;
+-				list_count++;
++			get_z2ram();
++			get_chipram();
 +
-  static inline int syscall_get_arch(struct task_struct *task)
-  {
-  	return AUDIT_ARCH_M68K;
-diff --git a/arch/m68k/kernel/ptrace.c b/arch/m68k/kernel/ptrace.c
-index ec5653b85dcdb4f9..a3a0a230dcdfc953 100644
---- a/arch/m68k/kernel/ptrace.c
-+++ b/arch/m68k/kernel/ptrace.c
-@@ -279,7 +279,8 @@ asmlinkage int syscall_trace_enter(void)
-  	if (test_thread_flag(TIF_SYSCALL_TRACE))
-  		ret = tracehook_report_syscall_entry(task_pt_regs(current));
-
--	secure_computing_strict(task_pt_regs(current)->orig_d0);
-+	if (secure_computing())
-+		return -1;
-
-  	return ret;
-  }
++			if (z2ram_size != 0)
++				pr_info("using %iK Zorro II RAM and %iK Chip RAM (Total %dK)\n",
++					z2_count * Z2RAM_CHUNK1024,
++					chip_count * Z2RAM_CHUNK1024,
++					(z2_count + chip_count) * Z2RAM_CHUNK1024);
++
++			break;
++
++		case Z2MINOR_Z2ONLY:
++			z2ram_map = kmalloc(max_z2_map, GFP_KERNEL);
++			if (!z2ram_map) {
++				pr_err("cannot get mem for z2ram_map\n");
++				goto out;
+ 			}
+ 
++			get_z2ram();
++
+ 			if (z2ram_size != 0)
+-				printk(KERN_INFO DEVICE_NAME
+-				       ": using %iK List Entry %d Memory\n",
+-				       list_count * Z2RAM_CHUNK1024, index);
+-		} else
+-			switch (device) {
+-			case Z2MINOR_COMBINED:
+-
+-				z2ram_map =
+-				    kmalloc(max_z2_map + max_chip_map,
+-					    GFP_KERNEL);
+-				if (z2ram_map == NULL) {
+-					printk(KERN_ERR DEVICE_NAME
+-					       ": cannot get mem for z2ram_map\n");
+-					goto err_out;
+-				}
+-
+-				get_z2ram();
+-				get_chipram();
+-
+-				if (z2ram_size != 0)
+-					printk(KERN_INFO DEVICE_NAME
+-					       ": using %iK Zorro II RAM and %iK Chip RAM (Total %dK)\n",
+-					       z2_count * Z2RAM_CHUNK1024,
+-					       chip_count * Z2RAM_CHUNK1024,
+-					       (z2_count +
+-						chip_count) * Z2RAM_CHUNK1024);
+-
+-				break;
+-
+-			case Z2MINOR_Z2ONLY:
+-				z2ram_map = kmalloc(max_z2_map, GFP_KERNEL);
+-				if (z2ram_map == NULL) {
+-					printk(KERN_ERR DEVICE_NAME
+-					       ": cannot get mem for z2ram_map\n");
+-					goto err_out;
+-				}
+-
+-				get_z2ram();
+-
+-				if (z2ram_size != 0)
+-					printk(KERN_INFO DEVICE_NAME
+-					       ": using %iK of Zorro II RAM\n",
+-					       z2_count * Z2RAM_CHUNK1024);
+-
+-				break;
+-
+-			case Z2MINOR_CHIPONLY:
+-				z2ram_map = kmalloc(max_chip_map, GFP_KERNEL);
+-				if (z2ram_map == NULL) {
+-					printk(KERN_ERR DEVICE_NAME
+-					       ": cannot get mem for z2ram_map\n");
+-					goto err_out;
+-				}
+-
+-				get_chipram();
+-
+-				if (z2ram_size != 0)
+-					printk(KERN_INFO DEVICE_NAME
+-					       ": using %iK Chip RAM\n",
+-					       chip_count * Z2RAM_CHUNK1024);
+-
+-				break;
+-
+-			default:
+-				rc = -ENODEV;
+-				goto err_out;
+-
+-				break;
++				pr_info("using %iK of Zorro II RAM\n",
++					z2_count * Z2RAM_CHUNK1024);
++
++			break;
++
++		case Z2MINOR_CHIPONLY:
++			z2ram_map = kmalloc(max_chip_map, GFP_KERNEL);
++			if (!z2ram_map) {
++				pr_err("cannot get mem for z2ram_map\n");
++				goto out;
+ 			}
+ 
+-		if (z2ram_size == 0) {
+-			printk(KERN_NOTICE DEVICE_NAME
+-			       ": no unused ZII/Chip RAM found\n");
+-			goto err_out_kfree;
++			get_chipram();
++
++			if (z2ram_size != 0)
++				pr_info("using %iK Chip RAM\n",
++					chip_count * Z2RAM_CHUNK1024);
++
++			break;
++
++		default:
++			rc = -ENODEV;
++			goto out;
+ 		}
++	}
+ 
+-		current_device = device;
+-		z2ram_size <<= Z2RAM_CHUNKSHIFT;
+-		set_capacity(z2ram_gendisk, z2ram_size >> 9);
++	if (z2ram_size == 0) {
++		pr_notice("no unused ZII/Chip RAM found\n");
++		kfree(z2ram_map);
++		goto out;
+ 	}
+ 
+-	mutex_unlock(&z2ram_mutex);
+-	return 0;
++	current_device = device;
++	z2ram_size <<= Z2RAM_CHUNKSHIFT;
++	set_capacity(z2ram_gendisk, z2ram_size >> 9);
++	rc = 0;
+ 
+-err_out_kfree:
+-	kfree(z2ram_map);
+-err_out:
++out:
+ 	mutex_unlock(&z2ram_mutex);
+ 	return rc;
+ }
+@@ -372,7 +351,6 @@ static int __init z2_init(void)
+ 
+ static void __exit z2_exit(void)
+ {
+-	int i, j;
+ 	blk_unregister_region(MKDEV(Z2RAM_MAJOR, 0), Z2MINOR_COUNT);
+ 	unregister_blkdev(Z2RAM_MAJOR, DEVICE_NAME);
+ 	del_gendisk(z2ram_gendisk);
+@@ -381,24 +359,21 @@ static void __exit z2_exit(void)
+ 	blk_mq_free_tag_set(&tag_set);
+ 
+ 	if (current_device != -1) {
++		int i, j;
++
+ 		i = 0;
+ 
+-		for (j = 0; j < z2_count; j++) {
++		for (j = 0; j < z2_count; j++)
+ 			set_bit(i++, zorro_unused_z2ram);
+-		}
+ 
+ 		for (j = 0; j < chip_count; j++) {
+-			if (z2ram_map[i]) {
++			if (z2ram_map[i])
+ 				amiga_chip_free((void *)z2ram_map[i++]);
+-			}
+ 		}
+ 
+-		if (z2ram_map != NULL) {
++		if (z2ram_map)
+ 			kfree(z2ram_map);
+-		}
+ 	}
+-
+-	return;
+ }
+ 
+ module_init(z2_init);
 -- 
-2.17.1
+2.26.0
 
 
-
-Gr{oetje,eeting}s,
-
- 						Geert
-
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
- 							    -- Linus Torvalds
