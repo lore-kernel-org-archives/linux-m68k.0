@@ -2,221 +2,107 @@ Return-Path: <SRS0=i6Xs=CE=vger.kernel.org=linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-12.8 required=3.0 tests=BAYES_00,
+X-Spam-Status: No, score=-12.7 required=3.0 tests=BAYES_00,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
-	version=3.4.0
+	SPF_HELO_NONE,SPF_PASS,UPPERCASE_50_75,USER_AGENT_GIT autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 8B6F8C433DF
-	for <linux-m68k@archiver.kernel.org>; Wed, 26 Aug 2020 12:51:33 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id CB5E9C433DF
+	for <linux-m68k@archiver.kernel.org>; Wed, 26 Aug 2020 12:53:09 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 658E92075E
-	for <linux-m68k@archiver.kernel.org>; Wed, 26 Aug 2020 12:51:33 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id A9560214F1
+	for <linux-m68k@archiver.kernel.org>; Wed, 26 Aug 2020 12:53:09 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729656AbgHZMvc (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Wed, 26 Aug 2020 08:51:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43234 "EHLO
+        id S1729891AbgHZMxI (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Wed, 26 Aug 2020 08:53:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43482 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729654AbgHZMva (ORCPT
+        with ESMTP id S1729501AbgHZMxC (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Wed, 26 Aug 2020 08:51:30 -0400
+        Wed, 26 Aug 2020 08:53:02 -0400
 Received: from baptiste.telenet-ops.be (baptiste.telenet-ops.be [IPv6:2a02:1800:120:4::f00:13])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 22041C061574
-        for <linux-m68k@lists.linux-m68k.org>; Wed, 26 Aug 2020 05:51:29 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 89F87C061757
+        for <linux-m68k@lists.linux-m68k.org>; Wed, 26 Aug 2020 05:53:01 -0700 (PDT)
 Received: from ramsan ([84.195.186.194])
         by baptiste.telenet-ops.be with bizsmtp
-        id LCrR2300G4C55Sk01CrRDP; Wed, 26 Aug 2020 14:51:25 +0200
+        id LCt0230024C55Sk01Ct0Tn; Wed, 26 Aug 2020 14:53:00 +0200
 Received: from rox.of.borg ([192.168.97.57])
         by ramsan with esmtp (Exim 4.90_1)
         (envelope-from <geert@linux-m68k.org>)
-        id 1kAuth-00082b-IT; Wed, 26 Aug 2020 14:51:25 +0200
+        id 1kAuvE-00082s-2F; Wed, 26 Aug 2020 14:53:00 +0200
 Received: from geert by rox.of.borg with local (Exim 4.90_1)
         (envelope-from <geert@linux-m68k.org>)
-        id 1kAuth-0006Dc-Fu; Wed, 26 Aug 2020 14:51:25 +0200
+        id 1kAuvE-0006Gw-0N; Wed, 26 Aug 2020 14:53:00 +0200
 From:   Geert Uytterhoeven <geert@linux-m68k.org>
 To:     linux-m68k@lists.linux-m68k.org
 Cc:     linux-kernel@vger.kernel.org,
         Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: [PATCH] m68k: amiga: Clean up Amiga hardware configuration
-Date:   Wed, 26 Aug 2020 14:51:24 +0200
-Message-Id: <20200826125124.23863-1-geert@linux-m68k.org>
+Subject: [PATCH] m68k: Sort selects in main Kconfig
+Date:   Wed, 26 Aug 2020 14:52:59 +0200
+Message-Id: <20200826125259.24069-1-geert@linux-m68k.org>
 X-Mailer: git-send-email 2.17.1
 Sender: linux-m68k-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-Move the generic Amiga hardware configuration section out of the
-switch statement, which allows to replace all ugly jumps by break
-statements.
+Sort the list of select statements in the main Kconfig file for the m68k
+architecture, to avoid conflicts when modifying this list.
 
 Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
 ---
- arch/m68k/amiga/config.c | 118 +++++++++++++++++++--------------------
- 1 file changed, 58 insertions(+), 60 deletions(-)
+ arch/m68k/Kconfig | 24 ++++++++++++------------
+ 1 file changed, 12 insertions(+), 12 deletions(-)
 
-diff --git a/arch/m68k/amiga/config.c b/arch/m68k/amiga/config.c
-index 9c1afa143d05962b..bee9f240f35deef5 100644
---- a/arch/m68k/amiga/config.c
-+++ b/arch/m68k/amiga/config.c
-@@ -214,7 +214,7 @@ static void __init amiga_identify(void)
+diff --git a/arch/m68k/Kconfig b/arch/m68k/Kconfig
+index 6f2f38d05772ab55..93bbb74ea876d6f2 100644
+--- a/arch/m68k/Kconfig
++++ b/arch/m68k/Kconfig
+@@ -6,32 +6,32 @@ config M68K
+ 	select ARCH_HAS_BINFMT_FLAT
+ 	select ARCH_HAS_DMA_PREP_COHERENT if HAS_DMA && MMU && !COLDFIRE
+ 	select ARCH_HAS_SYNC_DMA_FOR_DEVICE if HAS_DMA
++	select ARCH_HAVE_NMI_SAFE_CMPXCHG if RMW_INSNS
+ 	select ARCH_MIGHT_HAVE_PC_PARPORT if ISA
+ 	select ARCH_NO_PREEMPT if !COLDFIRE
++	select ARCH_WANT_IPC_PARSE_VERSION
+ 	select BINFMT_FLAT_ARGVP_ENVP_ON_STACK
+ 	select DMA_DIRECT_REMAP if HAS_DMA && MMU && !COLDFIRE
+-	select HAVE_IDE
+-	select HAVE_AOUT if MMU
+-	select HAVE_ASM_MODVERSIONS
+-	select HAVE_DEBUG_BUGVERBOSE
+-	select GENERIC_IRQ_SHOW
+ 	select GENERIC_ATOMIC64
+-	select NO_DMA if !MMU && !COLDFIRE
+-	select HAVE_UID16
+-	select VIRT_TO_BUS
+-	select ARCH_HAVE_NMI_SAFE_CMPXCHG if RMW_INSNS
+ 	select GENERIC_CPU_DEVICES
+ 	select GENERIC_IOMAP
++	select GENERIC_IRQ_SHOW
+ 	select GENERIC_STRNCPY_FROM_USER if MMU
+ 	select GENERIC_STRNLEN_USER if MMU
+-	select ARCH_WANT_IPC_PARSE_VERSION
++	select HAVE_AOUT if MMU
++	select HAVE_ASM_MODVERSIONS
++	select HAVE_DEBUG_BUGVERBOSE
+ 	select HAVE_FUTEX_CMPXCHG if MMU && FUTEX
++	select HAVE_IDE
+ 	select HAVE_MOD_ARCH_SPECIFIC
++	select HAVE_UID16
++	select MMU_GATHER_NO_RANGE if MMU
+ 	select MODULES_USE_ELF_REL
+ 	select MODULES_USE_ELF_RELA
+-	select OLD_SIGSUSPEND3
++	select NO_DMA if !MMU && !COLDFIRE
+ 	select OLD_SIGACTION
+-	select MMU_GATHER_NO_RANGE if MMU
++	select OLD_SIGSUSPEND3
++	select VIRT_TO_BUS
  
- 	switch (amiga_model) {
- 	case AMI_UNKNOWN:
--		goto Generic;
-+		break;
- 
- 	case AMI_600:
- 	case AMI_1200:
-@@ -227,7 +227,7 @@ static void __init amiga_identify(void)
- 	case AMI_2000:
- 	case AMI_2500:
- 		AMIGAHW_SET(A2000_CLK);	/* Is this correct for all models? */
--		goto Generic;
-+		break;
- 
- 	case AMI_3000:
- 	case AMI_3000T:
-@@ -238,7 +238,7 @@ static void __init amiga_identify(void)
- 		AMIGAHW_SET(A3000_SCSI);
- 		AMIGAHW_SET(A3000_CLK);
- 		AMIGAHW_SET(ZORRO3);
--		goto Generic;
-+		break;
- 
- 	case AMI_4000T:
- 		AMIGAHW_SET(A4000_SCSI);
-@@ -247,68 +247,12 @@ static void __init amiga_identify(void)
- 		AMIGAHW_SET(A4000_IDE);
- 		AMIGAHW_SET(A3000_CLK);
- 		AMIGAHW_SET(ZORRO3);
--		goto Generic;
-+		break;
- 
- 	case AMI_CDTV:
- 	case AMI_CD32:
- 		AMIGAHW_SET(CD_ROM);
- 		AMIGAHW_SET(A2000_CLK);             /* Is this correct? */
--		goto Generic;
--
--	Generic:
--		AMIGAHW_SET(AMI_VIDEO);
--		AMIGAHW_SET(AMI_BLITTER);
--		AMIGAHW_SET(AMI_AUDIO);
--		AMIGAHW_SET(AMI_FLOPPY);
--		AMIGAHW_SET(AMI_KEYBOARD);
--		AMIGAHW_SET(AMI_MOUSE);
--		AMIGAHW_SET(AMI_SERIAL);
--		AMIGAHW_SET(AMI_PARALLEL);
--		AMIGAHW_SET(CHIP_RAM);
--		AMIGAHW_SET(PAULA);
--
--		switch (amiga_chipset) {
--		case CS_OCS:
--		case CS_ECS:
--		case CS_AGA:
--			switch (amiga_custom.deniseid & 0xf) {
--			case 0x0c:
--				AMIGAHW_SET(DENISE_HR);
--				break;
--			case 0x08:
--				AMIGAHW_SET(LISA);
--				break;
--			default:
--				AMIGAHW_SET(DENISE);
--				break;
--			}
--			break;
--		}
--		switch ((amiga_custom.vposr>>8) & 0x7f) {
--		case 0x00:
--			AMIGAHW_SET(AGNUS_PAL);
--			break;
--		case 0x10:
--			AMIGAHW_SET(AGNUS_NTSC);
--			break;
--		case 0x20:
--		case 0x21:
--			AMIGAHW_SET(AGNUS_HR_PAL);
--			break;
--		case 0x30:
--		case 0x31:
--			AMIGAHW_SET(AGNUS_HR_NTSC);
--			break;
--		case 0x22:
--		case 0x23:
--			AMIGAHW_SET(ALICE_PAL);
--			break;
--		case 0x32:
--		case 0x33:
--			AMIGAHW_SET(ALICE_NTSC);
--			break;
--		}
--		AMIGAHW_SET(ZORRO);
- 		break;
- 
- 	case AMI_DRACO:
-@@ -318,6 +262,60 @@ static void __init amiga_identify(void)
- 		panic("Unknown Amiga Model");
- 	}
- 
-+	AMIGAHW_SET(AMI_VIDEO);
-+	AMIGAHW_SET(AMI_BLITTER);
-+	AMIGAHW_SET(AMI_AUDIO);
-+	AMIGAHW_SET(AMI_FLOPPY);
-+	AMIGAHW_SET(AMI_KEYBOARD);
-+	AMIGAHW_SET(AMI_MOUSE);
-+	AMIGAHW_SET(AMI_SERIAL);
-+	AMIGAHW_SET(AMI_PARALLEL);
-+	AMIGAHW_SET(CHIP_RAM);
-+	AMIGAHW_SET(PAULA);
-+
-+	switch (amiga_chipset) {
-+	case CS_OCS:
-+	case CS_ECS:
-+	case CS_AGA:
-+		switch (amiga_custom.deniseid & 0xf) {
-+		case 0x0c:
-+			AMIGAHW_SET(DENISE_HR);
-+			break;
-+		case 0x08:
-+			AMIGAHW_SET(LISA);
-+			break;
-+		default:
-+			AMIGAHW_SET(DENISE);
-+			break;
-+		}
-+		break;
-+	}
-+	switch ((amiga_custom.vposr>>8) & 0x7f) {
-+	case 0x00:
-+		AMIGAHW_SET(AGNUS_PAL);
-+		break;
-+	case 0x10:
-+		AMIGAHW_SET(AGNUS_NTSC);
-+		break;
-+	case 0x20:
-+	case 0x21:
-+		AMIGAHW_SET(AGNUS_HR_PAL);
-+		break;
-+	case 0x30:
-+	case 0x31:
-+		AMIGAHW_SET(AGNUS_HR_NTSC);
-+		break;
-+	case 0x22:
-+	case 0x23:
-+		AMIGAHW_SET(ALICE_PAL);
-+		break;
-+	case 0x32:
-+	case 0x33:
-+		AMIGAHW_SET(ALICE_NTSC);
-+		break;
-+	}
-+	AMIGAHW_SET(ZORRO);
-+
- #define AMIGAHW_ANNOUNCE(name, str)		\
- 	if (AMIGAHW_PRESENT(name))		\
- 		pr_cont(str)
+ config CPU_BIG_ENDIAN
+ 	def_bool y
 -- 
 2.17.1
 
