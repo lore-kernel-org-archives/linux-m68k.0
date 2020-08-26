@@ -2,52 +2,75 @@ Return-Path: <SRS0=i6Xs=CE=vger.kernel.org=linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.8 required=3.0 tests=BAYES_00,
+X-Spam-Status: No, score=-12.6 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 34583C433E1
-	for <linux-m68k@archiver.kernel.org>; Wed, 26 Aug 2020 14:52:07 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 3255BC433DF
+	for <linux-m68k@archiver.kernel.org>; Wed, 26 Aug 2020 14:56:34 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 1162A2177B
-	for <linux-m68k@archiver.kernel.org>; Wed, 26 Aug 2020 14:52:07 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id F19A92078D
+	for <linux-m68k@archiver.kernel.org>; Wed, 26 Aug 2020 14:56:33 +0000 (UTC)
+Authentication-Results: mail.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ivH/yedo"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728074AbgHZOwC (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Wed, 26 Aug 2020 10:52:02 -0400
-Received: from smtprelay0247.hostedemail.com ([216.40.44.247]:57352 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1728063AbgHZOv6 (ORCPT
+        id S1728273AbgHZOxg (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Wed, 26 Aug 2020 10:53:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34046 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727948AbgHZOxc (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Wed, 26 Aug 2020 10:51:58 -0400
-Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay08.hostedemail.com (Postfix) with ESMTP id 6E608182CF66C;
-        Wed, 26 Aug 2020 14:51:50 +0000 (UTC)
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-HE-Tag: spy71_140719227065
-X-Filterd-Recvd-Size: 11777
-Received: from XPS-9350.home (unknown [47.151.133.149])
-        (Authenticated sender: joe@perches.com)
-        by omf11.hostedemail.com (Postfix) with ESMTPA;
-        Wed, 26 Aug 2020 14:51:47 +0000 (UTC)
-Message-ID: <b88538f92386f41b938c502ae2daec5800a85dcf.camel@perches.com>
-Subject: Re: [PATCH 17/19] z2ram: reindent
-From:   Joe Perches <joe@perches.com>
-To:     John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
-Cc:     Christoph Hellwig <hch@lst.de>, Jens Axboe <axboe@kernel.dk>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Denis Efremov <efremov@linux.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Song Liu <song@kernel.org>, Al Viro <viro@zeniv.linux.org.uk>,
-        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-ide@vger.kernel.org, linux-raid@vger.kernel.org,
-        linux-scsi@vger.kernel.org, linux-m68k@lists.linux-m68k.org
-Date:   Wed, 26 Aug 2020 07:51:46 -0700
-In-Reply-To: <EF673A30-F88D-4E4E-8A2B-E942153830AC@physik.fu-berlin.de>
-References: <8570915f668159f93ba2eb845a3bbc05f8ee3a99.camel@perches.com>
-         <EF673A30-F88D-4E4E-8A2B-E942153830AC@physik.fu-berlin.de>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.36.4-0ubuntu1 
+        Wed, 26 Aug 2020 10:53:32 -0400
+Received: from mail-pj1-x1041.google.com (mail-pj1-x1041.google.com [IPv6:2607:f8b0:4864:20::1041])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 841D1C061574
+        for <linux-m68k@lists.linux-m68k.org>; Wed, 26 Aug 2020 07:53:32 -0700 (PDT)
+Received: by mail-pj1-x1041.google.com with SMTP id ds1so1004141pjb.1
+        for <linux-m68k@lists.linux-m68k.org>; Wed, 26 Aug 2020 07:53:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=iI/2kk53gpQ9Rn/t0izdpZaGmK63P9KDTKwfGTyE5K8=;
+        b=ivH/yedoVnRQZaiOBDE/q7i/+LlZQz4//Ac22EjXgDSh5z78UsF2b3rYcAwUTE0VWw
+         O3akOdfpfDZPuTGaKWobUg/CtUCnIsUjZftQct3FOb1jPRlUQiNj8Fv+ayC2WGX+PO8a
+         /9s+V/UtihMnFt2SYw1P9GmmaSFbh6cIMV4SiwgDzxT77fX3hxPs3DulQ2yS3Lax/rmT
+         UUjOnKVv80yVYX48yH/r8Tek/OFxlP6Uka0D+brPaZFXo+5qiKdS6/iqg/yaUG6Lirw7
+         +rj1zbW6R6r+NiEzsswvBgZahXYbQKL5Bcp2cARCgQbVcP55dthWgJ0T/81aUNEM+sK1
+         +MlA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=iI/2kk53gpQ9Rn/t0izdpZaGmK63P9KDTKwfGTyE5K8=;
+        b=gWrTFXY48N0ERshUL2G7hFkrMd8zStBShYSShNAw/MQGqtAUnUNW1YCfJnzkU5Bv5W
+         iwU7CmXw1TO8vc+27+6pfpwMCO8jxcL7kDO7penBVjIeTHSEspP1kf7xX/u4P0lWQzt9
+         Kbky7/QTb989AXbcp0nSGW34hNGlBGq4eAfkYZudKWiL2vIO6WbBywg75vbYAuikhRei
+         HtNMcyb15O2UeeV+tO3ZI15NOoSK/wzVyd5t/VIMP/6GV8k9fT7yq3/9bsY01LgRW5Rw
+         FntBX++YT2hXWypnA2FoSgIkGwyBcf6gBRkSeJ4RnYeLtnLiL4wfHXVkzKuQXLZjseGy
+         z5cA==
+X-Gm-Message-State: AOAM533hLobn30h5q9InFRL5JpeutqrtALGZC33LijHdFmUhKuZU2P9x
+        tgygOWkivZXJJ41W9kwb3yA=
+X-Google-Smtp-Source: ABdhPJwc2cHai12HbnvF2E57CKh2UaXXeM4qGHmYIx+dAfw9+5a/wogaP6zNkYnmdj+Nj5MlwPj4Xg==
+X-Received: by 2002:a17:902:a617:: with SMTP id u23mr11640565plq.188.1598453611955;
+        Wed, 26 Aug 2020 07:53:31 -0700 (PDT)
+Received: from bobo.ozlabs.ibm.com (61-68-212-105.tpgi.com.au. [61.68.212.105])
+        by smtp.gmail.com with ESMTPSA id r7sm3327140pfl.186.2020.08.26.07.53.28
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 26 Aug 2020 07:53:31 -0700 (PDT)
+From:   Nicholas Piggin <npiggin@gmail.com>
+To:     linux-arch@vger.kernel.org
+Cc:     Nicholas Piggin <npiggin@gmail.com>, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, Arnd Bergmann <arnd@arndb.de>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        linux-m68k@lists.linux-m68k.org
+Subject: [PATCH v2 09/23] m68k: use asm-generic/mmu_context.h for no-op implementations
+Date:   Thu, 27 Aug 2020 00:52:35 +1000
+Message-Id: <20200826145249.745432-10-npiggin@gmail.com>
+X-Mailer: git-send-email 2.23.0
+In-Reply-To: <20200826145249.745432-1-npiggin@gmail.com>
+References: <20200826145249.745432-1-npiggin@gmail.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Sender: linux-m68k-owner@vger.kernel.org
@@ -55,405 +78,129 @@ Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-On Wed, 2020-08-26 at 11:49 +0200, John Paul Adrian Glaubitz wrote:
-> > On Aug 26, 2020, at 11:21 AM, Joe Perches <joe@perches.com> wrote:
-> > 
-> > ﻿On Wed, 2020-08-26 at 08:24 +0200, Christoph Hellwig wrote:
-> > > reindent the driver using Lident as the code style was far away from
-> > > normal Linux code.
-> > 
-> > Why?  Does anyone use this anymore?
-> 
-> Yes, the Amiga and Linux/m68k is very well and alive.
-
-That's fine.  My question was why ancient code should be modified
-if it's not in use.
-
->  There is new hardware being developed and new drivers being developed and so on.
-
-OK, fine.
-
-btw:
-
-If style only changes are to be done on this code then
-I believe these changes on top should also be made done
-for style:
+Cc: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: linux-m68k@lists.linux-m68k.org
+Signed-off-by: Nicholas Piggin <npiggin@gmail.com>
 ---
-From 0eb1b25575abe52415ecb0139e14ae57ba4f57cb Mon Sep 17 00:00:00 2001
-Message-Id: <0eb1b25575abe52415ecb0139e14ae57ba4f57cb.1598453361.git.joe@perches.com>
-From: Joe Perches <joe@perches.com>
-Date: Wed, 26 Aug 2020 02:20:14 -0700
-Subject: [PATCH] z2ram: Use more current coding style
+ arch/m68k/include/asm/mmu_context.h | 47 +++++------------------------
+ 1 file changed, 8 insertions(+), 39 deletions(-)
 
-Use pr_fmt and pr_<level>, continue, and remove tests against NULL.
-Use more typical brace styles, add and remove them as appropriate.
-Simplify logic in z2_open, rename err_out label to out, unindent a
-large block by reversing the test and using goto.
-
-Signed-off-by: Joe Perches <joe@perches.com>
----
- drivers/block/z2ram.c | 261 +++++++++++++++++++-----------------------
- 1 file changed, 118 insertions(+), 143 deletions(-)
-
-diff --git a/drivers/block/z2ram.c b/drivers/block/z2ram.c
-index 566c653399d8..ea490fe4417e 100644
---- a/drivers/block/z2ram.c
-+++ b/drivers/block/z2ram.c
-@@ -1,7 +1,7 @@
+diff --git a/arch/m68k/include/asm/mmu_context.h b/arch/m68k/include/asm/mmu_context.h
+index 993fd7e37069..012e92204c1b 100644
+--- a/arch/m68k/include/asm/mmu_context.h
++++ b/arch/m68k/include/asm/mmu_context.h
+@@ -5,10 +5,6 @@
+ #include <asm-generic/mm_hooks.h>
+ #include <linux/mm_types.h>
+ 
+-static inline void enter_lazy_tlb(struct mm_struct *mm, struct task_struct *tsk)
+-{
+-}
+-
+ #ifdef CONFIG_MMU
+ 
+ #if defined(CONFIG_COLDFIRE)
+@@ -58,6 +54,7 @@ static inline void get_mmu_context(struct mm_struct *mm)
  /*
- ** z2ram - Amiga pseudo-driver to access 16bit-RAM in ZorroII space
- **         as a block device, to be used as a RAM disk or swap space
--** 
-+**
- ** Copyright (C) 1994 by Ingo Wilken (Ingo.Wilken@informatik.uni-oldenburg.de)
- **
- ** ++Geert: support for zorro_unused_z2ram, better range checking
-@@ -25,6 +25,8 @@
- ** implied warranty.
- */
- 
-+#define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
-+
- #define DEVICE_NAME "Z2RAM"
- 
- #include <linux/major.h>
-@@ -75,7 +77,7 @@ static blk_status_t z2_queue_rq(struct blk_mq_hw_ctx *hctx,
- 	blk_mq_start_request(req);
- 
- 	if (start + len > z2ram_size) {
--		pr_err(DEVICE_NAME ": bad access: block=%llu, count=%u\n",
-+		pr_err("bad access: block=%llu, count=%u\n",
- 		       (unsigned long long)blk_rq_pos(req),
- 		       blk_rq_cur_sectors(req));
- 		return BLK_STS_IOERR;
-@@ -109,34 +111,28 @@ static void get_z2ram(void)
- 	int i;
- 
- 	for (i = 0; i < Z2RAM_SIZE / Z2RAM_CHUNKSIZE; i++) {
--		if (test_bit(i, zorro_unused_z2ram)) {
--			z2_count++;
--			z2ram_map[z2ram_size++] =
--			    (unsigned long)ZTWO_VADDR(Z2RAM_START) +
--			    (i << Z2RAM_CHUNKSHIFT);
--			clear_bit(i, zorro_unused_z2ram);
--		}
-+		if (!test_bit(i, zorro_unused_z2ram))
-+			continue;
-+		z2_count++;
-+		z2ram_map[z2ram_size++] =
-+			(unsigned long)ZTWO_VADDR(Z2RAM_START) +
-+			(i << Z2RAM_CHUNKSHIFT);
-+		clear_bit(i, zorro_unused_z2ram);
- 	}
--
--	return;
- }
- 
- static void get_chipram(void)
+  * We're finished using the context for an address space.
+  */
++#define destroy_context destroy_context
+ static inline void destroy_context(struct mm_struct *mm)
  {
--
- 	while (amiga_chip_avail() > (Z2RAM_CHUNKSIZE * 4)) {
- 		chip_count++;
- 		z2ram_map[z2ram_size] =
- 		    (u_long) amiga_chip_alloc(Z2RAM_CHUNKSIZE, "z2ram");
- 
--		if (z2ram_map[z2ram_size] == 0) {
-+		if (z2ram_map[z2ram_size] == 0)
- 			break;
--		}
- 
- 		z2ram_size++;
- 	}
--
--	return;
+ 	if (mm->context != NO_CONTEXT) {
+@@ -79,19 +76,6 @@ static inline void switch_mm(struct mm_struct *prev, struct mm_struct *next,
+ 	set_context(tsk->mm->context, next->pgd);
  }
  
- static int z2_open(struct block_device *bdev, fmode_t mode)
-@@ -152,144 +148,127 @@ static int z2_open(struct block_device *bdev, fmode_t mode)
- 	mutex_lock(&z2ram_mutex);
- 	if (current_device != -1 && current_device != device) {
- 		rc = -EBUSY;
--		goto err_out;
-+		goto out;
+-/*
+- * After we have set current->mm to a new value, this activates
+- * the context for the new mm so we see the new mappings.
+- */
+-static inline void activate_mm(struct mm_struct *active_mm,
+-	struct mm_struct *mm)
+-{
+-	get_mmu_context(mm);
+-	set_context(mm->context, mm->pgd);
+-}
+-
+-#define deactivate_mm(tsk, mm) do { } while (0)
+-
+ #define prepare_arch_switch(next) load_ksp_mmu(next)
+ 
+ static inline void load_ksp_mmu(struct task_struct *task)
+@@ -176,6 +160,7 @@ extern unsigned long get_free_context(struct mm_struct *mm);
+ extern void clear_context(unsigned long context);
+ 
+ /* set the context for a new task to unmapped */
++#define init_new_context init_new_context
+ static inline int init_new_context(struct task_struct *tsk,
+ 				   struct mm_struct *mm)
+ {
+@@ -210,8 +195,7 @@ static inline void switch_mm(struct mm_struct *prev, struct mm_struct *next,
+ 	activate_context(tsk->mm);
+ }
+ 
+-#define deactivate_mm(tsk, mm)	do { } while (0)
+-
++#define activate_mm activate_mm
+ static inline void activate_mm(struct mm_struct *prev_mm,
+ 			       struct mm_struct *next_mm)
+ {
+@@ -224,6 +208,7 @@ static inline void activate_mm(struct mm_struct *prev_mm,
+ #include <asm/page.h>
+ #include <asm/cacheflush.h>
+ 
++#define init_new_context init_new_context
+ static inline int init_new_context(struct task_struct *tsk,
+ 				   struct mm_struct *mm)
+ {
+@@ -231,8 +216,6 @@ static inline int init_new_context(struct task_struct *tsk,
+ 	return 0;
+ }
+ 
+-#define destroy_context(mm)		do { } while(0)
+-
+ static inline void switch_mm_0230(struct mm_struct *mm)
+ {
+ 	unsigned long crp[2] = {
+@@ -300,8 +283,7 @@ static inline void switch_mm(struct mm_struct *prev, struct mm_struct *next, str
  	}
+ }
  
--	if (current_device == -1) {
--		z2_count = 0;
--		chip_count = 0;
--		list_count = 0;
--		z2ram_size = 0;
+-#define deactivate_mm(tsk,mm)	do { } while (0)
 -
--		/* Use a specific list entry. */
--		if (device >= Z2MINOR_MEMLIST1 && device <= Z2MINOR_MEMLIST4) {
--			int index = device - Z2MINOR_MEMLIST1 + 1;
--			unsigned long size, paddr, vaddr;
--
--			if (index >= m68k_realnum_memory) {
--				printk(KERN_ERR DEVICE_NAME
--				       ": no such entry in z2ram_map\n");
--				goto err_out;
--			}
-+	if (current_device != -1) {
-+		rc = 0;
-+		goto out;
-+	}
++#define activate_mm activate_mm
+ static inline void activate_mm(struct mm_struct *prev_mm,
+ 			       struct mm_struct *next_mm)
+ {
+@@ -315,24 +297,11 @@ static inline void activate_mm(struct mm_struct *prev_mm,
  
--			paddr = m68k_memory[index].addr;
--			size = m68k_memory[index].size & ~(Z2RAM_CHUNKSIZE - 1);
-+	z2_count = 0;
-+	chip_count = 0;
-+	list_count = 0;
-+	z2ram_size = 0;
- 
--#ifdef __powerpc__
--			/*
--			 * FIXME: ioremap doesn't build correct memory tables.
--			 */
--			vfree(vmalloc(size));
--			vaddr = (unsigned long)ioremap_wt(paddr, size);
-+	/* Use a specific list entry. */
-+	if (device >= Z2MINOR_MEMLIST1 && device <= Z2MINOR_MEMLIST4) {
-+		int index = device - Z2MINOR_MEMLIST1 + 1;
-+		unsigned long size, paddr, vaddr;
-+
-+		if (index >= m68k_realnum_memory) {
-+			pr_err("no such entry in z2ram_map\n");
-+			goto out;
-+		}
- 
-+		paddr = m68k_memory[index].addr;
-+		size = m68k_memory[index].size & ~(Z2RAM_CHUNKSIZE - 1);
-+
-+#ifdef __powerpc__
-+		/*
-+		 * FIXME: ioremap doesn't build correct memory tables.
-+		 */
-+		vfree(vmalloc(size));
-+		vaddr = (unsigned long)ioremap_wt(paddr, size);
- #else
--			vaddr =
--			    (unsigned long)z_remap_nocache_nonser(paddr, size);
-+		vaddr = (unsigned long)z_remap_nocache_nonser(paddr, size);
  #endif
--			z2ram_map =
--			    kmalloc_array(size / Z2RAM_CHUNKSIZE,
-+		z2ram_map = kmalloc_array(size / Z2RAM_CHUNKSIZE,
- 					  sizeof(z2ram_map[0]), GFP_KERNEL);
--			if (z2ram_map == NULL) {
--				printk(KERN_ERR DEVICE_NAME
--				       ": cannot get mem for z2ram_map\n");
--				goto err_out;
-+		if (!z2ram_map) {
-+			pr_err("cannot get mem for z2ram_map\n");
-+			goto out;
-+		}
-+
-+		while (size) {
-+			z2ram_map[z2ram_size++] = vaddr;
-+			size -= Z2RAM_CHUNKSIZE;
-+			vaddr += Z2RAM_CHUNKSIZE;
-+			list_count++;
-+		}
-+
-+		if (z2ram_size != 0)
-+			pr_info("using %iK List Entry %d Memory\n",
-+				list_count * Z2RAM_CHUNK1024, index);
-+	} else {
-+		switch (device) {
-+		case Z2MINOR_COMBINED:
-+			z2ram_map = kmalloc(max_z2_map + max_chip_map,
-+					    GFP_KERNEL);
-+			if (!z2ram_map) {
-+				pr_err("cannot get mem for z2ram_map\n");
-+				goto out;
- 			}
  
--			while (size) {
--				z2ram_map[z2ram_size++] = vaddr;
--				size -= Z2RAM_CHUNKSIZE;
--				vaddr += Z2RAM_CHUNKSIZE;
--				list_count++;
-+			get_z2ram();
-+			get_chipram();
-+
-+			if (z2ram_size != 0)
-+				pr_info("using %iK Zorro II RAM and %iK Chip RAM (Total %dK)\n",
-+					z2_count * Z2RAM_CHUNK1024,
-+					chip_count * Z2RAM_CHUNK1024,
-+					(z2_count + chip_count) * Z2RAM_CHUNK1024);
-+
-+			break;
-+
-+		case Z2MINOR_Z2ONLY:
-+			z2ram_map = kmalloc(max_z2_map, GFP_KERNEL);
-+			if (!z2ram_map) {
-+				pr_err("cannot get mem for z2ram_map\n");
-+				goto out;
- 			}
+-#else /* !CONFIG_MMU */
++#include <asm-generic/mmu_context.h>
  
-+			get_z2ram();
-+
- 			if (z2ram_size != 0)
--				printk(KERN_INFO DEVICE_NAME
--				       ": using %iK List Entry %d Memory\n",
--				       list_count * Z2RAM_CHUNK1024, index);
--		} else
--			switch (device) {
--			case Z2MINOR_COMBINED:
--
--				z2ram_map =
--				    kmalloc(max_z2_map + max_chip_map,
--					    GFP_KERNEL);
--				if (z2ram_map == NULL) {
--					printk(KERN_ERR DEVICE_NAME
--					       ": cannot get mem for z2ram_map\n");
--					goto err_out;
--				}
--
--				get_z2ram();
--				get_chipram();
--
--				if (z2ram_size != 0)
--					printk(KERN_INFO DEVICE_NAME
--					       ": using %iK Zorro II RAM and %iK Chip RAM (Total %dK)\n",
--					       z2_count * Z2RAM_CHUNK1024,
--					       chip_count * Z2RAM_CHUNK1024,
--					       (z2_count +
--						chip_count) * Z2RAM_CHUNK1024);
--
--				break;
--
--			case Z2MINOR_Z2ONLY:
--				z2ram_map = kmalloc(max_z2_map, GFP_KERNEL);
--				if (z2ram_map == NULL) {
--					printk(KERN_ERR DEVICE_NAME
--					       ": cannot get mem for z2ram_map\n");
--					goto err_out;
--				}
--
--				get_z2ram();
--
--				if (z2ram_size != 0)
--					printk(KERN_INFO DEVICE_NAME
--					       ": using %iK of Zorro II RAM\n",
--					       z2_count * Z2RAM_CHUNK1024);
--
--				break;
--
--			case Z2MINOR_CHIPONLY:
--				z2ram_map = kmalloc(max_chip_map, GFP_KERNEL);
--				if (z2ram_map == NULL) {
--					printk(KERN_ERR DEVICE_NAME
--					       ": cannot get mem for z2ram_map\n");
--					goto err_out;
--				}
--
--				get_chipram();
--
--				if (z2ram_size != 0)
--					printk(KERN_INFO DEVICE_NAME
--					       ": using %iK Chip RAM\n",
--					       chip_count * Z2RAM_CHUNK1024);
--
--				break;
--
--			default:
--				rc = -ENODEV;
--				goto err_out;
--
--				break;
-+				pr_info("using %iK of Zorro II RAM\n",
-+					z2_count * Z2RAM_CHUNK1024);
-+
-+			break;
-+
-+		case Z2MINOR_CHIPONLY:
-+			z2ram_map = kmalloc(max_chip_map, GFP_KERNEL);
-+			if (!z2ram_map) {
-+				pr_err("cannot get mem for z2ram_map\n");
-+				goto out;
- 			}
- 
--		if (z2ram_size == 0) {
--			printk(KERN_NOTICE DEVICE_NAME
--			       ": no unused ZII/Chip RAM found\n");
--			goto err_out_kfree;
-+			get_chipram();
-+
-+			if (z2ram_size != 0)
-+				pr_info("using %iK Chip RAM\n",
-+					chip_count * Z2RAM_CHUNK1024);
-+
-+			break;
-+
-+		default:
-+			rc = -ENODEV;
-+			goto out;
- 		}
-+	}
- 
--		current_device = device;
--		z2ram_size <<= Z2RAM_CHUNKSHIFT;
--		set_capacity(z2ram_gendisk, z2ram_size >> 9);
-+	if (z2ram_size == 0) {
-+		pr_notice("no unused ZII/Chip RAM found\n");
-+		kfree(z2ram_map);
-+		goto out;
- 	}
- 
--	mutex_unlock(&z2ram_mutex);
+-static inline int init_new_context(struct task_struct *tsk, struct mm_struct *mm)
+-{
 -	return 0;
-+	current_device = device;
-+	z2ram_size <<= Z2RAM_CHUNKSHIFT;
-+	set_capacity(z2ram_gendisk, z2ram_size >> 9);
-+	rc = 0;
- 
--err_out_kfree:
--	kfree(z2ram_map);
--err_out:
-+out:
- 	mutex_unlock(&z2ram_mutex);
- 	return rc;
- }
-@@ -372,7 +351,6 @@ static int __init z2_init(void)
- 
- static void __exit z2_exit(void)
- {
--	int i, j;
- 	blk_unregister_region(MKDEV(Z2RAM_MAJOR, 0), Z2MINOR_COUNT);
- 	unregister_blkdev(Z2RAM_MAJOR, DEVICE_NAME);
- 	del_gendisk(z2ram_gendisk);
-@@ -381,24 +359,21 @@ static void __exit z2_exit(void)
- 	blk_mq_free_tag_set(&tag_set);
- 
- 	if (current_device != -1) {
-+		int i, j;
-+
- 		i = 0;
- 
--		for (j = 0; j < z2_count; j++) {
-+		for (j = 0; j < z2_count; j++)
- 			set_bit(i++, zorro_unused_z2ram);
--		}
- 
- 		for (j = 0; j < chip_count; j++) {
--			if (z2ram_map[i]) {
-+			if (z2ram_map[i])
- 				amiga_chip_free((void *)z2ram_map[i++]);
--			}
- 		}
- 
--		if (z2ram_map != NULL) {
-+		if (z2ram_map)
- 			kfree(z2ram_map);
--		}
- 	}
+-}
 -
--	return;
- }
+-
+-static inline void switch_mm(struct mm_struct *prev, struct mm_struct *next, struct task_struct *tsk)
+-{
+-}
+-
+-#define destroy_context(mm)	do { } while (0)
+-#define deactivate_mm(tsk,mm)	do { } while (0)
++#else /* !CONFIG_MMU */
  
- module_init(z2_init);
+-static inline void activate_mm(struct mm_struct *prev_mm, struct mm_struct *next_mm)
+-{
+-}
++#include <asm-generic/nommu_context.h>
+ 
+ #endif /* CONFIG_MMU */
+ #endif /* __M68K_MMU_CONTEXT_H */
 -- 
-2.26.0
-
+2.23.0
 
