@@ -2,84 +2,68 @@ Return-Path: <SRS0=O3TF=CF=vger.kernel.org=linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-13.5 required=3.0 tests=BAYES_00,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,NICE_REPLY_A,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1
-	autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-3.8 required=3.0 tests=BAYES_00,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
+	autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A64A5C433E1
-	for <linux-m68k@archiver.kernel.org>; Thu, 27 Aug 2020 00:14:46 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B899BC433E1
+	for <linux-m68k@archiver.kernel.org>; Thu, 27 Aug 2020 04:00:25 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 812CE20825
-	for <linux-m68k@archiver.kernel.org>; Thu, 27 Aug 2020 00:14:46 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 974E72078A
+	for <linux-m68k@archiver.kernel.org>; Thu, 27 Aug 2020 04:00:25 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726784AbgH0AOq (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Wed, 26 Aug 2020 20:14:46 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58537 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726765AbgH0AOp (ORCPT <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Wed, 26 Aug 2020 20:14:45 -0400
-Received: from [192.168.0.106] (193-116-198-1.tpgi.com.au [193.116.198.1])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 8582B20791;
-        Thu, 27 Aug 2020 00:14:44 +0000 (UTC)
-Subject: Re: [PATCH] m68k: Revive _TIF_* masks
+        id S1725847AbgH0EAZ (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Thu, 27 Aug 2020 00:00:25 -0400
+Received: from kvm5.telegraphics.com.au ([98.124.60.144]:60684 "EHLO
+        kvm5.telegraphics.com.au" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725710AbgH0EAZ (ORCPT
+        <rfc822;linux-m68k@lists.linux-m68k.org>);
+        Thu, 27 Aug 2020 00:00:25 -0400
+Received: from localhost (localhost.localdomain [127.0.0.1])
+        by kvm5.telegraphics.com.au (Postfix) with ESMTP id F125429817;
+        Thu, 27 Aug 2020 00:00:20 -0400 (EDT)
+Date:   Thu, 27 Aug 2020 13:59:59 +1000 (AEST)
+From:   Finn Thain <fthain@telegraphics.com.au>
 To:     Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org
-References: <20200826122923.22821-1-geert@linux-m68k.org>
-From:   Greg Ungerer <gerg@linux-m68k.org>
-Message-ID: <aae200e7-2618-b17a-3e88-ee349a75c74d@linux-m68k.org>
-Date:   Thu, 27 Aug 2020 10:14:42 +1000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+cc:     linux-m68k <linux-m68k@lists.linux-m68k.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] m68k: Correct some typos in comments
+In-Reply-To: <CAMuHMdW7eWtkUURxvAwAz6cAHABLBk4qs4bLUXR3wuowQbn5Fw@mail.gmail.com>
+Message-ID: <alpine.LNX.2.23.453.2008271359390.53@nippy.intranet>
+References: <f54e99e9bd1e25ad70a6a1d7a7ec9ab2b4e50d68.1595460351.git.fthain@telegraphics.com.au> <CAMuHMdW7eWtkUURxvAwAz6cAHABLBk4qs4bLUXR3wuowQbn5Fw@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20200826122923.22821-1-geert@linux-m68k.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=US-ASCII
 Sender: linux-m68k-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-Hi Geert,
+On Wed, 26 Aug 2020, Geert Uytterhoeven wrote:
 
-On 26/8/20 10:29 pm, Geert Uytterhoeven wrote:
-> While the core m68k code does not use the _TIF_* masks anymore, there
-> exists generic code that relies on their presence.  Fortunately none of
-> that code is used on m68k, currently.
+> > @@ -2654,7 +2654,7 @@ func_start        mmu_get_page_table_entry,%d0/%a1
+> >         jne     2f
+> >
+> >         /* If the page table entry doesn't exist, we allocate a complete new
+> > -        * page and use it as one continues big page table which can cover
+> > +        * page and use it as one continuous big page table which can cover
 > 
-> Re-add the various _TIF_* masks, which were removed in commit
-> cddafa3500fde4a0 ("m68k/m68knommu: merge MMU and non-MMU
-> thread_info.h"), to avoid future nasty surprises.
+> Usually I use "contiguous", but the dictionary seems to permit both.
 > 
-> Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
 
-Acked-by: Greg Ungerer <gerg@linux-m68k.org>
+Two or more things may be said to be "contiguous". I think this sentence 
+refers to only one thing.
 
-Regards
-Greg
-
-
->   arch/m68k/include/asm/thread_info.h | 8 ++++++++
->   1 file changed, 8 insertions(+)
+> >          * 4MB of memory, nearly almost all mappings have that alignment.
+> >          */
+> >         get_new_page
 > 
-> diff --git a/arch/m68k/include/asm/thread_info.h b/arch/m68k/include/asm/thread_info.h
-> index 015f1ca383053a39..3689c6718c883d23 100644
-> --- a/arch/m68k/include/asm/thread_info.h
-> +++ b/arch/m68k/include/asm/thread_info.h
-> @@ -68,4 +68,12 @@ static inline struct thread_info *current_thread_info(void)
->   #define TIF_MEMDIE		16	/* is terminating due to OOM killer */
->   #define TIF_RESTORE_SIGMASK	18	/* restore signal mask in do_signal */
->   
-> +#define _TIF_NOTIFY_RESUME	(1 << TIF_NOTIFY_RESUME)
-> +#define _TIF_SIGPENDING		(1 << TIF_SIGPENDING)
-> +#define _TIF_NEED_RESCHED	(1 << TIF_NEED_RESCHED)
-> +#define _TIF_DELAYED_TRACE	(1 << TIF_DELAYED_TRACE)
-> +#define _TIF_SYSCALL_TRACE	(1 << TIF_SYSCALL_TRACE)
-> +#define _TIF_MEMDIE		(1 << TIF_MEMDIE)
-> +#define _TIF_RESTORE_SIGMASK	(1 << TIF_RESTORE_SIGMASK)
-> +
->   #endif	/* _ASM_M68K_THREAD_INFO_H */
+> Reviewed-by: Geert Uytterhoeven <geert@linux-m68k.org>
+> i.e. will queue in the m68k for-v5.10 branch.
+> 
+
+Thanks.
+
+> Gr{oetje,eeting}s,
+> 
+>                         Geert
 > 
