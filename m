@@ -2,227 +2,242 @@ Return-Path: <SRS0=O3TF=CF=vger.kernel.org=linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.8 required=3.0 tests=BAYES_00,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,
-	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-13.0 required=3.0 tests=BAYES_00,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,NICE_REPLY_A,
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 360D9C433E1
-	for <linux-m68k@archiver.kernel.org>; Thu, 27 Aug 2020 04:00:42 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id AC0B1C433E1
+	for <linux-m68k@archiver.kernel.org>; Thu, 27 Aug 2020 07:25:10 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 16F83204FD
-	for <linux-m68k@archiver.kernel.org>; Thu, 27 Aug 2020 04:00:42 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 8809D22CB1
+	for <linux-m68k@archiver.kernel.org>; Thu, 27 Aug 2020 07:25:10 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726058AbgH0EAl (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Thu, 27 Aug 2020 00:00:41 -0400
-Received: from mga05.intel.com ([192.55.52.43]:29243 "EHLO mga05.intel.com"
+        id S1728074AbgH0HZK (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Thu, 27 Aug 2020 03:25:10 -0400
+Received: from mx2.suse.de ([195.135.220.15]:41704 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725790AbgH0EAl (ORCPT <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Thu, 27 Aug 2020 00:00:41 -0400
-IronPort-SDR: rTdm06TXcTy1b3ddWFrYYDp/2Oog1aC9eW5yOo3sFNdB87pnnO8tIeZCbxHHIZHlY072C393mW
- Z1viPw5U9dWg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9725"; a="241239182"
-X-IronPort-AV: E=Sophos;i="5.76,358,1592895600"; 
-   d="scan'208";a="241239182"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Aug 2020 21:00:32 -0700
-IronPort-SDR: sG5y2c3NoDC5/OJntXdOMIgXw0j1KjKirbHJ9qO9HzHE0hsyCvopxyWS3Cl89ijQFD7Pg+sAoT
- WE9ZTZTaRmSQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.76,358,1592895600"; 
-   d="scan'208";a="337036887"
-Received: from lkp-server01.sh.intel.com (HELO 4f455964fc6c) ([10.239.97.150])
-  by FMSMGA003.fm.intel.com with ESMTP; 26 Aug 2020 21:00:31 -0700
-Received: from kbuild by 4f455964fc6c with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1kB95S-0001rM-Hq; Thu, 27 Aug 2020 04:00:30 +0000
-Date:   Thu, 27 Aug 2020 11:59:31 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     linux-m68k@lists.linux-m68k.org
-Subject: [m68k:m68k-queue] BUILD SUCCESS
- 3d86f8d3c27501378f9256a99cd2616d3539bb9b
-Message-ID: <5f472fa3.LcylrRkOT0CzzKs9%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+        id S1727792AbgH0HZJ (ORCPT <rfc822;linux-m68k@lists.linux-m68k.org>);
+        Thu, 27 Aug 2020 03:25:09 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 03E1EAC2B;
+        Thu, 27 Aug 2020 07:25:40 +0000 (UTC)
+Subject: Re: [PATCH 01/19] char_dev: replace cdev_map with an xarray
+To:     Christoph Hellwig <hch@lst.de>, Jens Axboe <axboe@kernel.dk>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Denis Efremov <efremov@linux.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Song Liu <song@kernel.org>, Al Viro <viro@zeniv.linux.org.uk>,
+        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-ide@vger.kernel.org, linux-raid@vger.kernel.org,
+        linux-scsi@vger.kernel.org, linux-m68k@lists.linux-m68k.org
+References: <20200826062446.31860-1-hch@lst.de>
+ <20200826062446.31860-2-hch@lst.de>
+From:   Hannes Reinecke <hare@suse.de>
+Openpgp: preference=signencrypt
+Autocrypt: addr=hare@suse.de; prefer-encrypt=mutual; keydata=
+ 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
+ azzYF4VRJsdl+d0MCaSy8mUh
+Message-ID: <b2126993-b861-1899-bb42-cb7f461094d4@suse.de>
+Date:   Thu, 27 Aug 2020 09:25:07 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <20200826062446.31860-2-hch@lst.de>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Sender: linux-m68k-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/geert/linux-m68k.git  m68k-queue
-branch HEAD: 3d86f8d3c27501378f9256a99cd2616d3539bb9b  fat: Use correct logical sector size for Atari GEMDOS FAT
+On 8/26/20 8:24 AM, Christoph Hellwig wrote:
+> None of the complicated overlapping regions bits of the kobj_map are
+> required for the character device lookup, so just a trivial xarray
+> instead.
+> 
+> Signed-off-by: Christoph Hellwig <hch@lst.de>
+> ---
+>  fs/char_dev.c | 94 +++++++++++++++++++++++++--------------------------
+>  fs/dcache.c   |  1 -
+>  fs/internal.h |  5 ---
+>  3 files changed, 46 insertions(+), 54 deletions(-)
+> 
+> diff --git a/fs/char_dev.c b/fs/char_dev.c
+> index ba0ded7842a779..6c4d6c4938f14b 100644
+> --- a/fs/char_dev.c
+> +++ b/fs/char_dev.c
+> @@ -17,7 +17,6 @@
+>  #include <linux/seq_file.h>
+>  
+>  #include <linux/kobject.h>
+> -#include <linux/kobj_map.h>
+>  #include <linux/cdev.h>
+>  #include <linux/mutex.h>
+>  #include <linux/backing-dev.h>
+> @@ -25,8 +24,7 @@
+>  
+>  #include "internal.h"
+>  
+> -static struct kobj_map *cdev_map;
+> -
+> +static DEFINE_XARRAY(cdev_map);
+>  static DEFINE_MUTEX(chrdevs_lock);
+>  
+>  #define CHRDEV_MAJOR_HASH_SIZE 255
+> @@ -367,6 +365,29 @@ void cdev_put(struct cdev *p)
+>  	}
+>  }
+>  
+> +static struct cdev *cdev_lookup(dev_t dev)
+> +{
+> +	struct cdev *cdev;
+> +
+> +retry:
+> +	mutex_lock(&chrdevs_lock);
+> +	cdev = xa_load(&cdev_map, dev);
+> +	if (!cdev) {
+> +		mutex_unlock(&chrdevs_lock);
+> +
+> +		if (request_module("char-major-%d-%d",
+> +				   MAJOR(dev), MINOR(dev)) > 0)
+> +			/* Make old-style 2.4 aliases work */
+> +			request_module("char-major-%d", MAJOR(dev));
+> +		goto retry;
+> +	}
+> +
+> +	if (!cdev_get(cdev))
+> +		cdev = NULL;
+> +	mutex_unlock(&chrdevs_lock);
+> +	return cdev;
+> +}
+> +
+>  /*
+>   * Called every time a character special file is opened
+>   */
+> @@ -380,13 +401,10 @@ static int chrdev_open(struct inode *inode, struct file *filp)
+>  	spin_lock(&cdev_lock);
+>  	p = inode->i_cdev;
+>  	if (!p) {
+> -		struct kobject *kobj;
+> -		int idx;
+>  		spin_unlock(&cdev_lock);
+> -		kobj = kobj_lookup(cdev_map, inode->i_rdev, &idx);
+> -		if (!kobj)
+> +		new = cdev_lookup(inode->i_rdev);
+> +		if (!new)
+>  			return -ENXIO;
+> -		new = container_of(kobj, struct cdev, kobj);
+>  		spin_lock(&cdev_lock);
+>  		/* Check i_cdev again in case somebody beat us to it while
+>  		   we dropped the lock. */
+> @@ -454,18 +472,6 @@ const struct file_operations def_chr_fops = {
+>  	.llseek = noop_llseek,
+>  };
+>  
+> -static struct kobject *exact_match(dev_t dev, int *part, void *data)
+> -{
+> -	struct cdev *p = data;
+> -	return &p->kobj;
+> -}
+> -
+> -static int exact_lock(dev_t dev, void *data)
+> -{
+> -	struct cdev *p = data;
+> -	return cdev_get(p) ? 0 : -1;
+> -}
+> -
+>  /**
+>   * cdev_add() - add a char device to the system
+>   * @p: the cdev structure for the device
+> @@ -478,7 +484,7 @@ static int exact_lock(dev_t dev, void *data)
+>   */
+>  int cdev_add(struct cdev *p, dev_t dev, unsigned count)
+>  {
+> -	int error;
+> +	int error, i;
+>  
+>  	p->dev = dev;
+>  	p->count = count;
+> @@ -486,14 +492,22 @@ int cdev_add(struct cdev *p, dev_t dev, unsigned count)
+>  	if (WARN_ON(dev == WHITEOUT_DEV))
+>  		return -EBUSY;
+>  
+> -	error = kobj_map(cdev_map, dev, count, NULL,
+> -			 exact_match, exact_lock, p);
+> -	if (error)
+> -		return error;
+> +	mutex_lock(&chrdevs_lock);
+> +	for (i = 0; i < count; i++) {
+> +		error = xa_insert(&cdev_map, dev + i, p, GFP_KERNEL);
+> +		if (error)
+> +			goto out_unwind;
+> +	}
+> +	mutex_unlock(&chrdevs_lock);
+>  
+>  	kobject_get(p->kobj.parent);
+> -
+>  	return 0;
+> +
+> +out_unwind:
+> +	while (--i >= 0)
+> +		xa_erase(&cdev_map, dev + i);
+> +	mutex_unlock(&chrdevs_lock);
+> +	return error;
+>  }
+>  
+>  /**
+Do you really need the mutex?
+Wouldn't xa_store_range() be better and avoid the mutex?
 
-elapsed time: 983m
+Cheers,
 
-configs tested: 158
-configs skipped: 9
-
-The following configs have been built successfully.
-More configs may be tested in the coming days.
-
-arm                              allmodconfig
-arm                                 defconfig
-arm64                            allyesconfig
-arm64                               defconfig
-arm                              allyesconfig
-mips                        workpad_defconfig
-mips                        maltaup_defconfig
-sh                   rts7751r2dplus_defconfig
-arm                        oxnas_v6_defconfig
-sh                        edosk7705_defconfig
-powerpc                     pseries_defconfig
-arm                        mvebu_v7_defconfig
-c6x                        evmc6472_defconfig
-arm                       multi_v4t_defconfig
-arm                          simpad_defconfig
-sh                          lboxre2_defconfig
-m68k                            q40_defconfig
-arm                              zx_defconfig
-mips                        jmr3927_defconfig
-sh                        sh7757lcr_defconfig
-arm                       aspeed_g4_defconfig
-m68k                          sun3x_defconfig
-m68k                       bvme6000_defconfig
-mips                      malta_kvm_defconfig
-mips                           jazz_defconfig
-arm                        multi_v5_defconfig
-riscv                            allmodconfig
-mips                         bigsur_defconfig
-sh                               j2_defconfig
-m68k                         amcore_defconfig
-m68k                         apollo_defconfig
-sh                ecovec24-romimage_defconfig
-sh                        apsh4ad0a_defconfig
-arm                       spear13xx_defconfig
-arm                        trizeps4_defconfig
-m68k                       m5249evb_defconfig
-arm                         palmz72_defconfig
-m68k                          multi_defconfig
-arc                                 defconfig
-arm                            zeus_defconfig
-i386                             allyesconfig
-powerpc                    adder875_defconfig
-sh                           se7751_defconfig
-powerpc                          g5_defconfig
-mips                     loongson1c_defconfig
-ia64                          tiger_defconfig
-mips                         cobalt_defconfig
-sh                           se7722_defconfig
-sh                   sh7770_generic_defconfig
-mips                         tb0226_defconfig
-powerpc                     skiroot_defconfig
-powerpc                         ps3_defconfig
-arm                         hackkit_defconfig
-arm                            qcom_defconfig
-arm                         lpc18xx_defconfig
-sh                          urquell_defconfig
-ia64                            zx1_defconfig
-arm                      integrator_defconfig
-powerpc                 mpc8272_ads_defconfig
-m68k                             allmodconfig
-arm                          ixp4xx_defconfig
-openrisc                    or1ksim_defconfig
-arc                          axs103_defconfig
-sh                          kfr2r09_defconfig
-mips                          rb532_defconfig
-arm                            dove_defconfig
-mips                          ath25_defconfig
-powerpc                         wii_defconfig
-m68k                        stmark2_defconfig
-sh                                  defconfig
-arc                    vdk_hs38_smp_defconfig
-arc                             nps_defconfig
-arm                  colibri_pxa270_defconfig
-mips                         rt305x_defconfig
-xtensa                generic_kc705_defconfig
-ia64                        generic_defconfig
-x86_64                           alldefconfig
-arm                          pxa3xx_defconfig
-sh                             sh03_defconfig
-mips                 decstation_r4k_defconfig
-arc                     nsimosci_hs_defconfig
-h8300                     edosk2674_defconfig
-mips                       capcella_defconfig
-arm                      footbridge_defconfig
-arm                           sunxi_defconfig
-mips                malta_kvm_guest_defconfig
-mips                        bcm47xx_defconfig
-sh                            shmin_defconfig
-sh                     sh7710voipgw_defconfig
-arm                     eseries_pxa_defconfig
-m68k                       m5475evb_defconfig
-mips                  decstation_64_defconfig
-mips                  cavium_octeon_defconfig
-nios2                         10m50_defconfig
-arm                            mmp2_defconfig
-m68k                       m5275evb_defconfig
-m68k                           sun3_defconfig
-sh                          sdk7786_defconfig
-mips                       rbtx49xx_defconfig
-sh                  sh7785lcr_32bit_defconfig
-arm                         orion5x_defconfig
-ia64                             allmodconfig
-ia64                                defconfig
-ia64                             allyesconfig
-m68k                                defconfig
-m68k                             allyesconfig
-nios2                               defconfig
-arc                              allyesconfig
-nds32                             allnoconfig
-c6x                              allyesconfig
-nds32                               defconfig
-nios2                            allyesconfig
-csky                                defconfig
-alpha                               defconfig
-alpha                            allyesconfig
-xtensa                           allyesconfig
-h8300                            allyesconfig
-sh                               allmodconfig
-parisc                              defconfig
-s390                             allyesconfig
-parisc                           allyesconfig
-s390                                defconfig
-sparc                            allyesconfig
-sparc                               defconfig
-i386                                defconfig
-mips                             allyesconfig
-mips                             allmodconfig
-powerpc                             defconfig
-powerpc                          allyesconfig
-powerpc                          allmodconfig
-powerpc                           allnoconfig
-i386                 randconfig-a002-20200826
-i386                 randconfig-a004-20200826
-i386                 randconfig-a003-20200826
-i386                 randconfig-a005-20200826
-i386                 randconfig-a006-20200826
-i386                 randconfig-a001-20200826
-x86_64               randconfig-a015-20200826
-x86_64               randconfig-a016-20200826
-x86_64               randconfig-a012-20200826
-x86_64               randconfig-a014-20200826
-x86_64               randconfig-a011-20200826
-x86_64               randconfig-a013-20200826
-i386                 randconfig-a013-20200826
-i386                 randconfig-a012-20200826
-i386                 randconfig-a011-20200826
-i386                 randconfig-a016-20200826
-i386                 randconfig-a015-20200826
-i386                 randconfig-a014-20200826
-riscv                            allyesconfig
-riscv                             allnoconfig
-riscv                               defconfig
-x86_64                                   rhel
-x86_64                           allyesconfig
-x86_64                    rhel-7.6-kselftests
-x86_64                              defconfig
-x86_64                               rhel-8.3
-x86_64                                  kexec
-
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+Hannes
+-- 
+Dr. Hannes Reinecke		           Kernel Storage Architect
+hare@suse.de			                  +49 911 74053 688
+SUSE Software Solutions Germany GmbH, Maxfeldstr. 5, 90409 Nürnberg
+HRB 36809 (AG Nürnberg), GF: Felix Imendörffer
