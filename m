@@ -2,91 +2,88 @@ Return-Path: <SRS0=O3TF=CF=vger.kernel.org=linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-6.8 required=3.0 tests=BAYES_00,
+X-Spam-Status: No, score=-8.3 required=3.0 tests=BAYES_00,
 	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,
-	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
+	SPF_PASS,USER_AGENT_SANE_1 autolearn=unavailable autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 146A5C433E1
-	for <linux-m68k@archiver.kernel.org>; Thu, 27 Aug 2020 07:36:45 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7A330C433DF
+	for <linux-m68k@archiver.kernel.org>; Thu, 27 Aug 2020 08:54:17 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id E742C20738
-	for <linux-m68k@archiver.kernel.org>; Thu, 27 Aug 2020 07:36:44 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 5ABDD2177B
+	for <linux-m68k@archiver.kernel.org>; Thu, 27 Aug 2020 08:54:17 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727105AbgH0Hgo (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Thu, 27 Aug 2020 03:36:44 -0400
-Received: from mail-ot1-f66.google.com ([209.85.210.66]:38475 "EHLO
-        mail-ot1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728218AbgH0Hgm (ORCPT
-        <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Thu, 27 Aug 2020 03:36:42 -0400
-Received: by mail-ot1-f66.google.com with SMTP id i11so3658734otr.5
-        for <linux-m68k@lists.linux-m68k.org>; Thu, 27 Aug 2020 00:36:42 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=bczqUQFB57ZFAWLvm+qps8KvfzclY1FoGAFfhuT5eN4=;
-        b=Qxq3kLO/aoEwqTpD1FITEqbDA5vS6WKWxtuvpRkQD/fywZ1YvWPVByT+e6ySUVrhpj
-         QIbVA7kcxzY/Vvhd059lu3jeMLqKIHgaAei4PcrckrZ/vwTIiKJDqjZxpaIqnTsWW2o8
-         6JzGwcJfnFO3cDx3yKyf7Xn7fPcfvxVYEVlvgFTrxNdsul7xHyJm6Xp2+0I/7EjD2KXl
-         lvN7sRk84oG8mpPpsX4DuY8a1NHuVZLlYBiFSvzM8k+TsEu1uDEmRYQlGQ9Ux1dbLYWa
-         rTnsUYYppZh7JlZCdse8Tsu98kPG6nsmSgkqVSbAvsMjk1ATd+XH/cY+fzXq975UwBnr
-         9v8w==
-X-Gm-Message-State: AOAM531RCdCeOvKGZrx5JpWVos47VlQkRY+A+o3bgnNwPfEDJzxXf9NE
-        WNKMTGZyAxuPZizlijHCynS9kzokJ9OWDedS4hM=
-X-Google-Smtp-Source: ABdhPJwVFgyYRXXpussfl49Xl7C9cX6P0/AbNZ5WQ8m6YD0Ftm/eTjlM5A7//j0mGak+BTd42smNfc0itlWtwjXSAG4=
-X-Received: by 2002:a9d:1b62:: with SMTP id l89mr12121818otl.145.1598513801598;
- Thu, 27 Aug 2020 00:36:41 -0700 (PDT)
+        id S1728087AbgH0Ix6 (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Thu, 27 Aug 2020 04:53:58 -0400
+Received: from verein.lst.de ([213.95.11.211]:37292 "EHLO verein.lst.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726851AbgH0Ix5 (ORCPT <rfc822;linux-m68k@lists.linux-m68k.org>);
+        Thu, 27 Aug 2020 04:53:57 -0400
+Received: by verein.lst.de (Postfix, from userid 2407)
+        id C68FE68B02; Thu, 27 Aug 2020 10:53:53 +0200 (CEST)
+Date:   Thu, 27 Aug 2020 10:53:53 +0200
+From:   Christoph Hellwig <hch@lst.de>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Christoph Hellwig <hch@lst.de>, Jens Axboe <axboe@kernel.dk>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Denis Efremov <efremov@linux.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Song Liu <song@kernel.org>, Al Viro <viro@zeniv.linux.org.uk>,
+        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-ide@vger.kernel.org, linux-raid@vger.kernel.org,
+        linux-scsi@vger.kernel.org, linux-m68k@lists.linux-m68k.org
+Subject: Re: [PATCH 01/19] char_dev: replace cdev_map with an xarray
+Message-ID: <20200827085353.GA12111@lst.de>
+References: <20200826062446.31860-1-hch@lst.de> <20200826062446.31860-2-hch@lst.de> <20200826081905.GB1796103@kroah.com>
 MIME-Version: 1.0
-References: <CAMuHMdV=gy1F2dX0+eURB=hubnbPUGbokrT_9kZXtk_ruAofSg@mail.gmail.com>
- <20200826185212.3139-1-grandmaster@al2klimov.de>
-In-Reply-To: <20200826185212.3139-1-grandmaster@al2klimov.de>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Thu, 27 Aug 2020 09:36:30 +0200
-Message-ID: <CAMuHMdVvx0z6xkH9YaPiWh4_WmmBP_W7VEyP4PjaLfNs9OWL0g@mail.gmail.com>
-Subject: Re: [PATCH v2] m68k: Replace HTTP links with HTTPS ones
-To:     "Alexander A. Klimov" <grandmaster@al2klimov.de>
-Cc:     Joshua Thompson <funaho@jurai.org>,
-        linux-m68k <linux-m68k@lists.linux-m68k.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200826081905.GB1796103@kroah.com>
+User-Agent: Mutt/1.5.17 (2007-11-01)
 Sender: linux-m68k-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-On Wed, Aug 26, 2020 at 8:52 PM Alexander A. Klimov
-<grandmaster@al2klimov.de> wrote:
-> Rationale:
-> Reduces attack surface on kernel devs opening the links for MITM
-> as HTTPS traffic is much harder to manipulate.
->
-> Deterministic algorithm:
-> For each file:
->   If not .svg:
->     For each line:
->       If doesn't contain `\bxmlns\b`:
->         For each link, `\bhttp://[^# \t\r\n]*(?:\w|/)`:
->           If neither `\bgnu\.org/license`, nor `\bmozilla\.org/MPL\b`:
->             If both the HTTP and HTTPS versions
->             return 200 OK and serve the same content:
->               Replace HTTP with HTTPS.
->
-> Signed-off-by: Alexander A. Klimov <grandmaster@al2klimov.de>
-> ---
->  v2: Thrown out de facto broken links.
->  archive.org-ing is on my TODO list, but beyond this project's scope.
+On Wed, Aug 26, 2020 at 10:19:05AM +0200, Greg Kroah-Hartman wrote:
+> On Wed, Aug 26, 2020 at 08:24:28AM +0200, Christoph Hellwig wrote:
+> > None of the complicated overlapping regions bits of the kobj_map are
+> > required for the character device lookup, so just a trivial xarray
+> > instead.
+> > 
+> > Signed-off-by: Christoph Hellwig <hch@lst.de>
+> 
+> Really?  This is ok to use and just as fast?  If so, wonderful, it would
+> be great to clean up kobj_map users.
 
-Reviewed-by: Geert Uytterhoeven <geert@linux-m68k.org>
-i.e. will queue in the m68k for-v5.10 branch.
+Xarrays provide pretty efficient as long as we have a unsigned long
+or smaller index (check, dev_t is small) and the indices are reasonable
+clustered (check, minors for the same major).  Memory usage will go down
+vs the probes, and lookup speed up.
 
-Gr{oetje,eeting}s,
+> > +	mutex_lock(&chrdevs_lock);
+> > +	for (i = 0; i < count; i++) {
+> > +		error = xa_insert(&cdev_map, dev + i, p, GFP_KERNEL);
+> > +		if (error)
+> > +			goto out_unwind;
+> > +	}
+> > +	mutex_unlock(&chrdevs_lock);
+> >  
+> >  	kobject_get(p->kobj.parent);
+> 
+> Can't you drop this kobject_get() too?
 
-                        Geert
+I'll have to drop it or add back the put on the delete side.  And
+I think the latter is safer for now, because..
 
--- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+> 
+> And also the "struct kobj" in struct cdev can be gone as well, as the
+> kobj_map was the only "real" user of this structure.  I know some
+> drivers liked to touch that field as well, but it never actually did
+> anything for them, so it was pointless, but it will take some 'make
+> allmodconfig' builds to flush them out.
 
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+I looked at it, but it does get registered and shows up in sysfs.
+I don't really dare to touch this for now, as it can have huge
+implications.  Better done in a separate series (if we can actually do
+it at all).
