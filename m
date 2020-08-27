@@ -2,74 +2,85 @@ Return-Path: <SRS0=O3TF=CF=vger.kernel.org=linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.8 required=3.0 tests=BAYES_00,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
-	autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-6.8 required=3.0 tests=BAYES_00,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,
+	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id EA4B4C433E1
-	for <linux-m68k@archiver.kernel.org>; Thu, 27 Aug 2020 09:19:24 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B276DC433E1
+	for <linux-m68k@archiver.kernel.org>; Thu, 27 Aug 2020 09:33:53 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id C72E72080C
-	for <linux-m68k@archiver.kernel.org>; Thu, 27 Aug 2020 09:19:24 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 8F9E422BF3
+	for <linux-m68k@archiver.kernel.org>; Thu, 27 Aug 2020 09:33:53 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727793AbgH0JTY (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Thu, 27 Aug 2020 05:19:24 -0400
-Received: from mail-oi1-f193.google.com ([209.85.167.193]:44721 "EHLO
-        mail-oi1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726882AbgH0JTX (ORCPT
-        <rfc822;linux-m68k@vger.kernel.org>); Thu, 27 Aug 2020 05:19:23 -0400
-Received: by mail-oi1-f193.google.com with SMTP id h3so4033943oie.11
-        for <linux-m68k@vger.kernel.org>; Thu, 27 Aug 2020 02:19:22 -0700 (PDT)
+        id S1728422AbgH0Jdx (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Thu, 27 Aug 2020 05:33:53 -0400
+Received: from mail-ot1-f66.google.com ([209.85.210.66]:41007 "EHLO
+        mail-ot1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728372AbgH0Jdw (ORCPT
+        <rfc822;linux-m68k@lists.linux-m68k.org>);
+        Thu, 27 Aug 2020 05:33:52 -0400
+Received: by mail-ot1-f66.google.com with SMTP id a65so3861433otc.8
+        for <linux-m68k@lists.linux-m68k.org>; Thu, 27 Aug 2020 02:33:52 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=sx5z9IOu3I+5D9BI9vMhr/6kFwAqRh7irYeujSwbebA=;
-        b=YBpgvaUhBFoI2QSFvK/Fh8Ey+odqlyBj0dCOJLggGLx7eXbd4iXNR8c8GpwvN9GYv+
-         b78VrQqfewRj1QWrcWlf8Hx32W3s4NFwjkSXqRRK856JPseb2ScQf2ItQ2VlWMMzFkOH
-         4pJhKaD68G0PFv4CbstqLxosWEvRAIVcS6q98VLe+WIa72xhr5+dcYo0aNe8l7WTL+XI
-         jTzNQuILbrtLMeY+ceyWMaxkSzCce0P6KflV6lpbVfG3bn4yYHK5UwHLAL7Ac6j50gFI
-         WPRsW++jqvMu+rjI1vIbKOsejDplGmad9DMPmzKfCUTP8DgDmLExxDTMuu+vADpWEnAM
-         MYaA==
-X-Gm-Message-State: AOAM532/PV1luyr68Iqj4LfGLp2c9OjVfx8THysi+flLD+QOreGMFSpB
-        8vgj/uuvJz7YgEuCcbFZRvfVkVuBOzb06y4BeGl/RCG+
-X-Google-Smtp-Source: ABdhPJyUXc0SSJkVC7ncP//DYQ8DP8s7glLEwzFdWmIS63lhV8sqoSlJXQT1ghZ8Ff7qamvPDX0NFXHQHAhIuGuActE=
-X-Received: by 2002:a05:6808:575:: with SMTP id j21mr6210058oig.54.1598519962335;
- Thu, 27 Aug 2020 02:19:22 -0700 (PDT)
+        bh=erOE8TrBl8kvb1HNiu2tPG2od/TXcbDQmkj/FRCOogE=;
+        b=YJWXmUdJQg9C0gGJ9Uc2yedEyjSIJWof7JOcg+MR6lGRUR4bHJbufjdDicUMckEWZ2
+         Xh91tqg/lWesD19VV3Ld741YS+A4Q7sYGj7emCPWYlQM6PEpKZ1YYSOx97vSA5bkeXnr
+         7DHORUuqUJ25Nf2Q33FpOvCadar0PFmfILZrJT0MBUlfzBU9aJnmZUXjwHzzdQrWRYg/
+         A3rx38h1/G5rRtUjMT4Lta3dTkgyPg87ZMilwVO9UhobPBqdkJP2uZBVehWnj1j/u1rz
+         A1+QJAGTJ5KkgytSNCcvI4fGQWapBxKIv8LWYS1rl51IM1bU+oWIr7tOD84njR1YLcD8
+         Wuww==
+X-Gm-Message-State: AOAM532ftg2oKP5MJY9iVsN3q+KhCrgimwioJycJ3AKMbhJ2dtaYBEq2
+        aEt9MiOnEJXTmIRxCytni9qIF0zzO9fnWCmvGsg=
+X-Google-Smtp-Source: ABdhPJzf5Rkx0MMkmy1DhlPa7m6zteOCzt6mslUfJ+2pjnLB14NhM0Z4C9ViJf9/MwLtHCDrl20l9yZOG5kwebfd3OE=
+X-Received: by 2002:a9d:32e5:: with SMTP id u92mr11767634otb.107.1598520831934;
+ Thu, 27 Aug 2020 02:33:51 -0700 (PDT)
 MIME-Version: 1.0
-References: <f0c9edc0-e596-c483-b9a6-f67778bd297c@physik.fu-berlin.de>
- <1595823555-11103-1-git-send-email-schmitzmic@gmail.com> <CAMuHMdVNqgG_6LSSuzMZekE1q7i_V4YisDJQUsjptLDejNGaRw@mail.gmail.com>
- <855486ab-736a-19ad-35c2-174b5eb59898@gmail.com>
-In-Reply-To: <855486ab-736a-19ad-35c2-174b5eb59898@gmail.com>
+References: <20200826145249.745432-1-npiggin@gmail.com> <20200826145249.745432-10-npiggin@gmail.com>
+In-Reply-To: <20200826145249.745432-10-npiggin@gmail.com>
 From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Thu, 27 Aug 2020 11:19:11 +0200
-Message-ID: <CAMuHMdWM0pMetDVKqtBUEHeyiD-_M6VsOQMr9WU4+xm1WdU=_g@mail.gmail.com>
-Subject: Re: [PATCH] m68k/kernel - wire up syscall_trace_enter/leave for m68k
-To:     Michael Schmitz <schmitzmic@gmail.com>
-Cc:     John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
-        "Linux/m68k" <linux-m68k@vger.kernel.org>,
-        Andreas Schwab <schwab@linux-m68k.org>
+Date:   Thu, 27 Aug 2020 11:33:40 +0200
+Message-ID: <CAMuHMdX5qo+2XpEm5QNbuwWRn508Ewee9rHYtmCBadj0x=3VnA@mail.gmail.com>
+Subject: Re: [PATCH v2 09/23] m68k: use asm-generic/mmu_context.h for no-op implementations
+To:     Nicholas Piggin <npiggin@gmail.com>
+Cc:     Linux-Arch <linux-arch@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux MM <linux-mm@kvack.org>, Arnd Bergmann <arnd@arndb.de>,
+        linux-m68k <linux-m68k@lists.linux-m68k.org>
 Content-Type: text/plain; charset="UTF-8"
 Sender: linux-m68k-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-Hi Michael,
+On Wed, Aug 26, 2020 at 4:53 PM Nicholas Piggin <npiggin@gmail.com> wrote:
+> Cc: Geert Uytterhoeven <geert@linux-m68k.org>
+> Cc: linux-m68k@lists.linux-m68k.org
+> Signed-off-by: Nicholas Piggin <npiggin@gmail.com>
 
-On Thu, Aug 27, 2020 at 2:08 AM Michael Schmitz <schmitzmic@gmail.com> wrote:
-> On 26/08/20 11:23 PM, Geert Uytterhoeven wrote:
-> > As your email subject didn't contain "v3", b4[*] insists on picking up
-> > RFC v2, and refuses to pick up the latest version, even when forced
->
-> Argh - I thought that since the first two were tagged 'RFC', I could
-> just restart with v1.
->
-> Never heard of b4, sorry.
+With the below fixed:
+Acked-by: Geert Uytterhoeven <geert@linux-m68k.org>
 
-It's the new tool to download patches and patch series, adding
-automatically any received *-by tags, and the Link: tag.  Makes my life
-easier ;-)
+> --- a/arch/m68k/include/asm/mmu_context.h
+> +++ b/arch/m68k/include/asm/mmu_context.h
+> @@ -79,19 +76,6 @@ static inline void switch_mm(struct mm_struct *prev, struct mm_struct *next,
+>         set_context(tsk->mm->context, next->pgd);
+>  }
+>
+> -/*
+> - * After we have set current->mm to a new value, this activates
+> - * the context for the new mm so we see the new mappings.
+> - */
+> -static inline void activate_mm(struct mm_struct *active_mm,
+> -       struct mm_struct *mm)
+> -{
+> -       get_mmu_context(mm);
+> -       set_context(mm->context, mm->pgd);
+> -}
+
+Assumed switch_mm() in [PATCH v2 01/23] is revived with the above body.
 
 Gr{oetje,eeting}s,
 
