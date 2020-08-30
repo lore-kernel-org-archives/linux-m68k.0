@@ -7,37 +7,37 @@ X-Spam-Status: No, score=-12.8 required=3.0 tests=BAYES_00,DKIM_INVALID,
 	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 10525C2BBD0
-	for <linux-m68k@archiver.kernel.org>; Sun, 30 Aug 2020 06:27:11 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 18CD3C433E2
+	for <linux-m68k@archiver.kernel.org>; Sun, 30 Aug 2020 06:27:28 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id DC49C2083E
-	for <linux-m68k@archiver.kernel.org>; Sun, 30 Aug 2020 06:27:10 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id EAF232083E
+	for <linux-m68k@archiver.kernel.org>; Sun, 30 Aug 2020 06:27:27 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="Hi5+wI6Y"
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="m0JIRqIx"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728748AbgH3G0a (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Sun, 30 Aug 2020 02:26:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58522 "EHLO
+        id S1728830AbgH3G1N (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Sun, 30 Aug 2020 02:27:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58482 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725874AbgH3GZG (ORCPT
+        with ESMTP id S1726078AbgH3GY6 (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Sun, 30 Aug 2020 02:25:06 -0400
+        Sun, 30 Aug 2020 02:24:58 -0400
 Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 98B4CC061239;
-        Sat, 29 Aug 2020 23:25:05 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 47F28C061239;
+        Sat, 29 Aug 2020 23:24:58 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
         d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
         References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:
         Content-Type:Content-ID:Content-Description;
-        bh=34hr4y/kC5XT7kH5TAn/CeLpg6Bsmo1oeMdH990fres=; b=Hi5+wI6YBzEK9jiwVa6ethgB/j
-        mGKPpYQc0zWCkuk33ZQFglAnwHCQCbN4xXry3LsSU+bQIsp8i/CiQvm3U1yrzJOZrPEzRkYhsyCaY
-        uDv0oOYRsXISIJqpShUHq6eybzn8uAakbNZygPEwnw2TqaoJAwLs6n0dHFCPPKRyF6PfFMbFHEK43
-        XdtPk92jX8Lw7QZKkfDi0RJ7Vhzz/L4dcl5zcqr/IGzdnwyT+IB3OOlshzbpS5bi+HFKssKoa0Q8J
-        y/C0bcQX8YBGPdR+XXbU6rWudzle8WCoT3BYf+uuwMShIiMbvB/uc8IvaG1ECkYZ9ikODVhLHnZIW
-        ccSlyFfw==;
+        bh=YM1SPyKS6FTgRnphdLuuProv8AP/xrdO+TruNwolZXE=; b=m0JIRqIxcxnW+xHg05y/iEvibd
+        2GVNSm9E9ZqUIAXi2i0hKZfhPyTcwG4oAmYs2TsPiJ6tuDAp4maqAEBCKeksvip3PQY2WkJu61csL
+        wo8srVBc47/x+ikRD00yff0tZihKfTubyHzVtSRkhCO7V2+r9Em/pdvlNNTYb0v0RUJHpaM6hKkCo
+        ubzo0pdQIhPEesSwUn385IjZLAUVJ7HB20y8S1mEnnQ1pqp3Zqgw+QvoF7FKdvpCGsqGmMDYPoXPr
+        kZ/dBzvCFxg30MQUYUw5uWJpmdUWoOok444LP8eCJFEllR9QIJQVRAdYSWJZFAv9EKYSY/HKvgPpj
+        S+H4wVqw==;
 Received: from [2001:4bb8:18c:45ba:9892:9e86:5202:32f0] (helo=localhost)
         by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kCGlv-0002OB-Hc; Sun, 30 Aug 2020 06:24:59 +0000
+        id 1kCGln-0002MZ-7L; Sun, 30 Aug 2020 06:24:51 +0000
 From:   Christoph Hellwig <hch@lst.de>
 To:     Jens Axboe <axboe@kernel.dk>
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
@@ -48,9 +48,9 @@ Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
         linux-ide@vger.kernel.org, linux-raid@vger.kernel.org,
         linux-scsi@vger.kernel.org, linux-m68k@lists.linux-m68k.org
-Subject: [PATCH 13/19] ide: switch to __register_blkdev for command set probing
-Date:   Sun, 30 Aug 2020 08:24:39 +0200
-Message-Id: <20200830062445.1199128-14-hch@lst.de>
+Subject: [PATCH 05/19] block: rework requesting modules for unclaimed devices
+Date:   Sun, 30 Aug 2020 08:24:31 +0200
+Message-Id: <20200830062445.1199128-6-hch@lst.de>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200830062445.1199128-1-hch@lst.de>
 References: <20200830062445.1199128-1-hch@lst.de>
@@ -62,86 +62,72 @@ Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-ide is the last user of the blk_register_region framework except for the
-tracking of allocated gendisk.  Switch to __register_blkdev, even if that
-doesn't allow us to trivially find out which command set to probe for.
-That means we now always request all modules when a user tries to access
-an unclaimed ide device node, but except for a few potentially loaded
-modules for a fringe use case of a deprecated and soon to be removed
-driver that doesn't make a difference.
+Instead of reusing the ranges in bdev_map, add a new helper that is
+called if no ranges was found.  This is a first step to unpeel and
+eventually remove the complex ranges structure.
 
 Signed-off-by: Christoph Hellwig <hch@lst.de>
 ---
- drivers/ide/ide-probe.c | 34 ++++++----------------------------
- 1 file changed, 6 insertions(+), 28 deletions(-)
+ block/genhd.c | 25 +++++++++++++++----------
+ 1 file changed, 15 insertions(+), 10 deletions(-)
 
-diff --git a/drivers/ide/ide-probe.c b/drivers/ide/ide-probe.c
-index 076d34b381720f..1c1567bb519429 100644
---- a/drivers/ide/ide-probe.c
-+++ b/drivers/ide/ide-probe.c
-@@ -902,31 +902,12 @@ static int init_irq (ide_hwif_t *hwif)
- 	return 1;
+diff --git a/block/genhd.c b/block/genhd.c
+index 0ae6210e141ee5..00164304317cfa 100644
+--- a/block/genhd.c
++++ b/block/genhd.c
+@@ -1035,6 +1035,13 @@ static ssize_t disk_badblocks_store(struct device *dev,
+ 	return badblocks_store(disk->bb, page, len, 0);
  }
  
--static int ata_lock(dev_t dev, void *data)
-+static void ata_probe(dev_t dev)
++static void request_gendisk_module(dev_t devt)
++{
++	if (request_module("block-major-%d-%d", MAJOR(devt), MINOR(devt)) > 0)
++		/* Make old-style 2.4 aliases work */
++		request_module("block-major-%d", MAJOR(devt));
++}
++
+ static struct gendisk *lookup_gendisk(dev_t dev, int *partno)
  {
--	/* FIXME: we want to pin hwif down */
--	return 0;
+ 	struct kobject *kobj;
+@@ -1059,6 +1066,14 @@ static struct gendisk *lookup_gendisk(dev_t dev, int *partno)
+ 		probe = p->probe;
+ 		best = p->range - 1;
+ 		*partno = dev - p->dev;
++
++		if (!probe) {
++			mutex_unlock(&bdev_map_lock);
++			module_put(owner);
++			request_gendisk_module(dev);
++			goto retry;
++		}
++
+ 		if (p->lock && p->lock(dev, data) < 0) {
+ 			module_put(owner);
+ 			continue;
+@@ -1297,15 +1312,6 @@ static const struct seq_operations partitions_op = {
+ };
+ #endif
+ 
+-
+-static struct kobject *base_probe(dev_t devt, int *partno, void *data)
+-{
+-	if (request_module("block-major-%d-%d", MAJOR(devt), MINOR(devt)) > 0)
+-		/* Make old-style 2.4 aliases work */
+-		request_module("block-major-%d", MAJOR(devt));
+-	return NULL;
 -}
 -
--static struct kobject *ata_probe(dev_t dev, int *part, void *data)
--{
--	ide_hwif_t *hwif = data;
--	int unit = *part >> PARTN_BITS;
--	ide_drive_t *drive = hwif->devices[unit];
--
--	if ((drive->dev_flags & IDE_DFLAG_PRESENT) == 0)
--		return NULL;
--
--	if (drive->media == ide_disk)
--		request_module("ide-disk");
--	if (drive->media == ide_cdrom || drive->media == ide_optical)
--		request_module("ide-cd");
--	if (drive->media == ide_tape)
--		request_module("ide-tape");
--	if (drive->media == ide_floppy)
--		request_module("ide-floppy");
--
--	return NULL;
-+	request_module("ide-disk");
-+	request_module("ide-cd");
-+	request_module("ide-tape");
-+	request_module("ide-floppy");
+ static void bdev_map_init(void)
+ {
+ 	struct bdev_map *base;
+@@ -1317,7 +1323,6 @@ static void bdev_map_init(void)
+ 
+ 	base->dev = 1;
+ 	base->range = ~0 ;
+-	base->probe = base_probe;
+ 	for (i = 0; i < 255; i++)
+ 		bdev_map[i] = base;
  }
- 
- void ide_init_disk(struct gendisk *disk, ide_drive_t *drive)
-@@ -967,7 +948,7 @@ static int hwif_init(ide_hwif_t *hwif)
- 		return 0;
- 	}
- 
--	if (register_blkdev(hwif->major, hwif->name))
-+	if (__register_blkdev(hwif->major, hwif->name, ata_probe))
- 		return 0;
- 
- 	if (!hwif->sg_max_nents)
-@@ -989,8 +970,6 @@ static int hwif_init(ide_hwif_t *hwif)
- 		goto out;
- 	}
- 
--	blk_register_region(MKDEV(hwif->major, 0), MAX_DRIVES << PARTN_BITS,
--			    THIS_MODULE, ata_probe, ata_lock, hwif);
- 	return 1;
- 
- out:
-@@ -1582,7 +1561,6 @@ static void ide_unregister(ide_hwif_t *hwif)
- 	/*
- 	 * Remove us from the kernel's knowledge
- 	 */
--	blk_unregister_region(MKDEV(hwif->major, 0), MAX_DRIVES<<PARTN_BITS);
- 	kfree(hwif->sg_table);
- 	unregister_blkdev(hwif->major, hwif->name);
- 
 -- 
 2.28.0
 
