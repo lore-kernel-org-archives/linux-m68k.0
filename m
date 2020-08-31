@@ -1,75 +1,69 @@
-Return-Path: <SRS0=usqL=CI=vger.kernel.org=linux-m68k-owner@kernel.org>
+Return-Path: <SRS0=I5t9=CJ=vger.kernel.org=linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-7.0 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no
+X-Spam-Status: No, score=-8.5 required=3.0 tests=BAYES_00,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,
+	SPF_PASS,USER_AGENT_SANE_1 autolearn=unavailable autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 09B60C433E6
-	for <linux-m68k@archiver.kernel.org>; Sun, 30 Aug 2020 07:35:12 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id EA046C43461
+	for <linux-m68k@archiver.kernel.org>; Mon, 31 Aug 2020 09:40:15 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id D7D69207DA
-	for <linux-m68k@archiver.kernel.org>; Sun, 30 Aug 2020 07:35:11 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=default; t=1598772911;
-	bh=Z/FmyEd9eHtomr5XbHkYpPD1417KzQFnCXSZgfQ4Z2w=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:List-ID:From;
-	b=pYXEXr72nho66fqN0UaHDUzi6fBTbvBgKM98qLY0aWJsvj6gs2oWtZYJ2UzfD/gSw
-	 8XW9gvmH1NCLPq/Bdj6r8EnYm/PbP5PN+b49L0Elmx6+CQZdCCVXq1QlVIo8NrNKE8
-	 fvsDsp3KW9u47aXk2g0fQsIMJz2k+PH3nQjJpClA=
+	by mail.kernel.org (Postfix) with ESMTP id C98522068F
+	for <linux-m68k@archiver.kernel.org>; Mon, 31 Aug 2020 09:40:15 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726528AbgH3HfG (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Sun, 30 Aug 2020 03:35:06 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36858 "EHLO mail.kernel.org"
+        id S1726121AbgHaJkD (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Mon, 31 Aug 2020 05:40:03 -0400
+Received: from mx2.suse.de ([195.135.220.15]:54478 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726061AbgH3HfG (ORCPT <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Sun, 30 Aug 2020 03:35:06 -0400
-Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 243402076D;
-        Sun, 30 Aug 2020 07:35:05 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598772905;
-        bh=Z/FmyEd9eHtomr5XbHkYpPD1417KzQFnCXSZgfQ4Z2w=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=TZNUvmUykyNDYQkeTDMM7k7xX6Q8qTwfuHNXRhJpwT3hFd72yxhzKbv2be1iUohkx
-         zmtHbAcdIPmKrtNX8gpSqwzEgaZYAmV4Mw223NUF7w00kD4RQyAhtTKZ05n5zJYAkv
-         BJeK9Rsq3ErIWcoaajLCvbBxSo2ktQSHCxveqQE4=
-Date:   Sun, 30 Aug 2020 09:35:03 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     Jens Axboe <axboe@kernel.dk>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Denis Efremov <efremov@linux.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Song Liu <song@kernel.org>, Al Viro <viro@zeniv.linux.org.uk>,
-        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-ide@vger.kernel.org, linux-raid@vger.kernel.org,
-        linux-scsi@vger.kernel.org, linux-m68k@lists.linux-m68k.org
-Subject: Re: [PATCH 19/19] block: switch gendisk lookup to a simple xarray
-Message-ID: <20200830073503.GB112265@kroah.com>
-References: <20200830062445.1199128-1-hch@lst.de>
- <20200830062445.1199128-20-hch@lst.de>
+        id S1726106AbgHaJkC (ORCPT <rfc822;linux-m68k@vger.kernel.org>);
+        Mon, 31 Aug 2020 05:40:02 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 49735ACDB;
+        Mon, 31 Aug 2020 09:40:34 +0000 (UTC)
+Received: by ds.suse.cz (Postfix, from userid 10065)
+        id 5CCC3DA840; Mon, 31 Aug 2020 11:38:48 +0200 (CEST)
+Date:   Mon, 31 Aug 2020 11:38:48 +0200
+From:   David Sterba <dsterba@suse.cz>
+To:     Max Staudt <max@enpas.org>
+Cc:     David Sterba <dsterba@suse.com>, linux-fsdevel@vger.kernel.org,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        linux-m68k@vger.kernel.org, glaubitz@physik.fu-berlin.de,
+        linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Subject: Re: [PATCH] fs/affs: Fix basic permission bits to actually work
+Message-ID: <20200831093848.GS28318@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+Mail-Followup-To: dsterba@suse.cz, Max Staudt <max@enpas.org>,
+        David Sterba <dsterba@suse.com>, linux-fsdevel@vger.kernel.org,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        linux-m68k@vger.kernel.org, glaubitz@physik.fu-berlin.de,
+        linux-kernel@vger.kernel.org, stable@vger.kernel.org
+References: <20200827154900.28233-1-max@enpas.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200830062445.1199128-20-hch@lst.de>
+In-Reply-To: <20200827154900.28233-1-max@enpas.org>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Sender: linux-m68k-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-On Sun, Aug 30, 2020 at 08:24:45AM +0200, Christoph Hellwig wrote:
-> Now that bdev_map is only used for finding gendisks, we can use
-> a simple xarray instead of the regions tracking structure for it.
+On Thu, Aug 27, 2020 at 05:49:00PM +0200, Max Staudt wrote:
+> The basic permission bits (protection bits in AmigaOS) have been broken
+> in Linux' affs - it would only set bits, but never delete them.
+> Also, contrary to the documentation, the Archived bit was not handled.
 > 
-> Signed-off-by: Christoph Hellwig <hch@lst.de>
-> ---
->  block/genhd.c         | 208 ++++++++----------------------------------
->  include/linux/genhd.h |   7 --
->  2 files changed, 37 insertions(+), 178 deletions(-)
+> Let's fix this for good, and set the bits such that Linux and classic
+> AmigaOS can coexist in the most peaceful manner.
+> 
+> Also, update the documentation to represent the current state of things.
+> 
+> Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
+> Cc: stable@vger.kernel.org
+> Signed-off-by: Max Staudt <max@enpas.org>
 
-Reviewed-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Thanks, patch looks good to me, I'll send a pull request to Linus this
+week.
