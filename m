@@ -1,203 +1,120 @@
-Return-Path: <SRS0=iTOZ=CK=vger.kernel.org=linux-m68k-owner@kernel.org>
+Return-Path: <SRS0=cZRO=CL=vger.kernel.org=linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-12.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
+X-Spam-Status: No, score=-12.8 required=3.0 tests=BAYES_00,DKIM_INVALID,
+	DKIM_SIGNED,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 5E3C4C433E6
-	for <linux-m68k@archiver.kernel.org>; Tue,  1 Sep 2020 14:43:28 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C107AC433E7
+	for <linux-m68k@archiver.kernel.org>; Wed,  2 Sep 2020 14:13:56 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 2F9E2206EB
-	for <linux-m68k@archiver.kernel.org>; Tue,  1 Sep 2020 14:43:28 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 98E6D207D3
+	for <linux-m68k@archiver.kernel.org>; Wed,  2 Sep 2020 14:13:56 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="EcXZ93WE"
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="WwKvie5U"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728454AbgIAOnY (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Tue, 1 Sep 2020 10:43:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42748 "EHLO
+        id S1727941AbgIBONq (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Wed, 2 Sep 2020 10:13:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38140 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728261AbgIAOQY (ORCPT
+        with ESMTP id S1727991AbgIBONL (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Tue, 1 Sep 2020 10:16:24 -0400
-Received: from mail-pj1-x1043.google.com (mail-pj1-x1043.google.com [IPv6:2607:f8b0:4864:20::1043])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 419EDC061265
-        for <linux-m68k@lists.linux-m68k.org>; Tue,  1 Sep 2020 07:16:24 -0700 (PDT)
-Received: by mail-pj1-x1043.google.com with SMTP id gf14so632828pjb.5
-        for <linux-m68k@lists.linux-m68k.org>; Tue, 01 Sep 2020 07:16:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=zvhzgkhZO1kqoSQJjNzOqYAXx9WauCb1i9WMlKWlKe8=;
-        b=EcXZ93WE2aWXzV48ZN7Escs+fQSd6CU/Wkoa2qVWkkzksQSYNoBrygJbDdbC3+0mFm
-         DOos39pn1mYuslZY1BZQjmDfM60TESM9RQgwh98KFByz9InAAzqdWYXR13ILXuM8fxne
-         BuOHcaAbNCCzX1jk1OSUa+t4A5smR68EiGTfYXbiQ5al2NSyNPSGnu1eHlPGGyqcr9Tn
-         YutzC7BU5MjT25I8KkGsYu3ibgteh5r4Bina0QoZcuJqZ8N+oET50Ai109ekvayNy3Mk
-         kr4RrCSf1K40XFImfSg/4yE+MC+pGZk9lCy2G/2ZMn57DP93xPu+ku/pZpZ1LCEZyIJr
-         W29A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=zvhzgkhZO1kqoSQJjNzOqYAXx9WauCb1i9WMlKWlKe8=;
-        b=cht4zlx25uBmVxRRLpgFrPL+rS89k3LtEsOw8mXO+byM4Sz4HAtUaFkJszUXLpLaxX
-         NWh9Tdh67ynoo++/LBstcNeuTNVSLA6qSVSab3genN5i4L8eqtj6Jqfo4RLmDo0RqYAB
-         rYwYzIyUfqehtbWfb5Vv4bBI5lTL7Wk+ka9Zx/X7KeUPjJ9KaTFVL+v98IwgItJW2174
-         kqEkk1HD+NLpRW+nRC/5kEEgavdPOowilO16UdkkXoyVVWXadCKbJjXJ7LzqgusjH5mH
-         l5yKvTgjN9kzjFSH2Jo+WPX98RvJ6BfYFKVJtInoK7Hq717L2UnchrGYgaQpVad2zMQP
-         Dcow==
-X-Gm-Message-State: AOAM533e3Mow/FXvtFUai7JmhvZl6EUpa7++s/PdwZok7g+NxOU60mgu
-        OWhniWXv1skZK24s51fpCH4=
-X-Google-Smtp-Source: ABdhPJxsgG44bWbTWPiAdffudfRe3VG6mhCW8Ffx7ERK3273FVgKG+24orA/GkxdBRoUGT226R4DlQ==
-X-Received: by 2002:a17:902:b714:: with SMTP id d20mr1587452pls.103.1598969783374;
-        Tue, 01 Sep 2020 07:16:23 -0700 (PDT)
-Received: from bobo.ibm.com ([203.185.249.227])
-        by smtp.gmail.com with ESMTPSA id w9sm2212816pgg.76.2020.09.01.07.16.20
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 01 Sep 2020 07:16:22 -0700 (PDT)
-From:   Nicholas Piggin <npiggin@gmail.com>
-To:     linux-arch@vger.kernel.org
-Cc:     Nicholas Piggin <npiggin@gmail.com>, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, Arnd Bergmann <arnd@arndb.de>,
-        linux-m68k@lists.linux-m68k.org,
-        Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: [PATCH v3 09/23] m68k: use asm-generic/mmu_context.h for no-op implementations
-Date:   Wed,  2 Sep 2020 00:15:25 +1000
-Message-Id: <20200901141539.1757549-10-npiggin@gmail.com>
-X-Mailer: git-send-email 2.23.0
-In-Reply-To: <20200901141539.1757549-1-npiggin@gmail.com>
-References: <20200901141539.1757549-1-npiggin@gmail.com>
+        Wed, 2 Sep 2020 10:13:11 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1396EC06125C;
+        Wed,  2 Sep 2020 07:12:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
+        References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:
+        Content-Type:Content-ID:Content-Description;
+        bh=EqP9HPoUpfEHaFZHJN9/qOYklR5YKLZjZD+GBezP77s=; b=WwKvie5UOByQM0J/L7OERFefDG
+        ekdcHLA92IY05Goz+JUSOuazP3GEGKKjiLVA1rLvqyDC5QPu1wQlZuYlb67SbGXgpQUWb0Z085ajZ
+        bzKBmGu7jmWA7jca34IRO+FzQGfZXCvxyTQLUgkJrzFOWFHRqdpbXFTey/eVRMg47kL6JCidKpDX7
+        0XIROz3WU/OiGmOoFvLLNfbDFBvsO5PcclVc8CarMFrymMsiwtWuH1CD3efqsXF1SBRJ8k2Nnub7I
+        FdkSZB5lwhZ9HKyDbJ2fEA1f4fwIkuFNnTxjhPcxx3OlbDrtrVbW53tyC6dCWUAoFHlrhRuiPpqve
+        2sW3A4EA==;
+Received: from [2001:4bb8:184:af1:6a63:7fdb:a80e:3b0b] (helo=localhost)
+        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kDTV7-0005f9-Hr; Wed, 02 Sep 2020 14:12:38 +0000
+From:   Christoph Hellwig <hch@lst.de>
+To:     Jens Axboe <axboe@kernel.dk>
+Cc:     Denis Efremov <efremov@linux.com>, Tim Waugh <tim@cyberelk.net>,
+        Michal Simek <michal.simek@xilinx.com>,
+        Borislav Petkov <bp@alien8.de>,
+        "David S. Miller" <davem@davemloft.net>,
+        Song Liu <song@kernel.org>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Finn Thain <fthain@telegraphics.com.au>,
+        Michael Schmitz <schmitzmic@gmail.com>,
+        linux-m68k@lists.linux-m68k.org, linux-block@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-ide@vger.kernel.org,
+        linux-raid@vger.kernel.org, linux-scsi@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org
+Subject: [PATCH 13/19] ide-cd: remove idecd_revalidate_disk
+Date:   Wed,  2 Sep 2020 16:12:12 +0200
+Message-Id: <20200902141218.212614-14-hch@lst.de>
+X-Mailer: git-send-email 2.28.0
+In-Reply-To: <20200902141218.212614-1-hch@lst.de>
+References: <20200902141218.212614-1-hch@lst.de>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
 Sender: linux-m68k-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-Cc: linux-m68k@lists.linux-m68k.org
-Acked-by: Geert Uytterhoeven <geert@linux-m68k.org>
-Signed-off-by: Nicholas Piggin <npiggin@gmail.com>
----
- arch/m68k/include/asm/mmu_context.h | 37 +++++++----------------------
- 1 file changed, 9 insertions(+), 28 deletions(-)
+Just merge the trivial function into its only caller.
 
-diff --git a/arch/m68k/include/asm/mmu_context.h b/arch/m68k/include/asm/mmu_context.h
-index 993fd7e37069..d12d8a9032f6 100644
---- a/arch/m68k/include/asm/mmu_context.h
-+++ b/arch/m68k/include/asm/mmu_context.h
-@@ -5,10 +5,6 @@
- #include <asm-generic/mm_hooks.h>
- #include <linux/mm_types.h>
+Signed-off-by: Christoph Hellwig <hch@lst.de>
+---
+ drivers/ide/ide-cd.c | 17 +++++------------
+ 1 file changed, 5 insertions(+), 12 deletions(-)
+
+diff --git a/drivers/ide/ide-cd.c b/drivers/ide/ide-cd.c
+index 6a38cbc80aea0d..25d2d88e82ada0 100644
+--- a/drivers/ide/ide-cd.c
++++ b/drivers/ide/ide-cd.c
+@@ -56,7 +56,6 @@ static DEFINE_MUTEX(ide_cd_mutex);
+ static DEFINE_MUTEX(idecd_ref_mutex);
  
--static inline void enter_lazy_tlb(struct mm_struct *mm, struct task_struct *tsk)
--{
--}
--
- #ifdef CONFIG_MMU
+ static void ide_cd_release(struct device *);
+-static int idecd_revalidate_disk(struct gendisk *disk);
  
- #if defined(CONFIG_COLDFIRE)
-@@ -58,6 +54,7 @@ static inline void get_mmu_context(struct mm_struct *mm)
- /*
-  * We're finished using the context for an address space.
-  */
-+#define destroy_context destroy_context
- static inline void destroy_context(struct mm_struct *mm)
+ static struct cdrom_info *ide_cd_get(struct gendisk *disk)
  {
- 	if (mm->context != NO_CONTEXT) {
-@@ -83,6 +80,7 @@ static inline void switch_mm(struct mm_struct *prev, struct mm_struct *next,
-  * After we have set current->mm to a new value, this activates
-  * the context for the new mm so we see the new mappings.
-  */
-+#define activate_mm activate_mm
- static inline void activate_mm(struct mm_struct *active_mm,
- 	struct mm_struct *mm)
- {
-@@ -90,8 +88,6 @@ static inline void activate_mm(struct mm_struct *active_mm,
- 	set_context(mm->context, mm->pgd);
+@@ -1612,8 +1611,11 @@ static int idecd_open(struct block_device *bdev, fmode_t mode)
+ 	struct cdrom_info *info;
+ 	int rc = -ENXIO;
+ 
+-	if (bdev_check_media_change(bdev))
+-		idecd_revalidate_disk(bdev->bd_disk);
++	if (bdev_check_media_change(bdev)) {
++		info = ide_drv_g(bdev->bd_disk, cdrom_info);
++
++		ide_cd_read_toc(info->drive);
++	}
+ 
+ 	mutex_lock(&ide_cd_mutex);
+ 	info = ide_cd_get(bdev->bd_disk);
+@@ -1755,15 +1757,6 @@ static unsigned int idecd_check_events(struct gendisk *disk,
+ 	return cdrom_check_events(&info->devinfo, clearing);
  }
  
--#define deactivate_mm(tsk, mm) do { } while (0)
--
- #define prepare_arch_switch(next) load_ksp_mmu(next)
- 
- static inline void load_ksp_mmu(struct task_struct *task)
-@@ -176,6 +172,7 @@ extern unsigned long get_free_context(struct mm_struct *mm);
- extern void clear_context(unsigned long context);
- 
- /* set the context for a new task to unmapped */
-+#define init_new_context init_new_context
- static inline int init_new_context(struct task_struct *tsk,
- 				   struct mm_struct *mm)
- {
-@@ -210,8 +207,7 @@ static inline void switch_mm(struct mm_struct *prev, struct mm_struct *next,
- 	activate_context(tsk->mm);
- }
- 
--#define deactivate_mm(tsk, mm)	do { } while (0)
--
-+#define activate_mm activate_mm
- static inline void activate_mm(struct mm_struct *prev_mm,
- 			       struct mm_struct *next_mm)
- {
-@@ -224,6 +220,7 @@ static inline void activate_mm(struct mm_struct *prev_mm,
- #include <asm/page.h>
- #include <asm/cacheflush.h>
- 
-+#define init_new_context init_new_context
- static inline int init_new_context(struct task_struct *tsk,
- 				   struct mm_struct *mm)
- {
-@@ -231,8 +228,6 @@ static inline int init_new_context(struct task_struct *tsk,
- 	return 0;
- }
- 
--#define destroy_context(mm)		do { } while(0)
--
- static inline void switch_mm_0230(struct mm_struct *mm)
- {
- 	unsigned long crp[2] = {
-@@ -300,8 +295,7 @@ static inline void switch_mm(struct mm_struct *prev, struct mm_struct *next, str
- 	}
- }
- 
--#define deactivate_mm(tsk,mm)	do { } while (0)
--
-+#define activate_mm activate_mm
- static inline void activate_mm(struct mm_struct *prev_mm,
- 			       struct mm_struct *next_mm)
- {
-@@ -315,24 +309,11 @@ static inline void activate_mm(struct mm_struct *prev_mm,
- 
- #endif
- 
--#else /* !CONFIG_MMU */
--
--static inline int init_new_context(struct task_struct *tsk, struct mm_struct *mm)
+-static int idecd_revalidate_disk(struct gendisk *disk)
 -{
--	return 0;
+-	struct cdrom_info *info = ide_drv_g(disk, cdrom_info);
+-
+-	ide_cd_read_toc(info->drive);
+-
+-	return  0;
 -}
 -
--
--static inline void switch_mm(struct mm_struct *prev, struct mm_struct *next, struct task_struct *tsk)
--{
--}
-+#include <asm-generic/mmu_context.h>
- 
--#define destroy_context(mm)	do { } while (0)
--#define deactivate_mm(tsk,mm)	do { } while (0)
-+#else /* !CONFIG_MMU */
- 
--static inline void activate_mm(struct mm_struct *prev_mm, struct mm_struct *next_mm)
--{
--}
-+#include <asm-generic/nommu_context.h>
- 
- #endif /* CONFIG_MMU */
- #endif /* __M68K_MMU_CONTEXT_H */
+ static const struct block_device_operations idecd_ops = {
+ 	.owner			= THIS_MODULE,
+ 	.open			= idecd_open,
 -- 
-2.23.0
+2.28.0
 
