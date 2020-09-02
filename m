@@ -2,65 +2,27 @@ Return-Path: <SRS0=cZRO=CL=vger.kernel.org=linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-11.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,NICE_REPLY_A,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=unavailable
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-5.8 required=3.0 tests=BAYES_00,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,NICE_REPLY_A,SPF_HELO_NONE,
+	SPF_PASS,USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 98952C43461
-	for <linux-m68k@archiver.kernel.org>; Wed,  2 Sep 2020 16:19:35 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 37BFBC433E7
+	for <linux-m68k@archiver.kernel.org>; Wed,  2 Sep 2020 22:00:16 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 7584C208B3
-	for <linux-m68k@archiver.kernel.org>; Wed,  2 Sep 2020 16:19:35 +0000 (UTC)
-Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="tBR2n6hv"
+	by mail.kernel.org (Postfix) with ESMTP id 1AFA520767
+	for <linux-m68k@archiver.kernel.org>; Wed,  2 Sep 2020 22:00:16 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728675AbgIBQTY (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Wed, 2 Sep 2020 12:19:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57670 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728397AbgIBQTW (ORCPT
-        <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Wed, 2 Sep 2020 12:19:22 -0400
-Received: from mail-lf1-x142.google.com (mail-lf1-x142.google.com [IPv6:2a00:1450:4864:20::142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB531C061245
-        for <linux-m68k@lists.linux-m68k.org>; Wed,  2 Sep 2020 09:19:21 -0700 (PDT)
-Received: by mail-lf1-x142.google.com with SMTP id u27so83997lfm.13
-        for <linux-m68k@lists.linux-m68k.org>; Wed, 02 Sep 2020 09:19:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=A4Ns4FXyKzBbQIQFhXeIN99gK1TEB4bN7K2rZb3tfqs=;
-        b=tBR2n6hvrbBmXRV3KYYvZLMZe1zksCcBHJSuVij9v/Mfx0mjvXpvKQv+n2NjGjB5+7
-         FUlvE06p5sp9p7lyyIWi2rgXvbZt8LHbpMfb31wmHq2MfE2dN19KZjip4hM9j1mjci7b
-         4ne3Nb7NNiRJSUh+wLALVk4vZsU1Ajv1tiTjTq6NzgX7BjYPwRrhcbzY0D+CobKQFM5v
-         8XGrSnvqb5C7xMnlLSeEs0UBZ29+9TXxGbshDEYoHp3P1wd6/6YZ2fziqnj3SZstZtRE
-         x6ZYyh15XZdwqOUWKRSnXUgcM7FViI71QM9cYJmMkibTmGfYjd+IhDtQgPUPE8dXMjn3
-         7Q8Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=A4Ns4FXyKzBbQIQFhXeIN99gK1TEB4bN7K2rZb3tfqs=;
-        b=O6rHwNhnAd9N8WZb0CON4Uw130BU6C/9DlwlBpDdB/NOrHGg3Y2FfdoBKYf1GnKehI
-         644h64y1xGARPTEYG/9KeyEoS3Wk3vhDIew2CwQgyAoDS5RXj67t3tI7RhpQx7cdNcsr
-         Tc4KWCuOqV7dQ5k5B/MvMYsC6H850ldxabpBl7ZtEPBrlBHnEPsdbbYhF3DBpztrrRzN
-         kGAmvKqJCfpJbqLjfme0/H4MPyp1t4V2rhzvgQ8ZxfluSAnHnNLOEbSUYaYG7JhiuYQe
-         /IaHF4ZF2fqMbSe5fLh52fVjFm0zYpg7EM21MfYuVnF2lGiQKrxnSkNIosok4eBh8pHj
-         vFUA==
-X-Gm-Message-State: AOAM533cI80SiqemScuDVpYhUYKw8oKvnVQFC3GzMUtsVR7bt06Gu3rs
-        rMitQcr2sRMVfhW0Hiho45w=
-X-Google-Smtp-Source: ABdhPJxorOuMt+fF1q/dzHdE2W3hPAzBwNmMujGF4eljWGZI3dJVEHHttghNXMYbfHt9AmKOTnf+bg==
-X-Received: by 2002:a19:dcb:: with SMTP id 194mr3481675lfn.25.1599063559361;
-        Wed, 02 Sep 2020 09:19:19 -0700 (PDT)
-Received: from wasted.omprussia.ru ([2a00:1fa0:44ba:bd37:6990:9f35:8864:71b0])
-        by smtp.gmail.com with ESMTPSA id d6sm19235ljg.25.2020.09.02.09.19.17
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 02 Sep 2020 09:19:18 -0700 (PDT)
-Subject: Re: [PATCH 16/19] sd: use bdev_check_media_change
+        id S1726526AbgIBWAK (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Wed, 2 Sep 2020 18:00:10 -0400
+Received: from smtp.hosts.co.uk ([85.233.160.19]:36177 "EHLO smtp.hosts.co.uk"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726269AbgIBWAJ (ORCPT <rfc822;linux-m68k@lists.linux-m68k.org>);
+        Wed, 2 Sep 2020 18:00:09 -0400
+Received: from host86-136-163-47.range86-136.btcentralplus.com ([86.136.163.47] helo=[192.168.1.65])
+        by smtp.hosts.co.uk with esmtpa (Exim)
+        (envelope-from <antlists@youngman.org.uk>)
+        id 1kDanW-00031m-Be; Wed, 02 Sep 2020 23:00:06 +0100
+Subject: Re: [PATCH 11/19] gdrom: use bdev_check_media_change
 To:     Christoph Hellwig <hch@lst.de>, Jens Axboe <axboe@kernel.dk>
 Cc:     Denis Efremov <efremov@linux.com>, Tim Waugh <tim@cyberelk.net>,
         Michal Simek <michal.simek@xilinx.com>,
@@ -75,55 +37,25 @@ Cc:     Denis Efremov <efremov@linux.com>, Tim Waugh <tim@cyberelk.net>,
         linux-raid@vger.kernel.org, linux-scsi@vger.kernel.org,
         linux-fsdevel@vger.kernel.org
 References: <20200902141218.212614-1-hch@lst.de>
- <20200902141218.212614-17-hch@lst.de>
-From:   Sergei Shtylyov <sergei.shtylyov@gmail.com>
-Message-ID: <1b972d93-e8e3-8f32-86de-76792948e20b@gmail.com>
-Date:   Wed, 2 Sep 2020 19:19:17 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.11.0
+ <20200902141218.212614-12-hch@lst.de>
+From:   antlists <antlists@youngman.org.uk>
+Message-ID: <0b8fa1fe-f2d5-bf18-2e8a-ad13e343629d@youngman.org.uk>
+Date:   Wed, 2 Sep 2020 23:00:05 +0100
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-In-Reply-To: <20200902141218.212614-17-hch@lst.de>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
+In-Reply-To: <20200902141218.212614-12-hch@lst.de>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-GB
 Content-Transfer-Encoding: 7bit
 Sender: linux-m68k-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-On 9/2/20 5:12 PM, Christoph Hellwig wrote:
+On 02/09/2020 15:12, Christoph Hellwig wrote:
+> The GD-ROM driver does not have a ->revalidate_disk method, so it can
+       ^^ (sic)
 
-> Switch to use bdev_check_media_change instead of check_disk_change and
-> call cd_revalidate_disk manually.  As sd also calls sd_revalidate_disk
-
-   s/cd/sd/?
-
-> manually during probe and open, , the extra call into ->revalidate_disk
-> from bdev_disk_changed is not required either, so stop wiring up the
-> method.
-> 
-> Signed-off-by: Christoph Hellwig <hch@lst.de>
-> ---
->  drivers/scsi/sd.c | 7 ++++---
->  1 file changed, 4 insertions(+), 3 deletions(-)
-> 
-> diff --git a/drivers/scsi/sd.c b/drivers/scsi/sd.c
-> index 2bec8cd526164d..d020639c28c6ca 100644
-> --- a/drivers/scsi/sd.c
-> +++ b/drivers/scsi/sd.c
-> @@ -1381,8 +1381,10 @@ static int sd_open(struct block_device *bdev, fmode_t mode)
->  	if (!scsi_block_when_processing_errors(sdev))
->  		goto error_out;
->  
-> -	if (sdev->removable || sdkp->write_prot)
-> -		check_disk_change(bdev);
-> +	if (sdev->removable || sdkp->write_prot) {
-> +		if (bdev_check_media_change(bdev))
-> +			sd_revalidate_disk(bdev->bd_disk);
-> +	}
->  
->  	/*
->  	 * If the drive is empty, just let the open fail.
-[...]
-
-MBR, Sergei
+Cheers,
+Wol
