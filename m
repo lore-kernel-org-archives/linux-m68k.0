@@ -2,149 +2,110 @@ Return-Path: <SRS0=kwK6=CQ=vger.kernel.org=linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-12.9 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	NICE_REPLY_A,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-	autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-10.2 required=3.0 tests=BAYES_00,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 1B842C43461
-	for <linux-m68k@archiver.kernel.org>; Mon,  7 Sep 2020 01:12:52 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8420EC43461
+	for <linux-m68k@archiver.kernel.org>; Mon,  7 Sep 2020 06:24:59 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id D7E4E20838
-	for <linux-m68k@archiver.kernel.org>; Mon,  7 Sep 2020 01:12:51 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=default; t=1599441171;
-	bh=xyTSMPG3pyBCZv5zMohBYPXtrUS10O0YxLED9qNXz1I=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:List-ID:From;
-	b=qpI/ST8E1v2/skZjILeezWiW8N+nAU7TtFDZLN8Ly8G6b2p1QB2R5WZvCxbkuDA75
-	 9xkbaG71DmhaMKRh+cyEgGsyyYC6sh3ZmSyJRDzLTXOauC1K58KsUfYhKVug11QcUq
-	 jfZJD3Gnt83CcC0sXWNfC1yqm5p/r+itG0ufDMnc=
+	by mail.kernel.org (Postfix) with ESMTP id 53CD1215A4
+	for <linux-m68k@archiver.kernel.org>; Mon,  7 Sep 2020 06:24:59 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726651AbgIGBMi (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Sun, 6 Sep 2020 21:12:38 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33604 "EHLO mail.kernel.org"
+        id S1726267AbgIGGY7 (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Mon, 7 Sep 2020 02:24:59 -0400
+Received: from verein.lst.de ([213.95.11.211]:47782 "EHLO verein.lst.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726577AbgIGBMh (ORCPT <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Sun, 6 Sep 2020 21:12:37 -0400
-Received: from devnote2 (NE2965lan1.rev.em-net.ne.jp [210.141.244.193])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id A6EA82080A;
-        Mon,  7 Sep 2020 01:12:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1599441156;
-        bh=xyTSMPG3pyBCZv5zMohBYPXtrUS10O0YxLED9qNXz1I=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=z4ctw8TGu/NMj1f6Hv2KXkrBHHa+hL7RZJDYAkBwkP7Zi0ELinKFYmIOB4m2bj+Br
-         REdUI3oczw2sfJo0SbI9XIY3sEtUK+33VKxfvPvGwHzxwMucx5Nbb4xzObhrn0k+Zq
-         pn0XJDjrIvvplQXYJSINInsZBA/KoOuJSe+bM3zE=
-Date:   Mon, 7 Sep 2020 10:12:26 +0900
-From:   Masami Hiramatsu <mhiramat@kernel.org>
-To:     Christian Brauner <christian.brauner@ubuntu.com>
-Cc:     linux-arch@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Jonathan Corbet <corbet@lwn.net>,
-        Yoshinori Sato <ysato@users.sourceforge.jp>,
-        Tony Luck <tony.luck@intel.com>,
-        Fenghua Yu <fenghua.yu@intel.com>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Ley Foon Tan <ley.foon.tan@intel.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, Arnd Bergmann <arnd@arndb.de>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Stafford Horne <shorne@gmail.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Kars de Jong <jongk@linux-m68k.org>,
-        Kees Cook <keescook@chromium.org>,
-        Greentime Hu <green.hu@gmail.com>,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Alexandre Chartre <alexandre.chartre@oracle.com>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Tom Zanussi <zanussi@kernel.org>,
-        Xiao Yang <yangx.jy@cn.fujitsu.com>, linux-doc@vger.kernel.org,
-        uclinux-h8-devel@lists.sourceforge.jp, linux-ia64@vger.kernel.org,
-        linux-m68k@lists.linux-m68k.org, sparclinux@vger.kernel.org,
-        kgdb-bugreport@lists.sourceforge.net,
-        linux-kselftest@vger.kernel.org,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Christoph Hewllig <hch@infradead.org>,
-        Matthew Wilcox <willy@infradead.org>
-Subject: Re: [PATCH v2 08/11] kprobes: switch to kernel_clone()
-Message-Id: <20200907101226.ab0d00639be953e81d4576c2@kernel.org>
-In-Reply-To: <20200819104655.436656-9-christian.brauner@ubuntu.com>
-References: <20200819104655.436656-1-christian.brauner@ubuntu.com>
-        <20200819104655.436656-9-christian.brauner@ubuntu.com>
-X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        id S1725823AbgIGGY6 (ORCPT <rfc822;linux-m68k@lists.linux-m68k.org>);
+        Mon, 7 Sep 2020 02:24:58 -0400
+Received: by verein.lst.de (Postfix, from userid 2407)
+        id 8033D6736F; Mon,  7 Sep 2020 08:24:56 +0200 (CEST)
+Date:   Mon, 7 Sep 2020 08:24:56 +0200
+From:   Christoph Hellwig <hch@lst.de>
+To:     kernel test robot <lkp@intel.com>
+Cc:     Christoph Hellwig <hch@lst.de>, kbuild-all@lists.01.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Greg Ungerer <gerg@linux-m68k.org>,
+        linux-m68k@lists.linux-m68k.org
+Subject: Re: [char-misc:char-misc-next 28/28] drivers/char/mem.c:737:21:
+ sparse: sparse: incorrect type in argument 1 (different address
+ spaces)
+Message-ID: <20200907062456.GA19124@lst.de>
+References: <202009060512.tOc1hWe8%lkp@intel.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <202009060512.tOc1hWe8%lkp@intel.com>
+User-Agent: Mutt/1.5.17 (2007-11-01)
 Sender: linux-m68k-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-Hi,
+On Sun, Sep 06, 2020 at 05:14:15AM +0800, kernel test robot wrote:
+> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/gregkh/char-misc.git char-misc-next
+> head:   99f667352f6c938440d9043d0f66f859d6f3d50d
+> commit: 99f667352f6c938440d9043d0f66f859d6f3d50d [28/28] /dev/zero: also implement ->read
+> config: m68k-randconfig-s031-20200904 (attached as .config)
+> compiler: m68k-linux-gcc (GCC) 9.3.0
 
-On Wed, 19 Aug 2020 12:46:52 +0200
-Christian Brauner <christian.brauner@ubuntu.com> wrote:
+Looks like m68 does not have proper __user annotations for clear_user..
 
-> The old _do_fork() helper is removed in favor of the new kernel_clone() helper.
-> The latter adheres to naming conventions for kernel internal syscall helpers.
-
-This looks good to me.
-
-Acked-by: Masami Hiramatsu <mhiramat@kernel.org>
-
-Thank you!
-
+> reproduce:
+>         wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
+>         chmod +x ~/bin/make.cross
+>         # apt-get install sparse
+>         # sparse version: v0.6.2-191-g10164920-dirty
+>         git checkout 99f667352f6c938440d9043d0f66f859d6f3d50d
+>         # save the attached .config to linux build tree
+>         COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-9.3.0 make.cross C=1 CF='-fdiagnostic-prefix -D__CHECK_ENDIAN__' ARCH=m68k 
 > 
-> Cc: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-> Cc: Alexandre Chartre <alexandre.chartre@oracle.com>
-> Cc: Jonathan Corbet <corbet@lwn.net>
-> Cc: Masami Hiramatsu <mhiramat@kernel.org>
-> Signed-off-by: Christian Brauner <christian.brauner@ubuntu.com>
+> If you fix the issue, kindly add following tag as appropriate
+> Reported-by: kernel test robot <lkp@intel.com>
+> 
+> 
+> sparse warnings: (new ones prefixed by >>)
+> 
+>    drivers/char/mem.c:163:37: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void *to @@     got char [noderef] __user *buf @@
+>    drivers/char/mem.c:163:37: sparse:     expected void *to
+>    drivers/char/mem.c:163:37: sparse:     got char [noderef] __user *buf
+> >> drivers/char/mem.c:737:21: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void *to @@     got char [noderef] __user * @@
+>    drivers/char/mem.c:737:21: sparse:     expected void *to
+> >> drivers/char/mem.c:737:21: sparse:     got char [noderef] __user *
+> 
+> # https://git.kernel.org/pub/scm/linux/kernel/git/gregkh/char-misc.git/commit/?id=99f667352f6c938440d9043d0f66f859d6f3d50d
+> git remote add char-misc https://git.kernel.org/pub/scm/linux/kernel/git/gregkh/char-misc.git
+> git fetch --no-tags char-misc char-misc-next
+> git checkout 99f667352f6c938440d9043d0f66f859d6f3d50d
+> vim +737 drivers/char/mem.c
+> 
+>    728	
+>    729	static ssize_t read_zero(struct file *file, char __user *buf,
+>    730				 size_t count, loff_t *ppos)
+>    731	{
+>    732		size_t cleared = 0;
+>    733	
+>    734		while (count) {
+>    735			size_t chunk = min_t(size_t, count, PAGE_SIZE);
+>    736	
+>  > 737			if (clear_user(buf + cleared, chunk))
+>    738				return cleared ? cleared : -EFAULT;
+>    739			cleared += chunk;
+>    740			count -= chunk;
+>    741	
+>    742			if (signal_pending(current))
+>    743				return cleared ? cleared : -ERESTARTSYS;
+>    744			cond_resched();
+>    745		}
+>    746	
+>    747		return cleared;
+>    748	}
+>    749	
+> 
 > ---
-> /* v2 */
-> unchanged
-> ---
->  samples/kprobes/kprobe_example.c | 6 +++---
->  1 file changed, 3 insertions(+), 3 deletions(-)
-> 
-> diff --git a/samples/kprobes/kprobe_example.c b/samples/kprobes/kprobe_example.c
-> index 240f2435ce6f..a02f53836ee1 100644
-> --- a/samples/kprobes/kprobe_example.c
-> +++ b/samples/kprobes/kprobe_example.c
-> @@ -2,13 +2,13 @@
->  /*
->   * NOTE: This example is works on x86 and powerpc.
->   * Here's a sample kernel module showing the use of kprobes to dump a
-> - * stack trace and selected registers when _do_fork() is called.
-> + * stack trace and selected registers when kernel_clone() is called.
->   *
->   * For more information on theory of operation of kprobes, see
->   * Documentation/staging/kprobes.rst
->   *
->   * You will see the trace data in /var/log/messages and on the console
-> - * whenever _do_fork() is invoked to create a new process.
-> + * whenever kernel_clone() is invoked to create a new process.
->   */
->  
->  #include <linux/kernel.h>
-> @@ -16,7 +16,7 @@
->  #include <linux/kprobes.h>
->  
->  #define MAX_SYMBOL_LEN	64
-> -static char symbol[MAX_SYMBOL_LEN] = "_do_fork";
-> +static char symbol[MAX_SYMBOL_LEN] = "kernel_clone";
->  module_param_string(symbol, symbol, sizeof(symbol), 0644);
->  
->  /* For each probe you need to allocate a kprobe structure */
-> -- 
-> 2.28.0
-> 
+> 0-DAY CI Kernel Test Service, Intel Corporation
+> https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
 
 
--- 
-Masami Hiramatsu <mhiramat@kernel.org>
+---end quoted text---
