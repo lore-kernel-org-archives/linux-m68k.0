@@ -2,41 +2,42 @@ Return-Path: <SRS0=nM4c=CR=vger.kernel.org=linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-6.6 required=3.0 tests=BAYES_00,DKIM_INVALID,
-	DKIM_SIGNED,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS,USER_AGENT_GIT autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-12.6 required=3.0 tests=BAYES_00,DKIM_INVALID,
+	DKIM_SIGNED,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id DC02CC43461
-	for <linux-m68k@archiver.kernel.org>; Tue,  8 Sep 2020 19:32:56 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 0673DC433E2
+	for <linux-m68k@archiver.kernel.org>; Tue,  8 Sep 2020 19:44:57 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 791642098B
-	for <linux-m68k@archiver.kernel.org>; Tue,  8 Sep 2020 19:32:56 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id BAD7420578
+	for <linux-m68k@archiver.kernel.org>; Tue,  8 Sep 2020 19:44:56 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="YL8Ksrxe"
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="GIpniUBI"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731053AbgIHTbj (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Tue, 8 Sep 2020 15:31:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54336 "EHLO
+        id S1732402AbgIHToV (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Tue, 8 Sep 2020 15:44:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53124 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730991AbgIHP6F (ORCPT
+        with ESMTP id S1730760AbgIHPvm (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Tue, 8 Sep 2020 11:58:05 -0400
+        Tue, 8 Sep 2020 11:51:42 -0400
 Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 12F3EC0A3BE8;
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 304B6C0A3BEA;
         Tue,  8 Sep 2020 07:55:00 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
         d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
-        Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
-        Content-Description:In-Reply-To:References;
-        bh=Ik1nskp4UUIa9huUq3TidG8Ju0niiHJiTpvYtnudikY=; b=YL8KsrxeI7tCv1WURY1i6FflSc
-        VTi648vPAzQ2Ypf02N1dEmIcx1t2yDB42y9xiUgMitpsB1OEiuFGxCevytdkUOxIG1/wcIZD2bnkq
-        ZhfB9q4LMCP/w4rBQA1KF0gn2t5nZY4TuHfRNVqxrWx53WmCmveXWp283Ar4ZqC+zil0ns44UWPHw
-        bDIUoWAw+V2Aizmn2VPcI8i/nzzirrGOMTLrx5uuZZ4antZmpqtoKfODJe/rD8bS5DTrwPRXYxz1R
-        lFH5Qf8Wf78PPBfMXySfdLM8CwFqMgOdxY7ZzSVkPykoaWl7vlvWrsIJvwKag1t8QeusFKcjgP94A
-        lMMA01bg==;
+        References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:
+        Content-Type:Content-ID:Content-Description;
+        bh=AIbdaWqDOZXyI97EfNIUO6cOxzS/iRi/fiJ/sz/ZAL8=; b=GIpniUBInLXgvz98qrm3XEFBUU
+        jI7kZn/WrtbX4474Skgn5Iwip5HLeqPsKx5DEn4psj2SQF9WbRQFr6hKKl3VF9Ii5a+mcgkre1Sza
+        LvVllN82PZVtFinvq56fIrZ+RrfX3jfJo2TnUV32FrYcLzR4jFJCrT6NEMboJtHMh3kzEw0gcMwMo
+        kjJpuGwfTeKms3eK/8v1oiodNb55XfT3nmCYDptXrSPYQqqabbpKVI0KcHMhN7OEQmG5UydppiZWH
+        7B0QIIZZTgk9Gy3y1V11t3QVuwPYZecByMco+KFniEh8KoEeAjHYCnn8GTwF55IekYLSdRaFbpzFI
+        XKaiiNDg==;
 Received: from [2001:4bb8:184:af1:3dc3:9c83:fc6c:e0f] (helo=localhost)
         by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kFf0H-0002uU-Kp; Tue, 08 Sep 2020 14:53:51 +0000
+        id 1kFf0u-0002xt-QY; Tue, 08 Sep 2020 14:54:30 +0000
 From:   Christoph Hellwig <hch@lst.de>
 To:     Jens Axboe <axboe@kernel.dk>
 Cc:     Denis Efremov <efremov@linux.com>, Tim Waugh <tim@cyberelk.net>,
@@ -50,11 +51,14 @@ Cc:     Denis Efremov <efremov@linux.com>, Tim Waugh <tim@cyberelk.net>,
         linux-m68k@lists.linux-m68k.org, linux-block@vger.kernel.org,
         linux-kernel@vger.kernel.org, linux-ide@vger.kernel.org,
         linux-raid@vger.kernel.org, linux-scsi@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org
-Subject: rework check_disk_change() v2
-Date:   Tue,  8 Sep 2020 16:53:28 +0200
-Message-Id: <20200908145347.2992670-1-hch@lst.de>
+        linux-fsdevel@vger.kernel.org,
+        Johannes Thumshirn <johannes.thumshirn@wdc.com>
+Subject: [PATCH 08/19] xsysace: use bdev_check_media_change
+Date:   Tue,  8 Sep 2020 16:53:36 +0200
+Message-Id: <20200908145347.2992670-9-hch@lst.de>
 X-Mailer: git-send-email 2.28.0
+In-Reply-To: <20200908145347.2992670-1-hch@lst.de>
+References: <20200908145347.2992670-1-hch@lst.de>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
@@ -63,34 +67,40 @@ Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-Hi Jens,
+Switch to use bdev_check_media_change instead of check_disk_change and
+call ace_revalidate_disk manually.  Given that ace_revalidate_disk only
+deals with media change events, the extra call into ->revalidate_disk
+from bdev_disk_changed is not required either, so stop wiring up the
+method.
 
-this series replaced the not very nice check_disk_change() function with
-a new bdev_media_changed that avoids having the ->revalidate_disk call
-at its end.  As a result ->revalidate_disk can be removed from a lot of
-drivers.
+Signed-off-by: Christoph Hellwig <hch@lst.de>
+Reviewed-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
+---
+ drivers/block/xsysace.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-Changes since v1:
- - minor changelog spelling fixes
+diff --git a/drivers/block/xsysace.c b/drivers/block/xsysace.c
+index 5d8e0ab3f054f5..eefe542f2d9fff 100644
+--- a/drivers/block/xsysace.c
++++ b/drivers/block/xsysace.c
+@@ -922,7 +922,8 @@ static int ace_open(struct block_device *bdev, fmode_t mode)
+ 	ace->users++;
+ 	spin_unlock_irqrestore(&ace->lock, flags);
+ 
+-	check_disk_change(bdev);
++	if (bdev_check_media_change(bdev))
++		ace_revalidate_disk(bdev->bd_disk);
+ 	mutex_unlock(&xsysace_mutex);
+ 
+ 	return 0;
+@@ -966,7 +967,6 @@ static const struct block_device_operations ace_fops = {
+ 	.open = ace_open,
+ 	.release = ace_release,
+ 	.check_events = ace_check_events,
+-	.revalidate_disk = ace_revalidate_disk,
+ 	.getgeo = ace_getgeo,
+ };
+ 
+-- 
+2.28.0
 
-Diffstat:
- block/genhd.c              |   29 ++++++++++++++++++++++++++-
- drivers/block/amiflop.c    |    2 -
- drivers/block/ataflop.c    |    7 +++---
- drivers/block/floppy.c     |    8 ++++---
- drivers/block/paride/pcd.c |    2 -
- drivers/block/swim.c       |   22 +-------------------
- drivers/block/swim3.c      |    4 +--
- drivers/block/xsysace.c    |   26 +++++++++---------------
- drivers/cdrom/gdrom.c      |    2 -
- drivers/ide/ide-cd.c       |   16 ++++-----------
- drivers/ide/ide-disk.c     |    5 ----
- drivers/ide/ide-floppy.c   |    2 -
- drivers/ide/ide-gd.c       |   48 +++++----------------------------------------
- drivers/md/md.c            |    2 -
- drivers/scsi/sd.c          |    7 +++---
- drivers/scsi/sr.c          |   36 +++++++++++++--------------------
- fs/block_dev.c             |   31 -----------------------------
- include/linux/genhd.h      |    3 --
- include/linux/ide.h        |    2 -
- 19 files changed, 86 insertions(+), 168 deletions(-)
