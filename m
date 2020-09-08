@@ -2,93 +2,69 @@ Return-Path: <SRS0=nM4c=CR=vger.kernel.org=linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-12.6 required=3.0 tests=BAYES_00,DKIM_INVALID,
-	DKIM_SIGNED,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
-	autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-6.9 required=3.0 tests=BAYES_00,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,NICE_REPLY_A,SPF_HELO_NONE,
+	SPF_PASS,USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id EA66DC2D0E1
-	for <linux-m68k@archiver.kernel.org>; Tue,  8 Sep 2020 20:09:14 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E737DC433E2
+	for <linux-m68k@archiver.kernel.org>; Tue,  8 Sep 2020 23:26:07 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id B0A07204FD
-	for <linux-m68k@archiver.kernel.org>; Tue,  8 Sep 2020 20:09:14 +0000 (UTC)
-Authentication-Results: mail.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="ko5s17TL"
+	by mail.kernel.org (Postfix) with ESMTP id B23A72080C
+	for <linux-m68k@archiver.kernel.org>; Tue,  8 Sep 2020 23:26:07 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730700AbgIHUIs (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Tue, 8 Sep 2020 16:08:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47060 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730193AbgIHPTN (ORCPT
-        <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Tue, 8 Sep 2020 11:19:13 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C6CF8C0A3BF2;
-        Tue,  8 Sep 2020 07:55:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
-        References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:
-        Content-Type:Content-ID:Content-Description;
-        bh=+zVHcucQifdjecrPBhxjClZkm2NjkT/RLZsD1fxF4P4=; b=ko5s17TLYKi28rzQRAAoq31zQ/
-        sfC2GOdl69IRxmLKZcQsa/k8a0GXiZ+umVW//0HgO5Fgv7b8S76wsrPhdwLL7Q4R1Xt2g0uB5iddx
-        l8OX+RO3CUFt6vACrGggetnHxpCNWp/RirodlGWGie0rjYr7aThkH4wHBbrXc8w4onm4vTbqciTqe
-        VJVnW+pXbo4wFQHSkUyCHgnbNDUtMRNfDJNinXDaGeW2X5VxRJAeQywpHRa/2Iot7BXopGkS2qY7/
-        AcJtui0CXtCixYCs94tac4VyaoOkq2lZhIP4OMyv9OqI4ny6ad+vb4CrcFqGt15GhiiRsHBuJ+CFU
-        ZGcTfpkw==;
-Received: from [2001:4bb8:184:af1:3dc3:9c83:fc6c:e0f] (helo=localhost)
-        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kFf1A-0002zJ-TG; Tue, 08 Sep 2020 14:54:45 +0000
-From:   Christoph Hellwig <hch@lst.de>
-To:     Jens Axboe <axboe@kernel.dk>
-Cc:     Denis Efremov <efremov@linux.com>, Tim Waugh <tim@cyberelk.net>,
-        Michal Simek <michal.simek@xilinx.com>,
-        Borislav Petkov <bp@alien8.de>,
-        "David S. Miller" <davem@davemloft.net>,
-        Song Liu <song@kernel.org>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Finn Thain <fthain@telegraphics.com.au>,
-        Michael Schmitz <schmitzmic@gmail.com>,
-        linux-m68k@lists.linux-m68k.org, linux-block@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-ide@vger.kernel.org,
-        linux-raid@vger.kernel.org, linux-scsi@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org,
-        Johannes Thumshirn <johannes.thumshirn@wdc.com>
-Subject: [PATCH 15/19] md: use bdev_check_media_change
-Date:   Tue,  8 Sep 2020 16:53:43 +0200
-Message-Id: <20200908145347.2992670-16-hch@lst.de>
-X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200908145347.2992670-1-hch@lst.de>
-References: <20200908145347.2992670-1-hch@lst.de>
+        id S1728631AbgIHX0H (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Tue, 8 Sep 2020 19:26:07 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59690 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726591AbgIHX0H (ORCPT <rfc822;linux-m68k@vger.kernel.org>);
+        Tue, 8 Sep 2020 19:26:07 -0400
+Received: from [10.44.0.192] (unknown [103.48.210.53])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 4642220732;
+        Tue,  8 Sep 2020 23:26:04 +0000 (UTC)
+Subject: Re: [PATCH] m68knommu: add missing __user annotations
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     linux-m68k@vger.kernel.org, geert@linux-m68k.org,
+        kernel test robot <lkp@intel.com>
+References: <20200908132647.923201-1-gerg@linux-m68k.org>
+ <20200908133017.GA4042@lst.de>
+From:   Greg Ungerer <gerg@linux-m68k.org>
+Message-ID: <cd61e5c7-dfb9-1994-2bbc-5bfbb1be26f5@linux-m68k.org>
+Date:   Wed, 9 Sep 2020 09:26:01 +1000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
+In-Reply-To: <20200908133017.GA4042@lst.de>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-m68k-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-The md driver does not have a ->revalidate_disk method, so it can just
-use bdev_check_media_change without any additional changes.
 
-Signed-off-by: Christoph Hellwig <hch@lst.de>
-Reviewed-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
----
- drivers/md/md.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+On 8/9/20 11:30 pm, Christoph Hellwig wrote:
+> On Tue, Sep 08, 2020 at 11:26:47PM +1000, Greg Ungerer wrote:
+>> Some of the m68knommu user access functions are not using the __user
+>> annotation where required. Specifically __clear_user(), strnlen_user()
+>> and strncpy_from_user() need their user space source address annoted
+>> with __user.
+> 
+> You'll also need __force annotations to that sparse doesn't complain
+> inside the function.  Btw, it might be worth to just use the helpers
+> from asm-generic/uaccess.h as they should work for m68knommu.
 
-diff --git a/drivers/md/md.c b/drivers/md/md.c
-index 9562ef598ae1f4..27ed61197014ef 100644
---- a/drivers/md/md.c
-+++ b/drivers/md/md.c
-@@ -7848,7 +7848,7 @@ static int md_open(struct block_device *bdev, fmode_t mode)
- 	atomic_inc(&mddev->openers);
- 	mutex_unlock(&mddev->open_mutex);
- 
--	check_disk_change(bdev);
-+	bdev_check_media_change(bdev);
-  out:
- 	if (err)
- 		mddev_put(mddev);
--- 
-2.28.0
+I would much prefer to use the helpers in asm-generic/uaccess.h.
+But that is going to involve a little more change, the put_user()
+and get_user() macros can't be over-ridden with the logic as defined
+in asm-generic/uaccess.h today.
+
+It might just be the case that we can use the whole lot and not
+lose optimized get_user()/set_user() anyway. I will check the
+resulting code and see if it is just as good.
+
+Regards
+Greg
 
