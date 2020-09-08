@@ -2,78 +2,99 @@ Return-Path: <SRS0=nM4c=CR=vger.kernel.org=linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-11.9 required=3.0 tests=BAYES_00,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,
-	NICE_REPLY_A,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1
-	autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-12.8 required=3.0 tests=BAYES_00,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3E8EDC433E2
-	for <linux-m68k@archiver.kernel.org>; Tue,  8 Sep 2020 17:00:42 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 3B4B5C43461
+	for <linux-m68k@archiver.kernel.org>; Tue,  8 Sep 2020 17:27:24 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id EFF7C207DE
-	for <linux-m68k@archiver.kernel.org>; Tue,  8 Sep 2020 17:00:41 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id E2D1E2078B
+	for <linux-m68k@archiver.kernel.org>; Tue,  8 Sep 2020 17:27:23 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731447AbgIHRAc (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Tue, 8 Sep 2020 13:00:32 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46316 "EHLO mail.kernel.org"
+        id S1728405AbgIHR1U (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Tue, 8 Sep 2020 13:27:20 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58440 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731695AbgIHRAa (ORCPT <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Tue, 8 Sep 2020 13:00:30 -0400
-Received: from [10.44.0.192] (unknown [103.48.210.53])
+        id S1731728AbgIHQQ6 (ORCPT <rfc822;linux-m68k@vger.kernel.org>);
+        Tue, 8 Sep 2020 12:16:58 -0400
+Received: from goober.digi.com (unknown [103.48.210.53])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B8E8022CB1;
-        Tue,  8 Sep 2020 13:06:51 +0000 (UTC)
-Subject: Re: [char-misc:char-misc-next 28/28] drivers/char/mem.c:737:21:
- sparse: sparse: incorrect type in argument 1 (different address spaces)
-To:     Christoph Hellwig <hch@lst.de>,
-        Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     kernel test robot <lkp@intel.com>, kbuild-all@lists.01.org,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-m68k <linux-m68k@lists.linux-m68k.org>
-References: <202009060512.tOc1hWe8%lkp@intel.com>
- <20200907062456.GA19124@lst.de>
- <CAMuHMdVTysHJoghpLC5KyX=s7SOFNFxsXKX1m69AseM12x3XRQ@mail.gmail.com>
- <20200907071400.GA19764@lst.de>
+        by mail.kernel.org (Postfix) with ESMTPSA id 6336023C18;
+        Tue,  8 Sep 2020 13:27:15 +0000 (UTC)
 From:   Greg Ungerer <gerg@linux-m68k.org>
-Message-ID: <d538937a-6ad0-2591-ad81-4f043b74abbf@linux-m68k.org>
-Date:   Tue, 8 Sep 2020 23:06:47 +1000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+To:     linux-m68k@vger.kernel.org
+Cc:     hch@lst.de, geert@linux-m68k.org,
+        Greg Ungerer <gerg@linux-m68k.org>,
+        kernel test robot <lkp@intel.com>
+Subject: [PATCH] m68knommu: add missing __user annotations
+Date:   Tue,  8 Sep 2020 23:26:47 +1000
+Message-Id: <20200908132647.923201-1-gerg@linux-m68k.org>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-In-Reply-To: <20200907071400.GA19764@lst.de>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Sender: linux-m68k-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
+Some of the m68knommu user access functions are not using the __user
+annotation where required. Specifically __clear_user(), strnlen_user()
+and strncpy_from_user() need their user space source address annoted
+with __user.
 
-On 7/9/20 5:14 pm, Christoph Hellwig wrote:
-> On Mon, Sep 07, 2020 at 09:04:15AM +0200, Geert Uytterhoeven wrote:
->> Hi Christoph,
->>
->> On Mon, Sep 7, 2020 at 8:25 AM Christoph Hellwig <hch@lst.de> wrote:
->>> On Sun, Sep 06, 2020 at 05:14:15AM +0800, kernel test robot wrote:
->>>> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/gregkh/char-misc.git char-misc-next
->>>> head:   99f667352f6c938440d9043d0f66f859d6f3d50d
->>>> commit: 99f667352f6c938440d9043d0f66f859d6f3d50d [28/28] /dev/zero: also implement ->read
->>>> config: m68k-randconfig-s031-20200904 (attached as .config)
->>>> compiler: m68k-linux-gcc (GCC) 9.3.0
->>>
->>> Looks like m68 does not have proper __user annotations for clear_user..
->>
->> M68k has, m68knommu apparently hasn't.
->> Same for strncpy_from_user() and strnlen_user().
-> 
-> Sorry, I mean to write m68knommu, that's why I added Greg to the
-> Cc list.
+Picked up by the kernel test robot, when running sparse:
 
-Yep, needs fixing. Will send a patch.
+  sparse warnings: (new ones prefixed by >>)
 
-Thanks
-Greg
+     drivers/char/mem.c:163:37: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void *to @@     got char [noderef] __user *buf @@
+     drivers/char/mem.c:163:37: sparse:     expected void *to
+     drivers/char/mem.c:163:37: sparse:     got char [noderef] __user *buf
+  >> drivers/char/mem.c:737:21: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void *to @@     got char [noderef] __user * @@
+     drivers/char/mem.c:737:21: sparse:     expected void *to
+  >> drivers/char/mem.c:737:21: sparse:     got char [noderef] __user *
 
+Add in __user where appropriate.
+
+Reported-by: kernel test robot <lkp@intel.com>
+Signed-off-by: Greg Ungerer <gerg@linux-m68k.org>
+---
+ arch/m68k/include/asm/uaccess_no.h | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/arch/m68k/include/asm/uaccess_no.h b/arch/m68k/include/asm/uaccess_no.h
+index dcfb69361408..764b01a3bd07 100644
+--- a/arch/m68k/include/asm/uaccess_no.h
++++ b/arch/m68k/include/asm/uaccess_no.h
+@@ -125,7 +125,7 @@ raw_copy_to_user(void __user *to, const void *from, unsigned long n)
+  */
+ 
+ static inline long
+-strncpy_from_user(char *dst, const char *src, long count)
++strncpy_from_user(char *dst, const char __user *src, long count)
+ {
+ 	char *tmp;
+ 	strncpy(dst, src, count);
+@@ -139,7 +139,7 @@ strncpy_from_user(char *dst, const char *src, long count)
+  *
+  * Return 0 on exception, a value greater than N if too long
+  */
+-static inline long strnlen_user(const char *src, long n)
++static inline long strnlen_user(const char __user *src, long n)
+ {
+ 	return(strlen(src) + 1); /* DAVIDM make safer */
+ }
+@@ -149,7 +149,7 @@ static inline long strnlen_user(const char *src, long n)
+  */
+ 
+ static inline unsigned long
+-__clear_user(void *to, unsigned long n)
++__clear_user(void __user *to, unsigned long n)
+ {
+ 	memset(to, 0, n);
+ 	return 0;
+-- 
+2.25.1
 
