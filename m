@@ -2,48 +2,95 @@ Return-Path: <SRS0=nM4c=CR=vger.kernel.org=linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.3 required=3.0 tests=BAYES_00,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-6.6 required=3.0 tests=BAYES_00,DKIM_INVALID,
+	DKIM_SIGNED,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS,USER_AGENT_GIT autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 0BC73C433E2
-	for <linux-m68k@archiver.kernel.org>; Tue,  8 Sep 2020 19:29:55 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id DC02CC43461
+	for <linux-m68k@archiver.kernel.org>; Tue,  8 Sep 2020 19:32:56 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id D41162078B
-	for <linux-m68k@archiver.kernel.org>; Tue,  8 Sep 2020 19:29:54 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 791642098B
+	for <linux-m68k@archiver.kernel.org>; Tue,  8 Sep 2020 19:32:56 +0000 (UTC)
+Authentication-Results: mail.kernel.org;
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="YL8Ksrxe"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731032AbgIHT3w (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Tue, 8 Sep 2020 15:29:52 -0400
-Received: from verein.lst.de ([213.95.11.211]:53207 "EHLO verein.lst.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731026AbgIHP7O (ORCPT <rfc822;linux-m68k@vger.kernel.org>);
-        Tue, 8 Sep 2020 11:59:14 -0400
-Received: by verein.lst.de (Postfix, from userid 2407)
-        id 4597868C4E; Tue,  8 Sep 2020 15:30:18 +0200 (CEST)
-Date:   Tue, 8 Sep 2020 15:30:17 +0200
+        id S1731053AbgIHTbj (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Tue, 8 Sep 2020 15:31:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54336 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730991AbgIHP6F (ORCPT
+        <rfc822;linux-m68k@lists.linux-m68k.org>);
+        Tue, 8 Sep 2020 11:58:05 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 12F3EC0A3BE8;
+        Tue,  8 Sep 2020 07:55:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
+        Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
+        Content-Description:In-Reply-To:References;
+        bh=Ik1nskp4UUIa9huUq3TidG8Ju0niiHJiTpvYtnudikY=; b=YL8KsrxeI7tCv1WURY1i6FflSc
+        VTi648vPAzQ2Ypf02N1dEmIcx1t2yDB42y9xiUgMitpsB1OEiuFGxCevytdkUOxIG1/wcIZD2bnkq
+        ZhfB9q4LMCP/w4rBQA1KF0gn2t5nZY4TuHfRNVqxrWx53WmCmveXWp283Ar4ZqC+zil0ns44UWPHw
+        bDIUoWAw+V2Aizmn2VPcI8i/nzzirrGOMTLrx5uuZZ4antZmpqtoKfODJe/rD8bS5DTrwPRXYxz1R
+        lFH5Qf8Wf78PPBfMXySfdLM8CwFqMgOdxY7ZzSVkPykoaWl7vlvWrsIJvwKag1t8QeusFKcjgP94A
+        lMMA01bg==;
+Received: from [2001:4bb8:184:af1:3dc3:9c83:fc6c:e0f] (helo=localhost)
+        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kFf0H-0002uU-Kp; Tue, 08 Sep 2020 14:53:51 +0000
 From:   Christoph Hellwig <hch@lst.de>
-To:     Greg Ungerer <gerg@linux-m68k.org>
-Cc:     linux-m68k@vger.kernel.org, hch@lst.de, geert@linux-m68k.org,
-        kernel test robot <lkp@intel.com>
-Subject: Re: [PATCH] m68knommu: add missing __user annotations
-Message-ID: <20200908133017.GA4042@lst.de>
-References: <20200908132647.923201-1-gerg@linux-m68k.org>
+To:     Jens Axboe <axboe@kernel.dk>
+Cc:     Denis Efremov <efremov@linux.com>, Tim Waugh <tim@cyberelk.net>,
+        Michal Simek <michal.simek@xilinx.com>,
+        Borislav Petkov <bp@alien8.de>,
+        "David S. Miller" <davem@davemloft.net>,
+        Song Liu <song@kernel.org>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Finn Thain <fthain@telegraphics.com.au>,
+        Michael Schmitz <schmitzmic@gmail.com>,
+        linux-m68k@lists.linux-m68k.org, linux-block@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-ide@vger.kernel.org,
+        linux-raid@vger.kernel.org, linux-scsi@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org
+Subject: rework check_disk_change() v2
+Date:   Tue,  8 Sep 2020 16:53:28 +0200
+Message-Id: <20200908145347.2992670-1-hch@lst.de>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200908132647.923201-1-gerg@linux-m68k.org>
-User-Agent: Mutt/1.5.17 (2007-11-01)
+Content-Transfer-Encoding: 8bit
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
 Sender: linux-m68k-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-On Tue, Sep 08, 2020 at 11:26:47PM +1000, Greg Ungerer wrote:
-> Some of the m68knommu user access functions are not using the __user
-> annotation where required. Specifically __clear_user(), strnlen_user()
-> and strncpy_from_user() need their user space source address annoted
-> with __user.
+Hi Jens,
 
-You'll also need __force annotations to that sparse doesn't complain
-inside the function.  Btw, it might be worth to just use the helpers
-from asm-generic/uaccess.h as they should work for m68knommu.
+this series replaced the not very nice check_disk_change() function with
+a new bdev_media_changed that avoids having the ->revalidate_disk call
+at its end.  As a result ->revalidate_disk can be removed from a lot of
+drivers.
+
+Changes since v1:
+ - minor changelog spelling fixes
+
+Diffstat:
+ block/genhd.c              |   29 ++++++++++++++++++++++++++-
+ drivers/block/amiflop.c    |    2 -
+ drivers/block/ataflop.c    |    7 +++---
+ drivers/block/floppy.c     |    8 ++++---
+ drivers/block/paride/pcd.c |    2 -
+ drivers/block/swim.c       |   22 +-------------------
+ drivers/block/swim3.c      |    4 +--
+ drivers/block/xsysace.c    |   26 +++++++++---------------
+ drivers/cdrom/gdrom.c      |    2 -
+ drivers/ide/ide-cd.c       |   16 ++++-----------
+ drivers/ide/ide-disk.c     |    5 ----
+ drivers/ide/ide-floppy.c   |    2 -
+ drivers/ide/ide-gd.c       |   48 +++++----------------------------------------
+ drivers/md/md.c            |    2 -
+ drivers/scsi/sd.c          |    7 +++---
+ drivers/scsi/sr.c          |   36 +++++++++++++--------------------
+ fs/block_dev.c             |   31 -----------------------------
+ include/linux/genhd.h      |    3 --
+ include/linux/ide.h        |    2 -
+ 19 files changed, 86 insertions(+), 168 deletions(-)
