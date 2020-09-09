@@ -2,90 +2,42 @@ Return-Path: <SRS0=X0A7=CS=vger.kernel.org=linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-11.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+X-Spam-Status: No, score=-11.8 required=3.0 tests=BAYES_00,
 	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,NICE_REPLY_A,SIGNED_OFF_BY,
 	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 8EE4BC43461
-	for <linux-m68k@archiver.kernel.org>; Wed,  9 Sep 2020 07:53:01 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2D869C433E2
+	for <linux-m68k@archiver.kernel.org>; Wed,  9 Sep 2020 07:54:45 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 50BFE20732
-	for <linux-m68k@archiver.kernel.org>; Wed,  9 Sep 2020 07:53:01 +0000 (UTC)
-Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="V33VD2Bb"
+	by mail.kernel.org (Postfix) with ESMTP id E1AB920732
+	for <linux-m68k@archiver.kernel.org>; Wed,  9 Sep 2020 07:54:44 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725974AbgIIHw7 (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Wed, 9 Sep 2020 03:52:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32934 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725959AbgIIHw7 (ORCPT
-        <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Wed, 9 Sep 2020 03:52:59 -0400
-Received: from mail-lj1-x242.google.com (mail-lj1-x242.google.com [IPv6:2a00:1450:4864:20::242])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CD511C061755
-        for <linux-m68k@lists.linux-m68k.org>; Wed,  9 Sep 2020 00:52:58 -0700 (PDT)
-Received: by mail-lj1-x242.google.com with SMTP id k25so2306366ljk.0
-        for <linux-m68k@lists.linux-m68k.org>; Wed, 09 Sep 2020 00:52:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:organization:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=yVb2e282hdQLrLNJBNJnpxjhygO2ulaSK5Qta1nt9i4=;
-        b=V33VD2Bb8Ip+WebEyfnQv1anRM4DsXTVmLZ7UG6OdWG/VA0/t9rUFMdrGahlSJRz0P
-         ASJxKJ6tiYV8ZZKpgdOIQt5qoCMpWGCz4qrNCYQiKvsZ5J3XW0mnWY7kJdXgFmDLN0mL
-         IjWveowF7IFmjnJxhzzpoDqwELXv6XjEffk+VIhnkUsiXmYnFIR6RjW47UCtlJz2Xxnx
-         dNNJpZsnjc6/r2FHH24hC9J/Dx3SFNO8w6bf9B4dEpOGkoe7FXOFVKfAHxOtnIHDKl5n
-         nuXH3dqSrnigC7w/C+ZQvV1tuqoKR923O8U0Gz2uNHQAaKb4mmvXdYxYSf3Pu/HEKGVF
-         k7yQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:organization
-         :message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=yVb2e282hdQLrLNJBNJnpxjhygO2ulaSK5Qta1nt9i4=;
-        b=VanYF1kPXGGX9BQY6EoSY47cCF71Qc5TB1RUCnxraXE0FQvBbrKX/iCX9i7XrlPw46
-         HCndBpxYIQxsEJCiXJCKhAhgQNpzdm9FHkfKpezqXGMj0tyxnUz4bU4A8PwW5SnaDWM8
-         aCDj89kKD1VMgxXyuPI/t1++YMGcJDkhRhlAoFdAmjvNyv50pMyi9ilqEsyylc5TxCH4
-         hHZvUzOivYlju8Plv7quHur0X1uE1NovPgGG+Rl7A/kjhXVrDi2H0m5uZH3xP1o1Imws
-         8Lsovm5Q8UYpTi853AEGSF7PqPU6CaAosTDPsLD8v3DsOhDepty3nlEhtXRtmna3kZBT
-         /rlw==
-X-Gm-Message-State: AOAM531NhJqsV9I+fpGvoGZmjUdZ2QeENsh4ZkE+TKCj0Ycb3ihAfZEL
-        X/BaES1YbnOu3VMgxYNRQsw=
-X-Google-Smtp-Source: ABdhPJxdOqw2y2E84GnrvUgPx4Wu/D8bPg+SVh1Tju19gcvcov5tEsIOa3Lw+N4xZh0hT6Djx969PA==
-X-Received: by 2002:a2e:a418:: with SMTP id p24mr1289871ljn.205.1599637977185;
-        Wed, 09 Sep 2020 00:52:57 -0700 (PDT)
-Received: from ?IPv6:2a00:1fa0:290:64e3:f5dd:84ac:70b0:5629? ([2a00:1fa0:290:64e3:f5dd:84ac:70b0:5629])
-        by smtp.gmail.com with ESMTPSA id s11sm530099ljh.56.2020.09.09.00.52.55
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 09 Sep 2020 00:52:56 -0700 (PDT)
-Subject: Re: [PATCH 16/19] sd: use bdev_check_media_change
-To:     Christoph Hellwig <hch@lst.de>, Jens Axboe <axboe@kernel.dk>
-Cc:     Denis Efremov <efremov@linux.com>, Tim Waugh <tim@cyberelk.net>,
-        Michal Simek <michal.simek@xilinx.com>,
-        Borislav Petkov <bp@alien8.de>,
-        "David S. Miller" <davem@davemloft.net>,
-        Song Liu <song@kernel.org>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Finn Thain <fthain@telegraphics.com.au>,
-        Michael Schmitz <schmitzmic@gmail.com>,
-        linux-m68k@lists.linux-m68k.org, linux-block@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-ide@vger.kernel.org,
-        linux-raid@vger.kernel.org, linux-scsi@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org,
-        Johannes Thumshirn <johannes.thumshirn@wdc.com>
-References: <20200908145347.2992670-1-hch@lst.de>
- <20200908145347.2992670-17-hch@lst.de>
-From:   Sergei Shtylyov <sergei.shtylyov@gmail.com>
-Organization: Brain-dead Software
-Message-ID: <31787d3e-05d2-3601-a88b-3c1ba5933f48@gmail.com>
-Date:   Wed, 9 Sep 2020 10:52:49 +0300
-User-Agent: Mozilla/5.0 (Windows NT 6.3; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        id S1726883AbgIIHyo (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Wed, 9 Sep 2020 03:54:44 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50614 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726399AbgIIHyn (ORCPT <rfc822;linux-m68k@vger.kernel.org>);
+        Wed, 9 Sep 2020 03:54:43 -0400
+Received: from [192.168.0.106] (193-116-198-1.tpgi.com.au [193.116.198.1])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id CF15B206F4;
+        Wed,  9 Sep 2020 07:54:40 +0000 (UTC)
+Subject: Re: [PATCH] m68knommu: switch to using asm-generic/uaccess.h
+To:     Geert Uytterhoeven <geert@linux-m68k.org>
+Cc:     Linux/m68k <linux-m68k@vger.kernel.org>,
+        Christoph Hellwig <hch@lst.de>, Arnd Bergmann <arnd@arndb.de>,
+        kernel test robot <lkp@intel.com>
+References: <20200909021831.1881990-1-gerg@linux-m68k.org>
+ <CAMuHMdU8DWRpnTp=iOGDqYbhsDaiDi9TtLLojm5Vd3umBbOo+w@mail.gmail.com>
+From:   Greg Ungerer <gerg@linux-m68k.org>
+Message-ID: <7a0a274b-b047-db66-6005-224a7d063ddb@linux-m68k.org>
+Date:   Wed, 9 Sep 2020 17:54:38 +1000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <20200908145347.2992670-17-hch@lst.de>
+In-Reply-To: <CAMuHMdU8DWRpnTp=iOGDqYbhsDaiDi9TtLLojm5Vd3umBbOo+w@mail.gmail.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -94,19 +46,105 @@ Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-On 08.09.2020 17:53, Christoph Hellwig wrote:
+Hi Geert,
 
-> Switch to use bdev_check_media_change instead of check_disk_change and
-> call sd_revalidate_disk manually.  As sd also calls sd_revalidate_disk
-> manually during probe and open, , the extra call into ->revalidate_disk
-
-    Too many commas. :-)
-
-> from bdev_disk_changed is not required either, so stop wiring up the
-> method.
+On 9/9/20 4:55 pm, Geert Uytterhoeven wrote:
+> Hi Greg,
 > 
-> Signed-off-by: Christoph Hellwig <hch@lst.de>
-> Reviewed-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
-[...]
+> On Wed, Sep 9, 2020 at 4:18 AM Greg Ungerer <gerg@linux-m68k.org> wrote:
+>> Switch to using the asm-generic/uaccess functions for non-MMU builds.
+>> Remove all the m68knommu local specific uaccess defines and macros.
+>>
+>> There is nothing so special about the m68knommu targets that they cannot
+>> use all of the asm-generic uaccess support. Using the asm-generic
+>> uaccess definitions also resolves some of the existing problems with
+>> missing __user annotations in the m68knommu specific functions.
+>>
+>> The elimination of all of the contents of uaccess_no.h means we can fold
+>> the uaccess_mm.h back into uaccess.h - and just have the single file
+>> now.
+>>
+>> The resulting generated code ends up being slightly smaller (by a few
+>> hundred bytes) due to the compilers ability to better optimize load
+>> and stores without forcing its hand with asm statements.
+>>
+>> Specifically trivial cases like this contrived example:
+>>
+>>      get_user(x, ptr);
+>>      x++;
+>>      put_user(x, ptr);
+>>
+>> end up now being optimized to a single instruction on m68k. More
+>> generally the compiler can avoid using a temporary register in many
+>> cases as well.
+>>
+>> Reported-by: kernel test robot <lkp@intel.com>
+>> Signed-off-by: Greg Ungerer <gerg@linux-m68k.org>
+> 
+> Thanks for your patch!
+> 
+>> rename from arch/m68k/include/asm/uaccess_mm.h
+>> rename to arch/m68k/include/asm/uaccess.h
+>> index 9ae9f8d05925..f98208ccbbcd 100644
+>> --- a/arch/m68k/include/asm/uaccess_mm.h
+>> +++ b/arch/m68k/include/asm/uaccess.h
+>> @@ -2,12 +2,15 @@
+>>   #ifndef __M68K_UACCESS_H
+>>   #define __M68K_UACCESS_H
+>>
+>> +#ifdef CONFIG_MMU
+>> +
+>>   /*
+>>    * User space memory access functions
+>>    */
+>>   #include <linux/compiler.h>
+>>   #include <linux/types.h>
+>>   #include <asm/segment.h>
+>> +#include <asm/extable.h>
+> 
+> For a moment, I wondered where this new include came from...
+> 
+> Seems like git doesn't show what happened to the old
+> arch/m68k/include/asm/uaccess.h file, which was overwritten by the
+> rename:
+> 
+>      -/* SPDX-License-Identifier: GPL-2.0 */
+>      -#ifdef __uClinux__
+>      -#include <asm/uaccess_no.h>
+>      -#else
+>      -#include <asm/uaccess_mm.h>
+>      -#endif
+>      -#include <asm/extable.h>
+> 
+> There it is ;-)
+> 
+> Acked-by: Geert Uytterhoeven <geert@linux-m68k.org>
 
-MBR, Sergei
+Thanks Geert.
+
+I noticed that in the diff too. I generated this one with
+"git format-patch -1 -M -B" to make it easier to review. Otherwise you end up
+with all those identical lines being inserted and deleted.
+But it makes that "#include <asm/extable.h>" appear to come out of nowhere.
+
+Regards
+Greg
+
+
+
+>>   /* We let the MMU do all checking */
+>>   static inline int access_ok(const void __user *addr,
+>> @@ -387,4 +390,8 @@ unsigned long __clear_user(void __user *to, unsigned long n);
+>>
+>>   #define clear_user     __clear_user
+>>
+>> +#else /* !CONFIG_MMU */
+>> +#include <asm-generic/uaccess.h>
+>> +#endif
+>> +
+>>   #endif /* _M68K_UACCESS_H */
+> 
+> Gr{oetje,eeting}s,
+> 
+>                          Geert
+> 
