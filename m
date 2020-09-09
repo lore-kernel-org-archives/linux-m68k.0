@@ -5,63 +5,63 @@ X-Spam-Level:
 X-Spam-Status: No, score=-11.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
 	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,NICE_REPLY_A,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=unavailable
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id F30C5C43461
-	for <linux-m68k@archiver.kernel.org>; Wed,  9 Sep 2020 07:50:24 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8EE4BC43461
+	for <linux-m68k@archiver.kernel.org>; Wed,  9 Sep 2020 07:53:01 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id B4776208FE
-	for <linux-m68k@archiver.kernel.org>; Wed,  9 Sep 2020 07:50:24 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 50BFE20732
+	for <linux-m68k@archiver.kernel.org>; Wed,  9 Sep 2020 07:53:01 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="M9Ywp41A"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="V33VD2Bb"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729670AbgIIHuM (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Wed, 9 Sep 2020 03:50:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60714 "EHLO
+        id S1725974AbgIIHw7 (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Wed, 9 Sep 2020 03:52:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32934 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729507AbgIIHuL (ORCPT
+        with ESMTP id S1725959AbgIIHw7 (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Wed, 9 Sep 2020 03:50:11 -0400
-Received: from mail-lj1-x241.google.com (mail-lj1-x241.google.com [IPv6:2a00:1450:4864:20::241])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B3121C061755
-        for <linux-m68k@lists.linux-m68k.org>; Wed,  9 Sep 2020 00:50:09 -0700 (PDT)
-Received: by mail-lj1-x241.google.com with SMTP id c2so2216646ljj.12
-        for <linux-m68k@lists.linux-m68k.org>; Wed, 09 Sep 2020 00:50:09 -0700 (PDT)
+        Wed, 9 Sep 2020 03:52:59 -0400
+Received: from mail-lj1-x242.google.com (mail-lj1-x242.google.com [IPv6:2a00:1450:4864:20::242])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CD511C061755
+        for <linux-m68k@lists.linux-m68k.org>; Wed,  9 Sep 2020 00:52:58 -0700 (PDT)
+Received: by mail-lj1-x242.google.com with SMTP id k25so2306366ljk.0
+        for <linux-m68k@lists.linux-m68k.org>; Wed, 09 Sep 2020 00:52:58 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=subject:to:cc:references:from:organization:message-id:date
          :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=+eoBy/bwt6qKy1ZU0hQLUIIb2eFiZ29uRJfoY0zAIck=;
-        b=M9Ywp41A+KsRDVsFPG6mUL2IKvRoQoehb0HspBt50pCHhLzboHNdhVGwGVEipw9wfJ
-         7hZZSg+T3fmGnUNuwAkfEqUaTbXRuOm31dKLaSiLK026mhUTT/MrgXoeTzmOHzbYsFqm
-         +A8i4gcA/t91nbljx6J9SSGkTYI6ynwT265Z3mOGFjpWNL9gaZ4VqBN67iae0YWqY2Qp
-         uVEDfPiK0Fw4oHjuJLVVPz0sykxlu2UC+lgqHqRKtuH3CMZ8CJdzDYkUlzjTONJogZ9Q
-         IHwXpYNPCNRByf2ynwQbgD+zOradLAKQbshX5mZ6mVJ8YryvtbQKQDlilS86zU1+4NWs
-         iquQ==
+        bh=yVb2e282hdQLrLNJBNJnpxjhygO2ulaSK5Qta1nt9i4=;
+        b=V33VD2Bb8Ip+WebEyfnQv1anRM4DsXTVmLZ7UG6OdWG/VA0/t9rUFMdrGahlSJRz0P
+         ASJxKJ6tiYV8ZZKpgdOIQt5qoCMpWGCz4qrNCYQiKvsZ5J3XW0mnWY7kJdXgFmDLN0mL
+         IjWveowF7IFmjnJxhzzpoDqwELXv6XjEffk+VIhnkUsiXmYnFIR6RjW47UCtlJz2Xxnx
+         dNNJpZsnjc6/r2FHH24hC9J/Dx3SFNO8w6bf9B4dEpOGkoe7FXOFVKfAHxOtnIHDKl5n
+         nuXH3dqSrnigC7w/C+ZQvV1tuqoKR923O8U0Gz2uNHQAaKb4mmvXdYxYSf3Pu/HEKGVF
+         k7yQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:subject:to:cc:references:from:organization
          :message-id:date:user-agent:mime-version:in-reply-to
          :content-language:content-transfer-encoding;
-        bh=+eoBy/bwt6qKy1ZU0hQLUIIb2eFiZ29uRJfoY0zAIck=;
-        b=CwGCNcbY8k/r9VrjWEzYIcTOA0MUnjM4QfQi8nHhS/HGJ37H4yJEVe01PWZrnt3MHM
-         9on82ynFGWp2mfVoKjVYOV5z+n5UxuKQtIMKwqej+S6m/7wXMZT+hQLzQo06msrcl4VI
-         HUMsimkgU6irUh+IyLcHmmPClZFEuvc0PbT2vRhJ16t2ZNxcHadYtGz9kG7bA1BH2drX
-         dO/MbZ/3xU0qOM2iaXgiedzqBdiPLPbroardV1Mek38Py0OdN7Gv8lgQk0NFHGcv9UYn
-         9h5HlQ0L5weY0AZNXmGRi1ULLFc9nGk+2EP2VLXbuYmriWmIYVtDiSvveMGYVfEUkX6L
-         FMoA==
-X-Gm-Message-State: AOAM530qBPupVnPUE0R/8+HF5YDOpJyj4CWuijRum7I+p+G5V4bbko1T
-        I/Nj24JY9uf2rX+BpCAaU5k=
-X-Google-Smtp-Source: ABdhPJwEA3XTx1gh59N0mVW4YGXuKKn+jsdBgABsdtOTBUZ1LgQuaosBlCBjZQ2p2fQTw9bkjzWHyA==
-X-Received: by 2002:a2e:3215:: with SMTP id y21mr1180072ljy.52.1599637807929;
-        Wed, 09 Sep 2020 00:50:07 -0700 (PDT)
+        bh=yVb2e282hdQLrLNJBNJnpxjhygO2ulaSK5Qta1nt9i4=;
+        b=VanYF1kPXGGX9BQY6EoSY47cCF71Qc5TB1RUCnxraXE0FQvBbrKX/iCX9i7XrlPw46
+         HCndBpxYIQxsEJCiXJCKhAhgQNpzdm9FHkfKpezqXGMj0tyxnUz4bU4A8PwW5SnaDWM8
+         aCDj89kKD1VMgxXyuPI/t1++YMGcJDkhRhlAoFdAmjvNyv50pMyi9ilqEsyylc5TxCH4
+         hHZvUzOivYlju8Plv7quHur0X1uE1NovPgGG+Rl7A/kjhXVrDi2H0m5uZH3xP1o1Imws
+         8Lsovm5Q8UYpTi853AEGSF7PqPU6CaAosTDPsLD8v3DsOhDepty3nlEhtXRtmna3kZBT
+         /rlw==
+X-Gm-Message-State: AOAM531NhJqsV9I+fpGvoGZmjUdZ2QeENsh4ZkE+TKCj0Ycb3ihAfZEL
+        X/BaES1YbnOu3VMgxYNRQsw=
+X-Google-Smtp-Source: ABdhPJxdOqw2y2E84GnrvUgPx4Wu/D8bPg+SVh1Tju19gcvcov5tEsIOa3Lw+N4xZh0hT6Djx969PA==
+X-Received: by 2002:a2e:a418:: with SMTP id p24mr1289871ljn.205.1599637977185;
+        Wed, 09 Sep 2020 00:52:57 -0700 (PDT)
 Received: from ?IPv6:2a00:1fa0:290:64e3:f5dd:84ac:70b0:5629? ([2a00:1fa0:290:64e3:f5dd:84ac:70b0:5629])
-        by smtp.gmail.com with ESMTPSA id z24sm403079lfe.54.2020.09.09.00.50.06
+        by smtp.gmail.com with ESMTPSA id s11sm530099ljh.56.2020.09.09.00.52.55
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 09 Sep 2020 00:50:07 -0700 (PDT)
-Subject: Re: [PATCH 07/19] swim3: use bdev_check_media_changed
+        Wed, 09 Sep 2020 00:52:56 -0700 (PDT)
+Subject: Re: [PATCH 16/19] sd: use bdev_check_media_change
 To:     Christoph Hellwig <hch@lst.de>, Jens Axboe <axboe@kernel.dk>
 Cc:     Denis Efremov <efremov@linux.com>, Tim Waugh <tim@cyberelk.net>,
         Michal Simek <michal.simek@xilinx.com>,
@@ -77,15 +77,15 @@ Cc:     Denis Efremov <efremov@linux.com>, Tim Waugh <tim@cyberelk.net>,
         linux-fsdevel@vger.kernel.org,
         Johannes Thumshirn <johannes.thumshirn@wdc.com>
 References: <20200908145347.2992670-1-hch@lst.de>
- <20200908145347.2992670-8-hch@lst.de>
+ <20200908145347.2992670-17-hch@lst.de>
 From:   Sergei Shtylyov <sergei.shtylyov@gmail.com>
 Organization: Brain-dead Software
-Message-ID: <81bd0c24-81ec-c43f-5771-22fbe7b3dce4@gmail.com>
-Date:   Wed, 9 Sep 2020 10:50:00 +0300
+Message-ID: <31787d3e-05d2-3601-a88b-3c1ba5933f48@gmail.com>
+Date:   Wed, 9 Sep 2020 10:52:49 +0300
 User-Agent: Mozilla/5.0 (Windows NT 6.3; WOW64; rv:68.0) Gecko/20100101
  Thunderbird/68.12.0
 MIME-Version: 1.0
-In-Reply-To: <20200908145347.2992670-8-hch@lst.de>
+In-Reply-To: <20200908145347.2992670-17-hch@lst.de>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -94,16 +94,14 @@ Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-Hello!
-
 On 08.09.2020 17:53, Christoph Hellwig wrote:
 
-> Switch to use bdev_check_media_changed instead of check_disk_change and
-             ^^^
-    Using?
+> Switch to use bdev_check_media_change instead of check_disk_change and
+> call sd_revalidate_disk manually.  As sd also calls sd_revalidate_disk
+> manually during probe and open, , the extra call into ->revalidate_disk
 
-> call floppy_revalidate manually.  Given that floppy_revalidate only
-> deals with media change events, the extra call into ->revalidate_disk
+    Too many commas. :-)
+
 > from bdev_disk_changed is not required either, so stop wiring up the
 > method.
 > 
