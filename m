@@ -2,155 +2,206 @@ Return-Path: <SRS0=3Sed=CX=vger.kernel.org=linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-6.8 required=3.0 tests=BAYES_00,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,
-	SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-8.8 required=3.0 tests=BAYES_00,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,
+	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C9B11C433E2
-	for <linux-m68k@archiver.kernel.org>; Mon, 14 Sep 2020 12:00:15 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 75CD7C43461
+	for <linux-m68k@archiver.kernel.org>; Mon, 14 Sep 2020 23:30:21 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 8E77122275
-	for <linux-m68k@archiver.kernel.org>; Mon, 14 Sep 2020 12:00:15 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 398B820936
+	for <linux-m68k@archiver.kernel.org>; Mon, 14 Sep 2020 23:30:21 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726149AbgINL74 (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Mon, 14 Sep 2020 07:59:56 -0400
-Received: from mail-oi1-f193.google.com ([209.85.167.193]:43164 "EHLO
-        mail-oi1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726076AbgINLnJ (ORCPT
-        <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Mon, 14 Sep 2020 07:43:09 -0400
-Received: by mail-oi1-f193.google.com with SMTP id i17so17500647oig.10
-        for <linux-m68k@lists.linux-m68k.org>; Mon, 14 Sep 2020 04:43:08 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=MAnMfyqXWfQGfIGw15jGsaHsgLXdnRjwDpDAGMwU7WA=;
-        b=eqvvVZ4N3Xi3HSyCwnct5F+UoWYMZcDQSZMmOGmRW2vpFSHrunmRO8u4g6Av30Q7FD
-         AvIhXZSWCpW/RanI4GmzIhkhKRD7ULT5KJqRikw7o+P37TT38QRL5VgLq7OquXzKjAzT
-         ILr8KYkvThNPacMqJufQmq4ZezOpH+6S3OaTecpANPuHff36goVqgEqq4NgeggbphWXq
-         8TQKV29kb5N9NOTD7LtBDff/H85Nts8Jq63urqn1WpcKWxkK0zZdaTby/Yyml/fD/KXR
-         czgsZWpCO1uL/2B8kFJwwtMa7e7KgwBpM0qf8qn9BPAhUsRBzByul0gOYVZfMauK7adm
-         nF8g==
-X-Gm-Message-State: AOAM532Qencg5a/DnBpGTpBYi2tOpcWJTrdeZ3Ra15PdvVlF9KLkV9KS
-        k9iaVqmvM9JY6Q2yedAKkuFcfCkP/sDCKqY6mk0=
-X-Google-Smtp-Source: ABdhPJx1JN0QWdrAwf9e1fPzpz0MTklVvosg75s+ekjAUlq1Q5Wjd87gxkBY2lffCmxyNTGaVh+NOl9PcAyV+g77LRM=
-X-Received: by 2002:aca:3bc3:: with SMTP id i186mr7592032oia.148.1600083788561;
- Mon, 14 Sep 2020 04:43:08 -0700 (PDT)
+        id S1726057AbgINXaU (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Mon, 14 Sep 2020 19:30:20 -0400
+Received: from mga07.intel.com ([134.134.136.100]:5811 "EHLO mga07.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725997AbgINXaU (ORCPT <rfc822;linux-m68k@lists.linux-m68k.org>);
+        Mon, 14 Sep 2020 19:30:20 -0400
+IronPort-SDR: +/6A1eo/bA4NswrJO/PVbjHHBJKu4FESovyq5IOCYppsSD/mCPbTLkWyuDwYrjdeI27zyvwnKd
+ 9PVTKACZ27CQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9744"; a="223358628"
+X-IronPort-AV: E=Sophos;i="5.76,427,1592895600"; 
+   d="scan'208";a="223358628"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Sep 2020 16:30:19 -0700
+IronPort-SDR: 6hKb4NbQ+16qQKdKMs9krrRZOO+0+e8SfbynaYlJKC7fKNAlDRGDHfYAROaKwgs1KHLpNlBwVT
+ 5+bc+eTOhohg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.76,427,1592895600"; 
+   d="scan'208";a="306353637"
+Received: from lkp-server01.sh.intel.com (HELO a75722977aa5) ([10.239.97.150])
+  by orsmga006.jf.intel.com with ESMTP; 14 Sep 2020 16:30:18 -0700
+Received: from kbuild by a75722977aa5 with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1kHxvN-0001E5-HK; Mon, 14 Sep 2020 23:30:17 +0000
+Date:   Tue, 15 Sep 2020 07:29:46 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Geert Uytterhoeven <geert@linux-m68k.org>
+Cc:     linux-m68k@lists.linux-m68k.org
+Subject: [m68k:m68k-queue] BUILD SUCCESS
+ 3da72afd6534e2800a2c70e135db49c9ad430e7b
+Message-ID: <5f5ffcea.r9W1JyWBHR0iSUrS%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
-References: <3cf40b9df80a99a3eee6d3af79437016038f0a44.1600051331.git.fthain@telegraphics.com.au>
-In-Reply-To: <3cf40b9df80a99a3eee6d3af79437016038f0a44.1600051331.git.fthain@telegraphics.com.au>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Mon, 14 Sep 2020 13:42:57 +0200
-Message-ID: <CAMuHMdUOdOkBE72ouk0W_bXnoSTFqLsLKag+2LSRz+Qox6MoxQ@mail.gmail.com>
-Subject: Re: [PATCH v2] ide/macide: Convert Mac IDE driver to platform driver
-To:     Finn Thain <fthain@telegraphics.com.au>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
-        Joshua Thompson <funaho@jurai.org>,
-        linux-m68k <linux-m68k@lists.linux-m68k.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-ide@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 Sender: linux-m68k-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-Hi Finn,
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/geert/linux-m68k.git  m68k-queue
+branch HEAD: 3da72afd6534e2800a2c70e135db49c9ad430e7b  fat: Use correct logical sector size for Atari GEMDOS FAT
 
-On Mon, Sep 14, 2020 at 4:47 AM Finn Thain <fthain@telegraphics.com.au> wrote:
-> Add platform devices for the Mac IDE controller variants. Convert the
-> macide module into a platform driver to support two of those variants.
-> For the third, use a generic "pata_platform" driver instead.
-> This enables automatic loading of the appropriate module and begins
-> the process of replacing the driver with libata alternatives.
->
-> Cc: Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>
-> Cc: Geert Uytterhoeven <geert@linux-m68k.org>
-> Cc: Joshua Thompson <funaho@jurai.org>
-> References: commit 5ed0794cde593 ("m68k/atari: Convert Falcon IDE drivers to platform drivers")
-> References: commit 7ad19a99ad431 ("ide: officially deprecated the legacy IDE driver")
-> Tested-by: Stan Johnson <userm57@yahoo.com>
-> Signed-off-by: Finn Thain <fthain@telegraphics.com.au>
-> ---
-> This patch was tested successfully on a Powerbook 190 (MAC_IDE_BABOON)
-> using both pata_platform and ide_platform drivers.
-> The next step will be to try using these generic drivers with the other
-> IDE controller variants (MAC_IDE_QUADRA or MAC_IDE_PB) so that the macide
-> driver can be entirely replaced with libata drivers.
->
-> Changed since v1:
->  - Adopted DEFINE_RES_MEM and DEFINE_RES_IRQ macros.
->  - Dropped IORESOURCE_IRQ_SHAREABLE flag as it is ignored by pata_platform.c
->    and IRQF_SHARED makes no difference in this case.
->  - Removed redundant release_mem_region() call.
->  - Enabled CONFIG_BLK_DEV_PLATFORM in mac_defconfig. We might also enable
->    CONFIG_PATA_PLATFORM but IMO migration to libata should be a separate
->    patch (as this patch has some unrelated benefits).
+elapsed time: 722m
 
-Thanks for the update!
+configs tested: 134
+configs skipped: 2
 
-BTW, who do you envision taking this (or the next version)? IDE or m68k?
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
-> --- a/arch/m68k/configs/mac_defconfig
-> +++ b/arch/m68k/configs/mac_defconfig
-> @@ -317,6 +317,7 @@ CONFIG_DUMMY_IRQ=m
->  CONFIG_IDE=y
->  CONFIG_IDE_GD_ATAPI=y
->  CONFIG_BLK_DEV_IDECD=y
-> +CONFIG_BLK_DEV_PLATFORM=y
+gcc tested configs:
+arm                                 defconfig
+arm64                            allyesconfig
+arm                              allyesconfig
+arm                              allmodconfig
+arm64                               defconfig
+sh                          sdk7786_defconfig
+powerpc                          g5_defconfig
+arm                           tegra_defconfig
+openrisc                 simple_smp_defconfig
+powerpc                        icon_defconfig
+m68k                         amcore_defconfig
+mips                    maltaup_xpa_defconfig
+mips                       rbtx49xx_defconfig
+powerpc                   currituck_defconfig
+riscv                          rv32_defconfig
+arm                          pxa3xx_defconfig
+sh                                  defconfig
+m68k                        m5307c3_defconfig
+powerpc                      mgcoge_defconfig
+sparc                               defconfig
+arm                         nhk8815_defconfig
+sh                          r7785rp_defconfig
+arc                            hsdk_defconfig
+arm                           spitz_defconfig
+mips                         cobalt_defconfig
+arm                    vt8500_v6_v7_defconfig
+ia64                                defconfig
+mips                        bcm47xx_defconfig
+arc                        nsimosci_defconfig
+m68k                          hp300_defconfig
+powerpc                      obs600_defconfig
+riscv                            alldefconfig
+arm                        multi_v5_defconfig
+arm                         cm_x300_defconfig
+xtensa                generic_kc705_defconfig
+arm                         lpc18xx_defconfig
+c6x                              allyesconfig
+mips                      loongson3_defconfig
+powerpc                  mpc866_ads_defconfig
+m68k                             alldefconfig
+mips                           jazz_defconfig
+arm                              zx_defconfig
+mips                      bmips_stb_defconfig
+sh                          r7780mp_defconfig
+arm                       aspeed_g5_defconfig
+sparc                       sparc64_defconfig
+powerpc                     tqm8560_defconfig
+riscv                            allmodconfig
+arm                        spear3xx_defconfig
+powerpc                      tqm8xx_defconfig
+m68k                          sun3x_defconfig
+powerpc                       ppc64_defconfig
+arm                             ezx_defconfig
+powerpc                     stx_gp3_defconfig
+ia64                             allmodconfig
+ia64                             allyesconfig
+m68k                             allmodconfig
+m68k                                defconfig
+m68k                             allyesconfig
+nios2                               defconfig
+arc                              allyesconfig
+nds32                             allnoconfig
+nds32                               defconfig
+nios2                            allyesconfig
+csky                                defconfig
+alpha                               defconfig
+alpha                            allyesconfig
+xtensa                           allyesconfig
+h8300                            allyesconfig
+arc                                 defconfig
+sh                               allmodconfig
+parisc                              defconfig
+s390                             allyesconfig
+parisc                           allyesconfig
+s390                                defconfig
+i386                             allyesconfig
+sparc                            allyesconfig
+i386                                defconfig
+mips                             allyesconfig
+mips                             allmodconfig
+powerpc                          allyesconfig
+powerpc                          allmodconfig
+powerpc                           allnoconfig
+x86_64               randconfig-a004-20200914
+x86_64               randconfig-a006-20200914
+x86_64               randconfig-a003-20200914
+x86_64               randconfig-a002-20200914
+x86_64               randconfig-a001-20200914
+x86_64               randconfig-a005-20200914
+i386                 randconfig-a004-20200913
+i386                 randconfig-a006-20200913
+i386                 randconfig-a003-20200913
+i386                 randconfig-a001-20200913
+i386                 randconfig-a002-20200913
+i386                 randconfig-a005-20200913
+i386                 randconfig-a004-20200914
+i386                 randconfig-a006-20200914
+i386                 randconfig-a001-20200914
+i386                 randconfig-a003-20200914
+i386                 randconfig-a002-20200914
+i386                 randconfig-a005-20200914
+x86_64               randconfig-a014-20200913
+x86_64               randconfig-a011-20200913
+x86_64               randconfig-a012-20200913
+x86_64               randconfig-a016-20200913
+x86_64               randconfig-a015-20200913
+x86_64               randconfig-a013-20200913
+i386                 randconfig-a015-20200914
+i386                 randconfig-a014-20200914
+i386                 randconfig-a011-20200914
+i386                 randconfig-a013-20200914
+i386                 randconfig-a016-20200914
+i386                 randconfig-a012-20200914
+i386                 randconfig-a015-20200913
+i386                 randconfig-a014-20200913
+i386                 randconfig-a011-20200913
+i386                 randconfig-a013-20200913
+i386                 randconfig-a016-20200913
+i386                 randconfig-a012-20200913
+riscv                            allyesconfig
+riscv                             allnoconfig
+riscv                               defconfig
+x86_64                                   rhel
+x86_64                           allyesconfig
+x86_64                    rhel-7.6-kselftests
+x86_64                              defconfig
+x86_64                               rhel-8.3
+x86_64                                  kexec
 
-I guess we want this in multi_defconfig, too?
+clang tested configs:
+x86_64               randconfig-a014-20200914
+x86_64               randconfig-a011-20200914
+x86_64               randconfig-a016-20200914
+x86_64               randconfig-a012-20200914
+x86_64               randconfig-a015-20200914
+x86_64               randconfig-a013-20200914
 
->  CONFIG_BLK_DEV_MAC_IDE=y
->  CONFIG_RAID_ATTRS=m
->  CONFIG_SCSI=y
-
-> --- a/drivers/ide/macide.c
-> +++ b/drivers/ide/macide.c
-
-> @@ -109,42 +110,61 @@ static const char *mac_ide_name[] =
->   * Probe for a Macintosh IDE interface
->   */
->
-> -static int __init macide_init(void)
-> +static int mac_ide_probe(struct platform_device *pdev)
->  {
-
->         printk(KERN_INFO "ide: Macintosh %s IDE controller\n",
->                          mac_ide_name[macintosh_config->ide_type - 1]);
->
-> -       macide_setup_ports(&hw, base, irq);
-> +       macide_setup_ports(&hw, mem->start, irq->start);
->
-> -       return ide_host_add(&d, hws, 1, NULL);
-> +       rc = ide_host_add(&d, hws, 1, &host);
-> +       if (rc)
-> +               return rc;
-> +
-> +       platform_set_drvdata(pdev, host);
-
-Move one up, to play it safe?
-
-> +       return 0;
->  }
->
-> -module_init(macide_init);
-> +static int mac_ide_remove(struct platform_device *pdev)
-> +{
-> +       struct ide_host *host = dev_get_drvdata(&pdev->dev);
-
-As you use platform_set_drvdata() above, you might as well use the
-platform_get_drvdata() helper here, for symmetry.
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
--- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
