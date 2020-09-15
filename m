@@ -2,153 +2,88 @@ Return-Path: <SRS0=+VAR=CY=vger.kernel.org=linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.9 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-12.8 required=3.0 tests=BAYES_00,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C75FCC2D0E0
-	for <linux-m68k@archiver.kernel.org>; Tue, 15 Sep 2020 08:39:55 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E57FAC433E2
+	for <linux-m68k@archiver.kernel.org>; Tue, 15 Sep 2020 12:10:28 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 9127A20B1F
-	for <linux-m68k@archiver.kernel.org>; Tue, 15 Sep 2020 08:39:55 +0000 (UTC)
-Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="4ZO6BoNl";
-	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="8ik3d8qu"
+	by mail.kernel.org (Postfix) with ESMTP id BC9E82078E
+	for <linux-m68k@archiver.kernel.org>; Tue, 15 Sep 2020 12:10:28 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726185AbgIOIjy (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Tue, 15 Sep 2020 04:39:54 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:40482 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726136AbgIOIjw (ORCPT
-        <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Tue, 15 Sep 2020 04:39:52 -0400
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1600159189;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=a15vj77Xa9KXo3Ek21dMycAwDWIIiMUe5bjhvVzzjCs=;
-        b=4ZO6BoNleN8HQgP0z8q+4JbOh4PFsXqPl2O1VMMFsqMl6Je+Vd4svU6GjBOnz4JBLm59ef
-        n28q3APVdlSA6QtUBbVtHjAsCDNA9DMNxmpB3Xs8JDO2mhj9om6HKXu9jHt5uTY4drNVe+
-        Xi88yb65/jAIcWHRrtrHzz6pJv5CkGBo0rMdCdV0m6UGwcjwsaPqQyFAYyPj9eb+iOpbLb
-        OyGnJVFkDuM2Xw/Zd91HZnJtSCpZf4n90+HYVnsyWEI2CIiSdIZikeb1E30oqvvQPgJtwy
-        7GKY8eCHlWViBl9/zu9LXs5HqsgBdJJ10OMSGETAETJYeANond9fGhpnX7IhVQ==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1600159189;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=a15vj77Xa9KXo3Ek21dMycAwDWIIiMUe5bjhvVzzjCs=;
-        b=8ik3d8quF/oYipmw+L5R6EnAKiYsBpkerr1Z3ToGRa9dHoJtFKl9KfoiSlZU5EwJHOK7Qp
-        VqVAEKjJfZ9P9ICw==
-To:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Herbert Xu <herbert@gondor.apana.org.au>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        Richard Henderson <rth@twiddle.net>,
-        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
-        Matt Turner <mattst88@gmail.com>,
-        alpha <linux-alpha@vger.kernel.org>,
-        Jeff Dike <jdike@addtoit.com>,
-        Richard Weinberger <richard@nod.at>,
-        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
-        linux-um <linux-um@lists.infradead.org>,
-        Brian Cain <bcain@codeaurora.org>,
-        linux-hexagon@vger.kernel.org,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        linux-m68k <linux-m68k@lists.linux-m68k.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Will Deacon <will@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linux-MM <linux-mm@kvack.org>, Ingo Molnar <mingo@redhat.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Chris Zankel <chris@zankel.net>,
-        Max Filippov <jcmvbkbc@gmail.com>,
-        linux-xtensa@linux-xtensa.org,
-        Jani Nikula <jani.nikula@linux.intel.com>,
-        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
-        Rodrigo Vivi <rodrigo.vivi@intel.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        intel-gfx <intel-gfx@lists.freedesktop.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Shuah Khan <shuah@kernel.org>, rcu@vger.kernel.org,
-        "open list\:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>
-Subject: Re: [patch 00/13] preempt: Make preempt count unconditional
-In-Reply-To: <CAHk-=wj0eUuVQ=hRFZv_nY7g5ZLt7Fy3K7SMJL0ZCzniPtsbbg@mail.gmail.com>
-References: <20200914204209.256266093@linutronix.de> <CAHk-=win80rdof8Pb=5k6gT9j_v+hz-TQzKPVastZDvBe9RimQ@mail.gmail.com> <871rj4owfn.fsf@nanos.tec.linutronix.de> <CAHk-=wj0eUuVQ=hRFZv_nY7g5ZLt7Fy3K7SMJL0ZCzniPtsbbg@mail.gmail.com>
-Date:   Tue, 15 Sep 2020 10:39:48 +0200
-Message-ID: <87bli75t7v.fsf@nanos.tec.linutronix.de>
+        id S1726485AbgIOMKX (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Tue, 15 Sep 2020 08:10:23 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41422 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726523AbgIOMJt (ORCPT <rfc822;linux-m68k@vger.kernel.org>);
+        Tue, 15 Sep 2020 08:09:49 -0400
+Received: from goober.digi.com (unknown [103.48.210.53])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id E90E62074B;
+        Tue, 15 Sep 2020 12:09:13 +0000 (UTC)
+From:   Greg Ungerer <gerg@linux-m68k.org>
+To:     linux-m68k@vger.kernel.org
+Cc:     geert@linux-m68k.org, Greg Ungerer <gerg@linux-m68k.org>,
+        kernel test robot <lkp@intel.com>
+Subject: [PATCH] m68knommu: fix sparse warnings in signal code
+Date:   Tue, 15 Sep 2020 22:08:59 +1000
+Message-Id: <20200915120859.1326796-1-gerg@linux-m68k.org>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Transfer-Encoding: 8bit
 Sender: linux-m68k-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-On Mon, Sep 14 2020 at 15:24, Linus Torvalds wrote:
-> On Mon, Sep 14, 2020 at 2:55 PM Thomas Gleixner <tglx@linutronix.de> wrote:
->>
->> Yes it does generate better code, but I tried hard to spot a difference
->> in various metrics exposed by perf. It's all in the noise and I only
->> can spot a difference when the actual preemption check after the
->> decrement
->
-> I'm somewhat more worried about the small-device case.
+Commit 858b810bf63f ("m68knommu: switch to using asm-generic/uaccess.h")
+cleaned up a number of sparse warnings associated with lack of __user
+annotations. It also uncovered a couple of more in the signal handling
+code:
 
-I just checked on one of my old UP ARM toys which I run at home. The .text
-increase is about 2% (75k) and none of the tests I ran showed any
-significant difference. Couldn't verify with perf though as the PMU on
-that piece of art is unusable.
+arch/m68k/kernel/signal.c:923:16:    expected char [noderef] __user *__x
+arch/m68k/kernel/signal.c:923:16:    got void *
+arch/m68k/kernel/signal.c:1007:16: warning: incorrect type in initializer (different address spaces)
+arch/m68k/kernel/signal.c:1007:16:    expected char [noderef] __user *__x
+arch/m68k/kernel/signal.c:1007:16:    got void *
+arch/m68k/kernel/signal.c:1132:6: warning: symbol 'do_notify_resume' was not declared. Should it be static?
 
-> That said, the diffstat certainly has its very clear charm, and I do
-> agree that it makes things simpler.
->
-> I'm just not convinced people should ever EVER do things like that "if
-> (preemptible())" garbage. It sounds like somebody is doing seriously
-> bad things.
+These are specific to a non-MMU configuration. Fix these inserting the
+correct __user annotations as required.
 
-OTOH, having a working 'preemptible()' or maybe better named
-'can_schedule()' check makes tons of sense to make decisions about
-allocation modes or other things.
+Reported-by: kernel test robot <lkp@intel.com>
+Signed-off-by: Greg Ungerer <gerg@linux-m68k.org>
+---
+ arch/m68k/kernel/signal.c | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
-We're currently looking through all of in_atomic(), in_interrupt()
-etc. usage sites and quite some of them are historic and have the clear
-intent of checking whether the code is called from task context or
-hard/softirq context. Lots of them are completely broken or just work by
-chance.
-
-But there is clearly historic precendence that context checks are
-useful, but they only can be useful if we have a consistent mechanism
-which works everywhere.
-
-Of course we could mandate that every interface which might be called
-from one or the other context has a context argument or provides two
-variants of the same thing. But I'm not really convinced whether that's
-a win over having a consistent and reliable set of checks.
-
-Thanks,
-
-        tglx
-
-
-
+diff --git a/arch/m68k/kernel/signal.c b/arch/m68k/kernel/signal.c
+index a98fca977073..a85f59bc1c35 100644
+--- a/arch/m68k/kernel/signal.c
++++ b/arch/m68k/kernel/signal.c
+@@ -920,7 +920,8 @@ static int setup_frame(struct ksignal *ksig, sigset_t *set,
+ 	err |= __put_user(0x70004e40 + (__NR_sigreturn << 16),
+ 			  (long __user *)(frame->retcode));
+ #else
+-	err |= __put_user((void *) ret_from_user_signal, &frame->pretcode);
++	err |= __put_user((long) ret_from_user_signal,
++			  (long __user *) &frame->pretcode);
+ #endif
+ 
+ 	if (err)
+@@ -1004,7 +1005,8 @@ static int setup_rt_frame(struct ksignal *ksig, sigset_t *set,
+ 	err |= __put_user(0x4e40, (short __user *)(frame->retcode + 4));
+ #endif
+ #else
+-	err |= __put_user((void *) ret_from_user_rt_signal, &frame->pretcode);
++	err |= __put_user((long) ret_from_user_rt_signal,
++			  (long __user *) &frame->pretcode);
+ #endif /* CONFIG_MMU */
+ 
+ 	if (err)
+-- 
+2.25.1
 
