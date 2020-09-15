@@ -2,148 +2,138 @@ Return-Path: <SRS0=+VAR=CY=vger.kernel.org=linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-6.8 required=3.0 tests=BAYES_00,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,
-	SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-3.9 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3EFC5C43461
-	for <linux-m68k@archiver.kernel.org>; Tue, 15 Sep 2020 07:15:30 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 3D0C8C43461
+	for <linux-m68k@archiver.kernel.org>; Tue, 15 Sep 2020 07:25:00 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 0000B2080C
-	for <linux-m68k@archiver.kernel.org>; Tue, 15 Sep 2020 07:15:29 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id DE6A320897
+	for <linux-m68k@archiver.kernel.org>; Tue, 15 Sep 2020 07:24:59 +0000 (UTC)
+Authentication-Results: mail.kernel.org;
+	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="Gm/q+1/L";
+	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="MuKXrmlh"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726129AbgIOHP3 (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Tue, 15 Sep 2020 03:15:29 -0400
-Received: from mail-ot1-f65.google.com ([209.85.210.65]:35493 "EHLO
-        mail-ot1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726125AbgIOHP1 (ORCPT
+        id S1726212AbgIOHY4 (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Tue, 15 Sep 2020 03:24:56 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:40012 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726208AbgIOHYt (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Tue, 15 Sep 2020 03:15:27 -0400
-Received: by mail-ot1-f65.google.com with SMTP id o6so2309688ota.2
-        for <linux-m68k@lists.linux-m68k.org>; Tue, 15 Sep 2020 00:15:26 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=0AAGDKBZ0tFUr5jZMaLm57FUfXngPQn4Fl7eT0hJb94=;
-        b=LsjE+xRnDj4/fvdf5pzc2me5eU6lBkhl05AtoV9HMxG2bnBllMCoYLSlNUDUwIBghY
-         7g9M6n1HUS0PEcaMGNWayQy9b+aZVy0+ipBMIDCexz0rDBA0K/02mx0pJ/z/6QhP1tZ2
-         RV9Wz1As5/XRWP3Nr7hf62GjeOaUZvSnrS6+I0m59pE9DRMGH8g2TydBw+ikYK4KBwc+
-         5SjlZTCwP+gaOTQ2qhNTKdrsc4wN/FX4oubedQ7KQQOmFFqtzMqq20WbNQCUjakV8VB0
-         7vHLEQvGkTNecJyV/OyQnS49cYN8ERY5PkBtv+8ppknWbex2DBAZuOmbrdf7po2MIaWo
-         AhQA==
-X-Gm-Message-State: AOAM531fa8scdp7SikyBFjs/mYHhcEFcgbILuFLCAUQtFgw375g3y7za
-        xBorNYB9qv8KScr9O9v5UeiFeZwPcGLue+reaRY=
-X-Google-Smtp-Source: ABdhPJzpO6RY/Lf4aDWUwHVYZc+GKQNaoNRQKjM2D7I9mlw4/3hODeF9iB9mFH88D/jBylkfQL8N1JMQjv4xKH0nCAY=
-X-Received: by 2002:a05:6830:1008:: with SMTP id a8mr11032303otp.107.1600154122683;
- Tue, 15 Sep 2020 00:15:22 -0700 (PDT)
-MIME-Version: 1.0
-References: <3cf40b9df80a99a3eee6d3af79437016038f0a44.1600051331.git.fthain@telegraphics.com.au>
- <CAMuHMdUOdOkBE72ouk0W_bXnoSTFqLsLKag+2LSRz+Qox6MoxQ@mail.gmail.com> <alpine.LNX.2.23.453.2009150945480.6@nippy.intranet>
-In-Reply-To: <alpine.LNX.2.23.453.2009150945480.6@nippy.intranet>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Tue, 15 Sep 2020 09:15:11 +0200
-Message-ID: <CAMuHMdX1GXMGg1mviE_msM1vx0ZLEKEPT4AacSBjYDzN6sZVmw@mail.gmail.com>
-Subject: Re: [PATCH v2] ide/macide: Convert Mac IDE driver to platform driver
-To:     Finn Thain <fthain@telegraphics.com.au>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
-        Joshua Thompson <funaho@jurai.org>,
+        Tue, 15 Sep 2020 03:24:49 -0400
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1600154684;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=BBI2zNFANGXkWYE4Qif9cyGi7S1uMUtiVcafI/NKee0=;
+        b=Gm/q+1/LmIgUKVhaBfxbtH41gZrDIBH8IS1H4zgztvnc5soB5Q5S9GFvwqD6AMThAJg7Eu
+        ICkbMzhHS8winOchbTgcb1qlmuZD7JVBas9osW7dkmUkrA19fW7G1Z84ERIdydT1XwABtV
+        b3YTiGY6/hGrgHGqtbAMSZ6WiChgMDc5V88LWXOoC6nxdSrZr6KYOF2hnpnoShLvzpGVZ4
+        qfLpRcJbnCwBly7jDRkK74aDmCV0ZOOHMRl3SoG6khP3VCoWYVF9b0W5VeuBj1d+MuAvxt
+        6cYp5N7yEfk2d6IXe87eOWbHI/ZdUwoUn1UDCyhqgpi5uCSq9M8lJDN8rwQv1w==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1600154684;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=BBI2zNFANGXkWYE4Qif9cyGi7S1uMUtiVcafI/NKee0=;
+        b=MuKXrmlhK1T+BH9XqoTgVQdGqBSQY5pVtsbiA531viHwxJXMJTBsBB/Iwr2EqMuOspN/XP
+        6hM/wG9/ctqUbmCQ==
+To:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Herbert Xu <herbert@gondor.apana.org.au>
+Cc:     Ard Biesheuvel <ardb@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-arch <linux-arch@vger.kernel.org>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        Richard Henderson <rth@twiddle.net>,
+        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
+        Matt Turner <mattst88@gmail.com>,
+        alpha <linux-alpha@vger.kernel.org>,
+        Jeff Dike <jdike@addtoit.com>,
+        Richard Weinberger <richard@nod.at>,
+        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
+        linux-um <linux-um@lists.infradead.org>,
+        Brian Cain <bcain@codeaurora.org>,
+        linux-hexagon@vger.kernel.org,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
         linux-m68k <linux-m68k@lists.linux-m68k.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-ide@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+        Ingo Molnar <mingo@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Will Deacon <will@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linux-MM <linux-mm@kvack.org>, Ingo Molnar <mingo@redhat.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Chris Zankel <chris@zankel.net>,
+        Max Filippov <jcmvbkbc@gmail.com>,
+        linux-xtensa@linux-xtensa.org,
+        Jani Nikula <jani.nikula@linux.intel.com>,
+        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
+        Rodrigo Vivi <rodrigo.vivi@intel.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        intel-gfx <intel-gfx@lists.freedesktop.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Shuah Khan <shuah@kernel.org>, rcu@vger.kernel.org
+Subject: Re: [patch 00/13] preempt: Make preempt count unconditional
+In-Reply-To: <CAHk-=wir6LZ=4gHt8VDdASv=TmEMjEUONuzbt=s+DyXPCvxaBA@mail.gmail.com>
+References: <20200914204209.256266093@linutronix.de> <CAHk-=win80rdof8Pb=5k6gT9j_v+hz-TQzKPVastZDvBe9RimQ@mail.gmail.com> <871rj4owfn.fsf@nanos.tec.linutronix.de> <CAHk-=wj0eUuVQ=hRFZv_nY7g5ZLt7Fy3K7SMJL0ZCzniPtsbbg@mail.gmail.com> <CAHk-=wjOV6f_ddg+QVCF6RUe+pXPhSR2WevnNyOs9oT+q2ihEA@mail.gmail.com> <CAMj1kXHrDU50D08TwLfzz2hCK+8+C7KGPF99PphXtsOYZ-ff1g@mail.gmail.com> <20200915062253.GA26275@gondor.apana.org.au> <CAHk-=wir6LZ=4gHt8VDdASv=TmEMjEUONuzbt=s+DyXPCvxaBA@mail.gmail.com>
+Date:   Tue, 15 Sep 2020 09:24:44 +0200
+Message-ID: <87een35woz.fsf@nanos.tec.linutronix.de>
+MIME-Version: 1.0
+Content-Type: text/plain
 Sender: linux-m68k-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-Hi Finn,
-
-On Tue, Sep 15, 2020 at 3:17 AM Finn Thain <fthain@telegraphics.com.au> wrote:
-> On Mon, 14 Sep 2020, Geert Uytterhoeven wrote:
-> > On Mon, Sep 14, 2020 at 4:47 AM Finn Thain <fthain@telegraphics.com.au> wrote:
-> > > Add platform devices for the Mac IDE controller variants. Convert the
-> > > macide module into a platform driver to support two of those variants.
-> > > For the third, use a generic "pata_platform" driver instead.
-> > > This enables automatic loading of the appropriate module and begins
-> > > the process of replacing the driver with libata alternatives.
-> > >
-> > > Cc: Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>
-> > > Cc: Geert Uytterhoeven <geert@linux-m68k.org>
-> > > Cc: Joshua Thompson <funaho@jurai.org>
-> > > References: commit 5ed0794cde593 ("m68k/atari: Convert Falcon IDE drivers to platform drivers")
-> > > References: commit 7ad19a99ad431 ("ide: officially deprecated the legacy IDE driver")
-> > > Tested-by: Stan Johnson <userm57@yahoo.com>
-> > > Signed-off-by: Finn Thain <fthain@telegraphics.com.au>
-> > > ---
-> > > This patch was tested successfully on a Powerbook 190 (MAC_IDE_BABOON)
-> > > using both pata_platform and ide_platform drivers.
-> > > The next step will be to try using these generic drivers with the other
-> > > IDE controller variants (MAC_IDE_QUADRA or MAC_IDE_PB) so that the macide
-> > > driver can be entirely replaced with libata drivers.
-> > >
-> > > Changed since v1:
-> > >  - Adopted DEFINE_RES_MEM and DEFINE_RES_IRQ macros.
-> > >  - Dropped IORESOURCE_IRQ_SHAREABLE flag as it is ignored by pata_platform.c
-> > >    and IRQF_SHARED makes no difference in this case.
-> > >  - Removed redundant release_mem_region() call.
-> > >  - Enabled CONFIG_BLK_DEV_PLATFORM in mac_defconfig. We might also enable
-> > >    CONFIG_PATA_PLATFORM but IMO migration to libata should be a separate
-> > >    patch (as this patch has some unrelated benefits).
-> >
-> > Thanks for the update!
-> >
-> > BTW, who do you envision taking this (or the next version)? IDE or m68k?
-> >
+On Mon, Sep 14 2020 at 23:39, Linus Torvalds wrote:
+> On Mon, Sep 14, 2020 at 11:24 PM Herbert Xu <herbert@gondor.apana.org.au> wrote:
+>> > But another reason I tried to avoid kmap_atomic() is that it disables
+>> > preemption unconditionally, even on 64-bit architectures where HIGHMEM
+>> > is irrelevant. So using kmap_atomic() here means that the bulk of
+>> > WireGuard packet encryption runs with preemption disabled, essentially
+>> > for legacy reasons.
+>>
+>> Agreed.  We should definitely fix that.
 >
-> It's unclear from the diff stat. But the focus is on the platform which
-> probably means it is more interesting to you, as the arch maintainer.
-
-Fair enough.
-
-Looking for an Acked-by from the IDE maintainer...
-
-> > > --- a/drivers/ide/macide.c
-> > > +++ b/drivers/ide/macide.c
-> >
-> > > @@ -109,42 +110,61 @@ static const char *mac_ide_name[] =
-> > >   * Probe for a Macintosh IDE interface
-> > >   */
-> > >
-> > > -static int __init macide_init(void)
-> > > +static int mac_ide_probe(struct platform_device *pdev)
-> > >  {
-> >
-> > >         printk(KERN_INFO "ide: Macintosh %s IDE controller\n",
-> > >                          mac_ide_name[macintosh_config->ide_type - 1]);
-> > >
-> > > -       macide_setup_ports(&hw, base, irq);
-> > > +       macide_setup_ports(&hw, mem->start, irq->start);
-> > >
-> > > -       return ide_host_add(&d, hws, 1, NULL);
-> > > +       rc = ide_host_add(&d, hws, 1, &host);
-> > > +       if (rc)
-> > > +               return rc;
-> > > +
-> > > +       platform_set_drvdata(pdev, host);
-> >
-> > Move one up, to play it safe?
-> >
+> Well, honestly, one big reason for that is debugging.
 >
-> You mean, before calling ide_host_add? The 'host' pointer is uninitialized
-> prior to that call.
+> The *semantics* of the kmap_atomic() is in the name - you can't sleep
+> in between it and the kunmap_atomic().
+>
+> On any sane architecture, kmap_atomic() ends up being a no-op from an
+> implementation standpoint, and sleeping would work just fine.
+>
+> But we very much want to make sure that people don't then write code
+> that doesn't work on the bad old 32-bit machines where it really needs
+> that sequence to be safe from preemption.
 
-Oh right, so the IDE subsystem doesn't let you use the drvdata inside
-your driver (besides in remove()) in a safe way :-(
+Alternatively we just make highmem a bit more expensive by making these
+maps preemptible. RT is doing this for a long time and it's not that
+horrible.
 
-Gr{oetje,eeting}s,
+The approach is to keep track about the number of active maps in a task
+and on an eventual context switch save them away in the task struct and
+restore them when the task is scheduled back in.
 
-                        Geert
+Thanks,
 
--- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+        tglx
 
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+
