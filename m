@@ -7,80 +7,77 @@ X-Spam-Status: No, score=-6.8 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=no
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 1279DC43461
-	for <linux-m68k@archiver.kernel.org>; Tue, 15 Sep 2020 18:43:51 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 27CBCC433E2
+	for <linux-m68k@archiver.kernel.org>; Tue, 15 Sep 2020 18:44:26 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id B3F1020872
-	for <linux-m68k@archiver.kernel.org>; Tue, 15 Sep 2020 18:43:50 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id DC8912068D
+	for <linux-m68k@archiver.kernel.org>; Tue, 15 Sep 2020 18:44:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=default; t=1600195430;
-	bh=zbNV4LoRm2SpxcQFTYkt0SpiZ9LfDT0MD1EunDcGBGg=;
+	s=default; t=1600195465;
+	bh=ZkX4IpJVrUUwnYeEwsTuxnlSCIoNpjg5abSoyxEllB0=;
 	h=References:In-Reply-To:From:Date:Subject:To:Cc:List-ID:From;
-	b=A7pCqSlNfA31U9pawdtfMz42pUx3y0tQpODPEnLqQtkKCPCLB1whELmX0fkUl7/JA
-	 svHoul9bQOh6R8WG2JCm1U7XJUBxbSvmRpgntX7qg62tY5GtBA1bim2+k4KkRvhYOQ
-	 R+tyP6NWz7vewjOVfSKNoDM2CofBUkcM4jHJe6oM=
+	b=mP9qji61NCn/P0vKcPZD1VZiUbHgHYHVuu3YWt0bTRj87Z2gijZKYS7lCrIphHXl8
+	 kY2p2jyzrIXsgl9yKkBzJrEt2ELWYHVOmA7GpbCMmkzKubWC71SHLyAvuIZ198J5va
+	 LCufc4vQwmBLEIety/phiJ5TUcaCpr4oha4RShdo=
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727906AbgIOSnm (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Tue, 15 Sep 2020 14:43:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35180 "EHLO
+        id S1727737AbgIOSoT (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Tue, 15 Sep 2020 14:44:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35194 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727913AbgIORfm (ORCPT
+        with ESMTP id S1727856AbgIORfm (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
         Tue, 15 Sep 2020 13:35:42 -0400
-Received: from mail-ed1-x544.google.com (mail-ed1-x544.google.com [IPv6:2a00:1450:4864:20::544])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E800CC06174A
-        for <linux-m68k@lists.linux-m68k.org>; Tue, 15 Sep 2020 10:35:34 -0700 (PDT)
-Received: by mail-ed1-x544.google.com with SMTP id w1so3888588edr.3
-        for <linux-m68k@lists.linux-m68k.org>; Tue, 15 Sep 2020 10:35:34 -0700 (PDT)
+Received: from mail-lf1-x141.google.com (mail-lf1-x141.google.com [IPv6:2a00:1450:4864:20::141])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A014C06178A
+        for <linux-m68k@lists.linux-m68k.org>; Tue, 15 Sep 2020 10:35:39 -0700 (PDT)
+Received: by mail-lf1-x141.google.com with SMTP id z17so3955834lfi.12
+        for <linux-m68k@lists.linux-m68k.org>; Tue, 15 Sep 2020 10:35:39 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linux-foundation.org; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=xSVHWYbzu3UQ8PBlLDNLl6dehpYO4ZB4CwIyD75ZWAE=;
-        b=HrsWxAPBdchRgJHFmShgtgLo+DYOxZ4XfJAXkzfzzcfRKd+SalkgHXOKOAhxqlhHgQ
-         V1SM0m5nq2pQBoktRVl1X3TADwVGw68gQTnxbkgl/4Ys1lUtjCYE6YOc6zJjNuYpT6Oi
-         cumGXilNIqaAVXq/H8sUmOpuXNhTWtrjfr3qo=
+        bh=0nYcbfWZAApGs9MKHeuMMDYKDYJP/KjXcIMY7yTiRjk=;
+        b=hFeX95/TT9jtwZAL/DonKpuMHGRk/7SCmZequDM1VaRmacKDQZY4lc39NgOcx0VujL
+         ul3l8yb5Ugprhwk3dogs1JqCkfr90spWSTqKGkSLsF9w3lXrIygeRUDRxh1yw1QSoeb3
+         vUCYW8AmUQyz6zbxknLrsvz9nPCTdNe9Dcd+4=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=xSVHWYbzu3UQ8PBlLDNLl6dehpYO4ZB4CwIyD75ZWAE=;
-        b=n2tTeZzOTWeBBrIln4/ZOhKlJ3sKrO8NPH8jBhv7Bm5Ugflvsv6kU5ofzpZfKUjxoE
-         /N9jSO6WQm9XV1iEufg/DEsrP9iOL9HfhfOabWw6ygPSx+u29LGW3wxhLy+/RX53xNDm
-         8DG3Yf1mbA2kLK/8UPly1VBSe59eHLcwV4EHnNAmwFq/jDavpU2OGP1+luXFvZOh6CTW
-         Bif8I7VdI1QjQ7DVHdgroVjXhMeYDWHSHso6Q0jwUqq+OSAZFgNhvaSUit1PKvtdYENJ
-         3sCE1JRG57kx6dAfhWq+ddusooVi2LaO5cu+lZsMGrxfaZPvjU7bpUV3i495EqrNOTxB
-         TC7w==
-X-Gm-Message-State: AOAM531yAZrJRSgINqMRREz3JoknTF/IXwD/IbCgSXGBDyF+FSY0HVE0
-        yvU2bSMmLMl8MK242ApBQXqhJNdz03ZHbA==
-X-Google-Smtp-Source: ABdhPJwCgw9R5o4etjASTsUoyfC9CYFJ757+sFYIT84QGeePvgwtETHuxMiAhxbhxYEEcAEHqQD39Q==
-X-Received: by 2002:a50:f197:: with SMTP id x23mr24568021edl.367.1600191333246;
-        Tue, 15 Sep 2020 10:35:33 -0700 (PDT)
-Received: from mail-ej1-f42.google.com (mail-ej1-f42.google.com. [209.85.218.42])
-        by smtp.gmail.com with ESMTPSA id be2sm12115140edb.0.2020.09.15.10.35.32
+        bh=0nYcbfWZAApGs9MKHeuMMDYKDYJP/KjXcIMY7yTiRjk=;
+        b=riT7seqIgjpLKdmRUXsxVLAERTsALdnlIT0RlU+QRHK12/6tXIeAa6G2i1XJpynMLe
+         cHVQKTnHmv/qgB1pV/W+TJCY65UOV2POxyTgmX7HrCKlE/JclIU2DrW+/QzUNgzRaBKe
+         yjIMPjTfIKKj3CthGdpCspxv4G+znrTwvQ2l6MGFAxTtQ5njZE2WySeZZxmq7hie6RTu
+         Aa+XvwIW/C/QKmstDHgRipVn0nppMfbUszo5TQ/bPEMrNkbp8SzMvW8wKwyvYXbJTjab
+         lCmVhmBkXK643eY/29TAy1p2QOWSU64vaOfGY1HYzAmfp60iIlBnroRorbqpicwJq/oe
+         1EvA==
+X-Gm-Message-State: AOAM5311ODU5pgzP5nIeQrwSeIHwUcXMmBJLe5C5+r6t3TLM9CryZinu
+        WjRlgzZPb5hUfcTdjBTHFBjA3PjWttiEDw==
+X-Google-Smtp-Source: ABdhPJz8/f1oFHmru4pU10lxepm6ApRX8UBrB6zZf8pF7g53ktlJRbq+0+uz+IE4IhMWPGeJyPXSRw==
+X-Received: by 2002:ac2:520f:: with SMTP id a15mr5823092lfl.546.1600191337555;
+        Tue, 15 Sep 2020 10:35:37 -0700 (PDT)
+Received: from mail-lf1-f53.google.com (mail-lf1-f53.google.com. [209.85.167.53])
+        by smtp.gmail.com with ESMTPSA id h25sm4092107lfl.273.2020.09.15.10.35.36
         for <linux-m68k@lists.linux-m68k.org>
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 15 Sep 2020 10:35:33 -0700 (PDT)
-Received: by mail-ej1-f42.google.com with SMTP id q13so6215671ejo.9
-        for <linux-m68k@lists.linux-m68k.org>; Tue, 15 Sep 2020 10:35:32 -0700 (PDT)
-X-Received: by 2002:a19:521a:: with SMTP id m26mr7168489lfb.133.1600191006488;
- Tue, 15 Sep 2020 10:30:06 -0700 (PDT)
+        Tue, 15 Sep 2020 10:35:37 -0700 (PDT)
+Received: by mail-lf1-f53.google.com with SMTP id x69so4008634lff.3
+        for <linux-m68k@lists.linux-m68k.org>; Tue, 15 Sep 2020 10:35:36 -0700 (PDT)
+X-Received: by 2002:ac2:5594:: with SMTP id v20mr6798322lfg.344.1600191336149;
+ Tue, 15 Sep 2020 10:35:36 -0700 (PDT)
 MIME-Version: 1.0
 References: <20200914204209.256266093@linutronix.de> <CAHk-=win80rdof8Pb=5k6gT9j_v+hz-TQzKPVastZDvBe9RimQ@mail.gmail.com>
  <871rj4owfn.fsf@nanos.tec.linutronix.de> <CAHk-=wj0eUuVQ=hRFZv_nY7g5ZLt7Fy3K7SMJL0ZCzniPtsbbg@mail.gmail.com>
- <CAHk-=wjOV6f_ddg+QVCF6RUe+pXPhSR2WevnNyOs9oT+q2ihEA@mail.gmail.com>
- <CAMj1kXHrDU50D08TwLfzz2hCK+8+C7KGPF99PphXtsOYZ-ff1g@mail.gmail.com>
- <20200915062253.GA26275@gondor.apana.org.au> <CAHk-=wir6LZ=4gHt8VDdASv=TmEMjEUONuzbt=s+DyXPCvxaBA@mail.gmail.com>
- <87een35woz.fsf@nanos.tec.linutronix.de>
-In-Reply-To: <87een35woz.fsf@nanos.tec.linutronix.de>
+ <87bli75t7v.fsf@nanos.tec.linutronix.de>
+In-Reply-To: <87bli75t7v.fsf@nanos.tec.linutronix.de>
 From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Tue, 15 Sep 2020 10:29:50 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wg_koVS=8bYurGCZ8zs=zDH5cOKVzFdoj4AkUWEW9mKjA@mail.gmail.com>
-Message-ID: <CAHk-=wg_koVS=8bYurGCZ8zs=zDH5cOKVzFdoj4AkUWEW9mKjA@mail.gmail.com>
+Date:   Tue, 15 Sep 2020 10:35:20 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wht7kAeyR5xEW2ORj7m0hibVxZ3t+2ie8vNHLQfdbN2_g@mail.gmail.com>
+Message-ID: <CAHk-=wht7kAeyR5xEW2ORj7m0hibVxZ3t+2ie8vNHLQfdbN2_g@mail.gmail.com>
 Subject: Re: [patch 00/13] preempt: Make preempt count unconditional
 To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     Herbert Xu <herbert@gondor.apana.org.au>,
-        Ard Biesheuvel <ardb@kernel.org>,
+Cc:     Ard Biesheuvel <ardb@kernel.org>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
         LKML <linux-kernel@vger.kernel.org>,
         linux-arch <linux-arch@vger.kernel.org>,
         Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
@@ -124,33 +121,54 @@ Cc:     Herbert Xu <herbert@gondor.apana.org.au>,
         Josh Triplett <josh@joshtriplett.org>,
         Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
         Lai Jiangshan <jiangshanlai@gmail.com>,
-        Shuah Khan <shuah@kernel.org>, rcu@vger.kernel.org
+        Shuah Khan <shuah@kernel.org>, rcu@vger.kernel.org,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Sender: linux-m68k-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-On Tue, Sep 15, 2020 at 12:24 AM Thomas Gleixner <tglx@linutronix.de> wrote:
+On Tue, Sep 15, 2020 at 1:39 AM Thomas Gleixner <tglx@linutronix.de> wrote:
 >
-> Alternatively we just make highmem a bit more expensive by making these
-> maps preemptible. RT is doing this for a long time and it's not that
-> horrible.
+> OTOH, having a working 'preemptible()' or maybe better named
+> 'can_schedule()' check makes tons of sense to make decisions about
+> allocation modes or other things.
 
-Ack.
+No. I think that those kinds of decisions about actual behavior are
+always simply fundamentally wrong.
 
-In fact, I've wanted to start just removing kmap support entirely. At
-some point it's not so much about "I have an old machine that wants
-HIGHMEM" but about "I have an old CPU, and I'll just run an old
-kernel".
+Note that this is very different from having warnings about invalid
+use. THAT is correct. It may not warn in all configurations, but that
+doesn't matter: what matters is that it warns in common enough
+configurations that developers will catch it.
 
-It's not that 32-bit is irrelevant, it's that 32-bit with large
-amounts of memory is irrelevant.
+So having a warning in "might_sleep()" that doesn't always trigger,
+because you have a limited configuration that can't even detect the
+situation, that's fine and dandy and intentional.
 
-Last time this was discussed, iirc the main issue was some
-questionable old ARM chips that were still very common in embedded
-environments, even with large memory.
+But having code like
 
-But we could definitely start de-emphasizing HIGHMEM.
+       if (can_schedule())
+           .. do something different ..
 
-                     Linus
+is fundamentally complete and utter garbage.
+
+It's one thing if you test for "am I in hardware interrupt context".
+Those tests aren't great either, but at least they make sense.
+
+But a driver - or some library routine - making a difference based on
+some nebulous "can I schedule" is fundamentally and basically WRONG.
+
+If some code changes behavior, it needs to be explicit to the *caller*
+of that code.
+
+So this is why GFP_ATOMIC is fine, but "if (!can_schedule())
+do_something_atomic()" is pure shite.
+
+And I am not IN THE LEAST interested in trying to help people doing
+pure shite. We need to fix them. Like the crypto code is getting
+fixed.
+
+                   Linus
