@@ -2,271 +2,178 @@ Return-Path: <SRS0=+VAR=CY=vger.kernel.org=linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.8 required=3.0 tests=BAYES_00,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-7.1 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 409ABC433E2
-	for <linux-m68k@archiver.kernel.org>; Tue, 15 Sep 2020 01:29:42 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id EE1B3C2D0E0
+	for <linux-m68k@archiver.kernel.org>; Tue, 15 Sep 2020 06:21:17 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 14B2C20738
-	for <linux-m68k@archiver.kernel.org>; Tue, 15 Sep 2020 01:29:42 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id BD10920829
+	for <linux-m68k@archiver.kernel.org>; Tue, 15 Sep 2020 06:21:17 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=default; t=1600150877;
+	bh=yHPOwHAJMf2CyGYn5iaGApE31+NbMN1jtYRrQr3OqtY=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:List-ID:From;
+	b=OR3z6/qRvIktf09L9UPVs4mVwOgnw/r/bAMu4I2xWtTWzFXD0cN6tJBJW93C9pLt4
+	 C2DUPq1jOJNbTgFkbxHoKcvTZpMqAwIY4KMUu7K5f6D2JioaOg325wxN3gyl3T7TyF
+	 Sg1WTYAj2teJdWdoIQa3wZNfNTYzfEpwcjFB+eSo=
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726091AbgIOB2k (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Mon, 14 Sep 2020 21:28:40 -0400
-Received: from kvm5.telegraphics.com.au ([98.124.60.144]:52364 "EHLO
-        kvm5.telegraphics.com.au" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726158AbgIOB2e (ORCPT
-        <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Mon, 14 Sep 2020 21:28:34 -0400
-Received: by kvm5.telegraphics.com.au (Postfix, from userid 502)
-        id 653D22A027; Mon, 14 Sep 2020 21:28:30 -0400 (EDT)
-To:     "David S. Miller" <davem@davemloft.net>,
-        "Geert Uytterhoeven" <geert@linux-m68k.org>
-Cc:     "Bartlomiej Zolnierkiewicz" <b.zolnierkie@samsung.com>,
-        "Joshua Thompson" <funaho@jurai.org>,
-        linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org,
-        linux-ide@vger.kernel.org
-Message-Id: <52189e8ee3f8b578e8477f4f05a2c880629209c2.1600132677.git.fthain@telegraphics.com.au>
-From:   Finn Thain <fthain@telegraphics.com.au>
-Subject: [PATCH v3] ide/macide: Convert Mac IDE driver to platform driver
-Date:   Tue, 15 Sep 2020 11:17:57 +1000
+        id S1726120AbgIOGVN (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Tue, 15 Sep 2020 02:21:13 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42630 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726035AbgIOGVM (ORCPT <rfc822;linux-m68k@lists.linux-m68k.org>);
+        Tue, 15 Sep 2020 02:21:12 -0400
+Received: from mail-oi1-f175.google.com (mail-oi1-f175.google.com [209.85.167.175])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 1B15C21D7D
+        for <linux-m68k@lists.linux-m68k.org>; Tue, 15 Sep 2020 06:21:11 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1600150871;
+        bh=yHPOwHAJMf2CyGYn5iaGApE31+NbMN1jtYRrQr3OqtY=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=TmmxknEGZyvx8vlGW5CGW73+O4uXGgraFnOf4HjrP8W3fP+hO00OxomgQPDZMrWul
+         TTPtnmKpuFwwNrUFpHPuMsrGwVxISsxidGAMi4sBmKygdDvEVG1y6hO3MT19lxjr8u
+         N8b5Mw4ZsilvmmxhDCjXlk2EUymtxsG5fkzIFbZw=
+Received: by mail-oi1-f175.google.com with SMTP id a3so2632608oib.4
+        for <linux-m68k@lists.linux-m68k.org>; Mon, 14 Sep 2020 23:21:11 -0700 (PDT)
+X-Gm-Message-State: AOAM5310wpEYUbD9cwgUGsEPK1jHVjJtYTz3ZFKsicfudWD96xzICiBv
+        grzJfIJMcJJLyAOG5ArAFuGKj36D46tOm5iAlPo=
+X-Google-Smtp-Source: ABdhPJyUSykKZBGXRh2yEfSyDpEqCADm2R5enp/Wn0v7qrNEGX7YgMeVQQUInE2Y4YU+sX9Jw9CdsuzBUOw9ncgQn/s=
+X-Received: by 2002:aca:d845:: with SMTP id p66mr2094330oig.47.1600150870261;
+ Mon, 14 Sep 2020 23:21:10 -0700 (PDT)
+MIME-Version: 1.0
+References: <20200914204209.256266093@linutronix.de> <CAHk-=win80rdof8Pb=5k6gT9j_v+hz-TQzKPVastZDvBe9RimQ@mail.gmail.com>
+ <871rj4owfn.fsf@nanos.tec.linutronix.de> <CAHk-=wj0eUuVQ=hRFZv_nY7g5ZLt7Fy3K7SMJL0ZCzniPtsbbg@mail.gmail.com>
+ <CAHk-=wjOV6f_ddg+QVCF6RUe+pXPhSR2WevnNyOs9oT+q2ihEA@mail.gmail.com>
+In-Reply-To: <CAHk-=wjOV6f_ddg+QVCF6RUe+pXPhSR2WevnNyOs9oT+q2ihEA@mail.gmail.com>
+From:   Ard Biesheuvel <ardb@kernel.org>
+Date:   Tue, 15 Sep 2020 09:20:59 +0300
+X-Gmail-Original-Message-ID: <CAMj1kXHrDU50D08TwLfzz2hCK+8+C7KGPF99PphXtsOYZ-ff1g@mail.gmail.com>
+Message-ID: <CAMj1kXHrDU50D08TwLfzz2hCK+8+C7KGPF99PphXtsOYZ-ff1g@mail.gmail.com>
+Subject: Re: [patch 00/13] preempt: Make preempt count unconditional
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-arch <linux-arch@vger.kernel.org>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        Richard Henderson <rth@twiddle.net>,
+        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
+        Matt Turner <mattst88@gmail.com>,
+        alpha <linux-alpha@vger.kernel.org>,
+        Jeff Dike <jdike@addtoit.com>,
+        Richard Weinberger <richard@nod.at>,
+        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
+        linux-um <linux-um@lists.infradead.org>,
+        Brian Cain <bcain@codeaurora.org>,
+        linux-hexagon@vger.kernel.org,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        linux-m68k <linux-m68k@lists.linux-m68k.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Will Deacon <will@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linux-MM <linux-mm@kvack.org>, Ingo Molnar <mingo@redhat.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Chris Zankel <chris@zankel.net>,
+        Max Filippov <jcmvbkbc@gmail.com>,
+        linux-xtensa@linux-xtensa.org,
+        Jani Nikula <jani.nikula@linux.intel.com>,
+        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
+        Rodrigo Vivi <rodrigo.vivi@intel.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        intel-gfx <intel-gfx@lists.freedesktop.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Shuah Khan <shuah@kernel.org>, rcu@vger.kernel.org,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-m68k-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-Add platform devices for the Mac IDE controller variants. Convert the
-macide module into a platform driver to support two of those variants.
-For the third, use a generic "pata_platform" driver instead.
-This enables automatic loading of the appropriate module and begins
-the process of replacing the driver with libata alternatives.
+On Tue, 15 Sep 2020 at 01:43, Linus Torvalds
+<torvalds@linux-foundation.org> wrote:
+>
+> On Mon, Sep 14, 2020 at 3:24 PM Linus Torvalds
+> <torvalds@linux-foundation.org> wrote:
+> >
+> > Ard and Herbert added to participants: see
+> > chacha20poly1305_crypt_sg_inplace(), which does
+> >
+> >         flags = SG_MITER_TO_SG;
+> >         if (!preemptible())
+> >                 flags |= SG_MITER_ATOMIC;
+> >
+> > introduced in commit d95312a3ccc0 ("crypto: lib/chacha20poly1305 -
+> > reimplement crypt_from_sg() routine").
+>
+> As far as I can tell, the only reason for this all is to try to use
+> "kmap()" rather than "kmap_atomic()".
+>
+> And kmap() actually has the much more complex "might_sleep()" tests,
+> and apparently the "preemptible()" check wasn't even the proper full
+> debug check, it was just a complete hack to catch the one that
+> triggered.
+>
 
-Cc: Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>
-Cc: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: Joshua Thompson <funaho@jurai.org>
-References: commit 5ed0794cde593 ("m68k/atari: Convert Falcon IDE drivers to platform drivers")
-References: commit 7ad19a99ad431 ("ide: officially deprecated the legacy IDE driver")
-Tested-by: Stan Johnson <userm57@yahoo.com>
-Signed-off-by: Finn Thain <fthain@telegraphics.com.au>
----
-This patch was tested successfully on a Powerbook 190 (MAC_IDE_BABOON)
-using both pata_platform and ide_platform drivers.
-The next step will be to try using these generic drivers with the other
-IDE controller variants (MAC_IDE_QUADRA or MAC_IDE_PB) so that the macide
-driver can be entirely replaced with libata drivers.
+This was not driven by a failing check.
 
-Changed since v2:
- - Enabled CONFIG_BLK_DEV_PLATFORM in multi_defconfig.
- - Replaced dev_get_drvdata() with platform_get_drvdata().
+The documentation of kmap_atomic() states the following:
 
-Changed since v1:
- - Adopted DEFINE_RES_MEM and DEFINE_RES_IRQ macros.
- - Dropped IORESOURCE_IRQ_SHAREABLE flag as it is ignored by pata_platform.c
-   and IRQF_SHARED makes no difference in this case.
- - Removed redundant release_mem_region() call.
- - Enabled CONFIG_BLK_DEV_PLATFORM in mac_defconfig. We might also enable
-   CONFIG_PATA_PLATFORM but IMO migration to libata should be a separate
-   patch (as this patch has some unrelated benefits).
----
- arch/m68k/configs/mac_defconfig   |  1 +
- arch/m68k/configs/multi_defconfig |  1 +
- arch/m68k/mac/config.c            | 41 +++++++++++++++++++
- drivers/ide/macide.c              | 66 ++++++++++++++++++++-----------
- 4 files changed, 86 insertions(+), 23 deletions(-)
+ * The use of kmap_atomic/kunmap_atomic is discouraged - kmap/kunmap
+ * gives a more generic (and caching) interface. But kmap_atomic can
+ * be used in IRQ contexts, so in some (very limited) cases we need
+ * it.
 
-diff --git a/arch/m68k/configs/mac_defconfig b/arch/m68k/configs/mac_defconfig
-index 6087798662601..f770970fe4e99 100644
---- a/arch/m68k/configs/mac_defconfig
-+++ b/arch/m68k/configs/mac_defconfig
-@@ -317,6 +317,7 @@ CONFIG_DUMMY_IRQ=m
- CONFIG_IDE=y
- CONFIG_IDE_GD_ATAPI=y
- CONFIG_BLK_DEV_IDECD=y
-+CONFIG_BLK_DEV_PLATFORM=y
- CONFIG_BLK_DEV_MAC_IDE=y
- CONFIG_RAID_ATTRS=m
- CONFIG_SCSI=y
-diff --git a/arch/m68k/configs/multi_defconfig b/arch/m68k/configs/multi_defconfig
-index 0abb53c38c20d..f93c3021f20d4 100644
---- a/arch/m68k/configs/multi_defconfig
-+++ b/arch/m68k/configs/multi_defconfig
-@@ -346,6 +346,7 @@ CONFIG_DUMMY_IRQ=m
- CONFIG_IDE=y
- CONFIG_IDE_GD_ATAPI=y
- CONFIG_BLK_DEV_IDECD=y
-+CONFIG_BLK_DEV_PLATFORM=y
- CONFIG_BLK_DEV_GAYLE=y
- CONFIG_BLK_DEV_BUDDHA=y
- CONFIG_BLK_DEV_FALCON_IDE=y
-diff --git a/arch/m68k/mac/config.c b/arch/m68k/mac/config.c
-index 5c9f3a2d65388..43fc29180cb58 100644
---- a/arch/m68k/mac/config.c
-+++ b/arch/m68k/mac/config.c
-@@ -24,6 +24,7 @@
- #include <linux/init.h>
- #include <linux/vt_kern.h>
- #include <linux/platform_device.h>
-+#include <linux/ata_platform.h>
- #include <linux/adb.h>
- #include <linux/cuda.h>
- #include <linux/pmu.h>
-@@ -940,6 +941,26 @@ static const struct resource mac_scsi_ccl_rsrc[] __initconst = {
- 	},
- };
- 
-+static const struct resource mac_ide_quadra_rsrc[] __initconst = {
-+	DEFINE_RES_MEM(0x50F1A000, 0x104),
-+	DEFINE_RES_IRQ(IRQ_NUBUS_F),
-+};
-+
-+static const struct resource mac_ide_pb_rsrc[] __initconst = {
-+	DEFINE_RES_MEM(0x50F1A000, 0x104),
-+	DEFINE_RES_IRQ(IRQ_NUBUS_C),
-+};
-+
-+static const struct resource mac_pata_baboon_rsrc[] __initconst = {
-+	DEFINE_RES_MEM(0x50F1A000, 0x38),
-+	DEFINE_RES_MEM(0x50F1A038, 0x04),
-+	DEFINE_RES_IRQ(IRQ_BABOON_1),
-+};
-+
-+static const struct pata_platform_info mac_pata_baboon_data __initconst = {
-+	.ioport_shift = 2,
-+};
-+
- int __init mac_platform_init(void)
- {
- 	phys_addr_t swim_base = 0;
-@@ -1048,6 +1069,26 @@ int __init mac_platform_init(void)
- 		break;
- 	}
- 
-+	/*
-+	 * IDE device
-+	 */
-+
-+	switch (macintosh_config->ide_type) {
-+	case MAC_IDE_QUADRA:
-+		platform_device_register_simple("mac_ide", -1,
-+			mac_ide_quadra_rsrc, ARRAY_SIZE(mac_ide_quadra_rsrc));
-+		break;
-+	case MAC_IDE_PB:
-+		platform_device_register_simple("mac_ide", -1,
-+			mac_ide_pb_rsrc, ARRAY_SIZE(mac_ide_pb_rsrc));
-+		break;
-+	case MAC_IDE_BABOON:
-+		platform_device_register_resndata(NULL, "pata_platform", -1,
-+			mac_pata_baboon_rsrc, ARRAY_SIZE(mac_pata_baboon_rsrc),
-+			&mac_pata_baboon_data, sizeof(mac_pata_baboon_data));
-+		break;
-+	}
-+
- 	/*
- 	 * Ethernet device
- 	 */
-diff --git a/drivers/ide/macide.c b/drivers/ide/macide.c
-index 3c6bb8599303b..8a201a467886b 100644
---- a/drivers/ide/macide.c
-+++ b/drivers/ide/macide.c
-@@ -18,10 +18,11 @@
- #include <linux/delay.h>
- #include <linux/ide.h>
- #include <linux/module.h>
-+#include <linux/platform_device.h>
- 
- #include <asm/macintosh.h>
--#include <asm/macints.h>
--#include <asm/mac_baboon.h>
-+
-+#define DRV_NAME "mac_ide"
- 
- #define IDE_BASE 0x50F1A000	/* Base address of IDE controller */
- 
-@@ -109,42 +110,61 @@ static const char *mac_ide_name[] =
-  * Probe for a Macintosh IDE interface
-  */
- 
--static int __init macide_init(void)
-+static int mac_ide_probe(struct platform_device *pdev)
- {
--	unsigned long base;
--	int irq;
-+	struct resource *mem, *irq;
- 	struct ide_hw hw, *hws[] = { &hw };
- 	struct ide_port_info d = macide_port_info;
-+	struct ide_host *host;
-+	int rc;
- 
- 	if (!MACH_IS_MAC)
- 		return -ENODEV;
- 
--	switch (macintosh_config->ide_type) {
--	case MAC_IDE_QUADRA:
--		base = IDE_BASE;
--		irq = IRQ_NUBUS_F;
--		break;
--	case MAC_IDE_PB:
--		base = IDE_BASE;
--		irq = IRQ_NUBUS_C;
--		break;
--	case MAC_IDE_BABOON:
--		base = BABOON_BASE;
--		d.port_ops = NULL;
--		irq = IRQ_BABOON_1;
--		break;
--	default:
-+	mem = platform_get_resource(pdev, IORESOURCE_MEM, 0);
-+	if (!mem)
-+		return -ENODEV;
-+
-+	irq = platform_get_resource(pdev, IORESOURCE_IRQ, 0);
-+	if (!irq)
- 		return -ENODEV;
-+
-+	if (!devm_request_mem_region(&pdev->dev, mem->start,
-+				     resource_size(mem), DRV_NAME)) {
-+		dev_err(&pdev->dev, "resources busy\n");
-+		return -EBUSY;
- 	}
- 
- 	printk(KERN_INFO "ide: Macintosh %s IDE controller\n",
- 			 mac_ide_name[macintosh_config->ide_type - 1]);
- 
--	macide_setup_ports(&hw, base, irq);
-+	macide_setup_ports(&hw, mem->start, irq->start);
- 
--	return ide_host_add(&d, hws, 1, NULL);
-+	rc = ide_host_add(&d, hws, 1, &host);
-+	if (rc)
-+		return rc;
-+
-+	platform_set_drvdata(pdev, host);
-+	return 0;
- }
- 
--module_init(macide_init);
-+static int mac_ide_remove(struct platform_device *pdev)
-+{
-+	struct ide_host *host = platform_get_drvdata(pdev);
-+
-+	ide_host_remove(host);
-+	return 0;
-+}
-+
-+static struct platform_driver mac_ide_driver = {
-+	.driver = {
-+		.name = DRV_NAME,
-+	},
-+	.probe  = mac_ide_probe,
-+	.remove = mac_ide_remove,
-+};
-+
-+module_platform_driver(mac_ide_driver);
- 
-+MODULE_ALIAS("platform:" DRV_NAME);
- MODULE_LICENSE("GPL");
--- 
-2.26.2
+so if this is no longer accurate, perhaps we should fix it?
 
+But another reason I tried to avoid kmap_atomic() is that it disables
+preemption unconditionally, even on 64-bit architectures where HIGHMEM
+is irrelevant. So using kmap_atomic() here means that the bulk of
+WireGuard packet encryption runs with preemption disabled, essentially
+for legacy reasons.
+
+
+> From a quick look, that code should probably just get rid of
+> SG_MITER_ATOMIC entirely, and alwayse use kmap_atomic().
+>
+> kmap_atomic() is actually the faster and proper interface to use
+> anyway (never mind that any of this matters on any sane hardware). The
+> old kmap() and kunmap() interfaces should generally be avoided like
+> the plague - yes, they allow sleeping in the middle and that is
+> sometimes required, but if you don't need that, you should never ever
+> use them.
+>
+> We used to have a very nasty kmap_atomic() that required people to be
+> very careful and know exactly which atomic entry to use, and that was
+> admitedly quite nasty.
+>
+> So it _looks_ like this code started using kmap() - probably back when
+> kmap_atomic() was so cumbersome to use - and was then converted
+> (conditionally) to kmap_atomic() rather than just changed whole-sale.
+> Is there actually something that wants to use those sg_miter functions
+> and sleep?
+>
+> Because if there is, that choice should come from the outside, not
+> from inside lib/scatterlist.c trying to make some bad guess based on
+> the wrong thing entirely.
+>
+>                  Linus
