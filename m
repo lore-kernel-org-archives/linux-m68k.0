@@ -2,80 +2,51 @@ Return-Path: <SRS0=+VAR=CY=vger.kernel.org=linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-6.8 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=no
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-3.9 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 27CBCC433E2
-	for <linux-m68k@archiver.kernel.org>; Tue, 15 Sep 2020 18:44:26 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7E909C43461
+	for <linux-m68k@archiver.kernel.org>; Tue, 15 Sep 2020 19:58:54 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id DC8912068D
-	for <linux-m68k@archiver.kernel.org>; Tue, 15 Sep 2020 18:44:25 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=default; t=1600195465;
-	bh=ZkX4IpJVrUUwnYeEwsTuxnlSCIoNpjg5abSoyxEllB0=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:List-ID:From;
-	b=mP9qji61NCn/P0vKcPZD1VZiUbHgHYHVuu3YWt0bTRj87Z2gijZKYS7lCrIphHXl8
-	 kY2p2jyzrIXsgl9yKkBzJrEt2ELWYHVOmA7GpbCMmkzKubWC71SHLyAvuIZ198J5va
-	 LCufc4vQwmBLEIety/phiJ5TUcaCpr4oha4RShdo=
+	by mail.kernel.org (Postfix) with ESMTP id 261C72080C
+	for <linux-m68k@archiver.kernel.org>; Tue, 15 Sep 2020 19:58:54 +0000 (UTC)
+Authentication-Results: mail.kernel.org;
+	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="R4Zt8iBi";
+	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="GHgvirbC"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727737AbgIOSoT (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Tue, 15 Sep 2020 14:44:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35194 "EHLO
+        id S1727846AbgIOT6j (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Tue, 15 Sep 2020 15:58:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57690 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727856AbgIORfm (ORCPT
+        with ESMTP id S1727812AbgIOT57 (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Tue, 15 Sep 2020 13:35:42 -0400
-Received: from mail-lf1-x141.google.com (mail-lf1-x141.google.com [IPv6:2a00:1450:4864:20::141])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A014C06178A
-        for <linux-m68k@lists.linux-m68k.org>; Tue, 15 Sep 2020 10:35:39 -0700 (PDT)
-Received: by mail-lf1-x141.google.com with SMTP id z17so3955834lfi.12
-        for <linux-m68k@lists.linux-m68k.org>; Tue, 15 Sep 2020 10:35:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=0nYcbfWZAApGs9MKHeuMMDYKDYJP/KjXcIMY7yTiRjk=;
-        b=hFeX95/TT9jtwZAL/DonKpuMHGRk/7SCmZequDM1VaRmacKDQZY4lc39NgOcx0VujL
-         ul3l8yb5Ugprhwk3dogs1JqCkfr90spWSTqKGkSLsF9w3lXrIygeRUDRxh1yw1QSoeb3
-         vUCYW8AmUQyz6zbxknLrsvz9nPCTdNe9Dcd+4=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=0nYcbfWZAApGs9MKHeuMMDYKDYJP/KjXcIMY7yTiRjk=;
-        b=riT7seqIgjpLKdmRUXsxVLAERTsALdnlIT0RlU+QRHK12/6tXIeAa6G2i1XJpynMLe
-         cHVQKTnHmv/qgB1pV/W+TJCY65UOV2POxyTgmX7HrCKlE/JclIU2DrW+/QzUNgzRaBKe
-         yjIMPjTfIKKj3CthGdpCspxv4G+znrTwvQ2l6MGFAxTtQ5njZE2WySeZZxmq7hie6RTu
-         Aa+XvwIW/C/QKmstDHgRipVn0nppMfbUszo5TQ/bPEMrNkbp8SzMvW8wKwyvYXbJTjab
-         lCmVhmBkXK643eY/29TAy1p2QOWSU64vaOfGY1HYzAmfp60iIlBnroRorbqpicwJq/oe
-         1EvA==
-X-Gm-Message-State: AOAM5311ODU5pgzP5nIeQrwSeIHwUcXMmBJLe5C5+r6t3TLM9CryZinu
-        WjRlgzZPb5hUfcTdjBTHFBjA3PjWttiEDw==
-X-Google-Smtp-Source: ABdhPJz8/f1oFHmru4pU10lxepm6ApRX8UBrB6zZf8pF7g53ktlJRbq+0+uz+IE4IhMWPGeJyPXSRw==
-X-Received: by 2002:ac2:520f:: with SMTP id a15mr5823092lfl.546.1600191337555;
-        Tue, 15 Sep 2020 10:35:37 -0700 (PDT)
-Received: from mail-lf1-f53.google.com (mail-lf1-f53.google.com. [209.85.167.53])
-        by smtp.gmail.com with ESMTPSA id h25sm4092107lfl.273.2020.09.15.10.35.36
-        for <linux-m68k@lists.linux-m68k.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 15 Sep 2020 10:35:37 -0700 (PDT)
-Received: by mail-lf1-f53.google.com with SMTP id x69so4008634lff.3
-        for <linux-m68k@lists.linux-m68k.org>; Tue, 15 Sep 2020 10:35:36 -0700 (PDT)
-X-Received: by 2002:ac2:5594:: with SMTP id v20mr6798322lfg.344.1600191336149;
- Tue, 15 Sep 2020 10:35:36 -0700 (PDT)
-MIME-Version: 1.0
-References: <20200914204209.256266093@linutronix.de> <CAHk-=win80rdof8Pb=5k6gT9j_v+hz-TQzKPVastZDvBe9RimQ@mail.gmail.com>
- <871rj4owfn.fsf@nanos.tec.linutronix.de> <CAHk-=wj0eUuVQ=hRFZv_nY7g5ZLt7Fy3K7SMJL0ZCzniPtsbbg@mail.gmail.com>
- <87bli75t7v.fsf@nanos.tec.linutronix.de>
-In-Reply-To: <87bli75t7v.fsf@nanos.tec.linutronix.de>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Tue, 15 Sep 2020 10:35:20 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wht7kAeyR5xEW2ORj7m0hibVxZ3t+2ie8vNHLQfdbN2_g@mail.gmail.com>
-Message-ID: <CAHk-=wht7kAeyR5xEW2ORj7m0hibVxZ3t+2ie8vNHLQfdbN2_g@mail.gmail.com>
-Subject: Re: [patch 00/13] preempt: Make preempt count unconditional
-To:     Thomas Gleixner <tglx@linutronix.de>
+        Tue, 15 Sep 2020 15:57:59 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0D5B6C06174A
+        for <linux-m68k@lists.linux-m68k.org>; Tue, 15 Sep 2020 12:57:39 -0700 (PDT)
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1600199857;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=WUf3cR8tRBv7eifn3bYRJqwOE06JyVH+YNcuAlhPEzY=;
+        b=R4Zt8iBiRf9a+cl1bV87aTb7PzjrsY9fDXMhiBS8K2ot+081OXV43gzpJxoKPhJ+bG/r3d
+        IZ+XMelmwH6I1/IeBzA0fsbvOLaK8KTaPACawTHUg6jjadOJqPR3b3oHieYk1VWz6/0oQm
+        160PfMvRl4sOXnVT35YSXZOTlM61qgXSYzZSMF7oaVHQZW8+sX+YqTW5CPNn3M/4wDy6pz
+        FqyKA3YK/qnHJa+/v8mb9TXFlw3YCbBIJGJZD6NGKFvRIxsCkXAfwQ3qqvw+SkHnN/x3SA
+        Xr1GzKJIli+LvQNZjFraeH3J5TJIjCZBBRyHcln921IMOu/pI6tJi9qyOaIRUA==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1600199857;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=WUf3cR8tRBv7eifn3bYRJqwOE06JyVH+YNcuAlhPEzY=;
+        b=GHgvirbCN6gxc0oKsh65B0tX+BLegnUGJa5AhDfyLfEqCZ+BxU1R9tgqcRPDwCSIqCwX9J
+        bXubW9jdXnVc0gCA==
+To:     Linus Torvalds <torvalds@linux-foundation.org>
 Cc:     Ard Biesheuvel <ardb@kernel.org>,
         Herbert Xu <herbert@gondor.apana.org.au>,
         LKML <linux-kernel@vger.kernel.org>,
@@ -122,53 +93,77 @@ Cc:     Ard Biesheuvel <ardb@kernel.org>,
         Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
         Lai Jiangshan <jiangshanlai@gmail.com>,
         Shuah Khan <shuah@kernel.org>, rcu@vger.kernel.org,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
+        "open list\:KERNEL SELFTEST FRAMEWORK" 
         <linux-kselftest@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Subject: Re: [patch 00/13] preempt: Make preempt count unconditional
+In-Reply-To: <CAHk-=wht7kAeyR5xEW2ORj7m0hibVxZ3t+2ie8vNHLQfdbN2_g@mail.gmail.com>
+References: <20200914204209.256266093@linutronix.de> <CAHk-=win80rdof8Pb=5k6gT9j_v+hz-TQzKPVastZDvBe9RimQ@mail.gmail.com> <871rj4owfn.fsf@nanos.tec.linutronix.de> <CAHk-=wj0eUuVQ=hRFZv_nY7g5ZLt7Fy3K7SMJL0ZCzniPtsbbg@mail.gmail.com> <87bli75t7v.fsf@nanos.tec.linutronix.de> <CAHk-=wht7kAeyR5xEW2ORj7m0hibVxZ3t+2ie8vNHLQfdbN2_g@mail.gmail.com>
+Date:   Tue, 15 Sep 2020 21:57:37 +0200
+Message-ID: <87y2la4xu6.fsf@nanos.tec.linutronix.de>
+MIME-Version: 1.0
+Content-Type: text/plain
 Sender: linux-m68k-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-On Tue, Sep 15, 2020 at 1:39 AM Thomas Gleixner <tglx@linutronix.de> wrote:
+On Tue, Sep 15 2020 at 10:35, Linus Torvalds wrote:
+> On Tue, Sep 15, 2020 at 1:39 AM Thomas Gleixner <tglx@linutronix.de> wrote:
+>>
+>> OTOH, having a working 'preemptible()' or maybe better named
+>> 'can_schedule()' check makes tons of sense to make decisions about
+>> allocation modes or other things.
 >
-> OTOH, having a working 'preemptible()' or maybe better named
-> 'can_schedule()' check makes tons of sense to make decisions about
-> allocation modes or other things.
+> No. I think that those kinds of decisions about actual behavior are
+> always simply fundamentally wrong.
+>
+> Note that this is very different from having warnings about invalid
+> use. THAT is correct. It may not warn in all configurations, but that
+> doesn't matter: what matters is that it warns in common enough
+> configurations that developers will catch it.
 
-No. I think that those kinds of decisions about actual behavior are
-always simply fundamentally wrong.
+You wish. I just found a 7 year old bug in a 10G network driver which
+surely would have been found if people would enable debug configs and
+not just run the crap on their PREEMPT_NONE, all debug off kernel. And
+that driver is not subject to bitrot, it gets regular bug fixes from
+people who seem to care (distro folks).
 
-Note that this is very different from having warnings about invalid
-use. THAT is correct. It may not warn in all configurations, but that
-doesn't matter: what matters is that it warns in common enough
-configurations that developers will catch it.
+> So having a warning in "might_sleep()" that doesn't always trigger,
+> because you have a limited configuration that can't even detect the
+> situation, that's fine and dandy and intentional.
 
-So having a warning in "might_sleep()" that doesn't always trigger,
-because you have a limited configuration that can't even detect the
-situation, that's fine and dandy and intentional.
+and lets people get away with their crap.
 
-But having code like
+> But having code like
+>
+>        if (can_schedule())
+>            .. do something different ..
+>
+> is fundamentally complete and utter garbage.
+>
+> It's one thing if you test for "am I in hardware interrupt context".
+> Those tests aren't great either, but at least they make sense.
 
-       if (can_schedule())
-           .. do something different ..
+They make sense in limited situations like exception handlers and such
+which really have to know from which context an exception was raised.
 
-is fundamentally complete and utter garbage.
+But with the above reasoning such checks do not make sense in any other
+general code. 'in hard interrupt context' is just another context where
+you can't do stuff which you can do when in preemptible task context.
 
-It's one thing if you test for "am I in hardware interrupt context".
-Those tests aren't great either, but at least they make sense.
+Most tests are way broader than a single context. in_interrupt() is true
+for hard interrupt, soft interrupt delivery and all BH disabled
+contexts, which is completely ill defined.
 
-But a driver - or some library routine - making a difference based on
-some nebulous "can I schedule" is fundamentally and basically WRONG.
+> But a driver - or some library routine - making a difference based on
+> some nebulous "can I schedule" is fundamentally and basically WRONG.
+>
+> If some code changes behavior, it needs to be explicit to the *caller*
+> of that code.
 
-If some code changes behavior, it needs to be explicit to the *caller*
-of that code.
+I'm fine with that, but then we have to be consequent and ban _all_ of
+these and not just declare can_schedule() to be a bad one.
 
-So this is why GFP_ATOMIC is fine, but "if (!can_schedule())
-do_something_atomic()" is pure shite.
+Thanks,
 
-And I am not IN THE LEAST interested in trying to help people doing
-pure shite. We need to fix them. Like the crypto code is getting
-fixed.
-
-                   Linus
+        tglx
