@@ -2,122 +2,93 @@ Return-Path: <SRS0=+VAR=CY=vger.kernel.org=linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-11.6 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=unavailable
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-3.8 required=3.0 tests=BAYES_00,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
+	autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C14D7C43461
-	for <linux-m68k@archiver.kernel.org>; Tue, 15 Sep 2020 22:34:48 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id BF524C43461
+	for <linux-m68k@archiver.kernel.org>; Tue, 15 Sep 2020 22:57:23 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 8613B20770
-	for <linux-m68k@archiver.kernel.org>; Tue, 15 Sep 2020 22:34:48 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=default; t=1600209288;
-	bh=h8FrMLmRYTR7EG3ov+53gJbd++NMD57LcgsrZ+W8Sok=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:List-ID:From;
-	b=FdoXlKoMY/PEyD97dncdpAj0U4zDgFxqHVoTFnf21uIYoBOSI7Hc8wQWGvpsVH3q1
-	 FF73Cn+aavboY25zq4FFpbPucYRZgoutthXrrUopKM5yCxGBaqIhaVX5PJLRSyxO6q
-	 XLCVRLHSacbKPY0eJc6jG/HwcOp66RsVfLQVk9u4=
+	by mail.kernel.org (Postfix) with ESMTP id 964D020770
+	for <linux-m68k@archiver.kernel.org>; Tue, 15 Sep 2020 22:57:23 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727539AbgIOWem (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Tue, 15 Sep 2020 18:34:42 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56822 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727588AbgIOQLG (ORCPT <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Tue, 15 Sep 2020 12:11:06 -0400
-Received: from willie-the-truck (236.31.169.217.in-addr.arpa [217.169.31.236])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id A5369206BE;
-        Tue, 15 Sep 2020 16:10:51 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600186258;
-        bh=h8FrMLmRYTR7EG3ov+53gJbd++NMD57LcgsrZ+W8Sok=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=sO86BqljD5TTUSf3Do5Tr23UIE8zY6Bz1UDtpNwChPTIbD5+keIeFFrqnf8XsRJr0
-         ojiIAWWGP4t8b9bz6D3u0TyrwIrYQfCa/vsL1qeBTtNKTpMduZ7SEC4jTL9i3luICh
-         OrDt1j8SFI8DM7C/qo2V0n/aLixXUHY994PZbfUw=
-Date:   Tue, 15 Sep 2020 17:10:48 +0100
-From:   Will Deacon <will@kernel.org>
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     LKML <linux-kernel@vger.kernel.org>, linux-arch@vger.kernel.org,
-        Linus Torvalds <torvalds@linuxfoundation.org>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        Richard Henderson <rth@twiddle.net>,
-        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
-        Matt Turner <mattst88@gmail.com>, linux-alpha@vger.kernel.org,
-        Jeff Dike <jdike@addtoit.com>,
-        Richard Weinberger <richard@nod.at>,
-        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
-        linux-um@lists.infradead.org, Brian Cain <bcain@codeaurora.org>,
-        linux-hexagon@vger.kernel.org,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        linux-m68k@lists.linux-m68k.org, Ingo Molnar <mingo@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
-        Ingo Molnar <mingo@redhat.com>,
-        Russell King <linux@armlinux.org.uk>,
-        linux-arm-kernel@lists.infradead.org,
-        Chris Zankel <chris@zankel.net>,
-        Max Filippov <jcmvbkbc@gmail.com>,
-        linux-xtensa@linux-xtensa.org,
-        Jani Nikula <jani.nikula@linux.intel.com>,
-        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
-        Rodrigo Vivi <rodrigo.vivi@intel.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Shuah Khan <shuah@kernel.org>, rcu@vger.kernel.org,
-        linux-kselftest@vger.kernel.org
-Subject: Re: [patch 06/13] locking/bitspinlock: Clenaup PREEMPT_COUNT
- leftovers
-Message-ID: <20200915161047.GA26745@willie-the-truck>
-References: <20200914204209.256266093@linutronix.de>
- <20200914204441.579902354@linutronix.de>
+        id S1727387AbgIOW5R (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Tue, 15 Sep 2020 18:57:17 -0400
+Received: from kvm5.telegraphics.com.au ([98.124.60.144]:46568 "EHLO
+        kvm5.telegraphics.com.au" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727418AbgIOW5E (ORCPT
+        <rfc822;linux-m68k@lists.linux-m68k.org>);
+        Tue, 15 Sep 2020 18:57:04 -0400
+Received: from localhost (localhost.localdomain [127.0.0.1])
+        by kvm5.telegraphics.com.au (Postfix) with ESMTP id 9B1CF272F2;
+        Tue, 15 Sep 2020 18:56:57 -0400 (EDT)
+Date:   Wed, 16 Sep 2020 08:56:58 +1000 (AEST)
+From:   Finn Thain <fthain@telegraphics.com.au>
+To:     Geert Uytterhoeven <geert@linux-m68k.org>
+cc:     "David S. Miller" <davem@davemloft.net>,
+        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
+        Joshua Thompson <funaho@jurai.org>,
+        linux-m68k <linux-m68k@lists.linux-m68k.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-ide@vger.kernel.org
+Subject: Re: [PATCH v2] ide/macide: Convert Mac IDE driver to platform
+ driver
+In-Reply-To: <CAMuHMdX1GXMGg1mviE_msM1vx0ZLEKEPT4AacSBjYDzN6sZVmw@mail.gmail.com>
+Message-ID: <alpine.LNX.2.23.453.2009160758350.6@nippy.intranet>
+References: <3cf40b9df80a99a3eee6d3af79437016038f0a44.1600051331.git.fthain@telegraphics.com.au> <CAMuHMdUOdOkBE72ouk0W_bXnoSTFqLsLKag+2LSRz+Qox6MoxQ@mail.gmail.com> <alpine.LNX.2.23.453.2009150945480.6@nippy.intranet>
+ <CAMuHMdX1GXMGg1mviE_msM1vx0ZLEKEPT4AacSBjYDzN6sZVmw@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200914204441.579902354@linutronix.de>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain; charset=US-ASCII
 Sender: linux-m68k-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-On Mon, Sep 14, 2020 at 10:42:15PM +0200, Thomas Gleixner wrote:
-> CONFIG_PREEMPT_COUNT is now unconditionally enabled and will be
-> removed. Cleanup the leftovers before doing so.
-> 
-> Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-> ---
->  include/linux/bit_spinlock.h |    4 +---
->  1 file changed, 1 insertion(+), 3 deletions(-)
-> 
-> --- a/include/linux/bit_spinlock.h
-> +++ b/include/linux/bit_spinlock.h
-> @@ -90,10 +90,8 @@ static inline int bit_spin_is_locked(int
->  {
->  #if defined(CONFIG_SMP) || defined(CONFIG_DEBUG_SPINLOCK)
->  	return test_bit(bitnum, addr);
-> -#elif defined CONFIG_PREEMPT_COUNT
-> -	return preempt_count();
->  #else
-> -	return 1;
-> +	return preempt_count();
->  #endif
+On Tue, 15 Sep 2020, Geert Uytterhoeven wrote:
 
-Acked-by: Will Deacon <will@kernel.org>
+> > > > --- a/drivers/ide/macide.c
+> > > > +++ b/drivers/ide/macide.c
+> > >
+> > > > @@ -109,42 +110,61 @@ static const char *mac_ide_name[] =
+> > > >   * Probe for a Macintosh IDE interface
+> > > >   */
+> > > >
+> > > > -static int __init macide_init(void)
+> > > > +static int mac_ide_probe(struct platform_device *pdev)
+> > > >  {
+> > >
+> > > >         printk(KERN_INFO "ide: Macintosh %s IDE controller\n",
+> > > >                          mac_ide_name[macintosh_config->ide_type - 1]);
+> > > >
+> > > > -       macide_setup_ports(&hw, base, irq);
+> > > > +       macide_setup_ports(&hw, mem->start, irq->start);
+> > > >
+> > > > -       return ide_host_add(&d, hws, 1, NULL);
+> > > > +       rc = ide_host_add(&d, hws, 1, &host);
+> > > > +       if (rc)
+> > > > +               return rc;
+> > > > +
+> > > > +       platform_set_drvdata(pdev, host);
+> > >
+> > > Move one up, to play it safe?
+> > >
+> >
+> > You mean, before calling ide_host_add? The 'host' pointer is uninitialized
+> > prior to that call.
+> 
+> Oh right, so the IDE subsystem doesn't let you use the drvdata inside 
+> your driver (besides in remove()) in a safe way :-(
+> 
 
-Will
+The IDE subsystem does allow other patterns here. I could have changed 
+ide_host_alloc() into ide_host_register() followed by ide_host_add() but I 
+could not see any benefit from that change.
+
+A quick search for "platform_device" shows that the driver does not use 
+any uninitialized driver_data pointer (because ide_ifr is a global). In 
+your message of September 9th you readily reached the same conclusion when 
+you reviewed v1.
+
+If mac_ide_probe() followed the usual pattern it might make review easier 
+(as reviewers may not wish to consider the entire driver) but does that 
+really make the code more "safe"?
