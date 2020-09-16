@@ -1,94 +1,191 @@
-Return-Path: <SRS0=+VAR=CY=vger.kernel.org=linux-m68k-owner@kernel.org>
+Return-Path: <SRS0=bvH4=CZ=vger.kernel.org=linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.8 required=3.0 tests=BAYES_00,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
-	autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-3.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id BF524C43461
-	for <linux-m68k@archiver.kernel.org>; Tue, 15 Sep 2020 22:57:23 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id F263BC43461
+	for <linux-m68k@archiver.kernel.org>; Wed, 16 Sep 2020 07:37:41 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 964D020770
-	for <linux-m68k@archiver.kernel.org>; Tue, 15 Sep 2020 22:57:23 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id A4BF720771
+	for <linux-m68k@archiver.kernel.org>; Wed, 16 Sep 2020 07:37:41 +0000 (UTC)
+Authentication-Results: mail.kernel.org;
+	dkim=pass (1024-bit key) header.d=ffwll.ch header.i=@ffwll.ch header.b="Wbmy2wm4"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727387AbgIOW5R (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Tue, 15 Sep 2020 18:57:17 -0400
-Received: from kvm5.telegraphics.com.au ([98.124.60.144]:46568 "EHLO
-        kvm5.telegraphics.com.au" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727418AbgIOW5E (ORCPT
+        id S1726523AbgIPHhh (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Wed, 16 Sep 2020 03:37:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52964 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726139AbgIPHhd (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Tue, 15 Sep 2020 18:57:04 -0400
-Received: from localhost (localhost.localdomain [127.0.0.1])
-        by kvm5.telegraphics.com.au (Postfix) with ESMTP id 9B1CF272F2;
-        Tue, 15 Sep 2020 18:56:57 -0400 (EDT)
-Date:   Wed, 16 Sep 2020 08:56:58 +1000 (AEST)
-From:   Finn Thain <fthain@telegraphics.com.au>
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-cc:     "David S. Miller" <davem@davemloft.net>,
-        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
-        Joshua Thompson <funaho@jurai.org>,
-        linux-m68k <linux-m68k@lists.linux-m68k.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-ide@vger.kernel.org
-Subject: Re: [PATCH v2] ide/macide: Convert Mac IDE driver to platform
- driver
-In-Reply-To: <CAMuHMdX1GXMGg1mviE_msM1vx0ZLEKEPT4AacSBjYDzN6sZVmw@mail.gmail.com>
-Message-ID: <alpine.LNX.2.23.453.2009160758350.6@nippy.intranet>
-References: <3cf40b9df80a99a3eee6d3af79437016038f0a44.1600051331.git.fthain@telegraphics.com.au> <CAMuHMdUOdOkBE72ouk0W_bXnoSTFqLsLKag+2LSRz+Qox6MoxQ@mail.gmail.com> <alpine.LNX.2.23.453.2009150945480.6@nippy.intranet>
- <CAMuHMdX1GXMGg1mviE_msM1vx0ZLEKEPT4AacSBjYDzN6sZVmw@mail.gmail.com>
+        Wed, 16 Sep 2020 03:37:33 -0400
+Received: from mail-ot1-x342.google.com (mail-ot1-x342.google.com [IPv6:2607:f8b0:4864:20::342])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AB970C061351
+        for <linux-m68k@lists.linux-m68k.org>; Wed, 16 Sep 2020 00:37:31 -0700 (PDT)
+Received: by mail-ot1-x342.google.com with SMTP id y5so5812548otg.5
+        for <linux-m68k@lists.linux-m68k.org>; Wed, 16 Sep 2020 00:37:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ffwll.ch; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=ir83kA7yZmatKHQpy7nyYwdfudWOyhH141WksSrpLpI=;
+        b=Wbmy2wm4Y3Z7IHj2WQgnSxJHvWaqiIYxvJrRLzN5yosJdstiBZVZo9gvc44pSE/nA1
+         P9hDpmjXczq2zLOkqvx/WHir/QasP1J2aBD5X+7FKjnP91s5nxsyqJv2jhU8PZzNRGRF
+         pjrrhaFUmLe21mq1kggp9iTxwlhfZdVWViCcQ=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=ir83kA7yZmatKHQpy7nyYwdfudWOyhH141WksSrpLpI=;
+        b=s/H2FAQWjlqNMdq7pmE3b5/f13KiSXQI8qY7bOExOfVspH22wzT9M1CGICZtDfu/EX
+         fLPtZhcJABC8C8nJRyLhK+9HMIVeiyhmmSVrOCyKpCdCpt7i7V+3oaE1bfY8wmSJMPtI
+         EGJBoNaXpU6nhE79YwWgiAsC1HXoC8HuA929jfHpna5X9ZpQHoqC+MvzouPs/suCQS3a
+         ruEfO8+73V/FEBbXOMhoeGJ+w626/Acjj2Kelo7bMKnQ5obPzhU965pgDwLPyMCPVq+1
+         01+t/3XWB39pd3zS1r7mSA6+FluhS19P/h4UDaqGEt9fnvdyDRHMvoS9OsYhbOtcJQOA
+         XXAg==
+X-Gm-Message-State: AOAM530aPiYQPY9Yi+Mh4GeKnlECO3csFwnoJ19BHmBLWDdZEQh+y0Qs
+        w0wwoGv4oDbrVvbU1WG4X0FqKdKWkX+PaTEGS88zmw==
+X-Google-Smtp-Source: ABdhPJwGl0rb2zlMJB/+T8+6pHD/ce/ZZx4zrU0sObZFxXtLXBpNIcPMMRDqJU2JyoR0WPCWkLBmcTGbfcRbBMPy77o=
+X-Received: by 2002:a05:6830:14d9:: with SMTP id t25mr16390529otq.188.1600241849077;
+ Wed, 16 Sep 2020 00:37:29 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+References: <20200914204209.256266093@linutronix.de> <CAHk-=win80rdof8Pb=5k6gT9j_v+hz-TQzKPVastZDvBe9RimQ@mail.gmail.com>
+ <871rj4owfn.fsf@nanos.tec.linutronix.de> <CAHk-=wj0eUuVQ=hRFZv_nY7g5ZLt7Fy3K7SMJL0ZCzniPtsbbg@mail.gmail.com>
+ <87bli75t7v.fsf@nanos.tec.linutronix.de> <CAHk-=wht7kAeyR5xEW2ORj7m0hibVxZ3t+2ie8vNHLQfdbN2_g@mail.gmail.com>
+In-Reply-To: <CAHk-=wht7kAeyR5xEW2ORj7m0hibVxZ3t+2ie8vNHLQfdbN2_g@mail.gmail.com>
+From:   Daniel Vetter <daniel@ffwll.ch>
+Date:   Wed, 16 Sep 2020 09:37:17 +0200
+Message-ID: <CAKMK7uHAk9-Vy2cof0ws=DrcD52GHiCDiyHbjLd19CgpBU2rKQ@mail.gmail.com>
+Subject: Re: [patch 00/13] preempt: Make preempt count unconditional
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-arch <linux-arch@vger.kernel.org>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        Richard Henderson <rth@twiddle.net>,
+        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
+        Matt Turner <mattst88@gmail.com>,
+        alpha <linux-alpha@vger.kernel.org>,
+        Jeff Dike <jdike@addtoit.com>,
+        Richard Weinberger <richard@nod.at>,
+        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
+        linux-um <linux-um@lists.infradead.org>,
+        Brian Cain <bcain@codeaurora.org>,
+        linux-hexagon@vger.kernel.org,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        linux-m68k <linux-m68k@lists.linux-m68k.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Will Deacon <will@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linux-MM <linux-mm@kvack.org>, Ingo Molnar <mingo@redhat.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Chris Zankel <chris@zankel.net>,
+        Max Filippov <jcmvbkbc@gmail.com>,
+        linux-xtensa@linux-xtensa.org,
+        Jani Nikula <jani.nikula@linux.intel.com>,
+        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
+        Rodrigo Vivi <rodrigo.vivi@intel.com>,
+        David Airlie <airlied@linux.ie>,
+        intel-gfx <intel-gfx@lists.freedesktop.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Shuah Khan <shuah@kernel.org>, rcu@vger.kernel.org,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-m68k-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-On Tue, 15 Sep 2020, Geert Uytterhoeven wrote:
-
-> > > > --- a/drivers/ide/macide.c
-> > > > +++ b/drivers/ide/macide.c
-> > >
-> > > > @@ -109,42 +110,61 @@ static const char *mac_ide_name[] =
-> > > >   * Probe for a Macintosh IDE interface
-> > > >   */
-> > > >
-> > > > -static int __init macide_init(void)
-> > > > +static int mac_ide_probe(struct platform_device *pdev)
-> > > >  {
-> > >
-> > > >         printk(KERN_INFO "ide: Macintosh %s IDE controller\n",
-> > > >                          mac_ide_name[macintosh_config->ide_type - 1]);
-> > > >
-> > > > -       macide_setup_ports(&hw, base, irq);
-> > > > +       macide_setup_ports(&hw, mem->start, irq->start);
-> > > >
-> > > > -       return ide_host_add(&d, hws, 1, NULL);
-> > > > +       rc = ide_host_add(&d, hws, 1, &host);
-> > > > +       if (rc)
-> > > > +               return rc;
-> > > > +
-> > > > +       platform_set_drvdata(pdev, host);
-> > >
-> > > Move one up, to play it safe?
-> > >
+On Tue, Sep 15, 2020 at 7:35 PM Linus Torvalds
+<torvalds@linux-foundation.org> wrote:
+>
+> On Tue, Sep 15, 2020 at 1:39 AM Thomas Gleixner <tglx@linutronix.de> wrote:
 > >
-> > You mean, before calling ide_host_add? The 'host' pointer is uninitialized
-> > prior to that call.
-> 
-> Oh right, so the IDE subsystem doesn't let you use the drvdata inside 
-> your driver (besides in remove()) in a safe way :-(
-> 
+> > OTOH, having a working 'preemptible()' or maybe better named
+> > 'can_schedule()' check makes tons of sense to make decisions about
+> > allocation modes or other things.
+>
+> No. I think that those kinds of decisions about actual behavior are
+> always simply fundamentally wrong.
+>
+> Note that this is very different from having warnings about invalid
+> use. THAT is correct. It may not warn in all configurations, but that
+> doesn't matter: what matters is that it warns in common enough
+> configurations that developers will catch it.
+>
+> So having a warning in "might_sleep()" that doesn't always trigger,
+> because you have a limited configuration that can't even detect the
+> situation, that's fine and dandy and intentional.
+>
+> But having code like
+>
+>        if (can_schedule())
+>            .. do something different ..
+>
+> is fundamentally complete and utter garbage.
+>
+> It's one thing if you test for "am I in hardware interrupt context".
+> Those tests aren't great either, but at least they make sense.
+>
+> But a driver - or some library routine - making a difference based on
+> some nebulous "can I schedule" is fundamentally and basically WRONG.
+>
+> If some code changes behavior, it needs to be explicit to the *caller*
+> of that code.
+>
+> So this is why GFP_ATOMIC is fine, but "if (!can_schedule())
+> do_something_atomic()" is pure shite.
+>
+> And I am not IN THE LEAST interested in trying to help people doing
+> pure shite. We need to fix them. Like the crypto code is getting
+> fixed.
 
-The IDE subsystem does allow other patterns here. I could have changed 
-ide_host_alloc() into ide_host_register() followed by ide_host_add() but I 
-could not see any benefit from that change.
+Just figured I'll throw my +1 in from reading too many (gpu) drivers.
+Code that tries to cleverly adjust its behaviour depending upon the
+context it's running in is harder to understand and blows up in more
+interesting ways. We still have drm_can_sleep() and it's mostly just
+used for debug code, and I've largely ended up just deleting
+everything that used it because when you're driver is blowing up the
+last thing you want is to realize your debug code and output can't be
+relied upon. Or worse, that the only Oops you have is the one in the
+debug code, because the real one scrolled away - the original idea
+behind drm_can_sleep was to make all the modeset code work
+automagically both in normal ioctl/kworker context and in the panic
+handlers or kgdb callbacks. Wishful thinking at best.
 
-A quick search for "platform_device" shows that the driver does not use 
-any uninitialized driver_data pointer (because ide_ifr is a global). In 
-your message of September 9th you readily reached the same conclusion when 
-you reviewed v1.
+Also at least for me that extends to everything, e.g. I much prefer
+explicit spin_lock and spin_lock_irq vs magic spin_lock_irqsave for
+locks shared with interrupt handlers, since the former two gives me
+clear information from which contexts such function can be called.
+Other end is the memalloc_no*_save/restore functions, where I recently
+made a real big fool of myself because I didn't realize how much that
+impacts everything that's run within - suddenly "GFP_KERNEL for small
+stuff never fails" is wrong everywhere.
 
-If mac_ide_probe() followed the usual pattern it might make review easier 
-(as reviewers may not wish to consider the entire driver) but does that 
-really make the code more "safe"?
+It's all great for debugging and sanity checks (and we run with all
+that stuff enabled in our CI), but really semantic changes depending
+upon magic context checks freak my out :-)
+-Daniel
+-- 
+Daniel Vetter
+Software Engineer, Intel Corporation
+http://blog.ffwll.ch
