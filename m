@@ -5,51 +5,51 @@ X-Spam-Level:
 X-Spam-Status: No, score=-16.1 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,INCLUDES_PATCH,MAILING_LIST_MULTI,
 	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
-	autolearn=unavailable autolearn_force=no version=3.4.0
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 300FAC43463
-	for <linux-m68k@archiver.kernel.org>; Fri, 18 Sep 2020 02:23:57 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id AF740C43464
+	for <linux-m68k@archiver.kernel.org>; Fri, 18 Sep 2020 02:29:51 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id E432022211
-	for <linux-m68k@archiver.kernel.org>; Fri, 18 Sep 2020 02:23:56 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 7CF8C235F7
+	for <linux-m68k@archiver.kernel.org>; Fri, 18 Sep 2020 02:29:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=default; t=1600395837;
-	bh=nYmT84IZqpNQVRhml9Cz9P+/PFzQZRK8LgBMFF0VCZg=;
+	s=default; t=1600396191;
+	bh=EK4ExL+4XPc6rfQSetuscZT39buHQChcqefi/2nI/KE=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-ID:From;
-	b=niLRXrTEJ86Z4ImzEKIfAxteZ9lmf8vMsmrH2py9uZBLK9EFvFwfxAjpl3+KU3d4j
-	 qJJjaZ15hMks/Lbh3oDWdIyhJ7HyvsklrNnAM4L1W+Jtd0nWsNG5orabvjPaSIYuQE
-	 jMl2acd162jVSbTNy8BbFb2n835q+ZzZ3F84zeb4=
+	b=zmUd3sUGiSQkvSXwODDsRI73R6n4KTpDasm/dn48/wMOEPsM/3xPXNF54V+a3dwQl
+	 bEKeuQ98iNhAIboMFwMajLPs7EoEotlAj7Xs5EtQRdzI9v9SyU2tYVdD3D1+Vqn6cw
+	 0kIFqZZR8vZZ15khpUkKhKumJvBxcFSU+yCgoDcE=
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729279AbgIRCXl (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Thu, 17 Sep 2020 22:23:41 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46770 "EHLO mail.kernel.org"
+        id S1728943AbgIRC3v (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Thu, 17 Sep 2020 22:29:51 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43484 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729447AbgIRCQr (ORCPT <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Thu, 17 Sep 2020 22:16:47 -0400
+        id S1729162AbgIRCO7 (ORCPT <rfc822;linux-m68k@lists.linux-m68k.org>);
+        Thu, 17 Sep 2020 22:14:59 -0400
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id F291C23600;
-        Fri, 18 Sep 2020 02:16:45 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 1A34823787;
+        Fri, 18 Sep 2020 02:14:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600395406;
-        bh=nYmT84IZqpNQVRhml9Cz9P+/PFzQZRK8LgBMFF0VCZg=;
+        s=default; t=1600395298;
+        bh=EK4ExL+4XPc6rfQSetuscZT39buHQChcqefi/2nI/KE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=OHDJc0U99goneJPettwOnotC2J8u43rmp33E+JtnP9lJhvlygUozvNzBrTMGnNam1
-         i/O5bv8nW/uFjp6SsLuXQK5SatjcyQNbCoAlA7wZMPKWztbDuzXTzSTLcwT7HEH3Df
-         zctGd3D2cnMp71eDxq3B5033elcB76fiwN+O91hU=
+        b=19j7+XI5i/wFfShZc+QkoXPzFEb813vXswUNn5oaZbkpgRgqGJWZnVbPuOS1ZNVQ0
+         hT1PML07UZaay8G97OP4T0jBWAwM2+lr0EL6UfY8nAp0bGs0ckWfdjKqGK4gYfCHXo
+         lxhrF4xO9CObvtsiGY1W2OuCiRlW4pUDgMQqg288=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
 Cc:     Fuqian Huang <huangfq.daxian@gmail.com>,
         Geert Uytterhoeven <geert@linux-m68k.org>,
         Sasha Levin <sashal@kernel.org>,
         linux-m68k@lists.linux-m68k.org
-Subject: [PATCH AUTOSEL 4.4 02/64] m68k: q40: Fix info-leak in rtc_ioctl
-Date:   Thu, 17 Sep 2020 22:15:41 -0400
-Message-Id: <20200918021643.2067895-2-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 4.9 02/90] m68k: q40: Fix info-leak in rtc_ioctl
+Date:   Thu, 17 Sep 2020 22:13:27 -0400
+Message-Id: <20200918021455.2067301-2-sashal@kernel.org>
 X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20200918021643.2067895-1-sashal@kernel.org>
-References: <20200918021643.2067895-1-sashal@kernel.org>
+In-Reply-To: <20200918021455.2067301-1-sashal@kernel.org>
+References: <20200918021455.2067301-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
@@ -79,7 +79,7 @@ Signed-off-by: Sasha Levin <sashal@kernel.org>
  1 file changed, 1 insertion(+)
 
 diff --git a/arch/m68k/q40/config.c b/arch/m68k/q40/config.c
-index e90fe903613ea..4e5f04d333188 100644
+index ea89a24f46000..cc0f924bbdd2d 100644
 --- a/arch/m68k/q40/config.c
 +++ b/arch/m68k/q40/config.c
 @@ -303,6 +303,7 @@ static int q40_get_rtc_pll(struct rtc_pll_info *pll)
