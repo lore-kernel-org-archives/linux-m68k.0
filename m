@@ -1,95 +1,110 @@
-Return-Path: <SRS0=pXGq=C3=vger.kernel.org=linux-m68k-owner@kernel.org>
+Return-Path: <SRS0=f1G8=C4=vger.kernel.org=linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-16.1 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
-	autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-10.1 required=3.0 tests=BAYES_00,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,NICE_REPLY_A,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 5626BC4346D
-	for <linux-m68k@archiver.kernel.org>; Fri, 18 Sep 2020 03:15:11 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2B311C43463
+	for <linux-m68k@archiver.kernel.org>; Sat, 19 Sep 2020 01:30:56 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 12502235F8
-	for <linux-m68k@archiver.kernel.org>; Fri, 18 Sep 2020 03:15:11 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=default; t=1600398911;
-	bh=i8udMsq7B91YRlinCGJcAolZi31wX66Zkhx3F3Z/lnA=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-ID:From;
-	b=znb6pHvkX6ZO+vvgN4atFnPCu0dOa/bJhFcsGSZ1zdTeynGARS0FISz9Rr4TZHXgt
-	 mPBiDxJz0+U19vHFgCOCq9kXasCMpAue9XkrY1/s3F6pHTtX732V2fMVcW4WDrVYUS
-	 Tbv0/oYsHi25dMqG6X0S25OPpWmDl+aLMnJyZeYU=
+	by mail.kernel.org (Postfix) with ESMTP id 01818206B6
+	for <linux-m68k@archiver.kernel.org>; Sat, 19 Sep 2020 01:30:55 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726476AbgIRDPE (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Thu, 17 Sep 2020 23:15:04 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45902 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726411AbgIRCBb (ORCPT <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Thu, 17 Sep 2020 22:01:31 -0400
-Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 31CD0221EC;
-        Fri, 18 Sep 2020 02:01:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600394490;
-        bh=i8udMsq7B91YRlinCGJcAolZi31wX66Zkhx3F3Z/lnA=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=vWYfWDOR9P6U3YzSzZRX8oAZbTcX3T/vTxj7wIH2m/tsmqW4tY3qztosNJD4YqMSJ
-         IgVD2D/4wF11lv7s6SKMSG7ppZLkvGme8zJRKtf3H6ORj3lpcG8/qAFrBwhr67VtnB
-         W41+ew04x+tjBLDP8B/QH8X07baNu/F8eD1AGz7A=
-From:   Sasha Levin <sashal@kernel.org>
-To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Fuqian Huang <huangfq.daxian@gmail.com>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Sasha Levin <sashal@kernel.org>,
-        linux-m68k@lists.linux-m68k.org
-Subject: [PATCH AUTOSEL 5.4 016/330] m68k: q40: Fix info-leak in rtc_ioctl
-Date:   Thu, 17 Sep 2020 21:55:56 -0400
-Message-Id: <20200918020110.2063155-16-sashal@kernel.org>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20200918020110.2063155-1-sashal@kernel.org>
-References: <20200918020110.2063155-1-sashal@kernel.org>
+        id S1726009AbgISBaz (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Fri, 18 Sep 2020 21:30:55 -0400
+Received: from szxga06-in.huawei.com ([45.249.212.32]:58578 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726327AbgISBaz (ORCPT <rfc822;linux-m68k@lists.linux-m68k.org>);
+        Fri, 18 Sep 2020 21:30:55 -0400
+Received: from DGGEMS404-HUB.china.huawei.com (unknown [172.30.72.59])
+        by Forcepoint Email with ESMTP id 32022B859BFF745D94BE;
+        Sat, 19 Sep 2020 09:30:53 +0800 (CST)
+Received: from [10.174.179.91] (10.174.179.91) by
+ DGGEMS404-HUB.china.huawei.com (10.3.19.204) with Microsoft SMTP Server id
+ 14.3.487.0; Sat, 19 Sep 2020 09:30:51 +0800
+Subject: Re: [PATCH -next] m68k/amiga: missing platform_device_unregister() on
+ error in amiga_init_devices()
+To:     Geert Uytterhoeven <geert@linux-m68k.org>
+CC:     Stephen Rothwell <sfr@canb.auug.org.au>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-m68k <linux-m68k@lists.linux-m68k.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+References: <20200728022746.87612-1-miaoqinglang@huawei.com>
+ <CAMuHMdWfqh_AKyE+od_0yVPP6Lkv8LUAR1dWf8Df94W7b4qxLA@mail.gmail.com>
+From:   miaoqinglang <miaoqinglang@huawei.com>
+Message-ID: <613d3a43-4fb0-48d5-93d6-bf0d8f0bd671@huawei.com>
+Date:   Sat, 19 Sep 2020 09:30:51 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
 MIME-Version: 1.0
-X-stable: review
-X-Patchwork-Hint: Ignore
+In-Reply-To: <CAMuHMdWfqh_AKyE+od_0yVPP6Lkv8LUAR1dWf8Df94W7b4qxLA@mail.gmail.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
 Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.174.179.91]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-From: Fuqian Huang <huangfq.daxian@gmail.com>
 
-[ Upstream commit 7cf78b6b12fd5550545e4b73b35dca18bd46b44c ]
 
-When the option is RTC_PLL_GET, pll will be copied to userland
-via copy_to_user. pll is initialized using mach_get_rtc_pll indirect
-call and mach_get_rtc_pll is only assigned with function
-q40_get_rtc_pll in arch/m68k/q40/config.c.
-In function q40_get_rtc_pll, the field pll_ctrl is not initialized.
-This will leak uninitialized stack content to userland.
-Fix this by zeroing the uninitialized field.
+在 2020/8/26 17:07, Geert Uytterhoeven 写道:
+> Hi Qinglang,
+> 
+> On Tue, Jul 28, 2020 at 4:24 AM Qinglang Miao <miaoqinglang@huawei.com> wrote:
+>> Add the missing platform_device_unregister() before return
+>> from amiga_init_devices() in the error handling case.
+>>
+>> Signed-off-by: Qinglang Miao <miaoqinglang@huawei.com>
+> 
+> Thanks for your patch!
+> 
+>> --- a/arch/m68k/amiga/platform.c
+>> +++ b/arch/m68k/amiga/platform.c
+>> @@ -188,8 +188,10 @@ static int __init amiga_init_devices(void)
+>>                          return PTR_ERR(pdev);
+>>                  error = platform_device_add_data(pdev, &a1200_ide_pdata,
+>>                                                   sizeof(a1200_ide_pdata));
+> 
+> The only reason why platform_device_add_data() can fail is because the
+> system ran out of memory.  If that's the case this early, the whole
+> system will fail to work anyway, and it doesn't matter that the IDE
+> driver will crash later due to missing platform data.
+> 
+> So I don't think it helps to increase kernel size by adding more error
+> handling.
+> 
+Hi Geert,
 
-Signed-off-by: Fuqian Huang <huangfq.daxian@gmail.com>
-Link: https://lore.kernel.org/r/20190927121544.7650-1-huangfq.daxian@gmail.com
-Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
- arch/m68k/q40/config.c | 1 +
- 1 file changed, 1 insertion(+)
+Glad to know your opnions, it sounds resonable to me.
 
-diff --git a/arch/m68k/q40/config.c b/arch/m68k/q40/config.c
-index e63eb5f069995..f31890078197e 100644
---- a/arch/m68k/q40/config.c
-+++ b/arch/m68k/q40/config.c
-@@ -264,6 +264,7 @@ static int q40_get_rtc_pll(struct rtc_pll_info *pll)
- {
- 	int tmp = Q40_RTC_CTRL;
- 
-+	pll->pll_ctrl = 0;
- 	pll->pll_value = tmp & Q40_RTC_PLL_MASK;
- 	if (tmp & Q40_RTC_PLL_SIGN)
- 		pll->pll_value = -pll->pll_value;
--- 
-2.25.1
+Thanks.
 
+>> -               if (error)
+>> +               if (error) {
+>> +                       platform_device_unregister(pdev);
+>>                          return error;
+>> +               }
+>>          }
+>>
+>>          if (AMIGAHW_PRESENT(A4000_IDE)) {
+>> @@ -199,8 +201,10 @@ static int __init amiga_init_devices(void)
+>>                          return PTR_ERR(pdev);
+>>                  error = platform_device_add_data(pdev, &a4000_ide_pdata,
+>>                                                   sizeof(a4000_ide_pdata));
+>> -               if (error)
+>> +               if (error) {
+>> +                       platform_device_unregister(pdev);
+> 
+> Likewise.
+> 
+>>                          return error;
+>> +               }
+> 
+> Gr{oetje,eeting}s,
+> 
+>                          Geert
+> 
