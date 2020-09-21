@@ -1,104 +1,102 @@
-Return-Path: <SRS0=f1G8=C4=vger.kernel.org=linux-m68k-owner@kernel.org>
+Return-Path: <SRS0=iw/Y=C6=vger.kernel.org=linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-11.6 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=ham
+X-Spam-Status: No, score=-12.8 required=3.0 tests=BAYES_00,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B64BBC43464
-	for <linux-m68k@archiver.kernel.org>; Sat, 19 Sep 2020 10:26:15 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8CC2CC43465
+	for <linux-m68k@archiver.kernel.org>; Mon, 21 Sep 2020 03:09:16 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 6ED0021D42
-	for <linux-m68k@archiver.kernel.org>; Sat, 19 Sep 2020 10:26:15 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=default; t=1600511175;
-	bh=QS+/7ck8Ms+3NScVBhWMouEzmGA4XUAFNHh7y81UkaA=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:List-ID:From;
-	b=WOtqqdOosD+QGbvVp1pogz+K+ljYKLhMD4kkR/PsPHB38N+2Q4fT5rDoHi85BEY0b
-	 yW779O0wq6dvLuo4orcRgumz/o8i+HgvdMOKpZ5nNFCn0MiIG/bwbgijz9hKe8iyEb
-	 CERR89ZOMEGsqFg02/GJfGfS38oMdXSrqm/h7eeU=
+	by mail.kernel.org (Postfix) with ESMTP id 537502078E
+	for <linux-m68k@archiver.kernel.org>; Mon, 21 Sep 2020 03:09:16 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726168AbgISK0P (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Sat, 19 Sep 2020 06:26:15 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34168 "EHLO mail.kernel.org"
+        id S1726210AbgIUDJQ (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Sun, 20 Sep 2020 23:09:16 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47644 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726159AbgISK0O (ORCPT <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Sat, 19 Sep 2020 06:26:14 -0400
-Received: from linux-8ccs (p57a236d4.dip0.t-ipconnect.de [87.162.54.212])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        id S1726104AbgIUDJP (ORCPT <rfc822;linux-m68k@vger.kernel.org>);
+        Sun, 20 Sep 2020 23:09:15 -0400
+Received: from goober.digi.com (unknown [103.48.210.53])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id EEFFF207FF;
-        Sat, 19 Sep 2020 10:26:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600511174;
-        bh=QS+/7ck8Ms+3NScVBhWMouEzmGA4XUAFNHh7y81UkaA=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Dhs4E9cCPWR5U6/L6w+Ot0AP6OfHcv183sxqnUkXXz/AnXJDt0AXHHvcqCMVei5i6
-         GKnSZS2OKXzMu25vZ30nutYcHd1k1XhpuBjem46GWue0KNcO/LOyTnnK8hzbEj6OMj
-         lh64cXJ94R44/ThRRJAbdzF0qE+FcmC0n0GycrxI=
-Date:   Sat, 19 Sep 2020 12:26:01 +0200
-From:   Jessica Yu <jeyu@kernel.org>
-To:     Masahiro Yamada <masahiroy@kernel.org>
-Cc:     linux-kbuild@vger.kernel.org, Will Deacon <will@kernel.org>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Fenghua Yu <fenghua.yu@intel.com>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Jeff Dike <jdike@addtoit.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Michal Marek <michal.lkml@markovi.net>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Paul Mackerras <paulus@samba.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Richard Weinberger <richard@nod.at>,
-        Russell King <linux@armlinux.org.uk>,
-        Tony Luck <tony.luck@intel.com>, linux-arch@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-ia64@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-m68k@lists.linux-m68k.org,
-        linux-riscv@lists.infradead.org, linux-um@lists.infradead.org,
-        linuxppc-dev@lists.ozlabs.org
-Subject: Re: [PATCH v2] kbuild: preprocess module linker script
-Message-ID: <20200919102601.GA22693@linux-8ccs>
-References: <20200908042708.2511528-1-masahiroy@kernel.org>
+        by mail.kernel.org (Postfix) with ESMTPSA id 7DBB420723;
+        Mon, 21 Sep 2020 03:09:14 +0000 (UTC)
+From:   Greg Ungerer <gerg@linux-m68k.org>
+To:     linux-m68k@vger.kernel.org
+Cc:     angelo.dureghello@timesys.com, Greg Ungerer <gerg@linux-m68k.org>
+Subject: [PATCH] m68knommu: include SDHC support only when hardware has it
+Date:   Mon, 21 Sep 2020 13:08:58 +1000
+Message-Id: <20200921030858.3899744-1-gerg@linux-m68k.org>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Disposition: inline
-In-Reply-To: <20200908042708.2511528-1-masahiroy@kernel.org>
-X-OS:   Linux linux-8ccs 4.12.14-lp150.12.61-default x86_64
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-+++ Masahiro Yamada [08/09/20 13:27 +0900]:
->There was a request to preprocess the module linker script like we
->do for the vmlinux one. (https://lkml.org/lkml/2020/8/21/512)
->
->The difference between vmlinux.lds and module.lds is that the latter
->is needed for external module builds, thus must be cleaned up by
->'make mrproper' instead of 'make clean'. Also, it must be created
->by 'make modules_prepare'.
->
->You cannot put it in arch/$(SRCARCH)/kernel/, which is cleaned up by
->'make clean'. I moved arch/$(SRCARCH)/kernel/module.lds to
->arch/$(SRCARCH)/include/asm/module.lds.h, which is included from
->scripts/module.lds.S.
->
->scripts/module.lds is fine because 'make clean' keeps all the
->build artifacts under scripts/.
->
->You can add arch-specific sections in <asm/module.lds.h>.
->
->Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
->Tested-by: Jessica Yu <jeyu@kernel.org>
->Acked-by: Will Deacon <will@kernel.org>
+The mere fact that the kernel has the MMC subsystem enabled (CONFIG_MMC
+enabled) does not mean that the underlying hardware platform has the
+SDHC hardware present. Within the ColdFire hardware defines that is
+signified by MCFSDHC_BASE being defined with an address.
 
-Acked-by: Jessica Yu <jeyu@kernel.org>
+The platform data for the ColdFire parts is including the SDHC hardware
+if CONFIG_MMC is enabled, instead of MCFSDHC_BASE. This means that if
+you are compiling for a ColdFire target that does not support SDHC but
+enable CONFIG_MMC you will fail to compile with errors like this:
 
-Thanks for working on this! 
+    arch/m68k/coldfire/device.c:565:12: error: ‘MCFSDHC_BASE’ undeclared here (not in a function)
+       .start = MCFSDHC_BASE,
+            ^
+    arch/m68k/coldfire/device.c:566:25: error: ‘MCFSDHC_SIZE’ undeclared here (not in a function)
+       .end = MCFSDHC_BASE + MCFSDHC_SIZE - 1,
+                         ^
+    arch/m68k/coldfire/device.c:569:12: error: ‘MCF_IRQ_SDHC’ undeclared here (not in a function)
+       .start = MCF_IRQ_SDHC,
+            ^
+
+Make the SDHC platform support depend on MCFSDHC_BASE, that is only
+include it if the specific ColdFire SoC has that hardware module.
+
+Signed-off-by: Greg Ungerer <gerg@linux-m68k.org>
+---
+ arch/m68k/coldfire/device.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/arch/m68k/coldfire/device.c b/arch/m68k/coldfire/device.c
+index 9ef4ec0aea00..59f7dfe50a4d 100644
+--- a/arch/m68k/coldfire/device.c
++++ b/arch/m68k/coldfire/device.c
+@@ -554,7 +554,7 @@ static struct platform_device mcf_edma = {
+ };
+ #endif /* IS_ENABLED(CONFIG_MCF_EDMA) */
+ 
+-#if IS_ENABLED(CONFIG_MMC)
++#ifdef MCFSDHC_BASE
+ static struct mcf_esdhc_platform_data mcf_esdhc_data = {
+ 	.max_bus_width = 4,
+ 	.cd_type = ESDHC_CD_NONE,
+@@ -579,7 +579,7 @@ static struct platform_device mcf_esdhc = {
+ 	.resource		= mcf_esdhc_resources,
+ 	.dev.platform_data	= &mcf_esdhc_data,
+ };
+-#endif /* IS_ENABLED(CONFIG_MMC) */
++#endif /* MCFSDHC_BASE */
+ 
+ static struct platform_device *mcf_devices[] __initdata = {
+ 	&mcf_uart,
+@@ -613,7 +613,7 @@ static struct platform_device *mcf_devices[] __initdata = {
+ #if IS_ENABLED(CONFIG_MCF_EDMA)
+ 	&mcf_edma,
+ #endif
+-#if IS_ENABLED(CONFIG_MMC)
++#ifdef MCFSDHC_BASE
+ 	&mcf_esdhc,
+ #endif
+ };
+-- 
+2.25.1
 
