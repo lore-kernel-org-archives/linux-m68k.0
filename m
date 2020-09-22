@@ -7,31 +7,31 @@ X-Spam-Status: No, score=-5.3 required=3.0 tests=BAYES_00,
 	SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=no autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 4A316C4363D
-	for <linux-m68k@archiver.kernel.org>; Tue, 22 Sep 2020 15:23:21 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C7082C4363D
+	for <linux-m68k@archiver.kernel.org>; Tue, 22 Sep 2020 16:06:37 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 1B87023A1B
-	for <linux-m68k@archiver.kernel.org>; Tue, 22 Sep 2020 15:23:21 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 8B0E722206
+	for <linux-m68k@archiver.kernel.org>; Tue, 22 Sep 2020 16:06:37 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726631AbgIVPXU (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Tue, 22 Sep 2020 11:23:20 -0400
-Received: from outpost1.zedat.fu-berlin.de ([130.133.4.66]:45043 "EHLO
+        id S1726567AbgIVQGh (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Tue, 22 Sep 2020 12:06:37 -0400
+Received: from outpost1.zedat.fu-berlin.de ([130.133.4.66]:40603 "EHLO
         outpost1.zedat.fu-berlin.de" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726566AbgIVPXU (ORCPT
+        by vger.kernel.org with ESMTP id S1726563AbgIVQGh (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Tue, 22 Sep 2020 11:23:20 -0400
+        Tue, 22 Sep 2020 12:06:37 -0400
 Received: from inpost2.zedat.fu-berlin.de ([130.133.4.69])
           by outpost.zedat.fu-berlin.de (Exim 4.93)
           with esmtps (TLS1.2)
           tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
           (envelope-from <glaubitz@zedat.fu-berlin.de>)
-          id 1kKk8V-002OdY-4n; Tue, 22 Sep 2020 17:23:19 +0200
+          id 1kKkoM-002d6X-QE; Tue, 22 Sep 2020 18:06:34 +0200
 Received: from suse-laptop.physik.fu-berlin.de ([160.45.32.140])
           by inpost2.zedat.fu-berlin.de (Exim 4.93)
           with esmtpsa (TLS1.2)
           tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
           (envelope-from <glaubitz@physik.fu-berlin.de>)
-          id 1kKk8U-002C5V-V8; Tue, 22 Sep 2020 17:23:19 +0200
+          id 1kKkoK-002Hlk-SS; Tue, 22 Sep 2020 18:06:34 +0200
 Subject: Re: Quick test on real hardware requested to test qemu
 From:   John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
 To:     Andreas Schwab <schwab@linux-m68k.org>
@@ -41,6 +41,7 @@ References: <9a777d01-d8c2-445d-f6ea-94cd315d3474@physik.fu-berlin.de>
  <875z86q73i.fsf@igel.home>
  <885e6765-d049-40a0-8399-bdb2d4f42e91@physik.fu-berlin.de>
  <f161ba86-7243-3f3f-5183-e010da3f29be@physik.fu-berlin.de>
+ <2484c74b-5f7d-deeb-4cde-a640e84367b4@physik.fu-berlin.de>
 Autocrypt: addr=glaubitz@physik.fu-berlin.de; keydata=
  mQINBE3JE9wBEADMrYGNfz3oz6XLw9XcWvuIxIlPWoTyw9BxTicfGAv0d87wngs9U+d52t/R
  EggPePf34gb7/k8FBY1IgyxnZEB5NxUb1WtW0M3GUxpPx6gBZqOm7SK1ZW3oSORw+T7Aezl3
@@ -85,12 +86,12 @@ Autocrypt: addr=glaubitz@physik.fu-berlin.de; keydata=
  jEF9ImTPcYZpw5vhdyPwBdXW2lSjV3EAqknWujRgcsm84nycuJnImwJptR481EWmtuH6ysj5
  YhRVGbQPfdsjVUQfZdRdkEv4CZ90pdscBi1nRqcqANtzC+WQFwekDzk2lGqNRDg56s+q0KtY
  scOkTAZQGVpD/8AaLH4v1w==
-Message-ID: <2484c74b-5f7d-deeb-4cde-a640e84367b4@physik.fu-berlin.de>
-Date:   Tue, 22 Sep 2020 17:23:18 +0200
+Message-ID: <d4ace0cb-29c6-8af0-a731-37dc8fd39307@physik.fu-berlin.de>
+Date:   Tue, 22 Sep 2020 18:06:32 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.12.0
 MIME-Version: 1.0
-In-Reply-To: <f161ba86-7243-3f3f-5183-e010da3f29be@physik.fu-berlin.de>
+In-Reply-To: <2484c74b-5f7d-deeb-4cde-a640e84367b4@physik.fu-berlin.de>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -100,17 +101,26 @@ Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-On 9/22/20 3:27 PM, John Paul Adrian Glaubitz wrote:
->>> That a typical bad alignment check.  It should use __alignof__, not
->>> sizeof.
+On 9/22/20 5:23 PM, John Paul Adrian Glaubitz wrote:> On 9/22/20 3:27 PM, John Paul Adrian Glaubitz wrote:
+>>>> That a typical bad alignment check.  It should use __alignof__, not
+>>>> sizeof.
+>>>
+>>> Aha, I was assuming something like that already but I wasn't sure since libatomic-ops wasn't
+>>> updated for a while in Debian [1].
 >>
->> Aha, I was assuming something like that already but I wasn't sure since libatomic-ops wasn't
->> updated for a while in Debian [1].
+>> What would be the correct check then in [1]?
+>
+> I was just re-reading the code and realized I'm dumb. Never mind.
 > 
-> What would be the correct check then in [1]?
-I was just re-reading the code and realized I'm dumb. Never mind.
+> s/sizeof/__alignof__/ should help.
 
-s/sizeof/__alignof__/ should help.
+Hmm, now it fails with __alignof__():
+
+(sid-m68k-sbuild)root@epyc:/# debfoster -f
+debfoster: /usr/include/atomic_ops/sysdeps/loadstore/atomic_load.h:31: AO_load: Assertion `((size_t)addr & (__alignof__(*addr) - 1)) == 0' failed.
+qemu: uncaught target signal 6 (Aborted) - core dumped
+Aborted
+(sid-m68k-sbuild)root@epyc:/#
 
 Adrian
 
@@ -119,3 +129,4 @@ Adrian
 : :' :  Debian Developer - glaubitz@debian.org
 `. `'   Freie Universitaet Berlin - glaubitz@physik.fu-berlin.de
   `-    GPG: 62FF 8A75 84E0 2956 9546  0006 7426 3B37 F5B5 F913
+
