@@ -2,125 +2,120 @@ Return-Path: <SRS0=PSEj=DC=vger.kernel.org=linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-6.8 required=3.0 tests=BAYES_00,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,
-	SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-5.5 required=3.0 tests=BAYES_00,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,NICE_REPLY_A,SPF_HELO_NONE,
+	SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=no autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 17969C4741F
-	for <linux-m68k@archiver.kernel.org>; Fri, 25 Sep 2020 06:58:27 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B8C47C4363D
+	for <linux-m68k@archiver.kernel.org>; Fri, 25 Sep 2020 10:07:28 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id DB7862311B
-	for <linux-m68k@archiver.kernel.org>; Fri, 25 Sep 2020 06:58:26 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 5B2C220BED
+	for <linux-m68k@archiver.kernel.org>; Fri, 25 Sep 2020 10:07:28 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727176AbgIYG6Y (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Fri, 25 Sep 2020 02:58:24 -0400
-Received: from mail-oi1-f193.google.com ([209.85.167.193]:40599 "EHLO
-        mail-oi1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727132AbgIYG6Y (ORCPT
+        id S1727290AbgIYKH1 (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Fri, 25 Sep 2020 06:07:27 -0400
+Received: from outpost1.zedat.fu-berlin.de ([130.133.4.66]:40357 "EHLO
+        outpost1.zedat.fu-berlin.de" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727044AbgIYKH1 (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Fri, 25 Sep 2020 02:58:24 -0400
-Received: by mail-oi1-f193.google.com with SMTP id t76so1758833oif.7
-        for <linux-m68k@lists.linux-m68k.org>; Thu, 24 Sep 2020 23:58:23 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=L3Yw2JSMJ9YMUyhRxop52ZEmWXLCPwoLTZXpveNO0fc=;
-        b=VqPrjO/H3mQk5KxhdzBeipsja5BjAbTiGTGwefzTPbInFyXP+C+m+6Gqksd7XzOJ9b
-         8NB+jUzyMEX+nnyTCS9FJdhkriG8vbjTcPe2J7nCw5jy2uxsOn6z8KWp/9VXZ9siYqAk
-         RXb+PbVbzhJqkn7w8467+27WgouOKy44ML4myLl8csogpA5BQS48oj68DpCCWc20UYza
-         52i00Jr7Z7RCgnV5jDedvT2BsRL0fplDOdl7PCKXc3kRj3I0QoGgmST/a7Ve4dnrJZEI
-         eo5pA8ufJSBrc4p151EOII+sf4wD/zYAH17NRdGxyRREqjjWZj8TQPGauXjvCg+yy8Wo
-         V+oQ==
-X-Gm-Message-State: AOAM533+h+p8Y2ZcoH2O35MlcwdDZ0DenoB5xkY/aAisvUfGHeYltVic
-        c45Vb7iKDB/Ne9PiiGAfbmC/cul1KBz4Pmws3CI=
-X-Google-Smtp-Source: ABdhPJynGEHE8plxVOMnpuSBb4WXibznM+UxbseQlsRuDndVsl7ZgC5jIQw82XrLHwGZ5WEpAklYa2BtWuVRJiqilss=
-X-Received: by 2002:aca:3bc3:: with SMTP id i186mr703603oia.148.1601017103075;
- Thu, 24 Sep 2020 23:58:23 -0700 (PDT)
+        Fri, 25 Sep 2020 06:07:27 -0400
+Received: from inpost2.zedat.fu-berlin.de ([130.133.4.69])
+          by outpost.zedat.fu-berlin.de (Exim 4.94)
+          with esmtps (TLS1.2)
+          tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+          (envelope-from <glaubitz@zedat.fu-berlin.de>)
+          id 1kLkdQ-003yvo-HV; Fri, 25 Sep 2020 12:07:24 +0200
+Received: from p5b13a6b0.dip0.t-ipconnect.de ([91.19.166.176] helo=[192.168.178.139])
+          by inpost2.zedat.fu-berlin.de (Exim 4.94)
+          with esmtpsa (TLS1.2)
+          tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+          (envelope-from <glaubitz@physik.fu-berlin.de>)
+          id 1kLkdQ-000nA2-00; Fri, 25 Sep 2020 12:07:24 +0200
+Subject: Re: [PATCH] fs/affs: Fix basic permission bits to actually work
+To:     Max Staudt <max@enpas.org>, David Sterba <dsterba@suse.com>
+Cc:     linux-fsdevel@vger.kernel.org,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org,
+        stable@vger.kernel.org
+References: <20200827154900.28233-1-max@enpas.org>
+From:   John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
+Autocrypt: addr=glaubitz@physik.fu-berlin.de; keydata=
+ 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
+ scOkTAZQGVpD/8AaLH4v1w==
+Message-ID: <c96b8ee5-5e96-07fd-de69-ffaa2a4f3bc6@physik.fu-berlin.de>
+Date:   Fri, 25 Sep 2020 12:07:22 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-References: <df121aff561c73f3ff7d83f906942ed0d954d737.1600997998.git.fthain@telegraphics.com.au>
-In-Reply-To: <df121aff561c73f3ff7d83f906942ed0d954d737.1600997998.git.fthain@telegraphics.com.au>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Fri, 25 Sep 2020 08:58:11 +0200
-Message-ID: <CAMuHMdWuVLy1PHryOOMkvDQ=MHJV=gs2JS1AUU-KWE53zOAfoQ@mail.gmail.com>
-Subject: Re: [PATCH] ide/falconide: Fix module unload
-To:     Finn Thain <fthain@telegraphics.com.au>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Michael Schmitz <schmitzmic@gmail.com>,
-        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
-        linux-m68k <linux-m68k@lists.linux-m68k.org>,
-        linux-ide@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20200827154900.28233-1-max@enpas.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Original-Sender: glaubitz@physik.fu-berlin.de
+X-Originating-IP: 91.19.166.176
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-On Fri, Sep 25, 2020 at 3:43 AM Finn Thain <fthain@telegraphics.com.au> wrote:
-> Unloading the falconide module results in a crash:
->
-> Unable to handle kernel NULL pointer dereference at virtual address 00000000
-> Oops: 00000000
-> Modules linked in: falconide(-)
-> PC: [<002930b2>] ide_host_remove+0x2e/0x1d2
-> SR: 2000  SP: 00b49e28  a2: 009b0f90
-> d0: 00000000    d1: 009b0f90    d2: 00000000    d3: 00b48000
-> d4: 003cef32    d5: 00299188    a0: 0086d000    a1: 0086d000
-> Process rmmod (pid: 322, task=009b0f90)
-> Frame format=7 eff addr=00000000 ssw=0505 faddr=00000000
-> wb 1 stat/addr/data: 0000 00000000 00000000
-> wb 2 stat/addr/data: 0000 00000000 00000000
-> wb 3 stat/addr/data: 0000 00000000 00018da9
-> push data: 00000000 00000000 00000000 00000000
-> Stack from 00b49e90:
->         004c456a 0027f176 0027cb0a 0027cb9e 00000000 0086d00a 2187d3f0 0027f0e0
->         00b49ebc 2187d1f6 00000000 00b49ec8 002811e8 0086d000 00b49ef0 0028024c
->         0086d00a 002800d6 00279a1a 00000001 00000001 0086d00a 2187d3f0 00279a58
->         00b49f1c 002802e0 0086d00a 2187d3f0 004c456a 0086d00a ef96af74 00000000
->         2187d3f0 002805d2 800de064 00b49f44 0027f088 2187d3f0 00ac1cf4 2187d3f0
->         004c43be 2187d3f0 00000000 2187d3f0 800b66a8 00b49f5c 00280776 2187d3f0
-> Call Trace: [<0027f176>] __device_driver_unlock+0x0/0x48
->  [<0027cb0a>] device_links_busy+0x0/0x94
->  [<0027cb9e>] device_links_unbind_consumers+0x0/0x130
->  [<0027f0e0>] __device_driver_lock+0x0/0x5a
->  [<2187d1f6>] falconide_remove+0x12/0x18 [falconide]
->  [<002811e8>] platform_drv_remove+0x1c/0x28
->  [<0028024c>] device_release_driver_internal+0x176/0x17c
->  [<002800d6>] device_release_driver_internal+0x0/0x17c
->  [<00279a1a>] get_device+0x0/0x22
->  [<00279a58>] put_device+0x0/0x18
->  [<002802e0>] driver_detach+0x56/0x82
->  [<002805d2>] driver_remove_file+0x0/0x24
->  [<0027f088>] bus_remove_driver+0x4c/0xa4
->  [<00280776>] driver_unregister+0x28/0x5a
->  [<00281a00>] platform_driver_unregister+0x12/0x18
->  [<2187d2a0>] ide_falcon_driver_exit+0x10/0x16 [falconide]
->  [<000764f0>] sys_delete_module+0x110/0x1f2
->  [<000e83ea>] sys_rename+0x1a/0x1e
->  [<00002e0c>] syscall+0x8/0xc
->  [<00188004>] ext4_multi_mount_protect+0x35a/0x3ce
-> Code: 0029 9188 4bf9 0027 aa1c 283c 003c ef32 <265c> 4a8b 6700 00b8 2043 2028 000c 0280 00ff ff00 6600 0176 40c0 7202 b2b9 004c
-> Disabling lock debugging due to kernel taint
->
-> This happens because the driver_data pointer is uninitialized.
-> Add the missing platform_set_drvdata() call. For clarity, use the
-> matching platform_get_drvdata() as well.
->
-> Cc: Michael Schmitz <schmitzmic@gmail.com>
-> Cc: Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>
-> Cc: linux-m68k@lists.linux-m68k.org
-> Fixes: 5ed0794cde593 ("m68k/atari: Convert Falcon IDE drivers to platform drivers")
-> Signed-off-by: Finn Thain <fthain@telegraphics.com.au>
+Hi Max!
 
-Reviewed-by: Geert Uytterhoeven <geert@linux-m68k.org>
+On 8/27/20 5:49 PM, Max Staudt wrote:
+> The basic permission bits (protection bits in AmigaOS) have been broken
+> in Linux' affs - it would only set bits, but never delete them.
+> Also, contrary to the documentation, the Archived bit was not handled.
+> 
+> Let's fix this for good, and set the bits such that Linux and classic
+> AmigaOS can coexist in the most peaceful manner.
+> 
+> Also, update the documentation to represent the current state of things.
+Has there already been any progress on reviewing this?
 
-Gr{oetje,eeting}s,
-
-                        Geert
+Adrian
 
 -- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+ .''`.  John Paul Adrian Glaubitz
+: :' :  Debian Developer - glaubitz@debian.org
+`. `'   Freie Universitaet Berlin - glaubitz@physik.fu-berlin.de
+  `-    GPG: 62FF 8A75 84E0 2956 9546  0006 7426 3B37 F5B5 F913
