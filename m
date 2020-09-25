@@ -1,105 +1,122 @@
-Return-Path: <SRS0=R1r/=DB=vger.kernel.org=linux-m68k-owner@kernel.org>
+Return-Path: <SRS0=PSEj=DC=vger.kernel.org=linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-6.8 required=3.0 tests=BAYES_00,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,
-	SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-9.8 required=3.0 tests=BAYES_00,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A3EF8C4346E
-	for <linux-m68k@archiver.kernel.org>; Thu, 24 Sep 2020 07:22:30 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 17790C4346E
+	for <linux-m68k@archiver.kernel.org>; Fri, 25 Sep 2020 01:43:50 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 5292D20936
-	for <linux-m68k@archiver.kernel.org>; Thu, 24 Sep 2020 07:22:30 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id D247F2083B
+	for <linux-m68k@archiver.kernel.org>; Fri, 25 Sep 2020 01:43:49 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727056AbgIXHW3 (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Thu, 24 Sep 2020 03:22:29 -0400
-Received: from mail-ot1-f68.google.com ([209.85.210.68]:38651 "EHLO
-        mail-ot1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727030AbgIXHW3 (ORCPT
+        id S1726730AbgIYBnt (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Thu, 24 Sep 2020 21:43:49 -0400
+Received: from kvm5.telegraphics.com.au ([98.124.60.144]:40398 "EHLO
+        kvm5.telegraphics.com.au" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726718AbgIYBnt (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Thu, 24 Sep 2020 03:22:29 -0400
-Received: by mail-ot1-f68.google.com with SMTP id y5so2254062otg.5
-        for <linux-m68k@lists.linux-m68k.org>; Thu, 24 Sep 2020 00:22:29 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=doJWUSEuMMX5XwNCFHPsthPQ0ya9qYj2kuRu85qUti0=;
-        b=BYRUzqb6guDswjej8AG4CavG9DqCA3DCx/GiTl5zX0j+WX8mQZSSHXAjc/CT59VYgN
-         dlNyMuGDc1hlOL5WKfy5ftyOYYraNkvKb/DkNa5F7SEWB15F8UCk071/L2fwgbeWn+Qe
-         jWinMfKDpMVKhOkq5/xzSkfRBzwapwmudVqs34iOPXoAGp8oYkzpc3nj0me0wiKZ2oQi
-         r7j0v9IB1+JQgiGTUEeJ7hS83XwXVZpzd2bDzXF/kXC8WaEo9DtcIo6rHAudQrU4I9iH
-         xix5AFzlEUYBmaX+crNP8foPizsFq5aKYfUQDhTLuRM/zBabggoYNoqbE2A7u3xd5+1x
-         jBag==
-X-Gm-Message-State: AOAM530TkrdV5jVIw5n3GRcvAnJIvd4KEQs2RXyFdaLX/IcxXDwwwnkr
-        u1aggC3ga2eJvdfxlP9zCz+UyB5KfMpxpXLdsr4=
-X-Google-Smtp-Source: ABdhPJwjrYu9v7nTc+tMgh9KYdsuHGvFOqnkyNOKYLmjSPS5VINKugoRgAsR/1ACTFe/LzcZfS+u3Zu/r8tn/L3D59A=
-X-Received: by 2002:a05:6830:1008:: with SMTP id a8mr2062693otp.107.1600932148967;
- Thu, 24 Sep 2020 00:22:28 -0700 (PDT)
-MIME-Version: 1.0
-References: <edd106dad1bbea32500601c6071f37a9f02a8004.1600901284.git.fthain@telegraphics.com.au>
-In-Reply-To: <edd106dad1bbea32500601c6071f37a9f02a8004.1600901284.git.fthain@telegraphics.com.au>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Thu, 24 Sep 2020 09:22:17 +0200
-Message-ID: <CAMuHMdXb=bPg=tsmCfTFj_asSyeE=MF=MxmeobUKv0qbHDisig@mail.gmail.com>
-Subject: Re: [PATCH v4] ide/macide: Convert Mac IDE driver to platform driver
-To:     Finn Thain <fthain@telegraphics.com.au>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
-        Joshua Thompson <funaho@jurai.org>,
-        linux-m68k <linux-m68k@lists.linux-m68k.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-ide@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+        Thu, 24 Sep 2020 21:43:49 -0400
+Received: by kvm5.telegraphics.com.au (Postfix, from userid 502)
+        id 6C1962A7EA; Thu, 24 Sep 2020 21:43:48 -0400 (EDT)
+To:     "David S. Miller" <davem@davemloft.net>,
+        Geert Uytterhoeven <geert@linux-m68k.org>
+Cc:     "Michael Schmitz" <schmitzmic@gmail.com>,
+        "Bartlomiej Zolnierkiewicz" <b.zolnierkie@samsung.com>,
+        linux-m68k@lists.linux-m68k.org, linux-ide@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Message-Id: <df121aff561c73f3ff7d83f906942ed0d954d737.1600997998.git.fthain@telegraphics.com.au>
+From:   Finn Thain <fthain@telegraphics.com.au>
+Subject: [PATCH] ide/falconide: Fix module unload
+Date:   Fri, 25 Sep 2020 11:39:58 +1000
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-Hi Finn,
+Unloading the falconide module results in a crash:
 
-On Thu, Sep 24, 2020 at 1:17 AM Finn Thain <fthain@telegraphics.com.au> wrote:
-> Add platform devices for the Mac IDE controller variants. Convert the
-> macide module into a platform driver to support two of those variants.
-> For the third, use a generic "pata_platform" driver instead.
-> This enables automatic loading of the appropriate module and begins
-> the process of replacing the driver with libata alternatives.
->
-> Cc: Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>
-> Cc: Geert Uytterhoeven <geert@linux-m68k.org>
-> Cc: Joshua Thompson <funaho@jurai.org>
-> References: commit 5ed0794cde593 ("m68k/atari: Convert Falcon IDE drivers to platform drivers")
-> References: commit 7ad19a99ad431 ("ide: officially deprecated the legacy IDE driver")
-> Tested-by: Stan Johnson <userm57@yahoo.com>
-> Signed-off-by: Finn Thain <fthain@telegraphics.com.au>
-> ---
-> This patch was tested successfully on a Powerbook 190 (MAC_IDE_BABOON)
-> using both pata_platform and ide_platform drivers.
-> The next step will be to try using these generic drivers with the other
-> IDE controller variants (MAC_IDE_QUADRA or MAC_IDE_PB) so that the macide
-> driver can be entirely replaced with libata drivers.
->
-> Changed since v3:
->  - Updated Kconfig help text.
->
-> Changed since v2:
->  - Enabled CONFIG_BLK_DEV_PLATFORM in multi_defconfig.
->  - Replaced dev_get_drvdata() with platform_get_drvdata().
+Unable to handle kernel NULL pointer dereference at virtual address 00000000
+Oops: 00000000
+Modules linked in: falconide(-)
+PC: [<002930b2>] ide_host_remove+0x2e/0x1d2
+SR: 2000  SP: 00b49e28  a2: 009b0f90
+d0: 00000000    d1: 009b0f90    d2: 00000000    d3: 00b48000
+d4: 003cef32    d5: 00299188    a0: 0086d000    a1: 0086d000
+Process rmmod (pid: 322, task=009b0f90)
+Frame format=7 eff addr=00000000 ssw=0505 faddr=00000000
+wb 1 stat/addr/data: 0000 00000000 00000000
+wb 2 stat/addr/data: 0000 00000000 00000000
+wb 3 stat/addr/data: 0000 00000000 00018da9
+push data: 00000000 00000000 00000000 00000000
+Stack from 00b49e90:
+        004c456a 0027f176 0027cb0a 0027cb9e 00000000 0086d00a 2187d3f0 0027f0e0
+        00b49ebc 2187d1f6 00000000 00b49ec8 002811e8 0086d000 00b49ef0 0028024c
+        0086d00a 002800d6 00279a1a 00000001 00000001 0086d00a 2187d3f0 00279a58
+        00b49f1c 002802e0 0086d00a 2187d3f0 004c456a 0086d00a ef96af74 00000000
+        2187d3f0 002805d2 800de064 00b49f44 0027f088 2187d3f0 00ac1cf4 2187d3f0
+        004c43be 2187d3f0 00000000 2187d3f0 800b66a8 00b49f5c 00280776 2187d3f0
+Call Trace: [<0027f176>] __device_driver_unlock+0x0/0x48
+ [<0027cb0a>] device_links_busy+0x0/0x94
+ [<0027cb9e>] device_links_unbind_consumers+0x0/0x130
+ [<0027f0e0>] __device_driver_lock+0x0/0x5a
+ [<2187d1f6>] falconide_remove+0x12/0x18 [falconide]
+ [<002811e8>] platform_drv_remove+0x1c/0x28
+ [<0028024c>] device_release_driver_internal+0x176/0x17c
+ [<002800d6>] device_release_driver_internal+0x0/0x17c
+ [<00279a1a>] get_device+0x0/0x22
+ [<00279a58>] put_device+0x0/0x18
+ [<002802e0>] driver_detach+0x56/0x82
+ [<002805d2>] driver_remove_file+0x0/0x24
+ [<0027f088>] bus_remove_driver+0x4c/0xa4
+ [<00280776>] driver_unregister+0x28/0x5a
+ [<00281a00>] platform_driver_unregister+0x12/0x18
+ [<2187d2a0>] ide_falcon_driver_exit+0x10/0x16 [falconide]
+ [<000764f0>] sys_delete_module+0x110/0x1f2
+ [<000e83ea>] sys_rename+0x1a/0x1e
+ [<00002e0c>] syscall+0x8/0xc
+ [<00188004>] ext4_multi_mount_protect+0x35a/0x3ce
+Code: 0029 9188 4bf9 0027 aa1c 283c 003c ef32 <265c> 4a8b 6700 00b8 2043 2028 000c 0280 00ff ff00 6600 0176 40c0 7202 b2b9 004c
+Disabling lock debugging due to kernel taint
 
-Thanks for the updates!
+This happens because the driver_data pointer is uninitialized.
+Add the missing platform_set_drvdata() call. For clarity, use the
+matching platform_get_drvdata() as well.
 
-Reviewed-by: Geert Uytterhoeven <geert@linux-m68k.org>
-i.e. will queue in the m68k for-v5.10 branch, hopefully with an
-Acked-by from the IDE maintainer.
+Cc: Michael Schmitz <schmitzmic@gmail.com>
+Cc: Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>
+Cc: linux-m68k@lists.linux-m68k.org
+Fixes: 5ed0794cde593 ("m68k/atari: Convert Falcon IDE drivers to platform drivers")
+Signed-off-by: Finn Thain <fthain@telegraphics.com.au>
+---
+This patch was tested using Aranym.
+---
+ drivers/ide/falconide.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-Gr{oetje,eeting}s,
+diff --git a/drivers/ide/falconide.c b/drivers/ide/falconide.c
+index dbeb2605e5f6e..607c44bc50f1b 100644
+--- a/drivers/ide/falconide.c
++++ b/drivers/ide/falconide.c
+@@ -166,6 +166,7 @@ static int __init falconide_init(struct platform_device *pdev)
+ 	if (rc)
+ 		goto err_free;
+ 
++	platform_set_drvdata(pdev, host);
+ 	return 0;
+ err_free:
+ 	ide_host_free(host);
+@@ -176,7 +177,7 @@ static int __init falconide_init(struct platform_device *pdev)
+ 
+ static int falconide_remove(struct platform_device *pdev)
+ {
+-	struct ide_host *host = dev_get_drvdata(&pdev->dev);
++	struct ide_host *host = platform_get_drvdata(pdev);
+ 
+ 	ide_host_remove(host);
+ 
+-- 
+2.26.2
 
-                        Geert
-
-
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
