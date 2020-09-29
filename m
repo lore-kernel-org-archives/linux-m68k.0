@@ -1,231 +1,126 @@
-Return-Path: <SRS0=jiH+=DF=vger.kernel.org=linux-m68k-owner@kernel.org>
+Return-Path: <SRS0=Ke7n=DG=vger.kernel.org=linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.8 required=3.0 tests=BAYES_00,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-3.9 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
+	SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id F0E66C2D0A8
-	for <linux-m68k@archiver.kernel.org>; Mon, 28 Sep 2020 21:40:21 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 07EA5C4346E
+	for <linux-m68k@archiver.kernel.org>; Tue, 29 Sep 2020 08:19:45 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id B80C62083B
-	for <linux-m68k@archiver.kernel.org>; Mon, 28 Sep 2020 21:40:21 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id A20A420773
+	for <linux-m68k@archiver.kernel.org>; Tue, 29 Sep 2020 08:19:44 +0000 (UTC)
+Authentication-Results: mail.kernel.org;
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="SSpMjosS"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726961AbgI1VkV (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Mon, 28 Sep 2020 17:40:21 -0400
-Received: from mga04.intel.com ([192.55.52.120]:17351 "EHLO mga04.intel.com"
+        id S1725554AbgI2ITo (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Tue, 29 Sep 2020 04:19:44 -0400
+Received: from mx2.suse.de ([195.135.220.15]:59516 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726958AbgI1VkV (ORCPT <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Mon, 28 Sep 2020 17:40:21 -0400
-IronPort-SDR: +tXJVEsEWL888YULwzH5GzBcJyryEB3+YTVI38YeORDaQHXadt0N4zQDb4WceIuCERLZJc1qLy
- 4P9sG3fdMjfg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9758"; a="159445363"
-X-IronPort-AV: E=Sophos;i="5.77,315,1596524400"; 
-   d="scan'208";a="159445363"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Sep 2020 14:27:15 -0700
-IronPort-SDR: 6uHgVc09equlDxJQ2VTnO+MSb4hJD6TnNSW0t39NY62WzBZPdywo7AjT8s4QlZ7uk4qGv2Ek61
- PkIiBJ0o1H2w==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.77,315,1596524400"; 
-   d="scan'208";a="345027768"
-Received: from lkp-server01.sh.intel.com (HELO 0e0978ea3297) ([10.239.97.150])
-  by fmsmga002.fm.intel.com with ESMTP; 28 Sep 2020 14:27:14 -0700
-Received: from kbuild by 0e0978ea3297 with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1kN0fx-0000PB-Tv; Mon, 28 Sep 2020 21:27:13 +0000
-Date:   Tue, 29 Sep 2020 05:26:56 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     linux-m68k@lists.linux-m68k.org
-Subject: [m68k:for-v5.10] BUILD SUCCESS
- 50c5feeea0af99a4401fd54fd72bec1333a496ca
-Message-ID: <5f725520.PxEqqgj8HJu91dny%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+        id S1725320AbgI2ITo (ORCPT <rfc822;linux-m68k@lists.linux-m68k.org>);
+        Tue, 29 Sep 2020 04:19:44 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1601367582;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=KFyfyEQCS1dcCR4BhfL+zwiQ3CuzyAy4x23tr+VkzjE=;
+        b=SSpMjosSL8o4OPVa55QL9wIlM8PHwJpdBy+0T8Zs2+GxBxG6YA9l00PJ9Y66qcHmMfGLv9
+        u+g+tcEvJ7RxAvAP57LRStfEelxtPsdHOGOgFzbQCNh9qQZDiKdnSarvXzcr1YnPqWmMjI
+        wdLRjalKNBbwgyGfH1Q3bT+vgMo4axA=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 3E86BADD8;
+        Tue, 29 Sep 2020 08:19:42 +0000 (UTC)
+Date:   Tue, 29 Sep 2020 10:19:38 +0200
+From:   Michal Hocko <mhocko@suse.com>
+To:     Daniel Vetter <daniel@ffwll.ch>
+Cc:     "Paul E. McKenney" <paulmck@kernel.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        Ben Segall <bsegall@google.com>, Linux-MM <linux-mm@kvack.org>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>, linux-hexagon@vger.kernel.org,
+        Will Deacon <will@kernel.org>, Ingo Molnar <mingo@kernel.org>,
+        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
+        linux-arch <linux-arch@vger.kernel.org>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        Brian Cain <bcain@codeaurora.org>,
+        Richard Weinberger <richard@nod.at>,
+        Russell King <linux@armlinux.org.uk>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        David Airlie <airlied@linux.ie>,
+        Ingo Molnar <mingo@redhat.com>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Mel Gorman <mgorman@suse.de>,
+        intel-gfx <intel-gfx@lists.freedesktop.org>,
+        Matt Turner <mattst88@gmail.com>,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        linux-xtensa@linux-xtensa.org, Shuah Khan <shuah@kernel.org>,
+        Jeff Dike <jdike@addtoit.com>,
+        linux-um <linux-um@lists.infradead.org>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Steven Rostedt <rostedt@goodmis.org>, rcu@vger.kernel.org,
+        linux-m68k <linux-m68k@lists.linux-m68k.org>,
+        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
+        Rodrigo Vivi <rodrigo.vivi@intel.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Richard Henderson <rth@twiddle.net>,
+        Chris Zankel <chris@zankel.net>,
+        Max Filippov <jcmvbkbc@gmail.com>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        alpha <linux-alpha@vger.kernel.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Subject: Re: [patch 00/13] preempt: Make preempt count unconditional
+Message-ID: <20200929081938.GC22035@dhcp22.suse.cz>
+References: <CAHk-=win80rdof8Pb=5k6gT9j_v+hz-TQzKPVastZDvBe9RimQ@mail.gmail.com>
+ <871rj4owfn.fsf@nanos.tec.linutronix.de>
+ <CAHk-=wj0eUuVQ=hRFZv_nY7g5ZLt7Fy3K7SMJL0ZCzniPtsbbg@mail.gmail.com>
+ <87bli75t7v.fsf@nanos.tec.linutronix.de>
+ <CAHk-=wht7kAeyR5xEW2ORj7m0hibVxZ3t+2ie8vNHLQfdbN2_g@mail.gmail.com>
+ <CAKMK7uHAk9-Vy2cof0ws=DrcD52GHiCDiyHbjLd19CgpBU2rKQ@mail.gmail.com>
+ <20200916152956.GV29330@paulmck-ThinkPad-P72>
+ <CAKMK7uGFyfhEyt=jmdk2jDO-hq0_Pf0ck+cKSELHjr2U3rPuYQ@mail.gmail.com>
+ <20200916205840.GD29330@paulmck-ThinkPad-P72>
+ <CAKMK7uHL2dMv80b8uBXr=BqHD2TQeODQQM1MGYhAfCYbX7sLrA@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+In-Reply-To: <CAKMK7uHL2dMv80b8uBXr=BqHD2TQeODQQM1MGYhAfCYbX7sLrA@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/geert/linux-m68k.git  for-v5.10
-branch HEAD: 50c5feeea0af99a4401fd54fd72bec1333a496ca  ide/macide: Convert Mac IDE driver to platform driver
+On Wed 16-09-20 23:43:02, Daniel Vetter wrote:
+> I can
+> then figure out whether it's better to risk not spotting issues with
+> call_rcu vs slapping a memalloc_noio_save/restore around all these
+> critical section which force-degrades any allocation to GFP_ATOMIC at
 
-elapsed time: 725m
+did you mean memalloc_noreclaim_* here?
 
-configs tested: 158
-configs skipped: 2
+> most, but has the risk that we run into code that assumes "GFP_KERNEL
+> never fails for small stuff" and has a decidedly less tested fallback
+> path than rcu code.
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+Even if the above then please note that memalloc_noreclaim_* or
+PF_MEMALLOC should be used with an extreme care. Essentially only for
+internal memory reclaimers. It grants access to _all_ the available
+memory so any abuse can be detrimental to the overall system operation.
+Allocation failure in this mode means that we are out of memory and any
+code relying on such an allocation has to carefuly consider failure.
+This is not a random allocation mode.
 
-gcc tested configs:
-arm                                 defconfig
-arm64                            allyesconfig
-arm64                               defconfig
-arm                              allyesconfig
-arm                              allmodconfig
-arc                                 defconfig
-sparc                               defconfig
-mips                           mtx1_defconfig
-powerpc                      bamboo_defconfig
-riscv                    nommu_virt_defconfig
-s390                                defconfig
-nios2                               defconfig
-powerpc                    amigaone_defconfig
-sh                          kfr2r09_defconfig
-mips                         cobalt_defconfig
-sh                          rsk7269_defconfig
-powerpc                    adder875_defconfig
-powerpc                 mpc8560_ads_defconfig
-m68k                         amcore_defconfig
-sparc64                          alldefconfig
-powerpc                      acadia_defconfig
-ia64                             allmodconfig
-powerpc                      obs600_defconfig
-sh                        apsh4ad0a_defconfig
-sh                            shmin_defconfig
-arm                        neponset_defconfig
-arm                          collie_defconfig
-nios2                         3c120_defconfig
-powerpc                     rainier_defconfig
-powerpc                     mpc512x_defconfig
-mips                       lemote2f_defconfig
-riscv                          rv32_defconfig
-riscv                            allyesconfig
-arc                         haps_hs_defconfig
-mips                        qi_lb60_defconfig
-arm                        vexpress_defconfig
-mips                           ci20_defconfig
-sh                        edosk7760_defconfig
-mips                      bmips_stb_defconfig
-arm                        magician_defconfig
-mips                           ip22_defconfig
-mips                        workpad_defconfig
-xtensa                       common_defconfig
-powerpc64                        alldefconfig
-arm                          lpd270_defconfig
-arm                        multi_v7_defconfig
-arm                       aspeed_g4_defconfig
-arc                 nsimosci_hs_smp_defconfig
-arm                        mvebu_v5_defconfig
-mips                    maltaup_xpa_defconfig
-powerpc                          allmodconfig
-arm                          simpad_defconfig
-powerpc                     akebono_defconfig
-arc                          axs101_defconfig
-arm                          prima2_defconfig
-sh                        sh7763rdp_defconfig
-sh                           se7619_defconfig
-ia64                      gensparse_defconfig
-mips                     loongson1b_defconfig
-xtensa                    smp_lx200_defconfig
-mips                 decstation_r4k_defconfig
-powerpc                 mpc837x_rdb_defconfig
-mips                           gcw0_defconfig
-m68k                             allmodconfig
-arm                         vf610m4_defconfig
-mips                       rbtx49xx_defconfig
-arc                           tb10x_defconfig
-arm                          ep93xx_defconfig
-powerpc                     mpc83xx_defconfig
-ia64                             alldefconfig
-sh                   rts7751r2dplus_defconfig
-sh                      rts7751r2d1_defconfig
-m68k                             alldefconfig
-mips                     decstation_defconfig
-arm                           stm32_defconfig
-powerpc                     kilauea_defconfig
-powerpc                   lite5200b_defconfig
-m68k                          sun3x_defconfig
-powerpc                     sequoia_defconfig
-arm                         orion5x_defconfig
-powerpc                 mpc8540_ads_defconfig
-sh                            titan_defconfig
-powerpc                   currituck_defconfig
-mips                        bcm47xx_defconfig
-parisc                              defconfig
-powerpc                     ep8248e_defconfig
-sh                        dreamcast_defconfig
-parisc                           allyesconfig
-arm                          pxa910_defconfig
-sh                           se7750_defconfig
-mips                           xway_defconfig
-arm                        cerfcube_defconfig
-arm                  colibri_pxa270_defconfig
-sh                          rsk7201_defconfig
-mips                      maltaaprp_defconfig
-ia64                                defconfig
-ia64                             allyesconfig
-m68k                                defconfig
-m68k                             allyesconfig
-arc                              allyesconfig
-nds32                             allnoconfig
-c6x                              allyesconfig
-nios2                            allyesconfig
-nds32                               defconfig
-csky                                defconfig
-alpha                               defconfig
-alpha                            allyesconfig
-xtensa                           allyesconfig
-h8300                            allyesconfig
-sh                               allmodconfig
-s390                             allyesconfig
-i386                             allyesconfig
-sparc                            allyesconfig
-i386                                defconfig
-mips                             allyesconfig
-mips                             allmodconfig
-powerpc                          allyesconfig
-powerpc                           allnoconfig
-x86_64               randconfig-a005-20200928
-x86_64               randconfig-a003-20200928
-x86_64               randconfig-a004-20200928
-x86_64               randconfig-a002-20200928
-x86_64               randconfig-a006-20200928
-x86_64               randconfig-a001-20200928
-i386                 randconfig-a006-20200928
-i386                 randconfig-a002-20200928
-i386                 randconfig-a003-20200928
-i386                 randconfig-a004-20200928
-i386                 randconfig-a005-20200928
-i386                 randconfig-a001-20200928
-i386                 randconfig-a012-20200928
-i386                 randconfig-a016-20200928
-i386                 randconfig-a014-20200928
-i386                 randconfig-a013-20200928
-i386                 randconfig-a015-20200928
-i386                 randconfig-a011-20200928
-riscv                             allnoconfig
-riscv                               defconfig
-riscv                            allmodconfig
-riscv                    nommu_k210_defconfig
-x86_64                                   rhel
-x86_64                           allyesconfig
-x86_64                    rhel-7.6-kselftests
-x86_64                              defconfig
-x86_64                               rhel-8.3
-x86_64                                  kexec
-
-clang tested configs:
-x86_64               randconfig-a005-20200927
-x86_64               randconfig-a003-20200927
-x86_64               randconfig-a004-20200927
-x86_64               randconfig-a002-20200927
-x86_64               randconfig-a006-20200927
-x86_64               randconfig-a001-20200927
-x86_64               randconfig-a011-20200928
-x86_64               randconfig-a013-20200928
-x86_64               randconfig-a015-20200928
-x86_64               randconfig-a014-20200928
-x86_64               randconfig-a016-20200928
-x86_64               randconfig-a012-20200928
-
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+-- 
+Michal Hocko
+SUSE Labs
