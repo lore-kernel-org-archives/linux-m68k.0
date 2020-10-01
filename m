@@ -1,39 +1,43 @@
-Return-Path: <SRS0=Ke7n=DG=vger.kernel.org=linux-m68k-owner@kernel.org>
+Return-Path: <SRS0=dE0B=DI=vger.kernel.org=linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-10.3 required=3.0 tests=BAYES_00,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=ham autolearn_force=no
+X-Spam-Status: No, score=-5.5 required=3.0 tests=BAYES_00,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,NICE_REPLY_A,SPF_HELO_NONE,
+	SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=no autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 470A9C4727C
-	for <linux-m68k@archiver.kernel.org>; Tue, 29 Sep 2020 15:22:12 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 16D10C4727F
+	for <linux-m68k@archiver.kernel.org>; Thu,  1 Oct 2020 09:49:26 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id CF589208B8
-	for <linux-m68k@archiver.kernel.org>; Tue, 29 Sep 2020 15:22:11 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id DD85D2087D
+	for <linux-m68k@archiver.kernel.org>; Thu,  1 Oct 2020 09:49:25 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728185AbgI2PWL (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Tue, 29 Sep 2020 11:22:11 -0400
-Received: from outpost1.zedat.fu-berlin.de ([130.133.4.66]:43891 "EHLO
+        id S1731131AbgJAJtZ (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Thu, 1 Oct 2020 05:49:25 -0400
+Received: from outpost1.zedat.fu-berlin.de ([130.133.4.66]:57221 "EHLO
         outpost1.zedat.fu-berlin.de" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725497AbgI2PWK (ORCPT
+        by vger.kernel.org with ESMTP id S1731067AbgJAJtZ (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Tue, 29 Sep 2020 11:22:10 -0400
+        Thu, 1 Oct 2020 05:49:25 -0400
 Received: from inpost2.zedat.fu-berlin.de ([130.133.4.69])
           by outpost.zedat.fu-berlin.de (Exim 4.94)
           with esmtps (TLS1.2)
           tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
           (envelope-from <glaubitz@zedat.fu-berlin.de>)
-          id 1kNHSC-001BA0-9q; Tue, 29 Sep 2020 17:22:08 +0200
-Received: from suse-laptop.physik.fu-berlin.de ([160.45.32.140])
+          id 1kNvDE-002zxc-TH; Thu, 01 Oct 2020 11:49:20 +0200
+Received: from p5b13af0b.dip0.t-ipconnect.de ([91.19.175.11] helo=[192.168.178.139])
           by inpost2.zedat.fu-berlin.de (Exim 4.94)
           with esmtpsa (TLS1.2)
           tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
           (envelope-from <glaubitz@physik.fu-berlin.de>)
-          id 1kNHSC-001zX1-40; Tue, 29 Sep 2020 17:22:08 +0200
-To:     Debian m68k <debian-68k@lists.debian.org>
-Cc:     linux-m68k <linux-m68k@lists.linux-m68k.org>,
+          id 1kNvD9-003Kgb-LP; Thu, 01 Oct 2020 11:49:20 +0200
+Subject: Re: Fwd: Re: Registers used for exception handling on Linux/m68k?
+To:     Nathan Sidwell <nathan@acm.org>
+References: <f9732b0d-9b7d-ba90-7897-1353d6912e24@acm.org>
+ <c8c4ef5a-e4bc-f9e5-7a76-74f32f084bd6@acm.org>
+Cc:     Debian m68k <debian-68k@lists.debian.org>,
+        linux-m68k <linux-m68k@lists.linux-m68k.org>,
         "gcc@gcc.gnu.org" <gcc@gcc.gnu.org>
 From:   John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
 Autocrypt: addr=glaubitz@physik.fu-berlin.de; keydata=
@@ -80,40 +84,55 @@ Autocrypt: addr=glaubitz@physik.fu-berlin.de; keydata=
  jEF9ImTPcYZpw5vhdyPwBdXW2lSjV3EAqknWujRgcsm84nycuJnImwJptR481EWmtuH6ysj5
  YhRVGbQPfdsjVUQfZdRdkEv4CZ90pdscBi1nRqcqANtzC+WQFwekDzk2lGqNRDg56s+q0KtY
  scOkTAZQGVpD/8AaLH4v1w==
-Subject: Registers used for exception handling on Linux/m68k?
-Message-ID: <2125fac9-a243-7158-d0c8-787d5e7e30ed@physik.fu-berlin.de>
-Date:   Tue, 29 Sep 2020 17:22:07 +0200
+Message-ID: <d17cc651-6b81-5e79-8fb4-243d8d4e9033@physik.fu-berlin.de>
+Date:   Thu, 1 Oct 2020 11:49:13 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.12.0
 MIME-Version: 1.0
+In-Reply-To: <c8c4ef5a-e4bc-f9e5-7a76-74f32f084bd6@acm.org>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 X-Original-Sender: glaubitz@physik.fu-berlin.de
-X-Originating-IP: 160.45.32.140
+X-Originating-IP: 91.19.175.11
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-Hello!
+Hi Nathan!
 
-I'm looking for an information regarding exception handling on Linux/m68k, in particular
-I need to know what registers are used by the ABI in order to implement the functions
-"getExceptionPointerRegister" and "getExceptionSelectorRegister" in the M680x0 backend
-in LLVM [1], [2].
+On 9/29/20 7:58 PM, Nathan Sidwell wrote:
+> On 9/29/20 11:22 AM, John Paul Adrian Glaubitz wrote:
+>>
+>> I'm looking for an information regarding exception handling on Linux/m68k, in particular
+>> I need to know what registers are used by the ABI in order to implement the functions
+>> "getExceptionPointerRegister" and "getExceptionSelectorRegister" in the M680x0 backend
+>> in LLVM [1], [2].
+> 
+> I don;t know what those functions are, but from their names they seem to be related to figuring out the exception object and type?
 
-I looked into the GCC source code to find the corresponding parts but I could only find
-the macros prefixed with "EH_" [4] which I didn't fully understand.
+I think so. I'm not a compiler expert hence my questions :-).
 
-Can any of the experienced GCC/m68k folks tell me which registers in [5] I need to use?
+> Do you understand the itanium ABI's unwinding mechanism --
+> 1) follow stack to get to landing pad.
+> 2) invoke landing pad to see if it wants to catch
+> 3) if not, continue following stack
+> 4) once we've found one to catch it, we need to unwind properly, which involves invoking cleanups. and eventually getting to the catcher
+> 
+> invoking the landing pad means passing (a) an integer telling it what's happening, and (b) a pointer to data.
 
+This seems to be the data that I need. I just need to understand how that works.
+
+>> I looked into the GCC source code to find the corresponding parts but I could only find
+>> the macros prefixed with "EH_" [4] which I didn't fully understand.
+> 
+> Those are the bits you want.  one of those is the selector (0?) and the other is the data pointer (1?).
+
+OK. But aren't they passed through particular registers on m68k? Or is this something specific
+to LLVM?
+
+Thanks for the help!
 Adrian
-
-> [1] https://github.com/M680x0/M680x0-mono-repo/issues/15
-> [2] https://github.com/llvm/llvm-project/blob/master/llvm/lib/Target/Sparc/SparcISelLowering.h#L107
-> [3] https://github.com/llvm/llvm-project/blob/ee34d9b210cb5a6d14fe069e2e2ae75b0548dba9/llvm/lib/Target/Sparc/SparcRegisterInfo.td#L151
-> [4] https://github.com/gcc-mirror/gcc/blob/master/gcc/config/m68k/m68k.h#L741
-> [5] https://github.com/M680x0/M680x0-mono-repo/blob/master/llvm/lib/Target/M680x0/M680x0RegisterInfo.td
 
 -- 
  .''`.  John Paul Adrian Glaubitz
