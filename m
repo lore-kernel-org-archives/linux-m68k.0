@@ -1,141 +1,101 @@
-Return-Path: <SRS0=dE0B=DI=vger.kernel.org=linux-m68k-owner@kernel.org>
+Return-Path: <SRS0=Qn8O=DJ=vger.kernel.org=linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.5 required=3.0 tests=BAYES_00,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,NICE_REPLY_A,SPF_HELO_NONE,
-	SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=no autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-12.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 7D9FCC4727C
-	for <linux-m68k@archiver.kernel.org>; Thu,  1 Oct 2020 12:51:34 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 12050C4363D
+	for <linux-m68k@archiver.kernel.org>; Fri,  2 Oct 2020 14:06:28 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 348132075F
-	for <linux-m68k@archiver.kernel.org>; Thu,  1 Oct 2020 12:51:34 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id B6DEE206A1
+	for <linux-m68k@archiver.kernel.org>; Fri,  2 Oct 2020 14:06:27 +0000 (UTC)
+Authentication-Results: mail.kernel.org;
+	dkim=pass (2048-bit key) header.d=timesys-com.20150623.gappssmtp.com header.i=@timesys-com.20150623.gappssmtp.com header.b="WK4Ko0Hq"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732028AbgJAMvd (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Thu, 1 Oct 2020 08:51:33 -0400
-Received: from outpost1.zedat.fu-berlin.de ([130.133.4.66]:46095 "EHLO
-        outpost1.zedat.fu-berlin.de" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1731891AbgJAMvd (ORCPT
-        <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Thu, 1 Oct 2020 08:51:33 -0400
-Received: from inpost2.zedat.fu-berlin.de ([130.133.4.69])
-          by outpost.zedat.fu-berlin.de (Exim 4.94)
-          with esmtps (TLS1.2)
-          tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-          (envelope-from <glaubitz@zedat.fu-berlin.de>)
-          id 1kNy3W-000HBz-Vy; Thu, 01 Oct 2020 14:51:31 +0200
-Received: from p5b13af0b.dip0.t-ipconnect.de ([91.19.175.11] helo=[192.168.178.139])
-          by inpost2.zedat.fu-berlin.de (Exim 4.94)
-          with esmtpsa (TLS1.2)
-          tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-          (envelope-from <glaubitz@physik.fu-berlin.de>)
-          id 1kNy3W-003iNI-ON; Thu, 01 Oct 2020 14:51:30 +0200
-Subject: Re: Fwd: Re: Registers used for exception handling on Linux/m68k?
-To:     Nathan Sidwell <nathan@acm.org>
-Cc:     Debian m68k <debian-68k@lists.debian.org>,
-        linux-m68k <linux-m68k@lists.linux-m68k.org>,
-        "gcc@gcc.gnu.org" <gcc@gcc.gnu.org>
-References: <f9732b0d-9b7d-ba90-7897-1353d6912e24@acm.org>
- <c8c4ef5a-e4bc-f9e5-7a76-74f32f084bd6@acm.org>
- <d17cc651-6b81-5e79-8fb4-243d8d4e9033@physik.fu-berlin.de>
- <e4191f44-74ff-c4bc-6824-f2425ff403ef@acm.org>
- <15fe02f1-6bd4-b4c1-dd73-77a93c23c539@physik.fu-berlin.de>
- <23e12ab6-a1fd-16f3-9e09-123a5e770cac@acm.org>
-From:   John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
-Autocrypt: addr=glaubitz@physik.fu-berlin.de; keydata=
- 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
- scOkTAZQGVpD/8AaLH4v1w==
-Message-ID: <4a1faf73-6349-55e7-a338-2757e05115cd@physik.fu-berlin.de>
-Date:   Thu, 1 Oct 2020 14:51:29 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        id S2387993AbgJBOG1 (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Fri, 2 Oct 2020 10:06:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50944 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2387992AbgJBOG1 (ORCPT
+        <rfc822;linux-m68k@vger.kernel.org>); Fri, 2 Oct 2020 10:06:27 -0400
+Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EC4CBC0613E2
+        for <linux-m68k@vger.kernel.org>; Fri,  2 Oct 2020 07:06:26 -0700 (PDT)
+Received: by mail-wr1-x442.google.com with SMTP id j2so1977888wrx.7
+        for <linux-m68k@vger.kernel.org>; Fri, 02 Oct 2020 07:06:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=timesys-com.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=4fQ1P5i5+5RX6Ky3j9bVO0oPaRJ1iFiFSHZs5cmAqj0=;
+        b=WK4Ko0HqIW2wK28lL7drmURbz9MXJaRbpEORGAEYkctjVAswsSnF1l/hwk/nC4LtkU
+         uPjuofNghmyanXg9OgOoSOQmG1LyjNFKfFJiL/ahjGT1t2Jx6v0KyS00DdlkwrYMnykF
+         sBWiNXhd0lcctZZIH4WKNGUuy6mGg+hD9BIjWVN++uORr1rrktKv8r5uxF4xhshclKgO
+         oKtJE/kRkZVvCVXFHwDVV824EeZZIxqsGcJXvwzdnygbkBYdb/nM0JjdFzujWpCwDoBi
+         LDUPobK9PKq4NTwbT8NwzxF7Db7nC5oiaBdjO1f6KOG+3RzXNjCMAu6pQieSmwlCbl8G
+         r7HQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=4fQ1P5i5+5RX6Ky3j9bVO0oPaRJ1iFiFSHZs5cmAqj0=;
+        b=OGMZGupDFnQQi0DaZJsI+v7YSRQh2YXaQ1bLoJT12OTHQieL9RyjQLXC0Im9p/B5qg
+         4FCpp0gpUSe8MMoUQnz8wbKNB4OB5ppdfJfmggkYGLwd1DUpmxr+Cp5D1leg2tBBIhNz
+         aAQh1gNqgQN8yFbsEe08zvVXIwwhaQvwBMG4lee/0UWeUTGX0BmhCitrpNfmL27HAgcb
+         xzLllKGLLjG0+VVisdETRPg6O2Dn7adQuaRKkCf7NZXJ4qqysYsAu1TFFsLQrm/4x2Gl
+         zRbPAFAyz28DpJd+f6Nxc3Cqi3c77KC39LZC7u0VvQKC/NsmzY7IxmgeWz6b+8fhcs2Y
+         yKtw==
+X-Gm-Message-State: AOAM5319+gdGFSo/+KeNdiIGUDUhwgiX+6LFIzBpoCPMpKFsjOvqTmYh
+        heAHT4goGnfFPPUtrOt9rllxrg==
+X-Google-Smtp-Source: ABdhPJykOE5JVtgyIOO2Io09nDK76PBiy+WKwOcX92EL0YVJBnhO+iOvb1AXmQ4sbI+HthIuSrHHSQ==
+X-Received: by 2002:adf:efc9:: with SMTP id i9mr3411669wrp.187.1601647585512;
+        Fri, 02 Oct 2020 07:06:25 -0700 (PDT)
+Received: from dfj.4.4.4.4 (host-79-20-236-235.retail.telecomitalia.it. [79.20.236.235])
+        by smtp.gmail.com with ESMTPSA id d2sm1917690wro.34.2020.10.02.07.06.24
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 02 Oct 2020 07:06:25 -0700 (PDT)
+From:   Angelo Dureghello <angelo.dureghello@timesys.com>
+To:     gerg@linux-m68k.org, gregkh@linuxfoundation.org
+Cc:     linux-m68k@vger.kernel.org, linux-serial@vger.kernel.org,
+        Angelo Dureghello <angelo.dureghello@timesys.com>
+Subject: [PATCH] serial: mcf: add sysrq capability
+Date:   Fri,  2 Oct 2020 16:05:45 +0200
+Message-Id: <20201002140545.477481-1-angelo.dureghello@timesys.com>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
-In-Reply-To: <23e12ab6-a1fd-16f3-9e09-123a5e770cac@acm.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
 Content-Transfer-Encoding: 8bit
-X-Original-Sender: glaubitz@physik.fu-berlin.de
-X-Originating-IP: 91.19.175.11
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-On 10/1/20 2:46 PM, Nathan Sidwell wrote:
-> Aha!  it is EH_RETURN :) and it appears stack adjustment is something different.
-> 
-> for x86, gcc has:
-> #define EH_RETURN_DATA_REGNO(N)    ((N) <= DX_REG ? (N) : INVALID_REGNUM)
-> 
-> thus N can either be AX_REG or DX_REG. (which is eax/rax and edx/rdx depending on compilation mode)
-> 
-> for m68k gcc has:
-> #define EH_RETURN_DATA_REGNO(N) \
->   ((N) < 2 ? (N) : INVALID_REGNUM)
-> 
-> so that's registers d0 and d1
-> 
-> I'm guessing EHPersonality:CoreCLR is a different ABI that you're not concerned with.
+After some unsuccessful attempts to use sysrq over console, figured
+out that port->has_sysrq should likely be enabled, as per other
+architectures, this when CONFIG_SERIAL_MCF_CONSOLE is also enabled.
 
-Yeah, it also seems to be present in the X86 backend only (at least not in the Sparc backend).
+Tested some magic sysrq commands (h, p, t, b), they works now
+properly. Commands works inside 5 secs after BREAK is sent, as
+expected.
 
-> Thus I think you want:
-> 
-> getExceptionPointerRegister to return d0 and getExceptionSelectorRegister to return d1.
-> 
-> give that a go, and see if you can throw/catch exceptions between code compiled by your llvm port and a gcc
+Signed-off-by: Angelo Dureghello <angelo.dureghello@timesys.com>
+---
+ drivers/tty/serial/mcf.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-Perfect, thanks.
-
-> hope that helps.
-I'll give it a try.
-
-Adrian
-
+diff --git a/drivers/tty/serial/mcf.c b/drivers/tty/serial/mcf.c
+index 7dbfb4cde124..09c88c48fb7b 100644
+--- a/drivers/tty/serial/mcf.c
++++ b/drivers/tty/serial/mcf.c
+@@ -632,6 +632,7 @@ static int mcf_probe(struct platform_device *pdev)
+ 		port->ops = &mcf_uart_ops;
+ 		port->flags = UPF_BOOT_AUTOCONF;
+ 		port->rs485_config = mcf_config_rs485;
++		port->has_sysrq = IS_ENABLED(CONFIG_SERIAL_MCF_CONSOLE);
+ 
+ 		uart_add_one_port(&mcf_driver, port);
+ 	}
 -- 
- .''`.  John Paul Adrian Glaubitz
-: :' :  Debian Developer - glaubitz@debian.org
-`. `'   Freie Universitaet Berlin - glaubitz@physik.fu-berlin.de
-  `-    GPG: 62FF 8A75 84E0 2956 9546  0006 7426 3B37 F5B5 F913
+2.28.0
+
