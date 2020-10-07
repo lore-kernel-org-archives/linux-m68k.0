@@ -2,83 +2,92 @@ Return-Path: <SRS0=Hd0i=DO=vger.kernel.org=linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-11.3 required=3.0 tests=BAYES_00,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,NICE_REPLY_A,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1
-	autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-11.8 required=3.0 tests=BAYES_00,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 7FDC2C4363D
-	for <linux-m68k@archiver.kernel.org>; Wed,  7 Oct 2020 12:00:56 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B659AC41604
+	for <linux-m68k@archiver.kernel.org>; Wed,  7 Oct 2020 15:48:34 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 32F2C20789
-	for <linux-m68k@archiver.kernel.org>; Wed,  7 Oct 2020 12:00:56 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 5DFE320782
+	for <linux-m68k@archiver.kernel.org>; Wed,  7 Oct 2020 15:48:34 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728039AbgJGMA4 (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Wed, 7 Oct 2020 08:00:56 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37774 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726219AbgJGMAz (ORCPT <rfc822;linux-m68k@vger.kernel.org>);
-        Wed, 7 Oct 2020 08:00:55 -0400
-Received: from [10.44.0.192] (unknown [103.48.210.53])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        id S1728782AbgJGPse (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Wed, 7 Oct 2020 11:48:34 -0400
+Received: from asavdk4.altibox.net ([109.247.116.15]:38366 "EHLO
+        asavdk4.altibox.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726463AbgJGPsd (ORCPT
+        <rfc822;linux-m68k@lists.linux-m68k.org>);
+        Wed, 7 Oct 2020 11:48:33 -0400
+X-Greylist: delayed 406 seconds by postgrey-1.27 at vger.kernel.org; Wed, 07 Oct 2020 11:48:32 EDT
+Received: from ravnborg.org (unknown [188.228.123.71])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 0B7F920782;
-        Wed,  7 Oct 2020 12:00:53 +0000 (UTC)
-Subject: Re: [PATCH] serial: mcf: add sysrq capability
-To:     Angelo Dureghello <angelo.dureghello@timesys.com>,
-        gregkh@linuxfoundation.org
-Cc:     linux-m68k@vger.kernel.org, linux-serial@vger.kernel.org
-References: <20201002140545.477481-1-angelo.dureghello@timesys.com>
-From:   Greg Ungerer <gerg@linux-m68k.org>
-Message-ID: <5d1e1ebd-93f4-adb7-fb94-57aafd2cca81@linux-m68k.org>
-Date:   Wed, 7 Oct 2020 22:00:52 +1000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        by asavdk4.altibox.net (Postfix) with ESMTPS id 39A32806C5;
+        Wed,  7 Oct 2020 17:41:43 +0200 (CEST)
+Date:   Wed, 7 Oct 2020 17:41:41 +0200
+From:   Sam Ravnborg <sam@ravnborg.org>
+To:     Arnd Bergmann <arnd@arndb.de>
+Cc:     Christoph Hellwig <hch@lst.de>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
+        linux-m68k <linux-m68k@lists.linux-m68k.org>,
+        sparclinux <sparclinux@vger.kernel.org>,
+        Linux Fbdev development list <linux-fbdev@vger.kernel.org>
+Subject: Re: [PATCH 1/3] fbdev/sbuslib: remove FBIOSCURSOR/FBIOGCURSOR
+ leftovers
+Message-ID: <20201007154141.GA862107@ravnborg.org>
+References: <20201007074447.797968-1-hch@lst.de>
+ <20201007074447.797968-2-hch@lst.de>
+ <CAK8P3a0UHEsND+vJjhtj2GKQpMjMCqD55vQ9+2u-SCrThe3wTw@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20201002140545.477481-1-angelo.dureghello@timesys.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAK8P3a0UHEsND+vJjhtj2GKQpMjMCqD55vQ9+2u-SCrThe3wTw@mail.gmail.com>
+X-CMAE-Score: 0
+X-CMAE-Analysis: v=2.3 cv=fu7ymmwf c=1 sm=1 tr=0
+        a=S6zTFyMACwkrwXSdXUNehg==:117 a=S6zTFyMACwkrwXSdXUNehg==:17
+        a=kj9zAlcOel0A:10 a=e5mUnYsNAAAA:8 a=9jrUWy9R0_lckN2VWKQA:9
+        a=CjuIK1q_8ugA:10 a=Vxmtnl_E_bksehYqCbjh:22
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-Hi Angelo,
+Hi Arnd.
 
-On 3/10/20 12:05 am, Angelo Dureghello wrote:
-> After some unsuccessful attempts to use sysrq over console, figured
-> out that port->has_sysrq should likely be enabled, as per other
-> architectures, this when CONFIG_SERIAL_MCF_CONSOLE is also enabled.
+On Wed, Oct 07, 2020 at 10:54:19AM +0200, Arnd Bergmann wrote:
+> On Wed, Oct 7, 2020 at 9:44 AM Christoph Hellwig <hch@lst.de> wrote:
+> >
+> > There are no actual implementations of FBIOSCURSOR/FBIOGCURSOR left, so
+> > don't bother with a compat handler for it, and remove the remaining
+> > definitions as well.
+> >
+> > Signed-off-by: Christoph Hellwig <hch@lst.de>
 > 
-> Tested some magic sysrq commands (h, p, t, b), they works now
-> properly. Commands works inside 5 secs after BREAK is sent, as
-> expected.
+> I had submitted a similar patch earlier, and Sam Ravnborg applied it to the
+> drm-misc tree, but it doesn't seem to be in linux-next, so I don't know
+> what the state is.
 > 
-> Signed-off-by: Angelo Dureghello <angelo.dureghello@timesys.com>
-
-Acked-by: Greg Ungerer <gerg@linux-m68k.org>
-
-I can take this via the m68knommu git tree if no one else wants to pick 
-it up?
-
-Regards
-Greg
-
-
-> ---
->   drivers/tty/serial/mcf.c | 1 +
->   1 file changed, 1 insertion(+)
+> My version only removed the compat handling, not the data structures,
+> so I'm happy to see your version used instead if mine got lost.
 > 
-> diff --git a/drivers/tty/serial/mcf.c b/drivers/tty/serial/mcf.c
-> index 7dbfb4cde124..09c88c48fb7b 100644
-> --- a/drivers/tty/serial/mcf.c
-> +++ b/drivers/tty/serial/mcf.c
-> @@ -632,6 +632,7 @@ static int mcf_probe(struct platform_device *pdev)
->   		port->ops = &mcf_uart_ops;
->   		port->flags = UPF_BOOT_AUTOCONF;
->   		port->rs485_config = mcf_config_rs485;
-> +		port->has_sysrq = IS_ENABLED(CONFIG_SERIAL_MCF_CONSOLE);
->   
->   		uart_add_one_port(&mcf_driver, port);
->   	}
-> 
+> Acked-by: Arnd Bergmann <arnd@arndb.de>
+
+I think the patches got applied to drm-misc-next *after* the final push
+to -next for the current merge window.
+So the patches are lingering in drm-misc-next waiting for the upcoming
+merge window to comple before they are pushed to linux-next.
+So for now the patches are only visible if one pulls drm-misc and checks
+out drm-misc-next branch.
+
+Pulling a fresh drm-misc tree just to be 100% sure .......
+
+Yep, patches are there when I pull a fresh tree and mripard just
+confirmed on irc that he sees them in his drm-misc-next repo.
+
+I am working with git.freedesktop.org/git/drm/drm-misc.
+
+	Sam
+
