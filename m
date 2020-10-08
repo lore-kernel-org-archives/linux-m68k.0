@@ -2,188 +2,114 @@ Return-Path: <SRS0=/L/6=DP=vger.kernel.org=linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-12.7 required=3.0 tests=BAYES_00,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=unavailable
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-6.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,
+	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 02278C4363A
-	for <linux-m68k@archiver.kernel.org>; Thu,  8 Oct 2020 15:49:40 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D93FEC433E7
+	for <linux-m68k@archiver.kernel.org>; Thu,  8 Oct 2020 20:04:12 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id C207620578
-	for <linux-m68k@archiver.kernel.org>; Thu,  8 Oct 2020 15:49:39 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 7C51F22228
+	for <linux-m68k@archiver.kernel.org>; Thu,  8 Oct 2020 20:04:12 +0000 (UTC)
+Authentication-Results: mail.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="soGxHYxn"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731295AbgJHPt1 (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Thu, 8 Oct 2020 11:49:27 -0400
-Received: from mout.kundenserver.de ([217.72.192.75]:49485 "EHLO
-        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729866AbgJHPtV (ORCPT
+        id S1729912AbgJHUEM (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Thu, 8 Oct 2020 16:04:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52154 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729860AbgJHUEL (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Thu, 8 Oct 2020 11:49:21 -0400
-Received: from localhost.localdomain ([192.30.34.233]) by
- mrelayeu.kundenserver.de (mreue107 [212.227.15.145]) with ESMTPA (Nemesis) id
- 1MStT6-1jwLIa42la-00ULFd; Thu, 08 Oct 2020 17:48:43 +0200
-From:   Arnd Bergmann <arnd@arndb.de>
-To:     linux-kernel@vger.kernel.org
-Cc:     Arnd Bergmann <arnd@arndb.de>,
-        Russell King <linux@armlinux.org.uk>,
-        Tony Luck <tony.luck@intel.com>,
-        Fenghua Yu <fenghua.yu@intel.com>,
-        Greg Ungerer <gerg@linux-m68k.org>,
+        Thu, 8 Oct 2020 16:04:11 -0400
+Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 80C69C0613D3
+        for <linux-m68k@lists.linux-m68k.org>; Thu,  8 Oct 2020 13:04:10 -0700 (PDT)
+Received: by mail-wm1-x343.google.com with SMTP id v12so7732247wmh.3
+        for <linux-m68k@lists.linux-m68k.org>; Thu, 08 Oct 2020 13:04:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:reply-to:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=0cpv+tP36ues9zKZvc23gnyV9b7gmZPPP3bWOFay3Z8=;
+        b=soGxHYxnlKP7l3roOE54jwTEMNQqPWr0nj6Hc9h7KhV5a8ASVFMdI1r+dyLbrtgIlV
+         TIdIKxQRLCjI9QAsxQOxc9AHdwu5H5MieylLqbVx15tm0HWBhRKahOO9STQ4r/ARFp+h
+         ag8HAY9rWc6BN+2zEcR6FUdQGjvyCdNf+e4zF7CfRfjQgx/nKr9oj2Lybgq7pNxViRIi
+         URASZFHORPGZxpo8hBuB4alXjoaIhNJqxtu820Z8PwM9/JpM+Y4bxcXu/IKgbPSPefd4
+         G3oQaPWFeqzD9PjBz9F9pBE735mtlMp6IYhU/ubBRRI9qww7GMVCbY7y8MURqzuej0rc
+         GynA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:reply-to
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=0cpv+tP36ues9zKZvc23gnyV9b7gmZPPP3bWOFay3Z8=;
+        b=eVxH709eVB66eDXEHi0ObPH/ONTa/rRze1MH+x79fQ447fpLuCbPNqWG5hUShiNpYm
+         f5qCFey71HEHksTeJVz6l69cA5chzlwfjn1fXYJOGGd3pYHtBBFrUlaxd82AQgIyXgEg
+         YGAB9FtaUuj+e+cQQApBXaJ6Iv6koDXs5ljyXmdlo5DMsJYVoyrtff8Tkb/YbLUOG6SL
+         dBXEf29VepbILFHQqJHdeNVhiSesonM9AU72pugWdzsEDhNCknNQR61M116tuinrctN7
+         C3jf1lOAZbSy1fjY6mVWEooCH77MO7A0GRoONCHaYq0bq6/Kke1QdmLlArqS6eWfVfGp
+         /a9g==
+X-Gm-Message-State: AOAM533ZrO6c4tB923lVoJHHOPeEyDKxZpR3zWw0Um8iWqlyh7ZY2XYN
+        dRxWxgq9soRIUSSLZjQdYJE=
+X-Google-Smtp-Source: ABdhPJzbefUFsnEexYnumCuenoA3EWX1ObnpD7vhR0ttyC6Vq9tiw4N7i5bJAYFbq933cEFleHu87Q==
+X-Received: by 2002:a1c:4904:: with SMTP id w4mr9841419wma.99.1602187449021;
+        Thu, 08 Oct 2020 13:04:09 -0700 (PDT)
+Received: from dell5510 ([62.201.25.198])
+        by smtp.gmail.com with ESMTPSA id v2sm9103715wme.19.2020.10.08.13.04.07
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 08 Oct 2020 13:04:08 -0700 (PDT)
+Date:   Thu, 8 Oct 2020 22:04:06 +0200
+From:   Petr Vorel <petr.vorel@gmail.com>
+To:     Jan Stancek <jstancek@redhat.com>
+Cc:     ltp@lists.linux.it, Ofer Levi <oferle@nvidia.com>,
+        Rich Felker <dalias@libc.org>,
+        Yoshinori Sato <ysato@users.sourceforge.jp>,
+        linux-sh@vger.kernel.org, Vineet Gupta <vgupta@synopsys.com>,
+        linux-mips@vger.kernel.org, linux-csky@vger.kernel.org,
+        linux-m68k@lists.linux-m68k.org, Guo Ren <guoren@kernel.org>,
+        Greentime Hu <green.hu@gmail.com>,
+        "Maciej W . Rozycki" <macro@linux-mips.org>,
         Geert Uytterhoeven <geert@linux-m68k.org>,
-        Finn Thain <fthain@telegraphics.com.au>,
-        Philip Blundell <philb@gnu.org>,
-        Joshua Thompson <funaho@jurai.org>,
-        Sam Creasey <sammy@sammy.net>,
-        "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
-        Helge Deller <deller@gmx.de>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        John Stultz <john.stultz@linaro.org>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        linux-ia64@vger.kernel.org, linux-parisc@vger.kernel.org,
-        linux-m68k@lists.linux-m68k.org,
-        linux-arm-kernel@lists.infradead.org
-Subject: [RFC 13/13] m68k: mac: convert to generic clockevent
-Date:   Thu,  8 Oct 2020 17:46:51 +0200
-Message-Id: <20201008154651.1901126-14-arnd@arndb.de>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20201008154651.1901126-1-arnd@arndb.de>
-References: <20201008154651.1901126-1-arnd@arndb.de>
+        Vincent Chen <deanbo422@gmail.com>
+Subject: Re: [LTP] [PATCH 1/1] cacheflush01: Rewrite into new API
+Message-ID: <20201008200406.GA18136@dell5510>
+Reply-To: Petr Vorel <petr.vorel@gmail.com>
+References: <20201002202416.28972-1-petr.vorel@gmail.com>
+ <1478290725.17134142.1602069275205.JavaMail.zimbra@redhat.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Provags-ID: V03:K1:t2TT0Gg6iZNzNSgl+OLD57/ppw5gg1Qso/eeRLVLEYaTBf/jIqQ
- Hjytsid5qWOgO94sXb2HqufDu6sYujxasZU8I0d6fpbSQ3aPXdulhuhjy1hT49RzBos4jzD
- TAn0VTtO47u4tnZhkeNMXUv9noQBvjvT6/jveq0eVE28BolhK15dXE6GaGQHpS+2wQbV7+C
- u0hUaI+Xe6zAY/NJfNthg==
-X-UI-Out-Filterresults: notjunk:1;V03:K0:gXB8YuDxJok=:EX4k3kZ8QtbIajiEgQTjiv
- SxHIuk7BFtV13qQjcBtlTsbXwtVoVK8kQhARoOlwilggxhieawtrezJt3Nn/X5O7tByqjdCC0
- BF62tpUUIYAbDtBIVIyZL2hUzvGMBZNsEbCoqkY9JNhrpx9qZIHES7A8RwQ3xHrexkILfIFta
- ySe2T7/BEMRY7zaRt35YvBZwbB2RYMnEHD4/epdU+npcF0vqxHlZ8EGd349xDSIQkFZLZ5/Qd
- A6jnQYe7kQEHk2S9vzlaQOLax2NzPVWqx2qJ8khlWwesz67wbkkbpL0Dia4r2XK7k5JK1j+1D
- OMulG+KxbdmVVTvwvWNoHtad5bJVLSuGm2XUP6X+H61R+j+K8DXxGPjyevNrwIRaX6RLhZxQP
- zqis6uJwcdAddHd2+B9sXPL6z4eBoA1GmBGjW/SJD50AJACvQ4E0e/0i2tHiNHS0rnm3bJLBJ
- lwrq4bHMoSrC7PqyJ7+CBr3egpqFuksOiesZ1mQdOw3OPSAD6kA3Yr0hajcJyhVUXPycwhCVN
- C++u17zvMBTUP/mYPIpUdEBDhmSi38cn4WzhKDeC3hciNlHjXobBSdiixilXs3+Dw4XeCYSVz
- 7Jy4BI50XcOxXCsnDEB4OPfSY3lqmAlyfxuSOW71Bbyl2aq4pE3hKYNiEQgx7M9GbLDsZCOhK
- /hwCC8rZXxH5x7+rCA0y7WcXnU+HjxGdER3IrB1Y5dZA3PXErgwUwwS2FAj8rlOKAMDs2zlVj
- BCQFJHvQcyP0SVgL+KsIAIoC2cONpmrqvhYyJ8KXY4ZKZCPOXJYlz2xx0MLLHvLC31pYlmJdM
- gh3zpYEZMSfwruQm5IBEZRtnKPMy9488EKTQyfQYASbr3lI25bzfMveHN011XHRSJ3ZPMfJ
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1478290725.17134142.1602069275205.JavaMail.zimbra@redhat.com>
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-Now that the infrastructure allows kernels to have both legacy timer
-ticks and clockevent drivers in the same image, start by moving one
-platform to generic clockevents.
+Hi Jan,
 
-As qemu only supports the q800 platform among the classic m68k, use
-that as an example.
+> ----- Original Message -----
+> > This syscall is currently (v5.9) supported on these architectures:
+> > arc, csky, mips, m68k, nds32, sh
 
-I also tried adding oneshot mode, which was successful but broke
-the clocksource. It's probably not hard to make it work properly,
-but this is where I've stopped.
+> > constants are missing for m68k, not sure if the testcase is valid for it.
+> > Untested.
 
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
----
-I have never tried implementing a clockevent or clocksource
-driver in the past, so this is really just an experiment and
-I expect I got something wrong.
+> > Test for __LTP__NR_INVALID_SYSCALL saves adding autotools check for
+> > <asm/cachectl.h>.
 
+> > Signed-off-by: Petr Vorel <petr.vorel@gmail.com>
+> > ---
+> > Hi,
 
- arch/m68k/Kconfig.machine |  2 +-
- arch/m68k/mac/via.c       | 44 ++++++++++++++++++++++++++++++++-------
- 2 files changed, 37 insertions(+), 9 deletions(-)
+> > FYI: I was going to ask for removal of this test, but all these archs are
+> > still supported. This test compiles on all archs now, but I haven't run
+> > it (I don't have access to none of these archs, not sure if LTP is even
+> > tested on these archs).
 
-diff --git a/arch/m68k/Kconfig.machine b/arch/m68k/Kconfig.machine
-index 8a4e8bd8aade..cccabdad618e 100644
---- a/arch/m68k/Kconfig.machine
-+++ b/arch/m68k/Kconfig.machine
-@@ -30,7 +30,7 @@ config MAC
- 	depends on MMU
- 	select MMU_MOTOROLA if MMU
- 	select HAVE_ARCH_NVRAM_OPS
--	select LEGACY_TIMER_TICK
-+	select GENERIC_CLOCKEVENTS
- 	help
- 	  This option enables support for the Apple Macintosh series of
- 	  computers (yes, there is experimental support now, at least for part
-diff --git a/arch/m68k/mac/via.c b/arch/m68k/mac/via.c
-index 8ad734e3c934..dd4c13c318b6 100644
---- a/arch/m68k/mac/via.c
-+++ b/arch/m68k/mac/via.c
-@@ -24,6 +24,7 @@
-  */
- 
- #include <linux/clocksource.h>
-+#include <linux/clockchips.h>
- #include <linux/types.h>
- #include <linux/kernel.h>
- #include <linux/mm.h>
-@@ -602,27 +603,54 @@ static u32 clk_total, clk_offset;
- 
- static irqreturn_t via_timer_handler(int irq, void *dev_id)
- {
-+	struct clock_event_device *evt = dev_id;
-+
- 	clk_total += VIA_TIMER_CYCLES;
- 	clk_offset = 0;
--	legacy_timer_tick(1);
-+	evt->event_handler(evt);
- 
- 	return IRQ_HANDLED;
- }
- 
--void __init via_init_clock(void)
-+static int via_set_periodic(struct clock_event_device *evt)
- {
--	if (request_irq(IRQ_MAC_TIMER_1, via_timer_handler, IRQF_TIMER, "timer",
--			NULL)) {
--		pr_err("Couldn't register %s interrupt\n", "timer");
--		return;
--	}
--
- 	via1[vT1LL] = VIA_TC_LOW;
- 	via1[vT1LH] = VIA_TC_HIGH;
- 	via1[vT1CL] = VIA_TC_LOW;
- 	via1[vT1CH] = VIA_TC_HIGH;
- 	via1[vACR] |= 0x40;
- 
-+	return 0;
-+}
-+
-+static int via_set_shutdown(struct clock_event_device *evt)
-+{
-+	via1[vACR] &= ~0x40;
-+
-+	return 0;
-+}
-+
-+static struct clock_event_device via_clk_event = {
-+	.name	= "via1",
-+	.rating = 250,
-+	.irq	= IRQ_MAC_TIMER_1,
-+	.owner	= THIS_MODULE,
-+
-+	.features		= CLOCK_EVT_FEAT_PERIODIC,
-+	.set_state_shutdown	= via_set_shutdown,
-+	.set_state_periodic	= via_set_periodic,
-+};
-+
-+void __init via_init_clock(void)
-+{
-+	clockevents_config_and_register(&via_clk_event, VIA_CLOCK_FREQ, 1, 0xffff);
-+
-+	if (request_irq(IRQ_MAC_TIMER_1, via_timer_handler, IRQF_TIMER, "timer",
-+			&via_clk_event)) {
-+		pr_err("Couldn't register %s interrupt\n", "timer");
-+		return;
-+	}
-+
- 	clocksource_register_hz(&mac_clk, VIA_CLOCK_FREQ);
- }
- 
--- 
-2.27.0
+> I haven't tested it too, but rewrite looks good.
 
+> Acked-by: Jan Stancek <jstancek@redhat.com>
+
+Thanks for your review, merged.
+
+Kind regards,
+Petr
