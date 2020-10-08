@@ -4,25 +4,25 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-12.7 required=3.0 tests=BAYES_00,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=unavailable
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id ABD2AC04EBE
-	for <linux-m68k@archiver.kernel.org>; Thu,  8 Oct 2020 15:48:34 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5D377C4363C
+	for <linux-m68k@archiver.kernel.org>; Thu,  8 Oct 2020 15:48:40 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 6DBD820782
-	for <linux-m68k@archiver.kernel.org>; Thu,  8 Oct 2020 15:48:34 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 2178F20578
+	for <linux-m68k@archiver.kernel.org>; Thu,  8 Oct 2020 15:48:40 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731160AbgJHPsY (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Thu, 8 Oct 2020 11:48:24 -0400
-Received: from mout.kundenserver.de ([212.227.17.10]:35595 "EHLO
+        id S1731206AbgJHPsj (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Thu, 8 Oct 2020 11:48:39 -0400
+Received: from mout.kundenserver.de ([212.227.17.10]:56269 "EHLO
         mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726304AbgJHPsW (ORCPT
+        with ESMTP id S1731178AbgJHPsi (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Thu, 8 Oct 2020 11:48:22 -0400
+        Thu, 8 Oct 2020 11:48:38 -0400
 Received: from localhost.localdomain ([192.30.34.233]) by
  mrelayeu.kundenserver.de (mreue107 [212.227.15.145]) with ESMTPA (Nemesis) id
- 1MQdMG-1k2x0a3lRe-00NkbV; Thu, 08 Oct 2020 17:47:35 +0200
+ 1Mn1iT-1kp7mV2szP-00k4sm; Thu, 08 Oct 2020 17:47:49 +0200
 From:   Arnd Bergmann <arnd@arndb.de>
 To:     linux-kernel@vger.kernel.org
 Cc:     Arnd Bergmann <arnd@arndb.de>,
@@ -45,109 +45,324 @@ Cc:     Arnd Bergmann <arnd@arndb.de>,
         linux-ia64@vger.kernel.org, linux-parisc@vger.kernel.org,
         linux-m68k@lists.linux-m68k.org,
         linux-arm-kernel@lists.infradead.org
-Subject: [PATCH 03/13] ARM: rpc: use legacy_timer_tick
-Date:   Thu,  8 Oct 2020 17:46:41 +0200
-Message-Id: <20201008154651.1901126-4-arnd@arndb.de>
+Subject: [PATCH 05/13] m68k: coldfire: use legacy_timer_tick()
+Date:   Thu,  8 Oct 2020 17:46:43 +0200
+Message-Id: <20201008154651.1901126-6-arnd@arndb.de>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20201008154651.1901126-1-arnd@arndb.de>
 References: <20201008154651.1901126-1-arnd@arndb.de>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Provags-ID: V03:K1:AV/xQQR2jt9Rwk0ymjAs+h06lgep6VgQtpKXSCm3RsvPedqWUvi
- k4xxlR1Egxcic8tT5i13A/WWoGB0lOB3XDe3RLEMa5aSAJ198tXUY5jfimFkr/t+H8PeSiO
- ou+MyWyazink8mfnqoLPk4rmHIQhJJM8u6Z5luNIbJyW7sL8WLXmM7pDT7b710FQyzvF1pN
- NYN6qpDk6KkYtg+eJTyYA==
-X-UI-Out-Filterresults: notjunk:1;V03:K0:HJYHx377UCA=:x/7rjJt+7xnjvb99y4WTbl
- cy+IsvGh3OG7yWjqodDRveTEuOWpIO3rbNU+jmFFmK/nohkqNWSVLuHFOOENtAxMhoMDjoNMC
- LQSmtU7RW5FF2lTBKlhkOk81b7fJPfIQnlELDI1jxBFvAsSwwiq9ib7p+7jvwFytw3dMwM1ve
- mJ4TMN44fIiPSxSM5RLxF6Wuc97rNJVa8fP3Dsm37YT6w+9xcQPCLVaAEx09tCCqFZBIeklsv
- UtMeQdswWU5fX0EGDZoPZgTTO+Coe+Iuowo1hbJEkY2Vrp3a+QtX7Xpw8s8pkMzyweyGzxdrP
- jIh4F6imG5gupoxZuP/mjiOxpsFGhP9UEmTpmxCvbnIB2sR4/fznuL0tlRku2KIBVWUZcb1yt
- fY3VkGQoGi6+hZ+4mFC3Y4OMQ8qSw8CgbNZwexkb5sDBxBZuc4sciWmo0ZMkxYOm06CfySarx
- JFUUwNLVoQHbZVydSdQX+BdwdK1Xh9rvnmtxQ1CTF+C7SMAoj440oBlhoAkZNbYG2G+v/qcTc
- 08wZdcP5uwlOyrOPOTOvS7nRXZCL0No1XSk4gQ6C+d5QsVJDECW9vqCNQdAbtj2l7pbtcTlhQ
- Zfw7MK94SfxGmGJNvmFb9a0lxL6YEshI5wwfBbobr/Q3E/w5n2UUwzj25x1BLRFebonP6KBRK
- ELzh6zwYfL7jT6d5mL/fDVIBrqbJ7oja+bzAIWNyUJkmKCkZf4ZC+p5IcrE5UCOubLc/z/Kuj
- LqYbQnUv6Lgspo76cwb7OIKKflco8Sk3Fzsrs6BSCmW3Y3Bc18QKuON2YgbdHaJsho8wpaFHM
- 5dzeyP6tLppPFy+cEmdJmFeVQpJz8JO/CANIprUirlscJmMf1FeFBdBmNEcQ8HXK9Cj44ym
+X-Provags-ID: V03:K1:xNQxS2XthDSdDM0fGxa0OcEpfzhuQeGcWB55DeOgoAALv6NRiur
+ EcuewQB+TTEl3bne5Oz1MWVYMU3jfDcmVWBNe4Jz53Ma61yGreo2XZNX08gunfwwUXS6DHo
+ ETJWbwiHtG6dXsQNe6llZp9PCSpmCZJA77Dy5/jHVXEHXT+Dw0yIR6Pon+8/MJVPWSC24yg
+ 3yohRLHTfW+RAfhNEitVQ==
+X-UI-Out-Filterresults: notjunk:1;V03:K0:ri+t/fACKuk=:q4aukyYZnZOvR98hZhLtT2
+ +pr15i/AgsInH8Epuvg/PLEnJAzzr37jF9HhP3vXuC7apUauO931yJtR329OHwpcGXdHnTi3w
+ XpKVoTERi6P3mbQV8klWRC94kQlcWsIEFLueTHw48ujkea8sgCCwcEx3F3oBQFYhsxP9XlfI0
+ SzijQB37ScmmHnoyRAkLHVfKcahumtbB2yPiazNT57MJErpvXfza1AYhC6Hq0Ka22J75CmxVc
+ 9Ce6PuI1WHc//cCBkNrwiyk2Y3ATGxTdbrzyxzEkWW/sYBOcu7JvB1yCSP1Mnh8ToQNANeuzb
+ Tb8xAgsTMBGnlDxa94ZHgAfGIn9fr6g3XNSrdj5ePe44aAXluhpwRgVm7AkvQ+rPzujLsBTQ4
+ xqHaKmlk8eA/o5D5SdtSB1dU1NUPSPdhVUKZHlBo+aa/Ldiv8O8IJ8Ce2ODwm6PFC59nOWgoe
+ QsfoyGc6YFcdcF6rDX5wwIM2axDM+cBy9Rv8q6uO1FMaffY9WGeEglvVP2PS4MG0MCwq4obN7
+ ZYjCj7miHQo9uqk490MIO6zdrZjFowhAnduzjo10xjJPWtJDXiRa+XplDqM96ApH/CIIsiplG
+ VLzKwUOBR3fR5VkbADwW1Y47VwyJrHJvG08f9icaHU8FJLEYfZj2IeI9Egcn3WbasVlaNnRwB
+ 6yC5Uu8PZQ6bprjtq4JQers2q1YXwmF13bEmda+jn/PGY8hWORyq9KzC9rQXDF4GiqPvDk2Aa
+ qs+RE1zS89LPXa8EjzvNeoxi3u0FjahRcrp7J2TU1EMB/ekJapr4YjvCyFesjuBVMXHdTUQMW
+ VaMBL9Ae0k5h9jYeFdz+oCTCYNlkL1AYAk1qCDmztRtGGz1bpvpbU4j6gxZu2Gv1Omf2Lnk
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-rpc is the only user of the timer_tick() function now, and can
-just call the newly added generic version instead.
+Replace the indirect function calls in the timer code
+with direct calls to the newly added legacy_timer_tick()
+helper for those that have not yet been converted to
+generic clockevents.
+
+This makes the timer code a little more self-contained.
 
 Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 ---
- arch/arm/Kconfig                 |  1 +
- arch/arm/include/asm/mach/time.h |  2 --
- arch/arm/kernel/time.c           | 14 --------------
- arch/arm/mach-rpc/time.c         |  2 +-
- 4 files changed, 2 insertions(+), 17 deletions(-)
+ arch/m68k/Kconfig.cpu         | 35 +++++++++++++++++++++++++++++------
+ arch/m68k/coldfire/Makefile   | 32 ++++++++++++++++++--------------
+ arch/m68k/coldfire/sltimers.c |  6 ++----
+ arch/m68k/coldfire/timers.c   |  6 ++----
+ 4 files changed, 51 insertions(+), 28 deletions(-)
 
-diff --git a/arch/arm/Kconfig b/arch/arm/Kconfig
-index fe2f17eb2b50..13af8d7a6c17 100644
---- a/arch/arm/Kconfig
-+++ b/arch/arm/Kconfig
-@@ -467,6 +467,7 @@ config ARCH_RPC
- 	select HAVE_IDE
- 	select HAVE_PATA_PLATFORM
- 	select ISA_DMA_API
+diff --git a/arch/m68k/Kconfig.cpu b/arch/m68k/Kconfig.cpu
+index 694c4fca9f5d..322a35ef14c6 100644
+--- a/arch/m68k/Kconfig.cpu
++++ b/arch/m68k/Kconfig.cpu
+@@ -137,6 +137,7 @@ config M5206
+ 	bool "MCF5206"
+ 	depends on !MMU
+ 	select COLDFIRE_SW_A7
++	select COLDFIRE_TIMERS
+ 	select HAVE_MBAR
+ 	select CPU_NO_EFFICIENT_FFS
+ 	help
+@@ -146,6 +147,7 @@ config M5206e
+ 	bool "MCF5206e"
+ 	depends on !MMU
+ 	select COLDFIRE_SW_A7
++	select COLDFIRE_TIMERS
+ 	select HAVE_MBAR
+ 	select CPU_NO_EFFICIENT_FFS
+ 	help
+@@ -154,7 +156,7 @@ config M5206e
+ config M520x
+ 	bool "MCF520x"
+ 	depends on !MMU
+-	select GENERIC_CLOCKEVENTS
++	select COLDFIRE_PIT_TIMER
+ 	select HAVE_CACHE_SPLIT
+ 	help
+ 	   Freescale Coldfire 5207/5208 processor support.
+@@ -162,7 +164,7 @@ config M520x
+ config M523x
+ 	bool "MCF523x"
+ 	depends on !MMU
+-	select GENERIC_CLOCKEVENTS
++	select COLDFIRE_PIT_TIMER
+ 	select HAVE_CACHE_SPLIT
+ 	select HAVE_IPSBAR
+ 	help
+@@ -172,6 +174,7 @@ config M5249
+ 	bool "MCF5249"
+ 	depends on !MMU
+ 	select COLDFIRE_SW_A7
++	select COLDFIRE_TIMERS
+ 	select HAVE_MBAR
+ 	select CPU_NO_EFFICIENT_FFS
+ 	help
+@@ -181,6 +184,7 @@ config M525x
+ 	bool "MCF525x"
+ 	depends on !MMU
+ 	select COLDFIRE_SW_A7
++	select COLDFIRE_TIMERS
+ 	select HAVE_MBAR
+ 	select CPU_NO_EFFICIENT_FFS
+ 	help
+@@ -189,10 +193,10 @@ config M525x
+ config M5271
+ 	bool "MCF5271"
+ 	depends on !MMU
++	select COLDFIRE_PIT_TIMER
+ 	select M527x
+ 	select HAVE_CACHE_SPLIT
+ 	select HAVE_IPSBAR
+-	select GENERIC_CLOCKEVENTS
+ 	help
+ 	  Freescale (Motorola) ColdFire 5270/5271 processor support.
+ 
+@@ -200,6 +204,7 @@ config M5272
+ 	bool "MCF5272"
+ 	depends on !MMU
+ 	select COLDFIRE_SW_A7
++	select COLDFIRE_TIMERS
+ 	select HAVE_MBAR
+ 	select CPU_NO_EFFICIENT_FFS
+ 	help
+@@ -208,17 +213,17 @@ config M5272
+ config M5275
+ 	bool "MCF5275"
+ 	depends on !MMU
++	select COLDFIRE_PIT_TIMER
+ 	select M527x
+ 	select HAVE_CACHE_SPLIT
+ 	select HAVE_IPSBAR
+-	select GENERIC_CLOCKEVENTS
+ 	help
+ 	  Freescale (Motorola) ColdFire 5274/5275 processor support.
+ 
+ config M528x
+ 	bool "MCF528x"
+ 	depends on !MMU
+-	select GENERIC_CLOCKEVENTS
++	select COLDFIRE_PIT_TIMER
+ 	select HAVE_CACHE_SPLIT
+ 	select HAVE_IPSBAR
+ 	help
+@@ -227,6 +232,7 @@ config M528x
+ config M5307
+ 	bool "MCF5307"
+ 	depends on !MMU
++	select COLDFIRE_TIMERS
+ 	select COLDFIRE_SW_A7
+ 	select HAVE_CACHE_CB
+ 	select HAVE_MBAR
+@@ -237,6 +243,7 @@ config M5307
+ config M532x
+ 	bool "MCF532x"
+ 	depends on !MMU
++	select COLDFIRE_TIMERS
+ 	select M53xx
+ 	select HAVE_CACHE_CB
+ 	help
+@@ -245,6 +252,7 @@ config M532x
+ config M537x
+ 	bool "MCF537x"
+ 	depends on !MMU
++	select COLDFIRE_TIMERS
+ 	select M53xx
+ 	select HAVE_CACHE_CB
+ 	help
+@@ -254,6 +262,7 @@ config M5407
+ 	bool "MCF5407"
+ 	depends on !MMU
+ 	select COLDFIRE_SW_A7
++	select COLDFIRE_TIMERS
+ 	select HAVE_CACHE_CB
+ 	select HAVE_MBAR
+ 	select CPU_NO_EFFICIENT_FFS
+@@ -263,6 +272,7 @@ config M5407
+ config M547x
+ 	bool "MCF547x"
+ 	select M54xx
++	select COLDFIRE_SLTIMERS
+ 	select MMU_COLDFIRE if MMU
+ 	select FPU if MMU
+ 	select HAVE_CACHE_CB
+@@ -273,6 +283,7 @@ config M547x
+ 
+ config M548x
+ 	bool "MCF548x"
++	select COLDFIRE_SLTIMERS
+ 	select MMU_COLDFIRE if MMU
+ 	select FPU if MMU
+ 	select M54xx
+@@ -284,8 +295,8 @@ config M548x
+ 
+ config M5441x
+ 	bool "MCF5441x"
++	select COLDFIRE_PIT_TIMER
+ 	select MMU_COLDFIRE if MMU
+-	select GENERIC_CLOCKEVENTS
+ 	select HAVE_CACHE_CB
+ 	help
+ 	  Freescale Coldfire 54410/54415/54416/54417/54418 processor support.
+@@ -302,6 +313,18 @@ config M54xx
+ 	select HAVE_PCI
+ 	bool
+ 
++config COLDFIRE_PIT_TIMER
++	bool
++	select GENERIC_CLOCKEVENTS
++
++config COLDFIRE_TIMERS
++	bool
 +	select LEGACY_TIMER_TICK
- 	select NEED_MACH_IO_H
- 	select NEED_MACH_MEMORY_H
- 	select NO_IOPORT_MAP
-diff --git a/arch/arm/include/asm/mach/time.h b/arch/arm/include/asm/mach/time.h
-index d75d39280db7..5f522916ec99 100644
---- a/arch/arm/include/asm/mach/time.h
-+++ b/arch/arm/include/asm/mach/time.h
-@@ -7,8 +7,6 @@
- #ifndef __ASM_ARM_MACH_TIME_H
- #define __ASM_ARM_MACH_TIME_H
++
++config COLDFIRE_SLTIMERS
++	bool
++	select LEGACY_TIMER_TICK
++
+ endif # COLDFIRE
  
--extern void timer_tick(void);
+ 
+diff --git a/arch/m68k/coldfire/Makefile b/arch/m68k/coldfire/Makefile
+index 573eabca1a3a..a3e18d73d8b8 100644
+--- a/arch/m68k/coldfire/Makefile
++++ b/arch/m68k/coldfire/Makefile
+@@ -16,20 +16,24 @@
+ asflags-$(CONFIG_FULLDEBUG) := -DDEBUGGER_COMPATIBLE_CACHE=1
+ 
+ obj-$(CONFIG_COLDFIRE)	+= cache.o clk.o device.o dma.o entry.o vectors.o
+-obj-$(CONFIG_M5206)	+= m5206.o timers.o intc.o reset.o
+-obj-$(CONFIG_M5206e)	+= m5206.o timers.o intc.o reset.o
+-obj-$(CONFIG_M520x)	+= m520x.o pit.o intc-simr.o reset.o
+-obj-$(CONFIG_M523x)	+= m523x.o pit.o dma_timer.o intc-2.o reset.o
+-obj-$(CONFIG_M5249)	+= m5249.o timers.o intc.o intc-5249.o reset.o
+-obj-$(CONFIG_M525x)	+= m525x.o timers.o intc.o intc-525x.o reset.o
+-obj-$(CONFIG_M527x)	+= m527x.o pit.o intc-2.o reset.o
+-obj-$(CONFIG_M5272)	+= m5272.o intc-5272.o timers.o
+-obj-$(CONFIG_M528x)	+= m528x.o pit.o intc-2.o reset.o
+-obj-$(CONFIG_M5307)	+= m5307.o timers.o intc.o reset.o
+-obj-$(CONFIG_M53xx)	+= m53xx.o timers.o intc-simr.o reset.o
+-obj-$(CONFIG_M5407)	+= m5407.o timers.o intc.o reset.o
+-obj-$(CONFIG_M54xx)	+= m54xx.o sltimers.o intc-2.o
+-obj-$(CONFIG_M5441x)	+= m5441x.o pit.o intc-simr.o reset.o
++obj-$(CONFIG_M5206)	+= m5206.o intc.o reset.o
++obj-$(CONFIG_M5206e)	+= m5206.o intc.o reset.o
++obj-$(CONFIG_M520x)	+= m520x.o intc-simr.o reset.o
++obj-$(CONFIG_M523x)	+= m523x.o dma_timer.o intc-2.o reset.o
++obj-$(CONFIG_M5249)	+= m5249.o intc.o intc-5249.o reset.o
++obj-$(CONFIG_M525x)	+= m525x.o intc.o intc-525x.o reset.o
++obj-$(CONFIG_M527x)	+= m527x.o intc-2.o reset.o
++obj-$(CONFIG_M5272)	+= m5272.o intc-5272.o
++obj-$(CONFIG_M528x)	+= m528x.o intc-2.o reset.o
++obj-$(CONFIG_M5307)	+= m5307.o intc.o reset.o
++obj-$(CONFIG_M53xx)	+= m53xx.o intc-simr.o reset.o
++obj-$(CONFIG_M5407)	+= m5407.o intc.o reset.o
++obj-$(CONFIG_M54xx)	+= m54xx.o intc-2.o
++obj-$(CONFIG_M5441x)	+= m5441x.o intc-simr.o reset.o
++
++obj-$(CONFIG_COLDFIRE_PIT_TIMER) += pit.o
++obj-$(CONFIG_COLDFIRE_TIMERS)	 += timers.o
++obj-$(CONFIG_COLDFIRE_SLTIMERS)	 += sltimers.o
+ 
+ obj-$(CONFIG_NETtel)	+= nettel.o
+ obj-$(CONFIG_CLEOPATRA)	+= nettel.o
+diff --git a/arch/m68k/coldfire/sltimers.c b/arch/m68k/coldfire/sltimers.c
+index 5ab81c9c552d..25a1319f3cb8 100644
+--- a/arch/m68k/coldfire/sltimers.c
++++ b/arch/m68k/coldfire/sltimers.c
+@@ -83,14 +83,13 @@ void mcfslt_profile_init(void)
+ static u32 mcfslt_cycles_per_jiffy;
+ static u32 mcfslt_cnt;
+ 
+-static irq_handler_t timer_interrupt;
 -
- typedef void (*clock_access_fn)(struct timespec64 *);
- extern int register_persistent_clock(clock_access_fn read_persistent);
- 
-diff --git a/arch/arm/kernel/time.c b/arch/arm/kernel/time.c
-index 09b149b09c43..b3836c94dc74 100644
---- a/arch/arm/kernel/time.c
-+++ b/arch/arm/kernel/time.c
-@@ -60,20 +60,6 @@ unsigned long profile_pc(struct pt_regs *regs)
- EXPORT_SYMBOL(profile_pc);
- #endif
- 
--#ifndef CONFIG_GENERIC_CLOCKEVENTS
--/*
-- * Kernel system timer support.
-- */
--void timer_tick(void)
--{
--	profile_tick(CPU_PROFILING);
--	xtime_update(1);
--#ifndef CONFIG_SMP
--	update_process_times(user_mode(get_irq_regs()));
--#endif
--}
--#endif
--
- static void dummy_clock_access(struct timespec64 *ts)
+ static irqreturn_t mcfslt_tick(int irq, void *dummy)
  {
- 	ts->tv_sec = 0;
-diff --git a/arch/arm/mach-rpc/time.c b/arch/arm/mach-rpc/time.c
-index da85cac761ba..9f8edcfe9357 100644
---- a/arch/arm/mach-rpc/time.c
-+++ b/arch/arm/mach-rpc/time.c
-@@ -81,7 +81,7 @@ static irqreturn_t
- ioc_timer_interrupt(int irq, void *dev_id)
- {
- 	ioc_time += RPC_LATCH;
--	timer_tick();
+ 	/* Reset Slice Timer 0 */
+ 	__raw_writel(MCFSLT_SSR_BE | MCFSLT_SSR_TE, TA(MCFSLT_SSR));
+ 	mcfslt_cnt += mcfslt_cycles_per_jiffy;
+-	return timer_interrupt(irq, dummy);
 +	legacy_timer_tick(1);
- 	return IRQ_HANDLED;
++	return IRQ_HANDLED;
  }
  
+ static u64 mcfslt_read_clk(struct clocksource *cs)
+@@ -136,7 +135,6 @@ void hw_timer_init(irq_handler_t handler)
+ 	/* initialize mcfslt_cnt knowing that slice timers count down */
+ 	mcfslt_cnt = mcfslt_cycles_per_jiffy;
+ 
+-	timer_interrupt = handler;
+ 	r = request_irq(MCF_IRQ_TIMER, mcfslt_tick, IRQF_TIMER, "timer", NULL);
+ 	if (r) {
+ 		pr_err("Failed to request irq %d (timer): %pe\n", MCF_IRQ_TIMER,
+diff --git a/arch/m68k/coldfire/timers.c b/arch/m68k/coldfire/timers.c
+index b8301fddf901..24b5e2d1b00b 100644
+--- a/arch/m68k/coldfire/timers.c
++++ b/arch/m68k/coldfire/timers.c
+@@ -48,8 +48,6 @@ void coldfire_profile_init(void);
+ static u32 mcftmr_cycles_per_jiffy;
+ static u32 mcftmr_cnt;
+ 
+-static irq_handler_t timer_interrupt;
+-
+ /***************************************************************************/
+ 
+ static void init_timer_irq(void)
+@@ -77,7 +75,8 @@ static irqreturn_t mcftmr_tick(int irq, void *dummy)
+ 	__raw_writeb(MCFTIMER_TER_CAP | MCFTIMER_TER_REF, TA(MCFTIMER_TER));
+ 
+ 	mcftmr_cnt += mcftmr_cycles_per_jiffy;
+-	return timer_interrupt(irq, dummy);
++	legacy_timer_tick(1);
++	return IRQ_HANDLED;
+ }
+ 
+ /***************************************************************************/
+@@ -126,7 +125,6 @@ void hw_timer_init(irq_handler_t handler)
+ 
+ 	clocksource_register_hz(&mcftmr_clk, FREQ);
+ 
+-	timer_interrupt = handler;
+ 	init_timer_irq();
+ 	r = request_irq(MCF_IRQ_TIMER, mcftmr_tick, IRQF_TIMER, "timer", NULL);
+ 	if (r) {
 -- 
 2.27.0
 
