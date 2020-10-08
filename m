@@ -1,93 +1,105 @@
-Return-Path: <SRS0=Hd0i=DO=vger.kernel.org=linux-m68k-owner@kernel.org>
+Return-Path: <SRS0=/L/6=DP=vger.kernel.org=linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-11.8 required=3.0 tests=BAYES_00,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham
+X-Spam-Status: No, score=-12.7 required=3.0 tests=BAYES_00,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B659AC41604
-	for <linux-m68k@archiver.kernel.org>; Wed,  7 Oct 2020 15:48:34 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C3CA4C43467
+	for <linux-m68k@archiver.kernel.org>; Thu,  8 Oct 2020 12:34:41 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 5DFE320782
-	for <linux-m68k@archiver.kernel.org>; Wed,  7 Oct 2020 15:48:34 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 806082083B
+	for <linux-m68k@archiver.kernel.org>; Thu,  8 Oct 2020 12:34:41 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728782AbgJGPse (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Wed, 7 Oct 2020 11:48:34 -0400
-Received: from asavdk4.altibox.net ([109.247.116.15]:38366 "EHLO
-        asavdk4.altibox.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726463AbgJGPsd (ORCPT
+        id S1730045AbgJHMel (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Thu, 8 Oct 2020 08:34:41 -0400
+Received: from mout.kundenserver.de ([212.227.17.24]:44951 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729931AbgJHMek (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Wed, 7 Oct 2020 11:48:33 -0400
-X-Greylist: delayed 406 seconds by postgrey-1.27 at vger.kernel.org; Wed, 07 Oct 2020 11:48:32 EDT
-Received: from ravnborg.org (unknown [188.228.123.71])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by asavdk4.altibox.net (Postfix) with ESMTPS id 39A32806C5;
-        Wed,  7 Oct 2020 17:41:43 +0200 (CEST)
-Date:   Wed, 7 Oct 2020 17:41:41 +0200
-From:   Sam Ravnborg <sam@ravnborg.org>
-To:     Arnd Bergmann <arnd@arndb.de>
-Cc:     Christoph Hellwig <hch@lst.de>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
-        linux-m68k <linux-m68k@lists.linux-m68k.org>,
-        sparclinux <sparclinux@vger.kernel.org>,
-        Linux Fbdev development list <linux-fbdev@vger.kernel.org>
-Subject: Re: [PATCH 1/3] fbdev/sbuslib: remove FBIOSCURSOR/FBIOGCURSOR
- leftovers
-Message-ID: <20201007154141.GA862107@ravnborg.org>
-References: <20201007074447.797968-1-hch@lst.de>
- <20201007074447.797968-2-hch@lst.de>
- <CAK8P3a0UHEsND+vJjhtj2GKQpMjMCqD55vQ9+2u-SCrThe3wTw@mail.gmail.com>
+        Thu, 8 Oct 2020 08:34:40 -0400
+Received: from localhost.localdomain ([192.30.34.233]) by
+ mrelayeu.kundenserver.de (mreue108 [212.227.15.145]) with ESMTPA (Nemesis) id
+ 1Mc06b-1kviHD2F9r-00dUgU; Thu, 08 Oct 2020 14:34:37 +0200
+From:   Arnd Bergmann <arnd@arndb.de>
+To:     Geert Uytterhoeven <geert@linux-m68k.org>
+Cc:     Arnd Bergmann <arnd@arndb.de>, Greg Ungerer <gerg@linux-m68k.org>,
+        linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] m68k: avoid xchg() warning
+Date:   Thu,  8 Oct 2020 14:34:04 +0200
+Message-Id: <20201008123429.1133896-1-arnd@arndb.de>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAK8P3a0UHEsND+vJjhtj2GKQpMjMCqD55vQ9+2u-SCrThe3wTw@mail.gmail.com>
-X-CMAE-Score: 0
-X-CMAE-Analysis: v=2.3 cv=fu7ymmwf c=1 sm=1 tr=0
-        a=S6zTFyMACwkrwXSdXUNehg==:117 a=S6zTFyMACwkrwXSdXUNehg==:17
-        a=kj9zAlcOel0A:10 a=e5mUnYsNAAAA:8 a=9jrUWy9R0_lckN2VWKQA:9
-        a=CjuIK1q_8ugA:10 a=Vxmtnl_E_bksehYqCbjh:22
+Content-Transfer-Encoding: 8bit
+X-Provags-ID: V03:K1:I+9wR8oh7607EOHEdvNpIMSS6YsdYkrjnvM8U1fKs03vgNed7Sd
+ ETQk6e3YUOZqq1DGvZiyk38v/6qe7oF5eD8BkHzo2ie4GRM3ioP1C7mCFsITvD2HwoUyocZ
+ e2lVd7u5vP7YHQ6GM04Vmudw91EzW8iJ+UnlxLVDpg5K1QEeqPqYtetRL2r/dRi/tFE/DZW
+ u5N5o8K/cFYf2d42h/J+w==
+X-UI-Out-Filterresults: notjunk:1;V03:K0:WIq8Vn22CvA=:R72ll13MwBmZy71UmvPEXk
+ /onrvpLxj7arDjjfhgZloR8fqEzN3vHRcSWCsfnUvGlA/+NpTnVUJTzSejQkSOcCc+CzVuT/E
+ 6X6Z2r+7cDphDDzk997c+uOtlyK1blyem8c+99wkMniSPph0QUhTpUAT6N8HASrDiRQ9XK83/
+ TV/Y+wct7d6wXUps+xpdenAEucQrlO+t4phqRl/htKIuUWsCt18TkLZbv+nsX0pn87GmPcUIE
+ j7oFQLmjhq7/Y6kvsbfFPUGQN+8djJb9xT23uUApIY56wPtsGD8xm1XiIZE3FNsSR3XXe2pck
+ II7PxFLOPE6fFLXZnZRWnUeym6qQ3rKNLq44kqhVfPaEM1Md3ocS3JMIFy03s+wlKy+YJGZRZ
+ XjLv/OmenJ7pzNnY0tw8VZGUtC8cXr6RwtOmPR87uX47JbtaNcX7Elp7ZiIw2bLx8sUH0cCWF
+ MrpiwzfCBPOubzkh/AY3674R/8ycwZbdHhJsvW8N953F3TTXQVvsW4BZfOxzmZBdiNhFeLjmV
+ 1RdBN7kJ6fshrZTSFQlW8xtJ/krazKGmcuv5Vslxw24t6C79rrrwkkK2U7vW9kdDRDS9S70a5
+ zxHDjRgxrFs+D6xQZjLXtqSVSFCIT4Q1tUDw/egVgw6v0Amry+dUjvcwJNkdlrTuvcSGzLIjp
+ 1j9u5IBwfS+WZW041tY9dOHEBtbHGYN8JkF6j0/XUQKMsrgcIUpcyJbgrjq7ASTOSh4YMdko3
+ Dub+Cc6nJhjutJdUmlG/UoNG5oW90aQwpCxL9EjgfC0PT3h82ZdNovkGbZQ6RHrRgimATaidB
+ ft+t13Juj5Qe89g4jcJ/E8u0SutMgeyunTmM5H4xdlXrLAIYNBZmU9ZX1V4XTCjX8ezPhDS
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-Hi Arnd.
+gcc warns about the value of xchg()/cmpxchg() being unused
+in some cases:
 
-On Wed, Oct 07, 2020 at 10:54:19AM +0200, Arnd Bergmann wrote:
-> On Wed, Oct 7, 2020 at 9:44 AM Christoph Hellwig <hch@lst.de> wrote:
-> >
-> > There are no actual implementations of FBIOSCURSOR/FBIOGCURSOR left, so
-> > don't bother with a compat handler for it, and remove the remaining
-> > definitions as well.
-> >
-> > Signed-off-by: Christoph Hellwig <hch@lst.de>
-> 
-> I had submitted a similar patch earlier, and Sam Ravnborg applied it to the
-> drm-misc tree, but it doesn't seem to be in linux-next, so I don't know
-> what the state is.
-> 
-> My version only removed the compat handling, not the data structures,
-> so I'm happy to see your version used instead if mine got lost.
-> 
-> Acked-by: Arnd Bergmann <arnd@arndb.de>
+net/core/filter.c: In function 'bpf_clear_redirect_map':
+arch/m68k/include/asm/cmpxchg.h:137:3: warning: value computed is not used [-Wunused-value]
+  106 | #define cmpxchg(ptr, o, n) cmpxchg_local((ptr), (o), (n))
+net/core/filter.c:3595:4: note: in expansion of macro 'cmpxchg'
+ 3595 |    cmpxchg(&ri->map, map, NULL);
 
-I think the patches got applied to drm-misc-next *after* the final push
-to -next for the current merge window.
-So the patches are lingering in drm-misc-next waiting for the upcoming
-merge window to comple before they are pushed to linux-next.
-So for now the patches are only visible if one pulls drm-misc and checks
-out drm-misc-next branch.
+Shut up that warning like we do on other architectures, by
+turning the macro into a statement expression.
 
-Pulling a fresh drm-misc tree just to be 100% sure .......
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+---
+ arch/m68k/include/asm/cmpxchg.h | 10 +++++-----
+ 1 file changed, 5 insertions(+), 5 deletions(-)
 
-Yep, patches are there when I pull a fresh tree and mripard just
-confirmed on irc that he sees them in his drm-misc-next repo.
-
-I am working with git.freedesktop.org/git/drm/drm-misc.
-
-	Sam
+diff --git a/arch/m68k/include/asm/cmpxchg.h b/arch/m68k/include/asm/cmpxchg.h
+index 3a3bdcfcd375..a4aa82021d3b 100644
+--- a/arch/m68k/include/asm/cmpxchg.h
++++ b/arch/m68k/include/asm/cmpxchg.h
+@@ -76,7 +76,7 @@ static inline unsigned long __xchg(unsigned long x, volatile void * ptr, int siz
+ }
+ #endif
+ 
+-#define xchg(ptr,x) ((__typeof__(*(ptr)))__xchg((unsigned long)(x),(ptr),sizeof(*(ptr))))
++#define xchg(ptr,x) ({(__typeof__(*(ptr)))__xchg((unsigned long)(x),(ptr),sizeof(*(ptr)));})
+ 
+ #include <asm-generic/cmpxchg-local.h>
+ 
+@@ -119,11 +119,11 @@ static inline unsigned long __cmpxchg(volatile void *p, unsigned long old,
+ }
+ 
+ #define cmpxchg(ptr, o, n)						    \
+-	((__typeof__(*(ptr)))__cmpxchg((ptr), (unsigned long)(o),	    \
+-			(unsigned long)(n), sizeof(*(ptr))))
++	({(__typeof__(*(ptr)))__cmpxchg((ptr), (unsigned long)(o),	    \
++			(unsigned long)(n), sizeof(*(ptr)));})
+ #define cmpxchg_local(ptr, o, n)					    \
+-	((__typeof__(*(ptr)))__cmpxchg((ptr), (unsigned long)(o),	    \
+-			(unsigned long)(n), sizeof(*(ptr))))
++	({(__typeof__(*(ptr)))__cmpxchg((ptr), (unsigned long)(o),	    \
++			(unsigned long)(n), sizeof(*(ptr)));})
+ 
+ #define cmpxchg64(ptr, o, n)	cmpxchg64_local((ptr), (o), (n))
+ 
+-- 
+2.27.0
 
