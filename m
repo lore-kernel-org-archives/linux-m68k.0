@@ -2,73 +2,116 @@ Return-Path: <SRS0=v436=DT=vger.kernel.org=linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-12.8 required=3.0 tests=BAYES_00,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PULL_REQUEST,MAILING_LIST_MULTI,
+	MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 32C38C433E7
-	for <linux-m68k@archiver.kernel.org>; Mon, 12 Oct 2020 04:34:49 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 32FCBC433DF
+	for <linux-m68k@archiver.kernel.org>; Mon, 12 Oct 2020 12:09:10 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id F17E420757
-	for <linux-m68k@archiver.kernel.org>; Mon, 12 Oct 2020 04:34:48 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 0AB1E20735
+	for <linux-m68k@archiver.kernel.org>; Mon, 12 Oct 2020 12:09:10 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726846AbgJLEes (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Mon, 12 Oct 2020 00:34:48 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38116 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726431AbgJLEes (ORCPT <rfc822;linux-m68k@vger.kernel.org>);
-        Mon, 12 Oct 2020 00:34:48 -0400
-Received: from goober.digi.com (unknown [103.48.210.53])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 128A42073A;
-        Mon, 12 Oct 2020 04:34:46 +0000 (UTC)
-From:   Greg Ungerer <gerg@linux-m68k.org>
-To:     linux-m68k@vger.kernel.org
-Cc:     Greg Ungerer <gerg@linux-m68k.org>
-Subject: [PATCH] m68knommu: align BSS section to 4-byte boundaries
-Date:   Mon, 12 Oct 2020 14:34:32 +1000
-Message-Id: <20201012043432.787588-1-gerg@linux-m68k.org>
-X-Mailer: git-send-email 2.25.1
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        id S2388436AbgJLMJJ (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Mon, 12 Oct 2020 08:09:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45068 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2388382AbgJLMJJ (ORCPT
+        <rfc822;linux-m68k@lists.linux-m68k.org>);
+        Mon, 12 Oct 2020 08:09:09 -0400
+Received: from albert.telenet-ops.be (albert.telenet-ops.be [IPv6:2a02:1800:110:4::f00:1a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 18BADC0613D0
+        for <linux-m68k@lists.linux-m68k.org>; Mon, 12 Oct 2020 05:09:08 -0700 (PDT)
+Received: from ramsan ([84.195.186.194])
+        by albert.telenet-ops.be with bizsmtp
+        id f0952300w4C55Sk06095aF; Mon, 12 Oct 2020 14:09:05 +0200
+Received: from rox.of.borg ([192.168.97.57])
+        by ramsan with esmtp (Exim 4.90_1)
+        (envelope-from <geert@linux-m68k.org>)
+        id 1kRwdV-0005XZ-NS; Mon, 12 Oct 2020 14:09:05 +0200
+Received: from geert by rox.of.borg with local (Exim 4.90_1)
+        (envelope-from <geert@linux-m68k.org>)
+        id 1kRwdV-0003OP-Kn; Mon, 12 Oct 2020 14:09:05 +0200
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Greg Ungerer <gerg@linux-m68k.org>,
+        linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org,
+        Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: [GIT PULL] m68k updates for 5.10
+Date:   Mon, 12 Oct 2020 14:09:04 +0200
+Message-Id: <20201012120904.12998-1-geert@linux-m68k.org>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-The kernel start up code for all of the nommu m68k types expects the
-BSS section to be on a 4-byte boundary, and to be a whole number of 32bit
-words. The BSS initialization loop sets 32bit sized quantities and has
-no provision for odd or unaligned accesses.
+	Hi Linus,
 
-Although this has always been the case, in practice the BSS was typically
-aligned and sized this way. The problem was first observed after commit
-7273ad2b08f8 ("kbuild: link lib-y objects to vmlinux forcibly when
-CONFIG_MODULES=y"). Some kernel builds, depending on exact configuration,
-then tended to generate even sized BSS sections - which is valid on m68k -
-but our BSS init code could not handle properly.
+The following changes since commit 9123e3a74ec7b934a4a099e98af6a61c2f80bbf5:
 
-The simplest and smallest solution is to align the BSS appropriately.
+  Linux 5.9-rc1 (2020-08-16 13:04:57 -0700)
 
-Signed-off-by: Greg Ungerer <gerg@linux-m68k.org>
----
- arch/m68k/kernel/vmlinux-nommu.lds | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+are available in the Git repository at:
 
-diff --git a/arch/m68k/kernel/vmlinux-nommu.lds b/arch/m68k/kernel/vmlinux-nommu.lds
-index 7b975420c3d9..730bb653f9c1 100644
---- a/arch/m68k/kernel/vmlinux-nommu.lds
-+++ b/arch/m68k/kernel/vmlinux-nommu.lds
-@@ -82,7 +82,7 @@ SECTIONS {
- 		__init_end = .;
- 	}
- 
--	BSS_SECTION(0, 0, 0)
-+	BSS_SECTION(4, 0, 4)
- 
- 	_end = .;
- 
--- 
-2.25.1
+  git://git.kernel.org/pub/scm/linux/kernel/git/geert/linux-m68k.git tags/m68k-for-v5.10-tag1
 
+for you to fetch changes up to 50c5feeea0af99a4401fd54fd72bec1333a496ca:
+
+  ide/macide: Convert Mac IDE driver to platform driver (2020-09-28 10:48:17 +0200)
+
+----------------------------------------------------------------
+m68k updates for v5.10
+
+  - Conversion of the Mac IDE driver to a platform driver,
+  - Minor cleanups and fixes.
+
+Thanks for pulling!
+
+----------------------------------------------------------------
+Alexander A. Klimov (1):
+      m68k: Replace HTTP links with HTTPS ones
+
+Christoph Hellwig (1):
+      m68k: Use get_kernel_nofault() in show_registers()
+
+Finn Thain (2):
+      m68k: Correct some typos in comments
+      ide/macide: Convert Mac IDE driver to platform driver
+
+Geert Uytterhoeven (7):
+      m68k: amiga: Fix Denise detection on OCS
+      zorro: Fix address space collision message with RAM expansion boards
+      m68k: Revive _TIF_* masks
+      m68k: amiga: Clean up Amiga hardware configuration
+      m68k: Sort selects in main Kconfig
+      m68k: mm: Use PAGE_ALIGNED() helper
+      m68k: mm: Remove superfluous memblock_alloc*() casts
+
+ arch/m68k/Kconfig                   |  24 ++++----
+ arch/m68k/amiga/config.c            | 118 ++++++++++++++++++------------------
+ arch/m68k/configs/mac_defconfig     |   1 +
+ arch/m68k/configs/multi_defconfig   |   1 +
+ arch/m68k/include/asm/thread_info.h |   8 +++
+ arch/m68k/kernel/head.S             |  16 ++---
+ arch/m68k/kernel/traps.c            |   5 +-
+ arch/m68k/mac/config.c              |  41 +++++++++++++
+ arch/m68k/mac/macboing.c            |   2 +-
+ arch/m68k/mm/mcfmmu.c               |   2 +-
+ arch/m68k/mm/motorola.c             |   9 ++-
+ drivers/ide/Kconfig                 |   7 ++-
+ drivers/ide/macide.c                |  66 +++++++++++++-------
+ drivers/zorro/zorro.c               |   2 +-
+ 14 files changed, 184 insertions(+), 118 deletions(-)
+
+Gr{oetje,eeting}s,
+
+						Geert
+
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+							    -- Linus Torvalds
