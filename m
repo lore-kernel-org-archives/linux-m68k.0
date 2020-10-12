@@ -6,44 +6,44 @@ X-Spam-Status: No, score=-6.7 required=3.0 tests=BAYES_00,
 	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,
 	SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A4CBFC433DF
-	for <linux-m68k@archiver.kernel.org>; Mon, 12 Oct 2020 13:14:46 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id BA230C4363A
+	for <linux-m68k@archiver.kernel.org>; Mon, 12 Oct 2020 13:15:20 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 65F3F2065D
-	for <linux-m68k@archiver.kernel.org>; Mon, 12 Oct 2020 13:14:46 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 7FAB82076E
+	for <linux-m68k@archiver.kernel.org>; Mon, 12 Oct 2020 13:15:20 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730578AbgJLNOq (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Mon, 12 Oct 2020 09:14:46 -0400
-Received: from mail-ot1-f68.google.com ([209.85.210.68]:37039 "EHLO
-        mail-ot1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730555AbgJLNOm (ORCPT
+        id S2388709AbgJLNPM (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Mon, 12 Oct 2020 09:15:12 -0400
+Received: from mail-oi1-f195.google.com ([209.85.167.195]:45927 "EHLO
+        mail-oi1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2388548AbgJLNPL (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Mon, 12 Oct 2020 09:14:42 -0400
-Received: by mail-ot1-f68.google.com with SMTP id m22so4362375ots.4
-        for <linux-m68k@lists.linux-m68k.org>; Mon, 12 Oct 2020 06:14:40 -0700 (PDT)
+        Mon, 12 Oct 2020 09:15:11 -0400
+Received: by mail-oi1-f195.google.com with SMTP id j7so1101801oie.12
+        for <linux-m68k@lists.linux-m68k.org>; Mon, 12 Oct 2020 06:15:11 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=fbLIhCOPNSjWOQaghAyPRVWzbVrxqBRGdH57khM7u7E=;
-        b=d0mT4WeWqduOj83iCqX4c6lXIAS/4N7i7hbh5O3s0UpPh+LPt2l8QlE9sa0eNUatpS
-         XhgVYykQMcYjAUq0BPhI8AZEiz+ynaFIUa4DXoFJfGsi8DLtHeTvJMvEjryGh7iKjcMJ
-         QOjHHyHHRVnzcolTDOCNLug9yXxGAiDpDbogqWtXg4HqvbfWNO9WJwaJ3T75FIoRVb4D
-         xH1rq5WagAR4Bg/BBoCr83rzhYpLZEHCvVGTTTm/2pR9+yg/C6sxcpsTj322s+IYsh79
-         6a4E58/cfl32gPm90hk2vkA6juRX6HeG/EYzHqtirAZJRmI2dY2dv8973rVcZEEmxUlF
-         JcWg==
-X-Gm-Message-State: AOAM5305V2xDGwcX8AVO+H0odeiyBSn+eHLD7wN8SBv4IZ7jOwT2f9kd
-        dDDcmtI0hEVdmH+ibOgPtVMiY/wfT8XHuAx0O3s=
-X-Google-Smtp-Source: ABdhPJxQ5OO/ggjyZpIV+Sqss7Q3IkWkzvdN60XWu45G9tXKXUPSGXGSLle8lOet30oUW8t+MfpiF57J8C2ncxOc0R4=
-X-Received: by 2002:a9d:3b76:: with SMTP id z109mr18910378otb.250.1602508478612;
- Mon, 12 Oct 2020 06:14:38 -0700 (PDT)
+        bh=HpOWl2K8xGZe8ObyWcT/Rs8C0sopZbqbVvo88pQRdW8=;
+        b=B6zpGr/UyFFMbZ9o8vw8Xf+Np8Mwn6ne1l0nY0hCTKWiGmJ5GYl+sX4OPlhKeV5lOo
+         g77QIbnGOkJ1iptMnkRVL4Xz/bT3fnkoRT7UkdApqHURICw32DR6ZHGtwCdDlbYn6CEc
+         vk65XKvXglkGqXGxGIvlW6D2N2LXuBRi13TfGE0X9tboKj/oEbgSf97iBWAnxHr8n8zH
+         6Pf0iJRycAab4wJTl1+tYZNssLDXzc4Lp5Js+YbAdyynyHy7XRmXTV3ux16TFMSR5Lex
+         9xlgx88DA9Be0nwXvatw59chXdDtnX66DW10/7pvUahLC1ZcjVgKWI7pSKBsekJZ7tKX
+         aAKQ==
+X-Gm-Message-State: AOAM531aad4/WotO40MP6NkGLe79woLdkhNLCx0yIDnn3di4WdGsZKQv
+        BsEl5vmTcjlu/v1nwjmg5SkY8D8UieuvxliUKqs=
+X-Google-Smtp-Source: ABdhPJx4N97WaNtxkBiGWavGJamYpC2k/3nsjt/ifSHOvJJxlsVXZ3k/2Mj9uJqTjcLeGamsrfAVV4ILuEa2QQZHLEA=
+X-Received: by 2002:aca:c490:: with SMTP id u138mr10798781oif.54.1602508510780;
+ Mon, 12 Oct 2020 06:15:10 -0700 (PDT)
 MIME-Version: 1.0
-References: <20201008154651.1901126-1-arnd@arndb.de> <20201008154651.1901126-2-arnd@arndb.de>
-In-Reply-To: <20201008154651.1901126-2-arnd@arndb.de>
+References: <20201008154651.1901126-1-arnd@arndb.de> <20201008154651.1901126-7-arnd@arndb.de>
+In-Reply-To: <20201008154651.1901126-7-arnd@arndb.de>
 From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Mon, 12 Oct 2020 15:14:27 +0200
-Message-ID: <CAMuHMdW22uxMj3=Yfyz9uZoofT_aNxL2kV6UERgAYbRcw7yb2w@mail.gmail.com>
-Subject: Re: [PATCH 01/13] timekeeping: add CONFIG_LEGACY_TIMER_TICK
+Date:   Mon, 12 Oct 2020 15:14:59 +0200
+Message-ID: <CAMuHMdWPcw39MZotZtBP-b_CiiaX0iyys5SyuK6TYQQZ0+k_PQ@mail.gmail.com>
+Subject: Re: [PATCH 06/13] m68k: split heartbeat out of timer function
 To:     Arnd Bergmann <arnd@arndb.de>
 Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
         Russell King <linux@armlinux.org.uk>,
@@ -70,18 +70,21 @@ Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-On Thu, Oct 8, 2020 at 5:47 PM Arnd Bergmann <arnd@arndb.de> wrote:
-> All platforms that currently do not use generic clockevents roughly call
-> the same set of functions in their timer interrupts: xtime_update(),
-> update_process_times() and profile_tick(), sometimes in a different
-> sequence.
+On Thu, Oct 8, 2020 at 5:48 PM Arnd Bergmann <arnd@arndb.de> wrote:
+> The heartbeat functionality is mostly separate from the
+> actual timer interrupt handling, and it is only used on
+> five platforms.
 >
-> Add a helper function that performs all three of them, to make the
-> callers more uniform and simplify the interface.
+> Split it out into a separate function and call that directly
+> from the timer irq on those platforms.
 >
 > Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 
 Reviewed-by: Geert Uytterhoeven <geert@linux-m68k.org>
+Acked-by: Geert Uytterhoeven <geert@linux-m68k.org>
+
+And finally (for Amiga):
+Tested-by: Geert Uytterhoeven <geert@linux-m68k.org>
 
 Gr{oetje,eeting}s,
 
