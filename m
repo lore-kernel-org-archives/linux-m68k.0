@@ -2,116 +2,95 @@ Return-Path: <SRS0=v436=DT=vger.kernel.org=linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PULL_REQUEST,MAILING_LIST_MULTI,
-	MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-6.7 required=3.0 tests=BAYES_00,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,
+	SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 32FCBC433DF
-	for <linux-m68k@archiver.kernel.org>; Mon, 12 Oct 2020 12:09:10 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A4CBFC433DF
+	for <linux-m68k@archiver.kernel.org>; Mon, 12 Oct 2020 13:14:46 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 0AB1E20735
-	for <linux-m68k@archiver.kernel.org>; Mon, 12 Oct 2020 12:09:10 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 65F3F2065D
+	for <linux-m68k@archiver.kernel.org>; Mon, 12 Oct 2020 13:14:46 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388436AbgJLMJJ (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Mon, 12 Oct 2020 08:09:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45068 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388382AbgJLMJJ (ORCPT
+        id S1730578AbgJLNOq (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Mon, 12 Oct 2020 09:14:46 -0400
+Received: from mail-ot1-f68.google.com ([209.85.210.68]:37039 "EHLO
+        mail-ot1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730555AbgJLNOm (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Mon, 12 Oct 2020 08:09:09 -0400
-Received: from albert.telenet-ops.be (albert.telenet-ops.be [IPv6:2a02:1800:110:4::f00:1a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 18BADC0613D0
-        for <linux-m68k@lists.linux-m68k.org>; Mon, 12 Oct 2020 05:09:08 -0700 (PDT)
-Received: from ramsan ([84.195.186.194])
-        by albert.telenet-ops.be with bizsmtp
-        id f0952300w4C55Sk06095aF; Mon, 12 Oct 2020 14:09:05 +0200
-Received: from rox.of.borg ([192.168.97.57])
-        by ramsan with esmtp (Exim 4.90_1)
-        (envelope-from <geert@linux-m68k.org>)
-        id 1kRwdV-0005XZ-NS; Mon, 12 Oct 2020 14:09:05 +0200
-Received: from geert by rox.of.borg with local (Exim 4.90_1)
-        (envelope-from <geert@linux-m68k.org>)
-        id 1kRwdV-0003OP-Kn; Mon, 12 Oct 2020 14:09:05 +0200
+        Mon, 12 Oct 2020 09:14:42 -0400
+Received: by mail-ot1-f68.google.com with SMTP id m22so4362375ots.4
+        for <linux-m68k@lists.linux-m68k.org>; Mon, 12 Oct 2020 06:14:40 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=fbLIhCOPNSjWOQaghAyPRVWzbVrxqBRGdH57khM7u7E=;
+        b=d0mT4WeWqduOj83iCqX4c6lXIAS/4N7i7hbh5O3s0UpPh+LPt2l8QlE9sa0eNUatpS
+         XhgVYykQMcYjAUq0BPhI8AZEiz+ynaFIUa4DXoFJfGsi8DLtHeTvJMvEjryGh7iKjcMJ
+         QOjHHyHHRVnzcolTDOCNLug9yXxGAiDpDbogqWtXg4HqvbfWNO9WJwaJ3T75FIoRVb4D
+         xH1rq5WagAR4Bg/BBoCr83rzhYpLZEHCvVGTTTm/2pR9+yg/C6sxcpsTj322s+IYsh79
+         6a4E58/cfl32gPm90hk2vkA6juRX6HeG/EYzHqtirAZJRmI2dY2dv8973rVcZEEmxUlF
+         JcWg==
+X-Gm-Message-State: AOAM5305V2xDGwcX8AVO+H0odeiyBSn+eHLD7wN8SBv4IZ7jOwT2f9kd
+        dDDcmtI0hEVdmH+ibOgPtVMiY/wfT8XHuAx0O3s=
+X-Google-Smtp-Source: ABdhPJxQ5OO/ggjyZpIV+Sqss7Q3IkWkzvdN60XWu45G9tXKXUPSGXGSLle8lOet30oUW8t+MfpiF57J8C2ncxOc0R4=
+X-Received: by 2002:a9d:3b76:: with SMTP id z109mr18910378otb.250.1602508478612;
+ Mon, 12 Oct 2020 06:14:38 -0700 (PDT)
+MIME-Version: 1.0
+References: <20201008154651.1901126-1-arnd@arndb.de> <20201008154651.1901126-2-arnd@arndb.de>
+In-Reply-To: <20201008154651.1901126-2-arnd@arndb.de>
 From:   Geert Uytterhoeven <geert@linux-m68k.org>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
+Date:   Mon, 12 Oct 2020 15:14:27 +0200
+Message-ID: <CAMuHMdW22uxMj3=Yfyz9uZoofT_aNxL2kV6UERgAYbRcw7yb2w@mail.gmail.com>
+Subject: Re: [PATCH 01/13] timekeeping: add CONFIG_LEGACY_TIMER_TICK
+To:     Arnd Bergmann <arnd@arndb.de>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Russell King <linux@armlinux.org.uk>,
+        Tony Luck <tony.luck@intel.com>,
+        Fenghua Yu <fenghua.yu@intel.com>,
         Greg Ungerer <gerg@linux-m68k.org>,
-        linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org,
-        Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: [GIT PULL] m68k updates for 5.10
-Date:   Mon, 12 Oct 2020 14:09:04 +0200
-Message-Id: <20201012120904.12998-1-geert@linux-m68k.org>
-X-Mailer: git-send-email 2.17.1
+        Finn Thain <fthain@telegraphics.com.au>,
+        Philip Blundell <philb@gnu.org>,
+        Joshua Thompson <funaho@jurai.org>,
+        Sam Creasey <sammy@sammy.net>,
+        "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
+        Helge Deller <deller@gmx.de>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        John Stultz <john.stultz@linaro.org>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        "linux-ia64@vger.kernel.org" <linux-ia64@vger.kernel.org>,
+        Parisc List <linux-parisc@vger.kernel.org>,
+        linux-m68k <linux-m68k@lists.linux-m68k.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-	Hi Linus,
+On Thu, Oct 8, 2020 at 5:47 PM Arnd Bergmann <arnd@arndb.de> wrote:
+> All platforms that currently do not use generic clockevents roughly call
+> the same set of functions in their timer interrupts: xtime_update(),
+> update_process_times() and profile_tick(), sometimes in a different
+> sequence.
+>
+> Add a helper function that performs all three of them, to make the
+> callers more uniform and simplify the interface.
+>
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 
-The following changes since commit 9123e3a74ec7b934a4a099e98af6a61c2f80bbf5:
-
-  Linux 5.9-rc1 (2020-08-16 13:04:57 -0700)
-
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/geert/linux-m68k.git tags/m68k-for-v5.10-tag1
-
-for you to fetch changes up to 50c5feeea0af99a4401fd54fd72bec1333a496ca:
-
-  ide/macide: Convert Mac IDE driver to platform driver (2020-09-28 10:48:17 +0200)
-
-----------------------------------------------------------------
-m68k updates for v5.10
-
-  - Conversion of the Mac IDE driver to a platform driver,
-  - Minor cleanups and fixes.
-
-Thanks for pulling!
-
-----------------------------------------------------------------
-Alexander A. Klimov (1):
-      m68k: Replace HTTP links with HTTPS ones
-
-Christoph Hellwig (1):
-      m68k: Use get_kernel_nofault() in show_registers()
-
-Finn Thain (2):
-      m68k: Correct some typos in comments
-      ide/macide: Convert Mac IDE driver to platform driver
-
-Geert Uytterhoeven (7):
-      m68k: amiga: Fix Denise detection on OCS
-      zorro: Fix address space collision message with RAM expansion boards
-      m68k: Revive _TIF_* masks
-      m68k: amiga: Clean up Amiga hardware configuration
-      m68k: Sort selects in main Kconfig
-      m68k: mm: Use PAGE_ALIGNED() helper
-      m68k: mm: Remove superfluous memblock_alloc*() casts
-
- arch/m68k/Kconfig                   |  24 ++++----
- arch/m68k/amiga/config.c            | 118 ++++++++++++++++++------------------
- arch/m68k/configs/mac_defconfig     |   1 +
- arch/m68k/configs/multi_defconfig   |   1 +
- arch/m68k/include/asm/thread_info.h |   8 +++
- arch/m68k/kernel/head.S             |  16 ++---
- arch/m68k/kernel/traps.c            |   5 +-
- arch/m68k/mac/config.c              |  41 +++++++++++++
- arch/m68k/mac/macboing.c            |   2 +-
- arch/m68k/mm/mcfmmu.c               |   2 +-
- arch/m68k/mm/motorola.c             |   9 ++-
- drivers/ide/Kconfig                 |   7 ++-
- drivers/ide/macide.c                |  66 +++++++++++++-------
- drivers/zorro/zorro.c               |   2 +-
- 14 files changed, 184 insertions(+), 118 deletions(-)
+Reviewed-by: Geert Uytterhoeven <geert@linux-m68k.org>
 
 Gr{oetje,eeting}s,
 
-						Geert
+                        Geert
+
 
 --
 Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
 In personal conversations with technical people, I call myself a hacker. But
 when I'm talking to journalists I just say "programmer" or something like that.
-							    -- Linus Torvalds
+                                -- Linus Torvalds
