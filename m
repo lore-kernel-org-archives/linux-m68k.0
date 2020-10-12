@@ -6,44 +6,44 @@ X-Spam-Status: No, score=-6.7 required=3.0 tests=BAYES_00,
 	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,
 	SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3F0F3C433DF
-	for <linux-m68k@archiver.kernel.org>; Mon, 12 Oct 2020 13:16:04 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 075C6C433E7
+	for <linux-m68k@archiver.kernel.org>; Mon, 12 Oct 2020 13:16:14 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 0C4B92065D
-	for <linux-m68k@archiver.kernel.org>; Mon, 12 Oct 2020 13:16:04 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id CF4162065D
+	for <linux-m68k@archiver.kernel.org>; Mon, 12 Oct 2020 13:16:13 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388756AbgJLNQD (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Mon, 12 Oct 2020 09:16:03 -0400
-Received: from mail-oo1-f65.google.com ([209.85.161.65]:45064 "EHLO
-        mail-oo1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388721AbgJLNQD (ORCPT
+        id S2388807AbgJLNQK (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Mon, 12 Oct 2020 09:16:10 -0400
+Received: from mail-oi1-f196.google.com ([209.85.167.196]:41353 "EHLO
+        mail-oi1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2388806AbgJLNQK (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Mon, 12 Oct 2020 09:16:03 -0400
-Received: by mail-oo1-f65.google.com with SMTP id x1so279090ooo.12
-        for <linux-m68k@lists.linux-m68k.org>; Mon, 12 Oct 2020 06:16:02 -0700 (PDT)
+        Mon, 12 Oct 2020 09:16:10 -0400
+Received: by mail-oi1-f196.google.com with SMTP id q136so17489026oic.8
+        for <linux-m68k@lists.linux-m68k.org>; Mon, 12 Oct 2020 06:16:09 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=tLQ9YunWIKqoe+aYDnxj7j3vxwL9TZbVGnFl2iqFMpI=;
-        b=Gp18+kMpxoUMshEmUP95WbdFcrlGu2TFx/DwI2GsmZSi2jnbyOzbaiNWodZVYWDAVG
-         MdaOwnHS3sDBtulCk9bc/7cEkh6q3Wrl0ch37cYM+CL/x9ax6B1UHIKQKWdmfBTQMJa8
-         3t4y0UGpGce7GPakXeVDbfyqlbQNrSvoef8l2gP/zIRvtfAD2rHUCuYHb66JwTIYtVoX
-         1Fw2D1Ds7D/oGMrObbz3qHCUZObXKCNl//mmYUJOTNS7TWjNbFSG8MbUCduvXp7fim11
-         gzmYDpr7Y3wvMRW5o7Q1ZTaur0VmtEnUbPwHthY6RHS2gtPM0nGaoFC5Qc8G0nqhhGR3
-         veJA==
-X-Gm-Message-State: AOAM5320A1MaRHA83NjPi3ZlpbrNR65KanHLwOk8kw92DHpunvlWHOy0
-        xYnG1EI4iLGUgC1CG3kfgjUVTkm0VODggkTPwWY=
-X-Google-Smtp-Source: ABdhPJy4En79gxB2k+49ecp+szepSXrwDIHHt78jsB5/HEmEcFlQC2kZ28isWhIx+lbYv7co1E5K8qggiNkVoAFaKzc=
-X-Received: by 2002:a4a:4f17:: with SMTP id c23mr18858278oob.11.1602508562529;
- Mon, 12 Oct 2020 06:16:02 -0700 (PDT)
+        bh=sSubvuvsRqa9Us4jIiX4BQlzCXkcEfFKaZCMlzTTvKk=;
+        b=Ud6h+9HzkPHIli3trrkXd6Mf4FvWEDji7f4SLZKvODqyhWja9cU+FfLt36WmCEeuX4
+         rkxkxa6Cb+uc9Mku0RfhSlOXpjpQ6JGX/3QmK6e+EOYTjed3d0W87GQKuqKBsV7fZ24E
+         4vz9vhtsMXcu1c5Td/5PwmYKnC6Q87at6U+AFM3WHfqyVfUYIlizIpWz92TJKuQxozm+
+         H9E5vt9p8EQs8KY0x/CFNT3eA/0PdKuXL7aDRVB/cohE1KGZalZEgpXy2Vq1+2lWU0Z9
+         vlhoSGuD4WacC27hLKkZWkHx57Ib1DiF2VVnqf7630JteExXOaXTKoeMF9o8jTmQX/q0
+         OX4g==
+X-Gm-Message-State: AOAM533XqtY+wN8NnI8E6qORR3oWdfTSChWbsyma88hSPSlApiMihyE0
+        qgLyZoPQpk5AJsN/Zd6SpCD2QmWrIBu8unyk3U8=
+X-Google-Smtp-Source: ABdhPJxQjws2mloxhrfVwndzh+qyK0VtTyyW1Ebe38OYBVK7LU+s7UXVE4pdXujubm9vT9JX1He1wqHhh6JroodbfYI=
+X-Received: by 2002:aca:4441:: with SMTP id r62mr10155966oia.153.1602508568842;
+ Mon, 12 Oct 2020 06:16:08 -0700 (PDT)
 MIME-Version: 1.0
-References: <20201008154651.1901126-1-arnd@arndb.de> <20201008154651.1901126-12-arnd@arndb.de>
-In-Reply-To: <20201008154651.1901126-12-arnd@arndb.de>
+References: <20201008154651.1901126-1-arnd@arndb.de> <20201008154651.1901126-13-arnd@arndb.de>
+In-Reply-To: <20201008154651.1901126-13-arnd@arndb.de>
 From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Mon, 12 Oct 2020 15:15:51 +0200
-Message-ID: <CAMuHMdU7bn7rzG-0xzr4St1uArGoOhw6dy7HCkrHRvYqM38Wxg@mail.gmail.com>
-Subject: Re: [PATCH 11/13] timekeeping: remove xtime_update
+Date:   Mon, 12 Oct 2020 15:15:57 +0200
+Message-ID: <CAMuHMdWS5JoXho97oxcavE_OFdv+tnr+da1WV_D7sOE_YbxQxA@mail.gmail.com>
+Subject: Re: [PATCH 12/13] timekeeping: default GENERIC_CLOCKEVENTS to enabled
 To:     Arnd Bergmann <arnd@arndb.de>
 Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
         Russell King <linux@armlinux.org.uk>,
@@ -70,33 +70,45 @@ Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-Hi Arnd,
-
 On Thu, Oct 8, 2020 at 5:48 PM Arnd Bergmann <arnd@arndb.de> wrote:
-> There are no more users of xtime_update aside from legacy_timer_tick(),
-> so fold it into that function and remove the declaration.
+> Almost all machines use GENERIC_CLOCKEVENTS, so it feels wrong to
+> require each one to select that symbol manually.
 >
-> update_process_times() is now only called inside of the kernel/time/
-> code, so the declaration can be moved there.
+> Instead, enable it whenever CONFIG_LEGACY_TIMER_TICK is disabled as
+> a simplification. It should be possible to select both
+> GENERIC_CLOCKEVENTS and LEGACY_TIMER_TICK from an architecture now
+> and decide at runtime between the two.
+>
+> For the clockevents arch-support.txt file, this means that additional
+> architectures are marked as TODO when they have at least one machine
+> that still uses LEGACY_TIMER_TICK, rather than being marked 'ok' when
+> at least one machine has been converted. This means that both m68k and
+> arm (for riscpc) revert to TODO.
+>
+> At this point, we could just always enable CONFIG_GENERIC_CLOCKEVENTS
+> rather than leaving it off when not needed. I built an m68k
+> defconfig kernel (using gcc-10.1.0) and found that this would add
+> around 5.5KB in kernel image size:
+>
+>    text    data     bss     dec     hex filename
+> 3861936 1092236  196656 5150828  4e986c obj-m68k/vmlinux-no-clockevent
+> 3866201 1093832  196184 5156217  4ead79 obj-m68k/vmlinux-clockevent
+>
+> On Arm (MACH_RPC), that difference appears to be twice as large,
+> around 11KB on top of an 6MB vmlinux.
 >
 > Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 
-Thanks for your patch!
-
 Reviewed-by: Geert Uytterhoeven <geert@linux-m68k.org>
 
-The comment about xtime_update() in arch/ia64/kernel/time.c needs
-an update.
-Does the comment about update_process_times() in
-arch/openrisc/kernel/time.c needs an update, too?
+>  arch/m68k/Kconfig.cpu                                |  1 -
 
-For Amiga and Atari/ARAnyM:
+Acked-by: Geert Uytterhoeven <geert@linux-m68k.org>
 Tested-by: Geert Uytterhoeven <geert@linux-m68k.org>
 
 Gr{oetje,eeting}s,
 
                         Geert
-
 
 --
 Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
