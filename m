@@ -1,424 +1,178 @@
-Return-Path: <SRS0=OQ2a=DW=vger.kernel.org=linux-m68k-owner@kernel.org>
+Return-Path: <SRS0=enim=DZ=vger.kernel.org=linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-12.8 required=3.0 tests=BAYES_00,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-3.7 required=3.0 tests=BAYES_00,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 81A94C433DF
-	for <linux-m68k@archiver.kernel.org>; Thu, 15 Oct 2020 12:33:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7A832C433DF
+	for <linux-m68k@archiver.kernel.org>; Sun, 18 Oct 2020 00:55:14 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 2170222258
-	for <linux-m68k@archiver.kernel.org>; Thu, 15 Oct 2020 12:33:39 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 4070E20EDD
+	for <linux-m68k@archiver.kernel.org>; Sun, 18 Oct 2020 00:55:14 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728740AbgJOMdi (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Thu, 15 Oct 2020 08:33:38 -0400
-Received: from mout.kundenserver.de ([212.227.126.131]:33109 "EHLO
-        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728617AbgJOMdi (ORCPT
+        id S2440051AbgJRAzN (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Sat, 17 Oct 2020 20:55:13 -0400
+Received: from kvm5.telegraphics.com.au ([98.124.60.144]:39742 "EHLO
+        kvm5.telegraphics.com.au" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2440034AbgJRAzN (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Thu, 15 Oct 2020 08:33:38 -0400
-Received: from localhost.localdomain ([46.223.126.90]) by
- mrelayeu.kundenserver.de (mreue009 [212.227.15.129]) with ESMTPA (Nemesis) id
- 1M42fA-1kT2Rp3cMi-0004oH; Thu, 15 Oct 2020 14:33:33 +0200
-From:   Arnd Bergmann <arnd@arndb.de>
-To:     Greg Ungerer <gerg@linux-m68k.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     Arnd Bergmann <arnd@arndb.de>, linux-m68k@lists.linux-m68k.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH 2/2] m68k: m68328: remove duplicate code
-Date:   Thu, 15 Oct 2020 14:32:37 +0200
-Message-Id: <20201015123258.2644027-2-arnd@arndb.de>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20201015123258.2644027-1-arnd@arndb.de>
-References: <20201015123258.2644027-1-arnd@arndb.de>
+        Sat, 17 Oct 2020 20:55:13 -0400
+Received: from localhost (localhost.localdomain [127.0.0.1])
+        by kvm5.telegraphics.com.au (Postfix) with ESMTP id C51E82A7EE;
+        Sat, 17 Oct 2020 20:55:06 -0400 (EDT)
+Date:   Sun, 18 Oct 2020 11:54:54 +1100 (AEDT)
+From:   Finn Thain <fthain@telegraphics.com.au>
+To:     Arnd Bergmann <arnd@arndb.de>
+cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Russell King <linux@armlinux.org.uk>,
+        Tony Luck <tony.luck@intel.com>,
+        Fenghua Yu <fenghua.yu@intel.com>,
+        Greg Ungerer <gerg@linux-m68k.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Philip Blundell <philb@gnu.org>,
+        Joshua Thompson <funaho@jurai.org>,
+        Sam Creasey <sammy@sammy.net>,
+        "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
+        Helge Deller <deller@gmx.de>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        John Stultz <john.stultz@linaro.org>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        linux-ia64@vger.kernel.org,
+        Parisc List <linux-parisc@vger.kernel.org>,
+        linux-m68k <linux-m68k@lists.linux-m68k.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>
+Subject: Re: [RFC 13/13] m68k: mac: convert to generic clockevent
+In-Reply-To: <CAK8P3a2ymv79j1edtJ983-VgjtxvT_6co7V0VRnHzcneW+0ZtA@mail.gmail.com>
+Message-ID: <alpine.LNX.2.23.453.2010180810010.6@nippy.intranet>
+References: <20201008154651.1901126-1-arnd@arndb.de> <20201008154651.1901126-14-arnd@arndb.de> <alpine.LNX.2.23.453.2010091900150.12@nippy.intranet> <CAK8P3a3rM7gJjdTtcKzr6yi15n6xs-yhEpmSOf3QHfahQwxqkw@mail.gmail.com> <alpine.LNX.2.23.453.2010150937430.16@nippy.intranet>
+ <CAK8P3a2ymv79j1edtJ983-VgjtxvT_6co7V0VRnHzcneW+0ZtA@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Provags-ID: V03:K1:Qs5XPB0DMKDmo5HinV7wV+DGUyuc14iU8GHrhhlQQRIYg6A5s7c
- xBRRckyRUtOb5e8rYfIW0U7GDr7aDo7SAPsE4N5VRDmse26ey49Hndi13QRkIw6mDYIxtZO
- GoS5ke1hIuORCiijppjK+iD3sMlIo/mvck/2DCyyEmt+5/60OomgtfpPTQgOX5XRuL93hGN
- FQckUcaRQqi3mCh/ix/Vw==
-X-UI-Out-Filterresults: notjunk:1;V03:K0:xSty4hrdJYw=:zY418HcdYy4/zSjzl0oMlB
- H1sEAlhgQ7Y60/A+Drop4D9i7hT3QZ2zmkqYdPUAxLiJTNRqCzt3TjTevIanGjapkUBE6bhX0
- N3vf4mZgN1gDCrM7/F5k2JoQNFad1cSv4b0y9auTZHho1sOafEDbZxw1jXQ6/14FPJiFCdbE9
- Gu8AZBZb42akQBU7Cx1Vk3ryBlz+OV7EwTwKqBtKjwNGTkwPbcxjKtNXdwA3cji2bdmUFzeIt
- G0TGGXibXfze/hW6ed896VQm9l5jppq4UoEslapdxSikkBZ7VFxllqezYtYLdtBbBhwcD4b7V
- vQKBHRLzrLNnIe9oUc7ae3Vn7rEcrZbg3lYuZ2i6iGg/2Ww7hNR4lEcGoA8GLjw2Gdrn3z/ZW
- LY8coVLwvU+feldM/b36FUtD7Y1mQWUeHKYEjSGuaiHDJOTVfg0X7BTCj3t6y
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-Building a kernel with multiple dragonball based boards
-enabled needlessly causes a link failure because of duplicate
-config_BSP() functions between the CPU versions.
+On Thu, 15 Oct 2020, Arnd Bergmann wrote:
 
-Avoid that merging the three almost identical files into one,
-and hiding the CPU configuration behind the board config.
-The pr_info() lines are consolidated in one place.
+> On Thu, Oct 15, 2020 at 3:19 AM Finn Thain <fthain@telegraphics.com.au> wrote:
+> >
+> > On Sat, 10 Oct 2020, Arnd Bergmann wrote:
+> >
+> > > > Perhaps patch 13 does not belong in this series (?).
+> > > >
+> > > > All m68k platforms will need conversion before the TODO can be removed
+> > > > from Documentation/features/time/clockevents/arch-support.txt.
+> > >
+> > > Yes, correct. I marked this patch as RFC instead of PATCH, as I'm just
+> > > trying to find out where it should be headed. I would hope the other
+> > > patches can just get merged.
+> > >
+> >
+> > I wonder whether we can improve support for your proposed configuration
+> > i.e. a system with no oneshot clockevent device.
+> >
+> > The 16 platforms you identified are not all in that category but I suspect
+> > that there are others which are (though they don't appear in this series
+> > because they already use GENERIC_CLOCKEVENTS).
+> >
+> > One useful optimization would be some way to elide oneshot clockevent
+> > support (perhaps with the help of Link Time Optimization).
+> 
+> I think this already happens if one picks CONFIG_HZ_PERIODIC while
+> disabling HIGH_RES_TIMERS. In that case, CONFIG_TICK_ONESHOT
+> remains disabled.
+> 
 
-It is still not possible to run a kernel configured for
-more than one board, but at least configurations that can
-be selected can also be built now.
+That configuration still produces the same 5 KiB of bloat. I see that 
+kernel/time/Kconfig has this --
 
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
----
- arch/m68k/68000/Makefile    |  5 +--
- arch/m68k/68000/m68328.c    | 31 ++++++++++-------
- arch/m68k/68000/m68EZ328.c  | 58 --------------------------------
- arch/m68k/68000/m68VZ328.c  | 67 -------------------------------------
- arch/m68k/Kconfig.cpu       |  8 ++---
- arch/m68k/Kconfig.machine   | 16 +++++----
- arch/m68k/kernel/setup_no.c |  9 +++++
- 7 files changed, 43 insertions(+), 151 deletions(-)
- delete mode 100644 arch/m68k/68000/m68EZ328.c
- delete mode 100644 arch/m68k/68000/m68VZ328.c
+# Core internal switch. Selected by NO_HZ_COMMON / HIGH_RES_TIMERS. This is
+# only related to the tick functionality. Oneshot clockevent devices
+# are supported independent of this.
+config TICK_ONESHOT
+        bool
 
-diff --git a/arch/m68k/68000/Makefile b/arch/m68k/68000/Makefile
-index ce0b26d6580d..674541fdf5b8 100644
---- a/arch/m68k/68000/Makefile
-+++ b/arch/m68k/68000/Makefile
-@@ -10,10 +10,7 @@
- 
- # 68328, 68EZ328, 68VZ328
- 
--obj-y			+= entry.o ints.o timers.o
--obj-$(CONFIG_M68328)	+= m68328.o
--obj-$(CONFIG_M68EZ328)	+= m68EZ328.o
--obj-$(CONFIG_M68VZ328)	+= m68VZ328.o
-+obj-y			+= entry.o ints.o timers.o m68328.o
- obj-$(CONFIG_ROM)	+= romvec.o
- 
- obj-$(CONFIG_DRAGEN2)	+= dragen2.o
-diff --git a/arch/m68k/68000/m68328.c b/arch/m68k/68000/m68328.c
-index 6a5cfc977150..eab08da058c6 100644
---- a/arch/m68k/68000/m68328.c
-+++ b/arch/m68k/68000/m68328.c
-@@ -1,10 +1,11 @@
- /***************************************************************************/
- 
- /*
-- *  m68328.c - 68328 specific config
-+ *  m68328.c - 68328/68EZ328/68VZ328 specific config
-  *
-  *  Copyright (C) 1993 Hamish Macdonald
-  *  Copyright (C) 1999 D. Jeff Dionne
-+ *  Copyright (C) 2001 Georges Menie, Ken Desmet
-  *
-  * This file is subject to the terms and conditions of the GNU General Public
-  * License.  See the file COPYING in the main directory of this archive
-@@ -20,8 +21,10 @@
- #include <linux/kernel.h>
- #include <linux/rtc.h>
- #include <asm/machdep.h>
--#include <asm/MC68328.h>
--#if defined(CONFIG_PILOT) || defined(CONFIG_INIT_LCD)
-+
-+#if defined(CONFIG_INIT_LCD) && defined(CONFIG_M68VZ328)
-+#include "bootlogo-vz.h"
-+#elif defined(CONFIG_PILOT) || defined(CONFIG_INIT_LCD)
- #include "bootlogo.h"
- #endif
- 
-@@ -29,10 +32,7 @@
- 
- /***************************************************************************/
- 
--
--/***************************************************************************/
--
--void m68328_reset (void)
-+static void m68328_reset(void)
- {
-   local_irq_disable();
-   asm volatile ("moveal #0x10c00000, %a0;\n\t"
-@@ -46,12 +46,19 @@ void m68328_reset (void)
- 
- void __init config_BSP(char *command, int len)
- {
--  pr_info("68328 support D. Jeff Dionne <jeff@uclinux.org>\n");
--  pr_info("68328 support Kenneth Albanowski <kjahds@kjshds.com>\n");
--  pr_info("68328/Pilot support Bernhard Kuhn <kuhn@lpr.e-technik.tu-muenchen.de>\n");
-+	mach_sched_init = hw_timer_init;
-+	mach_hwclk = m68328_hwclk;
-+	mach_reset = m68328_reset;
- 
--  mach_hwclk = m68328_hwclk;
--  mach_reset = m68328_reset;
-+#if   defined(CONFIG_PILOT) && defined(CONFIG_M68328)
-+	mach_sched_init = NULL;
-+#elif defined(CONFIG_UCSIMM)
-+	init_ucsimm(command, len);
-+#elif defined(CONFIG_UCDIMM)
-+	init_ucsimm(command, len);
-+#elif defined(CONFIG_DRAGEN2)
-+	init_dragen2(command, len);
-+#endif
- }
- 
- /***************************************************************************/
-diff --git a/arch/m68k/68000/m68EZ328.c b/arch/m68k/68000/m68EZ328.c
-deleted file mode 100644
-index 65bd112285ef..000000000000
---- a/arch/m68k/68000/m68EZ328.c
-+++ /dev/null
-@@ -1,58 +0,0 @@
--/***************************************************************************/
--
--/*
-- *  m68EZ328.c - 68EZ328 specific config
-- *
-- *  Copyright (C) 1993 Hamish Macdonald
-- *  Copyright (C) 1999 D. Jeff Dionne
-- *
-- * This file is subject to the terms and conditions of the GNU General Public
-- * License.  See the file COPYING in the main directory of this archive
-- * for more details.
-- */
--
--/***************************************************************************/
--
--#include <linux/init.h>
--#include <linux/types.h>
--#include <linux/kernel.h>
--#include <linux/rtc.h>
--#include <linux/pgtable.h>
--#include <asm/machdep.h>
--#include <asm/MC68EZ328.h>
--#ifdef CONFIG_UCSIMM
--#include <asm/bootstd.h>
--#endif
--
--#include "m68328.h"
--
--/***************************************************************************/
--
--void m68ez328_reset(void)
--{
--  local_irq_disable();
--  asm volatile (
--    "moveal #0x10c00000, %a0;\n"
--    "moveb #0, 0xFFFFF300;\n"
--    "moveal 0(%a0), %sp;\n"
--    "moveal 4(%a0), %a0;\n"
--    "jmp (%a0);\n"
--    );
--}
--
--/***************************************************************************/
--
--void __init config_BSP(char *command, int len)
--{
--  pr_info("68EZ328 DragonBallEZ support (C) 1999 Rt-Control, Inc\n");
--
--#ifdef CONFIG_UCSIMM
--  init_ucsimm(command, len);
--#endif
--
--  mach_sched_init = hw_timer_init;
--  mach_hwclk = m68328_hwclk;
--  mach_reset = m68ez328_reset;
--}
--
--/***************************************************************************/
-diff --git a/arch/m68k/68000/m68VZ328.c b/arch/m68k/68000/m68VZ328.c
-deleted file mode 100644
-index 025da5552f1c..000000000000
---- a/arch/m68k/68000/m68VZ328.c
-+++ /dev/null
-@@ -1,67 +0,0 @@
--/***************************************************************************/
--
--/*
-- *  m68VZ328.c - 68VZ328 specific config
-- *
-- *  Copyright (C) 1993 Hamish Macdonald
-- *  Copyright (C) 1999 D. Jeff Dionne
-- *  Copyright (C) 2001 Georges Menie, Ken Desmet
-- *
-- * This file is subject to the terms and conditions of the GNU General Public
-- * License.  See the file COPYING in the main directory of this archive
-- * for more details.
-- */
--
--/***************************************************************************/
--
--#include <linux/init.h>
--#include <linux/types.h>
--#include <linux/kernel.h>
--#include <linux/kd.h>
--#include <linux/netdevice.h>
--#include <linux/interrupt.h>
--#include <linux/irq.h>
--#include <linux/rtc.h>
--#include <linux/pgtable.h>
--
--#include <asm/machdep.h>
--#include <asm/MC68VZ328.h>
--#include <asm/bootstd.h>
--
--#ifdef CONFIG_INIT_LCD
--#include "bootlogo-vz.h"
--#endif
--
--#include "m68328.h"
--
--/***************************************************************************/
--static void m68vz328_reset(void)
--{
--	local_irq_disable();
--	asm volatile (
--		"moveal #0x10c00000, %a0;\n\t"
--		"moveb #0, 0xFFFFF300;\n\t"
--		"moveal 0(%a0), %sp;\n\t"
--		"moveal 4(%a0), %a0;\n\t"
--		"jmp (%a0);\n"
--	);
--}
--
--/***************************************************************************/
--
--void __init config_BSP(char *command, int size)
--{
--	pr_info("68VZ328 DragonBallVZ support (c) 2001 Lineo, Inc.\n");
--
--	mach_sched_init = hw_timer_init;
--	mach_hwclk = m68328_hwclk;
--	mach_reset = m68vz328_reset;
--
--#ifdef CONFIG_UCDIMM
--	init_ucsimm(command, len);
--#elif defined(CONFIG_DRAGEN2)
--	init_dragen2(command, len);
--#endif
--}
--
--/***************************************************************************/
-diff --git a/arch/m68k/Kconfig.cpu b/arch/m68k/Kconfig.cpu
-index 694c4fca9f5d..a65ce7618232 100644
---- a/arch/m68k/Kconfig.cpu
-+++ b/arch/m68k/Kconfig.cpu
-@@ -35,7 +35,7 @@ endchoice
- if M68KCLASSIC
- 
- config M68000
--	bool "MC68000"
-+	bool
- 	depends on !MMU
- 	select CPU_HAS_NO_BITFIELDS
- 	select CPU_HAS_NO_MULDIV64
-@@ -102,21 +102,21 @@ config M68060
- 	  processor, say Y. Otherwise, say N.
- 
- config M68328
--	bool "MC68328"
-+	bool
- 	depends on !MMU
- 	select M68000
- 	help
- 	  Motorola 68328 processor support.
- 
- config M68EZ328
--	bool "MC68EZ328"
-+	bool
- 	depends on !MMU
- 	select M68000
- 	help
- 	  Motorola 68EX328 processor support.
- 
- config M68VZ328
--	bool "MC68VZ328"
-+	bool
- 	depends on !MMU
- 	select M68000
- 	help
-diff --git a/arch/m68k/Kconfig.machine b/arch/m68k/Kconfig.machine
-index 17e8c3a292d7..1851c66e8667 100644
---- a/arch/m68k/Kconfig.machine
-+++ b/arch/m68k/Kconfig.machine
-@@ -136,14 +136,13 @@ config SUN3
- 
- 	  If you don't want to compile a kernel exclusively for a Sun 3, say N.
- 
--endif # M68KCLASSIC
--
- config PILOT
- 	bool
- 
- config PILOT3
- 	bool "Pilot 1000/5000, PalmPilot Personal/Pro, or PalmIII support"
--	depends on M68328
-+	depends on !MMU
-+	select M68328
- 	select PILOT
- 	help
- 	  Support for the Palm Pilot 1000/5000, Personal/Pro and PalmIII.
-@@ -156,19 +155,22 @@ config XCOPILOT_BUGS
- 
- config UCSIMM
- 	bool "uCsimm module support"
--	depends on M68EZ328
-+	depends on !MMU
-+	select M68EZ328
- 	help
- 	  Support for the Arcturus Networks uCsimm module.
- 
- config UCDIMM
- 	bool "uDsimm module support"
--	depends on M68VZ328
-+	depends on !MMU
-+	select M68VZ328
- 	help
- 	  Support for the Arcturus Networks uDsimm module.
- 
- config DRAGEN2
- 	bool "DragenEngine II board support"
--	depends on M68VZ328
-+	depends on !MMU
-+	select M68VZ328
- 	help
- 	  Support for the DragenEngine II board.
- 
-@@ -191,6 +193,8 @@ config MEMORY_RESERVE
- 	help
- 	  Reserve certain memory regions on 68x328 based boards.
- 
-+endif # M68KCLASSIC
-+
- config ARN5206
- 	bool "Arnewsh 5206 board support"
- 	depends on M5206
-diff --git a/arch/m68k/kernel/setup_no.c b/arch/m68k/kernel/setup_no.c
-index f66f4b1d062e..58dbe10ccf56 100644
---- a/arch/m68k/kernel/setup_no.c
-+++ b/arch/m68k/kernel/setup_no.c
-@@ -106,8 +106,16 @@ void __init setup_arch(char **cmdline_p)
- #ifdef CONFIG_UCDIMM
- 	pr_info("uCdimm by Lineo, Inc. <www.lineo.com>\n");
- #endif
-+#ifdef CONFIG_M68328
-+	pr_info("68328 support D. Jeff Dionne <jeff@uclinux.org>\n");
-+	pr_info("68328 support Kenneth Albanowski <kjahds@kjshds.com>\n");
-+#endif
-+#ifdef CONFIG_M68EZ328
-+	pr_info("68EZ328 DragonBallEZ support (C) 1999 Rt-Control, Inc\n");
-+#endif
- #ifdef CONFIG_M68VZ328
- 	pr_info("M68VZ328 support by Evan Stawnyczy <e@lineo.ca>\n");
-+	pr_info("68VZ328 DragonBallVZ support (c) 2001 Lineo, Inc.\n");
- #endif
- #ifdef CONFIG_COLDFIRE
- 	pr_info("COLDFIRE port done by Greg Ungerer, gerg@snapgear.com\n");
-@@ -121,6 +129,7 @@ void __init setup_arch(char **cmdline_p)
- 	pr_info("Flat model support (C) 1998,1999 Kenneth Albanowski, D. Jeff Dionne\n");
- 
- #if defined( CONFIG_PILOT ) && defined( CONFIG_M68328 )
-+	pr_info("68328/Pilot support Bernhard Kuhn <kuhn@lpr.e-technik.tu-muenchen.de>\n");
- 	pr_info("TRG SuperPilot FLASH card support <info@trgnet.com>\n");
- #endif
- #if defined( CONFIG_PILOT ) && defined( CONFIG_M68EZ328 )
--- 
-2.27.0
+But my question was really about both kinds of dead code (oneshot device 
+support and oneshot tick support). Anyway, after playing with the code for 
+a bit I don't see any easy way to reduce the growth in text size.
 
+> ...
+> > After looking at the chip documentation I don't think it's viable to 
+> > use the hardware timers in the way I proposed. A VIA register access 
+> > requires at least one full VIA clock cycle (about 1.3 us) which means 
+> > register accesses themselves cause timing delays. They also make 
+> > clocksource reads expensive.
+> >
+> > I think this rules out oneshot clockevent devices because if the 
+> > system offered such a device it would preferentially get used as a 
+> > tick device.
+> >
+> > So I think your approach (periodic clockevent device driven by the 
+> > existing periodic tick interrupt) is best for this platform due to 
+> > simplicity (not much code) and performance (good accuracy, no 
+> > additional overhead).
+> 
+> Yes, makes sense. I think the one remaining problem with the periodic 
+> mode in this driver is that it can drop timer ticks when interrupts are 
+> disabled for too long, while in oneshot mode there may be a way to know 
+> how much time has passed since the last tick as long as the counter does 
+> not overflow.
+
+Is there any benefit from adopting a oneshot tick (rather than periodic) 
+if no clocksource is consulted when calculating the next interval? (I'm 
+assuming NO_HZ is not in use, for reasons discussed below.)
+
+> I would agree that despite this oneshot mode is probably worse overall 
+> for timekeeping if the register accesses introduce systematic errors.
+> 
+
+It probably has to be tried. But consulting a VIA clocksource on every 
+tick would be expensive on this platform, so if that was the only way to 
+avoid cumulative errors, I'd probably just stick with the periodic tick.
+
+> ...
+> The arm/rpc timer seems to be roughly in the same category as most of 
+> the m68k ones or the i8253 counter on a PC. It's possible that some of 
+> them could use the same logic as drivers/clocksource/i8253.o as long as 
+> there is any hardware oneshot mode.
+> 
+
+There appear to be 15 platforms in that category. 4 have no clocksource 
+besides the jiffies clocksource, meaning there's no practical alternative 
+to using a periodic tick, like you did in your RFC patch:
+
+arch/m68k/apollo/config.c
+arch/m68k/q40/q40ints.c
+arch/m68k/sun3/sun3ints.c
+arch/m68k/sun3x/time.c
+
+The other 11 platforms in that category also have 'synthetic' clocksources 
+derived from a timer reload interrupt. In 3 cases, the clocksource read 
+method does not (or can not) check for a pending counter reload interrupt. 
+For these also, I see no practical alternative to the approach you've 
+taken in your RFC patch:
+
+arch/m68k/68000/timers.c
+arch/m68k/atari/time.c
+arch/m68k/coldfire/timers.c
+
+That leaves 8 platforms that have reliable clocksource devices which 
+should be able to provide an accurate reading even in the presence of a 
+dropped tick (due to drivers disabling interrupts for too long):
+
+arch/arm/mach-rpc/time.c
+arch/m68k/amiga/config.c
+arch/m68k/bvme6000/config.c
+arch/m68k/coldfire/sltimers.c
+arch/m68k/hp300/time.c
+arch/m68k/mac/via.c
+arch/m68k/mvme147/config.c
+arch/m68k/mvme16x/config.c
+
+But is there any reason to adopt a oneshot tick on any of these platforms, 
+if NO_HZ won't eliminate the timer interrupt that's needed to run a 
+'synthetic' clocksource?
