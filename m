@@ -1,103 +1,68 @@
-Return-Path: <SRS0=l4+5=D2=vger.kernel.org=linux-m68k-owner@kernel.org>
+Return-Path: <SRS0=5FMh=D3=vger.kernel.org=linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-15.2 required=3.0 tests=BAYES_00,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PULL_REQUEST,MAILING_LIST_MULTI,
-	MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=ham
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-9.1 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,
+	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B1508C433DF
-	for <linux-m68k@archiver.kernel.org>; Mon, 19 Oct 2020 01:22:47 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id F0EDFC433DF
+	for <linux-m68k@archiver.kernel.org>; Tue, 20 Oct 2020 01:24:04 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 7C7D7222C8
-	for <linux-m68k@archiver.kernel.org>; Mon, 19 Oct 2020 01:22:47 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id ACB1422253
+	for <linux-m68k@archiver.kernel.org>; Tue, 20 Oct 2020 01:24:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=default; t=1603157044;
+	bh=id1iqKwX3kGJKP5h5zs65Thlwq0Qg8yymAbtxxooZJw=;
+	h=Subject:From:In-Reply-To:References:Date:To:Cc:List-ID:From;
+	b=q8a4tpssW4lvLq9p/hHzU/OguIVtKWDRfcAMEq3VOxLD2m7fxmKRj33B7rlxVVeNh
+	 SjRJe0LJHfCvxTDavOzTcv37rYP+N68AN8uJm9sW0qeSNGWqGUiqYwd7gBR79i9xvh
+	 WmUFGUO6J7e07UZclNdJtqVy63ebzHVZYmEq3uOs=
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730364AbgJSBWq (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Sun, 18 Oct 2020 21:22:46 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55136 "EHLO mail.kernel.org"
+        id S2389944AbgJTBYE (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Mon, 19 Oct 2020 21:24:04 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46358 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730361AbgJSBWq (ORCPT <rfc822;linux-m68k@vger.kernel.org>);
-        Sun, 18 Oct 2020 21:22:46 -0400
-Received: from [10.44.0.192] (unknown [103.48.210.53])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 14020222C2;
-        Mon, 19 Oct 2020 01:22:43 +0000 (UTC)
-From:   Greg Ungerer <gerg@linux-m68k.org>
-Subject: [git pull] m68knommu changes for v5.10
-To:     torvalds@linux-foundation.org
-Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        id S2389942AbgJTBYD (ORCPT <rfc822;linux-m68k@vger.kernel.org>);
+        Mon, 19 Oct 2020 21:24:03 -0400
+Subject: Re: [git pull] m68knommu changes for v5.10
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1603157043;
+        bh=id1iqKwX3kGJKP5h5zs65Thlwq0Qg8yymAbtxxooZJw=;
+        h=From:In-Reply-To:References:Date:To:Cc:From;
+        b=dpy5Z5Qe2GuBdy+y+KA/3G+M0nsvGWvXB6mp1n94EbS/PFE8Ioc/GL5RJqH9fZcpy
+         Ax+xjzhzk/8Yf2BtxsmE0TQwWtORNwFfzPWLCOa5kjGH9sFX4fRoEEZbkT87eQt0dB
+         TO9LRpQd2aB4QA7Dy8vUSfFsIu693e1w+KAwZGUE=
+From:   pr-tracker-bot@kernel.org
+In-Reply-To: <dae7af98-a47c-4225-b444-21d47cc27307@linux-m68k.org>
+References: <dae7af98-a47c-4225-b444-21d47cc27307@linux-m68k.org>
+X-PR-Tracked-List-Id: <linux-m68k.vger.kernel.org>
+X-PR-Tracked-Message-Id: <dae7af98-a47c-4225-b444-21d47cc27307@linux-m68k.org>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/gerg/m68knommu.git tags/m68knommu-for-v5.10
+X-PR-Tracked-Commit-Id: 9f5fd809d7a02e32c2e044acb9f6aed1c79a699b
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: d3876ff74437c5f3a1a2f8d2a45b6fb91d51ea25
+Message-Id: <160315704338.30490.9609808423890515719.pr-tracker-bot@kernel.org>
+Date:   Tue, 20 Oct 2020 01:24:03 +0000
+To:     Greg Ungerer <gerg@linux-m68k.org>
+Cc:     torvalds@linux-foundation.org,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
         Linux/m68k <linux-m68k@vger.kernel.org>,
         Geert Uytterhoeven <geert@linux-m68k.org>
-Message-ID: <dae7af98-a47c-4225-b444-21d47cc27307@linux-m68k.org>
-Date:   Mon, 19 Oct 2020 11:22:40 +1000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-Hi Linus,
+The pull request you sent on Mon, 19 Oct 2020 11:22:40 +1000:
 
-Please pull the m68knommu changes for v5.10.
+> git://git.kernel.org/pub/scm/linux/kernel/git/gerg/m68knommu.git tags/m68knommu-for-v5.10
 
-I expect you will get a merge conflict on a27bc11f4b7c ("m68knommu: switch
-to using asm-generic/uaccess.h") in arch/m68k/Kconfig. The resolution is
-strait forward, you just need to add the single line:
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/d3876ff74437c5f3a1a2f8d2a45b6fb91d51ea25
 
-     select UACCESS_MEMCPY if !MMU
+Thank you!
 
-as per the that commit. Geert ordered that list alphabetically, so it
-now needs to go near the end of that list of selects, jut above
-"select VIRT_TO_BUS".
-
-Regards
-Greg
-
-
-
-The following changes since commit 549738f15da0e5a00275977623be199fbbf7df50:
-
-   Linux 5.9-rc8 (2020-10-04 16:04:34 -0700)
-
-are available in the Git repository at:
-
-   git://git.kernel.org/pub/scm/linux/kernel/git/gerg/m68knommu.git tags/m68knommu-for-v5.10
-
-for you to fetch changes up to 9f5fd809d7a02e32c2e044acb9f6aed1c79a699b:
-
-   serial: mcf: add sysrq capability (2020-10-07 21:58:36 +1000)
-
-----------------------------------------------------------------
-m68knommu: collection of fixes for 5.10
-
-Fixes include:
-. switch to using asm-generic uaccess code
-. fix sparse warnings in signal code
-. fix compilation of ColdFire MMC support
-. support sysrq in ColdFire serial driver
-
-----------------------------------------------------------------
-Angelo Dureghello (1):
-       serial: mcf: add sysrq capability
-
-Greg Ungerer (3):
-       m68knommu: switch to using asm-generic/uaccess.h
-       m68knommu: fix sparse warnings in signal code
-       m68knommu: include SDHC support only when hardware has it
-
-  arch/m68k/Kconfig                  |   1 +
-  arch/m68k/coldfire/device.c        |   6 +-
-  arch/m68k/include/asm/uaccess.h    | 398 ++++++++++++++++++++++++++++++++++++-
-  arch/m68k/include/asm/uaccess_mm.h | 390 ------------------------------------
-  arch/m68k/include/asm/uaccess_no.h | 160 ---------------
-  arch/m68k/kernel/signal.c          |   6 +-
-  drivers/tty/serial/mcf.c           |   1 +
-  7 files changed, 403 insertions(+), 559 deletions(-)
-  delete mode 100644 arch/m68k/include/asm/uaccess_mm.h
-  delete mode 100644 arch/m68k/include/asm/uaccess_no.h
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/prtracker.html
