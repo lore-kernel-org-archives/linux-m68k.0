@@ -2,67 +2,96 @@ Return-Path: <SRS0=5FMh=D3=vger.kernel.org=linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.1 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,
-	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-12.7 required=3.0 tests=BAYES_00,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=unavailable
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id F0EDFC433DF
-	for <linux-m68k@archiver.kernel.org>; Tue, 20 Oct 2020 01:24:04 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 1CD5BC4363A
+	for <linux-m68k@archiver.kernel.org>; Tue, 20 Oct 2020 16:23:21 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id ACB1422253
-	for <linux-m68k@archiver.kernel.org>; Tue, 20 Oct 2020 01:24:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=default; t=1603157044;
-	bh=id1iqKwX3kGJKP5h5zs65Thlwq0Qg8yymAbtxxooZJw=;
-	h=Subject:From:In-Reply-To:References:Date:To:Cc:List-ID:From;
-	b=q8a4tpssW4lvLq9p/hHzU/OguIVtKWDRfcAMEq3VOxLD2m7fxmKRj33B7rlxVVeNh
-	 SjRJe0LJHfCvxTDavOzTcv37rYP+N68AN8uJm9sW0qeSNGWqGUiqYwd7gBR79i9xvh
-	 WmUFGUO6J7e07UZclNdJtqVy63ebzHVZYmEq3uOs=
+	by mail.kernel.org (Postfix) with ESMTP id D373222247
+	for <linux-m68k@archiver.kernel.org>; Tue, 20 Oct 2020 16:23:20 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389944AbgJTBYE (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Mon, 19 Oct 2020 21:24:04 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46358 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2389942AbgJTBYD (ORCPT <rfc822;linux-m68k@vger.kernel.org>);
-        Mon, 19 Oct 2020 21:24:03 -0400
-Subject: Re: [git pull] m68knommu changes for v5.10
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603157043;
-        bh=id1iqKwX3kGJKP5h5zs65Thlwq0Qg8yymAbtxxooZJw=;
-        h=From:In-Reply-To:References:Date:To:Cc:From;
-        b=dpy5Z5Qe2GuBdy+y+KA/3G+M0nsvGWvXB6mp1n94EbS/PFE8Ioc/GL5RJqH9fZcpy
-         Ax+xjzhzk/8Yf2BtxsmE0TQwWtORNwFfzPWLCOa5kjGH9sFX4fRoEEZbkT87eQt0dB
-         TO9LRpQd2aB4QA7Dy8vUSfFsIu693e1w+KAwZGUE=
-From:   pr-tracker-bot@kernel.org
-In-Reply-To: <dae7af98-a47c-4225-b444-21d47cc27307@linux-m68k.org>
-References: <dae7af98-a47c-4225-b444-21d47cc27307@linux-m68k.org>
-X-PR-Tracked-List-Id: <linux-m68k.vger.kernel.org>
-X-PR-Tracked-Message-Id: <dae7af98-a47c-4225-b444-21d47cc27307@linux-m68k.org>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/gerg/m68knommu.git tags/m68knommu-for-v5.10
-X-PR-Tracked-Commit-Id: 9f5fd809d7a02e32c2e044acb9f6aed1c79a699b
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: d3876ff74437c5f3a1a2f8d2a45b6fb91d51ea25
-Message-Id: <160315704338.30490.9609808423890515719.pr-tracker-bot@kernel.org>
-Date:   Tue, 20 Oct 2020 01:24:03 +0000
-To:     Greg Ungerer <gerg@linux-m68k.org>
-Cc:     torvalds@linux-foundation.org,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Linux/m68k <linux-m68k@vger.kernel.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>
+        id S2394564AbgJTQXR (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Tue, 20 Oct 2020 12:23:17 -0400
+Received: from mout.kundenserver.de ([217.72.192.75]:60545 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2394563AbgJTQXR (ORCPT
+        <rfc822;linux-m68k@lists.linux-m68k.org>);
+        Tue, 20 Oct 2020 12:23:17 -0400
+Received: from localhost.localdomain ([82.252.146.14]) by
+ mrelayeu.kundenserver.de (mreue107 [212.227.15.183]) with ESMTPSA (Nemesis)
+ id 1MvrRB-1kBaLT25Nn-00stxd; Tue, 20 Oct 2020 18:23:08 +0200
+From:   Laurent Vivier <laurent@vivier.eu>
+To:     linux-kernel@vger.kernel.org
+Cc:     Joshua Thompson <funaho@jurai.org>, linux-serial@vger.kernel.org,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        linux-m68k@lists.linux-m68k.org,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Paul Mackerras <paulus@samba.org>,
+        linuxppc-dev@lists.ozlabs.org,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Laurent Vivier <laurent@vivier.eu>
+Subject: [PATCH] serial: pmac_zilog: don't init if zilog is not available
+Date:   Tue, 20 Oct 2020 18:23:03 +0200
+Message-Id: <20201020162303.1730562-1-laurent@vivier.eu>
+X-Mailer: git-send-email 2.26.2
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-Provags-ID: V03:K1:bKHy5QQSiE77OMXPCG5t3IA6kn0O8DJhl6MV+YUQP93v0wYpsUL
+ coTYiKGAtOBLA3PVaVWj8x5zDK9kGX+W2jYNGYsoMOJ+HEuJCUxIACpOjZfKt0VmMqsTss8
+ oVtH8p5n8HCTCqiQGfX6xdIAfG94PL2nv6jie7AOlG5rdMQJGKfXBCXpbqfcyprrUMeyXxf
+ NqH1bsfQST/Ym95UPoE9g==
+X-UI-Out-Filterresults: notjunk:1;V03:K0:WAQu6MsbUZI=:DFWpJUDEp0IFwkElkkrpXo
+ fbfo3nBHI5roarW7M3YyaoC2urbG0Wl54DII91AjRRDRFDIPBvsdVe6SyIdkp1XTHv23+208W
+ 1deQ6qZf6K+8yFpZg4eHwgbC1J6bbAsrlMorSD5kryvSmqf9RmcKceASTgaXYVchQkBAWMbTW
+ DhRZVLW0B/EbxqSlc1b33ezKElxQ/7t+i97CdaI6zVx9yUvyWyWcwkkKKu9WFiHW9ID7DcQaU
+ EF1pa4ZTBMYNZMVfm2Wyg1IvAw31QxpAODLRC6yNqa3u773bhhj5j8nBQGB1mXjhNn9m8Sn4+
+ 5/Z++c17HCYYREiU6APO4nHMwSEWx0mdRuJ6vvwHU9ev2lmbdWm9xEDKb6M/CP85weFnoXQhf
+ wC9IO5lNPF/yfso1AexECLSOeCM858pne4EXT6dXRQSIlFi0wjA/OMTgj/3Imr5AncWUmfkSx
+ +kIltyMbVA==
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-The pull request you sent on Mon, 19 Oct 2020 11:22:40 +1000:
+We can avoid to probe for the Zilog device (and generate ugly kernel warning)
+if kernel is built for Mac but not on a Mac.
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/gerg/m68knommu.git tags/m68knommu-for-v5.10
+Signed-off-by: Laurent Vivier <laurent@vivier.eu>
+---
+ drivers/tty/serial/pmac_zilog.c | 11 +++++++++++
+ 1 file changed, 11 insertions(+)
 
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/d3876ff74437c5f3a1a2f8d2a45b6fb91d51ea25
-
-Thank you!
-
+diff --git a/drivers/tty/serial/pmac_zilog.c b/drivers/tty/serial/pmac_zilog.c
+index 063484b22523..d1d2e55983c3 100644
+--- a/drivers/tty/serial/pmac_zilog.c
++++ b/drivers/tty/serial/pmac_zilog.c
+@@ -1867,6 +1867,12 @@ static struct platform_driver pmz_driver = {
+ static int __init init_pmz(void)
+ {
+ 	int rc, i;
++
++#ifdef CONFIG_MAC
++	if (!MACH_IS_MAC)
++		return -ENODEV;
++#endif
++
+ 	printk(KERN_INFO "%s\n", version);
+ 
+ 	/* 
+@@ -2034,6 +2040,11 @@ static int __init pmz_console_setup(struct console *co, char *options)
+ 
+ static int __init pmz_console_init(void)
+ {
++#ifdef CONFIG_MAC
++	if (!MACH_IS_MAC)
++		return -ENODEV;
++#endif
++
+ 	/* Probe ports */
+ 	pmz_probe();
+ 
 -- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/prtracker.html
+2.26.2
+
