@@ -1,108 +1,162 @@
-Return-Path: <SRS0=XyjB=D4=vger.kernel.org=linux-m68k-owner@kernel.org>
+Return-Path: <SRS0=bR5W=D5=vger.kernel.org=linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-9.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A6A2FC55179
-	for <linux-m68k@archiver.kernel.org>; Wed, 21 Oct 2020 17:23:11 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B7C5CC55179
+	for <linux-m68k@archiver.kernel.org>; Thu, 22 Oct 2020 02:53:18 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 3F6062224E
-	for <linux-m68k@archiver.kernel.org>; Wed, 21 Oct 2020 17:23:10 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 40EC82227F
+	for <linux-m68k@archiver.kernel.org>; Thu, 22 Oct 2020 02:53:18 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="ub1i2qnq"
+	dkim=pass (2048-bit key) header.d=ellerman.id.au header.i=@ellerman.id.au header.b="DeS/8oEh"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2503411AbgJURXK (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Wed, 21 Oct 2020 13:23:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35646 "EHLO
+        id S2895212AbgJVCxR (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Wed, 21 Oct 2020 22:53:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38838 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2443833AbgJURXK (ORCPT
+        with ESMTP id S2442728AbgJVCxR (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Wed, 21 Oct 2020 13:23:10 -0400
-Received: from mail-io1-xd44.google.com (mail-io1-xd44.google.com [IPv6:2607:f8b0:4864:20::d44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EAB38C0613D2
-        for <linux-m68k@lists.linux-m68k.org>; Wed, 21 Oct 2020 10:23:07 -0700 (PDT)
-Received: by mail-io1-xd44.google.com with SMTP id p15so4035314ioh.0
-        for <linux-m68k@lists.linux-m68k.org>; Wed, 21 Oct 2020 10:23:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=7535FUlfM8DZDchGw8aykWjhU0FVacKPwMt6VunyyW4=;
-        b=ub1i2qnqq5gc5yWa++WfJbKGLRDF3XgcjuF4SNEwsZorMl0qqBlkzzk65jDvd1rIp6
-         lsc7BJmCFH+/nkMbVQcVwn4bYWFUNTGPYV9LnCocI598fe1uL6/mDLuJIxfahYegMgmV
-         O6P5shfiwBpbj5CWne+FmGk5phLqk0nId5IETHoA04NJ3VI8BSq+2EJbyBFyDYvD9KOQ
-         SIXqL0Q6SqAfgMBeJW3/ZMjqQX2LwKMlStEFUHBOIC/HAkX92HVDxbei5SvC4AtBDDgM
-         BjeK/N4wHt0pTqvRnrqr83fx4BR3FWwhR0strhBEMc39uPq0fD7cDyRbXeouxt7OuCWl
-         kfYQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=7535FUlfM8DZDchGw8aykWjhU0FVacKPwMt6VunyyW4=;
-        b=TDyzIh07dvV0tVnZrP1CnVZ9NdclUjBmfTX9M316gbg0ysVZovTeGfaML/smzzIlJ2
-         MdP0Sa2bWRxmV1yUEQh+TV7yg3HUSBf4gAGpgkBl6Wa+vMsH2+SP9fCFr/7Ank1MffM0
-         QGpTsRp3fHyNx+2cK2GNc6omwvvpSUDon+7YSiPd2B9BzY4mxkbcKL2HK0JJt8YBAm3v
-         wiKOvt73UNgyYRWKG6iS41yXkPMHZp/tf6LVXcDpRHUKOwh7txX3xViDet2DDEx7fyx+
-         75mCR/6p2DhsgOqXugeXyQfmUV/4tlc1uZjMqoqKunFmumFy853It4rZu9dj7siNCBIK
-         4UNQ==
-X-Gm-Message-State: AOAM532TpbxQ3/sKWz9i8TiodBGr8Pa2zJIDvpRjnTFCL6lP1keoK0Jq
-        0CS57+hmNSD3fvarP1QSp5QXDe+yIi4f+i2LspaPgQ==
-X-Google-Smtp-Source: ABdhPJwAHwzHnXyK/Q61hpqVatVAWev4QhEe6lQZY+aucdSgk3iXPP53Fr7H1mN9nTWnRSkEsIkHirrQTjnUX0bFcLQ=
-X-Received: by 2002:a6b:5c06:: with SMTP id z6mr3661750ioh.49.1603300986883;
- Wed, 21 Oct 2020 10:23:06 -0700 (PDT)
-MIME-Version: 1.0
-References: <CA+G9fYvHze+hKROmiB0uL90S8h9ppO9S9Xe7RWwv808QwOd_Yw@mail.gmail.com>
- <CAHk-=wg5-P79Hr4iaC_disKR2P+7cRVqBA9Dsria9jdVwHo0+A@mail.gmail.com>
-In-Reply-To: <CAHk-=wg5-P79Hr4iaC_disKR2P+7cRVqBA9Dsria9jdVwHo0+A@mail.gmail.com>
-From:   Naresh Kamboju <naresh.kamboju@linaro.org>
-Date:   Wed, 21 Oct 2020 22:52:55 +0530
-Message-ID: <CA+G9fYv=DUanNfL2yza=y9kM7Y9bFpVv22Wd4L9NP28i0y7OzA@mail.gmail.com>
-Subject: Re: mmstress[1309]: segfault at 7f3d71a36ee8 ip 00007f3d77132bdf sp
- 00007f3d71a36ee8 error 4 in libc-2.27.so[7f3d77058000+1aa000]
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     open list <linux-kernel@vger.kernel.org>,
-        linux-m68k <linux-m68k@lists.linux-m68k.org>,
-        X86 ML <x86@kernel.org>, LTP List <ltp@lists.linux.it>,
-        lkft-triage@lists.linaro.org,
-        Linux-Next Mailing List <linux-next@vger.kernel.org>,
-        linux-mm <linux-mm@kvack.org>,
-        kasan-dev <kasan-dev@googlegroups.com>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Al Viro <viro@zeniv.linux.org.uk>,
+        Wed, 21 Oct 2020 22:53:17 -0400
+Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D74F4C0613CE
+        for <linux-m68k@lists.linux-m68k.org>; Wed, 21 Oct 2020 19:53:16 -0700 (PDT)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4CGsP14c7Vz9sSn;
+        Thu, 22 Oct 2020 13:53:08 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ellerman.id.au;
+        s=201909; t=1603335192;
+        bh=fW5FipmXYxyEiBCHMu/Sd0mLJUNgkUEv7kKEvoc29V0=;
+        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+        b=DeS/8oEhEaeq235MxQgaLDc0dL8ank/k+UdrfESwGHS+oQacrPHsm2SnK/uhn8UJ0
+         SuOqEbOVVsdXOCtnLZsRAzOvMwTx/miCuRrzfqM29KieQ6ERBMklEkPOk1fPpXCvIX
+         pg2UCUi0cpL4cC0PNw2Uz/B/HrQa6QxqIq+6+BSUGucoZNa6wl5iieZrtXAP99+w34
+         up9Kr9xMjz4IPptPv893Cq3n0BXmLyhXE8WHX3sbImziGehjfTczl87VVjyYH0qEz0
+         RL26T9lFD1uA77TzLX9k6uEsxkPOjSAlVToeVm34D3ucgM7DK0qB3ugaXLSpV5nBwp
+         h8Vn7kiDKIogw==
+From:   Michael Ellerman <mpe@ellerman.id.au>
+To:     Laurent Vivier <laurent@vivier.eu>,
+        Greg KH <gregkh@linuxfoundation.org>
+Cc:     linux-kernel@vger.kernel.org, Joshua Thompson <funaho@jurai.org>,
+        linux-serial@vger.kernel.org,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        linux-m68k@lists.linux-m68k.org,
         Geert Uytterhoeven <geert@linux-m68k.org>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        zenglg.jy@cn.fujitsu.com, Stephen Rothwell <sfr@canb.auug.org.au>,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        Dmitry Vyukov <dvyukov@google.com>
-Content-Type: text/plain; charset="UTF-8"
+        Paul Mackerras <paulus@samba.org>,
+        linuxppc-dev@lists.ozlabs.org
+Subject: Re: [PATCH] serial: pmac_zilog: don't init if zilog is not available
+In-Reply-To: <b52e7fde-8874-3c53-ca13-7709656b69fb@vivier.eu>
+References: <20201020162303.1730562-1-laurent@vivier.eu> <20201020162844.GA865546@kroah.com> <468bbbef-4745-3b16-b6f4-30b46ebcdc33@vivier.eu> <20201020173745.GA882703@kroah.com> <387fd2aa-b181-c41f-0581-0a7e79a44e41@vivier.eu> <20201020183246.GA912431@kroah.com> <b52e7fde-8874-3c53-ca13-7709656b69fb@vivier.eu>
+Date:   Thu, 22 Oct 2020 13:52:56 +1100
+Message-ID: <87o8kvx987.fsf@mpe.ellerman.id.au>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-On Wed, 21 Oct 2020 at 22:35, Linus Torvalds
-<torvalds@linux-foundation.org> wrote:
+Laurent Vivier <laurent@vivier.eu> writes:
+> Le 20/10/2020 =C3=A0 20:32, Greg KH a =C3=A9crit=C2=A0:
+>> On Tue, Oct 20, 2020 at 08:19:26PM +0200, Laurent Vivier wrote:
+>>> Le 20/10/2020 =C3=A0 19:37, Greg KH a =C3=A9crit=C2=A0:
+>>>> On Tue, Oct 20, 2020 at 06:37:41PM +0200, Laurent Vivier wrote:
+>>>>> Le 20/10/2020 =C3=A0 18:28, Greg KH a =C3=A9crit=C2=A0:
+>>>>>> On Tue, Oct 20, 2020 at 06:23:03PM +0200, Laurent Vivier wrote:
+>>>>>>> We can avoid to probe for the Zilog device (and generate ugly kerne=
+l warning)
+>>>>>>> if kernel is built for Mac but not on a Mac.
+>>>>>>>
+>>>>>>> Signed-off-by: Laurent Vivier <laurent@vivier.eu>
+>>>>>>> ---
+>>>>>>>  drivers/tty/serial/pmac_zilog.c | 11 +++++++++++
+>>>>>>>  1 file changed, 11 insertions(+)
+>>>>>>>
+>>>>>>> diff --git a/drivers/tty/serial/pmac_zilog.c b/drivers/tty/serial/p=
+mac_zilog.c
+>>>>>>> index 063484b22523..d1d2e55983c3 100644
+>>>>>>> --- a/drivers/tty/serial/pmac_zilog.c
+>>>>>>> +++ b/drivers/tty/serial/pmac_zilog.c
+>>>>>>> @@ -1867,6 +1867,12 @@ static struct platform_driver pmz_driver =3D=
+ {
+>>>>>>>  static int __init init_pmz(void)
+>>>>>>>  {
+>>>>>>>  	int rc, i;
+>>>>>>> +
+>>>>>>> +#ifdef CONFIG_MAC
+>>>>>>> +	if (!MACH_IS_MAC)
+>>>>>>> +		return -ENODEV;
+>>>>>>> +#endif
+>>>>>>
+>>>>>> Why is the #ifdef needed?
+>>>>>>
+>>>>>> We don't like putting #ifdef in .c files for good reasons.  Can you =
+make
+>>>>>> the api check for this work with and without that #ifdef needed?
+>>>>>
+>>>>> The #ifdef is needed because this file can be compiled for PowerMac a=
+nd
+>>>>> m68k Mac. For PowerMac, the MACH_IS_MAC is not defined, so we need the
+>>>>> #ifdef.
+>>>>>
+>>>>> We need the MAC_IS_MAC because the same kernel can be used with sever=
+al
+>>>>> m68k machines, so the init_pmz can be called on a m68k machine without
+>>>>> the zilog device (it's a multi-targets kernel).
+>>>>>
+>>>>> You can check it's the good way to do by looking inside:
+>>>>>
+>>>>>     drivers/video/fbdev/valkyriefb.c +317
+>>>>>     drivers/macintosh/adb.c +316
+>>>>>
+>>>>> That are two files used by both, mac and pmac.
+>>>>
+>>>> Why not fix it to work properly like other arch checks are done
+>>> I would be happy to do the same.
+>>>
+>>>> Put it in a .h file and do the #ifdef there.  Why is this "special"?
+>>>
+>>> I don't know.
+>>>
+>>> Do you mean something like:
+>>>
+>>> drivers/tty/serial/pmac_zilog.h
+>>> ...
+>>> #ifndef MACH_IS_MAC
+>>> #define MACH_IS_MAC (0)
+>>> #endif
+>>> ...
+>>>
+>>> drivers/tty/serial/pmac_zilog.c
+>>> ...
+>>> static int __init pmz_console_init(void)
+>>> {
+>>>         if (!MACH_IS_MAC)
+>>>                 return -ENODEV;
+>>> ...
+>>=20
+>> Yup, that would be a good start, but why is the pmac_zilog.h file
+>> responsible for this?  Shouldn't this be in some arch-specific file
+>> somewhere?
 >
-> On Wed, Oct 21, 2020 at 9:58 AM Naresh Kamboju
-> <naresh.kamboju@linaro.org> wrote:
-> >
-> > LTP mm mtest05 (mmstress), mtest06_3 and mallocstress01 (mallocstress) tested on
-> > x86 KASAN enabled build. But tests are getting PASS on Non KASAN builds.
-> > This regression started happening from next-20201015 nowards
+> For m68k, MACH_IS_MAC is defined in arch/m68k/include/asm/setup.h
 >
-> Is it repeatable enough to be bisectable?
-
-Yes. This is easily reproducible.
-I will bisect and report here.
-
+> If I want to define it for any other archs I don't know in which file we
+> can put it.
 >
->              Linus
+> But as m68k mac is only sharing drivers with pmac perhaps we can put
+> this in arch/powerpc/include/asm/setup.h?
 
-- Naresh
+It doesn't really belong in there.
+
+I'd accept a patch to create arch/powerpc/include/asm/macintosh.h, with
+MACH_IS_MAC defined in there.
+
+cheers
