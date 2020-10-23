@@ -7,64 +7,64 @@ X-Spam-Status: No, score=-3.9 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=no
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 7DA19C55179
-	for <linux-m68k@archiver.kernel.org>; Fri, 23 Oct 2020 15:53:13 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 32137C5517A
+	for <linux-m68k@archiver.kernel.org>; Fri, 23 Oct 2020 15:55:08 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 30DBD20878
-	for <linux-m68k@archiver.kernel.org>; Fri, 23 Oct 2020 15:53:13 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id CE8B220878
+	for <linux-m68k@archiver.kernel.org>; Fri, 23 Oct 2020 15:55:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=default; t=1603468393;
-	bh=mriDfNZeSOsY3E7iF8bTx6Iue1eFMbjdN4unfPYRSRE=;
+	s=default; t=1603468507;
+	bh=lSm7bqHTmkN1/WgtfgWR6pMAxMHJ4CrRjx6gMHZi0pI=;
 	h=References:In-Reply-To:From:Date:Subject:To:Cc:List-ID:From;
-	b=lJUkCRSTuHuWctFXt3AuJSdgDtRBsy3tvwdF9JgUK1kwMfoCnXQbeVQeIK5wBruMg
-	 rs0QGlr5+z7H3dgzzx1l0nfFB0fYcxvriN4mOQQOz/PkWN3ga0ikFDZMocigaNBrSH
-	 Ugh5BpsPqirH4i9I8BvGY5havU2eB3a1vLx2sF6U=
+	b=rXsyuXPHJXL5Bv32RIiMzqhzKm9rGUcF83pZ+X9C6i5OzGJVTFomJUKJjmfu3ScJ5
+	 TSs8v4PQ08eyX7GYGOjPZqjvt6rssh2poAhCuB1iisjV+wZWo9CAX+vAFlriUiWqzd
+	 pfeTczn/gr3vODAwb1aXF2ypTrC9GG9TQNxLkojU=
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S464148AbgJWPxM (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Fri, 23 Oct 2020 11:53:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42574 "EHLO
+        id S464044AbgJWPzH (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Fri, 23 Oct 2020 11:55:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42866 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S464128AbgJWPxL (ORCPT
+        with ESMTP id S464043AbgJWPzH (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Fri, 23 Oct 2020 11:53:11 -0400
-Received: from mail-lj1-x244.google.com (mail-lj1-x244.google.com [IPv6:2a00:1450:4864:20::244])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 47F5EC0613CE
-        for <linux-m68k@lists.linux-m68k.org>; Fri, 23 Oct 2020 08:53:11 -0700 (PDT)
-Received: by mail-lj1-x244.google.com with SMTP id d24so2066886ljg.10
-        for <linux-m68k@lists.linux-m68k.org>; Fri, 23 Oct 2020 08:53:11 -0700 (PDT)
+        Fri, 23 Oct 2020 11:55:07 -0400
+Received: from mail-lf1-x142.google.com (mail-lf1-x142.google.com [IPv6:2a00:1450:4864:20::142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 38708C0613D2
+        for <linux-m68k@lists.linux-m68k.org>; Fri, 23 Oct 2020 08:55:06 -0700 (PDT)
+Received: by mail-lf1-x142.google.com with SMTP id l28so2655861lfp.10
+        for <linux-m68k@lists.linux-m68k.org>; Fri, 23 Oct 2020 08:55:06 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linux-foundation.org; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=So975owvkkTFfYXQ470Q4DlssmIVIFu2QdqnJrTF8xg=;
-        b=TzWUN3CTm+h3r1g9oyCsI8lQvw43xzR9vIG57jNVIMScon9dkhOPSHSU0YuPTCTEbW
-         xSUTXNkTa/xHcxjOZm+H+owVFWXNWx30+II0u/JJDBaUgnHNJQKAZRQgLvSR8UT7JBoq
-         5hUnMcwfEz4zN7MfPmgGe/s+oSgXWn8ttaA2A=
+        bh=CVCIDlW+4rSCxQwC/0UuCHmyl6vLpGQY3YbrIv0lS7k=;
+        b=GD436E2U3ELljPkL4nM1PYvlFMy+YQnW7aen5YTspfRl7ksFgb2HDAmkn6V4t+JDaG
+         dMMQj13VpeQs7o/RmxbX2tP6MlGCxWLIBdmEqKZM5NLiH7YFdLHZUROFosyHo2YrU1Oc
+         /mkd7zfPG7SEUfxCAGBxjhO9Vpkj4+BC/pLM4=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=So975owvkkTFfYXQ470Q4DlssmIVIFu2QdqnJrTF8xg=;
-        b=kWHCveqbGSRzjm3gvS6m6Xg2yZ8wwgmGKIkFRd4yAiFDrT9tlrYGu151JovnK9NvcC
-         F6dxexBULf5xNuuUO21jRt58ABkgrS2Ovt2KapcHZQktsdBAchSsFgeDjeL4ypsQbUvA
-         5R4tSuzEN+j60bxoxnD+UkGAZj22pYmymPzNIowbeKDynQ9MO8c7G9x62LdxK2wbTqJw
-         7rHMBuNSKUR4leItCvXsWQP29OTm0yXMSY4e826rrOf5zwDG1NXwLUOnc88sSKumvsQO
-         3lWK5/0fuHruzk8ySF2FytuiEifGa3eLIdMCodb9elTQwQGO2CjaBF033BZ69sA+txJr
-         rmPA==
-X-Gm-Message-State: AOAM532PtvrR5JVvfCSvNKjXS7+hgJOX9aTlGP4gpCCupb1ZSo6a+2BA
-        gf/Pkm1V2fDT3AUMsvuj5HMLj31PFrmEjA==
-X-Google-Smtp-Source: ABdhPJzwmjBiBdWI5MDF8Xt3JrkXQ33hoYUmmhTdEb42UfaM1KJgxbVJYzxqVFzfMJRBL16/jpWmVg==
-X-Received: by 2002:a2e:54f:: with SMTP id 76mr1108447ljf.73.1603468389360;
-        Fri, 23 Oct 2020 08:53:09 -0700 (PDT)
-Received: from mail-lj1-f182.google.com (mail-lj1-f182.google.com. [209.85.208.182])
-        by smtp.gmail.com with ESMTPSA id n2sm173634lfa.24.2020.10.23.08.53.06
+        bh=CVCIDlW+4rSCxQwC/0UuCHmyl6vLpGQY3YbrIv0lS7k=;
+        b=kYI4ffVnewrtw/72W8LN0GNrw31v+TYz5uGchxusjW9Wftscipq0XgN8fRYCYqpSUs
+         jqbV6XlTMp/QFeHqRN/JWa7CPXzAmSP7yA6EkjPawCbfvlOy6aSn1/RtYFKgEsnSTrhZ
+         mz+tQzkUAAWpn40HSQhymDUON+00sfXUKpSd2KMMZ2E1tV2F9AOC2FgK6NzWElr0zuHg
+         o3Ph4UL5hYXHJ/cmZfGihBxb+h5+fddkhRK4AP5qssF27CC3F7/wrDplMYFcO3xBYY2N
+         PHJM5Hot7HyfhP0pNAnZGGH/XeIScKNcSQ4O4jPfzZo7eJhI2jPcUIIzv+dEZ0ZJMbXz
+         Z8Jw==
+X-Gm-Message-State: AOAM533xpf7W5oLpigcDMzTYRQ/Ouo4VQa6dEFCVurCy386nJHVOFNaa
+        0XOiglGrWynfHJcR8pan107/ASsi1qXXDg==
+X-Google-Smtp-Source: ABdhPJyxyTe9C9JGQFHP/dMzMwd/ASMck+Mv8Oav2V1GUbh9Y284KQ97LFjP1zwo4YHfeovZK4ZDMA==
+X-Received: by 2002:a05:6512:32b8:: with SMTP id q24mr951209lfe.176.1603468503925;
+        Fri, 23 Oct 2020 08:55:03 -0700 (PDT)
+Received: from mail-lj1-f177.google.com (mail-lj1-f177.google.com. [209.85.208.177])
+        by smtp.gmail.com with ESMTPSA id s2sm201456ljp.17.2020.10.23.08.55.01
         for <linux-m68k@lists.linux-m68k.org>
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 23 Oct 2020 08:53:07 -0700 (PDT)
-Received: by mail-lj1-f182.google.com with SMTP id h20so2076954lji.9
-        for <linux-m68k@lists.linux-m68k.org>; Fri, 23 Oct 2020 08:53:06 -0700 (PDT)
-X-Received: by 2002:a2e:898c:: with SMTP id c12mr1248002lji.285.1603468386475;
- Fri, 23 Oct 2020 08:53:06 -0700 (PDT)
+        Fri, 23 Oct 2020 08:55:01 -0700 (PDT)
+Received: by mail-lj1-f177.google.com with SMTP id 134so1070859ljj.3
+        for <linux-m68k@lists.linux-m68k.org>; Fri, 23 Oct 2020 08:55:01 -0700 (PDT)
+X-Received: by 2002:a2e:8815:: with SMTP id x21mr1227378ljh.312.1603468500894;
+ Fri, 23 Oct 2020 08:55:00 -0700 (PDT)
 MIME-Version: 1.0
 References: <CA+G9fYvHze+hKROmiB0uL90S8h9ppO9S9Xe7RWwv808QwOd_Yw@mail.gmail.com>
  <CAHk-=wg5-P79Hr4iaC_disKR2P+7cRVqBA9Dsria9jdVwHo0+A@mail.gmail.com>
@@ -73,16 +73,18 @@ References: <CA+G9fYvHze+hKROmiB0uL90S8h9ppO9S9Xe7RWwv808QwOd_Yw@mail.gmail.com>
  <CAHk-=who8WmkWuuOJeGKa-7QCtZHqp3PsOSJY0hadyywucPMcQ@mail.gmail.com>
  <CAHk-=wi=sf4WtmZXgGh=nAp4iQKftCKbdQqn56gjifxWNpnkxw@mail.gmail.com>
  <CAEUSe78A4fhsyF6+jWKVjd4isaUeuFWLiWqnhic87BF6cecN3w@mail.gmail.com>
- <CAHk-=wgqAp5B46SWzgBt6UkheVGFPs2rrE6H4aqLExXE1TXRfQ@mail.gmail.com> <20201023050214.GG23681@linux.intel.com>
-In-Reply-To: <20201023050214.GG23681@linux.intel.com>
+ <CAHk-=wgqAp5B46SWzgBt6UkheVGFPs2rrE6H4aqLExXE1TXRfQ@mail.gmail.com>
+ <20201023050214.GG23681@linux.intel.com> <356811ab-cb08-7685-ca01-fe58b5654953@rasmusvillemoes.dk>
+In-Reply-To: <356811ab-cb08-7685-ca01-fe58b5654953@rasmusvillemoes.dk>
 From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Fri, 23 Oct 2020 08:52:50 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wjBjUvjN_Mw2Oo5XMUJFSREi3d9AHTSFmgp-a42ZH_K_w@mail.gmail.com>
-Message-ID: <CAHk-=wjBjUvjN_Mw2Oo5XMUJFSREi3d9AHTSFmgp-a42ZH_K_w@mail.gmail.com>
+Date:   Fri, 23 Oct 2020 08:54:44 -0700
+X-Gmail-Original-Message-ID: <CAHk-=whFb3wk0ff8jb3BCyoNvNJ1TSZxoYRKaAoW=Y43iQFNkw@mail.gmail.com>
+Message-ID: <CAHk-=whFb3wk0ff8jb3BCyoNvNJ1TSZxoYRKaAoW=Y43iQFNkw@mail.gmail.com>
 Subject: Re: [LTP] mmstress[1309]: segfault at 7f3d71a36ee8 ip
  00007f3d77132bdf sp 00007f3d71a36ee8 error 4 in libc-2.27.so[7f3d77058000+1aa000]
-To:     Sean Christopherson <sean.j.christopherson@intel.com>
-Cc:     =?UTF-8?B?RGFuaWVsIETDrWF6?= <daniel.diaz@linaro.org>,
+To:     Rasmus Villemoes <linux@rasmusvillemoes.dk>
+Cc:     Sean Christopherson <sean.j.christopherson@intel.com>,
+        =?UTF-8?B?RGFuaWVsIETDrWF6?= <daniel.diaz@linaro.org>,
         Naresh Kamboju <naresh.kamboju@linaro.org>,
         Stephen Rothwell <sfr@canb.auug.org.au>,
         "Matthew Wilcox (Oracle)" <willy@infradead.org>,
@@ -108,18 +110,18 @@ Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-On Thu, Oct 22, 2020 at 10:02 PM Sean Christopherson
-<sean.j.christopherson@intel.com> wrote:
+On Fri, Oct 23, 2020 at 12:14 AM Rasmus Villemoes
+<linux@rasmusvillemoes.dk> wrote:
 >
-> I haven't reproduced the crash, but I did find a smoking gun that confirms the
-> "register shenanigans are evil shenanigans" theory.  I ran into a similar thing
-> recently where a seemingly innocuous line of code after loading a value into a
-> register variable wreaked havoc because it clobbered the input register.
+> That's certainly garbage. Now, I don't know if it's a sufficient fix (or
+> could break something else), but the obvious first step of rearranging
+> so that the ptr argument is evaluated before the assignment to __val_pu
 
-Yup, that certainly looks like the smoking gun.
+Ack. We could do that.
 
-Thanks for finding an example of this, clearly I'll have to either go
-back to the "conditionally use 'A' or 'a' depending on size" model, or
-perhaps try Rasmus' patch.
+I'm more inclined to just bite the bullet and go back to the ugly
+conditional on the size that I had hoped to avoid, but if that turns
+out too ugly, mind signing off on your patch and I'll have that as a
+fallback?
 
-              Linus
+             Linus
