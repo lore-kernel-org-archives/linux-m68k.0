@@ -2,253 +2,155 @@ Return-Path: <SRS0=aPjp=D6=vger.kernel.org=linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.5 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,NICE_REPLY_A,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
-	USER_AGENT_SANE_1 autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-3.7 required=3.0 tests=BAYES_00,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id F21E1C388F9
-	for <linux-m68k@archiver.kernel.org>; Fri, 23 Oct 2020 07:14:31 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 0532FC55179
+	for <linux-m68k@archiver.kernel.org>; Fri, 23 Oct 2020 09:24:51 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 9F32E20878
-	for <linux-m68k@archiver.kernel.org>; Fri, 23 Oct 2020 07:14:31 +0000 (UTC)
-Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=rasmusvillemoes.dk header.i=@rasmusvillemoes.dk header.b="fIw2nnxw"
+	by mail.kernel.org (Postfix) with ESMTP id A96CA2192A
+	for <linux-m68k@archiver.kernel.org>; Fri, 23 Oct 2020 09:24:50 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S375616AbgJWHO2 (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Fri, 23 Oct 2020 03:14:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46742 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S375612AbgJWHO1 (ORCPT
+        id S461300AbgJWJYu (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Fri, 23 Oct 2020 05:24:50 -0400
+Received: from mail-ot1-f66.google.com ([209.85.210.66]:46698 "EHLO
+        mail-ot1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S461414AbgJWJYs (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Fri, 23 Oct 2020 03:14:27 -0400
-Received: from mail-ej1-x642.google.com (mail-ej1-x642.google.com [IPv6:2a00:1450:4864:20::642])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AE878C0613D2
-        for <linux-m68k@lists.linux-m68k.org>; Fri, 23 Oct 2020 00:14:25 -0700 (PDT)
-Received: by mail-ej1-x642.google.com with SMTP id t25so907887ejd.13
-        for <linux-m68k@lists.linux-m68k.org>; Fri, 23 Oct 2020 00:14:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=rasmusvillemoes.dk; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=tV2JdgeetWkMo3b0CNfPI5PIf7h/qWNZxkMeAZIAXgY=;
-        b=fIw2nnxwmkbu7DraOrhc1cAb6DP8f6lxZtkBYUHubh5it1qNClYsZpnGZ3YLDsL/zb
-         Za90R2NRP5hBvIBd5J3NkV9nsLXUVzQSxDVKiLjnTELEbQSjkvAuDYIOFGxjsOYXTjpo
-         KbgJvqauR7ASZGWckCkRxGOSU/6znYiPGiN7w=
+        Fri, 23 Oct 2020 05:24:48 -0400
+Received: by mail-ot1-f66.google.com with SMTP id m11so691271otk.13
+        for <linux-m68k@lists.linux-m68k.org>; Fri, 23 Oct 2020 02:24:47 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=tV2JdgeetWkMo3b0CNfPI5PIf7h/qWNZxkMeAZIAXgY=;
-        b=AHDAl4Grud8ncS+/VEjHqdjZJeRuM20a+SD+xrc7wLL15iPdlahZZ7UteB/YKb0JGa
-         oKeberMXJS5ZNTqbgyln+JSjWpI4hCxYngpgcCCZLDDkTqbKdhOEy1pazsP+7croBj56
-         jd3MMmcVofVxNUBXlH+GIzbDevUe46qxL6W++YuDTf1GH1QCEfMBiI6lBcVvs4kO1nOr
-         fRAlWox65TBnTQ+rrcuJyiF3oPRQPgyNlcXhMvWrvwFYqwvMEMsjfOhhMR0BaypuEqIF
-         PxaX/9nvSfgXS2Yvih2wQVUJh93pLT02iA6P1xkCq9B2r8OG5Opw/OY/lvDM4bj9zpXh
-         37IQ==
-X-Gm-Message-State: AOAM533o7zOSj/nlLC6ouQ2hhFSzwc4WxhD+DPHKGstkmJwgtQrO2999
-        sRXVdhatMIgtjas2yMJ7PhzOaA==
-X-Google-Smtp-Source: ABdhPJy047+CmhTalOZN6C5t0TMaQd7AP4ay6FCicu99E7Q9zHQUqdZgSji/CmQEuleg6vEhWhL9+Q==
-X-Received: by 2002:a17:906:a1d4:: with SMTP id bx20mr664255ejb.262.1603437264294;
-        Fri, 23 Oct 2020 00:14:24 -0700 (PDT)
-Received: from [172.16.11.132] ([81.216.59.226])
-        by smtp.gmail.com with ESMTPSA id h17sm287717ejf.98.2020.10.23.00.14.22
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 23 Oct 2020 00:14:23 -0700 (PDT)
-Subject: Re: [LTP] mmstress[1309]: segfault at 7f3d71a36ee8 ip
- 00007f3d77132bdf sp 00007f3d71a36ee8 error 4 in
- libc-2.27.so[7f3d77058000+1aa000]
-To:     Sean Christopherson <sean.j.christopherson@intel.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     =?UTF-8?Q?Daniel_D=c3=adaz?= <daniel.diaz@linaro.org>,
-        Naresh Kamboju <naresh.kamboju@linaro.org>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-        zenglg.jy@cn.fujitsu.com,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        X86 ML <x86@kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        lkft-triage@lists.linaro.org,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        linux-mm <linux-mm@kvack.org>,
-        linux-m68k <linux-m68k@lists.linux-m68k.org>,
-        Linux-Next Mailing List <linux-next@vger.kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        kasan-dev <kasan-dev@googlegroups.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Ingo Molnar <mingo@redhat.com>, LTP List <ltp@lists.linux.it>,
-        Al Viro <viro@zeniv.linux.org.uk>
-References: <CA+G9fYvHze+hKROmiB0uL90S8h9ppO9S9Xe7RWwv808QwOd_Yw@mail.gmail.com>
- <CAHk-=wg5-P79Hr4iaC_disKR2P+7cRVqBA9Dsria9jdVwHo0+A@mail.gmail.com>
- <CA+G9fYv=DUanNfL2yza=y9kM7Y9bFpVv22Wd4L9NP28i0y7OzA@mail.gmail.com>
- <CA+G9fYudry0cXOuSfRTqHKkFKW-sMrA6Z9BdQFmtXsnzqaOgPg@mail.gmail.com>
- <CAHk-=who8WmkWuuOJeGKa-7QCtZHqp3PsOSJY0hadyywucPMcQ@mail.gmail.com>
- <CAHk-=wi=sf4WtmZXgGh=nAp4iQKftCKbdQqn56gjifxWNpnkxw@mail.gmail.com>
- <CAEUSe78A4fhsyF6+jWKVjd4isaUeuFWLiWqnhic87BF6cecN3w@mail.gmail.com>
- <CAHk-=wgqAp5B46SWzgBt6UkheVGFPs2rrE6H4aqLExXE1TXRfQ@mail.gmail.com>
- <20201023050214.GG23681@linux.intel.com>
-From:   Rasmus Villemoes <linux@rasmusvillemoes.dk>
-Message-ID: <356811ab-cb08-7685-ca01-fe58b5654953@rasmusvillemoes.dk>
-Date:   Fri, 23 Oct 2020 09:14:21 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Zc+AeQKYu0eA1NCCr9Ea0RhGk/czUMV0vr6kVFJGHw0=;
+        b=f4xJQvo4fIXBLDV6ShqI/nj2mOcer/Km9JJ2u23GNwkDzV5/ozEu2pOOuSW92QFvd+
+         VO/W82qiGom3e361NjXZ6wprRGhden6l4imC/gLPUAHVLnijv7QDM/+q3E0/7ezQShXl
+         eKcxDNhoGX6cUBjIbeNYM6YaA0VIOUd4KzcqlO3MvNIisLGGQaYnayb6Tg5Zh7IcQESF
+         9RyFlbzPVb3Uz0OExtVHw4HhmvVovVqGYtIBOSSFtj4JyU5087UDJddPpNy6DpNMpNP9
+         dBOV9+4pT/6xM5seJ6JRlW8P93i0zcDV9j2GOQFS0TMkyNQ9Jh7SdyEgml/yPBq6OPUY
+         1R6w==
+X-Gm-Message-State: AOAM531d0cY/1XX4PtbmnvY1TDSbcuTyspuj32pfHVLVJHkn2gWYdkAa
+        ne1ATgG4AJRUHEUEkQl9EKlsGu4auB1eZ1L0slw=
+X-Google-Smtp-Source: ABdhPJxehtfOoAm+qzRUkw5mm184UYL/qN+HgKHa1e9IqAJmQlfvEJk1yo1vlYOgf9p2GgsKSFaJDrnAsY04iiRnVFk=
+X-Received: by 2002:a9d:3b76:: with SMTP id z109mr904469otb.250.1603445087314;
+ Fri, 23 Oct 2020 02:24:47 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20201023050214.GG23681@linux.intel.com>
-Content-Type: text/plain; charset=windows-1252
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+References: <20201008154651.1901126-1-arnd@arndb.de> <20201008154651.1901126-14-arnd@arndb.de>
+ <alpine.LNX.2.23.453.2010091900150.12@nippy.intranet> <CAK8P3a3rM7gJjdTtcKzr6yi15n6xs-yhEpmSOf3QHfahQwxqkw@mail.gmail.com>
+ <alpine.LNX.2.23.453.2010150937430.16@nippy.intranet> <CAK8P3a3i6cum_9xGgsbxjXXvbRsP8Po5qLZ0Agb3c4gZTKC9GQ@mail.gmail.com>
+In-Reply-To: <CAK8P3a3i6cum_9xGgsbxjXXvbRsP8Po5qLZ0Agb3c4gZTKC9GQ@mail.gmail.com>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Fri, 23 Oct 2020 11:24:36 +0200
+Message-ID: <CAMuHMdUyGH=ORa4yHivMeJZaGQ3kEXi1kr9=P+u1y3QQnC+-4g@mail.gmail.com>
+Subject: Re: [RFC 13/13] m68k: mac: convert to generic clockevent
+To:     Arnd Bergmann <arnd@kernel.org>
+Cc:     Finn Thain <fthain@telegraphics.com.au>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Russell King <linux@armlinux.org.uk>,
+        Tony Luck <tony.luck@intel.com>,
+        Fenghua Yu <fenghua.yu@intel.com>,
+        Greg Ungerer <gerg@linux-m68k.org>,
+        Philip Blundell <philb@gnu.org>,
+        Joshua Thompson <funaho@jurai.org>,
+        Sam Creasey <sammy@sammy.net>,
+        "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
+        Helge Deller <deller@gmx.de>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        John Stultz <john.stultz@linaro.org>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        "linux-ia64@vger.kernel.org" <linux-ia64@vger.kernel.org>,
+        Parisc List <linux-parisc@vger.kernel.org>,
+        linux-m68k <linux-m68k@lists.linux-m68k.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-On 23/10/2020 07.02, Sean Christopherson wrote:
-> On Thu, Oct 22, 2020 at 08:05:05PM -0700, Linus Torvalds wrote:
->> On Thu, Oct 22, 2020 at 6:36 PM Daniel Díaz <daniel.diaz@linaro.org> wrote:
->>>
->>> The kernel Naresh originally referred to is here:
->>>   https://builds.tuxbuild.com/SCI7Xyjb7V2NbfQ2lbKBZw/
->>
->> Thanks.
->>
->> And when I started looking at it, I realized that my original idea
->> ("just look for __put_user_nocheck_X calls, there aren't so many of
->> those") was garbage, and that I was just being stupid.
->>
->> Yes, the commit that broke was about __put_user(), but in order to not
->> duplicate all the code, it re-used the regular put_user()
->> infrastructure, and so all the normal put_user() calls are potential
->> problem spots too if this is about the compiler interaction with KASAN
->> and the asm changes.
->>
->> So it's not just a couple of special cases to look at, it's all the
->> normal cases too.
->>
->> Ok, back to the drawing board, but I think reverting it is probably
->> the right thing to do if I can't think of something smart.
->>
->> That said, since you see this on x86-64, where the whole ugly trick with that
->>
->>    register asm("%"_ASM_AX)
->>
->> is unnecessary (because the 8-byte case is still just a single
->> register, no %eax:%edx games needed), it would be interesting to hear
->> if the attached patch fixes it. That would confirm that the problem
->> really is due to some register allocation issue interaction (or,
->> alternatively, it would tell me that there's something else going on).
-> 
-> I haven't reproduced the crash, but I did find a smoking gun that confirms the
-> "register shenanigans are evil shenanigans" theory.  I ran into a similar thing
-> recently where a seemingly innocuous line of code after loading a value into a
-> register variable wreaked havoc because it clobbered the input register.
-> 
-> This put_user() in schedule_tail():
-> 
->    if (current->set_child_tid)
->            put_user(task_pid_vnr(current), current->set_child_tid);
-> 
-> generates the following assembly with KASAN out-of-line:
-> 
->    0xffffffff810dccc9 <+73>: xor    %edx,%edx
->    0xffffffff810dcccb <+75>: xor    %esi,%esi
->    0xffffffff810dcccd <+77>: mov    %rbp,%rdi
->    0xffffffff810dccd0 <+80>: callq  0xffffffff810bf5e0 <__task_pid_nr_ns>
->    0xffffffff810dccd5 <+85>: mov    %r12,%rdi
->    0xffffffff810dccd8 <+88>: callq  0xffffffff81388c60 <__asan_load8>
->    0xffffffff810dccdd <+93>: mov    0x590(%rbp),%rcx
->    0xffffffff810dcce4 <+100>: callq  0xffffffff817708a0 <__put_user_4>
->    0xffffffff810dcce9 <+105>: pop    %rbx
->    0xffffffff810dccea <+106>: pop    %rbp
->    0xffffffff810dcceb <+107>: pop    %r12
-> 
-> __task_pid_nr_ns() returns the pid in %rax, which gets clobbered by
-> __asan_load8()'s check on current for the current->set_child_tid dereference.
-> 
+Hi Arnd,
 
-Yup, and you don't need KASAN to implicitly generate function calls for
-you. With x86_64 defconfig, I get
+On Fri, Oct 23, 2020 at 9:52 AM Arnd Bergmann <arnd@kernel.org> wrote:
+> On Sun, Oct 18, 2020 at 2:55 AM Finn Thain <fthain@telegraphics.com.au> wrote:
+> > On Thu, 15 Oct 2020, Arnd Bergmann wrote:
+> > > On Thu, Oct 15, 2020 at 3:19 AM Finn Thain <fthain@telegraphics.com.au> wrote:
+> > > > On Sat, 10 Oct 2020, Arnd Bergmann wrote:
+> >
+> > That configuration still produces the same 5 KiB of bloat. I see that
+> > kernel/time/Kconfig has this --
+> >
+> > # Core internal switch. Selected by NO_HZ_COMMON / HIGH_RES_TIMERS. This is
+> > # only related to the tick functionality. Oneshot clockevent devices
+> > # are supported independent of this.
+> > config TICK_ONESHOT
+> >         bool
+> >
+> > But my question was really about both kinds of dead code (oneshot device
+> > support and oneshot tick support). Anyway, after playing with the code for
+> > a bit I don't see any easy way to reduce the growth in text size.
+>
+> Did you look more deeply into where those 5KB are? Is this just
+> the code in kernel/time/{clockevents,tick-common}.c and the
+> added platform specific bits, or is there something more?
+> I suppose the sysfs interface and the clockevents_update_freq()
+> logic are not really needed on m68k, but it wouldn't make much
+> sense to split those out either.
+>
+> How does the 5KB bloat compare to the average bloat we get
+> from one release to the next? Geert has been collecting statistics
+> for this.
 
-extern u64 __user *get_destination(int x, int y);
+It would be a fair share of the typical increase of ca. 30 KiB per
+kernel release. Still, it would be lost in the noise of the increase for
+v5.10-rc1:
 
-void pu_test(void)
-{
-	u64 big = 0x1234abcd5678;
+    add/remove: 1200/455 grow/shrink: 1419/821 up/down: 468970/-93714 (375256)
+    Function                                     old     new   delta
+    _printk_rb_static_infos                        -  180224 +180224
+    write_buf                                   8192   32768  +24576
+    _printk_rb_static_descs                        -   24576  +24576
+    HUF_decompress4X4_usingDTable_internal         -    5664   +5664
+    HUF_decompress4X2_usingDTable_internal         -    5006   +5006
+    __ext4_ioctl                                   -    4774   +4774
+    sock_ops_convert_ctx_access                 3840    8462   +4622
+    ZSTD_decompressSequences                       -    3100   +3100
 
-	if (put_user(big, get_destination(4, 5)))
-		pr_warn("uh");
-}
+> > > The arm/rpc timer seems to be roughly in the same category as most of
+> > > the m68k ones or the i8253 counter on a PC. It's possible that some of
+> > > them could use the same logic as drivers/clocksource/i8253.o as long as
+> > > there is any hardware oneshot mode.
+> >
+> > There appear to be 15 platforms in that category. 4 have no clocksource
+> > besides the jiffies clocksource, meaning there's no practical alternative
+> > to using a periodic tick, like you did in your RFC patch:
+> >
+> > arch/m68k/apollo/config.c
+> > arch/m68k/q40/q40ints.c
+> > arch/m68k/sun3/sun3ints.c
+> > arch/m68k/sun3x/time.c
+>
+> Do any of these have users? I'm fairly sure sun3x has never worked in mainline,
+> sun3 seems to still need the same few patches it did 20 years ago. I
+> couldn't find
+> much about Linux on Apollo or q40, the information on the web for either
+> of them seems to all be for linux-2.4 kernels.
 
-to generate
+They probably don't have any users.
+AFAIK, the only users are the usual triumvirate of amiga/atari/mac
+(and perhaps the fleet of VME boards in the Australian navy? ;)
 
-0000000000004d60 <pu_test>:
-    4d60:       53                      push   %rbx
-    4d61:       be 05 00 00 00          mov    $0x5,%esi
-    4d66:       bf 04 00 00 00          mov    $0x4,%edi
-    4d6b:       e8 00 00 00 00          callq  4d70 <pu_test+0x10>
-                        4d6c: R_X86_64_PC32     get_destination-0x4
-    4d70:       48 89 c1                mov    %rax,%rcx
-    4d73:       e8 00 00 00 00          callq  4d78 <pu_test+0x18>
-                        4d74: R_X86_64_PC32     __put_user_8-0x4
-    4d78:       85 c9                   test   %ecx,%ecx
-    4d7a:       75 02                   jne    4d7e <pu_test+0x1e>
-    4d7c:       5b                      pop    %rbx
-    4d7d:       c3                      retq
-    4d7e:       5b                      pop    %rbx
-    4d7f:       48 c7 c7 00 00 00 00    mov    $0x0,%rdi
-                        4d82: R_X86_64_32S      .rodata.str1.1+0xfa
-    4d86:       e9 00 00 00 00          jmpq   4d8b <pu_test+0x2b>
-                        4d87: R_X86_64_PC32     printk-0x4
+Gr{oetje,eeting}s,
+
+                        Geert
 
 
-That's certainly garbage. Now, I don't know if it's a sufficient fix (or
-could break something else), but the obvious first step of rearranging
-so that the ptr argument is evaluated before the assignment to __val_pu
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
-diff --git a/arch/x86/include/asm/uaccess.h b/arch/x86/include/asm/uaccess.h
-index 477c503f2753..b5d3290fcd09 100644
---- a/arch/x86/include/asm/uaccess.h
-+++ b/arch/x86/include/asm/uaccess.h
-@@ -235,13 +235,13 @@ extern void __put_user_nocheck_8(void);
- #define do_put_user_call(fn,x,ptr)                                     \
- ({                                                                     \
-        int __ret_pu;                                                   \
--       register __typeof__(*(ptr)) __val_pu asm("%"_ASM_AX);           \
-+       __typeof__(ptr) __ptr = (ptr);                                  \
-+       register __typeof__(*(ptr)) __val_pu asm("%"_ASM_AX) = (x);     \
-        __chk_user_ptr(ptr);                                            \
--       __val_pu = (x);                                                 \
-        asm volatile("call __" #fn "_%P[size]"                          \
-                     : "=c" (__ret_pu),                                 \
-                        ASM_CALL_CONSTRAINT                             \
--                    : "0" (ptr),                                       \
-+                    : "0" (__ptr),                                     \
-                       "r" (__val_pu),                                  \
-                       [size] "i" (sizeof(*(ptr)))                      \
-                     :"ebx");                                           \
-
-
-at least gets us
-
-0000000000004d60 <pu_test>:
-    4d60:       53                      push   %rbx
-    4d61:       be 05 00 00 00          mov    $0x5,%esi
-    4d66:       bf 04 00 00 00          mov    $0x4,%edi
-    4d6b:       e8 00 00 00 00          callq  4d70 <pu_test+0x10>
-                        4d6c: R_X86_64_PC32     get_destination-0x4
-    4d70:       48 89 c1                mov    %rax,%rcx
-    4d73:       48 b8 78 56 cd ab 34    movabs $0x1234abcd5678,%rax
-    4d7a:       12 00 00
-    4d7d:       e8 00 00 00 00          callq  4d82 <pu_test+0x22>
-                        4d7e: R_X86_64_PC32     __put_user_8-0x4
-
-
-FWIW, https://gcc.gnu.org/onlinedocs/gcc/Local-Register-Variables.html
-does warn about function calls and other things that might clobber the
-register variables between the assignment and the use as an input
-(though the case of evaluating other input operands is not explicitly
-mentioned).
-
-Rasmus
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
