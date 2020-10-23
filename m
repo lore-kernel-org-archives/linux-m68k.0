@@ -2,155 +2,104 @@ Return-Path: <SRS0=aPjp=D6=vger.kernel.org=linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.7 required=3.0 tests=BAYES_00,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-10.1 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 0532FC55179
-	for <linux-m68k@archiver.kernel.org>; Fri, 23 Oct 2020 09:24:51 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7F62CC388F9
+	for <linux-m68k@archiver.kernel.org>; Fri, 23 Oct 2020 15:28:51 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id A96CA2192A
-	for <linux-m68k@archiver.kernel.org>; Fri, 23 Oct 2020 09:24:50 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 3224A221F9
+	for <linux-m68k@archiver.kernel.org>; Fri, 23 Oct 2020 15:28:51 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=default; t=1603466931;
+	bh=EU+2qTgoZbe7L0HsjpKr8odgtOe3LfA4NHygL8USK4w=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:List-ID:From;
+	b=iExZEiGlMe9oO7OUGTB3LQn1z2oEi+zIvdS5uaL9+WN0lss0Ss0V8EgWicgzlKgAj
+	 7LlpZN92UmS7sZqtnEV8OGNNd9E47fG+YlFrivWDilw6h1xIPgkEO17r/vEeULUTW0
+	 1RCztG3pELbT8cVMGEaW6kVJJRLlMUrsOhoTfifg=
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S461300AbgJWJYu (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Fri, 23 Oct 2020 05:24:50 -0400
-Received: from mail-ot1-f66.google.com ([209.85.210.66]:46698 "EHLO
-        mail-ot1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S461414AbgJWJYs (ORCPT
+        id S465812AbgJWP2u (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Fri, 23 Oct 2020 11:28:50 -0400
+Received: from mail-ej1-f67.google.com ([209.85.218.67]:39841 "EHLO
+        mail-ej1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S465813AbgJWP2s (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Fri, 23 Oct 2020 05:24:48 -0400
-Received: by mail-ot1-f66.google.com with SMTP id m11so691271otk.13
-        for <linux-m68k@lists.linux-m68k.org>; Fri, 23 Oct 2020 02:24:47 -0700 (PDT)
+        Fri, 23 Oct 2020 11:28:48 -0400
+Received: by mail-ej1-f67.google.com with SMTP id qh17so2942332ejb.6
+        for <linux-m68k@lists.linux-m68k.org>; Fri, 23 Oct 2020 08:28:46 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Zc+AeQKYu0eA1NCCr9Ea0RhGk/czUMV0vr6kVFJGHw0=;
-        b=f4xJQvo4fIXBLDV6ShqI/nj2mOcer/Km9JJ2u23GNwkDzV5/ozEu2pOOuSW92QFvd+
-         VO/W82qiGom3e361NjXZ6wprRGhden6l4imC/gLPUAHVLnijv7QDM/+q3E0/7ezQShXl
-         eKcxDNhoGX6cUBjIbeNYM6YaA0VIOUd4KzcqlO3MvNIisLGGQaYnayb6Tg5Zh7IcQESF
-         9RyFlbzPVb3Uz0OExtVHw4HhmvVovVqGYtIBOSSFtj4JyU5087UDJddPpNy6DpNMpNP9
-         dBOV9+4pT/6xM5seJ6JRlW8P93i0zcDV9j2GOQFS0TMkyNQ9Jh7SdyEgml/yPBq6OPUY
-         1R6w==
-X-Gm-Message-State: AOAM531d0cY/1XX4PtbmnvY1TDSbcuTyspuj32pfHVLVJHkn2gWYdkAa
-        ne1ATgG4AJRUHEUEkQl9EKlsGu4auB1eZ1L0slw=
-X-Google-Smtp-Source: ABdhPJxehtfOoAm+qzRUkw5mm184UYL/qN+HgKHa1e9IqAJmQlfvEJk1yo1vlYOgf9p2GgsKSFaJDrnAsY04iiRnVFk=
-X-Received: by 2002:a9d:3b76:: with SMTP id z109mr904469otb.250.1603445087314;
- Fri, 23 Oct 2020 02:24:47 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=8VWmVh1g5wU3te7Rzl0E5HboJR4NG/dn6wbec4O2niQ=;
+        b=NJ1cHU31DRglqr8YonFVjg68y9sgyVEdMlkd8WCJ0bsM9G95M9Z7XBliqFe7bdpmRd
+         2VXviKhL9RGPoX6ZoatX8ooVnqcFuOpckwkPnn75x8zETyfb0kRpoR/eIWW/+6ppniOx
+         /405fCX6wspB6cFEN7dLSZV2WZA0wa3IlV7P1aMHWJ0Hc4tJGHZRLpQC+2h3hRIuDgae
+         e+emvY2vG1616dmqu7eaGAz+MfkrqmTMgrdHdAv5bzF7ZzQHQskFcPkXH15OF+/SEu/n
+         s6gix1h6FJskGszwQgNz07U2qc5GHg2Sd0uNjxN0H40XDO0L4wFw2aeVhtDL+Ar7i/N0
+         oPjw==
+X-Gm-Message-State: AOAM532opQPMzawkR4BH95cwni1rgAIO6tgRVLfIdcTSXI1CLk9yErqG
+        XrLA0vOtWn3P0flpO6WfgDc=
+X-Google-Smtp-Source: ABdhPJx3vdJo1BSJWo8drebFDOaoi+uI+K9sO8Av8jwfByJcXHiSiDPwQs12Le8pPww4GnFk+EwZ/A==
+X-Received: by 2002:a17:906:48c:: with SMTP id f12mr2639269eja.467.1603466925850;
+        Fri, 23 Oct 2020 08:28:45 -0700 (PDT)
+Received: from kozik-lap ([194.230.155.171])
+        by smtp.googlemail.com with ESMTPSA id s6sm994985ejx.79.2020.10.23.08.28.43
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 23 Oct 2020 08:28:44 -0700 (PDT)
+Date:   Fri, 23 Oct 2020 17:28:42 +0200
+From:   Krzysztof Kozlowski <krzk@kernel.org>
+To:     peng.fan@nxp.com
+Cc:     shawnguo@kernel.org, s.hauer@pengutronix.de, festevam@gmail.com,
+        kernel@pengutronix.de, linux-imx@nxp.com,
+        linux-i2c@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, Greg Ungerer <gerg@linux-m68k.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        linux-m68k@lists.linux-m68k.org,
+        Angelo Dureghello <angelo.dureghello@timesys.com>
+Subject: Re: [PATCH 2/2] i2c: imx: remove id_table entry
+Message-ID: <20201023152842.GA5227@kozik-lap>
+References: <1603441103-17735-1-git-send-email-peng.fan@nxp.com>
+ <1603441103-17735-2-git-send-email-peng.fan@nxp.com>
 MIME-Version: 1.0
-References: <20201008154651.1901126-1-arnd@arndb.de> <20201008154651.1901126-14-arnd@arndb.de>
- <alpine.LNX.2.23.453.2010091900150.12@nippy.intranet> <CAK8P3a3rM7gJjdTtcKzr6yi15n6xs-yhEpmSOf3QHfahQwxqkw@mail.gmail.com>
- <alpine.LNX.2.23.453.2010150937430.16@nippy.intranet> <CAK8P3a3i6cum_9xGgsbxjXXvbRsP8Po5qLZ0Agb3c4gZTKC9GQ@mail.gmail.com>
-In-Reply-To: <CAK8P3a3i6cum_9xGgsbxjXXvbRsP8Po5qLZ0Agb3c4gZTKC9GQ@mail.gmail.com>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Fri, 23 Oct 2020 11:24:36 +0200
-Message-ID: <CAMuHMdUyGH=ORa4yHivMeJZaGQ3kEXi1kr9=P+u1y3QQnC+-4g@mail.gmail.com>
-Subject: Re: [RFC 13/13] m68k: mac: convert to generic clockevent
-To:     Arnd Bergmann <arnd@kernel.org>
-Cc:     Finn Thain <fthain@telegraphics.com.au>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Russell King <linux@armlinux.org.uk>,
-        Tony Luck <tony.luck@intel.com>,
-        Fenghua Yu <fenghua.yu@intel.com>,
-        Greg Ungerer <gerg@linux-m68k.org>,
-        Philip Blundell <philb@gnu.org>,
-        Joshua Thompson <funaho@jurai.org>,
-        Sam Creasey <sammy@sammy.net>,
-        "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
-        Helge Deller <deller@gmx.de>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        John Stultz <john.stultz@linaro.org>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        "linux-ia64@vger.kernel.org" <linux-ia64@vger.kernel.org>,
-        Parisc List <linux-parisc@vger.kernel.org>,
-        linux-m68k <linux-m68k@lists.linux-m68k.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <1603441103-17735-2-git-send-email-peng.fan@nxp.com>
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-Hi Arnd,
+On Fri, Oct 23, 2020 at 04:18:23PM +0800, peng.fan@nxp.com wrote:
+> From: Peng Fan <peng.fan@nxp.com>
+> 
+> The legacy platform device code has been removed under arch/arm/mach-imx,
+> so we no need id_table entry here.
 
-On Fri, Oct 23, 2020 at 9:52 AM Arnd Bergmann <arnd@kernel.org> wrote:
-> On Sun, Oct 18, 2020 at 2:55 AM Finn Thain <fthain@telegraphics.com.au> wrote:
-> > On Thu, 15 Oct 2020, Arnd Bergmann wrote:
-> > > On Thu, Oct 15, 2020 at 3:19 AM Finn Thain <fthain@telegraphics.com.au> wrote:
-> > > > On Sat, 10 Oct 2020, Arnd Bergmann wrote:
-> >
-> > That configuration still produces the same 5 KiB of bloat. I see that
-> > kernel/time/Kconfig has this --
-> >
-> > # Core internal switch. Selected by NO_HZ_COMMON / HIGH_RES_TIMERS. This is
-> > # only related to the tick functionality. Oneshot clockevent devices
-> > # are supported independent of this.
-> > config TICK_ONESHOT
-> >         bool
-> >
-> > But my question was really about both kinds of dead code (oneshot device
-> > support and oneshot tick support). Anyway, after playing with the code for
-> > a bit I don't see any easy way to reduce the growth in text size.
->
-> Did you look more deeply into where those 5KB are? Is this just
-> the code in kernel/time/{clockevents,tick-common}.c and the
-> added platform specific bits, or is there something more?
-> I suppose the sysfs interface and the clockevents_update_freq()
-> logic are not really needed on m68k, but it wouldn't make much
-> sense to split those out either.
->
-> How does the 5KB bloat compare to the average bloat we get
-> from one release to the next? Geert has been collecting statistics
-> for this.
+Cc: Greg, Geert, Angelo,
 
-It would be a fair share of the typical increase of ca. 30 KiB per
-kernel release. Still, it would be lost in the noise of the increase for
-v5.10-rc1:
+Aren't you breaking Coldfire platforms?
 
-    add/remove: 1200/455 grow/shrink: 1419/821 up/down: 468970/-93714 (375256)
-    Function                                     old     new   delta
-    _printk_rb_static_infos                        -  180224 +180224
-    write_buf                                   8192   32768  +24576
-    _printk_rb_static_descs                        -   24576  +24576
-    HUF_decompress4X4_usingDTable_internal         -    5664   +5664
-    HUF_decompress4X2_usingDTable_internal         -    5006   +5006
-    __ext4_ioctl                                   -    4774   +4774
-    sock_ops_convert_ctx_access                 3840    8462   +4622
-    ZSTD_decompressSequences                       -    3100   +3100
+Best regards,
+Krzysztof
 
-> > > The arm/rpc timer seems to be roughly in the same category as most of
-> > > the m68k ones or the i8253 counter on a PC. It's possible that some of
-> > > them could use the same logic as drivers/clocksource/i8253.o as long as
-> > > there is any hardware oneshot mode.
-> >
-> > There appear to be 15 platforms in that category. 4 have no clocksource
-> > besides the jiffies clocksource, meaning there's no practical alternative
-> > to using a periodic tick, like you did in your RFC patch:
-> >
-> > arch/m68k/apollo/config.c
-> > arch/m68k/q40/q40ints.c
-> > arch/m68k/sun3/sun3ints.c
-> > arch/m68k/sun3x/time.c
->
-> Do any of these have users? I'm fairly sure sun3x has never worked in mainline,
-> sun3 seems to still need the same few patches it did 20 years ago. I
-> couldn't find
-> much about Linux on Apollo or q40, the information on the web for either
-> of them seems to all be for linux-2.4 kernels.
-
-They probably don't have any users.
-AFAIK, the only users are the usual triumvirate of amiga/atari/mac
-(and perhaps the fleet of VME boards in the Australian navy? ;)
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
-
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+> 
+> Signed-off-by: Peng Fan <peng.fan@nxp.com>
+> ---
+>  drivers/i2c/busses/i2c-imx.c | 14 --------------
+>  1 file changed, 14 deletions(-)
+> 
+> diff --git a/drivers/i2c/busses/i2c-imx.c b/drivers/i2c/busses/i2c-imx.c
+> index ba9d639223ec..7ea36a78abb0 100644
+> --- a/drivers/i2c/busses/i2c-imx.c
+> +++ b/drivers/i2c/busses/i2c-imx.c
+> @@ -233,19 +233,6 @@ static struct imx_i2c_hwdata vf610_i2c_hwdata = {
+>  
+>  };
+>  
+> -static const struct platform_device_id imx_i2c_devtype[] = {
+> -	{
+> -		.name = "imx1-i2c",
+> -		.driver_data = (kernel_ulong_t)&imx1_i2c_hwdata,
+> -	}, {
