@@ -1,128 +1,129 @@
-Return-Path: <SRS0=aPjp=D6=vger.kernel.org=linux-m68k-owner@kernel.org>
+Return-Path: <SRS0=UdPK=D7=vger.kernel.org=linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-4.1 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-9.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 8A270C388F9
-	for <linux-m68k@archiver.kernel.org>; Fri, 23 Oct 2020 21:16:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4E7A8C2D0A3
+	for <linux-m68k@archiver.kernel.org>; Sat, 24 Oct 2020 07:47:18 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 3504421D6C
-	for <linux-m68k@archiver.kernel.org>; Fri, 23 Oct 2020 21:16:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=default; t=1603487769;
-	bh=qQcFmOGTx12wPD63RiThRe7Vh0MNAYSb3WtVSv6KO9I=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:List-ID:From;
-	b=e86zfvr3fOjw7TY2ANp+icF9lJ2rz7++0jg1FxE12hpktt9hx+VL7OG5Ud/tOonej
-	 UjguxXRiZwpZdIw3TMLPDIyOs+OP9b/z4T3/HRK2yT17rl386lcKLRnTh3tHFjAkBB
-	 MfVJSyeW/K6Gk725wRU9dwJ9S/LA6u1FW5sCG80I=
+	by mail.kernel.org (Postfix) with ESMTP id EF5A322460
+	for <linux-m68k@archiver.kernel.org>; Sat, 24 Oct 2020 07:47:17 +0000 (UTC)
+Authentication-Results: mail.kernel.org;
+	dkim=pass (1024-bit key) header.d=nxp.com header.i=@nxp.com header.b="DpxQSbGy"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1755857AbgJWVQI (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Fri, 23 Oct 2020 17:16:08 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40248 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1755356AbgJWVQH (ORCPT <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Fri, 23 Oct 2020 17:16:07 -0400
-Received: from mail-lj1-f176.google.com (mail-lj1-f176.google.com [209.85.208.176])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id A10502465D
-        for <linux-m68k@lists.linux-m68k.org>; Fri, 23 Oct 2020 21:16:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603487767;
-        bh=qQcFmOGTx12wPD63RiThRe7Vh0MNAYSb3WtVSv6KO9I=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=ylYjv002r5/d4PJz5MfpZMB4thciSwlk1eXkJiCA3bvenmoPxzuiHjvcXDcackAcE
-         w6VNJ7rBH6083fbGYBlG3chnrNZbtJNPqO54/g2gQKHUjVIOrFDXlaNINXtFbJdoKt
-         OK0nV4hNeaJ18/R+8VfmdHAtYYky9/5RkmV0QCgE=
-Received: by mail-lj1-f176.google.com with SMTP id c21so2991656ljn.13
-        for <linux-m68k@lists.linux-m68k.org>; Fri, 23 Oct 2020 14:16:06 -0700 (PDT)
-X-Gm-Message-State: AOAM531IIIXquxFC2kTLMgc6OJ4+zszQw78nM/lC5uLQa7bFIomhxfoq
-        HFLUYfGHMFfAz5Al1yX7elUPj+Npo2t/F6vnBC8=
-X-Google-Smtp-Source: ABdhPJxMP4Oqfuc0h+oHI0VayAXX1a002RyckvG+CEYT7Qe0w/jJqsSdKxhG124OF9Ag+jl4aWynWIOTPbYK55JDXo0=
-X-Received: by 2002:a05:651c:cd:: with SMTP id 13mr1498277ljr.392.1603487764782;
- Fri, 23 Oct 2020 14:16:04 -0700 (PDT)
-MIME-Version: 1.0
-References: <CA+G9fYvHze+hKROmiB0uL90S8h9ppO9S9Xe7RWwv808QwOd_Yw@mail.gmail.com>
- <CAHk-=wg5-P79Hr4iaC_disKR2P+7cRVqBA9Dsria9jdVwHo0+A@mail.gmail.com>
- <CA+G9fYv=DUanNfL2yza=y9kM7Y9bFpVv22Wd4L9NP28i0y7OzA@mail.gmail.com>
- <CA+G9fYudry0cXOuSfRTqHKkFKW-sMrA6Z9BdQFmtXsnzqaOgPg@mail.gmail.com>
- <CAHk-=who8WmkWuuOJeGKa-7QCtZHqp3PsOSJY0hadyywucPMcQ@mail.gmail.com>
- <CAHk-=wi=sf4WtmZXgGh=nAp4iQKftCKbdQqn56gjifxWNpnkxw@mail.gmail.com>
- <CAEUSe78A4fhsyF6+jWKVjd4isaUeuFWLiWqnhic87BF6cecN3w@mail.gmail.com>
- <CAHk-=wgqAp5B46SWzgBt6UkheVGFPs2rrE6H4aqLExXE1TXRfQ@mail.gmail.com>
- <CA+G9fYu5aGbMHaR1tewV9dPwXrUR5cbGHJC1BT=GSLsYYwN6Nw@mail.gmail.com> <CAHk-=wjyp3Y_vXJwvoieBJpmmTrs46kc4GKbq5x_nvonHvPJBw@mail.gmail.com>
-In-Reply-To: <CAHk-=wjyp3Y_vXJwvoieBJpmmTrs46kc4GKbq5x_nvonHvPJBw@mail.gmail.com>
-From:   Song Liu <song@kernel.org>
-Date:   Fri, 23 Oct 2020 14:15:53 -0700
-X-Gmail-Original-Message-ID: <CAPhsuW6wZRVoT3Bu6YBVjWVm6JBz9n6_RoZKGM7KrVAXx89SFQ@mail.gmail.com>
-Message-ID: <CAPhsuW6wZRVoT3Bu6YBVjWVm6JBz9n6_RoZKGM7KrVAXx89SFQ@mail.gmail.com>
-Subject: Re: [LTP] mmstress[1309]: segfault at 7f3d71a36ee8 ip
- 00007f3d77132bdf sp 00007f3d71a36ee8 error 4 in libc-2.27.so[7f3d77058000+1aa000]
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Naresh Kamboju <naresh.kamboju@linaro.org>,
-        =?UTF-8?B?RGFuaWVsIETDrWF6?= <daniel.diaz@linaro.org>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        X86 ML <x86@kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        lkft-triage@lists.linaro.org,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        linux-mm <linux-mm@kvack.org>,
-        linux-m68k <linux-m68k@lists.linux-m68k.org>,
-        Linux-Next Mailing List <linux-next@vger.kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        kasan-dev <kasan-dev@googlegroups.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
+        id S1759924AbgJXHrR (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Sat, 24 Oct 2020 03:47:17 -0400
+Received: from mail-eopbgr60040.outbound.protection.outlook.com ([40.107.6.40]:15424
+        "EHLO EUR04-DB3-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1756110AbgJXHrR (ORCPT <rfc822;linux-m68k@lists.linux-m68k.org>);
+        Sat, 24 Oct 2020 03:47:17 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Cp8VCEYFyIma55R3cgtT894M4jedftZrbK3XyCS6Mas+hmTKIV72HQrPdDHzq6VzblQbOr6WoUJBd5xD3qHu+0v9e+0+uz1JFxknQdQlEdPL145vBEn1P0WD1QLdUOYCKMrd5IMt5WjgMbsym4ozCyobcNOtj79ZymQaVMSccu6RUlCjS/IrbhP63C3M41bBL9CRBWVi7Ycs2Q/dfCUoZRSsxN6Qc1VTrcuIFUPbrgV81+OTvP6avBULp6bL/5oV3u0SI34AbDlUppcwCQ80czKcQM9DVpCn8lbE0WrmeuKT0exstOiZLRjwBm75uX/K646JL9SZvs1Rqssc7Nx5sw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Yxm8abs8irudvwI8Qx8fzNRrij4MW8CqJR5Yjxhkvdw=;
+ b=Rmg8ZVIy0ss0xVn68vRQUcamVSHVCC28WbvLS3t4h8TOicnEtdq6W92mwWAmQe1VzaK/NHDe1uDGFN2wi/yX09dlcDIlrccBwK2AOLKNMF57u4eewxwYsDy2dyt0aEI9wRYT6EZ9NHcP+WqLWJ1ZNjYl3m1AU9OqwFETpQqgZGn78J47ccGsp/zHj/XCfzcyyjBEyHogz5t98PMd8/HVBAOZsOpOHn7q6p0zuaBpxPLrLCJrgW133x8Mt7glAFosG3drbC5dFDIq1pQPzzrI99XJVPM7aoAEJYhFv199FEGeo821uYTLJLLCtEJFB5/MWcZ6YDtH2mtbCDmzk43C0Q==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Yxm8abs8irudvwI8Qx8fzNRrij4MW8CqJR5Yjxhkvdw=;
+ b=DpxQSbGy7cDdnku2y8H1RleqQhypgz2P5OctkuA0Z6E21P30RQ0sipuJVH0HFIU4W7lkarbJxpNfSfn81WYacPRi/brScWhlLzSK/ysmJ/337bnPWwGf13OWpBLBLg10JtqqorCCdolT6XaWbseMFU//qi/AuP1gLs0FS8emHbI=
+Received: from DB6PR0402MB2760.eurprd04.prod.outlook.com (2603:10a6:4:a1::14)
+ by DB8PR04MB7178.eurprd04.prod.outlook.com (2603:10a6:10:12e::20) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3455.21; Sat, 24 Oct
+ 2020 07:47:13 +0000
+Received: from DB6PR0402MB2760.eurprd04.prod.outlook.com
+ ([fe80::ec42:b6d0:7666:19ef]) by DB6PR0402MB2760.eurprd04.prod.outlook.com
+ ([fe80::ec42:b6d0:7666:19ef%8]) with mapi id 15.20.3477.028; Sat, 24 Oct 2020
+ 07:47:13 +0000
+From:   Peng Fan <peng.fan@nxp.com>
+To:     Krzysztof Kozlowski <krzk@kernel.org>
+CC:     "shawnguo@kernel.org" <shawnguo@kernel.org>,
+        "s.hauer@pengutronix.de" <s.hauer@pengutronix.de>,
+        "festevam@gmail.com" <festevam@gmail.com>,
+        "kernel@pengutronix.de" <kernel@pengutronix.de>,
+        dl-linux-imx <linux-imx@nxp.com>,
+        "linux-i2c@vger.kernel.org" <linux-i2c@vger.kernel.org>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Greg Ungerer <gerg@linux-m68k.org>,
         Geert Uytterhoeven <geert@linux-m68k.org>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Ingo Molnar <mingo@redhat.com>, LTP List <ltp@lists.linux.it>,
-        Al Viro <viro@zeniv.linux.org.uk>
-Content-Type: text/plain; charset="UTF-8"
+        "linux-m68k@lists.linux-m68k.org" <linux-m68k@lists.linux-m68k.org>,
+        Angelo Dureghello <angelo.dureghello@timesys.com>
+Subject: RE: [PATCH 2/2] i2c: imx: remove id_table entry
+Thread-Topic: [PATCH 2/2] i2c: imx: remove id_table entry
+Thread-Index: AQHWqRXTUwraF8FYdUmzA5S0YIqKi6mlUDQAgAEQSXA=
+Date:   Sat, 24 Oct 2020 07:47:13 +0000
+Message-ID: <DB6PR0402MB2760D2A54C69E7AAAB366C78881B0@DB6PR0402MB2760.eurprd04.prod.outlook.com>
+References: <1603441103-17735-1-git-send-email-peng.fan@nxp.com>
+ <1603441103-17735-2-git-send-email-peng.fan@nxp.com>
+ <20201023152842.GA5227@kozik-lap>
+In-Reply-To: <20201023152842.GA5227@kozik-lap>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: kernel.org; dkim=none (message not signed)
+ header.d=none;kernel.org; dmarc=none action=none header.from=nxp.com;
+x-originating-ip: [114.217.181.5]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-ht: Tenant
+x-ms-office365-filtering-correlation-id: 6036f733-10f4-4475-1b65-08d877f105aa
+x-ms-traffictypediagnostic: DB8PR04MB7178:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <DB8PR04MB7178607455D7CBD1EC6408C0881B0@DB8PR04MB7178.eurprd04.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:989;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: hgWotElTQfsuA9OiULP029xdmikUSJr3BTAwA432saivoYDdGD6b0xN0RFsXxKOLDKCfh2yb5pdXbnskEOZxP9i2jMgcMmyP9fi/4D1uS+kn2snHFpzMbuq1/aYhu/FIg1z3D2UDPPzopn8iUnxOk/VpPp8EBeZUaILSMyMNsN7Yer3/v4Xz8zhuuFh6NNgVX7QypNriEnVu66IymctOZBm+Lk63zJ2HcU9H+hD/IsShqrPKSAR03lUqTo1lWCo9xHvuO/qPP86gnwIdAQ4TnyPVCttlDX1fevLW40rw4twKdc7Q6tP7YIIfkifNYKqiX+TT80KzGUcDwjYvkSGf9A==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DB6PR0402MB2760.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(396003)(366004)(376002)(39860400002)(136003)(346002)(83380400001)(4326008)(76116006)(8936002)(478600001)(44832011)(55016002)(186003)(8676002)(52536014)(86362001)(26005)(7696005)(5660300002)(7416002)(6916009)(66556008)(54906003)(66446008)(33656002)(2906002)(66476007)(71200400001)(316002)(66946007)(64756008)(9686003)(6506007);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata: +qRgYF06hxSN2q2HNzjyOgxZO67dqyP5QMkhOf45en+M83MZYHC2VlMEB2aCpNvq+RI+G/uhls+HKGU9FXKwxSiqrTyxuLhLlDtau5NQjB0VEoM5lzyyV6vz6jxWCCoRUjl4/HJ+c3mHgMkKg8AfBJGFDobIF0NiU4arvQA5qULKWQ2ghESKSX6LsTdYA00H74PHJZZxvecF+OtZvtS65yNdLOkRWhk921dfdq6YdzHIpwNaQEXFSLnCU3VMzOSauS86V8OH3k6oVDPgWWeMlJxNkjU9ZH4KOF3W2q5I+dSRZleuq62UUrw9aT9dZVi+O1O9wjyPu0MNXcOMYRaxCvOgaz0jwjielc8RisI+3oK49SSAJALju3QfMaoy0X1t43Xc46waCikZ5V5kTamOyITTZ2GDyaSjAtCav9JBUrauCLBe/wOaHsHID0KkoejF1/L010rOT9MwasOs9AoCnC1chF0nA1Fnmccc4NIHgLQAA3mLQzApmXxlNEMybcqEBP2hSHORbUk3V9hgntm8oS57K9og60w357EZh6dEZSwFo1Zfwlt7qwfzDe5e/j9V8uxpX4viWIfssyUvPSycYT6NjkfjwX1YgOKe6fLBQnpS3H8K1nMziDbYB/b9tgNl5BLGFgFG/1b8Klp0Sg+OrQ==
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+MIME-Version: 1.0
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: DB6PR0402MB2760.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 6036f733-10f4-4475-1b65-08d877f105aa
+X-MS-Exchange-CrossTenant-originalarrivaltime: 24 Oct 2020 07:47:13.7743
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: ZsODnbSXve7uT4fCApwHe5S0krk0i1pCL5l1M/065mn460SOcDtDFam/C95luYdIlNOZokDakKkAW1o9RaKFfg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB8PR04MB7178
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-On Fri, Oct 23, 2020 at 10:51 AM Linus Torvalds
-<torvalds@linux-foundation.org> wrote:
->
-> On Fri, Oct 23, 2020 at 10:00 AM Naresh Kamboju
-> <naresh.kamboju@linaro.org> wrote:
-> >
-> > [Old patch from yesterday]
-> >
-> > After applying your patch on top on linux next tag 20201015
-> > there are two observations,
-> >   1) i386 build failed. please find build error build
->
-> Yes, this was expected. That patch explicitly only works on x86-64,
-> because 32-bit needs the double register handling for 64-bit values
-> (mainly loff_t).
->
-> >   2) x86_64 kasan test PASS and the reported error not found.
->
-> Ok, good. That confirms that the problem you reported is indeed the
-> register allocation.
->
-> The patch I sent an hour ago (the one based on Rasmus' one from
-> yesterday) should fix things too, and - unlike yesterday's - work on
-> 32-bit.
->
-> But I'll wait for confirmation (and hopefully a sign-off from Rasmus
-> so that I can give him authorship) before actually committing it.
->
->               Linus
-
-My test vm failed to boot since
-
-commit d55564cfc222326e944893eff0c4118353e349ec
-x86: Make __put_user() generate an out-of-line call
-
-The patch also fixed it.
-
-Thanks!
-Song
+PiBTdWJqZWN0OiBSZTogW1BBVENIIDIvMl0gaTJjOiBpbXg6IHJlbW92ZSBpZF90YWJsZSBlbnRy
+eQ0KPiANCj4gT24gRnJpLCBPY3QgMjMsIDIwMjAgYXQgMDQ6MTg6MjNQTSArMDgwMCwgcGVuZy5m
+YW5AbnhwLmNvbSB3cm90ZToNCj4gPiBGcm9tOiBQZW5nIEZhbiA8cGVuZy5mYW5AbnhwLmNvbT4N
+Cj4gPg0KPiA+IFRoZSBsZWdhY3kgcGxhdGZvcm0gZGV2aWNlIGNvZGUgaGFzIGJlZW4gcmVtb3Zl
+ZCB1bmRlcg0KPiA+IGFyY2gvYXJtL21hY2gtaW14LCBzbyB3ZSBubyBuZWVkIGlkX3RhYmxlIGVu
+dHJ5IGhlcmUuDQo+IA0KPiBDYzogR3JlZywgR2VlcnQsIEFuZ2VsbywNCj4gDQo+IEFyZW4ndCB5
+b3UgYnJlYWtpbmcgQ29sZGZpcmUgcGxhdGZvcm1zPw0KDQpPaywgSSBzZWUgY29sZGZpcmUgc3Rp
+bGwgdXNlIHVzZSBpbXgxLWkyYy4gQ291bGQgd2UgcmVtb3ZlIGlteDIxLWkyYyBvciBzdGlsbA0K
+a2VlcCBpdD8NCg0KVGhhbmtzDQpQZW5nLg0KDQo+IA0KPiBCZXN0IHJlZ2FyZHMsDQo+IEtyenlz
+enRvZg0KPiANCj4gPg0KPiA+IFNpZ25lZC1vZmYtYnk6IFBlbmcgRmFuIDxwZW5nLmZhbkBueHAu
+Y29tPg0KPiA+IC0tLQ0KPiA+ICBkcml2ZXJzL2kyYy9idXNzZXMvaTJjLWlteC5jIHwgMTQgLS0t
+LS0tLS0tLS0tLS0NCj4gPiAgMSBmaWxlIGNoYW5nZWQsIDE0IGRlbGV0aW9ucygtKQ0KPiA+DQo+
+ID4gZGlmZiAtLWdpdCBhL2RyaXZlcnMvaTJjL2J1c3Nlcy9pMmMtaW14LmMNCj4gPiBiL2RyaXZl
+cnMvaTJjL2J1c3Nlcy9pMmMtaW14LmMgaW5kZXggYmE5ZDYzOTIyM2VjLi43ZWEzNmE3OGFiYjAN
+Cj4gMTAwNjQ0DQo+ID4gLS0tIGEvZHJpdmVycy9pMmMvYnVzc2VzL2kyYy1pbXguYw0KPiA+ICsr
+KyBiL2RyaXZlcnMvaTJjL2J1c3Nlcy9pMmMtaW14LmMNCj4gPiBAQCAtMjMzLDE5ICsyMzMsNiBA
+QCBzdGF0aWMgc3RydWN0IGlteF9pMmNfaHdkYXRhIHZmNjEwX2kyY19od2RhdGEgPQ0KPiB7DQo+
+ID4NCj4gPiAgfTsNCj4gPg0KPiA+IC1zdGF0aWMgY29uc3Qgc3RydWN0IHBsYXRmb3JtX2Rldmlj
+ZV9pZCBpbXhfaTJjX2RldnR5cGVbXSA9IHsNCj4gPiAtCXsNCj4gPiAtCQkubmFtZSA9ICJpbXgx
+LWkyYyIsDQo+ID4gLQkJLmRyaXZlcl9kYXRhID0gKGtlcm5lbF91bG9uZ190KSZpbXgxX2kyY19o
+d2RhdGEsDQo+ID4gLQl9LCB7DQo=
