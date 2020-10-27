@@ -4,154 +4,78 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-7.1 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS,USER_AGENT_GIT autolearn=no autolearn_force=no version=3.4.0
+	SPF_NONE,URIBL_BLOCKED,USER_AGENT_GIT autolearn=no autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id AE683C55179
-	for <linux-m68k@archiver.kernel.org>; Tue, 27 Oct 2020 11:31:56 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id ECC6AC55179
+	for <linux-m68k@archiver.kernel.org>; Tue, 27 Oct 2020 16:24:21 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 6ED1122263
-	for <linux-m68k@archiver.kernel.org>; Tue, 27 Oct 2020 11:31:56 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id A75F021655
+	for <linux-m68k@archiver.kernel.org>; Tue, 27 Oct 2020 16:24:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=default; t=1603798316;
-	bh=D+57eBxZmqbGtpUmyagmHDBw1nHF2DKjanAqVX/AUkU=;
-	h=From:To:Cc:Subject:Date:List-ID:From;
-	b=sLJ9P/I5VCI8SH9hTTnWABWm/N5b8SDHUXLiFSKi7s022Sq1etNlTUTc3hLv9hrIj
-	 abfhDJ4pp1/C6kia8oaPOsz881uLzxIgkN+H54huTHH0yyv659P/xtw6m7Y2P86iRI
-	 Qc0eZyif12c8AHYk9i+Kx9I0HSt5TlgRrVhMCJ4A=
+	s=default; t=1603815861;
+	bh=lCYQZNcVsX6/8ZBMIImKIWSw6Ugxug66zxJxFeK6D1o=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-ID:From;
+	b=Vp+UG8GTEYORoeWUtSXj7UHa47YVP8ohlnEdUyony5eEdCx3aaI2rpN5pJTNvbkjN
+	 1L2JQ5GvmaC7RBwnOWK57bLEZLJKA9i5dib9R+dRIboW+7INDTFg+3Hqk0pHVR6Vak
+	 egDLkY5bWQHpnwL0B1wwVHq7pRitgN87RXWsSPlI=
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1749963AbgJ0LaH (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Tue, 27 Oct 2020 07:30:07 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45154 "EHLO mail.kernel.org"
+        id S1808880AbgJ0QYQ (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Tue, 27 Oct 2020 12:24:16 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48570 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1749957AbgJ0LaH (ORCPT <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Tue, 27 Oct 2020 07:30:07 -0400
-Received: from aquarius.haifa.ibm.com (nesher1.haifa.il.ibm.com [195.110.40.7])
+        id S1808876AbgJ0QYP (ORCPT <rfc822;linux-m68k@lists.linux-m68k.org>);
+        Tue, 27 Oct 2020 12:24:15 -0400
+Received: from localhost.localdomain (unknown [192.30.34.233])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id BFD8B2072D;
-        Tue, 27 Oct 2020 11:29:59 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 06AE921655;
+        Tue, 27 Oct 2020 16:24:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603798206;
-        bh=D+57eBxZmqbGtpUmyagmHDBw1nHF2DKjanAqVX/AUkU=;
-        h=From:To:Cc:Subject:Date:From;
-        b=Q9RaU3X/IJD/4dR3n3h9Ry46q2+Cd8ehNOxEB9JeoN0lGPicebs+j0qlAtlVAlW8F
-         F0vBvYTqv4GdHlkIa6G/HY/NJCiv0uBzWYkm4yxUz82hTQedsGnDaIAnFDeQrWUA7f
-         J4FEjdA0fGYuRF4Pc52GN10CIYKMe57/A5m9zfC0=
-From:   Mike Rapoport <rppt@kernel.org>
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     Alexey Dobriyan <adobriyan@gmail.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Greg Ungerer <gerg@linux-m68k.org>,
-        John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Matt Turner <mattst88@gmail.com>, Meelis Roos <mroos@linux.ee>,
-        Michael Schmitz <schmitzmic@gmail.com>,
-        Mike Rapoport <rppt@kernel.org>,
-        Mike Rapoport <rppt@linux.ibm.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Tony Luck <tony.luck@intel.com>,
-        Vineet Gupta <vgupta@synopsys.com>,
-        Will Deacon <will@kernel.org>, linux-alpha@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-doc@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-ia64@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-m68k@lists.linux-m68k.org,
-        linux-mm@kvack.org, linux-snps-arc@lists.infradead.org
-Subject: [PATCH 00/13] arch, mm: deprecate DISCONTIGMEM
-Date:   Tue, 27 Oct 2020 13:29:42 +0200
-Message-Id: <20201027112955.14157-1-rppt@kernel.org>
-X-Mailer: git-send-email 2.28.0
+        s=default; t=1603815854;
+        bh=lCYQZNcVsX6/8ZBMIImKIWSw6Ugxug66zxJxFeK6D1o=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=GFhh4O5CjyyDsLO2BhXm5BuUBAHHuRsguzDgucmXFsIx5lAaoMnfju5oiHw8WX1/W
+         qpiuJL3cOhezP31o0uyQScIqm/v0iWZQTqWLUbTckjAgeelS4/LaDazE3e3M8JSGJY
+         Bp0f9I0zqOwR6NjTUTBE08RS8MvFgoWta0hTx4/M=
+From:   Arnd Bergmann <arnd@kernel.org>
+To:     Nicholas Piggin <npiggin@gmail.com>,
+        Geert Uytterhoeven <geert+renesas@glider.be>
+Cc:     Arnd Bergmann <arnd@arndb.de>, noreply@ellerman.id.au,
+        linux-kernel@vger.kernel.org, linux-m68k@lists.linux-m68k.org
+Subject: Re: [PATCH -next] m68k: mmu_context: Fix Sun-3 build
+Date:   Tue, 27 Oct 2020 17:24:05 +0100
+Message-Id: <160381583391.399283.3338137504662576228.b4-ty@arndb.de>
+X-Mailer: git-send-email 2.27.0
+In-Reply-To: <20201027081919.4010948-1-geert+renesas@glider.be>
+References: <20201027081919.4010948-1-geert+renesas@glider.be>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-From: Mike Rapoport <rppt@linux.ibm.com>
+From: Arnd Bergmann <arnd@arndb.de>
 
-Hi,
+On Tue, 27 Oct 2020 09:19:19 +0100, Geert Uytterhoeven wrote:
+> When building for Sun-3 (e.g. sun3_defconfig):
+> 
+>     In file included from ./arch/m68k/include/asm/mmu_context.h:312,
+> 		     from arch/m68k/sun3/mmu_emu.c:28:
+>     ./include/asm-generic/mmu_context.h:46:20: error: redefinition of ‘destroy_context’
+>        46 | static inline void destroy_context(struct mm_struct *mm)
+> 	  |                    ^~~~~~~~~~~~~~~
+>     In file included from arch/m68k/sun3/mmu_emu.c:28:
+>     ./arch/m68k/include/asm/mmu_context.h:192:20: note: previous definition of ‘destroy_context’ was here
+>       192 | static inline void destroy_context(struct mm_struct *mm)
+> 	  |                    ^~~~~~~~~~~~~~~
+> 
+> [...]
 
-It's been a while since DISCONTIGMEM is generally considered deprecated,
-but it is still used by four architectures. This set replaces DISCONTIGMEM
-with a different way to handle holes in the memory map and marks
-DISCONTIGMEM configuration as BROKEN in Kconfigs of these architectures with
-the intention to completely remove it in several releases.
+Applied to asm-generic, thanks!
 
-While for 64-bit alpha and ia64 the switch to SPARSEMEM is quite obvious
-and was a matter of moving some bits around, for smaller 32-bit arc and
-m68k SPARSEMEM is not necessarily the best thing to do.
+[1/1] m68k: mmu_context: Fix Sun-3 build
+      commit: 2040a6bf90b530165cc86dfa879d5daa3b85f220
 
-On 32-bit machines SPARSEMEM would require large sections to make section
-index fit in the page flags, but larger sections mean that more memory is
-wasted for unused memory map.
-
-Besides, pfn_to_page() and page_to_pfn() become less efficient, at least on
-arc.
-
-So I've decided to generalize arm's approach for freeing of unused parts of
-the memory map with FLATMEM and enable it for both arc and m68k. The
-details are in the description of patches 10 (arc) and 13 (m68k).
-
-Mike Rapoport (13):
-  alpha: switch from DISCONTIGMEM to SPARSEMEM
-  ia64: remove custom __early_pfn_to_nid()
-  ia64: remove 'ifdef CONFIG_ZONE_DMA32' statements
-  ia64: discontig: paging_init(): remove local max_pfn calculation
-  ia64: split virtual map initialization out of paging_init()
-  ia64: forbid using VIRTUAL_MEM_MAP with FLATMEM
-  ia64: make SPARSEMEM default and disable DISCONTIGMEM
-  arm: remove CONFIG_ARCH_HAS_HOLES_MEMORYMODEL
-  arm, arm64: move free_unused_memmap() to generic mm
-  arc: use FLATMEM with freeing of unused memory map instead of DISCONTIGMEM
-  m68k/mm: make node data and node setup depend on CONFIG_DISCONTIGMEM
-  m68k/mm: enable use of generic memory_model.h for !DISCONTIGMEM
-  m68k: deprecate DISCONTIGMEM
-
- Documentation/vm/memory-model.rst   |  3 +-
- arch/Kconfig                        |  3 ++
- arch/alpha/Kconfig                  |  8 +++
- arch/alpha/include/asm/mmzone.h     | 14 +----
- arch/alpha/include/asm/page.h       |  7 +--
- arch/alpha/include/asm/pgtable.h    | 12 ++---
- arch/alpha/include/asm/sparsemem.h  | 18 +++++++
- arch/alpha/kernel/setup.c           |  1 +
- arch/arc/Kconfig                    |  3 +-
- arch/arc/include/asm/page.h         | 20 ++++++--
- arch/arc/mm/init.c                  | 29 ++++++++---
- arch/arm/Kconfig                    | 10 +---
- arch/arm/mach-bcm/Kconfig           |  1 -
- arch/arm/mach-davinci/Kconfig       |  1 -
- arch/arm/mach-exynos/Kconfig        |  1 -
- arch/arm/mach-highbank/Kconfig      |  1 -
- arch/arm/mach-omap2/Kconfig         |  1 -
- arch/arm/mach-s5pv210/Kconfig       |  1 -
- arch/arm/mach-tango/Kconfig         |  1 -
- arch/arm/mm/init.c                  | 78 ----------------------------
- arch/arm64/Kconfig                  |  4 +-
- arch/arm64/mm/init.c                | 68 ------------------------
- arch/ia64/Kconfig                   | 11 ++--
- arch/ia64/include/asm/meminit.h     |  2 -
- arch/ia64/mm/contig.c               | 58 ++++++++++-----------
- arch/ia64/mm/discontig.c            | 44 ++++++++--------
- arch/ia64/mm/init.c                 | 14 -----
- arch/ia64/mm/numa.c                 | 30 -----------
- arch/m68k/Kconfig.cpu               | 32 ++++++++++--
- arch/m68k/include/asm/page.h        |  2 +
- arch/m68k/include/asm/page_mm.h     |  7 ++-
- arch/m68k/include/asm/virtconvert.h |  2 +-
- arch/m68k/mm/init.c                 |  8 +--
- fs/proc/kcore.c                     |  2 -
- include/linux/mm.h                  |  3 --
- include/linux/mmzone.h              | 42 ---------------
- mm/memblock.c                       | 80 +++++++++++++++++++++++++++++
- mm/mmzone.c                         | 14 -----
- mm/page_alloc.c                     | 16 ++++--
- mm/vmstat.c                         |  4 --
- 40 files changed, 272 insertions(+), 384 deletions(-)
- create mode 100644 arch/alpha/include/asm/sparsemem.h
-
-
-base-commit: 3650b228f83adda7e5ee532e2b90429c03f7b9ec
--- 
-2.28.0
-
+       Arnd
