@@ -4,40 +4,40 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-13.1 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 7B709C55179
-	for <linux-m68k@archiver.kernel.org>; Tue, 27 Oct 2020 11:30:38 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 92B13C5517A
+	for <linux-m68k@archiver.kernel.org>; Tue, 27 Oct 2020 11:31:06 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 2F32022282
-	for <linux-m68k@archiver.kernel.org>; Tue, 27 Oct 2020 11:30:38 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 43C6822263
+	for <linux-m68k@archiver.kernel.org>; Tue, 27 Oct 2020 11:31:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=default; t=1603798238;
-	bh=UfaD/WmylipAS87Fv242yQHFr5+l5RhyHEWJxMmp2r8=;
+	s=default; t=1603798266;
+	bh=BP7DmwJKn81ZIeGVeKy2Y93BUEFg6s///fIAFdqxqhs=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-ID:From;
-	b=zYQQPvGSLiEYFRq0GMZNgqnxOqI9gvV33qBUjB5lTQaWSz1KDBDP7n1JJOn0KWlSi
-	 sN1S2sANGvtMuvda7X36Yo1KPcunNlsqSvISsmxh1iZC4bUvEtPFZpaQpDT+SihWre
-	 Jtf6LOV1z2pqEnX8ws1pmzT37x6q6RjX3g6EuUcc=
+	b=bxUHYrP3HVfoGuGiPEdnmYAU4rNhDNwxMrxUZwzOncYZ8/ZFd96tnkCJHZhO1yy0a
+	 g3rqK01OgBrcwUSlm9A309YxslJ8/nQGuU/Am4XzNI4H5Fnsr6uVw8RLqrKltdIRox
+	 5gGlueCdlV4DiT2/emCLrJrViqEpVF523V4YNtL8=
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2438806AbgJ0Lag (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Tue, 27 Oct 2020 07:30:36 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45642 "EHLO mail.kernel.org"
+        id S1750059AbgJ0Laz (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Tue, 27 Oct 2020 07:30:55 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46084 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1749977AbgJ0Lae (ORCPT <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Tue, 27 Oct 2020 07:30:34 -0400
+        id S1750056AbgJ0Lay (ORCPT <rfc822;linux-m68k@lists.linux-m68k.org>);
+        Tue, 27 Oct 2020 07:30:54 -0400
 Received: from aquarius.haifa.ibm.com (nesher1.haifa.il.ibm.com [195.110.40.7])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 03F2122283;
-        Tue, 27 Oct 2020 11:30:26 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 7C37F22265;
+        Tue, 27 Oct 2020 11:30:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603798233;
-        bh=UfaD/WmylipAS87Fv242yQHFr5+l5RhyHEWJxMmp2r8=;
+        s=default; t=1603798253;
+        bh=BP7DmwJKn81ZIeGVeKy2Y93BUEFg6s///fIAFdqxqhs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=AZ3uGKlwmDzw01MtfzRYyVNFCrBHcj9hNEcpMvUBfVE6GXyYWgRs8+pNMO0tSpZ5n
-         oKhgEP2eGtZrAXR4Jr+NuG5k7tt55ZwBXPkLdsRajrq8dYk0EnHYeNA20jabsK6JID
-         37xeaYZ4dJneHg8tW/gL3ZpBIbtl8c+S6BeyS9O0=
+        b=SbVgzqyLZGaEEJhsw5gi/5jRd9/0c9DXPi5zwYHMMRWepFNuaawIMOywiIx7tf01c
+         woZj8lHR8h1q/TwaKSunR3xAbHaCkjfhVzGAe4RSIj4B2AzIubiZcGelHwTcXwRwxQ
+         oCXgfWKTZluSks77EWejdBQxbhQ9Fd1kFXgzrTAc=
 From:   Mike Rapoport <rppt@kernel.org>
 To:     Andrew Morton <akpm@linux-foundation.org>
 Cc:     Alexey Dobriyan <adobriyan@gmail.com>,
@@ -58,9 +58,9 @@ Cc:     Alexey Dobriyan <adobriyan@gmail.com>,
         linux-fsdevel@vger.kernel.org, linux-ia64@vger.kernel.org,
         linux-kernel@vger.kernel.org, linux-m68k@lists.linux-m68k.org,
         linux-mm@kvack.org, linux-snps-arc@lists.infradead.org
-Subject: [PATCH 04/13] ia64: discontig: paging_init(): remove local max_pfn calculation
-Date:   Tue, 27 Oct 2020 13:29:46 +0200
-Message-Id: <20201027112955.14157-5-rppt@kernel.org>
+Subject: [PATCH 07/13] ia64: make SPARSEMEM default and disable DISCONTIGMEM
+Date:   Tue, 27 Oct 2020 13:29:49 +0200
+Message-Id: <20201027112955.14157-8-rppt@kernel.org>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20201027112955.14157-1-rppt@kernel.org>
 References: <20201027112955.14157-1-rppt@kernel.org>
@@ -72,44 +72,45 @@ X-Mailing-List: linux-m68k@vger.kernel.org
 
 From: Mike Rapoport <rppt@linux.ibm.com>
 
-The maximal PFN in the system is calculated during find_memory() time and
-it is stored at max_low_pfn then.
+SPARSEMEM memory model suitable for systems with large holes in their
+phyiscal memory layout. With SPARSEMEM_VMEMMAP enabled it provides
+pfn_to_page() and page_to_pfn() as fast as FLATMEM.
 
-Use this value in paging_init() and remove the redundant detection of
-max_pfn in that function.
+Make it the default memory model for IA-64 and disable DISCONTIGMEM which
+is considered obsolete for quite some time.
 
 Signed-off-by: Mike Rapoport <rppt@linux.ibm.com>
 ---
- arch/ia64/mm/discontig.c | 5 +----
- 1 file changed, 1 insertion(+), 4 deletions(-)
+ arch/ia64/Kconfig | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/arch/ia64/mm/discontig.c b/arch/ia64/mm/discontig.c
-index d255596f52c6..f41dcf75887b 100644
---- a/arch/ia64/mm/discontig.c
-+++ b/arch/ia64/mm/discontig.c
-@@ -594,7 +594,6 @@ void __init paging_init(void)
- {
- 	unsigned long max_dma;
- 	unsigned long pfn_offset = 0;
--	unsigned long max_pfn = 0;
- 	int node;
- 	unsigned long max_zone_pfns[MAX_NR_ZONES];
+diff --git a/arch/ia64/Kconfig b/arch/ia64/Kconfig
+index 83de0273d474..6e67d6110249 100644
+--- a/arch/ia64/Kconfig
++++ b/arch/ia64/Kconfig
+@@ -288,6 +288,7 @@ config ARCH_SELECT_MEMORY_MODEL
  
-@@ -616,13 +615,11 @@ void __init paging_init(void)
- #ifdef CONFIG_VIRTUAL_MEM_MAP
- 		NODE_DATA(node)->node_mem_map = vmem_map + pfn_offset;
- #endif
--		if (mem_data[node].max_pfn > max_pfn)
--			max_pfn = mem_data[node].max_pfn;
- 	}
+ config ARCH_DISCONTIGMEM_ENABLE
+ 	def_bool y
++	depends on BROKEN
+ 	help
+ 	  Say Y to support efficient handling of discontiguous physical memory,
+ 	  for architectures which are either NUMA (Non-Uniform Memory Access)
+@@ -299,12 +300,11 @@ config ARCH_FLATMEM_ENABLE
  
- 	memset(max_zone_pfns, 0, sizeof(max_zone_pfns));
- 	max_zone_pfns[ZONE_DMA32] = max_dma;
--	max_zone_pfns[ZONE_NORMAL] = max_pfn;
-+	max_zone_pfns[ZONE_NORMAL] = max_low_pfn;
- 	free_area_init(max_zone_pfns);
+ config ARCH_SPARSEMEM_ENABLE
+ 	def_bool y
+-	depends on ARCH_DISCONTIGMEM_ENABLE
+ 	select SPARSEMEM_VMEMMAP_ENABLE
  
- 	zero_page_memmap_ptr = virt_to_page(ia64_imva(empty_zero_page));
+-config ARCH_DISCONTIGMEM_DEFAULT
++config ARCH_SPARSEMEM_DEFAULT
+ 	def_bool y
+-	depends on ARCH_DISCONTIGMEM_ENABLE
++	depends on ARCH_SPARSEMEM_ENABLE
+ 
+ config NUMA
+ 	bool "NUMA support"
 -- 
 2.28.0
 
