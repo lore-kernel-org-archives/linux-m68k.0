@@ -5,39 +5,39 @@ X-Spam-Level:
 X-Spam-Status: No, score=-13.1 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,INCLUDES_PATCH,MAILING_LIST_MULTI,
 	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
-	autolearn=unavailable autolearn_force=no version=3.4.0
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 5A1C9C00A89
-	for <linux-m68k@archiver.kernel.org>; Fri, 30 Oct 2020 15:20:50 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 1E827C4363A
+	for <linux-m68k@archiver.kernel.org>; Fri, 30 Oct 2020 15:20:55 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id EDF7B20756
-	for <linux-m68k@archiver.kernel.org>; Fri, 30 Oct 2020 15:20:49 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id A8ECF2151B
+	for <linux-m68k@archiver.kernel.org>; Fri, 30 Oct 2020 15:20:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=default; t=1604071250;
-	bh=hpq25w7YsZaBF0F4LlMqvKcXZb1aUi1ae0/gcETtpew=;
+	s=default; t=1604071254;
+	bh=PhzarcZdxvr8JzCPKjAwfHGDJNezhF1oA5Gxqya2WxA=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-ID:From;
-	b=NdOXU+i1GuQLFtwjj6UUR8iEaNztiCvM+06XUs/gFteXqiow6npoRD9G9qq0b0QmJ
-	 KSN7AgBIklxJY8BRpDCicJPM3kQ9G3liVJdmzs6ikW81Off1CqXo0GRW2DCsekz6z0
-	 tn3SDjES7frfsSM7PQJQFaS+feQe3Z7pAzpT9gw4=
+	b=kLjYrbzfb0FDejJwq7R9iZ8Pa7UqmE4YAB3+SMtef2bmR0JRCz+7e6kMfqYEUSvC/
+	 ipZSmQG43pJpheqgWWbwFI7f55BFxpdVCyhrHCNIj6hL+xDJjAcwHiQjfkPIRwDDyi
+	 1ov7gINopiTQBFQgnuPANwQBxBdriH15ZnE2IzHM=
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727146AbgJ3PUt (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Fri, 30 Oct 2020 11:20:49 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53064 "EHLO mail.kernel.org"
+        id S1727010AbgJ3PUA (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Fri, 30 Oct 2020 11:20:00 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52958 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726996AbgJ3PUB (ORCPT <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Fri, 30 Oct 2020 11:20:01 -0400
+        id S1726957AbgJ3PUA (ORCPT <rfc822;linux-m68k@lists.linux-m68k.org>);
+        Fri, 30 Oct 2020 11:20:00 -0400
 Received: from localhost.localdomain (HSI-KBW-46-223-126-90.hsi.kabel-badenwuerttemberg.de [46.223.126.90])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 287942224E;
-        Fri, 30 Oct 2020 15:19:19 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 6395722249;
+        Fri, 30 Oct 2020 15:19:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604071164;
-        bh=hpq25w7YsZaBF0F4LlMqvKcXZb1aUi1ae0/gcETtpew=;
+        s=default; t=1604071145;
+        bh=PhzarcZdxvr8JzCPKjAwfHGDJNezhF1oA5Gxqya2WxA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=FJ/JrVi+9szrGBEP/LSniEyZGoGchJ7DUxx0tL+H2lDWb99COBF3948HAVcDRbWhR
-         J6WbQ5vp1/KCOEdVHzhQ0F4JzYEeouAipCvFQa3PLXvujOMqOghqY1iT5YM92w4+G+
-         IccB1XEQqMpWQ51uwGztWCm/UoX0Dawz1b3I+XMU=
+        b=J5ed3u+GT93CiIJpo4CV6B2Kf2eTdhI6CogSdoTb8qOL4XKTcGxynAdZovmqEp9YU
+         ywATfDwGaG7cWlJO557E8AUR7xCttz8fxCfIDapJLwr4YK5B0I6YYzXEcFz1PYgNBV
+         7enPMF3AaKBrq+4c4M96Obarw9GsEHORFB3LRBrc=
 From:   Arnd Bergmann <arnd@kernel.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Thomas Gleixner <tglx@linutronix.de>,
@@ -61,9 +61,9 @@ Cc:     Thomas Gleixner <tglx@linutronix.de>,
         linux-m68k <linux-m68k@lists.linux-m68k.org>,
         Linux ARM <linux-arm-kernel@lists.infradead.org>,
         Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: [PATCH v2 14/15] timekeeping: remove xtime_update
-Date:   Fri, 30 Oct 2020 16:17:57 +0100
-Message-Id: <20201030151758.1241164-15-arnd@kernel.org>
+Subject: [PATCH v2 10/15] m68k: sun3/sun3c: use legacy_timer_tick
+Date:   Fri, 30 Oct 2020 16:17:53 +0100
+Message-Id: <20201030151758.1241164-11-arnd@kernel.org>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20201030151758.1241164-1-arnd@kernel.org>
 References: <20201030151758.1241164-1-arnd@kernel.org>
@@ -75,107 +75,83 @@ X-Mailing-List: linux-m68k@vger.kernel.org
 
 From: Arnd Bergmann <arnd@arndb.de>
 
-There are no more users of xtime_update aside from legacy_timer_tick(),
-so fold it into that function and remove the declaration.
+These two are different from all other machines:
 
-update_process_times() is now only called inside of the kernel/time/
-code, so the declaration can be moved there.
+* sun3 does not call timer_routine() but open-codes it
+  except for the profile_tick() call that appears to
+  be unintentionally missing.
+
+* sun3x has a commented-out timer irq handler but no
+  functional timer tick I could find.
+
+Change both to calling the new legacy_timer_tick here,
+which includes the call to profile_tick() but does not
+fix sun3x as that is still commented out.
 
 Reviewed-by: Geert Uytterhoeven <geert@linux-m68k.org>
-Tested-by: Geert Uytterhoeven <geert@linux-m68k.org>
+Acked-by: Geert Uytterhoeven <geert@linux-m68k.org>
 Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
 Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 ---
- include/linux/timekeeping.h |  2 --
- kernel/time/tick-legacy.c   | 22 ++++++++++++++++++++--
- kernel/time/timekeeping.c   | 16 ----------------
- kernel/time/timekeeping.h   |  1 +
- 4 files changed, 21 insertions(+), 20 deletions(-)
+ arch/m68k/Kconfig.machine | 2 ++
+ arch/m68k/sun3/sun3ints.c | 3 +--
+ arch/m68k/sun3x/time.c    | 3 +--
+ 3 files changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/include/linux/timekeeping.h b/include/linux/timekeeping.h
-index 3670cb1670ff..d47009611109 100644
---- a/include/linux/timekeeping.h
-+++ b/include/linux/timekeeping.h
-@@ -10,8 +10,6 @@ void timekeeping_init(void);
- extern int timekeeping_suspended;
- 
- /* Architecture timer tick functions: */
--extern void update_process_times(int user);
--extern void xtime_update(unsigned long ticks);
- extern void legacy_timer_tick(unsigned long ticks);
- 
- /*
-diff --git a/kernel/time/tick-legacy.c b/kernel/time/tick-legacy.c
-index 73c5a0af4743..af225b32f5b3 100644
---- a/kernel/time/tick-legacy.c
-+++ b/kernel/time/tick-legacy.c
-@@ -10,10 +10,28 @@
- 
- #include "tick-internal.h"
- 
-+/**
-+ * legacy_timer_tick() - advances the timekeeping infrastructure
-+ * @ticks:	number of ticks, that have elapsed since the last call.
-+ *
-+ * This is used by platforms that have not been converted to
-+ * generic clockevents.
-+ *
-+ * If 'ticks' is zero, the CPU is not handling timekeeping, so
-+ * only perform process accounting and profiling.
-+ *
-+ * Must be called with interrupts disabled.
-+ */
- void legacy_timer_tick(unsigned long ticks)
- {
--	if (ticks)
--		xtime_update(ticks);
-+	if (ticks) {
-+		raw_spin_lock(&jiffies_lock);
-+		write_seqcount_begin(&jiffies_seq);
-+		do_timer(ticks);
-+		write_seqcount_end(&jiffies_seq);
-+		raw_spin_unlock(&jiffies_lock);
-+		update_wall_time();
-+	}
- 	update_process_times(user_mode(get_irq_regs()));
- 	profile_tick(CPU_PROFILING);
- }
-diff --git a/kernel/time/timekeeping.c b/kernel/time/timekeeping.c
-index 52fff7e9edcd..daa0ff017819 100644
---- a/kernel/time/timekeeping.c
-+++ b/kernel/time/timekeeping.c
-@@ -2438,19 +2438,3 @@ void hardpps(const struct timespec64 *phase_ts, const struct timespec64 *raw_ts)
- }
- EXPORT_SYMBOL(hardpps);
- #endif /* CONFIG_NTP_PPS */
--
--/**
-- * xtime_update() - advances the timekeeping infrastructure
-- * @ticks:	number of ticks, that have elapsed since the last call.
-- *
-- * Must be called with interrupts disabled.
-- */
--void xtime_update(unsigned long ticks)
--{
--	raw_spin_lock(&jiffies_lock);
--	write_seqcount_begin(&jiffies_seq);
--	do_timer(ticks);
--	write_seqcount_end(&jiffies_seq);
--	raw_spin_unlock(&jiffies_lock);
--	update_wall_time();
--}
-diff --git a/kernel/time/timekeeping.h b/kernel/time/timekeeping.h
-index 099737f6f10c..d94b69c5b869 100644
---- a/kernel/time/timekeeping.h
-+++ b/kernel/time/timekeeping.h
-@@ -22,6 +22,7 @@ static inline int sched_clock_suspend(void) { return 0; }
- static inline void sched_clock_resume(void) { }
+diff --git a/arch/m68k/Kconfig.machine b/arch/m68k/Kconfig.machine
+index 17e8c3a292d7..e3c835440d9a 100644
+--- a/arch/m68k/Kconfig.machine
++++ b/arch/m68k/Kconfig.machine
+@@ -99,6 +99,7 @@ config HP300
+ config SUN3X
+ 	bool "Sun3x support"
+ 	depends on MMU
++	select LEGACY_TIMER_TICK
+ 	select MMU_MOTOROLA if MMU
+ 	select M68030
+ 	help
+@@ -126,6 +127,7 @@ config SUN3
+ 	depends on MMU
+ 	depends on !MMU_MOTOROLA
+ 	select MMU_SUN3 if MMU
++	select LEGACY_TIMER_TICK
+ 	select NO_DMA
+ 	select M68020
+ 	help
+diff --git a/arch/m68k/sun3/sun3ints.c b/arch/m68k/sun3/sun3ints.c
+index a5824abb4a39..41ae422119d3 100644
+--- a/arch/m68k/sun3/sun3ints.c
++++ b/arch/m68k/sun3/sun3ints.c
+@@ -73,8 +73,7 @@ static irqreturn_t sun3_int5(int irq, void *dev_id)
+ #ifdef CONFIG_SUN3
+ 	intersil_clear();
  #endif
+-	xtime_update(1);
+-	update_process_times(user_mode(get_irq_regs()));
++	legacy_timer_tick(1);
+ 	cnt = kstat_irqs_cpu(irq, 0);
+ 	if (!(cnt % 20))
+ 		sun3_leds(led_pattern[cnt % 160 / 20]);
+diff --git a/arch/m68k/sun3x/time.c b/arch/m68k/sun3x/time.c
+index 9163294b0fb6..f6e25fdc008c 100644
+--- a/arch/m68k/sun3x/time.c
++++ b/arch/m68k/sun3x/time.c
+@@ -77,14 +77,13 @@ int sun3x_hwclk(int set, struct rtc_time *t)
+ #if 0
+ static irqreturn_t sun3x_timer_tick(int irq, void *dev_id)
+ {
+-	irq_handler_t timer_routine = dev_id;
+ 	unsigned long flags;
  
-+extern void update_process_times(int user);
- extern void do_timer(unsigned long ticks);
- extern void update_wall_time(void);
+ 	local_irq_save(flags);
+ 	/* Clear the pending interrupt - pulse the enable line low */
+ 	disable_irq(5);
+ 	enable_irq(5);
+-	timer_routine(0, NULL);
++	legacy_timer_tick(1);
+ 	local_irq_restore(flags);
  
+ 	return IRQ_HANDLED;
 -- 
 2.27.0
 
