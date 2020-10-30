@@ -2,108 +2,483 @@ Return-Path: <SRS0=oftE=EF=vger.kernel.org=linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.5 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,NICE_REPLY_A,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1
+X-Spam-Status: No, score=-13.1 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
 	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 32A4DC4363A
-	for <linux-m68k@archiver.kernel.org>; Fri, 30 Oct 2020 13:22:30 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 9E5EBC4363A
+	for <linux-m68k@archiver.kernel.org>; Fri, 30 Oct 2020 14:27:04 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id B0FCD20637
-	for <linux-m68k@archiver.kernel.org>; Fri, 30 Oct 2020 13:22:29 +0000 (UTC)
-Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel-dk.20150623.gappssmtp.com header.i=@kernel-dk.20150623.gappssmtp.com header.b="qgEeHwBz"
+	by mail.kernel.org (Postfix) with ESMTP id 364652076E
+	for <linux-m68k@archiver.kernel.org>; Fri, 30 Oct 2020 14:27:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=default; t=1604068024;
+	bh=R+jOcVx+fzeYWZUdFBJdgmffjIuOQTxBFUDvgjiIFdE=;
+	h=From:To:Cc:Subject:Date:List-ID:From;
+	b=SJrS8HefKsdti6Xb0nt1EmNpYXgFV7V2GpBWdfqYK5X7e3K0r53HDoB2Zh3DHhd5B
+	 5NlUQ5BuH4fMH74p9Anslwo/yIo2xoJqtU+xrKsH6xXQqBRntI2x+LuVQU7nAlhNFV
+	 EdIuvQwy+v4jGlG9AuFg8pU2rjcsY5tIJ6kDXxx0=
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726178AbgJ3NW3 (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Fri, 30 Oct 2020 09:22:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52308 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725939AbgJ3NW3 (ORCPT
-        <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Fri, 30 Oct 2020 09:22:29 -0400
-Received: from mail-il1-x142.google.com (mail-il1-x142.google.com [IPv6:2607:f8b0:4864:20::142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 13FB2C0613CF
-        for <linux-m68k@lists.linux-m68k.org>; Fri, 30 Oct 2020 06:22:29 -0700 (PDT)
-Received: by mail-il1-x142.google.com with SMTP id v18so6508105ilg.1
-        for <linux-m68k@lists.linux-m68k.org>; Fri, 30 Oct 2020 06:22:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=RiJM0N+P9MfW6VzzACq5Pg+q3WbBm9QpaMXg3W/6JAM=;
-        b=qgEeHwBz0pZzvqJRsuLXSpffaVxjMMK8BoI3BneXcmtCOyind6V4xXfqDR0TAgsrx6
-         KPig0QKu0QFYV7Ae6JqKX/8xmNrRTqyUnYYx6NEYBwkYoWhmTAkI08pCgBmrSvbgqBzG
-         gXjoLOtbJPcehQWkfyLmyRkanJbkNzml3bLzwRz7h0wgT5m+m1/Z8dIkA6dAMF1QgNBm
-         SYE0QwF8QkJzp3zOVGvYoEjz9az7B+8YklOv00S4LUAZboAkZ4iBHZ5hQTHFxces5bf3
-         pIt1/cIcBAUvPt2gL74esclDTp0Oq6k3VMLJqYRS1fJSerJXLCNIxoFnQ1AJhKjjSfnL
-         JDDg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=RiJM0N+P9MfW6VzzACq5Pg+q3WbBm9QpaMXg3W/6JAM=;
-        b=U29C6VAzrKIIB5Kv8F5ubwhJT6E0fRT1hn9Z/95j8/+7OzN8AW44EcRz1xcjlq+giH
-         pzosxo22n9DiZSRdO3fTWMvgpN0QJ9MtRy1zzv+hg3tRqoE5NyDT1RzRs7BVI2OmbRV4
-         vRUN9SJ5gCUWWws4LsK+ItlA5IT0JEB8FoUXAkD2h5vJnq/aF6QMsE/s5PtNnZWx02bi
-         LY+6kLbUEwFiG+66CN2gqhddHl2qWM6TCEkK1NvYYH1QdDCCHZmzSaivt+yRbSG9tMtM
-         unG2pWsYXYQzyljIsKHzKozSNuoSb5YU+78VLr+n9LfwBE6K3NUjigofqrz59QLbH7v6
-         N+ag==
-X-Gm-Message-State: AOAM533MmciH+1qBzttmJK4GfbMOj43Ah1+RKOeHv1tPQgHw1phAp0R9
-        bzE1ySkL0dpTlAF9+083m2FiuLjBfBn6xg==
-X-Google-Smtp-Source: ABdhPJwcrJ+FXVgXa+1dMwcF6g0He31VgNmpYsi4l23v8+zCL813QIBMcWF7cSiSKzkBipFaVnOeaQ==
-X-Received: by 2002:a92:ba14:: with SMTP id o20mr1880041ili.268.1604064148011;
-        Fri, 30 Oct 2020 06:22:28 -0700 (PDT)
-Received: from [192.168.1.30] ([65.144.74.34])
-        by smtp.gmail.com with ESMTPSA id e2sm469888ioc.3.2020.10.30.06.22.27
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 30 Oct 2020 06:22:27 -0700 (PDT)
-Subject: Re: [PATCH] m68k: add support for TIF_NOTIFY_SIGNAL
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     linux-m68k <linux-m68k@lists.linux-m68k.org>
-References: <63245c79-6fa4-49f6-d468-becf9a805ca8@kernel.dk>
- <CAMuHMdXXYdBadH4zj=bBsTzMBDxjQtAp=sYaz62ueOHqtWnDWw@mail.gmail.com>
-From:   Jens Axboe <axboe@kernel.dk>
-Message-ID: <21c936be-26ac-bd2b-fa05-963ad8968012@kernel.dk>
-Date:   Fri, 30 Oct 2020 07:22:26 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1726178AbgJ3O1D (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Fri, 30 Oct 2020 10:27:03 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60174 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726307AbgJ3O1B (ORCPT <rfc822;linux-m68k@lists.linux-m68k.org>);
+        Fri, 30 Oct 2020 10:27:01 -0400
+Received: from localhost.localdomain (HSI-KBW-46-223-126-90.hsi.kabel-badenwuerttemberg.de [46.223.126.90])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 28DD02076E;
+        Fri, 30 Oct 2020 14:26:45 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1604068007;
+        bh=R+jOcVx+fzeYWZUdFBJdgmffjIuOQTxBFUDvgjiIFdE=;
+        h=From:To:Cc:Subject:Date:From;
+        b=bUrYCSBZlVs/U/R+FhRrpwFwWL/FMl4fWFp5ISnQuaZfYIRH+mMZKa0SsW9qHmk74
+         z1DtBrzRkvDqn9+4MiJglCwywfSm5SicyUMtXQLaZBgJMbwDBnlZ9PYhqrRNvhF7IO
+         zqE6wWIEEL49XQAhX33YqWK9QHjpqBAVVpeLiifg=
+From:   Arnd Bergmann <arnd@kernel.org>
+To:     Greg Ungerer <gerg@linux-m68k.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>
+Cc:     Arnd Bergmann <arnd@arndb.de>, linux-m68k@lists.linux-m68k.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v2 1/2] m68k: m68328: move platform code to separate files
+Date:   Fri, 30 Oct 2020 15:26:23 +0100
+Message-Id: <20201030142642.855683-1-arnd@kernel.org>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-In-Reply-To: <CAMuHMdXXYdBadH4zj=bBsTzMBDxjQtAp=sYaz62ueOHqtWnDWw@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-On 10/30/20 2:52 AM, Geert Uytterhoeven wrote:
-> Hi Jens,
-> 
-> On Thu, Oct 29, 2020 at 5:16 PM Jens Axboe <axboe@kernel.dk> wrote:
->> Wire up TIF_NOTIFY_SIGNAL handling for m68k.
->>
->> Cc: linux-m68k@lists.linux-m68k.org
->> Signed-off-by: Jens Axboe <axboe@kernel.dk>
-> 
-> Thanks for your patch!
-> 
->> 5.11 has support queued up for TIF_NOTIFY_SIGNAL, see this posting
->> for details:
->>
->> https://lore.kernel.org/io-uring/20201026203230.386348-1-axboe@kernel.dk/
->>
->> As part of that work, I'm adding TIF_NOTIFY_SIGNAL support to all archs,
->> as that will enable a set of cleanups once all of them support it. I'm
->> happy carrying this patch if need be, or it can be funelled through the
->> arch tree. Let me know.
-> 
-> Acked-by: Geert Uytterhoeven <geert@linux-m68k.org>
-> hence please pick it up. Thx!
+From: Arnd Bergmann <arnd@arndb.de>
 
-Thanks Geert! Added.
+The dragen2 and ucsimm/ucdimm files require a bit of
+custom code compared to the other dragonball platforms,
+move them into separate files as a preparation for a
+build fix.
 
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+---
+Just a small cleanup after I ran into some issue during build
+testing my timer patches, the second patch contains the
+actual bugfix but relies on this preparation patch.
+---
+ arch/m68k/68000/Makefile   |   4 ++
+ arch/m68k/68000/dragen2.c  | 100 +++++++++++++++++++++++++++
+ arch/m68k/68000/m68328.c   |   3 +-
+ arch/m68k/68000/m68328.h   |   5 ++
+ arch/m68k/68000/m68EZ328.c |  23 +------
+ arch/m68k/68000/m68VZ328.c | 136 ++-----------------------------------
+ arch/m68k/68000/ucsimm.c   |  38 +++++++++++
+ 7 files changed, 158 insertions(+), 151 deletions(-)
+ create mode 100644 arch/m68k/68000/dragen2.c
+ create mode 100644 arch/m68k/68000/m68328.h
+ create mode 100644 arch/m68k/68000/ucsimm.c
+
+diff --git a/arch/m68k/68000/Makefile b/arch/m68k/68000/Makefile
+index 4f7d4b45a46f..ce0b26d6580d 100644
+--- a/arch/m68k/68000/Makefile
++++ b/arch/m68k/68000/Makefile
+@@ -16,4 +16,8 @@ obj-$(CONFIG_M68EZ328)	+= m68EZ328.o
+ obj-$(CONFIG_M68VZ328)	+= m68VZ328.o
+ obj-$(CONFIG_ROM)	+= romvec.o
+ 
++obj-$(CONFIG_DRAGEN2)	+= dragen2.o
++obj-$(CONFIG_UCSIMM)	+= ucsimm.o
++obj-$(CONFIG_UCDIMM)	+= ucsimm.o
++
+ extra-y 		:= head.o
+diff --git a/arch/m68k/68000/dragen2.c b/arch/m68k/68000/dragen2.c
+new file mode 100644
+index 000000000000..584893c57c37
+--- /dev/null
++++ b/arch/m68k/68000/dragen2.c
+@@ -0,0 +1,100 @@
++// SPDX-License-Identifier: GPL-2.0
++/*
++ *  Copyright (C) 1993 Hamish Macdonald
++ *  Copyright (C) 1999 D. Jeff Dionne
++ *  Copyright (C) 2001 Georges Menie, Ken Desmet
++ *
++ * This file is subject to the terms and conditions of the GNU General Public
++ * License.  See the file COPYING in the main directory of this archive
++ * for more details.
++ */
++#include <linux/init.h>
++#include <asm/machdep.h>
++#include <asm/MC68VZ328.h>
++
++/***************************************************************************/
++/*                        Init Drangon Engine hardware                     */
++/***************************************************************************/
++
++static void dragen2_reset(void)
++{
++	local_irq_disable();
++
++#ifdef CONFIG_INIT_LCD
++	PBDATA |= 0x20;				/* disable CCFL light */
++	PKDATA |= 0x4;				/* disable LCD controller */
++	LCKCON = 0;
++#endif
++
++	__asm__ __volatile__(
++		"reset\n\t"
++		"moveal #0x04000000, %a0\n\t"
++		"moveal 0(%a0), %sp\n\t"
++		"moveal 4(%a0), %a0\n\t"
++		"jmp (%a0)"
++	);
++}
++
++void __init init_dragen2(char *command, int size)
++{
++	mach_reset = dragen2_reset;
++
++#ifdef CONFIG_DIRECT_IO_ACCESS
++	SCR = 0x10;					/* allow user access to internal registers */
++#endif
++
++	/* CSGB Init */
++	CSGBB = 0x4000;
++	CSB = 0x1a1;
++
++	/* CS8900 init */
++	/* PK3: hardware sleep function pin, active low */
++	PKSEL |= PK(3);				/* select pin as I/O */
++	PKDIR |= PK(3);				/* select pin as output */
++	PKDATA |= PK(3);			/* set pin high */
++
++	/* PF5: hardware reset function pin, active high */
++	PFSEL |= PF(5);				/* select pin as I/O */
++	PFDIR |= PF(5);				/* select pin as output */
++	PFDATA &= ~PF(5);			/* set pin low */
++
++	/* cs8900 hardware reset */
++	PFDATA |= PF(5);
++	{ int i; for (i = 0; i < 32000; ++i); }
++	PFDATA &= ~PF(5);
++
++	/* INT1 enable (cs8900 IRQ) */
++	PDPOL &= ~PD(1);			/* active high signal */
++	PDIQEG &= ~PD(1);
++	PDIRQEN |= PD(1);			/* IRQ enabled */
++
++#ifdef CONFIG_INIT_LCD
++	/* initialize LCD controller */
++	LSSA = (long) screen_bits;
++	LVPW = 0x14;
++	LXMAX = 0x140;
++	LYMAX = 0xef;
++	LRRA = 0;
++	LPXCD = 3;
++	LPICF = 0x08;
++	LPOLCF = 0;
++	LCKCON = 0x80;
++	PCPDEN = 0xff;
++	PCSEL = 0;
++
++	/* Enable LCD controller */
++	PKDIR |= 0x4;
++	PKSEL |= 0x4;
++	PKDATA &= ~0x4;
++
++	/* Enable CCFL backlighting circuit */
++	PBDIR |= 0x20;
++	PBSEL |= 0x20;
++	PBDATA &= ~0x20;
++
++	/* contrast control register */
++	PFDIR |= 0x1;
++	PFSEL &= ~0x1;
++	PWMR = 0x037F;
++#endif
++}
+diff --git a/arch/m68k/68000/m68328.c b/arch/m68k/68000/m68328.c
+index 419751b15ec8..6a5cfc977150 100644
+--- a/arch/m68k/68000/m68328.c
++++ b/arch/m68k/68000/m68328.c
+@@ -25,9 +25,10 @@
+ #include "bootlogo.h"
+ #endif
+ 
++#include "m68328.h"
++
+ /***************************************************************************/
+ 
+-int m68328_hwclk(int set, struct rtc_time *t);
+ 
+ /***************************************************************************/
+ 
+diff --git a/arch/m68k/68000/m68328.h b/arch/m68k/68000/m68328.h
+new file mode 100644
+index 000000000000..f6047c3168d4
+--- /dev/null
++++ b/arch/m68k/68000/m68328.h
+@@ -0,0 +1,5 @@
++// SPDX-License-Identifier: GPL-2.0
++void init_dragen2(char *command, int size);
++void init_ucsimm(char *command, int size);
++struct rtc_time;
++int m68328_hwclk(int set, struct rtc_time *t);
+diff --git a/arch/m68k/68000/m68EZ328.c b/arch/m68k/68000/m68EZ328.c
+index 05f137dc257e..65bd112285ef 100644
+--- a/arch/m68k/68000/m68EZ328.c
++++ b/arch/m68k/68000/m68EZ328.c
+@@ -24,9 +24,7 @@
+ #include <asm/bootstd.h>
+ #endif
+ 
+-/***************************************************************************/
+-
+-int m68328_hwclk(int set, struct rtc_time *t);
++#include "m68328.h"
+ 
+ /***************************************************************************/
+ 
+@@ -44,29 +42,12 @@ void m68ez328_reset(void)
+ 
+ /***************************************************************************/
+ 
+-unsigned char *cs8900a_hwaddr;
+-static int errno;
+-
+-#ifdef CONFIG_UCSIMM
+-_bsc0(char *, getserialnum)
+-_bsc1(unsigned char *, gethwaddr, int, a)
+-_bsc1(char *, getbenv, char *, a)
+-#endif
+-
+ void __init config_BSP(char *command, int len)
+ {
+-  unsigned char *p;
+-
+   pr_info("68EZ328 DragonBallEZ support (C) 1999 Rt-Control, Inc\n");
+ 
+ #ifdef CONFIG_UCSIMM
+-  pr_info("uCsimm serial string [%s]\n", getserialnum());
+-  p = cs8900a_hwaddr = gethwaddr(0);
+-  pr_info("uCsimm hwaddr %pM\n", p);
+-
+-  p = getbenv("APPEND");
+-  if (p) strcpy(p,command);
+-  else command[0] = 0;
++  init_ucsimm(command, len);
+ #endif
+ 
+   mach_sched_init = hw_timer_init;
+diff --git a/arch/m68k/68000/m68VZ328.c b/arch/m68k/68000/m68VZ328.c
+index ada87b23afdc..025da5552f1c 100644
+--- a/arch/m68k/68000/m68VZ328.c
++++ b/arch/m68k/68000/m68VZ328.c
+@@ -32,101 +32,9 @@
+ #include "bootlogo-vz.h"
+ #endif
+ 
+-/***************************************************************************/
+-
+-int m68328_hwclk(int set, struct rtc_time *t);
+-
+-/***************************************************************************/
+-/*                        Init Drangon Engine hardware                     */
+-/***************************************************************************/
+-#if defined(CONFIG_DRAGEN2)
+-
+-static void m68vz328_reset(void)
+-{
+-	local_irq_disable();
+-
+-#ifdef CONFIG_INIT_LCD
+-	PBDATA |= 0x20;				/* disable CCFL light */
+-	PKDATA |= 0x4;				/* disable LCD controller */
+-	LCKCON = 0;
+-#endif
+-
+-	__asm__ __volatile__(
+-		"reset\n\t"
+-		"moveal #0x04000000, %a0\n\t"
+-		"moveal 0(%a0), %sp\n\t"
+-		"moveal 4(%a0), %a0\n\t"
+-		"jmp (%a0)"
+-	);
+-}
+-
+-static void __init init_hardware(char *command, int size)
+-{
+-#ifdef CONFIG_DIRECT_IO_ACCESS
+-	SCR = 0x10;					/* allow user access to internal registers */
+-#endif
+-
+-	/* CSGB Init */
+-	CSGBB = 0x4000;
+-	CSB = 0x1a1;
+-
+-	/* CS8900 init */
+-	/* PK3: hardware sleep function pin, active low */
+-	PKSEL |= PK(3);				/* select pin as I/O */
+-	PKDIR |= PK(3);				/* select pin as output */
+-	PKDATA |= PK(3);			/* set pin high */
+-
+-	/* PF5: hardware reset function pin, active high */
+-	PFSEL |= PF(5);				/* select pin as I/O */
+-	PFDIR |= PF(5);				/* select pin as output */
+-	PFDATA &= ~PF(5);			/* set pin low */
+-
+-	/* cs8900 hardware reset */
+-	PFDATA |= PF(5);
+-	{ int i; for (i = 0; i < 32000; ++i); }
+-	PFDATA &= ~PF(5);
+-
+-	/* INT1 enable (cs8900 IRQ) */
+-	PDPOL &= ~PD(1);			/* active high signal */
+-	PDIQEG &= ~PD(1);
+-	PDIRQEN |= PD(1);			/* IRQ enabled */
+-
+-#ifdef CONFIG_INIT_LCD
+-	/* initialize LCD controller */
+-	LSSA = (long) screen_bits;
+-	LVPW = 0x14;
+-	LXMAX = 0x140;
+-	LYMAX = 0xef;
+-	LRRA = 0;
+-	LPXCD = 3;
+-	LPICF = 0x08;
+-	LPOLCF = 0;
+-	LCKCON = 0x80;
+-	PCPDEN = 0xff;
+-	PCSEL = 0;
+-
+-	/* Enable LCD controller */
+-	PKDIR |= 0x4;
+-	PKSEL |= 0x4;
+-	PKDATA &= ~0x4;
+-
+-	/* Enable CCFL backlighting circuit */
+-	PBDIR |= 0x20;
+-	PBSEL |= 0x20;
+-	PBDATA &= ~0x20;
+-
+-	/* contrast control register */
+-	PFDIR |= 0x1;
+-	PFSEL &= ~0x1;
+-	PWMR = 0x037F;
+-#endif
+-}
++#include "m68328.h"
+ 
+ /***************************************************************************/
+-/*                      Init RT-Control uCdimm hardware                    */
+-/***************************************************************************/
+-#elif defined(CONFIG_UCDIMM)
+-
+ static void m68vz328_reset(void)
+ {
+ 	local_irq_disable();
+@@ -139,51 +47,21 @@ static void m68vz328_reset(void)
+ 	);
+ }
+ 
+-unsigned char *cs8900a_hwaddr;
+-static int errno;
+-
+-_bsc0(char *, getserialnum)
+-_bsc1(unsigned char *, gethwaddr, int, a)
+-_bsc1(char *, getbenv, char *, a)
+-
+-static void __init init_hardware(char *command, int size)
+-{
+-	char *p;
+-
+-	pr_info("uCdimm serial string [%s]\n", getserialnum());
+-	p = cs8900a_hwaddr = gethwaddr(0);
+-	pr_info("uCdimm hwaddr %pM\n", p);
+-	p = getbenv("APPEND");
+-	if (p)
+-		strcpy(p, command);
+-	else
+-		command[0] = 0;
+-}
+-
+-/***************************************************************************/
+-#else
+-
+-static void m68vz328_reset(void)
+-{
+-}
+-
+-static void __init init_hardware(char *command, int size)
+-{
+-}
+-
+-/***************************************************************************/
+-#endif
+ /***************************************************************************/
+ 
+ void __init config_BSP(char *command, int size)
+ {
+ 	pr_info("68VZ328 DragonBallVZ support (c) 2001 Lineo, Inc.\n");
+ 
+-	init_hardware(command, size);
+-
+ 	mach_sched_init = hw_timer_init;
+ 	mach_hwclk = m68328_hwclk;
+ 	mach_reset = m68vz328_reset;
++
++#ifdef CONFIG_UCDIMM
++	init_ucsimm(command, len);
++#elif defined(CONFIG_DRAGEN2)
++	init_dragen2(command, len);
++#endif
+ }
+ 
+ /***************************************************************************/
+diff --git a/arch/m68k/68000/ucsimm.c b/arch/m68k/68000/ucsimm.c
+new file mode 100644
+index 000000000000..7c6cbf643712
+--- /dev/null
++++ b/arch/m68k/68000/ucsimm.c
+@@ -0,0 +1,38 @@
++// SPDX-License-Identifier: GPL-2.0
++/*
++ *  Copyright (C) 1993 Hamish Macdonald
++ *  Copyright (C) 1999 D. Jeff Dionne
++ *  Copyright (C) 2001 Georges Menie, Ken Desmet
++ *
++ * This file is subject to the terms and conditions of the GNU General Public
++ * License.  See the file COPYING in the main directory of this archive
++ * for more details.
++ */
++#include <linux/init.h>
++#include <asm/bootstd.h>
++#include <asm/machdep.h>
++#include <asm/MC68VZ328.h>
++
++
++#include "m68328.h"
++
++unsigned char *cs8900a_hwaddr;
++static int errno;
++
++_bsc0(char *, getserialnum)
++_bsc1(unsigned char *, gethwaddr, int, a)
++_bsc1(char *, getbenv, char *, a)
++
++void __init init_ucsimm(char *command, int size)
++{
++	char *p;
++
++	pr_info("uCsimm/uCdimm serial string [%s]\n", getserialnum());
++	p = cs8900a_hwaddr = gethwaddr(0);
++	pr_info("uCsimm/uCdimm hwaddr %pM\n", p);
++	p = getbenv("APPEND");
++	if (p)
++		strcpy(p, command);
++	else
++		command[0] = 0;
++}
 -- 
-Jens Axboe
+2.27.0
 
