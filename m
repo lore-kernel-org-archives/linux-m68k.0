@@ -2,499 +2,219 @@ Return-Path: <SRS0=oftE=EF=vger.kernel.org=linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.8 required=3.0 tests=BAYES_00,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-3.8 required=3.0 tests=BAYES_00,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D462FC4742C
-	for <linux-m68k@archiver.kernel.org>; Fri, 30 Oct 2020 00:18:24 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A2FB8C4741F
+	for <linux-m68k@archiver.kernel.org>; Fri, 30 Oct 2020 00:42:39 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 65B9F2076B
-	for <linux-m68k@archiver.kernel.org>; Fri, 30 Oct 2020 00:18:24 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 5A9492087D
+	for <linux-m68k@archiver.kernel.org>; Fri, 30 Oct 2020 00:42:39 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726061AbgJ3ASX (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Thu, 29 Oct 2020 20:18:23 -0400
-Received: from smtprelay0119.hostedemail.com ([216.40.44.119]:55656 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726046AbgJ3ASV (ORCPT
+        id S1726200AbgJ3Amj (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Thu, 29 Oct 2020 20:42:39 -0400
+Received: from kvm5.telegraphics.com.au ([98.124.60.144]:54044 "EHLO
+        kvm5.telegraphics.com.au" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725372AbgJ3Ami (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Thu, 29 Oct 2020 20:18:21 -0400
-X-Greylist: delayed 389 seconds by postgrey-1.27 at vger.kernel.org; Thu, 29 Oct 2020 20:18:20 EDT
-Received: from smtprelay.hostedemail.com (10.5.19.251.rfc1918.com [10.5.19.251])
-        by smtpgrave07.hostedemail.com (Postfix) with ESMTP id 3182C18029D9D
-        for <linux-m68k@lists.linux-m68k.org>; Fri, 30 Oct 2020 00:11:51 +0000 (UTC)
-Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay06.hostedemail.com (Postfix) with ESMTP id 4AEA618224D75;
-        Fri, 30 Oct 2020 00:11:50 +0000 (UTC)
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-HE-Tag: watch11_400bb4e27291
-X-Filterd-Recvd-Size: 14105
-Received: from XPS-9350.home (unknown [47.151.133.149])
-        (Authenticated sender: joe@perches.com)
-        by omf18.hostedemail.com (Postfix) with ESMTPA;
-        Fri, 30 Oct 2020 00:11:47 +0000 (UTC)
-Message-ID: <4945b720d67e9f67b8c8ba02a29c6af1ffa15b08.camel@perches.com>
-Subject: [PATCH] z2ram: MODULE_LICENSE update and neatening
-From:   Joe Perches <joe@perches.com>
-To:     Christoph Hellwig <hch@lst.de>, Jens Axboe <axboe@kernel.dk>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Denis Efremov <efremov@linux.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Song Liu <song@kernel.org>, Al Viro <viro@zeniv.linux.org.uk>,
-        Finn Thain <fthain@telegraphics.com.au>,
-        Michael Schmitz <schmitzmic@gmail.com>,
-        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-ide@vger.kernel.org, linux-raid@vger.kernel.org,
-        linux-scsi@vger.kernel.org, linux-m68k@lists.linux-m68k.org,
-        Hannes Reinecke <hare@suse.de>
-Date:   Thu, 29 Oct 2020 17:11:46 -0700
-In-Reply-To: <20201029145841.144173-18-hch@lst.de>
-References: <20201029145841.144173-1-hch@lst.de>
-         <20201029145841.144173-18-hch@lst.de>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.38.1-1 
+        Thu, 29 Oct 2020 20:42:38 -0400
+Received: from localhost (localhost.localdomain [127.0.0.1])
+        by kvm5.telegraphics.com.au (Postfix) with ESMTP id 55B4C2A441;
+        Thu, 29 Oct 2020 20:41:36 -0400 (EDT)
+Date:   Fri, 30 Oct 2020 11:41:36 +1100 (AEDT)
+From:   Finn Thain <fthain@telegraphics.com.au>
+To:     Arnd Bergmann <arnd@kernel.org>
+cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Russell King <linux@armlinux.org.uk>,
+        Tony Luck <tony.luck@intel.com>,
+        Fenghua Yu <fenghua.yu@intel.com>,
+        Greg Ungerer <gerg@linux-m68k.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Philip Blundell <philb@gnu.org>,
+        Joshua Thompson <funaho@jurai.org>,
+        Sam Creasey <sammy@sammy.net>,
+        "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
+        Helge Deller <deller@gmx.de>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        John Stultz <john.stultz@linaro.org>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        linux-ia64@vger.kernel.org,
+        Parisc List <linux-parisc@vger.kernel.org>,
+        linux-m68k <linux-m68k@lists.linux-m68k.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>
+Subject: Re: [RFC 13/13] m68k: mac: convert to generic clockevent
+In-Reply-To: <CAK8P3a3i6cum_9xGgsbxjXXvbRsP8Po5qLZ0Agb3c4gZTKC9GQ@mail.gmail.com>
+Message-ID: <alpine.LNX.2.23.453.2010241025410.6@nippy.intranet>
+References: <20201008154651.1901126-1-arnd@arndb.de> <20201008154651.1901126-14-arnd@arndb.de> <alpine.LNX.2.23.453.2010091900150.12@nippy.intranet> <CAK8P3a3rM7gJjdTtcKzr6yi15n6xs-yhEpmSOf3QHfahQwxqkw@mail.gmail.com> <alpine.LNX.2.23.453.2010150937430.16@nippy.intranet>
+ <CAK8P3a3i6cum_9xGgsbxjXXvbRsP8Po5qLZ0Agb3c4gZTKC9GQ@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-Additional style neatenings.
+On Fri, 23 Oct 2020, Arnd Bergmann wrote:
 
-Miscellanea:
+> On Sun, Oct 18, 2020 at 2:55 AM Finn Thain <fthain@telegraphics.com.au>  wrote:
+> > On Thu, 15 Oct 2020, Arnd Bergmann wrote:
+> > > On Thu, Oct 15, 2020 at 3:19 AM Finn Thain <fthain@telegraphics.com.au> wrote:
+> > > > On Sat, 10 Oct 2020, Arnd Bergmann wrote:
+> >
+> > That configuration still produces the same 5 KiB of bloat. I see that 
+> > kernel/time/Kconfig has this --
+> >
+> > # Core internal switch. Selected by NO_HZ_COMMON / HIGH_RES_TIMERS. This is
+> > # only related to the tick functionality. Oneshot clockevent devices
+> > # are supported independent of this.
+> > config TICK_ONESHOT
+> >         bool
+> >
+> > But my question was really about both kinds of dead code (oneshot 
+> > device support and oneshot tick support). Anyway, after playing with 
+> > the code for a bit I don't see any easy way to reduce the growth in 
+> > text size.
+> 
+> Did you look more deeply into where those 5KB are? Is this just the code 
+> in kernel/time/{clockevents,tick-common}.c and the added platform 
+> specific bits, or is there something more?
 
-o Make MODULE_LICENSE match the actual license text
-o Comment neatening
-o alloc failure message removals as there is already a dump_stack()
-o Add pr_fmt() and convert printks to pr_<level>
-o Unindent code blocks by using continue
-o Return early z2open when current_device != 1 and unindent code block
-o Add and remove braces where appropriate
+What I did was to list the relevant functions using scripts/bloat-o-meter 
+and tried stubbing out some code related to oneshot clockevent devices. I 
+didn't find any low fruit and don't plan to pursue that without the help 
+of LTO.
 
-Signed-off-by: Joe Perches <joe@perches.com>
----
+> I suppose the sysfs interface and the clockevents_update_freq() logic 
+> are not really needed on m68k, but it wouldn't make much sense to split 
+> those out either.
+> 
+> How does the 5KB bloat compare to the average bloat we get from one 
+> release to the next? Geert has been collecting statistics for this.
+> 
 
-Uncompiled/untested.
+Perhaps that 5 KB is justified by gaining the hrtimers feature... hard to 
+say; it's never been available on these platforms. I can see the value in 
+it though.
 
-On top of Christoph's changes.
-This file still does not have an SPDX line.  What should it be?
-Is this still used by anyone?
+> > > Yes, makes sense. I think the one remaining problem with the 
+> > > periodic mode in this driver is that it can drop timer ticks when 
+> > > interrupts are disabled for too long, while in oneshot mode there 
+> > > may be a way to know how much time has passed since the last tick as 
+> > > long as the counter does not overflow.
+> >
+> > Is there any benefit from adopting a oneshot tick (rather than 
+> > periodic) if no clocksource is consulted when calculating the next 
+> > interval? (I'm assuming NO_HZ is not in use, for reasons discussed 
+> > below.)
+> 
+> If the clocksource does not set CLOCK_SOURCE_IS_CONTINOUS, the kernel 
+> will keep using periodic timers and not allow hrtimers.
+> 
 
- drivers/block/z2ram.c | 304 ++++++++++++++++++++++----------------------------
- 1 file changed, 132 insertions(+), 172 deletions(-)
+IIUC, when HIGH_RES_TIMERS=y, the kernel will enable hrtimers only if the 
+platform provides both a continuous clocksource device and a oneshot 
+clockevent device. However, the "jiffies" clocksource does not set 
+CLOCK_SOURCE_IS_CONTINOUS and neither does the one in 
+arch/arm/mach-rpc/time.c.
 
-diff --git a/drivers/block/z2ram.c b/drivers/block/z2ram.c
-index c1d20818e649..4e6c5564f1e8 100644
---- a/drivers/block/z2ram.c
-+++ b/drivers/block/z2ram.c
-@@ -1,30 +1,31 @@
- /*
--** z2ram - Amiga pseudo-driver to access 16bit-RAM in ZorroII space
--**         as a block device, to be used as a RAM disk or swap space
--** 
--** Copyright (C) 1994 by Ingo Wilken (Ingo.Wilken@informatik.uni-oldenburg.de)
--**
--** ++Geert: support for zorro_unused_z2ram, better range checking
--** ++roman: translate accesses via an array
--** ++Milan: support for ChipRAM usage
--** ++yambo: converted to 2.0 kernel
--** ++yambo: modularized and support added for 3 minor devices including:
--**          MAJOR  MINOR  DESCRIPTION
--**          -----  -----  ----------------------------------------------
--**          37     0       Use Zorro II and Chip ram
--**          37     1       Use only Zorro II ram
--**          37     2       Use only Chip ram
--**          37     4-7     Use memory list entry 1-4 (first is 0)
--** ++jskov: support for 1-4th memory list entry.
--**
--** Permission to use, copy, modify, and distribute this software and its
--** documentation for any purpose and without fee is hereby granted, provided
--** that the above copyright notice appear in all copies and that both that
--** copyright notice and this permission notice appear in supporting
--** documentation.  This software is provided "as is" without express or
--** implied warranty.
--*/
--
-+ * z2ram - Amiga pseudo-driver to access 16bit-RAM in ZorroII space
-+ *         as a block device, to be used as a RAM disk or swap space
-+ *
-+ * Copyright (C) 1994 by Ingo Wilken (Ingo.Wilken@informatik.uni-oldenburg.de)
-+ *
-+ * ++Geert: support for zorro_unused_z2ram, better range checking
-+ * ++roman: translate accesses via an array
-+ * ++Milan: support for ChipRAM usage
-+ * ++yambo: converted to 2.0 kernel
-+ * ++yambo: modularized and support added for 3 minor devices including:
-+ *          MAJOR  MINOR  DESCRIPTION
-+ *          -----  -----  ----------------------------------------------
-+ *          37     0       Use Zorro II and Chip ram
-+ *          37     1       Use only Zorro II ram
-+ *          37     2       Use only Chip ram
-+ *          37     4-7     Use memory list entry 1-4 (first is 0)
-+ * ++jskov: support for 1-4th memory list entry.
-+ *
-+ * Permission to use, copy, modify, and distribute this software and its
-+ * documentation for any purpose and without fee is hereby granted, provided
-+ * that the above copyright notice appear in all copies and that both that
-+ * copyright notice and this permission notice appear in supporting
-+ * documentation.  This software is provided "as is" without express or
-+ * implied warranty.
-+ */
-+
-+#define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
- #define DEVICE_NAME "Z2RAM"
- 
- #include <linux/major.h>
-@@ -51,7 +52,7 @@
- #define Z2MINOR_MEMLIST4      (7)
- #define Z2MINOR_COUNT         (8)	/* Move this down when adding a new minor */
- 
--#define Z2RAM_CHUNK1024       ( Z2RAM_CHUNKSIZE >> 10 )
-+#define Z2RAM_CHUNK1024       (Z2RAM_CHUNKSIZE >> 10)
- 
- static DEFINE_MUTEX(z2ram_mutex);
- static u_long *z2ram_map = NULL;
-@@ -75,8 +76,7 @@ static blk_status_t z2_queue_rq(struct blk_mq_hw_ctx *hctx,
- 	blk_mq_start_request(req);
- 
- 	if (start + len > z2ram_size) {
--		pr_err(DEVICE_NAME ": bad access: block=%llu, "
--		       "count=%u\n",
-+		pr_err("bad access: block=%llu, count=%u\n",
- 		       (unsigned long long)blk_rq_pos(req),
- 		       blk_rq_cur_sectors(req));
- 		return BLK_STS_IOERR;
-@@ -93,9 +93,9 @@ static blk_status_t z2_queue_rq(struct blk_mq_hw_ctx *hctx,
- 			size = len;
- 		addr += z2ram_map[start >> Z2RAM_CHUNKSHIFT];
- 		if (rq_data_dir(req) == READ)
--			memcpy(buffer, (char *)addr, size);
-+			memcpy(buffer, (void *)addr, size);
- 		else
--			memcpy((char *)addr, buffer, size);
-+			memcpy((void *)addr, buffer, size);
- 		start += size;
- 		len -= size;
- 	}
-@@ -107,37 +107,29 @@ static blk_status_t z2_queue_rq(struct blk_mq_hw_ctx *hctx,
- 
- static void get_z2ram(void)
- {
-+	unsigned long vaddr = (unsigned long)ZTWO_VADDR(Z2RAM_START);
- 	int i;
- 
- 	for (i = 0; i < Z2RAM_SIZE / Z2RAM_CHUNKSIZE; i++) {
--		if (test_bit(i, zorro_unused_z2ram)) {
--			z2_count++;
--			z2ram_map[z2ram_size++] =
--			    (unsigned long)ZTWO_VADDR(Z2RAM_START) +
--			    (i << Z2RAM_CHUNKSHIFT);
--			clear_bit(i, zorro_unused_z2ram);
--		}
-+		if (!test_and_clear_bit(i, zorro_unused_z2ram))
-+			continue;
-+		z2_count++;
-+		z2ram_map[z2ram_size++] = vaddr + (i << Z2RAM_CHUNKSHIFT);
- 	}
--
--	return;
- }
- 
- static void get_chipram(void)
- {
--
- 	while (amiga_chip_avail() > (Z2RAM_CHUNKSIZE * 4)) {
- 		chip_count++;
- 		z2ram_map[z2ram_size] =
--		    (u_long) amiga_chip_alloc(Z2RAM_CHUNKSIZE, "z2ram");
-+		    (u_long)amiga_chip_alloc(Z2RAM_CHUNKSIZE, "z2ram");
- 
--		if (z2ram_map[z2ram_size] == 0) {
-+		if (z2ram_map[z2ram_size] == 0)
- 			break;
--		}
- 
- 		z2ram_size++;
- 	}
--
--	return;
- }
- 
- static int z2_open(struct block_device *bdev, fmode_t mode)
-@@ -146,146 +138,120 @@ static int z2_open(struct block_device *bdev, fmode_t mode)
- 	int max_z2_map = (Z2RAM_SIZE / Z2RAM_CHUNKSIZE) * sizeof(z2ram_map[0]);
- 	int max_chip_map = (amiga_chip_size / Z2RAM_CHUNKSIZE) *
- 	    sizeof(z2ram_map[0]);
--	int rc = -ENOMEM;
-+	int ret = -ENOMEM;
- 
- 	device = MINOR(bdev->bd_dev);
- 
- 	mutex_lock(&z2ram_mutex);
--	if (current_device != -1 && current_device != device) {
--		rc = -EBUSY;
--		goto err_out;
-+	if (current_device != -1) {
-+		ret = (current_device != device) ? -EBUSY : 0;
-+		mutex_unlock(&z2ram_mutex);
-+		return ret;
- 	}
- 
--	if (current_device == -1) {
--		z2_count = 0;
--		chip_count = 0;
--		list_count = 0;
--		z2ram_size = 0;
--
--		/* Use a specific list entry. */
--		if (device >= Z2MINOR_MEMLIST1 && device <= Z2MINOR_MEMLIST4) {
--			int index = device - Z2MINOR_MEMLIST1 + 1;
--			unsigned long size, paddr, vaddr;
--
--			if (index >= m68k_realnum_memory) {
--				printk(KERN_ERR DEVICE_NAME
--				       ": no such entry in z2ram_map\n");
--				goto err_out;
--			}
-+	z2_count = 0;
-+	chip_count = 0;
-+	list_count = 0;
-+	z2ram_size = 0;
- 
--			paddr = m68k_memory[index].addr;
--			size = m68k_memory[index].size & ~(Z2RAM_CHUNKSIZE - 1);
-+	/* Use a specific list entry. */
-+	if (device >= Z2MINOR_MEMLIST1 && device <= Z2MINOR_MEMLIST4) {
-+		int index = device - Z2MINOR_MEMLIST1 + 1;
-+		unsigned long size, paddr, vaddr;
-+
-+		if (index >= m68k_realnum_memory) {
-+			pr_err("no such entry in z2ram_map\n");
-+			goto err_out;
-+		}
-+
-+		paddr = m68k_memory[index].addr;
-+		size = m68k_memory[index].size & ~(Z2RAM_CHUNKSIZE - 1);
- 
- #ifdef __powerpc__
--			/* FIXME: ioremap doesn't build correct memory tables. */
--			{
--				vfree(vmalloc(size));
--			}
-+		/* FIXME: ioremap doesn't build correct memory tables. */
-+		{
-+			vfree(vmalloc(size));
-+		}
- 
--			vaddr = (unsigned long)ioremap_wt(paddr, size);
-+		vaddr = (unsigned long)ioremap_wt(paddr, size);
- 
- #else
--			vaddr =
--			    (unsigned long)z_remap_nocache_nonser(paddr, size);
-+		vaddr = (unsigned long)z_remap_nocache_nonser(paddr, size);
- #endif
--			z2ram_map =
--			    kmalloc_array(size / Z2RAM_CHUNKSIZE,
-+		z2ram_map = kmalloc_array(size / Z2RAM_CHUNKSIZE,
- 					  sizeof(z2ram_map[0]), GFP_KERNEL);
--			if (z2ram_map == NULL) {
--				printk(KERN_ERR DEVICE_NAME
--				       ": cannot get mem for z2ram_map\n");
-+		if (!z2ram_map)
-+			goto err_out;
-+
-+		while (size) {
-+			z2ram_map[z2ram_size++] = vaddr;
-+			size -= Z2RAM_CHUNKSIZE;
-+			vaddr += Z2RAM_CHUNKSIZE;
-+			list_count++;
-+		}
-+
-+		if (z2ram_size != 0)
-+			pr_info("using %iK List Entry %d Memory\n",
-+				list_count * Z2RAM_CHUNK1024, index);
-+	} else {
-+		switch (device) {
-+		case Z2MINOR_COMBINED:
-+
-+			z2ram_map = kmalloc(max_z2_map + max_chip_map,
-+					    GFP_KERNEL);
-+			if (!z2ram_map)
- 				goto err_out;
--			}
- 
--			while (size) {
--				z2ram_map[z2ram_size++] = vaddr;
--				size -= Z2RAM_CHUNKSIZE;
--				vaddr += Z2RAM_CHUNKSIZE;
--				list_count++;
--			}
-+			get_z2ram();
-+			get_chipram();
- 
- 			if (z2ram_size != 0)
--				printk(KERN_INFO DEVICE_NAME
--				       ": using %iK List Entry %d Memory\n",
--				       list_count * Z2RAM_CHUNK1024, index);
--		} else
--			switch (device) {
--			case Z2MINOR_COMBINED:
--
--				z2ram_map =
--				    kmalloc(max_z2_map + max_chip_map,
--					    GFP_KERNEL);
--				if (z2ram_map == NULL) {
--					printk(KERN_ERR DEVICE_NAME
--					       ": cannot get mem for z2ram_map\n");
--					goto err_out;
--				}
--
--				get_z2ram();
--				get_chipram();
--
--				if (z2ram_size != 0)
--					printk(KERN_INFO DEVICE_NAME
--					       ": using %iK Zorro II RAM and %iK Chip RAM (Total %dK)\n",
--					       z2_count * Z2RAM_CHUNK1024,
--					       chip_count * Z2RAM_CHUNK1024,
--					       (z2_count +
--						chip_count) * Z2RAM_CHUNK1024);
--
--				break;
--
--			case Z2MINOR_Z2ONLY:
--				z2ram_map = kmalloc(max_z2_map, GFP_KERNEL);
--				if (z2ram_map == NULL) {
--					printk(KERN_ERR DEVICE_NAME
--					       ": cannot get mem for z2ram_map\n");
--					goto err_out;
--				}
--
--				get_z2ram();
--
--				if (z2ram_size != 0)
--					printk(KERN_INFO DEVICE_NAME
--					       ": using %iK of Zorro II RAM\n",
--					       z2_count * Z2RAM_CHUNK1024);
--
--				break;
--
--			case Z2MINOR_CHIPONLY:
--				z2ram_map = kmalloc(max_chip_map, GFP_KERNEL);
--				if (z2ram_map == NULL) {
--					printk(KERN_ERR DEVICE_NAME
--					       ": cannot get mem for z2ram_map\n");
--					goto err_out;
--				}
--
--				get_chipram();
--
--				if (z2ram_size != 0)
--					printk(KERN_INFO DEVICE_NAME
--					       ": using %iK Chip RAM\n",
--					       chip_count * Z2RAM_CHUNK1024);
--
--				break;
--
--			default:
--				rc = -ENODEV;
-+				pr_info("using %iK Zorro II RAM and %iK Chip RAM (Total %dK)\n",
-+					z2_count * Z2RAM_CHUNK1024,
-+					chip_count * Z2RAM_CHUNK1024,
-+					(z2_count + chip_count) * Z2RAM_CHUNK1024);
-+
-+			break;
-+
-+		case Z2MINOR_Z2ONLY:
-+			z2ram_map = kmalloc(max_z2_map, GFP_KERNEL);
-+			if (!z2ram_map)
-+				goto err_out;
-+
-+			get_z2ram();
-+
-+			if (z2ram_size != 0)
-+				pr_info("using %iK of Zorro II RAM\n",
-+					z2_count * Z2RAM_CHUNK1024);
-+			break;
-+
-+		case Z2MINOR_CHIPONLY:
-+			z2ram_map = kmalloc(max_chip_map, GFP_KERNEL);
-+			if (!z2ram_map)
- 				goto err_out;
- 
--				break;
--			}
-+			get_chipram();
- 
--		if (z2ram_size == 0) {
--			printk(KERN_NOTICE DEVICE_NAME
--			       ": no unused ZII/Chip RAM found\n");
--			goto err_out_kfree;
-+			if (z2ram_size != 0)
-+				pr_info("using %iK Chip RAM\n",
-+					chip_count * Z2RAM_CHUNK1024);
-+			break;
-+
-+		default:
-+			ret = -ENODEV;
-+			goto err_out;
- 		}
-+	}
- 
--		current_device = device;
--		z2ram_size <<= Z2RAM_CHUNKSHIFT;
--		set_capacity(z2ram_gendisk[device], z2ram_size >> 9);
-+	if (z2ram_size == 0) {
-+		pr_notice("no unused ZII/Chip RAM found\n");
-+		goto err_out_kfree;
- 	}
- 
-+	current_device = device;
-+	z2ram_size <<= Z2RAM_CHUNKSHIFT;
-+	set_capacity(z2ram_gendisk[device], z2ram_size >> 9);
-+
- 	mutex_unlock(&z2ram_mutex);
- 	return 0;
- 
-@@ -293,7 +259,7 @@ static int z2_open(struct block_device *bdev, fmode_t mode)
- 	kfree(z2ram_map);
- err_out:
- 	mutex_unlock(&z2ram_mutex);
--	return rc;
-+	return ret;
- }
- 
- static void z2_release(struct gendisk *disk, fmode_t mode)
-@@ -401,24 +367,18 @@ static void __exit z2_exit(void)
- 	if (current_device != -1) {
- 		i = 0;
- 
--		for (j = 0; j < z2_count; j++) {
-+		for (j = 0; j < z2_count; j++)
- 			set_bit(i++, zorro_unused_z2ram);
--		}
- 
- 		for (j = 0; j < chip_count; j++) {
--			if (z2ram_map[i]) {
-+			if (z2ram_map[i])
- 				amiga_chip_free((void *)z2ram_map[i++]);
--			}
- 		}
- 
--		if (z2ram_map != NULL) {
--			kfree(z2ram_map);
--		}
-+		kfree(z2ram_map);
- 	}
--
--	return;
- }
- 
- module_init(z2_init);
- module_exit(z2_exit);
--MODULE_LICENSE("GPL");
-+MODULE_LICENSE("GPL and additional rights");
+When HIGH_RES_TIMERS=n and NO_HZ_COMMON=n (which is presently the case for 
+all platforms with GENERIC_CLOCKEVENTS=n) there's no use for a oneshot 
+clockevent device, right?
 
+It seems likely that NO_HZ_COMMON=n because the clocksources on these 
+platforms produce a periodic interrupt regardless (e.g. 
+clocksource/i8253.c, arm/rpc, m68k platform timers etc.).
+
+Finally, HIGH_RES_TIMERS=n seems likely if the only clocksource is 
+unreliable (e.g. because it loses time due to interrupt priorities). There 
+may be a few of platforms in this category (Mac, Atari?).
+
+> > > I would agree that despite this oneshot mode is probably worse 
+> > > overall for timekeeping if the register accesses introduce 
+> > > systematic errors.
+> > >
+> >
+> > It probably has to be tried. But consulting a VIA clocksource on every 
+> > tick would be expensive on this platform, so if that was the only way 
+> > to avoid cumulative errors, I'd probably just stick with the periodic 
+> > tick.
+> 
+> I'm sure there is a tradeoff somewhere. Without hrtimers, some events 
+> will take longer when they have to wait for the next tick, and using 
+> NO_HZ_FULL can help help make things faster on some workloads.
+> 
+
+Yes, such a tradeoff is discussed in drivers/iio/adc/ep93xx_adc.c.
+
+But OTOH, Documentation/timers/timers-howto.rst says,
+
+    On slower systems, (embedded, OR perhaps a speed-stepped PC!) the 
+    overhead of setting up the hrtimers for usleep *may* not be worth it
+
+I guess it has to be tried.
+
+> ...
+> > The other 11 platforms in that category also have 'synthetic' 
+> > clocksources derived from a timer reload interrupt. In 3 cases, the 
+> > clocksource read method does not (or can not) check for a pending 
+> > counter reload interrupt. For these also, I see no practical 
+> > alternative to the approach you've taken in your RFC patch:
+> >
+> > arch/m68k/68000/timers.c
+> > arch/m68k/atari/time.c
+> > arch/m68k/coldfire/timers.c
+> 
+> Agreed. It's possible there is a way, but I don't see one either.
+> 
+
+For arch/m68k/68000/timers.c, I suppose we may be able to check for the 
+TMR1 bit in the Interrupt Status Register at 0xFFFFF30C or the COMP bit in 
+the Timer Status Register at 0xFFFFF60A. But testing that patch could be 
+difficult.
+
+I expect that equivalent flags are available in Coldfire registers, making 
+it possible to improve upon mcftmr_read_clk() and m68328_read_clk() if 
+need be -- that is, if it turns out that the clocksource interrupt was 
+subject to higher priority IRQs that would slow down the clocksource or 
+defeat its monotonicity.
+
+The other difficulty is a lack of hardware timers. There's only one timer 
+on MC68EZ328. On Atari, for now only Timer C is available though Michael 
+has said that it would be possible to free up Timer D. Some Coldfire chips 
+have only 2 timers and the second timer seems to be allocated to 
+profiling.
+
+> > That leaves 8 platforms that have reliable clocksource devices which 
+> > should be able to provide an accurate reading even in the presence of 
+> > a dropped tick (due to drivers disabling interrupts for too long):
+> >
+> > arch/arm/mach-rpc/time.c
+> > arch/m68k/amiga/config.c
+> > arch/m68k/bvme6000/config.c
+> > arch/m68k/coldfire/sltimers.c
+> > arch/m68k/hp300/time.c
+> > arch/m68k/mac/via.c
+> > arch/m68k/mvme147/config.c
+> > arch/m68k/mvme16x/config.c
+> >
+> > But is there any reason to adopt a oneshot tick on any of these platforms,
+> > if NO_HZ won't eliminate the timer interrupt that's needed to run a
+> > 'synthetic' clocksource?
+> 
+> I would expect that these could be changed to behave more like 
+> drivers/clocksource/i8253.c, which does support a clocksource in oneshot 
+> mode.
+> 
+
+I think you meant to write, "... support a clockevent device in oneshot 
+mode". I would agree.
+
+Since Macs do have a spare hardware timer, I will attempt to convert 
+arch/m68k/mac/via.c to a oneshot clockevent, using your 
+GENERIC_CLOCKEVENTS patch series as a basis, and see what effect that has 
+in the NO_HZ_COMMON=n, HIGH_RES_TIMERS=y case.
+
+>      Arnd
+> 
