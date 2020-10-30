@@ -7,37 +7,37 @@ X-Spam-Status: No, score=-13.1 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
 	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9E172C55179
-	for <linux-m68k@archiver.kernel.org>; Fri, 30 Oct 2020 15:20:46 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5A1C9C00A89
+	for <linux-m68k@archiver.kernel.org>; Fri, 30 Oct 2020 15:20:50 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 4736C22241
-	for <linux-m68k@archiver.kernel.org>; Fri, 30 Oct 2020 15:20:46 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id EDF7B20756
+	for <linux-m68k@archiver.kernel.org>; Fri, 30 Oct 2020 15:20:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=default; t=1604071246;
-	bh=GMWfpBFvyWmdpvD5W/p2JKxKxss2ykxW3nbwOHA5BIY=;
+	s=default; t=1604071250;
+	bh=hpq25w7YsZaBF0F4LlMqvKcXZb1aUi1ae0/gcETtpew=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-ID:From;
-	b=uWqtVFfD/mIhYOkpvSo2zgaC4RQhK2x+qBepVMtSLfo3/ljh70knNzBoWjP4T0tMj
-	 M+ON2MC9Ynf/BOaeU2oi8gp5tOmrkv7j4W/Q/qMW2JKd3HRScPfp/QWeaj6t187ZN5
-	 GnRk7O7YH9Pp28vQ7zk+m8g+F6vqnshSYbSNdWhg=
+	b=NdOXU+i1GuQLFtwjj6UUR8iEaNztiCvM+06XUs/gFteXqiow6npoRD9G9qq0b0QmJ
+	 KSN7AgBIklxJY8BRpDCicJPM3kQ9G3liVJdmzs6ikW81Off1CqXo0GRW2DCsekz6z0
+	 tn3SDjES7frfsSM7PQJQFaS+feQe3Z7pAzpT9gw4=
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727104AbgJ3PU3 (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Fri, 30 Oct 2020 11:20:29 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52960 "EHLO mail.kernel.org"
+        id S1727146AbgJ3PUt (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Fri, 30 Oct 2020 11:20:49 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53064 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726955AbgJ3PUB (ORCPT <rfc822;linux-m68k@lists.linux-m68k.org>);
+        id S1726996AbgJ3PUB (ORCPT <rfc822;linux-m68k@lists.linux-m68k.org>);
         Fri, 30 Oct 2020 11:20:01 -0400
 Received: from localhost.localdomain (HSI-KBW-46-223-126-90.hsi.kabel-badenwuerttemberg.de [46.223.126.90])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 1728B2224A;
-        Fri, 30 Oct 2020 15:19:05 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 287942224E;
+        Fri, 30 Oct 2020 15:19:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604071150;
-        bh=GMWfpBFvyWmdpvD5W/p2JKxKxss2ykxW3nbwOHA5BIY=;
+        s=default; t=1604071164;
+        bh=hpq25w7YsZaBF0F4LlMqvKcXZb1aUi1ae0/gcETtpew=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=xDT3Y783NYX+tG7pWdWca/zrFnSprsM6qfu8QZFMPZoEuPGBW2xHqdzEh8CAx4NeA
-         jvnONs0HFU6mJY6HBbiuXPalLPmGM9or7mYFQ3m10Zc+sH3dKkSi/LF/0fRyn0SElE
-         5MLwWycQfi0CbL1vKogBaWCzLmpov/ll3Sq9P8Hc=
+        b=FJ/JrVi+9szrGBEP/LSniEyZGoGchJ7DUxx0tL+H2lDWb99COBF3948HAVcDRbWhR
+         J6WbQ5vp1/KCOEdVHzhQ0F4JzYEeouAipCvFQa3PLXvujOMqOghqY1iT5YM92w4+G+
+         IccB1XEQqMpWQ51uwGztWCm/UoX0Dawz1b3I+XMU=
 From:   Arnd Bergmann <arnd@kernel.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Thomas Gleixner <tglx@linutronix.de>,
@@ -61,9 +61,9 @@ Cc:     Thomas Gleixner <tglx@linutronix.de>,
         linux-m68k <linux-m68k@lists.linux-m68k.org>,
         Linux ARM <linux-arm-kernel@lists.infradead.org>,
         Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: [PATCH v2 11/15] m68k: m68328: use legacy_timer_tick()
-Date:   Fri, 30 Oct 2020 16:17:54 +0100
-Message-Id: <20201030151758.1241164-12-arnd@kernel.org>
+Subject: [PATCH v2 14/15] timekeeping: remove xtime_update
+Date:   Fri, 30 Oct 2020 16:17:57 +0100
+Message-Id: <20201030151758.1241164-15-arnd@kernel.org>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20201030151758.1241164-1-arnd@kernel.org>
 References: <20201030151758.1241164-1-arnd@kernel.org>
@@ -75,77 +75,107 @@ X-Mailing-List: linux-m68k@vger.kernel.org
 
 From: Arnd Bergmann <arnd@arndb.de>
 
-A couple of machines share the m68328 timer code that
-is based on calling timer_interrupt(). Change these
-to the new and slightly more generic legacy_timer_tick()
-helper.
+There are no more users of xtime_update aside from legacy_timer_tick(),
+so fold it into that function and remove the declaration.
+
+update_process_times() is now only called inside of the kernel/time/
+code, so the declaration can be moved there.
 
 Reviewed-by: Geert Uytterhoeven <geert@linux-m68k.org>
+Tested-by: Geert Uytterhoeven <geert@linux-m68k.org>
 Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
 Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 ---
- arch/m68k/68000/timers.c | 5 ++---
- arch/m68k/Kconfig.cpu    | 3 +++
- 2 files changed, 5 insertions(+), 3 deletions(-)
+ include/linux/timekeeping.h |  2 --
+ kernel/time/tick-legacy.c   | 22 ++++++++++++++++++++--
+ kernel/time/timekeeping.c   | 16 ----------------
+ kernel/time/timekeeping.h   |  1 +
+ 4 files changed, 21 insertions(+), 20 deletions(-)
 
-diff --git a/arch/m68k/68000/timers.c b/arch/m68k/68000/timers.c
-index e8dfdd2556a5..3aa006f8e7ea 100644
---- a/arch/m68k/68000/timers.c
-+++ b/arch/m68k/68000/timers.c
-@@ -52,7 +52,6 @@
+diff --git a/include/linux/timekeeping.h b/include/linux/timekeeping.h
+index 3670cb1670ff..d47009611109 100644
+--- a/include/linux/timekeeping.h
++++ b/include/linux/timekeeping.h
+@@ -10,8 +10,6 @@ void timekeeping_init(void);
+ extern int timekeeping_suspended;
+ 
+ /* Architecture timer tick functions: */
+-extern void update_process_times(int user);
+-extern void xtime_update(unsigned long ticks);
+ extern void legacy_timer_tick(unsigned long ticks);
+ 
+ /*
+diff --git a/kernel/time/tick-legacy.c b/kernel/time/tick-legacy.c
+index 73c5a0af4743..af225b32f5b3 100644
+--- a/kernel/time/tick-legacy.c
++++ b/kernel/time/tick-legacy.c
+@@ -10,10 +10,28 @@
+ 
+ #include "tick-internal.h"
+ 
++/**
++ * legacy_timer_tick() - advances the timekeeping infrastructure
++ * @ticks:	number of ticks, that have elapsed since the last call.
++ *
++ * This is used by platforms that have not been converted to
++ * generic clockevents.
++ *
++ * If 'ticks' is zero, the CPU is not handling timekeeping, so
++ * only perform process accounting and profiling.
++ *
++ * Must be called with interrupts disabled.
++ */
+ void legacy_timer_tick(unsigned long ticks)
+ {
+-	if (ticks)
+-		xtime_update(ticks);
++	if (ticks) {
++		raw_spin_lock(&jiffies_lock);
++		write_seqcount_begin(&jiffies_seq);
++		do_timer(ticks);
++		write_seqcount_end(&jiffies_seq);
++		raw_spin_unlock(&jiffies_lock);
++		update_wall_time();
++	}
+ 	update_process_times(user_mode(get_irq_regs()));
+ 	profile_tick(CPU_PROFILING);
+ }
+diff --git a/kernel/time/timekeeping.c b/kernel/time/timekeeping.c
+index 52fff7e9edcd..daa0ff017819 100644
+--- a/kernel/time/timekeeping.c
++++ b/kernel/time/timekeeping.c
+@@ -2438,19 +2438,3 @@ void hardpps(const struct timespec64 *phase_ts, const struct timespec64 *raw_ts)
+ }
+ EXPORT_SYMBOL(hardpps);
+ #endif /* CONFIG_NTP_PPS */
+-
+-/**
+- * xtime_update() - advances the timekeeping infrastructure
+- * @ticks:	number of ticks, that have elapsed since the last call.
+- *
+- * Must be called with interrupts disabled.
+- */
+-void xtime_update(unsigned long ticks)
+-{
+-	raw_spin_lock(&jiffies_lock);
+-	write_seqcount_begin(&jiffies_seq);
+-	do_timer(ticks);
+-	write_seqcount_end(&jiffies_seq);
+-	raw_spin_unlock(&jiffies_lock);
+-	update_wall_time();
+-}
+diff --git a/kernel/time/timekeeping.h b/kernel/time/timekeeping.h
+index 099737f6f10c..d94b69c5b869 100644
+--- a/kernel/time/timekeeping.h
++++ b/kernel/time/timekeeping.h
+@@ -22,6 +22,7 @@ static inline int sched_clock_suspend(void) { return 0; }
+ static inline void sched_clock_resume(void) { }
  #endif
  
- static u32 m68328_tick_cnt;
--static irq_handler_t timer_interrupt;
++extern void update_process_times(int user);
+ extern void do_timer(unsigned long ticks);
+ extern void update_wall_time(void);
  
- /***************************************************************************/
- 
-@@ -62,7 +61,8 @@ static irqreturn_t hw_tick(int irq, void *dummy)
- 	TSTAT &= 0;
- 
- 	m68328_tick_cnt += TICKS_PER_JIFFY;
--	return timer_interrupt(irq, dummy);
-+	legacy_timer_tick(1);
-+	return IRQ_HANDLED;
- }
- 
- /***************************************************************************/
-@@ -113,7 +113,6 @@ void hw_timer_init(irq_handler_t handler)
- 	/* Enable timer 1 */
- 	TCTL |= TCTL_TEN;
- 	clocksource_register_hz(&m68328_clk, TICKS_PER_JIFFY*HZ);
--	timer_interrupt = handler;
- }
- 
- /***************************************************************************/
-diff --git a/arch/m68k/Kconfig.cpu b/arch/m68k/Kconfig.cpu
-index 322a35ef14c6..648054d4f860 100644
---- a/arch/m68k/Kconfig.cpu
-+++ b/arch/m68k/Kconfig.cpu
-@@ -104,6 +104,7 @@ config M68060
- config M68328
- 	bool "MC68328"
- 	depends on !MMU
-+	select LEGACY_TIMER_TICK
- 	select M68000
- 	help
- 	  Motorola 68328 processor support.
-@@ -111,6 +112,7 @@ config M68328
- config M68EZ328
- 	bool "MC68EZ328"
- 	depends on !MMU
-+	select LEGACY_TIMER_TICK
- 	select M68000
- 	help
- 	  Motorola 68EX328 processor support.
-@@ -118,6 +120,7 @@ config M68EZ328
- config M68VZ328
- 	bool "MC68VZ328"
- 	depends on !MMU
-+	select LEGACY_TIMER_TICK
- 	select M68000
- 	help
- 	  Motorola 68VZ328 processor support.
 -- 
 2.27.0
 
