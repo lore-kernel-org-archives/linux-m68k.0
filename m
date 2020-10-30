@@ -5,39 +5,39 @@ X-Spam-Level:
 X-Spam-Status: No, score=-13.1 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,INCLUDES_PATCH,MAILING_LIST_MULTI,
 	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
-	autolearn=ham autolearn_force=no version=3.4.0
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id CF451C56202
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 89B4CC56201
 	for <linux-m68k@archiver.kernel.org>; Fri, 30 Oct 2020 15:20:17 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 7B91020756
+	by mail.kernel.org (Postfix) with ESMTP id 2D4F122241
 	for <linux-m68k@archiver.kernel.org>; Fri, 30 Oct 2020 15:20:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
 	s=default; t=1604071217;
-	bh=1U0ECVqd2hNgqIJBzCiaE0G3Htac28AHKdGuEc6XP0Y=;
+	bh=NwyE0NWwEbYFzJ0SabgU5HM9BgoWyyGZaOAB32BtFiQ=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-ID:From;
-	b=HeFhh4Nc+Nzihw9kuqslwwqC64azASq8Q+5coFnVjv9JNAr85rEI0iGBLZ7jS2NmW
-	 8Z/6FVLTXCxBk0efLVxUzjFTg6AB7ETOvA/OOdQWFvjJSN/HSHuyvRYxGGihH/QQLN
-	 doO+kmId9y+cG1ehwq2pYzTs5xHxbvO2wVudha0M=
+	b=JGed3erNAssjspebYhc7CL0j/xJhzlhJ4Ck8OkI3O/xURwlxj/lRwVlC6oJ7iYIk+
+	 sPwk3WklBTCJCGqtvoxVFKDsiuwxR4K9r/E//XI0IjgOZV5Pyj+YqmwSDoToI+rZuT
+	 3Aqc3FOjUo7l1WU0v2Zn+b2NC4AFBRyd3HCWA2iM=
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726999AbgJ3PUC (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        id S1727033AbgJ3PUC (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
         Fri, 30 Oct 2020 11:20:02 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52850 "EHLO mail.kernel.org"
+Received: from mail.kernel.org ([198.145.29.99]:53028 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726951AbgJ3PUB (ORCPT <rfc822;linux-m68k@lists.linux-m68k.org>);
+        id S1726987AbgJ3PUB (ORCPT <rfc822;linux-m68k@lists.linux-m68k.org>);
         Fri, 30 Oct 2020 11:20:01 -0400
 Received: from localhost.localdomain (HSI-KBW-46-223-126-90.hsi.kabel-badenwuerttemberg.de [46.223.126.90])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id AF5EC22246;
-        Fri, 30 Oct 2020 15:18:56 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id C4DE02224D;
+        Fri, 30 Oct 2020 15:19:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604071140;
-        bh=1U0ECVqd2hNgqIJBzCiaE0G3Htac28AHKdGuEc6XP0Y=;
+        s=default; t=1604071155;
+        bh=NwyE0NWwEbYFzJ0SabgU5HM9BgoWyyGZaOAB32BtFiQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=mYdsPP8cT4riayqUCnHMvcpTSpOrhi3YSE4t0JqeIOcSvOMDaPTkYggDnUgQb2faP
-         h/CoXoTiH3Ok9f0NYQ9R/g3i6G1WgP0MSYZIfi+kiBxsYesZvCwAAJs1uQN9fFAKGG
-         SuIrZnPotazCQd8YQ5skHinbiEbDmJqn58vnt3kQ=
+        b=0PpdLHIorvGeACU1XDhUaEr2YAn3d++lLgXQuWaTDYWsG8y5chLWQhogDpUTxzkij
+         58P/P0Y/BIRgT1aujdUacqabUNEYyjct6UzXupCN+rcsfR0SNKybO5D0uB1Py5Opu0
+         89S5Os23FQ07eEn6psLwm+KfLn7szTiAP0sxLo44=
 From:   Arnd Bergmann <arnd@kernel.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Thomas Gleixner <tglx@linutronix.de>,
@@ -61,9 +61,9 @@ Cc:     Thomas Gleixner <tglx@linutronix.de>,
         linux-m68k <linux-m68k@lists.linux-m68k.org>,
         Linux ARM <linux-arm-kernel@lists.infradead.org>,
         Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: [PATCH v2 09/15] m68k: split heartbeat out of timer function
-Date:   Fri, 30 Oct 2020 16:17:52 +0100
-Message-Id: <20201030151758.1241164-10-arnd@kernel.org>
+Subject: [PATCH v2 12/15] m68k: change remaining timers to legacy_timer_tick
+Date:   Fri, 30 Oct 2020 16:17:55 +0100
+Message-Id: <20201030151758.1241164-13-arnd@kernel.org>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20201030151758.1241164-1-arnd@kernel.org>
 References: <20201030151758.1241164-1-arnd@kernel.org>
@@ -75,12 +75,11 @@ X-Mailing-List: linux-m68k@vger.kernel.org
 
 From: Arnd Bergmann <arnd@arndb.de>
 
-The heartbeat functionality is mostly separate from the
-actual timer interrupt handling, and it is only used on
-five platforms.
+There are nine more machines that each have their own timer interrupt
+calling the m68k timer_interrupt() function through an indirect pointer.
 
-Split it out into a separate function and call that directly
-from the timer irq on those platforms.
+This function is now the same as legacy_timer_tick, so just call that
+directly and select the corresponding Kconfig symbol.
 
 Reviewed-by: Geert Uytterhoeven <geert@linux-m68k.org>
 Acked-by: Geert Uytterhoeven <geert@linux-m68k.org>
@@ -88,137 +87,351 @@ Tested-by: Geert Uytterhoeven <geert@linux-m68k.org>
 Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
 Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 ---
- arch/m68k/amiga/config.c        | 1 +
- arch/m68k/apollo/config.c       | 1 +
- arch/m68k/atari/time.c          | 2 ++
- arch/m68k/hp300/time.c          | 1 +
- arch/m68k/include/asm/machdep.h | 7 +++++++
- arch/m68k/kernel/time.c         | 7 +++++--
- arch/m68k/q40/q40ints.c         | 2 ++
- 7 files changed, 19 insertions(+), 2 deletions(-)
+ arch/m68k/Kconfig.machine   | 9 +++++++++
+ arch/m68k/amiga/config.c    | 6 ++----
+ arch/m68k/apollo/config.c   | 6 ++----
+ arch/m68k/atari/time.c      | 5 ++---
+ arch/m68k/bvme6000/config.c | 5 ++---
+ arch/m68k/hp300/time.c      | 5 ++---
+ arch/m68k/mac/via.c         | 6 ++----
+ arch/m68k/mvme147/config.c  | 5 ++---
+ arch/m68k/mvme16x/config.c  | 5 ++---
+ arch/m68k/q40/q40ints.c     | 6 ++----
+ 10 files changed, 27 insertions(+), 31 deletions(-)
 
+diff --git a/arch/m68k/Kconfig.machine b/arch/m68k/Kconfig.machine
+index e3c835440d9a..b47ac37484fa 100644
+--- a/arch/m68k/Kconfig.machine
++++ b/arch/m68k/Kconfig.machine
+@@ -7,6 +7,7 @@ config AMIGA
+ 	bool "Amiga support"
+ 	depends on MMU
+ 	select MMU_MOTOROLA if MMU
++	select LEGACY_TIMER_TICK
+ 	help
+ 	  This option enables support for the Amiga series of computers. If
+ 	  you plan to use this kernel on an Amiga, say Y here and browse the
+@@ -17,6 +18,7 @@ config ATARI
+ 	depends on MMU
+ 	select MMU_MOTOROLA if MMU
+ 	select HAVE_ARCH_NVRAM_OPS
++	select LEGACY_TIMER_TICK
+ 	help
+ 	  This option enables support for the 68000-based Atari series of
+ 	  computers (including the TT, Falcon and Medusa). If you plan to use
+@@ -28,6 +30,7 @@ config MAC
+ 	depends on MMU
+ 	select MMU_MOTOROLA if MMU
+ 	select HAVE_ARCH_NVRAM_OPS
++	select LEGACY_TIMER_TICK
+ 	help
+ 	  This option enables support for the Apple Macintosh series of
+ 	  computers (yes, there is experimental support now, at least for part
+@@ -40,6 +43,7 @@ config APOLLO
+ 	bool "Apollo support"
+ 	depends on MMU
+ 	select MMU_MOTOROLA if MMU
++	select LEGACY_TIMER_TICK
+ 	help
+ 	  Say Y here if you want to run Linux on an MC680x0-based Apollo
+ 	  Domain workstation such as the DN3500.
+@@ -58,6 +62,7 @@ config MVME147
+ 	bool "MVME147 support"
+ 	depends on MMU
+ 	depends on VME
++	select LEGACY_TIMER_TICK
+ 	help
+ 	  Say Y to include support for early Motorola VME boards.  This will
+ 	  build a kernel which can run on MVME147 single-board computers.  If
+@@ -68,6 +73,7 @@ config MVME16x
+ 	bool "MVME162, 166 and 167 support"
+ 	depends on MMU
+ 	depends on VME
++	select LEGACY_TIMER_TICK
+ 	help
+ 	  Say Y to include support for Motorola VME boards.  This will build a
+ 	  kernel which can run on MVME162, MVME166, MVME167, MVME172, and
+@@ -79,6 +85,7 @@ config BVME6000
+ 	bool "BVME4000 and BVME6000 support"
+ 	depends on MMU
+ 	depends on VME
++	select LEGACY_TIMER_TICK
+ 	help
+ 	  Say Y to include support for VME boards from BVM Ltd.  This will
+ 	  build a kernel which can run on BVME4000 and BVME6000 boards.  If
+@@ -89,6 +96,7 @@ config HP300
+ 	bool "HP9000/300 and HP9000/400 support"
+ 	depends on MMU
+ 	select MMU_MOTOROLA if MMU
++	select LEGACY_TIMER_TICK
+ 	help
+ 	  This option enables support for the HP9000/300 and HP9000/400 series
+ 	  of workstations. Support for these machines is still somewhat
+@@ -115,6 +123,7 @@ config Q40
+ 	bool "Q40/Q60 support"
+ 	depends on MMU
+ 	select MMU_MOTOROLA if MMU
++	select LEGACY_TIMER_TICK
+ 	help
+ 	  The Q40 is a Motorola 68040-based successor to the Sinclair QL
+ 	  manufactured in Germany.  There is an official Q40 home page at
 diff --git a/arch/m68k/amiga/config.c b/arch/m68k/amiga/config.c
-index bee9f240f35d..29f92333119e 100644
+index 29f92333119e..91dc87b86411 100644
 --- a/arch/m68k/amiga/config.c
 +++ b/arch/m68k/amiga/config.c
-@@ -480,6 +480,7 @@ static irqreturn_t ciab_timer_handler(int irq, void *dev_id)
+@@ -475,11 +475,9 @@ static u32 clk_total, clk_offset;
+ 
+ static irqreturn_t ciab_timer_handler(int irq, void *dev_id)
+ {
+-	irq_handler_t timer_routine = dev_id;
+-
  	clk_total += jiffy_ticks;
  	clk_offset = 0;
- 	timer_routine(0, NULL);
-+	timer_heartbeat();
+-	timer_routine(0, NULL);
++	legacy_timer_tick(1);
+ 	timer_heartbeat();
  
  	return IRQ_HANDLED;
- }
+@@ -504,7 +502,7 @@ static void __init amiga_sched_init(irq_handler_t timer_routine)
+ 	 * SCSI code. We'll have to take a look at this later
+ 	 */
+ 	if (request_irq(IRQ_AMIGA_CIAB_TA, ciab_timer_handler, IRQF_TIMER,
+-			"timer", timer_routine))
++			"timer", NULL))
+ 		pr_err("Couldn't register timer interrupt\n");
+ 	/* start timer */
+ 	ciab.cra |= 0x11;
 diff --git a/arch/m68k/apollo/config.c b/arch/m68k/apollo/config.c
-index 762da5d7a415..30915f1a8760 100644
+index 30915f1a8760..17d59fa6b25b 100644
 --- a/arch/m68k/apollo/config.c
 +++ b/arch/m68k/apollo/config.c
-@@ -173,6 +173,7 @@ irqreturn_t dn_timer_int(int irq, void *dev_id)
+@@ -168,11 +168,9 @@ void __init config_apollo(void)
+ 
+ irqreturn_t dn_timer_int(int irq, void *dev_id)
+ {
+-	irq_handler_t timer_handler = dev_id;
+-
  	volatile unsigned char x;
  
- 	timer_handler(irq, dev_id);
-+	timer_heartbeat();
+-	timer_handler(irq, dev_id);
++	legacy_timer_tick(1);
+ 	timer_heartbeat();
  
  	x = *(volatile unsigned char *)(apollo_timer + 3);
- 	x = *(volatile unsigned char *)(apollo_timer + 5);
+@@ -199,7 +197,7 @@ void dn_sched_init(irq_handler_t timer_routine)
+ 		*(volatile unsigned char *)(apollo_timer + 0x3));
+ #endif
+ 
+-	if (request_irq(IRQ_APOLLO, dn_timer_int, 0, "time", timer_routine))
++	if (request_irq(IRQ_APOLLO, dn_timer_int, 0, "time", NULL))
+ 		pr_err("Couldn't register timer interrupt\n");
+ }
+ 
 diff --git a/arch/m68k/atari/time.c b/arch/m68k/atari/time.c
-index ce923a523695..ce4a5961ca93 100644
+index ce4a5961ca93..36d811ae09ee 100644
 --- a/arch/m68k/atari/time.c
 +++ b/arch/m68k/atari/time.c
-@@ -21,6 +21,7 @@
- #include <linux/export.h>
+@@ -41,7 +41,6 @@ static u8 last_timer_count;
  
- #include <asm/atariints.h>
-+#include <asm/machdep.h>
+ static irqreturn_t mfp_timer_c_handler(int irq, void *dev_id)
+ {
+-	irq_handler_t timer_routine = dev_id;
+ 	unsigned long flags;
  
- DEFINE_SPINLOCK(rtc_lock);
- EXPORT_SYMBOL_GPL(rtc_lock);
-@@ -49,6 +50,7 @@ static irqreturn_t mfp_timer_c_handler(int irq, void *dev_id)
+ 	local_irq_save(flags);
+@@ -49,7 +48,7 @@ static irqreturn_t mfp_timer_c_handler(int irq, void *dev_id)
+ 		last_timer_count = st_mfp.tim_dt_c;
  	} while (last_timer_count == 1);
  	clk_total += INT_TICKS;
- 	timer_routine(0, NULL);
-+	timer_heartbeat();
+-	timer_routine(0, NULL);
++	legacy_timer_tick(1);
+ 	timer_heartbeat();
  	local_irq_restore(flags);
  
- 	return IRQ_HANDLED;
+@@ -65,7 +64,7 @@ atari_sched_init(irq_handler_t timer_routine)
+     st_mfp.tim_ct_cd = (st_mfp.tim_ct_cd & 15) | 0x60;
+     /* install interrupt service routine for MFP Timer C */
+     if (request_irq(IRQ_MFP_TIMC, mfp_timer_c_handler, IRQF_TIMER, "timer",
+-                    timer_routine))
++                    NULL))
+ 	pr_err("Couldn't register timer interrupt\n");
+ 
+     clocksource_register_hz(&atari_clk, INT_CLK);
+diff --git a/arch/m68k/bvme6000/config.c b/arch/m68k/bvme6000/config.c
+index 50f4d01363df..d3f5963021d3 100644
+--- a/arch/m68k/bvme6000/config.c
++++ b/arch/m68k/bvme6000/config.c
+@@ -165,7 +165,6 @@ static u32 clk_total, clk_offset;
+ 
+ static irqreturn_t bvme6000_timer_int (int irq, void *dev_id)
+ {
+-    irq_handler_t timer_routine = dev_id;
+     unsigned long flags;
+     volatile RtcPtr_t rtc = (RtcPtr_t)BVME_RTC_BASE;
+     unsigned char msr;
+@@ -175,7 +174,7 @@ static irqreturn_t bvme6000_timer_int (int irq, void *dev_id)
+     rtc->msr = msr | 0x20;		/* Ack the interrupt */
+     clk_total += RTC_TIMER_CYCLES;
+     clk_offset = 0;
+-    timer_routine(0, NULL);
++    legacy_timer_tick(1);
+     local_irq_restore(flags);
+ 
+     return IRQ_HANDLED;
+@@ -198,7 +197,7 @@ void bvme6000_sched_init (irq_handler_t timer_routine)
+     rtc->msr = 0;	/* Ensure timer registers accessible */
+ 
+     if (request_irq(BVME_IRQ_RTC, bvme6000_timer_int, IRQF_TIMER, "timer",
+-                    timer_routine))
++                    NULL))
+ 	panic ("Couldn't register timer int");
+ 
+     rtc->t1cr_omr = 0x04;	/* Mode 2, ext clk */
 diff --git a/arch/m68k/hp300/time.c b/arch/m68k/hp300/time.c
-index bfee13e1d0fe..e3cd938de0f9 100644
+index e3cd938de0f9..011fc2e5a68a 100644
 --- a/arch/m68k/hp300/time.c
 +++ b/arch/m68k/hp300/time.c
-@@ -65,6 +65,7 @@ static irqreturn_t hp300_tick(int irq, void *dev_id)
+@@ -55,7 +55,6 @@ static u32 clk_total, clk_offset;
+ 
+ static irqreturn_t hp300_tick(int irq, void *dev_id)
+ {
+-	irq_handler_t timer_routine = dev_id;
+ 	unsigned long flags;
+ 	unsigned long tmp;
+ 
+@@ -64,7 +63,7 @@ static irqreturn_t hp300_tick(int irq, void *dev_id)
+ 	asm volatile ("movpw %1@(5),%0" : "=d" (tmp) : "a" (CLOCKBASE));
  	clk_total += INTVAL;
  	clk_offset = 0;
- 	timer_routine(0, NULL);
-+	timer_heartbeat();
+-	timer_routine(0, NULL);
++	legacy_timer_tick(1);
+ 	timer_heartbeat();
  	local_irq_restore(flags);
  
- 	/* Turn off the network and SCSI leds */
-diff --git a/arch/m68k/include/asm/machdep.h b/arch/m68k/include/asm/machdep.h
-index 49bd3266b4b1..e62a39d01ae4 100644
---- a/arch/m68k/include/asm/machdep.h
-+++ b/arch/m68k/include/asm/machdep.h
-@@ -35,6 +35,13 @@ extern void (*mach_beep) (unsigned int, unsigned int);
- /* Hardware clock functions */
- extern void hw_timer_init(irq_handler_t handler);
- extern unsigned long hw_timer_offset(void);
-+#ifdef CONFIG_HEARTBEAT
-+extern void timer_heartbeat(void);
-+#else
-+static inline void timer_heartbeat(void)
-+{
-+}
-+#endif
+@@ -106,7 +105,7 @@ void __init hp300_sched_init(irq_handler_t vector)
  
- extern void config_BSP(char *command, int len);
+   asm volatile(" movpw %0,%1@(5)" : : "d" (INTVAL), "a" (CLOCKBASE));
  
-diff --git a/arch/m68k/kernel/time.c b/arch/m68k/kernel/time.c
-index c2697a4d4ddd..c05cec21b05f 100644
---- a/arch/m68k/kernel/time.c
-+++ b/arch/m68k/kernel/time.c
-@@ -45,8 +45,12 @@ static irqreturn_t timer_interrupt(int irq, void *dummy)
- 	xtime_update(1);
- 	update_process_times(user_mode(get_irq_regs()));
- 	profile_tick(CPU_PROFILING);
-+	return IRQ_HANDLED;
-+}
+-  if (request_irq(IRQ_AUTO_6, hp300_tick, IRQF_TIMER, "timer tick", vector))
++  if (request_irq(IRQ_AUTO_6, hp300_tick, IRQF_TIMER, "timer tick", NULL))
+     pr_err("Couldn't register timer interrupt\n");
  
- #ifdef CONFIG_HEARTBEAT
-+void timer_heartbeat(void)
-+{
- 	/* use power LED as a heartbeat instead -- much more useful
- 	   for debugging -- based on the version for PReP by Cort */
- 	/* acts like an actual heart beat -- ie thump-thump-pause... */
-@@ -68,9 +72,8 @@ static irqreturn_t timer_interrupt(int irq, void *dummy)
- 		dist = period / 4;
- 	    }
- 	}
--#endif /* CONFIG_HEARTBEAT */
--	return IRQ_HANDLED;
+   out_8(CLOCKBASE + CLKCR2, 0x1);		/* select CR1 */
+diff --git a/arch/m68k/mac/via.c b/arch/m68k/mac/via.c
+index ac77d73af19a..ba444e1774b8 100644
+--- a/arch/m68k/mac/via.c
++++ b/arch/m68k/mac/via.c
+@@ -602,11 +602,9 @@ static u32 clk_total, clk_offset;
+ 
+ static irqreturn_t via_timer_handler(int irq, void *dev_id)
+ {
+-	irq_handler_t timer_routine = dev_id;
+-
+ 	clk_total += VIA_TIMER_CYCLES;
+ 	clk_offset = 0;
+-	timer_routine(0, NULL);
++	legacy_timer_tick(1);
+ 
+ 	return IRQ_HANDLED;
  }
-+#endif /* CONFIG_HEARTBEAT */
+@@ -614,7 +612,7 @@ static irqreturn_t via_timer_handler(int irq, void *dev_id)
+ void __init via_init_clock(irq_handler_t timer_routine)
+ {
+ 	if (request_irq(IRQ_MAC_TIMER_1, via_timer_handler, IRQF_TIMER, "timer",
+-			timer_routine)) {
++			NULL)) {
+ 		pr_err("Couldn't register %s interrupt\n", "timer");
+ 		return;
+ 	}
+diff --git a/arch/m68k/mvme147/config.c b/arch/m68k/mvme147/config.c
+index 490700aa2212..5dabbc915b8d 100644
+--- a/arch/m68k/mvme147/config.c
++++ b/arch/m68k/mvme147/config.c
+@@ -112,14 +112,13 @@ static u32 clk_total;
  
- #ifdef CONFIG_M68KCLASSIC
- #if !IS_BUILTIN(CONFIG_RTC_DRV_GENERIC)
+ static irqreturn_t mvme147_timer_int (int irq, void *dev_id)
+ {
+-	irq_handler_t timer_routine = dev_id;
+ 	unsigned long flags;
+ 
+ 	local_irq_save(flags);
+ 	m147_pcc->t1_int_cntrl = PCC_TIMER_INT_CLR;
+ 	m147_pcc->t1_cntrl = PCC_TIMER_CLR_OVF;
+ 	clk_total += PCC_TIMER_CYCLES;
+-	timer_routine(0, NULL);
++	legacy_timer_tick(1);
+ 	local_irq_restore(flags);
+ 
+ 	return IRQ_HANDLED;
+@@ -129,7 +128,7 @@ static irqreturn_t mvme147_timer_int (int irq, void *dev_id)
+ void mvme147_sched_init (irq_handler_t timer_routine)
+ {
+ 	if (request_irq(PCC_IRQ_TIMER1, mvme147_timer_int, IRQF_TIMER,
+-			"timer 1", timer_routine))
++			"timer 1", NULL))
+ 		pr_err("Couldn't register timer interrupt\n");
+ 
+ 	/* Init the clock with a value */
+diff --git a/arch/m68k/mvme16x/config.c b/arch/m68k/mvme16x/config.c
+index 5b86d10e0f84..ae9bb7fda161 100644
+--- a/arch/m68k/mvme16x/config.c
++++ b/arch/m68k/mvme16x/config.c
+@@ -372,14 +372,13 @@ static u32 clk_total;
+ 
+ static irqreturn_t mvme16x_timer_int (int irq, void *dev_id)
+ {
+-	irq_handler_t timer_routine = dev_id;
+ 	unsigned long flags;
+ 
+ 	local_irq_save(flags);
+ 	out_8(PCCTIC1, in_8(PCCTIC1) | PCCTIC1_INT_CLR);
+ 	out_8(PCCTOVR1, PCCTOVR1_OVR_CLR);
+ 	clk_total += PCC_TIMER_CYCLES;
+-	timer_routine(0, NULL);
++	legacy_timer_tick(1);
+ 	local_irq_restore(flags);
+ 
+ 	return IRQ_HANDLED;
+@@ -396,7 +395,7 @@ void mvme16x_sched_init (irq_handler_t timer_routine)
+     out_8(PCCTOVR1, in_8(PCCTOVR1) | PCCTOVR1_TIC_EN | PCCTOVR1_COC_EN);
+     out_8(PCCTIC1, PCCTIC1_INT_EN | 6);
+     if (request_irq(MVME16x_IRQ_TIMER, mvme16x_timer_int, IRQF_TIMER, "timer",
+-                    timer_routine))
++                    NULL))
+ 	panic ("Couldn't register timer int");
+ 
+     clocksource_register_hz(&mvme16x_clk, PCC_TIMER_CLOCK_FREQ);
 diff --git a/arch/m68k/q40/q40ints.c b/arch/m68k/q40/q40ints.c
-index 1c696906c159..b01b545a2db0 100644
+index b01b545a2db0..4c6c409053fd 100644
 --- a/arch/m68k/q40/q40ints.c
 +++ b/arch/m68k/q40/q40ints.c
-@@ -17,6 +17,7 @@
- #include <linux/interrupt.h>
- #include <linux/irq.h>
+@@ -130,8 +130,6 @@ void q40_mksound(unsigned int hz, unsigned int ticks)
  
-+#include <asm/machdep.h>
- #include <asm/ptrace.h>
- #include <asm/traps.h>
- 
-@@ -144,6 +145,7 @@ static irqreturn_t q40_timer_int(int irq, void *dev_id)
+ static irqreturn_t q40_timer_int(int irq, void *dev_id)
+ {
+-	irq_handler_t timer_routine = dev_id;
+-
+ 	ql_ticks = ql_ticks ? 0 : 1;
+ 	if (sound_ticks) {
+ 		unsigned char sval=(sound_ticks & 1) ? 128-SVOL : 128+SVOL;
+@@ -144,7 +142,7 @@ static irqreturn_t q40_timer_int(int irq, void *dev_id)
+ 		unsigned long flags;
  
  		local_irq_save(flags);
- 		timer_routine(0, NULL);
-+		timer_heartbeat();
+-		timer_routine(0, NULL);
++		legacy_timer_tick(1);
+ 		timer_heartbeat();
  		local_irq_restore(flags);
  	}
- 	return IRQ_HANDLED;
+@@ -157,7 +155,7 @@ void q40_sched_init (irq_handler_t timer_routine)
+ 
+ 	timer_irq = Q40_IRQ_FRAME;
+ 
+-	if (request_irq(timer_irq, q40_timer_int, 0, "timer", timer_routine))
++	if (request_irq(timer_irq, q40_timer_int, 0, "timer", NULL))
+ 		panic("Couldn't register timer int");
+ 
+ 	master_outb(-1, FRAME_CLEAR_REG);
 -- 
 2.27.0
 
