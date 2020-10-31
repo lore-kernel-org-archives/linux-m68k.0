@@ -1,123 +1,71 @@
-Return-Path: <SRS0=oftE=EF=vger.kernel.org=linux-m68k-owner@kernel.org>
+Return-Path: <SRS0=lkH3=EG=vger.kernel.org=linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.1 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-5.3 required=3.0 tests=BAYES_00,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A7C2DC00A89
-	for <linux-m68k@archiver.kernel.org>; Fri, 30 Oct 2020 20:37:53 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 18B05C388F7
+	for <linux-m68k@archiver.kernel.org>; Sat, 31 Oct 2020 08:53:43 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 5697520797
-	for <linux-m68k@archiver.kernel.org>; Fri, 30 Oct 2020 20:37:53 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=default; t=1604090273;
-	bh=KMeucbRcvCAihtlPektQKjQQmEbPkfEfXwxxqluaaUQ=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:List-ID:From;
-	b=bkrm85nejLIhLnhjhW4x1XMTgQgnoe0/dtSjk8eBG2AgMyo0IPYjNwV5ULY3WuIF1
-	 oTPYQ57JhL3cmXDSv3Kbac7iOHj1Akioge9PX3PKoBA7DsBn+/139Wq4HC3VPqj0B9
-	 LO8LqONq+h/UEWK7ynI2+Fmp3ZlQhXhWjDlsQzzc=
+	by mail.kernel.org (Postfix) with ESMTP id CEAAE20756
+	for <linux-m68k@archiver.kernel.org>; Sat, 31 Oct 2020 08:53:42 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727558AbgJ3Uhx (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Fri, 30 Oct 2020 16:37:53 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50736 "EHLO mail.kernel.org"
+        id S1726490AbgJaIxk (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Sat, 31 Oct 2020 04:53:40 -0400
+Received: from verein.lst.de ([213.95.11.211]:56354 "EHLO verein.lst.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727344AbgJ3Uhw (ORCPT <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Fri, 30 Oct 2020 16:37:52 -0400
-Received: from mail-qk1-f178.google.com (mail-qk1-f178.google.com [209.85.222.178])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id E30052224D
-        for <linux-m68k@lists.linux-m68k.org>; Fri, 30 Oct 2020 20:37:51 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604090272;
-        bh=KMeucbRcvCAihtlPektQKjQQmEbPkfEfXwxxqluaaUQ=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=n0aOfPqikD2DqyDNtRdaMMz7zhgr2XFWvlOW8+szCciZ5IZ8WuBMCbDXaTreNOhYd
-         drDknWEy+B/EaXYzq5iB3C7eEB5kYGx8pLc4oN9CU7d1t1kT1X64Yy9dWE2pXXHTOA
-         G8RJawjTEvYxNFoGoVoK9qn4pWo9Mc5PTx0Qdo+w=
-Received: by mail-qk1-f178.google.com with SMTP id q199so6103745qke.10
-        for <linux-m68k@lists.linux-m68k.org>; Fri, 30 Oct 2020 13:37:51 -0700 (PDT)
-X-Gm-Message-State: AOAM532oBOoWoprLh2MQnIh7YIl8ppJx/JORggwPG7Fna3bbVA2eyGqd
-        B2p7EHyyfn2K6R8UdGLNht0q7VZv2cpQngahJZM=
-X-Google-Smtp-Source: ABdhPJw19dZY4Xih4GL4dANiN8uMa27xGqxcu4F9ebbgd48VSQ+Qm0ZF3KNUOEKXfjfqBfqrvnQ2vDND7Ej01f3sHHE=
-X-Received: by 2002:a05:620a:22c9:: with SMTP id o9mr4110937qki.286.1604090270867;
- Fri, 30 Oct 2020 13:37:50 -0700 (PDT)
-MIME-Version: 1.0
-References: <20201030151758.1241164-1-arnd@kernel.org> <20201030151758.1241164-8-arnd@kernel.org>
- <2e2d7b65-0aa8-55aa-d395-52cfb048adef@gmx.de> <CAK8P3a0dPxWu6obX6jca8TsDQw6xsBmrihu8oH0TxR-BxYV3vw@mail.gmail.com>
- <b4779fce-5218-8aea-a416-b2806c9d062d@gmx.de>
-In-Reply-To: <b4779fce-5218-8aea-a416-b2806c9d062d@gmx.de>
-From:   Arnd Bergmann <arnd@kernel.org>
-Date:   Fri, 30 Oct 2020 21:37:34 +0100
-X-Gmail-Original-Message-ID: <CAK8P3a3F9Dx5fnE1nsEQqNH-fBM3-tFK7Kj3CECmNF8U4n8mug@mail.gmail.com>
-Message-ID: <CAK8P3a3F9Dx5fnE1nsEQqNH-fBM3-tFK7Kj3CECmNF8U4n8mug@mail.gmail.com>
-Subject: Re: [PATCH v2 07/15] parisc: use legacy_timer_tick
-To:     Helge Deller <deller@gmx.de>
-Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Russell King <linux@armlinux.org.uk>,
-        Tony Luck <tony.luck@intel.com>,
-        Fenghua Yu <fenghua.yu@intel.com>,
-        Greg Ungerer <gerg@linux-m68k.org>,
+        id S1726491AbgJaIxa (ORCPT <rfc822;linux-m68k@lists.linux-m68k.org>);
+        Sat, 31 Oct 2020 04:53:30 -0400
+Received: by verein.lst.de (Postfix, from userid 2407)
+        id 38F8867373; Sat, 31 Oct 2020 09:53:27 +0100 (CET)
+Date:   Sat, 31 Oct 2020 09:53:27 +0100
+From:   Christoph Hellwig <hch@lst.de>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Christoph Hellwig <hch@lst.de>, Jens Axboe <axboe@kernel.dk>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Denis Efremov <efremov@linux.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Song Liu <song@kernel.org>, Al Viro <viro@zeniv.linux.org.uk>,
         Finn Thain <fthain@telegraphics.com.au>,
-        Philip Blundell <philb@gnu.org>,
-        Joshua Thompson <funaho@jurai.org>,
-        Sam Creasey <sammy@sammy.net>,
-        "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        John Stultz <john.stultz@linaro.org>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        linux-ia64@vger.kernel.org,
-        Parisc List <linux-parisc@vger.kernel.org>,
-        linux-m68k <linux-m68k@lists.linux-m68k.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>
-Content-Type: text/plain; charset="UTF-8"
+        Michael Schmitz <schmitzmic@gmail.com>,
+        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-ide@vger.kernel.org, linux-raid@vger.kernel.org,
+        linux-scsi@vger.kernel.org, linux-m68k@lists.linux-m68k.org
+Subject: Re: [PATCH 02/18] block: open code kobj_map into in block/genhd.c
+Message-ID: <20201031085327.GA6112@lst.de>
+References: <20201029145841.144173-1-hch@lst.de> <20201029145841.144173-3-hch@lst.de> <20201029192236.GA991240@kroah.com> <20201029193242.GA4799@lst.de> <20201030104033.GA2392682@kroah.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20201030104033.GA2392682@kroah.com>
+User-Agent: Mutt/1.5.17 (2007-11-01)
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-On Fri, Oct 30, 2020 at 8:48 PM Helge Deller <deller@gmx.de> wrote:
-> On 10/30/20 8:33 PM, Arnd Bergmann wrote:
-> > On Fri, Oct 30, 2020 at 6:13 PM Helge Deller <deller@gmx.de> wrote:
-> >>
-> >> On 10/30/20 4:17 PM, Arnd Bergmann wrote:
-> >>> From: Arnd Bergmann <arnd@arndb.de>
-> >>>
-> >>> parisc has selected CONFIG_GENERIC_CLOCKEVENTS since commit 43b1f6abd590
-> >>> ("parisc: Switch to generic sched_clock implementation"), but does not
-> >>> appear to actually be using it, and instead calls the low-level
-> >>> timekeeping functions directly.
-> >>
-> >> Arnd, thank you for this patch!
-> >> It reminded me that I really missed to fully implement the clockevents on parisc!
-> >>
-> >> Your other patch ("RFC: m68k: mac: convert to generic clockevent")
-> >> was a big help too, as it showed how it might work on parisc as well.
-> >>
-> >> Here is now a current version of the clockevents-enabling-patch for parisc:
-> >> https://git.kernel.org/pub/scm/linux/kernel/git/deller/parisc-linux.git/commit/?h=for-next&id=3b7ab4a74a2d1972dbeb33285d85f1500b2ff96a
-> >
-> > Ah, nice!
-> >
-> >>> Remove the GENERIC_CLOCKEVENTS select again, and instead convert to
-> >>> the newly added legacy_timer_tick() helper.
-> >>
-> >> My patch still needs more testing, but if it turns to work
-> >> out right, would you mind to drop your patch for parisc?
-> >
-> > I think it would be easier if you could base your patch on top of
-> > my series, as they would otherwise inevitably conflict. I could either
-> > add it to my tree, or you could merge my branch into your tree.
->
-> Couldn't you drop your patch and include mine in your tree instead?
-> That way nothing conflicts, and they get merged together?
+On Fri, Oct 30, 2020 at 11:40:33AM +0100, Greg Kroah-Hartman wrote:
+> On Thu, Oct 29, 2020 at 08:32:42PM +0100, Christoph Hellwig wrote:
+> > On Thu, Oct 29, 2020 at 08:22:36PM +0100, Greg Kroah-Hartman wrote:
+> > > After this, you want me to get rid of kobj_map, right?  Or you don't
+> > > care as block doesn't use it anymore?  :)
+> > 
+> > I have a patch to kill it, but it causes odd regressions with the
+> > tpm driver according to the kernel test.  As I have grand plans that
+> > build on the block ѕide of this series for 5.11, I plan to defer the
+> > chardev side and address it for 5.12.
+> 
+> Ok, sounds good.
+> 
+> Wow, I just looked at the tpm code, and it is, um, "interesting" in how
+> it thinks device lifespans work.  Nothing like having 4 different
+> structures with different lifespans embedded within a single structure.
+> Good thing that no one can dynamically remove a TPM device during
+> "normal" operation.
 
-That only works if nobody merges this branch into another one,
-otherwise we end up with multiple copies of the later commits.
-
-       Arnd
+The regressions were during suspend then the tpm gets removed.  In
+fact I'm pretty sure it is an existing problem that the change in the
+lookup just surfaced in a way that the test bot notices, but I didn't
+want to guard the block changes on it.
