@@ -7,37 +7,37 @@ X-Spam-Status: No, score=-13.1 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 2423AC4742C
-	for <linux-m68k@archiver.kernel.org>; Sun,  1 Nov 2020 17:06:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 9020CC55178
+	for <linux-m68k@archiver.kernel.org>; Sun,  1 Nov 2020 17:06:21 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id DAE2C22246
-	for <linux-m68k@archiver.kernel.org>; Sun,  1 Nov 2020 17:06:08 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 4A8CA208B6
+	for <linux-m68k@archiver.kernel.org>; Sun,  1 Nov 2020 17:06:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=default; t=1604250368;
-	bh=+ecFmVmt/rsUVyb3hVXQX25qqx1MNuz8K3wp7M/7+rI=;
+	s=default; t=1604250381;
+	bh=ouvzP4AFjIGI/yJrmkEg4n9C1UOCnAtkBTTB0afK7Hc=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-ID:From;
-	b=GR3tuHLnQI6eghOt3pHnvPwi30/D2Urfxu/9cSRl8BxR+vqRuV2T69s2uRRhw0zQ9
-	 0o2AEwjscIzmyO5zpeXxZXO63vU4+8gF8g2pWMigZfb7H7LwGxwAxKELOZGkIgqFeL
-	 7/qFXJ7tfTOBAq50A3LhqnyjR6zu9ShsiVrOXeqk=
+	b=jvVS/5P76AhyJagme9whfjbmctn2CqYxpUxY4ujkJzgG2aw9pJCbIenMWLtVIxK0C
+	 mlhGu0ZbYji98aFQ8jsbaFpuhYsRhLl6iRDixp466mgxpEf6bm8EgcTiCT/xiPirIx
+	 MnZhPYpvzRCHCWy9D1B5vF8/Q15dXIPEDvj9PY1U=
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726866AbgKARGE (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Sun, 1 Nov 2020 12:06:04 -0500
-Received: from mail.kernel.org ([198.145.29.99]:40030 "EHLO mail.kernel.org"
+        id S1726791AbgKARGU (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Sun, 1 Nov 2020 12:06:20 -0500
+Received: from mail.kernel.org ([198.145.29.99]:40346 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727252AbgKARGC (ORCPT <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Sun, 1 Nov 2020 12:06:02 -0500
+        id S1727149AbgKARGO (ORCPT <rfc822;linux-m68k@lists.linux-m68k.org>);
+        Sun, 1 Nov 2020 12:06:14 -0500
 Received: from aquarius.haifa.ibm.com (nesher1.haifa.il.ibm.com [195.110.40.7])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id A3855208B6;
-        Sun,  1 Nov 2020 17:05:55 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 22A6A208B6;
+        Sun,  1 Nov 2020 17:06:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604250361;
-        bh=+ecFmVmt/rsUVyb3hVXQX25qqx1MNuz8K3wp7M/7+rI=;
+        s=default; t=1604250373;
+        bh=ouvzP4AFjIGI/yJrmkEg4n9C1UOCnAtkBTTB0afK7Hc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=u2/jIlBir/DJpSgEuwwICHipzapnBrfJ5wgziKCe76dN6IQWf2VbZfLeQF3gTGhwc
-         WCe6bIomXH+NoQ8agQkqUr7qOeSyy/W9VGgaEx48N/Pq869PCjWfU+m5Dwbpvc5Kq3
-         dYnfu7SqwADLLoQ0AmV0d1mb669IMNoEiY77DXKE=
+        b=WbgIlDSc8TGHbjxY7AvWdX2xlhItXwhXnkeSOegk0NJEn+PcsRhLpK58Wct05EpuF
+         QIbQDDYSNWr0CFyzs6q38T5WgbsWrY+rcsYZ8i4z+8++/7SB9ksnVuGBzDEnj48jdO
+         J85KeQCD/LWeoB5ASzK66AYQTGc+5DryB0pSWNWY=
 From:   Mike Rapoport <rppt@kernel.org>
 To:     Andrew Morton <akpm@linux-foundation.org>
 Cc:     Alexey Dobriyan <adobriyan@gmail.com>,
@@ -58,9 +58,9 @@ Cc:     Alexey Dobriyan <adobriyan@gmail.com>,
         linux-fsdevel@vger.kernel.org, linux-ia64@vger.kernel.org,
         linux-kernel@vger.kernel.org, linux-m68k@lists.linux-m68k.org,
         linux-mm@kvack.org, linux-snps-arc@lists.infradead.org
-Subject: [PATCH v2 09/13] arm, arm64: move free_unused_memmap() to generic mm
-Date:   Sun,  1 Nov 2020 19:04:50 +0200
-Message-Id: <20201101170454.9567-10-rppt@kernel.org>
+Subject: [PATCH v2 11/13] m68k/mm: make node data and node setup depend on CONFIG_DISCONTIGMEM
+Date:   Sun,  1 Nov 2020 19:04:52 +0200
+Message-Id: <20201101170454.9567-12-rppt@kernel.org>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20201101170454.9567-1-rppt@kernel.org>
 References: <20201101170454.9567-1-rppt@kernel.org>
@@ -72,365 +72,93 @@ X-Mailing-List: linux-m68k@vger.kernel.org
 
 From: Mike Rapoport <rppt@linux.ibm.com>
 
-ARM and ARM64 free unused parts of the memory map just before the
-initialization of the page allocator. To allow holes in the memory map both
-architectures overload pfn_valid() and define HAVE_ARCH_PFN_VALID.
+The pg_data_t node structures and their initialization currently depends on
+!CONFIG_SINGLE_MEMORY_CHUNK. Since they are required only for DISCONTIGMEM
+make this dependency explicit and replace usage of
+CONFIG_SINGLE_MEMORY_CHUNK with CONFIG_DISCONTIGMEM where appropriate.
 
-Allowing holes in the memory map for FLATMEM may be useful for small
-machines, such as ARC and m68k and will enable those architectures to cease
-using DISCONTIGMEM and still support more than one memory bank.
-
-Move the functions that free unused memory map to generic mm and enable
-them in case HAVE_ARCH_PFN_VALID=y.
+The CONFIG_SINGLE_MEMORY_CHUNK was implicitly disabled on the ColdFire MMU
+variant, although it always presumed a single memory bank. As there is no
+actual need for DISCONTIGMEM in this case, make sure that ColdFire MMU
+systems set CONFIG_SINGLE_MEMORY_CHUNK to 'y'.
 
 Signed-off-by: Mike Rapoport <rppt@linux.ibm.com>
 ---
- arch/Kconfig         |  3 ++
- arch/arm/Kconfig     |  4 +--
- arch/arm/mm/init.c   | 78 ------------------------------------------
- arch/arm64/Kconfig   |  4 +--
- arch/arm64/mm/init.c | 68 -------------------------------------
- mm/memblock.c        | 80 ++++++++++++++++++++++++++++++++++++++++++++
- 6 files changed, 85 insertions(+), 152 deletions(-)
+ arch/m68k/Kconfig.cpu               | 4 ++--
+ arch/m68k/include/asm/page_mm.h     | 2 +-
+ arch/m68k/include/asm/virtconvert.h | 2 +-
+ arch/m68k/mm/init.c                 | 4 ++--
+ 4 files changed, 6 insertions(+), 6 deletions(-)
 
-diff --git a/arch/Kconfig b/arch/Kconfig
-index 56b6ccc0e32d..d715da18a8a9 100644
---- a/arch/Kconfig
-+++ b/arch/Kconfig
-@@ -1028,6 +1028,9 @@ config HAVE_STATIC_CALL_INLINE
- 	bool
- 	depends on HAVE_STATIC_CALL
- 
-+config HAVE_ARCH_PFN_VALID
-+	bool
-+
- source "kernel/gcov/Kconfig"
- 
- source "scripts/gcc-plugins/Kconfig"
-diff --git a/arch/arm/Kconfig b/arch/arm/Kconfig
-index 83adc46c1e67..495d42c5ecec 100644
---- a/arch/arm/Kconfig
-+++ b/arch/arm/Kconfig
-@@ -68,6 +68,7 @@ config ARM
- 	select HAVE_ARCH_JUMP_LABEL if !XIP_KERNEL && !CPU_ENDIAN_BE32 && MMU
- 	select HAVE_ARCH_KGDB if !CPU_ENDIAN_BE32 && MMU
- 	select HAVE_ARCH_MMAP_RND_BITS if MMU
-+	select HAVE_ARCH_PFN_VALID
- 	select HAVE_ARCH_SECCOMP
- 	select HAVE_ARCH_SECCOMP_FILTER if AEABI && !OABI_COMPAT
- 	select HAVE_ARCH_THREAD_STRUCT_WHITELIST
-@@ -1488,9 +1489,6 @@ config ARCH_SPARSEMEM_ENABLE
- 	bool
- 	select SPARSEMEM_STATIC if SPARSEMEM
- 
--config HAVE_ARCH_PFN_VALID
--	def_bool y
--
- config HIGHMEM
- 	bool "High Memory Support"
+diff --git a/arch/m68k/Kconfig.cpu b/arch/m68k/Kconfig.cpu
+index 694c4fca9f5d..e8ad721e52f6 100644
+--- a/arch/m68k/Kconfig.cpu
++++ b/arch/m68k/Kconfig.cpu
+@@ -373,7 +373,7 @@ config RMW_INSNS
+ config SINGLE_MEMORY_CHUNK
+ 	bool "Use one physical chunk of memory only" if ADVANCED && !SUN3
  	depends on MMU
-diff --git a/arch/arm/mm/init.c b/arch/arm/mm/init.c
-index d57112a276f5..a04ac5ea7641 100644
---- a/arch/arm/mm/init.c
-+++ b/arch/arm/mm/init.c
-@@ -267,83 +267,6 @@ static inline void poison_init_mem(void *s, size_t count)
- 		*p++ = 0xe7fddef0;
+-	default y if SUN3
++	default y if SUN3 || MMU_COLDFIRE
+ 	select NEED_MULTIPLE_NODES
+ 	help
+ 	  Ignore all but the first contiguous chunk of physical memory for VM
+@@ -406,7 +406,7 @@ config M68K_L2_CACHE
+ config NODES_SHIFT
+ 	int
+ 	default "3"
+-	depends on !SINGLE_MEMORY_CHUNK
++	depends on DISCONTIGMEM
+ 
+ config CPU_HAS_NO_BITFIELDS
+ 	bool
+diff --git a/arch/m68k/include/asm/page_mm.h b/arch/m68k/include/asm/page_mm.h
+index e6b75992192b..0e794051d3bb 100644
+--- a/arch/m68k/include/asm/page_mm.h
++++ b/arch/m68k/include/asm/page_mm.h
+@@ -126,7 +126,7 @@ static inline void *__va(unsigned long x)
+ 
+ extern int m68k_virt_to_node_shift;
+ 
+-#ifdef CONFIG_SINGLE_MEMORY_CHUNK
++#ifndef CONFIG_DISCONTIGMEM
+ #define __virt_to_node(addr)	(&pg_data_map[0])
+ #else
+ extern struct pglist_data *pg_data_table[];
+diff --git a/arch/m68k/include/asm/virtconvert.h b/arch/m68k/include/asm/virtconvert.h
+index dfe43083b579..eb9eb5cb23a6 100644
+--- a/arch/m68k/include/asm/virtconvert.h
++++ b/arch/m68k/include/asm/virtconvert.h
+@@ -29,7 +29,7 @@ static inline void *phys_to_virt(unsigned long address)
  }
  
--static inline void __init
--free_memmap(unsigned long start_pfn, unsigned long end_pfn)
--{
--	struct page *start_pg, *end_pg;
--	phys_addr_t pg, pgend;
--
--	/*
--	 * Convert start_pfn/end_pfn to a struct page pointer.
--	 */
--	start_pg = pfn_to_page(start_pfn - 1) + 1;
--	end_pg = pfn_to_page(end_pfn - 1) + 1;
--
--	/*
--	 * Convert to physical addresses, and
--	 * round start upwards and end downwards.
--	 */
--	pg = PAGE_ALIGN(__pa(start_pg));
--	pgend = __pa(end_pg) & PAGE_MASK;
--
--	/*
--	 * If there are free pages between these,
--	 * free the section of the memmap array.
--	 */
--	if (pg < pgend)
--		memblock_free_early(pg, pgend - pg);
--}
--
--/*
-- * The mem_map array can get very big.  Free the unused area of the memory map.
-- */
--static void __init free_unused_memmap(void)
--{
--	unsigned long start, end, prev_end = 0;
--	int i;
--
--	/*
--	 * This relies on each bank being in address order.
--	 * The banks are sorted previously in bootmem_init().
--	 */
--	for_each_mem_pfn_range(i, MAX_NUMNODES, &start, &end, NULL) {
--#ifdef CONFIG_SPARSEMEM
--		/*
--		 * Take care not to free memmap entries that don't exist
--		 * due to SPARSEMEM sections which aren't present.
--		 */
--		start = min(start,
--				 ALIGN(prev_end, PAGES_PER_SECTION));
--#else
--		/*
--		 * Align down here since the VM subsystem insists that the
--		 * memmap entries are valid from the bank start aligned to
--		 * MAX_ORDER_NR_PAGES.
--		 */
--		start = round_down(start, MAX_ORDER_NR_PAGES);
--#endif
--		/*
--		 * If we had a previous bank, and there is a space
--		 * between the current bank and the previous, free it.
--		 */
--		if (prev_end && prev_end < start)
--			free_memmap(prev_end, start);
--
--		/*
--		 * Align up here since the VM subsystem insists that the
--		 * memmap entries are valid from the bank end aligned to
--		 * MAX_ORDER_NR_PAGES.
--		 */
--		prev_end = ALIGN(end, MAX_ORDER_NR_PAGES);
--	}
--
--#ifdef CONFIG_SPARSEMEM
--	if (!IS_ALIGNED(prev_end, PAGES_PER_SECTION))
--		free_memmap(prev_end,
--			    ALIGN(prev_end, PAGES_PER_SECTION));
--#endif
--}
--
- static void __init free_highpages(void)
+ /* Permanent address of a page. */
+-#if defined(CONFIG_MMU) && defined(CONFIG_SINGLE_MEMORY_CHUNK)
++#if defined(CONFIG_MMU) && !defined(CONFIG_DISCONTIGMEM)
+ #define page_to_phys(page) \
+ 	__pa(PAGE_OFFSET + (((page) - pg_data_map[0].node_mem_map) << PAGE_SHIFT))
+ #else
+diff --git a/arch/m68k/mm/init.c b/arch/m68k/mm/init.c
+index 53040857a9ed..4b46ceace3d3 100644
+--- a/arch/m68k/mm/init.c
++++ b/arch/m68k/mm/init.c
+@@ -47,14 +47,14 @@ EXPORT_SYMBOL(pg_data_map);
+ 
+ int m68k_virt_to_node_shift;
+ 
+-#ifndef CONFIG_SINGLE_MEMORY_CHUNK
++#ifdef CONFIG_DISCONTIGMEM
+ pg_data_t *pg_data_table[65];
+ EXPORT_SYMBOL(pg_data_table);
+ #endif
+ 
+ void __init m68k_setup_node(int node)
  {
- #ifdef CONFIG_HIGHMEM
-@@ -385,7 +308,6 @@ void __init mem_init(void)
- 	set_max_mapnr(pfn_to_page(max_pfn) - mem_map);
+-#ifndef CONFIG_SINGLE_MEMORY_CHUNK
++#ifdef CONFIG_DISCONTIGMEM
+ 	struct m68k_mem_info *info = m68k_memory + node;
+ 	int i, end;
  
- 	/* this will put all unused low memory onto the freelists */
--	free_unused_memmap();
- 	memblock_free_all();
- 
- #ifdef CONFIG_SA1111
-diff --git a/arch/arm64/Kconfig b/arch/arm64/Kconfig
-index f858c352f72a..b7e6a0c09d12 100644
---- a/arch/arm64/Kconfig
-+++ b/arch/arm64/Kconfig
-@@ -138,6 +138,7 @@ config ARM64
- 	select HAVE_ARCH_KGDB
- 	select HAVE_ARCH_MMAP_RND_BITS
- 	select HAVE_ARCH_MMAP_RND_COMPAT_BITS if COMPAT
-+	select HAVE_ARCH_PFN_VALID
- 	select HAVE_ARCH_PREL32_RELOCATIONS
- 	select HAVE_ARCH_SECCOMP_FILTER
- 	select HAVE_ARCH_STACKLEAK
-@@ -1021,9 +1022,6 @@ config ARCH_SELECT_MEMORY_MODEL
- config ARCH_FLATMEM_ENABLE
- 	def_bool !NUMA
- 
--config HAVE_ARCH_PFN_VALID
--	def_bool y
--
- config HW_PERF_EVENTS
- 	def_bool y
- 	depends on ARM_PMU
-diff --git a/arch/arm64/mm/init.c b/arch/arm64/mm/init.c
-index 095540667f0f..3d8328277bec 100644
---- a/arch/arm64/mm/init.c
-+++ b/arch/arm64/mm/init.c
-@@ -430,71 +430,6 @@ void __init bootmem_init(void)
- 	memblock_dump_all();
- }
- 
--#ifndef CONFIG_SPARSEMEM_VMEMMAP
--static inline void free_memmap(unsigned long start_pfn, unsigned long end_pfn)
--{
--	struct page *start_pg, *end_pg;
--	unsigned long pg, pgend;
--
--	/*
--	 * Convert start_pfn/end_pfn to a struct page pointer.
--	 */
--	start_pg = pfn_to_page(start_pfn - 1) + 1;
--	end_pg = pfn_to_page(end_pfn - 1) + 1;
--
--	/*
--	 * Convert to physical addresses, and round start upwards and end
--	 * downwards.
--	 */
--	pg = (unsigned long)PAGE_ALIGN(__pa(start_pg));
--	pgend = (unsigned long)__pa(end_pg) & PAGE_MASK;
--
--	/*
--	 * If there are free pages between these, free the section of the
--	 * memmap array.
--	 */
--	if (pg < pgend)
--		memblock_free(pg, pgend - pg);
--}
--
--/*
-- * The mem_map array can get very big. Free the unused area of the memory map.
-- */
--static void __init free_unused_memmap(void)
--{
--	unsigned long start, end, prev_end = 0;
--	int i;
--
--	for_each_mem_pfn_range(i, MAX_NUMNODES, &start, &end, NULL) {
--#ifdef CONFIG_SPARSEMEM
--		/*
--		 * Take care not to free memmap entries that don't exist due
--		 * to SPARSEMEM sections which aren't present.
--		 */
--		start = min(start, ALIGN(prev_end, PAGES_PER_SECTION));
--#endif
--		/*
--		 * If we had a previous bank, and there is a space between the
--		 * current bank and the previous, free it.
--		 */
--		if (prev_end && prev_end < start)
--			free_memmap(prev_end, start);
--
--		/*
--		 * Align up here since the VM subsystem insists that the
--		 * memmap entries are valid from the bank end aligned to
--		 * MAX_ORDER_NR_PAGES.
--		 */
--		prev_end = ALIGN(end, MAX_ORDER_NR_PAGES);
--	}
--
--#ifdef CONFIG_SPARSEMEM
--	if (!IS_ALIGNED(prev_end, PAGES_PER_SECTION))
--		free_memmap(prev_end, ALIGN(prev_end, PAGES_PER_SECTION));
--#endif
--}
--#endif	/* !CONFIG_SPARSEMEM_VMEMMAP */
--
- /*
-  * mem_init() marks the free areas in the mem_map and tells us how much memory
-  * is free.  This is done after various parts of the system have claimed their
-@@ -510,9 +445,6 @@ void __init mem_init(void)
- 
- 	set_max_mapnr(max_pfn - PHYS_PFN_OFFSET);
- 
--#ifndef CONFIG_SPARSEMEM_VMEMMAP
--	free_unused_memmap();
--#endif
- 	/* this will put all unused low memory onto the freelists */
- 	memblock_free_all();
- 
-diff --git a/mm/memblock.c b/mm/memblock.c
-index b68ee86788af..049df4163a97 100644
---- a/mm/memblock.c
-+++ b/mm/memblock.c
-@@ -1926,6 +1926,85 @@ static int __init early_memblock(char *p)
- }
- early_param("memblock", early_memblock);
- 
-+static void __init free_memmap(unsigned long start_pfn, unsigned long end_pfn)
-+{
-+	struct page *start_pg, *end_pg;
-+	phys_addr_t pg, pgend;
-+
-+	/*
-+	 * Convert start_pfn/end_pfn to a struct page pointer.
-+	 */
-+	start_pg = pfn_to_page(start_pfn - 1) + 1;
-+	end_pg = pfn_to_page(end_pfn - 1) + 1;
-+
-+	/*
-+	 * Convert to physical addresses, and round start upwards and end
-+	 * downwards.
-+	 */
-+	pg = PAGE_ALIGN(__pa(start_pg));
-+	pgend = __pa(end_pg) & PAGE_MASK;
-+
-+	/*
-+	 * If there are free pages between these, free the section of the
-+	 * memmap array.
-+	 */
-+	if (pg < pgend)
-+		memblock_free(pg, pgend - pg);
-+}
-+
-+/*
-+ * The mem_map array can get very big.  Free the unused area of the memory map.
-+ */
-+static void __init free_unused_memmap(void)
-+{
-+	unsigned long start, end, prev_end = 0;
-+	int i;
-+
-+	if (!IS_ENABLED(CONFIG_HAVE_ARCH_PFN_VALID) ||
-+	    IS_ENABLED(CONFIG_SPARSEMEM_VMEMMAP))
-+		return;
-+
-+	/*
-+	 * This relies on each bank being in address order.
-+	 * The banks are sorted previously in bootmem_init().
-+	 */
-+	for_each_mem_pfn_range(i, MAX_NUMNODES, &start, &end, NULL) {
-+#ifdef CONFIG_SPARSEMEM
-+		/*
-+		 * Take care not to free memmap entries that don't exist
-+		 * due to SPARSEMEM sections which aren't present.
-+		 */
-+		start = min(start, ALIGN(prev_end, PAGES_PER_SECTION));
-+#else
-+		/*
-+		 * Align down here since the VM subsystem insists that the
-+		 * memmap entries are valid from the bank start aligned to
-+		 * MAX_ORDER_NR_PAGES.
-+		 */
-+		start = round_down(start, MAX_ORDER_NR_PAGES);
-+#endif
-+
-+		/*
-+		 * If we had a previous bank, and there is a space
-+		 * between the current bank and the previous, free it.
-+		 */
-+		if (prev_end && prev_end < start)
-+			free_memmap(prev_end, start);
-+
-+		/*
-+		 * Align up here since the VM subsystem insists that the
-+		 * memmap entries are valid from the bank end aligned to
-+		 * MAX_ORDER_NR_PAGES.
-+		 */
-+		prev_end = ALIGN(end, MAX_ORDER_NR_PAGES);
-+	}
-+
-+#ifdef CONFIG_SPARSEMEM
-+	if (!IS_ALIGNED(prev_end, PAGES_PER_SECTION))
-+		free_memmap(prev_end, ALIGN(prev_end, PAGES_PER_SECTION));
-+#endif
-+}
-+
- static void __init __free_pages_memory(unsigned long start, unsigned long end)
- {
- 	int order;
-@@ -2012,6 +2091,7 @@ unsigned long __init memblock_free_all(void)
- {
- 	unsigned long pages;
- 
-+	free_unused_memmap();
- 	reset_all_zones_managed_pages();
- 
- 	pages = free_low_memory_core_early();
 -- 
 2.28.0
 
