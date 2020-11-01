@@ -2,81 +2,87 @@ Return-Path: <SRS0=JeTd=EH=vger.kernel.org=linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-12.7 required=3.0 tests=BAYES_00,
+X-Spam-Status: No, score=-9.7 required=3.0 tests=BAYES_00,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
-	autolearn_force=no version=3.4.0
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A70AFC2D0A3
-	for <linux-m68k@archiver.kernel.org>; Sun,  1 Nov 2020 10:29:45 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 871E3C2D0A3
+	for <linux-m68k@archiver.kernel.org>; Sun,  1 Nov 2020 11:29:21 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 73CDD20709
-	for <linux-m68k@archiver.kernel.org>; Sun,  1 Nov 2020 10:29:45 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 4ED3D2084C
+	for <linux-m68k@archiver.kernel.org>; Sun,  1 Nov 2020 11:29:21 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726341AbgKAK3p (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Sun, 1 Nov 2020 05:29:45 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45080 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726327AbgKAK3p (ORCPT
-        <rfc822;linux-m68k@vger.kernel.org>); Sun, 1 Nov 2020 05:29:45 -0500
-Received: from laurent.telenet-ops.be (laurent.telenet-ops.be [IPv6:2a02:1800:110:4::f00:19])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C9D2EC061A04
-        for <linux-m68k@vger.kernel.org>; Sun,  1 Nov 2020 02:29:44 -0800 (PST)
-Received: from ramsan.of.borg ([84.195.186.194])
-        by laurent.telenet-ops.be with bizsmtp
-        id myVi2300B4C55Sk01yVi9K; Sun, 01 Nov 2020 11:29:42 +0100
-Received: from rox.of.borg ([192.168.97.57])
-        by ramsan.of.borg with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.93)
-        (envelope-from <geert@linux-m68k.org>)
-        id 1kZAcI-001vTN-Dq; Sun, 01 Nov 2020 11:29:42 +0100
-Received: from geert by rox.of.borg with local (Exim 4.93)
-        (envelope-from <geert@linux-m68k.org>)
-        id 1kZAcH-00C871-TI; Sun, 01 Nov 2020 11:29:41 +0100
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-To:     Michael Schmitz <schmitzmic@gmail.com>
-Cc:     linux-fbdev@vger.kernel.org, linux-m68k@vger.kernel.org,
-        dri-devel@lists.freedesktop.org,
-        Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: [PATCH/RFC v2] video: fbdev: atari: Fix TT High video mode
-Date:   Sun,  1 Nov 2020 11:29:41 +0100
-Message-Id: <20201101102941.2891076-1-geert@linux-m68k.org>
-X-Mailer: git-send-email 2.25.1
+        id S1726474AbgKAL3V (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Sun, 1 Nov 2020 06:29:21 -0500
+Received: from asavdk4.altibox.net ([109.247.116.15]:44430 "EHLO
+        asavdk4.altibox.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726469AbgKAL3T (ORCPT
+        <rfc822;linux-m68k@vger.kernel.org>); Sun, 1 Nov 2020 06:29:19 -0500
+Received: from ravnborg.org (unknown [188.228.123.71])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by asavdk4.altibox.net (Postfix) with ESMTPS id EFCBD80477;
+        Sun,  1 Nov 2020 12:29:16 +0100 (CET)
+Date:   Sun, 1 Nov 2020 12:29:15 +0100
+From:   Sam Ravnborg <sam@ravnborg.org>
+To:     Geert Uytterhoeven <geert@linux-m68k.org>
+Cc:     Michael Schmitz <schmitzmic@gmail.com>,
+        linux-fbdev@vger.kernel.org, linux-m68k@vger.kernel.org,
+        dri-devel@lists.freedesktop.org
+Subject: Re: [PATCH/RFC v2] video: fbdev: atari: Fix TT High video mode
+Message-ID: <20201101112915.GB1263673@ravnborg.org>
+References: <20201101102941.2891076-1-geert@linux-m68k.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201101102941.2891076-1-geert@linux-m68k.org>
+X-CMAE-Score: 0
+X-CMAE-Analysis: v=2.3 cv=VafZwmh9 c=1 sm=1 tr=0
+        a=S6zTFyMACwkrwXSdXUNehg==:117 a=S6zTFyMACwkrwXSdXUNehg==:17
+        a=kj9zAlcOel0A:10 a=tBb2bbeoAAAA:8 a=01v-Q2eNbSkilRediCoA:9
+        a=CjuIK1q_8ugA:10 a=h95a96m6yT8A:10 a=Oj-tNtZlA1e06AYgeCfH:22
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-The horizontal resolution (640) for the TT High video mode (1280x960) is
-definitely bogus.  While fixing that, correct the timings to match the
-TTM195 service manual.
+Hi Geert.
 
-Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
----
-Untested on actual hardware, hence the RFC.
+On Sun, Nov 01, 2020 at 11:29:41AM +0100, Geert Uytterhoeven wrote:
+> The horizontal resolution (640) for the TT High video mode (1280x960) is
+> definitely bogus.  While fixing that, correct the timings to match the
+> TTM195 service manual.
+> 
+> Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
+> ---
+> Untested on actual hardware, hence the RFC.
+> 
+> v2:
+>   - Use correct base.
+> ---
+>  drivers/video/fbdev/atafb.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/video/fbdev/atafb.c b/drivers/video/fbdev/atafb.c
+> index f253daa05d9d3872..5ecf3ec9f94cb720 100644
+> --- a/drivers/video/fbdev/atafb.c
+> +++ b/drivers/video/fbdev/atafb.c
+> @@ -495,8 +495,8 @@ static struct fb_videomode atafb_modedb[] __initdata = {
+>  		"tt-mid", 60, 640, 480, 31041, 120, 100, 8, 16, 140, 30,
+>  		0, FB_VMODE_NONINTERLACED | FB_VMODE_YWRAP
+>  	}, {
+> -		/* 1280x960, 29 kHz, 60 Hz (TT high) */
+> -		"tt-high", 57, 640, 960, 31041, 120, 100, 8, 16, 140, 30,
+> +		/* 1280x960, 72 kHz, 72 Hz (TT high) */
+> +		"tt-high", 57, 1280, 960, 7761, 260, 60, 36, 4, 192, 4,
+>  		0, FB_VMODE_NONINTERLACED | FB_VMODE_YWRAP
 
-v2:
-  - Use correct base.
----
- drivers/video/fbdev/atafb.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+Well-spotted. The change of 640 => 1280 is surely right.
+I have a harder time understanding why the change of pixclock from 31041
+to 7761 is correct. All other modes have a pixclock close to or equal
+to 32000 - so it looks strange this one is off.
 
-diff --git a/drivers/video/fbdev/atafb.c b/drivers/video/fbdev/atafb.c
-index f253daa05d9d3872..5ecf3ec9f94cb720 100644
---- a/drivers/video/fbdev/atafb.c
-+++ b/drivers/video/fbdev/atafb.c
-@@ -495,8 +495,8 @@ static struct fb_videomode atafb_modedb[] __initdata = {
- 		"tt-mid", 60, 640, 480, 31041, 120, 100, 8, 16, 140, 30,
- 		0, FB_VMODE_NONINTERLACED | FB_VMODE_YWRAP
- 	}, {
--		/* 1280x960, 29 kHz, 60 Hz (TT high) */
--		"tt-high", 57, 640, 960, 31041, 120, 100, 8, 16, 140, 30,
-+		/* 1280x960, 72 kHz, 72 Hz (TT high) */
-+		"tt-high", 57, 1280, 960, 7761, 260, 60, 36, 4, 192, 4,
- 		0, FB_VMODE_NONINTERLACED | FB_VMODE_YWRAP
- 	},
- 
--- 
-2.25.1
+You know a tons more about all this than I do so it is properly right
+but I was left wondering so please enlighten me.
 
+	Sam
