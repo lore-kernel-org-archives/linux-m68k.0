@@ -2,103 +2,78 @@ Return-Path: <SRS0=JeTd=EH=vger.kernel.org=linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-4.1 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-12.8 required=3.0 tests=BAYES_00,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id DF8ABC2D0A3
-	for <linux-m68k@archiver.kernel.org>; Sun,  1 Nov 2020 09:53:51 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id DE0E7C2D0A3
+	for <linux-m68k@archiver.kernel.org>; Sun,  1 Nov 2020 10:28:08 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 921F0208A9
-	for <linux-m68k@archiver.kernel.org>; Sun,  1 Nov 2020 09:53:51 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=default; t=1604224431;
-	bh=HyGP8CyzoSVv4MCtKqC0pz2ILBHefcA84mBlIyrXGQY=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:List-ID:From;
-	b=BUR6gtDKzK9OvATKUVmAJon1O7ToyuqXJAGXczjMbFY77/fYZvBeW+hWADlNGihBr
-	 0vlIAeG7ifatlubAdca31Y1+IMOxJ+slW6P2E4k3TZp0rrcuX3sUBZd4qdPOFJ1RCD
-	 /QybS484eb6ZUFQrj+FVbb+jwL76omgRaGnqlpjA=
+	by mail.kernel.org (Postfix) with ESMTP id ACA9120709
+	for <linux-m68k@archiver.kernel.org>; Sun,  1 Nov 2020 10:28:08 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726123AbgKAJxv (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Sun, 1 Nov 2020 04:53:51 -0500
-Received: from mail.kernel.org ([198.145.29.99]:41760 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726122AbgKAJxu (ORCPT <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Sun, 1 Nov 2020 04:53:50 -0500
-Received: from mail-qt1-f174.google.com (mail-qt1-f174.google.com [209.85.160.174])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id E2E75208A9
-        for <linux-m68k@lists.linux-m68k.org>; Sun,  1 Nov 2020 09:53:49 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604224430;
-        bh=HyGP8CyzoSVv4MCtKqC0pz2ILBHefcA84mBlIyrXGQY=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=OMq+e5xfRYGK+MPaFvjA5XQ1EtstRGebvmfrK3+vfb+arDfLov6n8hi7lEhvA8JZE
-         z40cxD0hw5blLj6L2UKYdnzi/5gtxIYmBfUclxCvOu7zyF6h6jCeq4xX2W5yTZ2wGD
-         slN22E9LD6wvSE4f/dRWU2vJNnSXKl/+kfGMYbls=
-Received: by mail-qt1-f174.google.com with SMTP id r8so7262224qtp.13
-        for <linux-m68k@lists.linux-m68k.org>; Sun, 01 Nov 2020 01:53:49 -0800 (PST)
-X-Gm-Message-State: AOAM533qRoe3thOPjExfrhFsrr2yRfLc5O+/sMLsLBZfwk0miIXOjdbi
-        GX16jhmsHFf+BaWjQ75pGAzz7u1K9ShzzM0EngY=
-X-Google-Smtp-Source: ABdhPJysxelGXEjcD+tK3eXvueDK0E9An/zQqCvczumw3UuNNLcEVvMETDYrwUeexoouBWqMdjrPCeGJVcKk4WzZomA=
-X-Received: by 2002:ac8:7955:: with SMTP id r21mr9418714qtt.204.1604224429108;
- Sun, 01 Nov 2020 01:53:49 -0800 (PST)
+        id S1726340AbgKAK2I (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Sun, 1 Nov 2020 05:28:08 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44832 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726329AbgKAK2H (ORCPT
+        <rfc822;linux-m68k@vger.kernel.org>); Sun, 1 Nov 2020 05:28:07 -0500
+Received: from michel.telenet-ops.be (michel.telenet-ops.be [IPv6:2a02:1800:110:4::f00:18])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1BBDAC061A04
+        for <linux-m68k@vger.kernel.org>; Sun,  1 Nov 2020 02:28:06 -0800 (PST)
+Received: from ramsan.of.borg ([84.195.186.194])
+        by michel.telenet-ops.be with bizsmtp
+        id myU1230054C55Sk06yU1qi; Sun, 01 Nov 2020 11:28:01 +0100
+Received: from rox.of.borg ([192.168.97.57])
+        by ramsan.of.borg with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.93)
+        (envelope-from <geert@linux-m68k.org>)
+        id 1kZAae-001vQR-SD; Sun, 01 Nov 2020 11:28:00 +0100
+Received: from geert by rox.of.borg with local (Exim 4.93)
+        (envelope-from <geert@linux-m68k.org>)
+        id 1kZAae-00C7zY-Aj; Sun, 01 Nov 2020 11:28:00 +0100
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+To:     Michael Schmitz <schmitzmic@gmail.com>
+Cc:     linux-fbdev@vger.kernel.org, linux-m68k@vger.kernel.org,
+        dri-devel@lists.freedesktop.org,
+        Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: [PATCH/RFC] video: fbdev: atari: Fix TT High video mode
+Date:   Sun,  1 Nov 2020 11:27:59 +0100
+Message-Id: <20201101102759.2890612-1-geert@linux-m68k.org>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-References: <20201030151758.1241164-1-arnd@kernel.org> <alpine.LNX.2.23.453.2011011441010.32@nippy.intranet>
-In-Reply-To: <alpine.LNX.2.23.453.2011011441010.32@nippy.intranet>
-From:   Arnd Bergmann <arnd@kernel.org>
-Date:   Sun, 1 Nov 2020 10:53:33 +0100
-X-Gmail-Original-Message-ID: <CAK8P3a3Dg2UEN4MoVhHMUU=xd5x+uiue4nqZDeHBBK_CG6+LoA@mail.gmail.com>
-Message-ID: <CAK8P3a3Dg2UEN4MoVhHMUU=xd5x+uiue4nqZDeHBBK_CG6+LoA@mail.gmail.com>
-Subject: Re: [PATCH v2 00/15] timers: clean up ARCH_GETTIMEOFFSET, LEGACY_TIMER_TICK
-To:     Finn Thain <fthain@telegraphics.com.au>
-Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Russell King <linux@armlinux.org.uk>,
-        Tony Luck <tony.luck@intel.com>,
-        Fenghua Yu <fenghua.yu@intel.com>,
-        Greg Ungerer <gerg@linux-m68k.org>,
-        Philip Blundell <philb@gnu.org>,
-        Joshua Thompson <funaho@jurai.org>,
-        Sam Creasey <sammy@sammy.net>,
-        "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
-        Helge Deller <deller@gmx.de>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        John Stultz <john.stultz@linaro.org>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        linux-ia64@vger.kernel.org,
-        Parisc List <linux-parisc@vger.kernel.org>,
-        linux-m68k <linux-m68k@lists.linux-m68k.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-On Sun, Nov 1, 2020 at 4:47 AM Finn Thain <fthain@telegraphics.com.au> wrote:
->
-> On Fri, 30 Oct 2020, Arnd Bergmann wrote:
->
-> > CONFIG_ARCH_GETTIMEOFFSET has been gradually phased out from all
-> > platforms, with only ARM EBSA110 recently. As this has no more known
-> > users, the first three patches remove EBSA110 along with one platform
-> > specific driver and the ARCH_GETTIMEOFFSET infrastructure.
-> >
->
-> The CONFIG_ARCH_GETTIMEOFFSET patches weren't part of v1. Is there some
-> kind of dependency here?
+The horizontal resolution (640) for the TT High video mode (1280x960) is
+definitely bogus.  While fixing that, correct the timings to match the
+TTM195 service manual.
 
-There is technically a dependency, though nobody would notice
-in practice: removing the ARM timer tick function in patch 6 would
-break the ebsa110 platform if we didn't first remove it in patch 1.
-Changing ebsa110 to use legacy_timer_tick in turn would introduce
-a conflict against the removal patch.
+Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
+---
+Untested on actual hardware, hence the RFC.
+---
+ drivers/video/fbdev/atafb.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-Neither of those is particularly harmful as there are no users of
-the affected ebsa110 code, but keeping the two series together
-avoids getting complaints from the build bots.
+diff --git a/drivers/video/fbdev/atafb.c b/drivers/video/fbdev/atafb.c
+index 198ed539366f21a3..5ecf3ec9f94cb720 100644
+--- a/drivers/video/fbdev/atafb.c
++++ b/drivers/video/fbdev/atafb.c
+@@ -495,8 +495,8 @@ static struct fb_videomode atafb_modedb[] __initdata = {
+ 		"tt-mid", 60, 640, 480, 31041, 120, 100, 8, 16, 140, 30,
+ 		0, FB_VMODE_NONINTERLACED | FB_VMODE_YWRAP
+ 	}, {
+-		/* 1280x960, 29 kHz, 60 Hz (TT high) */
+-		"tt-high", 57, 1280, 960, 31041, 120, 100, 8, 16, 140, 30,
++		/* 1280x960, 72 kHz, 72 Hz (TT high) */
++		"tt-high", 57, 1280, 960, 7761, 260, 60, 36, 4, 192, 4,
+ 		0, FB_VMODE_NONINTERLACED | FB_VMODE_YWRAP
+ 	},
+ 
+-- 
+2.25.1
 
-      Arnd
