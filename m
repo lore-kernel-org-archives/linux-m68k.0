@@ -1,162 +1,227 @@
-Return-Path: <SRS0=xmJ+=EI=vger.kernel.org=linux-m68k-owner@kernel.org>
+Return-Path: <SRS0=aUui=EJ=vger.kernel.org=linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-11.1 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,NICE_REPLY_A,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=ham
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-8.7 required=3.0 tests=BAYES_00,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 8F9FDC2D0A3
-	for <linux-m68k@archiver.kernel.org>; Mon,  2 Nov 2020 18:52:40 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id ECCE0C00A89
+	for <linux-m68k@archiver.kernel.org>; Tue,  3 Nov 2020 00:10:04 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 348BC22245
-	for <linux-m68k@archiver.kernel.org>; Mon,  2 Nov 2020 18:52:40 +0000 (UTC)
-Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="aFwIY8EW"
+	by mail.kernel.org (Postfix) with ESMTP id AF10222268
+	for <linux-m68k@archiver.kernel.org>; Tue,  3 Nov 2020 00:10:04 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726429AbgKBSwk (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Mon, 2 Nov 2020 13:52:40 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33882 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725801AbgKBSwj (ORCPT
-        <rfc822;linux-m68k@vger.kernel.org>); Mon, 2 Nov 2020 13:52:39 -0500
-Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AE88BC0617A6;
-        Mon,  2 Nov 2020 10:52:39 -0800 (PST)
-Received: by mail-pg1-x544.google.com with SMTP id x13so11557607pgp.7;
-        Mon, 02 Nov 2020 10:52:39 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-transfer-encoding:content-language;
-        bh=HK3WmJW6u7M5Vx/m49h+Vsg1q0S7SYUSgOeAa79ZZJk=;
-        b=aFwIY8EW04InPVpjr7nipH18G4FAvswDmuqXCLLvRJjfVAYOc7qSxRnzhEC2rjfdc7
-         xJWHaMe0AYzP6PUFnRMr7E0DVDwNN9l9YuIygAuViSk9uOzcoJybD3wYAmsnMlYhgKWV
-         FTYNjgdhdw3VBoLrZhgl1rhLzi8TrQ5cEXIWic3oZ/bSWbeuHdonVlWSkBW/GUpizCN8
-         ONphXj05E2sTYjX/NawxS/mtdKGBKrDsGtvN4tgUjwrWo8PJbZV9AyN4Oai1nU/9az1k
-         DXLfiw811jl5BAOzvT4w7EqrLaStaH/ww0+oOhwMNNSLpQsrtH9L/jg0lSvwFSRUTxdt
-         xmCg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=HK3WmJW6u7M5Vx/m49h+Vsg1q0S7SYUSgOeAa79ZZJk=;
-        b=jfoPBkgIahV1CGjiNRwv/kbr+IurPB1bAZiYW6kcFVq1GQncRKsToe4oABz/Ldzaa1
-         DRhwgmp9FvAWLPLOSJL99JAHNme1sDQpeQZkjLyXI7Urj8kWD4I4gq2pSofzfjfAGDpB
-         XEP5Dm+pJ7JEW1bsz4k6OlBYO2wJOfdyfUz3fOsTahkVD2jdR8h4bjS1hhbWIgabJ1GN
-         6P7iCJwsvM5jPM/XZINPSDHzE5HPp4HL7w//ckJ5GgyeMj/aGfVdPjyBKOTgvtPjLaab
-         z7LLz35tDv6uzJEBrIrIuSqtDU1SLfZxqP0QFfSWduRz4p0Xn2xdYAZNNr/VLWW0Jv/M
-         jNug==
-X-Gm-Message-State: AOAM530EU2UUEi/vC1AI4eBJFjqotgFi4PP/8QHIs4SYsIML0uZ4KYhn
-        WPP61+Om4AxLid6KIWUl2t8=
-X-Google-Smtp-Source: ABdhPJxZFZg9a0x6Bf+IQte8IWMpeNM5Kh+wMkhnG24E8lYn1AFwZwa988kzNa4zMg3YHRzGP/ldnA==
-X-Received: by 2002:a17:90a:a505:: with SMTP id a5mr18272328pjq.76.1604343159258;
-        Mon, 02 Nov 2020 10:52:39 -0800 (PST)
-Received: from ?IPv6:2001:df0:0:200c:bd11:f10f:c2c8:538d? ([2001:df0:0:200c:bd11:f10f:c2c8:538d])
-        by smtp.gmail.com with ESMTPSA id e2sm210215pjw.13.2020.11.02.10.52.36
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Mon, 02 Nov 2020 10:52:38 -0800 (PST)
-Subject: Re: [PATCH/RFC v2] video: fbdev: atari: Fix TT High video mode
-To:     Geert Uytterhoeven <geert@linux-m68k.org>,
-        Andreas Schwab <schwab@linux-m68k.org>
-Cc:     Sam Ravnborg <sam@ravnborg.org>,
-        Linux Fbdev development list <linux-fbdev@vger.kernel.org>,
-        Linux/m68k <linux-m68k@vger.kernel.org>,
-        DRI Development <dri-devel@lists.freedesktop.org>
-References: <20201101102941.2891076-1-geert@linux-m68k.org>
- <20201101112915.GB1263673@ravnborg.org> <874km91by4.fsf@igel.home>
- <CAMuHMdUMF4R91Nt6mv9Tqz0zSaNh7AV8mghUoKL+uO-_PUH2aQ@mail.gmail.com>
-From:   Michael Schmitz <schmitzmic@gmail.com>
-Message-ID: <609bf047-2c4a-393e-75f6-c86f748682dc@gmail.com>
-Date:   Tue, 3 Nov 2020 07:52:34 +1300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.6.1
+        id S1726945AbgKCAKE (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Mon, 2 Nov 2020 19:10:04 -0500
+Received: from mga14.intel.com ([192.55.52.115]:5069 "EHLO mga14.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725910AbgKCAKE (ORCPT <rfc822;linux-m68k@lists.linux-m68k.org>);
+        Mon, 2 Nov 2020 19:10:04 -0500
+IronPort-SDR: 9EhaHnnktkDMfBOhgB6nXlKaouJGqTU8kuKzoNGvFgI1CffzHysiDoKDMwRnZMlB2Il4h1qyCv
+ GvzNx4w9eMzA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9793"; a="168190908"
+X-IronPort-AV: E=Sophos;i="5.77,446,1596524400"; 
+   d="scan'208";a="168190908"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Nov 2020 16:10:03 -0800
+IronPort-SDR: XmrstGZszCc34W6zh4HjcpT4cGxoHM2h+e9lZU/huhMuxgnh1xr0a69JErcFrAxQx9jZ8/NN86
+ Iv8gJmwsChzg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.77,446,1596524400"; 
+   d="scan'208";a="357493660"
+Received: from lkp-server02.sh.intel.com (HELO 9353403cd79d) ([10.239.97.151])
+  by fmsmga002.fm.intel.com with ESMTP; 02 Nov 2020 16:10:01 -0800
+Received: from kbuild by 9353403cd79d with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1kZjth-0000Ej-CU; Tue, 03 Nov 2020 00:10:01 +0000
+Date:   Tue, 03 Nov 2020 08:09:36 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Geert Uytterhoeven <geert@linux-m68k.org>
+Cc:     linux-m68k@lists.linux-m68k.org
+Subject: [m68k:master] BUILD SUCCESS
+ 98c613483ac642b72c2367085292ed0604f42073
+Message-ID: <5fa09fc0.XTcVgdgA1ZqV5IO7%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
-In-Reply-To: <CAMuHMdUMF4R91Nt6mv9Tqz0zSaNh7AV8mghUoKL+uO-_PUH2aQ@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-Hi Geert,
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/geert/linux-m68k.git  master
+branch HEAD: 98c613483ac642b72c2367085292ed0604f42073  Revert "Revert "msdos fs: remove unsettable atari option""
 
-On 2/11/20 9:39 PM, Geert Uytterhoeven wrote:
-> Hi Andreas,
->
-> On Sun, Nov 1, 2020 at 1:47 PM Andreas Schwab <schwab@linux-m68k.org> wrote:
->> On Nov 01 2020, Sam Ravnborg wrote:
->>> On Sun, Nov 01, 2020 at 11:29:41AM +0100, Geert Uytterhoeven wrote:
->>>> The horizontal resolution (640) for the TT High video mode (1280x960) is
->>>> definitely bogus.  While fixing that, correct the timings to match the
->>>> TTM195 service manual.
->>>>
->>>> Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
->>>> ---
->>>> Untested on actual hardware, hence the RFC.
->>>>
->>>> v2:
->>>>    - Use correct base.
->>>> ---
->>>>   drivers/video/fbdev/atafb.c | 4 ++--
->>>>   1 file changed, 2 insertions(+), 2 deletions(-)
->>>>
->>>> diff --git a/drivers/video/fbdev/atafb.c b/drivers/video/fbdev/atafb.c
->>>> index f253daa05d9d3872..5ecf3ec9f94cb720 100644
->>>> --- a/drivers/video/fbdev/atafb.c
->>>> +++ b/drivers/video/fbdev/atafb.c
->>>> @@ -495,8 +495,8 @@ static struct fb_videomode atafb_modedb[] __initdata = {
->>>>               "tt-mid", 60, 640, 480, 31041, 120, 100, 8, 16, 140, 30,
->>>>               0, FB_VMODE_NONINTERLACED | FB_VMODE_YWRAP
->>>>       }, {
->>>> -            /* 1280x960, 29 kHz, 60 Hz (TT high) */
->>>> -            "tt-high", 57, 640, 960, 31041, 120, 100, 8, 16, 140, 30,
->>>> +            /* 1280x960, 72 kHz, 72 Hz (TT high) */
->>>> +            "tt-high", 57, 1280, 960, 7761, 260, 60, 36, 4, 192, 4,
->>>>               0, FB_VMODE_NONINTERLACED | FB_VMODE_YWRAP
->>> Well-spotted. The change of 640 => 1280 is surely right.
-> TBH, I spotted that 7 years ago, but never got to looking up and calculating
-> the other values...
+elapsed time: 723m
 
-Looks like one of my copy&paste errors that went undetected for too long...
-I seem to have copied the tt-mid values above in that case.
+configs tested: 154
+configs skipped: 3
 
-Need to go back to the old driver to see what had been used there. A quick diff didn't show anything useful.
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
->>> I have a harder time understanding why the change of pixclock from 31041
->>> to 7761 is correct. All other modes have a pixclock close to or equal
->>> to 32000 - so it looks strange this one is off.
-> 32000 ps is 31.25 MHz. Looks like these are bogus, too, and only
-> the VGA and Falcon video modes are correct?
+gcc tested configs:
+arm                                 defconfig
+arm64                               defconfig
+arm                              allyesconfig
+arm64                            allyesconfig
+arm                              allmodconfig
+c6x                        evmc6457_defconfig
+arm                       imx_v6_v7_defconfig
+powerpc                      cm5200_defconfig
+arm                        magician_defconfig
+powerpc                     skiroot_defconfig
+sh                        sh7757lcr_defconfig
+arm                    vt8500_v6_v7_defconfig
+powerpc                    amigaone_defconfig
+arm                        spear6xx_defconfig
+arm                            mmp2_defconfig
+ia64                        generic_defconfig
+mips                    maltaup_xpa_defconfig
+sh                          rsk7269_defconfig
+arm                      tct_hammer_defconfig
+arm                            xcep_defconfig
+sh                   rts7751r2dplus_defconfig
+mips                      maltasmvp_defconfig
+powerpc                     mpc5200_defconfig
+sh                          urquell_defconfig
+powerpc                      ep88xc_defconfig
+powerpc                 canyonlands_defconfig
+arm                          simpad_defconfig
+sh                           se7750_defconfig
+arm                         at91_dt_defconfig
+arm                              zx_defconfig
+sh                           se7343_defconfig
+sh                            hp6xx_defconfig
+powerpc                      makalu_defconfig
+powerpc                       maple_defconfig
+mips                           ip28_defconfig
+arm                         lpc18xx_defconfig
+c6x                         dsk6455_defconfig
+powerpc                     kilauea_defconfig
+m68k                        mvme16x_defconfig
+mips                        bcm47xx_defconfig
+mips                            gpr_defconfig
+powerpc                 mpc837x_mds_defconfig
+alpha                               defconfig
+ia64                             allyesconfig
+arm                     davinci_all_defconfig
+mips                     decstation_defconfig
+powerpc                 mpc8315_rdb_defconfig
+arc                          axs101_defconfig
+mips                           gcw0_defconfig
+arm                        clps711x_defconfig
+arm                     eseries_pxa_defconfig
+arm64                            alldefconfig
+arm                          pxa168_defconfig
+arc                     haps_hs_smp_defconfig
+m68k                       bvme6000_defconfig
+arm                         vf610m4_defconfig
+arm                         mv78xx0_defconfig
+powerpc                      ppc40x_defconfig
+sh                          sdk7780_defconfig
+powerpc                       eiger_defconfig
+m68k                          multi_defconfig
+arm                         socfpga_defconfig
+riscv                            allyesconfig
+arm                          badge4_defconfig
+arm                           sunxi_defconfig
+mips                      maltaaprp_defconfig
+xtensa                generic_kc705_defconfig
+powerpc                      obs600_defconfig
+sh                   sh7770_generic_defconfig
+mips                        workpad_defconfig
+x86_64                           allyesconfig
+powerpc                       holly_defconfig
+mips                malta_kvm_guest_defconfig
+mips                        jmr3927_defconfig
+powerpc                   currituck_defconfig
+powerpc                     tqm8541_defconfig
+sh                ecovec24-romimage_defconfig
+arm                        multi_v5_defconfig
+powerpc                     tqm5200_defconfig
+powerpc                   lite5200b_defconfig
+m68k                        mvme147_defconfig
+powerpc                      tqm8xx_defconfig
+powerpc                      chrp32_defconfig
+sh                        edosk7760_defconfig
+riscv                            alldefconfig
+arm                          pxa3xx_defconfig
+mips                      fuloong2e_defconfig
+arm                       cns3420vb_defconfig
+arm                  colibri_pxa270_defconfig
+ia64                             allmodconfig
+ia64                                defconfig
+m68k                             allmodconfig
+m68k                                defconfig
+m68k                             allyesconfig
+nios2                               defconfig
+arc                              allyesconfig
+nds32                             allnoconfig
+c6x                              allyesconfig
+nds32                               defconfig
+nios2                            allyesconfig
+csky                                defconfig
+alpha                            allyesconfig
+xtensa                           allyesconfig
+h8300                            allyesconfig
+arc                                 defconfig
+sh                               allmodconfig
+parisc                              defconfig
+s390                             allyesconfig
+parisc                           allyesconfig
+s390                                defconfig
+i386                             allyesconfig
+sparc                            allyesconfig
+sparc                               defconfig
+i386                                defconfig
+mips                             allyesconfig
+mips                             allmodconfig
+powerpc                          allyesconfig
+powerpc                          allmodconfig
+powerpc                           allnoconfig
+i386                 randconfig-a004-20201102
+i386                 randconfig-a006-20201102
+i386                 randconfig-a005-20201102
+i386                 randconfig-a001-20201102
+i386                 randconfig-a002-20201102
+i386                 randconfig-a003-20201102
+x86_64               randconfig-a012-20201102
+x86_64               randconfig-a015-20201102
+x86_64               randconfig-a011-20201102
+x86_64               randconfig-a013-20201102
+x86_64               randconfig-a014-20201102
+x86_64               randconfig-a016-20201102
+i386                 randconfig-a013-20201102
+i386                 randconfig-a015-20201102
+i386                 randconfig-a014-20201102
+i386                 randconfig-a016-20201102
+i386                 randconfig-a011-20201102
+i386                 randconfig-a012-20201102
+riscv                    nommu_k210_defconfig
+riscv                    nommu_virt_defconfig
+riscv                             allnoconfig
+riscv                               defconfig
+riscv                          rv32_defconfig
+riscv                            allmodconfig
+x86_64                                   rhel
+x86_64                    rhel-7.6-kselftests
+x86_64                              defconfig
+x86_64                               rhel-8.3
+x86_64                                  kexec
 
-These were the only ones I could test (haven't seen a TT in 20 years). 
-At the time I worked on the Atari FB driver, I didn't have access to the 
-Profibuch either.
+clang tested configs:
+x86_64               randconfig-a004-20201102
+x86_64               randconfig-a005-20201102
+x86_64               randconfig-a003-20201102
+x86_64               randconfig-a002-20201102
+x86_64               randconfig-a006-20201102
+x86_64               randconfig-a001-20201102
 
-As Andreas mentioned, the Falcon (or external) hardware is the only one 
-that can be programmed freely, so we need to work from the 95 MHz 
-pixclock Andreas found. That's 10.5 ns approx.
-
-10.5 ns * 1280 * 960 (omitting HBL and VBL timing) gives 77 Hz refresh 
-so I don't think 95 MHz for 72 Hz refresh are unreasonable.
-
-Need to look up what all the other numbers in the mode entry mean now ...
-
-Cheers,
-
-     Michael
-
-
->
->> According to the Profibuch the pixclock should be about 95000.
-> 95 ns? That's a 10.5 MHz pixel clock? Definitely too low.
-> The TTM195 manual says 128.85 MHz.
->
-> Gr{oetje,eeting}s,
->
->                          Geert
->
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
