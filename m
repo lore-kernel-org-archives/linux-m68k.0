@@ -7,51 +7,51 @@ X-Spam-Status: No, score=-13.1 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E9CCEC2D0A3
-	for <linux-m68k@archiver.kernel.org>; Tue,  3 Nov 2020 18:12:42 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id BDF4CC388F9
+	for <linux-m68k@archiver.kernel.org>; Tue,  3 Nov 2020 18:12:47 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 9AFBD20757
-	for <linux-m68k@archiver.kernel.org>; Tue,  3 Nov 2020 18:12:42 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 746D620757
+	for <linux-m68k@archiver.kernel.org>; Tue,  3 Nov 2020 18:12:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=default; t=1604427162;
-	bh=YiFAXF8gpP+Fmp8T9Pr/5UbVkNbZC60Fqcgag/+SXFE=;
+	s=default; t=1604427167;
+	bh=PQX74yj5ihTQA+DrUuH9+j3nU3WFMOKlvrcpoArY8Os=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-ID:From;
-	b=vqglBAPo2J12WC+1zCFqP8eKggPfaJjb6vuSPdvWKn9r9IvphpjD+8L1rYH5KHv8r
-	 E8vl3/iW+AJUK9t8AlsItQ+LBuOWZ7ymlpogGN5Y4zSBgoF2UiO8syFY0+SPT+u0Rk
-	 kI1aLeihA+iMxf3JmFfJrc/5oy6s31CXKcIRJflU=
+	b=FpWn0yb1bM42qefdQSKZ2SLJnhmNKyXJpdwq3CwhPWRbPTgXe2a5fX9IpSN5iKH+n
+	 JNDdCPFP7HkXPbkUFYSRwK2FpIiz1lBpzQwH7HNB30+q0soWHxDrQcn0x+66y4GJxF
+	 J8ZZaP0sCApvuRL7qde7iCSlWa3GetTyMNc9PAn4=
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729277AbgKCSM0 (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Tue, 3 Nov 2020 13:12:26 -0500
-Received: from mail-lj1-f194.google.com ([209.85.208.194]:45022 "EHLO
+        id S1729258AbgKCSMY (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Tue, 3 Nov 2020 13:12:24 -0500
+Received: from mail-lj1-f194.google.com ([209.85.208.194]:38793 "EHLO
         mail-lj1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729061AbgKCSME (ORCPT
+        with ESMTP id S1729164AbgKCSMH (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Tue, 3 Nov 2020 13:12:04 -0500
-Received: by mail-lj1-f194.google.com with SMTP id o13so11773152ljj.11
-        for <linux-m68k@lists.linux-m68k.org>; Tue, 03 Nov 2020 10:12:02 -0800 (PST)
+        Tue, 3 Nov 2020 13:12:07 -0500
+Received: by mail-lj1-f194.google.com with SMTP id v19so15144372lji.5
+        for <linux-m68k@lists.linux-m68k.org>; Tue, 03 Nov 2020 10:12:05 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=lmR+OgLQpXiz9C9It/pksOvqMCO0WrxIHSJ60EhO0sc=;
-        b=Xf8ZUUg3sNvcSLRkhdBeoGwugAY4l8R0l0mjYjmtXYjnGhGHZDVWXInn1GyABVsOp4
-         NGNGwGeS+j8MbrbABl72TOLRW+hAP177sUD8sYiO7hI6CNz/xjPgikQIZUirF9PdiGlX
-         zvV5gIVDntL4TZwHERd5vbP4jvBfngUL99dnMpcCqV3kYH73Suuz/ARygyTEAUDozrWk
-         9fbyG87oUZSO/sTQcp2/LcTpOdQjyTdB6aYCJHeuZPOWTXXEMoAvLTppDNHfqMC7ebwl
-         ULA/Sl2yUYVnG5iI50eqfKOk27cmwIzHsxVktL4FB7D3flFkKjrkXQI5FTTszBkMr37e
-         Hvmg==
-X-Gm-Message-State: AOAM532XN2IrhrxuIpjzhYTvJ9us2wj55kd7cFUKO37k8Vxqqs0cBY7Z
-        i4uQfXwJsKa8Ugq5AAMKaP8=
-X-Google-Smtp-Source: ABdhPJz07sueJ3+iSzebkN7P4Ah4zYnUmAAYA1hmwphU/S9lC2YVretq83hvmXcayqIQwculOmRVWg==
-X-Received: by 2002:a2e:7310:: with SMTP id o16mr9809475ljc.42.1604427122132;
-        Tue, 03 Nov 2020 10:12:02 -0800 (PST)
+        bh=MyGoxRTFxoN3CcXdLX3OQwBVVHqEtKepL93LP6Dv6QA=;
+        b=rytaGJrumPGgzIN96CZlETg3tHcz+nZEeTwkAXFrbmy2qvzvunUTzNXSEF/RHLWPAu
+         DtB/oaQbbJNh6KS7RbitVOny1qEwa/1MPIoIFKvJFIwpzKFBOnYrfmsWvibV+9+hnf6q
+         mJ2/TYEo6PREby4Wap/cQtc5UXlPfBTOC5h4cDSFjiu2VHJ4piP5zAufhoKyn7xADmK7
+         d4H+xoxhZWnOOaO2xWr5LltvxDmlImDQsUdpP3dnTb5D54e9VKm+jOg1C30Q2t4jmnHp
+         a///smlL+P1ZT05zd1lEoEzuHRLak5EHYXNZKEm97GkAbe6pgkRDkkSHF2Scxbhq+knZ
+         aGug==
+X-Gm-Message-State: AOAM532ZQcUwQRoC3QkTbccuhQgDOxyl7xFdYLznMrs4AKHunsGSBjD6
+        z0mvsBcCnncP764MFcyFT9c=
+X-Google-Smtp-Source: ABdhPJz/MO3T96ux3lea2nDseTlpodjsFUn7zZD2Ae+pvGCV0PQp49JaKgosvrFzcYrMAizjAgvuaw==
+X-Received: by 2002:a2e:9b0c:: with SMTP id u12mr8407658lji.338.1604427124922;
+        Tue, 03 Nov 2020 10:12:04 -0800 (PST)
 Received: from xi.terra (c-beaee455.07-184-6d6c6d4.bbcust.telenor.se. [85.228.174.190])
-        by smtp.gmail.com with ESMTPSA id g20sm4540473ljn.134.2020.11.03.10.11.59
+        by smtp.gmail.com with ESMTPSA id l14sm3641920ljb.122.2020.11.03.10.11.59
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 03 Nov 2020 10:12:00 -0800 (PST)
+        Tue, 03 Nov 2020 10:12:01 -0800 (PST)
 Received: from johan by xi.terra with local (Exim 4.93.0.4)
         (envelope-from <johan@xi.terra>)
-        id 1ka0mn-0002rb-PW; Tue, 03 Nov 2020 19:12:01 +0100
+        id 1ka0mo-0002s0-7f; Tue, 03 Nov 2020 19:12:02 +0100
 From:   Johan Hovold <johan@kernel.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
@@ -71,9 +71,9 @@ Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
         Daniel Kurtz <djkurtz@chromium.org>,
         linux-arch@vger.kernel.org, linux-m68k@lists.linux-m68k.org,
         Johan Hovold <johan@kernel.org>
-Subject: [PATCH 3/8] module: drop version-attribute alignment
-Date:   Tue,  3 Nov 2020 18:57:06 +0100
-Message-Id: <20201103175711.10731-4-johan@kernel.org>
+Subject: [PATCH 8/8] params: clean up module-param macros
+Date:   Tue,  3 Nov 2020 18:57:11 +0100
+Message-Id: <20201103175711.10731-9-johan@kernel.org>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <20201103175711.10731-1-johan@kernel.org>
 References: <20201103175711.10731-1-johan@kernel.org>
@@ -83,37 +83,35 @@ Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-Commit 98562ad8cb03 ("module: explicitly align module_version_attribute
-structure") added an alignment attribute to the struct
-module_version_attribute type in order to fix an alignment issue on m68k
-where the structure is 2-byte aligned while MODULE_VERSION() forced the
-__modver section entries to be 4-byte aligned (sizeof(void *)).
-
-This was essentially an alternative fix to the problem addressed by
-b4bc842802db ("module: deal with alignment issues in built-in module
-versions") which used the array-of-pointer trick to prevent gcc from
-increasing alignment of the version attribute entries. And with the
-pointer indirection in place there's no need to increase the alignment
-of the type.
+Clean up the module-param macros by adding some indentation and using
+the __aligned() macro to improve readability.
 
 Signed-off-by: Johan Hovold <johan@kernel.org>
 ---
- include/linux/module.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ include/linux/moduleparam.h | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/include/linux/module.h b/include/linux/module.h
-index 7ccdf87f376f..293250958512 100644
---- a/include/linux/module.h
-+++ b/include/linux/module.h
-@@ -66,7 +66,7 @@ struct module_version_attribute {
- 	struct module_attribute mattr;
- 	const char *module_name;
- 	const char *version;
--} __attribute__ ((__aligned__(sizeof(void *))));
-+};
+diff --git a/include/linux/moduleparam.h b/include/linux/moduleparam.h
+index 15ecc6cc3a3b..eed280fae433 100644
+--- a/include/linux/moduleparam.h
++++ b/include/linux/moduleparam.h
+@@ -21,12 +21,12 @@
+ #define MAX_PARAM_PREFIX_LEN (64 - sizeof(unsigned long))
  
- extern ssize_t __modver_version_show(struct module_attribute *,
- 				     struct module_kobject *, char *);
+ #define __MODULE_INFO(tag, name, info)					  \
+-static const char __UNIQUE_ID(name)[]					  \
+-  __used __section(".modinfo") __attribute__((aligned(1)))		  \
+-  = __MODULE_INFO_PREFIX __stringify(tag) "=" info
++	static const char __UNIQUE_ID(name)[]				  \
++		__used __section(".modinfo") __aligned(1)		  \
++		= __MODULE_INFO_PREFIX __stringify(tag) "=" info
+ 
+ #define __MODULE_PARM_TYPE(name, _type)					  \
+-  __MODULE_INFO(parmtype, name##type, #name ":" _type)
++	__MODULE_INFO(parmtype, name##type, #name ":" _type)
+ 
+ /* One for each parameter, describing how to use it.  Some files do
+    multiple of these per line, so can't just use MODULE_INFO. */
 -- 
 2.26.2
 
