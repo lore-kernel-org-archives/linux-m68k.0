@@ -7,51 +7,51 @@ X-Spam-Status: No, score=-13.1 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 65520C63697
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 9C18CC63699
 	for <linux-m68k@archiver.kernel.org>; Tue,  3 Nov 2020 18:12:27 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 0E40720780
+	by mail.kernel.org (Postfix) with ESMTP id 49B6820757
 	for <linux-m68k@archiver.kernel.org>; Tue,  3 Nov 2020 18:12:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
 	s=default; t=1604427147;
-	bh=YkaD4b+z/SpZ7FcziWDlSPXvvpyKN5VdPbY35z2qB3Y=;
+	bh=fv1yXYep5am+ln0fmGIMp8cDS9eZbRnVA7swo5V6Hus=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-ID:From;
-	b=jdATjcWZ7YT7WZMN3XQ1yK+iTgMc+xKrVFzfOVw3D6yKbaBFaJDWYlegSY1O9pjdr
-	 7A3Eg7AuDwob0eIKs6lQN5Nraro4b827UaKgldMZNMqLP43DQfleUsLBsr3u5BNuHU
-	 pY4z91BMn0xr/8Js5jkZ0pNBRcxmVfWDmG0KSlr4=
+	b=WGfh3YUE/rhcSlBf9FOYyR0CmfvctXC7bbvMn9y5/MKAXfIDchf11S6ZjbgJ1J89y
+	 2SNuEaD8PC5kQ35M+ua6PHKax2GuylLSFZQDv/DiL8PxTtwOi7xFYZcxWn1543q1KQ
+	 Ts020Iz4XiLzMPOoJA/3FXpsWf9HHz8WtVN+93Zw=
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729272AbgKCSMZ (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Tue, 3 Nov 2020 13:12:25 -0500
-Received: from mail-lj1-f193.google.com ([209.85.208.193]:43098 "EHLO
-        mail-lj1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727857AbgKCSMF (ORCPT
+        id S1729279AbgKCSM0 (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Tue, 3 Nov 2020 13:12:26 -0500
+Received: from mail-lj1-f196.google.com ([209.85.208.196]:34118 "EHLO
+        mail-lj1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729016AbgKCSMD (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Tue, 3 Nov 2020 13:12:05 -0500
-Received: by mail-lj1-f193.google.com with SMTP id d24so20042191ljg.10
-        for <linux-m68k@lists.linux-m68k.org>; Tue, 03 Nov 2020 10:12:03 -0800 (PST)
+        Tue, 3 Nov 2020 13:12:03 -0500
+Received: by mail-lj1-f196.google.com with SMTP id y16so20114269ljk.1
+        for <linux-m68k@lists.linux-m68k.org>; Tue, 03 Nov 2020 10:12:02 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=rjuGehr4XknYYBgxjDQlTnP9rZe3czEuMZ+c8GBcVIs=;
-        b=I0rVHF8d+PEOheIdsz+S0eyiZO6ZKNt/36a4krf+l0JJszKhCPYOEec/fhymn0Fctl
-         83t7GEzMHVWoJdZIF7ElDT8iuZkBcbQATbcvx8zoTQ6gwJLKR8Wfo3RRp+nS6WBb8lkI
-         e6lVynETXlZT/eQH15ob+rJ1C0jJ7rBbhTOfbAcwe+nX3YKu2DssJd6gcazrXyBjgrg1
-         jdYUcgNazGLJpfHgM/KeeE+KXuo8kCr4R6AyyduqohVW/l6qePNKo0vXkpyQjdvx9aut
-         Y6E0k1PyV1by5Zr3/xPuAZWSPE3+hJhyDCH8jTzbJ1SPv29P8+Vvj/kIzCKLYlnTIkp8
-         1wfw==
-X-Gm-Message-State: AOAM530MjELfDL0Ftr+RLyfOaP5HhbPBQKp/cxMRlx9lWszTGM1NwZWy
-        uISufOqYNBf9ieUfagW7dZM=
-X-Google-Smtp-Source: ABdhPJyy4ScccKitgsgLmfW4+7RpegTCk9j7/oY7fM88C4FjnN07f4OIgFsfgAaoXJfSheheELK2gA==
-X-Received: by 2002:a2e:7d08:: with SMTP id y8mr8938849ljc.257.1604427122745;
-        Tue, 03 Nov 2020 10:12:02 -0800 (PST)
-Received: from xi.terra (c-beaee455.07-184-6d6c6d4.bbcust.telenor.se. [85.228.174.190])
-        by smtp.gmail.com with ESMTPSA id j10sm3655725lfr.288.2020.11.03.10.11.59
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        bh=7KBLghtZ420Ru5TtsLIZ3CUl6d4/Pr8c2e31nM972Ds=;
+        b=FxPReAbBFTTJnsYJwXHjrRN0MIu1RsRTDDF7ZzQ5PmzCQAcIIYR2Y3bbSdcLwLP4oh
+         /4IJHxzEaYf+b2sRJY6AFbVOQtM3KP7K3jbQAkv3JrUEHDPDTToW/bcl7MHS6J1pPa9Q
+         txSFKg5BE3gpRF/XH08elzs1zC5NYIgagqnfT/cVZSrpKDUJoJPE4mfyhm9UUvkuOzSp
+         ODgyy0F0ngqWrYDGojkqDSmVnvP9VRxgA+zX/Xn41TLqm5Pe7t0ie/RPrcsQEJJGimfb
+         u7bIiJdryestTDNvD5mInSDVRpWmF+fqFYh+mGoyaVuQVn6UkUxOnVWP09XWWMVpgFZ0
+         aEhQ==
+X-Gm-Message-State: AOAM531LKGAGyT/Q2XQWauIvyKeRZB2PLHkE3wJFXhTQjOPCvLEu58v/
+        LKR1byVBs8JJOVG7HqNgp8Y=
+X-Google-Smtp-Source: ABdhPJwQY8m/cWMaC3eDdLZZZIDEtwzCciIQWmKIp7GpVEiKr0cdfoZUUsLulnMKBfdNiza45agBZw==
+X-Received: by 2002:a2e:8143:: with SMTP id t3mr9710944ljg.29.1604427121364;
         Tue, 03 Nov 2020 10:12:01 -0800 (PST)
+Received: from xi.terra (c-beaee455.07-184-6d6c6d4.bbcust.telenor.se. [85.228.174.190])
+        by smtp.gmail.com with ESMTPSA id f6sm3745346lfk.104.2020.11.03.10.11.59
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 03 Nov 2020 10:11:59 -0800 (PST)
 Received: from johan by xi.terra with local (Exim 4.93.0.4)
         (envelope-from <johan@xi.terra>)
-        id 1ka0mn-0002rg-Sf; Tue, 03 Nov 2020 19:12:01 +0100
+        id 1ka0mn-0002rW-Mx; Tue, 03 Nov 2020 19:12:01 +0100
 From:   Johan Hovold <johan@kernel.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
@@ -71,9 +71,9 @@ Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
         Daniel Kurtz <djkurtz@chromium.org>,
         linux-arch@vger.kernel.org, linux-m68k@lists.linux-m68k.org,
         Johan Hovold <johan@kernel.org>
-Subject: [PATCH 4/8] module: simplify version-attribute handling
-Date:   Tue,  3 Nov 2020 18:57:07 +0100
-Message-Id: <20201103175711.10731-5-johan@kernel.org>
+Subject: [PATCH 2/8] earlycon: simplify earlycon-table implementation
+Date:   Tue,  3 Nov 2020 18:57:05 +0100
+Message-Id: <20201103175711.10731-3-johan@kernel.org>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <20201103175711.10731-1-johan@kernel.org>
 References: <20201103175711.10731-1-johan@kernel.org>
@@ -84,12 +84,12 @@ List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
 Instead of using the array-of-pointers trick to avoid having gcc mess up
-the built-in module-version array stride, specify type alignment when
-declaring entries to prevent gcc from increasing alignment.
+the earlycon array stride, specify type alignment when declaring entries
+to prevent gcc from increasing alignment.
 
 This is essentially an alternative (one-line) fix to the problem
-addressed by commit b4bc842802db ("module: deal with alignment issues in
-built-in module versions").
+addressed by commit dd709e72cb93 ("earlycon: Use a pointer table to fix
+__earlycon_table stride").
 
 Note that we have been relying on this gcc behaviour for kernel
 parameters for 16 years and it indeed hasn't changed since the
@@ -97,75 +97,100 @@ introduction of the aligned attribute in gcc-3.1.
 
 Signed-off-by: Johan Hovold <johan@kernel.org>
 ---
- include/linux/module.h | 26 +++++++++++++-------------
- kernel/params.c        | 10 ++++------
- 2 files changed, 17 insertions(+), 19 deletions(-)
+ drivers/of/fdt.c              |  7 ++-----
+ drivers/tty/serial/earlycon.c |  6 ++----
+ include/linux/serial_core.h   | 20 +++++++-------------
+ 3 files changed, 11 insertions(+), 22 deletions(-)
 
-diff --git a/include/linux/module.h b/include/linux/module.h
-index 293250958512..5958075ea3f4 100644
---- a/include/linux/module.h
-+++ b/include/linux/module.h
-@@ -266,20 +266,20 @@ extern typeof(name) __mod_##type##__##name##_device_table		\
- #else
- #define MODULE_VERSION(_version)					\
- 	MODULE_INFO(version, _version);					\
--	static struct module_version_attribute ___modver_attr = {	\
--		.mattr	= {						\
--			.attr	= {					\
--				.name	= "version",			\
--				.mode	= S_IRUGO,			\
-+	static struct module_version_attribute __modver_attr		\
-+		__used __section("__modver")				\
-+		__aligned(__alignof__(struct module_version_attribute)) \
-+		= {							\
-+			.mattr	= {					\
-+				.attr	= {				\
-+					.name	= "version",		\
-+					.mode	= S_IRUGO,		\
-+				},					\
-+				.show	= __modver_version_show,	\
- 			},						\
--			.show	= __modver_version_show,		\
--		},							\
--		.module_name	= KBUILD_MODNAME,			\
--		.version	= _version,				\
--	};								\
--	static const struct module_version_attribute			\
--	__used __section("__modver")					\
--	* __moduleparam_const __modver_attr = &___modver_attr
-+			.module_name	= KBUILD_MODNAME,		\
-+			.version	= _version,			\
-+		};
+diff --git a/drivers/of/fdt.c b/drivers/of/fdt.c
+index 4602e467ca8b..feb0f2d67fc5 100644
+--- a/drivers/of/fdt.c
++++ b/drivers/of/fdt.c
+@@ -906,7 +906,7 @@ int __init early_init_dt_scan_chosen_stdout(void)
+ 	int offset;
+ 	const char *p, *q, *options = NULL;
+ 	int l;
+-	const struct earlycon_id **p_match;
++	const struct earlycon_id *match;
+ 	const void *fdt = initial_boot_params;
+ 
+ 	offset = fdt_path_offset(fdt, "/chosen");
+@@ -933,10 +933,7 @@ int __init early_init_dt_scan_chosen_stdout(void)
+ 		return 0;
+ 	}
+ 
+-	for (p_match = __earlycon_table; p_match < __earlycon_table_end;
+-	     p_match++) {
+-		const struct earlycon_id *match = *p_match;
+-
++	for (match = __earlycon_table; match < __earlycon_table_end; match++) {
+ 		if (!match->compatible[0])
+ 			continue;
+ 
+diff --git a/drivers/tty/serial/earlycon.c b/drivers/tty/serial/earlycon.c
+index b70877932d47..57c70851f22a 100644
+--- a/drivers/tty/serial/earlycon.c
++++ b/drivers/tty/serial/earlycon.c
+@@ -175,7 +175,7 @@ static int __init register_earlycon(char *buf, const struct earlycon_id *match)
+  */
+ int __init setup_earlycon(char *buf)
+ {
+-	const struct earlycon_id **p_match;
++	const struct earlycon_id *match;
+ 	bool empty_compatible = true;
+ 
+ 	if (!buf || !buf[0])
+@@ -185,9 +185,7 @@ int __init setup_earlycon(char *buf)
+ 		return -EALREADY;
+ 
+ again:
+-	for (p_match = __earlycon_table; p_match < __earlycon_table_end;
+-	     p_match++) {
+-		const struct earlycon_id *match = *p_match;
++	for (match = __earlycon_table; match < __earlycon_table_end; match++) {
+ 		size_t len = strlen(match->name);
+ 
+ 		if (strncmp(buf, match->name, len))
+diff --git a/include/linux/serial_core.h b/include/linux/serial_core.h
+index ff63c2963359..3e32b788c28d 100644
+--- a/include/linux/serial_core.h
++++ b/include/linux/serial_core.h
+@@ -357,8 +357,8 @@ struct earlycon_id {
+ 	int	(*setup)(struct earlycon_device *, const char *options);
+ };
+ 
+-extern const struct earlycon_id *__earlycon_table[];
+-extern const struct earlycon_id *__earlycon_table_end[];
++extern const struct earlycon_id __earlycon_table[];
++extern const struct earlycon_id __earlycon_table_end[];
+ 
+ #if defined(CONFIG_SERIAL_EARLYCON) && !defined(MODULE)
+ #define EARLYCON_USED_OR_UNUSED	__used
+@@ -366,19 +366,13 @@ extern const struct earlycon_id *__earlycon_table_end[];
+ #define EARLYCON_USED_OR_UNUSED	__maybe_unused
  #endif
  
- /* Optional firmware file (or files) needed by the module
-diff --git a/kernel/params.c b/kernel/params.c
-index 3835fb82c64b..aa7d6f2213f1 100644
---- a/kernel/params.c
-+++ b/kernel/params.c
-@@ -843,18 +843,16 @@ ssize_t __modver_version_show(struct module_attribute *mattr,
- 	return scnprintf(buf, PAGE_SIZE, "%s\n", vattr->version);
- }
- 
--extern const struct module_version_attribute *__start___modver[];
--extern const struct module_version_attribute *__stop___modver[];
-+extern const struct module_version_attribute __start___modver[];
-+extern const struct module_version_attribute __stop___modver[];
- 
- static void __init version_sysfs_builtin(void)
- {
--	const struct module_version_attribute **p;
-+	const struct module_version_attribute *vattr;
- 	struct module_kobject *mk;
- 	int err;
- 
--	for (p = __start___modver; p < __stop___modver; p++) {
--		const struct module_version_attribute *vattr = *p;
+-#define _OF_EARLYCON_DECLARE(_name, compat, fn, unique_id)		\
+-	static const struct earlycon_id unique_id			\
+-	     EARLYCON_USED_OR_UNUSED __initconst			\
++#define OF_EARLYCON_DECLARE(_name, compat, fn)				\
++	static const struct earlycon_id __UNIQUE_ID(__earlycon_##_name) \
++		EARLYCON_USED_OR_UNUSED  __section("__earlycon_table")  \
++		__aligned(__alignof__(struct earlycon_id))		\
+ 		= { .name = __stringify(_name),				\
+ 		    .compatible = compat,				\
+-		    .setup = fn  };					\
+-	static const struct earlycon_id EARLYCON_USED_OR_UNUSED		\
+-		__section("__earlycon_table")				\
+-		* const __PASTE(__p, unique_id) = &unique_id
 -
-+	for (vattr = __start___modver; vattr < __stop___modver; vattr++) {
- 		mk = locate_module_kobject(vattr->module_name);
- 		if (mk) {
- 			err = sysfs_create_file(&mk->kobj, &vattr->mattr.attr);
+-#define OF_EARLYCON_DECLARE(_name, compat, fn)				\
+-	_OF_EARLYCON_DECLARE(_name, compat, fn,				\
+-			     __UNIQUE_ID(__earlycon_##_name))
++		    .setup = fn };
+ 
+ #define EARLYCON_DECLARE(_name, fn)	OF_EARLYCON_DECLARE(_name, "", fn)
+ 
 -- 
 2.26.2
 
