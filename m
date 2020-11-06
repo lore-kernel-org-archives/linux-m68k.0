@@ -2,115 +2,121 @@ Return-Path: <SRS0=YomX=EM=vger.kernel.org=linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.8 required=3.0 tests=BAYES_00,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
-	autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-5.6 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS,USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3DBD0C4742C
-	for <linux-m68k@archiver.kernel.org>; Fri,  6 Nov 2020 03:12:22 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id EB9FCC55178
+	for <linux-m68k@archiver.kernel.org>; Fri,  6 Nov 2020 16:03:56 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id EE3282078E
-	for <linux-m68k@archiver.kernel.org>; Fri,  6 Nov 2020 03:12:21 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id AF56720B80
+	for <linux-m68k@archiver.kernel.org>; Fri,  6 Nov 2020 16:03:56 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=default; t=1604678636;
+	bh=EYK+J+nFdAu5CEbJrfqWZq4PGL/t0JmQeodkAruc60E=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:List-ID:From;
+	b=LSmBVTCoCEXjh5l85i1Tpu/De0H8awU/5+t9aEm54vUZQ0Tfl1hG9bcXg+hgHoAs7
+	 dl7dEr7dNtSKYn1w+OkDt1MTU2PbPhUyVgw274dC3eOoVeYiIAtSSUSAAPyE04fORD
+	 pDhUtjs2AwvKM0IX8eATP5dzq6yH21XKHRdTSTWI=
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725979AbgKFDMV (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Thu, 5 Nov 2020 22:12:21 -0500
-Received: from kvm5.telegraphics.com.au ([98.124.60.144]:47336 "EHLO
-        kvm5.telegraphics.com.au" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725966AbgKFDMV (ORCPT
-        <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Thu, 5 Nov 2020 22:12:21 -0500
-Received: from localhost (localhost.localdomain [127.0.0.1])
-        by kvm5.telegraphics.com.au (Postfix) with ESMTP id D3BE7232E6;
-        Thu,  5 Nov 2020 22:12:18 -0500 (EST)
-Date:   Fri, 6 Nov 2020 14:12:08 +1100 (AEDT)
-From:   Finn Thain <fthain@telegraphics.com.au>
-To:     Greg Ungerer <gerg@linux-m68k.org>
-cc:     Arnd Bergmann <arnd@kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Russell King <linux@armlinux.org.uk>,
-        Tony Luck <tony.luck@intel.com>,
-        Fenghua Yu <fenghua.yu@intel.com>,
+        id S1727038AbgKFQDx (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Fri, 6 Nov 2020 11:03:53 -0500
+Received: from mail.kernel.org ([198.145.29.99]:59304 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727023AbgKFQDx (ORCPT <rfc822;linux-m68k@lists.linux-m68k.org>);
+        Fri, 6 Nov 2020 11:03:53 -0500
+Received: from linux-8ccs.fritz.box (p57a236d4.dip0.t-ipconnect.de [87.162.54.212])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id B04C2208C7;
+        Fri,  6 Nov 2020 16:03:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1604678632;
+        bh=EYK+J+nFdAu5CEbJrfqWZq4PGL/t0JmQeodkAruc60E=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=UHM7wJvE07Wa3hVRkhdkb/75xQO+HuXaQzce6E9FNDwyZx8Ir43LvS03WIcGblB9g
+         d3AIuBzRmSgG0IzSUhJ6wzw1/3RUJqRw7XbEIr42GbzU0BdgAZlH/J+UP3/sqC5wtf
+         dZeLHsfiaIqhYWLbBMKlhFwnF+4FqwH7VDiXUOso=
+Date:   Fri, 6 Nov 2020 17:03:45 +0100
+From:   Jessica Yu <jeyu@kernel.org>
+To:     Johan Hovold <johan@kernel.org>
+Cc:     linux-kernel@vger.kernel.org,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Frank Rowand <frowand.list@gmail.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Nick Desaulniers <ndesaulniers@gooogle.com>,
+        Arnd Bergmann <arnd@arndb.de>,
         Geert Uytterhoeven <geert@linux-m68k.org>,
-        Philip Blundell <philb@gnu.org>,
-        Joshua Thompson <funaho@jurai.org>,
-        Sam Creasey <sammy@sammy.net>,
-        "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
-        Helge Deller <deller@gmx.de>,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        David Miller <davem@davemloft.net>,
+        Jakub Jelinek <jakub@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
         Thomas Gleixner <tglx@linutronix.de>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        John Stultz <john.stultz@linaro.org>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        linux-ia64@vger.kernel.org,
-        Parisc List <linux-parisc@vger.kernel.org>,
-        linux-m68k <linux-m68k@lists.linux-m68k.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>
-Subject: Re: [RFC 13/13] m68k: mac: convert to generic clockevent
-In-Reply-To: <580c3542-92cc-7e33-a43d-bf6a68134a46@linux-m68k.org>
-Message-ID: <alpine.LNX.2.23.453.2011061352370.6@nippy.intranet>
-References: <20201008154651.1901126-1-arnd@arndb.de> <20201008154651.1901126-14-arnd@arndb.de> <alpine.LNX.2.23.453.2010091900150.12@nippy.intranet> <CAK8P3a3rM7gJjdTtcKzr6yi15n6xs-yhEpmSOf3QHfahQwxqkw@mail.gmail.com> <alpine.LNX.2.23.453.2010150937430.16@nippy.intranet>
- <CAK8P3a3i6cum_9xGgsbxjXXvbRsP8Po5qLZ0Agb3c4gZTKC9GQ@mail.gmail.com> <alpine.LNX.2.23.453.2010241025410.6@nippy.intranet> <580c3542-92cc-7e33-a43d-bf6a68134a46@linux-m68k.org>
+        Steven Rostedt <rostedt@goodmis.org>,
+        Daniel Kurtz <djkurtz@chromium.org>,
+        linux-arch@vger.kernel.org, linux-m68k@lists.linux-m68k.org
+Subject: Re: [PATCH 0/8] linker-section array fix and clean ups
+Message-ID: <20201106160344.GA12184@linux-8ccs.fritz.box>
+References: <20201103175711.10731-1-johan@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Disposition: inline
+In-Reply-To: <20201103175711.10731-1-johan@kernel.org>
+X-OS:   Linux linux-8ccs 4.12.14-lp150.12.61-default x86_64
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-On Fri, 30 Oct 2020, Greg Ungerer wrote:
++++ Johan Hovold [03/11/20 18:57 +0100]:
+>We rely on the linker to create arrays for a number of things including
+>kernel parameters and device-tree-match entries.
+>
+>The stride of these linker-section arrays obviously needs to match the
+>expectations of the code accessing them or bad things will happen.
+>
+>One thing to watch out for is that gcc is known to increase the
+>alignment of larger objects with static extent as an optimisation (on
+>x86), but this can be suppressed by using the aligned attribute when
+>declaring entries.
+>
+>We've been relying on this behaviour for 16 years for kernel parameters
+>(and other structures) and it indeed hasn't changed since the
+>introduction of the aligned attribute in gcc 3.1 (see align_variable()
+>in [1]).
+>
+>Occasionally this gcc optimisation do cause problems which have instead
+>been worked around in various creative ways including using indirection
+>through an array of pointers. This was originally done for tracepoints
+>[2] after a number of failed attempts to create properly aligned arrays,
+>and the approach was later reused for module-version attributes [3] and
+>earlycon entries.
 
-> > 
-> > > ...
-> > > > The other 11 platforms in that category also have 'synthetic' 
-> > > > clocksources derived from a timer reload interrupt. In 3 cases, 
-> > > > the clocksource read method does not (or can not) check for a 
-> > > > pending counter reload interrupt. For these also, I see no 
-> > > > practical alternative to the approach you've taken in your RFC 
-> > > > patch:
-> > > > 
-> > > > arch/m68k/68000/timers.c
-> > > > arch/m68k/atari/time.c
-> > > > arch/m68k/coldfire/timers.c
-> > > 
-> > > Agreed. It's possible there is a way, but I don't see one either.
-> > > 
-> > 
-> > For arch/m68k/68000/timers.c, I suppose we may be able to check for 
-> > the TMR1 bit in the Interrupt Status Register at 0xFFFFF30C or the 
-> > COMP bit in the Timer Status Register at 0xFFFFF60A. But testing that 
-> > patch could be difficult.
-> > 
-> > I expect that equivalent flags are available in Coldfire registers, 
-> > making it possible to improve upon mcftmr_read_clk() and 
-> > m68328_read_clk() if need be -- that is, if it turns out that the 
-> > clocksource interrupt was subject to higher priority IRQs that would 
-> > slow down the clocksource or defeat its monotonicity.
-> > 
-> > The other difficulty is a lack of hardware timers. There's only one 
-> > timer on MC68EZ328. On Atari, for now only Timer C is available though 
-> > Michael has said that it would be possible to free up Timer D. Some 
-> > Coldfire chips have only 2 timers and the second timer seems to be 
-> > allocated to profiling.
-> 
-> FWIW, I would have no problem with ditching the profiling clock, and 
-> using both on ColdFire platforms that have this. I doubt anyone has used 
-> that profiling setup in a _very_ long time.
-> 
+>[2] https://lore.kernel.org/lkml/20110126222622.GA10794@Krystal/
 
-If we ditched the Coldfire profiling clock, it would be possible to 
-dedicate one hardware timer to the clocksource device and the other to the 
-(oneshot) clockevent device.
+Hi Johan,
 
-That's a win if it means that the clocksource can use the full counter 
-width (making timer interrupts less frequent and timer interrupt latency 
-less problematic) and run at higher frequency (making the clocksource more 
-precise).
+So unfortunately, I am not familiar enough with the semantics of gcc's
+aligned attribute. AFAICT from the patch you linked in [2], the
+original purpose of the pointer indirection workaround was to avoid
+relying on (potentially inconsistent) compiler-specific behavior with
+respect to the aligned attribute. The main concern was potential
+up-alignment being done by gcc (or the linker) despite the desired
+alignment being specified. Indeed, the gcc documentation also states
+that the aligned attribute only specifies the *minimum* alignment,
+although there's no guarantee that up-alignment wouldn't occur.
 
-Also, note that hrtimers won't work with a periodic clockevent device (as 
-in Arnd's RFC patch). If you want hrtimers, I think you'll need both 
-hardware timers or else re-implement the existing synthetic clocksource 
-using the same oneshot timer driving a new oneshot clockevent device.
+So I guess my question is, is there some implicit guarantee that
+specifying alignment by type via __alignof__ that's supposed to
+prevent gcc from up-aligning? Or are we just assuming that gcc won't
+increase the alignment? The gcc docs don't seem to clarify this
+unfortunately.
 
-Please note that the lack of a spare hardware timer is a separate issue to 
-the failure of mcftmr_read_clk() and m68328_read_clk() to check the timer 
-reload interrupt flag (which may make those clocksources needlessly 
-susceptible to issues caused by timer interrupt latency...).
+Thanks,
+
+Jessica
+
+
+
+
