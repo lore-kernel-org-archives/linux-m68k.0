@@ -2,31 +2,60 @@ Return-Path: <SRS0=YomX=EM=vger.kernel.org=linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.2 required=3.0 tests=BAYES_00,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	USER_AGENT_SANE_2 autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-4.1 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 6D2EEC55178
-	for <linux-m68k@archiver.kernel.org>; Fri,  6 Nov 2020 16:55:31 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 19D64C55178
+	for <linux-m68k@archiver.kernel.org>; Fri,  6 Nov 2020 17:02:33 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 26B3922202
-	for <linux-m68k@archiver.kernel.org>; Fri,  6 Nov 2020 16:55:31 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id BDF382151B
+	for <linux-m68k@archiver.kernel.org>; Fri,  6 Nov 2020 17:02:32 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=default; t=1604682152;
+	bh=tOrhjB8801E1p+btlLJs95tpLOMvubFShNAI+eOrvNk=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:List-ID:From;
+	b=mflqHHR6qrKlV8F4UsJ+Z6aWF3jqn2M/zknJQ8zh/gWRCHpLt6d0XntRO4x7CUIS2
+	 ODBcbTkXGqpE8hXPzM/wp9sMbiWedqslfXFHttmDwji0vt+cuLyrfe+Mk835Cc62ZY
+	 ydY1u3s8E0Fd1SqN7TcXp6kIPe0oiddocZOdkM5Q=
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726880AbgKFQz2 (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Fri, 6 Nov 2020 11:55:28 -0500
-Received: from mail.kernel.org ([198.145.29.99]:55034 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726821AbgKFQz2 (ORCPT <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Fri, 6 Nov 2020 11:55:28 -0500
-Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 76BA620720;
-        Fri,  6 Nov 2020 16:55:25 +0000 (UTC)
-Date:   Fri, 6 Nov 2020 11:55:23 -0500
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Johan Hovold <johan@kernel.org>
-Cc:     Jessica Yu <jeyu@kernel.org>, linux-kernel@vger.kernel.org,
+        id S1727669AbgKFRCc (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Fri, 6 Nov 2020 12:02:32 -0500
+Received: from mail-lf1-f66.google.com ([209.85.167.66]:34686 "EHLO
+        mail-lf1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727287AbgKFRC1 (ORCPT
+        <rfc822;linux-m68k@lists.linux-m68k.org>);
+        Fri, 6 Nov 2020 12:02:27 -0500
+Received: by mail-lf1-f66.google.com with SMTP id i6so2928641lfd.1
+        for <linux-m68k@lists.linux-m68k.org>; Fri, 06 Nov 2020 09:02:25 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=IxgRn+NDQHTCeHwfBgvEL75Ff6LWDGq3sU/W0ROdACs=;
+        b=sh7bRqI9zAtcqjRorSa71m1ElDzr/AQJXcnMeQPCa/KDysv01hH8E/Txro1lsbyWdm
+         XHc7vW/U6wDo9S63i7A3AOVXxgT8cMbAbIPZynn7Z0wrWpBmG3/6vRB2e2eRShwGfwMU
+         LRRJimQ8wOZJpyb4yz8M9wbkMy34dB8zErVaFeOyuPD5CldaawpxX1Mn2Yvb04UkxVjz
+         pv1NMWBLfln1yltNuzHMNeYreecbQ7Xl0GU0rXCS03NK8HdLlaFC2Z4jXFyupmoXl/A6
+         0TnujnjlLGvGRgNcloQZsxXO23IyVZKmaquxGBsqe7bdLGw2RKPGOopUIYRnXcsQpeG8
+         nlgw==
+X-Gm-Message-State: AOAM530GDuTwWVOXbL/+GxDhyAFaaoWWgRKUZSOWJR1SNm0Lfp6fuiDt
+        Zzfh30OR7fceTFOfWqW0YqU=
+X-Google-Smtp-Source: ABdhPJw79cVvhd1vcIuu4XPui96mAP4xDKV9ArN/Fggzk4GDVD5ecQaYCGh110VzE2qKOVR/aU9B5Q==
+X-Received: by 2002:a05:6512:104e:: with SMTP id c14mr1305423lfb.345.1604682144693;
+        Fri, 06 Nov 2020 09:02:24 -0800 (PST)
+Received: from xi.terra (c-beaee455.07-184-6d6c6d4.bbcust.telenor.se. [85.228.174.190])
+        by smtp.gmail.com with ESMTPSA id r23sm225149lfe.228.2020.11.06.09.02.23
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 06 Nov 2020 09:02:23 -0800 (PST)
+Received: from johan by xi.terra with local (Exim 4.93.0.4)
+        (envelope-from <johan@kernel.org>)
+        id 1kb587-0000G4-23; Fri, 06 Nov 2020 18:02:27 +0100
+Date:   Fri, 6 Nov 2020 18:02:27 +0100
+From:   Johan Hovold <johan@kernel.org>
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     Johan Hovold <johan@kernel.org>, Jessica Yu <jeyu@kernel.org>,
+        linux-kernel@vger.kernel.org,
         Linus Torvalds <torvalds@linux-foundation.org>,
         Rob Herring <robh+dt@kernel.org>,
         Frank Rowand <frowand.list@gmail.com>,
@@ -42,39 +71,43 @@ Cc:     Jessica Yu <jeyu@kernel.org>, linux-kernel@vger.kernel.org,
         Daniel Kurtz <djkurtz@chromium.org>,
         linux-arch@vger.kernel.org, linux-m68k@lists.linux-m68k.org
 Subject: Re: [PATCH 0/8] linker-section array fix and clean ups
-Message-ID: <20201106115523.41f7e2ed@gandalf.local.home>
-In-Reply-To: <20201106164537.GD4085@localhost>
+Message-ID: <20201106170227.GE4085@localhost>
 References: <20201103175711.10731-1-johan@kernel.org>
-        <20201106160344.GA12184@linux-8ccs.fritz.box>
-        <20201106164537.GD4085@localhost>
-X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+ <20201106160344.GA12184@linux-8ccs.fritz.box>
+ <20201106164537.GD4085@localhost>
+ <20201106115523.41f7e2ed@gandalf.local.home>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201106115523.41f7e2ed@gandalf.local.home>
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-On Fri, 6 Nov 2020 17:45:37 +0100
-Johan Hovold <johan@kernel.org> wrote:
-
-> It's simply specifying alignment when declaring the variable that
-> prevents this optimisation. The relevant code is in the function
-> align_variable() in [1] where DATA_ALIGNMENT() is never called in case
-> an alignment has been specified (!DECL_USER_ALIGN(decl)).
+On Fri, Nov 06, 2020 at 11:55:23AM -0500, Steven Rostedt wrote:
+> On Fri, 6 Nov 2020 17:45:37 +0100
+> Johan Hovold <johan@kernel.org> wrote:
 > 
-> There's no mention in the documentation of this that I'm aware of, but
-> this is the way the aligned attribute has worked since its introduction
-> judging from the commit history.
+> > It's simply specifying alignment when declaring the variable that
+> > prevents this optimisation. The relevant code is in the function
+> > align_variable() in [1] where DATA_ALIGNMENT() is never called in case
+> > an alignment has been specified (!DECL_USER_ALIGN(decl)).
+> > 
+> > There's no mention in the documentation of this that I'm aware of, but
+> > this is the way the aligned attribute has worked since its introduction
+> > judging from the commit history.
+> > 
+> > As mentioned above, we've been relying on this for kernel parameters and
+> > other structures since 2003-2004 so if it ever were to change we'd find
+> > out soon enough.
+> > 
+> > It's about to be used for scheduler classes as well. [2]
 > 
-> As mentioned above, we've been relying on this for kernel parameters and
-> other structures since 2003-2004 so if it ever were to change we'd find
-> out soon enough.
-> 
-> It's about to be used for scheduler classes as well. [2]
+> Is this something that gcc folks are aware of? Yes, we appear to be relying
+> on undocumented implementations, but that hasn't caused gcc to break the
+> kernel in the past.
 
-Is this something that gcc folks are aware of? Yes, we appear to be relying
-on undocumented implementations, but that hasn't caused gcc to break the
-kernel in the past.
+The scheduler change was suggested by Jakub so at least some of them
+are.
 
--- Steve
+Johan
