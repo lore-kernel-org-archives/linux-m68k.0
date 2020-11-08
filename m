@@ -1,113 +1,113 @@
-Return-Path: <SRS0=YomX=EM=vger.kernel.org=linux-m68k-owner@kernel.org>
+Return-Path: <SRS0=L7lY=EO=vger.kernel.org=linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-4.1 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-12.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 19D64C55178
-	for <linux-m68k@archiver.kernel.org>; Fri,  6 Nov 2020 17:02:33 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 633CCC388F9
+	for <linux-m68k@archiver.kernel.org>; Sun,  8 Nov 2020 16:34:49 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id BDF382151B
-	for <linux-m68k@archiver.kernel.org>; Fri,  6 Nov 2020 17:02:32 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=default; t=1604682152;
-	bh=tOrhjB8801E1p+btlLJs95tpLOMvubFShNAI+eOrvNk=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:List-ID:From;
-	b=mflqHHR6qrKlV8F4UsJ+Z6aWF3jqn2M/zknJQ8zh/gWRCHpLt6d0XntRO4x7CUIS2
-	 ODBcbTkXGqpE8hXPzM/wp9sMbiWedqslfXFHttmDwji0vt+cuLyrfe+Mk835Cc62ZY
-	 ydY1u3s8E0Fd1SqN7TcXp6kIPe0oiddocZOdkM5Q=
+	by mail.kernel.org (Postfix) with ESMTP id 2169B206ED
+	for <linux-m68k@archiver.kernel.org>; Sun,  8 Nov 2020 16:34:49 +0000 (UTC)
+Authentication-Results: mail.kernel.org;
+	dkim=pass (2048-bit key) header.d=timesys-com.20150623.gappssmtp.com header.i=@timesys-com.20150623.gappssmtp.com header.b="ulm0+L1X"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727669AbgKFRCc (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Fri, 6 Nov 2020 12:02:32 -0500
-Received: from mail-lf1-f66.google.com ([209.85.167.66]:34686 "EHLO
-        mail-lf1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727287AbgKFRC1 (ORCPT
-        <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Fri, 6 Nov 2020 12:02:27 -0500
-Received: by mail-lf1-f66.google.com with SMTP id i6so2928641lfd.1
-        for <linux-m68k@lists.linux-m68k.org>; Fri, 06 Nov 2020 09:02:25 -0800 (PST)
+        id S1728006AbgKHQet (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Sun, 8 Nov 2020 11:34:49 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57278 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727958AbgKHQer (ORCPT
+        <rfc822;linux-m68k@vger.kernel.org>); Sun, 8 Nov 2020 11:34:47 -0500
+Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 44CB7C0613CF
+        for <linux-m68k@vger.kernel.org>; Sun,  8 Nov 2020 08:34:47 -0800 (PST)
+Received: by mail-wr1-x441.google.com with SMTP id p8so5470106wrx.5
+        for <linux-m68k@vger.kernel.org>; Sun, 08 Nov 2020 08:34:47 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=timesys-com.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=BYcQRBtxIjvgBMwV7s++gFNzxPk2VJ7fLL837R7lgKY=;
+        b=ulm0+L1XI6sPYUt3htbLZdTIAY6hxnxy7XiOJlGWnD254I/J0M8sBSSVOpp+dk88lx
+         WhRgpRwPh1xpzyQaOOiivZpWEk54SLzh5sH1yq7cfQlkjXFse/5aglrbd3avWJ2i0crr
+         MeOP3Se4OzDUa6QWN0Wv0bSNDwHa4zx0vtu/6p571Q6gLmTHsuBP7RtyahrQvWT0Z9wO
+         SiZm/HR2nuwFKLCEP/SKMJ4ci5P45+o/5VCKnwqkvKqEG9IH2TZZLAl3mouAdM8wuaCG
+         KSrsQSdG1A1OT+mLHmkoWoDW2jxQlUcFZBeAPM8OgQyDV4astrRodp98bjdVRq7csmmj
+         9F5w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=IxgRn+NDQHTCeHwfBgvEL75Ff6LWDGq3sU/W0ROdACs=;
-        b=sh7bRqI9zAtcqjRorSa71m1ElDzr/AQJXcnMeQPCa/KDysv01hH8E/Txro1lsbyWdm
-         XHc7vW/U6wDo9S63i7A3AOVXxgT8cMbAbIPZynn7Z0wrWpBmG3/6vRB2e2eRShwGfwMU
-         LRRJimQ8wOZJpyb4yz8M9wbkMy34dB8zErVaFeOyuPD5CldaawpxX1Mn2Yvb04UkxVjz
-         pv1NMWBLfln1yltNuzHMNeYreecbQ7Xl0GU0rXCS03NK8HdLlaFC2Z4jXFyupmoXl/A6
-         0TnujnjlLGvGRgNcloQZsxXO23IyVZKmaquxGBsqe7bdLGw2RKPGOopUIYRnXcsQpeG8
-         nlgw==
-X-Gm-Message-State: AOAM530GDuTwWVOXbL/+GxDhyAFaaoWWgRKUZSOWJR1SNm0Lfp6fuiDt
-        Zzfh30OR7fceTFOfWqW0YqU=
-X-Google-Smtp-Source: ABdhPJw79cVvhd1vcIuu4XPui96mAP4xDKV9ArN/Fggzk4GDVD5ecQaYCGh110VzE2qKOVR/aU9B5Q==
-X-Received: by 2002:a05:6512:104e:: with SMTP id c14mr1305423lfb.345.1604682144693;
-        Fri, 06 Nov 2020 09:02:24 -0800 (PST)
-Received: from xi.terra (c-beaee455.07-184-6d6c6d4.bbcust.telenor.se. [85.228.174.190])
-        by smtp.gmail.com with ESMTPSA id r23sm225149lfe.228.2020.11.06.09.02.23
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=BYcQRBtxIjvgBMwV7s++gFNzxPk2VJ7fLL837R7lgKY=;
+        b=Ev7iMX0yrmTRyl3L6MLOE9CZI92hTgtIp1OydUj6jqrIkL9T15ZoJoGCoeFMX19gwr
+         3QMrbUhEox3i9TG/tvzMOJVABySITaydtibzlIu6yWptgh6OL4t5FZIMX8zk/VqV8AXZ
+         l82MZa/8NzTkx0w7pUPAOsJJQMCo4zz/RidC5qXuCtX45pZr+uEdTgW191bJIbBfdYqM
+         asndU0IGALx70uHfKYZNDbKDXBeqJlya+iEvXGCEXiq60lqQiZbkAURY8tJcbyTwbILf
+         CoK4a2DuL4nZ+mMzjFQUJtnwm+a1zxzaMvSch4Hb1p6me5HA2LqY93Z5sixjsQF3LXdK
+         EVng==
+X-Gm-Message-State: AOAM532hHa7OHr/p0Bw+vNeogKBlLzt88kFZsCCiQXl6pf4rNYc0CeOc
+        gTiVMy2Ii7iIFqUgGFjRPqXOHonDHhr+QA==
+X-Google-Smtp-Source: ABdhPJzX9SK6jmYsTSWR3nIMBw74qiHvjuXdjlF2CW4DFEUNHZfVLzwI43ae6aSA/1bK00nAwjghsg==
+X-Received: by 2002:a5d:4388:: with SMTP id i8mr3930018wrq.262.1604853285985;
+        Sun, 08 Nov 2020 08:34:45 -0800 (PST)
+Received: from localhost.localdomain (host-80-116-112-213.retail.telecomitalia.it. [80.116.112.213])
+        by smtp.gmail.com with ESMTPSA id 130sm10342180wmd.18.2020.11.08.08.34.44
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 06 Nov 2020 09:02:23 -0800 (PST)
-Received: from johan by xi.terra with local (Exim 4.93.0.4)
-        (envelope-from <johan@kernel.org>)
-        id 1kb587-0000G4-23; Fri, 06 Nov 2020 18:02:27 +0100
-Date:   Fri, 6 Nov 2020 18:02:27 +0100
-From:   Johan Hovold <johan@kernel.org>
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     Johan Hovold <johan@kernel.org>, Jessica Yu <jeyu@kernel.org>,
-        linux-kernel@vger.kernel.org,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Frank Rowand <frowand.list@gmail.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Nick Desaulniers <ndesaulniers@gooogle.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        David Miller <davem@davemloft.net>,
-        Jakub Jelinek <jakub@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Daniel Kurtz <djkurtz@chromium.org>,
-        linux-arch@vger.kernel.org, linux-m68k@lists.linux-m68k.org
-Subject: Re: [PATCH 0/8] linker-section array fix and clean ups
-Message-ID: <20201106170227.GE4085@localhost>
-References: <20201103175711.10731-1-johan@kernel.org>
- <20201106160344.GA12184@linux-8ccs.fritz.box>
- <20201106164537.GD4085@localhost>
- <20201106115523.41f7e2ed@gandalf.local.home>
+        Sun, 08 Nov 2020 08:34:45 -0800 (PST)
+From:   Angelo Dureghello <angelo.dureghello@timesys.com>
+To:     gerg@linux-m68k.org
+Cc:     linux-m68k@vger.kernel.org, geert@linux-m68k.org,
+        Angelo Dureghello <angelo.dureghello@timesys.com>
+Subject: [PATCH] m68k: mm: fix wrong m68k_fixup_info addresses
+Date:   Sun,  8 Nov 2020 17:34:13 +0100
+Message-Id: <20201108163413.1349641-1-angelo.dureghello@timesys.com>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201106115523.41f7e2ed@gandalf.local.home>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-On Fri, Nov 06, 2020 at 11:55:23AM -0500, Steven Rostedt wrote:
-> On Fri, 6 Nov 2020 17:45:37 +0100
-> Johan Hovold <johan@kernel.org> wrote:
-> 
-> > It's simply specifying alignment when declaring the variable that
-> > prevents this optimisation. The relevant code is in the function
-> > align_variable() in [1] where DATA_ALIGNMENT() is never called in case
-> > an alignment has been specified (!DECL_USER_ALIGN(decl)).
-> > 
-> > There's no mention in the documentation of this that I'm aware of, but
-> > this is the way the aligned attribute has worked since its introduction
-> > judging from the commit history.
-> > 
-> > As mentioned above, we've been relying on this for kernel parameters and
-> > other structures since 2003-2004 so if it ever were to change we'd find
-> > out soon enough.
-> > 
-> > It's about to be used for scheduler classes as well. [2]
-> 
-> Is this something that gcc folks are aware of? Yes, we appear to be relying
-> on undocumented implementations, but that hasn't caused gcc to break the
-> kernel in the past.
+After rebasing today with mainline/master, i am hitting
+this issue again:
 
-The scheduler change was suggested by Jakub so at least some of them
-are.
+https://www.spinics.net/lists/linux-m68k/msg15881.html
 
-Johan
+   Loading Ramdisk to 47ccc000, end 47d85544 ... OK
+...
+initrd at 0x47ccc000:0x47d85544
+overlap at 1073741889 for chunk 0
+overlap at 1073746200 for chunk 0
+overlap at 1073746760 for chunk 0
+overlap at 1073746761 for chunk 0
+overlap at 1073746762 for chunk 0
+overlap at 1073746763 for chunk 0
+overlap at 1073746764 for chunk 0
+
+This time i am using gcc-10.1.0-nolibc, but the issue
+re-appeared. Add volatile again to solve the issue.
+
+Signed-off-by: Angelo Dureghello <angelo.dureghello@timesys.com>
+---
+ arch/m68k/include/asm/page_mm.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/arch/m68k/include/asm/page_mm.h b/arch/m68k/include/asm/page_mm.h
+index e6b75992192b..1eff386cc64b 100644
+--- a/arch/m68k/include/asm/page_mm.h
++++ b/arch/m68k/include/asm/page_mm.h
+@@ -135,7 +135,7 @@ static inline __attribute_const__ int __virt_to_node_shift(void)
+ {
+ 	int shift;
+ 
+-	asm (
++	asm volatile (
+ 		"1:	moveq	#0,%0\n"
+ 		m68k_fixup(%c1, 1b)
+ 		: "=d" (shift)
+-- 
+2.28.0
+
