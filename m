@@ -2,113 +2,107 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.3 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,NICE_REPLY_A,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=no autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-4.0 required=3.0 tests=BAYES_00,MAILING_LIST_MULTI,
+	SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D5FC0C5517A
-	for <linux-m68k@archiver.kernel.org>; Wed, 11 Nov 2020 16:18:08 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A8997C388F7
+	for <linux-m68k@archiver.kernel.org>; Fri, 13 Nov 2020 14:18:36 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 7B6D020756
-	for <linux-m68k@archiver.kernel.org>; Wed, 11 Nov 2020 16:18:08 +0000 (UTC)
-Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel-dk.20150623.gappssmtp.com header.i=@kernel-dk.20150623.gappssmtp.com header.b="E+UT7uDK"
+	by mail.kernel.org (Postfix) with ESMTP id 6DCE622240
+	for <linux-m68k@archiver.kernel.org>; Fri, 13 Nov 2020 14:18:36 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726203AbgKKQSF (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Wed, 11 Nov 2020 11:18:05 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51386 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726820AbgKKQR7 (ORCPT
+        id S1726725AbgKMOSg (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Fri, 13 Nov 2020 09:18:36 -0500
+Received: from mail-lf1-f65.google.com ([209.85.167.65]:36681 "EHLO
+        mail-lf1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726503AbgKMOSc (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Wed, 11 Nov 2020 11:17:59 -0500
-Received: from mail-io1-xd2c.google.com (mail-io1-xd2c.google.com [IPv6:2607:f8b0:4864:20::d2c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E309C0613D1
-        for <linux-m68k@lists.linux-m68k.org>; Wed, 11 Nov 2020 08:17:58 -0800 (PST)
-Received: by mail-io1-xd2c.google.com with SMTP id m9so2822795iox.10
-        for <linux-m68k@lists.linux-m68k.org>; Wed, 11 Nov 2020 08:17:58 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=hIBjUOhCL4FamySv2BSK1WhnluetPINBm9sx/SODghk=;
-        b=E+UT7uDKzv8M0Zf2lZ8UIYK1hcqMDMAvoGTdUr0tHYghvlxNxqiQgOW/5iqLyKbRZS
-         zVvYZGeU4MSOIwiwwYIlWhf/37CVkuzMdXfkbJgAuUAynl3foV2aD2CgntKM01Eag1w6
-         pQ8HBth/OBv12+fhMJKQGc1NkC3aSg3Ood/4QEvHAIURwz7xRQ3LiqHo+gH4kHkz/Tzz
-         kGrYC8QFOWBAL14ps4gGvDC3EJQ6RukmqNG7qjjJB2x3L16pNJsAI7fQJAXbZiNkIOyF
-         gOqtjfkreX6lm/ivN+Yhkt5U9rTka4eIy5SeWvarGIF0s96mi2fbJkGPVSL4J27D/Boc
-         p0OA==
+        Fri, 13 Nov 2020 09:18:32 -0500
+Received: by mail-lf1-f65.google.com with SMTP id f11so14045577lfs.3
+        for <linux-m68k@lists.linux-m68k.org>; Fri, 13 Nov 2020 06:18:30 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=hIBjUOhCL4FamySv2BSK1WhnluetPINBm9sx/SODghk=;
-        b=l9+PhT6mDGurxVFp3RFGUYVmfqWNuPlytFE27L41FVuB5HfxSad6pMwlf30zPRZdd2
-         W2OKkbaIgmX0kTnOskJrwwQ8ngjn1pzk8sewC1j0Q0b0e7C4qyHyt8iRxHeJR39S6tRW
-         e34hQmnFCyGrMzkSyHUOWcVfuFa3UYF68qj8eD+Xo4zX/8d7jdo321Ajubqijf59J6ep
-         7llGPPL39atmr8G8xNe27YeFRMa8qcJm20PT1nKqxOIgilhQy8bCoXIH+7UqNFCSnXmf
-         GrJw1BDy7NM6EFOrUpykiIca/7jbp0rnkzKz1m4jF9+69Tb8iIkvvI8yVoCFvVht3Aky
-         JArA==
-X-Gm-Message-State: AOAM5328kwW4M7kL8ExmpUb0k8yUwJhXjz/GUTh6OCQs9q8z1zonVgk/
-        gG2H9OkOrDevTQKdsntpmMst3LR36bE4IQ==
-X-Google-Smtp-Source: ABdhPJyWFXPFFosbpi7Mw4IBURM5g2Va17wNDYQIiOuR5s1zvzKiVX4DBgORaOVic1unFcvUrR9Xmg==
-X-Received: by 2002:a6b:7114:: with SMTP id q20mr18531488iog.16.1605111477264;
-        Wed, 11 Nov 2020 08:17:57 -0800 (PST)
-Received: from [192.168.1.30] ([65.144.74.34])
-        by smtp.gmail.com with ESMTPSA id v63sm1404927ioe.52.2020.11.11.08.17.56
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 11 Nov 2020 08:17:56 -0800 (PST)
-Subject: Re: simplify gendisk lookup and remove struct block_device aliases v4
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Denis Efremov <efremov@linux.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Song Liu <song@kernel.org>, Al Viro <viro@zeniv.linux.org.uk>,
-        Finn Thain <fthain@telegraphics.com.au>,
-        Michael Schmitz <schmitzmic@gmail.com>,
-        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-ide@vger.kernel.org, linux-raid@vger.kernel.org,
-        linux-scsi@vger.kernel.org, linux-m68k@lists.linux-m68k.org
-References: <20201029145841.144173-1-hch@lst.de>
-From:   Jens Axboe <axboe@kernel.dk>
-Message-ID: <92e869be-9717-8d97-a962-a630a2517f00@kernel.dk>
-Date:   Wed, 11 Nov 2020 09:17:55 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=gDgCLMJoZmxmDlgC6UusTiNF2DjvUhEUsSy7j2c2oEo=;
+        b=XAYxBYIi+VL4CZwFc9QXbVeOcblIQiG+5qPch1E4RIs41b2onXzVLe9mrBKC/Qyz5A
+         R4Zvd5NvoYu9UR9zrbj6ZxYayHBik8FBN2BG+nHJZUlMjPAhnUYx7lD61MNpiHzGTvQR
+         j4cFhVa9Swn7zMF8mza/sfYtFESrEizDdGid3TPEa+og27SPldLeYqvZIbRkHGqG+U4m
+         k7dLpK3pNb/hNzszqNqmqmt2AiCTQwXVe7G2WUeeVwaaJujv7bqq1UgTwHMH02QtL0/d
+         hVh91KoS9GxOCbIQHX7pH3ThR+lqXoMR6qK633G/ZRuT+QhrRgdCYQp1eZWP4UU5a403
+         1sWA==
+X-Gm-Message-State: AOAM531Kz7I+o51k3omHdOBgRmKsBs96bp2ZVJ1nOh2iqXeMKAQXfpGY
+        yHTkKs5lPUI/UJNbD7ScOF8=
+X-Google-Smtp-Source: ABdhPJxdfb818xmmOyNVGqR7psD/mq9eAAqChsuRhQu4aj8NV0L1pYsMjOklC1ct+Rq/A4X/wrdSUg==
+X-Received: by 2002:ac2:5503:: with SMTP id j3mr1103706lfk.94.1605277109708;
+        Fri, 13 Nov 2020 06:18:29 -0800 (PST)
+Received: from xi.terra (c-beaee455.07-184-6d6c6d4.bbcust.telenor.se. [85.228.174.190])
+        by smtp.gmail.com with ESMTPSA id v12sm1448452lji.3.2020.11.13.06.18.28
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 13 Nov 2020 06:18:28 -0800 (PST)
+Received: from johan by xi.terra with local (Exim 4.93.0.4)
+        (envelope-from <johan@kernel.org>)
+        id 1kdZuO-00021E-VC; Fri, 13 Nov 2020 15:18:37 +0100
+Date:   Fri, 13 Nov 2020 15:18:36 +0100
+From:   Johan Hovold <johan@kernel.org>
+To:     Jessica Yu <jeyu@kernel.org>
+Cc:     Johan Hovold <johan@kernel.org>, linux-kernel@vger.kernel.org,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Frank Rowand <frowand.list@gmail.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Nick Desaulniers <ndesaulniers@gooogle.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        David Miller <davem@davemloft.net>,
+        Jakub Jelinek <jakub@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Daniel Kurtz <djkurtz@chromium.org>,
+        linux-arch@vger.kernel.org, linux-m68k@lists.linux-m68k.org
+Subject: Re: [PATCH 0/8] linker-section array fix and clean ups
+Message-ID: <X66VvI/M4GRDbiWM@localhost>
+References: <20201103175711.10731-1-johan@kernel.org>
+ <20201106160344.GA12184@linux-8ccs.fritz.box>
+ <20201106164537.GD4085@localhost>
+ <20201111154716.GB5304@linux-8ccs>
 MIME-Version: 1.0
-In-Reply-To: <20201029145841.144173-1-hch@lst.de>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201111154716.GB5304@linux-8ccs>
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-On 10/29/20 8:58 AM, Christoph Hellwig wrote:
-> Hi all,
-> 
-> this series removes the annoying struct block_device aliases, which can
-> happen for a bunch of old floppy drivers (and z2ram).  In that case
-> multiple struct block device instances for different dev_t's can point
-> to the same gendisk, without being partitions.  The cause for that
-> is the probe/get callback registered through blk_register_regions.
-> 
-> This series removes blk_register_region entirely, splitting it it into
-> a simple xarray lookup of registered gendisks, and a probe callback
-> stored in the major_names array that can be used for modprobe overrides
-> or creating devices on demands when no gendisk is found.  The old
-> remapping is gone entirely, and instead the 4 remaining drivers just
-> register a gendisk for each operating mode.  In case of the two drivers
-> that have lots of aliases that is done on-demand using the new probe
-> callback, while for the other two I simply register all at probe time
-> to keep things simple.
-> 
-> Note that the m68k drivers are compile tested only.
+On Wed, Nov 11, 2020 at 04:47:16PM +0100, Jessica Yu wrote:
 
-Applied, thanks.
+> Thanks for providing the links and references. Your explanation and
+> this reply from Jakub [1] clarified things for me. I was not aware of
+> the distinction gcc made between aligned attributes on types vs. on
+> variables. So from what I understand now, gcc suppresses the
+> optimization when the alignment is specified in the variable
+> declaration, but not necessarily when the aligned attribute is just on
+> the type.
+> 
+> Even though it's been in use for a long time, I think it would be
+> really helpful if this gcc quirk was explained just a bit more in the
+> patch changelogs, especially since this is undocumented behavior.
+> I found the explanation in [1] (as well as in your cover letter) to be
+> sufficient. Maybe something like "GCC suppresses any optimizations
+> increasing alignment when the alignment is specified in the variable
+> declaration, as opposed to just on the type definition. Therefore,
+> explicitly specify type alignment when declaring entries to prevent
+> gcc from increasing alignment."
 
--- 
-Jens Axboe
+Sure, I can try to expand the commit messages a bit.
 
+> In any case, I can take the module and moduleparam.h patches through
+> my tree, but I will wait a few days in case there are any objections.
+
+Sounds good, thanks. I'll send a v2 next week then.
+
+Johan
+
+> [1] https://lore.kernel.org/lkml/20201021131806.GA2176@tucnak/
