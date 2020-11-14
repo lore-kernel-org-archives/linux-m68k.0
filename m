@@ -2,107 +2,78 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-4.0 required=3.0 tests=BAYES_00,MAILING_LIST_MULTI,
-	SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-8.2 required=3.0 tests=BAYES_00,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,
+	SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=unavailable
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A8997C388F7
-	for <linux-m68k@archiver.kernel.org>; Fri, 13 Nov 2020 14:18:36 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 958C0C63697
+	for <linux-m68k@archiver.kernel.org>; Sat, 14 Nov 2020 12:15:25 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 6DCE622240
-	for <linux-m68k@archiver.kernel.org>; Fri, 13 Nov 2020 14:18:36 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 694FB22226
+	for <linux-m68k@archiver.kernel.org>; Sat, 14 Nov 2020 12:15:25 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726725AbgKMOSg (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Fri, 13 Nov 2020 09:18:36 -0500
-Received: from mail-lf1-f65.google.com ([209.85.167.65]:36681 "EHLO
-        mail-lf1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726503AbgKMOSc (ORCPT
-        <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Fri, 13 Nov 2020 09:18:32 -0500
-Received: by mail-lf1-f65.google.com with SMTP id f11so14045577lfs.3
-        for <linux-m68k@lists.linux-m68k.org>; Fri, 13 Nov 2020 06:18:30 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=gDgCLMJoZmxmDlgC6UusTiNF2DjvUhEUsSy7j2c2oEo=;
-        b=XAYxBYIi+VL4CZwFc9QXbVeOcblIQiG+5qPch1E4RIs41b2onXzVLe9mrBKC/Qyz5A
-         R4Zvd5NvoYu9UR9zrbj6ZxYayHBik8FBN2BG+nHJZUlMjPAhnUYx7lD61MNpiHzGTvQR
-         j4cFhVa9Swn7zMF8mza/sfYtFESrEizDdGid3TPEa+og27SPldLeYqvZIbRkHGqG+U4m
-         k7dLpK3pNb/hNzszqNqmqmt2AiCTQwXVe7G2WUeeVwaaJujv7bqq1UgTwHMH02QtL0/d
-         hVh91KoS9GxOCbIQHX7pH3ThR+lqXoMR6qK633G/ZRuT+QhrRgdCYQp1eZWP4UU5a403
-         1sWA==
-X-Gm-Message-State: AOAM531Kz7I+o51k3omHdOBgRmKsBs96bp2ZVJ1nOh2iqXeMKAQXfpGY
-        yHTkKs5lPUI/UJNbD7ScOF8=
-X-Google-Smtp-Source: ABdhPJxdfb818xmmOyNVGqR7psD/mq9eAAqChsuRhQu4aj8NV0L1pYsMjOklC1ct+Rq/A4X/wrdSUg==
-X-Received: by 2002:ac2:5503:: with SMTP id j3mr1103706lfk.94.1605277109708;
-        Fri, 13 Nov 2020 06:18:29 -0800 (PST)
-Received: from xi.terra (c-beaee455.07-184-6d6c6d4.bbcust.telenor.se. [85.228.174.190])
-        by smtp.gmail.com with ESMTPSA id v12sm1448452lji.3.2020.11.13.06.18.28
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 13 Nov 2020 06:18:28 -0800 (PST)
-Received: from johan by xi.terra with local (Exim 4.93.0.4)
-        (envelope-from <johan@kernel.org>)
-        id 1kdZuO-00021E-VC; Fri, 13 Nov 2020 15:18:37 +0100
-Date:   Fri, 13 Nov 2020 15:18:36 +0100
-From:   Johan Hovold <johan@kernel.org>
-To:     Jessica Yu <jeyu@kernel.org>
-Cc:     Johan Hovold <johan@kernel.org>, linux-kernel@vger.kernel.org,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Frank Rowand <frowand.list@gmail.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Nick Desaulniers <ndesaulniers@gooogle.com>,
-        Arnd Bergmann <arnd@arndb.de>,
+        id S1726807AbgKNMPZ (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Sat, 14 Nov 2020 07:15:25 -0500
+Received: from mail.kernel.org ([198.145.29.99]:33690 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726768AbgKNMPY (ORCPT <rfc822;linux-m68k@lists.linux-m68k.org>);
+        Sat, 14 Nov 2020 07:15:24 -0500
+Received: from gaia (unknown [2.26.170.190])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 4D4BE221EB;
+        Sat, 14 Nov 2020 12:15:20 +0000 (UTC)
+Date:   Sat, 14 Nov 2020 12:15:17 +0000
+From:   Catalin Marinas <catalin.marinas@arm.com>
+To:     Mike Rapoport <rppt@kernel.org>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Alexey Dobriyan <adobriyan@gmail.com>,
         Geert Uytterhoeven <geert@linux-m68k.org>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        David Miller <davem@davemloft.net>,
-        Jakub Jelinek <jakub@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Daniel Kurtz <djkurtz@chromium.org>,
-        linux-arch@vger.kernel.org, linux-m68k@lists.linux-m68k.org
-Subject: Re: [PATCH 0/8] linker-section array fix and clean ups
-Message-ID: <X66VvI/M4GRDbiWM@localhost>
-References: <20201103175711.10731-1-johan@kernel.org>
- <20201106160344.GA12184@linux-8ccs.fritz.box>
- <20201106164537.GD4085@localhost>
- <20201111154716.GB5304@linux-8ccs>
+        Greg Ungerer <gerg@linux-m68k.org>,
+        John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Matt Turner <mattst88@gmail.com>, Meelis Roos <mroos@linux.ee>,
+        Michael Schmitz <schmitzmic@gmail.com>,
+        Mike Rapoport <rppt@linux.ibm.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Tony Luck <tony.luck@intel.com>,
+        Vineet Gupta <vgupta@synopsys.com>,
+        Will Deacon <will@kernel.org>, linux-alpha@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-doc@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-ia64@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-m68k@lists.linux-m68k.org,
+        linux-mm@kvack.org, linux-snps-arc@lists.infradead.org
+Subject: Re: [PATCH v2 09/13] arm, arm64: move free_unused_memmap() to
+ generic mm
+Message-ID: <20201114121516.GA2837@gaia>
+References: <20201101170454.9567-1-rppt@kernel.org>
+ <20201101170454.9567-10-rppt@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201111154716.GB5304@linux-8ccs>
+In-Reply-To: <20201101170454.9567-10-rppt@kernel.org>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-On Wed, Nov 11, 2020 at 04:47:16PM +0100, Jessica Yu wrote:
-
-> Thanks for providing the links and references. Your explanation and
-> this reply from Jakub [1] clarified things for me. I was not aware of
-> the distinction gcc made between aligned attributes on types vs. on
-> variables. So from what I understand now, gcc suppresses the
-> optimization when the alignment is specified in the variable
-> declaration, but not necessarily when the aligned attribute is just on
-> the type.
+On Sun, Nov 01, 2020 at 07:04:50PM +0200, Mike Rapoport wrote:
+> From: Mike Rapoport <rppt@linux.ibm.com>
 > 
-> Even though it's been in use for a long time, I think it would be
-> really helpful if this gcc quirk was explained just a bit more in the
-> patch changelogs, especially since this is undocumented behavior.
-> I found the explanation in [1] (as well as in your cover letter) to be
-> sufficient. Maybe something like "GCC suppresses any optimizations
-> increasing alignment when the alignment is specified in the variable
-> declaration, as opposed to just on the type definition. Therefore,
-> explicitly specify type alignment when declaring entries to prevent
-> gcc from increasing alignment."
+> ARM and ARM64 free unused parts of the memory map just before the
+> initialization of the page allocator. To allow holes in the memory map both
+> architectures overload pfn_valid() and define HAVE_ARCH_PFN_VALID.
+> 
+> Allowing holes in the memory map for FLATMEM may be useful for small
+> machines, such as ARC and m68k and will enable those architectures to cease
+> using DISCONTIGMEM and still support more than one memory bank.
+> 
+> Move the functions that free unused memory map to generic mm and enable
+> them in case HAVE_ARCH_PFN_VALID=y.
+> 
+> Signed-off-by: Mike Rapoport <rppt@linux.ibm.com>
 
-Sure, I can try to expand the commit messages a bit.
+For arm64:
 
-> In any case, I can take the module and moduleparam.h patches through
-> my tree, but I will wait a few days in case there are any objections.
-
-Sounds good, thanks. I'll send a v2 next week then.
-
-Johan
-
-> [1] https://lore.kernel.org/lkml/20201021131806.GA2176@tucnak/
+Acked-by: Catalin Marinas <catalin.marinas@arm.com>
