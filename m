@@ -2,78 +2,56 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.2 required=3.0 tests=BAYES_00,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,
-	SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=unavailable
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=0.6 required=3.0 tests=BAYES_50,DKIM_ADSP_CUSTOM_MED,
+	FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,FREEMAIL_REPLYTO_END_DIGIT,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
+	autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 958C0C63697
-	for <linux-m68k@archiver.kernel.org>; Sat, 14 Nov 2020 12:15:25 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A9943C8300F
+	for <linux-m68k@archiver.kernel.org>; Sun, 15 Nov 2020 16:45:37 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 694FB22226
-	for <linux-m68k@archiver.kernel.org>; Sat, 14 Nov 2020 12:15:25 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 91ED32419B
+	for <linux-m68k@archiver.kernel.org>; Sun, 15 Nov 2020 16:45:37 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726807AbgKNMPZ (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Sat, 14 Nov 2020 07:15:25 -0500
-Received: from mail.kernel.org ([198.145.29.99]:33690 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726768AbgKNMPY (ORCPT <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Sat, 14 Nov 2020 07:15:24 -0500
-Received: from gaia (unknown [2.26.170.190])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 4D4BE221EB;
-        Sat, 14 Nov 2020 12:15:20 +0000 (UTC)
-Date:   Sat, 14 Nov 2020 12:15:17 +0000
-From:   Catalin Marinas <catalin.marinas@arm.com>
-To:     Mike Rapoport <rppt@kernel.org>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Alexey Dobriyan <adobriyan@gmail.com>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Greg Ungerer <gerg@linux-m68k.org>,
-        John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Matt Turner <mattst88@gmail.com>, Meelis Roos <mroos@linux.ee>,
-        Michael Schmitz <schmitzmic@gmail.com>,
-        Mike Rapoport <rppt@linux.ibm.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Tony Luck <tony.luck@intel.com>,
-        Vineet Gupta <vgupta@synopsys.com>,
-        Will Deacon <will@kernel.org>, linux-alpha@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-doc@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-ia64@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-m68k@lists.linux-m68k.org,
-        linux-mm@kvack.org, linux-snps-arc@lists.infradead.org
-Subject: Re: [PATCH v2 09/13] arm, arm64: move free_unused_memmap() to
- generic mm
-Message-ID: <20201114121516.GA2837@gaia>
-References: <20201101170454.9567-1-rppt@kernel.org>
- <20201101170454.9567-10-rppt@kernel.org>
+        id S1727349AbgKOQoT convert rfc822-to-8bit (ORCPT
+        <rfc822;linux-m68k@archiver.kernel.org>);
+        Sun, 15 Nov 2020 11:44:19 -0500
+Received: from sw73-70-41.adsl.seed.net.tw ([203.73.70.41]:34169 "EHLO
+        oa.trendtek.com.tw" rhost-flags-OK-FAIL-OK-OK) by vger.kernel.org
+        with ESMTP id S1727362AbgKOQoT (ORCPT
+        <rfc822;linux-m68k@vger.kernel.org>); Sun, 15 Nov 2020 11:44:19 -0500
+Received: from [156.96.44.214] ([156.96.44.214])
+        (authenticated bits=0)
+        by oa.trendtek.com.tw (8.13.8/8.13.1) with ESMTP id 0AFGi9Sw032145
+        for <linux-m68k@lists.linux-m68k.org>; Mon, 16 Nov 2020 00:44:17 +0800
+Message-Id: <202011151644.0AFGi9Sw032145@oa.trendtek.com.tw>
+Content-Type: text/plain; charset="iso-8859-1"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201101170454.9567-10-rppt@kernel.org>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8BIT
+Content-Description: Mail message body
+Subject: Corporate and Personal Loan *
+To:     linux-m68k@vger.kernel.org
+From:   "Investment  Corporate" <financialcapability6@gmail.com>
+Date:   Sun, 15 Nov 2020 08:44:13 -0800
+Reply-To: hmurrah39@gmail.com
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-On Sun, Nov 01, 2020 at 07:04:50PM +0200, Mike Rapoport wrote:
-> From: Mike Rapoport <rppt@linux.ibm.com>
-> 
-> ARM and ARM64 free unused parts of the memory map just before the
-> initialization of the page allocator. To allow holes in the memory map both
-> architectures overload pfn_valid() and define HAVE_ARCH_PFN_VALID.
-> 
-> Allowing holes in the memory map for FLATMEM may be useful for small
-> machines, such as ARC and m68k and will enable those architectures to cease
-> using DISCONTIGMEM and still support more than one memory bank.
-> 
-> Move the functions that free unused memory map to generic mm and enable
-> them in case HAVE_ARCH_PFN_VALID=y.
-> 
-> Signed-off-by: Mike Rapoport <rppt@linux.ibm.com>
+Hello linux-m68k@lists.linux-m68k.org
 
-For arm64:
 
-Acked-by: Catalin Marinas <catalin.marinas@arm.com>
+We are Base Investment Company offering Corporate and Personal Loan at 3% Interest Rate for a duration of 10Years.
+
+
+We also pay 1% commission to brokers, who introduce project owners for finance or other opportunities.
+
+
+Please get back to me if you are interested for more
+
+details.
+
+
+Yours faithfully,
+
+Hashim Murrah
