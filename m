@@ -2,56 +2,98 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=0.6 required=3.0 tests=BAYES_50,DKIM_ADSP_CUSTOM_MED,
-	FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,FREEMAIL_REPLYTO_END_DIGIT,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
-	autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-5.2 required=3.0 tests=BAYES_00,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A9943C8300F
-	for <linux-m68k@archiver.kernel.org>; Sun, 15 Nov 2020 16:45:37 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D57A6C63798
+	for <linux-m68k@archiver.kernel.org>; Tue, 17 Nov 2020 00:11:21 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 91ED32419B
-	for <linux-m68k@archiver.kernel.org>; Sun, 15 Nov 2020 16:45:37 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 9C4952067D
+	for <linux-m68k@archiver.kernel.org>; Tue, 17 Nov 2020 00:11:21 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727349AbgKOQoT convert rfc822-to-8bit (ORCPT
-        <rfc822;linux-m68k@archiver.kernel.org>);
-        Sun, 15 Nov 2020 11:44:19 -0500
-Received: from sw73-70-41.adsl.seed.net.tw ([203.73.70.41]:34169 "EHLO
-        oa.trendtek.com.tw" rhost-flags-OK-FAIL-OK-OK) by vger.kernel.org
-        with ESMTP id S1727362AbgKOQoT (ORCPT
-        <rfc822;linux-m68k@vger.kernel.org>); Sun, 15 Nov 2020 11:44:19 -0500
-Received: from [156.96.44.214] ([156.96.44.214])
-        (authenticated bits=0)
-        by oa.trendtek.com.tw (8.13.8/8.13.1) with ESMTP id 0AFGi9Sw032145
-        for <linux-m68k@lists.linux-m68k.org>; Mon, 16 Nov 2020 00:44:17 +0800
-Message-Id: <202011151644.0AFGi9Sw032145@oa.trendtek.com.tw>
-Content-Type: text/plain; charset="iso-8859-1"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8BIT
-Content-Description: Mail message body
-Subject: Corporate and Personal Loan *
-To:     linux-m68k@vger.kernel.org
-From:   "Investment  Corporate" <financialcapability6@gmail.com>
-Date:   Sun, 15 Nov 2020 08:44:13 -0800
-Reply-To: hmurrah39@gmail.com
+        id S1731025AbgKQALB (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Mon, 16 Nov 2020 19:11:01 -0500
+Received: from anhedonia.sammy.net ([67.23.44.4]:54043 "EHLO sammy.net"
+        rhost-flags-OK-FAIL-OK-OK) by vger.kernel.org with ESMTP
+        id S1726310AbgKQALA (ORCPT <rfc822;linux-m68k@lists.linux-m68k.org>);
+        Mon, 16 Nov 2020 19:11:00 -0500
+X-Greylist: delayed 2620 seconds by postgrey-1.27 at vger.kernel.org; Mon, 16 Nov 2020 19:11:00 EST
+Received: from sammy by sammy.net with local (Exim 4.63)
+        (envelope-from <sammy@sammy.net>)
+        id 1kentn-00010k-IZ; Mon, 16 Nov 2020 18:27:03 -0500
+Date:   Mon, 16 Nov 2020 18:27:03 -0500
+From:   Sam Creasey <sammy@sammy.net>
+To:     Finn Thain <fthain@telegraphics.com.au>
+Cc:     Geert Uytterhoeven <geert@linux-m68k.org>,
+        Arnd Bergmann <arnd@kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Russell King <linux@armlinux.org.uk>,
+        Tony Luck <tony.luck@intel.com>,
+        Fenghua Yu <fenghua.yu@intel.com>,
+        Greg Ungerer <gerg@linux-m68k.org>,
+        Philip Blundell <philb@gnu.org>,
+        Joshua Thompson <funaho@jurai.org>,
+        Sam Creasey <sammy@sammy.net>,
+        "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
+        Helge Deller <deller@gmx.de>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        John Stultz <john.stultz@linaro.org>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        "linux-ia64@vger.kernel.org" <linux-ia64@vger.kernel.org>,
+        Parisc List <linux-parisc@vger.kernel.org>,
+        linux-m68k <linux-m68k@lists.linux-m68k.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>
+Subject: Re: [RFC 13/13] m68k: mac: convert to generic clockevent
+Message-ID: <20201116232703.GV14088@anhedonia-3>
+References: <20201008154651.1901126-1-arnd@arndb.de> <20201008154651.1901126-14-arnd@arndb.de> <alpine.LNX.2.23.453.2010091900150.12@nippy.intranet> <CAK8P3a3rM7gJjdTtcKzr6yi15n6xs-yhEpmSOf3QHfahQwxqkw@mail.gmail.com> <alpine.LNX.2.23.453.2010150937430.16@nippy.intranet> <CAK8P3a3i6cum_9xGgsbxjXXvbRsP8Po5qLZ0Agb3c4gZTKC9GQ@mail.gmail.com> <CAMuHMdUyGH=ORa4yHivMeJZaGQ3kEXi1kr9=P+u1y3QQnC+-4g@mail.gmail.com> <alpine.LNX.2.23.453.2011061343030.13@nippy.intranet>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <alpine.LNX.2.23.453.2011061343030.13@nippy.intranet>
+User-Agent: Mutt/1.4.2.2i
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-Hello linux-m68k@lists.linux-m68k.org
+On Fri, Nov 06, 2020 at 01:52:01PM +1100, Finn Thain wrote:
+> On Fri, 23 Oct 2020, Geert Uytterhoeven wrote:
+> 
+> > > > > The arm/rpc timer seems to be roughly in the same category as most 
+> > > > > of the m68k ones or the i8253 counter on a PC. It's possible that 
+> > > > > some of them could use the same logic as 
+> > > > > drivers/clocksource/i8253.o as long as there is any hardware 
+> > > > > oneshot mode.
+> > > >
+> > > > There appear to be 15 platforms in that category. 4 have no 
+> > > > clocksource besides the jiffies clocksource, meaning there's no 
+> > > > practical alternative to using a periodic tick, like you did in your 
+> > > > RFC patch:
+> > > >
+> > > > arch/m68k/apollo/config.c
+> > > > arch/m68k/q40/q40ints.c
+> > > > arch/m68k/sun3/sun3ints.c
+> > > > arch/m68k/sun3x/time.c
+> > >
+> > > Do any of these have users? I'm fairly sure sun3x has never worked in 
+> > > mainline, sun3 seems to still need the same few patches it did 20 
+> > > years ago. I couldn't find much about Linux on Apollo or q40, the 
+> > > information on the web for either of them seems to all be for 
+> > > linux-2.4 kernels.
+> > 
+> > They probably don't have any users.
+> 
+> I have access to several Sun 3 machines but no time to work on that port, 
+> unfortunately.
+> 
+> Are these 4 platforms (those with no clocksource besides the "jiffies" 
+> clocksource) the only reason for CONFIG_TIME_LOW_RES on m68k?
 
+Sun3x was probably at least as close (if not closer) than Sun3 to
+working in mainline back in the day, but unfortunately I'm in the same
+place as Finn...  I've got the hardware, but time is harder to come
+by.
 
-We are Base Investment Company offering Corporate and Personal Loan at 3% Interest Rate for a duration of 10Years.
-
-
-We also pay 1% commission to brokers, who introduce project owners for finance or other opportunities.
-
-
-Please get back to me if you are interested for more
-
-details.
-
-
-Yours faithfully,
-
-Hashim Murrah
+-- Sam
