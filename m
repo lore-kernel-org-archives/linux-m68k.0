@@ -2,104 +2,77 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
-	autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-8.8 required=3.0 tests=BAYES_00,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,MAILING_LIST_MULTI,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 06E3AC5519F
-	for <linux-m68k@archiver.kernel.org>; Fri, 20 Nov 2020 06:08:44 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id AAD96C6379F
+	for <linux-m68k@archiver.kernel.org>; Fri, 20 Nov 2020 07:34:47 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id A14B422256
-	for <linux-m68k@archiver.kernel.org>; Fri, 20 Nov 2020 06:08:43 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 5F64922256
+	for <linux-m68k@archiver.kernel.org>; Fri, 20 Nov 2020 07:34:47 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725829AbgKTGIX (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Fri, 20 Nov 2020 01:08:23 -0500
-Received: from mail.loongson.cn ([114.242.206.163]:48732 "EHLO loongson.cn"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1725766AbgKTGIX (ORCPT <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Fri, 20 Nov 2020 01:08:23 -0500
-Received: from bogon.localdomain (unknown [113.200.148.30])
-        by mail.loongson.cn (Coremail) with SMTP id AQAAf9Dx739OXbdfFXUTAA--.30887S2;
-        Fri, 20 Nov 2020 14:08:15 +0800 (CST)
-From:   Youling Tang <tangyouling@loongson.cn>
-To:     Geert Uytterhoeven <geert@linux-m68k.org>,
-        Sam Creasey <sammy@sammy.net>
-Cc:     linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org
-Subject: [PATCH 2/2] m68k: Add a missing ELF_DETAILS in link script
-Date:   Fri, 20 Nov 2020 14:08:14 +0800
-Message-Id: <1605852494-23515-1-git-send-email-tangyouling@loongson.cn>
-X-Mailer: git-send-email 2.1.0
-X-CM-TRANSID: AQAAf9Dx739OXbdfFXUTAA--.30887S2
-X-Coremail-Antispam: 1UD129KBjvJXoW7uF15Gw47Xr13uw4kZw4xWFg_yoW8XrW7pw
-        sFy3s5Jw4j9FyUAFykur4kZFyag3Z5WrW3XryYyFWrAF1a9r10q34kuF17JFWqqFyfKF40
-        gF1xKF4qya48ta7anT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUk2b7Iv0xC_Zr1lb4IE77IF4wAFF20E14v26r1j6r4UM7CY07I2
-        0VC2zVCF04k26cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rw
-        A2F7IY1VAKz4vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Gr0_Xr1l84ACjcxK6xII
-        jxv20xvEc7CjxVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26F4UJVW0owA2z4x0Y4
-        vEx4A2jsIEc7CjxVAFwI0_GcCE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xv
-        F2IEw4CE5I8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_Jrv_JF1lYx0Ex4A2jsIE14v26r4j6F
-        4UMcvjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvY0x0EwIxGrwCY02Avz4vE14v_GF1l42xK
-        82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGw
-        C20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r126r1DMIIYrxkI7VAKI48J
-        MIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r1j6r4UMI
-        IF0xvE42xK8VAvwI8IcIk0rVW8JVW3JwCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E
-        87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjxUszBTUUUUU
-X-CM-SenderInfo: 5wdqw5prxox03j6o00pqjv00gofq/
+        id S1727030AbgKTHeW (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Fri, 20 Nov 2020 02:34:22 -0500
+Received: from mail-oi1-f194.google.com ([209.85.167.194]:44522 "EHLO
+        mail-oi1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727021AbgKTHeW (ORCPT
+        <rfc822;linux-m68k@lists.linux-m68k.org>);
+        Fri, 20 Nov 2020 02:34:22 -0500
+Received: by mail-oi1-f194.google.com with SMTP id t16so9405248oie.11
+        for <linux-m68k@lists.linux-m68k.org>; Thu, 19 Nov 2020 23:34:21 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=6G2QXy2DyQdps+7JOhcILOmABxjD2Cyllu51GS8eEUA=;
+        b=GalcSQQALxkMdhIwXUrWvLnFf07k7mhfreeYv8Ma81rTsxFYS0afVHdbb0AefBX3Io
+         05UrIQiEryOuxgEQHK14WDEtlycMLpoC0jAancpn3nv095ZwiYJKL39njdEXtKKpgyxb
+         sEnLx35ypCUBFn+QP5rjoZZ67bUtjrOpyDdANlHNPLA38PnAHGwrB9nGLNwA2NFAiYuU
+         JEgmbDWIB9+GuPRVth2oI3FKB2iFNMCPwHqeQI+vnFN90yIyujIMbpznKYggBT6SeeOt
+         rzdXqrB+TlLbWad2OLMr3IL9fOcdYZgt4mg5Vo1L0YQUuqqnhy4ANSxwdxdfqlHgLrZI
+         CUzA==
+X-Gm-Message-State: AOAM530jQVEHtKdhpAtiM2O+6ezMsc7qNMO61tyHQC5/4n+1K0XEAA3K
+        e34JQ5pnKuioows3sQewr/xLsdBxeNdReFZRX78=
+X-Google-Smtp-Source: ABdhPJxTEV6JWrhe7RuqSWIYrFMwZ2x36SFeDhxHuau6uqBqN0qfbPzx+GihHxwrJaUYRpdUGeebVvqkDI/uavZJOoM=
+X-Received: by 2002:aca:52c9:: with SMTP id g192mr5790892oib.54.1605857661074;
+ Thu, 19 Nov 2020 23:34:21 -0800 (PST)
+MIME-Version: 1.0
+References: <bb327f05f8fb61eeb332cc2ba4e8335570976474.1605847196.git.fthain@telegraphics.com.au>
+In-Reply-To: <bb327f05f8fb61eeb332cc2ba4e8335570976474.1605847196.git.fthain@telegraphics.com.au>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Fri, 20 Nov 2020 08:34:10 +0100
+Message-ID: <CAMuHMdUQ5mJzJH7nsKTaxMTjS4yXoBM2_2R4=meg4KyxCfimgg@mail.gmail.com>
+Subject: Re: [PATCH] m68k/mac: Update Kconfig help
+To:     Finn Thain <fthain@telegraphics.com.au>
+Cc:     Joshua Thompson <funaho@jurai.org>,
+        linux-m68k <linux-m68k@lists.linux-m68k.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-Commit c604abc3f6e3 ("vmlinux.lds.h: Split ELF_DETAILS from STABS_DEBUG")
-after should add a missing ELF_DETAILS, at the same time, the .comment
-section has been included in the ELF_DETAILS.
+On Fri, Nov 20, 2020 at 5:51 AM Finn Thain <fthain@telegraphics.com.au> wrote:
+> There is still some missing hardware support that affects all models,
+> such as sound chip and localtalk support. However, many models are well
+> supported, including the Quadra 800 emulated by QEMU. Missing hardware
+> support is mostly documented at the web site, so add the URL.
+>
+> Cc: Joshua Thompson <funaho@jurai.org>
+> Signed-off-by: Finn Thain <fthain@telegraphics.com.au>
 
-Signed-off-by: Youling Tang <tangyouling@loongson.cn>
----
- arch/m68k/kernel/vmlinux-nommu.lds | 2 +-
- arch/m68k/kernel/vmlinux-std.lds   | 2 +-
- arch/m68k/kernel/vmlinux-sun3.lds  | 1 +
- 3 files changed, 3 insertions(+), 2 deletions(-)
+Reviewed-by: Geert Uytterhoeven <geert@linux-m68k.org>
+i.e. will queue in the m68k for-v5.11 branch.
 
-diff --git a/arch/m68k/kernel/vmlinux-nommu.lds b/arch/m68k/kernel/vmlinux-nommu.lds
-index 247e19f..396e126 100644
---- a/arch/m68k/kernel/vmlinux-nommu.lds
-+++ b/arch/m68k/kernel/vmlinux-nommu.lds
-@@ -86,7 +86,7 @@ SECTIONS {
- 	_end = .;
- 
- 	STABS_DEBUG
--	.comment 0 : { *(.comment) }
-+	ELF_DETAILS
- 
- 	/* Sections to be discarded */
- 	DISCARDS
-diff --git a/arch/m68k/kernel/vmlinux-std.lds b/arch/m68k/kernel/vmlinux-std.lds
-index 1511346..ed1d9ed 100644
---- a/arch/m68k/kernel/vmlinux-std.lds
-+++ b/arch/m68k/kernel/vmlinux-std.lds
-@@ -59,7 +59,7 @@ SECTIONS
-   _end = . ;
- 
-   STABS_DEBUG
--  .comment 0 : { *(.comment) }
-+  ELF_DETAILS
- 
-   /* Sections to be discarded */
-   DISCARDS
-diff --git a/arch/m68k/kernel/vmlinux-sun3.lds b/arch/m68k/kernel/vmlinux-sun3.lds
-index 90ff8e5..4a52f44 100644
---- a/arch/m68k/kernel/vmlinux-sun3.lds
-+++ b/arch/m68k/kernel/vmlinux-sun3.lds
-@@ -52,6 +52,7 @@ __init_begin = .;
-   _end = . ;
- 
-   STABS_DEBUG
-+  ELF_DETAILS
- 
-   /* Sections to be discarded */
-   DISCARDS
+Gr{oetje,eeting}s,
+
+                        Geert
+
 -- 
-2.1.0
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
