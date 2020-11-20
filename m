@@ -7,44 +7,44 @@ X-Spam-Status: No, score=-8.8 required=3.0 tests=BAYES_00,
 	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 62DCDC5519F
-	for <linux-m68k@archiver.kernel.org>; Fri, 20 Nov 2020 07:56:51 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id DA541C63798
+	for <linux-m68k@archiver.kernel.org>; Fri, 20 Nov 2020 08:03:08 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 07BA1222BA
-	for <linux-m68k@archiver.kernel.org>; Fri, 20 Nov 2020 07:56:50 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 8CDE12222F
+	for <linux-m68k@archiver.kernel.org>; Fri, 20 Nov 2020 08:03:08 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725829AbgKTH4a (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Fri, 20 Nov 2020 02:56:30 -0500
-Received: from mail-oi1-f195.google.com ([209.85.167.195]:46385 "EHLO
-        mail-oi1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725768AbgKTH4a (ORCPT
+        id S1726629AbgKTICt (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Fri, 20 Nov 2020 03:02:49 -0500
+Received: from mail-oi1-f193.google.com ([209.85.167.193]:37623 "EHLO
+        mail-oi1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725797AbgKTICt (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Fri, 20 Nov 2020 02:56:30 -0500
-Received: by mail-oi1-f195.google.com with SMTP id q206so9455898oif.13
-        for <linux-m68k@lists.linux-m68k.org>; Thu, 19 Nov 2020 23:56:29 -0800 (PST)
+        Fri, 20 Nov 2020 03:02:49 -0500
+Received: by mail-oi1-f193.google.com with SMTP id j15so4197373oih.4
+        for <linux-m68k@lists.linux-m68k.org>; Fri, 20 Nov 2020 00:02:48 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=TPr5T3DZ53wtsCD7JEASyN08meG9A+0KW3mx3nLQ5mo=;
-        b=NFC3cOqrDxwVubI1wpQxJAE6qzEk4RW7vIJhYg56mV8xnFFPExJssK6/aW5yr8wZge
-         qofbX0oNCqGwGOMaqeiMuM/41aoeXHFR7wVsacVrxVWwZfRzsVdRNSRNUDvjIbcmrqEU
-         n0u5zX8CsYom4Q+q4JCSivm3V/Mq6JHEkNRzlTpc4JCqQ7TxTINoAxbhdRtZkx5kSj52
-         +KtpHa1V+1HtE5W9cbJ2A/xCoRcgX4OAOvEBk343FsXn1IAt681y2ekVT+Nyw2av6snK
-         RIrXtE/8ep66fv4t3ruYzSEJUVtIjmYwfAlHJAGkcBCpkGSv9R6udsgndVWHOJvtUJtz
-         z/ow==
-X-Gm-Message-State: AOAM531J42L8nIgIm91S7y++uCjvf5RYY82ruF9ah0eidGaL5Ffj1zpU
-        acFkLSmuRywr7+eJNfCXgdy4yqoi8O/qpGgeOJM=
-X-Google-Smtp-Source: ABdhPJyZmb4gYamiRVU2ky78A95tTLo5XH/hqASKrT7hIKEXikms3FZsct5p8L8AOBT7x+qbjHMti4y80K8qvUq0ur8=
-X-Received: by 2002:aca:c3c4:: with SMTP id t187mr5264945oif.148.1605858989557;
- Thu, 19 Nov 2020 23:56:29 -0800 (PST)
+        bh=FNW2tMEqeVMvx00SS3WlWpA2yC7CPr7bbQBd7mo/OdM=;
+        b=gxGR2xr6A5P2+aiA8yw1wHcJaD3IIzpkZsPKvAY6GH9BEIJls0T4PnQTVPQ3+HMzJ+
+         ZlSp54nUY/ZSfETPDhg51bipZM3BYhB5aau1Sw93RTvAyy98H9VcAs5Gb1SF433E+tyG
+         2cUdCKlmx8s5+sgk6TCWvuVuGGxD+CuJfS135UIUOzgnFf25Da/iBWzNgRqGqbexbk6V
+         xCCAEK/TO5sgDaUx7PD3DxLzbe2hpoEJOeeeGPFWERDx+WsCuhByZrXbKLXTzWrn/ohN
+         fjbv7GpvdR/3XNXLuC+lwoXjVaIsqRKWguPBiRkD6IrtOaDsVCbpijFVxY4AEzW64k7G
+         A9ZQ==
+X-Gm-Message-State: AOAM532WT24SCezyHW7dkfly2/sGxRmgOmeXmro0Wu/vU15Zjt00LLGZ
+        jGdYBPs9KaVYHPa5YDzEJ/f1PkJXkBNL2n5lHO4=
+X-Google-Smtp-Source: ABdhPJyCk3kYjnyDhMztComlhPO59zBYUUFW/lu6YKHfj3Pzhcnpkg1JnW6JN6uVFE00P4w42rRAYZtYnlSRj1HbDWI=
+X-Received: by 2002:aca:4bc3:: with SMTP id y186mr5276812oia.153.1605859368606;
+ Fri, 20 Nov 2020 00:02:48 -0800 (PST)
 MIME-Version: 1.0
-References: <0a7b09f5e5f48e270b82041c19e8f20f54c69216.1605847196.git.fthain@telegraphics.com.au>
-In-Reply-To: <0a7b09f5e5f48e270b82041c19e8f20f54c69216.1605847196.git.fthain@telegraphics.com.au>
+References: <c6b1d9620af3e8f89dd0157a41fa4147294b251d.1605847196.git.fthain@telegraphics.com.au>
+In-Reply-To: <c6b1d9620af3e8f89dd0157a41fa4147294b251d.1605847196.git.fthain@telegraphics.com.au>
 From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Fri, 20 Nov 2020 08:56:18 +0100
-Message-ID: <CAMuHMdV7m47yAZm0mAo75Z8X=ONuibKMSwhVdpcbEdPqWjpRHw@mail.gmail.com>
-Subject: Re: [PATCH] m68k/mac: Refactor iop_preinit() and iop_init()
+Date:   Fri, 20 Nov 2020 09:02:37 +0100
+Message-ID: <CAMuHMdWOrPhS-QML+aK4PKj6qp2DDcWO2XbAzZ2U6XTKkGFK6Q@mail.gmail.com>
+Subject: Re: [PATCH] m68k/mac: Remove redundant VIA register writes
 To:     Finn Thain <fthain@telegraphics.com.au>
 Cc:     Joshua Thompson <funaho@jurai.org>,
         linux-m68k <linux-m68k@lists.linux-m68k.org>,
@@ -55,11 +55,10 @@ List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
 On Fri, Nov 20, 2020 at 5:51 AM Finn Thain <fthain@telegraphics.com.au> wrote:
-> The idea behind iop_preinit() was to put the SCC IOP into bypass mode.
-> However, that remains unimplemented and implementing it would be
-> difficult. Let the comments and code reflect this. Even if iop_preinit()
-> worked as described in the comments, it gets called immediately before
-> iop_init() so it might as well part of iop_init().
+> There's no need to write the same value to the timer latch and timer
+> counter registers. Values written to the counter registers get stored
+> in the latches anyway. The write to vT1CH copies the latch values to
+> the counter.
 >
 > Cc: Joshua Thompson <funaho@jurai.org>
 > Tested-by: Stan Johnson <userm57@yahoo.com>
