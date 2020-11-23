@@ -6,44 +6,44 @@ X-Spam-Status: No, score=-17.0 required=3.0 tests=BAYES_00,INCLUDES_CR_TRAILER,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
 	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 13703C64E7A
-	for <linux-m68k@archiver.kernel.org>; Mon, 23 Nov 2020 10:25:23 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B60C2C64E7D
+	for <linux-m68k@archiver.kernel.org>; Mon, 23 Nov 2020 10:25:25 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id C225C20731
-	for <linux-m68k@archiver.kernel.org>; Mon, 23 Nov 2020 10:25:20 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 7B83521D46
+	for <linux-m68k@archiver.kernel.org>; Mon, 23 Nov 2020 10:25:25 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728470AbgKWKZB (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        id S1728224AbgKWKZB (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
         Mon, 23 Nov 2020 05:25:01 -0500
-Received: from mail-lf1-f67.google.com ([209.85.167.67]:38248 "EHLO
-        mail-lf1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728374AbgKWKZA (ORCPT
+Received: from mail-lf1-f65.google.com ([209.85.167.65]:45683 "EHLO
+        mail-lf1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728356AbgKWKZA (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
         Mon, 23 Nov 2020 05:25:00 -0500
-Received: by mail-lf1-f67.google.com with SMTP id s27so3015918lfp.5
-        for <linux-m68k@lists.linux-m68k.org>; Mon, 23 Nov 2020 02:24:57 -0800 (PST)
+Received: by mail-lf1-f65.google.com with SMTP id z21so22947554lfe.12
+        for <linux-m68k@lists.linux-m68k.org>; Mon, 23 Nov 2020 02:24:58 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=0R5B5NEv7oqTPvl5L6QmigBIM00NjEd6sjsvZWW1R4A=;
-        b=S8SmgKPn6dL4S1KmroOzQy5xmArenPlgcsmAtTrOwIVpvYhfOKrLUyiY++xoWu2fcO
-         qUtB257uY345hdXQ3gmw92q0/Z+zZc2w3nXDV67Md3haNoyqjtXCQhy4CQrg753Unqbs
-         DkQMBKpEqZJ5AEQVHwWvGL0m55IvyC5YTh8pDTurqOk8ktYqFvolnGsiJOgzlGFOq6+K
-         M/DiWzM3mO1a00vL5Bv6kDK8bnNOVNauu/Pfw8F4mwE2Fhh/jL8JLzD+En7T8AQP6zuj
-         nxzz53uegjwNcinfv1GylZV2IAzSY7NHT8mU3GQkQS0x2SMAhaOhO0gqYCi9PmVmH5wC
-         Qd5Q==
-X-Gm-Message-State: AOAM532L5fjWw6oIlWckXB5J+dOWdGuPlej46BoloOVJ5hGAuapeSlya
-        hT+Lp51adzU5JV+QzuRf2GU=
-X-Google-Smtp-Source: ABdhPJzg8syGN8Z5PZT9JURA0pE0JMS+anhz0oG1XKKRmwEDBBg3hlO3N0RWYpGP0xVsjCD7fELdsw==
-X-Received: by 2002:a19:7fcd:: with SMTP id a196mr12426890lfd.53.1606127096822;
-        Mon, 23 Nov 2020 02:24:56 -0800 (PST)
+        bh=MyGoxRTFxoN3CcXdLX3OQwBVVHqEtKepL93LP6Dv6QA=;
+        b=cUEIyJktqerz2WDta6flmoTT5BKpywVxUm/ZTFd0imLFunbztC2BmOmg4YS+h2PVcA
+         s1pAHhMXfVeMF03aVwYjD5mPqnYh8eGgclJ0sZ2GYL80RtlPEOAyvr27WF5mh3fibUI1
+         i/INekRVcSMom7Ij4pqNu4VakWaexAneMdgphFQ1P5E6Pr6lXrl2vf0/D6z5WYFugdO1
+         wMD1oOreuSE4uZCNyYyjmT77O4eXqtI1LBwLWdK2QsH8J28ByaqORztW9UaXRgPkaqGz
+         xi4QjvwF7lQr2OWX1OhPl+T4uZNH1egwGYHn8buEiMtSDrcJtGIEoEEv+nF7l5ZEsmUY
+         PRFQ==
+X-Gm-Message-State: AOAM531U2RvaQf8FNNaJYPtjJ0LXQTKAGoU7i5/genNmGAU5RUSTxRaU
+        jE9CzajHMZO+1oRkSG/s3cg=
+X-Google-Smtp-Source: ABdhPJwl8WMWawBdVsNJWOHAvxz3cvEnNqeVuuYH2D1bUXik+AgYZGIqav0dRAEa9yNytSMyPFebDg==
+X-Received: by 2002:a19:910b:: with SMTP id t11mr1687236lfd.306.1606127097818;
+        Mon, 23 Nov 2020 02:24:57 -0800 (PST)
 Received: from xi.terra (c-beaee455.07-184-6d6c6d4.bbcust.telenor.se. [85.228.174.190])
-        by smtp.gmail.com with ESMTPSA id 7sm430133ljq.34.2020.11.23.02.24.52
+        by smtp.gmail.com with ESMTPSA id y17sm425927ljc.50.2020.11.23.02.24.53
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
         Mon, 23 Nov 2020 02:24:54 -0800 (PST)
 Received: from johan by xi.terra with local (Exim 4.93.0.4)
         (envelope-from <johan@xi.terra>)
-        id 1kh91q-000281-D3; Mon, 23 Nov 2020 11:25:02 +0100
+        id 1kh91q-00028L-QS; Mon, 23 Nov 2020 11:25:02 +0100
 From:   Johan Hovold <johan@kernel.org>
 To:     Rob Herring <robh+dt@kernel.org>,
         Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
@@ -61,9 +61,9 @@ Cc:     Frank Rowand <frowand.list@gmail.com>,
         Daniel Kurtz <djkurtz@chromium.org>,
         linux-arch@vger.kernel.org, linux-m68k@lists.linux-m68k.org,
         linux-kernel@vger.kernel.org, Johan Hovold <johan@kernel.org>
-Subject: [PATCH v2 4/8] module: simplify version-attribute handling
-Date:   Mon, 23 Nov 2020 11:23:15 +0100
-Message-Id: <20201123102319.8090-5-johan@kernel.org>
+Subject: [PATCH v2 8/8] params: clean up module-param macros
+Date:   Mon, 23 Nov 2020 11:23:19 +0100
+Message-Id: <20201123102319.8090-9-johan@kernel.org>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <20201123102319.8090-1-johan@kernel.org>
 References: <20201123102319.8090-1-johan@kernel.org>
@@ -73,93 +73,35 @@ Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-Instead of using the array-of-pointers trick to avoid having gcc mess up
-the built-in module-version array stride, specify type alignment when
-declaring entries to prevent gcc from increasing alignment.
-
-This is essentially an alternative (one-line) fix to the problem
-addressed by commit b4bc842802db ("module: deal with alignment issues in
-built-in module versions").
-
-gcc can increase the alignment of larger objects with static extent as
-an optimisation, but this can be suppressed by using the aligned
-attribute when declaring variables.
-
-Note that we have been relying on this behaviour for kernel parameters
-for 16 years and it indeed hasn't changed since the introduction of the
-aligned attribute in gcc-3.1.
+Clean up the module-param macros by adding some indentation and using
+the __aligned() macro to improve readability.
 
 Signed-off-by: Johan Hovold <johan@kernel.org>
 ---
- include/linux/module.h | 26 +++++++++++++-------------
- kernel/params.c        | 10 ++++------
- 2 files changed, 17 insertions(+), 19 deletions(-)
+ include/linux/moduleparam.h | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/include/linux/module.h b/include/linux/module.h
-index 735f2931ea47..ebe2641d7b0b 100644
---- a/include/linux/module.h
-+++ b/include/linux/module.h
-@@ -266,20 +266,20 @@ extern typeof(name) __mod_##type##__##name##_device_table		\
- #else
- #define MODULE_VERSION(_version)					\
- 	MODULE_INFO(version, _version);					\
--	static struct module_version_attribute ___modver_attr = {	\
--		.mattr	= {						\
--			.attr	= {					\
--				.name	= "version",			\
--				.mode	= S_IRUGO,			\
-+	static struct module_version_attribute __modver_attr		\
-+		__used __section("__modver")				\
-+		__aligned(__alignof__(struct module_version_attribute)) \
-+		= {							\
-+			.mattr	= {					\
-+				.attr	= {				\
-+					.name	= "version",		\
-+					.mode	= S_IRUGO,		\
-+				},					\
-+				.show	= __modver_version_show,	\
- 			},						\
--			.show	= __modver_version_show,		\
--		},							\
--		.module_name	= KBUILD_MODNAME,			\
--		.version	= _version,				\
--	};								\
--	static const struct module_version_attribute			\
--	__used __section("__modver")					\
--	* __moduleparam_const __modver_attr = &___modver_attr
-+			.module_name	= KBUILD_MODNAME,		\
-+			.version	= _version,			\
-+		};
- #endif
+diff --git a/include/linux/moduleparam.h b/include/linux/moduleparam.h
+index 15ecc6cc3a3b..eed280fae433 100644
+--- a/include/linux/moduleparam.h
++++ b/include/linux/moduleparam.h
+@@ -21,12 +21,12 @@
+ #define MAX_PARAM_PREFIX_LEN (64 - sizeof(unsigned long))
  
- /* Optional firmware file (or files) needed by the module
-diff --git a/kernel/params.c b/kernel/params.c
-index 164d79330849..2daa2780a92c 100644
---- a/kernel/params.c
-+++ b/kernel/params.c
-@@ -843,18 +843,16 @@ ssize_t __modver_version_show(struct module_attribute *mattr,
- 	return scnprintf(buf, PAGE_SIZE, "%s\n", vattr->version);
- }
+ #define __MODULE_INFO(tag, name, info)					  \
+-static const char __UNIQUE_ID(name)[]					  \
+-  __used __section(".modinfo") __attribute__((aligned(1)))		  \
+-  = __MODULE_INFO_PREFIX __stringify(tag) "=" info
++	static const char __UNIQUE_ID(name)[]				  \
++		__used __section(".modinfo") __aligned(1)		  \
++		= __MODULE_INFO_PREFIX __stringify(tag) "=" info
  
--extern const struct module_version_attribute *__start___modver[];
--extern const struct module_version_attribute *__stop___modver[];
-+extern const struct module_version_attribute __start___modver[];
-+extern const struct module_version_attribute __stop___modver[];
+ #define __MODULE_PARM_TYPE(name, _type)					  \
+-  __MODULE_INFO(parmtype, name##type, #name ":" _type)
++	__MODULE_INFO(parmtype, name##type, #name ":" _type)
  
- static void __init version_sysfs_builtin(void)
- {
--	const struct module_version_attribute **p;
-+	const struct module_version_attribute *vattr;
- 	struct module_kobject *mk;
- 	int err;
- 
--	for (p = __start___modver; p < __stop___modver; p++) {
--		const struct module_version_attribute *vattr = *p;
--
-+	for (vattr = __start___modver; vattr < __stop___modver; vattr++) {
- 		mk = locate_module_kobject(vattr->module_name);
- 		if (mk) {
- 			err = sysfs_create_file(&mk->kobj, &vattr->mattr.attr);
+ /* One for each parameter, describing how to use it.  Some files do
+    multiple of these per line, so can't just use MODULE_INFO. */
 -- 
 2.26.2
 
