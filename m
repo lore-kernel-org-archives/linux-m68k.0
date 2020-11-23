@@ -4,46 +4,46 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-17.0 required=3.0 tests=BAYES_00,INCLUDES_CR_TRAILER,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
-	autolearn=unavailable autolearn_force=no version=3.4.0
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B60C2C64E7D
-	for <linux-m68k@archiver.kernel.org>; Mon, 23 Nov 2020 10:25:25 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5E994C64E7B
+	for <linux-m68k@archiver.kernel.org>; Mon, 23 Nov 2020 10:25:26 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 7B83521D46
-	for <linux-m68k@archiver.kernel.org>; Mon, 23 Nov 2020 10:25:25 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 1C29F20731
+	for <linux-m68k@archiver.kernel.org>; Mon, 23 Nov 2020 10:25:26 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728224AbgKWKZB (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Mon, 23 Nov 2020 05:25:01 -0500
-Received: from mail-lf1-f65.google.com ([209.85.167.65]:45683 "EHLO
-        mail-lf1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728356AbgKWKZA (ORCPT
+        id S1728558AbgKWKZT (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Mon, 23 Nov 2020 05:25:19 -0500
+Received: from mail-lj1-f195.google.com ([209.85.208.195]:43350 "EHLO
+        mail-lj1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726780AbgKWKY5 (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Mon, 23 Nov 2020 05:25:00 -0500
-Received: by mail-lf1-f65.google.com with SMTP id z21so22947554lfe.12
-        for <linux-m68k@lists.linux-m68k.org>; Mon, 23 Nov 2020 02:24:58 -0800 (PST)
+        Mon, 23 Nov 2020 05:24:57 -0500
+Received: by mail-lj1-f195.google.com with SMTP id 142so17356580ljj.10
+        for <linux-m68k@lists.linux-m68k.org>; Mon, 23 Nov 2020 02:24:55 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=MyGoxRTFxoN3CcXdLX3OQwBVVHqEtKepL93LP6Dv6QA=;
-        b=cUEIyJktqerz2WDta6flmoTT5BKpywVxUm/ZTFd0imLFunbztC2BmOmg4YS+h2PVcA
-         s1pAHhMXfVeMF03aVwYjD5mPqnYh8eGgclJ0sZ2GYL80RtlPEOAyvr27WF5mh3fibUI1
-         i/INekRVcSMom7Ij4pqNu4VakWaexAneMdgphFQ1P5E6Pr6lXrl2vf0/D6z5WYFugdO1
-         wMD1oOreuSE4uZCNyYyjmT77O4eXqtI1LBwLWdK2QsH8J28ByaqORztW9UaXRgPkaqGz
-         xi4QjvwF7lQr2OWX1OhPl+T4uZNH1egwGYHn8buEiMtSDrcJtGIEoEEv+nF7l5ZEsmUY
-         PRFQ==
-X-Gm-Message-State: AOAM531U2RvaQf8FNNaJYPtjJ0LXQTKAGoU7i5/genNmGAU5RUSTxRaU
-        jE9CzajHMZO+1oRkSG/s3cg=
-X-Google-Smtp-Source: ABdhPJwl8WMWawBdVsNJWOHAvxz3cvEnNqeVuuYH2D1bUXik+AgYZGIqav0dRAEa9yNytSMyPFebDg==
-X-Received: by 2002:a19:910b:: with SMTP id t11mr1687236lfd.306.1606127097818;
-        Mon, 23 Nov 2020 02:24:57 -0800 (PST)
+        bh=LHyP1gF49h6gvXjDL3rBo+x9M1skx5AsWhXDDOWrSN8=;
+        b=jNyIsoGAN57Uy3sODfgTwO7J0kuWAS/NSoifxyOGKronF6AeoVZbVmFdG2S+6eDZHP
+         NNQT16ZW10surUTInBIRLP/NCH0PYOmWStgL6IxPmmSfWZQZW9Je3SNBgYV6+9SKuh6u
+         KciyBuW5RrZN6tl3+ljMNm4m6f+CBrODDwBlJUWq5INxQX4NBLha17AYLmLk/TP1BHFz
+         +C9Svoka10IIUe0XW+p1gIqFJOjRao5Y1bj5ZWd+R9n0/YWDAhceN9EekWlNdH9OHCu9
+         6c8kY6Q+5zi5k4U8uVKyzWFQz1+uqzV9Q0PMiQEQ2bwEx91ZcyfhdV6PQmr8DoZeCVsk
+         LQDQ==
+X-Gm-Message-State: AOAM531/traNkMfgp9mifpNpVUxsUqA2A9LA4Skwn4dyLc29qzBRKsa0
+        hx+dzCoGTkhW8RsfWePIUmE=
+X-Google-Smtp-Source: ABdhPJwNXcmhpB6rR47zowKo5AjZLMScQFr8spUl+ZmF+hYgPcER80cRSefkGb5VbKWnUX1JyagGew==
+X-Received: by 2002:a2e:5853:: with SMTP id x19mr24502ljd.232.1606127095247;
+        Mon, 23 Nov 2020 02:24:55 -0800 (PST)
 Received: from xi.terra (c-beaee455.07-184-6d6c6d4.bbcust.telenor.se. [85.228.174.190])
-        by smtp.gmail.com with ESMTPSA id y17sm425927ljc.50.2020.11.23.02.24.53
+        by smtp.gmail.com with ESMTPSA id a24sm1267712ljn.85.2020.11.23.02.24.52
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
         Mon, 23 Nov 2020 02:24:54 -0800 (PST)
 Received: from johan by xi.terra with local (Exim 4.93.0.4)
         (envelope-from <johan@xi.terra>)
-        id 1kh91q-00028L-QS; Mon, 23 Nov 2020 11:25:02 +0100
+        id 1kh91q-00027w-AR; Mon, 23 Nov 2020 11:25:02 +0100
 From:   Johan Hovold <johan@kernel.org>
 To:     Rob Herring <robh+dt@kernel.org>,
         Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
@@ -61,9 +61,9 @@ Cc:     Frank Rowand <frowand.list@gmail.com>,
         Daniel Kurtz <djkurtz@chromium.org>,
         linux-arch@vger.kernel.org, linux-m68k@lists.linux-m68k.org,
         linux-kernel@vger.kernel.org, Johan Hovold <johan@kernel.org>
-Subject: [PATCH v2 8/8] params: clean up module-param macros
-Date:   Mon, 23 Nov 2020 11:23:19 +0100
-Message-Id: <20201123102319.8090-9-johan@kernel.org>
+Subject: [PATCH v2 3/8] module: drop version-attribute alignment
+Date:   Mon, 23 Nov 2020 11:23:14 +0100
+Message-Id: <20201123102319.8090-4-johan@kernel.org>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <20201123102319.8090-1-johan@kernel.org>
 References: <20201123102319.8090-1-johan@kernel.org>
@@ -73,35 +73,37 @@ Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-Clean up the module-param macros by adding some indentation and using
-the __aligned() macro to improve readability.
+Commit 98562ad8cb03 ("module: explicitly align module_version_attribute
+structure") added an alignment attribute to the struct
+module_version_attribute type in order to fix an alignment issue on m68k
+where the structure is 2-byte aligned while MODULE_VERSION() forced the
+__modver section entries to be 4-byte aligned (sizeof(void *)).
+
+This was essentially an alternative fix to the problem addressed by
+b4bc842802db ("module: deal with alignment issues in built-in module
+versions") which used the array-of-pointer trick to prevent gcc from
+increasing alignment of the version attribute entries. And with the
+pointer indirection in place there's no need to increase the alignment
+of the type.
 
 Signed-off-by: Johan Hovold <johan@kernel.org>
 ---
- include/linux/moduleparam.h | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+ include/linux/module.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/include/linux/moduleparam.h b/include/linux/moduleparam.h
-index 15ecc6cc3a3b..eed280fae433 100644
---- a/include/linux/moduleparam.h
-+++ b/include/linux/moduleparam.h
-@@ -21,12 +21,12 @@
- #define MAX_PARAM_PREFIX_LEN (64 - sizeof(unsigned long))
+diff --git a/include/linux/module.h b/include/linux/module.h
+index 6264617bab4d..735f2931ea47 100644
+--- a/include/linux/module.h
++++ b/include/linux/module.h
+@@ -66,7 +66,7 @@ struct module_version_attribute {
+ 	struct module_attribute mattr;
+ 	const char *module_name;
+ 	const char *version;
+-} __attribute__ ((__aligned__(sizeof(void *))));
++};
  
- #define __MODULE_INFO(tag, name, info)					  \
--static const char __UNIQUE_ID(name)[]					  \
--  __used __section(".modinfo") __attribute__((aligned(1)))		  \
--  = __MODULE_INFO_PREFIX __stringify(tag) "=" info
-+	static const char __UNIQUE_ID(name)[]				  \
-+		__used __section(".modinfo") __aligned(1)		  \
-+		= __MODULE_INFO_PREFIX __stringify(tag) "=" info
- 
- #define __MODULE_PARM_TYPE(name, _type)					  \
--  __MODULE_INFO(parmtype, name##type, #name ":" _type)
-+	__MODULE_INFO(parmtype, name##type, #name ":" _type)
- 
- /* One for each parameter, describing how to use it.  Some files do
-    multiple of these per line, so can't just use MODULE_INFO. */
+ extern ssize_t __modver_version_show(struct module_attribute *,
+ 				     struct module_kobject *, char *);
 -- 
 2.26.2
 
