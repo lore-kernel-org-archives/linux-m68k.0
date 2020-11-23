@@ -4,46 +4,46 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-17.0 required=3.0 tests=BAYES_00,INCLUDES_CR_TRAILER,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
-	autolearn=ham autolearn_force=no version=3.4.0
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 5E994C64E7B
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 9E054C71155
 	for <linux-m68k@archiver.kernel.org>; Mon, 23 Nov 2020 10:25:26 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 1C29F20731
+	by mail.kernel.org (Postfix) with ESMTP id 6E0D82074B
 	for <linux-m68k@archiver.kernel.org>; Mon, 23 Nov 2020 10:25:26 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728558AbgKWKZT (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Mon, 23 Nov 2020 05:25:19 -0500
-Received: from mail-lj1-f195.google.com ([209.85.208.195]:43350 "EHLO
-        mail-lj1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726780AbgKWKY5 (ORCPT
+        id S1728549AbgKWKZS (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Mon, 23 Nov 2020 05:25:18 -0500
+Received: from mail-lf1-f65.google.com ([209.85.167.65]:40029 "EHLO
+        mail-lf1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726530AbgKWKY6 (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Mon, 23 Nov 2020 05:24:57 -0500
-Received: by mail-lj1-f195.google.com with SMTP id 142so17356580ljj.10
+        Mon, 23 Nov 2020 05:24:58 -0500
+Received: by mail-lf1-f65.google.com with SMTP id u19so23009506lfr.7
         for <linux-m68k@lists.linux-m68k.org>; Mon, 23 Nov 2020 02:24:55 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=LHyP1gF49h6gvXjDL3rBo+x9M1skx5AsWhXDDOWrSN8=;
-        b=jNyIsoGAN57Uy3sODfgTwO7J0kuWAS/NSoifxyOGKronF6AeoVZbVmFdG2S+6eDZHP
-         NNQT16ZW10surUTInBIRLP/NCH0PYOmWStgL6IxPmmSfWZQZW9Je3SNBgYV6+9SKuh6u
-         KciyBuW5RrZN6tl3+ljMNm4m6f+CBrODDwBlJUWq5INxQX4NBLha17AYLmLk/TP1BHFz
-         +C9Svoka10IIUe0XW+p1gIqFJOjRao5Y1bj5ZWd+R9n0/YWDAhceN9EekWlNdH9OHCu9
-         6c8kY6Q+5zi5k4U8uVKyzWFQz1+uqzV9Q0PMiQEQ2bwEx91ZcyfhdV6PQmr8DoZeCVsk
-         LQDQ==
-X-Gm-Message-State: AOAM531/traNkMfgp9mifpNpVUxsUqA2A9LA4Skwn4dyLc29qzBRKsa0
-        hx+dzCoGTkhW8RsfWePIUmE=
-X-Google-Smtp-Source: ABdhPJwNXcmhpB6rR47zowKo5AjZLMScQFr8spUl+ZmF+hYgPcER80cRSefkGb5VbKWnUX1JyagGew==
-X-Received: by 2002:a2e:5853:: with SMTP id x19mr24502ljd.232.1606127095247;
-        Mon, 23 Nov 2020 02:24:55 -0800 (PST)
-Received: from xi.terra (c-beaee455.07-184-6d6c6d4.bbcust.telenor.se. [85.228.174.190])
-        by smtp.gmail.com with ESMTPSA id a24sm1267712ljn.85.2020.11.23.02.24.52
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        bh=xUNXO1DwR5HIzR7mfNr6uLtZahlQ6vLAvdq4FQ2hTds=;
+        b=tgPoPAIxnebU0flVb8z5+1ql3zQyLjPmvvMIkVECKELProqffdPylpcalrWviWGuxr
+         zG5Pz3lip7o5yzuuCR4gTldNe2UBdvuwxXGYIjcqmkbFI3i2ML94W3Q5mtElId/IlbFE
+         YdPwXrdvq+TZD2r2RzUYyGoyaC0aBDrfmA66sHBfa+jOzdPrGZZRs4gSs92xIeVuTfvF
+         flld64jC19lFnmQ10lOv7bbknzim0qvOvp78vz5cyWb/l6XO+InZikLYy+A+KuNUBZ2U
+         a03U6BFcYLz6ZEOH/ySgOcq1YMCGX94Atngq9PEiTyOZSS1OhvCOGszUf0n9MF+AQKHm
+         Pn3w==
+X-Gm-Message-State: AOAM533SoT1BjtG41m/1CNRDLzQj0z8ImwTmlo5jZsCjbgAEVYKXlkol
+        w4dBqZzvfoaux1bMw62Qxo8=
+X-Google-Smtp-Source: ABdhPJydEcaFoMaC0KFpHCaN/kBccR3FoV+qEOC8o2Nrg4OdG9QwOfoHGxEGJO1w/Wx4vFwEAZWW9Q==
+X-Received: by 2002:ac2:5c4a:: with SMTP id s10mr1668875lfp.134.1606127094648;
         Mon, 23 Nov 2020 02:24:54 -0800 (PST)
+Received: from xi.terra (c-beaee455.07-184-6d6c6d4.bbcust.telenor.se. [85.228.174.190])
+        by smtp.gmail.com with ESMTPSA id o14sm1335967lfo.258.2020.11.23.02.24.52
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 23 Nov 2020 02:24:52 -0800 (PST)
 Received: from johan by xi.terra with local (Exim 4.93.0.4)
         (envelope-from <johan@xi.terra>)
-        id 1kh91q-00027w-AR; Mon, 23 Nov 2020 11:25:02 +0100
+        id 1kh91q-00027r-7O; Mon, 23 Nov 2020 11:25:02 +0100
 From:   Johan Hovold <johan@kernel.org>
 To:     Rob Herring <robh+dt@kernel.org>,
         Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
@@ -61,9 +61,9 @@ Cc:     Frank Rowand <frowand.list@gmail.com>,
         Daniel Kurtz <djkurtz@chromium.org>,
         linux-arch@vger.kernel.org, linux-m68k@lists.linux-m68k.org,
         linux-kernel@vger.kernel.org, Johan Hovold <johan@kernel.org>
-Subject: [PATCH v2 3/8] module: drop version-attribute alignment
-Date:   Mon, 23 Nov 2020 11:23:14 +0100
-Message-Id: <20201123102319.8090-4-johan@kernel.org>
+Subject: [PATCH v2 2/8] earlycon: simplify earlycon-table implementation
+Date:   Mon, 23 Nov 2020 11:23:13 +0100
+Message-Id: <20201123102319.8090-3-johan@kernel.org>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <20201123102319.8090-1-johan@kernel.org>
 References: <20201123102319.8090-1-johan@kernel.org>
@@ -73,37 +73,118 @@ Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-Commit 98562ad8cb03 ("module: explicitly align module_version_attribute
-structure") added an alignment attribute to the struct
-module_version_attribute type in order to fix an alignment issue on m68k
-where the structure is 2-byte aligned while MODULE_VERSION() forced the
-__modver section entries to be 4-byte aligned (sizeof(void *)).
+Instead of using the array-of-pointers trick to avoid having gcc mess up
+the earlycon array stride, specify type alignment when declaring entries
+to prevent gcc from increasing alignment.
 
-This was essentially an alternative fix to the problem addressed by
-b4bc842802db ("module: deal with alignment issues in built-in module
-versions") which used the array-of-pointer trick to prevent gcc from
-increasing alignment of the version attribute entries. And with the
-pointer indirection in place there's no need to increase the alignment
-of the type.
+This is essentially an alternative (one-line) fix to the problem
+addressed by commit dd709e72cb93 ("earlycon: Use a pointer table to fix
+__earlycon_table stride").
+
+gcc can increase the alignment of larger objects with static extent as
+an optimisation, but this can be suppressed by using the aligned
+attribute when declaring variables.
+
+Note that we have been relying on this behaviour for kernel parameters
+for 16 years and it indeed hasn't changed since the introduction of the
+aligned attribute in gcc-3.1.
 
 Signed-off-by: Johan Hovold <johan@kernel.org>
 ---
- include/linux/module.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/of/fdt.c              |  7 ++-----
+ drivers/tty/serial/earlycon.c |  6 ++----
+ include/linux/serial_core.h   | 20 +++++++-------------
+ 3 files changed, 11 insertions(+), 22 deletions(-)
 
-diff --git a/include/linux/module.h b/include/linux/module.h
-index 6264617bab4d..735f2931ea47 100644
---- a/include/linux/module.h
-+++ b/include/linux/module.h
-@@ -66,7 +66,7 @@ struct module_version_attribute {
- 	struct module_attribute mattr;
- 	const char *module_name;
- 	const char *version;
--} __attribute__ ((__aligned__(sizeof(void *))));
-+};
+diff --git a/drivers/of/fdt.c b/drivers/of/fdt.c
+index 4602e467ca8b..feb0f2d67fc5 100644
+--- a/drivers/of/fdt.c
++++ b/drivers/of/fdt.c
+@@ -906,7 +906,7 @@ int __init early_init_dt_scan_chosen_stdout(void)
+ 	int offset;
+ 	const char *p, *q, *options = NULL;
+ 	int l;
+-	const struct earlycon_id **p_match;
++	const struct earlycon_id *match;
+ 	const void *fdt = initial_boot_params;
  
- extern ssize_t __modver_version_show(struct module_attribute *,
- 				     struct module_kobject *, char *);
+ 	offset = fdt_path_offset(fdt, "/chosen");
+@@ -933,10 +933,7 @@ int __init early_init_dt_scan_chosen_stdout(void)
+ 		return 0;
+ 	}
+ 
+-	for (p_match = __earlycon_table; p_match < __earlycon_table_end;
+-	     p_match++) {
+-		const struct earlycon_id *match = *p_match;
+-
++	for (match = __earlycon_table; match < __earlycon_table_end; match++) {
+ 		if (!match->compatible[0])
+ 			continue;
+ 
+diff --git a/drivers/tty/serial/earlycon.c b/drivers/tty/serial/earlycon.c
+index b70877932d47..57c70851f22a 100644
+--- a/drivers/tty/serial/earlycon.c
++++ b/drivers/tty/serial/earlycon.c
+@@ -175,7 +175,7 @@ static int __init register_earlycon(char *buf, const struct earlycon_id *match)
+  */
+ int __init setup_earlycon(char *buf)
+ {
+-	const struct earlycon_id **p_match;
++	const struct earlycon_id *match;
+ 	bool empty_compatible = true;
+ 
+ 	if (!buf || !buf[0])
+@@ -185,9 +185,7 @@ int __init setup_earlycon(char *buf)
+ 		return -EALREADY;
+ 
+ again:
+-	for (p_match = __earlycon_table; p_match < __earlycon_table_end;
+-	     p_match++) {
+-		const struct earlycon_id *match = *p_match;
++	for (match = __earlycon_table; match < __earlycon_table_end; match++) {
+ 		size_t len = strlen(match->name);
+ 
+ 		if (strncmp(buf, match->name, len))
+diff --git a/include/linux/serial_core.h b/include/linux/serial_core.h
+index ff63c2963359..3e32b788c28d 100644
+--- a/include/linux/serial_core.h
++++ b/include/linux/serial_core.h
+@@ -357,8 +357,8 @@ struct earlycon_id {
+ 	int	(*setup)(struct earlycon_device *, const char *options);
+ };
+ 
+-extern const struct earlycon_id *__earlycon_table[];
+-extern const struct earlycon_id *__earlycon_table_end[];
++extern const struct earlycon_id __earlycon_table[];
++extern const struct earlycon_id __earlycon_table_end[];
+ 
+ #if defined(CONFIG_SERIAL_EARLYCON) && !defined(MODULE)
+ #define EARLYCON_USED_OR_UNUSED	__used
+@@ -366,19 +366,13 @@ extern const struct earlycon_id *__earlycon_table_end[];
+ #define EARLYCON_USED_OR_UNUSED	__maybe_unused
+ #endif
+ 
+-#define _OF_EARLYCON_DECLARE(_name, compat, fn, unique_id)		\
+-	static const struct earlycon_id unique_id			\
+-	     EARLYCON_USED_OR_UNUSED __initconst			\
++#define OF_EARLYCON_DECLARE(_name, compat, fn)				\
++	static const struct earlycon_id __UNIQUE_ID(__earlycon_##_name) \
++		EARLYCON_USED_OR_UNUSED  __section("__earlycon_table")  \
++		__aligned(__alignof__(struct earlycon_id))		\
+ 		= { .name = __stringify(_name),				\
+ 		    .compatible = compat,				\
+-		    .setup = fn  };					\
+-	static const struct earlycon_id EARLYCON_USED_OR_UNUSED		\
+-		__section("__earlycon_table")				\
+-		* const __PASTE(__p, unique_id) = &unique_id
+-
+-#define OF_EARLYCON_DECLARE(_name, compat, fn)				\
+-	_OF_EARLYCON_DECLARE(_name, compat, fn,				\
+-			     __UNIQUE_ID(__earlycon_##_name))
++		    .setup = fn };
+ 
+ #define EARLYCON_DECLARE(_name, fn)	OF_EARLYCON_DECLARE(_name, "", fn)
+ 
 -- 
 2.26.2
 
