@@ -2,48 +2,48 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-17.0 required=3.0 tests=BAYES_00,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
+X-Spam-Status: No, score=-17.0 required=3.0 tests=BAYES_00,INCLUDES_CR_TRAILER,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
 	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 38F75C64E90
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D6388C8300A
 	for <linux-m68k@archiver.kernel.org>; Mon, 23 Nov 2020 10:25:26 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id EA5862074B
-	for <linux-m68k@archiver.kernel.org>; Mon, 23 Nov 2020 10:25:25 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 9BDBF20731
+	for <linux-m68k@archiver.kernel.org>; Mon, 23 Nov 2020 10:25:26 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727692AbgKWKZS (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        id S1728151AbgKWKZS (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
         Mon, 23 Nov 2020 05:25:18 -0500
-Received: from mail-lf1-f66.google.com ([209.85.167.66]:37234 "EHLO
-        mail-lf1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727907AbgKWKY6 (ORCPT
+Received: from mail-lj1-f193.google.com ([209.85.208.193]:40236 "EHLO
+        mail-lj1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727692AbgKWKY6 (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
         Mon, 23 Nov 2020 05:24:58 -0500
-Received: by mail-lf1-f66.google.com with SMTP id s30so23011942lfc.4
-        for <linux-m68k@lists.linux-m68k.org>; Mon, 23 Nov 2020 02:24:55 -0800 (PST)
+Received: by mail-lj1-f193.google.com with SMTP id y10so1922687ljc.7
+        for <linux-m68k@lists.linux-m68k.org>; Mon, 23 Nov 2020 02:24:56 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=SJ6wjUN2TIaDvQSFiNF8yFtuiC0XjrcvQ2ERq/2mDa8=;
-        b=VfkRGur7uce3IOvouVBhzK+ZzSaJ5Ga8xeeyomr0t1klReS0hm5MZ0639E4qXeld2/
-         z+dXZSCv2BVZenLOzP8ofDK6wXKo/HOH3PtMyHNyk8Gx53ZqMFAL9ZZgYd7aOoddRZ5r
-         AB122tWVd31mU6aQKHyHig4FbzcKrr8hGCZppUCsWkbTF9vdda6Vl2l/nCoFri2n8w39
-         RClDHow0IkAbYYBvCsnXIQjCSETviWcEuRIBYC4FD110OUUSSLlEU9yuFqwWO9M3pG9S
-         oIOMoLsbTNrkw+5ooGndtmOtfuwzwSI6TL5XxwTT/LMdeNfK5pS3crCaX2RHztR2Twaz
-         uWjQ==
-X-Gm-Message-State: AOAM531qbpUWpFmTDWLtpsavxC+yiWfKuJRpSYMPaGNtSIr5+E1DUEqy
-        uO4cUVd9FdYQemBwOoRtKwU=
-X-Google-Smtp-Source: ABdhPJwlcEwlwHUKntwIlPFK3ymO9gKPmqpgJPUb1PXcjA1ZAsTHaI4/f8uE99LHcpa0nQU7xN6pDg==
-X-Received: by 2002:a19:17:: with SMTP id 23mr2896593lfa.389.1606127093543;
-        Mon, 23 Nov 2020 02:24:53 -0800 (PST)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=DIiHwj3zzp1SABTt1Q6VlY96K3Om1JLL4a2Gj9szo8g=;
+        b=YPDgKLSJqje7nd+TqiOmzVQ+h4KwwGFvaQ/IbObob2umGcz53XIoKFjDeNh8+LNX/i
+         kGdCdFWQLmGx0pJ03qW0jndXI3HY19qDd8pF91E3fh13vfqokBtC/nZOzM/r3xLs9lA4
+         K3lpDNq7EBegoL1Svjt5AamXRhzR/JCRzGfOSY+5Bpnq1zuKb+Dlr0TJGpO62x2u52T5
+         1xpc3VBO0cXR1Ed8BlsSMCqJ+vjkdDadvVe/QZG2acvioJ/3T9DfWbTJY5wSJN5F/J0o
+         IS/PBs5qOcv6GeoqysB61eQOlrT7FpZDKLIkQlMo0Eyv0xGPDQDwIJvjYqqNjiKDKE/N
+         KYfQ==
+X-Gm-Message-State: AOAM531Cf1gyeRq8b8jYEa4sxOOlfZ7oMFk9n+basVqDLpPXiKU3W7af
+        3zfJ5eLXZh4t1ohBPZN/6Cg=
+X-Google-Smtp-Source: ABdhPJypPhINbxOPDDAy+PaHJNUlqNhM/8V6ncVpCoNzYAAdenvD9//gnaDWJRNgSPvUqaBBQdCBOQ==
+X-Received: by 2002:a05:651c:326:: with SMTP id b6mr2712269ljp.339.1606127095742;
+        Mon, 23 Nov 2020 02:24:55 -0800 (PST)
 Received: from xi.terra (c-beaee455.07-184-6d6c6d4.bbcust.telenor.se. [85.228.174.190])
-        by smtp.gmail.com with ESMTPSA id j4sm1331431lfk.275.2020.11.23.02.24.52
+        by smtp.gmail.com with ESMTPSA id h11sm1343594lfc.194.2020.11.23.02.24.52
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 23 Nov 2020 02:24:52 -0800 (PST)
+        Mon, 23 Nov 2020 02:24:54 -0800 (PST)
 Received: from johan by xi.terra with local (Exim 4.93.0.4)
         (envelope-from <johan@xi.terra>)
-        id 1kh91p-00027i-AC; Mon, 23 Nov 2020 11:25:02 +0100
+        id 1kh91q-000286-Gd; Mon, 23 Nov 2020 11:25:02 +0100
 From:   Johan Hovold <johan@kernel.org>
 To:     Rob Herring <robh+dt@kernel.org>,
         Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
@@ -61,109 +61,50 @@ Cc:     Frank Rowand <frowand.list@gmail.com>,
         Daniel Kurtz <djkurtz@chromium.org>,
         linux-arch@vger.kernel.org, linux-m68k@lists.linux-m68k.org,
         linux-kernel@vger.kernel.org, Johan Hovold <johan@kernel.org>
-Subject: [PATCH v2 0/8] linker-section array fix and clean ups
-Date:   Mon, 23 Nov 2020 11:23:11 +0100
-Message-Id: <20201123102319.8090-1-johan@kernel.org>
+Subject: [PATCH v2 5/8] init: use type alignment for kernel parameters
+Date:   Mon, 23 Nov 2020 11:23:16 +0100
+Message-Id: <20201123102319.8090-6-johan@kernel.org>
 X-Mailer: git-send-email 2.26.2
+In-Reply-To: <20201123102319.8090-1-johan@kernel.org>
+References: <20201123102319.8090-1-johan@kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-We rely on the linker to create arrays for a number of things including
-kernel parameters and device-tree-match entries.
+Specify type alignment for kernel parameters instead of sizeof(long).
 
-The stride of these linker-section arrays obviously needs to match the
-expectations of the code accessing them or bad things will happen.
+The alignment attribute is used to prevent gcc from increasing the
+alignment of objects with static extent as an optimisation, something
+which would mess up the __setup array stride.
 
-One thing to watch out for is that gcc is known to increase the
-alignment of larger objects with static extent as an optimisation (on
-x86), but this can be suppressed by using the aligned attribute when
-declaring entries.
+Using __alignof__(struct obs_kernel_param) rather than sizeof(long) is
+preferred since it better indicates why it is there and doesn't break
+should the type size or alignment change.
 
-We've been relying on this behaviour for 16 years for kernel parameters
-(and other structures) and it indeed hasn't changed since the
-introduction of the aligned attribute in gcc 3.1 (see align_variable()
-in [1]).
+Note that on m68k the alignment of struct obs_kernel_param is actually
+two and that adding a 1- or 2-byte field to the 12-byte struct would
+cause a breakage with the current 4-byte alignment.
 
-Occasionally this gcc optimisation do cause problems which have instead
-been worked around in various creative ways including using indirection
-through an array of pointers. This was originally done for tracepoints
-[2] after a number of failed attempts to create properly aligned arrays,
-and the approach was later reused for module-version attributes [3] and
-earlycon entries.
+Signed-off-by: Johan Hovold <johan@kernel.org>
+---
+ include/linux/init.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-This series reverts the latter two workarounds in favour of the one-line
-fix of aligning the entries according to the requirement of the type.
-
-In principle, there shouldn't be anything preventing us from doing the
-same for tracepoints.
-
-The key observation here is that the arrays should be constructed using
-the alignment of the type in question (as given by __alignof__()) rather
-than some specific alignment such as sizeof(void *). This allows the
-structures to be stored efficiently, but more importantly prevents
-breakage on architectures like m68k where pointers are 2-byte aligned
-should the size or alignment of the type change (e.g. so that the size
-is no longer divisible by four).
-
-As a preventive measure in case the kernel-parameter structures are ever
-amended (or the code pattern is reused elsewhere), the final patches
-switches the parameter declarations to also use type alignment.
-
-The series has been tested using gcc 4.9 and 9.3 on x86_32 and
-x86_64 and using gcc 7.2 on arm; and has been compile-tested and
-verified using gcc 4.9 and 10.1 on aarch64, sparc and m68k.
-
-Note that the patches are mostly independent and can be merged through
-different subsystem trees. I decided to post them as a series to provide
-a common background and have a single thread for any general discussion.
-
-Rob and Greg, can you take patches 1 and 2 through your trees,
-respectively?
-
-Jessica, you said you could take the module and params patches through
-your tree?
-
-Who picks up the init.h one? Linus?
-
-Johan
-
-[1] https://github.com/gcc-mirror/gcc/blob/master/gcc/varasm.c
-[2] https://lore.kernel.org/lkml/20110126222622.GA10794@Krystal/
-[3] https://lore.kernel.org/lkml/1297123347-2170-1-git-send-email-dtor@vmware.com/
-
-
-Changes in v2
- - amend commit messages of patches 1, 2, 4, 5 and 7 slightly in order
-   to make it more clear that the gcc optimisation is suppressed by
-   specifying alignment when declaring variables
-
-v1
- - https://lore.kernel.org/r/20201103175711.10731-1-johan@kernel.org
-
-
-Johan Hovold (8):
-  of: fix linker-section match-table corruption
-  earlycon: simplify earlycon-table implementation
-  module: drop version-attribute alignment
-  module: simplify version-attribute handling
-  init: use type alignment for kernel parameters
-  params: drop redundant "unused" attributes
-  params: use type alignment for kernel parameters
-  params: clean up module-param macros
-
- drivers/of/fdt.c              |  7 ++-----
- drivers/tty/serial/earlycon.c |  6 ++----
- include/linux/init.h          |  2 +-
- include/linux/module.h        | 28 ++++++++++++++--------------
- include/linux/moduleparam.h   | 12 ++++++------
- include/linux/of.h            |  1 +
- include/linux/serial_core.h   | 20 +++++++-------------
- kernel/params.c               | 10 ++++------
- 8 files changed, 37 insertions(+), 49 deletions(-)
-
+diff --git a/include/linux/init.h b/include/linux/init.h
+index 7b53cb3092ee..e668832ef66a 100644
+--- a/include/linux/init.h
++++ b/include/linux/init.h
+@@ -255,7 +255,7 @@ struct obs_kernel_param {
+ 		__aligned(1) = str; 					\
+ 	static struct obs_kernel_param __setup_##unique_id		\
+ 		__used __section(".init.setup")				\
+-		__attribute__((aligned((sizeof(long)))))		\
++		__aligned(__alignof__(struct obs_kernel_param))		\
+ 		= { __setup_str_##unique_id, fn, early }
+ 
+ #define __setup(str, fn)						\
 -- 
 2.26.2
 
