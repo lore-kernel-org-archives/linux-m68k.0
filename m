@@ -2,216 +2,110 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.8 required=3.0 tests=BAYES_00,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-7.5 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS,USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 5893BC388F9
-	for <linux-m68k@archiver.kernel.org>; Mon, 23 Nov 2020 22:39:27 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 93D13C5519F
+	for <linux-m68k@archiver.kernel.org>; Wed, 25 Nov 2020 14:51:28 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 1072A206D8
-	for <linux-m68k@archiver.kernel.org>; Mon, 23 Nov 2020 22:39:27 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 2008B2083E
+	for <linux-m68k@archiver.kernel.org>; Wed, 25 Nov 2020 14:51:28 +0000 (UTC)
+Authentication-Results: mail.kernel.org;
+	dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="VuobexrS"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731007AbgKWWjN (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Mon, 23 Nov 2020 17:39:13 -0500
-Received: from mga06.intel.com ([134.134.136.31]:3801 "EHLO mga06.intel.com"
+        id S1727614AbgKYOv1 (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Wed, 25 Nov 2020 09:51:27 -0500
+Received: from mail.kernel.org ([198.145.29.99]:43922 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728567AbgKWWjM (ORCPT <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Mon, 23 Nov 2020 17:39:12 -0500
-IronPort-SDR: ebM9lVtirWMcbJ5Q2dowgJDcz6+p2/ktDmsYIuhxcnxJKhok8S+KAXKGS4XtF2crsKo3SUJ68R
- lgAfLv3nPI5w==
-X-IronPort-AV: E=McAfee;i="6000,8403,9814"; a="233465596"
-X-IronPort-AV: E=Sophos;i="5.78,364,1599548400"; 
-   d="scan'208";a="233465596"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga006.fm.intel.com ([10.253.24.20])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Nov 2020 14:39:10 -0800
-IronPort-SDR: RBgyxscR9556x9RxzJlHTzI7Fmti+4n2l3zOG7AZY6WURTY8gpll6dsgNu1u24/1DazXazpLsW
- 5a3uuHa9zJkg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.78,364,1599548400"; 
-   d="scan'208";a="534623524"
-Received: from lkp-server01.sh.intel.com (HELO 1138cb5768e3) ([10.239.97.150])
-  by fmsmga006.fm.intel.com with ESMTP; 23 Nov 2020 14:39:09 -0800
-Received: from kbuild by 1138cb5768e3 with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1khKUG-0000Ep-RL; Mon, 23 Nov 2020 22:39:08 +0000
-Date:   Tue, 24 Nov 2020 06:38:58 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     linux-m68k@lists.linux-m68k.org
-Subject: [m68k:m68k-queue] BUILD SUCCESS
- e70bf0f0f9ac09b4dbeb2be5d7c1af54623b700a
-Message-ID: <5fbc3a02.xAAtiecBrdUXrBbT%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+        id S1726295AbgKYOv1 (ORCPT <rfc822;linux-m68k@lists.linux-m68k.org>);
+        Wed, 25 Nov 2020 09:51:27 -0500
+Received: from linux-8ccs (p57a232c3.dip0.t-ipconnect.de [87.162.50.195])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 7F88F206B5;
+        Wed, 25 Nov 2020 14:51:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1606315887;
+        bh=N/IosfIbGitpjFvIvBGjanWy43jAdZYMsZ1O1iGVCqs=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=VuobexrSYNEaJHUs9u8B/SEUrsMEqYnTPlfO+3DgAS7ih1zUglusNmcgifq8bDMyV
+         QBlrqLdOO3ztt3E3e0qdvNNZSRe3EVocsttsim8BK4KBLlRz+Zr/oWXp0D169urNyg
+         mGDDK+JjsM7HTSxR2N98YJK6Mx0A1w8OV/wAYlL8=
+Date:   Wed, 25 Nov 2020 15:51:20 +0100
+From:   Jessica Yu <jeyu@kernel.org>
+To:     Johan Hovold <johan@kernel.org>
+Cc:     linux-kernel@vger.kernel.org,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Frank Rowand <frowand.list@gmail.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        David Miller <davem@davemloft.net>,
+        Jakub Jelinek <jakub@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Daniel Kurtz <djkurtz@chromium.org>,
+        linux-arch@vger.kernel.org, linux-m68k@lists.linux-m68k.org
+Subject: Re: [PATCH 0/8] linker-section array fix and clean ups
+Message-ID: <20201125145118.GA32446@linux-8ccs>
+References: <20201103175711.10731-1-johan@kernel.org>
+ <20201106160344.GA12184@linux-8ccs.fritz.box>
+ <20201106164537.GD4085@localhost>
+ <20201111154716.GB5304@linux-8ccs>
+ <X66VvI/M4GRDbiWM@localhost>
+ <X7uRZUY+2L9Yg9wt@localhost>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Disposition: inline
+In-Reply-To: <X7uRZUY+2L9Yg9wt@localhost>
+X-OS:   Linux linux-8ccs 4.12.14-lp150.12.61-default x86_64
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/geert/linux-m68k.git  m68k-queue
-branch HEAD: e70bf0f0f9ac09b4dbeb2be5d7c1af54623b700a  m68k: defconfig: Enable Atari EtherNAT and NetUSBee USB support
++++ Johan Hovold [23/11/20 11:39 +0100]:
+>On Fri, Nov 13, 2020 at 03:18:36PM +0100, Johan Hovold wrote:
+>> On Wed, Nov 11, 2020 at 04:47:16PM +0100, Jessica Yu wrote:
+>>
+>> > Thanks for providing the links and references. Your explanation and
+>> > this reply from Jakub [1] clarified things for me. I was not aware of
+>> > the distinction gcc made between aligned attributes on types vs. on
+>> > variables. So from what I understand now, gcc suppresses the
+>> > optimization when the alignment is specified in the variable
+>> > declaration, but not necessarily when the aligned attribute is just on
+>> > the type.
+>> >
+>> > Even though it's been in use for a long time, I think it would be
+>> > really helpful if this gcc quirk was explained just a bit more in the
+>> > patch changelogs, especially since this is undocumented behavior.
+>> > I found the explanation in [1] (as well as in your cover letter) to be
+>> > sufficient. Maybe something like "GCC suppresses any optimizations
+>> > increasing alignment when the alignment is specified in the variable
+>> > declaration, as opposed to just on the type definition. Therefore,
+>> > explicitly specify type alignment when declaring entries to prevent
+>> > gcc from increasing alignment."
+>>
+>> Sure, I can try to expand the commit messages a bit.
+>
+>I've amended the commit messages of the relevant patches to make it more
+>clear that the optimisation can be suppressed by specifying alignment
+>when declaring variables, but without making additional claims about the
+>type attribute. I hope the result is acceptable to you.
+>
+>Perhaps you can include a lore link to the patches when applying so that
+>this thread can be found easily if needed.
 
-elapsed time: 725m
+Hi Johan,
 
-configs tested: 144
-configs skipped: 2
+Good idea, I've included a link to this thread for each patch.
+I've queued up patches 3, 4, 6, 7, 8 for testing before pushing them
+out to modules-next.
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+Thanks!
 
-gcc tested configs:
-arm                                 defconfig
-arm64                            allyesconfig
-arm64                               defconfig
-arm                              allyesconfig
-arm                              allmodconfig
-m68k                          hp300_defconfig
-arm                         bcm2835_defconfig
-sh                               alldefconfig
-m68k                         apollo_defconfig
-sh                ecovec24-romimage_defconfig
-powerpc                 mpc832x_mds_defconfig
-arm                            zeus_defconfig
-powerpc                   bluestone_defconfig
-sh                         apsh4a3a_defconfig
-arm                        mvebu_v7_defconfig
-sh                     magicpanelr2_defconfig
-arm                         nhk8815_defconfig
-xtensa                         virt_defconfig
-sh                          r7780mp_defconfig
-arm                       netwinder_defconfig
-xtensa                              defconfig
-arm                            u300_defconfig
-powerpc                 xes_mpc85xx_defconfig
-powerpc                 mpc832x_rdb_defconfig
-arm                            pleb_defconfig
-sh                        apsh4ad0a_defconfig
-xtensa                          iss_defconfig
-powerpc                     skiroot_defconfig
-powerpc                      makalu_defconfig
-powerpc                        icon_defconfig
-arm                         cm_x300_defconfig
-arm64                            alldefconfig
-mips                         tb0226_defconfig
-powerpc                  iss476-smp_defconfig
-sh                           se7724_defconfig
-csky                             alldefconfig
-arm                            dove_defconfig
-m68k                           sun3_defconfig
-sh                   rts7751r2dplus_defconfig
-powerpc                     akebono_defconfig
-arm                         s3c6400_defconfig
-sparc                            alldefconfig
-mips                           ip32_defconfig
-sh                           se7721_defconfig
-powerpc                      ep88xc_defconfig
-mips                         bigsur_defconfig
-powerpc                     pseries_defconfig
-arm                           tegra_defconfig
-powerpc                     kmeter1_defconfig
-mips                 decstation_r4k_defconfig
-mips                           gcw0_defconfig
-mips                      fuloong2e_defconfig
-powerpc                   lite5200b_defconfig
-mips                          ath79_defconfig
-arm                       mainstone_defconfig
-sparc64                          alldefconfig
-arm                         assabet_defconfig
-arm                  colibri_pxa270_defconfig
-arm                     davinci_all_defconfig
-sh                           se7750_defconfig
-arc                     haps_hs_smp_defconfig
-mips                           mtx1_defconfig
-powerpc                   motionpro_defconfig
-powerpc                      chrp32_defconfig
-sh                          rsk7269_defconfig
-mips                malta_qemu_32r6_defconfig
-arm                             rpc_defconfig
-powerpc                      arches_defconfig
-powerpc                   currituck_defconfig
-arm                          pxa168_defconfig
-mips                        vocore2_defconfig
-powerpc                     pq2fads_defconfig
-powerpc                    socrates_defconfig
-nds32                             allnoconfig
-mips                         db1xxx_defconfig
-arc                              alldefconfig
-ia64                             allmodconfig
-ia64                                defconfig
-ia64                             allyesconfig
-m68k                             allmodconfig
-m68k                                defconfig
-m68k                             allyesconfig
-nios2                               defconfig
-arc                              allyesconfig
-c6x                              allyesconfig
-nds32                               defconfig
-nios2                            allyesconfig
-csky                                defconfig
-alpha                               defconfig
-alpha                            allyesconfig
-xtensa                           allyesconfig
-h8300                            allyesconfig
-arc                                 defconfig
-sh                               allmodconfig
-parisc                              defconfig
-s390                             allyesconfig
-parisc                           allyesconfig
-s390                                defconfig
-i386                             allyesconfig
-sparc                            allyesconfig
-sparc                               defconfig
-i386                                defconfig
-mips                             allyesconfig
-mips                             allmodconfig
-powerpc                          allyesconfig
-powerpc                          allmodconfig
-powerpc                           allnoconfig
-i386                 randconfig-a004-20201123
-i386                 randconfig-a003-20201123
-i386                 randconfig-a002-20201123
-i386                 randconfig-a005-20201123
-i386                 randconfig-a001-20201123
-i386                 randconfig-a006-20201123
-x86_64               randconfig-a015-20201123
-x86_64               randconfig-a011-20201123
-x86_64               randconfig-a014-20201123
-x86_64               randconfig-a016-20201123
-x86_64               randconfig-a012-20201123
-x86_64               randconfig-a013-20201123
-i386                 randconfig-a012-20201123
-i386                 randconfig-a013-20201123
-i386                 randconfig-a011-20201123
-i386                 randconfig-a016-20201123
-i386                 randconfig-a014-20201123
-i386                 randconfig-a015-20201123
-riscv                    nommu_k210_defconfig
-riscv                            allyesconfig
-riscv                    nommu_virt_defconfig
-riscv                             allnoconfig
-riscv                               defconfig
-riscv                          rv32_defconfig
-riscv                            allmodconfig
-x86_64                                   rhel
-x86_64                           allyesconfig
-x86_64                    rhel-7.6-kselftests
-x86_64                              defconfig
-x86_64                               rhel-8.3
-x86_64                                  kexec
-
-clang tested configs:
-x86_64               randconfig-a006-20201123
-x86_64               randconfig-a003-20201123
-x86_64               randconfig-a004-20201123
-x86_64               randconfig-a005-20201123
-x86_64               randconfig-a002-20201123
-x86_64               randconfig-a001-20201123
-
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+Jessica
