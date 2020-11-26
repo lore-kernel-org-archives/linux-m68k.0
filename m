@@ -2,110 +2,95 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-7.5 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS,USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-5.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
+	SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 93D13C5519F
-	for <linux-m68k@archiver.kernel.org>; Wed, 25 Nov 2020 14:51:28 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id ED749C56202
+	for <linux-m68k@archiver.kernel.org>; Thu, 26 Nov 2020 13:30:12 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 2008B2083E
-	for <linux-m68k@archiver.kernel.org>; Wed, 25 Nov 2020 14:51:28 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 99C0621D40
+	for <linux-m68k@archiver.kernel.org>; Thu, 26 Nov 2020 13:30:12 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="VuobexrS"
+	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="IZAPLh/g";
+	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="+R2H2APu"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727614AbgKYOv1 (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Wed, 25 Nov 2020 09:51:27 -0500
-Received: from mail.kernel.org ([198.145.29.99]:43922 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726295AbgKYOv1 (ORCPT <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Wed, 25 Nov 2020 09:51:27 -0500
-Received: from linux-8ccs (p57a232c3.dip0.t-ipconnect.de [87.162.50.195])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 7F88F206B5;
-        Wed, 25 Nov 2020 14:51:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1606315887;
-        bh=N/IosfIbGitpjFvIvBGjanWy43jAdZYMsZ1O1iGVCqs=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=VuobexrSYNEaJHUs9u8B/SEUrsMEqYnTPlfO+3DgAS7ih1zUglusNmcgifq8bDMyV
-         QBlrqLdOO3ztt3E3e0qdvNNZSRe3EVocsttsim8BK4KBLlRz+Zr/oWXp0D169urNyg
-         mGDDK+JjsM7HTSxR2N98YJK6Mx0A1w8OV/wAYlL8=
-Date:   Wed, 25 Nov 2020 15:51:20 +0100
-From:   Jessica Yu <jeyu@kernel.org>
-To:     Johan Hovold <johan@kernel.org>
-Cc:     linux-kernel@vger.kernel.org,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Frank Rowand <frowand.list@gmail.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        David Miller <davem@davemloft.net>,
-        Jakub Jelinek <jakub@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
+        id S2389847AbgKZNaM (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Thu, 26 Nov 2020 08:30:12 -0500
+Received: from Galois.linutronix.de ([193.142.43.55]:56382 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2389236AbgKZNaL (ORCPT
+        <rfc822;linux-m68k@lists.linux-m68k.org>);
+        Thu, 26 Nov 2020 08:30:11 -0500
+From:   Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1606397410;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=gKWNXrO69ijmKr06RgReA2B5m0/QsKYm+ymsyZGidRw=;
+        b=IZAPLh/gPNV9SPkRo5yU1iTFK2/RrPlGshE5xGaEscU4ZuVttcZeo8LCMhGjngrzr6Z4Fa
+        RjhoNwUG3NSiIaZERsAQOJzWNFekPczy4i6MGab1QY2E98qwzxeF7hvMi03qV4a3FRsR/s
+        7gBn0v66mzB6Hky27bu+XAThgaiUNGfKbQXkIN0Ko4nan3q9+c5rXv0zCzG8FwmCtB8Aq9
+        d3niDoJvLMkOGWxvO5scPZynOgG39NbvfVTsMZKdzr5XPCZiqIhU9e9l6feac7WntRLVlL
+        HaXm6UApmSErfYhI+rgP6gl9evci+6xqtIazLqZYBCIuijSGv0lE6VXp/tsuYA==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1606397410;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=gKWNXrO69ijmKr06RgReA2B5m0/QsKYm+ymsyZGidRw=;
+        b=+R2H2APu+AeyvL7q0xCnCAAFOiwwYoumjtb91uMyFvik8JqRH5A+Ow4NjnUvqyNBVPrC/S
+        iP/Qh8jpnmGsU8Cw==
+To:     linux-scsi@vger.kernel.org
+Cc:     Finn Thain <fthain@telegraphics.com.au>,
+        GR-QLogic-Storage-Upstream@marvell.com,
+        Hannes Reinecke <hare@kernel.org>,
+        Jack Wang <jinpu.wang@cloud.ionos.com>,
+        John Garry <john.garry@huawei.com>,
+        linux-m68k@lists.linux-m68k.org,
+        Manish Rangankar <mrangankar@marvell.com>,
+        Michael Schmitz <schmitzmic@gmail.com>,
+        MPT-FusionLinux.pdl@broadcom.com,
+        Nilesh Javali <njavali@marvell.com>,
+        Sathya Prakash <sathya.prakash@broadcom.com>,
+        Sreekanth Reddy <sreekanth.reddy@broadcom.com>,
+        Suganath Prabu Subramani 
+        <suganath-prabu.subramani@broadcom.com>,
+        Vikram Auradkar <auradkar@google.com>,
+        Xiang Chen <chenxiang66@hisilicon.com>,
+        Xiaofei Tan <tanxiaofei@huawei.com>,
+        "James E . J . Bottomley" <jejb@linux.ibm.com>,
+        "Martin K . Petersen" <martin.petersen@oracle.com>,
         Thomas Gleixner <tglx@linutronix.de>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Daniel Kurtz <djkurtz@chromium.org>,
-        linux-arch@vger.kernel.org, linux-m68k@lists.linux-m68k.org
-Subject: Re: [PATCH 0/8] linker-section array fix and clean ups
-Message-ID: <20201125145118.GA32446@linux-8ccs>
-References: <20201103175711.10731-1-johan@kernel.org>
- <20201106160344.GA12184@linux-8ccs.fritz.box>
- <20201106164537.GD4085@localhost>
- <20201111154716.GB5304@linux-8ccs>
- <X66VvI/M4GRDbiWM@localhost>
- <X7uRZUY+2L9Yg9wt@localhost>
+        "Ahmed S . Darwish" <a.darwish@linutronix.de>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Subject: [PATCH 00/14] scsi: Remove in_interrupt() usage.
+Date:   Thu, 26 Nov 2020 14:29:38 +0100
+Message-Id: <20201126132952.2287996-1-bigeasy@linutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Disposition: inline
-In-Reply-To: <X7uRZUY+2L9Yg9wt@localhost>
-X-OS:   Linux linux-8ccs 4.12.14-lp150.12.61-default x86_64
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-+++ Johan Hovold [23/11/20 11:39 +0100]:
->On Fri, Nov 13, 2020 at 03:18:36PM +0100, Johan Hovold wrote:
->> On Wed, Nov 11, 2020 at 04:47:16PM +0100, Jessica Yu wrote:
->>
->> > Thanks for providing the links and references. Your explanation and
->> > this reply from Jakub [1] clarified things for me. I was not aware of
->> > the distinction gcc made between aligned attributes on types vs. on
->> > variables. So from what I understand now, gcc suppresses the
->> > optimization when the alignment is specified in the variable
->> > declaration, but not necessarily when the aligned attribute is just on
->> > the type.
->> >
->> > Even though it's been in use for a long time, I think it would be
->> > really helpful if this gcc quirk was explained just a bit more in the
->> > patch changelogs, especially since this is undocumented behavior.
->> > I found the explanation in [1] (as well as in your cover letter) to be
->> > sufficient. Maybe something like "GCC suppresses any optimizations
->> > increasing alignment when the alignment is specified in the variable
->> > declaration, as opposed to just on the type definition. Therefore,
->> > explicitly specify type alignment when declaring entries to prevent
->> > gcc from increasing alignment."
->>
->> Sure, I can try to expand the commit messages a bit.
->
->I've amended the commit messages of the relevant patches to make it more
->clear that the optimisation can be suppressed by specifying alignment
->when declaring variables, but without making additional claims about the
->type attribute. I hope the result is acceptable to you.
->
->Perhaps you can include a lore link to the patches when applying so that
->this thread can be found easily if needed.
+Folks,
 
-Hi Johan,
+in the discussion about preempt count consistency across kernel
+configurations:
 
-Good idea, I've included a link to this thread for each patch.
-I've queued up patches 3, 4, 6, 7, 8 for testing before pushing them
-out to modules-next.
+ https://lore.kernel.org/r/20200914204209.256266093@linutronix.de/
 
-Thanks!
+it was concluded that the usage of in_interrupt() and related context
+checks should be removed from non-core code.
 
-Jessica
+This includes allocation mode (GFP_*) decisions and avoidance of code paths
+which might sleep.
+In the long run, usage of 'preemptible, in_*irq etc.' should be banned from
+driver code completely.
+
+This series addresses most of the SCSI subsystem.
+The first three patches have Fixes tags and address bugs were noticed during
+review.
+
+Sebastian
