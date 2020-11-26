@@ -2,75 +2,46 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-15.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-	autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-10.2 required=3.0 tests=BAYES_00,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,MAILING_LIST_MULTI,
+	NICE_REPLY_A,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3E072C63777
-	for <linux-m68k@archiver.kernel.org>; Thu, 26 Nov 2020 13:58:58 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D64F6C56202
+	for <linux-m68k@archiver.kernel.org>; Thu, 26 Nov 2020 14:11:25 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id C0D99221F7
-	for <linux-m68k@archiver.kernel.org>; Thu, 26 Nov 2020 13:58:57 +0000 (UTC)
-Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=cloud.ionos.com header.i=@cloud.ionos.com header.b="YGcu1A/b"
+	by mail.kernel.org (Postfix) with ESMTP id 7B9B22053B
+	for <linux-m68k@archiver.kernel.org>; Thu, 26 Nov 2020 14:11:25 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389961AbgKZN6o (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Thu, 26 Nov 2020 08:58:44 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33136 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2389923AbgKZN6o (ORCPT
+        id S2390350AbgKZOLJ (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Thu, 26 Nov 2020 09:11:09 -0500
+Received: from frasgout.his.huawei.com ([185.176.79.56]:2165 "EHLO
+        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2390344AbgKZOLJ (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Thu, 26 Nov 2020 08:58:44 -0500
-Received: from mail-ej1-x644.google.com (mail-ej1-x644.google.com [IPv6:2a00:1450:4864:20::644])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D589EC061A04
-        for <linux-m68k@lists.linux-m68k.org>; Thu, 26 Nov 2020 05:58:42 -0800 (PST)
-Received: by mail-ej1-x644.google.com with SMTP id jx16so2461564ejb.10
-        for <linux-m68k@lists.linux-m68k.org>; Thu, 26 Nov 2020 05:58:42 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cloud.ionos.com; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=0ZnlpdHGKLLs1HjgjZ57oIwQ/E9hSKGuo9TRf/d6l7Y=;
-        b=YGcu1A/bGEojIh2hXNbJIpvpVFABgN62i6zbiwIMkmT7nl5y8yS4N8sQWHV5/pTku5
-         a/9kwotcQNIUyhtm4NKxkST1Fe+RSzolno64PbsvHvEHvsHnFF1RBeQX46g4gDlyyIjX
-         st/xPIn6drh6b3MpPfMnYnFQJ6RBDxkEFpdg0RBaagKQ6qHnNd9+KmbdrDdLSTI8qJhI
-         /7gn48pxJCmB88DAcKSKghG6NdJVBSjJXeoPOS/6mEg1mMZ1svvletkcVbVKakF6xkiU
-         Laol6REYX5yAcFDzOhSBTiBeRcBQ6VBpO7MXE5nhJkxxdn1wO/7VLGQaE4u7P9IGraCh
-         G3cw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=0ZnlpdHGKLLs1HjgjZ57oIwQ/E9hSKGuo9TRf/d6l7Y=;
-        b=I8CCmZBNgvXi4IH52oiaNio2rav2MdM0wDk8nDyqXDesrO9Oom9mrB33qfFf9mFlnr
-         rYjLrBacQG7cK/HKcfbe+ztWQVpowJB37xq1vrVQa7aD962C28oZL2Pr3sldo1Oqo/65
-         F/nFa8nS7L7lxIzU9GqSnrO/Kgy7d4GCzrlk3FnNeA7ViM9bEANlzejgwYwPrPwQB2YJ
-         vrGOqPbv4+nwWowFEk2hcIBXpyWu3jg0TJFWulsgAMng+j0gMe1NKp65sD9z5w/SlYYZ
-         nnygJIuJiwtnWvjQ3TJBufp6PBH3R7hggY5FMLn/vX+Lc7qLLb1Gu03/4kBvjeid3MmC
-         71gw==
-X-Gm-Message-State: AOAM532dVUMzdUKeToz+Uw20vP5ntOqIPMRxY4AKaQSaqCJyUx6X6ZrP
-        QLUEonDv38Y2v/B7hI9vjki9TKLTrxVXf3TJnozmVg==
-X-Google-Smtp-Source: ABdhPJxQ3lbgok2nzajF7J3WM8tj9j7hS/DQ1abTCwysoqXRwAZKsSfY3arkEzD7W3qCTRbOaxjD6QmKApOjXisCCz0=
-X-Received: by 2002:a17:906:94ca:: with SMTP id d10mr1435532ejy.62.1606399121382;
- Thu, 26 Nov 2020 05:58:41 -0800 (PST)
-MIME-Version: 1.0
-References: <20201126132952.2287996-1-bigeasy@linutronix.de> <20201126132952.2287996-2-bigeasy@linutronix.de>
-In-Reply-To: <20201126132952.2287996-2-bigeasy@linutronix.de>
-From:   Jinpu Wang <jinpu.wang@cloud.ionos.com>
-Date:   Thu, 26 Nov 2020 14:58:30 +0100
-Message-ID: <CAMGffE=7=Tjx53gb8s8tjJQ5VeVtQN7OZzNro0ghpQH_pUWMzw@mail.gmail.com>
-Subject: Re: [PATCH 01/14] scsi: pm80xx: Do not sleep in atomic context.
-To:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Cc:     Linux SCSI Mailinglist <linux-scsi@vger.kernel.org>,
-        Finn Thain <fthain@telegraphics.com.au>,
-        GR-QLogic-Storage-Upstream@marvell.com,
+        Thu, 26 Nov 2020 09:11:09 -0500
+Received: from fraeml702-chm.china.huawei.com (unknown [172.18.147.200])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4Chfl467S7z67JM9;
+        Thu, 26 Nov 2020 22:09:20 +0800 (CST)
+Received: from lhreml724-chm.china.huawei.com (10.201.108.75) by
+ fraeml702-chm.china.huawei.com (10.206.15.51) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2106.2; Thu, 26 Nov 2020 15:11:07 +0100
+Received: from [10.210.172.213] (10.210.172.213) by
+ lhreml724-chm.china.huawei.com (10.201.108.75) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
+ 15.1.1913.5; Thu, 26 Nov 2020 14:11:05 +0000
+Subject: Re: [PATCH 02/14] scsi: hisi_sas: Remove preemptible().
+To:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        <linux-scsi@vger.kernel.org>
+CC:     Finn Thain <fthain@telegraphics.com.au>,
+        <GR-QLogic-Storage-Upstream@marvell.com>,
         Hannes Reinecke <hare@kernel.org>,
-        John Garry <john.garry@huawei.com>,
-        linux-m68k@lists.linux-m68k.org,
+        Jack Wang <jinpu.wang@cloud.ionos.com>,
+        <linux-m68k@lists.linux-m68k.org>,
         Manish Rangankar <mrangankar@marvell.com>,
         Michael Schmitz <schmitzmic@gmail.com>,
-        MPT-FusionLinux.pdl@broadcom.com,
+        <MPT-FusionLinux.pdl@broadcom.com>,
         Nilesh Javali <njavali@marvell.com>,
         Sathya Prakash <sathya.prakash@broadcom.com>,
         Sreekanth Reddy <sreekanth.reddy@broadcom.com>,
@@ -83,52 +54,50 @@ Cc:     Linux SCSI Mailinglist <linux-scsi@vger.kernel.org>,
         "Martin K . Petersen" <martin.petersen@oracle.com>,
         Thomas Gleixner <tglx@linutronix.de>,
         "Ahmed S . Darwish" <a.darwish@linutronix.de>
-Content-Type: text/plain; charset="UTF-8"
+References: <20201126132952.2287996-1-bigeasy@linutronix.de>
+ <20201126132952.2287996-3-bigeasy@linutronix.de>
+From:   John Garry <john.garry@huawei.com>
+Message-ID: <f405bce8-5929-b91a-2e42-12cdb7f08867@huawei.com>
+Date:   Thu, 26 Nov 2020 14:10:43 +0000
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.1.2
+MIME-Version: 1.0
+In-Reply-To: <20201126132952.2287996-3-bigeasy@linutronix.de>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.210.172.213]
+X-ClientProxiedBy: lhreml707-chm.china.huawei.com (10.201.108.56) To
+ lhreml724-chm.china.huawei.com (10.201.108.75)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-On Thu, Nov 26, 2020 at 2:30 PM Sebastian Andrzej Siewior
-<bigeasy@linutronix.de> wrote:
->
-> From: "Ahmed S. Darwish" <a.darwish@linutronix.de>
->
-> hw_event_sas_phy_up() is used in hardirq/softirq context:
->
->  pm8001_interrupt_handler_msix() || pm8001_interrupt_handler_intx() || pm8001_tasklet
->    => PM8001_CHIP_DISP->isr() = pm80xx_chip_isr()
->      => process_oq() [spin_lock_irqsave(&pm8001_ha->lock,)]
->        => process_one_iomb()
->          => mpi_hw_event()
->            => hw_event_sas_phy_up()
->              => msleep(200)
->
-> Revert the msleep() back to an mdelay() to avoid sleeping in atomic
-> context.
->
-> Fixes: 4daf1ef3c681 ("scsi: pm80xx: Convert 'long' mdelay to msleep")
-> Signed-off-by: Ahmed S. Darwish <a.darwish@linutronix.de>
-> Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-> Cc: Vikram Auradkar <auradkar@google.com>
-> Cc: Jack Wang <jinpu.wang@cloud.ionos.com>
-Indeed, thx for the fix.
-Acked-by: Jack Wang <jinpu.wang@cloud.ionos.com>> ---
->  drivers/scsi/pm8001/pm80xx_hwi.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/drivers/scsi/pm8001/pm80xx_hwi.c b/drivers/scsi/pm8001/pm80xx_hwi.c
-> index 69f8244539e04..7d838e316657c 100644
-> --- a/drivers/scsi/pm8001/pm80xx_hwi.c
-> +++ b/drivers/scsi/pm8001/pm80xx_hwi.c
-> @@ -3296,7 +3296,7 @@ hw_event_sas_phy_up(struct pm8001_hba_info *pm8001_ha, void *piomb)
->         pm8001_get_attached_sas_addr(phy, phy->sas_phy.attached_sas_addr);
->         spin_unlock_irqrestore(&phy->sas_phy.frame_rcvd_lock, flags);
->         if (pm8001_ha->flags == PM8001F_RUN_TIME)
-> -               msleep(200);/*delay a moment to wait disk to spinup*/
-> +               mdelay(200);/*delay a moment to wait disk to spinup*/
->         pm8001_bytes_dmaed(pm8001_ha, phy_id);
->  }
->
-> --
-> 2.29.2
->
+On 26/11/2020 13:29, Sebastian Andrzej Siewior wrote:
+> From: "Ahmed S. Darwish"<a.darwish@linutronix.de>
+> 
+> hisi_sas_task_exec() uses preemptible() to see if it's safe to block.
+> This does not work for CONFIG_PREEMPT_COUNT=n kernels in which
+> preemptible() always returns 0.
+> 
+> The problem is masked when enabling some of the common Kconfig.debug
+> options (like CONFIG_DEBUG_ATOMIC_SLEEP), as they implicitly enable the
+> preemption counter.
+> 
+> In general, driver leaf functions should not make logic decisions based
+> on the context they're called from. The caller should be the entity
+> responsible for explicitly indicating context.
+> 
+> Since hisi_sas_task_exec() already has a gfp_t flags parameter, use it
+> as the explicit context marker.
+> 
+> Fixes: 214e702d4b70 ("scsi: hisi_sas: Adjust task reject period during host reset")
+> Fixes: 550c0d89d52d ("scsi: hisi_sas: Replace in_softirq() check in hisi_sas_task_exec()")
+> Signed-off-by: Ahmed S. Darwish<a.darwish@linutronix.de>
+> Signed-off-by: Sebastian Andrzej Siewior<bigeasy@linutronix.de>
+> Cc: Xiaofei Tan<tanxiaofei@huawei.com>
+> Cc: Xiang Chen<chenxiang66@hisilicon.com>
+> Cc: John Garry<john.garry@huawei.com>
+
+Acked-by: John Garry <john.garry@huawei.com>
