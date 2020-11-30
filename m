@@ -4,26 +4,26 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-8.8 required=3.0 tests=BAYES_00,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,MAILING_LIST_MULTI,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E8275C64E8A
-	for <linux-m68k@archiver.kernel.org>; Mon, 30 Nov 2020 14:34:17 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 1430BC64E8A
+	for <linux-m68k@archiver.kernel.org>; Mon, 30 Nov 2020 15:17:33 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 9AF2C20684
-	for <linux-m68k@archiver.kernel.org>; Mon, 30 Nov 2020 14:34:17 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id B3EE2206F9
+	for <linux-m68k@archiver.kernel.org>; Mon, 30 Nov 2020 15:17:32 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726011AbgK3OeR (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Mon, 30 Nov 2020 09:34:17 -0500
-Received: from mx2.suse.de ([195.135.220.15]:48842 "EHLO mx2.suse.de"
+        id S1726498AbgK3PRR (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Mon, 30 Nov 2020 10:17:17 -0500
+Received: from mx2.suse.de ([195.135.220.15]:58414 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726410AbgK3OeR (ORCPT <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Mon, 30 Nov 2020 09:34:17 -0500
+        id S1725859AbgK3PRQ (ORCPT <rfc822;linux-m68k@lists.linux-m68k.org>);
+        Mon, 30 Nov 2020 10:17:16 -0500
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 6CA01AB63;
-        Mon, 30 Nov 2020 14:33:35 +0000 (UTC)
-Date:   Mon, 30 Nov 2020 15:33:34 +0100
+        by mx2.suse.de (Postfix) with ESMTP id 9A8AAAEDE;
+        Mon, 30 Nov 2020 15:16:34 +0000 (UTC)
+Date:   Mon, 30 Nov 2020 16:16:34 +0100
 From:   Daniel Wagner <dwagner@suse.de>
 To:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>
 Cc:     linux-scsi@vger.kernel.org,
@@ -48,55 +48,50 @@ Cc:     linux-scsi@vger.kernel.org,
         "Martin K . Petersen" <martin.petersen@oracle.com>,
         Thomas Gleixner <tglx@linutronix.de>,
         "Ahmed S . Darwish" <a.darwish@linutronix.de>
-Subject: Re: [PATCH 08/14] scsi: qla4xxx: qla4_82xx_rom_lock(): Remove
- in_interrupt().
-Message-ID: <20201130143334.b4x6y7qejsvlxeag@beryllium.lan>
+Subject: Re: [PATCH 09/14] scsi: mpt3sas: Remove in_interrupt().
+Message-ID: <20201130151634.seijadk2nvxnobt6@beryllium.lan>
 References: <20201126132952.2287996-1-bigeasy@linutronix.de>
- <20201126132952.2287996-9-bigeasy@linutronix.de>
+ <20201126132952.2287996-10-bigeasy@linutronix.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201126132952.2287996-9-bigeasy@linutronix.de>
+In-Reply-To: <20201126132952.2287996-10-bigeasy@linutronix.de>
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-On Thu, Nov 26, 2020 at 02:29:46PM +0100, Sebastian Andrzej Siewior wrote:
+On Thu, Nov 26, 2020 at 02:29:47PM +0100, Sebastian Andrzej Siewior wrote:
 > From: "Ahmed S. Darwish" <a.darwish@linutronix.de>
 > 
-> qla4_82xx_rom_lock() spins on a certain hardware state until it is
-> updated. At the end of each spin, if in_interrupt() is true, it does 20
-> loops of cpu_relax(). Otherwise, it yields the CPU.
+> _scsih_fw_event_cleanup_queue() waits for all outstanding firmware
+> events wokrqueue handlers to finish. If in_interrupt() is true, it
+> cancels itself and return early.
 > 
-> While in_interrupt() is ill-defined and does not provide what the name
-> suggests, it is not needed here: qla4_82xx_rom_lock() is always called
-> from process context. Below is an analysis of its callers:
+> That in_interrupt() check is ill-defined and does not provide what the
+> name suggests: it does not cover all states in which it is safe to block
+> and call functions like cancel_work_sync().
 > 
->   - ql4_nx.c: qla4_82xx_rom_fast_read(), all process context callers:
->     => ql4_nx.c: qla4_82xx_pinit_from_rom(), GFP_KERNEL allocation
->     => ql4_nx.c: qla4_82xx_load_from_flash(), msleep() in a loop
+> That check is also not needed: _scsih_fw_event_cleanup_queue() is always
+> invoked from process context. Below is an analysis of its callers:
 > 
->   - ql4_nx.c: qla4_82xx_pinit_from_rom(), earlier discussed
+>   - scsih_remove(), bound to PCI ->remove(), process context
 > 
->   - ql4_nx.c: qla4_82xx_rom_lock_recovery(), bound to "isp_operations"
->     ->rom_lock_recovery() hook, which has one process context caller,
->     qla4_8xxx_device_bootstrap(), with callers:
->       => ql4_83xx.c: qla4_83xx_need_reset_handler(), process, msleep()
->       => ql4_nx.c: qla4_8xxx_device_state_handler(), multiple msleep()s
+>   - scsih_shutdown(), bound to PCI ->shutdown(), process context
 > 
->   - ql4_nx.c: qla4_82xx_read_flash_data(), has cond_resched()
+>   - mpt3sas_scsih_clear_outstanding_scsi_tm_commands(), called by
+>       => _base_clear_outstanding_commands(), called by
+>         =>_base_fault_reset_work(), workqueue
+>         => mpt3sas_base_hard_reset_handler(), locks mutex
 > 
-> Remove the in_interrupt() check. Mark, qla4_82xx_rom_lock(), and the
-> ->rom_lock_recovery() hook, with "Context: task, can sleep".
-> 
-> Change qla4_82xx_rom_lock() implementation to sleep 20ms, instead of a
-> schedule(), for each spin. This is more deterministic, and it matches
-> the other implementations bound to ->rom_lock_recovery().
+> Remove the in_interrupt() check. Change _scsih_fw_event_cleanup_queue()
+> specification to a purely process-context function and mark it with
+> "Context: task, can sleep".
 > 
 > Signed-off-by: Ahmed S. Darwish <a.darwish@linutronix.de>
 > Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-> Cc: Nilesh Javali <njavali@marvell.com>
-> Cc: Manish Rangankar <mrangankar@marvell.com>
-> Cc: <GR-QLogic-Storage-Upstream@marvell.com>
+> Cc: Sathya Prakash <sathya.prakash@broadcom.com>
+> Cc: Sreekanth Reddy <sreekanth.reddy@broadcom.com>
+> Cc: Suganath Prabu Subramani <suganath-prabu.subramani@broadcom.com>
+> Cc: <MPT-FusionLinux.pdl@broadcom.com>
 
 Reviewed-by: Daniel Wagner <dwagner@suse.de>
