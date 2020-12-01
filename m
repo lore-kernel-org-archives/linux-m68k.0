@@ -2,152 +2,183 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-17.2 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
-	INCLUDES_CR_TRAILER,INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	UNPARSEABLE_RELAY,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-8.8 required=3.0 tests=BAYES_00,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3EEEDC63777
-	for <linux-m68k@archiver.kernel.org>; Mon, 30 Nov 2020 19:16:53 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4F36AC64E90
+	for <linux-m68k@archiver.kernel.org>; Tue,  1 Dec 2020 02:10:32 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id BD9CB206ED
-	for <linux-m68k@archiver.kernel.org>; Mon, 30 Nov 2020 19:16:52 +0000 (UTC)
-Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="L9rTKV3U"
+	by mail.kernel.org (Postfix) with ESMTP id F37F0207FF
+	for <linux-m68k@archiver.kernel.org>; Tue,  1 Dec 2020 02:10:31 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388258AbgK3TQW (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Mon, 30 Nov 2020 14:16:22 -0500
-Received: from aserp2130.oracle.com ([141.146.126.79]:40530 "EHLO
-        aserp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388228AbgK3TQU (ORCPT
-        <rfc822;linux-m68k@vger.kernel.org>); Mon, 30 Nov 2020 14:16:20 -0500
-Received: from pps.filterd (aserp2130.oracle.com [127.0.0.1])
-        by aserp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0AUJEtID180387;
-        Mon, 30 Nov 2020 19:15:21 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=content-type :
- mime-version : subject : from : in-reply-to : date : cc :
- content-transfer-encoding : message-id : references : to;
- s=corp-2020-01-29; bh=QRRyLHr54zLVvqts0q1E1e7aOWhET0v7UIce6bgUCrc=;
- b=L9rTKV3U9zLnRPNGh2azi9OleWIrKjaWkUwL8aqkJ/az28XpQrLIaXl1EAKkIyrAiDX1
- nkKrBPANksPj57rVaWB4+ILg/o+vtLhF2RfHfUFqVtmzRs3kpnPhYBXk/024nZ9pbSn4
- 1KP6rLX1GVgdQf25IyUkR8bPVKih/thFmavYD7Wa8ZJSGRTbIWeSYA6QJhMODwJLPfXU
- eQK5Ymw4tVvovNk/MNJaeKwpHi3jT5I/uQD4I/EBV5Mfa1Eyms1aLeFY/2Rlj2Wzb0B+
- LOCTioUfv70qBA66vWeH2WB5yuksEEjRLGhs52NIPLNYuUGB8biqmvYi46grZ7tHq2Ch XA== 
-Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
-        by aserp2130.oracle.com with ESMTP id 353c2aq073-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Mon, 30 Nov 2020 19:15:21 +0000
-Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
-        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0AUJ6DNH075561;
-        Mon, 30 Nov 2020 19:13:20 GMT
-Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
-        by userp3020.oracle.com with ESMTP id 3540ar1a2k-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 30 Nov 2020 19:13:20 +0000
-Received: from abhmp0003.oracle.com (abhmp0003.oracle.com [141.146.116.9])
-        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 0AUJDJPX021683;
-        Mon, 30 Nov 2020 19:13:19 GMT
-Received: from dhcp-10-154-168-92.vpn.oracle.com (/10.154.168.92)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Mon, 30 Nov 2020 11:13:18 -0800
-Content-Type: text/plain;
-        charset=us-ascii
-Mime-Version: 1.0 (Mac OS X Mail 13.4 \(3608.120.23.2.4\))
-Subject: Re: [PATCH 05/14] scsi: qla2xxx: tcm_qla2xxx: Remove
- BUG_ON(in_interrupt()).
-From:   Himanshu Madhani <himanshu.madhani@oracle.com>
-In-Reply-To: <20201126132952.2287996-6-bigeasy@linutronix.de>
-Date:   Mon, 30 Nov 2020 13:13:15 -0600
-Cc:     linux-scsi@vger.kernel.org,
-        Finn Thain <fthain@telegraphics.com.au>,
-        GR-QLogic-Storage-Upstream <GR-QLogic-Storage-Upstream@marvell.com>,
-        Hannes Reinecke <hare@kernel.org>,
-        Jack Wang <jinpu.wang@cloud.ionos.com>,
-        John Garry <john.garry@huawei.com>, linux-m68k@vger.kernel.org,
-        Manish Rangankar <mrangankar@marvell.com>,
-        Michael Schmitz <schmitzmic@gmail.com>,
-        MPT-FusionLinux.pdl@broadcom.com,
-        Nilesh Javali <njavali@marvell.com>,
-        Sathya Prakash <sathya.prakash@broadcom.com>,
-        Sreekanth Reddy <sreekanth.reddy@broadcom.com>,
-        Suganath Prabu Subramani 
-        <suganath-prabu.subramani@broadcom.com>,
-        Vikram Auradkar <auradkar@google.com>,
-        Xiang Chen <chenxiang66@hisilicon.com>,
-        Xiaofei Tan <tanxiaofei@huawei.com>,
-        "James E . J . Bottomley" <jejb@linux.ibm.com>,
-        "Martin K . Petersen" <martin.petersen@oracle.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        "Ahmed S . Darwish" <a.darwish@linutronix.de>
-Content-Transfer-Encoding: quoted-printable
-Message-Id: <74BF47E2-787C-41DA-8810-6369DFD0CC53@oracle.com>
-References: <20201126132952.2287996-1-bigeasy@linutronix.de>
- <20201126132952.2287996-6-bigeasy@linutronix.de>
-To:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-X-Mailer: Apple Mail (2.3608.120.23.2.4)
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9821 signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 bulkscore=0
- phishscore=0 mlxscore=0 adultscore=0 malwarescore=0 suspectscore=11
- spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2011300123
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9821 signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=11 lowpriorityscore=0
- clxscore=1015 bulkscore=0 mlxlogscore=999 phishscore=0 malwarescore=0
- spamscore=0 adultscore=0 mlxscore=0 priorityscore=1501 impostorscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2011300124
+        id S1726760AbgLACKb (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Mon, 30 Nov 2020 21:10:31 -0500
+Received: from mga11.intel.com ([192.55.52.93]:24864 "EHLO mga11.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725900AbgLACKb (ORCPT <rfc822;linux-m68k@lists.linux-m68k.org>);
+        Mon, 30 Nov 2020 21:10:31 -0500
+IronPort-SDR: KG6Q/ULxbcPPmQVD7RUbMcLyMibvVWZUgzCGb33QEjw1wCR6JcAzKiCXurlhfugYJ29d2wLH8M
+ o6WkU9NSLGVg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9821"; a="169247832"
+X-IronPort-AV: E=Sophos;i="5.78,382,1599548400"; 
+   d="scan'208";a="169247832"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Nov 2020 18:09:50 -0800
+IronPort-SDR: +lQ/RP2w7hFQbl6JCEabG8EUs0+C+kg7kLWQWvn3G9eQsDket8kC2LYt2OJCjLqfI5gUowe78X
+ oi7jW4teAzIQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.78,382,1599548400"; 
+   d="scan'208";a="404940117"
+Received: from lkp-server01.sh.intel.com (HELO 70b44b587200) ([10.239.97.150])
+  by orsmga001.jf.intel.com with ESMTP; 30 Nov 2020 18:09:49 -0800
+Received: from kbuild by 70b44b587200 with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1kjv6y-00003M-Sf; Tue, 01 Dec 2020 02:09:48 +0000
+Date:   Tue, 01 Dec 2020 10:09:22 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Geert Uytterhoeven <geert@linux-m68k.org>
+Cc:     linux-m68k@lists.linux-m68k.org
+Subject: [m68k:m68k-queue] BUILD SUCCESS
+ 2b194440063003a583e66b0ec5fd866f0e0c087b
+Message-ID: <5fc5a5d2.Uh6ymeYfCpjJ8vmX%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/geert/linux-m68k.git  m68k-queue
+branch HEAD: 2b194440063003a583e66b0ec5fd866f0e0c087b  m68k: defconfig: Enable Atari EtherNAT and NetUSBee USB support
 
+elapsed time: 725m
 
-> On Nov 26, 2020, at 7:29 AM, Sebastian Andrzej Siewior =
-<bigeasy@linutronix.de> wrote:
->=20
-> From: "Ahmed S. Darwish" <a.darwish@linutronix.de>
->=20
-> tcm_qla2xxx_free_session() has a BUG_ON(in_interrupt()).
->=20
-> While in_interrupt() is ill-defined and does not provide what the name
-> suggests, it is not needed here: the function is always invoked from
-> workqueue context through "struct qla_tgt_func_tmpl" ->free_session()
-> hook it is bound to.
->=20
-> The function also calls wait_event_timeout() down the chain, which
-> already has a might_sleep().
->=20
-> Remove the in_interrupt() check.
->=20
-> Signed-off-by: Ahmed S. Darwish <a.darwish@linutronix.de>
-> Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-> Cc: Nilesh Javali <njavali@marvell.com>
-> Cc: <GR-QLogic-Storage-Upstream@marvell.com>
-> ---
-> drivers/scsi/qla2xxx/tcm_qla2xxx.c | 2 --
-> 1 file changed, 2 deletions(-)
->=20
-> diff --git a/drivers/scsi/qla2xxx/tcm_qla2xxx.c =
-b/drivers/scsi/qla2xxx/tcm_qla2xxx.c
-> index 784b43f181818..b55fc768a2a7a 100644
-> --- a/drivers/scsi/qla2xxx/tcm_qla2xxx.c
-> +++ b/drivers/scsi/qla2xxx/tcm_qla2xxx.c
-> @@ -1400,8 +1400,6 @@ static void tcm_qla2xxx_free_session(struct =
-fc_port *sess)
-> 	struct se_session *se_sess;
-> 	struct tcm_qla2xxx_lport *lport;
->=20
-> -	BUG_ON(in_interrupt());
-> -
-> 	se_sess =3D sess->se_sess;
-> 	if (!se_sess) {
-> 		pr_err("struct fc_port->se_sess is NULL\n");
-> --=20
-> 2.29.2
->=20
+configs tested: 111
+configs skipped: 3
 
-Reviewed-by: Himanshu Madhani <himanshu.madhani@oracle.com>
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
---
-Himanshu Madhani	 Oracle Linux Engineering
+gcc tested configs:
+arm                                 defconfig
+arm64                            allyesconfig
+arm64                               defconfig
+arm                              allyesconfig
+arm                              allmodconfig
+powerpc                       maple_defconfig
+xtensa                    xip_kc705_defconfig
+sh                         apsh4a3a_defconfig
+c6x                         dsk6455_defconfig
+powerpc                      ppc64e_defconfig
+s390                       zfcpdump_defconfig
+arm                      pxa255-idp_defconfig
+m68k                                defconfig
+sh                          landisk_defconfig
+powerpc                      walnut_defconfig
+mips                      pic32mzda_defconfig
+um                             i386_defconfig
+arm                          ep93xx_defconfig
+arm                         lubbock_defconfig
+arm                          lpd270_defconfig
+powerpc                 mpc837x_rdb_defconfig
+powerpc                     tqm8541_defconfig
+m68k                       m5475evb_defconfig
+sh                           se7712_defconfig
+mips                        qi_lb60_defconfig
+arm                       multi_v4t_defconfig
+mips                          rm200_defconfig
+arc                         haps_hs_defconfig
+mips                        bcm47xx_defconfig
+openrisc                 simple_smp_defconfig
+powerpc                       ebony_defconfig
+powerpc               mpc834x_itxgp_defconfig
+mips                      malta_kvm_defconfig
+arm                       netwinder_defconfig
+powerpc                     tqm8555_defconfig
+mips                        nlm_xlp_defconfig
+arc                              allyesconfig
+m68k                        mvme16x_defconfig
+arm                       imx_v6_v7_defconfig
+m68k                       bvme6000_defconfig
+mips                     cu1830-neo_defconfig
+arm                  colibri_pxa270_defconfig
+powerpc                     stx_gp3_defconfig
+arm                          simpad_defconfig
+ia64                             allmodconfig
+ia64                                defconfig
+ia64                             allyesconfig
+m68k                             allmodconfig
+m68k                             allyesconfig
+nios2                               defconfig
+nds32                             allnoconfig
+c6x                              allyesconfig
+nds32                               defconfig
+nios2                            allyesconfig
+csky                                defconfig
+alpha                               defconfig
+alpha                            allyesconfig
+xtensa                           allyesconfig
+h8300                            allyesconfig
+arc                                 defconfig
+sh                               allmodconfig
+parisc                              defconfig
+s390                             allyesconfig
+parisc                           allyesconfig
+s390                                defconfig
+i386                             allyesconfig
+sparc                            allyesconfig
+sparc                               defconfig
+i386                                defconfig
+mips                             allyesconfig
+mips                             allmodconfig
+powerpc                          allyesconfig
+powerpc                          allmodconfig
+powerpc                           allnoconfig
+i386                 randconfig-a004-20201130
+i386                 randconfig-a002-20201130
+i386                 randconfig-a003-20201130
+i386                 randconfig-a005-20201130
+i386                 randconfig-a006-20201130
+i386                 randconfig-a001-20201130
+x86_64               randconfig-a014-20201130
+x86_64               randconfig-a015-20201130
+x86_64               randconfig-a016-20201130
+x86_64               randconfig-a011-20201130
+x86_64               randconfig-a012-20201130
+x86_64               randconfig-a013-20201130
+i386                 randconfig-a013-20201130
+i386                 randconfig-a012-20201130
+i386                 randconfig-a011-20201130
+i386                 randconfig-a016-20201130
+i386                 randconfig-a015-20201130
+i386                 randconfig-a014-20201130
+riscv                    nommu_k210_defconfig
+riscv                            allyesconfig
+riscv                    nommu_virt_defconfig
+riscv                             allnoconfig
+riscv                               defconfig
+riscv                          rv32_defconfig
+riscv                            allmodconfig
+x86_64                                   rhel
+x86_64                           allyesconfig
+x86_64                    rhel-7.6-kselftests
+x86_64                              defconfig
+x86_64                               rhel-8.3
+x86_64                                  kexec
 
+clang tested configs:
+x86_64               randconfig-a002-20201130
+x86_64               randconfig-a006-20201130
+x86_64               randconfig-a005-20201130
+x86_64               randconfig-a004-20201130
+x86_64               randconfig-a001-20201130
+x86_64               randconfig-a003-20201130
+
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
