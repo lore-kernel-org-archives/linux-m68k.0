@@ -2,89 +2,89 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
-	SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-9.0 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS,USER_AGENT_SANE_1 autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 77B67C83012
-	for <linux-m68k@archiver.kernel.org>; Tue,  1 Dec 2020 09:19:34 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 9FB2CC64E7A
+	for <linux-m68k@archiver.kernel.org>; Tue,  1 Dec 2020 09:56:51 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 129CA206CA
-	for <linux-m68k@archiver.kernel.org>; Tue,  1 Dec 2020 09:19:34 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 1D66E204FD
+	for <linux-m68k@archiver.kernel.org>; Tue,  1 Dec 2020 09:56:51 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="rqdfqmmu";
-	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="ndUpCPjh"
+	dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="CaKC+wOG"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387416AbgLAJJg (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Tue, 1 Dec 2020 04:09:36 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52078 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2389405AbgLAJJQ (ORCPT
-        <rfc822;linux-m68k@vger.kernel.org>); Tue, 1 Dec 2020 04:09:16 -0500
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F251BC0613D2;
-        Tue,  1 Dec 2020 01:08:35 -0800 (PST)
-Date:   Tue, 1 Dec 2020 10:08:32 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1606813714;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=L9+gkIZnLOvuCQK81cg/lOyvVKTHIgD55nPaV4Hs4MQ=;
-        b=rqdfqmmup0rMLp3sI2EV0Ma8bbRk2XDXDlwpwqB4oCFmHiEAi+cTzNtAIm9benWRWHlC2i
-        XYw2O+kbpqy0GFl6TDXwwQq+bs3VsMi7Th200p9IHh6xULB87NEdFNClG8JWKTtqL0+yjO
-        zdxBTONddz7YaRB5euisDD992TXgwFTsUsXYr98LPVlwenq2RTyVSsoI+Qpl2Bd06Zr2Vw
-        zDrYqZ9WbGJcvy1r8pi4YA6IXd/eyqR1yV7FJ5O5EWBd+PcC13bNO1Ga/MOiwWyrWsdNBz
-        dBrCihoB6Il6oZYJmeqYV7lUuohquFSWMUd26GC3U6wi8GPP02lxNylnr44aPQ==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1606813714;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=L9+gkIZnLOvuCQK81cg/lOyvVKTHIgD55nPaV4Hs4MQ=;
-        b=ndUpCPjhPFZJ4H+BmwnZ0ZK87Hxs0Vm00Wh6Ax8oQVsiysM6pjBAbxG2KNqEV9LMAa6Mq/
-        ioT9pUImcHLj87Ag==
-From:   Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-To:     "Martin K. Petersen" <martin.petersen@oracle.com>
-Cc:     linux-scsi@vger.kernel.org,
-        Finn Thain <fthain@telegraphics.com.au>,
-        GR-QLogic-Storage-Upstream@marvell.com,
-        Hannes Reinecke <hare@kernel.org>,
-        Jack Wang <jinpu.wang@cloud.ionos.com>,
-        John Garry <john.garry@huawei.com>, linux-m68k@vger.kernel.org,
-        Manish Rangankar <mrangankar@marvell.com>,
-        Michael Schmitz <schmitzmic@gmail.com>,
-        MPT-FusionLinux.pdl@broadcom.com,
-        Nilesh Javali <njavali@marvell.com>,
-        Sathya Prakash <sathya.prakash@broadcom.com>,
-        Sreekanth Reddy <sreekanth.reddy@broadcom.com>,
-        Suganath Prabu Subramani 
-        <suganath-prabu.subramani@broadcom.com>,
-        Vikram Auradkar <auradkar@google.com>,
-        Xiang Chen <chenxiang66@hisilicon.com>,
-        Xiaofei Tan <tanxiaofei@huawei.com>,
-        "James E . J . Bottomley" <jejb@linux.ibm.com>,
+        id S1727070AbgLAJ4f (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Tue, 1 Dec 2020 04:56:35 -0500
+Received: from mail.kernel.org ([198.145.29.99]:59080 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726360AbgLAJ4f (ORCPT <rfc822;linux-m68k@lists.linux-m68k.org>);
+        Tue, 1 Dec 2020 04:56:35 -0500
+Received: from linux-8ccs (p57a232c3.dip0.t-ipconnect.de [87.162.50.195])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 1DE6820657;
+        Tue,  1 Dec 2020 09:55:50 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1606816554;
+        bh=6kpZqmqH8xua3fMlvH5v7aR2iYhj3V3XHB8sPP9GwtE=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=CaKC+wOGCkaFDrokRs8vG8T9PyHnxjZewI0Q4wUOl8ZG1bedSsewuxTUWHg1g0Xga
+         g/qOMTN06J1M9yi62pQ/0janvXuvmXgbHFgl+gWFYJlyHsmlnf3/e1Cy2+EE14B3pQ
+         o/gp5LAXkM8m/KaEOGWeTPQwL8vV2/UmbPytjHQ0=
+Date:   Tue, 1 Dec 2020 10:55:47 +0100
+From:   Jessica Yu <jeyu@kernel.org>
+To:     Johan Hovold <johan@kernel.org>
+Cc:     linux-kernel@vger.kernel.org,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Frank Rowand <frowand.list@gmail.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        David Miller <davem@davemloft.net>,
+        Jakub Jelinek <jakub@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
         Thomas Gleixner <tglx@linutronix.de>,
-        "Ahmed S . Darwish" <a.darwish@linutronix.de>
-Subject: Re: [PATCH 00/14] scsi: Remove in_interrupt() usage.
-Message-ID: <20201201090832.6th7lqrkmyhnlmlr@linutronix.de>
-References: <20201126132952.2287996-1-bigeasy@linutronix.de>
- <yq1ft4qi095.fsf@ca-mkp.ca.oracle.com>
+        Steven Rostedt <rostedt@goodmis.org>,
+        Daniel Kurtz <djkurtz@chromium.org>,
+        linux-arch@vger.kernel.org, linux-m68k@lists.linux-m68k.org
+Subject: Re: [PATCH 0/8] linker-section array fix and clean ups
+Message-ID: <20201201095544.GA9394@linux-8ccs>
+References: <20201103175711.10731-1-johan@kernel.org>
+ <20201106160344.GA12184@linux-8ccs.fritz.box>
+ <20201106164537.GD4085@localhost>
+ <20201111154716.GB5304@linux-8ccs>
+ <X66VvI/M4GRDbiWM@localhost>
+ <X7uRZUY+2L9Yg9wt@localhost>
+ <20201125145118.GA32446@linux-8ccs>
+ <X8DN7b03/U2XDORg@localhost>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Disposition: inline
-In-Reply-To: <yq1ft4qi095.fsf@ca-mkp.ca.oracle.com>
+In-Reply-To: <X8DN7b03/U2XDORg@localhost>
+X-OS:   Linux linux-8ccs 4.12.14-lp150.12.61-default x86_64
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-On 2020-12-01 00:06:55 [-0500], Martin K. Petersen wrote:
++++ Johan Hovold [27/11/20 10:59 +0100]:
+>On Wed, Nov 25, 2020 at 03:51:20PM +0100, Jessica Yu wrote:
 >
-> Applied series to 5.11/scsi-staging except for the NCR patch. Would like
-> to see where that lands first.
+>> I've queued up patches 3, 4, 6, 7, 8 for testing before pushing them
+>> out to modules-next.
+>
+>Thanks, Jessica.
+>
+>Perhaps you can consider taking also the one for setup parameters (patch
+>5/8) through your tree since its related to the module-parameter one.
+>
+>Johan
 
-Thank you Martin.
+Sure, done.
 
-> Thanks!
+Thanks,
 
-Sebastian
+Jessica
