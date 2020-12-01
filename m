@@ -2,100 +2,89 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.2 required=3.0 tests=BAYES_00,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,NICE_REPLY_A,SPF_HELO_NONE,
-	SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=no autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-5.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
+	SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 0743DC83012
-	for <linux-m68k@archiver.kernel.org>; Tue,  1 Dec 2020 09:12:06 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 77B67C83012
+	for <linux-m68k@archiver.kernel.org>; Tue,  1 Dec 2020 09:19:34 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id AE02B21D46
-	for <linux-m68k@archiver.kernel.org>; Tue,  1 Dec 2020 09:12:05 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 129CA206CA
+	for <linux-m68k@archiver.kernel.org>; Tue,  1 Dec 2020 09:19:34 +0000 (UTC)
+Authentication-Results: mail.kernel.org;
+	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="rqdfqmmu";
+	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="ndUpCPjh"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389866AbgLAJLt (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Tue, 1 Dec 2020 04:11:49 -0500
-Received: from outpost1.zedat.fu-berlin.de ([130.133.4.66]:42849 "EHLO
-        outpost1.zedat.fu-berlin.de" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2389562AbgLAJLs (ORCPT
-        <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Tue, 1 Dec 2020 04:11:48 -0500
-Received: from inpost2.zedat.fu-berlin.de ([130.133.4.69])
-          by outpost.zedat.fu-berlin.de (Exim 4.94)
-          with esmtps (TLS1.2)
-          tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-          (envelope-from <glaubitz@zedat.fu-berlin.de>)
-          id 1kk1gY-003MrK-Et; Tue, 01 Dec 2020 10:10:58 +0100
-Received: from p57bd9091.dip0.t-ipconnect.de ([87.189.144.145] helo=[192.168.178.139])
-          by inpost2.zedat.fu-berlin.de (Exim 4.94)
-          with esmtpsa (TLS1.2)
-          tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-          (envelope-from <glaubitz@physik.fu-berlin.de>)
-          id 1kk1gX-000Ce2-UF; Tue, 01 Dec 2020 10:10:58 +0100
-Subject: Re: [PATCH v2 00/13] arch, mm: deprecate DISCONTIGMEM
-To:     Mike Rapoport <rppt@kernel.org>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Alexey Dobriyan <adobriyan@gmail.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Greg Ungerer <gerg@linux-m68k.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Matt Turner <mattst88@gmail.com>, Meelis Roos <mroos@linux.ee>,
+        id S2387416AbgLAJJg (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Tue, 1 Dec 2020 04:09:36 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52078 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2389405AbgLAJJQ (ORCPT
+        <rfc822;linux-m68k@vger.kernel.org>); Tue, 1 Dec 2020 04:09:16 -0500
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F251BC0613D2;
+        Tue,  1 Dec 2020 01:08:35 -0800 (PST)
+Date:   Tue, 1 Dec 2020 10:08:32 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1606813714;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=L9+gkIZnLOvuCQK81cg/lOyvVKTHIgD55nPaV4Hs4MQ=;
+        b=rqdfqmmup0rMLp3sI2EV0Ma8bbRk2XDXDlwpwqB4oCFmHiEAi+cTzNtAIm9benWRWHlC2i
+        XYw2O+kbpqy0GFl6TDXwwQq+bs3VsMi7Th200p9IHh6xULB87NEdFNClG8JWKTtqL0+yjO
+        zdxBTONddz7YaRB5euisDD992TXgwFTsUsXYr98LPVlwenq2RTyVSsoI+Qpl2Bd06Zr2Vw
+        zDrYqZ9WbGJcvy1r8pi4YA6IXd/eyqR1yV7FJ5O5EWBd+PcC13bNO1Ga/MOiwWyrWsdNBz
+        dBrCihoB6Il6oZYJmeqYV7lUuohquFSWMUd26GC3U6wi8GPP02lxNylnr44aPQ==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1606813714;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=L9+gkIZnLOvuCQK81cg/lOyvVKTHIgD55nPaV4Hs4MQ=;
+        b=ndUpCPjhPFZJ4H+BmwnZ0ZK87Hxs0Vm00Wh6Ax8oQVsiysM6pjBAbxG2KNqEV9LMAa6Mq/
+        ioT9pUImcHLj87Ag==
+From:   Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+To:     "Martin K. Petersen" <martin.petersen@oracle.com>
+Cc:     linux-scsi@vger.kernel.org,
+        Finn Thain <fthain@telegraphics.com.au>,
+        GR-QLogic-Storage-Upstream@marvell.com,
+        Hannes Reinecke <hare@kernel.org>,
+        Jack Wang <jinpu.wang@cloud.ionos.com>,
+        John Garry <john.garry@huawei.com>, linux-m68k@vger.kernel.org,
+        Manish Rangankar <mrangankar@marvell.com>,
         Michael Schmitz <schmitzmic@gmail.com>,
-        Mike Rapoport <rppt@linux.ibm.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Tony Luck <tony.luck@intel.com>,
-        Vineet Gupta <vgupta@synopsys.com>,
-        Will Deacon <will@kernel.org>, linux-alpha@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-doc@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-ia64@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-m68k@lists.linux-m68k.org,
-        linux-mm@kvack.org, linux-snps-arc@lists.infradead.org
-References: <20201101170454.9567-1-rppt@kernel.org>
- <43c53597-6267-bdc2-a975-0aab5daa0d37@physik.fu-berlin.de>
- <20201117062316.GB370813@kernel.org>
-From:   John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
-Message-ID: <a7d01146-77f9-d363-af99-af3aee3789b4@physik.fu-berlin.de>
-Date:   Tue, 1 Dec 2020 10:10:56 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.5.0
+        MPT-FusionLinux.pdl@broadcom.com,
+        Nilesh Javali <njavali@marvell.com>,
+        Sathya Prakash <sathya.prakash@broadcom.com>,
+        Sreekanth Reddy <sreekanth.reddy@broadcom.com>,
+        Suganath Prabu Subramani 
+        <suganath-prabu.subramani@broadcom.com>,
+        Vikram Auradkar <auradkar@google.com>,
+        Xiang Chen <chenxiang66@hisilicon.com>,
+        Xiaofei Tan <tanxiaofei@huawei.com>,
+        "James E . J . Bottomley" <jejb@linux.ibm.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        "Ahmed S . Darwish" <a.darwish@linutronix.de>
+Subject: Re: [PATCH 00/14] scsi: Remove in_interrupt() usage.
+Message-ID: <20201201090832.6th7lqrkmyhnlmlr@linutronix.de>
+References: <20201126132952.2287996-1-bigeasy@linutronix.de>
+ <yq1ft4qi095.fsf@ca-mkp.ca.oracle.com>
 MIME-Version: 1.0
-In-Reply-To: <20201117062316.GB370813@kernel.org>
 Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Original-Sender: glaubitz@physik.fu-berlin.de
-X-Originating-IP: 87.189.144.145
+Content-Disposition: inline
+In-Reply-To: <yq1ft4qi095.fsf@ca-mkp.ca.oracle.com>
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-Hi Mike!
+On 2020-12-01 00:06:55 [-0500], Martin K. Petersen wrote:
+>
+> Applied series to 5.11/scsi-staging except for the NCR patch. Would like
+> to see where that lands first.
 
-On 11/17/20 7:23 AM, Mike Rapoport wrote:
->> Apologies for the late reply. Is this still relevant for testing?
->>
->> I have already successfully tested v1 of the patch set, shall I test v2?
-> 
-> There were minor differences only for m68k between the versions. I've
-> verified them on ARAnyM but if you have a real machine a run there would
-> be nice.
+Thank you Martin.
 
-I have just built a fresh kernel from the tip of Linus' tree and it boots
-fine on my RX-2600:
+> Thanks!
 
-root@glendronach:~# uname -a
-Linux glendronach 5.10.0-rc6 #6 SMP Tue Dec 1 04:52:49 CET 2020 ia64 GNU/Linux
-root@glendronach:~#
-
-No issues observed so far. Looking at the git log, it seems these changes haven't
-been merged for 5.10 yet. I assume they will be coming with 5.11?
-
-Adrian
-
--- 
- .''`.  John Paul Adrian Glaubitz
-: :' :  Debian Developer - glaubitz@debian.org
-`. `'   Freie Universitaet Berlin - glaubitz@physik.fu-berlin.de
-  `-    GPG: 62FF 8A75 84E0 2956 9546  0006 7426 3B37 F5B5 F913
-
+Sebastian
