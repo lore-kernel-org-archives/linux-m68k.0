@@ -2,177 +2,111 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.8 required=3.0 tests=BAYES_00,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-7.2 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,UNPARSEABLE_RELAY autolearn=no
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id BA946C71155
-	for <linux-m68k@archiver.kernel.org>; Tue,  1 Dec 2020 02:10:32 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E96B4C64E7A
+	for <linux-m68k@archiver.kernel.org>; Tue,  1 Dec 2020 05:08:25 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 762A3207FF
-	for <linux-m68k@archiver.kernel.org>; Tue,  1 Dec 2020 02:10:32 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 8C63020725
+	for <linux-m68k@archiver.kernel.org>; Tue,  1 Dec 2020 05:08:25 +0000 (UTC)
+Authentication-Results: mail.kernel.org;
+	dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="FkAOZgLz"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725900AbgLACKc (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Mon, 30 Nov 2020 21:10:32 -0500
-Received: from mga04.intel.com ([192.55.52.120]:27280 "EHLO mga04.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726780AbgLACKc (ORCPT <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Mon, 30 Nov 2020 21:10:32 -0500
-IronPort-SDR: a1e0mSvQQtTZ+6cZMtppfeCbf8/RDE0R13TiKR8Ic9mjWqSgGmPW8VXn25RrrTlbEI+4JLNX1z
- 7Hwd09gqMi0A==
-X-IronPort-AV: E=McAfee;i="6000,8403,9821"; a="170182885"
-X-IronPort-AV: E=Sophos;i="5.78,382,1599548400"; 
-   d="scan'208";a="170182885"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Nov 2020 18:09:50 -0800
-IronPort-SDR: HViWC4GDbbszTneCPLLDEd8yeEQJGHPjhFOu+WwHMk3NwcV5I1yKgk7GO7sWnTqXG965J4vYbG
- gTkAGNG9VsWQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.78,382,1599548400"; 
-   d="scan'208";a="364496207"
-Received: from lkp-server01.sh.intel.com (HELO 70b44b587200) ([10.239.97.150])
-  by fmsmga004.fm.intel.com with ESMTP; 30 Nov 2020 18:09:49 -0800
-Received: from kbuild by 70b44b587200 with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1kjv6y-00003O-TT; Tue, 01 Dec 2020 02:09:48 +0000
-Date:   Tue, 01 Dec 2020 10:09:20 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     linux-m68k@lists.linux-m68k.org
-Subject: [m68k:master] BUILD SUCCESS
- 759fc5bd9fce95e30e6ef512d4d0a3506167f96e
-Message-ID: <5fc5a5d0.Tz8Yq2n9Ezvpkk4j%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+        id S1726257AbgLAFIZ (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Tue, 1 Dec 2020 00:08:25 -0500
+Received: from aserp2130.oracle.com ([141.146.126.79]:57332 "EHLO
+        aserp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726011AbgLAFIZ (ORCPT
+        <rfc822;linux-m68k@vger.kernel.org>); Tue, 1 Dec 2020 00:08:25 -0500
+Received: from pps.filterd (aserp2130.oracle.com [127.0.0.1])
+        by aserp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0B14n5xY008458;
+        Tue, 1 Dec 2020 05:07:06 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=to : cc : subject :
+ from : message-id : references : date : in-reply-to : mime-version :
+ content-type; s=corp-2020-01-29;
+ bh=BiCCQXoVeYnHmIYXryZAzrQUlEgYHq7oLq6zqNMtsIk=;
+ b=FkAOZgLzcrPSkOejqTSP4T5+r1m2EV2xtk17qErqhNb1flg5eO0jamH8xxsU1D8h/2vW
+ jWxOAN5aU+c3VDuV8Xr6GQp4F0oZug7OarFqxi5e0P9jPBH17okr/x3wCpCFirOSngcQ
+ Hrdp8SV6SyDtRFTOrvo6PAWTn5Z6Hve705qENwDH4Cvd+sbg6+BzF5sxPih6vIFTX3HK
+ tWAUa/79CT78cBWhHuV9iq++0abkTLpVQcfY0j5GKfjQZVLVveDrM5vxqY++BrkgDKS5
+ yvu5cA/DtRa9/Uvf/U4/Jsk19Uuv6IDcfsBOgT17B1U+mOsXwvoyck+GveTX+JA5gvxt ew== 
+Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
+        by aserp2130.oracle.com with ESMTP id 353c2arqj1-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Tue, 01 Dec 2020 05:07:06 +0000
+Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
+        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0B14pI5n051276;
+        Tue, 1 Dec 2020 05:07:05 GMT
+Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
+        by userp3030.oracle.com with ESMTP id 3540fwawmu-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 01 Dec 2020 05:07:05 +0000
+Received: from abhmp0013.oracle.com (abhmp0013.oracle.com [141.146.116.19])
+        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 0B1570Xf017643;
+        Tue, 1 Dec 2020 05:07:00 GMT
+Received: from ca-mkp.ca.oracle.com (/10.159.214.123)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Mon, 30 Nov 2020 21:06:59 -0800
+To:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Cc:     linux-scsi@vger.kernel.org,
+        Finn Thain <fthain@telegraphics.com.au>,
+        GR-QLogic-Storage-Upstream@marvell.com,
+        Hannes Reinecke <hare@kernel.org>,
+        Jack Wang <jinpu.wang@cloud.ionos.com>,
+        John Garry <john.garry@huawei.com>, linux-m68k@vger.kernel.org,
+        Manish Rangankar <mrangankar@marvell.com>,
+        Michael Schmitz <schmitzmic@gmail.com>,
+        MPT-FusionLinux.pdl@broadcom.com,
+        Nilesh Javali <njavali@marvell.com>,
+        Sathya Prakash <sathya.prakash@broadcom.com>,
+        Sreekanth Reddy <sreekanth.reddy@broadcom.com>,
+        Suganath Prabu Subramani 
+        <suganath-prabu.subramani@broadcom.com>,
+        Vikram Auradkar <auradkar@google.com>,
+        Xiang Chen <chenxiang66@hisilicon.com>,
+        Xiaofei Tan <tanxiaofei@huawei.com>,
+        "James E . J . Bottomley" <jejb@linux.ibm.com>,
+        "Martin K . Petersen" <martin.petersen@oracle.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        "Ahmed S . Darwish" <a.darwish@linutronix.de>
+Subject: Re: [PATCH 00/14] scsi: Remove in_interrupt() usage.
+From:   "Martin K. Petersen" <martin.petersen@oracle.com>
+Organization: Oracle Corporation
+Message-ID: <yq1ft4qi095.fsf@ca-mkp.ca.oracle.com>
+References: <20201126132952.2287996-1-bigeasy@linutronix.de>
+Date:   Tue, 01 Dec 2020 00:06:55 -0500
+In-Reply-To: <20201126132952.2287996-1-bigeasy@linutronix.de> (Sebastian
+        Andrzej Siewior's message of "Thu, 26 Nov 2020 14:29:38 +0100")
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9821 signatures=668682
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 suspectscore=1
+ phishscore=0 mlxlogscore=999 adultscore=0 mlxscore=0 bulkscore=0
+ spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2012010033
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9821 signatures=668682
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=1 lowpriorityscore=0
+ clxscore=1011 bulkscore=0 mlxlogscore=999 phishscore=0 malwarescore=0
+ spamscore=0 adultscore=0 mlxscore=0 priorityscore=1501 impostorscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2012010033
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/geert/linux-m68k.git  master
-branch HEAD: 759fc5bd9fce95e30e6ef512d4d0a3506167f96e  Merge tag 'v5.10-rc6'
 
-elapsed time: 723m
+Sebastian,
 
-configs tested: 105
-configs skipped: 2
+> This series addresses most of the SCSI subsystem.  The first three
+> patches have Fixes tags and address bugs were noticed during review.
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+Applied series to 5.11/scsi-staging except for the NCR patch. Would like
+to see where that lands first.
 
-gcc tested configs:
-arm                                 defconfig
-arm64                            allyesconfig
-arm64                               defconfig
-arm                              allyesconfig
-arm                              allmodconfig
-sh                        sh7763rdp_defconfig
-sh                          sdk7786_defconfig
-mips                           xway_defconfig
-mips                        jmr3927_defconfig
-powerpc                     tqm8555_defconfig
-arc                     haps_hs_smp_defconfig
-powerpc                      ppc64e_defconfig
-sparc                       sparc32_defconfig
-powerpc                     tqm8541_defconfig
-m68k                       m5475evb_defconfig
-sh                           se7712_defconfig
-mips                        qi_lb60_defconfig
-arm                       multi_v4t_defconfig
-sh                          rsk7269_defconfig
-sh                          r7780mp_defconfig
-arm                          pxa910_defconfig
-powerpc                 mpc837x_rdb_defconfig
-arm                             pxa_defconfig
-microblaze                      mmu_defconfig
-powerpc                 mpc834x_mds_defconfig
-microblaze                    nommu_defconfig
-powerpc                       ebony_defconfig
-powerpc               mpc834x_itxgp_defconfig
-mips                      malta_kvm_defconfig
-arm                       netwinder_defconfig
-mips                        nlm_xlp_defconfig
-arc                              allyesconfig
-xtensa                    xip_kc705_defconfig
-m68k                        mvme16x_defconfig
-arm                       imx_v6_v7_defconfig
-mips                          rm200_defconfig
-m68k                       bvme6000_defconfig
-ia64                             allmodconfig
-ia64                                defconfig
-ia64                             allyesconfig
-m68k                             allmodconfig
-m68k                                defconfig
-m68k                             allyesconfig
-nios2                               defconfig
-nds32                             allnoconfig
-c6x                              allyesconfig
-nds32                               defconfig
-nios2                            allyesconfig
-csky                                defconfig
-alpha                               defconfig
-alpha                            allyesconfig
-xtensa                           allyesconfig
-h8300                            allyesconfig
-arc                                 defconfig
-sh                               allmodconfig
-parisc                              defconfig
-s390                             allyesconfig
-parisc                           allyesconfig
-s390                                defconfig
-i386                             allyesconfig
-sparc                            allyesconfig
-sparc                               defconfig
-i386                                defconfig
-mips                             allyesconfig
-mips                             allmodconfig
-powerpc                          allyesconfig
-powerpc                          allmodconfig
-powerpc                           allnoconfig
-i386                 randconfig-a004-20201130
-i386                 randconfig-a002-20201130
-i386                 randconfig-a003-20201130
-i386                 randconfig-a005-20201130
-i386                 randconfig-a006-20201130
-i386                 randconfig-a001-20201130
-x86_64               randconfig-a014-20201130
-x86_64               randconfig-a015-20201130
-x86_64               randconfig-a016-20201130
-x86_64               randconfig-a011-20201130
-x86_64               randconfig-a012-20201130
-x86_64               randconfig-a013-20201130
-i386                 randconfig-a013-20201130
-i386                 randconfig-a012-20201130
-i386                 randconfig-a011-20201130
-i386                 randconfig-a016-20201130
-i386                 randconfig-a015-20201130
-i386                 randconfig-a014-20201130
-riscv                    nommu_k210_defconfig
-riscv                            allyesconfig
-riscv                    nommu_virt_defconfig
-riscv                             allnoconfig
-riscv                               defconfig
-riscv                          rv32_defconfig
-riscv                            allmodconfig
-x86_64                                   rhel
-x86_64                           allyesconfig
-x86_64                    rhel-7.6-kselftests
-x86_64                              defconfig
-x86_64                               rhel-8.3
-x86_64                                  kexec
+Thanks!
 
-clang tested configs:
-x86_64               randconfig-a002-20201130
-x86_64               randconfig-a006-20201130
-x86_64               randconfig-a005-20201130
-x86_64               randconfig-a004-20201130
-x86_64               randconfig-a001-20201130
-x86_64               randconfig-a003-20201130
-
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+-- 
+Martin K. Petersen	Oracle Linux Engineering
