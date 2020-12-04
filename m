@@ -6,45 +6,45 @@ X-Spam-Status: No, score=-9.0 required=3.0 tests=BAYES_00,INCLUDES_CR_TRAILER,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B2AA4C4361A
-	for <linux-m68k@archiver.kernel.org>; Fri,  4 Dec 2020 14:03:02 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 58C7AC1B087
+	for <linux-m68k@archiver.kernel.org>; Fri,  4 Dec 2020 14:03:55 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 7A3E722A83
-	for <linux-m68k@archiver.kernel.org>; Fri,  4 Dec 2020 14:03:02 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 3930322A99
+	for <linux-m68k@archiver.kernel.org>; Fri,  4 Dec 2020 14:03:55 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387618AbgLDODC (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Fri, 4 Dec 2020 09:03:02 -0500
-Received: from mail-lj1-f194.google.com ([209.85.208.194]:39387 "EHLO
-        mail-lj1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2387403AbgLDODC (ORCPT
+        id S1726312AbgLDODz (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Fri, 4 Dec 2020 09:03:55 -0500
+Received: from mail-lj1-f193.google.com ([209.85.208.193]:44519 "EHLO
+        mail-lj1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2387721AbgLDODy (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Fri, 4 Dec 2020 09:03:02 -0500
-Received: by mail-lj1-f194.google.com with SMTP id o24so6744608ljj.6
-        for <linux-m68k@lists.linux-m68k.org>; Fri, 04 Dec 2020 06:02:45 -0800 (PST)
+        Fri, 4 Dec 2020 09:03:54 -0500
+Received: by mail-lj1-f193.google.com with SMTP id s9so6706524ljo.11
+        for <linux-m68k@lists.linux-m68k.org>; Fri, 04 Dec 2020 06:03:38 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=SzMGLrWLNHR2uzHXkA7fVFrIiRthHhSpOA3S/SFE9xY=;
-        b=obhuMGEeNeroR6tU2uSKMy93SRb1ixllFKODnMdufrIdHMiE1ZEY6UUnzFfovGTMI9
-         5aMG/vouyUzbj0sZFp8ZYWUiBCkJSaqkrgwvUrv5lP00D+SFp0pJNR4rWHaXMp6p1T2t
-         rAByfA0m0IV/hNkETyKVl3uEEMnlgs3mkuI//KdOaPO3vU8v6G0lt+uYFXJTSvDdDhiG
-         smgWfxpVwgI9SwUMVTiJGisBYaoXVtR2iXzg6XRxyoePnjZ+sEV7CSHacEl7eZHq61Bx
-         m1/9SimZOhLePurH/tvM0B1EF99Pyw/SDd16fF0GamFsdPzRA3wtiZZ80XzkebxlM1xt
-         9gnw==
-X-Gm-Message-State: AOAM532YgqA9dMcQ5bEYaB3INehTQJhfaB4QCFZriMl0jh0TK1QgwiIW
-        jh9LnQ/tvwjinYTPNd5uVVM=
-X-Google-Smtp-Source: ABdhPJzinbl8W6GNnuh2d0iNrH45Uu5Od1aTjnKkRJ/b/Lo8Z2zvuOe5aiVnx94/T6QOmdOgJLSiFA==
-X-Received: by 2002:a2e:5853:: with SMTP id x19mr3739427ljd.232.1607090540012;
-        Fri, 04 Dec 2020 06:02:20 -0800 (PST)
+        bh=Gtn8MsRe3DMgMj91x+Smnp8eMKhG03Wope+aIlxxQKc=;
+        b=XiJXiQj/njeC8r/4iHzyPbmypjbIrXp0TxzTsTXHojkGpCmQHKul1oDKpuEL6PdaY2
+         t11X/Wg9Mr+6H9OPKBTP9hmyDbdY6HCltna1ia2Vgjwrzi995VsaapYB3piM1hHv2Aem
+         nQ/Ou3WOATpPlDlzWqiPQ83FTPo+Zo5QLsY+NkCaFBtWySQCmZrjIip1eJ8P7Mvv2SlZ
+         gaNN7thk5MhXwFyv6FFcuhQ8SubwOoxqsY8hsV4/Ij194Le70TTiaKo/UbIJA87Fsmja
+         QxlK6zfKc92LetxLoAEBvhR4kFublcm151if/sisdGqtACkD/pMB9YxxlhdyOgKYfG5G
+         fu0w==
+X-Gm-Message-State: AOAM533wTf3n/5mfJi4dIt5MQwrUBxie3MmEhLGCQdXHlFTE5AayNsIr
+        x0v/pkyks4tJBkNL6mnZNLk=
+X-Google-Smtp-Source: ABdhPJyVfVQdGoJLMZW3wLfqHywZjFX2O6JRGNqsqocxYouT0vH7fJrP+ILfGOn67a6g1kiOs0AAYg==
+X-Received: by 2002:a2e:593:: with SMTP id 141mr225913ljf.86.1607090592510;
+        Fri, 04 Dec 2020 06:03:12 -0800 (PST)
 Received: from xi.terra (c-beaee455.07-184-6d6c6d4.bbcust.telenor.se. [85.228.174.190])
-        by smtp.gmail.com with ESMTPSA id r141sm1684042lff.55.2020.12.04.06.02.18
+        by smtp.gmail.com with ESMTPSA id b12sm1729780ljj.133.2020.12.04.06.03.10
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 04 Dec 2020 06:02:19 -0800 (PST)
+        Fri, 04 Dec 2020 06:03:11 -0800 (PST)
 Received: from johan by xi.terra with local (Exim 4.93.0.4)
         (envelope-from <johan@kernel.org>)
-        id 1klBfh-0004K0-Ao; Fri, 04 Dec 2020 15:02:53 +0100
-Date:   Fri, 4 Dec 2020 15:02:53 +0100
+        id 1klBgX-0004KF-A2; Fri, 04 Dec 2020 15:03:45 +0100
+Date:   Fri, 4 Dec 2020 15:03:45 +0100
 From:   Johan Hovold <johan@kernel.org>
 To:     Rob Herring <robh+dt@kernel.org>,
         Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
@@ -61,62 +61,39 @@ Cc:     Frank Rowand <frowand.list@gmail.com>,
         Steven Rostedt <rostedt@goodmis.org>,
         Daniel Kurtz <djkurtz@chromium.org>,
         linux-arch@vger.kernel.org, linux-m68k@lists.linux-m68k.org,
-        linux-kernel@vger.kernel.org, Johan Hovold <johan@kernel.org>,
-        stable <stable@vger.kernel.org>
-Subject: Re: [PATCH v2 1/8] of: fix linker-section match-table corruption
-Message-ID: <X8pBjbZlbaWaOFxe@localhost>
+        linux-kernel@vger.kernel.org, Johan Hovold <johan@kernel.org>
+Subject: Re: [PATCH v2 2/8] earlycon: simplify earlycon-table implementation
+Message-ID: <X8pBwTl7nZoOQ18m@localhost>
 References: <20201123102319.8090-1-johan@kernel.org>
- <20201123102319.8090-2-johan@kernel.org>
+ <20201123102319.8090-3-johan@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201123102319.8090-2-johan@kernel.org>
+In-Reply-To: <20201123102319.8090-3-johan@kernel.org>
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-Rob,
+Greg,
 
-On Mon, Nov 23, 2020 at 11:23:12AM +0100, Johan Hovold wrote:
-> Specify type alignment when declaring linker-section match-table entries
-> to prevent gcc from increasing alignment and corrupting the various
-> tables with padding (e.g. timers, irqchips, clocks, reserved memory).
+On Mon, Nov 23, 2020 at 11:23:13AM +0100, Johan Hovold wrote:
+> Instead of using the array-of-pointers trick to avoid having gcc mess up
+> the earlycon array stride, specify type alignment when declaring entries
+> to prevent gcc from increasing alignment.
 > 
-> This is specifically needed on x86 where gcc (typically) aligns larger
-> objects like struct of_device_id with static extent on 32-byte
-> boundaries which at best prevents matching on anything but the first
-> entry. Specifying alignment when declaring variables suppresses this
-> optimisation.
+> This is essentially an alternative (one-line) fix to the problem
+> addressed by commit dd709e72cb93 ("earlycon: Use a pointer table to fix
+> __earlycon_table stride").
 > 
-> Here's a 64-bit example where all entries are corrupt as 16 bytes of
-> padding has been inserted before the first entry:
+> gcc can increase the alignment of larger objects with static extent as
+> an optimisation, but this can be suppressed by using the aligned
+> attribute when declaring variables.
 > 
-> 	ffffffff8266b4b0 D __clk_of_table
-> 	ffffffff8266b4c0 d __of_table_fixed_factor_clk
-> 	ffffffff8266b5a0 d __of_table_fixed_clk
-> 	ffffffff8266b680 d __clk_of_table_sentinel
+> Note that we have been relying on this behaviour for kernel parameters
+> for 16 years and it indeed hasn't changed since the introduction of the
+> aligned attribute in gcc-3.1.
 > 
-> And here's a 32-bit example where the 8-byte-aligned table happens to be
-> placed on a 32-byte boundary so that all but the first entry are corrupt
-> due to the 28 bytes of padding inserted between entries:
-> 
-> 	812b3ec0 D __irqchip_of_table
-> 	812b3ec0 d __of_table_irqchip1
-> 	812b3fa0 d __of_table_irqchip2
-> 	812b4080 d __of_table_irqchip3
-> 	812b4160 d irqchip_of_match_end
-> 
-> Verified on x86 using gcc-9.3 and gcc-4.9 (which uses 64-byte
-> alignment), and on arm using gcc-7.2.
-> 
-> Note that there are no in-tree users of these tables on x86 currently
-> (even if they are included in the image).
-> 
-> Fixes: 54196ccbe0ba ("of: consolidate linker section OF match table declarations")
-> Fixes: f6e916b82022 ("irqchip: add basic infrastructure")
-> Cc: stable <stable@vger.kernel.org>     # 3.9
 > Signed-off-by: Johan Hovold <johan@kernel.org>
-> ---
 
 Could you pick this one up for 5.11?
 
