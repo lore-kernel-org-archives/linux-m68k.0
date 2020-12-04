@@ -2,104 +2,122 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no
+X-Spam-Status: No, score=-9.0 required=3.0 tests=BAYES_00,INCLUDES_CR_TRAILER,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 2473CC64E8A
-	for <linux-m68k@archiver.kernel.org>; Wed,  2 Dec 2020 08:48:53 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B2AA4C4361A
+	for <linux-m68k@archiver.kernel.org>; Fri,  4 Dec 2020 14:03:02 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id C927922202
-	for <linux-m68k@archiver.kernel.org>; Wed,  2 Dec 2020 08:48:52 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 7A3E722A83
+	for <linux-m68k@archiver.kernel.org>; Fri,  4 Dec 2020 14:03:02 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729213AbgLBIsh (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Wed, 2 Dec 2020 03:48:37 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46314 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727431AbgLBIsg (ORCPT
+        id S2387618AbgLDODC (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Fri, 4 Dec 2020 09:03:02 -0500
+Received: from mail-lj1-f194.google.com ([209.85.208.194]:39387 "EHLO
+        mail-lj1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2387403AbgLDODC (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Wed, 2 Dec 2020 03:48:36 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 34B3FC0613CF;
-        Wed,  2 Dec 2020 00:47:56 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=CVfOdWh+yCP6h1F0F6Of76KYCDkJveNNCxoXWjniDQ8=; b=e7DptqrforPKS+KzFh7cyuGU1W
-        2FiwYJVlbozwB6UUNloOzV4jlkH4tBq0v/zasHMMZ/BQBM5hNHZK+rxCh+01H4IR7rlyVso0AUGRq
-        NkJuYXEV+Ol+tq8ukVcBghP1zDn1ibZlgeLhsJcGh0YJMLZF2QKe4SkagSTnbMvnBppCmcvYx36gQ
-        WMRZZFAVGP0lIG6UcbLOy2i7py227429EA7sw6NBgYucoytYH9gZt/4XjOSzwoz0jtTN9Jp0I9MXA
-        ne6yiO2hY1o06RlxADSY3TIq+ENmblMwUXvD9+QC8tqYCND3c6jza/N1jKC6jC7v7Suo+rFGxS8+F
-        J+ImQ3ww==;
-Received: from hch by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kkNni-0007Rp-PY; Wed, 02 Dec 2020 08:47:50 +0000
-Date:   Wed, 2 Dec 2020 08:47:50 +0000
-From:   Christoph Hellwig <hch@infradead.org>
-To:     Mike Rapoport <rppt@kernel.org>
-Cc:     Christoph Hellwig <hch@infradead.org>,
+        Fri, 4 Dec 2020 09:03:02 -0500
+Received: by mail-lj1-f194.google.com with SMTP id o24so6744608ljj.6
+        for <linux-m68k@lists.linux-m68k.org>; Fri, 04 Dec 2020 06:02:45 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=SzMGLrWLNHR2uzHXkA7fVFrIiRthHhSpOA3S/SFE9xY=;
+        b=obhuMGEeNeroR6tU2uSKMy93SRb1ixllFKODnMdufrIdHMiE1ZEY6UUnzFfovGTMI9
+         5aMG/vouyUzbj0sZFp8ZYWUiBCkJSaqkrgwvUrv5lP00D+SFp0pJNR4rWHaXMp6p1T2t
+         rAByfA0m0IV/hNkETyKVl3uEEMnlgs3mkuI//KdOaPO3vU8v6G0lt+uYFXJTSvDdDhiG
+         smgWfxpVwgI9SwUMVTiJGisBYaoXVtR2iXzg6XRxyoePnjZ+sEV7CSHacEl7eZHq61Bx
+         m1/9SimZOhLePurH/tvM0B1EF99Pyw/SDd16fF0GamFsdPzRA3wtiZZ80XzkebxlM1xt
+         9gnw==
+X-Gm-Message-State: AOAM532YgqA9dMcQ5bEYaB3INehTQJhfaB4QCFZriMl0jh0TK1QgwiIW
+        jh9LnQ/tvwjinYTPNd5uVVM=
+X-Google-Smtp-Source: ABdhPJzinbl8W6GNnuh2d0iNrH45Uu5Od1aTjnKkRJ/b/Lo8Z2zvuOe5aiVnx94/T6QOmdOgJLSiFA==
+X-Received: by 2002:a2e:5853:: with SMTP id x19mr3739427ljd.232.1607090540012;
+        Fri, 04 Dec 2020 06:02:20 -0800 (PST)
+Received: from xi.terra (c-beaee455.07-184-6d6c6d4.bbcust.telenor.se. [85.228.174.190])
+        by smtp.gmail.com with ESMTPSA id r141sm1684042lff.55.2020.12.04.06.02.18
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 04 Dec 2020 06:02:19 -0800 (PST)
+Received: from johan by xi.terra with local (Exim 4.93.0.4)
+        (envelope-from <johan@kernel.org>)
+        id 1klBfh-0004K0-Ao; Fri, 04 Dec 2020 15:02:53 +0100
+Date:   Fri, 4 Dec 2020 15:02:53 +0100
+From:   Johan Hovold <johan@kernel.org>
+To:     Rob Herring <robh+dt@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jessica Yu <jeyu@kernel.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Frank Rowand <frowand.list@gmail.com>,
+        Arnd Bergmann <arnd@arndb.de>,
         Geert Uytterhoeven <geert@linux-m68k.org>,
-        Jens Axboe <axboe@kernel.dk>,
-        "linux-ia64@vger.kernel.org" <linux-ia64@vger.kernel.org>,
-        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Linux MM <linux-mm@kvack.org>, Will Deacon <will@kernel.org>,
-        Greg Ungerer <gerg@linux-m68k.org>,
-        Jonathan Corbet <corbet@lwn.net>, Meelis Roos <mroos@linux.ee>,
-        Russell King <linux@armlinux.org.uk>,
-        Mike Rapoport <rppt@linux.ibm.com>,
-        Matt Turner <mattst88@gmail.com>,
-        arcml <linux-snps-arc@lists.infradead.org>,
-        Alexey Dobriyan <adobriyan@gmail.com>,
-        linux-m68k <linux-m68k@lists.linux-m68k.org>,
-        John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Michael Schmitz <schmitzmic@gmail.com>,
-        Tony Luck <tony.luck@intel.com>,
-        Vineet Gupta <vgupta@synopsys.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        alpha <linux-alpha@vger.kernel.org>,
-        Linux FS Devel <linux-fsdevel@vger.kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>
-Subject: Re: [PATCH v2 00/13] arch, mm: deprecate DISCONTIGMEM
-Message-ID: <20201202084750.GA28341@infradead.org>
-References: <a7d01146-77f9-d363-af99-af3aee3789b4@physik.fu-berlin.de>
- <20201201102901.GF557259@kernel.org>
- <e3d5d791-8e4f-afcc-944c-24f66f329bd7@physik.fu-berlin.de>
- <20201201121033.GG557259@kernel.org>
- <49a2022c-f106-55ec-9390-41307a056517@physik.fu-berlin.de>
- <20201201135623.GA751215@kernel.org>
- <59351dbb-96cc-93b2-f2ec-b8968e935845@kernel.dk>
- <CAMuHMdWRc8W7U0LKyH9u1hdMuN515PCZiTEJ12FrDaCx-eTdaQ@mail.gmail.com>
- <20201202084326.GA26573@infradead.org>
- <20201202084628.GE751215@kernel.org>
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        David Miller <davem@davemloft.net>,
+        Jakub Jelinek <jakub@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Daniel Kurtz <djkurtz@chromium.org>,
+        linux-arch@vger.kernel.org, linux-m68k@lists.linux-m68k.org,
+        linux-kernel@vger.kernel.org, Johan Hovold <johan@kernel.org>,
+        stable <stable@vger.kernel.org>
+Subject: Re: [PATCH v2 1/8] of: fix linker-section match-table corruption
+Message-ID: <X8pBjbZlbaWaOFxe@localhost>
+References: <20201123102319.8090-1-johan@kernel.org>
+ <20201123102319.8090-2-johan@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201202084628.GE751215@kernel.org>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
+In-Reply-To: <20201123102319.8090-2-johan@kernel.org>
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-On Wed, Dec 02, 2020 at 10:46:28AM +0200, Mike Rapoport wrote:
-> On Wed, Dec 02, 2020 at 08:43:26AM +0000, Christoph Hellwig wrote:
-> > On Tue, Dec 01, 2020 at 04:33:01PM +0100, Geert Uytterhoeven wrote:
-> > > > That's a lot of typos in that patch... I wonder why the buildbot hasn't
-> > > > complained about this. Thanks for fixing this up! I'm going to fold this
-> > > > into the original to avoid the breakage.
-> > > 
-> > > Does lkp@intel.com do ia64 builds? Yes, it builds zx1_defconfig.
-> > 
-> > I've never got results.  Which is annoying, as debian doesn't ship an
-> > ia64 cross toolchain either, and I can't find any pre-built one that
-> > works for me.
-> 
-> Arnd publishes a bunch of cross compilers here:
-> 
-> https://mirrors.edge.kernel.org/pub/tools/crosstool/
+Rob,
 
-This is my source for those architectures where debian doesn't ship
-cross compilers.  I'm stuck with mostly gcc 7/8 so I'm glad to see there
-have been some major updates.
+On Mon, Nov 23, 2020 at 11:23:12AM +0100, Johan Hovold wrote:
+> Specify type alignment when declaring linker-section match-table entries
+> to prevent gcc from increasing alignment and corrupting the various
+> tables with padding (e.g. timers, irqchips, clocks, reserved memory).
+> 
+> This is specifically needed on x86 where gcc (typically) aligns larger
+> objects like struct of_device_id with static extent on 32-byte
+> boundaries which at best prevents matching on anything but the first
+> entry. Specifying alignment when declaring variables suppresses this
+> optimisation.
+> 
+> Here's a 64-bit example where all entries are corrupt as 16 bytes of
+> padding has been inserted before the first entry:
+> 
+> 	ffffffff8266b4b0 D __clk_of_table
+> 	ffffffff8266b4c0 d __of_table_fixed_factor_clk
+> 	ffffffff8266b5a0 d __of_table_fixed_clk
+> 	ffffffff8266b680 d __clk_of_table_sentinel
+> 
+> And here's a 32-bit example where the 8-byte-aligned table happens to be
+> placed on a 32-byte boundary so that all but the first entry are corrupt
+> due to the 28 bytes of padding inserted between entries:
+> 
+> 	812b3ec0 D __irqchip_of_table
+> 	812b3ec0 d __of_table_irqchip1
+> 	812b3fa0 d __of_table_irqchip2
+> 	812b4080 d __of_table_irqchip3
+> 	812b4160 d irqchip_of_match_end
+> 
+> Verified on x86 using gcc-9.3 and gcc-4.9 (which uses 64-byte
+> alignment), and on arm using gcc-7.2.
+> 
+> Note that there are no in-tree users of these tables on x86 currently
+> (even if they are included in the image).
+> 
+> Fixes: 54196ccbe0ba ("of: consolidate linker section OF match table declarations")
+> Fixes: f6e916b82022 ("irqchip: add basic infrastructure")
+> Cc: stable <stable@vger.kernel.org>     # 3.9
+> Signed-off-by: Johan Hovold <johan@kernel.org>
+> ---
+
+Could you pick this one up for 5.11?
+
+Johan
