@@ -2,55 +2,36 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.0 required=3.0 tests=BAYES_00,INCLUDES_CR_TRAILER,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-10.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 58C7AC1B087
-	for <linux-m68k@archiver.kernel.org>; Fri,  4 Dec 2020 14:03:55 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 71DADC4361A
+	for <linux-m68k@archiver.kernel.org>; Fri,  4 Dec 2020 14:44:52 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 3930322A99
-	for <linux-m68k@archiver.kernel.org>; Fri,  4 Dec 2020 14:03:55 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 484D022B39
+	for <linux-m68k@archiver.kernel.org>; Fri,  4 Dec 2020 14:44:52 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726312AbgLDODz (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Fri, 4 Dec 2020 09:03:55 -0500
-Received: from mail-lj1-f193.google.com ([209.85.208.193]:44519 "EHLO
-        mail-lj1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2387721AbgLDODy (ORCPT
-        <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Fri, 4 Dec 2020 09:03:54 -0500
-Received: by mail-lj1-f193.google.com with SMTP id s9so6706524ljo.11
-        for <linux-m68k@lists.linux-m68k.org>; Fri, 04 Dec 2020 06:03:38 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=Gtn8MsRe3DMgMj91x+Smnp8eMKhG03Wope+aIlxxQKc=;
-        b=XiJXiQj/njeC8r/4iHzyPbmypjbIrXp0TxzTsTXHojkGpCmQHKul1oDKpuEL6PdaY2
-         t11X/Wg9Mr+6H9OPKBTP9hmyDbdY6HCltna1ia2Vgjwrzi995VsaapYB3piM1hHv2Aem
-         nQ/Ou3WOATpPlDlzWqiPQ83FTPo+Zo5QLsY+NkCaFBtWySQCmZrjIip1eJ8P7Mvv2SlZ
-         gaNN7thk5MhXwFyv6FFcuhQ8SubwOoxqsY8hsV4/Ij194Le70TTiaKo/UbIJA87Fsmja
-         QxlK6zfKc92LetxLoAEBvhR4kFublcm151if/sisdGqtACkD/pMB9YxxlhdyOgKYfG5G
-         fu0w==
-X-Gm-Message-State: AOAM533wTf3n/5mfJi4dIt5MQwrUBxie3MmEhLGCQdXHlFTE5AayNsIr
-        x0v/pkyks4tJBkNL6mnZNLk=
-X-Google-Smtp-Source: ABdhPJyVfVQdGoJLMZW3wLfqHywZjFX2O6JRGNqsqocxYouT0vH7fJrP+ILfGOn67a6g1kiOs0AAYg==
-X-Received: by 2002:a2e:593:: with SMTP id 141mr225913ljf.86.1607090592510;
-        Fri, 04 Dec 2020 06:03:12 -0800 (PST)
-Received: from xi.terra (c-beaee455.07-184-6d6c6d4.bbcust.telenor.se. [85.228.174.190])
-        by smtp.gmail.com with ESMTPSA id b12sm1729780ljj.133.2020.12.04.06.03.10
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 04 Dec 2020 06:03:11 -0800 (PST)
-Received: from johan by xi.terra with local (Exim 4.93.0.4)
-        (envelope-from <johan@kernel.org>)
-        id 1klBgX-0004KF-A2; Fri, 04 Dec 2020 15:03:45 +0100
-Date:   Fri, 4 Dec 2020 15:03:45 +0100
-From:   Johan Hovold <johan@kernel.org>
-To:     Rob Herring <robh+dt@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jessica Yu <jeyu@kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Frank Rowand <frowand.list@gmail.com>,
+        id S2388108AbgLDOoU (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Fri, 4 Dec 2020 09:44:20 -0500
+Received: from mail.kernel.org ([198.145.29.99]:57174 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2387662AbgLDOoT (ORCPT <rfc822;linux-m68k@lists.linux-m68k.org>);
+        Fri, 4 Dec 2020 09:44:19 -0500
+Date:   Fri, 4 Dec 2020 15:44:50 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1607093019;
+        bh=8IFQb+g4CepgZFNlZSyPHbJfmLd+mYQGMaC2gGfCljI=;
+        h=From:To:Cc:Subject:References:In-Reply-To:From;
+        b=mTpZfMOy0th7vL1Rjoes4NAiWAo4V8xSUdno3IqvRKxZEU1IZaYZcHvvbI6oAnjIx
+         7IlZjLdEXBP3U2HHtHW3Jpr69oT+hNCWMKCA0ihrf51BpncQh3Btg1SckzWphpMsgB
+         2NVSI+ih0yZnOAXs3cwVpwiBIMJzJl/nvgHEnDQU=
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Johan Hovold <johan@kernel.org>
+Cc:     Rob Herring <robh+dt@kernel.org>, Jessica Yu <jeyu@kernel.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Frank Rowand <frowand.list@gmail.com>,
         Arnd Bergmann <arnd@arndb.de>,
         Geert Uytterhoeven <geert@linux-m68k.org>,
         Dmitry Torokhov <dmitry.torokhov@gmail.com>,
@@ -61,40 +42,44 @@ Cc:     Frank Rowand <frowand.list@gmail.com>,
         Steven Rostedt <rostedt@goodmis.org>,
         Daniel Kurtz <djkurtz@chromium.org>,
         linux-arch@vger.kernel.org, linux-m68k@lists.linux-m68k.org,
-        linux-kernel@vger.kernel.org, Johan Hovold <johan@kernel.org>
+        linux-kernel@vger.kernel.org
 Subject: Re: [PATCH v2 2/8] earlycon: simplify earlycon-table implementation
-Message-ID: <X8pBwTl7nZoOQ18m@localhost>
+Message-ID: <X8pLYsprqsJMYanf@kroah.com>
 References: <20201123102319.8090-1-johan@kernel.org>
  <20201123102319.8090-3-johan@kernel.org>
+ <X8pBwTl7nZoOQ18m@localhost>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201123102319.8090-3-johan@kernel.org>
+In-Reply-To: <X8pBwTl7nZoOQ18m@localhost>
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-Greg,
+On Fri, Dec 04, 2020 at 03:03:45PM +0100, Johan Hovold wrote:
+> Greg,
+> 
+> On Mon, Nov 23, 2020 at 11:23:13AM +0100, Johan Hovold wrote:
+> > Instead of using the array-of-pointers trick to avoid having gcc mess up
+> > the earlycon array stride, specify type alignment when declaring entries
+> > to prevent gcc from increasing alignment.
+> > 
+> > This is essentially an alternative (one-line) fix to the problem
+> > addressed by commit dd709e72cb93 ("earlycon: Use a pointer table to fix
+> > __earlycon_table stride").
+> > 
+> > gcc can increase the alignment of larger objects with static extent as
+> > an optimisation, but this can be suppressed by using the aligned
+> > attribute when declaring variables.
+> > 
+> > Note that we have been relying on this behaviour for kernel parameters
+> > for 16 years and it indeed hasn't changed since the introduction of the
+> > aligned attribute in gcc-3.1.
+> > 
+> > Signed-off-by: Johan Hovold <johan@kernel.org>
+> 
+> Could you pick this one up for 5.11?
 
-On Mon, Nov 23, 2020 at 11:23:13AM +0100, Johan Hovold wrote:
-> Instead of using the array-of-pointers trick to avoid having gcc mess up
-> the earlycon array stride, specify type alignment when declaring entries
-> to prevent gcc from increasing alignment.
-> 
-> This is essentially an alternative (one-line) fix to the problem
-> addressed by commit dd709e72cb93 ("earlycon: Use a pointer table to fix
-> __earlycon_table stride").
-> 
-> gcc can increase the alignment of larger objects with static extent as
-> an optimisation, but this can be suppressed by using the aligned
-> attribute when declaring variables.
-> 
-> Note that we have been relying on this behaviour for kernel parameters
-> for 16 years and it indeed hasn't changed since the introduction of the
-> aligned attribute in gcc-3.1.
-> 
-> Signed-off-by: Johan Hovold <johan@kernel.org>
+Sure, will pick this and patch 1/8 up now, thanks for the prod.
 
-Could you pick this one up for 5.11?
-
-Johan
+greg k-h
