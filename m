@@ -3,86 +3,226 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
 X-Spam-Status: No, score=-8.7 required=3.0 tests=BAYES_00,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,MAILING_LIST_MULTI,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable autolearn_force=no
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B00B9C4361B
-	for <linux-m68k@archiver.kernel.org>; Mon,  7 Dec 2020 07:36:50 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7B9C5C4361B
+	for <linux-m68k@archiver.kernel.org>; Mon,  7 Dec 2020 23:32:39 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 75A3E225A9
-	for <linux-m68k@archiver.kernel.org>; Mon,  7 Dec 2020 07:36:50 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 4A19723A1D
+	for <linux-m68k@archiver.kernel.org>; Mon,  7 Dec 2020 23:32:39 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726074AbgLGHgf (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Mon, 7 Dec 2020 02:36:35 -0500
-Received: from mail-oi1-f195.google.com ([209.85.167.195]:46519 "EHLO
-        mail-oi1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726070AbgLGHge (ORCPT
-        <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Mon, 7 Dec 2020 02:36:34 -0500
-Received: by mail-oi1-f195.google.com with SMTP id k2so14420800oic.13
-        for <linux-m68k@lists.linux-m68k.org>; Sun, 06 Dec 2020 23:36:19 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=81A1/EI2V5mNEQhjEQLpvlKbCZRpRrCc/XWWtaeN53s=;
-        b=iuXm9ISXPkb8oNUIHOJDMPL/q+rsz/kswKX7St3OS3xXJj0HEv1/i+HRZ0jGJwfmsu
-         bNaNnFeP5IVN0cyQH5VLwzZ2dnixDINt22FMZT5gLJM+iYz9u3TyKPICCeHD0UdMc3kq
-         WD5co5wPnbNOEwwOjPLdSDVQ9V2eFlsmFfKQ5Y3DtqEESUghkOXEWGgTVkx75wU+HFB2
-         5Zlr0jthqJ83yNftp22DsuoJMvwC+muSChZypWNUx9dlPdeRuGLfG+lTu6m9A01W94dZ
-         SIoigXm/qhGaoccbS3LLTsZ6Vu1vofb7TjKqYjZaOp5kA0HHiU44/gla5Crj8/fW3Zu/
-         Zsug==
-X-Gm-Message-State: AOAM5306Op5Lr3v6oczRtFSnespe93uQG2+YKJVcrwKvayMuKiuNCMEd
-        MADmOYJHJ2WmCKRaql+2l1S3YLhHrKBps9yLHNw=
-X-Google-Smtp-Source: ABdhPJy/JEX754OpU/TA3+t9ubAjETJ+JgblXzUnQ4UMH8YPy4PUYm8OthzBU9+DM64zMQkgJyrBU5FFU4KbRsoCaak=
-X-Received: by 2002:aca:5c08:: with SMTP id q8mr9941990oib.54.1607326553857;
- Sun, 06 Dec 2020 23:35:53 -0800 (PST)
+        id S1727369AbgLGXcJ (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Mon, 7 Dec 2020 18:32:09 -0500
+Received: from mga12.intel.com ([192.55.52.136]:49302 "EHLO mga12.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726483AbgLGXcI (ORCPT <rfc822;linux-m68k@lists.linux-m68k.org>);
+        Mon, 7 Dec 2020 18:32:08 -0500
+IronPort-SDR: EUiya6tIq/Om/0W4Cbmu2AYQZMXQzPT4sYW4bYITdsl62NzmuDTyB4470CswdNcwtgQVQzlV6s
+ mKF4O/a0bK8g==
+X-IronPort-AV: E=McAfee;i="6000,8403,9828"; a="153037973"
+X-IronPort-AV: E=Sophos;i="5.78,401,1599548400"; 
+   d="scan'208";a="153037973"
+Received: from fmsmga007.fm.intel.com ([10.253.24.52])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Dec 2020 15:31:27 -0800
+IronPort-SDR: 1b86dCcwZgE2prpnKQWpj32P+oEzs25Aqem6HBOYWtgxLg4cSG+8EhMSkLzfBOuQO3zi+U9K0T
+ MfxG1DRzDHdA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.78,401,1599548400"; 
+   d="scan'208";a="318102123"
+Received: from lkp-server01.sh.intel.com (HELO f1d34cfde454) ([10.239.97.150])
+  by fmsmga007.fm.intel.com with ESMTP; 07 Dec 2020 15:31:26 -0800
+Received: from kbuild by f1d34cfde454 with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1kmPyY-0000CC-4O; Mon, 07 Dec 2020 23:31:26 +0000
+Date:   Tue, 08 Dec 2020 07:30:43 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Geert Uytterhoeven <geert@linux-m68k.org>
+Cc:     linux-m68k@lists.linux-m68k.org
+Subject: [m68k:m68k-queue] BUILD SUCCESS
+ 7d2e82ceb1fd8fce6c3ad58d507bfead956d68a9
+Message-ID: <5fcebb23.J/4vd14I4Yil29Rs%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
-References: <fbac2cd8632bb719f48cd1368910abd310548a0e.1607139987.git.fthain@telegraphics.com.au>
-In-Reply-To: <fbac2cd8632bb719f48cd1368910abd310548a0e.1607139987.git.fthain@telegraphics.com.au>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Mon, 7 Dec 2020 08:35:42 +0100
-Message-ID: <CAMuHMdWVS1nQM1vP5kyz9Dz3TmzYSDeZxCPXGpG-pGN93Zdxcw@mail.gmail.com>
-Subject: Re: [PATCH] MAINTAINERS: Update 68k Mac entry
-To:     Finn Thain <fthain@telegraphics.com.au>
-Cc:     Michael Ellerman <mpe@ellerman.id.au>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Joshua Thompson <funaho@jurai.org>,
-        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
-        linux-m68k <linux-m68k@lists.linux-m68k.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-Hi Finn,
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/geert/linux-m68k.git  m68k-queue
+branch HEAD: 7d2e82ceb1fd8fce6c3ad58d507bfead956d68a9  m68k: defconfig: Enable Atari EtherNAT and NetUSBee USB support
 
-On Sat, Dec 5, 2020 at 4:49 AM Finn Thain <fthain@telegraphics.com.au> wrote:
-> Two files under drivers/macintosh are actually m68k-only. I think that
-> patches for these files should be reviewed in the appropriate forum and
-> merged via the appropriate tree, rather than falling to the powerpc
-> maintainers to deal with. Update the "M68K ON APPLE MACINTOSH" section
-> accordingly.
->
-> Cc: Michael Ellerman <mpe@ellerman.id.au>
-> Cc: Benjamin Herrenschmidt <benh@kernel.crashing.org>
-> Cc: Joshua Thompson <funaho@jurai.org>
-> Cc: linuxppc-dev@lists.ozlabs.org
-> Cc: linux-m68k@lists.linux-m68k.org
-> Signed-off-by: Finn Thain <fthain@telegraphics.com.au>
+elapsed time: 722m
 
-Reviewed-by: Geert Uytterhoeven <geert@linux-m68k.org>
-i.e. will queue in the m68k for-v5.11 branch.
+configs tested: 157
+configs skipped: 2
 
-Gr{oetje,eeting}s,
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
-                        Geert
+gcc tested configs:
+arm                                 defconfig
+arm64                            allyesconfig
+arm64                               defconfig
+arm                              allyesconfig
+arm                              allmodconfig
+arm                         cm_x300_defconfig
+mips                      maltasmvp_defconfig
+arc                     nsimosci_hs_defconfig
+powerpc                     kilauea_defconfig
+s390                                defconfig
+arm                       imx_v6_v7_defconfig
+arm                          tango4_defconfig
+microblaze                      mmu_defconfig
+arm                        trizeps4_defconfig
+arm                         shannon_defconfig
+arc                         haps_hs_defconfig
+sh                               j2_defconfig
+mips                         cobalt_defconfig
+powerpc                  mpc885_ads_defconfig
+mips                           ip28_defconfig
+powerpc                     pq2fads_defconfig
+powerpc                 mpc832x_rdb_defconfig
+c6x                         dsk6455_defconfig
+m68k                        m5272c3_defconfig
+xtensa                generic_kc705_defconfig
+m68k                        mvme16x_defconfig
+m68k                          amiga_defconfig
+mips                      pistachio_defconfig
+powerpc                   motionpro_defconfig
+mips                malta_qemu_32r6_defconfig
+arm                           stm32_defconfig
+sh                             shx3_defconfig
+powerpc                      ep88xc_defconfig
+arm                         bcm2835_defconfig
+mips                        maltaup_defconfig
+powerpc                      makalu_defconfig
+m68k                          multi_defconfig
+arm                         s3c6400_defconfig
+powerpc                     tqm8555_defconfig
+arm                          ixp4xx_defconfig
+sh                           se7780_defconfig
+arm                  colibri_pxa300_defconfig
+powerpc                     powernv_defconfig
+arm                           tegra_defconfig
+powerpc                     tqm8540_defconfig
+arc                     haps_hs_smp_defconfig
+arm                            mmp2_defconfig
+arm                          pcm027_defconfig
+m68k                         amcore_defconfig
+arm                          pxa168_defconfig
+powerpc                      pcm030_defconfig
+powerpc                 mpc8313_rdb_defconfig
+sparc                            alldefconfig
+arm                      footbridge_defconfig
+powerpc                      ppc40x_defconfig
+sh                            migor_defconfig
+arm                            qcom_defconfig
+powerpc                      katmai_defconfig
+c6x                        evmc6474_defconfig
+sh                        edosk7705_defconfig
+mips                           xway_defconfig
+mips                         rt305x_defconfig
+nios2                         3c120_defconfig
+powerpc                 mpc834x_itx_defconfig
+powerpc                    klondike_defconfig
+sparc64                          alldefconfig
+arm                         mv78xx0_defconfig
+mips                            ar7_defconfig
+arm                       netwinder_defconfig
+x86_64                              defconfig
+arm                             ezx_defconfig
+mips                          ath79_defconfig
+mips                         tb0287_defconfig
+m68k                             alldefconfig
+arm                           omap1_defconfig
+um                            kunit_defconfig
+arm                       mainstone_defconfig
+arc                              alldefconfig
+mips                           ip32_defconfig
+arm                          lpd270_defconfig
+powerpc                         ps3_defconfig
+powerpc                    ge_imp3a_defconfig
+powerpc                 mpc837x_rdb_defconfig
+nds32                             allnoconfig
+arc                 nsimosci_hs_smp_defconfig
+mips                          rb532_defconfig
+sh                          landisk_defconfig
+arm64                            alldefconfig
+arm                            u300_defconfig
+powerpc                     stx_gp3_defconfig
+ia64                             allmodconfig
+ia64                                defconfig
+ia64                             allyesconfig
+m68k                             allmodconfig
+m68k                                defconfig
+m68k                             allyesconfig
+nios2                               defconfig
+arc                              allyesconfig
+c6x                              allyesconfig
+nds32                               defconfig
+nios2                            allyesconfig
+csky                                defconfig
+alpha                               defconfig
+alpha                            allyesconfig
+xtensa                           allyesconfig
+h8300                            allyesconfig
+arc                                 defconfig
+sh                               allmodconfig
+parisc                              defconfig
+s390                             allyesconfig
+parisc                           allyesconfig
+i386                             allyesconfig
+sparc                            allyesconfig
+sparc                               defconfig
+i386                               tinyconfig
+i386                                defconfig
+mips                             allyesconfig
+mips                             allmodconfig
+powerpc                          allyesconfig
+powerpc                          allmodconfig
+powerpc                           allnoconfig
+i386                 randconfig-a005-20201207
+i386                 randconfig-a004-20201207
+i386                 randconfig-a001-20201207
+i386                 randconfig-a002-20201207
+i386                 randconfig-a006-20201207
+i386                 randconfig-a003-20201207
+x86_64               randconfig-a016-20201207
+x86_64               randconfig-a012-20201207
+x86_64               randconfig-a014-20201207
+x86_64               randconfig-a013-20201207
+x86_64               randconfig-a015-20201207
+x86_64               randconfig-a011-20201207
+i386                 randconfig-a014-20201207
+i386                 randconfig-a013-20201207
+i386                 randconfig-a011-20201207
+i386                 randconfig-a015-20201207
+i386                 randconfig-a012-20201207
+i386                 randconfig-a016-20201207
+riscv                    nommu_k210_defconfig
+riscv                            allyesconfig
+riscv                    nommu_virt_defconfig
+riscv                             allnoconfig
+riscv                               defconfig
+riscv                          rv32_defconfig
+riscv                            allmodconfig
+x86_64                                   rhel
+x86_64                           allyesconfig
+x86_64                    rhel-7.6-kselftests
+x86_64                               rhel-8.3
+x86_64                                  kexec
 
--- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+clang tested configs:
+x86_64               randconfig-a004-20201207
+x86_64               randconfig-a006-20201207
+x86_64               randconfig-a002-20201207
+x86_64               randconfig-a001-20201207
+x86_64               randconfig-a005-20201207
+x86_64               randconfig-a003-20201207
 
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
