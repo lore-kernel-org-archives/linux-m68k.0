@@ -2,116 +2,147 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-4.1 required=3.0 tests=BAYES_00,CTE_8BIT_MISMATCH,
-	DKIM_INVALID,DKIM_SIGNED,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=no autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-21.7 required=3.0 tests=BAYES_00,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,INCLUDES_PULL_REQUEST,
+	MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
+	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D8CA1C433FE
-	for <linux-m68k@archiver.kernel.org>; Sun, 13 Dec 2020 11:40:23 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D6289C1B0D8
+	for <linux-m68k@archiver.kernel.org>; Mon, 14 Dec 2020 09:33:54 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 97737207FB
-	for <linux-m68k@archiver.kernel.org>; Sun, 13 Dec 2020 11:40:23 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 961BC207B5
+	for <linux-m68k@archiver.kernel.org>; Mon, 14 Dec 2020 09:33:54 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728212AbgLMLkV (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Sun, 13 Dec 2020 06:40:21 -0500
-Received: from noc.ebotel.net ([72.29.77.203]:49013 "EHLO noc.ebotel.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725864AbgLMLkV (ORCPT <rfc822;linux-m68k@vger.kernel.org>);
-        Sun, 13 Dec 2020 06:40:21 -0500
-X-Greylist: delayed 156651 seconds by postgrey-1.27 at vger.kernel.org; Sun, 13 Dec 2020 06:40:21 EST
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=ebo.tv;
-        s=default; h=Content-Transfer-Encoding:Content-Type:MIME-Version:Date:
-        Message-ID:Subject:From:To:Sender:Reply-To:Cc:Content-ID:Content-Description:
-        Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-        In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
-        List-Post:List-Owner:List-Archive;
-        bh=vwFD8DF/Rsv+Cjl17F44r/HtH9frhktyqHh4bRe5wAo=; b=iD4joVjY1GJIi+9myw1Exl2LwG
-        TjuwDnXinL/uoDW8tzOjX1edVcGchuiFWOQf0LRSyxKImvJ0bNe3WdMX7qR1/lLl9aY0KO0vf8Fyo
-        7HB4mP49BNDcrGGiZ9HMO/da5fmvoGIgA94n2+tzXamFeHfBE9oX8DcQM7YqPQ78E0q4=;
-Received: from [14.226.235.220] (port=35457 helo=ebo.tv)
-        by noc.ebotel.net with esmtpa (Exim 4.87)
-        (envelope-from <gerencia@ebo.tv>)
-        id 1knkyJ-0003E1-50; Fri, 11 Dec 2020 12:08:44 -0400
-To:     "Linux m68k" <linux-m68k@vger.kernel.org>,
-        "Andreas Schwab" <schwab@linux-m68k.org>
-From:   nik_bin_nek_alwi <gerencia@ebo.tv>
-Subject: =?UTF-8?Q?Hey._lange_nichts_von_dir_geh=C3=B6rt?=
-Message-ID: <54d4e3bb-8d22-4609-bbf9-30ea0c0d3ce0@ebo.tv>
-Date:   Fri, 11 Dec 2020 05:58:54 -1000
-User-Agent: Mozilla/5.0 (Windows NT 6.3; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.5.0
+        id S2394304AbgLNJdd (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Mon, 14 Dec 2020 04:33:33 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55894 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731617AbgLNJdZ (ORCPT
+        <rfc822;linux-m68k@lists.linux-m68k.org>);
+        Mon, 14 Dec 2020 04:33:25 -0500
+Received: from michel.telenet-ops.be (michel.telenet-ops.be [IPv6:2a02:1800:110:4::f00:18])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A0F44C0613D6
+        for <linux-m68k@lists.linux-m68k.org>; Mon, 14 Dec 2020 01:32:44 -0800 (PST)
+Received: from ramsan.of.borg ([84.195.186.194])
+        by michel.telenet-ops.be with bizsmtp
+        id 49Yh2400R4C55Sk069YhWD; Mon, 14 Dec 2020 10:32:41 +0100
+Received: from rox.of.borg ([192.168.97.57])
+        by ramsan.of.borg with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.93)
+        (envelope-from <geert@linux-m68k.org>)
+        id 1kokDh-00ATA1-7L; Mon, 14 Dec 2020 10:32:41 +0100
+Received: from geert by rox.of.borg with local (Exim 4.93)
+        (envelope-from <geert@linux-m68k.org>)
+        id 1kokDg-003SXO-D3; Mon, 14 Dec 2020 10:32:40 +0100
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Greg Ungerer <gerg@linux-m68k.org>,
+        linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org,
+        Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: [GIT PULL] m68k updates for 5.11
+Date:   Mon, 14 Dec 2020 10:32:37 +0100
+Message-Id: <20201214093237.824639-1-geert@linux-m68k.org>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
-X-AntiAbuse: Primary Hostname - noc.ebotel.net
-X-AntiAbuse: Original Domain - vger.kernel.org
-X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
-X-AntiAbuse: Sender Address Domain - ebo.tv
-X-Get-Message-Sender-Via: noc.ebotel.net: authenticated_id: gerencia@ebo.tv
-X-Authenticated-Sender: noc.ebotel.net: gerencia@ebo.tv
-X-Source: 
-X-Source-Args: 
-X-Source-Dir: 
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
+	Hi Linus,
 
+The following changes since commit 3650b228f83adda7e5ee532e2b90429c03f7b9ec:
 
+  Linux 5.10-rc1 (2020-10-25 15:14:11 -0700)
 
-🚩 Ich grüße dich. Ich hoffe, bei dir ist alles ok.
-https://bit.ly/2JM4DyH
+are available in the Git repository at:
 
+  git://git.kernel.org/pub/scm/linux/kernel/git/geert/linux-m68k.git tags/m68k-for-v5.11-tag1
 
+for you to fetch changes up to 2ae92e8b9b7eb042ccb7e9fc7ea9431f211a1bd3:
 
+  MAINTAINERS: Update m68k Mac entry (2020-12-07 10:48:16 +0100)
 
+----------------------------------------------------------------
+m68k updates for v5.11
 
+  - Fix WARNING splat in pmac_zilog driver,
+  - Fix ADB input device regression,
+  - Assume maintainership for adb-iop and via-macii,
+  - Minor fixes and improvements,
+  - Defconfig updates.
 
- nik_bin_nek_alwi@yahoo.com
+Thanks for pulling!
 
+----------------------------------------------------------------
+Arnd Bergmann (1):
+      m68k: Avoid xchg() warning
 
+Finn Thain (8):
+      m68k: mac: Refactor iop_preinit() and iop_init()
+      m68k: mac: Remove dead code
+      m68k: mac: Remove redundant VIA register writes
+      m68k: mac: Update Kconfig help
+      m68k: Fix WARNING splat in pmac_zilog driver
+      macintosh/adb-iop: Always wait for reply message from IOP
+      macintosh/adb-iop: Send correct poll command
+      MAINTAINERS: Update m68k Mac entry
 
+Geert Uytterhoeven (2):
+      m68k: defconfig: Update defconfigs for v5.10-rc1
+      m68k: defconfig: Enable KUnit tests
 
+Laurent Vivier (1):
+      m68k: Remove unused mach_max_dma_address
 
- 12/11/2020 7:58:54 AM
+Youling Tang (2):
+      m68k: Drop redundant NOTES in link script
+      m68k: Add a missing ELF_DETAILS in link script
 
+ MAINTAINERS                          |  2 ++
+ arch/m68k/Kconfig.machine            |  8 ++----
+ arch/m68k/amiga/config.c             |  8 ------
+ arch/m68k/apollo/config.c            |  1 -
+ arch/m68k/atari/config.c             |  1 -
+ arch/m68k/bvme6000/config.c          |  1 -
+ arch/m68k/configs/amiga_defconfig    |  9 ++++--
+ arch/m68k/configs/apollo_defconfig   |  9 ++++--
+ arch/m68k/configs/atari_defconfig    |  9 ++++--
+ arch/m68k/configs/bvme6000_defconfig |  9 ++++--
+ arch/m68k/configs/hp300_defconfig    |  9 ++++--
+ arch/m68k/configs/mac_defconfig      |  9 ++++--
+ arch/m68k/configs/multi_defconfig    |  9 ++++--
+ arch/m68k/configs/mvme147_defconfig  |  9 ++++--
+ arch/m68k/configs/mvme16x_defconfig  |  9 ++++--
+ arch/m68k/configs/q40_defconfig      |  9 ++++--
+ arch/m68k/configs/sun3_defconfig     |  9 ++++--
+ arch/m68k/configs/sun3x_defconfig    |  9 ++++--
+ arch/m68k/hp300/config.c             |  1 -
+ arch/m68k/include/asm/cmpxchg.h      | 10 +++----
+ arch/m68k/include/asm/machdep.h      |  1 -
+ arch/m68k/kernel/setup_mm.c          |  1 -
+ arch/m68k/kernel/vmlinux-nommu.lds   |  3 +-
+ arch/m68k/kernel/vmlinux-std.lds     |  3 +-
+ arch/m68k/kernel/vmlinux-sun3.lds    |  2 +-
+ arch/m68k/mac/config.c               | 26 ++++++-----------
+ arch/m68k/mac/iop.c                  | 54 ++++++++++++----------------------
+ arch/m68k/mac/via.c                  | 21 --------------
+ arch/m68k/mvme147/config.c           |  1 -
+ arch/m68k/mvme16x/config.c           |  1 -
+ arch/m68k/q40/config.c               |  5 ----
+ arch/m68k/sun3x/config.c             |  2 --
+ drivers/macintosh/adb-iop.c          | 56 ++++++++++++++++++++++++------------
+ drivers/tty/serial/pmac_zilog.c      | 14 +++++----
+ 34 files changed, 171 insertions(+), 159 deletions(-)
 
+Gr{oetje,eeting}s,
 
+						Geert
 
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
-
-
-
-
-
-____________________________________________________________________
- Your next stimulus check could be for $1,200, $600 or $0
-Lawmakers are negotiating another stimulus package that could be passed before year-end, but much remains in flux.
-Importance Of Diversity Among The Highest Ranks Of The Military
-NPR's Ari Shapiro talks with retired Lt. Gen. Stephen Twitty about what retired Gen. Lloyd Austin's nomination as defense secretary means for diversity within the Pentagon.
-Phil Linz, Unlikely Baseball Celebrity, Is Dead at 81
-Never a star and rarely a starter as a Yankee in the 1960s, Linz made news not for playing baseball but for playing the harmonica.
-Tributes paid to 'extraordinary' Dame Barbara Windsor
-Actors Larry Lamb, Danny Dyer and Tracy-Ann Oberman are among those honouring the late EastEnders star.
-'I'd love Olympia to be a CEO, start-up founder or pro athlete'
-Alexis Olympia Ohanian Jr., isn't yet three years old, but already her future looks bright -- her parents are making it so.
-PM: No-deal outcome from Brexit trade talks 'looking very, very likely'
-Boris Johnson has said a no-deal outcome from Brexit trade talks is "looking very, very likely" ahead of Sunday's deadline for a decision on the negotiations.
-
-The last long-shot chance for Trump allies to challenge election results
-A joint session of Congress to ratify the election is also an opportunity for lawmakers to challenge results.
-2020 Book Concierge: Books For History Lovers
-From NPR's 2020 Book Concierge, we offer four book recommendations for history buffs.
-Civilian Control of the Military Is Vital
-Biden must give a better explanation for why a waiver is justified and how to stop this from becoming a trend.
-Covid: What are the new rules for pubs and restaurants?
-Pubs in Wales must stop selling alcohol, and in England it must go with a "substantial meal"..
-Thieves break into Russia's nuclear war 'doomsday' plane
-Russian police are investigating a break-in at a top-secret airborne nuclear command center, nicknamed the "doomsday plane."
-EastEnders and Carry On icon Dame Barbara Windsor dies aged 83
-Dame Barbara Windsor - best known for her roles as Peggy Mitchell in EastEnders and in the Carry On films - has died aged 83.
-WHO Accused of Colluding With Italy to Hide Report Criticizing Pandemic Readiness, Report Says
-MOSCOW, (Sputnik) - The World Health Organization (WHO) has been accused of colluding with high-ranking public health officials in Italy to remove a report criticizing the European country's pandemic preparedness, The Guardian newspaper reported on Friday, citing one of the authors of the report.
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+							    -- Linus Torvalds
