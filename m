@@ -2,26 +2,27 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-6.8 required=3.0 tests=BAYES_00,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	USER_AGENT_GIT autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 53CD2C3526C
-	for <linux-m68k@archiver.kernel.org>; Fri, 18 Dec 2020 14:35:13 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E00E3C352A2
+	for <linux-m68k@archiver.kernel.org>; Fri, 18 Dec 2020 14:35:32 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 1E04523A84
-	for <linux-m68k@archiver.kernel.org>; Fri, 18 Dec 2020 14:35:13 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id BD1FA23AC0
+	for <linux-m68k@archiver.kernel.org>; Fri, 18 Dec 2020 14:35:32 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727979AbgLROfL (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Fri, 18 Dec 2020 09:35:11 -0500
-Received: from mout.kundenserver.de ([212.227.126.187]:46385 "EHLO
+        id S1728410AbgLROf2 (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Fri, 18 Dec 2020 09:35:28 -0500
+Received: from mout.kundenserver.de ([212.227.126.131]:57639 "EHLO
         mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727810AbgLROfJ (ORCPT
+        with ESMTP id S1728306AbgLROf0 (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Fri, 18 Dec 2020 09:35:09 -0500
+        Fri, 18 Dec 2020 09:35:26 -0500
 Received: from orion.localdomain ([95.115.54.243]) by mrelayeu.kundenserver.de
  (mreue009 [212.227.15.167]) with ESMTPSA (Nemesis) id
- 1M2wCi-1kmxPC1v92-003Pjz; Fri, 18 Dec 2020 15:31:38 +0100
+ 1MBltM-1kviq71HjA-00CBAN; Fri, 18 Dec 2020 15:32:11 +0100
 From:   "Enrico Weigelt, metux IT consult" <info@metux.net>
 To:     linux-kernel@vger.kernel.org
 Cc:     mark.rutland@arm.com, alexander.shishkin@linux.intel.com,
@@ -41,62 +42,169 @@ Cc:     mark.rutland@arm.com, alexander.shishkin@linux.intel.com,
         linux-sh@vger.kernel.org, sparclinux@vger.kernel.org,
         linux-gpio@vger.kernel.org, linux-omap@vger.kernel.org,
         linux-arch@vger.kernel.org
-Subject: cleanup handling of bad IRQs
-Date:   Fri, 18 Dec 2020 15:30:59 +0100
-Message-Id: <20201218143122.19459-1-info@metux.net>
+Subject: [PATCH 16/23] arch: alpha: use generic irq error counter
+Date:   Fri, 18 Dec 2020 15:31:15 +0100
+Message-Id: <20201218143122.19459-17-info@metux.net>
 X-Mailer: git-send-email 2.11.0
-X-Provags-ID: V03:K1:GCc9gbsI9eyOCfdNmRX4o9bXX1pOCTy0AyznDchDYs0oM1Puh0V
- HaUshqI/aGp8nZ32pIa3W6umlwkDU/2qcylknjRG07xPj3Phd4Hi7sPh0w6jCYT7br8wP9r
- fsQ6guhbrEZJsPZNI8LuMeU1nvpg4pLhQC4hxQMx4DspP5teK6wAXTnJgWzY/Mk0t7irqLX
- kur37BKvbPWU7xvonpMrg==
-X-UI-Out-Filterresults: notjunk:1;V03:K0:/sbNIRVafqs=:7E0S8ysTyADzbE8lkSM6eP
- 3TWEq16dIlocEj3ixPEv4zX+3uTZPLFNfZxuuLVDe5vQethUoPCGbLrF+TJzqQS6i9ZiPDOWV
- +MEyUwQsMabb9a7q9A0f4yZPbmnRvOUDPtXYvFQYiaQf8++meO3+CL9+AQCaHZpZU5Lu4zk3h
- DHvOcIL0N3IkgsS8EOQdWctpP0notp1p3/QtKqWrA0uwnQO8udkYh4oSleqescXu70z7m0miq
- aQx+1M87gYUAFYOUnCysSU1ZhyZRm3NivHaA+X1Bi0lbdEx0v1kCrv+PamjVlz+r4tOy1m2VO
- 7GBJGicMrEiBxqRit0qr0sJg1PjhIfT/u0Up/KxPuvMs/TGlnv05ySaqY98K0u1+80NKHB60f
- iftFYU5etid5UzRqKbNb+YFzN9b3C5t5lHQzh4h/GALhKjmHZEoAm9bm1bb//
+In-Reply-To: <20201218143122.19459-1-info@metux.net>
+References: <20201218143122.19459-1-info@metux.net>
+X-Provags-ID: V03:K1:uL2eosxDfl+XvBZmyvuxi59hjqB3gvygQ2D3u1dkJBAEAzLMp1b
+ 1MqzXADU9ncXWYXgkgCXzSTOO/Gt6me/VSxAj0zXBtHTCRIRMkS5pJ0Skq2jC6y+H4eUYXm
+ JkrFDQIkB+d21rZBQBVVbAHeJNsVb0hqBYZu5CxiMjJsma4xxaiq0ffONnEzakJHMNwVw8C
+ RLRxWTnjcmP98hgabxkLQ==
+X-UI-Out-Filterresults: notjunk:1;V03:K0:+iUvMyPwCvY=:zxyQNJwX9WMyH3mOyj3hW9
+ 2QA4nHu5IP5UnmuuasNI8nCnUEW/liy6+PRU6Nb+kbjLxPWUVv3AdHC8tAU/yJ4k5fZq2PP1Y
+ wzJh6EGFl6pywLiRAqva6M/JYnOTmbDRuh9e+6/KxPoPQoaoAFrTYDyxrf8ebilKg2zPKbIO1
+ M6lJd+OzY35LdY/2PaNSD+KOEX58QaqHZ6K5ZEbmBrSuwka8S+aoM5mSipPxCLb9XUIVAb9mN
+ URedXzwS9zxA2xjc/0wnxg8NEw5vGGbDLh2Fteam0ZLrfVv/1aAYaT3wx8AQ+WDZRiKk2NOhk
+ jpF2+AtAH2CDiEa3SFnjAaCV1mcVeoyKxZaEEi1a+G0wCVUGA7ayTsHp2wbj3Z1ROQccsA4u8
+ 12HLJxFiDKo/uUexSW2ySgO2rjAkJrGSXXNnYRkuvF5RTb79+B3IRzL0cbc0D
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-Hello friends,
+Use the newly introduced irq error counter, that's already maintained
+by all callers of ack_bad_irq(), in order to remove duplicate code.
 
+Signed-off-by: Enrico Weigelt, metux IT consult <info@metux.net>
+---
+ arch/alpha/include/asm/hardirq.h |  3 ---
+ arch/alpha/include/asm/hw_irq.h  |  2 --
+ arch/alpha/kernel/irq.c          | 12 +++---------
+ arch/alpha/kernel/irq_alpha.c    |  5 +++--
+ arch/alpha/kernel/perf_event.c   |  6 +++---
+ 5 files changed, 9 insertions(+), 19 deletions(-)
 
-here's a patch queue for cleaning up the IRQ handling. Inspired by a
-discussion we had on a previous patch of mine:
-
-    "arch: fix 'unexpected IRQ trap at vector' warnings"
-    https://www.spinics.net/lists/kernel/msg3763137.html
-
-Turned out that the whole message, as it is right now, doesn't make much
-sense at at all - not just incorrect wording, but also not quite useful
-information. And the whole ack_bad_irq() thing deserves a cleanup anyways.
-
-So, I've had a closer look and came to these conclusions:
-
-1. The warning message doesn't need to be duplicated in the per architecture
-   ack_bad_irq() functions. All, but one callers already do their own warning.
-   Thus just adding a pr_warn() call there, printing out more useful data
-   like the hardware IRQ number, and dropping all warnings from all the
-   ack_bad_irq() functions.
-
-2. Many of the ack_bad_irq()'s count up the spurious interrupts - lots of
-   duplications over the various archs. Some of them using atomic_t, some
-   just plain ints. Consolidating this by introducing a global counter
-   with inline'd accessors and doing the upcounting in the (currently 3)
-   call sites of ack_bad_irq(). After that, step by step changing all
-   archs to use the new counter.
-
-3. For all but one arch (x86), ack_bad_irq() became a no-op.
-
-   On x86, it's just a call to ack_APIC_irq(), in order to prevent lockups
-   when IRQs missed to be ack'ed on the APIC. Could we perhaps do this in
-   some better place ? In that case, ack_bad_irq() could easily be removed
-   entirely.
-
-have fun,
-
---mtx
-
+diff --git a/arch/alpha/include/asm/hardirq.h b/arch/alpha/include/asm/hardirq.h
+index 5ce5b34e8a1a..0bbc9947e364 100644
+--- a/arch/alpha/include/asm/hardirq.h
++++ b/arch/alpha/include/asm/hardirq.h
+@@ -2,9 +2,6 @@
+ #ifndef _ALPHA_HARDIRQ_H
+ #define _ALPHA_HARDIRQ_H
+ 
+-void ack_bad_irq(unsigned int irq);
+-#define ack_bad_irq ack_bad_irq
+-
+ #include <asm-generic/hardirq.h>
+ 
+ #endif /* _ALPHA_HARDIRQ_H */
+diff --git a/arch/alpha/include/asm/hw_irq.h b/arch/alpha/include/asm/hw_irq.h
+index e2d81ac0d934..0be79f3a6cae 100644
+--- a/arch/alpha/include/asm/hw_irq.h
++++ b/arch/alpha/include/asm/hw_irq.h
+@@ -2,8 +2,6 @@
+ #ifndef _ALPHA_HW_IRQ_H
+ #define _ALPHA_HW_IRQ_H
+ 
+-
+-extern volatile unsigned long irq_err_count;
+ DECLARE_PER_CPU(unsigned long, irq_pmi_count);
+ 
+ #ifdef CONFIG_ALPHA_GENERIC
+diff --git a/arch/alpha/kernel/irq.c b/arch/alpha/kernel/irq.c
+index c1980eea75a6..2b7dad83e0dc 100644
+--- a/arch/alpha/kernel/irq.c
++++ b/arch/alpha/kernel/irq.c
+@@ -25,18 +25,12 @@
+ #include <linux/seq_file.h>
+ #include <linux/profile.h>
+ #include <linux/bitops.h>
+-
++#include <asm-generic/irq-err.h>
+ #include <asm/io.h>
+ #include <linux/uaccess.h>
+ 
+-volatile unsigned long irq_err_count;
+ DEFINE_PER_CPU(unsigned long, irq_pmi_count);
+ 
+-void ack_bad_irq(unsigned int irq)
+-{
+-	irq_err_count++;
+-}
+-
+ #ifdef CONFIG_SMP 
+ static char irq_user_affinity[NR_IRQS];
+ 
+@@ -79,7 +73,7 @@ int arch_show_interrupts(struct seq_file *p, int prec)
+ 	for_each_online_cpu(j)
+ 		seq_printf(p, "%10lu ", per_cpu(irq_pmi_count, j));
+ 	seq_puts(p, "          Performance Monitoring\n");
+-	seq_printf(p, "ERR: %10lu\n", irq_err_count);
++	seq_printf(p, "ERR: %10lu\n", irq_err_get());
+ 	return 0;
+ }
+ 
+@@ -109,7 +103,7 @@ handle_irq(int irq)
+ 	
+ 	if (!desc || ((unsigned) irq > ACTUAL_NR_IRQS &&
+ 	    illegal_count < MAX_ILLEGAL_IRQS)) {
+-		irq_err_count++;
++		irq_err_inc();
+ 		illegal_count++;
+ 		printk(KERN_CRIT "device_interrupt: invalid interrupt %d\n",
+ 		       irq);
+diff --git a/arch/alpha/kernel/irq_alpha.c b/arch/alpha/kernel/irq_alpha.c
+index d17e44c99df9..3b6373cf73d9 100644
+--- a/arch/alpha/kernel/irq_alpha.c
++++ b/arch/alpha/kernel/irq_alpha.c
+@@ -13,6 +13,7 @@
+ #include <asm/dma.h>
+ #include <asm/perf_event.h>
+ #include <asm/mce.h>
++#include <asm-generic/irq-err.h>
+ 
+ #include "proto.h"
+ #include "irq_impl.h"
+@@ -30,7 +31,7 @@ EXPORT_SYMBOL(__min_ipl);
+ static void
+ dummy_perf(unsigned long vector, struct pt_regs *regs)
+ {
+-	irq_err_count++;
++	irq_err_inc();
+ 	printk(KERN_CRIT "Performance counter interrupt!\n");
+ }
+ 
+@@ -60,7 +61,7 @@ do_entInt(unsigned long type, unsigned long vector,
+ 		handle_ipi(regs);
+ 		return;
+ #else
+-		irq_err_count++;
++		irq_err_inc();
+ 		printk(KERN_CRIT "Interprocessor interrupt? "
+ 		       "You must be kidding!\n");
+ #endif
+diff --git a/arch/alpha/kernel/perf_event.c b/arch/alpha/kernel/perf_event.c
+index e7a59d927d78..d855cece7bb1 100644
+--- a/arch/alpha/kernel/perf_event.c
++++ b/arch/alpha/kernel/perf_event.c
+@@ -16,7 +16,7 @@
+ #include <linux/kdebug.h>
+ #include <linux/mutex.h>
+ #include <linux/init.h>
+-
++#include <asm-generic/irq-err.h>
+ #include <asm/hwrpb.h>
+ #include <linux/atomic.h>
+ #include <asm/irq.h>
+@@ -823,7 +823,7 @@ static void alpha_perf_event_irq_handler(unsigned long la_ptr,
+ 	/* la_ptr is the counter that overflowed. */
+ 	if (unlikely(la_ptr >= alpha_pmu->num_pmcs)) {
+ 		/* This should never occur! */
+-		irq_err_count++;
++		irq_err_inc();
+ 		pr_warn("PMI: silly index %ld\n", la_ptr);
+ 		wrperfmon(PERFMON_CMD_ENABLE, cpuc->idx_mask);
+ 		return;
+@@ -846,7 +846,7 @@ static void alpha_perf_event_irq_handler(unsigned long la_ptr,
+ 
+ 	if (unlikely(!event)) {
+ 		/* This should never occur! */
+-		irq_err_count++;
++		irq_err_inc();
+ 		pr_warn("PMI: No event at index %d!\n", idx);
+ 		wrperfmon(PERFMON_CMD_ENABLE, cpuc->idx_mask);
+ 		return;
+-- 
+2.11.0
 
