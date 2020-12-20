@@ -2,86 +2,90 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.8 required=3.0 tests=BAYES_00,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,MAILING_LIST_MULTI,
-	SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-20.3 required=3.0 tests=BAYES_00,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,INCLUDES_PULL_REQUEST,
+	MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,
+	USER_AGENT_SANE_1 autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D9467C4361B
-	for <linux-m68k@archiver.kernel.org>; Sun, 20 Dec 2020 14:29:15 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D7587C433DB
+	for <linux-m68k@archiver.kernel.org>; Sun, 20 Dec 2020 23:35:22 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id A193F22D58
-	for <linux-m68k@archiver.kernel.org>; Sun, 20 Dec 2020 14:29:15 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 98E2121D7F
+	for <linux-m68k@archiver.kernel.org>; Sun, 20 Dec 2020 23:35:22 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727570AbgLTO3K (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Sun, 20 Dec 2020 09:29:10 -0500
-Received: from mail-ot1-f43.google.com ([209.85.210.43]:35866 "EHLO
-        mail-ot1-f43.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727489AbgLTO3J (ORCPT
-        <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Sun, 20 Dec 2020 09:29:09 -0500
-Received: by mail-ot1-f43.google.com with SMTP id d20so6599738otl.3
-        for <linux-m68k@lists.linux-m68k.org>; Sun, 20 Dec 2020 06:28:53 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=KF5+wP+7KlD78JIfhqBLESbVDiU8JmERcp1ag/IZslk=;
-        b=obnw6J07lKhVY4TzyN2Bp55dAFgFBJNGBiVoyi2192+lFf9LqJ9C9uENKVh0UhsCmH
-         cV08tFhxEOMV76r/+aE6E/NcXmqIWJlGaWvZZaQPlSaqlOQYvEkyAJMbHQ9Q3jzBAQoh
-         +MvSWEPlwOHe0IS9INih2wYLFLUBBd9OSUvpbjiHDZIMDTfePQOguVGtKX2WXy0sm8FG
-         /HdLeVtpSVsa3fdgUC/6SWiNXoKK0XJlccz76XVjVQmuDUWD3IC6sVCqMJMjcDfOf640
-         6s8kFa1wTv8XxO6zIpJyah3/ARAkN5Yhnnx6lsOYCReHMlgOamovFibuvuoaljbW+k8C
-         ThQQ==
-X-Gm-Message-State: AOAM532oWOTRoESaPYx/Rq9Fdc4C4q9mPhp3uNDct8Rtftda+tXGq+R4
-        tLSPE18DBUWLk/WWoy7xuyt9117/PGgJubN1SM4=
-X-Google-Smtp-Source: ABdhPJzMK1uiaAN7IbtSoE6qYewgu28eYIxsdob3rWrrC4BIV5Q5HiKpvdwVtEf4WT6Q17Ycwzsh+IL/FcdurzDUWSQ=
-X-Received: by 2002:a9d:2203:: with SMTP id o3mr9021505ota.107.1608474508291;
- Sun, 20 Dec 2020 06:28:28 -0800 (PST)
+        id S1726564AbgLTXfH (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Sun, 20 Dec 2020 18:35:07 -0500
+Received: from mail.kernel.org ([198.145.29.99]:34144 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726561AbgLTXfH (ORCPT <rfc822;linux-m68k@vger.kernel.org>);
+        Sun, 20 Dec 2020 18:35:07 -0500
+From:   Greg Ungerer <gerg@linux-m68k.org>
+Authentication-Results: mail.kernel.org; dkim=permerror (bad message/signature format)
+Subject: [git pull] m68knommu changes for v5.11
+To:     torvalds@linux-foundation.org
+Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Linux/m68k <linux-m68k@vger.kernel.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>
+Message-ID: <b38f2450-9e60-8312-5eb9-220f8956218d@linux-m68k.org>
+Date:   Mon, 21 Dec 2020 09:34:22 +1000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-References: <20201220085141.1573113-1-geert@linux-m68k.org> <49a17a22-c657-8e26-6c84-36ef01264c5d@physik.fu-berlin.de>
-In-Reply-To: <49a17a22-c657-8e26-6c84-36ef01264c5d@physik.fu-berlin.de>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Sun, 20 Dec 2020 15:28:17 +0100
-Message-ID: <CAMuHMdUY5OY2s63AJE-EUVLGTM_z9st3iupQv_pWTt84tvN1hQ@mail.gmail.com>
-Subject: Re: [PATCH] m68k: Enable seccomp architecture tracking
-To:     John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
-Cc:     linux-m68k <linux-m68k@lists.linux-m68k.org>,
-        YiFei Zhu <yifeifz2@illinois.edu>,
-        Kees Cook <keescook@chromium.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-Hi Adrian,
+Hi Linus,
 
-On Sun, Dec 20, 2020 at 12:24 PM John Paul Adrian Glaubitz
-<glaubitz@physik.fu-berlin.de> wrote:
-> On 12/20/20 9:51 AM, Geert Uytterhoeven wrote:
-> > To enable seccomp constant action bitmaps, we need to have a static
-> > mapping to the audit architecture and system call table size.
-> >
-> > Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
-> > ---
-> > Needed for CONFIG_SECCOMP_CACHE_DEBUG.
-> > Note that upstream doesn't have m68k seccomp support yet.
->
-> Have we added SECCOMP support for m68k to the kernel yet?
+Please pull the m68knommu changes for v5.11.
 
-No, but I have applied locally the patches floating on the list...
+Regards
+Greg
 
-> It's actually something I was hoping to do over the holidays ;-).
 
-Happy to hear that!
 
-Gr{oetje,eeting}s,
+The following changes since commit 0477e92881850d44910a7e94fc2c46f96faa131f:
 
-                        Geert
+   Linux 5.10-rc7 (2020-12-06 14:25:12 -0800)
 
--- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+are available in the Git repository at:
 
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+   git://git.kernel.org/pub/scm/linux/kernel/git/gerg/m68knommu.git tags/m68knommu-for-v5.11
+
+for you to fetch changes up to 8b22820efb35f93d98638563b0a8f4094e8ee399:
+
+   m68k: m68328: remove duplicate code (2020-12-07 09:37:58 +1000)
+
+----------------------------------------------------------------
+Fixes include:
+. cleanup of 68328 code
+. align BSS section to 32bit
+
+----------------------------------------------------------------
+Arnd Bergmann (2):
+       m68k: m68328: move platform code to separate files
+       m68k: m68328: remove duplicate code
+
+Greg Ungerer (1):
+       m68knommu: align BSS section to 4-byte boundaries
+
+  arch/m68k/68000/Makefile           |   9 +-
+  arch/m68k/68000/dragen2.c          | 100 ++++++++++++++++++++
+  arch/m68k/68000/m68328.c           |  32 ++++---
+  arch/m68k/68000/m68328.h           |   5 +
+  arch/m68k/68000/m68EZ328.c         |  77 ---------------
+  arch/m68k/68000/m68VZ328.c         | 189 -------------------------------------
+  arch/m68k/68000/ucsimm.c           |  38 ++++++++
+  arch/m68k/Kconfig.cpu              |   8 +-
+  arch/m68k/Kconfig.machine          |  16 ++--
+  arch/m68k/kernel/setup_no.c        |   9 ++
+  arch/m68k/kernel/vmlinux-nommu.lds |   2 +-
+  11 files changed, 192 insertions(+), 293 deletions(-)
+  create mode 100644 arch/m68k/68000/dragen2.c
+  create mode 100644 arch/m68k/68000/m68328.h
+  delete mode 100644 arch/m68k/68000/m68EZ328.c
+  delete mode 100644 arch/m68k/68000/m68VZ328.c
+  create mode 100644 arch/m68k/68000/ucsimm.c
