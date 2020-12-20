@@ -2,104 +2,94 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.3 required=3.0 tests=BAYES_00,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,NICE_REPLY_A,SPF_HELO_NONE,
-	SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=no autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 61661C4361B
-	for <linux-m68k@archiver.kernel.org>; Fri, 18 Dec 2020 22:33:30 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 61058C4361B
+	for <linux-m68k@archiver.kernel.org>; Sun, 20 Dec 2020 08:52:44 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 2FA7923B5D
-	for <linux-m68k@archiver.kernel.org>; Fri, 18 Dec 2020 22:33:29 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 28E2F22D01
+	for <linux-m68k@archiver.kernel.org>; Sun, 20 Dec 2020 08:52:44 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725862AbgLRWdO (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Fri, 18 Dec 2020 17:33:14 -0500
-Received: from outpost1.zedat.fu-berlin.de ([130.133.4.66]:37089 "EHLO
-        outpost1.zedat.fu-berlin.de" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725836AbgLRWdO (ORCPT
+        id S1727338AbgLTIw2 (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Sun, 20 Dec 2020 03:52:28 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52924 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727327AbgLTIw2 (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Fri, 18 Dec 2020 17:33:14 -0500
-Received: from inpost2.zedat.fu-berlin.de ([130.133.4.69])
-          by outpost.zedat.fu-berlin.de (Exim 4.94)
-          with esmtps (TLS1.2)
-          tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-          (envelope-from <glaubitz@zedat.fu-berlin.de>)
-          id 1kqOIU-000s3X-8m; Fri, 18 Dec 2020 23:32:26 +0100
-Received: from p5b13a238.dip0.t-ipconnect.de ([91.19.162.56] helo=[192.168.178.139])
-          by inpost2.zedat.fu-berlin.de (Exim 4.94)
-          with esmtpsa (TLS1.2)
-          tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-          (envelope-from <glaubitz@physik.fu-berlin.de>)
-          id 1kqOIU-0041lK-0s; Fri, 18 Dec 2020 23:32:26 +0100
-Subject: Re: [PATCH v2 05/15] ia64: convert to legacy_timer_tick
-From:   John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
-To:     Arnd Bergmann <arnd@kernel.org>
-Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Russell King <linux@armlinux.org.uk>,
-        Tony Luck <tony.luck@intel.com>,
-        Fenghua Yu <fenghua.yu@intel.com>,
-        Greg Ungerer <gerg@linux-m68k.org>,
-        Finn Thain <fthain@telegraphics.com.au>,
-        Philip Blundell <philb@gnu.org>,
-        Joshua Thompson <funaho@jurai.org>,
-        Sam Creasey <sammy@sammy.net>,
-        "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
-        Helge Deller <deller@gmx.de>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        John Stultz <john.stultz@linaro.org>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        linux-ia64@vger.kernel.org,
-        Parisc List <linux-parisc@vger.kernel.org>,
-        linux-m68k <linux-m68k@lists.linux-m68k.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Mike Rapoport <rppt@linux.ibm.com>,
-        Anatoly Pugachev <matorola@gmail.com>
-References: <20201030151758.1241164-1-arnd@kernel.org>
- <20201030151758.1241164-6-arnd@kernel.org>
- <59efce0e-a28d-9424-82ca-fb7f3a1b9c29@physik.fu-berlin.de>
- <CAK8P3a0s5Wt=9sZXAV1JzebZFXVy4qn3KNvygEfPeH3eVMyO_w@mail.gmail.com>
- <ccc941a9-9b7f-2a37-664e-c01d60c200da@physik.fu-berlin.de>
-Message-ID: <7df57999-40dc-507a-acba-605a4057c83e@physik.fu-berlin.de>
-Date:   Fri, 18 Dec 2020 23:32:24 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.5.1
+        Sun, 20 Dec 2020 03:52:28 -0500
+Received: from xavier.telenet-ops.be (xavier.telenet-ops.be [IPv6:2a02:1800:120:4::f00:14])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AD439C0617B0
+        for <linux-m68k@lists.linux-m68k.org>; Sun, 20 Dec 2020 00:51:46 -0800 (PST)
+Received: from ramsan.of.borg ([84.195.186.194])
+        by xavier.telenet-ops.be with bizsmtp
+        id 6Yrj2400C4C55Sk01YrjKP; Sun, 20 Dec 2020 09:51:43 +0100
+Received: from rox.of.borg ([192.168.97.57])
+        by ramsan.of.borg with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.93)
+        (envelope-from <geert@linux-m68k.org>)
+        id 1kquRL-00CPg7-1S; Sun, 20 Dec 2020 09:51:43 +0100
+Received: from geert by rox.of.borg with local (Exim 4.93)
+        (envelope-from <geert@linux-m68k.org>)
+        id 1kquRK-006bNv-H9; Sun, 20 Dec 2020 09:51:42 +0100
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+To:     linux-m68k@lists.linux-m68k.org
+Cc:     YiFei Zhu <yifeifz2@illinois.edu>,
+        Kees Cook <keescook@chromium.org>,
+        linux-kernel@vger.kernel.org,
+        Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: [PATCH] m68k: Enable seccomp architecture tracking
+Date:   Sun, 20 Dec 2020 09:51:41 +0100
+Message-Id: <20201220085141.1573113-1-geert@linux-m68k.org>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-In-Reply-To: <ccc941a9-9b7f-2a37-664e-c01d60c200da@physik.fu-berlin.de>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Original-Sender: glaubitz@physik.fu-berlin.de
-X-Originating-IP: 91.19.162.56
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-Hi Arnd!
+To enable seccomp constant action bitmaps, we need to have a static
+mapping to the audit architecture and system call table size.
 
-On 12/18/20 11:13 PM, John Paul Adrian Glaubitz wrote:
->> I've attached a patch for a partial revert of my original change, this
->> should still work with the final cleanup on top, but restore the loop
->> plus the local_irq_enable()/local_irq_disable() that I dropped from
->> the original code. Does this make a difference?
-> 
-> I'll give it a try and report back.
+Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
+---
+Needed for CONFIG_SECCOMP_CACHE_DEBUG.
+Note that upstream doesn't have m68k seccomp support yet.
 
-Yes. That solves the timer issues. Now there is unfortunately still a
-second, unrelated regression with the hpsa driver that was introduced
-by one of the ia64 patches in the mm tree from Andrew which makes the
-hpsa driver not load at all.
+ arch/m68k/include/asm/Kbuild    |  1 -
+ arch/m68k/include/asm/seccomp.h | 11 +++++++++++
+ 2 files changed, 11 insertions(+), 1 deletion(-)
+ create mode 100644 arch/m68k/include/asm/seccomp.h
 
-Haven't figured out yet what the problem is.
-
-Adrian
-
+diff --git a/arch/m68k/include/asm/Kbuild b/arch/m68k/include/asm/Kbuild
+index d9f0f283707ff352..1bff55aa2d54e2ce 100644
+--- a/arch/m68k/include/asm/Kbuild
++++ b/arch/m68k/include/asm/Kbuild
+@@ -4,5 +4,4 @@ generic-y += extable.h
+ generic-y += kvm_para.h
+ generic-y += local64.h
+ generic-y += mcs_spinlock.h
+-generic-y += seccomp.h
+ generic-y += spinlock.h
+diff --git a/arch/m68k/include/asm/seccomp.h b/arch/m68k/include/asm/seccomp.h
+new file mode 100644
+index 0000000000000000..feefe511dd1f370d
+--- /dev/null
++++ b/arch/m68k/include/asm/seccomp.h
+@@ -0,0 +1,11 @@
++/* SPDX-License-Identifier: GPL-2.0-only */
++#ifndef _ASM_M68K_SECCOMP_H
++#define _ASM_M68K_SECCOMP_H
++
++#include <asm-generic/seccomp.h>
++
++#define SECCOMP_ARCH_NATIVE		AUDIT_ARCH_M68K
++#define SECCOMP_ARCH_NATIVE_NR		NR_syscalls
++#define SECCOMP_ARCH_NATIVE_NAME	"m68k"
++
++#endif /* _ASM_M68K_SECCOMP_H */
 -- 
- .''`.  John Paul Adrian Glaubitz
-: :' :  Debian Developer - glaubitz@debian.org
-`. `'   Freie Universitaet Berlin - glaubitz@physik.fu-berlin.de
-  `-    GPG: 62FF 8A75 84E0 2956 9546  0006 7426 3B37 F5B5 F913
+2.25.1
 
