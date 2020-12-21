@@ -2,90 +2,112 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-20.3 required=3.0 tests=BAYES_00,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,INCLUDES_PULL_REQUEST,
-	MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,
-	USER_AGENT_SANE_1 autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-5.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D7587C433DB
-	for <linux-m68k@archiver.kernel.org>; Sun, 20 Dec 2020 23:35:22 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id AD7FBC433E0
+	for <linux-m68k@archiver.kernel.org>; Mon, 21 Dec 2020 05:45:08 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 98E2121D7F
-	for <linux-m68k@archiver.kernel.org>; Sun, 20 Dec 2020 23:35:22 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 79ED8225AC
+	for <linux-m68k@archiver.kernel.org>; Mon, 21 Dec 2020 05:45:08 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726564AbgLTXfH (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Sun, 20 Dec 2020 18:35:07 -0500
-Received: from mail.kernel.org ([198.145.29.99]:34144 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726561AbgLTXfH (ORCPT <rfc822;linux-m68k@vger.kernel.org>);
-        Sun, 20 Dec 2020 18:35:07 -0500
-From:   Greg Ungerer <gerg@linux-m68k.org>
-Authentication-Results: mail.kernel.org; dkim=permerror (bad message/signature format)
-Subject: [git pull] m68knommu changes for v5.11
-To:     torvalds@linux-foundation.org
-Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Linux/m68k <linux-m68k@vger.kernel.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>
-Message-ID: <b38f2450-9e60-8312-5eb9-220f8956218d@linux-m68k.org>
-Date:   Mon, 21 Dec 2020 09:34:22 +1000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1727341AbgLUFpI (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Mon, 21 Dec 2020 00:45:08 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46624 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727224AbgLUFpI (ORCPT
+        <rfc822;linux-m68k@lists.linux-m68k.org>);
+        Mon, 21 Dec 2020 00:45:08 -0500
+Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4107C061282
+        for <linux-m68k@lists.linux-m68k.org>; Sun, 20 Dec 2020 21:44:27 -0800 (PST)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4CzpLk1qPgz9sVk;
+        Mon, 21 Dec 2020 16:44:14 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ellerman.id.au;
+        s=201909; t=1608529465;
+        bh=8q8pjXmt3fb3/FcKFZZhBpNNcXsp66j8Isw1H4VoFss=;
+        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+        b=ZnWF70NmUxyOGkj7ajnBegDo04rv8gH5Ux9NWJhGuiFgnNMVogs2qsK/JPPvTOxX3
+         hzwMtUhjiDSqvHc4ZZWFFrTwkUdkYXJq/1ML2X0U5qamtbWBfarkCtNAXDelPjKyYu
+         4R5GrwJUkFnZSYIfsBFzv3+C8RVv3a9uzsg9fDjFKnZkRtQDx75FnOmDIw99taeAnd
+         QCskX9h/ngj+6oMYoBPKKaJh3wx/SkbDouSAAbUuPyGD0ebzLrrNquc0B/69DXdzQf
+         fJmTp61f2fzdZls70bVcMCLTyxKnMkjf3NMjT+RK4eF560XOppbITSBixDl2QbJUdX
+         VnJ3dZzhE+mIA==
+From:   Michael Ellerman <mpe@ellerman.id.au>
+To:     Andy Shevchenko <andy.shevchenko@gmail.com>,
+        "Enrico Weigelt\, metux IT consult" <info@metux.net>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>, msalter@redhat.com,
+        jacquiot.aurelien@gmail.com, gerg@linux-m68k.org,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        James Bottomley <James.Bottomley@hansenpartnership.com>,
+        Helge Deller <deller@gmx.de>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Yoshinori Sato <ysato@users.sourceforge.jp>,
+        Rich Felker <dalias@libc.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Borislav Petkov <bp@alien8.de>,
+        "maintainer\:X86 ARCHITECTURE \(32-BIT AND 64-BIT\)" <x86@kernel.org>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Marc Zyngier <maz@kernel.org>,
+        Tony Lindgren <tony@atomide.com>,
+        Arnd Bergmann <arnd@arndb.de>, linux-alpha@vger.kernel.org,
+        linux-c6x-dev@linux-c6x.org, linux-ia64@vger.kernel.org,
+        linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org,
+        linux-parisc@vger.kernel.org,
+        "open list\:LINUX FOR POWERPC PA SEMI PWRFICIENT" 
+        <linuxppc-dev@lists.ozlabs.org>, linux-s390@vger.kernel.org,
+        Linux-SH <linux-sh@vger.kernel.org>, sparclinux@vger.kernel.org,
+        "open list\:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        Linux OMAP Mailing List <linux-omap@vger.kernel.org>,
+        Linux-Arch <linux-arch@vger.kernel.org>
+Subject: Re: [PATCH 01/23] kernel: irq: irqdescs: warn on spurious IRQ
+In-Reply-To: <CAHp75VfYz_K2BYOxqmSx0q+1F2F9Lp1eb70RrNYzJHs3FX+quQ@mail.gmail.com>
+References: <20201218143122.19459-1-info@metux.net> <20201218143122.19459-2-info@metux.net> <CAHp75VfYz_K2BYOxqmSx0q+1F2F9Lp1eb70RrNYzJHs3FX+quQ@mail.gmail.com>
+Date:   Mon, 21 Dec 2020 16:44:13 +1100
+Message-ID: <87ft3zyaqa.fsf@mpe.ellerman.id.au>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-Hi Linus,
+Andy Shevchenko <andy.shevchenko@gmail.com> writes:
+> On Fri, Dec 18, 2020 at 4:37 PM Enrico Weigelt, metux IT consult
+> <info@metux.net> wrote:
+>
+>> +               if (printk_ratelimit())
+>> +                       pr_warn("spurious IRQ: irq=%d hwirq=%d nr_irqs=%d\n",
+>> +                               irq, hwirq, nr_irqs);
+>
+> Perhaps you missed pr_warn_ratelimit() macro which is already in the
+> kernel for a long time.
 
-Please pull the m68knommu changes for v5.11.
+pr_warn_ratelimited() which calls printk_ratelimited().
 
-Regards
-Greg
+And see the comment above printk_ratelimit():
+
+/*
+ * Please don't use printk_ratelimit(), because it shares ratelimiting state
+ * with all other unrelated printk_ratelimit() callsites.  Instead use
+ * printk_ratelimited() or plain old __ratelimit().
+ */
 
 
-
-The following changes since commit 0477e92881850d44910a7e94fc2c46f96faa131f:
-
-   Linux 5.10-rc7 (2020-12-06 14:25:12 -0800)
-
-are available in the Git repository at:
-
-   git://git.kernel.org/pub/scm/linux/kernel/git/gerg/m68knommu.git tags/m68knommu-for-v5.11
-
-for you to fetch changes up to 8b22820efb35f93d98638563b0a8f4094e8ee399:
-
-   m68k: m68328: remove duplicate code (2020-12-07 09:37:58 +1000)
-
-----------------------------------------------------------------
-Fixes include:
-. cleanup of 68328 code
-. align BSS section to 32bit
-
-----------------------------------------------------------------
-Arnd Bergmann (2):
-       m68k: m68328: move platform code to separate files
-       m68k: m68328: remove duplicate code
-
-Greg Ungerer (1):
-       m68knommu: align BSS section to 4-byte boundaries
-
-  arch/m68k/68000/Makefile           |   9 +-
-  arch/m68k/68000/dragen2.c          | 100 ++++++++++++++++++++
-  arch/m68k/68000/m68328.c           |  32 ++++---
-  arch/m68k/68000/m68328.h           |   5 +
-  arch/m68k/68000/m68EZ328.c         |  77 ---------------
-  arch/m68k/68000/m68VZ328.c         | 189 -------------------------------------
-  arch/m68k/68000/ucsimm.c           |  38 ++++++++
-  arch/m68k/Kconfig.cpu              |   8 +-
-  arch/m68k/Kconfig.machine          |  16 ++--
-  arch/m68k/kernel/setup_no.c        |   9 ++
-  arch/m68k/kernel/vmlinux-nommu.lds |   2 +-
-  11 files changed, 192 insertions(+), 293 deletions(-)
-  create mode 100644 arch/m68k/68000/dragen2.c
-  create mode 100644 arch/m68k/68000/m68328.h
-  delete mode 100644 arch/m68k/68000/m68EZ328.c
-  delete mode 100644 arch/m68k/68000/m68VZ328.c
-  create mode 100644 arch/m68k/68000/ucsimm.c
+cheers
