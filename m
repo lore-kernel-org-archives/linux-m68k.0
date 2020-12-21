@@ -2,47 +2,67 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-2.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id AD7FBC433E0
-	for <linux-m68k@archiver.kernel.org>; Mon, 21 Dec 2020 05:45:08 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 59B97C433E6
+	for <linux-m68k@archiver.kernel.org>; Mon, 21 Dec 2020 10:42:15 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 79ED8225AC
-	for <linux-m68k@archiver.kernel.org>; Mon, 21 Dec 2020 05:45:08 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 1DD8022B2B
+	for <linux-m68k@archiver.kernel.org>; Mon, 21 Dec 2020 10:42:15 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727341AbgLUFpI (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Mon, 21 Dec 2020 00:45:08 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46624 "EHLO
+        id S1726864AbgLUKln (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Mon, 21 Dec 2020 05:41:43 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35076 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727224AbgLUFpI (ORCPT
+        with ESMTP id S1726499AbgLUKln (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Mon, 21 Dec 2020 00:45:08 -0500
-Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4107C061282
-        for <linux-m68k@lists.linux-m68k.org>; Sun, 20 Dec 2020 21:44:27 -0800 (PST)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4CzpLk1qPgz9sVk;
-        Mon, 21 Dec 2020 16:44:14 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ellerman.id.au;
-        s=201909; t=1608529465;
-        bh=8q8pjXmt3fb3/FcKFZZhBpNNcXsp66j8Isw1H4VoFss=;
-        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-        b=ZnWF70NmUxyOGkj7ajnBegDo04rv8gH5Ux9NWJhGuiFgnNMVogs2qsK/JPPvTOxX3
-         hzwMtUhjiDSqvHc4ZZWFFrTwkUdkYXJq/1ML2X0U5qamtbWBfarkCtNAXDelPjKyYu
-         4R5GrwJUkFnZSYIfsBFzv3+C8RVv3a9uzsg9fDjFKnZkRtQDx75FnOmDIw99taeAnd
-         QCskX9h/ngj+6oMYoBPKKaJh3wx/SkbDouSAAbUuPyGD0ebzLrrNquc0B/69DXdzQf
-         fJmTp61f2fzdZls70bVcMCLTyxKnMkjf3NMjT+RK4eF560XOppbITSBixDl2QbJUdX
-         VnJ3dZzhE+mIA==
-From:   Michael Ellerman <mpe@ellerman.id.au>
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>,
-        "Enrico Weigelt\, metux IT consult" <info@metux.net>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Mon, 21 Dec 2020 05:41:43 -0500
+Received: from mail-pg1-x532.google.com (mail-pg1-x532.google.com [IPv6:2607:f8b0:4864:20::532])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 23B54C061282
+        for <linux-m68k@lists.linux-m68k.org>; Mon, 21 Dec 2020 02:41:03 -0800 (PST)
+Received: by mail-pg1-x532.google.com with SMTP id g18so6122967pgk.1
+        for <linux-m68k@lists.linux-m68k.org>; Mon, 21 Dec 2020 02:41:03 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=qMI1qb6jm5Lag9GLrKzNd8c/nLzIAunUnseb/Ze4wwk=;
+        b=TNketNi86VoSW7yUCz1xJ0TySRbiCNnk6lgZVPNFHRq1Z0hYh2gKvfrjKM7LrvZdfw
+         RQePP3CI0izt8okVH5i0MDqzLe17kJ+gYsfp1t+Ps8IwCEHGQkv7O3PSU8DKD3ZNNffG
+         /JlM0O2eWxUHvRwz8qee/+LJwONqHO0lDu8V6J4W8M+AzN/jgGfMEfd8saM3jRp+ynNl
+         yyNQ52YpnwxSo70pHdjSzvzY1s3U8IilByiBPR9JecD00QG9hEu5BbgRdRErCXzWs2gF
+         45fFo4tr95q3qQ6Y+q0mxPqCFls3IDtt7iuwAPe+p0gTlRoSBsbkFCIhsAdHSkhvZ6+r
+         94Mg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=qMI1qb6jm5Lag9GLrKzNd8c/nLzIAunUnseb/Ze4wwk=;
+        b=QnhIW25GZAM8dbAkPa1FRljWHRY/2cyv3Hc+/DlnDVS4dXOlih/vz82llbwoJpZX/J
+         j+Zm9V71Gxra+PNu+78roP+NqD2XmUaUmKaLyJuFx0DJNl+XdiO1JMkkLIE4aRbvxNLz
+         dy6rk91Zfar64Jjq1p8I6L0VdNiLGapteyoMjDugMfcPZYUbRKB2KXmSk7d0jVTvvjjb
+         9M8rZvYB7UBCXOfw/iVa+IS0Jovy81JcRvozkrm5WY5IB05dlJ9IjvIPe8glcT7/qKFR
+         Jr72DQi3vxcdgSGfqwA+5VdhHS/zxVWM/m/BxZNG6PAUTecHHCiRcYf5yx8Axz2L+ISj
+         tMGQ==
+X-Gm-Message-State: AOAM5313uI9RTyqm7LruJ6O+7M/FHLCjD/0eUwU1nO9VDZcTqqEo1Byq
+        5VH1I2mQja7BsdnTup8s3lBrnmVIXWbnWYJ14FOxQAACUls=
+X-Google-Smtp-Source: ABdhPJxBtvImbDXQFJZFiuLU9iSSxkb054vusc68KLoVKz7M+YJaEYxx6P2xuo8zwNE89O9MkgEk4eONGxpDIef9SqA=
+X-Received: by 2002:a63:74b:: with SMTP id 72mr14619803pgh.4.1608542798518;
+ Mon, 21 Dec 2020 01:26:38 -0800 (PST)
+MIME-Version: 1.0
+References: <20201218143122.19459-1-info@metux.net> <20201218143122.19459-2-info@metux.net>
+ <CAHp75VfYz_K2BYOxqmSx0q+1F2F9Lp1eb70RrNYzJHs3FX+quQ@mail.gmail.com> <87ft3zyaqa.fsf@mpe.ellerman.id.au>
+In-Reply-To: <87ft3zyaqa.fsf@mpe.ellerman.id.au>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Mon, 21 Dec 2020 11:27:27 +0200
+Message-ID: <CAHp75VeGs-x0-XgpLS0uB2oZmxKZREfUKM1ByUwmRquqFc2FPg@mail.gmail.com>
+Subject: Re: [PATCH 01/23] kernel: irq: irqdescs: warn on spurious IRQ
+To:     Michael Ellerman <mpe@ellerman.id.au>
+Cc:     "Enrico Weigelt, metux IT consult" <info@metux.net>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
         Mark Rutland <mark.rutland@arm.com>,
         Alexander Shishkin <alexander.shishkin@linux.intel.com>,
         Jiri Olsa <jolsa@redhat.com>,
@@ -61,7 +81,7 @@ Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
         "David S. Miller" <davem@davemloft.net>,
         Thomas Gleixner <tglx@linutronix.de>,
         Borislav Petkov <bp@alien8.de>,
-        "maintainer\:X86 ARCHITECTURE \(32-BIT AND 64-BIT\)" <x86@kernel.org>,
+        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
         "H. Peter Anvin" <hpa@zytor.com>,
         Linus Walleij <linus.walleij@linaro.org>,
         Bartosz Golaszewski <bgolaszewski@baylibre.com>,
@@ -71,43 +91,45 @@ Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
         linux-c6x-dev@linux-c6x.org, linux-ia64@vger.kernel.org,
         linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org,
         linux-parisc@vger.kernel.org,
-        "open list\:LINUX FOR POWERPC PA SEMI PWRFICIENT" 
+        "open list:LINUX FOR POWERPC PA SEMI PWRFICIENT" 
         <linuxppc-dev@lists.ozlabs.org>, linux-s390@vger.kernel.org,
         Linux-SH <linux-sh@vger.kernel.org>, sparclinux@vger.kernel.org,
-        "open list\:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
         Linux OMAP Mailing List <linux-omap@vger.kernel.org>,
         Linux-Arch <linux-arch@vger.kernel.org>
-Subject: Re: [PATCH 01/23] kernel: irq: irqdescs: warn on spurious IRQ
-In-Reply-To: <CAHp75VfYz_K2BYOxqmSx0q+1F2F9Lp1eb70RrNYzJHs3FX+quQ@mail.gmail.com>
-References: <20201218143122.19459-1-info@metux.net> <20201218143122.19459-2-info@metux.net> <CAHp75VfYz_K2BYOxqmSx0q+1F2F9Lp1eb70RrNYzJHs3FX+quQ@mail.gmail.com>
-Date:   Mon, 21 Dec 2020 16:44:13 +1100
-Message-ID: <87ft3zyaqa.fsf@mpe.ellerman.id.au>
-MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-Andy Shevchenko <andy.shevchenko@gmail.com> writes:
-> On Fri, Dec 18, 2020 at 4:37 PM Enrico Weigelt, metux IT consult
-> <info@metux.net> wrote:
+On Mon, Dec 21, 2020 at 7:44 AM Michael Ellerman <mpe@ellerman.id.au> wrote:
+> Andy Shevchenko <andy.shevchenko@gmail.com> writes:
+> > On Fri, Dec 18, 2020 at 4:37 PM Enrico Weigelt, metux IT consult
+> > <info@metux.net> wrote:
+> >
+> >> +               if (printk_ratelimit())
+> >> +                       pr_warn("spurious IRQ: irq=%d hwirq=%d nr_irqs=%d\n",
+> >> +                               irq, hwirq, nr_irqs);
+> >
+> > Perhaps you missed pr_warn_ratelimit() macro which is already in the
+> > kernel for a long time.
 >
->> +               if (printk_ratelimit())
->> +                       pr_warn("spurious IRQ: irq=%d hwirq=%d nr_irqs=%d\n",
->> +                               irq, hwirq, nr_irqs);
+> pr_warn_ratelimited() which calls printk_ratelimited().
+
+I stand corrected.
+Right, that's what I had in mind (actually didn't know that there are variants).
+
+Thanks!
+
+> And see the comment above printk_ratelimit():
 >
-> Perhaps you missed pr_warn_ratelimit() macro which is already in the
-> kernel for a long time.
-
-pr_warn_ratelimited() which calls printk_ratelimited().
-
-And see the comment above printk_ratelimit():
-
-/*
- * Please don't use printk_ratelimit(), because it shares ratelimiting state
- * with all other unrelated printk_ratelimit() callsites.  Instead use
- * printk_ratelimited() or plain old __ratelimit().
- */
+> /*
+>  * Please don't use printk_ratelimit(), because it shares ratelimiting state
+>  * with all other unrelated printk_ratelimit() callsites.  Instead use
+>  * printk_ratelimited() or plain old __ratelimit().
+>  */
 
 
-cheers
+-- 
+With Best Regards,
+Andy Shevchenko
