@@ -2,223 +2,355 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.7 required=3.0 tests=BAYES_00,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-19.2 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9AF5DC433E0
-	for <linux-m68k@archiver.kernel.org>; Tue, 29 Dec 2020 01:00:13 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2F822C433E9
+	for <linux-m68k@archiver.kernel.org>; Tue,  5 Jan 2021 01:00:55 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 61240207D0
-	for <linux-m68k@archiver.kernel.org>; Tue, 29 Dec 2020 01:00:13 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 0961422B4B
+	for <linux-m68k@archiver.kernel.org>; Tue,  5 Jan 2021 01:00:55 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730634AbgL2BAN (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Mon, 28 Dec 2020 20:00:13 -0500
-Received: from mga14.intel.com ([192.55.52.115]:38976 "EHLO mga14.intel.com"
+        id S1727824AbhAEBAW (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Mon, 4 Jan 2021 20:00:22 -0500
+Received: from mail.kernel.org ([198.145.29.99]:39004 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730632AbgL2BAN (ORCPT <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Mon, 28 Dec 2020 20:00:13 -0500
-IronPort-SDR: 0OldIOLN85JwDwWlF/6G8AhcH6SykX1OMTqo9+izj9uME6wl6OquSjQmhjUF2ZhOLA7BuTOEzJ
- DEUodWJc7dLg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9848"; a="175665639"
-X-IronPort-AV: E=Sophos;i="5.78,456,1599548400"; 
-   d="scan'208";a="175665639"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Dec 2020 16:59:31 -0800
-IronPort-SDR: F9PcLiXEi6Fq2lxtwnhl5MLp/E+a5XhzoXftMC20s6bDV52tbNz5QGfveOfo2XyTpuWb1KkS6O
- n9O04SjZAnhA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.78,456,1599548400"; 
-   d="scan'208";a="418981687"
-Received: from lkp-server02.sh.intel.com (HELO 4242b19f17ef) ([10.239.97.151])
-  by orsmga001.jf.intel.com with ESMTP; 28 Dec 2020 16:59:30 -0800
-Received: from kbuild by 4242b19f17ef with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1ku3MH-0003Cb-Vb; Tue, 29 Dec 2020 00:59:29 +0000
-Date:   Tue, 29 Dec 2020 08:59:24 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     linux-m68k@lists.linux-m68k.org
-Subject: [m68k:m68k-queue] BUILD SUCCESS
- 88110bd69b55fbedceef7306052a08cc87ad4809
-Message-ID: <5fea7f6c.OS5XPGZ4iRoTPPY4%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+        id S1727814AbhAEBAW (ORCPT <rfc822;linux-m68k@lists.linux-m68k.org>);
+        Mon, 4 Jan 2021 20:00:22 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id ADCE6229C4;
+        Tue,  5 Jan 2021 00:59:37 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1609808380;
+        bh=k5tUJHFjMO2s79xpLs4QJPdGWhJciPZsye1o8rF3dAs=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=J3TSwo3nNU7X1fflv8qhWlBhn2SmnPDX6zcIj6O9oxknpuMjJ7N3yvo9ua4URUl0A
+         PuUfYceIKgapinnC/7xgRiktpmKCh88uXW3LIc+YIkYPxRD/9TsV1xs0NmEEJ6pjuk
+         oOPR+/OyUvkgYYruRtYDpBW7qfr/apzWLFoFvF4TGS/TmChN4wb9jYM6uX/RFJil+Z
+         yH/zKrmA41wjU1rucnDW1bq8SawDIgRo6A2eiQ22TOP0a4SI8/53r6h2GhKGeDbolu
+         KP0RRqhT1KCPIJETNATjvr6VeQAgN6iMWTc1LgWYyJbTxVaFthxWvx/CpUMxRgvKs3
+         4F1Hff+G6hnoQ==
+From:   Sasha Levin <sashal@kernel.org>
+To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Cc:     Randy Dunlap <rdunlap@infradead.org>,
+        Christoph Hellwig <hch@infradead.org>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Jens Axboe <axboe@kernel.dk>,
+        Ley Foon Tan <ley.foon.tan@intel.com>,
+        Mark Salter <msalter@redhat.com>,
+        Aurelien Jacquiot <jacquiot.aurelien@gmail.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Sasha Levin <sashal@kernel.org>, linux-alpha@vger.kernel.org,
+        linux-snps-arc@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org, linux-csky@vger.kernel.org,
+        uclinux-h8-devel@lists.sourceforge.jp,
+        linux-hexagon@vger.kernel.org, linux-ia64@vger.kernel.org,
+        linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org,
+        linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org,
+        linux-sh@vger.kernel.org, sparclinux@vger.kernel.org,
+        linux-xtensa@linux-xtensa.org, linux-arch@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.10 13/17] local64.h: make <asm/local64.h> mandatory
+Date:   Mon,  4 Jan 2021 19:59:11 -0500
+Message-Id: <20210105005915.3954208-13-sashal@kernel.org>
+X-Mailer: git-send-email 2.27.0
+In-Reply-To: <20210105005915.3954208-1-sashal@kernel.org>
+References: <20210105005915.3954208-1-sashal@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+X-stable: review
+X-Patchwork-Hint: Ignore
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/geert/linux-m68k.git  m68k-queue
-branch HEAD: 88110bd69b55fbedceef7306052a08cc87ad4809  m68k: defconfig: Enable Atari EtherNAT and NetUSBee USB support
+From: Randy Dunlap <rdunlap@infradead.org>
 
-elapsed time: 722m
+[ Upstream commit 87dbc209ea04645fd2351981f09eff5d23f8e2e9 ]
 
-configs tested: 153
-configs skipped: 2
+Make <asm-generic/local64.h> mandatory in include/asm-generic/Kbuild and
+remove all arch/*/include/asm/local64.h arch-specific files since they
+only #include <asm-generic/local64.h>.
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+This fixes build errors on arch/c6x/ and arch/nios2/ for
+block/blk-iocost.c.
 
-gcc tested configs:
-arm                                 defconfig
-arm64                            allyesconfig
-arm64                               defconfig
-arm                              allyesconfig
-arm                              allmodconfig
-riscv                    nommu_k210_defconfig
-powerpc                     rainier_defconfig
-powerpc                        warp_defconfig
-ia64                            zx1_defconfig
-arm                            mps2_defconfig
-m68k                          hp300_defconfig
-powerpc                   lite5200b_defconfig
-mips                          rb532_defconfig
-powerpc                     tqm8548_defconfig
-powerpc                     tqm8560_defconfig
-sh                        sh7757lcr_defconfig
-powerpc                     tqm8541_defconfig
-sh                           se7722_defconfig
-sh                 kfr2r09-romimage_defconfig
-sh                         ap325rxa_defconfig
-arm                       imx_v6_v7_defconfig
-arm                            qcom_defconfig
-powerpc                     powernv_defconfig
-arm                     am200epdkit_defconfig
-riscv                          rv32_defconfig
-riscv                               defconfig
-mips                        workpad_defconfig
-nios2                            alldefconfig
-um                           x86_64_defconfig
-sh                           se7724_defconfig
-powerpc                 mpc8313_rdb_defconfig
-mips                         tb0226_defconfig
-h8300                       h8s-sim_defconfig
-sh                               j2_defconfig
-csky                                defconfig
-sparc                       sparc32_defconfig
-powerpc                      pmac32_defconfig
-powerpc                  mpc866_ads_defconfig
-xtensa                         virt_defconfig
-powerpc                 mpc8540_ads_defconfig
-arm                            hisi_defconfig
-m68k                        mvme147_defconfig
-sh                         ecovec24_defconfig
-arm                         at91_dt_defconfig
-sh                           se7751_defconfig
-arm                      footbridge_defconfig
-sh                     magicpanelr2_defconfig
-powerpc                    adder875_defconfig
-arm                           tegra_defconfig
-mips                            gpr_defconfig
-arm                           sunxi_defconfig
-arm                           h5000_defconfig
-sh                        dreamcast_defconfig
-powerpc                      makalu_defconfig
-sh                      rts7751r2d1_defconfig
-powerpc                       ebony_defconfig
-mips                        jmr3927_defconfig
-arm                   milbeaut_m10v_defconfig
-mips                           ci20_defconfig
-powerpc                     kilauea_defconfig
-arm                             mxs_defconfig
-powerpc                     pseries_defconfig
-powerpc                     tqm8555_defconfig
-arm                        multi_v7_defconfig
-powerpc                 mpc836x_mds_defconfig
-arm                         shannon_defconfig
-powerpc                      walnut_defconfig
-sh                        sh7763rdp_defconfig
-mips                             allmodconfig
-m68k                        stmark2_defconfig
-mips                malta_kvm_guest_defconfig
-arc                     haps_hs_smp_defconfig
-mips                      fuloong2e_defconfig
-mips                  maltasmvp_eva_defconfig
-arm                      jornada720_defconfig
-ia64                             allmodconfig
-ia64                                defconfig
-ia64                             allyesconfig
-m68k                             allmodconfig
-m68k                                defconfig
-m68k                             allyesconfig
-nios2                               defconfig
-arc                              allyesconfig
-nds32                             allnoconfig
-c6x                              allyesconfig
-nds32                               defconfig
-nios2                            allyesconfig
-alpha                               defconfig
-alpha                            allyesconfig
-xtensa                           allyesconfig
-h8300                            allyesconfig
-arc                                 defconfig
-sh                               allmodconfig
-parisc                              defconfig
-s390                             allyesconfig
-parisc                           allyesconfig
-s390                                defconfig
-i386                             allyesconfig
-sparc                            allyesconfig
-sparc                               defconfig
-i386                               tinyconfig
-i386                                defconfig
-mips                             allyesconfig
-powerpc                          allyesconfig
-powerpc                          allmodconfig
-powerpc                           allnoconfig
-i386                 randconfig-a005-20201228
-i386                 randconfig-a002-20201228
-i386                 randconfig-a004-20201228
-i386                 randconfig-a006-20201228
-i386                 randconfig-a003-20201228
-i386                 randconfig-a001-20201228
-x86_64               randconfig-a014-20201228
-x86_64               randconfig-a015-20201228
-x86_64               randconfig-a016-20201228
-x86_64               randconfig-a012-20201228
-x86_64               randconfig-a011-20201228
-x86_64               randconfig-a013-20201228
-i386                 randconfig-a014-20201228
-i386                 randconfig-a012-20201228
-i386                 randconfig-a016-20201228
-i386                 randconfig-a011-20201228
-i386                 randconfig-a015-20201228
-i386                 randconfig-a013-20201228
-i386                 randconfig-a011-20201227
-i386                 randconfig-a016-20201227
-i386                 randconfig-a012-20201227
-i386                 randconfig-a014-20201227
-i386                 randconfig-a015-20201227
-i386                 randconfig-a013-20201227
-riscv                            allyesconfig
-riscv                    nommu_virt_defconfig
-riscv                             allnoconfig
-riscv                            allmodconfig
-x86_64                                   rhel
-x86_64                           allyesconfig
-x86_64                    rhel-7.6-kselftests
-x86_64                              defconfig
-x86_64                               rhel-8.3
-x86_64                      rhel-8.3-kbuiltin
-x86_64                                  kexec
+Build-tested on 21 of 25 arch-es.  (tools problems on the others)
 
-clang tested configs:
-x86_64               randconfig-a001-20201228
-x86_64               randconfig-a006-20201228
-x86_64               randconfig-a002-20201228
-x86_64               randconfig-a004-20201228
-x86_64               randconfig-a003-20201228
-x86_64               randconfig-a005-20201228
-x86_64               randconfig-a015-20201227
-x86_64               randconfig-a014-20201227
-x86_64               randconfig-a016-20201227
-x86_64               randconfig-a012-20201227
-x86_64               randconfig-a013-20201227
-x86_64               randconfig-a011-20201227
+Yes, we could even rename <asm-generic/local64.h> to
+<linux/local64.h> and change all #includes to use
+<linux/local64.h> instead.
 
+Link: https://lkml.kernel.org/r/20201227024446.17018-1-rdunlap@infradead.org
+Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+Suggested-by: Christoph Hellwig <hch@infradead.org>
+Reviewed-by: Masahiro Yamada <masahiroy@kernel.org>
+Cc: Jens Axboe <axboe@kernel.dk>
+Cc: Ley Foon Tan <ley.foon.tan@intel.com>
+Cc: Mark Salter <msalter@redhat.com>
+Cc: Aurelien Jacquiot <jacquiot.aurelien@gmail.com>
+Cc: Peter Zijlstra <peterz@infradead.org>
+Cc: Arnd Bergmann <arnd@arndb.de>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+ arch/alpha/include/asm/local64.h   | 1 -
+ arch/arc/include/asm/Kbuild        | 1 -
+ arch/arm/include/asm/Kbuild        | 1 -
+ arch/arm64/include/asm/Kbuild      | 1 -
+ arch/csky/include/asm/Kbuild       | 1 -
+ arch/h8300/include/asm/Kbuild      | 1 -
+ arch/hexagon/include/asm/Kbuild    | 1 -
+ arch/ia64/include/asm/local64.h    | 1 -
+ arch/m68k/include/asm/Kbuild       | 1 -
+ arch/microblaze/include/asm/Kbuild | 1 -
+ arch/mips/include/asm/Kbuild       | 1 -
+ arch/nds32/include/asm/Kbuild      | 1 -
+ arch/parisc/include/asm/Kbuild     | 1 -
+ arch/powerpc/include/asm/Kbuild    | 1 -
+ arch/riscv/include/asm/Kbuild      | 1 -
+ arch/s390/include/asm/Kbuild       | 1 -
+ arch/sh/include/asm/Kbuild         | 1 -
+ arch/sparc/include/asm/Kbuild      | 1 -
+ arch/x86/include/asm/local64.h     | 1 -
+ arch/xtensa/include/asm/Kbuild     | 1 -
+ include/asm-generic/Kbuild         | 1 +
+ 21 files changed, 1 insertion(+), 20 deletions(-)
+ delete mode 100644 arch/alpha/include/asm/local64.h
+ delete mode 100644 arch/ia64/include/asm/local64.h
+ delete mode 100644 arch/x86/include/asm/local64.h
+
+diff --git a/arch/alpha/include/asm/local64.h b/arch/alpha/include/asm/local64.h
+deleted file mode 100644
+index 36c93b5cc239b..0000000000000
+--- a/arch/alpha/include/asm/local64.h
++++ /dev/null
+@@ -1 +0,0 @@
+-#include <asm-generic/local64.h>
+diff --git a/arch/arc/include/asm/Kbuild b/arch/arc/include/asm/Kbuild
+index 81f4edec0c2a9..3c1afa524b9c2 100644
+--- a/arch/arc/include/asm/Kbuild
++++ b/arch/arc/include/asm/Kbuild
+@@ -1,7 +1,6 @@
+ # SPDX-License-Identifier: GPL-2.0
+ generic-y += extable.h
+ generic-y += kvm_para.h
+-generic-y += local64.h
+ generic-y += mcs_spinlock.h
+ generic-y += parport.h
+ generic-y += user.h
+diff --git a/arch/arm/include/asm/Kbuild b/arch/arm/include/asm/Kbuild
+index 383635b68763c..f1398b9267c08 100644
+--- a/arch/arm/include/asm/Kbuild
++++ b/arch/arm/include/asm/Kbuild
+@@ -2,7 +2,6 @@
+ generic-y += early_ioremap.h
+ generic-y += extable.h
+ generic-y += flat.h
+-generic-y += local64.h
+ generic-y += parport.h
+ generic-y += seccomp.h
+ 
+diff --git a/arch/arm64/include/asm/Kbuild b/arch/arm64/include/asm/Kbuild
+index ff9cbb6312128..07ac208edc894 100644
+--- a/arch/arm64/include/asm/Kbuild
++++ b/arch/arm64/include/asm/Kbuild
+@@ -1,6 +1,5 @@
+ # SPDX-License-Identifier: GPL-2.0
+ generic-y += early_ioremap.h
+-generic-y += local64.h
+ generic-y += mcs_spinlock.h
+ generic-y += qrwlock.h
+ generic-y += qspinlock.h
+diff --git a/arch/csky/include/asm/Kbuild b/arch/csky/include/asm/Kbuild
+index 64876e59e2ef9..2a5a4d94fafad 100644
+--- a/arch/csky/include/asm/Kbuild
++++ b/arch/csky/include/asm/Kbuild
+@@ -2,7 +2,6 @@
+ generic-y += asm-offsets.h
+ generic-y += gpio.h
+ generic-y += kvm_para.h
+-generic-y += local64.h
+ generic-y += qrwlock.h
+ generic-y += seccomp.h
+ generic-y += user.h
+diff --git a/arch/h8300/include/asm/Kbuild b/arch/h8300/include/asm/Kbuild
+index ddf04f32b5467..60ee7f0d60a8f 100644
+--- a/arch/h8300/include/asm/Kbuild
++++ b/arch/h8300/include/asm/Kbuild
+@@ -2,7 +2,6 @@
+ generic-y += asm-offsets.h
+ generic-y += extable.h
+ generic-y += kvm_para.h
+-generic-y += local64.h
+ generic-y += mcs_spinlock.h
+ generic-y += parport.h
+ generic-y += spinlock.h
+diff --git a/arch/hexagon/include/asm/Kbuild b/arch/hexagon/include/asm/Kbuild
+index 373964bb177e4..3ece3c93fe086 100644
+--- a/arch/hexagon/include/asm/Kbuild
++++ b/arch/hexagon/include/asm/Kbuild
+@@ -2,5 +2,4 @@
+ generic-y += extable.h
+ generic-y += iomap.h
+ generic-y += kvm_para.h
+-generic-y += local64.h
+ generic-y += mcs_spinlock.h
+diff --git a/arch/ia64/include/asm/local64.h b/arch/ia64/include/asm/local64.h
+deleted file mode 100644
+index 36c93b5cc239b..0000000000000
+--- a/arch/ia64/include/asm/local64.h
++++ /dev/null
+@@ -1 +0,0 @@
+-#include <asm-generic/local64.h>
+diff --git a/arch/m68k/include/asm/Kbuild b/arch/m68k/include/asm/Kbuild
+index 1bff55aa2d54e..0dbf9c5c6faeb 100644
+--- a/arch/m68k/include/asm/Kbuild
++++ b/arch/m68k/include/asm/Kbuild
+@@ -2,6 +2,5 @@
+ generated-y += syscall_table.h
+ generic-y += extable.h
+ generic-y += kvm_para.h
+-generic-y += local64.h
+ generic-y += mcs_spinlock.h
+ generic-y += spinlock.h
+diff --git a/arch/microblaze/include/asm/Kbuild b/arch/microblaze/include/asm/Kbuild
+index 63bce836b9f10..29b0e557aa7c5 100644
+--- a/arch/microblaze/include/asm/Kbuild
++++ b/arch/microblaze/include/asm/Kbuild
+@@ -2,7 +2,6 @@
+ generated-y += syscall_table.h
+ generic-y += extable.h
+ generic-y += kvm_para.h
+-generic-y += local64.h
+ generic-y += mcs_spinlock.h
+ generic-y += parport.h
+ generic-y += syscalls.h
+diff --git a/arch/mips/include/asm/Kbuild b/arch/mips/include/asm/Kbuild
+index 198b3bafdac97..95b4fa7bd0d1f 100644
+--- a/arch/mips/include/asm/Kbuild
++++ b/arch/mips/include/asm/Kbuild
+@@ -6,7 +6,6 @@ generated-y += syscall_table_64_n64.h
+ generated-y += syscall_table_64_o32.h
+ generic-y += export.h
+ generic-y += kvm_para.h
+-generic-y += local64.h
+ generic-y += mcs_spinlock.h
+ generic-y += parport.h
+ generic-y += qrwlock.h
+diff --git a/arch/nds32/include/asm/Kbuild b/arch/nds32/include/asm/Kbuild
+index ff1e94299317d..82a4453c9c2d5 100644
+--- a/arch/nds32/include/asm/Kbuild
++++ b/arch/nds32/include/asm/Kbuild
+@@ -4,6 +4,5 @@ generic-y += cmpxchg.h
+ generic-y += export.h
+ generic-y += gpio.h
+ generic-y += kvm_para.h
+-generic-y += local64.h
+ generic-y += parport.h
+ generic-y += user.h
+diff --git a/arch/parisc/include/asm/Kbuild b/arch/parisc/include/asm/Kbuild
+index e3ee5c0bfe80f..a1bd2adc63e3a 100644
+--- a/arch/parisc/include/asm/Kbuild
++++ b/arch/parisc/include/asm/Kbuild
+@@ -3,7 +3,6 @@ generated-y += syscall_table_32.h
+ generated-y += syscall_table_64.h
+ generated-y += syscall_table_c32.h
+ generic-y += kvm_para.h
+-generic-y += local64.h
+ generic-y += mcs_spinlock.h
+ generic-y += seccomp.h
+ generic-y += user.h
+diff --git a/arch/powerpc/include/asm/Kbuild b/arch/powerpc/include/asm/Kbuild
+index 90cd5c53af666..e1f9b4ea1c537 100644
+--- a/arch/powerpc/include/asm/Kbuild
++++ b/arch/powerpc/include/asm/Kbuild
+@@ -5,7 +5,6 @@ generated-y += syscall_table_c32.h
+ generated-y += syscall_table_spu.h
+ generic-y += export.h
+ generic-y += kvm_types.h
+-generic-y += local64.h
+ generic-y += mcs_spinlock.h
+ generic-y += qrwlock.h
+ generic-y += vtime.h
+diff --git a/arch/riscv/include/asm/Kbuild b/arch/riscv/include/asm/Kbuild
+index 59dd7be550054..445ccc97305a5 100644
+--- a/arch/riscv/include/asm/Kbuild
++++ b/arch/riscv/include/asm/Kbuild
+@@ -3,6 +3,5 @@ generic-y += early_ioremap.h
+ generic-y += extable.h
+ generic-y += flat.h
+ generic-y += kvm_para.h
+-generic-y += local64.h
+ generic-y += user.h
+ generic-y += vmlinux.lds.h
+diff --git a/arch/s390/include/asm/Kbuild b/arch/s390/include/asm/Kbuild
+index 319efa0e6d024..1a18d7b82f86d 100644
+--- a/arch/s390/include/asm/Kbuild
++++ b/arch/s390/include/asm/Kbuild
+@@ -7,5 +7,4 @@ generated-y += unistd_nr.h
+ generic-y += asm-offsets.h
+ generic-y += export.h
+ generic-y += kvm_types.h
+-generic-y += local64.h
+ generic-y += mcs_spinlock.h
+diff --git a/arch/sh/include/asm/Kbuild b/arch/sh/include/asm/Kbuild
+index 7435182ef8465..fc44d9c88b419 100644
+--- a/arch/sh/include/asm/Kbuild
++++ b/arch/sh/include/asm/Kbuild
+@@ -1,6 +1,5 @@
+ # SPDX-License-Identifier: GPL-2.0
+ generated-y += syscall_table.h
+ generic-y += kvm_para.h
+-generic-y += local64.h
+ generic-y += mcs_spinlock.h
+ generic-y += parport.h
+diff --git a/arch/sparc/include/asm/Kbuild b/arch/sparc/include/asm/Kbuild
+index 5269a704801fa..3688fdae50e45 100644
+--- a/arch/sparc/include/asm/Kbuild
++++ b/arch/sparc/include/asm/Kbuild
+@@ -6,5 +6,4 @@ generated-y += syscall_table_64.h
+ generated-y += syscall_table_c32.h
+ generic-y += export.h
+ generic-y += kvm_para.h
+-generic-y += local64.h
+ generic-y += mcs_spinlock.h
+diff --git a/arch/x86/include/asm/local64.h b/arch/x86/include/asm/local64.h
+deleted file mode 100644
+index 36c93b5cc239b..0000000000000
+--- a/arch/x86/include/asm/local64.h
++++ /dev/null
+@@ -1 +0,0 @@
+-#include <asm-generic/local64.h>
+diff --git a/arch/xtensa/include/asm/Kbuild b/arch/xtensa/include/asm/Kbuild
+index c59c42a1221a8..adefb1636f7ae 100644
+--- a/arch/xtensa/include/asm/Kbuild
++++ b/arch/xtensa/include/asm/Kbuild
+@@ -2,7 +2,6 @@
+ generated-y += syscall_table.h
+ generic-y += extable.h
+ generic-y += kvm_para.h
+-generic-y += local64.h
+ generic-y += mcs_spinlock.h
+ generic-y += param.h
+ generic-y += qrwlock.h
+diff --git a/include/asm-generic/Kbuild b/include/asm-generic/Kbuild
+index e78bbb9a07e90..d1300c6e0a471 100644
+--- a/include/asm-generic/Kbuild
++++ b/include/asm-generic/Kbuild
+@@ -34,6 +34,7 @@ mandatory-y += kmap_types.h
+ mandatory-y += kprobes.h
+ mandatory-y += linkage.h
+ mandatory-y += local.h
++mandatory-y += local64.h
+ mandatory-y += mm-arch-hooks.h
+ mandatory-y += mmiowb.h
+ mandatory-y += mmu.h
+-- 
+2.27.0
+
