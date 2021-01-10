@@ -2,209 +2,144 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.8 required=3.0 tests=BAYES_00,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-5.3 required=3.0 tests=BAYES_00,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 337B2C433E0
-	for <linux-m68k@archiver.kernel.org>; Fri,  8 Jan 2021 18:54:07 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 39882C433DB
+	for <linux-m68k@archiver.kernel.org>; Sun, 10 Jan 2021 17:36:58 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id E9D3323A7D
-	for <linux-m68k@archiver.kernel.org>; Fri,  8 Jan 2021 18:54:06 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 00CE32231F
+	for <linux-m68k@archiver.kernel.org>; Sun, 10 Jan 2021 17:36:57 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728689AbhAHSxv (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Fri, 8 Jan 2021 13:53:51 -0500
-Received: from mga04.intel.com ([192.55.52.120]:16223 "EHLO mga04.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728677AbhAHSxv (ORCPT <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Fri, 8 Jan 2021 13:53:51 -0500
-IronPort-SDR: gLDKMDO5pkHCzgEDw9cPBduvVSvqS3VOaagyznHjXNZOI62TXS/N7jhGtiGgYIrb8mWq1e9vaw
- 2veqPxlTNSyA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9858"; a="175062991"
-X-IronPort-AV: E=Sophos;i="5.79,332,1602572400"; 
-   d="scan'208";a="175062991"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Jan 2021 10:53:09 -0800
-IronPort-SDR: NVcdwR3ijHHFutiPlARiUCpzN70p/4Nt0ax3aIXw4ng1FLmUzwkgLtiJh9gIVgVPInNKbwif26
- TRHvec3uKycw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.79,332,1602572400"; 
-   d="scan'208";a="423034486"
-Received: from lkp-server01.sh.intel.com (HELO 412602b27703) ([10.239.97.150])
-  by orsmga001.jf.intel.com with ESMTP; 08 Jan 2021 10:53:08 -0800
-Received: from kbuild by 412602b27703 with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1kxwsl-0000cA-D3; Fri, 08 Jan 2021 18:53:07 +0000
-Date:   Sat, 09 Jan 2021 02:52:16 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     linux-m68k@lists.linux-m68k.org
-Subject: [m68k:m68k-queue] BUILD SUCCESS
- 5e8704c4abcd813e1fa08cc64502441c4fe9de86
-Message-ID: <5ff8a9e0.Gl4avg83oEY2wefc%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+        id S1726346AbhAJRgl (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Sun, 10 Jan 2021 12:36:41 -0500
+Received: from outpost1.zedat.fu-berlin.de ([130.133.4.66]:60719 "EHLO
+        outpost1.zedat.fu-berlin.de" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726267AbhAJRgl (ORCPT
+        <rfc822;linux-m68k@lists.linux-m68k.org>);
+        Sun, 10 Jan 2021 12:36:41 -0500
+Received: from inpost2.zedat.fu-berlin.de ([130.133.4.69])
+          by outpost.zedat.fu-berlin.de (Exim 4.94)
+          with esmtps (TLS1.2)
+          tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+          (envelope-from <glaubitz@zedat.fu-berlin.de>)
+          id 1kyedC-000z7W-GH; Sun, 10 Jan 2021 18:35:58 +0100
+Received: from p5b13a61e.dip0.t-ipconnect.de ([91.19.166.30] helo=[192.168.178.139])
+          by inpost2.zedat.fu-berlin.de (Exim 4.94)
+          with esmtpsa (TLS1.2)
+          tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+          (envelope-from <glaubitz@physik.fu-berlin.de>)
+          id 1kyedB-0007jE-HL; Sun, 10 Jan 2021 18:35:58 +0100
+In-Reply-To: <CAK8P3a2VW8T+yYUG1pn1yR-5eU4jJXe1+M_ot6DAvfr2KyXCzQ@mail.gmail.com>
+To:     Arnd Bergmann <arnd@arndb.de>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-m68k <linux-m68k@lists.linux-m68k.org>,
+        Sparc kernel list <sparclinux@vger.kernel.org>,
+        Linux-sh list <linux-sh@vger.kernel.org>
+From:   John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
+Subject: Re: Old platforms: bring out your dead
+Message-ID: <ef1dc21f-694b-2433-e1c6-aa121320173e@physik.fu-berlin.de>
+Date:   Sun, 10 Jan 2021 18:35:57 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-Original-Sender: glaubitz@physik.fu-berlin.de
+X-Originating-IP: 91.19.166.30
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/geert/linux-m68k.git  m68k-queue
-branch HEAD: 5e8704c4abcd813e1fa08cc64502441c4fe9de86  m68k: defconfig: Enable Atari EtherNAT and NetUSBee USB support
+Hi Arnd!
 
-elapsed time: 1031m
+(Please let's have this cross-posted for more visibility. I only learned about this
+ while reading Phoronix news)
 
-configs tested: 139
-configs skipped: 3
+> I also looked at non-ARM platforms while preparing for my article. Some of
+> these look like they are no longer actively maintained or used, but I'm not
+> doing anything about those unless the maintainers would like me to:
+> 
+> * h8300: Steven Rostedt has repeatedly asked about it to be removed
+>    or fixed in 2020 with no reply. This was killed before in 2013, added back
+>    in 2015 but has been mostly stale again since 2016
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+As far as I know, Yoshinori Sato is actively maintaining H8300 support, see:
 
-gcc tested configs:
-arm64                            allyesconfig
-arm64                               defconfig
-arm                                 defconfig
-arm                              allyesconfig
-arm                              allmodconfig
-nios2                            alldefconfig
-c6x                         dsk6455_defconfig
-arm                        mini2440_defconfig
-mips                          rb532_defconfig
-mips                       rbtx49xx_defconfig
-nios2                            allyesconfig
-powerpc                    mvme5100_defconfig
-mips                          ath25_defconfig
-sh                             shx3_defconfig
-m68k                          multi_defconfig
-sh                          lboxre2_defconfig
-arc                     haps_hs_smp_defconfig
-um                           x86_64_defconfig
-sparc64                          alldefconfig
-arm                        oxnas_v6_defconfig
-sh                           se7721_defconfig
-arm                       aspeed_g4_defconfig
-arm                         vf610m4_defconfig
-arm                          badge4_defconfig
-arm                        neponset_defconfig
-powerpc                      pcm030_defconfig
-powerpc                 mpc832x_rdb_defconfig
-m68k                          amiga_defconfig
-m68k                       bvme6000_defconfig
-xtensa                          iss_defconfig
-powerpc                      makalu_defconfig
-arm                           h3600_defconfig
-m68k                          atari_defconfig
-sparc                       sparc64_defconfig
-c6x                        evmc6472_defconfig
-mips                        workpad_defconfig
-mips                        omega2p_defconfig
-sh                            titan_defconfig
-powerpc                      ppc64e_defconfig
-sh                        dreamcast_defconfig
-powerpc                 xes_mpc85xx_defconfig
-mips                          rm200_defconfig
-powerpc                        cell_defconfig
-arm                    vt8500_v6_v7_defconfig
-arm                         socfpga_defconfig
-powerpc                     pseries_defconfig
-mips                    maltaup_xpa_defconfig
-arm                           tegra_defconfig
-sh                           sh2007_defconfig
-powerpc                  mpc885_ads_defconfig
-mips                malta_kvm_guest_defconfig
-i386                             allyesconfig
-powerpc                       ppc64_defconfig
-powerpc                     tqm8560_defconfig
-mips                         cobalt_defconfig
-nios2                         3c120_defconfig
-mips                         bigsur_defconfig
-powerpc                  storcenter_defconfig
-powerpc                mpc7448_hpc2_defconfig
-m68k                        m5272c3_defconfig
-sh                         ecovec24_defconfig
-nds32                            alldefconfig
-sh                           se7724_defconfig
-powerpc                      cm5200_defconfig
-arm                         lpc32xx_defconfig
-ia64                         bigsur_defconfig
-arm                     eseries_pxa_defconfig
-sh                          r7780mp_defconfig
-powerpc                      acadia_defconfig
-arc                          axs103_defconfig
-ia64                             allmodconfig
-ia64                                defconfig
-ia64                             allyesconfig
-m68k                             allmodconfig
-m68k                                defconfig
-m68k                             allyesconfig
-nios2                               defconfig
-arc                              allyesconfig
-nds32                             allnoconfig
-c6x                              allyesconfig
-nds32                               defconfig
-csky                                defconfig
-alpha                               defconfig
-alpha                            allyesconfig
-xtensa                           allyesconfig
-h8300                            allyesconfig
-arc                                 defconfig
-sh                               allmodconfig
-parisc                              defconfig
-s390                             allyesconfig
-parisc                           allyesconfig
-s390                                defconfig
-sparc                            allyesconfig
-sparc                               defconfig
-i386                               tinyconfig
-i386                                defconfig
-mips                             allyesconfig
-mips                             allmodconfig
-powerpc                          allyesconfig
-powerpc                          allmodconfig
-powerpc                           allnoconfig
-x86_64               randconfig-a004-20210108
-x86_64               randconfig-a006-20210108
-x86_64               randconfig-a001-20210108
-x86_64               randconfig-a002-20210108
-x86_64               randconfig-a003-20210108
-x86_64               randconfig-a005-20210108
-i386                 randconfig-a005-20210108
-i386                 randconfig-a002-20210108
-i386                 randconfig-a001-20210108
-i386                 randconfig-a003-20210108
-i386                 randconfig-a006-20210108
-i386                 randconfig-a004-20210108
-i386                 randconfig-a016-20210108
-i386                 randconfig-a011-20210108
-i386                 randconfig-a014-20210108
-i386                 randconfig-a015-20210108
-i386                 randconfig-a013-20210108
-i386                 randconfig-a012-20210108
-riscv                    nommu_k210_defconfig
-riscv                            allyesconfig
-riscv                    nommu_virt_defconfig
-riscv                             allnoconfig
-riscv                               defconfig
-riscv                          rv32_defconfig
-riscv                            allmodconfig
-x86_64                                   rhel
-x86_64                           allyesconfig
-x86_64                    rhel-7.6-kselftests
-x86_64                              defconfig
-x86_64                               rhel-8.3
-x86_64                      rhel-8.3-kbuiltin
-x86_64                                  kexec
+> https://osdn.net/projects/uclinux-h8/
 
-clang tested configs:
-x86_64               randconfig-a013-20210108
-x86_64               randconfig-a011-20210108
-x86_64               randconfig-a012-20210108
-x86_64               randconfig-a016-20210108
-x86_64               randconfig-a014-20210108
-x86_64               randconfig-a015-20210108
+> * c6x: Added in 2011, this has seen very few updates since, but
+>     Mark still Acks patches when they come. Like most other DSP platforms,
+>     the model of running Linux on a DSP appears to have been obsoleted
+>     by using Linux on ARM with on-chip DSP cores running bare-metal code.
+> * sparc/sun4m: A patch for removing 32-bit Sun sparc support (not LEON)
+>    is currently under review
 
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+I don't think this has reached any agreement yet. Multiple people want it to stay.
+
+> * powerpc/cell: I'm the maintainer and I promised to send a patch to remove it.
+>    it's in my backlog but I will get to it. This is separate from PS3,
+> which is actively
+>    maintained and used; spufs will move to ps3
+> * powerpc/chrp (32-bit rs6000, pegasos2): last updated in 2009
+
+I'm still using this. Please keep it.
+
+> * powerpc/amigaone: last updated in 2009
+> * powerpc/maple: last updated in 2011
+> * m68k/{apollo,hp300,sun3,q40} these are all presumably dead and have not
+>    seen updates in many years (atari/amiga/mac and coldfire are very much
+>    alive)
+
+Dito. I have both sun3 and hp300 machines.
+
+> * mips/jazz: last updated in 2007
+> * mips/cobalt: last updated in 2010
+> 
+> There might be some value in dropping old CPU support on architectures
+> and platforms that are almost exclusively used with more modern CPUs.
+> If there are only few users, those can still keep using v5.10 or v5.4 stable
+> kernels for a few more years. Again, I'm not doing anything about them,
+> except mention them since I did the research.
+> These are the oldest one by architecture, and they may have reached
+> their best-served-by-date:
+> 
+> * 80486SX/DX: 80386 CPUs were dropped in 2012, and there are
+>   indications that 486 have no users either on recent kernels.
+>   There is still the Vortex86 family of SoCs, and the oldest of those were
+>   486SX-class, but all the modern ones are 586-class.
+> * Alpha 2106x: First generation that lacks some of the later features.
+>   Since all Alphas are ancient by now, it's hard to tell whether these have
+>   any fewer users.
+
+I don't see the point in crippling Alpha support. Does this achieve anything?
+
+> * IA64 Merced: first generation Itanium (2001) was quickly replaced by
+>   Itanium II in 2002.
+> * MIPS R3000/TX39xx: 32-bit MIPS-II generation, mostly superseded by
+>   64-bit MIPS-III (R4000 and higher) starting in 1991. arch/mips still
+>   supports these in DECstation and Toshiba Txx9, but it appears that most
+>   of those machines are of the 64-bit kind. Later MIPS32 such as 4Kc and
+>   later are rather different and widely used.
+> * PowerPC 601 (from 1992) just got removed, later 60x, 4xx, 8xx etc
+>   are apparently all still used.
+> * SuperH SH-2: We discussed removing SH-2 (not J2 or SH-4)
+>   support in the past, I don't think there were any objections, but
+>   nobody submitted a patch.
+
+Isn't SH-2 basically J-2? I'm not sure what we would gain here.
+
+> * 68000/68328 (Dragonball): these are less capable than the
+>   68020+ or the Coldfire MCF5xxx line and similar to the 68360
+>   that was removed in 2016.
+
+Adrian
+
+-- 
+ .''`.  John Paul Adrian Glaubitz
+: :' :  Debian Developer - glaubitz@debian.org
+`. `'   Freie Universitaet Berlin - glaubitz@physik.fu-berlin.de
+  `-    GPG: 62FF 8A75 84E0 2956 9546  0006 7426 3B37 F5B5 F913
+
