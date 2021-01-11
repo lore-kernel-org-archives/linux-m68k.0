@@ -2,119 +2,126 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.3 required=3.0 tests=BAYES_00,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,NICE_REPLY_A,SPF_HELO_NONE,
-	SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=no autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-2.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 502A1C433E6
-	for <linux-m68k@archiver.kernel.org>; Mon, 11 Jan 2021 09:51:17 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 120C6C43331
+	for <linux-m68k@archiver.kernel.org>; Mon, 11 Jan 2021 14:57:03 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 09C2E22B47
-	for <linux-m68k@archiver.kernel.org>; Mon, 11 Jan 2021 09:51:16 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id CD53B225AC
+	for <linux-m68k@archiver.kernel.org>; Mon, 11 Jan 2021 14:57:02 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728593AbhAKJvE (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Mon, 11 Jan 2021 04:51:04 -0500
-Received: from mail.kernel.org ([198.145.29.99]:39432 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728432AbhAKJvA (ORCPT <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Mon, 11 Jan 2021 04:51:00 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6649D22527;
-        Mon, 11 Jan 2021 09:50:11 +0000 (UTC)
-Subject: Re: Old platforms: bring out your dead
-To:     Geert Uytterhoeven <geert@linux-m68k.org>,
-        John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
-Cc:     Daniel Palmer <daniel@0x0f.com>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Krzysztof Adamski <krzysztof.adamski@nokia.com>,
-        Oleksij Rempel <o.rempel@pengutronix.de>,
-        Baruch Siach <baruch@tkos.co.il>,
-        Russell King - ARM Linux <linux@armlinux.org.uk>,
-        Daniel Tang <dt.tangr@gmail.com>,
-        =?UTF-8?Q?Uwe_Kleine-K=c3=b6nig?= <u.kleine-koenig@pengutronix.de>,
-        Jamie Iles <jamie@jamieiles.com>,
-        Barry Song <song.bao.hua@hisilicon.com>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Jonas Jensen <jonas.jensen@gmail.com>,
-        Marc Gonzalez <marc.w.gonzalez@free.fr>,
-        Hartley Sweeten <hsweeten@visionengravers.com>,
-        Lubomir Rintel <lkundrak@v3.sk>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        Shawn Guo <shawnguo@kernel.org>, Alex Elder <elder@linaro.org>,
-        Alexander Shiyan <shc_work@mail.ru>,
-        Koen Vandeputte <koen.vandeputte@ncentric.com>,
-        Hans Ulli Kroll <ulli.kroll@googlemail.com>,
-        Vladimir Zapolskiy <vz@mleia.com>,
-        Wei Xu <xuwei5@hisilicon.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Yoshinori Sato <ysato@users.sourceforge.jp>,
-        Mark Salter <msalter@redhat.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        linux-m68k <linux-m68k@lists.linux-m68k.org>
-References: <CAFr9PX=BV1YFcO_GQWsW3XEo8nndjUwArzW5Fg1fnWzt8fiwGw@mail.gmail.com>
- <e1b2de15-b4ad-68bb-4fae-cf0f3ecd4b79@physik.fu-berlin.de>
- <CAMuHMdUia3-DroA3VOA5jkYYWP+Rip5yse-nd00JuV8uFnVp1Q@mail.gmail.com>
- <803a40ba-d0cb-e5e2-9d57-f1b70d7aee37@physik.fu-berlin.de>
- <CAMuHMdV0orx=9W3LU40Z4wvtL18Znz79=j6pObUw+22TEaAM6g@mail.gmail.com>
-From:   Greg Ungerer <gerg@linux-m68k.org>
-Message-ID: <9e9cc4ad-38b0-f799-cd0e-c1e1c7e3501c@linux-m68k.org>
-Date:   Mon, 11 Jan 2021 19:50:07 +1000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S2388988AbhAKO4v (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Mon, 11 Jan 2021 09:56:51 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43426 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2388990AbhAKO4u (ORCPT
+        <rfc822;linux-m68k@lists.linux-m68k.org>);
+        Mon, 11 Jan 2021 09:56:50 -0500
+Received: from mail-ej1-x635.google.com (mail-ej1-x635.google.com [IPv6:2a00:1450:4864:20::635])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3EF38C0617BF
+        for <linux-m68k@lists.linux-m68k.org>; Mon, 11 Jan 2021 06:55:26 -0800 (PST)
+Received: by mail-ej1-x635.google.com with SMTP id b9so60201ejy.0
+        for <linux-m68k@lists.linux-m68k.org>; Mon, 11 Jan 2021 06:55:26 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=fkb+6kHcBYmIX1rA4Q3FeNq39va9LRsa50OKmyScf2g=;
+        b=StzTmugQK+QsKVdCg08VrJTu0InftAnNTeBn1dPFsxCkTHuZnBMqpjVl1j2zpHwIKA
+         kh07HCvlA24asTJhfCOBi+zXMkN/j//P+jqlAF3G9XlwOOklB8kfWHqPXmB4NcCW3qvp
+         8c+EXmRLkhgt20qosv11KJAZ6tQjoomPnpJmUqQrGTWhpqzQuLJJLtPkwPqGsbykFZEN
+         56LWdCUy5mExsK2nG0/GGikEooSR70bJpFhBlwl+4hXNBcn+Xl732u9omU7GYbMNZ+od
+         lHAlEnbtMiZOkj06Reg/2m1GX4cGuXUBTKman8nyXquRKYyUEQbZKzMQWERthfTjkqzM
+         jGzQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=fkb+6kHcBYmIX1rA4Q3FeNq39va9LRsa50OKmyScf2g=;
+        b=rnC8BpJ7DtOraKIbDPBPXkQOD5iXov3OvZxqgH6R8LNMZzDdpS4sTs9IYUbU7Biz9m
+         Heh96V3FnpFa+0fBaa5DgEHYhZIQE7hb5ugqLOivzaRBThpeYcedGisDDeAyjyYi/vX1
+         PTgDqLCsFPu+Q5r/cHdRsE6FhO9VoLxZdFf4iGzBqdBEZpjIi+CjgL255Env61AfcIxW
+         Qajco+I+XgXryQMT1jSAokBZmKjQ1URuhyJ2I+rdZ+QiTRzBwFLkqBrJB6+/8eq1NqEX
+         ImB3O7u08z5ubWuDQeXKw4+rwcT3QRGZnMy/ktgVMFTBXXqnr5gT5CYU6btRn7+5VDIo
+         pfvw==
+X-Gm-Message-State: AOAM531eTn6HjKU4pud9xGp8G3/A4dWPxHstRNrAk0NAikA/7eaPHQ6G
+        Q7ESWVnG273R4lhhrc1p3V370lSse2GfaBTWA5k=
+X-Google-Smtp-Source: ABdhPJw918GbC6QuBafyHDaYJK5elbD1hwsTi1Ed+fYRWxX2QIhf0EjPIimbPBiw3xpG7FeRFh2zgSqqXVAx08t21DY=
+X-Received: by 2002:a17:906:7c49:: with SMTP id g9mr11454375ejp.185.1610376924969;
+ Mon, 11 Jan 2021 06:55:24 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <CAMuHMdV0orx=9W3LU40Z4wvtL18Znz79=j6pObUw+22TEaAM6g@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <CAK8P3a2VW8T+yYUG1pn1yR-5eU4jJXe1+M_ot6DAvfr2KyXCzQ@mail.gmail.com>
+ <ef1dc21f-694b-2433-e1c6-aa121320173e@physik.fu-berlin.de>
+ <20210110214653.GA1693373@ravnborg.org> <df42946e-5b1f-c433-fc6b-a2950f3d8dab@physik.fu-berlin.de>
+In-Reply-To: <df42946e-5b1f-c433-fc6b-a2950f3d8dab@physik.fu-berlin.de>
+From:   chase rayfield <cusbrar1@gmail.com>
+Date:   Mon, 11 Jan 2021 09:55:13 -0500
+Message-ID: <CACwypyNS+fVoPVspSr36v8YjFbkrnYb+amcYRqVmA2kD2uD1Wg@mail.gmail.com>
+Subject: Re: Old platforms: bring out your dead
+To:     John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
+Cc:     Sam Ravnborg <sam@ravnborg.org>, Arnd Bergmann <arnd@arndb.de>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-m68k <linux-m68k@lists.linux-m68k.org>,
+        Sparc kernel list <sparclinux@vger.kernel.org>,
+        Linux-sh list <linux-sh@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
+On Mon, Jan 11, 2021 at 3:09 AM John Paul Adrian Glaubitz
+<glaubitz@physik.fu-berlin.de> wrote:
 
+>
+> I'm not sure I understand the reasoning for doing this. The SPARC architecture
+> isn't going to see any new hardware developments in the future after Oracle
+> let go of most of the SPARC developers. So it's not that we need to make room
+> for new hardware.
+>
+My take is that there *would* be more interest in Sparc sun4m / Sun4d
+from enthusiasts at the very least if it was possible to actually boot
+the bloat hog that is Linux these days in a fully usable configuration
+that probably means some modifications to SILO and Linux required.
 
-On 11/1/21 7:36 pm, Geert Uytterhoeven wrote:
-> Hi Adrian,
-> 
-> On Mon, Jan 11, 2021 at 10:26 AM John Paul Adrian Glaubitz
-> <glaubitz@physik.fu-berlin.de> wrote:
->> On 1/11/21 10:20 AM, Geert Uytterhoeven wrote:
->>>> Sounds interesting. Do these SoCs come with an MMU? And do they use the
->>>> ColdFire instruction set or do they run plain 68k code?
->>>
->>> No MMU, plain m68k code.
->>>
->>> 68328 Soc = 68000 core + some peripherals,
->>> 68360 SoC = CPU32 core (based on 68020 + some peripherals.
->>
->> OK, I guess that would be useful for the NoMMU Linux port.
-> 
-> Note that 68360 support was removed from the kernel in 2016, as
-> Arnd said.
+The problem is as I understand it, SILO only sets up a 16Mb mapping
+(either due to having to assume 4MB minimum dram stick size or due to
+mapping limitations not sure, most of these machines have at least
+16MB in slot one...these days though that wasn't the case for sun4c),
+loads Linux into it and says good Luck. This isn't enough for a modern
+kernel with any  hardware support built in. So you might for instance
+get a kernel to fit but only if you dropped all of networking support
+etc... I'm guessing the fix for this would be to modify silo to map a
+larger amount in a way that Linux expects so it can remap it as it
+likes, or just have SILO map the full memory as Linux would. Anyway
+that is THE main demotivation for these architectures.... otherwise
+they have plenty of ram and performance to do basic router/server
+tasks sans SSL.
 
-And that 68360 was bit rotten for a very long time before that.
-Nobody ever seemed to show much interest in it.
+This has been the status quo for since the last of the 2.6 series of
+kernels which it was still possible to just barely squeeze a usable
+kernel out of... If someone wanted to take a few hours and fix this
+issue, and keep these architectures around I'd be happy to "buy them a
+round of pizza", though I recognize that many people that work on this
+already have nice jobs, and just don't have time.
 
-Keep in mind that the 68328 family of parts are pretty slow too...
+Also Sparc would probably be a good project for someone to extend/test
+Andi Keen's Linux LTO patch set so we could reduce the kernel binary
+size that way also even if sun4 architectures are dropped, it would
+still be useful for embedded sparc. Also there is a port of Temlib to
+the Mister hardware now, 3 cores roughly equivalent to a mid 90s
+machine, at least 128MB ram is possible ( more if a way to map the ARM
+system memory also 1GB is available there, it would have higher
+latency though).
 
+It is perfectly viable to build Sparc v7 or v8 32bit binaries in a
+chroot on a fast machine also, and I would recommend this if you wish
+to retain sanity rather than attempting cross compiler voodoo, unless
+that is your thing.
 
->>> Anyone working on integrating m68k (and SPARC and MIPS?) softcores in
->>> LiteX? ;-)
->>
->> I'm personally waiting for the Vampire to gain support for the real 68851
->> as the hardware in general looks very attractive [1].
-> 
-> The 68851 is way too complex for what's needed (who needs support for
-> 256 byte pages (https://lwn.net/Articles/839746/)?).
-> They'd be better off implementing something simpler, like 68040 MMU
-> support, or perhaps even a software-controlled TLB like most RISC
-> architectures (incl. ColdFire?).  The latter would require more changes
-> to Linux, though.
+Anyways it could be that people that want this get around to fixing
+SILO eventually and just sit on this last kernel version... *shrugs*
 
-Yep, the ColdFire MMU is a software controlled TLB.
-
-Regards
-Greg
+Chase
