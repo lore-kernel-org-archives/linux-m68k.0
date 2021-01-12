@@ -2,125 +2,306 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.3 required=3.0 tests=BAYES_00,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,NICE_REPLY_A,SPF_HELO_NONE,
-	SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=no autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-8.8 required=3.0 tests=BAYES_00,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,
+	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D9943C433DB
-	for <linux-m68k@archiver.kernel.org>; Tue, 12 Jan 2021 14:45:28 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id CC677C43217
+	for <linux-m68k@archiver.kernel.org>; Tue, 12 Jan 2021 21:49:28 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id B10AF23121
-	for <linux-m68k@archiver.kernel.org>; Tue, 12 Jan 2021 14:45:28 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 987F72078E
+	for <linux-m68k@archiver.kernel.org>; Tue, 12 Jan 2021 21:49:28 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726241AbhALOp2 (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Tue, 12 Jan 2021 09:45:28 -0500
-Received: from outpost1.zedat.fu-berlin.de ([130.133.4.66]:37225 "EHLO
-        outpost1.zedat.fu-berlin.de" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725890AbhALOp2 (ORCPT
-        <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Tue, 12 Jan 2021 09:45:28 -0500
-Received: from inpost2.zedat.fu-berlin.de ([130.133.4.69])
-          by outpost.zedat.fu-berlin.de (Exim 4.94)
-          with esmtps (TLS1.2)
-          tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-          (envelope-from <glaubitz@zedat.fu-berlin.de>)
-          id 1kzKub-000r5z-RI; Tue, 12 Jan 2021 15:44:45 +0100
-Received: from p5b13a61e.dip0.t-ipconnect.de ([91.19.166.30] helo=[192.168.178.139])
-          by inpost2.zedat.fu-berlin.de (Exim 4.94)
-          with esmtpsa (TLS1.2)
-          tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-          (envelope-from <glaubitz@physik.fu-berlin.de>)
-          id 1kzKub-001DBi-2u; Tue, 12 Jan 2021 15:44:45 +0100
-Subject: Re: Old platforms: bring out your dead
-To:     Gerhard Pircher <gerhard_pircher@gmx.net>,
-        Arnd Bergmann <arnd@arndb.de>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-m68k <linux-m68k@lists.linux-m68k.org>,
-        Sparc kernel list <sparclinux@vger.kernel.org>,
-        Linux-sh list <linux-sh@vger.kernel.org>
-References: <ef1dc21f-694b-2433-e1c6-aa121320173e@physik.fu-berlin.de>
- <f48bcf43-9dcc-e48b-d29d-f75f3814398b@gmx.net>
-From:   John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
-Message-ID: <cb5a2e11-d423-96ec-3d43-3568a109e37f@physik.fu-berlin.de>
-Date:   Tue, 12 Jan 2021 15:44:44 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+        id S1731199AbhALVs3 (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Tue, 12 Jan 2021 16:48:29 -0500
+Received: from mga18.intel.com ([134.134.136.126]:24504 "EHLO mga18.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2393332AbhALVgX (ORCPT <rfc822;linux-m68k@lists.linux-m68k.org>);
+        Tue, 12 Jan 2021 16:36:23 -0500
+IronPort-SDR: oE9dcW9CPMk4YeAWoOraiwqaNRuuDgEXYdniH0uSOCsGAaPvcELJZzmmGJigr6BC6elw3r12vj
+ JiRGftUcJKRA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9862"; a="165788882"
+X-IronPort-AV: E=Sophos;i="5.79,342,1602572400"; 
+   d="scan'208";a="165788882"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Jan 2021 13:35:40 -0800
+IronPort-SDR: O1IwW148Hx3Ng6s4rFQeobVdBwBOTHE53XyYqyIzDl5uvKdcheJXjCH/OFROMKcsn0Beso6iH2
+ 5g3f7fzIuB1g==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.79,342,1602572400"; 
+   d="scan'208";a="353185680"
+Received: from lkp-server01.sh.intel.com (HELO b73930e00c65) ([10.239.97.150])
+  by fmsmga008.fm.intel.com with ESMTP; 12 Jan 2021 13:35:38 -0800
+Received: from kbuild by b73930e00c65 with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1kzRKE-0000V6-5n; Tue, 12 Jan 2021 21:35:38 +0000
+Date:   Wed, 13 Jan 2021 05:35:27 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Geert Uytterhoeven <geert@linux-m68k.org>
+Cc:     linux-m68k@lists.linux-m68k.org
+Subject: [m68k:m68k-queue] BUILD SUCCESS
+ 069e2573efc3884d5b93f2fd35a9caefafc2132b
+Message-ID: <5ffe161f.9I/JUOwwZ9adISdw%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
-In-Reply-To: <f48bcf43-9dcc-e48b-d29d-f75f3814398b@gmx.net>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-Original-Sender: glaubitz@physik.fu-berlin.de
-X-Originating-IP: 91.19.166.30
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-Hello Gerhard!
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/geert/linux-m68k.git  m68k-queue
+branch HEAD: 069e2573efc3884d5b93f2fd35a9caefafc2132b  m68k: defconfig: Enable Atari EtherNAT and NetUSBee USB support
 
-On 1/11/21 4:04 PM, Gerhard Pircher wrote:
->>> * powerpc/cell: I'm the maintainer and I promised to send a patch to remove it.
->>>    it's in my backlog but I will get to it. This is separate from PS3,
->>>    which is actively maintained and used; spufs will move to ps3
->>> * powerpc/chrp (32-bit rs6000, pegasos2): last updated in 2009
->>
->> I'm still using this. Please keep it.
->
-> I can also confirm that Pegasos2 users in the Amiga scene are running Linux
-> (Debian) on these machines.
+elapsed time: 798m
 
-Thanks for raising your voice. It's nice and reliable hardware after all and
-still fast enough to run a recent version of Debian unstable with a lean
-desktop such as XFCE or MATE.
- 
->>> * powerpc/amigaone: last updated in 2009
->
-> I still have 2 of the 3 types of the first generation AmigaOne machines (not
-> to be confused with the newer AmigaOne X1000 and X5000 machines based on
-> PASemi and P5020 CPUs) working here. A third machine needs a repair of the
-> G4 CPU module (replacement parts already available).
+configs tested: 237
+configs skipped: 2
 
-Cool.
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
-> I have to admit however that I yet have to setup an environment that allows
-> me to regularly test new Linux kernel versions on these machines. Especially
-> because there are not many Linux users for these machines - which is likely
-> due to the fact that no distribution officially supports these machines out
-> of the box (the Pegasos2 platform had more luck here). Inputs on how to
-> automate tests would therefore be very welcome!
+gcc tested configs:
+arm                                 defconfig
+arm64                            allyesconfig
+arm64                               defconfig
+arm                              allyesconfig
+arm                              allmodconfig
+sh                           se7206_defconfig
+sh                               allmodconfig
+um                            kunit_defconfig
+sh                          r7780mp_defconfig
+powerpc                       ebony_defconfig
+c6x                         dsk6455_defconfig
+mips                         tb0226_defconfig
+powerpc                     akebono_defconfig
+powerpc                  mpc866_ads_defconfig
+mips                         db1xxx_defconfig
+mips                           rs90_defconfig
+powerpc                mpc7448_hpc2_defconfig
+xtensa                  cadence_csp_defconfig
+arm                    vt8500_v6_v7_defconfig
+powerpc                   motionpro_defconfig
+c6x                        evmc6678_defconfig
+m68k                       m5275evb_defconfig
+h8300                               defconfig
+arm                         shannon_defconfig
+sparc64                             defconfig
+arm                            xcep_defconfig
+arm                            hisi_defconfig
+powerpc                     tqm8548_defconfig
+mips                           jazz_defconfig
+powerpc                      cm5200_defconfig
+arm                          iop32x_defconfig
+powerpc                 mpc8540_ads_defconfig
+powerpc                     ep8248e_defconfig
+mips                    maltaup_xpa_defconfig
+arm                          collie_defconfig
+arc                     nsimosci_hs_defconfig
+arm                         cm_x300_defconfig
+m68k                       m5475evb_defconfig
+ia64                          tiger_defconfig
+mips                      loongson3_defconfig
+m68k                          amiga_defconfig
+mips                        qi_lb60_defconfig
+ia64                         bigsur_defconfig
+powerpc                 mpc836x_mds_defconfig
+sh                           se7780_defconfig
+sh                          sdk7786_defconfig
+arm                         mv78xx0_defconfig
+arm                          tango4_defconfig
+powerpc                      walnut_defconfig
+mips                           mtx1_defconfig
+powerpc                      arches_defconfig
+powerpc                      ppc6xx_defconfig
+arm                            lart_defconfig
+arm                         lubbock_defconfig
+arm                     am200epdkit_defconfig
+mips                        bcm47xx_defconfig
+ia64                      gensparse_defconfig
+h8300                     edosk2674_defconfig
+arm                           h5000_defconfig
+sh                  sh7785lcr_32bit_defconfig
+mips                        bcm63xx_defconfig
+arm                           efm32_defconfig
+s390                          debug_defconfig
+arm                         axm55xx_defconfig
+powerpc                     powernv_defconfig
+arm                          pxa168_defconfig
+mips                           ip22_defconfig
+sh                      rts7751r2d1_defconfig
+arm                          moxart_defconfig
+openrisc                  or1klitex_defconfig
+arm                        magician_defconfig
+arm                           corgi_defconfig
+sh                          r7785rp_defconfig
+powerpc                       eiger_defconfig
+m68k                            mac_defconfig
+arm                       spear13xx_defconfig
+sh                                  defconfig
+mips                      malta_kvm_defconfig
+sh                ecovec24-romimage_defconfig
+mips                        maltaup_defconfig
+sh                        dreamcast_defconfig
+arm                           h3600_defconfig
+m68k                         amcore_defconfig
+sh                            shmin_defconfig
+c6x                        evmc6472_defconfig
+sh                              ul2_defconfig
+powerpc                    socrates_defconfig
+um                           x86_64_defconfig
+arm                         palmz72_defconfig
+arm                         assabet_defconfig
+powerpc                     stx_gp3_defconfig
+sh                   rts7751r2dplus_defconfig
+sh                           se7722_defconfig
+powerpc                 mpc834x_itx_defconfig
+csky                             alldefconfig
+arm                           omap1_defconfig
+mips                         cobalt_defconfig
+mips                malta_kvm_guest_defconfig
+mips                         rt305x_defconfig
+powerpc                      ppc64e_defconfig
+arm                         vf610m4_defconfig
+m68k                           sun3_defconfig
+m68k                       bvme6000_defconfig
+arm                        cerfcube_defconfig
+sh                             shx3_defconfig
+powerpc                  storcenter_defconfig
+sparc64                          alldefconfig
+powerpc                     kmeter1_defconfig
+xtensa                  nommu_kc705_defconfig
+mips                           xway_defconfig
+csky                                defconfig
+powerpc                       maple_defconfig
+mips                           gcw0_defconfig
+sh                           se7343_defconfig
+sh                           sh2007_defconfig
+powerpc                        icon_defconfig
+arm                          prima2_defconfig
+arm                           stm32_defconfig
+arc                           tb10x_defconfig
+arc                              alldefconfig
+mips                 decstation_r4k_defconfig
+mips                  cavium_octeon_defconfig
+powerpc                       holly_defconfig
+microblaze                      mmu_defconfig
+powerpc                      mgcoge_defconfig
+powerpc                       ppc64_defconfig
+mips                       rbtx49xx_defconfig
+powerpc                      makalu_defconfig
+mips                           ip27_defconfig
+arm                       cns3420vb_defconfig
+parisc                generic-32bit_defconfig
+arm                             rpc_defconfig
+powerpc                      bamboo_defconfig
+arm                          ixp4xx_defconfig
+arm                         hackkit_defconfig
+m68k                          atari_defconfig
+arm                              zx_defconfig
+powerpc                          g5_defconfig
+ia64                             allmodconfig
+ia64                                defconfig
+ia64                             allyesconfig
+m68k                             allmodconfig
+m68k                                defconfig
+m68k                             allyesconfig
+nios2                               defconfig
+arc                              allyesconfig
+nds32                             allnoconfig
+c6x                              allyesconfig
+nds32                               defconfig
+nios2                            allyesconfig
+alpha                               defconfig
+alpha                            allyesconfig
+xtensa                           allyesconfig
+h8300                            allyesconfig
+arc                                 defconfig
+parisc                              defconfig
+s390                             allyesconfig
+parisc                           allyesconfig
+s390                                defconfig
+i386                             allyesconfig
+sparc                            allyesconfig
+sparc                               defconfig
+i386                               tinyconfig
+i386                                defconfig
+mips                             allyesconfig
+mips                             allmodconfig
+powerpc                          allyesconfig
+powerpc                          allmodconfig
+powerpc                           allnoconfig
+x86_64               randconfig-a004-20210111
+x86_64               randconfig-a006-20210111
+x86_64               randconfig-a001-20210111
+x86_64               randconfig-a003-20210111
+x86_64               randconfig-a005-20210111
+x86_64               randconfig-a002-20210111
+i386                 randconfig-a002-20210112
+i386                 randconfig-a005-20210112
+i386                 randconfig-a006-20210112
+i386                 randconfig-a003-20210112
+i386                 randconfig-a001-20210112
+i386                 randconfig-a004-20210112
+i386                 randconfig-a002-20210111
+i386                 randconfig-a005-20210111
+i386                 randconfig-a006-20210111
+i386                 randconfig-a001-20210111
+i386                 randconfig-a003-20210111
+i386                 randconfig-a004-20210111
+i386                 randconfig-a002-20210110
+i386                 randconfig-a005-20210110
+i386                 randconfig-a006-20210110
+i386                 randconfig-a001-20210110
+i386                 randconfig-a003-20210110
+i386                 randconfig-a004-20210110
+x86_64               randconfig-a015-20210112
+x86_64               randconfig-a012-20210112
+x86_64               randconfig-a013-20210112
+x86_64               randconfig-a016-20210112
+x86_64               randconfig-a014-20210112
+x86_64               randconfig-a011-20210112
+x86_64               randconfig-a015-20210110
+x86_64               randconfig-a012-20210110
+x86_64               randconfig-a013-20210110
+x86_64               randconfig-a016-20210110
+x86_64               randconfig-a014-20210110
+x86_64               randconfig-a011-20210110
+i386                 randconfig-a012-20210112
+i386                 randconfig-a011-20210112
+i386                 randconfig-a016-20210112
+i386                 randconfig-a013-20210112
+i386                 randconfig-a015-20210112
+i386                 randconfig-a014-20210112
+i386                 randconfig-a012-20210111
+i386                 randconfig-a011-20210111
+i386                 randconfig-a016-20210111
+i386                 randconfig-a015-20210111
+i386                 randconfig-a013-20210111
+i386                 randconfig-a014-20210111
+riscv                    nommu_k210_defconfig
+riscv                            allyesconfig
+riscv                    nommu_virt_defconfig
+riscv                             allnoconfig
+riscv                               defconfig
+riscv                          rv32_defconfig
+riscv                            allmodconfig
+x86_64                                   rhel
+x86_64                           allyesconfig
+x86_64                    rhel-7.6-kselftests
+x86_64                              defconfig
+x86_64                               rhel-8.3
+x86_64                      rhel-8.3-kbuiltin
+x86_64                                  kexec
 
-Are you on the debian-powerpc mailing list? If not, please subscribe and post
-your issues there:
+clang tested configs:
+x86_64               randconfig-a006-20210112
+x86_64               randconfig-a004-20210112
+x86_64               randconfig-a001-20210112
+x86_64               randconfig-a005-20210112
+x86_64               randconfig-a003-20210112
+x86_64               randconfig-a002-20210112
 
-> https://lists.debian.org/debian-powerpc/
-
-> Given however that the Debian PowerPC port has a proper maintainer again
-> (kudos to Adrian!) and there is also another new PowerPC distro (Void Linux),
-> I would like to ask for a period of grace. After all this is just a hobby
-> project for me, so keeping up with the pace of the Linux development isn't
-> always that easy (and no, work on this did not stop in 2009, but shifted more
-> towards distro support since then).
-
-Yeah, I have the same impression that's the strong commercial interest pushes
-hobbyist use of the Linux kernel a bit down. A lot of these changes feel like
-they're motivated by corporate decisions.
-
-There has to be a healthy balance between hobbyist and commercial use. I understand
-that from a commercial point of view, it doesn't make much sense to run Linux
-on a 30-year-old computer. But it's a hobbyist project for many people and hacking
-Linux stuff for these old machines has a very entertaining and educational factor.
-
-Plus, as Thomas Bogendoerfer already mentioned in this thread, most of the old ports
-run just fine. I have an Alpha XP-1000 building Debian packages for the Debian
-Alpha port and it runs 24/7 without a hick and is regularly kept up-to-date with
-dist-upgrades.
-
-Adrian
-
--- 
- .''`.  John Paul Adrian Glaubitz
-: :' :  Debian Developer - glaubitz@debian.org
-`. `'   Freie Universitaet Berlin - glaubitz@physik.fu-berlin.de
-  `-    GPG: 62FF 8A75 84E0 2956 9546  0006 7426 3B37 F5B5 F913
-
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
