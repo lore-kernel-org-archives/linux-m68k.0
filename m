@@ -2,294 +2,148 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.8 required=3.0 tests=BAYES_00,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-5.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
+	SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id ADF5EC43219
-	for <linux-m68k@archiver.kernel.org>; Tue, 12 Jan 2021 21:49:28 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B5174C433E0
+	for <linux-m68k@archiver.kernel.org>; Tue, 12 Jan 2021 22:46:59 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 8019620720
-	for <linux-m68k@archiver.kernel.org>; Tue, 12 Jan 2021 21:49:28 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 7685923130
+	for <linux-m68k@archiver.kernel.org>; Tue, 12 Jan 2021 22:46:59 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728392AbhALVs2 (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Tue, 12 Jan 2021 16:48:28 -0500
-Received: from mga07.intel.com ([134.134.136.100]:34092 "EHLO mga07.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2393333AbhALVgX (ORCPT <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Tue, 12 Jan 2021 16:36:23 -0500
-IronPort-SDR: pCUkpd2S58qrm1sLJuv5vtcIHzgocwkaztZ8iMbKxO8rfv9qtUfpoVdD7EUuLH8VYbmwhy5AV2
- pfdyNuKaXCXg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9862"; a="242181466"
-X-IronPort-AV: E=Sophos;i="5.79,342,1602572400"; 
-   d="scan'208";a="242181466"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Jan 2021 13:35:40 -0800
-IronPort-SDR: LktkyGWe/40AhlFa6d8dIwDSGuCfs8ID+kiQIW7D6C/413LtFu8AH0gq2hRqUgB3G0mRzzMfo/
- rMCl0rZelRfw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.79,342,1602572400"; 
-   d="scan'208";a="464667012"
-Received: from lkp-server01.sh.intel.com (HELO b73930e00c65) ([10.239.97.150])
-  by fmsmga001.fm.intel.com with ESMTP; 12 Jan 2021 13:35:38 -0800
-Received: from kbuild by b73930e00c65 with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1kzRKE-0000V9-8a; Tue, 12 Jan 2021 21:35:38 +0000
-Date:   Wed, 13 Jan 2021 05:35:20 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     linux-m68k@lists.linux-m68k.org
-Subject: [m68k:master] BUILD SUCCESS
- c941d009e8721648ba8eb1f5226125c3808a6cfe
-Message-ID: <5ffe1618.e5VEWCEjqR2pCPc6%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+        id S2438452AbhALWq7 (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Tue, 12 Jan 2021 17:46:59 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60238 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2436979AbhALWq6 (ORCPT
+        <rfc822;linux-m68k@lists.linux-m68k.org>);
+        Tue, 12 Jan 2021 17:46:58 -0500
+Received: from mail-lj1-x232.google.com (mail-lj1-x232.google.com [IPv6:2a00:1450:4864:20::232])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3627CC061794
+        for <linux-m68k@lists.linux-m68k.org>; Tue, 12 Jan 2021 14:46:18 -0800 (PST)
+Received: by mail-lj1-x232.google.com with SMTP id f17so323658ljg.12
+        for <linux-m68k@lists.linux-m68k.org>; Tue, 12 Jan 2021 14:46:18 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=g5sjkYmyNIlLJA59o61REHb8AKH1ySCBTcd6TLDoHDc=;
+        b=xk4F4JXWKJvoVpvkPcSF5eOSsKbrWU8dsBWmaz4aN0AbwvRerrH5HBxxf1LHNcBIGw
+         QhkRj0JMG3aU9rPaPuRZAbObV5TkPpyUjtw9Atlzn4WvUP/tOd7Qvu3iEP6FF0YSPnjz
+         yxorRvN3uiBmfI4ZHIvy5wSjUoAMzaKln49FJjB4+1y0WhrIgn+zw0LEFpuJAK1kOGjk
+         r3xeX+Zii+h4Tl0n3Tz8DkUcXZWP93xTFyEmftDLFhsDxQfgncMphsP7ACU0SaSXAQHl
+         J80ndUCEZfp2SvAiNRhNy8aBidHGFJ8u/EN1yXphTHrlSc+qcgh8Mv89Knes1Te+jiIv
+         WBmw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=g5sjkYmyNIlLJA59o61REHb8AKH1ySCBTcd6TLDoHDc=;
+        b=EHsi0/w2HitmfXP52x6X8snTUg/I4bCY5K7PBzZeQEIVxV8cnRUxt6pD+ehlatOe79
+         BnbMiPHRVgpenNyApsrh5g1gTf4T8ojMTZAU/CIpiaPQ/2zWCEs3C5V+iBCwI/OrzIIF
+         nJXcKEW6Dgu4KdqCda0dbYxi6HBjRMZu7y5rkCQnBkWlS3T8e3aT7wXNA2aT+AHNUXcq
+         reDIzljQG6dFGzSRLfvQ6WSHOyQZgSi3JFKHWgivqdscZbZqwEcFptdubwMz/o7sXbzF
+         zwQIyFJfL7mHUkLFWUF39X8zMR/TiYWKSxD5vM3AyGtVjcyrsx0CelRMVt8I8G0XqgKm
+         Bh0Q==
+X-Gm-Message-State: AOAM5306SEHibh17hg6JTcoDUwUYhh3RrQeWrBJHjn/pqSR77YBO4zSV
+        fMy2F99XW6tAv7B20jut1ZfM6zmE3/UXpPamrjQsUQ==
+X-Google-Smtp-Source: ABdhPJwB3XyCjodEyq4bELvSnFhLnKRKxthkfxIxeufYbeb5jjdzhJQrfu4eGAlRygt4g3EP31A/7cLluJ99FomQpIc=
+X-Received: by 2002:a2e:586:: with SMTP id 128mr634078ljf.273.1610491576669;
+ Tue, 12 Jan 2021 14:46:16 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+References: <ef1dc21f-694b-2433-e1c6-aa121320173e@physik.fu-berlin.de>
+ <f48bcf43-9dcc-e48b-d29d-f75f3814398b@gmx.net> <cb5a2e11-d423-96ec-3d43-3568a109e37f@physik.fu-berlin.de>
+In-Reply-To: <cb5a2e11-d423-96ec-3d43-3568a109e37f@physik.fu-berlin.de>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Tue, 12 Jan 2021 23:46:04 +0100
+Message-ID: <CACRpkda4E2NwNw29J7x5gehtqn_m3M_Z2dHpc7xRgvb0b-p22A@mail.gmail.com>
+Subject: Re: Old platforms: bring out your dead
+To:     John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
+Cc:     Gerhard Pircher <gerhard_pircher@gmx.net>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-m68k <linux-m68k@lists.linux-m68k.org>,
+        Sparc kernel list <sparclinux@vger.kernel.org>,
+        Linux-sh list <linux-sh@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/geert/linux-m68k.git  master
-branch HEAD: c941d009e8721648ba8eb1f5226125c3808a6cfe  Merge tag 'v5.11-rc3'
+On Tue, Jan 12, 2021 at 3:45 PM John Paul Adrian Glaubitz
+<glaubitz@physik.fu-berlin.de> wrote:
 
-elapsed time: 796m
+> Yeah, I have the same impression that's the strong commercial interest pu=
+shes
+> hobbyist use of the Linux kernel a bit down. A lot of these changes feel =
+like
+> they're motivated by corporate decisions.
+>
+> There has to be a healthy balance between hobbyist and commercial use. I =
+understand
+> that from a commercial point of view, it doesn't make much sense to run L=
+inux
+> on a 30-year-old computer. But it's a hobbyist project for many people an=
+d hacking
+> Linux stuff for these old machines has a very entertaining and educationa=
+l factor.
 
-configs tested: 224
-configs skipped: 2
+This is actually one of the most interesting things written in this discuss=
+ion.
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+I have both revamped and deleted subarchitectures in the ARM tree. We
+never deleted anyone's pet project *unless* they were clearly unwilling to
+work on it (such as simply testning new patches) and agreed that it will
+not go on.
 
-gcc tested configs:
-arm                                 defconfig
-arm64                            allyesconfig
-arm64                               defconfig
-arm                              allyesconfig
-arm                              allmodconfig
-sh                           se7206_defconfig
-um                            kunit_defconfig
-sh                               allmodconfig
-sh                          r7780mp_defconfig
-powerpc                       ebony_defconfig
-c6x                         dsk6455_defconfig
-mips                         tb0226_defconfig
-powerpc                     akebono_defconfig
-powerpc                  mpc866_ads_defconfig
-mips                         db1xxx_defconfig
-mips                           rs90_defconfig
-powerpc                mpc7448_hpc2_defconfig
-xtensa                  cadence_csp_defconfig
-arm                    vt8500_v6_v7_defconfig
-powerpc                   motionpro_defconfig
-c6x                        evmc6678_defconfig
-m68k                       m5275evb_defconfig
-h8300                               defconfig
-arm                         shannon_defconfig
-sparc64                             defconfig
-arm                            xcep_defconfig
-arm                            hisi_defconfig
-powerpc                     tqm8548_defconfig
-mips                           jazz_defconfig
-powerpc                      cm5200_defconfig
-arm                          iop32x_defconfig
-powerpc                 mpc8540_ads_defconfig
-powerpc                     ep8248e_defconfig
-mips                    maltaup_xpa_defconfig
-arm                          collie_defconfig
-arc                     nsimosci_hs_defconfig
-arm                         cm_x300_defconfig
-m68k                       m5475evb_defconfig
-ia64                          tiger_defconfig
-mips                      loongson3_defconfig
-m68k                          amiga_defconfig
-mips                        qi_lb60_defconfig
-ia64                         bigsur_defconfig
-powerpc                 mpc836x_mds_defconfig
-sh                           se7780_defconfig
-sh                          sdk7786_defconfig
-arm                         mv78xx0_defconfig
-arm                          tango4_defconfig
-powerpc                      walnut_defconfig
-mips                           mtx1_defconfig
-powerpc                      arches_defconfig
-powerpc                      ppc6xx_defconfig
-arm                            lart_defconfig
-arm                         lubbock_defconfig
-arm                     am200epdkit_defconfig
-mips                        bcm47xx_defconfig
-ia64                      gensparse_defconfig
-h8300                     edosk2674_defconfig
-arm                           h5000_defconfig
-sh                  sh7785lcr_32bit_defconfig
-mips                        bcm63xx_defconfig
-sh                      rts7751r2d1_defconfig
-arm                          moxart_defconfig
-openrisc                  or1klitex_defconfig
-arm                        magician_defconfig
-arm                           corgi_defconfig
-sh                          r7785rp_defconfig
-powerpc                       eiger_defconfig
-m68k                            mac_defconfig
-arm                       spear13xx_defconfig
-sh                                  defconfig
-mips                      malta_kvm_defconfig
-sh                ecovec24-romimage_defconfig
-mips                        maltaup_defconfig
-sh                        dreamcast_defconfig
-nios2                         3c120_defconfig
-sh                             espt_defconfig
-arm                      footbridge_defconfig
-powerpc                 canyonlands_defconfig
-sh                     magicpanelr2_defconfig
-arm                           h3600_defconfig
-m68k                         amcore_defconfig
-sh                            shmin_defconfig
-c6x                        evmc6472_defconfig
-sh                              ul2_defconfig
-powerpc                    socrates_defconfig
-um                           x86_64_defconfig
-arm                         palmz72_defconfig
-arm                         assabet_defconfig
-powerpc                     stx_gp3_defconfig
-sh                   rts7751r2dplus_defconfig
-sh                           se7722_defconfig
-powerpc                 mpc834x_itx_defconfig
-csky                             alldefconfig
-arm                           omap1_defconfig
-mips                         cobalt_defconfig
-m68k                       bvme6000_defconfig
-arm                        cerfcube_defconfig
-sh                             shx3_defconfig
-m68k                           sun3_defconfig
-powerpc                  storcenter_defconfig
-sparc64                          alldefconfig
-powerpc                     kmeter1_defconfig
-xtensa                  nommu_kc705_defconfig
-mips                           xway_defconfig
-csky                                defconfig
-arm                          prima2_defconfig
-arm                           stm32_defconfig
-arc                           tb10x_defconfig
-arc                              alldefconfig
-mips                 decstation_r4k_defconfig
-powerpc                      mgcoge_defconfig
-powerpc                       ppc64_defconfig
-mips                       rbtx49xx_defconfig
-powerpc                      makalu_defconfig
-mips                           ip27_defconfig
-arm                       cns3420vb_defconfig
-parisc                generic-32bit_defconfig
-arm                             rpc_defconfig
-powerpc                      bamboo_defconfig
-arm                          ixp4xx_defconfig
-arm                         hackkit_defconfig
-m68k                          atari_defconfig
-arm                              zx_defconfig
-powerpc                          g5_defconfig
-ia64                             allmodconfig
-ia64                                defconfig
-ia64                             allyesconfig
-m68k                             allmodconfig
-m68k                                defconfig
-m68k                             allyesconfig
-nios2                               defconfig
-arc                              allyesconfig
-nds32                             allnoconfig
-c6x                              allyesconfig
-nds32                               defconfig
-nios2                            allyesconfig
-alpha                               defconfig
-alpha                            allyesconfig
-xtensa                           allyesconfig
-h8300                            allyesconfig
-arc                                 defconfig
-parisc                              defconfig
-s390                             allyesconfig
-parisc                           allyesconfig
-s390                                defconfig
-i386                             allyesconfig
-sparc                            allyesconfig
-sparc                               defconfig
-i386                               tinyconfig
-i386                                defconfig
-mips                             allyesconfig
-mips                             allmodconfig
-powerpc                          allyesconfig
-powerpc                          allmodconfig
-powerpc                           allnoconfig
-x86_64               randconfig-a004-20210111
-x86_64               randconfig-a006-20210111
-x86_64               randconfig-a001-20210111
-x86_64               randconfig-a003-20210111
-x86_64               randconfig-a005-20210111
-x86_64               randconfig-a002-20210111
-i386                 randconfig-a002-20210112
-i386                 randconfig-a005-20210112
-i386                 randconfig-a006-20210112
-i386                 randconfig-a003-20210112
-i386                 randconfig-a001-20210112
-i386                 randconfig-a004-20210112
-i386                 randconfig-a002-20210111
-i386                 randconfig-a005-20210111
-i386                 randconfig-a006-20210111
-i386                 randconfig-a001-20210111
-i386                 randconfig-a003-20210111
-i386                 randconfig-a004-20210111
-i386                 randconfig-a002-20210110
-i386                 randconfig-a005-20210110
-i386                 randconfig-a006-20210110
-i386                 randconfig-a001-20210110
-i386                 randconfig-a003-20210110
-i386                 randconfig-a004-20210110
-x86_64               randconfig-a015-20210112
-x86_64               randconfig-a012-20210112
-x86_64               randconfig-a013-20210112
-x86_64               randconfig-a016-20210112
-x86_64               randconfig-a014-20210112
-x86_64               randconfig-a011-20210112
-i386                 randconfig-a012-20210112
-i386                 randconfig-a011-20210112
-i386                 randconfig-a016-20210112
-i386                 randconfig-a013-20210112
-i386                 randconfig-a015-20210112
-i386                 randconfig-a014-20210112
-i386                 randconfig-a012-20210111
-i386                 randconfig-a011-20210111
-i386                 randconfig-a016-20210111
-i386                 randconfig-a015-20210111
-i386                 randconfig-a013-20210111
-i386                 randconfig-a014-20210111
-riscv                    nommu_k210_defconfig
-riscv                            allyesconfig
-riscv                    nommu_virt_defconfig
-riscv                             allnoconfig
-riscv                               defconfig
-riscv                          rv32_defconfig
-riscv                            allmodconfig
-x86_64                                   rhel
-x86_64                           allyesconfig
-x86_64                    rhel-7.6-kselftests
-x86_64                              defconfig
-x86_64                               rhel-8.3
-x86_64                      rhel-8.3-kbuiltin
-x86_64                                  kexec
+At multiple occasions I actually found it easier to fix stuff than
+delete it, both because it is a nicer thing to do and because it
+simply creates less social problems, often to the point that the time
+(man hours) spent trying to solve the resulting social problems from
+deleting a platform would be longer than the time spent actually acquiring
+the physical platform and fixing it.
 
-clang tested configs:
-x86_64               randconfig-a006-20210112
-x86_64               randconfig-a004-20210112
-x86_64               randconfig-a001-20210112
-x86_64               randconfig-a005-20210112
-x86_64               randconfig-a003-20210112
-x86_64               randconfig-a002-20210112
-x86_64               randconfig-a015-20210111
-x86_64               randconfig-a012-20210111
-x86_64               randconfig-a013-20210111
-x86_64               randconfig-a016-20210111
-x86_64               randconfig-a014-20210111
-x86_64               randconfig-a011-20210111
+Corporate entities can be a bit deletionist (using Wikipedia terminology)
+and as in this thread there is always a strong inclusionist stance pushing
+back to that.
 
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+The explanation is in my mind very simply that running Linux
+on a 35-yo or so Amiga, Atari or Apollo Workstation is pretty impressive an=
+d
+fun. And I think that fits Mr. Torvalds own sociological-or-something
+explanation in the autobiographical "Just for fun" as to why to write it
+in the first place. And we are very protective of that quality of the
+kernel. (At least I am.)
+
+That said there are a three things that people should really be doing if th=
+ey
+want to keep their pet archs/subarchs around as good community
+members, and they are in essence to:
+
+1. Test and review/ack patches that others make
+
+2. Migrate existing drivers to newly appeared and
+    appropriate subsystems (I think there are some hacky heartbeat LED
+    drivers down in arch/* for example) there is also the feature matrix
+    core maintainers like and which appears if you type
+    Documentation/features/list-arch.sh <archname>
+    would be nice if you work on them if you can support them!
+    Or at least take a look.
+
+3. Migrate old systems to use the
+   contemporary hardware descriptions (such as device tree or ACPI)
+   because it makes things so much easier to maintain. Some
+   upfront work, but a great win for everyone. Especially for
+   subsystem maintainers.
+
+And if your arch uses highmem then please get rid of highmem. I'm
+trying to do this a bit right now for ARM let's see how it goes.
+
+I understand that for some maintainers time is a factor and this list
+feels stressful. I'd say relax, but it'd be nice if you have a TODO that
+you cross items off of.
+
+Just my =E2=82=AC0.01
+Linus Walleij
