@@ -2,99 +2,117 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.8 required=3.0 tests=BAYES_00,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-6.2 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B8B51C433E6
-	for <linux-m68k@archiver.kernel.org>; Wed, 13 Jan 2021 08:31:10 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id BD824C433E0
+	for <linux-m68k@archiver.kernel.org>; Wed, 13 Jan 2021 10:40:45 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 6B6CC2333F
-	for <linux-m68k@archiver.kernel.org>; Wed, 13 Jan 2021 08:31:10 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 7D6CF2339F
+	for <linux-m68k@archiver.kernel.org>; Wed, 13 Jan 2021 10:40:45 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726830AbhAMIbJ (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Wed, 13 Jan 2021 03:31:09 -0500
-Received: from mail-ot1-f50.google.com ([209.85.210.50]:33892 "EHLO
-        mail-ot1-f50.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726288AbhAMIbJ (ORCPT
-        <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Wed, 13 Jan 2021 03:31:09 -0500
-Received: by mail-ot1-f50.google.com with SMTP id a109so1200412otc.1
-        for <linux-m68k@lists.linux-m68k.org>; Wed, 13 Jan 2021 00:30:53 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=VerylV3C6Oqo66H4kYjNAQFsHeQf/aqmpm/swUaIPDA=;
-        b=fSfX5E5frvJsoRImBS0FxK+AxrlqkbQT/W648WqfJnPl5NDNW8sKhpxK2kryZwl/1s
-         gahcRPu4PmGgePXLdg+yxmqEMUpyf8opghLEuT1skmzPJJlfyswZBGQE54QTvZ33qI0F
-         F0WabUfJqNFm1Rt2x5R24IWNKFymf5vQcSaRosArv2LQBbfWxlY6cQIwcvcBzcM3vn10
-         Ru/+m5ozlseN77cT0Ga695dxkaQcFxfVDsHv49wYwct73nW7ZSwVJ4lkUxxrR0uOlrLT
-         QoaGWF+XAB2uVAIVmA4kZWPt+3adQr8BF/Ru1cCkIj5O5MyrMwJC6qOQZuHn9IJ0iHJ6
-         VN0A==
-X-Gm-Message-State: AOAM530VAkKfbAUMum7ZUyfsr2DdcvVJjQpg+NymsqZC9ReTRdSCnfmU
-        QiOlLBhJp7gW46AX5lTpm5ZY6kM+Xw8aGMO93K0=
-X-Google-Smtp-Source: ABdhPJyIN1vpdIV46KqwW/iEfulHBUYAUBAc/YRw4mm9/HbbklDKAesFiKIKPf1nhUOWQBIi818J1OQTzD1W+Gn1z8s=
-X-Received: by 2002:a05:6830:1f5a:: with SMTP id u26mr537624oth.250.1610526628288;
- Wed, 13 Jan 2021 00:30:28 -0800 (PST)
+        id S1726017AbhAMKk2 (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Wed, 13 Jan 2021 05:40:28 -0500
+Received: from mail.kernel.org ([198.145.29.99]:35270 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725681AbhAMKk2 (ORCPT <rfc822;linux-m68k@lists.linux-m68k.org>);
+        Wed, 13 Jan 2021 05:40:28 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 928952339F
+        for <linux-m68k@lists.linux-m68k.org>; Wed, 13 Jan 2021 10:39:47 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1610534387;
+        bh=4XG7y1VBPGl7jG0P2w9EDswQ9VedSZfg2eDSLDFC8CM=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=HxIK66UO9a/QH8CSj9DjuHrgi8ATLCtowiKjTb3wHq/GtvxkE7W4nCS6ADOgX+cm4
+         Tj5BJZp3WZ1n4r+EqXfIyOVqHf27m2xIoYMuFU5TXBl0WA0f6cVY0KL6eSHImKjxyj
+         GgZDTpUoyyRsX5NZSds1AuiCd93AxvYPsody/xngFSDxcLyzAIhRBgpP1XlB/lk/Sv
+         h0Zq1foFu+6qecQ6OWAfA91m8H6DgxT8218OJu75mJfUvK8qaTqHpJ69a531Nnmxh/
+         VpT+iZChdWp4WmX+v9AUBLvPG0JA4YEmXEuXfRqob0N8iaz1aJUgym5WJ4semSaBGc
+         1xY4c44auJrQA==
+Received: by mail-ot1-f48.google.com with SMTP id x13so1435246oto.8
+        for <linux-m68k@lists.linux-m68k.org>; Wed, 13 Jan 2021 02:39:47 -0800 (PST)
+X-Gm-Message-State: AOAM530ifY6wHN+yYQaoiym3LbrIuFEELt0WWPq/6UHn7dMGz24+o4/Z
+        9IteI+D+XHDCDTsEmRpMxzmh/nzMhS2bBU58T/Q=
+X-Google-Smtp-Source: ABdhPJxAcIgx9kT+7MQRw8jch2NBgw6/I/5Hq0Yvch2nwTkrg84SnU3bFvE4E1ecVMrPTxEfUWq9LY1jxHYyFJN828c=
+X-Received: by 2002:a05:6830:1e14:: with SMTP id s20mr765480otr.210.1610534386762;
+ Wed, 13 Jan 2021 02:39:46 -0800 (PST)
 MIME-Version: 1.0
-References: <5ffe161f.9I/JUOwwZ9adISdw%lkp@intel.com>
-In-Reply-To: <5ffe161f.9I/JUOwwZ9adISdw%lkp@intel.com>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Wed, 13 Jan 2021 09:30:17 +0100
-Message-ID: <CAMuHMdVs4fGG5k_BL=BEPHOkY2kMb7o8jFxO80Eg2yf_ypuLfw@mail.gmail.com>
-Subject: Re: [m68k:m68k-queue] BUILD SUCCESS 069e2573efc3884d5b93f2fd35a9caefafc2132b
-To:     kbuild test robot <lkp@intel.com>
-Cc:     linux-m68k <linux-m68k@lists.linux-m68k.org>
+References: <ef1dc21f-694b-2433-e1c6-aa121320173e@physik.fu-berlin.de>
+ <f48bcf43-9dcc-e48b-d29d-f75f3814398b@gmx.net> <cb5a2e11-d423-96ec-3d43-3568a109e37f@physik.fu-berlin.de>
+ <CACRpkda4E2NwNw29J7x5gehtqn_m3M_Z2dHpc7xRgvb0b-p22A@mail.gmail.com>
+In-Reply-To: <CACRpkda4E2NwNw29J7x5gehtqn_m3M_Z2dHpc7xRgvb0b-p22A@mail.gmail.com>
+From:   Arnd Bergmann <arnd@kernel.org>
+Date:   Wed, 13 Jan 2021 11:39:29 +0100
+X-Gmail-Original-Message-ID: <CAK8P3a3hKSVXZEjQEbkOLhtAO0oR0+UP1dL10S3jQM72EsmsWA@mail.gmail.com>
+Message-ID: <CAK8P3a3hKSVXZEjQEbkOLhtAO0oR0+UP1dL10S3jQM72EsmsWA@mail.gmail.com>
+Subject: Re: Old platforms: bring out your dead
+To:     Linus Walleij <linus.walleij@linaro.org>
+Cc:     John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
+        Gerhard Pircher <gerhard_pircher@gmx.net>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-m68k <linux-m68k@lists.linux-m68k.org>,
+        Sparc kernel list <sparclinux@vger.kernel.org>,
+        Linux-sh list <linux-sh@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-Hi kernel test robot:
-
-Thanks for your report!
-
-On Tue, Jan 12, 2021 at 10:35 PM kernel test robot <lkp@intel.com> wrote:
-> tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/geert/linux-m68k.git  m68k-queue
-> branch HEAD: 069e2573efc3884d5b93f2fd35a9caefafc2132b  m68k: defconfig: Enable Atari EtherNAT and NetUSBee USB support
+On Tue, Jan 12, 2021 at 11:46 PM Linus Walleij <linus.walleij@linaro.org> wrote:
 >
-> elapsed time: 798m
+> On Tue, Jan 12, 2021 at 3:45 PM John Paul Adrian Glaubitz
+> <glaubitz@physik.fu-berlin.de> wrote:
 >
-> configs tested: 237
-> configs skipped: 2
-
-Comparing this to your other email:
-
-> tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/geert/linux-m68k.git  master
-> branch HEAD: c941d009e8721648ba8eb1f5226125c3808a6cfe  Merge tag 'v5.11-rc3'
+> > Yeah, I have the same impression that's the strong commercial interest pushes
+> > hobbyist use of the Linux kernel a bit down. A lot of these changes feel like
+> > they're motivated by corporate decisions.
+> >
+> > There has to be a healthy balance between hobbyist and commercial use. I understand
+> > that from a commercial point of view, it doesn't make much sense to run Linux
+> > on a 30-year-old computer. But it's a hobbyist project for many people and hacking
+> > Linux stuff for these old machines has a very entertaining and educational factor.
 >
-> elapsed time: 796m
+> This is actually one of the most interesting things written in this discussion.
 >
-> configs tested: 224
-> configs skipped: 2
+> I have both revamped and deleted subarchitectures in the ARM tree. We
+> never deleted anyone's pet project *unless* they were clearly unwilling to
+> work on it (such as simply testning new patches) and agreed that it will
+> not go on.
+>
+> At multiple occasions I actually found it easier to fix stuff than
+> delete it, both because it is a nicer thing to do and because it
+> simply creates less social problems, often to the point that the time
+> (man hours) spent trying to solve the resulting social problems from
+> deleting a platform would be longer than the time spent actually acquiring
+> the physical platform and fixing it.
+>
+> Corporate entities can be a bit deletionist (using Wikipedia terminology)
+> and as in this thread there is always a strong inclusionist stance pushing
+> back to that.
 
-I deduce you're still doing separate builds for m68k/master and m68k/queue.
-As both branches should have the same source tree contents, both
-branches point to the same tree object:
+It's usually one of two things that happened before a platform gets
+deleted for good:
 
-$ git cat-file commit $(git show -s --format="%h" master) | grep tree
-tree 5a8b647f6c7b356475d900715c6ca2d416b36377
-$ git cat-file commit $(git show -s --format="%h" master) | grep tree
-tree 5a8b647f6c7b356475d900715c6ca2d416b36377
+* The platform port was (almost) exclusively done by one company
+   with a commercial interest in it, and the company shifts its priorities
+   for some reason (acquisition, bankruptcy, product cancellation,
+   accidentally laying off all competent developers, ...) that causes it to
+   stop working on it. Sometimes the previously paid maintainers
+   keep up their upstream position, but without someone pushing the
+   last missing bits into an official release, users are stuck on an old
+   BSP kernel.
 
-and you could save some cycles by only building one of them.
-The same may be true for other trees.
+* A platform port is done in the open and actually works for upstream
+  users, but over time the last active maintainers move on in their
+  lives. Complex platforms inevitably break when a treewide change
+  goes wrong, so we rely on users that are able to bisect and report
+  bugs when they happen. After a platform has been broken for
+  too long, even competent users may decide to just give up and
+  stay on their last working kernel. Some of these platforms eventually
+  recover when a new maintainer steps up or someone discovers they
+  depend on newer kernels for products, but after a few years it's
+  usually beyond repair.
 
-Gr{oetje,eeting}s,
-
-                        Geert
-
-
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+      Arnd
