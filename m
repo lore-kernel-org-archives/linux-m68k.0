@@ -2,103 +2,66 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-6.2 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-5.2 required=3.0 tests=BAYES_00,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 73674C433DB
-	for <linux-m68k@archiver.kernel.org>; Fri, 15 Jan 2021 08:32:57 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 018C5C433DB
+	for <linux-m68k@archiver.kernel.org>; Fri, 15 Jan 2021 18:31:56 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 34AF522597
-	for <linux-m68k@archiver.kernel.org>; Fri, 15 Jan 2021 08:32:57 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id C560A23A58
+	for <linux-m68k@archiver.kernel.org>; Fri, 15 Jan 2021 18:31:55 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729761AbhAOIcw (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Fri, 15 Jan 2021 03:32:52 -0500
-Received: from mail.kernel.org ([198.145.29.99]:57134 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726817AbhAOIcw (ORCPT <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Fri, 15 Jan 2021 03:32:52 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A73D72336E
-        for <linux-m68k@lists.linux-m68k.org>; Fri, 15 Jan 2021 08:32:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1610699530;
-        bh=l+vS3UHXXMrTJUBoLO6zBmJwtTma5Au1XHnUzyN4zW4=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=mTMCN0X3oCQgUbwZMAHO0vL3f6cxtUsRT65kSyGPT+GXs3QkYrfXawcTRCWViqOZO
-         1LdEl4aYVgSnElv5L+bIM1numvEjmB34RIgsXX5XpGlM6TvImsWwkRn3GVRcuLSkpH
-         /2ds2Ev+bEJPiooSiogiv7dTfiVla3XwoXFDgdqcmB3zcdKkRJE0SPK1CXkkA7YbDw
-         P9lfMRsGOuF7A5J0sfUWSVEj/qZXg9zM1WPb6lvqM8BOYNQ62vEUpXpInb7aLdCyth
-         9g4wDW7hUH8X2JZ5earEN2Q9UsTEuo2IdJSeJ9Te8t7xm4uI/7uz5WGNC1LuLsr06F
-         teb1dmHfxHYRQ==
-Received: by mail-ot1-f41.google.com with SMTP id r9so7807608otk.11
-        for <linux-m68k@lists.linux-m68k.org>; Fri, 15 Jan 2021 00:32:10 -0800 (PST)
-X-Gm-Message-State: AOAM532G0B0GrgPrUllqw28YXc1qf7FOo2TBfQ2MQnnOEYh7MYq5myQ4
-        O+qTMFbn5nAC+3m4lL4I4OVPF5zas1gyS5sY9ns=
-X-Google-Smtp-Source: ABdhPJyAZ9w6n+VSogM+tjnZEM6qr0MpVtvpDIkaBLigf9jGDThlrmNDUxXZPg7dZ6Yqzz7x4XxQ8NocTkgvdDdGixg=
-X-Received: by 2002:a9d:7a4b:: with SMTP id z11mr7509680otm.305.1610699529936;
- Fri, 15 Jan 2021 00:32:09 -0800 (PST)
+        id S1727443AbhAOSbz (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Fri, 15 Jan 2021 13:31:55 -0500
+Received: from outpost1.zedat.fu-berlin.de ([130.133.4.66]:37187 "EHLO
+        outpost1.zedat.fu-berlin.de" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726151AbhAOSbz (ORCPT
+        <rfc822;linux-m68k@lists.linux-m68k.org>);
+        Fri, 15 Jan 2021 13:31:55 -0500
+Received: from inpost2.zedat.fu-berlin.de ([130.133.4.69])
+          by outpost.zedat.fu-berlin.de (Exim 4.94)
+          for linux-m68k@lists.linux-m68k.org with esmtps (TLS1.2)
+          tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+          (envelope-from <glaubitz@zedat.fu-berlin.de>)
+          id 1l0TsP-000e0v-Uu; Fri, 15 Jan 2021 19:31:13 +0100
+Received: from pd9f74830.dip0.t-ipconnect.de ([217.247.72.48] helo=[192.168.178.23])
+          by inpost2.zedat.fu-berlin.de (Exim 4.94)
+          for linux-m68k@lists.linux-m68k.org with esmtpsa (TLS1.2)
+          tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+          (envelope-from <glaubitz@physik.fu-berlin.de>)
+          id 1l0TsP-001evV-B3; Fri, 15 Jan 2021 19:31:13 +0100
+To:     linux-m68k <linux-m68k@lists.linux-m68k.org>
+From:   John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
+Subject: Booting Linux on Sun3 machines
+Message-ID: <9fd0f739-1b4b-6ce1-6a02-02375b4b574f@physik.fu-berlin.de>
+Date:   Fri, 15 Jan 2021 19:31:12 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 MIME-Version: 1.0
-References: <ef1dc21f-694b-2433-e1c6-aa121320173e@physik.fu-berlin.de>
- <f48bcf43-9dcc-e48b-d29d-f75f3814398b@gmx.net> <cb5a2e11-d423-96ec-3d43-3568a109e37f@physik.fu-berlin.de>
- <CACRpkda4E2NwNw29J7x5gehtqn_m3M_Z2dHpc7xRgvb0b-p22A@mail.gmail.com>
- <1be37673-db0e-f09d-68c8-f929be4019ab@physik.fu-berlin.de>
- <CAK8P3a1+SdAW8VKnvMdXNVcpR-ykNdPoqLqb59uxzB+jNFJRtg@mail.gmail.com> <CAMo8Bf+geJqaaTkwaRyMUZPJgGC1ELXTdnYGq92UNnaaz2CFVg@mail.gmail.com>
-In-Reply-To: <CAMo8Bf+geJqaaTkwaRyMUZPJgGC1ELXTdnYGq92UNnaaz2CFVg@mail.gmail.com>
-From:   Arnd Bergmann <arnd@kernel.org>
-Date:   Fri, 15 Jan 2021 09:31:53 +0100
-X-Gmail-Original-Message-ID: <CAK8P3a16dta82GOVZCcMgFokB4Mo6y6Vje=+5gUH-t-1ATQYUw@mail.gmail.com>
-Message-ID: <CAK8P3a16dta82GOVZCcMgFokB4Mo6y6Vje=+5gUH-t-1ATQYUw@mail.gmail.com>
-Subject: Re: Old platforms: bring out your dead
-To:     Max Filippov <jcmvbkbc@gmail.com>
-Cc:     John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Gerhard Pircher <gerhard_pircher@gmx.net>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-m68k <linux-m68k@lists.linux-m68k.org>,
-        Sparc kernel list <sparclinux@vger.kernel.org>,
-        Linux-sh list <linux-sh@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Original-Sender: glaubitz@physik.fu-berlin.de
+X-Originating-IP: 217.247.72.48
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-On Fri, Jan 15, 2021 at 12:09 AM Max Filippov <jcmvbkbc@gmail.com> wrote:
-> On Thu, Jan 14, 2021 at 1:25 PM Arnd Bergmann <arnd@kernel.org> wrote:
-> > | arch/mips/Kconfig:config HIGHMEM
-> > | arch/xtensa/Kconfig:config HIGHMEM
-> >
-> > AFAICT On MIPS (prior to MIPS32r3) and xtensa, you have at
-> > most 512MB in the linear map, so the VMSPLIT_2G or VMSPLIT_4G_4G
-> > tricks won't work.
->
-> Regarding xtensa this was done to minimize difference between
-> MMUv2 and MMUv3 virtual memory layouts. MMUv2 has been
-> obsoleted more than 10 years ago, and MMUv3 is much more
-> flexible and can do e.g. 4GB linear map. The only piece of xtensa
-> MMUv2 hardware that I have has 96MB of DRAM which fits into
-> its linear mapping. So maybe it's time to do a cleanup and
-> rearrange virtual memory layout to eliminate the need of highmem.
+Hi!
 
-Yes, I think that sounds like a useful preparation for the future.
+Since Arnd has waved with the axe at the Sun3 port this week, I would like to start
+testing the port to make sure it still boots and if not, we can fix the problems.
 
-> > I have no idea who uses xtensa systems with lots of memory on
-> > modern kernels.
->
-> We definitely use it for development internally at Cadence/Tensilica,
-> mainly on simulators, but also on FPGA boards (e.g. on KC705 we
-> can use all of the 1GB onboard DRAM).
-> In the last few years we've had a few support requests for linux on
-> xtensa cores with MMU, but AFAICT none of them had to deal with
-> more than 512MB of onboard memory.
+I have three Sun3 machines in my basement that I can test the kernel on. However,
+I have zero experience booting these machines, so I was wondering whether anyone
+has booted Linux on these machines in the past and can tell me how that works.
 
-If 1GB of RAM is a useful upper bound on MMUv3, the easiest way is
-probably to hardcode the CONFIG_VMSPLIT_3G_OPT behavior
-from x86 and ARM, using 2.75GB of user addresses (TASK_SIZE),
-and 1.25 GB that gets split between linear map and vmalloc space,
-but no uncached linear map and ioremap() pointing into vmalloc
-instead. If you want to be prepared for machines with 2GB of linear
-lowmem, you could do the same with VMSPLIT_2G_OPT
-(TASK_SIZE == 0x70000000).
+Thanks,
+Adrian
 
-      Arnd
+-- 
+ .''`.  John Paul Adrian Glaubitz
+: :' :  Debian Developer - glaubitz@debian.org
+`. `'   Freie Universitaet Berlin - glaubitz@physik.fu-berlin.de
+  `-    GPG: 62FF 8A75 84E0 2956 9546  0006 7426 3B37 F5B5 F913
