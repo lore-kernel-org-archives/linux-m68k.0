@@ -2,92 +2,160 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.3 required=3.0 tests=BAYES_00,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,NICE_REPLY_A,SPF_HELO_NONE,
-	SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=no autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-3.8 required=3.0 tests=BAYES_00,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
+	autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D8113C433DB
-	for <linux-m68k@archiver.kernel.org>; Fri, 15 Jan 2021 19:08:04 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 89534C43217
+	for <linux-m68k@archiver.kernel.org>; Fri, 15 Jan 2021 20:03:26 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id A4FCD221E2
-	for <linux-m68k@archiver.kernel.org>; Fri, 15 Jan 2021 19:08:04 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 6EF3723A58
+	for <linux-m68k@archiver.kernel.org>; Fri, 15 Jan 2021 20:03:26 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730515AbhAOTHt (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Fri, 15 Jan 2021 14:07:49 -0500
-Received: from outpost1.zedat.fu-berlin.de ([130.133.4.66]:55791 "EHLO
-        outpost1.zedat.fu-berlin.de" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1729560AbhAOTHt (ORCPT
+        id S2388656AbhAOUDK convert rfc822-to-8bit (ORCPT
+        <rfc822;linux-m68k@archiver.kernel.org>);
+        Fri, 15 Jan 2021 15:03:10 -0500
+Received: from eu-smtp-delivery-151.mimecast.com ([185.58.86.151]:23775 "EHLO
+        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2388663AbhAOUDD (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Fri, 15 Jan 2021 14:07:49 -0500
-Received: from inpost2.zedat.fu-berlin.de ([130.133.4.69])
-          by outpost.zedat.fu-berlin.de (Exim 4.94)
-          with esmtps (TLS1.2)
-          tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-          (envelope-from <glaubitz@zedat.fu-berlin.de>)
-          id 1l0UR9-000njT-KG; Fri, 15 Jan 2021 20:07:07 +0100
-Received: from pd9f74830.dip0.t-ipconnect.de ([217.247.72.48] helo=[192.168.178.23])
-          by inpost2.zedat.fu-berlin.de (Exim 4.94)
-          with esmtpsa (TLS1.2)
-          tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-          (envelope-from <glaubitz@physik.fu-berlin.de>)
-          id 1l0UR8-001ixU-W5; Fri, 15 Jan 2021 20:07:07 +0100
-Subject: Re: BigRAMPlus seems to be detected now
-From:   John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
-To:     linux-m68k <linux-m68k@lists.linux-m68k.org>
-Cc:     Debian m68k <debian-68k@lists.debian.org>
-References: <2bde25bc-ce82-8442-92ae-629aaac91935@physik.fu-berlin.de>
-Message-ID: <db240bc7-b552-b3ec-e934-cb06414c174f@physik.fu-berlin.de>
-Date:   Fri, 15 Jan 2021 20:07:06 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+        Fri, 15 Jan 2021 15:03:03 -0500
+Received: from AcuMS.aculab.com (156.67.243.126 [156.67.243.126]) (Using
+ TLS) by relay.mimecast.com with ESMTP id
+ uk-mta-79-PS3OFpBZPgGXINPuMHjjeQ-1; Fri, 15 Jan 2021 20:01:22 +0000
+X-MC-Unique: PS3OFpBZPgGXINPuMHjjeQ-1
+Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) by
+ AcuMS.aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) with Microsoft SMTP
+ Server (TLS) id 15.0.1347.2; Fri, 15 Jan 2021 20:01:15 +0000
+Received: from AcuMS.Aculab.com ([fe80::43c:695e:880f:8750]) by
+ AcuMS.aculab.com ([fe80::43c:695e:880f:8750%12]) with mapi id 15.00.1347.000;
+ Fri, 15 Jan 2021 20:01:15 +0000
+From:   David Laight <David.Laight@ACULAB.COM>
+To:     "'sonicadvance1@gmail.com'" <sonicadvance1@gmail.com>
+CC:     Richard Henderson <rth@twiddle.net>,
+        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
+        Matt Turner <mattst88@gmail.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        "Will Deacon" <will@kernel.org>, Tony Luck <tony.luck@intel.com>,
+        Fenghua Yu <fenghua.yu@intel.com>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        "Michal Simek" <monstr@monstr.eu>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
+        Helge Deller <deller@gmx.de>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        "Benjamin Herrenschmidt" <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        Yoshinori Sato <ysato@users.sourceforge.jp>,
+        Rich Felker <dalias@libc.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Andy Lutomirski <luto@kernel.org>,
+        "Thomas Gleixner" <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>,
+        "Borislav Petkov" <bp@alien8.de>,
+        "x86@kernel.org" <x86@kernel.org>,
+        "H. Peter Anvin" <hpa@zytor.com>, Chris Zankel <chris@zankel.net>,
+        Max Filippov <jcmvbkbc@gmail.com>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Aleksa Sarai <cyphar@cyphar.com>,
+        Xiaoming Ni <nixiaoming@huawei.com>,
+        David Rientjes <rientjes@google.com>,
+        Willem de Bruijn <willemb@google.com>,
+        "Christian Brauner" <christian.brauner@ubuntu.com>,
+        Miklos Szeredi <mszeredi@redhat.com>,
+        Minchan Kim <minchan@kernel.org>,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        "Vincenzo Frascino" <vincenzo.frascino@arm.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Oleg Nesterov <oleg@redhat.com>,
+        YueHaibing <yuehaibing@huawei.com>,
+        "Suren Baghdasaryan" <surenb@google.com>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        Brian Gerst <brgerst@gmail.com>,
+        Dominik Brodowski <linux@dominikbrodowski.net>,
+        Jan Kara <jack@suse.cz>,
+        "Arnaldo Carvalho de Melo" <acme@redhat.com>,
+        "linux-alpha@vger.kernel.org" <linux-alpha@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "linux-ia64@vger.kernel.org" <linux-ia64@vger.kernel.org>,
+        "linux-m68k@lists.linux-m68k.org" <linux-m68k@lists.linux-m68k.org>,
+        "linux-mips@vger.kernel.org" <linux-mips@vger.kernel.org>,
+        "linux-parisc@vger.kernel.org" <linux-parisc@vger.kernel.org>,
+        "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>,
+        "linux-s390@vger.kernel.org" <linux-s390@vger.kernel.org>,
+        "linux-sh@vger.kernel.org" <linux-sh@vger.kernel.org>,
+        "sparclinux@vger.kernel.org" <sparclinux@vger.kernel.org>,
+        "linux-xtensa@linux-xtensa.org" <linux-xtensa@linux-xtensa.org>,
+        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
+        "linux-api@vger.kernel.org" <linux-api@vger.kernel.org>,
+        "linux-arch@vger.kernel.org" <linux-arch@vger.kernel.org>
+Subject: RE: [PATCH] Adds a new ioctl32 syscall for backwards compatibility
+ layers
+Thread-Topic: [PATCH] Adds a new ioctl32 syscall for backwards compatibility
+ layers
+Thread-Index: AQHW6wzXd1V6Thk8U0iiUgMFo8hTJqopEBwA
+Date:   Fri, 15 Jan 2021 20:01:15 +0000
+Message-ID: <b15672b1caec4cf980f2753d06b03596@AcuMS.aculab.com>
+References: <20210106064807.253112-1-Sonicadvance1@gmail.com>
+ <20210115070326.294332-1-Sonicadvance1@gmail.com>
+In-Reply-To: <20210115070326.294332-1-Sonicadvance1@gmail.com>
+Accept-Language: en-GB, en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.202.205.107]
 MIME-Version: 1.0
-In-Reply-To: <2bde25bc-ce82-8442-92ae-629aaac91935@physik.fu-berlin.de>
-Content-Type: text/plain; charset=utf-8
+Authentication-Results: relay.mimecast.com;
+        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: aculab.com
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Original-Sender: glaubitz@physik.fu-berlin.de
-X-Originating-IP: 217.247.72.48
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-Hi!
-
-On 3/7/20 10:00 PM, John Paul Adrian Glaubitz wrote:
-> Hi!
+From: sonicadvance1@gmail.com
+> Sent: 15 January 2021 07:03
+> Problem presented:
+> A backwards compatibility layer that allows running x86-64 and x86
+> processes inside of an AArch64 process.
+>   - CPU is emulated
+>   - Syscall interface is mostly passthrough
+>   - Some syscalls require patching or emulation depending on behaviour
+>   - Not viable from the emulator design to use an AArch32 host process
 > 
-> There is one user in the #debian-68k IRC channel who has tried installing Debian
-> on his A4000 with a A3660 and a BigRAMPlus installed and while the user is currently
-> running into problems with the kernel being stuck, to my surprise, the kernel seems
-> to be able to use and detect the extra memory from the BigRAMPlus (see below).
-> 
-> The kernel is reporting an address conflict though:
-> 
-> [    6.140000] Zorro: Probing AutoConfig expansion devices: 3 devices
-> [    6.150000]  zorro: Address space collision on device Zorro device 12128600 (Individual Computers) [??? 0x50000000-]
-> 
-> The question whether the lock up is caused by the BRP. But since this Amiga has only
-> 16 MB FAST RAM, the user hasn't tested to boot without the BRP yet.
-> 
-> I will dig out my BRP tomorrow and see if it's actually detected in my A4000
-> as well with current kernel versions.
 
-So, it turned out that with "tomorrow" I meant "almost one year later". I found
-my BigRAMPlus now and my Amiga 4000 is up and running at home now - except I'm
-not home at the moment.
+You are going to need to add all the x86 compatibility code into
+your arm64 kernel.
+This is likely to be different from the 32bit arm compatibility
+because 64bit items are only aligned on 32bit boundaries.
+The x86 x32 compatibility will be more like the 32bit arm 'compat'
+code - I'm pretty sure arm32 64bit aligned 64bit data.
 
-Depending on how the Covid-19 situation develops the next days, I will be back
-home and install the BigRAMPlus and verify whether it can be used as RAM these
-days now.
+You'll then need to remember how the process entered the kernel
+to work out which compatibility code to invoke.
+This is what x86 does.
+It allows a single process to do all three types of system call.
 
-Would be great to have 384 MB RAM in my Amiga 4000 ;).
+Trying to 'patch up' structures outside the kernel, or in the
+syscall interface code will always cause grief somewhere.
+The only sane place is in the code that uses the structures.
+Which, for ioctls, means inside the driver that parses them.
 
-Adrian
+	David
 
--- 
- .''`.  John Paul Adrian Glaubitz
-: :' :  Debian Developer - glaubitz@debian.org
-`. `'   Freie Universitaet Berlin - glaubitz@physik.fu-berlin.de
-  `-    GPG: 62FF 8A75 84E0 2956 9546  0006 7426 3B37 F5B5 F913
+-
+Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
+Registration No: 1397386 (Wales)
 
