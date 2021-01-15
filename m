@@ -8,55 +8,55 @@ X-Spam-Status: No, score=-18.5 required=3.0 tests=BAYES_00,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,
 	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E6A61C433E0
-	for <linux-m68k@archiver.kernel.org>; Fri, 15 Jan 2021 07:04:48 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D9A32C433DB
+	for <linux-m68k@archiver.kernel.org>; Fri, 15 Jan 2021 07:18:40 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 9C03021D7A
-	for <linux-m68k@archiver.kernel.org>; Fri, 15 Jan 2021 07:04:48 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 916E622D50
+	for <linux-m68k@archiver.kernel.org>; Fri, 15 Jan 2021 07:18:40 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725880AbhAOHEc (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Fri, 15 Jan 2021 02:04:32 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53094 "EHLO
+        id S1730380AbhAOHSk (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Fri, 15 Jan 2021 02:18:40 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56120 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727663AbhAOHEa (ORCPT
+        with ESMTP id S1729901AbhAOHSj (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Fri, 15 Jan 2021 02:04:30 -0500
-Received: from mail-pf1-x434.google.com (mail-pf1-x434.google.com [IPv6:2607:f8b0:4864:20::434])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8E30DC061757
-        for <linux-m68k@lists.linux-m68k.org>; Thu, 14 Jan 2021 23:03:50 -0800 (PST)
-Received: by mail-pf1-x434.google.com with SMTP id x126so4905790pfc.7
-        for <linux-m68k@lists.linux-m68k.org>; Thu, 14 Jan 2021 23:03:50 -0800 (PST)
+        Fri, 15 Jan 2021 02:18:39 -0500
+Received: from mail-pj1-x102b.google.com (mail-pj1-x102b.google.com [IPv6:2607:f8b0:4864:20::102b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 39CECC061757
+        for <linux-m68k@lists.linux-m68k.org>; Thu, 14 Jan 2021 23:17:59 -0800 (PST)
+Received: by mail-pj1-x102b.google.com with SMTP id my11so5095294pjb.1
+        for <linux-m68k@lists.linux-m68k.org>; Thu, 14 Jan 2021 23:17:59 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=GHiYLWes15995yc06JXjproFwSKI9EhRTzfJK8Em9SI=;
-        b=VuQxLNreZ35kgOv9t50bPmMmRYfdkoMyenmcQ/EDiL+khkwLjA9TiaeWqm8RE+0z5J
-         dJMnoqkNtpJ1vG4fRJ04X1k47+3GXa8DrrEpMY9XbvvaQDogHwCuIKtSthDXdn7B+psV
-         LLMjBR/e+Dkqs27AHDNisqoPuW0e47Zp2vCrNUEJRIsM65Y1hyOF60ujN5G+mVYCqmRt
-         lE+aEa9thbHHIIwH/bcuweSMJ/b5Zp+RON0M0MddkMSsHMojeueLCI6AYwxpCXSqVODX
-         3qjJY+iwd58/bhyAB4Ak0o5l/ViRZO3c3fC0mS1r/UaLnBREjoKNbKdVPsSTW8eGAeJr
-         TlQQ==
+        bh=fDBgTqph7U6sqOSXdt8AcS70Ilsiw0uIpXx8fn1angs=;
+        b=tj4DTccmh3ZQGUeqObnceaG0RemZklXTh5qssoEslhdzP0IvX6IzjS7dNL2lxBOffY
+         HkNStF1IOROuK+FkBE1ipDnikzcP3W2yAFJn1ZFOWrkZpgprx5iXGuk1HuIq/QBpXYpX
+         ZnbYUnkmOaTFPBZdZGwHrMxyPm1CnRftniktjtISvy/bYUG/pY2e4cC6Z/CcR3H73ucr
+         ervLAuU1fFhlXHaeEJEcU8ob7crnGhBqvTu5nFcRFE+cagJQdQIJzcq+VykJi3n9FtKM
+         fKwI4DRLGQtgFnLFMTkA8X00tYzFJ9js1tYR/leJe45ACMHo9kMOAdn3gnEYsucDbWLU
+         MErA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=GHiYLWes15995yc06JXjproFwSKI9EhRTzfJK8Em9SI=;
-        b=fsDoSHMk45TG3bNiVORTr/TOmnkkDoJ4Ab/zB7JFw07s82uZBpX/9BlYSoCWWgE1ek
-         Okodm+TItGR//4kyrsOOADIZYddzdHvx1Prv54H/w4RzXjyaPhu+z9C6guwywtlD1cx5
-         dAy6/nwY/VyXQcKMd7jkPgr4wQfXduL5EYx4VBcHZT3hXbXFTsHiAKAv8THPFzfDyA6Z
-         MiTS8gMs38ohOprqXixapTCX+4qNRTI5JVkla1qeKtJ/2IVcdH9BCNKpdlTMsHN1cJfN
-         zygnTxYOGK8d6TXThpPKPLEhflgUStLufsPSAeLLcfQ9D0x1IamqndbrXJRQLAwZaEhC
-         bD7A==
-X-Gm-Message-State: AOAM5315ytha3mYLk8dnXhbwWm6p3J8Yj+ASzZXqBHBn+V1ZN5biPST0
-        QROYtj8cLEcUzRGOfIUt2Bc=
-X-Google-Smtp-Source: ABdhPJy33sFGOuEJVL/71ZTFrs1JqOaDhD02Tw/th8z46pDfvhRBV6ViKBsRBoDKqTo0JFodgh2g5A==
-X-Received: by 2002:a62:8050:0:b029:19d:e8b4:ba1 with SMTP id j77-20020a6280500000b029019de8b40ba1mr11371438pfd.69.1610694229866;
-        Thu, 14 Jan 2021 23:03:49 -0800 (PST)
+        bh=fDBgTqph7U6sqOSXdt8AcS70Ilsiw0uIpXx8fn1angs=;
+        b=jajN/CKablgfW3J8BDjIM+O+UJiMnyi1QlKTPTtKYj6nvwYFQse9mBoB+Q6jYLjH49
+         7wth69mM+tQFO+Qmtqy7JQkACzbSy1y4XuJwNWz4seU6+O2NUZVA4KP2ayvW5DslYk/d
+         Y+S3sOb16S/6s0swtJDaIkAMG4zlLNnOq4Dgn2BgLaZVRNjUbIR4lXin4VanVz8zLR/w
+         W0bXFcSu0LI7Lu18M3AvZysjuxlNrBmGUKbf8EoRz7OAUOj2VDwkIS7RvyMrrM2x2U+a
+         kZDPEs6rtQVyywr71qxWW+CvLvFC7HTBZWOuQ0nL9X4dE1H5x7q9JALV9i9494nhz6J0
+         /X0Q==
+X-Gm-Message-State: AOAM531Q5sch76o+cP24eNSpK7X34hPkWH7lytfH2/6QXEjZgN4rPklZ
+        8czLRHwHYsqB20vMoYziJwQ=
+X-Google-Smtp-Source: ABdhPJzxCbaWhr5YDOC8CbRfvLQL9StIWqn3Qw30/BIDB8yn3be1W3dAF+FL/5uyfEj6iJOcPD8xNw==
+X-Received: by 2002:a17:90b:368f:: with SMTP id mj15mr8883373pjb.201.1610695078447;
+        Thu, 14 Jan 2021 23:17:58 -0800 (PST)
 Received: from localhost.localdomain (76-242-91-105.lightspeed.sntcca.sbcglobal.net. [76.242.91.105])
-        by smtp.gmail.com with ESMTPSA id h8sm8399086pjc.2.2021.01.14.23.03.45
+        by smtp.gmail.com with ESMTPSA id w1sm7037456pfn.151.2021.01.14.23.17.54
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 14 Jan 2021 23:03:49 -0800 (PST)
+        Thu, 14 Jan 2021 23:17:57 -0800 (PST)
 From:   sonicadvance1@gmail.com
 X-Google-Original-From: Sonicadvance1@gmail.com
 Cc:     Ryan Houdek <Sonicadvance1@gmail.com>,
@@ -90,24 +90,23 @@ Cc:     Ryan Houdek <Sonicadvance1@gmail.com>,
         Alexander Viro <viro@zeniv.linux.org.uk>,
         Arnd Bergmann <arnd@arndb.de>,
         Andrew Morton <akpm@linux-foundation.org>,
+        Willem de Bruijn <willemb@google.com>,
+        Miklos Szeredi <mszeredi@redhat.com>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        Minchan Kim <minchan@kernel.org>,
         Aleksa Sarai <cyphar@cyphar.com>,
         Xiaoming Ni <nixiaoming@huawei.com>,
-        David Rientjes <rientjes@google.com>,
-        Willem de Bruijn <willemb@google.com>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Miklos Szeredi <mszeredi@redhat.com>,
-        Minchan Kim <minchan@kernel.org>,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Oleg Nesterov <oleg@redhat.com>,
         YueHaibing <yuehaibing@huawei.com>,
         Suren Baghdasaryan <surenb@google.com>,
+        David Rientjes <rientjes@google.com>,
+        Vincenzo Frascino <vincenzo.frascino@arm.com>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        Vlastimil Babka <vbabka@suse.cz>,
         Nicholas Piggin <npiggin@gmail.com>,
         Brian Gerst <brgerst@gmail.com>,
         Dominik Brodowski <linux@dominikbrodowski.net>,
-        Jan Kara <jack@suse.cz>,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        Joe Perches <joe@perches.com>,
         Arnaldo Carvalho de Melo <acme@redhat.com>,
         linux-alpha@vger.kernel.org, linux-kernel@vger.kernel.org,
         linux-arm-kernel@lists.infradead.org, linux-ia64@vger.kernel.org,
@@ -117,12 +116,12 @@ Cc:     Ryan Houdek <Sonicadvance1@gmail.com>,
         sparclinux@vger.kernel.org, linux-xtensa@linux-xtensa.org,
         linux-fsdevel@vger.kernel.org, linux-api@vger.kernel.org,
         linux-arch@vger.kernel.org
-Subject: [PATCH] Adds a new ioctl32 syscall for backwards compatibility layers
-Date:   Thu, 14 Jan 2021 23:02:50 -0800
-Message-Id: <20210115070326.294332-1-Sonicadvance1@gmail.com>
+Subject: [PATCH v2] Adds a new ioctl32 syscall for backwards compatibility layers
+Date:   Thu, 14 Jan 2021 23:17:14 -0800
+Message-Id: <20210115071740.295973-1-Sonicadvance1@gmail.com>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20210106064807.253112-1-Sonicadvance1@gmail.com>
-References: <20210106064807.253112-1-Sonicadvance1@gmail.com>
+In-Reply-To: <20210115070326.294332-1-Sonicadvance1@gmail.com>
+References: <20210115070326.294332-1-Sonicadvance1@gmail.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 To:     unlisted-recipients:; (no To-header on input)
@@ -224,6 +223,12 @@ packing across the boundary
   - Prone to failure keeping the kernel ioctl and userspace ioctl
   handling in sync
   - Really want to have it in the kernel space as much as possible
+
+Changes in v2:
+- Added the syscall to all architecture tables
+- Disabled on 32bit and BE platforms. They can call ioctl directly.
+- Disabled on x86-64 as well since you can call this from ia32 or x32
+dispatch tables
 
 Signed-off-by: Ryan Houdek <Sonicadvance1@gmail.com>
 ---
