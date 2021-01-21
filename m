@@ -2,180 +2,281 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.8 required=3.0 tests=BAYES_00,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-15.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 09DF2C4332E
-	for <linux-m68k@archiver.kernel.org>; Mon, 18 Jan 2021 21:44:32 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7C921C433DB
+	for <linux-m68k@archiver.kernel.org>; Thu, 21 Jan 2021 00:57:34 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id CB532229C7
-	for <linux-m68k@archiver.kernel.org>; Mon, 18 Jan 2021 21:44:31 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 3EA4E23788
+	for <linux-m68k@archiver.kernel.org>; Thu, 21 Jan 2021 00:57:34 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388625AbhARVoQ (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Mon, 18 Jan 2021 16:44:16 -0500
-Received: from mga04.intel.com ([192.55.52.120]:40284 "EHLO mga04.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2394693AbhARVoN (ORCPT <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Mon, 18 Jan 2021 16:44:13 -0500
-IronPort-SDR: /BkIhuVZKmDxh6l+cVNxIj0xjHH90eB9QVbVGdNSQoVDb+9aoLqWjLzWstWR2h2Y/5zoroHGZy
- atZ46hrZ1RQQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9868"; a="176279939"
-X-IronPort-AV: E=Sophos;i="5.79,357,1602572400"; 
-   d="scan'208";a="176279939"
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Jan 2021 13:43:12 -0800
-IronPort-SDR: czVLH6zuziQkxff1nqa9Riasa21jvBHSM3GRJ1Vv5AqiLEtoy5cs7LveltdbMXNpwGLGRbT74G
- 2pnfGj/cunTA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.79,357,1602572400"; 
-   d="scan'208";a="365448077"
-Received: from lkp-server01.sh.intel.com (HELO 260eafd5ecd0) ([10.239.97.150])
-  by orsmga002.jf.intel.com with ESMTP; 18 Jan 2021 13:43:10 -0800
-Received: from kbuild by 260eafd5ecd0 with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1l1cIo-0004TA-27; Mon, 18 Jan 2021 21:43:10 +0000
-Date:   Tue, 19 Jan 2021 05:43:00 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     linux-m68k@lists.linux-m68k.org
-Subject: [m68k:master] BUILD SUCCESS
- abe70ee4912bda1466e67ba689712bc529e8114b
-Message-ID: <600600e4.wwlBauXU6J3wnctS%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+        id S1732385AbhAUA5Y (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Wed, 20 Jan 2021 19:57:24 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36956 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2392365AbhAUAKV (ORCPT
+        <rfc822;linux-m68k@lists.linux-m68k.org>);
+        Wed, 20 Jan 2021 19:10:21 -0500
+Received: from mail-qv1-xf2b.google.com (mail-qv1-xf2b.google.com [IPv6:2607:f8b0:4864:20::f2b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C4377C061796
+        for <linux-m68k@lists.linux-m68k.org>; Wed, 20 Jan 2021 16:06:41 -0800 (PST)
+Received: by mail-qv1-xf2b.google.com with SMTP id l7so128534qvt.4
+        for <linux-m68k@lists.linux-m68k.org>; Wed, 20 Jan 2021 16:06:41 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=VjoQ5qusNzQLb2JDxSVbTW4dQgrN6MvvxrltYUjtBfM=;
+        b=F6BNWYr8cXOX0IpQyqQhpA4Po7SyfJo8bimD8NpQndaBhuMIvimhbXdB8KQDB08eXO
+         Tl2zK9L+KiTRdIAoaVZSUXwWkbxLSRGYkPO9IyNesVADOn6xmdKLbtoKbE/Ls/U9KBOv
+         gWEdE08lDibEJdvNr9699iNWbxCxjvPHROlEZYhGJUo+FQUaJ6y4wpgXKsaUVlfR7xx2
+         00T0arBr6TXoid/DlrTR4Gcefi9RDl26xWGzqhgPjk5PdovrW1NZd3mEQhfutaJwy3yg
+         2YTeoi+CkGmC6rxWNW6An3KVxv7+v3Jra1XqChCYLcfSv++asKFForrjZh2PaQKkwuRS
+         3OXQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=VjoQ5qusNzQLb2JDxSVbTW4dQgrN6MvvxrltYUjtBfM=;
+        b=aGcbhWAXes3Ip+k+K81I80mRS5/vpFqKjVuNMHbYXNbXjsE1dIHxjlUd/RNwKaZzIC
+         BGv6izjzZEP7HKZym8kgXTuYMi0eq2cRMnC3HNUlXB4/1gCwi2QirolkTfadetlleMJ1
+         PG+va1mwKudL+IffM3dxId0p9CN0bazLc456PgxnE9fw+a/k6CGDCScvD9hkUm3SBNIW
+         w/pAZ0kzu2cFYIJKChYzyzLtdVmQh7kpxyfn2k8JhLGv/lnPR1wwiV132y5wxiNEmNM6
+         d3l/v9Q2zLrdTUySfMTDta8IEMqixvGeWm/sZ65crn+/DkuH6o/XOaeguo4CQTVvttdJ
+         6Qsw==
+X-Gm-Message-State: AOAM530yDjpWvFEnJSd0oPvFMQqCbH2kmEr2SouuDa2MNDf1eD6GFaFJ
+        8w8DvwoVKYqDNVLzpn4SBqonqjklVAmtmuPb
+X-Google-Smtp-Source: ABdhPJyfvweaPAwoiJNooJ/a9FPpNrA7RfXSU1z+h9CKbsg6oOMNOa5t80UZF07EFKodjUU2Xc7lig==
+X-Received: by 2002:a0c:b990:: with SMTP id v16mr11717292qvf.16.1611187600645;
+        Wed, 20 Jan 2021 16:06:40 -0800 (PST)
+Received: from localhost (d27-96-190-162.evv.wideopenwest.com. [96.27.162.190])
+        by smtp.gmail.com with ESMTPSA id d1sm2512482qkf.102.2021.01.20.16.06.39
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 20 Jan 2021 16:06:40 -0800 (PST)
+From:   Yury Norov <yury.norov@gmail.com>
+To:     linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org,
+        linux-sh@vger.kernel.org, linux-arch@vger.kernel.org
+Cc:     Yury Norov <yury.norov@gmail.com>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Yoshinori Sato <ysato@users.sourceforge.jp>,
+        Rich Felker <dalias@libc.org>, Arnd Bergmann <arnd@arndb.de>,
+        Dennis Zhou <dennis@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Wolfram Sang <wsa+renesas@sang-engineering.com>,
+        David Sterba <dsterba@suse.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Stefano Brivio <sbrivio@redhat.com>,
+        "Ma, Jianpeng" <jianpeng.ma@intel.com>,
+        Wei Yang <richard.weiyang@linux.alibaba.com>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Rasmus Villemoes <rasmus.villemoes@prevas.dk>
+Subject: [PATCH 4/6] lib: inline _find_next_bit() wrappers
+Date:   Wed, 20 Jan 2021 16:06:28 -0800
+Message-Id: <20210121000630.371883-5-yury.norov@gmail.com>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20210121000630.371883-1-yury.norov@gmail.com>
+References: <20210121000630.371883-1-yury.norov@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/geert/linux-m68k.git master
-branch HEAD: abe70ee4912bda1466e67ba689712bc529e8114b  Merge tag 'v5.11-rc4'
+lib/find_bit.c declares five single-line wrappers for _find_next_bit().
+We may turn those wrappers to inline functions. It eliminates
+unneeded function calls and opens room for compile-time optimizations.
 
-elapsed time: 721m
-
-configs tested: 110
-configs skipped: 3
-
-The following configs have been built successfully.
-More configs may be tested in the coming days.
-
-gcc tested configs:
-arm64                            allyesconfig
-arm64                               defconfig
-arm                                 defconfig
-arm                              allyesconfig
-arm                              allmodconfig
-xtensa                generic_kc705_defconfig
-m68k                             alldefconfig
-sh                           se7712_defconfig
-m68k                       bvme6000_defconfig
-m68k                          multi_defconfig
-powerpc                 mpc836x_mds_defconfig
-sh                        sh7763rdp_defconfig
-xtensa                         virt_defconfig
-m68k                        m5307c3_defconfig
-arm                           h3600_defconfig
-powerpc                 mpc8560_ads_defconfig
-xtensa                  nommu_kc705_defconfig
-powerpc                 mpc85xx_cds_defconfig
-powerpc                  mpc885_ads_defconfig
-powerpc                 mpc832x_rdb_defconfig
-mips                      bmips_stb_defconfig
-powerpc                 mpc834x_itx_defconfig
-mips                        jmr3927_defconfig
-arc                           tb10x_defconfig
-powerpc                   motionpro_defconfig
-arm                         at91_dt_defconfig
-c6x                                 defconfig
-arm                            hisi_defconfig
-mips                       bmips_be_defconfig
-arm                  colibri_pxa300_defconfig
-powerpc                     redwood_defconfig
-m68k                          hp300_defconfig
-sh                          landisk_defconfig
-mips                           jazz_defconfig
-powerpc                      ppc40x_defconfig
-powerpc                mpc7448_hpc2_defconfig
-sh                        dreamcast_defconfig
-arm                         axm55xx_defconfig
-powerpc                     tqm8560_defconfig
-sparc64                             defconfig
-arm                          ep93xx_defconfig
-mips                        nlm_xlr_defconfig
-powerpc                        cell_defconfig
-mips                        workpad_defconfig
-powerpc                    amigaone_defconfig
-sh                         apsh4a3a_defconfig
-mips                           ip32_defconfig
-microblaze                      mmu_defconfig
-ia64                             allmodconfig
-ia64                                defconfig
-ia64                             allyesconfig
-m68k                             allmodconfig
-m68k                                defconfig
-m68k                             allyesconfig
-nios2                               defconfig
-arc                              allyesconfig
-nds32                             allnoconfig
-c6x                              allyesconfig
-nds32                               defconfig
-nios2                            allyesconfig
-csky                                defconfig
-alpha                               defconfig
-alpha                            allyesconfig
-xtensa                           allyesconfig
-h8300                            allyesconfig
-arc                                 defconfig
-sh                               allmodconfig
-parisc                              defconfig
-s390                             allyesconfig
-parisc                           allyesconfig
-s390                                defconfig
-i386                             allyesconfig
-sparc                            allyesconfig
-sparc                               defconfig
-i386                               tinyconfig
-i386                                defconfig
-mips                             allyesconfig
-mips                             allmodconfig
-powerpc                          allyesconfig
-powerpc                          allmodconfig
-powerpc                           allnoconfig
-x86_64               randconfig-a015-20210118
-x86_64               randconfig-a016-20210118
-x86_64               randconfig-a014-20210118
-i386                 randconfig-a011-20210118
-i386                 randconfig-a012-20210118
-i386                 randconfig-a016-20210118
-i386                 randconfig-a015-20210118
-i386                 randconfig-a013-20210118
-i386                 randconfig-a014-20210118
-riscv                    nommu_k210_defconfig
-riscv                    nommu_virt_defconfig
-riscv                          rv32_defconfig
-riscv                            allyesconfig
-riscv                             allnoconfig
-riscv                               defconfig
-riscv                            allmodconfig
-x86_64                                   rhel
-x86_64                    rhel-7.6-kselftests
-x86_64                               rhel-8.3
-x86_64                      rhel-8.3-kbuiltin
-x86_64                                  kexec
-x86_64                           allyesconfig
-x86_64                              defconfig
-
-clang tested configs:
-x86_64               randconfig-a004-20210118
-x86_64               randconfig-a006-20210118
-x86_64               randconfig-a001-20210118
-x86_64               randconfig-a003-20210118
-x86_64               randconfig-a005-20210118
-x86_64               randconfig-a002-20210118
-
+Signed-off-by: Yury Norov <yury.norov@gmail.com>
 ---
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+ include/asm-generic/bitops/find.h | 28 ++++++++++++----
+ include/asm-generic/bitops/le.h   | 17 +++++++---
+ lib/find_bit.c                    | 56 ++-----------------------------
+ 3 files changed, 37 insertions(+), 64 deletions(-)
+
+diff --git a/include/asm-generic/bitops/find.h b/include/asm-generic/bitops/find.h
+index 9fdf21302fdf..7ad70dab8e93 100644
+--- a/include/asm-generic/bitops/find.h
++++ b/include/asm-generic/bitops/find.h
+@@ -2,6 +2,10 @@
+ #ifndef _ASM_GENERIC_BITOPS_FIND_H_
+ #define _ASM_GENERIC_BITOPS_FIND_H_
+ 
++extern unsigned long _find_next_bit(const unsigned long *addr1,
++		const unsigned long *addr2, unsigned long nbits,
++		unsigned long start, unsigned long invert, unsigned long le);
++
+ #ifndef find_next_bit
+ /**
+  * find_next_bit - find the next set bit in a memory region
+@@ -12,8 +16,12 @@
+  * Returns the bit number for the next set bit
+  * If no bits are set, returns @size.
+  */
+-extern unsigned long find_next_bit(const unsigned long *addr, unsigned long
+-		size, unsigned long offset);
++static inline
++unsigned long find_next_bit(const unsigned long *addr, unsigned long size,
++			    unsigned long offset)
++{
++	return _find_next_bit(addr, NULL, size, offset, 0UL, 0);
++}
+ #endif
+ 
+ #ifndef find_next_and_bit
+@@ -27,9 +35,13 @@ extern unsigned long find_next_bit(const unsigned long *addr, unsigned long
+  * Returns the bit number for the next set bit
+  * If no bits are set, returns @size.
+  */
+-extern unsigned long find_next_and_bit(const unsigned long *addr1,
++static inline
++unsigned long find_next_and_bit(const unsigned long *addr1,
+ 		const unsigned long *addr2, unsigned long size,
+-		unsigned long offset);
++		unsigned long offset)
++{
++	return _find_next_bit(addr1, addr2, size, offset, 0UL, 0);
++}
+ #endif
+ 
+ #ifndef find_next_zero_bit
+@@ -42,8 +54,12 @@ extern unsigned long find_next_and_bit(const unsigned long *addr1,
+  * Returns the bit number of the next zero bit
+  * If no bits are zero, returns @size.
+  */
+-extern unsigned long find_next_zero_bit(const unsigned long *addr, unsigned
+-		long size, unsigned long offset);
++static inline
++unsigned long find_next_zero_bit(const unsigned long *addr, unsigned long size,
++				 unsigned long offset)
++{
++	return _find_next_bit(addr, NULL, size, offset, ~0UL, 0);
++}
+ #endif
+ 
+ #ifdef CONFIG_GENERIC_FIND_FIRST_BIT
+diff --git a/include/asm-generic/bitops/le.h b/include/asm-generic/bitops/le.h
+index 188d3eba3ace..4cf44ea16ec0 100644
+--- a/include/asm-generic/bitops/le.h
++++ b/include/asm-generic/bitops/le.h
+@@ -4,6 +4,7 @@
+ 
+ #include <asm/types.h>
+ #include <asm/byteorder.h>
++#include <asm-generic/bitops/find.h>
+ 
+ #if defined(__LITTLE_ENDIAN)
+ 
+@@ -32,13 +33,21 @@ static inline unsigned long find_first_zero_bit_le(const void *addr,
+ #define BITOP_LE_SWIZZLE	((BITS_PER_LONG-1) & ~0x7)
+ 
+ #ifndef find_next_zero_bit_le
+-extern unsigned long find_next_zero_bit_le(const void *addr,
+-		unsigned long size, unsigned long offset);
++static inline
++unsigned long find_next_zero_bit_le(const void *addr, unsigned
++		long size, unsigned long offset)
++{
++	return _find_next_bit(addr, NULL, size, offset, ~0UL, 1);
++}
+ #endif
+ 
+ #ifndef find_next_bit_le
+-extern unsigned long find_next_bit_le(const void *addr,
+-		unsigned long size, unsigned long offset);
++static inline
++unsigned long find_next_bit_le(const void *addr, unsigned
++		long size, unsigned long offset)
++{
++	return _find_next_bit(addr, NULL, size, offset, 0UL, 1);
++}
+ #endif
+ 
+ #ifndef find_first_zero_bit_le
+diff --git a/lib/find_bit.c b/lib/find_bit.c
+index f67f86fd2f62..b03a101367f8 100644
+--- a/lib/find_bit.c
++++ b/lib/find_bit.c
+@@ -29,7 +29,7 @@
+  *    searching it for one bits.
+  *  - The optional "addr2", which is anded with "addr1" if present.
+  */
+-static unsigned long _find_next_bit(const unsigned long *addr1,
++unsigned long _find_next_bit(const unsigned long *addr1,
+ 		const unsigned long *addr2, unsigned long nbits,
+ 		unsigned long start, unsigned long invert, unsigned long le)
+ {
+@@ -68,37 +68,7 @@ static unsigned long _find_next_bit(const unsigned long *addr1,
+ 
+ 	return min(start + __ffs(tmp), nbits);
+ }
+-#endif
+-
+-#ifndef find_next_bit
+-/*
+- * Find the next set bit in a memory region.
+- */
+-unsigned long find_next_bit(const unsigned long *addr, unsigned long size,
+-			    unsigned long offset)
+-{
+-	return _find_next_bit(addr, NULL, size, offset, 0UL, 0);
+-}
+-EXPORT_SYMBOL(find_next_bit);
+-#endif
+-
+-#ifndef find_next_zero_bit
+-unsigned long find_next_zero_bit(const unsigned long *addr, unsigned long size,
+-				 unsigned long offset)
+-{
+-	return _find_next_bit(addr, NULL, size, offset, ~0UL, 0);
+-}
+-EXPORT_SYMBOL(find_next_zero_bit);
+-#endif
+-
+-#if !defined(find_next_and_bit)
+-unsigned long find_next_and_bit(const unsigned long *addr1,
+-		const unsigned long *addr2, unsigned long size,
+-		unsigned long offset)
+-{
+-	return _find_next_bit(addr1, addr2, size, offset, 0UL, 0);
+-}
+-EXPORT_SYMBOL(find_next_and_bit);
++EXPORT_SYMBOL(_find_next_bit);
+ #endif
+ 
+ #ifndef find_first_bit
+@@ -157,28 +127,6 @@ unsigned long find_last_bit(const unsigned long *addr, unsigned long size)
+ EXPORT_SYMBOL(find_last_bit);
+ #endif
+ 
+-#ifdef __BIG_ENDIAN
+-
+-#ifndef find_next_zero_bit_le
+-unsigned long find_next_zero_bit_le(const void *addr, unsigned
+-		long size, unsigned long offset)
+-{
+-	return _find_next_bit(addr, NULL, size, offset, ~0UL, 1);
+-}
+-EXPORT_SYMBOL(find_next_zero_bit_le);
+-#endif
+-
+-#ifndef find_next_bit_le
+-unsigned long find_next_bit_le(const void *addr, unsigned
+-		long size, unsigned long offset)
+-{
+-	return _find_next_bit(addr, NULL, size, offset, 0UL, 1);
+-}
+-EXPORT_SYMBOL(find_next_bit_le);
+-#endif
+-
+-#endif /* __BIG_ENDIAN */
+-
+ unsigned long find_next_clump8(unsigned long *clump, const unsigned long *addr,
+ 			       unsigned long size, unsigned long offset)
+ {
+-- 
+2.25.1
+
