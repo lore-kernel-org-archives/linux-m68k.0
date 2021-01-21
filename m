@@ -2,60 +2,61 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-10.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+X-Spam-Status: No, score=-15.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS,USER_AGENT_GIT autolearn=unavailable autolearn_force=no version=3.4.0
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 6DF4EC433E0
-	for <linux-m68k@archiver.kernel.org>; Thu, 21 Jan 2021 01:46:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 51212C433E6
+	for <linux-m68k@archiver.kernel.org>; Thu, 21 Jan 2021 01:46:55 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 12F4D23730
-	for <linux-m68k@archiver.kernel.org>; Thu, 21 Jan 2021 01:46:39 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 0644323788
+	for <linux-m68k@archiver.kernel.org>; Thu, 21 Jan 2021 01:46:54 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728075AbhAUAzz (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Wed, 20 Jan 2021 19:55:55 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36294 "EHLO
+        id S1730254AbhAUA40 (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Wed, 20 Jan 2021 19:56:26 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36646 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730910AbhAUAHX (ORCPT
+        with ESMTP id S2388421AbhAUAIz (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Wed, 20 Jan 2021 19:07:23 -0500
-Received: from mail-qv1-xf2b.google.com (mail-qv1-xf2b.google.com [IPv6:2607:f8b0:4864:20::f2b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D42F4C0613CF
-        for <linux-m68k@lists.linux-m68k.org>; Wed, 20 Jan 2021 16:06:36 -0800 (PST)
-Received: by mail-qv1-xf2b.google.com with SMTP id et9so114347qvb.10
-        for <linux-m68k@lists.linux-m68k.org>; Wed, 20 Jan 2021 16:06:36 -0800 (PST)
+        Wed, 20 Jan 2021 19:08:55 -0500
+Received: from mail-qk1-x72f.google.com (mail-qk1-x72f.google.com [IPv6:2607:f8b0:4864:20::72f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 04AF5C0613D6
+        for <linux-m68k@lists.linux-m68k.org>; Wed, 20 Jan 2021 16:06:38 -0800 (PST)
+Received: by mail-qk1-x72f.google.com with SMTP id 19so117503qkh.3
+        for <linux-m68k@lists.linux-m68k.org>; Wed, 20 Jan 2021 16:06:37 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=Xq2mU7OrVeGPTcxA188YnFoob4ru+nBZ6S/huK+o6i0=;
-        b=H6+23XVfkVA18ccIGaJGJhR+g280khYkE3BxT7jrGwkiTdVD/r+g+WOjI+A8wd/HQe
-         w4WRcHwotkQ6hK7UldM8ZDqP9GbBt9RidoOK7q/G9WJCuq7JbnZW3Oii2Y9FvQq3OIr0
-         lLjYFFFl9Qeep2e49ViwNzpHkojD+5WIgkAn/8bWdujhIUQqRbN1+sOPy1oGS5HC9fQY
-         2hj/sr5NtoKme2y3NaRAS/a79cTxaqE66Su6Az1RzRMXvoTXV1vmYcllV5t8En/kOcXU
-         BmoXYba5u/UAZ1CgsJmUkQ74golR7cct+jMMWnLcFnDWFNwr8IGFsCNnRZ49RqqMkIuc
-         Jhtw==
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=VJyAeNkICLzobewilotYyvHX3yTrS03Tp5qJyqqjL0g=;
+        b=irEJfFhw75j0zxYyv1AJTNPEoITdlEq7ViAShlWlaluOp16XsYOBe6kv5B7Gs1yMLk
+         Bz23HPNwKq9hVgiS9Lw7ph5GtM0TcGmHGx+oH45vktz+664CXPQi1TO/hEq9zM6h9NZq
+         Lwr3XWL12PINo5J6vj1wK5NrvFfXCIORz9SJ8bFDJvoSm1w2qvvgNAoGaUcd3IEzHNkF
+         ZL5nkVm220A+txnXZm4wu7L+y3gptXZ/92SG1hq1S4viIF8WD5qSDGqgvgBCl8NJzPcC
+         aq4ZTVsaLNOM3QREMOhSzOhjSQ24ZjeKjWnlUCytjGkn3cF9+HIS6gVrTTedDSNAqdhe
+         HGhw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=Xq2mU7OrVeGPTcxA188YnFoob4ru+nBZ6S/huK+o6i0=;
-        b=nEA1fw4u71MmhjH0tZ3+ylww2oG/ftVpiDx+rImWMNxbQP2g9FR2lcbEk5LUMbxw2A
-         OkFFtbdT1zvMngc5buuDRGI5cAwIAEHp2mC0T/6v8/JxvV8sfdAtIkLkxftGuLyIqa5X
-         5z5hW7QotOQYJKd+BVjk9cVjOLOL67PogZJH9DVdjMd7hbdd/H1hdc784L2tutjHkbCC
-         t7LZGRHX9m+LdvG+BFi/0HfJnwEd0LaXHt5CcNuEzfNtnFXI4dg95ae1OtTmlXXDBBun
-         k0yxT4EigDsHLeIrRBlqXeVcnytNYf8LxYdlSrGzp19k16KysEG18nQyCPX/0GqpWvdg
-         rPbA==
-X-Gm-Message-State: AOAM5313DXJbLYwmJgFexmKrUhQBguFGMhHOB2NVReQ9WRLYvFSOOOGk
-        Xl8yW3UStFb8Dxz58/NOl9XIlu0yR1FvkS1u
-X-Google-Smtp-Source: ABdhPJxpoAehXDqLMJQECWz6+rWOBFDlP1o9TdiUvJhrl51jSOmANePT/DqVuAJyhHr1sxiCymASyw==
-X-Received: by 2002:ad4:46a1:: with SMTP id br1mr12152632qvb.28.1611187595785;
-        Wed, 20 Jan 2021 16:06:35 -0800 (PST)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=VJyAeNkICLzobewilotYyvHX3yTrS03Tp5qJyqqjL0g=;
+        b=ZQGVMrU9c2WcsUZyHLQV5KfeTO99KsdzYz/aVV0jMaoCwGwn3mmg526SNXfuZLSF1l
+         3WKCYfJcIMJGj5zwRTTEvoSZtcQVqb8EfKmDFyzjZKjxFmq7sWIasMhW3Tes9rOMDvyq
+         R1EXX77ZYpdh2a3eN7BxP1YK+iaDeiwJG2kmgP4agVi8zFho/e+LsxGnuMUmO1zjutBW
+         elMDg/ml6Kz/sHGNscyBMTpefGeFhweY2bxOZMqGu5rtUuKgNiiRdzDmykf7C9JStYux
+         1VoyLIhJGl30MvPgh1cRQkeylvZP/P5H25xYSZp4Yx0J3r98BjNmqsmtiW+S82r5gSRg
+         kjnA==
+X-Gm-Message-State: AOAM533TKiF6geYfLCcPtY1thz5TTqiFhpWArYxsze5UiYPafLno4Yf6
+        cXAI8becbJqykbJ4njz8b8qGu9X3ncGy+TQs
+X-Google-Smtp-Source: ABdhPJwK96z5HSohBB4jgawql1ys9+J+U8m5f6SbrirOJTJj1+oKcKeFV63KJtEdZZ6RU5gOTh2EvA==
+X-Received: by 2002:a37:4286:: with SMTP id p128mr3589516qka.337.1611187597005;
+        Wed, 20 Jan 2021 16:06:37 -0800 (PST)
 Received: from localhost (d27-96-190-162.evv.wideopenwest.com. [96.27.162.190])
-        by smtp.gmail.com with ESMTPSA id x28sm2235985qtv.8.2021.01.20.16.06.34
+        by smtp.gmail.com with ESMTPSA id j124sm2505020qkf.113.2021.01.20.16.06.36
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 20 Jan 2021 16:06:34 -0800 (PST)
+        Wed, 20 Jan 2021 16:06:36 -0800 (PST)
 From:   Yury Norov <yury.norov@gmail.com>
 To:     linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org,
         linux-sh@vger.kernel.org, linux-arch@vger.kernel.org
@@ -73,46 +74,68 @@ Cc:     Yury Norov <yury.norov@gmail.com>,
         Wei Yang <richard.weiyang@linux.alibaba.com>,
         Josh Poimboeuf <jpoimboe@redhat.com>,
         Rasmus Villemoes <rasmus.villemoes@prevas.dk>
-Subject: [PATCH 0/6] lib/find_bit: fast path for small bitmaps
-Date:   Wed, 20 Jan 2021 16:06:24 -0800
-Message-Id: <20210121000630.371883-1-yury.norov@gmail.com>
+Subject: [PATCH 1/6] arch: rearrahge headers inclusion order in asm/bitops for m68k and sh
+Date:   Wed, 20 Jan 2021 16:06:25 -0800
+Message-Id: <20210121000630.371883-2-yury.norov@gmail.com>
 X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20210121000630.371883-1-yury.norov@gmail.com>
+References: <20210121000630.371883-1-yury.norov@gmail.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-Bitmap operations are much simpler and faster in case of small bitmaps,
-whicn fit into a single word. In linux/bitmap.h we have a machinery that
-allows compiler to replace actual function call with a few instructions
-if bitmaps passed into the function is small and its size is known at
-compile time.
+m68k and sh include bitmap/find.h prior to ffs/fls headers. New
+fast-path implementation in find.h requires ffs/fls. Reordering
+the order of headers inclusion helps to prevent compile-time
+implicit-function-declaration error.
 
-find_next_*_bit() lacks this functionality; despite users will
-benefit from it a lot. One important example is cpumask subsystem if
-NR_CPUS <= BITS_PER_LONG. In the very best case, the compiler may replace
-a find_*_bit() call for such a bitmap with a single ffs or ffz instruction.
+Signed-off-by: Yury Norov <yury.norov@gmail.com>
+---
+ arch/m68k/include/asm/bitops.h | 4 ++--
+ arch/sh/include/asm/bitops.h   | 3 ++-
+ 2 files changed, 4 insertions(+), 3 deletions(-)
 
-Yury Norov (6):
-  arch: rearrahge headers inclusion order in asm/bitops for m68k and sh
-  bitmap: move some macros from linux/bitmap.h to linux/bitops.h
-  tools: sync bitops macro definitions with the kernel
-  lib: inline _find_next_bit() wrappers
-  lib: add fast path for find_next_*_bit()
-  lib: add fast path for find_first_*_bit() and find_last_bit()
-
- arch/m68k/include/asm/bitops.h    |   4 +-
- arch/sh/include/asm/bitops.h      |   3 +-
- include/asm-generic/bitops/find.h | 123 +++++++++++++++++++++++++++---
- include/asm-generic/bitops/le.h   |  45 ++++++++++-
- include/linux/bitmap.h            |  11 ---
- include/linux/bitops.h            |  23 +++---
- lib/find_bit.c                    |  68 ++---------------
- tools/include/linux/bitmap.h      |  11 ---
- tools/include/linux/bitops.h      |  11 +++
- 9 files changed, 188 insertions(+), 111 deletions(-)
-
+diff --git a/arch/m68k/include/asm/bitops.h b/arch/m68k/include/asm/bitops.h
+index 10133a968c8e..093590c9e70f 100644
+--- a/arch/m68k/include/asm/bitops.h
++++ b/arch/m68k/include/asm/bitops.h
+@@ -440,8 +440,6 @@ static inline unsigned long ffz(unsigned long word)
+ 
+ #endif
+ 
+-#include <asm-generic/bitops/find.h>
+-
+ #ifdef __KERNEL__
+ 
+ #if defined(CONFIG_CPU_HAS_NO_BITFIELDS)
+@@ -531,4 +529,6 @@ static inline int __fls(int x)
+ #include <asm-generic/bitops/hweight.h>
+ #endif /* __KERNEL__ */
+ 
++#include <asm-generic/bitops/find.h>
++
+ #endif /* _M68K_BITOPS_H */
+diff --git a/arch/sh/include/asm/bitops.h b/arch/sh/include/asm/bitops.h
+index 450b5854d7c6..792bbe1237dc 100644
+--- a/arch/sh/include/asm/bitops.h
++++ b/arch/sh/include/asm/bitops.h
+@@ -58,7 +58,6 @@ static inline unsigned long __ffs(unsigned long word)
+ 	return result;
+ }
+ 
+-#include <asm-generic/bitops/find.h>
+ #include <asm-generic/bitops/ffs.h>
+ #include <asm-generic/bitops/hweight.h>
+ #include <asm-generic/bitops/lock.h>
+@@ -69,4 +68,6 @@ static inline unsigned long __ffs(unsigned long word)
+ #include <asm-generic/bitops/__fls.h>
+ #include <asm-generic/bitops/fls64.h>
+ 
++#include <asm-generic/bitops/find.h>
++
+ #endif /* __ASM_SH_BITOPS_H */
 -- 
 2.25.1
 
