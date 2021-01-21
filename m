@@ -8,55 +8,55 @@ X-Spam-Status: No, score=-15.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
 	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C6F9FC433E6
-	for <linux-m68k@archiver.kernel.org>; Thu, 21 Jan 2021 01:47:27 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id F0F21C433DB
+	for <linux-m68k@archiver.kernel.org>; Thu, 21 Jan 2021 01:47:43 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 7B8752388B
-	for <linux-m68k@archiver.kernel.org>; Thu, 21 Jan 2021 01:47:27 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id C430623788
+	for <linux-m68k@archiver.kernel.org>; Thu, 21 Jan 2021 01:47:43 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728518AbhAUA4x (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Wed, 20 Jan 2021 19:56:53 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36892 "EHLO
+        id S1731652AbhAUA5H (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Wed, 20 Jan 2021 19:57:07 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36958 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2392201AbhAUAKD (ORCPT
+        with ESMTP id S2392388AbhAUAKV (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Wed, 20 Jan 2021 19:10:03 -0500
-Received: from mail-qk1-x72c.google.com (mail-qk1-x72c.google.com [IPv6:2607:f8b0:4864:20::72c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 832E0C061794
-        for <linux-m68k@lists.linux-m68k.org>; Wed, 20 Jan 2021 16:06:40 -0800 (PST)
-Received: by mail-qk1-x72c.google.com with SMTP id c7so127148qke.1
-        for <linux-m68k@lists.linux-m68k.org>; Wed, 20 Jan 2021 16:06:40 -0800 (PST)
+        Wed, 20 Jan 2021 19:10:21 -0500
+Received: from mail-qt1-x82e.google.com (mail-qt1-x82e.google.com [IPv6:2607:f8b0:4864:20::82e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1DC87C061799
+        for <linux-m68k@lists.linux-m68k.org>; Wed, 20 Jan 2021 16:06:43 -0800 (PST)
+Received: by mail-qt1-x82e.google.com with SMTP id e17so398404qto.3
+        for <linux-m68k@lists.linux-m68k.org>; Wed, 20 Jan 2021 16:06:43 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=u1+v9PN1Uu2cLPRFWSGLmx3QT1L/QFpePD0yoTSiiK0=;
-        b=HrQFRw+5hk0kZek6NOt9rxQ2j5aMRX5yWhHyefWYvSFs/+iQKMbRq/2PloSq3xZJgn
-         wmbk94fwu0QfRMOInCiScjQrZoypNt1QxmtVmCwVt19G/gDhV2FB6/ZPNuzKCVq+2uxp
-         g/1Ay3zC5NzKjiE3zDS4hKEh99dIx/cMvXaT78m25u/0sK5lAwpvO11CypKch466J0jG
-         lVj0cHbLboX51SHINKwvXJVtqtvUmf5oNeSORLiisdd9teVI3gEbEHql/ppbzqnNdpOs
-         4C9P/bQ0sKAMDvHyf/Vx+VPf+N4Cq9iQ/3k2Jkk4L0sV8yfZGVhoAwpg3rQm4a1U7aP+
-         +U0g==
+        bh=EJvVbTcrFXhal00Em+TPrjdhMeNVT/fqvfLLy70dJMA=;
+        b=vWXwiNJ+21L5NEAcfTJmnhSL+ca7W/dNzSA0tHOF6ctG1i3z5n4FSbFYnxtaZrR9Kh
+         QjVy8Jh2Am8Z92TXHZRypNlqkefGFQtSusL0K++LpxONvZDQo0eFqK0oJ2lEl/45CRM1
+         u+pm8Va4XWVGO98mkSD0pse4jEYTHvwGD4OpmsCDndOSgyLTmdLPsYNKy5TQeJKlnZiU
+         cOj2LpXcBUQxU9GLNF1y7Ow0FoeuexvQ9aJoIesaEW0rOnSykNBIVw4hcnehcN9f02h3
+         4ixz1k+SkNiIJDj6EREawv9zhd17ejqFPmosZtYBPyBNPcps75wadIV5QKB3IX0TgQDW
+         n+vQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=u1+v9PN1Uu2cLPRFWSGLmx3QT1L/QFpePD0yoTSiiK0=;
-        b=Wl/w4KJkFhxivHlPK3I4DpZOt94S4W8vyTCoC2kiA6VyPV2sx7oOxacezDjhLlnH3R
-         W1tp4jFb1IGYTFbBd1/jQ5xXIfMdDZE+YzQrIWmXzTtpBP9iutOe+J/LPIKDCfofC53n
-         5hQBq2JnVBXCsr8+UNuIZaop43/v30BXE3W2T7vrSAmsxom5hAx+gbY2oD5q3ZVax9RV
-         C7Ic5RsJgn+UKCsRvVWL94Ltr8ilBi0DWaul1Dh/q3JsFC/XqphS++Ue9twGWTmQAZx7
-         nN9fr8BUaQ4o+uOPwxMSl5hhDwFbuUnY8RdjIDYzbqe0LD5OHLGXt1H3O25+Pvoarw0T
-         4Xhg==
-X-Gm-Message-State: AOAM531FfB+7YSe3uDFqBXu/+6lwIf384unGpr5IVtERDOxQBHr550hD
-        yuXpOrSnD9i8OoxZMEfk8a5TueTia1kzZ/g3
-X-Google-Smtp-Source: ABdhPJym8sxUBV8IVA+jlYKc3NALcR/rEHBGw31xie5ZX+g9RtMimSfF0h6MmVcZ7xHV+S0h+Ei3+w==
-X-Received: by 2002:ae9:e854:: with SMTP id a81mr12180102qkg.77.1611187599372;
-        Wed, 20 Jan 2021 16:06:39 -0800 (PST)
+        bh=EJvVbTcrFXhal00Em+TPrjdhMeNVT/fqvfLLy70dJMA=;
+        b=fmXgVOaGGdUKlxphJqlVVeDlxkYi4OdJY/lX7FZkLvWudz1W3+KGu/5K19jg939RqG
+         DGn3trXphBY0BH9Y3ZHGO9v/I0YoCiheFuxhun0ZXeThv86/Yxue16nlGSn113foCZJW
+         OteEZbIeZcTXuL7ZXO/WQU4QO6LfbMV3k1GpVNCMRmLxgcHzfoIqYwTbkGPr9BHd6fpd
+         2Efoqj8ItiNTTWmu+yhZSNV/I3wnk0nzdAUKNAtXmtHJKOQb6a+RilkCEmQwzeiq5e6w
+         8/is24X4XB8/3WCFGExWNK9dkhmb/snfJVtnM1h1ntup6sLGnHT3nZayldDQOVlN1fK6
+         eO2w==
+X-Gm-Message-State: AOAM531K2Mu6vbjX2h/IfEeWeqq18LNw2emNWcgq2ImnaN2o6VUKO966
+        34xm2LLBij7p9iJuIWbaSwh1Xo8Q81g7mTwu
+X-Google-Smtp-Source: ABdhPJzyA0gTkmmj57pbH5DOx/IkC97OqDS83dP13BmJv9Nnz4vmLR/AQG7HSaZwFjqG70KYKkP4DA==
+X-Received: by 2002:ac8:5e83:: with SMTP id r3mr11322397qtx.261.1611187601929;
+        Wed, 20 Jan 2021 16:06:41 -0800 (PST)
 Received: from localhost (d27-96-190-162.evv.wideopenwest.com. [96.27.162.190])
-        by smtp.gmail.com with ESMTPSA id o64sm2457701qka.43.2021.01.20.16.06.38
+        by smtp.gmail.com with ESMTPSA id i41sm2421673qtc.33.2021.01.20.16.06.41
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 20 Jan 2021 16:06:38 -0800 (PST)
+        Wed, 20 Jan 2021 16:06:41 -0800 (PST)
 From:   Yury Norov <yury.norov@gmail.com>
 To:     linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org,
         linux-sh@vger.kernel.org, linux-arch@vger.kernel.org
@@ -74,9 +74,9 @@ Cc:     Yury Norov <yury.norov@gmail.com>,
         Wei Yang <richard.weiyang@linux.alibaba.com>,
         Josh Poimboeuf <jpoimboe@redhat.com>,
         Rasmus Villemoes <rasmus.villemoes@prevas.dk>
-Subject: [PATCH 3/6] tools: sync bitops macro definitions with the kernel
-Date:   Wed, 20 Jan 2021 16:06:27 -0800
-Message-Id: <20210121000630.371883-4-yury.norov@gmail.com>
+Subject: [PATCH 5/6] lib: add fast path for find_next_*_bit()
+Date:   Wed, 20 Jan 2021 16:06:29 -0800
+Message-Id: <20210121000630.371883-6-yury.norov@gmail.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20210121000630.371883-1-yury.norov@gmail.com>
 References: <20210121000630.371883-1-yury.norov@gmail.com>
@@ -86,56 +86,134 @@ Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
+Similarly to bitmap functions, find_next_*_bit() users will benefit
+if we'll handle a case of bitmaps that fit into a single word. In the
+very best case, the compiler may replace a function call with a
+single ffs or ffz instruction.
+
 Signed-off-by: Yury Norov <yury.norov@gmail.com>
 ---
- tools/include/linux/bitmap.h | 11 -----------
- tools/include/linux/bitops.h | 11 +++++++++++
- 2 files changed, 11 insertions(+), 11 deletions(-)
+ include/asm-generic/bitops/find.h | 39 +++++++++++++++++++++++++++++++
+ include/asm-generic/bitops/le.h   | 28 ++++++++++++++++++++++
+ 2 files changed, 67 insertions(+)
 
-diff --git a/tools/include/linux/bitmap.h b/tools/include/linux/bitmap.h
-index 477a1cae513f..266a9291dd1f 100644
---- a/tools/include/linux/bitmap.h
-+++ b/tools/include/linux/bitmap.h
-@@ -19,17 +19,6 @@ int __bitmap_equal(const unsigned long *bitmap1,
- 		   const unsigned long *bitmap2, unsigned int bits);
- void bitmap_clear(unsigned long *map, unsigned int start, int len);
- 
--#define BITMAP_FIRST_WORD_MASK(start) (~0UL << ((start) & (BITS_PER_LONG - 1)))
--
--#define BITMAP_LAST_WORD_MASK(nbits)					\
--(									\
--	((nbits) % BITS_PER_LONG) ?					\
--		(1UL<<((nbits) % BITS_PER_LONG))-1 : ~0UL		\
--)
--
--#define small_const_nbits(nbits) \
--	(__builtin_constant_p(nbits) && (nbits) <= BITS_PER_LONG)
--
- static inline void bitmap_zero(unsigned long *dst, int nbits)
+diff --git a/include/asm-generic/bitops/find.h b/include/asm-generic/bitops/find.h
+index 7ad70dab8e93..d45096069011 100644
+--- a/include/asm-generic/bitops/find.h
++++ b/include/asm-generic/bitops/find.h
+@@ -20,6 +20,18 @@ static inline
+ unsigned long find_next_bit(const unsigned long *addr, unsigned long size,
+ 			    unsigned long offset)
  {
- 	if (small_const_nbits(nbits))
-diff --git a/tools/include/linux/bitops.h b/tools/include/linux/bitops.h
-index 5fca38fe1ba8..1c70919cb216 100644
---- a/tools/include/linux/bitops.h
-+++ b/tools/include/linux/bitops.h
-@@ -14,6 +14,17 @@
- #include <linux/bits.h>
- #include <linux/compiler.h>
++	if (small_const_nbits(size)) {
++		unsigned long val;
++
++		if (unlikely(offset >= size))
++			return size;
++
++		val = *addr & BITMAP_FIRST_WORD_MASK(offset)
++				& BITMAP_LAST_WORD_MASK(size);
++
++		return val ? __ffs(val) : size;
++	}
++
+ 	return _find_next_bit(addr, NULL, size, offset, 0UL, 0);
+ }
+ #endif
+@@ -40,6 +52,18 @@ unsigned long find_next_and_bit(const unsigned long *addr1,
+ 		const unsigned long *addr2, unsigned long size,
+ 		unsigned long offset)
+ {
++	if (small_const_nbits(size)) {
++		unsigned long val;
++
++		if (unlikely(offset >= size))
++			return size;
++
++		val = *addr1 & *addr2 & BITMAP_FIRST_WORD_MASK(offset)
++				      & BITMAP_LAST_WORD_MASK(size);
++
++		return val ? __ffs(val) : size;
++	}
++
+ 	return _find_next_bit(addr1, addr2, size, offset, 0UL, 0);
+ }
+ #endif
+@@ -58,6 +82,21 @@ static inline
+ unsigned long find_next_zero_bit(const unsigned long *addr, unsigned long size,
+ 				 unsigned long offset)
+ {
++	if (small_const_nbits(size)) {
++		unsigned long val, idx;
++
++		if (unlikely(offset >= size))
++			return size;
++
++		val = *addr | ~BITMAP_FIRST_WORD_MASK(offset);
++		if (val == ~0UL)
++			return size;
++
++		idx = ffz(val);
++
++		return idx < size ? idx : size;
++	}
++
+ 	return _find_next_bit(addr, NULL, size, offset, ~0UL, 0);
+ }
+ #endif
+diff --git a/include/asm-generic/bitops/le.h b/include/asm-generic/bitops/le.h
+index 4cf44ea16ec0..f4a76d3d145f 100644
+--- a/include/asm-generic/bitops/le.h
++++ b/include/asm-generic/bitops/le.h
+@@ -5,6 +5,7 @@
+ #include <asm/types.h>
+ #include <asm/byteorder.h>
+ #include <asm-generic/bitops/find.h>
++#include <linux/swab.h>
  
-+#define BITMAP_FIRST_WORD_MASK(start) (~0UL << ((start) & (BITS_PER_LONG - 1)))
-+#define BITMAP_LAST_WORD_MASK(nbits) (~0UL >> (-(nbits) & (BITS_PER_LONG - 1)))
+ #if defined(__LITTLE_ENDIAN)
+ 
+@@ -37,6 +38,21 @@ static inline
+ unsigned long find_next_zero_bit_le(const void *addr, unsigned
+ 		long size, unsigned long offset)
+ {
++	if (small_const_nbits(size)) {
++		unsigned long val = *(const unsigned long *)addr, idx;
 +
-+/*
-+ * The static inlines below do not handle constant nbits==0 correctly,
-+ * so make such users (should any ever turn up) call the out-of-line
-+ * versions.
-+ */
-+#define small_const_nbits(nbits) \
-+	(__builtin_constant_p(nbits) && (nbits) <= BITS_PER_LONG && (nbits) > 0)
++		if (unlikely(offset >= size))
++			return size;
 +
- #define BITS_PER_TYPE(type)	(sizeof(type) * BITS_PER_BYTE)
- #define BITS_TO_LONGS(nr)	DIV_ROUND_UP(nr, BITS_PER_TYPE(long))
- #define BITS_TO_U64(nr)		DIV_ROUND_UP(nr, BITS_PER_TYPE(u64))
++		val = swab(val) | ~BITMAP_FIRST_WORD_MASK(offset);
++		if (val == ~0UL)
++			return size;
++
++		idx = ffz(val);
++
++		return idx < size ? idx : size;
++	}
++
+ 	return _find_next_bit(addr, NULL, size, offset, ~0UL, 1);
+ }
+ #endif
+@@ -46,6 +62,18 @@ static inline
+ unsigned long find_next_bit_le(const void *addr, unsigned
+ 		long size, unsigned long offset)
+ {
++	if (small_const_nbits(size)) {
++		unsigned long val = *(const unsigned long *)addr;
++
++		if (unlikely(offset >= size))
++			return size;
++
++		val = swab(val) & BITMAP_FIRST_WORD_MASK(offset)
++				& BITMAP_LAST_WORD_MASK(size);
++
++		return val ? __ffs(val) : size;
++	}
++
+ 	return _find_next_bit(addr, NULL, size, offset, 0UL, 1);
+ }
+ #endif
 -- 
 2.25.1
 
