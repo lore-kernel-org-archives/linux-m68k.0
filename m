@@ -8,55 +8,55 @@ X-Spam-Status: No, score=-15.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
 	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 79821C433E0
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C6F9FC433E6
 	for <linux-m68k@archiver.kernel.org>; Thu, 21 Jan 2021 01:47:27 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 4768323788
+	by mail.kernel.org (Postfix) with ESMTP id 7B8752388B
 	for <linux-m68k@archiver.kernel.org>; Thu, 21 Jan 2021 01:47:27 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727809AbhAUA4n (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Wed, 20 Jan 2021 19:56:43 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36650 "EHLO
+        id S1728518AbhAUA4x (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Wed, 20 Jan 2021 19:56:53 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36892 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2389406AbhAUAI4 (ORCPT
+        with ESMTP id S2392201AbhAUAKD (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Wed, 20 Jan 2021 19:08:56 -0500
-Received: from mail-qt1-x833.google.com (mail-qt1-x833.google.com [IPv6:2607:f8b0:4864:20::833])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 32CE4C061786
-        for <linux-m68k@lists.linux-m68k.org>; Wed, 20 Jan 2021 16:06:39 -0800 (PST)
-Received: by mail-qt1-x833.google.com with SMTP id e15so369547qte.9
-        for <linux-m68k@lists.linux-m68k.org>; Wed, 20 Jan 2021 16:06:39 -0800 (PST)
+        Wed, 20 Jan 2021 19:10:03 -0500
+Received: from mail-qk1-x72c.google.com (mail-qk1-x72c.google.com [IPv6:2607:f8b0:4864:20::72c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 832E0C061794
+        for <linux-m68k@lists.linux-m68k.org>; Wed, 20 Jan 2021 16:06:40 -0800 (PST)
+Received: by mail-qk1-x72c.google.com with SMTP id c7so127148qke.1
+        for <linux-m68k@lists.linux-m68k.org>; Wed, 20 Jan 2021 16:06:40 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=PLzDDsb43NyMx0AvE6OrGjVNnyH2PAQsA/iidjpcD/E=;
-        b=OuPs6iN5DNL3e4a0wi5/M6GUhCYOFv7vYm1pW29MUWITn3Ao17PBRlFphOLfb3AUP+
-         wKADPHJSHBkrXY4UDmFXuOvgHOXchkk29iQt0nVWV9qbWTLdP77KQvv5NN2Wb1IB1y7b
-         ZZUncR1F1faGkm6WPt7F0fSGjuOiLMJnGzO4oJcaXYVGCnN5sxABXgW6RP2Y1//7cNnb
-         LhpozcCLY74/7m17FnqAiOlE8DsDMlPCOJ1dwy3tIrkvTPUrH/fB26MEePjjPBQu9IN/
-         Aqaf3PT7zLl29GgzKBepaIswcL4foYFDUdA2q6byv/7VGw3LH4xsxn1htTa1AOLu1Jpt
-         v2lQ==
+        bh=u1+v9PN1Uu2cLPRFWSGLmx3QT1L/QFpePD0yoTSiiK0=;
+        b=HrQFRw+5hk0kZek6NOt9rxQ2j5aMRX5yWhHyefWYvSFs/+iQKMbRq/2PloSq3xZJgn
+         wmbk94fwu0QfRMOInCiScjQrZoypNt1QxmtVmCwVt19G/gDhV2FB6/ZPNuzKCVq+2uxp
+         g/1Ay3zC5NzKjiE3zDS4hKEh99dIx/cMvXaT78m25u/0sK5lAwpvO11CypKch466J0jG
+         lVj0cHbLboX51SHINKwvXJVtqtvUmf5oNeSORLiisdd9teVI3gEbEHql/ppbzqnNdpOs
+         4C9P/bQ0sKAMDvHyf/Vx+VPf+N4Cq9iQ/3k2Jkk4L0sV8yfZGVhoAwpg3rQm4a1U7aP+
+         +U0g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=PLzDDsb43NyMx0AvE6OrGjVNnyH2PAQsA/iidjpcD/E=;
-        b=d0lXm/Squ6RpuCbYjVx2MsoaHmUP3pOHgTwFbVwynrigKNrjpmYSsyCxRyZX4Dm0nN
-         cB3fHmiXm/AgawToYo6KHCz13yMBcBBCrIXF65OGAOAeqyBauw7noT96Tal36IIkSryK
-         tFNiRKcgyDvAQkWiUD7pp9KyzBEzIieope3SwSxZA5QcpLSsr8lNn7JIB6JkO3AKtxIn
-         N5+q6cR7DxefIqoZA3xHT5lFWThcki0X1SThp3fJwfohDrw+FsC201Hv8AY6RcyK4MVQ
-         HBA0pKx9jUBQKlV/vFkKVU24wG83XqJa+p4pPuRHhnIw68+o0ghPEBIwovWORiyCQeE4
-         XV5Q==
-X-Gm-Message-State: AOAM531CmZNoALFyRCNfa06hlaz0+3tHs02uiTSdOq3sx3W9QGJGmZ8Y
-        vjcK5RBiYGi93wvHul4Uxn+F5O5RTPencyfY
-X-Google-Smtp-Source: ABdhPJzDAtae1ksWkHrhXovCS3XTS6Wj+QkJyM8BOP2ByMYHXOIPvEX7HVJIB1jrXMK8dV5JEOtqng==
-X-Received: by 2002:ac8:36e2:: with SMTP id b31mr11511989qtc.19.1611187598218;
-        Wed, 20 Jan 2021 16:06:38 -0800 (PST)
+        bh=u1+v9PN1Uu2cLPRFWSGLmx3QT1L/QFpePD0yoTSiiK0=;
+        b=Wl/w4KJkFhxivHlPK3I4DpZOt94S4W8vyTCoC2kiA6VyPV2sx7oOxacezDjhLlnH3R
+         W1tp4jFb1IGYTFbBd1/jQ5xXIfMdDZE+YzQrIWmXzTtpBP9iutOe+J/LPIKDCfofC53n
+         5hQBq2JnVBXCsr8+UNuIZaop43/v30BXE3W2T7vrSAmsxom5hAx+gbY2oD5q3ZVax9RV
+         C7Ic5RsJgn+UKCsRvVWL94Ltr8ilBi0DWaul1Dh/q3JsFC/XqphS++Ue9twGWTmQAZx7
+         nN9fr8BUaQ4o+uOPwxMSl5hhDwFbuUnY8RdjIDYzbqe0LD5OHLGXt1H3O25+Pvoarw0T
+         4Xhg==
+X-Gm-Message-State: AOAM531FfB+7YSe3uDFqBXu/+6lwIf384unGpr5IVtERDOxQBHr550hD
+        yuXpOrSnD9i8OoxZMEfk8a5TueTia1kzZ/g3
+X-Google-Smtp-Source: ABdhPJym8sxUBV8IVA+jlYKc3NALcR/rEHBGw31xie5ZX+g9RtMimSfF0h6MmVcZ7xHV+S0h+Ei3+w==
+X-Received: by 2002:ae9:e854:: with SMTP id a81mr12180102qkg.77.1611187599372;
+        Wed, 20 Jan 2021 16:06:39 -0800 (PST)
 Received: from localhost (d27-96-190-162.evv.wideopenwest.com. [96.27.162.190])
-        by smtp.gmail.com with ESMTPSA id b12sm2346703qtt.74.2021.01.20.16.06.37
+        by smtp.gmail.com with ESMTPSA id o64sm2457701qka.43.2021.01.20.16.06.38
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 20 Jan 2021 16:06:37 -0800 (PST)
+        Wed, 20 Jan 2021 16:06:38 -0800 (PST)
 From:   Yury Norov <yury.norov@gmail.com>
 To:     linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org,
         linux-sh@vger.kernel.org, linux-arch@vger.kernel.org
@@ -74,9 +74,9 @@ Cc:     Yury Norov <yury.norov@gmail.com>,
         Wei Yang <richard.weiyang@linux.alibaba.com>,
         Josh Poimboeuf <jpoimboe@redhat.com>,
         Rasmus Villemoes <rasmus.villemoes@prevas.dk>
-Subject: [PATCH 2/6] bitmap: move some macros from linux/bitmap.h to linux/bitops.h
-Date:   Wed, 20 Jan 2021 16:06:26 -0800
-Message-Id: <20210121000630.371883-3-yury.norov@gmail.com>
+Subject: [PATCH 3/6] tools: sync bitops macro definitions with the kernel
+Date:   Wed, 20 Jan 2021 16:06:27 -0800
+Message-Id: <20210121000630.371883-4-yury.norov@gmail.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20210121000630.371883-1-yury.norov@gmail.com>
 References: <20210121000630.371883-1-yury.norov@gmail.com>
@@ -86,44 +86,41 @@ Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-In the following patches of the series they are used by
-find_bit subsystem.
-
 Signed-off-by: Yury Norov <yury.norov@gmail.com>
 ---
- include/linux/bitmap.h | 11 -----------
- include/linux/bitops.h | 11 +++++++++++
+ tools/include/linux/bitmap.h | 11 -----------
+ tools/include/linux/bitops.h | 11 +++++++++++
  2 files changed, 11 insertions(+), 11 deletions(-)
 
-diff --git a/include/linux/bitmap.h b/include/linux/bitmap.h
-index 70a932470b2d..5bacbc8785eb 100644
---- a/include/linux/bitmap.h
-+++ b/include/linux/bitmap.h
-@@ -219,17 +219,6 @@ extern unsigned int bitmap_ord_to_pos(const unsigned long *bitmap, unsigned int
- extern int bitmap_print_to_pagebuf(bool list, char *buf,
- 				   const unsigned long *maskp, int nmaskbits);
+diff --git a/tools/include/linux/bitmap.h b/tools/include/linux/bitmap.h
+index 477a1cae513f..266a9291dd1f 100644
+--- a/tools/include/linux/bitmap.h
++++ b/tools/include/linux/bitmap.h
+@@ -19,17 +19,6 @@ int __bitmap_equal(const unsigned long *bitmap1,
+ 		   const unsigned long *bitmap2, unsigned int bits);
+ void bitmap_clear(unsigned long *map, unsigned int start, int len);
  
 -#define BITMAP_FIRST_WORD_MASK(start) (~0UL << ((start) & (BITS_PER_LONG - 1)))
--#define BITMAP_LAST_WORD_MASK(nbits) (~0UL >> (-(nbits) & (BITS_PER_LONG - 1)))
 -
--/*
-- * The static inlines below do not handle constant nbits==0 correctly,
-- * so make such users (should any ever turn up) call the out-of-line
-- * versions.
-- */
+-#define BITMAP_LAST_WORD_MASK(nbits)					\
+-(									\
+-	((nbits) % BITS_PER_LONG) ?					\
+-		(1UL<<((nbits) % BITS_PER_LONG))-1 : ~0UL		\
+-)
+-
 -#define small_const_nbits(nbits) \
--	(__builtin_constant_p(nbits) && (nbits) <= BITS_PER_LONG && (nbits) > 0)
+-	(__builtin_constant_p(nbits) && (nbits) <= BITS_PER_LONG)
 -
- static inline void bitmap_zero(unsigned long *dst, unsigned int nbits)
+ static inline void bitmap_zero(unsigned long *dst, int nbits)
  {
- 	unsigned int len = BITS_TO_LONGS(nbits) * sizeof(unsigned long);
-diff --git a/include/linux/bitops.h b/include/linux/bitops.h
-index a5a48303b0f1..a0e138bbb8ce 100644
---- a/include/linux/bitops.h
-+++ b/include/linux/bitops.h
-@@ -7,6 +7,17 @@
- 
- #include <uapi/linux/kernel.h>
+ 	if (small_const_nbits(nbits))
+diff --git a/tools/include/linux/bitops.h b/tools/include/linux/bitops.h
+index 5fca38fe1ba8..1c70919cb216 100644
+--- a/tools/include/linux/bitops.h
++++ b/tools/include/linux/bitops.h
+@@ -14,6 +14,17 @@
+ #include <linux/bits.h>
+ #include <linux/compiler.h>
  
 +#define BITMAP_FIRST_WORD_MASK(start) (~0UL << ((start) & (BITS_PER_LONG - 1)))
 +#define BITMAP_LAST_WORD_MASK(nbits) (~0UL >> (-(nbits) & (BITS_PER_LONG - 1)))
@@ -136,9 +133,9 @@ index a5a48303b0f1..a0e138bbb8ce 100644
 +#define small_const_nbits(nbits) \
 +	(__builtin_constant_p(nbits) && (nbits) <= BITS_PER_LONG && (nbits) > 0)
 +
- /* Set bits in the first 'n' bytes when loaded from memory */
- #ifdef __LITTLE_ENDIAN
- #  define aligned_byte_mask(n) ((1UL << 8*(n))-1)
+ #define BITS_PER_TYPE(type)	(sizeof(type) * BITS_PER_BYTE)
+ #define BITS_TO_LONGS(nr)	DIV_ROUND_UP(nr, BITS_PER_TYPE(long))
+ #define BITS_TO_U64(nr)		DIV_ROUND_UP(nr, BITS_PER_TYPE(u64))
 -- 
 2.25.1
 
