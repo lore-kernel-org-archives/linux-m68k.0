@@ -6,35 +6,35 @@ X-Spam-Status: No, score=-3.8 required=3.0 tests=BAYES_00,
 	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
 	autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 89ABBC433E0
-	for <linux-m68k@archiver.kernel.org>; Thu, 21 Jan 2021 10:41:47 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B1592C433DB
+	for <linux-m68k@archiver.kernel.org>; Thu, 21 Jan 2021 12:56:03 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 3D2EF207CC
-	for <linux-m68k@archiver.kernel.org>; Thu, 21 Jan 2021 10:41:47 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 7533823A1C
+	for <linux-m68k@archiver.kernel.org>; Thu, 21 Jan 2021 12:56:03 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728727AbhAUKlX (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Thu, 21 Jan 2021 05:41:23 -0500
-Received: from mga04.intel.com ([192.55.52.120]:6024 "EHLO mga04.intel.com"
+        id S1730412AbhAUMzy (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Thu, 21 Jan 2021 07:55:54 -0500
+Received: from mga12.intel.com ([192.55.52.136]:46993 "EHLO mga12.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728469AbhAUKlJ (ORCPT <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Thu, 21 Jan 2021 05:41:09 -0500
-IronPort-SDR: J9K67ndCFoTrYF8WNYyheTYmCbgPl9jPdcqXzwYvXv1aT35OUe0BxpJyQn4CTlAP9eB61SHvj4
- 3yjRdz+pzK3A==
-X-IronPort-AV: E=McAfee;i="6000,8403,9870"; a="176678785"
+        id S1729487AbhAUKfm (ORCPT <rfc822;linux-m68k@lists.linux-m68k.org>);
+        Thu, 21 Jan 2021 05:35:42 -0500
+IronPort-SDR: aRzHV+knYAzqb1IjQ2aUoZ9qYYT8f5+CPyBxd1qFV5fCzZ4fOk7nHMYHNczBOGBT7uxAP+MX/6
+ ZNCGEGbqhHWg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9870"; a="158428800"
 X-IronPort-AV: E=Sophos;i="5.79,363,1602572400"; 
-   d="scan'208";a="176678785"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Jan 2021 02:39:23 -0800
-IronPort-SDR: st5LNOVlRwOFFvLjpqR0nt4yjWk02rcI/4LtDur741eNR7Puwcd1q/4NcCWCNTw3/ssRE/aphb
- 8APS1z6r0EVw==
+   d="scan'208";a="158428800"
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Jan 2021 02:33:44 -0800
+IronPort-SDR: t0/3SHCCmps/HIQS11ATR5hPbMpPuTorfoWhf5Y7rT93Ngh/CeE1NlXGpQo1QXCKDgpJ0yqs0j
+ 8H3qxCqbE9uw==
 X-IronPort-AV: E=Sophos;i="5.79,363,1602572400"; 
-   d="scan'208";a="403145896"
+   d="scan'208";a="570685626"
 Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
-  by fmsmga002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Jan 2021 02:39:19 -0800
+  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Jan 2021 02:33:40 -0800
 Received: from andy by smile with local (Exim 4.94)
         (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1l2XO0-007Obd-Ny; Thu, 21 Jan 2021 12:40:20 +0200
-Date:   Thu, 21 Jan 2021 12:40:20 +0200
+        id 1l2XIY-007OH7-06; Thu, 21 Jan 2021 12:34:42 +0200
+Date:   Thu, 21 Jan 2021 12:34:41 +0200
 From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 To:     Yury Norov <yury.norov@gmail.com>
 Cc:     linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org,
@@ -51,52 +51,46 @@ Cc:     linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org,
         Wei Yang <richard.weiyang@linux.alibaba.com>,
         Josh Poimboeuf <jpoimboe@redhat.com>,
         Rasmus Villemoes <rasmus.villemoes@prevas.dk>
-Subject: Re: [PATCH 6/6] lib: add fast path for find_first_*_bit() and
- find_last_bit()
-Message-ID: <YAlaFJpV5Jd9VN2S@smile.fi.intel.com>
+Subject: Re: [PATCH 5/6] lib: add fast path for find_next_*_bit()
+Message-ID: <YAlYwZOO6QyaR6UZ@smile.fi.intel.com>
 References: <20210121000630.371883-1-yury.norov@gmail.com>
- <20210121000630.371883-7-yury.norov@gmail.com>
+ <20210121000630.371883-6-yury.norov@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210121000630.371883-7-yury.norov@gmail.com>
+In-Reply-To: <20210121000630.371883-6-yury.norov@gmail.com>
 Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-On Wed, Jan 20, 2021 at 04:06:30PM -0800, Yury Norov wrote:
-> Similarly to bitmap functions, users will benefit if we'll handle
-> a case of small-size bitmaps that fit into a single word.
-> 
-> While here, move the find_last_bit() declaration to bitops/find.h
-> where other find_*_bit() functions sit.
+On Wed, Jan 20, 2021 at 04:06:29PM -0800, Yury Norov wrote:
+> Similarly to bitmap functions, find_next_*_bit() users will benefit
+> if we'll handle a case of bitmaps that fit into a single word. In the
+> very best case, the compiler may replace a function call with a
+> single ffs or ffz instruction.
 
-...
-
-> +static inline
-> +unsigned long find_first_bit(const unsigned long *addr, unsigned long size)
-> +{
 > +	if (small_const_nbits(size)) {
-> +		unsigned long idx;
+> +		unsigned long val;
 > +
-> +		if (!*addr)
+> +		if (unlikely(offset >= size))
 > +			return size;
-> +
-> +		idx = __ffs(*addr);
 
-> +		return idx < size ? idx : size;
+> +		val = *addr & BITMAP_FIRST_WORD_MASK(offset)
+> +				& BITMAP_LAST_WORD_MASK(size);
 
-But can't we mask it first, then check for 0 (no bit set) otherwise return the
-result of __ffs directly?
+Seems like a new helper can be introduced (BITS or BITMAP namespace depending
+on the decision):
 
-Same comment for other similar places.
+#define	_OFFSET_SIZE_MASK(o,s)					\
+	(BITMAP_FIRST_WORD_MASK(o) & BITMAP_LAST_WORD_MASK(s))
 
+		val = *addr & BITMAP_OFFSET_SIZE_MASK(offset, size);
+
+And so on below.
+
+> +		return val ? __ffs(val) : size;
 > +	}
-> +
-> +	return _find_first_bit(addr, size);
-> +}
-
 
 -- 
 With Best Regards,
