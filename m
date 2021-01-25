@@ -2,117 +2,108 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-7.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 6886BC433DB
-	for <linux-m68k@archiver.kernel.org>; Thu, 21 Jan 2021 20:39:56 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 0DD47C433E9
+	for <linux-m68k@archiver.kernel.org>; Mon, 25 Jan 2021 07:56:17 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 2FA182389B
-	for <linux-m68k@archiver.kernel.org>; Thu, 21 Jan 2021 20:39:56 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id C678A22C9C
+	for <linux-m68k@archiver.kernel.org>; Mon, 25 Jan 2021 07:56:16 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727156AbhAUUjw (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Thu, 21 Jan 2021 15:39:52 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47732 "EHLO
+        id S1727262AbhAYHz7 (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Mon, 25 Jan 2021 02:55:59 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44344 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726942AbhAUUji (ORCPT
+        with ESMTP id S1727120AbhAYHzI (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Thu, 21 Jan 2021 15:39:38 -0500
-Received: from mail-io1-xd2c.google.com (mail-io1-xd2c.google.com [IPv6:2607:f8b0:4864:20::d2c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 62A6AC061756
-        for <linux-m68k@lists.linux-m68k.org>; Thu, 21 Jan 2021 12:38:58 -0800 (PST)
-Received: by mail-io1-xd2c.google.com with SMTP id d13so6773223ioy.4
-        for <linux-m68k@lists.linux-m68k.org>; Thu, 21 Jan 2021 12:38:58 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=t7mqf+OnHHgmEasThOeWv/Cz0OSsuhGVfQUCMVskmlM=;
-        b=k+6Mr4g1BWhGj8+NP3PAO4u1Ueou82T/GKsrvkujtMj+xcDstE3hn853F0Cpor9WMy
-         hzYeM98UCgt5PMNklfFnublFNEHYTwmJAIoLshgGOIOTq3NL3pnkgHqm58d1J0gczFnE
-         QqeSvJl2Lolsex4OuoAKizFwdtqnMQ7PGhYcFmD4p1o2pyZJRyunYCccAQLG6Z3pMxeK
-         YN4iZ82xmyaCXui9sLbFc0rgUPJyEmrUj2ql7+C5NCPm8D6snxMsnCBziQn7f/jIuQXm
-         8roNKxm5b8x1I5gTjBz/qVzjVRVmuFb1Us9nNZDZw8ibGymLpxgUdm5ZkXds2aCQGriM
-         3r3Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=t7mqf+OnHHgmEasThOeWv/Cz0OSsuhGVfQUCMVskmlM=;
-        b=YzGMCF7D4velAAXI+k29ZVSsYc4Ui3mFoh1EBVaQc/3jmQBRTBwhNDbhpwJlnWnuoY
-         9hkQ9GSm9DDx7F5G7vHyYit3Dbkuv0koFbbLcuKavLRSa+O4/Wj+52ketnLIkHZcm0EL
-         N124rTffyxwNwS3tiV5k9/tzGICbW5FDz5UogokiDKr8iyFAqExvX5tCA794HnFOscBy
-         l8CCaybjtNMgUzsmxiejm959voIBnjgwmRiDQUejK03O/yNHdSAs2oc7+bVbS3lV+sl9
-         xaXptrSk74KBnHB/RqlwMZ5MULWeXRtYiTTNv1kU+GtbiK4fJdN6ctkxgNx1f8XaPhff
-         o5RQ==
-X-Gm-Message-State: AOAM53304D1/v5cUInFk0er/F7frjFU1WHcCMl60qfTWKiGh1gJTXZi0
-        KQP1fuoewMSBvfC1wi3V4XCaGZw38WWrEcFDya4=
-X-Google-Smtp-Source: ABdhPJyQhycjgpb/B7dvMelEUuvwJXyOeWQcu7j6qPKfCoCN5La7YNeuaKa1QsTyFXiJ4QW4C3tC0OcDSSMsL2QAGBc=
-X-Received: by 2002:a05:6638:110a:: with SMTP id n10mr827873jal.29.1611261537592;
- Thu, 21 Jan 2021 12:38:57 -0800 (PST)
+        Mon, 25 Jan 2021 02:55:08 -0500
+Received: from baptiste.telenet-ops.be (baptiste.telenet-ops.be [IPv6:2a02:1800:120:4::f00:13])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 07D7AC06174A
+        for <linux-m68k@lists.linux-m68k.org>; Sun, 24 Jan 2021 23:45:36 -0800 (PST)
+Received: from ramsan.of.borg ([84.195.186.194])
+        by baptiste.telenet-ops.be with bizsmtp
+        id LvlZ2400R4C55Sk01vlZrr; Mon, 25 Jan 2021 08:45:34 +0100
+Received: from rox.of.borg ([192.168.97.57])
+        by ramsan.of.borg with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.93)
+        (envelope-from <geert@linux-m68k.org>)
+        id 1l3wZ3-000a4e-6X; Mon, 25 Jan 2021 08:45:33 +0100
+Received: from geert by rox.of.borg with local (Exim 4.93)
+        (envelope-from <geert@linux-m68k.org>)
+        id 1l3wZ2-00Chaf-Hm; Mon, 25 Jan 2021 08:45:32 +0100
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+To:     Joshua Thompson <funaho@jurai.org>
+Cc:     linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org,
+        Finn Thain <fthain@telegraphics.com.au>,
+        Stan Johnson <userm57@yahoo.com>,
+        Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: [PATCH] macintosh/adb-iop: Use big-endian autopoll mask
+Date:   Mon, 25 Jan 2021 08:45:24 +0100
+Message-Id: <20210125074524.3027452-1-geert@linux-m68k.org>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-References: <20210121000630.371883-1-yury.norov@gmail.com> <20210121000630.371883-3-yury.norov@gmail.com>
- <YAlVScX1d9KKvSZN@smile.fi.intel.com>
-In-Reply-To: <YAlVScX1d9KKvSZN@smile.fi.intel.com>
-From:   Yury Norov <yury.norov@gmail.com>
-Date:   Thu, 21 Jan 2021 12:38:46 -0800
-Message-ID: <CAAH8bW_YuHWD9KcMNzbzN2zg7CvRmqMKj0qkf7NSJmeT+NC+yQ@mail.gmail.com>
-Subject: Re: [PATCH 2/6] bitmap: move some macros from linux/bitmap.h to linux/bitops.h
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     linux-m68k@lists.linux-m68k.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-sh@vger.kernel.org, linux-arch@vger.kernel.org,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Yoshinori Sato <ysato@users.sourceforge.jp>,
-        Rich Felker <dalias@libc.org>, Arnd Bergmann <arnd@arndb.de>,
-        Dennis Zhou <dennis@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Wolfram Sang <wsa+renesas@sang-engineering.com>,
-        David Sterba <dsterba@suse.com>,
-        Stefano Brivio <sbrivio@redhat.com>,
-        "Ma, Jianpeng" <jianpeng.ma@intel.com>,
-        Wei Yang <richard.weiyang@linux.alibaba.com>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Rasmus Villemoes <rasmus.villemoes@prevas.dk>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-On Thu, Jan 21, 2021 at 2:18 AM Andy Shevchenko
-<andriy.shevchenko@linux.intel.com> wrote:
->
-> On Wed, Jan 20, 2021 at 04:06:26PM -0800, Yury Norov wrote:
-> > In the following patches of the series they are used by
-> > find_bit subsystem.
->
-> s/subsystem/API/
->
-> ...
->
-> > --- a/include/linux/bitops.h
-> > +++ b/include/linux/bitops.h
-> > @@ -7,6 +7,17 @@
-> >
-> >  #include <uapi/linux/kernel.h>
-> >
-> > +#define BITMAP_FIRST_WORD_MASK(start) (~0UL << ((start) & (BITS_PER_LONG - 1)))
-> > +#define BITMAP_LAST_WORD_MASK(nbits) (~0UL >> (-(nbits) & (BITS_PER_LONG - 1)))
->
-> Hmm... Naming here is not in the bitops namespace.
-> I would expect BITS rather than BITMAP for these two.
->
-> So, we have at least the following options:
->  - split to a separate header, like bitmap_macros.h
->  - s/BITMAP/BITS/ and either define BITMAP_* as respective BITS_* or rename it
->    everywhere in bitmap.*
->  - your variant
->  - ...???...
+From: Finn Thain <fthain@telegraphics.com.au>
 
-We have GENMASK in linux/bits.h. I think we should use it here and
-drop local ones.
-It will also cover the case of  OFFSET macro that you suggested in
-your comment to
-patch #5.
+As usual, the available documentation is inadequate and leaves endianness
+unspecified for message data. However, testing shows that this patch does
+improve correctness. The mistake should have been detected earlier but it
+was obscured by other bugs. In testing, this patch reinstated pre-v5.9
+behaviour. The old driver bugs remain and ADB input devices may stop
+working. But that appears to be unrelated.
+
+Cc: Joshua Thompson <funaho@jurai.org>
+Fixes: c66da95a39ec ("macintosh/adb-iop: Implement SRQ autopolling")
+Tested-by: Stan Johnson <userm57@yahoo.com>
+Signed-off-by: Finn Thain <fthain@telegraphics.com.au>
+Link: https://lore.kernel.org/r/58ba6b4eaf4d27f971f86993039da208129087af.1610778455.git.fthain@telegraphics.com.au
+Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
+---
+Resending on behalf of Finn, as his emails seem to be dropped by vger.
+
+To be queued in the m68k tree for v5.12.
+
+ drivers/macintosh/adb-iop.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/drivers/macintosh/adb-iop.c b/drivers/macintosh/adb-iop.c
+index 0ee3272491501c52..2633bc254935cc49 100644
+--- a/drivers/macintosh/adb-iop.c
++++ b/drivers/macintosh/adb-iop.c
+@@ -19,6 +19,7 @@
+ #include <asm/macints.h>
+ #include <asm/mac_iop.h>
+ #include <asm/adb_iop.h>
++#include <asm/unaligned.h>
+ 
+ #include <linux/adb.h>
+ 
+@@ -249,7 +250,7 @@ static void adb_iop_set_ap_complete(struct iop_msg *msg)
+ {
+ 	struct adb_iopmsg *amsg = (struct adb_iopmsg *)msg->message;
+ 
+-	autopoll_devs = (amsg->data[1] << 8) | amsg->data[0];
++	autopoll_devs = get_unaligned_be16(amsg->data);
+ 	if (autopoll_devs & (1 << autopoll_addr))
+ 		return;
+ 	autopoll_addr = autopoll_devs ? (ffs(autopoll_devs) - 1) : 0;
+@@ -266,8 +267,7 @@ static int adb_iop_autopoll(int devs)
+ 	amsg.flags = ADB_IOP_SET_AUTOPOLL | (mask ? ADB_IOP_AUTOPOLL : 0);
+ 	amsg.count = 2;
+ 	amsg.cmd = 0;
+-	amsg.data[0] = mask & 0xFF;
+-	amsg.data[1] = (mask >> 8) & 0xFF;
++	put_unaligned_be16(mask, amsg.data);
+ 
+ 	iop_send_message(ADB_IOP, ADB_CHAN, NULL, sizeof(amsg), (__u8 *)&amsg,
+ 			 adb_iop_set_ap_complete);
+-- 
+2.25.1
+
