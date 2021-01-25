@@ -2,108 +2,75 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,
+X-Spam-Status: No, score=-15.3 required=3.0 tests=BAYES_00,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
+	MAILING_LIST_MULTI,NICE_REPLY_A,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1
 	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 0DD47C433E9
-	for <linux-m68k@archiver.kernel.org>; Mon, 25 Jan 2021 07:56:17 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8D80AC433E9
+	for <linux-m68k@archiver.kernel.org>; Tue, 26 Jan 2021 06:02:06 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id C678A22C9C
-	for <linux-m68k@archiver.kernel.org>; Mon, 25 Jan 2021 07:56:16 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 5EF9122AAC
+	for <linux-m68k@archiver.kernel.org>; Tue, 26 Jan 2021 06:02:06 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727262AbhAYHz7 (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Mon, 25 Jan 2021 02:55:59 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44344 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727120AbhAYHzI (ORCPT
-        <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Mon, 25 Jan 2021 02:55:08 -0500
-Received: from baptiste.telenet-ops.be (baptiste.telenet-ops.be [IPv6:2a02:1800:120:4::f00:13])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 07D7AC06174A
-        for <linux-m68k@lists.linux-m68k.org>; Sun, 24 Jan 2021 23:45:36 -0800 (PST)
-Received: from ramsan.of.borg ([84.195.186.194])
-        by baptiste.telenet-ops.be with bizsmtp
-        id LvlZ2400R4C55Sk01vlZrr; Mon, 25 Jan 2021 08:45:34 +0100
-Received: from rox.of.borg ([192.168.97.57])
-        by ramsan.of.borg with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.93)
-        (envelope-from <geert@linux-m68k.org>)
-        id 1l3wZ3-000a4e-6X; Mon, 25 Jan 2021 08:45:33 +0100
-Received: from geert by rox.of.borg with local (Exim 4.93)
-        (envelope-from <geert@linux-m68k.org>)
-        id 1l3wZ2-00Chaf-Hm; Mon, 25 Jan 2021 08:45:32 +0100
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-To:     Joshua Thompson <funaho@jurai.org>
-Cc:     linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org,
-        Finn Thain <fthain@telegraphics.com.au>,
-        Stan Johnson <userm57@yahoo.com>,
-        Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: [PATCH] macintosh/adb-iop: Use big-endian autopoll mask
-Date:   Mon, 25 Jan 2021 08:45:24 +0100
-Message-Id: <20210125074524.3027452-1-geert@linux-m68k.org>
-X-Mailer: git-send-email 2.25.1
+        id S1728856AbhAZGCC (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Tue, 26 Jan 2021 01:02:02 -0500
+Received: from mail.kernel.org ([198.145.29.99]:45212 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728739AbhAYNZt (ORCPT <rfc822;linux-m68k@lists.linux-m68k.org>);
+        Mon, 25 Jan 2021 08:25:49 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C084822E03;
+        Mon, 25 Jan 2021 13:24:48 +0000 (UTC)
+Subject: Re: [PATCH] m68k: let clk_enable() return immediately if clk is NULL
+To:     Defang Bo <bodefang@126.com>, geert@linux-m68k.org
+Cc:     linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org
+References: <1609121265-207018-1-git-send-email-bodefang@126.com>
+From:   Greg Ungerer <gerg@linux-m68k.org>
+Message-ID: <963a69d9-34ac-085b-3756-95cc376fb7ca@linux-m68k.org>
+Date:   Mon, 25 Jan 2021 23:24:45 +1000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <1609121265-207018-1-git-send-email-bodefang@126.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-From: Finn Thain <fthain@telegraphics.com.au>
+Hi Defang,
 
-As usual, the available documentation is inadequate and leaves endianness
-unspecified for message data. However, testing shows that this patch does
-improve correctness. The mistake should have been detected earlier but it
-was obscured by other bugs. In testing, this patch reinstated pre-v5.9
-behaviour. The old driver bugs remain and ADB input devices may stop
-working. But that appears to be unrelated.
+On 28/12/20 12:07 pm, Defang Bo wrote:
+> Similar to commit<742859adc721>("m68k: let clk_disable() return immediately if clk is NULL").
+> there should be a check for clk to prevent NULL pointer dereference.
+> 
+> Signed-off-by: Defang Bo <bodefang@126.com>
 
-Cc: Joshua Thompson <funaho@jurai.org>
-Fixes: c66da95a39ec ("macintosh/adb-iop: Implement SRQ autopolling")
-Tested-by: Stan Johnson <userm57@yahoo.com>
-Signed-off-by: Finn Thain <fthain@telegraphics.com.au>
-Link: https://lore.kernel.org/r/58ba6b4eaf4d27f971f86993039da208129087af.1610778455.git.fthain@telegraphics.com.au
-Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
----
-Resending on behalf of Finn, as his emails seem to be dropped by vger.
+I have applied this to the m68knommu git tree, for-next branch -
+with blank line added as per Geert's suggestion.
 
-To be queued in the m68k tree for v5.12.
+Regards
+Greg
 
- drivers/macintosh/adb-iop.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/macintosh/adb-iop.c b/drivers/macintosh/adb-iop.c
-index 0ee3272491501c52..2633bc254935cc49 100644
---- a/drivers/macintosh/adb-iop.c
-+++ b/drivers/macintosh/adb-iop.c
-@@ -19,6 +19,7 @@
- #include <asm/macints.h>
- #include <asm/mac_iop.h>
- #include <asm/adb_iop.h>
-+#include <asm/unaligned.h>
- 
- #include <linux/adb.h>
- 
-@@ -249,7 +250,7 @@ static void adb_iop_set_ap_complete(struct iop_msg *msg)
- {
- 	struct adb_iopmsg *amsg = (struct adb_iopmsg *)msg->message;
- 
--	autopoll_devs = (amsg->data[1] << 8) | amsg->data[0];
-+	autopoll_devs = get_unaligned_be16(amsg->data);
- 	if (autopoll_devs & (1 << autopoll_addr))
- 		return;
- 	autopoll_addr = autopoll_devs ? (ffs(autopoll_devs) - 1) : 0;
-@@ -266,8 +267,7 @@ static int adb_iop_autopoll(int devs)
- 	amsg.flags = ADB_IOP_SET_AUTOPOLL | (mask ? ADB_IOP_AUTOPOLL : 0);
- 	amsg.count = 2;
- 	amsg.cmd = 0;
--	amsg.data[0] = mask & 0xFF;
--	amsg.data[1] = (mask >> 8) & 0xFF;
-+	put_unaligned_be16(mask, amsg.data);
- 
- 	iop_send_message(ADB_IOP, ADB_CHAN, NULL, sizeof(amsg), (__u8 *)&amsg,
- 			 adb_iop_set_ap_complete);
--- 
-2.25.1
 
+> ---
+>   arch/m68k/coldfire/clk.c | 3 +++
+>   1 file changed, 3 insertions(+)
+> 
+> diff --git a/arch/m68k/coldfire/clk.c b/arch/m68k/coldfire/clk.c
+> index 7bc666e..6decd11 100644
+> --- a/arch/m68k/coldfire/clk.c
+> +++ b/arch/m68k/coldfire/clk.c
+> @@ -90,6 +90,9 @@ EXPORT_SYMBOL(clk_get);
+>   int clk_enable(struct clk *clk)
+>   {
+>   	unsigned long flags;
+> +	if (!clk)
+> +		return -EINVAL;
+> +
+>   	spin_lock_irqsave(&clk_lock, flags);
+>   	if ((clk->enabled++ == 0) && clk->clk_ops)
+>   		clk->clk_ops->enable(clk);
+> 
