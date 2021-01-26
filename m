@@ -7,42 +7,42 @@ X-Spam-Status: No, score=-8.8 required=3.0 tests=BAYES_00,
 	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 4B47CC433DB
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 62A6EC433E0
 	for <linux-m68k@archiver.kernel.org>; Wed, 27 Jan 2021 04:08:07 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 100FB206B5
+	by mail.kernel.org (Postfix) with ESMTP id 2D6B2206B9
 	for <linux-m68k@archiver.kernel.org>; Wed, 27 Jan 2021 04:08:07 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233420AbhA0EHz (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Tue, 26 Jan 2021 23:07:55 -0500
-Received: from mga05.intel.com ([192.55.52.43]:52670 "EHLO mga05.intel.com"
+        id S233519AbhA0EH7 (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Tue, 26 Jan 2021 23:07:59 -0500
+Received: from mga01.intel.com ([192.55.52.88]:5505 "EHLO mga01.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729368AbhAZFVo (ORCPT <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Tue, 26 Jan 2021 00:21:44 -0500
-IronPort-SDR: BbjJdZXCkveGEDprHhi2JcQfLsPnvX7s14BTOrTKWu/LIi20Il6GTK7AXkQ5vSvCapeMKsNXlT
- HqJKeuL5dyzQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9875"; a="264673862"
+        id S1729397AbhAZFVt (ORCPT <rfc822;linux-m68k@lists.linux-m68k.org>);
+        Tue, 26 Jan 2021 00:21:49 -0500
+IronPort-SDR: VoatA8iNhBRuLeo92/kpOgZkAf1ycsBN7TddABGQucW7Ow3wLlGHA/gjpO11iJZpf3rHfQVrdZ
+ W97RcjkFjhfQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9875"; a="198634715"
 X-IronPort-AV: E=Sophos;i="5.79,375,1602572400"; 
-   d="scan'208";a="264673862"
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Jan 2021 21:21:03 -0800
-IronPort-SDR: wFAcWXFgdtAdoYm8fExv838sQIawBBkp1vmNoZ2CUiZYHgEoYtywuzJ5dR41XNEBBOUUhlvgmv
- 4+PZhokpiZ0A==
+   d="scan'208";a="198634715"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Jan 2021 21:21:03 -0800
+IronPort-SDR: uvrSkFAZBjke2VTE71rYz+aY4tDzJjLbuCd3Z6Acb9ocymh23MHrSfTbAVlcCtGqkSA9O6HJUY
+ ncxPQzzhFg7g==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.79,375,1602572400"; 
-   d="scan'208";a="402632360"
+   d="scan'208";a="406580209"
 Received: from lkp-server02.sh.intel.com (HELO 625d3a354f04) ([10.239.97.151])
-  by fmsmga004.fm.intel.com with ESMTP; 25 Jan 2021 21:21:02 -0800
+  by fmsmga002.fm.intel.com with ESMTP; 25 Jan 2021 21:21:02 -0800
 Received: from kbuild by 625d3a354f04 with local (Exim 4.92)
         (envelope-from <lkp@intel.com>)
-        id 1l4Gmj-0000Yl-QX; Tue, 26 Jan 2021 05:21:01 +0000
-Date:   Tue, 26 Jan 2021 13:20:13 +0800
+        id 1l4Gmj-0000Yj-PB; Tue, 26 Jan 2021 05:21:01 +0000
+Date:   Tue, 26 Jan 2021 13:20:16 +0800
 From:   kernel test robot <lkp@intel.com>
 To:     Geert Uytterhoeven <geert@linux-m68k.org>
 Cc:     linux-m68k@lists.linux-m68k.org
-Subject: [m68k:master] BUILD SUCCESS
- 3680b999390b58753ef154ce5d95d86183ab8db6
-Message-ID: <600fa68d.b7ralS1/a5/XVt0u%lkp@intel.com>
+Subject: [m68k:for-next] BUILD SUCCESS
+ c396dd2ec5bbd1cb80eafe32a72ab6bd6b17cb5a
+Message-ID: <600fa690.EmfpsDybGVqCDWeX%lkp@intel.com>
 User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
@@ -51,12 +51,12 @@ Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/geert/linux-m68k.git master
-branch HEAD: 3680b999390b58753ef154ce5d95d86183ab8db6  Merge tag 'v5.11-rc5'
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/geert/linux-m68k.git for-next
+branch HEAD: c396dd2ec5bbd1cb80eafe32a72ab6bd6b17cb5a  macintosh/adb-iop: Use big-endian autopoll mask
 
-elapsed time: 720m
+elapsed time: 723m
 
-configs tested: 150
+configs tested: 153
 configs skipped: 2
 
 The following configs have been built successfully.
@@ -79,14 +79,13 @@ arm                        keystone_defconfig
 powerpc                     ksi8560_defconfig
 sh                          rsk7201_defconfig
 powerpc                   bluestone_defconfig
-riscv                             allnoconfig
 arm                  colibri_pxa270_defconfig
+riscv                             allnoconfig
 sh                           se7722_defconfig
 mips                         db1xxx_defconfig
 m68k                       m5249evb_defconfig
 powerpc                          g5_defconfig
 sh                           se7343_defconfig
-ia64                             allyesconfig
 powerpc                    klondike_defconfig
 arm                         palmz72_defconfig
 arm                          badge4_defconfig
@@ -118,6 +117,9 @@ arm                            mmp2_defconfig
 ia64                      gensparse_defconfig
 arm                              alldefconfig
 mips                   sb1250_swarm_defconfig
+arm                         lpc18xx_defconfig
+sh                        sh7763rdp_defconfig
+powerpc                     tqm8555_defconfig
 sh                               alldefconfig
 sh                               j2_defconfig
 mips                      pistachio_defconfig
@@ -142,12 +144,13 @@ arm                        multi_v7_defconfig
 m68k                                defconfig
 ia64                             allmodconfig
 ia64                                defconfig
+ia64                             allyesconfig
 m68k                             allmodconfig
 m68k                             allyesconfig
+nios2                               defconfig
 arc                              allyesconfig
 nds32                             allnoconfig
 c6x                              allyesconfig
-nios2                               defconfig
 nds32                               defconfig
 nios2                            allyesconfig
 csky                                defconfig
@@ -160,10 +163,10 @@ sh                               allmodconfig
 parisc                              defconfig
 parisc                           allyesconfig
 s390                                defconfig
-i386                             allyesconfig
 sparc                            allyesconfig
 sparc                               defconfig
 i386                               tinyconfig
+i386                             allyesconfig
 i386                                defconfig
 mips                             allyesconfig
 mips                             allmodconfig
