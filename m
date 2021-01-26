@@ -2,75 +2,220 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-15.3 required=3.0 tests=BAYES_00,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,NICE_REPLY_A,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1
-	autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-8.8 required=3.0 tests=BAYES_00,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 8D80AC433E9
-	for <linux-m68k@archiver.kernel.org>; Tue, 26 Jan 2021 06:02:06 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4B47CC433DB
+	for <linux-m68k@archiver.kernel.org>; Wed, 27 Jan 2021 04:08:07 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 5EF9122AAC
-	for <linux-m68k@archiver.kernel.org>; Tue, 26 Jan 2021 06:02:06 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 100FB206B5
+	for <linux-m68k@archiver.kernel.org>; Wed, 27 Jan 2021 04:08:07 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728856AbhAZGCC (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Tue, 26 Jan 2021 01:02:02 -0500
-Received: from mail.kernel.org ([198.145.29.99]:45212 "EHLO mail.kernel.org"
+        id S233420AbhA0EHz (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Tue, 26 Jan 2021 23:07:55 -0500
+Received: from mga05.intel.com ([192.55.52.43]:52670 "EHLO mga05.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728739AbhAYNZt (ORCPT <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Mon, 25 Jan 2021 08:25:49 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C084822E03;
-        Mon, 25 Jan 2021 13:24:48 +0000 (UTC)
-Subject: Re: [PATCH] m68k: let clk_enable() return immediately if clk is NULL
-To:     Defang Bo <bodefang@126.com>, geert@linux-m68k.org
-Cc:     linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org
-References: <1609121265-207018-1-git-send-email-bodefang@126.com>
-From:   Greg Ungerer <gerg@linux-m68k.org>
-Message-ID: <963a69d9-34ac-085b-3756-95cc376fb7ca@linux-m68k.org>
-Date:   Mon, 25 Jan 2021 23:24:45 +1000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1729368AbhAZFVo (ORCPT <rfc822;linux-m68k@lists.linux-m68k.org>);
+        Tue, 26 Jan 2021 00:21:44 -0500
+IronPort-SDR: BbjJdZXCkveGEDprHhi2JcQfLsPnvX7s14BTOrTKWu/LIi20Il6GTK7AXkQ5vSvCapeMKsNXlT
+ HqJKeuL5dyzQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9875"; a="264673862"
+X-IronPort-AV: E=Sophos;i="5.79,375,1602572400"; 
+   d="scan'208";a="264673862"
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Jan 2021 21:21:03 -0800
+IronPort-SDR: wFAcWXFgdtAdoYm8fExv838sQIawBBkp1vmNoZ2CUiZYHgEoYtywuzJ5dR41XNEBBOUUhlvgmv
+ 4+PZhokpiZ0A==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.79,375,1602572400"; 
+   d="scan'208";a="402632360"
+Received: from lkp-server02.sh.intel.com (HELO 625d3a354f04) ([10.239.97.151])
+  by fmsmga004.fm.intel.com with ESMTP; 25 Jan 2021 21:21:02 -0800
+Received: from kbuild by 625d3a354f04 with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1l4Gmj-0000Yl-QX; Tue, 26 Jan 2021 05:21:01 +0000
+Date:   Tue, 26 Jan 2021 13:20:13 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Geert Uytterhoeven <geert@linux-m68k.org>
+Cc:     linux-m68k@lists.linux-m68k.org
+Subject: [m68k:master] BUILD SUCCESS
+ 3680b999390b58753ef154ce5d95d86183ab8db6
+Message-ID: <600fa68d.b7ralS1/a5/XVt0u%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
-In-Reply-To: <1609121265-207018-1-git-send-email-bodefang@126.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
+Content-Type: text/plain; charset=us-ascii
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-Hi Defang,
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/geert/linux-m68k.git master
+branch HEAD: 3680b999390b58753ef154ce5d95d86183ab8db6  Merge tag 'v5.11-rc5'
 
-On 28/12/20 12:07 pm, Defang Bo wrote:
-> Similar to commit<742859adc721>("m68k: let clk_disable() return immediately if clk is NULL").
-> there should be a check for clk to prevent NULL pointer dereference.
-> 
-> Signed-off-by: Defang Bo <bodefang@126.com>
+elapsed time: 720m
 
-I have applied this to the m68knommu git tree, for-next branch -
-with blank line added as per Geert's suggestion.
+configs tested: 150
+configs skipped: 2
 
-Regards
-Greg
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
+gcc tested configs:
+arm                                 defconfig
+arm64                            allyesconfig
+arm64                               defconfig
+arm                              allyesconfig
+arm                              allmodconfig
+powerpc                    adder875_defconfig
+powerpc                      obs600_defconfig
+mips                     decstation_defconfig
+mips                          rm200_defconfig
+mips                  decstation_64_defconfig
+arm                       mainstone_defconfig
+sh                           se7712_defconfig
+arm                        keystone_defconfig
+powerpc                     ksi8560_defconfig
+sh                          rsk7201_defconfig
+powerpc                   bluestone_defconfig
+riscv                             allnoconfig
+arm                  colibri_pxa270_defconfig
+sh                           se7722_defconfig
+mips                         db1xxx_defconfig
+m68k                       m5249evb_defconfig
+powerpc                          g5_defconfig
+sh                           se7343_defconfig
+ia64                             allyesconfig
+powerpc                    klondike_defconfig
+arm                         palmz72_defconfig
+arm                          badge4_defconfig
+m68k                        stmark2_defconfig
+mips                         rt305x_defconfig
+powerpc                      arches_defconfig
+mips                        omega2p_defconfig
+mips                          ath25_defconfig
+powerpc                     skiroot_defconfig
+powerpc                 mpc8315_rdb_defconfig
+powerpc                     rainier_defconfig
+arc                    vdk_hs38_smp_defconfig
+mips                       capcella_defconfig
+mips                            gpr_defconfig
+s390                             allyesconfig
+powerpc                       holly_defconfig
+arm                            u300_defconfig
+powerpc                     ppa8548_defconfig
+powerpc                   motionpro_defconfig
+i386                             alldefconfig
+mips                  maltasmvp_eva_defconfig
+sh                   sh7770_generic_defconfig
+sh                           se7705_defconfig
+mips                  cavium_octeon_defconfig
+powerpc                     tqm5200_defconfig
+arm                          lpd270_defconfig
+sh                 kfr2r09-romimage_defconfig
+arm                            mmp2_defconfig
+ia64                      gensparse_defconfig
+arm                              alldefconfig
+mips                   sb1250_swarm_defconfig
+sh                               alldefconfig
+sh                               j2_defconfig
+mips                      pistachio_defconfig
+openrisc                    or1ksim_defconfig
+sh                          polaris_defconfig
+arm                           corgi_defconfig
+powerpc                      walnut_defconfig
+arm                        mvebu_v7_defconfig
+mips                         mpc30x_defconfig
+powerpc                         ps3_defconfig
+arm                  colibri_pxa300_defconfig
+arm                     eseries_pxa_defconfig
+sparc64                          alldefconfig
+sh                        dreamcast_defconfig
+xtensa                  cadence_csp_defconfig
+arc                            hsdk_defconfig
+powerpc                     mpc83xx_defconfig
+arm                          imote2_defconfig
+m68k                            q40_defconfig
+mips                malta_qemu_32r6_defconfig
+arm                        multi_v7_defconfig
+m68k                                defconfig
+ia64                             allmodconfig
+ia64                                defconfig
+m68k                             allmodconfig
+m68k                             allyesconfig
+arc                              allyesconfig
+nds32                             allnoconfig
+c6x                              allyesconfig
+nios2                               defconfig
+nds32                               defconfig
+nios2                            allyesconfig
+csky                                defconfig
+alpha                               defconfig
+alpha                            allyesconfig
+xtensa                           allyesconfig
+h8300                            allyesconfig
+arc                                 defconfig
+sh                               allmodconfig
+parisc                              defconfig
+parisc                           allyesconfig
+s390                                defconfig
+i386                             allyesconfig
+sparc                            allyesconfig
+sparc                               defconfig
+i386                               tinyconfig
+i386                                defconfig
+mips                             allyesconfig
+mips                             allmodconfig
+powerpc                          allyesconfig
+powerpc                          allmodconfig
+powerpc                           allnoconfig
+x86_64               randconfig-a003-20210125
+x86_64               randconfig-a002-20210125
+x86_64               randconfig-a001-20210125
+x86_64               randconfig-a005-20210125
+x86_64               randconfig-a006-20210125
+x86_64               randconfig-a004-20210125
+i386                 randconfig-a002-20210125
+i386                 randconfig-a004-20210125
+i386                 randconfig-a005-20210125
+i386                 randconfig-a003-20210125
+i386                 randconfig-a001-20210125
+i386                 randconfig-a006-20210125
+x86_64               randconfig-a012-20210126
+x86_64               randconfig-a016-20210126
+x86_64               randconfig-a015-20210126
+x86_64               randconfig-a011-20210126
+x86_64               randconfig-a013-20210126
+x86_64               randconfig-a014-20210126
+i386                 randconfig-a013-20210125
+i386                 randconfig-a011-20210125
+i386                 randconfig-a012-20210125
+i386                 randconfig-a015-20210125
+i386                 randconfig-a014-20210125
+i386                 randconfig-a016-20210125
+riscv                    nommu_k210_defconfig
+riscv                            allyesconfig
+riscv                    nommu_virt_defconfig
+riscv                               defconfig
+riscv                          rv32_defconfig
+riscv                            allmodconfig
+x86_64                                   rhel
+x86_64                           allyesconfig
+x86_64                    rhel-7.6-kselftests
+x86_64                              defconfig
+x86_64                               rhel-8.3
+x86_64                      rhel-8.3-kbuiltin
+x86_64                                  kexec
 
+clang tested configs:
+x86_64               randconfig-a012-20210125
+x86_64               randconfig-a016-20210125
+x86_64               randconfig-a015-20210125
+x86_64               randconfig-a011-20210125
+x86_64               randconfig-a013-20210125
+x86_64               randconfig-a014-20210125
 
-> ---
->   arch/m68k/coldfire/clk.c | 3 +++
->   1 file changed, 3 insertions(+)
-> 
-> diff --git a/arch/m68k/coldfire/clk.c b/arch/m68k/coldfire/clk.c
-> index 7bc666e..6decd11 100644
-> --- a/arch/m68k/coldfire/clk.c
-> +++ b/arch/m68k/coldfire/clk.c
-> @@ -90,6 +90,9 @@ EXPORT_SYMBOL(clk_get);
->   int clk_enable(struct clk *clk)
->   {
->   	unsigned long flags;
-> +	if (!clk)
-> +		return -EINVAL;
-> +
->   	spin_lock_irqsave(&clk_lock, flags);
->   	if ((clk->enabled++ == 0) && clk->clk_ops)
->   		clk->clk_ops->enable(clk);
-> 
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
