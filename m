@@ -2,223 +2,228 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.8 required=3.0 tests=BAYES_00,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-17.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,INCLUDES_CR_TRAILER,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=unavailable
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 62A6EC433E0
-	for <linux-m68k@archiver.kernel.org>; Wed, 27 Jan 2021 04:08:07 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id F3A27C433DB
+	for <linux-m68k@archiver.kernel.org>; Thu, 28 Jan 2021 01:05:24 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 2D6B2206B9
-	for <linux-m68k@archiver.kernel.org>; Wed, 27 Jan 2021 04:08:07 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id AA71164DD8
+	for <linux-m68k@archiver.kernel.org>; Thu, 28 Jan 2021 01:05:24 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233519AbhA0EH7 (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Tue, 26 Jan 2021 23:07:59 -0500
-Received: from mga01.intel.com ([192.55.52.88]:5505 "EHLO mga01.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729397AbhAZFVt (ORCPT <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Tue, 26 Jan 2021 00:21:49 -0500
-IronPort-SDR: VoatA8iNhBRuLeo92/kpOgZkAf1ycsBN7TddABGQucW7Ow3wLlGHA/gjpO11iJZpf3rHfQVrdZ
- W97RcjkFjhfQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9875"; a="198634715"
-X-IronPort-AV: E=Sophos;i="5.79,375,1602572400"; 
-   d="scan'208";a="198634715"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Jan 2021 21:21:03 -0800
-IronPort-SDR: uvrSkFAZBjke2VTE71rYz+aY4tDzJjLbuCd3Z6Acb9ocymh23MHrSfTbAVlcCtGqkSA9O6HJUY
- ncxPQzzhFg7g==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.79,375,1602572400"; 
-   d="scan'208";a="406580209"
-Received: from lkp-server02.sh.intel.com (HELO 625d3a354f04) ([10.239.97.151])
-  by fmsmga002.fm.intel.com with ESMTP; 25 Jan 2021 21:21:02 -0800
-Received: from kbuild by 625d3a354f04 with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1l4Gmj-0000Yj-PB; Tue, 26 Jan 2021 05:21:01 +0000
-Date:   Tue, 26 Jan 2021 13:20:16 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     linux-m68k@lists.linux-m68k.org
-Subject: [m68k:for-next] BUILD SUCCESS
- c396dd2ec5bbd1cb80eafe32a72ab6bd6b17cb5a
-Message-ID: <600fa690.EmfpsDybGVqCDWeX%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+        id S231478AbhA1BEz (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Wed, 27 Jan 2021 20:04:55 -0500
+Received: from condef-03.nifty.com ([202.248.20.68]:64982 "EHLO
+        condef-03.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231439AbhA1BCw (ORCPT
+        <rfc822;linux-m68k@lists.linux-m68k.org>);
+        Wed, 27 Jan 2021 20:02:52 -0500
+X-Greylist: delayed 303 seconds by postgrey-1.27 at vger.kernel.org; Wed, 27 Jan 2021 20:02:16 EST
+Received: from conuserg-12.nifty.com ([10.126.8.75])by condef-03.nifty.com with ESMTP id 10S0weWH009443;
+        Thu, 28 Jan 2021 09:58:40 +0900
+Received: from oscar.flets-west.jp (softbank126026094251.bbtec.net [126.26.94.251]) (authenticated)
+        by conuserg-12.nifty.com with ESMTP id 10S0pjIn024172;
+        Thu, 28 Jan 2021 09:52:08 +0900
+DKIM-Filter: OpenDKIM Filter v2.10.3 conuserg-12.nifty.com 10S0pjIn024172
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
+        s=dec2015msa; t=1611795129;
+        bh=auDYMtfQRatUyx1FfAGRVS/QREy59NpDWkhykhL36rE=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=udcM4bOLBJAMbKMrr5JXrO26aR5LC0c8THByBm+aM0I5LEm9ynkcoxbPSoCAyI89L
+         UxT9f3oRi263fLwnUCUL/PB4ejBqB0Gpr7QKIKb0c1Rl3XodCCv/QKBKoQUCK6mkfR
+         7NlRwEDcnZuLc1CPYqIjusbU09YQBETP1YndCccFm7T7mD5vSelRMoGad0isz+egmV
+         sQ4Kc//6jzNZjjPYKAhcfzXj9d9vK+/ZevUevxBeWVJ0APrujY3q7hliD7dkbYT8tE
+         tzh/Zjeo0/YR/m4BnncO14PhAJP5zhxSIlftLmDV+rT9YY8slKkZPX/HCdKW2QflYv
+         kHLMoOFjHO1qg==
+X-Nifty-SrcIP: [126.26.94.251]
+From:   Masahiro Yamada <masahiroy@kernel.org>
+To:     linux-arch@vger.kernel.org, x86@kernel.org
+Cc:     linux-kbuild@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-alpha@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-ia64@vger.kernel.org, linux-m68k@lists.linux-m68k.org,
+        linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org,
+        linux-sh@vger.kernel.org, linux-um@lists.infradead.org,
+        linux-xtensa@linux-xtensa.org, linuxppc-dev@lists.ozlabs.org,
+        sparclinux@vger.kernel.org, Masahiro Yamada <masahiroy@kernel.org>
+Subject: [PATCH 18/27] parisc: syscalls: switch to generic syscalltbl.sh
+Date:   Thu, 28 Jan 2021 09:51:00 +0900
+Message-Id: <20210128005110.2613902-19-masahiroy@kernel.org>
+X-Mailer: git-send-email 2.27.0
+In-Reply-To: <20210128005110.2613902-1-masahiroy@kernel.org>
+References: <20210128005110.2613902-1-masahiroy@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/geert/linux-m68k.git for-next
-branch HEAD: c396dd2ec5bbd1cb80eafe32a72ab6bd6b17cb5a  macintosh/adb-iop: Use big-endian autopoll mask
+As of v5.11-rc1, 12 architectures duplicate similar shell scripts in
+order to generate syscall table headers. My goal is to unify them into
+the single scripts/syscalltbl.sh.
 
-elapsed time: 723m
+This commit converts parisc to use scripts/syscalltbl.sh. This also
+unifies syscall_table_64.h and syscall_table_c32.h.
 
-configs tested: 153
-configs skipped: 2
-
-The following configs have been built successfully.
-More configs may be tested in the coming days.
-
-gcc tested configs:
-arm                                 defconfig
-arm64                            allyesconfig
-arm64                               defconfig
-arm                              allyesconfig
-arm                              allmodconfig
-powerpc                    adder875_defconfig
-powerpc                      obs600_defconfig
-mips                     decstation_defconfig
-mips                          rm200_defconfig
-mips                  decstation_64_defconfig
-arm                       mainstone_defconfig
-sh                           se7712_defconfig
-arm                        keystone_defconfig
-powerpc                     ksi8560_defconfig
-sh                          rsk7201_defconfig
-powerpc                   bluestone_defconfig
-arm                  colibri_pxa270_defconfig
-riscv                             allnoconfig
-sh                           se7722_defconfig
-mips                         db1xxx_defconfig
-m68k                       m5249evb_defconfig
-powerpc                          g5_defconfig
-sh                           se7343_defconfig
-powerpc                    klondike_defconfig
-arm                         palmz72_defconfig
-arm                          badge4_defconfig
-m68k                        stmark2_defconfig
-mips                         rt305x_defconfig
-powerpc                      arches_defconfig
-mips                        omega2p_defconfig
-mips                          ath25_defconfig
-powerpc                     skiroot_defconfig
-powerpc                 mpc8315_rdb_defconfig
-powerpc                     rainier_defconfig
-arc                    vdk_hs38_smp_defconfig
-mips                       capcella_defconfig
-mips                            gpr_defconfig
-s390                             allyesconfig
-powerpc                       holly_defconfig
-arm                            u300_defconfig
-powerpc                     ppa8548_defconfig
-powerpc                   motionpro_defconfig
-i386                             alldefconfig
-mips                  maltasmvp_eva_defconfig
-sh                   sh7770_generic_defconfig
-sh                           se7705_defconfig
-mips                  cavium_octeon_defconfig
-powerpc                     tqm5200_defconfig
-arm                          lpd270_defconfig
-sh                 kfr2r09-romimage_defconfig
-arm                            mmp2_defconfig
-ia64                      gensparse_defconfig
-arm                              alldefconfig
-mips                   sb1250_swarm_defconfig
-arm                         lpc18xx_defconfig
-sh                        sh7763rdp_defconfig
-powerpc                     tqm8555_defconfig
-sh                               alldefconfig
-sh                               j2_defconfig
-mips                      pistachio_defconfig
-openrisc                    or1ksim_defconfig
-sh                          polaris_defconfig
-arm                           corgi_defconfig
-powerpc                      walnut_defconfig
-arm                        mvebu_v7_defconfig
-mips                         mpc30x_defconfig
-powerpc                         ps3_defconfig
-arm                  colibri_pxa300_defconfig
-arm                     eseries_pxa_defconfig
-sparc64                          alldefconfig
-sh                        dreamcast_defconfig
-xtensa                  cadence_csp_defconfig
-arc                            hsdk_defconfig
-powerpc                     mpc83xx_defconfig
-arm                          imote2_defconfig
-m68k                            q40_defconfig
-mips                malta_qemu_32r6_defconfig
-arm                        multi_v7_defconfig
-m68k                                defconfig
-ia64                             allmodconfig
-ia64                                defconfig
-ia64                             allyesconfig
-m68k                             allmodconfig
-m68k                             allyesconfig
-nios2                               defconfig
-arc                              allyesconfig
-nds32                             allnoconfig
-c6x                              allyesconfig
-nds32                               defconfig
-nios2                            allyesconfig
-csky                                defconfig
-alpha                               defconfig
-alpha                            allyesconfig
-xtensa                           allyesconfig
-h8300                            allyesconfig
-arc                                 defconfig
-sh                               allmodconfig
-parisc                              defconfig
-parisc                           allyesconfig
-s390                                defconfig
-sparc                            allyesconfig
-sparc                               defconfig
-i386                               tinyconfig
-i386                             allyesconfig
-i386                                defconfig
-mips                             allyesconfig
-mips                             allmodconfig
-powerpc                          allyesconfig
-powerpc                          allmodconfig
-powerpc                           allnoconfig
-x86_64               randconfig-a003-20210125
-x86_64               randconfig-a002-20210125
-x86_64               randconfig-a001-20210125
-x86_64               randconfig-a005-20210125
-x86_64               randconfig-a006-20210125
-x86_64               randconfig-a004-20210125
-i386                 randconfig-a002-20210125
-i386                 randconfig-a004-20210125
-i386                 randconfig-a005-20210125
-i386                 randconfig-a003-20210125
-i386                 randconfig-a001-20210125
-i386                 randconfig-a006-20210125
-x86_64               randconfig-a012-20210126
-x86_64               randconfig-a016-20210126
-x86_64               randconfig-a015-20210126
-x86_64               randconfig-a011-20210126
-x86_64               randconfig-a013-20210126
-x86_64               randconfig-a014-20210126
-i386                 randconfig-a013-20210125
-i386                 randconfig-a011-20210125
-i386                 randconfig-a012-20210125
-i386                 randconfig-a015-20210125
-i386                 randconfig-a014-20210125
-i386                 randconfig-a016-20210125
-riscv                    nommu_k210_defconfig
-riscv                            allyesconfig
-riscv                    nommu_virt_defconfig
-riscv                               defconfig
-riscv                          rv32_defconfig
-riscv                            allmodconfig
-x86_64                                   rhel
-x86_64                           allyesconfig
-x86_64                    rhel-7.6-kselftests
-x86_64                              defconfig
-x86_64                               rhel-8.3
-x86_64                      rhel-8.3-kbuiltin
-x86_64                                  kexec
-
-clang tested configs:
-x86_64               randconfig-a012-20210125
-x86_64               randconfig-a016-20210125
-x86_64               randconfig-a015-20210125
-x86_64               randconfig-a011-20210125
-x86_64               randconfig-a013-20210125
-x86_64               randconfig-a014-20210125
-
+Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
 ---
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+
+ arch/parisc/include/asm/Kbuild            |  1 -
+ arch/parisc/kernel/syscall.S              | 16 +++++-----
+ arch/parisc/kernel/syscalls/Makefile      | 19 ++++--------
+ arch/parisc/kernel/syscalls/syscalltbl.sh | 36 -----------------------
+ 4 files changed, 12 insertions(+), 60 deletions(-)
+ delete mode 100644 arch/parisc/kernel/syscalls/syscalltbl.sh
+
+diff --git a/arch/parisc/include/asm/Kbuild b/arch/parisc/include/asm/Kbuild
+index 4406475a2304..e6e7f74c8ac9 100644
+--- a/arch/parisc/include/asm/Kbuild
++++ b/arch/parisc/include/asm/Kbuild
+@@ -1,7 +1,6 @@
+ # SPDX-License-Identifier: GPL-2.0
+ generated-y += syscall_table_32.h
+ generated-y += syscall_table_64.h
+-generated-y += syscall_table_c32.h
+ generic-y += kvm_para.h
+ generic-y += mcs_spinlock.h
+ generic-y += user.h
+diff --git a/arch/parisc/kernel/syscall.S b/arch/parisc/kernel/syscall.S
+index 322503780db6..3f24a0af1e04 100644
+--- a/arch/parisc/kernel/syscall.S
++++ b/arch/parisc/kernel/syscall.S
+@@ -919,24 +919,24 @@ ENTRY(lws_table)
+ END(lws_table)
+ 	/* End of lws table */
+ 
++#ifdef CONFIG_64BIT
++#define __SYSCALL_WITH_COMPAT(nr, native, compat)	__SYSCALL(nr, compat)
++#else
++#define __SYSCALL_WITH_COMPAT(nr, native, compat)	__SYSCALL(nr, native)
++#endif
+ #define __SYSCALL(nr, entry)	ASM_ULONG_INSN entry
+ 	.align 8
+ ENTRY(sys_call_table)
+ 	.export sys_call_table,data
+-#ifdef CONFIG_64BIT
+-#include <asm/syscall_table_c32.h>   /* Compat syscalls */
+-#else
+-#include <asm/syscall_table_32.h>    /* 32-bit native syscalls */
+-#endif
++#include <asm/syscall_table_32.h>    /* 32-bit syscalls */
+ END(sys_call_table)
+ 
+ #ifdef CONFIG_64BIT
+ 	.align 8
+ ENTRY(sys_call_table64)
+-#include <asm/syscall_table_64.h>    /* 64-bit native syscalls */
++#include <asm/syscall_table_64.h>    /* 64-bit syscalls */
+ END(sys_call_table64)
+ #endif
+-#undef __SYSCALL
+ 
+ 	/*
+ 		All light-weight-syscall atomic operations 
+@@ -961,5 +961,3 @@ END(lws_lock_start)
+ 	.previous
+ 
+ .end
+-
+-
+diff --git a/arch/parisc/kernel/syscalls/Makefile b/arch/parisc/kernel/syscalls/Makefile
+index 556fe30a6c8f..77fea5beb9be 100644
+--- a/arch/parisc/kernel/syscalls/Makefile
++++ b/arch/parisc/kernel/syscalls/Makefile
+@@ -7,7 +7,7 @@ _dummy := $(shell [ -d '$(uapi)' ] || mkdir -p '$(uapi)')	\
+ 
+ syscall := $(srctree)/$(src)/syscall.tbl
+ syshdr := $(srctree)/$(src)/syscallhdr.sh
+-systbl := $(srctree)/$(src)/syscalltbl.sh
++systbl := $(srctree)/scripts/syscalltbl.sh
+ 
+ quiet_cmd_syshdr = SYSHDR  $@
+       cmd_syshdr = $(CONFIG_SHELL) '$(syshdr)' '$<' '$@'	\
+@@ -16,10 +16,7 @@ quiet_cmd_syshdr = SYSHDR  $@
+ 		   '$(syshdr_offset_$(basetarget))'
+ 
+ quiet_cmd_systbl = SYSTBL  $@
+-      cmd_systbl = $(CONFIG_SHELL) '$(systbl)' '$<' '$@'	\
+-		   '$(systbl_abis_$(basetarget))'		\
+-		   '$(systbl_abi_$(basetarget))'		\
+-		   '$(systbl_offset_$(basetarget))'
++      cmd_systbl = $(CONFIG_SHELL) $(systbl) $< $@ $(abis)
+ 
+ syshdr_abis_unistd_32 := common,32
+ $(uapi)/unistd_32.h: $(syscall) $(syshdr) FORCE
+@@ -29,23 +26,17 @@ syshdr_abis_unistd_64 := common,64
+ $(uapi)/unistd_64.h: $(syscall) $(syshdr) FORCE
+ 	$(call if_changed,syshdr)
+ 
+-systbl_abis_syscall_table_32 := common,32
++$(kapi)/syscall_table_32.h: abis := common,32
+ $(kapi)/syscall_table_32.h: $(syscall) $(systbl) FORCE
+ 	$(call if_changed,systbl)
+ 
+-systbl_abis_syscall_table_64 := common,64
++$(kapi)/syscall_table_64.h: abis := common,64
+ $(kapi)/syscall_table_64.h: $(syscall) $(systbl) FORCE
+ 	$(call if_changed,systbl)
+ 
+-systbl_abis_syscall_table_c32 := common,32
+-systbl_abi_syscall_table_c32 := c32
+-$(kapi)/syscall_table_c32.h: $(syscall) $(systbl) FORCE
+-	$(call if_changed,systbl)
+-
+ uapisyshdr-y		+= unistd_32.h unistd_64.h
+ kapisyshdr-y		+= syscall_table_32.h		\
+-			   syscall_table_64.h		\
+-			   syscall_table_c32.h
++			   syscall_table_64.h
+ 
+ uapisyshdr-y	:= $(addprefix $(uapi)/, $(uapisyshdr-y))
+ kapisyshdr-y	:= $(addprefix $(kapi)/, $(kapisyshdr-y))
+diff --git a/arch/parisc/kernel/syscalls/syscalltbl.sh b/arch/parisc/kernel/syscalls/syscalltbl.sh
+deleted file mode 100644
+index f7393a7b18aa..000000000000
+--- a/arch/parisc/kernel/syscalls/syscalltbl.sh
++++ /dev/null
+@@ -1,36 +0,0 @@
+-#!/bin/sh
+-# SPDX-License-Identifier: GPL-2.0
+-
+-in="$1"
+-out="$2"
+-my_abis=`echo "($3)" | tr ',' '|'`
+-my_abi="$4"
+-offset="$5"
+-
+-emit() {
+-	t_nxt="$1"
+-	t_nr="$2"
+-	t_entry="$3"
+-
+-	while [ $t_nxt -lt $t_nr ]; do
+-		printf "__SYSCALL(%s,sys_ni_syscall)\n" "${t_nxt}"
+-		t_nxt=$((t_nxt+1))
+-	done
+-	printf "__SYSCALL(%s,%s)\n" "${t_nxt}" "${t_entry}"
+-}
+-
+-grep -E "^[0-9A-Fa-fXx]+[[:space:]]+${my_abis}" "$in" | sort -n | (
+-	nxt=0
+-	if [ -z "$offset" ]; then
+-		offset=0
+-	fi
+-
+-	while read nr abi name entry compat ; do
+-		if [ "$my_abi" = "c32" ] && [ ! -z "$compat" ]; then
+-			emit $((nxt+offset)) $((nr+offset)) $compat
+-		else
+-			emit $((nxt+offset)) $((nr+offset)) $entry
+-		fi
+-		nxt=$((nr+1))
+-	done
+-) > "$out"
+-- 
+2.27.0
+
