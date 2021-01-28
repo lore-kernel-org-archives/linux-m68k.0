@@ -7,35 +7,35 @@ X-Spam-Status: No, score=-17.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=unavailable
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B786EC433E6
-	for <linux-m68k@archiver.kernel.org>; Thu, 28 Jan 2021 01:12:14 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 08A62C43381
+	for <linux-m68k@archiver.kernel.org>; Thu, 28 Jan 2021 01:12:16 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 6E9CB64DE1
-	for <linux-m68k@archiver.kernel.org>; Thu, 28 Jan 2021 01:12:14 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id BEEA364DDA
+	for <linux-m68k@archiver.kernel.org>; Thu, 28 Jan 2021 01:12:15 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229576AbhA1BMM (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Wed, 27 Jan 2021 20:12:12 -0500
-Received: from condef-05.nifty.com ([202.248.20.70]:40587 "EHLO
-        condef-05.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231728AbhA1BHB (ORCPT
+        id S231420AbhA1BMN (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Wed, 27 Jan 2021 20:12:13 -0500
+Received: from condef-06.nifty.com ([202.248.20.71]:40146 "EHLO
+        condef-06.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231575AbhA1BHE (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Wed, 27 Jan 2021 20:07:01 -0500
-Received: from conuserg-12.nifty.com ([10.126.8.75])by condef-05.nifty.com with ESMTP id 10S0stqR031892;
-        Thu, 28 Jan 2021 09:54:55 +0900
+        Wed, 27 Jan 2021 20:07:04 -0500
+Received: from conuserg-12.nifty.com ([10.126.8.75])by condef-06.nifty.com with ESMTP id 10S0vFbw011825;
+        Thu, 28 Jan 2021 09:57:15 +0900
 Received: from oscar.flets-west.jp (softbank126026094251.bbtec.net [126.26.94.251]) (authenticated)
-        by conuserg-12.nifty.com with ESMTP id 10S0pjIY024172;
-        Thu, 28 Jan 2021 09:51:49 +0900
-DKIM-Filter: OpenDKIM Filter v2.10.3 conuserg-12.nifty.com 10S0pjIY024172
+        by conuserg-12.nifty.com with ESMTP id 10S0pjIs024172;
+        Thu, 28 Jan 2021 09:52:15 +0900
+DKIM-Filter: OpenDKIM Filter v2.10.3 conuserg-12.nifty.com 10S0pjIs024172
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
-        s=dec2015msa; t=1611795110;
-        bh=d+/7doZEOPv1GMwh0J3MdPuks+/gdDt09tnPkcOGE80=;
+        s=dec2015msa; t=1611795136;
+        bh=sXMNoBLv9j0N7QwQXmd6ibc1V/AGKUC1JkcC/Dod730=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=dHgoABCG/DLtFuPlboUdmsid9QOFdwj4Tf4PGzheip0c70k1znW9rHwDaVAm1ON9c
-         MqujfDDvycEhQUC7c4A6EAS6XcIAN+RsPgZg5X4iVdsdNl9Ijhku5W1E2IB3RHnIHf
-         PVi5uaMIr3ScOj/K206H/yZuaQRofL0r01hroLHoZkOIAH7k8bCVjqex4M7jHFsd7w
-         33gPNSjwYmhXY9xmRZGWkWTY/bJWhubfFR5maBIJRAqhuDUIE8dR/O5ZmuTYZ6lCHz
-         KufvyYi7nnMRU/ql91EaeR5YhQwmGuzj1a6eX+DwdGUvtDgwlx3gy7/iWUC78zcslY
-         Ti9bulEqhkoFA==
+        b=mwn/xjqGwQTFsgDua5MXR1/bEPE+7A4fs3oO5oga8kla9IoxTuH2R0SaBHNAh+ED5
+         ButttMdR+1P4fVQEY0AKvCEo9HACSBLs3dCE5AK1ZNngcT+iS1kMpuDcu59eTWZXFA
+         IkmyaPFhByXq3WUQAnblP7UVmiuih939SXnqMLB5yv0jIcg20ViqxS19AXwWG3ZUBP
+         gFaDa1EdndIxTMLc+xvTZZu3nDcGWnd+YH2QEqFJqhg+BwhXSq6TtA110wvt35rzp5
+         DcP2Bz5F9KhAdffAa3Rw5Pk10gJPRh47tqEqFMaUtHQfCOSBI8yWgaMovL0oZxpe1Y
+         4mqqCS972v45g==
 X-Nifty-SrcIP: [126.26.94.251]
 From:   Masahiro Yamada <masahiroy@kernel.org>
 To:     linux-arch@vger.kernel.org, x86@kernel.org
@@ -46,9 +46,9 @@ Cc:     linux-kbuild@vger.kernel.org, linux-kernel@vger.kernel.org,
         linux-sh@vger.kernel.org, linux-um@lists.infradead.org,
         linux-xtensa@linux-xtensa.org, linuxppc-dev@lists.ozlabs.org,
         sparclinux@vger.kernel.org, Masahiro Yamada <masahiroy@kernel.org>
-Subject: [PATCH 03/27] x86/build: add missing FORCE and fix 'targets' to make if_changed work
-Date:   Thu, 28 Jan 2021 09:50:45 +0900
-Message-Id: <20210128005110.2613902-4-masahiroy@kernel.org>
+Subject: [PATCH 23/27] sparc: syscalls: switch to generic syscalltbl.sh
+Date:   Thu, 28 Jan 2021 09:51:05 +0900
+Message-Id: <20210128005110.2613902-24-masahiroy@kernel.org>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20210128005110.2613902-1-masahiroy@kernel.org>
 References: <20210128005110.2613902-1-masahiroy@kernel.org>
@@ -58,82 +58,175 @@ Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-The rules in this Makefile cannot detect the command line change because
-the prerequisite 'FORCE' is missing.
+As of v5.11-rc1, 12 architectures duplicate similar shell scripts in
+order to generate syscall table headers. My goal is to unify them into
+the single scripts/syscalltbl.sh.
 
-Adding 'FORCE' will result in the headers being rebuilt every time
-because the 'targets' addition is also wrong; the file paths in
-'targets' must be relative to the current Makefile.
-
-Fix all of them so the if_changed rules work correctly.
+This commit converts sparc to use scripts/syscalltbl.sh. This also
+unifies syscall_table_64.h and syscall_table_c32.h.
 
 Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
 ---
 
- arch/x86/entry/syscalls/Makefile | 23 ++++++++++++-----------
- 1 file changed, 12 insertions(+), 11 deletions(-)
+ arch/sparc/include/asm/Kbuild            |  1 -
+ arch/sparc/kernel/syscalls/Makefile      | 19 ++++---------
+ arch/sparc/kernel/syscalls/syscalltbl.sh | 36 ------------------------
+ arch/sparc/kernel/systbls_32.S           |  4 +--
+ arch/sparc/kernel/systbls_64.S           |  8 ++++--
+ 5 files changed, 12 insertions(+), 56 deletions(-)
+ delete mode 100644 arch/sparc/kernel/syscalls/syscalltbl.sh
 
-diff --git a/arch/x86/entry/syscalls/Makefile b/arch/x86/entry/syscalls/Makefile
-index 6fb9b57ed5ba..e1c7ddb7546b 100644
---- a/arch/x86/entry/syscalls/Makefile
-+++ b/arch/x86/entry/syscalls/Makefile
-@@ -24,34 +24,34 @@ quiet_cmd_hypercalls = HYPERCALLS $@
-       cmd_hypercalls = $(CONFIG_SHELL) '$<' $@ $(filter-out $<,$^)
+diff --git a/arch/sparc/include/asm/Kbuild b/arch/sparc/include/asm/Kbuild
+index aec20406145e..0b9d98ced34a 100644
+--- a/arch/sparc/include/asm/Kbuild
++++ b/arch/sparc/include/asm/Kbuild
+@@ -1,7 +1,6 @@
+ # SPDX-License-Identifier: GPL-2.0
+ generated-y += syscall_table_32.h
+ generated-y += syscall_table_64.h
+-generated-y += syscall_table_c32.h
+ generic-y += export.h
+ generic-y += kvm_para.h
+ generic-y += mcs_spinlock.h
+diff --git a/arch/sparc/kernel/syscalls/Makefile b/arch/sparc/kernel/syscalls/Makefile
+index 556fe30a6c8f..77fea5beb9be 100644
+--- a/arch/sparc/kernel/syscalls/Makefile
++++ b/arch/sparc/kernel/syscalls/Makefile
+@@ -7,7 +7,7 @@ _dummy := $(shell [ -d '$(uapi)' ] || mkdir -p '$(uapi)')	\
  
- syshdr_abi_unistd_32 := i386
--$(uapi)/unistd_32.h: $(syscall32) $(syshdr)
-+$(uapi)/unistd_32.h: $(syscall32) $(syshdr) FORCE
+ syscall := $(srctree)/$(src)/syscall.tbl
+ syshdr := $(srctree)/$(src)/syscallhdr.sh
+-systbl := $(srctree)/$(src)/syscalltbl.sh
++systbl := $(srctree)/scripts/syscalltbl.sh
+ 
+ quiet_cmd_syshdr = SYSHDR  $@
+       cmd_syshdr = $(CONFIG_SHELL) '$(syshdr)' '$<' '$@'	\
+@@ -16,10 +16,7 @@ quiet_cmd_syshdr = SYSHDR  $@
+ 		   '$(syshdr_offset_$(basetarget))'
+ 
+ quiet_cmd_systbl = SYSTBL  $@
+-      cmd_systbl = $(CONFIG_SHELL) '$(systbl)' '$<' '$@'	\
+-		   '$(systbl_abis_$(basetarget))'		\
+-		   '$(systbl_abi_$(basetarget))'		\
+-		   '$(systbl_offset_$(basetarget))'
++      cmd_systbl = $(CONFIG_SHELL) $(systbl) $< $@ $(abis)
+ 
+ syshdr_abis_unistd_32 := common,32
+ $(uapi)/unistd_32.h: $(syscall) $(syshdr) FORCE
+@@ -29,23 +26,17 @@ syshdr_abis_unistd_64 := common,64
+ $(uapi)/unistd_64.h: $(syscall) $(syshdr) FORCE
  	$(call if_changed,syshdr)
  
- syshdr_abi_unistd_32_ia32 := i386
- syshdr_pfx_unistd_32_ia32 := ia32_
--$(out)/unistd_32_ia32.h: $(syscall32) $(syshdr)
-+$(out)/unistd_32_ia32.h: $(syscall32) $(syshdr) FORCE
- 	$(call if_changed,syshdr)
- 
- syshdr_abi_unistd_x32 := common,x32
- syshdr_offset_unistd_x32 := __X32_SYSCALL_BIT
--$(uapi)/unistd_x32.h: $(syscall64) $(syshdr)
-+$(uapi)/unistd_x32.h: $(syscall64) $(syshdr) FORCE
- 	$(call if_changed,syshdr)
- 
- syshdr_abi_unistd_64 := common,64
--$(uapi)/unistd_64.h: $(syscall64) $(syshdr)
-+$(uapi)/unistd_64.h: $(syscall64) $(syshdr) FORCE
- 	$(call if_changed,syshdr)
- 
- syshdr_abi_unistd_64_x32 := x32
- syshdr_pfx_unistd_64_x32 := x32_
--$(out)/unistd_64_x32.h: $(syscall64) $(syshdr)
-+$(out)/unistd_64_x32.h: $(syscall64) $(syshdr) FORCE
- 	$(call if_changed,syshdr)
- 
--$(out)/syscalls_32.h: $(syscall32) $(systbl)
-+$(out)/syscalls_32.h: $(syscall32) $(systbl) FORCE
+-systbl_abis_syscall_table_32 := common,32
++$(kapi)/syscall_table_32.h: abis := common,32
+ $(kapi)/syscall_table_32.h: $(syscall) $(systbl) FORCE
  	$(call if_changed,systbl)
--$(out)/syscalls_64.h: $(syscall64) $(systbl)
-+$(out)/syscalls_64.h: $(syscall64) $(systbl) FORCE
+ 
+-systbl_abis_syscall_table_64 := common,64
++$(kapi)/syscall_table_64.h: abis := common,64
+ $(kapi)/syscall_table_64.h: $(syscall) $(systbl) FORCE
  	$(call if_changed,systbl)
  
--$(out)/xen-hypercalls.h: $(srctree)/scripts/xen-hypercalls.sh
-+$(out)/xen-hypercalls.h: $(srctree)/scripts/xen-hypercalls.sh FORCE
- 	$(call if_changed,hypercalls)
+-systbl_abis_syscall_table_c32 := common,32
+-systbl_abi_syscall_table_c32 := c32
+-$(kapi)/syscall_table_c32.h: $(syscall) $(systbl) FORCE
+-	$(call if_changed,systbl)
+-
+ uapisyshdr-y		+= unistd_32.h unistd_64.h
+ kapisyshdr-y		+= syscall_table_32.h		\
+-			   syscall_table_64.h		\
+-			   syscall_table_c32.h
++			   syscall_table_64.h
  
- $(out)/xen-hypercalls.h: $(srctree)/include/xen/interface/xen*.h
-@@ -62,9 +62,10 @@ syshdr-$(CONFIG_X86_64)		+= unistd_32_ia32.h unistd_64_x32.h
- syshdr-$(CONFIG_X86_64)		+= syscalls_64.h
- syshdr-$(CONFIG_XEN)		+= xen-hypercalls.h
+ uapisyshdr-y	:= $(addprefix $(uapi)/, $(uapisyshdr-y))
+ kapisyshdr-y	:= $(addprefix $(kapi)/, $(kapisyshdr-y))
+diff --git a/arch/sparc/kernel/syscalls/syscalltbl.sh b/arch/sparc/kernel/syscalls/syscalltbl.sh
+deleted file mode 100644
+index 77cf0143ba19..000000000000
+--- a/arch/sparc/kernel/syscalls/syscalltbl.sh
++++ /dev/null
+@@ -1,36 +0,0 @@
+-#!/bin/sh
+-# SPDX-License-Identifier: GPL-2.0
+-
+-in="$1"
+-out="$2"
+-my_abis=`echo "($3)" | tr ',' '|'`
+-my_abi="$4"
+-offset="$5"
+-
+-emit() {
+-	t_nxt="$1"
+-	t_nr="$2"
+-	t_entry="$3"
+-
+-	while [ $t_nxt -lt $t_nr ]; do
+-		printf "__SYSCALL(%s, sys_nis_syscall, )\n" "${t_nxt}"
+-		t_nxt=$((t_nxt+1))
+-	done
+-	printf "__SYSCALL(%s, %s, )\n" "${t_nxt}" "${t_entry}"
+-}
+-
+-grep -E "^[0-9A-Fa-fXx]+[[:space:]]+${my_abis}" "$in" | sort -n | (
+-	nxt=0
+-	if [ -z "$offset" ]; then
+-		offset=0
+-	fi
+-
+-	while read nr abi name entry compat ; do
+-		if [ "$my_abi" = "c32" ] && [ ! -z "$compat" ]; then
+-			emit $((nxt+offset)) $((nr+offset)) $compat
+-		else
+-			emit $((nxt+offset)) $((nr+offset)) $entry
+-		fi
+-		nxt=$((nr+1))
+-	done
+-) > "$out"
+diff --git a/arch/sparc/kernel/systbls_32.S b/arch/sparc/kernel/systbls_32.S
+index ab9e4d57685a..3aaffa017706 100644
+--- a/arch/sparc/kernel/systbls_32.S
++++ b/arch/sparc/kernel/systbls_32.S
+@@ -9,10 +9,10 @@
+  * Copyright (C) 1995 Adrian M. Rodriguez (adrian@remus.rutgers.edu)
+  */
  
--targets	+= $(uapisyshdr-y) $(syshdr-y)
-+uapisyshdr-y	:= $(addprefix $(uapi)/, $(uapisyshdr-y))
-+syshdr-y	:= $(addprefix $(out)/, $(syshdr-y))
-+targets		+= $(addprefix ../../../../, $(uapisyshdr-y) $(syshdr-y))
+-#define __SYSCALL(nr, entry, nargs) .long entry
++#define __SYSCALL_WITH_COMPAT(nr, native, compat)	__SYSCALL(nr, native)
++#define __SYSCALL(nr, entry) .long entry
+ 	.data
+ 	.align 4
+ 	.globl sys_call_table
+ sys_call_table:
+ #include <asm/syscall_table_32.h>	/* 32-bit native syscalls */
+-#undef __SYSCALL
+diff --git a/arch/sparc/kernel/systbls_64.S b/arch/sparc/kernel/systbls_64.S
+index a27394bf7d7f..398fe449dd34 100644
+--- a/arch/sparc/kernel/systbls_64.S
++++ b/arch/sparc/kernel/systbls_64.S
+@@ -10,18 +10,20 @@
+  * Copyright (C) 1995 Adrian M. Rodriguez (adrian@remus.rutgers.edu)
+  */
  
- PHONY += all
--all: $(addprefix $(uapi)/,$(uapisyshdr-y))
--all: $(addprefix $(out)/,$(syshdr-y))
-+all: $(uapisyshdr-y) $(syshdr-y)
- 	@:
+-#define __SYSCALL(nr, entry, nargs) .word entry
++#define __SYSCALL(nr, entry) .word entry
+ 	.text
+ 	.align	4
+ #ifdef CONFIG_COMPAT
+ 	.globl sys_call_table32
+ sys_call_table32:
+-#include <asm/syscall_table_c32.h>	/* Compat syscalls */
++#define __SYSCALL_WITH_COMPAT(nr, native, compat)	__SYSCALL(nr, compat)
++#include <asm/syscall_table_32.h>	/* Compat syscalls */
++#undef __SYSCALL_WITH_COMPAT
+ #endif /* CONFIG_COMPAT */
+ 
+ 	.align	4
+ 	.globl sys_call_table64, sys_call_table
+ sys_call_table64:
+ sys_call_table:
++#define __SYSCALL_WITH_COMPAT(nr, native, compat)	__SYSCALL(nr, native)
+ #include <asm/syscall_table_64.h>	/* 64-bit native syscalls */
+-#undef __SYSCALL
 -- 
 2.27.0
 
