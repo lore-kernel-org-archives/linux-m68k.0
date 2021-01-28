@@ -7,35 +7,35 @@ X-Spam-Status: No, score=-17.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 21190C433E0
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 6C4B9C433E6
 	for <linux-m68k@archiver.kernel.org>; Thu, 28 Jan 2021 01:17:28 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id C97F861492
-	for <linux-m68k@archiver.kernel.org>; Thu, 28 Jan 2021 01:17:27 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 2C4B264DD1
+	for <linux-m68k@archiver.kernel.org>; Thu, 28 Jan 2021 01:17:28 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231469AbhA1BQ6 (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Wed, 27 Jan 2021 20:16:58 -0500
-Received: from condef-01.nifty.com ([202.248.20.66]:33392 "EHLO
-        condef-01.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231694AbhA1BFh (ORCPT
+        id S231945AbhA1BRF (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Wed, 27 Jan 2021 20:17:05 -0500
+Received: from condef-09.nifty.com ([202.248.20.74]:49484 "EHLO
+        condef-09.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231596AbhA1BGT (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Wed, 27 Jan 2021 20:05:37 -0500
-Received: from conuserg-12.nifty.com ([10.126.8.75])by condef-01.nifty.com with ESMTP id 10S0wnQp005003;
-        Thu, 28 Jan 2021 09:58:49 +0900
+        Wed, 27 Jan 2021 20:06:19 -0500
+Received: from conuserg-12.nifty.com ([10.126.8.75])by condef-09.nifty.com with ESMTP id 10S108jp030642;
+        Thu, 28 Jan 2021 10:00:08 +0900
 Received: from oscar.flets-west.jp (softbank126026094251.bbtec.net [126.26.94.251]) (authenticated)
-        by conuserg-12.nifty.com with ESMTP id 10S0pjIg024172;
-        Thu, 28 Jan 2021 09:51:59 +0900
-DKIM-Filter: OpenDKIM Filter v2.10.3 conuserg-12.nifty.com 10S0pjIg024172
+        by conuserg-12.nifty.com with ESMTP id 10S0pjIv024172;
+        Thu, 28 Jan 2021 09:52:18 +0900
+DKIM-Filter: OpenDKIM Filter v2.10.3 conuserg-12.nifty.com 10S0pjIv024172
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
-        s=dec2015msa; t=1611795120;
-        bh=XJNJuhno9hAT3A1JjMh+5bcCus6LxY/fFlHwK/0rN8o=;
+        s=dec2015msa; t=1611795139;
+        bh=uPhzuxw9OJNtYZM2tsUx4a7eaa9t1FqlJVYIBoMhXhU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=o8t54K8bjMUZ1YiPCOg1Zhg8Iy8nbJVUqpQKRgj9PKl9Z66UZ2oglg4Mr1EJ8hZ0b
-         fqf3myOakclryZLYupXCDAZyZ1oBWLbn+BKoWjqN5ggkBUtwsum8ITFK1hgeJA5NsF
-         OcOb+IcS8z3j7iheSOsJu79obFQVL04EtKev8wcFmxJ+l/EUP/CeC5gL23KgNgx7cJ
-         tz/F1nbXVGkOmKba5TyTHtr8gTe9h3pLy0pW588S7ev1SayhuFdT2MkyXosIiWdgcI
-         eDT3D3mi3oAzWwfcdaTAZhW8thR1nJ1ystk6VrmWC/rlK7k19rIPlKvQwZZ//I0FKi
-         UhyiZ6UOs5hfw==
+        b=2I/l911DRFMahGMRrLX/icxR6Mi0fEG+1qCwc6h6UE7MNnIIW/D/qGbbSOZ3ILzr7
+         7kA0kSNBcXghXDqtEiAslJfNZyuJu7eddW9UA/Io7yR8mZRx0AuqvlClvC8+vz17a6
+         m5Dl6xZpsLDotala34FOnVXEQDlPsvt4JXDP2l/QMKqCaWQKZTpYxBbScYD4uYqZxg
+         6KUSW1EQigP1cb1FqsmY/zv4ApEHGDmntPVIgwI9QOgay6EuE1fbkZobVR6Fb9sf2Y
+         sU4uGqGJuQbFx+zyPfQidHYlKRtPXuwC0e99a0JbLppMoKLaDMEPdXB86Vah6CePtc
+         TyY51Dc+YW9EA==
 X-Nifty-SrcIP: [126.26.94.251]
 From:   Masahiro Yamada <masahiroy@kernel.org>
 To:     linux-arch@vger.kernel.org, x86@kernel.org
@@ -46,9 +46,9 @@ Cc:     linux-kbuild@vger.kernel.org, linux-kernel@vger.kernel.org,
         linux-sh@vger.kernel.org, linux-um@lists.infradead.org,
         linux-xtensa@linux-xtensa.org, linuxppc-dev@lists.ozlabs.org,
         sparclinux@vger.kernel.org, Masahiro Yamada <masahiroy@kernel.org>
-Subject: [PATCH 11/27] m68k: add missing FORCE and fix 'targets' to make if_changed work
-Date:   Thu, 28 Jan 2021 09:50:53 +0900
-Message-Id: <20210128005110.2613902-12-masahiroy@kernel.org>
+Subject: [PATCH 26/27] xtensa: add missing FORCE and fix 'targets' to make if_changed work
+Date:   Thu, 28 Jan 2021 09:51:08 +0900
+Message-Id: <20210128005110.2613902-27-masahiroy@kernel.org>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20210128005110.2613902-1-masahiroy@kernel.org>
 References: <20210128005110.2613902-1-masahiroy@kernel.org>
@@ -70,13 +70,13 @@ Fix all of them so the if_changed rules work correctly.
 Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
 ---
 
- arch/m68k/kernel/syscalls/Makefile | 11 ++++++-----
+ arch/xtensa/kernel/syscalls/Makefile | 11 ++++++-----
  1 file changed, 6 insertions(+), 5 deletions(-)
 
-diff --git a/arch/m68k/kernel/syscalls/Makefile b/arch/m68k/kernel/syscalls/Makefile
+diff --git a/arch/xtensa/kernel/syscalls/Makefile b/arch/xtensa/kernel/syscalls/Makefile
 index 659faefdcb1d..1c42d2d2926d 100644
---- a/arch/m68k/kernel/syscalls/Makefile
-+++ b/arch/m68k/kernel/syscalls/Makefile
+--- a/arch/xtensa/kernel/syscalls/Makefile
++++ b/arch/xtensa/kernel/syscalls/Makefile
 @@ -21,18 +21,19 @@ quiet_cmd_systbl = SYSTBL  $@
  		   '$(systbl_abi_$(basetarget))'		\
  		   '$(systbl_offset_$(basetarget))'
