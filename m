@@ -2,107 +2,93 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-17.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,INCLUDES_CR_TRAILER,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-8.7 required=3.0 tests=BAYES_00,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,MAILING_LIST_MULTI,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 78F4AC433DB
-	for <linux-m68k@archiver.kernel.org>; Thu, 28 Jan 2021 01:17:54 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id EBC28C433E0
+	for <linux-m68k@archiver.kernel.org>; Thu, 28 Jan 2021 08:00:34 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 38C8564DD0
-	for <linux-m68k@archiver.kernel.org>; Thu, 28 Jan 2021 01:17:54 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id A9B2D64DD9
+	for <linux-m68k@archiver.kernel.org>; Thu, 28 Jan 2021 08:00:34 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229808AbhA1BRv (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Wed, 27 Jan 2021 20:17:51 -0500
-Received: from condef-07.nifty.com ([202.248.20.72]:51254 "EHLO
-        condef-07.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231687AbhA1BFb (ORCPT
+        id S231615AbhA1IAK (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Thu, 28 Jan 2021 03:00:10 -0500
+Received: from mail-ot1-f52.google.com ([209.85.210.52]:35118 "EHLO
+        mail-ot1-f52.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232296AbhA1H74 (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Wed, 27 Jan 2021 20:05:31 -0500
-X-Greylist: delayed 421 seconds by postgrey-1.27 at vger.kernel.org; Wed, 27 Jan 2021 20:05:06 EST
-Received: from conuserg-12.nifty.com ([10.126.8.75])by condef-07.nifty.com with ESMTP id 10S0xhE3016321;
-        Thu, 28 Jan 2021 09:59:43 +0900
-Received: from oscar.flets-west.jp (softbank126026094251.bbtec.net [126.26.94.251]) (authenticated)
-        by conuserg-12.nifty.com with ESMTP id 10S0pjIo024172;
-        Thu, 28 Jan 2021 09:52:09 +0900
-DKIM-Filter: OpenDKIM Filter v2.10.3 conuserg-12.nifty.com 10S0pjIo024172
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
-        s=dec2015msa; t=1611795130;
-        bh=edevBHAxEzu6xl1QGcyiq00K/wGWzk2RE79/Nm9uSCk=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=GcbQa/gZGdyeTcoX0fmprTeNm9FdiiNR5G0s+N2bP8NmsJiASMuqzD9tL2q+Gmj8S
-         Uhqu8Mg4ylarW3iioQwp5LzwhmSOrGOkvZ5ceWa0tVafxsQDmF46iGC9xmLeExGaeK
-         ZNpvPL0fDNzaocwpOYWAY+jyJoy3RN+XsmT9EkNa90QEmafES6drwXSsnLgBbcKPtt
-         ZzqZ5uTDBDTjwY0Iaww6eiK/GTE/bKJIylZwrI9/OH2thONBnLJV5UOIUxFKyRVZ3H
-         FcqKGcpzptz2A9gNWTZcJQPV7APUeHKqMS23BZYvl/p3AxnZfV1S7r6OoBe2g0YC5X
-         Lb3Q0X2ukKftQ==
-X-Nifty-SrcIP: [126.26.94.251]
-From:   Masahiro Yamada <masahiroy@kernel.org>
-To:     linux-arch@vger.kernel.org, x86@kernel.org
-Cc:     linux-kbuild@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-alpha@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-ia64@vger.kernel.org, linux-m68k@lists.linux-m68k.org,
-        linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org,
-        linux-sh@vger.kernel.org, linux-um@lists.infradead.org,
-        linux-xtensa@linux-xtensa.org, linuxppc-dev@lists.ozlabs.org,
-        sparclinux@vger.kernel.org, Masahiro Yamada <masahiroy@kernel.org>
-Subject: [PATCH 19/27] sh: add missing FORCE and fix 'targets' to make if_changed work
-Date:   Thu, 28 Jan 2021 09:51:01 +0900
-Message-Id: <20210128005110.2613902-20-masahiroy@kernel.org>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20210128005110.2613902-1-masahiroy@kernel.org>
-References: <20210128005110.2613902-1-masahiroy@kernel.org>
+        Thu, 28 Jan 2021 02:59:56 -0500
+Received: by mail-ot1-f52.google.com with SMTP id 36so4388175otp.2
+        for <linux-m68k@lists.linux-m68k.org>; Wed, 27 Jan 2021 23:59:08 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=VFvlavdQj3vCTWkwoAVwJZYrgCNBuE8sgIQdKiGhY+w=;
+        b=NLimCBzMerQ4T6lEZc7yfui/91bajnBzUrUxCE7FcYET3P/DNEpUt1oGlrMggdgWNp
+         oE7SRNZsklCkTbpi5imI6/KKzAwrN0xLIiYb2ZZMgBGGyFIeBoPmMpD8cd7YGGBGeWKF
+         FUbxZhD516NloevqCKPWhi81Pi8bVxjuIlAQ1AKqMS1n8xGxv0bZSSmwnqFsPtznNhUP
+         af5yxjFMqOPrGcjbKRbRvifVu+8ShYlwa4NDUKwVLxogj+zef2x85ZKr4yZiBs+DBZe9
+         P0Xpzhp+O/C9omlc1Hgq4kSubhGep1llUGbxSRVzicpizf5LJe8coH9k517HHZEyqcwr
+         FRcA==
+X-Gm-Message-State: AOAM531YvwVCvZ4fxrc+sAQCeFF52efDyFN/uGw4hnH5Uqv5uXy4e0rJ
+        nfNLwMRDqyHQ8dXKQaWx1ex6pXT5bCg2aSC+jdE=
+X-Google-Smtp-Source: ABdhPJznIX8Ez5rT0eH2kPu8lo8LgYhmVvO6LoHIL5yF3kdkazjNHo5u99kdHiTbtJ4IH8g890LINaHfxGpj5ywaFPQ=
+X-Received: by 2002:a9d:c01:: with SMTP id 1mr10464911otr.107.1611820723093;
+ Wed, 27 Jan 2021 23:58:43 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210128005110.2613902-1-masahiroy@kernel.org> <20210128005110.2613902-12-masahiroy@kernel.org>
+In-Reply-To: <20210128005110.2613902-12-masahiroy@kernel.org>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Thu, 28 Jan 2021 08:58:32 +0100
+Message-ID: <CAMuHMdWTK7Xa-6E2yLHxv8sGkD-VYgDF2SMRCj4_tDTVS2Uw1A@mail.gmail.com>
+Subject: Re: [PATCH 11/27] m68k: add missing FORCE and fix 'targets' to make
+ if_changed work
+To:     Masahiro Yamada <masahiroy@kernel.org>
+Cc:     Linux-Arch <linux-arch@vger.kernel.org>,
+        "the arch/x86 maintainers" <x86@kernel.org>,
+        "open list:TENSILICA XTENSA PORT (xtensa)" 
+        <linux-xtensa@linux-xtensa.org>,
+        "linux-ia64@vger.kernel.org" <linux-ia64@vger.kernel.org>,
+        Parisc List <linux-parisc@vger.kernel.org>,
+        linux-kbuild <linux-kbuild@vger.kernel.org>,
+        Linux-sh list <linux-sh@vger.kernel.org>,
+        linux-um <linux-um@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "open list:BROADCOM NVRAM DRIVER" <linux-mips@vger.kernel.org>,
+        linux-m68k <linux-m68k@lists.linux-m68k.org>,
+        alpha <linux-alpha@vger.kernel.org>,
+        sparclinux <sparclinux@vger.kernel.org>,
+        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-The rules in this Makefile cannot detect the command line change because
-the prerequisite 'FORCE' is missing.
+On Thu, Jan 28, 2021 at 1:54 AM Masahiro Yamada <masahiroy@kernel.org> wrote:
+> The rules in this Makefile cannot detect the command line change because
+> the prerequisite 'FORCE' is missing.
+>
+> Adding 'FORCE' will result in the headers being rebuilt every time
+> because the 'targets' addition is also wrong; the file paths in
+> 'targets' must be relative to the current Makefile.
+>
+> Fix all of them so the if_changed rules work correctly.
+>
+> Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
 
-Adding 'FORCE' will result in the headers being rebuilt every time
-because the 'targets' addition is also wrong; the file paths in
-'targets' must be relative to the current Makefile.
+Acked-by: Geert Uytterhoeven <geert@linux-m68k.org>
 
-Fix all of them so the if_changed rules work correctly.
+Gr{oetje,eeting}s,
 
-Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
----
+                        Geert
 
- arch/sh/kernel/syscalls/Makefile | 11 ++++++-----
- 1 file changed, 6 insertions(+), 5 deletions(-)
-
-diff --git a/arch/sh/kernel/syscalls/Makefile b/arch/sh/kernel/syscalls/Makefile
-index 659faefdcb1d..1c42d2d2926d 100644
---- a/arch/sh/kernel/syscalls/Makefile
-+++ b/arch/sh/kernel/syscalls/Makefile
-@@ -21,18 +21,19 @@ quiet_cmd_systbl = SYSTBL  $@
- 		   '$(systbl_abi_$(basetarget))'		\
- 		   '$(systbl_offset_$(basetarget))'
- 
--$(uapi)/unistd_32.h: $(syscall) $(syshdr)
-+$(uapi)/unistd_32.h: $(syscall) $(syshdr) FORCE
- 	$(call if_changed,syshdr)
- 
--$(kapi)/syscall_table.h: $(syscall) $(systbl)
-+$(kapi)/syscall_table.h: $(syscall) $(systbl) FORCE
- 	$(call if_changed,systbl)
- 
- uapisyshdr-y		+= unistd_32.h
- kapisyshdr-y		+= syscall_table.h
- 
--targets	+= $(uapisyshdr-y) $(kapisyshdr-y)
-+uapisyshdr-y	:= $(addprefix $(uapi)/, $(uapisyshdr-y))
-+kapisyshdr-y	:= $(addprefix $(kapi)/, $(kapisyshdr-y))
-+targets		+= $(addprefix ../../../../, $(uapisyshdr-y) $(kapisyshdr-y))
- 
- PHONY += all
--all: $(addprefix $(uapi)/,$(uapisyshdr-y))
--all: $(addprefix $(kapi)/,$(kapisyshdr-y))
-+all: $(uapisyshdr-y) $(kapisyshdr-y)
- 	@:
 -- 
-2.27.0
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
