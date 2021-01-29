@@ -2,94 +2,122 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.7 required=3.0 tests=BAYES_00,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,MAILING_LIST_MULTI,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-7.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 59E87C433DB
-	for <linux-m68k@archiver.kernel.org>; Thu, 28 Jan 2021 08:18:33 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E4142C433DB
+	for <linux-m68k@archiver.kernel.org>; Fri, 29 Jan 2021 06:43:46 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 132F964DD6
-	for <linux-m68k@archiver.kernel.org>; Thu, 28 Jan 2021 08:18:33 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id A8B5F64DD9
+	for <linux-m68k@archiver.kernel.org>; Fri, 29 Jan 2021 06:43:46 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231963AbhA1ISR (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Thu, 28 Jan 2021 03:18:17 -0500
-Received: from mail-oi1-f173.google.com ([209.85.167.173]:34384 "EHLO
-        mail-oi1-f173.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231683AbhA1ISB (ORCPT
+        id S232050AbhA2GnI (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Fri, 29 Jan 2021 01:43:08 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53956 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231942AbhA2Gm5 (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Thu, 28 Jan 2021 03:18:01 -0500
-Received: by mail-oi1-f173.google.com with SMTP id h192so5203139oib.1
-        for <linux-m68k@lists.linux-m68k.org>; Thu, 28 Jan 2021 00:17:45 -0800 (PST)
+        Fri, 29 Jan 2021 01:42:57 -0500
+Received: from mail-io1-xd2d.google.com (mail-io1-xd2d.google.com [IPv6:2607:f8b0:4864:20::d2d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 70BDDC061573
+        for <linux-m68k@lists.linux-m68k.org>; Thu, 28 Jan 2021 22:41:57 -0800 (PST)
+Received: by mail-io1-xd2d.google.com with SMTP id d13so8249323ioy.4
+        for <linux-m68k@lists.linux-m68k.org>; Thu, 28 Jan 2021 22:41:57 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=iVAMGV92J/f/CkteAMcDz3wL9cSpiXqRvqsJUAbs4+w=;
+        b=pdaI6T09b4/35M8LZtfd5am6EJAi2hkvXoRBPVsi32LE8VBjR2dU2H7w8K9Ql8iAgf
+         VrbhUdwoVGL2ljic5eUiSCFsmaiCNtoueptBpiOAX8TLmIpI5z6pB8qdLSczv34d+Nv8
+         ZJSHqxyJgDo/rpNrzFxWaOCty38aakVFP7Gg6NzCpVwtv2hvrjgjoprP8QmvdZ1CRALU
+         xoi4Vdjt7+GltZVxJ8M5qAFeboZsNzHSZtxopPNx0cHM2nEGvt9LKCdEkZSm1R12TMPt
+         /OgMU7DX0mEN8j+431T3Mddp5jaf+1bIjJ8a/hYU8wjo8+OOE9ho17+xgpFYiKAeldfy
+         lk5Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=TL3tp80ch5Ojmt15uhmuDBGqfvQ8YwjAwOvbZ3H5gho=;
-        b=qdOR6X49wSiHz/rHsiT46QL7hK4pN4TWJTZHwxX9owk6ZXaCTd10aKPqKYemYZN7Ys
-         vh+ovfrcDZbcKqkcbFR3sVpN5mfo4FRNKR8rObLC3aVs4tcZrU/LlKhNpx4jqd4P1CH4
-         GBsmynPoTa/kmJS6JvPMakGp5i4k4fxgddmetg2YBVOvpv7MYAdcIH9EhyEyGjRklc9/
-         mPUqzCgZgaoYOCYwoki6wKhIl4HkOTrY6TrVaCr/kGhtxTSQRFDaD+LbO++pncwA6zXd
-         RErlKv2y8QnMgOizMrrv4LoojGYldWJvVBgrOuGr9Rjgo1EArOsE6rMU48Cy+E56w70a
-         /aag==
-X-Gm-Message-State: AOAM5300Qq23b1lAdqIqYGeN72sr2G2I1y+NjRyIfVDohAsqg+rqqoim
-        jY9sjLdt6WTS6bF1G9N5xniYl14Pij7Wh8KJbfo=
-X-Google-Smtp-Source: ABdhPJyaplo6/NZAAIS02LBbY6W1dLxYDZ/X0XB3GuIXLfaRgiB9Cco71R6713OCRdUcK2cT17+0m9PEdnGKkCz70nI=
-X-Received: by 2002:aca:1219:: with SMTP id 25mr5943005ois.54.1611821840178;
- Thu, 28 Jan 2021 00:17:20 -0800 (PST)
+        bh=iVAMGV92J/f/CkteAMcDz3wL9cSpiXqRvqsJUAbs4+w=;
+        b=mIR/WK1bCWx4M6F8SFrxHgOffL2y1kd9bcfpkdGXCUHURqqufMX/S5CuHnSixoUSyz
+         EMmBp65g4PcxG9Bxuc/rxH61PeELfIClxIcMGFV6HIfvcxuyxdk3OiXBbMMadMX2PL36
+         HaUIQAvMot2DxKrxaHlmQ57GY36fMB0ggFDvnAUetlVjySu0ASSnC8l+6tE9VHll4Bk0
+         0Qa8vjSYsEjNJ5xAvak+5VovXxQ4IWaIeaGrh6UVnCEZ2/BzmnUxPFiaM7MmrCBOldfa
+         8WNQbOupBXG8UlfLFHZ5hRKduZnmUv7jyL5slzSNOi9O7OQF69tLsPDuNiC8waS8670o
+         HF/A==
+X-Gm-Message-State: AOAM530tJ8ib/X1dCZg4X499nE22Lc6YvaFxrCmBl+NLaHvs6v0Xzwml
+        TJCOOxXfOmfgHFGjkt+xH869Wntse/NYS1/dOfo=
+X-Google-Smtp-Source: ABdhPJxBYeN3I1wdA2fWrBSBowJmYe8hGPdJD45A7zJciUI858z9CrZbB7j0UfSZvdn/5JVuocI+7v+FXFR9WB/DEtw=
+X-Received: by 2002:a6b:8f58:: with SMTP id r85mr2296622iod.132.1611902516781;
+ Thu, 28 Jan 2021 22:41:56 -0800 (PST)
 MIME-Version: 1.0
-References: <20210128005110.2613902-1-masahiroy@kernel.org> <20210128005110.2613902-13-masahiroy@kernel.org>
-In-Reply-To: <20210128005110.2613902-13-masahiroy@kernel.org>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Thu, 28 Jan 2021 09:17:09 +0100
-Message-ID: <CAMuHMdV_AHcnGoVToHLXa95JEd4wcL3eTqYfk6=7Ou0W8VJR5w@mail.gmail.com>
-Subject: Re: [PATCH 12/27] m68k: syscalls: switch to generic syscalltbl.sh
-To:     Masahiro Yamada <masahiroy@kernel.org>
-Cc:     Linux-Arch <linux-arch@vger.kernel.org>,
-        "the arch/x86 maintainers" <x86@kernel.org>,
-        "open list:TENSILICA XTENSA PORT (xtensa)" 
-        <linux-xtensa@linux-xtensa.org>,
-        "linux-ia64@vger.kernel.org" <linux-ia64@vger.kernel.org>,
-        Parisc List <linux-parisc@vger.kernel.org>,
-        linux-kbuild <linux-kbuild@vger.kernel.org>,
-        Linux-sh list <linux-sh@vger.kernel.org>,
-        linux-um <linux-um@lists.infradead.org>,
+References: <20210121000630.371883-1-yury.norov@gmail.com> <20210121000630.371883-5-yury.norov@gmail.com>
+ <YAlXMj7sIoPjZP3W@smile.fi.intel.com>
+In-Reply-To: <YAlXMj7sIoPjZP3W@smile.fi.intel.com>
+From:   Yury Norov <yury.norov@gmail.com>
+Date:   Thu, 28 Jan 2021 22:41:45 -0800
+Message-ID: <CAAH8bW8LSk4Jr_T0TZqfmzgXPQ4MMGJoN6OF664F+SGLYJG+Eg@mail.gmail.com>
+Subject: Re: [PATCH 4/6] lib: inline _find_next_bit() wrappers
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc:     linux-m68k@lists.linux-m68k.org,
         Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "open list:BROADCOM NVRAM DRIVER" <linux-mips@vger.kernel.org>,
-        linux-m68k <linux-m68k@lists.linux-m68k.org>,
-        alpha <linux-alpha@vger.kernel.org>,
-        sparclinux <sparclinux@vger.kernel.org>,
-        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>
+        linux-sh@vger.kernel.org, linux-arch@vger.kernel.org,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Yoshinori Sato <ysato@users.sourceforge.jp>,
+        Rich Felker <dalias@libc.org>, Arnd Bergmann <arnd@arndb.de>,
+        Dennis Zhou <dennis@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Wolfram Sang <wsa+renesas@sang-engineering.com>,
+        David Sterba <dsterba@suse.com>,
+        Stefano Brivio <sbrivio@redhat.com>,
+        "Ma, Jianpeng" <jianpeng.ma@intel.com>,
+        Wei Yang <richard.weiyang@linux.alibaba.com>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Rasmus Villemoes <rasmus.villemoes@prevas.dk>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-Hi Yamada-san,
-
-On Thu, Jan 28, 2021 at 1:54 AM Masahiro Yamada <masahiroy@kernel.org> wrote:
-> As of v5.11-rc1, 12 architectures duplicate similar shell scripts in
-> order to generate syscall table headers. My goal is to unify them into
-> the single scripts/syscalltbl.sh.
+On Thu, Jan 21, 2021 at 2:27 AM Andy Shevchenko
+<andriy.shevchenko@linux.intel.com> wrote:
 >
-> This commit converts m68k to use scripts/syscalltbl.sh.
+> On Wed, Jan 20, 2021 at 04:06:28PM -0800, Yury Norov wrote:
+> > lib/find_bit.c declares five single-line wrappers for _find_next_bit().
+> > We may turn those wrappers to inline functions. It eliminates
+> > unneeded function calls and opens room for compile-time optimizations.
 >
-> Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
+> ...
+>
+> > --- a/include/asm-generic/bitops/le.h
+> > +++ b/include/asm-generic/bitops/le.h
+> > @@ -4,6 +4,7 @@
+> >
+> >  #include <asm/types.h>
+> >  #include <asm/byteorder.h>
+> > +#include <asm-generic/bitops/find.h>
+>
+> I'm wondering if generic header inclusion should go before arch-dependent ones.
+>
+> ...
+>
+> > -#ifndef find_next_bit
+>
+> > -#ifndef find_next_zero_bit
+>
+> > -#if !defined(find_next_and_bit)
+>
+> > -#ifndef find_next_zero_bit_le
+>
+> > -#ifndef find_next_bit_le
+>
+> Shouldn't you leave these in new wrappers as well?
+>
+> --
+> With Best Regards,
+> Andy Shevchenko
 
-Thanks a lot!
-
-Tested-by: Geert Uytterhoeven <geert@linux-m68k.org>
-Acked-by: Geert Uytterhoeven <geert@linux-m68k.org>
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
--- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+Could you please elaborate? Wrappers in find.h are protected, functions
+in lib/find_bit.c too. Maybe I misunderstood you?..
