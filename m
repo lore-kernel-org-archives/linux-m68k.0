@@ -2,65 +2,42 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-7.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+X-Spam-Status: No, score=-8.8 required=3.0 tests=BAYES_00,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
+	SPF_PASS autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D51EDC433E6
-	for <linux-m68k@archiver.kernel.org>; Fri, 29 Jan 2021 21:29:44 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 84D18C433DB
+	for <linux-m68k@archiver.kernel.org>; Fri, 29 Jan 2021 21:34:09 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 5DF6A64E06
-	for <linux-m68k@archiver.kernel.org>; Fri, 29 Jan 2021 21:29:44 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 1FEC664E0C
+	for <linux-m68k@archiver.kernel.org>; Fri, 29 Jan 2021 21:34:09 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233489AbhA2V3n (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Fri, 29 Jan 2021 16:29:43 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46260 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233488AbhA2V3e (ORCPT
+        id S233487AbhA2Vds (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Fri, 29 Jan 2021 16:33:48 -0500
+Received: from smtprelay0025.hostedemail.com ([216.40.44.25]:35582 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S233501AbhA2Vdm (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Fri, 29 Jan 2021 16:29:34 -0500
-Received: from mail-io1-xd2b.google.com (mail-io1-xd2b.google.com [IPv6:2607:f8b0:4864:20::d2b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AE3D9C061574
-        for <linux-m68k@lists.linux-m68k.org>; Fri, 29 Jan 2021 13:28:31 -0800 (PST)
-Received: by mail-io1-xd2b.google.com with SMTP id z22so10814757ioh.9
-        for <linux-m68k@lists.linux-m68k.org>; Fri, 29 Jan 2021 13:28:31 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=iKpEQgZS1QCYwcoVA/IcLJsT/QZzUi4/M7PsXGgpQfE=;
-        b=fMRZFK4ep5zSIRr70ydxpadj/9KtuXo9IlmMEwZ6aSBmmveC0Kz+0vmK1ixQQC/7Dj
-         qTJVh5F+GLeCkuf41AJz1lOvFQ2EKeYDkywPzv93VmDy76NGDbC4hM6Jz6JaAv04VqXj
-         5mX4Z3nEzvkJuXl4k0bGt1bMZhEByd2J0lAFiApkCUsNEORaDgcXtmoSEf/gJnGryNsm
-         M/iRbEHi03TsNCLtiy+nzqn3QJHBqCCkyszrVeY7L+A1akugY+wMl7wNM4ORmgnJxWIB
-         Dmhbg/tO6wMnLD80Bfd+NynUkV4ToUW2V5318Ycg8GVEZhEDerA5AWIemBVmvJ2iGmTR
-         VG1Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=iKpEQgZS1QCYwcoVA/IcLJsT/QZzUi4/M7PsXGgpQfE=;
-        b=bxPFa6OvbbXSWDCZqEeJuuEq47eBvM31U+jq1pMZrUG7wTa3bVvPgN+unaebASYL4U
-         o78M8x31kS+bhXCN9CeZBckwmYN8GH9ccQpVZDBM1uMlAGQ1JigdTNg0nOshKFeTqwTd
-         JnnTlP4esVBwRVHv6q/9rlYqivE1wLqc91tcGuRCz+oJiuze1l7g+DTPpDdg2n2J6UEf
-         Y+bmoCcR72Ruwj8bAr6fK9rfdtCDbjU7Fo03vWEF9JCEdvxwTHldlbjmFzL66bxSEkMU
-         LYpCJBONN+IdF/a9mXMKsb2nwXEyD5LTFieD0Njfm4UwuvYsRHsduXB9XQWeprs3b8t+
-         GU3w==
-X-Gm-Message-State: AOAM531TQy0UDF9U1UM89ocZqMsnfuAn1Zz5kib+qo1rn6lBqvvTnl/W
-        1V0gGp4GTmxuLBAgxsT2rZv9M2c9dj5rmLR+/HM=
-X-Google-Smtp-Source: ABdhPJxQHThyPfYaf7dcZ8ePzMFtwOJvGemJiselxNzpqvhf5JHQn1G8eLTOO/AEnjalkFd2AazRdzRyVOSIgCGs158=
-X-Received: by 2002:a05:6638:1344:: with SMTP id u4mr5560181jad.86.1611955711081;
- Fri, 29 Jan 2021 13:28:31 -0800 (PST)
-MIME-Version: 1.0
-References: <20210129204528.2118168-1-yury.norov@gmail.com>
- <20210129204528.2118168-4-yury.norov@gmail.com> <CAHp75VcSc=myrcvyBOkaUDguR6aPjJAFFXi2iSvmU21+1664Hw@mail.gmail.com>
-In-Reply-To: <CAHp75VcSc=myrcvyBOkaUDguR6aPjJAFFXi2iSvmU21+1664Hw@mail.gmail.com>
-From:   Yury Norov <yury.norov@gmail.com>
-Date:   Fri, 29 Jan 2021 13:28:20 -0800
-Message-ID: <CAAH8bW_Gt+0bC=S2HtR_B3cH-KGJQQaUQ0z0xn=aZCtBzy43yQ@mail.gmail.com>
+        Fri, 29 Jan 2021 16:33:42 -0500
+X-Greylist: delayed 526 seconds by postgrey-1.27 at vger.kernel.org; Fri, 29 Jan 2021 16:33:42 EST
+Received: from smtprelay.hostedemail.com (10.5.19.251.rfc1918.com [10.5.19.251])
+        by smtpgrave01.hostedemail.com (Postfix) with ESMTP id 083741801BB8D
+        for <linux-m68k@lists.linux-m68k.org>; Fri, 29 Jan 2021 21:24:55 +0000 (UTC)
+Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay02.hostedemail.com (Postfix) with ESMTP id 940ED127C;
+        Fri, 29 Jan 2021 21:24:13 +0000 (UTC)
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-HE-Tag: scent97_621144b275ab
+X-Filterd-Recvd-Size: 2133
+Received: from [192.168.1.159] (unknown [47.151.137.21])
+        (Authenticated sender: joe@perches.com)
+        by omf14.hostedemail.com (Postfix) with ESMTPA;
+        Fri, 29 Jan 2021 21:24:10 +0000 (UTC)
+Message-ID: <f9dba4c16fb49e0ce19a8152dd1416f8d4056680.camel@perches.com>
 Subject: Re: [PATCH 2/5] bits_per_long.h: introduce SMALL_CONST() macro
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>
+From:   Joe Perches <joe@perches.com>
+To:     Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Yury Norov <yury.norov@gmail.com>
 Cc:     linux-m68k <linux-m68k@lists.linux-m68k.org>,
         Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
         Linux-SH <linux-sh@vger.kernel.org>,
@@ -78,77 +55,31 @@ Cc:     linux-m68k <linux-m68k@lists.linux-m68k.org>,
         Wei Yang <richard.weiyang@linux.alibaba.com>,
         Josh Poimboeuf <jpoimboe@redhat.com>,
         John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
-Content-Type: text/plain; charset="UTF-8"
+Date:   Fri, 29 Jan 2021 13:24:09 -0800
+In-Reply-To: <CAHp75VcSc=myrcvyBOkaUDguR6aPjJAFFXi2iSvmU21+1664Hw@mail.gmail.com>
+References: <20210129204528.2118168-1-yury.norov@gmail.com>
+         <20210129204528.2118168-4-yury.norov@gmail.com>
+         <CAHp75VcSc=myrcvyBOkaUDguR6aPjJAFFXi2iSvmU21+1664Hw@mail.gmail.com>
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.38.1-1 
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-On Fri, Jan 29, 2021 at 1:11 PM Andy Shevchenko
-<andy.shevchenko@gmail.com> wrote:
->
+On Fri, 2021-01-29 at 23:10 +0200, Andy Shevchenko wrote:
 > On Fri, Jan 29, 2021 at 10:49 PM Yury Norov <yury.norov@gmail.com> wrote:
-> >
-> > Many algorithms become simplier if they are passed with relatively small
->
-> simpler
->
-> > input values. One example is bitmap operations when the whole bitmap fits
-> > into one word. To implement such simplifications, linux/bitmap.h declares
-> > small_const_nbits() macro.
-> >
-> > Other subsystems may also benefit from optimizations of this sort, like
-> > find_bit API in the following patches. So it looks helpful to generalize
-> > the macro and extend it's visibility.
->
-> > It should probably go to linux/kernel.h, but doing that creates circular
-> > dependencies. So put it in asm-generic/bitsperlong.h.
->
-> No, no, please leave kernel.h alone. It's already quite a mess.
->
-> And this shouldn't be in the commit message either.
->
-> ...
->
-> > -       if (small_const_nbits(nbits))
-> > +       if (SMALL_CONST(nbits - 1))
->
-> Not sure if we need to rename it.
-
-Lower case for generic macro kind of breaking the rules.
-
-Behaviour has changed too. Before it was:
-0 < VAL <= 32
-Now it's
-0 <= VAL < 32
-Which is better for generic macro.
-
-So changing the name looks reasonable to me.
-
-> ...
->
-> > --- a/include/linux/bits.h
-> > +++ b/include/linux/bits.h
+[]
 > > @@ -37,7 +37,7 @@
-> >  #define GENMASK(h, l) \
-> >         (GENMASK_INPUT_CHECK(h, l) + __GENMASK(h, l))
-> >
+> >  #define GENMASK(h, l) \
+> >         (GENMASK_INPUT_CHECK(h, l) + __GENMASK(h, l))
+> > 
 > > -#define BITS_FIRST(nr)         GENMASK(nr), 0)
 > > +#define BITS_FIRST(nr)         GENMASK((nr), 0)
->
+> 
 > How come?!
 
-git send-email wrong_dir/000*
-Will resubmit today later.
+It's broken otherwise with unbalanced parentheses...
 
-> ...
->
-> > diff --git a/tools/include/asm-generic/bitsperlong.h b/tools/include/asm-generic/bitsperlong.h
-> > index 8f2283052333..432d272baf27 100644
-> > --- a/tools/include/asm-generic/bitsperlong.h
-> > +++ b/tools/include/asm-generic/bitsperlong.h
->
-> I think a tools update would be better to have in a separate patch.
->
-> --
-> With Best Regards,
-> Andy Shevchenko
+
