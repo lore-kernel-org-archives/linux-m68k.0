@@ -2,100 +2,161 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.8 required=3.0 tests=BAYES_00,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
-	autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-8.7 required=3.0 tests=BAYES_00,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 68121C433E0
-	for <linux-m68k@archiver.kernel.org>; Mon,  1 Feb 2021 16:24:23 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 16D33C433DB
+	for <linux-m68k@archiver.kernel.org>; Mon,  1 Feb 2021 21:07:27 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 1EE1A64DAF
-	for <linux-m68k@archiver.kernel.org>; Mon,  1 Feb 2021 16:24:23 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id B1CB564ECC
+	for <linux-m68k@archiver.kernel.org>; Mon,  1 Feb 2021 21:07:26 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229645AbhBAQYY (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Mon, 1 Feb 2021 11:24:24 -0500
-Received: from mga18.intel.com ([134.134.136.126]:57630 "EHLO mga18.intel.com"
+        id S229646AbhBAVH0 (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Mon, 1 Feb 2021 16:07:26 -0500
+Received: from mga04.intel.com ([192.55.52.120]:13816 "EHLO mga04.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229500AbhBAQYX (ORCPT <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Mon, 1 Feb 2021 11:24:23 -0500
-IronPort-SDR: +bs/qVjSzGj8CD6zVv0KO1B+vCmaBkoQ3tPWehVsRcUPU+pMFFN0PkSw66KEhTjya7AkJ8GfNt
- PDE8eMPbnlxA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9882"; a="168392202"
-X-IronPort-AV: E=Sophos;i="5.79,392,1602572400"; 
-   d="scan'208";a="168392202"
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Feb 2021 08:22:36 -0800
-IronPort-SDR: k6s+zarLevdYJoLssP9Apm++1N99I6/o1hRQHcqf1zrR51lrlo+Qa0FTOdbd2TDBVRXdYHy3jF
- PTC+iN9sxPiQ==
-X-IronPort-AV: E=Sophos;i="5.79,392,1602572400"; 
-   d="scan'208";a="412816627"
-Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
-  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Feb 2021 08:22:31 -0800
-Received: from andy by smile with local (Exim 4.94)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1l6by7-001Als-Ig; Mon, 01 Feb 2021 18:22:27 +0200
-Date:   Mon, 1 Feb 2021 18:22:27 +0200
-From:   'Andy Shevchenko' <andriy.shevchenko@linux.intel.com>
-To:     David Laight <David.Laight@aculab.com>
-Cc:     Yury Norov <yury.norov@gmail.com>,
-        "linux-m68k@lists.linux-m68k.org" <linux-m68k@lists.linux-m68k.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-sh@vger.kernel.org" <linux-sh@vger.kernel.org>,
-        "linux-arch@vger.kernel.org" <linux-arch@vger.kernel.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Yoshinori Sato <ysato@users.sourceforge.jp>,
-        Rich Felker <dalias@libc.org>, Arnd Bergmann <arnd@arndb.de>,
-        Dennis Zhou <dennis@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Wolfram Sang <wsa+renesas@sang-engineering.com>,
-        David Sterba <dsterba@suse.com>,
-        Stefano Brivio <sbrivio@redhat.com>,
-        "Ma, Jianpeng" <jianpeng.ma@intel.com>,
-        Wei Yang <richard.weiyang@linux.alibaba.com>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
-        Joe Perches <joe@perches.com>
-Subject: Re: [PATCH 7/8] lib: add fast path for find_next_*_bit()
-Message-ID: <YBgqwwrfWqU8wx+s@smile.fi.intel.com>
-References: <20210130191719.7085-1-yury.norov@gmail.com>
- <20210130191719.7085-8-yury.norov@gmail.com>
- <YBgG35UTDLpVSYWV@smile.fi.intel.com>
- <e9c66d506a614a7e95d039bea325c241@AcuMS.aculab.com>
+        id S229525AbhBAVHZ (ORCPT <rfc822;linux-m68k@lists.linux-m68k.org>);
+        Mon, 1 Feb 2021 16:07:25 -0500
+IronPort-SDR: cgUMs2pZ2cOI0CQeqaXC3JBrhA7yCntsv2cFSCQ2yVV9eJ9ohjckM8VHZWsyjfXO336lPufkx4
+ pigVNG7VY+PQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9882"; a="178191851"
+X-IronPort-AV: E=Sophos;i="5.79,393,1602572400"; 
+   d="scan'208";a="178191851"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Feb 2021 13:06:44 -0800
+IronPort-SDR: v1LbC01A+5oPnWP1P+gqUdb7rcFwxzRAJyPhgKE7BEC7ZCWYZzAU181zCCy+vqxvmk+jiYUQDP
+ wfdfgK21uGGA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.79,393,1602572400"; 
+   d="scan'208";a="479294182"
+Received: from lkp-server02.sh.intel.com (HELO 625d3a354f04) ([10.239.97.151])
+  by fmsmga001.fm.intel.com with ESMTP; 01 Feb 2021 13:06:43 -0800
+Received: from kbuild by 625d3a354f04 with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1l6gPC-0008MB-NJ; Mon, 01 Feb 2021 21:06:42 +0000
+Date:   Tue, 02 Feb 2021 05:06:40 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Geert Uytterhoeven <geert@linux-m68k.org>
+Cc:     linux-m68k@lists.linux-m68k.org
+Subject: [m68k:master] BUILD SUCCESS
+ ba69143c0249902349d36552a40ac7ada0a61faf
+Message-ID: <60186d60./zTBWOUimiDO6Bxs%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <e9c66d506a614a7e95d039bea325c241@AcuMS.aculab.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-On Mon, Feb 01, 2021 at 04:02:30PM +0000, David Laight wrote:
-> From: Andy Shevchenko
-> > Sent: 01 February 2021 13:49
-> > On Sat, Jan 30, 2021 at 11:17:18AM -0800, Yury Norov wrote:
-> > > Similarly to bitmap functions, find_next_*_bit() users will benefit
-> > > if we'll handle a case of bitmaps that fit into a single word. In the
-> > > very best case, the compiler may replace a function call with a
-> > > single ffs or ffz instruction.
-> > 
-> > Would be nice to have the examples how it reduces the actual code size (based
-> > on the existing code in kernel, especially in widely used frameworks /
-> > subsystems, like PCI).
-> 
-> I bet it makes the kernel bigger but very slightly faster.
-> But the fact that the wrappers end up in the i-cache may
-> mean that inlining actually makes it slower for some calling
-> sequences.
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/geert/linux-m68k.git master
+branch HEAD: ba69143c0249902349d36552a40ac7ada0a61faf  Merge tag 'v5.11-rc6'
 
-> If a bitmap fits in a single word (as a compile-time constant)
-> then you should (probably) be using different functions if
-> you care about performance.
+elapsed time: 720m
 
-Isn't this patch series exactly about it?
+configs tested: 91
+configs skipped: 2
 
--- 
-With Best Regards,
-Andy Shevchenko
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
+gcc tested configs:
+arm                                 defconfig
+arm64                            allyesconfig
+arm64                               defconfig
+arm                              allyesconfig
+arm                              allmodconfig
+sh                          rsk7264_defconfig
+sh                           se7619_defconfig
+sh                            migor_defconfig
+mips                 decstation_r4k_defconfig
+arc                          axs103_defconfig
+powerpc                      chrp32_defconfig
+riscv                             allnoconfig
+arm                        multi_v5_defconfig
+arm                       aspeed_g4_defconfig
+xtensa                         virt_defconfig
+powerpc                       ebony_defconfig
+powerpc                 mpc834x_itx_defconfig
+sh                          urquell_defconfig
+sh                           se7712_defconfig
+powerpc                mpc7448_hpc2_defconfig
+c6x                              alldefconfig
+ia64                             allmodconfig
+ia64                                defconfig
+ia64                             allyesconfig
+m68k                             allmodconfig
+m68k                                defconfig
+m68k                             allyesconfig
+nds32                               defconfig
+nios2                            allyesconfig
+csky                                defconfig
+alpha                               defconfig
+alpha                            allyesconfig
+xtensa                           allyesconfig
+h8300                            allyesconfig
+arc                                 defconfig
+sh                               allmodconfig
+nios2                               defconfig
+arc                              allyesconfig
+nds32                             allnoconfig
+c6x                              allyesconfig
+parisc                              defconfig
+s390                             allyesconfig
+parisc                           allyesconfig
+s390                                defconfig
+i386                             allyesconfig
+sparc                            allyesconfig
+sparc                               defconfig
+i386                               tinyconfig
+i386                                defconfig
+mips                             allyesconfig
+mips                             allmodconfig
+powerpc                          allyesconfig
+powerpc                          allmodconfig
+powerpc                           allnoconfig
+x86_64               randconfig-a006-20210201
+x86_64               randconfig-a001-20210201
+x86_64               randconfig-a005-20210201
+x86_64               randconfig-a002-20210201
+x86_64               randconfig-a004-20210201
+x86_64               randconfig-a003-20210201
+i386                 randconfig-a001-20210201
+i386                 randconfig-a005-20210201
+i386                 randconfig-a003-20210201
+i386                 randconfig-a006-20210201
+i386                 randconfig-a002-20210201
+i386                 randconfig-a004-20210201
+i386                 randconfig-a013-20210201
+i386                 randconfig-a016-20210201
+i386                 randconfig-a014-20210201
+i386                 randconfig-a012-20210201
+i386                 randconfig-a015-20210201
+i386                 randconfig-a011-20210201
+riscv                    nommu_k210_defconfig
+riscv                            allyesconfig
+riscv                    nommu_virt_defconfig
+riscv                               defconfig
+riscv                          rv32_defconfig
+riscv                            allmodconfig
+x86_64                                   rhel
+x86_64                           allyesconfig
+x86_64                    rhel-7.6-kselftests
+x86_64                              defconfig
+x86_64                               rhel-8.3
+x86_64                      rhel-8.3-kbuiltin
+x86_64                                  kexec
 
+clang tested configs:
+x86_64               randconfig-a013-20210201
+x86_64               randconfig-a014-20210201
+x86_64               randconfig-a015-20210201
+x86_64               randconfig-a016-20210201
+x86_64               randconfig-a011-20210201
+x86_64               randconfig-a012-20210201
+
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
