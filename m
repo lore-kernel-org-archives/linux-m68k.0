@@ -2,108 +2,114 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-7.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-16.7 required=3.0 tests=BAYES_00,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 94A66C433E6
-	for <linux-m68k@archiver.kernel.org>; Tue,  2 Feb 2021 07:14:51 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id EB264C433DB
+	for <linux-m68k@archiver.kernel.org>; Tue,  2 Feb 2021 13:07:45 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 3F03764DAE
-	for <linux-m68k@archiver.kernel.org>; Tue,  2 Feb 2021 07:14:51 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id A27EF64ECF
+	for <linux-m68k@archiver.kernel.org>; Tue,  2 Feb 2021 13:07:45 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231324AbhBBHOu (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Tue, 2 Feb 2021 02:14:50 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46988 "EHLO
+        id S232113AbhBBNHp (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Tue, 2 Feb 2021 08:07:45 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38070 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229462AbhBBHOt (ORCPT
-        <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Tue, 2 Feb 2021 02:14:49 -0500
-Received: from mail-il1-x131.google.com (mail-il1-x131.google.com [IPv6:2607:f8b0:4864:20::131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 712F5C061573
-        for <linux-m68k@lists.linux-m68k.org>; Mon,  1 Feb 2021 23:14:09 -0800 (PST)
-Received: by mail-il1-x131.google.com with SMTP id a16so486756ilq.5
-        for <linux-m68k@lists.linux-m68k.org>; Mon, 01 Feb 2021 23:14:09 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=i+rprk54pLD+tPDUDUth98iylk1i9f9VqxJ5r+zi39c=;
-        b=Th9dnnelCfdRL7BYukHCwGMUPbVimhNiEEJWsLCr8Q13rAkjxz5K8GqnB1qapqAkGU
-         nj06n8frT81N36DIcD858nXiNFRgYM+yIctWtBQ5Fxslvi9RLKfvd+6tURpfxr1JSMG2
-         RtT3XmXnl7/Yiy0Gsjk4xBeGJizgyyoU2CzRdURLcv/3cfM98rngr/SxAzVIwRFPFqmM
-         taJqz+DKifH3yetB6gYAKRzkC9nVQl6gO1vlBSLkwgPPorEXoq8M6C2ZPKvQe/M8EU8Q
-         BHUjsCK6ebAba+SHxu5qrobawj+MFn/UvoyDOEE5DUR8PrY9vBGQSx73F+TRNhJESQlO
-         6U7Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=i+rprk54pLD+tPDUDUth98iylk1i9f9VqxJ5r+zi39c=;
-        b=aKoruHRgKXilnEkks9O+0Nw+Y+HHqoi3w81rsW3Ybz3j54PWibn4+3f3NNSg0HAqw0
-         3sr5vMKLJRkINLZyYA3GEBriT6EvOXtKUSC3xRwNNG1RB8vjCl++rCPpO5DvWjTOwkRf
-         +Mq544I2U6oNywDHWXS+wIkc7Y6m6sFzKwzRfWrbPKmgS5t3eDJYBhcQZn0AE8sPmMcz
-         ikFQL5NqmeRWAI3e7HEQljD/caFujOYbcNkIJ7t+bGXc4Mgq6AbQSVCEyiIC3WkBbgP7
-         ynRZgwXxbyLLIxydLc+eOKHnAnEO+bu4MsUR//D5J9Af3tOomKmLHKNOtnWRFnGnwulr
-         8cSw==
-X-Gm-Message-State: AOAM5303Bj5PHA7ttcV2U7a8UWeiHFhGWfTssQkOvmpScgar8IdAsZat
-        LmiBZ96jki69plsjEaYuEdsrMhmfWEGvxFJ4hYQ=
-X-Google-Smtp-Source: ABdhPJzBBRVeY2XvzS/PhDUkTY1NGKiWnEwaAxpWkPAguR8twjHyytuvNS0+zU7r9F0yqCcsul4GAOM+Mru+mdzQGQc=
-X-Received: by 2002:a92:3646:: with SMTP id d6mr16601311ilf.170.1612250048847;
- Mon, 01 Feb 2021 23:14:08 -0800 (PST)
+        with ESMTP id S232101AbhBBNHm (ORCPT
+        <rfc822;linux-m68k@vger.kernel.org>); Tue, 2 Feb 2021 08:07:42 -0500
+Received: from xavier.telenet-ops.be (xavier.telenet-ops.be [IPv6:2a02:1800:120:4::f00:14])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1EF65C06174A
+        for <linux-m68k@vger.kernel.org>; Tue,  2 Feb 2021 05:06:55 -0800 (PST)
+Received: from ramsan.of.borg ([84.195.186.194])
+        by xavier.telenet-ops.be with bizsmtp
+        id QD6s2401X4C55Sk01D6sCS; Tue, 02 Feb 2021 14:06:53 +0100
+Received: from rox.of.borg ([192.168.97.57])
+        by ramsan.of.borg with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.93)
+        (envelope-from <geert@linux-m68k.org>)
+        id 1l6vOO-002iQk-7a; Tue, 02 Feb 2021 14:06:52 +0100
+Received: from geert by rox.of.borg with local (Exim 4.93)
+        (envelope-from <geert@linux-m68k.org>)
+        id 1l6vON-003d2k-Mh; Tue, 02 Feb 2021 14:06:51 +0100
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+To:     Fugang Duan <fugang.duan@nxp.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Greg Ungerer <gerg@linux-m68k.org>
+Cc:     Guenter Roeck <linux@roeck-us.net>, netdev@vger.kernel.org,
+        linux-m68k@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: [PATCH] net: fec: Silence M5272 build warnings
+Date:   Tue,  2 Feb 2021 14:06:50 +0100
+Message-Id: <20210202130650.865023-1-geert@linux-m68k.org>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-References: <20210130191719.7085-1-yury.norov@gmail.com> <20210130191719.7085-7-yury.norov@gmail.com>
- <YBgGf8y/K0da5MWz@smile.fi.intel.com>
-In-Reply-To: <YBgGf8y/K0da5MWz@smile.fi.intel.com>
-From:   Yury Norov <yury.norov@gmail.com>
-Date:   Mon, 1 Feb 2021 23:13:58 -0800
-Message-ID: <CAAH8bW-rOejgtYFpHQMA-M7MnpPT-8XAZtNOqMMYYxFo7xX8mw@mail.gmail.com>
-Subject: Re: [PATCH 6/8] lib: inline _find_next_bit() wrappers
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     linux-m68k <linux-m68k@lists.linux-m68k.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux-SH <linux-sh@vger.kernel.org>,
-        Linux-Arch <linux-arch@vger.kernel.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Yoshinori Sato <ysato@users.sourceforge.jp>,
-        Rich Felker <dalias@libc.org>, Arnd Bergmann <arnd@arndb.de>,
-        Dennis Zhou <dennis@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Wolfram Sang <wsa+renesas@sang-engineering.com>,
-        David Sterba <dsterba@suse.com>,
-        Stefano Brivio <sbrivio@redhat.com>,
-        "Ma, Jianpeng" <jianpeng.ma@intel.com>,
-        Wei Yang <richard.weiyang@linux.alibaba.com>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
-        Joe Perches <joe@perches.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-On Mon, Feb 1, 2021 at 5:47 AM Andy Shevchenko
-<andriy.shevchenko@linux.intel.com> wrote:
->
-> On Sat, Jan 30, 2021 at 11:17:17AM -0800, Yury Norov wrote:
-> > lib/find_bit.c declares five single-line wrappers for _find_next_bit().
-> > We may turn those wrappers to inline functions. It eliminates unneeded
-> > function calls and opens room for compile-time optimizations.
->
-> >  tools/include/asm-generic/bitops/find.h | 27 +++++++++---
-> >  tools/lib/find_bit.c                    | 52 ++++++++++-------------
->
-> In a separated patch, please. I don't think we need to defer this series in
-> case if tools lagged (which is usual case in my practice).
+If CONFIG_M5272=y:
 
-Splitting it to kernel and tools parts means either a patch bomb for tools or
-doubling the size of the series. Both options look worse than what we have now.
+    drivers/net/ethernet/freescale/fec_main.c: In function ‘fec_restart’:
+    drivers/net/ethernet/freescale/fec_main.c:948:6: warning: unused variable ‘val’ [-Wunused-variable]
+      948 |  u32 val;
+	  |      ^~~
+    drivers/net/ethernet/freescale/fec_main.c: In function ‘fec_get_mac’:
+    drivers/net/ethernet/freescale/fec_main.c:1667:28: warning: unused variable ‘pdata’ [-Wunused-variable]
+     1667 |  struct fec_platform_data *pdata = dev_get_platdata(&fep->pdev->dev);
+	  |                            ^~~~~
 
-Can you explain more on the lagged tools argument?
+Fix this by moving the variable declarations inside the existing #ifdef
+blocks.
 
-> --
-> With Best Regards,
-> Andy Shevchenko
->
->
+Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
+---
+ drivers/net/ethernet/freescale/fec_main.c | 7 ++++---
+ 1 file changed, 4 insertions(+), 3 deletions(-)
+
+diff --git a/drivers/net/ethernet/freescale/fec_main.c b/drivers/net/ethernet/freescale/fec_main.c
+index 9ebdb0e54291b204..3db882322b2bd3e8 100644
+--- a/drivers/net/ethernet/freescale/fec_main.c
++++ b/drivers/net/ethernet/freescale/fec_main.c
+@@ -945,7 +945,6 @@ static void
+ fec_restart(struct net_device *ndev)
+ {
+ 	struct fec_enet_private *fep = netdev_priv(ndev);
+-	u32 val;
+ 	u32 temp_mac[2];
+ 	u32 rcntl = OPT_FRAME_SIZE | 0x04;
+ 	u32 ecntl = 0x2; /* ETHEREN */
+@@ -997,7 +996,8 @@ fec_restart(struct net_device *ndev)
+ 
+ #if !defined(CONFIG_M5272)
+ 	if (fep->quirks & FEC_QUIRK_HAS_RACC) {
+-		val = readl(fep->hwp + FEC_RACC);
++		u32 val = readl(fep->hwp + FEC_RACC);
++
+ 		/* align IP header */
+ 		val |= FEC_RACC_SHIFT16;
+ 		if (fep->csum_flags & FLAG_RX_CSUM_ENABLED)
+@@ -1664,7 +1664,6 @@ static int fec_enet_rx_napi(struct napi_struct *napi, int budget)
+ static void fec_get_mac(struct net_device *ndev)
+ {
+ 	struct fec_enet_private *fep = netdev_priv(ndev);
+-	struct fec_platform_data *pdata = dev_get_platdata(&fep->pdev->dev);
+ 	unsigned char *iap, tmpaddr[ETH_ALEN];
+ 
+ 	/*
+@@ -1695,6 +1694,8 @@ static void fec_get_mac(struct net_device *ndev)
+ 		if (FEC_FLASHMAC)
+ 			iap = (unsigned char *)FEC_FLASHMAC;
+ #else
++		struct fec_platform_data *pdata = dev_get_platdata(&fep->pdev->dev);
++
+ 		if (pdata)
+ 			iap = (unsigned char *)&pdata->mac;
+ #endif
+-- 
+2.25.1
+
