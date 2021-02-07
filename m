@@ -2,72 +2,62 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.7 required=3.0 tests=BAYES_00,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-13.8 required=3.0 tests=BAYES_00,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 408C3C433E0
-	for <linux-m68k@archiver.kernel.org>; Fri,  5 Feb 2021 13:05:13 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 0253EC433DB
+	for <linux-m68k@archiver.kernel.org>; Sun,  7 Feb 2021 07:09:20 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id ECD2764F38
-	for <linux-m68k@archiver.kernel.org>; Fri,  5 Feb 2021 13:05:12 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id B3AEE64E72
+	for <linux-m68k@archiver.kernel.org>; Sun,  7 Feb 2021 07:09:20 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232447AbhBEND6 (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Fri, 5 Feb 2021 08:03:58 -0500
-Received: from mail-out.m-online.net ([212.18.0.9]:48522 "EHLO
-        mail-out.m-online.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232448AbhBENBd (ORCPT
+        id S229562AbhBGHJA (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Sun, 7 Feb 2021 02:09:00 -0500
+Received: from kvm5.telegraphics.com.au ([98.124.60.144]:60468 "EHLO
+        kvm5.telegraphics.com.au" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229510AbhBGHJA (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Fri, 5 Feb 2021 08:01:33 -0500
-Received: from frontend01.mail.m-online.net (unknown [192.168.8.182])
-        by mail-out.m-online.net (Postfix) with ESMTP id 4DXFr80dwTz1qs3H;
-        Fri,  5 Feb 2021 13:59:52 +0100 (CET)
-Received: from localhost (dynscan1.mnet-online.de [192.168.6.70])
-        by mail.m-online.net (Postfix) with ESMTP id 4DXFr803tlz1tYTs;
-        Fri,  5 Feb 2021 13:59:51 +0100 (CET)
-X-Virus-Scanned: amavisd-new at mnet-online.de
-Received: from mail.mnet-online.de ([192.168.8.182])
-        by localhost (dynscan1.mail.m-online.net [192.168.6.70]) (amavisd-new, port 10024)
-        with ESMTP id vJkKCHb1hqKy; Fri,  5 Feb 2021 13:59:51 +0100 (CET)
-X-Auth-Info: t4HE+BK5wQRCu1XDCfX+HaOtglUJ6QAlyQeLE9TtsrCU71f5bkuHerxzx5Omf1Vu
-Received: from igel.home (ppp-46-244-178-206.dynamic.mnet-online.de [46.244.178.206])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.mnet-online.de (Postfix) with ESMTPSA;
-        Fri,  5 Feb 2021 13:59:51 +0100 (CET)
-Received: by igel.home (Postfix, from userid 1000)
-        id 52CF92C36FC; Fri,  5 Feb 2021 13:59:50 +0100 (CET)
-From:   Andreas Schwab <schwab@linux-m68k.org>
-To:     Bhaskar Chowdhury <unixbhaskar@gmail.com>
-Cc:     sammy@sammy.net, geert@linux-m68k.org,
-        linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org,
-        rdunlap@infradead.org
-Subject: Re: [PATCH] arch: m68k: include: asm: Reconstruct the sentence in
- file sun3ints.h
-References: <20210205120455.1289448-1-unixbhaskar@gmail.com>
-X-Yow:  I'm sitting on my SPEED QUEEN..  To me, it's ENJOYABLE..
- I'm WARM..  I'm VIBRATORY..
-Date:   Fri, 05 Feb 2021 13:59:50 +0100
-In-Reply-To: <20210205120455.1289448-1-unixbhaskar@gmail.com> (Bhaskar
-        Chowdhury's message of "Fri, 5 Feb 2021 17:34:55 +0530")
-Message-ID: <87czxeisah.fsf@igel.home>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/27.1.91 (gnu/linux)
-MIME-Version: 1.0
-Content-Type: text/plain
+        Sun, 7 Feb 2021 02:09:00 -0500
+Received: by kvm5.telegraphics.com.au (Postfix, from userid 502)
+        id 03FB62A7EE; Sun,  7 Feb 2021 02:08:18 -0500 (EST)
+To:     Geert Uytterhoeven <geert@linux-m68k.org>
+Cc:     linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org
+Message-Id: <baa95d7235921dff23bed6320518f3fa90396603.1612681353.git.fthain@telegraphics.com.au>
+From:   Finn Thain <fthain@telegraphics.com.au>
+Subject: [PATCH] m68k: Drop -fno-strength-reduce from KBUILD_CFLAGS
+Date:   Sun, 07 Feb 2021 18:02:33 +1100
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-On Feb 05 2021, Bhaskar Chowdhury wrote:
+This workaround became redundant either when the driver in question was
+removed (in Linux v2.6.23) or when the compiler flag became a no-op
+(in GCC v4.2). Linux has required GCC v4.6 or later since v4.19.
 
-> -/* master list of VME vectors -- don't fuck with this */
-> +/* master list of VME vectors -- don't do anything with this */
+Link: https://gcc.gnu.org/git/?p=gcc.git;a=commitdiff;h=efa1cdf01850b28c2f6f7035ebd4420259494615
+References: commit 565bae6a4a8f ("[SCSI] 53c7xx: kill driver")
+References: commit cafa0010cd51 ("Raise the minimum required gcc version to 4.6")
+Signed-off-by: Finn Thain <fthain@telegraphics.com.au>
+---
+ arch/m68k/Makefile | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-don't mess with this
-
-Andreas.
-
+diff --git a/arch/m68k/Makefile b/arch/m68k/Makefile
+index ea14f2046fb4..5be4efec173a 100644
+--- a/arch/m68k/Makefile
++++ b/arch/m68k/Makefile
+@@ -66,8 +66,7 @@ KBUILD_CFLAGS += $(cpuflags-y)
+ KBUILD_CFLAGS += -pipe -ffreestanding
+ 
+ ifdef CONFIG_MMU
+-# without -fno-strength-reduce the 53c7xx.c driver fails ;-(
+-KBUILD_CFLAGS += -fno-strength-reduce -ffixed-a2
++KBUILD_CFLAGS += -ffixed-a2
+ else
+ # we can use a m68k-linux-gcc toolchain with these in place
+ KBUILD_CPPFLAGS += -DUTS_SYSNAME=\"uClinux\"
 -- 
-Andreas Schwab, schwab@linux-m68k.org
-GPG Key fingerprint = 7578 EB47 D4E5 4D69 2510  2552 DF73 E780 A9DA AEC1
-"And now for something completely different."
+2.26.2
+
