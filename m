@@ -2,66 +2,77 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.3 required=3.0 tests=BAYES_00,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,NICE_REPLY_A,SPF_HELO_NONE,
-	USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-3.8 required=3.0 tests=BAYES_00,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
+	autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 5D789C433DB
-	for <linux-m68k@archiver.kernel.org>; Sun,  7 Feb 2021 08:52:27 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4D859C433E0
+	for <linux-m68k@archiver.kernel.org>; Sun,  7 Feb 2021 09:47:01 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 2446764DF0
-	for <linux-m68k@archiver.kernel.org>; Sun,  7 Feb 2021 08:52:27 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 0883564DFD
+	for <linux-m68k@archiver.kernel.org>; Sun,  7 Feb 2021 09:47:00 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229629AbhBGIwZ (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Sun, 7 Feb 2021 03:52:25 -0500
-Received: from outpost1.zedat.fu-berlin.de ([130.133.4.66]:47761 "EHLO
-        outpost1.zedat.fu-berlin.de" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229522AbhBGIwY (ORCPT
+        id S229548AbhBGJqp (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Sun, 7 Feb 2021 04:46:45 -0500
+Received: from mail-oi1-f173.google.com ([209.85.167.173]:38257 "EHLO
+        mail-oi1-f173.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229522AbhBGJqn (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Sun, 7 Feb 2021 03:52:24 -0500
-Received: from inpost2.zedat.fu-berlin.de ([130.133.4.69])
-          by outpost.zedat.fu-berlin.de (Exim 4.94)
-          with esmtps (TLS1.2)
-          tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-          (envelope-from <glaubitz@zedat.fu-berlin.de>)
-          id 1l8fn9-000JI1-3c; Sun, 07 Feb 2021 09:51:39 +0100
-Received: from dynamic-089-014-072-044.89.14.pool.telefonica.de ([89.14.72.44] helo=[192.168.1.10])
-          by inpost2.zedat.fu-berlin.de (Exim 4.94)
-          with esmtpsa (TLS1.2)
-          tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-          (envelope-from <glaubitz@physik.fu-berlin.de>)
-          id 1l8fn8-000KeV-SY; Sun, 07 Feb 2021 09:51:39 +0100
-Subject: Re: [PATCH] m68k: Drop -fno-strength-reduce from KBUILD_CFLAGS
-To:     Finn Thain <fthain@telegraphics.com.au>,
-        Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org
-References: <baa95d7235921dff23bed6320518f3fa90396603.1612681353.git.fthain@telegraphics.com.au>
-From:   John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
-Message-ID: <8e3f7657-7e37-a8f1-ea20-2bd984fccd81@physik.fu-berlin.de>
-Date:   Sun, 7 Feb 2021 09:51:38 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.0
+        Sun, 7 Feb 2021 04:46:43 -0500
+Received: by mail-oi1-f173.google.com with SMTP id h6so12581591oie.5
+        for <linux-m68k@lists.linux-m68k.org>; Sun, 07 Feb 2021 01:46:28 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=eCzHsHOfsw/92ruMuZqxGmd0Y8mzeC+auWD82Of4Qj4=;
+        b=nNyG2l0b5qACnTysTRDQpov227xGOl3Nr8wEJRFuk47Ba+Ls26r5SSxCj9PCQxSXQw
+         cklOoF1LwIOLuTeun/7og+5rAR/gJxKP88LLJmQEVEXHkVFdAesTcILHigDyevD/wm1j
+         EgkWAlTn2kFamr4DFLtHQDJ/eKIgbDrIaPxG/BN89yg4z9im41qdV34slWy49O0HY/kY
+         HZJmAFscrq3tlnr05skyIwrmNv6rGJS1YdcOrgdpROyclAlJ3VM+5/a4ZGtSlgwjyPjx
+         RGuzhvgTwKcSu4iqHEx4DaNOvcflzWbQf3LKBfWJkHgPeBu6/W8Qe22d/+mdb8vyRNkK
+         nCmw==
+X-Gm-Message-State: AOAM530kqJNjsluORFlETVdNRR3ItS3FNI3OKqFIjb24M0YVvOZY3x1H
+        cM/5SXkXYpItR4ysehdXCd6909FwcP12pKshVzs=
+X-Google-Smtp-Source: ABdhPJwCKZmBf9CKasiV5sqSR6MM4vEWX6alfoIfk5diGVjc45PrwAyDnkunUISqepwXGVYfzTgDqynqUomYuLHwUDQ=
+X-Received: by 2002:a54:4e88:: with SMTP id c8mr7876328oiy.148.1612691162656;
+ Sun, 07 Feb 2021 01:46:02 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <baa95d7235921dff23bed6320518f3fa90396603.1612681353.git.fthain@telegraphics.com.au>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Original-Sender: glaubitz@physik.fu-berlin.de
-X-Originating-IP: 89.14.72.44
+References: <baa95d7235921dff23bed6320518f3fa90396603.1612681353.git.fthain@telegraphics.com.au>
+ <8e3f7657-7e37-a8f1-ea20-2bd984fccd81@physik.fu-berlin.de>
+In-Reply-To: <8e3f7657-7e37-a8f1-ea20-2bd984fccd81@physik.fu-berlin.de>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Sun, 7 Feb 2021 10:45:51 +0100
+Message-ID: <CAMuHMdUoHENnX9xDp3awgAxgbNpmKwqAR_MdunUA3O_3gGvK8g@mail.gmail.com>
+Subject: Re: [PATCH] m68k: Drop -fno-strength-reduce from KBUILD_CFLAGS
+To:     John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
+Cc:     Finn Thain <fthain@telegraphics.com.au>,
+        linux-m68k <linux-m68k@lists.linux-m68k.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-On 2/7/21 8:02 AM, Finn Thain wrote:
-> References: commit 565bae6a4a8f ("[SCSI] 53c7xx: kill driver")
+Hi Adrian,
 
-Does that mean there is currently no driver for the A4091?
+On Sun, Feb 7, 2021 at 9:51 AM John Paul Adrian Glaubitz
+<glaubitz@physik.fu-berlin.de> wrote:
+> On 2/7/21 8:02 AM, Finn Thain wrote:
+> > References: commit 565bae6a4a8f ("[SCSI] 53c7xx: kill driver")
+>
+> Does that mean there is currently no driver for the A4091?
 
-Adrian
+Supported by the replacement driver:
+45804fbb00eea27b ("[SCSI] 53c700: Amiga Zorro NCR53c710 SCSI")
+
+Gr{oetje,eeting}s,
+
+                        Geert
 
 -- 
- .''`.  John Paul Adrian Glaubitz
-: :' :  Debian Developer - glaubitz@debian.org
-`. `'   Freie Universitaet Berlin - glaubitz@physik.fu-berlin.de
-  `-    GPG: 62FF 8A75 84E0 2956 9546  0006 7426 3B37 F5B5 F913
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
