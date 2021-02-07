@@ -2,62 +2,66 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-13.8 required=3.0 tests=BAYES_00,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-5.3 required=3.0 tests=BAYES_00,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,NICE_REPLY_A,SPF_HELO_NONE,
+	USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 0253EC433DB
-	for <linux-m68k@archiver.kernel.org>; Sun,  7 Feb 2021 07:09:20 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5D789C433DB
+	for <linux-m68k@archiver.kernel.org>; Sun,  7 Feb 2021 08:52:27 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id B3AEE64E72
-	for <linux-m68k@archiver.kernel.org>; Sun,  7 Feb 2021 07:09:20 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 2446764DF0
+	for <linux-m68k@archiver.kernel.org>; Sun,  7 Feb 2021 08:52:27 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229562AbhBGHJA (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Sun, 7 Feb 2021 02:09:00 -0500
-Received: from kvm5.telegraphics.com.au ([98.124.60.144]:60468 "EHLO
-        kvm5.telegraphics.com.au" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229510AbhBGHJA (ORCPT
+        id S229629AbhBGIwZ (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Sun, 7 Feb 2021 03:52:25 -0500
+Received: from outpost1.zedat.fu-berlin.de ([130.133.4.66]:47761 "EHLO
+        outpost1.zedat.fu-berlin.de" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229522AbhBGIwY (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Sun, 7 Feb 2021 02:09:00 -0500
-Received: by kvm5.telegraphics.com.au (Postfix, from userid 502)
-        id 03FB62A7EE; Sun,  7 Feb 2021 02:08:18 -0500 (EST)
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
+        Sun, 7 Feb 2021 03:52:24 -0500
+Received: from inpost2.zedat.fu-berlin.de ([130.133.4.69])
+          by outpost.zedat.fu-berlin.de (Exim 4.94)
+          with esmtps (TLS1.2)
+          tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+          (envelope-from <glaubitz@zedat.fu-berlin.de>)
+          id 1l8fn9-000JI1-3c; Sun, 07 Feb 2021 09:51:39 +0100
+Received: from dynamic-089-014-072-044.89.14.pool.telefonica.de ([89.14.72.44] helo=[192.168.1.10])
+          by inpost2.zedat.fu-berlin.de (Exim 4.94)
+          with esmtpsa (TLS1.2)
+          tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+          (envelope-from <glaubitz@physik.fu-berlin.de>)
+          id 1l8fn8-000KeV-SY; Sun, 07 Feb 2021 09:51:39 +0100
+Subject: Re: [PATCH] m68k: Drop -fno-strength-reduce from KBUILD_CFLAGS
+To:     Finn Thain <fthain@telegraphics.com.au>,
+        Geert Uytterhoeven <geert@linux-m68k.org>
 Cc:     linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org
-Message-Id: <baa95d7235921dff23bed6320518f3fa90396603.1612681353.git.fthain@telegraphics.com.au>
-From:   Finn Thain <fthain@telegraphics.com.au>
-Subject: [PATCH] m68k: Drop -fno-strength-reduce from KBUILD_CFLAGS
-Date:   Sun, 07 Feb 2021 18:02:33 +1100
+References: <baa95d7235921dff23bed6320518f3fa90396603.1612681353.git.fthain@telegraphics.com.au>
+From:   John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
+Message-ID: <8e3f7657-7e37-a8f1-ea20-2bd984fccd81@physik.fu-berlin.de>
+Date:   Sun, 7 Feb 2021 09:51:38 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.0
+MIME-Version: 1.0
+In-Reply-To: <baa95d7235921dff23bed6320518f3fa90396603.1612681353.git.fthain@telegraphics.com.au>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Original-Sender: glaubitz@physik.fu-berlin.de
+X-Originating-IP: 89.14.72.44
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-This workaround became redundant either when the driver in question was
-removed (in Linux v2.6.23) or when the compiler flag became a no-op
-(in GCC v4.2). Linux has required GCC v4.6 or later since v4.19.
+On 2/7/21 8:02 AM, Finn Thain wrote:
+> References: commit 565bae6a4a8f ("[SCSI] 53c7xx: kill driver")
 
-Link: https://gcc.gnu.org/git/?p=gcc.git;a=commitdiff;h=efa1cdf01850b28c2f6f7035ebd4420259494615
-References: commit 565bae6a4a8f ("[SCSI] 53c7xx: kill driver")
-References: commit cafa0010cd51 ("Raise the minimum required gcc version to 4.6")
-Signed-off-by: Finn Thain <fthain@telegraphics.com.au>
----
- arch/m68k/Makefile | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+Does that mean there is currently no driver for the A4091?
 
-diff --git a/arch/m68k/Makefile b/arch/m68k/Makefile
-index ea14f2046fb4..5be4efec173a 100644
---- a/arch/m68k/Makefile
-+++ b/arch/m68k/Makefile
-@@ -66,8 +66,7 @@ KBUILD_CFLAGS += $(cpuflags-y)
- KBUILD_CFLAGS += -pipe -ffreestanding
- 
- ifdef CONFIG_MMU
--# without -fno-strength-reduce the 53c7xx.c driver fails ;-(
--KBUILD_CFLAGS += -fno-strength-reduce -ffixed-a2
-+KBUILD_CFLAGS += -ffixed-a2
- else
- # we can use a m68k-linux-gcc toolchain with these in place
- KBUILD_CPPFLAGS += -DUTS_SYSNAME=\"uClinux\"
+Adrian
+
 -- 
-2.26.2
+ .''`.  John Paul Adrian Glaubitz
+: :' :  Debian Developer - glaubitz@debian.org
+`. `'   Freie Universitaet Berlin - glaubitz@physik.fu-berlin.de
+  `-    GPG: 62FF 8A75 84E0 2956 9546  0006 7426 3B37 F5B5 F913
 
