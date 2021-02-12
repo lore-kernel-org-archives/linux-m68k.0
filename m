@@ -4,53 +4,55 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-8.7 required=3.0 tests=BAYES_00,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS,URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
+	SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 5CDE1C433DB
-	for <linux-m68k@archiver.kernel.org>; Fri, 12 Feb 2021 01:19:55 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 47819C433DB
+	for <linux-m68k@archiver.kernel.org>; Fri, 12 Feb 2021 02:53:49 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 1D68C64E3B
-	for <linux-m68k@archiver.kernel.org>; Fri, 12 Feb 2021 01:19:55 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 095A864E13
+	for <linux-m68k@archiver.kernel.org>; Fri, 12 Feb 2021 02:53:48 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229743AbhBLBTi convert rfc822-to-8bit (ORCPT
+        id S229575AbhBLCqk convert rfc822-to-8bit (ORCPT
         <rfc822;linux-m68k@archiver.kernel.org>);
-        Thu, 11 Feb 2021 20:19:38 -0500
-Received: from szxga02-in.huawei.com ([45.249.212.188]:3020 "EHLO
+        Thu, 11 Feb 2021 21:46:40 -0500
+Received: from szxga02-in.huawei.com ([45.249.212.188]:3021 "EHLO
         szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229714AbhBLBTg (ORCPT
-        <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Thu, 11 Feb 2021 20:19:36 -0500
-Received: from DGGEMM405-HUB.china.huawei.com (unknown [172.30.72.53])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4DcFwb3mh3zRCWT;
-        Fri, 12 Feb 2021 09:17:35 +0800 (CST)
-Received: from dggemi709-chm.china.huawei.com (10.3.20.108) by
- DGGEMM405-HUB.china.huawei.com (10.3.20.213) with Microsoft SMTP Server (TLS)
- id 14.3.498.0; Fri, 12 Feb 2021 09:18:52 +0800
+        with ESMTP id S229469AbhBLCqk (ORCPT
+        <rfc822;linux-m68k@vger.kernel.org>); Thu, 11 Feb 2021 21:46:40 -0500
+Received: from DGGEMM402-HUB.china.huawei.com (unknown [172.30.72.54])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4DcHs13h3kzRDQr;
+        Fri, 12 Feb 2021 10:44:37 +0800 (CST)
+Received: from dggemi762-chm.china.huawei.com (10.1.198.148) by
+ DGGEMM402-HUB.china.huawei.com (10.3.20.210) with Microsoft SMTP Server (TLS)
+ id 14.3.498.0; Fri, 12 Feb 2021 10:45:55 +0800
 Received: from dggemi761-chm.china.huawei.com (10.1.198.147) by
- dggemi709-chm.china.huawei.com (10.3.20.108) with Microsoft SMTP Server
+ dggemi762-chm.china.huawei.com (10.1.198.148) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2106.2; Fri, 12 Feb 2021 09:18:52 +0800
+ 15.1.2106.2; Fri, 12 Feb 2021 10:45:54 +0800
 Received: from dggemi761-chm.china.huawei.com ([10.9.49.202]) by
  dggemi761-chm.china.huawei.com ([10.9.49.202]) with mapi id 15.01.2106.006;
- Fri, 12 Feb 2021 09:18:52 +0800
+ Fri, 12 Feb 2021 10:45:54 +0800
 From:   "Song Bao Hua (Barry Song)" <song.bao.hua@hisilicon.com>
-To:     "tglx@linutronix.de" <tglx@linutronix.de>,
-        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
-        "arnd@arndb.de" <arnd@arndb.de>,
-        "geert@linux-m68k.org" <geert@linux-m68k.org>,
-        "funaho@jurai.org" <funaho@jurai.org>,
-        "philb@gnu.org" <philb@gnu.org>, "corbet@lwn.net" <corbet@lwn.net>,
-        "mingo@redhat.com" <mingo@redhat.com>
-CC:     "linux-m68k@lists.linux-m68k.org" <linux-m68k@lists.linux-m68k.org>,
-        "fthain@telegraphics.com.au" <fthain@telegraphics.com.au>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: [RFC] IRQ handlers run with some high-priority interrupts(not NMI)
- enabled on some platform
-Thread-Topic: [RFC] IRQ handlers run with some high-priority interrupts(not
- NMI) enabled on some platform
-Thread-Index: AdcA2xDwQTa7W6j6SmS4J3iBnsSynA==
-Date:   Fri, 12 Feb 2021 01:18:52 +0000
-Message-ID: <c46ddb954cfe45d9849c911271d7ec23@hisilicon.com>
+To:     Finn Thain <fthain@telegraphics.com.au>
+CC:     tanxiaofei <tanxiaofei@huawei.com>,
+        "jejb@linux.ibm.com" <jejb@linux.ibm.com>,
+        "martin.petersen@oracle.com" <martin.petersen@oracle.com>,
+        "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linuxarm@openeuler.org" <linuxarm@openeuler.org>,
+        "linux-m68k@vger.kernel.org" <linux-m68k@vger.kernel.org>
+Subject: RE: Re: [PATCH for-next 00/32] spin lock usage optimization for SCSI
+ drivers
+Thread-Topic: Re: [PATCH for-next 00/32] spin lock usage optimization for SCSI
+ drivers
+Thread-Index: AdcAYpckfegWyL1RTeK8yhWOZkcCaAAK/seAABDAZzD//30igP//VM2g
+Date:   Fri, 12 Feb 2021 02:45:54 +0000
+Message-ID: <48d2891ad9e340028c3b551a83d570b0@hisilicon.com>
+References: <417fa728c3ff4418ac87e0d409b5a084@hisilicon.com>
+ <c7fdb63e-e84-c685-35f4-6b6f663cd867@telegraphics.com.au>
+ <0d104f0e26134b1ea9c530be895e65d1@hisilicon.com>
+ <4dcf1410-768e-ae95-33bf-cba093b0751d@telegraphics.com.au>
+In-Reply-To: <4dcf1410-768e-ae95-33bf-cba093b0751d@telegraphics.com.au>
 Accept-Language: en-GB, en-US
 Content-Language: en-US
 X-MS-Has-Attach: 
@@ -64,130 +66,146 @@ Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-Hi,
 
-I am getting a very long debate with Finn in this thread:
-https://lore.kernel.org/lkml/1612697823-8073-1-git-send-email-tanxiaofei@huawei.com/
 
-In short, the debate is about if high-priority IRQs (*not NMI*)
-are allowed to preempt an running IRQ handler in hardIRQ context.
+> -----Original Message-----
+> From: Finn Thain [mailto:fthain@telegraphics.com.au]
+> Sent: Friday, February 12, 2021 1:09 PM
+> To: Song Bao Hua (Barry Song) <song.bao.hua@hisilicon.com>
+> Cc: tanxiaofei <tanxiaofei@huawei.com>; jejb@linux.ibm.com;
+> martin.petersen@oracle.com; linux-scsi@vger.kernel.org;
+> linux-kernel@vger.kernel.org; linuxarm@openeuler.org;
+> linux-m68k@vger.kernel.org
+> Subject: RE: Re: [PATCH for-next 00/32] spin lock usage optimization for SCSI
+> drivers
+> 
+> On Fri, 12 Feb 2021, Song Bao Hua (Barry Song) wrote:
+> 
+> >
+> > > -----Original Message-----
+> > > From: Finn Thain [mailto:fthain@telegraphics.com.au]
+> > > Sent: Friday, February 12, 2021 12:57 PM
+> > > To: Song Bao Hua (Barry Song) <song.bao.hua@hisilicon.com>
+> > > Cc: tanxiaofei <tanxiaofei@huawei.com>; jejb@linux.ibm.com;
+> > > martin.petersen@oracle.com; linux-scsi@vger.kernel.org;
+> > > linux-kernel@vger.kernel.org; linuxarm@openeuler.org;
+> > > linux-m68k@vger.kernel.org
+> > > Subject: RE: Re: [PATCH for-next 00/32] spin lock usage optimization for
+> SCSI
+> > > drivers
+> > >
+> > >
+> > > On Thu, 11 Feb 2021, Song Bao Hua (Barry Song) wrote:
+> > >
+> > > >
+> > > > Actually in m68k, I also saw its IRQ entry disabled interrupts by
+> > > > ' move	#0x2700,%sr		/* disable intrs */'
+> > > >
+> > > > arch/m68k/include/asm/entry.h:
+> > > >
+> > > > .macro SAVE_ALL_SYS
+> > > > 	move	#0x2700,%sr		/* disable intrs */
+> > > > 	btst	#5,%sp@(2)		/* from user? */
+> > > > 	bnes	6f			/* no, skip */
+> > > > 	movel	%sp,sw_usp		/* save user sp */
+> > > > ...
+> > > >
+> > > > .macro SAVE_ALL_INT
+> > > > 	SAVE_ALL_SYS
+> > > > 	moveq	#-1,%d0			/* not system call entry */
+> > > > 	movel	%d0,%sp@(PT_OFF_ORIG_D0)
+> > > > .endm
+> > > >
+> > > > arch/m68k/kernel/entry.S:
+> > > >
+> > > > /* This is the main interrupt handler for autovector interrupts */
+> > > >
+> > > > ENTRY(auto_inthandler)
+> > > > 	SAVE_ALL_INT
+> > > > 	GET_CURRENT(%d0)
+> > > > 					|  put exception # in d0
+> > > > 	bfextu	%sp@(PT_OFF_FORMATVEC){#4,#10},%d0
+> > > > 	subw	#VEC_SPUR,%d0
+> > > >
+> > > > 	movel	%sp,%sp@-
+> > > > 	movel	%d0,%sp@-		|  put vector # on stack
+> > > > auto_irqhandler_fixup = . + 2
+> > > > 	jsr	do_IRQ			|  process the IRQ
+> > > > 	addql	#8,%sp			|  pop parameters off stack
+> > > > 	jra	ret_from_exception
+> > > >
+> > > > So my question is that " move	#0x2700,%sr" is actually disabling
+> > > > all interrupts? And is m68k actually running irq handlers
+> > > > with interrupts disabled?
+> > > >
+> > >
+> > > When sonic_interrupt() executes, the IPL is 2 or 3 (since either IRQ may
+> > > be involved). That is, SR & 0x700 is 0x200 or 0x300. The level 3 interrupt
+> > > may interrupt execution of the level 2 handler so an irq lock is used to
+> > > avoid re-entrance.
+> > >
+> > > This patch,
+> > >
+> > > diff --git a/drivers/net/ethernet/natsemi/sonic.c
+> > > b/drivers/net/ethernet/natsemi/sonic.c
+> > > index d17d1b4f2585..041354647bad 100644
+> > > --- a/drivers/net/ethernet/natsemi/sonic.c
+> > > +++ b/drivers/net/ethernet/natsemi/sonic.c
+> > > @@ -355,6 +355,8 @@ static irqreturn_t sonic_interrupt(int irq, void *dev_id)
+> > >          */
+> > >         spin_lock_irqsave(&lp->lock, flags);
+> > >
+> > > +       printk_once(KERN_INFO "%s: %08lx\n", __func__, flags);
+> > > +
+> > >         status = SONIC_READ(SONIC_ISR) & SONIC_IMR_DEFAULT;
+> > >         if (!status) {
+> > >                 spin_unlock_irqrestore(&lp->lock, flags);
+> > >
+> > > produces this output,
+> > >
+> > > [    3.800000] sonic_interrupt: 00002300
+> >
+> > I actually hope you can directly read the register rather than reading
+> > a flag which might be a software one not from register.
+> >
+> 
+> Again, the implementation of arch_local_irq_save() may be found in
+> arch/m68k/include/asm/irqflags.h
 
-In my understanding, right now IRQ handlers are running with *all* interrupts
-disabled since this commit and IRQF_DISABLED was dropped:
-e58aa3d2d0cc
-genirq: Run irq handlers with interrupts disabled
+Yes. I have read it. Anyway, I started a discussion in genirq
+with you cc-ed:
+https://lore.kernel.org/lkml/c46ddb954cfe45d9849c911271d7ec23@hisilicon.com/
 
-b738a50a2026
-genirq: Warn when handler enables interrupts
-We run all handlers with interrupts disabled and expect them not to
-enable them. Warn when we catch one who does.
+And thanks very much for all your efforts to help me understand
+M68k. Let's get this clarified thoroughly in genirq level.
 
-While it seems to be true in almost all platforms, it seems to be
-false on m68k.
+In arm, we also have some special high-priority interrupts
+which are not NMI but able to preempt normal IRQ. They are
+managed by arch-extended APIs rather than common APIs.
 
-According to Finn, while IRQ handlers are running, high-priority
-interrupts can still jump out on m68k. A driver which is handling
-this issue is here: drivers/net/ethernet/natsemi/sonic.c.
-you can read the comment:
-static irqreturn_t sonic_interrupt(int irq, void *dev_id)
-{
-	struct net_device *dev = dev_id;
-	struct sonic_local *lp = netdev_priv(dev);
-	int status;
-	unsigned long flags;
+Neither arch_irqs_disabled() nor local_irq_disable() API can
+access this kind of interrupts. They are using things specific
+to ARM like:
+local_fiq_disable()
+local_fiq_enable()
+set_fiq_handler()
+disable_fiq()
+enable_fiq()
+...
 
-	/* The lock has two purposes. Firstly, it synchronizes sonic_interrupt()
-	 * with sonic_send_packet() so that the two functions can share state.
-	 * Secondly, it makes sonic_interrupt() re-entrant, as that is required
-	 * by macsonic which must use two IRQs with different priority levels.
-	 */
-	spin_lock_irqsave(&lp->lock, flags);
+so fiq doesn't bother us anyhow in genirq.
 
-	status = SONIC_READ(SONIC_ISR) & SONIC_IMR_DEFAULT;
-	if (!status) {
-		spin_unlock_irqrestore(&lp->lock, flags);
-
-		return IRQ_NONE;
-	}
-}
-
-So m68k does allow a high-priority interrupt to preempt
-a hardIRQ so the code needs to call irqsave to protect
-this risk. That is to say, some interrupts are not disabled
-during hardIRQ of m68k.
-
-But m68k doesn't trigger any warning for !irqs_disabled() in
-genirq:
-irqreturn_t __handle_irq_event_percpu(struct irq_desc *desc, unsigned int *flags)
-{
-	...
-
-		trace_irq_handler_entry(irq, action);
-		res = action->handler(irq, action->dev_id);
-		trace_irq_handler_exit(irq, action, res);
-
-		if (WARN_ONCE(!irqs_disabled(),"irq %u handler %pS enabled interrupts\n",
-			      irq, action->handler))
-			local_irq_disable();
-}
-
-The reason is:
-* arch_irqs_disabled() return true while low-priority interrupts are disabled
-though high-priority interrupts are still open;
-* local_irq_disable, spin_lock_irqsave() etc will disable high-priority interrupt
-(IPL 7);
-* arch_irqs_disabled() also return true while both low and high priority interrupts
-interrupts are disabled.
-Note m68k has several interrupt levels. But in the above description, I simply
-abstract them as high and low to help the understanding.
-
-I think m68k lets arch_irq_disabled() return true in relatively weaker condition
-to pretend all IRQs are disabled while high-priority IRQ is still open, thus
-pass all sanitizing check in genirq and kernel core. But Finn strongly disagreed.
-
-I am not saying I am right and Finn is wrong. But I think we need somewhere to clarify
-this problem.
-
-Personally, I would prefer "interrupts disabled" mean "all except NMI", So I'd like to
-guard this by:
-
-diff --git a/include/linux/hardirq.h b/include/linux/hardirq.h
-index 7c9d6a2d7e90..b8ca27555c76 100644
---- a/include/linux/hardirq.h
-+++ b/include/linux/hardirq.h
-@@ -32,6 +32,7 @@ static __always_inline void rcu_irq_enter_check_tick(void)
-  */
- #define __irq_enter()                                  \
-        do {                                            \
-+               WARN_ONCE(in_hardirq() && irqs_disabled(), "nested
-interrupts\n"); \
-                preempt_count_add(HARDIRQ_OFFSET);      \
-                lockdep_hardirq_enter();                \
-                account_hardirq_enter(current);         \
-@@ -44,6 +45,7 @@ static __always_inline void rcu_irq_enter_check_tick(void)
-  */
- #define __irq_enter_raw()                              \
-        do {                                            \
-+               WARN_ONCE(in_hardirq() && irqs_disabled(), " nested
-interrupts\n"); \
-                preempt_count_add(HARDIRQ_OFFSET);      \
-                lockdep_hardirq_enter();                \
-        } while (0)
-
-Though Finn thought it lacks any justification
-
-So I am requesting comments on:
-1. are we expecting all interrupts except NMI to be disabled in irq handler,
-or do we actually allow some high-priority interrupts between low and NMI to
-come in some platforms?
-
-2. If either side is true, I think we need to document it somewhere as there
-is always confusion about this.
-
-Personally, I would expect all interrupts to be disabled and I like the way
-of ARM64 to only use high-priority interrupt as pseudo NMI:
-https://lwn.net/Articles/755906/
-Though Finn argued that this will contribute to lose hardware feature of m68k.
+> 
+> > >
+> > > I ran that code in QEMU, but experience shows that Apple hardware works
+> > > exactly the same. Please do confirm this for yourself, if you still think
+> > > the code and comments in sonic_interrupt are wrong.
+> > >
+> > > > Best Regards
+> > > > Barry
+> > > >
+> >
 
 Thanks
 Barry
+
