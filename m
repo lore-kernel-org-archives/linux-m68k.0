@@ -2,39 +2,55 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.7 required=3.0 tests=BAYES_00,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-11.6 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 8B7A6C433E0
-	for <linux-m68k@archiver.kernel.org>; Fri, 12 Feb 2021 23:48:37 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8B940C433E0
+	for <linux-m68k@archiver.kernel.org>; Sat, 13 Feb 2021 16:33:15 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 4D34D64D9A
-	for <linux-m68k@archiver.kernel.org>; Fri, 12 Feb 2021 23:48:37 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 4E60964E2C
+	for <linux-m68k@archiver.kernel.org>; Sat, 13 Feb 2021 16:33:15 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231317AbhBLXsV (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Fri, 12 Feb 2021 18:48:21 -0500
-Received: from szxga02-in.huawei.com ([45.249.212.188]:3027 "EHLO
-        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231200AbhBLXsV (ORCPT
-        <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Fri, 12 Feb 2021 18:48:21 -0500
-Received: from DGGEMM401-HUB.china.huawei.com (unknown [172.30.72.54])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4Dcqrq1xqrzRDQy;
-        Sat, 13 Feb 2021 07:46:19 +0800 (CST)
-Received: from dggemi761-chm.china.huawei.com (10.1.198.147) by
- DGGEMM401-HUB.china.huawei.com (10.3.20.209) with Microsoft SMTP Server (TLS)
- id 14.3.498.0; Sat, 13 Feb 2021 07:47:37 +0800
-Received: from dggemi761-chm.china.huawei.com (10.1.198.147) by
- dggemi761-chm.china.huawei.com (10.1.198.147) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2106.2; Sat, 13 Feb 2021 07:46:59 +0800
-Received: from dggemi761-chm.china.huawei.com ([10.9.49.202]) by
- dggemi761-chm.china.huawei.com ([10.9.49.202]) with mapi id 15.01.2106.006;
- Sat, 13 Feb 2021 07:46:59 +0800
-From:   "Song Bao Hua (Barry Song)" <song.bao.hua@hisilicon.com>
-To:     Arnd Bergmann <arnd@kernel.org>
-CC:     "tglx@linutronix.de" <tglx@linutronix.de>,
+        id S229653AbhBMQc7 (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Sat, 13 Feb 2021 11:32:59 -0500
+Received: from mail.kernel.org ([198.145.29.99]:59826 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229592AbhBMQc6 (ORCPT <rfc822;linux-m68k@lists.linux-m68k.org>);
+        Sat, 13 Feb 2021 11:32:58 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B621664E4C
+        for <linux-m68k@lists.linux-m68k.org>; Sat, 13 Feb 2021 16:32:17 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1613233937;
+        bh=nfPivI676TW1Vyh+48AYclAWuVpk7t0piH1yKqAy+T4=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=kgnasnZBwka5FrcUtUMuzU5alzSSg7eCcCSdRhZZK/X2J0KEnAKwzVO/MdIAQKNdl
+         PQcL2ouGanAk7OCCUAHXFEFw3cMrQpbs2LYKVUokZxACJrD086k21C/PXxaBPBeLO4
+         Bn9v0Xv86blzlepR/Zhd5R7telTrUvyxNvYMFd2RtXVru02c2QEZ779IMhWcxqo0rl
+         si7W0IIefQLaCEU347Kv+O917oiouzte9AKckt/CeRPprMkhecZsB4w4oAHIBma52k
+         AbZ2p9N/ZsxmaD76q3j9f9jE0xZ0jK2+o0lvXZge0xbSJNQEUAdY45a15pdCyPJY5q
+         1urhH7NZEGrKw==
+Received: by mail-oi1-f181.google.com with SMTP id y199so3231525oia.4
+        for <linux-m68k@lists.linux-m68k.org>; Sat, 13 Feb 2021 08:32:17 -0800 (PST)
+X-Gm-Message-State: AOAM530lcoVkZ6Jbe4Z6qO0UwjjSEuCrOVzODxgKES+/xrKmconQLRnF
+        Q//KNxSd57FhhOPLSb0OEqrvPmFvtV+XvXLzW2c=
+X-Google-Smtp-Source: ABdhPJxu9CAbLoK/yoJdEoMHdvhxaDAU66vTbDCG+Q0e+t1pnRuMtUkIFbROtKSMN4VqXn/nJMFIw60amkYm558mfwc=
+X-Received: by 2002:aca:d908:: with SMTP id q8mr3115221oig.67.1613233936881;
+ Sat, 13 Feb 2021 08:32:16 -0800 (PST)
+MIME-Version: 1.0
+References: <c46ddb954cfe45d9849c911271d7ec23@hisilicon.com>
+ <CAK8P3a2adJsz5hRT_eMzSoHnUBC+aK9HZ18=oAYCZ-gisEkd1w@mail.gmail.com>
+ <24e0652b3afa48cdbf7c83287e43c087@hisilicon.com> <CAK8P3a0fwMe9LaXMfKjH46yvt6o-euZJZ4HXtVRPhYbKvAUPKg@mail.gmail.com>
+ <0b766dba0b004ced94131e158cd8e67d@hisilicon.com>
+In-Reply-To: <0b766dba0b004ced94131e158cd8e67d@hisilicon.com>
+From:   Arnd Bergmann <arnd@kernel.org>
+Date:   Sat, 13 Feb 2021 17:32:01 +0100
+X-Gmail-Original-Message-ID: <CAK8P3a2ZnKeeZ-zEWO+vHogs0DdLuDrZet61cSmJe_UMYhtaWQ@mail.gmail.com>
+Message-ID: <CAK8P3a2ZnKeeZ-zEWO+vHogs0DdLuDrZet61cSmJe_UMYhtaWQ@mail.gmail.com>
+Subject: Re: [RFC] IRQ handlers run with some high-priority interrupts(not
+ NMI) enabled on some platform
+To:     "Song Bao Hua (Barry Song)" <song.bao.hua@hisilicon.com>
+Cc:     "tglx@linutronix.de" <tglx@linutronix.de>,
         "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
         "arnd@arndb.de" <arnd@arndb.de>,
         "geert@linux-m68k.org" <geert@linux-m68k.org>,
@@ -44,121 +60,56 @@ CC:     "tglx@linutronix.de" <tglx@linutronix.de>,
         "linux-m68k@lists.linux-m68k.org" <linux-m68k@lists.linux-m68k.org>,
         "fthain@telegraphics.com.au" <fthain@telegraphics.com.au>,
         "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: RE: [RFC] IRQ handlers run with some high-priority interrupts(not
- NMI) enabled on some platform
-Thread-Topic: [RFC] IRQ handlers run with some high-priority interrupts(not
- NMI) enabled on some platform
-Thread-Index: AdcA2xDwQTa7W6j6SmS4J3iBnsSynAAcRXSAABFJYBD//354gP//dYEg
-Date:   Fri, 12 Feb 2021 23:46:59 +0000
-Message-ID: <0b766dba0b004ced94131e158cd8e67d@hisilicon.com>
-References: <c46ddb954cfe45d9849c911271d7ec23@hisilicon.com>
- <CAK8P3a2adJsz5hRT_eMzSoHnUBC+aK9HZ18=oAYCZ-gisEkd1w@mail.gmail.com>
- <24e0652b3afa48cdbf7c83287e43c087@hisilicon.com>
- <CAK8P3a0fwMe9LaXMfKjH46yvt6o-euZJZ4HXtVRPhYbKvAUPKg@mail.gmail.com>
-In-Reply-To: <CAK8P3a0fwMe9LaXMfKjH46yvt6o-euZJZ4HXtVRPhYbKvAUPKg@mail.gmail.com>
-Accept-Language: en-GB, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [10.126.201.105]
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-MIME-Version: 1.0
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-DQoNCj4gLS0tLS1PcmlnaW5hbCBNZXNzYWdlLS0tLS0NCj4gRnJvbTogQXJuZCBCZXJnbWFubiBb
-bWFpbHRvOmFybmRAa2VybmVsLm9yZ10NCj4gU2VudDogU2F0dXJkYXksIEZlYnJ1YXJ5IDEzLCAy
-MDIxIDEyOjA2IFBNDQo+IFRvOiBTb25nIEJhbyBIdWEgKEJhcnJ5IFNvbmcpIDxzb25nLmJhby5o
-dWFAaGlzaWxpY29uLmNvbT4NCj4gQ2M6IHRnbHhAbGludXRyb25peC5kZTsgZ3JlZ2toQGxpbnV4
-Zm91bmRhdGlvbi5vcmc7IGFybmRAYXJuZGIuZGU7DQo+IGdlZXJ0QGxpbnV4LW02OGsub3JnOyBm
-dW5haG9AanVyYWkub3JnOyBwaGlsYkBnbnUub3JnOyBjb3JiZXRAbHduLm5ldDsNCj4gbWluZ29A
-cmVkaGF0LmNvbTsgbGludXgtbTY4a0BsaXN0cy5saW51eC1tNjhrLm9yZzsNCj4gZnRoYWluQHRl
-bGVncmFwaGljcy5jb20uYXU7IGxpbnV4LWtlcm5lbEB2Z2VyLmtlcm5lbC5vcmcNCj4gU3ViamVj
-dDogUmU6IFtSRkNdIElSUSBoYW5kbGVycyBydW4gd2l0aCBzb21lIGhpZ2gtcHJpb3JpdHkgaW50
-ZXJydXB0cyhub3QgTk1JKQ0KPiBlbmFibGVkIG9uIHNvbWUgcGxhdGZvcm0NCj4gDQo+IE9uIFNh
-dCwgRmViIDEzLCAyMDIxIGF0IDEyOjAwIEFNIFNvbmcgQmFvIEh1YSAoQmFycnkgU29uZykNCj4g
-PHNvbmcuYmFvLmh1YUBoaXNpbGljb24uY29tPiB3cm90ZToNCj4gPiA+IC0tLS0tT3JpZ2luYWwg
-TWVzc2FnZS0tLS0tDQo+ID4gPiBGcm9tOiBBcm5kIEJlcmdtYW5uIFttYWlsdG86YXJuZEBrZXJu
-ZWwub3JnXQ0KPiA+ID4gU2VudDogU2F0dXJkYXksIEZlYnJ1YXJ5IDEzLCAyMDIxIDExOjM0IEFN
-DQo+ID4gPiBUbzogU29uZyBCYW8gSHVhIChCYXJyeSBTb25nKSA8c29uZy5iYW8uaHVhQGhpc2ls
-aWNvbi5jb20+DQo+ID4gPiBDYzogdGdseEBsaW51dHJvbml4LmRlOyBncmVna2hAbGludXhmb3Vu
-ZGF0aW9uLm9yZzsgYXJuZEBhcm5kYi5kZTsNCj4gPiA+IGdlZXJ0QGxpbnV4LW02OGsub3JnOyBm
-dW5haG9AanVyYWkub3JnOyBwaGlsYkBnbnUub3JnOyBjb3JiZXRAbHduLm5ldDsNCj4gPiA+IG1p
-bmdvQHJlZGhhdC5jb207IGxpbnV4LW02OGtAbGlzdHMubGludXgtbTY4ay5vcmc7DQo+ID4gPiBm
-dGhhaW5AdGVsZWdyYXBoaWNzLmNvbS5hdTsgbGludXgta2VybmVsQHZnZXIua2VybmVsLm9yZw0K
-PiA+ID4gU3ViamVjdDogUmU6IFtSRkNdIElSUSBoYW5kbGVycyBydW4gd2l0aCBzb21lIGhpZ2gt
-cHJpb3JpdHkgaW50ZXJydXB0cyhub3QNCj4gTk1JKQ0KPiA+ID4gZW5hYmxlZCBvbiBzb21lIHBs
-YXRmb3JtDQo+ID4gPg0KPiA+ID4gT24gRnJpLCBGZWIgMTIsIDIwMjEgYXQgMjoxOCBBTSBTb25n
-IEJhbyBIdWEgKEJhcnJ5IFNvbmcpDQo+ID4gPiA8c29uZy5iYW8uaHVhQGhpc2lsaWNvbi5jb20+
-IHdyb3RlOg0KPiA+ID4NCj4gPiA+ID4gU28gSSBhbSByZXF1ZXN0aW5nIGNvbW1lbnRzIG9uOg0K
-PiA+ID4gPiAxLiBhcmUgd2UgZXhwZWN0aW5nIGFsbCBpbnRlcnJ1cHRzIGV4Y2VwdCBOTUkgdG8g
-YmUgZGlzYWJsZWQgaW4gaXJxIGhhbmRsZXIsDQo+ID4gPiA+IG9yIGRvIHdlIGFjdHVhbGx5IGFs
-bG93IHNvbWUgaGlnaC1wcmlvcml0eSBpbnRlcnJ1cHRzIGJldHdlZW4gbG93IGFuZA0KPiBOTUkN
-Cj4gPiA+IHRvDQo+ID4gPiA+IGNvbWUgaW4gc29tZSBwbGF0Zm9ybXM/DQo+ID4gPg0KPiA+ID4g
-SSB0cmllZCB0byBjb21lIHRvIGFuIGFuc3dlciBidXQgdGhpcyBkb2VzIG5vdCBzZWVtIHBhcnRp
-Y3VsYXJseSB3ZWxsLWRlZmluZWQuDQo+ID4gPiBUaGVyZSBhcmUgYSBmZXcgdGhpbmdzIEkgbm90
-aWNlZDoNCj4gPiA+DQo+ID4gPiAtIGdvaW5nIHRocm91Z2ggdGhlIGxvY2FsX2lycV9zYXZlKCkv
-cmVzdG9yZSgpIGltcGxlbWVudGF0aW9ucyBvbiBhbGwNCj4gPiA+ICAgYXJjaGl0ZWN0dXJlcywg
-SSBkaWQgbm90IGZpbmQgYW55IG90aGVyIG9uZXMgYmVzaWRlcyBtNjhrIHRoYXQgbGVhdmUNCj4g
-PiA+ICAgaGlnaC1wcmlvcml0eSBpbnRlcnJ1cHRzIGVuYWJsZWQuIEkgZGlkIHNlZSB0aGF0IGF0
-IGxlYXN0IGFscGhhIGFuZCBvcGVucmlzYw0KPiA+ID4gICBhcmUgZGVzaWduZWQgdG8gc3VwcG9y
-dCB0aGF0IGluIGhhcmR3YXJlLCBidXQgdGhlIGNvZGUganVzdCBsZWF2ZXMgdGhlDQo+ID4gPiAg
-IGludGVycnVwdHMgZGlzYWJsZWQuDQo+ID4NCj4gPiBUaGUgY2FzZSBpcyBhIGxpdHRsZSBkaWZm
-ZXJlbnQuIEV4cGxpY2l0IGxvY2FsX2lycV9zYXZlKCkgZG9lcyBkaXNhYmxlIGFsbA0KPiA+IGhp
-Z2ggcHJpb3JpdHkgaW50ZXJydXB0cyBvbiBtNjhrLiBUaGUgb25seSBkaWZmZXJlbmNlIGlzIGFy
-Y2hfaXJxc19kaXNhYmxlZCgpDQo+ID4gb2YgbTY4ayB3aWxsIHJldHVybiB0cnVlIHdoaWxlIGxv
-dy1wcmlvcml0eSBpbnRlcnJ1cHRzIGFyZSBtYXNrZWQgYW5kIGhpZ2gNCj4gPiAtcHJpb3JpdHkg
-YXJlIHN0aWxsIG9wZW4uIE02OGsncyBoYXJkSVJRIGFsc28gcnVucyBpbiB0aGlzIGNvbnRleHQg
-d2l0aCBoaWdoDQo+ID4gcHJpb3JpdHkgaW50ZXJydXB0cyBlbmFibGVkLg0KPiANCj4gTXkgcG9p
-bnQgd2FzIHRoYXQgb24gbW9zdCBvdGhlciBhcmNoaXRlY3R1cmVzLCBsb2NhbF9pcnFfc2F2ZSgp
-L3Jlc3RvcmUoKQ0KPiBhbHdheXMgZGlzYWJsZXMvZW5hYmxlcyBhbGwgaW50ZXJydXB0cywgd2hp
-bGUgb24gbTY4ayBpdCByZXN0b3JlcyB0aGUNCj4gc3BlY2lmaWMgbGV2ZWwgdGhleSB3ZXJlIG9u
-IGJlZm9yZS4gT24gYWxwaGEsIGl0IGRvZXMgdGhlIHNhbWUgYXMgb24gbTY4aywNCj4gYnV0IHRo
-ZW4gdGhlIHRvcC1sZXZlbCBpbnRlcnJ1cHQgaGFuZGxlciBqdXN0IGRpc2FibGVzIHRoZW0gYWxs
-IGJlZm9yZSBjYWxsaW5nDQo+IGludG8gYW55IG90aGVyIGNvZGUuDQoNClRoYXQncyB3aGF0IEkg
-dGhpbmsgbTY4ayBpcyBiZXR0ZXIgdG8gZG8uDQogDQpMb29rcyB3ZWlyZCB0aGF0IG5lc3RlZCBp
-bnRlcnJ1cHRzIGNhbiBlbnRlciB3aGlsZSBhcmNoX2lycXNfZGlzYWJsZWQoKQ0KaXMgdHJ1ZSBv
-biBtNjhrIGJlY2F1c2UgbWFza2luZyBsb3ctcHJpb3JpdHkgaW50ZXJydXB0cyB3aXRoDQpoaWdo
-LWludGVycnVwdHMgc3RpbGwgZW5hYmxlZCB3b3VsZCBiZSBhYmxlIHRvIG1ha2UgbTY4aydzDQph
-cmNoX2lycXNfZGlzYWJsZWQoKSB0cnVlLCB3aGljaCBpcyBleGFjdGx5IHRoZSBlbnZpcm9ubWVu
-dA0KbTY4aydzIGlycSBoYW5kbGVyIGlzIHJ1bm5pbmcuDQoNClNvIEkgd2FzIGFjdHVhbGx5IHRy
-eWluZyB0byB3YXJuIHRoaXMgdW51c3VhbCBjYXNlIC0gaW50ZXJydXB0cw0KZ2V0IG5lc3RlZCB3
-aGlsZSBib3RoIGluX2hhcmRpcnEoKSBhbmQgaXJxc19kaXNhYmxlZCgpIGFyZSB0cnVlLg0KDQpk
-aWZmIC0tZ2l0IGEvaW5jbHVkZS9saW51eC9oYXJkaXJxLmggYi9pbmNsdWRlL2xpbnV4L2hhcmRp
-cnEuaA0KaW5kZXggN2M5ZDZhMmQ3ZTkwLi5iOGNhMjc1NTVjNzYgMTAwNjQ0DQotLS0gYS9pbmNs
-dWRlL2xpbnV4L2hhcmRpcnEuaA0KKysrIGIvaW5jbHVkZS9saW51eC9oYXJkaXJxLmgNCkBAIC0z
-Miw2ICszMiw3IEBAIHN0YXRpYyBfX2Fsd2F5c19pbmxpbmUgdm9pZCByY3VfaXJxX2VudGVyX2No
-ZWNrX3RpY2sodm9pZCkNCiAgKi8NCiAjZGVmaW5lIF9faXJxX2VudGVyKCkgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgXA0KICAgICAgICBkbyB7ICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICBcDQorICAgICAgICAgICAgICAgV0FSTl9PTkNFKGluX2hh
-cmRpcnEoKSAmJiBpcnFzX2Rpc2FibGVkKCksICJuZXN0ZWQNCmludGVycnVwdHNcbiIpOyBcDQog
-ICAgICAgICAgICAgICAgcHJlZW1wdF9jb3VudF9hZGQoSEFSRElSUV9PRkZTRVQpOyAgICAgIFwN
-CiAgICAgICAgICAgICAgICBsb2NrZGVwX2hhcmRpcnFfZW50ZXIoKTsgICAgICAgICAgICAgICAg
-XA0KICAgICAgICAgICAgICAgIGFjY291bnRfaGFyZGlycV9lbnRlcihjdXJyZW50KTsgICAgICAg
-ICBcDQpAQCAtNDQsNiArNDUsNyBAQCBzdGF0aWMgX19hbHdheXNfaW5saW5lIHZvaWQgcmN1X2ly
-cV9lbnRlcl9jaGVja190aWNrKHZvaWQpDQogICovDQogI2RlZmluZSBfX2lycV9lbnRlcl9yYXco
-KSAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIFwNCiAgICAgICAgZG8geyAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgXA0KKyAgICAgICAgICAgICAgIFdBUk5f
-T05DRShpbl9oYXJkaXJxKCkgJiYgaXJxc19kaXNhYmxlZCgpLCAiIG5lc3RlZA0KaW50ZXJydXB0
-c1xuIik7IFwNCiAgICAgICAgICAgICAgICBwcmVlbXB0X2NvdW50X2FkZChIQVJESVJRX09GRlNF
-VCk7ICAgICAgXA0KICAgICAgICAgICAgICAgIGxvY2tkZXBfaGFyZGlycV9lbnRlcigpOyAgICAg
-ICAgICAgICAgICBcDQogICAgICAgIH0gd2hpbGUgKDApDQoNCkFuZCBJIGFsc28gdGhpbmsgaXQg
-aXMgYmV0dGVyIGZvciBtNjhrJ3MgYXJjaF9pcnFzX2Rpc2FibGVkKCkgdG8gDQpyZXR1cm4gdHJ1
-ZSBvbmx5IHdoZW4gYm90aCBsb3cgYW5kIGhpZ2ggcHJpb3JpdHkgaW50ZXJydXB0cyBhcmUNCmRp
-c2FibGVkIHJhdGhlciB0aGFuIHRyeSB0byBtdXRlIHRoaXMgd2FybiBpbiBnZW5pcnEgYnkgYSB3
-ZWFrZXINCmNvbmRpdGlvbjoNCg0KaXJxcmV0dXJuX3QgX19oYW5kbGVfaXJxX2V2ZW50X3BlcmNw
-dShzdHJ1Y3QgaXJxX2Rlc2MgKmRlc2MsIHVuc2lnbmVkIGludCAqZmxhZ3MpDQp7DQoJLi4uDQoN
-CgkJdHJhY2VfaXJxX2hhbmRsZXJfZW50cnkoaXJxLCBhY3Rpb24pOw0KCQlyZXMgPSBhY3Rpb24t
-PmhhbmRsZXIoaXJxLCBhY3Rpb24tPmRldl9pZCk7DQoJCXRyYWNlX2lycV9oYW5kbGVyX2V4aXQo
-aXJxLCBhY3Rpb24sIHJlcyk7DQoNCgkJaWYgKFdBUk5fT05DRSghaXJxc19kaXNhYmxlZCgpLCJp
-cnEgJXUgaGFuZGxlciAlcFMgZW5hYmxlZCBpbnRlcnJ1cHRzXG4iLA0KCQkJICAgICAgaXJxLCBh
-Y3Rpb24tPmhhbmRsZXIpKQ0KCQkJbG9jYWxfaXJxX2Rpc2FibGUoKTsNCn0NCg0KVGhpcyB3YXJu
-IGlzIG5vdCBhY3RpdmF0ZWQgb24gbTY4ayBiZWNhdXNlIGl0cyBhcmNoX2lycXNfZGlzYWJsZWQo
-KSByZXR1cm4NCnRydWUgdGhvdWdoIGl0cyBoaWdoLXByaW9yaXR5IGludGVycnVwdHMgYXJlIHN0
-aWxsIGVuYWJsZWQuDQoNCj4gDQo+IEl0J3MgcG9zc2libGUgdGhhdCBJIG1pc3NlZCBzb21lIG90
-aGVyIGltcGxlbWVudGF0aW9uIGRvaW5nIHRoZSBzYW1lDQo+IGFzIG02OGssIGFzIHRoaXMgY29k
-ZSBpcyBmYWlybHkgc3VidGxlIG9uIHNvbWUgYXJjaGl0ZWN0dXJlcy4NCj4gDQo+ICAgICAgICAg
-QXJuZA0KDQpUaGFua3MNCkJhcnJ5DQoNCg==
+On Sat, Feb 13, 2021 at 12:50 AM Song Bao Hua (Barry Song)
+<song.bao.hua@hisilicon.com> wrote:
+
+> So I was actually trying to warn this unusual case - interrupts
+> get nested while both in_hardirq() and irqs_disabled() are true.
+>
+> diff --git a/include/linux/hardirq.h b/include/linux/hardirq.h
+> index 7c9d6a2d7e90..b8ca27555c76 100644
+> --- a/include/linux/hardirq.h
+> +++ b/include/linux/hardirq.h
+> @@ -32,6 +32,7 @@ static __always_inline void rcu_irq_enter_check_tick(void)
+>   */
+>  #define __irq_enter()                                  \
+>         do {                                            \
+> +               WARN_ONCE(in_hardirq() && irqs_disabled(), "nested
+> interrupts\n"); \
+>                 preempt_count_add(HARDIRQ_OFFSET);      \
+
+That seems to be a rather heavyweight change in a critical path.
+
+A more useful change might be to implement lockdep support for m68k
+and see if that warns about any actual problems. I'm not sure
+what is actually missing for that, but these are the commits that
+added it for other architectures in the past:
+
+3c4697982982 ("riscv: Enable LOCKDEP_SUPPORT & fixup TRACE_IRQFLAGS_SUPPORT")
+000591f1ca33 ("csky: Enable LOCKDEP_SUPPORT")
+78cdfb5cf15e ("openrisc: enable LOCKDEP_SUPPORT and irqflags tracing")
+8f371c752154 ("xtensa: enable lockdep support")
+bf2d80966890 ("microblaze: Lockdep support")
+
+> And I also think it is better for m68k's arch_irqs_disabled() to
+> return true only when both low and high priority interrupts are
+> disabled rather than try to mute this warn in genirq by a weaker
+> condition:
+>              if (WARN_ONCE(!irqs_disabled(),"irq %u handler %pS enabled interrupts\n",
+>                              irq, action->handler))
+>                        local_irq_disable();
+> }
+>
+> This warn is not activated on m68k because its arch_irqs_disabled() return
+> true though its high-priority interrupts are still enabled.
+
+Then it would just end up always warning when a nested hardirq happens,
+right? That seems no different to dropping support for nested hardirqs
+on m68k altogether, which of course is what you suggested already.
+
+       Arnd
