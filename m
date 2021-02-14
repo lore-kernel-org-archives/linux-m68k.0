@@ -2,72 +2,104 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.8 required=3.0 tests=BAYES_00,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
-	autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-14.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,INCLUDES_CR_TRAILER,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 2FEDEC433E0
-	for <linux-m68k@archiver.kernel.org>; Sun, 14 Feb 2021 05:11:22 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 146D0C433DB
+	for <linux-m68k@archiver.kernel.org>; Sun, 14 Feb 2021 17:02:16 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id EBE6961493
-	for <linux-m68k@archiver.kernel.org>; Sun, 14 Feb 2021 05:11:21 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id CC5F261493
+	for <linux-m68k@archiver.kernel.org>; Sun, 14 Feb 2021 17:02:15 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229563AbhBNFLG (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Sun, 14 Feb 2021 00:11:06 -0500
-Received: from kvm5.telegraphics.com.au ([98.124.60.144]:53282 "EHLO
-        kvm5.telegraphics.com.au" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229528AbhBNFLF (ORCPT
+        id S229759AbhBNRCP (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Sun, 14 Feb 2021 12:02:15 -0500
+Received: from conssluserg-05.nifty.com ([210.131.2.90]:54742 "EHLO
+        conssluserg-05.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229741AbhBNRCP (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Sun, 14 Feb 2021 00:11:05 -0500
-Received: from localhost (localhost.localdomain [127.0.0.1])
-        by kvm5.telegraphics.com.au (Postfix) with ESMTP id 632302A16B;
-        Sun, 14 Feb 2021 00:10:21 -0500 (EST)
-Date:   Sun, 14 Feb 2021 16:10:30 +1100 (AEDT)
-From:   Finn Thain <fthain@telegraphics.com.au>
-To:     "Song Bao Hua (Barry Song)" <song.bao.hua@hisilicon.com>
-cc:     Arnd Bergmann <arnd@kernel.org>,
-        "tglx@linutronix.de" <tglx@linutronix.de>,
-        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
-        "arnd@arndb.de" <arnd@arndb.de>,
-        "geert@linux-m68k.org" <geert@linux-m68k.org>,
-        "funaho@jurai.org" <funaho@jurai.org>,
-        "philb@gnu.org" <philb@gnu.org>, "corbet@lwn.net" <corbet@lwn.net>,
-        "mingo@redhat.com" <mingo@redhat.com>,
-        "linux-m68k@lists.linux-m68k.org" <linux-m68k@lists.linux-m68k.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: RE: [RFC] IRQ handlers run with some high-priority interrupts(not
- NMI) enabled on some platform
-In-Reply-To: <5148eb2aaceb42d78087bc6d8ce15183@hisilicon.com>
-Message-ID: <5fcea94e-6fc9-c340-d7d2-4ae8b69890b8@telegraphics.com.au>
-References: <c46ddb954cfe45d9849c911271d7ec23@hisilicon.com> <CAK8P3a2adJsz5hRT_eMzSoHnUBC+aK9HZ18=oAYCZ-gisEkd1w@mail.gmail.com> <24e0652b3afa48cdbf7c83287e43c087@hisilicon.com> <CAK8P3a0fwMe9LaXMfKjH46yvt6o-euZJZ4HXtVRPhYbKvAUPKg@mail.gmail.com>
- <0b766dba0b004ced94131e158cd8e67d@hisilicon.com> <CAK8P3a2ZnKeeZ-zEWO+vHogs0DdLuDrZet61cSmJe_UMYhtaWQ@mail.gmail.com>  <5148eb2aaceb42d78087bc6d8ce15183@hisilicon.com>
+        Sun, 14 Feb 2021 12:02:15 -0500
+Received: from mail-pf1-f175.google.com (mail-pf1-f175.google.com [209.85.210.175]) (authenticated)
+        by conssluserg-05.nifty.com with ESMTP id 11EH1DPf005787
+        for <linux-m68k@lists.linux-m68k.org>; Mon, 15 Feb 2021 02:01:13 +0900
+DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-05.nifty.com 11EH1DPf005787
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
+        s=dec2015msa; t=1613322074;
+        bh=SP1sGJk9Sz6Zv6lJ9Wi/Vff8sScxvUIuNUkChOHpFR8=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=eW5SCVd/ORO2ykDHxnNRrd0j5pNeofX24lJWfc1sAWEZK87VwCvlyBONkk1p+q0pw
+         n9urDcCM7JXO/83SDgjvjWIuq0kCzJpxghQ0kdEY/9lSUqF57fsB4kVM44LTekaoBL
+         2K5usgTVkdb+i9kzobmJV+tecZNrbgkAygUEWwX3cvMZxzFNtx08+4IWsN9L58B4V9
+         msLNld5lBI4A8trmLyO3EgTzKOINsLN5xgyvh+eWnDvPTyAVb6rNcHXCo6xnYQ8S9l
+         7hdmlhpR1RGeMV1AEHEn5ADueffOKPk44du6buIJ89LAEEs34fToTGEhTLY+vWrQY3
+         BiMMNZH6MaRbw==
+X-Nifty-SrcIP: [209.85.210.175]
+Received: by mail-pf1-f175.google.com with SMTP id u143so2764935pfc.7
+        for <linux-m68k@lists.linux-m68k.org>; Sun, 14 Feb 2021 09:01:13 -0800 (PST)
+X-Gm-Message-State: AOAM531jmmVBCFs6tB74JpS2hGgVY20Y9uYugmvt1ufCJRDrIKY8hNGB
+        +k8aP0TXq6o7FS5IZVVmPoQ9rxrgeunc4Hfc2DA=
+X-Google-Smtp-Source: ABdhPJynyvRuko2AvW0s/Rsmpz6hR6NWNFNxrImHm+1o7F+Y7g0dNzPk8oFZuEX0oJ2YCILzMn7MQK6BnXeqMrnP+x0=
+X-Received: by 2002:a63:1f1d:: with SMTP id f29mr11945438pgf.47.1613322073045;
+ Sun, 14 Feb 2021 09:01:13 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+References: <20210128005110.2613902-1-masahiroy@kernel.org> <20210128005110.2613902-22-masahiroy@kernel.org>
+In-Reply-To: <20210128005110.2613902-22-masahiroy@kernel.org>
+From:   Masahiro Yamada <masahiroy@kernel.org>
+Date:   Mon, 15 Feb 2021 02:00:35 +0900
+X-Gmail-Original-Message-ID: <CAK7LNAQDcfqSCsCeG9+ytrJNfD5mS8OLS2uZS8WRBuTHRL1qRg@mail.gmail.com>
+Message-ID: <CAK7LNAQDcfqSCsCeG9+ytrJNfD5mS8OLS2uZS8WRBuTHRL1qRg@mail.gmail.com>
+Subject: Re: [PATCH 21/27] sparc: remove wrong comment from arch/sparc/include/asm/Kbuild
+To:     linux-arch <linux-arch@vger.kernel.org>, X86 ML <x86@kernel.org>
+Cc:     Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-alpha@vger.kernel.org,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        linux-ia64@vger.kernel.org,
+        linux-m68k <linux-m68k@lists.linux-m68k.org>,
+        linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org,
+        Linux-sh list <linux-sh@vger.kernel.org>,
+        linux-um@lists.infradead.org,
+        "open list:TENSILICA XTENSA PORT (xtensa)" 
+        <linux-xtensa@linux-xtensa.org>,
+        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
+        sparclinux <sparclinux@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-On Sat, 13 Feb 2021, Song Bao Hua (Barry Song) wrote:
+On Thu, Jan 28, 2021 at 9:52 AM Masahiro Yamada <masahiroy@kernel.org> wrote:
+>
+> These are NOT exported to userspace.
+>
+> The headers listed in arch/sparc/include/uapi/asm/Kbuild are exported.
+>
+> Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
 
-> 
-> So what is really confusing and a pain to me is that:
-> For years people like me have been writing device drivers
-> with the idea that irq handlers run with interrupts
-> disabled after those commits in genirq. So I don't need
-> to care about if some other IRQs on the same cpu will
-> jump out to access the data the current IRQ handler
-> is accessing.
-> 
-> but it turns out the assumption is not true on some platform.
-> So should I start to program devices driver with the new idea
-> interrupts can actually come while irqhandler is running?
-> 
-> That's the question which really bothers me.
-> 
+Applied to linux-kbuild/fixes.
 
-That scenario seems a little contrived to me (drivers for two or more 
-devices sharing state through their interrupt handlers). Is it real? 
-I suppose every platform has its quirks. The irq lock in sonic_interrupt() 
-is only there because of a platform quirk (the same device can trigger 
-either of two IRQs). Anyway, no-one expects all drivers to work on all 
-platforms; I don't know why it bothers you so much when platforms differ.
+
+> ---
+>
+>  arch/sparc/include/asm/Kbuild | 2 --
+>  1 file changed, 2 deletions(-)
+>
+> diff --git a/arch/sparc/include/asm/Kbuild b/arch/sparc/include/asm/Kbuild
+> index 3688fdae50e4..aec20406145e 100644
+> --- a/arch/sparc/include/asm/Kbuild
+> +++ b/arch/sparc/include/asm/Kbuild
+> @@ -1,6 +1,4 @@
+>  # SPDX-License-Identifier: GPL-2.0
+> -# User exported sparc header files
+> -
+>  generated-y += syscall_table_32.h
+>  generated-y += syscall_table_64.h
+>  generated-y += syscall_table_c32.h
+> --
+> 2.27.0
+>
+
+
+-- 
+Best Regards
+Masahiro Yamada
