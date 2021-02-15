@@ -2,113 +2,105 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
-	autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-21.8 required=3.0 tests=BAYES_00,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,INCLUDES_PULL_REQUEST,
+	MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 88ACCC433DB
-	for <linux-m68k@archiver.kernel.org>; Mon, 15 Feb 2021 13:07:25 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id CEB2BC433E0
+	for <linux-m68k@archiver.kernel.org>; Mon, 15 Feb 2021 15:12:47 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 4E63B64DE0
-	for <linux-m68k@archiver.kernel.org>; Mon, 15 Feb 2021 13:07:25 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 99552600CF
+	for <linux-m68k@archiver.kernel.org>; Mon, 15 Feb 2021 15:12:47 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229977AbhBONHK (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Mon, 15 Feb 2021 08:07:10 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36032 "EHLO
+        id S230080AbhBOPM2 (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Mon, 15 Feb 2021 10:12:28 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34570 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229913AbhBONHI (ORCPT
+        with ESMTP id S230128AbhBOPMM (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Mon, 15 Feb 2021 08:07:08 -0500
-Received: from mail-pf1-x432.google.com (mail-pf1-x432.google.com [IPv6:2607:f8b0:4864:20::432])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9688AC061756
-        for <linux-m68k@lists.linux-m68k.org>; Mon, 15 Feb 2021 05:06:27 -0800 (PST)
-Received: by mail-pf1-x432.google.com with SMTP id k13so4126977pfh.13
-        for <linux-m68k@lists.linux-m68k.org>; Mon, 15 Feb 2021 05:06:27 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=MFFOxejaiAtToA7myl7RmqtoPYRgeW980AsV00ZQSl8=;
-        b=unuQEYLtyT4/Ao8x5nwwOIRfvuaugs+eGRhuCaq0nuC+p0gTiJxTh1mObC6zZyWo6e
-         cTaHZsu8vRwe4P7el44EMtKRA1LDuwGr3TYxaBGj6S/oSEaRey+AjH0MRweYn8o705lt
-         +sf1BuHpDLdW4v3oSZSKRIbUg2t0ULo2eYpqK1yM6YAmyTg4ZU30V6nFpzFi2JxAJitH
-         HhoxsnvY60nS2A/+Dt5J2o6NmGgdhR6Siho0FzwRtTYAWd4Gz7zbLHU3hhU9vvSX2Q61
-         CgbuuFlnItxljUHcF7PXUHCSSnWlseFiZfPvfbWDV1QZCriGC6k1cMyXdJqhu1Nlgi5+
-         nqGw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=MFFOxejaiAtToA7myl7RmqtoPYRgeW980AsV00ZQSl8=;
-        b=nreUcbKiA9r2bKrJ9wYsTwiSJCy28ykLaLMm48Z1GR0hEPcbrfVXI+TdKUoE81qUeh
-         oXXNZgxleQdUDUMPAqh6BRqlcH+Yvh2I+fDnsYsJtaBuXGChXVKCQc31f1wUov85+sAx
-         PEzo2c8r2X9P0U5an+BBqAFwFMPAX9Fi6IC5XpjGx3XHQOgSWycF2/pYic+pmaDDcZ2x
-         gMMbT1bfrzeY4aFKLwSlA2MJDif5Yqtvm8ZdC7EjkU0B+7flK0rFVkJmzqUsfzCbWWzu
-         q9kRzJJXY4kKzvlCp65FDuIjFVDFrp3sGAqq/MqOmPAvGBa838UzMwmrZTlbxYOakRkk
-         rjxw==
-X-Gm-Message-State: AOAM532hY+yWiqprfAnzR7hwbfUwRqq296XCR7FTDULXHeQYXv+QWkdl
-        mPqKIV3QaxBM59ZAX9iRZXCr+Xi10NPwG+/nrhI=
-X-Google-Smtp-Source: ABdhPJyFfiW9cbacENW0DVWjDGRKgGe5GYOIsNaOn/t7pr0ukLADnJ+l0vTG4Ei3JUN4GA5joaDOggt+M3plgiWbs1g=
-X-Received: by 2002:a63:3d0:: with SMTP id 199mr14876159pgd.4.1613394387088;
- Mon, 15 Feb 2021 05:06:27 -0800 (PST)
+        Mon, 15 Feb 2021 10:12:12 -0500
+Received: from albert.telenet-ops.be (albert.telenet-ops.be [IPv6:2a02:1800:110:4::f00:1a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C394EC061756
+        for <linux-m68k@lists.linux-m68k.org>; Mon, 15 Feb 2021 07:11:31 -0800 (PST)
+Received: from ramsan.of.borg ([IPv6:2a02:1810:ac12:ed60:c5d6:9422:c618:ee58])
+        by albert.telenet-ops.be with bizsmtp
+        id VTBV2400C2PLE0706TBVM1; Mon, 15 Feb 2021 16:11:29 +0100
+Received: from rox.of.borg ([192.168.97.57])
+        by ramsan.of.borg with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.93)
+        (envelope-from <geert@linux-m68k.org>)
+        id 1lBfX7-0079P7-6N; Mon, 15 Feb 2021 16:11:29 +0100
+Received: from geert by rox.of.borg with local (Exim 4.93)
+        (envelope-from <geert@linux-m68k.org>)
+        id 1lBfX6-00AhbW-Dn; Mon, 15 Feb 2021 16:11:28 +0100
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Greg Ungerer <gerg@linux-m68k.org>,
+        linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org,
+        Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: [GIT PULL] m68k updates for 5.12
+Date:   Mon, 15 Feb 2021 16:11:27 +0100
+Message-Id: <20210215151127.2550851-1-geert@linux-m68k.org>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-References: <c46ddb954cfe45d9849c911271d7ec23@hisilicon.com>
- <CAK8P3a2adJsz5hRT_eMzSoHnUBC+aK9HZ18=oAYCZ-gisEkd1w@mail.gmail.com>
- <24e0652b3afa48cdbf7c83287e43c087@hisilicon.com> <CAK8P3a0fwMe9LaXMfKjH46yvt6o-euZJZ4HXtVRPhYbKvAUPKg@mail.gmail.com>
- <0b766dba0b004ced94131e158cd8e67d@hisilicon.com> <CAK8P3a2ZnKeeZ-zEWO+vHogs0DdLuDrZet61cSmJe_UMYhtaWQ@mail.gmail.com>
- <5148eb2aaceb42d78087bc6d8ce15183@hisilicon.com> <5fcea94e-6fc9-c340-d7d2-4ae8b69890b8@telegraphics.com.au>
-In-Reply-To: <5fcea94e-6fc9-c340-d7d2-4ae8b69890b8@telegraphics.com.au>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Mon, 15 Feb 2021 15:06:10 +0200
-Message-ID: <CAHp75VeTKfSAnLUiwJ_SO-r4hUn7aQVTquG0j=k95QO_gk+c1g@mail.gmail.com>
-Subject: Re: [RFC] IRQ handlers run with some high-priority interrupts(not
- NMI) enabled on some platform
-To:     Finn Thain <fthain@telegraphics.com.au>
-Cc:     "Song Bao Hua (Barry Song)" <song.bao.hua@hisilicon.com>,
-        Arnd Bergmann <arnd@kernel.org>,
-        "tglx@linutronix.de" <tglx@linutronix.de>,
-        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
-        "arnd@arndb.de" <arnd@arndb.de>,
-        "geert@linux-m68k.org" <geert@linux-m68k.org>,
-        "funaho@jurai.org" <funaho@jurai.org>,
-        "philb@gnu.org" <philb@gnu.org>, "corbet@lwn.net" <corbet@lwn.net>,
-        "mingo@redhat.com" <mingo@redhat.com>,
-        "linux-m68k@lists.linux-m68k.org" <linux-m68k@lists.linux-m68k.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-On Sun, Feb 14, 2021 at 7:12 AM Finn Thain <fthain@telegraphics.com.au> wrote:
-> On Sat, 13 Feb 2021, Song Bao Hua (Barry Song) wrote:
-> > So what is really confusing and a pain to me is that:
-> > For years people like me have been writing device drivers
-> > with the idea that irq handlers run with interrupts
-> > disabled after those commits in genirq. So I don't need
-> > to care about if some other IRQs on the same cpu will
-> > jump out to access the data the current IRQ handler
-> > is accessing.
-> >
-> > but it turns out the assumption is not true on some platform.
-> > So should I start to program devices driver with the new idea
-> > interrupts can actually come while irqhandler is running?
-> >
-> > That's the question which really bothers me.
-> >
->
-> That scenario seems a little contrived to me (drivers for two or more
-> devices sharing state through their interrupt handlers). Is it real?
-> I suppose every platform has its quirks. The irq lock in sonic_interrupt()
-> is only there because of a platform quirk (the same device can trigger
-> either of two IRQs). Anyway, no-one expects all drivers to work on all
-> platforms; I don't know why it bothers you so much when platforms differ.
+	Hi Linus,
 
-Isn't it any IRQ chip driver which may get IRQ on one or more lines
-simultaneously?
-The question here is can the handler be re-entrant on the same CPU in that case?
+The following changes since commit 5c8fe583cce542aa0b84adc939ce85293de36e5e:
 
--- 
-With Best Regards,
-Andy Shevchenko
+  Linux 5.11-rc1 (2020-12-27 15:30:22 -0800)
+
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/geert/linux-m68k.git tags/m68k-for-v5.12-tag1
+
+for you to fetch changes up to c396dd2ec5bbd1cb80eafe32a72ab6bd6b17cb5a:
+
+  macintosh/adb-iop: Use big-endian autopoll mask (2021-01-25 13:23:38 +0100)
+
+----------------------------------------------------------------
+m68k updates for v5.11
+
+  - Fix ADB autopoll regression,
+  - Defconfig updates.
+
+----------------------------------------------------------------
+Finn Thain (1):
+      macintosh/adb-iop: Use big-endian autopoll mask
+
+Geert Uytterhoeven (1):
+      m68k: defconfig: Update defconfigs for v5.11-rc1
+
+ arch/m68k/configs/amiga_defconfig    | 3 +++
+ arch/m68k/configs/apollo_defconfig   | 3 +++
+ arch/m68k/configs/atari_defconfig    | 3 +++
+ arch/m68k/configs/bvme6000_defconfig | 3 +++
+ arch/m68k/configs/hp300_defconfig    | 3 +++
+ arch/m68k/configs/mac_defconfig      | 3 +++
+ arch/m68k/configs/multi_defconfig    | 3 +++
+ arch/m68k/configs/mvme147_defconfig  | 3 +++
+ arch/m68k/configs/mvme16x_defconfig  | 3 +++
+ arch/m68k/configs/q40_defconfig      | 3 +++
+ arch/m68k/configs/sun3_defconfig     | 3 +++
+ arch/m68k/configs/sun3x_defconfig    | 3 +++
+ drivers/macintosh/adb-iop.c          | 6 +++---
+ 13 files changed, 39 insertions(+), 3 deletions(-)
+
+Thanks for pulling!
+
+Gr{oetje,eeting}s,
+
+						Geert
+
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+							    -- Linus Torvalds
