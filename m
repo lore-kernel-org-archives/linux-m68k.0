@@ -2,113 +2,104 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+X-Spam-Status: No, score=-3.8 required=3.0 tests=BAYES_00,
 	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
 	autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E660BC433E6
-	for <linux-m68k@archiver.kernel.org>; Mon, 15 Feb 2021 21:31:35 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id EE8C1C433DB
+	for <linux-m68k@archiver.kernel.org>; Mon, 15 Feb 2021 22:22:59 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id BBB8F64DEB
-	for <linux-m68k@archiver.kernel.org>; Mon, 15 Feb 2021 21:31:35 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id BAA4D64DF4
+	for <linux-m68k@archiver.kernel.org>; Mon, 15 Feb 2021 22:22:59 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229807AbhBOVbc (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Mon, 15 Feb 2021 16:31:32 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59600 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229713AbhBOVb0 (ORCPT
+        id S229718AbhBOWW7 (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Mon, 15 Feb 2021 17:22:59 -0500
+Received: from kvm5.telegraphics.com.au ([98.124.60.144]:45144 "EHLO
+        kvm5.telegraphics.com.au" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229708AbhBOWW6 (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Mon, 15 Feb 2021 16:31:26 -0500
-Received: from mail-qk1-x72d.google.com (mail-qk1-x72d.google.com [IPv6:2607:f8b0:4864:20::72d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AFB3CC061756
-        for <linux-m68k@lists.linux-m68k.org>; Mon, 15 Feb 2021 13:30:46 -0800 (PST)
-Received: by mail-qk1-x72d.google.com with SMTP id r77so7656821qka.12
-        for <linux-m68k@lists.linux-m68k.org>; Mon, 15 Feb 2021 13:30:46 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=/ZVUXlIXARs+8uXUZ4VUGe97t/0+FH4zGariG/23quw=;
-        b=oYNPrcJWdwYDcjfr7BRtAMS1ZsIXADGqMxANcWv4k/DopQuXeqYdiTElcc49nNE8qY
-         Yk1qhDCBEziQr03O3cdRQxqrMoCXCuyUhJh+t/9tAsP2rJTyzUk4iL0HbQwt5ZkDsORd
-         QO3GwJHoN1hy01k8G8HRQ0jiJYumQo2qotPTWeCY+c/o4NJ8SCuMt6le81Wl+BHDOFSJ
-         NMUxmsOF3Qi81GJU27WtG8bwB/0POcex15oXQRskGeXUcEhrxkXNX2oyBx24M2MMslET
-         XZC0wGQLpf1OV3jgX2AkouJ6ZDdqMePIuj7AFc0JFZkwwqyZTIUuDkIfFOortZX59Aoq
-         Kzug==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=/ZVUXlIXARs+8uXUZ4VUGe97t/0+FH4zGariG/23quw=;
-        b=k96R4UPgES2W8+/3CcTPdPxOwS5ij1dp5Ov2wQyJibaXFphz+Z2wr7JAc2dySW8Ig+
-         eRIkRb5ECR6Qho1HShJPNAP0IaOedmKZi0EsGGmPAxQyVbbd5+1CBcF6+z/0pI764Nxy
-         LuJHHdTomCh7pqou475jeblGs3kcNdu3xiPvQ8awBQ9g+D9pGlTnt008zmKZ8nooQBar
-         AvewJCy8xqi5OoG4Rr5zfyX9W7gsqSJmCUYBCuqAs8Jf4I7dEQobtb140mPY7IcD1q9B
-         FBxNnqsTGH06Ryi/NJ64WneEF72KRTEXCYZmT/ppDbvvajtCXFP3bjhGE2XbNt4FFiKz
-         14iA==
-X-Gm-Message-State: AOAM531tqDlhKLx3/gimH7WCm1sYLwaMmRgJpPgwlcFYpIJfKG4itMBH
-        5WUz0PQhON000onTwJRDshTK4Vj0/MxP9w==
-X-Google-Smtp-Source: ABdhPJww+HEbybVa+NuUj1pReo4TCwVy8br4xX0cmIo5Fn/aZvp3joZCCkrRkQAmV1/YWqIfdDubsQ==
-X-Received: by 2002:a37:8a04:: with SMTP id m4mr16638337qkd.78.1613424645583;
-        Mon, 15 Feb 2021 13:30:45 -0800 (PST)
-Received: from localhost (d27-96-190-162.evv.wideopenwest.com. [96.27.162.190])
-        by smtp.gmail.com with ESMTPSA id a145sm7038704qkc.125.2021.02.15.13.30.45
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 15 Feb 2021 13:30:45 -0800 (PST)
-Date:   Mon, 15 Feb 2021 13:30:44 -0800
-From:   Yury Norov <yury.norov@gmail.com>
-To:     linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org,
-        linux-sh@vger.kernel.org, linux-arch@vger.kernel.org
-Cc:     Geert Uytterhoeven <geert@linux-m68k.org>,
-        Yoshinori Sato <ysato@users.sourceforge.jp>,
-        Rich Felker <dalias@libc.org>, Arnd Bergmann <arnd@arndb.de>,
-        Dennis Zhou <dennis@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Wolfram Sang <wsa+renesas@sang-engineering.com>,
-        David Sterba <dsterba@suse.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Stefano Brivio <sbrivio@redhat.com>,
-        "Ma, Jianpeng" <jianpeng.ma@intel.com>,
-        Wei Yang <richard.weiyang@linux.alibaba.com>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
-        Joe Perches <joe@perches.com>
-Subject: Re: [RESEND PATCH v2 0/6] lib/find_bit: fast path for small bitmaps
-Message-ID: <20210215213044.GB394846@yury-ThinkPad>
-References: <20210130191719.7085-1-yury.norov@gmail.com>
+        Mon, 15 Feb 2021 17:22:58 -0500
+Received: from localhost (localhost.localdomain [127.0.0.1])
+        by kvm5.telegraphics.com.au (Postfix) with ESMTP id E14432A4CB;
+        Mon, 15 Feb 2021 17:22:14 -0500 (EST)
+Date:   Tue, 16 Feb 2021 09:22:12 +1100 (AEDT)
+From:   Finn Thain <fthain@telegraphics.com.au>
+To:     Andy Shevchenko <andy.shevchenko@gmail.com>
+cc:     "Song Bao Hua (Barry Song)" <song.bao.hua@hisilicon.com>,
+        Arnd Bergmann <arnd@kernel.org>,
+        "tglx@linutronix.de" <tglx@linutronix.de>,
+        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
+        "arnd@arndb.de" <arnd@arndb.de>,
+        "geert@linux-m68k.org" <geert@linux-m68k.org>,
+        "funaho@jurai.org" <funaho@jurai.org>,
+        "philb@gnu.org" <philb@gnu.org>, "corbet@lwn.net" <corbet@lwn.net>,
+        "mingo@redhat.com" <mingo@redhat.com>,
+        "linux-m68k@lists.linux-m68k.org" <linux-m68k@lists.linux-m68k.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [RFC] IRQ handlers run with some high-priority interrupts(not
+ NMI) enabled on some platform
+In-Reply-To: <CAHp75VeTKfSAnLUiwJ_SO-r4hUn7aQVTquG0j=k95QO_gk+c1g@mail.gmail.com>
+Message-ID: <6bdbd8d8-add1-3c5c-8e3b-8b5ffb715b42@telegraphics.com.au>
+References: <c46ddb954cfe45d9849c911271d7ec23@hisilicon.com> <CAK8P3a2adJsz5hRT_eMzSoHnUBC+aK9HZ18=oAYCZ-gisEkd1w@mail.gmail.com> <24e0652b3afa48cdbf7c83287e43c087@hisilicon.com> <CAK8P3a0fwMe9LaXMfKjH46yvt6o-euZJZ4HXtVRPhYbKvAUPKg@mail.gmail.com>
+ <0b766dba0b004ced94131e158cd8e67d@hisilicon.com> <CAK8P3a2ZnKeeZ-zEWO+vHogs0DdLuDrZet61cSmJe_UMYhtaWQ@mail.gmail.com> <5148eb2aaceb42d78087bc6d8ce15183@hisilicon.com> <5fcea94e-6fc9-c340-d7d2-4ae8b69890b8@telegraphics.com.au>
+ <CAHp75VeTKfSAnLUiwJ_SO-r4hUn7aQVTquG0j=k95QO_gk+c1g@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210130191719.7085-1-yury.norov@gmail.com>
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-[add David Laight <David.Laight@ACULAB.COM> ]
+On Mon, 15 Feb 2021, Andy Shevchenko wrote:
 
-On Sat, Jan 30, 2021 at 11:17:11AM -0800, Yury Norov wrote:
-> Bitmap operations are much simpler and faster in case of small bitmaps
-> which fit into a single word. In linux/bitmap.h we have a machinery that
-> allows compiler to replace actual function call with a few instructions
-> if bitmaps passed into the function are small and their size is known at
-> compile time.
+> On Sun, Feb 14, 2021 at 7:12 AM Finn Thain <fthain@telegraphics.com.au> wrote:
+> > On Sat, 13 Feb 2021, Song Bao Hua (Barry Song) wrote:
+> > > So what is really confusing and a pain to me is that:
+> > > For years people like me have been writing device drivers
+> > > with the idea that irq handlers run with interrupts
+> > > disabled after those commits in genirq. So I don't need
+> > > to care about if some other IRQs on the same cpu will
+> > > jump out to access the data the current IRQ handler
+> > > is accessing.
+> > >
+> > > but it turns out the assumption is not true on some platform.
+> > > So should I start to program devices driver with the new idea
+> > > interrupts can actually come while irqhandler is running?
+> > >
+> > > That's the question which really bothers me.
+> > >
+> >
+> > That scenario seems a little contrived to me (drivers for two or more
+> > devices sharing state through their interrupt handlers). Is it real?
+> > I suppose every platform has its quirks. The irq lock in sonic_interrupt()
+> > is only there because of a platform quirk (the same device can trigger
+> > either of two IRQs). Anyway, no-one expects all drivers to work on all
+> > platforms; I don't know why it bothers you so much when platforms differ.
 > 
-> find_*_bit() API lacks this functionality; despite users will benefit from
-> it a lot. One important example is cpumask subsystem when
-> NR_CPUS <= BITS_PER_LONG. In the very best case, the compiler may replace
-> a find_*_bit() call for such a bitmap with a single ffs or ffz instruction.
+> Isn't it any IRQ chip driver which may get IRQ on one or more lines 
+> simultaneously?
+> The question here is can the handler be re-entrant on the same CPU in 
+> that case?
 > 
-> Tools is synchronized with new implementation where needed.
-> 
-> v1: https://www.spinics.net/lists/kernel/msg3804727.html
-> v2: - employ GENMASK() for bitmaps;
->     - unify find_bit inliners in;
->     - address comments to v1;
 
-Comments so far:
- - increased image size (patch #8) - addressed by introducing
-   CONFIG_FAST_PATH;
- - split tools and kernel parts - not clear why it's better.
+An irq_chip handler used only for interrupts having the same priority 
+level cannot be re-entered, thanks to the priority mask.
 
- Anything else?
+Where the priority levels are different, as in auto_irq_chip in 
+arch/m68k/kernel/ints.c, handle_simple_irq() can be re-entered but not 
+with the same descriptor (i.e. no shared state).
+
+Documentation/core-api/genericirq.rst says,
+
+   The locking of chip registers is up to the architecture that defines 
+   the chip primitives. The per-irq structure is protected via desc->lock, 
+   by the generic layer.
+
+Since the synchronization of chip registers is left up to the 
+architecture, I think the related code should be portable.
+
+Looking in kernel/irq/*.c, I see that desc->lock is sometimes acquired 
+with raw_spin_lock_irq(&desc->lock) and sometimes 
+raw_spin_lock(&desc->lock).
+
+I don't know whether there are portability issues lurking here; this code 
+is subtle and largely unfamiliar to me.
