@@ -2,248 +2,113 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
-	autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-2.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
+	autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 0BAF8C433DB
-	for <linux-m68k@archiver.kernel.org>; Mon, 15 Feb 2021 12:05:52 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 88ACCC433DB
+	for <linux-m68k@archiver.kernel.org>; Mon, 15 Feb 2021 13:07:25 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id C968464E26
-	for <linux-m68k@archiver.kernel.org>; Mon, 15 Feb 2021 12:05:51 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 4E63B64DE0
+	for <linux-m68k@archiver.kernel.org>; Mon, 15 Feb 2021 13:07:25 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229652AbhBOMFn (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Mon, 15 Feb 2021 07:05:43 -0500
-Received: from conssluserg-05.nifty.com ([210.131.2.90]:23241 "EHLO
-        conssluserg-05.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230131AbhBOMF0 (ORCPT
+        id S229977AbhBONHK (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Mon, 15 Feb 2021 08:07:10 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36032 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229913AbhBONHI (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Mon, 15 Feb 2021 07:05:26 -0500
-Received: from mail-pf1-f169.google.com (mail-pf1-f169.google.com [209.85.210.169]) (authenticated)
-        by conssluserg-05.nifty.com with ESMTP id 11FC4JA6025150
-        for <linux-m68k@lists.linux-m68k.org>; Mon, 15 Feb 2021 21:04:19 +0900
-DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-05.nifty.com 11FC4JA6025150
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
-        s=dec2015msa; t=1613390660;
-        bh=t+cDCI9ijwWCflMyf3HDaiArNB9qVsEf2A2CaoV+044=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=v9acLhbXPPB+XF0EA8XDIgH7r3wlY83CiYt6x+cqseVMlte0TA3RtTnirrlnNjiTr
-         jA68dM/v07+mFKYr5hhJJ86sLpsw1zXAAFWG0nZmD2UgbdqI5dP+4gqjF1Qz7xbVfa
-         TYfiSHRgbmbc9lW8zQRzsdMz3jjzYVDKfFB4cxTgYynvM51/dVbyA9i2oOH7gV2ovM
-         YtIWQQNzBAV80fb0gzeEX8gtOpBFZ35VCH4Vwyh7yA0R4ZVlykAJvDHNQVEJvjuJ9i
-         HE2MhAudNBtepEg/tb2vcKjd/p8qpJ98nhcyuqlk4YI7eTVYjVMGPnzoxSWA17pJYO
-         YzUleR5my8veQ==
-X-Nifty-SrcIP: [209.85.210.169]
-Received: by mail-pf1-f169.google.com with SMTP id q20so4048056pfu.8
-        for <linux-m68k@lists.linux-m68k.org>; Mon, 15 Feb 2021 04:04:19 -0800 (PST)
-X-Gm-Message-State: AOAM533YJJn+fPkptqLQUXLmSpKFkQ8QgkCJMyezIr3/vmvs6eAdz8B5
-        U3nHoJS4EQrP+8NfEXz3iT4yXW2IoM01VP6MTzc=
-X-Google-Smtp-Source: ABdhPJy8ziEWdbM9CrYgfTkv/bGLkaQWPoSZQQUddzH9UeCJB7fr30mJz6zKbkpruiTgtMQliWenGO50uCpdbS2IR0g=
-X-Received: by 2002:a63:1f1d:: with SMTP id f29mr14654997pgf.47.1613390659105;
- Mon, 15 Feb 2021 04:04:19 -0800 (PST)
+        Mon, 15 Feb 2021 08:07:08 -0500
+Received: from mail-pf1-x432.google.com (mail-pf1-x432.google.com [IPv6:2607:f8b0:4864:20::432])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9688AC061756
+        for <linux-m68k@lists.linux-m68k.org>; Mon, 15 Feb 2021 05:06:27 -0800 (PST)
+Received: by mail-pf1-x432.google.com with SMTP id k13so4126977pfh.13
+        for <linux-m68k@lists.linux-m68k.org>; Mon, 15 Feb 2021 05:06:27 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=MFFOxejaiAtToA7myl7RmqtoPYRgeW980AsV00ZQSl8=;
+        b=unuQEYLtyT4/Ao8x5nwwOIRfvuaugs+eGRhuCaq0nuC+p0gTiJxTh1mObC6zZyWo6e
+         cTaHZsu8vRwe4P7el44EMtKRA1LDuwGr3TYxaBGj6S/oSEaRey+AjH0MRweYn8o705lt
+         +sf1BuHpDLdW4v3oSZSKRIbUg2t0ULo2eYpqK1yM6YAmyTg4ZU30V6nFpzFi2JxAJitH
+         HhoxsnvY60nS2A/+Dt5J2o6NmGgdhR6Siho0FzwRtTYAWd4Gz7zbLHU3hhU9vvSX2Q61
+         CgbuuFlnItxljUHcF7PXUHCSSnWlseFiZfPvfbWDV1QZCriGC6k1cMyXdJqhu1Nlgi5+
+         nqGw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=MFFOxejaiAtToA7myl7RmqtoPYRgeW980AsV00ZQSl8=;
+        b=nreUcbKiA9r2bKrJ9wYsTwiSJCy28ykLaLMm48Z1GR0hEPcbrfVXI+TdKUoE81qUeh
+         oXXNZgxleQdUDUMPAqh6BRqlcH+Yvh2I+fDnsYsJtaBuXGChXVKCQc31f1wUov85+sAx
+         PEzo2c8r2X9P0U5an+BBqAFwFMPAX9Fi6IC5XpjGx3XHQOgSWycF2/pYic+pmaDDcZ2x
+         gMMbT1bfrzeY4aFKLwSlA2MJDif5Yqtvm8ZdC7EjkU0B+7flK0rFVkJmzqUsfzCbWWzu
+         q9kRzJJXY4kKzvlCp65FDuIjFVDFrp3sGAqq/MqOmPAvGBa838UzMwmrZTlbxYOakRkk
+         rjxw==
+X-Gm-Message-State: AOAM532hY+yWiqprfAnzR7hwbfUwRqq296XCR7FTDULXHeQYXv+QWkdl
+        mPqKIV3QaxBM59ZAX9iRZXCr+Xi10NPwG+/nrhI=
+X-Google-Smtp-Source: ABdhPJyFfiW9cbacENW0DVWjDGRKgGe5GYOIsNaOn/t7pr0ukLADnJ+l0vTG4Ei3JUN4GA5joaDOggt+M3plgiWbs1g=
+X-Received: by 2002:a63:3d0:: with SMTP id 199mr14876159pgd.4.1613394387088;
+ Mon, 15 Feb 2021 05:06:27 -0800 (PST)
 MIME-Version: 1.0
-References: <20210128005110.2613902-1-masahiroy@kernel.org>
-In-Reply-To: <20210128005110.2613902-1-masahiroy@kernel.org>
-From:   Masahiro Yamada <masahiroy@kernel.org>
-Date:   Mon, 15 Feb 2021 21:03:42 +0900
-X-Gmail-Original-Message-ID: <CAK7LNATgZ2xYFV-ow2VrSn_-NWZOjPeZRzrXLdCP8t5OQbC4+w@mail.gmail.com>
-Message-ID: <CAK7LNATgZ2xYFV-ow2VrSn_-NWZOjPeZRzrXLdCP8t5OQbC4+w@mail.gmail.com>
-Subject: Re: [PATCH 00/27] arch: syscalls: unifiy all syscalltbl.sh into scripts/syscalltbl.sh
-To:     linux-arch <linux-arch@vger.kernel.org>, X86 ML <x86@kernel.org>
-Cc:     Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-alpha@vger.kernel.org,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        linux-ia64@vger.kernel.org,
-        linux-m68k <linux-m68k@lists.linux-m68k.org>,
-        linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org,
-        Linux-sh list <linux-sh@vger.kernel.org>,
-        linux-um@lists.infradead.org,
-        "open list:TENSILICA XTENSA PORT (xtensa)" 
-        <linux-xtensa@linux-xtensa.org>,
-        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
-        sparclinux <sparclinux@vger.kernel.org>
+References: <c46ddb954cfe45d9849c911271d7ec23@hisilicon.com>
+ <CAK8P3a2adJsz5hRT_eMzSoHnUBC+aK9HZ18=oAYCZ-gisEkd1w@mail.gmail.com>
+ <24e0652b3afa48cdbf7c83287e43c087@hisilicon.com> <CAK8P3a0fwMe9LaXMfKjH46yvt6o-euZJZ4HXtVRPhYbKvAUPKg@mail.gmail.com>
+ <0b766dba0b004ced94131e158cd8e67d@hisilicon.com> <CAK8P3a2ZnKeeZ-zEWO+vHogs0DdLuDrZet61cSmJe_UMYhtaWQ@mail.gmail.com>
+ <5148eb2aaceb42d78087bc6d8ce15183@hisilicon.com> <5fcea94e-6fc9-c340-d7d2-4ae8b69890b8@telegraphics.com.au>
+In-Reply-To: <5fcea94e-6fc9-c340-d7d2-4ae8b69890b8@telegraphics.com.au>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Mon, 15 Feb 2021 15:06:10 +0200
+Message-ID: <CAHp75VeTKfSAnLUiwJ_SO-r4hUn7aQVTquG0j=k95QO_gk+c1g@mail.gmail.com>
+Subject: Re: [RFC] IRQ handlers run with some high-priority interrupts(not
+ NMI) enabled on some platform
+To:     Finn Thain <fthain@telegraphics.com.au>
+Cc:     "Song Bao Hua (Barry Song)" <song.bao.hua@hisilicon.com>,
+        Arnd Bergmann <arnd@kernel.org>,
+        "tglx@linutronix.de" <tglx@linutronix.de>,
+        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
+        "arnd@arndb.de" <arnd@arndb.de>,
+        "geert@linux-m68k.org" <geert@linux-m68k.org>,
+        "funaho@jurai.org" <funaho@jurai.org>,
+        "philb@gnu.org" <philb@gnu.org>, "corbet@lwn.net" <corbet@lwn.net>,
+        "mingo@redhat.com" <mingo@redhat.com>,
+        "linux-m68k@lists.linux-m68k.org" <linux-m68k@lists.linux-m68k.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-On Thu, Jan 28, 2021 at 9:51 AM Masahiro Yamada <masahiroy@kernel.org> wrote:
+On Sun, Feb 14, 2021 at 7:12 AM Finn Thain <fthain@telegraphics.com.au> wrote:
+> On Sat, 13 Feb 2021, Song Bao Hua (Barry Song) wrote:
+> > So what is really confusing and a pain to me is that:
+> > For years people like me have been writing device drivers
+> > with the idea that irq handlers run with interrupts
+> > disabled after those commits in genirq. So I don't need
+> > to care about if some other IRQs on the same cpu will
+> > jump out to access the data the current IRQ handler
+> > is accessing.
+> >
+> > but it turns out the assumption is not true on some platform.
+> > So should I start to program devices driver with the new idea
+> > interrupts can actually come while irqhandler is running?
+> >
+> > That's the question which really bothers me.
+> >
 >
->
-> As of v5.11-rc1, 12 architectures duplicate similar shell scripts:
->
->   $ find arch -name syscalltbl.sh | sort
->   arch/alpha/kernel/syscalls/syscalltbl.sh
->   arch/arm/tools/syscalltbl.sh
->   arch/ia64/kernel/syscalls/syscalltbl.sh
->   arch/m68k/kernel/syscalls/syscalltbl.sh
->   arch/microblaze/kernel/syscalls/syscalltbl.sh
->   arch/mips/kernel/syscalls/syscalltbl.sh
->   arch/parisc/kernel/syscalls/syscalltbl.sh
->   arch/powerpc/kernel/syscalls/syscalltbl.sh
->   arch/sh/kernel/syscalls/syscalltbl.sh
->   arch/sparc/kernel/syscalls/syscalltbl.sh
->   arch/x86/entry/syscalls/syscalltbl.sh
->   arch/xtensa/kernel/syscalls/syscalltbl.sh
->
-> This patch set unifies all of them into a single file,
-> scripts/syscalltbl.sh.
->
-> The code-diff is attractive:
->
->  51 files changed, 254 insertions(+), 674 deletions(-)
->  delete mode 100644 arch/alpha/kernel/syscalls/syscalltbl.sh
->  delete mode 100644 arch/arm/tools/syscalltbl.sh
->  delete mode 100644 arch/ia64/kernel/syscalls/syscalltbl.sh
->  delete mode 100644 arch/m68k/kernel/syscalls/syscalltbl.sh
->  delete mode 100644 arch/microblaze/kernel/syscalls/syscalltbl.sh
->  delete mode 100644 arch/mips/kernel/syscalls/syscalltbl.sh
->  delete mode 100644 arch/parisc/kernel/syscalls/syscalltbl.sh
->  delete mode 100644 arch/powerpc/kernel/syscalls/syscalltbl.sh
->  delete mode 100644 arch/sh/kernel/syscalls/syscalltbl.sh
->  delete mode 100644 arch/sparc/kernel/syscalls/syscalltbl.sh
->  delete mode 100644 arch/x86/entry/syscalls/syscalltbl.sh
->  delete mode 100644 arch/xtensa/kernel/syscalls/syscalltbl.sh
->  create mode 100644 scripts/syscalltbl.sh
->
-> Also, this includes Makefile fixes, and some x86 fixes and cleanups.
->
-> My question is, how to merge this series.
->
-> I am touching all architectures, but the first patch is a prerequisite
-> of the rest of this series.
->
-> One possibility is to ask the x86 maintainers to pickup the first 5
-> patches for v5.12-rc1, and then send the rest for v5.13-rc1,
-> splitting per-arch.
->
-> I want the x86 maintainers to check the first 5 patches because
-> I cleaned up the x32 code.
+> That scenario seems a little contrived to me (drivers for two or more
+> devices sharing state through their interrupt handlers). Is it real?
+> I suppose every platform has its quirks. The irq lock in sonic_interrupt()
+> is only there because of a platform quirk (the same device can trigger
+> either of two IRQs). Anyway, no-one expects all drivers to work on all
+> platforms; I don't know why it bothers you so much when platforms differ.
 
-
-Never mind.
-
-Sending too big patch set tends to fail.
-
-I will apply the generic script parts to my tree,
-then split the rest per arch in the next development cycle
-(aim for v5.13-rc1)
-
-
-
-
-
-
-
-
-
-> I know x32 was considered for deprecation, but my motivation is to
-> clean-up scripts across the tree without changing the functionality.
->
->
->
-> Masahiro Yamada (27):
->   scripts: add generic syscalltbl.sh
->   x86/syscalls: fix -Wmissing-prototypes warnings from COND_SYSCALL()
->   x86/build: add missing FORCE and fix 'targets' to make if_changed work
->   x86/entry/x32: rename __x32_compat_sys_* to __x64_compat_sys_*
->   x86/syscalls: switch to generic syscalltbl.sh
->   ARM: syscalls: switch to generic syscalltbl.sh
->   alpha: add missing FORCE and fix 'targets' to make if_changed work
->   alpha: syscalls: switch to generic syscalltbl.sh
->   ia64: add missing FORCE and fix 'targets' to make if_changed work
->   ia64: syscalls: switch to generic syscalltbl.sh
->   m68k: add missing FORCE and fix 'targets' to make if_changed work
->   m68k: syscalls: switch to generic syscalltbl.sh
->   microblaze: add missing FORCE and fix 'targets' to make if_changed
->     work
->   microblaze: syscalls: switch to generic syscalltbl.sh
->   mips: add missing FORCE and fix 'targets' to make if_changed work
->   mips: syscalls: switch to generic syscalltbl.sh
->   parisc: add missing FORCE and fix 'targets' to make if_changed work
->   parisc: syscalls: switch to generic syscalltbl.sh
->   sh: add missing FORCE and fix 'targets' to make if_changed work
->   sh: syscalls: switch to generic syscalltbl.sh
->   sparc: remove wrong comment from arch/sparc/include/asm/Kbuild
->   sparc: add missing FORCE and fix 'targets' to make if_changed work
->   sparc: syscalls: switch to generic syscalltbl.sh
->   powerpc: add missing FORCE and fix 'targets' to make if_changed work
->   powerpc: syscalls: switch to generic syscalltbl.sh
->   xtensa: add missing FORCE and fix 'targets' to make if_changed work
->   xtensa: syscalls: switch to generic syscalltbl.sh
->
->  arch/alpha/kernel/syscalls/Makefile           | 18 +++----
->  arch/alpha/kernel/syscalls/syscalltbl.sh      | 32 -----------
->  arch/alpha/kernel/systbls.S                   |  3 +-
->  arch/arm/kernel/entry-common.S                |  8 +--
->  arch/arm/tools/Makefile                       |  9 ++--
->  arch/arm/tools/syscalltbl.sh                  | 22 --------
->  arch/ia64/kernel/entry.S                      |  3 +-
->  arch/ia64/kernel/syscalls/Makefile            | 19 +++----
->  arch/ia64/kernel/syscalls/syscalltbl.sh       | 32 -----------
->  arch/m68k/kernel/syscalls/Makefile            | 18 +++----
->  arch/m68k/kernel/syscalls/syscalltbl.sh       | 32 -----------
->  arch/m68k/kernel/syscalltable.S               |  3 +-
->  arch/microblaze/kernel/syscall_table.S        |  3 +-
->  arch/microblaze/kernel/syscalls/Makefile      | 18 +++----
->  arch/microblaze/kernel/syscalls/syscalltbl.sh | 32 -----------
->  arch/mips/include/asm/Kbuild                  |  7 ++-
->  arch/mips/kernel/scall32-o32.S                |  4 +-
->  arch/mips/kernel/scall64-n32.S                |  3 +-
->  arch/mips/kernel/scall64-n64.S                |  3 +-
->  arch/mips/kernel/scall64-o32.S                |  4 +-
->  arch/mips/kernel/syscalls/Makefile            | 53 ++++++++-----------
->  arch/mips/kernel/syscalls/syscalltbl.sh       | 36 -------------
->  arch/parisc/include/asm/Kbuild                |  1 -
->  arch/parisc/kernel/syscall.S                  | 16 +++---
->  arch/parisc/kernel/syscalls/Makefile          | 34 +++++-------
->  arch/parisc/kernel/syscalls/syscalltbl.sh     | 36 -------------
->  arch/powerpc/include/asm/Kbuild               |  1 -
->  arch/powerpc/kernel/syscalls/Makefile         | 39 +++++---------
->  arch/powerpc/kernel/syscalls/syscalltbl.sh    | 36 -------------
->  arch/powerpc/kernel/systbl.S                  |  5 +-
->  arch/powerpc/platforms/cell/spu_callbacks.c   |  2 +-
->  arch/sh/kernel/syscalls/Makefile              | 18 +++----
->  arch/sh/kernel/syscalls/syscalltbl.sh         | 32 -----------
->  arch/sparc/include/asm/Kbuild                 |  3 --
->  arch/sparc/kernel/syscalls/Makefile           | 34 +++++-------
->  arch/sparc/kernel/syscalls/syscalltbl.sh      | 36 -------------
->  arch/sparc/kernel/systbls_32.S                |  4 +-
->  arch/sparc/kernel/systbls_64.S                |  8 +--
->  arch/x86/entry/syscall_32.c                   | 12 +++--
->  arch/x86/entry/syscall_64.c                   |  9 ++--
->  arch/x86/entry/syscall_x32.c                  | 27 ++--------
->  arch/x86/entry/syscalls/Makefile              | 33 +++++++-----
->  arch/x86/entry/syscalls/syscalltbl.sh         | 46 ----------------
->  arch/x86/include/asm/Kbuild                   |  1 +
->  arch/x86/include/asm/syscall_wrapper.h        | 11 ++--
->  arch/x86/um/sys_call_table_32.c               |  8 +--
->  arch/x86/um/sys_call_table_64.c               |  9 ++--
->  arch/xtensa/kernel/syscall.c                  |  3 +-
->  arch/xtensa/kernel/syscalls/Makefile          | 18 +++----
->  arch/xtensa/kernel/syscalls/syscalltbl.sh     | 32 -----------
->  scripts/syscalltbl.sh                         | 52 ++++++++++++++++++
->  51 files changed, 254 insertions(+), 674 deletions(-)
->  delete mode 100644 arch/alpha/kernel/syscalls/syscalltbl.sh
->  delete mode 100644 arch/arm/tools/syscalltbl.sh
->  delete mode 100644 arch/ia64/kernel/syscalls/syscalltbl.sh
->  delete mode 100644 arch/m68k/kernel/syscalls/syscalltbl.sh
->  delete mode 100644 arch/microblaze/kernel/syscalls/syscalltbl.sh
->  delete mode 100644 arch/mips/kernel/syscalls/syscalltbl.sh
->  delete mode 100644 arch/parisc/kernel/syscalls/syscalltbl.sh
->  delete mode 100644 arch/powerpc/kernel/syscalls/syscalltbl.sh
->  delete mode 100644 arch/sh/kernel/syscalls/syscalltbl.sh
->  delete mode 100644 arch/sparc/kernel/syscalls/syscalltbl.sh
->  delete mode 100644 arch/x86/entry/syscalls/syscalltbl.sh
->  delete mode 100644 arch/xtensa/kernel/syscalls/syscalltbl.sh
->  create mode 100644 scripts/syscalltbl.sh
->
-> --
-> 2.27.0
->
-
+Isn't it any IRQ chip driver which may get IRQ on one or more lines
+simultaneously?
+The question here is can the handler be re-entrant on the same CPU in that case?
 
 -- 
-Best Regards
-Masahiro Yamada
+With Best Regards,
+Andy Shevchenko
