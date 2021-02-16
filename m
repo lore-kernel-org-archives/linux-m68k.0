@@ -3,103 +3,103 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
 X-Spam-Status: No, score=-3.8 required=3.0 tests=BAYES_00,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
-	autolearn=no autolearn_force=no version=3.4.0
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id EE8C1C433DB
-	for <linux-m68k@archiver.kernel.org>; Mon, 15 Feb 2021 22:22:59 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id AD676C433DB
+	for <linux-m68k@archiver.kernel.org>; Tue, 16 Feb 2021 09:16:56 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id BAA4D64DF4
-	for <linux-m68k@archiver.kernel.org>; Mon, 15 Feb 2021 22:22:59 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 6BF0864DA1
+	for <linux-m68k@archiver.kernel.org>; Tue, 16 Feb 2021 09:16:56 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229718AbhBOWW7 (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Mon, 15 Feb 2021 17:22:59 -0500
-Received: from kvm5.telegraphics.com.au ([98.124.60.144]:45144 "EHLO
-        kvm5.telegraphics.com.au" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229708AbhBOWW6 (ORCPT
-        <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Mon, 15 Feb 2021 17:22:58 -0500
-Received: from localhost (localhost.localdomain [127.0.0.1])
-        by kvm5.telegraphics.com.au (Postfix) with ESMTP id E14432A4CB;
-        Mon, 15 Feb 2021 17:22:14 -0500 (EST)
-Date:   Tue, 16 Feb 2021 09:22:12 +1100 (AEDT)
-From:   Finn Thain <fthain@telegraphics.com.au>
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>
-cc:     "Song Bao Hua (Barry Song)" <song.bao.hua@hisilicon.com>,
-        Arnd Bergmann <arnd@kernel.org>,
-        "tglx@linutronix.de" <tglx@linutronix.de>,
-        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
-        "arnd@arndb.de" <arnd@arndb.de>,
-        "geert@linux-m68k.org" <geert@linux-m68k.org>,
-        "funaho@jurai.org" <funaho@jurai.org>,
-        "philb@gnu.org" <philb@gnu.org>, "corbet@lwn.net" <corbet@lwn.net>,
-        "mingo@redhat.com" <mingo@redhat.com>,
-        "linux-m68k@lists.linux-m68k.org" <linux-m68k@lists.linux-m68k.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [RFC] IRQ handlers run with some high-priority interrupts(not
- NMI) enabled on some platform
-In-Reply-To: <CAHp75VeTKfSAnLUiwJ_SO-r4hUn7aQVTquG0j=k95QO_gk+c1g@mail.gmail.com>
-Message-ID: <6bdbd8d8-add1-3c5c-8e3b-8b5ffb715b42@telegraphics.com.au>
-References: <c46ddb954cfe45d9849c911271d7ec23@hisilicon.com> <CAK8P3a2adJsz5hRT_eMzSoHnUBC+aK9HZ18=oAYCZ-gisEkd1w@mail.gmail.com> <24e0652b3afa48cdbf7c83287e43c087@hisilicon.com> <CAK8P3a0fwMe9LaXMfKjH46yvt6o-euZJZ4HXtVRPhYbKvAUPKg@mail.gmail.com>
- <0b766dba0b004ced94131e158cd8e67d@hisilicon.com> <CAK8P3a2ZnKeeZ-zEWO+vHogs0DdLuDrZet61cSmJe_UMYhtaWQ@mail.gmail.com> <5148eb2aaceb42d78087bc6d8ce15183@hisilicon.com> <5fcea94e-6fc9-c340-d7d2-4ae8b69890b8@telegraphics.com.au>
- <CAHp75VeTKfSAnLUiwJ_SO-r4hUn7aQVTquG0j=k95QO_gk+c1g@mail.gmail.com>
+        id S229802AbhBPJQd (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Tue, 16 Feb 2021 04:16:33 -0500
+Received: from mga11.intel.com ([192.55.52.93]:60464 "EHLO mga11.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229710AbhBPJQU (ORCPT <rfc822;linux-m68k@lists.linux-m68k.org>);
+        Tue, 16 Feb 2021 04:16:20 -0500
+IronPort-SDR: 8312lViQvanyZFi+DPq3qlgGKhWAvx/cG/Q0Wn76Cxi9ofWNQzUMfbHeHeMfGt3ujVXi/RqHDw
+ u4mB0ZlZA7jw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9896"; a="179337932"
+X-IronPort-AV: E=Sophos;i="5.81,183,1610438400"; 
+   d="scan'208";a="179337932"
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Feb 2021 01:14:33 -0800
+IronPort-SDR: tPkmKh2OTx4znumaJmxTa2l2vBJfWMkEjT34Z+L3rFz0la3AfJcfUFiM2BL5vE5rYPheUPAQ7d
+ zf7ZUrYkEr1A==
+X-IronPort-AV: E=Sophos;i="5.81,183,1610438400"; 
+   d="scan'208";a="512455158"
+Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
+  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Feb 2021 01:14:27 -0800
+Received: from andy by smile with local (Exim 4.94)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1lBwR5-005Qf3-SD; Tue, 16 Feb 2021 11:14:23 +0200
+Date:   Tue, 16 Feb 2021 11:14:23 +0200
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Yury Norov <yury.norov@gmail.com>
+Cc:     linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org,
+        linux-sh@vger.kernel.org, linux-arch@vger.kernel.org,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Yoshinori Sato <ysato@users.sourceforge.jp>,
+        Rich Felker <dalias@libc.org>, Arnd Bergmann <arnd@arndb.de>,
+        Dennis Zhou <dennis@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Wolfram Sang <wsa+renesas@sang-engineering.com>,
+        David Sterba <dsterba@suse.com>,
+        Stefano Brivio <sbrivio@redhat.com>,
+        "Ma, Jianpeng" <jianpeng.ma@intel.com>,
+        Wei Yang <richard.weiyang@linux.alibaba.com>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
+        Joe Perches <joe@perches.com>
+Subject: Re: [RESEND PATCH v2 0/6] lib/find_bit: fast path for small bitmaps
+Message-ID: <YCuM7yzMoXjpuj8Y@smile.fi.intel.com>
+References: <20210130191719.7085-1-yury.norov@gmail.com>
+ <20210215213044.GB394846@yury-ThinkPad>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210215213044.GB394846@yury-ThinkPad>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-On Mon, 15 Feb 2021, Andy Shevchenko wrote:
-
-> On Sun, Feb 14, 2021 at 7:12 AM Finn Thain <fthain@telegraphics.com.au> wrote:
-> > On Sat, 13 Feb 2021, Song Bao Hua (Barry Song) wrote:
-> > > So what is really confusing and a pain to me is that:
-> > > For years people like me have been writing device drivers
-> > > with the idea that irq handlers run with interrupts
-> > > disabled after those commits in genirq. So I don't need
-> > > to care about if some other IRQs on the same cpu will
-> > > jump out to access the data the current IRQ handler
-> > > is accessing.
-> > >
-> > > but it turns out the assumption is not true on some platform.
-> > > So should I start to program devices driver with the new idea
-> > > interrupts can actually come while irqhandler is running?
-> > >
-> > > That's the question which really bothers me.
-> > >
-> >
-> > That scenario seems a little contrived to me (drivers for two or more
-> > devices sharing state through their interrupt handlers). Is it real?
-> > I suppose every platform has its quirks. The irq lock in sonic_interrupt()
-> > is only there because of a platform quirk (the same device can trigger
-> > either of two IRQs). Anyway, no-one expects all drivers to work on all
-> > platforms; I don't know why it bothers you so much when platforms differ.
+On Mon, Feb 15, 2021 at 01:30:44PM -0800, Yury Norov wrote:
+> [add David Laight <David.Laight@ACULAB.COM> ]
 > 
-> Isn't it any IRQ chip driver which may get IRQ on one or more lines 
-> simultaneously?
-> The question here is can the handler be re-entrant on the same CPU in 
-> that case?
+> On Sat, Jan 30, 2021 at 11:17:11AM -0800, Yury Norov wrote:
+> > Bitmap operations are much simpler and faster in case of small bitmaps
+> > which fit into a single word. In linux/bitmap.h we have a machinery that
+> > allows compiler to replace actual function call with a few instructions
+> > if bitmaps passed into the function are small and their size is known at
+> > compile time.
+> > 
+> > find_*_bit() API lacks this functionality; despite users will benefit from
+> > it a lot. One important example is cpumask subsystem when
+> > NR_CPUS <= BITS_PER_LONG. In the very best case, the compiler may replace
+> > a find_*_bit() call for such a bitmap with a single ffs or ffz instruction.
+> > 
+> > Tools is synchronized with new implementation where needed.
+> > 
+> > v1: https://www.spinics.net/lists/kernel/msg3804727.html
+> > v2: - employ GENMASK() for bitmaps;
+> >     - unify find_bit inliners in;
+> >     - address comments to v1;
 > 
+> Comments so far:
+>  - increased image size (patch #8) - addressed by introducing
+>    CONFIG_FAST_PATH;
 
-An irq_chip handler used only for interrupts having the same priority 
-level cannot be re-entered, thanks to the priority mask.
+>  - split tools and kernel parts - not clear why it's better.
 
-Where the priority levels are different, as in auto_irq_chip in 
-arch/m68k/kernel/ints.c, handle_simple_irq() can be re-entered but not 
-with the same descriptor (i.e. no shared state).
+Because tools are user space programs and sometimes may not follow kernel
+specifics, so they are different logically and changes should be separated.
 
-Documentation/core-api/genericirq.rst says,
+>  Anything else?
 
-   The locking of chip registers is up to the architecture that defines 
-   the chip primitives. The per-irq structure is protected via desc->lock, 
-   by the generic layer.
+-- 
+With Best Regards,
+Andy Shevchenko
 
-Since the synchronization of chip registers is left up to the 
-architecture, I think the related code should be portable.
 
-Looking in kernel/irq/*.c, I see that desc->lock is sometimes acquired 
-with raw_spin_lock_irq(&desc->lock) and sometimes 
-raw_spin_lock(&desc->lock).
-
-I don't know whether there are portability issues lurking here; this code 
-is subtle and largely unfamiliar to me.
