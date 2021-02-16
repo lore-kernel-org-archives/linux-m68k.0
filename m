@@ -2,41 +2,63 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.8 required=3.0 tests=BAYES_00,
+X-Spam-Status: No, score=-2.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
 	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
 	URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id AD676C433DB
-	for <linux-m68k@archiver.kernel.org>; Tue, 16 Feb 2021 09:16:56 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 98B61C433DB
+	for <linux-m68k@archiver.kernel.org>; Tue, 16 Feb 2021 18:01:31 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 6BF0864DA1
-	for <linux-m68k@archiver.kernel.org>; Tue, 16 Feb 2021 09:16:56 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 64E7464DA1
+	for <linux-m68k@archiver.kernel.org>; Tue, 16 Feb 2021 18:01:31 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229802AbhBPJQd (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Tue, 16 Feb 2021 04:16:33 -0500
-Received: from mga11.intel.com ([192.55.52.93]:60464 "EHLO mga11.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229710AbhBPJQU (ORCPT <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Tue, 16 Feb 2021 04:16:20 -0500
-IronPort-SDR: 8312lViQvanyZFi+DPq3qlgGKhWAvx/cG/Q0Wn76Cxi9ofWNQzUMfbHeHeMfGt3ujVXi/RqHDw
- u4mB0ZlZA7jw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9896"; a="179337932"
-X-IronPort-AV: E=Sophos;i="5.81,183,1610438400"; 
-   d="scan'208";a="179337932"
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Feb 2021 01:14:33 -0800
-IronPort-SDR: tPkmKh2OTx4znumaJmxTa2l2vBJfWMkEjT34Z+L3rFz0la3AfJcfUFiM2BL5vE5rYPheUPAQ7d
- zf7ZUrYkEr1A==
-X-IronPort-AV: E=Sophos;i="5.81,183,1610438400"; 
-   d="scan'208";a="512455158"
-Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
-  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Feb 2021 01:14:27 -0800
-Received: from andy by smile with local (Exim 4.94)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1lBwR5-005Qf3-SD; Tue, 16 Feb 2021 11:14:23 +0200
-Date:   Tue, 16 Feb 2021 11:14:23 +0200
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Yury Norov <yury.norov@gmail.com>
+        id S229811AbhBPSBa (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Tue, 16 Feb 2021 13:01:30 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40580 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229867AbhBPSBZ (ORCPT
+        <rfc822;linux-m68k@lists.linux-m68k.org>);
+        Tue, 16 Feb 2021 13:01:25 -0500
+Received: from mail-qt1-x829.google.com (mail-qt1-x829.google.com [IPv6:2607:f8b0:4864:20::829])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D47B2C0613D6
+        for <linux-m68k@lists.linux-m68k.org>; Tue, 16 Feb 2021 10:00:44 -0800 (PST)
+Received: by mail-qt1-x829.google.com with SMTP id v10so7673169qtq.7
+        for <linux-m68k@lists.linux-m68k.org>; Tue, 16 Feb 2021 10:00:44 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=MZv88LoGDyoqj+JUsBfVabeWm3XvrAKVtmhQ8+/+qO4=;
+        b=noA0wnAT0o9cRCGQUDoWCay8HcKLJOp41CqraJbgr0dUVJgXnzgQUAbSsAcgKYFWrz
+         ZX4/8YMQjlkIrdJpgK7JvG7txBlCksTyIhn5WVGDX8YoSuEYB9bscqYA+I1tlZKObnNT
+         9gMnfORrhEIAw+8s/tjErap/Fe1hn98xqNTAjMhkziAaXL7kJAb+84hE4+WGPBMhVrIU
+         j4DhjZH7IM+6wbQnSY9MM5SKq/XkmovP+72t7oEF85pbrMehGtV2+DkPBnCl6YUpMLv7
+         WepA5REasHrXHRgJBWvi/WiOJxxbgPUhgbMLwoenvZ0Du9OfqIw1VKee4tVQKsoPzQGC
+         lxrQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=MZv88LoGDyoqj+JUsBfVabeWm3XvrAKVtmhQ8+/+qO4=;
+        b=TgBZREdWJTYrz7ekFb/de4rHnZCu0UHcMf6mBqmHmsG7tPhTb9BM1VUtgCGpwwmsXx
+         o7wtcENq05p14MQAOBs3/l3QqjmXmtrWl0zRulcBtKL4/96N03PasC9V9OZ8MUOLyLXT
+         81T/4bjj3RlkkdH/H0eI5XAlLc1G+zwnhYprePC3ZxVz/EqxVb/Ul2/lrqFeClG3JTMO
+         O3KGsq6GjIDRWpiZ9ZmkPgHA6Ks5Z+EYXyTxsCiM1zAB6v50bGI/m9bt/TH3v4Jz2/7l
+         1mgpN31Keg3FHifXRVue5XFMBwuoLrivKnA7EDflXI+eEZ0QWBQW+/zLePDn0mqE9EDP
+         tu+A==
+X-Gm-Message-State: AOAM532wlL1ZK3+b/bGWUNSg2SRMJmgEmk+yk1ko9g3n0Bg8bHmKITGM
+        +0duMK/kACAI8WQV/CAiSCc=
+X-Google-Smtp-Source: ABdhPJwYR92x2g6usp+e+eae7hovcmvLl8Gibk+9FAtpv8JCfKDcc7oYg5seY7OMZNn+EkTx8nA98A==
+X-Received: by 2002:a05:622a:8:: with SMTP id x8mr20156343qtw.359.1613498443928;
+        Tue, 16 Feb 2021 10:00:43 -0800 (PST)
+Received: from localhost (d27-96-190-162.evv.wideopenwest.com. [96.27.162.190])
+        by smtp.gmail.com with ESMTPSA id c81sm14537171qkb.88.2021.02.16.10.00.43
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 16 Feb 2021 10:00:43 -0800 (PST)
+Date:   Tue, 16 Feb 2021 10:00:42 -0800
+From:   Yury Norov <yury.norov@gmail.com>
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 Cc:     linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org,
         linux-sh@vger.kernel.org, linux-arch@vger.kernel.org,
         Geert Uytterhoeven <geert@linux-m68k.org>,
@@ -53,53 +75,52 @@ Cc:     linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org,
         John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
         Joe Perches <joe@perches.com>
 Subject: Re: [RESEND PATCH v2 0/6] lib/find_bit: fast path for small bitmaps
-Message-ID: <YCuM7yzMoXjpuj8Y@smile.fi.intel.com>
+Message-ID: <20210216180042.GA421019@yury-ThinkPad>
 References: <20210130191719.7085-1-yury.norov@gmail.com>
  <20210215213044.GB394846@yury-ThinkPad>
+ <YCuM7yzMoXjpuj8Y@smile.fi.intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210215213044.GB394846@yury-ThinkPad>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+In-Reply-To: <YCuM7yzMoXjpuj8Y@smile.fi.intel.com>
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-On Mon, Feb 15, 2021 at 01:30:44PM -0800, Yury Norov wrote:
-> [add David Laight <David.Laight@ACULAB.COM> ]
+On Tue, Feb 16, 2021 at 11:14:23AM +0200, Andy Shevchenko wrote:
+> On Mon, Feb 15, 2021 at 01:30:44PM -0800, Yury Norov wrote:
+> > [add David Laight <David.Laight@ACULAB.COM> ]
+> > 
+> > On Sat, Jan 30, 2021 at 11:17:11AM -0800, Yury Norov wrote:
+> > > Bitmap operations are much simpler and faster in case of small bitmaps
+> > > which fit into a single word. In linux/bitmap.h we have a machinery that
+> > > allows compiler to replace actual function call with a few instructions
+> > > if bitmaps passed into the function are small and their size is known at
+> > > compile time.
+> > > 
+> > > find_*_bit() API lacks this functionality; despite users will benefit from
+> > > it a lot. One important example is cpumask subsystem when
+> > > NR_CPUS <= BITS_PER_LONG. In the very best case, the compiler may replace
+> > > a find_*_bit() call for such a bitmap with a single ffs or ffz instruction.
+> > > 
+> > > Tools is synchronized with new implementation where needed.
+> > > 
+> > > v1: https://www.spinics.net/lists/kernel/msg3804727.html
+> > > v2: - employ GENMASK() for bitmaps;
+> > >     - unify find_bit inliners in;
+> > >     - address comments to v1;
+> > 
+> > Comments so far:
+> >  - increased image size (patch #8) - addressed by introducing
+> >    CONFIG_FAST_PATH;
 > 
-> On Sat, Jan 30, 2021 at 11:17:11AM -0800, Yury Norov wrote:
-> > Bitmap operations are much simpler and faster in case of small bitmaps
-> > which fit into a single word. In linux/bitmap.h we have a machinery that
-> > allows compiler to replace actual function call with a few instructions
-> > if bitmaps passed into the function are small and their size is known at
-> > compile time.
-> > 
-> > find_*_bit() API lacks this functionality; despite users will benefit from
-> > it a lot. One important example is cpumask subsystem when
-> > NR_CPUS <= BITS_PER_LONG. In the very best case, the compiler may replace
-> > a find_*_bit() call for such a bitmap with a single ffs or ffz instruction.
-> > 
-> > Tools is synchronized with new implementation where needed.
-> > 
-> > v1: https://www.spinics.net/lists/kernel/msg3804727.html
-> > v2: - employ GENMASK() for bitmaps;
-> >     - unify find_bit inliners in;
-> >     - address comments to v1;
+> >  - split tools and kernel parts - not clear why it's better.
 > 
-> Comments so far:
->  - increased image size (patch #8) - addressed by introducing
->    CONFIG_FAST_PATH;
+> Because tools are user space programs and sometimes may not follow kernel
+> specifics, so they are different logically and changes should be separated.
 
->  - split tools and kernel parts - not clear why it's better.
+In this specific case tools follow kernel well.
 
-Because tools are user space programs and sometimes may not follow kernel
-specifics, so they are different logically and changes should be separated.
-
->  Anything else?
-
--- 
-With Best Regards,
-Andy Shevchenko
-
-
+Nevertheless, if you think it's a blocker for the series, I can split. What
+option for tools is better for you - doubling the number of patches or 
+squashing everything in a patch bomb?
