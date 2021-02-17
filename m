@@ -2,192 +2,123 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.8 required=3.0 tests=BAYES_00,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-3.8 required=3.0 tests=BAYES_00,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
+	autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 91E64C433E0
-	for <linux-m68k@archiver.kernel.org>; Tue, 16 Feb 2021 19:42:26 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A46B5C433DB
+	for <linux-m68k@archiver.kernel.org>; Wed, 17 Feb 2021 10:36:18 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 4E4C464E6B
-	for <linux-m68k@archiver.kernel.org>; Tue, 16 Feb 2021 19:42:26 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 6C83E64E42
+	for <linux-m68k@archiver.kernel.org>; Wed, 17 Feb 2021 10:36:18 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229699AbhBPTmA (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Tue, 16 Feb 2021 14:42:00 -0500
-Received: from mga17.intel.com ([192.55.52.151]:19081 "EHLO mga17.intel.com"
+        id S231653AbhBQKfq (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Wed, 17 Feb 2021 05:35:46 -0500
+Received: from mga18.intel.com ([134.134.136.126]:42714 "EHLO mga18.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229811AbhBPTmA (ORCPT <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Tue, 16 Feb 2021 14:42:00 -0500
-IronPort-SDR: Mkuw8gJj09EOnsHq1POTCkuAXAPB+VjrRhCtBcWul3QuetBAtqWKVU0filV6bvYL1TlCA2/vea
- 2GzcHgpf4R0A==
-X-IronPort-AV: E=McAfee;i="6000,8403,9897"; a="162766259"
+        id S231279AbhBQKfn (ORCPT <rfc822;linux-m68k@lists.linux-m68k.org>);
+        Wed, 17 Feb 2021 05:35:43 -0500
+IronPort-SDR: ewGTq1VJeLRov9xWpJS0BFUdDrWrTinFQyNUaIubPxkGAT0jxjGaukAF4SE66q7f9SUfrwxc+6
+ pl2kR9XlLUDQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9897"; a="170819098"
 X-IronPort-AV: E=Sophos;i="5.81,184,1610438400"; 
-   d="scan'208";a="162766259"
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Feb 2021 11:41:19 -0800
-IronPort-SDR: +aL5+S8PEATlLQvAMrskuTNMB8K5GjBDXN/ly+zaw3v4xwCjh6jc5U7V1/0myauAdW7NMxQmn4
- EwRyFkvcpyIQ==
-X-ExtLoop1: 1
+   d="scan'208";a="170819098"
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Feb 2021 02:33:56 -0800
+IronPort-SDR: hOWlJUsQcHyQJdev2NZq4rPrhNivgK2pc/kjKEYoucJhryB/MyqrV1MltOkXhbbIyYffrogeq2
+ Yom38oYa9qhA==
 X-IronPort-AV: E=Sophos;i="5.81,184,1610438400"; 
-   d="scan'208";a="366585213"
-Received: from lkp-server02.sh.intel.com (HELO cd560a204411) ([10.239.97.151])
-  by fmsmga007.fm.intel.com with ESMTP; 16 Feb 2021 11:41:18 -0800
-Received: from kbuild by cd560a204411 with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1lC6Dl-0008Mr-FR; Tue, 16 Feb 2021 19:41:17 +0000
-Date:   Wed, 17 Feb 2021 03:41:10 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     linux-m68k@lists.linux-m68k.org
-Subject: [m68k:master] BUILD SUCCESS
- fa8e9df665a14d951e0991c6d5d4b1651a22665a
-Message-ID: <602c1fd6.2I2UwGRihkZd+azN%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+   d="scan'208";a="512825372"
+Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
+  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Feb 2021 02:33:51 -0800
+Received: from andy by smile with local (Exim 4.94)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1lCK9T-005gbL-PB; Wed, 17 Feb 2021 12:33:47 +0200
+Date:   Wed, 17 Feb 2021 12:33:47 +0200
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Yury Norov <yury.norov@gmail.com>
+Cc:     linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org,
+        linux-sh@vger.kernel.org, linux-arch@vger.kernel.org,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Yoshinori Sato <ysato@users.sourceforge.jp>,
+        Rich Felker <dalias@libc.org>, Arnd Bergmann <arnd@arndb.de>,
+        Dennis Zhou <dennis@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Wolfram Sang <wsa+renesas@sang-engineering.com>,
+        David Sterba <dsterba@suse.com>,
+        Stefano Brivio <sbrivio@redhat.com>,
+        "Ma, Jianpeng" <jianpeng.ma@intel.com>,
+        Wei Yang <richard.weiyang@linux.alibaba.com>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
+        Joe Perches <joe@perches.com>
+Subject: Re: [RESEND PATCH v2 0/6] lib/find_bit: fast path for small bitmaps
+Message-ID: <YCzxCyzUq3ESaoXH@smile.fi.intel.com>
+References: <20210130191719.7085-1-yury.norov@gmail.com>
+ <20210215213044.GB394846@yury-ThinkPad>
+ <YCuM7yzMoXjpuj8Y@smile.fi.intel.com>
+ <20210216180042.GA421019@yury-ThinkPad>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+In-Reply-To: <20210216180042.GA421019@yury-ThinkPad>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/geert/linux-m68k.git master
-branch HEAD: fa8e9df665a14d951e0991c6d5d4b1651a22665a  Merge tag 'v5.11'
+On Tue, Feb 16, 2021 at 10:00:42AM -0800, Yury Norov wrote:
+> On Tue, Feb 16, 2021 at 11:14:23AM +0200, Andy Shevchenko wrote:
+> > On Mon, Feb 15, 2021 at 01:30:44PM -0800, Yury Norov wrote:
+> > > [add David Laight <David.Laight@ACULAB.COM> ]
+> > > 
+> > > On Sat, Jan 30, 2021 at 11:17:11AM -0800, Yury Norov wrote:
+> > > > Bitmap operations are much simpler and faster in case of small bitmaps
+> > > > which fit into a single word. In linux/bitmap.h we have a machinery that
+> > > > allows compiler to replace actual function call with a few instructions
+> > > > if bitmaps passed into the function are small and their size is known at
+> > > > compile time.
+> > > > 
+> > > > find_*_bit() API lacks this functionality; despite users will benefit from
+> > > > it a lot. One important example is cpumask subsystem when
+> > > > NR_CPUS <= BITS_PER_LONG. In the very best case, the compiler may replace
+> > > > a find_*_bit() call for such a bitmap with a single ffs or ffz instruction.
+> > > > 
+> > > > Tools is synchronized with new implementation where needed.
+> > > > 
+> > > > v1: https://www.spinics.net/lists/kernel/msg3804727.html
+> > > > v2: - employ GENMASK() for bitmaps;
+> > > >     - unify find_bit inliners in;
+> > > >     - address comments to v1;
+> > > 
+> > > Comments so far:
+> > >  - increased image size (patch #8) - addressed by introducing
+> > >    CONFIG_FAST_PATH;
+> > 
+> > >  - split tools and kernel parts - not clear why it's better.
+> > 
+> > Because tools are user space programs and sometimes may not follow kernel
+> > specifics, so they are different logically and changes should be separated.
+> 
+> In this specific case tools follow kernel well.
+> 
+> Nevertheless, if you think it's a blocker for the series, I can split.
 
-elapsed time: 720m
+It's not a blocker from my side. But you make it harder to push like this,
+because you will need a tag from tools, which in my practice is quite
+hard to get -> blocker. My point is: don't make obstacles where we can avoid
+them. So, if tools won't take this, it won't block us.
 
-configs tested: 122
-configs skipped: 2
+> What
+> option for tools is better for you - doubling the number of patches or
+> squashing everything in a patch bomb?
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+Not a tools guy, but common sense tells me that the best approach is to follow
+kind of changes in the kernel (similar granularity).
 
-gcc tested configs:
-arm                                 defconfig
-arm64                            allyesconfig
-arm64                               defconfig
-arm                              allyesconfig
-arm                              allmodconfig
-sparc64                             defconfig
-powerpc                        cell_defconfig
-powerpc                     mpc512x_defconfig
-openrisc                 simple_smp_defconfig
-arm                          lpd270_defconfig
-sh                           se7721_defconfig
-arm                           efm32_defconfig
-arm                     eseries_pxa_defconfig
-sparc                            alldefconfig
-powerpc                      ppc6xx_defconfig
-nios2                         10m50_defconfig
-powerpc                     tqm5200_defconfig
-arm                       aspeed_g5_defconfig
-arm                         assabet_defconfig
-arm                        neponset_defconfig
-sh                        sh7785lcr_defconfig
-openrisc                  or1klitex_defconfig
-c6x                                 defconfig
-powerpc                mpc7448_hpc2_defconfig
-powerpc                      chrp32_defconfig
-powerpc                    amigaone_defconfig
-ia64                                defconfig
-arc                 nsimosci_hs_smp_defconfig
-mips                malta_kvm_guest_defconfig
-riscv                    nommu_k210_defconfig
-powerpc                     taishan_defconfig
-arm                        multi_v5_defconfig
-arm                          simpad_defconfig
-powerpc                     mpc5200_defconfig
-sh                        sh7763rdp_defconfig
-parisc                generic-64bit_defconfig
-m68k                            mac_defconfig
-mips                  decstation_64_defconfig
-powerpc                  storcenter_defconfig
-sh                           se7780_defconfig
-ia64                             allmodconfig
-ia64                             allyesconfig
-m68k                             allmodconfig
-m68k                                defconfig
-m68k                             allyesconfig
-nios2                               defconfig
-arc                              allyesconfig
-nds32                             allnoconfig
-c6x                              allyesconfig
-nds32                               defconfig
-nios2                            allyesconfig
-csky                                defconfig
-alpha                               defconfig
-alpha                            allyesconfig
-xtensa                           allyesconfig
-h8300                            allyesconfig
-arc                                 defconfig
-sh                               allmodconfig
-parisc                              defconfig
-s390                             allyesconfig
-s390                             allmodconfig
-parisc                           allyesconfig
-s390                                defconfig
-i386                             allyesconfig
-sparc                            allyesconfig
-sparc                               defconfig
-i386                               tinyconfig
-i386                                defconfig
-mips                             allyesconfig
-mips                             allmodconfig
-powerpc                          allyesconfig
-powerpc                          allmodconfig
-powerpc                           allnoconfig
-i386                 randconfig-a003-20210216
-i386                 randconfig-a005-20210216
-i386                 randconfig-a002-20210216
-i386                 randconfig-a006-20210216
-i386                 randconfig-a001-20210216
-i386                 randconfig-a004-20210216
-i386                 randconfig-a003-20210215
-i386                 randconfig-a005-20210215
-i386                 randconfig-a002-20210215
-i386                 randconfig-a006-20210215
-i386                 randconfig-a004-20210215
-i386                 randconfig-a001-20210215
-x86_64               randconfig-a016-20210215
-x86_64               randconfig-a013-20210215
-x86_64               randconfig-a012-20210215
-x86_64               randconfig-a015-20210215
-x86_64               randconfig-a014-20210215
-x86_64               randconfig-a011-20210215
-i386                 randconfig-a016-20210215
-i386                 randconfig-a014-20210215
-i386                 randconfig-a012-20210215
-i386                 randconfig-a013-20210215
-i386                 randconfig-a011-20210215
-i386                 randconfig-a015-20210215
-i386                 randconfig-a016-20210216
-i386                 randconfig-a014-20210216
-i386                 randconfig-a012-20210216
-i386                 randconfig-a013-20210216
-i386                 randconfig-a011-20210216
-i386                 randconfig-a015-20210216
-riscv                            allyesconfig
-riscv                    nommu_virt_defconfig
-riscv                             allnoconfig
-riscv                               defconfig
-riscv                          rv32_defconfig
-riscv                            allmodconfig
-x86_64                                   rhel
-x86_64                           allyesconfig
-x86_64                    rhel-7.6-kselftests
-x86_64                              defconfig
-x86_64                               rhel-8.3
-x86_64                      rhel-8.3-kbuiltin
-x86_64                                  kexec
 
-clang tested configs:
-x86_64               randconfig-a003-20210215
-x86_64               randconfig-a002-20210215
-x86_64               randconfig-a001-20210215
-x86_64               randconfig-a004-20210215
-x86_64               randconfig-a005-20210215
-x86_64               randconfig-a006-20210215
+-- 
+With Best Regards,
+Andy Shevchenko
 
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+
