@@ -2,136 +2,104 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-4.3 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,NICE_REPLY_A,SPF_HELO_NONE,
-	SPF_PASS,USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-7.3 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
+	NICE_REPLY_A,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=no
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D612DC433DB
-	for <linux-m68k@archiver.kernel.org>; Thu, 18 Feb 2021 22:12:12 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7AAE4C433DB
+	for <linux-m68k@archiver.kernel.org>; Thu, 18 Feb 2021 22:52:53 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 9DA4364E77
-	for <linux-m68k@archiver.kernel.org>; Thu, 18 Feb 2021 22:12:12 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 2667964DFD
+	for <linux-m68k@archiver.kernel.org>; Thu, 18 Feb 2021 22:52:53 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229655AbhBRWMM (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Thu, 18 Feb 2021 17:12:12 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60668 "EHLO
+        id S229945AbhBRWwg (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Thu, 18 Feb 2021 17:52:36 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41132 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229577AbhBRWML (ORCPT
+        with ESMTP id S229970AbhBRWwf (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Thu, 18 Feb 2021 17:12:11 -0500
-Received: from mail-pf1-x434.google.com (mail-pf1-x434.google.com [IPv6:2607:f8b0:4864:20::434])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B666FC061756
-        for <linux-m68k@lists.linux-m68k.org>; Thu, 18 Feb 2021 14:11:31 -0800 (PST)
-Received: by mail-pf1-x434.google.com with SMTP id q20so2300605pfu.8
-        for <linux-m68k@lists.linux-m68k.org>; Thu, 18 Feb 2021 14:11:31 -0800 (PST)
+        Thu, 18 Feb 2021 17:52:35 -0500
+Received: from mail-ej1-x62d.google.com (mail-ej1-x62d.google.com [IPv6:2a00:1450:4864:20::62d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C5C02C06178B
+        for <linux-m68k@lists.linux-m68k.org>; Thu, 18 Feb 2021 14:51:47 -0800 (PST)
+Received: by mail-ej1-x62d.google.com with SMTP id k13so6530483ejs.10
+        for <linux-m68k@lists.linux-m68k.org>; Thu, 18 Feb 2021 14:51:47 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
+        d=rasmusvillemoes.dk; s=google;
         h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-transfer-encoding:content-language;
-        bh=2BNm2Sy2P6jkCZbThkkqBfZaxS28xMnq4sQPLlpKVSc=;
-        b=oPxQ3zEatebLUJOzFuvXtpdBFNS1aXVvmULx3Vq1K7IH02cgp5JVRon+523RsysY4Q
-         NL9J7g0zml/wR7e9fBS7psfKr4ArmYBon9T+bDMYbNqhpJYgrSpSkKosODNPPkDQPOGs
-         wvHzGkgxOAD0cNO2WG5HTNhMPGRJKfRs66zqmc+9vYJqtewa44HvMOIvSAI5XHj96DFP
-         b3W41c7fU72hO0md5JE3DaJf0oXfJT0xL4E5F8AdwUg6wOi1UBryWr7rQv5nWFMHXe3R
-         5kqiD+FtAkgFcYepvCsIbm+E0j0rdwGm1ZnPuG6pN46/vdEZ5greAcqJkUL/27EBRFYW
-         gBeQ==
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=Vrc627xbuX2TMgkXGGkkQoTFvSmbGef3PT5dPjYaHq4=;
+        b=G+VppJXi/ZOG8gHCQ6TFEVZSG0VMgwjTbKRWl1GBBX3e9vwfVqsXJnB+Swrbm9Mbki
+         HeZGAKA758jQl1Wchle/AFqcf2AjQAMFFj13bi28/2IH0R2ELAAHaO0ZWoqacamBBtzs
+         uUGJ8VNz+ZknAy1z21qDfTSQ4nYI2gdZIrkck=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=2BNm2Sy2P6jkCZbThkkqBfZaxS28xMnq4sQPLlpKVSc=;
-        b=E6k+6n4oydudGz5CizP0wCrwG+h5q/JGrDrPRDpzmxjzDPc3jc275dhfXQRuV/eBih
-         UhcLlHAaG3g7PHdbSO1CR6nG1/LNqebBtvq9p3GcNMvMNmEvotiLahIlTuGmsSvEAiKb
-         3gxhj2pE1mJUJu96jTDsyZ6kZ1+LS9s0H9F7xfyb7rMVdqBOoUxZX6a4ThjYBgCP2tW6
-         PKeusVLOYKmE5HssMi0HgTSgFwBp+rvCNcK5QbZFVjmcmqOJqwdTd3Ue9Db2+nHX0F6b
-         KTYK9D7ZxiWCBmfe9yKzT8FNZz679n9EiR7jYXiiiis/vDYIzuxoJwuPEremlLd1FPvh
-         oKww==
-X-Gm-Message-State: AOAM530emFzFvLQnmeIJISEl3OiGRgceA1ESbiUz6ZTJR8IzyDsFVWJT
-        HjUoztjSuRXICm/1srWLYPo=
-X-Google-Smtp-Source: ABdhPJxunsRgQ2CCJLlBTWsCnLsHP+9AYoritUi0UOKmRkBpaGRwAA8k6z+KtBvdBCqVxt4KqfftJw==
-X-Received: by 2002:a62:154a:0:b029:1e6:ca6b:d5c6 with SMTP id 71-20020a62154a0000b02901e6ca6bd5c6mr6133870pfv.47.1613686291089;
-        Thu, 18 Feb 2021 14:11:31 -0800 (PST)
-Received: from ?IPv6:2001:df0:0:200c:184:e9f:a921:953a? ([2001:df0:0:200c:184:e9f:a921:953a])
-        by smtp.gmail.com with ESMTPSA id w3sm6233935pjt.24.2021.02.18.14.11.26
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=Vrc627xbuX2TMgkXGGkkQoTFvSmbGef3PT5dPjYaHq4=;
+        b=tjCPjJvLWeVchXuW58PWxNP/PNn6fdaNIOFzNQRxvQ83oxTVb/WBI8YCBZTiOxZPBr
+         Gi4v56tkx3StT7P7RcTL4W5TgEMBeS+h72FmcNhLWkzGHVWGEEcGiuGw3yYfLpf+Gfc4
+         nxCzBWSV1WvOvkhAWVHu7ZpIU7/SjPl/d2CmLWhrh3VzolyX348LQP7DP5mStzqZcxPd
+         ogDRu7OZXjYpNgEZivcUbbVLiaKkPP/lbBoPYGQ+d3YE4rfxoDEnCWeW+jYdNVWVG6cA
+         bsw9YxyJMEt8qfBjGGjAKIQYQtxE4+shGsGsUpM0f+IyN+mXpV+zYOGAi1Vc5evC2jnD
+         AvaQ==
+X-Gm-Message-State: AOAM531VqNJNtahmVVRHDmqIiDYKshEnYqCyolEZwX9FT7JhKkUNpZf7
+        mV/E2wjsXkYtyR7LO1KQI5NUrQ==
+X-Google-Smtp-Source: ABdhPJyKhm7W7GiwYBIDb8MWNmpDRdcqaFasH1pPiX6+4A01bLs1vLg+znuOAZacAYcYbAiyu87wIA==
+X-Received: by 2002:a17:906:301b:: with SMTP id 27mr2584079ejz.230.1613688705192;
+        Thu, 18 Feb 2021 14:51:45 -0800 (PST)
+Received: from [192.168.1.149] ([80.208.71.141])
+        by smtp.gmail.com with ESMTPSA id m7sm3279119ejk.52.2021.02.18.14.51.43
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 18 Feb 2021 14:11:30 -0800 (PST)
-Subject: Re: [RFC] IRQ handlers run with some high-priority interrupts(not
- NMI) enabled on some platform
-To:     Arnd Bergmann <arnd@kernel.org>,
-        Finn Thain <fthain@telegraphics.com.au>
-Cc:     "Song Bao Hua (Barry Song)" <song.bao.hua@hisilicon.com>,
-        "tglx@linutronix.de" <tglx@linutronix.de>,
-        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
-        "arnd@arndb.de" <arnd@arndb.de>,
-        "geert@linux-m68k.org" <geert@linux-m68k.org>,
-        "funaho@jurai.org" <funaho@jurai.org>,
-        "philb@gnu.org" <philb@gnu.org>, "corbet@lwn.net" <corbet@lwn.net>,
-        "mingo@redhat.com" <mingo@redhat.com>,
-        "linux-m68k@lists.linux-m68k.org" <linux-m68k@lists.linux-m68k.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-References: <c46ddb954cfe45d9849c911271d7ec23@hisilicon.com>
- <CAK8P3a2adJsz5hRT_eMzSoHnUBC+aK9HZ18=oAYCZ-gisEkd1w@mail.gmail.com>
- <24e0652b3afa48cdbf7c83287e43c087@hisilicon.com>
- <CAK8P3a0fwMe9LaXMfKjH46yvt6o-euZJZ4HXtVRPhYbKvAUPKg@mail.gmail.com>
- <0b766dba0b004ced94131e158cd8e67d@hisilicon.com>
- <CAK8P3a2ZnKeeZ-zEWO+vHogs0DdLuDrZet61cSmJe_UMYhtaWQ@mail.gmail.com>
- <5148eb2aaceb42d78087bc6d8ce15183@hisilicon.com>
- <5fcea94e-6fc9-c340-d7d2-4ae8b69890b8@telegraphics.com.au>
- <0c0ea8eca77c45ea89f2d4432580211c@hisilicon.com>
- <28d4b91d-1774-a8a-df97-7ac9b365c2@telegraphics.com.au>
- <CAK8P3a0VquJPxvS8B=2kLQ5y=h5BftJDR7WJYmj3hgQ8yQY5=Q@mail.gmail.com>
-From:   Michael Schmitz <schmitzmic@gmail.com>
-Message-ID: <a8595ec5-88db-072c-9cc3-7a3a301fe191@gmail.com>
-Date:   Fri, 19 Feb 2021 11:11:20 +1300
+        Thu, 18 Feb 2021 14:51:44 -0800 (PST)
+Subject: Re: [PATCH 04/14] lib: introduce BITS_{FIRST,LAST} macro
+To:     Yury Norov <yury.norov@gmail.com>, linux-kernel@vger.kernel.org
+Cc:     linux-m68k@lists.linux-m68k.org, linux-arch@vger.kernel.org,
+        linux-sh@vger.kernel.org, Alexey Klimov <aklimov@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Arnd Bergmann <arnd@arndb.de>, David Sterba <dsterba@suse.com>,
+        Dennis Zhou <dennis@kernel.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Jianpeng Ma <jianpeng.ma@intel.com>,
+        Joe Perches <joe@perches.com>,
+        John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Rich Felker <dalias@libc.org>,
+        Stefano Brivio <sbrivio@redhat.com>,
+        Wei Yang <richard.weiyang@linux.alibaba.com>,
+        Wolfram Sang <wsa+renesas@sang-engineering.com>,
+        Yoshinori Sato <ysato@users.sourceforge.jp>
+References: <20210218040512.709186-1-yury.norov@gmail.com>
+ <20210218040512.709186-5-yury.norov@gmail.com>
+From:   Rasmus Villemoes <linux@rasmusvillemoes.dk>
+Message-ID: <b371c94c-7480-5af4-d2bd-481436f535eb@rasmusvillemoes.dk>
+Date:   Thu, 18 Feb 2021 23:51:43 +0100
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <CAK8P3a0VquJPxvS8B=2kLQ5y=h5BftJDR7WJYmj3hgQ8yQY5=Q@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210218040512.709186-5-yury.norov@gmail.com>
+Content-Type: text/plain; charset=windows-1252
 Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-On 19/02/21 12:19 am, Arnd Bergmann wrote:
+On 18/02/2021 05.05, Yury Norov wrote:
+> BITMAP_{LAST,FIRST}_WORD_MASK() in linux/bitmap.h duplicates the
+> functionality of GENMASK(). The scope of there macros is wider
+> than just bitmap. This patch defines 4 new macros: BITS_FIRST(),
+> BITS_LAST(), BITS_FIRST_MASK() and BITS_LAST_MASK() in linux/bits.h
+> on top of GENMASK() and replaces BITMAP_{LAST,FIRST}_WORD_MASK()
+> to avoid duplication and increase the scope of the macros.
+> 
 
-> drivers/net/ethernet/8390/apne.c
-> drivers/net/ethernet/8390/ax88796.c
-> drivers/net/ethernet/8390/hydra.c
-> drivers/net/ethernet/8390/mac8390.c
-> drivers/net/ethernet/8390/ne.c
-> drivers/net/ethernet/8390/zorro8390.c
-[...]
-> Most of these are normal short-lived interrupts that only transfer
-> a few bytes or schedule deferred processing of some sort.
-> Most of the scsi and network drivers process the data in
-> a softirq, so those are generally fine here, but I do see that 8390
-> (ne2000) ethernet and the drivers/ide drivers do transfer their
-> data in hardirq context.
->
->          Arnd
+Please include some info on changes in generated code, if any. When the
+parameter to the macro is a constant I'm sure it all folds to a
+compile-time constant either way, but when it's not, I'm not sure gcc
+can do the same optimizations when the expressions become more complicated.
 
-8390 ethernet drivers are widely used on m68k platforms (Amiga and 
-Atari). At least on Amiga, the corresponding interrupt is a hardirq so 
-I'd advise caution. That said, the 8390 drivers might benefit from some 
-refactoring (the way these drivers are compiled does prevent e.g. the 
-APNE driver from being used with two different variants of PCMCIA 
-interfaces. I had begun some work on making IO primitives runtime 
-selected two years ago but that ended up looking too ugly ...).
-
-Can't recall what IPL the 8390 interrupts operate at - Geert?
-
-Regarding allowing preemption of hardirqs - at least in 2017, that was 
-considered perfectly OK (see Linus' comment on 
-https://lore.kernel.org/patchwork/patch/794954/). I concur with Finn on 
-this one - we did look for potential issues with the way irqs_disabled() 
-is defined on m68k (for me, in the context of the above bug that caused 
-memory corruption on my system), and found none.
-
-Cheers,
-
-     Michael
-
+Rasmus
