@@ -2,145 +2,100 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-12.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-3.8 required=3.0 tests=BAYES_00,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 4EB41C433DB
-	for <linux-m68k@archiver.kernel.org>; Thu, 18 Feb 2021 18:07:30 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id BD47AC433DB
+	for <linux-m68k@archiver.kernel.org>; Thu, 18 Feb 2021 18:07:48 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id EE24C64ECD
-	for <linux-m68k@archiver.kernel.org>; Thu, 18 Feb 2021 18:07:29 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 5735964ECD
+	for <linux-m68k@archiver.kernel.org>; Thu, 18 Feb 2021 18:07:48 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231634AbhBRSGv (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Thu, 18 Feb 2021 13:06:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59910 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232297AbhBRPfe (ORCPT
+        id S230184AbhBRSHA (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Thu, 18 Feb 2021 13:07:00 -0500
+Received: from mail-oi1-f170.google.com ([209.85.167.170]:35579 "EHLO
+        mail-oi1-f170.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231842AbhBRPkH (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Thu, 18 Feb 2021 10:35:34 -0500
-Received: from mail-qt1-x82b.google.com (mail-qt1-x82b.google.com [IPv6:2607:f8b0:4864:20::82b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 84B34C061756
-        for <linux-m68k@lists.linux-m68k.org>; Thu, 18 Feb 2021 07:34:26 -0800 (PST)
-Received: by mail-qt1-x82b.google.com with SMTP id z32so1627272qtd.8
-        for <linux-m68k@lists.linux-m68k.org>; Thu, 18 Feb 2021 07:34:26 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=qdUGE0ei1PeIqXVirzz2L2hmAvJjnRfr69rW6TULXQM=;
-        b=evSDWFVK1uXHuQBlCdLbHM2UlZh8PIg2tlI0ar+EYH15gZMFZ/WvisEj1M+4ssKAgO
-         QoCwbWFk2xYFvYtfwpqfXDCGv2MlvCk9bMvErepQTW49NcvBp75VJZF1EyfbTNrGBqoD
-         QHuzKtGevEeo4/Hnhh5i5tuCGoYUurqoSTuLbno9W9NOv0PeioJl1VP/qDu/LdS0Q4yU
-         jLe8eJzHn7fYI+QiqMRLDhN/HgkHfooH0L4tsZhuj95u7yc2p4h+sbLTnx8FYUyYXSZt
-         u3lfQJfDh3gtt8HuzuQfKS9yqBlzgOjf/ReUWtOH+RLXB8zni0ZvDLz1EY0nrCLEV7ED
-         1nGw==
+        Thu, 18 Feb 2021 10:40:07 -0500
+Received: by mail-oi1-f170.google.com with SMTP id l3so2413596oii.2
+        for <linux-m68k@lists.linux-m68k.org>; Thu, 18 Feb 2021 07:39:17 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=qdUGE0ei1PeIqXVirzz2L2hmAvJjnRfr69rW6TULXQM=;
-        b=CvEbbh9W+Xxrl25o8/nFKw7TcxFRUdJ0y4ZW8WZ3+mCwm6t73MNOOVJ9RRYUfVFUJl
-         IxiEPQ1+2EEBSmypuiorODwdMsYYJmwuzCZZorSBbnSwwLOMhJe3tcO6oLueg61hIlUS
-         n6xiKXyjUmiTEOh0mk/+Rn8RPh/kQ+oSulu1albV4epU3gFoHGGRexhCWwfJcwYIIf82
-         quAdptg/L926y8BJnrTOjRmeeyFm8ffRmgkEAm15UdhT7pNKDaBHLXmi2+FukHZT7yeG
-         rC1d/vChcjn9VMAbzyrPEMGmwIRYArY6xnxNcz+zQe1n5XyHkpn6j1gDFTBZq5taHCA8
-         Lm7A==
-X-Gm-Message-State: AOAM530XKVV21fMX7m+55Yy9IYjboLKW5vAeBDQ1KlOhV/0qxxovH2CO
-        iEcC+jfQDZpolyxStnuvB1Q=
-X-Google-Smtp-Source: ABdhPJzKLm03m2ZM2weJmDc19njdUFo0p+tamBbKYBwgzzZL1EUg/dGEX0ItuZg3We5eXCMPQXGIrg==
-X-Received: by 2002:ac8:59cd:: with SMTP id f13mr4786833qtf.258.1613662465537;
-        Thu, 18 Feb 2021 07:34:25 -0800 (PST)
-Received: from localhost (d27-96-190-162.evv.wideopenwest.com. [96.27.162.190])
-        by smtp.gmail.com with ESMTPSA id m5sm4072260qke.134.2021.02.18.07.34.24
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 18 Feb 2021 07:34:25 -0800 (PST)
-Date:   Thu, 18 Feb 2021 07:34:24 -0800
-From:   Yury Norov <yury.norov@gmail.com>
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     linux-kernel@vger.kernel.org, linux-m68k@lists.linux-m68k.org,
-        linux-arch@vger.kernel.org, linux-sh@vger.kernel.org,
-        Alexey Klimov <aklimov@redhat.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Arnd Bergmann <arnd@arndb.de>, David Sterba <dsterba@suse.com>,
-        Dennis Zhou <dennis@kernel.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Jianpeng Ma <jianpeng.ma@intel.com>,
-        Joe Perches <joe@perches.com>,
-        John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        Rich Felker <dalias@libc.org>,
-        Stefano Brivio <sbrivio@redhat.com>,
-        Wei Yang <richard.weiyang@linux.alibaba.com>,
-        Wolfram Sang <wsa+renesas@sang-engineering.com>,
-        Yoshinori Sato <ysato@users.sourceforge.jp>
-Subject: Re: [PATCH 14/14] MAINTAINERS: Add entry for the bitmap API
-Message-ID: <20210218153424.GA701246@yury-ThinkPad>
-References: <20210218040512.709186-1-yury.norov@gmail.com>
- <20210218040512.709186-15-yury.norov@gmail.com>
- <YC6HoF2lhSlrYs3j@smile.fi.intel.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=HNlmKXcHFwKXZ3lQCip3Cekwn845MPPEly4w3zH9oAw=;
+        b=c4dsAYv+AVx5EwyG6yBM14ShD9FRf4naaHRPgpXy9YHzNu179Zu1IF+XuywRG1qn5s
+         QxlxppxJe9G7VSk4WjTEmy8lA38OsQHhMGjKfqH1EEa36JI7OWP4ZTbt/NBN5APH3w4T
+         K0u2v0itsHLaYIHqNwvT5LqDjTiHjdIoZJK1HFBqh/U9GyFoiqgcUDaBo+a2T1nFdyAA
+         Eg/FehEOpXHNQboTVwx/AJYarWxNnTvezIbuyDF7SX5P8VRiLp0D0+32f14+Hqq6df6L
+         Vr7ZfTxifnKv2dTJWC1Bjum1RkeK13uJfsj5VsVcD4ShABT+GeDobemvLHjj61ZTUts+
+         EKDQ==
+X-Gm-Message-State: AOAM53304BPRVOrCXO40JmOZBPyrT+ISKsyDBzHGQ56bE644p+TZcYb2
+        CjCXX18UckLQt4VPtXg7c0I6JCS2pIbHsllIAWg=
+X-Google-Smtp-Source: ABdhPJz+hnXV9XKu4Qs5llxekDws7JX+4rMLAVZn4bS4sxC/WmxV29bRbkemdZu88iGtN0DQrzt7zVcSA8HNw2VeFP0=
+X-Received: by 2002:aca:d8c6:: with SMTP id p189mr3206817oig.54.1613662732142;
+ Thu, 18 Feb 2021 07:38:52 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YC6HoF2lhSlrYs3j@smile.fi.intel.com>
+References: <c46ddb954cfe45d9849c911271d7ec23@hisilicon.com>
+ <CAK8P3a2adJsz5hRT_eMzSoHnUBC+aK9HZ18=oAYCZ-gisEkd1w@mail.gmail.com>
+ <24e0652b3afa48cdbf7c83287e43c087@hisilicon.com> <CAK8P3a0fwMe9LaXMfKjH46yvt6o-euZJZ4HXtVRPhYbKvAUPKg@mail.gmail.com>
+ <0b766dba0b004ced94131e158cd8e67d@hisilicon.com> <CAK8P3a2ZnKeeZ-zEWO+vHogs0DdLuDrZet61cSmJe_UMYhtaWQ@mail.gmail.com>
+ <5148eb2aaceb42d78087bc6d8ce15183@hisilicon.com> <5fcea94e-6fc9-c340-d7d2-4ae8b69890b8@telegraphics.com.au>
+ <0c0ea8eca77c45ea89f2d4432580211c@hisilicon.com> <28d4b91d-1774-a8a-df97-7ac9b365c2@telegraphics.com.au>
+ <CAK8P3a0VquJPxvS8B=2kLQ5y=h5BftJDR7WJYmj3hgQ8yQY5=Q@mail.gmail.com>
+ <CAMuHMdUFv2r+YAttodcXhLxEVe+2KXgAG=q8Z3vA6WUKQj7zVA@mail.gmail.com> <CAK8P3a08y3pH6OGtPnPs_HMHRh0Q8xnKr40Lt=vMCW6T1yjz6w@mail.gmail.com>
+In-Reply-To: <CAK8P3a08y3pH6OGtPnPs_HMHRh0Q8xnKr40Lt=vMCW6T1yjz6w@mail.gmail.com>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Thu, 18 Feb 2021 16:38:40 +0100
+Message-ID: <CAMuHMdVD+BhxXcmZYvVK5QgtNsmbgyzS_Yx+dbFYmN8xdw0kDA@mail.gmail.com>
+Subject: Re: [RFC] IRQ handlers run with some high-priority interrupts(not
+ NMI) enabled on some platform
+To:     Arnd Bergmann <arnd@kernel.org>
+Cc:     Finn Thain <fthain@telegraphics.com.au>,
+        "Song Bao Hua (Barry Song)" <song.bao.hua@hisilicon.com>,
+        "tglx@linutronix.de" <tglx@linutronix.de>,
+        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
+        "arnd@arndb.de" <arnd@arndb.de>,
+        "funaho@jurai.org" <funaho@jurai.org>,
+        "philb@gnu.org" <philb@gnu.org>, "corbet@lwn.net" <corbet@lwn.net>,
+        "mingo@redhat.com" <mingo@redhat.com>,
+        "linux-m68k@lists.linux-m68k.org" <linux-m68k@lists.linux-m68k.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-On Thu, Feb 18, 2021 at 05:28:32PM +0200, Andy Shevchenko wrote:
-> On Wed, Feb 17, 2021 at 08:05:12PM -0800, Yury Norov wrote:
-> > Add myself as maintainer for bitmap API.
-> > 
-> > I'm an author of current implementation of lib/find_bit and an
-> > active contributor to lib/bitmap. It was spotted that there's no
-> > maintainer for bitmap API. I'm willing to maintain it.
-> 
-> Perhaps reviewers as well, like Rasmus, if he is okay with that, of course?
+Hi Arnd,
 
-I'll be happy if you and Rasmus join the team. :) Guys, just let me
-know and I'll update the patch.
- 
-> Otherwise, why not?
-> Acked-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-> 
-> > Signed-off-by: Yury Norov <yury.norov@gmail.com>
-> > ---
-> >  MAINTAINERS | 14 ++++++++++++++
-> >  1 file changed, 14 insertions(+)
-> > 
-> > diff --git a/MAINTAINERS b/MAINTAINERS
-> > index 7bdf12d3e0a8..9f8540a9dabf 100644
-> > --- a/MAINTAINERS
-> > +++ b/MAINTAINERS
-> > @@ -3146,6 +3146,20 @@ F:	Documentation/filesystems/bfs.rst
-> >  F:	fs/bfs/
-> >  F:	include/uapi/linux/bfs_fs.h
-> >  
-> > +BITMAP API
-> > +M:	Yury Norov <yury.norov@gmail.com>
-> > +S:	Maintained
-> > +F:	include/asm-generic/bitops/find.h
-> > +F:	include/linux/bitmap.h
-> > +F:	lib/bitmap.c
-> > +F:	lib/find_bit.c
-> > +F:	lib/find_find_bit_benchmark.c
-> > +F:	lib/test_bitmap.c
-> > +F:	tools/include/asm-generic/bitops/find.h
-> > +F:	tools/include/linux/bitmap.h
-> > +F:	tools/lib/bitmap.c
-> > +F:	tools/lib/find_bit.c
-> > +
-> >  BLINKM RGB LED DRIVER
-> >  M:	Jan-Simon Moeller <jansimon.moeller@gmx.de>
-> >  S:	Maintained
-> > -- 
-> > 2.25.1
-> > 
-> 
-> -- 
-> With Best Regards,
-> Andy Shevchenko
-> 
+On Thu, Feb 18, 2021 at 2:59 PM Arnd Bergmann <arnd@kernel.org> wrote:
+> On Thu, Feb 18, 2021 at 1:30 PM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
+> > The reason drivers/ide is doing that may be related to IDE hard drive
+> > quirks.  The old WD Caviar drives didn't obey disabling the IDE interrupt
+> > at the drive level.  On PC, that worked fine, as IRQs 14 and 15 weren't
+> > shared with other devices.  On systems with shared interrupts, that
+> > broke badly, and led to an interrupt storm.
+>
+> So presumably anyone that has one of those old drives will not be
+> able to move to drivers/ata then? I see that drivers/ata doesn't do
+> the transfers in interrupt mode, so it would seem to rely on masking
+> at the device level.
+
+I don't know.  This was an issue I debugged on a friend's Amiga in 1995
+or so ;-)  All bad WD Caviars may have died in the meantime...
+
+BTW, it wouldn't be the first time a drive quirk handling wasn't ported
+from drivers/ide/ to drivers/ata/.
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
+-- 
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
