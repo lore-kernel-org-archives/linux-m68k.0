@@ -2,149 +2,136 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+X-Spam-Status: No, score=-4.3 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,NICE_REPLY_A,SPF_HELO_NONE,
+	SPF_PASS,USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 60B25C433E0
-	for <linux-m68k@archiver.kernel.org>; Thu, 18 Feb 2021 19:46:35 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D612DC433DB
+	for <linux-m68k@archiver.kernel.org>; Thu, 18 Feb 2021 22:12:12 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 12F6564EAF
-	for <linux-m68k@archiver.kernel.org>; Thu, 18 Feb 2021 19:46:35 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 9DA4364E77
+	for <linux-m68k@archiver.kernel.org>; Thu, 18 Feb 2021 22:12:12 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231250AbhBRTqH (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Thu, 18 Feb 2021 14:46:07 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52988 "EHLO
+        id S229655AbhBRWMM (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Thu, 18 Feb 2021 17:12:12 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60668 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231553AbhBRTZF (ORCPT
+        with ESMTP id S229577AbhBRWML (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Thu, 18 Feb 2021 14:25:05 -0500
-Received: from mail-qv1-xf33.google.com (mail-qv1-xf33.google.com [IPv6:2607:f8b0:4864:20::f33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A39EAC0613D6
-        for <linux-m68k@lists.linux-m68k.org>; Thu, 18 Feb 2021 11:24:22 -0800 (PST)
-Received: by mail-qv1-xf33.google.com with SMTP id g3so1491268qvl.2
-        for <linux-m68k@lists.linux-m68k.org>; Thu, 18 Feb 2021 11:24:22 -0800 (PST)
+        Thu, 18 Feb 2021 17:12:11 -0500
+Received: from mail-pf1-x434.google.com (mail-pf1-x434.google.com [IPv6:2607:f8b0:4864:20::434])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B666FC061756
+        for <linux-m68k@lists.linux-m68k.org>; Thu, 18 Feb 2021 14:11:31 -0800 (PST)
+Received: by mail-pf1-x434.google.com with SMTP id q20so2300605pfu.8
+        for <linux-m68k@lists.linux-m68k.org>; Thu, 18 Feb 2021 14:11:31 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=mXM5l1A/rr2ByJpBGKJkreiRJB4kUscTTSOxZVH+5OE=;
-        b=S/1Zj2rIHDp94Hy7Lrt4L/xh6dTEeTwa+m6A8XtFbEUiecdRcMxUk1NgfIGY2q39AK
-         FzmYw7TJZUIqLjLFIZQpm1IhA43Glh72V3tlgVUnbXmG7chWrLq9i5YnB9GyhSoQdZKE
-         FlQry+iTUyO0pUzY0s3qymVBa/mztuIOExwpxrc1WzGs0GIVA+gLoCmkTsDjixArpIlK
-         V9wewO3y/NPHs66KUMNW8OtgcHb5o1ly+cOiawI8BHmX50kSY7Dx8qQyEf8YMiwaJfa5
-         SCq9Ku2s2wNmZxoCeaYJMLt6jfju1GZKd2fzi6Y7eDR0DQD1hbMOoJJ3yVW2uULSmZhF
-         Cu0g==
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-transfer-encoding:content-language;
+        bh=2BNm2Sy2P6jkCZbThkkqBfZaxS28xMnq4sQPLlpKVSc=;
+        b=oPxQ3zEatebLUJOzFuvXtpdBFNS1aXVvmULx3Vq1K7IH02cgp5JVRon+523RsysY4Q
+         NL9J7g0zml/wR7e9fBS7psfKr4ArmYBon9T+bDMYbNqhpJYgrSpSkKosODNPPkDQPOGs
+         wvHzGkgxOAD0cNO2WG5HTNhMPGRJKfRs66zqmc+9vYJqtewa44HvMOIvSAI5XHj96DFP
+         b3W41c7fU72hO0md5JE3DaJf0oXfJT0xL4E5F8AdwUg6wOi1UBryWr7rQv5nWFMHXe3R
+         5kqiD+FtAkgFcYepvCsIbm+E0j0rdwGm1ZnPuG6pN46/vdEZ5greAcqJkUL/27EBRFYW
+         gBeQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=mXM5l1A/rr2ByJpBGKJkreiRJB4kUscTTSOxZVH+5OE=;
-        b=Z6qSPzNxF91ALwwvTjji3xvvcKVXqYqCOLAQiZJmjLf5tW4EUdZYe9dGohXjiXl4RT
-         ADe/SgoMNakzXQgW4ChqIV8bIDC1xpk7KTfLJdZR+F8F+R5iRDRqme9ajkwQzryOg444
-         gcg5t4dssJ3KqcMIOv73WD1btj4mfgmoM5GtNQL3kq/B5mLA3bODyNjVjaCOE840u7wJ
-         bR0UTEtnCGSlELPNqlUBKwpB/ZxdHEAfzMp6nPbpUGTOX2L6eJle3htW5YssQt7mPSvR
-         yvjSakYntmBKiwbewBJFgxT1NOZ/rxtaa4YABMGSlvaN/42fPhOUVnentXUAOY7gnZHT
-         lBpA==
-X-Gm-Message-State: AOAM531F9yPL/plKdby0PVRfvCtt5oetJM+UYAl/U69ebVsbCYAQht81
-        TR+wZiv2G+NNCFeJewXulug=
-X-Google-Smtp-Source: ABdhPJyMSh9g14GV26Z4i40nLxt6vVBDIr9z7jhPcJi5tm6xS2HnR/vD0o8ec2Yg+2YlHh+kg/WzCg==
-X-Received: by 2002:a0c:90c9:: with SMTP id p67mr5761632qvp.14.1613676261132;
-        Thu, 18 Feb 2021 11:24:21 -0800 (PST)
-Received: from localhost (d27-96-190-162.evv.wideopenwest.com. [96.27.162.190])
-        by smtp.gmail.com with ESMTPSA id f26sm4479242qkh.80.2021.02.18.11.24.20
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 18 Feb 2021 11:24:20 -0800 (PST)
-Date:   Thu, 18 Feb 2021 11:24:19 -0800
-From:   Yury Norov <yury.norov@gmail.com>
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     linux-kernel@vger.kernel.org, linux-m68k@lists.linux-m68k.org,
-        linux-arch@vger.kernel.org, linux-sh@vger.kernel.org,
-        Alexey Klimov <aklimov@redhat.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Arnd Bergmann <arnd@arndb.de>, David Sterba <dsterba@suse.com>,
-        Dennis Zhou <dennis@kernel.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Jianpeng Ma <jianpeng.ma@intel.com>,
-        Joe Perches <joe@perches.com>,
-        John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        Rich Felker <dalias@libc.org>,
-        Stefano Brivio <sbrivio@redhat.com>,
-        Wei Yang <richard.weiyang@linux.alibaba.com>,
-        Wolfram Sang <wsa+renesas@sang-engineering.com>,
-        Yoshinori Sato <ysato@users.sourceforge.jp>
-Subject: Re: [PATCH 08/14] lib/Kconfig: introduce FAST_PATH option
-Message-ID: <20210218192419.GA788573@yury-ThinkPad>
-References: <20210218040512.709186-1-yury.norov@gmail.com>
- <20210218040512.709186-9-yury.norov@gmail.com>
- <YC6EnzFUXDuroy0+@smile.fi.intel.com>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=2BNm2Sy2P6jkCZbThkkqBfZaxS28xMnq4sQPLlpKVSc=;
+        b=E6k+6n4oydudGz5CizP0wCrwG+h5q/JGrDrPRDpzmxjzDPc3jc275dhfXQRuV/eBih
+         UhcLlHAaG3g7PHdbSO1CR6nG1/LNqebBtvq9p3GcNMvMNmEvotiLahIlTuGmsSvEAiKb
+         3gxhj2pE1mJUJu96jTDsyZ6kZ1+LS9s0H9F7xfyb7rMVdqBOoUxZX6a4ThjYBgCP2tW6
+         PKeusVLOYKmE5HssMi0HgTSgFwBp+rvCNcK5QbZFVjmcmqOJqwdTd3Ue9Db2+nHX0F6b
+         KTYK9D7ZxiWCBmfe9yKzT8FNZz679n9EiR7jYXiiiis/vDYIzuxoJwuPEremlLd1FPvh
+         oKww==
+X-Gm-Message-State: AOAM530emFzFvLQnmeIJISEl3OiGRgceA1ESbiUz6ZTJR8IzyDsFVWJT
+        HjUoztjSuRXICm/1srWLYPo=
+X-Google-Smtp-Source: ABdhPJxunsRgQ2CCJLlBTWsCnLsHP+9AYoritUi0UOKmRkBpaGRwAA8k6z+KtBvdBCqVxt4KqfftJw==
+X-Received: by 2002:a62:154a:0:b029:1e6:ca6b:d5c6 with SMTP id 71-20020a62154a0000b02901e6ca6bd5c6mr6133870pfv.47.1613686291089;
+        Thu, 18 Feb 2021 14:11:31 -0800 (PST)
+Received: from ?IPv6:2001:df0:0:200c:184:e9f:a921:953a? ([2001:df0:0:200c:184:e9f:a921:953a])
+        by smtp.gmail.com with ESMTPSA id w3sm6233935pjt.24.2021.02.18.14.11.26
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 18 Feb 2021 14:11:30 -0800 (PST)
+Subject: Re: [RFC] IRQ handlers run with some high-priority interrupts(not
+ NMI) enabled on some platform
+To:     Arnd Bergmann <arnd@kernel.org>,
+        Finn Thain <fthain@telegraphics.com.au>
+Cc:     "Song Bao Hua (Barry Song)" <song.bao.hua@hisilicon.com>,
+        "tglx@linutronix.de" <tglx@linutronix.de>,
+        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
+        "arnd@arndb.de" <arnd@arndb.de>,
+        "geert@linux-m68k.org" <geert@linux-m68k.org>,
+        "funaho@jurai.org" <funaho@jurai.org>,
+        "philb@gnu.org" <philb@gnu.org>, "corbet@lwn.net" <corbet@lwn.net>,
+        "mingo@redhat.com" <mingo@redhat.com>,
+        "linux-m68k@lists.linux-m68k.org" <linux-m68k@lists.linux-m68k.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+References: <c46ddb954cfe45d9849c911271d7ec23@hisilicon.com>
+ <CAK8P3a2adJsz5hRT_eMzSoHnUBC+aK9HZ18=oAYCZ-gisEkd1w@mail.gmail.com>
+ <24e0652b3afa48cdbf7c83287e43c087@hisilicon.com>
+ <CAK8P3a0fwMe9LaXMfKjH46yvt6o-euZJZ4HXtVRPhYbKvAUPKg@mail.gmail.com>
+ <0b766dba0b004ced94131e158cd8e67d@hisilicon.com>
+ <CAK8P3a2ZnKeeZ-zEWO+vHogs0DdLuDrZet61cSmJe_UMYhtaWQ@mail.gmail.com>
+ <5148eb2aaceb42d78087bc6d8ce15183@hisilicon.com>
+ <5fcea94e-6fc9-c340-d7d2-4ae8b69890b8@telegraphics.com.au>
+ <0c0ea8eca77c45ea89f2d4432580211c@hisilicon.com>
+ <28d4b91d-1774-a8a-df97-7ac9b365c2@telegraphics.com.au>
+ <CAK8P3a0VquJPxvS8B=2kLQ5y=h5BftJDR7WJYmj3hgQ8yQY5=Q@mail.gmail.com>
+From:   Michael Schmitz <schmitzmic@gmail.com>
+Message-ID: <a8595ec5-88db-072c-9cc3-7a3a301fe191@gmail.com>
+Date:   Fri, 19 Feb 2021 11:11:20 +1300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YC6EnzFUXDuroy0+@smile.fi.intel.com>
+In-Reply-To: <CAK8P3a0VquJPxvS8B=2kLQ5y=h5BftJDR7WJYmj3hgQ8yQY5=Q@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-On Thu, Feb 18, 2021 at 05:15:43PM +0200, Andy Shevchenko wrote:
-> On Wed, Feb 17, 2021 at 08:05:06PM -0800, Yury Norov wrote:
-> > This series introduces fast paths for find_bit() routines. It is
-> > beneficial for typical systems, but those who limited in I-cache
-> > may be concerned about increasing the .text size of the Image.
-> > 
-> > To address this concern, one can disable FAST_PATH option in the config
-> > and some save memory.
-> > 
-> > The effect of this option on my arm64 next-20210217 build is:
-> 
-> (Maybe bloat-o-meter will give better view on this, i.e. more human-readable)
+On 19/02/21 12:19 am, Arnd Bergmann wrote:
 
-Never heard about this tool, thanks for the hint.
+> drivers/net/ethernet/8390/apne.c
+> drivers/net/ethernet/8390/ax88796.c
+> drivers/net/ethernet/8390/hydra.c
+> drivers/net/ethernet/8390/mac8390.c
+> drivers/net/ethernet/8390/ne.c
+> drivers/net/ethernet/8390/zorro8390.c
+[...]
+> Most of these are normal short-lived interrupts that only transfer
+> a few bytes or schedule deferred processing of some sort.
+> Most of the scsi and network drivers process the data in
+> a softirq, so those are generally fine here, but I do see that 8390
+> (ne2000) ethernet and the drivers/ide drivers do transfer their
+> data in hardirq context.
+>
+>          Arnd
 
-scripts/bloat-o-meter vmlinux vmlinux.new
-add/remove: 16/13 grow/shrink: 111/439 up/down: 3616/-19352 (-15736)
-Function                                     old     new   delta
-find_next_bit.constprop                        -     220    +220
-apply_wqattrs_cleanup                          -     176    +176
-memcg_free_shrinker_maps                       -     172    +172
-...
-cpuset_hotplug_workfn                       2584    2288    -296
-task_numa_fault                             3640    3320    -320
-kmem_cache_free_bulk                        1684    1280    -404
-Total: Before=26085140, After=26069404, chg -0.06%
+8390 ethernet drivers are widely used on m68k platforms (Amiga and 
+Atari). At least on Amiga, the corresponding interrupt is a hardirq so 
+I'd advise caution. That said, the 8390 drivers might benefit from some 
+refactoring (the way these drivers are compiled does prevent e.g. the 
+APNE driver from being used with two different variants of PCMCIA 
+interfaces. I had begun some work on making IO primitives runtime 
+selected two years ago but that ended up looking too ugly ...).
 
-The complete output is here:
-https://pastebin.com/kBSdVJcK
+Can't recall what IPL the 8390 interrupts operate at - Geert?
 
-So if I understand the output correctly, the size of .text is decreased...
-Looks weird, but if it's true, we don't need the FAST_BIT config at all
-because there's no tradeoff, and I should drop the patch.
+Regarding allowing preemption of hardirqs - at least in 2017, that was 
+considered perfectly OK (see Linus' comment on 
+https://lore.kernel.org/patchwork/patch/794954/). I concur with Finn on 
+this one - we did look for potential issues with the way irqs_disabled() 
+is defined on m68k (for me, in the context of the above bug that caused 
+memory corruption on my system), and found none.
 
-Hmm...
+Cheers,
 
-> > +config FAST_PATH
-> 
-> I think the name is to broad for this cases, perhaps BITS_FAST_PATH? or BITMAP?
+     Michael
 
-My logic was that since SMALL_CONST() is global, and FAST_PATH
-controls the SMALL_CONST, it should also be global. I believe,
-Linux should have a global switch to control the behaviour in
-such cases, similarly to -Os compiler option. And I was surprized
-when I found nothing like FAST_PATH in the config.
-
-What about having FAST_PATH as a global option, and later if someone
-will request for granularity, we'll introduce nested configs?
-
-> > +	bool "Enable fast path code generation"
-> > +	default y
-> > +	help
-> > +	  This option enables fast path optimization with the cost of increasing
-> > +	  the text section.
-> 
-> -- 
-> With Best Regards,
-> Andy Shevchenko
-> 
