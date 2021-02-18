@@ -2,133 +2,151 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.7 required=3.0 tests=BAYES_00,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-10.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 1D58DC433E6
-	for <linux-m68k@archiver.kernel.org>; Wed, 17 Feb 2021 22:44:46 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A5CEFC433E0
+	for <linux-m68k@archiver.kernel.org>; Thu, 18 Feb 2021 04:06:07 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id D969B64D92
-	for <linux-m68k@archiver.kernel.org>; Wed, 17 Feb 2021 22:44:45 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 6608F64E28
+	for <linux-m68k@archiver.kernel.org>; Thu, 18 Feb 2021 04:06:07 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232948AbhBQWof convert rfc822-to-8bit (ORCPT
-        <rfc822;linux-m68k@archiver.kernel.org>);
-        Wed, 17 Feb 2021 17:44:35 -0500
-Received: from szxga08-in.huawei.com ([45.249.212.255]:2843 "EHLO
-        szxga08-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233960AbhBQWm2 (ORCPT
+        id S230199AbhBREGE (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Wed, 17 Feb 2021 23:06:04 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53958 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229864AbhBREF4 (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Wed, 17 Feb 2021 17:42:28 -0500
-Received: from DGGEMM405-HUB.china.huawei.com (unknown [172.30.72.53])
-        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4Dgt6z6thYz13vm8;
-        Thu, 18 Feb 2021 06:39:07 +0800 (CST)
-Received: from dggemi761-chm.china.huawei.com (10.1.198.147) by
- DGGEMM405-HUB.china.huawei.com (10.3.20.213) with Microsoft SMTP Server (TLS)
- id 14.3.498.0; Thu, 18 Feb 2021 06:41:33 +0800
-Received: from dggemi761-chm.china.huawei.com (10.1.198.147) by
- dggemi761-chm.china.huawei.com (10.1.198.147) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2106.2; Thu, 18 Feb 2021 06:41:33 +0800
-Received: from dggemi761-chm.china.huawei.com ([10.9.49.202]) by
- dggemi761-chm.china.huawei.com ([10.9.49.202]) with mapi id 15.01.2106.006;
- Thu, 18 Feb 2021 06:41:33 +0800
-From:   "Song Bao Hua (Barry Song)" <song.bao.hua@hisilicon.com>
-To:     Finn Thain <fthain@telegraphics.com.au>
-CC:     Arnd Bergmann <arnd@kernel.org>,
-        "tglx@linutronix.de" <tglx@linutronix.de>,
-        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
-        "arnd@arndb.de" <arnd@arndb.de>,
-        "geert@linux-m68k.org" <geert@linux-m68k.org>,
-        "funaho@jurai.org" <funaho@jurai.org>,
-        "philb@gnu.org" <philb@gnu.org>, "corbet@lwn.net" <corbet@lwn.net>,
-        "mingo@redhat.com" <mingo@redhat.com>,
-        "linux-m68k@lists.linux-m68k.org" <linux-m68k@lists.linux-m68k.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: RE: [RFC] IRQ handlers run with some high-priority interrupts(not
- NMI) enabled on some platform
-Thread-Topic: [RFC] IRQ handlers run with some high-priority interrupts(not
- NMI) enabled on some platform
-Thread-Index: AdcA2xDwQTa7W6j6SmS4J3iBnsSynAAcRXSAABFJYBD//354gP//dYEggAGu1ID//yBa4P/+Ln+AAHCiVQD/+aOIoA==
-Date:   Wed, 17 Feb 2021 22:41:33 +0000
-Message-ID: <0c0ea8eca77c45ea89f2d4432580211c@hisilicon.com>
-References: <c46ddb954cfe45d9849c911271d7ec23@hisilicon.com>
- <CAK8P3a2adJsz5hRT_eMzSoHnUBC+aK9HZ18=oAYCZ-gisEkd1w@mail.gmail.com>
- <24e0652b3afa48cdbf7c83287e43c087@hisilicon.com>
- <CAK8P3a0fwMe9LaXMfKjH46yvt6o-euZJZ4HXtVRPhYbKvAUPKg@mail.gmail.com>
- <0b766dba0b004ced94131e158cd8e67d@hisilicon.com>
- <CAK8P3a2ZnKeeZ-zEWO+vHogs0DdLuDrZet61cSmJe_UMYhtaWQ@mail.gmail.com>
-  <5148eb2aaceb42d78087bc6d8ce15183@hisilicon.com>
- <5fcea94e-6fc9-c340-d7d2-4ae8b69890b8@telegraphics.com.au>
-In-Reply-To: <5fcea94e-6fc9-c340-d7d2-4ae8b69890b8@telegraphics.com.au>
-Accept-Language: en-GB, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [10.47.96.186]
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
+        Wed, 17 Feb 2021 23:05:56 -0500
+Received: from mail-qt1-x836.google.com (mail-qt1-x836.google.com [IPv6:2607:f8b0:4864:20::836])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 804B9C061574
+        for <linux-m68k@lists.linux-m68k.org>; Wed, 17 Feb 2021 20:05:16 -0800 (PST)
+Received: by mail-qt1-x836.google.com with SMTP id f17so524830qth.7
+        for <linux-m68k@lists.linux-m68k.org>; Wed, 17 Feb 2021 20:05:16 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Anw9cEcn1eDvMf97OuUTfQWEQYyRaeSoAqep/Q3hH3A=;
+        b=MC2cYL7V1Y93aG+3eIujXEq/cECpUkkWjzZh1DWxkbV6PPDmuMzkUa1y83FwKTJ7A0
+         sOvCXq0OqzD2/pj5hEqmNFpDWaCbPLZx1nQa5KTZ8xPd5Sja+WQ79oIPzgZMdEKDkylX
+         wxffJbL73YjRCB3W6XghnrUzm6mgodwz+P30SCTd8YvjRjSlkWrXYzSx//Pe63FBrZL0
+         7ZgumI6pHK0F8ORZgT5QdPXJn3Tv8tjwnwrZ2J63wLBfZ1aun00NHAghkihp4ntDeDjg
+         nUAN7DvdNq2eZgK7RK+H+sb5P4pxXI+BgPBJBLUKnaJCQnkAJxlUXeAqGY6bjpDyrcm5
+         2wmg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Anw9cEcn1eDvMf97OuUTfQWEQYyRaeSoAqep/Q3hH3A=;
+        b=AT+H9Xk5drkCXss8NHJG1JvhA5F/Wo/xKC0vQIEvpVPc7g0x22IFurdNJH4D7oB+Qs
+         gdlsUu4bOWkN5bHstBcouHnId8KydVOo9FiEUBiLtsGeCU0JxT5N0XJGMoC/I5Z00Q1q
+         Ka6B3EuyPuuJlQSgU5g3P0wrTAQV7Zo6Ldk0vFTUXw4ohyuP45W3SaRhj87TVK7jJcW2
+         TRp0ap/sTzvcp2i3ss+9cN2TPWbMi09kJGgcmVIgQgDrqAMfE5jeE+rj2MIpjdsO4jRD
+         BKq4i/DLOtKv8/rG9s1E0A/MFIgJxIsldHVCcBnr2KzKOtK2A0PXmAfDBKr6T+VcKRmj
+         XB0A==
+X-Gm-Message-State: AOAM532pRC1rbeMBb3q4Y4V+wnM8SrJ5IjmEdt8lVwMBaI7GcbKgFX1Q
+        PO5KTqv8bLc4zCNeZFjptXI=
+X-Google-Smtp-Source: ABdhPJzWKZa3V+XRAH2TxMip8hFIPnAyTI9CntxouLiv9yLgr9nXcRQsdHmls5qcB0UACH5OJcjMSg==
+X-Received: by 2002:ac8:1415:: with SMTP id k21mr2613356qtj.181.1613621115642;
+        Wed, 17 Feb 2021 20:05:15 -0800 (PST)
+Received: from localhost (d27-96-190-162.evv.wideopenwest.com. [96.27.162.190])
+        by smtp.gmail.com with ESMTPSA id x79sm3186223qka.75.2021.02.17.20.05.14
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 17 Feb 2021 20:05:14 -0800 (PST)
+From:   Yury Norov <yury.norov@gmail.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     Yury Norov <yury.norov@gmail.com>, linux-m68k@lists.linux-m68k.org,
+        linux-arch@vger.kernel.org, linux-sh@vger.kernel.org,
+        Alexey Klimov <aklimov@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Arnd Bergmann <arnd@arndb.de>, David Sterba <dsterba@suse.com>,
+        Dennis Zhou <dennis@kernel.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Jianpeng Ma <jianpeng.ma@intel.com>,
+        Joe Perches <joe@perches.com>,
+        John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        Rich Felker <dalias@libc.org>,
+        Stefano Brivio <sbrivio@redhat.com>,
+        Wei Yang <richard.weiyang@linux.alibaba.com>,
+        Wolfram Sang <wsa+renesas@sang-engineering.com>,
+        Yoshinori Sato <ysato@users.sourceforge.jp>
+Subject: [PATCH v3 00/14] lib/find_bit: fast path for small bitmaps
+Date:   Wed, 17 Feb 2021 20:04:58 -0800
+Message-Id: <20210218040512.709186-1-yury.norov@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-X-CFilter-Loop: Reflected
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
+Bitmap operations are much simpler and faster in case of small bitmaps
+which fit into a single word. In linux/bitmap.c we have a machinery that
+allows compiler to replace actual function call with a few instructions
+if bitmaps passed into the function are small and their size is known at
+compile time.
 
+find_*_bit() API lacks this functionality; but users will benefit from it
+a lot. One important example is cpumask subsystem when
+NR_CPUS <= BITS_PER_LONG.
 
-> -----Original Message-----
-> From: Finn Thain [mailto:fthain@telegraphics.com.au]
-> Sent: Sunday, February 14, 2021 6:11 PM
-> To: Song Bao Hua (Barry Song) <song.bao.hua@hisilicon.com>
-> Cc: Arnd Bergmann <arnd@kernel.org>; tglx@linutronix.de;
-> gregkh@linuxfoundation.org; arnd@arndb.de; geert@linux-m68k.org;
-> funaho@jurai.org; philb@gnu.org; corbet@lwn.net; mingo@redhat.com;
-> linux-m68k@lists.linux-m68k.org; linux-kernel@vger.kernel.org
-> Subject: RE: [RFC] IRQ handlers run with some high-priority interrupts(not NMI)
-> enabled on some platform
-> 
-> On Sat, 13 Feb 2021, Song Bao Hua (Barry Song) wrote:
-> 
-> >
-> > So what is really confusing and a pain to me is that:
-> > For years people like me have been writing device drivers
-> > with the idea that irq handlers run with interrupts
-> > disabled after those commits in genirq. So I don't need
-> > to care about if some other IRQs on the same cpu will
-> > jump out to access the data the current IRQ handler
-> > is accessing.
-> >
-> > but it turns out the assumption is not true on some platform.
-> > So should I start to program devices driver with the new idea
-> > interrupts can actually come while irqhandler is running?
-> >
-> > That's the question which really bothers me.
-> >
-> 
-> That scenario seems a little contrived to me (drivers for two or more
-> devices sharing state through their interrupt handlers). Is it real?
-> I suppose every platform has its quirks. The irq lock in sonic_interrupt()
-> is only there because of a platform quirk (the same device can trigger
-> either of two IRQs). Anyway, no-one expects all drivers to work on all
-> platforms; I don't know why it bothers you so much when platforms differ.
+Tools is synchronized with new implementation where needed.
 
-Basically, we wrote drivers with the assumption that this driver will
-be cross-platform. (Of course there are some drivers which can only work
-on one platform, for example, if the IP of the device is only used in
-one platform as an internal component of a specific SoC.)
+v1: https://www.spinics.net/lists/kernel/msg3804727.html
+v2: https://www.spinics.net/lists/linux-m68k/msg16945.html
+v3: - split kernel and tools code;
+    - add FAST_PATH config option;
+    - add BITMAP API section to MAINTAINERS.
 
-So once a device has two or more interrupts, we need to consider one
-interrupt might preempt another one on m68k on the same cpu if we also
-want to support this driver on m68k. this usually doesn't matter on
-other platforms.
+Yury Norov (14):
+  tools: disable -Wno-type-limits
+  tools: bitmap: sync function declarations with the kernel
+  arch: rearrange headers inclusion order in asm/bitops for m68k and sh
+  lib: introduce BITS_{FIRST,LAST} macro
+  tools: sync BITS_MASK macros with the kernel
+  bitsperlong.h: introduce SMALL_CONST() macro
+  tools: introduce SMALL_CONST() macro
+  lib/Kconfig: introduce FAST_PATH option
+  lib: inline _find_next_bit() wrappers
+  tools: sync find_next_bit implementation
+  lib: add fast path for find_next_*_bit()
+  lib: add fast path for find_first_*_bit() and find_last_bit()
+  tools: sync lib/find_bit implementation
+  MAINTAINERS: Add entry for the bitmap API
 
-on the other hand, there are more than 400 irqs_disabled() in kernel,
-I am really not sure if they are running with the knowledge that
-the true irqs_disabled() actually means some interrupts are off
-and some others are still open on m68k. Or they are running with
-the assumption that the true irqs_disabled() means IRQ is totally
-quiet? If the latter is true, those drivers might fail to work on
-m68k as well.
+ MAINTAINERS                             |  14 +++
+ arch/m68k/include/asm/bitops.h          |   4 +-
+ arch/sh/include/asm/bitops.h            |   3 +-
+ include/asm-generic/bitops/find.h       | 108 +++++++++++++++++++++---
+ include/asm-generic/bitops/le.h         |  38 ++++++++-
+ include/asm-generic/bitsperlong.h       |   6 ++
+ include/linux/bitmap.h                  |  60 ++++++-------
+ include/linux/bitops.h                  |  12 ---
+ include/linux/bits.h                    |   6 ++
+ include/linux/cpumask.h                 |   8 +-
+ include/linux/netdev_features.h         |   2 +-
+ include/linux/nodemask.h                |   2 +-
+ lib/Kconfig                             |   7 ++
+ lib/bitmap.c                            |  26 +++---
+ lib/find_bit.c                          |  72 +++-------------
+ lib/genalloc.c                          |   8 +-
+ tools/include/asm-generic/bitops/find.h |  85 +++++++++++++++++--
+ tools/include/asm-generic/bitsperlong.h |   2 +
+ tools/include/linux/bitmap.h            |  47 ++++-------
+ tools/include/linux/bits.h              |   6 ++
+ tools/lib/bitmap.c                      |  10 +--
+ tools/lib/find_bit.c                    |  56 +++++-------
+ tools/scripts/Makefile.include          |   1 +
+ tools/testing/radix-tree/bitmap.c       |   4 +-
+ 24 files changed, 362 insertions(+), 225 deletions(-)
 
-Thanks
-Barry
+-- 
+2.25.1
+
