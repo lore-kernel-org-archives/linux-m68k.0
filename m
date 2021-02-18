@@ -2,125 +2,117 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.8 required=3.0 tests=BAYES_00,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
-	autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-10.3 required=3.0 tests=BAYES_00,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,
+	NICE_REPLY_A,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 70C06C433E6
-	for <linux-m68k@archiver.kernel.org>; Thu, 18 Feb 2021 05:33:52 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4A4DFC433E0
+	for <linux-m68k@archiver.kernel.org>; Thu, 18 Feb 2021 07:21:49 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 2F41E64DF0
-	for <linux-m68k@archiver.kernel.org>; Thu, 18 Feb 2021 05:33:52 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id DF32360238
+	for <linux-m68k@archiver.kernel.org>; Thu, 18 Feb 2021 07:21:48 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230104AbhBRFd3 (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Thu, 18 Feb 2021 00:33:29 -0500
-Received: from kvm5.telegraphics.com.au ([98.124.60.144]:58854 "EHLO
-        kvm5.telegraphics.com.au" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230475AbhBRFbY (ORCPT
-        <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Thu, 18 Feb 2021 00:31:24 -0500
-Received: from localhost (localhost.localdomain [127.0.0.1])
-        by kvm5.telegraphics.com.au (Postfix) with ESMTP id 07AD82ACC2;
-        Thu, 18 Feb 2021 00:30:33 -0500 (EST)
-Date:   Thu, 18 Feb 2021 16:30:20 +1100 (AEDT)
-From:   Finn Thain <fthain@telegraphics.com.au>
-To:     "Song Bao Hua (Barry Song)" <song.bao.hua@hisilicon.com>
-cc:     Arnd Bergmann <arnd@kernel.org>,
-        "tglx@linutronix.de" <tglx@linutronix.de>,
-        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
-        "arnd@arndb.de" <arnd@arndb.de>,
-        "geert@linux-m68k.org" <geert@linux-m68k.org>,
-        "funaho@jurai.org" <funaho@jurai.org>,
-        "philb@gnu.org" <philb@gnu.org>, "corbet@lwn.net" <corbet@lwn.net>,
-        "mingo@redhat.com" <mingo@redhat.com>,
-        "linux-m68k@lists.linux-m68k.org" <linux-m68k@lists.linux-m68k.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: RE: [RFC] IRQ handlers run with some high-priority interrupts(not
- NMI) enabled on some platform
-In-Reply-To: <0c0ea8eca77c45ea89f2d4432580211c@hisilicon.com>
-Message-ID: <28d4b91d-1774-a8a-df97-7ac9b365c2@telegraphics.com.au>
-References: <c46ddb954cfe45d9849c911271d7ec23@hisilicon.com> <CAK8P3a2adJsz5hRT_eMzSoHnUBC+aK9HZ18=oAYCZ-gisEkd1w@mail.gmail.com> <24e0652b3afa48cdbf7c83287e43c087@hisilicon.com> <CAK8P3a0fwMe9LaXMfKjH46yvt6o-euZJZ4HXtVRPhYbKvAUPKg@mail.gmail.com>
- <0b766dba0b004ced94131e158cd8e67d@hisilicon.com> <CAK8P3a2ZnKeeZ-zEWO+vHogs0DdLuDrZet61cSmJe_UMYhtaWQ@mail.gmail.com>  <5148eb2aaceb42d78087bc6d8ce15183@hisilicon.com> <5fcea94e-6fc9-c340-d7d2-4ae8b69890b8@telegraphics.com.au>
- <0c0ea8eca77c45ea89f2d4432580211c@hisilicon.com>
+        id S229471AbhBRHVD (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Thu, 18 Feb 2021 02:21:03 -0500
+Received: from szxga05-in.huawei.com ([45.249.212.191]:12553 "EHLO
+        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231169AbhBRHNp (ORCPT
+        <rfc822;linux-m68k@vger.kernel.org>); Thu, 18 Feb 2021 02:13:45 -0500
+Received: from DGGEMS410-HUB.china.huawei.com (unknown [172.30.72.58])
+        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4Dh5T93t3szMYgj;
+        Thu, 18 Feb 2021 15:10:37 +0800 (CST)
+Received: from [127.0.0.1] (10.40.192.162) by DGGEMS410-HUB.china.huawei.com
+ (10.3.19.210) with Microsoft SMTP Server id 14.3.498.0; Thu, 18 Feb 2021
+ 15:12:25 +0800
+Subject: Re: [Linuxarm] Re: [PATCH for-next 00/32] spin lock usage
+ optimization for SCSI drivers
+To:     Finn Thain <fthain@telegraphics.com.au>,
+        "Song Bao Hua (Barry Song)" <song.bao.hua@hisilicon.com>
+References: <1612697823-8073-1-git-send-email-tanxiaofei@huawei.com>
+ <31cd807d-3d0-ed64-60d-fde32cb3833c@telegraphics.com.au>
+ <e949a474a9284ac6951813bfc8b34945@hisilicon.com>
+ <f0a3339d-b1db-6571-fa2f-6765e150eb9d@telegraphics.com.au>
+CC:     "jejb@linux.ibm.com" <jejb@linux.ibm.com>,
+        "martin.petersen@oracle.com" <martin.petersen@oracle.com>,
+        "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linuxarm@openeuler.org" <linuxarm@openeuler.org>,
+        <linux-m68k@vger.kernel.org>
+From:   Xiaofei Tan <tanxiaofei@huawei.com>
+Message-ID: <7bc39d19-f4cc-8028-11e6-c0e45421a765@huawei.com>
+Date:   Thu, 18 Feb 2021 15:12:25 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:45.0) Gecko/20100101
+ Thunderbird/45.7.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+In-Reply-To: <f0a3339d-b1db-6571-fa2f-6765e150eb9d@telegraphics.com.au>
+Content-Type: text/plain; charset="windows-1252"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.40.192.162]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-On Wed, 17 Feb 2021, Song Bao Hua (Barry Song) wrote:
+Hi Finn,
 
-> > On Sat, 13 Feb 2021, Song Bao Hua (Barry Song) wrote:
-> > 
-> > >
-> > > So what is really confusing and a pain to me is that: For years 
-> > > people like me have been writing device drivers with the idea that 
-> > > irq handlers run with interrupts disabled after those commits in 
-> > > genirq. So I don't need to care about if some other IRQs on the same 
-> > > cpu will jump out to access the data the current IRQ handler is 
-> > > accessing.
-> > >
-> > > but it turns out the assumption is not true on some platform. So 
-> > > should I start to program devices driver with the new idea 
-> > > interrupts can actually come while irqhandler is running?
-> > >
-> > > That's the question which really bothers me.
-> > >
-> > 
-> > That scenario seems a little contrived to me (drivers for two or more 
-> > devices sharing state through their interrupt handlers). Is it real? I 
-> > suppose every platform has its quirks. The irq lock in 
-> > sonic_interrupt() is only there because of a platform quirk (the same 
-> > device can trigger either of two IRQs). Anyway, no-one expects all 
-> > drivers to work on all platforms; I don't know why it bothers you so 
-> > much when platforms differ.
-> 
-> Basically, we wrote drivers with the assumption that this driver will be 
-> cross-platform. (Of course there are some drivers which can only work on 
-> one platform, for example, if the IP of the device is only used in one 
-> platform as an internal component of a specific SoC.)
-> 
-> So once a device has two or more interrupts, we need to consider one 
-> interrupt might preempt another one on m68k on the same cpu if we also 
-> want to support this driver on m68k. this usually doesn't matter on 
-> other platforms.
-> 
+On 2021/2/9 13:06, Finn Thain wrote:
+> On Tue, 9 Feb 2021, Song Bao Hua (Barry Song) wrote:
+>
+>>> -----Original Message-----
+>>> From: Finn Thain [mailto:fthain@telegraphics.com.au]
+>>> Sent: Monday, February 8, 2021 8:57 PM
+>>> To: tanxiaofei <tanxiaofei@huawei.com>
+>>> Cc: jejb@linux.ibm.com; martin.petersen@oracle.com;
+>>> linux-scsi@vger.kernel.org; linux-kernel@vger.kernel.org;
+>>> linuxarm@openeuler.org
+>>> Subject: [Linuxarm] Re: [PATCH for-next 00/32] spin lock usage optimization
+>>> for SCSI drivers
+>>>
+>>> On Sun, 7 Feb 2021, Xiaofei Tan wrote:
+>>>
+>>>> Replace spin_lock_irqsave with spin_lock in hard IRQ of SCSI drivers.
+>>>> There are no function changes, but may speed up if interrupt happen too
+>>>> often.
+>>>
+>>> This change doesn't necessarily work on platforms that support nested
+>>> interrupts.
+>>>
+>>> Were you able to measure any benefit from this change on some other
+>>> platform?
+>>
+>> I think the code disabling irq in hardIRQ is simply wrong.
+>> Since this commit
+>> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=e58aa3d2d0cc
+>> genirq: Run irq handlers with interrupts disabled
+>>
+>> interrupt handlers are definitely running in a irq-disabled context
+>> unless irq handlers enable them explicitly in the handler to permit
+>> other interrupts.
+>>
+>
+> Repeating the same claim does not somehow make it true. If you put your
+> claim to the test, you'll see that that interrupts are not disabled on
+> m68k when interrupt handlers execute.
+>
+> The Interrupt Priority Level (IPL) can prevent any given irq handler from
+> being re-entered, but an irq with a higher priority level may be handled
+> during execution of a lower priority irq handler.
+>
+> sonic_interrupt() uses an irq lock within an interrupt handler to avoid
+> issues relating to this. This kind of locking may be needed in the drivers
+> you are trying to patch. Or it might not. Apparently, no-one has looked.
+>
 
-When users show up who desire to run your drivers on their platform, you 
-can expect them to bring patches and a MAINTAINERS file entry. AFAIK, 
-Linux development has always worked that way.
+According to your discussion with Barry, it seems that m68k is a little 
+different from other architecture, and this kind of modification of this 
+patch cannot be applied to m68k. So, could help to point out which 
+driver belong to m68k architecture in this patch set of SCSI?
+I can remove them.
 
-Besides, not all m68k platforms implement priority masking. So there's no 
-problem with portability to m68k per se.
+BTW, sonic_interrupt() is from net driver natsemi, right?  It would be 
+appreciative if only discuss SCSI drivers in this patch set. thanks.
 
-> on the other hand, there are more than 400 irqs_disabled() in kernel, I 
-> am really not sure if they are running with the knowledge that the true 
-> irqs_disabled() actually means some interrupts are off and some others 
-> are still open on m68k.
+> .
+>
 
-Firstly, use of irqs_disabled() is considered an antipattern by some 
-developers. Please see, 
-https://lore.kernel.org/linux-scsi/X8pfD5XtLoOygdez@lx-t490/
-and
-commit e6b6be53ec91 ("Merge branch 'net-in_interrupt-cleanup-and-fixes'")
-
-This means that the differences in semantics between the irqs_disabled() 
-implementations on various architectures are moot.
-
-Secondly, the existence of irqs_disabled() call sites does not imply a 
-flaw in your drivers nor in the m68k interrupt scheme. The actual semantic 
-differences are immaterial at many (all?) of these call sites.
-
-> Or they are running with the assumption that the true irqs_disabled() 
-> means IRQ is totally quiet? If the latter is true, those drivers might 
-> fail to work on m68k as well.
-> 
-
-Yes it's possible, and that was my fear too back in 2017 when I raised the 
-same question with the m68k maintainer. But I never found any code making 
-that assumption. If you know of such a bug, do tell. So far, your fears 
-remain unfounded.
-
-> Thanks
-> Barry
-> 
