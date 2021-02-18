@@ -5,58 +5,58 @@ X-Spam-Level:
 X-Spam-Status: No, score=-15.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
-	autolearn_force=no version=3.4.0
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A688FC433E0
-	for <linux-m68k@archiver.kernel.org>; Thu, 18 Feb 2021 04:06:59 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 1F34AC432C3
+	for <linux-m68k@archiver.kernel.org>; Thu, 18 Feb 2021 04:06:57 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 6D49264E4B
-	for <linux-m68k@archiver.kernel.org>; Thu, 18 Feb 2021 04:06:59 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id E6BB864E5F
+	for <linux-m68k@archiver.kernel.org>; Thu, 18 Feb 2021 04:06:56 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230332AbhBREGy (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Wed, 17 Feb 2021 23:06:54 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54152 "EHLO
+        id S229946AbhBREGv (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Wed, 17 Feb 2021 23:06:51 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54148 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230310AbhBREGo (ORCPT
+        with ESMTP id S230308AbhBREGo (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
         Wed, 17 Feb 2021 23:06:44 -0500
-Received: from mail-qt1-x836.google.com (mail-qt1-x836.google.com [IPv6:2607:f8b0:4864:20::836])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 733BEC0617A9
-        for <linux-m68k@lists.linux-m68k.org>; Wed, 17 Feb 2021 20:05:23 -0800 (PST)
-Received: by mail-qt1-x836.google.com with SMTP id w20so556725qta.0
-        for <linux-m68k@lists.linux-m68k.org>; Wed, 17 Feb 2021 20:05:23 -0800 (PST)
+Received: from mail-qv1-xf30.google.com (mail-qv1-xf30.google.com [IPv6:2607:f8b0:4864:20::f30])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 61EA4C061797
+        for <linux-m68k@lists.linux-m68k.org>; Wed, 17 Feb 2021 20:05:22 -0800 (PST)
+Received: by mail-qv1-xf30.google.com with SMTP id 2so385484qvd.0
+        for <linux-m68k@lists.linux-m68k.org>; Wed, 17 Feb 2021 20:05:22 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=6FLaYtqlcPj5mHz3wttzpDxqmTsU3JE46pi9R7LZnzQ=;
-        b=WcaKUrkhzBFoblnjEi373y1rNZ+Iv84R7dXzYpvVZucFwksStCrd6i+xfoTRvzjJCq
-         pZ1p7BEIF1oOl+8FXZnEcQO7Npv/GMkHu1QWg8/QJhaIxfjbElNQHBmj6gm877PsEv0T
-         TDOoAofxpjcDqhfwMtM8gPlCe+I0JWxfCYi6ihiCdDFzArG+TPvOrCMJkU++TbXEfEiT
-         1zxvaAnq/cA5O1yr7F1afKon6lgZ8WfLkKYHoBMo80PWnN+I2029y+WVvqvqpDKWwwle
-         UONBe+qp7YxJa2xfjoLbNO2oNbcUgQ20gwlyJuz4CnPLVlJWN0LUwcpBUJwAack17TPk
-         qPbg==
+        bh=ikJ0eLK/6OkjCoMd1X7LK5WjQKKwDBA3WSJVKIrvN0Q=;
+        b=hJg6KQKGJOnvHn0vwvN/UNsRZ03BJw7giIx2ZKPCaDoI43w6V/Bb7ASZ6QVyuy6LL7
+         wAy+CoCNsGnuJo4Aw+0i6YbUFzsWiCUGnhrnhrwwD5PMayJ+lSz+T3X0B36OjRd7CY0O
+         9+CFQeFlikpBuYVc3jEwRO0o9N2iueXh79+fZ9SAEnGgXlZmLWPB4gOpHMiFgPW1NtAa
+         a1dfEZpY70RNMlJFBDQco1J/AaC97WbbTL60/wZJtjN2Q77NzDze/Xh0X+YAyXrkE5/b
+         +Ot7oyJGO7xF4PZHE6F/mUFsN06aq1qVgq0hcb0g8NykkGqzccjRAg7tna9k50ssR513
+         bNNQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=6FLaYtqlcPj5mHz3wttzpDxqmTsU3JE46pi9R7LZnzQ=;
-        b=JGUzAKhS+rMC24Nmf0/W5LYHr/5ZbG7wM98+uI8wSs4A2Cxjcts+13bg87Tj+Im8Ik
-         uHPWlF/yDQhIzTquGZEykjqcP7AYpsGF0JxzxNXs12fPClSTZOEUMB8ewae5tsXE6Wa/
-         LLD0Xnh9pN8BVg2IYeUeDrcmiD+Zu60pOW7WZBgIzRAODjv04FWtLeUUXvQTAYYt0eeW
-         YepHHSe+M6T1im5AWXvVMXcFbySk5AIRPbuyFcjzMANze62ZWjYReambm7ruOrHgXlAv
-         Z8NYVT8eT50HHTIyTsuWpKIFsuxCf3oeesKTxtkZLacTjcWLIsmetlutgbCGtgITSq7n
-         rhqw==
-X-Gm-Message-State: AOAM532iTjYjgVgZ6zDCLWqPRsmDY3WSb+ztRySs3ylyU8Jksc/d0Fhz
-        SQ1V5Wh/Oe7qlEJpwFbb7Eg=
-X-Google-Smtp-Source: ABdhPJzD9ex6BPIwZwBTxQRWM29pvG7PcO8nqZzvvxw3eMNa8TLjrRaZkC8xW/fyY/pkdE6kuXRemg==
-X-Received: by 2002:ac8:ac4:: with SMTP id g4mr1888414qti.88.1613621122627;
-        Wed, 17 Feb 2021 20:05:22 -0800 (PST)
+        bh=ikJ0eLK/6OkjCoMd1X7LK5WjQKKwDBA3WSJVKIrvN0Q=;
+        b=a7a12wOoM06EKeJIlvehC9GacDNBcWh+lQPnVr/ooRL0V5GwvQPrQu2+qGkHD4uuTM
+         w5ozO6WNK3mLg1Efqa16ej7f4eHkF7uosShZZqIoSdutxKE0sSCtTcoSUbgF05vJ2cdt
+         kmRRTnUD9+ro2s5y8H97Bv7whzsqbk6dQC2HkhG+C4ubFqITMudSI8aStlTJnzCLx9l6
+         JKM8F40rFpBCTLQdkQ0oi9swIUtKUTPzt+tnUcVOX0Io6UsRfHixTBrYtiSBqlhMfuTU
+         3fmpWgcQnGpFtVtSIgNl52zg2NS6rjpD3ssF0L5ekXcs8vpT2TFfGj/qmfPDQn2Shy9M
+         xGpA==
+X-Gm-Message-State: AOAM532h+JACSDdzsnZKGC1RZZ81jB2H5lfwoqB/0CGkCDyfsmh/yxBC
+        p7/N1329uel21kTACOASU1M=
+X-Google-Smtp-Source: ABdhPJx9Tusg+e1+VHXXdGQGgvi3R8zz4RvA+JAGQDv/ycQz9J7otTemRUSc3W5l09mHkDorr8UDFQ==
+X-Received: by 2002:ad4:4631:: with SMTP id x17mr2504586qvv.6.1613621121538;
+        Wed, 17 Feb 2021 20:05:21 -0800 (PST)
 Received: from localhost (d27-96-190-162.evv.wideopenwest.com. [96.27.162.190])
-        by smtp.gmail.com with ESMTPSA id g5sm3199230qki.90.2021.02.17.20.05.22
+        by smtp.gmail.com with ESMTPSA id j66sm3255440qkf.78.2021.02.17.20.05.20
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 17 Feb 2021 20:05:22 -0800 (PST)
+        Wed, 17 Feb 2021 20:05:21 -0800 (PST)
 From:   Yury Norov <yury.norov@gmail.com>
 To:     linux-kernel@vger.kernel.org
 Cc:     Yury Norov <yury.norov@gmail.com>, linux-m68k@lists.linux-m68k.org,
@@ -77,9 +77,9 @@ Cc:     Yury Norov <yury.norov@gmail.com>, linux-m68k@lists.linux-m68k.org,
         Wei Yang <richard.weiyang@linux.alibaba.com>,
         Wolfram Sang <wsa+renesas@sang-engineering.com>,
         Yoshinori Sato <ysato@users.sourceforge.jp>
-Subject: [PATCH 06/14] bitsperlong.h: introduce SMALL_CONST() macro
-Date:   Wed, 17 Feb 2021 20:05:04 -0800
-Message-Id: <20210218040512.709186-7-yury.norov@gmail.com>
+Subject: [PATCH 05/14] tools: sync BITS_MASK macros with the kernel
+Date:   Wed, 17 Feb 2021 20:05:03 -0800
+Message-Id: <20210218040512.709186-6-yury.norov@gmail.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20210218040512.709186-1-yury.norov@gmail.com>
 References: <20210218040512.709186-1-yury.norov@gmail.com>
@@ -89,181 +89,172 @@ Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-Many algorithms become simpler if they are passed with relatively small
-input values. One example is bitmap operations when the whole bitmap fits
-into one word. To implement such simplifications, linux/bitmap.h declares
-small_const_nbits() macro.
-
-Other subsystems may also benefit from optimizations of this sort, like
-find_bit API in the following patches. So it looks helpful to generalize
-the macro and extend it's visibility.
+Remove BITMAP_{FIRST,LAST}_WORD_MASK and introduce
+BITS_{FIRST,LAST}{,_MASK} as per kernel implementation.
 
 Signed-off-by: Yury Norov <yury.norov@gmail.com>
 ---
- include/asm-generic/bitsperlong.h |  2 ++
- include/linux/bitmap.h            | 33 ++++++++++++++-----------------
- 2 files changed, 17 insertions(+), 18 deletions(-)
+ tools/include/linux/bitmap.h      | 20 ++++++--------------
+ tools/include/linux/bits.h        |  6 ++++++
+ tools/lib/bitmap.c                |  6 +++---
+ tools/lib/find_bit.c              |  2 +-
+ tools/testing/radix-tree/bitmap.c |  4 ++--
+ 5 files changed, 18 insertions(+), 20 deletions(-)
 
-diff --git a/include/asm-generic/bitsperlong.h b/include/asm-generic/bitsperlong.h
-index 3905c1c93dc2..0eeb77544f1d 100644
---- a/include/asm-generic/bitsperlong.h
-+++ b/include/asm-generic/bitsperlong.h
-@@ -23,4 +23,6 @@
- #define BITS_PER_LONG_LONG 64
- #endif
+diff --git a/tools/include/linux/bitmap.h b/tools/include/linux/bitmap.h
+index 7cbd23e56d48..b6e8430c8bc9 100644
+--- a/tools/include/linux/bitmap.h
++++ b/tools/include/linux/bitmap.h
+@@ -19,14 +19,6 @@ int __bitmap_equal(const unsigned long *bitmap1,
+ 		   const unsigned long *bitmap2, unsigned int bits);
+ void bitmap_clear(unsigned long *map, unsigned int start, int len);
  
-+#define SMALL_CONST(n) (__builtin_constant_p(n) && (unsigned long)(n) < BITS_PER_LONG)
-+
- #endif /* __ASM_GENERIC_BITS_PER_LONG */
-diff --git a/include/linux/bitmap.h b/include/linux/bitmap.h
-index adf7bd9f0467..e89f1dace846 100644
---- a/include/linux/bitmap.h
-+++ b/include/linux/bitmap.h
-@@ -224,9 +224,6 @@ extern int bitmap_print_to_pagebuf(bool list, char *buf,
-  * so make such users (should any ever turn up) call the out-of-line
-  * versions.
-  */
--#define small_const_nbits(nbits) \
--	(__builtin_constant_p(nbits) && (nbits) <= BITS_PER_LONG && (nbits) > 0)
+-#define BITMAP_FIRST_WORD_MASK(start) (~0UL << ((start) & (BITS_PER_LONG - 1)))
 -
- static inline void bitmap_zero(unsigned long *dst, unsigned int nbits)
- {
- 	unsigned int len = BITS_TO_LONGS(nbits) * sizeof(unsigned long);
-@@ -278,7 +275,7 @@ extern void bitmap_to_arr32(u32 *buf, const unsigned long *bitmap,
- static inline int bitmap_and(unsigned long *dst, const unsigned long *src1,
- 			const unsigned long *src2, unsigned int nbits)
- {
--	if (small_const_nbits(nbits))
-+	if (SMALL_CONST(nbits - 1))
- 		return (*dst = *src1 & *src2 & BITS_FIRST(nbits - 1)) != 0;
- 	return __bitmap_and(dst, src1, src2, nbits);
- }
-@@ -286,7 +283,7 @@ static inline int bitmap_and(unsigned long *dst, const unsigned long *src1,
- static inline void bitmap_or(unsigned long *dst, const unsigned long *src1,
- 			const unsigned long *src2, unsigned int nbits)
- {
--	if (small_const_nbits(nbits))
-+	if (SMALL_CONST(nbits - 1))
- 		*dst = *src1 | *src2;
- 	else
- 		__bitmap_or(dst, src1, src2, nbits);
-@@ -295,7 +292,7 @@ static inline void bitmap_or(unsigned long *dst, const unsigned long *src1,
- static inline void bitmap_xor(unsigned long *dst, const unsigned long *src1,
- 			const unsigned long *src2, unsigned int nbits)
- {
--	if (small_const_nbits(nbits))
-+	if (SMALL_CONST(nbits - 1))
- 		*dst = *src1 ^ *src2;
- 	else
- 		__bitmap_xor(dst, src1, src2, nbits);
-@@ -304,7 +301,7 @@ static inline void bitmap_xor(unsigned long *dst, const unsigned long *src1,
- static inline int bitmap_andnot(unsigned long *dst, const unsigned long *src1,
- 			const unsigned long *src2, unsigned int nbits)
- {
--	if (small_const_nbits(nbits))
-+	if (SMALL_CONST(nbits - 1))
- 		return (*dst = *src1 & ~(*src2) & BITS_FIRST(nbits - 1)) != 0;
- 	return __bitmap_andnot(dst, src1, src2, nbits);
- }
-@@ -312,7 +309,7 @@ static inline int bitmap_andnot(unsigned long *dst, const unsigned long *src1,
- static inline void bitmap_complement(unsigned long *dst, const unsigned long *src,
- 			unsigned int nbits)
- {
--	if (small_const_nbits(nbits))
-+	if (SMALL_CONST(nbits - 1))
- 		*dst = ~(*src);
- 	else
- 		__bitmap_complement(dst, src, nbits);
-@@ -328,7 +325,7 @@ static inline void bitmap_complement(unsigned long *dst, const unsigned long *sr
- static inline int bitmap_equal(const unsigned long *src1,
- 			const unsigned long *src2, unsigned int nbits)
- {
--	if (small_const_nbits(nbits))
-+	if (SMALL_CONST(nbits - 1))
- 		return !((*src1 ^ *src2) & BITS_FIRST(nbits - 1));
- 	if (__builtin_constant_p(nbits & BITMAP_MEM_MASK) &&
- 	    IS_ALIGNED(nbits, BITMAP_MEM_ALIGNMENT))
-@@ -350,7 +347,7 @@ static inline bool bitmap_or_equal(const unsigned long *src1,
- 				   const unsigned long *src3,
- 				   unsigned int nbits)
- {
--	if (!small_const_nbits(nbits))
-+	if (!SMALL_CONST(nbits - 1))
- 		return __bitmap_or_equal(src1, src2, src3, nbits);
+-#define BITMAP_LAST_WORD_MASK(nbits)					\
+-(									\
+-	((nbits) % BITS_PER_LONG) ?					\
+-		(1UL<<((nbits) % BITS_PER_LONG))-1 : ~0UL		\
+-)
+-
+ #define small_const_nbits(nbits) \
+ 	(__builtin_constant_p(nbits) && (nbits) <= BITS_PER_LONG)
  
- 	return !(((*src1 | *src2) ^ *src3) & BITS_FIRST(nbits - 1));
-@@ -359,7 +356,7 @@ static inline bool bitmap_or_equal(const unsigned long *src1,
- static inline int bitmap_intersects(const unsigned long *src1,
- 			const unsigned long *src2, unsigned int nbits)
- {
--	if (small_const_nbits(nbits))
-+	if (SMALL_CONST(nbits - 1))
- 		return ((*src1 & *src2) & BITS_FIRST(nbits - 1)) != 0;
- 	else
- 		return __bitmap_intersects(src1, src2, nbits);
-@@ -368,7 +365,7 @@ static inline int bitmap_intersects(const unsigned long *src1,
- static inline int bitmap_subset(const unsigned long *src1,
- 			const unsigned long *src2, unsigned int nbits)
- {
--	if (small_const_nbits(nbits))
-+	if (SMALL_CONST(nbits - 1))
- 		return !((*src1 & ~(*src2)) & BITS_FIRST(nbits - 1));
- 	else
- 		return __bitmap_subset(src1, src2, nbits);
-@@ -376,7 +373,7 @@ static inline int bitmap_subset(const unsigned long *src1,
+@@ -47,13 +39,13 @@ static inline void bitmap_fill(unsigned long *dst, unsigned int nbits)
+ 		unsigned int len = (nlongs - 1) * sizeof(unsigned long);
+ 		memset(dst, 0xff,  len);
+ 	}
+-	dst[nlongs - 1] = BITMAP_LAST_WORD_MASK(nbits);
++	dst[nlongs - 1] = BITS_FIRST(nbits - 1);
+ }
  
- static inline bool bitmap_empty(const unsigned long *src, unsigned nbits)
+ static inline int bitmap_empty(const unsigned long *src, unsigned nbits)
  {
--	if (small_const_nbits(nbits))
-+	if (SMALL_CONST(nbits - 1))
- 		return !(*src & BITS_FIRST(nbits - 1));
+ 	if (small_const_nbits(nbits))
+-		return ! (*src & BITMAP_LAST_WORD_MASK(nbits));
++		return !(*src & BITS_FIRST(nbits - 1));
  
  	return find_first_bit(src, nbits) == nbits;
-@@ -384,7 +381,7 @@ static inline bool bitmap_empty(const unsigned long *src, unsigned nbits)
- 
- static inline bool bitmap_full(const unsigned long *src, unsigned int nbits)
+ }
+@@ -61,7 +53,7 @@ static inline int bitmap_empty(const unsigned long *src, unsigned nbits)
+ static inline int bitmap_full(const unsigned long *src, unsigned int nbits)
  {
--	if (small_const_nbits(nbits))
-+	if (SMALL_CONST(nbits - 1))
- 		return !(~(*src) & BITS_FIRST(nbits - 1));
+ 	if (small_const_nbits(nbits))
+-		return ! (~(*src) & BITMAP_LAST_WORD_MASK(nbits));
++		return !(~(*src) & BITS_FIRST(nbits - 1));
  
  	return find_first_zero_bit(src, nbits) == nbits;
-@@ -392,7 +389,7 @@ static inline bool bitmap_full(const unsigned long *src, unsigned int nbits)
- 
- static __always_inline int bitmap_weight(const unsigned long *src, unsigned int nbits)
+ }
+@@ -69,7 +61,7 @@ static inline int bitmap_full(const unsigned long *src, unsigned int nbits)
+ static inline int bitmap_weight(const unsigned long *src, unsigned int nbits)
  {
--	if (small_const_nbits(nbits))
-+	if (SMALL_CONST(nbits - 1))
- 		return hweight_long(*src & BITS_FIRST(nbits - 1));
+ 	if (small_const_nbits(nbits))
+-		return hweight_long(*src & BITMAP_LAST_WORD_MASK(nbits));
++		return hweight_long(*src & BITS_FIRST(nbits - 1));
  	return __bitmap_weight(src, nbits);
  }
-@@ -428,7 +425,7 @@ static __always_inline void bitmap_clear(unsigned long *map, unsigned int start,
- static inline void bitmap_shift_right(unsigned long *dst, const unsigned long *src,
- 				unsigned int shift, unsigned int nbits)
+ 
+@@ -155,7 +147,7 @@ static inline int bitmap_and(unsigned long *dst, const unsigned long *src1,
+ 			     const unsigned long *src2, unsigned int nbits)
  {
--	if (small_const_nbits(nbits))
-+	if (SMALL_CONST(nbits - 1))
- 		*dst = (*src & BITS_FIRST(nbits - 1)) >> shift;
- 	else
- 		__bitmap_shift_right(dst, src, shift, nbits);
-@@ -437,7 +434,7 @@ static inline void bitmap_shift_right(unsigned long *dst, const unsigned long *s
- static inline void bitmap_shift_left(unsigned long *dst, const unsigned long *src,
- 				unsigned int shift, unsigned int nbits)
+ 	if (small_const_nbits(nbits))
+-		return (*dst = *src1 & *src2 & BITMAP_LAST_WORD_MASK(nbits)) != 0;
++		return (*dst = *src1 & *src2 & BITS_FIRST(nbits - 1)) != 0;
+ 	return __bitmap_and(dst, src1, src2, nbits);
+ }
+ 
+@@ -171,7 +163,7 @@ static inline int bitmap_equal(const unsigned long *src1,
+ 			const unsigned long *src2, unsigned int nbits)
  {
--	if (small_const_nbits(nbits))
-+	if (SMALL_CONST(nbits - 1))
- 		*dst = (*src << shift) & BITS_FIRST(nbits - 1);
- 	else
- 		__bitmap_shift_left(dst, src, shift, nbits);
-@@ -449,7 +446,7 @@ static inline void bitmap_replace(unsigned long *dst,
- 				  const unsigned long *mask,
- 				  unsigned int nbits)
- {
--	if (small_const_nbits(nbits))
-+	if (SMALL_CONST(nbits - 1))
- 		*dst = (*old & ~(*mask)) | (*new & *mask);
- 	else
- 		__bitmap_replace(dst, old, new, mask, nbits);
+ 	if (small_const_nbits(nbits))
+-		return !((*src1 ^ *src2) & BITMAP_LAST_WORD_MASK(nbits));
++		return !((*src1 ^ *src2) & BITS_FIRST(nbits - 1));
+ 	if (__builtin_constant_p(nbits & BITMAP_MEM_MASK) &&
+ 	    IS_ALIGNED(nbits, BITMAP_MEM_ALIGNMENT))
+ 		return !memcmp(src1, src2, nbits / 8);
+diff --git a/tools/include/linux/bits.h b/tools/include/linux/bits.h
+index 7f475d59a097..8c191c29506e 100644
+--- a/tools/include/linux/bits.h
++++ b/tools/include/linux/bits.h
+@@ -37,6 +37,12 @@
+ #define GENMASK(h, l) \
+ 	(GENMASK_INPUT_CHECK(h, l) + __GENMASK(h, l))
+ 
++#define BITS_FIRST(nr)		GENMASK((nr), 0)
++#define BITS_LAST(nr)		GENMASK(BITS_PER_LONG - 1, (nr))
++
++#define BITS_FIRST_MASK(nr)	BITS_FIRST((nr) % BITS_PER_LONG)
++#define BITS_LAST_MASK(nr)	BITS_LAST((nr) % BITS_PER_LONG)
++
+ #define __GENMASK_ULL(h, l) \
+ 	(((~ULL(0)) - (ULL(1) << (l)) + 1) & \
+ 	 (~ULL(0) >> (BITS_PER_LONG_LONG - 1 - (h))))
+diff --git a/tools/lib/bitmap.c b/tools/lib/bitmap.c
+index f4e914712b6f..8cffad2d1f77 100644
+--- a/tools/lib/bitmap.c
++++ b/tools/lib/bitmap.c
+@@ -13,7 +13,7 @@ int __bitmap_weight(const unsigned long *bitmap, int bits)
+ 		w += hweight_long(bitmap[k]);
+ 
+ 	if (bits % BITS_PER_LONG)
+-		w += hweight_long(bitmap[k] & BITMAP_LAST_WORD_MASK(bits));
++		w += hweight_long(bitmap[k] & BITS_FIRST_MASK(bits - 1));
+ 
+ 	return w;
+ }
+@@ -68,7 +68,7 @@ int __bitmap_and(unsigned long *dst, const unsigned long *bitmap1,
+ 		result |= (dst[k] = bitmap1[k] & bitmap2[k]);
+ 	if (bits % BITS_PER_LONG)
+ 		result |= (dst[k] = bitmap1[k] & bitmap2[k] &
+-			   BITMAP_LAST_WORD_MASK(bits));
++			   BITS_FIRST_MASK(bits - 1));
+ 	return result != 0;
+ }
+ 
+@@ -81,7 +81,7 @@ int __bitmap_equal(const unsigned long *bitmap1,
+ 			return 0;
+ 
+ 	if (bits % BITS_PER_LONG)
+-		if ((bitmap1[k] ^ bitmap2[k]) & BITMAP_LAST_WORD_MASK(bits))
++		if ((bitmap1[k] ^ bitmap2[k]) & BITS_FIRST_MASK(bits - 1))
+ 			return 0;
+ 
+ 	return 1;
+diff --git a/tools/lib/find_bit.c b/tools/lib/find_bit.c
+index ac37022e9486..49abb18549cc 100644
+--- a/tools/lib/find_bit.c
++++ b/tools/lib/find_bit.c
+@@ -43,7 +43,7 @@ static inline unsigned long _find_next_bit(const unsigned long *addr1,
+ 	tmp ^= invert;
+ 
+ 	/* Handle 1st word. */
+-	tmp &= BITMAP_FIRST_WORD_MASK(start);
++	tmp &= BITS_LAST_MASK(start);
+ 	start = round_down(start, BITS_PER_LONG);
+ 
+ 	while (!tmp) {
+diff --git a/tools/testing/radix-tree/bitmap.c b/tools/testing/radix-tree/bitmap.c
+index 66ec4a24a203..aedc15461f78 100644
+--- a/tools/testing/radix-tree/bitmap.c
++++ b/tools/testing/radix-tree/bitmap.c
+@@ -7,7 +7,7 @@ void bitmap_clear(unsigned long *map, unsigned int start, int len)
+ 	unsigned long *p = map + BIT_WORD(start);
+ 	const unsigned int size = start + len;
+ 	int bits_to_clear = BITS_PER_LONG - (start % BITS_PER_LONG);
+-	unsigned long mask_to_clear = BITMAP_FIRST_WORD_MASK(start);
++	unsigned long mask_to_clear = BITS_LAST_MASK(start);
+ 
+ 	while (len - bits_to_clear >= 0) {
+ 		*p &= ~mask_to_clear;
+@@ -17,7 +17,7 @@ void bitmap_clear(unsigned long *map, unsigned int start, int len)
+ 		p++;
+ 	}
+ 	if (len) {
+-		mask_to_clear &= BITMAP_LAST_WORD_MASK(size);
++		mask_to_clear &= BITS_FIRST_MASK(size - 1);
+ 		*p &= ~mask_to_clear;
+ 	}
+ }
 -- 
 2.25.1
 
