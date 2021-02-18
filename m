@@ -2,129 +2,125 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-15.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
-	autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-3.8 required=3.0 tests=BAYES_00,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
+	autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 0E446C433DB
-	for <linux-m68k@archiver.kernel.org>; Thu, 18 Feb 2021 04:09:56 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 70C06C433E6
+	for <linux-m68k@archiver.kernel.org>; Thu, 18 Feb 2021 05:33:52 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id CAC5D6023B
-	for <linux-m68k@archiver.kernel.org>; Thu, 18 Feb 2021 04:09:55 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 2F41E64DF0
+	for <linux-m68k@archiver.kernel.org>; Thu, 18 Feb 2021 05:33:52 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230383AbhBREJi (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Wed, 17 Feb 2021 23:09:38 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54336 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230400AbhBREHa (ORCPT
+        id S230104AbhBRFd3 (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Thu, 18 Feb 2021 00:33:29 -0500
+Received: from kvm5.telegraphics.com.au ([98.124.60.144]:58854 "EHLO
+        kvm5.telegraphics.com.au" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230475AbhBRFbY (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Wed, 17 Feb 2021 23:07:30 -0500
-Received: from mail-qt1-x834.google.com (mail-qt1-x834.google.com [IPv6:2607:f8b0:4864:20::834])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C97D4C0611C2
-        for <linux-m68k@lists.linux-m68k.org>; Wed, 17 Feb 2021 20:05:31 -0800 (PST)
-Received: by mail-qt1-x834.google.com with SMTP id e11so534668qtg.6
-        for <linux-m68k@lists.linux-m68k.org>; Wed, 17 Feb 2021 20:05:31 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=84gBY6rinb7deZXraCF0UsTbJivw5Olo0gL8/eJ63tU=;
-        b=KxfSS6niVzijRzEtdP/DC9eQUkwlu1PvxSxEgcuFub2GuTOz4WaJzl7H/fCoy3S4+a
-         eY4RldJTLxIdrBcLG0vRW7OXyBIjEZFa7saILAydNPEBgUNEHizOdS7B/TEiEx0rbstR
-         rev03iKVpZhbH2hPkQYiQIqUWyIcgRFiVWM1RG12hesTBatJevDd7loVlToiG+B1atGS
-         rGcBdPLVhqF6B8ANXWe6OR4SLeGgwF4iP707XgAkmtbFwUetmpHypCVFnhwUR5kfALT5
-         tlH5Sd+YLHI0F27k+7ecClMw1Obo98OnA0M042LYX8TCbWfoaLW7/YKRMUA+KYUrLYwI
-         MPnQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=84gBY6rinb7deZXraCF0UsTbJivw5Olo0gL8/eJ63tU=;
-        b=mTM8FYbT6C5eE1xYzgEKxWyj0zRBKGBlTlT/JBMo1vDeNYN+4ww4FkEISrU7DoyXqU
-         gHDbTEWE5rq/Q1iYjPIz/kOqo+oVMrtGgUskWBJu8mtxd9fVdK1RGUvcZtwXhh6UEt3W
-         0vcRBbhkIY2tBh94NKofSgoQiK4uGaUjVudPrYdAMPfsoa12DAcYWedP9xu8ChOG3mCG
-         zg0y1JotsZvysu6zvCLJFO4fQvPvs7ZyZXeSAiXNVli21Hk+tDJpZnbL+cAT9BrxnU5q
-         i0OT5cccKzAL8+8UBjcfIK+ghHXc9rCipSRzss5/5roqKmCZa68m0odfOT3lyYsuzAO+
-         6Jmg==
-X-Gm-Message-State: AOAM533rhrwYXu45/t3mtTEjmkjqjvOfojGh0mJIfsGLgqwXdC0Uohux
-        1q8wn/KhJm3gPblK1QCXms0=
-X-Google-Smtp-Source: ABdhPJwZifiZxE3P8q/lcvCbxJp+cC2M2zwuZmUjKMFL5WEt9kpRarYcAFb6PR4VznGQdSPl6yydfw==
-X-Received: by 2002:ac8:5d44:: with SMTP id g4mr2660798qtx.93.1613621131027;
-        Wed, 17 Feb 2021 20:05:31 -0800 (PST)
-Received: from localhost (d27-96-190-162.evv.wideopenwest.com. [96.27.162.190])
-        by smtp.gmail.com with ESMTPSA id b20sm2748495qto.45.2021.02.17.20.05.30
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 17 Feb 2021 20:05:30 -0800 (PST)
-From:   Yury Norov <yury.norov@gmail.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     Yury Norov <yury.norov@gmail.com>, linux-m68k@lists.linux-m68k.org,
-        linux-arch@vger.kernel.org, linux-sh@vger.kernel.org,
-        Alexey Klimov <aklimov@redhat.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Arnd Bergmann <arnd@arndb.de>, David Sterba <dsterba@suse.com>,
-        Dennis Zhou <dennis@kernel.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Jianpeng Ma <jianpeng.ma@intel.com>,
-        Joe Perches <joe@perches.com>,
-        John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        Rich Felker <dalias@libc.org>,
-        Stefano Brivio <sbrivio@redhat.com>,
-        Wei Yang <richard.weiyang@linux.alibaba.com>,
-        Wolfram Sang <wsa+renesas@sang-engineering.com>,
-        Yoshinori Sato <ysato@users.sourceforge.jp>
-Subject: [PATCH 14/14] MAINTAINERS: Add entry for the bitmap API
-Date:   Wed, 17 Feb 2021 20:05:12 -0800
-Message-Id: <20210218040512.709186-15-yury.norov@gmail.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210218040512.709186-1-yury.norov@gmail.com>
-References: <20210218040512.709186-1-yury.norov@gmail.com>
+        Thu, 18 Feb 2021 00:31:24 -0500
+Received: from localhost (localhost.localdomain [127.0.0.1])
+        by kvm5.telegraphics.com.au (Postfix) with ESMTP id 07AD82ACC2;
+        Thu, 18 Feb 2021 00:30:33 -0500 (EST)
+Date:   Thu, 18 Feb 2021 16:30:20 +1100 (AEDT)
+From:   Finn Thain <fthain@telegraphics.com.au>
+To:     "Song Bao Hua (Barry Song)" <song.bao.hua@hisilicon.com>
+cc:     Arnd Bergmann <arnd@kernel.org>,
+        "tglx@linutronix.de" <tglx@linutronix.de>,
+        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
+        "arnd@arndb.de" <arnd@arndb.de>,
+        "geert@linux-m68k.org" <geert@linux-m68k.org>,
+        "funaho@jurai.org" <funaho@jurai.org>,
+        "philb@gnu.org" <philb@gnu.org>, "corbet@lwn.net" <corbet@lwn.net>,
+        "mingo@redhat.com" <mingo@redhat.com>,
+        "linux-m68k@lists.linux-m68k.org" <linux-m68k@lists.linux-m68k.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: RE: [RFC] IRQ handlers run with some high-priority interrupts(not
+ NMI) enabled on some platform
+In-Reply-To: <0c0ea8eca77c45ea89f2d4432580211c@hisilicon.com>
+Message-ID: <28d4b91d-1774-a8a-df97-7ac9b365c2@telegraphics.com.au>
+References: <c46ddb954cfe45d9849c911271d7ec23@hisilicon.com> <CAK8P3a2adJsz5hRT_eMzSoHnUBC+aK9HZ18=oAYCZ-gisEkd1w@mail.gmail.com> <24e0652b3afa48cdbf7c83287e43c087@hisilicon.com> <CAK8P3a0fwMe9LaXMfKjH46yvt6o-euZJZ4HXtVRPhYbKvAUPKg@mail.gmail.com>
+ <0b766dba0b004ced94131e158cd8e67d@hisilicon.com> <CAK8P3a2ZnKeeZ-zEWO+vHogs0DdLuDrZet61cSmJe_UMYhtaWQ@mail.gmail.com>  <5148eb2aaceb42d78087bc6d8ce15183@hisilicon.com> <5fcea94e-6fc9-c340-d7d2-4ae8b69890b8@telegraphics.com.au>
+ <0c0ea8eca77c45ea89f2d4432580211c@hisilicon.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-Add myself as maintainer for bitmap API.
+On Wed, 17 Feb 2021, Song Bao Hua (Barry Song) wrote:
 
-I'm an author of current implementation of lib/find_bit and an
-active contributor to lib/bitmap. It was spotted that there's no
-maintainer for bitmap API. I'm willing to maintain it.
+> > On Sat, 13 Feb 2021, Song Bao Hua (Barry Song) wrote:
+> > 
+> > >
+> > > So what is really confusing and a pain to me is that: For years 
+> > > people like me have been writing device drivers with the idea that 
+> > > irq handlers run with interrupts disabled after those commits in 
+> > > genirq. So I don't need to care about if some other IRQs on the same 
+> > > cpu will jump out to access the data the current IRQ handler is 
+> > > accessing.
+> > >
+> > > but it turns out the assumption is not true on some platform. So 
+> > > should I start to program devices driver with the new idea 
+> > > interrupts can actually come while irqhandler is running?
+> > >
+> > > That's the question which really bothers me.
+> > >
+> > 
+> > That scenario seems a little contrived to me (drivers for two or more 
+> > devices sharing state through their interrupt handlers). Is it real? I 
+> > suppose every platform has its quirks. The irq lock in 
+> > sonic_interrupt() is only there because of a platform quirk (the same 
+> > device can trigger either of two IRQs). Anyway, no-one expects all 
+> > drivers to work on all platforms; I don't know why it bothers you so 
+> > much when platforms differ.
+> 
+> Basically, we wrote drivers with the assumption that this driver will be 
+> cross-platform. (Of course there are some drivers which can only work on 
+> one platform, for example, if the IP of the device is only used in one 
+> platform as an internal component of a specific SoC.)
+> 
+> So once a device has two or more interrupts, we need to consider one 
+> interrupt might preempt another one on m68k on the same cpu if we also 
+> want to support this driver on m68k. this usually doesn't matter on 
+> other platforms.
+> 
 
-Signed-off-by: Yury Norov <yury.norov@gmail.com>
----
- MAINTAINERS | 14 ++++++++++++++
- 1 file changed, 14 insertions(+)
+When users show up who desire to run your drivers on their platform, you 
+can expect them to bring patches and a MAINTAINERS file entry. AFAIK, 
+Linux development has always worked that way.
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 7bdf12d3e0a8..9f8540a9dabf 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -3146,6 +3146,20 @@ F:	Documentation/filesystems/bfs.rst
- F:	fs/bfs/
- F:	include/uapi/linux/bfs_fs.h
- 
-+BITMAP API
-+M:	Yury Norov <yury.norov@gmail.com>
-+S:	Maintained
-+F:	include/asm-generic/bitops/find.h
-+F:	include/linux/bitmap.h
-+F:	lib/bitmap.c
-+F:	lib/find_bit.c
-+F:	lib/find_find_bit_benchmark.c
-+F:	lib/test_bitmap.c
-+F:	tools/include/asm-generic/bitops/find.h
-+F:	tools/include/linux/bitmap.h
-+F:	tools/lib/bitmap.c
-+F:	tools/lib/find_bit.c
-+
- BLINKM RGB LED DRIVER
- M:	Jan-Simon Moeller <jansimon.moeller@gmx.de>
- S:	Maintained
--- 
-2.25.1
+Besides, not all m68k platforms implement priority masking. So there's no 
+problem with portability to m68k per se.
 
+> on the other hand, there are more than 400 irqs_disabled() in kernel, I 
+> am really not sure if they are running with the knowledge that the true 
+> irqs_disabled() actually means some interrupts are off and some others 
+> are still open on m68k.
+
+Firstly, use of irqs_disabled() is considered an antipattern by some 
+developers. Please see, 
+https://lore.kernel.org/linux-scsi/X8pfD5XtLoOygdez@lx-t490/
+and
+commit e6b6be53ec91 ("Merge branch 'net-in_interrupt-cleanup-and-fixes'")
+
+This means that the differences in semantics between the irqs_disabled() 
+implementations on various architectures are moot.
+
+Secondly, the existence of irqs_disabled() call sites does not imply a 
+flaw in your drivers nor in the m68k interrupt scheme. The actual semantic 
+differences are immaterial at many (all?) of these call sites.
+
+> Or they are running with the assumption that the true irqs_disabled() 
+> means IRQ is totally quiet? If the latter is true, those drivers might 
+> fail to work on m68k as well.
+> 
+
+Yes it's possible, and that was my fear too back in 2017 when I raised the 
+same question with the m68k maintainer. But I never found any code making 
+that assumption. If you know of such a bug, do tell. So far, your fears 
+remain unfounded.
+
+> Thanks
+> Barry
+> 
