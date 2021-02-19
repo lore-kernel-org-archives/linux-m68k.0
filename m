@@ -2,167 +2,118 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-17.3 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,NICE_REPLY_A,SPF_HELO_NONE,SPF_PASS,
-	USER_AGENT_SANE_1 autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-3.8 required=3.0 tests=BAYES_00,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 929E2C433E9
-	for <linux-m68k@archiver.kernel.org>; Thu, 18 Feb 2021 23:08:24 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 62074C433DB
+	for <linux-m68k@archiver.kernel.org>; Fri, 19 Feb 2021 08:11:51 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 66A7464E22
-	for <linux-m68k@archiver.kernel.org>; Thu, 18 Feb 2021 23:08:24 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 1FFB364EBF
+	for <linux-m68k@archiver.kernel.org>; Fri, 19 Feb 2021 08:11:51 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230073AbhBRXIO (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Thu, 18 Feb 2021 18:08:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44458 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230010AbhBRXIK (ORCPT
+        id S229636AbhBSILu (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Fri, 19 Feb 2021 03:11:50 -0500
+Received: from mail-oi1-f181.google.com ([209.85.167.181]:39951 "EHLO
+        mail-oi1-f181.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229498AbhBSILu (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Thu, 18 Feb 2021 18:08:10 -0500
-Received: from mail-ej1-x634.google.com (mail-ej1-x634.google.com [IPv6:2a00:1450:4864:20::634])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 61858C061788
-        for <linux-m68k@lists.linux-m68k.org>; Thu, 18 Feb 2021 15:07:30 -0800 (PST)
-Received: by mail-ej1-x634.google.com with SMTP id e13so5232795ejl.8
-        for <linux-m68k@lists.linux-m68k.org>; Thu, 18 Feb 2021 15:07:30 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=rasmusvillemoes.dk; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=sJ5d0ZObxlJmFwJLKE12O8RmYqwub+T3UwgmplQq6AE=;
-        b=Jo5g6iOuyD0BqTUzqL5h57SSH+EeNnhpMwvLvFVX6MxUWBTDBsqzDxkvg8FpT/imeV
-         liNLub0Tlg4eSf0srTc9b7UGVY2O8Njj4v1Pg1ZuNmLScVnb1WDVaszWS5AJZwbQt33H
-         qp17CzaTpYHW1EsfgC4jpRW4lgndPH6DdJYhs=
+        Fri, 19 Feb 2021 03:11:50 -0500
+Received: by mail-oi1-f181.google.com with SMTP id 18so5025951oiz.7
+        for <linux-m68k@lists.linux-m68k.org>; Fri, 19 Feb 2021 00:11:34 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=sJ5d0ZObxlJmFwJLKE12O8RmYqwub+T3UwgmplQq6AE=;
-        b=N/8objWZvZWAAYhOg6bJNYAGbA7duCpPfGJT3dcUpYqLPH4jYi6oDvNDjW+SEBIA4O
-         o1hi0bYULtVvubIWM9nyQ3x0L2bOMNmKYLXQRpsQubwgW78QM7Z8o+lFEWwB9CGVrs0d
-         +qYH0ZnjF+eg3GwKBdXOj0iOt+0ZCMGswFb/3KHwxGzhjXfINQa1nfgfMeZISkGDcNGi
-         frP+0X3yZLp3HdjuJpfhrFWNBO/kLIsvefATyvuFvTF1tIAapGgJgPYUfAbIdO+rq6XA
-         pHOMAL1BgqY2ZFASPdJN04meTFBMCn2//d9s3IdhCbcQf4VwRLVjuLhC3Hz0wexPNX/E
-         LQ3g==
-X-Gm-Message-State: AOAM533+uJj72exPfdzvgx+c6J8H5oE3S5okAVnnQaOlwnkckyexSRRa
-        WBerhp5gU7aoqwbhwEE7EigqPw==
-X-Google-Smtp-Source: ABdhPJzYHdNT9GqXgfQD21oEC7iYSyGizicKOn318FZ+K56DF/69E5Vl8IATzjttfzUAWvPTfps3Mw==
-X-Received: by 2002:a17:906:2a8b:: with SMTP id l11mr6170970eje.1.1613689648835;
-        Thu, 18 Feb 2021 15:07:28 -0800 (PST)
-Received: from [192.168.1.149] ([80.208.71.141])
-        by smtp.gmail.com with ESMTPSA id a23sm3383140ejy.60.2021.02.18.15.07.27
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 18 Feb 2021 15:07:28 -0800 (PST)
-Subject: Re: [PATCH 06/14] bitsperlong.h: introduce SMALL_CONST() macro
-To:     Yury Norov <yury.norov@gmail.com>, linux-kernel@vger.kernel.org
-Cc:     linux-m68k@lists.linux-m68k.org, linux-arch@vger.kernel.org,
-        linux-sh@vger.kernel.org, Alexey Klimov <aklimov@redhat.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Arnd Bergmann <arnd@arndb.de>, David Sterba <dsterba@suse.com>,
-        Dennis Zhou <dennis@kernel.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Jianpeng Ma <jianpeng.ma@intel.com>,
-        Joe Perches <joe@perches.com>,
-        John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Rich Felker <dalias@libc.org>,
-        Stefano Brivio <sbrivio@redhat.com>,
-        Wei Yang <richard.weiyang@linux.alibaba.com>,
-        Wolfram Sang <wsa+renesas@sang-engineering.com>,
-        Yoshinori Sato <ysato@users.sourceforge.jp>
-References: <20210218040512.709186-1-yury.norov@gmail.com>
- <20210218040512.709186-7-yury.norov@gmail.com>
-From:   Rasmus Villemoes <linux@rasmusvillemoes.dk>
-Message-ID: <55f1e25a-3211-8247-9dd3-3777e29287db@rasmusvillemoes.dk>
-Date:   Fri, 19 Feb 2021 00:07:27 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=jPT6wduAtrMWTggH0orR+C1UazQfve0OuOkS45gl8nY=;
+        b=XMd/h+YZxKVOBNQbVWstDUsP72YqumGEnmzCuEWSaqO+ZleaNOgGkd+trFSpRRX3Yu
+         2GGoBrvnlViumhaNRkm59+8Y20ZPrryh90hs/wOTGm2hKcJwZqwf5KLq7rO5DGBfiSny
+         uzLqvXJ4PxoiodZ6WS3F+prsFbp6Xoilu9K8S7xm+NaWG9HbpCNqCS9mlCjrNZ9ChSoh
+         JAQRodJt96CQvFYZ4+NXyVDvrQBagziBLnDs/tsdPShAIwpVIMNyuXYJnE59B7t+Gja/
+         bhgJmwKiZ8rzd3PjxNhyocklUDJ0LAjKe31cf1Be7EtDEWiHxvBomb6ZaYlCZM0uLpOZ
+         ukkg==
+X-Gm-Message-State: AOAM5339aUU/QNnxUvZxirnKSU8mBicEw3n7M+QOJ+O79NGIs7drL4CP
+        QgeqD+WPs0qVw/CDZdeMGp6ph/zSq24b6FNl9n8=
+X-Google-Smtp-Source: ABdhPJyfSiGUOklDk+pZ7+kPOH7+UKy79ImXV69aDZPSdlOwo5+D+0gSw7MvtoDHZ/JLtkZo/RFJZ+PEKeY7w0i2roc=
+X-Received: by 2002:aca:744:: with SMTP id 65mr5573246oih.153.1613722269299;
+ Fri, 19 Feb 2021 00:11:09 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20210218040512.709186-7-yury.norov@gmail.com>
-Content-Type: text/plain; charset=windows-1252
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <c46ddb954cfe45d9849c911271d7ec23@hisilicon.com>
+ <CAK8P3a2adJsz5hRT_eMzSoHnUBC+aK9HZ18=oAYCZ-gisEkd1w@mail.gmail.com>
+ <24e0652b3afa48cdbf7c83287e43c087@hisilicon.com> <CAK8P3a0fwMe9LaXMfKjH46yvt6o-euZJZ4HXtVRPhYbKvAUPKg@mail.gmail.com>
+ <0b766dba0b004ced94131e158cd8e67d@hisilicon.com> <CAK8P3a2ZnKeeZ-zEWO+vHogs0DdLuDrZet61cSmJe_UMYhtaWQ@mail.gmail.com>
+ <5148eb2aaceb42d78087bc6d8ce15183@hisilicon.com> <5fcea94e-6fc9-c340-d7d2-4ae8b69890b8@telegraphics.com.au>
+ <0c0ea8eca77c45ea89f2d4432580211c@hisilicon.com> <28d4b91d-1774-a8a-df97-7ac9b365c2@telegraphics.com.au>
+ <CAK8P3a0VquJPxvS8B=2kLQ5y=h5BftJDR7WJYmj3hgQ8yQY5=Q@mail.gmail.com> <a8595ec5-88db-072c-9cc3-7a3a301fe191@gmail.com>
+In-Reply-To: <a8595ec5-88db-072c-9cc3-7a3a301fe191@gmail.com>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Fri, 19 Feb 2021 09:10:57 +0100
+Message-ID: <CAMuHMdWBsupz06wVyVENHfjxP0uQ+1b7cnz6xGEMyqQkJFTeAA@mail.gmail.com>
+Subject: Re: [RFC] IRQ handlers run with some high-priority interrupts(not
+ NMI) enabled on some platform
+To:     Michael Schmitz <schmitzmic@gmail.com>
+Cc:     Arnd Bergmann <arnd@kernel.org>,
+        Finn Thain <fthain@telegraphics.com.au>,
+        "Song Bao Hua (Barry Song)" <song.bao.hua@hisilicon.com>,
+        "tglx@linutronix.de" <tglx@linutronix.de>,
+        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
+        "arnd@arndb.de" <arnd@arndb.de>,
+        "funaho@jurai.org" <funaho@jurai.org>,
+        "philb@gnu.org" <philb@gnu.org>, "corbet@lwn.net" <corbet@lwn.net>,
+        "mingo@redhat.com" <mingo@redhat.com>,
+        "linux-m68k@lists.linux-m68k.org" <linux-m68k@lists.linux-m68k.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-On 18/02/2021 05.05, Yury Norov wrote:
-> Many algorithms become simpler if they are passed with relatively small
-> input values. One example is bitmap operations when the whole bitmap fits
-> into one word. To implement such simplifications, linux/bitmap.h declares
-> small_const_nbits() macro.
-> 
-> Other subsystems may also benefit from optimizations of this sort, like
-> find_bit API in the following patches. So it looks helpful to generalize
-> the macro and extend it's visibility.
+Hi Michael,
 
-Perhaps, but SMALL_CONST is too generic a name, it needs to keep "bits"
-somewhere in there. So why not just keep it at small_const_nbits?
+On Thu, Feb 18, 2021 at 11:11 PM Michael Schmitz <schmitzmic@gmail.com> wrote:
+> On 19/02/21 12:19 am, Arnd Bergmann wrote:
+> > drivers/net/ethernet/8390/apne.c
+> > drivers/net/ethernet/8390/ax88796.c
+> > drivers/net/ethernet/8390/hydra.c
+> > drivers/net/ethernet/8390/mac8390.c
+> > drivers/net/ethernet/8390/ne.c
+> > drivers/net/ethernet/8390/zorro8390.c
+> [...]
+> > Most of these are normal short-lived interrupts that only transfer
+> > a few bytes or schedule deferred processing of some sort.
+> > Most of the scsi and network drivers process the data in
+> > a softirq, so those are generally fine here, but I do see that 8390
+> > (ne2000) ethernet and the drivers/ide drivers do transfer their
+> > data in hardirq context.
+> >
+> >          Arnd
+>
+> 8390 ethernet drivers are widely used on m68k platforms (Amiga and
+> Atari). At least on Amiga, the corresponding interrupt is a hardirq so
+> I'd advise caution. That said, the 8390 drivers might benefit from some
+> refactoring (the way these drivers are compiled does prevent e.g. the
+> APNE driver from being used with two different variants of PCMCIA
+> interfaces. I had begun some work on making IO primitives runtime
+> selected two years ago but that ended up looking too ugly ...).
+>
+> Can't recall what IPL the 8390 interrupts operate at - Geert?
 
-> Signed-off-by: Yury Norov <yury.norov@gmail.com>
-> ---
->  include/asm-generic/bitsperlong.h |  2 ++
->  include/linux/bitmap.h            | 33 ++++++++++++++-----------------
->  2 files changed, 17 insertions(+), 18 deletions(-)
-> 
-> diff --git a/include/asm-generic/bitsperlong.h b/include/asm-generic/bitsperlong.h
-> index 3905c1c93dc2..0eeb77544f1d 100644
-> --- a/include/asm-generic/bitsperlong.h
-> +++ b/include/asm-generic/bitsperlong.h
-> @@ -23,4 +23,6 @@
->  #define BITS_PER_LONG_LONG 64
->  #endif
->  
-> +#define SMALL_CONST(n) (__builtin_constant_p(n) && (unsigned long)(n) < BITS_PER_LONG)
-> +
->  #endif /* __ASM_GENERIC_BITS_PER_LONG */
-> diff --git a/include/linux/bitmap.h b/include/linux/bitmap.h
-> index adf7bd9f0467..e89f1dace846 100644
-> --- a/include/linux/bitmap.h
-> +++ b/include/linux/bitmap.h
-> @@ -224,9 +224,6 @@ extern int bitmap_print_to_pagebuf(bool list, char *buf,
->   * so make such users (should any ever turn up) call the out-of-line
->   * versions.
->   */
-> -#define small_const_nbits(nbits) \
-> -	(__builtin_constant_p(nbits) && (nbits) <= BITS_PER_LONG && (nbits) > 0)
-> -
->  static inline void bitmap_zero(unsigned long *dst, unsigned int nbits)
->  {
->  	unsigned int len = BITS_TO_LONGS(nbits) * sizeof(unsigned long);
-> @@ -278,7 +275,7 @@ extern void bitmap_to_arr32(u32 *buf, const unsigned long *bitmap,
->  static inline int bitmap_and(unsigned long *dst, const unsigned long *src1,
->  			const unsigned long *src2, unsigned int nbits)
->  {
-> -	if (small_const_nbits(nbits))
-> +	if (SMALL_CONST(nbits - 1))
+#define IRQ_AMIGA_PORTS         IRQ_AUTO_2
 
-Please don't force most users to be changed to something less readable.
-What's wrong with just keeping small_const_nbits() the way it is,
-avoiding all this churn and keeping the readability?
+Zorro expansion boards can also use
 
-At a quick reading, one of the very few places where you end up not
-passing nbits-1 but just nbits is this
+#define IRQ_AMIGA_EXTER         IRQ_AUTO_6
 
- unsigned long find_next_zero_bit_le(const void *addr, unsigned
- 		long size, unsigned long offset)
- {
-+	if (SMALL_CONST(size)) {
-+		unsigned long val = *(const unsigned long *)addr;
-+
-+		if (unlikely(offset >= size))
-+			return size;
+and some boards may have a jumper to select the latter, but all Amiga
+Linux drivers use IRQ_AMIGA_PORTS.
 
-which is a regression, for much the same reason the nbits==0 case was
-excluded from small_const_nbits in the first place. If size is 0, we
-used to just return 0 early in _find_next_bit. But you've introduced a
-dereference of addr before that check is now done, which is
-theoretically an oops.
+Gr{oetje,eeting}s,
 
-If find_next_zero_bit_le cannot handle nbits==BITS_PER_LONG efficiently
-but requires one off-limits bit position, fine, so be it, add an extra
-"small_const_nbits() && nbits < BITS_PER_LONG" (and a comment).
+                        Geert
 
-Rasmus
+-- 
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
