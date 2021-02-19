@@ -6,114 +6,128 @@ X-Spam-Status: No, score=-3.8 required=3.0 tests=BAYES_00,
 	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
 	URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 62074C433DB
-	for <linux-m68k@archiver.kernel.org>; Fri, 19 Feb 2021 08:11:51 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E34E4C433DB
+	for <linux-m68k@archiver.kernel.org>; Fri, 19 Feb 2021 10:56:34 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 1FFB364EBF
-	for <linux-m68k@archiver.kernel.org>; Fri, 19 Feb 2021 08:11:51 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 9856B64EB1
+	for <linux-m68k@archiver.kernel.org>; Fri, 19 Feb 2021 10:56:34 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229636AbhBSILu (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Fri, 19 Feb 2021 03:11:50 -0500
-Received: from mail-oi1-f181.google.com ([209.85.167.181]:39951 "EHLO
-        mail-oi1-f181.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229498AbhBSILu (ORCPT
-        <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Fri, 19 Feb 2021 03:11:50 -0500
-Received: by mail-oi1-f181.google.com with SMTP id 18so5025951oiz.7
-        for <linux-m68k@lists.linux-m68k.org>; Fri, 19 Feb 2021 00:11:34 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=jPT6wduAtrMWTggH0orR+C1UazQfve0OuOkS45gl8nY=;
-        b=XMd/h+YZxKVOBNQbVWstDUsP72YqumGEnmzCuEWSaqO+ZleaNOgGkd+trFSpRRX3Yu
-         2GGoBrvnlViumhaNRkm59+8Y20ZPrryh90hs/wOTGm2hKcJwZqwf5KLq7rO5DGBfiSny
-         uzLqvXJ4PxoiodZ6WS3F+prsFbp6Xoilu9K8S7xm+NaWG9HbpCNqCS9mlCjrNZ9ChSoh
-         JAQRodJt96CQvFYZ4+NXyVDvrQBagziBLnDs/tsdPShAIwpVIMNyuXYJnE59B7t+Gja/
-         bhgJmwKiZ8rzd3PjxNhyocklUDJ0LAjKe31cf1Be7EtDEWiHxvBomb6ZaYlCZM0uLpOZ
-         ukkg==
-X-Gm-Message-State: AOAM5339aUU/QNnxUvZxirnKSU8mBicEw3n7M+QOJ+O79NGIs7drL4CP
-        QgeqD+WPs0qVw/CDZdeMGp6ph/zSq24b6FNl9n8=
-X-Google-Smtp-Source: ABdhPJyfSiGUOklDk+pZ7+kPOH7+UKy79ImXV69aDZPSdlOwo5+D+0gSw7MvtoDHZ/JLtkZo/RFJZ+PEKeY7w0i2roc=
-X-Received: by 2002:aca:744:: with SMTP id 65mr5573246oih.153.1613722269299;
- Fri, 19 Feb 2021 00:11:09 -0800 (PST)
+        id S230106AbhBSK42 (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Fri, 19 Feb 2021 05:56:28 -0500
+Received: from mga12.intel.com ([192.55.52.136]:23792 "EHLO mga12.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230160AbhBSKy0 (ORCPT <rfc822;linux-m68k@lists.linux-m68k.org>);
+        Fri, 19 Feb 2021 05:54:26 -0500
+IronPort-SDR: mKnAXLf7gm3pggkT9h7JaFa5ysK0QU+IQ7nev/PjWlTzPvN6kX8/Txm0D1W+oa5h+pfKFG+p0o
+ UgsCDM9HXs3w==
+X-IronPort-AV: E=McAfee;i="6000,8403,9899"; a="162952294"
+X-IronPort-AV: E=Sophos;i="5.81,189,1610438400"; 
+   d="scan'208";a="162952294"
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Feb 2021 02:52:40 -0800
+IronPort-SDR: bVGrXxe3odPkq9jl2SHFPpUZx8yAK/e9ZiGCRHn1OpRte+3Sh+PsSwyKsbrFvOjG6dK3qKDY9E
+ 30CHMP0KncJQ==
+X-IronPort-AV: E=Sophos;i="5.81,189,1610438400"; 
+   d="scan'208";a="581637660"
+Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
+  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Feb 2021 02:52:35 -0800
+Received: from andy by smile with local (Exim 4.94)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1lD3Oh-006C0D-KD; Fri, 19 Feb 2021 12:52:31 +0200
+Date:   Fri, 19 Feb 2021 12:52:31 +0200
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Yury Norov <yury.norov@gmail.com>
+Cc:     linux-kernel@vger.kernel.org, linux-m68k@lists.linux-m68k.org,
+        linux-arch@vger.kernel.org, linux-sh@vger.kernel.org,
+        Alexey Klimov <aklimov@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Arnd Bergmann <arnd@arndb.de>, David Sterba <dsterba@suse.com>,
+        Dennis Zhou <dennis@kernel.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Jianpeng Ma <jianpeng.ma@intel.com>,
+        Joe Perches <joe@perches.com>,
+        John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        Rich Felker <dalias@libc.org>,
+        Stefano Brivio <sbrivio@redhat.com>,
+        Wei Yang <richard.weiyang@linux.alibaba.com>,
+        Wolfram Sang <wsa+renesas@sang-engineering.com>,
+        Yoshinori Sato <ysato@users.sourceforge.jp>
+Subject: Re: [PATCH 08/14] lib/Kconfig: introduce FAST_PATH option
+Message-ID: <YC+Yby6dbFnC81pu@smile.fi.intel.com>
+References: <20210218040512.709186-1-yury.norov@gmail.com>
+ <20210218040512.709186-9-yury.norov@gmail.com>
+ <YC6EnzFUXDuroy0+@smile.fi.intel.com>
+ <20210218192419.GA788573@yury-ThinkPad>
 MIME-Version: 1.0
-References: <c46ddb954cfe45d9849c911271d7ec23@hisilicon.com>
- <CAK8P3a2adJsz5hRT_eMzSoHnUBC+aK9HZ18=oAYCZ-gisEkd1w@mail.gmail.com>
- <24e0652b3afa48cdbf7c83287e43c087@hisilicon.com> <CAK8P3a0fwMe9LaXMfKjH46yvt6o-euZJZ4HXtVRPhYbKvAUPKg@mail.gmail.com>
- <0b766dba0b004ced94131e158cd8e67d@hisilicon.com> <CAK8P3a2ZnKeeZ-zEWO+vHogs0DdLuDrZet61cSmJe_UMYhtaWQ@mail.gmail.com>
- <5148eb2aaceb42d78087bc6d8ce15183@hisilicon.com> <5fcea94e-6fc9-c340-d7d2-4ae8b69890b8@telegraphics.com.au>
- <0c0ea8eca77c45ea89f2d4432580211c@hisilicon.com> <28d4b91d-1774-a8a-df97-7ac9b365c2@telegraphics.com.au>
- <CAK8P3a0VquJPxvS8B=2kLQ5y=h5BftJDR7WJYmj3hgQ8yQY5=Q@mail.gmail.com> <a8595ec5-88db-072c-9cc3-7a3a301fe191@gmail.com>
-In-Reply-To: <a8595ec5-88db-072c-9cc3-7a3a301fe191@gmail.com>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Fri, 19 Feb 2021 09:10:57 +0100
-Message-ID: <CAMuHMdWBsupz06wVyVENHfjxP0uQ+1b7cnz6xGEMyqQkJFTeAA@mail.gmail.com>
-Subject: Re: [RFC] IRQ handlers run with some high-priority interrupts(not
- NMI) enabled on some platform
-To:     Michael Schmitz <schmitzmic@gmail.com>
-Cc:     Arnd Bergmann <arnd@kernel.org>,
-        Finn Thain <fthain@telegraphics.com.au>,
-        "Song Bao Hua (Barry Song)" <song.bao.hua@hisilicon.com>,
-        "tglx@linutronix.de" <tglx@linutronix.de>,
-        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
-        "arnd@arndb.de" <arnd@arndb.de>,
-        "funaho@jurai.org" <funaho@jurai.org>,
-        "philb@gnu.org" <philb@gnu.org>, "corbet@lwn.net" <corbet@lwn.net>,
-        "mingo@redhat.com" <mingo@redhat.com>,
-        "linux-m68k@lists.linux-m68k.org" <linux-m68k@lists.linux-m68k.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210218192419.GA788573@yury-ThinkPad>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-Hi Michael,
+On Thu, Feb 18, 2021 at 11:24:19AM -0800, Yury Norov wrote:
+> On Thu, Feb 18, 2021 at 05:15:43PM +0200, Andy Shevchenko wrote:
+> > On Wed, Feb 17, 2021 at 08:05:06PM -0800, Yury Norov wrote:
+> > > This series introduces fast paths for find_bit() routines. It is
+> > > beneficial for typical systems, but those who limited in I-cache
+> > > may be concerned about increasing the .text size of the Image.
+> > > 
+> > > To address this concern, one can disable FAST_PATH option in the config
+> > > and some save memory.
+> > > 
+> > > The effect of this option on my arm64 next-20210217 build is:
+> > 
+> > (Maybe bloat-o-meter will give better view on this, i.e. more human-readable)
+> 
+> Never heard about this tool, thanks for the hint.
+> 
+> scripts/bloat-o-meter vmlinux vmlinux.new
+> add/remove: 16/13 grow/shrink: 111/439 up/down: 3616/-19352 (-15736)
+> Function                                     old     new   delta
+> find_next_bit.constprop                        -     220    +220
+> apply_wqattrs_cleanup                          -     176    +176
+> memcg_free_shrinker_maps                       -     172    +172
+> ...
+> cpuset_hotplug_workfn                       2584    2288    -296
+> task_numa_fault                             3640    3320    -320
+> kmem_cache_free_bulk                        1684    1280    -404
+> Total: Before=26085140, After=26069404, chg -0.06%
+> 
+> The complete output is here:
+> https://pastebin.com/kBSdVJcK
+> 
+> So if I understand the output correctly, the size of .text is decreased...
+> Looks weird, but if it's true, we don't need the FAST_BIT config at all
+> because there's no tradeoff, and I should drop the patch.
 
-On Thu, Feb 18, 2021 at 11:11 PM Michael Schmitz <schmitzmic@gmail.com> wrote:
-> On 19/02/21 12:19 am, Arnd Bergmann wrote:
-> > drivers/net/ethernet/8390/apne.c
-> > drivers/net/ethernet/8390/ax88796.c
-> > drivers/net/ethernet/8390/hydra.c
-> > drivers/net/ethernet/8390/mac8390.c
-> > drivers/net/ethernet/8390/ne.c
-> > drivers/net/ethernet/8390/zorro8390.c
-> [...]
-> > Most of these are normal short-lived interrupts that only transfer
-> > a few bytes or schedule deferred processing of some sort.
-> > Most of the scsi and network drivers process the data in
-> > a softirq, so those are generally fine here, but I do see that 8390
-> > (ne2000) ethernet and the drivers/ide drivers do transfer their
-> > data in hardirq context.
-> >
-> >          Arnd
->
-> 8390 ethernet drivers are widely used on m68k platforms (Amiga and
-> Atari). At least on Amiga, the corresponding interrupt is a hardirq so
-> I'd advise caution. That said, the 8390 drivers might benefit from some
-> refactoring (the way these drivers are compiled does prevent e.g. the
-> APNE driver from being used with two different variants of PCMCIA
-> interfaces. I had begun some work on making IO primitives runtime
-> selected two years ago but that ended up looking too ugly ...).
->
-> Can't recall what IPL the 8390 interrupts operate at - Geert?
+I actually expected the text size decrease when it's about constants.
+I remember that in PCI case we discussed with Bjorn the use of
+for_each_set_bit() that brought entire function into the object file that
+increased it by ~300 bytes (or so). But the code is something like
 
-#define IRQ_AMIGA_PORTS         IRQ_AUTO_2
+	for_each_set_bit(i, &addr, 32)
 
-Zorro expansion boards can also use
+...
 
-#define IRQ_AMIGA_EXTER         IRQ_AUTO_6
+> > I think the name is to broad for this cases, perhaps BITS_FAST_PATH? or BITMAP?
+> 
+> My logic was that since SMALL_CONST() is global, and FAST_PATH
+> controls the SMALL_CONST, it should also be global. I believe,
+> Linux should have a global switch to control the behaviour in
+> such cases, similarly to -Os compiler option. And I was surprized
+> when I found nothing like FAST_PATH in the config.
+> 
+> What about having FAST_PATH as a global option, and later if someone
+> will request for granularity, we'll introduce nested configs?
 
-and some boards may have a jumper to select the latter, but all Amiga
-Linux drivers use IRQ_AMIGA_PORTS.
-
-Gr{oetje,eeting}s,
-
-                        Geert
+I think it is too far from now. Let's do one step at a time.
 
 -- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+With Best Regards,
+Andy Shevchenko
 
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+
