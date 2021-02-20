@@ -2,116 +2,108 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.2 required=3.0 tests=BAYES_00,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-8.8 required=3.0 tests=BAYES_00,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,
+	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 48826C433DB
-	for <linux-m68k@archiver.kernel.org>; Fri, 19 Feb 2021 23:06:34 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id DAB07C433DB
+	for <linux-m68k@archiver.kernel.org>; Sat, 20 Feb 2021 05:18:55 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 179C064EB2
-	for <linux-m68k@archiver.kernel.org>; Fri, 19 Feb 2021 23:06:34 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id A4A2364E4E
+	for <linux-m68k@archiver.kernel.org>; Sat, 20 Feb 2021 05:18:55 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229684AbhBSXGS (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Fri, 19 Feb 2021 18:06:18 -0500
-Received: from cynthia.allandria.com ([50.242.82.17]:49687 "EHLO
-        cynthia.allandria.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229515AbhBSXGR (ORCPT
-        <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Fri, 19 Feb 2021 18:06:17 -0500
-X-Greylist: delayed 2073 seconds by postgrey-1.27 at vger.kernel.org; Fri, 19 Feb 2021 18:06:17 EST
-Received: from flar by cynthia.allandria.com with local (Exim 4.84_2)
-        (envelope-from <flar@allandria.com>)
-        id 1lDEIC-0000OT-RK; Fri, 19 Feb 2021 14:30:32 -0800
-Date:   Fri, 19 Feb 2021 14:30:32 -0800
-From:   Brad Boyer <flar@allandria.com>
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     Michael Schmitz <schmitzmic@gmail.com>,
-        Arnd Bergmann <arnd@kernel.org>,
-        Finn Thain <fthain@telegraphics.com.au>,
-        "Song Bao Hua (Barry Song)" <song.bao.hua@hisilicon.com>,
-        "tglx@linutronix.de" <tglx@linutronix.de>,
-        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
-        "arnd@arndb.de" <arnd@arndb.de>,
-        "funaho@jurai.org" <funaho@jurai.org>,
-        "philb@gnu.org" <philb@gnu.org>, "corbet@lwn.net" <corbet@lwn.net>,
-        "mingo@redhat.com" <mingo@redhat.com>,
-        "linux-m68k@lists.linux-m68k.org" <linux-m68k@lists.linux-m68k.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [RFC] IRQ handlers run with some high-priority interrupts(not
- NMI) enabled on some platform
-Message-ID: <20210219223032.GA1343@allandria.com>
-References: <CAK8P3a0fwMe9LaXMfKjH46yvt6o-euZJZ4HXtVRPhYbKvAUPKg@mail.gmail.com>
- <0b766dba0b004ced94131e158cd8e67d@hisilicon.com>
- <CAK8P3a2ZnKeeZ-zEWO+vHogs0DdLuDrZet61cSmJe_UMYhtaWQ@mail.gmail.com>
- <5148eb2aaceb42d78087bc6d8ce15183@hisilicon.com>
- <5fcea94e-6fc9-c340-d7d2-4ae8b69890b8@telegraphics.com.au>
- <0c0ea8eca77c45ea89f2d4432580211c@hisilicon.com>
- <28d4b91d-1774-a8a-df97-7ac9b365c2@telegraphics.com.au>
- <CAK8P3a0VquJPxvS8B=2kLQ5y=h5BftJDR7WJYmj3hgQ8yQY5=Q@mail.gmail.com>
- <a8595ec5-88db-072c-9cc3-7a3a301fe191@gmail.com>
- <CAMuHMdWBsupz06wVyVENHfjxP0uQ+1b7cnz6xGEMyqQkJFTeAA@mail.gmail.com>
+        id S229630AbhBTFSy (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Sat, 20 Feb 2021 00:18:54 -0500
+Received: from kvm5.telegraphics.com.au ([98.124.60.144]:35632 "EHLO
+        kvm5.telegraphics.com.au" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229825AbhBTFSy (ORCPT
+        <rfc822;linux-m68k@vger.kernel.org>); Sat, 20 Feb 2021 00:18:54 -0500
+Received: from localhost (localhost.localdomain [127.0.0.1])
+        by kvm5.telegraphics.com.au (Postfix) with ESMTP id CE37828237;
+        Sat, 20 Feb 2021 00:18:03 -0500 (EST)
+Date:   Sat, 20 Feb 2021 16:18:07 +1100 (AEDT)
+From:   Finn Thain <fthain@telegraphics.com.au>
+To:     Xiaofei Tan <tanxiaofei@huawei.com>
+cc:     "Song Bao Hua (Barry Song)" <song.bao.hua@hisilicon.com>,
+        "jejb@linux.ibm.com" <jejb@linux.ibm.com>,
+        "martin.petersen@oracle.com" <martin.petersen@oracle.com>,
+        "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linuxarm@openeuler.org" <linuxarm@openeuler.org>,
+        linux-m68k@vger.kernel.org
+Subject: Re: [Linuxarm] Re: [PATCH for-next 00/32] spin lock usage optimization
+ for SCSI drivers
+In-Reply-To: <7bc39d19-f4cc-8028-11e6-c0e45421a765@huawei.com>
+Message-ID: <588a87f-ae42-0b7-749e-c780ce5c3e4f@telegraphics.com.au>
+References: <1612697823-8073-1-git-send-email-tanxiaofei@huawei.com> <31cd807d-3d0-ed64-60d-fde32cb3833c@telegraphics.com.au> <e949a474a9284ac6951813bfc8b34945@hisilicon.com> <f0a3339d-b1db-6571-fa2f-6765e150eb9d@telegraphics.com.au>
+ <7bc39d19-f4cc-8028-11e6-c0e45421a765@huawei.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAMuHMdWBsupz06wVyVENHfjxP0uQ+1b7cnz6xGEMyqQkJFTeAA@mail.gmail.com>
-User-Agent: Mutt/1.5.23 (2014-03-12)
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-On Fri, Feb 19, 2021 at 09:10:57AM +0100, Geert Uytterhoeven wrote:
-> Hi Michael,
-> 
-> On Thu, Feb 18, 2021 at 11:11 PM Michael Schmitz <schmitzmic@gmail.com> wrote:
-> > On 19/02/21 12:19 am, Arnd Bergmann wrote:
-> > > drivers/net/ethernet/8390/apne.c
-> > > drivers/net/ethernet/8390/ax88796.c
-> > > drivers/net/ethernet/8390/hydra.c
-> > > drivers/net/ethernet/8390/mac8390.c
-> > > drivers/net/ethernet/8390/ne.c
-> > > drivers/net/ethernet/8390/zorro8390.c
-> > [...]
-> > > Most of these are normal short-lived interrupts that only transfer
-> > > a few bytes or schedule deferred processing of some sort.
-> > > Most of the scsi and network drivers process the data in
-> > > a softirq, so those are generally fine here, but I do see that 8390
-> > > (ne2000) ethernet and the drivers/ide drivers do transfer their
-> > > data in hardirq context.
-> > >
-> > >          Arnd
-> >
-> > 8390 ethernet drivers are widely used on m68k platforms (Amiga and
-> > Atari). At least on Amiga, the corresponding interrupt is a hardirq so
-> > I'd advise caution. That said, the 8390 drivers might benefit from some
-> > refactoring (the way these drivers are compiled does prevent e.g. the
-> > APNE driver from being used with two different variants of PCMCIA
-> > interfaces. I had begun some work on making IO primitives runtime
-> > selected two years ago but that ended up looking too ugly ...).
-> >
-> > Can't recall what IPL the 8390 interrupts operate at - Geert?
-> 
-> #define IRQ_AMIGA_PORTS         IRQ_AUTO_2
-> 
-> Zorro expansion boards can also use
-> 
-> #define IRQ_AMIGA_EXTER         IRQ_AUTO_6
-> 
-> and some boards may have a jumper to select the latter, but all Amiga
-> Linux drivers use IRQ_AMIGA_PORTS.
+On Thu, 18 Feb 2021, Xiaofei Tan wrote:
 
-The mac8390 driver will show up wherever NuBus interrupts are routed,
-which varies by hardware. It's frequently IRQ_AUTO_2 (due to being
-routed through the second VIA chip on most models), but it can be in
-other places on systems that don't use a second VIA chip.  On the IIfx,
-NuBus interrupts get routed through OSS to IRQ_AUTO_3. I don't see any
-cases that use other interrupt levels, but some of the logic is a
-little harder to follow.
+> On 2021/2/9 13:06, Finn Thain wrote:
+> > On Tue, 9 Feb 2021, Song Bao Hua (Barry Song) wrote:
+> > 
+> > > > On Sun, 7 Feb 2021, Xiaofei Tan wrote:
+> > > > 
+> > > > > Replace spin_lock_irqsave with spin_lock in hard IRQ of SCSI 
+> > > > > drivers. There are no function changes, but may speed up if 
+> > > > > interrupt happen too often.
+> > > > 
+> > > > This change doesn't necessarily work on platforms that support 
+> > > > nested interrupts.
+> > > > 
+> > > > Were you able to measure any benefit from this change on some 
+> > > > other platform?
+> > > 
+> > > I think the code disabling irq in hardIRQ is simply wrong.
+> > > Since this commit
+> > > https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=e58aa3d2d0cc
+> > > genirq: Run irq handlers with interrupts disabled
+> > > 
+> > > interrupt handlers are definitely running in a irq-disabled context
+> > > unless irq handlers enable them explicitly in the handler to permit
+> > > other interrupts.
+> > > 
+> > 
+> > Repeating the same claim does not somehow make it true. If you put 
+> > your claim to the test, you'll see that that interrupts are not 
+> > disabled on m68k when interrupt handlers execute.
+> > 
+> > The Interrupt Priority Level (IPL) can prevent any given irq handler 
+> > from being re-entered, but an irq with a higher priority level may be 
+> > handled during execution of a lower priority irq handler.
+> > 
+> > sonic_interrupt() uses an irq lock within an interrupt handler to 
+> > avoid issues relating to this. This kind of locking may be needed in 
+> > the drivers you are trying to patch. Or it might not. Apparently, 
+> > no-one has looked.
+> > 
+> 
+> According to your discussion with Barry, it seems that m68k is a little 
+> different from other architecture, and this kind of modification of this 
+> patch cannot be applied to m68k. So, could help to point out which 
+> driver belong to m68k architecture in this patch set of SCSI? I can 
+> remove them.
+> 
 
-It's not an 8390, but it looks like macmace actually uses two levels. The
-regular interrupt should show up at IRQ_AUTO_3 and the DMA interrupts at
-IRQ_AUTO_4. Most Macs only use 4 for serial, but this is an exception.
+If you would claim that "there are no function changes" in your patches 
+(as above) then the onus is on you to support that claim.
 
-	Brad Boyer
-	flar@allandria.com
+I assume that there are some platforms on which your assumptions hold.
 
+With regard to drivers for those platforms, you might want to explain why 
+your patches should be applied there, given that the existing code is 
+superior for being more portable.
+
+> BTW, sonic_interrupt() is from net driver natsemi, right?  It would be 
+> appreciative if only discuss SCSI drivers in this patch set. thanks.
+> 
+
+The 'net' subsystem does have some different requirements than the 'scsi' 
+subsystem. But I don't see how that's relevant. Perhaps you can explain 
+it. Thanks.
