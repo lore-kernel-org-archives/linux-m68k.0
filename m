@@ -2,75 +2,109 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.2 required=3.0 tests=BAYES_00,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-9.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,INCLUDES_CR_TRAILER,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 1AEBEC433DB
-	for <linux-m68k@archiver.kernel.org>; Sat, 20 Feb 2021 07:09:32 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id DDCACC4332B
+	for <linux-m68k@archiver.kernel.org>; Sun, 21 Feb 2021 17:16:41 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id D702464EB8
-	for <linux-m68k@archiver.kernel.org>; Sat, 20 Feb 2021 07:09:31 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id B784064EF1
+	for <linux-m68k@archiver.kernel.org>; Sun, 21 Feb 2021 17:16:41 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229678AbhBTHJQ (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Sat, 20 Feb 2021 02:09:16 -0500
-Received: from cynthia.allandria.com ([50.242.82.17]:49778 "EHLO
-        cynthia.allandria.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229667AbhBTHJP (ORCPT
+        id S229844AbhBURQc (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Sun, 21 Feb 2021 12:16:32 -0500
+Received: from conssluserg-02.nifty.com ([210.131.2.81]:45470 "EHLO
+        conssluserg-02.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230170AbhBURQ1 (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Sat, 20 Feb 2021 02:09:15 -0500
-Received: from flar by cynthia.allandria.com with local (Exim 4.84_2)
-        (envelope-from <flar@allandria.com>)
-        id 1lDMN6-0002Dq-5i; Fri, 19 Feb 2021 23:08:08 -0800
-Date:   Fri, 19 Feb 2021 23:08:08 -0800
-From:   Brad Boyer <flar@allandria.com>
-To:     Finn Thain <fthain@telegraphics.com.au>
-Cc:     Arnd Bergmann <arnd@kernel.org>,
-        "Song Bao Hua (Barry Song)" <song.bao.hua@hisilicon.com>,
-        "tglx@linutronix.de" <tglx@linutronix.de>,
-        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
-        "arnd@arndb.de" <arnd@arndb.de>,
-        "geert@linux-m68k.org" <geert@linux-m68k.org>,
-        "funaho@jurai.org" <funaho@jurai.org>,
-        "philb@gnu.org" <philb@gnu.org>, "corbet@lwn.net" <corbet@lwn.net>,
-        "mingo@redhat.com" <mingo@redhat.com>,
-        "linux-m68k@lists.linux-m68k.org" <linux-m68k@lists.linux-m68k.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [RFC] IRQ handlers run with some high-priority interrupts(not
- NMI) enabled on some platform
-Message-ID: <20210220070808.GA7874@allandria.com>
-References: <24e0652b3afa48cdbf7c83287e43c087@hisilicon.com>
- <CAK8P3a0fwMe9LaXMfKjH46yvt6o-euZJZ4HXtVRPhYbKvAUPKg@mail.gmail.com>
- <0b766dba0b004ced94131e158cd8e67d@hisilicon.com>
- <CAK8P3a2ZnKeeZ-zEWO+vHogs0DdLuDrZet61cSmJe_UMYhtaWQ@mail.gmail.com>
- <5148eb2aaceb42d78087bc6d8ce15183@hisilicon.com>
- <5fcea94e-6fc9-c340-d7d2-4ae8b69890b8@telegraphics.com.au>
- <0c0ea8eca77c45ea89f2d4432580211c@hisilicon.com>
- <28d4b91d-1774-a8a-df97-7ac9b365c2@telegraphics.com.au>
- <CAK8P3a0VquJPxvS8B=2kLQ5y=h5BftJDR7WJYmj3hgQ8yQY5=Q@mail.gmail.com>
- <264b37c2-527-f0ed-197d-b016a7d16e32@telegraphics.com.au>
+        Sun, 21 Feb 2021 12:16:27 -0500
+Received: from mail-oi1-f179.google.com (mail-oi1-f179.google.com [209.85.167.179]) (authenticated)
+        by conssluserg-02.nifty.com with ESMTP id 11LHFQVg017440
+        for <linux-m68k@lists.linux-m68k.org>; Mon, 22 Feb 2021 02:15:27 +0900
+DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-02.nifty.com 11LHFQVg017440
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
+        s=dec2015msa; t=1613927727;
+        bh=+E+JRgKeitH5eFBx4Z/rh8FyWasix1MSTNAEXqizMQU=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=bMuBhHK7G0jarpKwNRXWEMYT5MtPlzuF5j6jQhR0vKMbsbDlQYSfL7y4bC3BtKc+c
+         +x9fwA0r9GMAlg25UIIjgntPPxvjQKVJXrieXIEBqLwSYbUOMLRJs/BBjg9S5lDoJe
+         YFO+UWc6yok8wxWw5YHFcsaU+oWdY9hhIKQUV+1Vo8/hPo5kHU17wmhY2kmMkthXx1
+         Aac2tia/pqlRCEWpFaoNZu15eFP3XovGAJdZrNhdopztTSxTvNrTvSYUa/Wc0pUBjc
+         49b1LTdcahp1zJ37gWLuAPMixQeM/MK89EqDPRXF7Syn76qh20IGYMFKLKVDrjW2PT
+         Ro+SpRajqEwHw==
+X-Nifty-SrcIP: [209.85.167.179]
+Received: by mail-oi1-f179.google.com with SMTP id f3so11621722oiw.13
+        for <linux-m68k@lists.linux-m68k.org>; Sun, 21 Feb 2021 09:15:27 -0800 (PST)
+X-Gm-Message-State: AOAM530U6cJrUgQvrT30IIjkoRy9GPnmaQRiKccl5/gf00USuL7OLXRa
+        /q3uNb3/1d/iIircOLO3JNSQl1C6JPl7jTeqFc0=
+X-Google-Smtp-Source: ABdhPJxczjkYYwfFedULPavyehBQNlTo4yyE2oDz3aAz68ppY9EMF/VKLUDXMsDnW+fSNSL17VJtx2kpM0VX1zgRRK4=
+X-Received: by 2002:a17:90a:609:: with SMTP id j9mr19512007pjj.198.1613927724902;
+ Sun, 21 Feb 2021 09:15:24 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <264b37c2-527-f0ed-197d-b016a7d16e32@telegraphics.com.au>
-User-Agent: Mutt/1.5.23 (2014-03-12)
+References: <20210215004823.440102-1-masahiroy@kernel.org>
+In-Reply-To: <20210215004823.440102-1-masahiroy@kernel.org>
+From:   Masahiro Yamada <masahiroy@kernel.org>
+Date:   Mon, 22 Feb 2021 02:14:47 +0900
+X-Gmail-Original-Message-ID: <CAK7LNATvCAyHSUQNTdSck3JM1MfHNFcanjn0i4835okWE9Km5w@mail.gmail.com>
+Message-ID: <CAK7LNATvCAyHSUQNTdSck3JM1MfHNFcanjn0i4835okWE9Km5w@mail.gmail.com>
+Subject: Re: [PATCH 1/2] arch: syscalls: add missing FORCE and fix 'targets'
+ to make if_changed work
+To:     Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>
+Cc:     Geert Uytterhoeven <geert@linux-m68k.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Borislav Petkov <bp@alien8.de>,
+        Chris Zankel <chris@zankel.net>,
+        "David S. Miller" <davem@davemloft.net>,
+        Fenghua Yu <fenghua.yu@intel.com>,
+        "H. Peter Anvin" <hpa@zytor.com>, Helge Deller <deller@gmx.de>,
+        Ingo Molnar <mingo@redhat.com>,
+        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
+        "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
+        Matt Turner <mattst88@gmail.com>,
+        Max Filippov <jcmvbkbc@gmail.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Michal Simek <monstr@monstr.eu>,
+        Paul Mackerras <paulus@samba.org>,
+        Rich Felker <dalias@libc.org>,
+        Richard Henderson <rth@twiddle.net>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Tony Luck <tony.luck@intel.com>,
+        Yoshinori Sato <ysato@users.sourceforge.jp>,
+        linux-alpha@vger.kernel.org, linux-ia64@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-m68k <linux-m68k@lists.linux-m68k.org>,
+        linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org,
+        Linux-sh list <linux-sh@vger.kernel.org>,
+        "open list:TENSILICA XTENSA PORT (xtensa)" 
+        <linux-xtensa@linux-xtensa.org>,
+        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
+        sparclinux <sparclinux@vger.kernel.org>, X86 ML <x86@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-On Sat, Feb 20, 2021 at 05:32:30PM +1100, Finn Thain wrote:
-> Nope. Interrupt priority masking is there to place an upper bound 
-> interrupt latency. That's why this feature is shipping in contemporary 
-> hardware (e.g. ARM GIC). If you care about real time workloads on arm64, 
-> that may interest you.
+On Mon, Feb 15, 2021 at 9:50 AM Masahiro Yamada <masahiroy@kernel.org> wrote:
+>
+> The rules in these Makefiles cannot detect the command line change
+> because the prerequisite 'FORCE' is missing.
+>
+> Adding 'FORCE' will result in the headers being rebuilt every time
+> because the 'targets' additions are also wrong; the file paths in
+> 'targets' must be relative to the current Makefile.
+>
+> Fix all of them so the if_changed rules work correctly.
+>
+> Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
+> Acked-by: Geert Uytterhoeven <geert@linux-m68k.org>
 
-I don't know if it's still true today, but in the past there was a very
-noticeable difference in timer stability between the 68k macintosh
-models with the timer interrupt at IPL 1 as compared to the models
-where the timer interrupt was at IPL 6. The ability to preempt the
-other interrupt handlers made the difference between a usable clock
-and one that was pretty unreliable.
 
-	Brad Boyer
-	flar@allandria.com
+Both applied to linux-kbuild.
 
+
+-- 
+Best Regards
+Masahiro Yamada
