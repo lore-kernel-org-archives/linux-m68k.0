@@ -2,113 +2,137 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-15.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
-	autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-7.3 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
+	MAILING_LIST_MULTI,NICE_REPLY_A,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1
+	autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B99B2C433DB
-	for <linux-m68k@archiver.kernel.org>; Mon, 22 Feb 2021 15:15:25 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 6C916C433E9
+	for <linux-m68k@archiver.kernel.org>; Mon, 22 Feb 2021 16:38:39 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 77CE86148E
-	for <linux-m68k@archiver.kernel.org>; Mon, 22 Feb 2021 15:15:25 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 3EC9264E83
+	for <linux-m68k@archiver.kernel.org>; Mon, 22 Feb 2021 16:38:39 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231343AbhBVPOz (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Mon, 22 Feb 2021 10:14:55 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40112 "EHLO
+        id S230296AbhBVQiZ (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Mon, 22 Feb 2021 11:38:25 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58330 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231258AbhBVPOJ (ORCPT
+        with ESMTP id S230138AbhBVQiR (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Mon, 22 Feb 2021 10:14:09 -0500
-Received: from mail-wr1-x42a.google.com (mail-wr1-x42a.google.com [IPv6:2a00:1450:4864:20::42a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 96ABCC0617AB
-        for <linux-m68k@lists.linux-m68k.org>; Mon, 22 Feb 2021 07:12:54 -0800 (PST)
-Received: by mail-wr1-x42a.google.com with SMTP id l30so3771626wrb.12
-        for <linux-m68k@lists.linux-m68k.org>; Mon, 22 Feb 2021 07:12:54 -0800 (PST)
+        Mon, 22 Feb 2021 11:38:17 -0500
+Received: from mail-ot1-x333.google.com (mail-ot1-x333.google.com [IPv6:2607:f8b0:4864:20::333])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 02B5DC06178C
+        for <linux-m68k@lists.linux-m68k.org>; Mon, 22 Feb 2021 08:36:56 -0800 (PST)
+Received: by mail-ot1-x333.google.com with SMTP id l16so3553825oti.12
+        for <linux-m68k@lists.linux-m68k.org>; Mon, 22 Feb 2021 08:36:55 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=DkOt0yrBVyRKH79yBKw6bfM0jQaRrACpcMjpjEsTbCk=;
-        b=XovTNWHwTCos9xzXipmutbAdCB13MpWujMUaUW7i4hXpx6rYXFXRPIZ8/iNIwrIi2R
-         IbP55z5TmCskc2vHnE7UiDvlds9Z4mcKkR0XlN2D3QfmOmA+nY0FgXuDfsvASdnr3ug3
-         czItvGV4svJ/yme+wrTkvACH9L18hK0r1/zHtY+6xV+8xbuoGUGOBpls8YgfkWLuxWBa
-         91YJKDhrgBm2P2OxXOxoUunNoOsDqTJcdQI2B7Chr/RrYqxeCm3jBUh0z5PE43xzj+Fs
-         tWiylFYaUFkWZvLYXuEpybk/gQzm7sudrmZpNp3/2HLP7goAXFs5HwUHuZEsY0S7zSKy
-         ZGXg==
+        d=linuxfoundation.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=CQtzj2ET+OspvcT7VasFUJh31XI2DgueE7K7chQefu0=;
+        b=JgIAcXbmqnUtAzeQggrQMFDw+iRD7712f5b6XLlsNpGFq/2OH71ZR8eVPcYSvV8O9Z
+         Q4ZFhr/HY3qIL2VVw5am2ZXMqQjcHv6oQm57icBzxpF2r/H6pUN28Ic0UVcMNAWR0oM3
+         Nk4pk+06r39DoxUQo5VbU8V6VX0ewSDT/6fu0=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=DkOt0yrBVyRKH79yBKw6bfM0jQaRrACpcMjpjEsTbCk=;
-        b=ngvZRVTxKrCFv2qwbkHS2Xr4rr9ZEFa9FK5YzzM8ZvnFDCPmwLfCiKMEOSC6Bi8yPE
-         G9MUXI3o12lSRmLgfmYOyb0rwHgVqoFYh2bE6OmLdTY2JTfP9Apk/OByh049tildO9Zq
-         vx4An+m6H2z5ZFHAnfbotdWNb3rz3Oh7JPnFTSu+Zt11pWEse0YfCPGF1zhzGwopaoQv
-         cOZBDJxDavkjvwMoTbvJ+Z9jcY+yEF1n40OkRW7NBGepdtSixGO30X5GsGIUfdWihLap
-         7fl8sIvrpIqpHTcHdjbLgtG1qFuasuXIWRKxiBQIwF6huLD1W/atK0lFl41FfnPSiY0M
-         urEg==
-X-Gm-Message-State: AOAM533savZc98VN9qBwgzwhsDB1sOQviPT8aIgtd9StmvTFJf4gIJVY
-        oZlQX9czSNTZNNBs2o+GXTc=
-X-Google-Smtp-Source: ABdhPJzqndAalbnZM20kjoLXRdtC8IozfrJChCqLGB5rdddPCSw4ZQcEBtySznNjVccHSoocrtBBLg==
-X-Received: by 2002:a5d:524b:: with SMTP id k11mr1010025wrc.122.1614006773420;
-        Mon, 22 Feb 2021 07:12:53 -0800 (PST)
-Received: from debby (176-141-241-253.abo.bbox.fr. [176.141.241.253])
-        by smtp.gmail.com with ESMTPSA id y5sm12788081wrh.38.2021.02.22.07.12.52
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 22 Feb 2021 07:12:52 -0800 (PST)
-From:   Romain Perier <romain.perier@gmail.com>
-To:     Kees Cook <keescook@chromium.org>,
-        kernel-hardening@lists.openwall.com,
-        Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     Romain Perier <romain.perier@gmail.com>,
-        linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org
-Subject: [PATCH 09/20] m68k/atari: Manual replacement of the deprecated strlcpy() with return values
-Date:   Mon, 22 Feb 2021 16:12:20 +0100
-Message-Id: <20210222151231.22572-10-romain.perier@gmail.com>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20210222151231.22572-1-romain.perier@gmail.com>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=CQtzj2ET+OspvcT7VasFUJh31XI2DgueE7K7chQefu0=;
+        b=cU3igje5Xam7yrpDNP7x6TW1JPqnucVSoELUjnI2En/zbz8n4aQCqHBTVAbyTpVkxQ
+         FBBm2L0SRhmIs1qupNaAM2ohYdog5EBV2Dlx8Sh9vHA8fNa6NyDnrOXhpe6M7HIyZUA1
+         PUq/ti53xpZHNnrfKRXcLrnwEJ6ez37QtWRAzUsY/7MBITbPAedjiS6M3D42avPRvYMH
+         NuiblXU17N+u5Yo/IGadRT5xQzP4HYO741y+rCmbC3cidXRnBe4f1XPfsF1O36qLhgMo
+         T9YughbEC66X0iBD1wZk9QsIukCAKm/Xz29wME1otob+nhe2JcNqJjub+3YBETAz3DkZ
+         UJtA==
+X-Gm-Message-State: AOAM532YDcZ9Coax37C4v3nJhl5dwnmvUTjdfXTf6d2YlWwa12CGtQES
+        lEPlef5yQKY23Ino7yENj9CTCQ==
+X-Google-Smtp-Source: ABdhPJyA692d/UkhfnySsVsus41uILuIidqyduT1DxwFO8wUlVI27VDOIjP5WOhWxUUsjwOOYq7M6Q==
+X-Received: by 2002:a05:6830:314d:: with SMTP id c13mr16134049ots.124.1614011814286;
+        Mon, 22 Feb 2021 08:36:54 -0800 (PST)
+Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
+        by smtp.gmail.com with ESMTPSA id 7sm3712035oth.38.2021.02.22.08.36.51
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 22 Feb 2021 08:36:53 -0800 (PST)
+Subject: Re: [PATCH 00/20] Manual replacement of all strlcpy in favor of
+ strscpy
+To:     Romain Perier <romain.perier@gmail.com>,
+        Kees Cook <keescook@chromium.org>,
+        kernel-hardening@lists.openwall.com, Tejun Heo <tj@kernel.org>,
+        Zefan Li <lizefan.x@bytedance.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jiri Pirko <jiri@nvidia.com>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Mimi Zohar <zohar@linux.ibm.com>,
+        Dmitry Kasatkin <dmitry.kasatkin@gmail.com>,
+        "J. Bruce Fields" <bfields@fieldses.org>,
+        Chuck Lever <chuck.lever@oracle.com>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Jessica Yu <jeyu@kernel.org>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        Steffen Maier <maier@linux.ibm.com>,
+        Benjamin Block <bblock@linux.ibm.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        Felipe Balbi <balbi@kernel.org>,
+        Valentina Manea <valentina.manea.m@gmail.com>,
+        Shuah Khan <shuah@kernel.org>,
+        Wim Van Sebroeck <wim@linux-watchdog.org>
+Cc:     cgroups@vger.kernel.org, linux-crypto@vger.kernel.org,
+        netdev@vger.kernel.org, linux-media@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, linaro-mm-sig@lists.linaro.org,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        linux-integrity@vger.kernel.org, linux-nfs@vger.kernel.org,
+        linux-m68k@lists.linux-m68k.org, linux-hwmon@vger.kernel.org,
+        linux-s390@vger.kernel.org, linux-scsi@vger.kernel.org,
+        target-devel@vger.kernel.org, alsa-devel@alsa-project.org,
+        linux-usb@vger.kernel.org, linux-watchdog@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Shuah Khan <skhan@linuxfoundation.org>
 References: <20210222151231.22572-1-romain.perier@gmail.com>
+From:   Shuah Khan <skhan@linuxfoundation.org>
+Message-ID: <936bcf5e-2006-7643-7804-9efa318b3e2b@linuxfoundation.org>
+Date:   Mon, 22 Feb 2021 09:36:51 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210222151231.22572-1-romain.perier@gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-The strlcpy() reads the entire source buffer first, it is dangerous if
-the source buffer lenght is unbounded or possibility non NULL-terminated.
-It can lead to linear read overflows, crashes, etc...
+On 2/22/21 8:12 AM, Romain Perier wrote:
+> strlcpy() copy a C-String into a sized buffer, the result is always a
+> valid NULL-terminated that fits in the buffer, howerver it has severals
+> issues. It reads the source buffer first, which is dangerous if it is non
+> NULL-terminated or if the corresponding buffer is unbounded. Its safe
+> replacement is strscpy(), as suggested in the deprecated interface [1].
+> 
+> We plan to make this contribution in two steps:
+> - Firsly all cases of strlcpy's return value are manually replaced by the
+>    corresponding calls of strscpy() with the new handling of the return
+>    value (as the return code is different in case of error).
+> - Then all other cases are automatically replaced by using coccinelle.
+> 
 
-As recommended in the deprecated interfaces [1], it should be replaced
-by strscpy.
+Cool. A quick check shows me 1031 strscpy() calls with no return
+checks. All or some of these probably need to be reviewed and add
+return checks. Is this something that is in the plan to address as
+part of this work?
 
-This commit replaces all calls to strlcpy that handle the return values
-by the corresponding strscpy calls with new handling of the return
-values (as it is quite different between the two functions).
-
-[1] https://www.kernel.org/doc/html/latest/process/deprecated.html#strlcpy
-
-Signed-off-by: Romain Perier <romain.perier@gmail.com>
----
- arch/m68k/emu/natfeat.c |    6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
-
-diff --git a/arch/m68k/emu/natfeat.c b/arch/m68k/emu/natfeat.c
-index 71b78ecee75c..fbb3454d3c6a 100644
---- a/arch/m68k/emu/natfeat.c
-+++ b/arch/m68k/emu/natfeat.c
-@@ -41,10 +41,10 @@ long nf_get_id(const char *feature_name)
- {
- 	/* feature_name may be in vmalloc()ed memory, so make a copy */
- 	char name_copy[32];
--	size_t n;
-+	ssize_t n;
- 
--	n = strlcpy(name_copy, feature_name, sizeof(name_copy));
--	if (n >= sizeof(name_copy))
-+	n = strscpy(name_copy, feature_name, sizeof(name_copy));
-+	if (n == -E2BIG)
- 		return 0;
- 
- 	return nf_get_id_phys(virt_to_phys(name_copy));
-
+thanks,
+-- Shuah
