@@ -2,108 +2,157 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-15.2 required=3.0 tests=BAYES_00,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,NICE_REPLY_A,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
-	USER_AGENT_SANE_1 autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-21.2 required=3.0 tests=BAYES_00,DKIMWL_WL_MED,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
+	USER_AGENT_GIT,USER_IN_DEF_DKIM_WL autolearn=unavailable autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 131A4C433E0
-	for <linux-m68k@archiver.kernel.org>; Tue, 23 Feb 2021 13:05:26 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 13AC5C433DB
+	for <linux-m68k@archiver.kernel.org>; Tue, 23 Feb 2021 14:35:28 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id D7E5A64E31
-	for <linux-m68k@archiver.kernel.org>; Tue, 23 Feb 2021 13:05:25 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id D991B600CF
+	for <linux-m68k@archiver.kernel.org>; Tue, 23 Feb 2021 14:35:27 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232760AbhBWNFB (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Tue, 23 Feb 2021 08:05:01 -0500
-Received: from mail.kernel.org ([198.145.29.99]:48364 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232920AbhBWNDA (ORCPT <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Tue, 23 Feb 2021 08:03:00 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E72FE64E60;
-        Tue, 23 Feb 2021 13:02:17 +0000 (UTC)
-Subject: Re: [PATCH] m68k: Fix virt_addr_valid() W=1 compiler warnings
-To:     Geert Uytterhoeven <geert@linux-m68k.org>,
-        linux-m68k@lists.linux-m68k.org
-Cc:     Lee Jones <lee.jones@linaro.org>, Arnd Bergmann <arnd@arndb.de>,
-        linux-kernel@vger.kernel.org
-References: <20210223104957.2209219-1-geert@linux-m68k.org>
-From:   Greg Ungerer <gerg@linux-m68k.org>
-Message-ID: <bbb367f6-4f6d-027c-f0b7-345a24fdea0c@linux-m68k.org>
-Date:   Tue, 23 Feb 2021 23:02:14 +1000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
-MIME-Version: 1.0
-In-Reply-To: <20210223104957.2209219-1-geert@linux-m68k.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+        id S232922AbhBWOf1 (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Tue, 23 Feb 2021 09:35:27 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58486 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232695AbhBWOf0 (ORCPT
+        <rfc822;linux-m68k@lists.linux-m68k.org>);
+        Tue, 23 Feb 2021 09:35:26 -0500
+Received: from mail-qt1-x84a.google.com (mail-qt1-x84a.google.com [IPv6:2607:f8b0:4864:20::84a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 11439C06178B
+        for <linux-m68k@lists.linux-m68k.org>; Tue, 23 Feb 2021 06:34:46 -0800 (PST)
+Received: by mail-qt1-x84a.google.com with SMTP id a41so3243187qtk.0
+        for <linux-m68k@lists.linux-m68k.org>; Tue, 23 Feb 2021 06:34:46 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=sender:date:message-id:mime-version:subject:from:to:cc;
+        bh=Q8hQJDMeUJlqSjrNYnPafLaJX5CJRNsJS+XYHF26pcU=;
+        b=PJnNVGeDqB/jzzRFb43n6pABAUatJLV3VpoQVilcEqdrryJp08zjPufvVz5cFPnSEY
+         t/li1aI0RjRwp7z2bUQbnWYCBL0UM2aSKop0ae9s2DpamNAajkWv+hxDEW2W9qIUp36d
+         PAkr+ieLWes8nDdQ/+SEvLNzI2fhbLggfEVRl9YrCoom2ez47kSRP4/0+WUFn/kOA6Dt
+         tTkwHtzevwds9t+smuh8yccupDpw+dh//SW88nsBdvQXbwTAsE8g1S7IxFZI03HwubvC
+         rBVvVUVzattE0GWgZFrJETMXyA15a2rVhKdtnp2DazMEJEX4XDqEecySE72Fjn1RZ8Z0
+         L2rQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:message-id:mime-version:subject:from
+         :to:cc;
+        bh=Q8hQJDMeUJlqSjrNYnPafLaJX5CJRNsJS+XYHF26pcU=;
+        b=UMzalKe9hKyydpqG2WVQaDWaOwDm4QiLKfu8tQxXP4TaLQt2SYSYZfp9YEFd0SkJLb
+         MmcSEriGj7ekgkDQH8JG1QNyN6aOBnfKMCc/VK73q2zMT/dORbnyYQ7373HUDHA+cqnl
+         ognf8yucD3WlZNCsbbBdBUV48KokSvgVQ/4myYdxN/MH6Evi77bTSev4n5g+ZEfDKt/d
+         VRmF6Z5IFWki1dXPpQSOhrNdaJK7S/dUSvzh+FnYE9EA8xQIyCfqYo/2BMSMXzmwqHlh
+         mONR5QJtOzJPDfEujM2Ibe08TbkJGhNLG8ljIlceH0a6KJboKb3l/2ImMTCZcPzLeY4V
+         kyEg==
+X-Gm-Message-State: AOAM5315qL7Y3tMM/DuYSOI+oXoiTWoxOP4F1edJ4y23guetL1vWmcnI
+        k30wbZDp32DXHyYKUGQq4xlIko2ivw==
+X-Google-Smtp-Source: ABdhPJwIekUA4sFfcyjccindFCcQp2ep8MthgqSzW3N3MtGLmm1PZlc40koEqgpP+XoOBcmnN/Qv1jzPlw==
+Sender: "elver via sendgmr" <elver@elver.muc.corp.google.com>
+X-Received: from elver.muc.corp.google.com ([2a00:79e0:15:13:855b:f924:6e71:3d5d])
+ (user=elver job=sendgmr) by 2002:a0c:a8cf:: with SMTP id h15mr25576657qvc.20.1614090884790;
+ Tue, 23 Feb 2021 06:34:44 -0800 (PST)
+Date:   Tue, 23 Feb 2021 15:34:22 +0100
+Message-Id: <20210223143426.2412737-1-elver@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.30.0.617.g56c4b15f3c-goog
+Subject: [PATCH RFC 0/4] Add support for synchronous signals on perf events
+From:   Marco Elver <elver@google.com>
+To:     elver@google.com, peterz@infradead.org,
+        alexander.shishkin@linux.intel.com, acme@kernel.org,
+        mingo@redhat.com, jolsa@redhat.com, mark.rutland@arm.com,
+        namhyung@kernel.org, tglx@linutronix.de
+Cc:     glider@google.com, viro@zeniv.linux.org.uk, arnd@arndb.de,
+        christian@brauner.io, dvyukov@google.com, jannh@google.com,
+        axboe@kernel.dk, mascasa@google.com, pcc@google.com,
+        irogers@google.com, kasan-dev@googlegroups.com,
+        linux-arch@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-m68k@lists.linux-m68k.org,
+        x86@kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
+The perf subsystem today unifies various tracing and monitoring
+features, from both software and hardware. One benefit of the perf
+subsystem is automatically inheriting events to child tasks, which
+enables process-wide events monitoring with low overheads. By default
+perf events are non-intrusive, not affecting behaviour of the tasks
+being monitored.
 
-On 23/2/21 8:49 pm, Geert Uytterhoeven wrote:
-> If CONFIG_DEBUG_SG=y, and CONFIG_MMU=y:
-> 
->      include/linux/scatterlist.h: In function ‘sg_set_buf’:
->      arch/m68k/include/asm/page_mm.h:174:49: warning: ordered comparison of pointer with null pointer [-Wextra]
->        174 | #define virt_addr_valid(kaddr) ((void *)(kaddr) >= (void *)PAGE_OFFSET && (void *)(kaddr) < high_memory)
-> 	  |                                                 ^~
-> 
-> or CONFIG_MMU=n:
-> 
->      include/linux/scatterlist.h: In function ‘sg_set_buf’:
->      arch/m68k/include/asm/page_no.h:33:50: warning: ordered comparison of pointer with null pointer [-Wextra]
->         33 | #define virt_addr_valid(kaddr) (((void *)(kaddr) >= (void *)PAGE_OFFSET) && \
-> 	  |                                                  ^~
-> 
-> Fix this by doing the comparison in the "unsigned long" instead of the
-> "void *" domain.
-> 
-> Note that for now this is only seen when compiling btrfs, due to commit
-> e9aa7c285d20a69c ("btrfs: enable W=1 checks for btrfs"), but as people
-> are doing more W=1 compile testing, it will start to show up elsewhere,
-> too.
-> 
-> Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
+For certain use-cases, however, it makes sense to leverage the
+generality of the perf events subsystem and optionally allow the tasks
+being monitored to receive signals on events they are interested in.
+This patch series adds the option to synchronously signal user space on
+events.
 
-Acked-by: Greg Ungerer <gerg@linux-m68k.org>
+The discussion at [1] led to the changes proposed in this series. The
+approach taken in patch 3/4 to use 'event_limit' to trigger the signal
+was kindly suggested by Peter Zijlstra in [2].
+
+[1] https://lore.kernel.org/lkml/CACT4Y+YPrXGw+AtESxAgPyZ84TYkNZdP0xpocX2jwVAbZD=-XQ@mail.gmail.com/
+[2] https://lore.kernel.org/lkml/YBv3rAT566k+6zjg@hirez.programming.kicks-ass.net/ 
+
+Motivation and example uses:
+
+1. 	Our immediate motivation is low-overhead sampling-based race
+	detection for user-space [3]. By using perf_event_open() at
+	process initialization, we can create hardware
+	breakpoint/watchpoint events that are propagated automatically
+	to all threads in a process. As far as we are aware, today no
+	existing kernel facility (such as ptrace) allows us to set up
+	process-wide watchpoints with minimal overheads (that are
+	comparable to mprotect() of whole pages).
+
+	[3] https://llvm.org/devmtg/2020-09/slides/Morehouse-GWP-Tsan.pdf 
+
+2.	Other low-overhead error detectors that rely on detecting
+	accesses to certain memory locations or code, process-wide and
+	also only in a specific set of subtasks or threads.
+
+Other example use-cases we found potentially interesting:
+
+3.	Code hot patching without full stop-the-world. Specifically, by
+	setting a code breakpoint to entry to the patched routine, then
+	send signals to threads and check that they are not in the
+	routine, but without stopping them further. If any of the
+	threads will enter the routine, it will receive SIGTRAP and
+	pause.
+
+4. 	Safepoints without mprotect(). Some Java implementations use
+	"load from a known memory location" as a safepoint. When threads
+	need to be stopped, the page containing the location is
+	mprotect()ed and threads get a signal. This can be replaced with
+	a watchpoint, which does not require a whole page nor DTLB
+	shootdowns.
+
+5.	Tracking data flow globally.
+
+6.	Threads receiving signals on performance events to
+	throttle/unthrottle themselves.
 
 
-> ---
-> Probably we want this as a fix for v5.12, to avoid the build bots
-> nagging about it all the time?
-> 
->   arch/m68k/include/asm/page_mm.h | 2 +-
->   arch/m68k/include/asm/page_no.h | 4 ++--
->   2 files changed, 3 insertions(+), 3 deletions(-)
-> 
-> diff --git a/arch/m68k/include/asm/page_mm.h b/arch/m68k/include/asm/page_mm.h
-> index 7f5912af2a52ea0a..9b1672f9b2e22cdf 100644
-> --- a/arch/m68k/include/asm/page_mm.h
-> +++ b/arch/m68k/include/asm/page_mm.h
-> @@ -171,7 +171,7 @@ static inline __attribute_const__ int __virt_to_node_shift(void)
->   #include <asm-generic/memory_model.h>
->   #endif
->   
-> -#define virt_addr_valid(kaddr)	((void *)(kaddr) >= (void *)PAGE_OFFSET && (void *)(kaddr) < high_memory)
-> +#define virt_addr_valid(kaddr)	((unsigned long)(kaddr) >= PAGE_OFFSET && ((unsigned long)kaddr) < (unsigned long)high_memory)
->   #define pfn_valid(pfn)		virt_addr_valid(pfn_to_virt(pfn))
->   
->   #endif /* __ASSEMBLY__ */
-> diff --git a/arch/m68k/include/asm/page_no.h b/arch/m68k/include/asm/page_no.h
-> index 6bbe52025de3c5c6..8d0f862ee9d79532 100644
-> --- a/arch/m68k/include/asm/page_no.h
-> +++ b/arch/m68k/include/asm/page_no.h
-> @@ -30,8 +30,8 @@ extern unsigned long memory_end;
->   #define page_to_pfn(page)	virt_to_pfn(page_to_virt(page))
->   #define pfn_valid(pfn)	        ((pfn) < max_mapnr)
->   
-> -#define	virt_addr_valid(kaddr)	(((void *)(kaddr) >= (void *)PAGE_OFFSET) && \
-> -				((void *)(kaddr) < (void *)memory_end))
-> +#define	virt_addr_valid(kaddr)	(((unsigned long)(kaddr) >= PAGE_OFFSET) && \
-> +				((unsigned long)(kaddr) < memory_end))
->   
->   #endif /* __ASSEMBLY__ */
->   
-> 
+Marco Elver (4):
+  perf/core: Apply PERF_EVENT_IOC_MODIFY_ATTRIBUTES to children
+  signal: Introduce TRAP_PERF si_code and si_perf to siginfo
+  perf/core: Add support for SIGTRAP on perf events
+  perf/core: Add breakpoint information to siginfo on SIGTRAP
+
+ arch/m68k/kernel/signal.c          |  3 ++
+ arch/x86/kernel/signal_compat.c    |  5 ++-
+ fs/signalfd.c                      |  4 +++
+ include/linux/compat.h             |  2 ++
+ include/linux/signal.h             |  1 +
+ include/uapi/asm-generic/siginfo.h |  6 +++-
+ include/uapi/linux/perf_event.h    |  3 +-
+ include/uapi/linux/signalfd.h      |  4 ++-
+ kernel/events/core.c               | 54 +++++++++++++++++++++++++++++-
+ kernel/signal.c                    | 11 ++++++
+ 10 files changed, 88 insertions(+), 5 deletions(-)
+
+-- 
+2.30.0.617.g56c4b15f3c-goog
+
