@@ -2,68 +2,51 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-23.2 required=3.0 tests=BAYES_00,DKIMWL_WL_MED,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
-	INCLUDES_CR_TRAILER,INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	URIBL_BLOCKED,USER_IN_DEF_DKIM_WL autolearn=ham autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-13.7 required=3.0 tests=BAYES_00,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 5211CC433E6
-	for <linux-m68k@archiver.kernel.org>; Tue, 23 Feb 2021 17:17:30 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id CD758C433E6
+	for <linux-m68k@archiver.kernel.org>; Tue, 23 Feb 2021 18:02:46 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 2234764E83
-	for <linux-m68k@archiver.kernel.org>; Tue, 23 Feb 2021 17:17:30 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 9FC0664E24
+	for <linux-m68k@archiver.kernel.org>; Tue, 23 Feb 2021 18:02:46 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233692AbhBWRRO (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Tue, 23 Feb 2021 12:17:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36882 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233656AbhBWRRN (ORCPT
+        id S233817AbhBWSCp (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Tue, 23 Feb 2021 13:02:45 -0500
+Received: from mail-oi1-f170.google.com ([209.85.167.170]:45655 "EHLO
+        mail-oi1-f170.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233167AbhBWSCl (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Tue, 23 Feb 2021 12:17:13 -0500
-Received: from mail-ot1-x331.google.com (mail-ot1-x331.google.com [IPv6:2607:f8b0:4864:20::331])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8176EC06178A
-        for <linux-m68k@lists.linux-m68k.org>; Tue, 23 Feb 2021 09:16:33 -0800 (PST)
-Received: by mail-ot1-x331.google.com with SMTP id l23so16313333otn.10
-        for <linux-m68k@lists.linux-m68k.org>; Tue, 23 Feb 2021 09:16:33 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Y/7lyBIawgXVibPEQjRnIJxZC4/J4mTsACbEERnxYDg=;
-        b=mRjlqnBTeAG3y2s8FAauHnaH1SamsOPskLA8yoP4qMATNnDLnjombF0ueoOHemI4v+
-         ON6jLAZhOorVDCKlKeVaclVW9ax1Wykz+j252M1N70rI88dT8+/ddGZqMupFk8ePUsvK
-         lR4xLAbwYMFT1IC4bvpofpMVF0Gyw4e25Mcw1bCWYrZ7TrIvqotBPjioRqMac5HIgLYa
-         XYfi7UxAvEjWctj8pwgTeUIb+FgkAKDx3VBwjigk5C2ZNvZd5+QhbZQoHnNks7gY3H+l
-         VwJXfx7Fo2e8npir946O3k87wAW02SzO5wtDlyBr5gc6B5JV4UqSIR3Y9/ZCsk3rsY7Q
-         MPSg==
+        Tue, 23 Feb 2021 13:02:41 -0500
+Received: by mail-oi1-f170.google.com with SMTP id q186so18482019oig.12
+        for <linux-m68k@lists.linux-m68k.org>; Tue, 23 Feb 2021 10:02:26 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=Y/7lyBIawgXVibPEQjRnIJxZC4/J4mTsACbEERnxYDg=;
-        b=aSYNObz4BrNdgte1l+Z9Gl56hXiLbrDu6OZQdrjrRJyMu8gjjR0Mcj9WUMCBRPtmQ6
-         gGbLC8wib/nRdXhrc8dRry+IIFi0kxnBzNdp0tqexTYpfyO5u64NUKhTi6aThZtI41bc
-         CzkqaXLM9Vs5ah/d/9B97dIkBS1MziJdu5b28DXSjgYlxefwlWhsHqMQEg91KKx/iIaA
-         Q8hkKPg5Mf4pEIVPYlG+AT68KiATWXiuxH+acQyvVJQIfT2QYhkl7FqIh+inXhOfUTQm
-         6u5ha6r+twqFRofKoQtddpn6Ad+Dj685ObNRUzyQWvLKBCsCQ7jXouguxRQj9vbMhyUo
-         ZDXQ==
-X-Gm-Message-State: AOAM533Y17VN4ESQDKmIkh0J+XzKyMR/gsEBE5GRW2eLSR+GDHieZjDO
-        NFFMmm2BTH5zG4QIfVazzZMlRB+u0vySvuCuuxgCsg==
-X-Google-Smtp-Source: ABdhPJw2zJQHH6G+SOVfrrWuVDvoFs3AyTMegDYPDbhen+c9h8Rqfm/XJ8UoE2cbXebtHnL9Z/5RERNNXFBoFBXyXaU=
-X-Received: by 2002:a05:6830:1552:: with SMTP id l18mr21502367otp.233.1614100592568;
- Tue, 23 Feb 2021 09:16:32 -0800 (PST)
+        bh=Hr05fO8KOjmWsbPm+ZFI7vyJ8Gmfr+uEbMgTqe1usGE=;
+        b=tCxdAcfbAScgnTGKHBnDlH5yvtATc+QJ2PwUWAaK4SNmYL2cXZSLftAHfGd/+Sugsp
+         CqQ+GdIpsHbjw5sSovTyHU8+aSsPUUVrdikyOVxjb1ATLoTCrJBrkgV5hGHizx+rfU+F
+         rxlMnitIHAgBohav769SiZNu6pPOWgGjcPq9k+c0NI85OCpCQVva/Bv27il/2qJTxlz6
+         DlnBKrAsqqdxFJFYaD8eeHeKi0iVX2sA2rKx54O3YLvFnuEP1oYhAXYCyeYnqKzRu4wA
+         FguOVUBaInhCQSLtVytkxIEQrQf7qTXX3Jj1E6Kklw2uB9tEeFHTegQ9m1cIE7yPryzW
+         dhwA==
+X-Gm-Message-State: AOAM531lSbeM4MjndY4uIa2JLUKK6iWxgykdi0KD2dHywp6IU6Po65lK
+        /TaQ9I9ON45lBRCKSsCuIfTLj3s5D8z3bLQb50c=
+X-Google-Smtp-Source: ABdhPJwrwpFr2FQwQpfeP6BA1gpGIIYhMdOoi69PRSdY4DWGPHU2qkE9Uf2//SENA34d4VSlTfbxzpMseSX7CraCA+8=
+X-Received: by 2002:aca:744:: with SMTP id 65mr19161636oih.153.1614103320874;
+ Tue, 23 Feb 2021 10:02:00 -0800 (PST)
 MIME-Version: 1.0
-References: <20210223143426.2412737-1-elver@google.com> <20210223143426.2412737-5-elver@google.com>
- <CACT4Y+aq6voiAEfs0d5Vd9trumVbnQhv-PHYfns2LefijmfyoQ@mail.gmail.com>
- <CANpmjNP1wQvG0SNPP2L9QO=natf0XU8HXj-r2_-U4QZxtr-dVA@mail.gmail.com> <CACT4Y+ar7=q0p=LFxkbKbKhz-U3rwdf=PJ3Gg3=ZLP6w_sgTeA@mail.gmail.com>
-In-Reply-To: <CACT4Y+ar7=q0p=LFxkbKbKhz-U3rwdf=PJ3Gg3=ZLP6w_sgTeA@mail.gmail.com>
-From:   Marco Elver <elver@google.com>
-Date:   Tue, 23 Feb 2021 18:16:20 +0100
-Message-ID: <CANpmjNO-xj8jnakVoWBbjPjn2gjHaugEVJTOebfdpvSwZhG5LQ@mail.gmail.com>
-Subject: Re: [PATCH RFC 4/4] perf/core: Add breakpoint information to siginfo
- on SIGTRAP
-To:     Dmitry Vyukov <dvyukov@google.com>
+References: <20210223143426.2412737-1-elver@google.com> <20210223143426.2412737-3-elver@google.com>
+In-Reply-To: <20210223143426.2412737-3-elver@google.com>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Tue, 23 Feb 2021 19:01:49 +0100
+Message-ID: <CAMuHMdXVZ+UvNgoaNC-ZZoiuJ=DOsZs4oZzd8DubA7D+4iLCow@mail.gmail.com>
+Subject: Re: [PATCH RFC 2/4] signal: Introduce TRAP_PERF si_code and si_perf
+ to siginfo
+To:     Marco Elver <elver@google.com>
 Cc:     Peter Zijlstra <peterz@infradead.org>,
         Alexander Shishkin <alexander.shishkin@linux.intel.com>,
         Arnaldo Carvalho de Melo <acme@kernel.org>,
@@ -75,83 +58,38 @@ Cc:     Peter Zijlstra <peterz@infradead.org>,
         Al Viro <viro@zeniv.linux.org.uk>,
         Arnd Bergmann <arnd@arndb.de>,
         Christian Brauner <christian@brauner.io>,
+        Dmitry Vyukov <dvyukov@google.com>,
         Jann Horn <jannh@google.com>, Jens Axboe <axboe@kernel.dk>,
-        Matt Morehouse <mascasa@google.com>,
-        Peter Collingbourne <pcc@google.com>,
-        Ian Rogers <irogers@google.com>,
-        kasan-dev <kasan-dev@googlegroups.com>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-m68k@lists.linux-m68k.org,
+        mascasa@google.com, Peter Collingbourne <pcc@google.com>,
+        irogers@google.com, kasan-dev@googlegroups.com,
+        Linux-Arch <linux-arch@vger.kernel.org>,
+        Linux FS Devel <linux-fsdevel@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-m68k <linux-m68k@lists.linux-m68k.org>,
         "the arch/x86 maintainers" <x86@kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-On Tue, 23 Feb 2021 at 16:16, Dmitry Vyukov <dvyukov@google.com> wrote:
+On Tue, Feb 23, 2021 at 3:52 PM Marco Elver <elver@google.com> wrote:
+> Introduces the TRAP_PERF si_code, and associated siginfo_t field
+> si_perf. These will be used by the perf event subsystem to send signals
+> (if requested) to the task where an event occurred.
 >
-> On Tue, Feb 23, 2021 at 4:10 PM 'Marco Elver' via kasan-dev
-> <kasan-dev@googlegroups.com> wrote:
-> > > > Encode information from breakpoint attributes into siginfo_t, which
-> > > > helps disambiguate which breakpoint fired.
-> > > >
-> > > > Note, providing the event fd may be unreliable, since the event may have
-> > > > been modified (via PERF_EVENT_IOC_MODIFY_ATTRIBUTES) between the event
-> > > > triggering and the signal being delivered to user space.
-> > > >
-> > > > Signed-off-by: Marco Elver <elver@google.com>
-> > > > ---
-> > > >  kernel/events/core.c | 11 +++++++++++
-> > > >  1 file changed, 11 insertions(+)
-> > > >
-> > > > diff --git a/kernel/events/core.c b/kernel/events/core.c
-> > > > index 8718763045fd..d7908322d796 100644
-> > > > --- a/kernel/events/core.c
-> > > > +++ b/kernel/events/core.c
-> > > > @@ -6296,6 +6296,17 @@ static void perf_sigtrap(struct perf_event *event)
-> > > >         info.si_signo = SIGTRAP;
-> > > >         info.si_code = TRAP_PERF;
-> > > >         info.si_errno = event->attr.type;
-> > > > +
-> > > > +       switch (event->attr.type) {
-> > > > +       case PERF_TYPE_BREAKPOINT:
-> > > > +               info.si_addr = (void *)(unsigned long)event->attr.bp_addr;
-> > > > +               info.si_perf = (event->attr.bp_len << 16) | (u64)event->attr.bp_type;
-> > > > +               break;
-> > > > +       default:
-> > > > +               /* No additional info set. */
-> > >
-> > > Should we prohibit using attr.sigtrap for !PERF_TYPE_BREAKPOINT if we
-> > > don't know what info to pass yet?
-> >
-> > I don't think it's necessary. This way, by default we get support for
-> > other perf events. If user space observes si_perf==0, then there's no
-> > information available. That would require that any event type that
-> > sets si_perf in future, must ensure that it sets si_perf!=0.
-> >
-> > I can add a comment to document the requirement here (and user space
-> > facing documentation should get a copy of how the info is encoded,
-> > too).
-> >
-> > Alternatively, we could set si_errno to 0 if no info is available, at
-> > the cost of losing the type information for events not explicitly
-> > listed here.
+> Signed-off-by: Marco Elver <elver@google.com>
 
-Note that PERF_TYPE_HARDWARE == 0, so setting si_errno to 0 does not
-work. Which leaves us with:
+>  arch/m68k/kernel/signal.c          |  3 +++
 
-1. Ensure si_perf==0 (or some other magic value) if no info is
-available and !=0 otherwise.
+Acked-by: Geert Uytterhoeven <geert@linux-m68k.org>
 
-2. Return error for events where we do not officially support
-requesting sigtrap.
+Gr{oetje,eeting}s,
 
-I'm currently leaning towards (1).
+                        Geert
 
-> > What do you prefer?
->
-> Ah, I see.
-> Let's wait for the opinions of other people. There are a number of
-> options for how to approach this.
+-- 
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
