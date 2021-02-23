@@ -2,117 +2,149 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-26.3 required=3.0 tests=BAYES_00,DKIMWL_WL_MED,
+X-Spam-Status: No, score=-23.3 required=3.0 tests=BAYES_00,DKIMWL_WL_MED,
 	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
 	INCLUDES_CR_TRAILER,INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	USER_AGENT_GIT,USER_IN_DEF_DKIM_WL autolearn=unavailable autolearn_force=no
-	version=3.4.0
+	USER_IN_DEF_DKIM_WL autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 0D5F2C433DB
-	for <linux-m68k@archiver.kernel.org>; Tue, 23 Feb 2021 14:37:42 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8F912C43381
+	for <linux-m68k@archiver.kernel.org>; Tue, 23 Feb 2021 14:49:54 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id CAE1964DD3
-	for <linux-m68k@archiver.kernel.org>; Tue, 23 Feb 2021 14:37:41 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 5B04364E12
+	for <linux-m68k@archiver.kernel.org>; Tue, 23 Feb 2021 14:49:54 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233144AbhBWOhS (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Tue, 23 Feb 2021 09:37:18 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58810 "EHLO
+        id S232912AbhBWOtw (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Tue, 23 Feb 2021 09:49:52 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33356 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233130AbhBWOgs (ORCPT
+        with ESMTP id S232769AbhBWOts (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Tue, 23 Feb 2021 09:36:48 -0500
-Received: from mail-wr1-x449.google.com (mail-wr1-x449.google.com [IPv6:2a00:1450:4864:20::449])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5602DC061222
-        for <linux-m68k@lists.linux-m68k.org>; Tue, 23 Feb 2021 06:34:56 -0800 (PST)
-Received: by mail-wr1-x449.google.com with SMTP id c9so7391094wrq.18
-        for <linux-m68k@lists.linux-m68k.org>; Tue, 23 Feb 2021 06:34:56 -0800 (PST)
+        Tue, 23 Feb 2021 09:49:48 -0500
+Received: from mail-qv1-xf2c.google.com (mail-qv1-xf2c.google.com [IPv6:2607:f8b0:4864:20::f2c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 154FAC06174A
+        for <linux-m68k@lists.linux-m68k.org>; Tue, 23 Feb 2021 06:49:07 -0800 (PST)
+Received: by mail-qv1-xf2c.google.com with SMTP id s10so7217933qvl.9
+        for <linux-m68k@lists.linux-m68k.org>; Tue, 23 Feb 2021 06:49:07 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
-        h=sender:date:in-reply-to:message-id:mime-version:references:subject
-         :from:to:cc;
-        bh=S0g1Gw0V8LQdKC7HpmWoNe9UXx0KjO/uwYjAYtfhLeU=;
-        b=Fq2+eMK4jh0j/XFxErxBk8JeSfqqp/fu80bJNatnXBZ+At9fWTw+fV8REB7eXUtZp1
-         ULO0nXNMb/4yD7npazKim9wSN+KhAZDvelhEE2VXOW04dDQNWpR2j4a8dhjUh7H8vdLk
-         LdBD159jN26zXBuVa/9kmkk6hXeouARhByuMWxXgSfSal5Vajn6E0H/0xXc9M/FBGqDx
-         71vEf/3qA2dcUZrsFdOJHXvfq/XGKNsVTheqxZJWbPoc0xiNH+vHxYQlKO6MY+NL0rTl
-         U3Nazu+wdymC8xNyetJQHEzeaV/tg2wAU6FrWnoRr/J1/2/lOOZoEwX79LN/hewvBfCb
-         vklg==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=5S1278VXBXOSLVzud0ikIuJDPMbbC2qcHtU1cXjsgPk=;
+        b=NiVKZu5i8qwDclQxF0dwzHxzXcPvLJbWdBqJ0G5HlyTCGT8dxnmVly+zHKAPdGPFrQ
+         jLdOKWrkacctxFanoSKOGX3fa5L5bCcvzYdI6za53kIxVTLpypD57RLJB3PkyBrTsKkd
+         lKj6wAgVQntdDLIQBxJ8PT4t95heusHlnfeTwdCiuCeqGzrqnyqBeEaDR+9vUSPaYSbq
+         DG/uwnbkangeBPnYXVIcU4DYx5Qyusddt4EZdL8HrGfvG6gGArKhgL8JjHqAqZbyNnSP
+         9/dOz/8pMQC+MMk4o8QWp5Tuz5WRqftR8WswyTX6bHnKj8/SSyC4Do5EmH6jhxTuAx7C
+         iWwg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:in-reply-to:message-id:mime-version
-         :references:subject:from:to:cc;
-        bh=S0g1Gw0V8LQdKC7HpmWoNe9UXx0KjO/uwYjAYtfhLeU=;
-        b=j1/GKIbrjpK8VhVB0UcvvDxF8cjQYyC+Ymp5d9NBUaHP4NL6HB/FivMevegQ535U30
-         +iAlTv7/4DEzA00KbEowtGXglOuF2Z4y50jiYgs3AasuJ+ZLKiKIn5+rAURK5culFDWW
-         gSboVI+ar+MdeT5xAS0MFCLrbKFmcAn4AriboS/fjEfTxr4qA84jBLeRQr1C4xogC9V0
-         aQqmegRj74CxWQ+oH/KSyq4/lPcLaiKwz3rjruUFWg8mt9EKtrA7Yf+tcIfHT91M9XOq
-         3deSBgGUjJXfy5JOWtidrZnIpWN9pg/eoCjhZw9c+ouBUnd9v9IBmbyPJ0aKQe2retDC
-         Ai2A==
-X-Gm-Message-State: AOAM532nYqsqzG3ey2hzNBqLuLfE0BjM/WqXVlTFwQkzdDHm04xiBpLq
-        irfMajlZ+JgwTIlk1p6ag59NdBbqGw==
-X-Google-Smtp-Source: ABdhPJzt6spWgjRPJkBK/IplFxSdnMgcPPQTnbG7I8X4jppm6p3wuv5JFcbCjpxvdDcCW9kqNB9SgjiX0A==
-Sender: "elver via sendgmr" <elver@elver.muc.corp.google.com>
-X-Received: from elver.muc.corp.google.com ([2a00:79e0:15:13:855b:f924:6e71:3d5d])
- (user=elver job=sendgmr) by 2002:a1c:2e90:: with SMTP id u138mr587498wmu.0.1614090894574;
- Tue, 23 Feb 2021 06:34:54 -0800 (PST)
-Date:   Tue, 23 Feb 2021 15:34:26 +0100
-In-Reply-To: <20210223143426.2412737-1-elver@google.com>
-Message-Id: <20210223143426.2412737-5-elver@google.com>
-Mime-Version: 1.0
-References: <20210223143426.2412737-1-elver@google.com>
-X-Mailer: git-send-email 2.30.0.617.g56c4b15f3c-goog
-Subject: [PATCH RFC 4/4] perf/core: Add breakpoint information to siginfo on SIGTRAP
-From:   Marco Elver <elver@google.com>
-To:     elver@google.com, peterz@infradead.org,
-        alexander.shishkin@linux.intel.com, acme@kernel.org,
-        mingo@redhat.com, jolsa@redhat.com, mark.rutland@arm.com,
-        namhyung@kernel.org, tglx@linutronix.de
-Cc:     glider@google.com, viro@zeniv.linux.org.uk, arnd@arndb.de,
-        christian@brauner.io, dvyukov@google.com, jannh@google.com,
-        axboe@kernel.dk, mascasa@google.com, pcc@google.com,
-        irogers@google.com, kasan-dev@googlegroups.com,
-        linux-arch@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-m68k@lists.linux-m68k.org,
-        x86@kernel.org
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=5S1278VXBXOSLVzud0ikIuJDPMbbC2qcHtU1cXjsgPk=;
+        b=J+KhF1YI+yTwBpr5XTXTkAveAmtmmM1CeTLptxaj+FD37wgt7xLnmrCzKskFvytu8v
+         m3AquMAt3sdQwVeRu6GfNFAClIMzC5CzsxOaRsYCvS9dF5c80tyTZwEZvtvk1xvDKDs3
+         CKdnUUsehUHzZ4lcc1aTqnP3bpMtfwgmvBJuDc3uLULDUv60un47hIoMm/JKsvTnaJSa
+         B6D6XmXj86RW1SN8M0LDw+OxsAYvpmwUUA4iz0iavlR1ej2VeMiYTVMg033kLQblD2A2
+         AHwr59OzvYWK/A/c3/OLM3XOsxmLhAuu7FQkhGUn57cYsXI2tI/r9M6tN7mMjrohnwEn
+         o0EA==
+X-Gm-Message-State: AOAM533cOcTYzHpTJX7AdnHbOTloyt4Nbr+sMWjSf3At0YgNcapS7fS5
+        TGtqPVb7eyM36TZjOL/NtOC6HTSj9NImTG/miXbuCQ==
+X-Google-Smtp-Source: ABdhPJzkj0kFTsnMC8xw+10LnB3Mw8u1Yp18xzsvPq+XTQfqTRg36gkO97V96V/4F1u+24NycHQHKwxhsiqGo6/rJ1s=
+X-Received: by 2002:a0c:e20f:: with SMTP id q15mr22742422qvl.13.1614091745827;
+ Tue, 23 Feb 2021 06:49:05 -0800 (PST)
+MIME-Version: 1.0
+References: <20210223143426.2412737-1-elver@google.com> <20210223143426.2412737-2-elver@google.com>
+In-Reply-To: <20210223143426.2412737-2-elver@google.com>
+From:   Dmitry Vyukov <dvyukov@google.com>
+Date:   Tue, 23 Feb 2021 15:48:54 +0100
+Message-ID: <CACT4Y+YGrj3zc+KsxQ0=N5t3dPy58FwVuy=MY95RphOD4i4FHg@mail.gmail.com>
+Subject: Re: [PATCH RFC 1/4] perf/core: Apply PERF_EVENT_IOC_MODIFY_ATTRIBUTES
+ to children
+To:     Marco Elver <elver@google.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Ingo Molnar <mingo@redhat.com>, Jiri Olsa <jolsa@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Alexander Potapenko <glider@google.com>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Christian Brauner <christian@brauner.io>,
+        Jann Horn <jannh@google.com>, Jens Axboe <axboe@kernel.dk>,
+        Matt Morehouse <mascasa@google.com>,
+        Peter Collingbourne <pcc@google.com>,
+        Ian Rogers <irogers@google.com>,
+        kasan-dev <kasan-dev@googlegroups.com>,
+        linux-arch <linux-arch@vger.kernel.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-m68k@lists.linux-m68k.org,
+        "the arch/x86 maintainers" <x86@kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-Encode information from breakpoint attributes into siginfo_t, which
-helps disambiguate which breakpoint fired.
+On Tue, Feb 23, 2021 at 3:34 PM Marco Elver <elver@google.com> wrote:
+>
+> As with other ioctls (such as PERF_EVENT_IOC_{ENABLE,DISABLE}), fix up
+> handling of PERF_EVENT_IOC_MODIFY_ATTRIBUTES to also apply to children.
+>
+> Link: https://lkml.kernel.org/r/YBqVaY8aTMYtoUnX@hirez.programming.kicks-ass.net
+> Suggested-by: Dmitry Vyukov <dvyukov@google.com>
+> Signed-off-by: Marco Elver <elver@google.com>
 
-Note, providing the event fd may be unreliable, since the event may have
-been modified (via PERF_EVENT_IOC_MODIFY_ATTRIBUTES) between the event
-triggering and the signal being delivered to user space.
+Reviewed-by: Dmitry Vyukov <dvyukov@google.com>
 
-Signed-off-by: Marco Elver <elver@google.com>
----
- kernel/events/core.c | 11 +++++++++++
- 1 file changed, 11 insertions(+)
 
-diff --git a/kernel/events/core.c b/kernel/events/core.c
-index 8718763045fd..d7908322d796 100644
---- a/kernel/events/core.c
-+++ b/kernel/events/core.c
-@@ -6296,6 +6296,17 @@ static void perf_sigtrap(struct perf_event *event)
- 	info.si_signo = SIGTRAP;
- 	info.si_code = TRAP_PERF;
- 	info.si_errno = event->attr.type;
-+
-+	switch (event->attr.type) {
-+	case PERF_TYPE_BREAKPOINT:
-+		info.si_addr = (void *)(unsigned long)event->attr.bp_addr;
-+		info.si_perf = (event->attr.bp_len << 16) | (u64)event->attr.bp_type;
-+		break;
-+	default:
-+		/* No additional info set. */
-+		break;
-+	}
-+
- 	force_sig_info(&info);
- }
- 
--- 
-2.30.0.617.g56c4b15f3c-goog
-
+> ---
+>  kernel/events/core.c | 22 +++++++++++++++++++++-
+>  1 file changed, 21 insertions(+), 1 deletion(-)
+>
+> diff --git a/kernel/events/core.c b/kernel/events/core.c
+> index 129dee540a8b..37a8297be164 100644
+> --- a/kernel/events/core.c
+> +++ b/kernel/events/core.c
+> @@ -3179,16 +3179,36 @@ static int perf_event_modify_breakpoint(struct perf_event *bp,
+>  static int perf_event_modify_attr(struct perf_event *event,
+>                                   struct perf_event_attr *attr)
+>  {
+> +       int (*func)(struct perf_event *, struct perf_event_attr *);
+> +       struct perf_event *child;
+> +       int err;
+> +
+>         if (event->attr.type != attr->type)
+>                 return -EINVAL;
+>
+>         switch (event->attr.type) {
+>         case PERF_TYPE_BREAKPOINT:
+> -               return perf_event_modify_breakpoint(event, attr);
+> +               func = perf_event_modify_breakpoint;
+> +               break;
+>         default:
+>                 /* Place holder for future additions. */
+>                 return -EOPNOTSUPP;
+>         }
+> +
+> +       WARN_ON_ONCE(event->ctx->parent_ctx);
+> +
+> +       mutex_lock(&event->child_mutex);
+> +       err = func(event, attr);
+> +       if (err)
+> +               goto out;
+> +       list_for_each_entry(child, &event->child_list, child_list) {
+> +               err = func(child, attr);
+> +               if (err)
+> +                       goto out;
+> +       }
+> +out:
+> +       mutex_unlock(&event->child_mutex);
+> +       return err;
+>  }
+>
+>  static void ctx_sched_out(struct perf_event_context *ctx,
+> --
+> 2.30.0.617.g56c4b15f3c-goog
+>
