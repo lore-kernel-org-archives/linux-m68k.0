@@ -5,64 +5,65 @@ X-Spam-Level:
 X-Spam-Status: No, score=-23.2 required=3.0 tests=BAYES_00,DKIMWL_WL_MED,
 	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
 	INCLUDES_CR_TRAILER,INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	URIBL_BLOCKED,USER_IN_DEF_DKIM_WL autolearn=unavailable autolearn_force=no
+	URIBL_BLOCKED,USER_IN_DEF_DKIM_WL autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 8E7AFC433E6
-	for <linux-m68k@archiver.kernel.org>; Tue, 23 Feb 2021 15:17:41 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5211CC433E6
+	for <linux-m68k@archiver.kernel.org>; Tue, 23 Feb 2021 17:17:30 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 5147E64E60
-	for <linux-m68k@archiver.kernel.org>; Tue, 23 Feb 2021 15:17:41 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 2234764E83
+	for <linux-m68k@archiver.kernel.org>; Tue, 23 Feb 2021 17:17:30 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232784AbhBWPRZ (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Tue, 23 Feb 2021 10:17:25 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39316 "EHLO
+        id S233692AbhBWRRO (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Tue, 23 Feb 2021 12:17:14 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36882 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232695AbhBWPRY (ORCPT
+        with ESMTP id S233656AbhBWRRN (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Tue, 23 Feb 2021 10:17:24 -0500
-Received: from mail-qv1-xf35.google.com (mail-qv1-xf35.google.com [IPv6:2607:f8b0:4864:20::f35])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B2F0C061786
-        for <linux-m68k@lists.linux-m68k.org>; Tue, 23 Feb 2021 07:16:42 -0800 (PST)
-Received: by mail-qv1-xf35.google.com with SMTP id k8so7461565qvm.6
-        for <linux-m68k@lists.linux-m68k.org>; Tue, 23 Feb 2021 07:16:41 -0800 (PST)
+        Tue, 23 Feb 2021 12:17:13 -0500
+Received: from mail-ot1-x331.google.com (mail-ot1-x331.google.com [IPv6:2607:f8b0:4864:20::331])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8176EC06178A
+        for <linux-m68k@lists.linux-m68k.org>; Tue, 23 Feb 2021 09:16:33 -0800 (PST)
+Received: by mail-ot1-x331.google.com with SMTP id l23so16313333otn.10
+        for <linux-m68k@lists.linux-m68k.org>; Tue, 23 Feb 2021 09:16:33 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=3yeydPNUBbnBa03B4CtFFI71u/VogiWMTrnYPrUvA5o=;
-        b=uA/OwFba1OXPlE3eec0Lkuteazee/7d9Xd178WLkv5dnu8A92vJ3djvigMQ7jAUU3x
-         nME8FehzY+kcVllN570rvIsKcFTRvTQDbwiIWDA0cQJz1KzNcJZX4h3plHWk+bqaBjZn
-         SvN7Gfc1RxuY/+i/jtrAaPenwBNwNWegEHtOvmo0Vjx+8aRq1Ed96qCOX++Sjt87mB/X
-         GTaVTu2K4unxbuD3deSDB5Gpq8x62S/upY7qcSNNBkfFos/vSWFzs2kFtXbKsusKVwNb
-         7OlTcPYQlWfPWA0VtuzWC2Oxbe11yZH4qDiRafr6Ymkyv+N7fk7X9ZAaFHxyTMoLW8ij
-         Er2w==
+        bh=Y/7lyBIawgXVibPEQjRnIJxZC4/J4mTsACbEERnxYDg=;
+        b=mRjlqnBTeAG3y2s8FAauHnaH1SamsOPskLA8yoP4qMATNnDLnjombF0ueoOHemI4v+
+         ON6jLAZhOorVDCKlKeVaclVW9ax1Wykz+j252M1N70rI88dT8+/ddGZqMupFk8ePUsvK
+         lR4xLAbwYMFT1IC4bvpofpMVF0Gyw4e25Mcw1bCWYrZ7TrIvqotBPjioRqMac5HIgLYa
+         XYfi7UxAvEjWctj8pwgTeUIb+FgkAKDx3VBwjigk5C2ZNvZd5+QhbZQoHnNks7gY3H+l
+         VwJXfx7Fo2e8npir946O3k87wAW02SzO5wtDlyBr5gc6B5JV4UqSIR3Y9/ZCsk3rsY7Q
+         MPSg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=3yeydPNUBbnBa03B4CtFFI71u/VogiWMTrnYPrUvA5o=;
-        b=LdRJxnnRPIAP/RcGkanM7fTG9VcpRqFX13dWgV/eSGFL2wh8wRO+TnkPOl79G7ViRt
-         nmq1kqOcwx4+9RMbkc3vxA3h4KWg1RJDJaX3GGw1+5GLBRpXGc78dPUBAwjE4xCFh2FG
-         P+CLeBPA/KTnQEWjWROqdFnb8XfgcQDGAScFZi/xLeW7V2DwIyt56cslbQgWf60qp8zI
-         DxxQFDmTb8xVnVcDCMLwbM9DpJY1tmIu+LuDCr95C84EtrgmxQbvOr3hpfTX6c8XLO9V
-         mZ2mHdP6J/PUT19HX74cwVkkdjLrydZSxZeSMGJ1n+rHKb07rSo14lx9W8kZGuSe2FWf
-         XV3Q==
-X-Gm-Message-State: AOAM5315mCiEbCGKhdaDPBUpnjfdEiCA91s/KgyvH11BnmbUW69Vanc7
-        un6SmMwtKoP6IW8l1GJq1q+v1TmM33F0a1d0L/rnRw==
-X-Google-Smtp-Source: ABdhPJxLBKxZOO7lXuX++W27qocF5V5S96s4v/Tgf2IBWVEhIaFHgtodagR8vVVk8//B7pIxeik4PswMSc2P9YWh/9A=
-X-Received: by 2002:a0c:8304:: with SMTP id j4mr25737289qva.18.1614093400799;
- Tue, 23 Feb 2021 07:16:40 -0800 (PST)
+        bh=Y/7lyBIawgXVibPEQjRnIJxZC4/J4mTsACbEERnxYDg=;
+        b=aSYNObz4BrNdgte1l+Z9Gl56hXiLbrDu6OZQdrjrRJyMu8gjjR0Mcj9WUMCBRPtmQ6
+         gGbLC8wib/nRdXhrc8dRry+IIFi0kxnBzNdp0tqexTYpfyO5u64NUKhTi6aThZtI41bc
+         CzkqaXLM9Vs5ah/d/9B97dIkBS1MziJdu5b28DXSjgYlxefwlWhsHqMQEg91KKx/iIaA
+         Q8hkKPg5Mf4pEIVPYlG+AT68KiATWXiuxH+acQyvVJQIfT2QYhkl7FqIh+inXhOfUTQm
+         6u5ha6r+twqFRofKoQtddpn6Ad+Dj685ObNRUzyQWvLKBCsCQ7jXouguxRQj9vbMhyUo
+         ZDXQ==
+X-Gm-Message-State: AOAM533Y17VN4ESQDKmIkh0J+XzKyMR/gsEBE5GRW2eLSR+GDHieZjDO
+        NFFMmm2BTH5zG4QIfVazzZMlRB+u0vySvuCuuxgCsg==
+X-Google-Smtp-Source: ABdhPJw2zJQHH6G+SOVfrrWuVDvoFs3AyTMegDYPDbhen+c9h8Rqfm/XJ8UoE2cbXebtHnL9Z/5RERNNXFBoFBXyXaU=
+X-Received: by 2002:a05:6830:1552:: with SMTP id l18mr21502367otp.233.1614100592568;
+ Tue, 23 Feb 2021 09:16:32 -0800 (PST)
 MIME-Version: 1.0
 References: <20210223143426.2412737-1-elver@google.com> <20210223143426.2412737-5-elver@google.com>
- <CACT4Y+aq6voiAEfs0d5Vd9trumVbnQhv-PHYfns2LefijmfyoQ@mail.gmail.com> <CANpmjNP1wQvG0SNPP2L9QO=natf0XU8HXj-r2_-U4QZxtr-dVA@mail.gmail.com>
-In-Reply-To: <CANpmjNP1wQvG0SNPP2L9QO=natf0XU8HXj-r2_-U4QZxtr-dVA@mail.gmail.com>
-From:   Dmitry Vyukov <dvyukov@google.com>
-Date:   Tue, 23 Feb 2021 16:16:29 +0100
-Message-ID: <CACT4Y+ar7=q0p=LFxkbKbKhz-U3rwdf=PJ3Gg3=ZLP6w_sgTeA@mail.gmail.com>
+ <CACT4Y+aq6voiAEfs0d5Vd9trumVbnQhv-PHYfns2LefijmfyoQ@mail.gmail.com>
+ <CANpmjNP1wQvG0SNPP2L9QO=natf0XU8HXj-r2_-U4QZxtr-dVA@mail.gmail.com> <CACT4Y+ar7=q0p=LFxkbKbKhz-U3rwdf=PJ3Gg3=ZLP6w_sgTeA@mail.gmail.com>
+In-Reply-To: <CACT4Y+ar7=q0p=LFxkbKbKhz-U3rwdf=PJ3Gg3=ZLP6w_sgTeA@mail.gmail.com>
+From:   Marco Elver <elver@google.com>
+Date:   Tue, 23 Feb 2021 18:16:20 +0100
+Message-ID: <CANpmjNO-xj8jnakVoWBbjPjn2gjHaugEVJTOebfdpvSwZhG5LQ@mail.gmail.com>
 Subject: Re: [PATCH RFC 4/4] perf/core: Add breakpoint information to siginfo
  on SIGTRAP
-To:     Marco Elver <elver@google.com>
+To:     Dmitry Vyukov <dvyukov@google.com>
 Cc:     Peter Zijlstra <peterz@infradead.org>,
         Alexander Shishkin <alexander.shishkin@linux.intel.com>,
         Arnaldo Carvalho de Melo <acme@kernel.org>,
@@ -89,70 +90,68 @@ Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-On Tue, Feb 23, 2021 at 4:10 PM 'Marco Elver' via kasan-dev
-<kasan-dev@googlegroups.com> wrote:
-> > > Encode information from breakpoint attributes into siginfo_t, which
-> > > helps disambiguate which breakpoint fired.
+On Tue, 23 Feb 2021 at 16:16, Dmitry Vyukov <dvyukov@google.com> wrote:
+>
+> On Tue, Feb 23, 2021 at 4:10 PM 'Marco Elver' via kasan-dev
+> <kasan-dev@googlegroups.com> wrote:
+> > > > Encode information from breakpoint attributes into siginfo_t, which
+> > > > helps disambiguate which breakpoint fired.
+> > > >
+> > > > Note, providing the event fd may be unreliable, since the event may have
+> > > > been modified (via PERF_EVENT_IOC_MODIFY_ATTRIBUTES) between the event
+> > > > triggering and the signal being delivered to user space.
+> > > >
+> > > > Signed-off-by: Marco Elver <elver@google.com>
+> > > > ---
+> > > >  kernel/events/core.c | 11 +++++++++++
+> > > >  1 file changed, 11 insertions(+)
+> > > >
+> > > > diff --git a/kernel/events/core.c b/kernel/events/core.c
+> > > > index 8718763045fd..d7908322d796 100644
+> > > > --- a/kernel/events/core.c
+> > > > +++ b/kernel/events/core.c
+> > > > @@ -6296,6 +6296,17 @@ static void perf_sigtrap(struct perf_event *event)
+> > > >         info.si_signo = SIGTRAP;
+> > > >         info.si_code = TRAP_PERF;
+> > > >         info.si_errno = event->attr.type;
+> > > > +
+> > > > +       switch (event->attr.type) {
+> > > > +       case PERF_TYPE_BREAKPOINT:
+> > > > +               info.si_addr = (void *)(unsigned long)event->attr.bp_addr;
+> > > > +               info.si_perf = (event->attr.bp_len << 16) | (u64)event->attr.bp_type;
+> > > > +               break;
+> > > > +       default:
+> > > > +               /* No additional info set. */
 > > >
-> > > Note, providing the event fd may be unreliable, since the event may have
-> > > been modified (via PERF_EVENT_IOC_MODIFY_ATTRIBUTES) between the event
-> > > triggering and the signal being delivered to user space.
-> > >
-> > > Signed-off-by: Marco Elver <elver@google.com>
-> > > ---
-> > >  kernel/events/core.c | 11 +++++++++++
-> > >  1 file changed, 11 insertions(+)
-> > >
-> > > diff --git a/kernel/events/core.c b/kernel/events/core.c
-> > > index 8718763045fd..d7908322d796 100644
-> > > --- a/kernel/events/core.c
-> > > +++ b/kernel/events/core.c
-> > > @@ -6296,6 +6296,17 @@ static void perf_sigtrap(struct perf_event *event)
-> > >         info.si_signo = SIGTRAP;
-> > >         info.si_code = TRAP_PERF;
-> > >         info.si_errno = event->attr.type;
-> > > +
-> > > +       switch (event->attr.type) {
-> > > +       case PERF_TYPE_BREAKPOINT:
-> > > +               info.si_addr = (void *)(unsigned long)event->attr.bp_addr;
-> > > +               info.si_perf = (event->attr.bp_len << 16) | (u64)event->attr.bp_type;
-> > > +               break;
-> > > +       default:
-> > > +               /* No additional info set. */
+> > > Should we prohibit using attr.sigtrap for !PERF_TYPE_BREAKPOINT if we
+> > > don't know what info to pass yet?
 > >
-> > Should we prohibit using attr.sigtrap for !PERF_TYPE_BREAKPOINT if we
-> > don't know what info to pass yet?
->
-> I don't think it's necessary. This way, by default we get support for
-> other perf events. If user space observes si_perf==0, then there's no
-> information available. That would require that any event type that
-> sets si_perf in future, must ensure that it sets si_perf!=0.
->
-> I can add a comment to document the requirement here (and user space
-> facing documentation should get a copy of how the info is encoded,
-> too).
->
-> Alternatively, we could set si_errno to 0 if no info is available, at
-> the cost of losing the type information for events not explicitly
-> listed here.
->
-> What do you prefer?
+> > I don't think it's necessary. This way, by default we get support for
+> > other perf events. If user space observes si_perf==0, then there's no
+> > information available. That would require that any event type that
+> > sets si_perf in future, must ensure that it sets si_perf!=0.
+> >
+> > I can add a comment to document the requirement here (and user space
+> > facing documentation should get a copy of how the info is encoded,
+> > too).
+> >
+> > Alternatively, we could set si_errno to 0 if no info is available, at
+> > the cost of losing the type information for events not explicitly
+> > listed here.
 
-Ah, I see.
-Let's wait for the opinions of other people. There are a number of
-options for how to approach this.
+Note that PERF_TYPE_HARDWARE == 0, so setting si_errno to 0 does not
+work. Which leaves us with:
 
-> > > +               break;
-> > > +       }
-> > > +
-> > >         force_sig_info(&info);
-> > >  }
-> > >
-> > > --
-> > > 2.30.0.617.g56c4b15f3c-goog
-> > >
+1. Ensure si_perf==0 (or some other magic value) if no info is
+available and !=0 otherwise.
+
+2. Return error for events where we do not officially support
+requesting sigtrap.
+
+I'm currently leaning towards (1).
+
+> > What do you prefer?
 >
-> --
-> You received this message because you are subscribed to the Google Groups "kasan-dev" group.
-> To unsubscribe from this group and stop receiving emails from it, send an email to kasan-dev+unsubscribe@googlegroups.com.
-> To view this discussion on the web visit https://groups.google.com/d/msgid/kasan-dev/CANpmjNP1wQvG0SNPP2L9QO%3Dnatf0XU8HXj-r2_-U4QZxtr-dVA%40mail.gmail.com.
+> Ah, I see.
+> Let's wait for the opinions of other people. There are a number of
+> options for how to approach this.
