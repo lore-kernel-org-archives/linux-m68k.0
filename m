@@ -2,196 +2,109 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-13.2 required=3.0 tests=BAYES_00,DKIMWL_WL_MED,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_IN_DEF_DKIM_WL
+X-Spam-Status: No, score=-3.8 required=3.0 tests=BAYES_00,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
 	autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 78FE6C433E0
-	for <linux-m68k@archiver.kernel.org>; Tue, 23 Feb 2021 22:28:45 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 0715EC433E0
+	for <linux-m68k@archiver.kernel.org>; Wed, 24 Feb 2021 05:21:55 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 46E7E64E00
-	for <linux-m68k@archiver.kernel.org>; Tue, 23 Feb 2021 22:28:45 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id A272A64D9A
+	for <linux-m68k@archiver.kernel.org>; Wed, 24 Feb 2021 05:21:54 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232203AbhBWW2U (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Tue, 23 Feb 2021 17:28:20 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47320 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230330AbhBWW1W (ORCPT
-        <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Tue, 23 Feb 2021 17:27:22 -0500
-Received: from mail-ot1-x333.google.com (mail-ot1-x333.google.com [IPv6:2607:f8b0:4864:20::333])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4BEF4C06174A
-        for <linux-m68k@lists.linux-m68k.org>; Tue, 23 Feb 2021 14:26:42 -0800 (PST)
-Received: by mail-ot1-x333.google.com with SMTP id f33so232383otf.11
-        for <linux-m68k@lists.linux-m68k.org>; Tue, 23 Feb 2021 14:26:42 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=fZxhrFPoVeuINwqWYDTQrRIMFcJNq/iX5+xBlXUPDIw=;
-        b=Lkb/fePhnB3TeXO8nhWGUpDpvuWHlvarKeD0HrVivi0T+3SB/3s96S+TLlJRZWdu/7
-         LzAu9w42VS6gqUKOAyRRnlVvojownec1/CLyOEfqurejaYCCK5tVfresc04+Dl2XW/iN
-         UGuZwMWXTPugvWndL9KLxaN5dLQR0IdCP9yjKf5/5tcsEkL84nOowVAysLLEnAfcg3cS
-         z28cIFKTN5FIt0IiQWX+cbneyBitwyKBKVvCyjrF08Xt9Exkv3ZXlzFYa0UB2Km3buwT
-         44bJM65RqceFOuvwN2cfOXlSaBbfpqTbw3rXZXWhefF7OsdNuGkVpewdqnJ/XW/wWUWS
-         blkA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=fZxhrFPoVeuINwqWYDTQrRIMFcJNq/iX5+xBlXUPDIw=;
-        b=DmT24kxCa6fKbt0WA690GEv4rH7RNmUcSfIfivVeg4jpSUn35J9YoZCmGBAgMZRBhA
-         gK73bB+Tl1d+GTvnDBi1fDYkMK1HK8aSi+6JAwlPj6QZbVVoOPmLLB3P8td6eflvoTn8
-         eZ2HYaGsrU2Z259RF1Fvx+yYsQdue3TfqX0tZp/Ze9LBEeFnY/t0QPHNCh4/BfZUBX8+
-         YgUuIyVY8/ehDGdtMM6XyIbgbGtzSYqexRlcoO6AgnmFGvgchifTu0htqsFNyuCispci
-         DNUNmBUPKX1+SDPR4+lG7VOnAR7A/AhNzZT9ijjqkW7jQOWaI49cr9X1Av49PRYPDfj9
-         A2fg==
-X-Gm-Message-State: AOAM532OzQ8Kq2nxk4hdARCr/IP8lKH1ovsyBPWKEqS3IupCVvA7XSrV
-        nkEc188DXwqxEdNhY85+yshk6IrT/jck2WCxdaiQpA==
-X-Google-Smtp-Source: ABdhPJyKcJ1a+AjtPRO339TGkeeBUE+Uf/ejrr6lZnvFhmNcPW5GEY4o7F+DMHaSBgv4mLYXaBM1l4zKLP8jkuBLUWw=
-X-Received: by 2002:a9d:5a05:: with SMTP id v5mr22397134oth.17.1614119201352;
- Tue, 23 Feb 2021 14:26:41 -0800 (PST)
+        id S233720AbhBXFVi (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Wed, 24 Feb 2021 00:21:38 -0500
+Received: from kvm5.telegraphics.com.au ([98.124.60.144]:45274 "EHLO
+        kvm5.telegraphics.com.au" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233585AbhBXFVi (ORCPT
+        <rfc822;linux-m68k@vger.kernel.org>); Wed, 24 Feb 2021 00:21:38 -0500
+Received: from localhost (localhost.localdomain [127.0.0.1])
+        by kvm5.telegraphics.com.au (Postfix) with ESMTP id D1C9C29B6A;
+        Wed, 24 Feb 2021 00:20:53 -0500 (EST)
+Date:   Wed, 24 Feb 2021 16:20:54 +1100 (AEDT)
+From:   Finn Thain <fthain@telegraphics.com.au>
+To:     "Song Bao Hua (Barry Song)" <song.bao.hua@hisilicon.com>
+cc:     tanxiaofei <tanxiaofei@huawei.com>,
+        "jejb@linux.ibm.com" <jejb@linux.ibm.com>,
+        "martin.petersen@oracle.com" <martin.petersen@oracle.com>,
+        "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linuxarm@openeuler.org" <linuxarm@openeuler.org>,
+        "linux-m68k@vger.kernel.org" <linux-m68k@vger.kernel.org>
+Subject: RE: [Linuxarm] Re: [PATCH for-next 00/32] spin lock usage optimization
+ for SCSI drivers
+In-Reply-To: <4d2f90d2157045a7b0800a4004f539ba@hisilicon.com>
+Message-ID: <7293ba4c-c5ab-528f-1feb-dc59bfb0df2d@telegraphics.com.au>
+References: <1612697823-8073-1-git-send-email-tanxiaofei@huawei.com> <31cd807d-3d0-ed64-60d-fde32cb3833c@telegraphics.com.au> <e949a474a9284ac6951813bfc8b34945@hisilicon.com> <f0a3339d-b1db-6571-fa2f-6765e150eb9d@telegraphics.com.au>
+ <7bc39d19-f4cc-8028-11e6-c0e45421a765@huawei.com> <588a87f-ae42-0b7-749e-c780ce5c3e4f@telegraphics.com.au> <8c99b5c060eb4e5aa5b604666a8db516@hisilicon.com> <f38b950-c76e-39da-f386-9e77cfcecb3@telegraphics.com.au>
+ <4d2f90d2157045a7b0800a4004f539ba@hisilicon.com>
 MIME-Version: 1.0
-References: <20210223143426.2412737-1-elver@google.com> <3D507285-835F-4C83-8343-2888835971B4@amacapital.net>
-In-Reply-To: <3D507285-835F-4C83-8343-2888835971B4@amacapital.net>
-From:   Marco Elver <elver@google.com>
-Date:   Tue, 23 Feb 2021 23:26:29 +0100
-Message-ID: <CANpmjNOpq27pDnoPaNON7a_gi7Ls=7xQXBH5-BSe9jwiFE763A@mail.gmail.com>
-Subject: Re: [PATCH RFC 0/4] Add support for synchronous signals on perf events
-To:     Andy Lutomirski <luto@amacapital.net>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Ingo Molnar <mingo@redhat.com>, Jiri Olsa <jolsa@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Alexander Potapenko <glider@google.com>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Christian Brauner <christian@brauner.io>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Jann Horn <jannh@google.com>, Jens Axboe <axboe@kernel.dk>,
-        Matt Morehouse <mascasa@google.com>,
-        Peter Collingbourne <pcc@google.com>,
-        Ian Rogers <irogers@google.com>,
-        kasan-dev <kasan-dev@googlegroups.com>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-m68k@lists.linux-m68k.org,
-        "the arch/x86 maintainers" <x86@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-On Tue, 23 Feb 2021 at 21:27, Andy Lutomirski <luto@amacapital.net> wrote:
-> > On Feb 23, 2021, at 6:34 AM, Marco Elver <elver@google.com> wrote:
-> >
-> > =EF=BB=BFThe perf subsystem today unifies various tracing and monitorin=
-g
-> > features, from both software and hardware. One benefit of the perf
-> > subsystem is automatically inheriting events to child tasks, which
-> > enables process-wide events monitoring with low overheads. By default
-> > perf events are non-intrusive, not affecting behaviour of the tasks
-> > being monitored.
-> >
-> > For certain use-cases, however, it makes sense to leverage the
-> > generality of the perf events subsystem and optionally allow the tasks
-> > being monitored to receive signals on events they are interested in.
-> > This patch series adds the option to synchronously signal user space on
-> > events.
->
-> Unless I missed some machinations, which is entirely possible, you can=E2=
-=80=99t call force_sig_info() from NMI context. Not only am I not convinced=
- that the core signal code is NMI safe, but at least x86 can=E2=80=99t corr=
-ectly deliver signals on NMI return. You probably need an IPI-to-self.
+On Tue, 23 Feb 2021, Song Bao Hua (Barry Song) wrote:
 
-force_sig_info() is called from an irq_work only: perf_pending_event
--> perf_pending_event_disable -> perf_sigtrap -> force_sig_info. What
-did I miss?
+> > 
+> > Regarding m68k, your analysis overlooks the timing issue. E.g. patch 
+> > 11/32 could be a problem because removing the irqsave would allow PDMA 
+> > transfers to be interrupted. Aside from the timing issues, I agree 
+> > with your analysis above regarding m68k.
+> 
+> You mentioned you need realtime so you want an interrupt to be able to 
+> preempt another one.
 
-> > The discussion at [1] led to the changes proposed in this series. The
-> > approach taken in patch 3/4 to use 'event_limit' to trigger the signal
-> > was kindly suggested by Peter Zijlstra in [2].
-> >
-> > [1] https://lore.kernel.org/lkml/CACT4Y+YPrXGw+AtESxAgPyZ84TYkNZdP0xpoc=
-X2jwVAbZD=3D-XQ@mail.gmail.com/
-> > [2] https://lore.kernel.org/lkml/YBv3rAT566k+6zjg@hirez.programming.kic=
-ks-ass.net/
-> >
-> > Motivation and example uses:
-> >
-> > 1.    Our immediate motivation is low-overhead sampling-based race
-> >    detection for user-space [3]. By using perf_event_open() at
-> >    process initialization, we can create hardware
-> >    breakpoint/watchpoint events that are propagated automatically
-> >    to all threads in a process. As far as we are aware, today no
-> >    existing kernel facility (such as ptrace) allows us to set up
-> >    process-wide watchpoints with minimal overheads (that are
-> >    comparable to mprotect() of whole pages).
->
-> This would be doable much more simply with an API to set a breakpoint.  A=
-ll the machinery exists except the actual user API.
+That's not what I said. But for the sake of discussion, yes, I do know 
+people who run Linux on ARM hardware (if Android vendor kernels can be 
+called "Linux") and who would benefit from realtime support on those 
+devices.
 
-Isn't perf_event_open() that API?
+> Now you said you want an interrupt not to be preempted as it will make a 
+> timing issue.
 
-A new user API implementation will either be a thin wrapper around
-perf events or reinvent half of perf events to deal with managing
-watchpoints across a set of tasks (process-wide or some subset).
+mac_esp deliberately constrains segment sizes so that it can harmlessly 
+disable interrupts for the duration of the transfer.
 
-It's not just breakpoints though.
+Maybe the irqsave in this driver is over-cautious. Who knows? The PDMA 
+timing problem relates to SCSI bus signalling and the tolerance of real-
+world SCSI devices to same. The other problem is that the PDMA logic 
+circuit is undocumented hardware. So there may be further timing 
+requirements lurking there. Therefore, patch 11/32 is too risky.
 
-> >    [3] https://llvm.org/devmtg/2020-09/slides/Morehouse-GWP-Tsan.pdf
-> >
-> > 2.    Other low-overhead error detectors that rely on detecting
-> >    accesses to certain memory locations or code, process-wide and
-> >    also only in a specific set of subtasks or threads.
-> >
-> > Other example use-cases we found potentially interesting:
-> >
-> > 3.    Code hot patching without full stop-the-world. Specifically, by
-> >    setting a code breakpoint to entry to the patched routine, then
-> >    send signals to threads and check that they are not in the
-> >    routine, but without stopping them further. If any of the
-> >    threads will enter the routine, it will receive SIGTRAP and
-> >    pause.
->
-> Cute.
->
-> >
-> > 4.    Safepoints without mprotect(). Some Java implementations use
-> >    "load from a known memory location" as a safepoint. When threads
-> >    need to be stopped, the page containing the location is
-> >    mprotect()ed and threads get a signal. This can be replaced with
-> >    a watchpoint, which does not require a whole page nor DTLB
-> >    shootdowns.
->
-> I=E2=80=99m skeptical. Propagating a hardware breakpoint to all threads i=
-nvolves IPIs and horribly slow writes to DR1 (or 2, 3, or 4) and DR7.  A TL=
-B flush can be accelerated using paravirt or hypothetical future hardware. =
-Or real live hardware on ARM64.
->
-> (The hypothetical future hardware is almost present on Zen 3.  A bit of w=
-ork is needed on the hardware end to make it useful.)
+> If this PDMA transfer will have some problem when it is preempted, I 
+> believe we need some enhanced ways to handle this, otherwise, once we 
+> enable preempt_rt or threaded_irq, it will get the timing issue. so here 
+> it needs a clear comment and IRQF_NO_THREAD if this is the case.
+> 
 
-Fair enough. Although watchpoints can be much more fine-grained than
-an mprotect() which then also has downsides (checking if the accessed
-memory was actually the bytes we're interested in). Maybe we should
-also ask CPU vendors to give us better watchpoints (perhaps start with
-more of them, and easier to set in batch)? We still need a user space
-API...
+People who require fast response times cannot expect random drivers or 
+platforms to meet such requirements. I fear you may be asking too much 
+from Mac Quadra machines.
 
-Thanks,
--- Marco
+> > 
+> > With regard to other architectures and platforms, in specific cases, 
+> > e.g. where there's never more than one IRQ involved, then I could 
+> > agree that your assumptions probably hold and an irqsave would be 
+> > probably redundant.
+> > 
+> > When you find a redundant irqsave, to actually patch it would bring a 
+> > risk of regression with little or no reward. It's not my place to veto 
+> > this entire patch series on that basis but IMO this kind of churn is 
+> > misguided.
+> 
+> Nope.
+> 
+> I would say the real misguidance is that the code adds one lock while it 
+> doesn't need the lock. Easily we can add redundant locks or exaggerate 
+> the coverage range of locks, but the smarter way is that people add 
+> locks only when they really need the lock by considering concurrency and 
+> realtime performance.
+> 
 
+You appear to be debating a strawman. No-one is advocating excessive 
+locking in new code.
 
-
-> >
-> > 5.    Tracking data flow globally.
-> >
-> > 6.    Threads receiving signals on performance events to
-> >    throttle/unthrottle themselves.
+> Thanks
+> Barry
+> 
