@@ -2,95 +2,86 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.8 required=3.0 tests=BAYES_00,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,
-	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-19.0 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 2DD75C433E6
-	for <linux-m68k@archiver.kernel.org>; Thu, 25 Feb 2021 07:09:42 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7C8C8C433DB
+	for <linux-m68k@archiver.kernel.org>; Thu, 25 Feb 2021 11:16:01 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id D925864E85
-	for <linux-m68k@archiver.kernel.org>; Thu, 25 Feb 2021 07:09:39 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 38BD464EF1
+	for <linux-m68k@archiver.kernel.org>; Thu, 25 Feb 2021 11:16:01 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232161AbhBYHJ0 (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Thu, 25 Feb 2021 02:09:26 -0500
-Received: from kvm5.telegraphics.com.au ([98.124.60.144]:45332 "EHLO
-        kvm5.telegraphics.com.au" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232763AbhBYHIK (ORCPT
-        <rfc822;linux-m68k@vger.kernel.org>); Thu, 25 Feb 2021 02:08:10 -0500
-Received: from localhost (localhost.localdomain [127.0.0.1])
-        by kvm5.telegraphics.com.au (Postfix) with ESMTP id B19BC2A0F1;
-        Thu, 25 Feb 2021 02:07:21 -0500 (EST)
-Date:   Thu, 25 Feb 2021 18:07:22 +1100 (AEDT)
-From:   Finn Thain <fthain@telegraphics.com.au>
-To:     "Song Bao Hua (Barry Song)" <song.bao.hua@hisilicon.com>
-cc:     tanxiaofei <tanxiaofei@huawei.com>,
-        "jejb@linux.ibm.com" <jejb@linux.ibm.com>,
-        "martin.petersen@oracle.com" <martin.petersen@oracle.com>,
-        "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linuxarm@openeuler.org" <linuxarm@openeuler.org>,
-        "linux-m68k@vger.kernel.org" <linux-m68k@vger.kernel.org>
-Subject: RE: [Linuxarm]  Re: [PATCH for-next 00/32] spin lock usage optimization
- for SCSI drivers
-In-Reply-To: <79b5bdb1b5d94b248671bf99a930d971@hisilicon.com>
-Message-ID: <96385966-f423-4218-bd7-1bc7d8e6113f@telegraphics.com.au>
-References: <1612697823-8073-1-git-send-email-tanxiaofei@huawei.com> <31cd807d-3d0-ed64-60d-fde32cb3833c@telegraphics.com.au> <e949a474a9284ac6951813bfc8b34945@hisilicon.com> <f0a3339d-b1db-6571-fa2f-6765e150eb9d@telegraphics.com.au>
- <7bc39d19-f4cc-8028-11e6-c0e45421a765@huawei.com> <588a87f-ae42-0b7-749e-c780ce5c3e4f@telegraphics.com.au> <8c99b5c060eb4e5aa5b604666a8db516@hisilicon.com> <f38b950-c76e-39da-f386-9e77cfcecb3@telegraphics.com.au> <4d2f90d2157045a7b0800a4004f539ba@hisilicon.com>
- <7293ba4c-c5ab-528f-1feb-dc59bfb0df2d@telegraphics.com.au> <79b5bdb1b5d94b248671bf99a930d971@hisilicon.com>
+        id S233820AbhBYLP7 (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Thu, 25 Feb 2021 06:15:59 -0500
+Received: from mail.kernel.org ([198.145.29.99]:55766 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233720AbhBYLPx (ORCPT <rfc822;linux-m68k@lists.linux-m68k.org>);
+        Thu, 25 Feb 2021 06:15:53 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D678C64F0A;
+        Thu, 25 Feb 2021 11:15:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1614251710;
+        bh=Oi+SraEGODKqOTiXfFk5238MjRgZX5tRsLs16fRyUXI=;
+        h=From:To:Cc:Subject:Date:From;
+        b=CWcpDMBIlZJJ3+vI1ouKIBd0UyOm1DiD/+tYUCeitD+4sfskrwqhZ4NjnO4y2+v54
+         UrvXh+3gteq66kAtOq69lHW92VZt8O4SlDwq9Ep/kLS0sxW24+lT+Lt0kBod3GCirj
+         fjhNN7RTo4czWD5qkgLP7KbyKUBtNlyVam+SBMUgrgnZkbf1bHl6/EVBZ2mlKmF8/W
+         y3yScuRGsWQKmp7mBUtZFAKRxpaOF60HdzKbxym96N3zpVGK/60nRoDYfm2ZN8Fwrn
+         Pd2pT69P6k5RcVYbb+yDruzeNuEmulccVhkpPaZJkE6s2K1BgjGhdecFUAjFFXgeu3
+         0gGJpHpQtFZjQ==
+From:   Arnd Bergmann <arnd@kernel.org>
+To:     Geert Uytterhoeven <geert@linux-m68k.org>
+Cc:     Arnd Bergmann <arnd@arndb.de>, Kees Cook <keescook@chromium.org>,
+        Greg Ungerer <gerg@linux-m68k.org>,
+        linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] [RFT] m68k: enable HAVE_LD_DEAD_CODE_DATA_ELIMINATION
+Date:   Thu, 25 Feb 2021 12:14:45 +0100
+Message-Id: <20210225111505.1936566-1-arnd@kernel.org>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-On Wed, 24 Feb 2021, Song Bao Hua (Barry Song) wrote:
+From: Arnd Bergmann <arnd@arndb.de>
 
-> 
-> Realtime requirement is definitely a true requirement on ARM Linux.
-> 
-> I once talked/worked  with some guys who were using ARM for realtime
-> system.
-> The feasible approaches include:
-> 1. Dual OS(RTOS + Linux): e.g.  QNX+Linux XENOMAI+Linux L4+Linux
-> 2. preempt-rt
-> Which is continuously maintained like:
-> https://lore.kernel.org/lkml/20210218201041.65fknr7bdplwqbez@linutronix.de/
-> 3. bootargs isolcpus=
-> to isolate a cpu for a specific realtime task or interrupt
-> https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux_for_real_time/7/html/tuning_guide/isolating_cpus_using_tuned-profiles-realtime
-> 4. ARM FIQ which has separate fiq API, an example in fsl sound:
-> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/sound/soc/fsl/imx-pcm-fiq.c
-> 5. Let one core invisible to Linux
-> Running non-os system and rtos on the core
-> 
+While experimenting with CONFIG_TRIM_UNUSED_KSYMS across architectures,
+I noticed that this unsurprisingly works best when combined with the
+--gc-sections linker flag, which is not currently allowed on m68k.
 
-Regarding Linux systems, it appears that approach 3 could theoretically 
-achieve minimal interrupt latency for a given device without requiring any 
-interrupt nesting. But the price is one CPU core which is not going to 
-work on a uniprocessor system.
+Enabling it with this patch shows significant improvements
+for kernel size, looking at m68k defconfig with gcc-10, I get
 
-> Honestly, I've never seen anyone who depends on irq priority to support 
-> realtime in ARM Linux though ARM's RTOS-es use it quite commonly.
-> 
+4005135 1374302 167108 5546545 54a231 vmlinux-normal
+3916254 1378078 167108 5461440 5355c0 vmlinux+trim
+4012933 1362514 164280 5539727 54878f vmlinux+gcsection
+3797884 1334194 164640 5296718 50d24e vmlinux+gcsection+trim
 
-Perhaps you don't work with uniprocessor ARM Linux systems?
+There are probably bugs somewhere, but if someone is able to test this
+patch and fix any issues that come up, would be a useful improvement
+for memory-limited machines.
 
-> Once preempt_rt is enabled, those who want a fast irq environment need a 
-> no_thread flag, or need to set its irq thread to higher sched_fifo/rr 
-> priority.
-> 
+Link: https://lore.kernel.org/lkml/CAK8P3a05VZ9hSKRzVTxTn+1nf9E+gqebJWTj6N23nfm+ELHt9A@mail.gmail.com/
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+---
+ arch/m68k/Kconfig | 1 +
+ 1 file changed, 1 insertion(+)
 
-Thanks for the tip.
+diff --git a/arch/m68k/Kconfig b/arch/m68k/Kconfig
+index c186733562b3..5f1aafa7b2e2 100644
+--- a/arch/m68k/Kconfig
++++ b/arch/m68k/Kconfig
+@@ -24,6 +24,7 @@ config M68K
+ 	select HAVE_DEBUG_BUGVERBOSE
+ 	select HAVE_FUTEX_CMPXCHG if MMU && FUTEX
+ 	select HAVE_IDE
++	select HAVE_LD_DEAD_CODE_DATA_ELIMINATION
+ 	select HAVE_MOD_ARCH_SPECIFIC
+ 	select HAVE_UID16
+ 	select MMU_GATHER_NO_RANGE if MMU
+-- 
+2.29.2
 
-> [...]
-> 
-> Anyway, the debate is long enough, let's move to some more important 
-> things. I appreciate that you shared a lot of knowledge of m68k.
-> 
-
-No problem.
-
-> Thanks
-> Barry
-> 
