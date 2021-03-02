@@ -2,85 +2,73 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-15.2 required=3.0 tests=BAYES_00,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,NICE_REPLY_A,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
-	USER_AGENT_SANE_1 autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-8.8 required=3.0 tests=BAYES_00,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,MAILING_LIST_MULTI,
+	SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 97718C433DB
-	for <linux-m68k@archiver.kernel.org>; Tue,  2 Mar 2021 12:35:26 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 00FF3C433E0
+	for <linux-m68k@archiver.kernel.org>; Wed,  3 Mar 2021 05:37:55 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 491E264F0D
-	for <linux-m68k@archiver.kernel.org>; Tue,  2 Mar 2021 12:35:26 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id A5AEB64EC3
+	for <linux-m68k@archiver.kernel.org>; Wed,  3 Mar 2021 05:37:54 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244889AbhCBMYI (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Tue, 2 Mar 2021 07:24:08 -0500
-Received: from mail.kernel.org ([198.145.29.99]:55120 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1345670AbhCAX1F (ORCPT <rfc822;linux-m68k@vger.kernel.org>);
-        Mon, 1 Mar 2021 18:27:05 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 897E960200;
-        Mon,  1 Mar 2021 23:26:22 +0000 (UTC)
-Subject: Re: [PATCH v2] m68k: fix flatmem memory model setup
-To:     Angelo Dureghello <angelo@kernel-space.org>
-Cc:     akpm@linux-foundation.org, rppt@linux.ibm.com,
-        linux-m68k@vger.kernel.org
-References: <20210228190828.392974-1-angelo@kernel-space.org>
-From:   Greg Ungerer <gerg@linux-m68k.org>
-Message-ID: <6f97d6d2-be58-ed98-43f9-d55327c76f23@linux-m68k.org>
-Date:   Tue, 2 Mar 2021 09:26:17 +1000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S236110AbhCCFWR (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Wed, 3 Mar 2021 00:22:17 -0500
+Received: from mail-vs1-f51.google.com ([209.85.217.51]:39355 "EHLO
+        mail-vs1-f51.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1376819AbhCBNin (ORCPT
+        <rfc822;linux-m68k@lists.linux-m68k.org>);
+        Tue, 2 Mar 2021 08:38:43 -0500
+Received: by mail-vs1-f51.google.com with SMTP id p123so10584131vsp.6
+        for <linux-m68k@lists.linux-m68k.org>; Tue, 02 Mar 2021 05:38:20 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=S83xpZrRO2vsmOHrKP4fYqAMwPLcdiuf0B6CB48W+1Y=;
+        b=hrgKSzD4em+hBEtpOPjw2ymQxATY0AobTXG0Qw2a1mPVP6h0H6VAdFh4H4WDtchjXw
+         OChmx5fgQcdOUJKtddxztLHk4KVtJDgRpBGARuFZPD+q7iVDbe2v139DGa6epeLdxqqv
+         NtMw27A5MTlr13aeT5WvwEl4KZ9YfvFUF6mg8H3a3KSmzeVW0CHxZNpgJSg4npNrPoUn
+         9woIwA0c/TH8brU6Ob06x/SIa70dtpKUnU83WkYmGmBF2XzhLDc7pZi4jB8lPT+8rVyt
+         LwLVJ0ENN8IXDjHitmsMT/5J4AxPMfHwFDiaQN6zi0U0EH8GQ4B6jFZ2Uvu/+RIL/M+k
+         r2IQ==
+X-Gm-Message-State: AOAM5317K76mVs5xAA1G0Ai3H4df21QFby+gAH8XOVYAl/3LgyYKl9Pa
+        nPaTGwtPzvcGvYPqIX+DVjcHRDsEBBaXMb3izVU=
+X-Google-Smtp-Source: ABdhPJwF1CH14dyYdQNyF0S76UdIAbCyxS08yhx/MaBD+X5Om8NSEqFnrUJiw9WD0G45PsGWhQNBQ4Xitb1TOVPdJkE=
+X-Received: by 2002:a67:fe90:: with SMTP id b16mr2294947vsr.40.1614692274640;
+ Tue, 02 Mar 2021 05:37:54 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20210228190828.392974-1-angelo@kernel-space.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20210301142112.342909-1-masahiroy@kernel.org>
+In-Reply-To: <20210301142112.342909-1-masahiroy@kernel.org>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Tue, 2 Mar 2021 14:37:43 +0100
+Message-ID: <CAMuHMdWyxwqYp_xV17ESJtRZ19iGT1Bsm8YrxpGuXcRQiBiSEQ@mail.gmail.com>
+Subject: Re: [PATCH 1/2] m68k: syscalls: switch to generic syscalltbl.sh
+To:     Masahiro Yamada <masahiroy@kernel.org>
+Cc:     linux-m68k <linux-m68k@lists.linux-m68k.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-Hi Angelo,
+On Mon, Mar 1, 2021 at 3:21 PM Masahiro Yamada <masahiroy@kernel.org> wrote:
+> Many architectures duplicate similar shell scripts.
+>
+> This commit converts m68k to use scripts/syscalltbl.sh.
+>
+> Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
 
-On 1/3/21 5:08 am, Angelo Dureghello wrote:
-> Detected a broken boot on mcf54415, likely introduced from
-> 
-> commit 4bfc848e0981
-> ("m68k/mm: enable use of generic memory_model.h for !DISCONTIGMEM")
-> 
-> Fix ARCH_PFN_OFFSET to be a pfn.
-> 
-> Signed-off-by: Angelo Dureghello <angelo@kernel-space.org>
+Tested-by: Geert Uytterhoeven <geert@linux-m68k.org>
+i.e. will queue in the m68k for-v5.13 branch.
 
-Thanks. I will add to the for-next (and for-linus) branches of
-the m68knommu git tree - with Mike's Acked-by.
+Gr{oetje,eeting}s,
 
-If no issues show up I'll get this to Linus in the next week
-or two.
+                        Geert
 
-Thanks
-Greg
+-- 
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
-
-> ---
-> Change for v2:
-> - replace PAGE_OFFSET with m68k_memory[0].addr
-> ---
->   arch/m68k/include/asm/page_mm.h | 2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/arch/m68k/include/asm/page_mm.h b/arch/m68k/include/asm/page_mm.h
-> index 8cfc92451711..1c683ce57d48 100644
-> --- a/arch/m68k/include/asm/page_mm.h
-> +++ b/arch/m68k/include/asm/page_mm.h
-> @@ -167,7 +167,7 @@ static inline __attribute_const__ int __virt_to_node_shift(void)
->   	((__p) - pgdat->node_mem_map) + pgdat->node_start_pfn;		\
->   })
->   #else
-> -#define ARCH_PFN_OFFSET (m68k_memory[0].addr)
-> +#define ARCH_PFN_OFFSET (m68k_memory[0].addr >> PAGE_SHIFT)
->   #include <asm-generic/memory_model.h>
->   #endif
->   
-> 
-
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
