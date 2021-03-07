@@ -2,99 +2,140 @@ Return-Path: <SRS0=lht2=IF=vger.kernel.org=linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-21.8 required=3.0 tests=BAYES_00,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,INCLUDES_PULL_REQUEST,
-	MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
-	autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-8.8 required=3.0 tests=BAYES_00,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,
+	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id EB146C433DB
-	for <linux-m68k@archiver.kernel.org>; Sun,  7 Mar 2021 10:09:20 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 641EAC433E6
+	for <linux-m68k@archiver.kernel.org>; Sun,  7 Mar 2021 14:38:03 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id BF8E365126
-	for <linux-m68k@archiver.kernel.org>; Sun,  7 Mar 2021 10:09:20 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 245AE650FC
+	for <linux-m68k@archiver.kernel.org>; Sun,  7 Mar 2021 14:38:03 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231526AbhCGKIR (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Sun, 7 Mar 2021 05:08:17 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58516 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231325AbhCGKHq (ORCPT
-        <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Sun, 7 Mar 2021 05:07:46 -0500
-Received: from xavier.telenet-ops.be (xavier.telenet-ops.be [IPv6:2a02:1800:120:4::f00:14])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E22BBC06174A
-        for <linux-m68k@lists.linux-m68k.org>; Sun,  7 Mar 2021 02:07:43 -0800 (PST)
-Received: from ramsan.of.borg ([IPv6:2a02:1810:ac12:ed20:e0ad:f3ab:30c0:d794])
-        by xavier.telenet-ops.be with bizsmtp
-        id dN7g240042RkFys01N7gaJ; Sun, 07 Mar 2021 11:07:40 +0100
-Received: from rox.of.borg ([192.168.97.57])
-        by ramsan.of.borg with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.93)
-        (envelope-from <geert@linux-m68k.org>)
-        id 1lIqK3-005hLv-LG; Sun, 07 Mar 2021 11:07:39 +0100
-Received: from geert by rox.of.borg with local (Exim 4.93)
-        (envelope-from <geert@linux-m68k.org>)
-        id 1lIqK3-008fhq-61; Sun, 07 Mar 2021 11:07:39 +0100
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Greg Ungerer <gerg@linux-m68k.org>,
-        linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org,
-        Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: [GIT PULL] m68k updates for 5.12 (take two)
-Date:   Sun,  7 Mar 2021 11:07:31 +0100
-Message-Id: <20210307100731.2066899-1-geert@linux-m68k.org>
-X-Mailer: git-send-email 2.25.1
+        id S231299AbhCGOhb (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Sun, 7 Mar 2021 09:37:31 -0500
+Received: from mga09.intel.com ([134.134.136.24]:31373 "EHLO mga09.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231167AbhCGOgx (ORCPT <rfc822;linux-m68k@lists.linux-m68k.org>);
+        Sun, 7 Mar 2021 09:36:53 -0500
+IronPort-SDR: y/X98ov3GboVs2cWPbs/CdYP52rY4f4D18sscK9GhgM8zPOuNFLknwUer0Y6I3hbz0mdu3qdjY
+ ex103zmkyOqg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9916"; a="188012402"
+X-IronPort-AV: E=Sophos;i="5.81,230,1610438400"; 
+   d="scan'208";a="188012402"
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Mar 2021 06:36:52 -0800
+IronPort-SDR: E+JWhBTmajZCZtTUJoS5/8d66pXMefXOFpmYbh8EjomeGdVDalOnamOS6K8QD6ejLExstp7asV
+ lm5lcZVHTuSQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.81,230,1610438400"; 
+   d="scan'208";a="519660445"
+Received: from lkp-server01.sh.intel.com (HELO 3e992a48ca98) ([10.239.97.150])
+  by orsmga004.jf.intel.com with ESMTP; 07 Mar 2021 06:36:51 -0800
+Received: from kbuild by 3e992a48ca98 with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1lIuWY-0000Ru-Nq; Sun, 07 Mar 2021 14:36:50 +0000
+Date:   Sun, 07 Mar 2021 22:36:20 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Geert Uytterhoeven <geert@linux-m68k.org>
+Cc:     linux-m68k@lists.linux-m68k.org
+Subject: [m68k:for-v5.13] BUILD SUCCESS
+ f2e7e4bf38fd95aa8c0fdb8b2ad4104a9fc96d64
+Message-ID: <6044e4e4.YmaUych/SKVc+XBh%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-	Hi Linus,
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/geert/linux-m68k.git for-v5.13
+branch HEAD: f2e7e4bf38fd95aa8c0fdb8b2ad4104a9fc96d64  m68k: syscalls: switch to generic syscallhdr.sh
 
-The following changes since commit a38fd8748464831584a19438cbb3082b5a2dab15:
+elapsed time: 731m
 
-  Linux 5.12-rc2 (2021-03-05 17:33:41 -0800)
+configs tested: 71
+configs skipped: 118
 
-are available in the Git repository at:
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/geert/linux-m68k.git tags/m68k-for-v5.12-tag2
+gcc tested configs:
+arm                                 defconfig
+arm64                            allyesconfig
+arm64                               defconfig
+arm                              allyesconfig
+arm                              allmodconfig
+sh                          rsk7264_defconfig
+arm                         bcm2835_defconfig
+mips                     decstation_defconfig
+powerpc                 mpc8560_ads_defconfig
+arm                          pcm027_defconfig
+arm                          lpd270_defconfig
+riscv                    nommu_k210_defconfig
+sparc                            allyesconfig
+mips                        maltaup_defconfig
+sh                        sh7785lcr_defconfig
+sh                           se7705_defconfig
+nios2                            alldefconfig
+sh                   sh7724_generic_defconfig
+xtensa                    xip_kc705_defconfig
+m68k                            q40_defconfig
+mips                           rs90_defconfig
+ia64                             allmodconfig
+ia64                                defconfig
+ia64                             allyesconfig
+m68k                             allmodconfig
+m68k                                defconfig
+m68k                             allyesconfig
+nios2                               defconfig
+arc                              allyesconfig
+nds32                             allnoconfig
+nds32                               defconfig
+nios2                            allyesconfig
+csky                                defconfig
+alpha                               defconfig
+alpha                            allyesconfig
+i386                 randconfig-a005-20210307
+i386                 randconfig-a003-20210307
+i386                 randconfig-a002-20210307
+i386                 randconfig-a004-20210307
+i386                 randconfig-a006-20210307
+i386                 randconfig-a001-20210307
+x86_64               randconfig-a013-20210307
+x86_64               randconfig-a016-20210307
+x86_64               randconfig-a015-20210307
+x86_64               randconfig-a014-20210307
+x86_64               randconfig-a012-20210307
+x86_64               randconfig-a011-20210307
+i386                 randconfig-a016-20210307
+i386                 randconfig-a012-20210307
+i386                 randconfig-a013-20210307
+i386                 randconfig-a014-20210307
+i386                 randconfig-a011-20210307
+i386                 randconfig-a015-20210307
+riscv                            allyesconfig
+riscv                    nommu_virt_defconfig
+riscv                             allnoconfig
+riscv                               defconfig
+riscv                          rv32_defconfig
+riscv                            allmodconfig
+x86_64                           allyesconfig
+x86_64                    rhel-7.6-kselftests
+x86_64                              defconfig
+x86_64                               rhel-8.3
+x86_64                      rhel-8.3-kbuiltin
+x86_64                                  kexec
 
-for you to fetch changes up to a65a802aadba072ca7514fc0c301fd7fdc6fc6cb:
+clang tested configs:
+x86_64               randconfig-a006-20210307
+x86_64               randconfig-a001-20210307
+x86_64               randconfig-a004-20210307
+x86_64               randconfig-a005-20210307
+x86_64               randconfig-a002-20210307
+x86_64               randconfig-a003-20210307
 
-  m68k: Fix virt_addr_valid() W=1 compiler warnings (2021-03-06 14:15:07 +0100)
-
-----------------------------------------------------------------
-m68k updates for v5.12 (take two)
-
-  - Fix virt_addr_valid() W=1 compiler warnings.
-
-This is a single non-critical fix.  As the build bots are now testing
-all new code with W=1, these warnings are popping up everywhere,
-confusing people.  Hence I think it makes sense to silence it as soon as
-possible.
-
-Note that I have just rebased this single commit to v5.12-rc2, to avoid
-the swapfile bug.  Should be safe, as this file has not been touched
-since v5.11-rc1.
-
-Thanks for pulling!
-
-----------------------------------------------------------------
-Geert Uytterhoeven (1):
-      m68k: Fix virt_addr_valid() W=1 compiler warnings
-
- arch/m68k/include/asm/page_mm.h | 2 +-
- arch/m68k/include/asm/page_no.h | 4 ++--
- 2 files changed, 3 insertions(+), 3 deletions(-)
-
-Gr{oetje,eeting}s,
-
-						Geert
-
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-							    -- Linus Torvalds
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
