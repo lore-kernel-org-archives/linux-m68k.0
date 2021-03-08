@@ -1,67 +1,70 @@
-Return-Path: <SRS0=lht2=IF=vger.kernel.org=linux-m68k-owner@kernel.org>
+Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-11.3 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,
-	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-10.2 required=3.0 tests=BAYES_00,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id EED67C433E0
-	for <linux-m68k@archiver.kernel.org>; Sun,  7 Mar 2021 21:31:57 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C9C1FC433E9
+	for <linux-m68k@archiver.kernel.org>; Mon,  8 Mar 2021 21:38:31 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id C3E666515E
-	for <linux-m68k@archiver.kernel.org>; Sun,  7 Mar 2021 21:31:57 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 94D0665267
+	for <linux-m68k@archiver.kernel.org>; Mon,  8 Mar 2021 21:38:31 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233067AbhCGVbL (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Sun, 7 Mar 2021 16:31:11 -0500
-Received: from mail.kernel.org ([198.145.29.99]:33138 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233029AbhCGVa6 (ORCPT <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Sun, 7 Mar 2021 16:30:58 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPS id BBB316516B;
-        Sun,  7 Mar 2021 21:30:57 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1615152657;
-        bh=QnqDPVdIxTJC/1EGVfHIK2yKKOr3FQROSMIT8VqU3CY=;
-        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-        b=eo+YDQ3BpuKE2lNxjeHJL/jKU20LUwnoteAq2MmnTZ9LH15xmeyhGH82upWP3kP8Q
-         gmk51UcrURro3QO8LABzRXsSoxNQEPb5VD4nExdIM1zFV3g/WLRvhyb0t7bRyvZh5l
-         bKb4xLSKzA/MJUa3lD8orSTII5uGO8EyXlSIclOEbfW2q7c0lX/joHrKRVkTSpvvbH
-         hhKZCesZ8zf+v4VwzRVVWudnCdRV5nOvYeU8htSBlT6vsNTNt3w5IJJ6gkfjNYM2jA
-         0N02mDn2sulnC3I3x6nNUbulJYY17t2BPPJL9icWabq5NkTXuk5xv3m4txJrHp2WBp
-         26WSCrw2J2SNw==
-Subject: Re: [GIT PULL] m68k updates for 5.12 (take two)
-From:   pr-tracker-bot@kernel.org
-In-Reply-To: <20210307100731.2066899-1-geert@linux-m68k.org>
-References: <20210307100731.2066899-1-geert@linux-m68k.org>
-X-PR-Tracked-List-Id: <linux-m68k.vger.kernel.org>
-X-PR-Tracked-Message-Id: <20210307100731.2066899-1-geert@linux-m68k.org>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/geert/linux-m68k.git tags/m68k-for-v5.12-tag2
-X-PR-Tracked-Commit-Id: a65a802aadba072ca7514fc0c301fd7fdc6fc6cb
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: dac518707880617a2beaffc01fb1d7adf4b8008a
-Message-Id: <161515265774.2708.18273760352522911050.pr-tracker-bot@kernel.org>
-Date:   Sun, 07 Mar 2021 21:30:57 +0000
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Greg Ungerer <gerg@linux-m68k.org>,
-        linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org,
-        Geert Uytterhoeven <geert@linux-m68k.org>
+        id S229575AbhCHVh7 (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Mon, 8 Mar 2021 16:37:59 -0500
+Received: from outpost1.zedat.fu-berlin.de ([130.133.4.66]:49441 "EHLO
+        outpost1.zedat.fu-berlin.de" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229446AbhCHVhp (ORCPT
+        <rfc822;linux-m68k@lists.linux-m68k.org>);
+        Mon, 8 Mar 2021 16:37:45 -0500
+Received: from inpost2.zedat.fu-berlin.de ([130.133.4.69])
+          by outpost.zedat.fu-berlin.de (Exim 4.94)
+          with esmtps (TLS1.2)
+          tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+          (envelope-from <glaubitz@zedat.fu-berlin.de>)
+          id 1lJNZO-003gQk-0O; Mon, 08 Mar 2021 22:37:42 +0100
+Received: from p57bd9fdc.dip0.t-ipconnect.de ([87.189.159.220] helo=[192.168.178.139])
+          by inpost2.zedat.fu-berlin.de (Exim 4.94)
+          with esmtpsa (TLS1.2)
+          tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+          (envelope-from <glaubitz@physik.fu-berlin.de>)
+          id 1lJNZN-003NeX-QH; Mon, 08 Mar 2021 22:37:41 +0100
+To:     Debian m68k <debian-68k@lists.debian.org>
+Cc:     linux-m68k <linux-m68k@lists.linux-m68k.org>
+From:   John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
+Subject: M68k backend has landed in LLVM
+Message-ID: <2d5be765-cf44-ee47-bc18-f3678d78052c@physik.fu-berlin.de>
+Date:   Mon, 8 Mar 2021 22:37:41 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.0
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Original-Sender: glaubitz@physik.fu-berlin.de
+X-Originating-IP: 87.189.159.220
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-The pull request you sent on Sun,  7 Mar 2021 11:07:31 +0100:
+Hello!
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/geert/linux-m68k.git tags/m68k-for-v5.12-tag2
+For anyone interested, there is now an experimental backend for M68k
+in LLVM that was just added today [1].
 
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/dac518707880617a2beaffc01fb1d7adf4b8008a
+Please report any issues to the LLVM bug tracker, and, if necessary link
+the issue to this umbrella bug [2].
 
-Thank you!
+Adrian
+
+> [1] https://github.com/llvm/llvm-project/tree/main/llvm/lib/Target/M68k
+> [2] https://bugs.llvm.org/show_bug.cgi?id=48791
 
 -- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/prtracker.html
+ .''`.  John Paul Adrian Glaubitz
+: :' :  Debian Developer - glaubitz@debian.org
+`. `'   Freie Universitaet Berlin - glaubitz@physik.fu-berlin.de
+  `-    GPG: 62FF 8A75 84E0 2956 9546  0006 7426 3B37 F5B5 F913
