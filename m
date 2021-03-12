@@ -2,69 +2,120 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-10.2 required=3.0 tests=BAYES_00,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=ham
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-2.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
+	autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C9C1FC433E9
-	for <linux-m68k@archiver.kernel.org>; Mon,  8 Mar 2021 21:38:31 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5E027C433E9
+	for <linux-m68k@archiver.kernel.org>; Fri, 12 Mar 2021 04:31:49 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 94D0665267
-	for <linux-m68k@archiver.kernel.org>; Mon,  8 Mar 2021 21:38:31 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 3212564DCC
+	for <linux-m68k@archiver.kernel.org>; Fri, 12 Mar 2021 04:31:49 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229575AbhCHVh7 (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Mon, 8 Mar 2021 16:37:59 -0500
-Received: from outpost1.zedat.fu-berlin.de ([130.133.4.66]:49441 "EHLO
-        outpost1.zedat.fu-berlin.de" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229446AbhCHVhp (ORCPT
+        id S232158AbhCLEbN (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Thu, 11 Mar 2021 23:31:13 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43114 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232116AbhCLEbA (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Mon, 8 Mar 2021 16:37:45 -0500
-Received: from inpost2.zedat.fu-berlin.de ([130.133.4.69])
-          by outpost.zedat.fu-berlin.de (Exim 4.94)
-          with esmtps (TLS1.2)
-          tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-          (envelope-from <glaubitz@zedat.fu-berlin.de>)
-          id 1lJNZO-003gQk-0O; Mon, 08 Mar 2021 22:37:42 +0100
-Received: from p57bd9fdc.dip0.t-ipconnect.de ([87.189.159.220] helo=[192.168.178.139])
-          by inpost2.zedat.fu-berlin.de (Exim 4.94)
-          with esmtpsa (TLS1.2)
-          tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-          (envelope-from <glaubitz@physik.fu-berlin.de>)
-          id 1lJNZN-003NeX-QH; Mon, 08 Mar 2021 22:37:41 +0100
-To:     Debian m68k <debian-68k@lists.debian.org>
-Cc:     linux-m68k <linux-m68k@lists.linux-m68k.org>
-From:   John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
-Subject: M68k backend has landed in LLVM
-Message-ID: <2d5be765-cf44-ee47-bc18-f3678d78052c@physik.fu-berlin.de>
-Date:   Mon, 8 Mar 2021 22:37:41 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.0
+        Thu, 11 Mar 2021 23:31:00 -0500
+Received: from mail-qv1-xf2a.google.com (mail-qv1-xf2a.google.com [IPv6:2607:f8b0:4864:20::f2a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 509F1C061574
+        for <linux-m68k@lists.linux-m68k.org>; Thu, 11 Mar 2021 20:31:00 -0800 (PST)
+Received: by mail-qv1-xf2a.google.com with SMTP id cx5so3687926qvb.10
+        for <linux-m68k@lists.linux-m68k.org>; Thu, 11 Mar 2021 20:31:00 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=j5mqxb2fJvI18WxMVykNNWwtGK4f4IdAZVdlsREXq2A=;
+        b=t3OnvI3+xdtmiQNGZYbtyw43YCbTK6k3T2/7/VrtGwPTvV6NVnEG5NcbH2zMkRl5SL
+         rTpnEF0W91oi+A/6qWQjK6l4usDXIaVyR92Mo/bK+7+tAdCGg3vG1+fcMW+doVhm6/er
+         gRzOrh/T9PwfECFY+lR/2AVyEF6ljzJiWPAh5guzrSg4XBFhb5+ywGA3hVFaC9ePhrRd
+         tThT8zgVaCnOyFPSgIQQKgTn0mo7cLRrnrtmUaGY5ZdQeBOzok1dfKcnBwTQYqL4ZI9L
+         jBACFbNcRpcwLZGli3Fz3xe9D4AOLMH7A0RJYsUV4ibIVEvDmO2TVa/5FZj1pMOuUcUP
+         jRxA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=j5mqxb2fJvI18WxMVykNNWwtGK4f4IdAZVdlsREXq2A=;
+        b=GkW2VEndTHRattcHns1m4xWdtD38+SbUnYrEDpf2kvhaKX9iwWSrzcPwKbegIF80WH
+         pFvNr2Zp1ldPMf7K9mqUi1ki/ysWLYIg6CqHTAiAgnUM2c7j7lU8jx1rtEgwmbfNuRGS
+         4CYkczsFFlTrFhzcQV0c1wNUV1kw1BJcKODKge1SQKSr3LjHbSORtQ13I7fpS94yL/O2
+         BQu5+iGIKvO7RPzllkhwu05VV3rx2ZOZ6T+1ujemdMyOwidEatL2k22+M/zhPW+78xza
+         rLaMb8a7cv4b+LQP8N2ISfhcmq/Px1ak8EwqsO9yf10wL3178pKt1vnSBpY0TvMu+GZr
+         3Xcg==
+X-Gm-Message-State: AOAM533lHTuU1VaRHl+wqlA9cEQTiQ10UUn4IMFngokgmiNEw2LXV9ye
+        M5UAhq1PBMK6AN1jL4UMpuk=
+X-Google-Smtp-Source: ABdhPJwa8RuHIuqTiEI8+dfw2OazKTk2V6cz9i/XK+FP+De8yfp3HLruKdvg5xzlrBrYGYVuw2pu3A==
+X-Received: by 2002:a0c:8f1a:: with SMTP id z26mr10220826qvd.51.1615523459297;
+        Thu, 11 Mar 2021 20:30:59 -0800 (PST)
+Received: from localhost ([76.73.146.210])
+        by smtp.gmail.com with ESMTPSA id g7sm3263894qti.20.2021.03.11.20.30.58
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 11 Mar 2021 20:30:58 -0800 (PST)
+Date:   Thu, 11 Mar 2021 20:30:57 -0800
+From:   Yury Norov <yury.norov@gmail.com>
+To:     Rasmus Villemoes <linux@rasmusvillemoes.dk>
+Cc:     linux-kernel@vger.kernel.org, linux-m68k@lists.linux-m68k.org,
+        linux-arch@vger.kernel.org, linux-sh@vger.kernel.org,
+        Alexey Klimov <aklimov@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Arnd Bergmann <arnd@arndb.de>, David Sterba <dsterba@suse.com>,
+        Dennis Zhou <dennis@kernel.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Jianpeng Ma <jianpeng.ma@intel.com>,
+        Joe Perches <joe@perches.com>,
+        John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Rich Felker <dalias@libc.org>,
+        Stefano Brivio <sbrivio@redhat.com>,
+        Wei Yang <richard.weiyang@linux.alibaba.com>,
+        Wolfram Sang <wsa+renesas@sang-engineering.com>,
+        Yoshinori Sato <ysato@users.sourceforge.jp>
+Subject: Re: [PATCH 04/14] lib: introduce BITS_{FIRST,LAST} macro
+Message-ID: <20210312043057.GA137474@yury-ThinkPad>
+References: <20210218040512.709186-1-yury.norov@gmail.com>
+ <20210218040512.709186-5-yury.norov@gmail.com>
+ <b371c94c-7480-5af4-d2bd-481436f535eb@rasmusvillemoes.dk>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Original-Sender: glaubitz@physik.fu-berlin.de
-X-Originating-IP: 87.189.159.220
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <b371c94c-7480-5af4-d2bd-481436f535eb@rasmusvillemoes.dk>
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-Hello!
+On Thu, Feb 18, 2021 at 11:51:43PM +0100, Rasmus Villemoes wrote:
+> On 18/02/2021 05.05, Yury Norov wrote:
+> > BITMAP_{LAST,FIRST}_WORD_MASK() in linux/bitmap.h duplicates the
+> > functionality of GENMASK(). The scope of there macros is wider
+> > than just bitmap. This patch defines 4 new macros: BITS_FIRST(),
+> > BITS_LAST(), BITS_FIRST_MASK() and BITS_LAST_MASK() in linux/bits.h
+> > on top of GENMASK() and replaces BITMAP_{LAST,FIRST}_WORD_MASK()
+> > to avoid duplication and increase the scope of the macros.
+> > 
+> 
+> Please include some info on changes in generated code, if any. When the
+> parameter to the macro is a constant I'm sure it all folds to a
+> compile-time constant either way, but when it's not, I'm not sure gcc
+> can do the same optimizations when the expressions become more complicated.
 
-For anyone interested, there is now an experimental backend for M68k
-in LLVM that was just added today [1].
+After applying all patches till "tools: introduce SMALL_CONST() macro",
+there's no visible changes in code generation:
 
-Please report any issues to the LLVM bug tracker, and, if necessary link
-the issue to this umbrella bug [2].
+scripts/bloat-o-meter vmlinux.before vmlinux
+add/remove: 1/2 grow/shrink: 2/0 up/down: 17/-16 (1)
+Function                                     old     new   delta
+ethtool_get_drvinfo                          900     908      +8
+e843419@0cf2_0001309d_7f0                      -       8      +8
+vermagic                                      48      49      +1
+e843419@0d45_000138bb_f68                      8       -      -8
+e843419@0cc9_00012bce_198c                     8       -      -8
+Total: Before=26092016, After=26092017, chg +0.00%
 
-Adrian
-
-> [1] https://github.com/llvm/llvm-project/tree/main/llvm/lib/Target/M68k
-> [2] https://bugs.llvm.org/show_bug.cgi?id=48791
-
--- 
- .''`.  John Paul Adrian Glaubitz
-: :' :  Debian Developer - glaubitz@debian.org
-`. `'   Freie Universitaet Berlin - glaubitz@physik.fu-berlin.de
-  `-    GPG: 62FF 8A75 84E0 2956 9546  0006 7426 3B37 F5B5 F913
+The build is arm64, and the compilerr is:
+aarch64-linux-gnu-gcc (Linaro GCC 7.3-2018.05) 7.3.1 20180425
