@@ -2,182 +2,112 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-12.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
+X-Spam-Status: No, score=-16.6 required=3.0 tests=BAYES_00,DKIM_INVALID,
+	DKIM_SIGNED,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id AFDCAC433E6
-	for <linux-m68k@archiver.kernel.org>; Fri, 12 Mar 2021 21:54:12 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 96256C4332B
+	for <linux-m68k@archiver.kernel.org>; Sat, 13 Mar 2021 15:46:57 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 8E9E164E33
-	for <linux-m68k@archiver.kernel.org>; Fri, 12 Mar 2021 21:54:12 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 69BA364F1A
+	for <linux-m68k@archiver.kernel.org>; Sat, 13 Mar 2021 15:46:57 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235449AbhCLVxl (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Fri, 12 Mar 2021 16:53:41 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42452 "EHLO
+        id S233478AbhCMPqY (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Sat, 13 Mar 2021 10:46:24 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45774 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235489AbhCLVxi (ORCPT
-        <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Fri, 12 Mar 2021 16:53:38 -0500
-Received: from mail-qk1-x72c.google.com (mail-qk1-x72c.google.com [IPv6:2607:f8b0:4864:20::72c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6CE89C061761
-        for <linux-m68k@lists.linux-m68k.org>; Fri, 12 Mar 2021 13:53:38 -0800 (PST)
-Received: by mail-qk1-x72c.google.com with SMTP id b130so25919634qkc.10
-        for <linux-m68k@lists.linux-m68k.org>; Fri, 12 Mar 2021 13:53:38 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=9Ef5EY2WMrKCR6YQJjvJccCPLCTaOpepUxDNfS7WTGo=;
-        b=tjjBW8j2bo/jen8nkSMnG+TdHfhLmzrUK7o1rk3vK96G0IpIxYfAwtS4Wtq1p3NUWg
-         WbZy4AB7w0vnRvtXc5mbl+/aY9FUBRS94KHCWupN3J6saDc3KnMEvsKcJRPPdhFypfYj
-         ZZHTLijqqGENsbuC356dpSkGNcySYXCcKLMyPqsNcTORKfpXvohtdsIT+UBXeA3JyGrD
-         0KJ5xP4c2oPFv6rWr3osEdndh860EXuZ3FU/t/p+Hy+Cp2AkYNP2fFHKgkvCi1mHwhCd
-         57LJ66TvNRjJuGyTrcZH1XKT/5piUQPPT+zCNujfJ2e9/SISYPTv9jt59NXJdejKi/oh
-         jUPg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=9Ef5EY2WMrKCR6YQJjvJccCPLCTaOpepUxDNfS7WTGo=;
-        b=MfKYMTbZdrM6TJeDxRFI3w6GpEW87otmmCYXY7x+3LwIAttMcqdiko2e2smXB8cAwC
-         ZE8rM3Ti55QtBwC3g/ZayTCKWrRmnUC+at9H+vkApRJ9F2kC8wgSpLPaQuhZ0tZlNQxi
-         E/8LA/jRQ1rSF86E32g6bTEKMx+MCaNxeZkPo74BMt5aFnXYCjNi2W4LYYY7KmUn6odC
-         R2LLTKgB7ikt5SKjD0ebunfO6aKrYfN4fm2phInMxfFEf1T6MaRNYexW70Bm98z2sd6z
-         kepzHZUn9eJftSAMObJc8PLfhUS7mWC7QBCmAu2k6iz2rrk0TTUNQ1N8ZpYWCbLPThmS
-         Fc1Q==
-X-Gm-Message-State: AOAM5306WCneCHXP2cMSvIvx1UMErVZRMSPNVdGH+598j3qoedurBDhH
-        3GbRpqA8EHQXFBOwHNQqYzY=
-X-Google-Smtp-Source: ABdhPJyB61QmOAM1xkM7zp9iyyydvZwe9L+k8hjEI9bjJ/F+iikmGnqQCe8EI+Cnk01d/LQ/tIOHfg==
-X-Received: by 2002:a37:9b01:: with SMTP id d1mr12132300qke.337.1615586017485;
-        Fri, 12 Mar 2021 13:53:37 -0800 (PST)
-Received: from localhost ([76.73.146.210])
-        by smtp.gmail.com with ESMTPSA id 66sm5319791qkk.18.2021.03.12.13.53.36
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 12 Mar 2021 13:53:37 -0800 (PST)
-Date:   Fri, 12 Mar 2021 13:53:36 -0800
-From:   Yury Norov <yury.norov@gmail.com>
-To:     Rasmus Villemoes <linux@rasmusvillemoes.dk>
-Cc:     linux-kernel@vger.kernel.org, linux-m68k@lists.linux-m68k.org,
-        linux-arch@vger.kernel.org, linux-sh@vger.kernel.org,
-        Alexey Klimov <aklimov@redhat.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Arnd Bergmann <arnd@arndb.de>, David Sterba <dsterba@suse.com>,
-        Dennis Zhou <dennis@kernel.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Jianpeng Ma <jianpeng.ma@intel.com>,
-        Joe Perches <joe@perches.com>,
-        John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Rich Felker <dalias@libc.org>,
-        Stefano Brivio <sbrivio@redhat.com>,
-        Wei Yang <richard.weiyang@linux.alibaba.com>,
-        Wolfram Sang <wsa+renesas@sang-engineering.com>,
-        Yoshinori Sato <ysato@users.sourceforge.jp>
-Subject: Re: [PATCH 06/14] bitsperlong.h: introduce SMALL_CONST() macro
-Message-ID: <20210312215336.GA249694@yury-ThinkPad>
-References: <20210218040512.709186-1-yury.norov@gmail.com>
- <20210218040512.709186-7-yury.norov@gmail.com>
- <55f1e25a-3211-8247-9dd3-3777e29287db@rasmusvillemoes.dk>
- <20210312052812.GB137474@yury-ThinkPad>
- <c672b661-1921-f61c-a118-d51c650e41f4@rasmusvillemoes.dk>
+        with ESMTP id S233570AbhCMPqU (ORCPT
+        <rfc822;linux-m68k@vger.kernel.org>); Sat, 13 Mar 2021 10:46:20 -0500
+Received: from mail.kernel-space.org (unknown [IPv6:2a01:4f8:c2c:5a84::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 48EA2C061574
+        for <linux-m68k@vger.kernel.org>; Sat, 13 Mar 2021 07:46:19 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel-space.org;
+        s=20190913; t=1615650376;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=nsxp6yEnZypbY1+Ta3Bbf6gOwLbOIkA+zWoqWGJL2P0=;
+        b=EfRyBV4dQr/jpMbN72ZGW5HjOYLvfigwiZeIq8zkMlLVXjCoB9luCRGv63xS1yw0bulk/P
+        WwJwSrPAj50v9Hxd/D57KGdcnOJvmLYXprohEfcqrMLBQx3mB6b/MrlnX53LaH4WNLvq++
+        nBj5ywkBjZ9ZNSCeqJfHgG602Zviuq0=
+Received: from localhost.localdomain (host-87-8-57-96.retail.telecomitalia.it [87.8.57.96])
+        by sysam.it (OpenSMTPD) with ESMTPSA id 70a6cdcf (TLSv1.3:TLS_AES_256_GCM_SHA384:256:NO);
+        Sat, 13 Mar 2021 15:46:16 +0000 (UTC)
+From:   Angelo Dureghello <angelo@kernel-space.org>
+To:     gerg@linux-m68k.org
+Cc:     geert@linux-m68k.org, rppt@kernel.org, linux-m68k@vger.kernel.org,
+        Angelo Dureghello <angelo@kernel-space.org>
+Subject: [PATCH] m68k: mm: fix inappropriate pte dirty bit set
+Date:   Sat, 13 Mar 2021 16:46:03 +0100
+Message-Id: <20210313154603.629688-1-angelo@kernel-space.org>
+X-Mailer: git-send-email 2.30.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <c672b661-1921-f61c-a118-d51c650e41f4@rasmusvillemoes.dk>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-On Fri, Mar 12, 2021 at 10:12:22AM +0100, Rasmus Villemoes wrote:
-> On 12/03/2021 06.28, Yury Norov wrote:
-> > On Fri, Feb 19, 2021 at 12:07:27AM +0100, Rasmus Villemoes wrote:
-> >> On 18/02/2021 05.05, Yury Norov wrote:
-> >>> Many algorithms become simpler if they are passed with relatively small
-> >>> input values. One example is bitmap operations when the whole bitmap fits
-> >>> into one word. To implement such simplifications, linux/bitmap.h declares
-> >>> small_const_nbits() macro.
-> >>>
-> >>> Other subsystems may also benefit from optimizations of this sort, like
-> >>> find_bit API in the following patches. So it looks helpful to generalize
-> >>> the macro and extend it's visibility.
-> >>
-> >> Perhaps, but SMALL_CONST is too generic a name, it needs to keep "bits"
-> >> somewhere in there. So why not just keep it at small_const_nbits?
-> >>
-> >>> Signed-off-by: Yury Norov <yury.norov@gmail.com>
-> >>> ---
-> >>>  include/asm-generic/bitsperlong.h |  2 ++
-> >>>  include/linux/bitmap.h            | 33 ++++++++++++++-----------------
-> >>>  2 files changed, 17 insertions(+), 18 deletions(-)
-> >>>
-> >>> diff --git a/include/asm-generic/bitsperlong.h b/include/asm-generic/bitsperlong.h
-> >>> index 3905c1c93dc2..0eeb77544f1d 100644
-> >>> --- a/include/asm-generic/bitsperlong.h
-> >>> +++ b/include/asm-generic/bitsperlong.h
-> >>> @@ -23,4 +23,6 @@
-> >>>  #define BITS_PER_LONG_LONG 64
-> >>>  #endif
-> >>>  
-> >>> +#define SMALL_CONST(n) (__builtin_constant_p(n) && (unsigned long)(n) < BITS_PER_LONG)
-> >>> +
-> >>>  #endif /* __ASM_GENERIC_BITS_PER_LONG */
-> >>> diff --git a/include/linux/bitmap.h b/include/linux/bitmap.h
-> >>> index adf7bd9f0467..e89f1dace846 100644
-> >>> --- a/include/linux/bitmap.h
-> >>> +++ b/include/linux/bitmap.h
-> >>> @@ -224,9 +224,6 @@ extern int bitmap_print_to_pagebuf(bool list, char *buf,
-> >>>   * so make such users (should any ever turn up) call the out-of-line
-> >>>   * versions.
-> >>>   */
-> >>> -#define small_const_nbits(nbits) \
-> >>> -	(__builtin_constant_p(nbits) && (nbits) <= BITS_PER_LONG && (nbits) > 0)
-> >>> -
-> >>>  static inline void bitmap_zero(unsigned long *dst, unsigned int nbits)
-> >>>  {
-> >>>  	unsigned int len = BITS_TO_LONGS(nbits) * sizeof(unsigned long);
-> >>> @@ -278,7 +275,7 @@ extern void bitmap_to_arr32(u32 *buf, const unsigned long *bitmap,
-> >>>  static inline int bitmap_and(unsigned long *dst, const unsigned long *src1,
-> >>>  			const unsigned long *src2, unsigned int nbits)
-> >>>  {
-> >>> -	if (small_const_nbits(nbits))
-> >>> +	if (SMALL_CONST(nbits - 1))
-> >>
-> >> Please don't force most users to be changed to something less readable.
-> >> What's wrong with just keeping small_const_nbits() the way it is,
-> >> avoiding all this churn and keeping the readability?
-> > 
-> > The wrong thing is that it's defined in include/linux/bitmap.h, and I
-> > cannot use it in include/asm-generic/bitops/find.h, so I have to either
-> > move it to a separate header, or generalize and share with find.h and
-> > other users this way. I prefer the latter option, thougt it's more
-> > verbose.
-> 
-> The logical place would be the same place the BITS_PER_LONG macro is
-> defined, no?
+On mcf5441x, with mmc / ext4 rootfs mounted, the following warning
+was observed while executing some commands as routef:
 
-Yes. This where I placed SMALL_CONST() in current version.
+[    8.660000] ------------[ cut here ]------------
+[    8.670000] WARNING: CPU: 0 PID: 35 at fs/ext4/inode.c:3643 ext4_set_page_dirty+0x54/0x108
+[    8.680000] CPU: 0 PID: 35 Comm: ip Not tainted 5.10.0-rc5stmark2-001-00007-g02a1970b5d05-dirty #276
+[    8.690000] Stack from 40b8fddc:
+[    8.690000]         40b8fddc 4036549b 4036549b 402dc01a 4036a528 00000e3b 00000009 47f618bc
+[    8.690000]         402dc078 4036a528 00000e3b 400eb5f6 00000009 00000000 00000000 8007a000
+[    8.690000]         404ef419 000ff81b 8007c000 402dc46e 403628ce 40b7b534 400eb5f6 4036a528
+[    8.690000]         00000e3b 00000009 00000000 47f618bc 40b8ff22 40b8a0f8 4005e09a 47f618bc
+[    8.690000]         ffffffff 400097ff 402e4210 00000000 80086dbc 80086d94 40b7b534 4005e1cc
+[    8.690000]         00000000 40b8ffac 40053540 00000000 00095d88 40b88800 40b88804 000ff81b
+[    8.700000] Call Trace:
+[    8.700000]  [<402dc01a>] __warn+0x9c/0xb8
+[    8.710000]  [<402dc078>] warn_slowpath_fmt+0x42/0x62
+[    8.710000]  [<400eb5f6>] ext4_set_page_dirty+0x54/0x108
+[    8.720000]  [<402dc46e>] printk+0x12/0x18
+[    8.720000]  [<400eb5f6>] ext4_set_page_dirty+0x54/0x108
+[    8.730000]  [<4005e09a>] unmap_page_range+0x2d0/0x402
+[    8.740000]  [<400097ff>] sys_waitid+0x4b/0xd4
+[    8.740000]  [<402e4210>] down_read+0x0/0x30
+[    8.740000]  [<4005e1cc>] unmap_single_vma+0x0/0x68
+[    8.750000]  [<40053540>] page_mapping+0x0/0x7c
+[    8.750000]  [<4005e2e8>] unmap_vmas+0x36/0x40
+[    8.760000]  [<4006267e>] exit_mmap+0xac/0x110
+[    8.760000]  [<40005dfe>] __mmput+0xe/0x68
+[    8.770000]  [<4000922a>] do_exit+0x24c/0x6e8
+[    8.770000]  [<4000977e>] sys_exit_group+0x0/0x14
+[    8.780000]  [<40009744>] do_group_exit+0x4e/0x88
+[    8.780000]  [<40009792>] __wake_up_parent+0x0/0x22
+[    8.790000]  [<40004ba0>] system_call+0x54/0x96
+[    8.790000]
+[    8.790000] ---[ end trace b876c21409f1d404 ]---
 
-> No need to introduce a new header for that, and all current
-> users of small_const_nbits() must already (very possibly indirectly)
-> include asm-generic/bitsperlong.h.
-> 
-> I do prefer to keep both the name small_const_nbits() and its current
-> semantics, which, although not currently spelled out that way anywhere,
-> is "is BITMAP_SIZE(nbits) known at compile time and equal to 1", which
-> is precisely what allows the static inlines to unconditionally
-> dereference the pointer (that's the "exclude the 0 case") and just deal
-> with that one word.
-> 
-> I don't like either SMALL_CONST or small_const_size, because nothing in
-> there says it has anything to do with bit ops. As I said, if you have
-> some special place that for some reason cannot handle
-> nbits==BITS_PER_LONG, then just add that as an additional constraint
-> with a comment why.
+The cause of the wanring is pte dirty bit set on unmapping, since the page
+itself not marked dirty. This condition is not expected.
 
-OK, I'll move small_const_nbits() to the bitsperlong header and
-resubmit shortly. My concern still is that nbits is too specific 
-for bitsperlong.h, but if you're good with it, I'm OK as well.
+The PTE dirty bit shouldn't be set in a tlb miss, but it comes set on
+page fault, from
+
+mm/memory.c:wp_page_shared() and its call to fault_dirty_shared_page()
+
+Signed-off-by: Angelo Dureghello <angelo@kernel-space.org>
+---
+ arch/m68k/mm/mcfmmu.c | 1 -
+ 1 file changed, 1 deletion(-)
+
+diff --git a/arch/m68k/mm/mcfmmu.c b/arch/m68k/mm/mcfmmu.c
+index eac9dde65193..19fd691774db 100644
+--- a/arch/m68k/mm/mcfmmu.c
++++ b/arch/m68k/mm/mcfmmu.c
+@@ -141,7 +141,6 @@ int cf_tlb_miss(struct pt_regs *regs, int write, int dtlb, int extension_word)
+ 			local_irq_restore(flags);
+ 			return -1;
+ 		}
+-		set_pte(pte, pte_mkdirty(*pte));
+ 	}
+ 
+ 	set_pte(pte, pte_mkyoung(*pte));
+-- 
+2.30.1
+
