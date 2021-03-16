@@ -2,61 +2,61 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-15.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+X-Spam-Status: No, score=-15.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
 	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 24654C43603
-	for <linux-m68k@archiver.kernel.org>; Tue, 16 Mar 2021 01:55:38 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C9EAAC43332
+	for <linux-m68k@archiver.kernel.org>; Tue, 16 Mar 2021 01:55:37 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id E7CD66500C
+	by mail.kernel.org (Postfix) with ESMTP id B3DCB64FD2
 	for <linux-m68k@archiver.kernel.org>; Tue, 16 Mar 2021 01:55:37 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234348AbhCPBzI (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Mon, 15 Mar 2021 21:55:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58318 "EHLO
+        id S234336AbhCPBzG (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Mon, 15 Mar 2021 21:55:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58302 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234277AbhCPByf (ORCPT
+        with ESMTP id S232314AbhCPByd (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Mon, 15 Mar 2021 21:54:35 -0400
-Received: from mail-qk1-x732.google.com (mail-qk1-x732.google.com [IPv6:2607:f8b0:4864:20::732])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 22782C06174A
-        for <linux-m68k@lists.linux-m68k.org>; Mon, 15 Mar 2021 18:54:35 -0700 (PDT)
-Received: by mail-qk1-x732.google.com with SMTP id b130so33775423qkc.10
-        for <linux-m68k@lists.linux-m68k.org>; Mon, 15 Mar 2021 18:54:35 -0700 (PDT)
+        Mon, 15 Mar 2021 21:54:33 -0400
+Received: from mail-qv1-xf32.google.com (mail-qv1-xf32.google.com [IPv6:2607:f8b0:4864:20::f32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C841CC06174A
+        for <linux-m68k@lists.linux-m68k.org>; Mon, 15 Mar 2021 18:54:32 -0700 (PDT)
+Received: by mail-qv1-xf32.google.com with SMTP id g8so8815029qvx.1
+        for <linux-m68k@lists.linux-m68k.org>; Mon, 15 Mar 2021 18:54:32 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=ikJ0eLK/6OkjCoMd1X7LK5WjQKKwDBA3WSJVKIrvN0Q=;
-        b=thm8VDRl187VWW9BAPwOC8kCv3tz/sPc3K6jxuxHrQi2WSVqBsHWHPbiUjofAfCexz
-         ImY/SoMwOjcRyz8NVfKis0EC6gg/vApT7MnPovsGZ7Uy/kKpaHfbx7mQhcMmuBLrrtbw
-         zbm9nrZHpNeuQEQtHN1FDf7qPh+vkaboWQy1erZKH+tC8F3svak3ZXUeXUtiICuBOeWP
-         pV6Zyf3+/6jFc4q6yCpq7QYNzC0rAm2Tlso554u93Fe/0LZrJ0wnhFYnrYjrpY+UgKYe
-         N9xKXdYY1uCe754KhqiTeK17xy8h88hxFdngN66EwTtzFXyIvQrZEgArVusdmyl1t30Z
-         aGGQ==
+        bh=DAuTHkwSalBqH8EpHoooy9z28mwSmA5j1f0I3O8Qj8s=;
+        b=ijh4snlc2Amx6+CtrnrKHV8MK3Riz9uKwtUjT42NXePzWiQqcW/xuQQfjWYo4AZPIH
+         1p990WXv87kHIBU/yo/8jO/FmrEE6wCTNyKqPGA8sxYQY8zORXiiEYWxkgbJVxFtyy/4
+         jEzOSnBXP2+opPelPPTJ8h79QuENLiwy6k71baZVhaE8TrD2/7JKBjK3kmXdV90DyN9v
+         KFvhvOXSp2b0a4OVjZSWpAEu0TQgy9MMEkXmzdnC5O0SLGdKVRYooFqavYm8AkEIDfIL
+         HX6Sv2nArfYKSw0BzMg0n8HjWwHoIf2U7RG6GZZTY2ZZGmgBuUJqiWZxWkWbMeKZLwWW
+         exSA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=ikJ0eLK/6OkjCoMd1X7LK5WjQKKwDBA3WSJVKIrvN0Q=;
-        b=HpVvX5EvMmQhp+ns8M5x5Z+eRwGQXaZ0NEfc3uuGpJB/lmZ8vJCksTBXbs8Jge7ce5
-         9KMg+9ZSrC9N/APjCpjMn6pQIdGHKvrh2VZ2iSnSDpshBLD7oc8gJyoEy+0tNcvOofvu
-         fuEQfohUuTThSM21bPRuMcOkHatr0t9vtY29JrNWqVQdRPbUF1bBK86yEz4135DGw52K
-         J5hwGTO1x7fZmn+dvfscwPeChIJa+5DbppDZGO9cH7uw2o68+2MyMqjQsOHEot1y6gqE
-         Mp/WVXeF6UPahj2TxO1EoOKAikAh5O+2vr942i3QAnWKnTSkYZuzdJmHyLTfG6PtcKya
-         qFWQ==
-X-Gm-Message-State: AOAM533BCJQgM/R62b61o8IcWgvONM/bFj30xLxWlFGsfkRY551Or+Fw
-        qPFeiDP396BHcsjJ0jVkD3w=
-X-Google-Smtp-Source: ABdhPJx6j8+VLldoC176FvuGqcHrx/3F07zRS/Bj6gg26XyS4WLTQTpzvaxEcy5V4XX1782A4Eowgw==
-X-Received: by 2002:a05:620a:45:: with SMTP id t5mr28757043qkt.17.1615859674236;
-        Mon, 15 Mar 2021 18:54:34 -0700 (PDT)
+        bh=DAuTHkwSalBqH8EpHoooy9z28mwSmA5j1f0I3O8Qj8s=;
+        b=CWIsvBIBfbdIeHcEzUswropaQi+/V4h0/nT3FwojnZlK7RsaD+YQ2YlPhX61xxOG3U
+         CvH7c2Xjl4M0JGcM5u7rwOCin7olCbdst+XYdESFMlv2sNnVt6mczEujK+wZXw77J4AN
+         fHLEjFfqLrw7LkzFbAoPNXhdBO4UxlJPIQfByg0JMgoYPzBsg5q68LuJXiVPcxoonDPb
+         HaPg8xIaGqKzwwr3wLUTdIaVDKLkelpB/T9WcUO9WOd/sIfwY47ZpGoyTj03hM9l7ve0
+         CNxqYdqp83qjg0/Z7Xn91Tn7t5nZGNws4RRa95HfXqh3h9YnFQR0XE5gEeik3uoUoae1
+         u6mg==
+X-Gm-Message-State: AOAM533MgWtfM7/tzaW+4Ah6kT3IENGuff+/Y2p9zLTrYduQ4nF9rBX6
+        C6Fu9SgI7rbXLWRNLe2k/i4=
+X-Google-Smtp-Source: ABdhPJxFKLjVczXxEW5+046lcFGvWLADwkc39aPemk1zKbGCcL0D6GJ3Ijj6n6Mf8iJGX3dpZUfNOw==
+X-Received: by 2002:ad4:4991:: with SMTP id t17mr13491613qvx.33.1615859671930;
+        Mon, 15 Mar 2021 18:54:31 -0700 (PDT)
 Received: from localhost ([76.73.146.210])
-        by smtp.gmail.com with ESMTPSA id s6sm2909385qke.44.2021.03.15.18.54.33
+        by smtp.gmail.com with ESMTPSA id k129sm14326595qkf.108.2021.03.15.18.54.31
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 15 Mar 2021 18:54:33 -0700 (PDT)
+        Mon, 15 Mar 2021 18:54:31 -0700 (PDT)
 From:   Yury Norov <yury.norov@gmail.com>
 To:     linux-kernel@vger.kernel.org
 Cc:     Yury Norov <yury.norov@gmail.com>, linux-m68k@lists.linux-m68k.org,
@@ -77,9 +77,9 @@ Cc:     Yury Norov <yury.norov@gmail.com>, linux-m68k@lists.linux-m68k.org,
         Wei Yang <richard.weiyang@linux.alibaba.com>,
         Wolfram Sang <wsa+renesas@sang-engineering.com>,
         Yoshinori Sato <ysato@users.sourceforge.jp>
-Subject: [PATCH 05/13] tools: sync BITS_MASK macros with the kernel
-Date:   Mon, 15 Mar 2021 18:54:16 -0700
-Message-Id: <20210316015424.1999082-6-yury.norov@gmail.com>
+Subject: [PATCH 03/13] arch: rearrange headers inclusion order in asm/bitops for m68k and sh
+Date:   Mon, 15 Mar 2021 18:54:14 -0700
+Message-Id: <20210316015424.1999082-4-yury.norov@gmail.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20210316015424.1999082-1-yury.norov@gmail.com>
 References: <20210316015424.1999082-1-yury.norov@gmail.com>
@@ -89,172 +89,68 @@ Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-Remove BITMAP_{FIRST,LAST}_WORD_MASK and introduce
-BITS_{FIRST,LAST}{,_MASK} as per kernel implementation.
+m68k and sh include bitmap/{find,le}.h prior to ffs/fls headers. New
+fast-path implementation in find.h requires ffs/fls. Reordering the
+headers inclusion sequence helps to prevent compile-time implicit
+function declaration error.
 
 Signed-off-by: Yury Norov <yury.norov@gmail.com>
+Acked-by: Geert Uytterhoeven <geert@linux-m68k.org>
 ---
- tools/include/linux/bitmap.h      | 20 ++++++--------------
- tools/include/linux/bits.h        |  6 ++++++
- tools/lib/bitmap.c                |  6 +++---
- tools/lib/find_bit.c              |  2 +-
- tools/testing/radix-tree/bitmap.c |  4 ++--
- 5 files changed, 18 insertions(+), 20 deletions(-)
+ arch/m68k/include/asm/bitops.h | 6 +++---
+ arch/sh/include/asm/bitops.h   | 5 +++--
+ 2 files changed, 6 insertions(+), 5 deletions(-)
 
-diff --git a/tools/include/linux/bitmap.h b/tools/include/linux/bitmap.h
-index 7cbd23e56d48..b6e8430c8bc9 100644
---- a/tools/include/linux/bitmap.h
-+++ b/tools/include/linux/bitmap.h
-@@ -19,14 +19,6 @@ int __bitmap_equal(const unsigned long *bitmap1,
- 		   const unsigned long *bitmap2, unsigned int bits);
- void bitmap_clear(unsigned long *map, unsigned int start, int len);
+diff --git a/arch/m68k/include/asm/bitops.h b/arch/m68k/include/asm/bitops.h
+index 10133a968c8e..7b414099e5fc 100644
+--- a/arch/m68k/include/asm/bitops.h
++++ b/arch/m68k/include/asm/bitops.h
+@@ -440,8 +440,6 @@ static inline unsigned long ffz(unsigned long word)
  
--#define BITMAP_FIRST_WORD_MASK(start) (~0UL << ((start) & (BITS_PER_LONG - 1)))
+ #endif
+ 
+-#include <asm-generic/bitops/find.h>
 -
--#define BITMAP_LAST_WORD_MASK(nbits)					\
--(									\
--	((nbits) % BITS_PER_LONG) ?					\
--		(1UL<<((nbits) % BITS_PER_LONG))-1 : ~0UL		\
--)
--
- #define small_const_nbits(nbits) \
- 	(__builtin_constant_p(nbits) && (nbits) <= BITS_PER_LONG)
+ #ifdef __KERNEL__
  
-@@ -47,13 +39,13 @@ static inline void bitmap_fill(unsigned long *dst, unsigned int nbits)
- 		unsigned int len = (nlongs - 1) * sizeof(unsigned long);
- 		memset(dst, 0xff,  len);
- 	}
--	dst[nlongs - 1] = BITMAP_LAST_WORD_MASK(nbits);
-+	dst[nlongs - 1] = BITS_FIRST(nbits - 1);
- }
+ #if defined(CONFIG_CPU_HAS_NO_BITFIELDS)
+@@ -525,10 +523,12 @@ static inline int __fls(int x)
+ #define __clear_bit_unlock	clear_bit_unlock
  
- static inline int bitmap_empty(const unsigned long *src, unsigned nbits)
- {
- 	if (small_const_nbits(nbits))
--		return ! (*src & BITMAP_LAST_WORD_MASK(nbits));
-+		return !(*src & BITS_FIRST(nbits - 1));
+ #include <asm-generic/bitops/ext2-atomic.h>
+-#include <asm-generic/bitops/le.h>
+ #include <asm-generic/bitops/fls64.h>
+ #include <asm-generic/bitops/sched.h>
+ #include <asm-generic/bitops/hweight.h>
++#include <asm-generic/bitops/le.h>
+ #endif /* __KERNEL__ */
  
- 	return find_first_bit(src, nbits) == nbits;
- }
-@@ -61,7 +53,7 @@ static inline int bitmap_empty(const unsigned long *src, unsigned nbits)
- static inline int bitmap_full(const unsigned long *src, unsigned int nbits)
- {
- 	if (small_const_nbits(nbits))
--		return ! (~(*src) & BITMAP_LAST_WORD_MASK(nbits));
-+		return !(~(*src) & BITS_FIRST(nbits - 1));
- 
- 	return find_first_zero_bit(src, nbits) == nbits;
- }
-@@ -69,7 +61,7 @@ static inline int bitmap_full(const unsigned long *src, unsigned int nbits)
- static inline int bitmap_weight(const unsigned long *src, unsigned int nbits)
- {
- 	if (small_const_nbits(nbits))
--		return hweight_long(*src & BITMAP_LAST_WORD_MASK(nbits));
-+		return hweight_long(*src & BITS_FIRST(nbits - 1));
- 	return __bitmap_weight(src, nbits);
- }
- 
-@@ -155,7 +147,7 @@ static inline int bitmap_and(unsigned long *dst, const unsigned long *src1,
- 			     const unsigned long *src2, unsigned int nbits)
- {
- 	if (small_const_nbits(nbits))
--		return (*dst = *src1 & *src2 & BITMAP_LAST_WORD_MASK(nbits)) != 0;
-+		return (*dst = *src1 & *src2 & BITS_FIRST(nbits - 1)) != 0;
- 	return __bitmap_and(dst, src1, src2, nbits);
- }
- 
-@@ -171,7 +163,7 @@ static inline int bitmap_equal(const unsigned long *src1,
- 			const unsigned long *src2, unsigned int nbits)
- {
- 	if (small_const_nbits(nbits))
--		return !((*src1 ^ *src2) & BITMAP_LAST_WORD_MASK(nbits));
-+		return !((*src1 ^ *src2) & BITS_FIRST(nbits - 1));
- 	if (__builtin_constant_p(nbits & BITMAP_MEM_MASK) &&
- 	    IS_ALIGNED(nbits, BITMAP_MEM_ALIGNMENT))
- 		return !memcmp(src1, src2, nbits / 8);
-diff --git a/tools/include/linux/bits.h b/tools/include/linux/bits.h
-index 7f475d59a097..8c191c29506e 100644
---- a/tools/include/linux/bits.h
-+++ b/tools/include/linux/bits.h
-@@ -37,6 +37,12 @@
- #define GENMASK(h, l) \
- 	(GENMASK_INPUT_CHECK(h, l) + __GENMASK(h, l))
- 
-+#define BITS_FIRST(nr)		GENMASK((nr), 0)
-+#define BITS_LAST(nr)		GENMASK(BITS_PER_LONG - 1, (nr))
++#include <asm-generic/bitops/find.h>
 +
-+#define BITS_FIRST_MASK(nr)	BITS_FIRST((nr) % BITS_PER_LONG)
-+#define BITS_LAST_MASK(nr)	BITS_LAST((nr) % BITS_PER_LONG)
+ #endif /* _M68K_BITOPS_H */
+diff --git a/arch/sh/include/asm/bitops.h b/arch/sh/include/asm/bitops.h
+index 450b5854d7c6..3b6c7b5b7ec9 100644
+--- a/arch/sh/include/asm/bitops.h
++++ b/arch/sh/include/asm/bitops.h
+@@ -58,15 +58,16 @@ static inline unsigned long __ffs(unsigned long word)
+ 	return result;
+ }
+ 
+-#include <asm-generic/bitops/find.h>
+ #include <asm-generic/bitops/ffs.h>
+ #include <asm-generic/bitops/hweight.h>
+ #include <asm-generic/bitops/lock.h>
+ #include <asm-generic/bitops/sched.h>
+-#include <asm-generic/bitops/le.h>
+ #include <asm-generic/bitops/ext2-atomic.h>
+ #include <asm-generic/bitops/fls.h>
+ #include <asm-generic/bitops/__fls.h>
+ #include <asm-generic/bitops/fls64.h>
+ 
++#include <asm-generic/bitops/le.h>
++#include <asm-generic/bitops/find.h>
 +
- #define __GENMASK_ULL(h, l) \
- 	(((~ULL(0)) - (ULL(1) << (l)) + 1) & \
- 	 (~ULL(0) >> (BITS_PER_LONG_LONG - 1 - (h))))
-diff --git a/tools/lib/bitmap.c b/tools/lib/bitmap.c
-index f4e914712b6f..8cffad2d1f77 100644
---- a/tools/lib/bitmap.c
-+++ b/tools/lib/bitmap.c
-@@ -13,7 +13,7 @@ int __bitmap_weight(const unsigned long *bitmap, int bits)
- 		w += hweight_long(bitmap[k]);
- 
- 	if (bits % BITS_PER_LONG)
--		w += hweight_long(bitmap[k] & BITMAP_LAST_WORD_MASK(bits));
-+		w += hweight_long(bitmap[k] & BITS_FIRST_MASK(bits - 1));
- 
- 	return w;
- }
-@@ -68,7 +68,7 @@ int __bitmap_and(unsigned long *dst, const unsigned long *bitmap1,
- 		result |= (dst[k] = bitmap1[k] & bitmap2[k]);
- 	if (bits % BITS_PER_LONG)
- 		result |= (dst[k] = bitmap1[k] & bitmap2[k] &
--			   BITMAP_LAST_WORD_MASK(bits));
-+			   BITS_FIRST_MASK(bits - 1));
- 	return result != 0;
- }
- 
-@@ -81,7 +81,7 @@ int __bitmap_equal(const unsigned long *bitmap1,
- 			return 0;
- 
- 	if (bits % BITS_PER_LONG)
--		if ((bitmap1[k] ^ bitmap2[k]) & BITMAP_LAST_WORD_MASK(bits))
-+		if ((bitmap1[k] ^ bitmap2[k]) & BITS_FIRST_MASK(bits - 1))
- 			return 0;
- 
- 	return 1;
-diff --git a/tools/lib/find_bit.c b/tools/lib/find_bit.c
-index ac37022e9486..49abb18549cc 100644
---- a/tools/lib/find_bit.c
-+++ b/tools/lib/find_bit.c
-@@ -43,7 +43,7 @@ static inline unsigned long _find_next_bit(const unsigned long *addr1,
- 	tmp ^= invert;
- 
- 	/* Handle 1st word. */
--	tmp &= BITMAP_FIRST_WORD_MASK(start);
-+	tmp &= BITS_LAST_MASK(start);
- 	start = round_down(start, BITS_PER_LONG);
- 
- 	while (!tmp) {
-diff --git a/tools/testing/radix-tree/bitmap.c b/tools/testing/radix-tree/bitmap.c
-index 66ec4a24a203..aedc15461f78 100644
---- a/tools/testing/radix-tree/bitmap.c
-+++ b/tools/testing/radix-tree/bitmap.c
-@@ -7,7 +7,7 @@ void bitmap_clear(unsigned long *map, unsigned int start, int len)
- 	unsigned long *p = map + BIT_WORD(start);
- 	const unsigned int size = start + len;
- 	int bits_to_clear = BITS_PER_LONG - (start % BITS_PER_LONG);
--	unsigned long mask_to_clear = BITMAP_FIRST_WORD_MASK(start);
-+	unsigned long mask_to_clear = BITS_LAST_MASK(start);
- 
- 	while (len - bits_to_clear >= 0) {
- 		*p &= ~mask_to_clear;
-@@ -17,7 +17,7 @@ void bitmap_clear(unsigned long *map, unsigned int start, int len)
- 		p++;
- 	}
- 	if (len) {
--		mask_to_clear &= BITMAP_LAST_WORD_MASK(size);
-+		mask_to_clear &= BITS_FIRST_MASK(size - 1);
- 		*p &= ~mask_to_clear;
- 	}
- }
+ #endif /* __ASM_SH_BITOPS_H */
 -- 
 2.25.1
 
