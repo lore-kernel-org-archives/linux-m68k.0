@@ -2,66 +2,62 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-15.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
-	autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-17.3 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,NICE_REPLY_A,SPF_HELO_NONE,SPF_PASS,
+	USER_AGENT_SANE_1 autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id F1443C433DB
-	for <linux-m68k@archiver.kernel.org>; Tue, 16 Mar 2021 01:55:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E71A2C433E6
+	for <linux-m68k@archiver.kernel.org>; Tue, 16 Mar 2021 08:18:22 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id B603664FDC
-	for <linux-m68k@archiver.kernel.org>; Tue, 16 Mar 2021 01:55:39 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id A649265001
+	for <linux-m68k@archiver.kernel.org>; Tue, 16 Mar 2021 08:18:22 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234382AbhCPBzM (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Mon, 15 Mar 2021 21:55:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58362 "EHLO
+        id S234340AbhCPIRv (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Tue, 16 Mar 2021 04:17:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55934 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234304AbhCPByl (ORCPT
+        with ESMTP id S234335AbhCPIR2 (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Mon, 15 Mar 2021 21:54:41 -0400
-Received: from mail-qk1-x72e.google.com (mail-qk1-x72e.google.com [IPv6:2607:f8b0:4864:20::72e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 39810C06174A
-        for <linux-m68k@lists.linux-m68k.org>; Mon, 15 Mar 2021 18:54:41 -0700 (PDT)
-Received: by mail-qk1-x72e.google.com with SMTP id n79so33805115qke.3
-        for <linux-m68k@lists.linux-m68k.org>; Mon, 15 Mar 2021 18:54:41 -0700 (PDT)
+        Tue, 16 Mar 2021 04:17:28 -0400
+Received: from mail-ej1-x634.google.com (mail-ej1-x634.google.com [IPv6:2a00:1450:4864:20::634])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C6635C061762
+        for <linux-m68k@lists.linux-m68k.org>; Tue, 16 Mar 2021 01:17:27 -0700 (PDT)
+Received: by mail-ej1-x634.google.com with SMTP id mj10so70638552ejb.5
+        for <linux-m68k@lists.linux-m68k.org>; Tue, 16 Mar 2021 01:17:27 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=j4c6A5vaNMIPEVXkAQE2RzKOq7AaZrQoh3jtWJeGWIM=;
-        b=EDy2pXw8WcgTVX/eiVxDy95tfQT77EWZsd3bh5nalrjt/du8RvvOnkuo8zwynjyURw
-         HsOU6Mi3gmcijAneTU7N/0GvIY8kXZvJ8Wkk7UmN8MIe5TkGVGR9e20F6Hr8feyPJWi4
-         IDEHtrRXxX1K9MXxhQzz42+MxhfChuyTNrVLWMCkcdT85NdAtTLmtNW/Wdeej9rJzx9d
-         zZtt7qmYNx+aZHKptibWslAAloHy8BdcL8/Jr+QzUWmAls09HEOOR9iQvpvTTEORvvWW
-         0UsvBXaM7K9tLQGd2QLPxgRVyiitUjB2JkLdKvDE+WaaW2bv4sP0T6I7TXPpcF8p3iX5
-         d0/Q==
+        d=rasmusvillemoes.dk; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=p9kC/FfaYsWrKdpd44ySqOr9EeItGYJ7tqAoRplpcIw=;
+        b=EFjyEtLu7bg1hNv+88oPUzWFOq+7jZJ1JjL06HqzKU/TlfkEl1+HRe4/aFCgmsHASK
+         l4L9IRJYPnHUI5TnHzB51mEyaEH2wA1K+JGeag2qgdeECYLIpkSEFh70xoCt/tTGodcd
+         8ACpxYRZgaf4XJHaxUUuyAvrWxr92vlxsRsFQ=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=j4c6A5vaNMIPEVXkAQE2RzKOq7AaZrQoh3jtWJeGWIM=;
-        b=rHSvnyrBFPVLTXoqUtpC3eabH+5GvEymnXi0tZvHzMuZVj8ZTdd2V65UafBsy36Bt2
-         yrqjxFyZeh9hFl1zmkgOU+PwXjKWCUG4UdA5bR4xQ5da4DR6MlvpE1kZ2Fp1cXuE40Ou
-         v4VN+TwIPU8vidKnopb5tFx0C+VchPpz2hCIuwKAIRqLGtE2PBvBHJa4yLiPxCV58hao
-         okQfMKv0Mgf6WDfPqapjoaH/nMb+xChfXbqflhtkZP+EkA38gF8mz0nvcFOuNh2M/F5F
-         mM572OKNDdCo7/S4rhaUh4znoFEMQOZcRl8+u9yParWUR+wQ6GbZ+ZEJY0X38RwW4x+n
-         RLyw==
-X-Gm-Message-State: AOAM531BRw+hScqcBkbcwPVz1biqG+5KbOOD5OI+Xllwm64hqKOgiSRA
-        Im7YBQWUNP6TIngYTmWO/LI=
-X-Google-Smtp-Source: ABdhPJwiyazScIRYuDgSmETzPKD7RM2xXE52D6T/NNbYna4ASWpxPxm6BzbpXvCakxJNuFIJUmmE4Q==
-X-Received: by 2002:a37:d8e:: with SMTP id 136mr28916830qkn.114.1615859680380;
-        Mon, 15 Mar 2021 18:54:40 -0700 (PDT)
-Received: from localhost ([76.73.146.210])
-        by smtp.gmail.com with ESMTPSA id v7sm13987329qkv.86.2021.03.15.18.54.39
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 15 Mar 2021 18:54:40 -0700 (PDT)
-From:   Yury Norov <yury.norov@gmail.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     Yury Norov <yury.norov@gmail.com>, linux-m68k@lists.linux-m68k.org,
-        linux-arch@vger.kernel.org, linux-sh@vger.kernel.org,
-        Alexey Klimov <aklimov@redhat.com>,
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=p9kC/FfaYsWrKdpd44ySqOr9EeItGYJ7tqAoRplpcIw=;
+        b=jBK0lrPapkkHKaeYBpWjJjv6f+CNxEfVFw/yTtTagUFpRKtMQHPHzCoSGAIUxd8Q7m
+         S971vxt2YMu0plA749cKFSxLSrwvelFU/7AwDk6TaS3W39mWZ1Hi7kJd22F0b8WHDpFf
+         IkQ77ntQ3NjbaRG0cUfddVUyRknTsDMHMzVqTeF5UlhbP1wj9ehG+acg5wOtk39tDQts
+         W0Lb8BfYzM1cz0SvsI/QEDPFouVhQu5tnodJs1lCMo/QBvC6Tlzm7lnm5FQ0gffiOMSZ
+         OtpcMmq2ARsXuz0Z5sp7kkETZQ6Bj6SFoxz2kj/zrPGJfL0CW5BOqZRHy4dFJIm/N3kB
+         96rw==
+X-Gm-Message-State: AOAM533xolAeRS3bEN9IUo9VNIjQ6l34M5wMahbKqMxmr47CgsM2RAg6
+        7bnO5xwlSYfiViMhlBhtg6gJnQ==
+X-Google-Smtp-Source: ABdhPJwhMeO22Wisys4V+O8q3o0fM/7YfKkWeuBs/dpVq2nKIcG5cqRzvmDIEMex6Byh+X4q3Gsohw==
+X-Received: by 2002:a17:906:5902:: with SMTP id h2mr28099654ejq.416.1615882646474;
+        Tue, 16 Mar 2021 01:17:26 -0700 (PDT)
+Received: from [192.168.1.149] ([80.208.71.248])
+        by smtp.gmail.com with ESMTPSA id u13sm8931351ejy.31.2021.03.16.01.17.25
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 16 Mar 2021 01:17:26 -0700 (PDT)
+Subject: Re: [PATCH 01/13] tools: disable -Wno-type-limits
+To:     Yury Norov <yury.norov@gmail.com>, linux-kernel@vger.kernel.org
+Cc:     linux-m68k@lists.linux-m68k.org, linux-arch@vger.kernel.org,
+        linux-sh@vger.kernel.org, Alexey Klimov <aklimov@redhat.com>,
         Andrew Morton <akpm@linux-foundation.org>,
         Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
         Arnd Bergmann <arnd@arndb.de>, David Sterba <dsterba@suse.com>,
@@ -71,194 +67,61 @@ Cc:     Yury Norov <yury.norov@gmail.com>, linux-m68k@lists.linux-m68k.org,
         Joe Perches <joe@perches.com>,
         John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
         Josh Poimboeuf <jpoimboe@redhat.com>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
         Rich Felker <dalias@libc.org>,
         Stefano Brivio <sbrivio@redhat.com>,
         Wei Yang <richard.weiyang@linux.alibaba.com>,
         Wolfram Sang <wsa+renesas@sang-engineering.com>,
         Yoshinori Sato <ysato@users.sourceforge.jp>
-Subject: [PATCH 11/13] lib: add fast path for find_first_*_bit() and find_last_bit()
-Date:   Mon, 15 Mar 2021 18:54:22 -0700
-Message-Id: <20210316015424.1999082-12-yury.norov@gmail.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210316015424.1999082-1-yury.norov@gmail.com>
 References: <20210316015424.1999082-1-yury.norov@gmail.com>
+ <20210316015424.1999082-2-yury.norov@gmail.com>
+From:   Rasmus Villemoes <linux@rasmusvillemoes.dk>
+Message-ID: <2ec71f83-f903-2775-bf04-7f0a83c9f4cb@rasmusvillemoes.dk>
+Date:   Tue, 16 Mar 2021 09:17:24 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210316015424.1999082-2-yury.norov@gmail.com>
+Content-Type: text/plain; charset=windows-1252
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-Similarly to bitmap functions, users would benefit if we'll handle
-a case of small-size bitmaps that fit into a single word.
+On 16/03/2021 02.54, Yury Norov wrote:
+> GENMASK(h, l) may be passed with unsigned types. In such case, type-limits
+> warning is generated for example in case of GENMASK(h, 0).
+> 
+> Signed-off-by: Yury Norov <yury.norov@gmail.com>
+> ---
+>  tools/scripts/Makefile.include | 1 +
+>  1 file changed, 1 insertion(+)
+> 
+> diff --git a/tools/scripts/Makefile.include b/tools/scripts/Makefile.include
+> index 84dbf61a7eca..15e99905cb7d 100644
+> --- a/tools/scripts/Makefile.include
+> +++ b/tools/scripts/Makefile.include
+> @@ -38,6 +38,7 @@ EXTRA_WARNINGS += -Wswitch-enum
+>  EXTRA_WARNINGS += -Wundef
+>  EXTRA_WARNINGS += -Wwrite-strings
+>  EXTRA_WARNINGS += -Wformat
+> +EXTRA_WARNINGS += -Wno-type-limits
+>
 
-While here, move the find_last_bit() declaration to bitops/find.h
-where other find_*_bit() functions sit.
+I don't like that kind of collateral damage. I seem to recall another
+instance where a macro was instead rewritten to avoid triggering the
+type-limits warning (with a comment explaining the uglyness). Something like
 
-Signed-off-by: Yury Norov <yury.norov@gmail.com>
----
- include/asm-generic/bitops/find.h | 50 ++++++++++++++++++++++++++++---
- include/linux/bitops.h            | 12 --------
- lib/find_bit.c                    | 12 ++++----
- 3 files changed, 52 insertions(+), 22 deletions(-)
+foo > bar      is the same as
+!(foo <= bar)  which is the same as
+!(foo == bar || foo < bar)
 
-diff --git a/include/asm-generic/bitops/find.h b/include/asm-generic/bitops/find.h
-index 4148c74a1e4d..8d818b304869 100644
---- a/include/asm-generic/bitops/find.h
-+++ b/include/asm-generic/bitops/find.h
-@@ -5,6 +5,9 @@
- extern unsigned long _find_next_bit(const unsigned long *addr1,
- 		const unsigned long *addr2, unsigned long nbits,
- 		unsigned long start, unsigned long invert, unsigned long le);
-+extern unsigned long _find_first_bit(const unsigned long *addr, unsigned long size);
-+extern unsigned long _find_first_zero_bit(const unsigned long *addr, unsigned long size);
-+extern unsigned long _find_last_bit(const unsigned long *addr, unsigned long size);
- 
- #ifndef find_next_bit
- /**
-@@ -102,8 +105,17 @@ unsigned long find_next_zero_bit(const unsigned long *addr, unsigned long size,
-  * Returns the bit number of the first set bit.
-  * If no bits are set, returns @size.
-  */
--extern unsigned long find_first_bit(const unsigned long *addr,
--				    unsigned long size);
-+static inline
-+unsigned long find_first_bit(const unsigned long *addr, unsigned long size)
-+{
-+	if (small_const_nbits(size)) {
-+		unsigned long val = *addr & BITS_FIRST(size - 1);
-+
-+		return val ? __ffs(val) : size;
-+	}
-+
-+	return _find_first_bit(addr, size);
-+}
- 
- /**
-  * find_first_zero_bit - find the first cleared bit in a memory region
-@@ -113,8 +125,17 @@ extern unsigned long find_first_bit(const unsigned long *addr,
-  * Returns the bit number of the first cleared bit.
-  * If no bits are zero, returns @size.
-  */
--extern unsigned long find_first_zero_bit(const unsigned long *addr,
--					 unsigned long size);
-+static inline
-+unsigned long find_first_zero_bit(const unsigned long *addr, unsigned long size)
-+{
-+	if (small_const_nbits(size)) {
-+		unsigned long val = *addr | ~BITS_FIRST(size - 1);
-+
-+		return val == ~0UL ? size : ffz(val);
-+	}
-+
-+	return _find_first_zero_bit(addr, size);
-+}
- #else /* CONFIG_GENERIC_FIND_FIRST_BIT */
- 
- #ifndef find_first_bit
-@@ -126,6 +147,27 @@ extern unsigned long find_first_zero_bit(const unsigned long *addr,
- 
- #endif /* CONFIG_GENERIC_FIND_FIRST_BIT */
- 
-+#ifndef find_last_bit
-+/**
-+ * find_last_bit - find the last set bit in a memory region
-+ * @addr: The address to start the search at
-+ * @size: The number of bits to search
-+ *
-+ * Returns the bit number of the last set bit, or size.
-+ */
-+static inline
-+unsigned long find_last_bit(const unsigned long *addr, unsigned long size)
-+{
-+	if (small_const_nbits(size)) {
-+		unsigned long val = *addr & BITS_FIRST(size - 1);
-+
-+		return val ? __fls(val) : size;
-+	}
-+
-+	return _find_last_bit(addr, size);
-+}
-+#endif
-+
- /**
-  * find_next_clump8 - find next 8-bit clump with set bits in a memory region
-  * @clump: location to store copy of found clump
-diff --git a/include/linux/bitops.h b/include/linux/bitops.h
-index a5a48303b0f1..26bf15e6cd35 100644
---- a/include/linux/bitops.h
-+++ b/include/linux/bitops.h
-@@ -286,17 +286,5 @@ static __always_inline void __assign_bit(long nr, volatile unsigned long *addr,
- })
- #endif
- 
--#ifndef find_last_bit
--/**
-- * find_last_bit - find the last set bit in a memory region
-- * @addr: The address to start the search at
-- * @size: The number of bits to search
-- *
-- * Returns the bit number of the last set bit, or size.
-- */
--extern unsigned long find_last_bit(const unsigned long *addr,
--				   unsigned long size);
--#endif
--
- #endif /* __KERNEL__ */
- #endif
-diff --git a/lib/find_bit.c b/lib/find_bit.c
-index 2470ae390f3c..e2c301d28568 100644
---- a/lib/find_bit.c
-+++ b/lib/find_bit.c
-@@ -75,7 +75,7 @@ EXPORT_SYMBOL(_find_next_bit);
- /*
-  * Find the first set bit in a memory region.
-  */
--unsigned long find_first_bit(const unsigned long *addr, unsigned long size)
-+unsigned long _find_first_bit(const unsigned long *addr, unsigned long size)
- {
- 	unsigned long idx;
- 
-@@ -86,14 +86,14 @@ unsigned long find_first_bit(const unsigned long *addr, unsigned long size)
- 
- 	return size;
- }
--EXPORT_SYMBOL(find_first_bit);
-+EXPORT_SYMBOL(_find_first_bit);
- #endif
- 
- #ifndef find_first_zero_bit
- /*
-  * Find the first cleared bit in a memory region.
-  */
--unsigned long find_first_zero_bit(const unsigned long *addr, unsigned long size)
-+unsigned long _find_first_zero_bit(const unsigned long *addr, unsigned long size)
- {
- 	unsigned long idx;
- 
-@@ -104,11 +104,11 @@ unsigned long find_first_zero_bit(const unsigned long *addr, unsigned long size)
- 
- 	return size;
- }
--EXPORT_SYMBOL(find_first_zero_bit);
-+EXPORT_SYMBOL(_find_first_zero_bit);
- #endif
- 
- #ifndef find_last_bit
--unsigned long find_last_bit(const unsigned long *addr, unsigned long size)
-+unsigned long _find_last_bit(const unsigned long *addr, unsigned long size)
- {
- 	if (size) {
- 		unsigned long val = BITS_FIRST_MASK(size - 1);
-@@ -124,7 +124,7 @@ unsigned long find_last_bit(const unsigned long *addr, unsigned long size)
- 	}
- 	return size;
- }
--EXPORT_SYMBOL(find_last_bit);
-+EXPORT_SYMBOL(_find_last_bit);
- #endif
- 
- unsigned long find_next_clump8(unsigned long *clump, const unsigned long *addr,
--- 
-2.25.1
+Dunno if that would work here, but if it did, it would have the bonus
+that when somebody builds the kernel proper with Wtype-limits enabled
+(maybe W=1 or W=2) there would be no false positives from GENMASK to
+wade through.
 
+Alternatively, we really should consider making use of _Pragma to
+locally disable/re-enable certain warnings.
+
+Rasmus
