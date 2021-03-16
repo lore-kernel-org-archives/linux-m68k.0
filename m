@@ -2,61 +2,61 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-10.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+X-Spam-Status: No, score=-15.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham autolearn_force=no
-	version=3.4.0
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id CF38AC433E0
-	for <linux-m68k@archiver.kernel.org>; Tue, 16 Mar 2021 01:55:05 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8B4C8C4332D
+	for <linux-m68k@archiver.kernel.org>; Tue, 16 Mar 2021 01:55:06 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id A1ABB64FB2
-	for <linux-m68k@archiver.kernel.org>; Tue, 16 Mar 2021 01:55:05 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 35E6B64FD9
+	for <linux-m68k@archiver.kernel.org>; Tue, 16 Mar 2021 01:55:06 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232584AbhCPByd (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        id S231404AbhCPByd (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
         Mon, 15 Mar 2021 21:54:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58276 "EHLO
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58288 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231404AbhCPBy3 (ORCPT
+        with ESMTP id S231582AbhCPByc (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Mon, 15 Mar 2021 21:54:29 -0400
-Received: from mail-qk1-x72f.google.com (mail-qk1-x72f.google.com [IPv6:2607:f8b0:4864:20::72f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE01AC06174A
-        for <linux-m68k@lists.linux-m68k.org>; Mon, 15 Mar 2021 18:54:29 -0700 (PDT)
-Received: by mail-qk1-x72f.google.com with SMTP id m186so17164957qke.12
-        for <linux-m68k@lists.linux-m68k.org>; Mon, 15 Mar 2021 18:54:29 -0700 (PDT)
+        Mon, 15 Mar 2021 21:54:32 -0400
+Received: from mail-qt1-x833.google.com (mail-qt1-x833.google.com [IPv6:2607:f8b0:4864:20::833])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B7647C06174A
+        for <linux-m68k@lists.linux-m68k.org>; Mon, 15 Mar 2021 18:54:30 -0700 (PDT)
+Received: by mail-qt1-x833.google.com with SMTP id l13so10650578qtu.9
+        for <linux-m68k@lists.linux-m68k.org>; Mon, 15 Mar 2021 18:54:30 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=HRrxGQOEvm+/qrHASsf/SSlT9PdWhy6EY9fxf2NvOu8=;
-        b=G+2o1OZ1MsI8iRpV1SeE5skr4iOeVuLtUmY2erOFTsPPMX+nve/JlUBPWOJZQgab9M
-         hBpHUQIGgSHMAmVJ6YcJuS47G6c6BZA3mW6ZDS7c1mYMSwGr+8regxHvJ7Dw8vxXaGSi
-         9OO+4tEgMi1KPt4Eb9nCtrmrXgH0/gr//G7kDCZkVy7b1667WN5RbMN3PmavhKnQ4ArU
-         mrnS81tOgR513nspmzGd6IYiF21LiZv8+BsT3eIGR8M7IrP2dze4ObQanO4J6cJwds5W
-         T0FF+nH1g5GrnNOzklaYhDBNuTCVfsnTTpouaHF69sNW0mr+piyB8YL/G5Pc0riTO2X5
-         9zug==
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=a7JdQMPMgs8V6p2mIbAAMliZc+Q/jwU8V02vmoeVTgc=;
+        b=q+2JratXAIojiOnbybFMXtp6qteLs7myYpTjGtZUxGtQbOGGKO0ygwLBMT3MEwvH+d
+         ekA/xYjDbAxJtmcA6a4anum1Z0drIuGkeL7kSSk/VwXL/aT7sFiYKSe8ZPrXB2eYzTBZ
+         N+gEEcu3U4arDCnAa4mRZfX6dqdgwdWpMSYgdjZL2FE2MXfThRk5Kk3JHcfM5O59yRnL
+         hLOJc84dITbVMh17TiHQPu0mgWARfz5vB8MquDpPyZdfpWFHr7ZVxH7wdMOLJNMZXpal
+         SDOClxQ97Fq2JVX6z4XxN/grORdOwmotLT53/4oOmkaafttDD4VSepsaWIMZhTG8o21T
+         mmcA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=HRrxGQOEvm+/qrHASsf/SSlT9PdWhy6EY9fxf2NvOu8=;
-        b=K52Iur6nKcpiNy6iMxTLF15eoSvkEvooSlkmD5cGNtjn3BxBEGTZr71fSJrRi/ziuE
-         yyPlwpG9/DLeBMT4Om5OrGM7bShC+GB23wk6j1J0X4M9iOc/e3U5qjOu0GrzKg5bBAz2
-         z3+6vXOlYiIGgBcqg37ovFjItQlh6dnRN8cYd3CcMBLUBGXOhtyHPpL4stzip92g5+mL
-         eMLKSoeTjy/XaIkxIa7XeZjwqyxW9Z0ilNS5CDeV+BjddGfPa9+IKbtEfyYDFjKmM+AG
-         FflC+xow94kFvjhahBRwlpDAfzfVcntSa87ImXj2Xo8mZJcFqBJktXesJHVCcqAjmu/l
-         bJQw==
-X-Gm-Message-State: AOAM533fKPqb3b4SAlCGDzzuvnPOKalB2sCFUUF2NgwsCIRqo1lQTVw2
-        T8DfjHJ/9zxZaCBbfZGXur4=
-X-Google-Smtp-Source: ABdhPJzCaDNSlwkmiZ9WgCW+TTPmrecogVjoyOnn9rGSp0DPSAaxfU8YRYYMYsrW4+k/TO1pl5Lo5g==
-X-Received: by 2002:a37:c441:: with SMTP id h1mr28347436qkm.123.1615859668840;
-        Mon, 15 Mar 2021 18:54:28 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=a7JdQMPMgs8V6p2mIbAAMliZc+Q/jwU8V02vmoeVTgc=;
+        b=REaIvUQw7Vic8Iow55NR310jXYZik3Z+bwEtUW7D5prk1kVUl1B1zzX+yyBtvNPYv9
+         eRITPcu+lGiI5D4G1g/A4c7xSiGlPU8oQVwu3Qb+T8gsiSmH7l8LOIgd2BPKEeN4erp2
+         OKtuDtvkvkW5F3GRS+ey3ScVK50xzVyGcStkySWAKMTv4sGqREX5k/HULadNXMXZbh85
+         S2ICo5+62NsBeMIMvEhF5OPTID4wrWi65ukSMVnbehCHQ8rsf/tFHJbgNZru8XezJUFy
+         nUFahR3CvMlSqpuRCS1RBdu52gjF/RRxQTmumBAX7MWpDdZS998O18p1J+DzhWB5Gmw7
+         wj1g==
+X-Gm-Message-State: AOAM5305uOthvrobqehzjyp5xZNImDqiL25ueZ4y00OEF6FLCyiE7Gsq
+        //0fuw8wffRuqULsriXy8fw=
+X-Google-Smtp-Source: ABdhPJyjbBs7nlG8KEc38wGBab/VGyJ2ZNfYRj+OtifaXJOa0rBZ8Jw6way9C1o+bwbBBpGBDkALDw==
+X-Received: by 2002:aed:2063:: with SMTP id 90mr19621568qta.195.1615859669929;
+        Mon, 15 Mar 2021 18:54:29 -0700 (PDT)
 Received: from localhost ([76.73.146.210])
-        by smtp.gmail.com with ESMTPSA id i25sm3747177qka.38.2021.03.15.18.54.28
+        by smtp.gmail.com with ESMTPSA id q15sm12422975qti.9.2021.03.15.18.54.29
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 15 Mar 2021 18:54:28 -0700 (PDT)
+        Mon, 15 Mar 2021 18:54:29 -0700 (PDT)
 From:   Yury Norov <yury.norov@gmail.com>
 To:     linux-kernel@vger.kernel.org
 Cc:     Yury Norov <yury.norov@gmail.com>, linux-m68k@lists.linux-m68k.org,
@@ -77,75 +77,38 @@ Cc:     Yury Norov <yury.norov@gmail.com>, linux-m68k@lists.linux-m68k.org,
         Wei Yang <richard.weiyang@linux.alibaba.com>,
         Wolfram Sang <wsa+renesas@sang-engineering.com>,
         Yoshinori Sato <ysato@users.sourceforge.jp>
-Subject: [PATCH v4 00/13] lib/find_bit: fast path for small bitmaps
-Date:   Mon, 15 Mar 2021 18:54:11 -0700
-Message-Id: <20210316015424.1999082-1-yury.norov@gmail.com>
+Subject: [PATCH 01/13] tools: disable -Wno-type-limits
+Date:   Mon, 15 Mar 2021 18:54:12 -0700
+Message-Id: <20210316015424.1999082-2-yury.norov@gmail.com>
 X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20210316015424.1999082-1-yury.norov@gmail.com>
+References: <20210316015424.1999082-1-yury.norov@gmail.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-Bitmap operations are much simpler and faster in case of small bitmaps
-which fit into a single word. In linux/bitmap.c we have a machinery that
-allows compiler to replace actual function call with a few instructions
-if bitmaps passed into the function are small and their size is known at
-compile time.
+GENMASK(h, l) may be passed with unsigned types. In such case, type-limits
+warning is generated for example in case of GENMASK(h, 0).
 
-find_*_bit() API lacks this functionality; but users will benefit from it
-a lot. One important example is cpumask subsystem when
-NR_CPUS <= BITS_PER_LONG.
+Signed-off-by: Yury Norov <yury.norov@gmail.com>
+---
+ tools/scripts/Makefile.include | 1 +
+ 1 file changed, 1 insertion(+)
 
-v1: https://www.spinics.net/lists/kernel/msg3804727.html
-v2: https://www.spinics.net/lists/linux-m68k/msg16945.html
-v3: https://www.spinics.net/lists/kernel/msg3837020.html
-v4: - move le.h header together with find.h for m68 and sh;
-    - preserve small_const_nbits() macro;
-    - drop FAST_PATH config option as this series doesn't increase .text,
-      instead, it compacts it;
-    - add Andy and Rasmus as reviewers of BITMAP API.
-
-Yury Norov (13):
-  tools: disable -Wno-type-limits
-  tools: bitmap: sync function declarations with the kernel
-  arch: rearrange headers inclusion order in asm/bitops for m68k and sh
-  lib: introduce BITS_{FIRST,LAST} macro
-  tools: sync BITS_MASK macros with the kernel
-  lib: extend the scope of small_const_nbits() macro
-  tools: sync small_const_nbits() macro with the kernel
-  lib: inline _find_next_bit() wrappers
-  tools: sync find_next_bit implementation
-  lib: add fast path for find_next_*_bit()
-  lib: add fast path for find_first_*_bit() and find_last_bit()
-  tools: sync lib/find_bit implementation
-  MAINTAINERS: Add entry for the bitmap API
-
- MAINTAINERS                             |  16 ++++
- arch/m68k/include/asm/bitops.h          |   6 +-
- arch/sh/include/asm/bitops.h            |   5 +-
- include/asm-generic/bitops/find.h       | 108 +++++++++++++++++++++---
- include/asm-generic/bitops/le.h         |  38 ++++++++-
- include/asm-generic/bitsperlong.h       |   9 ++
- include/linux/bitmap.h                  |  30 +++----
- include/linux/bitops.h                  |  12 ---
- include/linux/bits.h                    |   6 ++
- include/linux/cpumask.h                 |   8 +-
- include/linux/netdev_features.h         |   2 +-
- include/linux/nodemask.h                |   2 +-
- lib/bitmap.c                            |  26 +++---
- lib/find_bit.c                          |  72 +++-------------
- lib/genalloc.c                          |   8 +-
- tools/include/asm-generic/bitops/find.h |  85 +++++++++++++++++--
- tools/include/asm-generic/bitsperlong.h |   3 +
- tools/include/linux/bitmap.h            |  31 +++----
- tools/include/linux/bits.h              |   6 ++
- tools/lib/bitmap.c                      |  10 +--
- tools/lib/find_bit.c                    |  56 +++++-------
- tools/scripts/Makefile.include          |   1 +
- tools/testing/radix-tree/bitmap.c       |   4 +-
- 23 files changed, 340 insertions(+), 204 deletions(-)
-
+diff --git a/tools/scripts/Makefile.include b/tools/scripts/Makefile.include
+index 84dbf61a7eca..15e99905cb7d 100644
+--- a/tools/scripts/Makefile.include
++++ b/tools/scripts/Makefile.include
+@@ -38,6 +38,7 @@ EXTRA_WARNINGS += -Wswitch-enum
+ EXTRA_WARNINGS += -Wundef
+ EXTRA_WARNINGS += -Wwrite-strings
+ EXTRA_WARNINGS += -Wformat
++EXTRA_WARNINGS += -Wno-type-limits
+ 
+ CC_NO_CLANG := $(shell $(CC) -dM -E -x c /dev/null | grep -Fq "__clang__"; echo $$?)
+ 
 -- 
 2.25.1
 
