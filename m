@@ -2,59 +2,60 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-17.3 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+X-Spam-Status: No, score=-12.3 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,NICE_REPLY_A,SPF_HELO_NONE,SPF_PASS,
+	MAILING_LIST_MULTI,NICE_REPLY_A,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
 	USER_AGENT_SANE_1 autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E71A2C433E6
-	for <linux-m68k@archiver.kernel.org>; Tue, 16 Mar 2021 08:18:22 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D201CC433E9
+	for <linux-m68k@archiver.kernel.org>; Tue, 16 Mar 2021 08:19:58 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id A649265001
-	for <linux-m68k@archiver.kernel.org>; Tue, 16 Mar 2021 08:18:22 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id AD37865001
+	for <linux-m68k@archiver.kernel.org>; Tue, 16 Mar 2021 08:19:58 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234340AbhCPIRv (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Tue, 16 Mar 2021 04:17:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55934 "EHLO
+        id S234354AbhCPIT0 (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Tue, 16 Mar 2021 04:19:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56246 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234335AbhCPIR2 (ORCPT
+        with ESMTP id S234396AbhCPISx (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Tue, 16 Mar 2021 04:17:28 -0400
-Received: from mail-ej1-x634.google.com (mail-ej1-x634.google.com [IPv6:2a00:1450:4864:20::634])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C6635C061762
-        for <linux-m68k@lists.linux-m68k.org>; Tue, 16 Mar 2021 01:17:27 -0700 (PDT)
-Received: by mail-ej1-x634.google.com with SMTP id mj10so70638552ejb.5
-        for <linux-m68k@lists.linux-m68k.org>; Tue, 16 Mar 2021 01:17:27 -0700 (PDT)
+        Tue, 16 Mar 2021 04:18:53 -0400
+Received: from mail-ej1-x62c.google.com (mail-ej1-x62c.google.com [IPv6:2a00:1450:4864:20::62c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB564C06174A
+        for <linux-m68k@lists.linux-m68k.org>; Tue, 16 Mar 2021 01:18:52 -0700 (PDT)
+Received: by mail-ej1-x62c.google.com with SMTP id lr13so70690644ejb.8
+        for <linux-m68k@lists.linux-m68k.org>; Tue, 16 Mar 2021 01:18:52 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=rasmusvillemoes.dk; s=google;
         h=subject:to:cc:references:from:message-id:date:user-agent
          :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=p9kC/FfaYsWrKdpd44ySqOr9EeItGYJ7tqAoRplpcIw=;
-        b=EFjyEtLu7bg1hNv+88oPUzWFOq+7jZJ1JjL06HqzKU/TlfkEl1+HRe4/aFCgmsHASK
-         l4L9IRJYPnHUI5TnHzB51mEyaEH2wA1K+JGeag2qgdeECYLIpkSEFh70xoCt/tTGodcd
-         8ACpxYRZgaf4XJHaxUUuyAvrWxr92vlxsRsFQ=
+        bh=OmmE3ufEAvDgtjy9vpprocD5iN2+Uqu85g8HBGh8RxU=;
+        b=LHEgSMvc3cWqM90kZ4gvD6TaEqf3+6Z+QFwyFujTOXKuj8vhH9mBpNX24ZIrVsOI02
+         U0la/1WtXHDdzlaSo720o1SWFpzEDdwIH9xsmFuVg2t6SfJcr8NK3Jkd0yX8Dq+NDWOJ
+         KChtHzbHPP17LCyJCpNdZf10gUXrkW2ch4mGY=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:subject:to:cc:references:from:message-id:date
          :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=p9kC/FfaYsWrKdpd44ySqOr9EeItGYJ7tqAoRplpcIw=;
-        b=jBK0lrPapkkHKaeYBpWjJjv6f+CNxEfVFw/yTtTagUFpRKtMQHPHzCoSGAIUxd8Q7m
-         S971vxt2YMu0plA749cKFSxLSrwvelFU/7AwDk6TaS3W39mWZ1Hi7kJd22F0b8WHDpFf
-         IkQ77ntQ3NjbaRG0cUfddVUyRknTsDMHMzVqTeF5UlhbP1wj9ehG+acg5wOtk39tDQts
-         W0Lb8BfYzM1cz0SvsI/QEDPFouVhQu5tnodJs1lCMo/QBvC6Tlzm7lnm5FQ0gffiOMSZ
-         OtpcMmq2ARsXuz0Z5sp7kkETZQ6Bj6SFoxz2kj/zrPGJfL0CW5BOqZRHy4dFJIm/N3kB
-         96rw==
-X-Gm-Message-State: AOAM533xolAeRS3bEN9IUo9VNIjQ6l34M5wMahbKqMxmr47CgsM2RAg6
-        7bnO5xwlSYfiViMhlBhtg6gJnQ==
-X-Google-Smtp-Source: ABdhPJwhMeO22Wisys4V+O8q3o0fM/7YfKkWeuBs/dpVq2nKIcG5cqRzvmDIEMex6Byh+X4q3Gsohw==
-X-Received: by 2002:a17:906:5902:: with SMTP id h2mr28099654ejq.416.1615882646474;
-        Tue, 16 Mar 2021 01:17:26 -0700 (PDT)
+        bh=OmmE3ufEAvDgtjy9vpprocD5iN2+Uqu85g8HBGh8RxU=;
+        b=oU2GEqTjBXC/fzFdm8aMbwB4/QU4rkpIt2ltQV/IwyUWg3XpisjR4T3Jc4OqHrGZSW
+         I339goOkvZpsgs+2WPWlLuC5RBYAMln7NzMdOrhW18kS2gPByWecYlQoJEiNUOU8nAD/
+         BFeflFmp39Raw1hDMK94NhUtz6n8mMIlZ9oE//Zt+4LUT3N9Yi8R4XT+rFLL0lxR2rCk
+         9b/dB4HLVT53sw9fhFNX06ZeGE6YulokAN7xyadyETKwhEfqnx/qrlbZVeynyOsYjQoT
+         NdRp1FdddplGXDKKoPwyVQegkwEPYB7+iK4tL6+azuYOnyV30YwBwA1UFJ4tJZj4dCyF
+         o2Dw==
+X-Gm-Message-State: AOAM532KBVN11F7Z5LfNCi7vKtvOgiO8FmqWGsDRdyLSjiTXnGhNkJA7
+        RT705NpZDkzjLYA//R75RtJ8Ag==
+X-Google-Smtp-Source: ABdhPJwKtInEZcyt1fXWt+TUJ77BSu39uwuRxne2DMvOwoF0XUOOeiBRKdKwwpuOnjLLSOFZ1bvRaA==
+X-Received: by 2002:a17:906:a248:: with SMTP id bi8mr28148535ejb.260.1615882731772;
+        Tue, 16 Mar 2021 01:18:51 -0700 (PDT)
 Received: from [192.168.1.149] ([80.208.71.248])
-        by smtp.gmail.com with ESMTPSA id u13sm8931351ejy.31.2021.03.16.01.17.25
+        by smtp.gmail.com with ESMTPSA id u24sm5149640edt.85.2021.03.16.01.18.50
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 16 Mar 2021 01:17:26 -0700 (PDT)
-Subject: Re: [PATCH 01/13] tools: disable -Wno-type-limits
+        Tue, 16 Mar 2021 01:18:51 -0700 (PDT)
+Subject: Re: [PATCH 02/13] tools: bitmap: sync function declarations with the
+ kernel
 To:     Yury Norov <yury.norov@gmail.com>, linux-kernel@vger.kernel.org
 Cc:     linux-m68k@lists.linux-m68k.org, linux-arch@vger.kernel.org,
         linux-sh@vger.kernel.org, Alexey Klimov <aklimov@redhat.com>,
@@ -73,14 +74,14 @@ Cc:     linux-m68k@lists.linux-m68k.org, linux-arch@vger.kernel.org,
         Wolfram Sang <wsa+renesas@sang-engineering.com>,
         Yoshinori Sato <ysato@users.sourceforge.jp>
 References: <20210316015424.1999082-1-yury.norov@gmail.com>
- <20210316015424.1999082-2-yury.norov@gmail.com>
+ <20210316015424.1999082-3-yury.norov@gmail.com>
 From:   Rasmus Villemoes <linux@rasmusvillemoes.dk>
-Message-ID: <2ec71f83-f903-2775-bf04-7f0a83c9f4cb@rasmusvillemoes.dk>
-Date:   Tue, 16 Mar 2021 09:17:24 +0100
+Message-ID: <4d1a1616-1e6d-fcef-82ab-38083a2430b8@rasmusvillemoes.dk>
+Date:   Tue, 16 Mar 2021 09:18:50 +0100
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
  Thunderbird/78.7.1
 MIME-Version: 1.0
-In-Reply-To: <20210316015424.1999082-2-yury.norov@gmail.com>
+In-Reply-To: <20210316015424.1999082-3-yury.norov@gmail.com>
 Content-Type: text/plain; charset=windows-1252
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -89,39 +90,9 @@ List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
 On 16/03/2021 02.54, Yury Norov wrote:
-> GENMASK(h, l) may be passed with unsigned types. In such case, type-limits
-> warning is generated for example in case of GENMASK(h, 0).
+> Some functions in tools/include/linux/bitmap.h declare nbits as int. In the
+> kernel nbits is declared as unsigned int.
 > 
 > Signed-off-by: Yury Norov <yury.norov@gmail.com>
-> ---
->  tools/scripts/Makefile.include | 1 +
->  1 file changed, 1 insertion(+)
-> 
-> diff --git a/tools/scripts/Makefile.include b/tools/scripts/Makefile.include
-> index 84dbf61a7eca..15e99905cb7d 100644
-> --- a/tools/scripts/Makefile.include
-> +++ b/tools/scripts/Makefile.include
-> @@ -38,6 +38,7 @@ EXTRA_WARNINGS += -Wswitch-enum
->  EXTRA_WARNINGS += -Wundef
->  EXTRA_WARNINGS += -Wwrite-strings
->  EXTRA_WARNINGS += -Wformat
-> +EXTRA_WARNINGS += -Wno-type-limits
->
 
-I don't like that kind of collateral damage. I seem to recall another
-instance where a macro was instead rewritten to avoid triggering the
-type-limits warning (with a comment explaining the uglyness). Something like
-
-foo > bar      is the same as
-!(foo <= bar)  which is the same as
-!(foo == bar || foo < bar)
-
-Dunno if that would work here, but if it did, it would have the bonus
-that when somebody builds the kernel proper with Wtype-limits enabled
-(maybe W=1 or W=2) there would be no false positives from GENMASK to
-wade through.
-
-Alternatively, we really should consider making use of _Pragma to
-locally disable/re-enable certain warnings.
-
-Rasmus
+Acked-by: Rasmus Villemoes <linux@rasmusvillemoes.dk>
