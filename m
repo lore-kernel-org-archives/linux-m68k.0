@@ -2,78 +2,157 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-15.3 required=3.0 tests=BAYES_00,
+X-Spam-Status: No, score=-12.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=ham
-	autolearn_force=no version=3.4.0
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3448AC433E6
-	for <linux-m68k@archiver.kernel.org>; Wed, 17 Mar 2021 04:31:28 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D8693C433DB
+	for <linux-m68k@archiver.kernel.org>; Wed, 17 Mar 2021 04:48:58 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 0EB3964F8C
-	for <linux-m68k@archiver.kernel.org>; Wed, 17 Mar 2021 04:31:28 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 85E3864F38
+	for <linux-m68k@archiver.kernel.org>; Wed, 17 Mar 2021 04:48:58 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229550AbhCQEaw (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Wed, 17 Mar 2021 00:30:52 -0400
-Received: from mout.perfora.net ([74.208.4.197]:36779 "EHLO mout.perfora.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229540AbhCQEaa (ORCPT <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Wed, 17 Mar 2021 00:30:30 -0400
-X-Greylist: delayed 302 seconds by postgrey-1.27 at vger.kernel.org; Wed, 17 Mar 2021 00:30:30 EDT
-Received: from [192.168.1.5] ([136.25.12.210]) by mrelay.perfora.net
- (mreueus002 [74.208.5.2]) with ESMTPSA (Nemesis) id 0Levc1-1m3TWF3Ihb-00qkD4;
- Wed, 17 Mar 2021 05:25:24 +0100
-From:   Mike Pavone <pavone@retrodev.com>
-Subject: [PATCH] m68k/mvme16x: Fix timer interrupts
-To:     linux-m68k@lists.linux-m68k.org
-Cc:     Geert Uytterhoeven <geert@linux-m68k.org>
-Message-ID: <628cb0d0-94af-651f-0d84-f78b966cd8bd@retrodev.com>
-Date:   Tue, 16 Mar 2021 21:25:23 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S229550AbhCQEs0 (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Wed, 17 Mar 2021 00:48:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40920 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229613AbhCQEsM (ORCPT
+        <rfc822;linux-m68k@lists.linux-m68k.org>);
+        Wed, 17 Mar 2021 00:48:12 -0400
+Received: from mail-qk1-x733.google.com (mail-qk1-x733.google.com [IPv6:2607:f8b0:4864:20::733])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1AB8CC06174A
+        for <linux-m68k@lists.linux-m68k.org>; Tue, 16 Mar 2021 21:48:01 -0700 (PDT)
+Received: by mail-qk1-x733.google.com with SMTP id s7so37692498qkg.4
+        for <linux-m68k@lists.linux-m68k.org>; Tue, 16 Mar 2021 21:48:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=AvKUgJkyyQ65jXujXRSi4LBYBTUmkT7KkIKMeZrVAdo=;
+        b=KE41bJLJ+162X8e94I0UFNQwCXc+qss+/i9doFeW3HqoqfEkCx5tzGx2JY4vz9vMR1
+         SiEo5JgPk0r8J5Wgx8eZSxw/Yh42zgWo5vExKf/QUXc9GHoRlIYwszaMBcPqmEBrBd7h
+         NSnMaq0iwheHoOoAooSn04VnlbUJQimysg/pH+woEcW8tu5kWkhqLZWngVozARysddan
+         FjYXaFd3zBs9einx3QGeXH/aJAf5vt04wAGT5Z7CoQFcdQFy7sHywoHW35E8QRxhrLFt
+         atIV5yC9K/1yAruECKW3sXqeDUbuBpHlYftG7mcPkBjGl9PqdnMgiZ9cIUkM+waf7HKW
+         6/3w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=AvKUgJkyyQ65jXujXRSi4LBYBTUmkT7KkIKMeZrVAdo=;
+        b=DhHQmAyHv+bNn8LIoufJPMf+0Y6jgH7QSZfmwjHksYo2f8szmPwi49CKX1ay2dstjm
+         pm8YEDnm7UryMFsJYJDdk73GCPa26yIGo8JT+KCNueHHdhD+ShtmpJwilSkAjLESyokS
+         uLkckt+A5Fppy7Wq6YzsgVWC9xUsoEyOqubzXqnErXrcPCqjj/lDTPsv/V8j49x/LDTs
+         wrK2VQIJfIHz2BtdZ2DLz42YMLFCSfP9sHHqtBfC3/i3+6oXsNaLutJloCgv/yT/Rctt
+         Cr9wE/90hgLV6oyGjgBydJ0Uat3RYeFR82tT7YqctuPWPGlh7cMXiYaNelNxG+zyW7HG
+         deNg==
+X-Gm-Message-State: AOAM5339C8ySHcNdNpeV14U0Z6Zq1OwlLort+ynnvUkuS/diTUZwfcNN
+        9XxwsowbnXB8SSvTuIllKAk=
+X-Google-Smtp-Source: ABdhPJxZ8lYjXxA3pAiLAVDoONL/005dYCt+qsk2muXPO7guFffCDiHagN6VTwwETZa+yLt1kobxpg==
+X-Received: by 2002:a37:e315:: with SMTP id y21mr2760659qki.418.1615956480256;
+        Tue, 16 Mar 2021 21:48:00 -0700 (PDT)
+Received: from localhost ([76.73.146.210])
+        by smtp.gmail.com with ESMTPSA id e14sm16348614qka.56.2021.03.16.21.47.59
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 16 Mar 2021 21:47:59 -0700 (PDT)
+Date:   Tue, 16 Mar 2021 21:47:59 -0700
+From:   Yury Norov <yury.norov@gmail.com>
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc:     linux-kernel@vger.kernel.org, linux-m68k@lists.linux-m68k.org,
+        linux-arch@vger.kernel.org, linux-sh@vger.kernel.org,
+        Alexey Klimov <aklimov@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Arnd Bergmann <arnd@arndb.de>, David Sterba <dsterba@suse.com>,
+        Dennis Zhou <dennis@kernel.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Jianpeng Ma <jianpeng.ma@intel.com>,
+        Joe Perches <joe@perches.com>,
+        John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        Rich Felker <dalias@libc.org>,
+        Stefano Brivio <sbrivio@redhat.com>,
+        Wei Yang <richard.weiyang@linux.alibaba.com>,
+        Wolfram Sang <wsa+renesas@sang-engineering.com>,
+        Yoshinori Sato <ysato@users.sourceforge.jp>,
+        Andy Whitcroft <apw@canonical.com>,
+        Dwaipayan Ray <dwaipayanray1@gmail.com>,
+        Lukas Bulwahn <lukas.bulwahn@gmail.com>
+Subject: Re: [PATCH 13/13] MAINTAINERS: Add entry for the bitmap API
+Message-ID: <20210317044759.GA2114775@yury-ThinkPad>
+References: <20210316015424.1999082-1-yury.norov@gmail.com>
+ <20210316015424.1999082-14-yury.norov@gmail.com>
+ <YFCabyt9pfPtoQiZ@smile.fi.intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-Provags-ID: V03:K1:haPn25ueCc2Axrh7CBbDuM3vyJBv56ZML0orj1OKCtD/jI3c4Kr
- 1ybDgJzr5gUF3iQRpQvlPxx2sE4WJTBSbIUrTfgRf8SloEFW4GGY9Sbg1XHZckQLc8hEL3f
- zEFpL7DNlnrKCGWEgYAUMAKSbCoAzoFGQx1UG/LGmsy83WqMMUQ25d2tBifzFUZnf6TSy31
- K2STHImI/Bcu76heO/5qA==
-X-UI-Out-Filterresults: notjunk:1;V03:K0:rM3HjmBxEAY=:a1XK/VM2noLyDogZr9JFa6
- XkpvLrvP+fsNC7nX3aGUrK+AGEEfpcjO7XfPoVOo2KuzKVTquCdd3VzHuRiG7X+g0R7CjEtP8
- 3uh44DGrEuZKIdfTo5XcqpdqAMlsw73dSkJEq/43YFLgz24TdXOPoDKR/2Yr4zS4WMIfcO9YB
- c6TacJhmfjZqlTZWThrwEdQ4DwjvDquhccP4w4GLyk0c/AXlVOy/fOL6Pq0M+aV1H/45VKZku
- +/Oe1le0D34D+ENXPt+MgJFdS1LlfL3LlLjzEj/Q3lP6OvSsegEyhNM1hSzgTUB0zBkEAIlEM
- k1eDhSpaxLj09sluybWFfjwpXQ4HzF7BOqpnRdIl/E21INczNd//gN6OTtLDkOwra9kV10WYR
- bq+ldkML0HGnphhTDXyB8dkOkSuPgznpUw6V7+q50WG6e2hgS31BJVVhWk0oNQoBVIMaP/VFE
- xctN9EvHaA==
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YFCabyt9pfPtoQiZ@smile.fi.intel.com>
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-Timer interrupts on MVME16x and MVME17x boards are broken as the CEN and
-COC bits are being inadvertently cleared when clearing the overflow
-counter. This results in no timer interrupts being delivered after the
-first. Initialization then hangs in calibrate_delay as the jiffies counter
-is not updated. OR with current register value to preserve these bits.
+[CC Andy Whitcroft, Joe Perches, Dwaipayan Ray, Lukas Bulwahn]
 
-Fixes: 19999a8b8782 ("m68k: mvme16x: Handle timer counter overflow")
-Signed-off-by: Michael Pavone <pavone@retrodev.com>
----
-  arch/m68k/mvme16x/config.c | 2 +-
-  1 file changed, 1 insertion(+), 1 deletion(-)
+On Tue, Mar 16, 2021 at 01:45:51PM +0200, Andy Shevchenko wrote:
+> On Mon, Mar 15, 2021 at 06:54:24PM -0700, Yury Norov wrote:
+> > Add myself as maintainer for bitmap API and Andy and Rasmus as reviewers.
+> > 
+> > I'm an author of current implementation of lib/find_bit and an active
+> > contributor to lib/bitmap. It was spotted that there's no maintainer for
+> > bitmap API. I'm willing to maintain it.
+> > 
+> > Signed-off-by: Yury Norov <yury.norov@gmail.com>
+> > Acked-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+> > Acked-by: Rasmus Villemoes <linux@rasmusvillemoes.dk>
+> > ---
+> >  MAINTAINERS | 16 ++++++++++++++++
+> >  1 file changed, 16 insertions(+)
+> > 
+> > diff --git a/MAINTAINERS b/MAINTAINERS
+> > index 3dd20015696e..44f94cdd5a20 100644
+> > --- a/MAINTAINERS
+> > +++ b/MAINTAINERS
+> > @@ -3151,6 +3151,22 @@ F:	Documentation/filesystems/bfs.rst
+> >  F:	fs/bfs/
+> >  F:	include/uapi/linux/bfs_fs.h
+> >  
+> > +BITMAP API
+> > +M:	Yury Norov <yury.norov@gmail.com>
+> > +R:	Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+> > +R:	Rasmus Villemoes <linux@rasmusvillemoes.dk>
+> > +S:	Maintained
+> > +F:	include/asm-generic/bitops/find.h
+> > +F:	include/linux/bitmap.h
+> > +F:	lib/bitmap.c
+> > +F:	lib/find_bit.c
+> 
+> > +F:	lib/find_find_bit_benchmark.c
+> 
+> Does this file exist?
+> I guess checkpatch.pl nowadays has a MAINTAINER data base validation.
 
-diff --git a/arch/m68k/mvme16x/config.c b/arch/m68k/mvme16x/config.c
-index 30357fe4ba6c..949d3e19f79c 100644
---- a/arch/m68k/mvme16x/config.c
-+++ b/arch/m68k/mvme16x/config.c
-@@ -375,7 +375,7 @@ static irqreturn_t mvme16x_timer_int (int irq, void *dev_id)
-  
-  	local_irq_save(flags);
-  	out_8(PCCTIC1, in_8(PCCTIC1) | PCCTIC1_INT_CLR);
--	out_8(PCCTOVR1, PCCTOVR1_OVR_CLR);
-+	out_8(PCCTOVR1, in_8(PCCTOVR1) | PCCTOVR1_OVR_CLR);
-  	clk_total += PCC_TIMER_CYCLES;
-  	legacy_timer_tick(1);
-  	local_irq_restore(flags);
+No lib/find_find_bit_benchmark.c doesn't exist. It's a typo, it should
+be lib/find_bit_benchmark.c. Checkpatch doesn't warn:
 
+yury:linux$ scripts/checkpatch.pl 0013-MAINTAINERS-Add-entry-for-the-bitmap-API.patch
+total: 0 errors, 0 warnings, 22 lines checked
+
+> > +F:	lib/test_bitmap.c
+> > +F:	tools/include/asm-generic/bitops/find.h
+> > +F:	tools/include/linux/bitmap.h
+> > +F:	tools/lib/bitmap.c
+> > +F:	tools/lib/find_bit.c
+> > +
+> >  BLINKM RGB LED DRIVER
+> >  M:	Jan-Simon Moeller <jansimon.moeller@gmx.de>
+> >  S:	Maintained
+> > -- 
+> > 2.25.1
+> > 
+> 
+> -- 
+> With Best Regards,
+> Andy Shevchenko
+> 
