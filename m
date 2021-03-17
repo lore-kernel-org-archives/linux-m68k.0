@@ -2,43 +2,65 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-13.8 required=3.0 tests=BAYES_00,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-7.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 28798C433E0
-	for <linux-m68k@archiver.kernel.org>; Wed, 17 Mar 2021 05:04:23 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4E4D2C433E0
+	for <linux-m68k@archiver.kernel.org>; Wed, 17 Mar 2021 05:41:44 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id EB04E64FAB
-	for <linux-m68k@archiver.kernel.org>; Wed, 17 Mar 2021 05:04:22 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 0806164EF6
+	for <linux-m68k@archiver.kernel.org>; Wed, 17 Mar 2021 05:41:43 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229550AbhCQFDt (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Wed, 17 Mar 2021 01:03:49 -0400
-Received: from smtprelay0089.hostedemail.com ([216.40.44.89]:50060 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S229498AbhCQFD1 (ORCPT
+        id S229519AbhCQFlK (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Wed, 17 Mar 2021 01:41:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52638 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229469AbhCQFk7 (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Wed, 17 Mar 2021 01:03:27 -0400
-Received: from smtprelay.hostedemail.com (10.5.19.251.rfc1918.com [10.5.19.251])
-        by smtpgrave07.hostedemail.com (Postfix) with ESMTP id 6D1FC1835108A
-        for <linux-m68k@lists.linux-m68k.org>; Wed, 17 Mar 2021 04:57:52 +0000 (UTC)
-Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay04.hostedemail.com (Postfix) with ESMTP id 66D271807624D;
-        Wed, 17 Mar 2021 04:57:51 +0000 (UTC)
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-HE-Tag: smoke89_02009a82773b
-X-Filterd-Recvd-Size: 3821
-Received: from [192.168.1.159] (unknown [47.151.137.21])
-        (Authenticated sender: joe@perches.com)
-        by omf02.hostedemail.com (Postfix) with ESMTPA;
-        Wed, 17 Mar 2021 04:57:47 +0000 (UTC)
-Message-ID: <eff989d0ceaede15216f1046c24829f1113c035f.camel@perches.com>
-Subject: Re: [PATCH 13/13] MAINTAINERS: Add entry for the bitmap API
-From:   Joe Perches <joe@perches.com>
-To:     Yury Norov <yury.norov@gmail.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     linux-kernel@vger.kernel.org, linux-m68k@lists.linux-m68k.org,
+        Wed, 17 Mar 2021 01:40:59 -0400
+Received: from mail-qk1-x733.google.com (mail-qk1-x733.google.com [IPv6:2607:f8b0:4864:20::733])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B67FEC06174A
+        for <linux-m68k@lists.linux-m68k.org>; Tue, 16 Mar 2021 22:40:59 -0700 (PDT)
+Received: by mail-qk1-x733.google.com with SMTP id x10so37779902qkm.8
+        for <linux-m68k@lists.linux-m68k.org>; Tue, 16 Mar 2021 22:40:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=CPSm56QZARIcAtzs4AWdlVXD+HaI2HudQhNYE/bwf0c=;
+        b=eNX3/KkKYyE3gNciNxHG2jxNlfRRTV+efiSSrXTJLEM9BLy+T+ER7gUr4lbPR8OQ0R
+         kz1iTGN6ch8aqMmCfJKh14wJlkFwDUIynaDTDRD6k1Nj/RQJh5kcusufWUXLk5zVnAwv
+         8ua6/rTO3DrDQz7lwNDLuD/e93zzpogPQE+qRZHL471WVAsthqat3wUYnrJyGHHCkLjM
+         jungnJ5I9JqlfAb00NcmdfSXlJVR/yRSh3MOrw4WSfPlS+QU+pwVI/N/sUggJAk4xFkD
+         xKCt2Di1rIp3seeJrwyS3fF7cOVBKASIm4rQW50jfxw0+qVnUNRn6dDN2w9kwqE1M6Rc
+         r3uA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=CPSm56QZARIcAtzs4AWdlVXD+HaI2HudQhNYE/bwf0c=;
+        b=H5Ou+7EXgi11O8NPFL5VTS5UyOYqEtgwzKXlmRo5hLKfXzHmJ3SM1xDG7Qc+FaKbx0
+         rvQosVgTCMlhH8V2JtME/qNUnOvtzLhdWm8V7/CUHhxSFz+zhz8tVmFdGUDwPfNiHn4Z
+         fHHmo8diwd1kw04JWr4xbpaqbYLEhLgpi58VVEmLQ+q29kYO4FPB3Bs5uic+9070/9JP
+         h6W2aafF8rQsYuKbJ698kk++vuvrQg7QzzdDYH/w6xppq3ai1yBiB7Vm9C0y23pld23O
+         02mAIfPmb2scShsN3TWnXaxnHj965OaLbzg5bi1b0p4x08Uze+SbmS62zoHesx5qoY0R
+         IStA==
+X-Gm-Message-State: AOAM532UDfnZxqjGJZLf0o8HmSDlbT3Qd9UCUzQdQ3cbdw03u88OmZ3q
+        cVb6z16p+YmRT8g9+3MoAXs=
+X-Google-Smtp-Source: ABdhPJx92GrckxUs3tyhYdiw3DknldvYvJ6QoejNd2Zc615/JMAkBxamhbbk2bzbYKYBbc0fPf+VLg==
+X-Received: by 2002:a37:274f:: with SMTP id n76mr2939792qkn.15.1615959658716;
+        Tue, 16 Mar 2021 22:40:58 -0700 (PDT)
+Received: from localhost ([76.73.146.210])
+        by smtp.gmail.com with ESMTPSA id z2sm17499506qkg.22.2021.03.16.22.40.57
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 16 Mar 2021 22:40:58 -0700 (PDT)
+Date:   Tue, 16 Mar 2021 22:40:57 -0700
+From:   Yury Norov <yury.norov@gmail.com>
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc:     Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        linux-kernel@vger.kernel.org, linux-m68k@lists.linux-m68k.org,
         linux-arch@vger.kernel.org, linux-sh@vger.kernel.org,
         Alexey Klimov <aklimov@redhat.com>,
         Andrew Morton <akpm@linux-foundation.org>,
@@ -46,82 +68,97 @@ Cc:     linux-kernel@vger.kernel.org, linux-m68k@lists.linux-m68k.org,
         Dennis Zhou <dennis@kernel.org>,
         Geert Uytterhoeven <geert@linux-m68k.org>,
         Jianpeng Ma <jianpeng.ma@intel.com>,
+        Joe Perches <joe@perches.com>,
         John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
         Josh Poimboeuf <jpoimboe@redhat.com>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
         Rich Felker <dalias@libc.org>,
         Stefano Brivio <sbrivio@redhat.com>,
         Wei Yang <richard.weiyang@linux.alibaba.com>,
         Wolfram Sang <wsa+renesas@sang-engineering.com>,
-        Yoshinori Sato <ysato@users.sourceforge.jp>,
-        Andy Whitcroft <apw@canonical.com>,
-        Dwaipayan Ray <dwaipayanray1@gmail.com>,
-        Lukas Bulwahn <lukas.bulwahn@gmail.com>
-Date:   Tue, 16 Mar 2021 21:57:46 -0700
-In-Reply-To: <20210317044759.GA2114775@yury-ThinkPad>
+        Yoshinori Sato <ysato@users.sourceforge.jp>
+Subject: Re: [PATCH 04/13] lib: introduce BITS_{FIRST,LAST} macro
+Message-ID: <20210317054057.GC2114775@yury-ThinkPad>
 References: <20210316015424.1999082-1-yury.norov@gmail.com>
-         <20210316015424.1999082-14-yury.norov@gmail.com>
-         <YFCabyt9pfPtoQiZ@smile.fi.intel.com>
-         <20210317044759.GA2114775@yury-ThinkPad>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.38.1-1 
+ <20210316015424.1999082-5-yury.norov@gmail.com>
+ <8021faab-e592-9587-329b-817ae007b89a@rasmusvillemoes.dk>
+ <YFCZtUuMYVNeNlUO@smile.fi.intel.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YFCZtUuMYVNeNlUO@smile.fi.intel.com>
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-On Tue, 2021-03-16 at 21:47 -0700, Yury Norov wrote:
-> [CC Andy Whitcroft, Joe Perches, Dwaipayan Ray, Lukas Bulwahn]
-> 
-> On Tue, Mar 16, 2021 at 01:45:51PM +0200, Andy Shevchenko wrote:
-> > On Mon, Mar 15, 2021 at 06:54:24PM -0700, Yury Norov wrote:
-> > > Add myself as maintainer for bitmap API and Andy and Rasmus as reviewers.
+On Tue, Mar 16, 2021 at 01:42:45PM +0200, Andy Shevchenko wrote:
+> On Tue, Mar 16, 2021 at 09:35:35AM +0100, Rasmus Villemoes wrote:
+> > On 16/03/2021 02.54, Yury Norov wrote:
+> > > BITMAP_{LAST,FIRST}_WORD_MASK() in linux/bitmap.h duplicates the
+> > > functionality of GENMASK(). The scope of BITMAP* macros is wider
+> > > than just bitmaps. This patch defines 4 new macros: BITS_FIRST(),
+> > > BITS_LAST(), BITS_FIRST_MASK() and BITS_LAST_MASK() in linux/bits.h
+> > > on top of GENMASK() and replaces BITMAP_{LAST,FIRST}_WORD_MASK()
+> > > to avoid duplication and increase the scope of the macros.
 > > > 
-> > > I'm an author of current implementation of lib/find_bit and an active
-> > > contributor to lib/bitmap. It was spotted that there's no maintainer for
-> > > bitmap API. I'm willing to maintain it.
-> > > 
-> > > Signed-off-by: Yury Norov <yury.norov@gmail.com>
-> > > Acked-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-> > > Acked-by: Rasmus Villemoes <linux@rasmusvillemoes.dk>
-> > > ---
-> > >  MAINTAINERS | 16 ++++++++++++++++
-> > >  1 file changed, 16 insertions(+)
-> > > 
-> > > diff --git a/MAINTAINERS b/MAINTAINERS
-> > > index 3dd20015696e..44f94cdd5a20 100644
-> > > --- a/MAINTAINERS
-> > > +++ b/MAINTAINERS
-> > > @@ -3151,6 +3151,22 @@ F:	Documentation/filesystems/bfs.rst
-> > >  F:	fs/bfs/
-> > >  F:	include/uapi/linux/bfs_fs.h
-> > >  
-> > > 
-> > > +BITMAP API
-> > > +M:	Yury Norov <yury.norov@gmail.com>
-> > > +R:	Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-> > > +R:	Rasmus Villemoes <linux@rasmusvillemoes.dk>
-> > > +S:	Maintained
-> > > +F:	include/asm-generic/bitops/find.h
-> > > +F:	include/linux/bitmap.h
-> > > +F:	lib/bitmap.c
-> > > +F:	lib/find_bit.c
+> > > This change doesn't affect code generation. On ARM64:
+> > > scripts/bloat-o-meter vmlinux.before vmlinux
+> > > add/remove: 1/2 grow/shrink: 2/0 up/down: 17/-16 (1)
+> > > Function                                     old     new   delta
+> > > ethtool_get_drvinfo                          900     908      +8
+> > > e843419@0cf2_0001309d_7f0                      -       8      +8
+> > > vermagic                                      48      49      +1
+> > > e843419@0d45_000138bb_f68                      8       -      -8
+> > > e843419@0cc9_00012bce_198c                     8       -      -8
 > > 
-> > > +F:	lib/find_find_bit_benchmark.c
+> > [what on earth are those weird symbols?]
 > > 
-> > Does this file exist?
-> > I guess checkpatch.pl nowadays has a MAINTAINER data base validation.
+> > 
+> > > diff --git a/include/linux/bits.h b/include/linux/bits.h
+> > > index 7f475d59a097..8c191c29506e 100644
+> > > --- a/include/linux/bits.h
+> > > +++ b/include/linux/bits.h
+> > > @@ -37,6 +37,12 @@
+> > >  #define GENMASK(h, l) \
+> > >  	(GENMASK_INPUT_CHECK(h, l) + __GENMASK(h, l))
+> > >  
+> > > +#define BITS_FIRST(nr)		GENMASK((nr), 0)
+> > > +#define BITS_LAST(nr)		GENMASK(BITS_PER_LONG - 1, (nr))
+> > > +
+> > > +#define BITS_FIRST_MASK(nr)	BITS_FIRST((nr) % BITS_PER_LONG)
+> > > +#define BITS_LAST_MASK(nr)	BITS_LAST((nr) % BITS_PER_LONG)
+> > 
+> > I don't think it's a good idea to propagate the unusual closed-range
+> > semantics of GENMASK to those wrappers. Almost all C and kernel code
+> > uses the 'inclusive lower bound, exclusive upper bound', and I'd expect
+> > BITS_FIRST(5) to result in a word with five bits set, not six. So I
+> > think these changes as-is make the code much harder to read and understand.
+> > 
+> > Regardless, please add some comments on the valid input ranges to the
+> > macros, whether that ends up being 0 <= nr < BITS_PER_LONG or 0 < nr <=
+> > BITS_PER_LONG or whatnot.
+> > 
+> > It would also be much easier to review if you just redefined the
+> > BITMAP_LAST_WORD_MASK macros etc. in terms of these new things, so you
+> > wouldn't have to do a lot of mechanical changes at the same time as
+> > introducing the new ones - especially when those mechanical changes
+> > involve adding a "minus 1" everywhere.
 > 
-> No lib/find_find_bit_benchmark.c doesn't exist. It's a typo, it should
-> be lib/find_bit_benchmark.c. Checkpatch doesn't warn:
-> 
-> yury:linux$ scripts/checkpatch.pl 0013-MAINTAINERS-Add-entry-for-the-bitmap-API.patch
-> total: 0 errors, 0 warnings, 22 lines checked
+> I tend to agree with Rasmus here.
 
-checkpatch does not validate filenames for each patch.
+OK. All this plus terrible GENMASK(high, low) design, when high goes
+first, makes me feel like we need to deprecate GENMASK and propose a
+new interface.
 
-checkpatch does have a --self-test=patterns capability that does
-validate file accessibility.
+What do you think about this:
+BITS_FIRST(bitnum)      -> [0, bitnum)
+BITS_LAST(bitnum)       -> [bitnum, BITS_PER_LONG)
+BITS_RANGE(begin, end)  -> [begin, end)
 
+We can pick BITS_{LAST,FIRST} implementation from existing BITMAP_*_WORD_MASK
+analogues, and make the BITS_RANGE like:
+        #define BITS_RANGE(begin, end) BITS_FIRST(end) & BITS_LAST(begin)
 
+Regarding BITMAP_*_WORD_MASK, I can save them in bitmap.h as aliases
+to BITS_{LAST,FIRST} to avoid massive renaming. (Should I?)
+
+Would this all work for you?
