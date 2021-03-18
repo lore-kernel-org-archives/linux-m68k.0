@@ -2,88 +2,74 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-10.3 required=3.0 tests=BAYES_00,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,MAILING_LIST_MULTI,
-	NICE_REPLY_A,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1
-	autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-13.8 required=3.0 tests=BAYES_00,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 25E40C433E6
-	for <linux-m68k@archiver.kernel.org>; Thu, 18 Mar 2021 01:02:36 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id DB183C433E0
+	for <linux-m68k@archiver.kernel.org>; Thu, 18 Mar 2021 03:06:05 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id CF89D64EF2
-	for <linux-m68k@archiver.kernel.org>; Thu, 18 Mar 2021 01:02:35 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 89B6861584
+	for <linux-m68k@archiver.kernel.org>; Thu, 18 Mar 2021 03:06:05 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229946AbhCRBCE (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Wed, 17 Mar 2021 21:02:04 -0400
-Received: from szxga04-in.huawei.com ([45.249.212.190]:13186 "EHLO
-        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229934AbhCRBCD (ORCPT
+        id S230192AbhCRDFe (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Wed, 17 Mar 2021 23:05:34 -0400
+Received: from kvm5.telegraphics.com.au ([98.124.60.144]:44562 "EHLO
+        kvm5.telegraphics.com.au" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229702AbhCRDFd (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Wed, 17 Mar 2021 21:02:03 -0400
-Received: from DGGEMS412-HUB.china.huawei.com (unknown [172.30.72.59])
-        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4F17w73LVNzmZ6G;
-        Thu, 18 Mar 2021 08:59:35 +0800 (CST)
-Received: from [10.174.177.244] (10.174.177.244) by
- DGGEMS412-HUB.china.huawei.com (10.3.19.212) with Microsoft SMTP Server id
- 14.3.498.0; Thu, 18 Mar 2021 09:01:56 +0800
-Subject: Re: [PATCH v2] mm: Move mem_init_print_info() into mm_init()
-To:     Dave Hansen <dave.hansen@intel.com>,
-        <linux-kernel@vger.kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>
-CC:     Russell King <linux@armlinux.org.uk>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Richard Henderson <rth@twiddle.net>,
-        Guo Ren <guoren@kernel.org>,
-        Yoshinori Sato <ysato@users.sourceforge.jp>,
-        Huacai Chen <chenhuacai@kernel.org>,
-        Jonas Bonn <jonas@southpole.se>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        "Peter Zijlstra" <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>, <linux-alpha@vger.kernel.org>,
-        <linux-snps-arc@lists.infradead.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-csky@vger.kernel.org>, <linux-hexagon@vger.kernel.org>,
-        <linux-ia64@vger.kernel.org>, <linux-m68k@lists.linux-m68k.org>,
-        <linux-mips@vger.kernel.org>, <openrisc@lists.librecores.org>,
-        <linux-parisc@vger.kernel.org>, <linuxppc-dev@lists.ozlabs.org>,
-        <linux-riscv@lists.infradead.org>, <linux-s390@vger.kernel.org>,
-        <linux-sh@vger.kernel.org>, <sparclinux@vger.kernel.org>,
-        <linux-um@lists.infradead.org>, <linux-xtensa@linux-xtensa.org>,
-        <linux-mm@kvack.org>
-References: <4d488195-7281-9238-b30d-9f89a6100fb9@csgroup.eu>
- <20210317015210.33641-1-wangkefeng.wang@huawei.com>
- <2a7d6e39-b293-7422-87b0-741f1ab0c22c@intel.com>
-From:   Kefeng Wang <wangkefeng.wang@huawei.com>
-Message-ID: <190f5356-f947-d474-a9fe-bc8e622a426e@huawei.com>
-Date:   Thu, 18 Mar 2021 09:01:54 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.0
+        Wed, 17 Mar 2021 23:05:33 -0400
+Received: from localhost (localhost.localdomain [127.0.0.1])
+        by kvm5.telegraphics.com.au (Postfix) with ESMTP id B924329EA1;
+        Wed, 17 Mar 2021 23:05:30 -0400 (EDT)
+Date:   Thu, 18 Mar 2021 14:05:33 +1100 (AEDT)
+From:   Finn Thain <fthain@telegraphics.com.au>
+To:     Mike Pavone <pavone@retrodev.com>
+cc:     linux-m68k@lists.linux-m68k.org,
+        Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: Re: [PATCH] m68k/mvme16x: Fix timer interrupts
+In-Reply-To: <628cb0d0-94af-651f-0d84-f78b966cd8bd@retrodev.com>
+Message-ID: <96914f42-e18-29cc-6c5-28b3a2fb360@telegraphics.com.au>
+References: <628cb0d0-94af-651f-0d84-f78b966cd8bd@retrodev.com>
 MIME-Version: 1.0
-In-Reply-To: <2a7d6e39-b293-7422-87b0-741f1ab0c22c@intel.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-Originating-IP: [10.174.177.244]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
+On Tue, 16 Mar 2021, Mike Pavone wrote:
 
-On 2021/3/18 2:48, Dave Hansen wrote:
-> On 3/16/21 6:52 PM, Kefeng Wang wrote:
->> mem_init_print_info() is called in mem_init() on each architecture,
->> and pass NULL argument, so using void argument and move it into mm_init().
->>
->> Acked-by: Dave Hansen <dave.hansen@linux.intel.com>
-> It's not a big deal but you might want to say something like:
->
-> Acked-by: Dave Hansen <dave.hansen@linux.intel.com> # x86 bits
->
-> Just to make it clear that I didn't look at the alpha bits at all. :)
-Get it, will be careful, thanks.
-> .
->
+> Timer interrupts on MVME16x and MVME17x boards are broken as the CEN and
+> COC bits are being inadvertently cleared when clearing the overflow
+> counter. This results in no timer interrupts being delivered after the
+> first. Initialization then hangs in calibrate_delay as the jiffies counter
+> is not updated. OR with current register value to preserve these bits.
+> 
+> Fixes: 19999a8b8782 ("m68k: mvme16x: Handle timer counter overflow")
+> Signed-off-by: Michael Pavone <pavone@retrodev.com>
+
+Sorry about that regression.
+
+Do you think that commit 7529b90d051e ("m68k: mvme147: Handle timer 
+counter overflow") has the same problem?
+
+> ---
+>  arch/m68k/mvme16x/config.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/arch/m68k/mvme16x/config.c b/arch/m68k/mvme16x/config.c
+> index 30357fe4ba6c..949d3e19f79c 100644
+> --- a/arch/m68k/mvme16x/config.c
+> +++ b/arch/m68k/mvme16x/config.c
+> @@ -375,7 +375,7 @@ static irqreturn_t mvme16x_timer_int (int irq, void
+> *dev_id)
+>   	local_irq_save(flags);
+>  	out_8(PCCTIC1, in_8(PCCTIC1) | PCCTIC1_INT_CLR);
+> -	out_8(PCCTOVR1, PCCTOVR1_OVR_CLR);
+> +	out_8(PCCTOVR1, in_8(PCCTOVR1) | PCCTOVR1_OVR_CLR);
+>  	clk_total += PCC_TIMER_CYCLES;
+>  	legacy_timer_tick(1);
+>  	local_irq_restore(flags);
+> 
+> 
