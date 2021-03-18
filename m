@@ -2,74 +2,78 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-13.8 required=3.0 tests=BAYES_00,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-6.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS,USER_AGENT_GIT autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id DB183C433E0
-	for <linux-m68k@archiver.kernel.org>; Thu, 18 Mar 2021 03:06:05 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B1357C433DB
+	for <linux-m68k@archiver.kernel.org>; Thu, 18 Mar 2021 04:58:38 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 89B6861584
-	for <linux-m68k@archiver.kernel.org>; Thu, 18 Mar 2021 03:06:05 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 8676F64EF9
+	for <linux-m68k@archiver.kernel.org>; Thu, 18 Mar 2021 04:58:38 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230192AbhCRDFe (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Wed, 17 Mar 2021 23:05:34 -0400
-Received: from kvm5.telegraphics.com.au ([98.124.60.144]:44562 "EHLO
-        kvm5.telegraphics.com.au" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229702AbhCRDFd (ORCPT
+        id S229454AbhCRE6J (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Thu, 18 Mar 2021 00:58:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44256 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229512AbhCRE6B (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Wed, 17 Mar 2021 23:05:33 -0400
-Received: from localhost (localhost.localdomain [127.0.0.1])
-        by kvm5.telegraphics.com.au (Postfix) with ESMTP id B924329EA1;
-        Wed, 17 Mar 2021 23:05:30 -0400 (EDT)
-Date:   Thu, 18 Mar 2021 14:05:33 +1100 (AEDT)
-From:   Finn Thain <fthain@telegraphics.com.au>
-To:     Mike Pavone <pavone@retrodev.com>
-cc:     linux-m68k@lists.linux-m68k.org,
+        Thu, 18 Mar 2021 00:58:01 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0D826C06174A;
+        Wed, 17 Mar 2021 21:57:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
+        Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
+        Content-Description:In-Reply-To:References;
+        bh=wEy5NunwrZKXnkhywjB0DIEFLxRmlhSa94tBcP+tKjE=; b=bv913LM0lvcD8Id3k3odeou8wR
+        1UvHd2GaSV+awelY4zndccdEi1o98SvR0osHU7YT2lzvxPSgn9S+llRvYFYZl0NqxKr6JPY5h6ZqC
+        /VHtYLrSrsc3G0fU/qqnWT2IZ/W4XWIdxAZ8719My3Pmb4XVeFuT7ZtRtwHvPpDffcuPFktVt74Ci
+        iKFsp0yleZWPZWxf14Mw2w5Vhlql3ikursfJEfoBHUEAclgryE05eVjtWYzyYdxxKWdARDOzxutBe
+        fAU3lk4ETNL1tXb+E/S9a3A6KawIpnvinkS/iDrdzoMGs3YMF+h+OAjuVTBRk+TeCrfcJQuHQYqF9
+        rlZkW62w==;
+Received: from [2001:4bb8:18c:bb3:e1cf:ad2f:7ff7:7a0b] (helo=localhost)
+        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1lMkiZ-002ZB3-Ks; Thu, 18 Mar 2021 04:57:10 +0000
+From:   Christoph Hellwig <hch@lst.de>
+To:     "David S. Miller" <davem@davemloft.net>,
+        Jens Axboe <axboe@kernel.dk>,
         Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: Re: [PATCH] m68k/mvme16x: Fix timer interrupts
-In-Reply-To: <628cb0d0-94af-651f-0d84-f78b966cd8bd@retrodev.com>
-Message-ID: <96914f42-e18-29cc-6c5-28b3a2fb360@telegraphics.com.au>
-References: <628cb0d0-94af-651f-0d84-f78b966cd8bd@retrodev.com>
+Cc:     Richard Henderson <rth@twiddle.net>,
+        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
+        Matt Turner <mattst88@gmail.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        linux-ide@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-alpha@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org
+Subject: remove the legacy ide driver
+Date:   Thu, 18 Mar 2021 05:56:56 +0100
+Message-Id: <20210318045706.200458-1-hch@lst.de>
+X-Mailer: git-send-email 2.30.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 8bit
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-On Tue, 16 Mar 2021, Mike Pavone wrote:
+Hi all,
 
-> Timer interrupts on MVME16x and MVME17x boards are broken as the CEN and
-> COC bits are being inadvertently cleared when clearing the overflow
-> counter. This results in no timer interrupts being delivered after the
-> first. Initialization then hangs in calibrate_delay as the jiffies counter
-> is not updated. OR with current register value to preserve these bits.
-> 
-> Fixes: 19999a8b8782 ("m68k: mvme16x: Handle timer counter overflow")
-> Signed-off-by: Michael Pavone <pavone@retrodev.com>
+we've been trying to get rid of the legacy ide driver for a while now,
+and finally scheduled a removal for 2021, which is three month old now.
 
-Sorry about that regression.
+In general distros and most defconfigs have switched to libata long ago,
+but there are a few exceptions.  This series first switches over all
+remaining defconfigs to use libata and then removes the legacy ide
+driver.
 
-Do you think that commit 7529b90d051e ("m68k: mvme147: Handle timer 
-counter overflow") has the same problem?
-
-> ---
->  arch/m68k/mvme16x/config.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/arch/m68k/mvme16x/config.c b/arch/m68k/mvme16x/config.c
-> index 30357fe4ba6c..949d3e19f79c 100644
-> --- a/arch/m68k/mvme16x/config.c
-> +++ b/arch/m68k/mvme16x/config.c
-> @@ -375,7 +375,7 @@ static irqreturn_t mvme16x_timer_int (int irq, void
-> *dev_id)
->   	local_irq_save(flags);
->  	out_8(PCCTIC1, in_8(PCCTIC1) | PCCTIC1_INT_CLR);
-> -	out_8(PCCTOVR1, PCCTOVR1_OVR_CLR);
-> +	out_8(PCCTOVR1, in_8(PCCTOVR1) | PCCTOVR1_OVR_CLR);
->  	clk_total += PCC_TIMER_CYCLES;
->  	legacy_timer_tick(1);
->  	local_irq_restore(flags);
-> 
-> 
+libata mostly covers all hardware supported by the legacy ide driver.
+There are three mips drivers that are not supported, but the linux-mips
+list could not identify any users of those.  There also are two m68k
+drivers that do not have libata equivalents, which might or might not
+have users, so we'll need some input and possibly help from the m68k
+community here.
