@@ -2,76 +2,108 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-10.3 required=3.0 tests=BAYES_00,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,MAILING_LIST_MULTI,
-	NICE_REPLY_A,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1
-	autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-5.3 required=3.0 tests=BAYES_00,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,NICE_REPLY_A,SPF_HELO_NONE,
+	SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=no autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 96376C433E0
-	for <linux-m68k@archiver.kernel.org>; Thu, 18 Mar 2021 07:24:08 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E1FF7C433E6
+	for <linux-m68k@archiver.kernel.org>; Thu, 18 Mar 2021 07:55:31 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 6694864EBD
-	for <linux-m68k@archiver.kernel.org>; Thu, 18 Mar 2021 07:24:08 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id A28F164F45
+	for <linux-m68k@archiver.kernel.org>; Thu, 18 Mar 2021 07:55:31 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229745AbhCRHXf (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Thu, 18 Mar 2021 03:23:35 -0400
-Received: from mout.perfora.net ([74.208.4.196]:54303 "EHLO mout.perfora.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229554AbhCRHXM (ORCPT <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Thu, 18 Mar 2021 03:23:12 -0400
-Received: from [192.168.1.5] ([136.25.12.210]) by mrelay.perfora.net
- (mreueus003 [74.208.5.2]) with ESMTPSA (Nemesis) id 0LxhYD-1lkRUS0ZQZ-017AtM;
- Thu, 18 Mar 2021 08:23:03 +0100
-Subject: Re: [PATCH] m68k/mvme16x: Fix timer interrupts
-To:     Finn Thain <fthain@telegraphics.com.au>
-Cc:     linux-m68k@lists.linux-m68k.org,
-        Geert Uytterhoeven <geert@linux-m68k.org>
-References: <628cb0d0-94af-651f-0d84-f78b966cd8bd@retrodev.com>
- <96914f42-e18-29cc-6c5-28b3a2fb360@telegraphics.com.au>
-From:   Michael Pavone <pavone@retrodev.com>
-Message-ID: <598f5719-8cc5-15da-4062-157b1162318a@retrodev.com>
-Date:   Thu, 18 Mar 2021 00:23:02 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S229654AbhCRHzA (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Thu, 18 Mar 2021 03:55:00 -0400
+Received: from outpost1.zedat.fu-berlin.de ([130.133.4.66]:58887 "EHLO
+        outpost1.zedat.fu-berlin.de" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229634AbhCRHy5 (ORCPT
+        <rfc822;linux-m68k@lists.linux-m68k.org>);
+        Thu, 18 Mar 2021 03:54:57 -0400
+Received: from inpost2.zedat.fu-berlin.de ([130.133.4.69])
+          by outpost.zedat.fu-berlin.de (Exim 4.94)
+          with esmtps (TLS1.2)
+          tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+          (envelope-from <glaubitz@zedat.fu-berlin.de>)
+          id 1lMnUZ-002BtB-BB; Thu, 18 Mar 2021 08:54:51 +0100
+Received: from p5b13a966.dip0.t-ipconnect.de ([91.19.169.102] helo=[192.168.178.139])
+          by inpost2.zedat.fu-berlin.de (Exim 4.94)
+          with esmtpsa (TLS1.2)
+          tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+          (envelope-from <glaubitz@physik.fu-berlin.de>)
+          id 1lMnUZ-001WwY-3q; Thu, 18 Mar 2021 08:54:51 +0100
+Subject: Re: [PATCH 01/10] alpha: use libata instead of the legacy ide driver
+To:     Al Viro <viro@zeniv.linux.org.uk>, Christoph Hellwig <hch@lst.de>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Jens Axboe <axboe@kernel.dk>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Richard Henderson <rth@twiddle.net>,
+        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
+        Matt Turner <mattst88@gmail.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        linux-ide@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-alpha@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org
+References: <20210318045706.200458-1-hch@lst.de>
+ <20210318045706.200458-2-hch@lst.de> <YFLrLwjZubWUvA2J@zeniv-ca.linux.org.uk>
+From:   John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
+Message-ID: <3a752e8c-b518-6d61-75e7-3549e9906f83@physik.fu-berlin.de>
+Date:   Thu, 18 Mar 2021 08:54:49 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-In-Reply-To: <96914f42-e18-29cc-6c5-28b3a2fb360@telegraphics.com.au>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <YFLrLwjZubWUvA2J@zeniv-ca.linux.org.uk>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-X-Provags-ID: V03:K1:50GKWac8BfCvYdgShLaoU0zHIBktOiJE+JmnqRcYjCJmszSCm7P
- 99cjrNpVcqwMc6iaLUxdFno7HPBFTk6e/C13pjVZjrZxHS7CdXxqG28/Q3pBdLFQMDpFqJL
- 0aUlOjInyRwFF7+jP/9AHEjoxpGMYmAxLe7ChLloKbcOqB06kyg3lgw0WqlnqOQ8lA79cIJ
- 452+AcZONl1Mz29g3WFiw==
-X-UI-Out-Filterresults: notjunk:1;V03:K0:Y25uIEduhW4=:8AuYU1ADRchIM9opZ1luju
- ABohYEbMddXvTlA0LXv+l724sqoKOLwKlzC1Io6twh+5CrKx8UgpfPE0ZrbfMR+qjQa5NKRz3
- RgoeqxC/mqpOHpNw46cn6vgsoHY3FlS9tiyfSeTaJutZY/ULdF704UnrV1LeAt1oV1apfxSn+
- +rSwV/1wMtsiBDR/aBGf1v7TphXmAl/wWb9j8Tx22sLHP8soE39bKNQ5DosPuj3jsmvWCdkks
- lw9Rzi0bDC/5TyipXkFK5607OmZmXKsE8jcIKlR9V2gLNbjFUMPWvnP4LHYjkePeSPkQ5FiCy
- rfXc9HS+R07ahG8QSrGYbLIoOEc0uMhWs2BzgCLzrSHC3VtCqu2fZbmLGhmmkm2WF/8ZzYHZk
- iAWkYsXWzlR6pkrEnMlEIm5hZNhKbThL7vRJnpdvYUUG8sy9tfE1JwfekvqLpTmShkSCiC8sL
- FuMqmxwgyw==
+Content-Transfer-Encoding: 7bit
+X-Original-Sender: glaubitz@physik.fu-berlin.de
+X-Originating-IP: 91.19.169.102
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-On 3/17/21 8:05 PM, Finn Thain wrote:
+Hi Al!
 
-> On Tue, 16 Mar 2021, Mike Pavone wrote:
->
->> Timer interrupts on MVME16x and MVME17x boards are broken as the CEN and
->> COC bits are being inadvertently cleared when clearing the overflow
->> counter. This results in no timer interrupts being delivered after the
->> first. Initialization then hangs in calibrate_delay as the jiffies counter
->> is not updated. OR with current register value to preserve these bits.
->>
->> Fixes: 19999a8b8782 ("m68k: mvme16x: Handle timer counter overflow")
->> Signed-off-by: Michael Pavone <pavone@retrodev.com>
-> Sorry about that regression.
->
-> Do you think that commit 7529b90d051e ("m68k: mvme147: Handle timer
-> counter overflow") has the same problem?
+On 3/18/21 6:54 AM, Al Viro wrote:
+> On Thu, Mar 18, 2021 at 05:56:57AM +0100, Christoph Hellwig wrote:
+>> Switch the alpha defconfig from the legacy ide driver to libata.
+> 
+> Umm...  I don't have an IDE alpha box in a usable shape (fans on
+> CPU module shat themselves), and it would take a while to resurrect
+> it, but I remember the joy it used to cause in some versions.
+> 
+> Do you have reports of libata variants of drivers actually tested on
+> those?
 
-I don't have an MVME147 board to test with, but based on the documentation
-it looks like it does. The clear bit is in the same register as the enable
-and count enable bits on the original PCCchip.
+At least pata_cypress works fine on my AlphaStation XP1000:
+
+root@tsunami:~> lspci
+0000:00:07.0 ISA bridge: Contaq Microsystems 82c693
+0000:00:07.1 IDE interface: Contaq Microsystems 82c693
+0000:00:07.2 IDE interface: Contaq Microsystems 82c693
+0000:00:07.3 USB controller: Contaq Microsystems 82c693
+0000:00:0d.0 VGA compatible controller: Texas Instruments TVP4020 [Permedia 2] (rev 01)
+0001:01:03.0 Ethernet controller: Digital Equipment Corporation DECchip 21142/43 (rev 41)
+0001:01:06.0 SCSI storage controller: QLogic Corp. ISP1020 Fast-wide SCSI (rev 06)
+0001:01:08.0 PCI bridge: Digital Equipment Corporation DECchip 21152 (rev 03)
+0001:02:09.0 Ethernet controller: Intel Corporation 82541PI Gigabit Ethernet Controller (rev 05)
+root@tsunami:~> lsmod|grep pata
+pata_cypress            3595  3
+libata                235071  2 ata_generic,pata_cypress
+root@tsunami:~>
+
+I also have two AlphaStation 233 currently in storage which I assume use
+different IDE chipset which I could test as well.
+
+Adrian
+
+-- 
+ .''`.  John Paul Adrian Glaubitz
+: :' :  Debian Developer - glaubitz@debian.org
+`. `'   Freie Universitaet Berlin - glaubitz@physik.fu-berlin.de
+  `-    GPG: 62FF 8A75 84E0 2956 9546  0006 7426 3B37 F5B5 F913
 
