@@ -2,127 +2,71 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.1 required=3.0 tests=BAYES_00,DKIM_INVALID,
-	DKIM_SIGNED,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
+X-Spam-Status: No, score=-5.3 required=3.0 tests=BAYES_00,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,NICE_REPLY_A,SPF_HELO_NONE,
 	SPF_PASS,USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B9F3FC433E3
-	for <linux-m68k@archiver.kernel.org>; Fri, 19 Mar 2021 17:54:24 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 47AA7C433E3
+	for <linux-m68k@archiver.kernel.org>; Fri, 19 Mar 2021 19:34:48 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 7B7FA6197E
-	for <linux-m68k@archiver.kernel.org>; Fri, 19 Mar 2021 17:54:24 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 1AF1C6197D
+	for <linux-m68k@archiver.kernel.org>; Fri, 19 Mar 2021 19:34:48 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229960AbhCSRxv (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Fri, 19 Mar 2021 13:53:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42930 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230024AbhCSRxW (ORCPT
-        <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Fri, 19 Mar 2021 13:53:22 -0400
-Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3EE08C06174A
-        for <linux-m68k@lists.linux-m68k.org>; Fri, 19 Mar 2021 10:53:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
-        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-         bh=5b5bolNJYoHvpbguUfHCrjOiVB1eiZ/SyLUPdIsBqrE=; b=fapckYyyVxKxd05dheNDlrTlv
-        uFcmGtMwFwzwBPEbnfZHhBlGlW9zqTLadk1HYzxRYAwklFLtV9Ox76oL3XfZFqn6UE1mg/IROkVj3
-        79f+WCg+fD7E2jnn1NqHDS3WGxIyuIatzqJmPNCsZxFSkCBNJu9EFI0JI2gN0m43clGoTG/R0W/fh
-        oEixbjDCYeE7nceZZwUWWrI/Ve1MweoQ8ZXHSGEwt/4o53r61OjolSZJcVNk3E10ogAN9vvDsQqgy
-        MhUzclWSUDU/yZFF8vu1i02HG9tGrP42frcpWnKzo5X6m8xslMqMzvtfBYxMIR2nmTOd6rlatvgWI
-        vvWNoMRwA==;
-Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:51488)
-        by pandora.armlinux.org.uk with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <linux@armlinux.org.uk>)
-        id 1lNJJA-0004hZ-VN; Fri, 19 Mar 2021 17:53:13 +0000
-Received: from linux by shell.armlinux.org.uk with local (Exim 4.92)
-        (envelope-from <linux@shell.armlinux.org.uk>)
-        id 1lNJJA-0000jP-3r; Fri, 19 Mar 2021 17:53:12 +0000
-Date:   Fri, 19 Mar 2021 17:53:12 +0000
-From:   Russell King - ARM Linux admin <linux@armlinux.org.uk>
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Jens Axboe <axboe@kernel.dk>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Richard Henderson <rth@twiddle.net>,
-        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
-        Matt Turner <mattst88@gmail.com>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        linux-ide@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-alpha@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org
-Subject: Re: [PATCH 02/10] ARM: disable CONFIG_IDE in footbridge_defconfig
-Message-ID: <20210319175311.GW1463@shell.armlinux.org.uk>
-References: <20210318045706.200458-1-hch@lst.de>
- <20210318045706.200458-3-hch@lst.de>
- <20210319170753.GV1463@shell.armlinux.org.uk>
+        id S231127AbhCSTeR (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Fri, 19 Mar 2021 15:34:17 -0400
+Received: from mout.perfora.net ([74.208.4.196]:40381 "EHLO mout.perfora.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230473AbhCSTeC (ORCPT <rfc822;linux-m68k@lists.linux-m68k.org>);
+        Fri, 19 Mar 2021 15:34:02 -0400
+Received: from [192.168.1.5] ([136.25.12.210]) by mrelay.perfora.net
+ (mreueus004 [74.208.5.2]) with ESMTPSA (Nemesis) id 1MUGJb-1lFGHH0nVT-00RKfh;
+ Fri, 19 Mar 2021 20:33:56 +0100
+Subject: Re: [PATCH] m68k/mvme16x: Fix timer interrupts
+To:     Finn Thain <fthain@telegraphics.com.au>
+Cc:     linux-m68k@lists.linux-m68k.org,
+        Geert Uytterhoeven <geert@linux-m68k.org>
+References: <628cb0d0-94af-651f-0d84-f78b966cd8bd@retrodev.com>
+ <f7fb45d-47e3-aeed-b85d-b3a36b14d7e@telegraphics.com.au>
+From:   Michael Pavone <pavone@retrodev.com>
+Message-ID: <bc1b0c13-9c9d-617e-3f4b-74c19b010fa7@retrodev.com>
+Date:   Fri, 19 Mar 2021 12:33:55 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210319170753.GV1463@shell.armlinux.org.uk>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-Sender: Russell King - ARM Linux admin <linux@armlinux.org.uk>
+In-Reply-To: <f7fb45d-47e3-aeed-b85d-b3a36b14d7e@telegraphics.com.au>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-Provags-ID: V03:K1:u9wlybuzuC6SskmrKcEW3J6ku0ujZsHcGWeCK7YJT+hhotnMGeJ
+ YETdyCQ57rpPVQlFlu4583Pyds/m6cYp/qSovaKmP7Mppp45rky7J4ZqaLF1NINbO+Xy0x2
+ wTLapB1UKUmL0FWbytC8pgmt+gShVGU8KSYl3YH+dzxw8sGvuOaq3RAPoBjIazgwE/BHT0c
+ rfriE2bp+5lxIuql8IO/Q==
+X-UI-Out-Filterresults: notjunk:1;V03:K0:rBR03mWqt9A=:t7phpH+oS1atHckETo8sKJ
+ 6ssSpyO44lBK2UyexiYh6+X7RLfjUYedCx7pmarCrPpadVdDAYWgUoQ7z+oCgV/LkoOVptDFw
+ jkd8M+sPhOjCfyXC58kNOAZz4Q/1LwmdZ94Qb6OmattanUe7Yo6KoGUMV89SLYyLBUfgwkQ+9
+ w7QonSccjfiSQ0vUxNhRVCHPgMuNmcyryCinTLT+fs9CPNGk8BjMirOmTEVrakBOLlyPOrN1b
+ SHH36hVdnlMv1F/4KD07EIXcuhdJVm9d0sQmDtHjVQeUcVHcqReVBmwWctEfauE84IEaOmDFb
+ RmBLBQhRBWFePErPOwgqVk74/51trexq/lUBt0nlBceNgwhdYjPwvnP0uPVkUnDLEzIgpY9Tf
+ lmzI/THKhJE/I+JEIx0crd819wa74nG1at9EkklLyts546RIdy7wMA3lk9h7EhzHuy2NsmRuw
+ RIqq27p4TQ==
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-On Fri, Mar 19, 2021 at 05:07:53PM +0000, Russell King - ARM Linux admin wrote:
-> On Thu, Mar 18, 2021 at 05:56:58AM +0100, Christoph Hellwig wrote:
-> > footbridge_defconfig enables CONFIG_IDE but no actual host controller
-> > driver, so just drop it.
-> 
-> I have been using the Cypress 82C693 IDE driver on Footbridge for a
-> CD ROM drive, and I know it doesn't work with the PATA driver - as
-> I need to disable BM DMA, otherwise the 82C693/DC21285 combination
-> deadlocks the PCI bus. The PATA driver doesn't support disabling
-> BM DMA without disabling it for all PATA ports, which is really
-> annoying for my IT821x card in the same machine.
-> 
-> So, I'm rather stuck using the PATA driver for the HDDs and the
-> IDE driver for the CD ROM.
-> 
-> That said, a commit a while back "cleaning up" the PCI layer appears
-> to have totally shafted the 82C693, as the kernel tries to request
-> IO resources at the legacy IDE addresses against the PCI bus resource
-> which only covers 0x1000-0xffff. Hence, the 82C693 IDE ports are non-
-> functional at the moment.
-> 
-> I'm debating about trying to find a fix to the PCI breakage that was
-> introduced by "ARM: move PCI i/o resource setup into common code".
-> 
-> I hadn't noticed it because I don't use the CD ROM drive very often,
-> and I don't upgrade the kernel that often either on the machine -
-> but it has been running 24x7 for almost two decades.
+On 3/19/21 12:07 AM, Finn Thain wrote:
 
-Okay, a bit more on this...
+> Since we know at compile time what bits should be set in PCCTOVR1, we can
+> avoid the additional register access. We should do the same in
+> mvme16x_sched_init() for clarity. What do you think about this patch?
 
-If I extend the arch/arm/kernel/bios32.c code to kill BARs 2/3 (which
-actually are not present on the CY82C693) then the IDE driver works
-for me, but the PATA driver does not:
+Makes sense and your patch works fine on my MVME177.
 
-cy82c693 0000:00:06.1: IDE controller (0x1080:0xc693 rev 0x00)
-cy82c693 0000:00:06.1: not 100% native mode: will probe irqs later
-legacy IDE will be removed in 2021, please switch to libata
-Report any missing HW support to linux-ide@vger.kernel.org
-    ide0: BM-DMA at 0x1080-0x1087
-    ide1: BM-DMA at 0x1088-0x108f
-Probing IDE interface ide0...
-hda: PIONEER DVD-RW DVR-105, ATAPI CD/DVD-ROM drive
-hda: host max PIO4 wanted PIO255(auto-tune) selected PIO4
-...
+On 3/18/21 11:35 PM, Finn Thain wrote:
+> BTW, assuming you did get the kernel running on your hardware, do you know 
+> if there's any need for the '#warning check me!' that still remains in 
+> arch/m68k/mvme16x/config.c and arch/m68k/mvme147/config.c?
 
-(unbind Cypress_IDE and try binding pata_cypress)
+It's running in the sense that it successfully runs init, but the lack of
+a proper tty driver makes it a bit painful to check anything else. I'm
+going to take a stab at writing a new one next.
 
-pata_cypress 0000:00:06.1: no available native port
-
-
--- 
-RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
-FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
