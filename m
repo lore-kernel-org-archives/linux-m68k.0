@@ -2,62 +2,67 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.3 required=3.0 tests=BAYES_00,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-8.8 required=3.0 tests=BAYES_00,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,MAILING_LIST_MULTI,
+	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 8D73AC433DB
-	for <linux-m68k@archiver.kernel.org>; Fri, 19 Mar 2021 05:44:02 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7A756C433DB
+	for <linux-m68k@archiver.kernel.org>; Fri, 19 Mar 2021 06:36:39 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 4AD2464EF6
-	for <linux-m68k@archiver.kernel.org>; Fri, 19 Mar 2021 05:44:02 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 4F09664F69
+	for <linux-m68k@archiver.kernel.org>; Fri, 19 Mar 2021 06:36:39 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233877AbhCSFn3 (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Fri, 19 Mar 2021 01:43:29 -0400
-Received: from verein.lst.de ([213.95.11.211]:44424 "EHLO verein.lst.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233869AbhCSFnX (ORCPT <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Fri, 19 Mar 2021 01:43:23 -0400
-Received: by verein.lst.de (Postfix, from userid 2407)
-        id EFE6A68BEB; Fri, 19 Mar 2021 06:43:19 +0100 (CET)
-Date:   Fri, 19 Mar 2021 06:43:19 +0100
-From:   Christoph Hellwig <hch@lst.de>
-To:     Finn Thain <fthain@telegraphics.com.au>
-Cc:     Christoph Hellwig <hch@lst.de>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jens Axboe <axboe@kernel.dk>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Richard Henderson <rth@twiddle.net>,
-        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
-        Matt Turner <mattst88@gmail.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        linux-ide@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-alpha@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org
-Subject: Re: remove the legacy ide driver
-Message-ID: <20210319054319.GA9880@lst.de>
-References: <20210318045706.200458-1-hch@lst.de> <c1fa8e6-a05d-9ea1-f47e-9e85ea6ea65e@telegraphics.com.au>
+        id S233993AbhCSGgI (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Fri, 19 Mar 2021 02:36:08 -0400
+Received: from kvm5.telegraphics.com.au ([98.124.60.144]:40144 "EHLO
+        kvm5.telegraphics.com.au" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233963AbhCSGfz (ORCPT
+        <rfc822;linux-m68k@lists.linux-m68k.org>);
+        Fri, 19 Mar 2021 02:35:55 -0400
+Received: from localhost (localhost.localdomain [127.0.0.1])
+        by kvm5.telegraphics.com.au (Postfix) with ESMTP id C0DF129EED;
+        Fri, 19 Mar 2021 02:35:50 -0400 (EDT)
+Date:   Fri, 19 Mar 2021 17:35:47 +1100 (AEDT)
+From:   Finn Thain <fthain@telegraphics.com.au>
+To:     Michael Pavone <pavone@retrodev.com>
+cc:     linux-m68k@lists.linux-m68k.org,
+        Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: Re: [PATCH] m68k/mvme16x: Fix timer interrupts
+In-Reply-To: <598f5719-8cc5-15da-4062-157b1162318a@retrodev.com>
+Message-ID: <475053d4-7ee-4e5f-26fe-c47e55e76a@telegraphics.com.au>
+References: <628cb0d0-94af-651f-0d84-f78b966cd8bd@retrodev.com> <96914f42-e18-29cc-6c5-28b3a2fb360@telegraphics.com.au> <598f5719-8cc5-15da-4062-157b1162318a@retrodev.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <c1fa8e6-a05d-9ea1-f47e-9e85ea6ea65e@telegraphics.com.au>
-User-Agent: Mutt/1.5.17 (2007-11-01)
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-On Fri, Mar 19, 2021 at 12:43:48PM +1100, Finn Thain wrote:
-> A few months ago I wrote another patch to move some more platforms away 
-> from macide but it has not been tested yet. That is not to say you should 
-> wait. However, my patch does have some changes that are missing from your 
-> patch series, relating to ide platform devices in arch/m68k/mac/config.c. 
-> I hope to be able to test this patch before the 5.13 merge window closes.
+On Thu, 18 Mar 2021, Michael Pavone wrote:
 
-Normally we do not remove drivers for hardware that is still used.  So
-at leat for macide my plan was not to take it away unless the users 
-are sufficiently happy.  Or in other words:  I think waiting it the
-right choice, but hopefully we can make that wait as short as possible.
+> On 3/17/21 8:05 PM, Finn Thain wrote:
+> 
+> > On Tue, 16 Mar 2021, Mike Pavone wrote:
+> >
+> >> Timer interrupts on MVME16x and MVME17x boards are broken as the CEN and
+> >> COC bits are being inadvertently cleared when clearing the overflow
+> >> counter. This results in no timer interrupts being delivered after the
+> >> first. Initialization then hangs in calibrate_delay as the jiffies counter
+> >> is not updated. OR with current register value to preserve these bits.
+> >>
+> >> Fixes: 19999a8b8782 ("m68k: mvme16x: Handle timer counter overflow")
+> >> Signed-off-by: Michael Pavone <pavone@retrodev.com>
+> > Sorry about that regression.
+> >
+> > Do you think that commit 7529b90d051e ("m68k: mvme147: Handle timer 
+> > counter overflow") has the same problem?
+> 
+> I don't have an MVME147 board to test with, but based on the 
+> documentation it looks like it does. The clear bit is in the same 
+> register as the enable and count enable bits on the original PCCchip.
+> 
+
+OK. I will write a patch for mvme147.
+
+BTW, assuming you did get the kernel running on your hardware, do you know 
+if there's any need for the '#warning check me!' that still remains in 
+arch/m68k/mvme16x/config.c and arch/m68k/mvme147/config.c?
