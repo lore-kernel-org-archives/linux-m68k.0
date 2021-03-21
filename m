@@ -5,58 +5,58 @@ X-Spam-Level:
 X-Spam-Status: No, score=-15.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
-	autolearn=unavailable autolearn_force=no version=3.4.0
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C246FC433E2
-	for <linux-m68k@archiver.kernel.org>; Sun, 21 Mar 2021 21:56:07 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 3C87EC433E5
+	for <linux-m68k@archiver.kernel.org>; Sun, 21 Mar 2021 21:56:08 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 860586194C
-	for <linux-m68k@archiver.kernel.org>; Sun, 21 Mar 2021 21:56:07 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 2277861943
+	for <linux-m68k@archiver.kernel.org>; Sun, 21 Mar 2021 21:56:08 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231459AbhCUVzf (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Sun, 21 Mar 2021 17:55:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60488 "EHLO
+        id S231465AbhCUVzg (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Sun, 21 Mar 2021 17:55:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60502 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231415AbhCUVzC (ORCPT
+        with ESMTP id S231424AbhCUVzE (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Sun, 21 Mar 2021 17:55:02 -0400
-Received: from mail-qk1-x72c.google.com (mail-qk1-x72c.google.com [IPv6:2607:f8b0:4864:20::72c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E7281C061763
-        for <linux-m68k@lists.linux-m68k.org>; Sun, 21 Mar 2021 14:55:01 -0700 (PDT)
-Received: by mail-qk1-x72c.google.com with SMTP id z10so8735109qkz.13
-        for <linux-m68k@lists.linux-m68k.org>; Sun, 21 Mar 2021 14:55:01 -0700 (PDT)
+        Sun, 21 Mar 2021 17:55:04 -0400
+Received: from mail-qk1-x72b.google.com (mail-qk1-x72b.google.com [IPv6:2607:f8b0:4864:20::72b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E00F3C061574
+        for <linux-m68k@lists.linux-m68k.org>; Sun, 21 Mar 2021 14:55:03 -0700 (PDT)
+Received: by mail-qk1-x72b.google.com with SMTP id y5so7193428qkl.9
+        for <linux-m68k@lists.linux-m68k.org>; Sun, 21 Mar 2021 14:55:03 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=a7JdQMPMgs8V6p2mIbAAMliZc+Q/jwU8V02vmoeVTgc=;
-        b=i8nKqZlbUpoWJrvA3SGtK3S4Wou/OIZTIBqJKR2kMwz57vvwN260GX9fz7ZKc/Oi7W
-         Oukvw0Lzn4khAl7Wa9hsqTxkyqeR6WuClBj+5Dp0p6Z5zsi6URFoDMD0Oqyk32+ittC+
-         q9dVt88Ppi5tjEA1uXwij/Mk8/HpX5YN18Yb2tM5M/tSKb/wV1rLBDo3F4h3kZREtI41
-         BPeQlUVdBsTzjl/ULZUpHP9SIGLooSSUT2l/UmILOkCX61J52d6CVvWiUlUIOiKIk3M7
-         Wk79OQtKwAPqq765O+tlhjw/LGOOm/ddQ4qZZXzD6gHmyTkcTqSuEKKrD1oM48cKXKNY
-         xL2w==
+        bh=NvWIjd4skNqWEETdEjzpZ2tC0PHOwPqhgZwMIfQRVT0=;
+        b=gygst6e6OzjxxG0tm7Q6v/mOApXmmwxuNIfrGfeVpdV/RARH0MtRZsfDvBaoT7XDfj
+         gNshGuh3j1Nv2UMQCilK/XBXhxiUQxYdWNQMlLYYGqwRDCfRpoL1Y82JFhSP9rEqxWcq
+         lnu/R1m9BLLvkOlU1khb0Ro0i6qF3ziw5gHdiKv3dsS7f6F0/jK6Bq80ZZN52UerQnfp
+         ilfKSN0yop5uryKIQQ11aV7KbVoBWjrIckuhDZHXo0x7RHqawqseCFdzBkdHOORX633e
+         /PG2lhGYOT7jRT5/XWhvuBZc6BzNY5Uox5I3CbqbASEvQqpDBgZwvV1rXMtlCXbfTqKy
+         9jKg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=a7JdQMPMgs8V6p2mIbAAMliZc+Q/jwU8V02vmoeVTgc=;
-        b=DT9s6GRZjkYh1YtNsiUDqyVfJVUC25BC1NOaDR1Z+eLDd7zRbfSWYHcoLet8l2P2Zj
-         Dlwfqfrv6tALPTxZf8J6JNi2+ESBHn3GRfIGiynu7eXUgXsYJIhaolCK5KskuyWzy6Im
-         gFY597wyn5qmYi3WlEOX6HneWqd/QDvI5AvVV1t96IZZTmdXJ/zWy/mNHsXh7Xl7VRsC
-         bhylGm0M80ZKB3M0TcOjSS+RDVOEHdD99KwFFhGSIlpg2nzbXZsQRKEguMgO0ATCHzMj
-         tSz3iWsw8+iw8GUL68VY00QoRAwr09fVNtEWdCw6Cqrqa8Jvy7gu/t9DoEtUWrhqiahV
-         ZH5g==
-X-Gm-Message-State: AOAM530WDqVOharhFOOmEwsObJgstog7f/17oEfq2vXFPMH/g9szGHWh
-        m+d1abkKF7NYwJWI83WVC8k=
-X-Google-Smtp-Source: ABdhPJxaXv9Xf37vBcTUmnfJmYRsajKHGinABLTlOhmsEfI1G0L3rHUlebwGQFQrpLkVUe5VpYtLfQ==
-X-Received: by 2002:ae9:eb58:: with SMTP id b85mr8274855qkg.168.1616363701088;
-        Sun, 21 Mar 2021 14:55:01 -0700 (PDT)
+        bh=NvWIjd4skNqWEETdEjzpZ2tC0PHOwPqhgZwMIfQRVT0=;
+        b=BS1u073SBN2HH//xAUYQPotJkCSmsiKQyZIDfeee4M27nn5WbTSxHk0t9SBF20NCjZ
+         AJKHtaNQTVjXxkakJHZQnaxEUoo5EsNGdAM0AFpwzA+6qm6gJO5CVSHlueJXp8llujHF
+         L6J8QKVs6E7W1aS0OKd4S+yfu+o0Z6j+q1KHn3F2nN4FoK4vKy1yKprP3ywYSPIt0NNP
+         7JtcTRa+bH7MWR6nX9kbiC0TDVMX2G7bx7EwLMGGS1duZ8LJCTHtWLE4OkZ7TjU/HKbb
+         X0doOS+mIeARiTT94Q2iM/OcIiYXcYFTQk2XmlMIF+yXbQdp5fkERCJFXAg5xsZZOmT8
+         Cu5Q==
+X-Gm-Message-State: AOAM532SEDnXzoqgtWsPQMz/6myDmrIVIjvRhcqfliqt8L5L0EDPTi6j
+        WqAv0e742fjmAbcnJvDBP9Q=
+X-Google-Smtp-Source: ABdhPJzA+Z7qKEEkJtDFD/IuGE+l6ZW0/peFytdrb6ziic9Si9Z6+O5AIy2+9Vlc8kuFnF6iDWHfdQ==
+X-Received: by 2002:a05:620a:1292:: with SMTP id w18mr7991286qki.400.1616363703099;
+        Sun, 21 Mar 2021 14:55:03 -0700 (PDT)
 Received: from localhost ([76.73.146.210])
-        by smtp.gmail.com with ESMTPSA id s19sm9365819qks.130.2021.03.21.14.55.00
+        by smtp.gmail.com with ESMTPSA id y1sm9234561qki.9.2021.03.21.14.55.02
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 21 Mar 2021 14:55:00 -0700 (PDT)
+        Sun, 21 Mar 2021 14:55:02 -0700 (PDT)
 From:   Yury Norov <yury.norov@gmail.com>
 To:     linux-kernel@vger.kernel.org
 Cc:     Yury Norov <yury.norov@gmail.com>, linux-m68k@lists.linux-m68k.org,
@@ -77,9 +77,9 @@ Cc:     Yury Norov <yury.norov@gmail.com>, linux-m68k@lists.linux-m68k.org,
         Wei Yang <richard.weiyang@linux.alibaba.com>,
         Wolfram Sang <wsa+renesas@sang-engineering.com>,
         Yoshinori Sato <ysato@users.sourceforge.jp>
-Subject: [PATCH 01/12] tools: disable -Wno-type-limits
-Date:   Sun, 21 Mar 2021 14:54:46 -0700
-Message-Id: <20210321215457.588554-2-yury.norov@gmail.com>
+Subject: [PATCH 03/12] tools: sync BITMAP_LAST_WORD_MASK() macro with the kernel
+Date:   Sun, 21 Mar 2021 14:54:48 -0700
+Message-Id: <20210321215457.588554-4-yury.norov@gmail.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20210321215457.588554-1-yury.norov@gmail.com>
 References: <20210321215457.588554-1-yury.norov@gmail.com>
@@ -89,26 +89,31 @@ Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-GENMASK(h, l) may be passed with unsigned types. In such case, type-limits
-warning is generated for example in case of GENMASK(h, 0).
+Kernel version generates better code.
 
 Signed-off-by: Yury Norov <yury.norov@gmail.com>
 ---
- tools/scripts/Makefile.include | 1 +
- 1 file changed, 1 insertion(+)
+ tools/include/linux/bitmap.h | 7 +------
+ 1 file changed, 1 insertion(+), 6 deletions(-)
 
-diff --git a/tools/scripts/Makefile.include b/tools/scripts/Makefile.include
-index 84dbf61a7eca..15e99905cb7d 100644
---- a/tools/scripts/Makefile.include
-+++ b/tools/scripts/Makefile.include
-@@ -38,6 +38,7 @@ EXTRA_WARNINGS += -Wswitch-enum
- EXTRA_WARNINGS += -Wundef
- EXTRA_WARNINGS += -Wwrite-strings
- EXTRA_WARNINGS += -Wformat
-+EXTRA_WARNINGS += -Wno-type-limits
+diff --git a/tools/include/linux/bitmap.h b/tools/include/linux/bitmap.h
+index 7cbd23e56d48..4aabc23ec747 100644
+--- a/tools/include/linux/bitmap.h
++++ b/tools/include/linux/bitmap.h
+@@ -20,12 +20,7 @@ int __bitmap_equal(const unsigned long *bitmap1,
+ void bitmap_clear(unsigned long *map, unsigned int start, int len);
  
- CC_NO_CLANG := $(shell $(CC) -dM -E -x c /dev/null | grep -Fq "__clang__"; echo $$?)
+ #define BITMAP_FIRST_WORD_MASK(start) (~0UL << ((start) & (BITS_PER_LONG - 1)))
+-
+-#define BITMAP_LAST_WORD_MASK(nbits)					\
+-(									\
+-	((nbits) % BITS_PER_LONG) ?					\
+-		(1UL<<((nbits) % BITS_PER_LONG))-1 : ~0UL		\
+-)
++#define BITMAP_LAST_WORD_MASK(nbits) (~0UL >> (-(nbits) & (BITS_PER_LONG - 1)))
  
+ #define small_const_nbits(nbits) \
+ 	(__builtin_constant_p(nbits) && (nbits) <= BITS_PER_LONG)
 -- 
 2.25.1
 
