@@ -2,220 +2,89 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-10.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-5.3 required=3.0 tests=BAYES_00,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 749A4C433DB
-	for <linux-m68k@archiver.kernel.org>; Mon, 22 Mar 2021 13:36:29 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2C02BC433DB
+	for <linux-m68k@archiver.kernel.org>; Mon, 22 Mar 2021 14:55:11 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 410CF6192A
-	for <linux-m68k@archiver.kernel.org>; Mon, 22 Mar 2021 13:36:29 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id D44AD6197F
+	for <linux-m68k@archiver.kernel.org>; Mon, 22 Mar 2021 14:55:10 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230230AbhCVNf5 (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Mon, 22 Mar 2021 09:35:57 -0400
-Received: from mx2.suse.de ([195.135.220.15]:52816 "EHLO mx2.suse.de"
+        id S230310AbhCVOyi (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Mon, 22 Mar 2021 10:54:38 -0400
+Received: from verein.lst.de ([213.95.11.211]:56127 "EHLO verein.lst.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230217AbhCVNfn (ORCPT <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Mon, 22 Mar 2021 09:35:43 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1616420142; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=bNwpWnU/mOEb8vDk9U6PPMjzkSSiO3GF6Uf0hvYy86c=;
-        b=T/88LUerDCEZ5aLb09F83ICr41UqeH2rh4J7zrGpXp20VeYsZHJpi/YuD6UnXQW4pyzMJd
-        jBAgDV46TT0Kz09FM1vI9JNZIIaETu438nFrfjiK/6ELDm8IlG80pWXjuPGHfOvQ9qSqDa
-        nwk9Za/1Mcrl0+PJNnBW15dSnFPW4Rw=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 2DFE4AD79;
-        Mon, 22 Mar 2021 13:35:42 +0000 (UTC)
-Date:   Mon, 22 Mar 2021 14:35:41 +0100
-From:   Michal Hocko <mhocko@suse.com>
-To:     David Hildenbrand <david@redhat.com>
-Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Hillf Danton <hdanton@sina.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Oleksiy Avramchenko <oleksiy.avramchenko@sonymobile.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Minchan Kim <minchan@kernel.org>,
-        huang ying <huang.ying.caritas@gmail.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Russell King <linux@armlinux.org.uk>,
-        Liviu Dudau <liviu.dudau@arm.com>,
-        Sudeep Holla <sudeep.holla@arm.com>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Gregory Clement <gregory.clement@bootlin.com>,
-        Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>,
-        Yoshinori Sato <ysato@users.sourceforge.jp>,
-        Brian Cain <bcain@codeaurora.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Jonas Bonn <jonas@southpole.se>,
-        Stefan Kristiansson <stefan.kristiansson@saunalahti.fi>,
-        Stafford Horne <shorne@gmail.com>,
-        Rich Felker <dalias@libc.org>,
+        id S231441AbhCVOyH (ORCPT <rfc822;linux-m68k@lists.linux-m68k.org>);
+        Mon, 22 Mar 2021 10:54:07 -0400
+Received: by verein.lst.de (Postfix, from userid 2407)
+        id A32F268BEB; Mon, 22 Mar 2021 15:54:03 +0100 (CET)
+Date:   Mon, 22 Mar 2021 15:54:03 +0100
+From:   Christoph Hellwig <hch@lst.de>
+To:     Russell King - ARM Linux admin <linux@armlinux.org.uk>
+Cc:     Christoph Hellwig <hch@lst.de>,
         "David S. Miller" <davem@davemloft.net>,
-        Chris Zankel <chris@zankel.net>,
-        Max Filippov <jcmvbkbc@gmail.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Rob Herring <robh@kernel.org>,
-        "Pavel Machek (CIP)" <pavel@denx.de>,
-        Theodore Dubois <tblodt@icloud.com>,
-        "Alexander A. Klimov" <grandmaster@al2klimov.de>,
-        Pavel Machek <pavel@ucw.cz>, Sam Ravnborg <sam@ravnborg.org>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Andrey Zhizhikin <andrey.zhizhikin@leica-geosystems.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Xiaoming Ni <nixiaoming@huawei.com>,
-        Robert Richter <rric@kernel.org>,
-        William Cohen <wcohen@redhat.com>,
-        Corentin Labbe <clabbe@baylibre.com>,
-        Kairui Song <kasong@redhat.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-doc@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        uclinux-h8-devel@lists.sourceforge.jp,
-        linux-hexagon@vger.kernel.org, linux-m68k@lists.linux-m68k.org,
-        openrisc@lists.librecores.org, linux-sh@vger.kernel.org,
-        sparclinux@vger.kernel.org, linux-xtensa@linux-xtensa.org,
-        linux-fsdevel@vger.kernel.org,
-        Linux API <linux-api@vger.kernel.org>
-Subject: Re: [PATCH RFC 1/3] drivers/char: remove /dev/kmem for good
-Message-ID: <YFidLVQs+/zw4aIF@dhcp22.suse.cz>
-References: <20210319143452.25948-1-david@redhat.com>
- <20210319143452.25948-2-david@redhat.com>
+        Jens Axboe <axboe@kernel.dk>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Richard Henderson <rth@twiddle.net>,
+        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
+        Matt Turner <mattst88@gmail.com>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        linux-ide@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-alpha@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org
+Subject: Re: [PATCH 02/10] ARM: disable CONFIG_IDE in footbridge_defconfig
+Message-ID: <20210322145403.GA30942@lst.de>
+References: <20210318045706.200458-1-hch@lst.de> <20210318045706.200458-3-hch@lst.de> <20210319170753.GV1463@shell.armlinux.org.uk> <20210319175311.GW1463@shell.armlinux.org.uk>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210319143452.25948-2-david@redhat.com>
+In-Reply-To: <20210319175311.GW1463@shell.armlinux.org.uk>
+User-Agent: Mutt/1.5.17 (2007-11-01)
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-On Fri 19-03-21 15:34:50, David Hildenbrand wrote:
-> Exploring /dev/kmem and /dev/mem in the context of memory hot(un)plug and
-> memory ballooning, I started questioning the existance of /dev/kmem.
+On Fri, Mar 19, 2021 at 05:53:12PM +0000, Russell King - ARM Linux admin wrote:
+> If I extend the arch/arm/kernel/bios32.c code to kill BARs 2/3 (which
+> actually are not present on the CY82C693) then the IDE driver works
+> for me, but the PATA driver does not:
 > 
-> Comparing it with the /proc/kcore implementation, it does not seem to be
-> able to deal with things like
-> a) Pages unmapped from the direct mapping (e.g., to be used by secretmem)
->   -> kern_addr_valid(). virt_addr_valid() is not sufficient.
-> b) Special cases like gart aperture memory that is not to be touched
->   -> mem_pfn_is_ram()
-> Unless I am missing something, it's at least broken in some cases and might
-> fault/crash the machine.
+> cy82c693 0000:00:06.1: IDE controller (0x1080:0xc693 rev 0x00)
+> cy82c693 0000:00:06.1: not 100% native mode: will probe irqs later
+> legacy IDE will be removed in 2021, please switch to libata
+> Report any missing HW support to linux-ide@vger.kernel.org
+>     ide0: BM-DMA at 0x1080-0x1087
+>     ide1: BM-DMA at 0x1088-0x108f
+> Probing IDE interface ide0...
+> hda: PIONEER DVD-RW DVR-105, ATAPI CD/DVD-ROM drive
+> hda: host max PIO4 wanted PIO255(auto-tune) selected PIO4
+> ...
 > 
-> Looks like its existance has been questioned before in 2005 and 2010
-> [1], after ~11 additional years, it might make sense to revive the
-> discussion.
+> (unbind Cypress_IDE and try binding pata_cypress)
 > 
-> CONFIG_DEVKMEM is only enabled in a single defconfig (on purpose or by
-> mistake?). All distributions I looked at disable it.
-> 
-> 1) /dev/kmem was popular for rootkits [2] before it got disabled
->    basically everywhere. Ubuntu documents [3] "There is no modern user of
->    /dev/kmem any more beyond attackers using it to load kernel rootkits.".
->    RHEL documents in a BZ [5] "it served no practical purpose other than to
->    serve as a potential security problem or to enable binary module drivers
->    to access structures/functions they shouldn't be touching"
-> 
-> 2) /proc/kcore is a decent interface to have a controlled way to read
->    kernel memory for debugging puposes. (will need some extensions to
->    deal with memory offlining/unplug, memory ballooning, and poisoned
->    pages, though)
-> 
-> 3) It might be useful for corner case debugging [1]. KDB/KGDB might be a
->    better fit, especially, to write random memory; harder to shoot
->    yourself into the foot.
-> 
-> 4) "Kernel Memory Editor" hasn't seen any updates since 2000 and seems
->    to be incompatible with 64bit [1]. For educational purposes,
->    /proc/kcore might be used to monitor value updates -- or older
->    kernels can be used.
-> 
-> 5) It's broken on arm64, and therefore, completely disabled there.
-> 
-> Looks like it's essentially unused and has been replaced by better
-> suited interfaces for individual tasks (/proc/kcore, KDB/KGDB). Let's
-> just remove it.
-> 
-> [1] https://lwn.net/Articles/147901/
-> [2] https://www.linuxjournal.com/article/10505
-> [3] https://wiki.ubuntu.com/Security/Features#A.2Fdev.2Fkmem_disabled
-> [4] https://sourceforge.net/projects/kme/
-> [5] https://bugzilla.redhat.com/show_bug.cgi?id=154796
-> 
-> Cc: Andrew Morton <akpm@linux-foundation.org>
-> Cc: Hillf Danton <hdanton@sina.com>
-> Cc: Michal Hocko <mhocko@suse.com>
-> Cc: Matthew Wilcox <willy@infradead.org>
-> Cc: Oleksiy Avramchenko <oleksiy.avramchenko@sonymobile.com>
-> Cc: Steven Rostedt <rostedt@goodmis.org>
-> Cc: Minchan Kim <minchan@kernel.org>
-> Cc: huang ying <huang.ying.caritas@gmail.com>
-> Cc: Jonathan Corbet <corbet@lwn.net>
-> Cc: Russell King <linux@armlinux.org.uk>
-> Cc: Liviu Dudau <liviu.dudau@arm.com>
-> Cc: Sudeep Holla <sudeep.holla@arm.com>
-> Cc: Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
-> Cc: Andrew Lunn <andrew@lunn.ch>
-> Cc: Gregory Clement <gregory.clement@bootlin.com>
-> Cc: Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>
-> Cc: Yoshinori Sato <ysato@users.sourceforge.jp>
-> Cc: Brian Cain <bcain@codeaurora.org>
-> Cc: Geert Uytterhoeven <geert@linux-m68k.org>
-> Cc: Jonas Bonn <jonas@southpole.se>
-> Cc: Stefan Kristiansson <stefan.kristiansson@saunalahti.fi>
-> Cc: Stafford Horne <shorne@gmail.com>
-> Cc: Rich Felker <dalias@libc.org>
-> Cc: "David S. Miller" <davem@davemloft.net>
-> Cc: Chris Zankel <chris@zankel.net>
-> Cc: Max Filippov <jcmvbkbc@gmail.com>
-> Cc: Arnd Bergmann <arnd@arndb.de>
-> Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> Cc: Alexander Viro <viro@zeniv.linux.org.uk>
-> Cc: Rob Herring <robh@kernel.org>
-> Cc: "Pavel Machek (CIP)" <pavel@denx.de>
-> Cc: Theodore Dubois <tblodt@icloud.com>
-> Cc: "Alexander A. Klimov" <grandmaster@al2klimov.de>
-> Cc: Pavel Machek <pavel@ucw.cz>
-> Cc: Sam Ravnborg <sam@ravnborg.org>
-> Cc: Alexandre Belloni <alexandre.belloni@bootlin.com>
-> Cc: Andrey Zhizhikin <andrey.zhizhikin@leica-geosystems.com>
-> Cc: Randy Dunlap <rdunlap@infradead.org>
-> Cc: Krzysztof Kozlowski <krzk@kernel.org>
-> Cc: Viresh Kumar <viresh.kumar@linaro.org>
-> Cc: "Eric W. Biederman" <ebiederm@xmission.com>
-> Cc: Thomas Gleixner <tglx@linutronix.de>
-> Cc: Xiaoming Ni <nixiaoming@huawei.com>
-> Cc: Robert Richter <rric@kernel.org>
-> Cc: William Cohen <wcohen@redhat.com>
-> Cc: Corentin Labbe <clabbe@baylibre.com>
-> Cc: Kairui Song <kasong@redhat.com>
-> Cc: Linus Torvalds <torvalds@linux-foundation.org>
-> Cc: linux-doc@vger.kernel.org
-> Cc: linux-kernel@vger.kernel.org
-> Cc: linux-arm-kernel@lists.infradead.org
-> Cc: uclinux-h8-devel@lists.sourceforge.jp
-> Cc: linux-hexagon@vger.kernel.org
-> Cc: linux-m68k@lists.linux-m68k.org
-> Cc: openrisc@lists.librecores.org
-> Cc: linux-sh@vger.kernel.org
-> Cc: sparclinux@vger.kernel.org
-> Cc: linux-xtensa@linux-xtensa.org
-> Cc: linux-fsdevel@vger.kernel.org
-> Cc: Linux API <linux-api@vger.kernel.org>
-> Signed-off-by: David Hildenbrand <david@redhat.com>
+> pata_cypress 0000:00:06.1: no available native port
 
-Acked-by: Michal Hocko <mhocko@suse.com>
--- 
-Michal Hocko
-SUSE Labs
+This comes from ata_pci_sff_init_host when it tails to initialize
+a port.  There are three cases why it can't initialize the port:
+
+ 1) because it is marked as dummy, which is the case for the second
+    port of the cypress controller, but you're not using that even
+    with the old ide driver, and we'd still not get that message just
+    because of that second port.
+ 2) when ata_resources_present returns false because the BAR has
+    a zero start or length
+ 3) because pcim_iomap_regions() fails.  This prints a warning to the
+    log ("failed to request/iomap BARs for port %d (errno=%d)") that you
+    should have seen
+
+So the problem here has to be number two.  The legacy ide driver OTOH
+seems to lack a lot of these checks, although I'm not sure how it
+manages to actually work without those.
+
+Can you show how the BAR assignment for the device looks using lscpi
+or a tool of your choice?
