@@ -2,66 +2,64 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-15.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-17.3 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,NICE_REPLY_A,SPF_HELO_NONE,SPF_PASS,
+	URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=unavailable autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C2112C43470
-	for <linux-m68k@archiver.kernel.org>; Sun, 21 Mar 2021 21:56:12 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 0BB56C433C1
+	for <linux-m68k@archiver.kernel.org>; Mon, 22 Mar 2021 08:35:52 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 8F5886195E
-	for <linux-m68k@archiver.kernel.org>; Sun, 21 Mar 2021 21:56:12 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id B386261972
+	for <linux-m68k@archiver.kernel.org>; Mon, 22 Mar 2021 08:35:51 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231502AbhCUVzm (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Sun, 21 Mar 2021 17:55:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60568 "EHLO
+        id S229665AbhCVIfR (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Mon, 22 Mar 2021 04:35:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57094 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231448AbhCUVzM (ORCPT
+        with ESMTP id S229786AbhCVIex (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Sun, 21 Mar 2021 17:55:12 -0400
-Received: from mail-qt1-x836.google.com (mail-qt1-x836.google.com [IPv6:2607:f8b0:4864:20::836])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 414CAC061763
-        for <linux-m68k@lists.linux-m68k.org>; Sun, 21 Mar 2021 14:55:12 -0700 (PDT)
-Received: by mail-qt1-x836.google.com with SMTP id m7so10990984qtq.11
-        for <linux-m68k@lists.linux-m68k.org>; Sun, 21 Mar 2021 14:55:12 -0700 (PDT)
+        Mon, 22 Mar 2021 04:34:53 -0400
+Received: from mail-ej1-x62b.google.com (mail-ej1-x62b.google.com [IPv6:2a00:1450:4864:20::62b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B9880C061763
+        for <linux-m68k@lists.linux-m68k.org>; Mon, 22 Mar 2021 01:34:52 -0700 (PDT)
+Received: by mail-ej1-x62b.google.com with SMTP id l4so19775270ejc.10
+        for <linux-m68k@lists.linux-m68k.org>; Mon, 22 Mar 2021 01:34:52 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=/XStqP8D36CZJzw2TftI54Ck6LfKQaVMF+TC1pFq5UY=;
-        b=boTqQ/9S6wam0P8nPn8btJusb093uXNIQ+5szswt4fPF0puRU1LwUoRPlSnbGlSVnf
-         PG2rgmLg5ihl/HCy5l6yfzUd8TRaVTUDRyrRS1H1ZN87AK52jtsVD71/Pc/KZTdQLxDc
-         Wp5oIZI69GG7YfRRGgLa4owGJIvKKbA9o8TvAOWvQvd/A3MKF5iNQOs6fjw6q9R7zHDp
-         CMnjcoMcruP8lRHGDsx+Qwwphj2+AiLyk0LSQndypvb8zSM6Q53FFa3+B68Htng8VvfO
-         3EZJAhcrCniYhwdqvXwn1cXMpcdyfjpVfAwsNMEci4jRkx3E9kV5CyaOmbXCN7Dxz73k
-         xafA==
+        d=rasmusvillemoes.dk; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=BBF8DIkoQQBUBd0KpgS6B4Sfzebh5T00LVb2n/RkXjU=;
+        b=DG3sytqOl9JAsShSSpGYHMmpeKDr/QvaT+FUc4L/et+jBGldZEkDRV5MmGFeOJUIRk
+         XVEuW1Ms1HGUAi1eUXKCEOAKb++Xth1RGm2ZPdTn7GKRz8YIVbVkzjbxZag55s3O+Wht
+         524nBj05bnQGW5VEgMfvtHVNwKJnbQNiEpSNM=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=/XStqP8D36CZJzw2TftI54Ck6LfKQaVMF+TC1pFq5UY=;
-        b=dkJuvgqLXuQB8sQ4VyY4wqhJfauTeBw+pWCJWgPZpa/5VniyScMJpNYDZEWkjUPt8M
-         rI3DEbQG+67Gh5XyfeHshjXasM2gHSPCfloJ+e2Bc/P4/Q31JUPCdY2GUpwsKn/9lpB4
-         oCKiSwaxM73FPTkNxCIfQo3/C7ZrZyG1MhgC5vNb93dfx26X386W0QwTcmfN3SZpP9ER
-         DQit18Si+wb7aauhuQVZxTD85PHiECwUgWPR2ueIbiHy2VIrcfCVV9g3G7ANaI1Jje3V
-         wPnK9HdbVlV2+qf/MHUYY9MNrlznUrGGxTg+pWsaSqF7giGCOjeV7IBHFKpTmAj4GW/h
-         P6bg==
-X-Gm-Message-State: AOAM530lUYnnW5nK0oyZXqCILp+GDyD5iTaISP3RhmiydalqJlb9J29K
-        HeJz90p9GxbmS1Y6jgrWlK8=
-X-Google-Smtp-Source: ABdhPJzuEUoa9KmXdMY9wULzE4YA/lfRLKC+pxc4pScjCeblaVmy7HRsyA9lMPhMUxxsJ6k5t5/hJw==
-X-Received: by 2002:ac8:6790:: with SMTP id b16mr7160203qtp.379.1616363711463;
-        Sun, 21 Mar 2021 14:55:11 -0700 (PDT)
-Received: from localhost ([76.73.146.210])
-        by smtp.gmail.com with ESMTPSA id r133sm9655356qke.20.2021.03.21.14.55.11
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 21 Mar 2021 14:55:11 -0700 (PDT)
-From:   Yury Norov <yury.norov@gmail.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     Yury Norov <yury.norov@gmail.com>, linux-m68k@lists.linux-m68k.org,
-        linux-arch@vger.kernel.org, linux-sh@vger.kernel.org,
-        Alexey Klimov <aklimov@redhat.com>,
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=BBF8DIkoQQBUBd0KpgS6B4Sfzebh5T00LVb2n/RkXjU=;
+        b=OkmwNg1BaqZ1EA0AbvVMee/p1mujA3oae/aLk9+tyRp+lznLN1lV8wwG/WJBJmfNBt
+         plUeKzCqz26JjojJ1DUOxvxQZOJrXQWxOiWUk0mEZch7wUJJM/ZrwmDS+GD1U0YwqmG9
+         183t1UMDDyMcLS4ddwR4YKVuDFAgDMyP1XPYTPeeg+3F1n2dfo0BBt1nkzAsgko+LEB/
+         vQs1cziDPuQoUp7X4XMkrKF1kwJ5IBi4k5y9q2C6KdBVNZaKAK9qYh1uatqLIE1+hbnU
+         AIu3vaWaxpK9r/RpD6pB7FMvnbgE9SIq0rhEauEKwU314gJ6Ov8UdlYF0ObHF2ldE2h2
+         4klQ==
+X-Gm-Message-State: AOAM531EwCysz3P/9C8pdWWBlQ57TAs5el/FENIOTmBjoY+/Tpgpakvj
+        bKMD2I4AlrVzLeKlGzsW0H/z8w==
+X-Google-Smtp-Source: ABdhPJwyTEl4Fnp8uqqgeSJXZsxHuLMe2rbTMi/8LPgpGvZiqZBjIMfQj0VdA7vl6TX3TRGENrg4xw==
+X-Received: by 2002:a17:906:3b41:: with SMTP id h1mr17454517ejf.506.1616402091330;
+        Mon, 22 Mar 2021 01:34:51 -0700 (PDT)
+Received: from [192.168.1.149] ([80.208.71.248])
+        by smtp.gmail.com with ESMTPSA id u13sm9444384ejn.59.2021.03.22.01.34.48
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 22 Mar 2021 01:34:50 -0700 (PDT)
+Subject: Re: [PATCH 06/12] tools: sync small_const_nbits() macro with the
+ kernel
+To:     Yury Norov <yury.norov@gmail.com>, linux-kernel@vger.kernel.org
+Cc:     linux-m68k@lists.linux-m68k.org, linux-arch@vger.kernel.org,
+        linux-sh@vger.kernel.org, Alexey Klimov <aklimov@redhat.com>,
         Andrew Morton <akpm@linux-foundation.org>,
         Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
         Arnd Bergmann <arnd@arndb.de>, David Sterba <dsterba@suse.com>,
@@ -71,60 +69,62 @@ Cc:     Yury Norov <yury.norov@gmail.com>, linux-m68k@lists.linux-m68k.org,
         Joe Perches <joe@perches.com>,
         John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
         Josh Poimboeuf <jpoimboe@redhat.com>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
         Rich Felker <dalias@libc.org>,
         Stefano Brivio <sbrivio@redhat.com>,
         Wei Yang <richard.weiyang@linux.alibaba.com>,
         Wolfram Sang <wsa+renesas@sang-engineering.com>,
         Yoshinori Sato <ysato@users.sourceforge.jp>
-Subject: [PATCH 12/12] MAINTAINERS: Add entry for the bitmap API
-Date:   Sun, 21 Mar 2021 14:54:57 -0700
-Message-Id: <20210321215457.588554-13-yury.norov@gmail.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210321215457.588554-1-yury.norov@gmail.com>
 References: <20210321215457.588554-1-yury.norov@gmail.com>
+ <20210321215457.588554-7-yury.norov@gmail.com>
+From:   Rasmus Villemoes <linux@rasmusvillemoes.dk>
+Message-ID: <ef470d38-073d-2c6c-f9f8-909689a52212@rasmusvillemoes.dk>
+Date:   Mon, 22 Mar 2021 09:34:47 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210321215457.588554-7-yury.norov@gmail.com>
+Content-Type: text/plain; charset=windows-1252
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-Add myself as maintainer for bitmap API and Andy and Rasmus as reviewers.
+On 21/03/2021 22.54, Yury Norov wrote:
+> Move the macro from tools/include/asm-generic/bitsperlong.h
+> to tools/include/linux/bitmap.h
 
-Signed-off-by: Yury Norov <yury.norov@gmail.com>
-Acked-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+The patch does it the other way around :)
+
+> Signed-off-by: Yury Norov <yury.norov@gmail.com>
+> ---
+>  tools/include/asm-generic/bitsperlong.h | 3 +++
+>  tools/include/linux/bitmap.h            | 3 ---
+>  2 files changed, 3 insertions(+), 3 deletions(-)
+> 
+> diff --git a/tools/include/asm-generic/bitsperlong.h b/tools/include/asm-generic/bitsperlong.h
+> index 8f2283052333..f530da2506cc 100644
+> --- a/tools/include/asm-generic/bitsperlong.h
+> +++ b/tools/include/asm-generic/bitsperlong.h
+> @@ -18,4 +18,7 @@
+>  #define BITS_PER_LONG_LONG 64
+>  #endif
+>  
+> +#define small_const_nbits(nbits) \
+> +	(__builtin_constant_p(nbits) && (nbits) <= BITS_PER_LONG)
+> +
+
+Well, the movement is consistent with the kernel, but shouldn't the
+definition also be updated to exclude constant-zero-size? It's not that
+they exist or ever have, in tools/ or kernel proper, but just if some
+day some oddball CONFIG_ combination ends up creating such a beast, I'd
+rather not have code like
+
++	if (small_const_nbits(size)) {
++		unsigned long val = *addr & GENMASK(size - 1, 0);
+
+blow up at run-time.
+
+Other than that (and the above commit log typo), consider the series
+
 Acked-by: Rasmus Villemoes <linux@rasmusvillemoes.dk>
----
- MAINTAINERS | 16 ++++++++++++++++
- 1 file changed, 16 insertions(+)
-
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 38ee5c1a7c3a..62be169be25a 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -3163,6 +3163,22 @@ F:	Documentation/filesystems/bfs.rst
- F:	fs/bfs/
- F:	include/uapi/linux/bfs_fs.h
- 
-+BITMAP API
-+M:	Yury Norov <yury.norov@gmail.com>
-+R:	Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-+R:	Rasmus Villemoes <linux@rasmusvillemoes.dk>
-+S:	Maintained
-+F:	include/asm-generic/bitops/find.h
-+F:	include/linux/bitmap.h
-+F:	lib/bitmap.c
-+F:	lib/find_bit.c
-+F:	lib/find_bit_benchmark.c
-+F:	lib/test_bitmap.c
-+F:	tools/include/asm-generic/bitops/find.h
-+F:	tools/include/linux/bitmap.h
-+F:	tools/lib/bitmap.c
-+F:	tools/lib/find_bit.c
-+
- BLINKM RGB LED DRIVER
- M:	Jan-Simon Moeller <jansimon.moeller@gmx.de>
- S:	Maintained
--- 
-2.25.1
-
