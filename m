@@ -2,70 +2,51 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-5.0 required=3.0 tests=BAYES_00,DKIM_INVALID,
+	DKIM_SIGNED,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=no autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 76F14C433E1
-	for <linux-m68k@archiver.kernel.org>; Mon, 22 Mar 2021 16:48:55 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4FE01C433DB
+	for <linux-m68k@archiver.kernel.org>; Mon, 22 Mar 2021 17:01:16 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 4D8ED61972
-	for <linux-m68k@archiver.kernel.org>; Mon, 22 Mar 2021 16:48:55 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 141D36199F
+	for <linux-m68k@archiver.kernel.org>; Mon, 22 Mar 2021 17:01:16 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231601AbhCVQsW (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Mon, 22 Mar 2021 12:48:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51300 "EHLO
+        id S229979AbhCVRAt (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Mon, 22 Mar 2021 13:00:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53970 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231486AbhCVQru (ORCPT
+        with ESMTP id S231607AbhCVRAO (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Mon, 22 Mar 2021 12:47:50 -0400
-Received: from mail-pj1-x102e.google.com (mail-pj1-x102e.google.com [IPv6:2607:f8b0:4864:20::102e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F38A9C061756
-        for <linux-m68k@lists.linux-m68k.org>; Mon, 22 Mar 2021 09:47:49 -0700 (PDT)
-Received: by mail-pj1-x102e.google.com with SMTP id nh23-20020a17090b3657b02900c0d5e235a8so8863476pjb.0
-        for <linux-m68k@lists.linux-m68k.org>; Mon, 22 Mar 2021 09:47:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=eo71V2xWro59w05Mq4CnF1xMsNUIPGze5LTw4FuXS2A=;
-        b=DLCxZ8Y9zjxqRMlu1J8/r7nzs+yb79uVYpIuUsLrMH2v7J7Of8MvDHK0SAqytIoffm
-         IAcbm21SCskZVG0eMJTr/YPMa8dHdIOU7yid/4LU7z/xIwCf9PNd33usAoL0/NQpXcnc
-         o0YIKhvIluJkw1ZSUEcZMolcs/Y8JiBAbhOynMzl2CrMOnnyCLaMxMzWF2c9Ghg1b841
-         4qb49GnPjICOYIu1Vhp19jfa+9rvWhFbBsLo/E4GW41FleypfdMdpq2n4VxGvHEZH6p5
-         YKgzKKhCPIKkHcTfK09hDujGumj2q6l0S/SugkxawOWShbvmusbIpR3FE/vb2RMokzM/
-         Dgww==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=eo71V2xWro59w05Mq4CnF1xMsNUIPGze5LTw4FuXS2A=;
-        b=iRXMmLu0Fwuht4dZfpqbZhzq/8BJgqoNWMPvjmYBy9SAH9ZipxDL1LNB3hqpHKljhW
-         E2LBO16LSnvnH+i4suEpT+sciLxepSeRHw1UbTzpya8J71QiDzt+5W8Ui3KGHxEd5ZXw
-         aJIjWO27GfoeCwghWZ7J4DAIRE/7PfgUAK2XE6MCzWtCVe8nVwiPD5c0MkhbjCeEXG9W
-         YsYdNj1xTlDR60nNCnaf8ioDnEfUh53zVT7IJa5NypmheAbyb91ymaVhbpDNJakjCECe
-         QH/jKXie0+35m80G3J3R6jc6miaXiGq4FvQ/c3NACh4ik2fcanMTsozcee8UTBvKRdy4
-         MiQA==
-X-Gm-Message-State: AOAM532yEHfzUxc206BElUPVIgriMmJZPZp6OHvuX5pzUZEC9RWg4DG+
-        wbttsz5/LYP+HB33TOnd+JeTHU0NvE0FVcIkSuY=
-X-Google-Smtp-Source: ABdhPJz5yVUG5nM8XQz+XfMVliRVJC+u6jW/d5gyfhCJ3fkTqwu7NtLBIJlTT4tDwktHXGI3PU2WiL1llZFRnDkPC1o=
-X-Received: by 2002:a17:902:8507:b029:e5:ea3a:3d61 with SMTP id
- bj7-20020a1709028507b02900e5ea3a3d61mr489956plb.71.1616431669453; Mon, 22 Mar
- 2021 09:47:49 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210318045706.200458-1-hch@lst.de> <20210318045706.200458-3-hch@lst.de>
- <20210319170753.GV1463@shell.armlinux.org.uk> <20210319175311.GW1463@shell.armlinux.org.uk>
- <20210322145403.GA30942@lst.de> <20210322151503.GX1463@shell.armlinux.org.uk> <224b110e-7c42-4e19-800e-e0fa23d3bf7f@physik.fu-berlin.de>
-In-Reply-To: <224b110e-7c42-4e19-800e-e0fa23d3bf7f@physik.fu-berlin.de>
-From:   Cye Borg <cyborgyn@gmail.com>
-Date:   Mon, 22 Mar 2021 17:47:38 +0100
-Message-ID: <CAD4NMuYBr7m+6Zw9cmOJWMXHqNOM17RqGY8bR7itx2yq8piKcw@mail.gmail.com>
-Subject: Re: [PATCH 02/10] ARM: disable CONFIG_IDE in footbridge_defconfig
-To:     John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
-Cc:     Russell King - ARM Linux admin <linux@armlinux.org.uk>,
-        Christoph Hellwig <hch@lst.de>,
-        "David S. Miller" <davem@davemloft.net>,
+        Mon, 22 Mar 2021 13:00:14 -0400
+Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6FA08C061574
+        for <linux-m68k@lists.linux-m68k.org>; Mon, 22 Mar 2021 10:00:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
+        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+         bh=/wzJhKM6WR08BxO9Rx9F+4jrBkWZ2G6YTLOBTI0aOD0=; b=UkTSwJFrJA41g1Jpc9MQFy2W/
+        3nnqiHqPlY4LT6afefhGXkSe38OlG4Cj6N+5xVV14AJBJMevjOhRDBP5Y3UOkxdynEVHg/OYNa8R9
+        k1/Nszw3tb5VViTAXoO8RddWSZ2JAGCMwtfo7bPOdavpFJB531CmzgpFgVkNHM5D/nlPV8yMZMbPB
+        jx251IdjkhlJbqWh8gNG9EgWx+ciuVMhdCeGv8/y6BoKRw/c8QrVMWOfCmb5xLEBSqjRksgFiN0j7
+        oAzOcBF7RbmQ1Hf2ihsxu7hF9Hfsxg7Dzj4O0i88qDZM0GQrqiY+kBQSCFMb1WkgPYx6Cg9N9lZeE
+        hSdnyA1hg==;
+Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:51588)
+        by pandora.armlinux.org.uk with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <linux@armlinux.org.uk>)
+        id 1lONuJ-0006jh-97; Mon, 22 Mar 2021 16:59:59 +0000
+Received: from linux by shell.armlinux.org.uk with local (Exim 4.92)
+        (envelope-from <linux@shell.armlinux.org.uk>)
+        id 1lONuG-0003Nx-T6; Mon, 22 Mar 2021 16:59:56 +0000
+Date:   Mon, 22 Mar 2021 16:59:56 +0000
+From:   Russell King - ARM Linux admin <linux@armlinux.org.uk>
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     "David S. Miller" <davem@davemloft.net>,
         Jens Axboe <axboe@kernel.dk>,
         Geert Uytterhoeven <geert@linux-m68k.org>,
         Richard Henderson <rth@twiddle.net>,
@@ -78,75 +59,50 @@ Cc:     Russell King - ARM Linux admin <linux@armlinux.org.uk>,
         linux-arm-kernel@lists.infradead.org,
         linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org,
         linuxppc-dev@lists.ozlabs.org
-Content-Type: text/plain; charset="UTF-8"
+Subject: Re: [PATCH 02/10] ARM: disable CONFIG_IDE in footbridge_defconfig
+Message-ID: <20210322165956.GY1463@shell.armlinux.org.uk>
+References: <20210318045706.200458-1-hch@lst.de>
+ <20210318045706.200458-3-hch@lst.de>
+ <20210319170753.GV1463@shell.armlinux.org.uk>
+ <20210319175311.GW1463@shell.armlinux.org.uk>
+ <20210322145403.GA30942@lst.de>
+ <20210322151503.GX1463@shell.armlinux.org.uk>
+ <20210322151823.GA2764@lst.de>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210322151823.GA2764@lst.de>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+Sender: Russell King - ARM Linux admin <linux@armlinux.org.uk>
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-I use pata_cypress on Alpha, and for the above mentioned problems,
-it always restricted me to use only one IDE channel out of the two
-available. Also, not forcing it to use PIO mode, it always failed to
-operate. I would love to test on Alpha, and give you feedback about
-a fix/finished implementation of the driver. I have both Alpha Server DS20E
-and Alpha Personal Workstation 500 including that freak chipset.
-
-Let me know if/when I can help with my limited capabilities.
-
-btw, here is the lspci of the Compaq PWS 500au:
-snow / # lspci
-00:03.0 Ethernet controller: Digital Equipment Corporation DECchip
-21142/43 (rev 30)
-00:07.0 ISA bridge: Contaq Microsystems 82c693
-00:07.1 IDE interface: Contaq Microsystems 82c693
-00:07.2 IDE interface: Contaq Microsystems 82c693
-00:07.3 USB controller: Contaq Microsystems 82c693
-00:0b.0 Multimedia video controller: 3Dfx Interactive, Inc. Voodoo 2 (rev 02)
-00:0c.0 PCI bridge: Digital Equipment Corporation DECchip 21052 (rev 01)
-00:14.0 PCI bridge: Digital Equipment Corporation DECchip 21152 (rev 02)
-01:04.0 VGA compatible controller: Cirrus Logic GD 5430/40 [Alpine] (rev 47)
-01:05.0 Display controller: Intergraph Corporation Device 00eb (rev 40)
-02:04.0 SCSI storage controller: QLogic Corp. ISP1020 Fast-wide SCSI (rev 05)
-02:0a.0 SCSI storage controller: Broadcom / LSI 53c810 (rev 01)
-
-Thanks, best regards,
-Barnabas Viragh
-
-
-On Mon, Mar 22, 2021 at 5:10 PM John Paul Adrian Glaubitz
-<glaubitz@physik.fu-berlin.de> wrote:
->
-> On 3/22/21 4:15 PM, Russell King - ARM Linux admin wrote:
+On Mon, Mar 22, 2021 at 04:18:23PM +0100, Christoph Hellwig wrote:
+> On Mon, Mar 22, 2021 at 03:15:03PM +0000, Russell King - ARM Linux admin wrote:
+> > It gets worse than that though - due to a change to remove
+> > pcibios_min_io from the generic code, moving it into the ARM
+> > architecture code, this has caused a regression that prevents the
+> > legacy resources being registered against the bus resource. So even
+> > if they are there, they cause probe failures. I haven't found a
+> > reasonable way to solve this yet, but until there is, there is no
+> > way that the PATA driver can be used as the "legacy mode" support
+> > is effectively done via the PCI code assigning virtual IO port
+> > resources.
+> > 
 > > I'm quite surprised that the CY82C693 even works on Alpha - I've
 > > asked for a lspci for that last week but nothing has yet been
 > > forthcoming from whoever responded to your patch for Alpha - so I
 > > can't compare what I'm seeing with what's happening with Alpha.
->
-> Here is lspci on my DEC Alpha XP-1000:
->
-> root@tsunami:~> lspci
-> 0000:00:07.0 ISA bridge: Contaq Microsystems 82c693
-> 0000:00:07.1 IDE interface: Contaq Microsystems 82c693
-> 0000:00:07.2 IDE interface: Contaq Microsystems 82c693
-> 0000:00:07.3 USB controller: Contaq Microsystems 82c693
-> 0000:00:0d.0 VGA compatible controller: Texas Instruments TVP4020 [Permedia 2] (rev 01)
-> 0001:01:03.0 Ethernet controller: Digital Equipment Corporation DECchip 21142/43 (rev 41)
-> 0001:01:06.0 SCSI storage controller: QLogic Corp. ISP1020 Fast-wide SCSI (rev 06)
-> 0001:01:08.0 PCI bridge: Digital Equipment Corporation DECchip 21152 (rev 03)
-> 0001:02:09.0 Ethernet controller: Intel Corporation 82541PI Gigabit Ethernet Controller (rev 05)
-> root@tsunami:~>
->
-> It's using pata_cypress:
->
-> root@tsunami:~> lsmod|grep cypress
-> pata_cypress            3595  3
-> libata                235071  2 ata_generic,pata_cypress
-> root@tsunami:~
->
-> Adrian
->
-> --
->  .''`.  John Paul Adrian Glaubitz
-> : :' :  Debian Developer - glaubitz@debian.org
-> `. `'   Freie Universitaet Berlin - glaubitz@physik.fu-berlin.de
->   `-    GPG: 62FF 8A75 84E0 2956 9546  0006 7426 3B37 F5B5 F913
->
+> 
+> That sounds like something we could fix with a quirk for function 2
+> in the PCI resource assignment code.  Can you show what vendor and
+> device ID function 2 has so that I could try to come up with one?
+
+I already have a quirk in arch/arm/kernel/bios32.c for this - but it
+is no longer sufficient due to changes in the PCI layer, where much
+of this is documented.
+
+-- 
+RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
+FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
