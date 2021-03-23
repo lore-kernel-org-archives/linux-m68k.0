@@ -2,135 +2,151 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.1 required=3.0 tests=BAYES_00,DKIM_INVALID,
-	DKIM_SIGNED,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS,USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-11.8 required=3.0 tests=BAYES_00,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 7015CC433E1
-	for <linux-m68k@archiver.kernel.org>; Tue, 23 Mar 2021 18:44:36 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 0BDD1C433E2
+	for <linux-m68k@archiver.kernel.org>; Tue, 23 Mar 2021 22:16:02 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 38505619C0
-	for <linux-m68k@archiver.kernel.org>; Tue, 23 Mar 2021 18:44:36 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id CA24F619D4
+	for <linux-m68k@archiver.kernel.org>; Tue, 23 Mar 2021 22:16:01 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232323AbhCWSoD (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Tue, 23 Mar 2021 14:44:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47970 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232231AbhCWSnw (ORCPT
+        id S233860AbhCWWP1 convert rfc822-to-8bit (ORCPT
+        <rfc822;linux-m68k@archiver.kernel.org>);
+        Tue, 23 Mar 2021 18:15:27 -0400
+Received: from mout.kundenserver.de ([212.227.126.133]:38145 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233793AbhCWWOw (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Tue, 23 Mar 2021 14:43:52 -0400
-Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 24B4BC061763
-        for <linux-m68k@lists.linux-m68k.org>; Tue, 23 Mar 2021 11:43:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
-        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-         bh=DKyHtKCO0K411018/e/MjJ+tlpnzWhDvazNrYsJOSa8=; b=wCZfve7N74jmvnRTUOrJapFiD
-        leJcWyRdawkhb6OZ4a1jxgzU3R/uQMZ2qIC4/y+Z+g9Sm9wd52sx8s5nB9p/DacOKa0D085kbjhUG
-        t719Zz6QmKCjMRJa189d+8TdFKszHhlT0JCrsUlaN15Ckx/gO6mdtjjXk0VX6m+6vTI47uvdxpJvh
-        2BG/ot8QgcvNes2LaU+gyZF0cTx4dYG2XnofuryoyNBFgVrUagwbgOO2Ln4dpB+6KoQP+1egdlpI6
-        il+83CsRb5nFRb3bPUyPMt1saGI84tHzmPIAIUXwkbKTNs43gPCOy+82tv90e78q6UWOAjTD1usvT
-        97GM9EK/Q==;
-Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:51634)
-        by pandora.armlinux.org.uk with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <linux@armlinux.org.uk>)
-        id 1lOlzy-00080o-ME; Tue, 23 Mar 2021 18:43:26 +0000
-Received: from linux by shell.armlinux.org.uk with local (Exim 4.92)
-        (envelope-from <linux@shell.armlinux.org.uk>)
-        id 1lOlzt-0004Mo-J1; Tue, 23 Mar 2021 18:43:21 +0000
-Date:   Tue, 23 Mar 2021 18:43:21 +0000
-From:   Russell King - ARM Linux admin <linux@armlinux.org.uk>
-To:     Cye Borg <cyborgyn@gmail.com>
-Cc:     John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
-        Christoph Hellwig <hch@lst.de>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jens Axboe <axboe@kernel.dk>,
+        Tue, 23 Mar 2021 18:14:52 -0400
+Received: from localhost.localdomain ([82.142.25.162]) by
+ mrelayeu.kundenserver.de (mreue010 [212.227.15.167]) with ESMTPSA (Nemesis)
+ id 1MJEMt-1l4g6s3aWJ-00KkmU; Tue, 23 Mar 2021 23:14:34 +0100
+From:   Laurent Vivier <laurent@vivier.eu>
+To:     linux-kernel@vger.kernel.org
+Cc:     linux-m68k@lists.linux-m68k.org,
         Geert Uytterhoeven <geert@linux-m68k.org>,
-        Richard Henderson <rth@twiddle.net>,
-        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
-        Matt Turner <mattst88@gmail.com>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        linux-ide@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-alpha@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org
-Subject: Re: [PATCH 02/10] ARM: disable CONFIG_IDE in footbridge_defconfig
-Message-ID: <20210323184321.GE1463@shell.armlinux.org.uk>
-References: <20210318045706.200458-1-hch@lst.de>
- <20210318045706.200458-3-hch@lst.de>
- <20210319170753.GV1463@shell.armlinux.org.uk>
- <20210319175311.GW1463@shell.armlinux.org.uk>
- <20210322145403.GA30942@lst.de>
- <20210322151503.GX1463@shell.armlinux.org.uk>
- <224b110e-7c42-4e19-800e-e0fa23d3bf7f@physik.fu-berlin.de>
- <20210322170338.GZ1463@shell.armlinux.org.uk>
- <CAD4NMuZWoV0m85OyBDHLt+J8NYCV5wYx7fFZaivBNEgDnrN5xw@mail.gmail.com>
+        linux-rtc@vger.kernel.org, Alessandro Zummo <a.zummo@towertech.it>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Laurent Vivier <laurent@vivier.eu>
+Subject: [PATCH 0/2] m68k: Add Virtual M68k Machine
+Date:   Tue, 23 Mar 2021 23:14:28 +0100
+Message-Id: <20210323221430.3735147-1-laurent@vivier.eu>
+X-Mailer: git-send-email 2.30.2
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAD4NMuZWoV0m85OyBDHLt+J8NYCV5wYx7fFZaivBNEgDnrN5xw@mail.gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-Sender: Russell King - ARM Linux admin <linux@armlinux.org.uk>
+Content-Transfer-Encoding: 8BIT
+X-Provags-ID: V03:K1:j8CPgu/CLqP6+6iZqF5GKlyEcInJxjDbuDcQ1KDqVzrJjRIJ0Qs
+ OZBKydzC53HxbPRvKcCMNJQczqrpXbd9VOUPCjmlc83I2qXQpkiYXTc5Ukb+kUb9JmFZvxs
+ J0GvNZQo8mQzpc1glFv1Ri2bJl3vb/Yiz1hL+rnP7u106v78WmjL5sg+h6ygyuEKQcvuEph
+ n76E2q5f/j8ARjM4bT4Vw==
+X-UI-Out-Filterresults: notjunk:1;V03:K0:UYqdyMaw7L0=:YjOZR8DQq4wWyPa53zBtew
+ nzc9yEl8ZBIY9jc1xT3sZQfBiRXNEuThEs3k1rj266bvIExHma5c+0A4FtwZiiHsG3DaMEtPa
+ hJBld2vj0XAyVoh+F9U0wwCXmhE1S2598COjaI23aISMEQ76C5mm5WN8q4l+4jKnQEqTvhtqu
+ 79IIpsf7ESDs4nywQaHbJCKR4EmVPODrJSAfM0yKoukihbfc53nm4ENaiJOV5jJfIyZp0AGWo
+ ptaVFL+yvvCiTqz/bKC1tUscnqP5Ge7a30qgNeYJN7oJ43XFdJkJnhGprDol0PZ1LIrDyP+vY
+ /HpGl65L7iy18on2ABcyeZi/6ZpMGtKy1Vd/URMBYMpDeP8Vwd5lrJjI3yvI0DXB9IiVFr8Ob
+ NA/cU09mmSwtUc8ccGHC5lckld0xxJqquqdUm7XCKgBVYfPpGX8Fp5Exn79LkwWTLsrooZr7I
+ 7+Szfeg1sg==
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-On Mon, Mar 22, 2021 at 06:10:01PM +0100, Cye Borg wrote:
-> PWS 500au:
-> 
-> snow / # lspci -vvx -s 7.1
-> 00:07.1 IDE interface: Contaq Microsystems 82c693 (prog-if 80 [ISA
-> Compatibility mode-only controller, supports bus mastering])
->         Control: I/O+ Mem- BusMaster+ SpecCycle- MemWINV- VGASnoop-
-> ParErr+ Stepping- SERR- FastB2B- DisINTx-
->         Status: Cap- 66MHz- UDF- FastB2B+ ParErr- DEVSEL=medium
-> >TAbort- <TAbort- <MAbort- >SERR- <PERR- INTx-
->         Latency: 0
->         Interrupt: pin A routed to IRQ 0
->         Region 0: I/O ports at 01f0 [size=8]
->         Region 1: I/O ports at 03f4
->         Region 4: I/O ports at 9080 [size=16]
->         Kernel driver in use: pata_cypress
->         Kernel modules: pata_cypress
-> 00: 80 10 93 c6 45 00 80 02 00 80 01 01 00 00 80 00
-> 10: f1 01 00 00 f5 03 00 00 00 00 00 00 00 00 00 00
-> 20: 81 90 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-> 30: 00 00 00 00 00 00 00 00 00 00 00 00 00 01 00 00
-> 
-> snow / # lspci -vvx -s 7.2
-> 00:07.2 IDE interface: Contaq Microsystems 82c693 (prog-if 00 [ISA
-> Compatibility mode-only controller])
->         Control: I/O+ Mem- BusMaster+ SpecCycle- MemWINV- VGASnoop-
-> ParErr+ Stepping- SERR- FastB2B- DisINTx-
->         Status: Cap- 66MHz- UDF- FastB2B+ ParErr- DEVSEL=medium
-> >TAbort- <TAbort- <MAbort- >SERR- <PERR- INTx-
->         Latency: 0
->         Interrupt: pin B routed to IRQ 0
->         Region 0: I/O ports at 0170 [size=8]
->         Region 1: I/O ports at 0374
->         Region 4: Memory at 0c240000 (32-bit, non-prefetchable)
-> [disabled] [size=64K]
->         Kernel modules: pata_cypress
-> 00: 80 10 93 c6 45 00 80 02 00 00 01 01 00 00 80 00
-> 10: 71 01 00 00 75 03 00 00 00 00 00 00 00 00 00 00
-> 20: 00 00 24 0c 00 00 00 00 00 00 00 00 00 00 00 00
-> 30: 00 00 00 00 00 00 00 00 00 00 00 00 00 02 00 00
+The most powerful m68k machine emulated by QEMU is a Quadra 800,
+but this machine is very limited: only 1 GiB of memory and only some
+specific interfaces, with no DMA.
 
-Thanks very much.
+The Virtual M68k Machine is based on Goldfish interfaces defined by Google
+for Android simulator. It uses Goldfish-rtc (timer and RTC),
+Goldfish-pic (PIC) and Goldfish-tty (for early tty).
 
-Could I also ask for the output of:
+The machine is created with 128 virtio-mmio buses, and they can
+be used to add serial console, GPU, disk, NIC, HID, hwrng, 9PFS...
 
-# lspci -vxxx -s 7.0
+The virtual m68k machine has been merged in QEMU and will be available
+with the release 6.0.
 
-as well please - this will dump all 256 bytes for the ISA bridge, which
-contains a bunch of configuration registers. Thanks.
+This series introduces the support of this new machine in the linux kernel.
 
--- 
-RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
-FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
+If you want to try:
+
+- Configure and build latest QEMU with (or download qemu 6.0 binary):
+
+  .../configure --target-list=3Dm68k-softmmu --enable-virglrenderer
+  make
+
+- Configure and build linux with:
+
+  make virt_defconfig
+  make vmlinux
+
+A pre-installed qcow2 disk image is available at:
+
+http://vivier.eu/debian-10.0.qcow2
+
+You can run the machine with something like:
+
+qemu-system-m68k -M virt \
+  -m 3G \
+  -chardev stdio,signal=3Doff,mux=3Don,id=3Dchar0 \
+  -mon chardev=3Dchar0,mode=3Dreadline \
+  -kernel vmlinux \
+  -append "console=3Dhvc0 root=3D/dev/vda2" \
+  -blockdev node-name=3Dsystem,driver=3Dfile,filename=3Ddebian-10.0.qcow2 \
+  -blockdev node-name=3Ddrive0,driver=3Dqcow2,file=3Dsystem \
+  -device virtio-blk-device,drive=3Ddrive0 \
+  -serial chardev:char0 \
+  -device virtio-net-device,netdev=3Dhostnet0 \
+  -netdev bridge,id=3Dhostnet0,br=3Dvirbr0,helper=3D/usr/libexec/qemu-bridge-=
+helper \
+  -device virtio-serial-device \
+  -device virtio-gpu-device \
+  -device virtconsole,chardev=3Dchar0 \
+  -device virtio-keyboard-device \
+  -device virtio-mouse-device
+
+You can watch a presentation about the machine on the Planet m68k channel:
+
+    https://youtu.be/s_ve0bCC9q4
+    [Demo at 38:00]
+
+Thanks,
+Laurent
+
+Laurent Vivier (2):
+  rtc: goldfish: remove dependency to OF
+  m68k: introduce a virtual m68k machine
+
+ arch/m68k/Kbuild                           |   1 +
+ arch/m68k/Kconfig.machine                  |  17 +++
+ arch/m68k/configs/virt_defconfig           |  93 ++++++++++++++++
+ arch/m68k/include/asm/irq.h                |   3 +-
+ arch/m68k/include/asm/pgtable_mm.h         |   7 ++
+ arch/m68k/include/asm/setup.h              |  44 ++++++--
+ arch/m68k/include/asm/virt.h               |  26 +++++
+ arch/m68k/include/uapi/asm/bootinfo-virt.h |  18 ++++
+ arch/m68k/include/uapi/asm/bootinfo.h      |   1 +
+ arch/m68k/kernel/Makefile                  |   1 +
+ arch/m68k/kernel/head.S                    |  30 ++++++
+ arch/m68k/kernel/setup_mm.c                |   9 ++
+ arch/m68k/mm/kmap.c                        |  20 ++--
+ arch/m68k/virt/Makefile                    |   6 ++
+ arch/m68k/virt/config.c                    | 118 +++++++++++++++++++++
+ arch/m68k/virt/ints.c                      | 110 +++++++++++++++++++
+ arch/m68k/virt/platform.c                  |  80 ++++++++++++++
+ arch/m68k/virt/timer.c                     |  91 ++++++++++++++++
+ drivers/rtc/Kconfig                        |   2 +-
+ 19 files changed, 659 insertions(+), 18 deletions(-)
+ create mode 100644 arch/m68k/configs/virt_defconfig
+ create mode 100644 arch/m68k/include/asm/virt.h
+ create mode 100644 arch/m68k/include/uapi/asm/bootinfo-virt.h
+ create mode 100644 arch/m68k/virt/Makefile
+ create mode 100644 arch/m68k/virt/config.c
+ create mode 100644 arch/m68k/virt/ints.c
+ create mode 100644 arch/m68k/virt/platform.c
+ create mode 100644 arch/m68k/virt/timer.c
+
+--=20
+2.30.2
+
