@@ -2,88 +2,73 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-17.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,INCLUDES_CR_TRAILER,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-8.8 required=3.0 tests=BAYES_00,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,MAILING_LIST_MULTI,
+	SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 2AA81C433ED
-	for <linux-m68k@archiver.kernel.org>; Wed, 31 Mar 2021 14:44:54 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 558C8C433ED
+	for <linux-m68k@archiver.kernel.org>; Wed, 31 Mar 2021 15:00:00 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id F0F3860FF2
-	for <linux-m68k@archiver.kernel.org>; Wed, 31 Mar 2021 14:44:53 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 1921161008
+	for <linux-m68k@archiver.kernel.org>; Wed, 31 Mar 2021 15:00:00 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236107AbhCaOoV (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Wed, 31 Mar 2021 10:44:21 -0400
-Received: from conuserg-10.nifty.com ([210.131.2.77]:33178 "EHLO
-        conuserg-10.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236067AbhCaOoP (ORCPT
+        id S236091AbhCaO71 (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Wed, 31 Mar 2021 10:59:27 -0400
+Received: from mail-ua1-f43.google.com ([209.85.222.43]:35754 "EHLO
+        mail-ua1-f43.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236085AbhCaO7S (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Wed, 31 Mar 2021 10:44:15 -0400
-Received: from localhost.localdomain (133-32-232-101.west.xps.vectant.ne.jp [133.32.232.101]) (authenticated)
-        by conuserg-10.nifty.com with ESMTP id 12VEhd3D005786;
-        Wed, 31 Mar 2021 23:43:40 +0900
-DKIM-Filter: OpenDKIM Filter v2.10.3 conuserg-10.nifty.com 12VEhd3D005786
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
-        s=dec2015msa; t=1617201820;
-        bh=PnpW/bjHoCFxKPSpBRx2jB2EfB2pG/XtBj+ImkglJ1w=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=gbautnCM4eb7KLsdrSKx7jcjaV4kxSn/uKhv8nXTnQLRdXAXDHrKpd4W3yYWkgPCm
-         9LXnRbb7mZQP/c8lbQB5IY1cmijYoOgboavrXSVzksF5CJ1NDRgyky/mIaTyjh/mqu
-         8meDfUjNek+31fUy0d8QyiTdz0hUaPwEg71rIuh1m7LCZLzyVY50agZS1VoQJlP7LI
-         roqwfVuIQr+czYNmuonyipPYcSbmJBz+OfamNQN28+1gyyxRMYgGq7dkh1UEX03Ogr
-         HWf7NVmCiMNYIT3OEqaLDR8EVwBmezDXLGjoCaPIP9n9MAT62D0yWl9WF7FA55Zb0u
-         htv6ughsQ3/NA==
-X-Nifty-SrcIP: [133.32.232.101]
-From:   Masahiro Yamada <masahiroy@kernel.org>
-To:     Geert Uytterhoeven <geert@linux-m68k.org>,
-        linux-m68k@lists.linux-m68k.org
-Cc:     Masahiro Yamada <masahiroy@kernel.org>,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH 2/2] m68k: remove meaningless EXTRA_LDFLAGS
-Date:   Wed, 31 Mar 2021 23:43:36 +0900
-Message-Id: <20210331144336.25628-2-masahiroy@kernel.org>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20210331144336.25628-1-masahiroy@kernel.org>
-References: <20210331144336.25628-1-masahiroy@kernel.org>
+        Wed, 31 Mar 2021 10:59:18 -0400
+Received: by mail-ua1-f43.google.com with SMTP id j19so6229217uax.2
+        for <linux-m68k@lists.linux-m68k.org>; Wed, 31 Mar 2021 07:59:18 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=OSz6CJVoblhMY8XWXlg1kvvJ25J01Wnwx8w1J/DwPGI=;
+        b=H0wLR9Mf9YTO3PXcnTMwP9dxLENxNuSXrP5ImIxyIJUt8XRm78wW2ZNizQ7yML4xBB
+         yv/rkA6ZsGn01pUlMMUhPKor64ZC6hwI3m+BQBqqXO692FumNSTcAuU7zCZJwBhdjuqF
+         Dwm/R1gpRXOFN+siyVYtfKChdnv3Gfqbve2fJxr+AMsUXFTJpH80dKNCjst5gOI5VNrs
+         u0zmwx/deJC0YfMEV5iTuYs29E5CdUTbjaSPwRY/sSK7PJqwn4sC2Vp63IdvYXyvSdCy
+         gS+G5ful4G+HVGPCzC0Go7/voK24GRNe0pQRw2YOifVpN+HZPYvhdtbH+UwdqzQZbuY1
+         MpYg==
+X-Gm-Message-State: AOAM532pcsrnKAitp2A5gxtCK9u5DcAj/pu6gTgWKhsRit7B7nj2Ff8W
+        Lkk1viZOpF40p8dkuXxGllIWrYYkzJ0so/vieWc=
+X-Google-Smtp-Source: ABdhPJzEmo+jaXA7S8yS/UF/SJmYHJFLOB/hurTZFxBIYrv1888gifZn3UHF5gKQrF1WMIIXGLgwWMxdEX3JjeWV9oA=
+X-Received: by 2002:ab0:30b3:: with SMTP id b19mr1779026uam.58.1617202757611;
+ Wed, 31 Mar 2021 07:59:17 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210331144336.25628-1-masahiroy@kernel.org>
+In-Reply-To: <20210331144336.25628-1-masahiroy@kernel.org>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Wed, 31 Mar 2021 16:59:06 +0200
+Message-ID: <CAMuHMdV2pR=rdN7ny_rLq8zCacFy9aw+hMuOQNnHcJ8q_nZYQw@mail.gmail.com>
+Subject: Re: [PATCH 1/2] m68k: remove meaningless $(OS_OBJS)
+To:     Masahiro Yamada <masahiroy@kernel.org>
+Cc:     linux-m68k <linux-m68k@lists.linux-m68k.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-These two Makefiles contain only built-in objects (i.e. obj-y), which
-are collected by $(AR) into a thin-archive.
+On Wed, Mar 31, 2021 at 4:44 PM Masahiro Yamada <masahiroy@kernel.org> wrote:
+> 'git grep OS_OBJS' hits only this line. $(OS_OBJS) is just empty.
 
-EXTRA_LDFLAGS is meaningless because $(LD) is not used here.
+Indeed. All other users were removed in 2002.
 
-Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
----
+> Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
 
- arch/m68k/fpsp040/Makefile  | 2 --
- arch/m68k/ifpsp060/Makefile | 2 --
- 2 files changed, 4 deletions(-)
+Reviewed-by: Geert Uytterhoeven <geert@linux-m68k.org>
+i.e. will queue in the m68k for-v5.13 branch.
 
-diff --git a/arch/m68k/fpsp040/Makefile b/arch/m68k/fpsp040/Makefile
-index 5537807457fb..834ae9471b88 100644
---- a/arch/m68k/fpsp040/Makefile
-+++ b/arch/m68k/fpsp040/Makefile
-@@ -10,5 +10,3 @@ obj-y    := bindec.o binstr.o decbin.o do_func.o gen_except.o get_op.o \
- 	    ssin.o ssinh.o stan.o stanh.o sto_res.o stwotox.o tbldo.o util.o \
- 	    x_bsun.o x_fline.o x_operr.o x_ovfl.o x_snan.o x_store.o \
- 	    x_unfl.o x_unimp.o x_unsupp.o bugfix.o skeleton.o
--
--EXTRA_LDFLAGS := -x
-diff --git a/arch/m68k/ifpsp060/Makefile b/arch/m68k/ifpsp060/Makefile
-index 43b435049452..56b530a96c2f 100644
---- a/arch/m68k/ifpsp060/Makefile
-+++ b/arch/m68k/ifpsp060/Makefile
-@@ -5,5 +5,3 @@
- # for more details.
- 
- obj-y := fskeleton.o iskeleton.o os.o
--
--EXTRA_LDFLAGS := -x
+Gr{oetje,eeting}s,
+
+                        Geert
+
 -- 
-2.27.0
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
