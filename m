@@ -6,57 +6,57 @@ X-Spam-Status: No, score=-15.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
-	autolearn=ham autolearn_force=no version=3.4.0
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 35571C433ED
+	by smtp.lore.kernel.org (Postfix) with ESMTP id AED0AC001BD
 	for <linux-m68k@archiver.kernel.org>; Thu,  1 Apr 2021 00:33:06 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 0628560FEC
-	for <linux-m68k@archiver.kernel.org>; Thu,  1 Apr 2021 00:33:05 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 8ACBE61029
+	for <linux-m68k@archiver.kernel.org>; Thu,  1 Apr 2021 00:33:06 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233225AbhDAAck (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Wed, 31 Mar 2021 20:32:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35148 "EHLO
+        id S233204AbhDAAci (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Wed, 31 Mar 2021 20:32:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35138 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233103AbhDAAcK (ORCPT
+        with ESMTP id S233080AbhDAAcJ (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Wed, 31 Mar 2021 20:32:10 -0400
+        Wed, 31 Mar 2021 20:32:09 -0400
 Received: from mail-qk1-x734.google.com (mail-qk1-x734.google.com [IPv6:2607:f8b0:4864:20::734])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CDD5CC061574
-        for <linux-m68k@lists.linux-m68k.org>; Wed, 31 Mar 2021 17:32:09 -0700 (PDT)
-Received: by mail-qk1-x734.google.com with SMTP id c4so682531qkg.3
-        for <linux-m68k@lists.linux-m68k.org>; Wed, 31 Mar 2021 17:32:09 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B8145C061574
+        for <linux-m68k@lists.linux-m68k.org>; Wed, 31 Mar 2021 17:32:08 -0700 (PDT)
+Received: by mail-qk1-x734.google.com with SMTP id z10so610236qkz.13
+        for <linux-m68k@lists.linux-m68k.org>; Wed, 31 Mar 2021 17:32:08 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=R5eR+cvpKZq1WYNNc805w7v5z1Gu54WewjgBw3zPSZw=;
-        b=eG+/eqlEB+D/yCNe7zlVJgHe15xLKvk+EdruRzRsHl8qL/OhqO2s4dBJBxM54EXgOO
-         sCApJaxsKTtoojPLbTTSpuKyrigZD5/pmm9f7gujpq1eFmjn9AjMqHAclzQy+wdv/GxB
-         4wIWcjcGJff8bilTKqOLXpVLeDm1tNLF3MKReIcz0PpZ8BNPVGTJCvMsK2VIfftig54u
-         0fem+lyi70p1L/YcNcsux7loTpIg2DBQOuDqIMMEi9FFRdmLfiiJz8Fgf/O3TK414z5o
-         AmFmvH0rye2Uc2Vggamo66a6V0KRyb6Mtfm4M9V743MNySC13rw8n+2qN2nyjdZq19eQ
-         VOiA==
+        bh=OWHXje7aHb+2OQQ4sHpfObqcJeqb3/Y1e6oZgl+21cA=;
+        b=sGTprdvoKyvEb9K8hmpQFNDJghLuuObLQ3aVFTwZ1kcFbQbug7Dz+45o7BxuQxAIQI
+         bxBrIH8azroqP7QDqIKe8uUhoAE1YRqASRwt17TGmchjQBQPWEnawwZ2VkEaanK1VQEu
+         SifRP4gzpH0Cs7JQYlDPmz1rl4gOgkk3qD8UUf8vPhhiplQLiv2wlIpqGqpXeync8JyA
+         Ri5n/7RGCyf8DRC1gwnXc3Aj1LYjrRWhCrFziiGE5VC1qOqv+IogU3Oi+xJFkedJLf7V
+         Akm9eIrg0rbyyah5vzNWpTaXW0fH+N0dw51Pg0AIEbZ+yj8T36o6U/3A2SdLrQ33Hdoj
+         1vIw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=R5eR+cvpKZq1WYNNc805w7v5z1Gu54WewjgBw3zPSZw=;
-        b=Xcqk5gMtfmNOkidjRR/wnBYzAPixXVgJG9R40UuKtITcN06hFSz5KVPn7W9K5BqUJ8
-         OUDiZZp5s77iDq/7gfqFBs9uaookckhC3eyYEHdbbPssSTGoNzdgBYgRMN12fXHsSg6Z
-         XsmvCkjPAqYYiyPh21dTDx0d+Dggr8xGzQGsnlI60xXzneQpzYUyAUunt2epmW3E4PRl
-         GHlIlXzxrDPdLNoXzSvt7f8K4vEdSIORQdtrHx1pKqQ2NvRJ3arVz648vCrbm3YCG7eO
-         DIpXdur4+R+JyuIRuxe3EtcqJliAXsN41E3YZ7sF+ONQ73jhSHGWpEOjYh2fn/CcgU0/
-         VQ0g==
-X-Gm-Message-State: AOAM530BM+pK0paPvfT7d7jD9gX3lxL5EYE2/H2cokJUugJQyJ0O7yr5
-        yAB1Xfza+9sxHs4CMtJph+c=
-X-Google-Smtp-Source: ABdhPJwZYb/UGumLv+aImCXZA08eHtGRinQM4tEe5XNBd32JW273HOB7CohLCLtXAs7On6YDaUZKOQ==
-X-Received: by 2002:a05:620a:1353:: with SMTP id c19mr6046144qkl.392.1617237128944;
-        Wed, 31 Mar 2021 17:32:08 -0700 (PDT)
+        bh=OWHXje7aHb+2OQQ4sHpfObqcJeqb3/Y1e6oZgl+21cA=;
+        b=MGyVwixbFuZVl1mdo5LuxeytkT2BP5XBUFwKNPZYw8P1lJu5QvgEc3xqZ64eQl7SS9
+         pssCS+3yU8r//MHdPCWa5nk/eO3Ei3RnIELURX58lYTfge/ZWRs29NwVc7KDf7KkKpBa
+         STZc7+N4eQ8H7Y0VfCX4i8UA1X1AZermIlh+ld7T8tA2yc42niFCTSDPRlxnFo9pDnlf
+         xmvZc6bj2eGh79W8JtQv9qWMSXvaFN7WJRrOKkmdlHdExIrUKHVswp6x4M08iEHNsAGJ
+         W7u6NUW0ZluVjeOX0lsyG6Z1rlBuKN1ni0117wjqmA+LdjU5ZoqPc+FX4hB9NgwnuYcj
+         +log==
+X-Gm-Message-State: AOAM533WMbz2+ryPBVnloy2DMVSsruJQGF8VYNfoDRKgfumU3utNA6iT
+        +rHmbV5HIAyoWHOVUvHEN7I=
+X-Google-Smtp-Source: ABdhPJzfXvFWj5mMG8ykN+Zn8l46W+R1ArWFHf1M6eYUJklnBNeB+OQG48RDKLL5uIEBQpRMk97BHw==
+X-Received: by 2002:a05:620a:144a:: with SMTP id i10mr5950253qkl.431.1617237127874;
+        Wed, 31 Mar 2021 17:32:07 -0700 (PDT)
 Received: from localhost ([207.98.216.60])
-        by smtp.gmail.com with ESMTPSA id d24sm2655513qko.54.2021.03.31.17.32.08
+        by smtp.gmail.com with ESMTPSA id k8sm2379342qth.74.2021.03.31.17.32.07
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 31 Mar 2021 17:32:08 -0700 (PDT)
+        Wed, 31 Mar 2021 17:32:07 -0700 (PDT)
 From:   Yury Norov <yury.norov@gmail.com>
 To:     linux-kernel@vger.kernel.org,
         Andrew Morton <akpm@linux-foundation.org>
@@ -77,9 +77,9 @@ Cc:     Yury Norov <yury.norov@gmail.com>, linux-m68k@lists.linux-m68k.org,
         Wei Yang <richard.weiyang@linux.alibaba.com>,
         Wolfram Sang <wsa+renesas@sang-engineering.com>,
         Yoshinori Sato <ysato@users.sourceforge.jp>
-Subject: [PATCH 12/12] MAINTAINERS: Add entry for the bitmap API
-Date:   Wed, 31 Mar 2021 17:31:53 -0700
-Message-Id: <20210401003153.97325-13-yury.norov@gmail.com>
+Subject: [PATCH 11/12] tools: sync lib/find_bit implementation
+Date:   Wed, 31 Mar 2021 17:31:52 -0700
+Message-Id: <20210401003153.97325-12-yury.norov@gmail.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20210401003153.97325-1-yury.norov@gmail.com>
 References: <20210401003153.97325-1-yury.norov@gmail.com>
@@ -89,42 +89,141 @@ Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-Add myself as maintainer for bitmap API and Andy and Rasmus as reviewers.
+Add fast paths to find_*_bit() functions as per kernel implementation.
 
 Signed-off-by: Yury Norov <yury.norov@gmail.com>
-Acked-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 Acked-by: Rasmus Villemoes <linux@rasmusvillemoes.dk>
 ---
- MAINTAINERS | 16 ++++++++++++++++
- 1 file changed, 16 insertions(+)
+ tools/include/asm-generic/bitops/find.h | 58 +++++++++++++++++++++++--
+ tools/lib/find_bit.c                    |  4 +-
+ 2 files changed, 57 insertions(+), 5 deletions(-)
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index bbd4484b5ba6..fcf89f8cbb6a 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -3172,6 +3172,22 @@ F:	Documentation/filesystems/bfs.rst
- F:	fs/bfs/
- F:	include/uapi/linux/bfs_fs.h
+diff --git a/tools/include/asm-generic/bitops/find.h b/tools/include/asm-generic/bitops/find.h
+index 9fe62d10b084..6481fd11012a 100644
+--- a/tools/include/asm-generic/bitops/find.h
++++ b/tools/include/asm-generic/bitops/find.h
+@@ -5,6 +5,9 @@
+ extern unsigned long _find_next_bit(const unsigned long *addr1,
+ 		const unsigned long *addr2, unsigned long nbits,
+ 		unsigned long start, unsigned long invert, unsigned long le);
++extern unsigned long _find_first_bit(const unsigned long *addr, unsigned long size);
++extern unsigned long _find_first_zero_bit(const unsigned long *addr, unsigned long size);
++extern unsigned long _find_last_bit(const unsigned long *addr, unsigned long size);
  
-+BITMAP API
-+M:	Yury Norov <yury.norov@gmail.com>
-+R:	Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-+R:	Rasmus Villemoes <linux@rasmusvillemoes.dk>
-+S:	Maintained
-+F:	include/asm-generic/bitops/find.h
-+F:	include/linux/bitmap.h
-+F:	lib/bitmap.c
-+F:	lib/find_bit.c
-+F:	lib/find_bit_benchmark.c
-+F:	lib/test_bitmap.c
-+F:	tools/include/asm-generic/bitops/find.h
-+F:	tools/include/linux/bitmap.h
-+F:	tools/lib/bitmap.c
-+F:	tools/lib/find_bit.c
+ #ifndef find_next_bit
+ /**
+@@ -20,6 +23,16 @@ static inline
+ unsigned long find_next_bit(const unsigned long *addr, unsigned long size,
+ 			    unsigned long offset)
+ {
++	if (small_const_nbits(size)) {
++		unsigned long val;
 +
- BLINKM RGB LED DRIVER
- M:	Jan-Simon Moeller <jansimon.moeller@gmx.de>
- S:	Maintained
++		if (unlikely(offset >= size))
++			return size;
++
++		val = *addr & GENMASK(size - 1, offset);
++		return val ? __ffs(val) : size;
++	}
++
+ 	return _find_next_bit(addr, NULL, size, offset, 0UL, 0);
+ }
+ #endif
+@@ -40,6 +53,16 @@ unsigned long find_next_and_bit(const unsigned long *addr1,
+ 		const unsigned long *addr2, unsigned long size,
+ 		unsigned long offset)
+ {
++	if (small_const_nbits(size)) {
++		unsigned long val;
++
++		if (unlikely(offset >= size))
++			return size;
++
++		val = *addr1 & *addr2 & GENMASK(size - 1, offset);
++		return val ? __ffs(val) : size;
++	}
++
+ 	return _find_next_bit(addr1, addr2, size, offset, 0UL, 0);
+ }
+ #endif
+@@ -58,6 +81,16 @@ static inline
+ unsigned long find_next_zero_bit(const unsigned long *addr, unsigned long size,
+ 				 unsigned long offset)
+ {
++	if (small_const_nbits(size)) {
++		unsigned long val;
++
++		if (unlikely(offset >= size))
++			return size;
++
++		val = *addr | ~GENMASK(size - 1, offset);
++		return val == ~0UL ? size : ffz(val);
++	}
++
+ 	return _find_next_bit(addr, NULL, size, offset, ~0UL, 0);
+ }
+ #endif
+@@ -72,8 +105,17 @@ unsigned long find_next_zero_bit(const unsigned long *addr, unsigned long size,
+  * Returns the bit number of the first set bit.
+  * If no bits are set, returns @size.
+  */
+-extern unsigned long find_first_bit(const unsigned long *addr,
+-				    unsigned long size);
++static inline
++unsigned long find_first_bit(const unsigned long *addr, unsigned long size)
++{
++	if (small_const_nbits(size)) {
++		unsigned long val = *addr & GENMASK(size - 1, 0);
++
++		return val ? __ffs(val) : size;
++	}
++
++	return _find_first_bit(addr, size);
++}
+ 
+ #endif /* find_first_bit */
+ 
+@@ -87,7 +129,17 @@ extern unsigned long find_first_bit(const unsigned long *addr,
+  * Returns the bit number of the first cleared bit.
+  * If no bits are zero, returns @size.
+  */
+-unsigned long find_first_zero_bit(const unsigned long *addr, unsigned long size);
++static inline
++unsigned long find_first_zero_bit(const unsigned long *addr, unsigned long size)
++{
++	if (small_const_nbits(size)) {
++		unsigned long val = *addr | ~GENMASK(size - 1, 0);
++
++		return val == ~0UL ? size : ffz(val);
++	}
++
++	return _find_first_zero_bit(addr, size);
++}
+ #endif
+ 
+ #endif /*_TOOLS_LINUX_ASM_GENERIC_BITOPS_FIND_H_ */
+diff --git a/tools/lib/find_bit.c b/tools/lib/find_bit.c
+index 589fd2f26f94..109aa7ffcf97 100644
+--- a/tools/lib/find_bit.c
++++ b/tools/lib/find_bit.c
+@@ -83,7 +83,7 @@ unsigned long _find_next_bit(const unsigned long *addr1,
+ /*
+  * Find the first set bit in a memory region.
+  */
+-unsigned long find_first_bit(const unsigned long *addr, unsigned long size)
++unsigned long _find_first_bit(const unsigned long *addr, unsigned long size)
+ {
+ 	unsigned long idx;
+ 
+@@ -100,7 +100,7 @@ unsigned long find_first_bit(const unsigned long *addr, unsigned long size)
+ /*
+  * Find the first cleared bit in a memory region.
+  */
+-unsigned long find_first_zero_bit(const unsigned long *addr, unsigned long size)
++unsigned long _find_first_zero_bit(const unsigned long *addr, unsigned long size)
+ {
+ 	unsigned long idx;
+ 
 -- 
 2.25.1
 
