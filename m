@@ -2,74 +2,114 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.8 required=3.0 tests=BAYES_00,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,MAILING_LIST_MULTI,
-	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-15.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 5B06BC433ED
-	for <linux-m68k@archiver.kernel.org>; Wed, 31 Mar 2021 15:02:41 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 78192C43461
+	for <linux-m68k@archiver.kernel.org>; Thu,  1 Apr 2021 00:33:01 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 26C696100C
-	for <linux-m68k@archiver.kernel.org>; Wed, 31 Mar 2021 15:02:41 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 4165261029
+	for <linux-m68k@archiver.kernel.org>; Thu,  1 Apr 2021 00:33:01 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235842AbhCaPCI (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Wed, 31 Mar 2021 11:02:08 -0400
-Received: from mail-ua1-f49.google.com ([209.85.222.49]:42953 "EHLO
-        mail-ua1-f49.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235273AbhCaPB5 (ORCPT
+        id S233125AbhDAAc1 (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Wed, 31 Mar 2021 20:32:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35060 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232718AbhDAAb6 (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Wed, 31 Mar 2021 11:01:57 -0400
-Received: by mail-ua1-f49.google.com with SMTP id r8so6217022ual.9
-        for <linux-m68k@lists.linux-m68k.org>; Wed, 31 Mar 2021 08:01:57 -0700 (PDT)
+        Wed, 31 Mar 2021 20:31:58 -0400
+Received: from mail-qv1-xf30.google.com (mail-qv1-xf30.google.com [IPv6:2607:f8b0:4864:20::f30])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B7711C061574
+        for <linux-m68k@lists.linux-m68k.org>; Wed, 31 Mar 2021 17:31:57 -0700 (PDT)
+Received: by mail-qv1-xf30.google.com with SMTP id x16so256175qvk.3
+        for <linux-m68k@lists.linux-m68k.org>; Wed, 31 Mar 2021 17:31:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=aaWFnvO5mlS7gtqbzZ/Rzs0v3x5NZRxF7C+mMsnpKHk=;
+        b=uPbjMAV4Y2EBSJ+JfaHmNGDYq5zqdqKOAZHbsb0VSPsGNd+nTGfoYrf1P5k0poyuPw
+         tpXpTqMoGwF7zx1knsS0ta5QmIUHxI1FN0437vyb7HR5bPI6WkQfADd/aLuXjYWQM7ZA
+         3Ka68CkZN0/ZcSMGzk4H4PNwVn/vc1/0YH8FpDTEBAlosT9aFdk6iNcIHQuegLwYVeMH
+         xI8ImgUTUgpmN0rhJhAh7UDzyUvdCpilKdzP9dCajfj4Wzo3xj2oLaH6i6VOqW/3M4EJ
+         OrXxIW+Ur2NKaxX/swQTPQcfFlSgXp3UDdZWJ2CUCkYHJBRs596j6K99oqbRTXTmMY+R
+         TSsA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=1mc9nk86dCN75VHp4R/+UxN4s8fz6T5fsikzkkqFEsQ=;
-        b=VuWWSMDf7JEgnduah18bJzYDOxqhbBzPPXalFm1bAwbTy4X+cdy7o4jNSuIEBi4eKd
-         Guq4GHbjbgc+taS73x/BbT/1uUlAnHvApFVc3aIIArAlG8eV/R6vpmcVrujglgj1F/tw
-         BUlsn+i100M2gAGfNTxy52Ar3ZJ8Cgdp8vGnjxa8J5Ghed22LQ7C6FZH4O0GlbPaVUHz
-         z5q6PXLs4s7d7hseSW4RRF88k5d4Fj7yeXMANSTX3Np1VaYgDe3UThOttEPrp6Mg+tNi
-         /mOe88efwUIUDB+KZqdc4yHfA/1RN58256k8teAhK2CNVhmHN6FK/6g+xqV27GrdNPhI
-         AsEA==
-X-Gm-Message-State: AOAM530OdanOdxGrFzphPMnorprzFO5C9pyN3yMRaJdJOqDX1NY5FZnj
-        23GsNod02dbhPcC4A41bM6uuV47CztoIybry6ss=
-X-Google-Smtp-Source: ABdhPJwv4UB5s4DrbZZrnToPi7FlyCQu9FFusTEse7S+9tKnQx8PerYCa0X16G17xqd6zcem/NHi8kzk7ZZIQsBRMrw=
-X-Received: by 2002:ab0:64cf:: with SMTP id j15mr1794879uaq.4.1617202917239;
- Wed, 31 Mar 2021 08:01:57 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=aaWFnvO5mlS7gtqbzZ/Rzs0v3x5NZRxF7C+mMsnpKHk=;
+        b=Im9bUbmnYjqOuXQqxGFs9LYeovbvc07qMm44pElCf7iNlnXp8KMZbGk2v9i+xEwbI8
+         GidLALpsz5ZjgZuixGNF+hunVKlyivbVAkAO/sskUviYHyL4Zbza7oSpGViQyds2T3MZ
+         pbCSGEJdr74aoongyEv1PXWFO6xqFv03bx2NzB7ZYn+rjDFA6UX5v7rplo5ZFxurue0R
+         F383yfnSPjzx5fEXBJRsm4mCJlGHyGdO24j18E/2uhY4HaaaYqyVXSr8HdxArMA+SwUK
+         aSqSnSALqnvczDLYaM/E50/uSlDU8H43bIQuikOrDyghyczxVLh4tE0PyvR4LFV4tIo9
+         CUYA==
+X-Gm-Message-State: AOAM533V7aPAFhqWx5vM6/Z9SfeXvBtmP7+E/dEXmJ0hA5j5VWTHp/Te
+        IF+6DcSWFvWTgRWZk+5up68=
+X-Google-Smtp-Source: ABdhPJx3TATPye1tKmcmsqyRcYujzF4mgS5d9QwIHuUiHq4KtN5wUxqV7hHXZewX29Hk2iSsHq6Ckg==
+X-Received: by 2002:a0c:f54d:: with SMTP id p13mr5641362qvm.32.1617237116796;
+        Wed, 31 Mar 2021 17:31:56 -0700 (PDT)
+Received: from localhost ([207.98.216.60])
+        by smtp.gmail.com with ESMTPSA id j6sm2771537qkl.84.2021.03.31.17.31.56
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 31 Mar 2021 17:31:56 -0700 (PDT)
+From:   Yury Norov <yury.norov@gmail.com>
+To:     linux-kernel@vger.kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>
+Cc:     Yury Norov <yury.norov@gmail.com>, linux-m68k@lists.linux-m68k.org,
+        linux-arch@vger.kernel.org, linux-sh@vger.kernel.org,
+        Alexey Klimov <aklimov@redhat.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Arnd Bergmann <arnd@arndb.de>, David Sterba <dsterba@suse.com>,
+        Dennis Zhou <dennis@kernel.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Jianpeng Ma <jianpeng.ma@intel.com>,
+        Joe Perches <joe@perches.com>,
+        John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        Rich Felker <dalias@libc.org>,
+        Stefano Brivio <sbrivio@redhat.com>,
+        Wei Yang <richard.weiyang@linux.alibaba.com>,
+        Wolfram Sang <wsa+renesas@sang-engineering.com>,
+        Yoshinori Sato <ysato@users.sourceforge.jp>
+Subject: [PATCH 01/12] tools: disable -Wno-type-limits
+Date:   Wed, 31 Mar 2021 17:31:42 -0700
+Message-Id: <20210401003153.97325-2-yury.norov@gmail.com>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20210401003153.97325-1-yury.norov@gmail.com>
+References: <20210401003153.97325-1-yury.norov@gmail.com>
 MIME-Version: 1.0
-References: <20210331144336.25628-1-masahiroy@kernel.org> <20210331144336.25628-2-masahiroy@kernel.org>
-In-Reply-To: <20210331144336.25628-2-masahiroy@kernel.org>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Wed, 31 Mar 2021 17:01:46 +0200
-Message-ID: <CAMuHMdW5+ZgLeJ_jFBiWLL0MGEQZhXx56AuJNQb4p8UvQsGB1g@mail.gmail.com>
-Subject: Re: [PATCH 2/2] m68k: remove meaningless EXTRA_LDFLAGS
-To:     Masahiro Yamada <masahiroy@kernel.org>
-Cc:     linux-m68k <linux-m68k@lists.linux-m68k.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-On Wed, Mar 31, 2021 at 4:44 PM Masahiro Yamada <masahiroy@kernel.org> wrote:
-> These two Makefiles contain only built-in objects (i.e. obj-y), which
-> are collected by $(AR) into a thin-archive.
->
-> EXTRA_LDFLAGS is meaningless because $(LD) is not used here.
->
-> Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
+GENMASK(h, l) may be passed with unsigned types. In such case, type-limits
+warning is generated for example in case of GENMASK(h, 0).
 
-Reviewed-by: Geert Uytterhoeven <geert@linux-m68k.org>
-i.e. will queue in the m68k for-v5.13 branch.
+Signed-off-by: Yury Norov <yury.norov@gmail.com>
+Acked-by: Rasmus Villemoes <linux@rasmusvillemoes.dk>
+---
+ tools/scripts/Makefile.include | 1 +
+ 1 file changed, 1 insertion(+)
 
-Gr{oetje,eeting}s,
-
-                        Geert
-
+diff --git a/tools/scripts/Makefile.include b/tools/scripts/Makefile.include
+index 84dbf61a7eca..15e99905cb7d 100644
+--- a/tools/scripts/Makefile.include
++++ b/tools/scripts/Makefile.include
+@@ -38,6 +38,7 @@ EXTRA_WARNINGS += -Wswitch-enum
+ EXTRA_WARNINGS += -Wundef
+ EXTRA_WARNINGS += -Wwrite-strings
+ EXTRA_WARNINGS += -Wformat
++EXTRA_WARNINGS += -Wno-type-limits
+ 
+ CC_NO_CLANG := $(shell $(CC) -dM -E -x c /dev/null | grep -Fq "__clang__"; echo $$?)
+ 
 -- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+2.25.1
 
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
