@@ -2,149 +2,88 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-18.8 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
-	INCLUDES_CR_TRAILER,INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-8.8 required=3.0 tests=BAYES_00,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,MAILING_LIST_MULTI,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 0DF54C433ED
-	for <linux-m68k@archiver.kernel.org>; Wed,  7 Apr 2021 05:35:40 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 80FC7C43460
+	for <linux-m68k@archiver.kernel.org>; Wed,  7 Apr 2021 07:19:29 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id E0F9E613CC
-	for <linux-m68k@archiver.kernel.org>; Wed,  7 Apr 2021 05:35:39 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 609F4613A7
+	for <linux-m68k@archiver.kernel.org>; Wed,  7 Apr 2021 07:19:29 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345328AbhDGFfr (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Wed, 7 Apr 2021 01:35:47 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39146 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1345278AbhDGFfe (ORCPT <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Wed, 7 Apr 2021 01:35:34 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9F532613CC;
-        Wed,  7 Apr 2021 05:35:24 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1617773725;
-        bh=ouCNsuEblkJkqcCKpXydk5fFIdkMGlk7rAG0PrWREyw=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=zl6se3MSZf7Bbx6lGPOwhll9RDskOF1e5A+NfZEmyM9Pa92fItZ6qdjg8m7qhgbDG
-         GjAsElIQZddmy/qiOKqfn/pjBBNKYEAq0nbLX3H3FMfTJrmb8C0/1I+DPbnmPwKNrr
-         Af0UHuIf1mo/sCxNU0Spbzn9Hl+qvffg/I5KuYRI=
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Masahiro Yamada <masahiroy@kernel.org>,
-        Michal Marek <michal.lkml@markovi.net>
-Cc:     linux-kbuild@vger.kernel.org, linux-arch@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        linux-m68k@lists.linux-m68k.org
-Subject: [PATCH 12/20] kbuild: m68k: use common install script
-Date:   Wed,  7 Apr 2021 07:34:11 +0200
-Message-Id: <20210407053419.449796-13-gregkh@linuxfoundation.org>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210407053419.449796-1-gregkh@linuxfoundation.org>
-References: <20210407053419.449796-1-gregkh@linuxfoundation.org>
+        id S234913AbhDGHTh (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Wed, 7 Apr 2021 03:19:37 -0400
+Received: from mail-vk1-f169.google.com ([209.85.221.169]:39697 "EHLO
+        mail-vk1-f169.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1346598AbhDGHTf (ORCPT
+        <rfc822;linux-m68k@lists.linux-m68k.org>);
+        Wed, 7 Apr 2021 03:19:35 -0400
+Received: by mail-vk1-f169.google.com with SMTP id c5so3738164vkm.6
+        for <linux-m68k@lists.linux-m68k.org>; Wed, 07 Apr 2021 00:19:25 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=w7Kx3btHgz7ta84S98Pg8BsIYMvQVkxtEX2Vc+I1KDE=;
+        b=AQxZ84E+WISKFo3rbk77ZglyGklZ7QJOYG61712g0lR+8L8HJIkNYfaujbIQ3ULu3C
+         PbTRLp5KyZiLTpd51/C9070lVbD5RXPxhrVveNZ8LobOQ/AGCEOSn5w6Dq4lUcZ3uO+n
+         U6wPxxJI6mwQAEF9olEJfkBl8AXDlDlDlSDtigYbjYzUj7iI2Cl5MhgZwKUrcsX6F9e+
+         2EXAMepUb5QrSoq5vZQH5bAmL2wq2WeAqlylmD7RBUj6Je8bs+dsP19MJmdtkoVssZMw
+         z0UIqYFWh04RS7UtfHDYzQHDHHwsmt0Qgw68W9bT0nYQvBLc7LARPFKILooqF4JjPgY3
+         SEUg==
+X-Gm-Message-State: AOAM531ctXyfUZrkWlze6F6z7yHdMoec+UBxRTquwlgTPNdfE83yQOuy
+        EcxGVpxWb+s9GuvimGBud0AYHmXF79KiYa9FSVE=
+X-Google-Smtp-Source: ABdhPJwSQIt0vRe/XPXraai5HlJT7pCQD6XwKdxiqkw/AiDw3l8QCTjw4hMZ46DTMUjbS5Q4AAwq3/pfH95+VvfIl+g=
+X-Received: by 2002:a1f:b689:: with SMTP id g131mr1055576vkf.6.1617779964647;
+ Wed, 07 Apr 2021 00:19:24 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210407053419.449796-1-gregkh@linuxfoundation.org> <20210407053419.449796-13-gregkh@linuxfoundation.org>
+In-Reply-To: <20210407053419.449796-13-gregkh@linuxfoundation.org>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Wed, 7 Apr 2021 09:19:13 +0200
+Message-ID: <CAMuHMdUP38rfMSFB87MCfJ0J_2JteKfJGYsdTnkkOcHViQL_OA@mail.gmail.com>
+Subject: Re: [PATCH 12/20] kbuild: m68k: use common install script
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Masahiro Yamada <masahiroy@kernel.org>,
+        Michal Marek <michal.lkml@markovi.net>,
+        linux-kbuild <linux-kbuild@vger.kernel.org>,
+        Linux-Arch <linux-arch@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-m68k <linux-m68k@lists.linux-m68k.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-The common scripts/install.sh script will now work for m68k, all that
-is needed is to add it to the list of arches that do not put the version
-number in the installed file name.
+Hi Greg,
 
-With that we can remove the m68k-only version of the install script.
+On Wed, Apr 7, 2021 at 7:35 AM Greg Kroah-Hartman
+<gregkh@linuxfoundation.org> wrote:
+> The common scripts/install.sh script will now work for m68k, all that
+> is needed is to add it to the list of arches that do not put the version
+> number in the installed file name.
+>
+> With that we can remove the m68k-only version of the install script.
+>
+> Cc: Geert Uytterhoeven <geert@linux-m68k.org>
+> Cc: linux-m68k@lists.linux-m68k.org
+> Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-Cc: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: linux-m68k@lists.linux-m68k.org
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
----
- arch/m68k/Makefile   |  2 +-
- arch/m68k/install.sh | 52 --------------------------------------------
- scripts/install.sh   |  2 +-
- 3 files changed, 2 insertions(+), 54 deletions(-)
- delete mode 100644 arch/m68k/install.sh
+Thanks for your patch!
 
-diff --git a/arch/m68k/Makefile b/arch/m68k/Makefile
-index ea14f2046fb4..e56abf79c313 100644
---- a/arch/m68k/Makefile
-+++ b/arch/m68k/Makefile
-@@ -143,4 +143,4 @@ archheaders:
- 	$(Q)$(MAKE) $(build)=arch/m68k/kernel/syscalls all
- 
- install:
--	sh $(srctree)/arch/m68k/install.sh $(KERNELRELEASE) vmlinux.gz System.map "$(INSTALL_PATH)"
-+	sh $(srctree)/scripts/install.sh $(KERNELRELEASE) vmlinux.gz System.map "$(INSTALL_PATH)"
-diff --git a/arch/m68k/install.sh b/arch/m68k/install.sh
-deleted file mode 100644
-index 57d640d4382c..000000000000
---- a/arch/m68k/install.sh
-+++ /dev/null
-@@ -1,52 +0,0 @@
--#!/bin/sh
--#
--# This file is subject to the terms and conditions of the GNU General Public
--# License.  See the file "COPYING" in the main directory of this archive
--# for more details.
--#
--# Copyright (C) 1995 by Linus Torvalds
--#
--# Adapted from code in arch/i386/boot/Makefile by H. Peter Anvin
--#
--# "make install" script for m68k architecture
--#
--# Arguments:
--#   $1 - kernel version
--#   $2 - kernel image file
--#   $3 - kernel map file
--#   $4 - default install path (blank if root directory)
--#
--
--verify () {
--	if [ ! -f "$1" ]; then
--		echo ""                                                   1>&2
--		echo " *** Missing file: $1"                              1>&2
--		echo ' *** You need to run "make" before "make install".' 1>&2
--		echo ""                                                   1>&2
--		exit 1
--	fi
--}
--
--# Make sure the files actually exist
--verify "$2"
--verify "$3"
--
--# User may have a custom install script
--
--if [ -x ~/bin/${INSTALLKERNEL} ]; then exec ~/bin/${INSTALLKERNEL} "$@"; fi
--if [ -x /sbin/${INSTALLKERNEL} ]; then exec /sbin/${INSTALLKERNEL} "$@"; fi
--
--# Default install - same as make zlilo
--
--if [ -f $4/vmlinuz ]; then
--	mv $4/vmlinuz $4/vmlinuz.old
--fi
--
--if [ -f $4/System.map ]; then
--	mv $4/System.map $4/System.old
--fi
--
--cat $2 > $4/vmlinuz
--cp $3 $4/System.map
--
--sync
-diff --git a/scripts/install.sh b/scripts/install.sh
-index b6ca2a0f0983..a61a5ce28cad 100644
---- a/scripts/install.sh
-+++ b/scripts/install.sh
-@@ -66,7 +66,7 @@ fi
- # Some architectures name their files based on version number, and
- # others do not.  Call out the ones that do not to make it obvious.
- case "${ARCH}" in
--	ia64 | x86)
-+	ia64 | m68k | x86)
- 		version=""
- 		;;
- 	*)
+Acked-by: Geert Uytterhoeven <geert@linux-m68k.org>
+
+I guess it would "work" with the version number, too.
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
 -- 
-2.31.1
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
