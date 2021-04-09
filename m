@@ -2,103 +2,90 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-16.6 required=3.0 tests=BAYES_00,DKIM_INVALID,
-	DKIM_SIGNED,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-10.8 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
+	INCLUDES_CR_TRAILER,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 49C28C433ED
-	for <linux-m68k@archiver.kernel.org>; Thu,  8 Apr 2021 21:38:13 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id ED28FC433ED
+	for <linux-m68k@archiver.kernel.org>; Fri,  9 Apr 2021 03:10:20 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 13BCC610D1
-	for <linux-m68k@archiver.kernel.org>; Thu,  8 Apr 2021 21:38:13 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id BE703600D1
+	for <linux-m68k@archiver.kernel.org>; Fri,  9 Apr 2021 03:10:20 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232532AbhDHViY (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Thu, 8 Apr 2021 17:38:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33454 "EHLO
+        id S233301AbhDIDKc (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Thu, 8 Apr 2021 23:10:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48854 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232404AbhDHViY (ORCPT
-        <rfc822;linux-m68k@vger.kernel.org>); Thu, 8 Apr 2021 17:38:24 -0400
-Received: from mail.kernel-space.org (unknown [IPv6:2a01:4f8:c2c:5a84::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1389CC061760
-        for <linux-m68k@vger.kernel.org>; Thu,  8 Apr 2021 14:38:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel-space.org;
-        s=20190913; t=1617917889;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=feevielqIGhhSdMUAuuvkE2DMQbA1pKerNvkIbA5msM=;
-        b=vXSVbSduAjeFf/VAaACK/EsInXvGU4NNmozijQ15CuRxnIhTYMRVysJpj2Gx033nvnJsOL
-        BYi31zKEF3JQ0TX7sd/R3HjqUTxsPAanPXTC0IQigLY98Lv7CF1MF3a5VX+5pHMBt64i/S
-        0TffRvXjsb+q8JaaVqe4hCkuE24Tlew=
-Received: from dfj.1.1.1.1 (host-79-16-10-129.retail.telecomitalia.it [79.16.10.129])
-        by sysam.it (OpenSMTPD) with ESMTPSA id 9c6e82c5 (TLSv1.3:TLS_AES_256_GCM_SHA384:256:NO);
-        Thu, 8 Apr 2021 21:38:08 +0000 (UTC)
-From:   Angelo Dureghello <angelo@kernel-space.org>
-To:     gerg@linux-m68k.org
-Cc:     geert@linux-m68k.org, linux-m68k@vger.kernel.org,
-        Angelo Dureghello <angelo@kernel-space.org>
-Subject: [PATCH v2] m68k: coldfire: fix irq ranges
-Date:   Thu,  8 Apr 2021 23:37:40 +0200
-Message-Id: <20210408213740.3235446-1-angelo@kernel-space.org>
-X-Mailer: git-send-email 2.31.0
+        with ESMTP id S233328AbhDIDKX (ORCPT
+        <rfc822;linux-m68k@lists.linux-m68k.org>);
+        Thu, 8 Apr 2021 23:10:23 -0400
+Received: from mail-pf1-x429.google.com (mail-pf1-x429.google.com [IPv6:2607:f8b0:4864:20::429])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 07CE3C061764
+        for <linux-m68k@lists.linux-m68k.org>; Thu,  8 Apr 2021 20:10:11 -0700 (PDT)
+Received: by mail-pf1-x429.google.com with SMTP id d124so3259114pfa.13
+        for <linux-m68k@lists.linux-m68k.org>; Thu, 08 Apr 2021 20:10:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=iY6PDGzEpDlFZ5JABIVINiXcyV7OXe1c5LxQqA7OAHw=;
+        b=IzYYpV9dHKjHQvb/c/mppIoj7Wg5xm7bLRt5obXAc+hZaC1pBsAxOJPEg74gi23Ere
+         4oLU87qukCBDi4mkJIl37V6ct2ZcoP29U53r7Wj7kVecXnl/p/TLfQIIaqdYxMM59c/m
+         kP5t4PhTjmHoMViKVliKCsYwTPPD01EjTYGOg=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=iY6PDGzEpDlFZ5JABIVINiXcyV7OXe1c5LxQqA7OAHw=;
+        b=JfNpstZVVizkapmQfLO47UtZCiFmp4rCUBZAajSSZ+yh7EFGHITyWpQNTUl/gwvOvN
+         I7IyQTM3sp1YsjUk9Hs+m8CJ6XGkmDKImzeUy3tiP8RtptG6Q7dxcUZLCrM2ISgoAbuc
+         5TcSJQ5p5oddD2noJRqQ+Kiuy8o7drrc1aNXYl7PWJR55wFZ2m6THEcyYiEndK/fOQKV
+         d4jCc6f+PmoZOrLAqUUb2MP4be/HvvTVby/+VLN+bAL1ui/akufqzfk4qNnZbYKWinwq
+         j2RZZpwLPce9m253DIR47vZZX55akmnThSeajc4/lklvBANpUFEjmB+ACIqUV/UjYgSL
+         I9Uw==
+X-Gm-Message-State: AOAM530V8G3FZ2kmoZhy3ubn/xyhbCwX58bI+t393ZwNFWUasKaGWhVN
+        4fVVS5IuD7mHRPlghIQil6Ycug==
+X-Google-Smtp-Source: ABdhPJx/DSDGdnbMIOkt4rPA2fB7bv1H2RrcmVv5V6WEDPg0VVHm/QRB/6pSWedUGA/ZcEljLEdHTA==
+X-Received: by 2002:aa7:8498:0:b029:1f6:8a25:7ade with SMTP id u24-20020aa784980000b02901f68a257ademr10530825pfn.76.1617937810322;
+        Thu, 08 Apr 2021 20:10:10 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id d4sm632353pjz.46.2021.04.08.20.10.09
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 08 Apr 2021 20:10:09 -0700 (PDT)
+Date:   Thu, 8 Apr 2021 20:10:08 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Masahiro Yamada <masahiroy@kernel.org>,
+        Michal Marek <michal.lkml@markovi.net>,
+        linux-kbuild@vger.kernel.org, linux-arch@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        linux-m68k@lists.linux-m68k.org
+Subject: Re: [PATCH 12/20] kbuild: m68k: use common install script
+Message-ID: <202104082010.0DE93225@keescook>
+References: <20210407053419.449796-1-gregkh@linuxfoundation.org>
+ <20210407053419.449796-13-gregkh@linuxfoundation.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210407053419.449796-13-gregkh@linuxfoundation.org>
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-Working on flexcan0, there was no way to have irq 128 working.
-Fix irq 128 and 196 setup.
+On Wed, Apr 07, 2021 at 07:34:11AM +0200, Greg Kroah-Hartman wrote:
+> The common scripts/install.sh script will now work for m68k, all that
+> is needed is to add it to the list of arches that do not put the version
+> number in the installed file name.
+> 
+> With that we can remove the m68k-only version of the install script.
+> 
+> Cc: Geert Uytterhoeven <geert@linux-m68k.org>
+> Cc: linux-m68k@lists.linux-m68k.org
+> Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-Signed-off-by: Angelo Dureghello <angelo@kernel-space.org>
----
-Change for v2:
-  line 85, fix >= into >
----
- arch/m68k/coldfire/intc-simr.c | 12 ++++++------
- 1 file changed, 6 insertions(+), 6 deletions(-)
+Reviewed-by: Kees Cook <keescook@chromium.org>
 
-diff --git a/arch/m68k/coldfire/intc-simr.c b/arch/m68k/coldfire/intc-simr.c
-index 15c4b7a6e38f..f7c2c41b3156 100644
---- a/arch/m68k/coldfire/intc-simr.c
-+++ b/arch/m68k/coldfire/intc-simr.c
-@@ -68,9 +68,9 @@ static void intc_irq_mask(struct irq_data *d)
- {
- 	unsigned int irq = d->irq - MCFINT_VECBASE;
- 
--	if (MCFINTC2_SIMR && (irq > 128))
-+	if (MCFINTC2_SIMR && (irq > 127))
- 		__raw_writeb(irq - 128, MCFINTC2_SIMR);
--	else if (MCFINTC1_SIMR && (irq > 64))
-+	else if (MCFINTC1_SIMR && (irq > 63))
- 		__raw_writeb(irq - 64, MCFINTC1_SIMR);
- 	else
- 		__raw_writeb(irq, MCFINTC0_SIMR);
-@@ -80,9 +80,9 @@ static void intc_irq_unmask(struct irq_data *d)
- {
- 	unsigned int irq = d->irq - MCFINT_VECBASE;
- 
--	if (MCFINTC2_CIMR && (irq > 128))
-+	if (MCFINTC2_CIMR && (irq > 127))
- 		__raw_writeb(irq - 128, MCFINTC2_CIMR);
--	else if (MCFINTC1_CIMR && (irq > 64))
-+	else if (MCFINTC1_CIMR && (irq > 63))
- 		__raw_writeb(irq - 64, MCFINTC1_CIMR);
- 	else
- 		__raw_writeb(irq, MCFINTC0_CIMR);
-@@ -115,9 +115,9 @@ static unsigned int intc_irq_startup(struct irq_data *d)
- 	}
- 
- 	irq -= MCFINT_VECBASE;
--	if (MCFINTC2_ICR0 && (irq > 128))
-+	if (MCFINTC2_ICR0 && (irq > 127))
- 		__raw_writeb(5, MCFINTC2_ICR0 + irq - 128);
--	else if (MCFINTC1_ICR0 && (irq > 64))
-+	else if (MCFINTC1_ICR0 && (irq > 63))
- 		__raw_writeb(5, MCFINTC1_ICR0 + irq - 64);
- 	else
- 		__raw_writeb(5, MCFINTC0_ICR0 + irq);
 -- 
-2.31.0
-
+Kees Cook
