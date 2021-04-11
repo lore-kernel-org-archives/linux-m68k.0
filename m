@@ -2,90 +2,182 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-10.8 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
-	INCLUDES_CR_TRAILER,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-	autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-17.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,INCLUDES_CR_TRAILER,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id ED28FC433ED
-	for <linux-m68k@archiver.kernel.org>; Fri,  9 Apr 2021 03:10:20 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id BCBCEC433B4
+	for <linux-m68k@archiver.kernel.org>; Sun, 11 Apr 2021 13:57:06 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id BE703600D1
-	for <linux-m68k@archiver.kernel.org>; Fri,  9 Apr 2021 03:10:20 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 903CE610CB
+	for <linux-m68k@archiver.kernel.org>; Sun, 11 Apr 2021 13:57:06 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233301AbhDIDKc (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Thu, 8 Apr 2021 23:10:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48854 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233328AbhDIDKX (ORCPT
+        id S235849AbhDKN5W (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Sun, 11 Apr 2021 09:57:22 -0400
+Received: from conuserg-07.nifty.com ([210.131.2.74]:29173 "EHLO
+        conuserg-07.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235338AbhDKN5V (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Thu, 8 Apr 2021 23:10:23 -0400
-Received: from mail-pf1-x429.google.com (mail-pf1-x429.google.com [IPv6:2607:f8b0:4864:20::429])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 07CE3C061764
-        for <linux-m68k@lists.linux-m68k.org>; Thu,  8 Apr 2021 20:10:11 -0700 (PDT)
-Received: by mail-pf1-x429.google.com with SMTP id d124so3259114pfa.13
-        for <linux-m68k@lists.linux-m68k.org>; Thu, 08 Apr 2021 20:10:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=iY6PDGzEpDlFZ5JABIVINiXcyV7OXe1c5LxQqA7OAHw=;
-        b=IzYYpV9dHKjHQvb/c/mppIoj7Wg5xm7bLRt5obXAc+hZaC1pBsAxOJPEg74gi23Ere
-         4oLU87qukCBDi4mkJIl37V6ct2ZcoP29U53r7Wj7kVecXnl/p/TLfQIIaqdYxMM59c/m
-         kP5t4PhTjmHoMViKVliKCsYwTPPD01EjTYGOg=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=iY6PDGzEpDlFZ5JABIVINiXcyV7OXe1c5LxQqA7OAHw=;
-        b=JfNpstZVVizkapmQfLO47UtZCiFmp4rCUBZAajSSZ+yh7EFGHITyWpQNTUl/gwvOvN
-         I7IyQTM3sp1YsjUk9Hs+m8CJ6XGkmDKImzeUy3tiP8RtptG6Q7dxcUZLCrM2ISgoAbuc
-         5TcSJQ5p5oddD2noJRqQ+Kiuy8o7drrc1aNXYl7PWJR55wFZ2m6THEcyYiEndK/fOQKV
-         d4jCc6f+PmoZOrLAqUUb2MP4be/HvvTVby/+VLN+bAL1ui/akufqzfk4qNnZbYKWinwq
-         j2RZZpwLPce9m253DIR47vZZX55akmnThSeajc4/lklvBANpUFEjmB+ACIqUV/UjYgSL
-         I9Uw==
-X-Gm-Message-State: AOAM530V8G3FZ2kmoZhy3ubn/xyhbCwX58bI+t393ZwNFWUasKaGWhVN
-        4fVVS5IuD7mHRPlghIQil6Ycug==
-X-Google-Smtp-Source: ABdhPJx/DSDGdnbMIOkt4rPA2fB7bv1H2RrcmVv5V6WEDPg0VVHm/QRB/6pSWedUGA/ZcEljLEdHTA==
-X-Received: by 2002:aa7:8498:0:b029:1f6:8a25:7ade with SMTP id u24-20020aa784980000b02901f68a257ademr10530825pfn.76.1617937810322;
-        Thu, 08 Apr 2021 20:10:10 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id d4sm632353pjz.46.2021.04.08.20.10.09
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 08 Apr 2021 20:10:09 -0700 (PDT)
-Date:   Thu, 8 Apr 2021 20:10:08 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+        Sun, 11 Apr 2021 09:57:21 -0400
+Received: from localhost.localdomain (133-32-232-101.west.xps.vectant.ne.jp [133.32.232.101]) (authenticated)
+        by conuserg-07.nifty.com with ESMTP id 13BDtZpj024906;
+        Sun, 11 Apr 2021 22:55:36 +0900
+DKIM-Filter: OpenDKIM Filter v2.10.3 conuserg-07.nifty.com 13BDtZpj024906
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
+        s=dec2015msa; t=1618149336;
+        bh=vS8e0SLZkCBy0RmRBkXW9rD3CCXXaiE+fv8+9wtNFcQ=;
+        h=From:To:Cc:Subject:Date:From;
+        b=T4auvfUkLCtH1xfy+3/BrGcOzcfBKdffBrAXk4ktteZcBCINybIlbpHd9u+FXgcif
+         RO7XzBcc9p98FwTRNy8JybHK2F1kD5uOTKziM8txSjy2xhfOkbGIf/yytdOE+0jpI8
+         KviylrePITI/U3uMXnTZgwZjolQgFonocj7FYZytyy/PjeAFIk4d+ZnlqNcz82TC5w
+         YlRMzOSoLaSCC1uOkHx7R065zcm6947UcUG2em5S3RDI+7PnZJcADDKJj5uN27osZQ
+         9HFOIw4qnFiaxSzmdf0tITxyKAxAA/2oJKzo5VUOhdMB6iiBQ1EhXsj3PC5YdEkMlh
+         RRIP4+C1tEq2Q==
+X-Nifty-SrcIP: [133.32.232.101]
+From:   Masahiro Yamada <masahiroy@kernel.org>
+To:     linux-kbuild@vger.kernel.org
 Cc:     Masahiro Yamada <masahiroy@kernel.org>,
-        Michal Marek <michal.lkml@markovi.net>,
-        linux-kbuild@vger.kernel.org, linux-arch@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
         Geert Uytterhoeven <geert@linux-m68k.org>,
-        linux-m68k@lists.linux-m68k.org
-Subject: Re: [PATCH 12/20] kbuild: m68k: use common install script
-Message-ID: <202104082010.0DE93225@keescook>
-References: <20210407053419.449796-1-gregkh@linuxfoundation.org>
- <20210407053419.449796-13-gregkh@linuxfoundation.org>
+        Helge Deller <deller@gmx.de>,
+        "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
+        Rich Felker <dalias@libc.org>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Vineet Gupta <vgupta@synopsys.com>,
+        Yoshinori Sato <ysato@users.sourceforge.jp>,
+        linux-kernel@vger.kernel.org, linux-m68k@lists.linux-m68k.org,
+        linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org,
+        linux-sh@vger.kernel.org, linux-snps-arc@lists.infradead.org,
+        uclinux-h8-devel@lists.sourceforge.jp
+Subject: [PATCH] kbuild: use ?= to assign CROSS_COMPILE by arch-Makefile
+Date:   Sun, 11 Apr 2021 22:55:32 +0900
+Message-Id: <20210411135532.219797-1-masahiroy@kernel.org>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210407053419.449796-13-gregkh@linuxfoundation.org>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-On Wed, Apr 07, 2021 at 07:34:11AM +0200, Greg Kroah-Hartman wrote:
-> The common scripts/install.sh script will now work for m68k, all that
-> is needed is to add it to the list of arches that do not put the version
-> number in the installed file name.
-> 
-> With that we can remove the m68k-only version of the install script.
-> 
-> Cc: Geert Uytterhoeven <geert@linux-m68k.org>
-> Cc: linux-m68k@lists.linux-m68k.org
-> Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Use ?= operator to let arch/*/Makefile to assign CROSS_COMPILE only
+when CROSS_COMPILE is undefined.
 
-Reviewed-by: Kees Cook <keescook@chromium.org>
+This allows arch-Makefiles to drop the ifeq ($(CROSS_COMPILE),)
+conditional.
 
+This slightly changes the behavior; the arch-Makefile previously
+overrode CROSS_COMPILE when CROSS_COMPILE has already been made empty
+via an environment variable as in 'export CROSS_COMPILE='.
+
+With this commit, arch-Makefle will respect the user's environment
+set-up, which seems to be a more correct behavior.
+
+Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
+---
+
+ arch/arc/Makefile    | 4 +---
+ arch/h8300/Makefile  | 4 +---
+ arch/m68k/Makefile   | 4 +---
+ arch/mips/Makefile   | 4 +---
+ arch/parisc/Makefile | 6 ++----
+ arch/sh/Makefile     | 4 +---
+ 6 files changed, 7 insertions(+), 19 deletions(-)
+
+diff --git a/arch/arc/Makefile b/arch/arc/Makefile
+index 4392c9c189c4..bd5a9daa3461 100644
+--- a/arch/arc/Makefile
++++ b/arch/arc/Makefile
+@@ -5,9 +5,7 @@
+ 
+ KBUILD_DEFCONFIG := haps_hs_smp_defconfig
+ 
+-ifeq ($(CROSS_COMPILE),)
+-CROSS_COMPILE := $(call cc-cross-prefix, arc-linux- arceb-linux-)
+-endif
++CROSS_COMPILE ?= $(call cc-cross-prefix, arc-linux- arceb-linux-)
+ 
+ cflags-y	+= -fno-common -pipe -fno-builtin -mmedium-calls -D__linux__
+ 
+diff --git a/arch/h8300/Makefile b/arch/h8300/Makefile
+index ba0f26cfad61..d6e466dbfc00 100644
+--- a/arch/h8300/Makefile
++++ b/arch/h8300/Makefile
+@@ -26,9 +26,7 @@ KBUILD_LDFLAGS += $(ldflags-y)
+ 
+ CHECKFLAGS += -msize-long
+ 
+-ifeq ($(CROSS_COMPILE),)
+-CROSS_COMPILE := $(call cc-cross-prefix, h8300-unknown-linux- h8300-linux-)
+-endif
++CROSS_COMPILE ?= $(call cc-cross-prefix, h8300-unknown-linux- h8300-linux-)
+ 
+ core-y	+= arch/$(ARCH)/kernel/ arch/$(ARCH)/mm/
+ core-y	+= arch/$(ARCH)/boot/dts/
+diff --git a/arch/m68k/Makefile b/arch/m68k/Makefile
+index ea14f2046fb4..79208ad7a355 100644
+--- a/arch/m68k/Makefile
++++ b/arch/m68k/Makefile
+@@ -17,10 +17,8 @@
+ KBUILD_DEFCONFIG := multi_defconfig
+ 
+ ifneq ($(SUBARCH),$(ARCH))
+-	ifeq ($(CROSS_COMPILE),)
+-		CROSS_COMPILE := $(call cc-cross-prefix, \
++	CROSS_COMPILE ?= $(call cc-cross-prefix, \
+ 			m68k-linux-gnu- m68k-linux- m68k-unknown-linux-gnu-)
+-	endif
+ endif
+ 
+ #
+diff --git a/arch/mips/Makefile b/arch/mips/Makefile
+index e71d587af49c..75e4e46532a4 100644
+--- a/arch/mips/Makefile
++++ b/arch/mips/Makefile
+@@ -51,9 +51,7 @@ UTS_MACHINE		:= mips64
+ endif
+ 
+ ifneq ($(SUBARCH),$(ARCH))
+-  ifeq ($(CROSS_COMPILE),)
+-    CROSS_COMPILE := $(call cc-cross-prefix, $(tool-archpref)-linux-  $(tool-archpref)-linux-gnu-  $(tool-archpref)-unknown-linux-gnu-)
+-  endif
++  CROSS_COMPILE ?= $(call cc-cross-prefix, $(tool-archpref)-linux-  $(tool-archpref)-linux-gnu-  $(tool-archpref)-unknown-linux-gnu-)
+ endif
+ 
+ ifdef CONFIG_FUNCTION_GRAPH_TRACER
+diff --git a/arch/parisc/Makefile b/arch/parisc/Makefile
+index 7d9f71aa829a..62272cb3513c 100644
+--- a/arch/parisc/Makefile
++++ b/arch/parisc/Makefile
+@@ -42,12 +42,10 @@ endif
+ export LD_BFD
+ 
+ ifneq ($(SUBARCH),$(UTS_MACHINE))
+-	ifeq ($(CROSS_COMPILE),)
+-		CC_SUFFIXES = linux linux-gnu unknown-linux-gnu
+-		CROSS_COMPILE := $(call cc-cross-prefix, \
++	CC_SUFFIXES = linux linux-gnu unknown-linux-gnu
++	CROSS_COMPILE ?= $(call cc-cross-prefix, \
+ 			$(foreach a,$(CC_ARCHES), \
+ 			$(foreach s,$(CC_SUFFIXES),$(a)-$(s)-)))
+-	endif
+ endif
+ 
+ ifdef CONFIG_DYNAMIC_FTRACE
+diff --git a/arch/sh/Makefile b/arch/sh/Makefile
+index 3bcbf52fb30e..0e8277be362e 100644
+--- a/arch/sh/Makefile
++++ b/arch/sh/Makefile
+@@ -10,9 +10,7 @@
+ # for more details.
+ #
+ ifneq ($(SUBARCH),$(ARCH))
+-  ifeq ($(CROSS_COMPILE),)
+-    CROSS_COMPILE := $(call cc-cross-prefix, sh-linux- sh-linux-gnu- sh-unknown-linux-gnu-)
+-  endif
++  CROSS_COMPILE ?= $(call cc-cross-prefix, sh-linux- sh-linux-gnu- sh-unknown-linux-gnu-)
+ endif
+ 
+ KBUILD_DEFCONFIG	:= shx3_defconfig
 -- 
-Kees Cook
+2.27.0
+
