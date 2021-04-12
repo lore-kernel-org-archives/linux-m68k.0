@@ -2,182 +2,79 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-17.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,INCLUDES_CR_TRAILER,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-20.3 required=3.0 tests=BAYES_00,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,INCLUDES_PULL_REQUEST,
+	MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,
+	USER_AGENT_SANE_1 autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id BCBCEC433B4
-	for <linux-m68k@archiver.kernel.org>; Sun, 11 Apr 2021 13:57:06 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 3AAF1C43461
+	for <linux-m68k@archiver.kernel.org>; Mon, 12 Apr 2021 01:14:04 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 903CE610CB
-	for <linux-m68k@archiver.kernel.org>; Sun, 11 Apr 2021 13:57:06 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 0733F6120A
+	for <linux-m68k@archiver.kernel.org>; Mon, 12 Apr 2021 01:14:04 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235849AbhDKN5W (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Sun, 11 Apr 2021 09:57:22 -0400
-Received: from conuserg-07.nifty.com ([210.131.2.74]:29173 "EHLO
-        conuserg-07.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235338AbhDKN5V (ORCPT
-        <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Sun, 11 Apr 2021 09:57:21 -0400
-Received: from localhost.localdomain (133-32-232-101.west.xps.vectant.ne.jp [133.32.232.101]) (authenticated)
-        by conuserg-07.nifty.com with ESMTP id 13BDtZpj024906;
-        Sun, 11 Apr 2021 22:55:36 +0900
-DKIM-Filter: OpenDKIM Filter v2.10.3 conuserg-07.nifty.com 13BDtZpj024906
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
-        s=dec2015msa; t=1618149336;
-        bh=vS8e0SLZkCBy0RmRBkXW9rD3CCXXaiE+fv8+9wtNFcQ=;
-        h=From:To:Cc:Subject:Date:From;
-        b=T4auvfUkLCtH1xfy+3/BrGcOzcfBKdffBrAXk4ktteZcBCINybIlbpHd9u+FXgcif
-         RO7XzBcc9p98FwTRNy8JybHK2F1kD5uOTKziM8txSjy2xhfOkbGIf/yytdOE+0jpI8
-         KviylrePITI/U3uMXnTZgwZjolQgFonocj7FYZytyy/PjeAFIk4d+ZnlqNcz82TC5w
-         YlRMzOSoLaSCC1uOkHx7R065zcm6947UcUG2em5S3RDI+7PnZJcADDKJj5uN27osZQ
-         9HFOIw4qnFiaxSzmdf0tITxyKAxAA/2oJKzo5VUOhdMB6iiBQ1EhXsj3PC5YdEkMlh
-         RRIP4+C1tEq2Q==
-X-Nifty-SrcIP: [133.32.232.101]
-From:   Masahiro Yamada <masahiroy@kernel.org>
-To:     linux-kbuild@vger.kernel.org
-Cc:     Masahiro Yamada <masahiroy@kernel.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Helge Deller <deller@gmx.de>,
-        "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
-        Rich Felker <dalias@libc.org>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Vineet Gupta <vgupta@synopsys.com>,
-        Yoshinori Sato <ysato@users.sourceforge.jp>,
-        linux-kernel@vger.kernel.org, linux-m68k@lists.linux-m68k.org,
-        linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org,
-        linux-sh@vger.kernel.org, linux-snps-arc@lists.infradead.org,
-        uclinux-h8-devel@lists.sourceforge.jp
-Subject: [PATCH] kbuild: use ?= to assign CROSS_COMPILE by arch-Makefile
-Date:   Sun, 11 Apr 2021 22:55:32 +0900
-Message-Id: <20210411135532.219797-1-masahiroy@kernel.org>
-X-Mailer: git-send-email 2.27.0
+        id S236104AbhDLBOT (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Sun, 11 Apr 2021 21:14:19 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48824 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S236199AbhDLBOS (ORCPT <rfc822;linux-m68k@vger.kernel.org>);
+        Sun, 11 Apr 2021 21:14:18 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2C88761206;
+        Mon, 12 Apr 2021 01:13:59 +0000 (UTC)
+From:   Greg Ungerer <gerg@linux-m68k.org>
+Subject: [git pull] m68knommu fix for v5.12-rc7
+To:     torvalds@linux-foundation.org
+Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Linux/m68k <linux-m68k@vger.kernel.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>, gerg@kernel.org
+Message-ID: <274538fc-42c0-e425-53a8-6a2f0234aae1@linux-m68k.org>
+Date:   Mon, 12 Apr 2021 11:13:57 +1000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-Use ?= operator to let arch/*/Makefile to assign CROSS_COMPILE only
-when CROSS_COMPILE is undefined.
+Hi Linus,
 
-This allows arch-Makefiles to drop the ifeq ($(CROSS_COMPILE),)
-conditional.
+Please pull the m68knommu tree for-linus branch.
 
-This slightly changes the behavior; the arch-Makefile previously
-overrode CROSS_COMPILE when CROSS_COMPILE has already been made empty
-via an environment variable as in 'export CROSS_COMPILE='.
+It contains a single regression fix.
+Some m68k platforms with non-zero memory base fail to boot
+with recent flatmem changes.
 
-With this commit, arch-Makefle will respect the user's environment
-set-up, which seems to be a more correct behavior.
+Sorry for getting this to you so late.
+I have been out on vacation and this slipped through the cracks.
 
-Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
----
+Regards
+Greg
 
- arch/arc/Makefile    | 4 +---
- arch/h8300/Makefile  | 4 +---
- arch/m68k/Makefile   | 4 +---
- arch/mips/Makefile   | 4 +---
- arch/parisc/Makefile | 6 ++----
- arch/sh/Makefile     | 4 +---
- 6 files changed, 7 insertions(+), 19 deletions(-)
 
-diff --git a/arch/arc/Makefile b/arch/arc/Makefile
-index 4392c9c189c4..bd5a9daa3461 100644
---- a/arch/arc/Makefile
-+++ b/arch/arc/Makefile
-@@ -5,9 +5,7 @@
- 
- KBUILD_DEFCONFIG := haps_hs_smp_defconfig
- 
--ifeq ($(CROSS_COMPILE),)
--CROSS_COMPILE := $(call cc-cross-prefix, arc-linux- arceb-linux-)
--endif
-+CROSS_COMPILE ?= $(call cc-cross-prefix, arc-linux- arceb-linux-)
- 
- cflags-y	+= -fno-common -pipe -fno-builtin -mmedium-calls -D__linux__
- 
-diff --git a/arch/h8300/Makefile b/arch/h8300/Makefile
-index ba0f26cfad61..d6e466dbfc00 100644
---- a/arch/h8300/Makefile
-+++ b/arch/h8300/Makefile
-@@ -26,9 +26,7 @@ KBUILD_LDFLAGS += $(ldflags-y)
- 
- CHECKFLAGS += -msize-long
- 
--ifeq ($(CROSS_COMPILE),)
--CROSS_COMPILE := $(call cc-cross-prefix, h8300-unknown-linux- h8300-linux-)
--endif
-+CROSS_COMPILE ?= $(call cc-cross-prefix, h8300-unknown-linux- h8300-linux-)
- 
- core-y	+= arch/$(ARCH)/kernel/ arch/$(ARCH)/mm/
- core-y	+= arch/$(ARCH)/boot/dts/
-diff --git a/arch/m68k/Makefile b/arch/m68k/Makefile
-index ea14f2046fb4..79208ad7a355 100644
---- a/arch/m68k/Makefile
-+++ b/arch/m68k/Makefile
-@@ -17,10 +17,8 @@
- KBUILD_DEFCONFIG := multi_defconfig
- 
- ifneq ($(SUBARCH),$(ARCH))
--	ifeq ($(CROSS_COMPILE),)
--		CROSS_COMPILE := $(call cc-cross-prefix, \
-+	CROSS_COMPILE ?= $(call cc-cross-prefix, \
- 			m68k-linux-gnu- m68k-linux- m68k-unknown-linux-gnu-)
--	endif
- endif
- 
- #
-diff --git a/arch/mips/Makefile b/arch/mips/Makefile
-index e71d587af49c..75e4e46532a4 100644
---- a/arch/mips/Makefile
-+++ b/arch/mips/Makefile
-@@ -51,9 +51,7 @@ UTS_MACHINE		:= mips64
- endif
- 
- ifneq ($(SUBARCH),$(ARCH))
--  ifeq ($(CROSS_COMPILE),)
--    CROSS_COMPILE := $(call cc-cross-prefix, $(tool-archpref)-linux-  $(tool-archpref)-linux-gnu-  $(tool-archpref)-unknown-linux-gnu-)
--  endif
-+  CROSS_COMPILE ?= $(call cc-cross-prefix, $(tool-archpref)-linux-  $(tool-archpref)-linux-gnu-  $(tool-archpref)-unknown-linux-gnu-)
- endif
- 
- ifdef CONFIG_FUNCTION_GRAPH_TRACER
-diff --git a/arch/parisc/Makefile b/arch/parisc/Makefile
-index 7d9f71aa829a..62272cb3513c 100644
---- a/arch/parisc/Makefile
-+++ b/arch/parisc/Makefile
-@@ -42,12 +42,10 @@ endif
- export LD_BFD
- 
- ifneq ($(SUBARCH),$(UTS_MACHINE))
--	ifeq ($(CROSS_COMPILE),)
--		CC_SUFFIXES = linux linux-gnu unknown-linux-gnu
--		CROSS_COMPILE := $(call cc-cross-prefix, \
-+	CC_SUFFIXES = linux linux-gnu unknown-linux-gnu
-+	CROSS_COMPILE ?= $(call cc-cross-prefix, \
- 			$(foreach a,$(CC_ARCHES), \
- 			$(foreach s,$(CC_SUFFIXES),$(a)-$(s)-)))
--	endif
- endif
- 
- ifdef CONFIG_DYNAMIC_FTRACE
-diff --git a/arch/sh/Makefile b/arch/sh/Makefile
-index 3bcbf52fb30e..0e8277be362e 100644
---- a/arch/sh/Makefile
-+++ b/arch/sh/Makefile
-@@ -10,9 +10,7 @@
- # for more details.
- #
- ifneq ($(SUBARCH),$(ARCH))
--  ifeq ($(CROSS_COMPILE),)
--    CROSS_COMPILE := $(call cc-cross-prefix, sh-linux- sh-linux-gnu- sh-unknown-linux-gnu-)
--  endif
-+  CROSS_COMPILE ?= $(call cc-cross-prefix, sh-linux- sh-linux-gnu- sh-unknown-linux-gnu-)
- endif
- 
- KBUILD_DEFCONFIG	:= shx3_defconfig
--- 
-2.27.0
 
+
+The following changes since commit d434405aaab7d0ebc516b68a8fc4100922d7f5ef:
+
+   Linux 5.12-rc7 (2021-04-11 15:16:13 -0700)
+
+are available in the Git repository at:
+
+   git://git.kernel.org/pub/scm/linux/kernel/git/gerg/m68knommu.git tags/m68knommu-for-v5.12-rc7
+
+for you to fetch changes up to d2bd44c4c05d043fb65cfdf26c54e6d8b94a4b41:
+
+   m68k: fix flatmem memory model setup (2021-04-12 09:34:26 +1000)
+
+----------------------------------------------------------------
+Single regression fix:
+. fix pfn offset (stops booting on some platforms)
+
+----------------------------------------------------------------
+Angelo Dureghello (1):
+       m68k: fix flatmem memory model setup
+
+  arch/m68k/include/asm/page_mm.h | 2 +-
+  1 file changed, 1 insertion(+), 1 deletion(-)
