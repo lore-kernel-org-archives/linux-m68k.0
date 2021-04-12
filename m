@@ -2,81 +2,65 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.8 required=3.0 tests=BAYES_00,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,MAILING_LIST_MULTI,
+X-Spam-Status: No, score=-11.0 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,
 	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 8A7F9C433ED
-	for <linux-m68k@archiver.kernel.org>; Mon, 12 Apr 2021 09:53:23 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 45C58C433ED
+	for <linux-m68k@archiver.kernel.org>; Mon, 12 Apr 2021 18:25:49 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 666AC611AD
-	for <linux-m68k@archiver.kernel.org>; Mon, 12 Apr 2021 09:53:23 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 128BB61358
+	for <linux-m68k@archiver.kernel.org>; Mon, 12 Apr 2021 18:25:49 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242339AbhDLJxi (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Mon, 12 Apr 2021 05:53:38 -0400
-Received: from mail-ua1-f53.google.com ([209.85.222.53]:37798 "EHLO
-        mail-ua1-f53.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244132AbhDLJvd (ORCPT
-        <rfc822;linux-m68k@vger.kernel.org>); Mon, 12 Apr 2021 05:51:33 -0400
-Received: by mail-ua1-f53.google.com with SMTP id s19so2850735uaq.4
-        for <linux-m68k@vger.kernel.org>; Mon, 12 Apr 2021 02:51:15 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=IO2DWy3AN/2hIxr0NwAXySR4KYGmjA07rlrAkv3+A7M=;
-        b=Hogrc5/r8OyKygigCqgUX/s4RN5o7vyso+R1MjgCDyANEGYN+ZMUTLuzkKfcxY1XDG
-         BvaVcDR5oKkb2UovkCp1z3wVAOtRZVxS/2h/rxmdksOKdSHfhKpELNtZi9AU1bz3hhB1
-         kfXApwjXdkOjRNtfTZofDXFNjjpVuEg6dRCgWH9735IiPJqm8QvjdcwVyxg8m/X2hjAa
-         ox9w0umCLiyIQp1CexCC2P9MAr6mUV4sD8C0NrwWbLqDfFOpykWVsdQdodFP2ldQrimR
-         k5jA1XH5CeoidylycNhwIVJ2X69fzKS2pzcGdiE4ydsvXtzpl8vlpKmDrr+NM1RXjUHA
-         QOVQ==
-X-Gm-Message-State: AOAM5305XRHQEpjlgBPIn/fJlIWiUivbQAWtSYB7yfu/ZO8iYp8rgg7w
-        SVQmPtC1NL+4in7PK8nduYbf3tZJP+uysMFsQ0+/8ftw
-X-Google-Smtp-Source: ABdhPJyFaA+Y5WOpVUc5hV7c3VhCqVyIAGh1fv6hQ7Duxn6TV8z9Mfi1FDVzQr3bN1wYztg/oqSgog3/E6SyjYG3hyg=
-X-Received: by 2002:ab0:3157:: with SMTP id e23mr17585715uam.106.1618221075136;
- Mon, 12 Apr 2021 02:51:15 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210228190828.392974-1-angelo@kernel-space.org>
-In-Reply-To: <20210228190828.392974-1-angelo@kernel-space.org>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Mon, 12 Apr 2021 11:51:03 +0200
-Message-ID: <CAMuHMdW6bOpdZWjJEcXsEzaRRjib4voW7dXoE08GKLvygxzGUg@mail.gmail.com>
-Subject: Re: [PATCH v2] m68k: fix flatmem memory model setup
-To:     Angelo Dureghello <angelo@kernel-space.org>
-Cc:     Greg Ungerer <gerg@linux-m68k.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Mike Rapoport <rppt@linux.ibm.com>,
-        "Linux/m68k" <linux-m68k@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        id S236675AbhDLS0G (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Mon, 12 Apr 2021 14:26:06 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51396 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S236716AbhDLS0G (ORCPT <rfc822;linux-m68k@vger.kernel.org>);
+        Mon, 12 Apr 2021 14:26:06 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPS id C278461350;
+        Mon, 12 Apr 2021 18:25:47 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1618251947;
+        bh=ZN2vqozDRocKnahAkvqi8qAJMlrIbH7pnklh3KTzCug=;
+        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
+        b=qjK4UxJWzyhi0NTymYkgIzhvCvB5buzE5A355/uBLGkUutWRt8cKXC9bjEWcM9+X4
+         x9akBLS80H1RD2iNCHiq6pPl8uJkJg7nnk8PyUCImqbbcLZKt6HDtQ3F3AiUBodFYQ
+         iS3Hmov6cqXlWH7eeSJhGmTgwChsQqBYWYcDnZ303AEuSZr48Tgz/8x7QKxAmvQDU3
+         x9x0aGiJuKmifEfvEn/mxPkeiAo19orkqXlIW2c8gzFNEin65/Iahj+YW/Yempr3qG
+         9XdAZPAhnYep1tXPWbittWI/9SA2KSJilmKbzym0uijplC7h5d+rjhMomGi2Usp3Jf
+         JI7/V3NC8IV3Q==
+Subject: Re: [git pull] m68knommu fix for v5.12-rc7
+From:   pr-tracker-bot@kernel.org
+In-Reply-To: <274538fc-42c0-e425-53a8-6a2f0234aae1@linux-m68k.org>
+References: <274538fc-42c0-e425-53a8-6a2f0234aae1@linux-m68k.org>
+X-PR-Tracked-List-Id: <linux-m68k.vger.kernel.org>
+X-PR-Tracked-Message-Id: <274538fc-42c0-e425-53a8-6a2f0234aae1@linux-m68k.org>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/gerg/m68knommu.git tags/m68knommu-for-v5.12-rc7
+X-PR-Tracked-Commit-Id: d2bd44c4c05d043fb65cfdf26c54e6d8b94a4b41
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: 89698becf06d341a700913c3d89ce2a914af69a2
+Message-Id: <161825194765.14899.11975799559047537024.pr-tracker-bot@kernel.org>
+Date:   Mon, 12 Apr 2021 18:25:47 +0000
+To:     Greg Ungerer <gerg@linux-m68k.org>
+Cc:     torvalds@linux-foundation.org,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Linux/m68k <linux-m68k@vger.kernel.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>, gerg@kernel.org
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-On Sun, Feb 28, 2021 at 9:12 PM Angelo Dureghello
-<angelo@kernel-space.org> wrote:
-> Detected a broken boot on mcf54415, likely introduced from
->
-> commit 4bfc848e0981
-> ("m68k/mm: enable use of generic memory_model.h for !DISCONTIGMEM")
->
-> Fix ARCH_PFN_OFFSET to be a pfn.
->
-> Signed-off-by: Angelo Dureghello <angelo@kernel-space.org>
+The pull request you sent on Mon, 12 Apr 2021 11:13:57 +1000:
 
-Reviewed-by: Geert Uytterhoeven <geert@linux-m68k.org>
+> git://git.kernel.org/pub/scm/linux/kernel/git/gerg/m68knommu.git tags/m68knommu-for-v5.12-rc7
 
-As this affects m68k-with-MMU, too, I have applied it, and queued it
-in the m68k for-v5.13 branch.  But it should hit upstream before v5.12
-due to Greg's pull request.
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/89698becf06d341a700913c3d89ce2a914af69a2
 
-Gr{oetje,eeting}s,
-
-                        Geert
+Thank you!
 
 -- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/prtracker.html
