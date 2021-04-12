@@ -2,50 +2,54 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-13.8 required=3.0 tests=BAYES_00,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-14.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,INCLUDES_CR_TRAILER,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id DD8B2C433B4
-	for <linux-m68k@archiver.kernel.org>; Mon, 12 Apr 2021 07:44:42 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id BFAF7C433B4
+	for <linux-m68k@archiver.kernel.org>; Mon, 12 Apr 2021 08:16:32 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id A9CE560FF0
-	for <linux-m68k@archiver.kernel.org>; Mon, 12 Apr 2021 07:44:42 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 97004600EF
+	for <linux-m68k@archiver.kernel.org>; Mon, 12 Apr 2021 08:16:32 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236895AbhDLHo7 (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Mon, 12 Apr 2021 03:44:59 -0400
-Received: from mail-ua1-f41.google.com ([209.85.222.41]:44990 "EHLO
-        mail-ua1-f41.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236808AbhDLHo7 (ORCPT
+        id S236895AbhDLIQt (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Mon, 12 Apr 2021 04:16:49 -0400
+Received: from conssluserg-06.nifty.com ([210.131.2.91]:61615 "EHLO
+        conssluserg-06.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236973AbhDLIQt (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Mon, 12 Apr 2021 03:44:59 -0400
-Received: by mail-ua1-f41.google.com with SMTP id q18so3939601uas.11
-        for <linux-m68k@lists.linux-m68k.org>; Mon, 12 Apr 2021 00:44:41 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=JXZ2evZ1HlMgd5dQiMnzV28T68ypmIxoPU4uM5YLJDY=;
-        b=FM4k9Rrs4QzjwggIpRGo0zGO9FJid6n/0mDTKA2wymoDZErWVmvIIwwzd5e3l7eMCB
-         mHb4gf2oDxzGtTUBj9w6Re6BocKBurq9lfaSq79eVs3RaQVsjX7X1FMzpGpcsFlETLyJ
-         FpzIRJY47UQwQZXbb5F4OyqJ70HlrNO4JlBR/D95hbLM3TSeAwCihUt5AyXIFnuahCLs
-         CyAPGCaqET8/QT1AMgvGubl884HsihYRZ3sx2xyG6NQVy9rUciTCDIuGIAKbilAxRlqK
-         2PDUnjqgn8hk/hGfuh/Eo/NWP61Io2nEhOBpFdTKNGeRJpDvA2Euey8/ErhCzgMXua2D
-         9eHQ==
-X-Gm-Message-State: AOAM531THZsJ3H9cLwX51vMxbhEWVQ9VOxKlQqkhzT+2u3Lz3lDev968
-        C/4ydvD2yTG+bEanb4hbflBkeHy4HKSlXpL3qIE=
-X-Google-Smtp-Source: ABdhPJx+WwlU+f/sxyzlKoozSp4V5pjbJlg2tOYyn632dPGmXpWO0oMiT+z+uxKe9nNXFSbUevs6IBKhAohcjgM8HOo=
-X-Received: by 2002:a9f:262c:: with SMTP id 41mr8642842uag.4.1618213481107;
- Mon, 12 Apr 2021 00:44:41 -0700 (PDT)
+        Mon, 12 Apr 2021 04:16:49 -0400
+Received: from mail-pf1-f170.google.com (mail-pf1-f170.google.com [209.85.210.170]) (authenticated)
+        by conssluserg-06.nifty.com with ESMTP id 13C8GCi2000519
+        for <linux-m68k@lists.linux-m68k.org>; Mon, 12 Apr 2021 17:16:13 +0900
+DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-06.nifty.com 13C8GCi2000519
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
+        s=dec2015msa; t=1618215373;
+        bh=uDdOFoatKT+5zEWWAiJzJLrdDEXYwLFG1mwLVDQeZSg=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=ChatkEem71FPJE1307DkBwk3EPN3NFOpzdXEboxnGfQ3DRCYX8wc4wg9Ihk3ndQb5
+         RFUazZAR9nNmJcwhJIvJV1T/Y12+8RCbGkYJS64SQ4g9fDYtJcIid3UnlN7jRZW5mM
+         kq1Foetoi6isuFQcp4M4PW8YDsrCiy/AG++mRyyu+VyqPU+XT7xVrfFVC15QVKq+Gg
+         ZEEhMg0jObJB08TbnX2+tovpffpLkluDGnNlPElN+JT2E6fLFzYMT73bi/H4crUpGS
+         6tUqPA9Cy1ovNGsl09vTE+KpBs9rVQtDOWRJQoKwEJIVh3sTj0Duu5nOEkUsMABc1C
+         LUgQh95SyPgNw==
+X-Nifty-SrcIP: [209.85.210.170]
+Received: by mail-pf1-f170.google.com with SMTP id w8so5233420pfn.9
+        for <linux-m68k@lists.linux-m68k.org>; Mon, 12 Apr 2021 01:16:12 -0700 (PDT)
+X-Gm-Message-State: AOAM531e+/HdFTBAi1leplLEe+vzRXM6sNAc3e2vxeKZi1RAQcGAijiC
+        NHnhXjGLgGMzizH91I3qRUgc3xQz944qDQQKsjs=
+X-Google-Smtp-Source: ABdhPJwQIkyZ0y/uMUlvB54CDG4omqvVnzcbv+RlS3hqxhdudrm8EDbUg9sZzv6Fn9SFbxY9GFmI5rHOYOeaY6T9tTM=
+X-Received: by 2002:a63:181c:: with SMTP id y28mr26531445pgl.175.1618215372220;
+ Mon, 12 Apr 2021 01:16:12 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210411135532.219797-1-masahiroy@kernel.org>
-In-Reply-To: <20210411135532.219797-1-masahiroy@kernel.org>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Mon, 12 Apr 2021 09:44:29 +0200
-Message-ID: <CAMuHMdUtqSv6PUfLtuGoBSgqqM4CkwSkT3nKstXRKN1tuXrQ_g@mail.gmail.com>
+References: <20210411135532.219797-1-masahiroy@kernel.org> <CAMuHMdUtqSv6PUfLtuGoBSgqqM4CkwSkT3nKstXRKN1tuXrQ_g@mail.gmail.com>
+In-Reply-To: <CAMuHMdUtqSv6PUfLtuGoBSgqqM4CkwSkT3nKstXRKN1tuXrQ_g@mail.gmail.com>
+From:   Masahiro Yamada <masahiroy@kernel.org>
+Date:   Mon, 12 Apr 2021 17:15:35 +0900
+X-Gmail-Original-Message-ID: <CAK7LNATozxbhq1Q4HtiOrE87KKFEmdC7Hfp-biXYG1e_eFzHvw@mail.gmail.com>
+Message-ID: <CAK7LNATozxbhq1Q4HtiOrE87KKFEmdC7Hfp-biXYG1e_eFzHvw@mail.gmail.com>
 Subject: Re: [PATCH] kbuild: use ?= to assign CROSS_COMPILE by arch-Makefile
-To:     Masahiro Yamada <masahiroy@kernel.org>
+To:     Geert Uytterhoeven <geert@linux-m68k.org>
 Cc:     linux-kbuild <linux-kbuild@vger.kernel.org>,
         Helge Deller <deller@gmx.de>,
         "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
@@ -66,61 +70,87 @@ Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-Hi Yamada-san,
-
-On Sun, Apr 11, 2021 at 3:56 PM Masahiro Yamada <masahiroy@kernel.org> wrote:
-> Use ?= operator to let arch/*/Makefile to assign CROSS_COMPILE only
-> when CROSS_COMPILE is undefined.
+On Mon, Apr 12, 2021 at 4:44 PM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
 >
-> This allows arch-Makefiles to drop the ifeq ($(CROSS_COMPILE),)
-> conditional.
+> Hi Yamada-san,
 >
-> This slightly changes the behavior; the arch-Makefile previously
-> overrode CROSS_COMPILE when CROSS_COMPILE has already been made empty
-> via an environment variable as in 'export CROSS_COMPILE='.
+> On Sun, Apr 11, 2021 at 3:56 PM Masahiro Yamada <masahiroy@kernel.org> wrote:
+> > Use ?= operator to let arch/*/Makefile to assign CROSS_COMPILE only
+> > when CROSS_COMPILE is undefined.
+> >
+> > This allows arch-Makefiles to drop the ifeq ($(CROSS_COMPILE),)
+> > conditional.
+> >
+> > This slightly changes the behavior; the arch-Makefile previously
+> > overrode CROSS_COMPILE when CROSS_COMPILE has already been made empty
+> > via an environment variable as in 'export CROSS_COMPILE='.
+> >
+> > With this commit, arch-Makefle will respect the user's environment
+> > set-up, which seems to be a more correct behavior.
+> >
+> > Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
 >
-> With this commit, arch-Makefle will respect the user's environment
-> set-up, which seems to be a more correct behavior.
+> Thanks for your patch!
 >
-> Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
-
-Thanks for your patch!
-
-> ---
+> > ---
+> >
+> >  arch/arc/Makefile    | 4 +---
+> >  arch/h8300/Makefile  | 4 +---
+> >  arch/m68k/Makefile   | 4 +---
+> >  arch/mips/Makefile   | 4 +---
+> >  arch/parisc/Makefile | 6 ++----
+> >  arch/sh/Makefile     | 4 +---
 >
->  arch/arc/Makefile    | 4 +---
->  arch/h8300/Makefile  | 4 +---
->  arch/m68k/Makefile   | 4 +---
->  arch/mips/Makefile   | 4 +---
->  arch/parisc/Makefile | 6 ++----
->  arch/sh/Makefile     | 4 +---
-
-What about arch/xtensa/Makefile?
-
-> --- a/arch/m68k/Makefile
-> +++ b/arch/m68k/Makefile
-> @@ -17,10 +17,8 @@
->  KBUILD_DEFCONFIG := multi_defconfig
+> What about arch/xtensa/Makefile?
 >
->  ifneq ($(SUBARCH),$(ARCH))
-> -       ifeq ($(CROSS_COMPILE),)
-> -               CROSS_COMPILE := $(call cc-cross-prefix, \
-> +       CROSS_COMPILE ?= $(call cc-cross-prefix, \
->                         m68k-linux-gnu- m68k-linux- m68k-unknown-linux-gnu-)
-> -       endif
->  endif
+> > --- a/arch/m68k/Makefile
+> > +++ b/arch/m68k/Makefile
+> > @@ -17,10 +17,8 @@
+> >  KBUILD_DEFCONFIG := multi_defconfig
+> >
+> >  ifneq ($(SUBARCH),$(ARCH))
+> > -       ifeq ($(CROSS_COMPILE),)
+> > -               CROSS_COMPILE := $(call cc-cross-prefix, \
+> > +       CROSS_COMPILE ?= $(call cc-cross-prefix, \
+> >                         m68k-linux-gnu- m68k-linux- m68k-unknown-linux-gnu-)
+> > -       endif
+> >  endif
+>
+> This does not seem to work as expected: my standard build scripts
+> (using "make ARCH=m68k") no longer pick up the cross-compiler,
+> but fall back to the native compiler, thus breaking the build.
 
-This does not seem to work as expected: my standard build scripts
-(using "make ARCH=m68k") no longer pick up the cross-compiler,
-but fall back to the native compiler, thus breaking the build.
 
-Gr{oetje,eeting}s,
+Agh, sorry, this patch does not work
+because the top Makefile exports CROSS_COMPILE.
 
-                        Geert
+export ARCH SRCARCH CONFIG_SHELL BASH HOSTCC KBUILD_HOSTCFLAGS
+CROSS_COMPILE LD CC
+
+
+
+Removing CROSS_COMPILE from that makes ?= work,
+but it would break other parts.
+
+
+Please ignore this patch.
+
+
+
+
+> Gr{oetje,eeting}s,
+>
+>                         Geert
+>
+> --
+> Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+>
+> In personal conversations with technical people, I call myself a hacker. But
+> when I'm talking to journalists I just say "programmer" or something like that.
+>                                 -- Linus Torvalds
+
+
 
 -- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+Best Regards
+Masahiro Yamada
