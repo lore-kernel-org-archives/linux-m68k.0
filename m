@@ -2,106 +2,88 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.3 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,NICE_REPLY_A,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=no autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-7.5 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS,USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B5660C433B4
-	for <linux-m68k@archiver.kernel.org>; Wed, 14 Apr 2021 09:25:17 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 797D5C433ED
+	for <linux-m68k@archiver.kernel.org>; Wed, 14 Apr 2021 14:20:45 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 94A18613C8
-	for <linux-m68k@archiver.kernel.org>; Wed, 14 Apr 2021 09:25:17 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 4C40461179
+	for <linux-m68k@archiver.kernel.org>; Wed, 14 Apr 2021 14:20:45 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348740AbhDNJZe (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Wed, 14 Apr 2021 05:25:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52306 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1350458AbhDNJZb (ORCPT
-        <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Wed, 14 Apr 2021 05:25:31 -0400
-Received: from mail-ed1-x532.google.com (mail-ed1-x532.google.com [IPv6:2a00:1450:4864:20::532])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B8D0BC061756
-        for <linux-m68k@lists.linux-m68k.org>; Wed, 14 Apr 2021 02:25:06 -0700 (PDT)
-Received: by mail-ed1-x532.google.com with SMTP id z1so22835678edb.8
-        for <linux-m68k@lists.linux-m68k.org>; Wed, 14 Apr 2021 02:25:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=tessares-net.20150623.gappssmtp.com; s=20150623;
-        h=to:cc:references:from:subject:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=gHbX9CNZcLaiMHXNZmBKODRDqd/reEdwnJR9AYcgnvs=;
-        b=gINN1R9lI5tCoYH2ZPewi+utvLw1oNr+AYOfDMNtw/hKaSHIjWFrbHQ2mEP/s050tD
-         g448CE9NUc6LD5cIHE915wtYMuh12ELdt/BZzVJtfcbRlcZzDt0CH8Ve04xqPwET4Rh5
-         BHdMYM5h1f/E2uWaCn6cX9rtXlGY2VM249gpU+JczEOZGYRnqBdk5vjJ2O5+ToJ3ERbh
-         U3FM3+/YLy3sEwiHrE30IVFtoFTTLn4R1GTNSu4oQJjn/xhueIXu1t9NC5c0QjPFa4VI
-         mHQlWeb7xSouf3EcOgTxrw7wUrUZIGalS4Ba2F808A+YtDSZwP171zeWniTOjTgCp8d7
-         ejDw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:to:cc:references:from:subject:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=gHbX9CNZcLaiMHXNZmBKODRDqd/reEdwnJR9AYcgnvs=;
-        b=dqBUM1ghMt0YRxFYP5rjRZrkiYkrtLTMUpXe/vJiwW9i8/634Up2SqX8MlNlYeQLk9
-         lzGVgpp5fUTsw0OOmStjyKXmJ09vyqWm1u2OBaX5PNQ+VapC8LKyE+b4+AWb9BKkZ+kC
-         R8BoTtqD9g8N95rCLsdRDrCa71WJX3DRdQ81UskbHVU4q1nBzmqFOylVuYJiVt81nCM7
-         y+ATe9JHXmYJk3gSOqwqPRt/W2UEpB51ab0OVHy3TJXl+AjPKiFSvuH3fdDxMfve2Ogp
-         i8szMAjDGm93Ok56B93QFPRxht/fbVvFjwUposK5Da9B5APIz4ZzjPP0sf44GEVPGY79
-         NnHQ==
-X-Gm-Message-State: AOAM531LKaV/cdh8HOt3r2CRm+EhmAtxZvrBEajrz/qSBljsLHvMs08W
-        ywI+eXugPkqSWO+koR7IKxfd5g==
-X-Google-Smtp-Source: ABdhPJwKI3fyWANihaNxRNJcYcXaOIyeXGZHEp2xOggKD3L098p3onGrqOxzTlf7HKaohGrVesV2FQ==
-X-Received: by 2002:aa7:c907:: with SMTP id b7mr40534459edt.37.1618392305540;
-        Wed, 14 Apr 2021 02:25:05 -0700 (PDT)
-Received: from tsr-lap-08.nix.tessares.net ([2a02:578:85b0:e00:bfbf:e0a9:a746:c4b9])
-        by smtp.gmail.com with ESMTPSA id t14sm9473304ejc.121.2021.04.14.02.25.04
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 14 Apr 2021 02:25:05 -0700 (PDT)
-To:     Nico Pache <npache@redhat.com>, linux-kernel@vger.kernel.org
-Cc:     brendanhiggins@google.com, gregkh@linuxfoundation.org,
-        linux-ext4@vger.kernel.org, netdev@vger.kernel.org,
-        rafael@kernel.org, linux-m68k@lists.linux-m68k.org,
-        geert@linux-m68k.org, tytso@mit.edu,
-        mathew.j.martineau@linux.intel.com, davem@davemloft.net,
-        broonie@kernel.org, davidgow@google.com, skhan@linuxfoundation.org,
-        mptcp@lists.linux.dev
+        id S1349472AbhDNOVF (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Wed, 14 Apr 2021 10:21:05 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60672 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1349443AbhDNOVA (ORCPT <rfc822;linux-m68k@lists.linux-m68k.org>);
+        Wed, 14 Apr 2021 10:21:00 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2632861019;
+        Wed, 14 Apr 2021 14:20:37 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1618410038;
+        bh=DykQO4BQxTHccj2c0RU/3WhmZd1h8XFYW7G9mDIAu20=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=PSuRbnLqSceeRXtJOmVbK2ImrfOgaaxVevo2l0FliVCtz6IapYN6ta3q8ZDOxTOyf
+         9PIh4JXcGsdm3oUf474ro0pblftH6gjuJ/70YDYDFYQJDbFzyXiuVd9mRbyCMGOgmH
+         W1Ssg8FbNI9Ym7O4ohirhw+9mVR24wEb6/gxCBFENBF0ivN7OHSIe5ohF7HvBz12at
+         ThwiA9XHnPqXvtRSSC0NzL3LZ8I/BHrmxQ3NaY9oPLFMjiAzEVjmXKqiwUN6h0mxL4
+         yJsnj4ZhMGGXIkmgdrFy0jJPJlSR+bSdf9RRa302+2rabt7hxc5S8hOnvT+H5HDwFq
+         3hq79rq5V6MYw==
+Date:   Wed, 14 Apr 2021 15:20:16 +0100
+From:   Mark Brown <broonie@kernel.org>
+To:     Nico Pache <npache@redhat.com>
+Cc:     linux-kernel@vger.kernel.org, brendanhiggins@google.com,
+        gregkh@linuxfoundation.org, linux-ext4@vger.kernel.org,
+        netdev@vger.kernel.org, rafael@kernel.org,
+        linux-m68k@lists.linux-m68k.org, geert@linux-m68k.org,
+        tytso@mit.edu, mathew.j.martineau@linux.intel.com,
+        davem@davemloft.net, davidgow@google.com,
+        skhan@linuxfoundation.org, mptcp@lists.linux.dev
+Subject: Re: [PATCH v2 1/6] kunit: ASoC: topology: adhear to KUNIT formatting
+ standard
+Message-ID: <20210414142016.GE4535@sirena.org.uk>
 References: <cover.1618388989.git.npache@redhat.com>
- <0fa191715b236766ad13c5f786d8daf92a9a0cf2.1618388989.git.npache@redhat.com>
-From:   Matthieu Baerts <matthieu.baerts@tessares.net>
-Subject: Re: [PATCH v2 5/6] kunit: mptcp: adhear to KUNIT formatting standard
-Message-ID: <e26fbcc8-ba3e-573a-523d-9c5d5f84bc46@tessares.net>
-Date:   Wed, 14 Apr 2021 11:25:03 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+ <dcf79e592f9a7e14483dde32ac561f6af2632e50.1618388989.git.npache@redhat.com>
 MIME-Version: 1.0
-In-Reply-To: <0fa191715b236766ad13c5f786d8daf92a9a0cf2.1618388989.git.npache@redhat.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="imjhCm/Pyz7Rq5F2"
+Content-Disposition: inline
+In-Reply-To: <dcf79e592f9a7e14483dde32ac561f6af2632e50.1618388989.git.npache@redhat.com>
+X-Cookie: George Orwell was an optimist.
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-Hi Nico,
 
-On 14/04/2021 10:58, Nico Pache wrote:
-> Drop 'S' from end of CONFIG_MPTCP_KUNIT_TESTS inorder to adhear to the
-> KUNIT *_KUNIT_TEST config name format.
+--imjhCm/Pyz7Rq5F2
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-For MPTCP, we have multiple KUnit tests: crypto and token. That's why we 
-wrote TESTS with a S.
+On Wed, Apr 14, 2021 at 04:58:04AM -0400, Nico Pache wrote:
+> Drop 'S' from end of SND_SOC_TOPOLOGY_KUNIT_TESTS inorder to adhear to
+>  the KUNIT *_KUNIT_TEST config name format.
 
-I'm fine without S if we need to stick with KUnit' standard. But maybe 
-the standard wants us to split the two tests and create 
-MPTCP_TOKEN_KUNIT_TEST and MPTCP_TOKEN_KUNIT_TEST config?
+Please submit patches using subject lines reflecting the style for the
+subsystem, this makes it easier for people to identify relevant patches.
+Look at what existing commits in the area you're changing are doing and
+make sure your subject lines visually resemble what they're doing.
+There's no need to resubmit to fix this alone.
 
-In this case, we could eventually keep MPTCP_KUNIT_TESTS which will in 
-charge of selecting the two new ones.
+--imjhCm/Pyz7Rq5F2
+Content-Type: application/pgp-signature; name="signature.asc"
 
-Up to the KUnit maintainers to decide ;-)
+-----BEGIN PGP SIGNATURE-----
 
-Cheers,
-Matt
--- 
-Tessares | Belgium | Hybrid Access Solutions
-www.tessares.net
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmB2+h8ACgkQJNaLcl1U
+h9C5ygf/f+BNG8PCz0e3sGq/F/lIAmu23fPiN7lzXIQ/7/mdT3MwGiTHu9temsXL
+0d99SUvGT3MUczcKW+6Vj6faDQZGBXKBsKMW7rOq5h7Ns2tvw5MyvWwSYhHLj/Zt
+Ojkg3tN7GXemTVGC+TZyHVqWgh2q2wWvqJHeNzKY/9WPDcQo5BqoHlvO0xm9iF+L
+w3XI2y5+R6HulHM9PNNH18x3QiPWrjIjDAn2INWfPuPsAwu9+GpPf16ZK6CusCmZ
+ugX0b36XCpwrS2aNmb6SrjAA7GiQGnNXTZZ290lLhaN+ams3aM2pCePDkPjQU5EI
+ASor0godC7IdsihlvPd4BHIRP07Sdw==
+=U3R8
+-----END PGP SIGNATURE-----
+
+--imjhCm/Pyz7Rq5F2--
