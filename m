@@ -2,244 +2,148 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-15.3 required=3.0 tests=BAYES_00,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,NICE_REPLY_A,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
-	USER_AGENT_SANE_1 autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-18.3 required=3.0 tests=BAYES_00,DKIMWL_WL_MED,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
+	INCLUDES_CR_TRAILER,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
+	USER_IN_DEF_DKIM_WL autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 19021C43600
-	for <linux-m68k@archiver.kernel.org>; Thu, 15 Apr 2021 04:40:00 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4C9CEC43460
+	for <linux-m68k@archiver.kernel.org>; Thu, 15 Apr 2021 06:01:27 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id E416661139
-	for <linux-m68k@archiver.kernel.org>; Thu, 15 Apr 2021 04:39:59 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 1D8CC61457
+	for <linux-m68k@archiver.kernel.org>; Thu, 15 Apr 2021 06:01:27 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229668AbhDOEkU (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Thu, 15 Apr 2021 00:40:20 -0400
-Received: from foss.arm.com ([217.140.110.172]:37240 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229485AbhDOEkT (ORCPT <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Thu, 15 Apr 2021 00:40:19 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id E0098113E;
-        Wed, 14 Apr 2021 21:39:55 -0700 (PDT)
-Received: from [10.163.73.114] (unknown [10.163.73.114])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 6A6073F73B;
-        Wed, 14 Apr 2021 21:39:49 -0700 (PDT)
-Subject: Re: [PATCH] mm: Define ARCH_HAS_FIRST_USER_ADDRESS
-To:     Christophe Leroy <christophe.leroy@csgroup.eu>, linux-mm@kvack.org,
-        akpm@linux-foundation.org
-Cc:     linux-s390@vger.kernel.org, x86@kernel.org,
-        linux-ia64@vger.kernel.org, linux-parisc@vger.kernel.org,
-        linux-hexagon@vger.kernel.org, linux-xtensa@linux-xtensa.org,
-        linux-sh@vger.kernel.org, linux-um@lists.infradead.org,
-        linux-mips@vger.kernel.org, linux-csky@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-m68k@lists.linux-m68k.org,
-        openrisc@lists.librecores.org, linux-alpha@vger.kernel.org,
-        sparclinux@vger.kernel.org, linux-riscv@lists.infradead.org,
-        linux-snps-arc@lists.infradead.org, linuxppc-dev@lists.ozlabs.org,
-        linux-arm-kernel@lists.infradead.org
-References: <1618368899-20311-1-git-send-email-anshuman.khandual@arm.com>
- <f29ba8e2-3071-c963-1e9f-e8c88526ed8d@csgroup.eu>
- <6d24d3cc-b2df-f0d7-f4bf-f505f679c77e@arm.com>
- <ec7bbb30-dbbd-197b-4d65-eb3600fe6413@csgroup.eu>
-From:   Anshuman Khandual <anshuman.khandual@arm.com>
-Message-ID: <e9d1a342-b444-efd5-d11f-79aa4d11fabc@arm.com>
-Date:   Thu, 15 Apr 2021 10:10:38 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S230464AbhDOGBs (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Thu, 15 Apr 2021 02:01:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39410 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230442AbhDOGBs (ORCPT
+        <rfc822;linux-m68k@lists.linux-m68k.org>);
+        Thu, 15 Apr 2021 02:01:48 -0400
+Received: from mail-lj1-x232.google.com (mail-lj1-x232.google.com [IPv6:2a00:1450:4864:20::232])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E7EE4C061756
+        for <linux-m68k@lists.linux-m68k.org>; Wed, 14 Apr 2021 23:01:23 -0700 (PDT)
+Received: by mail-lj1-x232.google.com with SMTP id a25so12510890ljm.11
+        for <linux-m68k@lists.linux-m68k.org>; Wed, 14 Apr 2021 23:01:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=qdo7GLfDZ1fKfLETl+AnnMu4LOm28kYyjEjCWeEN/kM=;
+        b=PZxrip/lkWUIJnUpal2tRZVXiAofn50XVw3/lU7TzdlDxJ3ozNg0JLo+iujw/3cE3A
+         7ozR/Gb7FWcOZSffC3ERKXcAVMqYX+YUIIHGzcVHpjaC2fhw6cvyROe7+ZOEORYP34gO
+         4rktudHPimrrD0KrViFavSSLb6Lfr99RTv1ImY4Ya8S+Tu4Lxwif0WmaVLv27ZZj9Be8
+         UX5lMfwFptT5vX2mIZh3o/ufbjoBKPI99et2JkncXPrOAFkC0J2O+KV2mRPrv6obQ8+/
+         NcGLJ772C8lX+8IbfHtw7egTBQodFI6Z5S9hmkz8qnGic7XsyD0KTZWn32nrdgIvO23n
+         CQbw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=qdo7GLfDZ1fKfLETl+AnnMu4LOm28kYyjEjCWeEN/kM=;
+        b=EeTThiYP0AT0otMv0A72xnBnRqjtvZNOOhT+Ohi9+4wkkEyOlpspEimF1bqq+lkgAO
+         pZtCkKIEZPgp0LlGBmdj2u343uqobDXXT3QDDz6qucSX5Z0SKTtXCMfwTzJED2/YjmD4
+         rIZ6COzLTVPo2qWMUWbb2c++s4QmHANklhhtB9aYnSQrCdX234evFVg7VgkFGbB0+mfg
+         mRuw4Y5ILFVserr7soIRQxPAbu/fiWO/UEOgcp8PPo53pk62wPh8AD6qSMGkTdf72Fmq
+         FaFqYPCS/OyYcUTLr6/QNUaEvNDWcCr89be1qdyRWuhyHaqD9VbhL9a+0FDCO6gbWdf7
+         uJdQ==
+X-Gm-Message-State: AOAM530aGoJuDm0e3R5G+njKg6sQkEY4OkoUpzZdGUiTgCfcOJp/v+qz
+        i1oZsbB6WctK++f9SdEhFJcFg7iNI4NWn/3ofmYkkA==
+X-Google-Smtp-Source: ABdhPJy9te6R+p8u4q5ZbHoZtpIs4d6hU7Z7VX61/DbN9iNOvSUCxpMUf/Ps0cuyIkT9nOAmt7XlbbjeLhPd7cK0OuU=
+X-Received: by 2002:a2e:8797:: with SMTP id n23mr831519lji.347.1618466482085;
+ Wed, 14 Apr 2021 23:01:22 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <ec7bbb30-dbbd-197b-4d65-eb3600fe6413@csgroup.eu>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+References: <cover.1618388989.git.npache@redhat.com> <0fa191715b236766ad13c5f786d8daf92a9a0cf2.1618388989.git.npache@redhat.com>
+ <e26fbcc8-ba3e-573a-523d-9c5d5f84bc46@tessares.net>
+In-Reply-To: <e26fbcc8-ba3e-573a-523d-9c5d5f84bc46@tessares.net>
+From:   David Gow <davidgow@google.com>
+Date:   Thu, 15 Apr 2021 14:01:10 +0800
+Message-ID: <CABVgOSm9Lfcu--iiFo=PNLCWCj4vkxqAqO0aZT9B2r3Kw5Fhaw@mail.gmail.com>
+Subject: Re: [PATCH v2 5/6] kunit: mptcp: adhear to KUNIT formatting standard
+To:     Matthieu Baerts <matthieu.baerts@tessares.net>,
+        Nico Pache <npache@redhat.com>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Brendan Higgins <brendanhiggins@google.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-ext4@vger.kernel.org, Networking <netdev@vger.kernel.org>,
+        rafael@kernel.org, linux-m68k@lists.linux-m68k.org,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        "Theodore Ts'o" <tytso@mit.edu>,
+        mathew.j.martineau@linux.intel.com, davem@davemloft.net,
+        Mark Brown <broonie@kernel.org>,
+        Shuah Khan <skhan@linuxfoundation.org>, mptcp@lists.linux.dev
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-On 4/14/21 11:40 AM, Christophe Leroy wrote:
-> 
-> 
-> Le 14/04/2021 à 07:59, Anshuman Khandual a écrit :
->>
->>
->> On 4/14/21 10:52 AM, Christophe Leroy wrote:
->>>
->>>
->>> Le 14/04/2021 à 04:54, Anshuman Khandual a écrit :
->>>> Currently most platforms define FIRST_USER_ADDRESS as 0UL duplicating the
->>>> same code all over. Instead define a new option ARCH_HAS_FIRST_USER_ADDRESS
->>>> for those platforms which would override generic default FIRST_USER_ADDRESS
->>>> value 0UL. This makes it much cleaner with reduced code.
->>>>
->>>> Cc: linux-alpha@vger.kernel.org
->>>> Cc: linux-snps-arc@lists.infradead.org
->>>> Cc: linux-arm-kernel@lists.infradead.org
->>>> Cc: linux-csky@vger.kernel.org
->>>> Cc: linux-hexagon@vger.kernel.org
->>>> Cc: linux-ia64@vger.kernel.org
->>>> Cc: linux-m68k@lists.linux-m68k.org
->>>> Cc: linux-mips@vger.kernel.org
->>>> Cc: openrisc@lists.librecores.org
->>>> Cc: linux-parisc@vger.kernel.org
->>>> Cc: linuxppc-dev@lists.ozlabs.org
->>>> Cc: linux-riscv@lists.infradead.org
->>>> Cc: linux-s390@vger.kernel.org
->>>> Cc: linux-sh@vger.kernel.org
->>>> Cc: sparclinux@vger.kernel.org
->>>> Cc: linux-um@lists.infradead.org
->>>> Cc: linux-xtensa@linux-xtensa.org
->>>> Cc: x86@kernel.org
->>>> Cc: linux-mm@kvack.org
->>>> Cc: linux-kernel@vger.kernel.org
->>>> Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
->>>> ---
->>>>    arch/alpha/include/asm/pgtable.h             | 1 -
->>>>    arch/arc/include/asm/pgtable.h               | 6 ------
->>>>    arch/arm/Kconfig                             | 1 +
->>>>    arch/arm64/include/asm/pgtable.h             | 2 --
->>>>    arch/csky/include/asm/pgtable.h              | 1 -
->>>>    arch/hexagon/include/asm/pgtable.h           | 3 ---
->>>>    arch/ia64/include/asm/pgtable.h              | 1 -
->>>>    arch/m68k/include/asm/pgtable_mm.h           | 1 -
->>>>    arch/microblaze/include/asm/pgtable.h        | 2 --
->>>>    arch/mips/include/asm/pgtable-32.h           | 1 -
->>>>    arch/mips/include/asm/pgtable-64.h           | 1 -
->>>>    arch/nds32/Kconfig                           | 1 +
->>>>    arch/nios2/include/asm/pgtable.h             | 2 --
->>>>    arch/openrisc/include/asm/pgtable.h          | 1 -
->>>>    arch/parisc/include/asm/pgtable.h            | 2 --
->>>>    arch/powerpc/include/asm/book3s/pgtable.h    | 1 -
->>>>    arch/powerpc/include/asm/nohash/32/pgtable.h | 1 -
->>>>    arch/powerpc/include/asm/nohash/64/pgtable.h | 2 --
->>>>    arch/riscv/include/asm/pgtable.h             | 2 --
->>>>    arch/s390/include/asm/pgtable.h              | 2 --
->>>>    arch/sh/include/asm/pgtable.h                | 2 --
->>>>    arch/sparc/include/asm/pgtable_32.h          | 1 -
->>>>    arch/sparc/include/asm/pgtable_64.h          | 3 ---
->>>>    arch/um/include/asm/pgtable-2level.h         | 1 -
->>>>    arch/um/include/asm/pgtable-3level.h         | 1 -
->>>>    arch/x86/include/asm/pgtable_types.h         | 2 --
->>>>    arch/xtensa/include/asm/pgtable.h            | 1 -
->>>>    include/linux/mm.h                           | 4 ++++
->>>>    mm/Kconfig                                   | 4 ++++
->>>>    29 files changed, 10 insertions(+), 43 deletions(-)
->>>>
->>>> diff --git a/include/linux/mm.h b/include/linux/mm.h
->>>> index 8ba434287387..47098ccd715e 100644
->>>> --- a/include/linux/mm.h
->>>> +++ b/include/linux/mm.h
->>>> @@ -46,6 +46,10 @@ extern int sysctl_page_lock_unfairness;
->>>>      void init_mm_internals(void);
->>>>    +#ifndef ARCH_HAS_FIRST_USER_ADDRESS
->>>
->>> I guess you didn't test it ..... :)
->>
->> In fact I did :) Though just booted it on arm64 and cross compiled on
->> multiple others platforms.
+Hi Nico, Matthieu,
 
-I guess for all platforms, ARCH_HAS_FIRST_USER_ADDRESS would have just
-evaluated to be false hence falling back on the generic definition. So
-this never complained during build any where or during boot on arm64.
+Thanks for going to the trouble of making these conform to the KUnit
+style guidelines.
 
->>
->>>
->>> should be #ifndef CONFIG_ARCH_HAS_FIRST_USER_ADDRESS
->>
->> Right, meant that instead.
->>
->>>
->>>> +#define FIRST_USER_ADDRESS    0UL
->>>> +#endif
->>>
->>> But why do we need a config option at all for that ?
->>>
->>> Why not just:
->>>
->>> #ifndef FIRST_USER_ADDRESS
->>> #define FIRST_USER_ADDRESS    0UL
->>> #endif
->>
->> This sounds simpler. But just wondering, would not there be any possibility
->> of build problems due to compilation sequence between arch and generic code ?
->>
-> 
-> For sure it has to be addresses carefully, but there are already a lot of stuff like that around pgtables.h
-> 
-> For instance, pte_offset_kernel() has a generic definition in linux/pgtables.h based on whether it is already defined or not.
-> 
-> Taking into account that FIRST_USER_ADDRESS is today in the architectures's asm/pgtables.h, I think putting the fallback definition in linux/pgtable.h would do the trick.
+On Wed, Apr 14, 2021 at 5:25 PM Matthieu Baerts
+<matthieu.baerts@tessares.net> wrote:
+>
+> Hi Nico,
+>
+> On 14/04/2021 10:58, Nico Pache wrote:
+> > Drop 'S' from end of CONFIG_MPTCP_KUNIT_TESTS inorder to adhear to the
+> > KUNIT *_KUNIT_TEST config name format.
 
-Agreed, <linux/pgtable.h> includes <asm/pgtable.h> at the beginning and
-if the arch defines FIRST_USER_ADDRESS, the generic one afterwards would
-be skipped. The following change builds on multiple platforms.
+[Super nitpicky comment for this series: It's 'adhere', not 'adhear'.
+It's not worth resending this out just to fix the spelling here, but
+if you do another version, it might be worth fiing.]
 
-diff --git a/arch/arm/Kconfig b/arch/arm/Kconfig
-index ad086e6d7155..5da96f5df48f 100644
---- a/arch/arm/Kconfig
-+++ b/arch/arm/Kconfig
-@@ -7,7 +7,6 @@ config ARM
- 	select ARCH_HAS_DEBUG_VIRTUAL if MMU
- 	select ARCH_HAS_DMA_WRITE_COMBINE if !ARM_DMA_MEM_BUFFERABLE
- 	select ARCH_HAS_ELF_RANDOMIZE
--	select ARCH_HAS_FIRST_USER_ADDRESS
- 	select ARCH_HAS_FORTIFY_SOURCE
- 	select ARCH_HAS_KEEPINITRD
- 	select ARCH_HAS_KCOV
-diff --git a/arch/nds32/Kconfig b/arch/nds32/Kconfig
-index 23ec4fcc0d0f..62313902d75d 100644
---- a/arch/nds32/Kconfig
-+++ b/arch/nds32/Kconfig
-@@ -8,7 +8,6 @@ config NDS32
- 	def_bool y
- 	select ARCH_32BIT_OFF_T
- 	select ARCH_HAS_DMA_PREP_COHERENT
--	select ARCH_HAS_FIRST_USER_ADDRESS
- 	select ARCH_HAS_SYNC_DMA_FOR_CPU
- 	select ARCH_HAS_SYNC_DMA_FOR_DEVICE
- 	select ARCH_WANT_FRAME_POINTERS if FTRACE
-diff --git a/include/linux/mm.h b/include/linux/mm.h
-index 47098ccd715e..8ba434287387 100644
---- a/include/linux/mm.h
-+++ b/include/linux/mm.h
-@@ -46,10 +46,6 @@ extern int sysctl_page_lock_unfairness;
- 
- void init_mm_internals(void);
- 
--#ifndef ARCH_HAS_FIRST_USER_ADDRESS
--#define FIRST_USER_ADDRESS	0UL
--#endif
--
- #ifndef CONFIG_NEED_MULTIPLE_NODES	/* Don't use mapnrs, do it properly */
- extern unsigned long max_mapnr;
- 
-diff --git a/include/linux/pgtable.h b/include/linux/pgtable.h
-index 5e772392a379..f3da6a5cc35a 100644
---- a/include/linux/pgtable.h
-+++ b/include/linux/pgtable.h
-@@ -28,6 +28,10 @@
- #define USER_PGTABLES_CEILING	0UL
- #endif
- 
-+#ifndef FIRST_USER_ADDRESS
-+#define FIRST_USER_ADDRESS	0UL
-+#endif
-+
- /*
-  * A page table page can be thought of an array like this: pXd_t[PTRS_PER_PxD]
-  *
-diff --git a/mm/Kconfig b/mm/Kconfig
-index 373fbe377075..4494501aa403 100644
---- a/mm/Kconfig
-+++ b/mm/Kconfig
-@@ -807,9 +807,6 @@ config VMAP_PFN
- config ARCH_USES_HIGH_VMA_FLAGS
- 	bool
- 
--config ARCH_HAS_FIRST_USER_ADDRESS
--	bool
--
- config ARCH_HAS_PKEYS
- 	bool
- 
--- 
-2.20.1
+>
+> For MPTCP, we have multiple KUnit tests: crypto and token. That's why we
+> wrote TESTS with a S.
+
+So (as this patch series attests), there are a few different config
+options which cover (or intend one day to cover) multiple suites, and
+hence end in KUNIT_TESTS. Personally, I'd still slightly prefer TEST
+here, just to have a common suffix for KUnit test options, and that's
+what I was going for when writing the style guide.
+
+That being said, it's also worth noting that there is an explicit
+exemption for existing tests, so if you (for example) have a bunch of
+automation which relies on this name and can't easily be changed,
+that's probably more important than a lone 'S'.
+
+> I'm fine without S if we need to stick with KUnit' standard. But maybe
+> the standard wants us to split the two tests and create
+> MPTCP_TOKEN_KUNIT_TEST and MPTCP_TOKEN_KUNIT_TEST config?
+>
+> In this case, we could eventually keep MPTCP_KUNIT_TESTS which will in
+> charge of selecting the two new ones.
+
+This is certainly an option if you want to do it, but personally I
+wouldn't bother unless it gives you some real advantage. One thing I
+would note, however, is that it's possible to have a per-subsystem
+'.kunitconfig' file, so if you want to run a particular group of tests
+(i.e., have a particular set of config options for testing), it'd be
+possible to have that rather than a meta-Kconfig entry.
+
+While there are some advantages to trying to have a  1:1 suite:config
+mapping, there's isn't actually anything that depends on it at the
+moment (or indeed, anything actively planned). So, in my view, there's
+no need for you to split the config entry unless you think there's a
+good reason you'd want to be able to build one set of tests but not
+the other.
+
+> Up to the KUnit maintainers to decide ;-)
+
+To summarise my view: personally, I'd prefer things the way this patch
+works: have everything end in _KUNIT_TEST, even if that enables a
+couple of suites. The extra 'S' on the end isn't a huge problem if you
+have a good reason to particularly want to keep it, though: as long as
+you don't have something like _K_UNIT_VERIFICATION or something
+equally silly that'd break grepping for '_KUNIT_TEST', it's fine be
+me.
+
+So, since it matches my prejudices, this patch is:
+
+Reviewed-by: David Gow <davidgow@google.com>
+
+Thanks,
+-- David
