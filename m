@@ -2,68 +2,97 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-6.8 required=3.0 tests=BAYES_00,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	USER_AGENT_GIT autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-13.3 required=3.0 tests=BAYES_00,DKIMWL_WL_MED,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL autolearn=no
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 7CF2AC433B4
-	for <linux-m68k@archiver.kernel.org>; Fri, 16 Apr 2021 20:36:22 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D5F01C433B4
+	for <linux-m68k@archiver.kernel.org>; Sat, 17 Apr 2021 04:24:18 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 3A8FA6124B
-	for <linux-m68k@archiver.kernel.org>; Fri, 16 Apr 2021 20:36:22 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id AD650611AB
+	for <linux-m68k@archiver.kernel.org>; Sat, 17 Apr 2021 04:24:18 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240036AbhDPUgq (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Fri, 16 Apr 2021 16:36:46 -0400
-Received: from mslow1.mail.gandi.net ([217.70.178.240]:37677 "EHLO
-        mslow1.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235727AbhDPUgq (ORCPT
+        id S229655AbhDQEYn (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Sat, 17 Apr 2021 00:24:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57554 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229547AbhDQEYm (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Fri, 16 Apr 2021 16:36:46 -0400
-Received: from relay9-d.mail.gandi.net (unknown [217.70.183.199])
-        by mslow1.mail.gandi.net (Postfix) with ESMTP id DFEDFD74F5
-        for <linux-m68k@lists.linux-m68k.org>; Fri, 16 Apr 2021 20:26:48 +0000 (UTC)
-X-Originating-IP: 90.65.108.55
-Received: from localhost (lfbn-lyo-1-1676-55.w90-65.abo.wanadoo.fr [90.65.108.55])
-        (Authenticated sender: alexandre.belloni@bootlin.com)
-        by relay9-d.mail.gandi.net (Postfix) with ESMTPSA id 422A6FF802;
-        Fri, 16 Apr 2021 20:26:27 +0000 (UTC)
-From:   Alexandre Belloni <alexandre.belloni@bootlin.com>
-To:     linux-kernel@vger.kernel.org, Laurent Vivier <laurent@vivier.eu>
-Cc:     Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Alessandro Zummo <a.zummo@towertech.it>,
-        linux-m68k@lists.linux-m68k.org, linux-rtc@vger.kernel.org,
-        Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: Re: [PATCH 0/2] m68k: Add Virtual M68k Machine
-Date:   Fri, 16 Apr 2021 22:26:26 +0200
-Message-Id: <161860472066.842937.16850667459079911050.b4-ty@bootlin.com>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210323221430.3735147-1-laurent@vivier.eu>
-References: <20210323221430.3735147-1-laurent@vivier.eu>
+        Sat, 17 Apr 2021 00:24:42 -0400
+Received: from mail-lf1-x12b.google.com (mail-lf1-x12b.google.com [IPv6:2a00:1450:4864:20::12b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0183BC061760
+        for <linux-m68k@lists.linux-m68k.org>; Fri, 16 Apr 2021 21:24:16 -0700 (PDT)
+Received: by mail-lf1-x12b.google.com with SMTP id y4so7742488lfl.10
+        for <linux-m68k@lists.linux-m68k.org>; Fri, 16 Apr 2021 21:24:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=dC0Ua26Rxhnd0n6CHTRnAJbktP1VUUbdUEYM+ldETTs=;
+        b=oLz758tToKci7zsi0yL0Scc7eybfO9b01MpTabJVy82AvrHxAm2Q8Bl580gyU51ORl
+         5O+hqfRQo/6iYzb6O/esTi7MhnB6inJ0UZ/cuMm5NCWSGF2LNtJrP8UzjS/jpcV3dYad
+         niAlpUWRvdSPNLTDAVSOb0zS9baNZ+yioNktaRnNcad2e6nypv+8Y4eSUqBy996u3E+p
+         dzuLhBxP2Nin+DHWvtnMYL4gfn2ujPEJkjlcfStQ5exWrdbLtmwnLwNSGW87LDnt9nVW
+         0diE7nHwTIYX3X25SJy70YHdEdFqr+IDG6Fbh5R/Y3Fd7APM7uiRGoj+GA3ywBCA3jQF
+         xLQw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=dC0Ua26Rxhnd0n6CHTRnAJbktP1VUUbdUEYM+ldETTs=;
+        b=EXKOg782dUs+FBXx3OY39GwT91GU1G+QH3vXhKrBdF2fKo3cFzM5336O5imZRVXQvP
+         ZkhutlgLqbML6NEIWc5DK+ZEuNLTqKRdMN7K3sKPrz+bcyeHlI77kkLdZQ7rF/CQ6O/F
+         E43xrQJ6sRSS57WtjMZ1z+bDv3CFg9JKWFnkHywF5mjTjda727qQRkfnMeJmEji6QXIu
+         QBY3PBv7O+X6jSea9npUdOhsioecbiSi8Uw4+UpXFyHs8+PtsAAoFKNiYjLzWVMWi6fY
+         1WlHwSxSzXVgx+Tmb8DRDOQFcxUIVPf6zSUkOSxvWTf/mS6FiJWb4KVWKydaEzrDgRCM
+         WqTw==
+X-Gm-Message-State: AOAM533qkYpn0cyyTE8TfZc5BA8s/4mNv4iIKYukYVsiQc196QJ1ERLJ
+        XxVKOccgi//e46elharZaU2qyfw86Nod197/iJa4eg==
+X-Google-Smtp-Source: ABdhPJzmV9SsVkwYJidvbnM4iWS8L0mm8LtiTIuV/aB/PYpvnOKcYLGWvpGibFQPijvf3rE6GcpLQP9erwMtTMvFSCo=
+X-Received: by 2002:a05:6512:138e:: with SMTP id p14mr3589595lfa.47.1618633455136;
+ Fri, 16 Apr 2021 21:24:15 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+References: <cover.1618388989.git.npache@redhat.com> <0fa191715b236766ad13c5f786d8daf92a9a0cf2.1618388989.git.npache@redhat.com>
+ <e26fbcc8-ba3e-573a-523d-9c5d5f84bc46@tessares.net> <CABVgOSm9Lfcu--iiFo=PNLCWCj4vkxqAqO0aZT9B2r3Kw5Fhaw@mail.gmail.com>
+ <b57a1cc8-4921-6ed5-adb8-0510d1918d28@tessares.net>
+In-Reply-To: <b57a1cc8-4921-6ed5-adb8-0510d1918d28@tessares.net>
+From:   David Gow <davidgow@google.com>
+Date:   Sat, 17 Apr 2021 12:24:03 +0800
+Message-ID: <CABVgOS=QDATYk3nn1jLHhVRh7rXoTp1+jQhUE5pZq8P9M0VpUA@mail.gmail.com>
+Subject: Re: [PATCH v2 5/6] kunit: mptcp: adhear to KUNIT formatting standard
+To:     Matthieu Baerts <matthieu.baerts@tessares.net>
+Cc:     Nico Pache <npache@redhat.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Brendan Higgins <brendanhiggins@google.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-ext4@vger.kernel.org, Networking <netdev@vger.kernel.org>,
+        rafael@kernel.org, linux-m68k@lists.linux-m68k.org,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        "Theodore Ts'o" <tytso@mit.edu>,
+        mathew.j.martineau@linux.intel.com, davem@davemloft.net,
+        Mark Brown <broonie@kernel.org>,
+        Shuah Khan <skhan@linuxfoundation.org>, mptcp@lists.linux.dev
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-On Tue, 23 Mar 2021 23:14:28 +0100, Laurent Vivier wrote:
-> The most powerful m68k machine emulated by QEMU is a Quadra 800,
-> but this machine is very limited: only 1 GiB of memory and only some
-> specific interfaces, with no DMA.
-> 
-> The Virtual M68k Machine is based on Goldfish interfaces defined by Google
-> for Android simulator. It uses Goldfish-rtc (timer and RTC),
-> Goldfish-pic (PIC) and Goldfish-tty (for early tty).
-> 
-> [...]
+Hi Matt,
 
-Applied, thanks!
+> Like patch 1/6, I can apply it in MPTCP tree and send it later to
+> net-next with other patches.
+> Except if you guys prefer to apply it in KUnit tree and send it to
+> linux-next?
 
-[1/2] rtc: goldfish: remove dependency to OF
-      commit: 3fd00fdc4f11c656a63e6a6280c0bcb63cf109a2
-[2/2] m68k: introduce a virtual m68k machine
-      commit: 95631785c64840f3816f7a4cc2ce1a5332f43184
+Given 1/6 is going to net-next, it makes sense to send this out that
+way too, then, IMHO.
+The only slight concern I have is that the m68k test config patch in
+the series will get split from the others, but that should resolve
+itself when they pick up the last patch.
 
-Best regards,
--- 
-Alexandre Belloni <alexandre.belloni@bootlin.com>
+At the very least, this shouldn't cause any conflicts with anything
+we're doing in the KUnit tree.
+
+Cheers,
+-- David
