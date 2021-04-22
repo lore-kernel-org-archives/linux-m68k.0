@@ -2,191 +2,135 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.8 required=3.0 tests=BAYES_00,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-7.3 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
+	MAILING_LIST_MULTI,NICE_REPLY_A,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1
+	autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 2B678C433ED
-	for <linux-m68k@archiver.kernel.org>; Mon, 19 Apr 2021 23:33:29 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 611D4C433B4
+	for <linux-m68k@archiver.kernel.org>; Thu, 22 Apr 2021 20:39:15 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id F34CE61077
-	for <linux-m68k@archiver.kernel.org>; Mon, 19 Apr 2021 23:33:28 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 14B5C613CD
+	for <linux-m68k@archiver.kernel.org>; Thu, 22 Apr 2021 20:39:15 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232263AbhDSXd6 (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Mon, 19 Apr 2021 19:33:58 -0400
-Received: from mga09.intel.com ([134.134.136.24]:63970 "EHLO mga09.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229842AbhDSXd5 (ORCPT <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Mon, 19 Apr 2021 19:33:57 -0400
-IronPort-SDR: O+xEtNi4hPie2cDTJiT3G+ueZg8OuRfn+YWAE8Ki23Cw7kQVvNM8ip0gi/1nvvbpew7Te7DQIE
- O6+ecycRDCwg==
-X-IronPort-AV: E=McAfee;i="6200,9189,9959"; a="195529648"
-X-IronPort-AV: E=Sophos;i="5.82,235,1613462400"; 
-   d="scan'208";a="195529648"
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Apr 2021 16:33:25 -0700
-IronPort-SDR: 8bmvwhWyIBuQoaHM5ATob/ouPQPG1FkZGb7WGbmqvlaMtUs3aEIXkhigb2i9DXLefAS2f0U5wT
- lJtGMROZN3OQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.82,235,1613462400"; 
-   d="scan'208";a="383888203"
-Received: from lkp-server01.sh.intel.com (HELO a48ff7ddd223) ([10.239.97.150])
-  by orsmga003.jf.intel.com with ESMTP; 19 Apr 2021 16:33:23 -0700
-Received: from kbuild by a48ff7ddd223 with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1lYdOM-0001xr-QX; Mon, 19 Apr 2021 23:33:22 +0000
-Date:   Tue, 20 Apr 2021 07:32:33 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     linux-m68k@lists.linux-m68k.org
-Subject: [m68k:master] BUILD SUCCESS
- 116a46c3f0cf8a2053aef36d5e59fc3dea7da0d5
-Message-ID: <607e1311.AesqewX8atBiRAwN%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+        id S239239AbhDVUjt (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Thu, 22 Apr 2021 16:39:49 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:26837 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S237010AbhDVUjr (ORCPT
+        <rfc822;linux-m68k@vger.kernel.org>);
+        Thu, 22 Apr 2021 16:39:47 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1619123952;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=cNpLvi6EdAaudYQUjNEEJ6bmi8/lRMsChihQZX3u/nI=;
+        b=THey2O8FKxkdsYJm8XVkVJ/okMJNlEuCeBq7dYJzFlfB3CtQEKnKV+BCj5agkN/vryKJ9x
+        Yo/e+gGzCw0kX3X8k8hTyrpxcSv50OCPO0RSjF1V9MpruX/5eA/0HZU17ZhqFp2yY8HgU1
+        zwJPHE2zPr9WChN1VT2s5371d/pf8E8=
+Received: from mail-qk1-f199.google.com (mail-qk1-f199.google.com
+ [209.85.222.199]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-2-7qJ-wdZRNjWD7eAhIwLM0A-1; Thu, 22 Apr 2021 16:39:10 -0400
+X-MC-Unique: 7qJ-wdZRNjWD7eAhIwLM0A-1
+Received: by mail-qk1-f199.google.com with SMTP id w3-20020ae9e5030000b029028013f752dbso12918773qkf.13
+        for <linux-m68k@vger.kernel.org>; Thu, 22 Apr 2021 13:39:10 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=cNpLvi6EdAaudYQUjNEEJ6bmi8/lRMsChihQZX3u/nI=;
+        b=YYZnxTrJzSIYlXcZw1Bt8yPUvVbfKcZ0yFVnmg0nc8jv1QRNccCqXh70hA0LhpT3ru
+         ZbsTEHkY2NkJ9MREdY5a68D89HIKBcjZNaBt0QtYzurSZXcS+/MYDfPkgib464i1W1gX
+         vAze+vWuQbbpNC8xP0cAjPaALXL5UuA+5GNTeF3IV5ibfi4XvyBvMjfaNoOC4+EtSXdv
+         +Y4s5AfS8pKFWpa7p0dpj6365GXE7DaqHSPpq2Jd/RyoVDZvbPP+76rIjDmhF97a5VIE
+         W/1SviIFUqemDLs8W2HcrhA/E6kLQzjrQL0/4BH5FUw8/D4S8SLMtRiPd2F7Ij3EX9qU
+         W/XA==
+X-Gm-Message-State: AOAM530cpjeW/R30tnT4IVXG/+LKTMGf6ow+NzlHXzWbf8+YwzjALe8o
+        TzDl5EbAlsbq9LFaefmZ7cql5LbGiVc9MhqemJz7ovXTutA//mN+oTb02vRFfKCPdIxC62MdYx9
+        CqJyAT0IVaFF285W7C/JAfA==
+X-Received: by 2002:a0c:e14e:: with SMTP id c14mr617260qvl.36.1619123949707;
+        Thu, 22 Apr 2021 13:39:09 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxcGeYSvpo24gXWSguEVi9JQ7kiE7Jqh/3hwJUN+VQ7PimQTarKqFfkP4TIFwc1yNxophk9lw==
+X-Received: by 2002:a0c:e14e:: with SMTP id c14mr617245qvl.36.1619123949525;
+        Thu, 22 Apr 2021 13:39:09 -0700 (PDT)
+Received: from localhost.localdomain ([2601:184:417f:70c0::42e6])
+        by smtp.gmail.com with ESMTPSA id x20sm2989311qkf.42.2021.04.22.13.39.08
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 22 Apr 2021 13:39:09 -0700 (PDT)
+Subject: Re: [PATCH v2 0/6] kunit: Fix formatting of KUNIT tests to meet the
+ standard
+To:     Theodore Ts'o <tytso@mit.edu>, brendanhiggins@google.com,
+        davidgow@google.com
+Cc:     linux-kernel@vger.kernel.org, gregkh@linuxfoundation.org,
+        linux-ext4@vger.kernel.org, netdev@vger.kernel.org,
+        rafael@kernel.org, linux-m68k@vger.kernel.org,
+        geert@linux-m68k.org, mathew.j.martineau@linux.intel.com,
+        davem@davemloft.net, broonie@kernel.org, skhan@linuxfoundation.org,
+        mptcp@lists.linux.dev
+References: <cover.1618388989.git.npache@redhat.com>
+ <YHyK+5xJEMcDDhVy@mit.edu>
+From:   Nico Pache <npache@redhat.com>
+Message-ID: <dbe6abeb-0082-e309-1208-9c43c6f127ae@redhat.com>
+Date:   Thu, 22 Apr 2021 16:39:07 -0400
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <YHyK+5xJEMcDDhVy@mit.edu>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/geert/linux-m68k.git master
-branch HEAD: 116a46c3f0cf8a2053aef36d5e59fc3dea7da0d5  m68k: sun3x: Remove unneeded semicolon
+On 4/18/21 3:39 PM, Theodore Ts'o wrote:
 
-elapsed time: 724m
+> On Wed, Apr 14, 2021 at 04:58:03AM -0400, Nico Pache wrote:
+>> There are few instances of KUNIT tests that are not properly defined.
+>> This commit focuses on correcting these issues to match the standard
+>> defined in the Documentation.
+> The word "standard" seems to be over-stating things.  The
+> documentation currently states, "they _usually_ have config options
+> ending in ``_KUNIT_TEST'' (emphasis mine).  I can imagine that there
+> might be some useful things we can do from a tooling perspective if we
+> do standardize things, but if you really want to make it a "standard",
+> we should first update the manpage to say so, 
 
-configs tested: 121
-configs skipped: 2
+KUNIT Maintainers, should we go ahead and make this the "standard"?
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+As Ted has stated...  consistency with 'grep' is my desired outcome.
 
-gcc tested configs:
-arm                                 defconfig
-arm64                            allyesconfig
-arm64                               defconfig
-arm                              allyesconfig
-arm                              allmodconfig
-x86_64                           allyesconfig
-i386                             allyesconfig
-arm                        mvebu_v5_defconfig
-arm                        realview_defconfig
-powerpc                     pseries_defconfig
-arm                      pxa255-idp_defconfig
-arm                       versatile_defconfig
-arm                       multi_v4t_defconfig
-sh                           se7206_defconfig
-powerpc                      ep88xc_defconfig
-powerpc                     sbc8548_defconfig
-mips                            gpr_defconfig
-arm                         orion5x_defconfig
-sh                          rsk7201_defconfig
-powerpc                 mpc834x_itx_defconfig
-xtensa                    smp_lx200_defconfig
-arm                        mini2440_defconfig
-arm                        neponset_defconfig
-mips                        bcm63xx_defconfig
-powerpc                 mpc837x_rdb_defconfig
-powerpc                         ps3_defconfig
-xtensa                           allyesconfig
-powerpc                 mpc832x_rdb_defconfig
-sparc                       sparc64_defconfig
-riscv             nommu_k210_sdcard_defconfig
-sh                            hp6xx_defconfig
-powerpc                     redwood_defconfig
-mips                  maltasmvp_eva_defconfig
-powerpc                      bamboo_defconfig
-ia64                         bigsur_defconfig
-arm                          simpad_defconfig
-ia64                                defconfig
-sparc                               defconfig
-powerpc                      ppc64e_defconfig
-powerpc                         wii_defconfig
-mips                            e55_defconfig
-xtensa                generic_kc705_defconfig
-m68k                        mvme16x_defconfig
-mips                          rm200_defconfig
-powerpc                     tqm8560_defconfig
-powerpc                     ksi8560_defconfig
-arc                          axs101_defconfig
-arm                          pxa168_defconfig
-riscv                          rv32_defconfig
-powerpc                 mpc836x_mds_defconfig
-arm                          gemini_defconfig
-arm                          exynos_defconfig
-powerpc                     kmeter1_defconfig
-powerpc                 mpc834x_mds_defconfig
-ia64                             allmodconfig
-ia64                             allyesconfig
-m68k                             allmodconfig
-m68k                                defconfig
-m68k                             allyesconfig
-nios2                               defconfig
-arc                              allyesconfig
-nds32                             allnoconfig
-nds32                               defconfig
-nios2                            allyesconfig
-csky                                defconfig
-alpha                               defconfig
-alpha                            allyesconfig
-h8300                            allyesconfig
-arc                                 defconfig
-sh                               allmodconfig
-parisc                              defconfig
-s390                             allyesconfig
-s390                             allmodconfig
-parisc                           allyesconfig
-s390                                defconfig
-sparc                            allyesconfig
-i386                                defconfig
-mips                             allyesconfig
-mips                             allmodconfig
-powerpc                          allyesconfig
-powerpc                          allmodconfig
-powerpc                           allnoconfig
-x86_64               randconfig-a003-20210419
-x86_64               randconfig-a001-20210419
-x86_64               randconfig-a005-20210419
-x86_64               randconfig-a002-20210419
-x86_64               randconfig-a006-20210419
-x86_64               randconfig-a004-20210419
-i386                 randconfig-a003-20210419
-i386                 randconfig-a001-20210419
-i386                 randconfig-a006-20210419
-i386                 randconfig-a005-20210419
-i386                 randconfig-a004-20210419
-i386                 randconfig-a002-20210419
-i386                 randconfig-a015-20210419
-i386                 randconfig-a013-20210419
-i386                 randconfig-a014-20210419
-i386                 randconfig-a016-20210419
-i386                 randconfig-a012-20210419
-i386                 randconfig-a011-20210419
-riscv                    nommu_k210_defconfig
-riscv                            allyesconfig
-riscv                    nommu_virt_defconfig
-riscv                             allnoconfig
-riscv                               defconfig
-riscv                            allmodconfig
-um                               allmodconfig
-um                                allnoconfig
-um                               allyesconfig
-um                                  defconfig
-x86_64                    rhel-8.3-kselftests
-x86_64                              defconfig
-x86_64                               rhel-8.3
-x86_64                      rhel-8.3-kbuiltin
-x86_64                                  kexec
+> and explain why (e.g.,
+> so that we can easily extract out all of the kunit test modules, and
+> perhaps paint a vision of what tools might be able to do with such a
+> standard).
+>
+> Alternatively, the word "standard" could perhaps be changed to
+> "convention", which I think more accurately defines how things work at
+> the moment.Nico Pache (6):
+>   kunit: ASoC: topology: adhear to KUNIT formatting standard
+>   kunit: software node: adhear to KUNIT formatting standard
+>   kunit: ext4: adhear to KUNIT formatting standard
+>   kunit: lib: adhear to KUNIT formatting standard
+>   kunit: mptcp: adhear to KUNIT formatting standard
+>   m68k: update configs to match the proper KUNIT syntax
+>
+> Also, "adhear" is not the correct spelling; the correct spelling is
+> "adhere" (from the Latin verb "adhaerere", "to stick", as in "to hold
+> fast or stick by as if by gluing", which then became "to bind oneself
+> to the observance of a set of rules or standards or practices").
+>
+>        		       	      	       		 - Ted
 
-clang tested configs:
-x86_64               randconfig-a014-20210419
-x86_64               randconfig-a015-20210419
-x86_64               randconfig-a013-20210419
-x86_64               randconfig-a011-20210419
-x86_64               randconfig-a012-20210419
-x86_64               randconfig-a016-20210419
+Whoops... Made that mistake in my v1 and inadvertently copied it over
 
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+to all the patches.
+
+
+Cheers!
+
+-- Nico
+
