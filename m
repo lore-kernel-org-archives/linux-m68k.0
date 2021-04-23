@@ -2,105 +2,208 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-11.9 required=3.0 tests=BAYES_00,FAKE_REPLY_A1,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=ham
+X-Spam-Status: No, score=-13.3 required=3.0 tests=BAYES_00,DKIMWL_WL_MED,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL autolearn=no
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 93C8AC433ED
-	for <linux-m68k@archiver.kernel.org>; Thu, 22 Apr 2021 22:31:17 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 6673EC433ED
+	for <linux-m68k@archiver.kernel.org>; Fri, 23 Apr 2021 06:27:11 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 53FE061417
-	for <linux-m68k@archiver.kernel.org>; Thu, 22 Apr 2021 22:31:17 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 3B974613CD
+	for <linux-m68k@archiver.kernel.org>; Fri, 23 Apr 2021 06:27:11 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236660AbhDVWbv (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Thu, 22 Apr 2021 18:31:51 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42084 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235977AbhDVWbu (ORCPT <rfc822;linux-m68k@vger.kernel.org>);
-        Thu, 22 Apr 2021 18:31:50 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 77583613ED;
-        Thu, 22 Apr 2021 22:31:14 +0000 (UTC)
-To:     angelo@kernel-space.org
-Cc:     Geert Uytterhoeven <geert@linux-m68k.org>,
-        Linux/m68k <linux-m68k@vger.kernel.org>
-From:   Greg Ungerer <gerg@linux-m68k.org>
-Subject: Re: [PATCH v2] m68k: coldfire: fix irq ranges
-Message-ID: <61f697da-e42c-4b38-8260-334607fb29f7@linux-m68k.org>
-Date:   Fri, 23 Apr 2021 08:31:10 +1000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+        id S236919AbhDWG1q (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Fri, 23 Apr 2021 02:27:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48952 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231635AbhDWG1p (ORCPT
+        <rfc822;linux-m68k@vger.kernel.org>); Fri, 23 Apr 2021 02:27:45 -0400
+Received: from mail-lf1-x12e.google.com (mail-lf1-x12e.google.com [IPv6:2a00:1450:4864:20::12e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 65D9DC06174A
+        for <linux-m68k@vger.kernel.org>; Thu, 22 Apr 2021 23:27:09 -0700 (PDT)
+Received: by mail-lf1-x12e.google.com with SMTP id x20so45554504lfu.6
+        for <linux-m68k@vger.kernel.org>; Thu, 22 Apr 2021 23:27:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=tGK8+4ozWsqfSV+YguCST2dzg87GoUZLYq4Ot8mDuZk=;
+        b=C5X5Mtd4R7HTL8wyZU7Ixy9P4PDXsY14O0vLCvDgBL0vd72PiWK+2hHcfnxHuCTbcw
+         P4+Lq8FUKX3ryO3w+UZl6uEAteLqbduy7POymIn2o3UeycLORj8S9HpLoUZQq4pjoQOO
+         KCfHQo8hWxrXk0Hc3aNwpnQ+15xyVfVP7cFfXC5gNuzTz2h8KqFCFAu1EuHy7vedc4ZY
+         ZnnGZHiFqVg4qYM3hx/v+7TD0HEfYpFf4g//L+6PnixiP6v6ba/2oJBNkiSLYczVvGVL
+         Fy1F06zZ0ofMwmb7W5q90RvBCNc7JVVITyfUBWkODq2UXa/sGkOZcBgZ6g+HHY1WQsnW
+         vo1Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=tGK8+4ozWsqfSV+YguCST2dzg87GoUZLYq4Ot8mDuZk=;
+        b=tOQHApcQugwMWbq1dKa+0lh/iI/S+LP/cg7hcWlryeYnTyof5QTEahJuuDUCeWrxKU
+         v66Lkn2vF+ZP3CdGVxyVunfXkSIkrV49iW6A5Y+qsQ93L+kU/8U+f+W0C8YdjnW6bS6n
+         ip9dEGvEUG7J/eAH3f/AY2cxToR+lJnLRIoVUjldgVS4pTROGEs+eZ0J076wWP4aRGY9
+         W7DlfutfAyR+tEXt0FbVPulOEnm5wLf6VvBwfCfysYqtsyvGWy5VFOWG53oCo26GT+dv
+         Cf7PA5j+wLAHKsz9QJf9ZaWZM4DwunXnM5n+xOAPYGUYplOta/j3MW0Ma1k0XuS6wJ/d
+         v0kw==
+X-Gm-Message-State: AOAM531RhBlzNrzzWLG2TBAEXwZpWf23lPU8Vl0mpMjt98RcGnkRKykP
+        gvWmXWfuJRqOgO66EIoFNvEp5lyCxMysFByTXc7rHg==
+X-Google-Smtp-Source: ABdhPJxwVNFz3aKPzwkMWWBUlqtIdr0gCVWb25meiGsqk5X/pr6U5Kjm8pNj2Whr4PHav4ogcf3/EODMFeeeiu7k4ZA=
+X-Received: by 2002:a05:6512:138e:: with SMTP id p14mr1534510lfa.47.1619159227671;
+ Thu, 22 Apr 2021 23:27:07 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <cover.1618388989.git.npache@redhat.com> <YHyK+5xJEMcDDhVy@mit.edu>
+ <dbe6abeb-0082-e309-1208-9c43c6f127ae@redhat.com>
+In-Reply-To: <dbe6abeb-0082-e309-1208-9c43c6f127ae@redhat.com>
+From:   David Gow <davidgow@google.com>
+Date:   Fri, 23 Apr 2021 14:26:55 +0800
+Message-ID: <CABVgOSmW=HPhpY05PJ2aj7q6G42YK1LfvifQY5EtheFE+of2RQ@mail.gmail.com>
+Subject: Re: [PATCH v2 0/6] kunit: Fix formatting of KUNIT tests to meet the standard
+To:     Nico Pache <npache@redhat.com>
+Cc:     "Theodore Ts'o" <tytso@mit.edu>,
+        Brendan Higgins <brendanhiggins@google.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-ext4@vger.kernel.org, Networking <netdev@vger.kernel.org>,
+        rafael@kernel.org, linux-m68k@vger.kernel.org,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        mathew.j.martineau@linux.intel.com, davem@davemloft.net,
+        Mark Brown <broonie@kernel.org>,
+        Shuah Khan <skhan@linuxfoundation.org>, mptcp@lists.linux.dev
+Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
+        boundary="000000000000a08b9005c09de260"
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-Hi Angelo,
+--000000000000a08b9005c09de260
+Content-Type: text/plain; charset="UTF-8"
 
-Sorry for the slow pick up of this. Some email problems caused me
-to not get the original emails (saw this in the archives).
+On Fri, Apr 23, 2021 at 4:39 AM Nico Pache <npache@redhat.com> wrote:
+>
+> On 4/18/21 3:39 PM, Theodore Ts'o wrote:
+>
+> > On Wed, Apr 14, 2021 at 04:58:03AM -0400, Nico Pache wrote:
+> >> There are few instances of KUNIT tests that are not properly defined.
+> >> This commit focuses on correcting these issues to match the standard
+> >> defined in the Documentation.
+> > The word "standard" seems to be over-stating things.  The
+> > documentation currently states, "they _usually_ have config options
+> > ending in ``_KUNIT_TEST'' (emphasis mine).  I can imagine that there
+> > might be some useful things we can do from a tooling perspective if we
+> > do standardize things, but if you really want to make it a "standard",
+> > we should first update the manpage to say so,
+>
+> KUNIT Maintainers, should we go ahead and make this the "standard"?
+>
+> As Ted has stated...  consistency with 'grep' is my desired outcome.
+>
 
-Applied to m68knommu git tree, for-next branch.
+The intention here is for this to be a "standard", with the caveat
+that there may be reasons for not following said standard, though they
+should be rare and may result in incompatibility with some tooling.
+This is broadly laid out in the opening of the
+Development/dev-tools/style.rst document, albeit still referring to
+"guidelines" rather than a "standard". The rest of the document does,
+as Ted pointed out, become more descriptive than prescriptive in some
+sections (like the Kconfig entry one): assuming no-one is particularly
+unhappy with that being tightened up, I've no problem with rewording
+it.
 
-Regards
-Greg
+That being said, when it comes to tooling, the Kconfig name does seem
+like it's less important than it could've been: the existence of a
+KUNIT_ALL_TESTS option, as well as support for having
+per-directory/per-subsystem .kunitconfig files should hopefully mean
+there's no need for tools to search for entries ending in _KUNIT_TEST.
+(I do agree that it makes using 'grep' more convenient, though.)
 
+> > and explain why (e.g.,
+> > so that we can easily extract out all of the kunit test modules, and
+> > perhaps paint a vision of what tools might be able to do with such a
+> > standard).
+> >
+> > Alternatively, the word "standard" could perhaps be changed to
+> > "convention", which I think more accurately defines how things work at
+> > the moment.
 
-> Working on flexcan0, there was no way to have irq 128 working.
-> Fix irq 128 and 196 setup.
-> 
-> Signed-off-by: Angelo Dureghello <angelo@kernel-space.org>
-> ---
-> Change for v2:
->   line 85, fix >= into >
-> ---
->  arch/m68k/coldfire/intc-simr.c | 12 ++++++------
->  1 file changed, 6 insertions(+), 6 deletions(-)
-> 
-> diff --git a/arch/m68k/coldfire/intc-simr.c b/arch/m68k/coldfire/intc-simr.c
-> index 15c4b7a6e38f..f7c2c41b3156 100644
-> --- a/arch/m68k/coldfire/intc-simr.c
-> +++ b/arch/m68k/coldfire/intc-simr.c
-> @@ -68,9 +68,9 @@ static void intc_irq_mask(struct irq_data *d)
->  {
->  	unsigned int irq = d->irq - MCFINT_VECBASE;
->  
-> -	if (MCFINTC2_SIMR && (irq > 128))
-> +	if (MCFINTC2_SIMR && (irq > 127))
->  		__raw_writeb(irq - 128, MCFINTC2_SIMR);
-> -	else if (MCFINTC1_SIMR && (irq > 64))
-> +	else if (MCFINTC1_SIMR && (irq > 63))
->  		__raw_writeb(irq - 64, MCFINTC1_SIMR);
->  	else
->  		__raw_writeb(irq, MCFINTC0_SIMR);
-> @@ -80,9 +80,9 @@ static void intc_irq_unmask(struct irq_data *d)
->  {
->  	unsigned int irq = d->irq - MCFINT_VECBASE;
->  
-> -	if (MCFINTC2_CIMR && (irq > 128))
-> +	if (MCFINTC2_CIMR && (irq > 127))
->  		__raw_writeb(irq - 128, MCFINTC2_CIMR);
-> -	else if (MCFINTC1_CIMR && (irq > 64))
-> +	else if (MCFINTC1_CIMR && (irq > 63))
->  		__raw_writeb(irq - 64, MCFINTC1_CIMR);
->  	else
->  		__raw_writeb(irq, MCFINTC0_CIMR);
-> @@ -115,9 +115,9 @@ static unsigned int intc_irq_startup(struct irq_data *d)
->  	}
->  
->  	irq -= MCFINT_VECBASE;
-> -	if (MCFINTC2_ICR0 && (irq > 128))
-> +	if (MCFINTC2_ICR0 && (irq > 127))
->  		__raw_writeb(5, MCFINTC2_ICR0 + irq - 128);
-> -	else if (MCFINTC1_ICR0 && (irq > 64))
-> +	else if (MCFINTC1_ICR0 && (irq > 63))
->  		__raw_writeb(5, MCFINTC1_ICR0 + irq - 64);
->  	else
->  		__raw_writeb(5, MCFINTC0_ICR0 + irq);
-> -- 
-> 2.31.0
+Cheers,
+-- David
 
+--000000000000a08b9005c09de260
+Content-Type: application/pkcs7-signature; name="smime.p7s"
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment; filename="smime.p7s"
+Content-Description: S/MIME Cryptographic Signature
 
+MIIPnAYJKoZIhvcNAQcCoIIPjTCCD4kCAQExDzANBglghkgBZQMEAgEFADALBgkqhkiG9w0BBwGg
+ggz2MIIEtjCCA56gAwIBAgIQeAMYYHb81ngUVR0WyMTzqzANBgkqhkiG9w0BAQsFADBMMSAwHgYD
+VQQLExdHbG9iYWxTaWduIFJvb3QgQ0EgLSBSMzETMBEGA1UEChMKR2xvYmFsU2lnbjETMBEGA1UE
+AxMKR2xvYmFsU2lnbjAeFw0yMDA3MjgwMDAwMDBaFw0yOTAzMTgwMDAwMDBaMFQxCzAJBgNVBAYT
+AkJFMRkwFwYDVQQKExBHbG9iYWxTaWduIG52LXNhMSowKAYDVQQDEyFHbG9iYWxTaWduIEF0bGFz
+IFIzIFNNSU1FIENBIDIwMjAwggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQCvLe9xPU9W
+dpiHLAvX7kFnaFZPuJLey7LYaMO8P/xSngB9IN73mVc7YiLov12Fekdtn5kL8PjmDBEvTYmWsuQS
+6VBo3vdlqqXZ0M9eMkjcKqijrmDRleudEoPDzTumwQ18VB/3I+vbN039HIaRQ5x+NHGiPHVfk6Rx
+c6KAbYceyeqqfuJEcq23vhTdium/Bf5hHqYUhuJwnBQ+dAUcFndUKMJrth6lHeoifkbw2bv81zxJ
+I9cvIy516+oUekqiSFGfzAqByv41OrgLV4fLGCDH3yRh1tj7EtV3l2TngqtrDLUs5R+sWIItPa/4
+AJXB1Q3nGNl2tNjVpcSn0uJ7aFPbAgMBAAGjggGKMIIBhjAOBgNVHQ8BAf8EBAMCAYYwHQYDVR0l
+BBYwFAYIKwYBBQUHAwIGCCsGAQUFBwMEMBIGA1UdEwEB/wQIMAYBAf8CAQAwHQYDVR0OBBYEFHzM
+CmjXouseLHIb0c1dlW+N+/JjMB8GA1UdIwQYMBaAFI/wS3+oLkUkrk1Q+mOai97i3Ru8MHsGCCsG
+AQUFBwEBBG8wbTAuBggrBgEFBQcwAYYiaHR0cDovL29jc3AyLmdsb2JhbHNpZ24uY29tL3Jvb3Ry
+MzA7BggrBgEFBQcwAoYvaHR0cDovL3NlY3VyZS5nbG9iYWxzaWduLmNvbS9jYWNlcnQvcm9vdC1y
+My5jcnQwNgYDVR0fBC8wLTAroCmgJ4YlaHR0cDovL2NybC5nbG9iYWxzaWduLmNvbS9yb290LXIz
+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
+ILbFHw0h01NI0v+AeczGMEwGA1UdIARFMEMwQQYJKwYBBAGgMgEoMDQwMgYIKwYBBQUHAgEWJmh0
+dHBzOi8vd3d3Lmdsb2JhbHNpZ24uY29tL3JlcG9zaXRvcnkvMAkGA1UdEwQCMAAwgZoGCCsGAQUF
+BwEBBIGNMIGKMD4GCCsGAQUFBzABhjJodHRwOi8vb2NzcC5nbG9iYWxzaWduLmNvbS9jYS9nc2F0
+bGFzcjNzbWltZWNhMjAyMDBIBggrBgEFBQcwAoY8aHR0cDovL3NlY3VyZS5nbG9iYWxzaWduLmNv
+bS9jYWNlcnQvZ3NhdGxhc3Izc21pbWVjYTIwMjAuY3J0MB8GA1UdIwQYMBaAFHzMCmjXouseLHIb
+0c1dlW+N+/JjMEYGA1UdHwQ/MD0wO6A5oDeGNWh0dHA6Ly9jcmwuZ2xvYmFsc2lnbi5jb20vY2Ev
+Z3NhdGxhc3Izc21pbWVjYTIwMjAuY3JsMA0GCSqGSIb3DQEBCwUAA4IBAQCNr3LBERPjVctGdVEb
+/hN6/N6F2eUWxZLSUbuV7fOle0OvI8xz2AUBrOYQLp94ox9LqmsATKPsBl2uiktsvfs/AXNMcmOz
+qsWHzfqp4XlvNgQsC/UyUMWxZoEyTDfTSat09yQjkFJ7viwzrqqscmTx5oTZz8TPRt0mbxwx3qry
+wDzYxadSUQXNpNnfi0FBDYUUfuCLFWPsPsAXmgh483u0RbNik9OY/ozNq1Gvg/U0jQOlJf2IiKbE
+kUL5Vq8gDDu6bETx5bHmRmSjHhwo7eVbxywczpzdFsU3dauZ3BzqhLy2pRGGzZybSH/3mf7o9y15
+gmRHE7WzPLrsULHG/TM8MYICajCCAmYCAQEwaDBUMQswCQYDVQQGEwJCRTEZMBcGA1UEChMQR2xv
+YmFsU2lnbiBudi1zYTEqMCgGA1UEAxMhR2xvYmFsU2lnbiBBdGxhcyBSMyBTTUlNRSBDQSAyMDIw
+AhABm/kO+4pd09krN7Fjk8ypMA0GCWCGSAFlAwQCAQUAoIHUMC8GCSqGSIb3DQEJBDEiBCCh7i1G
+xEa2Zy4mEF14lMt4G1bH/lllueUJtLj1vySixjAYBgkqhkiG9w0BCQMxCwYJKoZIhvcNAQcBMBwG
+CSqGSIb3DQEJBTEPFw0yMTA0MjMwNjI3MDhaMGkGCSqGSIb3DQEJDzFcMFowCwYJYIZIAWUDBAEq
+MAsGCWCGSAFlAwQBFjALBglghkgBZQMEAQIwCgYIKoZIhvcNAwcwCwYJKoZIhvcNAQEKMAsGCSqG
+SIb3DQEBBzALBglghkgBZQMEAgEwDQYJKoZIhvcNAQEBBQAEggEAjnHCdN9RnYjqXdO7bXdKmary
+TYS/w5AwbUbQ5IYadX5M4PTbGNa3bxfHfrz3NrUWF0bmJecomzt5SJe3NmDVzkntxuLGzZyUv2F4
+vk2p8uY0TMZad94dMfI+L3LsWngr7WNPqjDg/DXt+1dRhWbgVZSHnLMSOveUUCWV8ej/yaoSeRMQ
+YqxCK5e3VquVBt10CL/0cgXsj0AkhmddkHqkUyLQKioDONQWHfVSAeIyenaOU8TLhRDFfct1JL0I
+lfEWQWgYDhgY7tc3G0E0h9J2OBwUCmsuW3+czPgLLST8nvxkeyJKRykuAXcfEoBFGr233twR4UMQ
+aSowOoDaOEf06A==
+--000000000000a08b9005c09de260--
