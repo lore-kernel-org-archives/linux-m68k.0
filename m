@@ -2,143 +2,66 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-21.8 required=3.0 tests=BAYES_00,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,INCLUDES_PULL_REQUEST,
-	MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
-	autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-11.2 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,
+	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 17A4CC433B4
-	for <linux-m68k@archiver.kernel.org>; Mon, 26 Apr 2021 08:58:47 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4138CC433ED
+	for <linux-m68k@archiver.kernel.org>; Mon, 26 Apr 2021 17:38:23 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id D531A61184
-	for <linux-m68k@archiver.kernel.org>; Mon, 26 Apr 2021 08:58:46 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id F22BD600D1
+	for <linux-m68k@archiver.kernel.org>; Mon, 26 Apr 2021 17:38:22 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232116AbhDZI71 (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Mon, 26 Apr 2021 04:59:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57784 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232412AbhDZI7X (ORCPT
-        <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Mon, 26 Apr 2021 04:59:23 -0400
-Received: from xavier.telenet-ops.be (xavier.telenet-ops.be [IPv6:2a02:1800:120:4::f00:14])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 78A05C061756
-        for <linux-m68k@lists.linux-m68k.org>; Mon, 26 Apr 2021 01:58:42 -0700 (PDT)
-Received: from ramsan.of.borg ([IPv6:2a02:1810:ac12:ed20:2da6:a4cf:424d:1343])
-        by xavier.telenet-ops.be with bizsmtp
-        id xLyg240081UBnF701LygM4; Mon, 26 Apr 2021 10:58:40 +0200
-Received: from rox.of.borg ([192.168.97.57])
-        by ramsan.of.borg with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.93)
-        (envelope-from <geert@linux-m68k.org>)
-        id 1lax4h-000bfj-OW; Mon, 26 Apr 2021 10:58:39 +0200
-Received: from geert by rox.of.borg with local (Exim 4.93)
-        (envelope-from <geert@linux-m68k.org>)
-        id 1lax4h-005BN9-3G; Mon, 26 Apr 2021 10:58:39 +0200
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        id S237059AbhDZRjE (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Mon, 26 Apr 2021 13:39:04 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45300 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S237023AbhDZRjD (ORCPT <rfc822;linux-m68k@lists.linux-m68k.org>);
+        Mon, 26 Apr 2021 13:39:03 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPS id A4A9B61177;
+        Mon, 26 Apr 2021 17:38:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1619458701;
+        bh=RxMD1pua23Wo8r1rkVVoFJzWiUD1ylqoh4sifrNtCHg=;
+        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
+        b=hWNfW7VKesCjHZ4RqjnYc9yerbIYpnaatWEBgFH9vCYrjMxOXZYE2r/V5iVL9WwzK
+         8HSMapaQmI+8+ByYtm4Q6kpMNR8AKrcmWR28xQXNzQkX0Gwr/gQ34jClkMU2jPNf65
+         /UNoz4by0cJMm253acghH/m1YfD+jo3g2lxO6np332eiZf2A9NuKr34yBsf3XTZz0e
+         cJaX+gKNREnD4IknUj6QlW6+fQOAxIliMo6SspWJz+5oGq8KfRz9crrU1i03epJsqs
+         0l74SqqHH1xeJXC4/CaYG7UDdPWtz+NF95ZkpZ+y5IZssHp+EjHw7Roeme4EVkDvpN
+         9k5ENjEfErtkQ==
+Subject: Re: [GIT PULL] m68k updates for 5.13
+From:   pr-tracker-bot@kernel.org
+In-Reply-To: <20210426085837.1235312-1-geert@linux-m68k.org>
+References: <20210426085837.1235312-1-geert@linux-m68k.org>
+X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
+X-PR-Tracked-Message-Id: <20210426085837.1235312-1-geert@linux-m68k.org>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/geert/linux-m68k.git tags/m68k-for-v5.13-tag1
+X-PR-Tracked-Commit-Id: 34e5269bf987aff9a33ad3ab4f5d65c02913cbc1
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: 6a713827cece73136bca63a93e7f9a35dd009d3e
+Message-Id: <161945870156.23425.17467182446389169405.pr-tracker-bot@kernel.org>
+Date:   Mon, 26 Apr 2021 17:38:21 +0000
+To:     Geert Uytterhoeven <geert@linux-m68k.org>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
         Greg Ungerer <gerg@linux-m68k.org>,
         linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org,
         Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: [GIT PULL] m68k updates for 5.13
-Date:   Mon, 26 Apr 2021 10:58:37 +0200
-Message-Id: <20210426085837.1235312-1-geert@linux-m68k.org>
-X-Mailer: git-send-email 2.25.1
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-	Hi Linus,
+The pull request you sent on Mon, 26 Apr 2021 10:58:37 +0200:
 
-The following changes since commit a65a802aadba072ca7514fc0c301fd7fdc6fc6cb:
+> git://git.kernel.org/pub/scm/linux/kernel/git/geert/linux-m68k.git tags/m68k-for-v5.13-tag1
 
-  m68k: Fix virt_addr_valid() W=1 compiler warnings (2021-03-06 14:15:07 +0100)
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/6a713827cece73136bca63a93e7f9a35dd009d3e
 
-are available in the Git repository at:
+Thank you!
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/geert/linux-m68k.git tags/m68k-for-v5.13-tag1
-
-for you to fetch changes up to 34e5269bf987aff9a33ad3ab4f5d65c02913cbc1:
-
-  m68k: sun3x: Remove unneeded semicolon (2021-04-19 12:11:55 +0200)
-
-----------------------------------------------------------------
-m68k updates for v5.13 (take one)
-
-  - Fix flatmem setup for platforms where RAM starts at a non-zero
-    address,
-  - Defconfig updates,
-  - Use common scripts for syscall table and header generation,
-  - Fix timers on MVME platforms,
-  - Fix lock imbalance in cacheflush syscall,
-  - Minor fixes and improvements.
-
-Note that the first commit is a duplicate of a commit already in
-v5.12-rc8.  When I committed it, it was not clear that fix would make
-v512 through the m68knommu tree, and it had just been discovered the bug
-it fixes affects m68k-with-mmu too.
-
-Thanks for pulling!
-
-----------------------------------------------------------------
-Angelo Dureghello (1):
-      m68k: mm: Fix flatmem memory model setup
-
-Finn Thain (1):
-      m68k: mvme147,mvme16x: Don't wipe PCC timer config bits
-
-Geert Uytterhoeven (1):
-      m68k: defconfig: Update defconfigs for v5.12-rc1
-
-Liam Howlett (1):
-      m68k: Add missing mmap_read_lock() to sys_cacheflush()
-
-Masahiro Yamada (4):
-      m68k: syscalls: switch to generic syscalltbl.sh
-      m68k: syscalls: switch to generic syscallhdr.sh
-      m68k: fpsp040: Remove meaningless $(OS_OBJS)
-      m68k: fpsp040,ifpsp060: Remove meaningless EXTRA_LDFLAGS
-
-Wan Jiabing (1):
-      m68k: sun3x: Remove unneeded semicolon
-
- arch/m68k/configs/amiga_defconfig       |  5 -----
- arch/m68k/configs/apollo_defconfig      |  5 -----
- arch/m68k/configs/atari_defconfig       |  5 -----
- arch/m68k/configs/bvme6000_defconfig    |  5 -----
- arch/m68k/configs/hp300_defconfig       |  5 -----
- arch/m68k/configs/mac_defconfig         |  5 -----
- arch/m68k/configs/multi_defconfig       |  5 -----
- arch/m68k/configs/mvme147_defconfig     |  5 -----
- arch/m68k/configs/mvme16x_defconfig     |  5 -----
- arch/m68k/configs/q40_defconfig         |  5 -----
- arch/m68k/configs/sun3_defconfig        |  5 -----
- arch/m68k/configs/sun3x_defconfig       |  5 -----
- arch/m68k/fpsp040/Makefile              |  4 ----
- arch/m68k/ifpsp060/Makefile             |  2 --
- arch/m68k/include/asm/mvme147hw.h       |  3 +++
- arch/m68k/include/asm/page_mm.h         |  2 +-
- arch/m68k/include/asm/sun3xflop.h       |  2 +-
- arch/m68k/kernel/sys_m68k.c             |  2 ++
- arch/m68k/kernel/syscalls/Makefile      | 14 ++++---------
- arch/m68k/kernel/syscalls/syscallhdr.sh | 36 ---------------------------------
- arch/m68k/kernel/syscalls/syscalltbl.sh | 32 -----------------------------
- arch/m68k/kernel/syscalltable.S         |  3 +--
- arch/m68k/mvme147/config.c              | 14 +++++++------
- arch/m68k/mvme16x/config.c              | 14 +++++++------
- 24 files changed, 28 insertions(+), 160 deletions(-)
- delete mode 100644 arch/m68k/kernel/syscalls/syscallhdr.sh
- delete mode 100644 arch/m68k/kernel/syscalls/syscalltbl.sh
-
-Gr{oetje,eeting}s,
-
-						Geert
-
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-							    -- Linus Torvalds
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/prtracker.html
