@@ -7,62 +7,60 @@ X-Spam-Status: No, score=-4.3 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,NICE_REPLY_A,SPF_HELO_NONE,
 	SPF_PASS,USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id CB68BC433B4
-	for <linux-m68k@archiver.kernel.org>; Tue, 27 Apr 2021 19:29:30 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 3A182C433ED
+	for <linux-m68k@archiver.kernel.org>; Tue, 27 Apr 2021 19:55:03 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id B22E761153
-	for <linux-m68k@archiver.kernel.org>; Tue, 27 Apr 2021 19:29:30 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 1A88B613DA
+	for <linux-m68k@archiver.kernel.org>; Tue, 27 Apr 2021 19:55:03 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235686AbhD0TaN (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Tue, 27 Apr 2021 15:30:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36802 "EHLO
+        id S238811AbhD0Tzo (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Tue, 27 Apr 2021 15:55:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42490 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238690AbhD0TaM (ORCPT
+        with ESMTP id S238142AbhD0Tzn (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Tue, 27 Apr 2021 15:30:12 -0400
-Received: from mail-pf1-x436.google.com (mail-pf1-x436.google.com [IPv6:2607:f8b0:4864:20::436])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9DC2DC061574
-        for <linux-m68k@lists.linux-m68k.org>; Tue, 27 Apr 2021 12:29:27 -0700 (PDT)
-Received: by mail-pf1-x436.google.com with SMTP id j6so2691418pfh.5
-        for <linux-m68k@lists.linux-m68k.org>; Tue, 27 Apr 2021 12:29:27 -0700 (PDT)
+        Tue, 27 Apr 2021 15:55:43 -0400
+Received: from mail-pf1-x429.google.com (mail-pf1-x429.google.com [IPv6:2607:f8b0:4864:20::429])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 07D4AC061574
+        for <linux-m68k@lists.linux-m68k.org>; Tue, 27 Apr 2021 12:54:59 -0700 (PDT)
+Received: by mail-pf1-x429.google.com with SMTP id a12so2306119pfc.7
+        for <linux-m68k@lists.linux-m68k.org>; Tue, 27 Apr 2021 12:54:59 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=subject:to:cc:references:from:message-id:date:user-agent
          :mime-version:in-reply-to:content-transfer-encoding:content-language;
-        bh=4DnDRAFKRSlzBzYaivgjtMj5wX1pqux3PzUstCHe6KE=;
-        b=BJ0bqGD8MnjBlehJ3RU4NzEVMGbtX/qpT5wYt8CP2afSy2MZcwNDHieJSEEM5Lg0c9
-         uScbs4PNygryH15EVVuS+mxcccHjOeNJYC9mjAePpSua+0jxDkWhwL0p/YRaEA3N8O6/
-         FE7hIyMF9zr69mdHJw/N+j0AMykr/u0WhuyEsRyljYaJ/IR619g8Oe4/OXaIeegz+wth
-         RMK8f+2XADN13ckRvaehiICCApPnizze+rD4rj/wAIFqwAd//1ASSvL2ARoAQc1h2Dx3
-         htsG4CBeez1H+RzRqO52VEnERgS1HNFpZv8XR9g1o8hlFKYezFWPufJo2bPoVUl9+Sxy
-         G9iw==
+        bh=afoI4FuwTfrW6Z0hEFugsdIW4PHlren6vrmAD+HRX5I=;
+        b=XdmV3R4myyB0wfVtF2TSwjjYj73NP2+ZgRS6oYfw0kHGB9HC7orxGQFm2pp/bae30P
+         +oPTn+Bxjdu/46Q/7nli79ONM9lpasJ1bhguHMhI/aEj+6z46RrWK4hqhaUdeDW+G62B
+         JX1UrFr/GDZEmXYkRKIXiuCKxBVlEPx+b2yDb3YvKinpZ+4V2TxDswiT4tn+6FEWl87Z
+         pSKCczVuvZ5imuUQfQ8ZgkE/RCWpg4oGRjymdGOGv8uFGVJWKbYoVz47B/f9p2PRn20/
+         e/2Jcd+edwdtSa9ysX4myE572LIx0ophMwx1Hpbsvvc0UGvjKH/fTlkeAMYksICY9/m4
+         nBhg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:subject:to:cc:references:from:message-id:date
          :user-agent:mime-version:in-reply-to:content-transfer-encoding
          :content-language;
-        bh=4DnDRAFKRSlzBzYaivgjtMj5wX1pqux3PzUstCHe6KE=;
-        b=Q4tjcHDYqqq6U3NW6Xt8NAr5vNFKcxT2YP6s5OO9aiAqVdqf+kmVpQUae4DvHvYeIE
-         3DmzwajfVWKne1uvPGVnrnWWT96naiiWSK+neKWzuZukNvxF6/xM5y6/ZUimZKTjYfNS
-         AdAp/4xgb0+iwjohekVSK4bD6Gaml7U9ropYWdbKPN4RYl1yMAvWgEIwBzTd0Srg/FPE
-         xeks/0unetQjFsO3Sg5fIEI7ZC5G/IoM9lccLUBw8eQfN2bgjwblGstx1LHhCmCFGtqL
-         6YF8YmW2reQ8eOVdOkdaHnVNhZKvwCOTBLWNGuDpQ1Lf1QdFcQYyvG8g2uBYCvQy8ZnV
-         VzDQ==
-X-Gm-Message-State: AOAM530lvXD6/+YyKR/EvfhKzOtiVWN5n1NIklL9GojfLU40u5wBL55m
-        DJ9iPyRH9S725Tqw8oCHDTU=
-X-Google-Smtp-Source: ABdhPJw9e+tGS96lq3oOZM/s//+pqsPvbTeG8lwZt6ks9l/bAzVja8Dc+WiCSP/HaeSr+dgWtdBX0A==
-X-Received: by 2002:a63:f90d:: with SMTP id h13mr5623041pgi.18.1619551767150;
-        Tue, 27 Apr 2021 12:29:27 -0700 (PDT)
+        bh=afoI4FuwTfrW6Z0hEFugsdIW4PHlren6vrmAD+HRX5I=;
+        b=Ber9kgILcJDZc0D2ToDhraDFISOYuXxy5tbQVTLKSKmC/9mH0Eaof9tuTf+87Tkcij
+         +tWFmnX4kSr0l0yXkLom+T3cfjl+ZRSj6UIPrIUNgEuRuBJLUqlbk/AKHqPwFdm7l7tq
+         jIDBTtByS11jURo5aKstdZY6O6gZHW9xmIIvx1qHr4sCKA8NAJP5hkL83bkO304Y/JrJ
+         pKcGfKaaUEbitL/Ulshs/tFXmvSh3DDZ7LeD+DlUB4QZFjGPWzFlHCGmWIVRA3wH8NS5
+         NEnNmu1RXp0+SOfylH4F17OD4zIpDNzhbwA8vfg411g851OAKW300Kfj4CgWxEYsr0Ss
+         yDwQ==
+X-Gm-Message-State: AOAM532uG1SV5dwsTQyuGt9x55HhRWhjWQsiH6v+YGGQ/QonWALlbMoo
+        h2uYhY/kgeZJ0KwaqjOnZd8=
+X-Google-Smtp-Source: ABdhPJxr+Gi/fH9i5uoPwpCusU2t0LPExJAdJfmub2rirPN9/jUFKYoUKTFbKtoZkGDtFL++Bw7jwg==
+X-Received: by 2002:a63:150c:: with SMTP id v12mr23654133pgl.344.1619553298674;
+        Tue, 27 Apr 2021 12:54:58 -0700 (PDT)
 Received: from ?IPv6:2001:df0:0:200c:2d50:30a4:47de:1dd6? ([2001:df0:0:200c:2d50:30a4:47de:1dd6])
-        by smtp.gmail.com with ESMTPSA id k15sm3263204pfi.0.2021.04.27.12.29.22
+        by smtp.gmail.com with ESMTPSA id a7sm3116794pjm.0.2021.04.27.12.54.55
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 27 Apr 2021 12:29:26 -0700 (PDT)
+        Tue, 27 Apr 2021 12:54:58 -0700 (PDT)
 Subject: Re: [PATCH] m68k/mac: Replace macide driver with generic platform
  driver
-To:     Sergei Shtylyov <sergei.shtylyov@gmail.com>,
-        Finn Thain <fthain@fastmail.com.au>,
-        John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
-Cc:     Finn Thain <fthain@telegraphics.com.au>,
+To:     Finn Thain <fthain@fastmail.com.au>
+Cc:     John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
         Geert Uytterhoeven <geert@linux-m68k.org>,
         Christoph Hellwig <hch@lst.de>,
         Joshua Thompson <funaho@jurai.org>,
@@ -73,14 +71,14 @@ References: <793432cca963b632709c4d1312baa9874d73e1d8.1619341585.git.fthain@tele
  <ba908b1d-eab5-a4e5-0c0a-2c745287d121@physik.fu-berlin.de>
  <10a08764-c138-9fe5-966c-ce68349b9b6@nippy.intranet>
  <65f01f42-31d9-522a-e690-73d286405a01@gmail.com>
- <dbd5ddaa-c0ee-5aad-20d9-7fae5e2618af@gmail.com>
+ <9650358f-a789-7dbd-4495-1d39ff321ded@nippy.intranet>
 From:   Michael Schmitz <schmitzmic@gmail.com>
-Message-ID: <7c5eae75-d1de-171a-07ad-9c34ec7325b2@gmail.com>
-Date:   Wed, 28 Apr 2021 07:29:20 +1200
+Message-ID: <ada88dd6-f8d7-11dc-9a89-5c7e437a0981@gmail.com>
+Date:   Wed, 28 Apr 2021 07:54:52 +1200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <dbd5ddaa-c0ee-5aad-20d9-7fae5e2618af@gmail.com>
+In-Reply-To: <9650358f-a789-7dbd-4495-1d39ff321ded@nippy.intranet>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 8bit
 Content-Language: en-US
@@ -88,23 +86,36 @@ Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-On 27/04/21 8:11 pm, Sergei Shtylyov wrote:
-> On 27.04.2021 4:51, Michael Schmitz wrote:
+Hi Finn,
+
+On 27/04/21 3:47 pm, Finn Thain wrote:
+> On Tue, 27 Apr 2021, Michael Schmitz wrote:
 >
+>> On 26/04/21 7:37 pm, Finn Thain wrote:
 >>> Was macide the only IDE driver in Debian/m68k kernels without a libata
->>> alternative? If so, this patch would allow you to finally drop 
+>>> alternative? If so, this patch would allow you to finally drop
 >>> CONFIG_IDE.
 >>>
->> There's still q40ide.c (ISA IDE interface, byte-swapped, so would 
->> need treatment similar to Falcon IDE). Hasn't been updated to a 
->> platform device yet.
->
->    ISA drivers shouldn't be "updated" to the platform drivers. But I 
-> don't see 'struct isa_driver' there either...
+>> There's still q40ide.c (ISA IDE interface, byte-swapped, so would need
+>> treatment similar to Falcon IDE). Hasn't been updated to a platform
+>> device yet.
+>>
+> AIUI, q40 support is not included in Debian/m68k kernel builds.
+I see.
+> I wonder whether q40 could re-use the pata_falcon driver . I suppose
 
-My bad - while the Q40 has ISA slots, IDE isn't connected to the ISA 
-bus. Got confused by the base address range matching what I remember 
-from ISA cards...
+I'm pretty sure it could, but there is no reason why it would have to be 
+crippled in that way. Interrupts should work perfectly fine with IDE on 
+Q40.
+
+There is another reason why using the same module binary for both might 
+fail - the awkward address translation code in io_mm.h. Not certain at 
+all whether we can even have Q40 and Atari in the same kernel binary...
+
+> pata_falcon_set_mode() would be undesirable on q40 (?) It could be made
+
+Not sure what the defaults are - pata_buddha.c and pata_gayle.c use the 
+same code in their _set_mode(). I suspect we'd need it for Q40, too.
 
 Cheers,
 
