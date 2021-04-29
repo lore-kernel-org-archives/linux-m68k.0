@@ -2,95 +2,101 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
-	autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-3.7 required=3.0 tests=BAYES_00,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 77F73C433ED
-	for <linux-m68k@archiver.kernel.org>; Wed, 28 Apr 2021 23:06:40 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id DD3E3C433B4
+	for <linux-m68k@archiver.kernel.org>; Thu, 29 Apr 2021 07:25:08 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 5987461090
-	for <linux-m68k@archiver.kernel.org>; Wed, 28 Apr 2021 23:06:40 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 94EEC61289
+	for <linux-m68k@archiver.kernel.org>; Thu, 29 Apr 2021 07:25:08 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230382AbhD1XHZ (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Wed, 28 Apr 2021 19:07:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35484 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229488AbhD1XHY (ORCPT
+        id S237319AbhD2HZx (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Thu, 29 Apr 2021 03:25:53 -0400
+Received: from mail-vk1-f182.google.com ([209.85.221.182]:41897 "EHLO
+        mail-vk1-f182.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233375AbhD2HZu (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Wed, 28 Apr 2021 19:07:24 -0400
-Received: from mail-qk1-x733.google.com (mail-qk1-x733.google.com [IPv6:2607:f8b0:4864:20::733])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0EDCEC06138C
-        for <linux-m68k@lists.linux-m68k.org>; Wed, 28 Apr 2021 16:06:39 -0700 (PDT)
-Received: by mail-qk1-x733.google.com with SMTP id k127so9822418qkc.6
-        for <linux-m68k@lists.linux-m68k.org>; Wed, 28 Apr 2021 16:06:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:subject:from:in-reply-to:date:cc
-         :content-transfer-encoding:message-id:references:to;
-        bh=9qLoG8GhVsaODXvAxNVSdW8lGghLvmtsq9pFbRDh42Y=;
-        b=TDZzd9Yjn7zwOBAE6kqvkUuPXbahUd+wVeSFZKpWbKob9fl3wAJ1WJT8p4BGmnMUK/
-         DuJ3P1fGBC08Jw+LZwhm+xfSjdPlfsmvxQvQuBj0399jIdirjmH5Q03qVy8G1VOVOR7e
-         x+vWDHkzR7HRTU0Cs5c9Oz0pVn31wfPsKtsl5akMO//OBs3Gu+hSPMeH2f9XIdV7to6c
-         NPO1MW9vE8WwwZ6C0OQOn7NHVG0s6a345neSRiErDR22MWcZUrL9IxCku2/RRZ/WZxJX
-         PFP/MuNqi9PEq5PLw2kCn6xW6s7eVR7IQq5F7JLlBilwKShwJSTAqPLknTAnXJyh2Or9
-         NF4g==
+        Thu, 29 Apr 2021 03:25:50 -0400
+Received: by mail-vk1-f182.google.com with SMTP id o17so14287000vko.8
+        for <linux-m68k@lists.linux-m68k.org>; Thu, 29 Apr 2021 00:25:01 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:subject:from:in-reply-to:date:cc
-         :content-transfer-encoding:message-id:references:to;
-        bh=9qLoG8GhVsaODXvAxNVSdW8lGghLvmtsq9pFbRDh42Y=;
-        b=FRzCEipOsMoSv0XmgH3SOnsu86B8d9JPvmD+zLHhckNdpwxZUb6gaysikHeeYUnNyi
-         YuVa05jrcvBExcYio+Uaew3t51Eg1qhbiIN/j7ZIdf+XlM9eF8LG8Z8uIAwBInFCM5Wr
-         ktb75drn4WwqoPw3NTygh7YhfVk3+HwOlPkzw+LsaM9bRH3EOnjypDhsmobkIyjaWnUS
-         hbl02c3gosvLO0p5se4YPllbrAU5E2az5zb4nyiisKNfzmbxaRhNUqIns8nA9k6jYca1
-         aWjJ0tE1nVOZd4ghD6bpEidU4BOvwcKTxXxd8PEMjtbSucEu2OC6KDYU4SPGIyAdAIqf
-         IyFw==
-X-Gm-Message-State: AOAM533uuOQKKFIf1PjQeyxdyqx6lz1v8Ipb7MJDjILAXQ8e8hv4nwWp
-        k189ObkeTJzF8+WfE8tjF3c=
-X-Google-Smtp-Source: ABdhPJx7/CKXkBSSiNqr83HqQNA928kpne7Yz76AtLT3qadpPggSsUB4qoL9p1sjG/M1p1Qei8ubGg==
-X-Received: by 2002:a05:620a:232:: with SMTP id u18mr8411245qkm.213.1619651198317;
-        Wed, 28 Apr 2021 16:06:38 -0700 (PDT)
-Received: from ?IPv6:2601:152:4100:57e0:91c9:b195:c9a6:94c1? ([2601:152:4100:57e0:91c9:b195:c9a6:94c1])
-        by smtp.gmail.com with ESMTPSA id h62sm891040qkf.116.2021.04.28.16.06.36
-        (version=TLS1 cipher=ECDHE-RSA-AES128-SHA bits=128/128);
-        Wed, 28 Apr 2021 16:06:37 -0700 (PDT)
-Content-Type: text/plain; charset=us-ascii
-Mime-Version: 1.0 (Mac OS X Mail 7.3 \(1878.6\))
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=BR+Zb6bXtQ8BGY8mZumeMhUwBbZF2jGOR3njZwlxxUo=;
+        b=mUUPbF6TkDZaAJwlBtYPdKtLqofNmRqI27KF2HibNhPDyyFin91zo4z74lOFZ+XLNv
+         h+GI3Q7NTNfOXH5xpBfT1rgV/1WL9muqX/EXiGBgi4w+r8QoisnCF5JTz0OkD8UlnrIM
+         Uc5Ij4J02Eu5aqS+n0pQ6kNTbs4n2fcycTGoTkrNimcVmbNP3JC+IqYbviXg9gvUHlel
+         UhuqIzzFPnOfMlQ0OqlqOMQEFMSzhHOv9y/sarH6ljRfo2zmr4L5hR9KEgFC3ZMrdLfI
+         yGpCuayIUuq5rxnr2517nQfaysEZgSpleoyCc60wN1o0Z4hn5FDbctDkEbGd8azxEnvM
+         /Esw==
+X-Gm-Message-State: AOAM532kUYQbfgoKG025bBfH8GG+uNel4BJLEseAnecyprjOhFSpWjMy
+        yt7Zy8RF9GOQ1ROScbW2AP1MEB/NyNyuVZrHzvk=
+X-Google-Smtp-Source: ABdhPJzWxXJHZHy/a/3azuE76fEyxLCedtlAO9sChfUUdpE3dbANNOgLoCyBS8aBE6LYvOYl+2jaqpKGLBJpBu4clNQ=
+X-Received: by 2002:a1f:5682:: with SMTP id k124mr28961242vkb.2.1619681006490;
+ Thu, 29 Apr 2021 00:23:26 -0700 (PDT)
+MIME-Version: 1.0
+References: <20210323221430.3735147-1-laurent@vivier.eu> <20210323221430.3735147-3-laurent@vivier.eu>
+ <CAMuHMdUFh2W-bY5Ez1aOTZQjq0=THvmOf22JdxWoNNtFLskSzw@mail.gmail.com> <F9FB9B1D-3B31-452D-AD67-D1C57A302B83@gmail.com>
+In-Reply-To: <F9FB9B1D-3B31-452D-AD67-D1C57A302B83@gmail.com>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Thu, 29 Apr 2021 09:23:15 +0200
+Message-ID: <CAMuHMdXhSQNwCU627MOONOrXdasQN=VZxSGrCZiDN7iwQSwi7Q@mail.gmail.com>
 Subject: Re: [PATCH 2/2] m68k: introduce a virtual m68k machine
-From:   Josh Juran <jjuran@gmail.com>
-In-Reply-To: <CAMuHMdUFh2W-bY5Ez1aOTZQjq0=THvmOf22JdxWoNNtFLskSzw@mail.gmail.com>
-Date:   Wed, 28 Apr 2021 19:06:10 -0400
+To:     Josh Juran <jjuran@gmail.com>
 Cc:     Laurent Vivier <laurent@vivier.eu>,
         Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
         linux-m68k <linux-m68k@lists.linux-m68k.org>,
         linux-rtc@vger.kernel.org, Alessandro Zummo <a.zummo@towertech.it>,
         Alexandre Belloni <alexandre.belloni@bootlin.com>
-Content-Transfer-Encoding: 7bit
-Message-Id: <F9FB9B1D-3B31-452D-AD67-D1C57A302B83@gmail.com>
-References: <20210323221430.3735147-1-laurent@vivier.eu> <20210323221430.3735147-3-laurent@vivier.eu> <CAMuHMdUFh2W-bY5Ez1aOTZQjq0=THvmOf22JdxWoNNtFLskSzw@mail.gmail.com>
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-X-Mailer: Apple Mail (2.1878.6)
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-On Apr 28, 2021, at 8:04 AM, Geert Uytterhoeven <geert@linux-m68k.org> wrote:
+Hi Josh,
 
-> This can be simplified by shifting irq_pending instead of irq_bit:
-> 
->    do {
->            if (irq_pending & 1)
->                    generic_handle_irq(irq_num);
-> 
->            ++irq_num;
->            irq_pending >>= 1;
->    } while (irq_pending);
-> 
-> Unfortunately m68k doesn't have a single-instruction __ffs().
+On Thu, Apr 29, 2021 at 1:06 AM Josh Juran <jjuran@gmail.com> wrote:
+> On Apr 28, 2021, at 8:04 AM, Geert Uytterhoeven <geert@linux-m68k.org> wrote:
+> > This can be simplified by shifting irq_pending instead of irq_bit:
+> >
+> >    do {
+> >            if (irq_pending & 1)
+> >                    generic_handle_irq(irq_num);
+> >
+> >            ++irq_num;
+> >            irq_pending >>= 1;
+> >    } while (irq_pending);
+> >
+> > Unfortunately m68k doesn't have a single-instruction __ffs().
+>
+> The 68000 and 68010 don't, but couldn't the 68020's BFFFO do the job?
 
-The 68000 and 68010 don't, but couldn't the 68020's BFFFO do the job?
+I looked at the code generated by gcc for __builtin_ffs(), and while
+it did use BFFFO, it needs several other instructions.
 
-Josh
+The same can be seen in arch/m68k/include/asm/bitops.h:
 
+    static inline int ffs(int x)
+    {
+            int cnt;
+
+            __asm__ ("bfffo %1{#0:#0},%0"
+                    : "=d" (cnt)
+                    : "dm" (x & -x));
+            return 32 - cnt;
+    }
+
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
+-- 
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
