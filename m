@@ -2,103 +2,87 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-12.2 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,NICE_REPLY_A,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
-	USER_AGENT_SANE_1 autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-20.2 required=3.0 tests=BAYES_00,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,INCLUDES_PULL_REQUEST,
+	MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,
+	USER_AGENT_SANE_1 autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 18F04C43460
-	for <linux-m68k@archiver.kernel.org>; Mon,  3 May 2021 13:17:46 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id DB759C433B4
+	for <linux-m68k@archiver.kernel.org>; Tue,  4 May 2021 00:14:49 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id D9DFB61208
-	for <linux-m68k@archiver.kernel.org>; Mon,  3 May 2021 13:17:45 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id B2827611EE
+	for <linux-m68k@archiver.kernel.org>; Tue,  4 May 2021 00:14:49 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233924AbhECNSh (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Mon, 3 May 2021 09:18:37 -0400
-Received: from mout.gmx.net ([212.227.17.20]:48233 "EHLO mout.gmx.net"
+        id S229499AbhEDAPm (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Mon, 3 May 2021 20:15:42 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51874 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234234AbhECNSh (ORCPT <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Mon, 3 May 2021 09:18:37 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1620047851;
-        bh=TmR7smPPbyIXc3idtmR5f78hGH40oDdZ4CxoXbIedYc=;
-        h=X-UI-Sender-Class:Subject:To:Cc:References:From:Date:In-Reply-To;
-        b=RNwxb+s4MAb2ZK3gpW0qd7SSOoF/sF/fKmRRPcggKsbLKXOAjKaS9tKfLnQlQIMXU
-         7uDCPhXWbgKYhInig/GV7bvMPveLYosnwxoJISj1cwfwR6mgTDtgU9yQZkE6Ihs8lY
-         wdvlMtzW8PqPB8XaqPNe4s5tjqBZdtT9q8mOkl54=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [192.168.20.60] ([92.116.187.2]) by mail.gmx.net (mrgmx104
- [212.227.17.168]) with ESMTPSA (Nemesis) id 1Mplbx-1lDnLK2NMT-00qBpd; Mon, 03
- May 2021 15:17:31 +0200
-Subject: Re: [PATCH 2/2] arch: use cross_compiling to check whether it is a
- cross build or not
-To:     Masahiro Yamada <masahiroy@kernel.org>,
-        linux-kbuild@vger.kernel.org
-Cc:     Arnd Bergmann <arnd@arndb.de>,
-        "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Yoshinori Sato <ysato@users.sourceforge.jp>,
-        linux-kernel@vger.kernel.org, linux-m68k@lists.linux-m68k.org,
-        linux-parisc@vger.kernel.org, linux-xtensa@linux-xtensa.org
-References: <20210501172437.156926-1-masahiroy@kernel.org>
- <20210501172437.156926-2-masahiroy@kernel.org>
-From:   Helge Deller <deller@gmx.de>
-Message-ID: <939b93cf-a116-da76-8fde-fa4fe1b42ce4@gmx.de>
-Date:   Mon, 3 May 2021 15:16:47 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        id S229497AbhEDAPm (ORCPT <rfc822;linux-m68k@vger.kernel.org>);
+        Mon, 3 May 2021 20:15:42 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 89E8F610E6;
+        Tue,  4 May 2021 00:14:47 +0000 (UTC)
+From:   Greg Ungerer <gerg@linux-m68k.org>
+Subject: [git pull] m68knommu changes for v5.13
+To:     torvalds@linux-foundation.org
+Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Linux/m68k <linux-m68k@vger.kernel.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>, gerg@kernel.org
+Message-ID: <b2180862-6e08-d813-ac65-83052f87be1c@linux-m68k.org>
+Date:   Tue, 4 May 2021 10:14:45 +1000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <20210501172437.156926-2-masahiroy@kernel.org>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:+BWosmDLZL+SwICEc9moO+GCLWjW3cWM69iEf7Du7KjLcVNghcL
- +aIUj4GvD2LvQvte8kMgImNMLp6UgaEp8nobmB6wFwpL7YnCwq/+iwDKPiBoj/qZF6cEKjk
- LDOf1pPVli7KWZr68QsV/ewAPgX3tGLKnmo2Ob/izzOYNTQmVNBt6Zsw2XZUKgel/oWIT4J
- daLIq3nNmRKedAe1VOXTw==
-X-UI-Out-Filterresults: notjunk:1;V03:K0:NNTFDPnPx0A=:14K/UbOvRZpS1Wo61BrZl2
- rh53Cse1MU3HmTUtCH/wuZTVmP1QBB0XwMRsuWedqP/1JG8ZB/mDA7wpzsPJElVSvgdNPp+7w
- EfYblIkWUunNe4wuwGshi+W1+fTZw7dIaBaagO8o89UF/XuIhry08GMqNTRD51ewpTFcMOwWT
- WrHHFEiDdyPAkR+WKEFU1PBjF9DHKKHYu+HFxhs8T5AH82lVAaQLVtt1Cmki29rd8aVlcVP7Q
- IXpNKufvWkt9SOiStCH09FmHuUNssSvAphvK4gGzki2b53rjklfLWj0zUikJVauFH8OR7uugx
- bxg6TT3rH3FvMTY0F245GifLANa6vu9ggAkwiNgxW/9cTG5Eaf2eoG7hh7JeJN7Al2fTbKYYz
- NCLplGUSJN2Z+aidcxVBvY6nFbDbiUiclQm7wVEOMyYvJczBozp6jTpVKZfAwnBSmkSaC2sEa
- 5+1YTYcOz62aPnv00/23QlJF5hriarN46IJC+lMLuetpjueg6oT/kiuzL4QgHLs+0ambW9JQs
- Q5WUgb7a1STv3y+uij1bipsy724UL6qGfnTmVldUgJhdUQwP/UU/NVHOZzBvF+fnD9JiLO1Gg
- 8snk78k1B6dKVW20N9ivWIg53RjceJD3fFhjDYv3f0JuYuggMSQW8l19JDz3y3EpTWp82T5Qj
- MMZ0UBlNfZL8fX3uYDqmX/64WK9DEC8/7IgFPRMQq1qLqiM9fHORGemj4dJM4iHufXL3GOgSB
- MQXt5CFfqzEJGNfiTTduPEglimTv10uvb7dRXH7sRAAfJViGb7UVbcuuqeoUyUpR5YmPVCArw
- iGQdQPHwSK6g9v7tm2W2/LpzDOnFP5HQYA/gV2B/rlHGWUhLeEkEgk6HulH/Kr54rjwwVPRLN
- x7nMuPIBLRTG4VLxmn55Ez3X+Cu4FiynOXx+uIAELa2zMIm9Q4sI5QWjQG4Q1uusktkcbce0m
- 6gJYgJdIZm1CunIv+9PffbDLUqBuNxCFITH1bCY/fnPFVmfd1WaVLBXiKbvUasJb8JPiTouRQ
- XfRMCBNyFQcyyg+Wh6HOVDGl5ElN2c+HXOrZDz7gZ9ZRPUfR/K+ysUPr5DpP5nj40IPGEa/3j
- PeBIMyLNAUU339xt7fh3gA3S/W+wSAIEOq/D4PieBEn8gvCUJmdn2qH3gprCt4xe5MEaarKnM
- aTPCBDNrlLe2wSBUdq2hhHP2LdgXFf3LdtFsypulpXiwwL5EcTjv6Ey0NjI4TuPKHxOUQ=
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-On 5/1/21 7:24 PM, Masahiro Yamada wrote:
-> 'cross_compiling' is defined by the top Makefile and available for
-> arch Makefiles to check whether it is a cross build or not. A good
-> thing is the variable name 'cross_compiling' is self-documenting.
->
-> This is a simple replacement for m68k, mips, sh, for which $(ARCH)
-> and $(SRCARCH) always match.
->
-> No functional change is intended for xtensa, either.
->
-> This is rather a fix for parisc because arch/parisc/Makefile defines
-> UTS_MATCHINE depending on CONFIG_64BIT, therefore cc-cross-prefix
-> is not working in Kconfig time.
->
-> Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
->   arch/m68k/Makefile   | 2 +-
->   arch/mips/Makefile   | 2 +-
->   arch/parisc/Makefile | 2 +-
+Hi Linus,
 
-Acked-by: Helge Deller <deller@gmx.de>  # parisc
+Please pull the m68knommu tree for-next branch.
 
-Thanks!
-Helge
+There is a fix for interrupt number range checking for the ColdFire
+SIMR interrupt controller.
+
+The other changes are for the binfmt_flat binary loader. To allow RISC-V
+nommu support it needs to be able to accept flat binaries that have no
+gap between the text and data sections.
+
+Regards
+Greg
+
+
+
+The following changes since commit bf05bf16c76bb44ab5156223e1e58e26dfe30a88:
+
+   Linux 5.12-rc8 (2021-04-18 14:45:32 -0700)
+
+are available in the Git repository at:
+
+   git://git.kernel.org/pub/scm/linux/kernel/git/gerg/m68knommu.git tags/m68knommu-for-v5.13
+
+for you to fetch changes up to 6b3788e5fb8041211ac2fa7c818ca9010e976a74:
+
+   m68k: coldfire: fix irq ranges (2021-04-23 15:33:40 +1000)
+
+----------------------------------------------------------------
+M68knommu fixes include:
+
+. fix interrupt range check for ColdFire SIMR interrupt controller
+. add support for gapless sections flat format binary (needed by RISC-V)
+
+----------------------------------------------------------------
+Angelo Dureghello (1):
+       m68k: coldfire: fix irq ranges
+
+Damien Le Moal (2):
+       binfmt_flat: allow not offsetting data start
+       riscv: Disable data start offset in flat binaries
+
+  arch/m68k/coldfire/intc-simr.c | 12 ++++++------
+  arch/riscv/Kconfig             |  1 +
+  fs/Kconfig.binfmt              |  3 +++
+  fs/binfmt_flat.c               | 18 +++++++++++++-----
+  4 files changed, 23 insertions(+), 11 deletions(-)
