@@ -2,87 +2,113 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-20.2 required=3.0 tests=BAYES_00,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,INCLUDES_PULL_REQUEST,
-	MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,
-	USER_AGENT_SANE_1 autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-11.3 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+	FROM_LOCAL_NOVOWEL,HEADER_FROM_DIFFERENT_DOMAINS,HK_RANDOM_FROM,
+	INCLUDES_CR_TRAILER,INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id DB759C433B4
-	for <linux-m68k@archiver.kernel.org>; Tue,  4 May 2021 00:14:49 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E5E3CC433ED
+	for <linux-m68k@archiver.kernel.org>; Tue,  4 May 2021 09:46:05 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id B2827611EE
-	for <linux-m68k@archiver.kernel.org>; Tue,  4 May 2021 00:14:49 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 9CB0E6115C
+	for <linux-m68k@archiver.kernel.org>; Tue,  4 May 2021 09:46:05 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229499AbhEDAPm (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Mon, 3 May 2021 20:15:42 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51874 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229497AbhEDAPm (ORCPT <rfc822;linux-m68k@vger.kernel.org>);
-        Mon, 3 May 2021 20:15:42 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 89E8F610E6;
-        Tue,  4 May 2021 00:14:47 +0000 (UTC)
-From:   Greg Ungerer <gerg@linux-m68k.org>
-Subject: [git pull] m68knommu changes for v5.13
-To:     torvalds@linux-foundation.org
-Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Linux/m68k <linux-m68k@vger.kernel.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>, gerg@kernel.org
-Message-ID: <b2180862-6e08-d813-ac65-83052f87be1c@linux-m68k.org>
-Date:   Tue, 4 May 2021 10:14:45 +1000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S229993AbhEDJq7 (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Tue, 4 May 2021 05:46:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51850 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229953AbhEDJq7 (ORCPT
+        <rfc822;linux-m68k@lists.linux-m68k.org>);
+        Tue, 4 May 2021 05:46:59 -0400
+Received: from mail-ed1-x52e.google.com (mail-ed1-x52e.google.com [IPv6:2a00:1450:4864:20::52e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6CC92C06174A
+        for <linux-m68k@lists.linux-m68k.org>; Tue,  4 May 2021 02:46:04 -0700 (PDT)
+Received: by mail-ed1-x52e.google.com with SMTP id e7so9652930edu.10
+        for <linux-m68k@lists.linux-m68k.org>; Tue, 04 May 2021 02:46:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=FMMoB0knpTuesmL7S80gUZGP0uEA+wOrx5OG5Ck4KtQ=;
+        b=scnrBqC8w7CnFcQ5v3N0jKjMhFpIsia5XbpW2lEbIwi9mDBavP7Qr1J/E5dbLPwGGi
+         kfxu44i6CBIUFoJmRGqPshBv9v9r95jElB52yp+1cfiKLnhwlzLLBvJ24shBXg1NIf4I
+         TW09zi2ApCi7K0O8RmTHqDzya6qCTJBn9OBhagrT5amzbHwhXeTtHylqRPQlXujIQ5m7
+         d7POAwGN1dXtD187vi4ncI1maUhyl/odexxCfUhec2AoIuVpeXNTAfA4gIk5BvFakFcx
+         K989Jnpv0H72ayBFIwrONvUd3iG98IGx2L0MC4CUYyRTmUHvtvr5lFP+sLNjYy67+/go
+         hsgA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=FMMoB0knpTuesmL7S80gUZGP0uEA+wOrx5OG5Ck4KtQ=;
+        b=FHa05/p/Kx5kZrRGvTFLBQPNe68PdQAvyKA6wo4AS3rYuJfOirivLcURrjJpvGjgM7
+         537FXoX46wjJvvDfB2E9kkR9HU3W72ilTy59BjDj1ZgLVjO7UjV4DGIjUS1pnisJypx3
+         sBfh0lFZyfPZ8oen+Mnzur33FrfzMVl7Fz7vEEMwRaKoP29FfaFY9POPqtGbZdLZZ67Q
+         xR3RqGij/PVFCX2EJgLlIeuXBpy7P243Zsp1sIVcpnbj74mDsqkSVX0q/oBYKpSk1Hz5
+         igIhJpdZJWlaG8m1+600llLDnp+BQ+LMIRugIdd92kHoUlsTpN717aDeVDKaKVDMQjYe
+         Y6TQ==
+X-Gm-Message-State: AOAM531fiz5KlHk7ILWQ3tevgyuasmNjNh4qneuSLcIp27VRnljPZUx9
+        UK0GlOF4/k0Y/IN0JVzO+btrxh5/95dvwP4yKGI=
+X-Google-Smtp-Source: ABdhPJytIlqBg1GSjAvtrTGNIBv6aKqTmnMnu2e5kZW0EfBKg8Xh0c84yVVu4/JqV9YTkecrWRL3P/XHYROlWQerQAk=
+X-Received: by 2002:a05:6402:34c5:: with SMTP id w5mr3386137edc.237.1620121563132;
+ Tue, 04 May 2021 02:46:03 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20210501172437.156926-1-masahiroy@kernel.org> <20210501172437.156926-2-masahiroy@kernel.org>
+In-Reply-To: <20210501172437.156926-2-masahiroy@kernel.org>
+From:   Max Filippov <jcmvbkbc@gmail.com>
+Date:   Tue, 4 May 2021 02:45:51 -0700
+Message-ID: <CAMo8BfJgNgNKRi9XsPUFKPzH0GvtFcRxx75+swXaofcMN7kg8Q@mail.gmail.com>
+Subject: Re: [PATCH 2/2] arch: use cross_compiling to check whether it is a
+ cross build or not
+To:     Masahiro Yamada <masahiroy@kernel.org>
+Cc:     linux-kbuild <linux-kbuild@vger.kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>, Chris Zankel <chris@zankel.net>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Helge Deller <deller@gmx.de>,
+        "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
+        Rich Felker <dalias@libc.org>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Yoshinori Sato <ysato@users.sourceforge.jp>,
+        LKML <linux-kernel@vger.kernel.org>,
+        "open list:M68K ARCHITECTURE" <linux-m68k@lists.linux-m68k.org>,
+        linux-mips@vger.kernel.org,
+        "open list:PARISC ARCHITECTURE" <linux-parisc@vger.kernel.org>,
+        "open list:SUPERH" <linux-sh@vger.kernel.org>,
+        "open list:TENSILICA XTENSA PORT (xtensa)" 
+        <linux-xtensa@linux-xtensa.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-Hi Linus,
+On Sat, May 1, 2021 at 10:25 AM Masahiro Yamada <masahiroy@kernel.org> wrote:
+>
+> 'cross_compiling' is defined by the top Makefile and available for
+> arch Makefiles to check whether it is a cross build or not. A good
+> thing is the variable name 'cross_compiling' is self-documenting.
+>
+> This is a simple replacement for m68k, mips, sh, for which $(ARCH)
+> and $(SRCARCH) always match.
+>
+> No functional change is intended for xtensa, either.
+>
+> This is rather a fix for parisc because arch/parisc/Makefile defines
+> UTS_MATCHINE depending on CONFIG_64BIT, therefore cc-cross-prefix
+> is not working in Kconfig time.
+>
+> Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
+> ---
+>
+>  arch/m68k/Makefile   | 2 +-
+>  arch/mips/Makefile   | 2 +-
+>  arch/parisc/Makefile | 2 +-
+>  arch/sh/Makefile     | 2 +-
+>  arch/xtensa/Makefile | 6 +-----
+>  5 files changed, 5 insertions(+), 9 deletions(-)
 
-Please pull the m68knommu tree for-next branch.
+Acked-by: Max Filippov <jcmvbkbc@gmail.com> # xtensa
 
-There is a fix for interrupt number range checking for the ColdFire
-SIMR interrupt controller.
-
-The other changes are for the binfmt_flat binary loader. To allow RISC-V
-nommu support it needs to be able to accept flat binaries that have no
-gap between the text and data sections.
-
-Regards
-Greg
-
-
-
-The following changes since commit bf05bf16c76bb44ab5156223e1e58e26dfe30a88:
-
-   Linux 5.12-rc8 (2021-04-18 14:45:32 -0700)
-
-are available in the Git repository at:
-
-   git://git.kernel.org/pub/scm/linux/kernel/git/gerg/m68knommu.git tags/m68knommu-for-v5.13
-
-for you to fetch changes up to 6b3788e5fb8041211ac2fa7c818ca9010e976a74:
-
-   m68k: coldfire: fix irq ranges (2021-04-23 15:33:40 +1000)
-
-----------------------------------------------------------------
-M68knommu fixes include:
-
-. fix interrupt range check for ColdFire SIMR interrupt controller
-. add support for gapless sections flat format binary (needed by RISC-V)
-
-----------------------------------------------------------------
-Angelo Dureghello (1):
-       m68k: coldfire: fix irq ranges
-
-Damien Le Moal (2):
-       binfmt_flat: allow not offsetting data start
-       riscv: Disable data start offset in flat binaries
-
-  arch/m68k/coldfire/intc-simr.c | 12 ++++++------
-  arch/riscv/Kconfig             |  1 +
-  fs/Kconfig.binfmt              |  3 +++
-  fs/binfmt_flat.c               | 18 +++++++++++++-----
-  4 files changed, 23 insertions(+), 11 deletions(-)
+-- 
+Thanks.
+-- Max
