@@ -2,113 +2,65 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-11.3 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	FROM_LOCAL_NOVOWEL,HEADER_FROM_DIFFERENT_DOMAINS,HK_RANDOM_FROM,
-	INCLUDES_CR_TRAILER,INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
-	autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-11.7 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,
+	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E5E3CC433ED
-	for <linux-m68k@archiver.kernel.org>; Tue,  4 May 2021 09:46:05 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 77147C43461
+	for <linux-m68k@archiver.kernel.org>; Tue,  4 May 2021 18:30:13 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 9CB0E6115C
-	for <linux-m68k@archiver.kernel.org>; Tue,  4 May 2021 09:46:05 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 5D65761157
+	for <linux-m68k@archiver.kernel.org>; Tue,  4 May 2021 18:30:13 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229993AbhEDJq7 (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Tue, 4 May 2021 05:46:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51850 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229953AbhEDJq7 (ORCPT
-        <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Tue, 4 May 2021 05:46:59 -0400
-Received: from mail-ed1-x52e.google.com (mail-ed1-x52e.google.com [IPv6:2a00:1450:4864:20::52e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6CC92C06174A
-        for <linux-m68k@lists.linux-m68k.org>; Tue,  4 May 2021 02:46:04 -0700 (PDT)
-Received: by mail-ed1-x52e.google.com with SMTP id e7so9652930edu.10
-        for <linux-m68k@lists.linux-m68k.org>; Tue, 04 May 2021 02:46:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=FMMoB0knpTuesmL7S80gUZGP0uEA+wOrx5OG5Ck4KtQ=;
-        b=scnrBqC8w7CnFcQ5v3N0jKjMhFpIsia5XbpW2lEbIwi9mDBavP7Qr1J/E5dbLPwGGi
-         kfxu44i6CBIUFoJmRGqPshBv9v9r95jElB52yp+1cfiKLnhwlzLLBvJ24shBXg1NIf4I
-         TW09zi2ApCi7K0O8RmTHqDzya6qCTJBn9OBhagrT5amzbHwhXeTtHylqRPQlXujIQ5m7
-         d7POAwGN1dXtD187vi4ncI1maUhyl/odexxCfUhec2AoIuVpeXNTAfA4gIk5BvFakFcx
-         K989Jnpv0H72ayBFIwrONvUd3iG98IGx2L0MC4CUYyRTmUHvtvr5lFP+sLNjYy67+/go
-         hsgA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=FMMoB0knpTuesmL7S80gUZGP0uEA+wOrx5OG5Ck4KtQ=;
-        b=FHa05/p/Kx5kZrRGvTFLBQPNe68PdQAvyKA6wo4AS3rYuJfOirivLcURrjJpvGjgM7
-         537FXoX46wjJvvDfB2E9kkR9HU3W72ilTy59BjDj1ZgLVjO7UjV4DGIjUS1pnisJypx3
-         sBfh0lFZyfPZ8oen+Mnzur33FrfzMVl7Fz7vEEMwRaKoP29FfaFY9POPqtGbZdLZZ67Q
-         xR3RqGij/PVFCX2EJgLlIeuXBpy7P243Zsp1sIVcpnbj74mDsqkSVX0q/oBYKpSk1Hz5
-         igIhJpdZJWlaG8m1+600llLDnp+BQ+LMIRugIdd92kHoUlsTpN717aDeVDKaKVDMQjYe
-         Y6TQ==
-X-Gm-Message-State: AOAM531fiz5KlHk7ILWQ3tevgyuasmNjNh4qneuSLcIp27VRnljPZUx9
-        UK0GlOF4/k0Y/IN0JVzO+btrxh5/95dvwP4yKGI=
-X-Google-Smtp-Source: ABdhPJytIlqBg1GSjAvtrTGNIBv6aKqTmnMnu2e5kZW0EfBKg8Xh0c84yVVu4/JqV9YTkecrWRL3P/XHYROlWQerQAk=
-X-Received: by 2002:a05:6402:34c5:: with SMTP id w5mr3386137edc.237.1620121563132;
- Tue, 04 May 2021 02:46:03 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210501172437.156926-1-masahiroy@kernel.org> <20210501172437.156926-2-masahiroy@kernel.org>
-In-Reply-To: <20210501172437.156926-2-masahiroy@kernel.org>
-From:   Max Filippov <jcmvbkbc@gmail.com>
-Date:   Tue, 4 May 2021 02:45:51 -0700
-Message-ID: <CAMo8BfJgNgNKRi9XsPUFKPzH0GvtFcRxx75+swXaofcMN7kg8Q@mail.gmail.com>
-Subject: Re: [PATCH 2/2] arch: use cross_compiling to check whether it is a
- cross build or not
-To:     Masahiro Yamada <masahiroy@kernel.org>
-Cc:     linux-kbuild <linux-kbuild@vger.kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>, Chris Zankel <chris@zankel.net>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Helge Deller <deller@gmx.de>,
-        "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
-        Rich Felker <dalias@libc.org>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Yoshinori Sato <ysato@users.sourceforge.jp>,
-        LKML <linux-kernel@vger.kernel.org>,
-        "open list:M68K ARCHITECTURE" <linux-m68k@lists.linux-m68k.org>,
-        linux-mips@vger.kernel.org,
-        "open list:PARISC ARCHITECTURE" <linux-parisc@vger.kernel.org>,
-        "open list:SUPERH" <linux-sh@vger.kernel.org>,
-        "open list:TENSILICA XTENSA PORT (xtensa)" 
-        <linux-xtensa@linux-xtensa.org>
-Content-Type: text/plain; charset="UTF-8"
+        id S232276AbhEDSbF (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Tue, 4 May 2021 14:31:05 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34054 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231921AbhEDSbC (ORCPT <rfc822;linux-m68k@vger.kernel.org>);
+        Tue, 4 May 2021 14:31:02 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPS id 20D67613D8;
+        Tue,  4 May 2021 18:30:07 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1620153007;
+        bh=XjyOLWDTdPUqM1r+CAAtypP5rqJRtoNYx5ueA+ZPB4w=;
+        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
+        b=e6EZp1Uuo++Cbi2ysOB5EisUDv3/sKmmYd0sfI/LH/D17lV/6Ygbyl578VDLcgqIj
+         Ux+vUU34juIS5YTFEqvj0AeWC+nj+eIo4ESPH5SLDwUMA1q8m9xjm18q3CNKIWSI52
+         i/Yhgl00hHaknN5x5SkURv3xY2ncTE3NCrLUdQm2ldl8CKeLz+6N8EUovoJYO21odo
+         nYb1z9IL0Dk13BWH51ovoPi5XDtmpbKgYkKTxbw7A5CIzV9JsFKihDVlH7RZTlyYnh
+         8miSl6Kg1J4t+4CG/jruTdjcKUO+q5K51e1abfMc5TyEIP7tAey8slBRFSVXQP3+lt
+         cE5VnZFs94ZwQ==
+Subject: Re: [git pull] m68knommu changes for v5.13
+From:   pr-tracker-bot@kernel.org
+In-Reply-To: <b2180862-6e08-d813-ac65-83052f87be1c@linux-m68k.org>
+References: <b2180862-6e08-d813-ac65-83052f87be1c@linux-m68k.org>
+X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
+X-PR-Tracked-Message-Id: <b2180862-6e08-d813-ac65-83052f87be1c@linux-m68k.org>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/gerg/m68knommu.git tags/m68knommu-for-v5.13
+X-PR-Tracked-Commit-Id: 6b3788e5fb8041211ac2fa7c818ca9010e976a74
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: 51e6f07cb12e50bfc71181bd08bad5f0a9b5e9e2
+Message-Id: <162015300708.4220.1619890891845350084.pr-tracker-bot@kernel.org>
+Date:   Tue, 04 May 2021 18:30:07 +0000
+To:     Greg Ungerer <gerg@linux-m68k.org>
+Cc:     torvalds@linux-foundation.org,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Linux/m68k <linux-m68k@vger.kernel.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>, gerg@kernel.org
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-On Sat, May 1, 2021 at 10:25 AM Masahiro Yamada <masahiroy@kernel.org> wrote:
->
-> 'cross_compiling' is defined by the top Makefile and available for
-> arch Makefiles to check whether it is a cross build or not. A good
-> thing is the variable name 'cross_compiling' is self-documenting.
->
-> This is a simple replacement for m68k, mips, sh, for which $(ARCH)
-> and $(SRCARCH) always match.
->
-> No functional change is intended for xtensa, either.
->
-> This is rather a fix for parisc because arch/parisc/Makefile defines
-> UTS_MATCHINE depending on CONFIG_64BIT, therefore cc-cross-prefix
-> is not working in Kconfig time.
->
-> Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
-> ---
->
->  arch/m68k/Makefile   | 2 +-
->  arch/mips/Makefile   | 2 +-
->  arch/parisc/Makefile | 2 +-
->  arch/sh/Makefile     | 2 +-
->  arch/xtensa/Makefile | 6 +-----
->  5 files changed, 5 insertions(+), 9 deletions(-)
+The pull request you sent on Tue, 4 May 2021 10:14:45 +1000:
 
-Acked-by: Max Filippov <jcmvbkbc@gmail.com> # xtensa
+> git://git.kernel.org/pub/scm/linux/kernel/git/gerg/m68knommu.git tags/m68knommu-for-v5.13
+
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/51e6f07cb12e50bfc71181bd08bad5f0a9b5e9e2
+
+Thank you!
 
 -- 
-Thanks.
--- Max
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/prtracker.html
