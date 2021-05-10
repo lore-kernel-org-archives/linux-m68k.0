@@ -2,113 +2,198 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-11.7 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,INCLUDES_CR_TRAILER,MAILING_LIST_MULTI,
-	SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-10.3 required=3.0 tests=BAYES_00,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,NICE_REPLY_A,
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=unavailable
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A3109C433ED
-	for <linux-m68k@archiver.kernel.org>; Mon, 10 May 2021 13:42:04 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 1CF28C433B4
+	for <linux-m68k@archiver.kernel.org>; Mon, 10 May 2021 15:29:22 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 7396861106
-	for <linux-m68k@archiver.kernel.org>; Mon, 10 May 2021 13:42:04 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 0357861139
+	for <linux-m68k@archiver.kernel.org>; Mon, 10 May 2021 15:29:21 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231334AbhEJNnG (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Mon, 10 May 2021 09:43:06 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43554 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1352185AbhEJNOI (ORCPT <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Mon, 10 May 2021 09:14:08 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id F030E6128B
-        for <linux-m68k@lists.linux-m68k.org>; Mon, 10 May 2021 13:13:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1620652384;
-        bh=PSzgBT970qRtHokrpRLHj29TDKDvchKrZWRzijLqSCs=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=MUrtxCT/+rGukywuzRkfaC1xwjapGbNy2+3e8bzZ3aQ0cOAmyYUq3azbb6IhtO0Nw
-         p5XyHu4VOgBYEa957EVxU3BgA230WNLISuTb4U+Pxccg2CidCpYSBYUsyP2pl1C4D6
-         Ssp9VBJpOqOM9as1+ff4+s82GbQYrLj4/Ccvp6Fe5+4Wjf0bmQsntVsK1aQkAHLaNN
-         OiwPqMreqj7coc2PgsKzQusD9bUl92VBwDav2aumK3/lvRA4sE3dFXc1aRT3/acR7J
-         3ZcBejsOp9FNMrKrm2GMmyruGRR0lg3Ay1HMkJhYM5TQBY6g2bR+aDaeYkug9UNRRC
-         ZfVFhhHeOiFKw==
-Received: by mail-wr1-f42.google.com with SMTP id h4so16561141wrt.12
-        for <linux-m68k@lists.linux-m68k.org>; Mon, 10 May 2021 06:13:03 -0700 (PDT)
-X-Gm-Message-State: AOAM5325jXpLw0cJgsYTIJ4La9Hi2JOxSsTJcylntd1o59rKGLpuUtZ/
-        VNFeCKlGKewqFSHVWmpTNvW1Uq9Z71ubAqwfei0=
-X-Google-Smtp-Source: ABdhPJx5k3kdp4Lxo7eGFl+4v6Wmh8JO5Yw79c4lK0swD2DYw4OcpNkLlTJxYpDd9aQetiy3UvM5cENTcxibXnZaD3k=
-X-Received: by 2002:a5d:6a52:: with SMTP id t18mr31871475wrw.361.1620652382506;
- Mon, 10 May 2021 06:13:02 -0700 (PDT)
+        id S234318AbhEJPaV (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Mon, 10 May 2021 11:30:21 -0400
+Received: from www262.sakura.ne.jp ([202.181.97.72]:54898 "EHLO
+        www262.sakura.ne.jp" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238094AbhEJP35 (ORCPT
+        <rfc822;linux-m68k@lists.linux-m68k.org>);
+        Mon, 10 May 2021 11:29:57 -0400
+Received: from fsav303.sakura.ne.jp (fsav303.sakura.ne.jp [153.120.85.134])
+        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTP id 14AFRtfE007232;
+        Tue, 11 May 2021 00:27:56 +0900 (JST)
+        (envelope-from penguin-kernel@I-love.SAKURA.ne.jp)
+Received: from www262.sakura.ne.jp (202.181.97.72)
+ by fsav303.sakura.ne.jp (F-Secure/fsigk_smtp/550/fsav303.sakura.ne.jp);
+ Tue, 11 May 2021 00:27:55 +0900 (JST)
+X-Virus-Status: clean(F-Secure/fsigk_smtp/550/fsav303.sakura.ne.jp)
+Received: from [192.168.1.9] (M106072142033.v4.enabler.ne.jp [106.72.142.33])
+        (authenticated bits=0)
+        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTPSA id 14AFRtnu007228
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NO);
+        Tue, 11 May 2021 00:27:55 +0900 (JST)
+        (envelope-from penguin-kernel@I-love.SAKURA.ne.jp)
+Subject: Re: [PATCH 11/12] tools: sync lib/find_bit implementation
+To:     Yury Norov <yury.norov@gmail.com>, linux-kernel@vger.kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>
+Cc:     linux-m68k@lists.linux-m68k.org, linux-arch@vger.kernel.org,
+        linux-sh@vger.kernel.org, Alexey Klimov <aklimov@redhat.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Arnd Bergmann <arnd@arndb.de>, David Sterba <dsterba@suse.com>,
+        Dennis Zhou <dennis@kernel.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Jianpeng Ma <jianpeng.ma@intel.com>,
+        Joe Perches <joe@perches.com>,
+        John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Rich Felker <dalias@libc.org>,
+        Stefano Brivio <sbrivio@redhat.com>,
+        Wei Yang <richard.weiyang@linux.alibaba.com>,
+        Wolfram Sang <wsa+renesas@sang-engineering.com>,
+        Yoshinori Sato <ysato@users.sourceforge.jp>
+References: <20210401003153.97325-1-yury.norov@gmail.com>
+ <20210401003153.97325-12-yury.norov@gmail.com>
+From:   Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
+Message-ID: <1ac7bbc2-45d9-26ed-0b33-bf382b8d858b@I-love.SAKURA.ne.jp>
+Date:   Tue, 11 May 2021 00:27:51 +0900
+User-Agent: Mozilla/5.0 (Windows NT 6.3; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.1
 MIME-Version: 1.0
-References: <20210507220813.365382-1-arnd@kernel.org> <20210507220813.365382-2-arnd@kernel.org>
- <CAMuHMdV1=mJzbr1cLwo-zUnThh9J8BmdW870dJCvp_Kft8kM2w@mail.gmail.com>
-In-Reply-To: <CAMuHMdV1=mJzbr1cLwo-zUnThh9J8BmdW870dJCvp_Kft8kM2w@mail.gmail.com>
-From:   Arnd Bergmann <arnd@kernel.org>
-Date:   Mon, 10 May 2021 15:12:09 +0200
-X-Gmail-Original-Message-ID: <CAK8P3a15W5vV9ivk6YnR2aGMvDjTrPGrzsszf2kD6kv1TfrpbQ@mail.gmail.com>
-Message-ID: <CAK8P3a15W5vV9ivk6YnR2aGMvDjTrPGrzsszf2kD6kv1TfrpbQ@mail.gmail.com>
-Subject: Re: [RFC 01/12] asm-generic: use asm-generic/unaligned.h for most architectures
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     Linux-Arch <linux-arch@vger.kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Vineet Gupta <vgupta@synopsys.com>,
-        Richard Henderson <rth@twiddle.net>,
-        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
-        Matt Turner <mattst88@gmail.com>,
-        Michal Simek <monstr@monstr.eu>,
-        "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
-        Helge Deller <deller@gmx.de>,
-        "David S. Miller" <davem@davemloft.net>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "the arch/x86 maintainers" <x86@kernel.org>,
-        "H. Peter Anvin" <hpa@zytor.com>, Chris Zankel <chris@zankel.net>,
-        Max Filippov <jcmvbkbc@gmail.com>,
-        alpha <linux-alpha@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "linux-ia64@vger.kernel.org" <linux-ia64@vger.kernel.org>,
-        linux-m68k <linux-m68k@lists.linux-m68k.org>,
-        Parisc List <linux-parisc@vger.kernel.org>,
-        sparclinux <sparclinux@vger.kernel.org>,
-        "open list:TENSILICA XTENSA PORT (xtensa)" 
-        <linux-xtensa@linux-xtensa.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210401003153.97325-12-yury.norov@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-On Mon, May 10, 2021 at 12:16 PM Geert Uytterhoeven
-<geert@linux-m68k.org> wrote:
-> On Sat, May 8, 2021 at 12:09 AM Arnd Bergmann <arnd@kernel.org> wrote:
-> > From: Arnd Bergmann <arnd@arndb.de>
-> >
-> > There are several architectures that just duplicate the contents
-> > of asm-generic/unaligned.h, so change those over to use the
-> > file directly, to make future modifications easier.
-> >
-> > The exceptions are:
-> >
-> > - arm32 sets HAVE_EFFICIENT_UNALIGNED_ACCESS, but wants the
-> >   unaligned-struct version
-> >
-> > - ppc64le disables HAVE_EFFICIENT_UNALIGNED_ACCESS but includes
-> >   the access-ok version
-> >
-> > - m68k (non-dragonball) also uses the access-ok version without
-> >   setting HAVE_EFFICIENT_UNALIGNED_ACCESS.
->
-> This not only applies to dragonball, which has the CPU32 core, but also
-> to plain 68000, and any SoCs including the 68EC000 core.
+Commit eaae7841ba83bb42 ("tools: sync lib/find_bit implementation") broke
+build of 5.13-rc1 using gcc (GCC) 8.3.1 20190311 (Red Hat 8.3.1-3).
 
-I meant out of the machines that are currently supported in the kernel.
-As far as I can tell, the only 68000 variants that are supported are
-all Dragonball CONFIG_M68328, CONFIG_M68EZ328 and
-CONFIG_M68VZ328.
+  DESCEND  objtool
+  CC       /usr/src/linux/tools/objtool/exec-cmd.o
+  CC       /usr/src/linux/tools/objtool/help.o
+  CC       /usr/src/linux/tools/objtool/pager.o
+  CC       /usr/src/linux/tools/objtool/parse-options.o
+  CC       /usr/src/linux/tools/objtool/run-command.o
+  CC       /usr/src/linux/tools/objtool/sigchain.o
+  CC       /usr/src/linux/tools/objtool/subcmd-config.o
+  LD       /usr/src/linux/tools/objtool/libsubcmd-in.o
+  AR       /usr/src/linux/tools/objtool/libsubcmd.a
+  CC       /usr/src/linux/tools/objtool/arch/x86/special.o
+In file included from /usr/src/linux/tools/include/linux/kernel.h:8:0,
+                 from /usr/src/linux/tools/include/linux/list.h:7,
+                 from /usr/src/linux/tools/objtool/include/objtool/arch.h:10,
+                 from /usr/src/linux/tools/objtool/include/objtool/check.h:11,
+                 from /usr/src/linux/tools/objtool/include/objtool/special.h:10,
+                 from arch/x86/special.c:4:
+/usr/src/linux/tools/include/asm-generic/bitops/find.h: In function 'find_next_bit':
+/usr/src/linux/tools/include/linux/bits.h:24:21: error: first argument to '__builtin_choose_expr' not a constant
+  (BUILD_BUG_ON_ZERO(__builtin_choose_expr( \
+                     ^
+/usr/src/linux/tools/include/linux/build_bug.h:16:62: note: in definition of macro 'BUILD_BUG_ON_ZERO'
+ #define BUILD_BUG_ON_ZERO(e) ((int)(sizeof(struct { int:(-!!(e)); })))
+                                                              ^
+/usr/src/linux/tools/include/linux/bits.h:38:3: note: in expansion of macro 'GENMASK_INPUT_CHECK'
+  (GENMASK_INPUT_CHECK(h, l) + __GENMASK(h, l))
+   ^
+/usr/src/linux/tools/include/asm-generic/bitops/find.h:32:17: note: in expansion of macro 'GENMASK'
+   val = *addr & GENMASK(size - 1, offset);
+                 ^
+/usr/src/linux/tools/include/linux/build_bug.h:16:51: error: bit-field '<anonymous>' width not an integer constant
+ #define BUILD_BUG_ON_ZERO(e) ((int)(sizeof(struct { int:(-!!(e)); })))
+                                                   ^
+/usr/src/linux/tools/include/linux/bits.h:24:3: note: in expansion of macro 'BUILD_BUG_ON_ZERO'
+  (BUILD_BUG_ON_ZERO(__builtin_choose_expr( \
+   ^
+/usr/src/linux/tools/include/linux/bits.h:38:3: note: in expansion of macro 'GENMASK_INPUT_CHECK'
+  (GENMASK_INPUT_CHECK(h, l) + __GENMASK(h, l))
+   ^
+/usr/src/linux/tools/include/asm-generic/bitops/find.h:32:17: note: in expansion of macro 'GENMASK'
+   val = *addr & GENMASK(size - 1, offset);
+                 ^
+/usr/src/linux/tools/include/asm-generic/bitops/find.h: In function 'find_next_and_bit':
+/usr/src/linux/tools/include/linux/bits.h:24:21: error: first argument to '__builtin_choose_expr' not a constant
+  (BUILD_BUG_ON_ZERO(__builtin_choose_expr( \
+                     ^
+/usr/src/linux/tools/include/linux/build_bug.h:16:62: note: in definition of macro 'BUILD_BUG_ON_ZERO'
+ #define BUILD_BUG_ON_ZERO(e) ((int)(sizeof(struct { int:(-!!(e)); })))
+                                                              ^
+/usr/src/linux/tools/include/linux/bits.h:38:3: note: in expansion of macro 'GENMASK_INPUT_CHECK'
+  (GENMASK_INPUT_CHECK(h, l) + __GENMASK(h, l))
+   ^
+/usr/src/linux/tools/include/asm-generic/bitops/find.h:62:27: note: in expansion of macro 'GENMASK'
+   val = *addr1 & *addr2 & GENMASK(size - 1, offset);
+                           ^
+/usr/src/linux/tools/include/linux/build_bug.h:16:51: error: bit-field '<anonymous>' width not an integer constant
+ #define BUILD_BUG_ON_ZERO(e) ((int)(sizeof(struct { int:(-!!(e)); })))
+                                                   ^
+/usr/src/linux/tools/include/linux/bits.h:24:3: note: in expansion of macro 'BUILD_BUG_ON_ZERO'
+  (BUILD_BUG_ON_ZERO(__builtin_choose_expr( \
+   ^
+/usr/src/linux/tools/include/linux/bits.h:38:3: note: in expansion of macro 'GENMASK_INPUT_CHECK'
+  (GENMASK_INPUT_CHECK(h, l) + __GENMASK(h, l))
+   ^
+/usr/src/linux/tools/include/asm-generic/bitops/find.h:62:27: note: in expansion of macro 'GENMASK'
+   val = *addr1 & *addr2 & GENMASK(size - 1, offset);
+                           ^
+/usr/src/linux/tools/include/asm-generic/bitops/find.h: In function 'find_next_zero_bit':
+/usr/src/linux/tools/include/linux/bits.h:24:21: error: first argument to '__builtin_choose_expr' not a constant
+  (BUILD_BUG_ON_ZERO(__builtin_choose_expr( \
+                     ^
+/usr/src/linux/tools/include/linux/build_bug.h:16:62: note: in definition of macro 'BUILD_BUG_ON_ZERO'
+ #define BUILD_BUG_ON_ZERO(e) ((int)(sizeof(struct { int:(-!!(e)); })))
+                                                              ^
+/usr/src/linux/tools/include/linux/bits.h:38:3: note: in expansion of macro 'GENMASK_INPUT_CHECK'
+  (GENMASK_INPUT_CHECK(h, l) + __GENMASK(h, l))
+   ^
+/usr/src/linux/tools/include/asm-generic/bitops/find.h:90:18: note: in expansion of macro 'GENMASK'
+   val = *addr | ~GENMASK(size - 1, offset);
+                  ^
+/usr/src/linux/tools/include/linux/build_bug.h:16:51: error: bit-field '<anonymous>' width not an integer constant
+ #define BUILD_BUG_ON_ZERO(e) ((int)(sizeof(struct { int:(-!!(e)); })))
+                                                   ^
+/usr/src/linux/tools/include/linux/bits.h:24:3: note: in expansion of macro 'BUILD_BUG_ON_ZERO'
+  (BUILD_BUG_ON_ZERO(__builtin_choose_expr( \
+   ^
+/usr/src/linux/tools/include/linux/bits.h:38:3: note: in expansion of macro 'GENMASK_INPUT_CHECK'
+  (GENMASK_INPUT_CHECK(h, l) + __GENMASK(h, l))
+   ^
+/usr/src/linux/tools/include/asm-generic/bitops/find.h:90:18: note: in expansion of macro 'GENMASK'
+   val = *addr | ~GENMASK(size - 1, offset);
+                  ^
+make[5]: *** [/usr/src/linux/tools/objtool/arch/x86/special.o] Error 1
+make[4]: *** [arch/x86] Error 2
+make[3]: *** [/usr/src/linux/tools/objtool/objtool-in.o] Error 2
+make[2]: *** [objtool] Error 2
+make[1]: *** [tools/objtool] Error 2
+make: *** [__sub-make] Error 2
 
-CONFIG_MCPU32 has been dead since a3595962d824 ("m68knommu:
-remove obsolete 68360 support")
 
-> Reviewed-by: Geert Uytterhoeven <geert@linux-m68k.org>
-> Acked-by: Geert Uytterhoeven <geert@linux-m68k.org>
 
-Thanks!
+Applying below diff seems to solve the build failure.
+Do we need to use BUILD_BUG_ON_ZERO() here?
 
-        Arnd
+diff --git a/tools/include/linux/bits.h b/tools/include/linux/bits.h
+index 7f475d59a097..0aba9294f29d 100644
+--- a/tools/include/linux/bits.h
++++ b/tools/include/linux/bits.h
+@@ -21,8 +21,7 @@
+ #if !defined(__ASSEMBLY__)
+ #include <linux/build_bug.h>
+ #define GENMASK_INPUT_CHECK(h, l) \
+-	(BUILD_BUG_ON_ZERO(__builtin_choose_expr( \
+-		__builtin_constant_p((l) > (h)), (l) > (h), 0)))
++	({ BUILD_BUG_ON(__builtin_constant_p((l) > (h)) && ((l) > (h))); 0; })
+ #else
+ /*
+  * BUILD_BUG_ON_ZERO is not available in h files included from asm files,
+
+
+
+Also, why the fast path of find_*_bit() functions does not check
+__builtin_constant_p(offset) as well as small_const_nbits(size), for the fast
+path fails to catch BUILD_BUG_ON_ZERO() when offset argument is not a constant.
+
