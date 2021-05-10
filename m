@@ -2,104 +2,113 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-13.8 required=3.0 tests=BAYES_00,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-11.7 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,INCLUDES_CR_TRAILER,MAILING_LIST_MULTI,
+	SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 679ECC433B4
-	for <linux-m68k@archiver.kernel.org>; Mon, 10 May 2021 10:19:15 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A3109C433ED
+	for <linux-m68k@archiver.kernel.org>; Mon, 10 May 2021 13:42:04 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 1B69561007
-	for <linux-m68k@archiver.kernel.org>; Mon, 10 May 2021 10:19:15 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 7396861106
+	for <linux-m68k@archiver.kernel.org>; Mon, 10 May 2021 13:42:04 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229684AbhEJKUS (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Mon, 10 May 2021 06:20:18 -0400
-Received: from mail-vk1-f180.google.com ([209.85.221.180]:36727 "EHLO
-        mail-vk1-f180.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230137AbhEJKUL (ORCPT
-        <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Mon, 10 May 2021 06:20:11 -0400
-Received: by mail-vk1-f180.google.com with SMTP id c17so189044vke.3
-        for <linux-m68k@lists.linux-m68k.org>; Mon, 10 May 2021 03:19:06 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=KdRd6/gKBJmSyWKHkTLo2vWOf1KaAzTkqqnkH637tvE=;
-        b=rHdOBexE32DZ1va8JBCCEJ53A+pspad1kjHl+ch5sQBu+8fzIZ0xQ4nh6otuKLWuXb
-         DB8WBGmb0G+fhNfW8ZhHg5v/TFdqbTTTC0jIjQAgCpu09vZ8Wm50UtxSmtzQfv8ScVHc
-         wM32sdk9Gc6uZ5zKmGRDtVnJd1wtmq8PuLwQ3f4Uf+N47EGB+7ui2FPKZSTDewxk10Sc
-         S7/Q9xFCghhFkHQn3qKiOvPWmIOTUHP/T+juaXq3TwfAU94mTIo9Q+Rg9zcmBxlsRwHw
-         wr9mAjToltgo+PPJH/BF4b7L07MTb+VGoFBeCYGa3S8TZk7IyNxWUOoMirJm5IsAKMNY
-         W7zw==
-X-Gm-Message-State: AOAM5335eW/mtEpJBTwR5TgEjWp2yC7SVDxaK2DnfNQlNOAdZALthe7q
-        srj9mor8JCZ8qPvCu6mr+IwLQdctc2VbFz4gMoc=
-X-Google-Smtp-Source: ABdhPJyaOXi+XArkeKM210IRY8QcEM26/c7KnI/L43ooxhYTjbJbpZlbZUWioVOj4c1tWLX5jGBLlpRzufl3a7TwMsc=
-X-Received: by 2002:a1f:1f81:: with SMTP id f123mr16115181vkf.6.1620641946301;
- Mon, 10 May 2021 03:19:06 -0700 (PDT)
+        id S231334AbhEJNnG (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Mon, 10 May 2021 09:43:06 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43554 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1352185AbhEJNOI (ORCPT <rfc822;linux-m68k@lists.linux-m68k.org>);
+        Mon, 10 May 2021 09:14:08 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id F030E6128B
+        for <linux-m68k@lists.linux-m68k.org>; Mon, 10 May 2021 13:13:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1620652384;
+        bh=PSzgBT970qRtHokrpRLHj29TDKDvchKrZWRzijLqSCs=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=MUrtxCT/+rGukywuzRkfaC1xwjapGbNy2+3e8bzZ3aQ0cOAmyYUq3azbb6IhtO0Nw
+         p5XyHu4VOgBYEa957EVxU3BgA230WNLISuTb4U+Pxccg2CidCpYSBYUsyP2pl1C4D6
+         Ssp9VBJpOqOM9as1+ff4+s82GbQYrLj4/Ccvp6Fe5+4Wjf0bmQsntVsK1aQkAHLaNN
+         OiwPqMreqj7coc2PgsKzQusD9bUl92VBwDav2aumK3/lvRA4sE3dFXc1aRT3/acR7J
+         3ZcBejsOp9FNMrKrm2GMmyruGRR0lg3Ay1HMkJhYM5TQBY6g2bR+aDaeYkug9UNRRC
+         ZfVFhhHeOiFKw==
+Received: by mail-wr1-f42.google.com with SMTP id h4so16561141wrt.12
+        for <linux-m68k@lists.linux-m68k.org>; Mon, 10 May 2021 06:13:03 -0700 (PDT)
+X-Gm-Message-State: AOAM5325jXpLw0cJgsYTIJ4La9Hi2JOxSsTJcylntd1o59rKGLpuUtZ/
+        VNFeCKlGKewqFSHVWmpTNvW1Uq9Z71ubAqwfei0=
+X-Google-Smtp-Source: ABdhPJx5k3kdp4Lxo7eGFl+4v6Wmh8JO5Yw79c4lK0swD2DYw4OcpNkLlTJxYpDd9aQetiy3UvM5cENTcxibXnZaD3k=
+X-Received: by 2002:a5d:6a52:: with SMTP id t18mr31871475wrw.361.1620652382506;
+ Mon, 10 May 2021 06:13:02 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210507220813.365382-1-arnd@kernel.org> <20210507220813.365382-5-arnd@kernel.org>
-In-Reply-To: <20210507220813.365382-5-arnd@kernel.org>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Mon, 10 May 2021 12:18:55 +0200
-Message-ID: <CAMuHMdWYoGfDafgcObE4Cb4spZ4vAAEDfWPt-4+1pmEebjM6Ow@mail.gmail.com>
-Subject: Re: [RFC 04/12] m68k: select CONFIG_HAVE_EFFICIENT_UNALIGNED_ACCESS
-To:     Arnd Bergmann <arnd@kernel.org>
+References: <20210507220813.365382-1-arnd@kernel.org> <20210507220813.365382-2-arnd@kernel.org>
+ <CAMuHMdV1=mJzbr1cLwo-zUnThh9J8BmdW870dJCvp_Kft8kM2w@mail.gmail.com>
+In-Reply-To: <CAMuHMdV1=mJzbr1cLwo-zUnThh9J8BmdW870dJCvp_Kft8kM2w@mail.gmail.com>
+From:   Arnd Bergmann <arnd@kernel.org>
+Date:   Mon, 10 May 2021 15:12:09 +0200
+X-Gmail-Original-Message-ID: <CAK8P3a15W5vV9ivk6YnR2aGMvDjTrPGrzsszf2kD6kv1TfrpbQ@mail.gmail.com>
+Message-ID: <CAK8P3a15W5vV9ivk6YnR2aGMvDjTrPGrzsszf2kD6kv1TfrpbQ@mail.gmail.com>
+Subject: Re: [RFC 01/12] asm-generic: use asm-generic/unaligned.h for most architectures
+To:     Geert Uytterhoeven <geert@linux-m68k.org>
 Cc:     Linux-Arch <linux-arch@vger.kernel.org>,
         Linus Torvalds <torvalds@linux-foundation.org>,
         Vineet Gupta <vgupta@synopsys.com>,
-        Arnd Bergmann <arnd@arndb.de>,
+        Richard Henderson <rth@twiddle.net>,
+        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
+        Matt Turner <mattst88@gmail.com>,
+        Michal Simek <monstr@monstr.eu>,
+        "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
+        Helge Deller <deller@gmx.de>,
+        "David S. Miller" <davem@davemloft.net>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "the arch/x86 maintainers" <x86@kernel.org>,
+        "H. Peter Anvin" <hpa@zytor.com>, Chris Zankel <chris@zankel.net>,
+        Max Filippov <jcmvbkbc@gmail.com>,
+        alpha <linux-alpha@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "linux-ia64@vger.kernel.org" <linux-ia64@vger.kernel.org>,
         linux-m68k <linux-m68k@lists.linux-m68k.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+        Parisc List <linux-parisc@vger.kernel.org>,
+        sparclinux <sparclinux@vger.kernel.org>,
+        "open list:TENSILICA XTENSA PORT (xtensa)" 
+        <linux-xtensa@linux-xtensa.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-Hi Arnd,
-
-On Sat, May 8, 2021 at 12:10 AM Arnd Bergmann <arnd@kernel.org> wrote:
-> From: Arnd Bergmann <arnd@arndb.de>
+On Mon, May 10, 2021 at 12:16 PM Geert Uytterhoeven
+<geert@linux-m68k.org> wrote:
+> On Sat, May 8, 2021 at 12:09 AM Arnd Bergmann <arnd@kernel.org> wrote:
+> > From: Arnd Bergmann <arnd@arndb.de>
+> >
+> > There are several architectures that just duplicate the contents
+> > of asm-generic/unaligned.h, so change those over to use the
+> > file directly, to make future modifications easier.
+> >
+> > The exceptions are:
+> >
+> > - arm32 sets HAVE_EFFICIENT_UNALIGNED_ACCESS, but wants the
+> >   unaligned-struct version
+> >
+> > - ppc64le disables HAVE_EFFICIENT_UNALIGNED_ACCESS but includes
+> >   the access-ok version
+> >
+> > - m68k (non-dragonball) also uses the access-ok version without
+> >   setting HAVE_EFFICIENT_UNALIGNED_ACCESS.
 >
-> All supported CPUs other than the old dragonball use the
+> This not only applies to dragonball, which has the CPU32 core, but also
+> to plain 68000, and any SoCs including the 68EC000 core.
 
-Same comment about dragonball as for patch 01/12.
+I meant out of the machines that are currently supported in the kernel.
+As far as I can tell, the only 68000 variants that are supported are
+all Dragonball CONFIG_M68328, CONFIG_M68EZ328 and
+CONFIG_M68VZ328.
 
-> include/linux/unaligned/access_ok.h implementation for accessing unaligned
-> variables, so presumably this works everywhere.
->
-> However, m68k never selects CONFIG_HAVE_EFFICIENT_UNALIGNED_ACCESS,
-> so none of the other conditionals in the kernel get the optimized
-> implementation.
->
-> Select this based on CPU_HAS_NO_UNALIGNED to make the two settings
-> always match, and then use the generic version of the header.
->
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+CONFIG_MCPU32 has been dead since a3595962d824 ("m68knommu:
+remove obsolete 68360 support")
 
-> --- a/arch/m68k/Kconfig
-> +++ b/arch/m68k/Kconfig
-> @@ -22,6 +22,7 @@ config M68K
->         select HAVE_AOUT if MMU
->         select HAVE_ASM_MODVERSIONS
->         select HAVE_DEBUG_BUGVERBOSE
-> +       select HAVE_EFFICIENT_UNALIGNED_ACCESS if !CPU_HAS_NO_UNALIGNED
+> Reviewed-by: Geert Uytterhoeven <geert@linux-m68k.org>
+> Acked-by: Geert Uytterhoeven <geert@linux-m68k.org>
 
-This was clearly forgotten in commit 58340a07c194e0ae ("introduce
-HAVE_EFFICIENT_UNALIGNED_ACCESS Kconfig symbol"), which predates the
-existence of CPU_HAS_NO_UNALIGNED.
+Thanks!
 
-Reviewed-by: Geert Uytterhoeven <geert@linux-m68k.org>
-Acked-by: Geert Uytterhoeven <geert@linux-m68k.org>
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
--- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+        Arnd
