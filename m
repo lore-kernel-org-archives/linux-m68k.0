@@ -2,263 +2,138 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-7.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-8.8 required=3.0 tests=BAYES_00,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,
+	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 8F40EC43460
-	for <linux-m68k@archiver.kernel.org>; Mon, 10 May 2021 17:21:34 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B28F4C433B4
+	for <linux-m68k@archiver.kernel.org>; Mon, 10 May 2021 22:07:51 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 603D861076
-	for <linux-m68k@archiver.kernel.org>; Mon, 10 May 2021 17:21:34 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 931786147D
+	for <linux-m68k@archiver.kernel.org>; Mon, 10 May 2021 22:07:51 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232527AbhEJRWh (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Mon, 10 May 2021 13:22:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46186 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232296AbhEJRWe (ORCPT
-        <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Mon, 10 May 2021 13:22:34 -0400
-Received: from mail-qv1-xf31.google.com (mail-qv1-xf31.google.com [IPv6:2607:f8b0:4864:20::f31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 79261C06175F
-        for <linux-m68k@lists.linux-m68k.org>; Mon, 10 May 2021 10:21:28 -0700 (PDT)
-Received: by mail-qv1-xf31.google.com with SMTP id l19so8728940qvu.8
-        for <linux-m68k@lists.linux-m68k.org>; Mon, 10 May 2021 10:21:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=9sjLsVt8xymIh+A7BLyf2HYNixYx504wOSrn7OVFJwY=;
-        b=dYpRd8UBzBUQr2X+7B7FSdpW0/245RPF7H10qWxN/QAuMadAda8cqB23N8kMNFAW4G
-         VXTqhTJdMMcipdhAHP/yZyUDFkuw2NbZiW2/iHG95N8hheGFHCO29mX7vOK4CisCLB9A
-         bojYgFTYdlONo+rg0WcdAu4+XjjFTiE3LHh7oAkpISnOO5fo5tQxIbcvNnS1u+piVij/
-         t8kK8RFhv26nqqszVTM8ymQkgaG4ChC4kE70jtizruU+x6rOT5OWjvwHqWHuPw8aSKuV
-         +mtXB6E5nNy24Npd/nOHXex4J2Lt4At2gBAcEZkg9RyXWaYyOKVMzndNq4kwagP4zwKQ
-         G8Ig==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=9sjLsVt8xymIh+A7BLyf2HYNixYx504wOSrn7OVFJwY=;
-        b=LKG1IVy55Qyx2YjJdOdf4bIZjq2Fj9Xq8/mzbXibV9MgaxsWXNiqbMUJlWRft1al3n
-         zLxxMcD2fyOtw0ExEHvYBIWb5OzpcSBIcQCpiI/IOROY/vov6APR/i42MWePahiCE0Td
-         pBdOg8K/L8NGGuw+q+P64RH4nwlZdMDvkDtQ5wbn2fkUZjALUvxQzl3DaElPo8rvqqs1
-         Uq1kt8p0F6O1pZtB3kW0oO3QVava6j/AECGjbNlpK457X9pEyiUhWQM/K4MHOC/bGu//
-         CpbbbNC38Y9h/jbhqgOHosCuP8VOwHzgt5tvFSdRHY45dlZg1ibyqW6eQ0xehV8srHGS
-         eUYQ==
-X-Gm-Message-State: AOAM532VyohnNakZ2s0PId51n65hBDl+dyVr/hqJpfPYl/k6qeBpO3HA
-        bzS+r9/YHqRlT6nVAW7jNSs=
-X-Google-Smtp-Source: ABdhPJyx7jsRK8LEcdf7aWQRrTJWrrHx58JYmuJLXj76C8df16j2xWAHfu2XyIx87yYxQtDpoR4wBQ==
-X-Received: by 2002:ad4:5c68:: with SMTP id i8mr24688332qvh.53.1620667287417;
-        Mon, 10 May 2021 10:21:27 -0700 (PDT)
-Received: from localhost ([207.98.216.60])
-        by smtp.gmail.com with ESMTPSA id h7sm1744818qtj.35.2021.05.10.10.21.26
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 10 May 2021 10:21:26 -0700 (PDT)
-Date:   Mon, 10 May 2021 10:21:26 -0700
-From:   Yury Norov <yury.norov@gmail.com>
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc:     Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
-        Rikard Falkeborn <rikard.falkeborn@gmail.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        linux-m68k <linux-m68k@lists.linux-m68k.org>,
-        Linux-Arch <linux-arch@vger.kernel.org>,
-        Linux-SH <linux-sh@vger.kernel.org>,
-        Alexey Klimov <aklimov@redhat.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Arnd Bergmann <arnd@arndb.de>, David Sterba <dsterba@suse.com>,
-        Dennis Zhou <dennis@kernel.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Jianpeng Ma <jianpeng.ma@intel.com>,
-        Joe Perches <joe@perches.com>,
-        John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Rich Felker <dalias@libc.org>,
-        Stefano Brivio <sbrivio@redhat.com>,
-        Wei Yang <richard.weiyang@linux.alibaba.com>,
-        Wolfram Sang <wsa+renesas@sang-engineering.com>,
-        Yoshinori Sato <ysato@users.sourceforge.jp>
-Subject: Re: [PATCH 11/12] tools: sync lib/find_bit implementation
-Message-ID: <YJlravuhJLlWaqjs@yury-ThinkPad>
-References: <20210401003153.97325-1-yury.norov@gmail.com>
- <20210401003153.97325-12-yury.norov@gmail.com>
- <1ac7bbc2-45d9-26ed-0b33-bf382b8d858b@I-love.SAKURA.ne.jp>
- <CAHp75Vea0Y_LfWC7LNDoDZqO4t+SVHV5HZMzErfyMPoBAjjk1g@mail.gmail.com>
+        id S230045AbhEJWIz (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Mon, 10 May 2021 18:08:55 -0400
+Received: from mga07.intel.com ([134.134.136.100]:13737 "EHLO mga07.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230002AbhEJWIy (ORCPT <rfc822;linux-m68k@lists.linux-m68k.org>);
+        Mon, 10 May 2021 18:08:54 -0400
+IronPort-SDR: tra9slNh40nfpzUeQRYv7XoXMbVimhRCLxZThb1mTMsjojBgkVNOEA5rbOI5PJdf1z7JZNidZw
+ xkVV4Pnh1/Ow==
+X-IronPort-AV: E=McAfee;i="6200,9189,9980"; a="263229884"
+X-IronPort-AV: E=Sophos;i="5.82,288,1613462400"; 
+   d="scan'208";a="263229884"
+Received: from fmsmga007.fm.intel.com ([10.253.24.52])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 May 2021 15:07:48 -0700
+IronPort-SDR: GFVVb+zyiTv3/c3MNEhpe7oqikPRyJNJO4do0bu+hJ9nQznN6vQNl6xXD/ESXt8ljbquWsUwsc
+ YK8Q4l5jIyHw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.82,288,1613462400"; 
+   d="scan'208";a="399039196"
+Received: from lkp-server01.sh.intel.com (HELO f375d57c4ed4) ([10.239.97.150])
+  by fmsmga007.fm.intel.com with ESMTP; 10 May 2021 15:07:47 -0700
+Received: from kbuild by f375d57c4ed4 with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1lgE42-0000OB-I1; Mon, 10 May 2021 22:07:46 +0000
+Date:   Tue, 11 May 2021 06:07:30 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Geert Uytterhoeven <geert@linux-m68k.org>
+Cc:     linux-m68k@lists.linux-m68k.org
+Subject: [m68k:for-next] BUILD SUCCESS
+ eeff86b6d18ccd7ef1e663dd428b93f5887d02b5
+Message-ID: <6099aea2.34/BjD5UjwQ4HyHb%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAHp75Vea0Y_LfWC7LNDoDZqO4t+SVHV5HZMzErfyMPoBAjjk1g@mail.gmail.com>
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-On Mon, May 10, 2021 at 06:44:44PM +0300, Andy Shevchenko wrote:
-> +Cc: Rikard
-> 
-> On Mon, May 10, 2021 at 6:31 PM Tetsuo Handa
-> <penguin-kernel@i-love.sakura.ne.jp> wrote:
-> >
-> > Commit eaae7841ba83bb42 ("tools: sync lib/find_bit implementation") broke
-> > build of 5.13-rc1 using gcc (GCC) 8.3.1 20190311 (Red Hat 8.3.1-3).
-> >
-> >   DESCEND  objtool
-> >   CC       /usr/src/linux/tools/objtool/exec-cmd.o
-> >   CC       /usr/src/linux/tools/objtool/help.o
-> >   CC       /usr/src/linux/tools/objtool/pager.o
-> >   CC       /usr/src/linux/tools/objtool/parse-options.o
-> >   CC       /usr/src/linux/tools/objtool/run-command.o
-> >   CC       /usr/src/linux/tools/objtool/sigchain.o
-> >   CC       /usr/src/linux/tools/objtool/subcmd-config.o
-> >   LD       /usr/src/linux/tools/objtool/libsubcmd-in.o
-> >   AR       /usr/src/linux/tools/objtool/libsubcmd.a
-> >   CC       /usr/src/linux/tools/objtool/arch/x86/special.o
-> > In file included from /usr/src/linux/tools/include/linux/kernel.h:8:0,
-> >                  from /usr/src/linux/tools/include/linux/list.h:7,
-> >                  from /usr/src/linux/tools/objtool/include/objtool/arch.h:10,
-> >                  from /usr/src/linux/tools/objtool/include/objtool/check.h:11,
-> >                  from /usr/src/linux/tools/objtool/include/objtool/special.h:10,
-> >                  from arch/x86/special.c:4:
-> > /usr/src/linux/tools/include/asm-generic/bitops/find.h: In function 'find_next_bit':
-> > /usr/src/linux/tools/include/linux/bits.h:24:21: error: first argument to '__builtin_choose_expr' not a constant
-> >   (BUILD_BUG_ON_ZERO(__builtin_choose_expr( \
-> >                      ^
-> > /usr/src/linux/tools/include/linux/build_bug.h:16:62: note: in definition of macro 'BUILD_BUG_ON_ZERO'
-> >  #define BUILD_BUG_ON_ZERO(e) ((int)(sizeof(struct { int:(-!!(e)); })))
-> >                                                               ^
-> > /usr/src/linux/tools/include/linux/bits.h:38:3: note: in expansion of macro 'GENMASK_INPUT_CHECK'
-> >   (GENMASK_INPUT_CHECK(h, l) + __GENMASK(h, l))
-> >    ^
-> > /usr/src/linux/tools/include/asm-generic/bitops/find.h:32:17: note: in expansion of macro 'GENMASK'
-> >    val = *addr & GENMASK(size - 1, offset);
-> >                  ^
-> > /usr/src/linux/tools/include/linux/build_bug.h:16:51: error: bit-field '<anonymous>' width not an integer constant
-> >  #define BUILD_BUG_ON_ZERO(e) ((int)(sizeof(struct { int:(-!!(e)); })))
-> >                                                    ^
-> > /usr/src/linux/tools/include/linux/bits.h:24:3: note: in expansion of macro 'BUILD_BUG_ON_ZERO'
-> >   (BUILD_BUG_ON_ZERO(__builtin_choose_expr( \
-> >    ^
-> > /usr/src/linux/tools/include/linux/bits.h:38:3: note: in expansion of macro 'GENMASK_INPUT_CHECK'
-> >   (GENMASK_INPUT_CHECK(h, l) + __GENMASK(h, l))
-> >    ^
-> > /usr/src/linux/tools/include/asm-generic/bitops/find.h:32:17: note: in expansion of macro 'GENMASK'
-> >    val = *addr & GENMASK(size - 1, offset);
-> >                  ^
-> > /usr/src/linux/tools/include/asm-generic/bitops/find.h: In function 'find_next_and_bit':
-> > /usr/src/linux/tools/include/linux/bits.h:24:21: error: first argument to '__builtin_choose_expr' not a constant
-> >   (BUILD_BUG_ON_ZERO(__builtin_choose_expr( \
-> >                      ^
-> > /usr/src/linux/tools/include/linux/build_bug.h:16:62: note: in definition of macro 'BUILD_BUG_ON_ZERO'
-> >  #define BUILD_BUG_ON_ZERO(e) ((int)(sizeof(struct { int:(-!!(e)); })))
-> >                                                               ^
-> > /usr/src/linux/tools/include/linux/bits.h:38:3: note: in expansion of macro 'GENMASK_INPUT_CHECK'
-> >   (GENMASK_INPUT_CHECK(h, l) + __GENMASK(h, l))
-> >    ^
-> > /usr/src/linux/tools/include/asm-generic/bitops/find.h:62:27: note: in expansion of macro 'GENMASK'
-> >    val = *addr1 & *addr2 & GENMASK(size - 1, offset);
-> >                            ^
-> > /usr/src/linux/tools/include/linux/build_bug.h:16:51: error: bit-field '<anonymous>' width not an integer constant
-> >  #define BUILD_BUG_ON_ZERO(e) ((int)(sizeof(struct { int:(-!!(e)); })))
-> >                                                    ^
-> > /usr/src/linux/tools/include/linux/bits.h:24:3: note: in expansion of macro 'BUILD_BUG_ON_ZERO'
-> >   (BUILD_BUG_ON_ZERO(__builtin_choose_expr( \
-> >    ^
-> > /usr/src/linux/tools/include/linux/bits.h:38:3: note: in expansion of macro 'GENMASK_INPUT_CHECK'
-> >   (GENMASK_INPUT_CHECK(h, l) + __GENMASK(h, l))
-> >    ^
-> > /usr/src/linux/tools/include/asm-generic/bitops/find.h:62:27: note: in expansion of macro 'GENMASK'
-> >    val = *addr1 & *addr2 & GENMASK(size - 1, offset);
-> >                            ^
-> > /usr/src/linux/tools/include/asm-generic/bitops/find.h: In function 'find_next_zero_bit':
-> > /usr/src/linux/tools/include/linux/bits.h:24:21: error: first argument to '__builtin_choose_expr' not a constant
-> >   (BUILD_BUG_ON_ZERO(__builtin_choose_expr( \
-> >                      ^
-> > /usr/src/linux/tools/include/linux/build_bug.h:16:62: note: in definition of macro 'BUILD_BUG_ON_ZERO'
-> >  #define BUILD_BUG_ON_ZERO(e) ((int)(sizeof(struct { int:(-!!(e)); })))
-> >                                                               ^
-> > /usr/src/linux/tools/include/linux/bits.h:38:3: note: in expansion of macro 'GENMASK_INPUT_CHECK'
-> >   (GENMASK_INPUT_CHECK(h, l) + __GENMASK(h, l))
-> >    ^
-> > /usr/src/linux/tools/include/asm-generic/bitops/find.h:90:18: note: in expansion of macro 'GENMASK'
-> >    val = *addr | ~GENMASK(size - 1, offset);
-> >                   ^
-> > /usr/src/linux/tools/include/linux/build_bug.h:16:51: error: bit-field '<anonymous>' width not an integer constant
-> >  #define BUILD_BUG_ON_ZERO(e) ((int)(sizeof(struct { int:(-!!(e)); })))
-> >                                                    ^
-> > /usr/src/linux/tools/include/linux/bits.h:24:3: note: in expansion of macro 'BUILD_BUG_ON_ZERO'
-> >   (BUILD_BUG_ON_ZERO(__builtin_choose_expr( \
-> >    ^
-> > /usr/src/linux/tools/include/linux/bits.h:38:3: note: in expansion of macro 'GENMASK_INPUT_CHECK'
-> >   (GENMASK_INPUT_CHECK(h, l) + __GENMASK(h, l))
-> >    ^
-> > /usr/src/linux/tools/include/asm-generic/bitops/find.h:90:18: note: in expansion of macro 'GENMASK'
-> >    val = *addr | ~GENMASK(size - 1, offset);
-> >                   ^
-> > make[5]: *** [/usr/src/linux/tools/objtool/arch/x86/special.o] Error 1
-> > make[4]: *** [arch/x86] Error 2
-> > make[3]: *** [/usr/src/linux/tools/objtool/objtool-in.o] Error 2
-> > make[2]: *** [objtool] Error 2
-> > make[1]: *** [tools/objtool] Error 2
-> > make: *** [__sub-make] Error 2
-> >
-> >
-> > Applying below diff seems to solve the build failure.
-> >
-> It will desynchronize this implementation with the mother's one (i.e.
-> in bits.h).
-> 
-> > Do we need to use BUILD_BUG_ON_ZERO() here?
-> 
-> Rikard?
->
-> >
-> > diff --git a/tools/include/linux/bits.h b/tools/include/linux/bits.h
-> > index 7f475d59a097..0aba9294f29d 100644
-> > --- a/tools/include/linux/bits.h
-> > +++ b/tools/include/linux/bits.h
-> > @@ -21,8 +21,7 @@
-> >  #if !defined(__ASSEMBLY__)
-> >  #include <linux/build_bug.h>
-> >  #define GENMASK_INPUT_CHECK(h, l) \
-> > -       (BUILD_BUG_ON_ZERO(__builtin_choose_expr( \
-> > -               __builtin_constant_p((l) > (h)), (l) > (h), 0)))
-> > +       ({ BUILD_BUG_ON(__builtin_constant_p((l) > (h)) && ((l) > (h))); 0; })
-> >  #else
-> >  /*
-> >   * BUILD_BUG_ON_ZERO is not available in h files included from asm files,
- 
-As Andy said, we need to sync tools/GENMASK_INPUT_CHECK() with the
-kernel version, and if I do this, I have many build failures:
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/geert/linux-m68k.git for-next
+branch HEAD: eeff86b6d18ccd7ef1e663dd428b93f5887d02b5  m68k: dma: Remove unnecessary include of asm/cacheflush.h
 
-https://pastebin.com/Fan1VLVF
+elapsed time: 720m
 
-Maybe in this case we should use __GENMASK() to bypass GENMASK_INPUT_CHECK()...
-I'll check everything carefully this evening.
- 
-> > Also, why the fast path of find_*_bit() functions does not check
-> > __builtin_constant_p(offset) as well as small_const_nbits(size), for the fast
-> > path fails to catch BUILD_BUG_ON_ZERO() when offset argument is not a constant.
->
-> How would this help anything?
-> 
-> If you ask a bit from a bitmap behind the size, what do you expect to get?
-> 
-> And I'm a bit lost here, because I can't imagine the offset being
-> constant along with a size of bitmap. What do we want to achieve by
-> this? Any examples to better understand the case?
+configs tested: 71
+configs skipped: 113
 
-If offset is constant, the existing fast path optimization would work
-even better, without any modifications. (Not sure there's an example of
-it in the existing codebase.) But even if the offset is not constant,
-fast path works quite well - it saves ~1K of .text and improves on
-performance:
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
-https://lore.kernel.org/linux-m68k/20210321215457.588554-10-yury.norov@gmail.com/
+gcc tested configs:
+arm                                 defconfig
+arm64                            allyesconfig
+arm64                               defconfig
+arm                              allyesconfig
+arm                              allmodconfig
+x86_64                           allyesconfig
+riscv                            allmodconfig
+m68k                        mvme16x_defconfig
+mips                           xway_defconfig
+powerpc                  storcenter_defconfig
+mips                           ip32_defconfig
+arm                          pxa3xx_defconfig
+sh                               j2_defconfig
+powerpc                   currituck_defconfig
+mips                            gpr_defconfig
+arm                          ixp4xx_defconfig
+sh                              ul2_defconfig
+x86_64                            allnoconfig
+ia64                             allmodconfig
+ia64                                defconfig
+ia64                             allyesconfig
+m68k                             allmodconfig
+m68k                                defconfig
+m68k                             allyesconfig
+nds32                               defconfig
+nios2                            allyesconfig
+csky                                defconfig
+alpha                               defconfig
+alpha                            allyesconfig
+xtensa                           allyesconfig
+h8300                            allyesconfig
+arc                                 defconfig
+sh                               allmodconfig
+parisc                              defconfig
+s390                             allyesconfig
+s390                             allmodconfig
+parisc                           allyesconfig
+s390                                defconfig
+i386                             allyesconfig
+sparc                            allyesconfig
+sparc                               defconfig
+i386                                defconfig
+nios2                               defconfig
+arc                              allyesconfig
+nds32                             allnoconfig
+mips                             allyesconfig
+mips                             allmodconfig
+powerpc                          allyesconfig
+powerpc                          allmodconfig
+powerpc                           allnoconfig
+i386                 randconfig-a016-20210510
+i386                 randconfig-a014-20210510
+i386                 randconfig-a011-20210510
+i386                 randconfig-a015-20210510
+i386                 randconfig-a012-20210510
+i386                 randconfig-a013-20210510
+riscv                    nommu_k210_defconfig
+riscv                            allyesconfig
+riscv                    nommu_virt_defconfig
+riscv                             allnoconfig
+riscv                               defconfig
+riscv                          rv32_defconfig
+um                               allmodconfig
+um                                allnoconfig
+um                               allyesconfig
+um                                  defconfig
+x86_64                    rhel-8.3-kselftests
+x86_64                              defconfig
+x86_64                               rhel-8.3
+x86_64                      rhel-8.3-kbuiltin
+x86_64                                  kexec
 
-We don't need to disable the optimization for non-constant offsets,
-for sure. If asserts in GENMASK() break build, we should use __GENMASK().
-
-Thanks,
-Yury
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
