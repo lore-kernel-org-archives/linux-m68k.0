@@ -2,67 +2,42 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
-	autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-10.3 required=3.0 tests=BAYES_00,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,NICE_REPLY_A,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=unavailable
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 54290C433ED
-	for <linux-m68k@archiver.kernel.org>; Tue, 11 May 2021 10:36:52 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id CAD85C433ED
+	for <linux-m68k@archiver.kernel.org>; Tue, 11 May 2021 11:54:28 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 225FE615FF
-	for <linux-m68k@archiver.kernel.org>; Tue, 11 May 2021 10:36:52 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 9B3FD611CE
+	for <linux-m68k@archiver.kernel.org>; Tue, 11 May 2021 11:54:28 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229955AbhEKKh5 (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Tue, 11 May 2021 06:37:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52408 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229892AbhEKKh4 (ORCPT
+        id S230400AbhEKLze (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Tue, 11 May 2021 07:55:34 -0400
+Received: from www262.sakura.ne.jp ([202.181.97.72]:56145 "EHLO
+        www262.sakura.ne.jp" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229892AbhEKLze (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Tue, 11 May 2021 06:37:56 -0400
-Received: from mail-lf1-x129.google.com (mail-lf1-x129.google.com [IPv6:2a00:1450:4864:20::129])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 49846C061761
-        for <linux-m68k@lists.linux-m68k.org>; Tue, 11 May 2021 03:36:50 -0700 (PDT)
-Received: by mail-lf1-x129.google.com with SMTP id r5so10731461lfr.5
-        for <linux-m68k@lists.linux-m68k.org>; Tue, 11 May 2021 03:36:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:date:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=mPTGhSdYS1EwXktDTrRYGbw3xN/gpinHXJ0dbeYJ3es=;
-        b=uLAisls4ltrVE4/Ogyxj6kPvgrmoXy2pwMhFXj+C/1mOobjpzx0EP8xJNpPURz4OnO
-         aG3Dll4zNPrlWeqY0JdN4+eQlLJTqkmso/8DyY9YVmessQPzyJGx/DXBAEwNcJv4I27Q
-         dg3nz34jHrmu6DbuXxwJVHRD0x+uCOGhKYluvrALG/nIBDwCUIJj+kta9gu9WH3LwJe/
-         6S4Ak774b1i9g7BRjnIg41lyA7bGEuj7lcaAlvpjpXPArfdeOpBG1SBXs9nJhirvfFT4
-         o1JWaFsxWH/O4AHF7N+q/aFWJ3nib2f/V8tR/oKhB8oiytYd2RPUHCqGVg+W7jV8oYac
-         tfxA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=mPTGhSdYS1EwXktDTrRYGbw3xN/gpinHXJ0dbeYJ3es=;
-        b=PAy8jPpzEri+QdM5h9iYGcDwPP3bh/1d3qEyFtiwepizf782+meAQSqzMnbKNr2F6s
-         EnIswzGx76V9jkA1PrDyW3WChrdKRPM6vwFzPuEBxa1HWY/Sdr8xjTLUv7LIUUAwD83Z
-         IwqgoB7/ZRvYbzJFVjvPjwX3LcxFDMAQHr+DL6Or5gdgZOcxE5TSiWxSqpTSuUNHZnRN
-         rLrv2X+UCE32UBuGfNVo0B+nocRrYudeDYvYZa4ep7Jmqdvyw079bI+oNn+AK+PiBcMN
-         Qra36geetnakQvaod/nPVrMicwoSsAJENX7j0tEnYRxA3TUAKXjYmssMtx2SFsEQdBPb
-         M8yQ==
-X-Gm-Message-State: AOAM533PchgG5jz+xlPdLOzjjXIog0g7EON6qhM+5tm1jN7vqz4fhPed
-        rYbFjYHmNJJK3Rcw91J9oL4=
-X-Google-Smtp-Source: ABdhPJxH3TGCNCqhpUbtkmWcuM1loUXzrtKYaQ4Uv96NT1vQ/n7AYKCj9cmK9h40us2sMTkRMZ1b/Q==
-X-Received: by 2002:a19:c111:: with SMTP id r17mr19841633lff.564.1620729408667;
-        Tue, 11 May 2021 03:36:48 -0700 (PDT)
-Received: from rikard (h-158-174-22-223.NA.cust.bahnhof.se. [158.174.22.223])
-        by smtp.gmail.com with ESMTPSA id n7sm2548891lft.65.2021.05.11.03.36.47
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 11 May 2021 03:36:48 -0700 (PDT)
-From:   Rikard Falkeborn <rikard.falkeborn@gmail.com>
-X-Google-Original-From: Rikard Falkeborn <rikard.falkeborn>
-Date:   Tue, 11 May 2021 12:36:44 +0200
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc:     Rikard Falkeborn <rikard.falkeborn@gmail.com>,
-        Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
-        Yury Norov <yury.norov@gmail.com>,
+        Tue, 11 May 2021 07:55:34 -0400
+Received: from fsav304.sakura.ne.jp (fsav304.sakura.ne.jp [153.120.85.135])
+        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTP id 14BBrwGp025007;
+        Tue, 11 May 2021 20:53:58 +0900 (JST)
+        (envelope-from penguin-kernel@i-love.sakura.ne.jp)
+Received: from www262.sakura.ne.jp (202.181.97.72)
+ by fsav304.sakura.ne.jp (F-Secure/fsigk_smtp/550/fsav304.sakura.ne.jp);
+ Tue, 11 May 2021 20:53:58 +0900 (JST)
+X-Virus-Status: clean(F-Secure/fsigk_smtp/550/fsav304.sakura.ne.jp)
+Received: from [192.168.1.9] (M106072142033.v4.enabler.ne.jp [106.72.142.33])
+        (authenticated bits=0)
+        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTPSA id 14BBrvka024961
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NO);
+        Tue, 11 May 2021 20:53:57 +0900 (JST)
+        (envelope-from penguin-kernel@i-love.sakura.ne.jp)
+Subject: Re: [PATCH 11/12] tools: sync lib/find_bit implementation
+To:     Rikard Falkeborn <rikard.falkeborn@gmail.com>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc:     Yury Norov <yury.norov@gmail.com>,
         Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
         Andrew Morton <akpm@linux-foundation.org>,
         Rasmus Villemoes <linux@rasmusvillemoes.dk>,
@@ -82,58 +57,142 @@ Cc:     Rikard Falkeborn <rikard.falkeborn@gmail.com>,
         Wei Yang <richard.weiyang@linux.alibaba.com>,
         Wolfram Sang <wsa+renesas@sang-engineering.com>,
         Yoshinori Sato <ysato@users.sourceforge.jp>
-Subject: Re: [PATCH 11/12] tools: sync lib/find_bit implementation
-Message-ID: <YJpePAHS3EDw6PK1@rikard>
 References: <20210401003153.97325-1-yury.norov@gmail.com>
  <20210401003153.97325-12-yury.norov@gmail.com>
  <1ac7bbc2-45d9-26ed-0b33-bf382b8d858b@I-love.SAKURA.ne.jp>
  <CAHp75Vea0Y_LfWC7LNDoDZqO4t+SVHV5HZMzErfyMPoBAjjk1g@mail.gmail.com>
- <YJm5Dpo+RspbAtye@rikard>
- <YJoyMrqRtB3GSAny@smile.fi.intel.com>
+ <YJm5Dpo+RspbAtye@rikard> <YJoyMrqRtB3GSAny@smile.fi.intel.com>
+ <YJpePAHS3EDw6PK1@rikard>
+From:   Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>
+Message-ID: <151de51e-9302-1f59-407a-e0d68bbaf11c@i-love.sakura.ne.jp>
+Date:   Tue, 11 May 2021 20:53:53 +0900
+User-Agent: Mozilla/5.0 (Windows NT 6.3; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YJoyMrqRtB3GSAny@smile.fi.intel.com>
+In-Reply-To: <YJpePAHS3EDw6PK1@rikard>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-On Tue, May 11, 2021 at 10:28:50AM +0300, Andy Shevchenko wrote:
-> On Tue, May 11, 2021 at 12:51:58AM +0200, Rikard Falkeborn wrote:
-> > On Mon, May 10, 2021 at 06:44:44PM +0300, Andy Shevchenko wrote:
-> 
-> ...
-> 
-> > Does the following work for you? For simplicity, I copied__is_constexpr from
-> > include/linux/minmax.h (which isn't available in tools/). A proper patch
-> > would reuse __is_constexpr (possibly refactoring it to a separate
-> > header since bits.h including minmax.h for that only seems smelly)
-> 
-> I think we need to have it in something like compiler.h (top level). Under
-> 'top level' I meant something with the function as of compiler.h but with
-> Linuxisms rather than compiler attributes or so.
+On 2021/05/11 0:44, Andy Shevchenko wrote:
+> And I'm a bit lost here, because I can't imagine the offset being
+> constant along with a size of bitmap. What do we want to achieve by
+> this? Any examples to better understand the case?
 
-Right. Will you send a patch, or do you want me to?
+Because I feel that the GENMASK() macro cannot be evaluated without
+both arguments being a constant.
 
-It would be good to get confirmation that __is_constexpr solves the
-build failure.
+The usage is
+
+ unsigned long find_next_bit(const unsigned long *addr, unsigned long size,
+                            unsigned long offset)
+ {
++       if (small_const_nbits(size)) {
++               unsigned long val;
++
++               if (unlikely(offset >= size))
++                       return size;
++
++               val = *addr & GENMASK(size - 1, offset);
++               return val ? __ffs(val) : size;
++       }
++
+        return _find_next_bit(addr, NULL, size, offset, 0UL, 0);
+ }
+
+where GENMASK() might be called even if "offset" is not a constant.
+
+#define GENMASK(h, l) \
+     (GENMASK_INPUT_CHECK(h, l) + __GENMASK(h, l))
+
+#define __GENMASK(h, l) \
+     (((~UL(0)) - (UL(1) << (l)) + 1) & \
+       (~UL(0) >> (BITS_PER_LONG - 1 - (h))))
+
+#define GENMASK_INPUT_CHECK(h, l) \
+     (BUILD_BUG_ON_ZERO(__builtin_choose_expr( \
+          __builtin_constant_p((l) > (h)), (l) > (h), 0)))
+
+__GENMASK() does not need "h" and "l" being a constant.
+
+Yes, small_const_nbits(size) in find_next_bit() can guarantee that "size" is a
+constant and hence "h" argument in GENMASK_INPUT_CHECK() call is also a constant.
+But nothing can guarantee that "offset" is a constant, and hence nothing can
+guarantee that "l" argument in GENMASK_INPUT_CHECK() call is also a constant.
+
+Then, how can (l) > (h) in __builtin_constant_p((l) > (h)) be evaluated at build time
+if either l or h (i.e. "offset" and "size - 1" in find_next_bit()) lacks a guarantee of
+being a constant?
+
+But what a surprise,
+
+On 2021/05/11 7:51, Rikard Falkeborn wrote:
+> Does the following work for you? For simplicity, I copied__is_constexpr from
+> include/linux/minmax.h (which isn't available in tools/). A proper patch
+> would reuse __is_constexpr (possibly refactoring it to a separate
+> header since bits.h including minmax.h for that only seems smelly) and fix
+> bits.h in the kernel header as well, to keep the files in sync.
+
+this works for me.
 
 > 
-> Separate header for the (single) macro is too much...
+> diff --git a/tools/include/linux/bits.h b/tools/include/linux/bits.h
+> index 7f475d59a097..7bc4c31a7df0 100644
+> --- a/tools/include/linux/bits.h
+> +++ b/tools/include/linux/bits.h
+> @@ -19,10 +19,13 @@
+>   * GENMASK_ULL(39, 21) gives us the 64bit vector 0x000000ffffe00000.
+>   */
+>  #if !defined(__ASSEMBLY__)
+> +
+> +#define __is_constexpr(x) \
+> +       (sizeof(int) == sizeof(*(8 ? ((void *)((long)(x) * 0l)) : (int *)8)))
+>  #include <linux/build_bug.h>
+>  #define GENMASK_INPUT_CHECK(h, l) \
+>         (BUILD_BUG_ON_ZERO(__builtin_choose_expr( \
+> -               __builtin_constant_p((l) > (h)), (l) > (h), 0)))
+> +               __is_constexpr((l) > (h)), (l) > (h), 0)))
+>  #else
+>  /*
+>   * BUILD_BUG_ON_ZERO is not available in h files included from asm files,
 > 
 
-Agreed.
 
-> > and fix
-> > bits.h in the kernel header as well, to keep the files in sync.
-> 
-> Right.
-> 
-> -- 
-> With Best Regards,
-> Andy Shevchenko
-> 
-> 
 
-With Best Regards,
-Rikard
+On 2021/05/11 7:52, Yury Norov wrote:
+> I tested the objtool build with the 8.4.0 and 7.5.0 compilers from
+> ubuntu 21 distro, and it looks working. Can you please share more
+> details about your system? 
+
+Nothing special. A plain x86_64 CentOS 7.9 system with devtoolset-8.
+
+$ /opt/rh/devtoolset-8/root/bin/gcc --version
+gcc (GCC) 8.3.1 20190311 (Red Hat 8.3.1-3)
+Copyright (C) 2018 Free Software Foundation, Inc.
+This is free software; see the source for copying conditions.  There is NO
+warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+
+$ rpm -qi devtoolset-8-gcc
+Name        : devtoolset-8-gcc
+Version     : 8.3.1
+Release     : 3.2.el7
+Architecture: x86_64
+Install Date: Wed Apr 22 07:58:16 2020
+Group       : Development/Languages
+Size        : 74838011
+License     : GPLv3+ and GPLv3+ with exceptions and GPLv2+ with exceptions and LGPLv2+ and BSD
+Signature   : RSA/SHA1, Thu Apr 16 19:44:43 2020, Key ID 4eb84e71f2ee9d55
+Source RPM  : devtoolset-8-gcc-8.3.1-3.2.el7.src.rpm
+Build Date  : Sat Mar 28 00:06:45 2020
+Build Host  : c1be.rdu2.centos.org
+Relocations : (not relocatable)
+Packager    : CBS <cbs@centos.org>
+Vendor      : CentOS
+URL         : http://gcc.gnu.org
+Summary     : GCC version 8
+Description :
+The devtoolset-8-gcc package contains the GNU Compiler Collection version 7.
+
