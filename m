@@ -2,54 +2,66 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.8 required=3.0 tests=BAYES_00,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
-	autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-7.3 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
+	NICE_REPLY_A,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=no
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 5FE78C433B4
-	for <linux-m68k@archiver.kernel.org>; Wed, 12 May 2021 07:49:58 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id DA48CC433ED
+	for <linux-m68k@archiver.kernel.org>; Wed, 12 May 2021 08:15:43 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 178AC61624
-	for <linux-m68k@archiver.kernel.org>; Wed, 12 May 2021 07:49:58 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 9EEDC613C9
+	for <linux-m68k@archiver.kernel.org>; Wed, 12 May 2021 08:15:43 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230011AbhELHvE (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Wed, 12 May 2021 03:51:04 -0400
-Received: from mout.kundenserver.de ([212.227.126.130]:48811 "EHLO
-        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229850AbhELHvE (ORCPT
+        id S230190AbhELIQu (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Wed, 12 May 2021 04:16:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34198 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230176AbhELIQt (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Wed, 12 May 2021 03:51:04 -0400
-Received: from mail-oi1-f177.google.com ([209.85.167.177]) by
- mrelayeu.kundenserver.de (mreue009 [213.165.67.97]) with ESMTPSA (Nemesis) id
- 1MaIvV-1m3gUY2DcT-00WJ0V for <linux-m68k@lists.linux-m68k.org>; Wed, 12 May
- 2021 09:49:55 +0200
-Received: by mail-oi1-f177.google.com with SMTP id f184so1291022oig.3
-        for <linux-m68k@lists.linux-m68k.org>; Wed, 12 May 2021 00:49:55 -0700 (PDT)
-X-Gm-Message-State: AOAM533oum7ZjXwksOvAnAB5IkVgU5woUj3BXMFScIbv7kX9gHtMmTOG
-        Bf5DWR61JUdf4OALBNLbmsipVyNx0dL7zEKWtEc=
-X-Google-Smtp-Source: ABdhPJxd0lpfpoLIqJOw+6SPCO8QED3/X3t9JAR8I4sQlku1WpueQz6KE4WIiLlRxouPNnwly1mFxvEEQ4Zrg7KWp+o=
-X-Received: by 2002:aca:f587:: with SMTP id t129mr25234423oih.84.1620805794260;
- Wed, 12 May 2021 00:49:54 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210401003153.97325-1-yury.norov@gmail.com> <20210401003153.97325-12-yury.norov@gmail.com>
- <1ac7bbc2-45d9-26ed-0b33-bf382b8d858b@I-love.SAKURA.ne.jp>
- <CAHp75Vea0Y_LfWC7LNDoDZqO4t+SVHV5HZMzErfyMPoBAjjk1g@mail.gmail.com>
- <YJm5Dpo+RspbAtye@rikard> <YJoyMrqRtB3GSAny@smile.fi.intel.com>
- <YJpePAHS3EDw6PK1@rikard> <151de51e-9302-1f59-407a-e0d68bbaf11c@i-love.sakura.ne.jp>
- <YJrrJhvwq7RUvDXD@rikard>
-In-Reply-To: <YJrrJhvwq7RUvDXD@rikard>
-From:   Arnd Bergmann <arnd@arndb.de>
-Date:   Wed, 12 May 2021 09:48:57 +0200
-X-Gmail-Original-Message-ID: <CAK8P3a02qNHcksJ8DahHgLtbM9ZOydGjE3__3GoxgJFiWrAT0w@mail.gmail.com>
-Message-ID: <CAK8P3a02qNHcksJ8DahHgLtbM9ZOydGjE3__3GoxgJFiWrAT0w@mail.gmail.com>
+        Wed, 12 May 2021 04:16:49 -0400
+Received: from mail-ej1-x631.google.com (mail-ej1-x631.google.com [IPv6:2a00:1450:4864:20::631])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0D651C061760
+        for <linux-m68k@lists.linux-m68k.org>; Wed, 12 May 2021 01:15:41 -0700 (PDT)
+Received: by mail-ej1-x631.google.com with SMTP id a4so33712665ejk.1
+        for <linux-m68k@lists.linux-m68k.org>; Wed, 12 May 2021 01:15:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=rasmusvillemoes.dk; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=ofYbiesQgwQaEexlewrml7cRxApQkWB2Nx460iDcnyo=;
+        b=cHIOWKyzF0AfFHiktnENLignESiqbB75M/2S8bNYGwb4UmCWst1kzfVRtHWBUILKXs
+         c7eSZ9hehTk8NLHKdrT9XYNXDarjEYNKlTulZQDt9ENuebCRNglJRbSanTXy8bx1NlVm
+         YW7PRTEc6U7mjbRYuKiT9exW6nbvZazhgiCk4=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=ofYbiesQgwQaEexlewrml7cRxApQkWB2Nx460iDcnyo=;
+        b=ZnMyceztSvAchu3FckMLW++BDQEXKlAqadirNks/27ADT0aOeWEAcFJymrojuSxdmf
+         0jbZSuJlJ899n3fDjwzSrhMu/QgtW45UJaneLzQce6SBINjoBC9u8XVI1KE8wxBJw3nJ
+         IXfMgrx71dSiuIh6ubM37qPPYN6PERiq5cEZ9n/KVRYAYkKfV3EtP6o5hG0Nzof7Dxae
+         mjl1pezrpSTD8RYZTdPTUS/U60QDEunP2Ex6iwTb3VlpSRNQcIzpB38/8bSSAqHF9LGB
+         1EdqMzXzdjLO+k6EqVTaVMV1f4dS0urMRkQ74Pt2S/mz3vlonBFPFFqTckQnQ1orIFVW
+         SumA==
+X-Gm-Message-State: AOAM532uAv/AaKdUTd0PfVdEaAucJCqAAYH+Nbpi17pJW5qyzK5PU69Z
+        qe0JHgJZiERYLPEFgVcg3IzZCg==
+X-Google-Smtp-Source: ABdhPJzRky2jZTiXS/jGvK3y0xATQ4vtskLl8aSJ36xGqYFwRVDIZS1+rKVRogxxKQkuc5o4q2jaog==
+X-Received: by 2002:a17:906:f42:: with SMTP id h2mr37200326ejj.317.1620807339603;
+        Wed, 12 May 2021 01:15:39 -0700 (PDT)
+Received: from [192.168.1.149] ([80.208.71.248])
+        by smtp.gmail.com with ESMTPSA id um28sm13885567ejb.63.2021.05.12.01.15.37
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 12 May 2021 01:15:39 -0700 (PDT)
 Subject: Re: [PATCH 11/12] tools: sync lib/find_bit implementation
-To:     Rikard Falkeborn <rikard.falkeborn@gmail.com>
+To:     Arnd Bergmann <arnd@arndb.de>,
+        Rikard Falkeborn <rikard.falkeborn@gmail.com>
 Cc:     Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
         Andy Shevchenko <andy.shevchenko@gmail.com>,
         Yury Norov <yury.norov@gmail.com>,
         Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
         Andrew Morton <akpm@linux-foundation.org>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
         linux-m68k <linux-m68k@lists.linux-m68k.org>,
         Linux-Arch <linux-arch@vger.kernel.org>,
         Linux-SH <linux-sh@vger.kernel.org>,
@@ -66,56 +78,82 @@ Cc:     Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
         Wei Yang <richard.weiyang@linux.alibaba.com>,
         Wolfram Sang <wsa+renesas@sang-engineering.com>,
         Yoshinori Sato <ysato@users.sourceforge.jp>
-Content-Type: text/plain; charset="UTF-8"
-X-Provags-ID: V03:K1:HCx7TVFObo8DRPI6mL/iiRg4W+4ZzAN2bgH9PWren+bqE5txu6X
- oVCPqJzbcuiE3HMpGgiQuKbt9U7Irqb4EsCSj/o/tQvHIuaOFVmoS7uVey2kZ3LtZVP6v/N
- nFiv2+ts2mPvCtyDA5dTrwhKo3o9hf6vnl13+kLFewZgoaby55mtBHNaWJhIH/nkkBEzGsq
- rFiWw0aHwweBqiW/z1kWA==
-X-UI-Out-Filterresults: notjunk:1;V03:K0:3mNT/Orpj50=:wNTMPjKQIN6A+l1yaBzQ71
- rbimQcyFplVde+0EFpKFhyG9Z99DkF0rY1sykRhRfh5naQHot0bujpHZcMGvUnlfPEWDH/msW
- oqRnlm5+bX11+88SYF6LXMXUKHN0EpRqu/UDvCNAl6tsxNOFf2/tCCoJUsz4tO4QszWLDnBLD
- ExI1hCvV4OfN3E0tfvXzl+Ny0FWLOeYAptvNeBctG58PFnbLXqo92OZlzH1y8qYjF5Hd12a3R
- XhYSXpcoHlTUcPl+tAj77RKYhJB38KYx7fMExbvFc8/thVRNA8h6/i+zQVVMzRnsipUn354iw
- 6gtRjfgn7jrFSkrtAP9BRyBnQIk74cbYaxtkcPvgcdBCkvO0PzAS454GxV10d4bdSKtiJlfv0
- fJbzMnAgp8gElug+0CGqGpSxqASQfcmVqEBiDVK0HpCVcBXHU2FDY3oQC5O4wHE1TRF5yvp7A
- QQPwa53cjj9/C8V8J8rP6hECB0yngonduDzFAv8CWhglelwsSkI1FvFJ0uvtFKB0IM49s7ZaD
- mEGUvZpSHK2N/8ncePRKAJNq/Suhm+/QbnWIUir0urrzNQEcbZ2XfThzVFlzfgLDtmypNT0O6
- G53AM7g975SRM+uXqtmmuwM+cFIfKYFwNKLAH3nw4yUA1kmLC2JwoayONqN1vFfUbM1I6Hiek
- 3y2s=
+References: <20210401003153.97325-1-yury.norov@gmail.com>
+ <20210401003153.97325-12-yury.norov@gmail.com>
+ <1ac7bbc2-45d9-26ed-0b33-bf382b8d858b@I-love.SAKURA.ne.jp>
+ <CAHp75Vea0Y_LfWC7LNDoDZqO4t+SVHV5HZMzErfyMPoBAjjk1g@mail.gmail.com>
+ <YJm5Dpo+RspbAtye@rikard> <YJoyMrqRtB3GSAny@smile.fi.intel.com>
+ <YJpePAHS3EDw6PK1@rikard>
+ <151de51e-9302-1f59-407a-e0d68bbaf11c@i-love.sakura.ne.jp>
+ <YJrrJhvwq7RUvDXD@rikard>
+ <CAK8P3a02qNHcksJ8DahHgLtbM9ZOydGjE3__3GoxgJFiWrAT0w@mail.gmail.com>
+From:   Rasmus Villemoes <linux@rasmusvillemoes.dk>
+Message-ID: <030ae370-967c-22d4-56f8-cb0435be7540@rasmusvillemoes.dk>
+Date:   Wed, 12 May 2021 10:15:37 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
+MIME-Version: 1.0
+In-Reply-To: <CAK8P3a02qNHcksJ8DahHgLtbM9ZOydGjE3__3GoxgJFiWrAT0w@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-On Tue, May 11, 2021 at 10:39 PM Rikard Falkeborn
-<rikard.falkeborn@gmail.com> wrote:
-> On Tue, May 11, 2021 at 08:53:53PM +0900, Tetsuo Handa wrote:
+On 12/05/2021 09.48, Arnd Bergmann wrote:
+> On Tue, May 11, 2021 at 10:39 PM Rikard Falkeborn
+> <rikard.falkeborn@gmail.com> wrote:
+>> On Tue, May 11, 2021 at 08:53:53PM +0900, Tetsuo Handa wrote:
+> 
+>>> #define GENMASK_INPUT_CHECK(h, l) \
+>>>      (BUILD_BUG_ON_ZERO(__builtin_choose_expr( \
+>>>           __builtin_constant_p((l) > (h)), (l) > (h), 0)))
+>>>
+>>> __GENMASK() does not need "h" and "l" being a constant.
+>>>
+>>> Yes, small_const_nbits(size) in find_next_bit() can guarantee that "size" is a
+>>> constant and hence "h" argument in GENMASK_INPUT_CHECK() call is also a constant.
+>>> But nothing can guarantee that "offset" is a constant, and hence nothing can
+>>> guarantee that "l" argument in GENMASK_INPUT_CHECK() call is also a constant.
+>>>
+>>> Then, how can (l) > (h) in __builtin_constant_p((l) > (h)) be evaluated at build time
+>>> if either l or h (i.e. "offset" and "size - 1" in find_next_bit()) lacks a guarantee of
+>>> being a constant?
+>>>
+>>
+>> So the idea is that if (l > h) is constant, __builtin_constant_p should
+>> evaluate that, and if it is not it should use zero instead as input to
+>> __builtin_chose_expr(). This works with non-const inputs in many other
+>> places in the kernel, but apparently in this case with a certain
+>> compiler, it doesn't so I guess we need to work around it.
+> 
+> I have a vague memory that __builtin_constant_p() inside of
+> __builtin_choose_expr()
+> always evaluates to false because of the order in which the compiler processes
+> those: If constant-folding only happens after __builtin_choose_expr(), then
+> __builtin_constant_p() has to be false.
 
-> > #define GENMASK_INPUT_CHECK(h, l) \
-> >      (BUILD_BUG_ON_ZERO(__builtin_choose_expr( \
-> >           __builtin_constant_p((l) > (h)), (l) > (h), 0)))
-> >
-> > __GENMASK() does not need "h" and "l" being a constant.
-> >
-> > Yes, small_const_nbits(size) in find_next_bit() can guarantee that "size" is a
-> > constant and hence "h" argument in GENMASK_INPUT_CHECK() call is also a constant.
-> > But nothing can guarantee that "offset" is a constant, and hence nothing can
-> > guarantee that "l" argument in GENMASK_INPUT_CHECK() call is also a constant.
-> >
-> > Then, how can (l) > (h) in __builtin_constant_p((l) > (h)) be evaluated at build time
-> > if either l or h (i.e. "offset" and "size - 1" in find_next_bit()) lacks a guarantee of
-> > being a constant?
-> >
->
-> So the idea is that if (l > h) is constant, __builtin_constant_p should
-> evaluate that, and if it is not it should use zero instead as input to
-> __builtin_chose_expr(). This works with non-const inputs in many other
-> places in the kernel, but apparently in this case with a certain
-> compiler, it doesn't so I guess we need to work around it.
+It's more complicated than that. __builtin_constant_p on something which
+is a bona-fide Integer Constant Expression (ICE) gets folded early to a
+1. And then it turns out that such a __builtin_constant_p() that folds
+early to a 1 can be "stronger" than a literal 1, in the sense that when
+used as the controlling expression of a ?: with nonsense in the false
+branch, the former is OK but the latter fails:
 
-I have a vague memory that __builtin_constant_p() inside of
-__builtin_choose_expr()
-always evaluates to false because of the order in which the compiler processes
-those: If constant-folding only happens after __builtin_choose_expr(), then
-__builtin_constant_p() has to be false.
+https://lore.kernel.org/lkml/c68a0f46-346c-70a0-a9b8-31747888f05f@rasmusvillemoes.dk/
 
-        Arnd
+Now what happens when the argument to __builtin_constant_p is not an ICE
+is a lot more complicated. The argument _may_ be so obviously
+non-constant that it can be folded early to a 0, hence still be suitable
+as first argument to __b_c_e. But it is also possible that the compiler
+leaves it unevaluated, in the "hope" that a later optimization stage
+could prove the argument constant. And that's the case where __b_c_e
+will then break, because that can't be left unevaluated for very long -
+the very _type_ of the result depends on which branch is chosen.
+
+tl;dr: there's no "order in which the compiler processes those", __b_c_p
+can get evaluated (folded) early, before __b_c_e inspects it, or be left
+for later stages.
+
+Rasmus
