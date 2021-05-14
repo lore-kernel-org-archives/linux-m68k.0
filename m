@@ -2,114 +2,133 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-19.7 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-5.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
+	SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 8B735C43460
-	for <linux-m68k@archiver.kernel.org>; Fri, 14 May 2021 10:03:28 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id F3C33C433ED
+	for <linux-m68k@archiver.kernel.org>; Fri, 14 May 2021 17:33:06 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 6FE7761457
-	for <linux-m68k@archiver.kernel.org>; Fri, 14 May 2021 10:03:28 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id D8DB0613D6
+	for <linux-m68k@archiver.kernel.org>; Fri, 14 May 2021 17:33:06 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232812AbhENKEg (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Fri, 14 May 2021 06:04:36 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59158 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232795AbhENKEf (ORCPT <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Fri, 14 May 2021 06:04:35 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C5CE96101D;
-        Fri, 14 May 2021 10:03:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1620986604;
-        bh=FCn6ZP/mDL3GEna//8Jp2ayzBRYkQcmsOPivYHNTfF4=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=dKmoKSrMYAHLhDOeZ1UP89+0ZXg+ckzD143m2Hec1GKcmtQiUgKUoNcj+firf8vej
-         xMeYFAvG5JbdI+OqIfrxb3SQmgVSpK7qWlyx7UfDW5lsqwlMjQKksvbuQ1gzStl6e8
-         TsCZD+VaMs0sYrmzmMKmDST9QEbnuAsH1RJHyHIKdPXN0TbB0UskOL+s3d+2KLNYUM
-         h0bGn7DwU1wpHuSlQuZDdxBhcYDdatG42va2mdQx6FUtS5rmnCEkrWH2efKZedu9tf
-         ElmLQp0RWThAYINEENWcoHvYSpyhUAqvitng3o6dSGmEiyKAWioG9Xo+U0zbDCdg40
-         WILL8pWDh7/rA==
-From:   Arnd Bergmann <arnd@kernel.org>
-To:     linux-arch@vger.kernel.org
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        id S235136AbhENReR (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Fri, 14 May 2021 13:34:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37298 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235121AbhENReR (ORCPT
+        <rfc822;linux-m68k@lists.linux-m68k.org>);
+        Fri, 14 May 2021 13:34:17 -0400
+Received: from mail-ed1-x531.google.com (mail-ed1-x531.google.com [IPv6:2a00:1450:4864:20::531])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7E9E9C06174A
+        for <linux-m68k@lists.linux-m68k.org>; Fri, 14 May 2021 10:33:05 -0700 (PDT)
+Received: by mail-ed1-x531.google.com with SMTP id t15so7863665edr.11
+        for <linux-m68k@lists.linux-m68k.org>; Fri, 14 May 2021 10:33:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=3bmbAftPboaY7hu+DnMgt2b6hH50EmPqKJHrC7bAGn8=;
+        b=OCUpNcjguSpqlmqGqLclnsNCOhgzU3pBtJ+0aWvCc2SR59QNIHWTyn2iHNnFIXoHb/
+         IlrJnYgxa3QKa7TD5DPjuhh0hv9dsnnG2SJC44eepw5A/YU6NsZQR/5smJrlWciM7Uz7
+         oY/UTgSqeb9/fYqELWpyA+6END7cpdJzA1bkA=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=3bmbAftPboaY7hu+DnMgt2b6hH50EmPqKJHrC7bAGn8=;
+        b=hZq2GBHHJhtaXLQKT4K9ibH9DpwPVG1nFCVfoY6vWLrxhHB+jrpl0og+mq/uHYetXt
+         SeRKaRKoBpj1vkPKKyrdseXDLo/vYpvkATe7NaRsfS8nm9qEjwGuPO0NrTRLhsK8uomx
+         aH6gJ98zYfHYkCXjtbtdZpA1BZEuxaojgXad8DatvaSwX6Fz+v2gPVhlCwQb9sZNMvTM
+         lbFqEADO4CKSGOBoqnOLAuMAQO/tZLXrEv3JATJluNp7+j6aJHwIXePTDvKbnJa/UX2N
+         dwd+Zi+s4beEGCj3+4lT99zAkYgNWohO9H1vHcgFPsE7WdEtIIngwgTDqKnCkMET8XRY
+         H76g==
+X-Gm-Message-State: AOAM533KAT8x68Hz7OBPwDY8CDotFyKnjWE3BlrpcKpNskFtBO42OQPC
+        NW20EdEzTEi9yF8iJ0ApeVndDuWLAfjgy0p9G1g=
+X-Google-Smtp-Source: ABdhPJwsRjOjrJpG+HUXyLYZyDzMz4pTCj5gO/kUZv6wMPIUagsf9gd2EVmoCTrdIDgrj/XYv7osDg==
+X-Received: by 2002:aa7:dad1:: with SMTP id x17mr57312737eds.47.1621013584090;
+        Fri, 14 May 2021 10:33:04 -0700 (PDT)
+Received: from mail-wr1-f50.google.com (mail-wr1-f50.google.com. [209.85.221.50])
+        by smtp.gmail.com with ESMTPSA id y11sm4695525edd.91.2021.05.14.10.33.03
+        for <linux-m68k@lists.linux-m68k.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 14 May 2021 10:33:03 -0700 (PDT)
+Received: by mail-wr1-f50.google.com with SMTP id n2so86355wrm.0
+        for <linux-m68k@lists.linux-m68k.org>; Fri, 14 May 2021 10:33:03 -0700 (PDT)
+X-Received: by 2002:a2e:9251:: with SMTP id v17mr38807472ljg.507.1621013573543;
+ Fri, 14 May 2021 10:32:53 -0700 (PDT)
+MIME-Version: 1.0
+References: <20210514100106.3404011-1-arnd@kernel.org>
+In-Reply-To: <20210514100106.3404011-1-arnd@kernel.org>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Fri, 14 May 2021 10:32:37 -0700
+X-Gmail-Original-Message-ID: <CAHk-=whGObOKruA_bU3aPGZfoDqZM1_9wBkwREp0H0FgR-90uQ@mail.gmail.com>
+Message-ID: <CAHk-=whGObOKruA_bU3aPGZfoDqZM1_9wBkwREp0H0FgR-90uQ@mail.gmail.com>
+Subject: Re: [PATCH v2 00/13] Unify asm/unaligned.h around struct helper
+To:     Arnd Bergmann <arnd@kernel.org>
+Cc:     linux-arch <linux-arch@vger.kernel.org>,
         Vineet Gupta <vgupta@synopsys.com>,
         Arnd Bergmann <arnd@arndb.de>,
+        Amitkumar Karwar <amitkarwar@gmail.com>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Borislav Petkov <bp@alien8.de>,
+        Eric Dumazet <edumazet@google.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Ganapathi Bhat <ganapathi017@gmail.com>,
         Geert Uytterhoeven <geert@linux-m68k.org>,
+        "H. Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        James Morris <jmorris@namei.org>, Jens Axboe <axboe@kernel.dk>,
+        John Johansen <john.johansen@canonical.com>,
+        Jonas Bonn <jonas@southpole.se>,
+        Kalle Valo <kvalo@codeaurora.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Paul Mackerras <paulus@samba.org>,
+        Rich Felker <dalias@libc.org>,
+        "Richard Russon (FlatCap)" <ldm@flatcap.org>,
+        Russell King <linux@armlinux.org.uk>,
+        "Serge E. Hallyn" <serge@hallyn.com>,
+        Sharvari Harisangam <sharvari.harisangam@nxp.com>,
+        Stafford Horne <shorne@gmail.com>,
+        Stefan Kristiansson <stefan.kristiansson@saunalahti.fi>,
         Thomas Gleixner <tglx@linutronix.de>,
-        linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v2 04/13] m68k: select CONFIG_HAVE_EFFICIENT_UNALIGNED_ACCESS
-Date:   Fri, 14 May 2021 12:00:52 +0200
-Message-Id: <20210514100106.3404011-5-arnd@kernel.org>
-X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20210514100106.3404011-1-arnd@kernel.org>
-References: <20210514100106.3404011-1-arnd@kernel.org>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        Vladimir Oltean <vladimir.oltean@nxp.com>,
+        Xinming Hu <huxinming820@gmail.com>,
+        Yoshinori Sato <ysato@users.sourceforge.jp>,
+        "the arch/x86 maintainers" <x86@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        linux-m68k <linux-m68k@lists.linux-m68k.org>,
+        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
+        openrisc@lists.librecores.org,
+        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
+        Linux-sh list <linux-sh@vger.kernel.org>,
+        linux-sparc <sparclinux@vger.kernel.org>,
+        linux-ntfs-dev@lists.sourceforge.net,
+        linux-block <linux-block@vger.kernel.org>,
+        linux-wireless <linux-wireless@vger.kernel.org>,
+        Netdev <netdev@vger.kernel.org>,
+        LSM List <linux-security-module@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-From: Arnd Bergmann <arnd@arndb.de>
+On Fri, May 14, 2021 at 3:02 AM Arnd Bergmann <arnd@kernel.org> wrote:
+>
+> I've included this version in the asm-generic tree for 5.14 already,
+> addressing the few issues that were pointed out in the RFC. If there
+> are any remaining problems, I hope those can be addressed as follow-up
+> patches.
 
-All supported CPUs other than the old dragonball and in theory other 68000
-derivatives use the include/linux/unaligned/access_ok.h implementation
-for accessing unaligned variables, so presumably this works everywhere.
+This continues to look great to me, and now has the even simpler
+remaining implementation.
 
-However, m68k never selects CONFIG_HAVE_EFFICIENT_UNALIGNED_ACCESS,
-so none of the other conditionals in the kernel get the optimized
-implementation.
+I'd be tempted to just pull it in for 5.13, but I guess we don't
+actually have any _outstanding_ bug in this area (the bug was in our
+zlib code, required -O3 to trigger, has been fixed now, and the biggy
+case didn't even use "get_unaligned()").
 
-Select this based on CPU_HAS_NO_UNALIGNED to make the two settings
-always match, and then use the generic version of the header.
+So I guess your 5.14 timing is the right thing to do.
 
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-Reviewed-by: Geert Uytterhoeven <geert@linux-m68k.org>
-Acked-by: Geert Uytterhoeven <geert@linux-m68k.org>
----
- arch/m68k/Kconfig                 |  1 +
- arch/m68k/include/asm/unaligned.h | 19 -------------------
- 2 files changed, 1 insertion(+), 19 deletions(-)
- delete mode 100644 arch/m68k/include/asm/unaligned.h
-
-diff --git a/arch/m68k/Kconfig b/arch/m68k/Kconfig
-index 372e4e69c43a..46089f3b9603 100644
---- a/arch/m68k/Kconfig
-+++ b/arch/m68k/Kconfig
-@@ -21,6 +21,7 @@ config M68K
- 	select HAVE_AOUT if MMU
- 	select HAVE_ASM_MODVERSIONS
- 	select HAVE_DEBUG_BUGVERBOSE
-+	select HAVE_EFFICIENT_UNALIGNED_ACCESS if !CPU_HAS_NO_UNALIGNED
- 	select HAVE_FUTEX_CMPXCHG if MMU && FUTEX
- 	select HAVE_IDE
- 	select HAVE_MOD_ARCH_SPECIFIC
-diff --git a/arch/m68k/include/asm/unaligned.h b/arch/m68k/include/asm/unaligned.h
-deleted file mode 100644
-index 84e437337344..000000000000
---- a/arch/m68k/include/asm/unaligned.h
-+++ /dev/null
-@@ -1,19 +0,0 @@
--/* SPDX-License-Identifier: GPL-2.0 */
--#ifndef _ASM_M68K_UNALIGNED_H
--#define _ASM_M68K_UNALIGNED_H
--
--#ifdef CONFIG_CPU_HAS_NO_UNALIGNED
--#include <asm-generic/unaligned.h>
--#else
--/*
-- * The m68k can do unaligned accesses itself.
-- */
--#include <linux/unaligned/access_ok.h>
--#include <linux/unaligned/generic.h>
--
--#define get_unaligned	__get_unaligned_be
--#define put_unaligned	__put_unaligned_be
--
--#endif
--
--#endif /* _ASM_M68K_UNALIGNED_H */
--- 
-2.29.2
-
+        Linus
