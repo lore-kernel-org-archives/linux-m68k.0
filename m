@@ -2,134 +2,129 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
-	SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-14.7 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 0D8BEC43470
-	for <linux-m68k@archiver.kernel.org>; Fri, 14 May 2021 20:20:27 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B21D4C433ED
+	for <linux-m68k@archiver.kernel.org>; Fri, 14 May 2021 22:10:49 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id D81896145B
-	for <linux-m68k@archiver.kernel.org>; Fri, 14 May 2021 20:20:26 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 956DA61453
+	for <linux-m68k@archiver.kernel.org>; Fri, 14 May 2021 22:10:49 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232790AbhENUVg (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Fri, 14 May 2021 16:21:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46536 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232425AbhENUVf (ORCPT
-        <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Fri, 14 May 2021 16:21:35 -0400
-Received: from mail-lf1-x12d.google.com (mail-lf1-x12d.google.com [IPv6:2a00:1450:4864:20::12d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 20BD3C061756
-        for <linux-m68k@lists.linux-m68k.org>; Fri, 14 May 2021 13:20:22 -0700 (PDT)
-Received: by mail-lf1-x12d.google.com with SMTP id z13so147137lft.1
-        for <linux-m68k@lists.linux-m68k.org>; Fri, 14 May 2021 13:20:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=zj/dlxgrTFi/afXdqvpoKnC0fO1FIFdLyxVrDXldBSs=;
-        b=YFKY9Xahh+37BAr6aWqyWYu1Mb7APXH6ODm/OL23XmTx5cHPfE5nvsgH3V9cI44nS0
-         EW6HUNU9PMYQx+djBq7ws8ietkyGay3lY9V3u/1Wuw/v3Pr2ScmDgx0fOcF6ZkLkBuPr
-         cN3FjgtrPRUQDfA1h2PJ+U+sspjArlX7AElF0=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=zj/dlxgrTFi/afXdqvpoKnC0fO1FIFdLyxVrDXldBSs=;
-        b=g/YLeAbDQAlCh/nRfyeUdhP/efPoT7nu5HcyZT6luR592JX12u7rEyN5zb3/pkJ9Bl
-         ANJwsKWDnIonWAUTthAqWdBYVv0fRecd5N8k8DwDaVrq2OdtwZkRU303+OWdDvlFJ63A
-         8+YND0yQdiIxvMH7KlRBRnRU/qcpuwNJMOUChP0KL/wDQVFbI1I5cTB/PduYu0uwiXbR
-         lq2dzaTeNhfzTDwO5NoUK1PjtslUoJpCcHJ063z42pircrtteCRXBFPquytg2bsjLt8Q
-         KYDoyEzsi4JeqU2pMDdI3vlZRoxAOW/zAtDu8DfaLjLCrJNLIiH+I3uWTQ0IuTswCXIq
-         cThA==
-X-Gm-Message-State: AOAM532d7vSvGD0Lh1KbXibyNnfPc8WJap4cw2vd6H1NfqUbzjfqNseP
-        Bx+eVnIn0B2xacojZmcNDgnsjGFRpl89k3W/ETs=
-X-Google-Smtp-Source: ABdhPJxVSaYP2phtCxV1mZOgylXo5J72Y2C1KQ9EOxBeMc9tWHVz+3SiRXHyS0RSGi2AnUlDgZl9gg==
-X-Received: by 2002:ac2:4c33:: with SMTP id u19mr1767281lfq.655.1621023620503;
-        Fri, 14 May 2021 13:20:20 -0700 (PDT)
-Received: from mail-lf1-f53.google.com (mail-lf1-f53.google.com. [209.85.167.53])
-        by smtp.gmail.com with ESMTPSA id q8sm1306328ljj.104.2021.05.14.13.20.19
-        for <linux-m68k@lists.linux-m68k.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 14 May 2021 13:20:19 -0700 (PDT)
-Received: by mail-lf1-f53.google.com with SMTP id j10so75075lfb.12
-        for <linux-m68k@lists.linux-m68k.org>; Fri, 14 May 2021 13:20:19 -0700 (PDT)
-X-Received: by 2002:a05:6512:374b:: with SMTP id a11mr32730248lfs.377.1621023609037;
- Fri, 14 May 2021 13:20:09 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210514100106.3404011-1-arnd@kernel.org> <CAHk-=whGObOKruA_bU3aPGZfoDqZM1_9wBkwREp0H0FgR-90uQ@mail.gmail.com>
- <2408c893-4ae7-4f53-f58c-497c91f5b034@synopsys.com> <CAHk-=wih8UHDwJ8x6m-p0PQ7o4S4gOBwGNs=w=q10GNY7A-70w@mail.gmail.com>
- <14016937-b9c3-c131-db18-f97081806c7f@synopsys.com>
-In-Reply-To: <14016937-b9c3-c131-db18-f97081806c7f@synopsys.com>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Fri, 14 May 2021 13:19:53 -0700
-X-Gmail-Original-Message-ID: <CAHk-=whdR4OLJjwaU_nJhmS4n6ruGK4XFuLxA7zEOoCV7U=QLA@mail.gmail.com>
-Message-ID: <CAHk-=whdR4OLJjwaU_nJhmS4n6ruGK4XFuLxA7zEOoCV7U=QLA@mail.gmail.com>
-Subject: Re: [PATCH v2 00/13] Unify asm/unaligned.h around struct helper
-To:     Vineet Gupta <Vineet.Gupta1@synopsys.com>
-Cc:     Arnd Bergmann <arnd@kernel.org>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Amitkumar Karwar <amitkarwar@gmail.com>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Borislav Petkov <bp@alien8.de>,
-        Eric Dumazet <edumazet@google.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Ganapathi Bhat <ganapathi017@gmail.com>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        "H. Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        James Morris <jmorris@namei.org>, Jens Axboe <axboe@kernel.dk>,
-        John Johansen <john.johansen@canonical.com>,
-        Jonas Bonn <jonas@southpole.se>,
-        Kalle Valo <kvalo@codeaurora.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Paul Mackerras <paulus@samba.org>,
-        Rich Felker <dalias@libc.org>,
-        "Richard Russon (FlatCap)" <ldm@flatcap.org>,
-        Russell King <linux@armlinux.org.uk>,
-        "Serge E. Hallyn" <serge@hallyn.com>,
-        Sharvari Harisangam <sharvari.harisangam@nxp.com>,
-        Stafford Horne <shorne@gmail.com>,
-        Stefan Kristiansson <stefan.kristiansson@saunalahti.fi>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Vladimir Oltean <vladimir.oltean@nxp.com>,
-        Xinming Hu <huxinming820@gmail.com>,
+        id S233688AbhENWMA (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Fri, 14 May 2021 18:12:00 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42730 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233642AbhENWMA (ORCPT <rfc822;linux-m68k@lists.linux-m68k.org>);
+        Fri, 14 May 2021 18:12:00 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8F55B61182;
+        Fri, 14 May 2021 22:10:44 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1621030248;
+        bh=zwzpJpxhzEGdOSTs7iHw5uHEDYyGgvaSUy2MfaxR8a4=;
+        h=From:To:Cc:Subject:Date:From;
+        b=Amsg36igKFenDeVbVYqjy3ug1isOcKoawk6bBGVwpXxus0vf9KtNztP7we1xEnUjo
+         G4P9ZW0acUdIcQ54wii2EhWxQzotCNPrDegb9Ij4ShWHQsNq08RmeCBvVFHnUC+v77
+         5fx2VXC98JVtLXFyuub4Hjokij4TJwUqVxAIe3xhFi40DUBaL6RWuUS7GQqq4QupMJ
+         hGB6WqnnpE2ySboqAEjuH2/wBaJ3s5EYxDocovzG6UVkcoGZM2dDSjIHRZGZPQfPVg
+         qTqvx1B5VLkspJfQlTpO8TCmXDQEghXCqbkRbEToYO10Sayisjq1O+a1YrOM7useM6
+         FvHmzQq//ayRg==
+From:   Arnd Bergmann <arnd@kernel.org>
+To:     linux-arch@vger.kernel.org
+Cc:     Arnd Bergmann <arnd@arndb.de>, Christoph Hellwig <hch@lst.de>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Vineet Gupta <vgupta@synopsys.com>,
         Yoshinori Sato <ysato@users.sourceforge.jp>,
-        "the arch/x86 maintainers" <x86@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        linux-m68k <linux-m68k@lists.linux-m68k.org>,
-        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
-        "openrisc@lists.librecores.org" <openrisc@lists.librecores.org>,
-        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
-        Linux-sh list <linux-sh@vger.kernel.org>,
-        linux-sparc <sparclinux@vger.kernel.org>,
-        "linux-ntfs-dev@lists.sourceforge.net" 
-        <linux-ntfs-dev@lists.sourceforge.net>,
-        linux-block <linux-block@vger.kernel.org>,
-        linux-wireless <linux-wireless@vger.kernel.org>,
-        Netdev <netdev@vger.kernel.org>,
-        LSM List <linux-security-module@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        Brian Cain <bcain@codeaurora.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Jeff Dike <jdike@addtoit.com>,
+        Richard Weinberger <richard@nod.at>,
+        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
+        Sid Manning <sidneym@codeaurora.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Mike Rapoport <rppt@kernel.org>,
+        linux-snps-arc@lists.infradead.org, linux-kernel@vger.kernel.org,
+        uclinux-h8-devel@lists.sourceforge.jp,
+        linux-hexagon@vger.kernel.org, linux-m68k@lists.linux-m68k.org,
+        linux-riscv@lists.infradead.org, linux-um@lists.infradead.org
+Subject: [PATCH 0/5] asm-generic: strncpy_from_user/strnlen_user cleanup
+Date:   Sat, 15 May 2021 00:09:37 +0200
+Message-Id: <20210514220942.879805-1-arnd@kernel.org>
+X-Mailer: git-send-email 2.29.2
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-On Fri, May 14, 2021 at 12:45 PM Vineet Gupta
-<Vineet.Gupta1@synopsys.com> wrote:
->
-> Well, not really, the issue manifested in ARC O3 testing, but I showed
-> the problem existed for arm64 gcc too.
+From: Arnd Bergmann <arnd@arndb.de>
 
-.. but not with a supported kernel configuration.
+As I've queued up some patches for include/asm-generic/unistd.h, I
+remembered an older series that I created but never submitted.
 
-> > So in fact it's not even queued up for 5.14 due to this all, I just dropped it.
->
-> But Why.
+These two functions appear to be unnecessarily different between
+architectures, and the asm-generic version is a bit questionable,
+even for NOMMU architectures.
 
-I just didn't have time to deal with it during the merge window. If
-you keep it alive, that's all fine and good.
+Clean this up to just use the generic library version for anything
+that uses the generic version today.
 
-                Linus
+       Arnd
+
+Arnd Bergmann (5):
+  asm-generic/uaccess.h: remove __strncpy_from_user/__strnlen_user
+  hexagon: use generic strncpy/strnlen from_user
+  arc: use generic strncpy/strnlen from_user
+  asm-generic: uaccess: remove inline strncpy_from_user/strnlen_user
+  asm-generic: remove extra strn{cpy_from,len}_user declarations
+
+ arch/arc/Kconfig                    |   2 +
+ arch/arc/include/asm/uaccess.h      |  72 ----------------
+ arch/arc/mm/extable.c               |  12 ---
+ arch/h8300/Kconfig                  |   2 +
+ arch/hexagon/Kconfig                |   2 +
+ arch/hexagon/include/asm/uaccess.h  |  31 -------
+ arch/hexagon/kernel/hexagon_ksyms.c |   1 -
+ arch/hexagon/mm/Makefile            |   2 +-
+ arch/hexagon/mm/strnlen_user.S      | 126 ----------------------------
+ arch/m68k/Kconfig                   |   4 +-
+ arch/riscv/Kconfig                  |   4 +-
+ arch/um/include/asm/uaccess.h       |   5 +-
+ arch/um/kernel/skas/uaccess.c       |   5 +-
+ include/asm-generic/uaccess.h       |  52 ++----------
+ 14 files changed, 24 insertions(+), 296 deletions(-)
+ delete mode 100644 arch/hexagon/mm/strnlen_user.S
+
+-- 
+2.29.2
+
+Cc: Christoph Hellwig <hch@lst.de>
+Cc: Al Viro <viro@zeniv.linux.org.uk>
+Cc: Vineet Gupta <vgupta@synopsys.com>
+Cc: Yoshinori Sato <ysato@users.sourceforge.jp>
+Cc: Brian Cain <bcain@codeaurora.org>
+Cc: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: Paul Walmsley <paul.walmsley@sifive.com>
+Cc: Palmer Dabbelt <palmer@dabbelt.com>
+Cc: Albert Ou <aou@eecs.berkeley.edu>
+Cc: Jeff Dike <jdike@addtoit.com>
+Cc: Richard Weinberger <richard@nod.at>
+Cc: Anton Ivanov <anton.ivanov@cambridgegreys.com>
+Cc: Arnd Bergmann <arnd@arndb.de>
+Cc: Sid Manning <sidneym@codeaurora.org>
+Cc: Andrew Morton <akpm@linux-foundation.org>
+Cc: Mike Rapoport <rppt@kernel.org>
+Cc: linux-snps-arc@lists.infradead.org
+Cc: linux-kernel@vger.kernel.org
+Cc: uclinux-h8-devel@lists.sourceforge.jp
+Cc: linux-hexagon@vger.kernel.org
+Cc: linux-m68k@lists.linux-m68k.org
+Cc: linux-riscv@lists.infradead.org
+Cc: linux-um@lists.infradead.org
+Cc: linux-arch@vger.kernel.org
+
