@@ -6,25 +6,47 @@ X-Spam-Status: No, score=-3.8 required=3.0 tests=BAYES_00,
 	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
 	autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 4F5A2C433ED
-	for <linux-m68k@archiver.kernel.org>; Sun, 16 May 2021 04:24:11 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 67153C433B4
+	for <linux-m68k@archiver.kernel.org>; Sun, 16 May 2021 09:04:30 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 1F734610FC
-	for <linux-m68k@archiver.kernel.org>; Sun, 16 May 2021 04:24:11 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 34CAF610E6
+	for <linux-m68k@archiver.kernel.org>; Sun, 16 May 2021 09:04:30 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232207AbhEPEZY (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Sun, 16 May 2021 00:25:24 -0400
-Received: from kvm5.telegraphics.com.au ([98.124.60.144]:34528 "EHLO
-        kvm5.telegraphics.com.au" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229643AbhEPEZX (ORCPT
-        <rfc822;linux-m68k@vger.kernel.org>); Sun, 16 May 2021 00:25:23 -0400
-Received: from localhost (localhost.localdomain [127.0.0.1])
-        by kvm5.telegraphics.com.au (Postfix) with ESMTP id 52ACE27E19;
-        Sun, 16 May 2021 00:23:59 -0400 (EDT)
-Date:   Sun, 16 May 2021 14:24:07 +1000 (AEST)
-From:   Finn Thain <fthain@telegraphics.com.au>
-To:     Arnd Bergmann <arnd@kernel.org>
-cc:     netdev@vger.kernel.org, linux-m68k@vger.kernel.org,
+        id S230152AbhEPJFn (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Sun, 16 May 2021 05:05:43 -0400
+Received: from mail-ua1-f50.google.com ([209.85.222.50]:38882 "EHLO
+        mail-ua1-f50.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229445AbhEPJFn (ORCPT
+        <rfc822;linux-m68k@vger.kernel.org>); Sun, 16 May 2021 05:05:43 -0400
+Received: by mail-ua1-f50.google.com with SMTP id k45so1141726uag.5;
+        Sun, 16 May 2021 02:04:27 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=PtdmExuunL6I47GcuCl9lENSjo5yazFWO+xZYZLpNig=;
+        b=L/0IGamP5Ugf/Fcuob7CjzBixnjiGZe1aa1cPh6Zp3y05ZIZh23SS/vqIIhvmK+DCd
+         W7HhtmSExT83+f2qWsJ+WeA/PShrbIUqlYYQ2bzSPATaMX0/CdTjU+kcuCvsJ5mWgnsU
+         EBHfv5/uc6+SfixPQJbriV6QL2X9qVTFjXTytHEGZoKuYbSnY3nA+UpAg4Mdse39ad/S
+         nrYT/ALfXLT95awkIAIVZGUe7eufemG7AvyyK3KcLafPD+OitVm/JnhoWoDbEJNoNc9T
+         F9R8SAQjU1xZ5szdkCxOUYhLne56gEgeXw61CX2gDneokqFBT2+BOCkPQF9cAt9HBEkx
+         R79A==
+X-Gm-Message-State: AOAM530fPXWATlQo4RiawGS3g0YFnHxrvBQhWORTpiLu05yELPWqXSZR
+        ur3hYRaUtw4nu/uPVKGrTPRkaTy9E6t2/Kn+F1U=
+X-Google-Smtp-Source: ABdhPJxK3DYeQePlVbgeO7XqyfC5AFgcTM5ME/HtjYcIrDn+/XqI6pl1zvwgxXwih7+7VjttcAar2n0DEz3jwq/QyUE=
+X-Received: by 2002:ab0:7705:: with SMTP id z5mr8869408uaq.2.1621155867307;
+ Sun, 16 May 2021 02:04:27 -0700 (PDT)
+MIME-Version: 1.0
+References: <20210515221320.1255291-1-arnd@kernel.org> <20210515221320.1255291-14-arnd@kernel.org>
+ <d4e42d3-9920-8fe0-1a71-6c6de8585f4c@nippy.intranet>
+In-Reply-To: <d4e42d3-9920-8fe0-1a71-6c6de8585f4c@nippy.intranet>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Sun, 16 May 2021 11:04:15 +0200
+Message-ID: <CAMuHMdUJGxyL0kcj06Uxsxmf6bDj4UO_YKZPsZfxtTxCBXf=xg@mail.gmail.com>
+Subject: Re: [RFC 13/13] [net-next] 8390: xsurf100: avoid including lib8390.c
+To:     Finn Thain <fthain@telegraphics.com.au>
+Cc:     Arnd Bergmann <arnd@kernel.org>, netdev <netdev@vger.kernel.org>,
+        "Linux/m68k" <linux-m68k@vger.kernel.org>,
         Arnd Bergmann <arnd@arndb.de>,
         Paul Gortmaker <paul.gortmaker@windriver.com>,
         "Maciej W. Rozycki" <macro@orcam.me.uk>,
@@ -33,35 +55,44 @@ cc:     netdev@vger.kernel.org, linux-m68k@vger.kernel.org,
         Doug Berger <opendmb@gmail.com>,
         Florian Fainelli <f.fainelli@gmail.com>,
         Sam Creasey <sammy@sammy.net>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
         Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
         Andrew Lunn <andrew@lunn.ch>,
         Alexei Starovoitov <ast@kernel.org>,
         Eric Dumazet <edumazet@google.com>,
         Andrii Nakryiko <andriin@fb.com>,
         Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        linux-kernel@vger.kernel.org, bcm-kernel-feedback-list@broadcom.com
-Subject: Re: [RFC 13/13] [net-next] 8390: xsurf100: avoid including
- lib8390.c
-In-Reply-To: <20210515221320.1255291-14-arnd@kernel.org>
-Message-ID: <d4e42d3-9920-8fe0-1a71-6c6de8585f4c@nippy.intranet>
-References: <20210515221320.1255291-1-arnd@kernel.org> <20210515221320.1255291-14-arnd@kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        bcm-kernel-feedback-list <bcm-kernel-feedback-list@broadcom.com>,
+        Michael Schmitz <schmitzmic@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-On Sun, 16 May 2021, Arnd Bergmann wrote:
+On Sun, May 16, 2021 at 6:24 AM Finn Thain <fthain@telegraphics.com.au> wrote:
+> On Sun, 16 May 2021, Arnd Bergmann wrote:
+> > From: Arnd Bergmann <arnd@arndb.de>
+> >
+> > This driver always warns about unused functions because it includes
+> > an file that it doesn't actually need:
+>
+> I don't think you can omit #include "lib8390.c" here without changing
+> driver behaviour, because of the macros in effect.
+>
+> I think this change would need some actual testing unless you can show
+> that the module binary does not change.
 
-> From: Arnd Bergmann <arnd@arndb.de>
-> 
-> This driver always warns about unused functions because it includes
-> an file that it doesn't actually need:
-> 
+Michael posted a similar but different patch a while ago, involving
+calling ax_NS8390_reinit():
+https://lore.kernel.org/linux-m68k/1528604559-972-3-git-send-email-schmitzmic@gmail.com/
 
-I don't think you can omit #include "lib8390.c" here without changing 
-driver behaviour, because of the macros in effect.
+Gr{oetje,eeting}s,
 
-I think this change would need some actual testing unless you can show 
-that the module binary does not change.
+                        Geert
+
+-- 
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
