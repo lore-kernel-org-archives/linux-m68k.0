@@ -2,98 +2,107 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-6.3 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-16.3 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 276F3C433ED
-	for <linux-m68k@archiver.kernel.org>; Sun, 16 May 2021 09:40:34 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id BA4EDC433ED
+	for <linux-m68k@archiver.kernel.org>; Sun, 16 May 2021 09:54:07 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id F071661155
-	for <linux-m68k@archiver.kernel.org>; Sun, 16 May 2021 09:40:33 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 8535D61183
+	for <linux-m68k@archiver.kernel.org>; Sun, 16 May 2021 09:54:07 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229964AbhEPJlr (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Sun, 16 May 2021 05:41:47 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58272 "EHLO mail.kernel.org"
+        id S230032AbhEPJzU (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Sun, 16 May 2021 05:55:20 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33556 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229455AbhEPJlq (ORCPT <rfc822;linux-m68k@vger.kernel.org>);
-        Sun, 16 May 2021 05:41:46 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 21D7261183;
-        Sun, 16 May 2021 09:40:32 +0000 (UTC)
+        id S229661AbhEPJzU (ORCPT <rfc822;linux-m68k@vger.kernel.org>);
+        Sun, 16 May 2021 05:55:20 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D994B61183;
+        Sun, 16 May 2021 09:54:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1621158032;
-        bh=HPHAfZvAU6XXPJgmrCVIHUbZpsx6IlX29XORpnfKmZQ=;
+        s=k20201202; t=1621158845;
+        bh=x4mAmOQ3bS62UQ0vggyykS8w7giU9rdGau+C+3JrO98=;
         h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=YsQKZIwJh5KvtGgZZPg96UE6XZMndaOHN1BQahTZPkKub0arKiKy8nUhS4EylwQmp
-         uF12aKbaukquUbBvW85QVTimNP0n3ZIdSbkDfEKkpWqBysPrJc+you91MBBvRdaJGI
-         4w9/87kk0BkK1M2TsfnCuBIROHhTXe32KuEqkz/5q9RC3yFQxle6ffFfzHGxsCEVTM
-         Z5vSgMQCzkSJdLPZOucsXuhhu6MlILCwjJIIGIHa6JDv81j/kJzs7iJYcXOssPElKz
-         SmtHD0DptDzst7SO51cUyhGQxfNILB830mZb+GJNdOCuIwEPqISBnYzY9NUEon4a5U
-         VWbZkYC7CJnxA==
-Received: by mail-ot1-f41.google.com with SMTP id u19-20020a0568302493b02902d61b0d29adso3097549ots.10;
-        Sun, 16 May 2021 02:40:32 -0700 (PDT)
-X-Gm-Message-State: AOAM530+QdxvXH2XboYsyU4ORuzNmzgCDBtBusflAuUauCOt4ANUJSxh
-        ChdmMa/dJSO6V0q2ItPoExu9yj02qU0HBIfWFFU=
-X-Google-Smtp-Source: ABdhPJxEqdUoPYIQolx6YQg/gEdLuTmzfjwCY3mv54XNgVpzvySgnm359ZNikGDhue2q1sOqh/OPJhwqvmsGMVVpSdU=
-X-Received: by 2002:a9d:222a:: with SMTP id o39mr44734707ota.246.1621158031417;
- Sun, 16 May 2021 02:40:31 -0700 (PDT)
+        b=S81PODVFpaz5wdASUOVITxJ40DoAV1AKwAtG0mZRROCdHeWo0af+yFokNnieVXY8G
+         MhWKJeW/wCPTrI/dHWy4jQlkUbdAeFT4jsyFGN55OuCvytqY4Sb2treif9U7IsbalN
+         S4emhrTTRkvtGuLlKhgu/QS1+X9LVKRotUlya20sZKZIhpY8q7br12FOHEnivDISEm
+         6Ee+LFaL6qKv2QM7+x5PaVAMX1YTZtEdBLuOuB5n4hetzkpvWBPKkJ1khUIKmB2UkP
+         YwlGMQcSxwKEUY1XtX/17SSNUJYINzJIZ921oxrbVaJet3B7ZB+5nbI0c46QqEql3T
+         pVUUofUiDFOJg==
+Received: by mail-oi1-f177.google.com with SMTP id b25so3913653oic.0;
+        Sun, 16 May 2021 02:54:05 -0700 (PDT)
+X-Gm-Message-State: AOAM5326gg6olqEg8HBEKPtnt6XRg5CYRlQnuRTRg6cwdQelyH2ZJ66A
+        J8AENrd95k2MGTlsrJmYNZXBeX9RGpj2HkmKF18=
+X-Google-Smtp-Source: ABdhPJzMlKuXo356CSH09rt0kOrSVzLbOky255qYlXgAFIksVXqpXl8TxKelEIy6T9w1280nD6FgFNdtOgN7zJg7dXk=
+X-Received: by 2002:aca:3389:: with SMTP id z131mr11986472oiz.11.1621158845163;
+ Sun, 16 May 2021 02:54:05 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210515221320.1255291-1-arnd@kernel.org> <20210515221320.1255291-14-arnd@kernel.org>
- <d4e42d3-9920-8fe0-1a71-6c6de8585f4c@nippy.intranet> <CAMuHMdUJGxyL0kcj06Uxsxmf6bDj4UO_YKZPsZfxtTxCBXf=xg@mail.gmail.com>
-In-Reply-To: <CAMuHMdUJGxyL0kcj06Uxsxmf6bDj4UO_YKZPsZfxtTxCBXf=xg@mail.gmail.com>
+References: <CAMuHMdVfjE=+YiqCrPfGObeYYkQwKGiQEWyprQr-n9z7J9-X-A@mail.gmail.com>
+ <1528604559-972-3-git-send-email-schmitzmic@gmail.com>
+In-Reply-To: <1528604559-972-3-git-send-email-schmitzmic@gmail.com>
 From:   Arnd Bergmann <arnd@kernel.org>
-Date:   Sun, 16 May 2021 11:39:25 +0200
-X-Gmail-Original-Message-ID: <CAK8P3a0BzbGFnWLKsdsFkRJ+GyxO7xgxeuipQrCi-p_JEeZNPQ@mail.gmail.com>
-Message-ID: <CAK8P3a0BzbGFnWLKsdsFkRJ+GyxO7xgxeuipQrCi-p_JEeZNPQ@mail.gmail.com>
-Subject: Re: [RFC 13/13] [net-next] 8390: xsurf100: avoid including lib8390.c
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     Finn Thain <fthain@telegraphics.com.au>,
-        netdev <netdev@vger.kernel.org>,
+Date:   Sun, 16 May 2021 11:52:59 +0200
+X-Gmail-Original-Message-ID: <CAK8P3a0pH0V_y-Ayt0rTNgZGR+Rm6tVRSzjCbo_vuA97c4shkA@mail.gmail.com>
+Message-ID: <CAK8P3a0pH0V_y-Ayt0rTNgZGR+Rm6tVRSzjCbo_vuA97c4shkA@mail.gmail.com>
+Subject: Re: [PATCH 2/2] net-next: xsurf100: drop include of lib8390.c
+To:     Michael Schmitz <schmitzmic@gmail.com>
+Cc:     Networking <netdev@vger.kernel.org>,
         "Linux/m68k" <linux-m68k@vger.kernel.org>,
-        Paul Gortmaker <paul.gortmaker@windriver.com>,
-        "Maciej W. Rozycki" <macro@orcam.me.uk>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Doug Berger <opendmb@gmail.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Sam Creasey <sammy@sammy.net>,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
         Andrew Lunn <andrew@lunn.ch>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Eric Dumazet <edumazet@google.com>,
-        Andrii Nakryiko <andriin@fb.com>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        bcm-kernel-feedback-list <bcm-kernel-feedback-list@broadcom.com>,
-        Michael Schmitz <schmitzmic@gmail.com>
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Finn Thain <fthain@telegraphics.com.au>,
+        kernel@mkarcher.dialup.fu-berlin.de
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-On Sun, May 16, 2021 at 11:04 AM Geert Uytterhoeven
-<geert@linux-m68k.org> wrote:
+On Sun, Jun 10, 2018 at 6:23 AM Michael Schmitz <schmitzmic@gmail.com> wrote:
 >
-> On Sun, May 16, 2021 at 6:24 AM Finn Thain <fthain@telegraphics.com.au> wrote:
-> > On Sun, 16 May 2021, Arnd Bergmann wrote:
-> > > From: Arnd Bergmann <arnd@arndb.de>
-> > >
-> > > This driver always warns about unused functions because it includes
-> > > an file that it doesn't actually need:
-> >
-> > I don't think you can omit #include "lib8390.c" here without changing
-> > driver behaviour, because of the macros in effect.
-> >
-> > I think this change would need some actual testing unless you can show
-> > that the module binary does not change.
+> Now that ax88796.c exports the ax_NS8390_reinit() symbol, we can
+> include 8390.h instead of lib8390.c, avoiding duplication of that
+> function and killing a few compile warnings in the bargain.
 >
-> Michael posted a similar but different patch a while ago, involving
-> calling ax_NS8390_reinit():
-> https://lore.kernel.org/linux-m68k/1528604559-972-3-git-send-email-schmitzmic@gmail.com/
+> Fixes: 861928f4e60e826c ("net-next: New ax88796 platform
+> driver for Amiga X-Surf 100 Zorro board (m68k)")
+>
+> Signed-off-by: Michael Schmitz <schmitzmic@gmail.com>
+> ---
+>  drivers/net/ethernet/8390/xsurf100.c |   11 +++++------
+>  1 files changed, 5 insertions(+), 6 deletions(-)
 
-Ah nice. As far as I can tell, the two versions are functionally equivalent
-based on my reading of the port accessors, but he probably tested his
-version, so I'll drop mine from this series. Nothing else depends on this
-one, I just included it since it was an obvious thing to fix.
+Geert noticed that a patch I just sent is similar to this one. Since I assume
+you have verified this version works, it would be nice if you could resend
+both patches.
+
+Alternatively, I can include them in my series if you like.
+
+Reviewed-by: Arnd Bergmann <arnd@arndb.de
+
+> diff --git a/drivers/net/ethernet/8390/xsurf100.c b/drivers/net/ethernet/8390/xsurf100.c
+> index e2c9638..1c3e8d1 100644
+> --- a/drivers/net/ethernet/8390/xsurf100.c
+> +++ b/drivers/net/ethernet/8390/xsurf100.c
+> @@ -22,8 +22,6 @@
+>  #define XS100_8390_DATA_WRITE32_BASE 0x0C80
+>  #define XS100_8390_DATA_AREA_SIZE 0x80
+>
+> -#define __NS8390_init ax_NS8390_init
+> -
+>  /* force unsigned long back to 'void __iomem *' */
+>  #define ax_convert_addr(_a) ((void __force __iomem *)(_a))
+>
+> @@ -42,10 +40,11 @@
+>  /* Ensure we have our RCR base value */
+>  #define AX88796_PLATFORM
+>
+> -static unsigned char version[] =
+> -               "ax88796.c: Copyright 2005,2007 Simtec Electronics\n";
+> +#define NS8390_CORE
+> +#include "8390.h"
+
+I don't see that #define being referenced anywhere, can that be dropped?
 
         Arnd
