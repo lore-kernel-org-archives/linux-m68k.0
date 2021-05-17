@@ -6,46 +6,46 @@ X-Spam-Status: No, score=-6.4 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,MAILING_LIST_MULTI,SPF_HELO_NONE,
 	SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B7BDCC433ED
-	for <linux-m68k@archiver.kernel.org>; Mon, 17 May 2021 06:48:29 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 89F06C43460
+	for <linux-m68k@archiver.kernel.org>; Mon, 17 May 2021 07:28:13 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 9605161185
-	for <linux-m68k@archiver.kernel.org>; Mon, 17 May 2021 06:48:29 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 697FB611C2
+	for <linux-m68k@archiver.kernel.org>; Mon, 17 May 2021 07:28:13 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233732AbhEQGto (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Mon, 17 May 2021 02:49:44 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45106 "EHLO mail.kernel.org"
+        id S229755AbhEQH31 (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Mon, 17 May 2021 03:29:27 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56070 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230123AbhEQGtn (ORCPT <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Mon, 17 May 2021 02:49:43 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id AFB546134F
-        for <linux-m68k@lists.linux-m68k.org>; Mon, 17 May 2021 06:48:27 +0000 (UTC)
+        id S233226AbhEQH30 (ORCPT <rfc822;linux-m68k@lists.linux-m68k.org>);
+        Mon, 17 May 2021 03:29:26 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 66E4A611C2
+        for <linux-m68k@lists.linux-m68k.org>; Mon, 17 May 2021 07:28:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1621234107;
-        bh=XwMg9QqAApvxACMmxOXgBWUrqiIh4WJcvsyjh85BX2s=;
+        s=k20201202; t=1621236490;
+        bh=WoQ2Tt9j1s8lZ+rFGz15/N+rcvIN9GuIXZT/n/mvPAI=;
         h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=OJt9dRt9/P1Oeb+0iWbP7PGy1GVoBntHTUDRSoynf/8phrjMncmBI/ggwMFlKlmA4
-         uuwdcgFzPVyWcULWZZMV+PDvUGYAtGLZjcJeqxnAGFgXsSTbo1iqNuX9RovAK1NMog
-         v5E3xwNbYKKDTqYEhc8XqxdiPvJx8qxsysv0JpQTmDcI5dtqsts3rcOkmicLWGs+LZ
-         I3s4EXsVmmEK7pQkyBarkV2O524+ajYdjoiX+3tbSceN1/Ilqa5FIhlDMZxDYnNs2Y
-         PSrfMm1aeEIRhIwAaAgAbu/Cnzpc0lWpV5FQ3orgCW60gOeRfFqR8rngxAhVGG2A3o
-         DjkPheDPLSvvQ==
-Received: by mail-wm1-f49.google.com with SMTP id u4-20020a05600c00c4b02901774b80945cso1024604wmm.3
-        for <linux-m68k@lists.linux-m68k.org>; Sun, 16 May 2021 23:48:27 -0700 (PDT)
-X-Gm-Message-State: AOAM533OXSTnMbNGRzCD9Se1j+f9oDYmynO4aGW74wxTfVakPn9LFcmj
-        esBY9AY9HQtbAAAcTZWFAMT5l6sweke8JbRT9RY=
-X-Google-Smtp-Source: ABdhPJw5UzE+VLoPtUlE/tArhGvabDH4hlvlXDyeMCoxDrTy/spnQrm/S4VfHzJMMZdGgkigscZIoNK+LsoY0wqM4qk=
-X-Received: by 2002:a7b:c344:: with SMTP id l4mr21407803wmj.120.1621234106305;
- Sun, 16 May 2021 23:48:26 -0700 (PDT)
+        b=rz4nCnRs3MKPRjz0dKaFcIG7wjHT6KBRybD6Trvo3cwl2LtMEliatXLWXADfjInf4
+         ZurKjK+HSZugMQq4T93FIGYUf91CGscakYmybanqXsxFHKKMCODe6xFeOm9T4yqIKc
+         1PaYuHpasSko+WxNDMe/gfVOhwl02LQ7a9Q/twcx9iZj61UkRUvXQRv6inWu6oavnW
+         obIpBqlhMQ/9yzY5mvgiJYqKx/MlTHMrtTi9MYZWODtd1l34GSGJWS/BxBmTR6Pumm
+         mvZXtZTbU+uaHHN0eAih41AV/xVH950QQXPiSEe7NfGz1XKg22SmkmCmsyEzM+o5W0
+         8dyhDgzdQ8Egg==
+Received: by mail-wr1-f45.google.com with SMTP id h4so5208732wrt.12
+        for <linux-m68k@lists.linux-m68k.org>; Mon, 17 May 2021 00:28:10 -0700 (PDT)
+X-Gm-Message-State: AOAM530/MpfWAmSGKn2XOG6oweeFB7hRLpIO35XCdnE2b6c5c0gud4/W
+        mjyE79nTIv4E1BqvEm84+EpMVhTXLl+4oSaj7SI=
+X-Google-Smtp-Source: ABdhPJxk7eLWYGXPzamV742l9EnpMjLM0lyklUBUE5IGJo+cNnB5FKY+yx8/GMxQQ0Oji3ZyvDfH+BybrBLsoLFOZbo=
+X-Received: by 2002:a5d:6dc4:: with SMTP id d4mr74796509wrz.105.1621236489115;
+ Mon, 17 May 2021 00:28:09 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210515101803.924427-1-arnd@kernel.org> <20210515101803.924427-5-arnd@kernel.org>
- <20210517061656.GB23581@lst.de>
-In-Reply-To: <20210517061656.GB23581@lst.de>
+References: <20210515101803.924427-1-arnd@kernel.org> <20210515101803.924427-6-arnd@kernel.org>
+ <20210517062018.GC23581@lst.de>
+In-Reply-To: <20210517062018.GC23581@lst.de>
 From:   Arnd Bergmann <arnd@kernel.org>
-Date:   Mon, 17 May 2021 08:47:18 +0200
-X-Gmail-Original-Message-ID: <CAK8P3a12HtG7GZHikZa73SbKKr9QhDWgi6BcMwM-W=U1bpewGw@mail.gmail.com>
-Message-ID: <CAK8P3a12HtG7GZHikZa73SbKKr9QhDWgi6BcMwM-W=U1bpewGw@mail.gmail.com>
-Subject: Re: [PATCH 4/6] [v2] arc: use generic strncpy/strnlen from_user
+Date:   Mon, 17 May 2021 09:27:01 +0200
+X-Gmail-Original-Message-ID: <CAK8P3a2eDeSgB76SyzcpmQmV3uR1jwtOjZUoG9UYfDnYAWGyog@mail.gmail.com>
+Message-ID: <CAK8P3a2eDeSgB76SyzcpmQmV3uR1jwtOjZUoG9UYfDnYAWGyog@mail.gmail.com>
+Subject: Re: [PATCH 5/6] [v2] asm-generic: uaccess: remove inline strncpy_from_user/strnlen_user
 To:     Christoph Hellwig <hch@lst.de>
 Cc:     linux-arch <linux-arch@vger.kernel.org>,
         Al Viro <viro@zeniv.linux.org.uk>,
@@ -76,23 +76,46 @@ Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-On Mon, May 17, 2021 at 8:16 AM Christoph Hellwig <hch@lst.de> wrote:
+On Mon, May 17, 2021 at 8:20 AM Christoph Hellwig <hch@lst.de> wrote:
 >
-> On Sat, May 15, 2021 at 12:18:01PM +0200, Arnd Bergmann wrote:
+> On Sat, May 15, 2021 at 12:18:02PM +0200, Arnd Bergmann wrote:
 > > From: Arnd Bergmann <arnd@arndb.de>
 > >
-> > Most per-architecture versions of these functions are broken
-> > in some form, and they are almost certainly slower than the
-> > generic code as well.
+> > Consolidate the asm-generic implementation with the library version
+> > that is used everywhere else.
 > >
-> > This version is fairly slow because it always does byte accesses
-> > even for aligned data, and its checks for user_addr_max() differ
-> > from the generic code.
-> >
-> > Remove the ones for arc and instead use the generic version.
+> > These are the three versions for NOMMU kernels,
 >
-> Same comment as for hexaon before.
+> I don't get the three versions part?
 
-Changed now.
+Right, that was confusing. Rewording to
 
-     Arnd
+| The inline version is used on three NOMMU architectures and is
+| particularly inefficient when it scans the string one byte at a time
+| twice. It also lacks a check for user_addr_max(), but this is
+| probably ok on NOMMU targets.
+|
+| Consolidate the asm-generic implementation with the library version
+| that is used everywhere else.  This version is generalized enough to
+| work efficiently on both MMU and NOMMU targets, and using the
+| same code everywhere reduces the potential for subtle bugs.
+
+> > +     select GENERIC_STRNCPY_FROM_USER
+> > +     select GENERIC_STRNLEN_USER
+>
+> Given that most architetures select the generic version I wonder
+> if it might be worth to add another patch to invert the logic so
+> that architectures with their own implementation need to sekect a symbol.
+
+Done now, using 'CONFIG_ARCH_HAS_{STRNCPY_FROM,STRNLEN}_USER'.
+
+There are still seven or eight architectures that provide their own though.
+
+> > +extern long strncpy_from_user(char *dst, const char __user *src, long count);
+> > +extern long strnlen_user(const char __user *src, long n);
+>
+> No need for the extern here.
+
+Removed.
+
+       Arnd
