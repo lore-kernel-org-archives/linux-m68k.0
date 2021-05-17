@@ -2,107 +2,73 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-16.3 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-5.2 required=3.0 tests=BAYES_00,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id BA4EDC433ED
-	for <linux-m68k@archiver.kernel.org>; Sun, 16 May 2021 09:54:07 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 45DCCC433ED
+	for <linux-m68k@archiver.kernel.org>; Mon, 17 May 2021 06:16:40 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 8535D61183
-	for <linux-m68k@archiver.kernel.org>; Sun, 16 May 2021 09:54:07 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 2071261007
+	for <linux-m68k@archiver.kernel.org>; Mon, 17 May 2021 06:16:40 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230032AbhEPJzU (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Sun, 16 May 2021 05:55:20 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33556 "EHLO mail.kernel.org"
+        id S234661AbhEQGRz (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Mon, 17 May 2021 02:17:55 -0400
+Received: from verein.lst.de ([213.95.11.211]:56015 "EHLO verein.lst.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229661AbhEPJzU (ORCPT <rfc822;linux-m68k@vger.kernel.org>);
-        Sun, 16 May 2021 05:55:20 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D994B61183;
-        Sun, 16 May 2021 09:54:05 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1621158845;
-        bh=x4mAmOQ3bS62UQ0vggyykS8w7giU9rdGau+C+3JrO98=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=S81PODVFpaz5wdASUOVITxJ40DoAV1AKwAtG0mZRROCdHeWo0af+yFokNnieVXY8G
-         MhWKJeW/wCPTrI/dHWy4jQlkUbdAeFT4jsyFGN55OuCvytqY4Sb2treif9U7IsbalN
-         S4emhrTTRkvtGuLlKhgu/QS1+X9LVKRotUlya20sZKZIhpY8q7br12FOHEnivDISEm
-         6Ee+LFaL6qKv2QM7+x5PaVAMX1YTZtEdBLuOuB5n4hetzkpvWBPKkJ1khUIKmB2UkP
-         YwlGMQcSxwKEUY1XtX/17SSNUJYINzJIZ921oxrbVaJet3B7ZB+5nbI0c46QqEql3T
-         pVUUofUiDFOJg==
-Received: by mail-oi1-f177.google.com with SMTP id b25so3913653oic.0;
-        Sun, 16 May 2021 02:54:05 -0700 (PDT)
-X-Gm-Message-State: AOAM5326gg6olqEg8HBEKPtnt6XRg5CYRlQnuRTRg6cwdQelyH2ZJ66A
-        J8AENrd95k2MGTlsrJmYNZXBeX9RGpj2HkmKF18=
-X-Google-Smtp-Source: ABdhPJzMlKuXo356CSH09rt0kOrSVzLbOky255qYlXgAFIksVXqpXl8TxKelEIy6T9w1280nD6FgFNdtOgN7zJg7dXk=
-X-Received: by 2002:aca:3389:: with SMTP id z131mr11986472oiz.11.1621158845163;
- Sun, 16 May 2021 02:54:05 -0700 (PDT)
-MIME-Version: 1.0
-References: <CAMuHMdVfjE=+YiqCrPfGObeYYkQwKGiQEWyprQr-n9z7J9-X-A@mail.gmail.com>
- <1528604559-972-3-git-send-email-schmitzmic@gmail.com>
-In-Reply-To: <1528604559-972-3-git-send-email-schmitzmic@gmail.com>
-From:   Arnd Bergmann <arnd@kernel.org>
-Date:   Sun, 16 May 2021 11:52:59 +0200
-X-Gmail-Original-Message-ID: <CAK8P3a0pH0V_y-Ayt0rTNgZGR+Rm6tVRSzjCbo_vuA97c4shkA@mail.gmail.com>
-Message-ID: <CAK8P3a0pH0V_y-Ayt0rTNgZGR+Rm6tVRSzjCbo_vuA97c4shkA@mail.gmail.com>
-Subject: Re: [PATCH 2/2] net-next: xsurf100: drop include of lib8390.c
-To:     Michael Schmitz <schmitzmic@gmail.com>
-Cc:     Networking <netdev@vger.kernel.org>,
-        "Linux/m68k" <linux-m68k@vger.kernel.org>,
-        Andrew Lunn <andrew@lunn.ch>,
+        id S231400AbhEQGRz (ORCPT <rfc822;linux-m68k@lists.linux-m68k.org>);
+        Mon, 17 May 2021 02:17:55 -0400
+Received: by verein.lst.de (Postfix, from userid 2407)
+        id E9B8E6736F; Mon, 17 May 2021 08:16:35 +0200 (CEST)
+Date:   Mon, 17 May 2021 08:16:35 +0200
+From:   Christoph Hellwig <hch@lst.de>
+To:     Arnd Bergmann <arnd@kernel.org>
+Cc:     linux-arch@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>,
+        Christoph Hellwig <hch@lst.de>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Vineet Gupta <vgupta@synopsys.com>,
+        Yoshinori Sato <ysato@users.sourceforge.jp>,
+        Brian Cain <bcain@codeaurora.org>,
         Geert Uytterhoeven <geert@linux-m68k.org>,
-        Finn Thain <fthain@telegraphics.com.au>,
-        kernel@mkarcher.dialup.fu-berlin.de
-Content-Type: text/plain; charset="UTF-8"
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Jeff Dike <jdike@addtoit.com>,
+        Richard Weinberger <richard@nod.at>,
+        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
+        Sid Manning <sidneym@codeaurora.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Mike Rapoport <rppt@kernel.org>,
+        linux-snps-arc@lists.infradead.org, linux-kernel@vger.kernel.org,
+        uclinux-h8-devel@lists.sourceforge.jp,
+        linux-hexagon@vger.kernel.org, linux-m68k@lists.linux-m68k.org,
+        linux-riscv@lists.infradead.org, linux-um@lists.infradead.org
+Subject: Re: [PATCH 3/6] [v2] hexagon: use generic strncpy/strnlen from_user
+Message-ID: <20210517061635.GA23581@lst.de>
+References: <20210515101803.924427-1-arnd@kernel.org> <20210515101803.924427-4-arnd@kernel.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210515101803.924427-4-arnd@kernel.org>
+User-Agent: Mutt/1.5.17 (2007-11-01)
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-On Sun, Jun 10, 2018 at 6:23 AM Michael Schmitz <schmitzmic@gmail.com> wrote:
->
-> Now that ax88796.c exports the ax_NS8390_reinit() symbol, we can
-> include 8390.h instead of lib8390.c, avoiding duplication of that
-> function and killing a few compile warnings in the bargain.
->
-> Fixes: 861928f4e60e826c ("net-next: New ax88796 platform
-> driver for Amiga X-Surf 100 Zorro board (m68k)")
->
-> Signed-off-by: Michael Schmitz <schmitzmic@gmail.com>
-> ---
->  drivers/net/ethernet/8390/xsurf100.c |   11 +++++------
->  1 files changed, 5 insertions(+), 6 deletions(-)
+On Sat, May 15, 2021 at 12:18:00PM +0200, Arnd Bergmann wrote:
+> From: Arnd Bergmann <arnd@arndb.de>
+> 
+> Most per-architecture versions of these functions are broken in some form,
+> and they are almost certainly slower than the generic code as well.
+> 
+> Remove the ones for hexagon and instead use the generic version.
+> This custom version reads the data twice for strncpy() by doing an extra
+> strnlen(), and it apparently lacks a check for user_addr_max().
 
-Geert noticed that a patch I just sent is similar to this one. Since I assume
-you have verified this version works, it would be nice if you could resend
-both patches.
+I'd be tempted to just remove the first paragraph and reword the second
+as:
 
-Alternatively, I can include them in my series if you like.
-
-Reviewed-by: Arnd Bergmann <arnd@arndb.de
-
-> diff --git a/drivers/net/ethernet/8390/xsurf100.c b/drivers/net/ethernet/8390/xsurf100.c
-> index e2c9638..1c3e8d1 100644
-> --- a/drivers/net/ethernet/8390/xsurf100.c
-> +++ b/drivers/net/ethernet/8390/xsurf100.c
-> @@ -22,8 +22,6 @@
->  #define XS100_8390_DATA_WRITE32_BASE 0x0C80
->  #define XS100_8390_DATA_AREA_SIZE 0x80
->
-> -#define __NS8390_init ax_NS8390_init
-> -
->  /* force unsigned long back to 'void __iomem *' */
->  #define ax_convert_addr(_a) ((void __force __iomem *)(_a))
->
-> @@ -42,10 +40,11 @@
->  /* Ensure we have our RCR base value */
->  #define AX88796_PLATFORM
->
-> -static unsigned char version[] =
-> -               "ax88796.c: Copyright 2005,2007 Simtec Electronics\n";
-> +#define NS8390_CORE
-> +#include "8390.h"
-
-I don't see that #define being referenced anywhere, can that be dropped?
-
-        Arnd
+Remove the hexagon implementation of strncpy/strnlen and instead use the
+generic versions.  The hexago version of strncpy reads the data twice by
+doing an extra strnlen(), and it apparently lacks a check for
+user_addr_max().
