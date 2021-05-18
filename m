@@ -2,156 +2,73 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-12.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,NICE_REPLY_A,SPF_HELO_NONE,SPF_PASS autolearn=ham
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-6.4 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 95890C433B4
-	for <linux-m68k@archiver.kernel.org>; Tue, 18 May 2021 08:43:33 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 67724C43461
+	for <linux-m68k@archiver.kernel.org>; Tue, 18 May 2021 13:57:56 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 747E0610E9
-	for <linux-m68k@archiver.kernel.org>; Tue, 18 May 2021 08:43:33 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 3EF2C61185
+	for <linux-m68k@archiver.kernel.org>; Tue, 18 May 2021 13:57:56 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347562AbhERIou (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Tue, 18 May 2021 04:44:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60404 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242128AbhERIom (ORCPT
-        <rfc822;linux-m68k@vger.kernel.org>); Tue, 18 May 2021 04:44:42 -0400
-Received: from mail-pj1-x102a.google.com (mail-pj1-x102a.google.com [IPv6:2607:f8b0:4864:20::102a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 46B07C061573;
-        Tue, 18 May 2021 01:42:38 -0700 (PDT)
-Received: by mail-pj1-x102a.google.com with SMTP id g24so5125720pji.4;
-        Tue, 18 May 2021 01:42:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:references:cc:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-transfer-encoding;
-        bh=zPAWZP38EyewYo25KzL/nEXTJR7YqH77lAlzwI/ZVY4=;
-        b=EY6ssFDewzkGa3XU9kRDLv77BOy56Xu6cUQfvPZU8HDcu/5oaTQLimkvR0kpMCE4Om
-         sYYGijwwpccvd6LRyzTjWNS0alMhA/B5LtDO2kxWK1mdG/rUF0oa1UToWm4D8NDOSdo3
-         kI9/Efgl+H76747tzlAS0a+F9bvz2jWGxf9437nPphGUxCoJKARwdzc8fnj8+suaeJqT
-         GvUKUaIWTwjwe8sTS7kDH8tm1GIxMo8PKpn/BmpBjyXAwPbxbFOL5/8AH3IlPHtbvIeb
-         qvjOSjSAwJePEX97NwVHlksqESBhGd9neHk3ItRj6iX4gMuahEa2jZRHdeOasIc7th1W
-         +WCw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:references:cc:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding;
-        bh=zPAWZP38EyewYo25KzL/nEXTJR7YqH77lAlzwI/ZVY4=;
-        b=gRPvFC+wbMLTn+jKIthQRWtdwhwm5qiaFekqfrfm8MYF5c4nrtrqh7p8oX9hCpIEEc
-         GPOQShriAoApyXsWImaYklhNMf10CbNC7nvatILuBsbNwiLxO/Ha2ILk3f5Fnv3n9Yab
-         fbE0342RvFmUazv0IETg/qpdFzhgCgoKNmd12QxSIQj0fz9LCSuIozr5jde9fVGS/TqV
-         x5qF+2GCqtVhlMbr7R1ljF6JQ6AFkmmpM8PIs5tDhXzWK7SpfgMvhv+/z3t3QieqRTdo
-         izY+Ynn63NQoQVeoF9iCMaUlMKC1jiveLzsQQIyZD8Y+bY8pddp+iEcNpCM/WW7hsMIm
-         Y/sQ==
-X-Gm-Message-State: AOAM5333ZUrJoXHWTtbZSkhtuW/X18afrcH7qO2e2kCa1cuJEIJt3DbX
-        YnBml5K1f0U12qfr6StnHztBev8PQs8=
-X-Google-Smtp-Source: ABdhPJy/9B2pYUkqZ/C+iYZOlxNHXz+PNo78bGChv3WrbwdeNdBkRR8C3ImkYKM0zr5OHbJccn9xMw==
-X-Received: by 2002:a17:902:8d83:b029:e6:508a:7b8d with SMTP id v3-20020a1709028d83b02900e6508a7b8dmr3428154plo.18.1621327357883;
-        Tue, 18 May 2021 01:42:37 -0700 (PDT)
-Received: from [10.1.1.24] (122-58-21-90-fibre.sparkbb.co.nz. [122.58.21.90])
-        by smtp.gmail.com with ESMTPSA id bo10sm1504727pjb.36.2021.05.18.01.42.32
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 18 May 2021 01:42:37 -0700 (PDT)
-Subject: Re: [PATCH 2/2] net-next: xsurf100: drop include of lib8390.c
-To:     Arnd Bergmann <arnd@kernel.org>
+        id S1349687AbhERN7N (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Tue, 18 May 2021 09:59:13 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48580 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1349712AbhERN7F (ORCPT <rfc822;linux-m68k@vger.kernel.org>);
+        Tue, 18 May 2021 09:59:05 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A5C25611AD;
+        Tue, 18 May 2021 13:57:47 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1621346267;
+        bh=h3KMg6+z++srAMu39xKGp1LPAvtHZS6UzYi5l8h6GTg=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=A9ZYYU3cu5Tcr93+TjELcepOnaP+ptbQh0xhlypxZ9C6/Vze7OgIxsbk8UIccufTF
+         9chqX3tLC44ZWu0tQD1RHmIZa64cQVQqgaPnOuaSgCjqTWOcDWYspWKCD3qmaBrdjM
+         lXW9x4XV4y9EkcUeCkpvQOdIRTB7Nm/Cdf0YqcIgiiEuB4x1I/4lEXRuMfs3nwHNfG
+         V4v6HCfYZlHclsN/7I50lhTzUIEbu8UxDTLrAejf3EXgueVP/oSY0qDKTzln2DPAr8
+         Dlp2SdSXzTf26daB7n93r/8NXnz5n3f4NJWbrYIsWt6oPb8c+dFv3ZE9Z1cWG8XJOn
+         ZiV0A2KEDM92g==
+Received: by mail-wm1-f43.google.com with SMTP id 62so4461212wmb.3;
+        Tue, 18 May 2021 06:57:47 -0700 (PDT)
+X-Gm-Message-State: AOAM533YCR9cWScc4kVksVHjMgPTo6pxotZvfd1GAj+BImlGzyzUBEaD
+        jhb13YdowHxcl2mL93mN+G0//OTjNH7imo87bnw=
+X-Google-Smtp-Source: ABdhPJyHJGQybLRPgdqtJ3bpl5dBQ1UzTNSqZUC8Txzk4CmVSXarakoln4h/2x9eLgo9gScXwTU/7Znb4zedc/hbl18=
+X-Received: by 2002:a7b:c446:: with SMTP id l6mr5062434wmi.75.1621346266300;
+ Tue, 18 May 2021 06:57:46 -0700 (PDT)
+MIME-Version: 1.0
 References: <CAMuHMdVfjE=+YiqCrPfGObeYYkQwKGiQEWyprQr-n9z7J9-X-A@mail.gmail.com>
- <1528604559-972-3-git-send-email-schmitzmic@gmail.com>
- <CAK8P3a0pH0V_y-Ayt0rTNgZGR+Rm6tVRSzjCbo_vuA97c4shkA@mail.gmail.com>
+ <1528604559-972-3-git-send-email-schmitzmic@gmail.com> <CAK8P3a0pH0V_y-Ayt0rTNgZGR+Rm6tVRSzjCbo_vuA97c4shkA@mail.gmail.com>
+ <83400daa-d5a4-b39d-bd05-544a29065717@gmail.com>
+In-Reply-To: <83400daa-d5a4-b39d-bd05-544a29065717@gmail.com>
+From:   Arnd Bergmann <arnd@kernel.org>
+Date:   Tue, 18 May 2021 15:56:35 +0200
+X-Gmail-Original-Message-ID: <CAK8P3a3_2yN374Z6Nbybvs9noxoK9y_c=_6NHxWJU4RK4+Yyhw@mail.gmail.com>
+Message-ID: <CAK8P3a3_2yN374Z6Nbybvs9noxoK9y_c=_6NHxWJU4RK4+Yyhw@mail.gmail.com>
+Subject: Re: [PATCH 2/2] net-next: xsurf100: drop include of lib8390.c
+To:     Michael Schmitz <schmitzmic@gmail.com>
 Cc:     Networking <netdev@vger.kernel.org>,
-        Linux/m68k <linux-m68k@vger.kernel.org>,
+        "Linux/m68k" <linux-m68k@vger.kernel.org>,
         Andrew Lunn <andrew@lunn.ch>,
         Geert Uytterhoeven <geert@linux-m68k.org>,
         Finn Thain <fthain@telegraphics.com.au>,
         kernel@mkarcher.dialup.fu-berlin.de
-From:   Michael Schmitz <schmitzmic@gmail.com>
-Message-ID: <83400daa-d5a4-b39d-bd05-544a29065717@gmail.com>
-Date:   Tue, 18 May 2021 20:42:30 +1200
-User-Agent: Mozilla/5.0 (X11; Linux ppc; rv:45.0) Gecko/20100101
- Icedove/45.4.0
-MIME-Version: 1.0
-In-Reply-To: <CAK8P3a0pH0V_y-Ayt0rTNgZGR+Rm6tVRSzjCbo_vuA97c4shkA@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-Hi Arnd,
-
-Am 16.05.2021 um 21:52 schrieb Arnd Bergmann:
-> On Sun, Jun 10, 2018 at 6:23 AM Michael Schmitz <schmitzmic@gmail.com> wrote:
->>
->> Now that ax88796.c exports the ax_NS8390_reinit() symbol, we can
->> include 8390.h instead of lib8390.c, avoiding duplication of that
->> function and killing a few compile warnings in the bargain.
->>
->> Fixes: 861928f4e60e826c ("net-next: New ax88796 platform
->> driver for Amiga X-Surf 100 Zorro board (m68k)")
->>
->> Signed-off-by: Michael Schmitz <schmitzmic@gmail.com>
->> ---
->>  drivers/net/ethernet/8390/xsurf100.c |   11 +++++------
->>  1 files changed, 5 insertions(+), 6 deletions(-)
+On Tue, May 18, 2021 at 10:42 AM Michael Schmitz <schmitzmic@gmail.com> wrote:
 >
-> Geert noticed that a patch I just sent is similar to this one. Since I assume
-> you have verified this version works, it would be nice if you could resend
-> both patches.
-
-Oh dear - I had all but forgotten about this one. The patch announcement 
-states it was tested on elgar so yes, this version works.
-
-These patches originated in a review comment by Geert for the original 
-xsurf100 driver that came after Dave had accepted the driver. Might even 
-have been misrouted by me (I wasn't very clear whether net or net-next 
-was appropriate). I evidently never followed up.
-
-Which reminds me to check how far we ever got with testing the XSurf500 
-driver that's still stuck in my tree.
-
-> Alternatively, I can include them in my series if you like.
-
-Please do that - I haven't followed net-next for over a year and don't 
-have a current enough tree to rebase this on.
-
-> Reviewed-by: Arnd Bergmann <arnd@arndb.de
+> Which reminds me to check how far we ever got with testing the XSurf500
+> driver that's still stuck in my tree.
 >
->> diff --git a/drivers/net/ethernet/8390/xsurf100.c b/drivers/net/ethernet/8390/xsurf100.c
->> index e2c9638..1c3e8d1 100644
->> --- a/drivers/net/ethernet/8390/xsurf100.c
->> +++ b/drivers/net/ethernet/8390/xsurf100.c
->> @@ -22,8 +22,6 @@
->>  #define XS100_8390_DATA_WRITE32_BASE 0x0C80
->>  #define XS100_8390_DATA_AREA_SIZE 0x80
->>
->> -#define __NS8390_init ax_NS8390_init
->> -
->>  /* force unsigned long back to 'void __iomem *' */
->>  #define ax_convert_addr(_a) ((void __force __iomem *)(_a))
->>
->> @@ -42,10 +40,11 @@
->>  /* Ensure we have our RCR base value */
->>  #define AX88796_PLATFORM
->>
->> -static unsigned char version[] =
->> -               "ax88796.c: Copyright 2005,2007 Simtec Electronics\n";
->> +#define NS8390_CORE
->> +#include "8390.h"
+> > Alternatively, I can include them in my series if you like.
 >
-> I don't see that #define being referenced anywhere, can that be dropped?
+> Please do that - I haven't followed net-next for over a year and don't
+> have a current enough tree to rebase this on.
 
-Can't find it used anywhere either, so I'm confident it can be dropped. 
-While you're at it, I believe it can be dropped from lib8390.c as well 
-now (that's where I copied it from). Dave would know for sure.
+Ok, done. I'll send the series once net-next opens for 5.14.
 
-Cheers,
-
-	Michael
-
-
->
->         Arnd
->
+       Arnd
