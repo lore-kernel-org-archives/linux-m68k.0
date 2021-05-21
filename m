@@ -2,101 +2,120 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-4.3 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,NICE_REPLY_A,SPF_HELO_NONE,
-	SPF_PASS,USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-11.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 54544C433B4
-	for <linux-m68k@archiver.kernel.org>; Tue, 18 May 2021 20:33:29 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 1D41FC433ED
+	for <linux-m68k@archiver.kernel.org>; Fri, 21 May 2021 05:51:44 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 3ACBA61355
-	for <linux-m68k@archiver.kernel.org>; Tue, 18 May 2021 20:33:29 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id DFC0060FD8
+	for <linux-m68k@archiver.kernel.org>; Fri, 21 May 2021 05:51:43 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238285AbhERUer (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Tue, 18 May 2021 16:34:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53242 "EHLO
+        id S234057AbhEUFxF (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Fri, 21 May 2021 01:53:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37182 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236628AbhERUeq (ORCPT
-        <rfc822;linux-m68k@vger.kernel.org>); Tue, 18 May 2021 16:34:46 -0400
-Received: from mail-pj1-x102b.google.com (mail-pj1-x102b.google.com [IPv6:2607:f8b0:4864:20::102b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DFEA4C061573;
-        Tue, 18 May 2021 13:33:27 -0700 (PDT)
-Received: by mail-pj1-x102b.google.com with SMTP id b9-20020a17090a9909b029015cf9effaeaso2223140pjp.5;
-        Tue, 18 May 2021 13:33:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-transfer-encoding:content-language;
-        bh=GN6h5fvI363WSrqcaInFPCBwD3gDjCXT4u6SzhBf8Sg=;
-        b=qotCojRtv0T+bojfNb2H2U5CLbIKwTebfLzTGiF7+FTwl1DBa+XCbQSxLlNKygPQqo
-         VrAhLkGq+pIsI5fJCvLrFvvSzhRadmT8cSA5QRRlUSD7+/F80SalKVvpP0Oe8zMIgHPn
-         TX4rCT2c5+KRq7vgQ+wmDJ0KT9g8Fiz7Jia6WaDoBnbn1xKtYPheUNdDHWDxB+hAU66R
-         G1YsuspLMOlNhYmIit9UCfa5bVym6JQGVhrxpVilOdN5q0thWPu1B6ASZeXmXs2xKpfM
-         GoC/hPrs3jxEdMkQC9E0WG50Bl/duCE9ujrTEje510XD2obDc/AjTTFqzR3dvOZmROWf
-         0Kkg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=GN6h5fvI363WSrqcaInFPCBwD3gDjCXT4u6SzhBf8Sg=;
-        b=DUjp8R/wRXDZAP896LCIT83WYxe6sKFZDRorcANEQNgollE44Kt6UC2b6wJOS+cLxJ
-         LzmN/l1bd9pM+S8sG7a61V99iH/N/97BXGv/xyuJ9JlmQ3M+8hpCO01NgZD/Wa68TVtF
-         9lo+2ddFoKyMw7IrszYpZv9btJKOFT1ImDQY9CrgoXm3lIfFRys4xsPFuziSNXZvnwtI
-         JaD3N3MvYd5SqMhKp7nqWd+b/t/8zutrznicpJvBBPzE/LnHDUSvpX5XpDcFJIUKK4st
-         pBZK0u+vB1hjVNElHgpJIOlnJ5dIhCRZCj3qS/ZfjrColvY5jsh8GyQY2aXectgrdO/b
-         ZJmA==
-X-Gm-Message-State: AOAM530o9oeRDGLXPW6cwoCYqobSw3bbTebl2BnSL1QZ2HOiDQeEPzZz
-        +/axedMC9/Nf/fAe6cm8PXUuACPBhAY=
-X-Google-Smtp-Source: ABdhPJz9aYeB9fb300Jnk91j6iYa3CdvG4ahR73oJTvbuHkztiW4U5Op4eeONq6wJbnA92ivLTHAPg==
-X-Received: by 2002:a17:902:dccc:b029:f3:fb40:8752 with SMTP id t12-20020a170902dcccb02900f3fb408752mr2018888pll.83.1621370007523;
-        Tue, 18 May 2021 13:33:27 -0700 (PDT)
-Received: from ?IPv6:2001:df0:0:200c:a4c8:5d58:3d8c:ad8f? ([2001:df0:0:200c:a4c8:5d58:3d8c:ad8f])
-        by smtp.gmail.com with ESMTPSA id 191sm1794843pfx.121.2021.05.18.13.33.24
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 18 May 2021 13:33:26 -0700 (PDT)
-Subject: Re: [PATCH 2/2] net-next: xsurf100: drop include of lib8390.c
-To:     Arnd Bergmann <arnd@kernel.org>
-Cc:     Networking <netdev@vger.kernel.org>,
-        Linux/m68k <linux-m68k@vger.kernel.org>,
-        Andrew Lunn <andrew@lunn.ch>,
+        with ESMTP id S232090AbhEUFxF (ORCPT
+        <rfc822;linux-m68k@lists.linux-m68k.org>);
+        Fri, 21 May 2021 01:53:05 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A5FA8C061574;
+        Thu, 20 May 2021 22:51:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+        MIME-Version:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:
+        Content-ID:Content-Description:In-Reply-To:References;
+        bh=1uf84BS8Q7NSBXg1yQR5EC+qaCg2ZgLYmuXoDkaPjCQ=; b=yVac5N8yUOzpUTxL5O1tvL86te
+        m3UAUEPJY/af59veHnMPwBOnJ7BRLcZrKIKt8Dh7YPbjkftLfLGTS4VhKOyyyjq3VjpC44ktitdB9
+        IGcelhE3Oa213g7yVLse3bazcfqBPE0AjzvZkAoIGc9XTXbidpJpsbluOmOOc3JrOP6KXc8MYblK4
+        oHQQgY+u4rceYmhcSMGEEbuC03JwZPicLhzcbKv5cdyhrdklHJY1gLYGuEEO6TAkLoGvvppviy5Hp
+        K3tkB8PLSkhH6CJEnd2fuR+rb3FAaFtYutga3kk4PwncNu4+e+dofRaE7iKfkJNVvZr+BYooXFvLx
+        bVfJReyA==;
+Received: from [2001:4bb8:180:5add:4fd7:4137:d2f2:46e6] (helo=localhost)
+        by bombadil.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1ljy3s-00Gpw6-Eq; Fri, 21 May 2021 05:51:04 +0000
+From:   Christoph Hellwig <hch@lst.de>
+To:     Jens Axboe <axboe@kernel.dk>,
         Geert Uytterhoeven <geert@linux-m68k.org>,
-        Finn Thain <fthain@telegraphics.com.au>,
-        kernel@mkarcher.dialup.fu-berlin.de
-References: <CAMuHMdVfjE=+YiqCrPfGObeYYkQwKGiQEWyprQr-n9z7J9-X-A@mail.gmail.com>
- <1528604559-972-3-git-send-email-schmitzmic@gmail.com>
- <CAK8P3a0pH0V_y-Ayt0rTNgZGR+Rm6tVRSzjCbo_vuA97c4shkA@mail.gmail.com>
- <83400daa-d5a4-b39d-bd05-544a29065717@gmail.com>
- <CAK8P3a3_2yN374Z6Nbybvs9noxoK9y_c=_6NHxWJU4RK4+Yyhw@mail.gmail.com>
-From:   Michael Schmitz <schmitzmic@gmail.com>
-Message-ID: <9a7b0375-2c3f-d1ef-7aa5-5d7fbddcd8eb@gmail.com>
-Date:   Wed, 19 May 2021 08:33:21 +1200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Chris Zankel <chris@zankel.net>,
+        Max Filippov <jcmvbkbc@gmail.com>,
+        Philipp Reisner <philipp.reisner@linbit.com>,
+        Lars Ellenberg <lars.ellenberg@linbit.com>,
+        Jim Paris <jim@jtan.com>,
+        Joshua Morris <josh.h.morris@us.ibm.com>,
+        Philip Kelleher <pjk1939@linux.ibm.com>,
+        Minchan Kim <minchan@kernel.org>,
+        Nitin Gupta <ngupta@vflare.org>,
+        Matias Bjorling <mb@lightnvm.io>, Coly Li <colyli@suse.de>,
+        Mike Snitzer <snitzer@redhat.com>, Song Liu <song@kernel.org>,
+        Maxim Levitsky <maximlevitsky@gmail.com>,
+        Alex Dubov <oakad@yahoo.com>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Vishal Verma <vishal.l.verma@intel.com>,
+        Dave Jiang <dave.jiang@intel.com>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@de.ibm.com>
+Cc:     linux-block@vger.kernel.org, dm-devel@redhat.com,
+        linux-m68k@lists.linux-m68k.org, linux-xtensa@linux-xtensa.org,
+        drbd-dev@lists.linbit.com,
+        linuxppc-dev@lists.ozlabs.org (open list:PS3 PLATFORM SUPPORT),
+        linux-bcache@vger.kernel.org, linux-raid@vger.kernel.org,
+        linux-mmc@vger.kernel.org, nvdimm@lists.linux.dev,
+        linux-nvme@lists.infradead.org, linux-s390@vger.kernel.org
+Subject: simplify gendisk and request_queue allocation for bio based drivers
+Date:   Fri, 21 May 2021 07:50:35 +0200
+Message-Id: <20210521055102.1053529-1-hch@lst.de>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-In-Reply-To: <CAK8P3a3_2yN374Z6Nbybvs9noxoK9y_c=_6NHxWJU4RK4+Yyhw@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 8bit
-Content-Language: en-US
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-Thanks Arnd!
+Hi all,
 
-Cheers,
+this series is the first part of cleaning up lifetimes and allocation of
+the gendisk and request_queue structure.  It adds a new interface to
+allocate the disk and queue together for bio based drivers, and a helper
+for cleanup/free them when a driver is unloaded or a device is removed.
 
-     Michael
+Together this removes the need to treat the gendisk and request_queue
+as separate entities for bio based drivers.
 
-On 19/05/21 1:56 am, Arnd Bergmann wrote:
-> On Tue, May 18, 2021 at 10:42 AM Michael Schmitz <schmitzmic@gmail.com> wrote:
->> Which reminds me to check how far we ever got with testing the XSurf500
->> driver that's still stuck in my tree.
->>
->>> Alternatively, I can include them in my series if you like.
->> Please do that - I haven't followed net-next for over a year and don't
->> have a current enough tree to rebase this on.
-> Ok, done. I'll send the series once net-next opens for 5.14.
->
->         Arnd
+Diffstat:
+ arch/m68k/emu/nfblock.c             |   20 +---
+ arch/xtensa/platforms/iss/simdisk.c |   29 +------
+ block/blk-core.c                    |    1 
+ block/blk.h                         |    6 -
+ block/genhd.c                       |  149 +++++++++++++++++++-----------------
+ block/partitions/core.c             |   19 ++--
+ drivers/block/brd.c                 |   94 +++++++---------------
+ drivers/block/drbd/drbd_main.c      |   23 +----
+ drivers/block/n64cart.c             |    8 -
+ drivers/block/null_blk/main.c       |   38 ++++-----
+ drivers/block/pktcdvd.c             |   11 --
+ drivers/block/ps3vram.c             |   31 +------
+ drivers/block/rsxx/dev.c            |   39 +++------
+ drivers/block/rsxx/rsxx_priv.h      |    1 
+ drivers/block/zram/zram_drv.c       |   19 ----
+ drivers/lightnvm/core.c             |   24 +----
+ drivers/md/bcache/super.c           |   15 ---
+ drivers/md/dm.c                     |   16 +--
+ drivers/md/md.c                     |   25 ++----
+ drivers/memstick/core/ms_block.c    |    1 
+ drivers/nvdimm/blk.c                |   27 +-----
+ drivers/nvdimm/btt.c                |   25 +-----
+ drivers/nvdimm/btt.h                |    2 
+ drivers/nvdimm/pmem.c               |   17 +---
+ drivers/nvme/host/core.c            |    1 
+ drivers/nvme/host/multipath.c       |   46 +++--------
+ drivers/s390/block/dcssblk.c        |   26 +-----
+ drivers/s390/block/xpram.c          |   26 ++----
+ include/linux/blkdev.h              |    1 
+ include/linux/genhd.h               |   23 +++++
+ 30 files changed, 297 insertions(+), 466 deletions(-)
