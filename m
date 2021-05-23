@@ -2,151 +2,113 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-17.2 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,NICE_REPLY_A,SPF_HELO_NONE,SPF_PASS,
-	URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-15.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 5404FC4707A
-	for <linux-m68k@archiver.kernel.org>; Sun, 23 May 2021 16:20:47 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A67C4C47085
+	for <linux-m68k@archiver.kernel.org>; Sun, 23 May 2021 23:26:08 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 2A45E61263
-	for <linux-m68k@archiver.kernel.org>; Sun, 23 May 2021 16:20:47 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 7ED2661185
+	for <linux-m68k@archiver.kernel.org>; Sun, 23 May 2021 23:26:08 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231842AbhEWQWM (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Sun, 23 May 2021 12:22:12 -0400
-Received: from mx2.suse.de ([195.135.220.15]:40028 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231818AbhEWQWM (ORCPT <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Sun, 23 May 2021 12:22:12 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1621786845; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=iFkWHMko4nu73I8bffz46LtF778hJacVhJlqbZzQwF8=;
-        b=xIMCLEuwtEJ3ZYLVT1jAFLSlmekHbIbar2TdYds2f7pJgux+ASXt64k09tx/I3VzYVSQbd
-        jYbEua8uhBBK1QtJJhgUBirelGonk+/REbn1EZdyuTOztWNmc/243wGZRrn0BpiSJnEF/k
-        3o6nC8QrS3eMOcehdY1jqcN3GUtqNzU=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1621786845;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=iFkWHMko4nu73I8bffz46LtF778hJacVhJlqbZzQwF8=;
-        b=OjWXQORh1AHg1yI5pLimYhJCE0/GNAVfRs6jLZKfmf7Vpd71K+gfdYi9LvcDAJhupXh6Tf
-        ZrcrurNwYt+dptBg==
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id DA2BFAAFD;
-        Sun, 23 May 2021 16:20:44 +0000 (UTC)
-Subject: Re: [PATCH 12/26] bcache: convert to blk_alloc_disk/blk_cleanup_disk
-To:     Christoph Hellwig <hch@lst.de>, Jens Axboe <axboe@kernel.dk>,
+        id S232058AbhEWX1e (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Sun, 23 May 2021 19:27:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56876 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231989AbhEWX1d (ORCPT
+        <rfc822;linux-m68k@lists.linux-m68k.org>);
+        Sun, 23 May 2021 19:27:33 -0400
+Received: from mail-lj1-x22b.google.com (mail-lj1-x22b.google.com [IPv6:2a00:1450:4864:20::22b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 21608C061756
+        for <linux-m68k@lists.linux-m68k.org>; Sun, 23 May 2021 16:26:05 -0700 (PDT)
+Received: by mail-lj1-x22b.google.com with SMTP id c15so31137781ljr.7
+        for <linux-m68k@lists.linux-m68k.org>; Sun, 23 May 2021 16:26:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=pPiK1DfUxZZrTBI/5iz69l7qULP78LHErLsYFXd4x9o=;
+        b=Wh4IAnNxXo994rOpcpBG1uHjyJm1icPsdNE7/2cIz+9OcmAv8x5QRPsjauEGrPNXiW
+         RQkuH5Bx1P5mQmEgcSIo+dbZENJWfm+ttnjxO+s92XMY+RPBJ2+nun7R4NtaOHRkojvQ
+         W5cyhqxNL775x1J4LWzOqkZigA/1vrCffMUNYpOkXrHm5cFJmaSSfTKIr13MI9bCY/Nq
+         LR2+mcOUhyQTrJmbrtHh4CssW4Gvgsl5T+cpjBpF4kz2QpQPMu12h5jDZ0hMpEJyjgTp
+         0ruHCtRGDigp05ZBlZJ/ZsD0UV5aaUlUx5toHznF4RKhugLSlHIIAWqhOg4k8RZwG5Gm
+         lDow==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=pPiK1DfUxZZrTBI/5iz69l7qULP78LHErLsYFXd4x9o=;
+        b=mibRkIcyOPfJKOh3nCr8t5U/JFUIBW57L+JSM8Y7MjTDMCxfRz24700BskEXEEaD6N
+         12R9DztImdY6HMx5ROa0Mag3+ghODvLTN4XBN+xaV9I/McRuq1JdkL4E1PKfpKLdIeMb
+         zFCl1OfktWFOooix3a+5/TSjAn+RIe/Oh6bnIEdf8JywAPHcBzIb2qY06Z7nPTokaqDQ
+         ZKHpK0uaWs2xlrTXxkxTbv85H62DbR+PtALeIFM61vJMUi6UGlxiQzblJBklecqXBb2i
+         3Jhx3vz+1OWHS5nUOG1DTjo5BOw7hXh4ybcfnNMEdxf9JC0da3GKArojwppVGKGOBZIp
+         B+hQ==
+X-Gm-Message-State: AOAM532eSpsUuckssJTZXty169Q/voJogGXyISCFVoNEzqwAiBqkzv4g
+        Y09dE+s4xJNpIUroYTqExss=
+X-Google-Smtp-Source: ABdhPJzn0nkTvNJ4/y5/7O9Cpdv0X5iyxFW9w+e888CSbB1VKcAijfzu9imoGp+TgHIWvgjlKrqffQ==
+X-Received: by 2002:a05:651c:1043:: with SMTP id x3mr14722134ljm.130.1621812363346;
+        Sun, 23 May 2021 16:26:03 -0700 (PDT)
+Received: from localhost.localdomain (109-252-193-110.dynamic.spd-mgts.ru. [109.252.193.110])
+        by smtp.gmail.com with ESMTPSA id p7sm1489329ljg.61.2021.05.23.16.26.02
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 23 May 2021 16:26:02 -0700 (PDT)
+From:   Dmitry Osipenko <digetx@gmail.com>
+To:     Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Tony Lindgren <tony@atomide.com>,
+        Arnd Bergmann <arnd@arndb.de>,
         Geert Uytterhoeven <geert@linux-m68k.org>,
-        Chris Zankel <chris@zankel.net>,
-        Max Filippov <jcmvbkbc@gmail.com>,
-        Philipp Reisner <philipp.reisner@linbit.com>,
-        Lars Ellenberg <lars.ellenberg@linbit.com>,
-        Jim Paris <jim@jtan.com>,
-        Joshua Morris <josh.h.morris@us.ibm.com>,
-        Philip Kelleher <pjk1939@linux.ibm.com>,
-        Minchan Kim <minchan@kernel.org>,
-        Nitin Gupta <ngupta@vflare.org>,
-        Matias Bjorling <mb@lightnvm.io>,
-        Mike Snitzer <snitzer@redhat.com>, Song Liu <song@kernel.org>,
-        Maxim Levitsky <maximlevitsky@gmail.com>,
-        Alex Dubov <oakad@yahoo.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Vishal Verma <vishal.l.verma@intel.com>,
-        Dave Jiang <dave.jiang@intel.com>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@de.ibm.com>
-Cc:     linux-block@vger.kernel.org, dm-devel@redhat.com,
-        linux-m68k@lists.linux-m68k.org, linux-xtensa@linux-xtensa.org,
-        drbd-dev@lists.linbit.com, linuxppc-dev@lists.ozlabs.org,
-        linux-bcache@vger.kernel.org, linux-raid@vger.kernel.org,
-        linux-mmc@vger.kernel.org, nvdimm@lists.linux.dev,
-        linux-nvme@lists.infradead.org, linux-s390@vger.kernel.org
-References: <20210521055116.1053587-1-hch@lst.de>
- <20210521055116.1053587-13-hch@lst.de>
-From:   Coly Li <colyli@suse.de>
-Message-ID: <19e05358-abc2-a577-d3bd-d4ae89f6316e@suse.de>
-Date:   Mon, 24 May 2021 00:20:34 +0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.10.2
+        Paul Burton <paul.burton@mips.com>,
+        John Crispin <john@phrozen.org>
+Cc:     linux-mips@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org,
+        linux-tegra@vger.kernel.org, linux-clk@vger.kernel.org,
+        linux-omap@vger.kernel.org
+Subject: [PATCH v1] kbuild: Disable compile testing if HAVE_LEGACY_CLK enabled
+Date:   Mon, 24 May 2021 02:25:56 +0300
+Message-Id: <20210523232556.15017-1-digetx@gmail.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-In-Reply-To: <20210521055116.1053587-13-hch@lst.de>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-On 5/21/21 1:51 PM, Christoph Hellwig wrote:
-> Convert the bcache driver to use the blk_alloc_disk and blk_cleanup_disk
-> helpers to simplify gendisk and request_queue allocation.
-> 
-> Signed-off-by: Christoph Hellwig <hch@lst.de>
+There are couple older platforms that can't be compile-tested because they
+partially implement CLK API. It causes build failure of kernel drivers due
+to the missing symbols of the unimplemented part of CLK API.
 
-Acked-by: Coly Li <colyli@suse.de>
+These platforms are: ARM EP93XX, ARM OMAP1, m68k ColdFire, MIPS AR7,
+                     MIPS Ralink.
 
-Thanks.
+Disable compile-testing for HAVE_LEGACY_CLK=y.
 
+Reported-by: kernel test robot <lkp@intel.com>
+Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
+---
+ init/Kconfig | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Coly Li
-
-> ---
->  drivers/md/bcache/super.c | 15 ++++-----------
->  1 file changed, 4 insertions(+), 11 deletions(-)
-> 
-> diff --git a/drivers/md/bcache/super.c b/drivers/md/bcache/super.c
-> index bea8c4429ae8..185246a0d855 100644
-> --- a/drivers/md/bcache/super.c
-> +++ b/drivers/md/bcache/super.c
-> @@ -890,13 +890,9 @@ static void bcache_device_free(struct bcache_device *d)
->  		if (disk_added)
->  			del_gendisk(disk);
->  
-> -		if (disk->queue)
-> -			blk_cleanup_queue(disk->queue);
-> -
-> +		blk_cleanup_disk(disk);
->  		ida_simple_remove(&bcache_device_idx,
->  				  first_minor_to_idx(disk->first_minor));
-> -		if (disk_added)
-> -			put_disk(disk);
->  	}
->  
->  	bioset_exit(&d->bio_split);
-> @@ -946,7 +942,7 @@ static int bcache_device_init(struct bcache_device *d, unsigned int block_size,
->  			BIOSET_NEED_BVECS|BIOSET_NEED_RESCUER))
->  		goto err;
->  
-> -	d->disk = alloc_disk(BCACHE_MINORS);
-> +	d->disk = blk_alloc_disk(NUMA_NO_NODE);
->  	if (!d->disk)
->  		goto err;
->  
-> @@ -955,14 +951,11 @@ static int bcache_device_init(struct bcache_device *d, unsigned int block_size,
->  
->  	d->disk->major		= bcache_major;
->  	d->disk->first_minor	= idx_to_first_minor(idx);
-> +	d->disk->minors		= BCACHE_MINORS;
->  	d->disk->fops		= ops;
->  	d->disk->private_data	= d;
->  
-> -	q = blk_alloc_queue(NUMA_NO_NODE);
-> -	if (!q)
-> -		return -ENOMEM;
-> -
-> -	d->disk->queue			= q;
-> +	q = d->disk->queue;
->  	q->limits.max_hw_sectors	= UINT_MAX;
->  	q->limits.max_sectors		= UINT_MAX;
->  	q->limits.max_segment_size	= UINT_MAX;
-> 
+diff --git a/init/Kconfig b/init/Kconfig
+index 173a474012d7..42701b04be00 100644
+--- a/init/Kconfig
++++ b/init/Kconfig
+@@ -131,7 +131,7 @@ config INIT_ENV_ARG_LIMIT
+ 
+ config COMPILE_TEST
+ 	bool "Compile also drivers which will not load"
+-	depends on HAS_IOMEM
++	depends on HAS_IOMEM && !HAVE_LEGACY_CLK
+ 	help
+ 	  Some drivers can be compiled on a different platform than they are
+ 	  intended to be run on. Despite they cannot be loaded there (or even
+-- 
+2.30.2
 
