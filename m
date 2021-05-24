@@ -2,115 +2,112 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-12.3 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
-	MAILING_LIST_MULTI,NICE_REPLY_A,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1
-	autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-13.8 required=3.0 tests=BAYES_00,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B1C9CC04FF3
-	for <linux-m68k@archiver.kernel.org>; Mon, 24 May 2021 08:27:20 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E808FC04FF3
+	for <linux-m68k@archiver.kernel.org>; Mon, 24 May 2021 08:55:10 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 7D1FA610A2
-	for <linux-m68k@archiver.kernel.org>; Mon, 24 May 2021 08:27:20 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id CEF7560698
+	for <linux-m68k@archiver.kernel.org>; Mon, 24 May 2021 08:55:10 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232313AbhEXI2r (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Mon, 24 May 2021 04:28:47 -0400
-Received: from mx2.suse.de ([195.135.220.15]:43146 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232279AbhEXI2q (ORCPT <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Mon, 24 May 2021 04:28:46 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1621844838; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=Q1F35rBDncf+ODcVO5jTKQ+c6J+Bpaijj4tb+WLiO1U=;
-        b=hWbnJCzrn8D8sq7QiamSboM/nv6TN+2iWleusnloao35oVE4OyeDX0eKAMzya8OGGThQFh
-        zl1nxRchNuFxstuajSgFtmryku8O1hRGBIRcM0SbrM2Dt3hLAz/KodIIf9vgrdWDs21AJk
-        09tFtAADDGOyfSpK1oh2IZudvgHfbuQ=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1621844838;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=Q1F35rBDncf+ODcVO5jTKQ+c6J+Bpaijj4tb+WLiO1U=;
-        b=/Ey/RBTrd/apAViE3Xd9DP0Lfre1LBpPPlJZl5IzG70TmMypTfoLUolyItvUQoIO9R6YkJ
-        B6psOuCyZCUW50Cw==
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id CBD6EAB6D;
-        Mon, 24 May 2021 08:27:17 +0000 (UTC)
-Subject: Re: [PATCH 14/26] md: convert to blk_alloc_disk/blk_cleanup_disk
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     Jens Axboe <axboe@kernel.dk>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Chris Zankel <chris@zankel.net>,
-        Max Filippov <jcmvbkbc@gmail.com>,
-        Philipp Reisner <philipp.reisner@linbit.com>,
-        Lars Ellenberg <lars.ellenberg@linbit.com>,
-        Jim Paris <jim@jtan.com>,
-        Joshua Morris <josh.h.morris@us.ibm.com>,
-        Philip Kelleher <pjk1939@linux.ibm.com>,
-        Minchan Kim <minchan@kernel.org>,
-        Nitin Gupta <ngupta@vflare.org>,
-        Matias Bjorling <mb@lightnvm.io>, Coly Li <colyli@suse.de>,
-        Mike Snitzer <snitzer@redhat.com>, Song Liu <song@kernel.org>,
-        Maxim Levitsky <maximlevitsky@gmail.com>,
-        Alex Dubov <oakad@yahoo.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Vishal Verma <vishal.l.verma@intel.com>,
-        Dave Jiang <dave.jiang@intel.com>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        linux-block@vger.kernel.org, dm-devel@redhat.com,
-        linux-m68k@lists.linux-m68k.org, linux-xtensa@linux-xtensa.org,
-        drbd-dev@lists.linbit.com, linuxppc-dev@lists.ozlabs.org,
-        linux-bcache@vger.kernel.org, linux-raid@vger.kernel.org,
-        linux-mmc@vger.kernel.org, nvdimm@lists.linux.dev,
-        linux-nvme@lists.infradead.org, linux-s390@vger.kernel.org
-References: <20210521055116.1053587-1-hch@lst.de>
- <20210521055116.1053587-15-hch@lst.de>
- <e65de9e6-337c-3e41-b5c2-d033ff236582@suse.de>
- <20210524072642.GF23890@lst.de>
-From:   Hannes Reinecke <hare@suse.de>
-Message-ID: <1360c598-44a9-e0c5-dd81-695cb1ec8ccf@suse.de>
-Date:   Mon, 24 May 2021 10:27:16 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.0
+        id S232474AbhEXI4g (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Mon, 24 May 2021 04:56:36 -0400
+Received: from mail-ua1-f44.google.com ([209.85.222.44]:44666 "EHLO
+        mail-ua1-f44.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232473AbhEXI4g (ORCPT
+        <rfc822;linux-m68k@lists.linux-m68k.org>);
+        Mon, 24 May 2021 04:56:36 -0400
+Received: by mail-ua1-f44.google.com with SMTP id 68so1110507uao.11
+        for <linux-m68k@lists.linux-m68k.org>; Mon, 24 May 2021 01:55:08 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=5H0qZkzumrdkYcAyVjQDQA6Hje2p2FxbSu2Plzs94Cg=;
+        b=ADT01EEPpTja2U0JuiPwl4FuLpMDEe06Ntwd+Lg7siUBaq49Ny90NpjWCtOWIv8bl2
+         IX7IG04BUTuNswgHjzILRsNsiI34yZC/JfW0PPbM2Iequh+3EznHvOiV+EtGo8Skdx5E
+         BO3/GEJhtV9ApNSKVWiQWoQAILm3wIDFm8lOf3fED2g3c2UQ6SdnyYQLMZ2G/6FbunA6
+         AyXsYh536cxJzueb+9R9ViiHfFDVJd1V0kUltx3vCsFaO90TShGyCOlC8MB1XSj7n4g5
+         Q7+1yKymYnhnN2UyHzuRJj1NXiTiFOzrcbJmHwGFTdOPOKyv+l2/tTqQjsDJ2Od2QqHi
+         VySg==
+X-Gm-Message-State: AOAM531mG7J8ziBkTobrEwBM08UpjOezBh4FIj1DIqlUdMTsJu8NCfpd
+        OWRmuYOIW8BrA4PoNxn+QBXzgaLlbj7HLJkVGp0=
+X-Google-Smtp-Source: ABdhPJxxyosYrdj1GqNypPiBnYRArw2E3/38homNMO1Av1PFu0RXXr0Dh8t9Utur9chqZtb0X55m4PfZQwmS3BcBlZQ=
+X-Received: by 2002:ab0:7705:: with SMTP id z5mr20481974uaq.2.1621846508208;
+ Mon, 24 May 2021 01:55:08 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20210524072642.GF23890@lst.de>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+References: <20210523232556.15017-1-digetx@gmail.com>
+In-Reply-To: <20210523232556.15017-1-digetx@gmail.com>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Mon, 24 May 2021 10:54:57 +0200
+Message-ID: <CAMuHMdWqNngrDQOut1r5aD1Nk5BMXEV4m8+OBix4DXOV6OSpNg@mail.gmail.com>
+Subject: Re: [PATCH v1] kbuild: Disable compile testing if HAVE_LEGACY_CLK enabled
+To:     Dmitry Osipenko <digetx@gmail.com>
+Cc:     Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Tony Lindgren <tony@atomide.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Paul Burton <paul.burton@mips.com>,
+        John Crispin <john@phrozen.org>,
+        "open list:BROADCOM NVRAM DRIVER" <linux-mips@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        linux-m68k <linux-m68k@lists.linux-m68k.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-tegra <linux-tegra@vger.kernel.org>,
+        linux-clk <linux-clk@vger.kernel.org>,
+        "open list:TI ETHERNET SWITCH DRIVER (CPSW)" 
+        <linux-omap@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-On 5/24/21 9:26 AM, Christoph Hellwig wrote:
-> On Sun, May 23, 2021 at 10:12:49AM +0200, Hannes Reinecke wrote:
->>> +	blk_set_stacking_limits(&mddev->queue->limits);
->>>    	blk_queue_write_cache(mddev->queue, true, true);
->>>    	/* Allow extended partitions.  This makes the
->>>    	 * 'mdp' device redundant, but we can't really
->>>
->> Wouldn't it make sense to introduce a helper 'blk_queue_from_disk()' or
->> somesuch to avoid having to keep an explicit 'queue' pointer?
-> 
-> My rought plan is that a few series from now bio based drivers will
-> never directly deal with the request_queue at all.
-> 
-Go for it.
+Hi Dmitry,
 
-Reviewed-by: Hannes Reinecke <hare@suse.de>
+On Mon, May 24, 2021 at 1:26 AM Dmitry Osipenko <digetx@gmail.com> wrote:
+> There are couple older platforms that can't be compile-tested because they
+> partially implement CLK API. It causes build failure of kernel drivers due
+> to the missing symbols of the unimplemented part of CLK API.
+>
+> These platforms are: ARM EP93XX, ARM OMAP1, m68k ColdFire, MIPS AR7,
+>                      MIPS Ralink.
+>
+> Disable compile-testing for HAVE_LEGACY_CLK=y.
+>
+> Reported-by: kernel test robot <lkp@intel.com>
+> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
 
-Cheers,
+Thanks for your patch!
 
-Hannes
+> --- a/init/Kconfig
+> +++ b/init/Kconfig
+> @@ -131,7 +131,7 @@ config INIT_ENV_ARG_LIMIT
+>
+>  config COMPILE_TEST
+>         bool "Compile also drivers which will not load"
+> -       depends on HAS_IOMEM
+> +       depends on HAS_IOMEM && !HAVE_LEGACY_CLK
+
+That sounds a bit drastic to me.  Usually we just try to implement the
+missing functionality, or provide stubs.
+Which functions are missing?
+
+>         help
+>           Some drivers can be compiled on a different platform than they are
+>           intended to be run on. Despite they cannot be loaded there (or even
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
 -- 
-Dr. Hannes Reinecke                Kernel Storage Architect
-hare@suse.de                              +49 911 74053 688
-SUSE Software Solutions GmbH, Maxfeldstr. 5, 90409 Nürnberg
-HRB 36809 (AG Nürnberg), Geschäftsführer: Felix Imendörffer
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
