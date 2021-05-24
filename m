@@ -2,50 +2,65 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-13.8 required=3.0 tests=BAYES_00,
+X-Spam-Status: No, score=-14.3 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no
-	version=3.4.0
+	MAILING_LIST_MULTI,NICE_REPLY_A,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E808FC04FF3
-	for <linux-m68k@archiver.kernel.org>; Mon, 24 May 2021 08:55:10 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7F7F5C47085
+	for <linux-m68k@archiver.kernel.org>; Mon, 24 May 2021 12:39:29 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id CEF7560698
-	for <linux-m68k@archiver.kernel.org>; Mon, 24 May 2021 08:55:10 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 527B2613AD
+	for <linux-m68k@archiver.kernel.org>; Mon, 24 May 2021 12:39:29 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232474AbhEXI4g (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Mon, 24 May 2021 04:56:36 -0400
-Received: from mail-ua1-f44.google.com ([209.85.222.44]:44666 "EHLO
-        mail-ua1-f44.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232473AbhEXI4g (ORCPT
+        id S232842AbhEXMk4 (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Mon, 24 May 2021 08:40:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35902 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232770AbhEXMkx (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Mon, 24 May 2021 04:56:36 -0400
-Received: by mail-ua1-f44.google.com with SMTP id 68so1110507uao.11
-        for <linux-m68k@lists.linux-m68k.org>; Mon, 24 May 2021 01:55:08 -0700 (PDT)
+        Mon, 24 May 2021 08:40:53 -0400
+Received: from mail-lf1-x135.google.com (mail-lf1-x135.google.com [IPv6:2a00:1450:4864:20::135])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D0BC7C061756
+        for <linux-m68k@lists.linux-m68k.org>; Mon, 24 May 2021 05:39:23 -0700 (PDT)
+Received: by mail-lf1-x135.google.com with SMTP id q7so39119134lfr.6
+        for <linux-m68k@lists.linux-m68k.org>; Mon, 24 May 2021 05:39:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=13zcyWdsm4gpffNG5ZgDMwvczQG34AV4139pdXe/s/0=;
+        b=Ukzs1lpffefInt+Tc3rj13rbWCFBfbLYbuOBDb1j5YTp/JNEMJrM+0BS9pYYP38s9n
+         7HnDgswflfy/VLz9qqAzPEQ99K+h8Qw9BP4SNjW8CFWmWgh5JMUSDfFAJeK+RZdsaGGL
+         E/Dufo5c9cUI5wYk5ZS925uvNbuEl/D0DVzT9JJnHjAK1LG65AMdNhVEY5bjp2L2ZkJx
+         xTyf1oVqYbmYguDJ4dsI4rGt5dv+nSIZOdciE20NRNrrOmtUf9V4AfSlhip/ALqlXDCi
+         a3xqCn7eZwwF4XtCyKGnbWeeDVyinyJ8tey0f34ksGlX16trBozo1SFW0R8FUHxTuMe2
+         gCpw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=5H0qZkzumrdkYcAyVjQDQA6Hje2p2FxbSu2Plzs94Cg=;
-        b=ADT01EEPpTja2U0JuiPwl4FuLpMDEe06Ntwd+Lg7siUBaq49Ny90NpjWCtOWIv8bl2
-         IX7IG04BUTuNswgHjzILRsNsiI34yZC/JfW0PPbM2Iequh+3EznHvOiV+EtGo8Skdx5E
-         BO3/GEJhtV9ApNSKVWiQWoQAILm3wIDFm8lOf3fED2g3c2UQ6SdnyYQLMZ2G/6FbunA6
-         AyXsYh536cxJzueb+9R9ViiHfFDVJd1V0kUltx3vCsFaO90TShGyCOlC8MB1XSj7n4g5
-         Q7+1yKymYnhnN2UyHzuRJj1NXiTiFOzrcbJmHwGFTdOPOKyv+l2/tTqQjsDJ2Od2QqHi
-         VySg==
-X-Gm-Message-State: AOAM531mG7J8ziBkTobrEwBM08UpjOezBh4FIj1DIqlUdMTsJu8NCfpd
-        OWRmuYOIW8BrA4PoNxn+QBXzgaLlbj7HLJkVGp0=
-X-Google-Smtp-Source: ABdhPJxxyosYrdj1GqNypPiBnYRArw2E3/38homNMO1Av1PFu0RXXr0Dh8t9Utur9chqZtb0X55m4PfZQwmS3BcBlZQ=
-X-Received: by 2002:ab0:7705:: with SMTP id z5mr20481974uaq.2.1621846508208;
- Mon, 24 May 2021 01:55:08 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210523232556.15017-1-digetx@gmail.com>
-In-Reply-To: <20210523232556.15017-1-digetx@gmail.com>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Mon, 24 May 2021 10:54:57 +0200
-Message-ID: <CAMuHMdWqNngrDQOut1r5aD1Nk5BMXEV4m8+OBix4DXOV6OSpNg@mail.gmail.com>
-Subject: Re: [PATCH v1] kbuild: Disable compile testing if HAVE_LEGACY_CLK enabled
-To:     Dmitry Osipenko <digetx@gmail.com>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=13zcyWdsm4gpffNG5ZgDMwvczQG34AV4139pdXe/s/0=;
+        b=eyWB0fF1wQjPWVUatyiWYY4CPn1GrMSnQXQRCMRH2ivtWU6tgsNI7YbCigivmFByvq
+         ZZlmyjfhh9AI9myayJ6i8dX7OPRNyKz8xoBIthuwb9Q0gdOZEogSTvcjZpfU8NkuYosc
+         K9zOO2g5flXZTuniK4kPwupPi8z1kH2pakCAIISs2ySB6+pTwYCWrRwnnygb122ewRvQ
+         DW4dPxKQeQDVX6cMZJBrLPvbMr/AIVnxJhdMmPuxgrap6bM9rxdERaiB6G1C371ureyx
+         qTaGmoQP7U734QP00AWApqHFDMvHysdGhVIC40yBasHlj5yYmjUkumLYppSwMe9Y11s8
+         y99A==
+X-Gm-Message-State: AOAM532xkYJECVF/CRMLsDC5t3DXBJfA/oej48sj5hWQQr0+FQ4PTjJD
+        e4tFnIfo+1rF93BrfKJWDXs=
+X-Google-Smtp-Source: ABdhPJyhCOFQn/Z1pKRmtZeJWu1d4dSY2QLiSj+ONw56eIR3cGKanVoF3Tn/DOinhtQ09s5N7gDupw==
+X-Received: by 2002:a05:6512:128c:: with SMTP id u12mr10567429lfs.160.1621859961442;
+        Mon, 24 May 2021 05:39:21 -0700 (PDT)
+Received: from [192.168.2.145] (109-252-193-110.dynamic.spd-mgts.ru. [109.252.193.110])
+        by smtp.googlemail.com with ESMTPSA id p21sm1409745lfg.97.2021.05.24.05.39.20
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 24 May 2021 05:39:21 -0700 (PDT)
+Subject: Re: [PATCH v1] kbuild: Disable compile testing if HAVE_LEGACY_CLK
+ enabled
+To:     Geert Uytterhoeven <geert@linux-m68k.org>
 Cc:     Thierry Reding <thierry.reding@gmail.com>,
         Jonathan Hunter <jonathanh@nvidia.com>,
         Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
@@ -62,52 +77,79 @@ Cc:     Thierry Reding <thierry.reding@gmail.com>,
         linux-clk <linux-clk@vger.kernel.org>,
         "open list:TI ETHERNET SWITCH DRIVER (CPSW)" 
         <linux-omap@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+References: <20210523232556.15017-1-digetx@gmail.com>
+ <CAMuHMdWqNngrDQOut1r5aD1Nk5BMXEV4m8+OBix4DXOV6OSpNg@mail.gmail.com>
+From:   Dmitry Osipenko <digetx@gmail.com>
+Message-ID: <8b6af8c0-6f01-193f-1eb4-4e230871f0cd@gmail.com>
+Date:   Mon, 24 May 2021 15:39:20 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
+MIME-Version: 1.0
+In-Reply-To: <CAMuHMdWqNngrDQOut1r5aD1Nk5BMXEV4m8+OBix4DXOV6OSpNg@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-Hi Dmitry,
+24.05.2021 11:54, Geert Uytterhoeven пишет:
+> Hi Dmitry,
+> 
+> On Mon, May 24, 2021 at 1:26 AM Dmitry Osipenko <digetx@gmail.com> wrote:
+>> There are couple older platforms that can't be compile-tested because they
+>> partially implement CLK API. It causes build failure of kernel drivers due
+>> to the missing symbols of the unimplemented part of CLK API.
+>>
+>> These platforms are: ARM EP93XX, ARM OMAP1, m68k ColdFire, MIPS AR7,
+>>                      MIPS Ralink.
+>>
+>> Disable compile-testing for HAVE_LEGACY_CLK=y.
+>>
+>> Reported-by: kernel test robot <lkp@intel.com>
+>> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
+> 
+> Thanks for your patch!
+> 
+>> --- a/init/Kconfig
+>> +++ b/init/Kconfig
+>> @@ -131,7 +131,7 @@ config INIT_ENV_ARG_LIMIT
+>>
+>>  config COMPILE_TEST
+>>         bool "Compile also drivers which will not load"
+>> -       depends on HAS_IOMEM
+>> +       depends on HAS_IOMEM && !HAVE_LEGACY_CLK
+> 
+> That sounds a bit drastic to me.  Usually we just try to implement the
+> missing functionality, or provide stubs.
+> Which functions are missing?
 
-On Mon, May 24, 2021 at 1:26 AM Dmitry Osipenko <digetx@gmail.com> wrote:
-> There are couple older platforms that can't be compile-tested because they
-> partially implement CLK API. It causes build failure of kernel drivers due
-> to the missing symbols of the unimplemented part of CLK API.
->
-> These platforms are: ARM EP93XX, ARM OMAP1, m68k ColdFire, MIPS AR7,
->                      MIPS Ralink.
->
-> Disable compile-testing for HAVE_LEGACY_CLK=y.
->
-> Reported-by: kernel test robot <lkp@intel.com>
-> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
+Everything that belongs to CONFIG_COMMON_CLK needs stubs.
 
-Thanks for your patch!
+That is everything under CONFIG_HAVE_CLK [1], excluding functions
+belonging to clk-devres.o and clk-bulk.o [2]. The HAVE_LEGACY_CLK
+selects HAVE_CLK, but the COMMON_CLK is under HAVE_CLK too.
 
-> --- a/init/Kconfig
-> +++ b/init/Kconfig
-> @@ -131,7 +131,7 @@ config INIT_ENV_ARG_LIMIT
->
->  config COMPILE_TEST
->         bool "Compile also drivers which will not load"
-> -       depends on HAS_IOMEM
-> +       depends on HAS_IOMEM && !HAVE_LEGACY_CLK
+[1]
+https://elixir.bootlin.com/linux/v5.13-rc3/source/include/linux/clk.h#L786
+[2]
+https://elixir.bootlin.com/linux/v5.13-rc3/source/drivers/clk/Makefile#L3
 
-That sounds a bit drastic to me.  Usually we just try to implement the
-missing functionality, or provide stubs.
-Which functions are missing?
+This problem is repeated over and over again for the past years. Some
+maintainers are adding "depends on COMMON_CLK" for COMPILE_TEST of each
+driver, but this doesn't solve the root of the problem, and thus, it's
+constantly reoccurring.
 
->         help
->           Some drivers can be compiled on a different platform than they are
->           intended to be run on. Despite they cannot be loaded there (or even
+Recently Krzysztof Kozlowski added couple more clk stubs for MIPS, but
+still lots of stubs are missing. Some platforms don't have any stubs at
+all and apparently nobody cares to fix them.
 
-Gr{oetje,eeting}s,
+There 3 possible solutions:
 
-                        Geert
+1. Factor out COMMON_CLK from HAVE_LEGACY_CLK, if this is possible
+2. Build stubs universally, maybe using weak functions.
+3. Disable compile-testing for HAVE_LEGACY_CLK
 
--- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+The third option is the simplest. If anyone will care to fix those
+legacy platforms properly, then compile-testing could be re-enabled for
+them. This is my proposal.
