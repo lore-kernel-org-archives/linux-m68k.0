@@ -2,113 +2,104 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-15.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
-	autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-10.3 required=3.0 tests=BAYES_00,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS,USER_AGENT_SANE_1 autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A67C4C47085
-	for <linux-m68k@archiver.kernel.org>; Sun, 23 May 2021 23:26:08 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 23CE3C47085
+	for <linux-m68k@archiver.kernel.org>; Mon, 24 May 2021 07:20:20 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 7ED2661185
-	for <linux-m68k@archiver.kernel.org>; Sun, 23 May 2021 23:26:08 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 068CA610CE
+	for <linux-m68k@archiver.kernel.org>; Mon, 24 May 2021 07:20:20 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232058AbhEWX1e (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Sun, 23 May 2021 19:27:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56876 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231989AbhEWX1d (ORCPT
-        <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Sun, 23 May 2021 19:27:33 -0400
-Received: from mail-lj1-x22b.google.com (mail-lj1-x22b.google.com [IPv6:2a00:1450:4864:20::22b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 21608C061756
-        for <linux-m68k@lists.linux-m68k.org>; Sun, 23 May 2021 16:26:05 -0700 (PDT)
-Received: by mail-lj1-x22b.google.com with SMTP id c15so31137781ljr.7
-        for <linux-m68k@lists.linux-m68k.org>; Sun, 23 May 2021 16:26:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=pPiK1DfUxZZrTBI/5iz69l7qULP78LHErLsYFXd4x9o=;
-        b=Wh4IAnNxXo994rOpcpBG1uHjyJm1icPsdNE7/2cIz+9OcmAv8x5QRPsjauEGrPNXiW
-         RQkuH5Bx1P5mQmEgcSIo+dbZENJWfm+ttnjxO+s92XMY+RPBJ2+nun7R4NtaOHRkojvQ
-         W5cyhqxNL775x1J4LWzOqkZigA/1vrCffMUNYpOkXrHm5cFJmaSSfTKIr13MI9bCY/Nq
-         LR2+mcOUhyQTrJmbrtHh4CssW4Gvgsl5T+cpjBpF4kz2QpQPMu12h5jDZ0hMpEJyjgTp
-         0ruHCtRGDigp05ZBlZJ/ZsD0UV5aaUlUx5toHznF4RKhugLSlHIIAWqhOg4k8RZwG5Gm
-         lDow==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=pPiK1DfUxZZrTBI/5iz69l7qULP78LHErLsYFXd4x9o=;
-        b=mibRkIcyOPfJKOh3nCr8t5U/JFUIBW57L+JSM8Y7MjTDMCxfRz24700BskEXEEaD6N
-         12R9DztImdY6HMx5ROa0Mag3+ghODvLTN4XBN+xaV9I/McRuq1JdkL4E1PKfpKLdIeMb
-         zFCl1OfktWFOooix3a+5/TSjAn+RIe/Oh6bnIEdf8JywAPHcBzIb2qY06Z7nPTokaqDQ
-         ZKHpK0uaWs2xlrTXxkxTbv85H62DbR+PtALeIFM61vJMUi6UGlxiQzblJBklecqXBb2i
-         3Jhx3vz+1OWHS5nUOG1DTjo5BOw7hXh4ybcfnNMEdxf9JC0da3GKArojwppVGKGOBZIp
-         B+hQ==
-X-Gm-Message-State: AOAM532eSpsUuckssJTZXty169Q/voJogGXyISCFVoNEzqwAiBqkzv4g
-        Y09dE+s4xJNpIUroYTqExss=
-X-Google-Smtp-Source: ABdhPJzn0nkTvNJ4/y5/7O9Cpdv0X5iyxFW9w+e888CSbB1VKcAijfzu9imoGp+TgHIWvgjlKrqffQ==
-X-Received: by 2002:a05:651c:1043:: with SMTP id x3mr14722134ljm.130.1621812363346;
-        Sun, 23 May 2021 16:26:03 -0700 (PDT)
-Received: from localhost.localdomain (109-252-193-110.dynamic.spd-mgts.ru. [109.252.193.110])
-        by smtp.gmail.com with ESMTPSA id p7sm1489329ljg.61.2021.05.23.16.26.02
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 23 May 2021 16:26:02 -0700 (PDT)
-From:   Dmitry Osipenko <digetx@gmail.com>
-To:     Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Tony Lindgren <tony@atomide.com>,
-        Arnd Bergmann <arnd@arndb.de>,
+        id S232249AbhEXHVq (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Mon, 24 May 2021 03:21:46 -0400
+Received: from verein.lst.de ([213.95.11.211]:53368 "EHLO verein.lst.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232128AbhEXHVq (ORCPT <rfc822;linux-m68k@vger.kernel.org>);
+        Mon, 24 May 2021 03:21:46 -0400
+Received: by verein.lst.de (Postfix, from userid 2407)
+        id A686B67373; Mon, 24 May 2021 09:20:13 +0200 (CEST)
+Date:   Mon, 24 May 2021 09:20:13 +0200
+From:   Christoph Hellwig <hch@lst.de>
+To:     Luis Chamberlain <mcgrof@kernel.org>
+Cc:     Christoph Hellwig <hch@lst.de>, Jens Axboe <axboe@kernel.dk>,
         Geert Uytterhoeven <geert@linux-m68k.org>,
-        Paul Burton <paul.burton@mips.com>,
-        John Crispin <john@phrozen.org>
-Cc:     linux-mips@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org,
-        linux-tegra@vger.kernel.org, linux-clk@vger.kernel.org,
-        linux-omap@vger.kernel.org
-Subject: [PATCH v1] kbuild: Disable compile testing if HAVE_LEGACY_CLK enabled
-Date:   Mon, 24 May 2021 02:25:56 +0300
-Message-Id: <20210523232556.15017-1-digetx@gmail.com>
-X-Mailer: git-send-email 2.30.2
+        Chris Zankel <chris@zankel.net>,
+        Max Filippov <jcmvbkbc@gmail.com>,
+        Philipp Reisner <philipp.reisner@linbit.com>,
+        Lars Ellenberg <lars.ellenberg@linbit.com>,
+        Jim Paris <jim@jtan.com>,
+        Joshua Morris <josh.h.morris@us.ibm.com>,
+        Philip Kelleher <pjk1939@linux.ibm.com>,
+        Minchan Kim <minchan@kernel.org>,
+        Nitin Gupta <ngupta@vflare.org>,
+        Matias Bjorling <mb@lightnvm.io>, Coly Li <colyli@suse.de>,
+        Mike Snitzer <snitzer@redhat.com>, Song Liu <song@kernel.org>,
+        Maxim Levitsky <maximlevitsky@gmail.com>,
+        Alex Dubov <oakad@yahoo.com>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Vishal Verma <vishal.l.verma@intel.com>,
+        Dave Jiang <dave.jiang@intel.com>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        linux-xtensa@linux-xtensa.org, linux-m68k@vger.kernel.org,
+        linux-raid@vger.kernel.org, nvdimm@lists.linux.dev,
+        linux-s390@vger.kernel.org, linux-mmc@vger.kernel.org,
+        linux-bcache@vger.kernel.org, linux-nvme@lists.infradead.org,
+        linux-block@vger.kernel.org, dm-devel@redhat.com,
+        drbd-dev@tron.linbit.com, linuxppc-dev@lists.ozlabs.org
+Subject: Re: [dm-devel] [PATCH 01/26] block: refactor device number setup
+ in __device_add_disk
+Message-ID: <20210524072013.GA23890@lst.de>
+References: <20210521055116.1053587-1-hch@lst.de> <20210521055116.1053587-2-hch@lst.de> <20210521171646.GA25017@42.do-not-panic.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210521171646.GA25017@42.do-not-panic.com>
+User-Agent: Mutt/1.5.17 (2007-11-01)
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-There are couple older platforms that can't be compile-tested because they
-partially implement CLK API. It causes build failure of kernel drivers due
-to the missing symbols of the unimplemented part of CLK API.
+On Fri, May 21, 2021 at 05:16:46PM +0000, Luis Chamberlain wrote:
+> > -	/* in consecutive minor range? */
+> > -	if (bdev->bd_partno < disk->minors) {
+> > -		*devt = MKDEV(disk->major, disk->first_minor + bdev->bd_partno);
+> > -		return 0;
+> > -	}
+> > -
+> 
+> It is not obviously clear to me, why this was part of add_disk()
+> path, and ...
+> 
+> > diff --git a/block/partitions/core.c b/block/partitions/core.c
+> > index dc60ecf46fe6..504297bdc8bf 100644
+> > --- a/block/partitions/core.c
+> > +++ b/block/partitions/core.c
+> > @@ -379,9 +380,15 @@ static struct block_device *add_partition(struct gendisk *disk, int partno,
+> >  	pdev->type = &part_type;
+> >  	pdev->parent = ddev;
+> >  
+> > -	err = blk_alloc_devt(bdev, &devt);
+> > -	if (err)
+> > -		goto out_put;
+> > +	/* in consecutive minor range? */
+> > +	if (bdev->bd_partno < disk->minors) {
+> > +		devt = MKDEV(disk->major, disk->first_minor + bdev->bd_partno);
+> > +	} else {
+> > +		err = blk_alloc_ext_minor();
+> > +		if (err < 0)
+> > +			goto out_put;
+> > +		devt = MKDEV(BLOCK_EXT_MAJOR, err);
+> > +	}
+> >  	pdev->devt = devt;
+> >  
+> >  	/* delay uevent until 'holders' subdir is created */
+> 
+> ... and why we only add this here now.
 
-These platforms are: ARM EP93XX, ARM OMAP1, m68k ColdFire, MIPS AR7,
-                     MIPS Ralink.
-
-Disable compile-testing for HAVE_LEGACY_CLK=y.
-
-Reported-by: kernel test robot <lkp@intel.com>
-Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
----
- init/Kconfig | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/init/Kconfig b/init/Kconfig
-index 173a474012d7..42701b04be00 100644
---- a/init/Kconfig
-+++ b/init/Kconfig
-@@ -131,7 +131,7 @@ config INIT_ENV_ARG_LIMIT
- 
- config COMPILE_TEST
- 	bool "Compile also drivers which will not load"
--	depends on HAS_IOMEM
-+	depends on HAS_IOMEM && !HAVE_LEGACY_CLK
- 	help
- 	  Some drivers can be compiled on a different platform than they are
- 	  intended to be run on. Despite they cannot be loaded there (or even
--- 
-2.30.2
-
+For the genhd minors == 0 (aka GENHD_FL_EXT_DEVT) implies having to
+allocate a dynamic dev_t, so it can be folded into another conditional.
