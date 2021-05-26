@@ -2,125 +2,88 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-7.3 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
-	NICE_REPLY_A,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=no
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-5.3 required=3.0 tests=BAYES_00,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E9A74C4707F
-	for <linux-m68k@archiver.kernel.org>; Wed, 26 May 2021 00:40:05 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 3DFF4C2B9F7
+	for <linux-m68k@archiver.kernel.org>; Wed, 26 May 2021 04:49:49 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id C3EDC6023C
-	for <linux-m68k@archiver.kernel.org>; Wed, 26 May 2021 00:40:05 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 037AF613AB
+	for <linux-m68k@archiver.kernel.org>; Wed, 26 May 2021 04:49:48 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230312AbhEZAlf (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Tue, 25 May 2021 20:41:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43796 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230106AbhEZAle (ORCPT
-        <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Tue, 25 May 2021 20:41:34 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A9995C061574;
-        Tue, 25 May 2021 17:40:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-        Content-Type:In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:
-        Subject:Sender:Reply-To:Content-ID:Content-Description;
-        bh=tETNDjNyS9VWp0lmkXGYY/OSTeXZstfAPKUdqUv0Z6g=; b=cuho+FlC0QiW7LCkxQwvlW2LIn
-        vdATixI4JJu6Nb5GPntqn1h36tTA2GAp4u6SqyHeh4v/U8os2HHd7AJ/qdpILv+k7W42QdTck2XWp
-        1JNEx++xFzzmG/OqOkdDRyqor7KWVOXZlaDgM5qdCCy4aTs/dbpv9AHRjiYmlFO0D6i/OWquSxpkO
-        qeUqZahCEgKwivrncyTcomGUWpOtgWIr5NwvudL22BrVdrI6GA11Ps039sQ6LcjvsUEDYGNXXWPzI
-        H9DZWM9o05gvYQiMEMB6c1Ey3T+ysWCYP18tsz3oEA7nbelPsDblH6/nnLJHpyNVnqgdwRAHAsJsK
-        6lhywPkA==;
-Received: from [2601:1c0:6280:3f0::7376]
-        by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1llhaa-009Y5s-Ge; Wed, 26 May 2021 00:40:00 +0000
-Subject: Re: [PATCH v1] kbuild: Disable compile testing if HAVE_LEGACY_CLK
- enabled
-To:     Dmitry Osipenko <digetx@gmail.com>,
+        id S229690AbhEZEvT (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Wed, 26 May 2021 00:51:19 -0400
+Received: from verein.lst.de ([213.95.11.211]:33187 "EHLO verein.lst.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229522AbhEZEvS (ORCPT <rfc822;linux-m68k@lists.linux-m68k.org>);
+        Wed, 26 May 2021 00:51:18 -0400
+Received: by verein.lst.de (Postfix, from userid 2407)
+        id 3ADA76736F; Wed, 26 May 2021 06:49:44 +0200 (CEST)
+Date:   Wed, 26 May 2021 06:49:43 +0200
+From:   Christoph Hellwig <hch@lst.de>
+To:     Ulf Hansson <ulf.hansson@linaro.org>
+Cc:     Christoph Hellwig <hch@lst.de>, Jens Axboe <axboe@kernel.dk>,
         Geert Uytterhoeven <geert@linux-m68k.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Cc:     Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Tony Lindgren <tony@atomide.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Paul Burton <paul.burton@mips.com>,
-        John Crispin <john@phrozen.org>,
-        "open list:BROADCOM NVRAM DRIVER" <linux-mips@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        linux-m68k <linux-m68k@lists.linux-m68k.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-tegra <linux-tegra@vger.kernel.org>,
-        linux-clk <linux-clk@vger.kernel.org>,
-        "open list:TI ETHERNET SWITCH DRIVER (CPSW)" 
-        <linux-omap@vger.kernel.org>
-References: <20210523232556.15017-1-digetx@gmail.com>
- <CAMuHMdWqNngrDQOut1r5aD1Nk5BMXEV4m8+OBix4DXOV6OSpNg@mail.gmail.com>
- <8b6af8c0-6f01-193f-1eb4-4e230871f0cd@gmail.com>
- <f12b4622-6cea-ac65-2d94-f50a85c29215@canonical.com>
- <CAMuHMdW_G259Nwx1EEf38h0AcVH8yjmjqp9Mh-vQ4LJJMzD8Dg@mail.gmail.com>
- <2e5bb7c2-62d9-b1f7-7f35-2b379d3692d5@gmail.com>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <3661fdba-ad32-5d16-7714-1ebc58caf435@infradead.org>
-Date:   Tue, 25 May 2021 17:39:55 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.0
+        Chris Zankel <chris@zankel.net>,
+        Max Filippov <jcmvbkbc@gmail.com>,
+        Philipp Reisner <philipp.reisner@linbit.com>,
+        Lars Ellenberg <lars.ellenberg@linbit.com>,
+        Jim Paris <jim@jtan.com>,
+        Joshua Morris <josh.h.morris@us.ibm.com>,
+        Philip Kelleher <pjk1939@linux.ibm.com>,
+        Minchan Kim <minchan@kernel.org>,
+        Nitin Gupta <ngupta@vflare.org>,
+        Matias Bjorling <mb@lightnvm.io>, Coly Li <colyli@suse.de>,
+        Mike Snitzer <snitzer@redhat.com>, Song Liu <song@kernel.org>,
+        Maxim Levitsky <maximlevitsky@gmail.com>,
+        Alex Dubov <oakad@yahoo.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Vishal Verma <vishal.l.verma@intel.com>,
+        Dave Jiang <dave.jiang@intel.com>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        linux-block <linux-block@vger.kernel.org>, dm-devel@redhat.com,
+        linux-m68k@lists.linux-m68k.org, linux-xtensa@linux-xtensa.org,
+        drbd-dev@lists.linbit.com,
+        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
+        linux-bcache@vger.kernel.org, linux-raid@vger.kernel.org,
+        linux-mmc <linux-mmc@vger.kernel.org>, nvdimm@lists.linux.dev,
+        linux-nvme@lists.infradead.org, linux-s390@vger.kernel.org
+Subject: Re: simplify gendisk and request_queue allocation for bio based
+ drivers
+Message-ID: <20210526044943.GA28551@lst.de>
+References: <20210521055116.1053587-1-hch@lst.de> <CAPDyKFpqdSYeA+Zg=9Ewi46CmSWNpXQbju6HQo7aviCcRzyAAg@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <2e5bb7c2-62d9-b1f7-7f35-2b379d3692d5@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAPDyKFpqdSYeA+Zg=9Ewi46CmSWNpXQbju6HQo7aviCcRzyAAg@mail.gmail.com>
+User-Agent: Mutt/1.5.17 (2007-11-01)
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-On 5/25/21 2:29 PM, Dmitry Osipenko wrote:
-> 25.05.2021 15:19, Geert Uytterhoeven пишет:
-> ...
->>>> There 3 possible solutions:
->>>>
->>>> 1. Factor out COMMON_CLK from HAVE_LEGACY_CLK, if this is possible
->>>> 2. Build stubs universally, maybe using weak functions.
->>>
->>> I vote for this one - global stubs.
->>
->> Yep.
->>
->>> Or for a new one:
->>> 4. Disable COMPILE_TEST for specific platforms (mentioned in commit
->>> msg). Eventually could be like:
->>> config RALINK
->>>         depends !COMPILE_TEST || (COMPILE_TEST && COMMON_CLK)
->>
->> That's a neat idea!
->>
->> Of course there's a fifth option:
->>
->> 5. Convert legacy platforms to COMMON_CLK.
->>
->> Which is already happening for ARM EP93XX.
+On Wed, May 26, 2021 at 12:41:37AM +0200, Ulf Hansson wrote:
+> On Fri, 21 May 2021 at 07:51, Christoph Hellwig <hch@lst.de> wrote:
+> >
+> > Hi all,
+> >
+> > this series is the first part of cleaning up lifetimes and allocation of
+> > the gendisk and request_queue structure.  It adds a new interface to
+> > allocate the disk and queue together for bio based drivers, and a helper
+> > for cleanup/free them when a driver is unloaded or a device is removed.
 > 
-> I'll try to take a closer look at alternative options, thank you for
-> yours input.
+> May I ask what else you have in the pipe for the next steps?
+> 
+> The reason why I ask is that I am looking into some issues related to
+> lifecycle problems of gendisk/mmc, typically triggered at SD/MMC card
+> removal.
 
-Hi,
+In the short run not much more than superficial cleanups.  Eventually
+I want bio based drivers to not require a separate request_queue, leaving
+that purely as a data structure for blk-mq based drivers.  But it will
+take a while until we get there, so it should not block any fixes.
 
-If you are messing around with HAVE_LEGACY_CLK and COMMON_CLK
-and don't mind, please have a look at this report from
-'kernel test robot':
-  https://lore.kernel.org/lkml/202103162301.oomY9NwI-lkp@intel.com/
-
-
-Maybe this one is more MIPS-specific. I dunno.
-I tried to come up with a patch for it and failed.
-
-I will be happy to built-test any patches that you come up with.
-
-Maybe I have just looked at this too long...
-
-thanks.
--- 
-~Randy
-
+For hot unplug handling it might be worth to take a look at nvme, as it
+is tested a lot for that case.
