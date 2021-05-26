@@ -2,88 +2,100 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.3 required=3.0 tests=BAYES_00,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-13.8 required=3.0 tests=BAYES_00,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3DFF4C2B9F7
-	for <linux-m68k@archiver.kernel.org>; Wed, 26 May 2021 04:49:49 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8D488C2B9F7
+	for <linux-m68k@archiver.kernel.org>; Wed, 26 May 2021 07:20:33 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 037AF613AB
-	for <linux-m68k@archiver.kernel.org>; Wed, 26 May 2021 04:49:48 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 6E19F61402
+	for <linux-m68k@archiver.kernel.org>; Wed, 26 May 2021 07:20:33 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229690AbhEZEvT (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Wed, 26 May 2021 00:51:19 -0400
-Received: from verein.lst.de ([213.95.11.211]:33187 "EHLO verein.lst.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229522AbhEZEvS (ORCPT <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Wed, 26 May 2021 00:51:18 -0400
-Received: by verein.lst.de (Postfix, from userid 2407)
-        id 3ADA76736F; Wed, 26 May 2021 06:49:44 +0200 (CEST)
-Date:   Wed, 26 May 2021 06:49:43 +0200
-From:   Christoph Hellwig <hch@lst.de>
-To:     Ulf Hansson <ulf.hansson@linaro.org>
-Cc:     Christoph Hellwig <hch@lst.de>, Jens Axboe <axboe@kernel.dk>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Chris Zankel <chris@zankel.net>,
-        Max Filippov <jcmvbkbc@gmail.com>,
-        Philipp Reisner <philipp.reisner@linbit.com>,
-        Lars Ellenberg <lars.ellenberg@linbit.com>,
-        Jim Paris <jim@jtan.com>,
-        Joshua Morris <josh.h.morris@us.ibm.com>,
-        Philip Kelleher <pjk1939@linux.ibm.com>,
-        Minchan Kim <minchan@kernel.org>,
-        Nitin Gupta <ngupta@vflare.org>,
-        Matias Bjorling <mb@lightnvm.io>, Coly Li <colyli@suse.de>,
-        Mike Snitzer <snitzer@redhat.com>, Song Liu <song@kernel.org>,
-        Maxim Levitsky <maximlevitsky@gmail.com>,
-        Alex Dubov <oakad@yahoo.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Vishal Verma <vishal.l.verma@intel.com>,
-        Dave Jiang <dave.jiang@intel.com>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        linux-block <linux-block@vger.kernel.org>, dm-devel@redhat.com,
-        linux-m68k@lists.linux-m68k.org, linux-xtensa@linux-xtensa.org,
-        drbd-dev@lists.linbit.com,
-        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
-        linux-bcache@vger.kernel.org, linux-raid@vger.kernel.org,
-        linux-mmc <linux-mmc@vger.kernel.org>, nvdimm@lists.linux.dev,
-        linux-nvme@lists.infradead.org, linux-s390@vger.kernel.org
-Subject: Re: simplify gendisk and request_queue allocation for bio based
- drivers
-Message-ID: <20210526044943.GA28551@lst.de>
-References: <20210521055116.1053587-1-hch@lst.de> <CAPDyKFpqdSYeA+Zg=9Ewi46CmSWNpXQbju6HQo7aviCcRzyAAg@mail.gmail.com>
+        id S232989AbhEZHWD (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Wed, 26 May 2021 03:22:03 -0400
+Received: from mail-ua1-f45.google.com ([209.85.222.45]:33558 "EHLO
+        mail-ua1-f45.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232975AbhEZHWC (ORCPT
+        <rfc822;linux-m68k@lists.linux-m68k.org>);
+        Wed, 26 May 2021 03:22:02 -0400
+Received: by mail-ua1-f45.google.com with SMTP id c6so258640uat.0
+        for <linux-m68k@lists.linux-m68k.org>; Wed, 26 May 2021 00:20:30 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=mfyNClndHUNcIv3x/5sWBhrH6KgenkR88tjR35EvNYU=;
+        b=E10nut3jMRv/BEMHGwe54zZYnjHkbwrpLJwU0Hr/ftBRQkRHXczhhNhbHqpl+QwJTQ
+         VrNUl7VIcznzNyMW53lxnNC8YXP2q1ffPlECY1qHuJ12uaNzSl+ZCKtQ8Ym70ARdnLWo
+         BLFuaCERS96nbQIOK+697/yXvdjJD9pTls9MHVIi66nLX6vWwWUCePQftYdUXQ8qgJjC
+         KRFMsnfkuQXdmyc2epenGFeGNVNehpBZJU3DJUZsxUyjsHbxMUb6nPaZY5p6xjhYa7yX
+         HIAFd0sYISUiYs0G1GDFOoxT5WJ3vgJw7f3nHOhLkayp37p2Z0LgB/RU/+An9VochJAA
+         yLmA==
+X-Gm-Message-State: AOAM530BLYyE5bX8ryLg5e9PCUKysUyE1+1P1YIK30isXetxONTXLLC3
+        Xob7iOdVTuc34OQsHmbW4uS87xyJzKJfi9eflbA=
+X-Google-Smtp-Source: ABdhPJxF+qtPXKWBS1ATx0OB8NSVaKioeEzf3uGa4Whzc6rDzo7AkL3e1u+kHO4TtFK5BkjfqOjJo9rP8okfur+vUSQ=
+X-Received: by 2002:ab0:7705:: with SMTP id z5mr30510980uaq.2.1622013630064;
+ Wed, 26 May 2021 00:20:30 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAPDyKFpqdSYeA+Zg=9Ewi46CmSWNpXQbju6HQo7aviCcRzyAAg@mail.gmail.com>
-User-Agent: Mutt/1.5.17 (2007-11-01)
+References: <20210526070345.31114-1-rdunlap@infradead.org>
+In-Reply-To: <20210526070345.31114-1-rdunlap@infradead.org>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Wed, 26 May 2021 09:20:18 +0200
+Message-ID: <CAMuHMdXdpzmFMSmM+8z9csZ094O5UG6nmAyTYYb=4TAmyUiSnw@mail.gmail.com>
+Subject: Re: [PATCH] MOUSE_ATARI: fix kconfig unmet dependency warning
+To:     Randy Dunlap <rdunlap@infradead.org>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Michael Schmitz <schmitz@debian.org>,
+        Roman Zippel <zippel@linux-m68k.org>,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        linux-input <linux-input@vger.kernel.org>,
+        linux-m68k <linux-m68k@lists.linux-m68k.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-On Wed, May 26, 2021 at 12:41:37AM +0200, Ulf Hansson wrote:
-> On Fri, 21 May 2021 at 07:51, Christoph Hellwig <hch@lst.de> wrote:
-> >
-> > Hi all,
-> >
-> > this series is the first part of cleaning up lifetimes and allocation of
-> > the gendisk and request_queue structure.  It adds a new interface to
-> > allocate the disk and queue together for bio based drivers, and a helper
-> > for cleanup/free them when a driver is unloaded or a device is removed.
-> 
-> May I ask what else you have in the pipe for the next steps?
-> 
-> The reason why I ask is that I am looking into some issues related to
-> lifecycle problems of gendisk/mmc, typically triggered at SD/MMC card
-> removal.
+Hi Randy,
 
-In the short run not much more than superficial cleanups.  Eventually
-I want bio based drivers to not require a separate request_queue, leaving
-that purely as a data structure for blk-mq based drivers.  But it will
-take a while until we get there, so it should not block any fixes.
+On Wed, May 26, 2021 at 9:03 AM Randy Dunlap <rdunlap@infradead.org> wrote:
+> MOUSE_ATARI should depend on INPUT_KEYBOARD since ATARI_KBD_CORE
+> depends on INPUT_KEYBOARD. This prevents MOUSE_ATARI from
+> selecting ATARI_KBD_CORE when INPUT_KEYBOARD is not set/enabled.
+>
+> WARNING: unmet direct dependencies detected for ATARI_KBD_CORE
+>   Depends on [n]: !UML && INPUT [=y] && INPUT_KEYBOARD [=n]
+>   Selected by [y]:
+>   - MOUSE_ATARI [=y] && !UML && INPUT [=y] && INPUT_MOUSE [=y] && ATARI [=y]
+>
+> Fixes: c04cb856e20a ("m68k: Atari keyboard and mouse support.")
+> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
 
-For hot unplug handling it might be worth to take a look at nvme, as it
-is tested a lot for that case.
+Thanks for your patch!
+
+> --- linux-next-20210525.orig/drivers/input/mouse/Kconfig
+> +++ linux-next-20210525/drivers/input/mouse/Kconfig
+> @@ -348,6 +348,7 @@ config MOUSE_AMIGA
+>
+>  config MOUSE_ATARI
+>         tristate "Atari mouse"
+> +       depends on INPUT_KEYBOARD
+>         depends on ATARI
+>         select ATARI_KBD_CORE
+>         help
+
+It looks like arch/m68k/atari/atakeyb.c doesn't use anything from the
+input subsystem, so I think you can move the ATARI_KBD_CORE symbol
+outside the "if INPUT_KEYBOARD" section instead.
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
+-- 
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
