@@ -2,109 +2,100 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-18.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
-	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-8.7 required=3.0 tests=BAYES_00,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,MAILING_LIST_MULTI,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id DEAD8C47082
-	for <linux-m68k@archiver.kernel.org>; Thu, 27 May 2021 00:12:57 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 3CE81C47089
+	for <linux-m68k@archiver.kernel.org>; Thu, 27 May 2021 06:56:46 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id BBB72613BE
-	for <linux-m68k@archiver.kernel.org>; Thu, 27 May 2021 00:12:57 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 0C622613ED
+	for <linux-m68k@archiver.kernel.org>; Thu, 27 May 2021 06:56:46 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232982AbhE0AO3 (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Wed, 26 May 2021 20:14:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52400 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232829AbhE0AO2 (ORCPT
+        id S232310AbhE0G6R (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Thu, 27 May 2021 02:58:17 -0400
+Received: from mail-ua1-f49.google.com ([209.85.222.49]:42746 "EHLO
+        mail-ua1-f49.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233653AbhE0G6Q (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Wed, 26 May 2021 20:14:28 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E7134C061574;
-        Wed, 26 May 2021 17:12:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-        MIME-Version:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:
-        Content-ID:Content-Description:In-Reply-To:References;
-        bh=/mkS48c0mh9e8PGwzXLkD0N/csDVEEHF15MWB/exkqw=; b=2Z8CkuWyzbvSKkqqPdVKo0p4Cq
-        S4EdPYT/LXn94S81bYRBYp0gY3X0hw5rFwehV2CLt9siXvcRIFkDXGVQMW0MClPZ/rjGL1tY2HB+n
-        TUlEEv79v2EGgS84h/CIUWAGKuxg4qhpIMWN4j5vJy5IW1zPpCjYvDwqfT/xEbxit5avKQxzJWpXE
-        /u2zK8qEX0Zu66TywY5K/mECMEDjDZHs0XPpHtt+wUdPmZw3hC4xOe3VaYXpkQEvJ4pvoWQBiSQ00
-        YuyXROAsqsRA9ZLaqj3tYmfSRAVHGUgpSh4zmBvd9I2l6GovSzg/zOqt59JlMxKNI8DSumBHtWEDr
-        /OOvghhw==;
-Received: from [2601:1c0:6280:3f0::ce7d] (helo=bombadil.infradead.org)
-        by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1lm3du-0014je-7c; Thu, 27 May 2021 00:12:54 +0000
-From:   Randy Dunlap <rdunlap@infradead.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Randy Dunlap <rdunlap@infradead.org>,
+        Thu, 27 May 2021 02:58:16 -0400
+Received: by mail-ua1-f49.google.com with SMTP id w5so2227137uaq.9
+        for <linux-m68k@lists.linux-m68k.org>; Wed, 26 May 2021 23:56:42 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=h2t6IMzVIqTCod2+uOSHEsZTJdw+bDIz54J1tQ79MxI=;
+        b=dOdHylpGsyqVZqAvaTCQMcLoQz09APQaNXaCkG7Eps6kUVlg9tGoTXv28w4timKflA
+         +SB4GG1RBk9R8NLY4/qKj1iBse0QAtvQE11pdnUlgAkByuBYUp7jNY3kyiPZ3y+CoEdm
+         MGkCBS1u4L9g2ukuKIph0AccsWVinxXC8lrE0QW68vN9JSyHEwiZRD4O7ibcdNmZu6Ht
+         /5hApljBoG+AHAbdx7iC4JeAfUexLp37XJdXQMc5454KnQ8L+sOgTP3sDPnUk1BNgJHX
+         52sDUFutoj5/zXbqc16Z+db22RZj3WUHDs7guquRh60i/kmJ0G2NXi5SihvMbp1SrUgl
+         bLWQ==
+X-Gm-Message-State: AOAM533pYf9TPuZS0W7Daqk/yAULtWL1OUlZ64khyx5lA3449cVvy1mj
+        ZKFzbUm43KAT6Fog6seLdmFpBlfmIhTWwjsejXU=
+X-Google-Smtp-Source: ABdhPJy2YAKKfxFxxvKdmhExBLtPw5lTCiBuF+JtcYk8I7TJ0hfYqoU1o0Y8QVH5FiEH0N4Sj81vPMLvvnlXq+SMexU=
+X-Received: by 2002:a1f:d8c3:: with SMTP id p186mr1066978vkg.1.1622098602086;
+ Wed, 26 May 2021 23:56:42 -0700 (PDT)
+MIME-Version: 1.0
+References: <20210527001251.8529-1-rdunlap@infradead.org>
+In-Reply-To: <20210527001251.8529-1-rdunlap@infradead.org>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Thu, 27 May 2021 08:56:30 +0200
+Message-ID: <CAMuHMdWxBDM6za4_zPrkPGja8K6vy47gfdzYMNjJ-i1n1ySsHA@mail.gmail.com>
+Subject: Re: [PATCH v2] MOUSE_ATARI: fix kconfig unmet dependency warning
+To:     Randy Dunlap <rdunlap@infradead.org>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
         Michael Schmitz <schmitz@debian.org>,
         Roman Zippel <zippel@linux-m68k.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
         Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        linux-input@vger.kernel.org, linux-m68k@lists.linux-m68k.org,
+        linux-input <linux-input@vger.kernel.org>,
+        linux-m68k <linux-m68k@lists.linux-m68k.org>,
         Michael Schmitz <schmitzmic@gmail.com>
-Subject: [PATCH v2] MOUSE_ATARI: fix kconfig unmet dependency warning
-Date:   Wed, 26 May 2021 17:12:51 -0700
-Message-Id: <20210527001251.8529-1-rdunlap@infradead.org>
-X-Mailer: git-send-email 2.26.2
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-Since the code for ATARI_KBD_CORE does not use drivers/input/keyboard/
-code, just move ATARI_KBD_CORE to arch/m68k/Kconfig.machine to remove
-this dependency.
+On Thu, May 27, 2021 at 2:12 AM Randy Dunlap <rdunlap@infradead.org> wrote:
+> Since the code for ATARI_KBD_CORE does not use drivers/input/keyboard/
+> code, just move ATARI_KBD_CORE to arch/m68k/Kconfig.machine to remove
+> this dependency.
+>
+> Removes this kconfig warning:
+>
+> WARNING: unmet direct dependencies detected for ATARI_KBD_CORE
+>   Depends on [n]: !UML && INPUT [=y] && INPUT_KEYBOARD [=n]
+>   Selected by [y]:
+>   - MOUSE_ATARI [=y] && !UML && INPUT [=y] && INPUT_MOUSE [=y] && ATARI [=y]
+>
+> Fixes: c04cb856e20a ("m68k: Atari keyboard and mouse support.")
+> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+> Cc: Michael Schmitz <schmitz@debian.org>
+> Cc: Roman Zippel <zippel@linux-m68k.org>
+> Cc: Geert Uytterhoeven <geert@linux-m68k.org>
+> Cc: Dmitry Torokhov <dmitry.torokhov@gmail.com>
+> Cc: linux-input@vger.kernel.org
+> Cc: linux-m68k@lists.linux-m68k.org
+> Suggested-by: Geert Uytterhoeven <geert@linux-m68k.org>
+> Suggested-by: Michael Schmitz <schmitzmic@gmail.com>
 
-Removes this kconfig warning:
+> ---
+> v2: move the symbol outside of INPUT_KEYBOARD (Geert) -- all the way
+>     to Kconfig.machine (Michael). Thanks.
 
-WARNING: unmet direct dependencies detected for ATARI_KBD_CORE
-  Depends on [n]: !UML && INPUT [=y] && INPUT_KEYBOARD [=n]
-  Selected by [y]:
-  - MOUSE_ATARI [=y] && !UML && INPUT [=y] && INPUT_MOUSE [=y] && ATARI [=y]
+Acked-by: Geert Uytterhoeven <geert@linux-m68k.org>
 
-Fixes: c04cb856e20a ("m68k: Atari keyboard and mouse support.")
-Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-Cc: Michael Schmitz <schmitz@debian.org>
-Cc: Roman Zippel <zippel@linux-m68k.org>
-Cc: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: Dmitry Torokhov <dmitry.torokhov@gmail.com>
-Cc: linux-input@vger.kernel.org
-Cc: linux-m68k@lists.linux-m68k.org
-Suggested-by: Geert Uytterhoeven <geert@linux-m68k.org>
-Suggested-by: Michael Schmitz <schmitzmic@gmail.com>
----
-v2: move the symbol outside of INPUT_KEYBOARD (Geert) -- all the way
-    to Kconfig.machine (Michael). Thanks.
+I'm willing to queue this in the m68k for-v5.14 branch, if Dmitry agrees.
 
- arch/m68k/Kconfig.machine      |    3 +++
- drivers/input/keyboard/Kconfig |    3 ---
- 2 files changed, 3 insertions(+), 3 deletions(-)
+Gr{oetje,eeting}s,
 
---- linux-next-20210525.orig/arch/m68k/Kconfig.machine
-+++ linux-next-20210525/arch/m68k/Kconfig.machine
-@@ -25,6 +25,9 @@ config ATARI
- 	  this kernel on an Atari, say Y here and browse the material
- 	  available in <file:Documentation/m68k>; otherwise say N.
- 
-+config ATARI_KBD_CORE
-+	bool
-+
- config MAC
- 	bool "Macintosh support"
- 	depends on MMU
---- linux-next-20210525.orig/drivers/input/keyboard/Kconfig
-+++ linux-next-20210525/drivers/input/keyboard/Kconfig
-@@ -67,9 +67,6 @@ config KEYBOARD_AMIGA
- 	  To compile this driver as a module, choose M here: the
- 	  module will be called amikbd.
- 
--config ATARI_KBD_CORE
--	bool
--
- config KEYBOARD_APPLESPI
- 	tristate "Apple SPI keyboard and trackpad"
- 	depends on ACPI && EFI
+                        Geert
+
+-- 
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
