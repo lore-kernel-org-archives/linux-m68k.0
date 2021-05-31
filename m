@@ -2,66 +2,51 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-4.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,NICE_REPLY_A,SPF_HELO_NONE,
-	SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=no autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-6.4 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B9667C47080
-	for <linux-m68k@archiver.kernel.org>; Mon, 31 May 2021 18:45:22 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id DCF21C47082
+	for <linux-m68k@archiver.kernel.org>; Mon, 31 May 2021 18:49:02 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 8A1806124B
-	for <linux-m68k@archiver.kernel.org>; Mon, 31 May 2021 18:45:22 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id B489B6135A
+	for <linux-m68k@archiver.kernel.org>; Mon, 31 May 2021 18:49:02 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230288AbhEaSqz (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Mon, 31 May 2021 14:46:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43898 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231305AbhEaSqo (ORCPT
-        <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Mon, 31 May 2021 14:46:44 -0400
-Received: from mail-lj1-x233.google.com (mail-lj1-x233.google.com [IPv6:2a00:1450:4864:20::233])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E5CE6C06174A
-        for <linux-m68k@lists.linux-m68k.org>; Mon, 31 May 2021 11:44:57 -0700 (PDT)
-Received: by mail-lj1-x233.google.com with SMTP id e2so16108482ljk.4
-        for <linux-m68k@lists.linux-m68k.org>; Mon, 31 May 2021 11:44:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=79vD5fPBpuqJk8BjQVZSQr4mk68U0V00Pi0IrfP1E+M=;
-        b=ixQHV7O1Jnid0/lAhrc6f8PJ7yXOT3iZeSwgte5o+5eGGjBWik4JLPgjXKgQqbI/4n
-         AzcbI3Xn0bBqNWcRRZZ3Ejy7opZhfIva3huN4AcImLORMW7r0annLMjRcYdH1Fz1z/uV
-         7VeN+6GDRjSvTUSgVomxmD5GeLQ8Oc0fOEVwh5RDCKyXhyJTY8d6BnmyyzgESlc1nOxT
-         YsAZ0CfgHfN7mBpqbvQDzxFE45TNOW1hhIcbx3WYdkQN795zoe4FAiqZQvla2PkrARvA
-         ADkUFG6M722rPlnqXpZq089sOC0+qhLUZvS12KHL0NFlXBlZLEyAIDKa30T3Qwv5+BYK
-         GzUw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=79vD5fPBpuqJk8BjQVZSQr4mk68U0V00Pi0IrfP1E+M=;
-        b=VEe1bILjtJiu95L7sHDVfoesq1q5HE4PyrRDKxEOX99z0PTBOi+Tw5hFH/jbcEiXga
-         aEWSS0W6gM/CeOGnpkNyPFnwoZ45zNtQE/6VwcknJjxS47Mwdh+g+iueqw+DHc0mjYh4
-         BJjHhFkPc5oS3WqLc1Y5dld9xniNKc5Bra7kBdxaPvcNxZCF8UWlRJDp2SxxuLVmPEDZ
-         pmDRq1syBEYQEuVwzjc7T4kPpGfCR9w9ENcIR5CGrRTgJEQu0e6QssO+aNdWbgvAIhJr
-         NlrkBKo7pOaA7QBJPeYF9Srz6ThTT99BqcfgTMWml7Vd4Srp3mS4V6S6TmRkaCnzBkXT
-         dz/g==
-X-Gm-Message-State: AOAM531Mzl+JjFsTz0MLPys1Dr8yH5TQ7BKlDJWalyu/G7gaDZJRq3ow
-        TZBncMWFDg98lgzvpbpFxpI=
-X-Google-Smtp-Source: ABdhPJzwHa2O3tQI6SdJ2nYRIHhOGUD4JpkZi3hQlX9rJYnZ5sdfcrEYOKXStv1Grwdln5npijZ3JA==
-X-Received: by 2002:a2e:9c8e:: with SMTP id x14mr3613896lji.264.1622486696164;
-        Mon, 31 May 2021 11:44:56 -0700 (PDT)
-Received: from [192.168.2.145] (79-139-170-222.dynamic.spd-mgts.ru. [79.139.170.222])
-        by smtp.googlemail.com with ESMTPSA id o2sm1631880ljp.60.2021.05.31.11.44.55
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 31 May 2021 11:44:55 -0700 (PDT)
+        id S230424AbhEaSul (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Mon, 31 May 2021 14:50:41 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39876 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230289AbhEaSuk (ORCPT <rfc822;linux-m68k@lists.linux-m68k.org>);
+        Mon, 31 May 2021 14:50:40 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C19086135D
+        for <linux-m68k@lists.linux-m68k.org>; Mon, 31 May 2021 18:49:00 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1622486940;
+        bh=uZQ4hjCYk7ih5FfmEF29XAW17p2cSE/QFyhl2Ea4ySw=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=OQvD8F929NH58CF8oTBVGn36npvqZMDPkFOXE3AsO4uylOF2eG37ICRHk29MYIpFV
+         T4vuemJ2j18q2afDhCHTHT36xt/CRb0uIBm8+WxTaLIjcBoARY0EV3bFmhx2wPUqYn
+         axlcPlGvfhjNHv2G6gZGB6g+P5YNb9/WKlW7KFJ7K7GIcVCJyMY8eM+NtmoVjh9EtH
+         DqrZwZUkxtYz1+h+b3JpdcwASSVz98pbml5MT+ko3jR+O5qDIzzofRjgDbjuKS+70w
+         aWC3CN7JDA4xbQAkxLbas5HRPShKhA40lpoRSPrmFf6RAuQyT88GZqfJBuNn63+TCd
+         AyeopB5k8aUFQ==
+Received: by mail-wm1-f51.google.com with SMTP id f20-20020a05600c4e94b0290181f6edda88so84827wmq.2
+        for <linux-m68k@lists.linux-m68k.org>; Mon, 31 May 2021 11:49:00 -0700 (PDT)
+X-Gm-Message-State: AOAM530sv5vt3Vx/IlKhSrb/S/Yi9DO+AtYPlrKyWvIOzNtrFUn5etUG
+        NWQ6SWwQa1P08OzwtyK4DACkQlarKbQ59/sHI1c=
+X-Google-Smtp-Source: ABdhPJzbEG+ZcvnFkCSV6IHkDnP12JJjwSWbDQhrFskKKZGPmEpuOs+pJ6UdB1UxJNHhUhjBxGHkXZWscBGE5NfZwYs=
+X-Received: by 2002:a1c:7d15:: with SMTP id y21mr423290wmc.120.1622486939359;
+ Mon, 31 May 2021 11:48:59 -0700 (PDT)
+MIME-Version: 1.0
+References: <20210531173429.2467403-1-arnd@kernel.org> <c4161b44-1628-9b75-083d-2715fa366596@gmail.com>
+In-Reply-To: <c4161b44-1628-9b75-083d-2715fa366596@gmail.com>
+From:   Arnd Bergmann <arnd@kernel.org>
+Date:   Mon, 31 May 2021 20:47:23 +0200
+X-Gmail-Original-Message-ID: <CAK8P3a18oCcDrEur9MdtG8OZb1BhJZ8LnApdfMu+-ssnTuW2qg@mail.gmail.com>
+Message-ID: <CAK8P3a18oCcDrEur9MdtG8OZb1BhJZ8LnApdfMu+-ssnTuW2qg@mail.gmail.com>
 Subject: Re: [PATCH 0/7] clk: clean up legacy clock interfaces
-To:     Arnd Bergmann <arnd@kernel.org>, linux-clk@vger.kernel.org
-Cc:     Arnd Bergmann <arnd@arndb.de>,
-        Florian Fainelli <florian@openwrt.org>,
+To:     Dmitry Osipenko <digetx@gmail.com>
+Cc:     linux-clk@vger.kernel.org, Florian Fainelli <florian@openwrt.org>,
         Geert Uytterhoeven <geert@linux-m68k.org>,
         Greg Ungerer <gerg@linux-m68k.org>,
         John Crispin <john@phrozen.org>,
@@ -72,41 +57,19 @@ Cc:     Arnd Bergmann <arnd@arndb.de>,
         Stephen Boyd <sboyd@kernel.org>,
         Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
         linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org
-References: <20210531173429.2467403-1-arnd@kernel.org>
-From:   Dmitry Osipenko <digetx@gmail.com>
-Message-ID: <c4161b44-1628-9b75-083d-2715fa366596@gmail.com>
-Date:   Mon, 31 May 2021 21:44:55 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
-MIME-Version: 1.0
-In-Reply-To: <20210531173429.2467403-1-arnd@kernel.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-31.05.2021 20:34, Arnd Bergmann пишет:
-> From: Arnd Bergmann <arnd@arndb.de>
-> 
-> A recent discussion about legacy clk interface users revealed
-> that there are only two platforms remaining that provide their own
-> clk_get()/clk_put() implementations, MIPS ar7 and and m68k coldfire.
-> 
-> I managed to rework both of these to just use the normal clkdev code,
-> and fold CONFIG_CLKDEV_LOOKUP into CONFIG_HAVE_CLK as it is now shared
-> among all users.
-> 
-> As I noticed that the ar7 clock implementation and the ralink version
-> are rather trivial, I ended up converting those to use the common-clk
-> interfaces as well, though this is unrelated to the other changes.
-> 
->      Arnd
-> 
-> Link: https://lore.kernel.org/lkml/CAK8P3a2XsrfUJQQAfnGknh8HiA-D9L_wmEoAgXU89KqagE31NQ@mail.gmail.com/
+On Mon, May 31, 2021 at 8:44 PM Dmitry Osipenko <digetx@gmail.com> wrote:
+>
+> Awesome, thank you very much!
+>
+> I see only this cover-letter email, will we see the rest of the patches?
+> The patches 1-7 have only linux-clk@vger.kernel.org in the recipients.
 
-Awesome, thank you very much!
+Oops, I meant to send with --cc-cover, sorry about that, and sorry for the
+coming duplicate mails on linux-clk@v.g.o.
 
-I see only this cover-letter email, will we see the rest of the patches?
-The patches 1-7 have only linux-clk@vger.kernel.org in the recipients.
+       Arnd
