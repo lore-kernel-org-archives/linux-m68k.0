@@ -2,122 +2,119 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-15.1 required=3.0 tests=BAYES_00,DKIM_INVALID,
-	DKIM_SIGNED,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1
-	autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-5.9 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,NICE_REPLY_A,
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=no autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 08E01C47093
-	for <linux-m68k@archiver.kernel.org>; Tue,  1 Jun 2021 13:23:38 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id BB8CBC47080
+	for <linux-m68k@archiver.kernel.org>; Tue,  1 Jun 2021 13:48:13 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id DE7E4610A1
-	for <linux-m68k@archiver.kernel.org>; Tue,  1 Jun 2021 13:23:37 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 9AE206008E
+	for <linux-m68k@archiver.kernel.org>; Tue,  1 Jun 2021 13:48:13 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233584AbhFANZS (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Tue, 1 Jun 2021 09:25:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39098 "EHLO
+        id S234084AbhFANtx (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Tue, 1 Jun 2021 09:49:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44794 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233971AbhFANZR (ORCPT
+        with ESMTP id S234003AbhFANtw (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Tue, 1 Jun 2021 09:25:17 -0400
-Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5DE6CC061574
-        for <linux-m68k@lists.linux-m68k.org>; Tue,  1 Jun 2021 06:23:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
-        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-         bh=/dtiXdp0eZ6e655MRel5Bn3jci0kO9BH3UelOiZFbg0=; b=V9z+tNnh+pFSora35MQeQ/f+k
-        4BbXZCK9lVijgJNIoUV+jZW+fP1TbSFK+AuKliHz+Zp6jUP7h/6BbzC/0zDpen3lUh0UnV+5vrKze
-        clZDiwxsp8+/bnaKS1BfKZyVkDpBAzCdNsy4vEORxsPcE/H7ROqL8HvzfAqjfpIvhiq3AWMSXXM9E
-        Toa73mV2/aWqgRwRoXlLl9dBpLwtvfOkmeQlCBfYLo8w5L2OB5xGQAq/YACvYrj2TDf/K3urOpyEw
-        BlyBFeAeu5UHGgQH5uLg0/+JxWEnk3xV5V25ameB+ETmj5haIGNBR4scMap1T06pvqJ6uHtIsy9ZI
-        Ppk1TcSWQ==;
-Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:44574)
-        by pandora.armlinux.org.uk with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <linux@armlinux.org.uk>)
-        id 1lo4Mj-00045a-7c; Tue, 01 Jun 2021 14:23:29 +0100
-Received: from linux by shell.armlinux.org.uk with local (Exim 4.92)
-        (envelope-from <linux@shell.armlinux.org.uk>)
-        id 1lo4Mh-00008v-EA; Tue, 01 Jun 2021 14:23:27 +0100
-Date:   Tue, 1 Jun 2021 14:23:27 +0100
-From:   "Russell King (Oracle)" <linux@armlinux.org.uk>
-To:     Arnd Bergmann <arnd@kernel.org>
-Cc:     linux-clk@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>,
-        Dmitry Osipenko <digetx@gmail.com>,
-        Florian Fainelli <florian@openwrt.org>,
+        Tue, 1 Jun 2021 09:49:52 -0400
+Received: from mail-oi1-x233.google.com (mail-oi1-x233.google.com [IPv6:2607:f8b0:4864:20::233])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 307DBC061761
+        for <linux-m68k@lists.linux-m68k.org>; Tue,  1 Jun 2021 06:48:11 -0700 (PDT)
+Received: by mail-oi1-x233.google.com with SMTP id z3so15520813oib.5
+        for <linux-m68k@lists.linux-m68k.org>; Tue, 01 Jun 2021 06:48:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=QlGkt7fWsHM9mcKdq1bDx/YwBl/iUUk0WEjc5rg04fY=;
+        b=SJMAgBW5mswAe1ZmlZlRdAFuvYPDEVLqi723Nnx1S4FLz3Yy3Tj3lQWVdZ0F6Qr4eS
+         SMIy05Vpx5EU+XswU9cem+w+MzG0a62ahvk23Tf2SUyNvaWPkh1rlmu3OkVCdEssPf8k
+         xwwmCV/LazyU6UjgCMJxdw//dP9UOpzUM54yyNCR3QG30hScN/IqdhxGg71hNvOalyX+
+         pO6I2f3s4rBYqGHOnzUAspl9mEOwDLA0qywJ9pSLvD5fVKPzw+UNtHhfYY4OA0aw1ASO
+         zcdxwDDiGjJD5VEZLuOr0Rlq6ubnYTbGW3SYaGllJ+Xvfy3vmm5YD3DkNvXi1rVEGPqw
+         8g9A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=QlGkt7fWsHM9mcKdq1bDx/YwBl/iUUk0WEjc5rg04fY=;
+        b=eV+DJI7yaw6LRTLdobiLBjMuCOfnVxhGvfhysSwzxRuaDt0gvIqo+4Epg/UcdopXqG
+         ErpDTF+R8SP0Xt37bmmuH+wd+0kjjSw7EnZDagfT1yxjEtMozy6CGBpvyonaSNMWu+yc
+         u+NIZVN3jHbKUybe6ZOAMx4Wq5mDUT1ePjq3oIoRQTciDwnTr8RJO/v7rGooEB3tLGwz
+         oyvcJjy15lIR4jwUWr0WAqIPLlIlNESJOmbLIXbbKMugGvOH7ZGSSpQ7XW9FXPfCr1ie
+         Lpl9fDpWhpO8hC04AbXO0libwAwp31vJKAcAbQ6+M6gPKuDfiOS+OM5HQyZMu40n7ING
+         qtIw==
+X-Gm-Message-State: AOAM530cc4AF1Ku8BYC1xraGZSMkm39t0f6d4dK8n9wg9pYKW/bI6IfR
+        TgjLOU/ytcQni0D4mtVGOLw5zg==
+X-Google-Smtp-Source: ABdhPJyRtEOQYxSXItYfv2Xv0el0nwhIYWVK6zfd5YIEz7fo5+/L3t2bxzT7qaz6PyG5RR7CPJmZJA==
+X-Received: by 2002:a05:6808:245:: with SMTP id m5mr18302900oie.6.1622555290008;
+        Tue, 01 Jun 2021 06:48:10 -0700 (PDT)
+Received: from [192.168.1.134] ([198.8.77.61])
+        by smtp.gmail.com with ESMTPSA id i4sm3456045oih.13.2021.06.01.06.48.07
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 01 Jun 2021 06:48:09 -0700 (PDT)
+Subject: Re: simplify gendisk and request_queue allocation for bio based
+ drivers
+To:     Christoph Hellwig <hch@lst.de>,
         Geert Uytterhoeven <geert@linux-m68k.org>,
-        Greg Ungerer <gerg@linux-m68k.org>,
-        John Crispin <john@phrozen.org>,
-        Jonas Gorski <jonas.gorski@gmail.com>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org
-Subject: Re: [PATCH 1/7] mips: ar7: convert to clkdev_lookup
-Message-ID: <20210601132327.GX30436@shell.armlinux.org.uk>
-References: <20210531184749.2475868-1-arnd@kernel.org>
- <20210531184749.2475868-2-arnd@kernel.org>
+        Chris Zankel <chris@zankel.net>,
+        Max Filippov <jcmvbkbc@gmail.com>,
+        Philipp Reisner <philipp.reisner@linbit.com>,
+        Lars Ellenberg <lars.ellenberg@linbit.com>,
+        Jim Paris <jim@jtan.com>,
+        Joshua Morris <josh.h.morris@us.ibm.com>,
+        Philip Kelleher <pjk1939@linux.ibm.com>,
+        Minchan Kim <minchan@kernel.org>,
+        Nitin Gupta <ngupta@vflare.org>,
+        Matias Bjorling <mb@lightnvm.io>, Coly Li <colyli@suse.de>,
+        Mike Snitzer <snitzer@redhat.com>, Song Liu <song@kernel.org>,
+        Maxim Levitsky <maximlevitsky@gmail.com>,
+        Alex Dubov <oakad@yahoo.com>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Vishal Verma <vishal.l.verma@intel.com>,
+        Dave Jiang <dave.jiang@intel.com>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@de.ibm.com>
+Cc:     linux-block@vger.kernel.org, dm-devel@redhat.com,
+        linux-m68k@lists.linux-m68k.org, linux-xtensa@linux-xtensa.org,
+        drbd-dev@lists.linbit.com, linuxppc-dev@lists.ozlabs.org,
+        linux-bcache@vger.kernel.org, linux-raid@vger.kernel.org,
+        linux-mmc@vger.kernel.org, nvdimm@lists.linux.dev,
+        linux-nvme@lists.infradead.org, linux-s390@vger.kernel.org
+References: <20210521055116.1053587-1-hch@lst.de>
+From:   Jens Axboe <axboe@kernel.dk>
+Message-ID: <a5d7127f-b422-5556-6810-cf4c98c038ac@kernel.dk>
+Date:   Tue, 1 Jun 2021 07:48:09 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210531184749.2475868-2-arnd@kernel.org>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-Sender: Russell King (Oracle) <linux@armlinux.org.uk>
+In-Reply-To: <20210521055116.1053587-1-hch@lst.de>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-On Mon, May 31, 2021 at 08:47:43PM +0200, Arnd Bergmann wrote:
-> From: Arnd Bergmann <arnd@arndb.de>
+On 5/20/21 11:50 PM, Christoph Hellwig wrote:
+> Hi all,
 > 
-> ar7 is one of only two platforms that provide the clock interface but
-> implement a custom version of the clkdev_lookup code.
+> this series is the first part of cleaning up lifetimes and allocation of
+> the gendisk and request_queue structure.  It adds a new interface to
+> allocate the disk and queue together for bio based drivers, and a helper
+> for cleanup/free them when a driver is unloaded or a device is removed.
 > 
-> Change this to use the generic version instead.
-> 
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-> ---
->  arch/mips/Kconfig     |  1 +
->  arch/mips/ar7/clock.c | 32 ++++++++++++--------------------
->  2 files changed, 13 insertions(+), 20 deletions(-)
-> 
-> diff --git a/arch/mips/Kconfig b/arch/mips/Kconfig
-> index ed51970c08e7..1cc03a7652a9 100644
-> --- a/arch/mips/Kconfig
-> +++ b/arch/mips/Kconfig
-> @@ -215,6 +215,7 @@ config AR7
->  	select SYS_SUPPORTS_ZBOOT_UART16550
->  	select GPIOLIB
->  	select VLYNQ
-> +	select CLKDEV_LOOKUP
->  	select HAVE_LEGACY_CLK
->  	help
->  	  Support for the Texas Instruments AR7 System-on-a-Chip
-> diff --git a/arch/mips/ar7/clock.c b/arch/mips/ar7/clock.c
-> index 95def949c971..c614f254f370 100644
-> --- a/arch/mips/ar7/clock.c
-> +++ b/arch/mips/ar7/clock.c
-> @@ -5,6 +5,7 @@
->   * Copyright (C) 2009 Florian Fainelli <florian@openwrt.org>
->   */
->  
-> +#include <linux/clkdev.h>
->  #include <linux/kernel.h>
->  #include <linux/init.h>
->  #include <linux/types.h>
-> @@ -14,6 +15,7 @@
->  #include <linux/io.h>
->  #include <linux/err.h>
->  #include <linux/clk.h>
-> +#include <linux/clkdev.h>
+> Together this removes the need to treat the gendisk and request_queue
+> as separate entities for bio based drivers.
 
-Did you mean to include this twice?
+Applied, thanks.
 
 -- 
-RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
-FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
+Jens Axboe
+
