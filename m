@@ -2,110 +2,131 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-15.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=ham
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-3.3 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,NICE_REPLY_A,SPF_HELO_NONE,
+	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 8CF2CC47080
-	for <linux-m68k@archiver.kernel.org>; Tue,  1 Jun 2021 02:56:29 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 67095C47080
+	for <linux-m68k@archiver.kernel.org>; Tue,  1 Jun 2021 03:33:08 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 61AA061186
-	for <linux-m68k@archiver.kernel.org>; Tue,  1 Jun 2021 02:56:29 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 398D4611CA
+	for <linux-m68k@archiver.kernel.org>; Tue,  1 Jun 2021 03:33:08 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232364AbhFAC6G (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Mon, 31 May 2021 22:58:06 -0400
-Received: from ozlabs.org ([203.11.71.1]:39827 "EHLO ozlabs.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232268AbhFAC6G (ORCPT <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Mon, 31 May 2021 22:58:06 -0400
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4FvGy61k79z9sWF;
-        Tue,  1 Jun 2021 12:56:13 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ellerman.id.au;
-        s=201909; t=1622516184;
-        bh=iY7MeF5kJVTgb76PGSIe64N6mVxLFvLQ+P911N0MgIM=;
-        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-        b=mgyJJS7Mpwj0xHxjTQUJCbxWXBqEpx7u6kJmlJrory1kepRlcJMq86u8b7CRC0TBx
-         2eKAPApa1yyT+8Bx3Nq7xXqq+U0aoxEZ+zVk8LZNufbS19MjY54JklUeikWPo3saVu
-         rZYPlntAMlPhhFnF6Z4PsS/40mD9BayKN5dAP0deDvSFY91SZJGkqyvQLfTKpVKAj7
-         nHaMrjkuyFLjQPzypNJGHxewO6DV/mxxi6HJjuKa/Hbn4YkWBejjdidjhax1ODsJHB
-         2xtaQQzhaLoYsK439xsAx0/uvUVbRJkkNCZEwtolQgis+ZjvEfMSx7TFq4rv4vlYtC
-         mKEDQ5CYN2DQw==
-From:   Michael Ellerman <mpe@ellerman.id.au>
-To:     Kefeng Wang <wangkefeng.wang@huawei.com>,
-        Andrew Morton <akpm@linux-foundation.org>
-Cc:     linux-alpha@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-ia64@vger.kernel.org, linux-m68k@lists.linux-m68k.org,
-        linux-mips@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org,
-        sparclinux@vger.kernel.org, linux-mm@kvack.org,
-        Kefeng Wang <wangkefeng.wang@huawei.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        id S232772AbhFADes (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Mon, 31 May 2021 23:34:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46972 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232592AbhFADer (ORCPT
+        <rfc822;linux-m68k@lists.linux-m68k.org>);
+        Mon, 31 May 2021 23:34:47 -0400
+Received: from mail-pg1-x531.google.com (mail-pg1-x531.google.com [IPv6:2607:f8b0:4864:20::531])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CD074C061574
+        for <linux-m68k@lists.linux-m68k.org>; Mon, 31 May 2021 20:33:06 -0700 (PDT)
+Received: by mail-pg1-x531.google.com with SMTP id e22so9656437pgv.10
+        for <linux-m68k@lists.linux-m68k.org>; Mon, 31 May 2021 20:33:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:references:cc:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-transfer-encoding;
+        bh=2I7gwiPNG3dO/hNb3HCWaBWdw5cnTwTu8xp12S8ELPw=;
+        b=KvT51l0FzAYKMCO9gz6ILkE+MHmlZKbBt3AkzSG6UeevaRKx0Ctvrjj5uyLgSk9ejq
+         lOpnFnHBoGGapBRfegDZYJSO6NTjlWz76RD+1lj7PlQpTc8xysjx8AbPyH/VdLckKhdL
+         xftdVOcQnJdkfr9ja+zQKd94c5EzxG7JtndelRCnyhTCIOIeoLAmKo4MqDYAHcMJuG/U
+         ruXMGcgMlMCl9XatyZZNUVBMA6Ddbk31l/vKGVwwO8yXcY4kUVsIk5kmZ+Oin18egDbf
+         bFAoS1fYC3Idx4pCZyYsWic4niJGa+XmJ14+eCQOQtNj+kEizhFBQlDEswD0YD80k3Nw
+         jtBw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:references:cc:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding;
+        bh=2I7gwiPNG3dO/hNb3HCWaBWdw5cnTwTu8xp12S8ELPw=;
+        b=RLfWaLFQe52GVKiaZ/SQJRMmrDDfCSiN8lXtA9Kq27bsAo4V1itOqX13v0dyq0aHYW
+         4Qn4umB0bixuwIr5kOJbIqKrt+mwgMns8Gy4+2lTp5Zqtl0hT8Zh0N9Vc05YmuhTgPDT
+         67Fqsy8MJf+WkNDcqssdfwJPb0HGADkf43cR2sID5KrpTiFHQwW5ZMxBqEQQyrTJaOvd
+         xtS36GuOTYUsoe+AIbhf8WDzzwPZdluG9ovjnQMomcKG7WJBOEVd5ZBLQrlvJq+HXmV9
+         9F+Vs7FuNs9cOIERV+aANI3GIsxks65C9iklL5PyiwmrePfIr2i06Qq++4K7PtY9yCI0
+         mYcg==
+X-Gm-Message-State: AOAM531ju7+kLeMlXwZMUCWjieq2qKMcwK+8Zcwn2bcaKOtRkTzVJHnM
+        ZbYuYyJxKdv9VWiYAERF8wl7g4BtZdk=
+X-Google-Smtp-Source: ABdhPJzPsqmzRNJdoSviO43Z83f94QppThbv3sLgOPX6/ECZ/rrGSo+JoeIZjqHa5g0Ru0FgL5LiUg==
+X-Received: by 2002:a63:5d19:: with SMTP id r25mr25105173pgb.317.1622518386067;
+        Mon, 31 May 2021 20:33:06 -0700 (PDT)
+Received: from [10.1.1.25] (222-152-189-137-fibre.sparkbb.co.nz. [222.152.189.137])
+        by smtp.gmail.com with ESMTPSA id r16sm2899711pfq.140.2021.05.31.20.33.01
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Mon, 31 May 2021 20:33:05 -0700 (PDT)
+Subject: Re: [PATCH] m68k/mac: Replace macide driver with generic platform
+ driver
+To:     Geert Uytterhoeven <geert@linux-m68k.org>
+References: <793432cca963b632709c4d1312baa9874d73e1d8.1619341585.git.fthain@telegraphics.com.au>
+ <ba908b1d-eab5-a4e5-0c0a-2c745287d121@physik.fu-berlin.de>
+ <10a08764-c138-9fe5-966c-ce68349b9b6@nippy.intranet>
+ <65f01f42-31d9-522a-e690-73d286405a01@gmail.com>
+ <9650358f-a789-7dbd-4495-1d39ff321ded@nippy.intranet>
+ <ada88dd6-f8d7-11dc-9a89-5c7e437a0981@gmail.com>
+ <CAMuHMdUy_B_+pHZQpnDHYsee+gpXOs9ek_HaVxLjE2HVfGmLQg@mail.gmail.com>
+Cc:     Finn Thain <fthain@fastmail.com.au>,
+        John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
+        Christoph Hellwig <hch@lst.de>,
+        Joshua Thompson <funaho@jurai.org>,
         "David S. Miller" <davem@davemloft.net>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Richard Henderson <rth@twiddle.net>,
-        Russell King <linux@armlinux.org.uk>,
-        Mike Rapoport <rppt@linux.ibm.com>
-Subject: Re: [PATCH v2] mm: generalize ZONE_[DMA|DMA32]
-In-Reply-To: <20210528074557.17768-1-wangkefeng.wang@huawei.com>
-References: <20210527143047.123611-1-wangkefeng.wang@huawei.com>
- <20210528074557.17768-1-wangkefeng.wang@huawei.com>
-Date:   Tue, 01 Jun 2021 12:56:10 +1000
-Message-ID: <87k0negunp.fsf@mpe.ellerman.id.au>
+        linux-m68k <linux-m68k@lists.linux-m68k.org>
+From:   Michael Schmitz <schmitzmic@gmail.com>
+Message-ID: <e4635ac5-903a-a52e-51cf-b59295c76973@gmail.com>
+Date:   Tue, 1 Jun 2021 15:32:59 +1200
+User-Agent: Mozilla/5.0 (X11; Linux ppc; rv:45.0) Gecko/20100101
+ Icedove/45.4.0
 MIME-Version: 1.0
-Content-Type: text/plain
+In-Reply-To: <CAMuHMdUy_B_+pHZQpnDHYsee+gpXOs9ek_HaVxLjE2HVfGmLQg@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-Kefeng Wang <wangkefeng.wang@huawei.com> writes:
-> ZONE_[DMA|DMA32] configs have duplicate definitions on platforms
-> that subscribe them. Instead, just make them generic options which
-> can be selected on applicable platforms.
->
-> Also only x86/arm64 architectures could enable both ZONE_DMA and
-> ZONE_DMA32 if EXPERT, add ARCH_HAS_ZONE_DMA_SET to make dma zone
-> configurable and visible on the two architectures.
->
-> Cc: Andrew Morton <akpm@linux-foundation.org>
-> Cc: Catalin Marinas <catalin.marinas@arm.com>
-> Cc: Will Deacon <will@kernel.org>
-> Cc: Geert Uytterhoeven <geert@linux-m68k.org>
-> Cc: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-> Cc: "David S. Miller" <davem@davemloft.net>
-> Cc: Ingo Molnar <mingo@redhat.com>
-> Cc: Borislav Petkov <bp@alien8.de>
-> Cc: Palmer Dabbelt <palmer@dabbelt.com>
-> Cc: Richard Henderson <rth@twiddle.net>
-> Cc: Russell King <linux@armlinux.org.uk>
-> Acked-by: Catalin Marinas <catalin.marinas@arm.com> # for arm64
-> Acked-by: Geert Uytterhoeven <geert@linux-m68k.org> # for m68k
-> Acked-by: Mike Rapoport <rppt@linux.ibm.com>
-> Signed-off-by: Kefeng Wang <wangkefeng.wang@huawei.com>
-> ---
-> v2:
-> -i386 can't enable ZONE_DMA32, fix it.
-> -make ZONE_DMA default y on X86 as before.
-> -collect ACKs
->
->  arch/alpha/Kconfig                     |  5 +----
->  arch/arm/Kconfig                       |  3 ---
->  arch/arm64/Kconfig                     |  9 +--------
->  arch/ia64/Kconfig                      |  4 +---
->  arch/m68k/Kconfig                      |  5 +----
->  arch/microblaze/Kconfig                |  4 +---
->  arch/mips/Kconfig                      |  7 -------
->  arch/powerpc/Kconfig                   |  4 ----
->  arch/powerpc/platforms/Kconfig.cputype |  1 +
+Hi Geert,
 
-Acked-by: Michael Ellerman <mpe@ellerman.id.au> (powerpc)
+Am 28.04.2021 um 18:53 schrieb Geert Uytterhoeven:
+>>> I wonder whether q40 could re-use the pata_falcon driver . I suppose
+>>
+>> I'm pretty sure it could, but there is no reason why it would have to be
+>> crippled in that way. Interrupts should work perfectly fine with IDE on
+>> Q40.
+>>
+>> There is another reason why using the same module binary for both might
+>> fail - the awkward address translation code in io_mm.h. Not certain at
+>> all whether we can even have Q40 and Atari in the same kernel binary...
+>
+> That's supposed to work, else our multi_defconfig is broken.
 
-cheers
+Took a while to get back to this, but I believe unless this 
+configuration sets CONFIG_ISA && !CONFIG_ATARI_ROM_ISA, Q40 ISA support 
+will indeed be broken, due to
+
+#define inb(port)       ((port) < 1024 ? isa_rom_inb(port) : in_8(port))
+
+using incorrect address translation on Q40 (either that for the Atari 
+ROM port, or none)? Not entirely sure what I had been smoking when 
+writing that ...
+
+Conversely, if that combination _is_ set, neither ROM port access nor 
+IDE access on Atari will work (again due to incorrect address 
+translation - indiscriminately applying the one required for the ROM 
+port in that case, which is inappropriate for Atari IDE).
+
+I'm currently considering a fix that does conditional address 
+translation in isa_itb() and its buddys, and replaces in_8() by 
+isa_inb() in the definition above (and equivalent changes elsewhere).
+
+Can you see anything wrong with that, just off the bat?
+
+Cheers,
+
+	Michael
+
+(CC: trimmed a little to cut down on spam to the general lists...)
+
+
+
+
