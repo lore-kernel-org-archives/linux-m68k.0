@@ -2,132 +2,110 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-19.4 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
-	autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-15.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A151BC47082
-	for <linux-m68k@archiver.kernel.org>; Mon, 31 May 2021 18:49:54 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8CF2CC47080
+	for <linux-m68k@archiver.kernel.org>; Tue,  1 Jun 2021 02:56:29 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 899356128A
-	for <linux-m68k@archiver.kernel.org>; Mon, 31 May 2021 18:49:54 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 61AA061186
+	for <linux-m68k@archiver.kernel.org>; Tue,  1 Jun 2021 02:56:29 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231151AbhEaSvd (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Mon, 31 May 2021 14:51:33 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40254 "EHLO mail.kernel.org"
+        id S232364AbhFAC6G (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Mon, 31 May 2021 22:58:06 -0400
+Received: from ozlabs.org ([203.11.71.1]:39827 "EHLO ozlabs.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231436AbhEaSv1 (ORCPT <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Mon, 31 May 2021 14:51:27 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9DF596135C;
-        Mon, 31 May 2021 18:49:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1622486986;
-        bh=LuPsBIFhxgd/n8nHsszgAmLqq7folE7IErl+jaDcRN8=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=fcp6c+wZo5wEr710/B2ayV2ajI/zLr+FjkaCm6Mf1S4AqqJWj62k9nfTBcsUjp0KU
-         K6IuUxOMbzlfA9/+4DED2VF7ciCjTe2yel6zir9R0NLY2KrkUw9k+cx1iJjYwsXkZH
-         uQLxp5m/nADmnU8AnrcbeGKxB8TkgjX3wdJ5ikQdzVxwWnTwSIvfs7TWGlsDMjYkv0
-         3S4MKwXHBBpeTKQMsau34FJXuNTh4KpFwpVHZY5EQIoWc9JkOrCraESIeIJSIRBSVg
-         xQlc9x4/KOL8BYZjQZco9HJ0pMIC6zCanrFgBs4BQyNX8vJDIf3C8ntY5y0isRpuA5
-         lCd768WIJ/Z7w==
-From:   Arnd Bergmann <arnd@kernel.org>
-To:     linux-clk@vger.kernel.org
-Cc:     Arnd Bergmann <arnd@arndb.de>, Dmitry Osipenko <digetx@gmail.com>,
-        Florian Fainelli <florian@openwrt.org>,
+        id S232268AbhFAC6G (ORCPT <rfc822;linux-m68k@lists.linux-m68k.org>);
+        Mon, 31 May 2021 22:58:06 -0400
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4FvGy61k79z9sWF;
+        Tue,  1 Jun 2021 12:56:13 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ellerman.id.au;
+        s=201909; t=1622516184;
+        bh=iY7MeF5kJVTgb76PGSIe64N6mVxLFvLQ+P911N0MgIM=;
+        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+        b=mgyJJS7Mpwj0xHxjTQUJCbxWXBqEpx7u6kJmlJrory1kepRlcJMq86u8b7CRC0TBx
+         2eKAPApa1yyT+8Bx3Nq7xXqq+U0aoxEZ+zVk8LZNufbS19MjY54JklUeikWPo3saVu
+         rZYPlntAMlPhhFnF6Z4PsS/40mD9BayKN5dAP0deDvSFY91SZJGkqyvQLfTKpVKAj7
+         nHaMrjkuyFLjQPzypNJGHxewO6DV/mxxi6HJjuKa/Hbn4YkWBejjdidjhax1ODsJHB
+         2xtaQQzhaLoYsK439xsAx0/uvUVbRJkkNCZEwtolQgis+ZjvEfMSx7TFq4rv4vlYtC
+         mKEDQ5CYN2DQw==
+From:   Michael Ellerman <mpe@ellerman.id.au>
+To:     Kefeng Wang <wangkefeng.wang@huawei.com>,
+        Andrew Morton <akpm@linux-foundation.org>
+Cc:     linux-alpha@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-ia64@vger.kernel.org, linux-m68k@lists.linux-m68k.org,
+        linux-mips@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org,
+        sparclinux@vger.kernel.org, linux-mm@kvack.org,
+        Kefeng Wang <wangkefeng.wang@huawei.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
         Geert Uytterhoeven <geert@linux-m68k.org>,
-        Greg Ungerer <gerg@linux-m68k.org>,
-        John Crispin <john@phrozen.org>,
-        Jonas Gorski <jonas.gorski@gmail.com>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Stephen Boyd <sboyd@kernel.org>,
         Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org
-Subject: [PATCH 7/7] clkdev: remove unused clkdev_alloc() interfaces
-Date:   Mon, 31 May 2021 20:47:49 +0200
-Message-Id: <20210531184749.2475868-8-arnd@kernel.org>
-X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20210531184749.2475868-1-arnd@kernel.org>
-References: <20210531184749.2475868-1-arnd@kernel.org>
+        "David S. Miller" <davem@davemloft.net>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Richard Henderson <rth@twiddle.net>,
+        Russell King <linux@armlinux.org.uk>,
+        Mike Rapoport <rppt@linux.ibm.com>
+Subject: Re: [PATCH v2] mm: generalize ZONE_[DMA|DMA32]
+In-Reply-To: <20210528074557.17768-1-wangkefeng.wang@huawei.com>
+References: <20210527143047.123611-1-wangkefeng.wang@huawei.com>
+ <20210528074557.17768-1-wangkefeng.wang@huawei.com>
+Date:   Tue, 01 Jun 2021 12:56:10 +1000
+Message-ID: <87k0negunp.fsf@mpe.ellerman.id.au>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-From: Arnd Bergmann <arnd@arndb.de>
+Kefeng Wang <wangkefeng.wang@huawei.com> writes:
+> ZONE_[DMA|DMA32] configs have duplicate definitions on platforms
+> that subscribe them. Instead, just make them generic options which
+> can be selected on applicable platforms.
+>
+> Also only x86/arm64 architectures could enable both ZONE_DMA and
+> ZONE_DMA32 if EXPERT, add ARCH_HAS_ZONE_DMA_SET to make dma zone
+> configurable and visible on the two architectures.
+>
+> Cc: Andrew Morton <akpm@linux-foundation.org>
+> Cc: Catalin Marinas <catalin.marinas@arm.com>
+> Cc: Will Deacon <will@kernel.org>
+> Cc: Geert Uytterhoeven <geert@linux-m68k.org>
+> Cc: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+> Cc: "David S. Miller" <davem@davemloft.net>
+> Cc: Ingo Molnar <mingo@redhat.com>
+> Cc: Borislav Petkov <bp@alien8.de>
+> Cc: Palmer Dabbelt <palmer@dabbelt.com>
+> Cc: Richard Henderson <rth@twiddle.net>
+> Cc: Russell King <linux@armlinux.org.uk>
+> Acked-by: Catalin Marinas <catalin.marinas@arm.com> # for arm64
+> Acked-by: Geert Uytterhoeven <geert@linux-m68k.org> # for m68k
+> Acked-by: Mike Rapoport <rppt@linux.ibm.com>
+> Signed-off-by: Kefeng Wang <wangkefeng.wang@huawei.com>
+> ---
+> v2:
+> -i386 can't enable ZONE_DMA32, fix it.
+> -make ZONE_DMA default y on X86 as before.
+> -collect ACKs
+>
+>  arch/alpha/Kconfig                     |  5 +----
+>  arch/arm/Kconfig                       |  3 ---
+>  arch/arm64/Kconfig                     |  9 +--------
+>  arch/ia64/Kconfig                      |  4 +---
+>  arch/m68k/Kconfig                      |  5 +----
+>  arch/microblaze/Kconfig                |  4 +---
+>  arch/mips/Kconfig                      |  7 -------
+>  arch/powerpc/Kconfig                   |  4 ----
+>  arch/powerpc/platforms/Kconfig.cputype |  1 +
 
-The last user of clkdev_alloc() and clkdev_hw_alloc() was
-removed last year, so everything now calls clkdev_create()
-and clkdev_hw_create() instead.
+Acked-by: Michael Ellerman <mpe@ellerman.id.au> (powerpc)
 
-Removing the unused functions lets the compiler optimize
-the remaining ones slightly better.
-
-Fixes: e5006671acc7 ("clk: versatile: Drop the legacy IM-PD1 clock code")
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
----
- drivers/clk/clkdev.c   | 28 ----------------------------
- include/linux/clkdev.h |  5 -----
- 2 files changed, 33 deletions(-)
-
-diff --git a/drivers/clk/clkdev.c b/drivers/clk/clkdev.c
-index 0f2e3fcf0f19..67f601a41023 100644
---- a/drivers/clk/clkdev.c
-+++ b/drivers/clk/clkdev.c
-@@ -190,34 +190,6 @@ vclkdev_create(struct clk_hw *hw, const char *con_id, const char *dev_fmt,
- 	return cl;
- }
- 
--struct clk_lookup * __ref
--clkdev_alloc(struct clk *clk, const char *con_id, const char *dev_fmt, ...)
--{
--	struct clk_lookup *cl;
--	va_list ap;
--
--	va_start(ap, dev_fmt);
--	cl = vclkdev_alloc(__clk_get_hw(clk), con_id, dev_fmt, ap);
--	va_end(ap);
--
--	return cl;
--}
--EXPORT_SYMBOL(clkdev_alloc);
--
--struct clk_lookup *
--clkdev_hw_alloc(struct clk_hw *hw, const char *con_id, const char *dev_fmt, ...)
--{
--	struct clk_lookup *cl;
--	va_list ap;
--
--	va_start(ap, dev_fmt);
--	cl = vclkdev_alloc(hw, con_id, dev_fmt, ap);
--	va_end(ap);
--
--	return cl;
--}
--EXPORT_SYMBOL(clkdev_hw_alloc);
--
- /**
-  * clkdev_create - allocate and add a clkdev lookup structure
-  * @clk: struct clk to associate with all clk_lookups
-diff --git a/include/linux/clkdev.h b/include/linux/clkdev.h
-index fd06b2780a22..8a8423eb8e9a 100644
---- a/include/linux/clkdev.h
-+++ b/include/linux/clkdev.h
-@@ -30,11 +30,6 @@ struct clk_lookup {
- 		.clk = c,	\
- 	}
- 
--struct clk_lookup *clkdev_alloc(struct clk *clk, const char *con_id,
--	const char *dev_fmt, ...) __printf(3, 4);
--struct clk_lookup *clkdev_hw_alloc(struct clk_hw *hw, const char *con_id,
--	const char *dev_fmt, ...) __printf(3, 4);
--
- void clkdev_add(struct clk_lookup *cl);
- void clkdev_drop(struct clk_lookup *cl);
- 
--- 
-2.29.2
-
+cheers
