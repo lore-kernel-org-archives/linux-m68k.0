@@ -2,81 +2,120 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.8 required=3.0 tests=BAYES_00,DKIM_INVALID,
-	DKIM_SIGNED,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=no
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-7.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,MAILING_LIST_MULTI,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 32329C47092
-	for <linux-m68k@archiver.kernel.org>; Tue,  1 Jun 2021 22:05:36 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 87388C4708F
+	for <linux-m68k@archiver.kernel.org>; Wed,  2 Jun 2021 04:15:52 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 16178613BC
-	for <linux-m68k@archiver.kernel.org>; Tue,  1 Jun 2021 22:05:36 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 6EBFE61075
+	for <linux-m68k@archiver.kernel.org>; Wed,  2 Jun 2021 04:15:52 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234856AbhFAWHR (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Tue, 1 Jun 2021 18:07:17 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57520 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234758AbhFAWHQ (ORCPT <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Tue, 1 Jun 2021 18:07:16 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6E2A660C40;
-        Tue,  1 Jun 2021 22:05:34 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1622585134;
-        bh=8jUQRuRq7+XNs7eJRgPkH3E+fqJrNLYhQd8GuAAdJZU=;
-        h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
-        b=GlRUA12fnB+nlD4JuD2hbQnzNtj5gO4J+pVpB2LhQMA5iRGcaA+fAKgafBBJUC9Xo
-         /0mSPGx3lK3HLyGG4O/QIIlvazdcVPCu777Jg7E/BTEdodl+msGiSCYUZ4RHGCeYCr
-         YKItQ4pXi5PkdjqIp7KhrfDsxSvMjF8ENQM0hCknhGgfbOpCX03affStPEFYNTkqqC
-         zMP4XTVIt6SDFcLLFIxhkhIK78H/lcmaCK3HW24VVXk3wS9pyvRM052qle6B2iCNw+
-         h22MS10HDr4EczuWlzFx0c/HPOwifn+P2I529Clc5gnuwuxDlbtLpztJo1TRjbbdqa
-         F978NQeiHWtrA==
-Content-Type: text/plain; charset="utf-8"
+        id S230320AbhFBERd (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Wed, 2 Jun 2021 00:17:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41144 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229831AbhFBERd (ORCPT
+        <rfc822;linux-m68k@lists.linux-m68k.org>);
+        Wed, 2 Jun 2021 00:17:33 -0400
+Received: from mail-pj1-x1034.google.com (mail-pj1-x1034.google.com [IPv6:2607:f8b0:4864:20::1034])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F096C061574
+        for <linux-m68k@lists.linux-m68k.org>; Tue,  1 Jun 2021 21:15:51 -0700 (PDT)
+Received: by mail-pj1-x1034.google.com with SMTP id k7so904040pjf.5
+        for <linux-m68k@lists.linux-m68k.org>; Tue, 01 Jun 2021 21:15:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=/1wSyt9lFdOW+ZpHSxjEn9egCfQ8IpXv9FipEBLxVKA=;
+        b=A0zZaxAbhJjpcQ6ZlZ5KabO4GHlMw7dRWskq7QPKx0KrpNisezotqM+N1+MQawtzip
+         cHVFfMR0RcUhjfBBVs1ojRbH5vAHWHDZ7W0Yk80W/hkKXlwER+79glZocKvVaYn0eRCd
+         gByvwFhj8QzFN9OEHnxOX1+0hbRN1i98905UMOrOxdi97An3tb+8m8HxowQtSA7cfK8n
+         tPittSPYKEqw7xK3fI1fTnoxhfrfC3APOLvil65vQB115anWo9fTa5oxVBvN025Cp2wl
+         GCzRZJ94Bazx5QKBsYYkwJpqHj22ZSbi2PUcqU1w0TGjLX2E5in5QatIBbC9vyX8Qc/W
+         KT8g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=/1wSyt9lFdOW+ZpHSxjEn9egCfQ8IpXv9FipEBLxVKA=;
+        b=r+izfOwe3tCLjX1fYBcBYfSQIRDB10lMGxbVy4CAKSAReMh5AxHgU+3tLfKKS8VO0X
+         gRzOC1g7VeeJlr8rls+AFAsuhnnVDcjjfHd+btxcLCvJz626FeJuxECcTtnw0noWrkm9
+         eq3kmq2JxF75nA+5pmbKj5GIHfDSL8AGDYta//EzoFPy97OEvHEqu6R+29lbIs6UCn8d
+         AqNJUERNJJK1EhrDHl/v7hWe/p0DCDrUPhvjx16jZhtAEHkNH7NbSAjdHiFwc1V9vyIU
+         If+S8ldPFNIMnCcIrLnknnnfloFwSPDZ0LAuwdPRWjVqZl0Fk1YJu4RvmGvu43hwHW/g
+         9ZYg==
+X-Gm-Message-State: AOAM533YGtMt1sSh1YNYL5LrfyppqVWm+bw8mC/fms98rT7afGR18lyG
+        1rK9c6RbEMinteTRBrcPb0w=
+X-Google-Smtp-Source: ABdhPJyPfEgLySzIcgD97mB22RFDByH3ihiCq4Sa0rTLX1HYtlfhh+50oXuL2mi1wdMQMq+yubr79A==
+X-Received: by 2002:a17:902:bf04:b029:fd:7c7c:bbf3 with SMTP id bi4-20020a170902bf04b02900fd7c7cbbf3mr29016675plb.59.1622607350098;
+        Tue, 01 Jun 2021 21:15:50 -0700 (PDT)
+Received: from google.com ([2620:15c:202:201:a596:b3cb:1a6:1ee4])
+        by smtp.gmail.com with ESMTPSA id lp13sm3331919pjb.0.2021.06.01.21.15.48
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 01 Jun 2021 21:15:49 -0700 (PDT)
+Date:   Tue, 1 Jun 2021 21:15:46 -0700
+From:   Dmitry Torokhov <dmitry.torokhov@gmail.com>
+To:     Geert Uytterhoeven <geert@linux-m68k.org>
+Cc:     Randy Dunlap <rdunlap@infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Michael Schmitz <schmitz@debian.org>,
+        Roman Zippel <zippel@linux-m68k.org>,
+        linux-input <linux-input@vger.kernel.org>,
+        linux-m68k <linux-m68k@lists.linux-m68k.org>,
+        Michael Schmitz <schmitzmic@gmail.com>
+Subject: Re: [PATCH v2] MOUSE_ATARI: fix kconfig unmet dependency warning
+Message-ID: <YLcF8k71w1mhN9OX@google.com>
+References: <20210527001251.8529-1-rdunlap@infradead.org>
+ <CAMuHMdWxBDM6za4_zPrkPGja8K6vy47gfdzYMNjJ-i1n1ySsHA@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <CAK8P3a2Ueg0UFZisrzrrL_MkBLnu6TbMtVGx4_wO0d6rj48weg@mail.gmail.com>
-References: <20210531184749.2475868-1-arnd@kernel.org> <20210601095129.GF6961@alpha.franken.de> <CAK8P3a2Ueg0UFZisrzrrL_MkBLnu6TbMtVGx4_wO0d6rj48weg@mail.gmail.com>
-Subject: Re: [PATCH 0/7] clk: clean up legacy clock interfaces
-From:   Stephen Boyd <sboyd@kernel.org>
-Cc:     linux-clk <linux-clk@vger.kernel.org>,
-        Dmitry Osipenko <digetx@gmail.com>,
-        Florian Fainelli <florian@openwrt.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Greg Ungerer <gerg@linux-m68k.org>,
-        John Crispin <john@phrozen.org>,
-        Jonas Gorski <jonas.gorski@gmail.com>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Russell King <linux@armlinux.org.uk>,
-        linux-m68k <linux-m68k@lists.linux-m68k.org>, open list:
-        BROADCOM NVRAM DRIVER <linux-mips@vger.kernel.org>, ;
-Illegal-Object: Syntax error in Cc: address found on vger.kernel.org:
-        Cc:     ;
-                        ^-missing semicolon to end mail group, extraneous tokens in mailbox, missing end of mailbox
-To:     Arnd Bergmann <arnd@kernel.org>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-Date:   Tue, 01 Jun 2021 15:05:33 -0700
-Message-ID: <162258513314.4130789.12039373985147120919@swboyd.mtv.corp.google.com>
-User-Agent: alot/0.9.1
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAMuHMdWxBDM6za4_zPrkPGja8K6vy47gfdzYMNjJ-i1n1ySsHA@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-Quoting Arnd Bergmann (2021-06-01 05:24:59)
-> On Tue, Jun 1, 2021 at 11:51 AM Thomas Bogendoerfer
-> <tsbogend@alpha.franken.de> wrote:
+On Thu, May 27, 2021 at 08:56:30AM +0200, Geert Uytterhoeven wrote:
+> On Thu, May 27, 2021 at 2:12 AM Randy Dunlap <rdunlap@infradead.org> wrote:
+> > Since the code for ATARI_KBD_CORE does not use drivers/input/keyboard/
+> > code, just move ATARI_KBD_CORE to arch/m68k/Kconfig.machine to remove
+> > this dependency.
 > >
-> > On Mon, May 31, 2021 at 08:47:42PM +0200, Arnd Bergmann wrote:
-> > > As I noticed that the ar7 clock implementation and the ralink version
-> > > are rather trivial, I ended up converting those to use the common-clk
-> > > interfaces as well, though this is unrelated to the other changes.
+> > Removes this kconfig warning:
 > >
-> > excellent, how is your plan for merging the series ?
->=20
-> I have not decided yet. I think it would be best to keep the series toget=
-her
-> and merge it through the clk maintainer tree, or possibly my asm-generic
-> tree, but as there is no rush, we could also do the mips and m68k bits
-> through the architecture trees, and defer the rest for 5.15.
->=20
+> > WARNING: unmet direct dependencies detected for ATARI_KBD_CORE
+> >   Depends on [n]: !UML && INPUT [=y] && INPUT_KEYBOARD [=n]
+> >   Selected by [y]:
+> >   - MOUSE_ATARI [=y] && !UML && INPUT [=y] && INPUT_MOUSE [=y] && ATARI [=y]
+> >
+> > Fixes: c04cb856e20a ("m68k: Atari keyboard and mouse support.")
+> > Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+> > Cc: Michael Schmitz <schmitz@debian.org>
+> > Cc: Roman Zippel <zippel@linux-m68k.org>
+> > Cc: Geert Uytterhoeven <geert@linux-m68k.org>
+> > Cc: Dmitry Torokhov <dmitry.torokhov@gmail.com>
+> > Cc: linux-input@vger.kernel.org
+> > Cc: linux-m68k@lists.linux-m68k.org
+> > Suggested-by: Geert Uytterhoeven <geert@linux-m68k.org>
+> > Suggested-by: Michael Schmitz <schmitzmic@gmail.com>
+> 
+> > ---
+> > v2: move the symbol outside of INPUT_KEYBOARD (Geert) -- all the way
+> >     to Kconfig.machine (Michael). Thanks.
+> 
+> Acked-by: Geert Uytterhoeven <geert@linux-m68k.org>
+> 
+> I'm willing to queue this in the m68k for-v5.14 branch, if Dmitry agrees.
 
-I'm happy to take the series through clk tree if that helps.
+Sure, works for me.
+
+Acked-by: Dmitry Torokhov <dmitry.torokhov@gmail.com>
+
+Thanks.
+
+-- 
+Dmitry
