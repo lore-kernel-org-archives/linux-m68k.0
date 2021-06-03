@@ -2,159 +2,118 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-16.4 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-3.4 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,NICE_REPLY_A,SPF_HELO_NONE,
+	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 66EDCC4708F
-	for <linux-m68k@archiver.kernel.org>; Wed,  2 Jun 2021 14:03:16 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 21DA6C47082
+	for <linux-m68k@archiver.kernel.org>; Thu,  3 Jun 2021 03:44:18 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 49460613BF
-	for <linux-m68k@archiver.kernel.org>; Wed,  2 Jun 2021 14:03:16 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id E029D613DC
+	for <linux-m68k@archiver.kernel.org>; Thu,  3 Jun 2021 03:44:17 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230078AbhFBOE6 (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Wed, 2 Jun 2021 10:04:58 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46846 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230030AbhFBOE6 (ORCPT <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Wed, 2 Jun 2021 10:04:58 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8CE12613B8;
-        Wed,  2 Jun 2021 14:03:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1622642595;
-        bh=rVTIekozkKZiHFO8KV73KQ3u8bmmogfis0wnY/V9zMk=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=j8vmJNJ02mTS2qujW9AuK34CyGewsKEQa3NJI4x54mI/kZ6TFkXgNShYSldLi9wwR
-         iVZIZpo10XmlpdD1gKCLSxI2hAconHrCrMCgpriX/VTH8VoFXTo8owedKrPE/jIZ0c
-         D0z4cOoqJMINruzqON7gaCTnozO9ZlPYtavKjKyFVVT2dZ+EtfNVi3gYHbuLNepcSX
-         +gq/yzfSnUELMMLNTwhQ6DbA0qs/Rfv2LkuAbudO4aFFo53imu8k7hO2V3DMiMK48/
-         BPzuDC2hRRaPw3diNLbn7YRlcBUV1pB+YMb1s77Dpt31JAkWDkRc6hv1mITOzdI2oz
-         pUQhhp2WADSpA==
-Date:   Wed, 2 Jun 2021 17:03:01 +0300
-From:   Mike Rapoport <rppt@kernel.org>
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Matt Turner <mattst88@gmail.com>,
-        Mike Rapoport <rppt@linux.ibm.com>,
-        Richard Henderson <rth@twiddle.net>,
-        Vineet Gupta <vgupta@synopsys.com>, kexec@lists.infradead.org,
-        alpha <linux-alpha@vger.kernel.org>,
-        Linux-Arch <linux-arch@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
-        "linux-ia64@vger.kernel.org" <linux-ia64@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-m68k <linux-m68k@lists.linux-m68k.org>,
-        "open list:BROADCOM NVRAM DRIVER" <linux-mips@vger.kernel.org>,
-        Linux MM <linux-mm@kvack.org>,
-        linux-riscv <linux-riscv@lists.infradead.org>,
-        linux-s390 <linux-s390@vger.kernel.org>,
-        Linux-sh list <linux-sh@vger.kernel.org>,
-        arcml <linux-snps-arc@lists.infradead.org>,
-        "open list:TENSILICA XTENSA PORT (xtensa)" 
-        <linux-xtensa@linux-xtensa.org>,
-        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
-        sparclinux <sparclinux@vger.kernel.org>
-Subject: Re: [PATCH 4/9] m68k: remove support for DISCONTIGMEM
-Message-ID: <YLePlSaXR0XvtZki@kernel.org>
-References: <20210602105348.13387-1-rppt@kernel.org>
- <20210602105348.13387-5-rppt@kernel.org>
- <CAMuHMdUUzMNcWNXCjwZmH-VBC+jH1ShBpeg6EBCdRXv3mwHxsQ@mail.gmail.com>
+        id S229663AbhFCDqB (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Wed, 2 Jun 2021 23:46:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44108 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229611AbhFCDqA (ORCPT
+        <rfc822;linux-m68k@vger.kernel.org>); Wed, 2 Jun 2021 23:46:00 -0400
+Received: from mail-pf1-x42c.google.com (mail-pf1-x42c.google.com [IPv6:2607:f8b0:4864:20::42c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5E032C06174A
+        for <linux-m68k@vger.kernel.org>; Wed,  2 Jun 2021 20:44:05 -0700 (PDT)
+Received: by mail-pf1-x42c.google.com with SMTP id h12so1015374pfe.2
+        for <linux-m68k@vger.kernel.org>; Wed, 02 Jun 2021 20:44:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:references:cc:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-transfer-encoding;
+        bh=Ut3WAuN7O3xn9fuDoqG5eOtbXJyXxliNPO6u9/Jerxw=;
+        b=hg8x1VCYFiZXgQRbjwlbb1kKW6MtzCCnFLv8QP8OdT6FzBfD3PK5DBb5Ko6v2NAsQw
+         mUokp7zZ5G27DHX4y1wSS+1bgwTo8GeRz8x89j2eFQUw5B0RAG//tDO0xMTUW4bacqci
+         sF/4mp5F4PnL4BANuSU8nNz+WTOw7hjzI8nFG7g+S2+ix9cWk6W8BeiE7U0AOywdcwUl
+         brV3CTL0b3OXWIdJxX+HfuAnR6Pmrn9NCmqddTV7WHXkCYa6Mxd+YcqeWIzQN9G+jL1D
+         GLcLV4/kEnI2JC6kKSeG9zZLcy0WTs4LIOhTrokenugk4VtH4mFAWquDwPB941jpvvcv
+         mIYQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:references:cc:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding;
+        bh=Ut3WAuN7O3xn9fuDoqG5eOtbXJyXxliNPO6u9/Jerxw=;
+        b=F02bMmusAH4aoPRzg9coSCkHNksmxVly+QiORx1pqDznF98LMASFPaGSuul8x5DLoq
+         YRrHFEsqMbv+ab4mDurq+UxFqwprqhGqFPyLaQnjtc09PAuNGo0y7WsH55maiZsvJMMW
+         yMXBxHYw9TrbYGW7xlLZ05wxG278Xftnl6IS4X5BM9ZBoffJVpEQ/waye2CTWQVoZgRA
+         6oD94s8WEQaEnlGwGjUr5ej3gwRBGZI25Fi//D+H2TiG3NtD/cerNjEm4mc2pkSDcvQ+
+         NN1KMBtOV7ubux8LrvYcJRJ7oSY+cmeTQMjelJZYoZFkmzrWGFH/SRNa2XR7ZhOfIeTx
+         SwWg==
+X-Gm-Message-State: AOAM533a1GJBR9uA5iyQHqYdi/AoS+31sG+eh5DCka5sdYLkAwswF5hX
+        wdAo6x6GINYcW2w3z8FTxwWN0p/fRJ4=
+X-Google-Smtp-Source: ABdhPJz1pux/oreOES/R84ikYbF1SIqvydW1fgjHBd2RqwImjW5Q6SQ2gSWP6qjBEygl39vk8Fv3Hg==
+X-Received: by 2002:a62:8745:0:b029:2e9:cbec:87d6 with SMTP id i66-20020a6287450000b02902e9cbec87d6mr19469701pfe.64.1622691844733;
+        Wed, 02 Jun 2021 20:44:04 -0700 (PDT)
+Received: from [10.1.1.25] (222-152-189-137-fibre.sparkbb.co.nz. [222.152.189.137])
+        by smtp.gmail.com with ESMTPSA id f139sm833034pfa.38.2021.06.02.20.44.01
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Wed, 02 Jun 2021 20:44:03 -0700 (PDT)
+Subject: Re: [PATCH RFC 0/2] Fix m68k multiplatform ISA support
+To:     linux-m68k@vger.kernel.org, geert@linux-m68k.org
+References: <CAMuHMdUskb3oicq8Kbf6MY_4mn4-Y1pJ-om4fny7k48gndscgg@mail.gmail.com>
+ <1622611267-15825-1-git-send-email-schmitzmic@gmail.com>
+Cc:     fthain@linux-m68k.org
+From:   Michael Schmitz <schmitzmic@gmail.com>
+Message-ID: <4f52cce1-e894-c224-a42b-18cce4f61056@gmail.com>
+Date:   Thu, 3 Jun 2021 15:43:58 +1200
+User-Agent: Mozilla/5.0 (X11; Linux ppc; rv:45.0) Gecko/20100101
+ Icedove/45.4.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAMuHMdUUzMNcWNXCjwZmH-VBC+jH1ShBpeg6EBCdRXv3mwHxsQ@mail.gmail.com>
+In-Reply-To: <1622611267-15825-1-git-send-email-schmitzmic@gmail.com>
+Content-Type: text/plain; charset=iso-8859-15; format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-On Wed, Jun 02, 2021 at 01:25:24PM +0200, Geert Uytterhoeven wrote:
-> Hi Mike,
-> 
-> On Wed, Jun 2, 2021 at 12:54 PM Mike Rapoport <rppt@kernel.org> wrote:
-> > From: Mike Rapoport <rppt@linux.ibm.com>
-> >
-> > DISCONTIGMEM was replaced by FLATMEM with freeing of the unused memory map
-> > in v5.11.
-> >
-> > Remove the support for DISCONTIGMEM entirely.
-> >
-> > Signed-off-by: Mike Rapoport <rppt@linux.ibm.com>
-> 
-> Thanks for your patch!
-> 
-> Reviewed-by: Geert Uytterhoeven <geert@linux-m68k.org>
-> Acked-by: Geert Uytterhoeven <geert@linux-m68k.org>
-> 
-> > --- a/arch/m68k/include/asm/page_mm.h
-> > +++ b/arch/m68k/include/asm/page_mm.h
-> > @@ -126,25 +126,7 @@ static inline void *__va(unsigned long x)
-> >
-> >  extern int m68k_virt_to_node_shift;
-> >
-> > -#ifndef CONFIG_DISCONTIGMEM
-> >  #define __virt_to_node(addr)   (&pg_data_map[0])
-> 
-> With pg_data_map[] removed, this definition can go as well.
-> Seems to be a leftover from 1008a11590b966b4 ("m68k: switch to MEMBLOCK
->  + NO_BOOTMEM")
-> 
-> There are a few more:
-> arch/m68k/include/asm/mmzone.h:extern pg_data_t pg_data_map[];
-> arch/m68k/include/asm/mmzone.h:#define NODE_DATA(nid)
-> (&pg_data_map[nid])
+Point of detail: don't forget to run 'make clean' after applying this 
+series. Modules are not automatically rebuilt after changes to our 
+io_mm.h (should they?)
 
-It seems that arch/m68k/include/asm/mmzone.h can be simply removed.
- 
-> > -#else
-> > -extern struct pglist_data *pg_data_table[];
-> > -
-> > -static inline __attribute_const__ int __virt_to_node_shift(void)
-> > -{
-> > -       int shift;
-> > -
-> > -       asm (
-> > -               "1:     moveq   #0,%0\n"
-> > -               m68k_fixup(%c1, 1b)
-> > -               : "=d" (shift)
-> > -               : "i" (m68k_fixup_vnode_shift));
-> > -       return shift;
-> > -}
-> > -
-> > -#define __virt_to_node(addr)   (pg_data_table[(unsigned long)(addr) >> __virt_to_node_shift()])
-> > -#endif
-> 
-> > --- a/arch/m68k/mm/init.c
-> > +++ b/arch/m68k/mm/init.c
-> > @@ -44,28 +44,8 @@ EXPORT_SYMBOL(empty_zero_page);
-> >
-> >  int m68k_virt_to_node_shift;
-> >
-> > -#ifdef CONFIG_DISCONTIGMEM
-> > -pg_data_t pg_data_map[MAX_NUMNODES];
-> > -EXPORT_SYMBOL(pg_data_map);
-> > -
-> > -pg_data_t *pg_data_table[65];
-> > -EXPORT_SYMBOL(pg_data_table);
-> > -#endif
-> > -
-> 
-> Gr{oetje,eeting}s,
-> 
->                         Geert
-> 
-> 
-> --
-> Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-> 
-> In personal conversations with technical people, I call myself a hacker. But
-> when I'm talking to journalists I just say "programmer" or something like that.
->                                 -- Linus Torvalds
+Cheers,
 
--- 
-Sincerely yours,
-Mike.
+	Michael
+
+Am 02.06.2021 um 17:21 schrieb Michael Schmitz:
+> Finn Thain found out that our multiplatform support is broken when
+> attempting to build a kernel with support for both Q40 and Atari (when
+> setting CONFIG_ISA through CONFIG_Q40, but not CONFIG_ATARI_ROM_ISA).
+>
+> Inspection of the code in io_mm.h reveals that in that case, ISA I/O
+> accessors with address translation are used for the Atari IDE driver, where
+> MMIO accessors with no address translation would have been appropriate.
+>
+> Setting CONFIG_ATARI_ROM_ISA will fix the issue for Atari, but then force the
+> use of I/O accessors without address translation for Q40. The code in
+> io_mm.h is fundamentally broken for kernels that have both Q40 and Atari
+> support.
+>
+> Address this by adding a check for address < 1024 to the Atari address
+> translation case, changing the default address translation to return the
+> untranslated address, and changing the CONFIG_ATARI_ROM_ISA section to use
+> ISA I/O accessors for addresses > 1024 (i.e., those not intended to map to
+> the ROM port).
+>
+> Tested on ARAnyM with all combinations of CONFIG_ATARI_ROM_ISA and
+> CONFIG_ISA. Earlier versions tested on my Falcon hardware, all using
+> pata_falcon.
+>
+> A thorough review in particular in regard to ramifications for Q40 and Amiga
+> would be welcome. If there is a better way to implement these changes, I'd
+> appreciate a hint. This is all academic as long as support for Q40 and Atari
+> in the same kernel image is not needed, of course.
+>
+> I suspect patch 2 may not be needed, since the isa_sex variable should always
+> be zero?
+>
+> Cheers,
+>
+>    Michael
+>
