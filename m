@@ -2,216 +2,130 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-21.4 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-	autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-3.3 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,NICE_REPLY_A,SPF_HELO_NONE,
+	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 5FC8AC4709C
-	for <linux-m68k@archiver.kernel.org>; Fri,  4 Jun 2021 14:49:55 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id BC3BCC4743C
+	for <linux-m68k@archiver.kernel.org>; Fri,  4 Jun 2021 21:36:34 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 4B197613FF
-	for <linux-m68k@archiver.kernel.org>; Fri,  4 Jun 2021 14:49:55 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 8017E60C3E
+	for <linux-m68k@archiver.kernel.org>; Fri,  4 Jun 2021 21:36:34 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230073AbhFDOvk (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Fri, 4 Jun 2021 10:51:40 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48908 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229880AbhFDOvj (ORCPT <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Fri, 4 Jun 2021 10:51:39 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3F7C46140B;
-        Fri,  4 Jun 2021 14:49:46 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1622818193;
-        bh=rnFSlNaPq8u6wC/6QmquuOa136Onpb4MOEGa2hLgk9I=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=LwwJaCK2IwLxB9kyXGjYKVF9yzkzn7XRMKeQ8X72ltVfnmPF5p41UBu+e+05a9DAy
-         tZKeaBQHBAcKLB2Qe5TMvMpTImanf/IJol37sjCQauBE3/upu93O1L0ehCiz24v3Eo
-         sgkxYEhJA2jhJ1hXN8nOKaMM///ktUE3ni2XrsbrjomrPUTFManqUNJ/xUZvLqqjSH
-         FSVnaCBtBJhMvzfd0MKLff525QxHTp7w4mkKBDT0KOaGgN/fy/0yJ+Z0e/so6SnMiQ
-         P2u25M6Qqug84oEiWVQUttGG0bIXa2/7x8ISySiIyeKQCCUonmeBlNLWKV2nP78fa3
-         67XpLaAb4EoHQ==
-Date:   Fri, 4 Jun 2021 17:49:41 +0300
-From:   Mike Rapoport <rppt@kernel.org>
-To:     Vineet Gupta <Vineet.Gupta1@synopsys.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Matt Turner <mattst88@gmail.com>,
-        Mike Rapoport <rppt@linux.ibm.com>,
-        Richard Henderson <rth@twiddle.net>,
-        "kexec@lists.infradead.org" <kexec@lists.infradead.org>,
-        "linux-alpha@vger.kernel.org" <linux-alpha@vger.kernel.org>,
-        "linux-arch@vger.kernel.org" <linux-arch@vger.kernel.org>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
-        "linux-ia64@vger.kernel.org" <linux-ia64@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-m68k@lists.linux-m68k.org" <linux-m68k@lists.linux-m68k.org>,
-        "linux-mips@vger.kernel.org" <linux-mips@vger.kernel.org>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        "linux-riscv@lists.infradead.org" <linux-riscv@lists.infradead.org>,
-        "linux-s390@vger.kernel.org" <linux-s390@vger.kernel.org>,
-        "linux-sh@vger.kernel.org" <linux-sh@vger.kernel.org>,
-        "linux-snps-arc@lists.infradead.org" 
-        <linux-snps-arc@lists.infradead.org>,
-        "linux-xtensa@linux-xtensa.org" <linux-xtensa@linux-xtensa.org>,
-        "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>,
-        "sparclinux@vger.kernel.org" <sparclinux@vger.kernel.org>
-Subject: Re: [PATCH v2 3/9] arc: remove support for DISCONTIGMEM
-Message-ID: <YLo9hb3yTeh3LBMg@kernel.org>
-References: <20210604064916.26580-1-rppt@kernel.org>
- <20210604064916.26580-4-rppt@kernel.org>
- <f1616f95-f99c-c387-4ed4-88961457a7c6@synopsys.com>
+        id S229746AbhFDViU (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Fri, 4 Jun 2021 17:38:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57164 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229665AbhFDViU (ORCPT
+        <rfc822;linux-m68k@vger.kernel.org>); Fri, 4 Jun 2021 17:38:20 -0400
+Received: from mail-pj1-x102c.google.com (mail-pj1-x102c.google.com [IPv6:2607:f8b0:4864:20::102c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 86913C061767;
+        Fri,  4 Jun 2021 14:36:19 -0700 (PDT)
+Received: by mail-pj1-x102c.google.com with SMTP id m13-20020a17090b068db02901656cc93a75so8172169pjz.3;
+        Fri, 04 Jun 2021 14:36:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:references:cc:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-transfer-encoding;
+        bh=wGqdV4bNNz4VAcdMHyar3DhYCaMKnNzMvXRq2H+IWtI=;
+        b=Yj3sYkqVhkpnvdu0jr0bWdQcYU9ZRNr5W+Y/Nqg/bbj7rsCFrD+nsOg8ujfNBMAvYY
+         9Hmif3zF3KpJyh59w+74a1e4K6qfmmEOdaDKoAqWVFyGNhlGMinH4dmDOmssmDYhgBEz
+         eFD4geLksXcNYoBPGTJuQXKFPqAeFJMvbdrixH3Xxac1j5UzdzDlyTPsRY3DM/2ELuHv
+         q7yqhna0+h+2vEKzoiN3oEOZWXqchs0TNwPKKC8Sw24EaOmKT9FC3KsCZrwW6jlY/jxt
+         oI8tOUAEMjs2SL217Dx2mvIkg81/NH3pFxQpKNkE5Ndo8ilx8dlHEAnmuYvtAeIY7Ib1
+         +7lA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:references:cc:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding;
+        bh=wGqdV4bNNz4VAcdMHyar3DhYCaMKnNzMvXRq2H+IWtI=;
+        b=UvxDAnnt2i5N5gJ8+7kIabG9855yM9O4Pyfa784QjCSxLDKxmjkCHmuyJNlqATOBGN
+         K751pzfHBbF0WGeBI+7Nh4kO3xcQFF8LhszZ33s/NA6VmHMEZ5gKToO0h1Fopp44nGue
+         awGbPQAlloRo5Fcg9E9YZn/Q7siccVmbt3MSEsHuY/vXAreNIOGfpdsvMMQjP32lT8oE
+         uX2JKJnEeT2JbN7hc67csinloKoguFb99GsYIWmrvIRdjedxbrZ3VA7gsDLeDI8wOXIy
+         J5zjSirYUH0O7RLz3Xi6Wy6MR4Q1kFuPfGuNlTtuNa6vuF4Sm8D8akV075o8mJhtIoWR
+         BUGA==
+X-Gm-Message-State: AOAM531oivQr7K8VFrvGuuj0512hsdwtsX02nbWDNTRkXLpGWI01Ovvg
+        WpyTzI2QfWbPdIhAtTNwT6PxOrAcqVM=
+X-Google-Smtp-Source: ABdhPJzzhDuAKOdhODAvipxYTxxL6SC278eYPRwX9XeJiKiEWRZfGMD803btqx7HfIc3s3RQdGiisg==
+X-Received: by 2002:a17:90a:aa96:: with SMTP id l22mr18683537pjq.173.1622842578852;
+        Fri, 04 Jun 2021 14:36:18 -0700 (PDT)
+Received: from [10.1.1.25] (222-152-189-137-fibre.sparkbb.co.nz. [222.152.189.137])
+        by smtp.gmail.com with ESMTPSA id r4sm2344685pff.197.2021.06.04.14.36.15
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Fri, 04 Jun 2021 14:36:18 -0700 (PDT)
+Subject: Re: [PATCH RFC 1/2] m68k: io_mm.h: conditionalize ISA address
+ translation on Atari
+To:     Geert Uytterhoeven <geert@linux-m68k.org>
+References: <CAMuHMdUskb3oicq8Kbf6MY_4mn4-Y1pJ-om4fny7k48gndscgg@mail.gmail.com>
+ <1622611267-15825-1-git-send-email-schmitzmic@gmail.com>
+ <1622611267-15825-2-git-send-email-schmitzmic@gmail.com>
+ <25ab336d-e0e0-41a8-d468-ecbf8d83d2b@linux-m68k.org>
+ <143313da-d294-f89b-d285-235230514c5a@gmail.com>
+ <CAMuHMdU5ebmsErLdy6EykCHNULsBVFCpVsz0H3gpTLUmH1tt7g@mail.gmail.com>
+Cc:     Finn Thain <fthain@linux-m68k.org>,
+        Linux/m68k <linux-m68k@vger.kernel.org>,
+        linux-ide@vger.kernel.org
+From:   Michael Schmitz <schmitzmic@gmail.com>
+Message-ID: <28042fd1-4a54-af21-347f-165b8e4e63b4@gmail.com>
+Date:   Sat, 5 Jun 2021 09:36:13 +1200
+User-Agent: Mozilla/5.0 (X11; Linux ppc; rv:45.0) Gecko/20100101
+ Icedove/45.4.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <f1616f95-f99c-c387-4ed4-88961457a7c6@synopsys.com>
+In-Reply-To: <CAMuHMdU5ebmsErLdy6EykCHNULsBVFCpVsz0H3gpTLUmH1tt7g@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-On Fri, Jun 04, 2021 at 02:07:39PM +0000, Vineet Gupta wrote:
-> On 6/3/21 11:49 PM, Mike Rapoport wrote:
-> > From: Mike Rapoport <rppt@linux.ibm.com>
-> >
-> > DISCONTIGMEM was replaced by FLATMEM with freeing of the unused memory map
-> > in v5.11.
-> >
-> > Remove the support for DISCONTIGMEM entirely.
-> >
-> > Signed-off-by: Mike Rapoport <rppt@linux.ibm.com>
-> 
-> Looks non intrusive, but I'd still like to give this a spin on hardware 
-> - considering highmem on ARC has tendency to go sideways ;-)
-> Can you please share a branch !
+Hi Geert,
 
-Sure:
+Am 04.06.2021 um 19:54 schrieb Geert Uytterhoeven:
+>>> I have to wonder whether there is a nice simple definition for MULTI_ISA.
+>>
+>> As I understand it, MULTI_ISA means that different byte orders and/or
+>> different address translations need to be used in the same kernel, so
+>> all that cannot be decided at build time.
+>>
+>> As long as there is only a single platform that will use this code (ISA
+>> only used on a single platform, and neither Atari IDE nor EtherNEC
+>> used), MULTI_ISA is not needed.
+>>
+>> If we have Kconfig symbols for 'single platform only', and
+>> 'multi-platform ISA use', that might be shorter to write and easier to
+>> understand. Geert?
+>
+> It would be nice to have that automatically, like with the current
+> MULTI_ISA define (and all the MACH_* in arch/m68k/include/asm/setup.h).
+> Perhaps we should extend kconfig syntax to define a group of
+> related symbols, and to automatically generate CONFIG_FOO_MULTI or
+> CONFIG_FOO_SINGLE (and even CONFIG_BAR_ONLY?) symbols?
 
-https://git.kernel.org/pub/scm/linux/kernel/git/rppt/linux.git/log/?h=memory-models/rm-discontig/v2
- 
-> Acked-by: Vineet Gupta <vgupta@synopsys.com>
+I take it this is not supported by our current Kconfig syntax?
 
-Thanks!
- 
-> Thx,
-> -Vineet
-> 
-> > ---
-> >   arch/arc/Kconfig              | 13 ------------
-> >   arch/arc/include/asm/mmzone.h | 40 -----------------------------------
-> >   arch/arc/mm/init.c            |  8 -------
-> >   3 files changed, 61 deletions(-)
-> >   delete mode 100644 arch/arc/include/asm/mmzone.h
-> >
-> > diff --git a/arch/arc/Kconfig b/arch/arc/Kconfig
-> > index 2d98501c0897..d8f51eb8963b 100644
-> > --- a/arch/arc/Kconfig
-> > +++ b/arch/arc/Kconfig
-> > @@ -62,10 +62,6 @@ config SCHED_OMIT_FRAME_POINTER
-> >   config GENERIC_CSUM
-> >   	def_bool y
-> >   
-> > -config ARCH_DISCONTIGMEM_ENABLE
-> > -	def_bool n
-> > -	depends on BROKEN
-> > -
-> >   config ARCH_FLATMEM_ENABLE
-> >   	def_bool y
-> >   
-> > @@ -344,15 +340,6 @@ config ARC_HUGEPAGE_16M
-> >   
-> >   endchoice
-> >   
-> > -config NODES_SHIFT
-> > -	int "Maximum NUMA Nodes (as a power of 2)"
-> > -	default "0" if !DISCONTIGMEM
-> > -	default "1" if DISCONTIGMEM
-> > -	depends on NEED_MULTIPLE_NODES
-> > -	help
-> > -	  Accessing memory beyond 1GB (with or w/o PAE) requires 2 memory
-> > -	  zones.
-> > -
-> >   config ARC_COMPACT_IRQ_LEVELS
-> >   	depends on ISA_ARCOMPACT
-> >   	bool "Setup Timer IRQ as high Priority"
-> > diff --git a/arch/arc/include/asm/mmzone.h b/arch/arc/include/asm/mmzone.h
-> > deleted file mode 100644
-> > index b86b9d1e54dc..000000000000
-> > --- a/arch/arc/include/asm/mmzone.h
-> > +++ /dev/null
-> > @@ -1,40 +0,0 @@
-> > -/* SPDX-License-Identifier: GPL-2.0-only */
-> > -/*
-> > - * Copyright (C) 2016 Synopsys, Inc. (www.synopsys.com)
-> > - */
-> > -
-> > -#ifndef _ASM_ARC_MMZONE_H
-> > -#define _ASM_ARC_MMZONE_H
-> > -
-> > -#ifdef CONFIG_DISCONTIGMEM
-> > -
-> > -extern struct pglist_data node_data[];
-> > -#define NODE_DATA(nid) (&node_data[nid])
-> > -
-> > -static inline int pfn_to_nid(unsigned long pfn)
-> > -{
-> > -	int is_end_low = 1;
-> > -
-> > -	if (IS_ENABLED(CONFIG_ARC_HAS_PAE40))
-> > -		is_end_low = pfn <= virt_to_pfn(0xFFFFFFFFUL);
-> > -
-> > -	/*
-> > -	 * node 0: lowmem:             0x8000_0000   to 0xFFFF_FFFF
-> > -	 * node 1: HIGHMEM w/o  PAE40: 0x0           to 0x7FFF_FFFF
-> > -	 *         HIGHMEM with PAE40: 0x1_0000_0000 to ...
-> > -	 */
-> > -	if (pfn >= ARCH_PFN_OFFSET && is_end_low)
-> > -		return 0;
-> > -
-> > -	return 1;
-> > -}
-> > -
-> > -static inline int pfn_valid(unsigned long pfn)
-> > -{
-> > -	int nid = pfn_to_nid(pfn);
-> > -
-> > -	return (pfn <= node_end_pfn(nid));
-> > -}
-> > -#endif /* CONFIG_DISCONTIGMEM  */
-> > -
-> > -#endif
-> > diff --git a/arch/arc/mm/init.c b/arch/arc/mm/init.c
-> > index 397a201adfe3..abfeef7bf6f8 100644
-> > --- a/arch/arc/mm/init.c
-> > +++ b/arch/arc/mm/init.c
-> > @@ -32,11 +32,6 @@ unsigned long arch_pfn_offset;
-> >   EXPORT_SYMBOL(arch_pfn_offset);
-> >   #endif
-> >   
-> > -#ifdef CONFIG_DISCONTIGMEM
-> > -struct pglist_data node_data[MAX_NUMNODES] __read_mostly;
-> > -EXPORT_SYMBOL(node_data);
-> > -#endif
-> > -
-> >   long __init arc_get_mem_sz(void)
-> >   {
-> >   	return low_mem_sz;
-> > @@ -147,9 +142,6 @@ void __init setup_arch_memory(void)
-> >   	 * to the hole is freed and ARC specific version of pfn_valid()
-> >   	 * handles the hole in the memory map.
-> >   	 */
-> > -#ifdef CONFIG_DISCONTIGMEM
-> > -	node_set_online(1);
-> > -#endif
-> >   
-> >   	min_high_pfn = PFN_DOWN(high_mem_start);
-> >   	max_high_pfn = PFN_DOWN(high_mem_start + high_mem_sz);
-> 
+>
+> group ISA
+>      item ATARI_ROM_ISA
+>      item AMIGA_PCMCIA
+>      item Q40
+>
+> => CONFIG_ISA_MULTI or CONFIG_ISA_SINGLE (+ e.g. ATARI_ROM_ISA_ONLY
+>    if appropriate).
+>
+> Are there other users who can benefit from this?
 
--- 
-Sincerely yours,
-Mike.
+Nothing comes to mind immediately. But there will be other drivers 
+shared between different architectures (Mac / PowerPC?) that might benefit.
+
+Cheers,
+
+	Michael
+
+
+>
+> Gr{oetje,eeting}s,
+>
+>                         Geert
+>
