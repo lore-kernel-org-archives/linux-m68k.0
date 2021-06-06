@@ -2,113 +2,78 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-13.4 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,UNWANTED_LANGUAGE_BODY,
-	URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-5.3 required=3.0 tests=BAYES_00,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 6F310C48BC2
-	for <linux-m68k@archiver.kernel.org>; Sun,  6 Jun 2021 21:31:21 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5E0B1C4743F
+	for <linux-m68k@archiver.kernel.org>; Sun,  6 Jun 2021 23:51:11 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 58FC761408
-	for <linux-m68k@archiver.kernel.org>; Sun,  6 Jun 2021 21:31:21 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 278386142A
+	for <linux-m68k@archiver.kernel.org>; Sun,  6 Jun 2021 23:51:11 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230390AbhFFVdJ (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Sun, 6 Jun 2021 17:33:09 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54176 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230356AbhFFVdI (ORCPT <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Sun, 6 Jun 2021 17:33:08 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id AEFDA613B6;
-        Sun,  6 Jun 2021 21:31:13 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1623015078;
-        bh=ZtDz+Tx3gDJURxeLGuynFGZ8uxab5SNEIC7k5srsrBY=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=AHcE9g6brTgSAV+4xVNhxekKQlGM0mhAwBWD7XpWpqvtSKGR2QVl9LLO9Fp8mdhc+
-         pc81xS+K6zgxjC9BvkiLbrgqfQSTHMEsv0LbOBaFKiII1tEOu5/8nloj4MSsU82HIa
-         zrNuIDNh84AL4LuphasPGIwe4LNbg9inob5KFPcyQWr6fCOpQ1hseHxL1zqLaM0xud
-         rcUhT1KG4HC3/rPAMCNByPC09q5k03V88CjP/YnrWLRCt6Qt1kUehiQTJUTNwYN4hW
-         To0R1RL/ILuw03NT52wJ9AiDWAT36NN77oYd2Bnz8ID2ZeewkpMb92YVMYNyVavhgv
-         L/9jySVl4Hzcg==
-Date:   Mon, 7 Jun 2021 00:31:09 +0300
-From:   Mike Rapoport <rppt@kernel.org>
-To:     Kefeng Wang <wangkefeng.wang@huawei.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        linux-snps-arc@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, linux-csky@vger.kernel.org,
-        uclinux-h8-devel@lists.sourceforge.jp,
-        linux-m68k@lists.linux-m68k.org, openrisc@lists.librecores.org,
-        linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org,
-        linux-sh@vger.kernel.org, linux-s390@vger.kernel.org,
-        x86@kernel.org
-Subject: Re: [PATCH v2 01/15] mm: add setup_initial_init_mm() helper
-Message-ID: <YL0+nZPViz5xzxca@kernel.org>
-References: <20210604070633.32363-1-wangkefeng.wang@huawei.com>
- <20210604070633.32363-2-wangkefeng.wang@huawei.com>
+        id S229885AbhFFXxA (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Sun, 6 Jun 2021 19:53:00 -0400
+Received: from cynthia.allandria.com ([50.242.82.17]:49540 "EHLO
+        cynthia.allandria.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229813AbhFFXxA (ORCPT
+        <rfc822;linux-m68k@vger.kernel.org>); Sun, 6 Jun 2021 19:53:00 -0400
+Received: from flar by cynthia.allandria.com with local (Exim 4.84_2)
+        (envelope-from <flar@allandria.com>)
+        id 1lq2Xq-0003CW-Ir; Sun, 06 Jun 2021 16:51:06 -0700
+Date:   Sun, 6 Jun 2021 16:51:06 -0700
+From:   Brad Boyer <flar@allandria.com>
+To:     Michael Schmitz <schmitzmic@gmail.com>
+Cc:     Finn Thain <fthain@linux-m68k.org>, linux-m68k@vger.kernel.org,
+        geert@linux-m68k.org, linux-ide@vger.kernel.org,
+        ALeX Kazik <alex@kazik.de>
+Subject: Re: [PATCH RFC 1/2] m68k: io_mm.h: conditionalize ISA address
+ translation on Atari
+Message-ID: <20210606235106.GA10846@allandria.com>
+References: <25ab336d-e0e0-41a8-d468-ecbf8d83d2b@linux-m68k.org>
+ <143313da-d294-f89b-d285-235230514c5a@gmail.com>
+ <d7165fdd-9269-7bd2-185-c6193f864722@linux-m68k.org>
+ <535b7829-f16f-4ddc-a676-dbb10c7a4a35@gmail.com>
+ <20210604224955.GA12141@allandria.com>
+ <eefa79e9-01d3-9179-9ca6-57500b9ab7c2@gmail.com>
+ <20210605060447.GA18461@allandria.com>
+ <5bed9868-2cb6-6604-abb9-faa9361fa3e3@gmail.com>
+ <bfce51f-a393-7c3e-77f0-a99595a0d037@linux-m68k.org>
+ <460124e6-6ac3-4b94-43de-ebff5cb50cf8@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210604070633.32363-2-wangkefeng.wang@huawei.com>
+In-Reply-To: <460124e6-6ac3-4b94-43de-ebff5cb50cf8@gmail.com>
+User-Agent: Mutt/1.5.23 (2014-03-12)
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-Hello Kefeng,
-
-On Fri, Jun 04, 2021 at 03:06:19PM +0800, Kefeng Wang wrote:
-> Add setup_initial_init_mm() helper to setup kernel text,
-> data and brk.
+On Sun, Jun 06, 2021 at 05:42:30PM +1200, Michael Schmitz wrote:
+> >Would (port & ~1) be faster than (port - 1) here?
 > 
-> Cc: linux-snps-arc@lists.infradead.org
-> Cc: linux-arm-kernel@lists.infradead.org
-> Cc: linux-csky@vger.kernel.org
-> Cc: uclinux-h8-devel@lists.sourceforge.jp
-> Cc: linux-m68k@lists.linux-m68k.org
-> Cc: openrisc@lists.librecores.org
-> Cc: linuxppc-dev@lists.ozlabs.org
-> Cc: linux-riscv@lists.infradead.org
-> Cc: linux-sh@vger.kernel.org
-> Cc: linux-s390@vger.kernel.org
-> Cc: x86@kernel.org
-> Signed-off-by: Kefeng Wang <wangkefeng.wang@huawei.com>
-> ---
->  include/linux/mm_types.h | 8 ++++++++
->  1 file changed, 8 insertions(+)
-> 
-> diff --git a/include/linux/mm_types.h b/include/linux/mm_types.h
-> index 5aacc1c10a45..e1d2429089a4 100644
-> --- a/include/linux/mm_types.h
-> +++ b/include/linux/mm_types.h
-> @@ -572,6 +572,14 @@ struct mm_struct {
->  };
->  
->  extern struct mm_struct init_mm;
-> +static inline void setup_initial_init_mm(void *start_code, void *end_code,
-> +					 void *end_data, void *brk)
+> Perhaps it would - I'd hope the compiler will pick the most efficient
+> solution here.
 
-I think it's not that performance sensitive to make it inline. It can be
-placed in mm/init-mm.c with a forward declaration in mm.h
+I'm pretty sure the compiler couldn't do that optimization. Without
+more context, those two statements are not equivalent. I don't see
+how the compiler could know that.
 
-> +{
-> +	init_mm.start_code = (unsigned long)start_code;
-> +	init_mm.end_code = (unsigned long)end_code;
-> +	init_mm.end_data = (unsigned long)end_data;
-> +	init_mm.brk = (unsigned long)brk;
-> +}
-  
->  /* Pointer magic because the dynamic array size confuses some compilers. */
->  static inline void mm_init_cpumask(struct mm_struct *mm)
-> -- 
-> 2.26.2
-> 
-> 
-> _______________________________________________
-> linux-riscv mailing list
-> linux-riscv@lists.infradead.org
-> http://lists.infradead.org/mailman/listinfo/linux-riscv
+Looking at the 68040 manual, the instruction timing of ANDI and SUBQ
+is mostly the same (except for immediate addressing, where ANDI is
+slower). The ANDI is also going to take up extra bytes in the code
+to put the bitmask in an extension word. BCLR can be faster than
+ANDI or SUBQ in some cases, but it's slower in others. It also needs
+an extension word when using an immediate value for the bit number.
+If you presume port is in a data register, then ANDI and SUBQ have
+the same timing and BCLR is slower. At that point, the difference
+between ANDI and SUBQ is the size of the instruction which would
+favor using SUBQ. I haven't checked if other m68k chips have similar
+timings.
 
--- 
-Sincerely yours,
-Mike.
+Unless I missed something, I don't see a better way to do the
+equivalent of the and with a constant bitmask.
+
+	Brad Boyer
+	flar@allandria.com
+
