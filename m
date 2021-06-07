@@ -2,88 +2,98 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.1 required=3.0 tests=BAYES_00,DKIM_INVALID,
-	DKIM_SIGNED,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS,USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-13.8 required=3.0 tests=BAYES_00,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id DA059C4743C
-	for <linux-m68k@archiver.kernel.org>; Mon,  7 Jun 2021 09:31:38 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 914F2C47095
+	for <linux-m68k@archiver.kernel.org>; Mon,  7 Jun 2021 11:15:31 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id BDC5C61159
-	for <linux-m68k@archiver.kernel.org>; Mon,  7 Jun 2021 09:31:38 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 6B7B36101A
+	for <linux-m68k@archiver.kernel.org>; Mon,  7 Jun 2021 11:15:31 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230359AbhFGJd2 (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Mon, 7 Jun 2021 05:33:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43404 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230345AbhFGJd2 (ORCPT
-        <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Mon, 7 Jun 2021 05:33:28 -0400
-Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 63434C061766
-        for <linux-m68k@lists.linux-m68k.org>; Mon,  7 Jun 2021 02:31:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
-        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-         bh=MlvkgxFcyawWgLbaD1anFAhejhA4mPswAd0WEOPLbd0=; b=cetr6/k8ZHIlURSNkBDEkxOd3
-        puNo+HwooQUeJn9AaPBl4regJ9NkcXwohGBb5OPUoX7XTTODh5d6IsuhC8Hnw3taLmVn0F8+4hF1o
-        ArioCmyKCJRUZ5c5W9Ct8Cw0Zpb4xNWdK87xHBWnc3daFNyrTg9aLL7A/E6TbbFPNgdTXMtoLpPh1
-        VNTboFgYQtPgYxGziLgboqSm+C9rc0zETM+h5ZE5kg+2kGPOkoZAIe8MZfd5JZNTDNazJFXr/S6Gm
-        YDi+dqX3d1L4b71QKMOqk7jvcXPp8QSgQdX3C28GtCjdiTWKtuBWWAYuFwAi7GnVSCXRZB8Zx7iVW
-        ALDutps2w==;
-Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:44784)
-        by pandora.armlinux.org.uk with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <linux@armlinux.org.uk>)
-        id 1lqBbS-0000Eu-Fv; Mon, 07 Jun 2021 10:31:26 +0100
-Received: from linux by shell.armlinux.org.uk with local (Exim 4.92)
-        (envelope-from <linux@shell.armlinux.org.uk>)
-        id 1lqBbN-0005oE-UB; Mon, 07 Jun 2021 10:31:21 +0100
-Date:   Mon, 7 Jun 2021 10:31:21 +0100
-From:   "Russell King (Oracle)" <linux@armlinux.org.uk>
-To:     Christophe Leroy <christophe.leroy@csgroup.eu>
-Cc:     Kefeng Wang <wangkefeng.wang@huawei.com>,
-        Mike Rapoport <rppt@kernel.org>,
-        uclinux-h8-devel@lists.sourceforge.jp, linux-s390@vger.kernel.org,
-        linux-sh@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-csky@vger.kernel.org, linux-mm@kvack.org,
-        linux-m68k@lists.linux-m68k.org, openrisc@lists.librecores.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        linux-snps-arc@lists.infradead.org, linuxppc-dev@lists.ozlabs.org,
-        linux-riscv@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH v2 00/15] init_mm: cleanup ARCH's text/data/brk setup code
-Message-ID: <20210607093121.GC22278@shell.armlinux.org.uk>
-References: <20210604070633.32363-1-wangkefeng.wang@huawei.com>
- <YL0+Jargm+y9aqx1@kernel.org>
- <481056ab-686e-9f42-3b8a-b31941f58af6@huawei.com>
- <006eb573-5a20-1ac7-6234-338d11346a08@csgroup.eu>
+        id S230253AbhFGLRV (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Mon, 7 Jun 2021 07:17:21 -0400
+Received: from mail-ua1-f45.google.com ([209.85.222.45]:38586 "EHLO
+        mail-ua1-f45.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230215AbhFGLRV (ORCPT
+        <rfc822;linux-m68k@vger.kernel.org>); Mon, 7 Jun 2021 07:17:21 -0400
+Received: by mail-ua1-f45.google.com with SMTP id d13so8775435uav.5;
+        Mon, 07 Jun 2021 04:15:30 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Wgp/tBpjeqf6O2lPslH9bnakWrDSZCGb8Fz8Hl4UvnQ=;
+        b=rd7fZ/Vc5Tsay7oyC4m89l5lqP08dgiz09ZdO4zJ6HMYgmJvuH6hXsxDYXBwB1yXeW
+         CcD/yq1hOEV4NKwk6DahbTpdihR9ASHQYzV5yHoDY0SUm3RLdOBtnM+XO/TXKPdAFnBk
+         m3bloOuU8x2w6GPMs24zEK2Ai8wHNSekm2HxRx+YRbc7nbDmrmjIhIcYwyBH51aOnd5r
+         NbDRexnwa/1j30Pjx6f8cHI/529WMBCtisWiMUFV4M2d3o7/wAj7SNh/aXuu4p6yH9NQ
+         bioNtg39fLmaasgjhN84GWLAk9GAyX/EtAHhO3BKwgIeJhMici0RcueLDUa81deR2RDZ
+         gyDQ==
+X-Gm-Message-State: AOAM530rsROBqmATWwAcFhc6rjkMGUPzKZZn4szat8iJabkNIzGj5cDw
+        vV8QJvBSFUy2pZOwql/49mvb+Zyn38ZV2MSMMqM=
+X-Google-Smtp-Source: ABdhPJwXLFVczFNkh7qoopILS7Zq6IMI4+2N7i/u5ETu9RMK0fDl0OmoiIgsh/Y9sOA5u809zy+ptyPJmCdH9bcLgXE=
+X-Received: by 2002:a1f:d8c3:: with SMTP id p186mr7553368vkg.1.1623064529977;
+ Mon, 07 Jun 2021 04:15:29 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <006eb573-5a20-1ac7-6234-338d11346a08@csgroup.eu>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-Sender: Russell King (Oracle) <linux@armlinux.org.uk>
+References: <20210605060447.GA18461@allandria.com> <1622958877-2026-1-git-send-email-schmitzmic@gmail.com>
+ <1622958877-2026-2-git-send-email-schmitzmic@gmail.com>
+In-Reply-To: <1622958877-2026-2-git-send-email-schmitzmic@gmail.com>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Mon, 7 Jun 2021 13:15:18 +0200
+Message-ID: <CAMuHMdX1cD_zt6hU-6CUZi=uyYdk_xgW+hTCXvxSTRFPy_qn5w@mail.gmail.com>
+Subject: Re: [PATCH RFC 1/2] m68k: io_mm.h - add APNE 100 MBit support
+To:     Michael Schmitz <schmitzmic@gmail.com>
+Cc:     "Linux/m68k" <linux-m68k@vger.kernel.org>,
+        linux-ide@vger.kernel.org, Finn Thain <fthain@linux-m68k.org>,
+        ALeX Kazik <alex@kazik.de>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-On Mon, Jun 07, 2021 at 07:48:54AM +0200, Christophe Leroy wrote:
-> Hi Kefeng,
-> 
-> What you could do is to define a __weak function that architectures can
-> override and call that function from mm_init() as suggested by Mike,
+Hi Michael,
 
-The problem with weak functions is that they bloat the kernel. Each
-time a weak function is overriden, it becomes dead unreachable code
-within the kernel image.
+On Sun, Jun 6, 2021 at 7:54 AM Michael Schmitz <schmitzmic@gmail.com> wrote:
+> Add code to support 10 Mbit and 100 Mbit mode for APNE driver.
+>
+> A new ISA type ISA_TYPE_AG100 switches the Amiga ISA inb accessor
+> to word access as required by the 100 Mbit cards.
+>
+> Patch modified after patch "[PATCH RFC net-next] Amiga PCMCIA
+> 100 MBit card support" submitted to netdev 2018/09/16 by Alex
+> Kazik <alex@kazik.de>.
+>
+> Signed-off-by: Michael Schmitz <schmitzmic@gmail.com>
 
-At some point we're probabily going to have to enable -ffunction-sections
-to (hopefully) allow the dead code to be discarded.
+> --- a/arch/m68k/include/asm/io_mm.h
+> +++ b/arch/m68k/include/asm/io_mm.h
+> @@ -212,13 +232,16 @@ static inline u16 __iomem *isa_mtw(unsigned long addr)
+>  }
+>
+>
+> -#define isa_inb(port)      in_8(isa_itb(port))
+>  #define isa_inw(port)      (ISA_SEX ? in_be16(isa_itw(port)) : in_le16(isa_itw(port)))
+>  #define isa_inl(port)      (ISA_SEX ? in_be32(isa_itl(port)) : in_le32(isa_itl(port)))
+>  #define isa_outb(val,port) out_8(isa_itb(port),(val))
+>  #define isa_outw(val,port) (ISA_SEX ? out_be16(isa_itw(port),(val)) : out_le16(isa_itw(port),(val)))
+>  #define isa_outl(val,port) (ISA_SEX ? out_be32(isa_itl(port),(val)) : out_le32(isa_itl(port),(val)))
+>
+> +/* for APNE 100 Mbit cards - hope the APNE 100 case will be eliminated as
+> + * dead code if MULTI_ISA is not set */
+> +#define isa_inb(port)      ((ISA_TYPE == ISA_TYPE_AG100) ? ((port) & 1 ? isa_inw((port) - 1) & 0xff : isa_inw(port) >> 8) : in_8(isa_itb(port))
+
+This fails to compile due to a missing closing parenthesis.
+
+Gr{oetje,eeting}s,
+
+                        Geert
 
 -- 
-RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
-FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
