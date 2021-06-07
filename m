@@ -2,102 +2,130 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-10.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,
+X-Spam-Status: No, score=-13.8 required=3.0 tests=BAYES_00,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id EE13BC47082
-	for <linux-m68k@archiver.kernel.org>; Mon,  7 Jun 2021 08:47:33 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 348D0C47082
+	for <linux-m68k@archiver.kernel.org>; Mon,  7 Jun 2021 08:53:37 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id D4E7261164
-	for <linux-m68k@archiver.kernel.org>; Mon,  7 Jun 2021 08:47:33 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 0D85060E08
+	for <linux-m68k@archiver.kernel.org>; Mon,  7 Jun 2021 08:53:37 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230128AbhFGItY (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Mon, 7 Jun 2021 04:49:24 -0400
-Received: from mail-ed1-f47.google.com ([209.85.208.47]:43814 "EHLO
-        mail-ed1-f47.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229545AbhFGItX (ORCPT
-        <rfc822;linux-m68k@vger.kernel.org>); Mon, 7 Jun 2021 04:49:23 -0400
-Received: by mail-ed1-f47.google.com with SMTP id s6so19325386edu.10
-        for <linux-m68k@vger.kernel.org>; Mon, 07 Jun 2021 01:47:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kazik.de; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=rbCJZ424Xbt1MnOfGZf2sF9LS+q4Pp70klcOnStjO08=;
-        b=rVqM/N7ix6+OFOAqkzmX/3xR+VlPj49ipm/MCahSj2TeHef+NFYDEi6YmLyp/zvLo1
-         yJOMfqUsR9VaRoZirf2O9halVqRXr9wqnGlav1+bXjIDu4/scqA7V4E+aIPH5RPdpj9s
-         ak2db+be33WvInAZeRfH0cXVt1OmFxsJ8Uxnc=
+        id S230374AbhFGIz1 (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Mon, 7 Jun 2021 04:55:27 -0400
+Received: from mail-ua1-f49.google.com ([209.85.222.49]:38530 "EHLO
+        mail-ua1-f49.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230366AbhFGIz0 (ORCPT
+        <rfc822;linux-m68k@lists.linux-m68k.org>);
+        Mon, 7 Jun 2021 04:55:26 -0400
+Received: by mail-ua1-f49.google.com with SMTP id d13so8588143uav.5
+        for <linux-m68k@lists.linux-m68k.org>; Mon, 07 Jun 2021 01:53:19 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=rbCJZ424Xbt1MnOfGZf2sF9LS+q4Pp70klcOnStjO08=;
-        b=n4ArYvaJh6sK9YyQw7gtIh8kacEM9HkGaxNyKc1pGNPno2oA/7CfQpmJJ1vlbKR5U4
-         JlVfOtEyGwex/pajPvfwYH2vMxOM2j5zwOM+kGZ97gml8kJJlQ6NRHBvRC3jW+CD35Db
-         4CReg99Z8Gf4TwTwz1kN0phA8QrFmyLl3wskpZwhOQFbGgwqCZNUYXygVbfjJQpKmfdt
-         1sh3W1zC3ax5CvADp532izYJUGInjoEkc3rsESzBUwW372yzrXJCa2pe8x6o0Oz80eip
-         5iTy/lythLns/BK+3Ok2nIC28ItHcfga/Q3pn86UZjCuK2UsfKkwLGI4QCB+llyQeQJw
-         cmcg==
-X-Gm-Message-State: AOAM533O8RAj8DntsdCxGZ39hjhzeBvvkoqxXGXGOlxQBSJufjBmA2I+
-        W9uaN3GYBlHxlTLm9ZCzFyVfB8Nfl0PGhrDjHNc6ig==
-X-Google-Smtp-Source: ABdhPJyxVmF5qq2RnWEx36JlhrjEE//8AmCKLcPsyhdNc3vg9ieNuhslYCmsW8jAruky+WQ86nfRnSGCmnXvx/owm8Q=
-X-Received: by 2002:a05:6402:5256:: with SMTP id t22mr5796547edd.54.1623055579647;
- Mon, 07 Jun 2021 01:46:19 -0700 (PDT)
+        bh=y7XwbZyFAy9rqQo5J7t8DRS+d/mueoOLl5p+cSQb+8Y=;
+        b=OtZJ0eQTCq+Wdj0lBQSXQNLLPAZyN7EL8Z1Zu0FJY0D1rV2PIuOfJLw8F3Mr9al+PO
+         1gNlT9r330+dJGnL4PrgkGyV0r18Un8mSLKpV+FdpLW7hRhNyeV4ngSNfHFUaCSbVghx
+         MvdZSLKW21g7d3FdxNrZHhTY2Msg9bTI5QQ/IuWUysrJlPQ+7zKSvv+og8gfGLcQv0ga
+         fFJLCg7HXSLUcWUYsN/Pa7hlikr+m3JwjXOtjAmnQGjo2Elc9hjTa7zD1fmq58H6C7gY
+         Fjzym50r1qhFCSIo4aqnGrJd7uYYuMiYhkuv2DiNu4m57krSOsIMzSFHN2xpK3xkwMEc
+         UEpw==
+X-Gm-Message-State: AOAM532yFxz47k2TJGtbiCwlMSoTF0Hq1C9YBjQ4OxqcDz9gSn2+UM7q
+        7lAjOpb+mdiYOlqCa2NRi1g4kw2okX0pGEvfiWw=
+X-Google-Smtp-Source: ABdhPJw70xfmNroh3KIu5QGmqKsYwQ+PKLyHQ50n7DeatYgE4iGl6TNz+FWGTOL2BBcrgRRRH99rMYwIPPT469OpB6M=
+X-Received: by 2002:ab0:63d9:: with SMTP id i25mr6682382uap.106.1623055999326;
+ Mon, 07 Jun 2021 01:53:19 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210605060447.GA18461@allandria.com> <1622958877-2026-1-git-send-email-schmitzmic@gmail.com>
- <1622958877-2026-3-git-send-email-schmitzmic@gmail.com> <CAMuHMdXEs874y3nBjVNt8TQP-AMLTRMFgh+1wMt2xyJP3W_+Dg@mail.gmail.com>
- <d6268e39-295d-f9a4-862c-738803168f03@gmail.com>
-In-Reply-To: <d6268e39-295d-f9a4-862c-738803168f03@gmail.com>
-From:   ALeX Kazik <alex@kazik.de>
-Date:   Mon, 7 Jun 2021 10:46:09 +0200
-Message-ID: <CAFFuhJp5iu-2o4wYf3XSsCF3VV_T-q8gp08bkPpGBs8Ra_OnKw@mail.gmail.com>
-Subject: Re: [PATCH RFC 2/2] net/8390: apne.c - add 100 Mbit support to apne.c driver
-To:     Michael Schmitz <schmitzmic@gmail.com>
-Cc:     Geert Uytterhoeven <geert@linux-m68k.org>,
-        "Linux/m68k" <linux-m68k@vger.kernel.org>,
-        linux-ide@vger.kernel.org, Finn Thain <fthain@linux-m68k.org>
+References: <20210604064916.26580-1-rppt@kernel.org> <20210604064916.26580-9-rppt@kernel.org>
+In-Reply-To: <20210604064916.26580-9-rppt@kernel.org>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Mon, 7 Jun 2021 10:53:08 +0200
+Message-ID: <CAMuHMdVa29gUQAdHjKh-qDNpOJaoGwXtUkBM2qnOTi1DWV70xA@mail.gmail.com>
+Subject: Re: [PATCH v2 8/9] mm: replace CONFIG_NEED_MULTIPLE_NODES with CONFIG_NUMA
+To:     Mike Rapoport <rppt@kernel.org>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Matt Turner <mattst88@gmail.com>,
+        Mike Rapoport <rppt@linux.ibm.com>,
+        Richard Henderson <rth@twiddle.net>,
+        Vineet Gupta <vgupta@synopsys.com>, kexec@lists.infradead.org,
+        alpha <linux-alpha@vger.kernel.org>,
+        Linux-Arch <linux-arch@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
+        "linux-ia64@vger.kernel.org" <linux-ia64@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-m68k <linux-m68k@lists.linux-m68k.org>,
+        "open list:BROADCOM NVRAM DRIVER" <linux-mips@vger.kernel.org>,
+        Linux MM <linux-mm@kvack.org>,
+        linux-riscv <linux-riscv@lists.infradead.org>,
+        linux-s390 <linux-s390@vger.kernel.org>,
+        Linux-sh list <linux-sh@vger.kernel.org>,
+        arcml <linux-snps-arc@lists.infradead.org>,
+        "open list:TENSILICA XTENSA PORT (xtensa)" 
+        <linux-xtensa@linux-xtensa.org>,
+        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
+        sparclinux <sparclinux@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-Hi all,
+Hi Mike,
 
-> It's been quite a while - can you still try and build/test this change, Alex?
-
-I'm happy to test it again (assuming my Amiga still works, not used
-for a while).
-But I'm waiting until you guys have perfected the patch.
-
-> >> +
-> >>         pr_info("Looking for PCMCIA ethernet card : ");
-> >>
-> >>         /* check if a card is inserted */
-> >> @@ -590,6 +597,16 @@ static int init_pcmcia(void)
-> >>  #endif
-> >>         u_long offset;
-> >>
-> >> +#ifdef CONFIG_APNE100MBIT
-> >> +       /* reset card (idea taken from CardReset by Artur Pogoda) */
-> >> +       {
-> >> +               u_char  tmp = gayle.intreq;
-> >> +
-> >> +               gayle.intreq = 0xff;    mdelay(1);
-> >> +               gayle.intreq = tmp;     mdelay(300);
-> >> +       }
-> >
-> > Is this safe for all cards?
+On Fri, Jun 4, 2021 at 8:50 AM Mike Rapoport <rppt@kernel.org> wrote:
+> From: Mike Rapoport <rppt@linux.ibm.com>
 >
-> I _think_ so, but this really is a question for Alex and others involved
-> in developing the original patch. (The original patch had that
-> conditionalized as well so I might be wrong ...)
+> After removal of DISCINTIGMEM the NEED_MULTIPLE_NODES and NUMA
+> configuration options are equivalent.
+>
+> Drop CONFIG_NEED_MULTIPLE_NODES and use CONFIG_NUMA instead.
+>
+> Done with
+>
+>         $ sed -i 's/CONFIG_NEED_MULTIPLE_NODES/CONFIG_NUMA/' \
+>                 $(git grep -wl CONFIG_NEED_MULTIPLE_NODES)
+>         $ sed -i 's/NEED_MULTIPLE_NODES/NUMA/' \
+>                 $(git grep -wl NEED_MULTIPLE_NODES)
+>
+> with manual tweaks afterwards.
+>
+> Signed-off-by: Mike Rapoport <rppt@linux.ibm.com>
 
-My code is based on the patches here: http://www.g-mb.de/pcmcia_e.html
+Thanks for your patch!
 
-I'm not deep into it, just adapted the patch. And that's why I can't
-tell if the other drivers will work with it always enabled, sorry.
+As you dropped the following hunk from v2 of PATCH 5/9, there's now
+one reference left of CONFIG_NEED_MULTIPLE_NODES
+(plus the discontigmem comment):
 
-Bye,
-Alex.
+-diff --git a/mm/memory.c b/mm/memory.c
+-index f3ffab9b9e39157b..fd0ebb63be3304f5 100644
+---- a/mm/memory.c
+-+++ b/mm/memory.c
+-@@ -90,8 +90,7 @@
+- #warning Unfortunate NUMA and NUMA Balancing config, growing
+page-frame for last_cpupid.
+- #endif
+-
+--#ifndef CONFIG_NEED_MULTIPLE_NODES
+--/* use the per-pgdat data instead for discontigmem - mbligh */
+-+#ifdef CONFIG_FLATMEM
+- unsigned long max_mapnr;
+- EXPORT_SYMBOL(max_mapnr);
+-
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
+-- 
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
