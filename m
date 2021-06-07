@@ -2,91 +2,102 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.8 required=3.0 tests=BAYES_00,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
-	autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-10.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C774CC47082
-	for <linux-m68k@archiver.kernel.org>; Mon,  7 Jun 2021 08:44:58 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id EE13BC47082
+	for <linux-m68k@archiver.kernel.org>; Mon,  7 Jun 2021 08:47:33 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id A5DAE61105
-	for <linux-m68k@archiver.kernel.org>; Mon,  7 Jun 2021 08:44:58 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id D4E7261164
+	for <linux-m68k@archiver.kernel.org>; Mon,  7 Jun 2021 08:47:33 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231176AbhFGIqs (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Mon, 7 Jun 2021 04:46:48 -0400
-Received: from mail-vs1-f49.google.com ([209.85.217.49]:39591 "EHLO
-        mail-vs1-f49.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230374AbhFGIqs (ORCPT
-        <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Mon, 7 Jun 2021 04:46:48 -0400
-Received: by mail-vs1-f49.google.com with SMTP id z206so8491116vsz.6
-        for <linux-m68k@lists.linux-m68k.org>; Mon, 07 Jun 2021 01:44:57 -0700 (PDT)
+        id S230128AbhFGItY (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Mon, 7 Jun 2021 04:49:24 -0400
+Received: from mail-ed1-f47.google.com ([209.85.208.47]:43814 "EHLO
+        mail-ed1-f47.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229545AbhFGItX (ORCPT
+        <rfc822;linux-m68k@vger.kernel.org>); Mon, 7 Jun 2021 04:49:23 -0400
+Received: by mail-ed1-f47.google.com with SMTP id s6so19325386edu.10
+        for <linux-m68k@vger.kernel.org>; Mon, 07 Jun 2021 01:47:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=kazik.de; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=rbCJZ424Xbt1MnOfGZf2sF9LS+q4Pp70klcOnStjO08=;
+        b=rVqM/N7ix6+OFOAqkzmX/3xR+VlPj49ipm/MCahSj2TeHef+NFYDEi6YmLyp/zvLo1
+         yJOMfqUsR9VaRoZirf2O9halVqRXr9wqnGlav1+bXjIDu4/scqA7V4E+aIPH5RPdpj9s
+         ak2db+be33WvInAZeRfH0cXVt1OmFxsJ8Uxnc=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=NMLFqpyinJNzmHBwsTXpi/IC86W5Z3EEdqUV4Gadqtw=;
-        b=NA7hNcMjFjR+MHm/t0Dio2IoErFjlLFw4j4dj+ouhQU4CFwIXnORbozD2xp9VnK4xg
-         ygpfs6mEJbcyhfcgqpYFrkirPHMGUaD+oZpP0XRUX6xFEDCnVyU/ZqWdjd/TgUHcVzGj
-         oxv6YyCGoAMwZC44MgIg03pL4ae6iZgCFhfld0KS/wMCdurSMfwR7lP5wu1Z9mWBguAU
-         rc0Xs4ib8cXqX6+a071f8RrQ7Cy25AvwPJhhDQXv5kS4l6/S4yAtLKuZavE5pBtB8Plx
-         T9a9YfbpFkIZLGdpbZV0XJqKCCgtJXeiU9poVHxLjJXD2w6lLwwrtxbRX8bvLy4Wwnt+
-         pQGQ==
-X-Gm-Message-State: AOAM532cmuQB+SYWmSyUSAUb40cnivq4A40saRBIBuUh1PYxIW+W/DW/
-        A8GJhvF+U5mvSNkw7S9lbf1QGCA+oA2/yR2Pojw=
-X-Google-Smtp-Source: ABdhPJwMLHirwEQ4tJUPI7qaplUDz3bp0fsmhod8P88K7RhBRU2njU8TgCywfoM2VwxcEnVDrH/bezsBM2ie2giEJTc=
-X-Received: by 2002:a05:6102:c4c:: with SMTP id y12mr3863270vss.18.1623055497041;
- Mon, 07 Jun 2021 01:44:57 -0700 (PDT)
+        bh=rbCJZ424Xbt1MnOfGZf2sF9LS+q4Pp70klcOnStjO08=;
+        b=n4ArYvaJh6sK9YyQw7gtIh8kacEM9HkGaxNyKc1pGNPno2oA/7CfQpmJJ1vlbKR5U4
+         JlVfOtEyGwex/pajPvfwYH2vMxOM2j5zwOM+kGZ97gml8kJJlQ6NRHBvRC3jW+CD35Db
+         4CReg99Z8Gf4TwTwz1kN0phA8QrFmyLl3wskpZwhOQFbGgwqCZNUYXygVbfjJQpKmfdt
+         1sh3W1zC3ax5CvADp532izYJUGInjoEkc3rsESzBUwW372yzrXJCa2pe8x6o0Oz80eip
+         5iTy/lythLns/BK+3Ok2nIC28ItHcfga/Q3pn86UZjCuK2UsfKkwLGI4QCB+llyQeQJw
+         cmcg==
+X-Gm-Message-State: AOAM533O8RAj8DntsdCxGZ39hjhzeBvvkoqxXGXGOlxQBSJufjBmA2I+
+        W9uaN3GYBlHxlTLm9ZCzFyVfB8Nfl0PGhrDjHNc6ig==
+X-Google-Smtp-Source: ABdhPJyxVmF5qq2RnWEx36JlhrjEE//8AmCKLcPsyhdNc3vg9ieNuhslYCmsW8jAruky+WQ86nfRnSGCmnXvx/owm8Q=
+X-Received: by 2002:a05:6402:5256:: with SMTP id t22mr5796547edd.54.1623055579647;
+ Mon, 07 Jun 2021 01:46:19 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210604064916.26580-1-rppt@kernel.org>
-In-Reply-To: <20210604064916.26580-1-rppt@kernel.org>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Mon, 7 Jun 2021 10:44:45 +0200
-Message-ID: <CAMuHMdWuOk2LBJunCsCjzjYnBDs1rZh_x=ez7N=gjYv_ETMAcQ@mail.gmail.com>
-Subject: Re: [PATCH v2 0/9] Remove DISCINTIGMEM memory model
-To:     Mike Rapoport <rppt@kernel.org>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Matt Turner <mattst88@gmail.com>,
-        Mike Rapoport <rppt@linux.ibm.com>,
-        Richard Henderson <rth@twiddle.net>,
-        Vineet Gupta <vgupta@synopsys.com>, kexec@lists.infradead.org,
-        alpha <linux-alpha@vger.kernel.org>,
-        Linux-Arch <linux-arch@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
-        "linux-ia64@vger.kernel.org" <linux-ia64@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-m68k <linux-m68k@lists.linux-m68k.org>,
-        "open list:BROADCOM NVRAM DRIVER" <linux-mips@vger.kernel.org>,
-        Linux MM <linux-mm@kvack.org>,
-        linux-riscv <linux-riscv@lists.infradead.org>,
-        linux-s390 <linux-s390@vger.kernel.org>,
-        Linux-sh list <linux-sh@vger.kernel.org>,
-        arcml <linux-snps-arc@lists.infradead.org>,
-        "open list:TENSILICA XTENSA PORT (xtensa)" 
-        <linux-xtensa@linux-xtensa.org>,
-        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
-        sparclinux <sparclinux@vger.kernel.org>
+References: <20210605060447.GA18461@allandria.com> <1622958877-2026-1-git-send-email-schmitzmic@gmail.com>
+ <1622958877-2026-3-git-send-email-schmitzmic@gmail.com> <CAMuHMdXEs874y3nBjVNt8TQP-AMLTRMFgh+1wMt2xyJP3W_+Dg@mail.gmail.com>
+ <d6268e39-295d-f9a4-862c-738803168f03@gmail.com>
+In-Reply-To: <d6268e39-295d-f9a4-862c-738803168f03@gmail.com>
+From:   ALeX Kazik <alex@kazik.de>
+Date:   Mon, 7 Jun 2021 10:46:09 +0200
+Message-ID: <CAFFuhJp5iu-2o4wYf3XSsCF3VV_T-q8gp08bkPpGBs8Ra_OnKw@mail.gmail.com>
+Subject: Re: [PATCH RFC 2/2] net/8390: apne.c - add 100 Mbit support to apne.c driver
+To:     Michael Schmitz <schmitzmic@gmail.com>
+Cc:     Geert Uytterhoeven <geert@linux-m68k.org>,
+        "Linux/m68k" <linux-m68k@vger.kernel.org>,
+        linux-ide@vger.kernel.org, Finn Thain <fthain@linux-m68k.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-Hi Mike,
+Hi all,
 
-You may want to fix the DISCINTIGMEM typo in the subject for v3, unless
-you think that makes tracking series versions more complicated ;-)
+> It's been quite a while - can you still try and build/test this change, Alex?
 
-Gr{oetje,eeting}s,
+I'm happy to test it again (assuming my Amiga still works, not used
+for a while).
+But I'm waiting until you guys have perfected the patch.
 
-                        Geert
+> >> +
+> >>         pr_info("Looking for PCMCIA ethernet card : ");
+> >>
+> >>         /* check if a card is inserted */
+> >> @@ -590,6 +597,16 @@ static int init_pcmcia(void)
+> >>  #endif
+> >>         u_long offset;
+> >>
+> >> +#ifdef CONFIG_APNE100MBIT
+> >> +       /* reset card (idea taken from CardReset by Artur Pogoda) */
+> >> +       {
+> >> +               u_char  tmp = gayle.intreq;
+> >> +
+> >> +               gayle.intreq = 0xff;    mdelay(1);
+> >> +               gayle.intreq = tmp;     mdelay(300);
+> >> +       }
+> >
+> > Is this safe for all cards?
+>
+> I _think_ so, but this really is a question for Alex and others involved
+> in developing the original patch. (The original patch had that
+> conditionalized as well so I might be wrong ...)
 
--- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+My code is based on the patches here: http://www.g-mb.de/pcmcia_e.html
 
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+I'm not deep into it, just adapted the patch. And that's why I can't
+tell if the other drivers will work with it always enabled, sorry.
+
+Bye,
+Alex.
