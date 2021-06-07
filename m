@@ -2,142 +2,125 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,NICE_REPLY_A,SPF_HELO_NONE,
-	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-13.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id EB99AC4743D
-	for <linux-m68k@archiver.kernel.org>; Mon,  7 Jun 2021 03:41:49 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id DA916C4743C
+	for <linux-m68k@archiver.kernel.org>; Mon,  7 Jun 2021 04:44:15 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id D109261168
-	for <linux-m68k@archiver.kernel.org>; Mon,  7 Jun 2021 03:41:49 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id C2452610C8
+	for <linux-m68k@archiver.kernel.org>; Mon,  7 Jun 2021 04:44:15 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230292AbhFGDnj (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Sun, 6 Jun 2021 23:43:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51134 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230239AbhFGDni (ORCPT
+        id S229470AbhFGEqF (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Mon, 7 Jun 2021 00:46:05 -0400
+Received: from mail-pl1-f179.google.com ([209.85.214.179]:43943 "EHLO
+        mail-pl1-f179.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230173AbhFGEqF (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Sun, 6 Jun 2021 23:43:38 -0400
-Received: from mail-pl1-x634.google.com (mail-pl1-x634.google.com [IPv6:2607:f8b0:4864:20::634])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 62B84C061787
-        for <linux-m68k@lists.linux-m68k.org>; Sun,  6 Jun 2021 20:41:33 -0700 (PDT)
-Received: by mail-pl1-x634.google.com with SMTP id q16so7878499pls.6
-        for <linux-m68k@lists.linux-m68k.org>; Sun, 06 Jun 2021 20:41:33 -0700 (PDT)
+        Mon, 7 Jun 2021 00:46:05 -0400
+Received: by mail-pl1-f179.google.com with SMTP id v12so7935838plo.10
+        for <linux-m68k@lists.linux-m68k.org>; Sun, 06 Jun 2021 21:44:14 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:references:cc:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-transfer-encoding;
-        bh=VtFXrsX8w0w0nf24oPfhWOTgY39JrMcR9uKyv6wE2u4=;
-        b=KGEqwqgWOH1l9hDKlXq8r54KBUTCvmqWXEyyuJCdLyCSyq0yDDiXwaGqy5XbwARN2G
-         WYmTgQkFYk+VoyRxO8TrSU30Gf2EdKgyU6hwG/UufRBLMAJ5Y/CNIlgXU/45ypYDl4ad
-         I9y7xs/TZhf2c+PuNf+7GvyV+ti/1dmExnN7OT7FDlUGTxVOnHcVuAUzaPE8+wHYCKDy
-         9l5yF2SAkEJM9vOU/JMV0MJno6lsFTzIGSSwNXys2rqemmYulCOpUCdWBvBI7qdfBOs8
-         rUOLivULMaKtGz5MtWpCGvihgTuy8v2gsvhYEKGmYLmeKeGeZAHvcRoqYa3k9gqLx+CF
-         W6+Q==
+        d=intel-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=CRj471fcopWwQDLwVjladgw5/TWtqNQ37b4ozfCN7s8=;
+        b=mUwrryrMK2/51rlcR19uFKtt3Uz+vhowS1qfTyT3U4jbSFAWkNWauh6vZ1LO5VmIVs
+         5ECi3fnIpqEf7SJMnMZB8oq3crwKNTWITd/ZeOFm876BQIrYAX3u/vNdV2CgZCK01tkz
+         C8YU7ud0HQKax1RxO59EYt6KRwvWGHRSNo9PWsgDov28KfdcU8hcxJqxXgxw+nPdjo7K
+         342fva71vreSrrP8Kmd82X7Kbm8YcsSnvq3hNSryExEQqxyEuVJkiKabNqk+zLsUk8un
+         QX0WKhwpmqtVabr66aXRDGAcLJ6aoyf/DzL3OqIqE10TWaZPFDhN5OQPz3qcG9KZwqa3
+         ZqZQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:references:cc:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding;
-        bh=VtFXrsX8w0w0nf24oPfhWOTgY39JrMcR9uKyv6wE2u4=;
-        b=VxgXQyYC05sDPMxpqKsnl2BzgZ9L15itkrJnAy0vB2V50oyGEI7UVrBaAOyeb5RJdH
-         FpusVgUY6Gw+/AMYlyuHU066viGaGfqfYxKgLjgGfMys9MKUdyZIZOAHfiOI/x40sILI
-         uM06XE5jGjOqSsCCg72i7hAOaADq1raWoXGrqBzDt+3ecmym/CTaLFRAW2hhy1iuFU/a
-         4rNqt36uMiggbxnZXTXpLE6Lhn0ytIHwsl330QHe7UJWH4fJ3yFVH4dS6r3nSI8gEDHk
-         5NmhzjUbYsDSraIb7GFUVxWDOWzxSpNpII4aRYdkbjGyordQSqSyX6Xu1N+lU6YRKARB
-         1oog==
-X-Gm-Message-State: AOAM530zxSfYtbkU+frhyj38kL5qbhVIaEOgBoOAS+4I1ikJwnIqMOke
-        nA1oeJILxJPTD8VIOCYgAiw=
-X-Google-Smtp-Source: ABdhPJynmMpcDyU4FEBZOVJAayjiYV2j6daSl8h9v6E/kElpAojuRaW/7p+UpjZ9dGPXVZGxjr5Syg==
-X-Received: by 2002:a17:90b:124a:: with SMTP id gx10mr18655057pjb.214.1623037292916;
-        Sun, 06 Jun 2021 20:41:32 -0700 (PDT)
-Received: from [10.1.1.25] (222-152-189-137-fibre.sparkbb.co.nz. [222.152.189.137])
-        by smtp.gmail.com with ESMTPSA id p7sm7019372pfb.45.2021.06.06.20.41.28
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Sun, 06 Jun 2021 20:41:32 -0700 (PDT)
-Subject: Re: [PATCH] m68k/q40: Replace q40ide with pata_falcon and falconide
-To:     Finn Thain <fthain@linux-m68k.org>
-References: <352239036981177050c296ca3deb84a102d9faa2.1622970906.git.fthain@linux-m68k.org>
- <e250cffb-9edd-1b84-3826-58079758b35a@gmail.com>
- <4a32d59-ebb-9dc-fec7-ad172547d9a3@linux-m68k.org>
-Cc:     Geert Uytterhoeven <geert@linux-m68k.org>,
-        Richard Zidlicky <rz@linux-m68k.org>,
-        Jens Axboe <axboe@kernel.dk>,
-        "David S. Miller" <davem@davemloft.net>,
-        linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org,
-        linux-ide@vger.kernel.org
-From:   Michael Schmitz <schmitzmic@gmail.com>
-Message-ID: <a665b3ff-1dec-48b6-d8b1-a9966e1c1bf0@gmail.com>
-Date:   Mon, 7 Jun 2021 15:41:25 +1200
-User-Agent: Mozilla/5.0 (X11; Linux ppc; rv:45.0) Gecko/20100101
- Icedove/45.4.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=CRj471fcopWwQDLwVjladgw5/TWtqNQ37b4ozfCN7s8=;
+        b=Nb5rVx3nnXgoWSqJRuO9AWvuPBTGfewLl1UPDoyiOKE7tH483IzCj1xnLLLkx8XuEq
+         dONfz8x2Z9bAsDeYI6Qr7/dcQve+Fd2i39qO9inpMWnhjDVn6AN11DWq4qweKsf1bAPB
+         /PkyHZT0LIGJ2RLA6RF7r0OGl/KYNF+CA1gU+YZRsF5PCK+WkW4vNEryFGNOLoKREMZt
+         TOWefdnNEc1tiBJJpp5v6R6Eeb0urtQx5li/G5uPlqPwnhSJmOhxACVb1RJv0LF7CH5U
+         eLmXD23MFToLMbA9RS8+FUs89cIA3V/7VV9tkD4x5Gqq+SJjIvM7dmaWInLT4Kjc5aCQ
+         2F5Q==
+X-Gm-Message-State: AOAM531QcXtBLaELrICIwlzGJvUbxDoHWVM0pxKyrhEOpXMeS8kX5HQ5
+        nvFtAo3ZLadyBPU5YpUJazKjuoW24Z7FkQfZGn/Stg==
+X-Google-Smtp-Source: ABdhPJylkfr3HkdoqNF9xRMFqCn7oO5cpDCL+nuDgN1ppB6ZETr18hlSAOgBmuySRxZfODa5nUP7K4JpxKKLUl+WZPE=
+X-Received: by 2002:a17:902:f1cb:b029:10c:5c6d:88b with SMTP id
+ e11-20020a170902f1cbb029010c5c6d088bmr16307416plc.52.1623040994149; Sun, 06
+ Jun 2021 21:43:14 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <4a32d59-ebb-9dc-fec7-ad172547d9a3@linux-m68k.org>
-Content-Type: text/plain; charset=windows-1252; format=flowed
-Content-Transfer-Encoding: 7bit
+References: <20210521055116.1053587-1-hch@lst.de> <20210521055116.1053587-18-hch@lst.de>
+In-Reply-To: <20210521055116.1053587-18-hch@lst.de>
+From:   Dan Williams <dan.j.williams@intel.com>
+Date:   Sun, 6 Jun 2021 21:43:03 -0700
+Message-ID: <CAPcyv4gFEbZH4sXbkvQ32Xv1HiZ6JPL04efGpAWCqaJP_X9jaA@mail.gmail.com>
+Subject: Re: [PATCH 17/26] nvdimm-pmem: convert to blk_alloc_disk/blk_cleanup_disk
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     Jens Axboe <axboe@kernel.dk>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Chris Zankel <chris@zankel.net>,
+        Max Filippov <jcmvbkbc@gmail.com>,
+        Philipp Reisner <philipp.reisner@linbit.com>,
+        Lars Ellenberg <lars.ellenberg@linbit.com>,
+        Jim Paris <jim@jtan.com>,
+        Joshua Morris <josh.h.morris@us.ibm.com>,
+        Philip Kelleher <pjk1939@linux.ibm.com>,
+        Minchan Kim <minchan@kernel.org>,
+        Nitin Gupta <ngupta@vflare.org>,
+        Matias Bjorling <mb@lightnvm.io>, Coly Li <colyli@suse.de>,
+        Mike Snitzer <snitzer@redhat.com>, Song Liu <song@kernel.org>,
+        Maxim Levitsky <maximlevitsky@gmail.com>,
+        Alex Dubov <oakad@yahoo.com>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Vishal Verma <vishal.l.verma@intel.com>,
+        Dave Jiang <dave.jiang@intel.com>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        linux-block@vger.kernel.org,
+        device-mapper development <dm-devel@redhat.com>,
+        linux-m68k@lists.linux-m68k.org, linux-xtensa@linux-xtensa.org,
+        drbd-dev@lists.linbit.com,
+        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
+        linux-bcache@vger.kernel.org,
+        linux-raid <linux-raid@vger.kernel.org>,
+        linux-mmc@vger.kernel.org, nvdimm@lists.linux.dev,
+        linux-nvme@lists.infradead.org,
+        linux-s390 <linux-s390@vger.kernel.org>,
+        Sachin Sant <sachinp@linux.vnet.ibm.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-Hi Finn
+[ add Sachin who reported this commit in -next ]
 
-Am 07.06.2021 um 14:07 schrieb Finn Thain:
->> are there any substantial changes from what I'd tested before?
+On Thu, May 20, 2021 at 10:52 PM Christoph Hellwig <hch@lst.de> wrote:
 >
-> The request_region() stuff is new, and I reworked the host->get_lock and
-> host->release_lock changes. So you may want to review it again.
-
-I'll do that (and test the old falconide driver with your patch - never 
-got around to that, and I now remember there was something fishy in that 
-driver in relation to registering the IDE interrupt that I need to 
-re-check).
-
+> Convert the nvdimm-pmem driver to use the blk_alloc_disk and
+> blk_cleanup_disk helpers to simplify gendisk and request_queue
+> allocation.
 >
->> Your patch conflicts with (I think) the Mac IDE patches now in Geert's
->> tree, and I'd rather avoid hand-patching the lot if at all possible:
->>
->> m68k_q40_Replace_q40ide_with_pata_falcon_and_falconide
->> Applying: m68k/q40: Replace q40ide with pata_falcon and falconide
->> error: patch failed: arch/m68k/configs/multi_defconfig:351
->> error: arch/m68k/configs/multi_defconfig: patch does not apply
->> error: patch failed: drivers/ide/Kconfig:731
->> error: drivers/ide/Kconfig: patch does not apply
->> error: patch failed: drivers/ide/Makefile:29
->> error: drivers/ide/Makefile: patch does not apply
->>
+> Signed-off-by: Christoph Hellwig <hch@lst.de>
+> ---
+>  drivers/nvdimm/pmem.c | 15 +++++----------
+>  1 file changed, 5 insertions(+), 10 deletions(-)
 >
-> I should have sent these as a two-part series. Sorry about that.
-> You'll need to apply this patch first:
-> https://lore.kernel.org/linux-ide/3de9a93d-2f7-a650-1fa-c2129a4a765b@nippy.intranet/T/
-
-Looks like that's commit e4ab3dc4eb88f53730061a3976c1e63523c5567d which 
-fixed the conflict for me, thanks.
-
-
+> diff --git a/drivers/nvdimm/pmem.c b/drivers/nvdimm/pmem.c
+> index 968b8483c763..9fcd05084564 100644
+> --- a/drivers/nvdimm/pmem.c
+> +++ b/drivers/nvdimm/pmem.c
+> @@ -338,7 +338,7 @@ static void pmem_pagemap_cleanup(struct dev_pagemap *pgmap)
+>         struct request_queue *q =
+>                 container_of(pgmap->ref, struct request_queue, q_usage_counter);
 >
->> What's your baseline for this patch?
->>
->
-> I've used v5.12 and v5.13-rc5, but mostly I develop on the mac68k branch
-> in my github repository.
->
->> (In the alternative: just add my Tested-by if nothing changed aside from the
->> IO region reservation)
->>
->
-> I have tested these patches in Aranym (including a multi-platform
-> atari/q40 build which required your ISA fix) but I don't have any way to
-> test the q40-only code.
->
+> -       blk_cleanup_queue(q);
+> +       blk_cleanup_disk(queue_to_disk(q));
 
-Neither have I, but I'd like to verify that the falconide driver still 
-works with SCSI after this patch (can't see from the diff what the 
-ramifications are for locking and request_irq() ... as I said, I 
-remember something odd about the IDE interrupt that I need to verify).
-
-Cheers,
-
-	Michael
-
-
+This is broken. This comes after del_gendisk() which means the queue
+device is no longer associated with its disk parent. Perhaps @pmem
+could be stashed in pgmap->owner and then this can use pmem->disk? Not
+see any other readily available ways to get back to the disk from here
+after del_gendisk().
