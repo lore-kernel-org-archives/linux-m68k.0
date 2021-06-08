@@ -2,104 +2,115 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-13.8 required=3.0 tests=BAYES_00,
+X-Spam-Status: No, score=-14.0 required=3.0 tests=BAYES_00,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham
-	autolearn_force=no version=3.4.0
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,UNWANTED_LANGUAGE_BODY,
+	URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 6D225C47082
-	for <linux-m68k@archiver.kernel.org>; Tue,  8 Jun 2021 06:42:51 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A5369C4743D
+	for <linux-m68k@archiver.kernel.org>; Tue,  8 Jun 2021 08:26:03 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 4FC9B61027
-	for <linux-m68k@archiver.kernel.org>; Tue,  8 Jun 2021 06:42:51 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 902716128E
+	for <linux-m68k@archiver.kernel.org>; Tue,  8 Jun 2021 08:26:03 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230119AbhFHGon (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Tue, 8 Jun 2021 02:44:43 -0400
-Received: from mail-vs1-f50.google.com ([209.85.217.50]:34397 "EHLO
-        mail-vs1-f50.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229657AbhFHGom (ORCPT
-        <rfc822;linux-m68k@vger.kernel.org>); Tue, 8 Jun 2021 02:44:42 -0400
-Received: by mail-vs1-f50.google.com with SMTP id q2so2915463vsr.1;
-        Mon, 07 Jun 2021 23:42:50 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=uh8HVNA1CoHHn3gsvnYelJgEcLtS8VQWfCKOnvYkTR0=;
-        b=QazluQD6dqkzEzIUbp0SjjoSLxvltr9MbzQDY7wdkV8ty6SZH7bBt1qYXQmFxMEjBP
-         NLHklz4ZuEBzmNdEoQVMsO3tBDx5TRrc+6VA820j/x04kb1XDiwRArWB4pBdYg7GvTGH
-         AytrfwOt0ew9NVbRzjrrT9TiTsbtslsbdqNrADBAaD/V1WkApCgTmvhE7bc98Kh+HoBh
-         ImUNlZ0c9zPvAfssvwKkOkj30oO7MrER0FG1LvWxxY6DsmOg0gKVq+6hc4K3L+cVje+T
-         L5BQTUWtOUFBQn3sWXJ8oKcwl90wn7B7E4qmBjyUPU3Ip8kGqLUbfPD7pUKcpSfre/2c
-         koTA==
-X-Gm-Message-State: AOAM533K0ptjqdREkKKd4jLKeA0CIcPvdQstDnoxOF0e4RBDbv7ocD3Q
-        ejXPC/A28HEV9Bm+/oytCGOWJu2u1lb7D5yx6m8=
-X-Google-Smtp-Source: ABdhPJw7FTOmF92eD7pkc9jfXU8xB1JoFwxiW8B5Z+8hEoMj937klVZqauirHweN/cDJG+B4SNp7f0sNyMOf9T1elAQ=
-X-Received: by 2002:a05:6102:2011:: with SMTP id p17mr11257426vsr.40.1623134569719;
- Mon, 07 Jun 2021 23:42:49 -0700 (PDT)
+        id S231222AbhFHI1z (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Tue, 8 Jun 2021 04:27:55 -0400
+Received: from szxga01-in.huawei.com ([45.249.212.187]:3794 "EHLO
+        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230523AbhFHI1v (ORCPT
+        <rfc822;linux-m68k@lists.linux-m68k.org>);
+        Tue, 8 Jun 2021 04:27:51 -0400
+Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.55])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4Fzjqk3LPtzWspY;
+        Tue,  8 Jun 2021 16:21:06 +0800 (CST)
+Received: from dggpemm500001.china.huawei.com (7.185.36.107) by
+ dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Tue, 8 Jun 2021 16:25:53 +0800
+Received: from localhost.localdomain.localdomain (10.175.113.25) by
+ dggpemm500001.china.huawei.com (7.185.36.107) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Tue, 8 Jun 2021 16:25:52 +0800
+From:   Kefeng Wang <wangkefeng.wang@huawei.com>
+To:     Andrew Morton <akpm@linux-foundation.org>,
+        <linux-kernel@vger.kernel.org>
+CC:     <linux-mm@kvack.org>, Kefeng Wang <wangkefeng.wang@huawei.com>,
+        <linux-snps-arc@lists.infradead.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-csky@vger.kernel.org>,
+        <uclinux-h8-devel@lists.sourceforge.jp>,
+        <linux-m68k@lists.linux-m68k.org>, <openrisc@lists.librecores.org>,
+        <linuxppc-dev@lists.ozlabs.org>, <linux-riscv@lists.infradead.org>,
+        <linux-sh@vger.kernel.org>, <linux-s390@vger.kernel.org>,
+        <x86@kernel.org>
+Subject: [PATCH v3 resend 01/15] mm: add setup_initial_init_mm() helper
+Date:   Tue, 8 Jun 2021 16:34:04 +0800
+Message-ID: <20210608083418.137226-2-wangkefeng.wang@huawei.com>
+X-Mailer: git-send-email 2.26.2
+In-Reply-To: <20210608083418.137226-1-wangkefeng.wang@huawei.com>
+References: <20210608083418.137226-1-wangkefeng.wang@huawei.com>
 MIME-Version: 1.0
-References: <20210605060447.GA18461@allandria.com> <1622958877-2026-1-git-send-email-schmitzmic@gmail.com>
- <1622958877-2026-2-git-send-email-schmitzmic@gmail.com> <CAMuHMdX1cD_zt6hU-6CUZi=uyYdk_xgW+hTCXvxSTRFPy_qn5w@mail.gmail.com>
- <b2943f57-396c-cfd7-7064-4a1351585fa3@gmail.com>
-In-Reply-To: <b2943f57-396c-cfd7-7064-4a1351585fa3@gmail.com>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Tue, 8 Jun 2021 08:42:38 +0200
-Message-ID: <CAMuHMdXDXSh2VkpFyFDXpPFDS+f2JGhU-x1gn2dTCSub=9gw8w@mail.gmail.com>
-Subject: Re: [PATCH RFC 1/2] m68k: io_mm.h - add APNE 100 MBit support
-To:     Michael Schmitz <schmitzmic@gmail.com>
-Cc:     "Linux/m68k" <linux-m68k@vger.kernel.org>,
-        linux-ide@vger.kernel.org, Finn Thain <fthain@linux-m68k.org>,
-        ALeX Kazik <alex@kazik.de>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.113.25]
+X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
+ dggpemm500001.china.huawei.com (7.185.36.107)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-Hi Michael,
+Add setup_initial_init_mm() helper to setup kernel text,
+data and brk.
 
-On Mon, Jun 7, 2021 at 9:58 PM Michael Schmitz <schmitzmic@gmail.com> wrote:
-> On 7/06/21 11:15 pm, Geert Uytterhoeven wrote:
-> > On Sun, Jun 6, 2021 at 7:54 AM Michael Schmitz <schmitzmic@gmail.com> wrote:
-> >> Add code to support 10 Mbit and 100 Mbit mode for APNE driver.
-> >>
-> >> A new ISA type ISA_TYPE_AG100 switches the Amiga ISA inb accessor
-> >> to word access as required by the 100 Mbit cards.
-> >>
-> >> Patch modified after patch "[PATCH RFC net-next] Amiga PCMCIA
-> >> 100 MBit card support" submitted to netdev 2018/09/16 by Alex
-> >> Kazik <alex@kazik.de>.
-> >>
-> >> Signed-off-by: Michael Schmitz <schmitzmic@gmail.com>
-> >> --- a/arch/m68k/include/asm/io_mm.h
-> >> +++ b/arch/m68k/include/asm/io_mm.h
-> >> @@ -212,13 +232,16 @@ static inline u16 __iomem *isa_mtw(unsigned long addr)
-> >>   }
-> >>
-> >>
-> >> -#define isa_inb(port)      in_8(isa_itb(port))
-> >>   #define isa_inw(port)      (ISA_SEX ? in_be16(isa_itw(port)) : in_le16(isa_itw(port)))
-> >>   #define isa_inl(port)      (ISA_SEX ? in_be32(isa_itl(port)) : in_le32(isa_itl(port)))
-> >>   #define isa_outb(val,port) out_8(isa_itb(port),(val))
-> >>   #define isa_outw(val,port) (ISA_SEX ? out_be16(isa_itw(port),(val)) : out_le16(isa_itw(port),(val)))
-> >>   #define isa_outl(val,port) (ISA_SEX ? out_be32(isa_itl(port),(val)) : out_le32(isa_itl(port),(val)))
-> >>
-> >> +/* for APNE 100 Mbit cards - hope the APNE 100 case will be eliminated as
-> >> + * dead code if MULTI_ISA is not set */
-> >> +#define isa_inb(port)      ((ISA_TYPE == ISA_TYPE_AG100) ? ((port) & 1 ? isa_inw((port) - 1) & 0xff : isa_inw(port) >> 8) : in_8(isa_itb(port))
-> > This fails to compile due to a missing closing parenthesis.
->
-> Sorry - looks like brown paper bag time today. (I did say 'entirely
-> untested'? Didn't expect such a thorough review for a first RFC patch ...)
+Cc: linux-snps-arc@lists.infradead.org
+Cc: linux-arm-kernel@lists.infradead.org
+Cc: linux-csky@vger.kernel.org
+Cc: uclinux-h8-devel@lists.sourceforge.jp
+Cc: linux-m68k@lists.linux-m68k.org
+Cc: openrisc@lists.librecores.org
+Cc: linuxppc-dev@lists.ozlabs.org
+Cc: linux-riscv@lists.infradead.org
+Cc: linux-sh@vger.kernel.org
+Cc: linux-s390@vger.kernel.org
+Cc: x86@kernel.org
+Signed-off-by: Kefeng Wang <wangkefeng.wang@huawei.com>
+---
+ include/linux/mm.h | 3 +++
+ mm/init-mm.c       | 9 +++++++++
+ 2 files changed, 12 insertions(+)
 
-Sorry, I missed that part in the cover letter ;-)
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
+diff --git a/include/linux/mm.h b/include/linux/mm.h
+index c274f75efcf9..02aa057540b7 100644
+--- a/include/linux/mm.h
++++ b/include/linux/mm.h
+@@ -244,6 +244,9 @@ int __add_to_page_cache_locked(struct page *page, struct address_space *mapping,
+ 
+ #define lru_to_page(head) (list_entry((head)->prev, struct page, lru))
+ 
++void setup_initial_init_mm(void *start_code, void *end_code,
++			   void *end_data, void *brk);
++
+ /*
+  * Linux kernel virtual memory manager primitives.
+  * The idea being to have a "virtual" mm in the same way
+diff --git a/mm/init-mm.c b/mm/init-mm.c
+index 153162669f80..b4a6f38fb51d 100644
+--- a/mm/init-mm.c
++++ b/mm/init-mm.c
+@@ -40,3 +40,12 @@ struct mm_struct init_mm = {
+ 	.cpu_bitmap	= CPU_BITS_NONE,
+ 	INIT_MM_CONTEXT(init_mm)
+ };
++
++void setup_initial_init_mm(void *start_code, void *end_code,
++			   void *end_data, void *brk)
++{
++	init_mm.start_code = (unsigned long)start_code;
++	init_mm.end_code = (unsigned long)end_code;
++	init_mm.end_data = (unsigned long)end_data;
++	init_mm.brk = (unsigned long)brk;
++}
 -- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+2.26.2
 
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
