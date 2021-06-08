@@ -2,104 +2,182 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
-	autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-14.2 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 5D66AC48BCF
-	for <linux-m68k@archiver.kernel.org>; Tue,  8 Jun 2021 08:26:15 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 67DAFC47082
+	for <linux-m68k@archiver.kernel.org>; Tue,  8 Jun 2021 09:13:29 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 4CC1061351
-	for <linux-m68k@archiver.kernel.org>; Tue,  8 Jun 2021 08:26:15 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 457F761263
+	for <linux-m68k@archiver.kernel.org>; Tue,  8 Jun 2021 09:13:29 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231472AbhFHI2G (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Tue, 8 Jun 2021 04:28:06 -0400
-Received: from szxga02-in.huawei.com ([45.249.212.188]:4524 "EHLO
-        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231277AbhFHI17 (ORCPT
-        <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Tue, 8 Jun 2021 04:27:59 -0400
-Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.55])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4FzjtB4w4nzZf1J;
-        Tue,  8 Jun 2021 16:23:14 +0800 (CST)
-Received: from dggpemm500001.china.huawei.com (7.185.36.107) by
- dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Tue, 8 Jun 2021 16:25:56 +0800
-Received: from localhost.localdomain.localdomain (10.175.113.25) by
- dggpemm500001.china.huawei.com (7.185.36.107) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Tue, 8 Jun 2021 16:25:56 +0800
-From:   Kefeng Wang <wangkefeng.wang@huawei.com>
-To:     Andrew Morton <akpm@linux-foundation.org>,
-        <linux-kernel@vger.kernel.org>
-CC:     <linux-mm@kvack.org>, Kefeng Wang <wangkefeng.wang@huawei.com>,
-        "Greg Ungerer" <gerg@linux-m68k.org>,
+        id S229724AbhFHJPV (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Tue, 8 Jun 2021 05:15:21 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33828 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229657AbhFHJPU (ORCPT <rfc822;linux-m68k@lists.linux-m68k.org>);
+        Tue, 8 Jun 2021 05:15:20 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id CF16C61208;
+        Tue,  8 Jun 2021 09:13:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1623143608;
+        bh=JiiuTjFCB/4PLSsHGFNFns29l9HBPjAxjVfH42hb+H4=;
+        h=From:To:Cc:Subject:Date:From;
+        b=BvBM91enChDqY6+VuhfUkSW1HXIS9ONW9olMjxmDaKa7XG0xFJ88O84JgyyOUqCn2
+         zUlrusQNc+hVn4BaQ/hZVyUb111Dx/0tXSwwa1nft23bMjs842ThUbJ97WIXp48iAN
+         r0g3L51e1nIYJ+KG+xqOOKm8wEM0xnzHCbU/F5o+L0LMd7cx2OoQcnKd39oshKQQ8X
+         1xoHEyi5Pr0JMt9c9KNVQ+agiuHE3xgktQcWzhfx+TwlsoVquZYtBqrqsWjBXsXwdc
+         kvWtnfkm9HI72rJ+KD+i20Cm8mWhZAuWSSvbBxlTAuV4H0sJOC9f3xiWuy2knlZ9v6
+         r+gmfpltnZIlA==
+From:   Mike Rapoport <rppt@kernel.org>
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     Arnd Bergmann <arnd@arndb.de>,
         Geert Uytterhoeven <geert@linux-m68k.org>,
-        <linux-m68k@lists.linux-m68k.org>
-Subject: [PATCH v3 resend 07/15] m68k: convert to setup_initial_init_mm()
-Date:   Tue, 8 Jun 2021 16:34:10 +0800
-Message-ID: <20210608083418.137226-8-wangkefeng.wang@huawei.com>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20210608083418.137226-1-wangkefeng.wang@huawei.com>
-References: <20210608083418.137226-1-wangkefeng.wang@huawei.com>
+        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Matt Turner <mattst88@gmail.com>,
+        Mike Rapoport <rppt@kernel.org>,
+        Mike Rapoport <rppt@linux.ibm.com>,
+        Richard Henderson <rth@twiddle.net>,
+        Vineet Gupta <vgupta@synopsys.com>, kexec@lists.infradead.org,
+        linux-alpha@vger.kernel.org, linux-arch@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-doc@vger.kernel.org,
+        linux-ia64@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org,
+        linux-mm@kvack.org, linux-riscv@lists.infradead.org,
+        linux-s390@vger.kernel.org, linux-sh@vger.kernel.org,
+        linux-snps-arc@lists.infradead.org, linux-xtensa@linux-xtensa.org,
+        linuxppc-dev@lists.ozlabs.org, sparclinux@vger.kernel.org
+Subject: [PATCH v3 0/9] Remove DISCONTIGMEM memory model
+Date:   Tue,  8 Jun 2021 12:13:07 +0300
+Message-Id: <20210608091316.3622-1-rppt@kernel.org>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.113.25]
-X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
- dggpemm500001.china.huawei.com (7.185.36.107)
-X-CFilter-Loop: Reflected
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-Use setup_initial_init_mm() helper to simplify code.
+From: Mike Rapoport <rppt@linux.ibm.com>
 
-Acked-by: Greg Ungerer <gerg@linux-m68k.org>
-Acked-by: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: Greg Ungerer <gerg@linux-m68k.org>
-Cc: linux-m68k@lists.linux-m68k.org
-Signed-off-by: Kefeng Wang <wangkefeng.wang@huawei.com>
----
- arch/m68k/kernel/setup_mm.c | 5 +----
- arch/m68k/kernel/setup_no.c | 5 +----
- 2 files changed, 2 insertions(+), 8 deletions(-)
+Hi,
 
-diff --git a/arch/m68k/kernel/setup_mm.c b/arch/m68k/kernel/setup_mm.c
-index 017bac3aab80..4b51bfd38e5f 100644
---- a/arch/m68k/kernel/setup_mm.c
-+++ b/arch/m68k/kernel/setup_mm.c
-@@ -258,10 +258,7 @@ void __init setup_arch(char **cmdline_p)
- 		}
- 	}
- 
--	init_mm.start_code = PAGE_OFFSET;
--	init_mm.end_code = (unsigned long)_etext;
--	init_mm.end_data = (unsigned long)_edata;
--	init_mm.brk = (unsigned long)_end;
-+	setup_initial_init_mm((void *)PAGE_OFFSET, _etext, _edata, _end);
- 
- #if defined(CONFIG_BOOTPARAM)
- 	strncpy(m68k_command_line, CONFIG_BOOTPARAM_STRING, CL_SIZE);
-diff --git a/arch/m68k/kernel/setup_no.c b/arch/m68k/kernel/setup_no.c
-index d1b7988efc91..5e4104f07a44 100644
---- a/arch/m68k/kernel/setup_no.c
-+++ b/arch/m68k/kernel/setup_no.c
-@@ -87,10 +87,7 @@ void __init setup_arch(char **cmdline_p)
- 	memory_start = PAGE_ALIGN(_ramstart);
- 	memory_end = _ramend;
- 
--	init_mm.start_code = (unsigned long) &_stext;
--	init_mm.end_code = (unsigned long) &_etext;
--	init_mm.end_data = (unsigned long) &_edata;
--	init_mm.brk = (unsigned long) 0;
-+	setup_initial_init_mm(_stext, _etext, _edata, NULL);
- 
- 	config_BSP(&command_line[0], sizeof(command_line));
- 
+SPARSEMEM memory model was supposed to entirely replace DISCONTIGMEM a
+(long) while ago. The last architectures that used DISCONTIGMEM were
+updated to use other memory models in v5.11 and it is about the time to
+entirely remove DISCONTIGMEM from the kernel.
+
+This set removes DISCONTIGMEM from alpha, arc and m68k, simplifies memory
+model selection in mm/Kconfig and replaces usage of redundant
+CONFIG_NEED_MULTIPLE_NODES and CONFIG_FLAT_NODE_MEM_MAP with CONFIG_NUMA
+and CONFIG_FLATMEM respectively. 
+
+I've also removed NUMA support on alpha that was BROKEN for more than 15
+years.
+
+There were also minor updates all over arch/ to remove mentions of
+DISCONTIGMEM in comments and #ifdefs.
+
+v3:
+* Remove stale reference of CONFIG_NEED_MULTIPLE_NODES and stale
+  discontigmem comment, per Geert
+* Add Vineet Acks
+* Fix spelling in cover letter subject
+
+v2: Link: https://lore.kernel.org/lkml/20210604064916.26580-1-rppt@kernel.org
+* Fix build errors reported by kbuild bot
+* Add additional cleanups in m68k as suggested by Geert
+
+v1: Link: https://lore.kernel.org/lkml/20210602105348.13387-1-rppt@kernel.org
+
+Mike Rapoport (9):
+  alpha: remove DISCONTIGMEM and NUMA
+  arc: update comment about HIGHMEM implementation
+  arc: remove support for DISCONTIGMEM
+  m68k: remove support for DISCONTIGMEM
+  mm: remove CONFIG_DISCONTIGMEM
+  arch, mm: remove stale mentions of DISCONIGMEM
+  docs: remove description of DISCONTIGMEM
+  mm: replace CONFIG_NEED_MULTIPLE_NODES with CONFIG_NUMA
+  mm: replace CONFIG_FLAT_NODE_MEM_MAP with CONFIG_FLATMEM
+
+ Documentation/admin-guide/sysctl/vm.rst |  12 +-
+ Documentation/vm/memory-model.rst       |  45 +----
+ arch/alpha/Kconfig                      |  22 ---
+ arch/alpha/include/asm/machvec.h        |   6 -
+ arch/alpha/include/asm/mmzone.h         | 100 -----------
+ arch/alpha/include/asm/pgtable.h        |   4 -
+ arch/alpha/include/asm/topology.h       |  39 -----
+ arch/alpha/kernel/core_marvel.c         |  53 +-----
+ arch/alpha/kernel/core_wildfire.c       |  29 +--
+ arch/alpha/kernel/pci_iommu.c           |  29 ---
+ arch/alpha/kernel/proto.h               |   8 -
+ arch/alpha/kernel/setup.c               |  16 --
+ arch/alpha/kernel/sys_marvel.c          |   5 -
+ arch/alpha/kernel/sys_wildfire.c        |   5 -
+ arch/alpha/mm/Makefile                  |   2 -
+ arch/alpha/mm/init.c                    |   3 -
+ arch/alpha/mm/numa.c                    | 223 ------------------------
+ arch/arc/Kconfig                        |  13 --
+ arch/arc/include/asm/mmzone.h           |  40 -----
+ arch/arc/mm/init.c                      |  21 +--
+ arch/arm64/Kconfig                      |   2 +-
+ arch/ia64/Kconfig                       |   2 +-
+ arch/ia64/kernel/topology.c             |   5 +-
+ arch/ia64/mm/numa.c                     |   5 +-
+ arch/m68k/Kconfig.cpu                   |  10 --
+ arch/m68k/include/asm/mmzone.h          |  10 --
+ arch/m68k/include/asm/page.h            |   2 +-
+ arch/m68k/include/asm/page_mm.h         |  35 ----
+ arch/m68k/mm/init.c                     |  20 ---
+ arch/mips/Kconfig                       |   2 +-
+ arch/mips/include/asm/mmzone.h          |   8 +-
+ arch/mips/include/asm/page.h            |   2 +-
+ arch/mips/mm/init.c                     |   7 +-
+ arch/nds32/include/asm/memory.h         |   6 -
+ arch/powerpc/Kconfig                    |   2 +-
+ arch/powerpc/include/asm/mmzone.h       |   4 +-
+ arch/powerpc/kernel/setup_64.c          |   2 +-
+ arch/powerpc/kernel/smp.c               |   2 +-
+ arch/powerpc/kexec/core.c               |   4 +-
+ arch/powerpc/mm/Makefile                |   2 +-
+ arch/powerpc/mm/mem.c                   |   4 +-
+ arch/riscv/Kconfig                      |   2 +-
+ arch/s390/Kconfig                       |   2 +-
+ arch/sh/include/asm/mmzone.h            |   4 +-
+ arch/sh/kernel/topology.c               |   2 +-
+ arch/sh/mm/Kconfig                      |   2 +-
+ arch/sh/mm/init.c                       |   2 +-
+ arch/sparc/Kconfig                      |   2 +-
+ arch/sparc/include/asm/mmzone.h         |   4 +-
+ arch/sparc/kernel/smp_64.c              |   2 +-
+ arch/sparc/mm/init_64.c                 |  12 +-
+ arch/x86/Kconfig                        |   2 +-
+ arch/x86/kernel/setup_percpu.c          |   6 +-
+ arch/x86/mm/init_32.c                   |   4 +-
+ arch/xtensa/include/asm/page.h          |   4 -
+ include/asm-generic/memory_model.h      |  37 +---
+ include/asm-generic/topology.h          |   2 +-
+ include/linux/gfp.h                     |   4 +-
+ include/linux/memblock.h                |   6 +-
+ include/linux/mm.h                      |   4 +-
+ include/linux/mmzone.h                  |  20 ++-
+ kernel/crash_core.c                     |   4 +-
+ mm/Kconfig                              |  36 +---
+ mm/memblock.c                           |   8 +-
+ mm/memory.c                             |   3 +-
+ mm/page_alloc.c                         |  25 +--
+ mm/page_ext.c                           |   2 +-
+ 67 files changed, 101 insertions(+), 911 deletions(-)
+ delete mode 100644 arch/alpha/include/asm/mmzone.h
+ delete mode 100644 arch/alpha/mm/numa.c
+ delete mode 100644 arch/arc/include/asm/mmzone.h
+ delete mode 100644 arch/m68k/include/asm/mmzone.h
+
+
+base-commit: c4681547bcce777daf576925a966ffa824edd09d
 -- 
-2.26.2
+2.28.0
 
