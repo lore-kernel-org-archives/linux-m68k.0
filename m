@@ -2,69 +2,137 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-10.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-9.9 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,UNWANTED_LANGUAGE_BODY,
+	URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 93164C4743E
-	for <linux-m68k@archiver.kernel.org>; Tue,  8 Jun 2021 14:38:18 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 06154C47082
+	for <linux-m68k@archiver.kernel.org>; Tue,  8 Jun 2021 14:54:02 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 796DD61029
-	for <linux-m68k@archiver.kernel.org>; Tue,  8 Jun 2021 14:38:18 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id DA7AB61059
+	for <linux-m68k@archiver.kernel.org>; Tue,  8 Jun 2021 14:54:01 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233514AbhFHOkE (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Tue, 8 Jun 2021 10:40:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33196 "EHLO
+        id S233598AbhFHOzy (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Tue, 8 Jun 2021 10:55:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36674 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233316AbhFHOkC (ORCPT
+        with ESMTP id S233558AbhFHOzx (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Tue, 8 Jun 2021 10:40:02 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1EB69C06178B;
-        Tue,  8 Jun 2021 07:38:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=sMEsStOb6mO9hXHdT3HWSmfrRuJ0Awq1YlH4iEA8L4Y=; b=KFplbzH/LlDm+AgUOf2U3e3d9H
-        GLn3zqEjGHW+Ei/TTsCFYfGLui341DfsWefMKpI6fnAW+l4q3H1pyXf1V4CGFoU88MBFCZ4sUeQqf
-        rr0mEh6nyOS4EVCF2ORhPFHrm6ycrBSTzuuGq5b8i8F6uStpFoB2yYVLdSo50hR7rNIgZ9X5dXmMY
-        wNZAJMxQHKrGwKIGZXO4r5fKNXfT3ZeRiJ7gq+grDL/03GEWEgAvCzEjdBlsP2YAoiWDh6+XMozmh
-        9QN0dZsccRRXkkii2OZ2xFYtR4jXqY4bVgq4LBqzFPQ7WXAYIo1axFCfeLy2YPZDhCXeF15pbaMUO
-        /fsTBHmQ==;
-Received: from hch by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
-        id 1lqcrA-00H1nj-W6; Tue, 08 Jun 2021 14:37:34 +0000
-Date:   Tue, 8 Jun 2021 15:37:28 +0100
-From:   Christoph Hellwig <hch@infradead.org>
-To:     Finn Thain <fthain@linux-m68k.org>
-Cc:     Geert Uytterhoeven <geert@linux-m68k.org>,
-        Jens Axboe <axboe@kernel.dk>,
-        "David S. Miller" <davem@davemloft.net>,
-        Joshua Thompson <funaho@jurai.org>, linux-ide@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-m68k@lists.linux-m68k.org,
-        Richard Zidlicky <rz@linux-m68k.org>,
-        Michael Schmitz <schmitzmic@gmail.com>
-Subject: Re: [PATCH v2 0/2] Use libata platform drivers to replace deprecated
- m68k IDE drivers
-Message-ID: <YL+AqIEPjMgG519L@infradead.org>
-References: <cover.1623131194.git.fthain@linux-m68k.org>
+        Tue, 8 Jun 2021 10:55:53 -0400
+Received: from mail-vs1-xe2a.google.com (mail-vs1-xe2a.google.com [IPv6:2607:f8b0:4864:20::e2a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F775C061574
+        for <linux-m68k@lists.linux-m68k.org>; Tue,  8 Jun 2021 07:53:51 -0700 (PDT)
+Received: by mail-vs1-xe2a.google.com with SMTP id f21so9289095vsl.4
+        for <linux-m68k@lists.linux-m68k.org>; Tue, 08 Jun 2021 07:53:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=2AJ2s6Swi7DKePDYPTjpM9W7XfKGuXx2NmxnXLQgYSU=;
+        b=rU2pKJ75Y3/QHhh8al8WEHFkA1xcRM5SZMWEuWTFwhfJJj/V+31x/44DQ1/ocvOPg+
+         HHLB+cX2JzVE7e8VyhwDv4Qz2FVNR+zh+m0OixPYjyc4fzjuukhztIpMy0r4QCqs9ENM
+         rx2wn2LyftAjOv4hRMViR3COc1TqDPy9Jwcq9YGNqCboxfBQc5R+uHuQkEmoWcUMg/uD
+         GgTRTBH9LOsD2SMP7YGpIDk7kjlQlU6IpzX1idxEjiKF6VTF7R6q/SsI4HkaBei2kO/c
+         foGKHLzxbvnAfZr24OLQ0mXOUtMYfCqu0p3aPHXa31jtaApPg9eDz4MFF332lbCsxpOF
+         vhTQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=2AJ2s6Swi7DKePDYPTjpM9W7XfKGuXx2NmxnXLQgYSU=;
+        b=nxPXu7TIVeKysT8TmKPAZV8p8JETujjYRBpGw1qlQJjrsPeGCsH0QnGbxC2vZ6P9ik
+         USWLpf+KJy/28y179rZxbhIsSmq5RQva/2j43DcjzZq9TmqcmjMhGMObwMGpMdUihNkM
+         GlG32xHwx1fMj9ai13azQ8ZDPQJ6UBhNYvyXyRWsux1vf5b1YEwce6GikWflpuz/DEju
+         9z3P8Dh6PS7nbM7KOA6GpSNcYxEqAYpsGbPmHYXIk8ykmoqG9Rp2ZUtv7AYVzot78e6C
+         FQJMLYbJr22NXCnF7pxb1i43HJ1nEyh6mu4Kl6JhNYNUcWgdmQmk4wqR8LyeksGdEv6K
+         YT6w==
+X-Gm-Message-State: AOAM530I4Pfh4yFY6DGyRf7+LWwMhFfIV9UyZEaTCZ9fVsUzejkQF6zq
+        QK/TKcsWqHWHRl0pBkOyrpNGjYpZF7/aubCp7Sc=
+X-Google-Smtp-Source: ABdhPJyRLWrfWEbRY82WKzbAaqxe+Tz0Rq9l4OoSLSgaPe9ZQ71sH6V/8n9uYyj4peJXY7ySMuwi8lVHUHfIxXWhTlU=
+X-Received: by 2002:a67:ed5a:: with SMTP id m26mr149235vsp.59.1623164030307;
+ Tue, 08 Jun 2021 07:53:50 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <cover.1623131194.git.fthain@linux-m68k.org>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
+References: <20210608083418.137226-1-wangkefeng.wang@huawei.com> <20210608083418.137226-2-wangkefeng.wang@huawei.com>
+In-Reply-To: <20210608083418.137226-2-wangkefeng.wang@huawei.com>
+From:   Souptick Joarder <jrdr.linux@gmail.com>
+Date:   Tue, 8 Jun 2021 20:23:38 +0530
+Message-ID: <CAFqt6zYmCQ=wxEjnOJ6fgJWYQyFajBuxWD=UT_D-WjWUS_4pcw@mail.gmail.com>
+Subject: Re: [PATCH v3 resend 01/15] mm: add setup_initial_init_mm() helper
+To:     Kefeng Wang <wangkefeng.wang@huawei.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        linux-kernel@vger.kernel.org, Linux-MM <linux-mm@kvack.org>,
+        linux-snps-arc@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org, linux-csky@vger.kernel.org,
+        uclinux-h8-devel@lists.sourceforge.jp,
+        linux-m68k@lists.linux-m68k.org, openrisc@lists.librecores.org,
+        linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org,
+        linux-sh@vger.kernel.org, linux-s390@vger.kernel.org,
+        X86 ML <x86@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-On Tue, Jun 08, 2021 at 03:46:34PM +1000, Finn Thain wrote:
-> This patch series allows m68k platforms to switch from deprecated IDE
-> drivers to libata drivers.
+On Tue, Jun 8, 2021 at 1:56 PM Kefeng Wang <wangkefeng.wang@huawei.com> wrote:
+>
+> Add setup_initial_init_mm() helper to setup kernel text,
+> data and brk.
+>
+> Cc: linux-snps-arc@lists.infradead.org
+> Cc: linux-arm-kernel@lists.infradead.org
+> Cc: linux-csky@vger.kernel.org
+> Cc: uclinux-h8-devel@lists.sourceforge.jp
+> Cc: linux-m68k@lists.linux-m68k.org
+> Cc: openrisc@lists.librecores.org
+> Cc: linuxppc-dev@lists.ozlabs.org
+> Cc: linux-riscv@lists.infradead.org
+> Cc: linux-sh@vger.kernel.org
+> Cc: linux-s390@vger.kernel.org
+> Cc: x86@kernel.org
+> Signed-off-by: Kefeng Wang <wangkefeng.wang@huawei.com>
+> ---
+>  include/linux/mm.h | 3 +++
+>  mm/init-mm.c       | 9 +++++++++
+>  2 files changed, 12 insertions(+)
+>
+> diff --git a/include/linux/mm.h b/include/linux/mm.h
+> index c274f75efcf9..02aa057540b7 100644
+> --- a/include/linux/mm.h
+> +++ b/include/linux/mm.h
+> @@ -244,6 +244,9 @@ int __add_to_page_cache_locked(struct page *page, struct address_space *mapping,
+>
+>  #define lru_to_page(head) (list_entry((head)->prev, struct page, lru))
+>
+> +void setup_initial_init_mm(void *start_code, void *end_code,
+> +                          void *end_data, void *brk);
+> +
 
-Thanks, this looks good to me:
+Gentle query -> is there any limitation to add inline functions in
+setup_arch() functions ?
 
-Reviewed-by: Christoph Hellwig <hch@lst.de>
-
-Jens, any chance you could pick this up quickly to prepare for the
-legacy IDE removal series?
+>  /*
+>   * Linux kernel virtual memory manager primitives.
+>   * The idea being to have a "virtual" mm in the same way
+> diff --git a/mm/init-mm.c b/mm/init-mm.c
+> index 153162669f80..b4a6f38fb51d 100644
+> --- a/mm/init-mm.c
+> +++ b/mm/init-mm.c
+> @@ -40,3 +40,12 @@ struct mm_struct init_mm = {
+>         .cpu_bitmap     = CPU_BITS_NONE,
+>         INIT_MM_CONTEXT(init_mm)
+>  };
+> +
+> +void setup_initial_init_mm(void *start_code, void *end_code,
+> +                          void *end_data, void *brk)
+> +{
+> +       init_mm.start_code = (unsigned long)start_code;
+> +       init_mm.end_code = (unsigned long)end_code;
+> +       init_mm.end_data = (unsigned long)end_data;
+> +       init_mm.brk = (unsigned long)brk;
+> +}
+> --
+> 2.26.2
+>
+>
