@@ -2,133 +2,91 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-19.2 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
+X-Spam-Status: No, score=-16.6 required=3.0 tests=BAYES_00,DKIM_INVALID,
+	DKIM_SIGNED,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
 	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9481EC4743F
-	for <linux-m68k@archiver.kernel.org>; Tue,  8 Jun 2021 15:25:02 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C4CD5C4743F
+	for <linux-m68k@archiver.kernel.org>; Tue,  8 Jun 2021 20:46:38 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 82BD661363
-	for <linux-m68k@archiver.kernel.org>; Tue,  8 Jun 2021 15:25:02 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 9AB7061027
+	for <linux-m68k@archiver.kernel.org>; Tue,  8 Jun 2021 20:46:38 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232792AbhFHP0x (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Tue, 8 Jun 2021 11:26:53 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46832 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232376AbhFHP0V (ORCPT <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Tue, 8 Jun 2021 11:26:21 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0515661375;
-        Tue,  8 Jun 2021 15:24:25 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1623165868;
-        bh=4Os6CR4tEQ00n/+2ln1euX1FtJH9pwevnbQbOo/vINM=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=QBybnYoZUFQmFgdTBQZ1+Xj2jOEoeDuMQSl5ErbezuCF1LzuDqZO0PbEF/4M1rycD
-         BnXfKG3sGlXrEeKExw7ybE817h6Hch48h5wFmiMqXoJELfJggBxT4NPmVPLk8InU7F
-         giN8bYjg0tevnICTD3eS1EfquCEUNjOptagPmROl7e+q7SFWLZVvlRIFZH8M2hn2rD
-         6VqlatJ8u1sQkN0vJC6YOY8RwtSBSU8PZVAITEEhO7RTc0iwKErXCPiGx1XwpyTQod
-         nqG6aIx5azCAAZJcwXyPO2280eDax4ssABxH/rv9gxlMdT24bqokdBwq/61ftFNII+
-         JbuX3PK+NlwSQ==
-From:   Arnd Bergmann <arnd@kernel.org>
-To:     linux-clk@vger.kernel.org, Stephen Boyd <sboyd@kernel.org>
-Cc:     Arnd Bergmann <arnd@arndb.de>, Dmitry Osipenko <digetx@gmail.com>,
-        Florian Fainelli <florian@openwrt.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Greg Ungerer <gerg@linux-m68k.org>,
-        John Crispin <john@phrozen.org>,
-        Jonas Gorski <jonas.gorski@gmail.com>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v2 7/7] clkdev: remove unused clkdev_alloc() interfaces
-Date:   Tue,  8 Jun 2021 17:22:14 +0200
-Message-Id: <20210608152214.1231666-8-arnd@kernel.org>
-X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20210608152214.1231666-1-arnd@kernel.org>
-References: <20210608152214.1231666-1-arnd@kernel.org>
+        id S230169AbhFHUsb (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Tue, 8 Jun 2021 16:48:31 -0400
+Received: from mail.kernel-space.org ([195.201.34.187]:37354 "EHLO
+        mail.kernel-space.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229548AbhFHUsb (ORCPT
+        <rfc822;linux-m68k@vger.kernel.org>); Tue, 8 Jun 2021 16:48:31 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel-space.org;
+        s=20190913; t=1623185192;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=b0wt4MdYRnXoVJfyA4gpUQHt8ddNOiAimYy1woA8xBY=;
+        b=a0JHbwrP/aKzHGeTO2A3jNL+lZ3D0Wt5Tc1sl+m+1vDkfHukX8gdJJtZ8E3wDt4cmfsyO7
+        Zs97Z2Bh+vlveVJKEgBxFaMPPJlFaNklWkKWoZ3HlEGW6cPzWCOkjgWD0vkiFvs7QdzaUE
+        DpWsId/UbZ2MG9fuJSicRYzWWyCAT5Y=
+Received: from dfj.1.1.1.1 (host-87-8-57-171.retail.telecomitalia.it [87.8.57.171])
+        by ziongate (OpenSMTPD) with ESMTPSA id 08454881 (TLSv1.3:TLS_AES_256_GCM_SHA384:256:NO);
+        Tue, 8 Jun 2021 20:46:32 +0000 (UTC)
+From:   Angelo Dureghello <angelo@kernel-space.org>
+To:     gerg@linux-m68k.org, wg@grandegger.com, mkl@pengutronix.de
+Cc:     geert@linux-m68k.org, linux-m68k@vger.kernel.org,
+        linux-can@vger.kernel.org, qiangqing.zhang@nxp.com,
+        Angelo Dureghello <angelo@kernel-space.org>
+Subject: [PATCH 1/5] can: flexcan: add platform data for ColdFire
+Date:   Tue,  8 Jun 2021 22:45:38 +0200
+Message-Id: <20210608204542.983925-1-angelo@kernel-space.org>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-From: Arnd Bergmann <arnd@arndb.de>
+Add platform data object for ColdFire architecture.
 
-The last user of clkdev_alloc() and clkdev_hw_alloc() was
-removed last year, so everything now calls clkdev_create()
-and clkdev_hw_create() instead.
-
-Removing the unused functions lets the compiler optimize
-the remaining ones slightly better.
-
-Fixes: e5006671acc7 ("clk: versatile: Drop the legacy IM-PD1 clock code")
-Reviewed-by: Stephen Boyd <sboyd@kernel.org>
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+Signed-off-by: Angelo Dureghello <angelo@kernel-space.org>
 ---
- drivers/clk/clkdev.c   | 28 ----------------------------
- include/linux/clkdev.h |  5 -----
- 2 files changed, 33 deletions(-)
+ include/linux/platform_data/flexcan-mcf.h | 27 +++++++++++++++++++++++
+ 1 file changed, 27 insertions(+)
+ create mode 100644 include/linux/platform_data/flexcan-mcf.h
 
-diff --git a/drivers/clk/clkdev.c b/drivers/clk/clkdev.c
-index 0f2e3fcf0f19..67f601a41023 100644
---- a/drivers/clk/clkdev.c
-+++ b/drivers/clk/clkdev.c
-@@ -190,34 +190,6 @@ vclkdev_create(struct clk_hw *hw, const char *con_id, const char *dev_fmt,
- 	return cl;
- }
- 
--struct clk_lookup * __ref
--clkdev_alloc(struct clk *clk, const char *con_id, const char *dev_fmt, ...)
--{
--	struct clk_lookup *cl;
--	va_list ap;
--
--	va_start(ap, dev_fmt);
--	cl = vclkdev_alloc(__clk_get_hw(clk), con_id, dev_fmt, ap);
--	va_end(ap);
--
--	return cl;
--}
--EXPORT_SYMBOL(clkdev_alloc);
--
--struct clk_lookup *
--clkdev_hw_alloc(struct clk_hw *hw, const char *con_id, const char *dev_fmt, ...)
--{
--	struct clk_lookup *cl;
--	va_list ap;
--
--	va_start(ap, dev_fmt);
--	cl = vclkdev_alloc(hw, con_id, dev_fmt, ap);
--	va_end(ap);
--
--	return cl;
--}
--EXPORT_SYMBOL(clkdev_hw_alloc);
--
- /**
-  * clkdev_create - allocate and add a clkdev lookup structure
-  * @clk: struct clk to associate with all clk_lookups
-diff --git a/include/linux/clkdev.h b/include/linux/clkdev.h
-index fd06b2780a22..8a8423eb8e9a 100644
---- a/include/linux/clkdev.h
-+++ b/include/linux/clkdev.h
-@@ -30,11 +30,6 @@ struct clk_lookup {
- 		.clk = c,	\
- 	}
- 
--struct clk_lookup *clkdev_alloc(struct clk *clk, const char *con_id,
--	const char *dev_fmt, ...) __printf(3, 4);
--struct clk_lookup *clkdev_hw_alloc(struct clk_hw *hw, const char *con_id,
--	const char *dev_fmt, ...) __printf(3, 4);
--
- void clkdev_add(struct clk_lookup *cl);
- void clkdev_drop(struct clk_lookup *cl);
- 
+diff --git a/include/linux/platform_data/flexcan-mcf.h b/include/linux/platform_data/flexcan-mcf.h
+new file mode 100644
+index 000000000000..71fe1a9df084
+--- /dev/null
++++ b/include/linux/platform_data/flexcan-mcf.h
+@@ -0,0 +1,27 @@
++/* SPDX-License-Identifier: GPL-2.0-only */
++/*
++ * Flexcan options for ColdFire family
++ *
++ * Copyright (C) 2021  Angelo Dureghello <angelo@kernel-space.org>
++ *
++ * This program is free software; you can redistribute it and/or
++ * modify it under the terms of the GNU General Public License
++ * version 2 as published by the Free Software Foundation.
++ *
++ * This program is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ * GNU General Public License for more details.
++ */
++
++#ifndef _PLAT_FLEXCAN_MCF_H
++#define _PLAT_FLEXCAN_MCF_H
++
++struct mcf_flexcan_platform_data {
++	int stop_mode;
++	int clk_src;
++	int clock_frequency;
++	bool big_endian;
++};
++
++#endif /* _PLAT_FLEXCAN_MCF_H */
 -- 
-2.29.2
+2.31.1
 
