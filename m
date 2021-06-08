@@ -2,250 +2,141 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.8 required=3.0 tests=BAYES_00,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-2.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,NICE_REPLY_A,SPF_HELO_NONE,
+	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3110BC47082
-	for <linux-m68k@archiver.kernel.org>; Tue,  8 Jun 2021 02:56:05 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D066CC47082
+	for <linux-m68k@archiver.kernel.org>; Tue,  8 Jun 2021 03:02:41 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 1654D6120F
-	for <linux-m68k@archiver.kernel.org>; Tue,  8 Jun 2021 02:56:05 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id AF29D60240
+	for <linux-m68k@archiver.kernel.org>; Tue,  8 Jun 2021 03:02:41 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230329AbhFHC54 (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Mon, 7 Jun 2021 22:57:56 -0400
-Received: from mga17.intel.com ([192.55.52.151]:23991 "EHLO mga17.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230233AbhFHC54 (ORCPT <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Mon, 7 Jun 2021 22:57:56 -0400
-IronPort-SDR: JaP7JEsndjETBxIBwg8C3ohNYHoWdtdBjHr8qVnvUHUwSP8otm1O4hAAxpfTqh+Uy9ZHeaVfKg
- tltFpK+yfsuw==
-X-IronPort-AV: E=McAfee;i="6200,9189,10008"; a="185134324"
-X-IronPort-AV: E=Sophos;i="5.83,256,1616482800"; 
-   d="scan'208";a="185134324"
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Jun 2021 19:56:03 -0700
-IronPort-SDR: 1sODiFxgyLV46NVXLfKdWh33tcSBUCkCDV2R7Jjlhi7T3MI5FN0BUsCX/dIjV1WNOJJ931vDis
- 9ktVGk4Ew3VA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.83,256,1616482800"; 
-   d="scan'208";a="440291290"
-Received: from lkp-server02.sh.intel.com (HELO 1ec8406c5392) ([10.239.97.151])
-  by orsmga007.jf.intel.com with ESMTP; 07 Jun 2021 19:56:02 -0700
-Received: from kbuild by 1ec8406c5392 with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1lqRuL-0008id-Ig; Tue, 08 Jun 2021 02:56:01 +0000
-Date:   Tue, 08 Jun 2021 10:55:21 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     linux-m68k@lists.linux-m68k.org
-Subject: [m68k:for-next] BUILD SUCCESS
- c1367ee016e3550745315fb9a2dd1e4ce02cdcf6
-Message-ID: <60bedc19./KLi9qpyabcnjus5%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+        id S231532AbhFHDEb (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Mon, 7 Jun 2021 23:04:31 -0400
+Received: from mail-pf1-f181.google.com ([209.85.210.181]:41683 "EHLO
+        mail-pf1-f181.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230522AbhFHDEa (ORCPT
+        <rfc822;linux-m68k@lists.linux-m68k.org>);
+        Mon, 7 Jun 2021 23:04:30 -0400
+Received: by mail-pf1-f181.google.com with SMTP id x73so14610494pfc.8
+        for <linux-m68k@lists.linux-m68k.org>; Mon, 07 Jun 2021 20:02:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:references:cc:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-transfer-encoding;
+        bh=4zyzSgjehYpTMwvkMAdkEk8UOEiuBvRn+Lbe9JMcg3U=;
+        b=KmwLevrVyZBLk+TmP9kkEbneRprDD+cTDc0mI24ZPzZmmSOvZrTtua9iRD/F86olxj
+         XQxcHOeBpFNwsT9mafmBM5kWyJ5XrWUflmotaFtnE7CrU+ZNcSTaL+MwfZ/XEhPwkqoh
+         tFMfhaAChKjg9eh1pl1MkH1RhJtk5qjpF56DA3DJsM1Ch/LcuBuocp0puIiG3kwKqHUm
+         UWfOYdYCU/z4HKw6sRU32qcaLzeoAFtB2Dj9sJGsoJuDoRumahYiN8zrIbcjhQxmxO4R
+         T6cDnViulSmU4/FnHqs+kV1rZL5UoNK/Q/BAVrKvzVrc0muqKf+yHnUpydwdsMJPp0CX
+         jzAw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:references:cc:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding;
+        bh=4zyzSgjehYpTMwvkMAdkEk8UOEiuBvRn+Lbe9JMcg3U=;
+        b=tpUWM9I7E+N1u09vsocLnWiWpwg6CjcEm8r+UrkhN402nnZZWuz+bsXre3oeR9GmgW
+         kQCyH0GVD3G29qbdHC/aVGNYcPi+YXFSjzM0z57HrVFUajsDP6+8WAt2DQtOMxsvz/l8
+         gx7EvXIH8UD8KkV7c+SHch9C8esBABTooJsBSx4/p7B8I68EwOIs3bb3Ym3VYNWLwz2+
+         RfSSlQLeGX9wsS6U9l5OaJ4Ka41pYLV6m9UK+6hH2NB3k9915BftaFNWWbf/P6fbJYCD
+         RNmY2Mdbhy72NDpTISwlft67rPWXNDjcDSEdp/sjHbOtIHbSlGoplnL2dERA2yVqR6O3
+         5FTw==
+X-Gm-Message-State: AOAM532AA3zm0WeI0atjbvngIdVMdjEuxxICQdkcguhZWqGOrOfX0Op4
+        oVAPsMsWMEHh/WzdB5yUtmo=
+X-Google-Smtp-Source: ABdhPJyvDlTti6C1rnpagcKLHVsTYa+kmn9kiphYRNiQIyDb3KlqCPzQXCo032VmJ6SiL+ifXjSD1w==
+X-Received: by 2002:a63:9515:: with SMTP id p21mr18889215pgd.333.1623121297946;
+        Mon, 07 Jun 2021 20:01:37 -0700 (PDT)
+Received: from [10.1.1.25] (222-152-189-137-fibre.sparkbb.co.nz. [222.152.189.137])
+        by smtp.gmail.com with ESMTPSA id s22sm1671639pfg.197.2021.06.07.20.01.33
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Mon, 07 Jun 2021 20:01:37 -0700 (PDT)
+Subject: Re: [PATCH] m68k/q40: Replace q40ide with pata_falcon and falconide
+To:     Finn Thain <fthain@linux-m68k.org>
+References: <352239036981177050c296ca3deb84a102d9faa2.1622970906.git.fthain@linux-m68k.org>
+ <e250cffb-9edd-1b84-3826-58079758b35a@gmail.com>
+ <4a32d59-ebb-9dc-fec7-ad172547d9a3@linux-m68k.org>
+Cc:     Geert Uytterhoeven <geert@linux-m68k.org>,
+        Richard Zidlicky <rz@linux-m68k.org>,
+        Jens Axboe <axboe@kernel.dk>,
+        "David S. Miller" <davem@davemloft.net>,
+        linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org,
+        linux-ide@vger.kernel.org
+From:   Michael Schmitz <schmitzmic@gmail.com>
+Message-ID: <3b789204-a959-a266-9fc3-1b2be09c981a@gmail.com>
+Date:   Tue, 8 Jun 2021 15:01:30 +1200
+User-Agent: Mozilla/5.0 (X11; Linux ppc; rv:45.0) Gecko/20100101
+ Icedove/45.4.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <4a32d59-ebb-9dc-fec7-ad172547d9a3@linux-m68k.org>
+Content-Type: text/plain; charset=windows-1252; format=flowed
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/geert/linux-m68k.git for-next
-branch HEAD: c1367ee016e3550745315fb9a2dd1e4ce02cdcf6  m68k: atari: Fix ATARI_KBD_CORE kconfig unmet dependency warning
+Hi Finn,
 
-elapsed time: 721m
 
-configs tested: 180
-configs skipped: 3
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+Am 07.06.2021 um 14:07 schrieb Finn Thain:
+> On Mon, 7 Jun 2021, Michael Schmitz wrote:
+>
+>> Hi Finn,
+>>
+>> are there any substantial changes from what I'd tested before?
+>
+> The request_region() stuff is new, and I reworked the host->get_lock and
+> host->release_lock changes. So you may want to review it again.
 
-gcc tested configs:
-arm                                 defconfig
-arm64                            allyesconfig
-arm64                               defconfig
-arm                              allyesconfig
-arm                              allmodconfig
-mips                     loongson2k_defconfig
-sh                          r7780mp_defconfig
-arc                    vdk_hs38_smp_defconfig
-arm                      pxa255-idp_defconfig
-arm                         assabet_defconfig
-arc                          axs103_defconfig
-arm                     davinci_all_defconfig
-powerpc64                           defconfig
-powerpc                     sbc8548_defconfig
-arm                       versatile_defconfig
-arm                        oxnas_v6_defconfig
-powerpc                 mpc836x_mds_defconfig
-powerpc                     akebono_defconfig
-openrisc                  or1klitex_defconfig
-powerpc                       ppc64_defconfig
-arm                        multi_v7_defconfig
-powerpc                    sam440ep_defconfig
-m68k                         amcore_defconfig
-arm                           viper_defconfig
-sh                     sh7710voipgw_defconfig
-mips                          rm200_defconfig
-powerpc                 mpc8560_ads_defconfig
-arm                           omap1_defconfig
-powerpc                 xes_mpc85xx_defconfig
-sh                             sh03_defconfig
-arm                           sama5_defconfig
-mips                        omega2p_defconfig
-s390                             alldefconfig
-sh                            migor_defconfig
-m68k                            q40_defconfig
-powerpc                 mpc8272_ads_defconfig
-arm                             ezx_defconfig
-riscv             nommu_k210_sdcard_defconfig
-sh                           se7343_defconfig
-arc                     nsimosci_hs_defconfig
-powerpc                     powernv_defconfig
-mips                           rs90_defconfig
-arm                         mv78xx0_defconfig
-sh                  sh7785lcr_32bit_defconfig
-arm                          simpad_defconfig
-sh                   sh7724_generic_defconfig
-mips                       capcella_defconfig
-mips                           ip32_defconfig
-powerpc                     skiroot_defconfig
-powerpc                  mpc866_ads_defconfig
-sh                 kfr2r09-romimage_defconfig
-x86_64                           allyesconfig
-arm                            lart_defconfig
-riscv                          rv32_defconfig
-powerpc                   motionpro_defconfig
-ia64                             allmodconfig
-arm                      jornada720_defconfig
-powerpc                 mpc834x_itx_defconfig
-powerpc                    adder875_defconfig
-x86_64                           alldefconfig
-arm                            hisi_defconfig
-arm                             pxa_defconfig
-arm                        shmobile_defconfig
-sh                   sh7770_generic_defconfig
-m68k                                defconfig
-xtensa                           allyesconfig
-arc                            hsdk_defconfig
-mips                       bmips_be_defconfig
-s390                                defconfig
-powerpc                      pasemi_defconfig
-arm                        realview_defconfig
-mips                           ci20_defconfig
-arm                         axm55xx_defconfig
-mips                         db1xxx_defconfig
-arm                      footbridge_defconfig
-h8300                     edosk2674_defconfig
-mips                      pic32mzda_defconfig
-nds32                             allnoconfig
-sh                          sdk7780_defconfig
-mips                           jazz_defconfig
-arm                        mvebu_v5_defconfig
-arc                        nsimosci_defconfig
-xtensa                  nommu_kc705_defconfig
-powerpc                 mpc832x_mds_defconfig
-sh                             espt_defconfig
-arc                           tb10x_defconfig
-powerpc                         wii_defconfig
-powerpc                         ps3_defconfig
-powerpc                     mpc5200_defconfig
-m68k                       m5208evb_defconfig
-sparc                       sparc64_defconfig
-powerpc                 canyonlands_defconfig
-sh                          lboxre2_defconfig
-powerpc                 mpc836x_rdk_defconfig
-mips                           ip28_defconfig
-powerpc                      ep88xc_defconfig
-mips                        maltaup_defconfig
-arm                        vexpress_defconfig
-sh                           se7619_defconfig
-um                           x86_64_defconfig
-powerpc                mpc7448_hpc2_defconfig
-arm                            qcom_defconfig
-mips                           mtx1_defconfig
-arm                         s5pv210_defconfig
-arc                        vdk_hs38_defconfig
-nios2                         10m50_defconfig
-parisc                              defconfig
-sh                         microdev_defconfig
-sh                     magicpanelr2_defconfig
-sh                      rts7751r2d1_defconfig
-sh                                  defconfig
-powerpc                        warp_defconfig
-powerpc                 mpc8315_rdb_defconfig
-powerpc               mpc834x_itxgp_defconfig
-powerpc                        fsp2_defconfig
-x86_64                              defconfig
-x86_64                            allnoconfig
-ia64                                defconfig
-ia64                             allyesconfig
-m68k                             allmodconfig
-m68k                             allyesconfig
-nios2                               defconfig
-arc                              allyesconfig
-nds32                               defconfig
-nios2                            allyesconfig
-alpha                               defconfig
-alpha                            allyesconfig
-csky                                defconfig
-h8300                            allyesconfig
-arc                                 defconfig
-sh                               allmodconfig
-s390                             allyesconfig
-s390                             allmodconfig
-parisc                           allyesconfig
-i386                             allyesconfig
-sparc                            allyesconfig
-sparc                               defconfig
-i386                                defconfig
-mips                             allyesconfig
-mips                             allmodconfig
-powerpc                          allyesconfig
-powerpc                          allmodconfig
-powerpc                           allnoconfig
-i386                 randconfig-a003-20210607
-i386                 randconfig-a006-20210607
-i386                 randconfig-a004-20210607
-i386                 randconfig-a002-20210607
-i386                 randconfig-a005-20210607
-i386                 randconfig-a001-20210607
-x86_64               randconfig-a015-20210607
-x86_64               randconfig-a011-20210607
-x86_64               randconfig-a013-20210607
-x86_64               randconfig-a014-20210607
-x86_64               randconfig-a012-20210607
-x86_64               randconfig-a016-20210607
-i386                 randconfig-a015-20210607
-i386                 randconfig-a011-20210607
-i386                 randconfig-a012-20210607
-i386                 randconfig-a013-20210607
-i386                 randconfig-a016-20210607
-i386                 randconfig-a014-20210607
-riscv                    nommu_k210_defconfig
-riscv                            allyesconfig
-riscv                    nommu_virt_defconfig
-riscv                             allnoconfig
-riscv                               defconfig
-riscv                            allmodconfig
-um                             i386_defconfig
-um                            kunit_defconfig
-x86_64                    rhel-8.3-kselftests
-x86_64                               rhel-8.3
-x86_64                      rhel-8.3-kbuiltin
-x86_64                                  kexec
+Done that - the weirdness around request_irq() that I remembered is not 
+actually an issue, that's taken care of by setting host->get_lock. And 
+your patch doesn't change anything for Falcon.
 
-clang tested configs:
-x86_64               randconfig-b001-20210607
-x86_64               randconfig-a002-20210607
-x86_64               randconfig-a004-20210607
-x86_64               randconfig-a003-20210607
-x86_64               randconfig-a006-20210607
-x86_64               randconfig-a005-20210607
-x86_64               randconfig-a001-20210607
+Tested on my Falcon - I can still use both IDE and SCSI (no stress test 
+done but I doubt it would turn out much different).
 
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+Not setting host->get_lock on Q40 will correctly request the IRQ for IDE 
+there, the same lowlevel IO routines can be shared by both, and there 
+wasn't ever much more that these old drivers did.
+
+Please add my Reviewed-by as well as Tested-by.
+
+Cheers,
+
+	Michael
+
+
+>> Your patch conflicts with (I think) the Mac IDE patches now in Geert's
+>> tree, and I'd rather avoid hand-patching the lot if at all possible:
+>>
+>> m68k_q40_Replace_q40ide_with_pata_falcon_and_falconide
+>> Applying: m68k/q40: Replace q40ide with pata_falcon and falconide
+>> error: patch failed: arch/m68k/configs/multi_defconfig:351
+>> error: arch/m68k/configs/multi_defconfig: patch does not apply
+>> error: patch failed: drivers/ide/Kconfig:731
+>> error: drivers/ide/Kconfig: patch does not apply
+>> error: patch failed: drivers/ide/Makefile:29
+>> error: drivers/ide/Makefile: patch does not apply
+>>
+>
+> I should have sent these as a two-part series. Sorry about that.
+> You'll need to apply this patch first:
+> https://lore.kernel.org/linux-ide/3de9a93d-2f7-a650-1fa-c2129a4a765b@nippy.intranet/T/
+>
+>> What's your baseline for this patch?
+>>
+>
+> I've used v5.12 and v5.13-rc5, but mostly I develop on the mac68k branch
+> in my github repository.
+>
+>> (In the alternative: just add my Tested-by if nothing changed aside from the
+>> IO region reservation)
+>>
+>
+> I have tested these patches in Aranym (including a multi-platform
+> atari/q40 build which required your ISA fix) but I don't have any way to
+> test the q40-only code.
+>
