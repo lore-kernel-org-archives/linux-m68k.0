@@ -2,70 +2,44 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-17.5 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
-	INCLUDES_CR_TRAILER,INCLUDES_PATCH,MAILING_LIST_MULTI,NICE_REPLY_A,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=unavailable
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-8.8 required=3.0 tests=BAYES_00,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,MAILING_LIST_MULTI,
+	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A12A4C48BD1
-	for <linux-m68k@archiver.kernel.org>; Wed,  9 Jun 2021 10:58:16 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D4C73C48BCF
+	for <linux-m68k@archiver.kernel.org>; Wed,  9 Jun 2021 11:32:35 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 87D3B60FE5
-	for <linux-m68k@archiver.kernel.org>; Wed,  9 Jun 2021 10:58:16 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id BF649613B6
+	for <linux-m68k@archiver.kernel.org>; Wed,  9 Jun 2021 11:32:35 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238517AbhFILAK (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Wed, 9 Jun 2021 07:00:10 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:42577 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S238534AbhFILAJ (ORCPT
+        id S238103AbhFILe3 (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Wed, 9 Jun 2021 07:34:29 -0400
+Received: from mout.kundenserver.de ([212.227.17.13]:35217 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231162AbhFILe1 (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Wed, 9 Jun 2021 07:00:09 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1623236295;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=2Gdg9+tpOx626Ezvggt1xE7D6QrGInTamndBpZke/4o=;
-        b=X/JH4frm23e51OvL+AzU/aGWN4rwxW2nutCDtOm9LyTOJ/rzwK4RgqtIqNDskkViAY0b6j
-        QsdxlegHTDekdhcER9oIYr8BV3Fi9hIVng/rQ/W7RX39u3ZqNYbFp3mtJVvbGCdRe5Vq6D
-        0dJzVXNeFzQMfVoJmLP17f8BVs/C8FM=
-Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com
- [209.85.221.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-569-q1a6JbUpNCeMX1F7IspLpA-1; Wed, 09 Jun 2021 06:58:14 -0400
-X-MC-Unique: q1a6JbUpNCeMX1F7IspLpA-1
-Received: by mail-wr1-f69.google.com with SMTP id e9-20020a5d6d090000b0290119e91be97dso2373495wrq.1
-        for <linux-m68k@lists.linux-m68k.org>; Wed, 09 Jun 2021 03:58:13 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:organization
-         :message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=2Gdg9+tpOx626Ezvggt1xE7D6QrGInTamndBpZke/4o=;
-        b=rl52GYnvDVH7QILfRE1QgS6c804xSquyrxgzys5o20Yg56aQ9MKFcpHx0FYR1RxJe1
-         tvaJsB8b6xeVVb7QxOrK69m2vJZYORuBcfEs/PmBarsuwS0AxJw2QuQHdO0hBr1HbqxO
-         Pw+wfsimTXQTqkGovJArG6dAKIniON8UUhWY3YweV76WVwy1lRc8cb3pnHxnb9SJIlxx
-         eXqEea1x9zmAbjQ6kfLR08R8x53xh6CsxbF2fZGLg5gC6kdL/YoDfIFNfFELdUrOXJXu
-         H3SWFRhZOr+nlu5AidefjBmXoYVCOHsFxBdoBto3rL3X6pxhd+xD3ta5bicZoEK40eAF
-         wWbw==
-X-Gm-Message-State: AOAM531y4cfLmu1Z3E3nBz13GiVDdy5d2Q9An/ikp+Ae/I0DBf1RVNWv
-        zE80zsLVbrDnPP/XeYUNsDY92kz9/N1llWva8J+mmzqlxUvHy5+1GNLkL38LFMVziXIP6OPCNI4
-        lyKeh9Cx5H6tdpseeb9AeQF3bWYae
-X-Received: by 2002:a5d:6b81:: with SMTP id n1mr27256952wrx.144.1623236292819;
-        Wed, 09 Jun 2021 03:58:12 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxANfssiXPPwd5jXqSLFwZZmn/VQ6v6aq6x8NxYxZ6oulxycL5+UbfQGME/wwP7BrwnDfbhqg==
-X-Received: by 2002:a5d:6b81:: with SMTP id n1mr27256934wrx.144.1623236292583;
-        Wed, 09 Jun 2021 03:58:12 -0700 (PDT)
-Received: from [192.168.3.132] (p5b0c611d.dip0.t-ipconnect.de. [91.12.97.29])
-        by smtp.gmail.com with ESMTPSA id o3sm24218939wrm.78.2021.06.09.03.58.11
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 09 Jun 2021 03:58:12 -0700 (PDT)
-Subject: Re: [PATCH 9/9] mm: replace CONFIG_FLAT_NODE_MEM_MAP with
- CONFIG_FLATMEM
-To:     Mike Rapoport <rppt@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>
-Cc:     Arnd Bergmann <arnd@arndb.de>,
+        Wed, 9 Jun 2021 07:34:27 -0400
+Received: from mail-wm1-f41.google.com ([209.85.128.41]) by
+ mrelayeu.kundenserver.de (mreue106 [213.165.67.113]) with ESMTPSA (Nemesis)
+ id 1MDy54-1m0noh3l24-009zZc for <linux-m68k@lists.linux-m68k.org>; Wed, 09
+ Jun 2021 13:32:31 +0200
+Received: by mail-wm1-f41.google.com with SMTP id l11-20020a05600c4f0bb029017a7cd488f5so3999803wmq.0
+        for <linux-m68k@lists.linux-m68k.org>; Wed, 09 Jun 2021 04:32:31 -0700 (PDT)
+X-Gm-Message-State: AOAM532oCaTQfJP+NjpFg4/yAayKI2TMb0IFtb1gtc5MoCah2dB2j7qd
+        SxSY59EH0yaabobbHHtR8SXFNfEfL5atwqWB/y8=
+X-Google-Smtp-Source: ABdhPJzoAPnjJWGlDyxsxVrxhheEMZ1P753dKM++est77A1JSiUJC5TRRvOf+sTRALv47GHRkLWv+YzLbHb9Ukp7IwY=
+X-Received: by 2002:a1c:7d15:: with SMTP id y21mr9135927wmc.120.1623238351528;
+ Wed, 09 Jun 2021 04:32:31 -0700 (PDT)
+MIME-Version: 1.0
+References: <20210604064916.26580-1-rppt@kernel.org>
+In-Reply-To: <20210604064916.26580-1-rppt@kernel.org>
+From:   Arnd Bergmann <arnd@arndb.de>
+Date:   Wed, 9 Jun 2021 13:30:39 +0200
+X-Gmail-Original-Message-ID: <CAK8P3a2tZDJDqgr9-1vJrnbDhd_36eKq8LMEznDkU7rvuAnAag@mail.gmail.com>
+Message-ID: <CAK8P3a2tZDJDqgr9-1vJrnbDhd_36eKq8LMEznDkU7rvuAnAag@mail.gmail.com>
+Subject: Re: [PATCH v2 0/9] Remove DISCINTIGMEM memory model
+To:     Mike Rapoport <rppt@kernel.org>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
         Geert Uytterhoeven <geert@linux-m68k.org>,
         Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
         Jonathan Corbet <corbet@lwn.net>,
@@ -73,152 +47,70 @@ Cc:     Arnd Bergmann <arnd@arndb.de>,
         Mike Rapoport <rppt@linux.ibm.com>,
         Richard Henderson <rth@twiddle.net>,
         Vineet Gupta <vgupta@synopsys.com>, kexec@lists.infradead.org,
-        linux-alpha@vger.kernel.org, linux-arch@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-doc@vger.kernel.org,
-        linux-ia64@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org,
-        linux-mm@kvack.org, linux-riscv@lists.infradead.org,
-        linux-s390@vger.kernel.org, linux-sh@vger.kernel.org,
-        linux-snps-arc@lists.infradead.org, linux-xtensa@linux-xtensa.org,
-        linuxppc-dev@lists.ozlabs.org, sparclinux@vger.kernel.org
-References: <20210602105348.13387-1-rppt@kernel.org>
- <20210602105348.13387-10-rppt@kernel.org>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat
-Message-ID: <5dc2c695-06c9-671f-a77d-24db56485041@redhat.com>
-Date:   Wed, 9 Jun 2021 12:58:11 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.1
-MIME-Version: 1.0
-In-Reply-To: <20210602105348.13387-10-rppt@kernel.org>
-Authentication-Results: relay.mimecast.com;
-        auth=pass smtp.auth=CUSA124A263 smtp.mailfrom=david@redhat.com
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: redhat.com
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+        alpha <linux-alpha@vger.kernel.org>,
+        linux-arch <linux-arch@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
+        linux-ia64@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-m68k <linux-m68k@lists.linux-m68k.org>,
+        "open list:BROADCOM NVRAM DRIVER" <linux-mips@vger.kernel.org>,
+        Linux-MM <linux-mm@kvack.org>,
+        linux-riscv <linux-riscv@lists.infradead.org>,
+        linux-s390 <linux-s390@vger.kernel.org>,
+        Linux-sh list <linux-sh@vger.kernel.org>,
+        "open list:SYNOPSYS ARC ARCHITECTURE" 
+        <linux-snps-arc@lists.infradead.org>,
+        "open list:TENSILICA XTENSA PORT (xtensa)" 
+        <linux-xtensa@linux-xtensa.org>,
+        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
+        sparclinux <sparclinux@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Provags-ID: V03:K1:SFd4Jyn5spMADADsBsIjI4XXTJUcNhs8ewC0rJhXF1+IOUg9Yi9
+ OjXu6wYbJavJOnB9ca03oIwjfpFB6kSfAFpjAeGh/aBV3eti4y/uzhwJPgTzj1yN/zYCpbo
+ JyT5kLQYZRWk6RLm7m6BRHfvwV5voP5pvwb0LKI5nYDzqt1Qp67j9HeUSJmwaExF3OFNdSD
+ mupd7wdx7UFQNJjOoOfSg==
+X-UI-Out-Filterresults: notjunk:1;V03:K0:bi3ekusigyA=:JQ6ZjhJ70YCBrITFo3Veb+
+ Sj/YUchNW4t/Z3ufEyF0x1pwdDQnPyJevfhoarTTvM8n2kuMKJ8wr8IkrjQWVbmufLj4QYK+M
+ kA0CMBB3fZF0uu/OXdJt9y63bMbbYAw+QMyGusyKyUg9i1+LmK/nGCvUsTbqOQNGl6vQ5i/Zm
+ 0AknLO0m88uWyvjqZF1mTKD4t1f9jlPr7wValyW4/eZihDLDBXgmX2y+mx5sp7AOEa5T7JZ2D
+ ZMmqhqFbMwY1JMRi7kuOLIbC2E9nfOoNHIP1HdjDCk6Vt6LlMLRS/qzqAx2gfny3xiGfbG6Ti
+ gfhHn34JZY+HPnUEUIAteL+lnADkvHrPow+lLK87G5Ut2/TNe9PiKxxfrzGZkP0oU0/u/emDP
+ wcTpf11s/xulfWIbytk5l6cucJmL6nF8Xfabm2GlHvIfmoig0sCzPsOPjz2GgEbtpCB0tgmUB
+ sU4xGrjW74iXAPbrhyegF3d42oS2+5PY2lNAZl+vzeFyDKZplll3NhNx5bYhIWVVvGlkycFDI
+ mglNSqAQ7I1Wv8BiMdZSSk=
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-On 02.06.21 12:53, Mike Rapoport wrote:
+On Fri, Jun 4, 2021 at 8:49 AM Mike Rapoport <rppt@kernel.org> wrote:
+>
 > From: Mike Rapoport <rppt@linux.ibm.com>
-> 
-> After removal of the DISCONTIGMEM memory model the FLAT_NODE_MEM_MAP
-> configuration option is equivalent to FLATMEM.
-> 
-> Drop CONFIG_FLAT_NODE_MEM_MAP and use CONFIG_FLATMEM instead.
-> 
-> Signed-off-by: Mike Rapoport <rppt@linux.ibm.com>
-> ---
->   include/linux/mmzone.h | 4 ++--
->   kernel/crash_core.c    | 2 +-
->   mm/Kconfig             | 4 ----
->   mm/page_alloc.c        | 6 +++---
->   mm/page_ext.c          | 2 +-
->   5 files changed, 7 insertions(+), 11 deletions(-)
-> 
-> diff --git a/include/linux/mmzone.h b/include/linux/mmzone.h
-> index ad42f440c704..2698cdbfbf75 100644
-> --- a/include/linux/mmzone.h
-> +++ b/include/linux/mmzone.h
-> @@ -775,7 +775,7 @@ typedef struct pglist_data {
->   	struct zonelist node_zonelists[MAX_ZONELISTS];
->   
->   	int nr_zones; /* number of populated zones in this node */
-> -#ifdef CONFIG_FLAT_NODE_MEM_MAP	/* means !SPARSEMEM */
-> +#ifdef CONFIG_FLATMEM	/* means !SPARSEMEM */
->   	struct page *node_mem_map;
->   #ifdef CONFIG_PAGE_EXTENSION
->   	struct page_ext *node_page_ext;
-> @@ -865,7 +865,7 @@ typedef struct pglist_data {
->   
->   #define node_present_pages(nid)	(NODE_DATA(nid)->node_present_pages)
->   #define node_spanned_pages(nid)	(NODE_DATA(nid)->node_spanned_pages)
-> -#ifdef CONFIG_FLAT_NODE_MEM_MAP
-> +#ifdef CONFIG_FLATMEM
->   #define pgdat_page_nr(pgdat, pagenr)	((pgdat)->node_mem_map + (pagenr))
->   #else
->   #define pgdat_page_nr(pgdat, pagenr)	pfn_to_page((pgdat)->node_start_pfn + (pagenr))
-> diff --git a/kernel/crash_core.c b/kernel/crash_core.c
-> index 53eb8bc6026d..2b8446ea7105 100644
-> --- a/kernel/crash_core.c
-> +++ b/kernel/crash_core.c
-> @@ -483,7 +483,7 @@ static int __init crash_save_vmcoreinfo_init(void)
->   	VMCOREINFO_OFFSET(page, compound_head);
->   	VMCOREINFO_OFFSET(pglist_data, node_zones);
->   	VMCOREINFO_OFFSET(pglist_data, nr_zones);
-> -#ifdef CONFIG_FLAT_NODE_MEM_MAP
-> +#ifdef CONFIG_FLATMEM
->   	VMCOREINFO_OFFSET(pglist_data, node_mem_map);
->   #endif
->   	VMCOREINFO_OFFSET(pglist_data, node_start_pfn);
-> diff --git a/mm/Kconfig b/mm/Kconfig
-> index bffe4bd859f3..ded98fb859ab 100644
-> --- a/mm/Kconfig
-> +++ b/mm/Kconfig
-> @@ -55,10 +55,6 @@ config FLATMEM
->   	def_bool y
->   	depends on !SPARSEMEM || FLATMEM_MANUAL
->   
-> -config FLAT_NODE_MEM_MAP
-> -	def_bool y
-> -	depends on !SPARSEMEM
-> -
->   #
->   # SPARSEMEM_EXTREME (which is the default) does some bootmem
->   # allocations when sparse_init() is called.  If this cannot
-> diff --git a/mm/page_alloc.c b/mm/page_alloc.c
-> index 8f08135d3eb4..f039736541eb 100644
-> --- a/mm/page_alloc.c
-> +++ b/mm/page_alloc.c
-> @@ -6444,7 +6444,7 @@ static void __meminit zone_init_free_lists(struct zone *zone)
->   	}
->   }
->   
-> -#if !defined(CONFIG_FLAT_NODE_MEM_MAP)
-> +#if !defined(CONFIG_FLATMEM)
->   /*
->    * Only struct pages that correspond to ranges defined by memblock.memory
->    * are zeroed and initialized by going through __init_single_page() during
-> @@ -7241,7 +7241,7 @@ static void __init free_area_init_core(struct pglist_data *pgdat)
->   	}
->   }
->   
-> -#ifdef CONFIG_FLAT_NODE_MEM_MAP
-> +#ifdef CONFIG_FLATMEM
->   static void __ref alloc_node_mem_map(struct pglist_data *pgdat)
->   {
->   	unsigned long __maybe_unused start = 0;
-> @@ -7289,7 +7289,7 @@ static void __ref alloc_node_mem_map(struct pglist_data *pgdat)
->   }
->   #else
->   static void __ref alloc_node_mem_map(struct pglist_data *pgdat) { }
-> -#endif /* CONFIG_FLAT_NODE_MEM_MAP */
-> +#endif /* CONFIG_FLATMEM */
->   
->   #ifdef CONFIG_DEFERRED_STRUCT_PAGE_INIT
->   static inline void pgdat_set_deferred_range(pg_data_t *pgdat)
-> diff --git a/mm/page_ext.c b/mm/page_ext.c
-> index df6f74aac8e1..293b2685fc48 100644
-> --- a/mm/page_ext.c
-> +++ b/mm/page_ext.c
-> @@ -191,7 +191,7 @@ void __init page_ext_init_flatmem(void)
->   	panic("Out of memory");
->   }
->   
-> -#else /* CONFIG_FLAT_NODE_MEM_MAP */
-> +#else /* CONFIG_FLATMEM */
->   
->   struct page_ext *lookup_page_ext(const struct page *page)
->   {
-> 
+>
+> Hi,
+>
+> SPARSEMEM memory model was supposed to entirely replace DISCONTIGMEM a
+> (long) while ago. The last architectures that used DISCONTIGMEM were
+> updated to use other memory models in v5.11 and it is about the time to
+> entirely remove DISCONTIGMEM from the kernel.
+>
+> This set removes DISCONTIGMEM from alpha, arc and m68k, simplifies memory
+> model selection in mm/Kconfig and replaces usage of redundant
+> CONFIG_NEED_MULTIPLE_NODES and CONFIG_FLAT_NODE_MEM_MAP with CONFIG_NUMA
+> and CONFIG_FLATMEM respectively.
+>
+> I've also removed NUMA support on alpha that was BROKEN for more than 15
+> years.
+>
+> There were also minor updates all over arch/ to remove mentions of
+> DISCONTIGMEM in comments and #ifdefs.
 
-Acked-by: David Hildenbrand <david@redhat.com>
+Hi Mike and Andrew,
 
--- 
-Thanks,
+It looks like everyone is happy with this version so far. How should we merge it
+for linux-next? I'm happy to take it through the asm-generic tree, but linux-mm
+would fit at least as well. In case we go for linux-mm, feel free to add
 
-David / dhildenb
+Acked-by: Arnd Bergmann <arnd@arndb.de>
 
+for the whole series.
