@@ -2,134 +2,85 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-15.1 required=3.0 tests=BAYES_00,DKIM_INVALID,
-	DKIM_SIGNED,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,NICE_REPLY_A,SPF_HELO_NONE,USER_AGENT_SANE_1
-	autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-8.8 required=3.0 tests=BAYES_00,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 5102EC47095
-	for <linux-m68k@archiver.kernel.org>; Wed,  9 Jun 2021 07:58:51 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D71C1C47095
+	for <linux-m68k@archiver.kernel.org>; Wed,  9 Jun 2021 08:04:07 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 39B276128A
-	for <linux-m68k@archiver.kernel.org>; Wed,  9 Jun 2021 07:58:51 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id B84EF6128A
+	for <linux-m68k@archiver.kernel.org>; Wed,  9 Jun 2021 08:04:07 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237391AbhFIIAo (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Wed, 9 Jun 2021 04:00:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36226 "EHLO
+        id S237690AbhFIIFz (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Wed, 9 Jun 2021 04:05:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37308 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237387AbhFIIAo (ORCPT
-        <rfc822;linux-m68k@vger.kernel.org>); Wed, 9 Jun 2021 04:00:44 -0400
-Received: from mail.kernel-space.org (unknown [IPv6:2a01:4f8:c2c:5a84::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B2C20C061574;
-        Wed,  9 Jun 2021 00:58:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel-space.org;
-        s=20190913; t=1623225526;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=02VwZyIvMU268Hlo6xoR5zpfL4+9l3U6sVubHZrLxJ8=;
-        b=NUXO8u2ist2YaaTlasjLsp8J4I3OzDn0PdLcZ44TXyB00qRO4NTw6+E/dZfta3V/04jCJA
-        sF8+rmMqGavfUKzfVmwDHYKT0qUqec7lUhGE5PSrisJzDTH4mh8ooJ6O0SxQZ/+faMvAWU
-        HsnusWLO5VvivdsNw56TE9BvxnD2F4w=
-Received: from [192.168.0.2] (host-87-8-57-171.retail.telecomitalia.it [87.8.57.171])
-        by ziongate (OpenSMTPD) with ESMTPSA id 4c6e8472 (TLSv1.3:TLS_AES_256_GCM_SHA384:256:NO);
-        Wed, 9 Jun 2021 07:58:46 +0000 (UTC)
-Subject: Re: [PATCH 1/5] can: flexcan: add platform data for ColdFire
-To:     Joakim Zhang <qiangqing.zhang@nxp.com>,
-        "gerg@linux-m68k.org" <gerg@linux-m68k.org>,
-        "wg@grandegger.com" <wg@grandegger.com>,
-        "mkl@pengutronix.de" <mkl@pengutronix.de>
-Cc:     "geert@linux-m68k.org" <geert@linux-m68k.org>,
-        "linux-m68k@vger.kernel.org" <linux-m68k@vger.kernel.org>,
-        "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
-References: <20210608204542.983925-1-angelo@kernel-space.org>
- <DB8PR04MB6795AC38C4A930DFC5DF1A86E6369@DB8PR04MB6795.eurprd04.prod.outlook.com>
-From:   Angelo Dureghello <angelo@kernel-space.org>
-Message-ID: <ce4f4b47-bccb-582e-5c47-e20cbaa0d5c0@kernel-space.org>
-Date:   Wed, 9 Jun 2021 09:57:58 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.1
+        with ESMTP id S236315AbhFIIFX (ORCPT
+        <rfc822;linux-m68k@vger.kernel.org>); Wed, 9 Jun 2021 04:05:23 -0400
+X-Greylist: delayed 315 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Wed, 09 Jun 2021 01:03:04 PDT
+Received: from mail-out.m-online.net (mail-out.m-online.net [IPv6:2001:a60:0:28:0:1:25:1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 48592C06124A;
+        Wed,  9 Jun 2021 01:03:03 -0700 (PDT)
+Received: from frontend01.mail.m-online.net (unknown [192.168.8.182])
+        by mail-out.m-online.net (Postfix) with ESMTP id 4G0KGL5cKHz1s2CP;
+        Wed,  9 Jun 2021 09:57:46 +0200 (CEST)
+Received: from localhost (dynscan1.mnet-online.de [192.168.6.70])
+        by mail.m-online.net (Postfix) with ESMTP id 4G0KGL4Yqyz1qr3P;
+        Wed,  9 Jun 2021 09:57:46 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at mnet-online.de
+Received: from mail.mnet-online.de ([192.168.8.182])
+        by localhost (dynscan1.mail.m-online.net [192.168.6.70]) (amavisd-new, port 10024)
+        with ESMTP id iro4N3ysXr4G; Wed,  9 Jun 2021 09:57:45 +0200 (CEST)
+X-Auth-Info: LIsqKLcHwpaFlDbwS02/n04035rxGS/WPR+ibJhB4L4wRah3XaACBbxYRXjkhAYg
+Received: from igel.home (ppp-46-244-166-111.dynamic.mnet-online.de [46.244.166.111])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.mnet-online.de (Postfix) with ESMTPSA;
+        Wed,  9 Jun 2021 09:57:45 +0200 (CEST)
+Received: by igel.home (Postfix, from userid 1000)
+        id 6224A2C3171; Wed,  9 Jun 2021 09:57:45 +0200 (CEST)
+From:   Andreas Schwab <schwab@linux-m68k.org>
+To:     Michael Schmitz <schmitzmic@gmail.com>
+Cc:     linux-m68k@vger.kernel.org, geert@linux-m68k.org,
+        linux-ide@vger.kernel.org, fthain@linux-m68k.org
+Subject: Re: [PATCH v2] m68k: io_mm.h: conditionalize ISA address
+ translation on Atari
+References: <1622957313-321-1-git-send-email-schmitzmic@gmail.com>
+        <1623223322-4242-1-git-send-email-schmitzmic@gmail.com>
+X-Yow:  YOW!!  I am having FUN!!
+Date:   Wed, 09 Jun 2021 09:57:45 +0200
+In-Reply-To: <1623223322-4242-1-git-send-email-schmitzmic@gmail.com> (Michael
+        Schmitz's message of "Wed, 9 Jun 2021 19:22:02 +1200")
+Message-ID: <874ke71nd2.fsf@igel.home>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/27.2 (gnu/linux)
 MIME-Version: 1.0
-In-Reply-To: <DB8PR04MB6795AC38C4A930DFC5DF1A86E6369@DB8PR04MB6795.eurprd04.prod.outlook.com>
-Content-Type: text/plain; charset=gbk; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-Hi Joakim,
+On Jun 09 2021, Michael Schmitz wrote:
 
-On 09/06/21 4:05 AM, Joakim Zhang wrote:
-> 
->> -----Original Message-----
->> From: Angelo Dureghello <angelo@kernel-space.org>
->> Sent: 2021Äê6ÔÂ9ÈÕ 4:46
->> To: gerg@linux-m68k.org; wg@grandegger.com; mkl@pengutronix.de
->> Cc: geert@linux-m68k.org; linux-m68k@vger.kernel.org;
->> linux-can@vger.kernel.org; Joakim Zhang <qiangqing.zhang@nxp.com>;
->> Angelo Dureghello <angelo@kernel-space.org>
->> Subject: [PATCH 1/5] can: flexcan: add platform data for ColdFire
->>
->> Add platform data object for ColdFire architecture.
->>
->> Signed-off-by: Angelo Dureghello <angelo@kernel-space.org>
->> ---
->>   include/linux/platform_data/flexcan-mcf.h | 27 +++++++++++++++++++++++
->>   1 file changed, 27 insertions(+)
->>   create mode 100644 include/linux/platform_data/flexcan-mcf.h
->>
->> diff --git a/include/linux/platform_data/flexcan-mcf.h
->> b/include/linux/platform_data/flexcan-mcf.h
->> new file mode 100644
->> index 000000000000..71fe1a9df084
->> --- /dev/null
->> +++ b/include/linux/platform_data/flexcan-mcf.h
-> 
-> Should locate CAN header file here? include/linux/can/platform/
-> 
+> @@ -135,10 +139,13 @@ static inline u8 __iomem *isa_itb(unsigned long addr)
+>      case ISA_TYPE_AG: return (u8 __iomem *)AG_ISA_IO_B(addr);
+>  #endif
+>  #ifdef CONFIG_ATARI_ROM_ISA
+> -    case ISA_TYPE_ENEC: return (u8 __iomem *)ENEC_ISA_IO_B(addr);
+> +    case ISA_TYPE_ENEC:
+> +	if (addr < 1024)
+> +		return (u8 __iomem *)ENEC_ISA_IO_B(addr);
+> +	break; /* not ROM port? fallback below! */
+>  #endif
+> -    default: return NULL; /* avoid warnings, just in case */
+>      }
+> +    return (u8 __iomem *)(addr); /* avoid warnings, just in case */
 
-oh, missed that place, looks like that location is more correct,
-sure, can move the file there.
+I don't think the comment still fits here.
 
-> Best Regards,
-> Joakim Zhang
->> @@ -0,0 +1,27 @@
->> +/* SPDX-License-Identifier: GPL-2.0-only */
->> +/*
->> + * Flexcan options for ColdFire family
->> + *
->> + * Copyright (C) 2021  Angelo Dureghello <angelo@kernel-space.org>
->> + *
->> + * This program is free software; you can redistribute it and/or
->> + * modify it under the terms of the GNU General Public License
->> + * version 2 as published by the Free Software Foundation.
->> + *
->> + * This program is distributed in the hope that it will be useful,
->> + * but WITHOUT ANY WARRANTY; without even the implied warranty of
->> + * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
->> + * GNU General Public License for more details.
->> + */
->> +
->> +#ifndef _PLAT_FLEXCAN_MCF_H
->> +#define _PLAT_FLEXCAN_MCF_H
->> +
->> +struct mcf_flexcan_platform_data {
->> +	int stop_mode;
->> +	int clk_src;
->> +	int clock_frequency;
->> +	bool big_endian;
->> +};
->> +
->> +#endif /* _PLAT_FLEXCAN_MCF_H */
->> --
->> 2.31.1
-> 
+Andreas.
 
-Regards
 -- 
-Angelo Dureghello
-+++ kernelspace +++
-+E: angelo AT kernel-space.org
-+W: www.kernel-space.org
+Andreas Schwab, schwab@linux-m68k.org
+GPG Key fingerprint = 7578 EB47 D4E5 4D69 2510  2552 DF73 E780 A9DA AEC1
+"And now for something completely different."
