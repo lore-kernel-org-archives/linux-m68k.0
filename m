@@ -2,96 +2,80 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-13.8 required=3.0 tests=BAYES_00,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-3.8 required=3.0 tests=BAYES_00,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
+	autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D80D4C47095
-	for <linux-m68k@archiver.kernel.org>; Wed,  9 Jun 2021 06:31:20 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8D6D5C47095
+	for <linux-m68k@archiver.kernel.org>; Wed,  9 Jun 2021 06:33:44 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id B521D61040
-	for <linux-m68k@archiver.kernel.org>; Wed,  9 Jun 2021 06:31:20 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 6B03C61181
+	for <linux-m68k@archiver.kernel.org>; Wed,  9 Jun 2021 06:33:42 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236167AbhFIGdO (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Wed, 9 Jun 2021 02:33:14 -0400
-Received: from mail-vs1-f45.google.com ([209.85.217.45]:35751 "EHLO
-        mail-vs1-f45.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235954AbhFIGdN (ORCPT
-        <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Wed, 9 Jun 2021 02:33:13 -0400
-Received: by mail-vs1-f45.google.com with SMTP id j15so12284548vsf.2
-        for <linux-m68k@lists.linux-m68k.org>; Tue, 08 Jun 2021 23:31:06 -0700 (PDT)
+        id S236301AbhFIGff (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Wed, 9 Jun 2021 02:35:35 -0400
+Received: from mail-vs1-f46.google.com ([209.85.217.46]:41844 "EHLO
+        mail-vs1-f46.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231508AbhFIGff (ORCPT
+        <rfc822;linux-m68k@vger.kernel.org>); Wed, 9 Jun 2021 02:35:35 -0400
+Received: by mail-vs1-f46.google.com with SMTP id c1so5859598vsh.8;
+        Tue, 08 Jun 2021 23:33:31 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=AXXJVR5Kvh9DfRAdNlNbcwWy6ZK6zdovOov80Vu519Q=;
-        b=JkWCkiHml2XE82NRCFr6KTn6ELSfbUzG8iZINyRTYax7qLDsRxYhTsxS+eJMMablSp
-         yXik9kZbBikw51LxX1Z4S6sb75bgJLVL51ov2+quKgPeugtuqf06Yr3NuLILzs65Eo8K
-         oZcsMVKq62vHzQv+P3oZU7WBKkReOHRIDVfxp4Vd7++3Q0NPSLIlqsI74K3O4bG3eiCl
-         xQhegkqM3iVbgsgMfTiqAjq8JN2GoxVYmUsQlytSuyuU/WhAHTmKqLILgqPA6Y6B5Bir
-         qdCIVQQ3KNiYnr0dcSi7f6FF/Kmlo+ztYdFhqxWPImdbw7WpXB1Y5yjvGWzPZk5HIyIE
-         nwGw==
-X-Gm-Message-State: AOAM531pwF4gv/PsmeFdVddH6ngYIwMG0QTzuvsrpGFQPBewdLcHBcig
-        7vkiWcbz/aUhCpy/4dgSPFRkVT5HUdEArt9/cbw=
-X-Google-Smtp-Source: ABdhPJytskfX8RUZ+4NhknMctxOwBSUBELeh6tvFA09PULcHxmJwYO2ANDAZkYVxZDa/Or7kb9nCfGg8yyfm0oSnUI0=
-X-Received: by 2002:a67:3c2:: with SMTP id 185mr3441670vsd.42.1623220266397;
- Tue, 08 Jun 2021 23:31:06 -0700 (PDT)
+        bh=huztDeh1iQpGlwwTvC3NoL5RKEn6PGXwfnOsLXt4nb8=;
+        b=Enm9aAtkHtxne7Ike/UeTgjmAGmorBlgtwOkOY9fXJEuR6Ez9JTHQ+L/Mhiu8h+5aJ
+         BabC+Q5C5lnByUAh5R4zkCPRzGhYymStKw2kSdmHgraJAXKfc1ef2Tppb07dN1WLpvpC
+         7e83WU8367nB2onpgFc8nLJpdZYRWgqVXPLj28lslwodHshxRF66LO6ydg4vOX/nCVb/
+         LbcL2lJDB/TMncSVoQy8YdjfNnzVn5nxivnSetR/SLs3PKGIS/tKgM0zeiPnXAeK7MXU
+         jtNesn57fY/RdoFSKO+5FneMI/O1NX6bMQpHJYtSowOhuZ5htR7Ip/UYPsOvqYMfqV8m
+         BzsA==
+X-Gm-Message-State: AOAM531UwyZ8EcKKZXtI5xE8lyWiijmpc3R1zPtQt2Z2Lj2XxHciQpfV
+        uCdDfliVnRe8s2C3jkPt5SijDN8SL8Hu/ECuwQ8=
+X-Google-Smtp-Source: ABdhPJzB7Cs+b8Z1kfWQNgkZNq1KP4O4dykkE/wf6X7patiQV4rmWAHf+pXvRkl0aSCpDwx00nqOucanjtW6ggWI6yU=
+X-Received: by 2002:a67:f106:: with SMTP id n6mr3772029vsk.40.1623220410597;
+ Tue, 08 Jun 2021 23:33:30 -0700 (PDT)
 MIME-Version: 1.0
-References: <cover.1623131194.git.fthain@linux-m68k.org> <e781c54ae2c837c3c15b2505c5cde19b8b340a59.1623131194.git.fthain@linux-m68k.org>
-In-Reply-To: <e781c54ae2c837c3c15b2505c5cde19b8b340a59.1623131194.git.fthain@linux-m68k.org>
+References: <20210605060447.GA18461@allandria.com> <1622958877-2026-1-git-send-email-schmitzmic@gmail.com>
+ <1622958877-2026-2-git-send-email-schmitzmic@gmail.com> <CAMuHMdX1cD_zt6hU-6CUZi=uyYdk_xgW+hTCXvxSTRFPy_qn5w@mail.gmail.com>
+ <b2943f57-396c-cfd7-7064-4a1351585fa3@gmail.com> <CAMuHMdXDXSh2VkpFyFDXpPFDS+f2JGhU-x1gn2dTCSub=9gw8w@mail.gmail.com>
+ <602d8eed-dcad-33db-3b64-d099c2f33503@gmail.com>
+In-Reply-To: <602d8eed-dcad-33db-3b64-d099c2f33503@gmail.com>
 From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Wed, 9 Jun 2021 08:30:55 +0200
-Message-ID: <CAMuHMdVXPfV20TQgpczGVGELFQ4gcqhgX=K=Hb1k-7Ph6j4jZg@mail.gmail.com>
-Subject: Re: [PATCH v2 2/2] m68k/q40: Replace q40ide driver with pata_falcon
- and falconide
-To:     Finn Thain <fthain@linux-m68k.org>
-Cc:     Jens Axboe <axboe@kernel.dk>,
-        "David S. Miller" <davem@davemloft.net>,
-        Michael Schmitz <schmitzmic@gmail.com>,
-        Richard Zidlicky <rz@linux-m68k.org>,
-        linux-m68k <linux-m68k@lists.linux-m68k.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-ide@vger.kernel.org
+Date:   Wed, 9 Jun 2021 08:33:19 +0200
+Message-ID: <CAMuHMdW5DE3+KzCp5AS9fT9BaKLufCPa2hjj2e8xNyChoB0Otw@mail.gmail.com>
+Subject: Re: [PATCH RFC 1/2] m68k: io_mm.h - add APNE 100 MBit support
+To:     Michael Schmitz <schmitzmic@gmail.com>
+Cc:     "Linux/m68k" <linux-m68k@vger.kernel.org>,
+        linux-ide@vger.kernel.org, Finn Thain <fthain@linux-m68k.org>,
+        ALeX Kazik <alex@kazik.de>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-On Tue, Jun 8, 2021 at 8:04 AM Finn Thain <fthain@linux-m68k.org> wrote:
-> This allows m68k q40 systems to switch from the deprecated IDE subsystem
-> to libata.
->
-> Enhance the byte-swapping falconide and pata_falcon platform drivers to
-> accept an irq resource, for use on q40. Atari ST-DMA IRQ arrangements seem
-> to co-exist with q40 IRQ arrangements without too much mess.
->
-> The new IO resources were added solely for the purpose of making
-> request_region() reservations identical to those made by q40ide: these
-> regions aren't used for actual IO.
->
-> Cc: Michael Schmitz <schmitzmic@gmail.com>
-> Cc: Richard Zidlicky <rz@linux-m68k.org>
-> Reviewed-and-tested-by: Michael Schmitz <schmitzmic@gmail.com>
-> Signed-off-by: Finn Thain <fthain@linux-m68k.org>
+Hi Michael,
 
-Thanks for your patch!
+On Tue, Jun 8, 2021 at 11:55 PM Michael Schmitz <schmitzmic@gmail.com> wrote:
+> On 8/06/21 6:42 pm, Geert Uytterhoeven wrote:
+> > +#define isa_inb(port)      ((ISA_TYPE == ISA_TYPE_AG100) ? ((port) & 1 ? isa_inw((port) - 1) & 0xff : isa_inw(port) >> 8) : in_8(isa_itb(port))
+> >>> This fails to compile due to a missing closing parenthesis.
+> >> Sorry - looks like brown paper bag time today. (I did say 'entirely
+> >> untested'? Didn't expect such a thorough review for a first RFC patch ...)
+> > Sorry, I missed that part in the cover letter ;-)
+>
+> I'll put it more prominently next time.
+>
+> Ran all patches through checkpatch now, and I still get warnings and
+> even a few errors ('trailing statements should be on the next line').
+> All due to my keeping to the code style used in io_mm.h, as far as I
+> could see.
+>
+> What's your preference - additions in new style, or keep the old style?
 
->  arch/m68k/atari/config.c          |  12 +--
->  arch/m68k/configs/multi_defconfig |   1 -
->  arch/m68k/configs/q40_defconfig   |   2 +-
->  arch/m68k/q40/config.c            |  37 +++++--
->  drivers/ata/Kconfig               |   6 +-
->  drivers/ata/pata_falcon.c         |  62 ++++++++---
->  drivers/ide/Kconfig               |  18 +---
->  drivers/ide/Makefile              |   1 -
->  drivers/ide/falconide.c           |  75 ++++++++-----
->  drivers/ide/q40ide.c              | 168 ------------------------------
->  10 files changed, 137 insertions(+), 245 deletions(-)
->  delete mode 100644 drivers/ide/q40ide.c
-
-Acked-by: Geert Uytterhoeven <geert@linux-m68k.org>
+Please use the existing style, unless you're willing to modernize the
+whole file in a separate patch.
 
 Gr{oetje,eeting}s,
 
