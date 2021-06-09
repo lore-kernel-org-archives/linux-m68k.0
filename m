@@ -2,77 +2,137 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.8 required=3.0 tests=BAYES_00,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-13.8 required=3.0 tests=BAYES_00,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id DD19EC47095
-	for <linux-m68k@archiver.kernel.org>; Wed,  9 Jun 2021 08:04:50 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C7B8BC47095
+	for <linux-m68k@archiver.kernel.org>; Wed,  9 Jun 2021 08:13:01 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id C89FF6128A
-	for <linux-m68k@archiver.kernel.org>; Wed,  9 Jun 2021 08:04:50 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 95B3C61285
+	for <linux-m68k@archiver.kernel.org>; Wed,  9 Jun 2021 08:13:01 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234326AbhFIIGo (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Wed, 9 Jun 2021 04:06:44 -0400
-Received: from mail-out.m-online.net ([212.18.0.9]:48335 "EHLO
-        mail-out.m-online.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237731AbhFIIGL (ORCPT
-        <rfc822;linux-m68k@vger.kernel.org>); Wed, 9 Jun 2021 04:06:11 -0400
-X-Greylist: delayed 376 seconds by postgrey-1.27 at vger.kernel.org; Wed, 09 Jun 2021 04:06:08 EDT
-Received: from frontend01.mail.m-online.net (unknown [192.168.8.182])
-        by mail-out.m-online.net (Postfix) with ESMTP id 4G0KPf68ylz1qv9X;
-        Wed,  9 Jun 2021 10:04:06 +0200 (CEST)
-Received: from localhost (dynscan1.mnet-online.de [192.168.6.70])
-        by mail.m-online.net (Postfix) with ESMTP id 4G0KPf5ZrLz1qr3M;
-        Wed,  9 Jun 2021 10:04:06 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at mnet-online.de
-Received: from mail.mnet-online.de ([192.168.8.182])
-        by localhost (dynscan1.mail.m-online.net [192.168.6.70]) (amavisd-new, port 10024)
-        with ESMTP id XIir5Iq8mtuX; Wed,  9 Jun 2021 10:04:06 +0200 (CEST)
-X-Auth-Info: beSZl78YBRusfkLRKiXWhp6fn9LTGos5iAQUrB1J9rwAc1BOD8SWeFC+9mELCpxl
-Received: from igel.home (ppp-46-244-166-111.dynamic.mnet-online.de [46.244.166.111])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.mnet-online.de (Postfix) with ESMTPSA;
-        Wed,  9 Jun 2021 10:04:06 +0200 (CEST)
-Received: by igel.home (Postfix, from userid 1000)
-        id 9202D2C3171; Wed,  9 Jun 2021 10:04:05 +0200 (CEST)
-From:   Andreas Schwab <schwab@linux-m68k.org>
-To:     Michael Schmitz <schmitzmic@gmail.com>
-Cc:     linux-m68k@vger.kernel.org, geert@linux-m68k.org,
-        linux-ide@vger.kernel.org, fthain@linux-m68k.org, alex@kazik.de
-Subject: Re: [PATCH v1 1/2] m68k: io_mm.h - add APNE 100 MBit support
-References: <1622958877-2026-1-git-send-email-schmitzmic@gmail.com>
-        <1623224214-4836-1-git-send-email-schmitzmic@gmail.com>
-        <1623224214-4836-2-git-send-email-schmitzmic@gmail.com>
-X-Yow:  Why was I BORN?
-Date:   Wed, 09 Jun 2021 10:04:05 +0200
-In-Reply-To: <1623224214-4836-2-git-send-email-schmitzmic@gmail.com> (Michael
-        Schmitz's message of "Wed, 9 Jun 2021 19:36:53 +1200")
-Message-ID: <87zgvzzcp6.fsf@igel.home>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/27.2 (gnu/linux)
+        id S237073AbhFIIOy convert rfc822-to-8bit (ORCPT
+        <rfc822;linux-m68k@archiver.kernel.org>);
+        Wed, 9 Jun 2021 04:14:54 -0400
+Received: from mail-ua1-f41.google.com ([209.85.222.41]:46762 "EHLO
+        mail-ua1-f41.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236067AbhFIIOy (ORCPT
+        <rfc822;linux-m68k@vger.kernel.org>); Wed, 9 Jun 2021 04:14:54 -0400
+Received: by mail-ua1-f41.google.com with SMTP id p1so12548732uam.13;
+        Wed, 09 Jun 2021 01:12:47 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=ns7di523CTNIuVt+baY7bBFi5ZUlGHzkGIIjcfLMzbk=;
+        b=cMSsbbZQx0BRxwn1fwSBc/QyJcmRdytT4HWJTmAEGHp2FRfo6g3KY9bQL+WQbOS3bc
+         54N5DRSRLAaHnLl+FBnXi4MLGbQbtBMBHtjRSchAkecIMioXv/3Io4RG3m9jn9Ab8Xmc
+         8EukITom4lLadHZNpUJj7mbNwxA9QJ7RAw780KCZVSbsIENOEI+EmsKF3pR0dd2VU24W
+         SzWtB8oEJ50Qjps4H+pVRAZMXByd2QWhJZVhmidUo13lgNNfLPkL91MYIFO0rxwEL+PH
+         0e4HnDfS0aH8L+jgDiAhNny3pQaXTAANtbdgfmXluUo9K4ZD8EkILqf29QrIfuPENQYH
+         0sZw==
+X-Gm-Message-State: AOAM533D0i+320yb6vXJ02XOnSYAZnqLMVvczEOzsrPcmhxsUIrjo6YP
+        GowyVqdktOMXc/XISoAJYKd7xbj+KhUx93bOUtU+qAYhlF9Nzw==
+X-Google-Smtp-Source: ABdhPJyaAYoPj7NCRyR3TpjNy4uEXLK50HJ8uBvqihxtSbIvIJn4n0xrx7Iu5S4pRIoNTipjmdx6xzg2DgxxAioxmT8=
+X-Received: by 2002:ab0:708c:: with SMTP id m12mr17570616ual.4.1623226366873;
+ Wed, 09 Jun 2021 01:12:46 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
+References: <20210608204542.983925-1-angelo@kernel-space.org>
+ <20210608204542.983925-5-angelo@kernel-space.org> <DB8PR04MB6795CE1FF40605F69E3A0040E6369@DB8PR04MB6795.eurprd04.prod.outlook.com>
+In-Reply-To: <DB8PR04MB6795CE1FF40605F69E3A0040E6369@DB8PR04MB6795.eurprd04.prod.outlook.com>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Wed, 9 Jun 2021 10:12:35 +0200
+Message-ID: <CAMuHMdUeeH2BWgVRoVX7yfckY=wi8X3qkaH0THhVF_3FpZsbqg@mail.gmail.com>
+Subject: Re: [PATCH 5/5] can: flexcan: add mcf5441x support
+To:     Joakim Zhang <qiangqing.zhang@nxp.com>,
+        Angelo Dureghello <angelo@kernel-space.org>
+Cc:     "gerg@linux-m68k.org" <gerg@linux-m68k.org>,
+        "wg@grandegger.com" <wg@grandegger.com>,
+        "mkl@pengutronix.de" <mkl@pengutronix.de>,
+        "linux-m68k@vger.kernel.org" <linux-m68k@vger.kernel.org>,
+        "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-On Jun 09 2021, Michael Schmitz wrote:
+Hi Joakim, Angelo,
 
-> @@ -136,6 +141,9 @@ static inline u8 __iomem *isa_itb(unsigned long addr)
->      case ISA_TYPE_Q40: return (u8 __iomem *)Q40_ISA_IO_B(addr);
->  #endif
->  #ifdef CONFIG_AMIGA_PCMCIA
-> +#ifdef CONFIG_APNE100MBIT
-> +    case ISA_TYPE_AG16: fallthrough;
-> +#endif
->      case ISA_TYPE_AG: return (u8 __iomem *)AG_ISA_IO_B(addr);
+On Wed, Jun 9, 2021 at 4:05 AM Joakim Zhang <qiangqing.zhang@nxp.com> wrote:
+> > From: Angelo Dureghello <angelo@kernel-space.org>
+> > Sent: 2021年6月9日 4:46
+> > To: gerg@linux-m68k.org; wg@grandegger.com; mkl@pengutronix.de
+> > Cc: geert@linux-m68k.org; linux-m68k@vger.kernel.org;
+> > linux-can@vger.kernel.org; Joakim Zhang <qiangqing.zhang@nxp.com>;
+> > Angelo Dureghello <angelo@kernel-space.org>
+> > Subject: [PATCH 5/5] can: flexcan: add mcf5441x support
+> >
+> > Add flexcan support for NXP ColdFire mcf5441x family.
+> >
+> > This flexcan module is quite similar to imx6 flexcan module, but with some
+> > exceptions:
+> >
+> > - 3 separate interrupt sources, MB, BOFF and ERR,
+> > - implements 16 mb only,
+> > - m68k architecture is not supporting devicetrees, so a
+> >   platform data check/case has been added,
+> > - ColdFire is m68k, so big-endian cpu, with a little-endian flexcan
+> >   module.
+> >
+> > Signed-off-by: Angelo Dureghello <angelo@kernel-space.org>
 
-Is the fallthrough annotation really needed?
+> > --- a/drivers/net/can/flexcan.c
+> > +++ b/drivers/net/can/flexcan.c
 
-Andreas.
+> > @@ -637,13 +650,17 @@ static int flexcan_clks_enable(const struct
+> > flexcan_priv *priv)  {
+> >       int err;
+> >
+> > -     err = clk_prepare_enable(priv->clk_ipg);
+> > -     if (err)
+> > -             return err;
+> > +     if (priv->clk_ipg) {
+> > +             err = clk_prepare_enable(priv->clk_ipg);
+> > +             if (err)
+> > +                     return err;
+> > +     }
+> >
+> > -     err = clk_prepare_enable(priv->clk_per);
+> > -     if (err)
+> > -             clk_disable_unprepare(priv->clk_ipg);
+> > +     if (priv->clk_per) {
+> > +             err = clk_prepare_enable(priv->clk_per);
+> > +             if (err)
+> > +                     clk_disable_unprepare(priv->clk_ipg);
+> > +     }
+>
+> No need do this check, it will be handled in clk_prepare_enable() / clk_disable_unprepare(). So this change is unnecessary.
+
+Except that the non-CCF implementation of clk_enable() in
+arch/m68k/coldfire/clk.c still returns -EINVAL instead of NULL.
+Any plans to move to CCF? Or at least fix legacy clk_enable().
+
+> > @@ -2091,6 +2133,11 @@ static int flexcan_probe(struct platform_device
+> > *pdev)
+> >
+> >       devtype_data = of_device_get_match_data(&pdev->dev);
+> >
+> > +     if (pdata && !devtype_data) {
+> > +             devtype_data =
+> > +                     (struct flexcan_devtype_data *)&fsl_mcf_devtype_data;
+
+Cast not needed?
+
+Gr{oetje,eeting}s,
+
+                        Geert
 
 -- 
-Andreas Schwab, schwab@linux-m68k.org
-GPG Key fingerprint = 7578 EB47 D4E5 4D69 2510  2552 DF73 E780 A9DA AEC1
-"And now for something completely different."
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
