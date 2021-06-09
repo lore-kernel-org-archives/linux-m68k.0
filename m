@@ -2,191 +2,134 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-15.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-15.1 required=3.0 tests=BAYES_00,DKIM_INVALID,
+	DKIM_SIGNED,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,NICE_REPLY_A,SPF_HELO_NONE,USER_AGENT_SANE_1
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 0E717C48BCD
-	for <linux-m68k@archiver.kernel.org>; Wed,  9 Jun 2021 07:38:21 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5102EC47095
+	for <linux-m68k@archiver.kernel.org>; Wed,  9 Jun 2021 07:58:51 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id EFF1061351
-	for <linux-m68k@archiver.kernel.org>; Wed,  9 Jun 2021 07:38:20 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 39B276128A
+	for <linux-m68k@archiver.kernel.org>; Wed,  9 Jun 2021 07:58:51 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232921AbhFIHkO (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Wed, 9 Jun 2021 03:40:14 -0400
-Received: from mail-pg1-f174.google.com ([209.85.215.174]:34434 "EHLO
-        mail-pg1-f174.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230233AbhFIHkO (ORCPT
-        <rfc822;linux-m68k@vger.kernel.org>); Wed, 9 Jun 2021 03:40:14 -0400
-Received: by mail-pg1-f174.google.com with SMTP id l1so18744699pgm.1;
-        Wed, 09 Jun 2021 00:38:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=m6BQeygwdufdV9h+iSLPUeIxQ7I6Fb52GLs3OuHXhNM=;
-        b=SNfPwaunWFA/fMxg9S+4ubJTkYFxz9lrOOh68efko3QNkKXKM68M1m3k4VFq6LwuNa
-         q33ObOuBEmCu8sPCf7amzJ5zR8it4ZLSghOFfI6fkt1YqDcVvCN6Z5IofGyvCat45vpm
-         wrjiPChcBvEG1PrnjpGOdl+b6DNZBolTSFU8ZKy6Wn/SFJpqQMxw8/cd5zzRzt8O4Qpl
-         T6mCyhF3vEc5xHlNYHYVswnQ+TB1chZn+LE6DNi0Oh3TqNa+mugZFSm9SS/1nCmSG3kx
-         D4csPqNMHjxvMsSD+5ZKcFAXuTZlIjAI40l37P2qeHnYOyTGIG14hcUREJH0RKigRVaL
-         r2Hw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references;
-        bh=m6BQeygwdufdV9h+iSLPUeIxQ7I6Fb52GLs3OuHXhNM=;
-        b=oqMY03cHYPCurihTW3BEjI56tuaK4gAUAYMqaAdDQ2+xVlkswOhBdiwkEcR8/6XiR7
-         BI+WDBq+AZ35nU/DIr4jg12lOIVRQSZ3iFO42lGhx2twgSdebQ5Om8aLcde7XeM6QcYe
-         jqSG0lihhv7LKvC3kdUPfpnN1/lRtngfeFhr2FEHk7IuJSAiWu6v+aoPGkXg/oL3bXU0
-         8sqBDiy0r5vr8eDwxTfyjZkuHuszUfqxBOjP1lVCLwhmupgptoYHgimdW4Ox39UixUF+
-         I/UOIMNiooGzQhkDv914rYZdFH3TgyyCpPq75W7f0qnOzW2C03AW4M2pJ/C693FdednU
-         WAwA==
-X-Gm-Message-State: AOAM532aF2sqp1fkSO5TicJjG4AB10ubENZ5E1BWwWPLIuTURUQYc/qR
-        u9IB8Z06SeYrhBfZbh92C34=
-X-Google-Smtp-Source: ABdhPJzBn2FIoB/tlIi8tkoLYaPPvPIvBihFnuWK7CNDyRBpg/0N5kIk4RPCu1i+LIOyXYiRBG79Dg==
-X-Received: by 2002:a62:b401:0:b029:2ec:a3ed:9494 with SMTP id h1-20020a62b4010000b02902eca3ed9494mr3835993pfn.56.1623224224809;
-        Wed, 09 Jun 2021 00:37:04 -0700 (PDT)
-Received: from xplor.waratah.dyndns.org (222-152-189-137-fibre.sparkbb.co.nz. [222.152.189.137])
-        by smtp.gmail.com with ESMTPSA id c190sm12549836pfc.26.2021.06.09.00.37.03
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Wed, 09 Jun 2021 00:37:04 -0700 (PDT)
-Received: by xplor.waratah.dyndns.org (Postfix, from userid 1000)
-        id 296E73603D9; Wed,  9 Jun 2021 19:37:01 +1200 (NZST)
-From:   Michael Schmitz <schmitzmic@gmail.com>
-To:     linux-m68k@vger.kernel.org, geert@linux-m68k.org
-Cc:     linux-ide@vger.kernel.org, fthain@linux-m68k.org, alex@kazik.de,
-        Michael Schmitz <schmitzmic@gmail.com>
-Subject: [PATCH v1 1/2] m68k: io_mm.h - add APNE 100 MBit support
-Date:   Wed,  9 Jun 2021 19:36:53 +1200
-Message-Id: <1623224214-4836-2-git-send-email-schmitzmic@gmail.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1623224214-4836-1-git-send-email-schmitzmic@gmail.com>
-References: <1622958877-2026-1-git-send-email-schmitzmic@gmail.com>
- <1623224214-4836-1-git-send-email-schmitzmic@gmail.com>
+        id S237391AbhFIIAo (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Wed, 9 Jun 2021 04:00:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36226 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237387AbhFIIAo (ORCPT
+        <rfc822;linux-m68k@vger.kernel.org>); Wed, 9 Jun 2021 04:00:44 -0400
+Received: from mail.kernel-space.org (unknown [IPv6:2a01:4f8:c2c:5a84::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B2C20C061574;
+        Wed,  9 Jun 2021 00:58:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel-space.org;
+        s=20190913; t=1623225526;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=02VwZyIvMU268Hlo6xoR5zpfL4+9l3U6sVubHZrLxJ8=;
+        b=NUXO8u2ist2YaaTlasjLsp8J4I3OzDn0PdLcZ44TXyB00qRO4NTw6+E/dZfta3V/04jCJA
+        sF8+rmMqGavfUKzfVmwDHYKT0qUqec7lUhGE5PSrisJzDTH4mh8ooJ6O0SxQZ/+faMvAWU
+        HsnusWLO5VvivdsNw56TE9BvxnD2F4w=
+Received: from [192.168.0.2] (host-87-8-57-171.retail.telecomitalia.it [87.8.57.171])
+        by ziongate (OpenSMTPD) with ESMTPSA id 4c6e8472 (TLSv1.3:TLS_AES_256_GCM_SHA384:256:NO);
+        Wed, 9 Jun 2021 07:58:46 +0000 (UTC)
+Subject: Re: [PATCH 1/5] can: flexcan: add platform data for ColdFire
+To:     Joakim Zhang <qiangqing.zhang@nxp.com>,
+        "gerg@linux-m68k.org" <gerg@linux-m68k.org>,
+        "wg@grandegger.com" <wg@grandegger.com>,
+        "mkl@pengutronix.de" <mkl@pengutronix.de>
+Cc:     "geert@linux-m68k.org" <geert@linux-m68k.org>,
+        "linux-m68k@vger.kernel.org" <linux-m68k@vger.kernel.org>,
+        "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
+References: <20210608204542.983925-1-angelo@kernel-space.org>
+ <DB8PR04MB6795AC38C4A930DFC5DF1A86E6369@DB8PR04MB6795.eurprd04.prod.outlook.com>
+From:   Angelo Dureghello <angelo@kernel-space.org>
+Message-ID: <ce4f4b47-bccb-582e-5c47-e20cbaa0d5c0@kernel-space.org>
+Date:   Wed, 9 Jun 2021 09:57:58 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.1
+MIME-Version: 1.0
+In-Reply-To: <DB8PR04MB6795AC38C4A930DFC5DF1A86E6369@DB8PR04MB6795.eurprd04.prod.outlook.com>
+Content-Type: text/plain; charset=gbk; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-Add code to support 10 Mbit and 100 Mbit mode for APNE driver.
+Hi Joakim,
 
-A new ISA type ISA_TYPE_AG16 dynamically switches the Amiga
-ISA inb accessor to word access as required by the 100 Mbit cards.
+On 09/06/21 4:05 AM, Joakim Zhang wrote:
+> 
+>> -----Original Message-----
+>> From: Angelo Dureghello <angelo@kernel-space.org>
+>> Sent: 2021Äê6ÔÂ9ÈÕ 4:46
+>> To: gerg@linux-m68k.org; wg@grandegger.com; mkl@pengutronix.de
+>> Cc: geert@linux-m68k.org; linux-m68k@vger.kernel.org;
+>> linux-can@vger.kernel.org; Joakim Zhang <qiangqing.zhang@nxp.com>;
+>> Angelo Dureghello <angelo@kernel-space.org>
+>> Subject: [PATCH 1/5] can: flexcan: add platform data for ColdFire
+>>
+>> Add platform data object for ColdFire architecture.
+>>
+>> Signed-off-by: Angelo Dureghello <angelo@kernel-space.org>
+>> ---
+>>   include/linux/platform_data/flexcan-mcf.h | 27 +++++++++++++++++++++++
+>>   1 file changed, 27 insertions(+)
+>>   create mode 100644 include/linux/platform_data/flexcan-mcf.h
+>>
+>> diff --git a/include/linux/platform_data/flexcan-mcf.h
+>> b/include/linux/platform_data/flexcan-mcf.h
+>> new file mode 100644
+>> index 000000000000..71fe1a9df084
+>> --- /dev/null
+>> +++ b/include/linux/platform_data/flexcan-mcf.h
+> 
+> Should locate CAN header file here? include/linux/can/platform/
+> 
 
-Patch modified after patch "[PATCH RFC net-next] Amiga PCMCIA
-100 MBit card support" submitted to netdev 2018/09/16 by Alex
-Kazik <alex@kazik.de>.
+oh, missed that place, looks like that location is more correct,
+sure, can move the file there.
 
-Signed-off-by: Michael Schmitz <schmitzmic@gmail.com>
+> Best Regards,
+> Joakim Zhang
+>> @@ -0,0 +1,27 @@
+>> +/* SPDX-License-Identifier: GPL-2.0-only */
+>> +/*
+>> + * Flexcan options for ColdFire family
+>> + *
+>> + * Copyright (C) 2021  Angelo Dureghello <angelo@kernel-space.org>
+>> + *
+>> + * This program is free software; you can redistribute it and/or
+>> + * modify it under the terms of the GNU General Public License
+>> + * version 2 as published by the Free Software Foundation.
+>> + *
+>> + * This program is distributed in the hope that it will be useful,
+>> + * but WITHOUT ANY WARRANTY; without even the implied warranty of
+>> + * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+>> + * GNU General Public License for more details.
+>> + */
+>> +
+>> +#ifndef _PLAT_FLEXCAN_MCF_H
+>> +#define _PLAT_FLEXCAN_MCF_H
+>> +
+>> +struct mcf_flexcan_platform_data {
+>> +	int stop_mode;
+>> +	int clk_src;
+>> +	int clock_frequency;
+>> +	bool big_endian;
+>> +};
+>> +
+>> +#endif /* _PLAT_FLEXCAN_MCF_H */
+>> --
+>> 2.31.1
+> 
 
---
-Changes from RFC:
-
-Geert Uytterhoeven:
-- rename ISA_TYPE_AG100 to ISA_TYPE_AG16 (16 bit cards)
-- move ISA_TYPE_AG16 case inside #ifdef CONFIG_AMIGA_PCMCIA
-- change #if defined(CONFIG_APNE_100MBIT) to #ifdef
-- fix parentheses in isa_inb() define
-- omit comment about compiler optimization
-
-- add ISA_TYPE_AG16 case to isa_delay()
----
- arch/m68k/include/asm/io_mm.h | 26 +++++++++++++++++++++++++-
- 1 file changed, 25 insertions(+), 1 deletion(-)
-
-diff --git a/arch/m68k/include/asm/io_mm.h b/arch/m68k/include/asm/io_mm.h
-index 6eae9ec..a965a0e 100644
---- a/arch/m68k/include/asm/io_mm.h
-+++ b/arch/m68k/include/asm/io_mm.h
-@@ -101,6 +101,11 @@
- #define ISA_TYPE_Q40  (1)
- #define ISA_TYPE_AG   (2)
- #define ISA_TYPE_ENEC (3)
-+#define ISA_TYPE_AG16 (4)	/* for 100 MBit APNE card */
-+
-+#if defined(CONFIG_APNE100MBIT)
-+#define MULTI_ISA 1
-+#endif
- 
- #if defined(CONFIG_Q40) && !defined(MULTI_ISA)
- #define ISA_TYPE ISA_TYPE_Q40
-@@ -136,6 +141,9 @@ static inline u8 __iomem *isa_itb(unsigned long addr)
-     case ISA_TYPE_Q40: return (u8 __iomem *)Q40_ISA_IO_B(addr);
- #endif
- #ifdef CONFIG_AMIGA_PCMCIA
-+#ifdef CONFIG_APNE100MBIT
-+    case ISA_TYPE_AG16: fallthrough;
-+#endif
-     case ISA_TYPE_AG: return (u8 __iomem *)AG_ISA_IO_B(addr);
- #endif
- #ifdef CONFIG_ATARI_ROM_ISA
-@@ -155,6 +163,9 @@ static inline u16 __iomem *isa_itw(unsigned long addr)
-     case ISA_TYPE_Q40: return (u16 __iomem *)Q40_ISA_IO_W(addr);
- #endif
- #ifdef CONFIG_AMIGA_PCMCIA
-+#ifdef CONFIG_APNE100MBIT
-+    case ISA_TYPE_AG16: fallthrough;
-+#endif
-     case ISA_TYPE_AG: return (u16 __iomem *)AG_ISA_IO_W(addr);
- #endif
- #ifdef CONFIG_ATARI_ROM_ISA
-@@ -171,6 +182,9 @@ static inline u32 __iomem *isa_itl(unsigned long addr)
-   switch(ISA_TYPE)
-     {
- #ifdef CONFIG_AMIGA_PCMCIA
-+#ifdef CONFIG_APNE100MBIT
-+    case ISA_TYPE_AG16: fallthrough;
-+#endif
-     case ISA_TYPE_AG: return (u32 __iomem *)AG_ISA_IO_W(addr);
- #endif
-     }
-@@ -184,6 +198,9 @@ static inline u8 __iomem *isa_mtb(unsigned long addr)
-     case ISA_TYPE_Q40: return (u8 __iomem *)Q40_ISA_MEM_B(addr);
- #endif
- #ifdef CONFIG_AMIGA_PCMCIA
-+#ifdef CONFIG_APNE100MBIT
-+    case ISA_TYPE_AG16: fallthrough;
-+#endif
-     case ISA_TYPE_AG: return (u8 __iomem *)addr;
- #endif
- #ifdef CONFIG_ATARI_ROM_ISA
-@@ -203,6 +220,9 @@ static inline u16 __iomem *isa_mtw(unsigned long addr)
-     case ISA_TYPE_Q40: return (u16 __iomem *)Q40_ISA_MEM_W(addr);
- #endif
- #ifdef CONFIG_AMIGA_PCMCIA
-+#ifdef CONFIG_APNE100MBIT
-+    case ISA_TYPE_AG16: fallthrough;
-+#endif
-     case ISA_TYPE_AG: return (u16 __iomem *)addr;
- #endif
- #ifdef CONFIG_ATARI_ROM_ISA
-@@ -216,13 +236,14 @@ static inline u16 __iomem *isa_mtw(unsigned long addr)
- }
- 
- 
--#define isa_inb(port)      in_8(isa_itb(port))
- #define isa_inw(port)      (ISA_SEX ? in_be16(isa_itw(port)) : in_le16(isa_itw(port)))
- #define isa_inl(port)      (ISA_SEX ? in_be32(isa_itl(port)) : in_le32(isa_itl(port)))
- #define isa_outb(val,port) out_8(isa_itb(port),(val))
- #define isa_outw(val,port) (ISA_SEX ? out_be16(isa_itw(port),(val)) : out_le16(isa_itw(port),(val)))
- #define isa_outl(val,port) (ISA_SEX ? out_be32(isa_itl(port),(val)) : out_le32(isa_itl(port),(val)))
- 
-+#define isa_inb(port)      ((ISA_TYPE == ISA_TYPE_AG16) ? ((port) & 1 ? isa_inw((port) - 1) & 0xff : isa_inw(port) >> 8) : in_8(isa_itb(port)))
-+
- #define isa_readb(p)       in_8(isa_mtb((unsigned long)(p)))
- #define isa_readw(p)       \
- 	(ISA_SEX ? in_be16(isa_mtw((unsigned long)(p)))	\
-@@ -270,6 +291,9 @@ static inline void isa_delay(void)
-     case ISA_TYPE_Q40: isa_outb(0,0x80); break;
- #endif
- #ifdef CONFIG_AMIGA_PCMCIA
-+#ifdef CONFIG_APNE100MBIT
-+    case ISA_TYPE_AG16: break;
-+#endif
-     case ISA_TYPE_AG: break;
- #endif
- #ifdef CONFIG_ATARI_ROM_ISA
+Regards
 -- 
-2.7.4
-
+Angelo Dureghello
++++ kernelspace +++
++E: angelo AT kernel-space.org
++W: www.kernel-space.org
