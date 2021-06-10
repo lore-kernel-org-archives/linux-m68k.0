@@ -2,107 +2,114 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-10.3 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
+	MENTIONS_GIT_HOSTING,NICE_REPLY_A,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
+	USER_AGENT_SANE_1 autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3481DC48BD1
-	for <linux-m68k@archiver.kernel.org>; Thu, 10 Jun 2021 22:06:11 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5DEBAC48BDF
+	for <linux-m68k@archiver.kernel.org>; Thu, 10 Jun 2021 22:30:30 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 1CCCB613F5
-	for <linux-m68k@archiver.kernel.org>; Thu, 10 Jun 2021 22:06:11 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 32673613DE
+	for <linux-m68k@archiver.kernel.org>; Thu, 10 Jun 2021 22:30:30 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230303AbhFJWIH (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Thu, 10 Jun 2021 18:08:07 -0400
-Received: from mail-lf1-f53.google.com ([209.85.167.53]:39688 "EHLO
-        mail-lf1-f53.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230179AbhFJWIG (ORCPT
+        id S230416AbhFJWc0 (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Thu, 10 Jun 2021 18:32:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39632 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230230AbhFJWcZ (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Thu, 10 Jun 2021 18:08:06 -0400
-Received: by mail-lf1-f53.google.com with SMTP id p17so5535857lfc.6
-        for <linux-m68k@lists.linux-m68k.org>; Thu, 10 Jun 2021 15:05:53 -0700 (PDT)
+        Thu, 10 Jun 2021 18:32:25 -0400
+Received: from mail-pl1-x62b.google.com (mail-pl1-x62b.google.com [IPv6:2607:f8b0:4864:20::62b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 404C8C0617A8
+        for <linux-m68k@lists.linux-m68k.org>; Thu, 10 Jun 2021 15:30:29 -0700 (PDT)
+Received: by mail-pl1-x62b.google.com with SMTP id e7so1804613plj.7
+        for <linux-m68k@lists.linux-m68k.org>; Thu, 10 Jun 2021 15:30:29 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=IH1SveIFJ5wJ6kocsX0s8v3WiB0uqtridXReuF2KUMY=;
-        b=Qzof8FNEW2Ba5XPZGpDfZSR6rdtd6WGsu717h8Er0yjM+Qrz/xmDEYF47olKQxMaDV
-         /WuPvFIxyme1vchmGP1HhMrAqH5OzNDJ6D669STTMCTBS8PPP8U2SeAmmSAiNv3xHWUT
-         sYS5gTDilCKxc+IrHBQDdFNyeZ8axOedobMUc=
+        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=bNl27/chKNf7nJqRZtYWTaY8Wo6h+Jsbjb7Fm98XfjM=;
+        b=jCiCmb87ZtZLGSYlrI52zzxIxynosBucCOjocRFX/sGizfI0ke6pcxMDE2tOp9tCa6
+         CKt1C5YkN09m3JxkQlvkUkVJSWfMU0dHG2NOhImoT3oK9NlOGtPxPkTwoweBizRwq09d
+         mgJ1X35tS2uQtOG/V98/eaKPoriNKeKlp8JLg43wjdPMz+pVNcCAAkz/HDDwhdvMeLFq
+         lhtSdgsIhRC0NcyCnsVMxGmvUwkjEnjfZ/DJm8QscBe8nQvJeyvbUJ8XfweUcriulmsU
+         2xz5sW/N7DUadJtUodY67+Q4szcZMHET3aHRqBtM9bm8XdNZjF/qe2z5DQAR9Gr/xVHC
+         k/aw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=IH1SveIFJ5wJ6kocsX0s8v3WiB0uqtridXReuF2KUMY=;
-        b=rScI6s8Pj6JMKVs/htzkWzVuThqtr46CBCQHZDowtXSKtPPLbMHdv27d5jSYZai9Pa
-         QhUZmmPV54useW5KaVufU0cv2jVe18baFwHRYf0a7QgcVTekF+ztiuWuIMAf4RM5W3Hb
-         i2aEMdWpiQJr/pYXL+9wnV9SMhdpvxASUnPbPboXIfsp0RLoHt2kbLBdd0kzPEYPY/1W
-         5mkdToqNuXGBK8Vwwy4TXBJ2+nFax5nue+KM58zmIOx3vr04CDm2MZAJO9XD8vb1k9Ti
-         Exez5VCkxIOEW6xwt2SGyJMv1R6IuQ2dMZYwOXKQbMbqWg15yDSamwpoOdiwdpZt0LSE
-         O8NA==
-X-Gm-Message-State: AOAM5323PjxyTmPdtRTZHNh01GU0EslwELqXnDYTElzvNi3P7mrrbMn2
-        XzJxL+LZ+xqj33q1jrTkYYRMTZ6D1Ie32ArKtKQ=
-X-Google-Smtp-Source: ABdhPJxewfaxe6F/239nQ77CBHSsOsi6ijzi3nzYzdT1ZhtP1q/+/6LewXwnR1drPgzQi9hDrbADpA==
-X-Received: by 2002:ac2:551d:: with SMTP id j29mr563685lfk.319.1623362692118;
-        Thu, 10 Jun 2021 15:04:52 -0700 (PDT)
-Received: from mail-lf1-f45.google.com (mail-lf1-f45.google.com. [209.85.167.45])
-        by smtp.gmail.com with ESMTPSA id x15sm409438lfa.156.2021.06.10.15.04.49
-        for <linux-m68k@lists.linux-m68k.org>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=bNl27/chKNf7nJqRZtYWTaY8Wo6h+Jsbjb7Fm98XfjM=;
+        b=j0V+WoHQxFLeMLhSeJM7PnAcfzYzbaWoMGU6XQ4QOTrCAJni71INrVylSDTBMzVSI8
+         7ZoX9ykoavtfkTGNsIrYIj8kWAzIjbz7WTVtRfolIOxbwuiwT5EgHkIt7opJWZO+vJdb
+         nqJfj1Wwss4eOk39IZhr6hgtjlYFSdQx4NYgWEEo3V+0b17yaZypd/P9mYdN85qjTvcY
+         OZ8PdMgLoBPyfHf+DfiKUKnLmSe+D3xJEWFusZs0ek2zdgheRr1rc0sW46XvHo81EWnS
+         RAGMJ9BnvaYxx9uiL+xymsZoknbGjwKTiKudMB+Njiav733Dx2S964pZ/vpWIYGN6/rN
+         PFzQ==
+X-Gm-Message-State: AOAM532n8WoXnMWZUgTsMxkzs3qmCHzYmS3HEEZOkW8lMBtRe/ZJ7fSf
+        a7MuD6SoxsciyZyzmz0KItBieA==
+X-Google-Smtp-Source: ABdhPJx9c9j/u3MaSBk3DA1HSUM+hQguDjnwUT3XsYHDbPDwYq2+P04SHbAygYF20BLqKLhu5wgpWw==
+X-Received: by 2002:a17:90a:bf87:: with SMTP id d7mr5616505pjs.118.1623364228440;
+        Thu, 10 Jun 2021 15:30:28 -0700 (PDT)
+Received: from [192.168.4.41] (cpe-72-132-29-68.dc.res.rr.com. [72.132.29.68])
+        by smtp.gmail.com with ESMTPSA id l201sm3234885pfd.183.2021.06.10.15.30.26
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 10 Jun 2021 15:04:50 -0700 (PDT)
-Received: by mail-lf1-f45.google.com with SMTP id r5so5542156lfr.5
-        for <linux-m68k@lists.linux-m68k.org>; Thu, 10 Jun 2021 15:04:49 -0700 (PDT)
-X-Received: by 2002:ac2:43b9:: with SMTP id t25mr578806lfl.253.1623362689248;
- Thu, 10 Jun 2021 15:04:49 -0700 (PDT)
-MIME-Version: 1.0
-References: <87sg1p30a1.fsf@disp2133>
-In-Reply-To: <87sg1p30a1.fsf@disp2133>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Thu, 10 Jun 2021 15:04:33 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wjiBXCZBxLiCG5hxpd0vMkMjiocenponWygG5SCG6DXNw@mail.gmail.com>
-Message-ID: <CAHk-=wjiBXCZBxLiCG5hxpd0vMkMjiocenponWygG5SCG6DXNw@mail.gmail.com>
-Subject: Re: Kernel stack read with PTRACE_EVENT_EXIT and io_uring threads
-To:     "Eric W. Biederman" <ebiederm@xmission.com>
-Cc:     linux-arch <linux-arch@vger.kernel.org>,
-        Jens Axboe <axboe@kernel.dk>, Oleg Nesterov <oleg@redhat.com>,
-        Al Viro <viro@zeniv.linux.org.uk>,
+        Thu, 10 Jun 2021 15:30:27 -0700 (PDT)
+Subject: Re: [PATCH v3 0/2] Use libata platform drivers to replace deprecated
+ m68k IDE drivers
+To:     Finn Thain <fthain@linux-m68k.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Joshua Thompson <funaho@jurai.org>, linux-ide@vger.kernel.org,
         Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Richard Henderson <rth@twiddle.net>,
-        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
-        Matt Turner <mattst88@gmail.com>,
-        alpha <linux-alpha@vger.kernel.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
         linux-m68k <linux-m68k@lists.linux-m68k.org>,
-        Arnd Bergmann <arnd@kernel.org>,
-        Ley Foon Tan <ley.foon.tan@intel.com>,
-        Tejun Heo <tj@kernel.org>,
-        Daniel Jacobowitz <drow@nevyn.them.org>,
-        Kees Cook <keescook@chromium.org>
-Content-Type: text/plain; charset="UTF-8"
+        Richard Zidlicky <rz@linux-m68k.org>,
+        Michael Schmitz <schmitzmic@gmail.com>
+References: <cover.1623287706.git.fthain@linux-m68k.org>
+ <CAMuHMdWLJWBH5uz=PLL7pt2uEHz9uSO2Gh7twCDUTz3NDfhdEQ@mail.gmail.com>
+ <417a2d12-6085-e796-a8a5-605a58f131f@linux-m68k.org>
+From:   Jens Axboe <axboe@kernel.dk>
+Message-ID: <eec9fc3a-f485-b0c8-2502-df899f4fcd71@kernel.dk>
+Date:   Thu, 10 Jun 2021 16:30:32 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
+MIME-Version: 1.0
+In-Reply-To: <417a2d12-6085-e796-a8a5-605a58f131f@linux-m68k.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-On Thu, Jun 10, 2021 at 1:58 PM Eric W. Biederman <ebiederm@xmission.com> wrote:
->
-> The problem is sometimes we read all of the registers from
-> a context where they are not all saved.
+On 6/10/21 1:57 AM, Finn Thain wrote:
+> On Thu, 10 Jun 2021, Geert Uytterhoeven wrote:
+> 
+>> On Thu, Jun 10, 2021 at 3:34 AM Finn Thain <fthain@linux-m68k.org> wrote:
+>>> This patch series allows m68k platforms to switch from deprecated IDE
+>>> drivers to libata drivers.
+>>>
+>>> Changed since v1:
+>>>  - Added reviewed-by and tested-by tags.
+>>>  - Improved commit log.
+>>>
+>>> Changed since v2:
+>>>  - Added #ifdef guards to prevent build failure when CONFIG_ATARI=n.
+>>
+>> Thanks for the update!
+>>
+>> Note that Jens has already applied v2 to block/for-next.
+>> https://git.kernel.org/pub/scm/linux/kernel/git/axboe/linux-block.git/commit/?h=for-next&id=9658506fbf8c1b629ca8a660862bc1ee57400506
+>>
+> 
+> Thanks for the tip. I gather that Jens' tree can't be rebased, so I'll 
+> have to send another patch...
 
-Ouch. Yes. And this is really painful because none of the *normal*
-architectures do this, so it gets absolutely no coverage.
+It's top of tree for that branch, so not a huge issue to rebase it. Just
+did...
 
-> I think at this point we need to say that the architectures that have a
-> do this need to be fixed to at least call do_exit and the kernel
-> function in create_io_thread with the deeper stack.
+-- 
+Jens Axboe
 
-Yeah. We traditionally have that requirement for fork() and friends
-too (vfork/clone), so adding exit and io_uring to do so seems like the
-most straightforward thing.
-
-But I really wish we had some way to test and trigger this so that we
-wouldn't get caught on this before. Something in task_pt_regs() that
-catches "this doesn't actually work" and does a WARN_ON_ONCE() on the
-affected architectures?
-
-               Linus
