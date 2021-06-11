@@ -2,107 +2,272 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-15.3 required=3.0 tests=BAYES_00,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,NICE_REPLY_A,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1
+X-Spam-Status: No, score=-15.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
 	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 74F94C48BD1
-	for <linux-m68k@archiver.kernel.org>; Fri, 11 Jun 2021 12:38:57 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5A823C48BD1
+	for <linux-m68k@archiver.kernel.org>; Fri, 11 Jun 2021 21:09:28 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 526EE613DF
-	for <linux-m68k@archiver.kernel.org>; Fri, 11 Jun 2021 12:38:57 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 3A7BC61285
+	for <linux-m68k@archiver.kernel.org>; Fri, 11 Jun 2021 21:09:28 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230346AbhFKMky (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Fri, 11 Jun 2021 08:40:54 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51122 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230291AbhFKMky (ORCPT <rfc822;linux-m68k@vger.kernel.org>);
-        Fri, 11 Jun 2021 08:40:54 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2219B613DE;
-        Fri, 11 Jun 2021 12:38:54 +0000 (UTC)
-Subject: Re: [PATCH 3/5] m68k: m5441x: add flexcan support
-To:     Angelo Dureghello <angelo@kernel-space.org>, wg@grandegger.com,
-        mkl@pengutronix.de
-Cc:     geert@linux-m68k.org, linux-m68k@vger.kernel.org,
-        linux-can@vger.kernel.org, qiangqing.zhang@nxp.com
-References: <20210608204542.983925-1-angelo@kernel-space.org>
- <20210608204542.983925-3-angelo@kernel-space.org>
- <30aef0c6-e1fb-63ed-5e46-a2bc14e198a2@linux-m68k.org>
- <835a0684-e4ec-00fa-4682-b9d99d3f1c56@kernel-space.org>
-From:   Greg Ungerer <gerg@linux-m68k.org>
-Message-ID: <6fdaadc0-0567-20d9-7077-d6d38453686d@linux-m68k.org>
-Date:   Fri, 11 Jun 2021 22:38:52 +1000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        id S230201AbhFKVL0 (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Fri, 11 Jun 2021 17:11:26 -0400
+Received: from sender4-of-o51.zoho.com ([136.143.188.51]:21197 "EHLO
+        sender4-of-o51.zoho.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230040AbhFKVLZ (ORCPT
+        <rfc822;linux-m68k@lists.linux-m68k.org>);
+        Fri, 11 Jun 2021 17:11:25 -0400
+X-Greylist: delayed 902 seconds by postgrey-1.27 at vger.kernel.org; Fri, 11 Jun 2021 17:11:25 EDT
+ARC-Seal: i=1; a=rsa-sha256; t=1623444841; cv=none; 
+        d=zohomail.com; s=zohoarc; 
+        b=ce8iv3uhoTvb6Q4mp8yAk9ByyP/ztKIi+7b/No/F5R6a8XX6yJLnV1YBkzoUycc7oJWju88UBVC3K0dYBDgPLkQtt0DqzEImhEj/R5z+8wdFbqcETjVaY1Shy9z1laYIr40k6r0T2XaSSC8qDpPn1DMwqrGJiCbn6XQyLCJBeLk=
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=zohomail.com; s=zohoarc; 
+        t=1623444841; h=Content-Type:Cc:Date:From:In-Reply-To:MIME-Version:Message-ID:References:Subject:To; 
+        bh=AoiLwcmX3pbOV819C0Lo7M/WNWjoO/Lazqk1NS5j5f4=; 
+        b=igDgmnMQYOE7OMpajT0d6+VpAk0is3qy1yDPiJ6VaI0g32XYdTLBW4vA2wzLDN0Fr5buSCoBFXJjIDMefERXTBCLx5jD9staWgrZl3S5UIB585+PiTcqJ+66g0aEakFC3AyMhBFBY43YTO9Kxx5kTUKFCto0CGA49vG6REfmPSI=
+ARC-Authentication-Results: i=1; mx.zohomail.com;
+        dkim=pass  header.i=brennan.io;
+        spf=pass  smtp.mailfrom=stephen@brennan.io;
+        dmarc=pass header.from=<stephen@brennan.io>
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; t=1623444841;
+        s=selector01; d=brennan.io; i=stephen@brennan.io;
+        h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:MIME-Version:Content-Type;
+        bh=AoiLwcmX3pbOV819C0Lo7M/WNWjoO/Lazqk1NS5j5f4=;
+        b=VUodxOwwNi8y2ZV9XwmfH/FLB5Dutdvekx3lJ+cc3zMogLBOrgoxpvh0Fn5PgteO
+        DV4rTlIi8PRtIixHgmUQjDjasTJjwPojeggLpOcOcHRdHq3s5PanSnlFopFMJy1H+Ge
+        RNuP8guFfEoTAR0L3QQgAj8N+d01mwEstQBT16Qc=
+Received: from localhost (148.87.23.10 [148.87.23.10]) by mx.zohomail.com
+        with SMTPS id 1623444832045346.08477193904275; Fri, 11 Jun 2021 13:53:52 -0700 (PDT)
+From:   Stephen Brennan <stephen@brennan.io>
+To:     Mike Rapoport <rppt@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>
+Cc:     Arnd Bergmann <arnd@arndb.de>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Matt Turner <mattst88@gmail.com>,
+        Mike Rapoport <rppt@kernel.org>,
+        Mike Rapoport <rppt@linux.ibm.com>,
+        Richard Henderson <rth@twiddle.net>,
+        Vineet Gupta <vgupta@synopsys.com>, kexec@lists.infradead.org,
+        linux-alpha@vger.kernel.org, linux-arch@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-doc@vger.kernel.org,
+        linux-ia64@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org,
+        linux-mm@kvack.org, linux-riscv@lists.infradead.org,
+        linux-s390@vger.kernel.org, linux-sh@vger.kernel.org,
+        linux-snps-arc@lists.infradead.org, linux-xtensa@linux-xtensa.org,
+        linuxppc-dev@lists.ozlabs.org, sparclinux@vger.kernel.org
+Subject: Re: [PATCH v3 5/9] mm: remove CONFIG_DISCONTIGMEM
+In-Reply-To: <20210608091316.3622-6-rppt@kernel.org>
+References: <20210608091316.3622-1-rppt@kernel.org>
+ <20210608091316.3622-6-rppt@kernel.org>
+Date:   Fri, 11 Jun 2021 13:53:48 -0700
+Message-ID: <87r1h886n7.fsf@stepbren-lnx.us.oracle.com>
 MIME-Version: 1.0
-In-Reply-To: <835a0684-e4ec-00fa-4682-b9d99d3f1c56@kernel-space.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ZohoMailClient: External
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-Hi Angelo,
+Mike Rapoport <rppt@kernel.org> writes:
+> From: Mike Rapoport <rppt@linux.ibm.com>
+>
+> There are no architectures that support DISCONTIGMEM left.
+>
+> Remove the configuration option and the dead code it was guarding in the
+> generic memory management code.
+>
+> Signed-off-by: Mike Rapoport <rppt@linux.ibm.com>
+> ---
+>  include/asm-generic/memory_model.h | 37 ++++--------------------------
+>  include/linux/mmzone.h             |  8 ++++---
+>  mm/Kconfig                         | 25 +++-----------------
+>  mm/page_alloc.c                    | 13 -----------
+>  4 files changed, 12 insertions(+), 71 deletions(-)
+>
+> diff --git a/include/asm-generic/memory_model.h b/include/asm-generic/memory_model.h
+> index 7637fb46ba4f..a2c8ed60233a 100644
+> --- a/include/asm-generic/memory_model.h
+> +++ b/include/asm-generic/memory_model.h
+> @@ -6,47 +6,18 @@
+>  
+>  #ifndef __ASSEMBLY__
+>  
+> +/*
+> + * supports 3 memory models.
+> + */
 
-On 10/6/21 5:59 pm, Angelo Dureghello wrote:
-> Hi Greg,
-> 
-> On 09/06/21 3:24 PM, Greg Ungerer wrote:
->> Hi Angelo,
->>
->> On 9/6/21 6:45 am, Angelo Dureghello wrote:
->>> Add flexcan support.
->>>
->>> Signed-off-by: Angelo Dureghello <angelo@kernel-space.org>
->>> ---
->>>   arch/m68k/coldfire/device.c       | 31 +++++++++++++++++++++++++++++++
->>>   arch/m68k/coldfire/m5441x.c       |  8 ++++----
->>>   arch/m68k/include/asm/m5441xsim.h | 19 +++++++++++++++++++
->>>   3 files changed, 54 insertions(+), 4 deletions(-)
->>>
-> 
->>> diff --git a/arch/m68k/coldfire/m5441x.c b/arch/m68k/coldfire/m5441x.c
->>> index 1e5259a652d1..18b152edb69c 100644
->>> --- a/arch/m68k/coldfire/m5441x.c
->>> +++ b/arch/m68k/coldfire/m5441x.c
->>> @@ -18,8 +18,8 @@
->>>   #include <asm/mcfclk.h>
->>>   DEFINE_CLK(0, "flexbus", 2, MCF_CLK);
->>> -DEFINE_CLK(0, "mcfcan.0", 8, MCF_CLK);
->>> -DEFINE_CLK(0, "mcfcan.1", 9, MCF_CLK);
->>> +DEFINE_CLK(0, "flexcan.0", 8, MCF_CLK);
->>> +DEFINE_CLK(0, "flexcan.1", 9, MCF_CLK);
->>>   DEFINE_CLK(0, "imx1-i2c.1", 14, MCF_CLK);
->>
->> Just a heads up, but this will likely conflict with Arnd's clock changes, see:
->>
->>      https://lkml.org/lkml/2021/6/8/774
->>
-> 
-> is this a clock naming issue ? The "mcfcan" is actually
-> not referenced in any driver so naming it "flexcan"
-> shouldn't be an issue.
+This comment could either be updated to reflect 2 memory models, or
+removed entirely.
 
-Yeah, no problem with that. The "mcfcan" name was really just a
-place holder here. Not used previously.
+Thanks,
+Stephen
 
-My comment is more that your patches and Anrd's are touching
-some of the same things. Depending on whose is applied first one
-or the other will need to be updated to reflect the others.
-No big deal, and easy to do in this case.
-
-Regards
-Greg
-
-
-
-> Or i should get and enable "mcfcan" clock from the driver ?
-> 
->> Regards
->> Greg
->>
-> 
-> Thanks,
-> regards,
+>  #if defined(CONFIG_FLATMEM)
+>  
+>  #ifndef ARCH_PFN_OFFSET
+>  #define ARCH_PFN_OFFSET		(0UL)
+>  #endif
+>  
+> -#elif defined(CONFIG_DISCONTIGMEM)
+> -
+> -#ifndef arch_pfn_to_nid
+> -#define arch_pfn_to_nid(pfn)	pfn_to_nid(pfn)
+> -#endif
+> -
+> -#ifndef arch_local_page_offset
+> -#define arch_local_page_offset(pfn, nid)	\
+> -	((pfn) - NODE_DATA(nid)->node_start_pfn)
+> -#endif
+> -
+> -#endif /* CONFIG_DISCONTIGMEM */
+> -
+> -/*
+> - * supports 3 memory models.
+> - */
+> -#if defined(CONFIG_FLATMEM)
+> -
+>  #define __pfn_to_page(pfn)	(mem_map + ((pfn) - ARCH_PFN_OFFSET))
+>  #define __page_to_pfn(page)	((unsigned long)((page) - mem_map) + \
+>  				 ARCH_PFN_OFFSET)
+> -#elif defined(CONFIG_DISCONTIGMEM)
+> -
+> -#define __pfn_to_page(pfn)			\
+> -({	unsigned long __pfn = (pfn);		\
+> -	unsigned long __nid = arch_pfn_to_nid(__pfn);  \
+> -	NODE_DATA(__nid)->node_mem_map + arch_local_page_offset(__pfn, __nid);\
+> -})
+> -
+> -#define __page_to_pfn(pg)						\
+> -({	const struct page *__pg = (pg);					\
+> -	struct pglist_data *__pgdat = NODE_DATA(page_to_nid(__pg));	\
+> -	(unsigned long)(__pg - __pgdat->node_mem_map) +			\
+> -	 __pgdat->node_start_pfn;					\
+> -})
+>  
+>  #elif defined(CONFIG_SPARSEMEM_VMEMMAP)
+>  
+> @@ -70,7 +41,7 @@
+>  	struct mem_section *__sec = __pfn_to_section(__pfn);	\
+>  	__section_mem_map_addr(__sec) + __pfn;		\
+>  })
+> -#endif /* CONFIG_FLATMEM/DISCONTIGMEM/SPARSEMEM */
+> +#endif /* CONFIG_FLATMEM/SPARSEMEM */
+>  
+>  /*
+>   * Convert a physical address to a Page Frame Number and back
+> diff --git a/include/linux/mmzone.h b/include/linux/mmzone.h
+> index 0d53eba1c383..700032e99419 100644
+> --- a/include/linux/mmzone.h
+> +++ b/include/linux/mmzone.h
+> @@ -738,10 +738,12 @@ struct zonelist {
+>  	struct zoneref _zonerefs[MAX_ZONES_PER_ZONELIST + 1];
+>  };
+>  
+> -#ifndef CONFIG_DISCONTIGMEM
+> -/* The array of struct pages - for discontigmem use pgdat->lmem_map */
+> +/*
+> + * The array of struct pages for flatmem.
+> + * It must be declared for SPARSEMEM as well because there are configurations
+> + * that rely on that.
+> + */
+>  extern struct page *mem_map;
+> -#endif
+>  
+>  #ifdef CONFIG_TRANSPARENT_HUGEPAGE
+>  struct deferred_split {
+> diff --git a/mm/Kconfig b/mm/Kconfig
+> index 02d44e3420f5..218b96ccc84a 100644
+> --- a/mm/Kconfig
+> +++ b/mm/Kconfig
+> @@ -19,7 +19,7 @@ choice
+>  
+>  config FLATMEM_MANUAL
+>  	bool "Flat Memory"
+> -	depends on !(ARCH_DISCONTIGMEM_ENABLE || ARCH_SPARSEMEM_ENABLE) || ARCH_FLATMEM_ENABLE
+> +	depends on !ARCH_SPARSEMEM_ENABLE || ARCH_FLATMEM_ENABLE
+>  	help
+>  	  This option is best suited for non-NUMA systems with
+>  	  flat address space. The FLATMEM is the most efficient
+> @@ -32,21 +32,6 @@ config FLATMEM_MANUAL
+>  
+>  	  If unsure, choose this option (Flat Memory) over any other.
+>  
+> -config DISCONTIGMEM_MANUAL
+> -	bool "Discontiguous Memory"
+> -	depends on ARCH_DISCONTIGMEM_ENABLE
+> -	help
+> -	  This option provides enhanced support for discontiguous
+> -	  memory systems, over FLATMEM.  These systems have holes
+> -	  in their physical address spaces, and this option provides
+> -	  more efficient handling of these holes.
+> -
+> -	  Although "Discontiguous Memory" is still used by several
+> -	  architectures, it is considered deprecated in favor of
+> -	  "Sparse Memory".
+> -
+> -	  If unsure, choose "Sparse Memory" over this option.
+> -
+>  config SPARSEMEM_MANUAL
+>  	bool "Sparse Memory"
+>  	depends on ARCH_SPARSEMEM_ENABLE
+> @@ -62,17 +47,13 @@ config SPARSEMEM_MANUAL
+>  
+>  endchoice
+>  
+> -config DISCONTIGMEM
+> -	def_bool y
+> -	depends on (!SELECT_MEMORY_MODEL && ARCH_DISCONTIGMEM_ENABLE) || DISCONTIGMEM_MANUAL
+> -
+>  config SPARSEMEM
+>  	def_bool y
+>  	depends on (!SELECT_MEMORY_MODEL && ARCH_SPARSEMEM_ENABLE) || SPARSEMEM_MANUAL
+>  
+>  config FLATMEM
+>  	def_bool y
+> -	depends on (!DISCONTIGMEM && !SPARSEMEM) || FLATMEM_MANUAL
+> +	depends on !SPARSEMEM || FLATMEM_MANUAL
+>  
+>  config FLAT_NODE_MEM_MAP
+>  	def_bool y
+> @@ -85,7 +66,7 @@ config FLAT_NODE_MEM_MAP
+>  #
+>  config NEED_MULTIPLE_NODES
+>  	def_bool y
+> -	depends on DISCONTIGMEM || NUMA
+> +	depends on NUMA
+>  
+>  #
+>  # SPARSEMEM_EXTREME (which is the default) does some bootmem
+> diff --git a/mm/page_alloc.c b/mm/page_alloc.c
+> index aaa1655cf682..6fc22482eaa8 100644
+> --- a/mm/page_alloc.c
+> +++ b/mm/page_alloc.c
+> @@ -331,20 +331,7 @@ compound_page_dtor * const compound_page_dtors[NR_COMPOUND_DTORS] = {
+>  
+>  int min_free_kbytes = 1024;
+>  int user_min_free_kbytes = -1;
+> -#ifdef CONFIG_DISCONTIGMEM
+> -/*
+> - * DiscontigMem defines memory ranges as separate pg_data_t even if the ranges
+> - * are not on separate NUMA nodes. Functionally this works but with
+> - * watermark_boost_factor, it can reclaim prematurely as the ranges can be
+> - * quite small. By default, do not boost watermarks on discontigmem as in
+> - * many cases very high-order allocations like THP are likely to be
+> - * unsupported and the premature reclaim offsets the advantage of long-term
+> - * fragmentation avoidance.
+> - */
+> -int watermark_boost_factor __read_mostly;
+> -#else
+>  int watermark_boost_factor __read_mostly = 15000;
+> -#endif
+>  int watermark_scale_factor = 10;
+>  
+>  static unsigned long nr_kernel_pages __initdata;
+> -- 
+> 2.28.0
