@@ -2,277 +2,173 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-16.2 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-15.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 6B752C49360
-	for <linux-m68k@archiver.kernel.org>; Sat, 12 Jun 2021 05:43:48 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 29089C48BE8
+	for <linux-m68k@archiver.kernel.org>; Sat, 12 Jun 2021 23:39:33 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 564506128A
-	for <linux-m68k@archiver.kernel.org>; Sat, 12 Jun 2021 05:43:48 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id EEB7361105
+	for <linux-m68k@archiver.kernel.org>; Sat, 12 Jun 2021 23:39:32 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230218AbhFLFpo (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Sat, 12 Jun 2021 01:45:44 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38722 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230141AbhFLFpn (ORCPT <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Sat, 12 Jun 2021 01:45:43 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5410B61019;
-        Sat, 12 Jun 2021 05:43:37 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1623476624;
-        bh=jXSf9kPU6/p3Pl02zFLTjgmsn62vO+wR89LkyYwqjYE=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=jQzBYFAXgxUH9zPpsPc2S9koB6TyWpzCJ1FcyoOFUPs7glHYtJWXiwaYLZbOYr1MD
-         e8dUX72/dMktQcP+MfbQLugr1DigtCWPruv02QxyYGEBDlYcEvhTSF63D1F76zo+eL
-         vOmDN5XDSPdJfrU5UpdF1koBNLPwdNgaB2Yne6m3YDq4mBcFE1Twi6f4e9jRCCYQMf
-         fXFfPo4RoZ3j+NJMVPgoFRy/0IXayxTFHiwh1+yLk0mxoQNt6KiYCSMshhiOPS7yS1
-         6HDTiCLiwW9bME21jEq92F8Esv4cZpDqtMIPSa1vd/42SwMmpCSE4nvcQy4brkpojX
-         7a11xyl6jl4EA==
-Date:   Sat, 12 Jun 2021 08:43:33 +0300
-From:   Mike Rapoport <rppt@kernel.org>
-To:     Stephen Brennan <stephen@brennan.io>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Matt Turner <mattst88@gmail.com>,
-        Mike Rapoport <rppt@linux.ibm.com>,
-        Richard Henderson <rth@twiddle.net>,
-        Vineet Gupta <vgupta@synopsys.com>, kexec@lists.infradead.org,
-        linux-alpha@vger.kernel.org, linux-arch@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-doc@vger.kernel.org,
-        linux-ia64@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org,
-        linux-mm@kvack.org, linux-riscv@lists.infradead.org,
-        linux-s390@vger.kernel.org, linux-sh@vger.kernel.org,
-        linux-snps-arc@lists.infradead.org, linux-xtensa@linux-xtensa.org,
-        linuxppc-dev@lists.ozlabs.org, sparclinux@vger.kernel.org
-Subject: Re: [PATCH v3 5/9] mm: remove CONFIG_DISCONTIGMEM
-Message-ID: <YMRJhezHRZrbrO0Y@kernel.org>
-References: <20210608091316.3622-1-rppt@kernel.org>
- <20210608091316.3622-6-rppt@kernel.org>
- <87r1h886n7.fsf@stepbren-lnx.us.oracle.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <87r1h886n7.fsf@stepbren-lnx.us.oracle.com>
+        id S229753AbhFLXk0 (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Sat, 12 Jun 2021 19:40:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34074 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231479AbhFLXkZ (ORCPT
+        <rfc822;linux-m68k@lists.linux-m68k.org>);
+        Sat, 12 Jun 2021 19:40:25 -0400
+Received: from mail-pj1-x1030.google.com (mail-pj1-x1030.google.com [IPv6:2607:f8b0:4864:20::1030])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9D14EC061574
+        for <linux-m68k@lists.linux-m68k.org>; Sat, 12 Jun 2021 16:38:24 -0700 (PDT)
+Received: by mail-pj1-x1030.google.com with SMTP id h12-20020a17090aa88cb029016400fd8ad8so8037726pjq.3
+        for <linux-m68k@lists.linux-m68k.org>; Sat, 12 Jun 2021 16:38:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references;
+        bh=6DYIKrUXMcsL4MIVy/dc7Q9toGqp4qAGWl+gq54bqdk=;
+        b=N53F1VinuVv0AWyAoc7M3J+1r59cTqMdDJ4f4JVqPQeMdsbm546Tpx6LTzuBd9/gTz
+         L7HxF/MbrHGnrtAwIF/LL/FWQCxLEfRaf1X16VvkC/33S3oHeEtCRz3zgVejelgpmw26
+         pduA5sUg8/2G7hRi5j/J0Zy+pPisYuhVPqfgZbSkkWJ7cMCvZ8ShqWxFTmMHfUrs1RbN
+         o3ZwlAqMIIrRB8XQjLzIrtkX1bVuoK/xm4jhdLlN8r1euWxALcI/jwit0VauIIF/3wC2
+         n9h/zs/A25hWBrMjPk9LFdDXIGNQPxCIoWtVXovWUvy11+e7nXMzNVe4P9o05kzezxp5
+         5hUg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references;
+        bh=6DYIKrUXMcsL4MIVy/dc7Q9toGqp4qAGWl+gq54bqdk=;
+        b=Dm+MPsSr2kXdS4CdNwFfyMdsNc9qwvzIGiF2XYkftfrRYUKP9dDDK9Ty2CfS30P9bc
+         FuzifuYbsjEROHcetIRYCPulaTEo/7djHJzKVvMpMb2qoiyJ7vtcwRT+l+q/Od3sft8j
+         0VOHz8itZ2ulqqt9Mu5iUOlCTfnrgGLdr+7he0GGg6sRuEfMFV35/dlWBa0u8qFXLNf+
+         PpDuhROsHVtUH6lzE0cA9gvKRm/+6mf+10gtROorGBs76hQXtIGXCGs1PcuTEjHK5rfg
+         3eqbYZ1qL3InWuufi/ddt0YcljIY/RHI27uNGnFPa6MO6Ej4hNWDORQzc6SeT7NJNMZN
+         ITWQ==
+X-Gm-Message-State: AOAM530K6mEShQoVNijqndoTh1IQR0Ct6FhFlxnpp01k2k6BrU6uY0Ok
+        HCvjXbQiWK7Svzc+SMVlrQ0=
+X-Google-Smtp-Source: ABdhPJwU4fpMmMl7S0gj2YqbLjrsWqvDhDcG/GGfh6anjev0C45OjP7b3hwW0Kpk2L8MmhLfZcGNmg==
+X-Received: by 2002:a17:90a:17c8:: with SMTP id q66mr16070296pja.154.1623541103926;
+        Sat, 12 Jun 2021 16:38:23 -0700 (PDT)
+Received: from xplor.waratah.dyndns.org (222-152-189-137-fibre.sparkbb.co.nz. [222.152.189.137])
+        by smtp.gmail.com with ESMTPSA id j9sm7876809pjy.25.2021.06.12.16.38.22
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Sat, 12 Jun 2021 16:38:23 -0700 (PDT)
+Received: by xplor.waratah.dyndns.org (Postfix, from userid 1000)
+        id CE17736040F; Sun, 13 Jun 2021 11:38:19 +1200 (NZST)
+From:   Michael Schmitz <schmitzmic@gmail.com>
+To:     geert@linux-m68k.org, linux-arch@vger.kernel.org,
+        linux-m68k@lists.linux-m68k.org
+Cc:     ebiederm@xmission.com, torvalds@linux-foundation.org,
+        schwab@linux-m68k.org, Michael Schmitz <schmitzmic@gmail.com>
+Subject: [PATCH v1] m68k: save extra registers on sys_exit and sys_exit_group syscall entry
+Date:   Sun, 13 Jun 2021 11:38:18 +1200
+Message-Id: <1623541098-6532-1-git-send-email-schmitzmic@gmail.com>
+X-Mailer: git-send-email 2.7.4
+In-Reply-To: <87sg1p30a1.fsf@disp2133>
+References: <87sg1p30a1.fsf@disp2133>
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-On Fri, Jun 11, 2021 at 01:53:48PM -0700, Stephen Brennan wrote:
-> Mike Rapoport <rppt@kernel.org> writes:
-> > From: Mike Rapoport <rppt@linux.ibm.com>
-> >
-> > There are no architectures that support DISCONTIGMEM left.
-> >
-> > Remove the configuration option and the dead code it was guarding in the
-> > generic memory management code.
-> >
-> > Signed-off-by: Mike Rapoport <rppt@linux.ibm.com>
-> > ---
-> >  include/asm-generic/memory_model.h | 37 ++++--------------------------
-> >  include/linux/mmzone.h             |  8 ++++---
-> >  mm/Kconfig                         | 25 +++-----------------
-> >  mm/page_alloc.c                    | 13 -----------
-> >  4 files changed, 12 insertions(+), 71 deletions(-)
-> >
-> > diff --git a/include/asm-generic/memory_model.h b/include/asm-generic/memory_model.h
-> > index 7637fb46ba4f..a2c8ed60233a 100644
-> > --- a/include/asm-generic/memory_model.h
-> > +++ b/include/asm-generic/memory_model.h
-> > @@ -6,47 +6,18 @@
-> >  
-> >  #ifndef __ASSEMBLY__
-> >  
-> > +/*
-> > + * supports 3 memory models.
-> > + */
-> 
-> This comment could either be updated to reflect 2 memory models, or
-> removed entirely.
+do_exit() calls prace_stop() which may require access to all saved
+registers. We only save those registers not preserved by C code
+currently.
 
-I counted SPARSE and SPARSE_VMEMMAP as 2.
+Provide a special syscall entry for exit and exit_group syscalls
+similar to that used by clone and clone3, which have the same
+requirements.
 
-The code below has three clauses: one for FLATMEM, one for SPARSE and one
-for VMEMMAP.
+No fix to io_uring appears to be needed, because m68k copy_thread
+treats kernel threads the same as e.g. alpha does, and copies only
+a subset of registers in that case.
+
+CC: Eric W. Biederman <ebiederm@xmission.com>
+CC: Linus Torvalds <torvalds@linux-foundation.org>
+CC: Andreas Schwab <schwab@linux-m68k.org>
+Signed-off-by: Michael Schmitz <schmitzmic@gmail.com>
+---
+ arch/m68k/kernel/entry.S              | 14 ++++++++++++++
+ arch/m68k/kernel/process.c            | 16 ++++++++++++++++
+ arch/m68k/kernel/syscalls/syscall.tbl |  4 ++--
+ 3 files changed, 32 insertions(+), 2 deletions(-)
+
+diff --git a/arch/m68k/kernel/entry.S b/arch/m68k/kernel/entry.S
+index 9dd76fb..1e067e6 100644
+--- a/arch/m68k/kernel/entry.S
++++ b/arch/m68k/kernel/entry.S
+@@ -76,6 +76,20 @@ ENTRY(__sys_clone3)
+ 	lea	%sp@(28),%sp
+ 	rts
  
-> Thanks,
-> Stephen
-> 
-> >  #if defined(CONFIG_FLATMEM)
-> >  
-> >  #ifndef ARCH_PFN_OFFSET
-> >  #define ARCH_PFN_OFFSET		(0UL)
-> >  #endif
-> >  
-> > -#elif defined(CONFIG_DISCONTIGMEM)
-> > -
-> > -#ifndef arch_pfn_to_nid
-> > -#define arch_pfn_to_nid(pfn)	pfn_to_nid(pfn)
-> > -#endif
-> > -
-> > -#ifndef arch_local_page_offset
-> > -#define arch_local_page_offset(pfn, nid)	\
-> > -	((pfn) - NODE_DATA(nid)->node_start_pfn)
-> > -#endif
-> > -
-> > -#endif /* CONFIG_DISCONTIGMEM */
-> > -
-> > -/*
-> > - * supports 3 memory models.
-> > - */
-> > -#if defined(CONFIG_FLATMEM)
-> > -
-> >  #define __pfn_to_page(pfn)	(mem_map + ((pfn) - ARCH_PFN_OFFSET))
-> >  #define __page_to_pfn(page)	((unsigned long)((page) - mem_map) + \
-> >  				 ARCH_PFN_OFFSET)
-> > -#elif defined(CONFIG_DISCONTIGMEM)
-> > -
-> > -#define __pfn_to_page(pfn)			\
-> > -({	unsigned long __pfn = (pfn);		\
-> > -	unsigned long __nid = arch_pfn_to_nid(__pfn);  \
-> > -	NODE_DATA(__nid)->node_mem_map + arch_local_page_offset(__pfn, __nid);\
-> > -})
-> > -
-> > -#define __page_to_pfn(pg)						\
-> > -({	const struct page *__pg = (pg);					\
-> > -	struct pglist_data *__pgdat = NODE_DATA(page_to_nid(__pg));	\
-> > -	(unsigned long)(__pg - __pgdat->node_mem_map) +			\
-> > -	 __pgdat->node_start_pfn;					\
-> > -})
-> >  
-> >  #elif defined(CONFIG_SPARSEMEM_VMEMMAP)
-> >  
-> > @@ -70,7 +41,7 @@
-> >  	struct mem_section *__sec = __pfn_to_section(__pfn);	\
-> >  	__section_mem_map_addr(__sec) + __pfn;		\
-> >  })
-> > -#endif /* CONFIG_FLATMEM/DISCONTIGMEM/SPARSEMEM */
-> > +#endif /* CONFIG_FLATMEM/SPARSEMEM */
-> >  
-> >  /*
-> >   * Convert a physical address to a Page Frame Number and back
-> > diff --git a/include/linux/mmzone.h b/include/linux/mmzone.h
-> > index 0d53eba1c383..700032e99419 100644
-> > --- a/include/linux/mmzone.h
-> > +++ b/include/linux/mmzone.h
-> > @@ -738,10 +738,12 @@ struct zonelist {
-> >  	struct zoneref _zonerefs[MAX_ZONES_PER_ZONELIST + 1];
-> >  };
-> >  
-> > -#ifndef CONFIG_DISCONTIGMEM
-> > -/* The array of struct pages - for discontigmem use pgdat->lmem_map */
-> > +/*
-> > + * The array of struct pages for flatmem.
-> > + * It must be declared for SPARSEMEM as well because there are configurations
-> > + * that rely on that.
-> > + */
-> >  extern struct page *mem_map;
-> > -#endif
-> >  
-> >  #ifdef CONFIG_TRANSPARENT_HUGEPAGE
-> >  struct deferred_split {
-> > diff --git a/mm/Kconfig b/mm/Kconfig
-> > index 02d44e3420f5..218b96ccc84a 100644
-> > --- a/mm/Kconfig
-> > +++ b/mm/Kconfig
-> > @@ -19,7 +19,7 @@ choice
-> >  
-> >  config FLATMEM_MANUAL
-> >  	bool "Flat Memory"
-> > -	depends on !(ARCH_DISCONTIGMEM_ENABLE || ARCH_SPARSEMEM_ENABLE) || ARCH_FLATMEM_ENABLE
-> > +	depends on !ARCH_SPARSEMEM_ENABLE || ARCH_FLATMEM_ENABLE
-> >  	help
-> >  	  This option is best suited for non-NUMA systems with
-> >  	  flat address space. The FLATMEM is the most efficient
-> > @@ -32,21 +32,6 @@ config FLATMEM_MANUAL
-> >  
-> >  	  If unsure, choose this option (Flat Memory) over any other.
-> >  
-> > -config DISCONTIGMEM_MANUAL
-> > -	bool "Discontiguous Memory"
-> > -	depends on ARCH_DISCONTIGMEM_ENABLE
-> > -	help
-> > -	  This option provides enhanced support for discontiguous
-> > -	  memory systems, over FLATMEM.  These systems have holes
-> > -	  in their physical address spaces, and this option provides
-> > -	  more efficient handling of these holes.
-> > -
-> > -	  Although "Discontiguous Memory" is still used by several
-> > -	  architectures, it is considered deprecated in favor of
-> > -	  "Sparse Memory".
-> > -
-> > -	  If unsure, choose "Sparse Memory" over this option.
-> > -
-> >  config SPARSEMEM_MANUAL
-> >  	bool "Sparse Memory"
-> >  	depends on ARCH_SPARSEMEM_ENABLE
-> > @@ -62,17 +47,13 @@ config SPARSEMEM_MANUAL
-> >  
-> >  endchoice
-> >  
-> > -config DISCONTIGMEM
-> > -	def_bool y
-> > -	depends on (!SELECT_MEMORY_MODEL && ARCH_DISCONTIGMEM_ENABLE) || DISCONTIGMEM_MANUAL
-> > -
-> >  config SPARSEMEM
-> >  	def_bool y
-> >  	depends on (!SELECT_MEMORY_MODEL && ARCH_SPARSEMEM_ENABLE) || SPARSEMEM_MANUAL
-> >  
-> >  config FLATMEM
-> >  	def_bool y
-> > -	depends on (!DISCONTIGMEM && !SPARSEMEM) || FLATMEM_MANUAL
-> > +	depends on !SPARSEMEM || FLATMEM_MANUAL
-> >  
-> >  config FLAT_NODE_MEM_MAP
-> >  	def_bool y
-> > @@ -85,7 +66,7 @@ config FLAT_NODE_MEM_MAP
-> >  #
-> >  config NEED_MULTIPLE_NODES
-> >  	def_bool y
-> > -	depends on DISCONTIGMEM || NUMA
-> > +	depends on NUMA
-> >  
-> >  #
-> >  # SPARSEMEM_EXTREME (which is the default) does some bootmem
-> > diff --git a/mm/page_alloc.c b/mm/page_alloc.c
-> > index aaa1655cf682..6fc22482eaa8 100644
-> > --- a/mm/page_alloc.c
-> > +++ b/mm/page_alloc.c
-> > @@ -331,20 +331,7 @@ compound_page_dtor * const compound_page_dtors[NR_COMPOUND_DTORS] = {
-> >  
-> >  int min_free_kbytes = 1024;
-> >  int user_min_free_kbytes = -1;
-> > -#ifdef CONFIG_DISCONTIGMEM
-> > -/*
-> > - * DiscontigMem defines memory ranges as separate pg_data_t even if the ranges
-> > - * are not on separate NUMA nodes. Functionally this works but with
-> > - * watermark_boost_factor, it can reclaim prematurely as the ranges can be
-> > - * quite small. By default, do not boost watermarks on discontigmem as in
-> > - * many cases very high-order allocations like THP are likely to be
-> > - * unsupported and the premature reclaim offsets the advantage of long-term
-> > - * fragmentation avoidance.
-> > - */
-> > -int watermark_boost_factor __read_mostly;
-> > -#else
-> >  int watermark_boost_factor __read_mostly = 15000;
-> > -#endif
-> >  int watermark_scale_factor = 10;
-> >  
-> >  static unsigned long nr_kernel_pages __initdata;
-> > -- 
-> > 2.28.0
-> 
-> _______________________________________________
-> linux-riscv mailing list
-> linux-riscv@lists.infradead.org
-> http://lists.infradead.org/mailman/listinfo/linux-riscv
-
++ENTRY(__sys_exit)
++	SAVE_SWITCH_STACK
++	pea	%sp@(SWITCH_STACK_SIZE)
++	jbsr	m68k_exit
++	lea	%sp@(28),%sp
++	rts
++
++ENTRY(__sys_exit_group)
++	SAVE_SWITCH_STACK
++	pea	%sp@(SWITCH_STACK_SIZE)
++	jbsr	m68k_exit_group
++	lea	%sp@(28),%sp
++	rts
++
+ ENTRY(sys_sigreturn)
+ 	SAVE_SWITCH_STACK
+ 	movel	%sp,%sp@-		  | switch_stack pointer
+diff --git a/arch/m68k/kernel/process.c b/arch/m68k/kernel/process.c
+index da83cc8..df4e5f1 100644
+--- a/arch/m68k/kernel/process.c
++++ b/arch/m68k/kernel/process.c
+@@ -138,6 +138,22 @@ asmlinkage int m68k_clone3(struct pt_regs *regs)
+ 	return sys_clone3((struct clone_args __user *)regs->d1, regs->d2);
+ }
+ 
++/*
++ * Because extra registers are saved on the stack after the sys_exit()
++ * arguments, this C wrapper extracts them from pt_regs * and then calls the
++ * generic sys_exit() implementation.
++ */
++asmlinkage int m68k_exit(struct pt_regs *regs)
++{
++	return sys_exit(regs->d1);
++}
++
++/* Same for sys_exit_group ... */
++asmlinkage int m68k_exit_group(struct pt_regs *regs)
++{
++	return sys_exit_group(regs->d1);
++}
++
+ int copy_thread(unsigned long clone_flags, unsigned long usp, unsigned long arg,
+ 		struct task_struct *p, unsigned long tls)
+ {
+diff --git a/arch/m68k/kernel/syscalls/syscall.tbl b/arch/m68k/kernel/syscalls/syscall.tbl
+index 0dd019d..3d5b6fbc 100644
+--- a/arch/m68k/kernel/syscalls/syscall.tbl
++++ b/arch/m68k/kernel/syscalls/syscall.tbl
+@@ -8,7 +8,7 @@
+ # The <abi> is always "common" for this file
+ #
+ 0	common	restart_syscall			sys_restart_syscall
+-1	common	exit				sys_exit
++1	common	exit				__sys_exit
+ 2	common	fork				__sys_fork
+ 3	common	read				sys_read
+ 4	common	write				sys_write
+@@ -254,7 +254,7 @@
+ 244	common	io_submit			sys_io_submit
+ 245	common	io_cancel			sys_io_cancel
+ 246	common	fadvise64			sys_fadvise64
+-247	common	exit_group			sys_exit_group
++247	common	exit_group			__sys_exit_group
+ 248	common	lookup_dcookie			sys_lookup_dcookie
+ 249	common	epoll_create			sys_epoll_create
+ 250	common	epoll_ctl			sys_epoll_ctl
 -- 
-Sincerely yours,
-Mike.
+2.7.4
+
