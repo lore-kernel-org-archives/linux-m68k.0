@@ -2,128 +2,186 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-14.4 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,NICE_REPLY_A,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1
-	autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-3.8 required=3.0 tests=BAYES_00,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
+	autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 2C45BC48BDF
-	for <linux-m68k@archiver.kernel.org>; Sun, 13 Jun 2021 21:53:30 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 07AA6C49360
+	for <linux-m68k@archiver.kernel.org>; Sun, 13 Jun 2021 21:55:29 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id EC6AE61357
-	for <linux-m68k@archiver.kernel.org>; Sun, 13 Jun 2021 21:53:29 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id D96EB6108E
+	for <linux-m68k@archiver.kernel.org>; Sun, 13 Jun 2021 21:55:28 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232106AbhFMVz3 (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Sun, 13 Jun 2021 17:55:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37402 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232020AbhFMVz2 (ORCPT
-        <rfc822;linux-m68k@vger.kernel.org>); Sun, 13 Jun 2021 17:55:28 -0400
-Received: from mail-pj1-x1031.google.com (mail-pj1-x1031.google.com [IPv6:2607:f8b0:4864:20::1031])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1457CC061574
-        for <linux-m68k@vger.kernel.org>; Sun, 13 Jun 2021 14:53:09 -0700 (PDT)
-Received: by mail-pj1-x1031.google.com with SMTP id 22-20020a17090a0c16b0290164a5354ad0so8908771pjs.2
-        for <linux-m68k@vger.kernel.org>; Sun, 13 Jun 2021 14:53:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-transfer-encoding:content-language;
-        bh=Mro1VyAxlQkGLtn5uSbOgQ/UW0V9GlQMwFoiLahKSsk=;
-        b=q+uWtC7mS5Xn3+OBf2Wd0aUl8TUvEfJoPQNQI3xM5Ng+i/Yp9zl8BJ7NZYc2Ht++3g
-         65oqLOcvPgZ9kNroARSHgYoDVQMLkI31j4/7ipXBnoy7MWwFNtHzyFn5ePK8rHA2OjxM
-         J7oY7j0CoOiyFXyJ0eDkGcOV5JwlkX6foACRTziBRM4dQNtRjR0B5XdoCxwyPNjKzP6f
-         wqrcAn8Zi0mBtRmWDw9TuMH0Alygdwh9cfgDstC4hNXsZktDV4lGzsjNM2AGzEWbbD3t
-         W340GAchDNWSNo7o4b5dk7HA5+tRjNqEYLcaopfDxO0/zOOzxk02KRd53wJh119bYFKt
-         2SHg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=Mro1VyAxlQkGLtn5uSbOgQ/UW0V9GlQMwFoiLahKSsk=;
-        b=YPiCuOhCwdhbSdmxIdUAom/L6doMkpsaEgHQx625fyF7L+utmQtnU6AJ1c1kQp/Pmb
-         sKc0ZzrhY2wMgZNzkfEUTYdvoArfG+rVIUOLqccFlSPhBM2WAZFvWuJsIwdg8SnfWlt+
-         Qg5CNrF6TYjbtuImj71MxtlO22UvZh9/GcuNRZ5cGRLp61bCMyLWR3cHvHtbFpU5J1xL
-         QGv7xnTquRADhmgywHoC570iQZIsquwh5Or1l5m/QJFxIsYbAmhnSlMTeU5Qk+KBK5/h
-         lsSUsVyN+OQHCAIgV4E9GnKx3XdtgtQleLmZteWNtNrnXCu4rxSpkOuQMSSw0smzsPUL
-         3H2Q==
-X-Gm-Message-State: AOAM532Fi3CqgAGvEh8BS3q1jOPHHKfKuW2A+z3wiJHuMWPbTy8aM1Xd
-        TjP5C3tEr/lMJiwxRPmqwa2IAY30PtY=
-X-Google-Smtp-Source: ABdhPJzoR4w8h1i2yzPqfnqOwH2xL+RxgR0CL3IWXngvc4b3FiCHHsTYrKhWvXUb35h02aKBzjgRCQ==
-X-Received: by 2002:a17:903:2403:b029:ef:9419:b914 with SMTP id e3-20020a1709032403b02900ef9419b914mr13876327plo.59.1623621188524;
-        Sun, 13 Jun 2021 14:53:08 -0700 (PDT)
-Received: from ?IPv6:2001:df0:0:200c:9034:3fbe:cf28:988a? ([2001:df0:0:200c:9034:3fbe:cf28:988a])
-        by smtp.gmail.com with ESMTPSA id a9sm15010504pjm.51.2021.06.13.14.53.06
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 13 Jun 2021 14:53:08 -0700 (PDT)
-Subject: Re: [PATCH RFC 2/2] net/8390: apne.c - add 100 Mbit support to apne.c
- driver
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     Linux/m68k <linux-m68k@vger.kernel.org>,
-        Finn Thain <fthain@linux-m68k.org>, ALeX Kazik <alex@kazik.de>
-References: <20210605060447.GA18461@allandria.com>
- <1622958877-2026-1-git-send-email-schmitzmic@gmail.com>
- <1622958877-2026-3-git-send-email-schmitzmic@gmail.com>
- <CAMuHMdXOnAwrdjnqwWeMGBv8Y+eKk1SQSs+tHnFL9Q89W3gGhQ@mail.gmail.com>
-From:   Michael Schmitz <schmitzmic@gmail.com>
-Message-ID: <fa012986-ccaa-e034-2a42-7beb8df537d3@gmail.com>
-Date:   Mon, 14 Jun 2021 09:53:04 +1200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S232148AbhFMV53 (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Sun, 13 Jun 2021 17:57:29 -0400
+Received: from out02.mta.xmission.com ([166.70.13.232]:41562 "EHLO
+        out02.mta.xmission.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232020AbhFMV50 (ORCPT
+        <rfc822;linux-m68k@lists.linux-m68k.org>);
+        Sun, 13 Jun 2021 17:57:26 -0400
+Received: from in01.mta.xmission.com ([166.70.13.51])
+        by out02.mta.xmission.com with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.93)
+        (envelope-from <ebiederm@xmission.com>)
+        id 1lsY4e-00BfB2-O9; Sun, 13 Jun 2021 15:55:20 -0600
+Received: from ip68-227-160-95.om.om.cox.net ([68.227.160.95] helo=email.xmission.com)
+        by in01.mta.xmission.com with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.93)
+        (envelope-from <ebiederm@xmission.com>)
+        id 1lsY4d-008LUl-KS; Sun, 13 Jun 2021 15:55:20 -0600
+From:   ebiederm@xmission.com (Eric W. Biederman)
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     linux-arch <linux-arch@vger.kernel.org>,
+        Jens Axboe <axboe@kernel.dk>, Oleg Nesterov <oleg@redhat.com>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Richard Henderson <rth@twiddle.net>,
+        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
+        Matt Turner <mattst88@gmail.com>,
+        alpha <linux-alpha@vger.kernel.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        linux-m68k <linux-m68k@lists.linux-m68k.org>,
+        Arnd Bergmann <arnd@kernel.org>,
+        Ley Foon Tan <ley.foon.tan@intel.com>,
+        Tejun Heo <tj@kernel.org>,
+        Daniel Jacobowitz <drow@nevyn.them.org>,
+        Kees Cook <keescook@chromium.org>
+References: <87sg1p30a1.fsf@disp2133>
+        <CAHk-=wjiBXCZBxLiCG5hxpd0vMkMjiocenponWygG5SCG6DXNw@mail.gmail.com>
+        <87pmwsytb3.fsf@disp2133>
+        <CAHk-=wgdO5VwSUFjfF9g=DAQNYmVxzTq73NtdisYErzdZKqDGg@mail.gmail.com>
+Date:   Sun, 13 Jun 2021 16:54:05 -0500
+In-Reply-To: <CAHk-=wgdO5VwSUFjfF9g=DAQNYmVxzTq73NtdisYErzdZKqDGg@mail.gmail.com>
+        (Linus Torvalds's message of "Fri, 11 Jun 2021 16:26:21 -0700")
+Message-ID: <87sg1lwhvm.fsf@disp2133>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
 MIME-Version: 1.0
-In-Reply-To: <CAMuHMdXOnAwrdjnqwWeMGBv8Y+eKk1SQSs+tHnFL9Q89W3gGhQ@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
+Content-Type: text/plain
+X-XM-SPF: eid=1lsY4d-008LUl-KS;;;mid=<87sg1lwhvm.fsf@disp2133>;;;hst=in01.mta.xmission.com;;;ip=68.227.160.95;;;frm=ebiederm@xmission.com;;;spf=neutral
+X-XM-AID: U2FsdGVkX19b5C0aF+plb+/5FAhTXq2CXegUQeVKyl0=
+X-SA-Exim-Connect-IP: 68.227.160.95
+X-SA-Exim-Mail-From: ebiederm@xmission.com
+Subject: Re: Kernel stack read with PTRACE_EVENT_EXIT and io_uring threads
+X-SA-Exim-Version: 4.2.1 (built Sat, 08 Feb 2020 21:53:50 +0000)
+X-SA-Exim-Scanned: Yes (on in01.mta.xmission.com)
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-Hi Geert,
+Linus Torvalds <torvalds@linux-foundation.org> writes:
 
-Alex has been testing the patch for me, but had to resort to hardcoding 
-the kernel option (or isa_type).
-
-How would this option be specified on the kernel command line?
-
-I would have thought apne:apne_100_mbit=1 would set that variable to 1?
-
-There's been other issues with the patch as well, this appears to need a 
-bit more work.
-
-Cheers,
-
-     Michael
-
-On 8/06/21 12:56 am, Geert Uytterhoeven wrote:
-> Hi Michael,
->
-> On Sun, Jun 6, 2021 at 7:54 AM Michael Schmitz <schmitzmic@gmail.com> wrote:
->> Add Kconfig option, module parameter and PCMCIA reset code
->> required to support 100 Mbit PCMCIA ethernet cards on Amiga.
+> On Fri, Jun 11, 2021 at 2:40 PM Eric W. Biederman <ebiederm@xmission.com> wrote:
 >>
->> 10 Mbit and 100 Mbit mode are supported by the same module.
->> A module parameter switches Amiga ISA IO accessors to word
->> access by changing isa_type at runtime. Additional code to
->> reset the PCMCIA hardware is also added to the driver probe.
->>
->> Patch modified after patch "[PATCH RFC net-next] Amiga PCMCIA
->> 100 MBit card support" submitted to netdev 2018/09/16 by Alex
->> Kazik <alex@kazik.de>.
->>
->> Signed-off-by: Michael Schmitz <schmitzmic@gmail.com>
->> --- a/drivers/net/ethernet/8390/apne.c
->> +++ b/drivers/net/ethernet/8390/apne.c
->> @@ -120,6 +120,10 @@ static u32 apne_msg_enable;
->>   module_param_named(msg_enable, apne_msg_enable, uint, 0444);
->>   MODULE_PARM_DESC(msg_enable, "Debug message level (see linux/netdevice.h for bitmap)");
->>
->> +static u32 apne_100_mbit;
->> +module_param_named(apne_100_mbit, uint, 0);
-> error: macro "module_param_named" requires 4 arguments, but only 3 given
+>> Looking at copy_thread it looks like at least on alpha we are dealing
+>> with a structure that defines all of the registers in copy_thread.
 >
-> Gr{oetje,eeting}s,
+> On the target side, yes.
 >
->                          Geert
+> On the _source_ side, the code does
 >
+>         struct pt_regs *regs = current_pt_regs();
+>
+> and that's the part that means that fork() and related functions need
+> to have done that DO_SWITCH_STACK(), so that they have the full
+> register set to be copied.
+>
+> Otherwise it would copy random contents from the source stack.
+>
+> But that
+>
+>         if (unlikely(p->flags & (PF_KTHREAD | PF_IO_WORKER))) {
+>
+> ends up protecting us, and the code never uses that set of source
+> registers for the io worker threads.
+
+The test in copy_thread.  That isn't the case I am worried about.
+
+> So io_uring looks fine on alpha. I didn't check m68k and friends, but
+> I think they have the same thing going.
+
+As I have read through the code more I don't think so.
+
+The code paths I am worried about are:
+
+	ret_from_kernel_thread
+        	io_wqe_worker
+                	get_signal
+                        	do_coredump
+                        	ptrace_stop
+
+	ret_from_kernel_thread
+        	io_sq_thread
+                	get_signal
+                        	do_coredump
+                        	ptrace_stop
+
+
+As I understand the code the new thread created by create_thread
+initially has a full complement of registers, and then is started
+by alpha_switch_to:
+
+	.align	4
+	.globl	alpha_switch_to
+	.type	alpha_switch_to, @function
+	.cfi_startproc
+alpha_switch_to:
+	DO_SWITCH_STACK
+	call_pal PAL_swpctx
+	lda	$8, 0x3fff
+	UNDO_SWITCH_STACK
+	bic	$sp, $8, $8
+	mov	$17, $0
+	ret
+	.cfi_endproc
+	.size	alpha_switch_to, .-alpha_switch_to
+
+
+The alpha_switch_to will remove the extra registers from the stack and
+then call ret which if I understand alpha assembly correctly is
+equivalent to jumping to where $26 points.  Which is
+ret_from_kernel_thread (as setup by copy_thread).
+
+Which leaves ret_from_kernel_thread and everything it calls without
+the extra context saved on the stack.
+
+I am still trying to understand how we get registers populated at a
+fixed offset on the stack during schedule.  As it looks like switch_to
+assumes the stack pointer is in the proper location.
+
+>> It looks like we just need something like this to cover the userspace
+>> side of exit.
+>
+> Looks correct to me. Except I think you could just use "fork_like()"
+> instead of creating a new (and identical) "exit_like()" macro.
+>
+>> > But I really wish we had some way to test and trigger this so that we
+>> > wouldn't get caught on this before. Something in task_pt_regs() that
+>> > catches "this doesn't actually work" and does a WARN_ON_ONCE() on the
+>> > affected architectures?
+>>
+>> I think that would require pushing an extra magic value in SWITCH_STACK
+>> and not just popping it but deliberately changing that value in
+>> UNDO_SWITCH_STACK.  Basically stack canaries.
+>>
+>> I don't see how we could do it in an arch independent way though.
+>
+> No, I think you're right. There's no obvious generic solution to it,
+> and once we look at arch-specific ones we're vback to "just alpha,
+> m68k and nios needs this or cares" and tonce you're there you might as
+> well just fix it.
+>
+> ia64 has soem "fast system call" model with limited registers too, but
+> I think that's limited to just a few very special system calls (ie it
+> does the reverse of what alpha does: alpha does the fast case by
+> default, and then marks fork/vfork/clone as special).
+
+I wonder if the arch specific solution should be to move the registers
+to a fixed location in task_struct (perhaps thread_struct ) so that the
+same patterns can apply across all architectures and we don't get
+surprises at all.
+
+What appears to be unique about alpha, m68k, and nios is that
+space is not always reserved for all of the registers, so we can't
+always count on them being saved after a task switch.
+
+Eric
