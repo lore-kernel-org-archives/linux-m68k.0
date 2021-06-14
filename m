@@ -2,138 +2,189 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.2 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+X-Spam-Status: No, score=-13.2 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,NICE_REPLY_A,SPF_HELO_NONE,
-	SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,NICE_REPLY_A,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3C69AC48BE6
-	for <linux-m68k@archiver.kernel.org>; Mon, 14 Jun 2021 05:03:45 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id DDDAAC48BE6
+	for <linux-m68k@archiver.kernel.org>; Mon, 14 Jun 2021 07:13:36 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 0C93A613C0
-	for <linux-m68k@archiver.kernel.org>; Mon, 14 Jun 2021 05:03:45 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id B8579613BF
+	for <linux-m68k@archiver.kernel.org>; Mon, 14 Jun 2021 07:13:36 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229793AbhFNFFq (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Mon, 14 Jun 2021 01:05:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45156 "EHLO
+        id S232486AbhFNHPh (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Mon, 14 Jun 2021 03:15:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44810 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229596AbhFNFFq (ORCPT
+        with ESMTP id S232096AbhFNHPh (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Mon, 14 Jun 2021 01:05:46 -0400
-Received: from mail-pl1-x630.google.com (mail-pl1-x630.google.com [IPv6:2607:f8b0:4864:20::630])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DB9B7C061574
-        for <linux-m68k@lists.linux-m68k.org>; Sun, 13 Jun 2021 22:03:43 -0700 (PDT)
-Received: by mail-pl1-x630.google.com with SMTP id v11so5905974ply.6
-        for <linux-m68k@lists.linux-m68k.org>; Sun, 13 Jun 2021 22:03:43 -0700 (PDT)
+        Mon, 14 Jun 2021 03:15:37 -0400
+Received: from mail-pl1-x62d.google.com (mail-pl1-x62d.google.com [IPv6:2607:f8b0:4864:20::62d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5005EC061574
+        for <linux-m68k@lists.linux-m68k.org>; Mon, 14 Jun 2021 00:13:19 -0700 (PDT)
+Received: by mail-pl1-x62d.google.com with SMTP id b12so6041018plg.11
+        for <linux-m68k@lists.linux-m68k.org>; Mon, 14 Jun 2021 00:13:19 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=subject:to:references:cc:from:message-id:date:user-agent
          :mime-version:in-reply-to:content-transfer-encoding;
-        bh=/Shcl0CcwcVQvnqm4kjruvfteHB5V70Bgq+EW67+hVs=;
-        b=B5SBMSbjT8JJZ0clP7225Gi2clR3Q4OchlvIiY/CVvOS/s3gFjPf0ybYVRqwbIG/dZ
-         Y8fJHjfu8wY1guNyM/wNNFbHK+cMl/eMbnj3TVjh8v7tBKbjRrt5ivQORq0NjueN9QXa
-         x6x0nPCYp+HfTubRj1wmV4idu6a/kvc2wnsRx5LyQ7CLvBsu7qQIu6s5MRo+cSTHs51z
-         FJRDLeLVosLvWgeGb5rV8piHUEoVvgaZ8PYvVHCrSOExft7bgqRESMuQ+KAxHiCu22A+
-         lSmXN9GdGs/9vgPpg0Md5tu3/RxBd29BWkXJYO1MPH6PcllXlp8hVlnIvMHJQm5foksZ
-         Ue2A==
+        bh=3jXFhgPKKXbdGbAYYh8y51QN2z9+91QTjeVRxCLUbzk=;
+        b=HvxLap28LQqYd0+t3G2EAGzbfp/xd6IJGU4KUojcB4o0oqkNJjligCySKIfj1sOGMm
+         sjkSEs5aIAI2T/IFZI8JKE7PEwe91v4k5h6oFZ8d5djzVan0vWf/ZuUnXGnJkCRmG+w9
+         pjRjvlZTLpxHAzQ18v9OfuNvnAA9raqsAzbro8MBYDUEJSppgBNkxlRpX5w5f0/PtOXM
+         gqQGq3xfFKwqoqJTsvUkahmpiM+t2AnjwWwmt94+L8yXrFuZKMEMf8W5Q9QnNh8AuzkU
+         g94UCHJyXA40e7waxboBobfMQU27yzkAVjHa/MWneoCDIxwemg73iMVmBxLeFbTAShlZ
+         G/sQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:subject:to:references:cc:from:message-id:date
          :user-agent:mime-version:in-reply-to:content-transfer-encoding;
-        bh=/Shcl0CcwcVQvnqm4kjruvfteHB5V70Bgq+EW67+hVs=;
-        b=ZtQmULibSl3j9Dw97YXF9fiWmasWJgPrsBLcb5hLT3x4l+C/5fzYMMV/2t68MH/F77
-         p2GlED6T8DxPmuyuYlQFtTNRR4B7okZ+at/rV1N9wGCHKu6MP/G5z3mt1wkWIJ4QrtuM
-         DSG9ea4CgfaEEWXENSw30EoUGga50J+Ac+lEPVdMFzStz1QOH+BqZmJ5yAbT7Hi2+urV
-         +TPCgxWJyDy8+lEPJjmX45YupenPidC0sZCEaD4nNSpvP58sKVyF87iMkI3TMWQQBnyB
-         776HTNhHh3+5ciDjS9lByLxMSCedbLRXBkL2vufpk4iR5iNospmjjJXHSpvoBc2tEmMM
-         Hg5A==
-X-Gm-Message-State: AOAM531x0VaPoy/FWIXRx4pdHCm9JZyJ26DMD4nRNmufRhS8a4W+ATgG
-        68brYoFS1Wq9E8Q4hSpLQTU=
-X-Google-Smtp-Source: ABdhPJwkPl8QjSwHR1OhgiNQGW21SvV1YCn2jXTQrmZjnukE9TtSBBVhBqVhbHYh9Co4wob1faZfnQ==
-X-Received: by 2002:a17:902:8307:b029:103:c733:e5e0 with SMTP id bd7-20020a1709028307b0290103c733e5e0mr15280288plb.8.1623647023369;
-        Sun, 13 Jun 2021 22:03:43 -0700 (PDT)
+        bh=3jXFhgPKKXbdGbAYYh8y51QN2z9+91QTjeVRxCLUbzk=;
+        b=AdnjdudsXp54z9D3i4narpohdnphHDdTatRv23WJRR3rWZknqhG2nx0ji7/cd7qrQ4
+         0sLI0W2v67l7LqZ3BZGYLumXpz/rJTFHknfo1jjHaeCkrqKwXO8Ex/hkDNXpkmgdrQrg
+         iOW70aMn5IgOlQoWzEe3LJXnLAy5QX2l0UEgmw4Sd24X4bKT8IRYJhKfwAPptWa0Ru+j
+         fG+R1CQHA3NzeIFBpyJ1LtGEAKBTkYD7K9VQd/6AoRkGpl1vlthCFP4PwGuRXpUTpUDw
+         zORoBN/ZxNcNjwkDDoVpQmFwKXJqpiD7pT2RqBzfs3iPw37IHHDLY/zh/wjUjolPuK3o
+         E0AQ==
+X-Gm-Message-State: AOAM531mzRk3JeXaV5M+HEsfBG2DGSFZuuB/ABChMHVtaGAW8QNCJS7z
+        nFJG0fZK/YVVmGqfxpR9w3M=
+X-Google-Smtp-Source: ABdhPJzAbm5jmEkB/z/kVu7aYvPkZAvuMnbRJDalpkChMol+BLJBx/ZvYCISBgxQcQwt++5Dzv9X8w==
+X-Received: by 2002:a17:90a:bf87:: with SMTP id d7mr21854776pjs.118.1623654797963;
+        Mon, 14 Jun 2021 00:13:17 -0700 (PDT)
 Received: from [10.1.1.25] (222-152-189-137-fibre.sparkbb.co.nz. [222.152.189.137])
-        by smtp.gmail.com with ESMTPSA id b5sm5251727pfp.102.2021.06.13.22.03.34
+        by smtp.gmail.com with ESMTPSA id a10sm2245364pgm.60.2021.06.14.00.13.14
         (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Sun, 13 Jun 2021 22:03:42 -0700 (PDT)
-Subject: Re: Kernel stack read with PTRACE_EVENT_EXIT and io_uring threads
-To:     Linus Torvalds <torvalds@linux-foundation.org>,
-        "Eric W. Biederman" <ebiederm@xmission.com>
+        Mon, 14 Jun 2021 00:13:17 -0700 (PDT)
+Subject: Re: [PATCH v1] m68k: save extra registers on sys_exit and
+ sys_exit_group syscall entry
+To:     geert@linux-m68k.org, linux-m68k@lists.linux-m68k.org
 References: <87sg1p30a1.fsf@disp2133>
- <CAHk-=wjiBXCZBxLiCG5hxpd0vMkMjiocenponWygG5SCG6DXNw@mail.gmail.com>
- <87pmwsytb3.fsf@disp2133>
- <CAHk-=wgdO5VwSUFjfF9g=DAQNYmVxzTq73NtdisYErzdZKqDGg@mail.gmail.com>
- <87sg1lwhvm.fsf@disp2133>
- <CAHk-=wgsnMTr0V-0F4FOk30Q1h7CeT8wLvR1MSnjack7EpyWtQ@mail.gmail.com>
- <6e47eff8-d0a4-8390-1222-e975bfbf3a65@gmail.com>
-Cc:     linux-arch <linux-arch@vger.kernel.org>,
-        Jens Axboe <axboe@kernel.dk>, Oleg Nesterov <oleg@redhat.com>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Richard Henderson <rth@twiddle.net>,
-        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
-        Matt Turner <mattst88@gmail.com>,
-        alpha <linux-alpha@vger.kernel.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        linux-m68k <linux-m68k@lists.linux-m68k.org>,
-        Arnd Bergmann <arnd@kernel.org>,
-        Ley Foon Tan <ley.foon.tan@intel.com>,
-        Tejun Heo <tj@kernel.org>, Kees Cook <keescook@chromium.org>
+ <1623541098-6532-1-git-send-email-schmitzmic@gmail.com>
+Cc:     schwab@linux-m68k.org, Kars de Jong <jongk@linux-m68k.org>
 From:   Michael Schmitz <schmitzmic@gmail.com>
-Message-ID: <924ec53c-2fd9-2e1c-bbb1-3fda49809be4@gmail.com>
-Date:   Mon, 14 Jun 2021 17:03:32 +1200
+Message-ID: <eab743c3-7deb-33c3-030b-6686ff1f5e94@gmail.com>
+Date:   Mon, 14 Jun 2021 19:13:12 +1200
 User-Agent: Mozilla/5.0 (X11; Linux ppc; rv:45.0) Gecko/20100101
  Icedove/45.4.0
 MIME-Version: 1.0
-In-Reply-To: <6e47eff8-d0a4-8390-1222-e975bfbf3a65@gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
+In-Reply-To: <1623541098-6532-1-git-send-email-schmitzmic@gmail.com>
+Content-Type: text/plain; charset=iso-8859-15; format=flowed
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-On second thought, I'm not certain what adding another empty stack frame 
-would achieve here.
+Hi Geert,
 
-On m68k, 'frame' already is a new stack frame, for running the new 
-thread in. This new frame does not have any user context at all, and 
-it's explicitly wiped anyway.
+do we need to add
 
-Unless we save all user context on the stack, then push that context to 
-a new save frame, and somehow point get_signal to look there for IO 
-threads (essentially what Eric suggested), I don't see how this could work?
+.globl __sys_exit, __sys_exit_group
 
-I must be missing something.
+(and perhaps __sys_clone3) at the start of entry.S? We have that for 
+__sys_fork, __sys_clone and __sys_vfork.
 
 Cheers,
 
-	Michael Schmitz
+	Michael
 
-Am 14.06.2021 um 14:05 schrieb Michael Schmitz:
->>
->> I wouldn't be surprised if m68k has the exact same thing for the exact
->> same reason, but I didn't check..
+
+Am 13.06.2021 um 11:38 schrieb Michael Schmitz:
+> do_exit() calls prace_stop() which may require access to all saved
+> registers. We only save those registers not preserved by C code
+> currently.
 >
-> m68k is indeed similar, it has:
+> Provide a special syscall entry for exit and exit_group syscalls
+> similar to that used by clone and clone3, which have the same
+> requirements.
 >
->        if (unlikely(p->flags & (PF_KTHREAD | PF_IO_WORKER))) {
->                 /* kernel thread */
->                 memset(frame, 0, sizeof(struct fork_frame));
->                 frame->regs.sr = PS_S;
->                 frame->sw.a3 = usp; /* function */
->                 frame->sw.d7 = arg;
->                 frame->sw.retpc = (unsigned long)ret_from_kernel_thread;
->                 p->thread.usp = 0;
->                 return 0;
->         }
+> No fix to io_uring appears to be needed, because m68k copy_thread
+> treats kernel threads the same as e.g. alpha does, and copies only
+> a subset of registers in that case.
 >
-> so a similar patch should be possible.
+> CC: Eric W. Biederman <ebiederm@xmission.com>
+> CC: Linus Torvalds <torvalds@linux-foundation.org>
+> CC: Andreas Schwab <schwab@linux-m68k.org>
+> Signed-off-by: Michael Schmitz <schmitzmic@gmail.com>
+> ---
+>  arch/m68k/kernel/entry.S              | 14 ++++++++++++++
+>  arch/m68k/kernel/process.c            | 16 ++++++++++++++++
+>  arch/m68k/kernel/syscalls/syscall.tbl |  4 ++--
+>  3 files changed, 32 insertions(+), 2 deletions(-)
 >
-> Cheers,
+> diff --git a/arch/m68k/kernel/entry.S b/arch/m68k/kernel/entry.S
+> index 9dd76fb..1e067e6 100644
+> --- a/arch/m68k/kernel/entry.S
+> +++ b/arch/m68k/kernel/entry.S
+> @@ -76,6 +76,20 @@ ENTRY(__sys_clone3)
+>  	lea	%sp@(28),%sp
+>  	rts
 >
->     Michael
+> +ENTRY(__sys_exit)
+> +	SAVE_SWITCH_STACK
+> +	pea	%sp@(SWITCH_STACK_SIZE)
+> +	jbsr	m68k_exit
+> +	lea	%sp@(28),%sp
+> +	rts
+> +
+> +ENTRY(__sys_exit_group)
+> +	SAVE_SWITCH_STACK
+> +	pea	%sp@(SWITCH_STACK_SIZE)
+> +	jbsr	m68k_exit_group
+> +	lea	%sp@(28),%sp
+> +	rts
+> +
+>  ENTRY(sys_sigreturn)
+>  	SAVE_SWITCH_STACK
+>  	movel	%sp,%sp@-		  | switch_stack pointer
+> diff --git a/arch/m68k/kernel/process.c b/arch/m68k/kernel/process.c
+> index da83cc8..df4e5f1 100644
+> --- a/arch/m68k/kernel/process.c
+> +++ b/arch/m68k/kernel/process.c
+> @@ -138,6 +138,22 @@ asmlinkage int m68k_clone3(struct pt_regs *regs)
+>  	return sys_clone3((struct clone_args __user *)regs->d1, regs->d2);
+>  }
 >
+> +/*
+> + * Because extra registers are saved on the stack after the sys_exit()
+> + * arguments, this C wrapper extracts them from pt_regs * and then calls the
+> + * generic sys_exit() implementation.
+> + */
+> +asmlinkage int m68k_exit(struct pt_regs *regs)
+> +{
+> +	return sys_exit(regs->d1);
+> +}
+> +
+> +/* Same for sys_exit_group ... */
+> +asmlinkage int m68k_exit_group(struct pt_regs *regs)
+> +{
+> +	return sys_exit_group(regs->d1);
+> +}
+> +
+>  int copy_thread(unsigned long clone_flags, unsigned long usp, unsigned long arg,
+>  		struct task_struct *p, unsigned long tls)
+>  {
+> diff --git a/arch/m68k/kernel/syscalls/syscall.tbl b/arch/m68k/kernel/syscalls/syscall.tbl
+> index 0dd019d..3d5b6fbc 100644
+> --- a/arch/m68k/kernel/syscalls/syscall.tbl
+> +++ b/arch/m68k/kernel/syscalls/syscall.tbl
+> @@ -8,7 +8,7 @@
+>  # The <abi> is always "common" for this file
+>  #
+>  0	common	restart_syscall			sys_restart_syscall
+> -1	common	exit				sys_exit
+> +1	common	exit				__sys_exit
+>  2	common	fork				__sys_fork
+>  3	common	read				sys_read
+>  4	common	write				sys_write
+> @@ -254,7 +254,7 @@
+>  244	common	io_submit			sys_io_submit
+>  245	common	io_cancel			sys_io_cancel
+>  246	common	fadvise64			sys_fadvise64
+> -247	common	exit_group			sys_exit_group
+> +247	common	exit_group			__sys_exit_group
+>  248	common	lookup_dcookie			sys_lookup_dcookie
+>  249	common	epoll_create			sys_epoll_create
+>  250	common	epoll_ctl			sys_epoll_ctl
 >
->
->>
->>                    Linus
