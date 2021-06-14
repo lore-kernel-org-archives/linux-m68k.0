@@ -2,106 +2,117 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.2 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,NICE_REPLY_A,SPF_HELO_NONE,
-	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-3.8 required=3.0 tests=BAYES_00,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
+	autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D16B9C48BE6
-	for <linux-m68k@archiver.kernel.org>; Mon, 14 Jun 2021 08:19:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7169FC48BE6
+	for <linux-m68k@archiver.kernel.org>; Mon, 14 Jun 2021 16:27:00 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id B26A361370
-	for <linux-m68k@archiver.kernel.org>; Mon, 14 Jun 2021 08:19:09 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 610366023F
+	for <linux-m68k@archiver.kernel.org>; Mon, 14 Jun 2021 16:27:00 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232659AbhFNIVK (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Mon, 14 Jun 2021 04:21:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59224 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232660AbhFNIVJ (ORCPT
+        id S234604AbhFNQ3B (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Mon, 14 Jun 2021 12:29:01 -0400
+Received: from out01.mta.xmission.com ([166.70.13.231]:51962 "EHLO
+        out01.mta.xmission.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234124AbhFNQ3A (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Mon, 14 Jun 2021 04:21:09 -0400
-Received: from mail-pg1-x531.google.com (mail-pg1-x531.google.com [IPv6:2607:f8b0:4864:20::531])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 69A29C061787
-        for <linux-m68k@lists.linux-m68k.org>; Mon, 14 Jun 2021 01:19:06 -0700 (PDT)
-Received: by mail-pg1-x531.google.com with SMTP id i34so8001474pgl.9
-        for <linux-m68k@lists.linux-m68k.org>; Mon, 14 Jun 2021 01:19:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:references:cc:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-transfer-encoding;
-        bh=t58XiPWs2cfgnBzrbA7PjVd+4FPATUZkL2yIWPsHhJ4=;
-        b=A0/8WmpRugQKAuvoljVxOl2EDgcWq4SiU8Hz4Ewm8SaOAonkTJW0qxZpt180gwF6Yu
-         jqcR7W6XOzmKSmstTMzLVW6z73TRIfm8XZb7UrgC4+RpTP4wX/ZVfNkfUViUstP2T4Cz
-         TxVHwWNQPZPSJnatwpsLOCKUaaH9/KagkeF/P633+6AHDD90o7f1DBiE0wxc1Mr1RgyV
-         BcixCFQYSwZatpRszV7+9O+3qLwDtIDMlQb9mwweEGnO2NJwqdHbWd8TgjD6/Sh/2D3S
-         hHb3PBBi5eyvqfBbusdi/j4Ak1GfCPIGdq1RxTcHOpIyWq0PzZpc0yGcgKpgbu6XxQrl
-         NCcg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:references:cc:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding;
-        bh=t58XiPWs2cfgnBzrbA7PjVd+4FPATUZkL2yIWPsHhJ4=;
-        b=TxTd2z9p3OzBQu2hHZ+mA1ZoQigibNZ5FTfiulSvoLOyis5rM6B/2eqMU/J/P4yYG2
-         AvzHBK1sTq7GbKmwg+Tyn1v4xFidS5qrOBIXDHDJ95Qcfd65j73bjH8raX0GgcRSicMj
-         N27ukTAdolf2fLEk+X1y5fWkcV6DFngGspiimTZSp2/REb4siaTCBtWXb3YmDNoirmpt
-         vcYc5ny2WdGYT7N4NRDFnO1tD7SB5yvkAG0TtvY+fBmU9GD83Jqa7bd3+o1A93Y4caSn
-         w4Poh07FeMJp6y4LUcHbiID3DvPpiFkAiK/C3cBCg5wBh7UO9xizKwB7V+AF8cBIgFkJ
-         SGRw==
-X-Gm-Message-State: AOAM533xoBE4EYNMi16gB3ZdHBYVS6N43aB5666urDxVwvQH/ezoLUnA
-        Uq4IpDo5br7TfKUDBYR2Yjk=
-X-Google-Smtp-Source: ABdhPJwUb1RaOlcDyBk8nbk8iGz87J6sIR47Cjx7rn8EcuBV26G3r+pnXN+DhyY/qTLkmUVk8C4JRg==
-X-Received: by 2002:a63:4a49:: with SMTP id j9mr15929663pgl.234.1623658745832;
-        Mon, 14 Jun 2021 01:19:05 -0700 (PDT)
-Received: from [10.1.1.25] (222-152-189-137-fibre.sparkbb.co.nz. [222.152.189.137])
-        by smtp.gmail.com with ESMTPSA id g8sm12266053pgo.10.2021.06.14.01.19.02
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Mon, 14 Jun 2021 01:19:05 -0700 (PDT)
-Subject: Re: [PATCH v1] m68k: save extra registers on sys_exit and
- sys_exit_group syscall entry
-To:     Andreas Schwab <schwab@linux-m68k.org>
+        Mon, 14 Jun 2021 12:29:00 -0400
+Received: from in02.mta.xmission.com ([166.70.13.52])
+        by out01.mta.xmission.com with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.93)
+        (envelope-from <ebiederm@xmission.com>)
+        id 1lspQM-00E1Ph-7M; Mon, 14 Jun 2021 10:26:54 -0600
+Received: from ip68-227-160-95.om.om.cox.net ([68.227.160.95] helo=email.xmission.com)
+        by in02.mta.xmission.com with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.93)
+        (envelope-from <ebiederm@xmission.com>)
+        id 1lspQL-00Bgki-8b; Mon, 14 Jun 2021 10:26:53 -0600
+From:   ebiederm@xmission.com (Eric W. Biederman)
+To:     Michael Schmitz <schmitzmic@gmail.com>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        linux-arch <linux-arch@vger.kernel.org>,
+        Jens Axboe <axboe@kernel.dk>, Oleg Nesterov <oleg@redhat.com>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Richard Henderson <rth@twiddle.net>,
+        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
+        Matt Turner <mattst88@gmail.com>,
+        alpha <linux-alpha@vger.kernel.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        linux-m68k <linux-m68k@lists.linux-m68k.org>,
+        Arnd Bergmann <arnd@kernel.org>,
+        Ley Foon Tan <ley.foon.tan@intel.com>,
+        Tejun Heo <tj@kernel.org>, Kees Cook <keescook@chromium.org>
+In-Reply-To: <924ec53c-2fd9-2e1c-bbb1-3fda49809be4@gmail.com> (Michael
+        Schmitz's message of "Mon, 14 Jun 2021 17:03:32 +1200")
 References: <87sg1p30a1.fsf@disp2133>
- <1623541098-6532-1-git-send-email-schmitzmic@gmail.com>
- <eab743c3-7deb-33c3-030b-6686ff1f5e94@gmail.com> <87a6nssxln.fsf@igel.home>
-Cc:     geert@linux-m68k.org, linux-m68k@lists.linux-m68k.org,
-        Kars de Jong <jongk@linux-m68k.org>
-From:   Michael Schmitz <schmitzmic@gmail.com>
-Message-ID: <3852c4bc-8256-71e9-4720-85fafd276430@gmail.com>
-Date:   Mon, 14 Jun 2021 20:19:00 +1200
-User-Agent: Mozilla/5.0 (X11; Linux ppc; rv:45.0) Gecko/20100101
- Icedove/45.4.0
+        <CAHk-=wjiBXCZBxLiCG5hxpd0vMkMjiocenponWygG5SCG6DXNw@mail.gmail.com>
+        <87pmwsytb3.fsf@disp2133>
+        <CAHk-=wgdO5VwSUFjfF9g=DAQNYmVxzTq73NtdisYErzdZKqDGg@mail.gmail.com>
+        <87sg1lwhvm.fsf@disp2133>
+        <CAHk-=wgsnMTr0V-0F4FOk30Q1h7CeT8wLvR1MSnjack7EpyWtQ@mail.gmail.com>
+        <6e47eff8-d0a4-8390-1222-e975bfbf3a65@gmail.com>
+        <924ec53c-2fd9-2e1c-bbb1-3fda49809be4@gmail.com>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
+Date:   Mon, 14 Jun 2021 11:26:39 -0500
+Message-ID: <87eed4v2dc.fsf@disp2133>
 MIME-Version: 1.0
-In-Reply-To: <87a6nssxln.fsf@igel.home>
-Content-Type: text/plain; charset=iso-8859-15; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
+X-XM-SPF: eid=1lspQL-00Bgki-8b;;;mid=<87eed4v2dc.fsf@disp2133>;;;hst=in02.mta.xmission.com;;;ip=68.227.160.95;;;frm=ebiederm@xmission.com;;;spf=neutral
+X-XM-AID: U2FsdGVkX1+p8M0GsrdXS5+5TC221baY4cqTIjSrQBA=
+X-SA-Exim-Connect-IP: 68.227.160.95
+X-SA-Exim-Mail-From: ebiederm@xmission.com
+Subject: Re: Kernel stack read with PTRACE_EVENT_EXIT and io_uring threads
+X-SA-Exim-Version: 4.2.1 (built Sat, 08 Feb 2020 21:53:50 +0000)
+X-SA-Exim-Scanned: Yes (on in02.mta.xmission.com)
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-Hi Andreas,
+Michael Schmitz <schmitzmic@gmail.com> writes:
 
-Am 14.06.2021 um 19:40 schrieb Andreas Schwab:
-> On Jun 14 2021, Michael Schmitz wrote:
+> On second thought, I'm not certain what adding another empty stack frame would
+> achieve here.
 >
->> do we need to add
->>
->> .globl __sys_exit, __sys_exit_group
->>
->> (and perhaps __sys_clone3) at the start of entry.S?
+> On m68k, 'frame' already is a new stack frame, for running the new thread
+> in. This new frame does not have any user context at all, and it's explicitly
+> wiped anyway.
 >
-> ENTRY takes care of that.  You wouldn't be able to link without that
-> anyway.
+> Unless we save all user context on the stack, then push that context to a new
+> save frame, and somehow point get_signal to look there for IO threads
+> (essentially what Eric suggested), I don't see how this could work?
+>
+> I must be missing something.
 
-Thanks - I guessed being able to link (and run) the code should be good 
-enough, but I don't try a lot of tool chains...
+It is only designed to work well enough so that ptrace will access
+something well defined when ptrace accesses io_uring tasks.
 
-Cheers,
+The io_uring tasks are special in that they are user process
+threads that never run in userspace.  So as long as everything
+ptrace can read is accessible on that process all is well.
 
-	Michael
+Having stared a bit longer at the code I think the short term
+fix for both of PTRACE_EVENT_EXIT and io_uring is to guard
+them both with CONFIG_HAVE_ARCH_TRACEHOOK.
 
->
->> We have that for __sys_fork, __sys_clone and __sys_vfork.
->
-> Not really needed.
->
-> Andreas.
->
+Today CONFIG_HAVE_ARCH_TRACEHOOK guards access to /proc/self/syscall.
+Which out of necessity ensures that user context is always readable.
+Which seems to solve both the PTRACE_EVENT_EXIT and the io_uring
+problems.
+
+What I especially like about that is there are a lot of other reasons
+to encourage architectures in a CONFIG_HAVE_ARCH_TRACEHOOK direction.
+I think the biggies are getting architectures to store the extra
+saved state on context switch into some place in task_struct
+and to implement the regset view of registers.
+
+Hmm. This is odd. CONFIG_HAVE_ARCH_TRACEHOOK is supposed to imply
+CORE_DUMP_USE_REGSET.  But alpha, csky, h8300, m68k, microblaze, nds32
+don't implement CORE_DUMP_USE_REGSET but nds32 implements
+CONFIG_ARCH_HAVE_TRACEHOOK.
+
+I will keep digging and see what clean code I can come up with.
+
+Eric
