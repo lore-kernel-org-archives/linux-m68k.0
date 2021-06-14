@@ -7,74 +7,84 @@ X-Spam-Status: No, score=-4.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,NICE_REPLY_A,SPF_HELO_NONE,
 	SPF_PASS,USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D5090C48BE6
-	for <linux-m68k@archiver.kernel.org>; Mon, 14 Jun 2021 22:11:16 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 76EB9C2B9F4
+	for <linux-m68k@archiver.kernel.org>; Mon, 14 Jun 2021 22:27:57 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id AA9AE61183
-	for <linux-m68k@archiver.kernel.org>; Mon, 14 Jun 2021 22:11:16 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 3B1F7611AB
+	for <linux-m68k@archiver.kernel.org>; Mon, 14 Jun 2021 22:27:57 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229781AbhFNWNT (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Mon, 14 Jun 2021 18:13:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45052 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229499AbhFNWNS (ORCPT
-        <rfc822;linux-m68k@vger.kernel.org>); Mon, 14 Jun 2021 18:13:18 -0400
-Received: from mail-pj1-x102d.google.com (mail-pj1-x102d.google.com [IPv6:2607:f8b0:4864:20::102d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 18405C061574
-        for <linux-m68k@vger.kernel.org>; Mon, 14 Jun 2021 15:11:07 -0700 (PDT)
-Received: by mail-pj1-x102d.google.com with SMTP id o10-20020a17090aac0ab029016e92770073so955423pjq.5
-        for <linux-m68k@vger.kernel.org>; Mon, 14 Jun 2021 15:11:07 -0700 (PDT)
+        id S230058AbhFNW36 (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Mon, 14 Jun 2021 18:29:58 -0400
+Received: from mail-pj1-f53.google.com ([209.85.216.53]:34369 "EHLO
+        mail-pj1-f53.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229499AbhFNW3z (ORCPT
+        <rfc822;linux-m68k@lists.linux-m68k.org>);
+        Mon, 14 Jun 2021 18:29:55 -0400
+Received: by mail-pj1-f53.google.com with SMTP id g6-20020a17090adac6b029015d1a9a6f1aso688912pjx.1
+        for <linux-m68k@lists.linux-m68k.org>; Mon, 14 Jun 2021 15:27:42 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=subject:to:cc:references:from:message-id:date:user-agent
          :mime-version:in-reply-to:content-transfer-encoding:content-language;
-        bh=jAnoEISI0L2OXGy96apZSthRcMdJs90A0Scf4hR9OWU=;
-        b=vZdSciB4bh4s9msC6E2WbnUdR1Jgz5LJiAGndZe7zs5+YinzmY9eKp+mlJpeGMH9k0
-         z880monRkkOg/hG24PEFEd8LmjOrQYQYbxcBN2qrKeQzrXwZ45oX9alW9bua2M6FHcc0
-         mIqPT+mTM/nIsBIsDuic2+CZl1/1DGWzZFyBuxIdiWXFivC6OKp4pRzPB1RHT7uyFghy
-         ORfMpw5v5BsHbdAS8qEWCba+6ZUwEit/kGOImxB4tsVyWGkSXMakkn3icW4p+/6I9JKd
-         xcFCRlPpyZE01vIex57KRSP0rAlWCPJ1hS1DLEd2hke+KqR1sEOJunTu7FWswnodqg5w
-         t1YQ==
+        bh=2wHRYHn3irCXYL7For+pyhXkLVm13sKB64rDtBd32VI=;
+        b=PqSXodK6N07bLspEMMWcvPzitnStxehhQAiPSELS8T8LHkqJ0thnWFLh49SdacSsY2
+         mwfEWmZE7gfRIKKrAJKzf0VnP2FQu83DYScL0qtL+6yBz6jC1D5neNbKVRIq4KsrpMRl
+         iCPzp1pYJ1cP2aDk2+Dpen5zvQYeeZLZPGYVT6X2hqVbQF+MvERc2iXu6jx6u/pnw5TQ
+         lw22OikSINSCmlJW/cE92LS/dSqsVtBmKWHpdhqov40mrW+SFoZLlAVSRfuerKVbXygy
+         N/bQ7S8MIEF8SQrb/cElur2NuQ7OL7I6/uGHuF/rCCsZ2J/13LS4CUGB5siOxSzSuS12
+         I55Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:subject:to:cc:references:from:message-id:date
          :user-agent:mime-version:in-reply-to:content-transfer-encoding
          :content-language;
-        bh=jAnoEISI0L2OXGy96apZSthRcMdJs90A0Scf4hR9OWU=;
-        b=Vf4tx4FrPhqGU/OovVWxzIKsPENzhfDhMUIs8pgkMeHOzDCvLsOUnQ51YF+DH+Nw+a
-         zyZW4Y+bTw5m8OqBJJ0Efn5wWgTk3xHpui+Ea5fw2qoWv/cA2dCb7aMTElnsF+h82npV
-         T4SImeXCwnOGAQQTSsXAg0WYNVsYu+s3BUrcMb3HvygYuc1OV4aFiMrsjr80JJUGwaSR
-         DO+z8ODpP+6jWVdaHDQEGXfujgBvQfuWJovQP9mDKktpbYQRpClsJFdlUj6ipzlLbDXA
-         TtFEs74/RXffc4FnpOu0aT+sqbXaFg3DbmoYhPcoKZKI7XdClB2JYDNU0yhvMdJdxMGA
-         qcBg==
-X-Gm-Message-State: AOAM530TOTAHn18VWoX7apLThHeqO5WMb+tOJ3NMQu0c2gVv1Nq1fj3c
-        AwYEwUZUYWZPZFsH9kvk4pApH7W0qmZggQ==
-X-Google-Smtp-Source: ABdhPJxz284kbgly9xGyxKcxlv6yUh95MHD3htllr2sWt488c+/C3VmqckKFUKnviwdoPmtpOa88uw==
-X-Received: by 2002:a17:902:b288:b029:111:4a4f:9916 with SMTP id u8-20020a170902b288b02901114a4f9916mr1279694plr.24.1623708666506;
-        Mon, 14 Jun 2021 15:11:06 -0700 (PDT)
+        bh=2wHRYHn3irCXYL7For+pyhXkLVm13sKB64rDtBd32VI=;
+        b=IehKSMRyOtnizIlrsC366ASeTnbre+1V/3P1MwUi1uQrCiksPUwWc2ajkpvvP2QEFe
+         lXYCyGmr9ir1WzEXmcnKtrOsop7LvfKbeI4pRh19qx152LLJsRupka9hsRnIw/bdzjZW
+         3Vfsfu8kcGP0hoWH+QLNf/35uavQpvMWpZhEm8Q+3lzDyYgKT/1y06x8fISuwFSEL2Fu
+         CFJFtsCazt+JZn8o3p1hn4prNTygcHgviJ45fNy3Uov4dirsooITzEunyYirKgeN/vNd
+         n35+yBmxZuK8+tOvFXgmt1+WlVlCi8IXyiXfI0EZfbcmDSM3FvkDMEdLFfrkIMDX2nFO
+         MELg==
+X-Gm-Message-State: AOAM533yuxvGMvZBGZ4LmXba1vSwFnOtAjghRdYXgNiYjVSQIurCVjhC
+        3Y9qwsInUAb9K34VBzdPfbg=
+X-Google-Smtp-Source: ABdhPJygbvcn8zCklBMa7quiEyd7aRA7FuUVFrWXN9QUvOlCU/oXa2HsIJAJXO6Bh4uxWBVrg4utBg==
+X-Received: by 2002:a17:902:8d92:b029:113:91e7:89d6 with SMTP id v18-20020a1709028d92b029011391e789d6mr1282283plo.85.1623709601728;
+        Mon, 14 Jun 2021 15:26:41 -0700 (PDT)
 Received: from ?IPv6:2001:df0:0:200c:108d:81dd:b77d:48cd? ([2001:df0:0:200c:108d:81dd:b77d:48cd])
-        by smtp.gmail.com with ESMTPSA id p24sm13794185pfh.17.2021.06.14.15.11.04
+        by smtp.gmail.com with ESMTPSA id j4sm433096pjv.7.2021.06.14.15.26.35
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 14 Jun 2021 15:11:06 -0700 (PDT)
-Subject: Re: [PATCH] m68k/kernel - wire up syscall_trace_enter/leave for m68k
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
-        Linux/m68k <linux-m68k@vger.kernel.org>,
-        Andreas Schwab <schwab@linux-m68k.org>
-References: <f0c9edc0-e596-c483-b9a6-f67778bd297c@physik.fu-berlin.de>
- <1595823555-11103-1-git-send-email-schmitzmic@gmail.com>
- <CAMuHMdVNqgG_6LSSuzMZekE1q7i_V4YisDJQUsjptLDejNGaRw@mail.gmail.com>
- <855486ab-736a-19ad-35c2-174b5eb59898@gmail.com>
- <CAMuHMdWM0pMetDVKqtBUEHeyiD-_M6VsOQMr9WU4+xm1WdU=_g@mail.gmail.com>
- <0292f4c9-40c1-6469-07f6-91722806216b@gmail.com>
- <CAMuHMdUi=rFjiQRsAsBSAxr668wgxAWCL_xAszW5Fi8dn_SRww@mail.gmail.com>
+        Mon, 14 Jun 2021 15:26:41 -0700 (PDT)
+Subject: Re: Kernel stack read with PTRACE_EVENT_EXIT and io_uring threads
+To:     "Eric W. Biederman" <ebiederm@xmission.com>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        linux-arch <linux-arch@vger.kernel.org>,
+        Jens Axboe <axboe@kernel.dk>, Oleg Nesterov <oleg@redhat.com>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Richard Henderson <rth@twiddle.net>,
+        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
+        Matt Turner <mattst88@gmail.com>,
+        alpha <linux-alpha@vger.kernel.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        linux-m68k <linux-m68k@lists.linux-m68k.org>,
+        Arnd Bergmann <arnd@kernel.org>,
+        Ley Foon Tan <ley.foon.tan@intel.com>,
+        Tejun Heo <tj@kernel.org>, Kees Cook <keescook@chromium.org>
+References: <87sg1p30a1.fsf@disp2133>
+ <CAHk-=wjiBXCZBxLiCG5hxpd0vMkMjiocenponWygG5SCG6DXNw@mail.gmail.com>
+ <87pmwsytb3.fsf@disp2133>
+ <CAHk-=wgdO5VwSUFjfF9g=DAQNYmVxzTq73NtdisYErzdZKqDGg@mail.gmail.com>
+ <87sg1lwhvm.fsf@disp2133>
+ <CAHk-=wgsnMTr0V-0F4FOk30Q1h7CeT8wLvR1MSnjack7EpyWtQ@mail.gmail.com>
+ <6e47eff8-d0a4-8390-1222-e975bfbf3a65@gmail.com>
+ <924ec53c-2fd9-2e1c-bbb1-3fda49809be4@gmail.com> <87eed4v2dc.fsf@disp2133>
 From:   Michael Schmitz <schmitzmic@gmail.com>
-Message-ID: <76e2f396-ec94-2615-4fea-0f33f6564f19@gmail.com>
-Date:   Tue, 15 Jun 2021 10:11:01 +1200
+Message-ID: <5929e116-fa61-b211-342a-c706dcb834ca@gmail.com>
+Date:   Tue, 15 Jun 2021 10:26:33 +1200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <CAMuHMdUi=rFjiQRsAsBSAxr668wgxAWCL_xAszW5Fi8dn_SRww@mail.gmail.com>
+In-Reply-To: <87eed4v2dc.fsf@disp2133>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 8bit
 Content-Language: en-US
@@ -82,42 +92,58 @@ Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-Hi Geert,
+Hi Eric,
 
-working on entry.S recently, I was reminded of this one. It's never been 
-applied, and I can't find a trace of it in my tree.
+On 15/06/21 4:26 am, Eric W. Biederman wrote:
+> Michael Schmitz <schmitzmic@gmail.com> writes:
+>
+>> On second thought, I'm not certain what adding another empty stack frame would
+>> achieve here.
+>>
+>> On m68k, 'frame' already is a new stack frame, for running the new thread
+>> in. This new frame does not have any user context at all, and it's explicitly
+>> wiped anyway.
+>>
+>> Unless we save all user context on the stack, then push that context to a new
+>> save frame, and somehow point get_signal to look there for IO threads
+>> (essentially what Eric suggested), I don't see how this could work?
+>>
+>> I must be missing something.
+> It is only designed to work well enough so that ptrace will access
+> something well defined when ptrace accesses io_uring tasks.
+>
+> The io_uring tasks are special in that they are user process
+> threads that never run in userspace.  So as long as everything
+> ptrace can read is accessible on that process all is well.
+OK, I'm testing a patch that would save extra context in 
+sys_io_uring_setup, which ought to ensure that for m68k.
+> Having stared a bit longer at the code I think the short term
+> fix for both of PTRACE_EVENT_EXIT and io_uring is to guard
+> them both with CONFIG_HAVE_ARCH_TRACEHOOK.
 
-Not sure how far Adrian got with seccomp support testing, so I'm 
-uncertain this is still of interest ...
+Fair enough :-)
 
 Cheers,
 
      Michael
 
-
-On 28/08/20 8:58 pm, Geert Uytterhoeven wrote:
-> Hi Michael,
 >
-> On Thu, Aug 27, 2020 at 9:29 PM Michael Schmitz <schmitzmic@gmail.com> wrote:
->> On 27/08/20 9:19 PM, Geert Uytterhoeven wrote:
->>> On Thu, Aug 27, 2020 at 2:08 AM Michael Schmitz <schmitzmic@gmail.com> wrote:
->>>> On 26/08/20 11:23 PM, Geert Uytterhoeven wrote:
->>>>> As your email subject didn't contain "v3", b4[*] insists on picking up
->>>>> RFC v2, and refuses to pick up the latest version, even when forced
->>>> Argh - I thought that since the first two were tagged 'RFC', I could
->>>> just restart with v1.
->>>>
->>>> Never heard of b4, sorry.
->>> It's the new tool to download patches and patch series, adding
->>> automatically any received *-by tags, and the Link: tag.  Makes my life
->>> easier ;-)
->> I take that as read. Rather you than me :-)
->>
->> Do you want me to resend this as v3? And any preference on the branch
->> test (non-zero, or -1)?
-> No need to resend, unless there will be a v4 ;-)
+> Today CONFIG_HAVE_ARCH_TRACEHOOK guards access to /proc/self/syscall.
+> Which out of necessity ensures that user context is always readable.
+> Which seems to solve both the PTRACE_EVENT_EXIT and the io_uring
+> problems.
 >
-> Gr{oetje,eeting}s,
+> What I especially like about that is there are a lot of other reasons
+> to encourage architectures in a CONFIG_HAVE_ARCH_TRACEHOOK direction.
+> I think the biggies are getting architectures to store the extra
+> saved state on context switch into some place in task_struct
+> and to implement the regset view of registers.
 >
->                          Geert
+> Hmm. This is odd. CONFIG_HAVE_ARCH_TRACEHOOK is supposed to imply
+> CORE_DUMP_USE_REGSET.  But alpha, csky, h8300, m68k, microblaze, nds32
+> don't implement CORE_DUMP_USE_REGSET but nds32 implements
+> CONFIG_ARCH_HAVE_TRACEHOOK.
 >
+> I will keep digging and see what clean code I can come up with.
+>
+> Eric
