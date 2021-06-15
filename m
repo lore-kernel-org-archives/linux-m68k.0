@@ -2,204 +2,121 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.8 required=3.0 tests=BAYES_00,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,
-	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-3.8 required=3.0 tests=BAYES_00,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
+	autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 159DDC48BE5
-	for <linux-m68k@archiver.kernel.org>; Tue, 15 Jun 2021 12:19:49 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 01AFCC48BE5
+	for <linux-m68k@archiver.kernel.org>; Tue, 15 Jun 2021 19:31:59 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id F1F8861462
-	for <linux-m68k@archiver.kernel.org>; Tue, 15 Jun 2021 12:19:48 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id D848D61351
+	for <linux-m68k@archiver.kernel.org>; Tue, 15 Jun 2021 19:31:58 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229986AbhFOMVw (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Tue, 15 Jun 2021 08:21:52 -0400
-Received: from mga11.intel.com ([192.55.52.93]:33311 "EHLO mga11.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229557AbhFOMVw (ORCPT <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Tue, 15 Jun 2021 08:21:52 -0400
-IronPort-SDR: Y0MNb1udiZ276mJ2BRoW0+IWsKoRAtdy4BN+MZUlKw0266cnc4tgG0AxSj3/ZqmHVIkJNj0Eh+
- UwdS8VDqd1dA==
-X-IronPort-AV: E=McAfee;i="6200,9189,10015"; a="202952874"
-X-IronPort-AV: E=Sophos;i="5.83,275,1616482800"; 
-   d="scan'208";a="202952874"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Jun 2021 05:19:46 -0700
-IronPort-SDR: 6vi8wsUPqW0ar6k2ajNI+Lbht+IIfmBeRgG1+OzLD98+Roqrg6MkmpOYxaj+5F7J814K7no5S8
- +6QorCIvh4+A==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.83,275,1616482800"; 
-   d="scan'208";a="451953087"
-Received: from lkp-server01.sh.intel.com (HELO 4aae0cb4f5b5) ([10.239.97.150])
-  by fmsmga008.fm.intel.com with ESMTP; 15 Jun 2021 05:19:45 -0700
-Received: from kbuild by 4aae0cb4f5b5 with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1lt82h-0000PR-G3; Tue, 15 Jun 2021 12:19:43 +0000
-Date:   Tue, 15 Jun 2021 20:18:47 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     linux-m68k@lists.linux-m68k.org
-Subject: [m68k:master] BUILD SUCCESS
- e75a865fa2a36b7adf4ad149d311362333b84c43
-Message-ID: <60c89aa7.cizg3eggMebu3Q/9%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+        id S229965AbhFOTeD (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Tue, 15 Jun 2021 15:34:03 -0400
+Received: from out03.mta.xmission.com ([166.70.13.233]:53420 "EHLO
+        out03.mta.xmission.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229749AbhFOTeC (ORCPT
+        <rfc822;linux-m68k@lists.linux-m68k.org>);
+        Tue, 15 Jun 2021 15:34:02 -0400
+Received: from in02.mta.xmission.com ([166.70.13.52])
+        by out03.mta.xmission.com with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.93)
+        (envelope-from <ebiederm@xmission.com>)
+        id 1ltEmu-007YGd-82; Tue, 15 Jun 2021 13:31:52 -0600
+Received: from ip68-227-160-95.om.om.cox.net ([68.227.160.95] helo=email.xmission.com)
+        by in02.mta.xmission.com with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.93)
+        (envelope-from <ebiederm@xmission.com>)
+        id 1ltEmt-00FC9o-1T; Tue, 15 Jun 2021 13:31:51 -0600
+From:   ebiederm@xmission.com (Eric W. Biederman)
+To:     Michael Schmitz <schmitzmic@gmail.com>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        linux-arch <linux-arch@vger.kernel.org>,
+        Jens Axboe <axboe@kernel.dk>, Oleg Nesterov <oleg@redhat.com>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Richard Henderson <rth@twiddle.net>,
+        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
+        Matt Turner <mattst88@gmail.com>,
+        alpha <linux-alpha@vger.kernel.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        linux-m68k <linux-m68k@lists.linux-m68k.org>,
+        Arnd Bergmann <arnd@kernel.org>,
+        Ley Foon Tan <ley.foon.tan@intel.com>,
+        Tejun Heo <tj@kernel.org>, Kees Cook <keescook@chromium.org>
+In-Reply-To: <5929e116-fa61-b211-342a-c706dcb834ca@gmail.com> (Michael
+        Schmitz's message of "Tue, 15 Jun 2021 10:26:33 +1200")
+References: <87sg1p30a1.fsf@disp2133>
+        <CAHk-=wjiBXCZBxLiCG5hxpd0vMkMjiocenponWygG5SCG6DXNw@mail.gmail.com>
+        <87pmwsytb3.fsf@disp2133>
+        <CAHk-=wgdO5VwSUFjfF9g=DAQNYmVxzTq73NtdisYErzdZKqDGg@mail.gmail.com>
+        <87sg1lwhvm.fsf@disp2133>
+        <CAHk-=wgsnMTr0V-0F4FOk30Q1h7CeT8wLvR1MSnjack7EpyWtQ@mail.gmail.com>
+        <6e47eff8-d0a4-8390-1222-e975bfbf3a65@gmail.com>
+        <924ec53c-2fd9-2e1c-bbb1-3fda49809be4@gmail.com>
+        <87eed4v2dc.fsf@disp2133>
+        <5929e116-fa61-b211-342a-c706dcb834ca@gmail.com>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
+Date:   Tue, 15 Jun 2021 14:30:59 -0500
+Message-ID: <87fsxjorgs.fsf@disp2133>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
+X-XM-SPF: eid=1ltEmt-00FC9o-1T;;;mid=<87fsxjorgs.fsf@disp2133>;;;hst=in02.mta.xmission.com;;;ip=68.227.160.95;;;frm=ebiederm@xmission.com;;;spf=neutral
+X-XM-AID: U2FsdGVkX18kd161ANp8gAbkjGsKS094xb9QyLKgQ0I=
+X-SA-Exim-Connect-IP: 68.227.160.95
+X-SA-Exim-Mail-From: ebiederm@xmission.com
+Subject: Re: Kernel stack read with PTRACE_EVENT_EXIT and io_uring threads
+X-SA-Exim-Version: 4.2.1 (built Sat, 08 Feb 2020 21:53:50 +0000)
+X-SA-Exim-Scanned: Yes (on in02.mta.xmission.com)
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/geert/linux-m68k.git master
-branch HEAD: e75a865fa2a36b7adf4ad149d311362333b84c43  Merge tag 'v5.13-rc6'
+Michael Schmitz <schmitzmic@gmail.com> writes:
 
-elapsed time: 1554m
+> Hi Eric,
+>
+> On 15/06/21 4:26 am, Eric W. Biederman wrote:
+>> Michael Schmitz <schmitzmic@gmail.com> writes:
+>>
+>>> On second thought, I'm not certain what adding another empty stack frame would
+>>> achieve here.
+>>>
+>>> On m68k, 'frame' already is a new stack frame, for running the new thread
+>>> in. This new frame does not have any user context at all, and it's explicitly
+>>> wiped anyway.
+>>>
+>>> Unless we save all user context on the stack, then push that context to a new
+>>> save frame, and somehow point get_signal to look there for IO threads
+>>> (essentially what Eric suggested), I don't see how this could work?
+>>>
+>>> I must be missing something.
+>> It is only designed to work well enough so that ptrace will access
+>> something well defined when ptrace accesses io_uring tasks.
+>>
+>> The io_uring tasks are special in that they are user process
+>> threads that never run in userspace.  So as long as everything
+>> ptrace can read is accessible on that process all is well.
+> OK, I'm testing a patch that would save extra context in sys_io_uring_setup,
+> which ought to ensure that for m68k.
 
-configs tested: 135
-configs skipped: 2
+I had to update ret_from_kernel_thread to pop that state to get Linus's
+change to boot.  Apparently kernel_threads exiting needs to be handled.
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+>> Having stared a bit longer at the code I think the short term
+>> fix for both of PTRACE_EVENT_EXIT and io_uring is to guard
+>> them both with CONFIG_HAVE_ARCH_TRACEHOOK.
 
-gcc tested configs:
-arm                                 defconfig
-arm64                            allyesconfig
-arm64                               defconfig
-arm                              allyesconfig
-arm                              allmodconfig
-arc                              allyesconfig
-sh                          kfr2r09_defconfig
-powerpc                 mpc85xx_cds_defconfig
-arm                        spear3xx_defconfig
-m68k                          hp300_defconfig
-ia64                                defconfig
-powerpc                     tqm8560_defconfig
-mips                        vocore2_defconfig
-mips                         cobalt_defconfig
-mips                        bcm63xx_defconfig
-powerpc                     powernv_defconfig
-powerpc                 mpc832x_mds_defconfig
-arm                         s3c2410_defconfig
-arm                         nhk8815_defconfig
-powerpc                    klondike_defconfig
-csky                             alldefconfig
-powerpc                 mpc837x_mds_defconfig
-arm                       spear13xx_defconfig
-arm                          pxa910_defconfig
-powerpc                 mpc8315_rdb_defconfig
-powerpc                      chrp32_defconfig
-nios2                         10m50_defconfig
-arm                           omap1_defconfig
-csky                                defconfig
-sh                     magicpanelr2_defconfig
-mips                         bigsur_defconfig
-sh                             sh03_defconfig
-powerpc                     taishan_defconfig
-arm                          ixp4xx_defconfig
-mips                        nlm_xlp_defconfig
-mips                      malta_kvm_defconfig
-arm                          pcm027_defconfig
-powerpc                      ppc40x_defconfig
-arm                          simpad_defconfig
-sh                          rsk7201_defconfig
-powerpc                 mpc8272_ads_defconfig
-powerpc                      walnut_defconfig
-m68k                        mvme16x_defconfig
-arm                         mv78xx0_defconfig
-arm                            dove_defconfig
-mips                      maltasmvp_defconfig
-x86_64                            allnoconfig
-ia64                             allmodconfig
-ia64                             allyesconfig
-m68k                             allmodconfig
-m68k                                defconfig
-m68k                             allyesconfig
-nds32                               defconfig
-nios2                            allyesconfig
-alpha                               defconfig
-alpha                            allyesconfig
-nds32                             allnoconfig
-xtensa                           allyesconfig
-h8300                            allyesconfig
-arc                                 defconfig
-sh                               allmodconfig
-nios2                               defconfig
-parisc                              defconfig
-s390                             allyesconfig
-s390                             allmodconfig
-parisc                           allyesconfig
-s390                                defconfig
-i386                             allyesconfig
-sparc                            allyesconfig
-sparc                               defconfig
-i386                                defconfig
-mips                             allyesconfig
-mips                             allmodconfig
-powerpc                          allyesconfig
-powerpc                          allmodconfig
-powerpc                           allnoconfig
-i386                 randconfig-a002-20210613
-i386                 randconfig-a006-20210613
-i386                 randconfig-a001-20210613
-i386                 randconfig-a004-20210613
-i386                 randconfig-a005-20210613
-i386                 randconfig-a003-20210613
-i386                 randconfig-a002-20210614
-i386                 randconfig-a006-20210614
-i386                 randconfig-a004-20210614
-i386                 randconfig-a001-20210614
-i386                 randconfig-a005-20210614
-i386                 randconfig-a003-20210614
-i386                 randconfig-a015-20210613
-i386                 randconfig-a013-20210613
-i386                 randconfig-a016-20210613
-i386                 randconfig-a014-20210613
-i386                 randconfig-a012-20210613
-i386                 randconfig-a011-20210613
-i386                 randconfig-a015-20210614
-i386                 randconfig-a013-20210614
-i386                 randconfig-a016-20210614
-i386                 randconfig-a012-20210614
-i386                 randconfig-a014-20210614
-i386                 randconfig-a011-20210614
-riscv                    nommu_k210_defconfig
-riscv                            allyesconfig
-riscv                    nommu_virt_defconfig
-riscv                             allnoconfig
-riscv                               defconfig
-riscv                          rv32_defconfig
-riscv                            allmodconfig
-um                           x86_64_defconfig
-um                             i386_defconfig
-um                            kunit_defconfig
-x86_64                           allyesconfig
-x86_64                    rhel-8.3-kselftests
-x86_64                              defconfig
-x86_64                               rhel-8.3
-x86_64                      rhel-8.3-kbuiltin
-x86_64                                  kexec
+Which does not work because nios2 which looks susceptible
+sets CONFIG_HAVE_ARCH_TRACEHOOK.
 
-clang tested configs:
-x86_64               randconfig-b001-20210614
-x86_64               randconfig-a001-20210614
-x86_64               randconfig-a004-20210614
-x86_64               randconfig-a002-20210614
-x86_64               randconfig-a003-20210614
-x86_64               randconfig-a006-20210614
-x86_64               randconfig-a005-20210614
-x86_64               randconfig-a015-20210615
-x86_64               randconfig-a011-20210615
-x86_64               randconfig-a012-20210615
-x86_64               randconfig-a014-20210615
-x86_64               randconfig-a016-20210615
-x86_64               randconfig-a013-20210615
-x86_64               randconfig-a015-20210613
-x86_64               randconfig-a011-20210613
-x86_64               randconfig-a014-20210613
-x86_64               randconfig-a012-20210613
-x86_64               randconfig-a013-20210613
-x86_64               randconfig-a016-20210613
+A further look shows that there is also PTRACE_EVENT_EXEC that
+needs to be handled so execve and execveat need to be wrapped
+as well.
 
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+Do you happen to know if there is userspace that will run
+in qemu-system-m68k that can be used for testing?
+
+Eric
+
