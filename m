@@ -2,73 +2,76 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
-	SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-10.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 428E8C48BDF
-	for <linux-m68k@archiver.kernel.org>; Tue, 15 Jun 2021 21:58:35 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 082BEC48BE5
+	for <linux-m68k@archiver.kernel.org>; Tue, 15 Jun 2021 22:03:19 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 14C56611AB
-	for <linux-m68k@archiver.kernel.org>; Tue, 15 Jun 2021 21:58:35 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id C916B611AB
+	for <linux-m68k@archiver.kernel.org>; Tue, 15 Jun 2021 22:03:18 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230402AbhFOWAj (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Tue, 15 Jun 2021 18:00:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56732 "EHLO
+        id S229898AbhFOWFX (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Tue, 15 Jun 2021 18:05:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57788 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230184AbhFOWAh (ORCPT
+        with ESMTP id S229760AbhFOWFW (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Tue, 15 Jun 2021 18:00:37 -0400
-Received: from mail-lj1-x233.google.com (mail-lj1-x233.google.com [IPv6:2a00:1450:4864:20::233])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AAB43C06175F
-        for <linux-m68k@lists.linux-m68k.org>; Tue, 15 Jun 2021 14:58:32 -0700 (PDT)
-Received: by mail-lj1-x233.google.com with SMTP id r16so768011ljk.9
-        for <linux-m68k@lists.linux-m68k.org>; Tue, 15 Jun 2021 14:58:32 -0700 (PDT)
+        Tue, 15 Jun 2021 18:05:22 -0400
+Received: from mail-lj1-x232.google.com (mail-lj1-x232.google.com [IPv6:2a00:1450:4864:20::232])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A9FDC061574
+        for <linux-m68k@lists.linux-m68k.org>; Tue, 15 Jun 2021 15:03:16 -0700 (PDT)
+Received: by mail-lj1-x232.google.com with SMTP id b37so749920ljr.13
+        for <linux-m68k@lists.linux-m68k.org>; Tue, 15 Jun 2021 15:03:16 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linux-foundation.org; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=0l26BC8IhPfrvU9uGo+au3BoxNgDLxCiG8UoyUZG3Ik=;
-        b=TFaqMa9trH0+DcltUOWD9SDg1O0XP/L7I2lYUz0Glh+HYXXZcxcD6sfjwxWfuZY+Ok
-         eLw6VyrExA7gBNmYpfm8IdtmzqFEznbO1gHxDtyivDlT8jzLszkwtH4h94NAyR3n3R/V
-         cMVr5dZELWDG4zkytARwyq6x21dhxpBfi5ra4=
+        bh=hoQkSnA6XRE+cBEiih5+9r6Hum8C///uGbJ9Kw2ELY0=;
+        b=g/G9Q+2q40OzWZg7EFc4fouy9Igftb3L4Bk0mo8X1bGB4ay1i3Hzx7gDAXF7I9BNha
+         YY8Tb63PTEjuFPLmasFyOxKTcxDVfcgS07QY91o7V0JoZ5Vat/JBFwVsnn2A0xh999aU
+         tK9zqa7kM5VekQfnZejDxEUyMFWO9psHM4igQ=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=0l26BC8IhPfrvU9uGo+au3BoxNgDLxCiG8UoyUZG3Ik=;
-        b=qURuwbD8vZLgiXSGo6HSxOWziRM0u+9bFyFnB2ReoznrJjsSMWYt7xu4agILeMoamv
-         DIcm6gIaDbIoCYSblyeosuVLO51LQ8MF8LrgnRlqVBdSX7lleYcB213253FSEK06S2n/
-         58mxDP6j12amR4B54apK963kxYxTHFgIEfzZk905Pl1eKcLk6Sb26IjT7+usB0JS9/ef
-         8FHaLjivXOypCBd1vVxY3rgl17Y9zaMcW+QzLgf/j+iNmFoUhSMnSC37ZVuj5U51ezOX
-         dyWL01R6EpuYF2coHt6Xc7fjLTPh44eQlGKpjeZEK7zhF0gQ0DB/UUDqahHwpvXciE76
-         3cYA==
-X-Gm-Message-State: AOAM533KTiiNLe9apFiOUi9HKcCFQGxutNnrfnyTr0var5kRdI5ZfbCf
-        e6HwjzshlXnKFjySRmN4+K2OFz9OG1AnSK1O
-X-Google-Smtp-Source: ABdhPJwc6hErPv9KdyNJbIWwVlsOHk+fgO8sAzDcaA8fQCnVHwUW2MRBo0obn4o7vSCTLI+sOtEmRw==
-X-Received: by 2002:a2e:a584:: with SMTP id m4mr1580957ljp.64.1623794310636;
-        Tue, 15 Jun 2021 14:58:30 -0700 (PDT)
-Received: from mail-lf1-f52.google.com (mail-lf1-f52.google.com. [209.85.167.52])
-        by smtp.gmail.com with ESMTPSA id 201sm29961lfa.97.2021.06.15.14.58.28
+        bh=hoQkSnA6XRE+cBEiih5+9r6Hum8C///uGbJ9Kw2ELY0=;
+        b=iV+e0OIGDNR1c+1NEPsXFun9tsq3hnmHEXe6hAv0qizqoSizD9obrg/TRBmRuleFFW
+         S6+1f7WZnovLC1gEYpXk1BH+gUJ7vArGkGeIDGEB5DyPjJdWZAkTyudzscSs5K/VP0yD
+         Kmxnw3H/19exZpS397drVzP3QcHh5OZWjYdSZ5/WygfTwooWBRCiWy924EfFAQfan7M+
+         Yq+y0jNtSoVK4cWOR3FN3c1LYYnbGn3WFSmaI9mclwZoL7rgR3/uBkMP4eLcM2krTONz
+         r0NuTYi1io1dU4Bt5Dwk9dbuXbMnEQNad6tG8Y/xGthEI5bxIhcgHTd/Vcgw3SZQwGE1
+         fPZA==
+X-Gm-Message-State: AOAM533/8FmASDVB2KBmiINo8bNmCes55gCjU8xahGrl2UzMlDA5Beqo
+        HtLLthWfCXzPYGFWDpS2qkmvklfbTdGbPy3V
+X-Google-Smtp-Source: ABdhPJzSl95JJnSlAz8Z0pUUdcDI/a/b6M7wook1XLwzyPkDb6BKgptjWGAM/UTDo6N23IWYS/+Dig==
+X-Received: by 2002:a2e:9d43:: with SMTP id y3mr1501893ljj.85.1623794594501;
+        Tue, 15 Jun 2021 15:03:14 -0700 (PDT)
+Received: from mail-lj1-f180.google.com (mail-lj1-f180.google.com. [209.85.208.180])
+        by smtp.gmail.com with ESMTPSA id v19sm31450lfp.92.2021.06.15.15.03.13
         for <linux-m68k@lists.linux-m68k.org>
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 15 Jun 2021 14:58:29 -0700 (PDT)
-Received: by mail-lf1-f52.google.com with SMTP id a1so615346lfr.12
-        for <linux-m68k@lists.linux-m68k.org>; Tue, 15 Jun 2021 14:58:28 -0700 (PDT)
-X-Received: by 2002:ac2:43b9:: with SMTP id t25mr1069877lfl.253.1623794308417;
- Tue, 15 Jun 2021 14:58:28 -0700 (PDT)
+        Tue, 15 Jun 2021 15:03:13 -0700 (PDT)
+Received: by mail-lj1-f180.google.com with SMTP id d2so770169ljj.11
+        for <linux-m68k@lists.linux-m68k.org>; Tue, 15 Jun 2021 15:03:13 -0700 (PDT)
+X-Received: by 2002:a2e:9644:: with SMTP id z4mr1520639ljh.507.1623794593506;
+ Tue, 15 Jun 2021 15:03:13 -0700 (PDT)
 MIME-Version: 1.0
 References: <87sg1p30a1.fsf@disp2133> <CAHk-=wjiBXCZBxLiCG5hxpd0vMkMjiocenponWygG5SCG6DXNw@mail.gmail.com>
  <87pmwsytb3.fsf@disp2133> <CAHk-=wgdO5VwSUFjfF9g=DAQNYmVxzTq73NtdisYErzdZKqDGg@mail.gmail.com>
  <87sg1lwhvm.fsf@disp2133> <CAHk-=wgsnMTr0V-0F4FOk30Q1h7CeT8wLvR1MSnjack7EpyWtQ@mail.gmail.com>
  <6e47eff8-d0a4-8390-1222-e975bfbf3a65@gmail.com> <924ec53c-2fd9-2e1c-bbb1-3fda49809be4@gmail.com>
- <87eed4v2dc.fsf@disp2133> <5929e116-fa61-b211-342a-c706dcb834ca@gmail.com> <87fsxjorgs.fsf@disp2133>
-In-Reply-To: <87fsxjorgs.fsf@disp2133>
+ <87eed4v2dc.fsf@disp2133> <5929e116-fa61-b211-342a-c706dcb834ca@gmail.com>
+ <87fsxjorgs.fsf@disp2133> <87zgvqor7d.fsf_-_@disp2133>
+In-Reply-To: <87zgvqor7d.fsf_-_@disp2133>
 From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Tue, 15 Jun 2021 14:58:12 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wj5cJjpjAmDptmP9u4__6p3Y93SCQHG8Ef4+h=cnLiCsA@mail.gmail.com>
-Message-ID: <CAHk-=wj5cJjpjAmDptmP9u4__6p3Y93SCQHG8Ef4+h=cnLiCsA@mail.gmail.com>
-Subject: Re: Kernel stack read with PTRACE_EVENT_EXIT and io_uring threads
+Date:   Tue, 15 Jun 2021 15:02:57 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wir2P6h+HKtswPEGDh+GKLMM6_h8aovpMcUHyQv2zJ5Og@mail.gmail.com>
+Message-ID: <CAHk-=wir2P6h+HKtswPEGDh+GKLMM6_h8aovpMcUHyQv2zJ5Og@mail.gmail.com>
+Subject: Re: [PATCH] alpha: Add extra switch_stack frames in exit, exec, and
+ kernel threads
 To:     "Eric W. Biederman" <ebiederm@xmission.com>
 Cc:     Michael Schmitz <schmitzmic@gmail.com>,
         linux-arch <linux-arch@vger.kernel.org>,
@@ -89,39 +92,40 @@ Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-On Tue, Jun 15, 2021 at 12:32 PM Eric W. Biederman
+On Tue, Jun 15, 2021 at 12:36 PM Eric W. Biederman
 <ebiederm@xmission.com> wrote:
 >
-> I had to update ret_from_kernel_thread to pop that state to get Linus's
-> change to boot.  Apparently kernel_threads exiting needs to be handled.
+> I looked and there nothing I can do that is not arch specific, so
+> whack the moles with a minimal backportable fix.
+>
+> This change survives boot testing on qemu-system-alpha.
 
-You are very right.
+So as mentioned in the other thread, I think this patch is exactly right.
 
-That, btw, seems to be a horrible design mistake, but I think it's how
-"kernel_execve()" works - both for the initial "init", but also for
-user-mode helper processes.
+However, the need for this part
 
-Both of those cases do "kernel_thread()" to create a new thread, and
-then that new kernel thread does kernel_execve() to create the user
-space image for that thread. And that act of "execve()" clears
-PF_KTHREAD from the thread, and then the final return from the kernel
-thread function returns to that new user space.
+> @@ -785,6 +785,7 @@ ret_from_kernel_thread:
+>         mov     $9, $27
+>         mov     $10, $16
+>         jsr     $26, ($9)
+> +       lda     $sp, SWITCH_STACK_SIZE($sp)
+>         br      $31, ret_to_user
+>  .end ret_from_kernel_thread
 
-Or something like that. It's been ages since I looked at that code,
-and your patch initially confused the heck out of me because I went
-"that can't _possibly_ be needed".
+obviously eluded me in my "how about something like this", and I had
+to really try to figure out why we'd ever return.
 
-But yes, I think your patch is right.
+Which is why I came to that "oooh - kernel_execve()" realization.
 
-And I think our horrible "kernel threads return to user space when
-done" is absolutely horrifically nasty. Maybe of the clever sort, but
-mostly of the historical horror sort.
+It might be good to comment on that somewhere. And if you can think of
+some other case, that should be mentioned too.
 
-Or am I mis-rememberting how this ends up working? Did you look at
-exactly what it was that returned from kernel threads?
+Anyway, thanks for looking into this odd case. And if you have a
+test-case for this all, it really would be a good thing. Yes, it
+should only affect a couple of odd-ball architectures, but still... It
+would also be good to hear that you actually did verify the behavior
+of this patch wrt that ptrace-of-io-worker-threads case..
 
-This might be worth commenting on somewhere. But your patch for alpha
-looks correct to me. Did you have some test-case to verify ptrace() on
-io worker threads?
+           Linus
 
-             Linus
+               Linus
