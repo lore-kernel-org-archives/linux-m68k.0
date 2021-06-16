@@ -2,93 +2,89 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.8 required=3.0 tests=BAYES_00,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-3.8 required=3.0 tests=BAYES_00,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 6C8D8C48BE6
-	for <linux-m68k@archiver.kernel.org>; Wed, 16 Jun 2021 07:28:14 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5D641C48BE5
+	for <linux-m68k@archiver.kernel.org>; Wed, 16 Jun 2021 07:38:35 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 4BC116044F
-	for <linux-m68k@archiver.kernel.org>; Wed, 16 Jun 2021 07:28:14 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 369C56109E
+	for <linux-m68k@archiver.kernel.org>; Wed, 16 Jun 2021 07:38:35 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231741AbhFPHaT (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Wed, 16 Jun 2021 03:30:19 -0400
-Received: from mail-out.m-online.net ([212.18.0.9]:60168 "EHLO
-        mail-out.m-online.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232147AbhFPHaE (ORCPT
-        <rfc822;linux-m68k@vger.kernel.org>); Wed, 16 Jun 2021 03:30:04 -0400
-Received: from frontend01.mail.m-online.net (unknown [192.168.8.182])
-        by mail-out.m-online.net (Postfix) with ESMTP id 4G4cGh43Cwz1qtdr;
-        Wed, 16 Jun 2021 09:27:56 +0200 (CEST)
-Received: from localhost (dynscan1.mnet-online.de [192.168.6.70])
-        by mail.m-online.net (Postfix) with ESMTP id 4G4cGh3Wvsz1qrkN;
-        Wed, 16 Jun 2021 09:27:56 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at mnet-online.de
-Received: from mail.mnet-online.de ([192.168.8.182])
-        by localhost (dynscan1.mail.m-online.net [192.168.6.70]) (amavisd-new, port 10024)
-        with ESMTP id aueOI--L6Cye; Wed, 16 Jun 2021 09:27:55 +0200 (CEST)
-X-Auth-Info: FQo7Zrc3zgu6PXY+W38A3CiE2nsXoc0RzAhe9LEez6L7fyiiMHzzLJr7DK9Uc/pZ
-Received: from igel.home (ppp-46-244-160-108.dynamic.mnet-online.de [46.244.160.108])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.mnet-online.de (Postfix) with ESMTPSA;
-        Wed, 16 Jun 2021 09:27:55 +0200 (CEST)
-Received: by igel.home (Postfix, from userid 1000)
-        id 1F5862C0314; Wed, 16 Jun 2021 09:27:55 +0200 (CEST)
-From:   Andreas Schwab <schwab@linux-m68k.org>
-To:     Michael Schmitz <schmitzmic@gmail.com>
-Cc:     linux-m68k@vger.kernel.org, geert@linux-m68k.org,
-        glaubitz@physik.fu-berlin.de
-Subject: Re: [PATCH v4] m68k/kernel - wire up syscall_trace_enter/leave for
- m68k
-References: <1623804565-25473-1-git-send-email-schmitzmic@gmail.com>
-X-Yow:  I appoint you ambassador to Fantasy Island!!!
-Date:   Wed, 16 Jun 2021 09:27:55 +0200
-In-Reply-To: <1623804565-25473-1-git-send-email-schmitzmic@gmail.com> (Michael
-        Schmitz's message of "Wed, 16 Jun 2021 12:49:25 +1200")
-Message-ID: <87v96es1z8.fsf@igel.home>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/27.2 (gnu/linux)
+        id S231496AbhFPHkj (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Wed, 16 Jun 2021 03:40:39 -0400
+Received: from mail-vk1-f177.google.com ([209.85.221.177]:42522 "EHLO
+        mail-vk1-f177.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231245AbhFPHkj (ORCPT
+        <rfc822;linux-m68k@lists.linux-m68k.org>);
+        Wed, 16 Jun 2021 03:40:39 -0400
+Received: by mail-vk1-f177.google.com with SMTP id h19so407006vkh.9
+        for <linux-m68k@lists.linux-m68k.org>; Wed, 16 Jun 2021 00:38:33 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=oYkI/zG40URv+m/LERapdYdXE8mdGOgDXjJQ7nWdKJQ=;
+        b=RIlWtDALgFLz+jyrXo1YzkCp840vGOnwMMwzTTbWmQdrxqhwJKP909Z6PsFeV+yEo8
+         nO2nQxfX7oQ0Yjwz+ksYHQMQIlkkMC8asKZMNUnT6HE7qeEnGJcGlqKczBVbAxfEjriH
+         bV9GOQ2AqbWmhHmBg0z/nLA5nrSTzbkpvkjIsEFWss0xn56FsB+PkW6EB2YghtytQ/Xc
+         8yIZa7MVc+wMPjoG0qE+TunuoRbE7fiBd4xvjQEhbstO/aRk08IH6NaUc/27al2laMsr
+         oOMPwXPioPui9LFBKI1CCqdxUtY7nj5+A9Jag+mUWUYKu5NW5O11y2M5Tf2qhN48vRon
+         VdBg==
+X-Gm-Message-State: AOAM533JWjboJ0b42vicLEP3o+rmKdRulO56ov+WllPxkjuRWTBKciTn
+        hHvvi/jDTFWA23OBycCEMUN/V0ydw4TvS9/f2fg=
+X-Google-Smtp-Source: ABdhPJzufbJykYOmxZN0p1SAxGmJWo5X7VotLxBsWJYFnoUcAIbLyiwJ2blqdHa1Jr10POv3l3B1Oi8N3GGoHXROasQ=
+X-Received: by 2002:a1f:9505:: with SMTP id x5mr8101727vkd.6.1623829113459;
+ Wed, 16 Jun 2021 00:38:33 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
+References: <87sg1p30a1.fsf@disp2133> <CAHk-=wjiBXCZBxLiCG5hxpd0vMkMjiocenponWygG5SCG6DXNw@mail.gmail.com>
+ <87pmwsytb3.fsf@disp2133> <CAHk-=wgdO5VwSUFjfF9g=DAQNYmVxzTq73NtdisYErzdZKqDGg@mail.gmail.com>
+ <87sg1lwhvm.fsf@disp2133> <CAHk-=wgsnMTr0V-0F4FOk30Q1h7CeT8wLvR1MSnjack7EpyWtQ@mail.gmail.com>
+ <6e47eff8-d0a4-8390-1222-e975bfbf3a65@gmail.com> <924ec53c-2fd9-2e1c-bbb1-3fda49809be4@gmail.com>
+ <87eed4v2dc.fsf@disp2133> <5929e116-fa61-b211-342a-c706dcb834ca@gmail.com> <87fsxjorgs.fsf@disp2133>
+In-Reply-To: <87fsxjorgs.fsf@disp2133>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Wed, 16 Jun 2021 09:38:22 +0200
+Message-ID: <CAMuHMdUkhbq+tOyrpyd5hKGGcpYduBnbnXKFBwEfCGjw5XGYVA@mail.gmail.com>
+Subject: Re: Kernel stack read with PTRACE_EVENT_EXIT and io_uring threads
+To:     "Eric W. Biederman" <ebiederm@xmission.com>
+Cc:     Michael Schmitz <schmitzmic@gmail.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        linux-arch <linux-arch@vger.kernel.org>,
+        Jens Axboe <axboe@kernel.dk>, Oleg Nesterov <oleg@redhat.com>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Richard Henderson <rth@twiddle.net>,
+        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
+        Matt Turner <mattst88@gmail.com>,
+        alpha <linux-alpha@vger.kernel.org>,
+        linux-m68k <linux-m68k@lists.linux-m68k.org>,
+        Arnd Bergmann <arnd@kernel.org>,
+        Ley Foon Tan <ley.foon.tan@intel.com>,
+        Tejun Heo <tj@kernel.org>, Kees Cook <keescook@chromium.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-On Jun 16 2021, Michael Schmitz wrote:
+Hi Eric,
 
-> m68k (other than Coldfire) uses syscall_trace for both trace entry
-> and trace exit. Seccomp support requires separate entry points for
-> trace entry and exit which are already provided for Coldfire.
->
-> Replace syscall_trace by syscall_trace_enter and syscall_trace_leave
-> in preparation for seccomp support. Check return code of
-> syscall_trace_enter(), and skip syscall if -1. Return code will be
-> left at what had been set by by ptrace or seccomp (in regs->d0).
+On Tue, Jun 15, 2021 at 9:32 PM Eric W. Biederman <ebiederm@xmission.com> wrote:
+> Do you happen to know if there is userspace that will run
+> in qemu-system-m68k that can be used for testing?
 
-s/by by/by/
+There's a link to an image in Laurent's patch series "[PATCH 0/2]
+m68k: Add Virtual M68k Machine"
+https://lore.kernel.org/linux-m68k/20210323221430.3735147-1-laurent@vivier.eu/
 
-> diff --git a/arch/m68k/kernel/entry.S b/arch/m68k/kernel/entry.S
-> index 9dd76fb..e949b66 100644
-> --- a/arch/m68k/kernel/entry.S
-> +++ b/arch/m68k/kernel/entry.S
-> @@ -164,9 +164,11 @@ do_trace_entry:
->  	movel	#-ENOSYS,%sp@(PT_OFF_D0)| needed for strace
->  	subql	#4,%sp
->  	SAVE_SWITCH_STACK
-> -	jbsr	syscall_trace
-> +	jbsr	syscall_trace_enter
->  	RESTORE_SWITCH_STACK
->  	addql	#4,%sp
-> +	cmpil	#-1,%d0
+Gr{oetje,eeting}s,
 
-That can be optimized as addql #1,%d0.
-
-> +	jeq	ret_from_syscall
-
-Andreas.
+                        Geert
 
 -- 
-Andreas Schwab, schwab@linux-m68k.org
-GPG Key fingerprint = 7578 EB47 D4E5 4D69 2510  2552 DF73 E780 A9DA AEC1
-"And now for something completely different."
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
