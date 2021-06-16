@@ -2,113 +2,141 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.4 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,NICE_REPLY_A,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=no autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-3.8 required=3.0 tests=BAYES_00,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 2FF17C48BE8
-	for <linux-m68k@archiver.kernel.org>; Wed, 16 Jun 2021 14:52:22 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 9C498C48BE6
+	for <linux-m68k@archiver.kernel.org>; Wed, 16 Jun 2021 15:07:46 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 1686A6115C
-	for <linux-m68k@archiver.kernel.org>; Wed, 16 Jun 2021 14:52:22 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 76AD4611BE
+	for <linux-m68k@archiver.kernel.org>; Wed, 16 Jun 2021 15:07:46 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234220AbhFPOy1 (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Wed, 16 Jun 2021 10:54:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58698 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234115AbhFPOy1 (ORCPT
+        id S234445AbhFPPJv (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Wed, 16 Jun 2021 11:09:51 -0400
+Received: from out01.mta.xmission.com ([166.70.13.231]:49108 "EHLO
+        out01.mta.xmission.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234443AbhFPPJv (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Wed, 16 Jun 2021 10:54:27 -0400
-Received: from mail-io1-xd30.google.com (mail-io1-xd30.google.com [IPv6:2607:f8b0:4864:20::d30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 327D7C061760
-        for <linux-m68k@lists.linux-m68k.org>; Wed, 16 Jun 2021 07:52:21 -0700 (PDT)
-Received: by mail-io1-xd30.google.com with SMTP id f10so3327659iok.6
-        for <linux-m68k@lists.linux-m68k.org>; Wed, 16 Jun 2021 07:52:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=Ho0nMLLWDiEI8PWRRnO12oSgVwkuBUrJL0BDNxvINsA=;
-        b=hoREoaRWaUrQikoDfDACdirEoAtNi+fOmNy3ydxCJMLyS1AYVOlkcC6i6q2ACi7hoR
-         YdvK7zt01zFnWIoInOM4K4wHv15MobleKQ1Md6yZJgidSl5oEj8UBm6vgBx5+levT+bF
-         gqF6j+MUp/6RnngHTAeIvJzipUGYH5hjKD1VuO/9eya66IdaHMbpo/KgDZ3DVaHvErqA
-         B3qi1ZmurpgN6d4R5YCa0cXu/kDnuxtw+1LeEfjQcxRp6ZbVEoBzspOFJuy/TVVDm65t
-         V0QVWPMfUuOXT+50eXThDDyewiClZ1fYk3Xwe/r2yV0gFF5zxhb9twIsyab3WIZv3KyY
-         DAmQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=Ho0nMLLWDiEI8PWRRnO12oSgVwkuBUrJL0BDNxvINsA=;
-        b=Z3PKG982Sa4TTd3qQW7m5Qx009D7p1XD7ehX7axCMtUWVgaPeSgbtXe2kkxxKT0fkI
-         H5zBNBbBJzu0EKivWXo4kXar8arb1EPdVnIget/TjwxzC6s1atL1pCv4yH4RSVoO7UZw
-         0rQoWS8TCHh8HOk+MtsnKM572Uj3dtZ2F6SAYpaLr71CVxA8u24jivu2uLwcB57wWZe1
-         VYRki9nwaM/loXaUK/CTOj6pYmnAJi2HOqlDMkFJvu51Xr2PqoyLM+oFnVkzvxP32HcH
-         RLrZ3fVzAkeO8lfAu+xRb692kMJkLPmHLThj89MMm/AlvAtQNIUcwYkR8bgKcIsf8TAC
-         NMYg==
-X-Gm-Message-State: AOAM530zlY5DWWSWFRusjYVex/Ad6E3OHzKAd/lhhDSQCN22UUfm/6Ka
-        YaWr/LRfq7JJhct/oekLF5D5CWS16BB5Q4OR
-X-Google-Smtp-Source: ABdhPJwRYyaHR20NfmOGxiiM9sMUCdWhA1YbxXGNbJVFB3qF4ZclbwduUBkSVJG7m8JN/4680wB/fg==
-X-Received: by 2002:a5d:91ca:: with SMTP id k10mr292660ior.23.1623855140114;
-        Wed, 16 Jun 2021 07:52:20 -0700 (PDT)
-Received: from [192.168.1.30] ([65.144.74.34])
-        by smtp.gmail.com with ESMTPSA id h200sm1298166iof.6.2021.06.16.07.52.19
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 16 Jun 2021 07:52:19 -0700 (PDT)
-Subject: Re: remove the legacy ide driver v2
-To:     Christoph Hellwig <hch@lst.de>,
-        "David S. Miller" <davem@davemloft.net>,
-        Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     Richard Henderson <rth@twiddle.net>,
+        Wed, 16 Jun 2021 11:09:51 -0400
+Received: from in01.mta.xmission.com ([166.70.13.51])
+        by out01.mta.xmission.com with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.93)
+        (envelope-from <ebiederm@xmission.com>)
+        id 1ltX8i-0011K6-L6; Wed, 16 Jun 2021 09:07:37 -0600
+Received: from ip68-227-160-95.om.om.cox.net ([68.227.160.95] helo=email.xmission.com)
+        by in01.mta.xmission.com with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.93)
+        (envelope-from <ebiederm@xmission.com>)
+        id 1ltX8g-00FrFA-Ab; Wed, 16 Jun 2021 09:07:35 -0600
+From:   ebiederm@xmission.com (Eric W. Biederman)
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Michael Schmitz <schmitzmic@gmail.com>,
+        linux-arch <linux-arch@vger.kernel.org>,
+        Jens Axboe <axboe@kernel.dk>, Oleg Nesterov <oleg@redhat.com>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Richard Henderson <rth@twiddle.net>,
         Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
         Matt Turner <mattst88@gmail.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-ide@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-alpha@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-m68k@lists.linux-m68k.org
-References: <20210616134658.1471835-1-hch@lst.de>
-From:   Jens Axboe <axboe@kernel.dk>
-Message-ID: <4b003372-41d0-507a-b74b-b73aa33189f4@kernel.dk>
-Date:   Wed, 16 Jun 2021 08:52:18 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        alpha <linux-alpha@vger.kernel.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        linux-m68k <linux-m68k@lists.linux-m68k.org>,
+        Arnd Bergmann <arnd@kernel.org>,
+        Ley Foon Tan <ley.foon.tan@intel.com>,
+        Tejun Heo <tj@kernel.org>, Kees Cook <keescook@chromium.org>
+References: <87sg1p30a1.fsf@disp2133>
+        <CAHk-=wjiBXCZBxLiCG5hxpd0vMkMjiocenponWygG5SCG6DXNw@mail.gmail.com>
+        <87pmwsytb3.fsf@disp2133>
+        <CAHk-=wgdO5VwSUFjfF9g=DAQNYmVxzTq73NtdisYErzdZKqDGg@mail.gmail.com>
+        <87sg1lwhvm.fsf@disp2133>
+        <CAHk-=wgsnMTr0V-0F4FOk30Q1h7CeT8wLvR1MSnjack7EpyWtQ@mail.gmail.com>
+        <6e47eff8-d0a4-8390-1222-e975bfbf3a65@gmail.com>
+        <924ec53c-2fd9-2e1c-bbb1-3fda49809be4@gmail.com>
+        <87eed4v2dc.fsf@disp2133>
+        <5929e116-fa61-b211-342a-c706dcb834ca@gmail.com>
+        <87fsxjorgs.fsf@disp2133>
+        <CAHk-=wj5cJjpjAmDptmP9u4__6p3Y93SCQHG8Ef4+h=cnLiCsA@mail.gmail.com>
+Date:   Wed, 16 Jun 2021 10:06:56 -0500
+In-Reply-To: <CAHk-=wj5cJjpjAmDptmP9u4__6p3Y93SCQHG8Ef4+h=cnLiCsA@mail.gmail.com>
+        (Linus Torvalds's message of "Tue, 15 Jun 2021 14:58:12 -0700")
+Message-ID: <87mtrplugf.fsf@disp2133>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
 MIME-Version: 1.0
-In-Reply-To: <20210616134658.1471835-1-hch@lst.de>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
+X-XM-SPF: eid=1ltX8g-00FrFA-Ab;;;mid=<87mtrplugf.fsf@disp2133>;;;hst=in01.mta.xmission.com;;;ip=68.227.160.95;;;frm=ebiederm@xmission.com;;;spf=neutral
+X-XM-AID: U2FsdGVkX18nS3lgdCF5xGbxXWl1AqbEgD3hNQUW+UQ=
+X-SA-Exim-Connect-IP: 68.227.160.95
+X-SA-Exim-Mail-From: ebiederm@xmission.com
+Subject: Re: Kernel stack read with PTRACE_EVENT_EXIT and io_uring threads
+X-SA-Exim-Version: 4.2.1 (built Sat, 08 Feb 2020 21:53:50 +0000)
+X-SA-Exim-Scanned: Yes (on in01.mta.xmission.com)
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-On 6/16/21 7:46 AM, Christoph Hellwig wrote:
-> Hi all,
-> 
-> we've been trying to get rid of the legacy ide driver for a while now,
-> and finally scheduled a removal for 2021, which is three month old now.
-> 
-> In general distros and most defconfigs have switched to libata long ago,
-> but there are a few exceptions.  This series first switches over all
-> remaining defconfigs to use libata and then removes the legacy ide
-> driver.
-> 
-> libata mostly covers all hardware supported by the legacy ide driver.
-> There are three mips drivers that are not supported, but the linux-mips
-> list could not identify any users of those.  There also are two m68k
-> drivers that do not have libata equivalents, which might or might not
-> have users, so we'll need some input and possibly help from the m68k
-> community here.
-> 
-> This series is against Jens' for-5.14/libata branch.
+Linus Torvalds <torvalds@linux-foundation.org> writes:
 
-Unless someone complains loudly, I plan on queueing this up end this
-week.
+> On Tue, Jun 15, 2021 at 12:32 PM Eric W. Biederman
+> <ebiederm@xmission.com> wrote:
+>>
+>> I had to update ret_from_kernel_thread to pop that state to get Linus's
+>> change to boot.  Apparently kernel_threads exiting needs to be handled.
+>
+> You are very right.
+>
+> That, btw, seems to be a horrible design mistake, but I think it's how
+> "kernel_execve()" works - both for the initial "init", but also for
+> user-mode helper processes.
+>
+> Both of those cases do "kernel_thread()" to create a new thread, and
+> then that new kernel thread does kernel_execve() to create the user
+> space image for that thread. And that act of "execve()" clears
+> PF_KTHREAD from the thread, and then the final return from the kernel
+> thread function returns to that new user space.
+>
+> Or something like that. It's been ages since I looked at that code,
+> and your patch initially confused the heck out of me because I went
+> "that can't _possibly_ be needed".
+>
+> But yes, I think your patch is right.
+>
+> And I think our horrible "kernel threads return to user space when
+> done" is absolutely horrifically nasty. Maybe of the clever sort, but
+> mostly of the historical horror sort.
+>
+> Or am I mis-rememberting how this ends up working? Did you look at
+> exactly what it was that returned from kernel threads?
+>
+> This might be worth commenting on somewhere. But your patch for alpha
+> looks correct to me. Did you have some test-case to verify ptrace() on
+> io worker threads?
 
--- 
-Jens Axboe
+At this point I just booted an alpha image and on qemu-system-alpha.
 
+I do have gdb in my kernel image so I can test that.  I haven't yet but
+I can and should.
+
+Sleeping on it I came up with a plan to add TF_SWITCH_STACK_SAVED to
+indicate if the registers have been saved.  The DO_SWITCH_STACK and
+UNDO_SWITCH_STACK helpers (except in alpha_switch_to) can test that.
+The ptrace helpers can test that and turn an access of random kernel
+stack contents into something well behaved that does WARN_ON_ONCE
+because we should not get there.
+
+I suspect adding TF_SWITCH_STACK_SAVED should come first so it
+is easy to verify the problem behavior, before I fix it.
+
+My real goal is to find a pattern that architectures whose register
+saves are structured like alphas can emulate, to minimize problems in
+the future.
+
+Plus I would really like to get the last handful of architectures
+updated so we can remove CONFIG_HAVE_ARCH_TRACEHOOK.  I think we can
+do that on alpha because we save all of the system call arguments
+in pt_regs and that is all the other non-ptrace code paths care about.
+
+AKA I am trying to move the old architectures forward so we can get rid
+of unnecessary complications in the core code.
+
+Eric
