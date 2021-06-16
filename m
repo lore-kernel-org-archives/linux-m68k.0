@@ -2,66 +2,98 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.9 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
-	NICE_REPLY_A,SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-16.6 required=3.0 tests=BAYES_00,DKIM_INVALID,
+	DKIM_SIGNED,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 7EC5AC48BE6
-	for <linux-m68k@archiver.kernel.org>; Wed, 16 Jun 2021 23:09:06 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8C2D6C48BE5
+	for <linux-m68k@archiver.kernel.org>; Wed, 16 Jun 2021 23:17:49 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 49DAE61027
-	for <linux-m68k@archiver.kernel.org>; Wed, 16 Jun 2021 23:09:06 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 606F8611BE
+	for <linux-m68k@archiver.kernel.org>; Wed, 16 Jun 2021 23:17:49 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234431AbhFPXLM (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Wed, 16 Jun 2021 19:11:12 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45292 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234350AbhFPXLL (ORCPT <rfc822;linux-m68k@vger.kernel.org>);
-        Wed, 16 Jun 2021 19:11:11 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 874D260FF1;
-        Wed, 16 Jun 2021 23:09:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
-        s=korg; t=1623884944;
-        bh=IZsHCzpYhVnOA7preGSau6rA8qgP6HKFxjKgSja1eL0=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=ya2ZP+w0tecCWkQRgX69bO6HYOyjDnO010jk/O2wAw6Zsuovzv7xhHhgIc6Yk06uA
-         ZCYvxCbCkVf5yXwFRNMAJgFp6ixuvqqQCReTczkt8P04D6CZgdculdlGx+OgR5Ln+8
-         UNBs7mcjgMaobwjFyc/CwbMPq9cERYDE+ontS7S0=
-Date:   Wed, 16 Jun 2021 16:09:04 -0700
-From:   Andrew Morton <akpm@linux-foundation.org>
-To:     "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>
-Cc:     kernel test robot <lkp@intel.com>, linux-alpha@vger.kernel.org,
-        linux-arch@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-ia64@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-m68k@vger.kernel.org, linux-mips@vger.kernel.org,
-        linux-parisc@vger.kernel.org, linux-riscv@lists.infradead.org,
-        kbuild-all@lists.01.org, Stephen Rothwell <sfr@canb.auug.org.au>
-Subject: Re: +
- mm-rename-pud_page_vaddr-to-pud_pgtable-and-make-it-return-pmd_t.patch
- added to -mm tree
-Message-Id: <20210616160904.cf834ee8c9e7a26008aa833e@linux-foundation.org>
-In-Reply-To: <87zgvpnbl7.fsf@linux.ibm.com>
-References: <20210615233808.hzjGO1gF2%akpm@linux-foundation.org>
-        <202106162159.MurvDMy6-lkp@intel.com>
-        <87zgvpnbl7.fsf@linux.ibm.com>
-X-Mailer: Sylpheed 3.5.1 (GTK+ 2.24.31; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        id S234417AbhFPXTz (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Wed, 16 Jun 2021 19:19:55 -0400
+Received: from mail.kernel-space.org ([195.201.34.187]:38042 "EHLO
+        mail.kernel-space.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234361AbhFPXTz (ORCPT
+        <rfc822;linux-m68k@vger.kernel.org>); Wed, 16 Jun 2021 19:19:55 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel-space.org;
+        s=20190913; t=1623885464;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=GMzM6rne3aqNDELEFFWbt27YcLcmG9IGt3KJNXfYwgA=;
+        b=e4mc4D/PVvsEDSWw1pJbtwFkPFRB9t9k3xdovlK76vkbdDoC5CvBY9mPrw+Qplq11i7lo+
+        Brj35CwmtsJAiFehFmiz+UkNEd069fRgU7YChgzn10GS9Fo86xAZYjYU5ysCsUWoFonwpf
+        +P154vTqNWKBoRMVYFH2E45iJ06h/jU=
+Received: from dfj.1.1.1.1 (host-87-8-57-171.retail.telecomitalia.it [87.8.57.171])
+        by ziongate (OpenSMTPD) with ESMTPSA id 34ec42f6 (TLSv1.3:TLS_AES_256_GCM_SHA384:256:NO);
+        Wed, 16 Jun 2021 23:17:44 +0000 (UTC)
+From:   Angelo Dureghello <angelo@kernel-space.org>
+To:     gerg@linux-m68k.org, wg@grandegger.com, mkl@pengutronix.de
+Cc:     geert@linux-m68k.org, linux-m68k@vger.kernel.org,
+        linux-can@vger.kernel.org, qiangqing.zhang@nxp.com,
+        Angelo Dureghello <angelo@kernel-space.org>
+Subject: [PATCH v2 1/5] can: flexcan: add platform data for ColdFire
+Date:   Thu, 17 Jun 2021 01:16:48 +0200
+Message-Id: <20210616231652.738027-1-angelo@kernel-space.org>
+X-Mailer: git-send-email 2.31.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-On Wed, 16 Jun 2021 19:41:32 +0530 "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com> wrote:
+Add platform data object for ColdFire architecture.
 
-> We may want to fixup pgd_page_vaddr correctly later. pgd_page_vaddr() gets
-> cast to different pointer types based on architecture. But for now this
-> should work? This ensure we keep the pgd_page_vaddr() same as before. 
+---
+Changes for v2:
+- move header file in more proper location
+- remove irq defines
+- change variable types to match driver types
 
-I'll drop
+Signed-off-by: Angelo Dureghello <angelo@kernel-space.org>
+---
+ include/linux/can/platform/mcf5441x.h | 28 +++++++++++++++++++++++++++
+ 1 file changed, 28 insertions(+)
+ create mode 100644 include/linux/can/platform/mcf5441x.h
 
-mm-rename-pud_page_vaddr-to-pud_pgtable-and-make-it-return-pmd_t.patch
-mm-rename-p4d_page_vaddr-to-p4d_pgtable-and-make-it-return-pud_t.patch          
+diff --git a/include/linux/can/platform/mcf5441x.h b/include/linux/can/platform/mcf5441x.h
+new file mode 100644
+index 000000000000..6866f0f60caf
+--- /dev/null
++++ b/include/linux/can/platform/mcf5441x.h
+@@ -0,0 +1,28 @@
++/* SPDX-License-Identifier: GPL-2.0-only */
++/*
++ * Flexcan options for ColdFire family
++ *
++ * Copyright (C) 2021  Angelo Dureghello <angelo@kernel-space.org>
++ *
++ * This program is free software; you can redistribute it and/or
++ * modify it under the terms of the GNU General Public License
++ * version 2 as published by the Free Software Foundation.
++ *
++ * This program is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ * GNU General Public License for more details.
++ */
++
++#ifndef _PLAT_FLEXCAN_MCF_H
++#define _PLAT_FLEXCAN_MCF_H
++
++struct mcf_flexcan_platform_data {
++	u8 clk_src;
++	u32 clock_frequency;
++	bool big_endian;
++};
++
++#define FLEXCAN_MCF5411X_MB_CNT_MCF	16
++
++#endif /* _PLAT_FLEXCAN_MCF_H */
+-- 
+2.31.1
 
-for now.
