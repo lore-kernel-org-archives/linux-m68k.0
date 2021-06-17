@@ -2,175 +2,84 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-13.8 required=3.0 tests=BAYES_00,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-10.3 required=3.0 tests=BAYES_00,DKIM_INVALID,
+	DKIM_SIGNED,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
+	MAILING_LIST_MULTI,NICE_REPLY_A,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 381EFC2B9F4
-	for <linux-m68k@archiver.kernel.org>; Thu, 17 Jun 2021 06:59:03 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 19BFFC2B9F4
+	for <linux-m68k@archiver.kernel.org>; Thu, 17 Jun 2021 07:18:18 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 18FF26120A
-	for <linux-m68k@archiver.kernel.org>; Thu, 17 Jun 2021 06:59:03 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id F059C613BF
+	for <linux-m68k@archiver.kernel.org>; Thu, 17 Jun 2021 07:18:17 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229848AbhFQHBJ (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Thu, 17 Jun 2021 03:01:09 -0400
-Received: from kvm5.telegraphics.com.au ([98.124.60.144]:33498 "EHLO
-        kvm5.telegraphics.com.au" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229846AbhFQHBJ (ORCPT
-        <rfc822;linux-m68k@vger.kernel.org>); Thu, 17 Jun 2021 03:01:09 -0400
-Received: from localhost (localhost.localdomain [127.0.0.1])
-        by kvm5.telegraphics.com.au (Postfix) with ESMTP id BEC332BD2A;
-        Thu, 17 Jun 2021 02:58:59 -0400 (EDT)
-Date:   Thu, 17 Jun 2021 16:58:59 +1000 (AEST)
-From:   Finn Thain <fthain@linux-m68k.org>
-To:     Michael Schmitz <schmitzmic@gmail.com>
-cc:     linux-m68k@vger.kernel.org, geert@linux-m68k.org, alex@kazik.de
-Subject: Re: [PATCH v3 1/2] m68k: io_mm.h - add APNE 100 MBit support
-In-Reply-To: <1623907712-29366-2-git-send-email-schmitzmic@gmail.com>
-Message-ID: <8fad435e-e541-befe-8e3c-ccd75b3db0db@linux-m68k.org>
-References: <1623907712-29366-1-git-send-email-schmitzmic@gmail.com> <1623907712-29366-2-git-send-email-schmitzmic@gmail.com>
+        id S229891AbhFQHUY (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Thu, 17 Jun 2021 03:20:24 -0400
+Received: from mail.kernel-space.org ([195.201.34.187]:38274 "EHLO
+        mail.kernel-space.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229712AbhFQHUY (ORCPT
+        <rfc822;linux-m68k@vger.kernel.org>); Thu, 17 Jun 2021 03:20:24 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel-space.org;
+        s=20190913; t=1623914293;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=J0phvptjMwOdLxHc6uH2So5bqysJlj8nAt92UycKxek=;
+        b=r+IReweA/DM/rK8eyCjwB9lRhzBAXjAt2s1Gf12Ry+xPJH9Jrafal2pPl/PCwW1wCx5occ
+        0r5yUgxA5y+1/d+bTbLzxB/22+NmiT488HMok1JTwhOhGIDhgQ494Lnd9UBymxqRGD6Bx6
+        oc/pElK2Q5bDjbJiROwrX1o/1v/F6HY=
+Received: from [192.168.0.2] (host-87-8-57-171.retail.telecomitalia.it [87.8.57.171])
+        by ziongate (OpenSMTPD) with ESMTPSA id 5b26ddc8 (TLSv1.3:TLS_AES_256_GCM_SHA384:256:NO);
+        Thu, 17 Jun 2021 07:18:13 +0000 (UTC)
+Subject: Re: [PATCH v2 3/5] m68k: m5441x: add flexcan support
+To:     Greg Ungerer <gerg@linux-m68k.org>, wg@grandegger.com,
+        mkl@pengutronix.de
+Cc:     geert@linux-m68k.org, linux-m68k@vger.kernel.org,
+        linux-can@vger.kernel.org, qiangqing.zhang@nxp.com
+References: <20210616231652.738027-1-angelo@kernel-space.org>
+ <20210616231652.738027-3-angelo@kernel-space.org>
+ <45495fee-b026-0a2c-6b98-1631cbd8060f@linux-m68k.org>
+From:   Angelo Dureghello <angelo@kernel-space.org>
+Message-ID: <bbe98567-a767-8eb3-9258-b6a66bc7a476@kernel-space.org>
+Date:   Thu, 17 Jun 2021 09:17:21 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+In-Reply-To: <45495fee-b026-0a2c-6b98-1631cbd8060f@linux-m68k.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-On Thu, 17 Jun 2021, Michael Schmitz wrote:
+Hi Greg,
 
-> Add code to support 10 Mbit and 100 Mbit mode for APNE driver.
+On 17/06/21 2:18 AM, Greg Ungerer wrote:
+> Hi Angelo,
 > 
-> A new ISA type ISA_TYPE_AG16 dynamically switches the Amiga
-> ISA inb accessor to word access as required by the 100 Mbit cards.
+> On 17/6/21 9:16 am, Angelo Dureghello wrote:
+>> Add flexcan support.
+>>
+>> ---
+>> Changes for v2:
+>> - add irq resources for ERR and BOFF interrutps
+>>
+>> Signed-off-by: Angelo Dureghello <angelo@kernel-space.org>
 > 
-> Patch modified after patch "[PATCH RFC net-next] Amiga PCMCIA
-> 100 MBit card support" submitted to netdev 2018/09/16 by Alex
-> Kazik <alex@kazik.de>.
-> 
-> Signed-off-by: Michael Schmitz <schmitzmic@gmail.com>
-> 
-> --
-> Changes from v1:
-> 
-> Andreas Schwab:
-> - remove redundant fallthrough annotations
-> 
-> Changes from RFC:
-> 
-> Geert Uytterhoeven:
-> - rename ISA_TYPE_AG100 to ISA_TYPE_AG16 (16 bit cards)
-> - move ISA_TYPE_AG16 case inside #ifdef CONFIG_AMIGA_PCMCIA
-> - change #if defined(CONFIG_APNE_100MBIT) to #ifdef
-> - fix parentheses in isa_inb() define
-> - omit comment about compiler optimization
-> 
-> - add ISA_TYPE_AG16 case to isa_delay()
-> 
-> fixup - review comment Andreas Schwab (fallthrough)
-> ---
->  arch/m68k/include/asm/io_mm.h | 26 +++++++++++++++++++++++++-
->  1 file changed, 25 insertions(+), 1 deletion(-)
-> 
-> diff --git a/arch/m68k/include/asm/io_mm.h b/arch/m68k/include/asm/io_mm.h
-> index 9c521b0..3ab2f1d 100644
-> --- a/arch/m68k/include/asm/io_mm.h
-> +++ b/arch/m68k/include/asm/io_mm.h
-> @@ -101,6 +101,11 @@
->  #define ISA_TYPE_Q40  (1)
->  #define ISA_TYPE_AG   (2)
->  #define ISA_TYPE_ENEC (3)
-> +#define ISA_TYPE_AG16 (4)	/* for 100 MBit APNE card */
-> +
-> +#if defined(CONFIG_APNE100MBIT)
-> +#define MULTI_ISA 1
-> +#endif
->  
->  #if defined(CONFIG_Q40) && !defined(MULTI_ISA)
->  #define ISA_TYPE ISA_TYPE_Q40
-> @@ -136,6 +141,9 @@ static inline u8 __iomem *isa_itb(unsigned long addr)
->      case ISA_TYPE_Q40: return (u8 __iomem *)Q40_ISA_IO_B(addr);
->  #endif
->  #ifdef CONFIG_AMIGA_PCMCIA
-> +#ifdef CONFIG_APNE100MBIT
-> +    case ISA_TYPE_AG16:
-> +#endif
->      case ISA_TYPE_AG: return (u8 __iomem *)AG_ISA_IO_B(addr);
->  #endif
->  #ifdef CONFIG_ATARI_ROM_ISA
-> @@ -155,6 +163,9 @@ static inline u16 __iomem *isa_itw(unsigned long addr)
->      case ISA_TYPE_Q40: return (u16 __iomem *)Q40_ISA_IO_W(addr);
->  #endif
->  #ifdef CONFIG_AMIGA_PCMCIA
-> +#ifdef CONFIG_APNE100MBIT
-> +    case ISA_TYPE_AG16:
-> +#endif
->      case ISA_TYPE_AG: return (u16 __iomem *)AG_ISA_IO_W(addr);
->  #endif
->  #ifdef CONFIG_ATARI_ROM_ISA
-> @@ -171,6 +182,9 @@ static inline u32 __iomem *isa_itl(unsigned long addr)
->    switch(ISA_TYPE)
->      {
->  #ifdef CONFIG_AMIGA_PCMCIA
-> +#ifdef CONFIG_APNE100MBIT
-> +    case ISA_TYPE_AG16:
-> +#endif
->      case ISA_TYPE_AG: return (u32 __iomem *)AG_ISA_IO_W(addr);
->  #endif
->      }
-> @@ -184,6 +198,9 @@ static inline u8 __iomem *isa_mtb(unsigned long addr)
->      case ISA_TYPE_Q40: return (u8 __iomem *)Q40_ISA_MEM_B(addr);
->  #endif
->  #ifdef CONFIG_AMIGA_PCMCIA
-> +#ifdef CONFIG_APNE100MBIT
-> +    case ISA_TYPE_AG16:
-> +#endif
->      case ISA_TYPE_AG: return (u8 __iomem *)addr;
->  #endif
->  #ifdef CONFIG_ATARI_ROM_ISA
-> @@ -203,6 +220,9 @@ static inline u16 __iomem *isa_mtw(unsigned long addr)
->      case ISA_TYPE_Q40: return (u16 __iomem *)Q40_ISA_MEM_W(addr);
->  #endif
->  #ifdef CONFIG_AMIGA_PCMCIA
-> +#ifdef CONFIG_APNE100MBIT
-> +    case ISA_TYPE_AG16:
-> +#endif
->      case ISA_TYPE_AG: return (u16 __iomem *)addr;
->  #endif
->  #ifdef CONFIG_ATARI_ROM_ISA
-> @@ -216,13 +236,14 @@ static inline u16 __iomem *isa_mtw(unsigned long addr)
->  }
->  
->  
-> -#define isa_inb(port)      in_8(isa_itb(port))
->  #define isa_inw(port)      (ISA_SEX ? in_be16(isa_itw(port)) : in_le16(isa_itw(port)))
->  #define isa_inl(port)      (ISA_SEX ? in_be32(isa_itl(port)) : in_le32(isa_itl(port)))
->  #define isa_outb(val,port) out_8(isa_itb(port),(val))
->  #define isa_outw(val,port) (ISA_SEX ? out_be16(isa_itw(port),(val)) : out_le16(isa_itw(port),(val)))
->  #define isa_outl(val,port) (ISA_SEX ? out_be32(isa_itl(port),(val)) : out_le32(isa_itl(port),(val)))
->  
-> +#define isa_inb(port)      ((ISA_TYPE == ISA_TYPE_AG16) ? ((port) & 1 ? isa_inw((port) - 1) & 0xff : isa_inw(port) >> 8) : in_8(isa_itb(port)))
-> +
->  #define isa_readb(p)       in_8(isa_mtb((unsigned long)(p)))
->  #define isa_readw(p)       \
->  	(ISA_SEX ? in_be16(isa_mtw((unsigned long)(p)))	\
+> You should put your signed-off-by above the first "---".
+> Tools like "git am" drop everything below the first "---" and before the
+> patch proper. So it ends up losing your signed-off-by.
+>
+Oh ok, thanks.
 
-Was the re-ordering of definitions deliberate?
-
-
-> @@ -270,6 +291,9 @@ static inline void isa_delay(void)
->      case ISA_TYPE_Q40: isa_outb(0,0x80); break;
->  #endif
->  #ifdef CONFIG_AMIGA_PCMCIA
-> +#ifdef CONFIG_APNE100MBIT
-> +    case ISA_TYPE_AG16: break;
-> +#endif
->      case ISA_TYPE_AG: break;
->  #endif
->  #ifdef CONFIG_ATARI_ROM_ISA
+> Regards
+> Greg
+> 
 > 
 
-I think most of these "#ifdef CONFIG_APNE100MBIT" conditionals are 
-redundant. case ISA_TYPE_AG16 should be optimized away as dead code in the 
-MULTI_ISA == 0 configuration. And in the MULTI_ISA == 1 configuration, the 
-logic used to assign isa_type already depends on 
-defined(CONFIG_APNE100MBIT).
+Regards,
+-- 
+Angelo Dureghello
+
