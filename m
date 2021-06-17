@@ -8,176 +8,163 @@ X-Spam-Status: No, score=-15.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 779DAC2B9F4
-	for <linux-m68k@archiver.kernel.org>; Thu, 17 Jun 2021 05:28:56 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 6F8FBC2B9F4
+	for <linux-m68k@archiver.kernel.org>; Thu, 17 Jun 2021 05:39:30 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 5920961241
-	for <linux-m68k@archiver.kernel.org>; Thu, 17 Jun 2021 05:28:56 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 469FC613DF
+	for <linux-m68k@archiver.kernel.org>; Thu, 17 Jun 2021 05:39:30 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229686AbhFQFbC (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Thu, 17 Jun 2021 01:31:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55416 "EHLO
+        id S229580AbhFQFlg (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Thu, 17 Jun 2021 01:41:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57794 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229580AbhFQFbC (ORCPT
-        <rfc822;linux-m68k@vger.kernel.org>); Thu, 17 Jun 2021 01:31:02 -0400
-Received: from mail-pl1-x634.google.com (mail-pl1-x634.google.com [IPv6:2607:f8b0:4864:20::634])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 472F9C061574;
-        Wed, 16 Jun 2021 22:28:55 -0700 (PDT)
-Received: by mail-pl1-x634.google.com with SMTP id h1so2322694plt.1;
-        Wed, 16 Jun 2021 22:28:55 -0700 (PDT)
+        with ESMTP id S229515AbhFQFlg (ORCPT
+        <rfc822;linux-m68k@vger.kernel.org>); Thu, 17 Jun 2021 01:41:36 -0400
+Received: from mail-pf1-x42d.google.com (mail-pf1-x42d.google.com [IPv6:2607:f8b0:4864:20::42d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 77C60C061574
+        for <linux-m68k@vger.kernel.org>; Wed, 16 Jun 2021 22:39:28 -0700 (PDT)
+Received: by mail-pf1-x42d.google.com with SMTP id h12so4101669pfe.2
+        for <linux-m68k@vger.kernel.org>; Wed, 16 Jun 2021 22:39:28 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=aZxZQhd0Q8r7isZC7zXuPgUVtNUa9gCiihLnz96JFNU=;
-        b=HEY3LEgVjI4/pG9Rj8SolPOsGuIrJFDnRUb5yi1PI/6v3BQUvqeZkJEGYvH6s5pVk5
-         aol6hUVFO5lpYTW0iKwDPVtbkKalx9WG9jynBGUdJsx85i3XAOzM2PUaacuZa5Y4S2iS
-         b5EcF+vTVaXdkH9MDVJ5QQxyWeXPQnDZkzu2p5Ihr/trH3PSjYEFwBvJn3M713eTTgtv
-         SD0SITJXFGVD003qma2FMrLlfKJx4glQgjrz87yXYdUsDvkEVsquRM7nX4wgz9yKe/aV
-         RWjNAeLB+080dSGfK4N9FOB3kqDPqQtsFg6W/2RzK+n5hTo7SNjRPGhDMQcPRXuf5GKQ
-         9FjQ==
+        h=from:to:cc:subject:date:message-id;
+        bh=zdlkssB8kkE3t0yd9MzHlFs5Z3kbqsqbfnS7iAuhXJk=;
+        b=RJAevVVUTPm3WDeH2QH1zRFAEvKtAa1+0LeYy0NZILONQJLT7u0F1phfMWjJiUPWwb
+         xdFpBOUOYA5TTGAZ1Acqi74Ed+mClNfpfDIzZAC+aT8u/WWQwkEee4Y7HE+qjMxYJkjh
+         RTYgzcIiRbdjQ0iPsb4B1hu5b4zNOk4bMaSKEn9LMzz8UI4VUbq9+ciwgRv9aDAMKzX1
+         rl6dgyuXTolQ0LP/oRf+pRBCxvBl+aKoMpKAfOyOGPvdDEfTzte5AJ4gKUtC4YwFdPMN
+         0YBAjexz91K7BCV6iyZDVnrG/VrkBpGHSM+g8B8Z0gMGzhkIMzHFx8RFNBHbRy5+MPmp
+         +gKA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references;
-        bh=aZxZQhd0Q8r7isZC7zXuPgUVtNUa9gCiihLnz96JFNU=;
-        b=QkkZYAIvM4yP+8Fh8AtBxigWLbZMN1LxzauUoPMzowrkWZvolEwD+9nfCCOiIBeUbq
-         L83hyAEA101rDJlGem4SdfDCk7QFk1Z9TNSQyt6hDTVRaLRnLBQOF9Mfuq9BfRrxSiZv
-         Z6b+u8xNdoak5vc2/DB+yl6tKjMbHi8qKnqOBeNl3SXgNlMEOqe0rbiO7Qd0bnrCy3bC
-         rdKCVrNHpKlelTw+oZ6gHapqg42mge+l2eymEzadkL+jJ8IoJIqmQlYoxV5MRB7kJRAP
-         fD07+3GiPRH7BAmrZbyXmQANLZPj3MW6uKG4a95dO3xpZgTQXTY4hgzsf+Rq4gLnAGcE
-         SKVg==
-X-Gm-Message-State: AOAM530a7N2H7hL6SAiX5VItxKY5vO2BHtGd7kJKA2XkZo+y0AAGdfjW
-        1lAI/JqFBlt33XMYmI3RYHeu5ahUe+fLbw==
-X-Google-Smtp-Source: ABdhPJz4DbU2jw6hIaMgCn1iNp1n0K8BgQSP+asbCqDnDJryVGb+kxwwqeYd6ToJ56Qro/hd4PcbIQ==
-X-Received: by 2002:a17:902:ff11:b029:114:37a7:21ad with SMTP id f17-20020a170902ff11b029011437a721admr2848386plj.68.1623907734897;
-        Wed, 16 Jun 2021 22:28:54 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=zdlkssB8kkE3t0yd9MzHlFs5Z3kbqsqbfnS7iAuhXJk=;
+        b=F4cfJmuFwZbHDNSXwqml/A75kCfU2lhiFg4n00juz8Itq6/nBR7e//q+mDHFAFhlJ1
+         X75JDmu349Xx29tYe2XdTuykx1f743vRHwVjDwWkfwtfx1sEsntcCW+AgGBKWQqlJ8Kw
+         7+ax8S4YD+9l6McemmhWsDxK5tpcyFyEhWfptWCANJ5NwW/TqEW/3ucnyLCsTuN6nkn+
+         edN4E5jCxFMmjncx66tbfz7Jx8S0b3nZrqN49cvilbHaGfs9v0OKniPZ1iLkohBO5cu0
+         RvkT0MwPpLVBmZcxCZTAHxXmkLQhazQlkvfCBdeeGqjo/mvUWwsLi7k1e7x/34k9z8Py
+         tVEA==
+X-Gm-Message-State: AOAM532cFf56KHhu6GsymISFUlUzZ9OB+/IwpfwsNC+g0iOu/a8oCLds
+        oUeMFS+5FA0baoFS69o+tKU=
+X-Google-Smtp-Source: ABdhPJyn3QbuBd2j0DQHiaNPlzXZPmTAEoH8b2pJrREIuH1Y6UJ3XP7SzyF93mpxHavD6ngOF59aWw==
+X-Received: by 2002:a63:30d:: with SMTP id 13mr3313437pgd.204.1623908368030;
+        Wed, 16 Jun 2021 22:39:28 -0700 (PDT)
 Received: from xplor.waratah.dyndns.org (222-152-189-137-fibre.sparkbb.co.nz. [222.152.189.137])
-        by smtp.gmail.com with ESMTPSA id q24sm4121470pgk.32.2021.06.16.22.28.54
+        by smtp.gmail.com with ESMTPSA id d22sm3950322pgb.15.2021.06.16.22.39.26
         (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Wed, 16 Jun 2021 22:28:54 -0700 (PDT)
+        Wed, 16 Jun 2021 22:39:27 -0700 (PDT)
 Received: by xplor.waratah.dyndns.org (Postfix, from userid 1000)
-        id 1ED1336040F; Thu, 17 Jun 2021 17:28:51 +1200 (NZST)
+        id EA9DB36040F; Thu, 17 Jun 2021 17:39:23 +1200 (NZST)
 From:   Michael Schmitz <schmitzmic@gmail.com>
 To:     linux-m68k@vger.kernel.org, geert@linux-m68k.org
-Cc:     alex@kazik.de, Michael Schmitz <schmitzmic@gmail.com>,
-        netdev@vger.kernel.org
-Subject: [PATCH net-next v3 2/2] net/8390: apne.c - add 100 Mbit support to apne.c driver
-Date:   Thu, 17 Jun 2021 17:28:32 +1200
-Message-Id: <1623907712-29366-3-git-send-email-schmitzmic@gmail.com>
+Cc:     glaubitz@physik.fu-berlin.de, schwab@linux-m68k.org,
+        Michael Schmitz <schmitzmic@gmail.com>
+Subject: [PATCH v5 1/2] m68k/kernel - wire up syscall_trace_enter/leave for m68k
+Date:   Thu, 17 Jun 2021 17:39:20 +1200
+Message-Id: <1623908361-29837-1-git-send-email-schmitzmic@gmail.com>
 X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1623907712-29366-1-git-send-email-schmitzmic@gmail.com>
-References: <1623907712-29366-1-git-send-email-schmitzmic@gmail.com>
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-Add Kconfig option, module parameter and PCMCIA reset code
-required to support 100 Mbit PCMCIA ethernet cards on Amiga.
+m68k (other than Coldfire) uses syscall_trace for both trace entry
+and trace exit. Seccomp support requires separate entry points for
+trace entry and exit which are already provided for Coldfire.
 
-10 Mbit and 100 Mbit mode are supported by the same module.
-A module parameter switches Amiga ISA IO accessors to word
-access by changing isa_type at runtime. Additional code to
-reset the PCMCIA hardware is also added to the driver probe.
+Replace syscall_trace by syscall_trace_enter and syscall_trace_leave
+in preparation for seccomp support. Check return code of
+syscall_trace_enter(), and skip syscall if -1. Return code will be
+left at what had been set by ptrace or seccomp (in regs->d0).
 
-Patch modified after patch "[PATCH RFC net-next] Amiga PCMCIA
-100 MBit card support" submitted to netdev 2018/09/16 by Alex
-Kazik <alex@kazik.de>.
+No regression seen in testing with strace on ARAnyM.
 
-CC: netdev@vger.kernel.org
-Tested-by: Alex Kazik <alex@kazik.de>
 Signed-off-by: Michael Schmitz <schmitzmic@gmail.com>
 
 --
-Changes from v1:
+Changes from v4:
 
-- fix module parameter name in Kconfig help text
+Andreas Schwab:
+- optimize return code test (addql #1,%d0 for cmpil #-1,%d0)
+- spelling fix in commit message
 
-Alex Kazik:
-- change module parameter type to bool, fix module parameter
-  permission
+Changes from v3:
 
-Changes from RFC:
+- change syscall_trace_enter return code test from !=0 to ==-1
 
-Geert Uytterhoeven:
-- change APNE_100MBIT to depend on APNE
-- change '---help---' to 'help' (former no longer supported)
-- fix whitespace errors
-- fix module_param_named() arg count
-- protect all added code by #ifdef CONFIG_APNE_100MBIT
+Andreas: optimize syscall trace return code test
 ---
- drivers/net/ethernet/8390/Kconfig | 12 ++++++++++++
- drivers/net/ethernet/8390/apne.c  | 21 +++++++++++++++++++++
- 2 files changed, 33 insertions(+)
+ arch/m68k/kernel/entry.S  |  8 +++++---
+ arch/m68k/kernel/ptrace.c | 17 -----------------
+ 2 files changed, 5 insertions(+), 20 deletions(-)
 
-diff --git a/drivers/net/ethernet/8390/Kconfig b/drivers/net/ethernet/8390/Kconfig
-index 9f4b302..6e4db63 100644
---- a/drivers/net/ethernet/8390/Kconfig
-+++ b/drivers/net/ethernet/8390/Kconfig
-@@ -143,6 +143,18 @@ config APNE
- 	  To compile this driver as a module, choose M here: the module
- 	  will be called apne.
+diff --git a/arch/m68k/kernel/entry.S b/arch/m68k/kernel/entry.S
+index 9dd76fb..90c5dcc 100644
+--- a/arch/m68k/kernel/entry.S
++++ b/arch/m68k/kernel/entry.S
+@@ -164,9 +164,11 @@ do_trace_entry:
+ 	movel	#-ENOSYS,%sp@(PT_OFF_D0)| needed for strace
+ 	subql	#4,%sp
+ 	SAVE_SWITCH_STACK
+-	jbsr	syscall_trace
++	jbsr	syscall_trace_enter
+ 	RESTORE_SWITCH_STACK
+ 	addql	#4,%sp
++	addql	#1,%d0
++	jeq	ret_from_syscall
+ 	movel	%sp@(PT_OFF_ORIG_D0),%d0
+ 	cmpl	#NR_syscalls,%d0
+ 	jcs	syscall
+@@ -177,7 +179,7 @@ badsys:
+ do_trace_exit:
+ 	subql	#4,%sp
+ 	SAVE_SWITCH_STACK
+-	jbsr	syscall_trace
++	jbsr	syscall_trace_leave
+ 	RESTORE_SWITCH_STACK
+ 	addql	#4,%sp
+ 	jra	.Lret_from_exception
+@@ -186,7 +188,7 @@ ENTRY(ret_from_signal)
+ 	movel	%curptr@(TASK_STACK),%a1
+ 	tstb	%a1@(TINFO_FLAGS+2)
+ 	jge	1f
+-	jbsr	syscall_trace
++	jbsr	syscall_trace_leave
+ 1:	RESTORE_SWITCH_STACK
+ 	addql	#4,%sp
+ /* on 68040 complete pending writebacks if any */
+diff --git a/arch/m68k/kernel/ptrace.c b/arch/m68k/kernel/ptrace.c
+index 94b3b27..74d58a8 100644
+--- a/arch/m68k/kernel/ptrace.c
++++ b/arch/m68k/kernel/ptrace.c
+@@ -271,22 +271,6 @@ long arch_ptrace(struct task_struct *child, long request,
+ 	return -EIO;
+ }
  
-+config APNE100MBIT
-+	bool "PCMCIA NE2000 100MBit support"
-+	depends on APNE
-+	default n
-+	help
-+	  This changes the driver to support 10/100Mbit cards (e.g. Netgear
-+	  FA411, CNet Singlepoint). 10 MBit cards and 100 MBit cards are
-+	  supported by the same driver.
-+
-+	  To activate 100 Mbit support at runtime or from the kernel
-+	  command line, use the apne.100mbit module parameter.
-+
- config PCMCIA_PCNET
- 	tristate "NE2000 compatible PCMCIA support"
- 	depends on PCMCIA
-diff --git a/drivers/net/ethernet/8390/apne.c b/drivers/net/ethernet/8390/apne.c
-index fe6c834..59e41ad 100644
---- a/drivers/net/ethernet/8390/apne.c
-+++ b/drivers/net/ethernet/8390/apne.c
-@@ -120,6 +120,12 @@ static u32 apne_msg_enable;
- module_param_named(msg_enable, apne_msg_enable, uint, 0444);
- MODULE_PARM_DESC(msg_enable, "Debug message level (see linux/netdevice.h for bitmap)");
- 
-+#ifdef CONFIG_APNE100MBIT
-+static bool apne_100_mbit;
-+module_param_named(apne_100_mbit_msg, apne_100_mbit, bool, 0444);
-+MODULE_PARM_DESC(apne_100_mbit_msg, "Enable 100 Mbit support");
-+#endif
-+
- struct net_device * __init apne_probe(int unit)
+-asmlinkage void syscall_trace(void)
+-{
+-	ptrace_notify(SIGTRAP | ((current->ptrace & PT_TRACESYSGOOD)
+-				 ? 0x80 : 0));
+-	/*
+-	 * this isn't the same as continuing with a signal, but it will do
+-	 * for normal use.  strace only continues with a signal if the
+-	 * stopping signal is not SIGTRAP.  -brl
+-	 */
+-	if (current->exit_code) {
+-		send_sig(current->exit_code, current, 1);
+-		current->exit_code = 0;
+-	}
+-}
+-
+-#if defined(CONFIG_COLDFIRE) || !defined(CONFIG_MMU)
+ asmlinkage int syscall_trace_enter(void)
  {
- 	struct net_device *dev;
-@@ -139,6 +145,11 @@ struct net_device * __init apne_probe(int unit)
- 	if ( !(AMIGAHW_PRESENT(PCMCIA)) )
- 		return ERR_PTR(-ENODEV);
- 
-+#ifdef CONFIG_APNE100MBIT
-+	if (apne_100_mbit)
-+		isa_type = ISA_TYPE_AG16;
-+#endif
-+
- 	pr_info("Looking for PCMCIA ethernet card : ");
- 
- 	/* check if a card is inserted */
-@@ -590,6 +601,16 @@ static int init_pcmcia(void)
- #endif
- 	u_long offset;
- 
-+#ifdef CONFIG_APNE100MBIT
-+	/* reset card (idea taken from CardReset by Artur Pogoda) */
-+	{
-+		u_char  tmp = gayle.intreq;
-+
-+		gayle.intreq = 0xff;    mdelay(1);
-+		gayle.intreq = tmp;     mdelay(300);
-+	}
-+#endif
-+
- 	pcmcia_reset();
- 	pcmcia_program_voltage(PCMCIA_0V);
- 	pcmcia_access_speed(PCMCIA_SPEED_250NS);
+ 	int ret = 0;
+@@ -301,4 +285,3 @@ asmlinkage void syscall_trace_leave(void)
+ 	if (test_thread_flag(TIF_SYSCALL_TRACE))
+ 		tracehook_report_syscall_exit(task_pt_regs(current), 0);
+ }
+-#endif /* CONFIG_COLDFIRE */
 -- 
 2.7.4
 
