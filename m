@@ -2,66 +2,117 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.3 required=3.0 tests=BAYES_00,DKIM_INVALID,
-	DKIM_SIGNED,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,NICE_REPLY_A,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=no autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-13.8 required=3.0 tests=BAYES_00,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 87111C2B9F4
-	for <linux-m68k@archiver.kernel.org>; Thu, 17 Jun 2021 13:33:56 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C774CC2B9F4
+	for <linux-m68k@archiver.kernel.org>; Thu, 17 Jun 2021 15:27:55 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 66B47613BA
-	for <linux-m68k@archiver.kernel.org>; Thu, 17 Jun 2021 13:33:56 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id AEE476112D
+	for <linux-m68k@archiver.kernel.org>; Thu, 17 Jun 2021 15:27:55 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232792AbhFQNgC (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Thu, 17 Jun 2021 09:36:02 -0400
-Received: from mail.kernel-space.org ([195.201.34.187]:38404 "EHLO
-        mail.kernel-space.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232317AbhFQNgC (ORCPT
-        <rfc822;linux-m68k@vger.kernel.org>); Thu, 17 Jun 2021 09:36:02 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel-space.org;
-        s=20190913; t=1623936831;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=VUTCbLDJ944g7guNYSUqiuktQNN0Iln97z6m+EaP/Ds=;
-        b=wdCnxlXoLfTm6lyiUOd1gvkKqdQcP4QULzWHn+yCmAdXEaX/VKaYly3UmTPjhOe44QJwu/
-        wc+udf6rXLaMf9drVCmDv4nrDruakQZ0amG+YGvBjq5xptsEO/lV+7AGXI0OBAGGX2nG6j
-        bceFrUnrTHyPlpwFQWY5xe6/XQna4I8=
-Received: from [192.168.0.2] (host-87-8-57-171.retail.telecomitalia.it [87.8.57.171])
-        by ziongate (OpenSMTPD) with ESMTPSA id 72be8f16 (TLSv1.3:TLS_AES_256_GCM_SHA384:256:NO);
-        Thu, 17 Jun 2021 13:33:51 +0000 (UTC)
-Subject: Re: [PATCH v2 5/5] can: flexcan: add mcf5441x support
-To:     Marc Kleine-Budde <mkl@pengutronix.de>
+        id S233237AbhFQP35 (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Thu, 17 Jun 2021 11:29:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49582 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233202AbhFQP3z (ORCPT
+        <rfc822;linux-m68k@vger.kernel.org>); Thu, 17 Jun 2021 11:29:55 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2AAD9C06175F
+        for <linux-m68k@vger.kernel.org>; Thu, 17 Jun 2021 08:27:45 -0700 (PDT)
+Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <mkl@pengutronix.de>)
+        id 1lttvg-0007vk-6m; Thu, 17 Jun 2021 17:27:40 +0200
+Received: from pengutronix.de (unknown [IPv6:2a03:f580:87bc:d400:653d:6f2f:e25e:5f2e])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (Client did not present a certificate)
+        (Authenticated sender: mkl-all@blackshift.org)
+        by smtp.blackshift.org (Postfix) with ESMTPSA id 9579263E313;
+        Thu, 17 Jun 2021 15:27:38 +0000 (UTC)
+Date:   Thu, 17 Jun 2021 17:27:37 +0200
+From:   Marc Kleine-Budde <mkl@pengutronix.de>
+To:     Angelo Dureghello <angelo@kernel-space.org>
 Cc:     gerg@linux-m68k.org, wg@grandegger.com, geert@linux-m68k.org,
         linux-m68k@vger.kernel.org, linux-can@vger.kernel.org,
         qiangqing.zhang@nxp.com
+Subject: Re: [PATCH v2 4/5] can: flexcan: enable Kconfig for ColdFire
+Message-ID: <20210617152737.eapu5wp6ca5iqzv4@pengutronix.de>
 References: <20210616231652.738027-1-angelo@kernel-space.org>
- <20210616231652.738027-5-angelo@kernel-space.org>
- <20210617130053.yovl3b3p5mn2srnd@pengutronix.de>
-From:   Angelo Dureghello <angelo@kernel-space.org>
-Message-ID: <089ba61d-2b84-6f99-ab00-c7187d37bad3@kernel-space.org>
-Date:   Thu, 17 Jun 2021 15:32:59 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.1
+ <20210616231652.738027-4-angelo@kernel-space.org>
 MIME-Version: 1.0
-In-Reply-To: <20210617130053.yovl3b3p5mn2srnd@pengutronix.de>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="bc7ek4i77udtpll3"
+Content-Disposition: inline
+In-Reply-To: <20210616231652.738027-4-angelo@kernel-space.org>
+X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
+X-SA-Exim-Mail-From: mkl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-m68k@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-Hi Mark,
 
-thanks for the review, will fix all.
+--bc7ek4i77udtpll3
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
+On 17.06.2021 01:16:51, Angelo Dureghello wrote:
+> Enable flexcan KConfig for ColdFire m5441x cpu's.
+>=20
+> Signed-off-by: Angelo Dureghello <angelo@kernel-space.org>
+> ---
+>  drivers/net/can/Kconfig | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>=20
+> diff --git a/drivers/net/can/Kconfig b/drivers/net/can/Kconfig
+> index e355d3974977..7a1be9dad52d 100644
+> --- a/drivers/net/can/Kconfig
+> +++ b/drivers/net/can/Kconfig
+> @@ -97,7 +97,7 @@ config CAN_AT91
+> =20
+>  config CAN_FLEXCAN
+>  	tristate "Support for Freescale FLEXCAN based chips"
+> -	depends on OF && HAS_IOMEM
+> +	depends on (OF || M5441x) && HAS_IOMEM
 
-> regards,
-> Marc
-> 
+I think it's OK to only remove the OF.
 
-Regards,
-angelo
+>  	help
+>  	  Say Y here if you want to support for Freescale FlexCAN.
+> =20
+> --=20
+> 2.31.1
+>=20
+>
+
+Marc
+
+--=20
+Pengutronix e.K.                 | Marc Kleine-Budde           |
+Embedded Linux                   | https://www.pengutronix.de  |
+Vertretung West/Dortmund         | Phone: +49-231-2826-924     |
+Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-5555 |
+
+--bc7ek4i77udtpll3
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEK3kIWJt9yTYMP3ehqclaivrt76kFAmDLaecACgkQqclaivrt
+76kGmQgAtZblFfhWySgYy4TzIL4l+9+s03I2/NlmZUBV1jKP0uwjVN69La0eApMQ
+mopi1Y1NAG5t9RNf1G4niRQ0g9tj2RJv1rk21wtGinr3W3LKfnPh9fYHLmh7WJPd
+wuSEDAy89IZPRP/6F9nU1jYRUGTsyht1zzorfcDfJrmHzz1KcZq6REcDmdYz9LA5
+IJG5lHqF0FLbgHxi/FZh9M+ctkTywM0GCnE+kd4pBJrAJ5wiizFwn3Q9thApmzQm
+jxZB7DA5/vBIeJjIVgoVe3z2TIrWkTFoyiLa+GxpdABOVhOl4qPwYvTEWH49cPzH
+7WkIplvEVAosoNR+brCG0+ydBwzpPg==
+=miXF
+-----END PGP SIGNATURE-----
+
+--bc7ek4i77udtpll3--
