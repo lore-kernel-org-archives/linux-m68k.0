@@ -2,205 +2,119 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-12.6 required=3.0 tests=BAYES_00,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,NICE_REPLY_A,SPF_HELO_NONE,SPF_PASS,UNWANTED_LANGUAGE_BODY,
-	USER_AGENT_SANE_1 autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-4.4 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,NICE_REPLY_A,SPF_HELO_NONE,
+	SPF_PASS,USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B099BC48BE6
-	for <linux-m68k@archiver.kernel.org>; Thu, 17 Jun 2021 00:18:21 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A2777C48BE5
+	for <linux-m68k@archiver.kernel.org>; Thu, 17 Jun 2021 01:10:07 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 7C7A5613CB
-	for <linux-m68k@archiver.kernel.org>; Thu, 17 Jun 2021 00:18:21 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 6E671613CA
+	for <linux-m68k@archiver.kernel.org>; Thu, 17 Jun 2021 01:10:07 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234942AbhFQAU1 (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Wed, 16 Jun 2021 20:20:27 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57688 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229681AbhFQAU1 (ORCPT <rfc822;linux-m68k@vger.kernel.org>);
-        Wed, 16 Jun 2021 20:20:27 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 27090613BD;
-        Thu, 17 Jun 2021 00:18:18 +0000 (UTC)
-Subject: Re: [PATCH v2 3/5] m68k: m5441x: add flexcan support
-To:     Angelo Dureghello <angelo@kernel-space.org>, wg@grandegger.com,
-        mkl@pengutronix.de
-Cc:     geert@linux-m68k.org, linux-m68k@vger.kernel.org,
-        linux-can@vger.kernel.org, qiangqing.zhang@nxp.com
-References: <20210616231652.738027-1-angelo@kernel-space.org>
- <20210616231652.738027-3-angelo@kernel-space.org>
-From:   Greg Ungerer <gerg@linux-m68k.org>
-Message-ID: <45495fee-b026-0a2c-6b98-1631cbd8060f@linux-m68k.org>
-Date:   Thu, 17 Jun 2021 10:18:16 +1000
+        id S231750AbhFQBMN (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Wed, 16 Jun 2021 21:12:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55228 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230267AbhFQBMN (ORCPT
+        <rfc822;linux-m68k@vger.kernel.org>); Wed, 16 Jun 2021 21:12:13 -0400
+Received: from mail-pf1-x430.google.com (mail-pf1-x430.google.com [IPv6:2607:f8b0:4864:20::430])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 98D3EC061574;
+        Wed, 16 Jun 2021 18:10:06 -0700 (PDT)
+Received: by mail-pf1-x430.google.com with SMTP id z26so3625803pfj.5;
+        Wed, 16 Jun 2021 18:10:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-transfer-encoding:content-language;
+        bh=5CFAnD2pFgTapSI0IuW8VVi8leOVL2PTk0MVDgV8WjU=;
+        b=O26FgXo6QsfESEQaT+Ndre/bXFjpQ2RZWUKz+u8cQZzwjiQWxdngXyvcAaix15xtCo
+         OpQmyaRTNPrmqLqsAo3iJDv/tEPVkhV/6E63Uqg3Rg6Mm3KRwp3Dhu+2Nv1v8o1BuJki
+         kEDE86fVgv23R33I/pBStn+1ogOLSsZ/pYCluShIduWfcKJd4QGma26TGaVLoJBrd27T
+         ach4MGapeEqonG2wa4N3Usrsf1+wb2xdWTZ2lGQ6mmqmt7NGB7Hdpqaf9ZNhvxruBvxx
+         Yo9qPOS6jBGHIlch9IdzluHyQQRjiv7GQac76CH5/Mg7hqwiJXR8qs8m31miS6CRTfNO
+         ZBpw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=5CFAnD2pFgTapSI0IuW8VVi8leOVL2PTk0MVDgV8WjU=;
+        b=DEjT+HPXpkcDNvjqqiqvS45g/KQfRTjntebv0jW+Ifv6upQtALyzHi5buE2eM5pp3F
+         z4NpfJgCeGnh3fsorfxJoDWSJVexfZyjZEpkkG6/zY1T/SNOX4T4j2QnX8yuHKwROFEo
+         uZoc64iVo8359Lg6FoaXbWDwecPpmNrf7QomiO6RhQYlElQd01UcLV8S2nl/pBgn9PXG
+         CFZ4+zeWQ846YACUnvD2y3TPRj2AVwQcf1MTh2O9S6sWx1B7Ac2jwP9mwYoqsESuBLlf
+         txb+52d83yM1bMcmSJRRSFwZOBWmiLRwUF5RN2R+TIa8hihWrhuQXpooZtqs3AgFtoA9
+         XGAQ==
+X-Gm-Message-State: AOAM531kILO8558cL+FRWb0uV2Y66pOmPL1Q7zd7rkGBVbs0wKIV/BqE
+        fjLfULrVaM5gMQXuNESphI8=
+X-Google-Smtp-Source: ABdhPJzPC3QiD7aZcmcAleSzjXkZaSMB7vcYTXvwvU7oVODneGdRAO+OXUeWPQVIIe/IyulRcACb2w==
+X-Received: by 2002:a63:a44:: with SMTP id z4mr2349161pgk.379.1623892206137;
+        Wed, 16 Jun 2021 18:10:06 -0700 (PDT)
+Received: from ?IPv6:2001:df0:0:200c:9d12:c2c8:273e:6ffd? ([2001:df0:0:200c:9d12:c2c8:273e:6ffd])
+        by smtp.gmail.com with ESMTPSA id r10sm3603660pga.48.2021.06.16.18.10.02
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 16 Jun 2021 18:10:05 -0700 (PDT)
+Subject: Re: [PATCH v2 0/2] Add APNE PCMCIA 100 Mbit support
+To:     ALeX Kazik <alex@kazik.de>
+Cc:     Linux/m68k <linux-m68k@vger.kernel.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        linux-ide@vger.kernel.org, Finn Thain <fthain@linux-m68k.org>
+References: <1623224214-4836-1-git-send-email-schmitzmic@gmail.com>
+ <1623290953-18000-1-git-send-email-schmitzmic@gmail.com>
+ <CAFFuhJpT+2h+4O_q15VjE_77iCQaxwLJC11siSFrr5GbjQ-pFw@mail.gmail.com>
+From:   Michael Schmitz <schmitzmic@gmail.com>
+Message-ID: <904176c2-810f-0573-998f-31b55e617448@gmail.com>
+Date:   Thu, 17 Jun 2021 13:10:00 +1200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
  Thunderbird/78.8.1
 MIME-Version: 1.0
-In-Reply-To: <20210616231652.738027-3-angelo@kernel-space.org>
+In-Reply-To: <CAFFuhJpT+2h+4O_q15VjE_77iCQaxwLJC11siSFrr5GbjQ-pFw@mail.gmail.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-Hi Angelo,
+Hi Alex,
 
-On 17/6/21 9:16 am, Angelo Dureghello wrote:
-> Add flexcan support.
-> 
-> ---
-> Changes for v2:
-> - add irq resources for ERR and BOFF interrutps
-> 
-> Signed-off-by: Angelo Dureghello <angelo@kernel-space.org>
+Thanks for testing!
 
-You should put your signed-off-by above the first "---".
-Tools like "git am" drop everything below the first "---" and before the
-patch proper. So it ends up losing your signed-off-by.
+On 17/06/21 9:11 am, ALeX Kazik wrote:
+> Hi,
+>
+> I've tested the patches and they work.
+>
+> At first I got it only to work with the following line removed/commented out:
+>    if (apne_100_mbit)
+> And thus enabling the following line always.
+>
+> I've changed, with the help of Michael, the parameters to:
+>
+>    static u32 apne_100_mbit = 0;
+>    module_param_named(100_mbit, apne_100_mbit, uint, 0644);
+>    MODULE_PARM_DESC(100_mbit, "Enable 100 Mbit support");
+>
+> And was able to enable it with the kernel option "apne.100_mbit=1".
+>
+> It's also available as /sys/module/apne/parameters/100_mbit
+>
+> The 0644 is the permission (root can change it), If it shouldn't be
+> changed at runtime 0444 or 0 would be used.
+Changing that parameter at runtime won't do anything (it's only tested 
+at device probe time). But I'd better change the permission to 444.
+> (I think there is also a bool option instead of the uint, but I'm glad
+> it works like this.)
 
-Regards
-Greg
+True, that would be the better option indeed. I'll change that in the 
+next version (which will go to netdev as well).
+
+Cheers,
+
+     Michael
 
 
-
-> ---
->   arch/m68k/coldfire/device.c       | 42 +++++++++++++++++++++++++++++++
->   arch/m68k/coldfire/m5441x.c       |  8 +++---
->   arch/m68k/include/asm/m5441xsim.h | 19 ++++++++++++++
->   3 files changed, 65 insertions(+), 4 deletions(-)
-> 
-> diff --git a/arch/m68k/coldfire/device.c b/arch/m68k/coldfire/device.c
-> index 59f7dfe50a4d..1b2eaee6d6f6 100644
-> --- a/arch/m68k/coldfire/device.c
-> +++ b/arch/m68k/coldfire/device.c
-> @@ -23,6 +23,7 @@
->   #include <linux/platform_data/edma.h>
->   #include <linux/platform_data/dma-mcf-edma.h>
->   #include <linux/platform_data/mmc-esdhc-mcf.h>
-> +#include <linux/can/platform/mcf5441x.h>
->   
->   /*
->    *	All current ColdFire parts contain from 2, 3, 4 or 10 UARTS.
-> @@ -581,6 +582,44 @@ static struct platform_device mcf_esdhc = {
->   };
->   #endif /* MCFSDHC_BASE */
->   
-> +#if IS_ENABLED(CONFIG_CAN)
-> +static struct mcf_flexcan_platform_data mcf_flexcan_info = {
-> +	.clk_src = 1,
-> +	.clock_frequency = 120000000,
-> +};
-> +
-> +static struct resource mcf_flexcan0_resource[] = {
-> +	{
-> +		.start = MCFFLEXCAN_BASE0,
-> +		.end = MCFFLEXCAN_BASE0 + MCFFLEXCAN_SIZE,
-> +		.flags = IORESOURCE_MEM,
-> +	},
-> +	{
-> +		.start = MCF_IRQ_IFL0,
-> +		.end = MCF_IRQ_IFL0,
-> +		.flags = IORESOURCE_IRQ,
-> +	},
-> +	{
-> +		.start = MCF_IRQ_BOFF0,
-> +		.end = MCF_IRQ_BOFF0,
-> +		.flags = IORESOURCE_IRQ,
-> +	},
-> +	{
-> +		.start = MCF_IRQ_ERR0,
-> +		.end = MCF_IRQ_ERR0,
-> +		.flags = IORESOURCE_IRQ,
-> +	},
-> +};
-> +
-> +static struct platform_device mcf_flexcan0 = {
-> +	.name = "flexcan-mcf",
-> +	.id = 0,
-> +	.num_resources = ARRAY_SIZE(mcf_flexcan0_resource),
-> +	.resource = mcf_flexcan0_resource,
-> +	.dev.platform_data = &mcf_flexcan_info,
-> +};
-> +#endif /* IS_ENABLED(CONFIG_CAN) */
-> +
->   static struct platform_device *mcf_devices[] __initdata = {
->   	&mcf_uart,
->   #if IS_ENABLED(CONFIG_FEC)
-> @@ -616,6 +655,9 @@ static struct platform_device *mcf_devices[] __initdata = {
->   #ifdef MCFSDHC_BASE
->   	&mcf_esdhc,
->   #endif
-> +#if IS_ENABLED(CONFIG_CAN)
-> +	&mcf_flexcan0,
-> +#endif
->   };
->   
->   /*
-> diff --git a/arch/m68k/coldfire/m5441x.c b/arch/m68k/coldfire/m5441x.c
-> index 1e5259a652d1..18b152edb69c 100644
-> --- a/arch/m68k/coldfire/m5441x.c
-> +++ b/arch/m68k/coldfire/m5441x.c
-> @@ -18,8 +18,8 @@
->   #include <asm/mcfclk.h>
->   
->   DEFINE_CLK(0, "flexbus", 2, MCF_CLK);
-> -DEFINE_CLK(0, "mcfcan.0", 8, MCF_CLK);
-> -DEFINE_CLK(0, "mcfcan.1", 9, MCF_CLK);
-> +DEFINE_CLK(0, "flexcan.0", 8, MCF_CLK);
-> +DEFINE_CLK(0, "flexcan.1", 9, MCF_CLK);
->   DEFINE_CLK(0, "imx1-i2c.1", 14, MCF_CLK);
->   DEFINE_CLK(0, "mcfdspi.1", 15, MCF_CLK);
->   DEFINE_CLK(0, "edma", 17, MCF_CLK);
-> @@ -146,6 +146,8 @@ struct clk *mcf_clks[] = {
->   
->   static struct clk * const enable_clks[] __initconst = {
->   	/* make sure these clocks are enabled */
-> +	&__clk_0_8, /* flexcan.0 */
-> +	&__clk_0_9, /* flexcan.1 */
->   	&__clk_0_15, /* dspi.1 */
->   	&__clk_0_17, /* eDMA */
->   	&__clk_0_18, /* intc0 */
-> @@ -166,8 +168,6 @@ static struct clk * const enable_clks[] __initconst = {
->   	&__clk_1_37, /* gpio */
->   };
->   static struct clk * const disable_clks[] __initconst = {
-> -	&__clk_0_8, /* can.0 */
-> -	&__clk_0_9, /* can.1 */
->   	&__clk_0_14, /* i2c.1 */
->   	&__clk_0_22, /* i2c.0 */
->   	&__clk_0_23, /* dspi.0 */
-> diff --git a/arch/m68k/include/asm/m5441xsim.h b/arch/m68k/include/asm/m5441xsim.h
-> index e091e36d3464..f48cf63bd782 100644
-> --- a/arch/m68k/include/asm/m5441xsim.h
-> +++ b/arch/m68k/include/asm/m5441xsim.h
-> @@ -73,6 +73,12 @@
->   #define MCFINT0_FECENTC1	55
->   
->   /* on interrupt controller 1 */
-> +#define MCFINT1_FLEXCAN0_IFL	0
-> +#define MCFINT1_FLEXCAN0_BOFF	1
-> +#define MCFINT1_FLEXCAN0_ERR	3
-> +#define MCFINT1_FLEXCAN1_IFL	4
-> +#define MCFINT1_FLEXCAN1_BOFF	5
-> +#define MCFINT1_FLEXCAN1_ERR	7
->   #define MCFINT1_UART4		48
->   #define MCFINT1_UART5		49
->   #define MCFINT1_UART6		50
-> @@ -314,4 +320,17 @@
->   #define MCF_IRQ_SDHC		(MCFINT2_VECBASE + MCFINT2_SDHC)
->   #define MCFSDHC_CLK		(MCFSDHC_BASE + 0x2c)
->   
-> +/*
-> + * Flexcan module
-> + */
-> +#define MCFFLEXCAN_BASE0	0xfc020000
-> +#define MCFFLEXCAN_BASE1	0xfc024000
-> +#define MCFFLEXCAN_SIZE		0x4000
-> +#define MCF_IRQ_IFL0		(MCFINT1_VECBASE + MCFINT1_FLEXCAN0_IFL)
-> +#define MCF_IRQ_BOFF0		(MCFINT1_VECBASE + MCFINT1_FLEXCAN0_BOFF)
-> +#define MCF_IRQ_ERR0		(MCFINT1_VECBASE + MCFINT1_FLEXCAN0_ERR)
-> +#define MCF_IRQ_IFL1		(MCFINT1_VECBASE + MCFINT1_FLEXCAN1_IFL)
-> +#define MCF_IRQ_BOFF1		(MCFINT1_VECBASE + MCFINT1_FLEXCAN1_BOFF)
-> +#define MCF_IRQ_ERR1		(MCFINT1_VECBASE + MCFINT1_FLEXCAN1_ERR)
-> +
->   #endif /* m5441xsim_h */
-> 
+>
+> Alex.
