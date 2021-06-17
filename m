@@ -2,82 +2,199 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+X-Spam-Status: No, score=-15.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	USER_AGENT_GIT autolearn=no autolearn_force=no version=3.4.0
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 96332C2B9F4
-	for <linux-m68k@archiver.kernel.org>; Thu, 17 Jun 2021 05:28:43 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 497EEC2B9F4
+	for <linux-m68k@archiver.kernel.org>; Thu, 17 Jun 2021 05:28:50 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 6309B61241
-	for <linux-m68k@archiver.kernel.org>; Thu, 17 Jun 2021 05:28:43 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 1700C6128C
+	for <linux-m68k@archiver.kernel.org>; Thu, 17 Jun 2021 05:28:50 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229515AbhFQFat (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Thu, 17 Jun 2021 01:30:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55366 "EHLO
+        id S229683AbhFQFa4 (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Thu, 17 Jun 2021 01:30:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55392 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229580AbhFQFat (ORCPT
-        <rfc822;linux-m68k@vger.kernel.org>); Thu, 17 Jun 2021 01:30:49 -0400
-Received: from mail-pl1-x62b.google.com (mail-pl1-x62b.google.com [IPv6:2607:f8b0:4864:20::62b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A09E4C061574
-        for <linux-m68k@vger.kernel.org>; Wed, 16 Jun 2021 22:28:42 -0700 (PDT)
-Received: by mail-pl1-x62b.google.com with SMTP id e7so2310935plj.7
-        for <linux-m68k@vger.kernel.org>; Wed, 16 Jun 2021 22:28:42 -0700 (PDT)
+        with ESMTP id S229580AbhFQFa4 (ORCPT
+        <rfc822;linux-m68k@vger.kernel.org>); Thu, 17 Jun 2021 01:30:56 -0400
+Received: from mail-pg1-x52d.google.com (mail-pg1-x52d.google.com [IPv6:2607:f8b0:4864:20::52d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 96FFAC061574
+        for <linux-m68k@vger.kernel.org>; Wed, 16 Jun 2021 22:28:49 -0700 (PDT)
+Received: by mail-pg1-x52d.google.com with SMTP id t17so3986069pga.5
+        for <linux-m68k@vger.kernel.org>; Wed, 16 Jun 2021 22:28:49 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=IFywHEcVNePkUFCp4ND1o9fM3/6/OfmM6q2uBS+rX1k=;
-        b=rA3PUDOyaiORM437Wt7y6kPmgDHJIIkaxho6YxfteQPraksQPbiedloQyNn5t1t971
-         qJsIGaljdz8FWIDy/x6sjnkGp4hzvUhYkElyrcQli1/0+7PAugbRcQV7zJ511cNAUOT0
-         09rO67aN8Y0QHwtZDEkt6Oerdl0NkVJiLaRzjAg6fz+svl9MZHAKiM1iYhbi5eRIM2M+
-         uNsKupX+o7Ok/6UAdOtO+uYrKLRVd3urKOMsza3dMyox+lWq0Fa/ne1D09Z4QRmNsvRX
-         CUInc5bo6PotbRHNVipZDD2Wwtf3yT6BUdtM8MJQIdK6bLaXcv7By+xJkRzHmZERGd6/
-         T6Pw==
+        h=from:to:cc:subject:date:message-id:in-reply-to:references;
+        bh=eWB1M8mXOkRZXtMwwlZeHzR+WSj1aGwPLzSUUqVXtf4=;
+        b=CkAW4SltoFkz2bV0XW0DbOZJEou/8/AyCTyxdjhaUhiCIzvPZUQAgqzmeLVaWTHgl0
+         /GJ2u2HwDvQVaDd4XY0WsBl0fQ9WrzBG54xwfBNPGunBn2AdS6P/fS+u01Ky1MxPE5rt
+         vLVC2BoU0jckU9/o8CbT79RcVoijVwedFntJKo/RFC79El4tMNMHC43tV19xy+yMst/X
+         STh8+Dih9Aje0Le3SF9cRtlliCbfeC6EgaI503jEKisZG+Da0y6XRM2OMuW+46nn/Y3U
+         QVhpPNXiIeCxziQCtBPDgtYsTE5P+ppYLct2vgMBaZt0wUfnln3WL7zL/T0RGsrHwuZ/
+         qqaQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=IFywHEcVNePkUFCp4ND1o9fM3/6/OfmM6q2uBS+rX1k=;
-        b=jYKeUAxNlHE0eLSwr/HyHEwc5mYEAST1kpex9SVJ7EZruoR8VXw9N4vToLShkNS1sC
-         Zcqt5nxGzkc/cnyJ8NBUfwpE7Q+UUuffYrWiaJj7Dzj7sWb22fa9UyMuixyAgx1S7vjx
-         IAnpL0OI74dQD/KsePCV6ckLJPGKZtsO84xFCt8zUBImKoQO39+Mm97uxCmO+U9sK7eC
-         NbgYJ6cth/6rQH79emNiGBqT/Iyr1AkER81sudRJZeDhtT+3YAHzejJ+SfaZ8dlTKTlX
-         cNMT1BTO/jljpoddiXlfR9R4HJ7WtnxhCvaNrrt8Y5D47f6anSI4UQKBMwwSn0qSrynB
-         e5Gg==
-X-Gm-Message-State: AOAM533kUsV1lMHisUGFkPnAk9e1MHHJcgwU57JaapXakr0tZDCMSYl2
-        4El5BTTKnikPI3SavyRpO0pR5lrVynXXOw==
-X-Google-Smtp-Source: ABdhPJxFVIRXFrngFrLf0nISXyVV58rYkjurSwm5+QF5WDMkRgb+XoxOJUPP+rVm9ttGOnJowJHHEg==
-X-Received: by 2002:a17:90a:5b13:: with SMTP id o19mr3782579pji.33.1623907722099;
-        Wed, 16 Jun 2021 22:28:42 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references;
+        bh=eWB1M8mXOkRZXtMwwlZeHzR+WSj1aGwPLzSUUqVXtf4=;
+        b=hC2rK+qNAp0IB4RigM+0H5ULDNRMmv4LexbASHGtlhU6OfNxAlxFBApQLv4whZa+OT
+         izLs5DJxLeIDGvLutoS07oMapZpqapGg1vwvVDo0+641qEWrAftETxfZgCP7v52XhS+/
+         mFVj94P8CuBNJSeIs8ImXo9h19DvybLiDCaWDgoHbJ74sYGBzxOiT6/g19wQrOzW1Uso
+         2m8z6fa3cJQg3qbo7dvI4Nt/YOhuL6iOc+Avc0ah4GXTpBiC46P5kn8wqr4M7lQzC3aT
+         4hqqQ6kF7bD2ScX/HCysG9o6Y0c7BoHultUvpeXzlpsyQWKFyPYRgcvnHQZoHYpa6FoF
+         e0cg==
+X-Gm-Message-State: AOAM530QPbNGgu9ghIAOIjFqkW40wp65oxBdNduQD53VxSo/zorphLkW
+        Pm7/Nuf8CeDHBhydaRmMT+U=
+X-Google-Smtp-Source: ABdhPJxhVuV9lZwb734rko+XSTwcf2HCy0Kyzmkjwkc3wRjPDW3O7qGdf/HVAaSWLPFN93LzrfKeTQ==
+X-Received: by 2002:a63:b645:: with SMTP id v5mr3315755pgt.15.1623907728630;
+        Wed, 16 Jun 2021 22:28:48 -0700 (PDT)
 Received: from xplor.waratah.dyndns.org (222-152-189-137-fibre.sparkbb.co.nz. [222.152.189.137])
-        by smtp.gmail.com with ESMTPSA id 21sm3554994pfh.103.2021.06.16.22.28.41
+        by smtp.gmail.com with ESMTPSA id q12sm4233572pgc.25.2021.06.16.22.28.47
         (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Wed, 16 Jun 2021 22:28:41 -0700 (PDT)
+        Wed, 16 Jun 2021 22:28:48 -0700 (PDT)
 Received: by xplor.waratah.dyndns.org (Postfix, from userid 1000)
-        id DFCCD36040F; Thu, 17 Jun 2021 17:28:37 +1200 (NZST)
+        id 9214C36040F; Thu, 17 Jun 2021 17:28:44 +1200 (NZST)
 From:   Michael Schmitz <schmitzmic@gmail.com>
 To:     linux-m68k@vger.kernel.org, geert@linux-m68k.org
-Cc:     alex@kazik.de
-Subject: [PATCH v3 0/2] Add APNE PCMCIA 100 Mbit support
-Date:   Thu, 17 Jun 2021 17:28:30 +1200
-Message-Id: <1623907712-29366-1-git-send-email-schmitzmic@gmail.com>
+Cc:     alex@kazik.de, Michael Schmitz <schmitzmic@gmail.com>
+Subject: [PATCH v3 1/2] m68k: io_mm.h - add APNE 100 MBit support
+Date:   Thu, 17 Jun 2021 17:28:31 +1200
+Message-Id: <1623907712-29366-2-git-send-email-schmitzmic@gmail.com>
 X-Mailer: git-send-email 2.7.4
+In-Reply-To: <1623907712-29366-1-git-send-email-schmitzmic@gmail.com>
+References: <1623907712-29366-1-git-send-email-schmitzmic@gmail.com>
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-Add another ISA type for these cards, and switch to that type from the
-APNE probe code in response to a module parameter. 
+Add code to support 10 Mbit and 100 Mbit mode for APNE driver.
 
-I've addressed review comments received so far, to the best of my ability.
-Patch 1 not changed in v3, only fixes to patch 2 by Alex Kazik included.
+A new ISA type ISA_TYPE_AG16 dynamically switches the Amiga
+ISA inb accessor to word access as required by the 100 Mbit cards.
 
-v3 is the first version of this patch series sent to net-next (apne.c part
-only).
+Patch modified after patch "[PATCH RFC net-next] Amiga PCMCIA
+100 MBit card support" submitted to netdev 2018/09/16 by Alex
+Kazik <alex@kazik.de>.
 
-Tested by Alex on his Amiga 1200.
+Signed-off-by: Michael Schmitz <schmitzmic@gmail.com>
 
-Cheers,
+--
+Changes from v1:
 
-   Michael
-   
+Andreas Schwab:
+- remove redundant fallthrough annotations
+
+Changes from RFC:
+
+Geert Uytterhoeven:
+- rename ISA_TYPE_AG100 to ISA_TYPE_AG16 (16 bit cards)
+- move ISA_TYPE_AG16 case inside #ifdef CONFIG_AMIGA_PCMCIA
+- change #if defined(CONFIG_APNE_100MBIT) to #ifdef
+- fix parentheses in isa_inb() define
+- omit comment about compiler optimization
+
+- add ISA_TYPE_AG16 case to isa_delay()
+
+fixup - review comment Andreas Schwab (fallthrough)
+---
+ arch/m68k/include/asm/io_mm.h | 26 +++++++++++++++++++++++++-
+ 1 file changed, 25 insertions(+), 1 deletion(-)
+
+diff --git a/arch/m68k/include/asm/io_mm.h b/arch/m68k/include/asm/io_mm.h
+index 9c521b0..3ab2f1d 100644
+--- a/arch/m68k/include/asm/io_mm.h
++++ b/arch/m68k/include/asm/io_mm.h
+@@ -101,6 +101,11 @@
+ #define ISA_TYPE_Q40  (1)
+ #define ISA_TYPE_AG   (2)
+ #define ISA_TYPE_ENEC (3)
++#define ISA_TYPE_AG16 (4)	/* for 100 MBit APNE card */
++
++#if defined(CONFIG_APNE100MBIT)
++#define MULTI_ISA 1
++#endif
+ 
+ #if defined(CONFIG_Q40) && !defined(MULTI_ISA)
+ #define ISA_TYPE ISA_TYPE_Q40
+@@ -136,6 +141,9 @@ static inline u8 __iomem *isa_itb(unsigned long addr)
+     case ISA_TYPE_Q40: return (u8 __iomem *)Q40_ISA_IO_B(addr);
+ #endif
+ #ifdef CONFIG_AMIGA_PCMCIA
++#ifdef CONFIG_APNE100MBIT
++    case ISA_TYPE_AG16:
++#endif
+     case ISA_TYPE_AG: return (u8 __iomem *)AG_ISA_IO_B(addr);
+ #endif
+ #ifdef CONFIG_ATARI_ROM_ISA
+@@ -155,6 +163,9 @@ static inline u16 __iomem *isa_itw(unsigned long addr)
+     case ISA_TYPE_Q40: return (u16 __iomem *)Q40_ISA_IO_W(addr);
+ #endif
+ #ifdef CONFIG_AMIGA_PCMCIA
++#ifdef CONFIG_APNE100MBIT
++    case ISA_TYPE_AG16:
++#endif
+     case ISA_TYPE_AG: return (u16 __iomem *)AG_ISA_IO_W(addr);
+ #endif
+ #ifdef CONFIG_ATARI_ROM_ISA
+@@ -171,6 +182,9 @@ static inline u32 __iomem *isa_itl(unsigned long addr)
+   switch(ISA_TYPE)
+     {
+ #ifdef CONFIG_AMIGA_PCMCIA
++#ifdef CONFIG_APNE100MBIT
++    case ISA_TYPE_AG16:
++#endif
+     case ISA_TYPE_AG: return (u32 __iomem *)AG_ISA_IO_W(addr);
+ #endif
+     }
+@@ -184,6 +198,9 @@ static inline u8 __iomem *isa_mtb(unsigned long addr)
+     case ISA_TYPE_Q40: return (u8 __iomem *)Q40_ISA_MEM_B(addr);
+ #endif
+ #ifdef CONFIG_AMIGA_PCMCIA
++#ifdef CONFIG_APNE100MBIT
++    case ISA_TYPE_AG16:
++#endif
+     case ISA_TYPE_AG: return (u8 __iomem *)addr;
+ #endif
+ #ifdef CONFIG_ATARI_ROM_ISA
+@@ -203,6 +220,9 @@ static inline u16 __iomem *isa_mtw(unsigned long addr)
+     case ISA_TYPE_Q40: return (u16 __iomem *)Q40_ISA_MEM_W(addr);
+ #endif
+ #ifdef CONFIG_AMIGA_PCMCIA
++#ifdef CONFIG_APNE100MBIT
++    case ISA_TYPE_AG16:
++#endif
+     case ISA_TYPE_AG: return (u16 __iomem *)addr;
+ #endif
+ #ifdef CONFIG_ATARI_ROM_ISA
+@@ -216,13 +236,14 @@ static inline u16 __iomem *isa_mtw(unsigned long addr)
+ }
+ 
+ 
+-#define isa_inb(port)      in_8(isa_itb(port))
+ #define isa_inw(port)      (ISA_SEX ? in_be16(isa_itw(port)) : in_le16(isa_itw(port)))
+ #define isa_inl(port)      (ISA_SEX ? in_be32(isa_itl(port)) : in_le32(isa_itl(port)))
+ #define isa_outb(val,port) out_8(isa_itb(port),(val))
+ #define isa_outw(val,port) (ISA_SEX ? out_be16(isa_itw(port),(val)) : out_le16(isa_itw(port),(val)))
+ #define isa_outl(val,port) (ISA_SEX ? out_be32(isa_itl(port),(val)) : out_le32(isa_itl(port),(val)))
+ 
++#define isa_inb(port)      ((ISA_TYPE == ISA_TYPE_AG16) ? ((port) & 1 ? isa_inw((port) - 1) & 0xff : isa_inw(port) >> 8) : in_8(isa_itb(port)))
++
+ #define isa_readb(p)       in_8(isa_mtb((unsigned long)(p)))
+ #define isa_readw(p)       \
+ 	(ISA_SEX ? in_be16(isa_mtw((unsigned long)(p)))	\
+@@ -270,6 +291,9 @@ static inline void isa_delay(void)
+     case ISA_TYPE_Q40: isa_outb(0,0x80); break;
+ #endif
+ #ifdef CONFIG_AMIGA_PCMCIA
++#ifdef CONFIG_APNE100MBIT
++    case ISA_TYPE_AG16: break;
++#endif
+     case ISA_TYPE_AG: break;
+ #endif
+ #ifdef CONFIG_ATARI_ROM_ISA
+-- 
+2.7.4
+
