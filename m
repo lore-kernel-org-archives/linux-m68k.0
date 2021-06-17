@@ -7,31 +7,29 @@ X-Spam-Status: No, score=-13.8 required=3.0 tests=BAYES_00,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9E018C2B9F4
-	for <linux-m68k@archiver.kernel.org>; Thu, 17 Jun 2021 06:51:47 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 381EFC2B9F4
+	for <linux-m68k@archiver.kernel.org>; Thu, 17 Jun 2021 06:59:03 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 6D3C161159
-	for <linux-m68k@archiver.kernel.org>; Thu, 17 Jun 2021 06:51:47 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 18FF26120A
+	for <linux-m68k@archiver.kernel.org>; Thu, 17 Jun 2021 06:59:03 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229515AbhFQGxx (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Thu, 17 Jun 2021 02:53:53 -0400
-Received: from kvm5.telegraphics.com.au ([98.124.60.144]:33314 "EHLO
+        id S229848AbhFQHBJ (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Thu, 17 Jun 2021 03:01:09 -0400
+Received: from kvm5.telegraphics.com.au ([98.124.60.144]:33498 "EHLO
         kvm5.telegraphics.com.au" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229712AbhFQGxx (ORCPT
-        <rfc822;linux-m68k@vger.kernel.org>); Thu, 17 Jun 2021 02:53:53 -0400
+        with ESMTP id S229846AbhFQHBJ (ORCPT
+        <rfc822;linux-m68k@vger.kernel.org>); Thu, 17 Jun 2021 03:01:09 -0400
 Received: from localhost (localhost.localdomain [127.0.0.1])
-        by kvm5.telegraphics.com.au (Postfix) with ESMTP id BED3E2BF26;
-        Thu, 17 Jun 2021 02:51:34 -0400 (EDT)
-Date:   Thu, 17 Jun 2021 16:51:33 +1000 (AEST)
+        by kvm5.telegraphics.com.au (Postfix) with ESMTP id BEC332BD2A;
+        Thu, 17 Jun 2021 02:58:59 -0400 (EDT)
+Date:   Thu, 17 Jun 2021 16:58:59 +1000 (AEST)
 From:   Finn Thain <fthain@linux-m68k.org>
 To:     Michael Schmitz <schmitzmic@gmail.com>
-cc:     linux-m68k@vger.kernel.org, geert@linux-m68k.org, alex@kazik.de,
-        netdev@vger.kernel.org
-Subject: Re: [PATCH net-next v3 2/2] net/8390: apne.c - add 100 Mbit support
- to apne.c driver
-In-Reply-To: <1623907712-29366-3-git-send-email-schmitzmic@gmail.com>
-Message-ID: <d661fb8-274d-6731-75f4-685bb2311c41@linux-m68k.org>
-References: <1623907712-29366-1-git-send-email-schmitzmic@gmail.com> <1623907712-29366-3-git-send-email-schmitzmic@gmail.com>
+cc:     linux-m68k@vger.kernel.org, geert@linux-m68k.org, alex@kazik.de
+Subject: Re: [PATCH v3 1/2] m68k: io_mm.h - add APNE 100 MBit support
+In-Reply-To: <1623907712-29366-2-git-send-email-schmitzmic@gmail.com>
+Message-ID: <8fad435e-e541-befe-8e3c-ccd75b3db0db@linux-m68k.org>
+References: <1623907712-29366-1-git-send-email-schmitzmic@gmail.com> <1623907712-29366-2-git-send-email-schmitzmic@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
@@ -40,114 +38,139 @@ X-Mailing-List: linux-m68k@vger.kernel.org
 
 On Thu, 17 Jun 2021, Michael Schmitz wrote:
 
-> Add Kconfig option, module parameter and PCMCIA reset code
-> required to support 100 Mbit PCMCIA ethernet cards on Amiga.
+> Add code to support 10 Mbit and 100 Mbit mode for APNE driver.
 > 
-> 10 Mbit and 100 Mbit mode are supported by the same module.
-> A module parameter switches Amiga ISA IO accessors to word
-> access by changing isa_type at runtime. Additional code to
-> reset the PCMCIA hardware is also added to the driver probe.
+> A new ISA type ISA_TYPE_AG16 dynamically switches the Amiga
+> ISA inb accessor to word access as required by the 100 Mbit cards.
 > 
 > Patch modified after patch "[PATCH RFC net-next] Amiga PCMCIA
 > 100 MBit card support" submitted to netdev 2018/09/16 by Alex
 > Kazik <alex@kazik.de>.
 > 
-> CC: netdev@vger.kernel.org
-> Tested-by: Alex Kazik <alex@kazik.de>
 > Signed-off-by: Michael Schmitz <schmitzmic@gmail.com>
 > 
 > --
 > Changes from v1:
 > 
-> - fix module parameter name in Kconfig help text
-> 
-> Alex Kazik:
-> - change module parameter type to bool, fix module parameter
->   permission
+> Andreas Schwab:
+> - remove redundant fallthrough annotations
 > 
 > Changes from RFC:
 > 
 > Geert Uytterhoeven:
-> - change APNE_100MBIT to depend on APNE
-> - change '---help---' to 'help' (former no longer supported)
-> - fix whitespace errors
-> - fix module_param_named() arg count
-> - protect all added code by #ifdef CONFIG_APNE_100MBIT
-> ---
->  drivers/net/ethernet/8390/Kconfig | 12 ++++++++++++
->  drivers/net/ethernet/8390/apne.c  | 21 +++++++++++++++++++++
->  2 files changed, 33 insertions(+)
+> - rename ISA_TYPE_AG100 to ISA_TYPE_AG16 (16 bit cards)
+> - move ISA_TYPE_AG16 case inside #ifdef CONFIG_AMIGA_PCMCIA
+> - change #if defined(CONFIG_APNE_100MBIT) to #ifdef
+> - fix parentheses in isa_inb() define
+> - omit comment about compiler optimization
 > 
-> diff --git a/drivers/net/ethernet/8390/Kconfig b/drivers/net/ethernet/8390/Kconfig
-> index 9f4b302..6e4db63 100644
-> --- a/drivers/net/ethernet/8390/Kconfig
-> +++ b/drivers/net/ethernet/8390/Kconfig
-> @@ -143,6 +143,18 @@ config APNE
->  	  To compile this driver as a module, choose M here: the module
->  	  will be called apne.
->  
-> +config APNE100MBIT
-> +	bool "PCMCIA NE2000 100MBit support"
-> +	depends on APNE
-> +	default n
-> +	help
-> +	  This changes the driver to support 10/100Mbit cards (e.g. Netgear
-> +	  FA411, CNet Singlepoint). 10 MBit cards and 100 MBit cards are
-> +	  supported by the same driver.
+> - add ISA_TYPE_AG16 case to isa_delay()
+> 
+> fixup - review comment Andreas Schwab (fallthrough)
+> ---
+>  arch/m68k/include/asm/io_mm.h | 26 +++++++++++++++++++++++++-
+>  1 file changed, 25 insertions(+), 1 deletion(-)
+> 
+> diff --git a/arch/m68k/include/asm/io_mm.h b/arch/m68k/include/asm/io_mm.h
+> index 9c521b0..3ab2f1d 100644
+> --- a/arch/m68k/include/asm/io_mm.h
+> +++ b/arch/m68k/include/asm/io_mm.h
+> @@ -101,6 +101,11 @@
+>  #define ISA_TYPE_Q40  (1)
+>  #define ISA_TYPE_AG   (2)
+>  #define ISA_TYPE_ENEC (3)
+> +#define ISA_TYPE_AG16 (4)	/* for 100 MBit APNE card */
 > +
-> +	  To activate 100 Mbit support at runtime or from the kernel
-> +	  command line, use the apne.100mbit module parameter.
-> +
->  config PCMCIA_PCNET
->  	tristate "NE2000 compatible PCMCIA support"
->  	depends on PCMCIA
-> diff --git a/drivers/net/ethernet/8390/apne.c b/drivers/net/ethernet/8390/apne.c
-> index fe6c834..59e41ad 100644
-> --- a/drivers/net/ethernet/8390/apne.c
-> +++ b/drivers/net/ethernet/8390/apne.c
-> @@ -120,6 +120,12 @@ static u32 apne_msg_enable;
->  module_param_named(msg_enable, apne_msg_enable, uint, 0444);
->  MODULE_PARM_DESC(msg_enable, "Debug message level (see linux/netdevice.h for bitmap)");
->  
-> +#ifdef CONFIG_APNE100MBIT
-> +static bool apne_100_mbit;
-> +module_param_named(apne_100_mbit_msg, apne_100_mbit, bool, 0444);
-> +MODULE_PARM_DESC(apne_100_mbit_msg, "Enable 100 Mbit support");
+> +#if defined(CONFIG_APNE100MBIT)
+> +#define MULTI_ISA 1
 > +#endif
-> +
->  struct net_device * __init apne_probe(int unit)
->  {
->  	struct net_device *dev;
-> @@ -139,6 +145,11 @@ struct net_device * __init apne_probe(int unit)
->  	if ( !(AMIGAHW_PRESENT(PCMCIA)) )
->  		return ERR_PTR(-ENODEV);
 >  
-> +#ifdef CONFIG_APNE100MBIT
-> +	if (apne_100_mbit)
-> +		isa_type = ISA_TYPE_AG16;
-> +#endif
-> +
-
-I think isa_type has to be assigned unconditionally otherwise it can't be 
-reset for 10 mbit cards. Therefore, the AMIGAHW_PRESENT(PCMCIA) logic in 
-arch/m68k/kernel/setup_mm.c probably should move here.
-
->  	pr_info("Looking for PCMCIA ethernet card : ");
->  
->  	/* check if a card is inserted */
-> @@ -590,6 +601,16 @@ static int init_pcmcia(void)
+>  #if defined(CONFIG_Q40) && !defined(MULTI_ISA)
+>  #define ISA_TYPE ISA_TYPE_Q40
+> @@ -136,6 +141,9 @@ static inline u8 __iomem *isa_itb(unsigned long addr)
+>      case ISA_TYPE_Q40: return (u8 __iomem *)Q40_ISA_IO_B(addr);
 >  #endif
->  	u_long offset;
->  
+>  #ifdef CONFIG_AMIGA_PCMCIA
 > +#ifdef CONFIG_APNE100MBIT
-> +	/* reset card (idea taken from CardReset by Artur Pogoda) */
-> +	{
-> +		u_char  tmp = gayle.intreq;
-> +
-> +		gayle.intreq = 0xff;    mdelay(1);
-> +		gayle.intreq = tmp;     mdelay(300);
-> +	}
+> +    case ISA_TYPE_AG16:
 > +#endif
+>      case ISA_TYPE_AG: return (u8 __iomem *)AG_ISA_IO_B(addr);
+>  #endif
+>  #ifdef CONFIG_ATARI_ROM_ISA
+> @@ -155,6 +163,9 @@ static inline u16 __iomem *isa_itw(unsigned long addr)
+>      case ISA_TYPE_Q40: return (u16 __iomem *)Q40_ISA_IO_W(addr);
+>  #endif
+>  #ifdef CONFIG_AMIGA_PCMCIA
+> +#ifdef CONFIG_APNE100MBIT
+> +    case ISA_TYPE_AG16:
+> +#endif
+>      case ISA_TYPE_AG: return (u16 __iomem *)AG_ISA_IO_W(addr);
+>  #endif
+>  #ifdef CONFIG_ATARI_ROM_ISA
+> @@ -171,6 +182,9 @@ static inline u32 __iomem *isa_itl(unsigned long addr)
+>    switch(ISA_TYPE)
+>      {
+>  #ifdef CONFIG_AMIGA_PCMCIA
+> +#ifdef CONFIG_APNE100MBIT
+> +    case ISA_TYPE_AG16:
+> +#endif
+>      case ISA_TYPE_AG: return (u32 __iomem *)AG_ISA_IO_W(addr);
+>  #endif
+>      }
+> @@ -184,6 +198,9 @@ static inline u8 __iomem *isa_mtb(unsigned long addr)
+>      case ISA_TYPE_Q40: return (u8 __iomem *)Q40_ISA_MEM_B(addr);
+>  #endif
+>  #ifdef CONFIG_AMIGA_PCMCIA
+> +#ifdef CONFIG_APNE100MBIT
+> +    case ISA_TYPE_AG16:
+> +#endif
+>      case ISA_TYPE_AG: return (u8 __iomem *)addr;
+>  #endif
+>  #ifdef CONFIG_ATARI_ROM_ISA
+> @@ -203,6 +220,9 @@ static inline u16 __iomem *isa_mtw(unsigned long addr)
+>      case ISA_TYPE_Q40: return (u16 __iomem *)Q40_ISA_MEM_W(addr);
+>  #endif
+>  #ifdef CONFIG_AMIGA_PCMCIA
+> +#ifdef CONFIG_APNE100MBIT
+> +    case ISA_TYPE_AG16:
+> +#endif
+>      case ISA_TYPE_AG: return (u16 __iomem *)addr;
+>  #endif
+>  #ifdef CONFIG_ATARI_ROM_ISA
+> @@ -216,13 +236,14 @@ static inline u16 __iomem *isa_mtw(unsigned long addr)
+>  }
+>  
+>  
+> -#define isa_inb(port)      in_8(isa_itb(port))
+>  #define isa_inw(port)      (ISA_SEX ? in_be16(isa_itw(port)) : in_le16(isa_itw(port)))
+>  #define isa_inl(port)      (ISA_SEX ? in_be32(isa_itl(port)) : in_le32(isa_itl(port)))
+>  #define isa_outb(val,port) out_8(isa_itb(port),(val))
+>  #define isa_outw(val,port) (ISA_SEX ? out_be16(isa_itw(port),(val)) : out_le16(isa_itw(port),(val)))
+>  #define isa_outl(val,port) (ISA_SEX ? out_be32(isa_itl(port),(val)) : out_le32(isa_itl(port),(val)))
+>  
+> +#define isa_inb(port)      ((ISA_TYPE == ISA_TYPE_AG16) ? ((port) & 1 ? isa_inw((port) - 1) & 0xff : isa_inw(port) >> 8) : in_8(isa_itb(port)))
 > +
+>  #define isa_readb(p)       in_8(isa_mtb((unsigned long)(p)))
+>  #define isa_readw(p)       \
+>  	(ISA_SEX ? in_be16(isa_mtw((unsigned long)(p)))	\
 
-The indentation/alignment here doesn't conform to the kernel coding style. 
+Was the re-ordering of definitions deliberate?
+
+
+> @@ -270,6 +291,9 @@ static inline void isa_delay(void)
+>      case ISA_TYPE_Q40: isa_outb(0,0x80); break;
+>  #endif
+>  #ifdef CONFIG_AMIGA_PCMCIA
+> +#ifdef CONFIG_APNE100MBIT
+> +    case ISA_TYPE_AG16: break;
+> +#endif
+>      case ISA_TYPE_AG: break;
+>  #endif
+>  #ifdef CONFIG_ATARI_ROM_ISA
+> 
+
+I think most of these "#ifdef CONFIG_APNE100MBIT" conditionals are 
+redundant. case ISA_TYPE_AG16 should be optimized away as dead code in the 
+MULTI_ISA == 0 configuration. And in the MULTI_ISA == 1 configuration, the 
+logic used to assign isa_type already depends on 
+defined(CONFIG_APNE100MBIT).
