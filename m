@@ -2,119 +2,110 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-4.4 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,NICE_REPLY_A,SPF_HELO_NONE,
-	SPF_PASS,USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-5.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
+	SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A2777C48BE5
-	for <linux-m68k@archiver.kernel.org>; Thu, 17 Jun 2021 01:10:07 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id BF7EDC48BE8
+	for <linux-m68k@archiver.kernel.org>; Thu, 17 Jun 2021 01:23:43 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 6E671613CA
-	for <linux-m68k@archiver.kernel.org>; Thu, 17 Jun 2021 01:10:07 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 8BFC2601FE
+	for <linux-m68k@archiver.kernel.org>; Thu, 17 Jun 2021 01:23:43 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231750AbhFQBMN (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Wed, 16 Jun 2021 21:12:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55228 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230267AbhFQBMN (ORCPT
-        <rfc822;linux-m68k@vger.kernel.org>); Wed, 16 Jun 2021 21:12:13 -0400
-Received: from mail-pf1-x430.google.com (mail-pf1-x430.google.com [IPv6:2607:f8b0:4864:20::430])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 98D3EC061574;
-        Wed, 16 Jun 2021 18:10:06 -0700 (PDT)
-Received: by mail-pf1-x430.google.com with SMTP id z26so3625803pfj.5;
-        Wed, 16 Jun 2021 18:10:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-transfer-encoding:content-language;
-        bh=5CFAnD2pFgTapSI0IuW8VVi8leOVL2PTk0MVDgV8WjU=;
-        b=O26FgXo6QsfESEQaT+Ndre/bXFjpQ2RZWUKz+u8cQZzwjiQWxdngXyvcAaix15xtCo
-         OpQmyaRTNPrmqLqsAo3iJDv/tEPVkhV/6E63Uqg3Rg6Mm3KRwp3Dhu+2Nv1v8o1BuJki
-         kEDE86fVgv23R33I/pBStn+1ogOLSsZ/pYCluShIduWfcKJd4QGma26TGaVLoJBrd27T
-         ach4MGapeEqonG2wa4N3Usrsf1+wb2xdWTZ2lGQ6mmqmt7NGB7Hdpqaf9ZNhvxruBvxx
-         Yo9qPOS6jBGHIlch9IdzluHyQQRjiv7GQac76CH5/Mg7hqwiJXR8qs8m31miS6CRTfNO
-         ZBpw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=5CFAnD2pFgTapSI0IuW8VVi8leOVL2PTk0MVDgV8WjU=;
-        b=DEjT+HPXpkcDNvjqqiqvS45g/KQfRTjntebv0jW+Ifv6upQtALyzHi5buE2eM5pp3F
-         z4NpfJgCeGnh3fsorfxJoDWSJVexfZyjZEpkkG6/zY1T/SNOX4T4j2QnX8yuHKwROFEo
-         uZoc64iVo8359Lg6FoaXbWDwecPpmNrf7QomiO6RhQYlElQd01UcLV8S2nl/pBgn9PXG
-         CFZ4+zeWQ846YACUnvD2y3TPRj2AVwQcf1MTh2O9S6sWx1B7Ac2jwP9mwYoqsESuBLlf
-         txb+52d83yM1bMcmSJRRSFwZOBWmiLRwUF5RN2R+TIa8hihWrhuQXpooZtqs3AgFtoA9
-         XGAQ==
-X-Gm-Message-State: AOAM531kILO8558cL+FRWb0uV2Y66pOmPL1Q7zd7rkGBVbs0wKIV/BqE
-        fjLfULrVaM5gMQXuNESphI8=
-X-Google-Smtp-Source: ABdhPJzPC3QiD7aZcmcAleSzjXkZaSMB7vcYTXvwvU7oVODneGdRAO+OXUeWPQVIIe/IyulRcACb2w==
-X-Received: by 2002:a63:a44:: with SMTP id z4mr2349161pgk.379.1623892206137;
-        Wed, 16 Jun 2021 18:10:06 -0700 (PDT)
-Received: from ?IPv6:2001:df0:0:200c:9d12:c2c8:273e:6ffd? ([2001:df0:0:200c:9d12:c2c8:273e:6ffd])
-        by smtp.gmail.com with ESMTPSA id r10sm3603660pga.48.2021.06.16.18.10.02
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 16 Jun 2021 18:10:05 -0700 (PDT)
-Subject: Re: [PATCH v2 0/2] Add APNE PCMCIA 100 Mbit support
-To:     ALeX Kazik <alex@kazik.de>
-Cc:     Linux/m68k <linux-m68k@vger.kernel.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        linux-ide@vger.kernel.org, Finn Thain <fthain@linux-m68k.org>
-References: <1623224214-4836-1-git-send-email-schmitzmic@gmail.com>
- <1623290953-18000-1-git-send-email-schmitzmic@gmail.com>
- <CAFFuhJpT+2h+4O_q15VjE_77iCQaxwLJC11siSFrr5GbjQ-pFw@mail.gmail.com>
-From:   Michael Schmitz <schmitzmic@gmail.com>
-Message-ID: <904176c2-810f-0573-998f-31b55e617448@gmail.com>
-Date:   Thu, 17 Jun 2021 13:10:00 +1200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        id S231168AbhFQBZs (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Wed, 16 Jun 2021 21:25:48 -0400
+Received: from bilbo.ozlabs.org ([203.11.71.1]:43453 "EHLO ozlabs.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230239AbhFQBZs (ORCPT <rfc822;linux-m68k@vger.kernel.org>);
+        Wed, 16 Jun 2021 21:25:48 -0400
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4G547t2Dcmz9sRK;
+        Thu, 17 Jun 2021 11:23:38 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1623893019;
+        bh=Lcb2dMbhechCmOAsVMjFJF1Q5m5ZN1yIgPu4v2lWEzQ=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=FFuIqQ0d1IO7+8c2R7C3UaIAbs4XmgHZMW3/k0A6cst4tmWTj9zRbGKt0endBnJfv
+         i+gOLWVxcLe5F6nNFxQsnf4C0RpOSfPvPfYqM31AayDVqzt5E+lsZ5mqz9xsfoqJUw
+         64tp+I+skZgMSfoaB9sXjrumzoqZ1RCW5gWRnXTD9+uNlsbta/JxUtXin7p0//9y6T
+         ZliYQGiLHKP2r5dduauCHB1vQet6wt7Ln2L3PcD/WDuhbXqtivyPnecha9VHZW/wnm
+         MtULaIvomxoZSUmYwSsDNBnfB4p6wi9JywyqsN8SvtDFUrD/MNK/27rsIp+PY6kJ8i
+         tNGPZO4W/Facw==
+Date:   Thu, 17 Jun 2021 11:23:37 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>,
+        kernel test robot <lkp@intel.com>,
+        linux-alpha@vger.kernel.org, linux-arch@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-ia64@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-m68k@vger.kernel.org,
+        linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org,
+        linux-riscv@lists.infradead.org, kbuild-all@lists.01.org
+Subject: Re: +
+ mm-rename-pud_page_vaddr-to-pud_pgtable-and-make-it-return-pmd_t.patch
+ added to -mm tree
+Message-ID: <20210617112337.465c2607@canb.auug.org.au>
+In-Reply-To: <20210616160904.cf834ee8c9e7a26008aa833e@linux-foundation.org>
+References: <20210615233808.hzjGO1gF2%akpm@linux-foundation.org>
+        <202106162159.MurvDMy6-lkp@intel.com>
+        <87zgvpnbl7.fsf@linux.ibm.com>
+        <20210616160904.cf834ee8c9e7a26008aa833e@linux-foundation.org>
 MIME-Version: 1.0
-In-Reply-To: <CAFFuhJpT+2h+4O_q15VjE_77iCQaxwLJC11siSFrr5GbjQ-pFw@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
+Content-Type: multipart/signed; boundary="Sig_/a/+9AWFMGRAeBWcsE/82QFB";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-Hi Alex,
+--Sig_/a/+9AWFMGRAeBWcsE/82QFB
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-Thanks for testing!
+Hi Andrew,
 
-On 17/06/21 9:11 am, ALeX Kazik wrote:
-> Hi,
+On Wed, 16 Jun 2021 16:09:04 -0700 Andrew Morton <akpm@linux-foundation.org=
+> wrote:
 >
-> I've tested the patches and they work.
->
-> At first I got it only to work with the following line removed/commented out:
->    if (apne_100_mbit)
-> And thus enabling the following line always.
->
-> I've changed, with the help of Michael, the parameters to:
->
->    static u32 apne_100_mbit = 0;
->    module_param_named(100_mbit, apne_100_mbit, uint, 0644);
->    MODULE_PARM_DESC(100_mbit, "Enable 100 Mbit support");
->
-> And was able to enable it with the kernel option "apne.100_mbit=1".
->
-> It's also available as /sys/module/apne/parameters/100_mbit
->
-> The 0644 is the permission (root can change it), If it shouldn't be
-> changed at runtime 0444 or 0 would be used.
-Changing that parameter at runtime won't do anything (it's only tested 
-at device probe time). But I'd better change the permission to 444.
-> (I think there is also a bool option instead of the uint, but I'm glad
-> it works like this.)
+> On Wed, 16 Jun 2021 19:41:32 +0530 "Aneesh Kumar K.V" <aneesh.kumar@linux=
+.ibm.com> wrote:
+>=20
+> > We may want to fixup pgd_page_vaddr correctly later. pgd_page_vaddr() g=
+ets
+> > cast to different pointer types based on architecture. But for now this
+> > should work? This ensure we keep the pgd_page_vaddr() same as before.  =
+=20
+>=20
+> I'll drop
+>=20
+> mm-rename-pud_page_vaddr-to-pud_pgtable-and-make-it-return-pmd_t.patch
+> mm-rename-p4d_page_vaddr-to-p4d_pgtable-and-make-it-return-pud_t.patch   =
+      =20
+>=20
+> for now.
 
-True, that would be the better option indeed. I'll change that in the 
-next version (which will go to netdev as well).
+Dropped form linux-next today (along with my fix from yesterday).
 
+--=20
 Cheers,
+Stephen Rothwell
 
-     Michael
+--Sig_/a/+9AWFMGRAeBWcsE/82QFB
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
 
+-----BEGIN PGP SIGNATURE-----
 
->
-> Alex.
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmDKpBkACgkQAVBC80lX
+0GzE6Qf9F9328LVgfB4V5Iv/4uPQk5jfyblmoxIn6ZJqV0uqu+dplGIY4vT0wwV5
+K1aQ3HB1ESIFEAiSXffgkj3zETi5BkR8O32X08gwXq7yYbHEWZ+pQvJfSFzU6g9g
+j6xql8TjMtYUFuvNT5QWrz38nRKB5IGvAA9YDxYsJPX6RKlCjWyIkF9Iooscg5s3
+2lTSr2KZ8hUXF++sM1VXUCtksGbcZsdsugOGYpi1VBwvIT+Jc/WUSO3pp5Hrb02y
+gDFtYDryQiN/XIdjYCDqLWjhQ7cnjTZJY0q9j5pUjFvQdgrgmT/5n63BxxegqQ65
+vUoFVdDhDmKUeJ1s8LTXpvIliUuZWg==
+=zFs2
+-----END PGP SIGNATURE-----
+
+--Sig_/a/+9AWFMGRAeBWcsE/82QFB--
