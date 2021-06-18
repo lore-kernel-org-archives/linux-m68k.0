@@ -2,131 +2,266 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
-	SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-13.8 required=3.0 tests=BAYES_00,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 02FB7C48BDF
-	for <linux-m68k@archiver.kernel.org>; Fri, 18 Jun 2021 17:18:19 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 26A55C48BE8
+	for <linux-m68k@archiver.kernel.org>; Fri, 18 Jun 2021 18:40:26 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id D94A9613E9
-	for <linux-m68k@archiver.kernel.org>; Fri, 18 Jun 2021 17:18:18 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 0DCDC60FF2
+	for <linux-m68k@archiver.kernel.org>; Fri, 18 Jun 2021 18:40:26 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233869AbhFRRU1 (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Fri, 18 Jun 2021 13:20:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55432 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233680AbhFRRU1 (ORCPT
+        id S232853AbhFRSme (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Fri, 18 Jun 2021 14:42:34 -0400
+Received: from out01.mta.xmission.com ([166.70.13.231]:48624 "EHLO
+        out01.mta.xmission.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235315AbhFRSmd (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Fri, 18 Jun 2021 13:20:27 -0400
-Received: from mail-lj1-x233.google.com (mail-lj1-x233.google.com [IPv6:2a00:1450:4864:20::233])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C9458C061574
-        for <linux-m68k@lists.linux-m68k.org>; Fri, 18 Jun 2021 10:18:16 -0700 (PDT)
-Received: by mail-lj1-x233.google.com with SMTP id a21so10026142ljj.1
-        for <linux-m68k@lists.linux-m68k.org>; Fri, 18 Jun 2021 10:18:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=nBnuJCjQE+aAZPwJSd9bJXr2Ds6ZThaAzMpjQA51kUI=;
-        b=F1P+lKociosdfPcWBId6Ys43KUatGPrylEYc2ZkgaQSaIwYVTH2vl+FTSZsWUNtS2S
-         xCB0wytuIkmaIt/KIgw7pVq9/rGNTKHWukrdulsisjI9kiH2RhIFD/Maq8/t/3Zc/+yP
-         OBhR+UrWjvPrDLgpXfflpIry4l57W+y+y6Jd0=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=nBnuJCjQE+aAZPwJSd9bJXr2Ds6ZThaAzMpjQA51kUI=;
-        b=jD6P5dnzzg1kkZDAjq8jvQe4IIr4alSmWimiW2onB7qoHYGMvMYTkJoM1vYfAoJuWU
-         YdBCNNB2/O1zAt4I7kJG6kNzjGkSvAG1KCdl+xNGp4kdyQ2eByy1rA4reGKHQpl3i5NS
-         rWXpF2c2M+MmoEfbPrgTnryQU5QHiNs0wbvsehhCocgtlRSa/ehqhQwKFKA5uzZ+RFsz
-         U4cUPjoj58VUJmV6UGxkonN+p+IVf8jPa3kjjCkudQgE6K8WomTN+lFxxE70DDm7oSAg
-         ve/OwffeyHvvIUxsIrn/9xNUaPc0Unifa9bwSTA1pluOKSBk9A8QRqTbk6TOxQTQnXfk
-         Vvhw==
-X-Gm-Message-State: AOAM530c3dK+RdhK9kGp6Uyh3pd6AAOUZIaBsINPg/JJ8uVGR0AMecd5
-        lR06qrtt14S+kVr8J7WOfnYVatsTqjUzmbq4
-X-Google-Smtp-Source: ABdhPJwHfYKjCUQxqGkSXNBmGpK51x7FHLGlsptGRheCIXglXqMvDc70yUHywuNbH2hCuexZCNUUbg==
-X-Received: by 2002:a2e:b163:: with SMTP id a3mr7303226ljm.147.1624036694510;
-        Fri, 18 Jun 2021 10:18:14 -0700 (PDT)
-Received: from mail-lj1-f178.google.com (mail-lj1-f178.google.com. [209.85.208.178])
-        by smtp.gmail.com with ESMTPSA id c5sm963353lfv.117.2021.06.18.10.18.13
-        for <linux-m68k@lists.linux-m68k.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 18 Jun 2021 10:18:14 -0700 (PDT)
-Received: by mail-lj1-f178.google.com with SMTP id d13so14934686ljg.12
-        for <linux-m68k@lists.linux-m68k.org>; Fri, 18 Jun 2021 10:18:13 -0700 (PDT)
-X-Received: by 2002:a2e:2ac6:: with SMTP id q189mr10211514ljq.61.1624036693648;
- Fri, 18 Jun 2021 10:18:13 -0700 (PDT)
-MIME-Version: 1.0
-References: <1623979642-14983-1-git-send-email-schmitzmic@gmail.com>
-In-Reply-To: <1623979642-14983-1-git-send-email-schmitzmic@gmail.com>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Fri, 18 Jun 2021 10:17:57 -0700
-X-Gmail-Original-Message-ID: <CAHk-=whTKf6UFr6YneXsPU4=8dTs+eEX_861ugESTE3CmZtFUg@mail.gmail.com>
-Message-ID: <CAHk-=whTKf6UFr6YneXsPU4=8dTs+eEX_861ugESTE3CmZtFUg@mail.gmail.com>
-Subject: Re: [PATCH v2] m68k: save extra registers on more syscall entry points
+        Fri, 18 Jun 2021 14:42:33 -0400
+Received: from in01.mta.xmission.com ([166.70.13.51])
+        by out01.mta.xmission.com with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.93)
+        (envelope-from <ebiederm@xmission.com>)
+        id 1luJPi-0068vz-6T; Fri, 18 Jun 2021 12:40:22 -0600
+Received: from ip68-227-160-95.om.om.cox.net ([68.227.160.95] helo=email.xmission.com)
+        by in01.mta.xmission.com with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.93)
+        (envelope-from <ebiederm@xmission.com>)
+        id 1luJPf-004iGm-RR; Fri, 18 Jun 2021 12:40:21 -0600
+From:   ebiederm@xmission.com (Eric W. Biederman)
 To:     Michael Schmitz <schmitzmic@gmail.com>
-Cc:     Geert Uytterhoeven <geert@linux-m68k.org>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        linux-m68k <linux-m68k@lists.linux-m68k.org>,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        Andreas Schwab <schwab@linux-m68k.org>
-Content-Type: text/plain; charset="UTF-8"
+Cc:     geert@linux-m68k.org, linux-arch@vger.kernel.org,
+        linux-m68k@lists.linux-m68k.org, torvalds@linux-foundation.org,
+        schwab@linux-m68k.org
+References: <1623979642-14983-1-git-send-email-schmitzmic@gmail.com>
+Date:   Fri, 18 Jun 2021 13:39:10 -0500
+In-Reply-To: <1623979642-14983-1-git-send-email-schmitzmic@gmail.com> (Michael
+        Schmitz's message of "Fri, 18 Jun 2021 13:27:22 +1200")
+Message-ID: <87sg1f3tm9.fsf@disp2133>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
+MIME-Version: 1.0
+Content-Type: text/plain
+X-XM-SPF: eid=1luJPf-004iGm-RR;;;mid=<87sg1f3tm9.fsf@disp2133>;;;hst=in01.mta.xmission.com;;;ip=68.227.160.95;;;frm=ebiederm@xmission.com;;;spf=neutral
+X-XM-AID: U2FsdGVkX1/+YXG+rQ1XrRBSlH+CG4zcrklPcL85W34=
+X-SA-Exim-Connect-IP: 68.227.160.95
+X-SA-Exim-Mail-From: ebiederm@xmission.com
+Subject: Re: [PATCH v2] m68k: save extra registers on more syscall entry points
+X-SA-Exim-Version: 4.2.1 (built Sat, 08 Feb 2020 21:53:50 +0000)
+X-SA-Exim-Scanned: Yes (on in01.mta.xmission.com)
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-On Thu, Jun 17, 2021 at 6:27 PM Michael Schmitz <schmitzmic@gmail.com> wrote:
+Michael Schmitz <schmitzmic@gmail.com> writes:
+
+> Multiple syscalls are liable to PTRACE_EVENT_* tracing and thus
+> require full user context saved on the kernel stack. We only
+> save those registers not preserved by C code currently.
+>
+> do_exit() calls ptrace_stop() which may require access to all
+> saved registers. Add code to save additional registers in the
+> switch_stack struct for exit and exit_group syscalls (similar
+> to what is already done for fork, vfork and clone3). According
+> to Eric's analysis, execve and execveat can be traced as well,
+> so have been given the same treatment.
+>
+> I'm not sure what to do about io_uring_setup - added code to
+> save full context on entry, and some more code to save/restore
+> additional registers on the switch stack around the kworker thread
+> call in ret_from_kernel_thread, but this may well be redundant.
 >
 > I'd need specific test cases to exercise io_uring_setup in
 > particular, to see whether stack offsets for pt_regs and the
 > switch stack have been messed up.
+>
+> Boot tested on ARAnym - earlier version including io_uring entry
+> save also tested on real hardware unter heavy IO load.
 
-I don't think doing this for io_uring_setup() will help any - the
-problem is not in that system call thread itself, it's purely in the
-kernel thread that it then starts.
 
-And the fact that io_uring_setup() has the full stack frame won't then
-help that kernel thread, for exactly the same reason that was true on
-alpha: copy_thread() will actually _create_ the full stack, but when
-we switch to it (through switch_to() -> resume()), the resume code in
-arch/m68k/kernel/entry.S will switch to that stack, and then do
-RESTORE_SWITCH_STACK which will consume it again.
+Are the registers that SAVE_SWITCH_STACK saves on m68k caller saved
+registers?
 
-So I think m68k should do the same thing as Eric's patch for alpha: do
-the full stack for exit and exit_group, and for kernel thread creation
-- or at least PF_IO_WORKER), do an extra stack frame on the kernel
-stack, so that even after resume() we'll still have another copy of
-the frame.
+The fact that the registers are saved somewhere on the stack on alpha is
+what forces the registers to be saved before calling exit and exec.
 
-The alternative would be to do what x86 does: see __switch_to_asm().
-Instead of doing that normal kernel entry/exit stack (with
-SAVE_SWITCH_STACK and RESTORE_SWITCH_STACK), x86 has it's own very
-special "only for task switching" stack frame thing, and leaves the
-pt_regs etc entirely alone.
+Eric
 
-Of course, that "only for task switching" is _kind_of_ what the whole
-SAVE_SWITCH_STACK is for - it's part of the name after all - but the
-difference is that on alpha and m68k, it's also (and primarily) the
-"full state" stack frame, used not just for task switching, but for
-signal handling state and for ptrace too.
 
-So in theory, it would be good to split this up:
-
- (a) have the signal handling and ptrace stack be one thing (maybe
-rename the "SWITCH" part of the operations to something else, like
-"EXTRA" or "SIGNAL" or whatever)
-
- (b) make a separate "for task switching only" stack frame, which is
-used by that switch_to() -> resume() sequence, and that copy_thread()
-has a "struct inactive_task_frame" thing for..
-
-That way, the pt_regs/extra_regs stack frame that copy_thread()
-creates wouldn't then be eaten up by the task switch.
-
-But while that sounds like the right thing to do, it would be a rather
-bigger change. I'm not entirely sure it's worth it.
-
-Eric, comments?
-
-                Linus
+> CC: Eric W. Biederman <ebiederm@xmission.com>
+> CC: Linus Torvalds <torvalds@linux-foundation.org>
+> CC: Andreas Schwab <schwab@linux-m68k.org>
+> Signed-off-by: Michael Schmitz <schmitzmic@gmail.com>
+>
+> --
+> Changes from v1:
+>
+> - added exec, execve and io_uring_setup syscalls
+> - save extra registers around kworker thread calls
+> ---
+>  arch/m68k/kernel/entry.S              | 41 ++++++++++++++++++++++++++++++++++-
+>  arch/m68k/kernel/process.c            | 39 +++++++++++++++++++++++++++++++++
+>  arch/m68k/kernel/syscalls/syscall.tbl | 10 ++++-----
+>  3 files changed, 84 insertions(+), 6 deletions(-)
+>
+> diff --git a/arch/m68k/kernel/entry.S b/arch/m68k/kernel/entry.S
+> index 9dd76fb..02bf2a1 100644
+> --- a/arch/m68k/kernel/entry.S
+> +++ b/arch/m68k/kernel/entry.S
+> @@ -76,6 +76,41 @@ ENTRY(__sys_clone3)
+>  	lea	%sp@(28),%sp
+>  	rts
+>  
+> +ENTRY(__sys_exit)
+> +	SAVE_SWITCH_STACK
+> +	pea	%sp@(SWITCH_STACK_SIZE)
+> +	jbsr	m68k_exit
+> +	lea	%sp@(28),%sp
+> +	rts
+> +
+> +ENTRY(__sys_exit_group)
+> +	SAVE_SWITCH_STACK
+> +	pea	%sp@(SWITCH_STACK_SIZE)
+> +	jbsr	m68k_exit_group
+> +	lea	%sp@(28),%sp
+> +	rts
+> +
+> +ENTRY(__sys_execve)
+> +	SAVE_SWITCH_STACK
+> +	pea	%sp@(SWITCH_STACK_SIZE)
+> +	jbsr	m68k_execve
+> +	lea	%sp@(28),%sp
+> +	rts
+> +
+> +ENTRY(__sys_execveat)
+> +	SAVE_SWITCH_STACK
+> +	pea	%sp@(SWITCH_STACK_SIZE)
+> +	jbsr	m68k_execveat
+> +	lea	%sp@(28),%sp
+> +	rts
+> +
+> +ENTRY(__sys_io_uring_setup)
+> +	SAVE_SWITCH_STACK
+> +	pea	%sp@(SWITCH_STACK_SIZE)
+> +	jbsr	m68k_io_uring_setup
+> +	lea	%sp@(28),%sp
+> +	rts
+> +
+>  ENTRY(sys_sigreturn)
+>  	SAVE_SWITCH_STACK
+>  	movel	%sp,%sp@-		  | switch_stack pointer
+> @@ -123,9 +158,13 @@ ENTRY(ret_from_kernel_thread)
+>  	| a3 contains the kernel thread payload, d7 - its argument
+>  	movel	%d1,%sp@-
+>  	jsr	schedule_tail
+> -	movel	%d7,(%sp)
+> +	addql	#4,%sp
+> +	| kernel threads can be traced!
+> +	SAVE_SWITCH_STACK
+> +	movel	%d7,%sp@-
+>  	jsr	%a3@
+>  	addql	#4,%sp
+> +	RESTORE_SWITCH_STACK
+>  	jra	ret_from_exception
+>  
+>  #if defined(CONFIG_COLDFIRE) || !defined(CONFIG_MMU)
+> diff --git a/arch/m68k/kernel/process.c b/arch/m68k/kernel/process.c
+> index da83cc8..298ac99 100644
+> --- a/arch/m68k/kernel/process.c
+> +++ b/arch/m68k/kernel/process.c
+> @@ -138,6 +138,45 @@ asmlinkage int m68k_clone3(struct pt_regs *regs)
+>  	return sys_clone3((struct clone_args __user *)regs->d1, regs->d2);
+>  }
+>  
+> +/*
+> + * Because extra registers are saved on the stack after the sys_exit()
+> + * arguments, this C wrapper extracts them from pt_regs * and then calls the
+> + * generic sys_exit() implementation.
+> + */
+> +asmlinkage int m68k_exit(struct pt_regs *regs)
+> +{
+> +	return sys_exit(regs->d1);
+> +}
+> +
+> +/* Same for sys_exit_group ... */
+> +asmlinkage int m68k_exit_group(struct pt_regs *regs)
+> +{
+> +	return sys_exit_group(regs->d1);
+> +}
+> +
+> +/* Same for sys_exit_group ... */
+> +asmlinkage int m68k_execve(struct pt_regs *regs)
+> +{
+> +	return sys_execve((const char __user *)regs->d1,
+> +			(const char __user *const __user*)regs->d2,
+> +			(const char __user *const __user*)regs->d3);
+> +}
+> +
+> +/* Same for sys_exit_group ... */
+> +asmlinkage int m68k_execveat(struct pt_regs *regs)
+> +{
+> +	return sys_execveat(regs->d1, (const char __user *)regs->d2,
+> +			(const char __user *const __user*)regs->d3,
+> +			(const char __user *const __user*)regs->d4,
+> +			regs->d5);
+> +}
+> +
+> +/* and for sys_io_uring_create */
+> +asmlinkage int m68k_io_uring_setup(struct pt_regs *regs)
+> +{
+> +	return sys_io_uring_setup(regs->d1,(struct io_uring_params __user *)regs->d2);
+> +}
+> +
+>  int copy_thread(unsigned long clone_flags, unsigned long usp, unsigned long arg,
+>  		struct task_struct *p, unsigned long tls)
+>  {
+> diff --git a/arch/m68k/kernel/syscalls/syscall.tbl b/arch/m68k/kernel/syscalls/syscall.tbl
+> index 0dd019d..4a1ba1d 100644
+> --- a/arch/m68k/kernel/syscalls/syscall.tbl
+> +++ b/arch/m68k/kernel/syscalls/syscall.tbl
+> @@ -8,7 +8,7 @@
+>  # The <abi> is always "common" for this file
+>  #
+>  0	common	restart_syscall			sys_restart_syscall
+> -1	common	exit				sys_exit
+> +1	common	exit				__sys_exit
+>  2	common	fork				__sys_fork
+>  3	common	read				sys_read
+>  4	common	write				sys_write
+> @@ -18,7 +18,7 @@
+>  8	common	creat				sys_creat
+>  9	common	link				sys_link
+>  10	common	unlink				sys_unlink
+> -11	common	execve				sys_execve
+> +11	common	execve				__sys_execve
+>  12	common	chdir				sys_chdir
+>  13	common	time				sys_time32
+>  14	common	mknod				sys_mknod
+> @@ -254,7 +254,7 @@
+>  244	common	io_submit			sys_io_submit
+>  245	common	io_cancel			sys_io_cancel
+>  246	common	fadvise64			sys_fadvise64
+> -247	common	exit_group			sys_exit_group
+> +247	common	exit_group			__sys_exit_group
+>  248	common	lookup_dcookie			sys_lookup_dcookie
+>  249	common	epoll_create			sys_epoll_create
+>  250	common	epoll_ctl			sys_epoll_ctl
+> @@ -362,7 +362,7 @@
+>  352	common	getrandom			sys_getrandom
+>  353	common	memfd_create			sys_memfd_create
+>  354	common	bpf				sys_bpf
+> -355	common	execveat			sys_execveat
+> +355	common	execveat			__sys_execveat
+>  356	common	socket				sys_socket
+>  357	common	socketpair			sys_socketpair
+>  358	common	bind				sys_bind
+> @@ -424,7 +424,7 @@
+>  422	common	futex_time64			sys_futex
+>  423	common	sched_rr_get_interval_time64	sys_sched_rr_get_interval
+>  424	common	pidfd_send_signal		sys_pidfd_send_signal
+> -425	common	io_uring_setup			sys_io_uring_setup
+> +425	common	io_uring_setup			__sys_io_uring_setup
+>  426	common	io_uring_enter			sys_io_uring_enter
+>  427	common	io_uring_register		sys_io_uring_register
+>  428	common	open_tree			sys_open_tree
