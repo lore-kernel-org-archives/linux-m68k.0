@@ -2,273 +2,145 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-15.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+X-Spam-Status: No, score=-13.8 required=3.0 tests=BAYES_00,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
-	autolearn=unavailable autolearn_force=no version=3.4.0
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 52DEDC48BE5
-	for <linux-m68k@archiver.kernel.org>; Fri, 18 Jun 2021 01:27:30 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id DAE19C48BE8
+	for <linux-m68k@archiver.kernel.org>; Fri, 18 Jun 2021 07:16:34 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 30C6C613A9
-	for <linux-m68k@archiver.kernel.org>; Fri, 18 Jun 2021 01:27:30 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id B827561057
+	for <linux-m68k@archiver.kernel.org>; Fri, 18 Jun 2021 07:16:34 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233528AbhFRB3i (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Thu, 17 Jun 2021 21:29:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40794 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233475AbhFRB3h (ORCPT
-        <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Thu, 17 Jun 2021 21:29:37 -0400
-Received: from mail-pf1-x434.google.com (mail-pf1-x434.google.com [IPv6:2607:f8b0:4864:20::434])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A21FC06175F
-        for <linux-m68k@lists.linux-m68k.org>; Thu, 17 Jun 2021 18:27:28 -0700 (PDT)
-Received: by mail-pf1-x434.google.com with SMTP id t8so1745752pfe.3
-        for <linux-m68k@lists.linux-m68k.org>; Thu, 17 Jun 2021 18:27:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=XSTHhCaBsJt3mNAtVlBQxPXwkNlyk/T9G5vdaaRvwQA=;
-        b=Yuxmy9lvIOTJ+DSak2qwgkVm2cPHcAsH8oCCLJBjReVBYq+tLDFFjOazOAHo8xdInx
-         ZZj86VDMPeuaeg2Xv3jcGxSFLk+OcmSEOP44/85iBODr6UOczwS4gmFLta5MX9WDdaeS
-         qfQySiMNHaX0mVl1tNvu4tmV2IDQdzEX3Zt3UfKZ7Ps8ZbkNjw9DCHGmLtmo4uSSJF8M
-         ZyateXt2HzgjrDcHiuKzcIWHcgG/splJHd8SqmhnSzAL1iXNlBtzvjtqdyaJ94dXBMHO
-         bWwb9OT6Hogb1SYhrdVMYXsp0JqVvmhkRHvQHPJ8ilalpZ6RKUq709zBw60JhO8i3PfF
-         VuEQ==
+        id S232858AbhFRHSn (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Fri, 18 Jun 2021 03:18:43 -0400
+Received: from mail-ua1-f50.google.com ([209.85.222.50]:43715 "EHLO
+        mail-ua1-f50.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230447AbhFRHSm (ORCPT
+        <rfc822;linux-m68k@vger.kernel.org>); Fri, 18 Jun 2021 03:18:42 -0400
+Received: by mail-ua1-f50.google.com with SMTP id f1so3042012uaj.10;
+        Fri, 18 Jun 2021 00:16:33 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=XSTHhCaBsJt3mNAtVlBQxPXwkNlyk/T9G5vdaaRvwQA=;
-        b=dqptN+4f09UensC75MRHjChXNO87u4Cgnw0/l52cXhgChn3k2cMeOPItNJGdmObS+Y
-         gf3GGKlWVGiLdTSfmdSpvZO9xsjYxHKTknZoCIbwuxLOehnC78Wx+/oh5SegrYk3QIX5
-         XrtxH+XTLYAuiGLnxSnaeY4CGWMxz9TVElA8tvadbnIzlmNoWHiPZoYjSWmPv6TyGeGu
-         4SdWEtqF61Bdzy3fcYMcGus5QE81kIU7CFeCi0Vmi2SEe2mJUupnKSWKGAQBYJUk2Rxn
-         35q67zQnmVFzRmrPYNFwDgiDsZbCXEockAwvLpKAFqOMDvFrdLCHySHX/WcLGnWS/GRn
-         ou+Q==
-X-Gm-Message-State: AOAM533JYavV1Wcx3sB5MikqQLp7kL32ACTkoGQQWlS9lRtKK77AlNSO
-        WiBW2s4Xu/ejgaLCWdncSWE=
-X-Google-Smtp-Source: ABdhPJw0SxEC/W/anhO8amMuGDuGZo9MCJArdet+AS6JgCUoX35MrG5NieCe9gByeVkwlm3LHdko+w==
-X-Received: by 2002:a05:6a00:238e:b029:2ef:839b:adc7 with SMTP id f14-20020a056a00238eb02902ef839badc7mr2576582pfc.54.1623979647914;
-        Thu, 17 Jun 2021 18:27:27 -0700 (PDT)
-Received: from xplor.waratah.dyndns.org (222-152-189-137-fibre.sparkbb.co.nz. [222.152.189.137])
-        by smtp.gmail.com with ESMTPSA id w71sm6091512pfc.164.2021.06.17.18.27.26
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 17 Jun 2021 18:27:27 -0700 (PDT)
-Received: by xplor.waratah.dyndns.org (Postfix, from userid 1000)
-        id F120C3603D8; Fri, 18 Jun 2021 13:27:23 +1200 (NZST)
-From:   Michael Schmitz <schmitzmic@gmail.com>
-To:     geert@linux-m68k.org, linux-arch@vger.kernel.org,
-        linux-m68k@lists.linux-m68k.org
-Cc:     ebiederm@xmission.com, torvalds@linux-foundation.org,
-        schwab@linux-m68k.org, Michael Schmitz <schmitzmic@gmail.com>
-Subject: [PATCH v2] m68k: save extra registers on more syscall entry points
-Date:   Fri, 18 Jun 2021 13:27:22 +1200
-Message-Id: <1623979642-14983-1-git-send-email-schmitzmic@gmail.com>
-X-Mailer: git-send-email 2.7.4
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=c1qjp3LSqiWe30R+Xguwq2AymeWV15Ne0QLP1Md9aAA=;
+        b=eydW0LtYkqWWYeVc3e4QIxbtIud7g6MjyixJUeZ0eYBWNs+Suh9mgK4D/ieBPZz1qy
+         KAFbTUDWTLrl/YGOTbaqxEgpUnVLnAzYlBxSI3PvXQ+isug1Zdf6UZ9TzJec9O8+A9sk
+         7exOKNeWnxYO37LIiU/X4zXu4Cq7vvU3yXsh8qz+mBAbtwTqx9QvWWunC0msoMZx1l5C
+         1q9gHfqrr6UnmoxIe9R1pGCwfWc9+TyObXpnXCR8z3ara2R92YOvj94cTi/4hluPI2Ka
+         XScWFrx6OmTPVtgFrf4+VcVwxEoqgqPLIStA/qgF2/e+3k+RLHQTk0AvExAdc3eMhEAV
+         1n1Q==
+X-Gm-Message-State: AOAM531wkjhX+87ULbUBOWMtpl0w/r/6BAfYYZSAALzpbXOkUqXRrrq8
+        Osv78kvnoZuaeueH0pRjMwrSDvMzJVU/DUJJ/No=
+X-Google-Smtp-Source: ABdhPJxG7V8iKYTWute1ru1376/EX/H8waoz1J/qmrsYwZZxFCqjGi6H8s6qBjbQtv6x2Wk1/JRq2irv2Zl0u43wIIA=
+X-Received: by 2002:ab0:647:: with SMTP id f65mr10459435uaf.4.1624000593113;
+ Fri, 18 Jun 2021 00:16:33 -0700 (PDT)
+MIME-Version: 1.0
+References: <1623907712-29366-1-git-send-email-schmitzmic@gmail.com>
+ <1623907712-29366-3-git-send-email-schmitzmic@gmail.com> <d661fb8-274d-6731-75f4-685bb2311c41@linux-m68k.org>
+ <1fa288e2-3157-68f8-32c1-ffa1c63e4f85@gmail.com>
+In-Reply-To: <1fa288e2-3157-68f8-32c1-ffa1c63e4f85@gmail.com>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Fri, 18 Jun 2021 09:16:21 +0200
+Message-ID: <CAMuHMdVGe1EutOVpw3-R=25xG0p2rWd65cB2mqM-imXWYjLtXw@mail.gmail.com>
+Subject: Re: [PATCH net-next v3 2/2] net/8390: apne.c - add 100 Mbit support
+ to apne.c driver
+To:     Michael Schmitz <schmitzmic@gmail.com>
+Cc:     Finn Thain <fthain@linux-m68k.org>,
+        "Linux/m68k" <linux-m68k@vger.kernel.org>,
+        ALeX Kazik <alex@kazik.de>, netdev <netdev@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-Multiple syscalls are liable to PTRACE_EVENT_* tracing and thus
-require full user context saved on the kernel stack. We only
-save those registers not preserved by C code currently.
+Hi Michael,
 
-do_exit() calls ptrace_stop() which may require access to all
-saved registers. Add code to save additional registers in the
-switch_stack struct for exit and exit_group syscalls (similar
-to what is already done for fork, vfork and clone3). According
-to Eric's analysis, execve and execveat can be traced as well,
-so have been given the same treatment.
+On Thu, Jun 17, 2021 at 9:33 PM Michael Schmitz <schmitzmic@gmail.com> wrote:
+> On 17/06/21 6:51 pm, Finn Thain wrote:
+> > On Thu, 17 Jun 2021, Michael Schmitz wrote:
+> >> Add Kconfig option, module parameter and PCMCIA reset code
+> >> required to support 100 Mbit PCMCIA ethernet cards on Amiga.
+> >>
+> >> 10 Mbit and 100 Mbit mode are supported by the same module.
+> >> A module parameter switches Amiga ISA IO accessors to word
+> >> access by changing isa_type at runtime. Additional code to
+> >> reset the PCMCIA hardware is also added to the driver probe.
+> >>
+> >> Patch modified after patch "[PATCH RFC net-next] Amiga PCMCIA
+> >> 100 MBit card support" submitted to netdev 2018/09/16 by Alex
+> >> Kazik <alex@kazik.de>.
+> >>
+> >> CC: netdev@vger.kernel.org
+> >> Tested-by: Alex Kazik <alex@kazik.de>
+> >> Signed-off-by: Michael Schmitz <schmitzmic@gmail.com>
+> >> --- a/drivers/net/ethernet/8390/apne.c
+> >> +++ b/drivers/net/ethernet/8390/apne.c
+> >> @@ -120,6 +120,12 @@ static u32 apne_msg_enable;
+> >>   module_param_named(msg_enable, apne_msg_enable, uint, 0444);
+> >>   MODULE_PARM_DESC(msg_enable, "Debug message level (see linux/netdevice.h for bitmap)");
+> >>
+> >> +#ifdef CONFIG_APNE100MBIT
+> >> +static bool apne_100_mbit;
+> >> +module_param_named(apne_100_mbit_msg, apne_100_mbit, bool, 0444);
+> >> +MODULE_PARM_DESC(apne_100_mbit_msg, "Enable 100 Mbit support");
+> >> +#endif
+> >> +
+> >>   struct net_device * __init apne_probe(int unit)
+> >>   {
+> >>      struct net_device *dev;
+> >> @@ -139,6 +145,11 @@ struct net_device * __init apne_probe(int unit)
+> >>      if ( !(AMIGAHW_PRESENT(PCMCIA)) )
+> >>              return ERR_PTR(-ENODEV);
+> >>
+> >> +#ifdef CONFIG_APNE100MBIT
+> >> +    if (apne_100_mbit)
+> >> +            isa_type = ISA_TYPE_AG16;
+> >> +#endif
+> >> +
+> > I think isa_type has to be assigned unconditionally otherwise it can't be
+> > reset for 10 mbit cards. Therefore, the AMIGAHW_PRESENT(PCMCIA) logic in
+> > arch/m68k/kernel/setup_mm.c probably should move here.
+>
+> Good catch! I am uncertain though as to whether replacing a 100 Mbit
+> card by a 10 Mbit one at run time is a common use case (or even
+> possible, given constraints of the Amiga PCMCIA interface?), but it
+> ought to work even if rarely used.
 
-I'm not sure what to do about io_uring_setup - added code to
-save full context on entry, and some more code to save/restore
-additional registers on the switch stack around the kworker thread
-call in ret_from_kernel_thread, but this may well be redundant.
+Given it's PCMCIA, I guess that's a possibility.
+Furthermore, always setting isa_type means the user can recover from
+a mistake by unloading the module, and modprobe'ing again with the
+correct parameter.
+For the builtin-case, that needs a s/0444/0644/ change, though.
 
-I'd need specific test cases to exercise io_uring_setup in
-particular, to see whether stack offsets for pt_regs and the
-switch stack have been messed up.
+> The comment there says isa_type must be set as early as possible, so I'd
+> rather leave that alone, and add an 'else' clause here.
+>
+> This of course raise the question whether we ought to move the entire
+> isa_type handling into arch code instead - make it a generic
+> amiga_pcmcia_16bit option settable via sysfs. There may be other 16 bit
+> cards that require the same treatment, and duplicating PCMCIA mode
+> switching all over the place could be avoided. Opinions?
 
-Boot tested on ARAnym - earlier version including io_uring entry
-save also tested on real hardware unter heavy IO load.
+Indeed.
 
-CC: Eric W. Biederman <ebiederm@xmission.com>
-CC: Linus Torvalds <torvalds@linux-foundation.org>
-CC: Andreas Schwab <schwab@linux-m68k.org>
-Signed-off-by: Michael Schmitz <schmitzmic@gmail.com>
+Still, can we autodetect in the driver?
+
+I'm wondering how this is handled on PCs with PCMCIA, or if there
+really is something special about Amiga PCMCIA hardware...
+
+And I'd really like to get rid of the CONFIG_APNE100MBIT option,
+i.e. always include the support, if possible.
+
+Gr{oetje,eeting}s,
+
+                        Geert
 
 --
-Changes from v1:
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
-- added exec, execve and io_uring_setup syscalls
-- save extra registers around kworker thread calls
----
- arch/m68k/kernel/entry.S              | 41 ++++++++++++++++++++++++++++++++++-
- arch/m68k/kernel/process.c            | 39 +++++++++++++++++++++++++++++++++
- arch/m68k/kernel/syscalls/syscall.tbl | 10 ++++-----
- 3 files changed, 84 insertions(+), 6 deletions(-)
-
-diff --git a/arch/m68k/kernel/entry.S b/arch/m68k/kernel/entry.S
-index 9dd76fb..02bf2a1 100644
---- a/arch/m68k/kernel/entry.S
-+++ b/arch/m68k/kernel/entry.S
-@@ -76,6 +76,41 @@ ENTRY(__sys_clone3)
- 	lea	%sp@(28),%sp
- 	rts
- 
-+ENTRY(__sys_exit)
-+	SAVE_SWITCH_STACK
-+	pea	%sp@(SWITCH_STACK_SIZE)
-+	jbsr	m68k_exit
-+	lea	%sp@(28),%sp
-+	rts
-+
-+ENTRY(__sys_exit_group)
-+	SAVE_SWITCH_STACK
-+	pea	%sp@(SWITCH_STACK_SIZE)
-+	jbsr	m68k_exit_group
-+	lea	%sp@(28),%sp
-+	rts
-+
-+ENTRY(__sys_execve)
-+	SAVE_SWITCH_STACK
-+	pea	%sp@(SWITCH_STACK_SIZE)
-+	jbsr	m68k_execve
-+	lea	%sp@(28),%sp
-+	rts
-+
-+ENTRY(__sys_execveat)
-+	SAVE_SWITCH_STACK
-+	pea	%sp@(SWITCH_STACK_SIZE)
-+	jbsr	m68k_execveat
-+	lea	%sp@(28),%sp
-+	rts
-+
-+ENTRY(__sys_io_uring_setup)
-+	SAVE_SWITCH_STACK
-+	pea	%sp@(SWITCH_STACK_SIZE)
-+	jbsr	m68k_io_uring_setup
-+	lea	%sp@(28),%sp
-+	rts
-+
- ENTRY(sys_sigreturn)
- 	SAVE_SWITCH_STACK
- 	movel	%sp,%sp@-		  | switch_stack pointer
-@@ -123,9 +158,13 @@ ENTRY(ret_from_kernel_thread)
- 	| a3 contains the kernel thread payload, d7 - its argument
- 	movel	%d1,%sp@-
- 	jsr	schedule_tail
--	movel	%d7,(%sp)
-+	addql	#4,%sp
-+	| kernel threads can be traced!
-+	SAVE_SWITCH_STACK
-+	movel	%d7,%sp@-
- 	jsr	%a3@
- 	addql	#4,%sp
-+	RESTORE_SWITCH_STACK
- 	jra	ret_from_exception
- 
- #if defined(CONFIG_COLDFIRE) || !defined(CONFIG_MMU)
-diff --git a/arch/m68k/kernel/process.c b/arch/m68k/kernel/process.c
-index da83cc8..298ac99 100644
---- a/arch/m68k/kernel/process.c
-+++ b/arch/m68k/kernel/process.c
-@@ -138,6 +138,45 @@ asmlinkage int m68k_clone3(struct pt_regs *regs)
- 	return sys_clone3((struct clone_args __user *)regs->d1, regs->d2);
- }
- 
-+/*
-+ * Because extra registers are saved on the stack after the sys_exit()
-+ * arguments, this C wrapper extracts them from pt_regs * and then calls the
-+ * generic sys_exit() implementation.
-+ */
-+asmlinkage int m68k_exit(struct pt_regs *regs)
-+{
-+	return sys_exit(regs->d1);
-+}
-+
-+/* Same for sys_exit_group ... */
-+asmlinkage int m68k_exit_group(struct pt_regs *regs)
-+{
-+	return sys_exit_group(regs->d1);
-+}
-+
-+/* Same for sys_exit_group ... */
-+asmlinkage int m68k_execve(struct pt_regs *regs)
-+{
-+	return sys_execve((const char __user *)regs->d1,
-+			(const char __user *const __user*)regs->d2,
-+			(const char __user *const __user*)regs->d3);
-+}
-+
-+/* Same for sys_exit_group ... */
-+asmlinkage int m68k_execveat(struct pt_regs *regs)
-+{
-+	return sys_execveat(regs->d1, (const char __user *)regs->d2,
-+			(const char __user *const __user*)regs->d3,
-+			(const char __user *const __user*)regs->d4,
-+			regs->d5);
-+}
-+
-+/* and for sys_io_uring_create */
-+asmlinkage int m68k_io_uring_setup(struct pt_regs *regs)
-+{
-+	return sys_io_uring_setup(regs->d1,(struct io_uring_params __user *)regs->d2);
-+}
-+
- int copy_thread(unsigned long clone_flags, unsigned long usp, unsigned long arg,
- 		struct task_struct *p, unsigned long tls)
- {
-diff --git a/arch/m68k/kernel/syscalls/syscall.tbl b/arch/m68k/kernel/syscalls/syscall.tbl
-index 0dd019d..4a1ba1d 100644
---- a/arch/m68k/kernel/syscalls/syscall.tbl
-+++ b/arch/m68k/kernel/syscalls/syscall.tbl
-@@ -8,7 +8,7 @@
- # The <abi> is always "common" for this file
- #
- 0	common	restart_syscall			sys_restart_syscall
--1	common	exit				sys_exit
-+1	common	exit				__sys_exit
- 2	common	fork				__sys_fork
- 3	common	read				sys_read
- 4	common	write				sys_write
-@@ -18,7 +18,7 @@
- 8	common	creat				sys_creat
- 9	common	link				sys_link
- 10	common	unlink				sys_unlink
--11	common	execve				sys_execve
-+11	common	execve				__sys_execve
- 12	common	chdir				sys_chdir
- 13	common	time				sys_time32
- 14	common	mknod				sys_mknod
-@@ -254,7 +254,7 @@
- 244	common	io_submit			sys_io_submit
- 245	common	io_cancel			sys_io_cancel
- 246	common	fadvise64			sys_fadvise64
--247	common	exit_group			sys_exit_group
-+247	common	exit_group			__sys_exit_group
- 248	common	lookup_dcookie			sys_lookup_dcookie
- 249	common	epoll_create			sys_epoll_create
- 250	common	epoll_ctl			sys_epoll_ctl
-@@ -362,7 +362,7 @@
- 352	common	getrandom			sys_getrandom
- 353	common	memfd_create			sys_memfd_create
- 354	common	bpf				sys_bpf
--355	common	execveat			sys_execveat
-+355	common	execveat			__sys_execveat
- 356	common	socket				sys_socket
- 357	common	socketpair			sys_socketpair
- 358	common	bind				sys_bind
-@@ -424,7 +424,7 @@
- 422	common	futex_time64			sys_futex
- 423	common	sched_rr_get_interval_time64	sys_sched_rr_get_interval
- 424	common	pidfd_send_signal		sys_pidfd_send_signal
--425	common	io_uring_setup			sys_io_uring_setup
-+425	common	io_uring_setup			__sys_io_uring_setup
- 426	common	io_uring_enter			sys_io_uring_enter
- 427	common	io_uring_register		sys_io_uring_register
- 428	common	open_tree			sys_open_tree
--- 
-2.7.4
-
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
