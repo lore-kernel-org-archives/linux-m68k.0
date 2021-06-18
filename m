@@ -2,116 +2,167 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-15.3 required=3.0 tests=BAYES_00,DKIM_INVALID,
-	DKIM_SIGNED,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,NICE_REPLY_A,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
-	USER_AGENT_SANE_1 autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-3.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,NICE_REPLY_A,SPF_HELO_NONE,
+	SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 6A9A1C48BDF
-	for <linux-m68k@archiver.kernel.org>; Fri, 18 Jun 2021 08:01:05 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C6D5AC48BDF
+	for <linux-m68k@archiver.kernel.org>; Fri, 18 Jun 2021 08:06:30 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 4DE5E61396
-	for <linux-m68k@archiver.kernel.org>; Fri, 18 Jun 2021 08:01:05 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 9950761351
+	for <linux-m68k@archiver.kernel.org>; Fri, 18 Jun 2021 08:06:30 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232606AbhFRIDH (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Fri, 18 Jun 2021 04:03:07 -0400
-Received: from mail.kernel-space.org ([195.201.34.187]:40022 "EHLO
-        mail.kernel-space.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232455AbhFRIDA (ORCPT
-        <rfc822;linux-m68k@vger.kernel.org>); Fri, 18 Jun 2021 04:03:00 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel-space.org;
-        s=20190913; t=1624003228;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=cdx0lnD35FU0zWS7M/aFD/0+udR81CFLOOBC06iW+Bk=;
-        b=oUl2+5MOmd5Oc6hfMLVzjEVFGUwnZu/ZwshOV2Z3E677xie1BaNwZXt2k3DmPUWMF0pKaa
-        5uVoJ9VWfue2+PIeDG7OMK5wuaY/8G0R3jV/j6RmbB7RmSlhCMB278znuHStjsswaHHHEw
-        URNCLya3euKmgoJA40NSJJtEepNJmok=
-Received: from [192.168.0.2] (host-87-8-57-171.retail.telecomitalia.it [87.8.57.171])
-        by ziongate (OpenSMTPD) with ESMTPSA id ce60978d (TLSv1.3:TLS_AES_256_GCM_SHA384:256:NO);
-        Fri, 18 Jun 2021 08:00:28 +0000 (UTC)
-Subject: Re: [PATCH v2 5/5] can: flexcan: add mcf5441x support
-To:     Marc Kleine-Budde <mkl@pengutronix.de>
-Cc:     gerg@linux-m68k.org, wg@grandegger.com, geert@linux-m68k.org,
-        linux-m68k@vger.kernel.org, linux-can@vger.kernel.org,
-        qiangqing.zhang@nxp.com
-References: <20210616231652.738027-1-angelo@kernel-space.org>
- <20210616231652.738027-5-angelo@kernel-space.org>
- <20210617193823.w75gayd33jpmkw4d@pengutronix.de>
-From:   Angelo Dureghello <angelo@kernel-space.org>
-Message-ID: <3e47a1a4-c0c5-fd1e-ffa7-b9f217a9a859@kernel-space.org>
-Date:   Fri, 18 Jun 2021 09:59:35 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.1
+        id S231877AbhFRIIi (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Fri, 18 Jun 2021 04:08:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43502 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232395AbhFRIIh (ORCPT
+        <rfc822;linux-m68k@vger.kernel.org>); Fri, 18 Jun 2021 04:08:37 -0400
+Received: from mail-pj1-x102a.google.com (mail-pj1-x102a.google.com [IPv6:2607:f8b0:4864:20::102a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F05F5C061574;
+        Fri, 18 Jun 2021 01:06:25 -0700 (PDT)
+Received: by mail-pj1-x102a.google.com with SMTP id k22-20020a17090aef16b0290163512accedso6805057pjz.0;
+        Fri, 18 Jun 2021 01:06:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:references:cc:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-transfer-encoding;
+        bh=LZv0lWsZ028iyr8vq0HfRi2N3ffpsv5fCOqqDgr2at4=;
+        b=PdMP+51Yl8pKocErxqVLBFAPwTKLWwLprB3Mwa43S9H3awdMJBFNHgBg9PR3sNlFem
+         PHj+oOR+3lAJOQWAynDrn0m4hNyIQ7pSlPL/yEw1GGWNP1lLJCqWk/Cyam9WD4rRmMAh
+         Q0T7McwE5wMyI8yI5WpAKNrTMCv4lvBGAcyqqXCzpTHgxKxwx1H9dn2YjRIppKDEJzk0
+         0wrVO5Cpmt7Elmq74//604QmWhycCAFw9f2BytJcYxAm886pB0tvL2a5cGyrFOThWJzu
+         OswRdoTnjr0RSrvz21KwgLl0pSKDX5jQ2NWMHEDgCxJhPsVIJivEtdhwlPKqnJgDlUxA
+         Y82w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:references:cc:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding;
+        bh=LZv0lWsZ028iyr8vq0HfRi2N3ffpsv5fCOqqDgr2at4=;
+        b=uCtoN7NoaDSHTgroDP71oCle+msA7V8JwGvYzPo1JWExO/A6oao3DOZeT8AMRl0hqU
+         y72/Lguqe4RGg4GsvV0b/4ur3+dolYo0D9Eo7u/+EvdvuHMsawr1Y9o1Wp2JBhrhuDSP
+         M9vO+Z44WBG5gJgPaJrYbnzaa5RJSZD6oJ4MwF/6cQjsWQeH6P1sY87DM332f1D8BL9U
+         5hMgjoOICWPMyO9QSsm1V0GfAyWuYVG/6V7cvY/76csnUQ1kqfsIOi/taPXjpIQP9qSW
+         jkXsl4cjj8azUwqS+k+j9g6h0qwlTU01pIrMs2z0eK8GX4Pzh+Du+xGNS/gpMjJu6D5m
+         aJQw==
+X-Gm-Message-State: AOAM531o5rtTM5tQZGpplaggRKKTmeFmBoQD/po+BPv9CS16ppgPcGIR
+        YjFtZg4XVzDLFSIC1ZboMDDQejLhw0M=
+X-Google-Smtp-Source: ABdhPJzVYZxgVw25FGjhK+4SyrGoz17eB4y3Iey5PBYuBWnJRBspAICa0Ld93YufHUbqhgimwEALsQ==
+X-Received: by 2002:a17:90a:4208:: with SMTP id o8mr9672528pjg.216.1624003585199;
+        Fri, 18 Jun 2021 01:06:25 -0700 (PDT)
+Received: from [10.1.1.25] (222-152-189-137-fibre.sparkbb.co.nz. [222.152.189.137])
+        by smtp.gmail.com with ESMTPSA id ip7sm7047665pjb.39.2021.06.18.01.06.21
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Fri, 18 Jun 2021 01:06:24 -0700 (PDT)
+Subject: Re: [PATCH net-next v3 2/2] net/8390: apne.c - add 100 Mbit support
+ to apne.c driver
+To:     Geert Uytterhoeven <geert@linux-m68k.org>
+References: <1623907712-29366-1-git-send-email-schmitzmic@gmail.com>
+ <1623907712-29366-3-git-send-email-schmitzmic@gmail.com>
+ <d661fb8-274d-6731-75f4-685bb2311c41@linux-m68k.org>
+ <1fa288e2-3157-68f8-32c1-ffa1c63e4f85@gmail.com>
+ <CAMuHMdVGe1EutOVpw3-R=25xG0p2rWd65cB2mqM-imXWYjLtXw@mail.gmail.com>
+Cc:     Finn Thain <fthain@linux-m68k.org>,
+        Linux/m68k <linux-m68k@vger.kernel.org>,
+        ALeX Kazik <alex@kazik.de>, netdev <netdev@vger.kernel.org>
+From:   Michael Schmitz <schmitzmic@gmail.com>
+Message-ID: <da54e915-c142-a69b-757f-6a6419f173fa@gmail.com>
+Date:   Fri, 18 Jun 2021 20:06:19 +1200
+User-Agent: Mozilla/5.0 (X11; Linux ppc; rv:45.0) Gecko/20100101
+ Icedove/45.4.0
 MIME-Version: 1.0
-In-Reply-To: <20210617193823.w75gayd33jpmkw4d@pengutronix.de>
+In-Reply-To: <CAMuHMdVGe1EutOVpw3-R=25xG0p2rWd65cB2mqM-imXWYjLtXw@mail.gmail.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-Hi Marc,
+Hi Geert,
 
-On 17/06/21 9:38 PM, Marc Kleine-Budde wrote:
-> On 17.06.2021 01:16:52, Angelo Dureghello wrote:
->> Add flexcan support for NXP ColdFire mcf5441x family.
+Am 18.06.2021 um 19:16 schrieb Geert Uytterhoeven:
+>>>> +#ifdef CONFIG_APNE100MBIT
+>>>> +    if (apne_100_mbit)
+>>>> +            isa_type = ISA_TYPE_AG16;
+>>>> +#endif
+>>>> +
+>>> I think isa_type has to be assigned unconditionally otherwise it can't be
+>>> reset for 10 mbit cards. Therefore, the AMIGAHW_PRESENT(PCMCIA) logic in
+>>> arch/m68k/kernel/setup_mm.c probably should move here.
 >>
->> This flexcan module is quite similar to imx6 flexcan module, but
->> with some exceptions:
->>
->> - 3 separate interrupt sources, MB, BOFF and ERR,
->> - implements 16 mb only,
->> - m68k architecture is not supporting devicetrees, so a
->>    platform data check/case has been added,
->> - ColdFire is m68k, so big-endian cpu, with a little-endian flexcan
->>    module.
->>
->> ---
->> Changes for v2:
->> - re-add platform data handling restarting from 2c0ac9208135
->> - re-add flexcan_id_table, as from 2c0ac9208135
->> - usinig irq resources for ERR and BOFF interrupts
->> - add missing free_irq() for interrupts
->> - minor syntax fixes
->>
->> Signed-off-by: Angelo Dureghello <angelo@kernel-space.org>
->> ---
->>   drivers/net/can/flexcan.c | 95 ++++++++++++++++++++++++++++++++++-----
->>   1 file changed, 84 insertions(+), 11 deletions(-)
->>
->> diff --git a/drivers/net/can/flexcan.c b/drivers/net/can/flexcan.c
->> index 57f3635ad8d7..2188dc36a010 100644
->> --- a/drivers/net/can/flexcan.c
->> +++ b/drivers/net/can/flexcan.c
->> @@ -28,6 +28,7 @@
->>   #include <linux/of_device.h>
->>   #include <linux/pinctrl/consumer.h>
->>   #include <linux/platform_device.h>
->> +#include <linux/can/platform/mcf5441x.h>
->>   #include <linux/pm_runtime.h>
->>   #include <linux/regmap.h>
->>   #include <linux/regulator/consumer.h>
->> @@ -246,6 +247,8 @@
->>   #define FLEXCAN_QUIRK_SUPPORT_ECC BIT(10)
->>   /* Setup stop mode with SCU firmware to support wakeup */
->>   #define FLEXCAN_QUIRK_SETUP_STOP_MODE_SCFW BIT(11)
->> +/* Setup for flexcan module as in mcf, 16 mb, 3 separate interrupts  */
->> +#define FLEXCAN_QUIRK_SETUP_MCF BIT(12)
-> 
-> Can you split this into QUIRK_NR_IRQ_3 and QUIRK_NR_MB_16.
-> 
+>> Good catch! I am uncertain though as to whether replacing a 100 Mbit
+>> card by a 10 Mbit one at run time is a common use case (or even
+>> possible, given constraints of the Amiga PCMCIA interface?), but it
+>> ought to work even if rarely used.
+>
+> Given it's PCMCIA, I guess that's a possibility.
+> Furthermore, always setting isa_type means the user can recover from
+> a mistake by unloading the module, and modprobe'ing again with the
+> correct parameter.
+> For the builtin-case, that needs a s/0444/0644/ change, though.
 
-done
+How does re-probing after a card change for a builtin driver work? 
+Changing the permission bits is a minor issue.
 
-> Marc
-> 
+>
+>> The comment there says isa_type must be set as early as possible, so I'd
+>> rather leave that alone, and add an 'else' clause here.
+>>
+>> This of course raise the question whether we ought to move the entire
+>> isa_type handling into arch code instead - make it a generic
+>> amiga_pcmcia_16bit option settable via sysfs. There may be other 16 bit
+>> cards that require the same treatment, and duplicating PCMCIA mode
+>> switching all over the place could be avoided. Opinions?
+>
+> Indeed.
 
--- 
-Angelo Dureghello
-+++ kernelspace +++
-+E: angelo AT kernel-space.org
-+W: www.kernel-space.org
+The only downside I can see is that setting isa_type needs to be done 
+ahead of modprobe, through sysfs. That might be a little error prone.
+
+> Still, can we autodetect in the driver?
+
+Guess we'll have to find out how the 16 bit cards behave if first poked 
+in 8 bit mode, attempting to force a reset of the 8390 chip, and 
+switching to 16 bit mode if this fails. That's normally done in 
+apne_probe1() which runs after init_pcmcia(), so we can't rely on the 
+result of a 8390 reset autoprobe to do the PCMCIA software reset there.
+
+The 8390 reset part does not rely on anything else in apne_probe1(), so 
+that code can be lifted out of apne_probe1() and run early in 
+apne_probe() (after the check for an inserted PCMCIA card). I'll try and 
+prepare a patch for Alex to test that method.
+
+>
+> I'm wondering how this is handled on PCs with PCMCIA, or if there
+> really is something special about Amiga PCMCIA hardware...
+
+What's special about Amiga PCMCIA hardware is that the card reset isn't 
+connected for those 16 bit cards, so pcmcia_reset() does not work.
+
+Whether the software reset workaround hurts for 8 bit cards is something 
+I don't know and cannot test. But
+
+> And I'd really like to get rid of the CONFIG_APNE100MBIT option,
+> i.e. always include the support, if possible.
+
+I can't see why that wouldn't be possible - the only downside is that we 
+force MULTI_ISA=1 always for Amiga, and lose the optimizations done for 
+MUTLI_ISA=0 in io_mm.h. Unless we autoprobe, we can use isa_type to 
+guard against running a software reset on 8 bit cards ...
+
+Cheers,
+
+	Michael
+
+> Gr{oetje,eeting}s,
+>
+>                         Geert
+>
+> --
+> Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+>
+> In personal conversations with technical people, I call myself a hacker. But
+> when I'm talking to journalists I just say "programmer" or something like that.
+>                                 -- Linus Torvalds
+>
