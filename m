@@ -2,117 +2,131 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.5 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,NICE_REPLY_A,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=no autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-5.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
+	SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9876AC48BE8
-	for <linux-m68k@archiver.kernel.org>; Fri, 18 Jun 2021 14:38:58 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 02FB7C48BDF
+	for <linux-m68k@archiver.kernel.org>; Fri, 18 Jun 2021 17:18:19 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 7EEB461154
-	for <linux-m68k@archiver.kernel.org>; Fri, 18 Jun 2021 14:38:58 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id D94A9613E9
+	for <linux-m68k@archiver.kernel.org>; Fri, 18 Jun 2021 17:18:18 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234595AbhFROlH (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Fri, 18 Jun 2021 10:41:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47570 "EHLO
+        id S233869AbhFRRU1 (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Fri, 18 Jun 2021 13:20:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55432 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234590AbhFROlG (ORCPT
+        with ESMTP id S233680AbhFRRU1 (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Fri, 18 Jun 2021 10:41:06 -0400
-Received: from mail-ot1-x333.google.com (mail-ot1-x333.google.com [IPv6:2607:f8b0:4864:20::333])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E49F4C06175F
-        for <linux-m68k@lists.linux-m68k.org>; Fri, 18 Jun 2021 07:38:56 -0700 (PDT)
-Received: by mail-ot1-x333.google.com with SMTP id j11-20020a9d738b0000b02903ea3c02ded8so9881499otk.5
-        for <linux-m68k@lists.linux-m68k.org>; Fri, 18 Jun 2021 07:38:56 -0700 (PDT)
+        Fri, 18 Jun 2021 13:20:27 -0400
+Received: from mail-lj1-x233.google.com (mail-lj1-x233.google.com [IPv6:2a00:1450:4864:20::233])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C9458C061574
+        for <linux-m68k@lists.linux-m68k.org>; Fri, 18 Jun 2021 10:18:16 -0700 (PDT)
+Received: by mail-lj1-x233.google.com with SMTP id a21so10026142ljj.1
+        for <linux-m68k@lists.linux-m68k.org>; Fri, 18 Jun 2021 10:18:16 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
-        h=subject:from:to:cc:references:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=T9YZ9nd9UJQBiMGTA8SwSx9fF/IkYT4ggh3TTtYGORU=;
-        b=ELMedzfqm5gGYiZMpebilxyhIz30HP+7MOrFhLWMfRM7CNAGCIQMGLIobxyzi2vTvr
-         aj3eqq2G0rINF61dtcVNMqxlKrb2V4BxLPEmPZiRqvpDoudbV/EgJiamQGWpXpxflQmO
-         ND3tV4XYaw4ZeFHRCzpd+EOeGFKQC2rJD985zQdcFF3mqvI4ET4kgMto7ucO5bfXIzvY
-         /cBGMYPqdnkSCTr4+YLVPB0A5rpI9N5gZtGLbFQa1CNCzSRtYfXQmZ4FMBc/itdFoj/X
-         Z09tQjkcsSNNkxC1pLW0oyfttF9xqvdh30nPpapcASD+YC/vcdSisam+uu+KYMjXS1oZ
-         jueQ==
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=nBnuJCjQE+aAZPwJSd9bJXr2Ds6ZThaAzMpjQA51kUI=;
+        b=F1P+lKociosdfPcWBId6Ys43KUatGPrylEYc2ZkgaQSaIwYVTH2vl+FTSZsWUNtS2S
+         xCB0wytuIkmaIt/KIgw7pVq9/rGNTKHWukrdulsisjI9kiH2RhIFD/Maq8/t/3Zc/+yP
+         OBhR+UrWjvPrDLgpXfflpIry4l57W+y+y6Jd0=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:from:to:cc:references:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=T9YZ9nd9UJQBiMGTA8SwSx9fF/IkYT4ggh3TTtYGORU=;
-        b=KGkB9by5T+ifBvM4KXjkNsKXrS1gn/HPetmC+y3ScrOxaufMkPZAbl+b2kltyi4y9s
-         1MwsGOCa4VnJEvPnmui9ayePQNE3z/5lZvyCBnuCv84jkKG6wYOvU9EXTaUZ4eD91q2i
-         xSAC0oEjLG55TjmVH0V8szaQwFMjpv5R2vyv+cGMoV6dZE/SyIdv23t1zPdxE/d1QpPv
-         Tlt+Kj2cdpbHDdaurtps9d2VAvfTHlXFgF+gJ03/D/EXO7Uz7sgDEPlgkHQYuHjdpqgM
-         6d3O8trc0fSF5Z+y3RY8qWnZMhfN0TsU0sLvcCe0tPQW1P1XRAz+CMyPQ56vkCmbgRhW
-         9CIQ==
-X-Gm-Message-State: AOAM533Iqk1lhkH2TjZFSMCcAI119rz0u/IBUpAw5vwskcAMy68qNMnN
-        0ZTuHcbRuqtsIAXkFW7IGbQYiaKBdj1sYA==
-X-Google-Smtp-Source: ABdhPJzHAmLUNJckmU3abFOD9WQomHPPF2qlw1+78hJMYelf0T+g8MkjAjpQ3BD9i4JwVNNbP4pUfw==
-X-Received: by 2002:a9d:426:: with SMTP id 35mr9427857otc.162.1624027135675;
-        Fri, 18 Jun 2021 07:38:55 -0700 (PDT)
-Received: from [192.168.1.134] ([198.8.77.61])
-        by smtp.gmail.com with ESMTPSA id l2sm2126772otl.27.2021.06.18.07.38.53
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=nBnuJCjQE+aAZPwJSd9bJXr2Ds6ZThaAzMpjQA51kUI=;
+        b=jD6P5dnzzg1kkZDAjq8jvQe4IIr4alSmWimiW2onB7qoHYGMvMYTkJoM1vYfAoJuWU
+         YdBCNNB2/O1zAt4I7kJG6kNzjGkSvAG1KCdl+xNGp4kdyQ2eByy1rA4reGKHQpl3i5NS
+         rWXpF2c2M+MmoEfbPrgTnryQU5QHiNs0wbvsehhCocgtlRSa/ehqhQwKFKA5uzZ+RFsz
+         U4cUPjoj58VUJmV6UGxkonN+p+IVf8jPa3kjjCkudQgE6K8WomTN+lFxxE70DDm7oSAg
+         ve/OwffeyHvvIUxsIrn/9xNUaPc0Unifa9bwSTA1pluOKSBk9A8QRqTbk6TOxQTQnXfk
+         Vvhw==
+X-Gm-Message-State: AOAM530c3dK+RdhK9kGp6Uyh3pd6AAOUZIaBsINPg/JJ8uVGR0AMecd5
+        lR06qrtt14S+kVr8J7WOfnYVatsTqjUzmbq4
+X-Google-Smtp-Source: ABdhPJwHfYKjCUQxqGkSXNBmGpK51x7FHLGlsptGRheCIXglXqMvDc70yUHywuNbH2hCuexZCNUUbg==
+X-Received: by 2002:a2e:b163:: with SMTP id a3mr7303226ljm.147.1624036694510;
+        Fri, 18 Jun 2021 10:18:14 -0700 (PDT)
+Received: from mail-lj1-f178.google.com (mail-lj1-f178.google.com. [209.85.208.178])
+        by smtp.gmail.com with ESMTPSA id c5sm963353lfv.117.2021.06.18.10.18.13
+        for <linux-m68k@lists.linux-m68k.org>
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 18 Jun 2021 07:38:55 -0700 (PDT)
-Subject: Re: remove the legacy ide driver v2
-From:   Jens Axboe <axboe@kernel.dk>
-To:     Christoph Hellwig <hch@lst.de>,
-        "David S. Miller" <davem@davemloft.net>,
-        Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     Richard Henderson <rth@twiddle.net>,
-        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
-        Matt Turner <mattst88@gmail.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-ide@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-alpha@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-m68k@lists.linux-m68k.org
-References: <20210616134658.1471835-1-hch@lst.de>
- <4b003372-41d0-507a-b74b-b73aa33189f4@kernel.dk>
-Message-ID: <57488a7b-02fa-3b3a-6719-81ab8dd64b53@kernel.dk>
-Date:   Fri, 18 Jun 2021 08:38:56 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Fri, 18 Jun 2021 10:18:14 -0700 (PDT)
+Received: by mail-lj1-f178.google.com with SMTP id d13so14934686ljg.12
+        for <linux-m68k@lists.linux-m68k.org>; Fri, 18 Jun 2021 10:18:13 -0700 (PDT)
+X-Received: by 2002:a2e:2ac6:: with SMTP id q189mr10211514ljq.61.1624036693648;
+ Fri, 18 Jun 2021 10:18:13 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <4b003372-41d0-507a-b74b-b73aa33189f4@kernel.dk>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <1623979642-14983-1-git-send-email-schmitzmic@gmail.com>
+In-Reply-To: <1623979642-14983-1-git-send-email-schmitzmic@gmail.com>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Fri, 18 Jun 2021 10:17:57 -0700
+X-Gmail-Original-Message-ID: <CAHk-=whTKf6UFr6YneXsPU4=8dTs+eEX_861ugESTE3CmZtFUg@mail.gmail.com>
+Message-ID: <CAHk-=whTKf6UFr6YneXsPU4=8dTs+eEX_861ugESTE3CmZtFUg@mail.gmail.com>
+Subject: Re: [PATCH v2] m68k: save extra registers on more syscall entry points
+To:     Michael Schmitz <schmitzmic@gmail.com>
+Cc:     Geert Uytterhoeven <geert@linux-m68k.org>,
+        linux-arch <linux-arch@vger.kernel.org>,
+        linux-m68k <linux-m68k@lists.linux-m68k.org>,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        Andreas Schwab <schwab@linux-m68k.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-On 6/16/21 8:52 AM, Jens Axboe wrote:
-> On 6/16/21 7:46 AM, Christoph Hellwig wrote:
->> Hi all,
->>
->> we've been trying to get rid of the legacy ide driver for a while now,
->> and finally scheduled a removal for 2021, which is three month old now.
->>
->> In general distros and most defconfigs have switched to libata long ago,
->> but there are a few exceptions.  This series first switches over all
->> remaining defconfigs to use libata and then removes the legacy ide
->> driver.
->>
->> libata mostly covers all hardware supported by the legacy ide driver.
->> There are three mips drivers that are not supported, but the linux-mips
->> list could not identify any users of those.  There also are two m68k
->> drivers that do not have libata equivalents, which might or might not
->> have users, so we'll need some input and possibly help from the m68k
->> community here.
->>
->> This series is against Jens' for-5.14/libata branch.
-> 
-> Unless someone complains loudly, I plan on queueing this up end this
-> week.
+On Thu, Jun 17, 2021 at 6:27 PM Michael Schmitz <schmitzmic@gmail.com> wrote:
+>
+> I'd need specific test cases to exercise io_uring_setup in
+> particular, to see whether stack offsets for pt_regs and the
+> switch stack have been messed up.
 
-This has now been applied for 5.14, thanks.
+I don't think doing this for io_uring_setup() will help any - the
+problem is not in that system call thread itself, it's purely in the
+kernel thread that it then starts.
 
--- 
-Jens Axboe
+And the fact that io_uring_setup() has the full stack frame won't then
+help that kernel thread, for exactly the same reason that was true on
+alpha: copy_thread() will actually _create_ the full stack, but when
+we switch to it (through switch_to() -> resume()), the resume code in
+arch/m68k/kernel/entry.S will switch to that stack, and then do
+RESTORE_SWITCH_STACK which will consume it again.
 
+So I think m68k should do the same thing as Eric's patch for alpha: do
+the full stack for exit and exit_group, and for kernel thread creation
+- or at least PF_IO_WORKER), do an extra stack frame on the kernel
+stack, so that even after resume() we'll still have another copy of
+the frame.
+
+The alternative would be to do what x86 does: see __switch_to_asm().
+Instead of doing that normal kernel entry/exit stack (with
+SAVE_SWITCH_STACK and RESTORE_SWITCH_STACK), x86 has it's own very
+special "only for task switching" stack frame thing, and leaves the
+pt_regs etc entirely alone.
+
+Of course, that "only for task switching" is _kind_of_ what the whole
+SAVE_SWITCH_STACK is for - it's part of the name after all - but the
+difference is that on alpha and m68k, it's also (and primarily) the
+"full state" stack frame, used not just for task switching, but for
+signal handling state and for ptrace too.
+
+So in theory, it would be good to split this up:
+
+ (a) have the signal handling and ptrace stack be one thing (maybe
+rename the "SWITCH" part of the operations to something else, like
+"EXTRA" or "SIGNAL" or whatever)
+
+ (b) make a separate "for task switching only" stack frame, which is
+used by that switch_to() -> resume() sequence, and that copy_thread()
+has a "struct inactive_task_frame" thing for..
+
+That way, the pt_regs/extra_regs stack frame that copy_thread()
+creates wouldn't then be eaten up by the task switch.
+
+But while that sounds like the right thing to do, it would be a rather
+bigger change. I'm not entirely sure it's worth it.
+
+Eric, comments?
+
+                Linus
