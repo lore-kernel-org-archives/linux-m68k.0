@@ -2,161 +2,117 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,NICE_REPLY_A,SPF_HELO_NONE,
-	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-5.5 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,NICE_REPLY_A,
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=no autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 01B1AC48BDF
-	for <linux-m68k@archiver.kernel.org>; Fri, 18 Jun 2021 08:28:50 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 9876AC48BE8
+	for <linux-m68k@archiver.kernel.org>; Fri, 18 Jun 2021 14:38:58 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id CD46D61396
-	for <linux-m68k@archiver.kernel.org>; Fri, 18 Jun 2021 08:28:49 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 7EEB461154
+	for <linux-m68k@archiver.kernel.org>; Fri, 18 Jun 2021 14:38:58 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233657AbhFRIa5 (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Fri, 18 Jun 2021 04:30:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48516 "EHLO
+        id S234595AbhFROlH (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Fri, 18 Jun 2021 10:41:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47570 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232853AbhFRIa5 (ORCPT
-        <rfc822;linux-m68k@vger.kernel.org>); Fri, 18 Jun 2021 04:30:57 -0400
-Received: from mail-pg1-x52a.google.com (mail-pg1-x52a.google.com [IPv6:2607:f8b0:4864:20::52a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D55DDC061574;
-        Fri, 18 Jun 2021 01:28:48 -0700 (PDT)
-Received: by mail-pg1-x52a.google.com with SMTP id w31so7204939pga.6;
-        Fri, 18 Jun 2021 01:28:48 -0700 (PDT)
+        with ESMTP id S234590AbhFROlG (ORCPT
+        <rfc822;linux-m68k@lists.linux-m68k.org>);
+        Fri, 18 Jun 2021 10:41:06 -0400
+Received: from mail-ot1-x333.google.com (mail-ot1-x333.google.com [IPv6:2607:f8b0:4864:20::333])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E49F4C06175F
+        for <linux-m68k@lists.linux-m68k.org>; Fri, 18 Jun 2021 07:38:56 -0700 (PDT)
+Received: by mail-ot1-x333.google.com with SMTP id j11-20020a9d738b0000b02903ea3c02ded8so9881499otk.5
+        for <linux-m68k@lists.linux-m68k.org>; Fri, 18 Jun 2021 07:38:56 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:references:cc:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-transfer-encoding;
-        bh=L8E9iQlqVEJ+gzCXld3siwY+dzmNVX0LaD06zHF/0RQ=;
-        b=h5Vw5aFu9zGEkuOEorRUs/MpAEYMCPPaB70hiYJznDPXZ1gGMPxEr2CIYO2LdrAGVy
-         YK3LQL1OMH+tuMfWQfhvbuavcJEBFubTDRtGI6+TCaIuWp2EKhIwPQZJozFUuiTenhMK
-         ww8i4vtrmKKCNXQWRiCG7H17O3PHoMxfJV91ed7VT2lkMljRS6s2wuiHP4DvyklERJNl
-         T47BULDGlhBJZqT48XKBqrV1pKTNC8s3DraeNkeojph7V/O2Yqj0+LJ4R0psHawbQiSy
-         TKuyHZ4VoxO5jYOgkAuxzSny+lB8+612x0cm4jDF+1X0vuFeof3TNubVk/ZUljKTvgXy
-         qJzg==
+        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
+        h=subject:from:to:cc:references:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=T9YZ9nd9UJQBiMGTA8SwSx9fF/IkYT4ggh3TTtYGORU=;
+        b=ELMedzfqm5gGYiZMpebilxyhIz30HP+7MOrFhLWMfRM7CNAGCIQMGLIobxyzi2vTvr
+         aj3eqq2G0rINF61dtcVNMqxlKrb2V4BxLPEmPZiRqvpDoudbV/EgJiamQGWpXpxflQmO
+         ND3tV4XYaw4ZeFHRCzpd+EOeGFKQC2rJD985zQdcFF3mqvI4ET4kgMto7ucO5bfXIzvY
+         /cBGMYPqdnkSCTr4+YLVPB0A5rpI9N5gZtGLbFQa1CNCzSRtYfXQmZ4FMBc/itdFoj/X
+         Z09tQjkcsSNNkxC1pLW0oyfttF9xqvdh30nPpapcASD+YC/vcdSisam+uu+KYMjXS1oZ
+         jueQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:references:cc:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding;
-        bh=L8E9iQlqVEJ+gzCXld3siwY+dzmNVX0LaD06zHF/0RQ=;
-        b=Oy8HEEhNBaaEv4mRQCstdmSrnx8sEBza05BZsv948MsvMjqQIS1i1vvYFQwy33Wij+
-         d4+IIlMBZ+JBF76ydUeoOJdqitObzitjh1ZpQOvjCZsxcaET8s4Mjd+ErEEi4I/dOury
-         FCMQms/pz/zW5NgbDs/hTkHyBYJVURbsfGZVLn92oAE/AQmfZws31dvSF89WKvbrzkNV
-         eC79V2cIOSEdyG74Qn9feGreqzR1MlRTJl4dcq3FMJlQN9ICuFilg4WzsVtSUK8Q1fTu
-         +ag3Fgy5lFNSWr6Q/4Rx387vWn3ZbCsr2JbBs4vxtv7PfFmaajiYnnS4h8s+TZ58hh8k
-         Q4SA==
-X-Gm-Message-State: AOAM530JeiMZMN41EJjpyROwHMjcx5j2NPRgMT9DEl16UDe4G908GltA
-        mCDlWWr3LkZLknmmJuBu8bixPJwhLmY=
-X-Google-Smtp-Source: ABdhPJyBJCfAM2WelwdCsSVYQ7SryUKZ62EQis5tWdW7ajbykm/ean1iA8t+/FlOEIDyfteizWQgKg==
-X-Received: by 2002:a63:81c3:: with SMTP id t186mr9082057pgd.123.1624004928119;
-        Fri, 18 Jun 2021 01:28:48 -0700 (PDT)
-Received: from [10.1.1.25] (222-152-189-137-fibre.sparkbb.co.nz. [222.152.189.137])
-        by smtp.gmail.com with ESMTPSA id q21sm7815537pfn.81.2021.06.18.01.28.44
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Fri, 18 Jun 2021 01:28:47 -0700 (PDT)
-Subject: Re: [PATCH net-next v3 2/2] net/8390: apne.c - add 100 Mbit support
- to apne.c driver
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-References: <1623907712-29366-1-git-send-email-schmitzmic@gmail.com>
- <1623907712-29366-3-git-send-email-schmitzmic@gmail.com>
- <d661fb8-274d-6731-75f4-685bb2311c41@linux-m68k.org>
- <1fa288e2-3157-68f8-32c1-ffa1c63e4f85@gmail.com>
- <CAMuHMdVGe1EutOVpw3-R=25xG0p2rWd65cB2mqM-imXWYjLtXw@mail.gmail.com>
- <da54e915-c142-a69b-757f-6a6419f173fa@gmail.com>
- <CAMuHMdV5Yd2w+maSn-dQ=NOrVyVc8JjV38miKRc-pvnzBcKSig@mail.gmail.com>
-Cc:     Finn Thain <fthain@linux-m68k.org>,
-        Linux/m68k <linux-m68k@vger.kernel.org>,
-        ALeX Kazik <alex@kazik.de>, netdev <netdev@vger.kernel.org>
-From:   Michael Schmitz <schmitzmic@gmail.com>
-Message-ID: <9faae8bf-74c2-52e8-ce3d-9abef34412e4@gmail.com>
-Date:   Fri, 18 Jun 2021 20:28:42 +1200
-User-Agent: Mozilla/5.0 (X11; Linux ppc; rv:45.0) Gecko/20100101
- Icedove/45.4.0
+        h=x-gm-message-state:subject:from:to:cc:references:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=T9YZ9nd9UJQBiMGTA8SwSx9fF/IkYT4ggh3TTtYGORU=;
+        b=KGkB9by5T+ifBvM4KXjkNsKXrS1gn/HPetmC+y3ScrOxaufMkPZAbl+b2kltyi4y9s
+         1MwsGOCa4VnJEvPnmui9ayePQNE3z/5lZvyCBnuCv84jkKG6wYOvU9EXTaUZ4eD91q2i
+         xSAC0oEjLG55TjmVH0V8szaQwFMjpv5R2vyv+cGMoV6dZE/SyIdv23t1zPdxE/d1QpPv
+         Tlt+Kj2cdpbHDdaurtps9d2VAvfTHlXFgF+gJ03/D/EXO7Uz7sgDEPlgkHQYuHjdpqgM
+         6d3O8trc0fSF5Z+y3RY8qWnZMhfN0TsU0sLvcCe0tPQW1P1XRAz+CMyPQ56vkCmbgRhW
+         9CIQ==
+X-Gm-Message-State: AOAM533Iqk1lhkH2TjZFSMCcAI119rz0u/IBUpAw5vwskcAMy68qNMnN
+        0ZTuHcbRuqtsIAXkFW7IGbQYiaKBdj1sYA==
+X-Google-Smtp-Source: ABdhPJzHAmLUNJckmU3abFOD9WQomHPPF2qlw1+78hJMYelf0T+g8MkjAjpQ3BD9i4JwVNNbP4pUfw==
+X-Received: by 2002:a9d:426:: with SMTP id 35mr9427857otc.162.1624027135675;
+        Fri, 18 Jun 2021 07:38:55 -0700 (PDT)
+Received: from [192.168.1.134] ([198.8.77.61])
+        by smtp.gmail.com with ESMTPSA id l2sm2126772otl.27.2021.06.18.07.38.53
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 18 Jun 2021 07:38:55 -0700 (PDT)
+Subject: Re: remove the legacy ide driver v2
+From:   Jens Axboe <axboe@kernel.dk>
+To:     Christoph Hellwig <hch@lst.de>,
+        "David S. Miller" <davem@davemloft.net>,
+        Geert Uytterhoeven <geert@linux-m68k.org>
+Cc:     Richard Henderson <rth@twiddle.net>,
+        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
+        Matt Turner <mattst88@gmail.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        linux-ide@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-alpha@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-m68k@lists.linux-m68k.org
+References: <20210616134658.1471835-1-hch@lst.de>
+ <4b003372-41d0-507a-b74b-b73aa33189f4@kernel.dk>
+Message-ID: <57488a7b-02fa-3b3a-6719-81ab8dd64b53@kernel.dk>
+Date:   Fri, 18 Jun 2021 08:38:56 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <CAMuHMdV5Yd2w+maSn-dQ=NOrVyVc8JjV38miKRc-pvnzBcKSig@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <4b003372-41d0-507a-b74b-b73aa33189f4@kernel.dk>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-Hi Geert,
-
-Am 18.06.2021 um 20:13 schrieb Geert Uytterhoeven:
+On 6/16/21 8:52 AM, Jens Axboe wrote:
+> On 6/16/21 7:46 AM, Christoph Hellwig wrote:
+>> Hi all,
 >>
->> How does re-probing after a card change for a builtin driver work?
->> Changing the permission bits is a minor issue.
->
-> Oh right, this driver predates the driver framework, and doesn't support
-> PCMCIA hotplug.  So auto-unregister on removal doesn't work.
-> Even using unbind/bind in sysfs won't work.
->
-> So rmmod/modprobe is the only thing that has a chance to work...
->
->>>> The comment there says isa_type must be set as early as possible, so I'd
->>>> rather leave that alone, and add an 'else' clause here.
->>>>
->>>> This of course raise the question whether we ought to move the entire
->>>> isa_type handling into arch code instead - make it a generic
->>>> amiga_pcmcia_16bit option settable via sysfs. There may be other 16 bit
->>>> cards that require the same treatment, and duplicating PCMCIA mode
->>>> switching all over the place could be avoided. Opinions?
->>>
->>> Indeed.
+>> we've been trying to get rid of the legacy ide driver for a while now,
+>> and finally scheduled a removal for 2021, which is three month old now.
 >>
->> The only downside I can see is that setting isa_type needs to be done
->> ahead of modprobe, through sysfs. That might be a little error prone.
+>> In general distros and most defconfigs have switched to libata long ago,
+>> but there are a few exceptions.  This series first switches over all
+>> remaining defconfigs to use libata and then removes the legacy ide
+>> driver.
 >>
->>> Still, can we autodetect in the driver?
+>> libata mostly covers all hardware supported by the legacy ide driver.
+>> There are three mips drivers that are not supported, but the linux-mips
+>> list could not identify any users of those.  There also are two m68k
+>> drivers that do not have libata equivalents, which might or might not
+>> have users, so we'll need some input and possibly help from the m68k
+>> community here.
 >>
->> Guess we'll have to find out how the 16 bit cards behave if first poked
->> in 8 bit mode, attempting to force a reset of the 8390 chip, and
->> switching to 16 bit mode if this fails. That's normally done in
->> apne_probe1() which runs after init_pcmcia(), so we can't rely on the
->> result of a 8390 reset autoprobe to do the PCMCIA software reset there.
->>
->> The 8390 reset part does not rely on anything else in apne_probe1(), so
->> that code can be lifted out of apne_probe1() and run early in
->> apne_probe() (after the check for an inserted PCMCIA card). I'll try and
->> prepare a patch for Alex to test that method.
+>> This series is against Jens' for-5.14/libata branch.
+> 
+> Unless someone complains loudly, I plan on queueing this up end this
+> week.
 
-I just realized that might not work - ínit_pcmcia() enables the PCMCIA 
-interface for us, so the early 8390 reset may not go through at all... 
-The module parameter may have to stay as a fallback option at least.
+This has now been applied for 5.14, thanks.
 
->>
->>> I'm wondering how this is handled on PCs with PCMCIA, or if there
->>> really is something special about Amiga PCMCIA hardware...
->>
->> What's special about Amiga PCMCIA hardware is that the card reset isn't
->> connected for those 16 bit cards, so pcmcia_reset() does not work.
->
-> I was mostly thinking about the difference between 8-bit and 16-bit
-> accesses.
+-- 
+Jens Axboe
 
-No idea. I've never even seen an 8 bit PCMCIA card - I have a few old 
-16/32 bit ones around that were great for crashing my PowerBook, nothing 
-else...
-
->>> And I'd really like to get rid of the CONFIG_APNE100MBIT option,
->>> i.e. always include the support, if possible.
->>
->> I can't see why that wouldn't be possible - the only downside is that we
->> force MULTI_ISA=1 always for Amiga, and lose the optimizations done for
->> MUTLI_ISA=0 in io_mm.h. Unless we autoprobe, we can use isa_type to
->> guard against running a software reset on 8 bit cards ...
->
-> The latter sounds like a neat trick...
-
-Yes, we can at least get rid of the APNE100MBIT option that way. I'll 
-have to think about the autoprobe a bit more.
-
-Cheers,
-
-	Michael
-
-> Gr{oetje,eeting}s,
->
->                         Geert
->
