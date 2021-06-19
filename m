@@ -2,191 +2,135 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-13.8 required=3.0 tests=BAYES_00,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-3.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,NICE_REPLY_A,SPF_HELO_NONE,
+	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 4DEC4C48BE8
-	for <linux-m68k@archiver.kernel.org>; Sat, 19 Jun 2021 00:56:56 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C1D89C48BE8
+	for <linux-m68k@archiver.kernel.org>; Sat, 19 Jun 2021 01:32:34 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 2CAE960FF1
-	for <linux-m68k@archiver.kernel.org>; Sat, 19 Jun 2021 00:56:56 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 9F06A61264
+	for <linux-m68k@archiver.kernel.org>; Sat, 19 Jun 2021 01:32:34 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234262AbhFSA7F (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Fri, 18 Jun 2021 20:59:05 -0400
-Received: from kvm5.telegraphics.com.au ([98.124.60.144]:33524 "EHLO
-        kvm5.telegraphics.com.au" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231819AbhFSA7E (ORCPT
-        <rfc822;linux-m68k@vger.kernel.org>); Fri, 18 Jun 2021 20:59:04 -0400
-Received: from localhost (localhost.localdomain [127.0.0.1])
-        by kvm5.telegraphics.com.au (Postfix) with ESMTP id 7E45F29FEF;
-        Fri, 18 Jun 2021 20:56:50 -0400 (EDT)
-Date:   Sat, 19 Jun 2021 10:56:51 +1000 (AEST)
-From:   Finn Thain <fthain@linux-m68k.org>
-To:     Michael Schmitz <schmitzmic@gmail.com>
-cc:     linux-m68k@vger.kernel.org, geert@linux-m68k.org, alex@kazik.de,
-        netdev@vger.kernel.org
-Subject: Re: [PATCH net-next v5 2/2] net/8390: apne.c - add 100 Mbit support
- to apne.c driver
-In-Reply-To: <1624062891-22762-3-git-send-email-schmitzmic@gmail.com>
-Message-ID: <83b0640-459c-6f46-e070-1fc9559bd0be@linux-m68k.org>
-References: <1624062891-22762-1-git-send-email-schmitzmic@gmail.com> <1624062891-22762-3-git-send-email-schmitzmic@gmail.com>
+        id S235313AbhFSBen (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Fri, 18 Jun 2021 21:34:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53166 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233675AbhFSBen (ORCPT
+        <rfc822;linux-m68k@lists.linux-m68k.org>);
+        Fri, 18 Jun 2021 21:34:43 -0400
+Received: from mail-pg1-x530.google.com (mail-pg1-x530.google.com [IPv6:2607:f8b0:4864:20::530])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7DFBEC06175F
+        for <linux-m68k@lists.linux-m68k.org>; Fri, 18 Jun 2021 18:32:32 -0700 (PDT)
+Received: by mail-pg1-x530.google.com with SMTP id e22so3094303pgv.10
+        for <linux-m68k@lists.linux-m68k.org>; Fri, 18 Jun 2021 18:32:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:references:cc:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-transfer-encoding;
+        bh=YwFHnlTTaMz13RCYRIL+2y1iQwoDWlR2YjoEQFcO4UM=;
+        b=DSVcX9VOp0AoRrwhOjcyfdYMAXkkdNjdTqQkymnNL2WFFE+veeahA6zvyoqjiUQGEx
+         RE9jwhCayyQg+t+dHq5wT5ZcUR0BD27bD0L+/U/qgwA6xhyjpujFmwG+v17rq786pzJf
+         yUGZemyVbgYZQ2owVxXRhMp6YYDYGiJmry7ligWI+2Gql4bW2RyvDX9ZID1a8ZgP17Ie
+         d9Xj1Pko35WaXqlqNqn/uK4KFT3iOcNyl8luouByQ/69e4WihxIyvmEVil5d/+yvMuP1
+         c6jqM/f5OxxUJrD5W8VTB8OrxyOA9Vor2YDZQF0kO5y21uDyP6gl317z45E03e6xFE62
+         WaFA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:references:cc:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding;
+        bh=YwFHnlTTaMz13RCYRIL+2y1iQwoDWlR2YjoEQFcO4UM=;
+        b=Sgs/Yg1DUq6xciJws2VO+/wl0rjhNzcQwBqi9aZGRuxv+mbKGTKnvLsZZN3hOD4QJi
+         SiTHm23a8FKOPqEpqomN25+h+8y07NRg2z8H8Ob1ADvzEAXBLZZnYOTe7tCLfijhzMyV
+         DNSv3LWBvw0xu6Wxn0KPmmeqxxLzgJ385I+tToA7B46MJNrpBu43I9Rl9eZ422dX7Ouh
+         vD1AQVyZVx8L/sRm88xFko8VZFZywfoLK7DZXV1lK1n1lUtNzM2EKc7SLuqS4lv7vi3/
+         D4IGXC3WzEXUMpB1UoiU33vxqVv+aNrukC+6VnQqDjhs0YJwjMjMa1esIr6Yyrga/v0Q
+         rqHg==
+X-Gm-Message-State: AOAM53009QhlEX1QEmfLAvzvECAbOlAp2xT+I/VbecA/2K5gairkxCFN
+        wpYr/Nn5HGuyqHaJHRDcJvM=
+X-Google-Smtp-Source: ABdhPJwMtlZprDlyAoxBUyRJHHVl53TnITK8Gnm+SkvEU6OKpcuiyQspgUb4DGPupv+yjGOQi2UZwQ==
+X-Received: by 2002:a62:834f:0:b029:2f2:9935:8fcb with SMTP id h76-20020a62834f0000b02902f299358fcbmr7863733pfe.68.1624066352036;
+        Fri, 18 Jun 2021 18:32:32 -0700 (PDT)
+Received: from [10.1.1.25] (222-152-189-137-fibre.sparkbb.co.nz. [222.152.189.137])
+        by smtp.gmail.com with ESMTPSA id v6sm10522032pgk.33.2021.06.18.18.32.26
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Fri, 18 Jun 2021 18:32:31 -0700 (PDT)
+Subject: Re: [PATCH v2] m68k: save extra registers on more syscall entry
+ points
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+References: <1623979642-14983-1-git-send-email-schmitzmic@gmail.com>
+ <CAHk-=whTKf6UFr6YneXsPU4=8dTs+eEX_861ugESTE3CmZtFUg@mail.gmail.com>
+ <91865b90-c597-6119-5e14-dfe521a33489@gmail.com>
+ <CAHk-=whjJappNkdsrmsRoA4QUiu0_NNqa9Y_ct0A21m2XT5+YA@mail.gmail.com>
+Cc:     Geert Uytterhoeven <geert@linux-m68k.org>,
+        linux-arch <linux-arch@vger.kernel.org>,
+        linux-m68k <linux-m68k@lists.linux-m68k.org>,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        Andreas Schwab <schwab@linux-m68k.org>
+From:   Michael Schmitz <schmitzmic@gmail.com>
+Message-ID: <2b2ba866-104c-afea-9c29-145e9d80c2d5@gmail.com>
+Date:   Sat, 19 Jun 2021 13:32:23 +1200
+User-Agent: Mozilla/5.0 (X11; Linux ppc; rv:45.0) Gecko/20100101
+ Icedove/45.4.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+In-Reply-To: <CAHk-=whjJappNkdsrmsRoA4QUiu0_NNqa9Y_ct0A21m2XT5+YA@mail.gmail.com>
+Content-Type: text/plain; charset=windows-1252; format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-On Sat, 19 Jun 2021, Michael Schmitz wrote:
+Hi Linus,
 
-> Add Kconfig option, module parameter and PCMCIA reset code
-> required to support 100 Mbit PCMCIA ethernet cards on Amiga.
-> 
-> 10 Mbit and 100 Mbit mode are supported by the same module.
-> A module parameter switches Amiga ISA IO accessors to word
-> access by changing isa_type at runtime. Additional code to
-> reset the PCMCIA hardware is also added to the driver probe.
-> 
-> Patch modified after patch "[PATCH RFC net-next] Amiga PCMCIA
-> 100 MBit card support" submitted to netdev 2018/09/16 by Alex
-> Kazik <alex@kazik.de>.
-> 
-> CC: netdev@vger.kernel.org
-> Link: https://lore.kernel.org/r/1622958877-2026-1-git-send-email-schmitzmic@gmail.com
-> Tested-by: Alex Kazik <alex@kazik.de>
-> Signed-off-by: Michael Schmitz <schmitzmic@gmail.com>
-> 
-> --
-> Changes from v4:
-> 
-> Geert Uytterhoeven:
-> - remove APNE100MBIT config option, always include 16 bit support
-> - change module parameter permissions
-> - try autoprobing for 16 bit mode early on in device probe
-> 
-> Changes from v3:
-> 
-> - change module parameter name to match Kconfig help
-> 
-> Finn Thain:
-> - fix coding style in new card reset code block
-> - allow reset of isa_type by module parameter
-> 
-> Changes from v1:
-> 
-> - fix module parameter name in Kconfig help text
-> 
-> Alex Kazik:
-> - change module parameter type to bool, fix module parameter
->   permission
-> 
-> Changes from RFC:
-> 
-> Geert Uytterhoeven:
-> - change APNE_100MBIT to depend on APNE
-> - change '---help---' to 'help' (former no longer supported)
-> - fix whitespace errors
-> - fix module_param_named() arg count
-> - protect all added code by #ifdef CONFIG_APNE_100MBIT
-> ---
->  drivers/net/ethernet/8390/Kconfig |  4 ++++
->  drivers/net/ethernet/8390/apne.c  | 33 +++++++++++++++++++++++++++++++++
->  2 files changed, 37 insertions(+)
-> 
-> diff --git a/drivers/net/ethernet/8390/Kconfig b/drivers/net/ethernet/8390/Kconfig
-> index 9f4b302..cf0d8b3 100644
-> --- a/drivers/net/ethernet/8390/Kconfig
-> +++ b/drivers/net/ethernet/8390/Kconfig
-> @@ -143,6 +143,10 @@ config APNE
->  	  To compile this driver as a module, choose M here: the module
->  	  will be called apne.
->  
-> +	  The driver also supports 10/100Mbit cards (e.g. Netgear FA411,
-> +	  CNet Singlepoint). To activate 100 Mbit support at runtime or
-> +	  from the kernel command line, use the apne.100mbit module parameter.
-> +
->  config PCMCIA_PCNET
->  	tristate "NE2000 compatible PCMCIA support"
->  	depends on PCMCIA
-> diff --git a/drivers/net/ethernet/8390/apne.c b/drivers/net/ethernet/8390/apne.c
-> index fe6c834..8223e15 100644
-> --- a/drivers/net/ethernet/8390/apne.c
-> +++ b/drivers/net/ethernet/8390/apne.c
-> @@ -120,6 +120,10 @@ static u32 apne_msg_enable;
->  module_param_named(msg_enable, apne_msg_enable, uint, 0444);
->  MODULE_PARM_DESC(msg_enable, "Debug message level (see linux/netdevice.h for bitmap)");
->  
-> +static bool apne_100_mbit;
-> +module_param_named(100_mbit, apne_100_mbit, bool, 0644);
-> +MODULE_PARM_DESC(100_mbit, "Enable 100 Mbit support");
-> +
->  struct net_device * __init apne_probe(int unit)
->  {
->  	struct net_device *dev;
-> @@ -139,6 +143,11 @@ struct net_device * __init apne_probe(int unit)
->  	if ( !(AMIGAHW_PRESENT(PCMCIA)) )
->  		return ERR_PTR(-ENODEV);
->  
-> +	if (apne_100_mbit)
-> +		isa_type = ISA_TYPE_AG16;
-> +	else
-> +		isa_type = ISA_TYPE_AG;
-> +
->  	pr_info("Looking for PCMCIA ethernet card : ");
->  
->  	/* check if a card is inserted */
-> @@ -147,6 +156,20 @@ struct net_device * __init apne_probe(int unit)
->  		return ERR_PTR(-ENODEV);
->  	}
->  
-> +	/* Reset card. Who knows what dain-bramaged state it was left in. */
-> +	{	unsigned long reset_start_time = jiffies;
+Am 19.06.2021 um 11:38 schrieb Linus Torvalds:
+> On Fri, Jun 18, 2021 at 3:34 PM Michael Schmitz <schmitzmic@gmail.com> wrote:
+>>
+>> Is your patch to copy_thread() to add the extra stack frame still needed?
+>
+> So it's been a long time since I did any m68k assembly, but I think
+> the m68k patch for the PF_IO_WORKER thread case should look something
+> like the attached.
+>
+> Note: my only m68k work was ever on the 68008, and used the Motorola
+> syntax, not the odd Sun assembler syntax, so my m68k asm skills really
+> aren't good.
+>
+> Put another way: I'd be surprised if the attached patch actually
+> works, but I think it's fairly close. I tried to add comments to
+> explain the code at least a bit.
 
-There's a missing line break here.
+That went well:
 
-> +
-> +		outb(inb(IOBASE + NE_RESET), IOBASE + NE_RESET);
-> +
-> +		while ((inb(IOBASE + NE_EN0_ISR) & ENISR_RESET) == 0)
-> +			if (time_after(jiffies, reset_start_time + 2*HZ/100)) {
+*** FORMAT ERROR ***   FORMAT=0
+Current process id is 1
+BAD KERNEL TRAP: 00000000
+Modules linked in:
+PC: [<00002af0>] resume_userspace+0x14/0x16
+SR: 2204  SP: (ptrval)  a2: 00000000
+d0: 00000000    d1: 00000000    d2: 00000000    d3: 00000000
+d4: 00000000    d5: 00000000    a0: 00000000    a1: 00000000
+Process init (pid: 1, task=(ptrval))
+Frame format=0
+Stack from 0081bffc:
+         19bc0000
+Call Trace:
+Code: 1029 0007 660c 4cdf 073e 201f 588f dfdf <4e73> 254f 03ec e308 660a 
+487a ffe0 60ff 002a f6ba 598f 48e7 031e 486f 001c 61ff
+Disabling lock debugging due to kernel taint
+Kernel panic - not syncing: Attempted to kill init! exitcode=0x0000000b
 
-You could use msecs_to_jiffies(20) here.
+Looks like the zeroed frame was restored where we'd have expected an 
+actual save frame?
 
-> +				pr_info("Card not found (no reset ack).\n");
-> +				isa_type=ISA_TYPE_AG16;
+I'll next try and apply your solution to IO worker threads only ...
 
-Whitespace is needed around the '='.
+Cheers,
 
-> +			}
+	Michael
 
-Missing a break statement?
-
-> +
-> +		outb(0xff, IOBASE + NE_EN0_ISR);		/* Ack all intr. */
-> +	}
-> +
->  	dev = alloc_ei_netdev();
->  	if (!dev)
->  		return ERR_PTR(-ENOMEM);
-> @@ -590,6 +613,16 @@ static int init_pcmcia(void)
->  #endif
->  	u_long offset;
->  
-> +	/* reset card (idea taken from CardReset by Artur Pogoda) */
-> +	if (isa_type == ISA_TYPE_AG16) {
-> +		u_char  tmp = gayle.intreq;
-> +
-
-Extra whitespace.
-
-> +		gayle.intreq = 0xff;
-> +		mdelay(1);
-> +		gayle.intreq = tmp;
-> +		mdelay(300);
-> +	}
-> +
->  	pcmcia_reset();
->  	pcmcia_program_voltage(PCMCIA_0V);
->  	pcmcia_access_speed(PCMCIA_SPEED_250NS);
-> 
+>
+> Hmm?
+>
+>          Linus
+>
