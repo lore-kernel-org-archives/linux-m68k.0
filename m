@@ -2,87 +2,206 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+X-Spam-Status: No, score=-15.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	USER_AGENT_GIT autolearn=no autolearn_force=no version=3.4.0
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 663C0C2B9F4
-	for <linux-m68k@archiver.kernel.org>; Sat, 19 Jun 2021 23:24:46 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D6494C49361
+	for <linux-m68k@archiver.kernel.org>; Sat, 19 Jun 2021 23:24:47 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 38FFF60FEA
-	for <linux-m68k@archiver.kernel.org>; Sat, 19 Jun 2021 23:24:46 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id BC89160FEA
+	for <linux-m68k@archiver.kernel.org>; Sat, 19 Jun 2021 23:24:47 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230047AbhFSX04 (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Sat, 19 Jun 2021 19:26:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54970 "EHLO
+        id S230052AbhFSX05 (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Sat, 19 Jun 2021 19:26:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54982 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229591AbhFSX0x (ORCPT
+        with ESMTP id S229945AbhFSX0x (ORCPT
         <rfc822;linux-m68k@vger.kernel.org>); Sat, 19 Jun 2021 19:26:53 -0400
-Received: from mail-pg1-x534.google.com (mail-pg1-x534.google.com [IPv6:2607:f8b0:4864:20::534])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CF2BDC061574
-        for <linux-m68k@vger.kernel.org>; Sat, 19 Jun 2021 16:24:40 -0700 (PDT)
-Received: by mail-pg1-x534.google.com with SMTP id u190so7132824pgd.8
-        for <linux-m68k@vger.kernel.org>; Sat, 19 Jun 2021 16:24:40 -0700 (PDT)
+Received: from mail-pj1-x1032.google.com (mail-pj1-x1032.google.com [IPv6:2607:f8b0:4864:20::1032])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F29A9C06175F;
+        Sat, 19 Jun 2021 16:24:41 -0700 (PDT)
+Received: by mail-pj1-x1032.google.com with SMTP id z3-20020a17090a3983b029016bc232e40bso7998668pjb.4;
+        Sat, 19 Jun 2021 16:24:41 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=U9QzV6uamNQuCapEV7AChyrLmdUewXmjuKNxDkaSc14=;
-        b=njrlMBpPgV93efkzjocy7H0eE7LegEnbjs48fwBGLCfsOB8Hq6wsf5qFoCRHnIRoWg
-         JaPlFawTpGtlz8IAfr3FggBI5W1aK0JK58jmKTDZ/O2KP4ZYuh/oFrSmL4rkcxxd6ROq
-         K1SeJVkULA1bSUfshgDr8S8AGV/Pz1De5vQpAJof+yEoCpalgmWQ2+G3JX4dJEQpmKi1
-         5ecAyyUnP2TLmmCYn9NXkumTiYs+0nF3OlNAnGoyqQyMwJ8Yhg/28GERaA7KSPL8ORkk
-         rfuMDX5mEWuP1SQvqIjdXmMbcMr9XkcdgXVw0fVa1lA/HxCq6SMervG0Xx+sChoujYqe
-         lFJg==
+        h=from:to:cc:subject:date:message-id:in-reply-to:references;
+        bh=/OxDFjyIZue4441K5bnV8O0AZvbxViOWb16xjWvcGDY=;
+        b=ImhjxiU4rDRAMvBQ3mFI4q+fg8NJysZdmFB/4hhFfVextgH/9xEbwuDFna8MTzQbQE
+         WMyyT6l+t63re4kPCUZLrhWopX+52ic7qc0JUpzGwLwYbz0N40w75fAORS3kK3S+4CPC
+         0p2BsabsRG1yljZiBbM94nAOtlO5ZxUKp4y3ArYD8UTOPtsdeauwX4pDneJQ8z3Gfwro
+         Rx5QcVVsAcRDRLD+GYS3wax8WXKw03WBZCKjXsF9AL4kLTGNSODRj6FOtP8O67LLgX3v
+         Ef+3u9Rn2AaeVXn0yJNKyRKNvorMx1DcqXWH/QirMfQBKqMkVmcgWKAjtofx9bbCKmyd
+         dKzg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=U9QzV6uamNQuCapEV7AChyrLmdUewXmjuKNxDkaSc14=;
-        b=fQiA+PyHH43vSwgowe9yo8oQ2H+O0bgYu9DtfrgX9Id/aUPWFZJAVWRcdv0qp6sr8y
-         E2SG1LcgpOdjTzGuEX0ZVIdVW6YXdV9MewsDxBot1+r8Y7H7o0jKUbs/frtPlCcE9i5O
-         zkYA+24rTM/cQ4Ko3voRi7Nb6S4jqdD+6a4VEIYEYjmzoRzOQkVGcpQ4okFSYFOrvgYL
-         WY3ZViFoimUKBAN2/T8vZ2VTrnsRKrxvJot/pmjob2Zjf4AgZDMLYCG5RA9LpLtgA5Y8
-         Z+7F6LxvQaZDCx6mruQTt/kBn4iHJtsMl2QOQ667uzvrlyUdBpmthlXs26bWFYkhDfM6
-         Z3Kw==
-X-Gm-Message-State: AOAM53345USNRFIcYrBL+B2FjmOPa/KFOfWPbbMb3w5jvNHgrB0a3qN1
-        KN44ilWGORs0HDDE8eLdZUVcqLb/6tI=
-X-Google-Smtp-Source: ABdhPJxWfRDZW3EkOdrn9JvciWalBlh763y6YB8/DwgEL9KXzTSoo0EOH8wIBa90NbBX4yCQtJGGpg==
-X-Received: by 2002:a63:5b0e:: with SMTP id p14mr16598307pgb.110.1624145080205;
-        Sat, 19 Jun 2021 16:24:40 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references;
+        bh=/OxDFjyIZue4441K5bnV8O0AZvbxViOWb16xjWvcGDY=;
+        b=XmHFLGxCimwyeT8eW4E2X2ulNfL/M2WZhlYq3RS47lMl1aoXzda6QZgtyC7lHuL/FH
+         R/GjWX/+/DtRaGw9FeRRW8OIP09ftFZ7exJcxqj3qOjFHQ/YenPD0T1Nl1fY9v03uLa9
+         PmuAt5bTdREHZPKzbJvbtNb2cmwdPlZX+AKOyfSKk5XHcj0S/zZ+6juR7GUP5lge9VR3
+         7hG3r++i8pENMnMAahdLtmQDpWPNnZFQsz2a43b7vb0kLsHaxKAqK+bpafDS6mbckhCd
+         hJ+x6Tk4Qe7VbhMy/M0vJ/bVZF35ZIXnigs9AP0meB6no/3rKr1/fJ2SlamprkrxkTBB
+         5DKQ==
+X-Gm-Message-State: AOAM531XBa63N+Hwhxoy+jWmWBYUo6srITTff4BZx7Xq7x7ia80hIGI1
+        cWEi9tF482pnDKTnKqtv1RQy5Q9ad3I=
+X-Google-Smtp-Source: ABdhPJyU3zjDdh0XWCIVYgYa2poXzLdl8M95TVoDHuv0I2U017n2ZK4j44blHNh6xAgeM7GuLvUtZA==
+X-Received: by 2002:a17:90b:955:: with SMTP id dw21mr18440615pjb.28.1624145081483;
+        Sat, 19 Jun 2021 16:24:41 -0700 (PDT)
 Received: from xplor.waratah.dyndns.org (222-152-189-137-fibre.sparkbb.co.nz. [222.152.189.137])
-        by smtp.gmail.com with ESMTPSA id w2sm11303519pjq.5.2021.06.19.16.24.38
+        by smtp.gmail.com with ESMTPSA id i13sm6006844pjl.2.2021.06.19.16.24.40
         (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Sat, 19 Jun 2021 16:24:39 -0700 (PDT)
+        Sat, 19 Jun 2021 16:24:41 -0700 (PDT)
 Received: by xplor.waratah.dyndns.org (Postfix, from userid 1000)
-        id 807463603D8; Sun, 20 Jun 2021 11:24:35 +1200 (NZST)
+        id 2946E3603E0; Sun, 20 Jun 2021 11:24:37 +1200 (NZST)
 From:   Michael Schmitz <schmitzmic@gmail.com>
 To:     linux-m68k@vger.kernel.org, geert@linux-m68k.org
-Cc:     alex@kazik.de
-Subject: [PATCH v6 0/3] Add APNE PCMCIA 100 Mbit support
-Date:   Sun, 20 Jun 2021 11:24:30 +1200
-Message-Id: <1624145073-12674-1-git-send-email-schmitzmic@gmail.com>
+Cc:     alex@kazik.de, Michael Schmitz <schmitzmic@gmail.com>,
+        netdev@vger.kernel.org
+Subject: [PATCH netdev v6 2/3] net/8390: apne.c - add 100 Mbit support to apne.c driver
+Date:   Sun, 20 Jun 2021 11:24:32 +1200
+Message-Id: <1624145073-12674-3-git-send-email-schmitzmic@gmail.com>
 X-Mailer: git-send-email 2.7.4
+In-Reply-To: <1624145073-12674-1-git-send-email-schmitzmic@gmail.com>
+References: <1624145073-12674-1-git-send-email-schmitzmic@gmail.com>
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-Now that we've sanitzed m68k io_mm.h, revisit support for the 100 Mbit
-APNE PCMCIA card variants that didn't find favour with the netdev folks
-three years ago.
+Add module parameter and PCMCIA reset code required to
+support 100 Mbit PCMCIA ethernet cards on Amiga.
 
-Add another ISA type for these cards, and switch to that type from the
-APNE probe code in response to a module parameter or kernel option.
-Support for the 16 bit 10/100 Mbit cards is now included by default.
+10 Mbit and 100 Mbit mode are supported by the same module.
+A module parameter switches Amiga ISA IO accessors to word
+access by changing isa_type at runtime. Code to reset the
+PCMCIA hardware required for 16 bit cards is also added to
+the driver probe.
 
-Try to autoprobe for 16 bit mode (patch 3; experimental!).
+This patch depends on patch "m68k: io_mm.h - add APNE 100
+MBit support" sent to linux-m68k, and must not be applied
+before that one!
 
-Note that only patch 2 and 3 have been sent to netdev. These patches
-depend on patch 1, and must not be applied to the netdev tree before
-Geert has applied patch 1! A note to that effect has been added to
-the commit logs. 
+Patch modified after patch "[PATCH RFC net-next] Amiga PCMCIA
+100 MBit card support" submitted to netdev 2018/09/16 by Alex
+Kazik <alex@kazik.de>.
 
-Cheers,
+CC: netdev@vger.kernel.org
+Link: https://lore.kernel.org/r/1622958877-2026-1-git-send-email-schmitzmic@gmail.com
+Tested-by: Alex Kazik <alex@kazik.de>
+Signed-off-by: Michael Schmitz <schmitzmic@gmail.com>
 
-   Michael
+--
+Changes from v5:
 
+- move autoprobe code to new patch in this series
+
+Geert Uytterhoeven:
+- reword Kconfig help text
+
+Finn Thain:
+- style fixes, use msec_to_jiffies in timeout calc
+
+Alex Kazik:
+- revert module parameter permission change
+
+Changes from v4:
+
+Geert Uytterhoeven:
+- remove APNE100MBIT config option, always include 16 bit support
+- change module parameter permissions
+- try autoprobing for 16 bit mode early on in device probe
+
+Changes from v3:
+
+- change module parameter name to match Kconfig help
+
+Finn Thain:
+- fix coding style in new card reset code block
+- allow reset of isa_type by module parameter
+
+Changes from v1:
+
+- fix module parameter name in Kconfig help text
+
+Alex Kazik:
+- change module parameter type to bool, fix module parameter
+  permission
+
+Changes from RFC:
+
+Geert Uytterhoeven:
+- change APNE_100MBIT to depend on APNE
+- change '---help---' to 'help' (former no longer supported)
+- fix whitespace errors
+- fix module_param_named() arg count
+- protect all added code by #ifdef CONFIG_APNE_100MBIT
+---
+ drivers/net/ethernet/8390/Kconfig |  5 +++++
+ drivers/net/ethernet/8390/apne.c  | 18 ++++++++++++++++++
+ 2 files changed, 23 insertions(+)
+
+diff --git a/drivers/net/ethernet/8390/Kconfig b/drivers/net/ethernet/8390/Kconfig
+index 9f4b302..4c3f7b6 100644
+--- a/drivers/net/ethernet/8390/Kconfig
++++ b/drivers/net/ethernet/8390/Kconfig
+@@ -143,6 +143,11 @@ config APNE
+ 	  To compile this driver as a module, choose M here: the module
+ 	  will be called apne.
+ 
++	  The driver also supports 10/100Mbit cards (e.g. Netgear FA411,
++	  CNet Singlepoint). To activate 100 Mbit support, use the kernel
++	  option apne.100mbit=1 (builtin) at boot time, or the apne.100mbit
++	  module parameter.
++
+ config PCMCIA_PCNET
+ 	tristate "NE2000 compatible PCMCIA support"
+ 	depends on PCMCIA
+diff --git a/drivers/net/ethernet/8390/apne.c b/drivers/net/ethernet/8390/apne.c
+index fe6c834..4dd721e 100644
+--- a/drivers/net/ethernet/8390/apne.c
++++ b/drivers/net/ethernet/8390/apne.c
+@@ -120,6 +120,10 @@ static u32 apne_msg_enable;
+ module_param_named(msg_enable, apne_msg_enable, uint, 0444);
+ MODULE_PARM_DESC(msg_enable, "Debug message level (see linux/netdevice.h for bitmap)");
+ 
++static bool apne_100_mbit;
++module_param_named(100_mbit, apne_100_mbit, bool, 0444);
++MODULE_PARM_DESC(100_mbit, "Enable 100 Mbit support");
++
+ struct net_device * __init apne_probe(int unit)
+ {
+ 	struct net_device *dev;
+@@ -139,6 +143,11 @@ struct net_device * __init apne_probe(int unit)
+ 	if ( !(AMIGAHW_PRESENT(PCMCIA)) )
+ 		return ERR_PTR(-ENODEV);
+ 
++	if (apne_100_mbit)
++		isa_type = ISA_TYPE_AG16;
++	else
++		isa_type = ISA_TYPE_AG;
++
+ 	pr_info("Looking for PCMCIA ethernet card : ");
+ 
+ 	/* check if a card is inserted */
+@@ -590,6 +599,15 @@ static int init_pcmcia(void)
+ #endif
+ 	u_long offset;
+ 
++	/* reset card (idea taken from CardReset by Artur Pogoda) */
++	if (isa_type == ISA_TYPE_AG16) {
++		u_char tmp = gayle.intreq;
++		gayle.intreq = 0xff;
++		mdelay(1);
++		gayle.intreq = tmp;
++		mdelay(300);
++	}
++
+ 	pcmcia_reset();
+ 	pcmcia_program_voltage(PCMCIA_0V);
+ 	pcmcia_access_speed(PCMCIA_SPEED_250NS);
+-- 
+2.7.4
 
