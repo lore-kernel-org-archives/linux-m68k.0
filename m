@@ -2,69 +2,107 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
-	SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-8.8 required=3.0 tests=BAYES_00,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,MAILING_LIST_MULTI,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 7D2D3C48BDF
-	for <linux-m68k@archiver.kernel.org>; Sun, 20 Jun 2021 08:30:49 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 34A5CC49361
+	for <linux-m68k@archiver.kernel.org>; Sun, 20 Jun 2021 11:48:13 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 4037B6100A
-	for <linux-m68k@archiver.kernel.org>; Sun, 20 Jun 2021 08:30:49 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 1479961057
+	for <linux-m68k@archiver.kernel.org>; Sun, 20 Jun 2021 11:48:13 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229516AbhFTIc7 (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Sun, 20 Jun 2021 04:32:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59292 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229491AbhFTIc7 (ORCPT
-        <rfc822;linux-m68k@vger.kernel.org>); Sun, 20 Jun 2021 04:32:59 -0400
-Received: from mail-ej1-x634.google.com (mail-ej1-x634.google.com [IPv6:2a00:1450:4864:20::634])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EBF48C061574
-        for <linux-m68k@vger.kernel.org>; Sun, 20 Jun 2021 01:30:45 -0700 (PDT)
-Received: by mail-ej1-x634.google.com with SMTP id nd37so23314062ejc.3
-        for <linux-m68k@vger.kernel.org>; Sun, 20 Jun 2021 01:30:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kazik.de; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=DojqSxCC80oiW5B/wzCpI09x/w14/X8vv7tL8vCBtgk=;
-        b=l9YETLXeRHFKQK1QhG3MQtVoq0G/BBzQZw07BVMWYSGmlQSn1OSaFpcaMdJU4Asv4K
-         YldeO09aJFS4oPbNEB9Z86WlFUdTpSPqjHzi4t2EnHbBUxsI0VtEHiZ/I1l6MeOHH96y
-         vGj3emVo2Z/99ITbk0cepyi+QiPSk7+hiL5uk=
+        id S229595AbhFTLuQ (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Sun, 20 Jun 2021 07:50:16 -0400
+Received: from mail-ua1-f44.google.com ([209.85.222.44]:42998 "EHLO
+        mail-ua1-f44.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229580AbhFTLuP (ORCPT
+        <rfc822;linux-m68k@vger.kernel.org>); Sun, 20 Jun 2021 07:50:15 -0400
+Received: by mail-ua1-f44.google.com with SMTP id e20so5260999ual.9;
+        Sun, 20 Jun 2021 04:48:03 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=DojqSxCC80oiW5B/wzCpI09x/w14/X8vv7tL8vCBtgk=;
-        b=JgqGw/eXQkJos488Ygzg9Cbe4PIOZhHB41Hn3vsIb8n96NQqZwxx/cw+MSj5YqgBYb
-         Jp0eMwjgLOsp9RPrUUlzx276hc8fuprvsMEuIVrMWWkT5lpEpr6d9MSacDBtJFpJocEx
-         ZNxqIizCYPbON0UL2FEl+pHO0PI3tQB6he2cgqbBi7E5jZKroWhgsbCFNEyxlqblwJqj
-         3aaZ9zrhIuFY2KaVRr8WeBFBP/nowfOYCaMeO05eFahx889EHM6XIeGVf/ioIeOKmKRi
-         oKygRBMHvYdu6Os17H5AAS7maBPQIch8MpFAF14mgEqfZUb7yqjW/VOP6SdZ7nTJeqkp
-         1+xw==
-X-Gm-Message-State: AOAM531KTiUosQ7TLp8PoZJ1TxZ9w9LWJX1uUO0jYlck4ZiZO46HLE2O
-        ivoF3llJ+BgucqtwZ1363b/1p8VmZzCtjZ2UOB9c7A==
-X-Google-Smtp-Source: ABdhPJw5akvGTueD37Xw2f1buofX6Y79lIy2Cfj88lnT3gKWcrBSbNnbXaFYtCh4D7laFdANgrOU8ol0AnJnRdH8f2g=
-X-Received: by 2002:a17:907:7b9e:: with SMTP id ne30mr19154142ejc.389.1624177844099;
- Sun, 20 Jun 2021 01:30:44 -0700 (PDT)
+        bh=Im8HK5D4Dd8ayHHB8TPoataAcp6a597GIb4OP9tjGxg=;
+        b=kKV1VL7oDhWWVV7f2xQk59HWbzMYah5iuynykDJMi+EVGlfQy/ECD3NvOCRmd5dios
+         E0FBO987IrNMomZrr0Ergyr0AZ5QmXXETlsYSyUO1PJ22mk9utIxTV0luovkkTx7EFkp
+         KxH5krNiokpyq8RAM3S8q4gF24LYiUX5XbhXgIeFtO52a0SnwMYSraOd957Jf6xes84x
+         ARc33uyx91i6cF7nrLRp5hLjf7fSCBhQH6qFmrRYBvzJg+lhhkofWDKMvTbR0Mp1+/Xo
+         O3p+KtPEdfi4rJN031KpYObCluoBQUcfd/AArzGwKUcrT1whaF25A+wtgMvQg9RXKUyE
+         Hvhg==
+X-Gm-Message-State: AOAM530m1wv5s9yxDApHMayY6aqvw5a9bI90yiB/1RBR13f6+976h7Xi
+        KRDgyGSgkpIZfQOLlnt2xENu+YhCo4aFSC3xlag=
+X-Google-Smtp-Source: ABdhPJzfseuiTuNvP/PNS2Gpb7u3ed5CK3BmqOhGwWipfE1M/+rzB9LgG+5x+92e9+/0KHoW/kpAn4i0qPDlVSEbJzU=
+X-Received: by 2002:ab0:70b3:: with SMTP id q19mr18249159ual.2.1624189682908;
+ Sun, 20 Jun 2021 04:48:02 -0700 (PDT)
 MIME-Version: 1.0
-References: <1624145073-12674-1-git-send-email-schmitzmic@gmail.com>
-In-Reply-To: <1624145073-12674-1-git-send-email-schmitzmic@gmail.com>
-From:   ALeX Kazik <alex@kazik.de>
-Date:   Sun, 20 Jun 2021 10:30:33 +0200
-Message-ID: <CAFFuhJry5tuJmzu1H_3-9NfGsiOYGHQpdY7aPBOockXeA7NAhw@mail.gmail.com>
-Subject: Re: [PATCH v6 0/3] Add APNE PCMCIA 100 Mbit support
+References: <1624062891-22762-1-git-send-email-schmitzmic@gmail.com>
+ <1624062891-22762-3-git-send-email-schmitzmic@gmail.com> <CAMuHMdUSGWGMs6_wqy-CkfuKsdk=EBpEVBf3UugxCuo3qZQCKg@mail.gmail.com>
+ <5e753883-d8c1-8e2a-9cd8-e6c315862fa2@gmail.com>
+In-Reply-To: <5e753883-d8c1-8e2a-9cd8-e6c315862fa2@gmail.com>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Sun, 20 Jun 2021 13:47:51 +0200
+Message-ID: <CAMuHMdXPY6w3_rg9nKkiZc1d-bEW84G8xzD0kYEqRiwj6hLWhA@mail.gmail.com>
+Subject: Re: [PATCH net-next v5 2/2] net/8390: apne.c - add 100 Mbit support
+ to apne.c driver
 To:     Michael Schmitz <schmitzmic@gmail.com>
 Cc:     "Linux/m68k" <linux-m68k@vger.kernel.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>
+        ALeX Kazik <alex@kazik.de>, netdev <netdev@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-Hi,
+Hi Michael,
 
-I've tested the v6 patch on my A1200 and it works great.
-It's activated via the kernel boot option "apne.100_mbit=1".
+On Sat, Jun 19, 2021 at 9:31 PM Michael Schmitz <schmitzmic@gmail.com> wrote:
+> Am 19.06.2021 um 21:08 schrieb Geert Uytterhoeven:
+> > On Sat, Jun 19, 2021 at 2:35 AM Michael Schmitz <schmitzmic@gmail.com> wrote:
+> >> Add Kconfig option, module parameter and PCMCIA reset code
+> >> required to support 100 Mbit PCMCIA ethernet cards on Amiga.
+> >>
+> >> 10 Mbit and 100 Mbit mode are supported by the same module.
+> >> A module parameter switches Amiga ISA IO accessors to word
+> >> access by changing isa_type at runtime. Additional code to
+> >> reset the PCMCIA hardware is also added to the driver probe.
+> >>
+> >> Patch modified after patch "[PATCH RFC net-next] Amiga PCMCIA
+> >> 100 MBit card support" submitted to netdev 2018/09/16 by Alex
+> >> Kazik <alex@kazik.de>.
+> >>
+> >> CC: netdev@vger.kernel.org
+> >> Link: https://lore.kernel.org/r/1622958877-2026-1-git-send-email-schmitzmic@gmail.com
+> >> Tested-by: Alex Kazik <alex@kazik.de>
+> >> Signed-off-by: Michael Schmitz <schmitzmic@gmail.com>
+> >
+> > Thanks for your patch!
+> >
+> > Note that this patch has a hard dependency on "[PATCH v5 1/2] m68k:
+> > io_mm.h - add APNE 100 MBit support" in the series, so it must not
+> > be applied to the netdev tree yet.
+>
+> Hmm - so we ought to protect the new code by
+>
+> #ifdef ARCH_HAVE_16BIT_PCMCIA
+>
+> and set that in the m68k machine Kconfig in the first patch?
+>
+> (It's almost, but not quite like a config option :-)
 
-Alex.
+No, we just manage dependencies, so either:
+  1. Patch 2 cannot go in until patch 1 is upstream,
+  2. One subsystem maintainer gives an Acked-by for one patch,so
+    the other subsystem maintainer can apply both patches.
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
+-- 
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
