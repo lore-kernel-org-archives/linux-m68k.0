@@ -7,76 +7,69 @@ X-Spam-Status: No, score=-2.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,NICE_REPLY_A,SPF_HELO_NONE,
 	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id BD602C49361
-	for <linux-m68k@archiver.kernel.org>; Mon, 21 Jun 2021 03:18:54 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 49B81C49EA2
+	for <linux-m68k@archiver.kernel.org>; Mon, 21 Jun 2021 03:36:57 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 9D1CA610C7
-	for <linux-m68k@archiver.kernel.org>; Mon, 21 Jun 2021 03:18:54 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 2A7556023B
+	for <linux-m68k@archiver.kernel.org>; Mon, 21 Jun 2021 03:36:57 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230059AbhFUDVF (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Sun, 20 Jun 2021 23:21:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48894 "EHLO
+        id S230028AbhFUDjH (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Sun, 20 Jun 2021 23:39:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52790 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230013AbhFUDVE (ORCPT
+        with ESMTP id S229937AbhFUDjH (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Sun, 20 Jun 2021 23:21:04 -0400
-Received: from mail-pg1-x52a.google.com (mail-pg1-x52a.google.com [IPv6:2607:f8b0:4864:20::52a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 62A6EC061574
-        for <linux-m68k@lists.linux-m68k.org>; Sun, 20 Jun 2021 20:18:50 -0700 (PDT)
-Received: by mail-pg1-x52a.google.com with SMTP id m2so12986934pgk.7
-        for <linux-m68k@lists.linux-m68k.org>; Sun, 20 Jun 2021 20:18:50 -0700 (PDT)
+        Sun, 20 Jun 2021 23:39:07 -0400
+Received: from mail-pf1-x430.google.com (mail-pf1-x430.google.com [IPv6:2607:f8b0:4864:20::430])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 073A4C061756
+        for <linux-m68k@lists.linux-m68k.org>; Sun, 20 Jun 2021 20:36:52 -0700 (PDT)
+Received: by mail-pf1-x430.google.com with SMTP id q192so6011153pfc.7
+        for <linux-m68k@lists.linux-m68k.org>; Sun, 20 Jun 2021 20:36:52 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=subject:to:references:cc:from:message-id:date:user-agent
          :mime-version:in-reply-to:content-transfer-encoding;
-        bh=bEMA3Fn9G78MJjOLATMzSr4FKpTvjeDpYpynuiBu+GA=;
-        b=PS/fyHWzLBT1/zodXO4xLg84QbHysEnQVTc3dv5WCMuUobaxp6DjQ540et46Alwz6U
-         u5YqcrE7lDRnJDFFQPDZk7+B8Vp6hDXnRyrXGUEzQCp1goLnuT+ys9Sh1vxhaWDW+82z
-         330ohDW3yPJiBQ11QXqp5A6seYVO0rSKK2CDCvGenxUPtIXmmEMTAZ4NX+F2BqEiMXl+
-         3wlBvZuws+TG9TSYLdoxGBWWzLchUp7NE0mel+oO0ADhlz8jwZaLOdJR2f/f+y9lFwKI
-         4HlFdk/pYc2z70DywQwdpOj9mhF0lCT0S7Wk1VCVmTf9MJ2RruOrFzv6tR46qq4HxZ8f
-         I9hg==
+        bh=xLiu6z7n8Nm4pgvs/bW2NXTNeK55NaWWpQGLLIvDVng=;
+        b=S5rqecO5NnewVMiMgfEHBfVJRZG9DzFsYkSVQ/EFVweec1CqVq+fziE2JAteDFz7hb
+         gw7srdiAAkBuFrsn8uyX3zPk1OLrFCbSRHe5kRgRTu9nPpcsrJGJ2CmehyJoJTz73Q/n
+         CIIplHkKDn/X9xYpzxQHk1uC7tHbMq0bnAs+TFiWbtcgL3zZIO/K2cXgVv3wgeR970/W
+         P8TZLmviFCrV1teriIklo40jrRJOoO3donZvc79Vkyz7IptxOVwgC1YmUnH6UOqmiaS/
+         2dEG1K+YrBe3F+VsnA55g2h3uQrQgfc057DDfipoELXgQBCjs5Mtnfr+FUO2ZC5BUHmN
+         iWHg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:subject:to:references:cc:from:message-id:date
          :user-agent:mime-version:in-reply-to:content-transfer-encoding;
-        bh=bEMA3Fn9G78MJjOLATMzSr4FKpTvjeDpYpynuiBu+GA=;
-        b=DR25WEkN3j+zEjWhz4+CTPbHJOZAPQP1tDmlbez2zUs6cLiJub/SE9LBjAkhKUf5/Q
-         vuxNm9gKKPdj459jNpx+hYuwewKrHMmvpkuJOnHb00/Jk8HURsiU4I4yrD1EfQcJkVmT
-         mNz4NSPNPyK1mixTanUdYvsxWQwDjv4M2C7rVMlOZfuG33VQw8vsxfXI4mLI036Twg7Z
-         BB3LMdbyBnk+U1gGE0G9XwCAkPdoHP3Hbqk50nYlhU4idw0FA0ImE0ZpBZrd3mHtlul/
-         H8UHk3P5FgayZGPKO7IgsGin1mi00QtFbJ5FYaN0j7oGwsSQxOhMWmPKwY3SNdKlzsz7
-         RTxg==
-X-Gm-Message-State: AOAM530i2+xLaA9qYnXVEadccNvH6owRGhYw7L8EnFJm54GGQKCH+YtN
-        OeGYkNam2QpnelzXHX1uEbE=
-X-Google-Smtp-Source: ABdhPJyUfWEv5BoYwOgWVygbT6EiyTPosdGk4TH3uOWQjG4bExdI4KdIy6JNOvUBApYgYKKgt24h6w==
-X-Received: by 2002:a62:1e82:0:b029:2f9:aad3:b368 with SMTP id e124-20020a621e820000b02902f9aad3b368mr17509192pfe.79.1624245529816;
-        Sun, 20 Jun 2021 20:18:49 -0700 (PDT)
+        bh=xLiu6z7n8Nm4pgvs/bW2NXTNeK55NaWWpQGLLIvDVng=;
+        b=sXF4g1Kr7i2Gd+DJkk9xgyHpkUQ9P4wATpgjazEwg43NwWn3ACZLHlEA1BgkS3aZfM
+         0g1B3aYyULbTlNx0Il/l8Q+u9VMIA49FKZpGL/3pWD0RikFKohEPC3OZKXScA4FLczYQ
+         8wi7U/luSp+T61z9PLh9pcfUFe+kBs/xcd2ajSysVYze3f2VBb0w3xrhH7nvTSULBFEM
+         ODuVYnqP/Ztj8NaO1PCO5dzGfl09vRmM3IpzZfxyQ2MmOUVae2Mvh/aJDSbpsFOwkkUU
+         2oNofYSUIgvSHrTCOwW2P6sUrDbiEKfDOaYgUlLxmz9xAby4xYb2zcdo7lumkEX8lvTg
+         2AUA==
+X-Gm-Message-State: AOAM531Tt7vVsdmoHiqFNc4zxkX/ukTeiglgcji8XG7milH2siNjLXCg
+        NlOrVhWQNcBplkr4Y4kYKiw=
+X-Google-Smtp-Source: ABdhPJxVBdwsRiX1C8pmBuP+luLGE83oud1sbsqsWQaBPVj49ppFiH84WMPluWwEQgGhK3WPEUFq5w==
+X-Received: by 2002:aa7:8244:0:b029:2ec:968d:c1b4 with SMTP id e4-20020aa782440000b02902ec968dc1b4mr17307756pfn.32.1624246612404;
+        Sun, 20 Jun 2021 20:36:52 -0700 (PDT)
 Received: from [10.1.1.25] (222-152-189-137-fibre.sparkbb.co.nz. [222.152.189.137])
-        by smtp.gmail.com with ESMTPSA id x13sm13379004pjh.30.2021.06.20.20.18.38
+        by smtp.gmail.com with ESMTPSA id b5sm11515267pgh.41.2021.06.20.20.36.43
         (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Sun, 20 Jun 2021 20:18:49 -0700 (PDT)
+        Sun, 20 Jun 2021 20:36:52 -0700 (PDT)
 Subject: Re: [PATCH 1/2] alpha/ptrace: Record and handle the absence of
  switch_stack
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-References: <87sg1p30a1.fsf@disp2133>
- <CAHk-=wjiBXCZBxLiCG5hxpd0vMkMjiocenponWygG5SCG6DXNw@mail.gmail.com>
- <87pmwsytb3.fsf@disp2133>
- <CAHk-=wgdO5VwSUFjfF9g=DAQNYmVxzTq73NtdisYErzdZKqDGg@mail.gmail.com>
- <87sg1lwhvm.fsf@disp2133>
- <CAHk-=wgsnMTr0V-0F4FOk30Q1h7CeT8wLvR1MSnjack7EpyWtQ@mail.gmail.com>
- <6e47eff8-d0a4-8390-1222-e975bfbf3a65@gmail.com>
- <924ec53c-2fd9-2e1c-bbb1-3fda49809be4@gmail.com> <87eed4v2dc.fsf@disp2133>
- <5929e116-fa61-b211-342a-c706dcb834ca@gmail.com> <87fsxjorgs.fsf@disp2133>
- <87zgvqor7d.fsf_-_@disp2133>
+To:     Al Viro <viro@zeniv.linux.org.uk>
+References: <924ec53c-2fd9-2e1c-bbb1-3fda49809be4@gmail.com>
+ <87eed4v2dc.fsf@disp2133> <5929e116-fa61-b211-342a-c706dcb834ca@gmail.com>
+ <87fsxjorgs.fsf@disp2133> <87zgvqor7d.fsf_-_@disp2133>
  <CAHk-=wir2P6h+HKtswPEGDh+GKLMM6_h8aovpMcUHyQv2zJ5Og@mail.gmail.com>
  <87mtrpg47k.fsf@disp2133> <87pmwlek8d.fsf_-_@disp2133>
  <87k0mtek4n.fsf_-_@disp2133> <393c37de-5edf-effc-3d06-d7e63f34a317@gmail.com>
- <CAHk-=wip8KgrNUcU68wsLZqbWV+3NWg9kqqQwygHGAA8-xOwMA@mail.gmail.com>
+ <YM/5KAlgTtR6ncOl@zeniv-ca.linux.org.uk>
 Cc:     "Eric W. Biederman" <ebiederm@xmission.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
         linux-arch <linux-arch@vger.kernel.org>,
         Jens Axboe <axboe@kernel.dk>, Oleg Nesterov <oleg@redhat.com>,
-        Al Viro <viro@zeniv.linux.org.uk>,
         Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
         Richard Henderson <rth@twiddle.net>,
         Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
@@ -88,73 +81,51 @@ Cc:     "Eric W. Biederman" <ebiederm@xmission.com>,
         Ley Foon Tan <ley.foon.tan@intel.com>,
         Tejun Heo <tj@kernel.org>, Kees Cook <keescook@chromium.org>
 From:   Michael Schmitz <schmitzmic@gmail.com>
-Message-ID: <60c0fe00-b966-6385-d348-f6dd45277113@gmail.com>
-Date:   Mon, 21 Jun 2021 15:18:35 +1200
+Message-ID: <9db8096e-677f-3852-6ca4-28143a228ec3@gmail.com>
+Date:   Mon, 21 Jun 2021 15:36:41 +1200
 User-Agent: Mozilla/5.0 (X11; Linux ppc; rv:45.0) Gecko/20100101
  Icedove/45.4.0
 MIME-Version: 1.0
-In-Reply-To: <CAHk-=wip8KgrNUcU68wsLZqbWV+3NWg9kqqQwygHGAA8-xOwMA@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
+In-Reply-To: <YM/5KAlgTtR6ncOl@zeniv-ca.linux.org.uk>
+Content-Type: text/plain; charset=windows-1252; format=flowed
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-Hi Linus,
+Hi Al,
 
-Am 21.06.2021 um 14:17 schrieb Linus Torvalds:
-> On Sun, Jun 20, 2021 at 7:01 PM Michael Schmitz <schmitzmic@gmail.com> wrote:
+
+Am 21.06.2021 um 14:27 schrieb Al Viro:
+> On Mon, Jun 21, 2021 at 02:01:18PM +1200, Michael Schmitz wrote:
+>> Hi Eric,
 >>
 >> instrumenting get_reg on m68k and using a similar patch to yours to warn
->> when unsaved registers are accessed on the switch stack, I get a hit
->> from getegid and getegid32, just by running a simple ptrace on ls.
+>> when unsaved registers are accessed on the switch stack, I get a hit from
+>> getegid and getegid32, just by running a simple ptrace on ls.
 >>
 >> Going to wack those two moles now ...
 >
-> I don't see what's going on. Those system calls don't use the register
-> state, afaik. What's the call chain, exactly?
+> Explain, please.  get_reg() is called by tracer; whose state are you checking?
 
-This is what I get from WARN_ONCE:
+The check is only triggered when syscall tracing (I set a flag on trace 
+entry, and clear that on trace exit)... From the WARN_ONCE stack dump, 
+it appears that I get the warning from inside the syscall, not 
+syscall_trace().
 
-------------[ cut here ]------------
-WARNING: CPU: 0 PID: 1177 at arch/m68k/kernel/ptrace.c:91 get_reg+0x90/0xb8
-Modules linked in:
-CPU: 0 PID: 1177 Comm: strace Not tainted 
-5.13.0-rc1-atari-fpuemu-exitfix+ #1146
-Stack from 014b7f04:
-         014b7f04 00336401 00336401 000278f0 0032c015 0000005b 00000005 
-0002795a
-         0032c015 0000005b 0000338c 00000009 00000000 00000000 ffffffe4 
-00000005
-         00000003 00000014 00000003 00000014 efc2b90c 0000338c 0032c015 
-0000005b
-         00000009 00000000 efc2b908 00912540 efc2b908 000034cc 00912540 
-00000005
-         00000000 efc2b908 00000003 00912540 8000110c c010b0a4 efc2b90c 
-0002d1d8
-         00912540 00000003 00000014 efc2b908 0000049a 00000014 efc2b908 
-800acaa8
-Call Trace: [<000278f0>] __warn+0x9e/0xb4
-  [<0002795a>] warn_slowpath_fmt+0x54/0x62
-  [<0000338c>] get_reg+0x90/0xb8
-  [<0000338c>] get_reg+0x90/0xb8
-  [<000034cc>] arch_ptrace+0x7e/0x250
-  [<0002d1d8>] sys_ptrace+0x232/0x2f8
-  [<00002ab6>] syscall+0x8/0xc
-  [<0000c00b>] lower+0x7/0x20
+> Because you are *not* accessing the switch stack of the caller of get_reg().
+> And tracee should be in something like syscall_trace() or do_notify_resume();
+> both have SAVE_SWITCH_STACK done by the glue...
 
----[ end trace ee4be53b94695793 ]---
+And that's where my problem may be - I stupidly forgot to set the 'all 
+registers saved' flag before calling syscall_trace() ...
 
-Syscall numbers are actually 90 and 192 - sys_old_mmap and sys_mmap2 on 
-m68k. Used the calculator on my Ubuntu desktop, that appears to be a 
-little confused about hex to decimal conversions.
-
-I hope that makes more sense?
+I'll fix that and try again. Sorry for the noise!
 
 Cheers,
 
 	Michael
 
->
->            Linus
+
+
 >
