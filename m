@@ -2,124 +2,98 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.8 required=3.0 tests=BAYES_00,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
-	autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-16.6 required=3.0 tests=BAYES_00,DKIM_INVALID,
+	DKIM_SIGNED,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 8CE5DC4743C
-	for <linux-m68k@archiver.kernel.org>; Mon, 21 Jun 2021 16:53:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 90E3EC48BC2
+	for <linux-m68k@archiver.kernel.org>; Mon, 21 Jun 2021 18:47:21 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 6E4CE60FE3
-	for <linux-m68k@archiver.kernel.org>; Mon, 21 Jun 2021 16:53:09 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 7D2E66135D
+	for <linux-m68k@archiver.kernel.org>; Mon, 21 Jun 2021 18:47:21 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232324AbhFUQzR (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Mon, 21 Jun 2021 12:55:17 -0400
-Received: from out02.mta.xmission.com ([166.70.13.232]:39884 "EHLO
-        out02.mta.xmission.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232940AbhFUQx5 (ORCPT
-        <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Mon, 21 Jun 2021 12:53:57 -0400
-Received: from in02.mta.xmission.com ([166.70.13.52])
-        by out02.mta.xmission.com with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.93)
-        (envelope-from <ebiederm@xmission.com>)
-        id 1lvN97-009Tro-7v; Mon, 21 Jun 2021 10:51:37 -0600
-Received: from ip68-227-160-95.om.om.cox.net ([68.227.160.95] helo=email.xmission.com)
-        by in02.mta.xmission.com with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.93)
-        (envelope-from <ebiederm@xmission.com>)
-        id 1lvN96-00D9Qn-9o; Mon, 21 Jun 2021 10:51:36 -0600
-From:   ebiederm@xmission.com (Eric W. Biederman)
-To:     Al Viro <viro@zeniv.linux.org.uk>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Michael Schmitz <schmitzmic@gmail.com>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        Jens Axboe <axboe@kernel.dk>, Oleg Nesterov <oleg@redhat.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Richard Henderson <rth@twiddle.net>,
-        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
-        Matt Turner <mattst88@gmail.com>,
-        alpha <linux-alpha@vger.kernel.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        linux-m68k <linux-m68k@lists.linux-m68k.org>,
-        Arnd Bergmann <arnd@kernel.org>,
-        Ley Foon Tan <ley.foon.tan@intel.com>,
-        Tejun Heo <tj@kernel.org>, Kees Cook <keescook@chromium.org>
-References: <CAHk-=wgdO5VwSUFjfF9g=DAQNYmVxzTq73NtdisYErzdZKqDGg@mail.gmail.com>
-        <87sg1lwhvm.fsf@disp2133>
-        <CAHk-=wgsnMTr0V-0F4FOk30Q1h7CeT8wLvR1MSnjack7EpyWtQ@mail.gmail.com>
-        <6e47eff8-d0a4-8390-1222-e975bfbf3a65@gmail.com>
-        <924ec53c-2fd9-2e1c-bbb1-3fda49809be4@gmail.com>
-        <87eed4v2dc.fsf@disp2133>
-        <5929e116-fa61-b211-342a-c706dcb834ca@gmail.com>
-        <87fsxjorgs.fsf@disp2133>
-        <CAHk-=wj5cJjpjAmDptmP9u4__6p3Y93SCQHG8Ef4+h=cnLiCsA@mail.gmail.com>
-        <YNCaMDQVYB04bk3j@zeniv-ca.linux.org.uk>
-        <YNCfNWC1UMvuE5d5@zeniv-ca.linux.org.uk>
-Date:   Mon, 21 Jun 2021 11:50:56 -0500
-In-Reply-To: <YNCfNWC1UMvuE5d5@zeniv-ca.linux.org.uk> (Al Viro's message of
-        "Mon, 21 Jun 2021 14:16:21 +0000")
-Message-ID: <87czsfi2kv.fsf@disp2133>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
+        id S232099AbhFUSte (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Mon, 21 Jun 2021 14:49:34 -0400
+Received: from mail.kernel-space.org ([195.201.34.187]:48192 "EHLO
+        mail.kernel-space.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232273AbhFUSte (ORCPT
+        <rfc822;linux-m68k@vger.kernel.org>); Mon, 21 Jun 2021 14:49:34 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel-space.org;
+        s=20190913; t=1624301235;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=hO6lwUo8KdLyOuC1N3tXTu8RjL9dMEFc9jtud9ss8lk=;
+        b=JkD2xaXnkfm7pQ67FAxmzd5QDKKEp93coJDMsPni/vswfd4+fjEJlpnmWfv2Wh49ZTPBvy
+        /QNmGqs3nU/dERLpnD9BqZGl0GX0mLfm+UKZni5W/9F19YlskOOWLW27d39mEgdT6weOsJ
+        oM1x+U9XMEL/hGMxTyAdyZ6KyE0GkAc=
+Received: from dfj.bfc.timesys.com (host-87-8-57-171.retail.telecomitalia.it [87.8.57.171])
+        by ziongate (OpenSMTPD) with ESMTPSA id 6c23e2f7 (TLSv1.3:TLS_AES_256_GCM_SHA384:256:NO);
+        Mon, 21 Jun 2021 18:47:15 +0000 (UTC)
+From:   Angelo Dureghello <angelo@kernel-space.org>
+To:     gerg@linux-m68k.org, wg@grandegger.com, mkl@pengutronix.de
+Cc:     geert@linux-m68k.org, linux-m68k@vger.kernel.org,
+        linux-can@vger.kernel.org, qiangqing.zhang@nxp.com,
+        Angelo Dureghello <angelo@kernel-space.org>
+Subject: [PATCH v3 1/5] can: flexcan: add platform data header
+Date:   Mon, 21 Jun 2021 20:46:11 +0200
+Message-Id: <20210621184615.3345846-1-angelo@kernel-space.org>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Content-Type: text/plain
-X-XM-SPF: eid=1lvN96-00D9Qn-9o;;;mid=<87czsfi2kv.fsf@disp2133>;;;hst=in02.mta.xmission.com;;;ip=68.227.160.95;;;frm=ebiederm@xmission.com;;;spf=neutral
-X-XM-AID: U2FsdGVkX1+rRKCOW0fN5lvEtZhHOcs8b3xyBuZW5K8=
-X-SA-Exim-Connect-IP: 68.227.160.95
-X-SA-Exim-Mail-From: ebiederm@xmission.com
-Subject: Re: Kernel stack read with PTRACE_EVENT_EXIT and io_uring threads
-X-SA-Exim-Version: 4.2.1 (built Sat, 08 Feb 2020 21:53:50 +0000)
-X-SA-Exim-Scanned: Yes (on in02.mta.xmission.com)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-Al Viro <viro@zeniv.linux.org.uk> writes:
+Add platform data header for flexcan.
 
-> On Mon, Jun 21, 2021 at 01:54:56PM +0000, Al Viro wrote:
->> On Tue, Jun 15, 2021 at 02:58:12PM -0700, Linus Torvalds wrote:
->> 
->> > And I think our horrible "kernel threads return to user space when
->> > done" is absolutely horrifically nasty. Maybe of the clever sort, but
->> > mostly of the historical horror sort.
->> 
->> How would you prefer to handle that, then?  Separate magical path from
->> kernel_execve() to switch to userland?  We used to have something of
->> that sort, and that had been a real horror...
->> 
->> As it is, it's "kernel thread is spawned at the point similar to
->> ret_from_fork(), runs the payload (which almost never returns) and
->> then proceeds out to userland, same way fork(2) would've done."
->> That way kernel_execve() doesn't have to do anything magical.
->> 
->> Al, digging through the old notes and current call graph...
->
-> 	FWIW, the major assumption back then had been that get_signal(),
-> signal_delivered() and all associated machinery (including coredumps)
-> runs *only* from SIGPENDING/NOTIFY_SIGNAL handling.
->
-> 	And "has complete registers on stack" is only a part of that;
-> there was other fun stuff in the area ;-/  Do we want coredumps for
-> those, and if we do, will the de_thread stuff work there?
+Signed-off-by: Angelo Dureghello <angelo@kernel-space.org>
+---
+Changes for v2:
+- move header file in more proper location
+- remove irq defines
+- change variable types to match driver types
+Changes for v3:
+- rename to more generic flexcan.h
+- reorder struct fields to avoid paddings
+- remove unused big_endian
+---
+ include/linux/can/platform/flexcan.h | 25 +++++++++++++++++++++++++
+ 1 file changed, 25 insertions(+)
+ create mode 100644 include/linux/can/platform/flexcan.h
 
-Do we want coredumps from processes that use io_uring? yes
-Exactly what we want from io_uring threads is less clear.  We can't
-really give much that is meaningful beyond the thread ids of the
-io_uring threads.
-
-What problems do are you seeing beyond the missing registers on the
-stack for kernel threads?
-
-I don't immediately see the connection between coredumps and de_thread.
-
-The function de_thread arranges for the fatal_signal_pending to be true,
-and that should work just fine for io_uring threads.  The io_uring
-threads process the fatal_signal with get_signal and then proceed to
-exit eventually calling do_exit.
-
-Eric
-
-
-
-
+diff --git a/include/linux/can/platform/flexcan.h b/include/linux/can/platform/flexcan.h
+new file mode 100644
+index 000000000000..ab4628ce701b
+--- /dev/null
++++ b/include/linux/can/platform/flexcan.h
+@@ -0,0 +1,25 @@
++/* SPDX-License-Identifier: GPL-2.0-only */
++/*
++ * Copyright (C) 2021  Angelo Dureghello <angelo@kernel-space.org>
++ *
++ * This program is free software; you can redistribute it and/or
++ * modify it under the terms of the GNU General Public License
++ * version 2 as published by the Free Software Foundation.
++ *
++ * This program is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ * GNU General Public License for more details.
++ */
++
++#ifndef _PLAT_FLEXCAN_H
++#define _PLAT_FLEXCAN_H
++
++struct mcf_flexcan_platform_data {
++	u32 clock_frequency;
++	u8 clk_src;
++};
++
++#define FLEXCAN_MCF5411X_MB_CNT_MCF	16
++
++#endif /* _PLAT_FLEXCAN_H */
+-- 
+2.31.1
 
