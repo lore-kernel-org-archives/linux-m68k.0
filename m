@@ -2,197 +2,134 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.8 required=3.0 tests=BAYES_00,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,
-	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-3.8 required=3.0 tests=BAYES_00,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
+	autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 077E7C4743C
-	for <linux-m68k@archiver.kernel.org>; Mon, 21 Jun 2021 22:47:48 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id DACABC4743C
+	for <linux-m68k@archiver.kernel.org>; Mon, 21 Jun 2021 23:06:03 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id D4F156128A
-	for <linux-m68k@archiver.kernel.org>; Mon, 21 Jun 2021 22:47:47 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id B0D5060FE6
+	for <linux-m68k@archiver.kernel.org>; Mon, 21 Jun 2021 23:06:03 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232181AbhFUWuB (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Mon, 21 Jun 2021 18:50:01 -0400
-Received: from mga07.intel.com ([134.134.136.100]:27737 "EHLO mga07.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230438AbhFUWuB (ORCPT <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Mon, 21 Jun 2021 18:50:01 -0400
-IronPort-SDR: tGMGFfXJicTCnEE90gEAXb03imhuL+kOfQ3qHPUh0KT8dGwUkYTf3Rk0PckyqUoCbRpHZasef/
- L75lZDuksmGA==
-X-IronPort-AV: E=McAfee;i="6200,9189,10022"; a="270792696"
-X-IronPort-AV: E=Sophos;i="5.83,290,1616482800"; 
-   d="scan'208";a="270792696"
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Jun 2021 15:47:38 -0700
-IronPort-SDR: TtrRCRiIkco4lmH2c6IQ1EZhXgXIlev6YWe6F74d2EJwRbFryY3cO4JmKKYtxszNtTi/LWan8E
- jmSG5oD5Nieg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.83,290,1616482800"; 
-   d="scan'208";a="423102168"
-Received: from lkp-server01.sh.intel.com (HELO 4aae0cb4f5b5) ([10.239.97.150])
-  by orsmga002.jf.intel.com with ESMTP; 21 Jun 2021 15:47:37 -0700
-Received: from kbuild by 4aae0cb4f5b5 with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1lvShc-0004pC-UH; Mon, 21 Jun 2021 22:47:36 +0000
-Date:   Tue, 22 Jun 2021 06:46:59 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     linux-m68k@lists.linux-m68k.org
-Subject: [m68k:master] BUILD SUCCESS
- 496c768d46ebc427721b85431055fdd0f5b13c24
-Message-ID: <60d116e3.VzLSgZuxdsatCJ3y%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+        id S230239AbhFUXIR (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Mon, 21 Jun 2021 19:08:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34642 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229915AbhFUXIR (ORCPT
+        <rfc822;linux-m68k@lists.linux-m68k.org>);
+        Mon, 21 Jun 2021 19:08:17 -0400
+Received: from zeniv-ca.linux.org.uk (zeniv-ca.linux.org.uk [IPv6:2607:5300:60:148a::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8CEF6C061574;
+        Mon, 21 Jun 2021 16:06:02 -0700 (PDT)
+Received: from viro by zeniv-ca.linux.org.uk with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1lvSyp-00AzNi-P9; Mon, 21 Jun 2021 23:05:23 +0000
+Date:   Mon, 21 Jun 2021 23:05:23 +0000
+From:   Al Viro <viro@zeniv.linux.org.uk>
+To:     "Eric W. Biederman" <ebiederm@xmission.com>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Michael Schmitz <schmitzmic@gmail.com>,
+        linux-arch <linux-arch@vger.kernel.org>,
+        Jens Axboe <axboe@kernel.dk>, Oleg Nesterov <oleg@redhat.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Richard Henderson <rth@twiddle.net>,
+        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
+        Matt Turner <mattst88@gmail.com>,
+        alpha <linux-alpha@vger.kernel.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        linux-m68k <linux-m68k@lists.linux-m68k.org>,
+        Arnd Bergmann <arnd@kernel.org>,
+        Ley Foon Tan <ley.foon.tan@intel.com>,
+        Tejun Heo <tj@kernel.org>, Kees Cook <keescook@chromium.org>
+Subject: Re: Kernel stack read with PTRACE_EVENT_EXIT and io_uring threads
+Message-ID: <YNEbM+B8Su7GDCSo@zeniv-ca.linux.org.uk>
+References: <CAHk-=wgsnMTr0V-0F4FOk30Q1h7CeT8wLvR1MSnjack7EpyWtQ@mail.gmail.com>
+ <6e47eff8-d0a4-8390-1222-e975bfbf3a65@gmail.com>
+ <924ec53c-2fd9-2e1c-bbb1-3fda49809be4@gmail.com>
+ <87eed4v2dc.fsf@disp2133>
+ <5929e116-fa61-b211-342a-c706dcb834ca@gmail.com>
+ <87fsxjorgs.fsf@disp2133>
+ <CAHk-=wj5cJjpjAmDptmP9u4__6p3Y93SCQHG8Ef4+h=cnLiCsA@mail.gmail.com>
+ <YNCaMDQVYB04bk3j@zeniv-ca.linux.org.uk>
+ <YNCfNWC1UMvuE5d5@zeniv-ca.linux.org.uk>
+ <87czsfi2kv.fsf@disp2133>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+In-Reply-To: <87czsfi2kv.fsf@disp2133>
+Sender: Al Viro <viro@ftp.linux.org.uk>
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/geert/linux-m68k.git master
-branch HEAD: 496c768d46ebc427721b85431055fdd0f5b13c24  Merge tag 'v5.13-rc7'
+On Mon, Jun 21, 2021 at 11:50:56AM -0500, Eric W. Biederman wrote:
+> Al Viro <viro@zeniv.linux.org.uk> writes:
+> 
+> > On Mon, Jun 21, 2021 at 01:54:56PM +0000, Al Viro wrote:
+> >> On Tue, Jun 15, 2021 at 02:58:12PM -0700, Linus Torvalds wrote:
+> >> 
+> >> > And I think our horrible "kernel threads return to user space when
+> >> > done" is absolutely horrifically nasty. Maybe of the clever sort, but
+> >> > mostly of the historical horror sort.
+> >> 
+> >> How would you prefer to handle that, then?  Separate magical path from
+> >> kernel_execve() to switch to userland?  We used to have something of
+> >> that sort, and that had been a real horror...
+> >> 
+> >> As it is, it's "kernel thread is spawned at the point similar to
+> >> ret_from_fork(), runs the payload (which almost never returns) and
+> >> then proceeds out to userland, same way fork(2) would've done."
+> >> That way kernel_execve() doesn't have to do anything magical.
+> >> 
+> >> Al, digging through the old notes and current call graph...
+> >
+> > 	FWIW, the major assumption back then had been that get_signal(),
+> > signal_delivered() and all associated machinery (including coredumps)
+> > runs *only* from SIGPENDING/NOTIFY_SIGNAL handling.
+> >
+> > 	And "has complete registers on stack" is only a part of that;
+> > there was other fun stuff in the area ;-/  Do we want coredumps for
+> > those, and if we do, will the de_thread stuff work there?
+> 
+> Do we want coredumps from processes that use io_uring? yes
+> Exactly what we want from io_uring threads is less clear.  We can't
+> really give much that is meaningful beyond the thread ids of the
+> io_uring threads.
+> 
+> What problems do are you seeing beyond the missing registers on the
+> stack for kernel threads?
+> 
+> I don't immediately see the connection between coredumps and de_thread.
+> 
+> The function de_thread arranges for the fatal_signal_pending to be true,
+> and that should work just fine for io_uring threads.  The io_uring
+> threads process the fatal_signal with get_signal and then proceed to
+> exit eventually calling do_exit.
 
-elapsed time: 724m
+I would like to see the testing in cases when the io-uring thread is
+the one getting hit by initial signal and when it's the normal one
+with associated io-uring ones.  The thread-collecting logics at least
+used to depend upon fairly subtle assumptions, and "kernel threads
+obviously can't show up as candidates" used to narrow the analysis
+down...
 
-configs tested: 128
-configs skipped: 2
+In any case, WTF would we allow reads or writes to *any* registers of
+such threads?  It's not as simple as "just return zeroes", BTW - the
+values allowed in special registers might have non-trivial constraints
+on them.  The same goes for coredump - we don't _have_ registers to
+dump for those, period.
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+Looks like the first things to do would be
+	* prohibit ptrace accessing any regsets of worker threads
+	* make coredump skip all register notes for those
 
-gcc tested configs:
-arm                                 defconfig
-arm64                            allyesconfig
-arm64                               defconfig
-arm                              allyesconfig
-arm                              allmodconfig
-powerpc                 xes_mpc85xx_defconfig
-powerpc                    klondike_defconfig
-powerpc                     ep8248e_defconfig
-arm                        vexpress_defconfig
-arm                              alldefconfig
-powerpc                    sam440ep_defconfig
-powerpc                 mpc8540_ads_defconfig
-powerpc                    socrates_defconfig
-m68k                            mac_defconfig
-riscv                               defconfig
-um                               alldefconfig
-arc                              allyesconfig
-nios2                         10m50_defconfig
-arm                             mxs_defconfig
-powerpc                     sequoia_defconfig
-arm                          badge4_defconfig
-mips                          ath79_defconfig
-arm                       mainstone_defconfig
-mips                        maltaup_defconfig
-m68k                         amcore_defconfig
-arm                         palmz72_defconfig
-arm                        cerfcube_defconfig
-powerpc                  mpc866_ads_defconfig
-sh                          landisk_defconfig
-powerpc                      ep88xc_defconfig
-mips                  maltasmvp_eva_defconfig
-s390                             alldefconfig
-m68k                          multi_defconfig
-powerpc                     tqm5200_defconfig
-m68k                        mvme16x_defconfig
-h8300                    h8300h-sim_defconfig
-mips                       lemote2f_defconfig
-powerpc                       holly_defconfig
-parisc                generic-32bit_defconfig
-arm                          pxa168_defconfig
-mips                           ip22_defconfig
-mips                           gcw0_defconfig
-openrisc                  or1klitex_defconfig
-mips                           ip27_defconfig
-arm                             rpc_defconfig
-riscv                          rv32_defconfig
-mips                   sb1250_swarm_defconfig
-powerpc                      katmai_defconfig
-mips                  decstation_64_defconfig
-m68k                        m5272c3_defconfig
-sh                         ecovec24_defconfig
-arm                          collie_defconfig
-arm                  colibri_pxa300_defconfig
-mips                         tb0287_defconfig
-arc                     haps_hs_smp_defconfig
-microblaze                          defconfig
-um                                  defconfig
-x86_64                            allnoconfig
-ia64                             allmodconfig
-ia64                                defconfig
-ia64                             allyesconfig
-m68k                             allmodconfig
-m68k                                defconfig
-m68k                             allyesconfig
-nios2                               defconfig
-nds32                             allnoconfig
-nds32                               defconfig
-nios2                            allyesconfig
-csky                                defconfig
-alpha                               defconfig
-alpha                            allyesconfig
-xtensa                           allyesconfig
-h8300                            allyesconfig
-arc                                 defconfig
-sh                               allmodconfig
-parisc                              defconfig
-s390                             allyesconfig
-s390                             allmodconfig
-parisc                           allyesconfig
-s390                                defconfig
-i386                             allyesconfig
-sparc                            allyesconfig
-sparc                               defconfig
-i386                                defconfig
-mips                             allyesconfig
-mips                             allmodconfig
-powerpc                          allyesconfig
-powerpc                          allmodconfig
-powerpc                           allnoconfig
-i386                 randconfig-a002-20210621
-i386                 randconfig-a001-20210621
-i386                 randconfig-a003-20210621
-i386                 randconfig-a006-20210621
-i386                 randconfig-a005-20210621
-i386                 randconfig-a004-20210621
-i386                 randconfig-a011-20210621
-i386                 randconfig-a014-20210621
-i386                 randconfig-a013-20210621
-i386                 randconfig-a015-20210621
-i386                 randconfig-a012-20210621
-i386                 randconfig-a016-20210621
-x86_64               randconfig-a002-20210621
-x86_64               randconfig-a001-20210621
-x86_64               randconfig-a005-20210621
-x86_64               randconfig-a003-20210621
-x86_64               randconfig-a004-20210621
-x86_64               randconfig-a006-20210621
-riscv                    nommu_k210_defconfig
-riscv                            allyesconfig
-riscv                    nommu_virt_defconfig
-riscv                             allnoconfig
-riscv                            allmodconfig
-x86_64                    rhel-8.3-kselftests
-um                           x86_64_defconfig
-um                             i386_defconfig
-um                            kunit_defconfig
-x86_64                           allyesconfig
-x86_64                              defconfig
-x86_64                               rhel-8.3
-x86_64                      rhel-8.3-kbuiltin
-x86_64                                  kexec
+Note, BTW, that kernel_thread() and kernel_execve() do *NOT* step into
+ptrace_notify() - explicit CLONE_UNTRACED for the former and zero
+current->ptrace in the caller of the latter.  So fork and exec side
+has ptrace_event() crap limited to real syscalls.
 
-clang tested configs:
-x86_64               randconfig-b001-20210621
-x86_64               randconfig-a012-20210621
-x86_64               randconfig-a016-20210621
-x86_64               randconfig-a015-20210621
-x86_64               randconfig-a014-20210621
-x86_64               randconfig-a013-20210621
-x86_64               randconfig-a011-20210621
+It's seccomp[1] and exit-related stuff that are messy...
 
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+[1] "never trust somebody who introduces himself as Honest Joe and keeps
+carping on that all the time"; c.f. __secure_computing(), CONFIG_INTEGRITY,
+etc.
