@@ -2,31 +2,75 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.8 required=3.0 tests=BAYES_00,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
-	autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-5.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
+	SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 92075C48BE5
-	for <linux-m68k@archiver.kernel.org>; Mon, 21 Jun 2021 14:16:37 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 53449C4743C
+	for <linux-m68k@archiver.kernel.org>; Mon, 21 Jun 2021 15:38:36 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 7C39F6134F
-	for <linux-m68k@archiver.kernel.org>; Mon, 21 Jun 2021 14:16:37 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 2ACAD61042
+	for <linux-m68k@archiver.kernel.org>; Mon, 21 Jun 2021 15:38:36 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230014AbhFUOSu (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Mon, 21 Jun 2021 10:18:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55656 "EHLO
+        id S229747AbhFUPkt (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Mon, 21 Jun 2021 11:40:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46438 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230076AbhFUOSr (ORCPT
+        with ESMTP id S229789AbhFUPkt (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Mon, 21 Jun 2021 10:18:47 -0400
-Received: from zeniv-ca.linux.org.uk (zeniv-ca.linux.org.uk [IPv6:2607:5300:60:148a::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8FB70C061574;
-        Mon, 21 Jun 2021 07:16:32 -0700 (PDT)
-Received: from viro by zeniv-ca.linux.org.uk with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1lvKir-00Ar4K-2D; Mon, 21 Jun 2021 14:16:21 +0000
-Date:   Mon, 21 Jun 2021 14:16:21 +0000
-From:   Al Viro <viro@zeniv.linux.org.uk>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
+        Mon, 21 Jun 2021 11:40:49 -0400
+Received: from mail-lf1-x12c.google.com (mail-lf1-x12c.google.com [IPv6:2a00:1450:4864:20::12c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC75DC061756
+        for <linux-m68k@lists.linux-m68k.org>; Mon, 21 Jun 2021 08:38:33 -0700 (PDT)
+Received: by mail-lf1-x12c.google.com with SMTP id f30so30995005lfj.1
+        for <linux-m68k@lists.linux-m68k.org>; Mon, 21 Jun 2021 08:38:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=R/gsr/Z80fSxEB0qmGqShvDUtlhm4ESakW3xcimnUEw=;
+        b=a39nbPZCP+nWMeIZ/x5qt0slwYnbNb/TvhmNaAml5kNvhs0i32rgF44OFGvy4ACZ5M
+         SfNAyRTK1aJ1m7aW6sC2No3kMhETcLZ7kUjianICGGeVyVPSyizOAaXDDMbjMew6KcRK
+         SAT8eIJUsUOJFoDNwA7oyYdllQrDrIWi08wng=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=R/gsr/Z80fSxEB0qmGqShvDUtlhm4ESakW3xcimnUEw=;
+        b=QE6FRn6IYztnmRXou6zY9Xgec81S7bicpJbFauqImI72o/2B5MhBM3ZrkukMP+EIKs
+         DKtb6HrdjpG+lTtfFhAdcJQKqIR1cRDq5ue1TevnmC2mNziOcEW1gbDkj1NVIx5wVLq6
+         epO+ah/xbt2zfXMyhE8Q2JC12bD0SvUERV07eLDDc+dqIT+aIo/NGNKqO74hHgtPrgN5
+         H7Ergzwfx/bDNC5QqswTTbXXZKhteqLYiqZo+d8Oz01pTi/c4TjRYU81OnCpDlF2lBeY
+         SIrdkkc3nHGIml9vmg4kjvPjt4bNv995LyDieyLyXT6uemOhxl1A1T50vBQAyVGXMkMc
+         4K/g==
+X-Gm-Message-State: AOAM532fAtycG7BSLxCzp3ln3b8tbnGvkY9beb6kUCgkdWrOGih9IebQ
+        94nwA9MFUFZlq7EWqEzBcwx0OwIFhyZvaOzV
+X-Google-Smtp-Source: ABdhPJzI5Y1xiE7bMdfjJQAkJE9KUi0upLJI7D25NdzkC5LhuKMQpaYrmDRpXQJjzjLblQhYU+NNIw==
+X-Received: by 2002:a19:c4b:: with SMTP id 72mr14706126lfm.15.1624289911962;
+        Mon, 21 Jun 2021 08:38:31 -0700 (PDT)
+Received: from mail-lj1-f181.google.com (mail-lj1-f181.google.com. [209.85.208.181])
+        by smtp.gmail.com with ESMTPSA id v1sm1908877lfq.284.2021.06.21.08.38.30
+        for <linux-m68k@lists.linux-m68k.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 21 Jun 2021 08:38:30 -0700 (PDT)
+Received: by mail-lj1-f181.google.com with SMTP id k8so2807620ljk.7
+        for <linux-m68k@lists.linux-m68k.org>; Mon, 21 Jun 2021 08:38:30 -0700 (PDT)
+X-Received: by 2002:a2e:b618:: with SMTP id r24mr22042332ljn.48.1624289909978;
+ Mon, 21 Jun 2021 08:38:29 -0700 (PDT)
+MIME-Version: 1.0
+References: <87pmwsytb3.fsf@disp2133> <CAHk-=wgdO5VwSUFjfF9g=DAQNYmVxzTq73NtdisYErzdZKqDGg@mail.gmail.com>
+ <87sg1lwhvm.fsf@disp2133> <CAHk-=wgsnMTr0V-0F4FOk30Q1h7CeT8wLvR1MSnjack7EpyWtQ@mail.gmail.com>
+ <6e47eff8-d0a4-8390-1222-e975bfbf3a65@gmail.com> <924ec53c-2fd9-2e1c-bbb1-3fda49809be4@gmail.com>
+ <87eed4v2dc.fsf@disp2133> <5929e116-fa61-b211-342a-c706dcb834ca@gmail.com>
+ <87fsxjorgs.fsf@disp2133> <CAHk-=wj5cJjpjAmDptmP9u4__6p3Y93SCQHG8Ef4+h=cnLiCsA@mail.gmail.com>
+ <YNCaMDQVYB04bk3j@zeniv-ca.linux.org.uk>
+In-Reply-To: <YNCaMDQVYB04bk3j@zeniv-ca.linux.org.uk>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Mon, 21 Jun 2021 08:38:14 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wjC_=iwj61vSZ0orPGjrxhDK3Ob2D4eaRpXXFdAbF6coQ@mail.gmail.com>
+Message-ID: <CAHk-=wjC_=iwj61vSZ0orPGjrxhDK3Ob2D4eaRpXXFdAbF6coQ@mail.gmail.com>
+Subject: Re: Kernel stack read with PTRACE_EVENT_EXIT and io_uring threads
+To:     Al Viro <viro@zeniv.linux.org.uk>
 Cc:     "Eric W. Biederman" <ebiederm@xmission.com>,
         Michael Schmitz <schmitzmic@gmail.com>,
         linux-arch <linux-arch@vger.kernel.org>,
@@ -41,49 +85,33 @@ Cc:     "Eric W. Biederman" <ebiederm@xmission.com>,
         Arnd Bergmann <arnd@kernel.org>,
         Ley Foon Tan <ley.foon.tan@intel.com>,
         Tejun Heo <tj@kernel.org>, Kees Cook <keescook@chromium.org>
-Subject: Re: Kernel stack read with PTRACE_EVENT_EXIT and io_uring threads
-Message-ID: <YNCfNWC1UMvuE5d5@zeniv-ca.linux.org.uk>
-References: <CAHk-=wgdO5VwSUFjfF9g=DAQNYmVxzTq73NtdisYErzdZKqDGg@mail.gmail.com>
- <87sg1lwhvm.fsf@disp2133>
- <CAHk-=wgsnMTr0V-0F4FOk30Q1h7CeT8wLvR1MSnjack7EpyWtQ@mail.gmail.com>
- <6e47eff8-d0a4-8390-1222-e975bfbf3a65@gmail.com>
- <924ec53c-2fd9-2e1c-bbb1-3fda49809be4@gmail.com>
- <87eed4v2dc.fsf@disp2133>
- <5929e116-fa61-b211-342a-c706dcb834ca@gmail.com>
- <87fsxjorgs.fsf@disp2133>
- <CAHk-=wj5cJjpjAmDptmP9u4__6p3Y93SCQHG8Ef4+h=cnLiCsA@mail.gmail.com>
- <YNCaMDQVYB04bk3j@zeniv-ca.linux.org.uk>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YNCaMDQVYB04bk3j@zeniv-ca.linux.org.uk>
-Sender: Al Viro <viro@ftp.linux.org.uk>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-On Mon, Jun 21, 2021 at 01:54:56PM +0000, Al Viro wrote:
+On Mon, Jun 21, 2021 at 6:55 AM Al Viro <viro@zeniv.linux.org.uk> wrote:
+>
 > On Tue, Jun 15, 2021 at 02:58:12PM -0700, Linus Torvalds wrote:
-> 
+>
 > > And I think our horrible "kernel threads return to user space when
 > > done" is absolutely horrifically nasty. Maybe of the clever sort, but
 > > mostly of the historical horror sort.
-> 
+>
 > How would you prefer to handle that, then?  Separate magical path from
 > kernel_execve() to switch to userland?  We used to have something of
 > that sort, and that had been a real horror...
-> 
-> As it is, it's "kernel thread is spawned at the point similar to
-> ret_from_fork(), runs the payload (which almost never returns) and
-> then proceeds out to userland, same way fork(2) would've done."
-> That way kernel_execve() doesn't have to do anything magical.
-> 
-> Al, digging through the old notes and current call graph...
 
-	FWIW, the major assumption back then had been that get_signal(),
-signal_delivered() and all associated machinery (including coredumps)
-runs *only* from SIGPENDING/NOTIFY_SIGNAL handling.
+Hmm. Maybe the alternatives would all be worse. The current thing is
+clever, and shares the return path with the normal case. It's just
+also a bit surprising, in that a kernel thread normally must not
+return - with the magical exception of "if it had done a
+kernel_execve() at some point, then returning is magically the way you
+actually start user mode".
 
-	And "has complete registers on stack" is only a part of that;
-there was other fun stuff in the area ;-/  Do we want coredumps for
-those, and if we do, will the de_thread stuff work there?
+So it all feels very special, and there's not even a comment about it.
+
+I think we only have two users of that thing (the very first 'init',
+and user-mode-helpr), So I guess it doesn't really matter.
+
+            Linus
