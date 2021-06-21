@@ -2,126 +2,105 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.7 required=3.0 tests=BAYES_00,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	URIBL_RED autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-13.8 required=3.0 tests=BAYES_00,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 684A7C49EA2
-	for <linux-m68k@archiver.kernel.org>; Mon, 21 Jun 2021 20:04:11 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8783BC4743C
+	for <linux-m68k@archiver.kernel.org>; Mon, 21 Jun 2021 20:12:12 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 4FE086115B
-	for <linux-m68k@archiver.kernel.org>; Mon, 21 Jun 2021 20:04:11 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 598D46023E
+	for <linux-m68k@archiver.kernel.org>; Mon, 21 Jun 2021 20:12:12 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231834AbhFUUGZ (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Mon, 21 Jun 2021 16:06:25 -0400
-Received: from out03.mta.xmission.com ([166.70.13.233]:58178 "EHLO
-        out03.mta.xmission.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230367AbhFUUGY (ORCPT
-        <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Mon, 21 Jun 2021 16:06:24 -0400
-Received: from in01.mta.xmission.com ([166.70.13.51])
-        by out03.mta.xmission.com with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.93)
-        (envelope-from <ebiederm@xmission.com>)
-        id 1lvQ9O-001vem-HU; Mon, 21 Jun 2021 14:04:06 -0600
-Received: from ip68-227-160-95.om.om.cox.net ([68.227.160.95] helo=email.xmission.com)
-        by in01.mta.xmission.com with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.93)
-        (envelope-from <ebiederm@xmission.com>)
-        id 1lvQ9N-00Aepo-Db; Mon, 21 Jun 2021 14:04:06 -0600
-From:   ebiederm@xmission.com (Eric W. Biederman)
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Al Viro <viro@zeniv.linux.org.uk>,
-        Michael Schmitz <schmitzmic@gmail.com>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        Jens Axboe <axboe@kernel.dk>, Oleg Nesterov <oleg@redhat.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Richard Henderson <rth@twiddle.net>,
-        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
-        Matt Turner <mattst88@gmail.com>,
-        alpha <linux-alpha@vger.kernel.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        linux-m68k <linux-m68k@lists.linux-m68k.org>,
-        Arnd Bergmann <arnd@kernel.org>,
-        Ley Foon Tan <ley.foon.tan@intel.com>,
-        Tejun Heo <tj@kernel.org>, Kees Cook <keescook@chromium.org>
-References: <CAHk-=wgdO5VwSUFjfF9g=DAQNYmVxzTq73NtdisYErzdZKqDGg@mail.gmail.com>
-        <87sg1lwhvm.fsf@disp2133>
-        <CAHk-=wgsnMTr0V-0F4FOk30Q1h7CeT8wLvR1MSnjack7EpyWtQ@mail.gmail.com>
-        <6e47eff8-d0a4-8390-1222-e975bfbf3a65@gmail.com>
-        <924ec53c-2fd9-2e1c-bbb1-3fda49809be4@gmail.com>
-        <87eed4v2dc.fsf@disp2133>
-        <5929e116-fa61-b211-342a-c706dcb834ca@gmail.com>
-        <87fsxjorgs.fsf@disp2133>
-        <CAHk-=wj5cJjpjAmDptmP9u4__6p3Y93SCQHG8Ef4+h=cnLiCsA@mail.gmail.com>
-        <YNCaMDQVYB04bk3j@zeniv-ca.linux.org.uk>
-        <YNDhdb7XNQE6zQzL@zeniv-ca.linux.org.uk>
-        <CAHk-=whAsWXcJkpMM8ji77DkYkeJAT4Cj98WBX-S6=GnMQwhzg@mail.gmail.com>
-Date:   Mon, 21 Jun 2021 15:03:57 -0500
-In-Reply-To: <CAHk-=whAsWXcJkpMM8ji77DkYkeJAT4Cj98WBX-S6=GnMQwhzg@mail.gmail.com>
-        (Linus Torvalds's message of "Mon, 21 Jun 2021 12:22:06 -0700")
-Message-ID: <87a6njf0ia.fsf@disp2133>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
+        id S231490AbhFUUO0 (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Mon, 21 Jun 2021 16:14:26 -0400
+Received: from mail-vs1-f53.google.com ([209.85.217.53]:35643 "EHLO
+        mail-vs1-f53.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230274AbhFUUO0 (ORCPT
+        <rfc822;linux-m68k@vger.kernel.org>); Mon, 21 Jun 2021 16:14:26 -0400
+Received: by mail-vs1-f53.google.com with SMTP id j15so9981507vsf.2;
+        Mon, 21 Jun 2021 13:12:10 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=7Kip9GifiuNfj9QeA3XUqqC+M+epRVwb+HCe4pTkQPs=;
+        b=nDWU7VwIzisaQioFwWkl+61kzV6rl9qtweaHJAEfnkQ+jbrgTclfypZUam9IoQYhU4
+         ykcyFqp5w11qNH0MpjvfOmRmISalrCRxt4vig42nOUd5lGncX8mu+atRKl5xHAl0G//C
+         8DNOSXpEvPdVGSVvVA6rpSoCI+D2W/E5FrmIb7VYk50US8IF69CsjKRNQvRf3W6ehL1n
+         iCbCiSBc59lU01t52zAb3ef4OvjkD0E4lpMAO1URzSZ6xl7SdOKoQeInAgc7IWhCip5N
+         7By63lJHZoDN4l/RGAVDU9alNeP7REAsFllk5P6WklbTMX8XuKhzPHO3hzgZ+kifKRRT
+         0GTQ==
+X-Gm-Message-State: AOAM530H0kRtx169RPs9srwtN0QhImk782iZ+nl72HojOBoJDD5C5pL9
+        uPODXBzBpt4RjW8PLnSF84hTAKA4d+aWO6hP/7GYEq4RdTPiiw==
+X-Google-Smtp-Source: ABdhPJxONGPsVicbk+opB70+yMR9opfn4r2E02U4PIHhh4jNXoJZ+ClcNEBwkvKxL8FhXH438zf5uhlOUUlvx0eToP8=
+X-Received: by 2002:a05:6102:c4c:: with SMTP id y12mr19756967vss.18.1624306329961;
+ Mon, 21 Jun 2021 13:12:09 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-XM-SPF: eid=1lvQ9N-00Aepo-Db;;;mid=<87a6njf0ia.fsf@disp2133>;;;hst=in01.mta.xmission.com;;;ip=68.227.160.95;;;frm=ebiederm@xmission.com;;;spf=neutral
-X-XM-AID: U2FsdGVkX1/xxzvL+2c2HnDdD8EOIbBaeuM2HSOQ4LU=
-X-SA-Exim-Connect-IP: 68.227.160.95
-X-SA-Exim-Mail-From: ebiederm@xmission.com
-Subject: Re: Kernel stack read with PTRACE_EVENT_EXIT and io_uring threads
-X-SA-Exim-Version: 4.2.1 (built Sat, 08 Feb 2020 21:53:50 +0000)
-X-SA-Exim-Scanned: Yes (on in01.mta.xmission.com)
+References: <20210621184615.3345846-1-angelo@kernel-space.org> <20210621184615.3345846-4-angelo@kernel-space.org>
+In-Reply-To: <20210621184615.3345846-4-angelo@kernel-space.org>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Mon, 21 Jun 2021 22:11:58 +0200
+Message-ID: <CAMuHMdV8a=YKowGLY3kGqwsfAPd3VPEXS8x7xqYaUz9ZBh64hg@mail.gmail.com>
+Subject: Re: [PATCH v3 4/5] can: flexcan: update Kconfig to allow non-of cases
+To:     Angelo Dureghello <angelo@kernel-space.org>
+Cc:     Greg Ungerer <gerg@linux-m68k.org>,
+        Wolfgang Grandegger <wg@grandegger.com>,
+        Marc Kleine-Budde <mkl@pengutronix.de>,
+        "Linux/m68k" <linux-m68k@vger.kernel.org>,
+        linux-can@vger.kernel.org, Joakim Zhang <qiangqing.zhang@nxp.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-Linus Torvalds <torvalds@linux-foundation.org> writes:
+Hi Angelo,
 
-> On Mon, Jun 21, 2021 at 11:59 AM Al Viro <viro@zeniv.linux.org.uk> wrote:
->>
->>         There's a large mess around do_exit() - we have a bunch of
->> callers all over arch/*; if nothing else, I very much doubt that really
->> want to let tracer play with a thread in the middle of die_if_kernel()
->> or similar.
+On Mon, Jun 21, 2021 at 8:47 PM Angelo Dureghello
+<angelo@kernel-space.org> wrote:
+> Update flexcan to support architectures without fdt.
 >
-> Right you are.
+> Signed-off-by: Angelo Dureghello <angelo@kernel-space.org>
+> ---
+> Changes for v2:
+> none
+> Changes for v3:
+> - change to just remove OF
+> ---
+>  drivers/net/can/Kconfig | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 >
-> I'm really beginning to hate ptrace_{event,notify}() and those
-> PTRACE_EVENT_xyz things.
+> diff --git a/drivers/net/can/Kconfig b/drivers/net/can/Kconfig
+> index e355d3974977..a0f4ae7ccb84 100644
+> --- a/drivers/net/can/Kconfig
+> +++ b/drivers/net/can/Kconfig
+> @@ -97,7 +97,7 @@ config CAN_AT91
 >
-> I don't even know what uses them, honestly. How very annoying.
+>  config CAN_FLEXCAN
+>         tristate "Support for Freescale FLEXCAN based chips"
+> -       depends on OF && HAS_IOMEM
+> +       depends on HAS_IOMEM
 
-Modern strace does.  Modern gdb appears not to.
+I think you want to add a line
 
-However strace at least does not read the exit code,
-or really appear to care about stopping for PTRACE_EVENT_EXIT.
+    depends on ARCH_LAYERSCAPE || ARCH_MXC || COLDFIRE ||
+FSL_SOC_BOOKE || COMPILE_TEST
 
-I completely agree with you that they are very annoying.
+(or PPC instead of FSL_SOC_BOOKE?)
+so the question doesn't pop up when compiling a kernel for a system
+that cannot have a Freescale FlexCAN IP block.
 
-> I guess it's easy enough (famous last words) to move the
-> ptrace_event() call out of do_exit() and into the actual
-> exit/exit_group system calls, and the signal handling path. The paths
-> that actually have proper pt_regs.
->
-> Looks like sys_exit() and do_group_exit() would be the two places to
-> do it (do_group_exit() would handle the signal case and
-> sys_group_exit()).
+>         help
+>           Say Y here if you want to support for Freescale FlexCAN.
 
-For other ptrace_event calls I am playing with seeing if I can split
-them in two.  Like sending a signal.  So that we can have perform all
-of the work in get_signal.
+Gr{oetje,eeting}s,
 
-I think we can even change exit_group(2) and exit(2) so that (at least
-when ptraced) they just send the ``event signal'' and then the signal
-handling path handles all of the ptrace stuff.
+                        Geert
 
+-- 
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
-When I started it was just going to be exit and PTRACE_EVENT_EXIT and
-some old architectures, and that a generic solution was going to be
-hard.
-
-I still think we are going to need to fix the io_uring threads on the
-architectures that use the caller saved register optimization like alpha
-and m68k.  But I think we can handle the rest in generic code.
-
-Eric
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
