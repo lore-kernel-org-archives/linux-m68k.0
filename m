@@ -6,119 +6,156 @@ X-Spam-Status: No, score=-3.7 required=3.0 tests=BAYES_00,
 	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
 	URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id EAEF3C48BE5
-	for <linux-m68k@archiver.kernel.org>; Tue, 22 Jun 2021 06:54:37 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 201ADC48BDF
+	for <linux-m68k@archiver.kernel.org>; Tue, 22 Jun 2021 16:40:38 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id C8F0860720
-	for <linux-m68k@archiver.kernel.org>; Tue, 22 Jun 2021 06:54:37 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 058AF6128C
+	for <linux-m68k@archiver.kernel.org>; Tue, 22 Jun 2021 16:40:38 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229629AbhFVG4v (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Tue, 22 Jun 2021 02:56:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53522 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229501AbhFVG4v (ORCPT
-        <rfc822;linux-m68k@vger.kernel.org>); Tue, 22 Jun 2021 02:56:51 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B3B07C061756
-        for <linux-m68k@vger.kernel.org>; Mon, 21 Jun 2021 23:54:35 -0700 (PDT)
-Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <mkl@pengutronix.de>)
-        id 1lvaIo-000842-Hq; Tue, 22 Jun 2021 08:54:30 +0200
-Received: from pengutronix.de (unknown [IPv6:2a03:f580:87bc:d400:f4a:9a72:36be:c814])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (Client did not present a certificate)
-        (Authenticated sender: mkl-all@blackshift.org)
-        by smtp.blackshift.org (Postfix) with ESMTPSA id E4E43640FEC;
-        Tue, 22 Jun 2021 06:54:28 +0000 (UTC)
-Date:   Tue, 22 Jun 2021 08:54:27 +0200
-From:   Marc Kleine-Budde <mkl@pengutronix.de>
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     Angelo Dureghello <angelo@kernel-space.org>,
-        Greg Ungerer <gerg@linux-m68k.org>,
-        Wolfgang Grandegger <wg@grandegger.com>,
-        Linux/m68k <linux-m68k@vger.kernel.org>,
-        linux-can@vger.kernel.org, Joakim Zhang <qiangqing.zhang@nxp.com>
-Subject: Re: [PATCH v3 4/5] can: flexcan: update Kconfig to allow non-of cases
-Message-ID: <20210622065427.z5dnixenf47zag4g@pengutronix.de>
-References: <20210621184615.3345846-1-angelo@kernel-space.org>
- <20210621184615.3345846-4-angelo@kernel-space.org>
- <CAMuHMdV8a=YKowGLY3kGqwsfAPd3VPEXS8x7xqYaUz9ZBh64hg@mail.gmail.com>
- <20210621201816.pk6n4xa7j4bi6vfk@pengutronix.de>
- <CAMuHMdUHQyPB8G5QX-oK7+MDvkLihR6QCoD+9_3pQKQZWu7TGw@mail.gmail.com>
- <20210621204127.xwrk2tlxggct7kst@pengutronix.de>
- <CAMuHMdUrFa6r2VQdNTgr8mV_wGoOb4VhK0Y5_XQQ1Xzgc93NMw@mail.gmail.com>
+        id S231282AbhFVQmw (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Tue, 22 Jun 2021 12:42:52 -0400
+Received: from out03.mta.xmission.com ([166.70.13.233]:41800 "EHLO
+        out03.mta.xmission.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230102AbhFVQmw (ORCPT
+        <rfc822;linux-m68k@lists.linux-m68k.org>);
+        Tue, 22 Jun 2021 12:42:52 -0400
+Received: from in01.mta.xmission.com ([166.70.13.51])
+        by out03.mta.xmission.com with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.93)
+        (envelope-from <ebiederm@xmission.com>)
+        id 1lvjRn-003aSW-4M; Tue, 22 Jun 2021 10:40:23 -0600
+Received: from ip68-227-160-95.om.om.cox.net ([68.227.160.95] helo=email.xmission.com)
+        by in01.mta.xmission.com with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.93)
+        (envelope-from <ebiederm@xmission.com>)
+        id 1lvjRl-00Cjxd-Up; Tue, 22 Jun 2021 10:40:22 -0600
+From:   ebiederm@xmission.com (Eric W. Biederman)
+To:     Al Viro <viro@zeniv.linux.org.uk>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Michael Schmitz <schmitzmic@gmail.com>,
+        linux-arch <linux-arch@vger.kernel.org>,
+        Jens Axboe <axboe@kernel.dk>, Oleg Nesterov <oleg@redhat.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Richard Henderson <rth@twiddle.net>,
+        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
+        Matt Turner <mattst88@gmail.com>,
+        alpha <linux-alpha@vger.kernel.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        linux-m68k <linux-m68k@lists.linux-m68k.org>,
+        Arnd Bergmann <arnd@kernel.org>,
+        Ley Foon Tan <ley.foon.tan@intel.com>,
+        Tejun Heo <tj@kernel.org>, Kees Cook <keescook@chromium.org>
+References: <CAHk-=wgsnMTr0V-0F4FOk30Q1h7CeT8wLvR1MSnjack7EpyWtQ@mail.gmail.com>
+        <6e47eff8-d0a4-8390-1222-e975bfbf3a65@gmail.com>
+        <924ec53c-2fd9-2e1c-bbb1-3fda49809be4@gmail.com>
+        <87eed4v2dc.fsf@disp2133>
+        <5929e116-fa61-b211-342a-c706dcb834ca@gmail.com>
+        <87fsxjorgs.fsf@disp2133>
+        <CAHk-=wj5cJjpjAmDptmP9u4__6p3Y93SCQHG8Ef4+h=cnLiCsA@mail.gmail.com>
+        <YNCaMDQVYB04bk3j@zeniv-ca.linux.org.uk>
+        <YNCfNWC1UMvuE5d5@zeniv-ca.linux.org.uk> <87czsfi2kv.fsf@disp2133>
+        <YNEbM+B8Su7GDCSo@zeniv-ca.linux.org.uk>
+Date:   Tue, 22 Jun 2021 11:39:40 -0500
+In-Reply-To: <YNEbM+B8Su7GDCSo@zeniv-ca.linux.org.uk> (Al Viro's message of
+        "Mon, 21 Jun 2021 23:05:23 +0000")
+Message-ID: <87pmwddfar.fsf@disp2133>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="s6dgs2ngnlnhqaoo"
-Content-Disposition: inline
-In-Reply-To: <CAMuHMdUrFa6r2VQdNTgr8mV_wGoOb4VhK0Y5_XQQ1Xzgc93NMw@mail.gmail.com>
-X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
-X-SA-Exim-Mail-From: mkl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-m68k@vger.kernel.org
+Content-Type: text/plain
+X-XM-SPF: eid=1lvjRl-00Cjxd-Up;;;mid=<87pmwddfar.fsf@disp2133>;;;hst=in01.mta.xmission.com;;;ip=68.227.160.95;;;frm=ebiederm@xmission.com;;;spf=neutral
+X-XM-AID: U2FsdGVkX1/X41R2QSJA4Bsomag6udFxEERDHThxYq8=
+X-SA-Exim-Connect-IP: 68.227.160.95
+X-SA-Exim-Mail-From: ebiederm@xmission.com
+Subject: Re: Kernel stack read with PTRACE_EVENT_EXIT and io_uring threads
+X-SA-Exim-Version: 4.2.1 (built Sat, 08 Feb 2020 21:53:50 +0000)
+X-SA-Exim-Scanned: Yes (on in01.mta.xmission.com)
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
+Al Viro <viro@zeniv.linux.org.uk> writes:
 
---s6dgs2ngnlnhqaoo
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+> On Mon, Jun 21, 2021 at 11:50:56AM -0500, Eric W. Biederman wrote:
+>> Al Viro <viro@zeniv.linux.org.uk> writes:
+>> 
+>> > On Mon, Jun 21, 2021 at 01:54:56PM +0000, Al Viro wrote:
+>> >> On Tue, Jun 15, 2021 at 02:58:12PM -0700, Linus Torvalds wrote:
+>> >> 
+>> >> > And I think our horrible "kernel threads return to user space when
+>> >> > done" is absolutely horrifically nasty. Maybe of the clever sort, but
+>> >> > mostly of the historical horror sort.
+>> >> 
+>> >> How would you prefer to handle that, then?  Separate magical path from
+>> >> kernel_execve() to switch to userland?  We used to have something of
+>> >> that sort, and that had been a real horror...
+>> >> 
+>> >> As it is, it's "kernel thread is spawned at the point similar to
+>> >> ret_from_fork(), runs the payload (which almost never returns) and
+>> >> then proceeds out to userland, same way fork(2) would've done."
+>> >> That way kernel_execve() doesn't have to do anything magical.
+>> >> 
+>> >> Al, digging through the old notes and current call graph...
+>> >
+>> > 	FWIW, the major assumption back then had been that get_signal(),
+>> > signal_delivered() and all associated machinery (including coredumps)
+>> > runs *only* from SIGPENDING/NOTIFY_SIGNAL handling.
+>> >
+>> > 	And "has complete registers on stack" is only a part of that;
+>> > there was other fun stuff in the area ;-/  Do we want coredumps for
+>> > those, and if we do, will the de_thread stuff work there?
+>> 
+>> Do we want coredumps from processes that use io_uring? yes
+>> Exactly what we want from io_uring threads is less clear.  We can't
+>> really give much that is meaningful beyond the thread ids of the
+>> io_uring threads.
+>> 
+>> What problems do are you seeing beyond the missing registers on the
+>> stack for kernel threads?
+>> 
+>> I don't immediately see the connection between coredumps and de_thread.
+>> 
+>> The function de_thread arranges for the fatal_signal_pending to be true,
+>> and that should work just fine for io_uring threads.  The io_uring
+>> threads process the fatal_signal with get_signal and then proceed to
+>> exit eventually calling do_exit.
+>
+> I would like to see the testing in cases when the io-uring thread is
+> the one getting hit by initial signal and when it's the normal one
+> with associated io-uring ones.  The thread-collecting logics at least
+> used to depend upon fairly subtle assumptions, and "kernel threads
+> obviously can't show up as candidates" used to narrow the analysis
+> down...
+>
+> In any case, WTF would we allow reads or writes to *any* registers of
+> such threads?  It's not as simple as "just return zeroes", BTW - the
+> values allowed in special registers might have non-trivial constraints
+> on them.  The same goes for coredump - we don't _have_ registers to
+> dump for those, period.
+>
+> Looks like the first things to do would be
+> 	* prohibit ptrace accessing any regsets of worker threads
+> 	* make coredump skip all register notes for those
 
-On 22.06.2021 08:52:05, Geert Uytterhoeven wrote:
-> > Probably. What about the original proposed change: "(OF || M5441x) && H=
-AS_IOMEM"?
->=20
-> Yeah, the Flexcan might pop up on RISC-V, too.
-> But any new platforms should use OF.
-> Given the Flexcan is probably present on more than just M5441x,
-> I'd go for:
->=20
->     depends on OF || COLDFIRE || COMPILE_TEST
->     depends on HAS_IOMEM
+Skipping register notes is fine.  Prohibiting ptrace access to any
+regsets of worker threads is interesting.  I think that was tried and
+shown to confuse gdb.  So the conclusion was just to provide a fake set
+of registers.
 
-Looks good to me!
+Which has appears to work up to the point of dealing with architectures
+that have their magic caller-saved optimization (like alpha and m68k),
+and no check that all of the registers were saved when accessed.  Adding
+a dummy switch stack frame for the kernel threads on those architectures
+looks like a good/cheap solution at first glance.
 
-> > > > So I think there won't be too many configs where the oldconfig ques=
-tion
-> > > > would pop up.
-> > >
-> > > Now it will, as Mr. Torvalds' main machine does not satisfy "ARM || P=
-PC"
-> > > or "OF && HAS_IOMEM", but does "HAS_IOMEM" ;-)
-> >
-> > IC, that would be one question too much :)
->=20
-> I do doubt he has CONFIG_CAN enabled ;-)
+> Note, BTW, that kernel_thread() and kernel_execve() do *NOT* step into
+> ptrace_notify() - explicit CLONE_UNTRACED for the former and zero
+> current->ptrace in the caller of the latter.  So fork and exec side
+> has ptrace_event() crap limited to real syscalls.
 
-:D
+That is where I thought we were.  Thanks for confirming that.
 
-regards,
-Marc
-
---=20
-Pengutronix e.K.                 | Marc Kleine-Budde           |
-Embedded Linux                   | https://www.pengutronix.de  |
-Vertretung West/Dortmund         | Phone: +49-231-2826-924     |
-Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-5555 |
-
---s6dgs2ngnlnhqaoo
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEK3kIWJt9yTYMP3ehqclaivrt76kFAmDRiSEACgkQqclaivrt
-76lZCAf/ekQ8XfkOJIawXZDDpjaVLO1FOL9o4/es0jY+ytWjQWUWshRKWgTbxeY3
-EP+LTnf+0R3jVGXVslMaANyyfhgYjRrM2aCQD6I55cXBkxJsrmWVeNRbLYl0giHh
-GOkykIEJejF6h+HCz1sq2vHftbb0JA5YFB0VrjJqY4bYf5W5sXT4EytRwLneT9Na
-p+sdTPE4hPV+bRwWjsd0Tz0P4RW1cz6mPejTXRr/PXJoyINv5kBCFEUiYW/mOIQD
-k36vLMdR8tooj1eK5IqQJRGkgMgpAvtnpmYtBFSurmohesu4iGyfDob4348oTvJa
-uyRISslDj+tPyMk2udDn4vTzwvzKxA==
-=pPbT
------END PGP SIGNATURE-----
-
---s6dgs2ngnlnhqaoo--
+> It's seccomp[1] and exit-related stuff that are messy...
+>
+> [1] "never trust somebody who introduces himself as Honest Joe and keeps
+> carping on that all the time"; c.f. __secure_computing(), CONFIG_INTEGRITY,
+> etc.
