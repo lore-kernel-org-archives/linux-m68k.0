@@ -2,164 +2,120 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-12.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,NICE_REPLY_A,SPF_HELO_NONE,SPF_PASS autolearn=ham
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-3.8 required=3.0 tests=BAYES_00,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
+	autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id EE442C4743C
-	for <linux-m68k@archiver.kernel.org>; Wed, 23 Jun 2021 08:34:04 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7F917C4743C
+	for <linux-m68k@archiver.kernel.org>; Wed, 23 Jun 2021 14:34:54 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id C80E361164
-	for <linux-m68k@archiver.kernel.org>; Wed, 23 Jun 2021 08:34:04 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 5D5FD60FF2
+	for <linux-m68k@archiver.kernel.org>; Wed, 23 Jun 2021 14:34:54 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229987AbhFWIgU (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Wed, 23 Jun 2021 04:36:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35364 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229954AbhFWIgS (ORCPT
-        <rfc822;linux-m68k@vger.kernel.org>); Wed, 23 Jun 2021 04:36:18 -0400
-Received: from mail-pg1-x52e.google.com (mail-pg1-x52e.google.com [IPv6:2607:f8b0:4864:20::52e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A493FC061574
-        for <linux-m68k@vger.kernel.org>; Wed, 23 Jun 2021 01:34:00 -0700 (PDT)
-Received: by mail-pg1-x52e.google.com with SMTP id a2so1155114pgi.6
-        for <linux-m68k@vger.kernel.org>; Wed, 23 Jun 2021 01:34:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:references:cc:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-transfer-encoding;
-        bh=L/3a8CLXh2oRWkaeQA/G8ySraa+QGGoy4OWmTjpkSkc=;
-        b=FYa/tn9orNW/ss61r8y3qmaz+wTWW9aACAmWita3VDQZJ4tUuEcPPuZw4OSNG8pwcn
-         ecm0EYk+iKHMIjFDNd1A1Nx/1QaWc1/FgSwQDZ3n2+vNMh6rwt3Hy99jZxHUCvuL4Yw9
-         rRUABJnvR05xTuazBk+khjs/7hD2F/fr/8a5c+Ixiv7NtAcdaixsAjp3vmrycfS9Kmf9
-         Pezlk76aefnQr8h1LwT7sjo3dB+PhRfN5KrqE/mmSDy88M3FNsSpUUccVXEKu/e8CjNs
-         x+CmPufgad9BynIIWPar3Hx+ZJqeQq6pjlfRMF7KDgZUWSBV4+vreUSKcmb+jCZ9MEdq
-         C7/g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:references:cc:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding;
-        bh=L/3a8CLXh2oRWkaeQA/G8ySraa+QGGoy4OWmTjpkSkc=;
-        b=lzvaWI8St7+350bpUdsfXy9lWvSPepiLCb1C7qH+ZW9Z2B8X35G/dMCCzQin7a8gJ1
-         Y4yw6cj6j000jsE0YMZNqdD/RgqnzA19QS2tar5MqY82+R6ZKATgmSX8oxaqsDE2OWG2
-         Xc9dRu5/cJ+eNE4ltK7VodmgFd3zItASYOx9CQrL2PtoN8uCb4nYBo7xm+h8RJc8oni6
-         4O4mrPytHq80i3oqYH0gV/SXqHeV68zglrvyxUgCuDQL1ZSTwpa84YcWbURDK52rpkFH
-         DzfYZFqsk+GByqOEKOZpNRSM3OHa9KDC4VfaL1AATP5clt9XkdJFkrt7wXMURgeItTKg
-         oCsQ==
-X-Gm-Message-State: AOAM533lQzbLiEjDzbdTSIc44WFegGGjovAEGWTFk8r/RvAysmBaXsZ9
-        yT1qvqBW4pXK5v3q9fJFhMtEy45HBoAASQ==
-X-Google-Smtp-Source: ABdhPJwg71sbNV3MspOQChwNHYuozlgJy0oUnT+gVaS4678D3MFWkywwW7VxISB0jw6DRqvmyDcIZA==
-X-Received: by 2002:a63:4842:: with SMTP id x2mr2930874pgk.288.1624437240210;
-        Wed, 23 Jun 2021 01:34:00 -0700 (PDT)
-Received: from [10.1.1.25] (222-152-189-137-fibre.sparkbb.co.nz. [222.152.189.137])
-        by smtp.gmail.com with ESMTPSA id m16sm1667818pfk.192.2021.06.23.01.33.56
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Wed, 23 Jun 2021 01:33:59 -0700 (PDT)
-Subject: Re: [PATCH v5 2/2] m68k: add kernel seccomp support
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-References: <1623908361-29837-1-git-send-email-schmitzmic@gmail.com>
- <1623908361-29837-2-git-send-email-schmitzmic@gmail.com>
- <CAMuHMdV+CCcUWYTOs3J+wKsgXD=G0u3_5aP1RcPz1p2tviKreA@mail.gmail.com>
-Cc:     Linux/m68k <linux-m68k@vger.kernel.org>,
-        John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
-        Andreas Schwab <schwab@linux-m68k.org>
-From:   Michael Schmitz <schmitzmic@gmail.com>
-Message-ID: <4d470df2-b84f-7b32-ecfe-f4628092caed@gmail.com>
-Date:   Wed, 23 Jun 2021 20:33:53 +1200
-User-Agent: Mozilla/5.0 (X11; Linux ppc; rv:45.0) Gecko/20100101
- Icedove/45.4.0
+        id S231185AbhFWOhL (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Wed, 23 Jun 2021 10:37:11 -0400
+Received: from out02.mta.xmission.com ([166.70.13.232]:50778 "EHLO
+        out02.mta.xmission.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229523AbhFWOhK (ORCPT
+        <rfc822;linux-m68k@lists.linux-m68k.org>);
+        Wed, 23 Jun 2021 10:37:10 -0400
+Received: from in02.mta.xmission.com ([166.70.13.52])
+        by out02.mta.xmission.com with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.93)
+        (envelope-from <ebiederm@xmission.com>)
+        id 1lw3xr-00DZwe-3m; Wed, 23 Jun 2021 08:34:51 -0600
+Received: from ip68-227-160-95.om.om.cox.net ([68.227.160.95] helo=email.xmission.com)
+        by in02.mta.xmission.com with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.93)
+        (envelope-from <ebiederm@xmission.com>)
+        id 1lw3xp-001cBY-Vq; Wed, 23 Jun 2021 08:34:50 -0600
+From:   ebiederm@xmission.com (Eric W. Biederman)
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Al Viro <viro@zeniv.linux.org.uk>,
+        Michael Schmitz <schmitzmic@gmail.com>,
+        linux-arch <linux-arch@vger.kernel.org>,
+        Jens Axboe <axboe@kernel.dk>, Oleg Nesterov <oleg@redhat.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Richard Henderson <rth@twiddle.net>,
+        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
+        Matt Turner <mattst88@gmail.com>,
+        alpha <linux-alpha@vger.kernel.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        linux-m68k <linux-m68k@lists.linux-m68k.org>,
+        Arnd Bergmann <arnd@kernel.org>,
+        Ley Foon Tan <ley.foon.tan@intel.com>,
+        Tejun Heo <tj@kernel.org>, Kees Cook <keescook@chromium.org>
+References: <CAHk-=wgdO5VwSUFjfF9g=DAQNYmVxzTq73NtdisYErzdZKqDGg@mail.gmail.com>
+        <87sg1lwhvm.fsf@disp2133>
+        <CAHk-=wgsnMTr0V-0F4FOk30Q1h7CeT8wLvR1MSnjack7EpyWtQ@mail.gmail.com>
+        <6e47eff8-d0a4-8390-1222-e975bfbf3a65@gmail.com>
+        <924ec53c-2fd9-2e1c-bbb1-3fda49809be4@gmail.com>
+        <87eed4v2dc.fsf@disp2133>
+        <5929e116-fa61-b211-342a-c706dcb834ca@gmail.com>
+        <87fsxjorgs.fsf@disp2133>
+        <CAHk-=wj5cJjpjAmDptmP9u4__6p3Y93SCQHG8Ef4+h=cnLiCsA@mail.gmail.com>
+        <YNCaMDQVYB04bk3j@zeniv-ca.linux.org.uk>
+        <YNDhdb7XNQE6zQzL@zeniv-ca.linux.org.uk>
+        <CAHk-=whAsWXcJkpMM8ji77DkYkeJAT4Cj98WBX-S6=GnMQwhzg@mail.gmail.com>
+        <87a6njf0ia.fsf@disp2133>
+        <CAHk-=wh4_iMRmWcao6a8kCvR0Hhdrz+M9L+q4Bfcwx9E9D0huw@mail.gmail.com>
+        <87tulpbp19.fsf@disp2133>
+        <CAHk-=wi_kQAff1yx2ufGRo2zApkvqU8VGn7kgPT-Kv71FTs=AA@mail.gmail.com>
+Date:   Wed, 23 Jun 2021 09:33:50 -0500
+In-Reply-To: <CAHk-=wi_kQAff1yx2ufGRo2zApkvqU8VGn7kgPT-Kv71FTs=AA@mail.gmail.com>
+        (Linus Torvalds's message of "Tue, 22 Jun 2021 17:41:51 -0700")
+Message-ID: <87zgvgabw1.fsf@disp2133>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
 MIME-Version: 1.0
-In-Reply-To: <CAMuHMdV+CCcUWYTOs3J+wKsgXD=G0u3_5aP1RcPz1p2tviKreA@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
+X-XM-SPF: eid=1lw3xp-001cBY-Vq;;;mid=<87zgvgabw1.fsf@disp2133>;;;hst=in02.mta.xmission.com;;;ip=68.227.160.95;;;frm=ebiederm@xmission.com;;;spf=neutral
+X-XM-AID: U2FsdGVkX19bOZKovoM2dTCNa4FoP/ARdkEwpSg1W4M=
+X-SA-Exim-Connect-IP: 68.227.160.95
+X-SA-Exim-Mail-From: ebiederm@xmission.com
+Subject: Re: Kernel stack read with PTRACE_EVENT_EXIT and io_uring threads
+X-SA-Exim-Version: 4.2.1 (built Sat, 08 Feb 2020 21:53:50 +0000)
+X-SA-Exim-Scanned: Yes (on in02.mta.xmission.com)
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-Hi Geert,
+Linus Torvalds <torvalds@linux-foundation.org> writes:
 
-thanks for reviewing this!
-
-Am 23.06.2021 um 19:26 schrieb Geert Uytterhoeven:
-> Hi Michael,
->
-> On Thu, Jun 17, 2021 at 7:39 AM Michael Schmitz <schmitzmic@gmail.com> wrote:
->> Add secure_computing() call to syscall_trace_enter to actually
->> filter system calls.
+> On Tue, Jun 22, 2021 at 1:53 PM Eric W. Biederman <ebiederm@xmission.com> wrote:
 >>
->> Add necessary arch Kconfig options, define TIF_SECCOMP trace
->> flag and provide basic seccomp filter support in asm/syscall.h
+>> Playing with it some more I think I have everything working working
+>> except for PTRACE_EVENT_SECCOMP (which can stay ptrace_event) and
+>> group_exit(2).
 >>
->> syscall_get_nr currently uses the syscall nr stored in orig_d0
->> because we change d0 to a default return code before starting a
->> syscall trace. This may be inconsistent with syscall_rollback
->> copying orig_d0 to d0 (which we never check upon return from
->> trace). We use d0 for the return code from syscall_trace_enter
->> in entry.S currently, and could perhaps expand that to store
->> a new syscall number returned by the seccomp filter before
->> executing the syscall. This clearly needs some discussion.
->>
->> Compiles (for Atari) and boots on ARAnyM, otherwise untested.
->>
->> Signed-off-by: Michael Schmitz <schmitzmic@gmail.com>
+>> Basically in exit sending yourself a signal and then calling do_exit
+>> from the signal handler is not unreasonable, as exit is an ordinary
+>> system call.
 >
-> Thanks for your patch!
+> Ok, this is a bit odd, but I do like the concept of just making
+> ptrace_event just post a signal, and have all ptrace things always be
+> handled at signal time (or the special system call entry/exit, which
+> is fine too).
 >
->> --- a/arch/m68k/include/asm/syscall.h
->> +++ b/arch/m68k/include/asm/syscall.h
->> @@ -4,6 +4,39 @@
->>
->>  #include <uapi/linux/audit.h>
->>
->> +#include <asm/unistd.h>
->> +
->> +extern const unsigned long sys_call_table[];
->> +
->> +static inline int syscall_get_nr(struct task_struct *task,
->> +                                struct pt_regs *regs)
->> +{
->> +       return regs->orig_d0;
->> +}
->> +
->> +static inline void syscall_rollback(struct task_struct *task,
->> +                                   struct pt_regs *regs)
->> +{
->> +       regs->d0 = regs->orig_d0;
->> +}
->> +
->> +static inline void syscall_set_return_value(struct task_struct *task,
->> +                                           struct pt_regs *regs,
->> +                                           int error, long val)
->> +{
->> +       regs->d0 = (long) error ? error : val;
->> +}
->> +
->> +static inline void syscall_get_arguments(struct task_struct *task,
->> +                                        struct pt_regs *regs,
->> +                                        unsigned long *args)
->> +{
->> +       args[0] = regs->orig_d0;
->> +       args++;
->> +
->> +       memcpy(args, &regs->d0 + 1, 5 * sizeof(args[0]));
+>> For purposes of discussion this is my current draft implementation.
 >
-> This doesn't look right to me: "&regs->d0 + 1" is "&regs->orig_d0"
-> again, and there are no registers after that.
-> Perhaps you meant "&regs->d1"?
+> I didn't check what is so different about exit_group() that you left
+> that as an exercise for the reader, but if that ends up then removing
+> the whole "wait synchromously for ptrace" cases for good I don't
+> _hate_ this. It's a bit odd, but it would be really nice to limit
+> where ptrace picks up data.
 
-Well spotted - that's a copy&paste error I didn't catch.
+I am still figuring out exit_group.  I am hoping for sometime today.
+My intuition tells me I can do it, and I have a sense of what threads I
+need to pull to get there.  I just don't know what the code is going to
+look like yet.
 
-I'll look at the patch you referenced in the other mail later - Adrian 
-was going to test my patch with his libseccomp version. If I can build a 
-simple test case myself, all the better.
+Basically solving exit_group means moving ptrace_event out of do_exit.
 
-Cheers,
+> We do end up doing that stuff in "get_signal()", and that means that
+> we have the interaction with io_uring calling it directly, but it's at
+> least not a new thing.
 
-	Michael
+The ugliest bit is having to repeat the wait_for_vfork_done both in fork
+and in get_signal.
 
->
-> Gr{oetje,eeting}s,
->
->                         Geert
->
+Eric
