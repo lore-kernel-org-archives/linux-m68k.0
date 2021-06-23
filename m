@@ -2,142 +2,234 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-4.2 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+X-Spam-Status: No, score=-15.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,NICE_REPLY_A,SPF_HELO_NONE,
-	SPF_PASS,USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 10C7CC2B9F4
-	for <linux-m68k@archiver.kernel.org>; Tue, 22 Jun 2021 21:57:36 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 6E337C2B9F4
+	for <linux-m68k@archiver.kernel.org>; Wed, 23 Jun 2021 00:21:47 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id DCD9560FDC
-	for <linux-m68k@archiver.kernel.org>; Tue, 22 Jun 2021 21:57:35 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 4CC816135A
+	for <linux-m68k@archiver.kernel.org>; Wed, 23 Jun 2021 00:21:47 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230109AbhFVV7v (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Tue, 22 Jun 2021 17:59:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35366 "EHLO
+        id S229747AbhFWAYC (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Tue, 22 Jun 2021 20:24:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39120 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229612AbhFVV7v (ORCPT
+        with ESMTP id S229775AbhFWAYA (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Tue, 22 Jun 2021 17:59:51 -0400
-Received: from mail-pj1-x1029.google.com (mail-pj1-x1029.google.com [IPv6:2607:f8b0:4864:20::1029])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 93F58C061574
-        for <linux-m68k@lists.linux-m68k.org>; Tue, 22 Jun 2021 14:57:33 -0700 (PDT)
-Received: by mail-pj1-x1029.google.com with SMTP id t19-20020a17090ae513b029016f66a73701so2545138pjy.3
-        for <linux-m68k@lists.linux-m68k.org>; Tue, 22 Jun 2021 14:57:33 -0700 (PDT)
+        Tue, 22 Jun 2021 20:24:00 -0400
+Received: from mail-pj1-x1036.google.com (mail-pj1-x1036.google.com [IPv6:2607:f8b0:4864:20::1036])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ADFE7C061760
+        for <linux-m68k@lists.linux-m68k.org>; Tue, 22 Jun 2021 17:21:43 -0700 (PDT)
+Received: by mail-pj1-x1036.google.com with SMTP id x21-20020a17090aa395b029016e25313bfcso235571pjp.2
+        for <linux-m68k@lists.linux-m68k.org>; Tue, 22 Jun 2021 17:21:43 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-transfer-encoding:content-language;
-        bh=q3sSzRhIYRc08dnfAfmCyTORkqMDLuhDq0YQcDshAkw=;
-        b=b7F/isKgmlnCGn7ktKvQiwQaGkX//vxpblPW5Aj3zNKiPyoIi7L6xPA0H+VD3mmaV2
-         KK3ZmsT5Kx0XYBSi6rAJB6yf4y+ypdpaF4k8xNGxuXiRoWYyzkzKrFOsZB2bTfuWyz1V
-         pIZ6u6YjIWAFEzdxEpXck55WHYWnXfeO9tM4jXryNbRGP8x9lTwwMV7z1J5rYgQIb11J
-         bwCo2XoKzw1Byt5bpTGrEVmHlrjyhQd9lRLB1mkL3qgJ/mZ4MLBh6HcydQ5giJyPyUg0
-         o3lLcUur7tND7+LxDLyXT5AbbRNWGXXKNCuI54z4x98prRHyaHRJSFwZZyGaonB77FJq
-         fE8A==
+        h=from:to:cc:subject:date:message-id:in-reply-to:references;
+        bh=lhUb3jZlTu6gAKs2wWK6rpO2+cL4RD1k7Iga+zzzTUo=;
+        b=tsnKcRSEG9TrqOQfJIcacGBvEPL5iHqxVMwXukRX/Myf76ofMMdcainEZnLoP62L4m
+         LzfdeES96jv23JtzvOEv7JffBslWj7AGKpKAG86rptpLuq1xEbXoTibvRvMKnUO/KRlr
+         IOUp6G9BXphvEU+j5it41Gj2ob4+uz0puaituXgBBYiLpJ56Jdh1NArpv9bEncWnXg7Y
+         I8vz3JIk9d4K0o7MFJjLgMr9q0jPn4LOblrGGswEqrvmXCiRjv4/cB3+o1cGTb38L4bj
+         /UsgelS0bRz6ViQxYgYhOAgM0RN3fTPZn4Xr3v/FYjThqCxrZ+3prmqr1ga5Wox30Boc
+         z8ZQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=q3sSzRhIYRc08dnfAfmCyTORkqMDLuhDq0YQcDshAkw=;
-        b=Ht6bPt+/fFBOGz7M+IO9NOfgn7MttJ/VClukKFPIYdFZOIgE2PkP4vjkuxEpdF4gYa
-         UT4zr7K9gmirusIKk+Usw46WQAg4Bj2d+cqWvkC+j3jmYBU9dmuqGCzkRtP1phrxXlDd
-         C0/N02Nc1SFw5S7byQV8C3KWmBFS5CmvkRDbkiD6w8KFb7U0GZ8iP/G/ztacFmL00zLW
-         pGGKsHDIDZ+B/4P0ATfyia+3+1j3WCP5nMBLHPddCJAOgIoDbny9XMjSWIWMUwe321B5
-         iizdoKZk7i7rSDI7xgTSsMCteyV2BFl09smXB6HIv+4hdEgu0AILbe1II5b9gUreAQld
-         j71A==
-X-Gm-Message-State: AOAM533rgfq27hcLh2QSRK0fyWPaR3ZuQtiVUGCuyeiGh3/YEKPUQ2d8
-        cmdAJSx/Moitm1f1TYKgy8tqURoup8hbxA==
-X-Google-Smtp-Source: ABdhPJwlKwvoG5Z9DeeMyE3mjGfDMy5eHoV3xhucGbnHdUQlgp85EV7UAlHh9fZyxo3tpwvOVevOAg==
-X-Received: by 2002:a17:90b:3581:: with SMTP id mm1mr5936783pjb.98.1624399053199;
-        Tue, 22 Jun 2021 14:57:33 -0700 (PDT)
-Received: from ?IPv6:2001:df0:0:200c:9491:40e4:164d:6ab3? ([2001:df0:0:200c:9491:40e4:164d:6ab3])
-        by smtp.gmail.com with ESMTPSA id z9sm270622pfa.2.2021.06.22.14.57.26
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 22 Jun 2021 14:57:32 -0700 (PDT)
-Subject: Re: Kernel stack read with PTRACE_EVENT_EXIT and io_uring threads
-To:     Al Viro <viro@zeniv.linux.org.uk>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        Jens Axboe <axboe@kernel.dk>, Oleg Nesterov <oleg@redhat.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Richard Henderson <rth@twiddle.net>,
-        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
-        Matt Turner <mattst88@gmail.com>,
-        alpha <linux-alpha@vger.kernel.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        linux-m68k <linux-m68k@lists.linux-m68k.org>,
-        Arnd Bergmann <arnd@kernel.org>, Tejun Heo <tj@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
-        Andreas Schwab <schwab@linux-m68k.org>
-References: <87eed4v2dc.fsf@disp2133>
- <5929e116-fa61-b211-342a-c706dcb834ca@gmail.com> <87fsxjorgs.fsf@disp2133>
- <CAHk-=wj5cJjpjAmDptmP9u4__6p3Y93SCQHG8Ef4+h=cnLiCsA@mail.gmail.com>
- <YNCaMDQVYB04bk3j@zeniv-ca.linux.org.uk>
- <YNDhdb7XNQE6zQzL@zeniv-ca.linux.org.uk>
- <CAHk-=whAsWXcJkpMM8ji77DkYkeJAT4Cj98WBX-S6=GnMQwhzg@mail.gmail.com>
- <YNDsYk6kbisbNy3I@zeniv-ca.linux.org.uk>
- <CAHk-=wh82uJ5Poqby3brn-D7xWbCMnGv-JnwfO0tuRfCvsVgXA@mail.gmail.com>
- <de5f0132-eed4-f1d0-ddd2-f65a62de6b81@gmail.com>
- <YNJFr5xUOm91Vy1r@zeniv-ca.linux.org.uk>
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references;
+        bh=lhUb3jZlTu6gAKs2wWK6rpO2+cL4RD1k7Iga+zzzTUo=;
+        b=q8n0RGnxfi/zWUjjHUdtCyOT8XdxDEZKQQlzeIlz0OuijK4QVOksjjsO6/pFc9mFLP
+         I6V16i13yg37HC2GkjeWERvQtTpKCIPDFnsfwc/XEKi+sQ1sn8gEtlq7IFfeKgRexjk4
+         0EvfEJKeOQfNHR0KuTTqbCROfgZvtndR14piFs+rV2m+qsNu8hHORONXjPqBGxxkqT0Q
+         GNrj2xSeK5VmNYiJHpwjb2nSFvqWjcr4iMTLQtD01e7LY9fvBHb0tBI10JrV82Pq+ylS
+         Iuxqa591645rHziMlplV2ne01cxGkZeX+oOMItYivMuO8+KXEwPgofS6OLys6zZiuCiu
+         7B4g==
+X-Gm-Message-State: AOAM530cUe0b4zc7d+qdFs2E4pNoL+7XLzDUAKEROjKpi18HdlR2BOsS
+        kyS2q9NyJh44bH6AipwEC2E=
+X-Google-Smtp-Source: ABdhPJzW9vTGoemKFhpiq3MVZPxDtWu6V1USOoiv4sVrcJ7Xx/KuFD1NcLxkul+TfAxpJgWku7W1KQ==
+X-Received: by 2002:a17:90a:6ba3:: with SMTP id w32mr6802383pjj.33.1624407703255;
+        Tue, 22 Jun 2021 17:21:43 -0700 (PDT)
+Received: from xplor.waratah.dyndns.org (222-152-189-137-fibre.sparkbb.co.nz. [222.152.189.137])
+        by smtp.gmail.com with ESMTPSA id m16sm376265pfk.192.2021.06.22.17.21.42
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Tue, 22 Jun 2021 17:21:42 -0700 (PDT)
+Received: by xplor.waratah.dyndns.org (Postfix, from userid 1000)
+        id 5FBD73603D9; Wed, 23 Jun 2021 12:21:39 +1200 (NZST)
 From:   Michael Schmitz <schmitzmic@gmail.com>
-Message-ID: <8badff67-64c9-ca03-7af1-de73d0d75285@gmail.com>
-Date:   Wed, 23 Jun 2021 09:57:23 +1200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
-MIME-Version: 1.0
-In-Reply-To: <YNJFr5xUOm91Vy1r@zeniv-ca.linux.org.uk>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
+To:     geert@linux-m68k.org, linux-arch@vger.kernel.org,
+        linux-m68k@lists.linux-m68k.org
+Cc:     ebiederm@xmission.com, torvalds@linux-foundation.org,
+        schwab@linux-m68k.org, Michael Schmitz <schmitzmic@gmail.com>
+Subject: [PATCH v4 1/3] m68k: save extra registers on more syscall entry points
+Date:   Wed, 23 Jun 2021 12:21:34 +1200
+Message-Id: <1624407696-20180-2-git-send-email-schmitzmic@gmail.com>
+X-Mailer: git-send-email 2.7.4
+In-Reply-To: <1624407696-20180-1-git-send-email-schmitzmic@gmail.com>
+References: <1624407696-20180-1-git-send-email-schmitzmic@gmail.com>
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-Hi Al,
+Multiple syscalls are liable to PTRACE_EVENT_* tracing and thus
+require full user context saved on the kernel stack. We only
+save those registers not preserved by C code currently.
 
-On 23/06/21 8:18 am, Al Viro wrote:
-> On Wed, Jun 23, 2021 at 08:04:11AM +1200, Michael Schmitz wrote:
->
->> All syscalls that _do_ save the switch stack are currently called through
->> wrappers which pull the syscall arguments out of the saved pt_regs on the
->> stack (pushing the switch stack after the SAVE_ALL saved stuff buries the
->> syscall arguments on the stack, see comment about m68k_clone(). We'd have to
->> push the switch stack _first_ when entering system_call to leave the syscall
->> arguments in place, but that will require further changes to the syscall
->> exit path (currently shared with the interrupt exit path). Not to mention
->> the register offset calculations in arch/m68k/kernel/ptrace.c, and perhaps a
->> few other dependencies that don't come to mind immediately.
->>
->> We have both pt_regs and switch_stack in uapi/asm/ptrace.h, but the ordering
->> of the two is only mentioned in a comment. Can we reorder them on the stack,
->> as long as we don't change the struct definitions proper?
->>
->> This will take a little more time to work out and test - certainly not
->> before the weekend. I'll send a corrected version of my debug patch before
->> that.
-> This is insane, *especially* on m68k where you have the mess with different
-> frame layouts and associated ->stkadj crap (see mangle_kernel_stack() for
-> the (very) full barfbag).
+do_exit() calls ptrace_stop() which may require access to all
+saved registers. Add code to save additional registers in the
+switch_stack struct for exit and exit_group syscalls (similar
+to what is already done for fork, vfork and clone3). According
+to Eric's analysis, execve and execveat can be traced as well,
+so have been given the same treatment.
 
-Indeed - that's one of the uses of pt_regs and switch_stack that I 
-hadn't yet seen.
+Tested on both ARAnyM and Falcon hardware.
 
-So it's either leave the stack layout in system calls unchanged (aside 
-from the ones that need the extra registers) and protect against 
-accidental misuse of registers that weren't saved, with the overhead of 
-playing with thread_info->status bits, or tackle the mess of redoing the 
-stack layout to save all registers, always (did I already mention that 
-I'd need a _lot_ of help from someone more conversant with m68k assembly 
-coding for that option?).
+CC: Eric W. Biederman <ebiederm@xmission.com>
+CC: Linus Torvalds <torvalds@linux-foundation.org>
+CC: Andreas Schwab <schwab@linux-m68k.org>
+Signed-off-by: Michael Schmitz <schmitzmic@gmail.com>
 
-Which one of these two barf bags is the fuller one?
+--
+Changes from v2:
+- drop handling of io_uring_setup syscall
 
-Cheers,
+Changes from v1:
 
-     Michael
+- added exec, execve and io_uring_setup syscalls
+- save extra registers around kworker thread calls
+
+drop io_uring_setup handling
+---
+ arch/m68k/kernel/entry.S              | 28 ++++++++++++++++++++++++++++
+ arch/m68k/kernel/process.c            | 33 +++++++++++++++++++++++++++++++++
+ arch/m68k/kernel/syscalls/syscall.tbl |  8 ++++----
+ 3 files changed, 65 insertions(+), 4 deletions(-)
+
+diff --git a/arch/m68k/kernel/entry.S b/arch/m68k/kernel/entry.S
+index 9dd76fb..275452a 100644
+--- a/arch/m68k/kernel/entry.S
++++ b/arch/m68k/kernel/entry.S
+@@ -76,6 +76,34 @@ ENTRY(__sys_clone3)
+ 	lea	%sp@(28),%sp
+ 	rts
+ 
++ENTRY(__sys_exit)
++	SAVE_SWITCH_STACK
++	pea	%sp@(SWITCH_STACK_SIZE)
++	jbsr	m68k_exit
++	lea	%sp@(28),%sp
++	rts
++
++ENTRY(__sys_exit_group)
++	SAVE_SWITCH_STACK
++	pea	%sp@(SWITCH_STACK_SIZE)
++	jbsr	m68k_exit_group
++	lea	%sp@(28),%sp
++	rts
++
++ENTRY(__sys_execve)
++	SAVE_SWITCH_STACK
++	pea	%sp@(SWITCH_STACK_SIZE)
++	jbsr	m68k_execve
++	lea	%sp@(28),%sp
++	rts
++
++ENTRY(__sys_execveat)
++	SAVE_SWITCH_STACK
++	pea	%sp@(SWITCH_STACK_SIZE)
++	jbsr	m68k_execveat
++	lea	%sp@(28),%sp
++	rts
++
+ ENTRY(sys_sigreturn)
+ 	SAVE_SWITCH_STACK
+ 	movel	%sp,%sp@-		  | switch_stack pointer
+diff --git a/arch/m68k/kernel/process.c b/arch/m68k/kernel/process.c
+index da83cc8..6f2f2ab 100644
+--- a/arch/m68k/kernel/process.c
++++ b/arch/m68k/kernel/process.c
+@@ -138,6 +138,39 @@ asmlinkage int m68k_clone3(struct pt_regs *regs)
+ 	return sys_clone3((struct clone_args __user *)regs->d1, regs->d2);
+ }
+ 
++/*
++ * Because extra registers are saved on the stack after the sys_exit()
++ * arguments, this C wrapper extracts them from pt_regs * and then calls the
++ * generic sys_exit() implementation.
++ */
++asmlinkage int m68k_exit(struct pt_regs *regs)
++{
++	return sys_exit(regs->d1);
++}
++
++/* Same for sys_exit_group ... */
++asmlinkage int m68k_exit_group(struct pt_regs *regs)
++{
++	return sys_exit_group(regs->d1);
++}
++
++/* Same for sys_exit_group ... */
++asmlinkage int m68k_execve(struct pt_regs *regs)
++{
++	return sys_execve((const char __user *)regs->d1,
++			(const char __user *const __user *)regs->d2,
++			(const char __user *const __user *)regs->d3);
++}
++
++/* Same for sys_exit_group ... */
++asmlinkage int m68k_execveat(struct pt_regs *regs)
++{
++	return sys_execveat(regs->d1, (const char __user *)regs->d2,
++			(const char __user *const __user *)regs->d3,
++			(const char __user *const __user *)regs->d4,
++			regs->d5);
++}
++
+ int copy_thread(unsigned long clone_flags, unsigned long usp, unsigned long arg,
+ 		struct task_struct *p, unsigned long tls)
+ {
+diff --git a/arch/m68k/kernel/syscalls/syscall.tbl b/arch/m68k/kernel/syscalls/syscall.tbl
+index 0dd019d..13dd02e 100644
+--- a/arch/m68k/kernel/syscalls/syscall.tbl
++++ b/arch/m68k/kernel/syscalls/syscall.tbl
+@@ -8,7 +8,7 @@
+ # The <abi> is always "common" for this file
+ #
+ 0	common	restart_syscall			sys_restart_syscall
+-1	common	exit				sys_exit
++1	common	exit				__sys_exit
+ 2	common	fork				__sys_fork
+ 3	common	read				sys_read
+ 4	common	write				sys_write
+@@ -18,7 +18,7 @@
+ 8	common	creat				sys_creat
+ 9	common	link				sys_link
+ 10	common	unlink				sys_unlink
+-11	common	execve				sys_execve
++11	common	execve				__sys_execve
+ 12	common	chdir				sys_chdir
+ 13	common	time				sys_time32
+ 14	common	mknod				sys_mknod
+@@ -254,7 +254,7 @@
+ 244	common	io_submit			sys_io_submit
+ 245	common	io_cancel			sys_io_cancel
+ 246	common	fadvise64			sys_fadvise64
+-247	common	exit_group			sys_exit_group
++247	common	exit_group			__sys_exit_group
+ 248	common	lookup_dcookie			sys_lookup_dcookie
+ 249	common	epoll_create			sys_epoll_create
+ 250	common	epoll_ctl			sys_epoll_ctl
+@@ -362,7 +362,7 @@
+ 352	common	getrandom			sys_getrandom
+ 353	common	memfd_create			sys_memfd_create
+ 354	common	bpf				sys_bpf
+-355	common	execveat			sys_execveat
++355	common	execveat			__sys_execveat
+ 356	common	socket				sys_socket
+ 357	common	socketpair			sys_socketpair
+ 358	common	bind				sys_bind
+-- 
+2.7.4
 
