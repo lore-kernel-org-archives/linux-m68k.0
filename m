@@ -7,42 +7,42 @@ X-Spam-Status: No, score=-13.8 required=3.0 tests=BAYES_00,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 54C4FC4743C
-	for <linux-m68k@archiver.kernel.org>; Wed, 23 Jun 2021 07:27:06 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5821BC49EB7
+	for <linux-m68k@archiver.kernel.org>; Wed, 23 Jun 2021 07:36:21 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 395D661076
-	for <linux-m68k@archiver.kernel.org>; Wed, 23 Jun 2021 07:27:06 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 3B9D56128A
+	for <linux-m68k@archiver.kernel.org>; Wed, 23 Jun 2021 07:36:21 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229949AbhFWH3V (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Wed, 23 Jun 2021 03:29:21 -0400
-Received: from mail-vk1-f176.google.com ([209.85.221.176]:35752 "EHLO
-        mail-vk1-f176.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229660AbhFWH3T (ORCPT
-        <rfc822;linux-m68k@vger.kernel.org>); Wed, 23 Jun 2021 03:29:19 -0400
-Received: by mail-vk1-f176.google.com with SMTP id d7so306612vkf.2
-        for <linux-m68k@vger.kernel.org>; Wed, 23 Jun 2021 00:27:02 -0700 (PDT)
+        id S230445AbhFWHig (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Wed, 23 Jun 2021 03:38:36 -0400
+Received: from mail-vs1-f51.google.com ([209.85.217.51]:45009 "EHLO
+        mail-vs1-f51.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230291AbhFWHi2 (ORCPT
+        <rfc822;linux-m68k@vger.kernel.org>); Wed, 23 Jun 2021 03:38:28 -0400
+Received: by mail-vs1-f51.google.com with SMTP id x13so916521vsf.11
+        for <linux-m68k@vger.kernel.org>; Wed, 23 Jun 2021 00:36:10 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=mbHJeZ/2jQg4KnIx3/UM94SO1G0UPV0Bw9MTNTsLwY0=;
-        b=HcM6S88Z92wUB6107caitgD3yjzF3ST5no7L/tCEUZ93QkPghPSApNMyXsfuKy3RjM
-         eYvBu48tcqVFhI398TM0mJuyZvkNpmnxZ+8ynd6fI+5aXHL9dflIY6Jd17fR2cNh6vzl
-         +xgsy9/6ayb+dhy9Lr6/MeQitNVO0SG+aTilVxfSr4XG58P0pogubFJ+xtnW72YwTf3o
-         kTwXfBUOq1DOq8+TbGlgqOIn4TeibQ0DtA5fA+8XG3mVLN+JS8L62iT9lHPaFZqCiFcY
-         TK2/JeZCRvRsxuXqc0zaUVcxUo6wTEdbPIulx/J011nM64+W5UGUvNK4Kl+Mc+NalEGv
-         UJwg==
-X-Gm-Message-State: AOAM532V1CkmLy9Qi4lZUPVk9UuPnFWl4uJia5tT9vBbHSsoCM5+bUqX
-        MqBlVZo3vU84xPVrQNzspIFyLEgFrSdKdgeQ6Qs=
-X-Google-Smtp-Source: ABdhPJwGfo68zhMWhGupRXStniyG0TvuhyPrgN4e3oI6ibLaYa/nLJ/3ZXtBnvFAzgo19eftp7LgpSlqcNReq2h/990=
-X-Received: by 2002:a1f:d8c3:: with SMTP id p186mr22306555vkg.1.1624433222367;
- Wed, 23 Jun 2021 00:27:02 -0700 (PDT)
+        bh=RGL9cZ/xRW33i2pkrE+M4n8gHG+C6+BJc/vskHA4hac=;
+        b=XEWn1tYE5ac8/1t5ItC6Tic5uIsOSD+oV8r909G1CktHm/PNq+jQMj/ozK9H+4n8s4
+         3sWrYZGgIgJbOBuA2q9ip6IIkkuHuqFeh/fK63s2RHsjNiRpi0ksv0gkfgABzQvsHEGG
+         0UZ10snTrVZkGUdE1cFcuwxPlHIOPFjO923jO0XJ5aXGGxnDF83tsfAPZYUTk6z562Mh
+         ojA235oGuj8dlK5QlTihQ2lZA0OwdfcPQL9vOGRLt0NDt8Xkcn9ZT5ewtI4P4GKeYaXl
+         hcSRV1ZmcwpnXp8KAoD4uP1gRRhtv7lYD2vCm4jjQIgQ6zTNUtsSekNqVEfARFk6MJlb
+         qQ/g==
+X-Gm-Message-State: AOAM533Q6qhj4EPAVr3mRkKaPAg3jmZbxruYLfcisz11x0awg8viGJGr
+        ZWentkTHBHfE9aVjBgqeKVuA/yKAs9xtwcY4vNY=
+X-Google-Smtp-Source: ABdhPJxkkCdVxxCVpcKiOcJr1dRuBs+gAufgtX2HEZdX2lmTj7qk2zbLkYRSHPu8cXsi5jpdPhzHsjn4I2C4LqQkAJs=
+X-Received: by 2002:a67:ba0c:: with SMTP id l12mr123312vsn.40.1624433770128;
+ Wed, 23 Jun 2021 00:36:10 -0700 (PDT)
 MIME-Version: 1.0
 References: <1623908361-29837-1-git-send-email-schmitzmic@gmail.com> <1623908361-29837-2-git-send-email-schmitzmic@gmail.com>
 In-Reply-To: <1623908361-29837-2-git-send-email-schmitzmic@gmail.com>
 From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Wed, 23 Jun 2021 09:26:51 +0200
-Message-ID: <CAMuHMdV+CCcUWYTOs3J+wKsgXD=G0u3_5aP1RcPz1p2tviKreA@mail.gmail.com>
+Date:   Wed, 23 Jun 2021 09:35:59 +0200
+Message-ID: <CAMuHMdX-JBTAWDvFQg7nVGwwxu8o6sX1GYVF0ha6JpZxOxuG8g@mail.gmail.com>
 Subject: Re: [PATCH v5 2/2] m68k: add kernel seccomp support
 To:     Michael Schmitz <schmitzmic@gmail.com>
 Cc:     "Linux/m68k" <linux-m68k@vger.kernel.org>,
@@ -74,50 +74,67 @@ On Thu, Jun 17, 2021 at 7:39 AM Michael Schmitz <schmitzmic@gmail.com> wrote:
 > Compiles (for Atari) and boots on ARAnyM, otherwise untested.
 >
 > Signed-off-by: Michael Schmitz <schmitzmic@gmail.com>
-
-Thanks for your patch!
-
-> --- a/arch/m68k/include/asm/syscall.h
-> +++ b/arch/m68k/include/asm/syscall.h
-> @@ -4,6 +4,39 @@
+> ---
+>  arch/m68k/Kconfig                   |  2 ++
+>  arch/m68k/include/asm/seccomp.h     | 11 +++++++++++
+>  arch/m68k/include/asm/syscall.h     | 33 +++++++++++++++++++++++++++++++++
+>  arch/m68k/include/asm/thread_info.h |  2 ++
+>  arch/m68k/kernel/ptrace.c           |  5 +++++
+>  5 files changed, 53 insertions(+)
+>  create mode 100644 arch/m68k/include/asm/seccomp.h
 >
->  #include <uapi/linux/audit.h>
->
-> +#include <asm/unistd.h>
-> +
-> +extern const unsigned long sys_call_table[];
-> +
-> +static inline int syscall_get_nr(struct task_struct *task,
-> +                                struct pt_regs *regs)
-> +{
-> +       return regs->orig_d0;
-> +}
-> +
-> +static inline void syscall_rollback(struct task_struct *task,
-> +                                   struct pt_regs *regs)
-> +{
-> +       regs->d0 = regs->orig_d0;
-> +}
-> +
-> +static inline void syscall_set_return_value(struct task_struct *task,
-> +                                           struct pt_regs *regs,
-> +                                           int error, long val)
-> +{
-> +       regs->d0 = (long) error ? error : val;
-> +}
-> +
-> +static inline void syscall_get_arguments(struct task_struct *task,
-> +                                        struct pt_regs *regs,
-> +                                        unsigned long *args)
-> +{
-> +       args[0] = regs->orig_d0;
-> +       args++;
-> +
-> +       memcpy(args, &regs->d0 + 1, 5 * sizeof(args[0]));
+> diff --git a/arch/m68k/Kconfig b/arch/m68k/Kconfig
+> index 372e4e6..deaea88 100644
+> --- a/arch/m68k/Kconfig
+> +++ b/arch/m68k/Kconfig
+> @@ -19,6 +19,8 @@ config M68K
+>         select GENERIC_STRNCPY_FROM_USER if MMU
+>         select GENERIC_STRNLEN_USER if MMU
+>         select HAVE_AOUT if MMU
+> +       select HAVE_ARCH_SECCOMP
+> +       select HAVE_ARCH_SECCOMP_FILTER
 
-This doesn't look right to me: "&regs->d0 + 1" is "&regs->orig_d0"
-again, and there are no registers after that.
-Perhaps you meant "&regs->d1"?
+So the status should be changed from "TODO" to "ok" in
+Documentation/features/seccomp/seccomp-filter/arch-support.txt
+
+BTW, there was also "[PATCH] [WIP] selftests/seccomp: Add m68k support"
+https://lore.kernel.org/linux-m68k/alpine.DEB.2.21.2008261315050.25325@ramsan.of.borg/
+
+I kept on up-porting it, but haven't exercised it recently.
+Recent version looks like (gmail-whitespace-damaged):
+
+--- a/tools/testing/selftests/seccomp/seccomp_bpf.c
++++ b/tools/testing/selftests/seccomp/seccomp_bpf.c
+@@ -135,6 +135,8 @@ struct seccomp_data {
+ #  define __NR_seccomp 337
+ # elif defined(__sh__)
+ #  define __NR_seccomp 372
++# elif defined(__mc68000__)
++#  define __NR_seccomp 380
+ # else
+ #  warning "seccomp syscall number unknown for this architecture"
+ #  define __NR_seccomp 0xffff
+@@ -1815,6 +1817,10 @@ TEST_F(TRACE_poke, getpid_runs_normally)
+ # define ARCH_REGS             struct pt_regs
+ # define SYSCALL_NUM(_regs)    (_regs).regs[3]
+ # define SYSCALL_RET(_regs)    (_regs).regs[0]
++#elif defined(__mc68000__)
++# define ARCH_REGS             struct pt_regs
++# define SYSCALL_NUM(_regs)    (_regs).orig_d0
++# define SYSCALL_RET(_regs)    (_regs).d0
+ #else
+ # error "Do not know how to find your architecture's registers and syscalls"
+ #endif
+@@ -1879,7 +1885,7 @@ const bool ptrace_entry_set_syscall_ret =
+  * Use PTRACE_GETREGS and PTRACE_SETREGS when available. This is useful for
+  * architectures without HAVE_ARCH_TRACEHOOK (e.g. User-mode Linux).
+  */
+-#if defined(__x86_64__) || defined(__i386__) || defined(__mips__)
++#if defined(__x86_64__) || defined(__i386__) || defined(__mips__) ||
+defined(__mc68000)
+ # define ARCH_GETREGS(_regs)   ptrace(PTRACE_GETREGS, tracee, 0, &(_regs))
+ # define ARCH_SETREGS(_regs)   ptrace(PTRACE_SETREGS, tracee, 0, &(_regs))
+ #else
 
 Gr{oetje,eeting}s,
 
