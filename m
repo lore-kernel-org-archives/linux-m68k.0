@@ -8,62 +8,62 @@ X-Spam-Status: No, score=-15.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id DED42C49EA5
-	for <linux-m68k@archiver.kernel.org>; Thu, 24 Jun 2021 00:46:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 543ACC49EA6
+	for <linux-m68k@archiver.kernel.org>; Thu, 24 Jun 2021 00:46:11 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id ADF4E61185
-	for <linux-m68k@archiver.kernel.org>; Thu, 24 Jun 2021 00:46:09 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 3FA4C61358
+	for <linux-m68k@archiver.kernel.org>; Thu, 24 Jun 2021 00:46:11 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229818AbhFXAs1 (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Wed, 23 Jun 2021 20:48:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56806 "EHLO
+        id S229774AbhFXAs3 (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Wed, 23 Jun 2021 20:48:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56808 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229726AbhFXAs1 (ORCPT
+        with ESMTP id S229844AbhFXAs1 (ORCPT
         <rfc822;linux-m68k@vger.kernel.org>); Wed, 23 Jun 2021 20:48:27 -0400
-Received: from mail-pj1-x1034.google.com (mail-pj1-x1034.google.com [IPv6:2607:f8b0:4864:20::1034])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AE1A9C061756
-        for <linux-m68k@vger.kernel.org>; Wed, 23 Jun 2021 17:46:07 -0700 (PDT)
-Received: by mail-pj1-x1034.google.com with SMTP id c7-20020a17090ad907b029016faeeab0ccso4817702pjv.4
-        for <linux-m68k@vger.kernel.org>; Wed, 23 Jun 2021 17:46:07 -0700 (PDT)
+Received: from mail-pj1-x102c.google.com (mail-pj1-x102c.google.com [IPv6:2607:f8b0:4864:20::102c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 91EC0C06175F
+        for <linux-m68k@vger.kernel.org>; Wed, 23 Jun 2021 17:46:08 -0700 (PDT)
+Received: by mail-pj1-x102c.google.com with SMTP id bb10-20020a17090b008ab029016eef083425so4812259pjb.5
+        for <linux-m68k@vger.kernel.org>; Wed, 23 Jun 2021 17:46:08 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=m1m1S8/XurGJVe+58CsfGi2yfhBse5fddhLQFsq6B4Y=;
-        b=ad1x+2NLOTfGRbFXUQV07cjQNRBRfqVv+86egix22kp0Ku7pG7wWQknM1SmUYvV/Sp
-         pAh0TMQqfYj5w57M4XnAmXj49vmUIKL9vANdHBUZLm9mXXb99MsuUFB5zY3VsKQQRh6T
-         BONJnHty0YPSdGtQb1/1DV36oiSM0iccRJQNjRWYkVoWzebeBflGxzSLnEZn9niIjRa9
-         mr+qUmBj3v41AwLT8Lo1h6ggMHfk7mTsjY1xWRPTt63PSVPE6BwX4IBRtK/XNBtLOtWb
-         tdvhZsepO0ngmUyAF5W+l+d85ayqxgf52EKUc5fCv68U+OeFdt/A5j5ETc7FrT5XoIkX
-         s+Sw==
+        bh=AEcE7gUCuSy+6ivM1ZIg2ZOLoO/kyHePM/0KklD0CqQ=;
+        b=XU5qLQQF0Js54N5gyW9KhnOiP+Nh43NrytRw6P+hDMIJfa+LSUzYES+Xu7tLacglpN
+         8tSHEf+lRo5NQEe743yLDo+w5xfPlVtvRU7y6Y9KQJ9fX6PbpUcXx2JAHfmuRNNru72E
+         yG3aGwbKL3XmKSsZklqAVe/YtrcS7GT/R6CGGeC+kNG3sxEVneyzgpaJ+W6Pswo51w0J
+         Tj7e8ESRA54scZnEjWAxu2bnY0pzXBTpPCd4qZLPCwTbCa3IWF8kSPRRDAC/nJag7eOv
+         A/Ik4sNJfBRVXpV6Dhr3T+dAAYhVJeOhDl8eUsLT6So46AbgwGXIaDXz1lPkeCj6feIm
+         TXuA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references;
-        bh=m1m1S8/XurGJVe+58CsfGi2yfhBse5fddhLQFsq6B4Y=;
-        b=oEFYRK79r0i/f6qsPF/bu8GlTWqAaFvXmUBofs4Hfv9aQvKtERXmpbFJV/P9kKYOkN
-         UxJixyo6BDya4iI7WlqhNXAX+vcU5Ndfb9FlidSqQuSzAO4trdGx9Fs6RnxNG1yUb0av
-         MtuQvLY6fuu3GoRSF73B7O5NdydzK6fXx2Pvq0MFnFSDSEx+6+sTiS6g20YdGKdwYYn2
-         ubApb9Qk826Qea++4rIpgXdA0DU/eOJiAv18lLZghVOoMoKeN4znGutJ0pvga1pBQcic
-         dn4eWKRWzuHUPecHyl6+0zhyMK3NIpQbJRQyHzFEm0kMZXXhgM7rA7JKTIKCSs/GBjJn
-         YgoA==
-X-Gm-Message-State: AOAM5320PIEWFs/9UiZD3Mbj/GKYduPV+wDYGuUqB17ZgAlvLFSxXGUx
-        Z9Pydh49nZACT/om0XSYNG0=
-X-Google-Smtp-Source: ABdhPJzPuayjRmhM+gowAnADouCY0/AhsY9pGzHt89OLDqWLSUBey0cvMpzgIg5IFh0Xwc4ZA+74RA==
-X-Received: by 2002:a17:90a:7381:: with SMTP id j1mr12073967pjg.29.1624495567337;
-        Wed, 23 Jun 2021 17:46:07 -0700 (PDT)
+        bh=AEcE7gUCuSy+6ivM1ZIg2ZOLoO/kyHePM/0KklD0CqQ=;
+        b=rEttw85edClYijoRV5cliszps8zw/rkeNtM3ohoZqIsyWX1lGsH5gQNZRmP+LJQtSg
+         htTyeWXmA7b0Nvnlu7qRjdaJ6HNefCoOsFSEWnOR+qvBNjiGIkw1ORDTx2FzjAxnVZbL
+         PyUa21+n7vwtCqQ6n9h/h7Ya4UwI7llYtdk19vdECx9QVHP01sC4i2IPWLhmUF2+nlDQ
+         kz63fwZFGK2tTMktAXgrMXdhec9xis7W6avJnHhLCA2ZWH/fl+NRjqH+5AWq1cvig4xj
+         CF0tZ78IqIkAwGYew6E8EcmKho9jWfGfiGr8foMTtcLhJTG3e6kRAzZbADrK4VpNVDU4
+         tFqQ==
+X-Gm-Message-State: AOAM531748mRFD8mEyO0QVt9hRF1mroZefGN9jSrkMTB5HGsnR93tm63
+        G2Q1FEOoe0ux6YEZ6457RcX4AiENKQjtLQ==
+X-Google-Smtp-Source: ABdhPJxqpCCC6qleZvU39SFA1mSyJWpyoodnWUExHQ5FWglJ7Vs6vl/wCr92qP2I69Gmx+ANM0Ptww==
+X-Received: by 2002:a17:902:e5c1:b029:127:683b:175f with SMTP id u1-20020a170902e5c1b0290127683b175fmr1840237plf.18.1624495568153;
+        Wed, 23 Jun 2021 17:46:08 -0700 (PDT)
 Received: from xplor.waratah.dyndns.org (222-152-189-137-fibre.sparkbb.co.nz. [222.152.189.137])
-        by smtp.gmail.com with ESMTPSA id c184sm855378pfa.38.2021.06.23.17.46.05
+        by smtp.gmail.com with ESMTPSA id h18sm268055pgl.87.2021.06.23.17.46.06
         (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Wed, 23 Jun 2021 17:46:06 -0700 (PDT)
+        Wed, 23 Jun 2021 17:46:07 -0700 (PDT)
 Received: by xplor.waratah.dyndns.org (Postfix, from userid 1000)
-        id E9AA03603D9; Thu, 24 Jun 2021 12:46:02 +1200 (NZST)
+        id 7BF413603E0; Thu, 24 Jun 2021 12:46:03 +1200 (NZST)
 From:   Michael Schmitz <schmitzmic@gmail.com>
 To:     linux-m68k@vger.kernel.org, geert@linux-m68k.org
 Cc:     glaubitz@physik.fu-berlin.de, schwab@linux-m68k.org,
         Michael Schmitz <schmitzmic@gmail.com>
-Subject: [PATCH v6 1/2] m68k/kernel - wire up syscall_trace_enter/leave for m68k
-Date:   Thu, 24 Jun 2021 12:45:59 +1200
-Message-Id: <1624495560-6351-2-git-send-email-schmitzmic@gmail.com>
+Subject: [PATCH v6 2/2] m68k: add kernel seccomp support
+Date:   Thu, 24 Jun 2021 12:46:00 +1200
+Message-Id: <1624495560-6351-3-git-send-email-schmitzmic@gmail.com>
 X-Mailer: git-send-email 2.7.4
 In-Reply-To: <1624495560-6351-1-git-send-email-schmitzmic@gmail.com>
 References: <1624495560-6351-1-git-send-email-schmitzmic@gmail.com>
@@ -71,105 +71,171 @@ Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-m68k (other than Coldfire) uses syscall_trace for both trace entry
-and trace exit. Seccomp support requires separate entry points for
-trace entry and exit which are already provided for Coldfire.
+Add secure_computing() call to syscall_trace_enter to actually
+filter system calls.
 
-Replace syscall_trace by syscall_trace_enter and syscall_trace_leave
-in preparation for seccomp support. Check return code of
-syscall_trace_enter(), and skip syscall if -1. Return code will be
-left at what had been set by ptrace or seccomp (in regs->d0).
+Add necessary arch Kconfig options, define TIF_SECCOMP trace
+flag and provide basic seccomp filter support in asm/syscall.h
 
-No regression seen in testing with strace on ARAnyM.
+syscall_get_nr currently uses the syscall nr stored in orig_d0
+because we change d0 to a default return code before starting a
+syscall trace. This may be inconsistent with syscall_rollback
+copying orig_d0 to d0 (which we never check upon return from
+trace). We use d0 for the return code from syscall_trace_enter
+in entry.S currently, and could perhaps expand that to store
+a new syscall number returned by the seccomp filter before
+executing the syscall. This clearly needs some discussion.
+
+Compiles (for Atari) and boots on ARAnyM, otherwise untested.
 
 Signed-off-by: Michael Schmitz <schmitzmic@gmail.com>
 
 --
 Changes from v5:
 
-- add comment to explain optimization
-
-Changes from v4:
-
-Andreas Schwab:
-- optimize return code test (addql #1,%d0 for cmpil #-1,%d0)
-- spelling fix in commit message
-
-Changes from v3:
-
-- change syscall_trace_enter return code test from !=0 to ==-1
+Geert Uytterhoeven:
+- correct wrong offset for d1-d5 register copy
+- update Documentation/features/seccomp/seccomp-filter/arch-support.txt
 ---
- arch/m68k/kernel/entry.S  |  8 +++++---
- arch/m68k/kernel/ptrace.c | 17 -----------------
- 2 files changed, 5 insertions(+), 20 deletions(-)
+ .../seccomp/seccomp-filter/arch-support.txt        |  2 +-
+ arch/m68k/Kconfig                                  |  2 ++
+ arch/m68k/include/asm/seccomp.h                    | 11 ++++++++
+ arch/m68k/include/asm/syscall.h                    | 33 ++++++++++++++++++++++
+ arch/m68k/include/asm/thread_info.h                |  2 ++
+ arch/m68k/kernel/ptrace.c                          |  5 ++++
+ 6 files changed, 54 insertions(+), 1 deletion(-)
+ create mode 100644 arch/m68k/include/asm/seccomp.h
 
-diff --git a/arch/m68k/kernel/entry.S b/arch/m68k/kernel/entry.S
-index 9dd76fb..d6f941d 100644
---- a/arch/m68k/kernel/entry.S
-+++ b/arch/m68k/kernel/entry.S
-@@ -164,9 +164,11 @@ do_trace_entry:
- 	movel	#-ENOSYS,%sp@(PT_OFF_D0)| needed for strace
- 	subql	#4,%sp
- 	SAVE_SWITCH_STACK
--	jbsr	syscall_trace
-+	jbsr	syscall_trace_enter
- 	RESTORE_SWITCH_STACK
- 	addql	#4,%sp
-+	addql	#1,%d0			| optimization for cmpil #-1,%d0
-+	jeq	ret_from_syscall
- 	movel	%sp@(PT_OFF_ORIG_D0),%d0
- 	cmpl	#NR_syscalls,%d0
- 	jcs	syscall
-@@ -177,7 +179,7 @@ badsys:
- do_trace_exit:
- 	subql	#4,%sp
- 	SAVE_SWITCH_STACK
--	jbsr	syscall_trace
-+	jbsr	syscall_trace_leave
- 	RESTORE_SWITCH_STACK
- 	addql	#4,%sp
- 	jra	.Lret_from_exception
-@@ -186,7 +188,7 @@ ENTRY(ret_from_signal)
- 	movel	%curptr@(TASK_STACK),%a1
- 	tstb	%a1@(TINFO_FLAGS+2)
- 	jge	1f
--	jbsr	syscall_trace
-+	jbsr	syscall_trace_leave
- 1:	RESTORE_SWITCH_STACK
- 	addql	#4,%sp
- /* on 68040 complete pending writebacks if any */
+diff --git a/Documentation/features/seccomp/seccomp-filter/arch-support.txt b/Documentation/features/seccomp/seccomp-filter/arch-support.txt
+index 26eec58..be71f20 100644
+--- a/Documentation/features/seccomp/seccomp-filter/arch-support.txt
++++ b/Documentation/features/seccomp/seccomp-filter/arch-support.txt
+@@ -14,7 +14,7 @@
+     |       h8300: | TODO |
+     |     hexagon: | TODO |
+     |        ia64: | TODO |
+-    |        m68k: | TODO |
++    |        m68k: |  ok  |
+     |  microblaze: | TODO |
+     |        mips: |  ok  |
+     |       nds32: | TODO |
+diff --git a/arch/m68k/Kconfig b/arch/m68k/Kconfig
+index 372e4e6..deaea88 100644
+--- a/arch/m68k/Kconfig
++++ b/arch/m68k/Kconfig
+@@ -19,6 +19,8 @@ config M68K
+ 	select GENERIC_STRNCPY_FROM_USER if MMU
+ 	select GENERIC_STRNLEN_USER if MMU
+ 	select HAVE_AOUT if MMU
++	select HAVE_ARCH_SECCOMP
++	select HAVE_ARCH_SECCOMP_FILTER
+ 	select HAVE_ASM_MODVERSIONS
+ 	select HAVE_DEBUG_BUGVERBOSE
+ 	select HAVE_FUTEX_CMPXCHG if MMU && FUTEX
+diff --git a/arch/m68k/include/asm/seccomp.h b/arch/m68k/include/asm/seccomp.h
+new file mode 100644
+index 0000000..de8a94e
+--- /dev/null
++++ b/arch/m68k/include/asm/seccomp.h
+@@ -0,0 +1,11 @@
++/* SPDX-License-Identifier: GPL-2.0-only */
++#ifndef _ASM_SECCOMP_H
++#define _ASM_SECCOMP_H
++
++#include <asm-generic/seccomp.h>
++
++#define SECCOMP_ARCH_NATIVE		AUDIT_ARCH_M68K
++#define SECCOMP_ARCH_NATIVE_NR		NR_syscalls
++#define SECCOMP_ARCH_NATIVE_NAME	"m68k"
++
++#endif /* _ASM_SECCOMP_H */
+diff --git a/arch/m68k/include/asm/syscall.h b/arch/m68k/include/asm/syscall.h
+index 465ac03..ab8ab94e 100644
+--- a/arch/m68k/include/asm/syscall.h
++++ b/arch/m68k/include/asm/syscall.h
+@@ -4,6 +4,39 @@
+ 
+ #include <uapi/linux/audit.h>
+ 
++#include <asm/unistd.h>
++
++extern const unsigned long sys_call_table[];
++
++static inline int syscall_get_nr(struct task_struct *task,
++				 struct pt_regs *regs)
++{
++	return regs->orig_d0;
++}
++
++static inline void syscall_rollback(struct task_struct *task,
++				    struct pt_regs *regs)
++{
++	regs->d0 = regs->orig_d0;
++}
++
++static inline void syscall_set_return_value(struct task_struct *task,
++					    struct pt_regs *regs,
++					    int error, long val)
++{
++	regs->d0 = (long) error ? error : val;
++}
++
++static inline void syscall_get_arguments(struct task_struct *task,
++					 struct pt_regs *regs,
++					 unsigned long *args)
++{
++	args[0] = regs->orig_d0;
++	args++;
++
++	memcpy(args, &regs->d1, 5 * sizeof(args[0]));
++}
++
+ static inline int syscall_get_arch(struct task_struct *task)
+ {
+ 	return AUDIT_ARCH_M68K;
+diff --git a/arch/m68k/include/asm/thread_info.h b/arch/m68k/include/asm/thread_info.h
+index 15a7570..d813fed 100644
+--- a/arch/m68k/include/asm/thread_info.h
++++ b/arch/m68k/include/asm/thread_info.h
+@@ -64,6 +64,7 @@ static inline struct thread_info *current_thread_info(void)
+ #define TIF_NOTIFY_RESUME	5	/* callback before returning to user */
+ #define TIF_SIGPENDING		6	/* signal pending */
+ #define TIF_NEED_RESCHED	7	/* rescheduling necessary */
++#define TIF_SECCOMP		13	/* seccomp syscall filtering active */
+ #define TIF_DELAYED_TRACE	14	/* single step a syscall */
+ #define TIF_SYSCALL_TRACE	15	/* syscall trace active */
+ #define TIF_MEMDIE		16	/* is terminating due to OOM killer */
+@@ -72,6 +73,7 @@ static inline struct thread_info *current_thread_info(void)
+ #define _TIF_NOTIFY_RESUME	(1 << TIF_NOTIFY_RESUME)
+ #define _TIF_SIGPENDING		(1 << TIF_SIGPENDING)
+ #define _TIF_NEED_RESCHED	(1 << TIF_NEED_RESCHED)
++#define _TIF_SECCOMP		(1 << TIF_SECCOMP)
+ #define _TIF_DELAYED_TRACE	(1 << TIF_DELAYED_TRACE)
+ #define _TIF_SYSCALL_TRACE	(1 << TIF_SYSCALL_TRACE)
+ #define _TIF_MEMDIE		(1 << TIF_MEMDIE)
 diff --git a/arch/m68k/kernel/ptrace.c b/arch/m68k/kernel/ptrace.c
-index 94b3b27..74d58a8 100644
+index 74d58a8..bc2490c 100644
 --- a/arch/m68k/kernel/ptrace.c
 +++ b/arch/m68k/kernel/ptrace.c
-@@ -271,22 +271,6 @@ long arch_ptrace(struct task_struct *child, long request,
- 	return -EIO;
+@@ -19,6 +19,7 @@
+ #include <linux/ptrace.h>
+ #include <linux/user.h>
+ #include <linux/signal.h>
++#include <linux/seccomp.h>
+ #include <linux/tracehook.h>
+ 
+ #include <linux/uaccess.h>
+@@ -277,6 +278,10 @@ asmlinkage int syscall_trace_enter(void)
+ 
+ 	if (test_thread_flag(TIF_SYSCALL_TRACE))
+ 		ret = tracehook_report_syscall_entry(task_pt_regs(current));
++
++	if (secure_computing() == -1)
++		return -1;
++
+ 	return ret;
  }
  
--asmlinkage void syscall_trace(void)
--{
--	ptrace_notify(SIGTRAP | ((current->ptrace & PT_TRACESYSGOOD)
--				 ? 0x80 : 0));
--	/*
--	 * this isn't the same as continuing with a signal, but it will do
--	 * for normal use.  strace only continues with a signal if the
--	 * stopping signal is not SIGTRAP.  -brl
--	 */
--	if (current->exit_code) {
--		send_sig(current->exit_code, current, 1);
--		current->exit_code = 0;
--	}
--}
--
--#if defined(CONFIG_COLDFIRE) || !defined(CONFIG_MMU)
- asmlinkage int syscall_trace_enter(void)
- {
- 	int ret = 0;
-@@ -301,4 +285,3 @@ asmlinkage void syscall_trace_leave(void)
- 	if (test_thread_flag(TIF_SYSCALL_TRACE))
- 		tracehook_report_syscall_exit(task_pt_regs(current), 0);
- }
--#endif /* CONFIG_COLDFIRE */
 -- 
 2.7.4
 
