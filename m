@@ -8,55 +8,55 @@ X-Spam-Status: No, score=-14.2 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MAILING_LIST_MULTI,NICE_REPLY_A,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1
 	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9042DC48BC2
-	for <linux-m68k@archiver.kernel.org>; Thu, 24 Jun 2021 02:13:12 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A9333C48BC2
+	for <linux-m68k@archiver.kernel.org>; Thu, 24 Jun 2021 02:13:25 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 72A30613AA
-	for <linux-m68k@archiver.kernel.org>; Thu, 24 Jun 2021 02:13:12 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 8F531613AA
+	for <linux-m68k@archiver.kernel.org>; Thu, 24 Jun 2021 02:13:25 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229812AbhFXCPa (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Wed, 23 Jun 2021 22:15:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47590 "EHLO
+        id S229818AbhFXCPn (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Wed, 23 Jun 2021 22:15:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47650 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229800AbhFXCP3 (ORCPT
-        <rfc822;linux-m68k@vger.kernel.org>); Wed, 23 Jun 2021 22:15:29 -0400
-Received: from mail-pl1-x634.google.com (mail-pl1-x634.google.com [IPv6:2607:f8b0:4864:20::634])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BC478C061574
-        for <linux-m68k@vger.kernel.org>; Wed, 23 Jun 2021 19:13:09 -0700 (PDT)
-Received: by mail-pl1-x634.google.com with SMTP id u2so2148219plf.3
-        for <linux-m68k@vger.kernel.org>; Wed, 23 Jun 2021 19:13:09 -0700 (PDT)
+        with ESMTP id S229800AbhFXCPm (ORCPT
+        <rfc822;linux-m68k@vger.kernel.org>); Wed, 23 Jun 2021 22:15:42 -0400
+Received: from mail-pg1-x535.google.com (mail-pg1-x535.google.com [IPv6:2607:f8b0:4864:20::535])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D22F1C061574
+        for <linux-m68k@vger.kernel.org>; Wed, 23 Jun 2021 19:13:24 -0700 (PDT)
+Received: by mail-pg1-x535.google.com with SMTP id e33so3420876pgm.3
+        for <linux-m68k@vger.kernel.org>; Wed, 23 Jun 2021 19:13:24 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=subject:to:cc:references:from:message-id:date:user-agent
          :mime-version:in-reply-to:content-transfer-encoding:content-language;
         bh=4DDCrHHwM1ncjw5gQeuAKvdhRjsT2eeguJP7e659fqI=;
-        b=DvIFgquWHQwqnU35MICk8+SfIVvHUnGDy9pMs66yGr01FiA2e6740USRs1t2Q+jVjn
-         8LRfRR+xvKIStdKF7QXKrue4gtgE+E9zYHLc8pAgs8VMgb7xg92bN0Ovy0mESviHzXSW
-         VpCeQqDXz7G5X55bZ7nIiHp6v5r96w98TZjpUm4+aJCMvtBrqOxO18BlL9/DySeajQiU
-         Do79Pn5zReQfKDDxnGvuNLoyMnR/e1fR4F/qNZkl+JtkMtahXc7epYczGHNeJnddHhLw
-         eVwnIgyOOjX7uucjasG25CV4sKjxD/YqF2PpDGQEbqMHtqGaCoiP1kRDQUMQuNva/QZo
-         95Qg==
+        b=V4bC/eXEJfVP2/UQEGssXNVW4iL0z+Faa2tWk7hUfbiGd3G7zpc9HjzozfnPw04lyh
+         xGPvfsu4/lEiIzoFnmrXHRLCLBhegziXs+VKnUeHVI+1/BRiKcJwRQA3N+KwkKhcpbkj
+         ceS2CWlaFoXjG8Uv41GNPRN8rIlrEKvb0/nN9SEKO0IJevZo5iMY1xEMZCxK8NLTlGXi
+         5wwSRB9zpNArIUDvhjbrb1l3Osgz/rv89JjbpD52QbDITMKF8IgIMbZx7qm9YKv9MGnM
+         jzCVM9Fk/hkV1SzFPHhsEKHbk/XV8lF2rjbJCtSuWcOIi/PslCOq4fPbhqcjOHjZGKp4
+         6jkw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:subject:to:cc:references:from:message-id:date
          :user-agent:mime-version:in-reply-to:content-transfer-encoding
          :content-language;
         bh=4DDCrHHwM1ncjw5gQeuAKvdhRjsT2eeguJP7e659fqI=;
-        b=qGzIK0ZAL4m4PSjRIB0tRMv2o2nqkyOiWMh6wI4NJlOM8St1oFnlkq7ghKJx1/kOGn
-         mDm8DDvfHLGZvr6gv+3BT9WBw7DQ9BW+hyhCHYggRs3nW9cIl96PGcgRqHVVAF3VWSAW
-         UlZXzJPegI9w7Bl7gDeEhn7p/6PE5p004eqIxgIaUZta6xgr+C3NsujqnfZxG6f7WDhm
-         GV82Hf6pm/63oILaHX8t6SMXzymAGTyLNs4BuQWPBYDDwi5YZXRKOT/uF2u6ox77Nrsn
-         7VX8W7mvMTJBruf3AjxSKwP8gAvZRbYgFMXQ89/YRZ28zjKpHYFhHmltzTf4PM+juKHK
-         zb0Q==
-X-Gm-Message-State: AOAM531DFOYpFnIivWdhBwkszdmYfBYE7qcO5jt2R/Y2BYKFZBNF6ior
-        bt0bDOKSfjmQqxana/aOTEo=
-X-Google-Smtp-Source: ABdhPJzkT5OrKb1YuMO+BnIg3anEmbzLRII0QHZHvPG6AO5zg9xa6LGoX5hZO+W4PeJkuc1NBWEaJw==
-X-Received: by 2002:a17:902:9695:b029:117:2072:88a8 with SMTP id n21-20020a1709029695b0290117207288a8mr2182927plp.64.1624500789303;
-        Wed, 23 Jun 2021 19:13:09 -0700 (PDT)
+        b=W89uR0D8r3Mz+CIVSsvFcUSj4Rh6biTHaZB7nihjr1pSug4Hs6YsgHe4rdEV0z4C/I
+         yguW6i4q6eXVn0pzJ+M6bsQNVXNkZVxyKOUrDB3E/1dNn5ev0bX7OaSeiDyztabCtmAi
+         jtBQx4fa1VdBVtZMR6f816dvJrsiGpJxI3MOsutcFPDgsBd9e3aQYcNvjCryAoPCmPAN
+         E6GT/mNCTLPPWlRHOkEfbsfGLytMq6/Rerm7CoUWB3qa2wFpOJro678CKjmUdfTbMbXh
+         h7vwMBRF1U1ZonUrUyE1NOOKxLpnFCsgW4iZQkdlycgWmxVR66YuMl4IcWPyUWc1+xue
+         1adg==
+X-Gm-Message-State: AOAM533YkjKglZKeC/sWIW7QLekCsh/fnAqqNimkFYuH3GWIfYFwUNif
+        8WeO0I3qSo2EkhTJyTU5pbd6jWRS/LbSqg==
+X-Google-Smtp-Source: ABdhPJziT42aGaXu5SOlWizqaaVnyP7A6pz2oTmzdUtOnmlM2PyHEM1DBUjBh16m1moyOxugH8QY7Q==
+X-Received: by 2002:a63:da0a:: with SMTP id c10mr2415159pgh.255.1624500804396;
+        Wed, 23 Jun 2021 19:13:24 -0700 (PDT)
 Received: from ?IPv6:2001:df0:0:200c:4de2:77c4:143f:6b70? ([2001:df0:0:200c:4de2:77c4:143f:6b70])
-        by smtp.gmail.com with ESMTPSA id b2sm715999pjw.24.2021.06.23.19.12.48
+        by smtp.gmail.com with ESMTPSA id p9sm969504pfo.106.2021.06.23.19.13.14
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 23 Jun 2021 19:12:52 -0700 (PDT)
+        Wed, 23 Jun 2021 19:13:17 -0700 (PDT)
 Subject: Re: [PATCH v5 2/2] m68k: add kernel seccomp support
 To:     Geert Uytterhoeven <geert@linux-m68k.org>
 Cc:     Linux/m68k <linux-m68k@vger.kernel.org>,
@@ -66,8 +66,8 @@ References: <1623908361-29837-1-git-send-email-schmitzmic@gmail.com>
  <1623908361-29837-2-git-send-email-schmitzmic@gmail.com>
  <CAMuHMdX-JBTAWDvFQg7nVGwwxu8o6sX1GYVF0ha6JpZxOxuG8g@mail.gmail.com>
 From:   Michael Schmitz <schmitzmic@gmail.com>
-Message-ID: <d5292d44-1806-fb66-61d2-06c8a9afac95@gmail.com>
-Date:   Thu, 24 Jun 2021 14:12:45 +1200
+Message-ID: <c968ef23-bad9-aaef-ed18-03195f720c09@gmail.com>
+Date:   Thu, 24 Jun 2021 14:13:12 +1200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
  Thunderbird/78.8.1
 MIME-Version: 1.0
