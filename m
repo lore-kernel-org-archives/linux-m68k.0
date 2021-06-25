@@ -2,88 +2,124 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.8 required=3.0 tests=BAYES_00,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
-	autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-2.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,NICE_REPLY_A,SPF_HELO_NONE,
+	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A56A6C2B9F4
-	for <linux-m68k@archiver.kernel.org>; Fri, 25 Jun 2021 07:31:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 68221C2B9F4
+	for <linux-m68k@archiver.kernel.org>; Fri, 25 Jun 2021 18:42:31 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 80ABA6141E
-	for <linux-m68k@archiver.kernel.org>; Fri, 25 Jun 2021 07:31:39 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 425F260FDB
+	for <linux-m68k@archiver.kernel.org>; Fri, 25 Jun 2021 18:42:31 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229764AbhFYHd7 (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Fri, 25 Jun 2021 03:33:59 -0400
-Received: from mail-vk1-f180.google.com ([209.85.221.180]:36515 "EHLO
-        mail-vk1-f180.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229616AbhFYHd6 (ORCPT
-        <rfc822;linux-m68k@vger.kernel.org>); Fri, 25 Jun 2021 03:33:58 -0400
-Received: by mail-vk1-f180.google.com with SMTP id c17so1892461vke.3
-        for <linux-m68k@vger.kernel.org>; Fri, 25 Jun 2021 00:31:38 -0700 (PDT)
+        id S229630AbhFYSov (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Fri, 25 Jun 2021 14:44:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57762 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229531AbhFYSov (ORCPT
+        <rfc822;linux-m68k@vger.kernel.org>); Fri, 25 Jun 2021 14:44:51 -0400
+Received: from mail-pg1-x52c.google.com (mail-pg1-x52c.google.com [IPv6:2607:f8b0:4864:20::52c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A1875C061574
+        for <linux-m68k@vger.kernel.org>; Fri, 25 Jun 2021 11:42:29 -0700 (PDT)
+Received: by mail-pg1-x52c.google.com with SMTP id a2so8573046pgi.6
+        for <linux-m68k@vger.kernel.org>; Fri, 25 Jun 2021 11:42:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:references:cc:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-transfer-encoding;
+        bh=iqkVGvlGqvnagaeE+6ZdPO8ENhnfxCC1XyhBdWI8das=;
+        b=VgP2tDiFk5Iw++DNlQtucxUt86pdkWDohObWTWOIz4R99Kw3WmboOQch9cdHPZ9iDF
+         LIFgWL1bHdM4LX02Qgr1sY2NDJcp9ZsE8/pDn4B9one8kfbgMGtUX7k8M621p0AR5ORS
+         rK7cW9RztlNk6l+LEoho/jZW/APgiYwd3r0BDdGzsJao9ldejChdgpMit5VIkrZcksDY
+         11mTkMBHx+ZvaRmLxMNf/Y0s1EuirfWObD2+V3CnbR4KkuJYeXBz7lqJ8yonxH6nL07Z
+         QtAyDbLx6lhqC3l5hca2pj4Om2MpNCLhaEjKNgh0ShYAga1ALbJVKpncP2/w70GzlEr2
+         78yw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=R0Gg6JHEF4hnRdpG2OoC677oqIVFs57WAZV9zpZY39A=;
-        b=Mg9j4FUoVhUxNncNTXLz/eFr6SLRft2Pii0m9mn3WWGa6ycOuWrVaM+zNeVzZiCFW5
-         utSDzCSLP80RPTGfV7LNWEAlTj9lAmWOH2sq2WTH+kUVVtJ9PKrPqt6aQNU8t+g+x/1S
-         VCBwB6CjHLLglZXGicakMj/otsCa+0+Q9TX5EmzINDe1cELF29PmJgvlJ2f83vcsYsZ2
-         dM6o/0Ia6Ji+MdOanu4liBlY2CkkfSxDAVnMSVT6cfphXlD9z2MMbMISeJiCNFvWYQs/
-         QPeufDcdQ98QUCE/cmLwXGjXeBEOWuS/Nhzp2Jbuhx2PuDdzOheWR0ZcnkrJ/MeumkLh
-         6pMw==
-X-Gm-Message-State: AOAM530MV38QelZNjzsWob88kdVVoHDjMK6d0JhwIhqR+BBHa/+SuhS1
-        o9B7t6pzA+dGl2EQq+5yDii9yVIP0BuVAYGCBtdAafB7qGUV2g==
-X-Google-Smtp-Source: ABdhPJxY1wz7MxWjPVJmULjs+WbZCEd3NdkcXYHfnS7hZC/7DxiL17gDXAGjDcyY1UY3AbSJ3+I5oDNokgbNdkH1Gow=
-X-Received: by 2002:a1f:9505:: with SMTP id x5mr6545921vkd.6.1624606297683;
- Fri, 25 Jun 2021 00:31:37 -0700 (PDT)
-MIME-Version: 1.0
-References: <1623908361-29837-1-git-send-email-schmitzmic@gmail.com>
- <1623908361-29837-2-git-send-email-schmitzmic@gmail.com> <CAMuHMdX-JBTAWDvFQg7nVGwwxu8o6sX1GYVF0ha6JpZxOxuG8g@mail.gmail.com>
- <78dee109-3714-073c-110b-3d023f66f815@gmail.com>
-In-Reply-To: <78dee109-3714-073c-110b-3d023f66f815@gmail.com>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Fri, 25 Jun 2021 09:31:26 +0200
-Message-ID: <CAMuHMdVtyTyC0L-LZPZCdNsaaxqcVLXky4dsd3m8uyyLUm9drg@mail.gmail.com>
+        h=x-gm-message-state:subject:to:references:cc:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding;
+        bh=iqkVGvlGqvnagaeE+6ZdPO8ENhnfxCC1XyhBdWI8das=;
+        b=siBeC58vnt8oYo4QPNv2SeKmDPeQqoNStFIPIe9BW72Pp8vEXyarac8/4QN5MXe5/r
+         Yd2tJ/raYv3/oErHlrrMukvVYzALkwn16u06KevoaFsLIrUwaAWJ2OxAHaLoHDODEL2f
+         qd+42X3l6xCnX9PL1SZ0lv4XCktgvQ5SF8SKKbWDTwTHrm0pC92wHSfbMBB3geVXhGoh
+         BkAHI+hm3t7XYN4x78VhopGXWXOQASKBJiQgCjSki6QSNmGSJTyn8iF5jmWHOrOoA2Yq
+         Ylvp200HaIHQ3Oc1sH2gCn0wLgUXXwEMVHls7gO3RBCxYIbGpwnA3CJNsiNqS76IfGOV
+         3x9A==
+X-Gm-Message-State: AOAM5308GZa3akTwTqU5dh4zEKpdURbmqA+X6oc5j0CvmT3RoWbOfOJY
+        zI+BMkbaC0KnbnMzDkF/LYm5BreDrPE=
+X-Google-Smtp-Source: ABdhPJwoDkyUqVHZb2qYvEWN5EBnDdA6JGtWmDm6ZHTUCHwF/F0RBwGMYU0+2ZcFwhCh/NoMhz6HlQ==
+X-Received: by 2002:a62:5c1:0:b029:2a9:7589:dd30 with SMTP id 184-20020a6205c10000b02902a97589dd30mr11917020pff.66.1624646549046;
+        Fri, 25 Jun 2021 11:42:29 -0700 (PDT)
+Received: from [10.1.1.25] (222-152-189-137-fibre.sparkbb.co.nz. [222.152.189.137])
+        by smtp.gmail.com with ESMTPSA id p1sm6213088pfp.137.2021.06.25.11.42.25
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Fri, 25 Jun 2021 11:42:28 -0700 (PDT)
 Subject: Re: [PATCH v5 2/2] m68k: add kernel seccomp support
-To:     Michael Schmitz <schmitzmic@gmail.com>
-Cc:     "Linux/m68k" <linux-m68k@vger.kernel.org>,
+To:     Geert Uytterhoeven <geert@linux-m68k.org>
+References: <1623908361-29837-1-git-send-email-schmitzmic@gmail.com>
+ <1623908361-29837-2-git-send-email-schmitzmic@gmail.com>
+ <CAMuHMdX-JBTAWDvFQg7nVGwwxu8o6sX1GYVF0ha6JpZxOxuG8g@mail.gmail.com>
+ <78dee109-3714-073c-110b-3d023f66f815@gmail.com>
+ <CAMuHMdVtyTyC0L-LZPZCdNsaaxqcVLXky4dsd3m8uyyLUm9drg@mail.gmail.com>
+Cc:     Linux/m68k <linux-m68k@vger.kernel.org>,
         John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
         Andreas Schwab <schwab@linux-m68k.org>
-Content-Type: text/plain; charset="UTF-8"
+From:   Michael Schmitz <schmitzmic@gmail.com>
+Message-ID: <3c7cb5b1-4a31-2802-dc60-021c67aa06d3@gmail.com>
+Date:   Sat, 26 Jun 2021 06:42:23 +1200
+User-Agent: Mozilla/5.0 (X11; Linux ppc; rv:45.0) Gecko/20100101
+ Icedove/45.4.0
+MIME-Version: 1.0
+In-Reply-To: <CAMuHMdVtyTyC0L-LZPZCdNsaaxqcVLXky4dsd3m8uyyLUm9drg@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-Hi Michael,
+Hi Geert,
 
-On Thu, Jun 24, 2021 at 11:20 PM Michael Schmitz <schmitzmic@gmail.com> wrote:
-> On 23/06/21 7:35 pm, Geert Uytterhoeven wrote:
-> > BTW, there was also "[PATCH] [WIP] selftests/seccomp: Add m68k support"
-> > https://lore.kernel.org/linux-m68k/alpine.DEB.2.21.2008261315050.25325@ramsan.of.borg/
-> >
-> > I kept on up-porting it, but haven't exercised it recently.
+Am 25.06.2021 um 19:31 schrieb Geert Uytterhoeven:
+> Hi Michael,
 >
-> See attached for test results on my ARAnyM image (Laurent's qemu image,
-> essentially).
+> On Thu, Jun 24, 2021 at 11:20 PM Michael Schmitz <schmitzmic@gmail.com> wrote:
+>> On 23/06/21 7:35 pm, Geert Uytterhoeven wrote:
+>>> BTW, there was also "[PATCH] [WIP] selftests/seccomp: Add m68k support"
+>>> https://lore.kernel.org/linux-m68k/alpine.DEB.2.21.2008261315050.25325@ramsan.of.borg/
+>>>
+>>> I kept on up-porting it, but haven't exercised it recently.
+>>
+>> See attached for test results on my ARAnyM image (Laurent's qemu image,
+>> essentially).
+>>
+>> Is that any different from what you got in your earlier tests?
 >
-> Is that any different from what you got in your earlier tests?
+> Fortunately lore has a better memory than I do ;-)
+>
+> https://lore.kernel.org/linux-m68k/alpine.DEB.2.21.2008261612360.2926@ramsan.of.borg/
+>
+> mine: FAILED: 35 / 86 tests passed
+> yours: FAILED: 35 / 87 tests passed
+>
+> So one new test, and it fails?
 
-Fortunately lore has a better memory than I do ;-)
+Looks like it. I must be missing some mail in my mail archive, can't 
+recall ever seeing that one.
 
-https://lore.kernel.org/linux-m68k/alpine.DEB.2.21.2008261612360.2926@ramsan.of.borg/
+There's one new test added after your mail was sent - KILL_unknown. I 
+suppose it's that one.
 
-mine: FAILED: 35 / 86 tests passed
-yours: FAILED: 35 / 87 tests passed
+Anyway, both much better than without seccomp support. And going back 
+over the archive, I found your patch where you added seccomp.h - and 
+added a line in Kbuild as well, which I forgot. Will fix that.
 
-So one new test, and it fails?
+Cheers,
 
-Gr{oetje,eeting}s,
+	Michael
 
-                        Geert
-
--- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+>
+> Gr{oetje,eeting}s,
+>
+>                         Geert
+>
