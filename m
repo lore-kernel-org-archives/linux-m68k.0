@@ -7,53 +7,53 @@ X-Spam-Status: No, score=-16.1 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	INCLUDES_CR_TRAILER,INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
 	URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A045FC49EA7
-	for <linux-m68k@archiver.kernel.org>; Sat, 26 Jun 2021 03:42:12 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4897CC49EA5
+	for <linux-m68k@archiver.kernel.org>; Sat, 26 Jun 2021 05:56:27 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 82C1B61442
-	for <linux-m68k@archiver.kernel.org>; Sat, 26 Jun 2021 03:42:12 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 1B19E61627
+	for <linux-m68k@archiver.kernel.org>; Sat, 26 Jun 2021 05:56:27 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230056AbhFZDob (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Fri, 25 Jun 2021 23:44:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34720 "EHLO
+        id S229873AbhFZF6r (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Sat, 26 Jun 2021 01:58:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35442 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230006AbhFZDob (ORCPT
+        with ESMTP id S229629AbhFZF6q (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Fri, 25 Jun 2021 23:44:31 -0400
-Received: from mail-pf1-x436.google.com (mail-pf1-x436.google.com [IPv6:2607:f8b0:4864:20::436])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C56C7C061767
-        for <linux-m68k@lists.linux-m68k.org>; Fri, 25 Jun 2021 20:42:08 -0700 (PDT)
-Received: by mail-pf1-x436.google.com with SMTP id s137so1396395pfc.4
-        for <linux-m68k@lists.linux-m68k.org>; Fri, 25 Jun 2021 20:42:08 -0700 (PDT)
+        Sat, 26 Jun 2021 01:58:46 -0400
+Received: from mail-pf1-x431.google.com (mail-pf1-x431.google.com [IPv6:2607:f8b0:4864:20::431])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 773A4C061768
+        for <linux-m68k@lists.linux-m68k.org>; Fri, 25 Jun 2021 22:56:23 -0700 (PDT)
+Received: by mail-pf1-x431.google.com with SMTP id 21so9218528pfp.3
+        for <linux-m68k@lists.linux-m68k.org>; Fri, 25 Jun 2021 22:56:23 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=chromium.org; s=google;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to;
-        bh=DEu/zUGEil5W1i542Jddkvc9pkER3JRysmBpbGQkYys=;
-        b=h/QRUEAVNrUKdOz23aXgH2qZADlVHaJeFs2MojeAXLKLDp3e1LOG9MjMdVwDqHGe3B
-         YxK6GS2Dy3kNvMeygQwfdJ9jhAyjbJcbRBbtkjoa1UtJjxJw3AoZVAV1d2dS1+yv32o4
-         7HJpXFhj83H1JRRR9SNpp6vFWF7KQea3GpBv8=
+        bh=PnTryFwi50YPbqJtIMnYSzHf4Qnr9714ggy6hZgJqDU=;
+        b=A0yt7bNf9bzrq08PyG2aWZjlGPFVe0ZpT3tW8adQohWogD9fk2WCcLhhkas3T6XpYM
+         5zw7na5G33E3mATJXbN88ODE3XlfK/wvPQPp30QBD0XIcitdPyC4az4AnuLWNRZwkDCb
+         rIXHvb2WHF2H5nrZiw0p4AH0mwXyLrBfZw8ek=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=DEu/zUGEil5W1i542Jddkvc9pkER3JRysmBpbGQkYys=;
-        b=fYgd+in/wzkzERAXlZxvBdQvFKiO1N+XNPw8t0ccPKps+3TLn1QPuI32s5KI7hKIFx
-         bwzwQ4qIMEeAoy3++Wh9189CFJZogz24mFyIAsE6oSQpvXAJzhp8LTJyVUpiO4TSFEpq
-         Y1ddwHqfwBxuUtRssyAtQ3xVW2W/iSLMGBO3M/J4zphzb/0kTMljIxrJ27CKybej5+ty
-         mV05XzPKdXzq5QK7KVXsYjs9a9jtjJoWBlAORP0GZTVcNS2LR9OprTeRQ3xXXiANZT9x
-         vtSza8x3vQ/j0CY8GmpYnbRkAwVEZpAScYGOVdPS1sGPLUW0cSNsxdxQCMstN6A+Q72w
-         XlXA==
-X-Gm-Message-State: AOAM531ZKdVagYyygYNhuAFoaW7W2vDW9psn5meAUM7iFw5tPYCa8wdw
-        N+9qOc5j1QaiqJ4y+7URNfc4TA==
-X-Google-Smtp-Source: ABdhPJy7s7vbcIeT9sY4Mja7Fe9OP6nBus7t8ECrzqyO7z40aJkGpejLzHmj4n00fK93l9p5wqCq0A==
-X-Received: by 2002:a62:6406:0:b029:302:bb9:1511 with SMTP id y6-20020a6264060000b02903020bb91511mr13668259pfb.26.1624678928256;
-        Fri, 25 Jun 2021 20:42:08 -0700 (PDT)
+        bh=PnTryFwi50YPbqJtIMnYSzHf4Qnr9714ggy6hZgJqDU=;
+        b=q/wqRx6CFAUNiW4+Ub6S/o6wc5Af5ABB8e5D6m57gG1WCMdhPE+Wp8YazuNslTg6nS
+         M1eoDZETTGU1Hpeoc5FY8MGoLMBjJr0m/FKqgYlCVk7ioRj7CiBhoW9SA1UhE8MAMAws
+         hJn/H9GoYs1xzv36gvu4nZHDbrr2uf3Fmuo5Tcmfob62g11GgaODVXq3POrNJbEYVxJd
+         yiyoVVmEIalAVYe+/YhFOWfnI1JIcT6CdtNCh0C0G4KvwYeyqY26x6btsee34LrKQHYI
+         X2clmlUbGA4n2u03ePLO2Slc013d+5hcKL3JuCAnZ7I73lLsz1pDJksra3lxcqImTDjT
+         Bfgg==
+X-Gm-Message-State: AOAM530M69Is0KzJEHxG2ichr6W+g1RrQIkdgYevnmxnNXzh3XJFK46M
+        Qgh4qx5KRD2vyJkqPG8g9nbMsg==
+X-Google-Smtp-Source: ABdhPJzv/1HY9hsQM4WghbagiFbCcefyqd4jDNtq/4dPy/G575HLa46mXqbb9A/VOKW/6Ajxv5mTbw==
+X-Received: by 2002:a63:f20a:: with SMTP id v10mr647186pgh.415.1624686982817;
+        Fri, 25 Jun 2021 22:56:22 -0700 (PDT)
 Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id j12sm6494689pjw.52.2021.06.25.20.42.07
+        by smtp.gmail.com with ESMTPSA id v129sm7662740pfc.31.2021.06.25.22.56.21
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 25 Jun 2021 20:42:07 -0700 (PDT)
-Date:   Fri, 25 Jun 2021 20:42:06 -0700
+        Fri, 25 Jun 2021 22:56:22 -0700 (PDT)
+Date:   Fri, 25 Jun 2021 22:56:21 -0700
 From:   Kees Cook <keescook@chromium.org>
 To:     "Eric W. Biederman" <ebiederm@xmission.com>
 Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
@@ -69,9 +69,9 @@ Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
         Geert Uytterhoeven <geert@linux-m68k.org>,
         linux-m68k <linux-m68k@lists.linux-m68k.org>,
         Arnd Bergmann <arnd@kernel.org>, Tejun Heo <tj@kernel.org>
-Subject: Re: [PATCH 6/9] signal: Fold do_group_exit into get_signal fixing
- io_uring threads
-Message-ID: <202106252038.389B963B6F@keescook>
+Subject: Re: [PATCH 8/9] signal/task_exit: Use start_task_exit in place of
+ do_exit
+Message-ID: <202106252255.32CE2711@keescook>
 References: <YNCaMDQVYB04bk3j@zeniv-ca.linux.org.uk>
  <YNDhdb7XNQE6zQzL@zeniv-ca.linux.org.uk>
  <CAHk-=whAsWXcJkpMM8ji77DkYkeJAT4Cj98WBX-S6=GnMQwhzg@mail.gmail.com>
@@ -81,167 +81,101 @@ References: <YNCaMDQVYB04bk3j@zeniv-ca.linux.org.uk>
  <CAHk-=wi_kQAff1yx2ufGRo2zApkvqU8VGn7kgPT-Kv71FTs=AA@mail.gmail.com>
  <87zgvgabw1.fsf@disp2133>
  <875yy3850g.fsf_-_@disp2133>
- <874kdn6q87.fsf_-_@disp2133>
+ <87pmwb5blu.fsf_-_@disp2133>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <874kdn6q87.fsf_-_@disp2133>
+In-Reply-To: <87pmwb5blu.fsf_-_@disp2133>
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-On Thu, Jun 24, 2021 at 02:02:16PM -0500, Eric W. Biederman wrote:
+On Thu, Jun 24, 2021 at 02:03:25PM -0500, Eric W. Biederman wrote:
 > 
-> Forld do_group_exit into get_signal as it is the last caller.
+> Reuse start_task_exit_locked to implement start_task_exit.
 > 
-> Move the group_exit logic above the PF_IO_WORKER exit, ensuring
-> that if an PF_IO_WORKER catches SIGKILL every thread in
-> the thread group will exit not just the the PF_IO_WORKER.
-> 
-> Now that the information is easily available only set PF_SIGNALED
-> when it was a signal that caused the exit.
+> Simplify the exit logic by having all exits go through get_signal.
+> This simplifies the analysis of syncrhonization during exit and
+> gurantees a full set of registers will be available for ptrace to
+> examine at PTRACE_EVENT_EXIT.
 > 
 > Signed-off-by: "Eric W. Biederman" <ebiederm@xmission.com>
 > ---
->  include/linux/sched/task.h |  1 -
->  kernel/exit.c              | 31 -------------------------------
->  kernel/signal.c            | 35 +++++++++++++++++++++++++----------
->  3 files changed, 25 insertions(+), 42 deletions(-)
+>  include/linux/sched/signal.h |  1 +
+>  kernel/exit.c                |  4 +++-
+>  kernel/seccomp.c             |  2 +-
+>  kernel/signal.c              | 12 ++++++++++++
+>  4 files changed, 17 insertions(+), 2 deletions(-)
 > 
-> diff --git a/include/linux/sched/task.h b/include/linux/sched/task.h
-> index ef02be869cf2..45525512e3d0 100644
-> --- a/include/linux/sched/task.h
-> +++ b/include/linux/sched/task.h
-> @@ -77,7 +77,6 @@ static inline void exit_thread(struct task_struct *tsk)
->  {
->  }
->  #endif
-> -extern void do_group_exit(int);
+> diff --git a/include/linux/sched/signal.h b/include/linux/sched/signal.h
+> index a958381ba4a9..3f4e69c019b7 100644
+> --- a/include/linux/sched/signal.h
+> +++ b/include/linux/sched/signal.h
+> @@ -430,6 +430,7 @@ static inline void ptrace_signal_wake_up(struct task_struct *t, bool resume)
 >  
->  extern void exit_files(struct task_struct *);
->  extern void exit_itimers(struct signal_struct *);
+>  void start_group_exit(int exit_code);
+>  void start_task_exit_locked(struct task_struct *task, int exit_code);
+> +void start_task_exit(int exit_code);
+>  
+>  void task_join_group_stop(struct task_struct *task);
+>  
 > diff --git a/kernel/exit.c b/kernel/exit.c
-> index 921519d80b56..635f434122b7 100644
+> index 635f434122b7..51e0c82b3f7d 100644
 > --- a/kernel/exit.c
 > +++ b/kernel/exit.c
-> @@ -892,37 +892,6 @@ SYSCALL_DEFINE1(exit, int, error_code)
->  	do_exit((error_code&0xff)<<8);
+> @@ -889,7 +889,9 @@ EXPORT_SYMBOL(complete_and_exit);
+>  
+>  SYSCALL_DEFINE1(exit, int, error_code)
+>  {
+> -	do_exit((error_code&0xff)<<8);
+> +	start_task_exit((error_code&0xff)<<8);
+> +	/* get_signal will call do_exit */
+> +	return 0;
 >  }
 >  
-> -/*
-> - * Take down every thread in the group.  This is called by fatal signals
-> - * as well as by sys_exit_group (below).
-> - */
-> -void
-> -do_group_exit(int exit_code)
-> -{
-> -	struct signal_struct *sig = current->signal;
-> -
-> -	BUG_ON(exit_code & 0x80); /* core dumps don't get here */
-> -
-> -	if (signal_group_exit(sig))
-> -		exit_code = sig->group_exit_code;
-> -	else if (!thread_group_empty(current)) {
-> -		struct sighand_struct *const sighand = current->sighand;
-> -
-> -		spin_lock_irq(&sighand->siglock);
-> -		if (signal_group_exit(sig))
-> -			/* Another thread got here before we took the lock.  */
-> -			exit_code = sig->group_exit_code;
-> -		else {
-> -			sig->group_exit_code = exit_code;
-> -			sig->flags = SIGNAL_GROUP_EXIT;
-> -			zap_other_threads(current);
-
-Oh, now I see it: the "new code" in start_group_exit() is an open-coded
-zap_other_threads()? That wasn't clear to me, but makes sense now.
-
-> -		}
-> -		spin_unlock_irq(&sighand->siglock);
-> -	}
-> -
-> -	do_exit(exit_code);
-> -	/* NOTREACHED */
-> -}
 >  
->  /*
->   * this kills every thread in the thread group. Note that any externally
+> diff --git a/kernel/seccomp.c b/kernel/seccomp.c
+> index b1c06fd1b205..e0c4c123a8bf 100644
+> --- a/kernel/seccomp.c
+> +++ b/kernel/seccomp.c
+> @@ -1248,7 +1248,7 @@ static int __seccomp_filter(int this_syscall, const struct seccomp_data *sd,
+>  			force_sig_seccomp(this_syscall, data, true);
+>  		} else {
+>  			if (action == SECCOMP_RET_KILL_THREAD)
+> -				do_exit(SIGSYS);
+> +				start_task_exit(SIGSYS);
+>  			else
+>  				start_group_exit(SIGSYS);
+>  		}
+
+Looks good, yeah.
+
 > diff --git a/kernel/signal.c b/kernel/signal.c
-> index c79c010ca5f3..95a076af600a 100644
+> index afbc001220dd..63fda9b6bbf9 100644
 > --- a/kernel/signal.c
 > +++ b/kernel/signal.c
-> @@ -2646,6 +2646,7 @@ bool get_signal(struct ksignal *ksig)
->  {
->  	struct sighand_struct *sighand = current->sighand;
->  	struct signal_struct *signal = current->signal;
-> +	int exit_code;
->  	int signr;
->  
->  	if (unlikely(current->task_works))
-> @@ -2848,8 +2849,6 @@ bool get_signal(struct ksignal *ksig)
->  		/*
->  		 * Anything else is fatal, maybe with a core dump.
->  		 */
-> -		current->flags |= PF_SIGNALED;
-> -
->  		if (sig_kernel_coredump(signr)) {
->  			if (print_fatal_signals)
->  				print_fatal_signal(ksig->info.si_signo);
-> @@ -2857,14 +2856,33 @@ bool get_signal(struct ksignal *ksig)
->  			/*
->  			 * If it was able to dump core, this kills all
->  			 * other threads in the group and synchronizes with
-> -			 * their demise.  If we lost the race with another
-> -			 * thread getting here, it set group_exit_code
-> -			 * first and our do_group_exit call below will use
-> -			 * that value and ignore the one we pass it.
-> +			 * their demise.  If  another thread makes it
-> +			 * to do_coredump first, it will set group_exit_code
-> +			 * which will be passed to do_exit.
->  			 */
->  			do_coredump(&ksig->info);
->  		}
->  
-> +		/*
-> +		 * Death signals, no core dump.
-> +		 */
-> +		exit_code = signr;
-> +		if (signal_group_exit(signal)) {
-> +			exit_code = signal->group_exit_code;
-> +		} else {
-> +			spin_lock_irq(&sighand->siglock);
-> +			if (signal_group_exit(signal)) {
-> +				/* Another thread got here before we took the lock.  */
-> +				exit_code = signal->group_exit_code;
-> +			} else {
-> +				start_group_exit_locked(signal, exit_code);
-
-And here's the "if we didn't already do start_group_exit(), do it here".
-And that state is entirely captured via the SIGNAL_GROUP_EXIT flag.
-Cool.
-
-> +			}
-> +			spin_unlock_irq(&sighand->siglock);
-> +		}
-> +
-> +		if (exit_code & 0x7f)
-> +			current->flags |= PF_SIGNALED;
-> +
->  		/*
->  		 * PF_IO_WORKER threads will catch and exit on fatal signals
->  		 * themselves. They have cleanup that must be performed, so
-> @@ -2873,10 +2891,7 @@ bool get_signal(struct ksignal *ksig)
->  		if (current->flags & PF_IO_WORKER)
->  			goto out;
->  
-> -		/*
-> -		 * Death signals, no core dump.
-> -		 */
-> -		do_group_exit(ksig->info.si_signo);
-> +		do_exit(exit_code);
->  		/* NOTREACHED */
+> @@ -1424,6 +1424,18 @@ void start_task_exit_locked(struct task_struct *task, int exit_code)
 >  	}
->  	spin_unlock_irq(&sighand->siglock);
+>  }
+>  
+> +void start_task_exit(int exit_code)
+> +{
+> +	struct task_struct *task = current;
+> +	if (!fatal_signal_pending(task)) {
+> +		struct sighand_struct *const sighand = task->sighand;
+> +		spin_lock_irq(&sighand->siglock);
+> +		if (!fatal_signal_pending(current))
+
+efficiency nit: "task" instead of "current" here, yes?
+
+> +			start_task_exit_locked(task, exit_code);
+> +		spin_unlock_irq(&sighand->siglock);
+> +	}
+> +}
+> +
+>  struct sighand_struct *__lock_task_sighand(struct task_struct *tsk,
+>  					   unsigned long *flags)
+>  {
 > -- 
 > 2.20.1
 > 
