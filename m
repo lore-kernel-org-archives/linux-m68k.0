@@ -2,183 +2,123 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-16.1 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
-	INCLUDES_CR_TRAILER,INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-5.1 required=3.0 tests=BAYES_00,DKIM_INVALID,
+	DKIM_SIGNED,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,NICE_REPLY_A,
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=no autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 4897CC49EA5
-	for <linux-m68k@archiver.kernel.org>; Sat, 26 Jun 2021 05:56:27 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 16F00C49EA6
+	for <linux-m68k@archiver.kernel.org>; Sat, 26 Jun 2021 12:19:18 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 1B19E61627
-	for <linux-m68k@archiver.kernel.org>; Sat, 26 Jun 2021 05:56:27 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id DD24261C2A
+	for <linux-m68k@archiver.kernel.org>; Sat, 26 Jun 2021 12:19:17 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229873AbhFZF6r (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Sat, 26 Jun 2021 01:58:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35442 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229629AbhFZF6q (ORCPT
-        <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Sat, 26 Jun 2021 01:58:46 -0400
-Received: from mail-pf1-x431.google.com (mail-pf1-x431.google.com [IPv6:2607:f8b0:4864:20::431])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 773A4C061768
-        for <linux-m68k@lists.linux-m68k.org>; Fri, 25 Jun 2021 22:56:23 -0700 (PDT)
-Received: by mail-pf1-x431.google.com with SMTP id 21so9218528pfp.3
-        for <linux-m68k@lists.linux-m68k.org>; Fri, 25 Jun 2021 22:56:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=PnTryFwi50YPbqJtIMnYSzHf4Qnr9714ggy6hZgJqDU=;
-        b=A0yt7bNf9bzrq08PyG2aWZjlGPFVe0ZpT3tW8adQohWogD9fk2WCcLhhkas3T6XpYM
-         5zw7na5G33E3mATJXbN88ODE3XlfK/wvPQPp30QBD0XIcitdPyC4az4AnuLWNRZwkDCb
-         rIXHvb2WHF2H5nrZiw0p4AH0mwXyLrBfZw8ek=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=PnTryFwi50YPbqJtIMnYSzHf4Qnr9714ggy6hZgJqDU=;
-        b=q/wqRx6CFAUNiW4+Ub6S/o6wc5Af5ABB8e5D6m57gG1WCMdhPE+Wp8YazuNslTg6nS
-         M1eoDZETTGU1Hpeoc5FY8MGoLMBjJr0m/FKqgYlCVk7ioRj7CiBhoW9SA1UhE8MAMAws
-         hJn/H9GoYs1xzv36gvu4nZHDbrr2uf3Fmuo5Tcmfob62g11GgaODVXq3POrNJbEYVxJd
-         yiyoVVmEIalAVYe+/YhFOWfnI1JIcT6CdtNCh0C0G4KvwYeyqY26x6btsee34LrKQHYI
-         X2clmlUbGA4n2u03ePLO2Slc013d+5hcKL3JuCAnZ7I73lLsz1pDJksra3lxcqImTDjT
-         Bfgg==
-X-Gm-Message-State: AOAM530M69Is0KzJEHxG2ichr6W+g1RrQIkdgYevnmxnNXzh3XJFK46M
-        Qgh4qx5KRD2vyJkqPG8g9nbMsg==
-X-Google-Smtp-Source: ABdhPJzv/1HY9hsQM4WghbagiFbCcefyqd4jDNtq/4dPy/G575HLa46mXqbb9A/VOKW/6Ajxv5mTbw==
-X-Received: by 2002:a63:f20a:: with SMTP id v10mr647186pgh.415.1624686982817;
-        Fri, 25 Jun 2021 22:56:22 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id v129sm7662740pfc.31.2021.06.25.22.56.21
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 25 Jun 2021 22:56:22 -0700 (PDT)
-Date:   Fri, 25 Jun 2021 22:56:21 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     "Eric W. Biederman" <ebiederm@xmission.com>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Michael Schmitz <schmitzmic@gmail.com>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        Jens Axboe <axboe@kernel.dk>, Oleg Nesterov <oleg@redhat.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Richard Henderson <rth@twiddle.net>,
-        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
-        Matt Turner <mattst88@gmail.com>,
-        alpha <linux-alpha@vger.kernel.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        linux-m68k <linux-m68k@lists.linux-m68k.org>,
-        Arnd Bergmann <arnd@kernel.org>, Tejun Heo <tj@kernel.org>
-Subject: Re: [PATCH 8/9] signal/task_exit: Use start_task_exit in place of
- do_exit
-Message-ID: <202106252255.32CE2711@keescook>
-References: <YNCaMDQVYB04bk3j@zeniv-ca.linux.org.uk>
- <YNDhdb7XNQE6zQzL@zeniv-ca.linux.org.uk>
- <CAHk-=whAsWXcJkpMM8ji77DkYkeJAT4Cj98WBX-S6=GnMQwhzg@mail.gmail.com>
- <87a6njf0ia.fsf@disp2133>
- <CAHk-=wh4_iMRmWcao6a8kCvR0Hhdrz+M9L+q4Bfcwx9E9D0huw@mail.gmail.com>
- <87tulpbp19.fsf@disp2133>
- <CAHk-=wi_kQAff1yx2ufGRo2zApkvqU8VGn7kgPT-Kv71FTs=AA@mail.gmail.com>
- <87zgvgabw1.fsf@disp2133>
- <875yy3850g.fsf_-_@disp2133>
- <87pmwb5blu.fsf_-_@disp2133>
+        id S229556AbhFZMVj (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Sat, 26 Jun 2021 08:21:39 -0400
+Received: from mail.kernel-space.org ([195.201.34.187]:60372 "EHLO
+        mail.kernel-space.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229518AbhFZMVi (ORCPT
+        <rfc822;linux-m68k@vger.kernel.org>); Sat, 26 Jun 2021 08:21:38 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel-space.org;
+        s=20190913; t=1624709953;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=yE2t7aTLXnsIGk9NsRTTnIh6+5LIIl0v6R6s6pcp9W8=;
+        b=WCSQMDx38NWXj/DClaJFiEjLRxdGN9o8o5ZuR5NEdhrehvslsoqovJIW87XfY5H6rACluR
+        Y3A1kMAxdRPoc5X6NdQPbnScqypo2jlY7k1yWlUTFBC8GtpXzchQatnkcFwbY3x9CuX5BP
+        xE4LNVi3qTVeBgRTrQMX2yhrSDKTm+4=
+Received: from [192.168.0.2] (host-87-8-57-171.retail.telecomitalia.it [87.8.57.171])
+        by ziongate (OpenSMTPD) with ESMTPSA id 47016f6f (TLSv1.3:TLS_AES_256_GCM_SHA384:256:NO);
+        Sat, 26 Jun 2021 12:19:13 +0000 (UTC)
+Subject: Re: [PATCH v3 4/5] can: flexcan: update Kconfig to allow non-of cases
+To:     Marc Kleine-Budde <mkl@pengutronix.de>,
+        Geert Uytterhoeven <geert@linux-m68k.org>
+Cc:     Greg Ungerer <gerg@linux-m68k.org>,
+        Wolfgang Grandegger <wg@grandegger.com>,
+        Linux/m68k <linux-m68k@vger.kernel.org>,
+        linux-can@vger.kernel.org, Joakim Zhang <qiangqing.zhang@nxp.com>
+References: <20210621184615.3345846-1-angelo@kernel-space.org>
+ <20210621184615.3345846-4-angelo@kernel-space.org>
+ <CAMuHMdV8a=YKowGLY3kGqwsfAPd3VPEXS8x7xqYaUz9ZBh64hg@mail.gmail.com>
+ <20210621201816.pk6n4xa7j4bi6vfk@pengutronix.de>
+ <CAMuHMdUHQyPB8G5QX-oK7+MDvkLihR6QCoD+9_3pQKQZWu7TGw@mail.gmail.com>
+ <20210621204127.xwrk2tlxggct7kst@pengutronix.de>
+ <CAMuHMdUrFa6r2VQdNTgr8mV_wGoOb4VhK0Y5_XQQ1Xzgc93NMw@mail.gmail.com>
+ <20210622065427.z5dnixenf47zag4g@pengutronix.de>
+From:   Angelo Dureghello <angelo@kernel-space.org>
+Message-ID: <9d724149-3c30-adca-1ecc-96d204699c03@kernel-space.org>
+Date:   Sat, 26 Jun 2021 14:18:07 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <87pmwb5blu.fsf_-_@disp2133>
+In-Reply-To: <20210622065427.z5dnixenf47zag4g@pengutronix.de>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-On Thu, Jun 24, 2021 at 02:03:25PM -0500, Eric W. Biederman wrote:
-> 
-> Reuse start_task_exit_locked to implement start_task_exit.
-> 
-> Simplify the exit logic by having all exits go through get_signal.
-> This simplifies the analysis of syncrhonization during exit and
-> gurantees a full set of registers will be available for ptrace to
-> examine at PTRACE_EVENT_EXIT.
-> 
-> Signed-off-by: "Eric W. Biederman" <ebiederm@xmission.com>
-> ---
->  include/linux/sched/signal.h |  1 +
->  kernel/exit.c                |  4 +++-
->  kernel/seccomp.c             |  2 +-
->  kernel/signal.c              | 12 ++++++++++++
->  4 files changed, 17 insertions(+), 2 deletions(-)
-> 
-> diff --git a/include/linux/sched/signal.h b/include/linux/sched/signal.h
-> index a958381ba4a9..3f4e69c019b7 100644
-> --- a/include/linux/sched/signal.h
-> +++ b/include/linux/sched/signal.h
-> @@ -430,6 +430,7 @@ static inline void ptrace_signal_wake_up(struct task_struct *t, bool resume)
->  
->  void start_group_exit(int exit_code);
->  void start_task_exit_locked(struct task_struct *task, int exit_code);
-> +void start_task_exit(int exit_code);
->  
->  void task_join_group_stop(struct task_struct *task);
->  
-> diff --git a/kernel/exit.c b/kernel/exit.c
-> index 635f434122b7..51e0c82b3f7d 100644
-> --- a/kernel/exit.c
-> +++ b/kernel/exit.c
-> @@ -889,7 +889,9 @@ EXPORT_SYMBOL(complete_and_exit);
->  
->  SYSCALL_DEFINE1(exit, int, error_code)
->  {
-> -	do_exit((error_code&0xff)<<8);
-> +	start_task_exit((error_code&0xff)<<8);
-> +	/* get_signal will call do_exit */
-> +	return 0;
->  }
->  
->  
-> diff --git a/kernel/seccomp.c b/kernel/seccomp.c
-> index b1c06fd1b205..e0c4c123a8bf 100644
-> --- a/kernel/seccomp.c
-> +++ b/kernel/seccomp.c
-> @@ -1248,7 +1248,7 @@ static int __seccomp_filter(int this_syscall, const struct seccomp_data *sd,
->  			force_sig_seccomp(this_syscall, data, true);
->  		} else {
->  			if (action == SECCOMP_RET_KILL_THREAD)
-> -				do_exit(SIGSYS);
-> +				start_task_exit(SIGSYS);
->  			else
->  				start_group_exit(SIGSYS);
->  		}
+Hi Marc, Geert,
 
-Looks good, yeah.
+thanks, fixed all, but i am still fighting on an
+occasional strange heisenbug.
 
-> diff --git a/kernel/signal.c b/kernel/signal.c
-> index afbc001220dd..63fda9b6bbf9 100644
-> --- a/kernel/signal.c
-> +++ b/kernel/signal.c
-> @@ -1424,6 +1424,18 @@ void start_task_exit_locked(struct task_struct *task, int exit_code)
->  	}
->  }
->  
-> +void start_task_exit(int exit_code)
-> +{
-> +	struct task_struct *task = current;
-> +	if (!fatal_signal_pending(task)) {
-> +		struct sighand_struct *const sighand = task->sighand;
-> +		spin_lock_irq(&sighand->siglock);
-> +		if (!fatal_signal_pending(current))
+After several hours of "candump can0" on coldfire and
+"cangen can0" from PC (peak_usb) at 1Mbit/s, coldfire
+side suddenly produces a 129 RX errors from one packet
+to another 0 -> 129.
+In this condition, after reset and reboot, issue seems
+to persist, at the first received packet coldfire
+produces no ack, i still get 129 rx errors:
 
-efficiency nit: "task" instead of "current" here, yes?
+[   18.090000] flexcan flexcan-mcf5441x.0 can0: flexcan_chip_start: 
+reading mcr=0x60a3020f ctrl=0x052d2056
+[   18.090000] flexcan_irq() ecr=0x00008100 esr=0x0001c912
+[   18.090000] flexcan flexcan-mcf5441x.0 can0: Controller changed from 
+Error Active State (0) into Error Passive State (2).
 
-> +			start_task_exit_locked(task, exit_code);
-> +		spin_unlock_irq(&sighand->siglock);
-> +	}
-> +}
-> +
->  struct sighand_struct *__lock_task_sighand(struct task_struct *tsk,
->  					   unsigned long *flags)
->  {
-> -- 
-> 2.20.1
+Issue seems to disappear again after resoldering the
+can transceiver (SN65HVD230).
+
+So it seems some issue with my hw, investigating on
+this before v4, need to be fully sure it's not a
+driver issue. By oscilloscope, differential signal and
+rx signal seems perfect, no rings. Also baudrate seems
+nearly perfect.
+
+
+On 22/06/21 8:54 AM, Marc Kleine-Budde wrote:
+> On 22.06.2021 08:52:05, Geert Uytterhoeven wrote:
+>>> Probably. What about the original proposed change: "(OF || M5441x) && HAS_IOMEM"?
+>>
+>> Yeah, the Flexcan might pop up on RISC-V, too.
+>> But any new platforms should use OF.
+>> Given the Flexcan is probably present on more than just M5441x,
+>> I'd go for:
+>>
+>>      depends on OF || COLDFIRE || COMPILE_TEST
+>>      depends on HAS_IOMEM
+> 
+> Looks good to me!
+> 
+>>>>> So I think there won't be too many configs where the oldconfig question
+>>>>> would pop up.
+>>>>
+>>>> Now it will, as Mr. Torvalds' main machine does not satisfy "ARM || PPC"
+>>>> or "OF && HAS_IOMEM", but does "HAS_IOMEM" ;-)
+>>>
+>>> IC, that would be one question too much :)
+>>
+>> I do doubt he has CONFIG_CAN enabled ;-)
+> 
+> :D
+> 
+> regards,
+> Marc
 > 
 
--- 
-Kees Cook
+Regards,
+angelo
