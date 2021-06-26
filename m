@@ -7,53 +7,53 @@ X-Spam-Status: No, score=-6.1 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 2BAB8C2B9F4
-	for <linux-m68k@archiver.kernel.org>; Sat, 26 Jun 2021 03:18:01 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8D833C49EA7
+	for <linux-m68k@archiver.kernel.org>; Sat, 26 Jun 2021 03:20:34 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 0EFFD6194B
-	for <linux-m68k@archiver.kernel.org>; Sat, 26 Jun 2021 03:18:01 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 6B2246194B
+	for <linux-m68k@archiver.kernel.org>; Sat, 26 Jun 2021 03:20:34 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230011AbhFZDUS (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Fri, 25 Jun 2021 23:20:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57632 "EHLO
+        id S229782AbhFZDWy (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Fri, 25 Jun 2021 23:22:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58212 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230001AbhFZDUR (ORCPT
+        with ESMTP id S230021AbhFZDWx (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Fri, 25 Jun 2021 23:20:17 -0400
-Received: from mail-pg1-x535.google.com (mail-pg1-x535.google.com [IPv6:2607:f8b0:4864:20::535])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A1194C061768
-        for <linux-m68k@lists.linux-m68k.org>; Fri, 25 Jun 2021 20:17:54 -0700 (PDT)
-Received: by mail-pg1-x535.google.com with SMTP id u190so9842441pgd.8
-        for <linux-m68k@lists.linux-m68k.org>; Fri, 25 Jun 2021 20:17:54 -0700 (PDT)
+        Fri, 25 Jun 2021 23:22:53 -0400
+Received: from mail-pl1-x634.google.com (mail-pl1-x634.google.com [IPv6:2607:f8b0:4864:20::634])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E38B1C061768
+        for <linux-m68k@lists.linux-m68k.org>; Fri, 25 Jun 2021 20:20:31 -0700 (PDT)
+Received: by mail-pl1-x634.google.com with SMTP id x22so5690043pll.11
+        for <linux-m68k@lists.linux-m68k.org>; Fri, 25 Jun 2021 20:20:31 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=chromium.org; s=google;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to;
-        bh=aM4y0UrWCLTv7rcBz2RIFnjL7rxnHwV/LKZu/4UV0wk=;
-        b=nH6MyPY34BEZoiZq9gMd9L04Gprl6YIaeAZoBnp0GSMt6LQrC+9wF5uB7Gs9IBvMc7
-         YHwFB8GDL7VOOkWUb/0Ni1Z+5TYZZGjbbN6/MIr6MnfKoetN0ss2z+DZofF60z2LgDtF
-         eWrJMT5xunVz9YpztTCkxHoQKtZEc1cqE6z1Q=
+        bh=m/r2jKnf6mzXHGS0+mY6tO8kdxoIVifevnwrBMvWaHk=;
+        b=k5evDFcu122UMvrbb5kz6pJG46rSJobzAashV394QfzBP+VFZW1qcemLOWIMTqTwnO
+         KhX0VgfKs97JSqirj7NxmKbJhyY7pwgk8AjhjA15rr2M34TyDxxbjmKofm2KW8+ZtL0q
+         Wq8LJ8oNzBFS43JDygd5Msv1UzewtYzPIfmIg=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=aM4y0UrWCLTv7rcBz2RIFnjL7rxnHwV/LKZu/4UV0wk=;
-        b=Kge0oPXKTzhU0G2M9lCqFzGw2YmmWgTNJw04WxEWUUPydIg2v0kl7SeyQhP0Wq+kmv
-         eoN6xz4SWwE2lMbBz2/GKdwxpAV1YDumpqgvhjiNnVpch6vbzmTM5fcRUE90hbi/VXXJ
-         Y6BZyzNjLHSJCSrRTeEIHUumI53MxpcrmyjIMyrunXHMzS9dEw7IhFDQkYE30N80eyp0
-         3psfsO16EVbyTVVJR0/JQN2BhuMy+DymbI2nOMaAPoJ7dJ5Pz8Jt+wVa0p6ZemUheiEz
-         2B8J6qmqZmTjvt7u+TpDxIgJOtPXbC/imn1OFoSZTnBBzPD5Y1n2sl/PHTOla2dSq/4n
-         XKYQ==
-X-Gm-Message-State: AOAM5308oVEvW1/lagUQNJqVOkKP2F+FOiz7KSOEIc26UPaT79tXIU1H
-        aEfu672Ql13PD6sowD+DiI9kcw==
-X-Google-Smtp-Source: ABdhPJxUN9p2EsCZz7BIQjod4EcoDqz9OBJQC6bGOc2LMhvw/VqcEhhLzzrJgDkNPO2ksaq2j/1KWw==
-X-Received: by 2002:a63:4c2:: with SMTP id 185mr12584370pge.236.1624677473974;
-        Fri, 25 Jun 2021 20:17:53 -0700 (PDT)
+        bh=m/r2jKnf6mzXHGS0+mY6tO8kdxoIVifevnwrBMvWaHk=;
+        b=enm3huneSUD4hLSYdSsKBh0xTndwAD51ULXPwACS9K9AI9verG6g0QP0fWyHex4HhD
+         8FeWhdDiNz+W4riwzlyKBjxbXdeRNClCbZWu4rsutpstFTGFrg8ldKussYIhVw2/fYrs
+         wl9uOpxD+kHI4kcIGQyeDmgttuyKQp9e0gPC0EboW/I4a++fvCntxdHaXdV/CUYGstLN
+         c8NL5MUsKy4KqXbtQI8VmqF+12mwzIp97cYZg//mTxp27M4TXJErUz1f1h2XPQExxWe1
+         5KrEDzyD896nKs3JjZw4pR+J32aFWFqAtl41QaERtPfw86a4H0b3na/oQBDBlLZzSuSE
+         FMOg==
+X-Gm-Message-State: AOAM533POZEb7iFEcacaY8R3xtmy9ufVI2e8mzhbG2fyKjfKckwnFvxJ
+        6/GYPK1W/a0MvDRBORtWwHzK5g==
+X-Google-Smtp-Source: ABdhPJx6GLx4csCnOZlukBXZovccTKxSC/6UVhMJK8OX54jANvNUvIHSf9UYkCV8OtkrYu2Hzi1FWg==
+X-Received: by 2002:a17:90a:3d09:: with SMTP id h9mr23591717pjc.78.1624677631208;
+        Fri, 25 Jun 2021 20:20:31 -0700 (PDT)
 Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id c2sm6473987pjv.10.2021.06.25.20.17.52
+        by smtp.gmail.com with ESMTPSA id h18sm6660549pgl.87.2021.06.25.20.20.30
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 25 Jun 2021 20:17:53 -0700 (PDT)
-Date:   Fri, 25 Jun 2021 20:17:51 -0700
+        Fri, 25 Jun 2021 20:20:30 -0700 (PDT)
+Date:   Fri, 25 Jun 2021 20:20:29 -0700
 From:   Kees Cook <keescook@chromium.org>
 To:     "Eric W. Biederman" <ebiederm@xmission.com>
 Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
@@ -71,9 +71,9 @@ Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
         Arnd Bergmann <arnd@kernel.org>,
         Ley Foon Tan <ley.foon.tan@intel.com>,
         Tejun Heo <tj@kernel.org>
-Subject: Re: [PATCH 2/9] signal/seccomp: Refactor seccomp signal and coredump
- generation
-Message-ID: <202106252014.5AE600929@keescook>
+Subject: Re: [PATCH 3/9] signal/seccomp: Dump core when there is only one
+ live thread
+Message-ID: <202106252018.0EC329C@keescook>
 References: <YNCaMDQVYB04bk3j@zeniv-ca.linux.org.uk>
  <YNDhdb7XNQE6zQzL@zeniv-ca.linux.org.uk>
  <CAHk-=whAsWXcJkpMM8ji77DkYkeJAT4Cj98WBX-S6=GnMQwhzg@mail.gmail.com>
@@ -83,41 +83,20 @@ References: <YNCaMDQVYB04bk3j@zeniv-ca.linux.org.uk>
  <CAHk-=wi_kQAff1yx2ufGRo2zApkvqU8VGn7kgPT-Kv71FTs=AA@mail.gmail.com>
  <87zgvgabw1.fsf@disp2133>
  <875yy3850g.fsf_-_@disp2133>
- <87r1gr6qc4.fsf_-_@disp2133>
+ <87lf6z6qbd.fsf_-_@disp2133>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <87r1gr6qc4.fsf_-_@disp2133>
+In-Reply-To: <87lf6z6qbd.fsf_-_@disp2133>
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-On Thu, Jun 24, 2021 at 01:59:55PM -0500, Eric W. Biederman wrote:
-> 
-> Factor out force_sig_seccomp from the seccomp signal generation and
-> place it in kernel/signal.c.  The function force_sig_seccomp takes a
-> paramter force_coredump to indicate that the sigaction field should be
-> reset to SIGDFL so that a coredump will be generated when the signal
-> is delivered.
+On Thu, Jun 24, 2021 at 02:00:22PM -0500, Eric W. Biederman wrote:
+> Replace get_nr_threads with atomic_read(&current->signal->live) as
+> that is a more accurate number that is decremented sooner.
 
-Ah! This is the part I missed when I was originally trying to figure
-out the coredump stuff. It's the need for setting a default handler
-(i.e. doing a coredump)?
-
-> force_sig_seccomp is then used to replace both seccomp_send_sigsys
-> and seccomp_init_siginfo.
-> 
-> force_sig_info_to_task gains an extra parameter to force using
-> the default signal action.
-> 
-> With this change seccomp is no longer a special case and there
-> becomes exactly one place do_coredump is called from.
-
-Looks good to me. This may benefit from force_sig_seccomp() to be wrapped
-in an #ifdef CONFIG_SECCOMP.
-
-(This patch reminds me that the seccomp self tests don't check for core
-dumps...)
+Okay, seems fine to me. :)
 
 -- 
 Kees Cook
