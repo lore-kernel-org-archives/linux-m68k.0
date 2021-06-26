@@ -2,58 +2,58 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-6.1 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+X-Spam-Status: No, score=-16.1 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no
-	version=3.4.0
+	INCLUDES_CR_TRAILER,INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 81E91C2B9F4
-	for <linux-m68k@archiver.kernel.org>; Sat, 26 Jun 2021 03:24:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E825EC48BC2
+	for <linux-m68k@archiver.kernel.org>; Sat, 26 Jun 2021 03:35:10 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 5EB226113A
-	for <linux-m68k@archiver.kernel.org>; Sat, 26 Jun 2021 03:24:09 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id C604F61956
+	for <linux-m68k@archiver.kernel.org>; Sat, 26 Jun 2021 03:35:10 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229934AbhFZD0a (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Fri, 25 Jun 2021 23:26:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58994 "EHLO
+        id S230004AbhFZDhb (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Fri, 25 Jun 2021 23:37:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33140 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229873AbhFZD03 (ORCPT
+        with ESMTP id S229878AbhFZDh3 (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Fri, 25 Jun 2021 23:26:29 -0400
-Received: from mail-pl1-x62c.google.com (mail-pl1-x62c.google.com [IPv6:2607:f8b0:4864:20::62c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EFB5EC061768
-        for <linux-m68k@lists.linux-m68k.org>; Fri, 25 Jun 2021 20:24:06 -0700 (PDT)
-Received: by mail-pl1-x62c.google.com with SMTP id f10so5724926plg.0
-        for <linux-m68k@lists.linux-m68k.org>; Fri, 25 Jun 2021 20:24:06 -0700 (PDT)
+        Fri, 25 Jun 2021 23:37:29 -0400
+Received: from mail-pl1-x62a.google.com (mail-pl1-x62a.google.com [IPv6:2607:f8b0:4864:20::62a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B0C2BC061766
+        for <linux-m68k@lists.linux-m68k.org>; Fri, 25 Jun 2021 20:35:06 -0700 (PDT)
+Received: by mail-pl1-x62a.google.com with SMTP id f10so5733873plg.0
+        for <linux-m68k@lists.linux-m68k.org>; Fri, 25 Jun 2021 20:35:06 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=chromium.org; s=google;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to;
-        bh=ZYiH9nK6crmHzzEefhGaKJK98dSESEicqRD9TcJugLA=;
-        b=DcagL9ukyAri4GHOF/R0Zf3Iu0Lo6msYVkx5FGprR+PMGBy9p9RQixD9ErVc1gzXH6
-         mSli7Te1XBpclsd+1tAr6ijhr8hce6Hp3XBsdEJyda/f94I0H+WZ5DnF+oq1N6s+TGRd
-         RJdvcGL/FQ4D2d/B27HhdT/IBBdxghruULKz4=
+        bh=aUhvmz2IAighG804GQ35EBkkFq5G6bi3JzTCxCLPv0E=;
+        b=jQhfIeYg/XK/RbrcxRHqUnVapM962lRzN/PRvFhV2DZYDFbKdC7vhV1PUaQsJn6C2u
+         wc+lSbUOtv47V7AjIimm25dFBpNDIJF/gjwNyux0Zp3DXmVZ+9n9jYRDF4LhGOCQBu/7
+         W3DUA2b9WyKlpfNECqM9x3zozs9kmMB/qRga4=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=ZYiH9nK6crmHzzEefhGaKJK98dSESEicqRD9TcJugLA=;
-        b=BH3jCbKsPhfX9b7BleOOju3GVHnZsu8aGAlpltXCP7mg6IKRrvusqOK9JDYytzw5Fa
-         kBorzxUTw7jtAJP+B1N24jD2c8I8U/4e280L+VUkQyKrfJoUUcTiVzrKYqR2ANkAMv1G
-         bIhqyyao4Pbsm9L8npTqme7+ZCgYlaUyrEdhScESflN7aIU4LNpCNdSznfFfV7BGXw39
-         NVISPUMV2jT3UkNOlNtmNCAturtXra1OLjjTmJ6hqDz1Cjd9EK3l06JLc+2bBu2NKRbr
-         upbzm+XLYryybuMWM132MFp2ztt1J+gPC4XrtGP1TVegbrarmoXRkNLvOatdYQN6wpvd
-         Pt1w==
-X-Gm-Message-State: AOAM532TsHOclhP+eBxNjxaDHvGU+Ws8RUgCcohidZ27+M4XFvCpBWJ8
-        i+e+GXI7x0ylL+Vz/nQtHapTew==
-X-Google-Smtp-Source: ABdhPJzaO+QEnFQnNol01zQxJCk+8I37gEbzWkLNj3gUl/PIejMlM+53/MOUevmSyYRVKywcyg4+IA==
-X-Received: by 2002:a17:902:e850:b029:127:a2ed:9924 with SMTP id t16-20020a170902e850b0290127a2ed9924mr8346735plg.57.1624677846193;
-        Fri, 25 Jun 2021 20:24:06 -0700 (PDT)
+        bh=aUhvmz2IAighG804GQ35EBkkFq5G6bi3JzTCxCLPv0E=;
+        b=Gd7TKzNVoGTSVL0RkxvkrOBkk2mw+eSjx3aBH8BfPHGSVeyyqehS5etoIU2i8SurzT
+         8QCcTPHNGBZaR/kgEgTd97JqemXi0ytYF3ejMCIZmvSezfgunktF4CxBGibjrAyj7TJM
+         Dsw6ILXP6n6vEZIH9m8TsXS0yYuk5A60Hu0uLJoNo4qhEipcF+qSnzLuLJ+qrOtY6D06
+         mvG8ZxbCYoAidtFRgWeQ/hGrT6GzBT8C4ZIJs3sK98mJ2SWWD/uc1ficFEm0lQ9+gpzF
+         elZMFMP8pYIC34YhAI1ENN2tmncrmQJU4dQtew9r2MvUuBS+7HUiePUfHABBRMjg38Lf
+         +lUQ==
+X-Gm-Message-State: AOAM533mcYbh9fdEIqUPeaVnEDL1AGf8/BJ7dVB2BRjZ4bOrtPOZy6nx
+        dplj8z9dDL9EuAlPYkpm09/hpw==
+X-Google-Smtp-Source: ABdhPJzmqBYRC7fkJSowdBtNlnsxPIiIDINa/zg9UgQCV7lhXUeX0LJKM1GTh/RC2pyQQdZfZQtQYA==
+X-Received: by 2002:a17:90a:4d88:: with SMTP id m8mr24251849pjh.169.1624678506089;
+        Fri, 25 Jun 2021 20:35:06 -0700 (PDT)
 Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id k7sm1724628pfp.65.2021.06.25.20.24.05
+        by smtp.gmail.com with ESMTPSA id c24sm7160497pfd.167.2021.06.25.20.35.05
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 25 Jun 2021 20:24:05 -0700 (PDT)
-Date:   Fri, 25 Jun 2021 20:24:04 -0700
+        Fri, 25 Jun 2021 20:35:05 -0700 (PDT)
+Date:   Fri, 25 Jun 2021 20:35:04 -0700
 From:   Kees Cook <keescook@chromium.org>
 To:     "Eric W. Biederman" <ebiederm@xmission.com>
 Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
@@ -71,9 +71,9 @@ Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
         Arnd Bergmann <arnd@kernel.org>,
         Ley Foon Tan <ley.foon.tan@intel.com>,
         Tejun Heo <tj@kernel.org>
-Subject: Re: [PATCH 4/9] signal: Factor start_group_exit out of
- complete_signal
-Message-ID: <202106252022.79A9A1A@keescook>
+Subject: Re: [PATCH 5/9] signal/group_exit: Use start_group_exit in place of
+ do_group_exit
+Message-ID: <202106252026.E8C5393@keescook>
 References: <YNCaMDQVYB04bk3j@zeniv-ca.linux.org.uk>
  <YNDhdb7XNQE6zQzL@zeniv-ca.linux.org.uk>
  <CAHk-=whAsWXcJkpMM8ji77DkYkeJAT4Cj98WBX-S6=GnMQwhzg@mail.gmail.com>
@@ -83,41 +83,79 @@ References: <YNCaMDQVYB04bk3j@zeniv-ca.linux.org.uk>
  <CAHk-=wi_kQAff1yx2ufGRo2zApkvqU8VGn7kgPT-Kv71FTs=AA@mail.gmail.com>
  <87zgvgabw1.fsf@disp2133>
  <875yy3850g.fsf_-_@disp2133>
- <87czsb6q9r.fsf_-_@disp2133>
+ <87a6nf6q97.fsf_-_@disp2133>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <87czsb6q9r.fsf_-_@disp2133>
+In-Reply-To: <87a6nf6q97.fsf_-_@disp2133>
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-On Thu, Jun 24, 2021 at 02:01:20PM -0500, Eric W. Biederman wrote:
-> +static void start_group_exit_locked(struct signal_struct *signal, int exit_code)
-> +{
-> +	/*
-> +	 * Start a group exit and wake everybody up.
-> +	 * This way we don't have other threads
-> +	 * running and doing things after a slower
-> +	 * thread has the fatal signal pending.
-> +	 */
-> +	struct task_struct *t;
-> +
-> +	signal->flags = SIGNAL_GROUP_EXIT;
-> +	signal->group_exit_code = exit_code;
-> +	signal->group_stop_count = 0;
-> +	__for_each_thread(signal, t) {
-> +		task_clear_jobctl_pending(t, JOBCTL_PENDING_MASK);
-> +
-> +		/* Don't bother with already dead threads */
-> +		if (t->exit_state)
-> +			continue;
-> +		sigaddset(&t->pending.signal, SIGKILL);
-> +		signal_wake_up(t, 1);
-> +	}
+On Thu, Jun 24, 2021 at 02:01:40PM -0500, Eric W. Biederman wrote:
+> 
+> Make thread exiting uniform by causing all threads to pass through
+> get_signal when they are exiting.  This simplifies the analysis
+> of sychronization during exit and guarantees that all full set
+> of registers will be available for ptrace to examine for
+> threads that stop at PTRACE_EVENT_EXIT.
 
-This both extracts it and changes it. For ease-of-review, maybe split
-this patch into the move and then the logic changes?
+Yeah, cool. I do like making the process lifetime more sensible here. It
+always threw me that do_exit*() just stopped execution. :)
+
+For future me, can you add a comment on start_group_exit() that mentions
+where final process death happens?
+
+> 
+> Signed-off-by: "Eric W. Biederman" <ebiederm@xmission.com>
+> ---
+>  kernel/exit.c    | 4 ++--
+>  kernel/seccomp.c | 2 +-
+>  2 files changed, 3 insertions(+), 3 deletions(-)
+> 
+> diff --git a/kernel/exit.c b/kernel/exit.c
+> index fd1c04193e18..921519d80b56 100644
+> --- a/kernel/exit.c
+> +++ b/kernel/exit.c
+> @@ -931,8 +931,8 @@ do_group_exit(int exit_code)
+>   */
+>  SYSCALL_DEFINE1(exit_group, int, error_code)
+>  {
+> -	do_group_exit((error_code & 0xff) << 8);
+> -	/* NOTREACHED */
+> +	start_group_exit((error_code & 0xff) << 8);
+> +	/* get_signal will call do_exit */
+>  	return 0;
+
+"0" feels weird here, but I can't think of any better "fail closed"
+error code here.
+
+>  }
+>  
+> diff --git a/kernel/seccomp.c b/kernel/seccomp.c
+> index 5301eca670a0..b1c06fd1b205 100644
+> --- a/kernel/seccomp.c
+> +++ b/kernel/seccomp.c
+> @@ -1250,7 +1250,7 @@ static int __seccomp_filter(int this_syscall, const struct seccomp_data *sd,
+>  			if (action == SECCOMP_RET_KILL_THREAD)
+>  				do_exit(SIGSYS);
+>  			else
+> -				do_group_exit(SIGSYS);
+> +				start_group_exit(SIGSYS);
+
+This could use a similar comment to the syscall's comment, just so I
+don't panic when I read this code in like 3 years. ;)
+
+Otherwise, yeah, looks good.
+
+-Kees
+
+>  		}
+>  		return -1;
+>  	}
+> -- 
+> 2.20.1
+> 
 
 -- 
 Kees Cook
