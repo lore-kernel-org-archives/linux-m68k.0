@@ -2,99 +2,140 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-13.8 required=3.0 tests=BAYES_00,
+X-Spam-Status: No, score=-15.3 required=3.0 tests=BAYES_00,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham
-	autolearn_force=no version=3.4.0
+	MAILING_LIST_MULTI,NICE_REPLY_A,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
+	USER_AGENT_SANE_1 autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A7D52C2B9F4
-	for <linux-m68k@archiver.kernel.org>; Mon, 28 Jun 2021 13:29:46 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4451FC2B9F4
+	for <linux-m68k@archiver.kernel.org>; Mon, 28 Jun 2021 13:58:19 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 861EF61607
-	for <linux-m68k@archiver.kernel.org>; Mon, 28 Jun 2021 13:29:46 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 2B61461C71
+	for <linux-m68k@archiver.kernel.org>; Mon, 28 Jun 2021 13:58:19 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229802AbhF1NcL (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Mon, 28 Jun 2021 09:32:11 -0400
-Received: from mail-ua1-f50.google.com ([209.85.222.50]:43979 "EHLO
-        mail-ua1-f50.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229778AbhF1NcL (ORCPT
-        <rfc822;linux-m68k@vger.kernel.org>); Mon, 28 Jun 2021 09:32:11 -0400
-Received: by mail-ua1-f50.google.com with SMTP id f1so6950979uaj.10
-        for <linux-m68k@vger.kernel.org>; Mon, 28 Jun 2021 06:29:44 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=nXLj5kpcShUDKbcLNSbbsXyrrjsrJPHalyO9B0ZFW9o=;
-        b=T0nX5HRMSo/MoSWmLufpapAUuHIR9StB4JIC17vls2ANOc6lDEEO58+JKMMQw7rc8K
-         OS/Zng0XwzGYSdxRh9b+meEhezHp2j5vmVeNYFYcv9SrzST9Y8GqPgD8b8G4mnXtVLOW
-         gZ4ijHbxT91Q054pbOcNIzuFmB5jOxYTt3925iXePMTMNKHvstei8LdIGqVcbRE0B35r
-         lovCuSyO8AmxSbXDBw84f49c9Jdr7M5rJdoOn9NxcCGPMkm8rJqDIGUxUMaj4AfcM4Pt
-         ezmgaNHdOw+/X22aes4W3H8ln3bywBWn0DIDbS0Cbyg/SAprHAVV4oBoTOHfcDZlFp3E
-         /Qng==
-X-Gm-Message-State: AOAM533W9bA8buAwY5ps/b/5f/zeCuAXp8KNPJdwb/dgc+BEGdoJKAzs
-        uE2XknvLCF8vd4La7VHzvZI/+kvSX5cPyZa3ynejGqIuRyM=
-X-Google-Smtp-Source: ABdhPJyt+x2KMFiNkI3LocsMh0h5jAE+VB0qAbAwo9v/ew1siSxuafl/OuqImgmN70YgaGTlcZWfdUTHHs4aHUUeQbw=
-X-Received: by 2002:ab0:70b3:: with SMTP id q19mr20686131ual.2.1624886984302;
- Mon, 28 Jun 2021 06:29:44 -0700 (PDT)
-MIME-Version: 1.0
-References: <1342441646-5645-1-git-send-email-gerg@snapgear.com>
- <1342441646-5645-2-git-send-email-gerg@snapgear.com> <CAMuHMdWSBLUzWfDFK0mSiuO0+=cidymmd33jR3qQ1gFmCPk02A@mail.gmail.com>
- <6796b52b-a868-7955-fedd-e841a21e6c95@linux-m68k.org>
-In-Reply-To: <6796b52b-a868-7955-fedd-e841a21e6c95@linux-m68k.org>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Mon, 28 Jun 2021 15:29:33 +0200
-Message-ID: <CAMuHMdX5vn87B=-pm8puECC74bog4YM6Uf2vY4mondntzSg65Q@mail.gmail.com>
+        id S232399AbhF1OAn (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Mon, 28 Jun 2021 10:00:43 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60998 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232343AbhF1OAk (ORCPT <rfc822;linux-m68k@vger.kernel.org>);
+        Mon, 28 Jun 2021 10:00:40 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7815A61C71;
+        Mon, 28 Jun 2021 13:58:14 +0000 (UTC)
 Subject: Re: [PATCH v2 1/5] m68k: common PCI support definitions and code
-To:     Greg Ungerer <gerg@linux-m68k.org>
-Cc:     "Linux/m68k" <linux-m68k@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+To:     Geert Uytterhoeven <geert@linux-m68k.org>
+Cc:     Linux/m68k <linux-m68k@vger.kernel.org>
+References: <1342441646-5645-1-git-send-email-gerg@snapgear.com>
+ <1342441646-5645-2-git-send-email-gerg@snapgear.com>
+ <CAMuHMdWSBLUzWfDFK0mSiuO0+=cidymmd33jR3qQ1gFmCPk02A@mail.gmail.com>
+ <6796b52b-a868-7955-fedd-e841a21e6c95@linux-m68k.org>
+ <CAMuHMdX5vn87B=-pm8puECC74bog4YM6Uf2vY4mondntzSg65Q@mail.gmail.com>
+From:   Greg Ungerer <gerg@linux-m68k.org>
+Message-ID: <02eedc6b-e346-f8f4-ac1d-4d7d4a7c638c@linux-m68k.org>
+Date:   Mon, 28 Jun 2021 23:58:12 +1000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
+MIME-Version: 1.0
+In-Reply-To: <CAMuHMdX5vn87B=-pm8puECC74bog4YM6Uf2vY4mondntzSg65Q@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-Hi Greg,
+Hi Geert,
 
-On Mon, Jun 28, 2021 at 3:23 PM Greg Ungerer <gerg@linux-m68k.org> wrote:
-> On 28/6/21 5:44 pm, Geert Uytterhoeven wrote:
-> > On Mon, Jul 16, 2012 at 2:25 PM <gerg@snapgear.com> wrote:
-> >> From: Greg Ungerer <gerg@uclinux.org>
-> >>
-> >> Basic set of definitions and support code required to turn on CONFIG_PCI
-> >> for the m68k architecture. Nothing specific to any PCI implementation in
-> >> any m68k class CPU hardware yet.
-> >>
-> >> Signed-off-by: Greg Ungerer <gerg@uclinux.org>
-> >
-> >> --- a/arch/m68k/include/asm/io_mm.h
-> >> +++ b/arch/m68k/include/asm/io_mm.h
-> >> @@ -340,4 +340,6 @@ static inline void memcpy_toio(volatile void __iomem *dst, const void *src, int
-> >>    */
-> >>   #define xlate_dev_kmem_ptr(p)  p
-> >>
-> >> +#define ioport_map(port, nr)   ((void __iomem *)(port))
-> >
-> > So should we dop:
-> >
-> >      config NO_IOPORT_MAP
-> >              def_bool y
-> >
-> > Triggered by seeing CONFIG_GPIO_TQMX86 being removed from allmodconfig
-> > builds due to commit c6414e1a2bd26b00 ("gpio: AMD8111 and TQMX86
-> > require HAS_IOPORT_MAP").
->
-> I guess we could.
-> But we would have to remove the iomap/iounmap definitions in kmap.h too right?
+On 28/6/21 11:29 pm, Geert Uytterhoeven wrote:
+> Hi Greg,
+> 
+> On Mon, Jun 28, 2021 at 3:23 PM Greg Ungerer <gerg@linux-m68k.org> wrote:
+>> On 28/6/21 5:44 pm, Geert Uytterhoeven wrote:
+>>> On Mon, Jul 16, 2012 at 2:25 PM <gerg@snapgear.com> wrote:
+>>>> From: Greg Ungerer <gerg@uclinux.org>
+>>>>
+>>>> Basic set of definitions and support code required to turn on CONFIG_PCI
+>>>> for the m68k architecture. Nothing specific to any PCI implementation in
+>>>> any m68k class CPU hardware yet.
+>>>>
+>>>> Signed-off-by: Greg Ungerer <gerg@uclinux.org>
+>>>
+>>>> --- a/arch/m68k/include/asm/io_mm.h
+>>>> +++ b/arch/m68k/include/asm/io_mm.h
+>>>> @@ -340,4 +340,6 @@ static inline void memcpy_toio(volatile void __iomem *dst, const void *src, int
+>>>>     */
+>>>>    #define xlate_dev_kmem_ptr(p)  p
+>>>>
+>>>> +#define ioport_map(port, nr)   ((void __iomem *)(port))
+>>>
+>>> So should we dop:
+>>>
+>>>       config NO_IOPORT_MAP
+>>>               def_bool y
+>>>
+>>> Triggered by seeing CONFIG_GPIO_TQMX86 being removed from allmodconfig
+>>> builds due to commit c6414e1a2bd26b00 ("gpio: AMD8111 and TQMX86
+>>> require HAS_IOPORT_MAP").
+>>
+>> I guess we could.
+>> But we would have to remove the iomap/iounmap definitions in kmap.h too right?
+> 
+> Why? Do I need more coffee?
 
-Why? Do I need more coffee?
+If you do this:
 
-Gr{oetje,eeting}s,
+diff --git a/arch/m68k/Kconfig b/arch/m68k/Kconfig
+index 372e4e69c43a..a6d4b2b1fe5a 100644
+--- a/arch/m68k/Kconfig
++++ b/arch/m68k/Kconfig
+@@ -59,9 +59,6 @@ config TIME_LOW_RES
+         bool
+         default y
+  
+-config NO_IOPORT_MAP
+-       def_bool y
+-
+  config ZONE_DMA
+         bool
+         default y
 
-                        Geert
 
--- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+And the compile for an M5475 target for example you get this:
 
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+   CC      lib/strncpy_from_user.o
+In file included from ./arch/m68k/include/asm/io_no.h:134,
+                  from ./arch/m68k/include/asm/io.h:6,
+                  from ./include/linux/io.h:13,
+                  from ./include/linux/irq.h:20,
+                  from ./include/asm-generic/hardirq.h:17,
+                  from ./arch/m68k/include/generated/asm/hardirq.h:1,
+                  from ./include/linux/hardirq.h:11,
+                  from ./include/linux/interrupt.h:11,
+                  from ./include/linux/pci.h:38,
+                  from lib/iomap.c:7:
+./arch/m68k/include/asm/kmap.h:61:20: error: redefinition of ‘ioport_map’
+  #define ioport_map ioport_map
+                     ^~~~~~~~~~
+lib/iomap.c:362:15: note: in expansion of macro ‘ioport_map’
+  void __iomem *ioport_map(unsigned long port, unsigned int nr)
+                ^~~~~~~~~~
+./arch/m68k/include/asm/kmap.h:61:20: note: previous definition of ‘ioport_map’ was here
+  #define ioport_map ioport_map
+                     ^~~~~~~~~~
+./arch/m68k/include/asm/kmap.h:62:29: note: in expansion of macro ‘ioport_map’
+  static inline void __iomem *ioport_map(unsigned long port, unsigned int nr)
+                              ^~~~~~~~~~
+./arch/m68k/include/asm/kmap.h:67:22: error: redefinition of ‘ioport_unmap’
+  #define ioport_unmap ioport_unmap
+                       ^~~~~~~~~~~~
+lib/iomap.c:369:6: note: in expansion of macro ‘ioport_unmap’
+  void ioport_unmap(void __iomem *addr)
+       ^~~~~~~~~~~~
+./arch/m68k/include/asm/kmap.h:67:22: note: previous definition of ‘ioport_unmap’ was here
+  #define ioport_unmap ioport_unmap
+                       ^~~~~~~~~~~~
+./arch/m68k/include/asm/kmap.h:68:20: note: in expansion of macro ‘ioport_unmap’
+  static inline void ioport_unmap(void __iomem *p)
+                     ^~~~~~~~~~~~
+
+Regards
+Greg
