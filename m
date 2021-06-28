@@ -2,115 +2,82 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.8 required=3.0 tests=BAYES_00,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-13.8 required=3.0 tests=BAYES_00,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 1ADBAC49EA7
-	for <linux-m68k@archiver.kernel.org>; Mon, 28 Jun 2021 07:31:51 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 67171C2B9F4
+	for <linux-m68k@archiver.kernel.org>; Mon, 28 Jun 2021 07:44:51 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id F1E5D61582
-	for <linux-m68k@archiver.kernel.org>; Mon, 28 Jun 2021 07:31:50 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 4951B6194B
+	for <linux-m68k@archiver.kernel.org>; Mon, 28 Jun 2021 07:44:51 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232401AbhF1HeO (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Mon, 28 Jun 2021 03:34:14 -0400
-Received: from mail-ua1-f48.google.com ([209.85.222.48]:35819 "EHLO
-        mail-ua1-f48.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232354AbhF1HeO (ORCPT
-        <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Mon, 28 Jun 2021 03:34:14 -0400
-Received: by mail-ua1-f48.google.com with SMTP id n61so6596831uan.2
-        for <linux-m68k@lists.linux-m68k.org>; Mon, 28 Jun 2021 00:31:48 -0700 (PDT)
+        id S230294AbhF1HrP (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Mon, 28 Jun 2021 03:47:15 -0400
+Received: from mail-vs1-f53.google.com ([209.85.217.53]:34775 "EHLO
+        mail-vs1-f53.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230256AbhF1HrP (ORCPT
+        <rfc822;linux-m68k@vger.kernel.org>); Mon, 28 Jun 2021 03:47:15 -0400
+Received: by mail-vs1-f53.google.com with SMTP id x1so9533919vsc.1
+        for <linux-m68k@vger.kernel.org>; Mon, 28 Jun 2021 00:44:49 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=YwIJEG/rO0Ceg2ym/ezfAo5dwUkYJUNngLzGb8y4q34=;
-        b=jBKWbk1ZVMiiJOjWUyGxalf8k+vtu36kBW0zcAHPeTluAMLAo2N3NNwVcWFnZh7wTh
-         D/lcAgZMdfcmQr2qhW816jDQvRa0G1/nvKB73dlGpuA7vBeYG62Ny+1Koelbdtl9MHZB
-         EeQMF5NzEKcOmzSN3zh9HSSwx9YNzK0qwVR8sPz2RTmWOVH7TYcpMQh13Fq9TcGaFdxP
-         XRwYz/aCIlT+XS5lotcmqLhvLFMck12Ozl0xpX27wwepGhYxqY3wZLKcWpD/SEXX6fhl
-         cFpfO8eNBBxqQQzGkifGMn3ZlU3JZwfXDosdYbcBoQ+rA0pXNkHW5Zkkqy5XS1iyq4AT
-         cY1Q==
-X-Gm-Message-State: AOAM530FTjzgxk+l6aQwAEbMkqUvQPdOqdcAwnk4C1fFFclbEMp8nsmF
-        t/7oB2WB6btTo1xG0qTpy35Weklb5+bZRCjuBHE=
-X-Google-Smtp-Source: ABdhPJzYCFkqI6XO8XkluCeuBx9LnwBi5juJUkv7ROdktEW/OX3bMPqqTtRpjrN4il7UKs8a0PGwlEAC4EpisNoB+x4=
-X-Received: by 2002:ab0:647:: with SMTP id f65mr19209348uaf.4.1624865507461;
- Mon, 28 Jun 2021 00:31:47 -0700 (PDT)
+        bh=/Wdn42pVjXddthv/fcZQZUXc/tLtV6tLrYN/I2Q8r20=;
+        b=fDskaogDCSUR3Ht4B3QI0RarL800MI9chHNXGvz+FzPu7vVeEHrqlQeiI+zzcOejHp
+         AeGntBuiSFGUvXa1dih7+dh+R+CzS0KuO1srmpsqjxox2a5CvIZOqtaEmIpPEJ6ZDqpn
+         7IpBTtMl8hptZJjeXG8sokxHyHTLpaELFx7gB4QeuIMlRz/LMS8MwT3xEZlr6dkxCV3R
+         LKPINmy3x4+g00QGRjXyDqmvPcDukZPLDwus74AuLW7ehdQoZlJFTH5BiRDTNYwlF1xE
+         TT09VecZJDVH40RVVkpMdoWpKMC2g9OwEq3fKzu1NoszTphsbMR/lgUEw2LYJ+pGscj2
+         /LXA==
+X-Gm-Message-State: AOAM530CFATNeZr+RbxM85fkqxbSdWqgBN3xhyD+zq2Dkx5dArD7zVbm
+        fJCIrIi46dRTDdnq+48MvEv9Zoqmsccbj2TfZ4s=
+X-Google-Smtp-Source: ABdhPJwWYIAqJIjtz9yXx7y58Gf4xys7ZJTVQwF00yXdaxYNv20b0oLn01pbfOnZLKPaUXuqG8oDbRTHrXcU/ekp6WE=
+X-Received: by 2002:a67:ba0c:: with SMTP id l12mr17098305vsn.40.1624866289272;
+ Mon, 28 Jun 2021 00:44:49 -0700 (PDT)
 MIME-Version: 1.0
-References: <YNCaMDQVYB04bk3j@zeniv-ca.linux.org.uk> <YNDhdb7XNQE6zQzL@zeniv-ca.linux.org.uk>
- <CAHk-=whAsWXcJkpMM8ji77DkYkeJAT4Cj98WBX-S6=GnMQwhzg@mail.gmail.com>
- <87a6njf0ia.fsf@disp2133> <CAHk-=wh4_iMRmWcao6a8kCvR0Hhdrz+M9L+q4Bfcwx9E9D0huw@mail.gmail.com>
- <87tulpbp19.fsf@disp2133> <CAHk-=wi_kQAff1yx2ufGRo2zApkvqU8VGn7kgPT-Kv71FTs=AA@mail.gmail.com>
- <87zgvgabw1.fsf@disp2133> <875yy3850g.fsf_-_@disp2133> <YNULA+Ff+eB66bcP@zeniv-ca.linux.org.uk>
- <YNj4DItToR8FphxC@zeniv-ca.linux.org.uk> <6e283d24-7121-ae7c-d5ad-558f85858a09@gmail.com>
-In-Reply-To: <6e283d24-7121-ae7c-d5ad-558f85858a09@gmail.com>
+References: <1342441646-5645-1-git-send-email-gerg@snapgear.com> <1342441646-5645-2-git-send-email-gerg@snapgear.com>
+In-Reply-To: <1342441646-5645-2-git-send-email-gerg@snapgear.com>
 From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Mon, 28 Jun 2021 09:31:36 +0200
-Message-ID: <CAMuHMdXSU6_98NbC1UWTT_kmwxD=6Ha5LJxFAtbSuD=y78nASg@mail.gmail.com>
-Subject: Re: [PATCH 0/9] Refactoring exit
-To:     Michael Schmitz <schmitzmic@gmail.com>
-Cc:     Al Viro <viro@zeniv.linux.org.uk>,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        Jens Axboe <axboe@kernel.dk>, Oleg Nesterov <oleg@redhat.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Richard Henderson <rth@twiddle.net>,
-        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
-        Matt Turner <mattst88@gmail.com>,
-        alpha <linux-alpha@vger.kernel.org>,
-        linux-m68k <linux-m68k@lists.linux-m68k.org>,
-        Arnd Bergmann <arnd@kernel.org>, Tejun Heo <tj@kernel.org>,
-        Kees Cook <keescook@chromium.org>
+Date:   Mon, 28 Jun 2021 09:44:38 +0200
+Message-ID: <CAMuHMdWSBLUzWfDFK0mSiuO0+=cidymmd33jR3qQ1gFmCPk02A@mail.gmail.com>
+Subject: Re: [PATCH v2 1/5] m68k: common PCI support definitions and code
+To:     Greg Ungerer <gerg@linux-m68k.org>
+Cc:     "Linux/m68k" <linux-m68k@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-Hi Michael,
+Hi Greg,
 
-On Mon, Jun 28, 2021 at 1:00 AM Michael Schmitz <schmitzmic@gmail.com> wrote:
-> On 28/06/21 10:13 am, Al Viro wrote:
-> > On Thu, Jun 24, 2021 at 10:45:23PM +0000, Al Viro wrote:
-> >
-> >> 13) there's bdflush(1, whatever), which is equivalent to exit(0).
-> >> IMO it's long past the time to simply remove the sucker.
-> > Incidentally, calling that from ptraced process on alpha leads to
-> > the same headache for tracer.  _If_ we leave it around, this is
-> > another candidate for "hit yourself with that special signal" -
-> > both alpha and m68k have that syscall, and IMO adding an asm
-> > wrapper for that one is over the top.
-> >
-> > Said that, we really ought to bury that thing:
-> >
-> > commit 2f268ee88abb33968501a44368db55c63adaad40
-> > Author: Andrew Morton <akpm@digeo.com>
-> > Date:   Sat Dec 14 03:16:29 2002 -0800
-> >
-> >      [PATCH] deprecate use of bdflush()
-> >
-> >      Patch from Robert Love <rml@tech9.net>
-> >
-> >      We can never get rid of it if we do not deprecate it - so do so and
-> >      print a stern warning to those who still run bdflush daemons.
-> >
-> > Deprecated for 18.5 years by now - I seriously suspect that we have
-> > some contributors younger than that...
+On Mon, Jul 16, 2012 at 2:25 PM <gerg@snapgear.com> wrote:
+> From: Greg Ungerer <gerg@uclinux.org>
 >
-> Haven't found that warning in over 7 years' worth of console logs, and
-> I'm a good candidate for running the oldest userland in existence for m68k.
+> Basic set of definitions and support code required to turn on CONFIG_PCI
+> for the m68k architecture. Nothing specific to any PCI implementation in
+> any m68k class CPU hardware yet.
 >
-> Time to let it go.
+> Signed-off-by: Greg Ungerer <gerg@uclinux.org>
 
-The warning is printed when using filesys-ELF-2.0.x-1400K-2.gz,
-which is a very old ramdisk from right after the m68k a.out to ELF
-transition:
+> --- a/arch/m68k/include/asm/io_mm.h
+> +++ b/arch/m68k/include/asm/io_mm.h
+> @@ -340,4 +340,6 @@ static inline void memcpy_toio(volatile void __iomem *dst, const void *src, int
+>   */
+>  #define xlate_dev_kmem_ptr(p)  p
+>
+> +#define ioport_map(port, nr)   ((void __iomem *)(port))
 
-    warning: process `update' used the obsolete bdflush system call
-    Fix your initscripts?
+So should we dop:
 
-I still boot it, once in a while.
+    config NO_IOPORT_MAP
+            def_bool y
+
+Triggered by seeing CONFIG_GPIO_TQMX86 being removed from allmodconfig
+builds due to commit c6414e1a2bd26b00 ("gpio: AMD8111 and TQMX86
+require HAS_IOPORT_MAP").
 
 Gr{oetje,eeting}s,
 
