@@ -2,119 +2,200 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-14.3 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,NICE_REPLY_A,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1
-	autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-8.8 required=3.0 tests=BAYES_00,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 8826CC11F64
-	for <linux-m68k@archiver.kernel.org>; Mon, 28 Jun 2021 22:16:15 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 860E2C11F64
+	for <linux-m68k@archiver.kernel.org>; Mon, 28 Jun 2021 22:32:21 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 698F261CA3
-	for <linux-m68k@archiver.kernel.org>; Mon, 28 Jun 2021 22:16:15 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 6414C61CF9
+	for <linux-m68k@archiver.kernel.org>; Mon, 28 Jun 2021 22:32:21 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234031AbhF1WSg (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Mon, 28 Jun 2021 18:18:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56006 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235639AbhF1WSc (ORCPT
-        <rfc822;linux-m68k@vger.kernel.org>); Mon, 28 Jun 2021 18:18:32 -0400
-Received: from mail-pj1-x1031.google.com (mail-pj1-x1031.google.com [IPv6:2607:f8b0:4864:20::1031])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD4F3C061574
-        for <linux-m68k@vger.kernel.org>; Mon, 28 Jun 2021 15:16:05 -0700 (PDT)
-Received: by mail-pj1-x1031.google.com with SMTP id cx9-20020a17090afd89b0290170a3e085edso1111540pjb.0
-        for <linux-m68k@vger.kernel.org>; Mon, 28 Jun 2021 15:16:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-transfer-encoding:content-language;
-        bh=KRIrgvuAXO/IG0grXiv1+a2lZ0EsIhj2Su/BshphfTE=;
-        b=A0UTEK8ODfeUc3qhDk07dZhlU8aWHcOWm6cANOSLd2ynQ4i86INaZMm7R5wjX5CFGI
-         SEXucHIVmAJGLTFFQZEyl3a6Xxa3zas9UK18UQrZvSZy1+gE97iuMA8zdDy9bamzbSVZ
-         1iH6c8+pAoGP4T1/m9hmvwiGVJdCg2/8jSxsdJPksQjxolZ5bP5HI1Ac3i531iVRkoTN
-         s9Pe5FwM4YKQAVIWKBUKD4KLDNaMFymUeWvwnFmNI5SwWSQU9Lue/KnWSrf2Igd2+PMG
-         SSzKXZNmOD20XSVt0dSFF3Lg9ycaW6TbjseIg7JfbcldEvNH3ymQ9xjW0SVGiTXoODcy
-         lGyA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=KRIrgvuAXO/IG0grXiv1+a2lZ0EsIhj2Su/BshphfTE=;
-        b=oWTVqn+v9KLgAnjz3rdtl979opBxyBIjB2cFR1uA52oI+QTnEjjv6c7tfgdsKYBV/X
-         o7SdfLI4iGj1D5RZXfn3QL0KIe6+/QM4HFTpBFYN+lCqEIkQVLYnOkT4oHk6yHRD+roD
-         c+Hcjh0sq6rFG0uRGJchdmrL19Uo2nIeSW6DebpBY0sy0MJk8gYF+F04tGwlm5+52J8v
-         06bb+uJH8yNVPpJqeBh/cnz8NovvqC8yKOGQkdIWfZtW1iVzI4c8Lgy2ATTqjjA6FGe5
-         K6EsAdFv4n6RZMXYdc+eYln43XpTl+95VpiRjnWifeEVjPNWJwXJ/zxsPV0oiZEJ0CIO
-         N0UQ==
-X-Gm-Message-State: AOAM531kcpk0yMeqXGmRFpt9HBTLhJHlvetYkecOPwePRObvwTa8FoWu
-        OgMmqB1K9ofPfG3AYusMFCT8vkHB2nj0aA==
-X-Google-Smtp-Source: ABdhPJzpKWb2LCHLh8RkMMIk1jN3oi2zZNWZ3wpCUCQpV+ONo7Zd5JDP2OS8MP4snXrB/q2rVNm3ew==
-X-Received: by 2002:a17:902:ed82:b029:ef:48c8:128e with SMTP id e2-20020a170902ed82b02900ef48c8128emr24860386plj.72.1624918565313;
-        Mon, 28 Jun 2021 15:16:05 -0700 (PDT)
-Received: from ?IPv6:2001:df0:0:200c:1c9b:7d7f:b312:1fae? ([2001:df0:0:200c:1c9b:7d7f:b312:1fae])
-        by smtp.gmail.com with ESMTPSA id m21sm529846pjz.57.2021.06.28.15.16.02
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 28 Jun 2021 15:16:04 -0700 (PDT)
-Subject: Re: [PATCH v6 1/2] m68k/kernel - wire up syscall_trace_enter/leave
- for m68k
+        id S236197AbhF1Weo (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Mon, 28 Jun 2021 18:34:44 -0400
+Received: from mga03.intel.com ([134.134.136.65]:8426 "EHLO mga03.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S236057AbhF1We3 (ORCPT <rfc822;linux-m68k@lists.linux-m68k.org>);
+        Mon, 28 Jun 2021 18:34:29 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10029"; a="208085031"
+X-IronPort-AV: E=Sophos;i="5.83,306,1616482800"; 
+   d="scan'208";a="208085031"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Jun 2021 15:32:00 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.83,306,1616482800"; 
+   d="scan'208";a="456526549"
+Received: from lkp-server01.sh.intel.com (HELO 4aae0cb4f5b5) ([10.239.97.150])
+  by fmsmga008.fm.intel.com with ESMTP; 28 Jun 2021 15:31:58 -0700
+Received: from kbuild by 4aae0cb4f5b5 with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1lxznK-0008ks-1X; Mon, 28 Jun 2021 22:31:58 +0000
+Date:   Tue, 29 Jun 2021 06:31:10 +0800
+From:   kernel test robot <lkp@intel.com>
 To:     Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     Linux/m68k <linux-m68k@vger.kernel.org>,
-        John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
-        Andreas Schwab <schwab@linux-m68k.org>
-References: <1624495560-6351-1-git-send-email-schmitzmic@gmail.com>
- <1624495560-6351-2-git-send-email-schmitzmic@gmail.com>
- <CAMuHMdWoX=6Yf7MZXR92Q3APYixY5MDM6MW_UUf0DO2+oDkHAQ@mail.gmail.com>
-From:   Michael Schmitz <schmitzmic@gmail.com>
-Message-ID: <aeac601a-a6ff-678b-83dc-48dacb430ec3@gmail.com>
-Date:   Tue, 29 Jun 2021 10:16:00 +1200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+Cc:     linux-m68k@lists.linux-m68k.org
+Subject: [m68k:m68k-v5.13] BUILD SUCCESS
+ 340860ab7d4a01103d33f3e0efa07aeb9d135bd9
+Message-ID: <60da4dae.1+emA/ZFw3Lw7++U%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
-In-Reply-To: <CAMuHMdWoX=6Yf7MZXR92Q3APYixY5MDM6MW_UUf0DO2+oDkHAQ@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-Hi Geert,
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/geert/linux-m68k.git m68k-v5.13
+branch HEAD: 340860ab7d4a01103d33f3e0efa07aeb9d135bd9  m68k: defconfig: Enable Atari EtherNAT and NetUSBee USB support
 
-On 28/06/21 7:25 pm, Geert Uytterhoeven wrote:
-> On Thu, Jun 24, 2021 at 2:46 AM Michael Schmitz <schmitzmic@gmail.com> wrote:
->> m68k (other than Coldfire) uses syscall_trace for both trace entry
->> and trace exit. Seccomp support requires separate entry points for
->> trace entry and exit which are already provided for Coldfire.
->>
->> Replace syscall_trace by syscall_trace_enter and syscall_trace_leave
->> in preparation for seccomp support. Check return code of
->> syscall_trace_enter(), and skip syscall if -1. Return code will be
->> left at what had been set by ptrace or seccomp (in regs->d0).
->>
->> No regression seen in testing with strace on ARAnyM.
->>
->> Signed-off-by: Michael Schmitz <schmitzmic@gmail.com>
-> b
-> Thanks for your patch!
->
->>   arch/m68k/kernel/entry.S  |  8 +++++---
-> We need similar changes to arch/m68k/68000/entry.S and
-> arch/m68k/coldfire/entry.S
+elapsed time: 725m
 
-Do you have a current defconfig for 68000? I've test compiled my patch 
-with two coldfire defconfigs, but could not find one for m68kclassic ...
+configs tested: 134
+configs skipped: 3
 
-Cheers,
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
-     Michael
+gcc tested configs:
+arm                                 defconfig
+arm64                            allyesconfig
+arm64                               defconfig
+arm                              allyesconfig
+arm                              allmodconfig
+powerpc                    sam440ep_defconfig
+h8300                       h8s-sim_defconfig
+parisc                           alldefconfig
+powerpc                 canyonlands_defconfig
+m68k                          multi_defconfig
+sh                           se7750_defconfig
+arm                         palmz72_defconfig
+powerpc                         wii_defconfig
+riscv                             allnoconfig
+m68k                        stmark2_defconfig
+powerpc                 mpc836x_rdk_defconfig
+powerpc                     mpc5200_defconfig
+powerpc                      ep88xc_defconfig
+mips                            ar7_defconfig
+powerpc                       ppc64_defconfig
+arm                         socfpga_defconfig
+parisc                generic-64bit_defconfig
+arm                             rpc_defconfig
+powerpc                     mpc83xx_defconfig
+arm                         cm_x300_defconfig
+powerpc                 mpc832x_rdb_defconfig
+powerpc                      obs600_defconfig
+powerpc                        fsp2_defconfig
+arm                         vf610m4_defconfig
+powerpc                     stx_gp3_defconfig
+sh                          kfr2r09_defconfig
+arm                         s5pv210_defconfig
+powerpc                     taishan_defconfig
+h8300                               defconfig
+sh                      rts7751r2d1_defconfig
+powerpc                     tqm8541_defconfig
+mips                        omega2p_defconfig
+microblaze                      mmu_defconfig
+powerpc64                           defconfig
+mips                         db1xxx_defconfig
+powerpc                      bamboo_defconfig
+sh                           se7619_defconfig
+sh                         ecovec24_defconfig
+powerpc                      cm5200_defconfig
+mips                     loongson1c_defconfig
+x86_64                           alldefconfig
+mips                  maltasmvp_eva_defconfig
+powerpc                     sequoia_defconfig
+mips                          ath79_defconfig
+powerpc                     skiroot_defconfig
+um                           x86_64_defconfig
+nios2                            alldefconfig
+powerpc                 mpc8540_ads_defconfig
+mips                      loongson3_defconfig
+openrisc                            defconfig
+powerpc                       eiger_defconfig
+um                                  defconfig
+x86_64                            allnoconfig
+sh                 kfr2r09-romimage_defconfig
+powerpc                      mgcoge_defconfig
+sh                            hp6xx_defconfig
+mips                       lemote2f_defconfig
+powerpc                      ppc44x_defconfig
+ia64                             allmodconfig
+ia64                                defconfig
+ia64                             allyesconfig
+m68k                             allmodconfig
+m68k                                defconfig
+m68k                             allyesconfig
+nios2                               defconfig
+arc                              allyesconfig
+nds32                             allnoconfig
+nds32                               defconfig
+nios2                            allyesconfig
+csky                                defconfig
+alpha                               defconfig
+alpha                            allyesconfig
+xtensa                           allyesconfig
+h8300                            allyesconfig
+arc                                 defconfig
+sh                               allmodconfig
+parisc                              defconfig
+s390                             allyesconfig
+s390                             allmodconfig
+parisc                           allyesconfig
+s390                                defconfig
+i386                             allyesconfig
+sparc                            allyesconfig
+sparc                               defconfig
+i386                                defconfig
+mips                             allyesconfig
+mips                             allmodconfig
+powerpc                          allyesconfig
+powerpc                          allmodconfig
+powerpc                           allnoconfig
+i386                 randconfig-a001-20210628
+i386                 randconfig-a002-20210628
+i386                 randconfig-a003-20210628
+i386                 randconfig-a006-20210628
+i386                 randconfig-a005-20210628
+i386                 randconfig-a004-20210628
+x86_64               randconfig-a012-20210628
+x86_64               randconfig-a016-20210628
+x86_64               randconfig-a015-20210628
+x86_64               randconfig-a013-20210628
+x86_64               randconfig-a014-20210628
+x86_64               randconfig-a011-20210628
+i386                 randconfig-a011-20210628
+i386                 randconfig-a014-20210628
+i386                 randconfig-a013-20210628
+i386                 randconfig-a015-20210628
+i386                 randconfig-a016-20210628
+i386                 randconfig-a012-20210628
+riscv                    nommu_k210_defconfig
+riscv                            allyesconfig
+riscv                    nommu_virt_defconfig
+riscv                               defconfig
+riscv                          rv32_defconfig
+riscv                            allmodconfig
+x86_64                    rhel-8.3-kselftests
+um                             i386_defconfig
+um                            kunit_defconfig
+x86_64                           allyesconfig
+x86_64                              defconfig
+x86_64                               rhel-8.3
+x86_64                      rhel-8.3-kbuiltin
+x86_64                                  kexec
 
+clang tested configs:
+x86_64               randconfig-b001-20210628
+x86_64               randconfig-a002-20210628
+x86_64               randconfig-a005-20210628
+x86_64               randconfig-a001-20210628
+x86_64               randconfig-a003-20210628
+x86_64               randconfig-a004-20210628
+x86_64               randconfig-a006-20210628
 
->
->>   arch/m68k/kernel/ptrace.c | 17 -----------------
->>   2 files changed, 5 insertions(+), 20 deletions(-)
-> Gr{oetje,eeting}s,
->
->                          Geert
->
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
