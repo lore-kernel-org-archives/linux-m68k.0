@@ -2,77 +2,37 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,NICE_REPLY_A,SPF_HELO_NONE,
-	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-3.8 required=3.0 tests=BAYES_00,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
+	autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9D3DAC49361
-	for <linux-m68k@archiver.kernel.org>; Mon, 28 Jun 2021 17:14:31 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E0529C11F66
+	for <linux-m68k@archiver.kernel.org>; Mon, 28 Jun 2021 19:03:39 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 80F6761C43
-	for <linux-m68k@archiver.kernel.org>; Mon, 28 Jun 2021 17:14:31 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id C244B61982
+	for <linux-m68k@archiver.kernel.org>; Mon, 28 Jun 2021 19:03:39 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233135AbhF1RQ4 (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Mon, 28 Jun 2021 13:16:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45294 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233114AbhF1RQz (ORCPT
+        id S235934AbhF1TGC (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Mon, 28 Jun 2021 15:06:02 -0400
+Received: from out03.mta.xmission.com ([166.70.13.233]:33324 "EHLO
+        out03.mta.xmission.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233101AbhF1TGA (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Mon, 28 Jun 2021 13:16:55 -0400
-Received: from mail-pg1-x532.google.com (mail-pg1-x532.google.com [IPv6:2607:f8b0:4864:20::532])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AC72FC061760
-        for <linux-m68k@lists.linux-m68k.org>; Mon, 28 Jun 2021 10:14:27 -0700 (PDT)
-Received: by mail-pg1-x532.google.com with SMTP id m2so15987728pgk.7
-        for <linux-m68k@lists.linux-m68k.org>; Mon, 28 Jun 2021 10:14:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:references:cc:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-transfer-encoding;
-        bh=8ssRK52MSevAKyQoJxF4jNVc366d3EchjdXo13/rUh0=;
-        b=OTreY5lHoXNQ2THoqnz3iL4Rn8/qrdaoVrPCgJ8vwojjNX7ZbIGTNwLMegvtr3NEOx
-         f4x1ieFMEEfPUc+TUB8eorPq6zNdNyAzIl04LigkNLL3eYJ5nryN8cPp+/c0l7T7gh4d
-         dvS7oNd42R5Qco5BpF18DRN/tO3wBHjIcTLCCqfWMep5h3drVoEgJZgzx8BgTvWTjGv6
-         iWoA3UG/Pe7zVTznLVgkz043hgsRJ5glZMvlCON65HheZ55cf5N6XebXtVxwPWm3mpJV
-         MocqOsJokcMgzOQIIvEyDIafgzBURe9vogeNPnCUUsJDmqPGT9rr8UiKR3HW1MubaqDY
-         cFvA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:references:cc:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding;
-        bh=8ssRK52MSevAKyQoJxF4jNVc366d3EchjdXo13/rUh0=;
-        b=rBPZ1RS+dmkdWQ/HT7y4x2Iji4bKb7F2exiiyiBecimDUJLcmeEuQ4FhcFOZu+FXgp
-         0hmVbZ6cH65djwjxYmWcY/rgn/By3NwmuFTIAvdMntFBYu0O6C9LNvM4oInXdWZpMOyM
-         8YAXRV3g4rhn6tqT5ApqMwnaBne34MCbrblE/fricPRNkJ3RbQ7xNiT3gyzxxYvYzbcQ
-         +Xdz1j1ClFVdClFanOYfp8M3eTJY1S/mRh7CfAGK6Cpp4f6+8GxTUOlGzws8rUOQkAWA
-         XRZSwYTuFxFOQyV20rCIqHxEtc04yKyFT8uaRlyDaAYjH4kdYV89cYafH/AKMYHa7mY3
-         Z2sg==
-X-Gm-Message-State: AOAM53088s2+djub7kuvxv+zHLrAPO1KYTDvCoyqWTlA72Z77lgkK9RR
-        O96Mmfj4VJZbp6vrAttKQSY=
-X-Google-Smtp-Source: ABdhPJxqJ3swu4BK/xwqLBbP1EzrcjSmkBPGV9E35yiozTOuPnT7dVU6RjahTgXLPTyN8nqdYyzoUw==
-X-Received: by 2002:a63:f556:: with SMTP id e22mr23969589pgk.189.1624900467165;
-        Mon, 28 Jun 2021 10:14:27 -0700 (PDT)
-Received: from [10.1.1.25] (222-152-189-137-fibre.sparkbb.co.nz. [222.152.189.137])
-        by smtp.gmail.com with ESMTPSA id u2sm3685754pfh.61.2021.06.28.10.14.19
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Mon, 28 Jun 2021 10:14:26 -0700 (PDT)
-Subject: Re: [PATCH 0/9] Refactoring exit
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-References: <YNCaMDQVYB04bk3j@zeniv-ca.linux.org.uk>
- <YNDhdb7XNQE6zQzL@zeniv-ca.linux.org.uk>
- <CAHk-=whAsWXcJkpMM8ji77DkYkeJAT4Cj98WBX-S6=GnMQwhzg@mail.gmail.com>
- <87a6njf0ia.fsf@disp2133>
- <CAHk-=wh4_iMRmWcao6a8kCvR0Hhdrz+M9L+q4Bfcwx9E9D0huw@mail.gmail.com>
- <87tulpbp19.fsf@disp2133>
- <CAHk-=wi_kQAff1yx2ufGRo2zApkvqU8VGn7kgPT-Kv71FTs=AA@mail.gmail.com>
- <87zgvgabw1.fsf@disp2133> <875yy3850g.fsf_-_@disp2133>
- <YNULA+Ff+eB66bcP@zeniv-ca.linux.org.uk>
- <YNj4DItToR8FphxC@zeniv-ca.linux.org.uk>
- <6e283d24-7121-ae7c-d5ad-558f85858a09@gmail.com>
- <CAMuHMdXSU6_98NbC1UWTT_kmwxD=6Ha5LJxFAtbSuD=y78nASg@mail.gmail.com>
-Cc:     Al Viro <viro@zeniv.linux.org.uk>,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
+        Mon, 28 Jun 2021 15:06:00 -0400
+Received: from in01.mta.xmission.com ([166.70.13.51]:48296)
+        by out03.mta.xmission.com with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.93)
+        (envelope-from <ebiederm@xmission.com>)
+        id 1lxwXY-00FZtO-Fr; Mon, 28 Jun 2021 13:03:28 -0600
+Received: from ip68-227-160-95.om.om.cox.net ([68.227.160.95]:38704 helo=email.xmission.com)
+        by in01.mta.xmission.com with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.93)
+        (envelope-from <ebiederm@xmission.com>)
+        id 1lxwXX-00Gdx8-9L; Mon, 28 Jun 2021 13:03:28 -0600
+From:   ebiederm@xmission.com (Eric W. Biederman)
+To:     Al Viro <viro@zeniv.linux.org.uk>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Michael Schmitz <schmitzmic@gmail.com>,
         linux-arch <linux-arch@vger.kernel.org>,
         Jens Axboe <axboe@kernel.dk>, Oleg Nesterov <oleg@redhat.com>,
         Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
@@ -80,52 +40,84 @@ Cc:     Al Viro <viro@zeniv.linux.org.uk>,
         Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
         Matt Turner <mattst88@gmail.com>,
         alpha <linux-alpha@vger.kernel.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
         linux-m68k <linux-m68k@lists.linux-m68k.org>,
-        Arnd Bergmann <arnd@kernel.org>, Tejun Heo <tj@kernel.org>,
-        Kees Cook <keescook@chromium.org>
-From:   Michael Schmitz <schmitzmic@gmail.com>
-Message-ID: <7ad6c3a9-b983-46a5-fc95-f961b636d3fe@gmail.com>
-Date:   Tue, 29 Jun 2021 05:14:16 +1200
-User-Agent: Mozilla/5.0 (X11; Linux ppc; rv:45.0) Gecko/20100101
- Icedove/45.4.0
+        Arnd Bergmann <arnd@kernel.org>,
+        Ley Foon Tan <ley.foon.tan@intel.com>,
+        Tejun Heo <tj@kernel.org>, Kees Cook <keescook@chromium.org>
+References: <CAHk-=wj5cJjpjAmDptmP9u4__6p3Y93SCQHG8Ef4+h=cnLiCsA@mail.gmail.com>
+        <YNCaMDQVYB04bk3j@zeniv-ca.linux.org.uk>
+        <YNDhdb7XNQE6zQzL@zeniv-ca.linux.org.uk>
+        <CAHk-=whAsWXcJkpMM8ji77DkYkeJAT4Cj98WBX-S6=GnMQwhzg@mail.gmail.com>
+        <87a6njf0ia.fsf@disp2133>
+        <CAHk-=wh4_iMRmWcao6a8kCvR0Hhdrz+M9L+q4Bfcwx9E9D0huw@mail.gmail.com>
+        <87tulpbp19.fsf@disp2133>
+        <CAHk-=wi_kQAff1yx2ufGRo2zApkvqU8VGn7kgPT-Kv71FTs=AA@mail.gmail.com>
+        <87zgvgabw1.fsf@disp2133> <875yy3850g.fsf_-_@disp2133>
+        <YNULA+Ff+eB66bcP@zeniv-ca.linux.org.uk>
+Date:   Mon, 28 Jun 2021 14:02:50 -0500
+In-Reply-To: <YNULA+Ff+eB66bcP@zeniv-ca.linux.org.uk> (Al Viro's message of
+        "Thu, 24 Jun 2021 22:45:23 +0000")
+Message-ID: <87v95xx15x.fsf@disp2133>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
 MIME-Version: 1.0
-In-Reply-To: <CAMuHMdXSU6_98NbC1UWTT_kmwxD=6Ha5LJxFAtbSuD=y78nASg@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
+X-XM-SPF: eid=1lxwXX-00Gdx8-9L;;;mid=<87v95xx15x.fsf@disp2133>;;;hst=in01.mta.xmission.com;;;ip=68.227.160.95;;;frm=ebiederm@xmission.com;;;spf=neutral
+X-XM-AID: U2FsdGVkX18JERu3BMiKmUMjDvvelGV7aJUlVNLWdXI=
+X-SA-Exim-Connect-IP: 68.227.160.95
+X-SA-Exim-Mail-From: ebiederm@xmission.com
+Subject: Re: [PATCH 0/9] Refactoring exit
+X-SA-Exim-Version: 4.2.1 (built Sat, 08 Feb 2020 21:53:50 +0000)
+X-SA-Exim-Scanned: Yes (on in01.mta.xmission.com)
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-Hi Geert,
+Al Viro <viro@zeniv.linux.org.uk> writes:
 
-Am 28.06.2021 um 19:31 schrieb Geert Uytterhoeven:
->> Haven't found that warning in over 7 years' worth of console logs, and
->> I'm a good candidate for running the oldest userland in existence for m68k.
->>
->> Time to let it go.
+> On Thu, Jun 24, 2021 at 01:57:35PM -0500, Eric W. Biederman wrote:
 >
-> The warning is printed when using filesys-ELF-2.0.x-1400K-2.gz,
-> which is a very old ramdisk from right after the m68k a.out to ELF
-> transition:
+>> So far the code has been lightly tested, and the descriptions of some
+>> of the patches are a bit light, but I think this shows the direction
+>> I am aiming to travel for sorting out exit(2) and exit_group(2).
 >
->     warning: process `update' used the obsolete bdflush system call
->     Fix your initscripts?
+> FWIW, here's the current picture for do_exit(), aside of exit(2) and do_exit_group():
 >
-> I still boot it, once in a while.
+> 1) stuff that is clearly oops-like -
+>         alpha:die_if_kernel() alpha:do_entUna() alpha:do_page_fault() arm:oops_end()
+>         arm:__do_kernel_fault() arm64:die() arm64:die_kernel_fault() csky:alignment()
+>         csky:die() csky:no_context() h8300:die() h8300:do_page_fault() hexagon:die()
+>         ia64:die() i64:ia64_do_page_fault() m68k:die_if_kernel() m68k:send_fault_sig()
+>         microblaze:die() mips:die() nds32:handle_fpu_exception() nds32:die()
+>         nds32:unhandled_interruption() nds32:unhandled_exceptions() nds32:do_revinsn()
+>         nds32:do_page_fault() nios:die() openrisc:die() openrisc:do_page_fault()
+>         parisc:die_if_kernel() ppc:oops_end() riscv:die() riscv:die_kernel_fault()
+>         s390:die() s390:do_no_context() s390:do_low_address() sh:die()
+>         sparc32:die_if_kernel() sparc32:do_sparc_fault() sparc64:die_if_kernel()
+>         x86:rewind_stack_do_exit() xtensa:die() xtensa:bad_page_fault()
+> We really do not want ptrace anywhere near any of those and we do not want
+> any of that to return; this shit would better be handled right there and
+> there - no "post a fatal signal" would do.
 
-OK; you take the cake. That ramdisk came to mind when I thought about 
-where I'd last seen bdflush, but I've not used it in ages (not sure 14 
-MB are enough for that).
+Thanks that makes a good start for digging into these.
 
-The question then is - will bdflush fail gracefully, or spin retrying 
-the syscall?
+I think the distinction I would make is:
+- If the kernel is broken use do_task_dead.
+- Otherwise cleanup the semantics by using start_group_exit,
+  start_task_exit or by just cleaning up the code.
+  
 
-Cheers,
+Looking at the reboot case it looks like we the code
+should have become do_group_exit in 2.5.  I have a suspicion
+we have a bunch of similar cases that want to terminate the
+entire process, but we simply never updated to deal with
+multi-thread processes.
 
-	Michael
+I suspect in the reboot case panic if machine_halt or
+or machine_power_off fails is more likely the correct
+handling.  But we do have funny semantics sometimes.
 
->
-> Gr{oetje,eeting}s,
->
->                         Geert
->
+I will see what I can do to expand my patchset to handle all of these
+various callers of do_exit.
+
+Eric
