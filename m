@@ -2,134 +2,80 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-4.2 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+X-Spam-Status: No, score=-5.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,NICE_REPLY_A,SPF_HELO_NONE,
-	SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=no autolearn_force=no
-	version=3.4.0
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	USER_AGENT_GIT autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 7B82DC11F64
-	for <linux-m68k@archiver.kernel.org>; Mon, 28 Jun 2021 23:42:37 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A69E8C11F66
+	for <linux-m68k@archiver.kernel.org>; Mon, 28 Jun 2021 23:55:30 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 5C55161CF6
-	for <linux-m68k@archiver.kernel.org>; Mon, 28 Jun 2021 23:42:37 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 8A29061A1D
+	for <linux-m68k@archiver.kernel.org>; Mon, 28 Jun 2021 23:55:30 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235708AbhF1XpC (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Mon, 28 Jun 2021 19:45:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46708 "EHLO
+        id S229933AbhF1X54 (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Mon, 28 Jun 2021 19:57:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49580 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235667AbhF1Xov (ORCPT
-        <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Mon, 28 Jun 2021 19:44:51 -0400
-Received: from mail-pf1-x433.google.com (mail-pf1-x433.google.com [IPv6:2607:f8b0:4864:20::433])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ED204C061766
-        for <linux-m68k@lists.linux-m68k.org>; Mon, 28 Jun 2021 16:42:24 -0700 (PDT)
-Received: by mail-pf1-x433.google.com with SMTP id g21so13903995pfc.11
-        for <linux-m68k@lists.linux-m68k.org>; Mon, 28 Jun 2021 16:42:24 -0700 (PDT)
+        with ESMTP id S229626AbhF1X5z (ORCPT
+        <rfc822;linux-m68k@vger.kernel.org>); Mon, 28 Jun 2021 19:57:55 -0400
+Received: from mail-pf1-x435.google.com (mail-pf1-x435.google.com [IPv6:2607:f8b0:4864:20::435])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E8907C061574
+        for <linux-m68k@vger.kernel.org>; Mon, 28 Jun 2021 16:55:26 -0700 (PDT)
+Received: by mail-pf1-x435.google.com with SMTP id c8so15632592pfp.5
+        for <linux-m68k@vger.kernel.org>; Mon, 28 Jun 2021 16:55:26 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-transfer-encoding:content-language;
-        bh=MnOd9iaFXNVD5FJdstRfyB3AFTdce3B7edCsrT/B65c=;
-        b=pqa8SXQ/hrN3EE8tWnQaXTgQQ3IZBW/4UPp07rsEpJERt1vDmlBqwfOVQJuTRyq0Am
-         H/71eemQRinvfC1+TvsMm3hta9jb1/e0qATCWojjxQKaLzr4Oml0uSu5Xq0jVZVXJqER
-         MDi/VtgB+XdWcx9atuL8LQkkSpJ0xM/te+EfGO7nhhSi9Mhs8zUsnBMZEpBTkGIA4Fpk
-         3pUjAvMP3WS/7h60szKRz131Yf2UsqM8p6CgL0/4ZV5qJrWEmM56TyOTQZFHm/pbrDd7
-         L/MwUK09uULPkJsmlecXAHPFUVAJaGDsqbKUmRTCqPFtorFVPxlMJpH98IJ4wEi9vvlQ
-         LPbA==
+        h=from:to:cc:subject:date:message-id;
+        bh=fOwJ009XWzDHSyQvnVFmk8mchZ3rDOSzJwss4bY6xeo=;
+        b=JqtHGIC5Oq2KwWVyS8sxplQsMBoLNy1vbeRcnchIDO16CIgGgKDnb8QR5SGWml875K
+         kdtcXYybMetm8nJ5sSXiN1J1xqVjvPzq9tKRdWZ6Cj4HVjxzVrEFRzbjGILE4wa/3RzL
+         yKeIjYA2XiqOKsBNjN1gpifREjtnVdKO1H5LHIoCtOdrCxZgtjCq/UV0hlHw5p3Qq7b2
+         7nbTU4cvwcFE6B0nYsEuUKp1ux234dTNhsK72wzdoRmIl1fua+bViqdD6I4KPIVNneQA
+         xiyTCjNQtbVQCYxQCnOXBrNeEVPHpWmyr4vILwQEAzofzyKI63w3NjWOeifswNPxHX/e
+         I5AA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=MnOd9iaFXNVD5FJdstRfyB3AFTdce3B7edCsrT/B65c=;
-        b=tl3+BPF63ATgdLtsZpQf3QUOQGI0NHvr6t4VXLIK3TuKmAUYdUmkADPfYW06ZfKBNj
-         9EmKC9VYYsEdB0LmCnkVpmTi58JoIDFxww9IkV80TLsg2xK4LVqgFWx2jCQcmn75BTsC
-         jsH0p4boVxxWI/bq1mIJ05CPvZ4Zc77opixCMEhQpRLyIhu80qHofkFj14LwyYZRV1h2
-         ihNYIpav16yUE4V/LCd1cNmK+/GQwDFb0NyJZOYk90/EfNWmSIPp9cjDREo5NZPBwAoj
-         lhIQSCN5kjhBQ6ycFqeA1/obaeSm5cRoftPMaLao6bCoTw9YHxMOTYoOonEPk+I92MTz
-         3EtQ==
-X-Gm-Message-State: AOAM531vqkPAarAGpn1BmxV3JXzAUoz/B38NJW0fRE6WrbPreWXbBxQF
-        omRQNZ1lQR+OXfjturmJ6TY=
-X-Google-Smtp-Source: ABdhPJz/f2/QHZHxYzQmy+94Nkod9KHgsQwGFSUCdzNUYFhI6D1IVCfUxlSeGgG7NhfUSC7zGxB1OQ==
-X-Received: by 2002:a05:6a00:23d0:b029:2de:c1a2:f1e with SMTP id g16-20020a056a0023d0b02902dec1a20f1emr27465201pfc.60.1624923744460;
-        Mon, 28 Jun 2021 16:42:24 -0700 (PDT)
-Received: from ?IPv6:2001:df0:0:200c:1c9b:7d7f:b312:1fae? ([2001:df0:0:200c:1c9b:7d7f:b312:1fae])
-        by smtp.gmail.com with ESMTPSA id m21sm15768932pfa.99.2021.06.28.16.42.18
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 28 Jun 2021 16:42:24 -0700 (PDT)
-Subject: Re: [PATCH 0/9] Refactoring exit
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     Al Viro <viro@zeniv.linux.org.uk>,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        Jens Axboe <axboe@kernel.dk>, Oleg Nesterov <oleg@redhat.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Richard Henderson <rth@twiddle.net>,
-        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
-        Matt Turner <mattst88@gmail.com>,
-        alpha <linux-alpha@vger.kernel.org>,
-        linux-m68k <linux-m68k@lists.linux-m68k.org>,
-        Arnd Bergmann <arnd@kernel.org>, Tejun Heo <tj@kernel.org>,
-        Kees Cook <keescook@chromium.org>
-References: <YNCaMDQVYB04bk3j@zeniv-ca.linux.org.uk>
- <YNDhdb7XNQE6zQzL@zeniv-ca.linux.org.uk>
- <CAHk-=whAsWXcJkpMM8ji77DkYkeJAT4Cj98WBX-S6=GnMQwhzg@mail.gmail.com>
- <87a6njf0ia.fsf@disp2133>
- <CAHk-=wh4_iMRmWcao6a8kCvR0Hhdrz+M9L+q4Bfcwx9E9D0huw@mail.gmail.com>
- <87tulpbp19.fsf@disp2133>
- <CAHk-=wi_kQAff1yx2ufGRo2zApkvqU8VGn7kgPT-Kv71FTs=AA@mail.gmail.com>
- <87zgvgabw1.fsf@disp2133> <875yy3850g.fsf_-_@disp2133>
- <YNULA+Ff+eB66bcP@zeniv-ca.linux.org.uk>
- <YNj4DItToR8FphxC@zeniv-ca.linux.org.uk>
- <6e283d24-7121-ae7c-d5ad-558f85858a09@gmail.com>
- <CAMuHMdXSU6_98NbC1UWTT_kmwxD=6Ha5LJxFAtbSuD=y78nASg@mail.gmail.com>
- <7ad6c3a9-b983-46a5-fc95-f961b636d3fe@gmail.com>
- <CAMuHMdUi5Ri=GmWzS8hb7dkfPyAE=HpQHg6OsKSLDse_364E=g@mail.gmail.com>
- <dbb4ca2d-a857-84f0-f167-5ad4e06aa52b@gmail.com>
- <CAMuHMdVKdZNBU-cTUY0zotA5DmtQ=dxH+iFY0_GX=4DzqpycZQ@mail.gmail.com>
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=fOwJ009XWzDHSyQvnVFmk8mchZ3rDOSzJwss4bY6xeo=;
+        b=nOGo5FRSE5i2JSjK9775DvUvY5v3lcZ+xPpeMDQRe2ygmqK2I+DEOYXJ/pWgN+MQCZ
+         sgxnX4fZlzWHg8o8snm4891XhMMFOnlvaYc+fJySJrhqTr8d8YmlCxsHmXvRiAEbjlbo
+         g+KKvO9SJwRkizWeI3SNcmD1JMbmwGL0LaGQUf74RMRekrnZMWy8UD/cHGJ8so7m3ccx
+         TF7rtEmT5yc7FZcjdp6P6nTTj9QKOBr1e6s5oeJNPmW+up+wgSIwVmRUUwsrP7SSbGFV
+         5oFLY/GKBCB2pUMI+KzH+JRC5327VSXDumHBXmDAVf96LAJTxcD85dJeS1+I4EtqeJkZ
+         9lcw==
+X-Gm-Message-State: AOAM5326ntGttlz+wh8l5T10ZAGH8w/3ymbdJWFolt4fMgTzgSad7nhF
+        H//rqa21+GRFhGh/qAZq281g0jquPaaSnA==
+X-Google-Smtp-Source: ABdhPJyMYX6vr7/809Mr2m8HPbJrbFV72r9WzrV1W7cy09YmY0wJjkQexkCwjyGnGlBprA/ensbWFQ==
+X-Received: by 2002:a63:2046:: with SMTP id r6mr25209944pgm.359.1624924526450;
+        Mon, 28 Jun 2021 16:55:26 -0700 (PDT)
+Received: from xplor.waratah.dyndns.org (222-152-189-137-fibre.sparkbb.co.nz. [222.152.189.137])
+        by smtp.gmail.com with ESMTPSA id a20sm5241817pfo.190.2021.06.28.16.55.25
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Mon, 28 Jun 2021 16:55:26 -0700 (PDT)
+Received: by xplor.waratah.dyndns.org (Postfix, from userid 1000)
+        id 2ACC6360411; Tue, 29 Jun 2021 11:55:22 +1200 (NZST)
 From:   Michael Schmitz <schmitzmic@gmail.com>
-Message-ID: <36123b5d-daa0-6c2b-f2d4-a942f069fd54@gmail.com>
-Date:   Tue, 29 Jun 2021 11:42:16 +1200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
-MIME-Version: 1.0
-In-Reply-To: <CAMuHMdVKdZNBU-cTUY0zotA5DmtQ=dxH+iFY0_GX=4DzqpycZQ@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
+To:     linux-m68k@vger.kernel.org, geert@linux-m68k.org
+Cc:     glaubitz@physik.fu-berlin.de, schwab@linux-m68k.org
+Subject: [PATCH v7 0/2] Add kernel seccomp support for m68k
+Date:   Tue, 29 Jun 2021 11:55:18 +1200
+Message-Id: <1624924520-17567-1-git-send-email-schmitzmic@gmail.com>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-Hi Geert,
+Respin of m68k kernel seccomp support. 
 
-On 29/06/21 9:18 am, Geert Uytterhoeven wrote:
->
->>>> The question then is - will bdflush fail gracefully, or spin retrying
->>>> the syscall?
->>> Will add to my todo list...
->>> BTW, you can boot this ramdisk on ARAnyM, too.
->> True. I can't find that ramdisk image anywhere - if you can point me to
->> some archive, I'll give that a try.
-> http://ftp.mac.linux-m68k.org/pub/linux-mac68k/initrd/
+I have added syscall_trace_enter() return code checks for
+coldfire and 68000 in patch 1, and syscall_get_error(),
+syscall_get_return_value() and syscall_set_arguments() defs
+in patch 2 (the latter are not used without adding further
+code to support tracehooks or syscall tracepoints though).
 
-Thanks - removing the if (func==1) do_exit(0); part does give similar 
-behaviour as before - kernel warns five times, then shuts up (without 
-change, warns twice only, and /sbin/update no longer runs).
-
-Removing the syscall from the m68k syscall table altogether still gives 
-a working ramdisk. /sbin/update is still running, so evidently doesn't 
-care about the invalid syscall result ...
 
 Cheers,
 
-     Michael
+	Michael
 
-
->
-> Gr{oetje,eeting}s,
->
->                          Geert
->
