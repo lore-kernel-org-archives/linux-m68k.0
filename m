@@ -7,43 +7,44 @@ X-Spam-Status: No, score=-13.8 required=3.0 tests=BAYES_00,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 805A4C49EAB
-	for <linux-m68k@archiver.kernel.org>; Mon, 28 Jun 2021 07:23:31 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2C62AC2B9F4
+	for <linux-m68k@archiver.kernel.org>; Mon, 28 Jun 2021 07:26:10 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 61A2961C31
-	for <linux-m68k@archiver.kernel.org>; Mon, 28 Jun 2021 07:23:31 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 0A76961AC0
+	for <linux-m68k@archiver.kernel.org>; Mon, 28 Jun 2021 07:26:10 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232369AbhF1HZz (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Mon, 28 Jun 2021 03:25:55 -0400
-Received: from mail-ua1-f46.google.com ([209.85.222.46]:41972 "EHLO
-        mail-ua1-f46.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232353AbhF1HZy (ORCPT
-        <rfc822;linux-m68k@vger.kernel.org>); Mon, 28 Jun 2021 03:25:54 -0400
-Received: by mail-ua1-f46.google.com with SMTP id k20so988613uao.8
-        for <linux-m68k@vger.kernel.org>; Mon, 28 Jun 2021 00:23:29 -0700 (PDT)
+        id S232312AbhF1H2e (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Mon, 28 Jun 2021 03:28:34 -0400
+Received: from mail-ua1-f47.google.com ([209.85.222.47]:45806 "EHLO
+        mail-ua1-f47.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229998AbhF1H2d (ORCPT
+        <rfc822;linux-m68k@vger.kernel.org>); Mon, 28 Jun 2021 03:28:33 -0400
+Received: by mail-ua1-f47.google.com with SMTP id c20so6591712uar.12
+        for <linux-m68k@vger.kernel.org>; Mon, 28 Jun 2021 00:26:08 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=1vfCxQoOKo+mHWeD3i9chikgVU5vWQOI/Yw8n20gQAA=;
-        b=dcD+DAbdUBKW0p8Jp4LhTSqhK2k6pSzei1bwmUGmWGXtnvjlb5KEUb4Lnh+jNS7N4L
-         QkRwe32W4BDp8SeUGg8mMtubSl23IXYYt+oMZJHGPRZF/yMfVjojd8zOdIUlbsPgZ8yh
-         /Dc3onlH4DaqV9mqhXRH/unBcICQjUjnTVc0WlCsvChhtElrTNtF/5OmRh+h67Q41lfq
-         ck8BlyIWKm196nzZE/EnVFfNj+MujA3EG+xL9UGEoHp1jS1NqnOrTNWctxaiCcFYBsEy
-         xhcwC3xt36GLscEaQZItPGX+CK/yzNotxbuS+AfGx1n3iMWnELUA8ISx+jlaC2NAWQDc
-         Roeg==
-X-Gm-Message-State: AOAM531/Xezyur29HpKgp2UfVIAq3ytyu7YSp1dE4R6u+tP8ZmwFmz55
-        ggZAKhOBCyJjqg5eXjaJMJsAso942ai454ucC1M=
-X-Google-Smtp-Source: ABdhPJyadbyJUuVIcbF3RMxWnWM8Jfn47/KuQ3OfUD77PbUqV0PGuaOvnmPLyk9e5213Z920iDTh5SqZlkI9o4GThG0=
-X-Received: by 2002:ab0:70b3:: with SMTP id q19mr19424255ual.2.1624865009125;
- Mon, 28 Jun 2021 00:23:29 -0700 (PDT)
+        bh=LsKnbt4+ViUcXtKxLi4ZKEFU973s/ysubk2jt/d6VUE=;
+        b=VHvjXL6xKT8jH9yacEKVKWxQBa3CsIpnEOZq315dIJxWO07J1bLXA9N9a+n7/fLOBE
+         dgLZXI4SpfAMpy50bKY5BrCnXx8I1JOQcslRuhyV/nscysS0bgZo7ARGyve4Tj0jIYHF
+         wUxiGooerZdozSUGkc/3/EV4jccm0IEJ3xnHQSDee1EnYzGn/laRXDPXobZyA0q4hPXB
+         uHLQxwieWSjKcciLVDgltwiza10yyFvGBn5lzgFyzd68o/bWoXRMuKjUytPhbdYpRuUh
+         sakgq8VBiL7Lux66JLTQ3dgeqCEAZb61i7a7TMI/39L28057tvCRSfMC6LPnLB4iH+RH
+         i1Bw==
+X-Gm-Message-State: AOAM532hb16yY8nt83UP1qMU3vh4gdgchC80FYeBYcANsA+pQRY2juRi
+        +POILv56dPtQ3TxMiRUjIilr62hAJWnkgkizGTw=
+X-Google-Smtp-Source: ABdhPJx7bGqXKb6Ma5HvVbcA8UO26T+/XYpS38fC2GoBFUthXIpO4gn+I3T6UbSziPgk9xhP2LOiaNBwXzCMqq5aE+8=
+X-Received: by 2002:ab0:3734:: with SMTP id s20mr19893993uag.106.1624865168354;
+ Mon, 28 Jun 2021 00:26:08 -0700 (PDT)
 MIME-Version: 1.0
-References: <1624495560-6351-1-git-send-email-schmitzmic@gmail.com> <1624495560-6351-3-git-send-email-schmitzmic@gmail.com>
-In-Reply-To: <1624495560-6351-3-git-send-email-schmitzmic@gmail.com>
+References: <1624495560-6351-1-git-send-email-schmitzmic@gmail.com> <1624495560-6351-2-git-send-email-schmitzmic@gmail.com>
+In-Reply-To: <1624495560-6351-2-git-send-email-schmitzmic@gmail.com>
 From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Mon, 28 Jun 2021 09:23:17 +0200
-Message-ID: <CAMuHMdWC9sLUdDpscdHAr--iWxKN=qm7Qq9Zu5VOOR9JTrvo0A@mail.gmail.com>
-Subject: Re: [PATCH v6 2/2] m68k: add kernel seccomp support
+Date:   Mon, 28 Jun 2021 09:25:57 +0200
+Message-ID: <CAMuHMdWoX=6Yf7MZXR92Q3APYixY5MDM6MW_UUf0DO2+oDkHAQ@mail.gmail.com>
+Subject: Re: [PATCH v6 1/2] m68k/kernel - wire up syscall_trace_enter/leave
+ for m68k
 To:     Michael Schmitz <schmitzmic@gmail.com>
 Cc:     "Linux/m68k" <linux-m68k@vger.kernel.org>,
         John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
@@ -53,77 +54,30 @@ Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-Hi Michael,
-
 On Thu, Jun 24, 2021 at 2:46 AM Michael Schmitz <schmitzmic@gmail.com> wrote:
-> Add secure_computing() call to syscall_trace_enter to actually
-> filter system calls.
 >
-> Add necessary arch Kconfig options, define TIF_SECCOMP trace
-> flag and provide basic seccomp filter support in asm/syscall.h
+> m68k (other than Coldfire) uses syscall_trace for both trace entry
+> and trace exit. Seccomp support requires separate entry points for
+> trace entry and exit which are already provided for Coldfire.
 >
-> syscall_get_nr currently uses the syscall nr stored in orig_d0
-> because we change d0 to a default return code before starting a
-> syscall trace. This may be inconsistent with syscall_rollback
-> copying orig_d0 to d0 (which we never check upon return from
-> trace). We use d0 for the return code from syscall_trace_enter
-> in entry.S currently, and could perhaps expand that to store
-> a new syscall number returned by the seccomp filter before
-> executing the syscall. This clearly needs some discussion.
+> Replace syscall_trace by syscall_trace_enter and syscall_trace_leave
+> in preparation for seccomp support. Check return code of
+> syscall_trace_enter(), and skip syscall if -1. Return code will be
+> left at what had been set by ptrace or seccomp (in regs->d0).
 >
-> Compiles (for Atari) and boots on ARAnyM, otherwise untested.
+> No regression seen in testing with strace on ARAnyM.
 >
 > Signed-off-by: Michael Schmitz <schmitzmic@gmail.com>
 
-> --- a/arch/m68k/include/asm/syscall.h
-> +++ b/arch/m68k/include/asm/syscall.h
-> @@ -4,6 +4,39 @@
->
->  #include <uapi/linux/audit.h>
->
-> +#include <asm/unistd.h>
-> +
-> +extern const unsigned long sys_call_table[];
-> +
-> +static inline int syscall_get_nr(struct task_struct *task,
-> +                                struct pt_regs *regs)
-> +{
-> +       return regs->orig_d0;
-> +}
-> +
-> +static inline void syscall_rollback(struct task_struct *task,
-> +                                   struct pt_regs *regs)
-> +{
-> +       regs->d0 = regs->orig_d0;
-> +}
-> +
-> +static inline void syscall_set_return_value(struct task_struct *task,
-> +                                           struct pt_regs *regs,
-> +                                           int error, long val)
-> +{
-> +       regs->d0 = (long) error ? error : val;
-> +}
-> +
-> +static inline void syscall_get_arguments(struct task_struct *task,
-> +                                        struct pt_regs *regs,
-> +                                        unsigned long *args)
-> +{
-> +       args[0] = regs->orig_d0;
-> +       args++;
-> +
-> +       memcpy(args, &regs->d1, 5 * sizeof(args[0]));
-> +}
-> +
->  static inline int syscall_get_arch(struct task_struct *task)
->  {
->         return AUDIT_ARCH_M68K;
+Thanks for your patch!
 
-Comparing this to what I had before, I noticed syscall_get_return_value()
-is missing.
+>  arch/m68k/kernel/entry.S  |  8 +++++---
 
-Upon closer look, we don't need it (yet), as we don't select any
-of GENERIC_ENTRY, HAVE_ARCH_TRACEHOOK, or HAVE_SYSCALL_TRACEPOINTS,
-but why not add it while we're at it?
+We need similar changes to arch/m68k/68000/entry.S and
+arch/m68k/coldfire/entry.S
+
+>  arch/m68k/kernel/ptrace.c | 17 -----------------
+>  2 files changed, 5 insertions(+), 20 deletions(-)
 
 Gr{oetje,eeting}s,
 
