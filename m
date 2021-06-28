@@ -2,90 +2,118 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-13.8 required=3.0 tests=BAYES_00,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-21.8 required=3.0 tests=BAYES_00,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,INCLUDES_PULL_REQUEST,
+	MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
+	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 67171C2B9F4
-	for <linux-m68k@archiver.kernel.org>; Mon, 28 Jun 2021 07:44:51 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 20971C2B9F4
+	for <linux-m68k@archiver.kernel.org>; Mon, 28 Jun 2021 10:11:03 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 4951B6194B
-	for <linux-m68k@archiver.kernel.org>; Mon, 28 Jun 2021 07:44:51 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 0770961982
+	for <linux-m68k@archiver.kernel.org>; Mon, 28 Jun 2021 10:11:03 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230294AbhF1HrP (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Mon, 28 Jun 2021 03:47:15 -0400
-Received: from mail-vs1-f53.google.com ([209.85.217.53]:34775 "EHLO
-        mail-vs1-f53.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230256AbhF1HrP (ORCPT
-        <rfc822;linux-m68k@vger.kernel.org>); Mon, 28 Jun 2021 03:47:15 -0400
-Received: by mail-vs1-f53.google.com with SMTP id x1so9533919vsc.1
-        for <linux-m68k@vger.kernel.org>; Mon, 28 Jun 2021 00:44:49 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=/Wdn42pVjXddthv/fcZQZUXc/tLtV6tLrYN/I2Q8r20=;
-        b=fDskaogDCSUR3Ht4B3QI0RarL800MI9chHNXGvz+FzPu7vVeEHrqlQeiI+zzcOejHp
-         AeGntBuiSFGUvXa1dih7+dh+R+CzS0KuO1srmpsqjxox2a5CvIZOqtaEmIpPEJ6ZDqpn
-         7IpBTtMl8hptZJjeXG8sokxHyHTLpaELFx7gB4QeuIMlRz/LMS8MwT3xEZlr6dkxCV3R
-         LKPINmy3x4+g00QGRjXyDqmvPcDukZPLDwus74AuLW7ehdQoZlJFTH5BiRDTNYwlF1xE
-         TT09VecZJDVH40RVVkpMdoWpKMC2g9OwEq3fKzu1NoszTphsbMR/lgUEw2LYJ+pGscj2
-         /LXA==
-X-Gm-Message-State: AOAM530CFATNeZr+RbxM85fkqxbSdWqgBN3xhyD+zq2Dkx5dArD7zVbm
-        fJCIrIi46dRTDdnq+48MvEv9Zoqmsccbj2TfZ4s=
-X-Google-Smtp-Source: ABdhPJwWYIAqJIjtz9yXx7y58Gf4xys7ZJTVQwF00yXdaxYNv20b0oLn01pbfOnZLKPaUXuqG8oDbRTHrXcU/ekp6WE=
-X-Received: by 2002:a67:ba0c:: with SMTP id l12mr17098305vsn.40.1624866289272;
- Mon, 28 Jun 2021 00:44:49 -0700 (PDT)
-MIME-Version: 1.0
-References: <1342441646-5645-1-git-send-email-gerg@snapgear.com> <1342441646-5645-2-git-send-email-gerg@snapgear.com>
-In-Reply-To: <1342441646-5645-2-git-send-email-gerg@snapgear.com>
+        id S232606AbhF1KN1 (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Mon, 28 Jun 2021 06:13:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35030 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232488AbhF1KN1 (ORCPT
+        <rfc822;linux-m68k@lists.linux-m68k.org>);
+        Mon, 28 Jun 2021 06:13:27 -0400
+Received: from albert.telenet-ops.be (albert.telenet-ops.be [IPv6:2a02:1800:110:4::f00:1a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2FE09C061766
+        for <linux-m68k@lists.linux-m68k.org>; Mon, 28 Jun 2021 03:11:02 -0700 (PDT)
+Received: from ramsan.of.borg ([IPv6:2a02:1810:ac12:ed20:e463:9bf2:1db6:b482])
+        by albert.telenet-ops.be with bizsmtp
+        id NaAy2500W4LH09C06aAy7a; Mon, 28 Jun 2021 12:10:59 +0200
+Received: from rox.of.borg ([192.168.97.57])
+        by ramsan.of.borg with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.93)
+        (envelope-from <geert@linux-m68k.org>)
+        id 1lxoEE-004YF8-Au; Mon, 28 Jun 2021 12:10:58 +0200
+Received: from geert by rox.of.borg with local (Exim 4.93)
+        (envelope-from <geert@linux-m68k.org>)
+        id 1lxoED-00EeO0-Og; Mon, 28 Jun 2021 12:10:57 +0200
 From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Mon, 28 Jun 2021 09:44:38 +0200
-Message-ID: <CAMuHMdWSBLUzWfDFK0mSiuO0+=cidymmd33jR3qQ1gFmCPk02A@mail.gmail.com>
-Subject: Re: [PATCH v2 1/5] m68k: common PCI support definitions and code
-To:     Greg Ungerer <gerg@linux-m68k.org>
-Cc:     "Linux/m68k" <linux-m68k@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Greg Ungerer <gerg@linux-m68k.org>,
+        linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org,
+        Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: [GIT PULL] m68k updates for 5.14
+Date:   Mon, 28 Jun 2021 12:10:33 +0200
+Message-Id: <20210628101033.3491773-1-geert@linux-m68k.org>
+X-Mailer: git-send-email 2.25.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-Hi Greg,
+	Hi Linus,
 
-On Mon, Jul 16, 2012 at 2:25 PM <gerg@snapgear.com> wrote:
-> From: Greg Ungerer <gerg@uclinux.org>
->
-> Basic set of definitions and support code required to turn on CONFIG_PCI
-> for the m68k architecture. Nothing specific to any PCI implementation in
-> any m68k class CPU hardware yet.
->
-> Signed-off-by: Greg Ungerer <gerg@uclinux.org>
+The following changes since commit 6efb943b8616ec53a5e444193dccf1af9ad627b5:
 
-> --- a/arch/m68k/include/asm/io_mm.h
-> +++ b/arch/m68k/include/asm/io_mm.h
-> @@ -340,4 +340,6 @@ static inline void memcpy_toio(volatile void __iomem *dst, const void *src, int
->   */
->  #define xlate_dev_kmem_ptr(p)  p
->
-> +#define ioport_map(port, nr)   ((void __iomem *)(port))
+  Linux 5.13-rc1 (2021-05-09 14:17:44 -0700)
 
-So should we dop:
+are available in the Git repository at:
 
-    config NO_IOPORT_MAP
-            def_bool y
+  git://git.kernel.org/pub/scm/linux/kernel/git/geert/linux-m68k.git tags/m68k-for-v5.14-tag1
 
-Triggered by seeing CONFIG_GPIO_TQMX86 being removed from allmodconfig
-builds due to commit c6414e1a2bd26b00 ("gpio: AMD8111 and TQMX86
-require HAS_IOPORT_MAP").
+for you to fetch changes up to c1367ee016e3550745315fb9a2dd1e4ce02cdcf6:
+
+  m68k: atari: Fix ATARI_KBD_CORE kconfig unmet dependency warning (2021-06-07 16:28:51 +0200)
+
+----------------------------------------------------------------
+m68k updates for v5.14
+
+  - Update Finn's email address in MAINTAINERS,
+  - Defconfig updates,
+  - Minor fixes and improvements.
+
+Thanks for pulling!
+
+----------------------------------------------------------------
+Finn Thain (2):
+      m68k: Drop -fno-strength-reduce from KBUILD_CFLAGS
+      MAINTAINERS, .mailmap: Update Finn Thain's email address
+
+Geert Uytterhoeven (1):
+      m68k: defconfig: Update defconfigs for v5.13-rc1
+
+Randy Dunlap (1):
+      m68k: atari: Fix ATARI_KBD_CORE kconfig unmet dependency warning
+
+Wan Jiabing (1):
+      m68k: dma: Remove unnecessary include of asm/cacheflush.h
+
+ .mailmap                             | 1 +
+ MAINTAINERS                          | 4 ++--
+ arch/m68k/Kconfig.machine            | 3 +++
+ arch/m68k/Makefile                   | 3 +--
+ arch/m68k/configs/amiga_defconfig    | 5 +++--
+ arch/m68k/configs/apollo_defconfig   | 5 +++--
+ arch/m68k/configs/atari_defconfig    | 5 +++--
+ arch/m68k/configs/bvme6000_defconfig | 5 +++--
+ arch/m68k/configs/hp300_defconfig    | 5 +++--
+ arch/m68k/configs/mac_defconfig      | 5 +++--
+ arch/m68k/configs/multi_defconfig    | 5 +++--
+ arch/m68k/configs/mvme147_defconfig  | 5 +++--
+ arch/m68k/configs/mvme16x_defconfig  | 5 +++--
+ arch/m68k/configs/q40_defconfig      | 5 +++--
+ arch/m68k/configs/sun3_defconfig     | 5 +++--
+ arch/m68k/configs/sun3x_defconfig    | 5 +++--
+ arch/m68k/kernel/dma.c               | 3 ---
+ drivers/input/keyboard/Kconfig       | 3 ---
+ 18 files changed, 43 insertions(+), 34 deletions(-)
 
 Gr{oetje,eeting}s,
 
-                        Geert
+						Geert
 
--- 
+--
 Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
 In personal conversations with technical people, I call myself a hacker. But
 when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+							    -- Linus Torvalds
