@@ -2,39 +2,66 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-13.8 required=3.0 tests=BAYES_00,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-4.3 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,NICE_REPLY_A,SPF_HELO_NONE,
+	SPF_PASS,USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 637FEC11F64
-	for <linux-m68k@archiver.kernel.org>; Mon, 28 Jun 2021 19:25:52 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 97E26C11F64
+	for <linux-m68k@archiver.kernel.org>; Mon, 28 Jun 2021 20:13:43 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 46CC861C92
-	for <linux-m68k@archiver.kernel.org>; Mon, 28 Jun 2021 19:25:52 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 6EF5761CCD
+	for <linux-m68k@archiver.kernel.org>; Mon, 28 Jun 2021 20:13:43 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236465AbhF1T2R (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Mon, 28 Jun 2021 15:28:17 -0400
-Received: from out01.mta.xmission.com ([166.70.13.231]:32802 "EHLO
-        out01.mta.xmission.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233366AbhF1T2R (ORCPT
+        id S237262AbhF1UQI (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Mon, 28 Jun 2021 16:16:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57182 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236089AbhF1UQH (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Mon, 28 Jun 2021 15:28:17 -0400
-Received: from in02.mta.xmission.com ([166.70.13.52])
-        by out01.mta.xmission.com with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.93)
-        (envelope-from <ebiederm@xmission.com>)
-        id 1lxwtB-0077lT-FQ; Mon, 28 Jun 2021 13:25:49 -0600
-Received: from ip68-227-160-95.om.om.cox.net ([68.227.160.95]:39208 helo=email.xmission.com)
-        by in02.mta.xmission.com with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.93)
-        (envelope-from <ebiederm@xmission.com>)
-        id 1lxwtA-00GC6G-Bf; Mon, 28 Jun 2021 13:25:49 -0600
-From:   ebiederm@xmission.com (Eric W. Biederman)
-To:     Kees Cook <keescook@chromium.org>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Michael Schmitz <schmitzmic@gmail.com>,
+        Mon, 28 Jun 2021 16:16:07 -0400
+Received: from mail-pg1-x536.google.com (mail-pg1-x536.google.com [IPv6:2607:f8b0:4864:20::536])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8B2C1C061760
+        for <linux-m68k@lists.linux-m68k.org>; Mon, 28 Jun 2021 13:13:41 -0700 (PDT)
+Received: by mail-pg1-x536.google.com with SMTP id e33so16439860pgm.3
+        for <linux-m68k@lists.linux-m68k.org>; Mon, 28 Jun 2021 13:13:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-transfer-encoding:content-language;
+        bh=vaR0ZHeLh3Rgpq/oOLze5JOk9+DRbDxLmGgrRMNd4Ls=;
+        b=JK/dcwlV5HtjZwqC4/JKo2T5Iu8KcG9Kcd0VQ5ut3njx9t8wLXG9YHp25nmsBb6aKA
+         QFK96qg/LIuguGMS5VsnxqiR3trE5g/dNI1VqluPWV2qMtM1ykGmJeBeHCyrv+5mj+1r
+         W6Vh6SPJHhb9MBqFzMFGTyck3DLP+ZSHxn91KB6neU6wzP39XgV1HpGfm/BiJ7JHBYI/
+         ZNJ+wbclln4o63iRuhoRlW+yVD+wQDCajjefih3eqnQFROwySSE/gtCb7APBz1ul6PFJ
+         XoEX1OWC2IVXgrl6NQXaTbivO5f+1TEv0Rq+1tu9bEk21eThKtcAOW8r2qMbgiDm+aYG
+         TdkA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=vaR0ZHeLh3Rgpq/oOLze5JOk9+DRbDxLmGgrRMNd4Ls=;
+        b=EfAD1tHMkHxiIbiSqeAVnEl3HNnr6trV8o+YJ+59uux0YR9vCBg22jAMGn3eegsfJz
+         aZ84XEGF8CyHxTbyVgOsnpWYglAi/b2QDzI7WvWhDBSWnyOd6fQgaNfV6+3dtM/IoY9T
+         rvQaMCwuUTUPscnC39FkN6KhbSmVOQfBgnnasTlpV9kcPjqQ4ajnp9SsPKMfbPE+0Fb+
+         pVC9qb8Om6IlFGXkzHMddRxahC8tQWiIpkirg1QwDJVOg13tvm9nrJGpNs9otNA9yf9f
+         ZDieYruEYOAalNpFqWqsZUoV/wRI2N+7Wina5lnpkQDS1FAJnZ3eW7uOYrluqiccIDkV
+         AdWA==
+X-Gm-Message-State: AOAM532AVh9l0b97FKQhocAtGc4z9uOepMlgWEkHoVmb07b9B2Z48Dhz
+        fb7AytC7QVctJgPGXg8EM/o=
+X-Google-Smtp-Source: ABdhPJxyQ/1DoRnjU5lf6igsVabo2ZeY13D7p5RiA9jKlGU/j2Sut1YGa+bd6AiG1JPX6EHy2PoRwg==
+X-Received: by 2002:a62:7cc4:0:b029:302:f75a:69ab with SMTP id x187-20020a627cc40000b0290302f75a69abmr26829379pfc.74.1624911221022;
+        Mon, 28 Jun 2021 13:13:41 -0700 (PDT)
+Received: from ?IPv6:2001:df0:0:200c:1c9b:7d7f:b312:1fae? ([2001:df0:0:200c:1c9b:7d7f:b312:1fae])
+        by smtp.gmail.com with ESMTPSA id ga1sm981249pjb.43.2021.06.28.13.13.35
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 28 Jun 2021 13:13:40 -0700 (PDT)
+Subject: Re: [PATCH 0/9] Refactoring exit
+To:     Geert Uytterhoeven <geert@linux-m68k.org>
+Cc:     Al Viro <viro@zeniv.linux.org.uk>,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
         linux-arch <linux-arch@vger.kernel.org>,
         Jens Axboe <axboe@kernel.dk>, Oleg Nesterov <oleg@redhat.com>,
         Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
@@ -42,195 +69,75 @@ Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
         Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
         Matt Turner <mattst88@gmail.com>,
         alpha <linux-alpha@vger.kernel.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
         linux-m68k <linux-m68k@lists.linux-m68k.org>,
-        Arnd Bergmann <arnd@kernel.org>, Tejun Heo <tj@kernel.org>
+        Arnd Bergmann <arnd@kernel.org>, Tejun Heo <tj@kernel.org>,
+        Kees Cook <keescook@chromium.org>
 References: <YNCaMDQVYB04bk3j@zeniv-ca.linux.org.uk>
-        <YNDhdb7XNQE6zQzL@zeniv-ca.linux.org.uk>
-        <CAHk-=whAsWXcJkpMM8ji77DkYkeJAT4Cj98WBX-S6=GnMQwhzg@mail.gmail.com>
-        <87a6njf0ia.fsf@disp2133>
-        <CAHk-=wh4_iMRmWcao6a8kCvR0Hhdrz+M9L+q4Bfcwx9E9D0huw@mail.gmail.com>
-        <87tulpbp19.fsf@disp2133>
-        <CAHk-=wi_kQAff1yx2ufGRo2zApkvqU8VGn7kgPT-Kv71FTs=AA@mail.gmail.com>
-        <87zgvgabw1.fsf@disp2133> <875yy3850g.fsf_-_@disp2133>
-        <874kdn6q87.fsf_-_@disp2133> <202106252038.389B963B6F@keescook>
-Date:   Mon, 28 Jun 2021 14:25:41 -0500
-In-Reply-To: <202106252038.389B963B6F@keescook> (Kees Cook's message of "Fri,
-        25 Jun 2021 20:42:06 -0700")
-Message-ID: <875yxxx03u.fsf@disp2133>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
+ <YNDhdb7XNQE6zQzL@zeniv-ca.linux.org.uk>
+ <CAHk-=whAsWXcJkpMM8ji77DkYkeJAT4Cj98WBX-S6=GnMQwhzg@mail.gmail.com>
+ <87a6njf0ia.fsf@disp2133>
+ <CAHk-=wh4_iMRmWcao6a8kCvR0Hhdrz+M9L+q4Bfcwx9E9D0huw@mail.gmail.com>
+ <87tulpbp19.fsf@disp2133>
+ <CAHk-=wi_kQAff1yx2ufGRo2zApkvqU8VGn7kgPT-Kv71FTs=AA@mail.gmail.com>
+ <87zgvgabw1.fsf@disp2133> <875yy3850g.fsf_-_@disp2133>
+ <YNULA+Ff+eB66bcP@zeniv-ca.linux.org.uk>
+ <YNj4DItToR8FphxC@zeniv-ca.linux.org.uk>
+ <6e283d24-7121-ae7c-d5ad-558f85858a09@gmail.com>
+ <CAMuHMdXSU6_98NbC1UWTT_kmwxD=6Ha5LJxFAtbSuD=y78nASg@mail.gmail.com>
+ <7ad6c3a9-b983-46a5-fc95-f961b636d3fe@gmail.com>
+ <CAMuHMdUi5Ri=GmWzS8hb7dkfPyAE=HpQHg6OsKSLDse_364E=g@mail.gmail.com>
+From:   Michael Schmitz <schmitzmic@gmail.com>
+Message-ID: <dbb4ca2d-a857-84f0-f167-5ad4e06aa52b@gmail.com>
+Date:   Tue, 29 Jun 2021 08:13:32 +1200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-Content-Type: text/plain
-X-XM-SPF: eid=1lxwtA-00GC6G-Bf;;;mid=<875yxxx03u.fsf@disp2133>;;;hst=in02.mta.xmission.com;;;ip=68.227.160.95;;;frm=ebiederm@xmission.com;;;spf=neutral
-X-XM-AID: U2FsdGVkX1/8u7v6yaAqNjosMDiG7hIGwsbaE7HP7qs=
-X-SA-Exim-Connect-IP: 68.227.160.95
-X-SA-Exim-Mail-From: ebiederm@xmission.com
-Subject: Re: [PATCH 6/9] signal: Fold do_group_exit into get_signal fixing io_uring threads
-X-SA-Exim-Version: 4.2.1 (built Sat, 08 Feb 2020 21:53:50 +0000)
-X-SA-Exim-Scanned: Yes (on in02.mta.xmission.com)
+In-Reply-To: <CAMuHMdUi5Ri=GmWzS8hb7dkfPyAE=HpQHg6OsKSLDse_364E=g@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-Kees Cook <keescook@chromium.org> writes:
+Hi Geert,
 
-> On Thu, Jun 24, 2021 at 02:02:16PM -0500, Eric W. Biederman wrote:
->> 
->> Forld do_group_exit into get_signal as it is the last caller.
->> 
->> Move the group_exit logic above the PF_IO_WORKER exit, ensuring
->> that if an PF_IO_WORKER catches SIGKILL every thread in
->> the thread group will exit not just the the PF_IO_WORKER.
->> 
->> Now that the information is easily available only set PF_SIGNALED
->> when it was a signal that caused the exit.
->> 
->> Signed-off-by: "Eric W. Biederman" <ebiederm@xmission.com>
->> ---
->>  include/linux/sched/task.h |  1 -
->>  kernel/exit.c              | 31 -------------------------------
->>  kernel/signal.c            | 35 +++++++++++++++++++++++++----------
->>  3 files changed, 25 insertions(+), 42 deletions(-)
->> 
->> diff --git a/include/linux/sched/task.h b/include/linux/sched/task.h
->> index ef02be869cf2..45525512e3d0 100644
->> --- a/include/linux/sched/task.h
->> +++ b/include/linux/sched/task.h
->> @@ -77,7 +77,6 @@ static inline void exit_thread(struct task_struct *tsk)
->>  {
->>  }
->>  #endif
->> -extern void do_group_exit(int);
->>  
->>  extern void exit_files(struct task_struct *);
->>  extern void exit_itimers(struct signal_struct *);
->> diff --git a/kernel/exit.c b/kernel/exit.c
->> index 921519d80b56..635f434122b7 100644
->> --- a/kernel/exit.c
->> +++ b/kernel/exit.c
->> @@ -892,37 +892,6 @@ SYSCALL_DEFINE1(exit, int, error_code)
->>  	do_exit((error_code&0xff)<<8);
->>  }
->>  
->> -/*
->> - * Take down every thread in the group.  This is called by fatal signals
->> - * as well as by sys_exit_group (below).
->> - */
->> -void
->> -do_group_exit(int exit_code)
->> -{
->> -	struct signal_struct *sig = current->signal;
->> -
->> -	BUG_ON(exit_code & 0x80); /* core dumps don't get here */
->> -
->> -	if (signal_group_exit(sig))
->> -		exit_code = sig->group_exit_code;
->> -	else if (!thread_group_empty(current)) {
->> -		struct sighand_struct *const sighand = current->sighand;
->> -
->> -		spin_lock_irq(&sighand->siglock);
->> -		if (signal_group_exit(sig))
->> -			/* Another thread got here before we took the lock.  */
->> -			exit_code = sig->group_exit_code;
->> -		else {
->> -			sig->group_exit_code = exit_code;
->> -			sig->flags = SIGNAL_GROUP_EXIT;
->> -			zap_other_threads(current);
+On 29/06/21 7:17 am, Geert Uytterhoeven wrote:
+>>> The warning is printed when using filesys-ELF-2.0.x-1400K-2.gz,
+>>> which is a very old ramdisk from right after the m68k a.out to ELF
+>>> transition:
+>>>
+>>>      warning: process `update' used the obsolete bdflush system call
+>>>      Fix your initscripts?
+>>>
+>>> I still boot it, once in a while.
+>> OK; you take the cake. That ramdisk came to mind when I thought about
+>> where I'd last seen bdflush, but I've not used it in ages (not sure 14
+>> MB are enough for that).
+> Of course it will work on your 14 MiB machine!  It fits on a floppy, _after_
+> decompression.  It was used by people to install Linux on the hard disks
+> of their beefy m68k machines, after they had set up the family Christmas
+> tree, in December 1996.
+Been there, done that. Wrote the HOWTO for ext2 filesystem byte-swapping.
+> I also have a slightly larger one, built from OpenWRT when I did my first
+> experiments on that.  Unlike filesys-ELF-2.0.x-1400K-2.gz, it does open
+> a shell on the serial console, so it is more useful to me.
 >
-> Oh, now I see it: the "new code" in start_group_exit() is an open-coded
-> zap_other_threads()? That wasn't clear to me, but makes sense now.
+>> The question then is - will bdflush fail gracefully, or spin retrying
+>> the syscall?
+> Will add to my todo list...
+> BTW, you can boot this ramdisk on ARAnyM, too.
 
-Pretty much.  I think zap_other_threads has actually muddied the waters
-quite a bit by putting reuse in the wrong place.
+True. I can't find that ramdisk image anywhere - if you can point me to 
+some archive, I'll give that a try.
 
->> -		}
->> -		spin_unlock_irq(&sighand->siglock);
->> -	}
->> -
->> -	do_exit(exit_code);
->> -	/* NOTREACHED */
->> -}
->>  
->>  /*
->>   * this kills every thread in the thread group. Note that any externally
->> diff --git a/kernel/signal.c b/kernel/signal.c
->> index c79c010ca5f3..95a076af600a 100644
->> --- a/kernel/signal.c
->> +++ b/kernel/signal.c
->> @@ -2646,6 +2646,7 @@ bool get_signal(struct ksignal *ksig)
->>  {
->>  	struct sighand_struct *sighand = current->sighand;
->>  	struct signal_struct *signal = current->signal;
->> +	int exit_code;
->>  	int signr;
->>  
->>  	if (unlikely(current->task_works))
->> @@ -2848,8 +2849,6 @@ bool get_signal(struct ksignal *ksig)
->>  		/*
->>  		 * Anything else is fatal, maybe with a core dump.
->>  		 */
->> -		current->flags |= PF_SIGNALED;
->> -
->>  		if (sig_kernel_coredump(signr)) {
->>  			if (print_fatal_signals)
->>  				print_fatal_signal(ksig->info.si_signo);
->> @@ -2857,14 +2856,33 @@ bool get_signal(struct ksignal *ksig)
->>  			/*
->>  			 * If it was able to dump core, this kills all
->>  			 * other threads in the group and synchronizes with
->> -			 * their demise.  If we lost the race with another
->> -			 * thread getting here, it set group_exit_code
->> -			 * first and our do_group_exit call below will use
->> -			 * that value and ignore the one we pass it.
->> +			 * their demise.  If  another thread makes it
->> +			 * to do_coredump first, it will set group_exit_code
->> +			 * which will be passed to do_exit.
->>  			 */
->>  			do_coredump(&ksig->info);
->>  		}
->>  
->> +		/*
->> +		 * Death signals, no core dump.
->> +		 */
->> +		exit_code = signr;
->> +		if (signal_group_exit(signal)) {
->> +			exit_code = signal->group_exit_code;
->> +		} else {
->> +			spin_lock_irq(&sighand->siglock);
->> +			if (signal_group_exit(signal)) {
->> +				/* Another thread got here before we took the lock.  */
->> +				exit_code = signal->group_exit_code;
->> +			} else {
->> +				start_group_exit_locked(signal, exit_code);
+Cheers,
+
+     Michael
+
+
 >
-> And here's the "if we didn't already do start_group_exit(), do it here".
-> And that state is entirely captured via the SIGNAL_GROUP_EXIT flag.
-> Cool.
-
-Yes.  At least when the dust clears. 
-
->> +			}
->> +			spin_unlock_irq(&sighand->siglock);
->> +		}
->> +
->> +		if (exit_code & 0x7f)
->> +			current->flags |= PF_SIGNALED;
->> +
->>  		/*
->>  		 * PF_IO_WORKER threads will catch and exit on fatal signals
->>  		 * themselves. They have cleanup that must be performed, so
->> @@ -2873,10 +2891,7 @@ bool get_signal(struct ksignal *ksig)
->>  		if (current->flags & PF_IO_WORKER)
->>  			goto out;
->>  
->> -		/*
->> -		 * Death signals, no core dump.
->> -		 */
->> -		do_group_exit(ksig->info.si_signo);
->> +		do_exit(exit_code);
->>  		/* NOTREACHED */
->>  	}
->>  	spin_unlock_irq(&sighand->siglock);
->> -- 
->> 2.20.1
->> 
+> Gr{oetje,eeting}s,
+>
+>                          Geert
+>
