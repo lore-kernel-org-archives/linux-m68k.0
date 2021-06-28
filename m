@@ -2,97 +2,76 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-4.3 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+X-Spam-Status: No, score=-9.3 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,NICE_REPLY_A,SPF_HELO_NONE,
-	SPF_PASS,USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,NICE_REPLY_A,
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 97E26C11F64
-	for <linux-m68k@archiver.kernel.org>; Mon, 28 Jun 2021 20:13:43 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 0D59BC11F64
+	for <linux-m68k@archiver.kernel.org>; Mon, 28 Jun 2021 20:17:29 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 6EF5761CCD
-	for <linux-m68k@archiver.kernel.org>; Mon, 28 Jun 2021 20:13:43 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id D14A361CCA
+	for <linux-m68k@archiver.kernel.org>; Mon, 28 Jun 2021 20:17:28 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237262AbhF1UQI (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Mon, 28 Jun 2021 16:16:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57182 "EHLO
+        id S236248AbhF1UTy (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Mon, 28 Jun 2021 16:19:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58020 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236089AbhF1UQH (ORCPT
-        <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Mon, 28 Jun 2021 16:16:07 -0400
-Received: from mail-pg1-x536.google.com (mail-pg1-x536.google.com [IPv6:2607:f8b0:4864:20::536])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8B2C1C061760
-        for <linux-m68k@lists.linux-m68k.org>; Mon, 28 Jun 2021 13:13:41 -0700 (PDT)
-Received: by mail-pg1-x536.google.com with SMTP id e33so16439860pgm.3
-        for <linux-m68k@lists.linux-m68k.org>; Mon, 28 Jun 2021 13:13:41 -0700 (PDT)
+        with ESMTP id S232014AbhF1UTx (ORCPT
+        <rfc822;linux-m68k@vger.kernel.org>); Mon, 28 Jun 2021 16:19:53 -0400
+Received: from mail-pj1-x102b.google.com (mail-pj1-x102b.google.com [IPv6:2607:f8b0:4864:20::102b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F31EBC061574
+        for <linux-m68k@vger.kernel.org>; Mon, 28 Jun 2021 13:17:27 -0700 (PDT)
+Received: by mail-pj1-x102b.google.com with SMTP id ce18-20020a17090aff12b0290170a3e3eb07so866757pjb.1
+        for <linux-m68k@vger.kernel.org>; Mon, 28 Jun 2021 13:17:27 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=subject:to:cc:references:from:message-id:date:user-agent
          :mime-version:in-reply-to:content-transfer-encoding:content-language;
-        bh=vaR0ZHeLh3Rgpq/oOLze5JOk9+DRbDxLmGgrRMNd4Ls=;
-        b=JK/dcwlV5HtjZwqC4/JKo2T5Iu8KcG9Kcd0VQ5ut3njx9t8wLXG9YHp25nmsBb6aKA
-         QFK96qg/LIuguGMS5VsnxqiR3trE5g/dNI1VqluPWV2qMtM1ykGmJeBeHCyrv+5mj+1r
-         W6Vh6SPJHhb9MBqFzMFGTyck3DLP+ZSHxn91KB6neU6wzP39XgV1HpGfm/BiJ7JHBYI/
-         ZNJ+wbclln4o63iRuhoRlW+yVD+wQDCajjefih3eqnQFROwySSE/gtCb7APBz1ul6PFJ
-         XoEX1OWC2IVXgrl6NQXaTbivO5f+1TEv0Rq+1tu9bEk21eThKtcAOW8r2qMbgiDm+aYG
-         TdkA==
+        bh=nmQtlWPuX6vPzCmaAp0QXLNnsKe8ZNEDuDsbhPHNTN8=;
+        b=O2PB/Pcfr+EFaVoP6EK2RZOx4HRzDgSXpFuAazlu7Au5Apc8AYDWh8rTMJlW3joaQW
+         TF1BpvbVMiVqEdv1l8XK+Jl3uHGRRNOiwzDcv/imtQ54IbliNxyHC1T4tvKlBbjdU/Sw
+         pOra7ZyzOjcMMK21BNIFd45wPQFeh2oA8qiAS8QYktOepTLKOArrNGemY4WN3dXdxcrO
+         Jnl7imjUBhjJLGMGVZdhXgRqkeam8eqwu9TkR+Lz5HrZBL8HZP3KVe5ztKROHhpFVIjQ
+         tLMkmEoJAJWoiBAhQg1Kpa1GFYhEcwEhDB7lDixmPo6W1EllbDJfDbmuNKHv18yRc1kL
+         qYtw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:subject:to:cc:references:from:message-id:date
          :user-agent:mime-version:in-reply-to:content-transfer-encoding
          :content-language;
-        bh=vaR0ZHeLh3Rgpq/oOLze5JOk9+DRbDxLmGgrRMNd4Ls=;
-        b=EfAD1tHMkHxiIbiSqeAVnEl3HNnr6trV8o+YJ+59uux0YR9vCBg22jAMGn3eegsfJz
-         aZ84XEGF8CyHxTbyVgOsnpWYglAi/b2QDzI7WvWhDBSWnyOd6fQgaNfV6+3dtM/IoY9T
-         rvQaMCwuUTUPscnC39FkN6KhbSmVOQfBgnnasTlpV9kcPjqQ4ajnp9SsPKMfbPE+0Fb+
-         pVC9qb8Om6IlFGXkzHMddRxahC8tQWiIpkirg1QwDJVOg13tvm9nrJGpNs9otNA9yf9f
-         ZDieYruEYOAalNpFqWqsZUoV/wRI2N+7Wina5lnpkQDS1FAJnZ3eW7uOYrluqiccIDkV
-         AdWA==
-X-Gm-Message-State: AOAM532AVh9l0b97FKQhocAtGc4z9uOepMlgWEkHoVmb07b9B2Z48Dhz
-        fb7AytC7QVctJgPGXg8EM/o=
-X-Google-Smtp-Source: ABdhPJxyQ/1DoRnjU5lf6igsVabo2ZeY13D7p5RiA9jKlGU/j2Sut1YGa+bd6AiG1JPX6EHy2PoRwg==
-X-Received: by 2002:a62:7cc4:0:b029:302:f75a:69ab with SMTP id x187-20020a627cc40000b0290302f75a69abmr26829379pfc.74.1624911221022;
-        Mon, 28 Jun 2021 13:13:41 -0700 (PDT)
+        bh=nmQtlWPuX6vPzCmaAp0QXLNnsKe8ZNEDuDsbhPHNTN8=;
+        b=HlzmUwU7R1Y9scWPuMZOPnxbZwxgCYxYqn+P+/Wc/1k8p5oeOaHKjKo9RabXyjCaDy
+         vLwz/5T4VKiUF5wluM1oR6Fv8eMuT2JSqkqMY5pGTm+1uUdz3wsgwqsfKPDGrB3XeHf8
+         IyvXTdWca9axVgzS1X+lhaTfRh6sGcsXaf7EtetfA7NuiUl5WMux4uXYcX8vrFBU280e
+         CSOY2lrfDEc2Q4nv1GkujJjW1eiorTWyq8KUcCuQxk1gLbi5duUiP2QE+ViftCLqShCX
+         CPnkBk00TNuJsYxQ4TUG4FM7cv5q982026XcWh+ubHQe7vPQm60kfMoVGO5E+2Ujrqct
+         sJaQ==
+X-Gm-Message-State: AOAM530GaN6G+mMKT+3VAkuXnVA59CkKU6w3o1jPdb8aZ/3pLTbA1eRU
+        gw/gSZe7hIOCyR5GikOJqsE7KAwKjtp+cw==
+X-Google-Smtp-Source: ABdhPJx3LusZjSx+jBBt7DWroNTl/9q1X0kxgSG68LeIk+pdg82rN8DcnFYA2bZGYCvC+xEUuWPAGg==
+X-Received: by 2002:a17:90a:8c4:: with SMTP id 4mr38819896pjn.82.1624911447422;
+        Mon, 28 Jun 2021 13:17:27 -0700 (PDT)
 Received: from ?IPv6:2001:df0:0:200c:1c9b:7d7f:b312:1fae? ([2001:df0:0:200c:1c9b:7d7f:b312:1fae])
-        by smtp.gmail.com with ESMTPSA id ga1sm981249pjb.43.2021.06.28.13.13.35
+        by smtp.gmail.com with ESMTPSA id w8sm16584921pgf.81.2021.06.28.13.17.25
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 28 Jun 2021 13:13:40 -0700 (PDT)
-Subject: Re: [PATCH 0/9] Refactoring exit
+        Mon, 28 Jun 2021 13:17:26 -0700 (PDT)
+Subject: Re: [PATCH v6 2/2] m68k: add kernel seccomp support
 To:     Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     Al Viro <viro@zeniv.linux.org.uk>,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        Jens Axboe <axboe@kernel.dk>, Oleg Nesterov <oleg@redhat.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Richard Henderson <rth@twiddle.net>,
-        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
-        Matt Turner <mattst88@gmail.com>,
-        alpha <linux-alpha@vger.kernel.org>,
-        linux-m68k <linux-m68k@lists.linux-m68k.org>,
-        Arnd Bergmann <arnd@kernel.org>, Tejun Heo <tj@kernel.org>,
-        Kees Cook <keescook@chromium.org>
-References: <YNCaMDQVYB04bk3j@zeniv-ca.linux.org.uk>
- <YNDhdb7XNQE6zQzL@zeniv-ca.linux.org.uk>
- <CAHk-=whAsWXcJkpMM8ji77DkYkeJAT4Cj98WBX-S6=GnMQwhzg@mail.gmail.com>
- <87a6njf0ia.fsf@disp2133>
- <CAHk-=wh4_iMRmWcao6a8kCvR0Hhdrz+M9L+q4Bfcwx9E9D0huw@mail.gmail.com>
- <87tulpbp19.fsf@disp2133>
- <CAHk-=wi_kQAff1yx2ufGRo2zApkvqU8VGn7kgPT-Kv71FTs=AA@mail.gmail.com>
- <87zgvgabw1.fsf@disp2133> <875yy3850g.fsf_-_@disp2133>
- <YNULA+Ff+eB66bcP@zeniv-ca.linux.org.uk>
- <YNj4DItToR8FphxC@zeniv-ca.linux.org.uk>
- <6e283d24-7121-ae7c-d5ad-558f85858a09@gmail.com>
- <CAMuHMdXSU6_98NbC1UWTT_kmwxD=6Ha5LJxFAtbSuD=y78nASg@mail.gmail.com>
- <7ad6c3a9-b983-46a5-fc95-f961b636d3fe@gmail.com>
- <CAMuHMdUi5Ri=GmWzS8hb7dkfPyAE=HpQHg6OsKSLDse_364E=g@mail.gmail.com>
+Cc:     Linux/m68k <linux-m68k@vger.kernel.org>,
+        John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
+        Andreas Schwab <schwab@linux-m68k.org>
+References: <1624495560-6351-1-git-send-email-schmitzmic@gmail.com>
+ <1624495560-6351-3-git-send-email-schmitzmic@gmail.com>
+ <CAMuHMdWC9sLUdDpscdHAr--iWxKN=qm7Qq9Zu5VOOR9JTrvo0A@mail.gmail.com>
 From:   Michael Schmitz <schmitzmic@gmail.com>
-Message-ID: <dbb4ca2d-a857-84f0-f167-5ad4e06aa52b@gmail.com>
-Date:   Tue, 29 Jun 2021 08:13:32 +1200
+Message-ID: <bc56cc50-3270-53d1-d40f-8f69fe1700d7@gmail.com>
+Date:   Tue, 29 Jun 2021 08:17:22 +1200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
  Thunderbird/78.8.1
 MIME-Version: 1.0
-In-Reply-To: <CAMuHMdUi5Ri=GmWzS8hb7dkfPyAE=HpQHg6OsKSLDse_364E=g@mail.gmail.com>
+In-Reply-To: <CAMuHMdWC9sLUdDpscdHAr--iWxKN=qm7Qq9Zu5VOOR9JTrvo0A@mail.gmail.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 8bit
 Content-Language: en-US
@@ -102,39 +81,64 @@ X-Mailing-List: linux-m68k@vger.kernel.org
 
 Hi Geert,
 
-On 29/06/21 7:17 am, Geert Uytterhoeven wrote:
->>> The warning is printed when using filesys-ELF-2.0.x-1400K-2.gz,
->>> which is a very old ramdisk from right after the m68k a.out to ELF
->>> transition:
->>>
->>>      warning: process `update' used the obsolete bdflush system call
->>>      Fix your initscripts?
->>>
->>> I still boot it, once in a while.
->> OK; you take the cake. That ramdisk came to mind when I thought about
->> where I'd last seen bdflush, but I've not used it in ages (not sure 14
->> MB are enough for that).
-> Of course it will work on your 14 MiB machine!  It fits on a floppy, _after_
-> decompression.  It was used by people to install Linux on the hard disks
-> of their beefy m68k machines, after they had set up the family Christmas
-> tree, in December 1996.
-Been there, done that. Wrote the HOWTO for ext2 filesystem byte-swapping.
-> I also have a slightly larger one, built from OpenWRT when I did my first
-> experiments on that.  Unlike filesys-ELF-2.0.x-1400K-2.gz, it does open
-> a shell on the serial console, so it is more useful to me.
+On 28/06/21 7:23 pm, Geert Uytterhoeven wrote:
 >
->> The question then is - will bdflush fail gracefully, or spin retrying
->> the syscall?
-> Will add to my todo list...
-> BTW, you can boot this ramdisk on ARAnyM, too.
+>> --- a/arch/m68k/include/asm/syscall.h
+>> +++ b/arch/m68k/include/asm/syscall.h
+>> @@ -4,6 +4,39 @@
+>>
+>>   #include <uapi/linux/audit.h>
+>>
+>> +#include <asm/unistd.h>
+>> +
+>> +extern const unsigned long sys_call_table[];
+>> +
+>> +static inline int syscall_get_nr(struct task_struct *task,
+>> +                                struct pt_regs *regs)
+>> +{
+>> +       return regs->orig_d0;
+>> +}
+>> +
+>> +static inline void syscall_rollback(struct task_struct *task,
+>> +                                   struct pt_regs *regs)
+>> +{
+>> +       regs->d0 = regs->orig_d0;
+>> +}
+>> +
+>> +static inline void syscall_set_return_value(struct task_struct *task,
+>> +                                           struct pt_regs *regs,
+>> +                                           int error, long val)
+>> +{
+>> +       regs->d0 = (long) error ? error : val;
+>> +}
+>> +
+>> +static inline void syscall_get_arguments(struct task_struct *task,
+>> +                                        struct pt_regs *regs,
+>> +                                        unsigned long *args)
+>> +{
+>> +       args[0] = regs->orig_d0;
+>> +       args++;
+>> +
+>> +       memcpy(args, &regs->d1, 5 * sizeof(args[0]));
+>> +}
+>> +
+>>   static inline int syscall_get_arch(struct task_struct *task)
+>>   {
+>>          return AUDIT_ARCH_M68K;
+> Comparing this to what I had before, I noticed syscall_get_return_value()
+> is missing.
+Yes - I only added the bare minimum I needed to compile.
+> Upon closer look, we don't need it (yet), as we don't select any
+> of GENERIC_ENTRY, HAVE_ARCH_TRACEHOOK, or HAVE_SYSCALL_TRACEPOINTS,
+> but why not add it while we're at it?
 
-True. I can't find that ramdisk image anywhere - if you can point me to 
-some archive, I'll give that a try.
+I can do that - the trouble with this entire series is that I can't 
+meaningfully test anything. But syscall_get_return_value() isn't that 
+difficult.
 
 Cheers,
 
      Michael
-
 
 >
 > Gr{oetje,eeting}s,
