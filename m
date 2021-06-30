@@ -2,114 +2,103 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-10.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham
+X-Spam-Status: No, score=-16.6 required=3.0 tests=BAYES_00,DKIM_INVALID,
+	DKIM_SIGNED,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A93CBC11F68
-	for <linux-m68k@archiver.kernel.org>; Wed, 30 Jun 2021 12:56:22 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 25012C11F66
+	for <linux-m68k@archiver.kernel.org>; Wed, 30 Jun 2021 23:01:38 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 92F32613B1
-	for <linux-m68k@archiver.kernel.org>; Wed, 30 Jun 2021 12:56:22 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 061126144E
+	for <linux-m68k@archiver.kernel.org>; Wed, 30 Jun 2021 23:01:38 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234804AbhF3M6u (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Wed, 30 Jun 2021 08:58:50 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:56998 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234821AbhF3M6t (ORCPT
-        <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Wed, 30 Jun 2021 08:58:49 -0400
-Received: from imap.suse.de (imap-alt.suse-dmz.suse.de [192.168.254.47])
-        (using TLSv1.2 with cipher ECDHE-ECDSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 274431FE79;
-        Wed, 30 Jun 2021 12:56:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1625057779; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=xdQwii54mAQjoPtlBzJZA6d/rnKA0OLflwRprIEP0MY=;
-        b=GLULahH7VamboBss/Z2V3SMN2JRwOZ2rY2pDrAciiyGHEmc+ThftQraPIXuXgpPHGu7ubl
-        hjWHvAhGeC5h/zvvdCfH/7jhvgqMSSzVSO1aoK7qtoYmWQy8AMYG4ENYWa0dbzG0er2EUH
-        EcOdUboNbZ6IivkjAWM9O7yrisWIQ1Y=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1625057779;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=xdQwii54mAQjoPtlBzJZA6d/rnKA0OLflwRprIEP0MY=;
-        b=prVTd2KF0wkFSsuN3EFfXFBBttALuxdHLNTzxLOQENelHuRy+4eazXzbqinkjRc7sXCAFg
-        T81d9SHcp5uEUCAA==
-Received: from imap3-int (imap-alt.suse-dmz.suse.de [192.168.254.47])
-        by imap.suse.de (Postfix) with ESMTP id 0F1B9118DD;
-        Wed, 30 Jun 2021 12:56:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1625057779; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=xdQwii54mAQjoPtlBzJZA6d/rnKA0OLflwRprIEP0MY=;
-        b=GLULahH7VamboBss/Z2V3SMN2JRwOZ2rY2pDrAciiyGHEmc+ThftQraPIXuXgpPHGu7ubl
-        hjWHvAhGeC5h/zvvdCfH/7jhvgqMSSzVSO1aoK7qtoYmWQy8AMYG4ENYWa0dbzG0er2EUH
-        EcOdUboNbZ6IivkjAWM9O7yrisWIQ1Y=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1625057779;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=xdQwii54mAQjoPtlBzJZA6d/rnKA0OLflwRprIEP0MY=;
-        b=prVTd2KF0wkFSsuN3EFfXFBBttALuxdHLNTzxLOQENelHuRy+4eazXzbqinkjRc7sXCAFg
-        T81d9SHcp5uEUCAA==
-Received: from director2.suse.de ([192.168.254.72])
-        by imap3-int with ESMTPSA
-        id bdpOAvNp3GDUYAAALh3uQQ
-        (envelope-from <chrubis@suse.cz>); Wed, 30 Jun 2021 12:56:19 +0000
-Date:   Wed, 30 Jun 2021 14:30:45 +0200
-From:   Cyril Hrubis <chrubis@suse.cz>
-To:     "Eric W. Biederman" <ebiederm@xmission.com>
-Cc:     Michael Schmitz <schmitzmic@gmail.com>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        Jens Axboe <axboe@kernel.dk>, Oleg Nesterov <oleg@redhat.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Richard Henderson <rth@twiddle.net>,
-        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
-        Matt Turner <mattst88@gmail.com>,
-        alpha <linux-alpha@vger.kernel.org>,
-        linux-m68k <linux-m68k@lists.linux-m68k.org>,
-        Arnd Bergmann <arnd@kernel.org>, Tejun Heo <tj@kernel.org>,
-        Kees Cook <keescook@chromium.org>, linux-api@vger.kernel.org
-Subject: Re: [CFT][PATCH] exit/bdflush: Remove the deprecated bdflush system
- call
-Message-ID: <YNxj9Ydotv39vwPW@yuki>
-References: <YNULA+Ff+eB66bcP@zeniv-ca.linux.org.uk>
- <YNj4DItToR8FphxC@zeniv-ca.linux.org.uk>
- <6e283d24-7121-ae7c-d5ad-558f85858a09@gmail.com>
- <CAMuHMdXSU6_98NbC1UWTT_kmwxD=6Ha5LJxFAtbSuD=y78nASg@mail.gmail.com>
- <7ad6c3a9-b983-46a5-fc95-f961b636d3fe@gmail.com>
- <CAMuHMdUi5Ri=GmWzS8hb7dkfPyAE=HpQHg6OsKSLDse_364E=g@mail.gmail.com>
- <dbb4ca2d-a857-84f0-f167-5ad4e06aa52b@gmail.com>
- <CAMuHMdVKdZNBU-cTUY0zotA5DmtQ=dxH+iFY0_GX=4DzqpycZQ@mail.gmail.com>
- <36123b5d-daa0-6c2b-f2d4-a942f069fd54@gmail.com>
- <87sg10quue.fsf_-_@disp2133>
+        id S231770AbhF3XEG (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Wed, 30 Jun 2021 19:04:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55674 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231704AbhF3XEF (ORCPT
+        <rfc822;linux-m68k@vger.kernel.org>); Wed, 30 Jun 2021 19:04:05 -0400
+Received: from mail.kernel-space.org (unknown [IPv6:2a01:4f8:c2c:5a84::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5D94EC061756;
+        Wed, 30 Jun 2021 16:01:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel-space.org;
+        s=20190913; t=1625094091;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=BzTpWjhuglx3ZJpmsnSuWElG8U0BoMwOehLzb1L4ML0=;
+        b=tOhgwCBXoHftEsG9xXxE3tZCU8lrbvyHqucpb4iEu3OL5z5DkRj/OTwE3PuHTLCwt9ifsR
+        IeMlw04Za0amgnmrJqEwuqbrBjKP87/tZhfyagmPyP+7H0KRsKFVHqFWVLhbuBwTnJ11lR
+        PY+FH76IlpLNQ5n/gZRsnZOh/Qf9MlA=
+Received: from dfj.bfc.timesys.com (host-87-4-238-130.retail.telecomitalia.it [87.4.238.130])
+        by ziongate (OpenSMTPD) with ESMTPSA id 03095eb0 (TLSv1.3:TLS_AES_256_GCM_SHA384:256:NO);
+        Wed, 30 Jun 2021 23:01:31 +0000 (UTC)
+From:   Angelo Dureghello <angelo@kernel-space.org>
+To:     gerg@linux-m68k.org, wg@grandegger.com, mkl@pengutronix.de
+Cc:     geert@linux-m68k.org, linux-m68k@vger.kernel.org,
+        linux-can@vger.kernel.org, qiangqing.zhang@nxp.com,
+        Angelo Dureghello <angelo@kernel-space.org>
+Subject: [PATCH v4 1/5] can: flexcan: add platform data header
+Date:   Thu,  1 Jul 2021 01:00:12 +0200
+Message-Id: <20210630230016.4099050-1-angelo@kernel-space.org>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <87sg10quue.fsf_-_@disp2133>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-Hi!
-I've send a similar patch [1] a while ago when I removed bdflush tests from
-LTP.
+Add platform data header for flexcan.
 
-[1] https://lore.kernel.org/lkml/20190528101012.11402-1-chrubis@suse.cz/
+Signed-off-by: Angelo Dureghello <angelo@kernel-space.org>
+---
+Changes for v2:
+- move header file in more proper location
+- remove irq defines
+- change variable types to match driver types
+Changes for v3:
+- rename to more generic flexcan.h
+- reorder struct fields to avoid paddings
+- remove unused big_endian
+Changes for v4:
+- rename structure to flexcan_platform_data
+---
+ include/linux/can/platform/flexcan.h | 25 +++++++++++++++++++++++++
+ 1 file changed, 25 insertions(+)
+ create mode 100644 include/linux/can/platform/flexcan.h
 
-Acked-by: Cyril Hrubis <chrubis@suse.cz>
-
+diff --git a/include/linux/can/platform/flexcan.h b/include/linux/can/platform/flexcan.h
+new file mode 100644
+index 000000000000..533dbe39c659
+--- /dev/null
++++ b/include/linux/can/platform/flexcan.h
+@@ -0,0 +1,25 @@
++/* SPDX-License-Identifier: GPL-2.0-only */
++/*
++ * Copyright (C) 2021  Angelo Dureghello <angelo@kernel-space.org>
++ *
++ * This program is free software; you can redistribute it and/or
++ * modify it under the terms of the GNU General Public License
++ * version 2 as published by the Free Software Foundation.
++ *
++ * This program is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ * GNU General Public License for more details.
++ */
++
++#ifndef _PLAT_FLEXCAN_H
++#define _PLAT_FLEXCAN_H
++
++struct flexcan_platform_data {
++	u32 clock_frequency;
++	u8 clk_src;
++};
++
++#define FLEXCAN_MCF5411X_MB_CNT_MCF	16
++
++#endif /* _PLAT_FLEXCAN_H */
 -- 
-Cyril Hrubis
-chrubis@suse.cz
+2.31.1
+
