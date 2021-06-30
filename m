@@ -2,59 +2,70 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-11.4 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,INCLUDES_CR_TRAILER,MAILING_LIST_MULTI,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-10.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id AF390C11F69
-	for <linux-m68k@archiver.kernel.org>; Wed, 30 Jun 2021 08:39:52 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A93CBC11F68
+	for <linux-m68k@archiver.kernel.org>; Wed, 30 Jun 2021 12:56:22 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 92E3361CF9
-	for <linux-m68k@archiver.kernel.org>; Wed, 30 Jun 2021 08:39:52 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 92F32613B1
+	for <linux-m68k@archiver.kernel.org>; Wed, 30 Jun 2021 12:56:22 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233507AbhF3ImU (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Wed, 30 Jun 2021 04:42:20 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43770 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232984AbhF3ImT (ORCPT <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Wed, 30 Jun 2021 04:42:19 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3037861CF9
-        for <linux-m68k@lists.linux-m68k.org>; Wed, 30 Jun 2021 08:39:51 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1625042391;
-        bh=nF7bRnKiTfUwAEQZZ4y99Ifd5yL4YN8o4MyvNHrDvp4=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=MpqndtoVyuwdHmtwGrVrGcFJ0F6VxobYQR7k5p6T5BBM3yD7cXtMc2KrSM240IEae
-         Mru3I2+bK5p+AAh29/LS1LvnTUGRO8ov1AV2jN8DawuaTyJyt/4onD/JEyM51Y+buD
-         NYh8DxmbEqDYxxu1NVb1xjmwnUEqzvFM4p+m8mzendALw5bkZXQj2R+IaELz3oaGkw
-         uHtYh/SD/6bmX729ejU/1SLfdQ78LvvZm9s4iEOi/fzNQ7UaJ/Cn6UE7Yr9Ags0Rpn
-         WvC/AEWx0w4moWKTuveXjlvuyz59lcyeE2IaUsa3M847Cl3n0BqP+eoshBPE7VQ0Xf
-         ZnKEDw6Z9vRvg==
-Received: by mail-wr1-f52.google.com with SMTP id m18so2601165wrv.2
-        for <linux-m68k@lists.linux-m68k.org>; Wed, 30 Jun 2021 01:39:51 -0700 (PDT)
-X-Gm-Message-State: AOAM531IjYS4olTNYEnIKx9Taz2Vo2Iyms+qg/xVzDpQyqW+ZQiDqtvg
-        V9buY7iueff+ZK6VuirkopDpSUaSbKurufeypOs=
-X-Google-Smtp-Source: ABdhPJy5zClIXH6gfYBFh+/svLWqgI96t+bAqOlJJAIzgHK1Q/gPj3CBEHSVyEyQRwmgsqb+Od88D+57FqAsW4c5SOY=
-X-Received: by 2002:adf:e107:: with SMTP id t7mr37744493wrz.165.1625042389771;
- Wed, 30 Jun 2021 01:39:49 -0700 (PDT)
-MIME-Version: 1.0
-References: <YNCaMDQVYB04bk3j@zeniv-ca.linux.org.uk> <YNDhdb7XNQE6zQzL@zeniv-ca.linux.org.uk>
- <CAHk-=whAsWXcJkpMM8ji77DkYkeJAT4Cj98WBX-S6=GnMQwhzg@mail.gmail.com>
- <87a6njf0ia.fsf@disp2133> <CAHk-=wh4_iMRmWcao6a8kCvR0Hhdrz+M9L+q4Bfcwx9E9D0huw@mail.gmail.com>
- <87tulpbp19.fsf@disp2133> <CAHk-=wi_kQAff1yx2ufGRo2zApkvqU8VGn7kgPT-Kv71FTs=AA@mail.gmail.com>
- <87zgvgabw1.fsf@disp2133> <875yy3850g.fsf_-_@disp2133> <YNULA+Ff+eB66bcP@zeniv-ca.linux.org.uk>
- <YNj4DItToR8FphxC@zeniv-ca.linux.org.uk> <6e283d24-7121-ae7c-d5ad-558f85858a09@gmail.com>
- <CAMuHMdXSU6_98NbC1UWTT_kmwxD=6Ha5LJxFAtbSuD=y78nASg@mail.gmail.com>
- <7ad6c3a9-b983-46a5-fc95-f961b636d3fe@gmail.com> <CAMuHMdUi5Ri=GmWzS8hb7dkfPyAE=HpQHg6OsKSLDse_364E=g@mail.gmail.com>
- <dbb4ca2d-a857-84f0-f167-5ad4e06aa52b@gmail.com> <CAMuHMdVKdZNBU-cTUY0zotA5DmtQ=dxH+iFY0_GX=4DzqpycZQ@mail.gmail.com>
- <36123b5d-daa0-6c2b-f2d4-a942f069fd54@gmail.com> <87sg10quue.fsf_-_@disp2133>
-In-Reply-To: <87sg10quue.fsf_-_@disp2133>
-From:   Arnd Bergmann <arnd@kernel.org>
-Date:   Wed, 30 Jun 2021 10:37:15 +0200
-X-Gmail-Original-Message-ID: <CAK8P3a0=A7WhiWBpX+yy6+haR84paXWUOO2=65uP9E82yNomoQ@mail.gmail.com>
-Message-ID: <CAK8P3a0=A7WhiWBpX+yy6+haR84paXWUOO2=65uP9E82yNomoQ@mail.gmail.com>
-Subject: Re: [CFT][PATCH] exit/bdflush: Remove the deprecated bdflush system call
+        id S234804AbhF3M6u (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Wed, 30 Jun 2021 08:58:50 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:56998 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234821AbhF3M6t (ORCPT
+        <rfc822;linux-m68k@lists.linux-m68k.org>);
+        Wed, 30 Jun 2021 08:58:49 -0400
+Received: from imap.suse.de (imap-alt.suse-dmz.suse.de [192.168.254.47])
+        (using TLSv1.2 with cipher ECDHE-ECDSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 274431FE79;
+        Wed, 30 Jun 2021 12:56:19 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1625057779; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=xdQwii54mAQjoPtlBzJZA6d/rnKA0OLflwRprIEP0MY=;
+        b=GLULahH7VamboBss/Z2V3SMN2JRwOZ2rY2pDrAciiyGHEmc+ThftQraPIXuXgpPHGu7ubl
+        hjWHvAhGeC5h/zvvdCfH/7jhvgqMSSzVSO1aoK7qtoYmWQy8AMYG4ENYWa0dbzG0er2EUH
+        EcOdUboNbZ6IivkjAWM9O7yrisWIQ1Y=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1625057779;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=xdQwii54mAQjoPtlBzJZA6d/rnKA0OLflwRprIEP0MY=;
+        b=prVTd2KF0wkFSsuN3EFfXFBBttALuxdHLNTzxLOQENelHuRy+4eazXzbqinkjRc7sXCAFg
+        T81d9SHcp5uEUCAA==
+Received: from imap3-int (imap-alt.suse-dmz.suse.de [192.168.254.47])
+        by imap.suse.de (Postfix) with ESMTP id 0F1B9118DD;
+        Wed, 30 Jun 2021 12:56:19 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1625057779; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=xdQwii54mAQjoPtlBzJZA6d/rnKA0OLflwRprIEP0MY=;
+        b=GLULahH7VamboBss/Z2V3SMN2JRwOZ2rY2pDrAciiyGHEmc+ThftQraPIXuXgpPHGu7ubl
+        hjWHvAhGeC5h/zvvdCfH/7jhvgqMSSzVSO1aoK7qtoYmWQy8AMYG4ENYWa0dbzG0er2EUH
+        EcOdUboNbZ6IivkjAWM9O7yrisWIQ1Y=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1625057779;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=xdQwii54mAQjoPtlBzJZA6d/rnKA0OLflwRprIEP0MY=;
+        b=prVTd2KF0wkFSsuN3EFfXFBBttALuxdHLNTzxLOQENelHuRy+4eazXzbqinkjRc7sXCAFg
+        T81d9SHcp5uEUCAA==
+Received: from director2.suse.de ([192.168.254.72])
+        by imap3-int with ESMTPSA
+        id bdpOAvNp3GDUYAAALh3uQQ
+        (envelope-from <chrubis@suse.cz>); Wed, 30 Jun 2021 12:56:19 +0000
+Date:   Wed, 30 Jun 2021 14:30:45 +0200
+From:   Cyril Hrubis <chrubis@suse.cz>
 To:     "Eric W. Biederman" <ebiederm@xmission.com>
 Cc:     Michael Schmitz <schmitzmic@gmail.com>,
         Geert Uytterhoeven <geert@linux-m68k.org>,
@@ -68,34 +79,37 @@ Cc:     Michael Schmitz <schmitzmic@gmail.com>,
         Matt Turner <mattst88@gmail.com>,
         alpha <linux-alpha@vger.kernel.org>,
         linux-m68k <linux-m68k@lists.linux-m68k.org>,
-        Tejun Heo <tj@kernel.org>, Kees Cook <keescook@chromium.org>,
-        Linux API <linux-api@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        Arnd Bergmann <arnd@kernel.org>, Tejun Heo <tj@kernel.org>,
+        Kees Cook <keescook@chromium.org>, linux-api@vger.kernel.org
+Subject: Re: [CFT][PATCH] exit/bdflush: Remove the deprecated bdflush system
+ call
+Message-ID: <YNxj9Ydotv39vwPW@yuki>
+References: <YNULA+Ff+eB66bcP@zeniv-ca.linux.org.uk>
+ <YNj4DItToR8FphxC@zeniv-ca.linux.org.uk>
+ <6e283d24-7121-ae7c-d5ad-558f85858a09@gmail.com>
+ <CAMuHMdXSU6_98NbC1UWTT_kmwxD=6Ha5LJxFAtbSuD=y78nASg@mail.gmail.com>
+ <7ad6c3a9-b983-46a5-fc95-f961b636d3fe@gmail.com>
+ <CAMuHMdUi5Ri=GmWzS8hb7dkfPyAE=HpQHg6OsKSLDse_364E=g@mail.gmail.com>
+ <dbb4ca2d-a857-84f0-f167-5ad4e06aa52b@gmail.com>
+ <CAMuHMdVKdZNBU-cTUY0zotA5DmtQ=dxH+iFY0_GX=4DzqpycZQ@mail.gmail.com>
+ <36123b5d-daa0-6c2b-f2d4-a942f069fd54@gmail.com>
+ <87sg10quue.fsf_-_@disp2133>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <87sg10quue.fsf_-_@disp2133>
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-On Tue, Jun 29, 2021 at 10:28 PM Eric W. Biederman
-<ebiederm@xmission.com> wrote:
->
->
-> The bdflush system call has been deprecated for a very long time.
-> Recently Michael Schmitz tested[1] and found that the last known
-> caller of of the bdflush system call is unaffected by it's removal.
->
-> Since the code is not needed delete it.
->
-> [1] https://lkml.kernel.org/r/36123b5d-daa0-6c2b-f2d4-a942f069fd54@gmail.com
-> Signed-off-by: "Eric W. Biederman" <ebiederm@xmission.com>
-> ---
->
-> I think we have consensus that bdflush can be removed. Can folks please
-> verify I have removed it correctly?
+Hi!
+I've send a similar patch [1] a while ago when I removed bdflush tests from
+LTP.
 
-Reviewed-by: Arnd Bergmann <arnd@arndb.de>
+[1] https://lore.kernel.org/lkml/20190528101012.11402-1-chrubis@suse.cz/
 
-We are traditionally somewhat inconsistent about whether to leave the
-__NR_bdflush macro present in asm/unistd.h or to remove it when the
-syscall is gone. Leaving it in place as you do is probably better here.
+Acked-by: Cyril Hrubis <chrubis@suse.cz>
 
-        Arnd
+-- 
+Cyril Hrubis
+chrubis@suse.cz
