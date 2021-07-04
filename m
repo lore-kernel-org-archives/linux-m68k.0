@@ -2,136 +2,94 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.8 required=3.0 tests=BAYES_00,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,MAILING_LIST_MULTI,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-18.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
+	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 676CDC11F6A
-	for <linux-m68k@archiver.kernel.org>; Fri,  2 Jul 2021 09:56:02 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2439BC07E95
+	for <linux-m68k@archiver.kernel.org>; Sun,  4 Jul 2021 23:01:42 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 50ECE6140E
-	for <linux-m68k@archiver.kernel.org>; Fri,  2 Jul 2021 09:56:02 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 077AF613F9
+	for <linux-m68k@archiver.kernel.org>; Sun,  4 Jul 2021 23:01:42 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230235AbhGBJ6d (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Fri, 2 Jul 2021 05:58:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36850 "EHLO
+        id S229549AbhGDXER (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Sun, 4 Jul 2021 19:04:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43600 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230150AbhGBJ6d (ORCPT
-        <rfc822;linux-m68k@vger.kernel.org>); Fri, 2 Jul 2021 05:58:33 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA8FEC061762
-        for <linux-m68k@vger.kernel.org>; Fri,  2 Jul 2021 02:56:01 -0700 (PDT)
-Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <mkl@pengutronix.de>)
-        id 1lzFtt-0002SF-KH; Fri, 02 Jul 2021 11:55:57 +0200
-Received: from pengutronix.de (unknown [IPv6:2a03:f580:87bc:d400:fe13:c2b2:7939:752b])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (Client did not present a certificate)
-        (Authenticated sender: mkl-all@blackshift.org)
-        by smtp.blackshift.org (Postfix) with ESMTPSA id 935CC6477C7;
-        Fri,  2 Jul 2021 09:55:56 +0000 (UTC)
-Date:   Fri, 2 Jul 2021 11:55:56 +0200
-From:   Marc Kleine-Budde <mkl@pengutronix.de>
-To:     Angelo Dureghello <angelo@kernel-space.org>
-Cc:     gerg@linux-m68k.org, wg@grandegger.com, geert@linux-m68k.org,
-        linux-m68k@vger.kernel.org, linux-can@vger.kernel.org,
-        qiangqing.zhang@nxp.com
-Subject: Re: [PATCH v4 1/5] can: flexcan: add platform data header
-Message-ID: <20210702095556.zq2edwmblexswbaz@pengutronix.de>
-References: <20210630230016.4099050-1-angelo@kernel-space.org>
- <20210701092738.iw4l4vekpvn2c4an@pengutronix.de>
- <eca22abd-7aff-5113-3cc7-a8abf10062e1@kernel-space.org>
+        with ESMTP id S229530AbhGDXER (ORCPT
+        <rfc822;linux-m68k@lists.linux-m68k.org>);
+        Sun, 4 Jul 2021 19:04:17 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5E898C061574;
+        Sun,  4 Jul 2021 16:01:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+        MIME-Version:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:
+        Content-ID:Content-Description:In-Reply-To:References;
+        bh=bR0QEHVYAdW3v72Aw8kC9THbMpNs2o+j6IWYhXHWArQ=; b=pR2pENaQmLKuVLljp3vAWZ0rIw
+        D3huTZ2u+hOmQnmJh3zEPRxQRnZYHXfgx+8ZVjjGx6prK94cwlhA9ahlGCm5HaKJHZe0YovDxsHBo
+        hvxOH+4wTugIKll+Ewho0TjDvQfSqgNwzMQm3EwQ0LZkF0nmd3zpVOTMMD1cIyZ98uWbMCLwF9qq5
+        24KpE992qrIZOc6Dt2w7EN14lyAYL+aPIAxtRx/E8w4l8rqp5yG8Js1WEFXTGdTwTk2CHdtcOdTte
+        Cic4X2q5ZinDOlEJGoVrKmItPNPUb6GJdFt7PkBX72sR0Jya6BbbFQqvuN6bRMs1oSZiYYegoq+jZ
+        eHkJi8bg==;
+Received: from [2601:1c0:6280:3f0:7629:afff:fe72:e49d] (helo=bombadil.infradead.org)
+        by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1m0B7K-006sCv-2P; Sun, 04 Jul 2021 23:01:38 +0000
+From:   Randy Dunlap <rdunlap@infradead.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Randy Dunlap <rdunlap@infradead.org>,
+        kernel test robot <lkp@intel.com>,
+        Greg Ungerer <gerg@linux-m68k.org>,
+        linux-m68k@lists.linux-m68k.org, uclinux-dev@uclinux.org,
+        Arnd Bergmann <arnd@arndb.de>
+Subject: [PATCH] m68k/coldfire: change pll var. to clk_pll
+Date:   Sun,  4 Jul 2021 16:01:37 -0700
+Message-Id: <20210704230137.28915-1-rdunlap@infradead.org>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="ckp7k3nhniuhd7ek"
-Content-Disposition: inline
-In-Reply-To: <eca22abd-7aff-5113-3cc7-a8abf10062e1@kernel-space.org>
-X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
-X-SA-Exim-Mail-From: mkl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-m68k@vger.kernel.org
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
+DEFINE_CLK() makes the variable name be clk_xyz, so variable
+'pll' should instead be 'clk_pll'.
 
---ckp7k3nhniuhd7ek
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+In file included from ../arch/m68k/coldfire/m525x.c:12:
+../arch/m68k/coldfire/m525x.c:29:30: error: 'pll' undeclared here (not in a function)
+   29 |  CLKDEV_INIT(NULL, "pll.0", &pll),
+      |                              ^~~
+../include/linux/clkdev.h:30:10: note: in definition of macro 'CLKDEV_INIT'
+   30 |   .clk = c, \
+      |          ^
+In file included from ../arch/m68k/coldfire/m525x.c:21:
+../arch/m68k/include/asm/mcfclk.h:43:27: warning: 'clk_pll' defined but not used [-Wunused-variable]
+   43 |         static struct clk clk_##clk_ref = { \
+      |                           ^~~~
+../arch/m68k/coldfire/m525x.c:25:1: note: in expansion of macro 'DEFINE_CLK'
+   25 | DEFINE_CLK(pll, "pll.0", MCF_CLK);
+      | ^~~~~~~~~~
 
-On 02.07.2021 11:21:40, Angelo Dureghello wrote:
-> Hi Marc,
->=20
-> On 01/07/21 11:27 AM, Marc Kleine-Budde wrote:
-> > On 01.07.2021 01:00:12, Angelo Dureghello wrote:
-> > > Add platform data header for flexcan.
-> >=20
-> > BTW: the DKIM signatures on your mails are invalid:
-> >=20
-> > |   =E2=9C=97 [PATCH v4 1/5] can: flexcan: add platform data header
-> > |     + Link: https://lore.kernel.org/r/20210630230016.4099050-1-angelo=
-@kernel-space.org
-> > |     + Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
-> > |   =E2=9C=97 [PATCH v4 4/5] can: flexcan: update Kconfig to enable col=
-dfire
-> > |     + Link: https://lore.kernel.org/r/20210630230016.4099050-4-angelo=
-@kernel-space.org
-> > |     + Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
-> > |   =E2=9C=97 [PATCH v4 5/5] can: flexcan: add mcf5441x support
-> > |     + Link: https://lore.kernel.org/r/20210630230016.4099050-5-angelo=
-@kernel-space.org
-> > |     + Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
-> > |   ---
-> > |   Attestation is available, but did not succeed:
-> > |     =E2=9C=97 Failed DKIM/kernel-space.org attestation
-> >=20
->=20
-> thanks for catching this, fixed, now dkim tests are passing.
+Fixes: 63aadb77669a ("m68k: coldfire: use clkdev_lookup on most coldfire")
+Reported-by: kernel test robot <lkp@intel.com>
+Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+Cc: Greg Ungerer <gerg@linux-m68k.org>
+Cc: linux-m68k@lists.linux-m68k.org
+Cc: uclinux-dev@uclinux.org
+Cc: Arnd Bergmann <arnd@arndb.de>
+---
+ arch/m68k/coldfire/m525x.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-It still fails with the new series:
-
-|   =E2=9C=97 [PATCH v5 1/5] can: flexcan: add platform data header
-|     + Link: https://lore.kernel.org/r/20210702094841.327679-1-angelo@kern=
-el-space.org
-|     + Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
-|   =E2=9C=97 [PATCH v5 4/5] can: flexcan: update Kconfig to enable coldfire
-|     + Link: https://lore.kernel.org/r/20210702094841.327679-4-angelo@kern=
-el-space.org
-|     + Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
-|   =E2=9C=97 [PATCH v5 5/5] can: flexcan: add mcf5441x support
-|     + Link: https://lore.kernel.org/r/20210702094841.327679-5-angelo@kern=
-el-space.org
-|     + Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
-|   ---
-|   Attestation is available, but did not succeed:
-|     =E2=9C=97 Failed DKIM/kernel-space.org attestation
-
-Marc
-
---=20
-Pengutronix e.K.                 | Marc Kleine-Budde           |
-Embedded Linux                   | https://www.pengutronix.de  |
-Vertretung West/Dortmund         | Phone: +49-231-2826-924     |
-Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-5555 |
-
---ckp7k3nhniuhd7ek
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEK3kIWJt9yTYMP3ehqclaivrt76kFAmDe4qkACgkQqclaivrt
-76kXoAgAslx7ksLJgiBOODhU6wgNEbard0r7bCyt8lXF6LM/ZIuscpBNQ0C3n2WL
-6IXkhIvHdt9s0fnER1o6CCB7ddjI34U39hJ6AC76wD4sPhi5hSvrHb+ySSJpvH1Y
-LQsFn3RaM13sLf6/akw/dD0lmcnmiu+OmLcZId9HVAK1S5xr2GlikXkuBGYfe8vz
-fQe4UCv7W3DLqtbGQB4kaV6LG+wFadiLCR0H+A3LuM0KoFqPwG1LVs/rANo0kIrp
-86cOUsT7CeRosEhu2S6Z4D25i6thakGwt3BynbA0fklRyoTE8JNJdwmGk88BAtgB
-rbfrqV09wNr+Ac0bc6cijE2wAHki+w==
-=lKxZ
------END PGP SIGNATURE-----
-
---ckp7k3nhniuhd7ek--
+--- linux-next-20210701.orig/arch/m68k/coldfire/m525x.c
++++ linux-next-20210701/arch/m68k/coldfire/m525x.c
+@@ -26,7 +26,7 @@ DEFINE_CLK(pll, "pll.0", MCF_CLK);
+ DEFINE_CLK(sys, "sys.0", MCF_BUSCLK);
+ 
+ static struct clk_lookup m525x_clk_lookup[] = {
+-	CLKDEV_INIT(NULL, "pll.0", &pll),
++	CLKDEV_INIT(NULL, "pll.0", &clk_pll),
+ 	CLKDEV_INIT(NULL, "sys.0", &clk_sys),
+ 	CLKDEV_INIT("mcftmr.0", NULL, &clk_sys),
+ 	CLKDEV_INIT("mcftmr.1", NULL, &clk_sys),
