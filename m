@@ -2,94 +2,77 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-18.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
-	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-20.2 required=3.0 tests=BAYES_00,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,INCLUDES_PULL_REQUEST,
+	MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,
+	USER_AGENT_SANE_1 autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 2439BC07E95
-	for <linux-m68k@archiver.kernel.org>; Sun,  4 Jul 2021 23:01:42 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id AB69BC07E95
+	for <linux-m68k@archiver.kernel.org>; Mon,  5 Jul 2021 01:15:40 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 077AF613F9
-	for <linux-m68k@archiver.kernel.org>; Sun,  4 Jul 2021 23:01:42 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 7CFE1613CE
+	for <linux-m68k@archiver.kernel.org>; Mon,  5 Jul 2021 01:15:40 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229549AbhGDXER (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Sun, 4 Jul 2021 19:04:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43600 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229530AbhGDXER (ORCPT
-        <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Sun, 4 Jul 2021 19:04:17 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5E898C061574;
-        Sun,  4 Jul 2021 16:01:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-        MIME-Version:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:
-        Content-ID:Content-Description:In-Reply-To:References;
-        bh=bR0QEHVYAdW3v72Aw8kC9THbMpNs2o+j6IWYhXHWArQ=; b=pR2pENaQmLKuVLljp3vAWZ0rIw
-        D3huTZ2u+hOmQnmJh3zEPRxQRnZYHXfgx+8ZVjjGx6prK94cwlhA9ahlGCm5HaKJHZe0YovDxsHBo
-        hvxOH+4wTugIKll+Ewho0TjDvQfSqgNwzMQm3EwQ0LZkF0nmd3zpVOTMMD1cIyZ98uWbMCLwF9qq5
-        24KpE992qrIZOc6Dt2w7EN14lyAYL+aPIAxtRx/E8w4l8rqp5yG8Js1WEFXTGdTwTk2CHdtcOdTte
-        Cic4X2q5ZinDOlEJGoVrKmItPNPUb6GJdFt7PkBX72sR0Jya6BbbFQqvuN6bRMs1oSZiYYegoq+jZ
-        eHkJi8bg==;
-Received: from [2601:1c0:6280:3f0:7629:afff:fe72:e49d] (helo=bombadil.infradead.org)
-        by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1m0B7K-006sCv-2P; Sun, 04 Jul 2021 23:01:38 +0000
-From:   Randy Dunlap <rdunlap@infradead.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Randy Dunlap <rdunlap@infradead.org>,
-        kernel test robot <lkp@intel.com>,
-        Greg Ungerer <gerg@linux-m68k.org>,
-        linux-m68k@lists.linux-m68k.org, uclinux-dev@uclinux.org,
-        Arnd Bergmann <arnd@arndb.de>
-Subject: [PATCH] m68k/coldfire: change pll var. to clk_pll
-Date:   Sun,  4 Jul 2021 16:01:37 -0700
-Message-Id: <20210704230137.28915-1-rdunlap@infradead.org>
-X-Mailer: git-send-email 2.26.2
+        id S229809AbhGEBSM (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Sun, 4 Jul 2021 21:18:12 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59578 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229549AbhGEBSM (ORCPT <rfc822;linux-m68k@vger.kernel.org>);
+        Sun, 4 Jul 2021 21:18:12 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C4412611F2;
+        Mon,  5 Jul 2021 01:15:34 +0000 (UTC)
+From:   Greg Ungerer <gerg@linux-m68k.org>
+Subject: [git pull] m68knommu changes for v5.14
+To:     torvalds@linux-foundation.org
+Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Linux/m68k <linux-m68k@vger.kernel.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>, gerg@kernel.org
+Message-ID: <f1a49aed-3498-ee1c-a29c-77f900970308@linux-m68k.org>
+Date:   Mon, 5 Jul 2021 11:15:32 +1000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-DEFINE_CLK() makes the variable name be clk_xyz, so variable
-'pll' should instead be 'clk_pll'.
+Hi Linus,
 
-In file included from ../arch/m68k/coldfire/m525x.c:12:
-../arch/m68k/coldfire/m525x.c:29:30: error: 'pll' undeclared here (not in a function)
-   29 |  CLKDEV_INIT(NULL, "pll.0", &pll),
-      |                              ^~~
-../include/linux/clkdev.h:30:10: note: in definition of macro 'CLKDEV_INIT'
-   30 |   .clk = c, \
-      |          ^
-In file included from ../arch/m68k/coldfire/m525x.c:21:
-../arch/m68k/include/asm/mcfclk.h:43:27: warning: 'clk_pll' defined but not used [-Wunused-variable]
-   43 |         static struct clk clk_##clk_ref = { \
-      |                           ^~~~
-../arch/m68k/coldfire/m525x.c:25:1: note: in expansion of macro 'DEFINE_CLK'
-   25 | DEFINE_CLK(pll, "pll.0", MCF_CLK);
-      | ^~~~~~~~~~
+Please pull the m68knommu changes for v5.14.
 
-Fixes: 63aadb77669a ("m68k: coldfire: use clkdev_lookup on most coldfire")
-Reported-by: kernel test robot <lkp@intel.com>
-Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-Cc: Greg Ungerer <gerg@linux-m68k.org>
-Cc: linux-m68k@lists.linux-m68k.org
-Cc: uclinux-dev@uclinux.org
-Cc: Arnd Bergmann <arnd@arndb.de>
----
- arch/m68k/coldfire/m525x.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Only a single fix, for a build failure picked up by the kernel build robot.
 
---- linux-next-20210701.orig/arch/m68k/coldfire/m525x.c
-+++ linux-next-20210701/arch/m68k/coldfire/m525x.c
-@@ -26,7 +26,7 @@ DEFINE_CLK(pll, "pll.0", MCF_CLK);
- DEFINE_CLK(sys, "sys.0", MCF_BUSCLK);
- 
- static struct clk_lookup m525x_clk_lookup[] = {
--	CLKDEV_INIT(NULL, "pll.0", &pll),
-+	CLKDEV_INIT(NULL, "pll.0", &clk_pll),
- 	CLKDEV_INIT(NULL, "sys.0", &clk_sys),
- 	CLKDEV_INIT("mcftmr.0", NULL, &clk_sys),
- 	CLKDEV_INIT("mcftmr.1", NULL, &clk_sys),
+Regards
+Greg
+
+
+
+The following changes since commit 13311e74253fe64329390df80bed3f07314ddd61:
+
+   Linux 5.13-rc7 (2021-06-20 15:03:15 -0700)
+
+are available in the Git repository at:
+
+   git://git.kernel.org/pub/scm/linux/kernel/git/gerg/m68knommu.git tags/m68knommu-for-v5.14
+
+for you to fetch changes up to 3f605ee17f8e785ba6ff69bee8e584e377a3cf28:
+
+   m68knommu: fix missing LCD splash screen data initializer (2021-06-21 12:09:26 +1000)
+
+----------------------------------------------------------------
+m68knommu: fixes for v5.14
+
+Fixes include:
+. fix missing LCD splash screen data initializer
+
+----------------------------------------------------------------
+Greg Ungerer (1):
+       m68knommu: fix missing LCD splash screen data initializer
+
+  arch/m68k/68000/dragen2.c |   1 +
+  arch/m68k/68000/screen.h  | 804 ++++++++++++++++++++++++++++++++++++++++++++++
+  2 files changed, 805 insertions(+)
+  create mode 100644 arch/m68k/68000/screen.h
