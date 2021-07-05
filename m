@@ -2,77 +2,60 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-20.2 required=3.0 tests=BAYES_00,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,INCLUDES_PULL_REQUEST,
-	MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,
-	USER_AGENT_SANE_1 autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-6.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS,USER_AGENT_GIT autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id AB69BC07E95
-	for <linux-m68k@archiver.kernel.org>; Mon,  5 Jul 2021 01:15:40 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D83F2C07E98
+	for <linux-m68k@archiver.kernel.org>; Mon,  5 Jul 2021 05:57:46 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 7CFE1613CE
-	for <linux-m68k@archiver.kernel.org>; Mon,  5 Jul 2021 01:15:40 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id B628661396
+	for <linux-m68k@archiver.kernel.org>; Mon,  5 Jul 2021 05:57:46 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229809AbhGEBSM (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Sun, 4 Jul 2021 21:18:12 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59578 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229549AbhGEBSM (ORCPT <rfc822;linux-m68k@vger.kernel.org>);
-        Sun, 4 Jul 2021 21:18:12 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C4412611F2;
-        Mon,  5 Jul 2021 01:15:34 +0000 (UTC)
-From:   Greg Ungerer <gerg@linux-m68k.org>
-Subject: [git pull] m68knommu changes for v5.14
-To:     torvalds@linux-foundation.org
-Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Linux/m68k <linux-m68k@vger.kernel.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>, gerg@kernel.org
-Message-ID: <f1a49aed-3498-ee1c-a29c-77f900970308@linux-m68k.org>
-Date:   Mon, 5 Jul 2021 11:15:32 +1000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        id S229781AbhGEGAW (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Mon, 5 Jul 2021 02:00:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50540 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229734AbhGEGAW (ORCPT
+        <rfc822;linux-m68k@lists.linux-m68k.org>);
+        Mon, 5 Jul 2021 02:00:22 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E1962C061574
+        for <linux-m68k@lists.linux-m68k.org>; Sun,  4 Jul 2021 22:57:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
+        Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
+        Content-Description:In-Reply-To:References;
+        bh=Cskoe9oyQCYklHNnJijNFqW/H/1PlRUBwxq1N2Fs1W4=; b=FBvKZzYLDCNh0pem2Ek6G09/Qr
+        THW2LZihPvRbUg+q/faQLSJ3ujVapZnEOfYzrAiH5bJfmq+ERJTJuAjurH1qzCA2amDN5WJsdYaNj
+        R2PZmuybhy5A57uIEFKKmOyjoiFvPiDfV51PiOjahEF7LeVb1Rl1Cb1AW6qDAc8K0cCaesrZ5V6OJ
+        7SsI7QCdZy8Dtv+jVvcn/EyhlFPHdcchyHdkP13sGQvSZylUwXM+6UAtg6oXxZ4sCHP52JqxByAl7
+        BKfqzwOyaf9t7pUwqMLel2KB5tp8oy4ma2NxFGn1FxYAeWDCfH4UVA9LvIworHvy3WpuhtKjF27X4
+        +E7e8hVg==;
+Received: from 213-225-15-202.nat.highway.a1.net ([213.225.15.202] helo=localhost)
+        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1m0Hbd-009vkb-NI; Mon, 05 Jul 2021 05:57:24 +0000
+From:   Christoph Hellwig <hch@lst.de>
+To:     geert@linux-m68k.org, gerg@linux-m68k.org
+Cc:     linux-m68k@lists.linux-m68k.org, uclinux-dev@uclinux.org,
+        torvalds@linux-foundation.org
+Subject: RFC: stop implementing set_fs for m68knommu
+Date:   Mon,  5 Jul 2021 07:57:18 +0200
+Message-Id: <20210705055719.949875-1-hch@lst.de>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-Hi Linus,
+Hi all,
 
-Please pull the m68knommu changes for v5.14.
+as a recently build error showed implementing set_fs for m68knommu is
+actively wrong given that it already does not distinguish between address
+spaces.  Fix this up by not implementing set_fs() at all.
 
-Only a single fix, for a build failure picked up by the kernel build robot.
-
-Regards
-Greg
-
+Compile tested only.
 
 
-The following changes since commit 13311e74253fe64329390df80bed3f07314ddd61:
-
-   Linux 5.13-rc7 (2021-06-20 15:03:15 -0700)
-
-are available in the Git repository at:
-
-   git://git.kernel.org/pub/scm/linux/kernel/git/gerg/m68knommu.git tags/m68knommu-for-v5.14
-
-for you to fetch changes up to 3f605ee17f8e785ba6ff69bee8e584e377a3cf28:
-
-   m68knommu: fix missing LCD splash screen data initializer (2021-06-21 12:09:26 +1000)
-
-----------------------------------------------------------------
-m68knommu: fixes for v5.14
-
-Fixes include:
-. fix missing LCD splash screen data initializer
-
-----------------------------------------------------------------
-Greg Ungerer (1):
-       m68knommu: fix missing LCD splash screen data initializer
-
-  arch/m68k/68000/dragen2.c |   1 +
-  arch/m68k/68000/screen.h  | 804 ++++++++++++++++++++++++++++++++++++++++++++++
-  2 files changed, 805 insertions(+)
-  create mode 100644 arch/m68k/68000/screen.h
