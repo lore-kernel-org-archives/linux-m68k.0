@@ -4,95 +4,107 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-5.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no
-	version=3.4.0
+	SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 27161C07E96
-	for <linux-m68k@archiver.kernel.org>; Tue,  6 Jul 2021 18:36:46 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 08C95C07E96
+	for <linux-m68k@archiver.kernel.org>; Tue,  6 Jul 2021 18:47:47 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 0F77B61C53
-	for <linux-m68k@archiver.kernel.org>; Tue,  6 Jul 2021 18:36:46 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id E51CB61C6B
+	for <linux-m68k@archiver.kernel.org>; Tue,  6 Jul 2021 18:47:46 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231490AbhGFSjY (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Tue, 6 Jul 2021 14:39:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59388 "EHLO
+        id S231403AbhGFSuZ (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Tue, 6 Jul 2021 14:50:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33622 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231500AbhGFSjY (ORCPT
+        with ESMTP id S231360AbhGFSuZ (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Tue, 6 Jul 2021 14:39:24 -0400
-Received: from mail-lj1-x22d.google.com (mail-lj1-x22d.google.com [IPv6:2a00:1450:4864:20::22d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 49B96C06175F
-        for <linux-m68k@lists.linux-m68k.org>; Tue,  6 Jul 2021 11:36:45 -0700 (PDT)
-Received: by mail-lj1-x22d.google.com with SMTP id z9so2388770ljm.2
-        for <linux-m68k@lists.linux-m68k.org>; Tue, 06 Jul 2021 11:36:45 -0700 (PDT)
+        Tue, 6 Jul 2021 14:50:25 -0400
+Received: from mail-lf1-x133.google.com (mail-lf1-x133.google.com [IPv6:2a00:1450:4864:20::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3ADC2C061574
+        for <linux-m68k@lists.linux-m68k.org>; Tue,  6 Jul 2021 11:47:45 -0700 (PDT)
+Received: by mail-lf1-x133.google.com with SMTP id v14so14475008lfb.4
+        for <linux-m68k@lists.linux-m68k.org>; Tue, 06 Jul 2021 11:47:45 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linux-foundation.org; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=lrVJK+Q14mFOC+j3MMFLSinvwGmoJQcqPmcCDNLRRHM=;
-        b=QZ8Dj/twWu+MobFnAqqgMwIPQshe/wgx78QmIFILR/IdrZE0Rrv8TsQY1snB6WWkd5
-         B8kcXIxCzURQdnxbf16evkp2rGFTAjmgXHQhc9oEb/SRYEUVVZJhfRyg4JF4omSg3Pxx
-         sT8eFvqdWjKTVUQnAGW5wttZKQLhMMa4vu+AM=
+        bh=LvCCh3BWoxUlOSyprsz6AuDfJG53KvgaRAB6wqLXsnY=;
+        b=gUdCtnQTlhbAY8Sm4xnIeiB0VYLbEdUciVdwMTIP08GM3MNE5lfgR2+tuExnv7R2rl
+         xWtAGGMmNlaQzgI6ryMYXMyNdu40HaKK4WRVIruTqxNUotxnyEl0og8ZC2r7sMNdvOHB
+         aKYRUyzQDuQCUZiz88G1nGUAV8NI63yJrsqPU=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=lrVJK+Q14mFOC+j3MMFLSinvwGmoJQcqPmcCDNLRRHM=;
-        b=CPb/VgzhdkEyyQ4L+9IGVHjMoF3G3QADDVciNkNbY0tZRqDg3Pant5ZFUG8G2N3j1c
-         zeGVuJwSVd2k5IBHl5C97+GK0fZlL07PcVkwOhgG6WX9/+Nnfj2vdb4OF7kqc/7801Kh
-         rZ4TqOtAToXtlJLEr7CAIuiWYVLxE8k6RpdKYBWqyRN8Qf6TjTu/PhiHif9ei362x9XA
-         MEfOfy5pCQf0J4ryjwdZ3TmekondikUqeIbAv+Mj1hGrHfRzNDIhwONU0kSkzPvligMg
-         ZBB8Kmv0+Ctat3bF/xEgS9BQ/oSGoI+AbDJVskbOXXEOlwmWaA/4JVHnB5gOp+1mXGD/
-         80kQ==
-X-Gm-Message-State: AOAM531LXhUJt+puCFB8+nJHcLhdTjLDRd098cy6aPoL7dwbmivIpxsf
-        cYIcd/iWHTlXzxDbrQdvhKyeYAMBXI/0rdbN
-X-Google-Smtp-Source: ABdhPJyi4WctxH0nWF32YD4Vl9e0zTVrvlQiuF7pqg+Rxp7rHLzzDlwSYUfz6V3Nkn+RFUHCTVK6fQ==
-X-Received: by 2002:a2e:2e0a:: with SMTP id u10mr7090254lju.309.1625596603132;
-        Tue, 06 Jul 2021 11:36:43 -0700 (PDT)
-Received: from mail-lj1-f174.google.com (mail-lj1-f174.google.com. [209.85.208.174])
-        by smtp.gmail.com with ESMTPSA id m20sm297772lfu.8.2021.07.06.11.36.42
+        bh=LvCCh3BWoxUlOSyprsz6AuDfJG53KvgaRAB6wqLXsnY=;
+        b=l6lO+ToNKdOXovWAFTL4HFCN1RJDRm/9SBYl/PEQIdsGFyDvX4SykBxGdnC/lX1ZLW
+         Fnw1iHRmUiwzSTjEY/VAbMpcATsRvFSFb43ihd4W4R9RQYrKP/kwdhlwW1FHndI2EuhH
+         uZUBc4UM+/jM73SZ40OIKtZ+ULAswlX7EFuPyUbm9DpFS0Xs2aktAe1Vxm2gFpc18h1F
+         2TbBwUOA7yiii3jK93twdkGHGDRTBM6+aaXXUPkiDbRt26JZer+fPy0s6uqE3ofDUI9/
+         5nxr3g44n4Ax8Bd6FOnJYTJUiY8MKE6Gt1HrpqADsS879quyNIFJhpfJCPdUBSS6bCNU
+         RnwA==
+X-Gm-Message-State: AOAM5335u3zhl2pxeQ26fejBS2nPyrcwcEOyrM6oGzo61PPTFL7VNHhw
+        yV2DIDtLDv//4MjU50zINIW2OwJbda9Mjo6g
+X-Google-Smtp-Source: ABdhPJwXVTXxurnK//pogeFQvQd4Q4yj2N459F/w3vKaFJMlaJyBpdUceyOfIDsfH2wEn5hnZ0kNPA==
+X-Received: by 2002:a05:6512:605:: with SMTP id b5mr11200311lfe.372.1625597263317;
+        Tue, 06 Jul 2021 11:47:43 -0700 (PDT)
+Received: from mail-lf1-f49.google.com (mail-lf1-f49.google.com. [209.85.167.49])
+        by smtp.gmail.com with ESMTPSA id h2sm963391lfd.288.2021.07.06.11.47.42
         for <linux-m68k@lists.linux-m68k.org>
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 06 Jul 2021 11:36:42 -0700 (PDT)
-Received: by mail-lj1-f174.google.com with SMTP id a6so30425805ljq.3
-        for <linux-m68k@lists.linux-m68k.org>; Tue, 06 Jul 2021 11:36:42 -0700 (PDT)
-X-Received: by 2002:a2e:50b:: with SMTP id 11mr16796098ljf.220.1625596602315;
- Tue, 06 Jul 2021 11:36:42 -0700 (PDT)
+        Tue, 06 Jul 2021 11:47:42 -0700 (PDT)
+Received: by mail-lf1-f49.google.com with SMTP id a18so40004274lfs.10
+        for <linux-m68k@lists.linux-m68k.org>; Tue, 06 Jul 2021 11:47:42 -0700 (PDT)
+X-Received: by 2002:ac2:4903:: with SMTP id n3mr15483582lfi.487.1625597262624;
+ Tue, 06 Jul 2021 11:47:42 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210705055719.949875-1-hch@lst.de> <20210705055719.949875-2-hch@lst.de>
- <CAMuHMdV4UQaKE7fn0_HhPfHzwEMwouPvqoeW6_V13yebe7ZSQQ@mail.gmail.com>
- <CAHk-=wgjWebav7K_F7WS7KiwOAYr8KktsZiaV+jYP5LU5RB3Sg@mail.gmail.com> <20210706041353.GA10889@lst.de>
-In-Reply-To: <20210706041353.GA10889@lst.de>
+References: <1625527229-3224-1-git-send-email-schmitzmic@gmail.com>
+In-Reply-To: <1625527229-3224-1-git-send-email-schmitzmic@gmail.com>
 From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Tue, 6 Jul 2021 11:36:26 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wjZRs8icwmK4g-XSmY7PB9WUhi3=KGs5NsV7QO=uW_taw@mail.gmail.com>
-Message-ID: <CAHk-=wjZRs8icwmK4g-XSmY7PB9WUhi3=KGs5NsV7QO=uW_taw@mail.gmail.com>
-Subject: Re: [PATCH] m68knommu: remove set_fs()
-To:     Christoph Hellwig <hch@lst.de>
+Date:   Tue, 6 Jul 2021 11:47:26 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wjokOnXnth3jw1d9yOnOFMaYNhOftTC+qm2XVh9Pe+7=Q@mail.gmail.com>
+Message-ID: <CAHk-=wjokOnXnth3jw1d9yOnOFMaYNhOftTC+qm2XVh9Pe+7=Q@mail.gmail.com>
+Subject: Re: [PATCH RFC] Fixes to Linus' 'remove set_fs patch'
+To:     Michael Schmitz <schmitzmic@gmail.com>
 Cc:     Geert Uytterhoeven <geert@linux-m68k.org>,
-        Greg Ungerer <gerg@linux-m68k.org>,
-        linux-m68k <linux-m68k@lists.linux-m68k.org>,
-        uClinux development list <uclinux-dev@uclinux.org>
+        linux-m68k <linux-m68k@lists.linux-m68k.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-On Mon, Jul 5, 2021 at 9:13 PM Christoph Hellwig <hch@lst.de> wrote:
+On Mon, Jul 5, 2021 at 4:20 PM Michael Schmitz <schmitzmic@gmail.com> wrote:
 >
-> It still needs "real" kernel-style set_fs for the mm/maccess.c routines,
-> but adding __{get,put}_kernel_nofault should not be too hard.
+> Linus' patch didn't compile out of the box. I'm a little
+> worried that I had to patch mm/maccess.c,
 
-Yeah, it's not that it wants set-fs(), it's that I missed that m68k
-doesn't have HAVE_GET_KERNEL_NOFAULT.
+Yeah, that's not the right way to do it.
 
-Implementing __get/put_kernel_nofault() should be fairly
-straightforward: they are basically the same thing as the
-__get/put_user() functions, except they should just use "move" instead
-of "moves".
+See the other thread where Christoph rightly points out that the
+problem is that m68k needs __{get,put}_kernel_nofault() and then just
+enable CONFIG_HAVE_GET_KERNEL_NOFAULT.
 
-The m68k uaccess.h file already kind of has support for that, but it's
-hardcoded to the CONFIG_CPU_HAS_ADDRESS_SPACES config, rather than
-being available as two different versions.
+__{get,put}_kernel_nofault() is basically the similar to
+__get_user/__put_user, except for
 
-           Linus
+ (a) it uses kernel addresses (so in m68k parlance, "move" rather than "moves")
+
+ (b) it uses the "goto err_label" approach instead of being an
+expression that returns an error value
+
+That (b) is what allows the use of "asm goto" to implement the
+exception case much more efficiently (but you can avoid having to
+convert to that model by just doing something like
+
+        if (unlikely(__gu_err)) goto err_label;
+
+inside the macro instead - even architectures that use the "asm goto"
+do that for old compilers that don't support "asm goto" with output
+values.
+
+It shouldn't be too hard to implement on m68k - you'd likely want to
+make the helper macros in <asm/uaccess.h> take that "MOVES" thing as a
+new argument, so that you can generate code for the "move" vs "moves"
+cases using the same helper macros, just with different arguments.
+
+            Linus
