@@ -2,77 +2,77 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.2 required=3.0 tests=BAYES_00,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-8.8 required=3.0 tests=BAYES_00,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,MAILING_LIST_MULTI,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 29F4AC07E9B
-	for <linux-m68k@archiver.kernel.org>; Tue,  6 Jul 2021 04:13:58 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D8FA5C07E96
+	for <linux-m68k@archiver.kernel.org>; Tue,  6 Jul 2021 07:02:20 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 0949B6198E
-	for <linux-m68k@archiver.kernel.org>; Tue,  6 Jul 2021 04:13:58 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id B753D61973
+	for <linux-m68k@archiver.kernel.org>; Tue,  6 Jul 2021 07:02:20 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229956AbhGFEQe (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Tue, 6 Jul 2021 00:16:34 -0400
-Received: from verein.lst.de ([213.95.11.211]:58963 "EHLO verein.lst.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229550AbhGFEQd (ORCPT <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Tue, 6 Jul 2021 00:16:33 -0400
-Received: by verein.lst.de (Postfix, from userid 2407)
-        id 8D75868B05; Tue,  6 Jul 2021 06:13:53 +0200 (CEST)
-Date:   Tue, 6 Jul 2021 06:13:53 +0200
-From:   Christoph Hellwig <hch@lst.de>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Geert Uytterhoeven <geert@linux-m68k.org>,
-        Christoph Hellwig <hch@lst.de>,
-        Greg Ungerer <gerg@linux-m68k.org>,
-        linux-m68k <linux-m68k@lists.linux-m68k.org>,
-        uClinux development list <uclinux-dev@uclinux.org>
-Subject: Re: [PATCH] m68knommu: remove set_fs()
-Message-ID: <20210706041353.GA10889@lst.de>
-References: <20210705055719.949875-1-hch@lst.de> <20210705055719.949875-2-hch@lst.de> <CAMuHMdV4UQaKE7fn0_HhPfHzwEMwouPvqoeW6_V13yebe7ZSQQ@mail.gmail.com> <CAHk-=wgjWebav7K_F7WS7KiwOAYr8KktsZiaV+jYP5LU5RB3Sg@mail.gmail.com>
+        id S230195AbhGFHE6 (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Tue, 6 Jul 2021 03:04:58 -0400
+Received: from mail-vs1-f52.google.com ([209.85.217.52]:40571 "EHLO
+        mail-vs1-f52.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230146AbhGFHE5 (ORCPT
+        <rfc822;linux-m68k@lists.linux-m68k.org>);
+        Tue, 6 Jul 2021 03:04:57 -0400
+Received: by mail-vs1-f52.google.com with SMTP id u11so6613734vsl.7
+        for <linux-m68k@lists.linux-m68k.org>; Tue, 06 Jul 2021 00:02:19 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=9xIwHt5PeAkDjNM0GumPVX7YcEcAvNDDYFz3rxhdD9Y=;
+        b=YK/171lEyOIr5B0y5lXdEIREZkVsJSBLiawcCFtP/ERepAKfjaOnNdoJtCWCDJyZxi
+         Bcxx3SO0Fb1ro/7LYFGj0BvGO6TKulMMhDlm51glJ4oFefvt5ADQb+kQORszBVlNWch8
+         53ElKt0yBT4Oj57byFU1UhcdyBdlIwdFueeSxTkXvzr45LiuLCqNuhY+8z+VVElhKQMc
+         F2gBcQMq3VDdZ8XWKcYk9TF31FjMZMNs48bdnuIWtwXwZc0aBfJ9znzC7Hm1I+XuEyWR
+         vypkcLdWcJkrmoBFNXTAeC4TbD9rJhd6+M+nUAvsDabkI9FTxQT6pFfUAqQuG+Qfmn1o
+         U35A==
+X-Gm-Message-State: AOAM531WIqaRKsa3Uh03P8ZVjQNXqNfJbcz1kA+jO5Y0jaxXy9iBRir4
+        kLv8qjEhGRUJ3Wfs09Q3KP/8xuwShYnKIMqsCfU=
+X-Google-Smtp-Source: ABdhPJwnML5SWGn0qF4isgulOhytCA8swwd1O/FeaZOMpZYf4vXlJfE7PIkxUiW+3hjI+6B7ZBztsOp7S4Y5DihWY3A=
+X-Received: by 2002:a67:db05:: with SMTP id z5mr13391517vsj.18.1625554939386;
+ Tue, 06 Jul 2021 00:02:19 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAHk-=wgjWebav7K_F7WS7KiwOAYr8KktsZiaV+jYP5LU5RB3Sg@mail.gmail.com>
-User-Agent: Mutt/1.5.17 (2007-11-01)
+References: <20210705204727.10743-1-paskripkin@gmail.com>
+In-Reply-To: <20210705204727.10743-1-paskripkin@gmail.com>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Tue, 6 Jul 2021 09:02:08 +0200
+Message-ID: <CAMuHMdVKgW42GCwntSawRXNvRejm90zhuY9_X_u1OxfDj40aTA@mail.gmail.com>
+Subject: Re: [PATCH] m68k: emu: fix invalid free in nfeth_cleanup()
+To:     Pavel Skripkin <paskripkin@gmail.com>
+Cc:     Petr Stehlik <pstehlik@sophics.cz>, milan.jurik@xylab.cz,
+        Michael Schmitz <schmitz@debian.org>,
+        linux-m68k <linux-m68k@lists.linux-m68k.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-On Mon, Jul 05, 2021 at 01:39:03PM -0700, Linus Torvalds wrote:
-> On Mon, Jul 5, 2021 at 1:46 AM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
-> >
-> > Probably this should be
-> >
-> >     select SET_FS if CPU_HAS_ADDRESS_SPACES
-> 
-> Actually, I don't think m68k has a single real "set_fs()" at all, and
-> it should just be converted as-is to not use CONFIG_SET_FS.
-> 
-> Yes, there is a "set_fs()" function, but none of the remaining uses
-> actually are the traditional kernel style of "use kernel addresses as
-> user addresses". So as far as the *kernel* is concerned, m68k already
-> looks like a no-SET_FS architecture, and "set-fs()" is purely a
-> syntactic thing.
+On Mon, Jul 5, 2021 at 10:47 PM Pavel Skripkin <paskripkin@gmail.com> wrote:
+> In for loop all nfeth_dev array members should be freed, not only
+> the first one. Freeing only first array member can cause double-free bug.
+>
+> Fixes: 9cd7b148312f ("m68k/atari: ARAnyM - Add support for network
+> access")
+> Signed-off-by: Pavel Skripkin <paskripkin@gmail.com>
 
-It still needs "real" kernel-style set_fs for the mm/maccess.c routines,
-but adding __{get,put}_kernel_nofault should not be too hard.
+Reviewed-by: Geert Uytterhoeven <geert@linux-m68k.org>
+i.e. will queue in the m68k for-v5.15 branch.
 
-> So I think the right thing to do looks something like this:
-> 
->  - make the rule be that SFC/DFC is always normally USER_DATA
-> 
->  - the special m68k sequences that need to play with special segments
-> will always do
-> 
->         preempt_disable();
->         set_segment(..whatever segment they need..);
->         .. do the special operation ..
->         set_segment(USER_DATA);
->         preempt_enable();
-> 
->  - set_fs() goes away entirely, because the user access functions
-> always work on USER_DATA and SFC/DFC is always right for them.
+Gr{oetje,eeting}s,
 
-Yes, that's what I mean with needing a more work.
+                        Geert
+
+-- 
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
