@@ -2,80 +2,60 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-18.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
-	autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-5.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
+	SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id EE42CC07E95
-	for <linux-m68k@archiver.kernel.org>; Wed,  7 Jul 2021 16:37:36 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B0309C07E95
+	for <linux-m68k@archiver.kernel.org>; Wed,  7 Jul 2021 17:06:03 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id C95EB61CCB
-	for <linux-m68k@archiver.kernel.org>; Wed,  7 Jul 2021 16:37:36 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 9335C61C4E
+	for <linux-m68k@archiver.kernel.org>; Wed,  7 Jul 2021 17:06:03 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230012AbhGGQkQ (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Wed, 7 Jul 2021 12:40:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41286 "EHLO
+        id S230248AbhGGRIn (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Wed, 7 Jul 2021 13:08:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47650 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229542AbhGGQkQ (ORCPT
+        with ESMTP id S230109AbhGGRIn (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Wed, 7 Jul 2021 12:40:16 -0400
-Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E1F75C061574;
-        Wed,  7 Jul 2021 09:37:35 -0700 (PDT)
+        Wed, 7 Jul 2021 13:08:43 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B9111C061574;
+        Wed,  7 Jul 2021 10:06:02 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=Content-Transfer-Encoding:MIME-Version
-        :Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
-        Content-Description:In-Reply-To:References;
-        bh=afkY8fwCdiinxqtpJexWC5QSojoHbl6E8/ynsI8qr+0=; b=jGgPW2qEz7oj4ztURfzsTH7ZXW
-        UUkbmjXcTSOWX24r1uiYSFLinnI8pygrnAdBCC43Uod6ZCjY+NbQ9oue/HvrxzhTC4/UZRCjet6f+
-        aliYhGProwyDtA4YCfbePZ4ZapgVirsW5RxoaG4a0lJcWU928znsaJHBTSyoSceNo9VgdaVVfM447
-        iBt0v0tfP7Efwjb+2JV5vuo/E5pfNKxYu/YKcOvitgzxQB/PHkBM+S3bdebV9aekXA9ESOmp1VAOS
-        Vcn5bn7LNVWiUxclA9nNLHHeMzO6jp2RMR9vX4AurdB1m/mDSXjV4Vay4YVhKMqAP0psSgpip/7z4
-        O3UFPmqQ==;
-Received: from [2601:1c0:6280:3f0::a22f] (helo=smtpauth.infradead.org)
-        by desiato.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1m1AYH-00FPKf-Kh; Wed, 07 Jul 2021 16:37:34 +0000
-From:   Randy Dunlap <rdunlap@infradead.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Randy Dunlap <rdunlap@infradead.org>,
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=d3VM6WT6D5YL/WJ5V7RszIEGS7pxSO5TS9NGv7itCmU=; b=gPlz2ujtqcODOZy73CeHy4SqNb
+        pEeMt2zOH/pBPwn43VYADVC5ffumABTnaxNJFHq7Rbqqs8WsM3xtimmi5bVvpouDVdyF0JMDxnDnR
+        pKnDbtzl28dWqF8iNqZNjHJqlyQ3aHnJoWoywLAK/i/TxK9+V2aJemZjNx20YlhvseFxN4Vjimrqz
+        u+Fd8Cdeu8/8lrMaaUnbCclH9/soUbf+n741MsHiofGmkodZ/LJA79HepwZ8VUtb3WSpua5fa2OiK
+        xwZy9qrmpyyv3XbE0WzFmmdhQNKY7VK5zyIvYuobRjaW7BJbkLOuHIzLclTONAzeHVPWmB4m4l4uv
+        +1HXYCwg==;
+Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1m1Azi-00CcFj-GQ; Wed, 07 Jul 2021 17:05:56 +0000
+Date:   Wed, 7 Jul 2021 18:05:54 +0100
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Randy Dunlap <rdunlap@infradead.org>
+Cc:     linux-kernel@vger.kernel.org, Yang Shi <shy828301@gmail.com>,
+        Hugh Dickins <hughd@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
         Greg Ungerer <gerg@linux-m68k.org>,
         linux-m68k@lists.linux-m68k.org, uclinux-dev@uclinux.org
-Subject: [PATCH] m68k/nommu: prevent setting ROMKERNEL when ROM is not set
-Date:   Wed,  7 Jul 2021 09:37:29 -0700
-Message-Id: <20210707163729.30388-1-rdunlap@infradead.org>
-X-Mailer: git-send-email 2.26.2
+Subject: Re: [PATCH] mm: try_to_unmap() is now void
+Message-ID: <YOXe8jb3uOXFq0j7@casper.infradead.org>
+References: <20210707161614.13001-1-rdunlap@infradead.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210707161614.13001-1-rdunlap@infradead.org>
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-When CONFIG_ROMKERNEL is set but CONFIG_ROM is not set, the linker
-complains:
-  m68k-linux-ld:./arch/m68k/kernel/vmlinux.lds:5: undefined symbol `CONFIG_ROMSTART' referenced in expression
+On Wed, Jul 07, 2021 at 09:16:14AM -0700, Randy Dunlap wrote:
+> Fix the "CONFIG_MMU is not set" case of converting
+> try_to_unmap() from bool to void.
+> (as seen on m68k/coldfire)
 
-# CONFIG_ROM is not set
-# CONFIG_RAMKERNEL is not set
-CONFIG_ROMKERNEL=y
-
-Since ROMSTART depends on ROM, make ROMKERNEL also depend on ROM.
-
-Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-Cc: Greg Ungerer <gerg@linux-m68k.org>
-Cc: linux-m68k@lists.linux-m68k.org
-Cc: uclinux-dev@uclinux.org
----
- arch/m68k/Kconfig.machine |    1 +
- 1 file changed, 1 insertion(+)
-
---- linux-next-20210701.orig/arch/m68k/Kconfig.machine
-+++ linux-next-20210701/arch/m68k/Kconfig.machine
-@@ -464,6 +464,7 @@ config RAMKERNEL
- 
- config ROMKERNEL
- 	bool "ROM"
-+	depends on ROM
- 	help
- 	  The kernel will be resident in FLASH/ROM when running. This is
- 	  often referred to as Execute-in-Place (XIP), since the kernel
+hch sent basically the same patch on Monday
