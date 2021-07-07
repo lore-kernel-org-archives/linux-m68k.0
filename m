@@ -2,116 +2,104 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
-	SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-8.8 required=3.0 tests=BAYES_00,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,MAILING_LIST_MULTI,
+	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 13E44C07E95
-	for <linux-m68k@archiver.kernel.org>; Wed,  7 Jul 2021 17:41:37 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5D73CC07E95
+	for <linux-m68k@archiver.kernel.org>; Wed,  7 Jul 2021 20:32:38 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id E180761CC2
-	for <linux-m68k@archiver.kernel.org>; Wed,  7 Jul 2021 17:41:36 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 36B1261CBB
+	for <linux-m68k@archiver.kernel.org>; Wed,  7 Jul 2021 20:32:37 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230196AbhGGRoQ (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Wed, 7 Jul 2021 13:44:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55522 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230110AbhGGRoP (ORCPT
+        id S232456AbhGGUfR (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Wed, 7 Jul 2021 16:35:17 -0400
+Received: from mout.kundenserver.de ([212.227.126.131]:45599 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231266AbhGGUfR (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Wed, 7 Jul 2021 13:44:15 -0400
-Received: from mail-lf1-x136.google.com (mail-lf1-x136.google.com [IPv6:2a00:1450:4864:20::136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3E1B7C061574
-        for <linux-m68k@lists.linux-m68k.org>; Wed,  7 Jul 2021 10:41:35 -0700 (PDT)
-Received: by mail-lf1-x136.google.com with SMTP id r26so6006923lfp.2
-        for <linux-m68k@lists.linux-m68k.org>; Wed, 07 Jul 2021 10:41:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=YKHQ/rw8LlbQWpNabXm024WWtkQF86zvYrgEkfafFog=;
-        b=aRM8KAbfkQSDWPvNa1CKbGMVm9G9iQY1kyF6Z1putF8KlrySN3/lfMSc/DxOwiq1LR
-         VA5MFwaAHl+lHSs1AGV05tf0np3O6/58fGxmjkyxzSTpD422ds3KnFAY8PZOoRYm6pZG
-         /Rn07mjjAbXrRZo8CmfJ0T7TVdKLOL3Wf6pUE=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=YKHQ/rw8LlbQWpNabXm024WWtkQF86zvYrgEkfafFog=;
-        b=fEMksBrZQRoURlY2zwnIfa6fm07uJhtMVGOdLbHE05fZ4NgHf/O/N8Y30CkpbLskIT
-         tfyZWz5gdJ5TK2CwVRSNTyTGn8IUrODwfCZg4dssTUopJ3ZpaD5oanB0uFkkCMFZe9F3
-         ols3Vc1++ZJDzsIpbtajFATcBRyLTWOYMhax+c/3uh9dp/iM4I4rMzpY3pd3tfULqa1n
-         pgomLcWe/+8u1y0qXxrn9jZ9P1gAMp2El9teC4Jx6pvX8HcY6eti3HzSJPSHR/7tsYeU
-         Zy5cXi1hoTv/MGFSdaT7qi7GQz8zf9VUzeqUsyqx7dKKczjVollL7eDu0VbI0iyAndUY
-         eGbg==
-X-Gm-Message-State: AOAM533ayEre2wm0Z9gmBwW1EfP861/aQbxNPu55bLjj8nYYmhDHuNh6
-        4C5VVWewminT5oyx5ibsK9ASxrt6YgxhwQuq
-X-Google-Smtp-Source: ABdhPJxgW/RxB96I24FNFBel3/rN+5K03/RHojUCHZfEfPSKt4fpbySwOYgQiRR7LfP/8rkRl/1arQ==
-X-Received: by 2002:a2e:808d:: with SMTP id i13mr20485324ljg.172.1625679692746;
-        Wed, 07 Jul 2021 10:41:32 -0700 (PDT)
-Received: from mail-lf1-f54.google.com (mail-lf1-f54.google.com. [209.85.167.54])
-        by smtp.gmail.com with ESMTPSA id k17sm1762036lfm.282.2021.07.07.10.41.32
-        for <linux-m68k@lists.linux-m68k.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 07 Jul 2021 10:41:32 -0700 (PDT)
-Received: by mail-lf1-f54.google.com with SMTP id p16so6017359lfc.5
-        for <linux-m68k@lists.linux-m68k.org>; Wed, 07 Jul 2021 10:41:32 -0700 (PDT)
-X-Received: by 2002:a2e:9c58:: with SMTP id t24mr19562341ljj.411.1625679691806;
- Wed, 07 Jul 2021 10:41:31 -0700 (PDT)
+        Wed, 7 Jul 2021 16:35:17 -0400
+Received: from mail-wr1-f46.google.com ([209.85.221.46]) by
+ mrelayeu.kundenserver.de (mreue012 [213.165.67.97]) with ESMTPSA (Nemesis) id
+ 1MLAZe-1lj96W1B0U-00IBUU for <linux-m68k@lists.linux-m68k.org>; Wed, 07 Jul
+ 2021 22:32:34 +0200
+Received: by mail-wr1-f46.google.com with SMTP id v5so4572753wrt.3
+        for <linux-m68k@lists.linux-m68k.org>; Wed, 07 Jul 2021 13:32:34 -0700 (PDT)
+X-Gm-Message-State: AOAM533ip87M9vkZiMuU1mNcuPH0w8LnU9wYOX/Jd0XOI32CYRRkgSye
+        eFv0m5rnfI+0QQtZZKa4iyNNhXmW7g+kY0MkstY=
+X-Google-Smtp-Source: ABdhPJy5VJu6z99q3WHol0nhDN/0Tj/f1dApJZX2WjGYW0msrEn7r8yPypCRoa8aEUTZStmiUyCIyFYosfATXOPW91Q=
+X-Received: by 2002:adf:e107:: with SMTP id t7mr30232628wrz.165.1625689953891;
+ Wed, 07 Jul 2021 13:32:33 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210705055719.949875-1-hch@lst.de> <20210705055719.949875-2-hch@lst.de>
- <CAMuHMdV4UQaKE7fn0_HhPfHzwEMwouPvqoeW6_V13yebe7ZSQQ@mail.gmail.com>
- <CAHk-=wgjWebav7K_F7WS7KiwOAYr8KktsZiaV+jYP5LU5RB3Sg@mail.gmail.com>
- <20210706041353.GA10889@lst.de> <CAHk-=wjZRs8icwmK4g-XSmY7PB9WUhi3=KGs5NsV7QO=uW_taw@mail.gmail.com>
- <20210707142531.GA26080@lst.de>
-In-Reply-To: <20210707142531.GA26080@lst.de>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Wed, 7 Jul 2021 10:41:16 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wh2nz6BdDGoJf9Gb=zsmBtfYyOvQqZptRPuk4WH98JHnQ@mail.gmail.com>
-Message-ID: <CAHk-=wh2nz6BdDGoJf9Gb=zsmBtfYyOvQqZptRPuk4WH98JHnQ@mail.gmail.com>
-Subject: Re: [PATCH] m68knommu: remove set_fs()
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     Geert Uytterhoeven <geert@linux-m68k.org>,
-        Greg Ungerer <gerg@linux-m68k.org>,
+References: <20210704230137.28915-1-rdunlap@infradead.org> <024360ce-41b2-c072-f399-7e87f516bfd0@linux-m68k.org>
+In-Reply-To: <024360ce-41b2-c072-f399-7e87f516bfd0@linux-m68k.org>
+From:   Arnd Bergmann <arnd@arndb.de>
+Date:   Wed, 7 Jul 2021 22:32:18 +0200
+X-Gmail-Original-Message-ID: <CAK8P3a3sqC4nFsP=3cnz-zYjKRLHun5NSgSF31ZJErsYX7yP=g@mail.gmail.com>
+Message-ID: <CAK8P3a3sqC4nFsP=3cnz-zYjKRLHun5NSgSF31ZJErsYX7yP=g@mail.gmail.com>
+Subject: Re: [PATCH] m68k/coldfire: change pll var. to clk_pll
+To:     Greg Ungerer <gerg@linux-m68k.org>
+Cc:     Randy Dunlap <rdunlap@infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        kernel test robot <lkp@intel.com>,
         linux-m68k <linux-m68k@lists.linux-m68k.org>,
-        uClinux development list <uclinux-dev@uclinux.org>,
-        Michael Schmitz <schmitzmic@gmail.com>
+        uclinux-dev@uclinux.org
 Content-Type: text/plain; charset="UTF-8"
+X-Provags-ID: V03:K1:8T+dh4twiwzTPF9l429JOuCRsfL3LM/zWXiCRpnpPiy76CphBWP
+ JI0yCOUbdzzjFWE++gCC3sr38wmmIRrbJYvri679H4SWXJR24R81IlIze+J5/PaIZu8maes
+ 1/pR9aDYKalQnFLorztoNZc07pbKY5WLQUAQhPTMdbRzpvCcN34sTsY+2+GsKtxoNmW27lI
+ R1cVB4R5N+NkOPjfcQRcg==
+X-UI-Out-Filterresults: notjunk:1;V03:K0:BzEJ72hjk+w=:U2v51JfoDazKaK9L9M1s2F
+ tKL1tRr63A+vWlUsVpLDzHP5h8lpMmMnbQlJLn5HRumgP/xGQHefR/KkDp68oNm1NiaGBeLg6
+ BIQnGWCdD7Qgcrrk4x44aunxK8FpUHbAWniXh6lap7z6d70qMztB2QqzfRHLtwziZaL2N8MtM
+ K5+c+ZskAkps1E0VCfivNQXs8CEx053FMIip/MosAwe0e8lUalpeMcSlBs07lUafwhfP2tk7O
+ b/xBDToGzq39DneD1pxMlqmRYo7EWu5b3/YhVCXtW1Xo4NSRqlyj8WfwuKEgkx2q83hODI/xq
+ a4RzQDjGSIuD5S20MIIVBHFhDONI5r6jc5+qNo78cBwRNu5ddKCbQ9KfQsOjWklW5KwrtC900
+ IhuKCe6sooIZr6DyY8ETXZaK7ykZYNqPz32z4cxqF9EkSAZABKkC25tY66THkqAl2DXcnZ/jQ
+ 9PKpKeh51GASHXcyQCPZ+l9IsZT5KhIO/RRJuYQZHqE+JhuvYRV7IUN+/xcWDCJtBR/5PVltC
+ t7E/11n2J/f7S3ROfIxE2PBDk148rcdOr2K9r1py5LavQglEgzs63J6IzaQjiJELU768/Almk
+ 62K9CJfgi9HcQ2vs9jz1iFfAAGBVB0Dqyen2/geZpK9aWIShu57kOs1kGtWJg/sgI3ggNNm5T
+ hxbLS6gcSSIEtbXzTYbFdDcrKJRC4cyK2/vNpMoVQSbo2sfapR4V1T/hhsVF0/w1VwwgDjI5z
+ dgaibh4th0w6GRmpMIK0EYI8/kNJcMGB/A+11BoSLJ/6ZBnx+adioSkC7hSkXft+9aJGj6f+k
+ LSVlJ8Tzkn+S1bhhQjvzF+fn1G9vDnVyKMwByE3F4DtCXxehLYadJkfhuUAoc3IRNtKabcW
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-On Wed, Jul 7, 2021 at 7:25 AM Christoph Hellwig <hch@lst.de> wrote:
+On Wed, Jul 7, 2021 at 2:30 PM Greg Ungerer <gerg@linux-m68k.org> wrote:
+> On 5/7/21 9:01 am, Randy Dunlap wrote:
+> > DEFINE_CLK() makes the variable name be clk_xyz, so variable
+> > 'pll' should instead be 'clk_pll'.
+> >
+> > In file included from ../arch/m68k/coldfire/m525x.c:12:
+> > ../arch/m68k/coldfire/m525x.c:29:30: error: 'pll' undeclared here (not in a function)
+> >     29 |  CLKDEV_INIT(NULL, "pll.0", &pll),
+> >        |                              ^~~
+> > ../include/linux/clkdev.h:30:10: note: in definition of macro 'CLKDEV_INIT'
+> >     30 |   .clk = c, \
+> >        |          ^
+> > In file included from ../arch/m68k/coldfire/m525x.c:21:
+> > ../arch/m68k/include/asm/mcfclk.h:43:27: warning: 'clk_pll' defined but not used [-Wunused-variable]
+> >     43 |         static struct clk clk_##clk_ref = { \
+> >        |                           ^~~~
+> > ../arch/m68k/coldfire/m525x.c:25:1: note: in expansion of macro 'DEFINE_CLK'
+> >     25 | DEFINE_CLK(pll, "pll.0", MCF_CLK);
+> >        | ^~~~~~~~~~
+> >
+> > Fixes: 63aadb77669a ("m68k: coldfire: use clkdev_lookup on most coldfire")
+> > Reported-by: kernel test robot <lkp@intel.com>
+> > Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+> > Cc: Greg Ungerer <gerg@linux-m68k.org>
+> > Cc: linux-m68k@lists.linux-m68k.org
+> > Cc: uclinux-dev@uclinux.org
+> > Cc: Arnd Bergmann <arnd@arndb.de>
 >
-> So I've come up with a whole (compile tested only) series.  We don't
-> really need the preempt_disable either given the m68k saves and restores
-> the SFC/DFC registers on context switch:
+> Thanks Randy.
+>
+> Arnd: since this has hit mainline do you want me to pick it up
+> in the m68knommu git tree and push to Linus from there?
 
-Your commit f349b7ab5f34 ("m68k: hardcode the error value in
-__{get,put}_user_asm") is wrong. The fact that
-__constant_copy_to_user() passes in a positive "error" value may look
-odd, but it is correct.  It's not an error, it's a return value, and
-"copy_to_user()" returns not -EFAULT, but the number of characters not
-copied (because it needs to be able to restart - think partial
-"read/write()" system calls etc).
+Yes, that would be good. Sorry I completely missed the bug report and the
+earlier fix.
 
-That said, on x86, we've gotten rid of the small constant cases
-entirely, because it just made such a mess of the uaccess.h files, and
-we ended up just fixing any performance-sensitive code that used small
-constant sizes to do the proper get/put_user() instead.
-
-So one option is to just remove that constant-sized copy code entirely.
-
-Also - can somebody verify that SFC/DFC is never modified in interrupts?
-
-Because if that happens, then the "temporarily modify SFC/DFC"
-sequences need to actually save/restore it, rather than just set it
-back to USER_DATA.. But yes, you're right that switch_to() will
-save/restore it for regular context switches.
-
-Finally, talking about regular context switches - I think this series
-should also rename "thread.fs" to "thread.segment" or something like
-that.
-
-Apart from those small details, I think that series looks very good.
-
-                   Linus
+        Arnd
