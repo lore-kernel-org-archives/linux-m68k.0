@@ -2,65 +2,97 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-10.2 required=3.0 tests=BAYES_00,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=ham autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-18.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A1459C11F78
-	for <linux-m68k@archiver.kernel.org>; Wed,  7 Jul 2021 14:25:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 6515DC07E95
+	for <linux-m68k@archiver.kernel.org>; Wed,  7 Jul 2021 16:16:25 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 83BC361CDB
-	for <linux-m68k@archiver.kernel.org>; Wed,  7 Jul 2021 14:25:39 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 49D2F61CC2
+	for <linux-m68k@archiver.kernel.org>; Wed,  7 Jul 2021 16:16:25 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232052AbhGGO2R (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Wed, 7 Jul 2021 10:28:17 -0400
-Received: from verein.lst.de ([213.95.11.211]:37134 "EHLO verein.lst.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231965AbhGGO2O (ORCPT <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Wed, 7 Jul 2021 10:28:14 -0400
-Received: by verein.lst.de (Postfix, from userid 2407)
-        id 8F59868BEB; Wed,  7 Jul 2021 16:25:31 +0200 (CEST)
-Date:   Wed, 7 Jul 2021 16:25:31 +0200
-From:   Christoph Hellwig <hch@lst.de>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Christoph Hellwig <hch@lst.de>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
+        id S229519AbhGGQTF (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Wed, 7 Jul 2021 12:19:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36336 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229475AbhGGQTE (ORCPT
+        <rfc822;linux-m68k@lists.linux-m68k.org>);
+        Wed, 7 Jul 2021 12:19:04 -0400
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 84F44C061574;
+        Wed,  7 Jul 2021 09:16:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=desiato.20200630; h=Content-Transfer-Encoding:MIME-Version
+        :Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
+        Content-Description:In-Reply-To:References;
+        bh=8vx2MlWUn5LIhwKdzrV6SOg1W/EZtZtrXCT9CRbQ+0g=; b=FV3ssxZghmBYayxtp6VYSP6mZJ
+        ornbpTVgIMpLa550CiIgjKoj8bx72CdZ6pYZ+ZNVQ20OhUwrGy8visAobOoNpHlSVngpCldM5SLYw
+        o85Tz9QpNRBpHI4zUIBLX6RnKFyzsacv8sZ0sDjdO9nbLGQDa9MmZ53XR73AZVAc4PQ8BFMUL6kKI
+        3RSLD7xjprLfKTs3bN4nCp03Jd5xgj0fOHsZRkqiRRLcK5RLCtwYeN327IVH35SFSnOiXBoxbQoAl
+        LriR/x3fEMEGh6T/nxU8m68kdGPKrmaAV1U9PCZbHV8TrgOTTtgKHA6nwbTGVC+gCFR7liaLvPBdd
+        jH6J6LwQ==;
+Received: from [2601:1c0:6280:3f0::a22f] (helo=smtpauth.infradead.org)
+        by desiato.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1m1ADk-00FP2Q-8B; Wed, 07 Jul 2021 16:16:20 +0000
+From:   Randy Dunlap <rdunlap@infradead.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Randy Dunlap <rdunlap@infradead.org>,
+        Yang Shi <shy828301@gmail.com>,
+        Hugh Dickins <hughd@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
         Greg Ungerer <gerg@linux-m68k.org>,
-        linux-m68k <linux-m68k@lists.linux-m68k.org>,
-        uClinux development list <uclinux-dev@uclinux.org>
-Subject: Re: [PATCH] m68knommu: remove set_fs()
-Message-ID: <20210707142531.GA26080@lst.de>
-References: <20210705055719.949875-1-hch@lst.de> <20210705055719.949875-2-hch@lst.de> <CAMuHMdV4UQaKE7fn0_HhPfHzwEMwouPvqoeW6_V13yebe7ZSQQ@mail.gmail.com> <CAHk-=wgjWebav7K_F7WS7KiwOAYr8KktsZiaV+jYP5LU5RB3Sg@mail.gmail.com> <20210706041353.GA10889@lst.de> <CAHk-=wjZRs8icwmK4g-XSmY7PB9WUhi3=KGs5NsV7QO=uW_taw@mail.gmail.com>
+        linux-m68k@lists.linux-m68k.org, uclinux-dev@uclinux.org
+Subject: [PATCH] mm: try_to_unmap() is now void
+Date:   Wed,  7 Jul 2021 09:16:14 -0700
+Message-Id: <20210707161614.13001-1-rdunlap@infradead.org>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAHk-=wjZRs8icwmK4g-XSmY7PB9WUhi3=KGs5NsV7QO=uW_taw@mail.gmail.com>
-User-Agent: Mutt/1.5.17 (2007-11-01)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-On Tue, Jul 06, 2021 at 11:36:26AM -0700, Linus Torvalds wrote:
-> On Mon, Jul 5, 2021 at 9:13 PM Christoph Hellwig <hch@lst.de> wrote:
-> >
-> > It still needs "real" kernel-style set_fs for the mm/maccess.c routines,
-> > but adding __{get,put}_kernel_nofault should not be too hard.
-> 
-> Yeah, it's not that it wants set-fs(), it's that I missed that m68k
-> doesn't have HAVE_GET_KERNEL_NOFAULT.
-> 
-> Implementing __get/put_kernel_nofault() should be fairly
-> straightforward: they are basically the same thing as the
-> __get/put_user() functions, except they should just use "move" instead
-> of "moves".
-> 
-> The m68k uaccess.h file already kind of has support for that, but it's
-> hardcoded to the CONFIG_CPU_HAS_ADDRESS_SPACES config, rather than
-> being available as two different versions.
+Fix the "CONFIG_MMU is not set" case of converting
+try_to_unmap() from bool to void.
+(as seen on m68k/coldfire)
 
-So I've come up with a whole (compile tested only) series.  We don't
-really need the preempt_disable either given the m68k saves and restores
-the SFC/DFC registers on context switch:
+In file included from ../mm/vmscan.c:33:
+../mm/vmscan.c: In function 'shrink_page_list':
+../include/linux/rmap.h:294:34: warning: statement with no effect [-Wunused-value]
+  294 | #define try_to_unmap(page, refs) false
+      |                                  ^~~~~
+../mm/vmscan.c:1508:4: note: in expansion of macro 'try_to_unmap'
+ 1508 |    try_to_unmap(page, flags);
+      |    ^~~~~~~~~~~~
 
-http://git.infradead.org/users/hch/misc.git/shortlog/refs/heads/m68k-set_fs
+Fixes: 1fb08ac63bee ("mm: rmap: make try_to_unmap() void function")
+Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+Cc: Yang Shi <shy828301@gmail.com>
+Cc: Hugh Dickins <hughd@google.com>
+Cc: Andrew Morton <akpm@linux-foundation.org>
+Cc: linux-mm@kvack.org
+Cc: Greg Ungerer <gerg@linux-m68k.org>
+Cc: linux-m68k@lists.linux-m68k.org
+Cc: uclinux-dev@uclinux.org
+---
+v2: add linux-mm m.l.
+    add M68K/Coldfire Cc's
+    change to static inline function.
+
+ include/linux/rmap.h |    3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+--- linux-next-20210701.orig/include/linux/rmap.h
++++ linux-next-20210701/include/linux/rmap.h
+@@ -291,7 +291,8 @@ static inline int page_referenced(struct
+ 	return 0;
+ }
+ 
+-#define try_to_unmap(page, refs) false
++static inline void try_to_unmap(struct page *page, enum ttu_flags flags)
++{}
+ 
+ static inline int page_mkclean(struct page *page)
+ {
