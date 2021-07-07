@@ -7,46 +7,43 @@ X-Spam-Status: No, score=-18.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
 	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 6515DC07E95
-	for <linux-m68k@archiver.kernel.org>; Wed,  7 Jul 2021 16:16:25 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id EE42CC07E95
+	for <linux-m68k@archiver.kernel.org>; Wed,  7 Jul 2021 16:37:36 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 49D2F61CC2
-	for <linux-m68k@archiver.kernel.org>; Wed,  7 Jul 2021 16:16:25 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id C95EB61CCB
+	for <linux-m68k@archiver.kernel.org>; Wed,  7 Jul 2021 16:37:36 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229519AbhGGQTF (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Wed, 7 Jul 2021 12:19:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36336 "EHLO
+        id S230012AbhGGQkQ (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Wed, 7 Jul 2021 12:40:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41286 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229475AbhGGQTE (ORCPT
+        with ESMTP id S229542AbhGGQkQ (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Wed, 7 Jul 2021 12:19:04 -0400
+        Wed, 7 Jul 2021 12:40:16 -0400
 Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 84F44C061574;
-        Wed,  7 Jul 2021 09:16:24 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E1F75C061574;
+        Wed,  7 Jul 2021 09:37:35 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
         d=infradead.org; s=desiato.20200630; h=Content-Transfer-Encoding:MIME-Version
         :Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
         Content-Description:In-Reply-To:References;
-        bh=8vx2MlWUn5LIhwKdzrV6SOg1W/EZtZtrXCT9CRbQ+0g=; b=FV3ssxZghmBYayxtp6VYSP6mZJ
-        ornbpTVgIMpLa550CiIgjKoj8bx72CdZ6pYZ+ZNVQ20OhUwrGy8visAobOoNpHlSVngpCldM5SLYw
-        o85Tz9QpNRBpHI4zUIBLX6RnKFyzsacv8sZ0sDjdO9nbLGQDa9MmZ53XR73AZVAc4PQ8BFMUL6kKI
-        3RSLD7xjprLfKTs3bN4nCp03Jd5xgj0fOHsZRkqiRRLcK5RLCtwYeN327IVH35SFSnOiXBoxbQoAl
-        LriR/x3fEMEGh6T/nxU8m68kdGPKrmaAV1U9PCZbHV8TrgOTTtgKHA6nwbTGVC+gCFR7liaLvPBdd
-        jH6J6LwQ==;
+        bh=afkY8fwCdiinxqtpJexWC5QSojoHbl6E8/ynsI8qr+0=; b=jGgPW2qEz7oj4ztURfzsTH7ZXW
+        UUkbmjXcTSOWX24r1uiYSFLinnI8pygrnAdBCC43Uod6ZCjY+NbQ9oue/HvrxzhTC4/UZRCjet6f+
+        aliYhGProwyDtA4YCfbePZ4ZapgVirsW5RxoaG4a0lJcWU928znsaJHBTSyoSceNo9VgdaVVfM447
+        iBt0v0tfP7Efwjb+2JV5vuo/E5pfNKxYu/YKcOvitgzxQB/PHkBM+S3bdebV9aekXA9ESOmp1VAOS
+        Vcn5bn7LNVWiUxclA9nNLHHeMzO6jp2RMR9vX4AurdB1m/mDSXjV4Vay4YVhKMqAP0psSgpip/7z4
+        O3UFPmqQ==;
 Received: from [2601:1c0:6280:3f0::a22f] (helo=smtpauth.infradead.org)
         by desiato.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1m1ADk-00FP2Q-8B; Wed, 07 Jul 2021 16:16:20 +0000
+        id 1m1AYH-00FPKf-Kh; Wed, 07 Jul 2021 16:37:34 +0000
 From:   Randy Dunlap <rdunlap@infradead.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Randy Dunlap <rdunlap@infradead.org>,
-        Yang Shi <shy828301@gmail.com>,
-        Hugh Dickins <hughd@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
         Greg Ungerer <gerg@linux-m68k.org>,
         linux-m68k@lists.linux-m68k.org, uclinux-dev@uclinux.org
-Subject: [PATCH] mm: try_to_unmap() is now void
-Date:   Wed,  7 Jul 2021 09:16:14 -0700
-Message-Id: <20210707161614.13001-1-rdunlap@infradead.org>
+Subject: [PATCH] m68k/nommu: prevent setting ROMKERNEL when ROM is not set
+Date:   Wed,  7 Jul 2021 09:37:29 -0700
+Message-Id: <20210707163729.30388-1-rdunlap@infradead.org>
 X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -54,45 +51,31 @@ Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-Fix the "CONFIG_MMU is not set" case of converting
-try_to_unmap() from bool to void.
-(as seen on m68k/coldfire)
+When CONFIG_ROMKERNEL is set but CONFIG_ROM is not set, the linker
+complains:
+  m68k-linux-ld:./arch/m68k/kernel/vmlinux.lds:5: undefined symbol `CONFIG_ROMSTART' referenced in expression
 
-In file included from ../mm/vmscan.c:33:
-../mm/vmscan.c: In function 'shrink_page_list':
-../include/linux/rmap.h:294:34: warning: statement with no effect [-Wunused-value]
-  294 | #define try_to_unmap(page, refs) false
-      |                                  ^~~~~
-../mm/vmscan.c:1508:4: note: in expansion of macro 'try_to_unmap'
- 1508 |    try_to_unmap(page, flags);
-      |    ^~~~~~~~~~~~
+# CONFIG_ROM is not set
+# CONFIG_RAMKERNEL is not set
+CONFIG_ROMKERNEL=y
 
-Fixes: 1fb08ac63bee ("mm: rmap: make try_to_unmap() void function")
+Since ROMSTART depends on ROM, make ROMKERNEL also depend on ROM.
+
 Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-Cc: Yang Shi <shy828301@gmail.com>
-Cc: Hugh Dickins <hughd@google.com>
-Cc: Andrew Morton <akpm@linux-foundation.org>
-Cc: linux-mm@kvack.org
 Cc: Greg Ungerer <gerg@linux-m68k.org>
 Cc: linux-m68k@lists.linux-m68k.org
 Cc: uclinux-dev@uclinux.org
 ---
-v2: add linux-mm m.l.
-    add M68K/Coldfire Cc's
-    change to static inline function.
+ arch/m68k/Kconfig.machine |    1 +
+ 1 file changed, 1 insertion(+)
 
- include/linux/rmap.h |    3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
-
---- linux-next-20210701.orig/include/linux/rmap.h
-+++ linux-next-20210701/include/linux/rmap.h
-@@ -291,7 +291,8 @@ static inline int page_referenced(struct
- 	return 0;
- }
+--- linux-next-20210701.orig/arch/m68k/Kconfig.machine
++++ linux-next-20210701/arch/m68k/Kconfig.machine
+@@ -464,6 +464,7 @@ config RAMKERNEL
  
--#define try_to_unmap(page, refs) false
-+static inline void try_to_unmap(struct page *page, enum ttu_flags flags)
-+{}
- 
- static inline int page_mkclean(struct page *page)
- {
+ config ROMKERNEL
+ 	bool "ROM"
++	depends on ROM
+ 	help
+ 	  The kernel will be resident in FLASH/ROM when running. This is
+ 	  often referred to as Execute-in-Place (XIP), since the kernel
