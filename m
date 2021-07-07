@@ -2,95 +2,65 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-15.3 required=3.0 tests=BAYES_00,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,NICE_REPLY_A,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1
-	autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-10.2 required=3.0 tests=BAYES_00,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 305A8C07E9C
-	for <linux-m68k@archiver.kernel.org>; Wed,  7 Jul 2021 12:30:53 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A1459C11F78
+	for <linux-m68k@archiver.kernel.org>; Wed,  7 Jul 2021 14:25:39 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 0513261CA8
-	for <linux-m68k@archiver.kernel.org>; Wed,  7 Jul 2021 12:30:53 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 83BC361CDB
+	for <linux-m68k@archiver.kernel.org>; Wed,  7 Jul 2021 14:25:39 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231452AbhGGMdb (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Wed, 7 Jul 2021 08:33:31 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47798 "EHLO mail.kernel.org"
+        id S232052AbhGGO2R (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Wed, 7 Jul 2021 10:28:17 -0400
+Received: from verein.lst.de ([213.95.11.211]:37134 "EHLO verein.lst.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231704AbhGGMd1 (ORCPT <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Wed, 7 Jul 2021 08:33:27 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 213BF61C82;
-        Wed,  7 Jul 2021 12:30:33 +0000 (UTC)
-Subject: Re: [PATCH] m68k/coldfire: change pll var. to clk_pll
-To:     Randy Dunlap <rdunlap@infradead.org>, linux-kernel@vger.kernel.org
-Cc:     kernel test robot <lkp@intel.com>, linux-m68k@lists.linux-m68k.org,
-        uclinux-dev@uclinux.org, Arnd Bergmann <arnd@arndb.de>
-References: <20210704230137.28915-1-rdunlap@infradead.org>
-From:   Greg Ungerer <gerg@linux-m68k.org>
-Message-ID: <024360ce-41b2-c072-f399-7e87f516bfd0@linux-m68k.org>
-Date:   Wed, 7 Jul 2021 22:30:32 +1000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        id S231965AbhGGO2O (ORCPT <rfc822;linux-m68k@lists.linux-m68k.org>);
+        Wed, 7 Jul 2021 10:28:14 -0400
+Received: by verein.lst.de (Postfix, from userid 2407)
+        id 8F59868BEB; Wed,  7 Jul 2021 16:25:31 +0200 (CEST)
+Date:   Wed, 7 Jul 2021 16:25:31 +0200
+From:   Christoph Hellwig <hch@lst.de>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Christoph Hellwig <hch@lst.de>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Greg Ungerer <gerg@linux-m68k.org>,
+        linux-m68k <linux-m68k@lists.linux-m68k.org>,
+        uClinux development list <uclinux-dev@uclinux.org>
+Subject: Re: [PATCH] m68knommu: remove set_fs()
+Message-ID: <20210707142531.GA26080@lst.de>
+References: <20210705055719.949875-1-hch@lst.de> <20210705055719.949875-2-hch@lst.de> <CAMuHMdV4UQaKE7fn0_HhPfHzwEMwouPvqoeW6_V13yebe7ZSQQ@mail.gmail.com> <CAHk-=wgjWebav7K_F7WS7KiwOAYr8KktsZiaV+jYP5LU5RB3Sg@mail.gmail.com> <20210706041353.GA10889@lst.de> <CAHk-=wjZRs8icwmK4g-XSmY7PB9WUhi3=KGs5NsV7QO=uW_taw@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20210704230137.28915-1-rdunlap@infradead.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAHk-=wjZRs8icwmK4g-XSmY7PB9WUhi3=KGs5NsV7QO=uW_taw@mail.gmail.com>
+User-Agent: Mutt/1.5.17 (2007-11-01)
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-
-On 5/7/21 9:01 am, Randy Dunlap wrote:
-> DEFINE_CLK() makes the variable name be clk_xyz, so variable
-> 'pll' should instead be 'clk_pll'.
+On Tue, Jul 06, 2021 at 11:36:26AM -0700, Linus Torvalds wrote:
+> On Mon, Jul 5, 2021 at 9:13 PM Christoph Hellwig <hch@lst.de> wrote:
+> >
+> > It still needs "real" kernel-style set_fs for the mm/maccess.c routines,
+> > but adding __{get,put}_kernel_nofault should not be too hard.
 > 
-> In file included from ../arch/m68k/coldfire/m525x.c:12:
-> ../arch/m68k/coldfire/m525x.c:29:30: error: 'pll' undeclared here (not in a function)
->     29 |  CLKDEV_INIT(NULL, "pll.0", &pll),
->        |                              ^~~
-> ../include/linux/clkdev.h:30:10: note: in definition of macro 'CLKDEV_INIT'
->     30 |   .clk = c, \
->        |          ^
-> In file included from ../arch/m68k/coldfire/m525x.c:21:
-> ../arch/m68k/include/asm/mcfclk.h:43:27: warning: 'clk_pll' defined but not used [-Wunused-variable]
->     43 |         static struct clk clk_##clk_ref = { \
->        |                           ^~~~
-> ../arch/m68k/coldfire/m525x.c:25:1: note: in expansion of macro 'DEFINE_CLK'
->     25 | DEFINE_CLK(pll, "pll.0", MCF_CLK);
->        | ^~~~~~~~~~
+> Yeah, it's not that it wants set-fs(), it's that I missed that m68k
+> doesn't have HAVE_GET_KERNEL_NOFAULT.
 > 
-> Fixes: 63aadb77669a ("m68k: coldfire: use clkdev_lookup on most coldfire")
-> Reported-by: kernel test robot <lkp@intel.com>
-> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-> Cc: Greg Ungerer <gerg@linux-m68k.org>
-> Cc: linux-m68k@lists.linux-m68k.org
-> Cc: uclinux-dev@uclinux.org
-> Cc: Arnd Bergmann <arnd@arndb.de>
-
-Thanks Randy.
-
-Arnd: since this has hit mainline do you want me to pick it up
-in the m68knommu git tree and push to Linus from there?
-
-Regards
-Greg
-
-
-
-> ---
->   arch/m68k/coldfire/m525x.c |    2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
+> Implementing __get/put_kernel_nofault() should be fairly
+> straightforward: they are basically the same thing as the
+> __get/put_user() functions, except they should just use "move" instead
+> of "moves".
 > 
-> --- linux-next-20210701.orig/arch/m68k/coldfire/m525x.c
-> +++ linux-next-20210701/arch/m68k/coldfire/m525x.c
-> @@ -26,7 +26,7 @@ DEFINE_CLK(pll, "pll.0", MCF_CLK);
->   DEFINE_CLK(sys, "sys.0", MCF_BUSCLK);
->   
->   static struct clk_lookup m525x_clk_lookup[] = {
-> -	CLKDEV_INIT(NULL, "pll.0", &pll),
-> +	CLKDEV_INIT(NULL, "pll.0", &clk_pll),
->   	CLKDEV_INIT(NULL, "sys.0", &clk_sys),
->   	CLKDEV_INIT("mcftmr.0", NULL, &clk_sys),
->   	CLKDEV_INIT("mcftmr.1", NULL, &clk_sys),
-> 
+> The m68k uaccess.h file already kind of has support for that, but it's
+> hardcoded to the CONFIG_CPU_HAS_ADDRESS_SPACES config, rather than
+> being available as two different versions.
+
+So I've come up with a whole (compile tested only) series.  We don't
+really need the preempt_disable either given the m68k saves and restores
+the SFC/DFC registers on context switch:
+
+http://git.infradead.org/users/hch/misc.git/shortlog/refs/heads/m68k-set_fs
