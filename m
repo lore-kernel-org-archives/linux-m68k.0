@@ -2,81 +2,58 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-15.5 required=3.0 tests=BAYES_00,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,NICE_REPLY_A,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
-	USER_AGENT_SANE_1 autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-5.5 required=3.0 tests=BAYES_00,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 8D2EDC07E96
-	for <linux-m68k@archiver.kernel.org>; Thu,  8 Jul 2021 12:33:27 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4A151C07E96
+	for <linux-m68k@archiver.kernel.org>; Thu,  8 Jul 2021 12:57:55 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 71AD561450
-	for <linux-m68k@archiver.kernel.org>; Thu,  8 Jul 2021 12:33:27 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 2309261584
+	for <linux-m68k@archiver.kernel.org>; Thu,  8 Jul 2021 12:57:55 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230451AbhGHMgI (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Thu, 8 Jul 2021 08:36:08 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49250 "EHLO mail.kernel.org"
+        id S231490AbhGHNAg (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Thu, 8 Jul 2021 09:00:36 -0400
+Received: from verein.lst.de ([213.95.11.211]:40317 "EHLO verein.lst.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229901AbhGHMgH (ORCPT <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Thu, 8 Jul 2021 08:36:07 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D60CC61424;
-        Thu,  8 Jul 2021 12:33:24 +0000 (UTC)
-Subject: Re: [PATCH] m68k/nommu: prevent setting ROMKERNEL when ROM is not set
-To:     Randy Dunlap <rdunlap@infradead.org>, linux-kernel@vger.kernel.org
-Cc:     linux-m68k@lists.linux-m68k.org, uclinux-dev@uclinux.org
-References: <20210707163729.30388-1-rdunlap@infradead.org>
-From:   Greg Ungerer <gerg@linux-m68k.org>
-Message-ID: <a429671e-927e-e5c8-cc33-ab4310446792@linux-m68k.org>
-Date:   Thu, 8 Jul 2021 22:33:22 +1000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        id S231716AbhGHNAg (ORCPT <rfc822;linux-m68k@lists.linux-m68k.org>);
+        Thu, 8 Jul 2021 09:00:36 -0400
+Received: by verein.lst.de (Postfix, from userid 2407)
+        id 1FD9C68C4E; Thu,  8 Jul 2021 14:57:52 +0200 (CEST)
+Date:   Thu, 8 Jul 2021 14:57:51 +0200
+From:   Christoph Hellwig <hch@lst.de>
+To:     Michael Schmitz <schmitzmic@gmail.com>
+Cc:     Christoph Hellwig <hch@lst.de>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        linux-m68k <linux-m68k@lists.linux-m68k.org>
+Subject: Re: [PATCH RFC v2] m68k: remove get_fs()/set_fs()
+Message-ID: <20210708125751.GA11898@lst.de>
+References: <1625708899-29013-1-git-send-email-schmitzmic@gmail.com> <CAHk-=whRp-m0DFPF27=OZzMq4b=16J+6bQEG_jeDM=osuuZF2w@mail.gmail.com> <CAHk-=wgCp0X4Q=GkDF1j1=_XTq4gA_ZsKUXfkPBeeTJcoS6gwQ@mail.gmail.com> <20210708043145.GB17672@lst.de> <38991687-7b33-994b-b7d3-22400872a45a@gmail.com> <20210708045804.GA18249@lst.de> <147ffcbd-f946-bb6c-b7bc-35c0672572ce@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20210707163729.30388-1-rdunlap@infradead.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <147ffcbd-f946-bb6c-b7bc-35c0672572ce@gmail.com>
+User-Agent: Mutt/1.5.17 (2007-11-01)
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-Hi Randy,
+On Thu, Jul 08, 2021 at 05:48:46PM +1200, Michael Schmitz wrote:
+> Hi Christoph,
+>
+> Am 08.07.2021 um 16:58 schrieb Christoph Hellwig:
+>> On Thu, Jul 08, 2021 at 04:33:08PM +1200, Michael Schmitz wrote:
+>>>> Yes, that problem exists, but just removing the # causes "inst" to go
+>>>> into the cpp output.  Let me brush up my cpp-foo.
+>>>
+>>> Putting quotes around 'inst' makes it compile for me.
+>>
+>> Do you just want to take the series over from here?  I think you are
+>> about 15 times more qualified than me anyway :)
+>
+> Not in a million years :-) A brief look at my patch review history on 
+> linux-m68k will disabuse you of that notion. I routinely hit v6 and higher 
+> ... I'm a simple hobbyist, and a little out of my depth here.
 
-On 8/7/21 2:37 am, Randy Dunlap wrote:
-> When CONFIG_ROMKERNEL is set but CONFIG_ROM is not set, the linker
-> complains:
->    m68k-linux-ld:./arch/m68k/kernel/vmlinux.lds:5: undefined symbol `CONFIG_ROMSTART' referenced in expression
-> 
-> # CONFIG_ROM is not set
-> # CONFIG_RAMKERNEL is not set
-> CONFIG_ROMKERNEL=y
-> 
-> Since ROMSTART depends on ROM, make ROMKERNEL also depend on ROM.
-> 
-> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-> Cc: Greg Ungerer <gerg@linux-m68k.org>
-> Cc: linux-m68k@lists.linux-m68k.org
-> Cc: uclinux-dev@uclinux.org
-
-Looks good, thanks.
-I will apply to for-next branch of m68knommu git tree when the current
-merge window closes.
-
-Regards
-Greg
-
-
-> ---
->   arch/m68k/Kconfig.machine |    1 +
->   1 file changed, 1 insertion(+)
-> 
-> --- linux-next-20210701.orig/arch/m68k/Kconfig.machine
-> +++ linux-next-20210701/arch/m68k/Kconfig.machine
-> @@ -464,6 +464,7 @@ config RAMKERNEL
->   
->   config ROMKERNEL
->   	bool "ROM"
-> +	depends on ROM
->   	help
->   	  The kernel will be resident in FLASH/ROM when running. This is
->   	  often referred to as Execute-in-Place (XIP), since the kernel
-> 
+I've force pushed a new version to the branch, can you give it a spin?
