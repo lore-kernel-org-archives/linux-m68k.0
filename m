@@ -6,64 +6,64 @@ X-Spam-Status: No, score=-5.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
 	SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C04B8C07E9B
-	for <linux-m68k@archiver.kernel.org>; Thu,  8 Jul 2021 02:52:05 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id EF332C07E9C
+	for <linux-m68k@archiver.kernel.org>; Thu,  8 Jul 2021 03:01:54 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 9979361CD6
-	for <linux-m68k@archiver.kernel.org>; Thu,  8 Jul 2021 02:52:05 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id D695361CD9
+	for <linux-m68k@archiver.kernel.org>; Thu,  8 Jul 2021 03:01:54 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230201AbhGHCyq (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Wed, 7 Jul 2021 22:54:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36166 "EHLO
+        id S230304AbhGHDEf (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Wed, 7 Jul 2021 23:04:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38296 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230195AbhGHCyp (ORCPT
+        with ESMTP id S230295AbhGHDEe (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Wed, 7 Jul 2021 22:54:45 -0400
-Received: from mail-lf1-x12d.google.com (mail-lf1-x12d.google.com [IPv6:2a00:1450:4864:20::12d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9D474C061574
-        for <linux-m68k@lists.linux-m68k.org>; Wed,  7 Jul 2021 19:52:04 -0700 (PDT)
-Received: by mail-lf1-x12d.google.com with SMTP id p16so10405467lfc.5
-        for <linux-m68k@lists.linux-m68k.org>; Wed, 07 Jul 2021 19:52:04 -0700 (PDT)
+        Wed, 7 Jul 2021 23:04:34 -0400
+Received: from mail-lf1-x131.google.com (mail-lf1-x131.google.com [IPv6:2a00:1450:4864:20::131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 69C0EC061574
+        for <linux-m68k@lists.linux-m68k.org>; Wed,  7 Jul 2021 20:01:53 -0700 (PDT)
+Received: by mail-lf1-x131.google.com with SMTP id p21so10381486lfj.13
+        for <linux-m68k@lists.linux-m68k.org>; Wed, 07 Jul 2021 20:01:53 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linux-foundation.org; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=gn4DYTgk78SkzfR6qBL8w1yovIr2Em8zi5ZgKIqSYn4=;
-        b=WKbhMlBUwW+kTqbGupPTzUQXHhPCozrYnPmyGDKs/k6dqinCcxMTtvqp99TjmZTH75
-         sGfnpnSLmbfHVT31wVjk6CGPj9NKdSvQR5IfN4pfUUmfUkuES+rKN0AdThdHh181pq1x
-         q99zJhBj/QXgi8Hr9xwdAxSADHDUhA2Yl/v+c=
+        bh=tGRidrRLzWEFp1s1N21PC8ToqpT6xI7i7fg9XBghpsc=;
+        b=ai27sdrV5lgMqbLG2nrJeQnUt3USzoPvsFQeALPi4nD7UuQ0QShTPAFUzyEh95TRR7
+         Ng9EPZlJ3YzNuubI4otH0LaqFFiLMs6AnK5ySMJhU+P49erBIjRddT6s7DUQRkLxCgpj
+         GjWjCxPSFbwA6VGmtbBWmr5T4Lmoele/kAh5c=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=gn4DYTgk78SkzfR6qBL8w1yovIr2Em8zi5ZgKIqSYn4=;
-        b=OTLKsO6QL4Ma8uHjcJb/K2iSXCGpCH9nyM+hCe3Lx31oux15e9hTbMMaOV8W5iIrte
-         /CGfry6cBrjbEBD/qB4Zd8bSHn8v2fzDSqZ6kMIQywu7z2SQgooaDGA5KdworXRivAj6
-         5OsBYyICtGSoutTF/WKRTIL24o7BkYI+cpBJcYWUaF6YBSamR22JhI8S5Fm6ZDUvUfTf
-         eBouF2kAJUefSfdenlhDX2hrxDalYS/skrxotbwZLbD+YjTfFoQQ+dAUkcFLyE9fVWwC
-         QyvG/8FUeE7iHu0u0dimTwar6mcQoBYf3f7VfEt3B4umCTIKhqTRG6kK3DcogrLte6bh
-         hCxw==
-X-Gm-Message-State: AOAM533amrnc4T4q2umeBHVrzYReP6L+Swne1k15xHE9zdgJesYktuyh
-        En0FZXYRUvifeMTgA6xXPCfNEy5P/IERxVS/iq4=
-X-Google-Smtp-Source: ABdhPJyImHIbhbYzIeMxUCHgvW5URK1xHjyfcyOoq0F1c/GGpgUUirYVLECns2gPmZWQ52EsfDJuJw==
-X-Received: by 2002:a2e:b5a6:: with SMTP id f6mr21576631ljn.198.1625712722321;
-        Wed, 07 Jul 2021 19:52:02 -0700 (PDT)
+        bh=tGRidrRLzWEFp1s1N21PC8ToqpT6xI7i7fg9XBghpsc=;
+        b=qCFZpSaNlfrSxOD1hwCHh42p8TI1N+nIiOZZ0WbSkOBH/T6fvL621qDWSPPQhgn/LB
+         hdQQjHDDyWfkuDhTPM0sDf8/XdPIt/t6GFDg6U5thF9jWPwo5T2w/jwg6d6EW9jDgKE5
+         rBGsbdrZUM8CIQvwYN+lCZeJiL2qUUMgR+41YHxQ9oIIiHuzV5T8fWN935qR3IVlJ1DU
+         c3YE0tH6+p16oLoulVs17waGZNgo5uy9rQ8OET523N3259KtJuh6eKuTq1VkXpqb5tLq
+         djwVMeLKlsahGzk3dacpPFaj8Ximyw/YAJ3zxHmI3VIjOk3Ci1aldG6U9RtS3B/kShFZ
+         5n8A==
+X-Gm-Message-State: AOAM533LGetPQa/h5PcjhVn4OvW7DXONWAWX66ZodqxqhjHjh37NAes4
+        mChg1Zo/jXorqIBUNl7O1c95IZk/UOTBVylNr7I=
+X-Google-Smtp-Source: ABdhPJyRa/XbzGBrqokeQ0duFmXPgQ/RROKF3WWBW+Mzfakqe12RyrSPnJg8wpTASMT6OqmjzQWSbQ==
+X-Received: by 2002:a2e:97c9:: with SMTP id m9mr9439575ljj.382.1625713310866;
+        Wed, 07 Jul 2021 20:01:50 -0700 (PDT)
 Received: from mail-lf1-f54.google.com (mail-lf1-f54.google.com. [209.85.167.54])
-        by smtp.gmail.com with ESMTPSA id h22sm88699ljk.133.2021.07.07.19.52.01
+        by smtp.gmail.com with ESMTPSA id bn23sm90304ljb.48.2021.07.07.20.01.50
         for <linux-m68k@lists.linux-m68k.org>
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 07 Jul 2021 19:52:01 -0700 (PDT)
-Received: by mail-lf1-f54.google.com with SMTP id p1so10295337lfr.12
-        for <linux-m68k@lists.linux-m68k.org>; Wed, 07 Jul 2021 19:52:01 -0700 (PDT)
-X-Received: by 2002:a2e:50b:: with SMTP id 11mr22577437ljf.220.1625712721213;
- Wed, 07 Jul 2021 19:52:01 -0700 (PDT)
+        Wed, 07 Jul 2021 20:01:50 -0700 (PDT)
+Received: by mail-lf1-f54.google.com with SMTP id p16so10473666lfc.5
+        for <linux-m68k@lists.linux-m68k.org>; Wed, 07 Jul 2021 20:01:50 -0700 (PDT)
+X-Received: by 2002:ac2:4903:: with SMTP id n3mr21264746lfi.487.1625713309781;
+ Wed, 07 Jul 2021 20:01:49 -0700 (PDT)
 MIME-Version: 1.0
-References: <1625708899-29013-1-git-send-email-schmitzmic@gmail.com>
-In-Reply-To: <1625708899-29013-1-git-send-email-schmitzmic@gmail.com>
+References: <1625708899-29013-1-git-send-email-schmitzmic@gmail.com> <CAHk-=whRp-m0DFPF27=OZzMq4b=16J+6bQEG_jeDM=osuuZF2w@mail.gmail.com>
+In-Reply-To: <CAHk-=whRp-m0DFPF27=OZzMq4b=16J+6bQEG_jeDM=osuuZF2w@mail.gmail.com>
 From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Wed, 7 Jul 2021 19:51:45 -0700
-X-Gmail-Original-Message-ID: <CAHk-=whRp-m0DFPF27=OZzMq4b=16J+6bQEG_jeDM=osuuZF2w@mail.gmail.com>
-Message-ID: <CAHk-=whRp-m0DFPF27=OZzMq4b=16J+6bQEG_jeDM=osuuZF2w@mail.gmail.com>
+Date:   Wed, 7 Jul 2021 20:01:33 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wgCp0X4Q=GkDF1j1=_XTq4gA_ZsKUXfkPBeeTJcoS6gwQ@mail.gmail.com>
+Message-ID: <CAHk-=wgCp0X4Q=GkDF1j1=_XTq4gA_ZsKUXfkPBeeTJcoS6gwQ@mail.gmail.com>
 Subject: Re: [PATCH RFC v2] m68k: remove get_fs()/set_fs()
 To:     Michael Schmitz <schmitzmic@gmail.com>
 Cc:     Geert Uytterhoeven <geert@linux-m68k.org>,
@@ -74,44 +74,58 @@ Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-On Wed, Jul 7, 2021 at 6:48 PM Michael Schmitz <schmitzmic@gmail.com> wrote:
+On Wed, Jul 7, 2021 at 7:51 PM Linus Torvalds
+<torvalds@linux-foundation.org> wrote:
 >
-> Followup to my patch "Fixes to Linus' 'remove set_fs patch'", with
-> kernel mode copy macros used in __get/put_kernel_nofault().
-> (As soon as I use the same __get/put_user_asm() macros with
-> parameters, like in Christoph's patch, everything falls to pieces.)
+> Ok, strange. If this works for you, then the _concept_ is fine, and
+> there's something odd going on with the "macros with 'moves' vs 'move'
+> as a parameter" thing.
 
-Ok, strange. If this works for you, then the _concept_ is fine, and
-there's something odd going on with the "macros with 'moves' vs 'move'
-as a parameter" thing.
+Oh, I think I see the problem.
 
-> The fact that I had to touch include/linux/uaccess.h at all means
-> I got something horribly wrong in my use of MAKE_MM_SEG() to
-> set the segments.
+Or rather, I see it in Christoph's version of the patch, I don't think
+I've seen Michael's version, but that one was apparently very similar,
+so maybe it has the same bug.
 
-Oh, that's straightforward enough: the m68k segment code uses the same
-'mm_segment_t' type that the geberic kernel just wants to make empty
-for the non-CONFIG_SET_FS case.
+Christoph does:
 
-So the m68k segment type should just use a different name.
+   #define __put_user_asm(inst, res, x, ptr, bwl, reg)    \
+   asm volatile ("\n"                                     \
+          "1:     #inst."#bwl"    %2,%1\n"
+   ...
 
-In fact, the m68k manuals call them "alternate function code
-registers", so maybe it shouldn't be about "mm_segment_t" at all, but
-the type should really be named as such.
+and then uses it with code like
 
-The "segment" naming is just legacy x86 nomenclature, so I suspect it
-would be a good thing to really walk away from that and make it very
-explicit about what this is on m68k.
+                __put_user_asm(MOVES, __pu_err, __pu_val, ptr, b, d);
 
-So maybe it could be
+and
 
-    typedef struct {
-        unsigned char val:3;
-    } function_code_reg_t;
+                __get_user_asm("move", __gk_err, __gk_dst, __gk_src, u8, b, d);
 
-or something like that.
+and the issue is that there's a '#' too many.
 
-I suspect some real m68k person should make up the name, not me. The
-alternate function code registers are all from after my time ;)
+The '#' turns the argument into a string, but it was already
+_supposed_ to be a string. But no, the problem is that it turns the
+macro name MOVES into the _string_ "MOVES".
 
-              Linus
+Which happens to compile just fine, because "moves" is a real
+instruction. But it's actually _meant_ to be a macro that expands to
+either the string "moves" or "move".
+
+So what happens is that at least in Christoph's version, I think the
+code _always_ uses "MOVES", even in configurations where the macro
+MOVES should have just become "move".
+
+So it all builds fine, looks fine to the assembler, but it uses the
+wrong instruction.
+
+Macro expansion with the '#' character and other macros used as
+arguments is something people need to be very careful with.  It's why
+we have a whole header file for just the "stringify" operation, see
+<linux/stringify.h>
+
+But in this case, it shouldn't have used '#' at all, since the
+argument was already a string, and never needed to be turned into a
+string by the pre-processor.
+
+             Linus
