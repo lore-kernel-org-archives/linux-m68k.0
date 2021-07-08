@@ -2,160 +2,158 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-4.2 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,NICE_REPLY_A,SPF_HELO_NONE,
-	SPF_PASS,USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-5.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
+	SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 0F9FBC07E95
-	for <linux-m68k@archiver.kernel.org>; Thu,  8 Jul 2021 03:40:57 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id EE3C1C07E96
+	for <linux-m68k@archiver.kernel.org>; Thu,  8 Jul 2021 04:14:49 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id E680561C40
-	for <linux-m68k@archiver.kernel.org>; Thu,  8 Jul 2021 03:40:56 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id D028161CD5
+	for <linux-m68k@archiver.kernel.org>; Thu,  8 Jul 2021 04:14:49 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230376AbhGHDnh (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Wed, 7 Jul 2021 23:43:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46742 "EHLO
+        id S229553AbhGHERa (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Thu, 8 Jul 2021 00:17:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54034 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230359AbhGHDnh (ORCPT
+        with ESMTP id S229482AbhGHERa (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Wed, 7 Jul 2021 23:43:37 -0400
-Received: from mail-pg1-x52b.google.com (mail-pg1-x52b.google.com [IPv6:2607:f8b0:4864:20::52b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 59792C061574
-        for <linux-m68k@lists.linux-m68k.org>; Wed,  7 Jul 2021 20:40:55 -0700 (PDT)
-Received: by mail-pg1-x52b.google.com with SMTP id u14so4513044pga.11
-        for <linux-m68k@lists.linux-m68k.org>; Wed, 07 Jul 2021 20:40:55 -0700 (PDT)
+        Thu, 8 Jul 2021 00:17:30 -0400
+Received: from mail-lf1-x133.google.com (mail-lf1-x133.google.com [IPv6:2a00:1450:4864:20::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 02EE9C061574
+        for <linux-m68k@lists.linux-m68k.org>; Wed,  7 Jul 2021 21:14:48 -0700 (PDT)
+Received: by mail-lf1-x133.google.com with SMTP id p21so10856702lfj.13
+        for <linux-m68k@lists.linux-m68k.org>; Wed, 07 Jul 2021 21:14:47 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-transfer-encoding;
-        bh=s3lhWDsAp0c7FeLsyyjAH1Z6u2dhZHW6Zov46WdH7JE=;
-        b=jEOYgWXyNPdyipqRFD2u5bC/E4WKueR2qjmnbuHTLrUw9eN71aUE9PQO4gLi+TGG8D
-         jSksLhpuTdi6ESLawOelX4fi/O8jzzsuQ6LaCW9RYcV9/mEk4+3P9nzSefJMCe40ao7T
-         r2xZKDj70GTZ27biDvkpyHxnljamM2TruJWCXEV9j/vipqO++VsYpRNYSuHJDQZ4LUfG
-         C72pWAYL/6APXmmttSy8Y55lHAI1s4biisstOP+exoXPA0GiiSGVH89385VkLS7f9PjR
-         S9Q1+OCcZObZ/XEmiOgPqxEmfCnJKg/8vdr8PdZIDGRV+8StGKlR+6GmOIRfseeZE/c1
-         OYJw==
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=smnbtIEm8n0eqG2DpuQUo/OM6a9OzPGT6CIyftc/7n8=;
+        b=V0SLORR0teJA4Vc8Lqasx9xrAKWw55gv+iml7Okg+bxIOLwhdawW/DQeN+vzNMdZYG
+         gnYkfxV1hMv6MvUL8B2lRhHMg9Jby6BROO/f0dURAdeELes5qy8yA38qNIZtA4DYqFL/
+         2DAlySA4+05UTTyDgc0ag4PDUgKNDR90dq+qk=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding;
-        bh=s3lhWDsAp0c7FeLsyyjAH1Z6u2dhZHW6Zov46WdH7JE=;
-        b=rtqVbhOvdLdy7iisBXcK1cG+gnGhmp8ZCPRkrn8Bshwxyj/yLdM45NQlVRLcj/Pdkt
-         ohAlhmipCmHh0AVsAXe7pz5qUNhrX8pBKVzEOBMOQ+21TJ1w1AeBp0CoB1q3OcuyRSHy
-         GQn9j5goYR+jsNvYDnecSM1cFS8T7nZ7rauyaycKzq/1QO+ioSDq5Ms57GkJybDwRc+9
-         bl5PIyzmbYQhhl/E7FOMa7cm53yhWDi4rlfdz3LpJW3DyET3wxKXUbVdAZD33o2+E/mE
-         h4qzxkA/fNQoxLwgUL/o5MbwtgvhbR9RY744vnfGFsbiJh1u0ERxw6RSDqfo2sPJyRwI
-         O4iA==
-X-Gm-Message-State: AOAM531g/3DFQTyqpr+IOeMyEBlDkwGowWV55vRJ4nXJ2AmYZECkUlPt
-        NssZOk4Ojor1l1mjTEsoNnA=
-X-Google-Smtp-Source: ABdhPJxptZe2FVkrpw79LN5bs8FtAV1PlMogmva2kuqGcmTFDnzJblExdIB7hyo2ZEnAVn3QrguDxQ==
-X-Received: by 2002:a05:6a00:23d0:b029:2de:c1a2:f1e with SMTP id g16-20020a056a0023d0b02902dec1a20f1emr29067522pfc.60.1625715654918;
-        Wed, 07 Jul 2021 20:40:54 -0700 (PDT)
-Received: from Schmitz-MacBook-Pro.local (222-152-189-137-fibre.sparkbb.co.nz. [222.152.189.137])
-        by smtp.googlemail.com with ESMTPSA id e2sm859289pgh.5.2021.07.07.20.40.51
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=smnbtIEm8n0eqG2DpuQUo/OM6a9OzPGT6CIyftc/7n8=;
+        b=n5GJu5Q36OEAfg9K3JkS2lcxT7OXpqjxDgr/itWYumi8liQIvAX9UfqusU0/35GPQL
+         MC5xpQ3sXWdwqQksmdCQqZ/tQq3dhoQ3ikCiOpVouYL5e8GaCyri90faUpnE6rOU4+7n
+         CwWe1+MAMpiZBbdI9WsPx0dCeXwoIuwTpagAAFR4YPJhCO7PyTBYwspmpu5ncSr51PmE
+         EOWaB2NyxopzhQORaE2TUalM0zeK1BFfN4EiXS8XrXUJPDvBBLUUo3xAwW5Am2brIpdP
+         jtcRQPVaPXepqENROuoRPVY1RAVN0DemDuPPmIm8Yh6zjXZ3nOELyStsXlapMjOgJKaE
+         HEQA==
+X-Gm-Message-State: AOAM532J3zjDUPILXKrexSovgNsPevqPRKbWZtglIrY6y/+dnvVOC4z+
+        ygeSJVe903enMQlQGDQv/49Rt/TYEWH9l/M+6Ek=
+X-Google-Smtp-Source: ABdhPJzvuZ7h65uejRvjus/JJC2qooZqiNSfPWYFZTzam5K24/JxNgbpmuUkkcy299q3jHez4Cluyg==
+X-Received: by 2002:ac2:5e8d:: with SMTP id b13mr21149389lfq.452.1625717686137;
+        Wed, 07 Jul 2021 21:14:46 -0700 (PDT)
+Received: from mail-lf1-f42.google.com (mail-lf1-f42.google.com. [209.85.167.42])
+        by smtp.gmail.com with ESMTPSA id n17sm75278lft.74.2021.07.07.21.14.45
+        for <linux-m68k@lists.linux-m68k.org>
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 07 Jul 2021 20:40:54 -0700 (PDT)
+        Wed, 07 Jul 2021 21:14:45 -0700 (PDT)
+Received: by mail-lf1-f42.google.com with SMTP id y42so10944359lfa.3
+        for <linux-m68k@lists.linux-m68k.org>; Wed, 07 Jul 2021 21:14:45 -0700 (PDT)
+X-Received: by 2002:a05:6512:3f82:: with SMTP id x2mr21306375lfa.421.1625717685406;
+ Wed, 07 Jul 2021 21:14:45 -0700 (PDT)
+MIME-Version: 1.0
+References: <20210705055719.949875-1-hch@lst.de> <20210705055719.949875-2-hch@lst.de>
+ <CAMuHMdV4UQaKE7fn0_HhPfHzwEMwouPvqoeW6_V13yebe7ZSQQ@mail.gmail.com>
+ <CAHk-=wgjWebav7K_F7WS7KiwOAYr8KktsZiaV+jYP5LU5RB3Sg@mail.gmail.com> <3c736dc7-dd0c-0691-ece4-e7dc9aaa3a54@gmail.com>
+In-Reply-To: <3c736dc7-dd0c-0691-ece4-e7dc9aaa3a54@gmail.com>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Wed, 7 Jul 2021 21:14:29 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wjPcjY0TUNeh1pwC2s4xk=MPJGu_66+ywJ3SbmrEW5Yxg@mail.gmail.com>
+Message-ID: <CAHk-=wjPcjY0TUNeh1pwC2s4xk=MPJGu_66+ywJ3SbmrEW5Yxg@mail.gmail.com>
 Subject: Re: [PATCH] m68knommu: remove set_fs()
-To:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     Christoph Hellwig <hch@lst.de>, Greg Ungerer <gerg@linux-m68k.org>,
+To:     Michael Schmitz <schmitzmic@gmail.com>
+Cc:     Geert Uytterhoeven <geert@linux-m68k.org>,
+        Christoph Hellwig <hch@lst.de>,
+        Greg Ungerer <gerg@linux-m68k.org>,
         linux-m68k <linux-m68k@lists.linux-m68k.org>,
         uClinux development list <uclinux-dev@uclinux.org>
-References: <20210705055719.949875-1-hch@lst.de>
- <20210705055719.949875-2-hch@lst.de>
- <CAMuHMdV4UQaKE7fn0_HhPfHzwEMwouPvqoeW6_V13yebe7ZSQQ@mail.gmail.com>
- <CAHk-=wgjWebav7K_F7WS7KiwOAYr8KktsZiaV+jYP5LU5RB3Sg@mail.gmail.com>
-From:   Michael Schmitz <schmitzmic@gmail.com>
-Message-ID: <3c736dc7-dd0c-0691-ece4-e7dc9aaa3a54@gmail.com>
-Date:   Thu, 8 Jul 2021 15:40:49 +1200
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.11; rv:78.0)
- Gecko/20100101 Thunderbird/78.11.0
-MIME-Version: 1.0
-In-Reply-To: <CAHk-=wgjWebav7K_F7WS7KiwOAYr8KktsZiaV+jYP5LU5RB3Sg@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-Hi Linus,
+On Wed, Jul 7, 2021 at 8:40 PM Michael Schmitz <schmitzmic@gmail.com> wrote:
+>
+> going back to this one, I missed that bit earlier - the last three hunks
+> of your patch replaced KERNEL_DS by USER_DATA, everywhere else it's
+> replaced by SUPER_DATA. Typo, or something too subtle for me to grasp?
 
-going back to this one, I missed that bit earlier - the last three hunks
-of your patch replaced KERNEL_DS by USER_DATA, everywhere else it's
-replaced by SUPER_DATA. Typo, or something too subtle for me to grasp?
+So I think the old KERNEL_DS was purely legacy, and isn't what I think
+it's really supposed to be. It didn't _matter_, because then execve()
+will set it to USER_DS by the time you run any user program, but I
+didn't like it.
 
-Cheers,
+So I decided that in the new world order, the rules should be really
+straightforward and simple:
 
-    Michael
+ - SFC/DFC is always USER_DATA normally, which is how get_user/put_user want it.
 
+ - special functions that actually use SFC/DFC for some temporary
+override will set it to that temporary value, and then restore it to
+USER_DATA after use.
 
-Am 06.07.21 um 08:39 schrieb Linus Torvalds:
-> On Mon, Jul 5, 2021 at 1:46 AM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
->> Probably this should be
->>
->>     select SET_FS if CPU_HAS_ADDRESS_SPACES
-> Actually, I don't think m68k has a single real "set_fs()" at all, and
-> it should just be converted as-is to not use CONFIG_SET_FS.
->
-> Yes, there is a "set_fs()" function, but none of the remaining uses
-> actually are the traditional kernel style of "use kernel addresses as
-> user addresses". So as far as the *kernel* is concerned, m68k already
-> looks like a no-SET_FS architecture, and "set-fs()" is purely a
-> syntactic thing.
->
-> So I think the right thing to do looks something like this:
->
->  - make the rule be that SFC/DFC is always normally USER_DATA
->
->  - the special m68k sequences that need to play with special segments
-> will always do
->
->         preempt_disable();
->         set_segment(..whatever segment they need..);
->         .. do the special operation ..
->         set_segment(USER_DATA);
->         preempt_enable();
->
->  - set_fs() goes away entirely, because the user access functions
-> always work on USER_DATA and SFC/DFC is always right for them.
->
-> Anyway, I'm attaching a COMPLETELY UNTESTED AND ALMOST CERTAINLY VERY
-> VERY BROKEN patch that is likely not at all correct, but shows what I
-> think the solution should be.
->
-> The important thing is really just the removal of SET_FS entirely, the
-> rest is me winging it.
->
-> NOTE! The above very much assumes that all the special non-USER_DATA
-> accesses can always be done with preemption disabled. Why? Because I
-> also made the context switching always just save USER_DATA as the
-> segment. I didn't *remove* the segment switching - because I'm not
-> sure if that "just disable preemption across things that do segment
-> games" is actually valid.
->
-> So *if* that preempt_disable/enable is ok, then the segment switching
-> can just be removed entirely at context switch time.
->
-> And if it is *not* ok, then the preempt_disable/enable should go away,
-> and the context switch should save/restore the actual SFC/DFC value.
->
-> Again - let me be very very clear: the only m68k I've ever used was a
-> 68008. It didn't have segments. This patch is COMPLETE GARBAGE. Do not
-> trust it. Do not use it for anything but a "Linus suggests maybe
-> something along these lines could work".
->
-> This has not even been build-tested, and I'm pretty sure it won't
-> build as-is. It really is a "Linus did some pattern matching and a few
-> grep's".
->
-> Oh, and if the magical SFC/DFC games can happen in interrupts, then
-> the "preempt_disable/enable" actually needs to be a full interrupt
-> disable/enable, or the code needs to re-introduce that "save old
-> value, restore it". So that's another assumption this example patch
-> makes - that the SFC/DFC games only happen in process context. Which
-> may be complete garbage too.
->
-> Did I mention that I think this patch is garbage? Because it really is.
->
->                 Linus
+and that's what I wrote my patch for.
+
+BUT! And this is the important part:
+
+My patch was completely untested garbage. I may have had opinions, I
+may have had a plan, but the reality is that without testing (and
+fixing things up for the things I had missed - like the code in
+mm/maccess.c) that plan is just so much hot air.
+
+In other words, take the above with a big pinch of salt.
+
+And I want to stress once more time: if any of the SFC/DFC
+modifications are done in interrupt handlers, that whole "set it back
+to USER_DATA" is _wrong_. If they can happen in interrupts, then those
+functions that modify SFC/DFC need to save the old value, and restore
+it at the end, because otherwise you might have
+
+ - function that uses SFC/DFC:
+
+   set new 'value A'
+
+        <- get interrupt here
+           nested function that uses SFC/DFC
+           set new value B
+           .. do whatever special op
+           set SDC/DFC to USER_DATA
+        <- interrupt returns
+
+   original SFC/DFC function now has SFC/DFC with USER_DATA
+   it _wanted_ to have it with 'value A'
+
+See the problem?
+
+So if nesting can occur - due to interrupts - then all the things that
+set a different SFC/DFC really need to save/restore the old one,
+rather than set it back blindly to USER_DATA.
+
+Also, finally: my patch had that "preempt_disable/preempt_enable"
+around the SFC/DFC modifications. That was hot garbage. Christoph
+correctly pointed out that switch_to() will save/restore SFC/DFC, so
+there's no real reason to.
+
+Except now that I think about it, I worry about getting scheduled away
+*between* the instruction that sets SFC and the one that sets DFC. And
+then switch_to() will save just SFC to the thread-struct. And then
+restore the (new thread) SFC value to _both_ SFC and DFC.
+
+So task switching doesn't actually save and restore SFC and DFC. It
+only really saves SFC, and then it restores both SFC and DFC with the
+same value.
+
+Which should be ok, if the m68k code that modifies DFC will _always_
+have modified SFC to the new value first. So even if we then schedule
+away and back in between the two instructions, it only means that
+we'll set DFC then to the value that it will soon be assigned anyway.
+
+But it's all a tiny bit subtle and somewhat confusing.
+
+                  Linus
