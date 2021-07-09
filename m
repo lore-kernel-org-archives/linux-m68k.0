@@ -7,55 +7,55 @@ X-Spam-Status: No, score=-3.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,NICE_REPLY_A,SPF_HELO_NONE,
 	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 797EAC07E99
-	for <linux-m68k@archiver.kernel.org>; Fri,  9 Jul 2021 19:26:07 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id BAD00C07E99
+	for <linux-m68k@archiver.kernel.org>; Fri,  9 Jul 2021 19:52:55 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 4EB24613C3
-	for <linux-m68k@archiver.kernel.org>; Fri,  9 Jul 2021 19:26:07 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 9A3EC613CC
+	for <linux-m68k@archiver.kernel.org>; Fri,  9 Jul 2021 19:52:55 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229503AbhGIT2u (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Fri, 9 Jul 2021 15:28:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43002 "EHLO
+        id S229506AbhGITzi (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Fri, 9 Jul 2021 15:55:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48886 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229459AbhGIT2u (ORCPT
+        with ESMTP id S229459AbhGITzi (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Fri, 9 Jul 2021 15:28:50 -0400
-Received: from mail-pg1-x532.google.com (mail-pg1-x532.google.com [IPv6:2607:f8b0:4864:20::532])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 644B5C0613DD
-        for <linux-m68k@lists.linux-m68k.org>; Fri,  9 Jul 2021 12:26:06 -0700 (PDT)
-Received: by mail-pg1-x532.google.com with SMTP id a2so10937459pgi.6
-        for <linux-m68k@lists.linux-m68k.org>; Fri, 09 Jul 2021 12:26:06 -0700 (PDT)
+        Fri, 9 Jul 2021 15:55:38 -0400
+Received: from mail-pj1-x102c.google.com (mail-pj1-x102c.google.com [IPv6:2607:f8b0:4864:20::102c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C76D2C0613DD
+        for <linux-m68k@lists.linux-m68k.org>; Fri,  9 Jul 2021 12:52:53 -0700 (PDT)
+Received: by mail-pj1-x102c.google.com with SMTP id d9-20020a17090ae289b0290172f971883bso8253732pjz.1
+        for <linux-m68k@lists.linux-m68k.org>; Fri, 09 Jul 2021 12:52:53 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=subject:to:references:cc:from:message-id:date:user-agent
          :mime-version:in-reply-to:content-transfer-encoding;
-        bh=9O6+b+9zYT3rTrVB6zCyg8w10MltZ6JXPDdZnf3jecw=;
-        b=VZ5zAa40jFSjP91Z48ktaUWyfXsukPC41kwOb21cG0xRvfwB70RzCIKHGaJoO3TdEb
-         BsqB3MjLlWvhgpewvJVZH00zS2MNOz1zmM67b8xwsmC2Yrdo+UiP1e8uCC9BIJp3C9ax
-         TQAEvRqVMfsPqvUveqg5+Gz97KVI8PP6/LGbq4JHjjcFBq/wkODGEdz5j0iNFhZLbQSQ
-         qiM78/nVjbJnha21pd3QGhL3zoPtKagY78bdBK0Z7Z6esj8nVpRVwFi7t3C+EhwF/7OL
-         OX+CFW55g2fbBt1gzXvXM5oaE+9eURj2w06K2LkSZpAy+I/SrSeAKJViNqdarRkrFNZG
-         FDGw==
+        bh=GdLc5FzSb+yImN+W4r7AQmT5Srr/lu6NzKX/tIS7/Oc=;
+        b=NyA/BVMo2buNM6W7vJEjTxTh275m5UoQ7elmVOENVzaoma9S0wfi1PyG4UbofTYdpY
+         dQU/+Go62Vx4wNPJthYRXOjv1STGPq3Kb5+pVA2XR0+xQMlOI63aiImX6cXUkDtlQPpM
+         JRgoqvpL1PqaLNH7/mXVgBUmBNc4coKBrSFobNKG3eGYKrv+udkExPiKo/yFJXQLowUw
+         tZyMY6QIuPJpbR9DlnCxCrH50AKwWAfTz0sxEkkLrA+lmkJXUekWyxKccQ2fXzI84v0P
+         GcBpqiJqS1ce3EccG+A8CEGUgBcrU2ur8iAVXYOvLpM8wN9tmwaOX7AEpbihfNRn4qXq
+         bRkg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:subject:to:references:cc:from:message-id:date
          :user-agent:mime-version:in-reply-to:content-transfer-encoding;
-        bh=9O6+b+9zYT3rTrVB6zCyg8w10MltZ6JXPDdZnf3jecw=;
-        b=DSvCVQbOOapmT2RDzb+jgZvbXJD5O2xbT3nu9/H+Sc+6yRlBgdwzXq08L+Vz/HKfLi
-         NlFWY12q/U0s1jjthgaAiIc+4YcdYKXR24MJL2aTpIdZErERKmT+pCcbdWC6i1KQEV4k
-         PwycfV5C0vEGUPbDI/pOiow1OXnDVipnViRgYCinjvRYM8CQn0urfJ06cRNJo9WeXPQQ
-         z5D5ZaHaevhL6zOt45eyw29tF2LYQKvOX+fuN9OJ+x8abzhfWfYxhGO8vcNXg7BJXcBQ
-         Duu98uj8Lth2cmJj/vvEeOIs9m1aHFxszoROoUGYOqdnDsyG59wsC9flZoNr2SuG9gvJ
-         UIDw==
-X-Gm-Message-State: AOAM531duIWb+hw81HTojG6oaacUk0OrNz9FhGRedAkhj7etMyXHELCU
-        GWnbfWhYShEkFrwGUUQFZic7Ve/GqAQ=
-X-Google-Smtp-Source: ABdhPJxLvyCGdgk7qOaesCutWhZGvBTEZQwQZT+pLmH3LrNn6LwfhoTZw6EFjx4Yo6/dDFLqWpOrWQ==
-X-Received: by 2002:a05:6a00:1a12:b029:323:8712:e7a4 with SMTP id g18-20020a056a001a12b02903238712e7a4mr21647485pfv.39.1625858765250;
-        Fri, 09 Jul 2021 12:26:05 -0700 (PDT)
+        bh=GdLc5FzSb+yImN+W4r7AQmT5Srr/lu6NzKX/tIS7/Oc=;
+        b=tpid+TIHNuLikpNbTHr/NbrIx+3MPuulEcCeoebYTAlIqCRa7G8gOnOM0XPXh1VjVV
+         cZwh84VA9e8McAgKVAXmkwDLzq5SSKwX8XZJBk/GIi5pqiTlv/z+NpUm2hk9rZjt3xlm
+         RyhRAqcYGeU+N/NWu7KwpN+4/8u+KaNMbPNaRuCSAO40s8IsIgznA19w12TKDQ2PULtZ
+         UXtxCr2VqxhZoAyUXLfwMx/KbbFCqYuCrojYrrShE51cIpei4vbTEKQcVLhsot8Pbtiz
+         hFaRCXAQsB8DlgKr0V5Uo9F/xJEtGnyvn5rIoPzmfB5V/ok5mm6KMofJmLddgc0dPhUi
+         yVWw==
+X-Gm-Message-State: AOAM5327fRVeQzMwrRMaZ7GjFVqJweirFIE6z67z6DSJmv8zpxwnYLBh
+        sltihcTeOr6o/H8izliGGFXOf0atho4=
+X-Google-Smtp-Source: ABdhPJxrQOBkLmk/5xJT9+RuMQ7hS0pslwNUqLOjo5IaAQVtUHkExIGv7hNQamhM8YJBpEube3sOlQ==
+X-Received: by 2002:a17:902:d395:b029:129:c8a4:2302 with SMTP id e21-20020a170902d395b0290129c8a42302mr12542410pld.2.1625860373080;
+        Fri, 09 Jul 2021 12:52:53 -0700 (PDT)
 Received: from [10.1.1.25] (222-152-189-137-fibre.sparkbb.co.nz. [222.152.189.137])
-        by smtp.gmail.com with ESMTPSA id f20sm6847485pfv.47.2021.07.09.12.26.01
+        by smtp.gmail.com with ESMTPSA id u125sm7680415pfu.95.2021.07.09.12.52.49
         (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Fri, 09 Jul 2021 12:26:04 -0700 (PDT)
+        Fri, 09 Jul 2021 12:52:52 -0700 (PDT)
 Subject: Re: [PATCH RFC v2] m68k: remove get_fs()/set_fs()
 To:     Geert Uytterhoeven <geert@linux-m68k.org>
 References: <20210708043145.GB17672@lst.de>
@@ -71,64 +71,79 @@ References: <20210708043145.GB17672@lst.de>
  <20210709085324.GA23590@lst.de>
  <061de3e3-91df-2c23-116f-250f579a664e@gmail.com>
  <CAMuHMdVWuHfHdNjMLq1LG0cQ0jq2w-XodvJPOK+Q4Dhy807fuA@mail.gmail.com>
+ <d3f23781-1968-d936-2a1a-6d964dbcb860@gmail.com>
 Cc:     Christoph Hellwig <hch@lst.de>,
         Linus Torvalds <torvalds@linux-foundation.org>,
         linux-m68k <linux-m68k@lists.linux-m68k.org>
 From:   Michael Schmitz <schmitzmic@gmail.com>
-Message-ID: <d3f23781-1968-d936-2a1a-6d964dbcb860@gmail.com>
-Date:   Sat, 10 Jul 2021 07:25:58 +1200
+Message-ID: <34ba1bc1-9e15-3d14-55ec-a5b4ca118e63@gmail.com>
+Date:   Sat, 10 Jul 2021 07:52:47 +1200
 User-Agent: Mozilla/5.0 (X11; Linux ppc; rv:45.0) Gecko/20100101
  Icedove/45.4.0
 MIME-Version: 1.0
-In-Reply-To: <CAMuHMdVWuHfHdNjMLq1LG0cQ0jq2w-XodvJPOK+Q4Dhy807fuA@mail.gmail.com>
+In-Reply-To: <d3f23781-1968-d936-2a1a-6d964dbcb860@gmail.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-Hi Geert,
-
-Am 09.07.2021 um 23:20 schrieb Geert Uytterhoeven:
-> Hi Michael,
+Am 10.07.2021 um 07:25 schrieb Michael Schmitz:
+> Hi Geert,
 >
-> On Fri, Jul 9, 2021 at 11:00 AM Michael Schmitz <schmitzmic@gmail.com> wrote:
->> Am 09.07.2021 um 20:53 schrieb Christoph Hellwig:
->>> On Fri, Jul 09, 2021 at 08:34:07PM +1200, Michael Schmitz wrote:
->>>> Just booting to a login prompt: Quite a few with 8 bytes, some with 4 bytes
->>>> (those from the keyboard driver), the rest is 16, 24, 36 and 92 bytes (a
+> Am 09.07.2021 um 23:20 schrieb Geert Uytterhoeven:
+>> Hi Michael,
 >>
->> Over 400x 8 bytes, 20x 4 bytes on a count with the larger one suppressed.
->>
+>> On Fri, Jul 9, 2021 at 11:00 AM Michael Schmitz <schmitzmic@gmail.com>
+>> wrote:
+>>> Am 09.07.2021 um 20:53 schrieb Christoph Hellwig:
+>>>> On Fri, Jul 09, 2021 at 08:34:07PM +1200, Michael Schmitz wrote:
+>>>>> Just booting to a login prompt: Quite a few with 8 bytes, some with
+>>>>> 4 bytes
+>>>>> (those from the keyboard driver), the rest is 16, 24, 36 and 92
+>>>>> bytes (a
 >>>
->>> The 4/8 byte ones can usually be switched to just use get/put_user easily.
+>>> Over 400x 8 bytes, 20x 4 bytes on a count with the larger one
+>>> suppressed.
+>>>
+>>>>
+>>>> The 4/8 byte ones can usually be switched to just use get/put_user
+>>>> easily.
+>>>
+>>> Need to log the call sites then ... that should be fun. Something to do
+>>> tomorrow :-)
 >>
->> Need to log the call sites then ... that should be fun. Something to do
->> tomorrow :-)
+>> WARN_ON_ONCE() is your friend.
 >
-> WARN_ON_ONCE() is your friend.
+> Sure - here's the result:
+>
+> WARNING: CPU: 0 PID: 1 at ./arch/m68k/include/asm/uaccess.h:395
+> raw_copy_to_user.constprop.27+0x26/0x42
 
-Sure - here's the result:
-
-WARNING: CPU: 0 PID: 1 at ./arch/m68k/include/asm/uaccess.h:395 
-raw_copy_to_user.constprop.27+0x26/0x42
-WARNING: CPU: 0 PID: 819 at ./arch/m68k/include/asm/uaccess.h:395 
-do_pipe2+0x4a/0xbc
-WARNING: CPU: 0 PID: 838 at ./arch/m68k/include/asm/uaccess.h:395 
-__put_old_timespec32+0x36/0x58
-WARNING: CPU: 0 PID: 854 at ./arch/m68k/include/asm/uaccess.h:303 
-vt_do_kdsk_ioctl+0x38/0x28a
-WARNING: CPU: 0 PID: 950 at ./arch/m68k/include/asm/uaccess.h:395 
-tty_ioctl+0x27a/0x6c4
-
-uaccess.h:303 is __constant_copy_from_user.
+That one got called from sys_llseek+0x5c/0x86
 
 Cheers,
 
 	Michael
 
 
-> Gr{oetje,eeting}s,
+> WARNING: CPU: 0 PID: 819 at ./arch/m68k/include/asm/uaccess.h:395
+> do_pipe2+0x4a/0xbc
+> WARNING: CPU: 0 PID: 838 at ./arch/m68k/include/asm/uaccess.h:395
+> __put_old_timespec32+0x36/0x58
+> WARNING: CPU: 0 PID: 854 at ./arch/m68k/include/asm/uaccess.h:303
+> vt_do_kdsk_ioctl+0x38/0x28a
+> WARNING: CPU: 0 PID: 950 at ./arch/m68k/include/asm/uaccess.h:395
+> tty_ioctl+0x27a/0x6c4
 >
->                         Geert
+> uaccess.h:303 is __constant_copy_from_user.
 >
+> Cheers,
+>
+>     Michael
+>
+>
+>> Gr{oetje,eeting}s,
+>>
+>>                         Geert
+>>
