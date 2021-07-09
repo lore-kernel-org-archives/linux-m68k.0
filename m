@@ -7,43 +7,43 @@ X-Spam-Status: No, score=-17.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B8DC2C07E99
-	for <linux-m68k@archiver.kernel.org>; Fri,  9 Jul 2021 07:02:16 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id BE15FC07E99
+	for <linux-m68k@archiver.kernel.org>; Fri,  9 Jul 2021 07:02:22 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 98998613C9
-	for <linux-m68k@archiver.kernel.org>; Fri,  9 Jul 2021 07:02:16 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id A7672613C9
+	for <linux-m68k@archiver.kernel.org>; Fri,  9 Jul 2021 07:02:22 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230501AbhGIHE7 (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Fri, 9 Jul 2021 03:04:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43182 "EHLO
+        id S230527AbhGIHFF (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Fri, 9 Jul 2021 03:05:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43210 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230121AbhGIHE6 (ORCPT
+        with ESMTP id S230121AbhGIHFF (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Fri, 9 Jul 2021 03:04:58 -0400
+        Fri, 9 Jul 2021 03:05:05 -0400
 Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D3CFBC0613DD
-        for <linux-m68k@lists.linux-m68k.org>; Fri,  9 Jul 2021 00:02:15 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 17324C0613DD
+        for <linux-m68k@lists.linux-m68k.org>; Fri,  9 Jul 2021 00:02:22 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
         d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
         References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:
         Content-Type:Content-ID:Content-Description;
-        bh=NKe7bAERaTaJvCUnOBiRH8wHsjgIp5YBjNOiSF8GkyM=; b=Mx970+wYUao0f50xgg6QB/nHXk
-        FuA7Xrje82fXxlKbWSmJZp6q+wuzXmBGXAdcMAQD1klNKCQcCCFne2J1nwp2riOfpMg4cNeZB7ogx
-        vEn/5Fmh4IqfZxRYypS+epo+LFHDrjdT9j3EK7C/Wgu32cQdm/2tzkfJrrrF1yJPZtq1URxbmjINb
-        +sXSyYMxw8I+OpSz7FCx2zgx/W4fSWA0eQOqsyfKFm9xWknhK1uLDC8CZ+s8YJt5eb1SIwlQMJWzV
-        3FFQNQdL1jjWbHHT74zqBruOYf2hIKgsar27bvY1eBWI2R0gydv9rvsKy0ZMZjdThHPp5uwMNo6Ss
-        29gOP3VA==;
+        bh=dHPlRL3NH55IZNgpSQvfzrVYg6/KQ8mHK/80/am7w9o=; b=kn7llS9aenVBYaKFm9DDQ7mpRL
+        VTyOMbvj4l0N8JkE7r5Fnrt+n1WRxCBV34IGeepEotHOuFUwZL+S4HxTB3xc2YYd4z9q21Gvsz/RF
+        v7tzm9CLZVfoEEtvF4L0VsVWZf4FW2uI0QM175gCxkc43TQElnTSaQLGzOSsWqBpvFOS8b2YRv92s
+        yrgFj0pm6hMRzOFGfTcHiluuhJtm6EOj9eVwa0BnYqw4q/PCoqwq9pumyB3ewCMsUGqgaGnMt3Ql0
+        4K3eKcsmwlboWVdn1/vxgc7pZyYtjxkROuOBqKuLTA4CGz6CygeWm8HvMdq/FPwUHc+DWl9oj+jy9
+        eL6geMdQ==;
 Received: from p4fdb05cb.dip0.t-ipconnect.de ([79.219.5.203] helo=localhost)
         by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1m1kWX-00EFO6-KG; Fri, 09 Jul 2021 07:02:09 +0000
+        id 1m1kWZ-00EFOE-B7; Fri, 09 Jul 2021 07:02:14 +0000
 From:   Christoph Hellwig <hch@lst.de>
 To:     Geert Uytterhoeven <geert@linux-m68k.org>,
         Greg Ungerer <gerg@linux-m68k.org>
 Cc:     Michael Schmitz <schmitzmic@gmail.com>,
         linux-m68k@lists.linux-m68k.org
-Subject: [PATCH 5/7] m68k: factor the 8-byte lowlevel {get,put}_user code into helpers
-Date:   Fri,  9 Jul 2021 09:01:30 +0200
-Message-Id: <20210709070132.3387689-6-hch@lst.de>
+Subject: [PATCH 6/7] m68k: provide __{get,put}_kernel_nofault
+Date:   Fri,  9 Jul 2021 09:01:31 +0200
+Message-Id: <20210709070132.3387689-7-hch@lst.de>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210709070132.3387689-1-hch@lst.de>
 References: <20210709070132.3387689-1-hch@lst.de>
@@ -54,159 +54,185 @@ Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-Add new helpers for doing the grunt work of the 8-byte {get,put}_user
-routines to allow for better reuse.
+Allow non-faulting access to kernel addresses without overriding the
+address space.  Implemented by passing the instruction name to the
+low-level assembly macros as an argument, and force the use of the
+normal move instructions for kernel access.
 
 Signed-off-by: Christoph Hellwig <hch@lst.de>
 ---
- arch/m68k/include/asm/uaccess.h | 111 +++++++++++++++++---------------
- 1 file changed, 60 insertions(+), 51 deletions(-)
+ arch/m68k/include/asm/uaccess.h | 90 ++++++++++++++++++++++++++-------
+ 1 file changed, 72 insertions(+), 18 deletions(-)
 
 diff --git a/arch/m68k/include/asm/uaccess.h b/arch/m68k/include/asm/uaccess.h
-index fa466bf6c4ca..384b2a6b135c 100644
+index 384b2a6b135c..2bedb1b8c4bf 100644
 --- a/arch/m68k/include/asm/uaccess.h
 +++ b/arch/m68k/include/asm/uaccess.h
-@@ -57,6 +57,31 @@ asm volatile ("\n"					\
+@@ -39,9 +39,9 @@ static inline int access_ok(const void __user *addr,
+ #define	MOVES	"move"
+ #endif
+ 
+-#define __put_user_asm(res, x, ptr, bwl, reg)		\
++#define __put_user_asm(inst, res, x, ptr, bwl, reg)	\
+ asm volatile ("\n"					\
+-	"1:	"MOVES"."#bwl"	%2,%1\n"		\
++	"1:	"inst"."#bwl"	%2,%1\n"		\
+ 	"2:\n"						\
+ 	"	.section .fixup,\"ax\"\n"		\
+ 	"	.even\n"				\
+@@ -57,13 +57,13 @@ asm volatile ("\n"					\
  	: "+d" (res), "=m" (*(ptr))			\
  	: #reg (x), "i" (-EFAULT))
  
-+#define __put_user_asm8(res, x, ptr)				\
-+do {								\
-+	const void *__pu_ptr = (const void __force *)(ptr);	\
-+								\
-+	asm volatile ("\n"					\
-+		"1:	"MOVES".l %2,(%1)+\n"			\
-+		"2:	"MOVES".l %R2,(%1)\n"			\
-+		"3:\n"						\
-+		"	.section .fixup,\"ax\"\n"		\
-+		"	.even\n"				\
-+		"10:	movel %3,%0\n"				\
-+		"	jra 3b\n"				\
-+		"	.previous\n"				\
-+		"\n"						\
-+		"	.section __ex_table,\"a\"\n"		\
-+		"	.align 4\n"				\
-+		"	.long 1b,10b\n"				\
-+		"	.long 2b,10b\n"				\
-+		"	.long 3b,10b\n"				\
-+		"	.previous"				\
-+		: "+d" (res), "+a" (__pu_ptr)			\
-+		: "r" (x), "i" (-EFAULT)			\
-+		: "memory");					\
-+} while (0)
-+
- /*
-  * These are the main single-value transfer routines.  They automatically
-  * use the right size if we just have the right pointer type.
-@@ -78,29 +103,8 @@ asm volatile ("\n"					\
- 		__put_user_asm(__pu_err, __pu_val, ptr, l, r);		\
+-#define __put_user_asm8(res, x, ptr)				\
++#define __put_user_asm8(inst, res, x, ptr)			\
+ do {								\
+ 	const void *__pu_ptr = (const void __force *)(ptr);	\
+ 								\
+ 	asm volatile ("\n"					\
+-		"1:	"MOVES".l %2,(%1)+\n"			\
+-		"2:	"MOVES".l %R2,(%1)\n"			\
++		"1:	"inst".l %2,(%1)+\n"			\
++		"2:	"inst".l %R2,(%1)\n"			\
+ 		"3:\n"						\
+ 		"	.section .fixup,\"ax\"\n"		\
+ 		"	.even\n"				\
+@@ -94,16 +94,16 @@ do {								\
+ 	__chk_user_ptr(ptr);						\
+ 	switch (sizeof (*(ptr))) {					\
+ 	case 1:								\
+-		__put_user_asm(__pu_err, __pu_val, ptr, b, d);		\
++		__put_user_asm(MOVES, __pu_err, __pu_val, ptr, b, d);	\
+ 		break;							\
+ 	case 2:								\
+-		__put_user_asm(__pu_err, __pu_val, ptr, w, r);		\
++		__put_user_asm(MOVES, __pu_err, __pu_val, ptr, w, r);	\
+ 		break;							\
+ 	case 4:								\
+-		__put_user_asm(__pu_err, __pu_val, ptr, l, r);		\
++		__put_user_asm(MOVES, __pu_err, __pu_val, ptr, l, r);	\
  		break;							\
  	case 8:								\
-- 	    {								\
-- 		const void __user *__pu_ptr = (ptr);			\
--		asm volatile ("\n"					\
--			"1:	"MOVES".l	%2,(%1)+\n"		\
--			"2:	"MOVES".l	%R2,(%1)\n"		\
--			"3:\n"						\
--			"	.section .fixup,\"ax\"\n"		\
--			"	.even\n"				\
--			"10:	movel %3,%0\n"				\
--			"	jra 3b\n"				\
--			"	.previous\n"				\
--			"\n"						\
--			"	.section __ex_table,\"a\"\n"		\
--			"	.align 4\n"				\
--			"	.long 1b,10b\n"				\
--			"	.long 2b,10b\n"				\
--			"	.long 3b,10b\n"				\
--			"	.previous"				\
--			: "+d" (__pu_err), "+a" (__pu_ptr)		\
--			: "r" (__pu_val), "i" (-EFAULT)			\
--			: "memory");					\
-+		__put_user_asm8(__pu_err, __pu_val, ptr);		\
+-		__put_user_asm8(__pu_err, __pu_val, ptr);		\
++		__put_user_asm8(MOVES, __pu_err, __pu_val, ptr);	\
  		break;							\
--	    }								\
  	default:							\
  		BUILD_BUG();						\
- 	}								\
-@@ -130,6 +134,38 @@ asm volatile ("\n"					\
+@@ -113,10 +113,10 @@ do {								\
+ #define put_user(x, ptr)	__put_user(x, ptr)
+ 
+ 
+-#define __get_user_asm(res, x, ptr, type, bwl, reg) ({			\
++#define __get_user_asm(inst, res, x, ptr, type, bwl, reg) ({		\
+ 	type __gu_val;							\
+ 	asm volatile ("\n"						\
+-		"1:	"MOVES"."#bwl"	%2,%1\n"			\
++		"1:	"inst"."#bwl"	%2,%1\n"			\
+ 		"2:\n"							\
+ 		"	.section .fixup,\"ax\"\n"			\
+ 		"	.even\n"					\
+@@ -134,7 +134,7 @@ do {								\
  	(x) = (__force typeof(*(ptr)))(__force unsigned long)__gu_val;	\
  })
  
-+#define __get_user_asm8(res, x, ptr)					\
-+do {									\
-+	const void *__gu_ptr = (const void __force *)(ptr);		\
-+	union {								\
-+		u64 l;							\
-+		__typeof__(*(ptr)) t;					\
-+	} __gu_val;							\
-+									\
-+	asm volatile ("\n"						\
-+		"1:	"MOVES".l	(%2)+,%1\n"			\
-+		"2:	"MOVES".l	(%2),%R1\n"			\
-+		"3:\n"							\
-+		"	.section .fixup,\"ax\"\n"			\
-+		"	.even\n"					\
-+		"10:	move.l	%3,%0\n"				\
-+		"	sub.l	%1,%1\n"				\
-+		"	sub.l	%R1,%R1\n"				\
-+		"	jra	3b\n"					\
-+		"	.previous\n"					\
-+		"\n"							\
-+		"	.section __ex_table,\"a\"\n"			\
-+		"	.align	4\n"					\
-+		"	.long	1b,10b\n"				\
-+		"	.long	2b,10b\n"				\
-+		"	.previous"					\
-+		: "+d" (res), "=&r" (__gu_val.l),			\
-+		  "+a" (__gu_ptr)					\
-+		: "i" (-EFAULT)						\
-+		: "memory");						\
-+	(x) = __gu_val.t;						\
-+} while (0)
-+
- #define __get_user(x, ptr)						\
- ({									\
- 	int __gu_err = 0;						\
-@@ -144,36 +180,9 @@ asm volatile ("\n"					\
+-#define __get_user_asm8(res, x, ptr)					\
++#define __get_user_asm8(inst, res, x, ptr) 				\
+ do {									\
+ 	const void *__gu_ptr = (const void __force *)(ptr);		\
+ 	union {								\
+@@ -143,8 +143,8 @@ do {									\
+ 	} __gu_val;							\
+ 									\
+ 	asm volatile ("\n"						\
+-		"1:	"MOVES".l	(%2)+,%1\n"			\
+-		"2:	"MOVES".l	(%2),%R1\n"			\
++		"1:	"inst".l (%2)+,%1\n"				\
++		"2:	"inst".l (%2),%R1\n"				\
+ 		"3:\n"							\
+ 		"	.section .fixup,\"ax\"\n"			\
+ 		"	.even\n"					\
+@@ -172,16 +172,16 @@ do {									\
+ 	__chk_user_ptr(ptr);						\
+ 	switch (sizeof(*(ptr))) {					\
+ 	case 1:								\
+-		__get_user_asm(__gu_err, x, ptr, u8, b, d);		\
++		__get_user_asm(MOVES, __gu_err, x, ptr, u8, b, d);	\
+ 		break;							\
+ 	case 2:								\
+-		__get_user_asm(__gu_err, x, ptr, u16, w, r);		\
++		__get_user_asm(MOVES, __gu_err, x, ptr, u16, w, r);	\
+ 		break;							\
  	case 4:								\
- 		__get_user_asm(__gu_err, x, ptr, u32, l, r);		\
+-		__get_user_asm(__gu_err, x, ptr, u32, l, r);		\
++		__get_user_asm(MOVES, __gu_err, x, ptr, u32, l, r);	\
  		break;							\
--	case 8: {							\
--		const void __user *__gu_ptr = (ptr);			\
--		union {							\
--			u64 l;						\
--			__typeof__(*(ptr)) t;				\
--		} __gu_val;						\
--		asm volatile ("\n"					\
--			"1:	"MOVES".l	(%2)+,%1\n"		\
--			"2:	"MOVES".l	(%2),%R1\n"		\
--			"3:\n"						\
--			"	.section .fixup,\"ax\"\n"		\
--			"	.even\n"				\
--			"10:	move.l	%3,%0\n"			\
--			"	sub.l	%1,%1\n"			\
--			"	sub.l	%R1,%R1\n"			\
--			"	jra	3b\n"				\
--			"	.previous\n"				\
--			"\n"						\
--			"	.section __ex_table,\"a\"\n"		\
--			"	.align	4\n"				\
--			"	.long	1b,10b\n"			\
--			"	.long	2b,10b\n"			\
--			"	.previous"				\
--			: "+d" (__gu_err), "=&r" (__gu_val.l),		\
--			  "+a" (__gu_ptr)				\
--			: "i" (-EFAULT)					\
--			: "memory");					\
--		(x) = __gu_val.t;					\
-+	case 8:								\
-+		__get_user_asm8(__gu_err, x, ptr);			\
+ 	case 8:								\
+-		__get_user_asm8(__gu_err, x, ptr);			\
++		__get_user_asm8(MOVES, __gu_err, x, ptr);		\
  		break;							\
--	}								\
  	default:							\
  		BUILD_BUG();						\
- 	}								\
+@@ -190,6 +190,60 @@ do {									\
+ })
+ #define get_user(x, ptr) __get_user(x, ptr)
+ 
++#define HAVE_GET_KERNEL_NOFAULT
++
++#define __get_kernel_nofault(dst, src, type, err_label)			\
++do {									\
++	type __gk_dst = *(type *)(dst);					\
++	type *__gk_src = (type *)(src);					\
++	int __gk_err = 0;						\
++									\
++	switch (sizeof(type)) {						\
++	case 1:								\
++		__get_user_asm("move", __gk_err, __gk_dst, __gk_src, u8, b, d); \
++		break;							\
++	case 2:								\
++		__get_user_asm("move", __gk_err, __gk_dst, __gk_src, u16, w, r); \
++		break;							\
++	case 4:								\
++		__get_user_asm("move", __gk_err, __gk_dst, __gk_src, u32, l, r); \
++		break;							\
++	case 8:								\
++		__get_user_asm8("move", __gk_err, __gk_dst, __gk_src);	\
++		break;							\
++	default:							\
++		BUILD_BUG();						\
++	}								\
++	if (unlikely(__gk_err))						\
++		goto err_label;						\
++} while (0)
++
++#define __put_kernel_nofault(dst, src, type, err_label)			\
++do {									\
++	type __pk_src = *(type *)(src);					\
++	type *__pk_dst = (type *)(dst);					\
++	int __pk_err = 0;						\
++									\
++	switch (sizeof(type)) {						\
++	case 1:								\
++		__put_user_asm("move", __pk_err, __pk_src, __pk_dst, b, d); \
++		break;							\
++	case 2:								\
++		__put_user_asm("move", __pk_err, __pk_src, __pk_dst, w, r); \
++		break;							\
++	case 4:								\
++		__put_user_asm("move", __pk_err, __pk_src, __pk_dst, l, r); \
++		break;							\
++	case 8:								\
++		__put_user_asm8("move", __pk_err, __pk_src, __pk_dst);	\
++		break;							\
++	default:							\
++		BUILD_BUG();						\
++	}								\
++	if (unlikely(__pk_err))						\
++		goto err_label;						\
++} while (0)
++
+ unsigned long raw_copy_from_user(void *to, const void __user *from,
+ 		unsigned long n);
+ unsigned long raw_copy_to_user(void __user *to, const void *from,
 -- 
 2.30.2
 
