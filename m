@@ -2,599 +2,135 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-16.7 required=3.0 tests=BAYES_00,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,UPPERCASE_50_75,URIBL_BLOCKED,
-	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-5.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,NICE_REPLY_A,SPF_HELO_NONE,
+	SPF_PASS,USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 0D087C07E99
-	for <linux-m68k@archiver.kernel.org>; Mon, 12 Jul 2021 12:05:03 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E1B32C07E99
+	for <linux-m68k@archiver.kernel.org>; Mon, 12 Jul 2021 19:04:49 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id DD5D46044F
-	for <linux-m68k@archiver.kernel.org>; Mon, 12 Jul 2021 12:05:02 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id C35466121E
+	for <linux-m68k@archiver.kernel.org>; Mon, 12 Jul 2021 19:04:49 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233542AbhGLMHt (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Mon, 12 Jul 2021 08:07:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51650 "EHLO
+        id S236100AbhGLTHh (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Mon, 12 Jul 2021 15:07:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35678 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233539AbhGLMHs (ORCPT
+        with ESMTP id S236056AbhGLTHh (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Mon, 12 Jul 2021 08:07:48 -0400
-Received: from laurent.telenet-ops.be (laurent.telenet-ops.be [IPv6:2a02:1800:110:4::f00:19])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 624EBC0613DD
-        for <linux-m68k@lists.linux-m68k.org>; Mon, 12 Jul 2021 05:05:00 -0700 (PDT)
-Received: from ramsan.of.borg ([IPv6:2a02:1810:ac12:ed10:f017:d84b:501f:cdd7])
-        by laurent.telenet-ops.be with bizsmtp
-        id UC4y250013dzGBx01C4ysE; Mon, 12 Jul 2021 14:04:58 +0200
-Received: from rox.of.borg ([192.168.97.57])
-        by ramsan.of.borg with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.93)
-        (envelope-from <geert@linux-m68k.org>)
-        id 1m2ugD-000YCi-Nk; Mon, 12 Jul 2021 14:04:57 +0200
-Received: from geert by rox.of.borg with local (Exim 4.93)
-        (envelope-from <geert@linux-m68k.org>)
-        id 1m2ugD-00HHcR-56; Mon, 12 Jul 2021 14:04:57 +0200
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-To:     linux-m68k@lists.linux-m68k.org
-Cc:     linux-kernel@vger.kernel.org,
-        Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: [PATCH] m68k: defconfig: Update defconfigs for v5.14-rc1:
-Date:   Mon, 12 Jul 2021 14:04:56 +0200
-Message-Id: <20210712120456.4119260-1-geert@linux-m68k.org>
-X-Mailer: git-send-email 2.25.1
+        Mon, 12 Jul 2021 15:07:37 -0400
+Received: from mail-pf1-x430.google.com (mail-pf1-x430.google.com [IPv6:2607:f8b0:4864:20::430])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 46F1BC0613E8
+        for <linux-m68k@lists.linux-m68k.org>; Mon, 12 Jul 2021 12:04:48 -0700 (PDT)
+Received: by mail-pf1-x430.google.com with SMTP id y4so17287805pfi.9
+        for <linux-m68k@lists.linux-m68k.org>; Mon, 12 Jul 2021 12:04:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:from:to:cc:references:message-id:date:user-agent
+         :mime-version:in-reply-to:content-transfer-encoding:content-language;
+        bh=PWv80kvGr7CiEAMwVGDs6p3SLdtegrwaiapyjLd0rDE=;
+        b=Dwt8z8RJCl7N07bp7vj9TaPmCqoTcdfPbEkIJ0BTeJgTcGbJxzaj/N8iKZm9AFcQ1L
+         OxEZOfMn246gUVeooNL5mhpBeyVsIIwz2BdPeufZjG5ToZz1+sctCa7MK5TcFY9i7GLF
+         o0kBsBQLTAr49BBjLYHp6R8mr92aFOYzPmni4Q7UP+hGE44nj5lku+alCDu8OSdra0aA
+         rjhWFsGqHqjY242gE7q9GjYlkQpr4qlvvIC82T4VuMwC6gZAb7TptCVldwzV54WkPw1T
+         f04SpajnE129IROXo2hlU1ZB5vNYbBRfO+n6MSsOBIBcslLYi1QQDWoypY1YI108us7G
+         /ARw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:from:to:cc:references:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=PWv80kvGr7CiEAMwVGDs6p3SLdtegrwaiapyjLd0rDE=;
+        b=FCT24Tst/jbXd2P05foMidg5eRrUsMAzZTGEm8ZvpUAsX0icT8biqxpRr6PABrhbXq
+         8waNOadAPJqc+zPtRHyd9+A558jJG3kVSzG+r2DbH0pVPUhzVFHEL3l5QOssS0Bw+ScI
+         mWsqFPlDGkKdTcs53JN0fXC2/3+G82OuZ77c8B2wZUz5H7HU4LLwpkeppVNifjUup+Gv
+         iNlzTBJJrEjRlAllSZ9agBTj7Xq37bg3O2WgTjRyskpk29bkEIQYAZM7s5ema1nE9Io6
+         bb++wrTIkbwCb3+0fT/EAnAbNsOgMZZh7TRNMzgw18uKAExB88Mxui1SCbjMvB9p8j/c
+         wSSw==
+X-Gm-Message-State: AOAM533IBP6U/MR/uWp5HgFKmlvgjW2KTmXRCv35nIMHQLiyUa9zrpmw
+        I0+/fnUrIp6R+rc+lxrl8Bz5TrGrjE4=
+X-Google-Smtp-Source: ABdhPJwJp8xA2q9VzEmVzAXNaNCUKLBCSEwEYnAjVJS+pGaO4Gp/P2m5bqmrBPHpyh8J+s/DTAXYJg==
+X-Received: by 2002:a65:5648:: with SMTP id m8mr552852pgs.93.1626116686984;
+        Mon, 12 Jul 2021 12:04:46 -0700 (PDT)
+Received: from ?IPv6:2001:df0:0:200c:c0e7:435e:1bae:e7d? ([2001:df0:0:200c:c0e7:435e:1bae:e7d])
+        by smtp.gmail.com with ESMTPSA id j6sm14436519pji.23.2021.07.12.12.04.38
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 12 Jul 2021 12:04:45 -0700 (PDT)
+Subject: Re: RFC: remove set_fs for m68k
+From:   Michael Schmitz <schmitzmic@gmail.com>
+To:     Christoph Hellwig <hch@lst.de>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Greg Ungerer <gerg@linux-m68k.org>
+Cc:     linux-m68k@lists.linux-m68k.org
+References: <20210709070132.3387689-1-hch@lst.de>
+ <039e2f42-b9bc-d8ce-393a-c0896439f784@gmail.com>
+Message-ID: <f77ca077-cd36-5963-1930-4002e604415f@gmail.com>
+Date:   Tue, 13 Jul 2021 07:04:27 +1200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
+In-Reply-To: <039e2f42-b9bc-d8ce-393a-c0896439f784@gmail.com>
+Content-Type: text/plain; charset=iso-8859-15; format=flowed
 Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-  - Enable modular build of the new Netfilter base hook dump support,
-  - Drop CONFIG_SCSI=y (selected by ATA, as enabled since commit
-    b90257bfddbd01f3 ("m68k: use libata instead of the legacy ide
-    driver")),
-  - Disable CIFS_STATS2 (defaults to enabled since commit
-    0d52df81e07739db ("cifs: enable extended stats by default")),
-  - Enable modular build of the glob self-test (visible since commit
-    b90257bfddbd01f3 ("m68k: use libata instead of the legacy ide
-    driver")),
-  - Drop CONFIG_TEST_LIST_SORT=m (auto-enabled since commit
-    ebd09577be6c15ee ("lib/test: convert lib/test_list_sort.c to use
-    KUnit")),
-  - Enable modular build of the new test for the scanf() family of
-    functions.
+On 11/07/21 7:20 pm, Michael Schmitz wrote:
 
-Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
----
-Perhaps we do want to keep the changed default for CONFIG_CIFS_STATS2?
+> Hi Christoph,
+>
+> Am 09.07.2021 um 19:01 schrieb Christoph Hellwig:
+>> Hi all,
+>>
+>> this series converts m68k to the new world where set_fs is gone to make
+>> the uaccess routines work on kernel pointers.  Note that it is compile
+>> tested only and thus needs to be handled with care.
+>
+> Testing your series, I've got this in the console log:
+>
+> [16534.130000] *** FORMAT ERROR ***   FORMAT=0
+> [16534.150000] Current process id is 1347
+> [16534.160000] BAD KERNEL TRAP: 00000000
+> [16534.180000] Modules linked in: atari_scsi ne 8390p
+> [16534.210000] PC: [<00002a8c>] resume_userspace+0x14/0x16
+> [16534.230000] SR: 2200  SP: d1b6e0e8  a2: 00000000
+> [16534.240000] d0: 0000001e    d1: 00000003    d2: 00000578    d3: 
+> 00000000
+> [16534.270000] d4: ffffffff    d5: 00000001    a0: 00000578    a1: 
+> 00000080
+> [16534.300000] Process savelog (pid: 1347, task=e3955528)
+> [16534.310000] Frame format=0
+> [16534.330000] Stack from 005e9fa4:
+> [16534.330000]         02108005 0d06b008 1eeeb649 007e0001 00aea040 
+> 003ec318 005e9e68 000279a2
+> [16534.330000]         000b0000 00000000 00000000 030dfffb 0044fffa 
+> 0e000000 fffa1a00 fffa1c00
+> [16534.330000]         fffa1e00 fffb0e40 fffb0e80 00049e02 00000040 
+> 0085a800 00000001
+> [16534.430000] Call Trace: [<000279a2>] warn_slowpath_fmt+0x0/0x62
+> [16534.460000]  [<000b0000>] vm_map_ram+0x144/0x5ae
+> [16534.490000]  [<00049e02>] __handle_irq_event_percpu+0x38/0xce
+> [16534.520000]
+> [16534.540000] Code: 9f38 9f38 9f38 9f38 9f38 9f38 9f38 9f38 <9f38> 
+> 9f38 9f38 9f38 9f38 9f38 9f38 9f38 9f38 9f38 9f38 9f38 9f38 9f38 9f38 
+> 9f38
+>
+> Never seen the like of it before...
+>
+Now the good news is, the IO test I ran at that time continued OK and 
+completed normally (aside from the OOM killer hitting another process). 
+I'm using IO to three 24 MB files each on five partitions concurrently 
+with 14 MB of RAM (9,7 MB total RAM remaining once the kernel has 
+loaded) so memory may be a little tight.
 
-To be queued in the m68k tree for v5.15.
----
- arch/m68k/configs/amiga_defconfig    | 6 ++++--
- arch/m68k/configs/apollo_defconfig   | 4 +++-
- arch/m68k/configs/atari_defconfig    | 6 ++++--
- arch/m68k/configs/bvme6000_defconfig | 4 +++-
- arch/m68k/configs/hp300_defconfig    | 4 +++-
- arch/m68k/configs/mac_defconfig      | 6 ++++--
- arch/m68k/configs/multi_defconfig    | 6 ++++--
- arch/m68k/configs/mvme147_defconfig  | 4 +++-
- arch/m68k/configs/mvme16x_defconfig  | 4 +++-
- arch/m68k/configs/q40_defconfig      | 6 ++++--
- arch/m68k/configs/sun3_defconfig     | 4 +++-
- arch/m68k/configs/sun3x_defconfig    | 4 +++-
- 12 files changed, 41 insertions(+), 17 deletions(-)
+Any reason to assume the warn_slowpath_fmt() here is related to the 
+warning you stuck in set_segment()?
 
-diff --git a/arch/m68k/configs/amiga_defconfig b/arch/m68k/configs/amiga_defconfig
-index 0a2cacf7be08255c..5f536286f5fce88d 100644
---- a/arch/m68k/configs/amiga_defconfig
-+++ b/arch/m68k/configs/amiga_defconfig
-@@ -84,6 +84,7 @@ CONFIG_IPV6_ILA=m
- CONFIG_IPV6_VTI=m
- CONFIG_IPV6_GRE=m
- CONFIG_NETFILTER=y
-+CONFIG_NETFILTER_NETLINK_HOOK=m
- CONFIG_NF_CONNTRACK=m
- CONFIG_NF_CONNTRACK_ZONES=y
- # CONFIG_NF_CONNTRACK_PROCFS is not set
-@@ -323,7 +324,6 @@ CONFIG_CDROM_PKTCDVD=m
- CONFIG_ATA_OVER_ETH=m
- CONFIG_DUMMY_IRQ=m
- CONFIG_RAID_ATTRS=m
--CONFIG_SCSI=y
- CONFIG_BLK_DEV_SD=y
- CONFIG_CHR_DEV_ST=m
- CONFIG_BLK_DEV_SR=y
-@@ -502,6 +502,7 @@ CONFIG_ROOT_NFS=y
- CONFIG_NFSD=m
- CONFIG_NFSD_V3=y
- CONFIG_CIFS=m
-+# CONFIG_CIFS_STATS2 is not set
- # CONFIG_CIFS_DEBUG is not set
- CONFIG_CODA_FS=m
- CONFIG_NLS_CODEPAGE_437=y
-@@ -616,6 +617,7 @@ CONFIG_PRIME_NUMBERS=m
- CONFIG_CRC32_SELFTEST=m
- CONFIG_CRC64=m
- CONFIG_XZ_DEC_TEST=m
-+CONFIG_GLOB_SELFTEST=m
- CONFIG_STRING_SELFTEST=m
- # CONFIG_SECTION_MISMATCH_WARN_ONLY is not set
- CONFIG_MAGIC_SYSRQ=y
-@@ -624,7 +626,6 @@ CONFIG_WW_MUTEX_SELFTEST=m
- CONFIG_EARLY_PRINTK=y
- CONFIG_KUNIT=m
- CONFIG_KUNIT_ALL_TESTS=m
--CONFIG_TEST_LIST_SORT=m
- CONFIG_TEST_MIN_HEAP=m
- CONFIG_TEST_SORT=m
- CONFIG_TEST_DIV64=m
-@@ -636,6 +637,7 @@ CONFIG_TEST_STRING_HELPERS=m
- CONFIG_TEST_STRSCPY=m
- CONFIG_TEST_KSTRTOX=m
- CONFIG_TEST_PRINTF=m
-+CONFIG_TEST_SCANF=m
- CONFIG_TEST_BITMAP=m
- CONFIG_TEST_UUID=m
- CONFIG_TEST_XARRAY=m
-diff --git a/arch/m68k/configs/apollo_defconfig b/arch/m68k/configs/apollo_defconfig
-index 4dc6dcfaf28ab323..d9568644051adb24 100644
---- a/arch/m68k/configs/apollo_defconfig
-+++ b/arch/m68k/configs/apollo_defconfig
-@@ -80,6 +80,7 @@ CONFIG_IPV6_ILA=m
- CONFIG_IPV6_VTI=m
- CONFIG_IPV6_GRE=m
- CONFIG_NETFILTER=y
-+CONFIG_NETFILTER_NETLINK_HOOK=m
- CONFIG_NF_CONNTRACK=m
- CONFIG_NF_CONNTRACK_ZONES=y
- # CONFIG_NF_CONNTRACK_PROCFS is not set
-@@ -458,6 +459,7 @@ CONFIG_ROOT_NFS=y
- CONFIG_NFSD=m
- CONFIG_NFSD_V3=y
- CONFIG_CIFS=m
-+# CONFIG_CIFS_STATS2 is not set
- # CONFIG_CIFS_DEBUG is not set
- CONFIG_CODA_FS=m
- CONFIG_NLS_CODEPAGE_437=y
-@@ -580,7 +582,6 @@ CONFIG_WW_MUTEX_SELFTEST=m
- CONFIG_EARLY_PRINTK=y
- CONFIG_KUNIT=m
- CONFIG_KUNIT_ALL_TESTS=m
--CONFIG_TEST_LIST_SORT=m
- CONFIG_TEST_MIN_HEAP=m
- CONFIG_TEST_SORT=m
- CONFIG_TEST_DIV64=m
-@@ -592,6 +593,7 @@ CONFIG_TEST_STRING_HELPERS=m
- CONFIG_TEST_STRSCPY=m
- CONFIG_TEST_KSTRTOX=m
- CONFIG_TEST_PRINTF=m
-+CONFIG_TEST_SCANF=m
- CONFIG_TEST_BITMAP=m
- CONFIG_TEST_UUID=m
- CONFIG_TEST_XARRAY=m
-diff --git a/arch/m68k/configs/atari_defconfig b/arch/m68k/configs/atari_defconfig
-index ac57c699f03bfac7..55fa03710ccca852 100644
---- a/arch/m68k/configs/atari_defconfig
-+++ b/arch/m68k/configs/atari_defconfig
-@@ -87,6 +87,7 @@ CONFIG_IPV6_ILA=m
- CONFIG_IPV6_VTI=m
- CONFIG_IPV6_GRE=m
- CONFIG_NETFILTER=y
-+CONFIG_NETFILTER_NETLINK_HOOK=m
- CONFIG_NF_CONNTRACK=m
- CONFIG_NF_CONNTRACK_ZONES=y
- # CONFIG_NF_CONNTRACK_PROCFS is not set
-@@ -324,7 +325,6 @@ CONFIG_CDROM_PKTCDVD=m
- CONFIG_ATA_OVER_ETH=m
- CONFIG_DUMMY_IRQ=m
- CONFIG_RAID_ATTRS=m
--CONFIG_SCSI=y
- CONFIG_BLK_DEV_SD=y
- CONFIG_CHR_DEV_ST=m
- CONFIG_BLK_DEV_SR=y
-@@ -491,6 +491,7 @@ CONFIG_ROOT_NFS=y
- CONFIG_NFSD=m
- CONFIG_NFSD_V3=y
- CONFIG_CIFS=m
-+# CONFIG_CIFS_STATS2 is not set
- # CONFIG_CIFS_DEBUG is not set
- CONFIG_CODA_FS=m
- CONFIG_NLS_CODEPAGE_437=y
-@@ -605,6 +606,7 @@ CONFIG_PRIME_NUMBERS=m
- CONFIG_CRC32_SELFTEST=m
- CONFIG_CRC64=m
- CONFIG_XZ_DEC_TEST=m
-+CONFIG_GLOB_SELFTEST=m
- CONFIG_STRING_SELFTEST=m
- # CONFIG_SECTION_MISMATCH_WARN_ONLY is not set
- CONFIG_MAGIC_SYSRQ=y
-@@ -613,7 +615,6 @@ CONFIG_WW_MUTEX_SELFTEST=m
- CONFIG_EARLY_PRINTK=y
- CONFIG_KUNIT=m
- CONFIG_KUNIT_ALL_TESTS=m
--CONFIG_TEST_LIST_SORT=m
- CONFIG_TEST_MIN_HEAP=m
- CONFIG_TEST_SORT=m
- CONFIG_TEST_DIV64=m
-@@ -625,6 +626,7 @@ CONFIG_TEST_STRING_HELPERS=m
- CONFIG_TEST_STRSCPY=m
- CONFIG_TEST_KSTRTOX=m
- CONFIG_TEST_PRINTF=m
-+CONFIG_TEST_SCANF=m
- CONFIG_TEST_BITMAP=m
- CONFIG_TEST_UUID=m
- CONFIG_TEST_XARRAY=m
-diff --git a/arch/m68k/configs/bvme6000_defconfig b/arch/m68k/configs/bvme6000_defconfig
-index 2c3f428338469686..7620db3e33e7fabc 100644
---- a/arch/m68k/configs/bvme6000_defconfig
-+++ b/arch/m68k/configs/bvme6000_defconfig
-@@ -77,6 +77,7 @@ CONFIG_IPV6_ILA=m
- CONFIG_IPV6_VTI=m
- CONFIG_IPV6_GRE=m
- CONFIG_NETFILTER=y
-+CONFIG_NETFILTER_NETLINK_HOOK=m
- CONFIG_NF_CONNTRACK=m
- CONFIG_NF_CONNTRACK_ZONES=y
- # CONFIG_NF_CONNTRACK_PROCFS is not set
-@@ -451,6 +452,7 @@ CONFIG_ROOT_NFS=y
- CONFIG_NFSD=m
- CONFIG_NFSD_V3=y
- CONFIG_CIFS=m
-+# CONFIG_CIFS_STATS2 is not set
- # CONFIG_CIFS_DEBUG is not set
- CONFIG_CODA_FS=m
- CONFIG_NLS_CODEPAGE_437=y
-@@ -573,7 +575,6 @@ CONFIG_WW_MUTEX_SELFTEST=m
- CONFIG_EARLY_PRINTK=y
- CONFIG_KUNIT=m
- CONFIG_KUNIT_ALL_TESTS=m
--CONFIG_TEST_LIST_SORT=m
- CONFIG_TEST_MIN_HEAP=m
- CONFIG_TEST_SORT=m
- CONFIG_TEST_DIV64=m
-@@ -585,6 +586,7 @@ CONFIG_TEST_STRING_HELPERS=m
- CONFIG_TEST_STRSCPY=m
- CONFIG_TEST_KSTRTOX=m
- CONFIG_TEST_PRINTF=m
-+CONFIG_TEST_SCANF=m
- CONFIG_TEST_BITMAP=m
- CONFIG_TEST_UUID=m
- CONFIG_TEST_XARRAY=m
-diff --git a/arch/m68k/configs/hp300_defconfig b/arch/m68k/configs/hp300_defconfig
-index 5b1898d4b249a467..113a02d47ebbfae9 100644
---- a/arch/m68k/configs/hp300_defconfig
-+++ b/arch/m68k/configs/hp300_defconfig
-@@ -79,6 +79,7 @@ CONFIG_IPV6_ILA=m
- CONFIG_IPV6_VTI=m
- CONFIG_IPV6_GRE=m
- CONFIG_NETFILTER=y
-+CONFIG_NETFILTER_NETLINK_HOOK=m
- CONFIG_NF_CONNTRACK=m
- CONFIG_NF_CONNTRACK_ZONES=y
- # CONFIG_NF_CONNTRACK_PROCFS is not set
-@@ -460,6 +461,7 @@ CONFIG_ROOT_NFS=y
- CONFIG_NFSD=m
- CONFIG_NFSD_V3=y
- CONFIG_CIFS=m
-+# CONFIG_CIFS_STATS2 is not set
- # CONFIG_CIFS_DEBUG is not set
- CONFIG_CODA_FS=m
- CONFIG_NLS_CODEPAGE_437=y
-@@ -582,7 +584,6 @@ CONFIG_WW_MUTEX_SELFTEST=m
- CONFIG_EARLY_PRINTK=y
- CONFIG_KUNIT=m
- CONFIG_KUNIT_ALL_TESTS=m
--CONFIG_TEST_LIST_SORT=m
- CONFIG_TEST_MIN_HEAP=m
- CONFIG_TEST_SORT=m
- CONFIG_TEST_DIV64=m
-@@ -594,6 +595,7 @@ CONFIG_TEST_STRING_HELPERS=m
- CONFIG_TEST_STRSCPY=m
- CONFIG_TEST_KSTRTOX=m
- CONFIG_TEST_PRINTF=m
-+CONFIG_TEST_SCANF=m
- CONFIG_TEST_BITMAP=m
- CONFIG_TEST_UUID=m
- CONFIG_TEST_XARRAY=m
-diff --git a/arch/m68k/configs/mac_defconfig b/arch/m68k/configs/mac_defconfig
-index 9606ccd8dafa8956..a8e006e8da6688fc 100644
---- a/arch/m68k/configs/mac_defconfig
-+++ b/arch/m68k/configs/mac_defconfig
-@@ -78,6 +78,7 @@ CONFIG_IPV6_ILA=m
- CONFIG_IPV6_VTI=m
- CONFIG_IPV6_GRE=m
- CONFIG_NETFILTER=y
-+CONFIG_NETFILTER_NETLINK_HOOK=m
- CONFIG_NF_CONNTRACK=m
- CONFIG_NF_CONNTRACK_ZONES=y
- # CONFIG_NF_CONNTRACK_PROCFS is not set
-@@ -315,7 +316,6 @@ CONFIG_CDROM_PKTCDVD=m
- CONFIG_ATA_OVER_ETH=m
- CONFIG_DUMMY_IRQ=m
- CONFIG_RAID_ATTRS=m
--CONFIG_SCSI=y
- CONFIG_BLK_DEV_SD=y
- CONFIG_CHR_DEV_ST=m
- CONFIG_BLK_DEV_SR=y
-@@ -482,6 +482,7 @@ CONFIG_ROOT_NFS=y
- CONFIG_NFSD=m
- CONFIG_NFSD_V3=y
- CONFIG_CIFS=m
-+# CONFIG_CIFS_STATS2 is not set
- # CONFIG_CIFS_DEBUG is not set
- CONFIG_CODA_FS=m
- CONFIG_NLS_CODEPAGE_437=y
-@@ -596,6 +597,7 @@ CONFIG_PRIME_NUMBERS=m
- CONFIG_CRC32_SELFTEST=m
- CONFIG_CRC64=m
- CONFIG_XZ_DEC_TEST=m
-+CONFIG_GLOB_SELFTEST=m
- CONFIG_STRING_SELFTEST=m
- # CONFIG_SECTION_MISMATCH_WARN_ONLY is not set
- CONFIG_MAGIC_SYSRQ=y
-@@ -604,7 +606,6 @@ CONFIG_WW_MUTEX_SELFTEST=m
- CONFIG_EARLY_PRINTK=y
- CONFIG_KUNIT=m
- CONFIG_KUNIT_ALL_TESTS=m
--CONFIG_TEST_LIST_SORT=m
- CONFIG_TEST_MIN_HEAP=m
- CONFIG_TEST_SORT=m
- CONFIG_TEST_DIV64=m
-@@ -616,6 +617,7 @@ CONFIG_TEST_STRING_HELPERS=m
- CONFIG_TEST_STRSCPY=m
- CONFIG_TEST_KSTRTOX=m
- CONFIG_TEST_PRINTF=m
-+CONFIG_TEST_SCANF=m
- CONFIG_TEST_BITMAP=m
- CONFIG_TEST_UUID=m
- CONFIG_TEST_XARRAY=m
-diff --git a/arch/m68k/configs/multi_defconfig b/arch/m68k/configs/multi_defconfig
-index 3175ba5007e1f5d2..b6655907a1f3cc3f 100644
---- a/arch/m68k/configs/multi_defconfig
-+++ b/arch/m68k/configs/multi_defconfig
-@@ -98,6 +98,7 @@ CONFIG_IPV6_ILA=m
- CONFIG_IPV6_VTI=m
- CONFIG_IPV6_GRE=m
- CONFIG_NETFILTER=y
-+CONFIG_NETFILTER_NETLINK_HOOK=m
- CONFIG_NF_CONNTRACK=m
- CONFIG_NF_CONNTRACK_ZONES=y
- # CONFIG_NF_CONNTRACK_PROCFS is not set
-@@ -344,7 +345,6 @@ CONFIG_CDROM_PKTCDVD=m
- CONFIG_ATA_OVER_ETH=m
- CONFIG_DUMMY_IRQ=m
- CONFIG_RAID_ATTRS=m
--CONFIG_SCSI=y
- CONFIG_BLK_DEV_SD=y
- CONFIG_CHR_DEV_ST=m
- CONFIG_BLK_DEV_SR=y
-@@ -567,6 +567,7 @@ CONFIG_ROOT_NFS=y
- CONFIG_NFSD=m
- CONFIG_NFSD_V3=y
- CONFIG_CIFS=m
-+# CONFIG_CIFS_STATS2 is not set
- # CONFIG_CIFS_DEBUG is not set
- CONFIG_CODA_FS=m
- CONFIG_NLS_CODEPAGE_437=y
-@@ -681,6 +682,7 @@ CONFIG_PRIME_NUMBERS=m
- CONFIG_CRC32_SELFTEST=m
- CONFIG_CRC64=m
- CONFIG_XZ_DEC_TEST=m
-+CONFIG_GLOB_SELFTEST=m
- CONFIG_STRING_SELFTEST=m
- # CONFIG_SECTION_MISMATCH_WARN_ONLY is not set
- CONFIG_MAGIC_SYSRQ=y
-@@ -689,7 +691,6 @@ CONFIG_WW_MUTEX_SELFTEST=m
- CONFIG_EARLY_PRINTK=y
- CONFIG_KUNIT=m
- CONFIG_KUNIT_ALL_TESTS=m
--CONFIG_TEST_LIST_SORT=m
- CONFIG_TEST_MIN_HEAP=m
- CONFIG_TEST_SORT=m
- CONFIG_TEST_DIV64=m
-@@ -701,6 +702,7 @@ CONFIG_TEST_STRING_HELPERS=m
- CONFIG_TEST_STRSCPY=m
- CONFIG_TEST_KSTRTOX=m
- CONFIG_TEST_PRINTF=m
-+CONFIG_TEST_SCANF=m
- CONFIG_TEST_BITMAP=m
- CONFIG_TEST_UUID=m
- CONFIG_TEST_XARRAY=m
-diff --git a/arch/m68k/configs/mvme147_defconfig b/arch/m68k/configs/mvme147_defconfig
-index 793085f00c99f551..563ba47db8c68dd0 100644
---- a/arch/m68k/configs/mvme147_defconfig
-+++ b/arch/m68k/configs/mvme147_defconfig
-@@ -76,6 +76,7 @@ CONFIG_IPV6_ILA=m
- CONFIG_IPV6_VTI=m
- CONFIG_IPV6_GRE=m
- CONFIG_NETFILTER=y
-+CONFIG_NETFILTER_NETLINK_HOOK=m
- CONFIG_NF_CONNTRACK=m
- CONFIG_NF_CONNTRACK_ZONES=y
- # CONFIG_NF_CONNTRACK_PROCFS is not set
-@@ -450,6 +451,7 @@ CONFIG_ROOT_NFS=y
- CONFIG_NFSD=m
- CONFIG_NFSD_V3=y
- CONFIG_CIFS=m
-+# CONFIG_CIFS_STATS2 is not set
- # CONFIG_CIFS_DEBUG is not set
- CONFIG_CODA_FS=m
- CONFIG_NLS_CODEPAGE_437=y
-@@ -572,7 +574,6 @@ CONFIG_WW_MUTEX_SELFTEST=m
- CONFIG_EARLY_PRINTK=y
- CONFIG_KUNIT=m
- CONFIG_KUNIT_ALL_TESTS=m
--CONFIG_TEST_LIST_SORT=m
- CONFIG_TEST_MIN_HEAP=m
- CONFIG_TEST_SORT=m
- CONFIG_TEST_DIV64=m
-@@ -584,6 +585,7 @@ CONFIG_TEST_STRING_HELPERS=m
- CONFIG_TEST_STRSCPY=m
- CONFIG_TEST_KSTRTOX=m
- CONFIG_TEST_PRINTF=m
-+CONFIG_TEST_SCANF=m
- CONFIG_TEST_BITMAP=m
- CONFIG_TEST_UUID=m
- CONFIG_TEST_XARRAY=m
-diff --git a/arch/m68k/configs/mvme16x_defconfig b/arch/m68k/configs/mvme16x_defconfig
-index 56fbac7943b2ee8c..9f1b44de4706e1b0 100644
---- a/arch/m68k/configs/mvme16x_defconfig
-+++ b/arch/m68k/configs/mvme16x_defconfig
-@@ -77,6 +77,7 @@ CONFIG_IPV6_ILA=m
- CONFIG_IPV6_VTI=m
- CONFIG_IPV6_GRE=m
- CONFIG_NETFILTER=y
-+CONFIG_NETFILTER_NETLINK_HOOK=m
- CONFIG_NF_CONNTRACK=m
- CONFIG_NF_CONNTRACK_ZONES=y
- # CONFIG_NF_CONNTRACK_PROCFS is not set
-@@ -451,6 +452,7 @@ CONFIG_ROOT_NFS=y
- CONFIG_NFSD=m
- CONFIG_NFSD_V3=y
- CONFIG_CIFS=m
-+# CONFIG_CIFS_STATS2 is not set
- # CONFIG_CIFS_DEBUG is not set
- CONFIG_CODA_FS=m
- CONFIG_NLS_CODEPAGE_437=y
-@@ -573,7 +575,6 @@ CONFIG_WW_MUTEX_SELFTEST=m
- CONFIG_EARLY_PRINTK=y
- CONFIG_KUNIT=m
- CONFIG_KUNIT_ALL_TESTS=m
--CONFIG_TEST_LIST_SORT=m
- CONFIG_TEST_MIN_HEAP=m
- CONFIG_TEST_SORT=m
- CONFIG_TEST_DIV64=m
-@@ -585,6 +586,7 @@ CONFIG_TEST_STRING_HELPERS=m
- CONFIG_TEST_STRSCPY=m
- CONFIG_TEST_KSTRTOX=m
- CONFIG_TEST_PRINTF=m
-+CONFIG_TEST_SCANF=m
- CONFIG_TEST_BITMAP=m
- CONFIG_TEST_UUID=m
- CONFIG_TEST_XARRAY=m
-diff --git a/arch/m68k/configs/q40_defconfig b/arch/m68k/configs/q40_defconfig
-index 0e15431b65e2ac44..1993433d08406eeb 100644
---- a/arch/m68k/configs/q40_defconfig
-+++ b/arch/m68k/configs/q40_defconfig
-@@ -78,6 +78,7 @@ CONFIG_IPV6_ILA=m
- CONFIG_IPV6_VTI=m
- CONFIG_IPV6_GRE=m
- CONFIG_NETFILTER=y
-+CONFIG_NETFILTER_NETLINK_HOOK=m
- CONFIG_NF_CONNTRACK=m
- CONFIG_NF_CONNTRACK_ZONES=y
- # CONFIG_NF_CONNTRACK_PROCFS is not set
-@@ -314,7 +315,6 @@ CONFIG_CDROM_PKTCDVD=m
- CONFIG_ATA_OVER_ETH=m
- CONFIG_DUMMY_IRQ=m
- CONFIG_RAID_ATTRS=m
--CONFIG_SCSI=y
- CONFIG_BLK_DEV_SD=y
- CONFIG_CHR_DEV_ST=m
- CONFIG_BLK_DEV_SR=y
-@@ -469,6 +469,7 @@ CONFIG_ROOT_NFS=y
- CONFIG_NFSD=m
- CONFIG_NFSD_V3=y
- CONFIG_CIFS=m
-+# CONFIG_CIFS_STATS2 is not set
- # CONFIG_CIFS_DEBUG is not set
- CONFIG_CODA_FS=m
- CONFIG_NLS_CODEPAGE_437=y
-@@ -583,6 +584,7 @@ CONFIG_PRIME_NUMBERS=m
- CONFIG_CRC32_SELFTEST=m
- CONFIG_CRC64=m
- CONFIG_XZ_DEC_TEST=m
-+CONFIG_GLOB_SELFTEST=m
- CONFIG_STRING_SELFTEST=m
- # CONFIG_SECTION_MISMATCH_WARN_ONLY is not set
- CONFIG_MAGIC_SYSRQ=y
-@@ -591,7 +593,6 @@ CONFIG_WW_MUTEX_SELFTEST=m
- CONFIG_EARLY_PRINTK=y
- CONFIG_KUNIT=m
- CONFIG_KUNIT_ALL_TESTS=m
--CONFIG_TEST_LIST_SORT=m
- CONFIG_TEST_MIN_HEAP=m
- CONFIG_TEST_SORT=m
- CONFIG_TEST_DIV64=m
-@@ -603,6 +604,7 @@ CONFIG_TEST_STRING_HELPERS=m
- CONFIG_TEST_STRSCPY=m
- CONFIG_TEST_KSTRTOX=m
- CONFIG_TEST_PRINTF=m
-+CONFIG_TEST_SCANF=m
- CONFIG_TEST_BITMAP=m
- CONFIG_TEST_UUID=m
- CONFIG_TEST_XARRAY=m
-diff --git a/arch/m68k/configs/sun3_defconfig b/arch/m68k/configs/sun3_defconfig
-index 3490a05f29b82d40..56dbc63cef5bc48b 100644
---- a/arch/m68k/configs/sun3_defconfig
-+++ b/arch/m68k/configs/sun3_defconfig
-@@ -74,6 +74,7 @@ CONFIG_IPV6_ILA=m
- CONFIG_IPV6_VTI=m
- CONFIG_IPV6_GRE=m
- CONFIG_NETFILTER=y
-+CONFIG_NETFILTER_NETLINK_HOOK=m
- CONFIG_NF_CONNTRACK=m
- CONFIG_NF_CONNTRACK_ZONES=y
- # CONFIG_NF_CONNTRACK_PROCFS is not set
-@@ -453,6 +454,7 @@ CONFIG_ROOT_NFS=y
- CONFIG_NFSD=m
- CONFIG_NFSD_V3=y
- CONFIG_CIFS=m
-+# CONFIG_CIFS_STATS2 is not set
- # CONFIG_CIFS_DEBUG is not set
- CONFIG_CODA_FS=m
- CONFIG_NLS_CODEPAGE_437=y
-@@ -574,7 +576,6 @@ CONFIG_TEST_LOCKUP=m
- CONFIG_WW_MUTEX_SELFTEST=m
- CONFIG_KUNIT=m
- CONFIG_KUNIT_ALL_TESTS=m
--CONFIG_TEST_LIST_SORT=m
- CONFIG_TEST_MIN_HEAP=m
- CONFIG_TEST_SORT=m
- CONFIG_TEST_DIV64=m
-@@ -586,6 +587,7 @@ CONFIG_TEST_STRING_HELPERS=m
- CONFIG_TEST_STRSCPY=m
- CONFIG_TEST_KSTRTOX=m
- CONFIG_TEST_PRINTF=m
-+CONFIG_TEST_SCANF=m
- CONFIG_TEST_BITMAP=m
- CONFIG_TEST_UUID=m
- CONFIG_TEST_XARRAY=m
-diff --git a/arch/m68k/configs/sun3x_defconfig b/arch/m68k/configs/sun3x_defconfig
-index 4e92c8c332fc5f97..6bd1bba81ac32876 100644
---- a/arch/m68k/configs/sun3x_defconfig
-+++ b/arch/m68k/configs/sun3x_defconfig
-@@ -74,6 +74,7 @@ CONFIG_IPV6_ILA=m
- CONFIG_IPV6_VTI=m
- CONFIG_IPV6_GRE=m
- CONFIG_NETFILTER=y
-+CONFIG_NETFILTER_NETLINK_HOOK=m
- CONFIG_NF_CONNTRACK=m
- CONFIG_NF_CONNTRACK_ZONES=y
- # CONFIG_NF_CONNTRACK_PROCFS is not set
-@@ -452,6 +453,7 @@ CONFIG_ROOT_NFS=y
- CONFIG_NFSD=m
- CONFIG_NFSD_V3=y
- CONFIG_CIFS=m
-+# CONFIG_CIFS_STATS2 is not set
- # CONFIG_CIFS_DEBUG is not set
- CONFIG_CODA_FS=m
- CONFIG_NLS_CODEPAGE_437=y
-@@ -574,7 +576,6 @@ CONFIG_WW_MUTEX_SELFTEST=m
- CONFIG_EARLY_PRINTK=y
- CONFIG_KUNIT=m
- CONFIG_KUNIT_ALL_TESTS=m
--CONFIG_TEST_LIST_SORT=m
- CONFIG_TEST_MIN_HEAP=m
- CONFIG_TEST_SORT=m
- CONFIG_TEST_DIV64=m
-@@ -586,6 +587,7 @@ CONFIG_TEST_STRING_HELPERS=m
- CONFIG_TEST_STRSCPY=m
- CONFIG_TEST_KSTRTOX=m
- CONFIG_TEST_PRINTF=m
-+CONFIG_TEST_SCANF=m
- CONFIG_TEST_BITMAP=m
- CONFIG_TEST_UUID=m
- CONFIG_TEST_XARRAY=m
--- 
-2.25.1
+Cheers,
+
+     Michael
+
 
