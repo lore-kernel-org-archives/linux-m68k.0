@@ -2,128 +2,110 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-7.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,NICE_REPLY_A,
-	SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-3.8 required=3.0 tests=BAYES_00,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
+	autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 789CDC07E96
-	for <linux-m68k@archiver.kernel.org>; Thu, 15 Jul 2021 05:44:19 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C789BC07E96
+	for <linux-m68k@archiver.kernel.org>; Thu, 15 Jul 2021 13:30:34 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 4C5566117A
-	for <linux-m68k@archiver.kernel.org>; Thu, 15 Jul 2021 05:44:19 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id AD18F61360
+	for <linux-m68k@archiver.kernel.org>; Thu, 15 Jul 2021 13:30:34 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231245AbhGOFrJ (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Thu, 15 Jul 2021 01:47:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45956 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231200AbhGOFrJ (ORCPT
+        id S237629AbhGONd1 (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Thu, 15 Jul 2021 09:33:27 -0400
+Received: from out01.mta.xmission.com ([166.70.13.231]:55092 "EHLO
+        out01.mta.xmission.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237618AbhGONd0 (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Thu, 15 Jul 2021 01:47:09 -0400
-Received: from mail-pf1-x436.google.com (mail-pf1-x436.google.com [IPv6:2607:f8b0:4864:20::436])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CEE23C06175F
-        for <linux-m68k@lists.linux-m68k.org>; Wed, 14 Jul 2021 22:44:15 -0700 (PDT)
-Received: by mail-pf1-x436.google.com with SMTP id c1so261432pfc.13
-        for <linux-m68k@lists.linux-m68k.org>; Wed, 14 Jul 2021 22:44:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:references:cc:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-transfer-encoding;
-        bh=Cfo51w5fWbZ5YfkkpqjGiPlVpSeAOP7w9tw4E3E/dzc=;
-        b=hei+AzcylVXQYdVxz6wdSVK+CAf3Gx0HHxkija5dUubrfq7DWO1PpmAuzmi2+ys9Uz
-         xXbYzOpDx7/sD7ZAEwk+GvMBw5vzFfwJ+p5bkxL7JrnuXVheOkZkgCi5Vd82dSX8BfWN
-         yahu1sI7s1QmGkT1D7sgmBb84H8PISJBxfVIUwbl70JR+JW1kSx7u+fm7pMv+BqCpiDm
-         dyg/cpde3IwVWc9CxWlm/whPK7OAp4hOdU7I9/pYN3YAI4dfLnFbodi/D7OubkMGWSws
-         lwKgodj5rCluhxO0ILh9gFi61pLQdEwClIJDFi2/9UQJbh+yxmJOj6c+nZrkLFqmR2Q3
-         vR+g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:references:cc:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding;
-        bh=Cfo51w5fWbZ5YfkkpqjGiPlVpSeAOP7w9tw4E3E/dzc=;
-        b=N75yNtRgXKSNV9tPa41t0rX+JcxsMu5MHouujxoHEAPlV1qF7Gmqi8fgBFHyNf6nGd
-         5HteF55oLuajGubF6gV6b2CvTHOmiOzB6oJttmq/m0lfM4U72AKhSA2hhMfdBoLcuvXT
-         9uHdc7RfFDCNxqG3AinSuuNNiVYApTL2T8/DCgxYZsxwEMYfgCgh+qzPytbIwkS5Wctn
-         KTQbt3N1xrzMFKsnZuJVCkF8e3DKpRof451hnjjnTsbl8Q5cfDz7Q5eUPXifwnN0jnjL
-         PW3bhUsNMmMym976lbFPNLWuP72C3bIjqGsw6UNJUVkUgDEPpD6TjinaoHZqw1zBrTFw
-         dE7Q==
-X-Gm-Message-State: AOAM5300N6Uev9Wg5Rdf/rZt6gj5DCeDcQlFxkks1fba1zYzXsWOsKrn
-        vWxuxgA3IFBC8+Oq5B8gi2Q=
-X-Google-Smtp-Source: ABdhPJyUkeAqMHgmhnROg4y7urmggLKELKZDOYM6LCkPvnTMM6c+0oGpLlQccG8Revf9Rp+Qx1lIRA==
-X-Received: by 2002:a62:c501:0:b029:32a:dfe9:8648 with SMTP id j1-20020a62c5010000b029032adfe98648mr2718840pfg.28.1626327854985;
-        Wed, 14 Jul 2021 22:44:14 -0700 (PDT)
-Received: from [10.1.1.25] (222-152-189-37-fibre.sparkbb.co.nz. [222.152.189.37])
-        by smtp.gmail.com with ESMTPSA id n4sm4941635pff.51.2021.07.14.22.44.10
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Wed, 14 Jul 2021 22:44:14 -0700 (PDT)
-Subject: Re: RFC: remove set_fs for m68k
-To:     Andreas Schwab <schwab@linux-m68k.org>
-References: <20210709070132.3387689-1-hch@lst.de>
- <039e2f42-b9bc-d8ce-393a-c0896439f784@gmail.com> <87fswjomtm.fsf@igel.home>
- <969718aa-92d4-e77b-0630-f9da6c809178@gmail.com>
- <20210713054134.GA5880@lst.de>
- <90e30f50-f062-ac8d-68e7-1250c886d0e1@gmail.com>
- <20210713085419.GA22839@lst.de>
- <eb057cdd-e9f2-27ce-cf60-7b0d87cb6bce@gmail.com> <875yxcek8a.fsf@igel.home>
-Cc:     Christoph Hellwig <hch@lst.de>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Greg Ungerer <gerg@linux-m68k.org>,
-        linux-m68k@lists.linux-m68k.org,
-        Linus Torvalds <torvalds@linux-foundation.org>
-From:   Michael Schmitz <schmitzmic@gmail.com>
-Message-ID: <fcf9d847-0f41-9624-70f3-a4419c3b98bf@gmail.com>
-Date:   Thu, 15 Jul 2021 17:44:08 +1200
-User-Agent: Mozilla/5.0 (X11; Linux ppc; rv:45.0) Gecko/20100101
- Icedove/45.4.0
+        Thu, 15 Jul 2021 09:33:26 -0400
+Received: from in02.mta.xmission.com ([166.70.13.52])
+        by out01.mta.xmission.com with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.93)
+        (envelope-from <ebiederm@xmission.com>)
+        id 1m41Rg-00AcTY-Kv; Thu, 15 Jul 2021 07:30:32 -0600
+Received: from ip68-227-160-95.om.om.cox.net ([68.227.160.95]:49460 helo=email.xmission.com)
+        by in02.mta.xmission.com with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.93)
+        (envelope-from <ebiederm@xmission.com>)
+        id 1m41Rf-009x1e-Cw; Thu, 15 Jul 2021 07:30:32 -0600
+From:   ebiederm@xmission.com (Eric W. Biederman)
+To:     Michael Schmitz <schmitzmic@gmail.com>
+Cc:     geert@linux-m68k.org, linux-arch@vger.kernel.org,
+        linux-m68k@lists.linux-m68k.org, torvalds@linux-foundation.org,
+        schwab@linux-m68k.org
+References: <1624407696-20180-1-git-send-email-schmitzmic@gmail.com>
+Date:   Thu, 15 Jul 2021 08:29:49 -0500
+In-Reply-To: <1624407696-20180-1-git-send-email-schmitzmic@gmail.com> (Michael
+        Schmitz's message of "Wed, 23 Jun 2021 12:21:33 +1200")
+Message-ID: <87zgunzovm.fsf@disp2133>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
 MIME-Version: 1.0
-In-Reply-To: <875yxcek8a.fsf@igel.home>
-Content-Type: text/plain; charset=iso-8859-15; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
+X-XM-SPF: eid=1m41Rf-009x1e-Cw;;;mid=<87zgunzovm.fsf@disp2133>;;;hst=in02.mta.xmission.com;;;ip=68.227.160.95;;;frm=ebiederm@xmission.com;;;spf=neutral
+X-XM-AID: U2FsdGVkX19qDoQBF+W6wCsYMYjPYLIsWcESflkf144=
+X-SA-Exim-Connect-IP: 68.227.160.95
+X-SA-Exim-Mail-From: ebiederm@xmission.com
+Subject: Re: [PATCH v4 0/3] m68k: Improved switch stack handling
+X-SA-Exim-Version: 4.2.1 (built Sat, 08 Feb 2020 21:53:50 +0000)
+X-SA-Exim-Scanned: Yes (on in02.mta.xmission.com)
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-Hi Andreas,
+Michael Schmitz <schmitzmic@gmail.com> writes:
 
-well spotted. I'll give that a try.
-
-Cheers,
-
-	Michael
-
-Am 15.07.2021 um 08:03 schrieb Andreas Schwab:
-> diff --git a/arch/m68k/include/asm/uaccess.h b/arch/m68k/include/asm/uaccess.h
-> index a308f0b41154..578e643ec83d 100644
-> --- a/arch/m68k/include/asm/uaccess.h
-> +++ b/arch/m68k/include/asm/uaccess.h
-> @@ -193,22 +193,22 @@ do {									\
+> m68k version of Eric's patch series 'alpha/ptrace: Improved
+> switch_stack handling'.
 >
->  #define __get_kernel_nofault(dst, src, type, err_label)			\
->  do {									\
-> -	type __gk_dst = *(type *)(dst);					\
-> +	type *__gk_dst = (type *)(dst);					\
->  	type *__gk_src = (type *)(src);					\
->  	int __gk_err = 0;						\
->  									\
->  	switch (sizeof(type)) {						\
->  	case 1:								\
-> -		__get_user_asm("move", __gk_err, __gk_dst, __gk_src, u8, b, d); \
-> +		__get_user_asm("move", __gk_err, *__gk_dst, __gk_src, u8, b, d); \
->  		break;							\
->  	case 2:								\
-> -		__get_user_asm("move", __gk_err, __gk_dst, __gk_src, u16, w, r); \
-> +		__get_user_asm("move", __gk_err, *__gk_dst, __gk_src, u16, w, r); \
->  		break;							\
->  	case 4:								\
-> -		__get_user_asm("move", __gk_err, __gk_dst, __gk_src, u32, l, r); \
-> +		__get_user_asm("move", __gk_err, *__gk_dst, __gk_src, u32, l, r); \
->  		break;							\
->  	case 8:								\
-> -		__get_user_asm8("move", __gk_err, __gk_dst, __gk_src);	\
-> +		__get_user_asm8("move", __gk_err, *__gk_dst, __gk_src);	\
->  		break;							\
->  	default:							\
->  		BUILD_BUG();						\
+> Registers d6, d7, a3-a6 are not saved on the stack by default
+> on every syscall entry by the m68k kernel. A separate switch
+> stack frame is pushed to save those registers as needed.
+> This leaves the majority of syscalls with only a subset of
+> registers on the stack, and access to unsaved registers in
+> those would expose or modify random stack addresses.  
 >
-> Andreas.
+> Patch 1 and 2 add a switch stack for all syscalls that were
+> found to need one to allow ptrace access to all registers
+> outside of syscall entry/exit tracing, as well as kernel
+> worker threads. This ought to protect against accidents.
 >
+> Patch 3 adds safety checks and debug output to m68k get_reg()
+> and put_reg() functions. Any unsafe register access during
+> process tracing will be prevented and reported. 
+>
+> Suggestions for optimizations or improvements welcome!
+>
+> Cheers,
+>
+>    Michael
+>    
+> Link: https://lore.kernel.org/r/<87pmwlek8d.fsf_-_@disp2133>
+
+I have been digging into this some more and I have found one place
+that I am having a challenge dealing with.
+
+In arch/m68k/fpsp040/skeleton.S there is an assembly version of
+copy_from_user that calls fpsp040_die when the bytes can not be read.
+
+Now fpsp040_die is just:
+
+/*
+ * This function is called if an error occur while accessing
+ * user-space from the fpsp040 code.
+ */
+asmlinkage void fpsp040_die(void)
+{
+	do_exit(SIGSEGV);
+}
+
+
+The problem here is the instruction emulation performed in the fpsp040
+code performs a very minimal saving of registers.  I don't think even
+the normal system call entry point registers that are saved are present
+at that point.
+
+Is there any chance you can help me figure out how to get a stack frame
+with all of the registers present before fpsp040_die is called?
+
+Eric
