@@ -2,113 +2,132 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-4.3 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+X-Spam-Status: No, score=-2.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
 	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,NICE_REPLY_A,SPF_HELO_NONE,
-	SPF_PASS,USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
+	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id CFEABC636C8
-	for <linux-m68k@archiver.kernel.org>; Fri, 16 Jul 2021 02:03:14 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2D6F7C636C9
+	for <linux-m68k@archiver.kernel.org>; Sat, 17 Jul 2021 05:38:13 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id A5C5C613D8
-	for <linux-m68k@archiver.kernel.org>; Fri, 16 Jul 2021 02:03:14 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 02287613D4
+	for <linux-m68k@archiver.kernel.org>; Sat, 17 Jul 2021 05:38:12 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230523AbhGPCGI (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Thu, 15 Jul 2021 22:06:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43120 "EHLO
+        id S229918AbhGQFlH (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Sat, 17 Jul 2021 01:41:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46848 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231344AbhGPCGH (ORCPT
+        with ESMTP id S229778AbhGQFlH (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Thu, 15 Jul 2021 22:06:07 -0400
-Received: from mail-pf1-x434.google.com (mail-pf1-x434.google.com [IPv6:2607:f8b0:4864:20::434])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D118CC06175F
-        for <linux-m68k@lists.linux-m68k.org>; Thu, 15 Jul 2021 19:03:12 -0700 (PDT)
-Received: by mail-pf1-x434.google.com with SMTP id q10so7513419pfj.12
-        for <linux-m68k@lists.linux-m68k.org>; Thu, 15 Jul 2021 19:03:12 -0700 (PDT)
+        Sat, 17 Jul 2021 01:41:07 -0400
+Received: from mail-pg1-x533.google.com (mail-pg1-x533.google.com [IPv6:2607:f8b0:4864:20::533])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 55F87C061760
+        for <linux-m68k@lists.linux-m68k.org>; Fri, 16 Jul 2021 22:38:10 -0700 (PDT)
+Received: by mail-pg1-x533.google.com with SMTP id w15so12068789pgk.13
+        for <linux-m68k@lists.linux-m68k.org>; Fri, 16 Jul 2021 22:38:10 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=subject:from:to:cc:references:message-id:date:user-agent
-         :mime-version:in-reply-to:content-transfer-encoding:content-language;
-        bh=fUVPLwCOda1qxNWKFrBB41M6dPU/AseGctk4InLhGKo=;
-        b=FzvC5E6tKeF9AHpa+HzUnuK2BUGgFL57qRJaf0r9Fi5p/n2he29W7zw3oBC3H3SlG7
-         OxSXb5TrEuOAf/zzUIrfNH1Py/zO2zR4fOdm6l3K+DA7xBxLznX4ufPMiLMIphuu0FPs
-         Bh9GnBf8IeEMtIZdUhzsxhb2BmLhsP7LuorvIYveaSSzZm2QCrXcMRsSqNU1P4LIL1ST
-         bHSrslOfIf0/lgExnOwS17UdlsVZKDwnZmXbcR+jSj0CSTCyzzMaiZsVqHOSYvke1C1i
-         upb+/rRgjcEFevSq7mPVSEk973xWLpFwIWJYJgpS8VIPTtELWrr2Bi0jeZHKFOnwQ/LS
-         EC0w==
+        h=subject:to:references:cc:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-transfer-encoding;
+        bh=ufZLoU++KwzTLrSeOiNHYHKkFRVcvivHEu5YkyD6pFM=;
+        b=bvVTP4elDiw5wrqRF917W8S6tLCfHIxaLKkqWeUzQNzC90aVtuY8f/3iRmfo+Btalb
+         ZuRyd+bypUChxdxIBqPhWdKugitLldEIZmysifsRvacOx1j5d4Ka3muiMBmgt1HXZW9b
+         1F+7RCs4gMXA4nWzDdE/wdaY3zoqX8YlFeNVQElgHfrM7hogA73VGWkVCQsyuynElbbR
+         k5yNV+DSXDZgaHkPZlY6OCQ6vjp8AFvkqR9ScvieqgO8JqjqAEgjUbMyXPiwZ2BadkSM
+         9TlAx7eOj9fBAwnNffQbitbiZhr8LdUe9Bu/iD9vCD69OcpUPL6DatiRZGcZfIsuTr2o
+         pvXw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:from:to:cc:references:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=fUVPLwCOda1qxNWKFrBB41M6dPU/AseGctk4InLhGKo=;
-        b=E0wKUqQI7Io+aNILD31rNDiPTf6BGBKQso4KPDuX1eHLZrtwwrvbm73P19INWEsj+7
-         lLIfo9i9F//79u9mya9kwMOyknG1jzcnHpuGwzN2CkWPb5w5sLcJzi6KurHI1wIVlJlF
-         2SWFOpo/F4J8RshXk2yjdpD0Fpgs4bUNOs1B7uYSTVFUI5GGb3kIk1HeP1doPn1d3jRP
-         sTH5CYj/rh8Lzk4fmdNsV5mjixebUEBjbx4kYuhKcy83BaMjKXq4SqkY1TlCZKn9Lx5m
-         v4RvOqFj6kZY3Cc8Ov8rCBEo9HSJFZWbb8dPmB9kzN+Y/qae26kjI/Ho6Cq15Ce5RteI
-         iAEw==
-X-Gm-Message-State: AOAM5325T8wFnh/IAJdL53KVxp0L2KOOjPGS0YrC0/KJjAavL2xGBqcd
-        PPs6PQYwD0xKj3CPGeN5EyE=
-X-Google-Smtp-Source: ABdhPJz6xlXrBd+mrQgEKqcUH5RL2q2mI6RUVbcjZIr0K2b0sW9Mq5g1SJ5tR7bmHHZOlY/H+Z1z1Q==
-X-Received: by 2002:a65:578e:: with SMTP id b14mr7425312pgr.117.1626400992315;
-        Thu, 15 Jul 2021 19:03:12 -0700 (PDT)
-Received: from ?IPv6:2001:df0:0:200c:bd84:68b:cf56:4515? ([2001:df0:0:200c:bd84:68b:cf56:4515])
-        by smtp.gmail.com with ESMTPSA id d22sm2384172pfl.201.2021.07.15.19.03.09
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 15 Jul 2021 19:03:11 -0700 (PDT)
-Subject: Re: RFC: remove set_fs for m68k
+        h=x-gm-message-state:subject:to:references:cc:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding;
+        bh=ufZLoU++KwzTLrSeOiNHYHKkFRVcvivHEu5YkyD6pFM=;
+        b=JKxvJ/MSbdpzzq7D/3h42BcIpCqlgUA0Ir+JyNrejXEr9OaEaTAhu8p8WYb05JCgXK
+         61hby715HCUp+VMoOb5SZaMYO+K0p+T+ml6pP6Ww+Uq8vaLvS5MggjHYFf3nCHe+EZyW
+         UCbf5hEDYT/zgFJzu4LANiG4pSp4+UPTesU+1W+VHqonytLBgWgU1c80qBm7N3Z8O/l2
+         nKa/eGnp9GBTKV8JBdh8O7o9yM4FE8AXddKv1EW0MbwhrvBQpWMk2UFUjZDwiAHoXUju
+         AQfcr8jVi3JXXfqtmi83o1tUdlrvmthTBFmEVegwiO7ofIII+Th9FXdQ4cgNI1vPZKfQ
+         rYpw==
+X-Gm-Message-State: AOAM530kKinw9zghaDbajrpz6X2wJYrMQkELHwIeW85h+Z/HR54gFm0Z
+        6GdxI2KhuNpr64iW0u9e5zE=
+X-Google-Smtp-Source: ABdhPJwefctfw8nGpJeddfKU/GJyORZWYibARYL0WRzSQ8gucpY3XgMp9rjp+Ka3lgQRYuciF872Tg==
+X-Received: by 2002:a63:2308:: with SMTP id j8mr9411051pgj.166.1626500289745;
+        Fri, 16 Jul 2021 22:38:09 -0700 (PDT)
+Received: from [10.1.1.25] (222-152-189-37-fibre.sparkbb.co.nz. [222.152.189.37])
+        by smtp.gmail.com with ESMTPSA id j20sm11824131pfc.203.2021.07.16.22.38.04
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Fri, 16 Jul 2021 22:38:09 -0700 (PDT)
+Subject: Re: [PATCH v4 0/3] m68k: Improved switch stack handling
+To:     "Eric W. Biederman" <ebiederm@xmission.com>
+References: <1624407696-20180-1-git-send-email-schmitzmic@gmail.com>
+ <87zgunzovm.fsf@disp2133> <3b4f287b-7be2-0e7b-ae5a-6c11972601fb@gmail.com>
+Cc:     geert@linux-m68k.org, linux-arch@vger.kernel.org,
+        linux-m68k@lists.linux-m68k.org, torvalds@linux-foundation.org,
+        schwab@linux-m68k.org
 From:   Michael Schmitz <schmitzmic@gmail.com>
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     Andreas Schwab <schwab@linux-m68k.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Greg Ungerer <gerg@linux-m68k.org>,
-        linux-m68k@lists.linux-m68k.org,
-        Linus Torvalds <torvalds@linux-foundation.org>
-References: <20210709070132.3387689-1-hch@lst.de>
- <039e2f42-b9bc-d8ce-393a-c0896439f784@gmail.com> <87fswjomtm.fsf@igel.home>
- <969718aa-92d4-e77b-0630-f9da6c809178@gmail.com>
- <20210713054134.GA5880@lst.de>
- <90e30f50-f062-ac8d-68e7-1250c886d0e1@gmail.com>
- <20210713085419.GA22839@lst.de>
- <eb057cdd-e9f2-27ce-cf60-7b0d87cb6bce@gmail.com>
-Message-ID: <3acb1a9e-9133-50d4-a642-98d7046d6d4f@gmail.com>
-Date:   Fri, 16 Jul 2021 14:03:06 +1200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+Message-ID: <1b656c02-925c-c4ba-03d3-f56075cdfac5@gmail.com>
+Date:   Sat, 17 Jul 2021 17:38:01 +1200
+User-Agent: Mozilla/5.0 (X11; Linux ppc; rv:45.0) Gecko/20100101
+ Icedove/45.4.0
 MIME-Version: 1.0
-In-Reply-To: <eb057cdd-e9f2-27ce-cf60-7b0d87cb6bce@gmail.com>
-Content-Type: text/plain; charset=windows-1252; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
+In-Reply-To: <3b4f287b-7be2-0e7b-ae5a-6c11972601fb@gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-Hi Christoph,
+Am 16.07.2021 um 11:10 schrieb Michael Schmitz:
+> Eric,
+>
+> On 16/07/21 1:29 am, Eric W. Biederman wrote:
+>>
+>> I have been digging into this some more and I have found one place
+>> that I am having a challenge dealing with.
+>>
+>> In arch/m68k/fpsp040/skeleton.S there is an assembly version of
+>> copy_from_user that calls fpsp040_die when the bytes can not be read.
+>>
+>> Now fpsp040_die is just:
+>>
+>> /*
+>>   * This function is called if an error occur while accessing
+>>   * user-space from the fpsp040 code.
+>>   */
+>> asmlinkage void fpsp040_die(void)
+>> {
+>>     do_exit(SIGSEGV);
+>> }
+>> The problem here is the instruction emulation performed in the fpsp040
+>> code performs a very minimal saving of registers.  I don't think even
+>> the normal system call entry point registers that are saved are present
+>> at that point.
+>>
+>> Is there any chance you can help me figure out how to get a stack frame
+>> with all of the registers present before fpsp040_die is called?
+>
+> I suppose adding the following code (untested) to entry.S:
+>
+> ENTRY(fpsp040_die)
+>         SAVE_ALL_INT
+>         jbsr    fpsp040_die_c
+>         jra     ret_from_exception
+>
+> along with renaming above C entry point to fpsp040_die_c would add the
+> basic saved registers, but these would not necessarily reflect the state
+> of the processor when the fpsp040 trap was called. Is that what you're
+> after?
 
-On 15/07/21 7:26 am, Michael Schmitz wrote:
-> I've got a vague recollection that I've seen weird crashes in the past 
-> related to temperature extremes (we've had a few unusually cold days 
-> in our parts just now), so I've gone back to a kernel from the switch 
-> stack / refactoring exit tests (which ran the stress tests fine 
-> earlier) to rule that one out. Looking good so far, so I begin to 
-> wonder whether we need to introduce get_fc() and use that to restore 
-> the original sfc/dfc instead of assuming USER_DATA is always correct?
+I should have looked more closely at skeleton.S - most FPU exceptions 
+handled there call trap_c the same way as is done for generic traps, 
+i.e. SAVE_ALL_INT before, ret_from_exception after.
 
-No crashes with the known good kernel after over a day of stress testing 
-- I'll try Andreas' patch once the current test run has completed.
+Instead of adding code to entry.S, much better to add it in skeleton.S. 
+I'll try to come up with a way to test this code path (calling 
+fpsp040_die from the dz exception hander seems much the easiest way) to 
+make sure this doesn't have side effects.
 
-One thing I noticed with either your final or your v2 patch series - as 
-far as the tests ran at all, run times were 30% increased. That's a lot 
-more than I would have expected. Large byte size user copies were 
-already handled by the code in arch/m68k/lib/uaccess.c which wasn't 
-explicitly inlined though the calling raw_copy_to/from_user() was. Could 
-the change to no longer inline raw_copy_to/from_user() have such a large 
-impact?
+Does do_exit() ever return?
 
 Cheers,
 
-     Michael
-
-
+	Michael
