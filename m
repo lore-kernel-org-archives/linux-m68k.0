@@ -2,127 +2,152 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,NICE_REPLY_A,SPF_HELO_NONE,
-	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-8.8 required=3.0 tests=BAYES_00,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,
+	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 8CCC7C636CB
-	for <linux-m68k@archiver.kernel.org>; Mon, 19 Jul 2021 03:15:54 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C8992C07E95
+	for <linux-m68k@archiver.kernel.org>; Mon, 19 Jul 2021 23:16:38 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 7289A6108B
-	for <linux-m68k@archiver.kernel.org>; Mon, 19 Jul 2021 03:15:54 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id A922260FE9
+	for <linux-m68k@archiver.kernel.org>; Mon, 19 Jul 2021 23:16:38 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233894AbhGSDSw (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Sun, 18 Jul 2021 23:18:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48924 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233720AbhGSDSw (ORCPT
-        <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Sun, 18 Jul 2021 23:18:52 -0400
-Received: from mail-pj1-x1030.google.com (mail-pj1-x1030.google.com [IPv6:2607:f8b0:4864:20::1030])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BC4F2C061765
-        for <linux-m68k@lists.linux-m68k.org>; Sun, 18 Jul 2021 20:15:52 -0700 (PDT)
-Received: by mail-pj1-x1030.google.com with SMTP id cu14so10614187pjb.0
-        for <linux-m68k@lists.linux-m68k.org>; Sun, 18 Jul 2021 20:15:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:references:cc:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-transfer-encoding;
-        bh=A0RwgPQGJrc23vgBFxOPp4E1hoFr61XtuLyv5X/G1b4=;
-        b=r3SJ8BZWR20u9aJjNmUQ5SDbgL4Y24EtCIr/jbWPjsCb8PgpBTpL+wJ4/7OVx0mXRi
-         Cekir0U8s+VReASNOnWajbYpy5VUjV4Lqa6Q/DlRd12ud4HBGxZcptLLjLBXxoiLTxKx
-         X9PARsWeen3Wkk1SAtoxcFdLNm/uX+AcX3GCLiWdSc+THshSUoOuKw2I34RujkbAN1iE
-         CYaHupXR1tW5io/uDKVB6tfbHWfHcx443tLZFeduB3o/rLcmiwmLAVJp6ciAfCELEdgm
-         2DohpVL28HDFtQX/hojilfxySfTZiuytFzk5YhvmA5nEbQpSMSp8f9iBMoxfYIADX3LW
-         yKJQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:references:cc:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding;
-        bh=A0RwgPQGJrc23vgBFxOPp4E1hoFr61XtuLyv5X/G1b4=;
-        b=uc5VOlq6k44TLvCfIDKPxh+Kz7mdiyfW0LaqJglDiMpMTKYogUO6YW4NDTO3zNHV2e
-         DBP5IydGCpdFqFSy+/1YolAYgJmkhgibyHGvdYpjb+JVXePT0rinum4fkDMXxdq60g9a
-         4j203GdqZL7R5J2pemwBfe/URgJWu0V0z2urs9jErm5Z4U4oHRY2UI84xUOn06+K0OZ2
-         uEA52mfJ1zP927tNbAL8BNWvSJa2YjppDItqMoupqA56fMUvb9BpeDkT/fZXDWaY1I0y
-         smcrYPVxaiPFuWJnRm/U+0SuTAIQyqOOUq+T/zpGy0JC7UglrGEmvlLYJBnd9+0Ps1zz
-         I00g==
-X-Gm-Message-State: AOAM530kSVlE5HUAGlEQrogGLC9V249QYQ4SIjTE9ROEvxNQdHcQpgD4
-        yV0TpEcUBElni6Zg5vKtoSg=
-X-Google-Smtp-Source: ABdhPJwxQVnbf6De3mHEV80Kfnfk/WVI0UOwdDLQxwgZEyZQ7W31qteUxNBBqSYWWsrAl1TnEaoa7A==
-X-Received: by 2002:a17:90a:642:: with SMTP id q2mr27991332pje.205.1626664552208;
-        Sun, 18 Jul 2021 20:15:52 -0700 (PDT)
-Received: from [10.1.1.25] (222-152-189-37-fibre.sparkbb.co.nz. [222.152.189.37])
-        by smtp.gmail.com with ESMTPSA id g27sm19150222pgl.19.2021.07.18.20.15.47
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Sun, 18 Jul 2021 20:15:51 -0700 (PDT)
-Subject: Re: [PATCH v4 0/3] m68k: Improved switch stack handling
-To:     Brad Boyer <flar@allandria.com>
-References: <1624407696-20180-1-git-send-email-schmitzmic@gmail.com>
- <87zgunzovm.fsf@disp2133> <3b4f287b-7be2-0e7b-ae5a-6c11972601fb@gmail.com>
- <1b656c02-925c-c4ba-03d3-f56075cdfac5@gmail.com> <8735scvklk.fsf@disp2133>
- <e9009e13-cfec-c494-0b3b-f334f75cd1e4@gmail.com>
- <af434994-5c61-0e3a-c7bc-3ed966ccb44f@gmail.com> <87a6mj99vf.fsf@igel.home>
- <1ebfb9de-de16-d05c-ea15-a110857fe284@gmail.com>
- <20210718205956.GA802@allandria.com>
-Cc:     Andreas Schwab <schwab@linux-m68k.org>,
-        "Eric W. Biederman" <ebiederm@xmission.com>, geert@linux-m68k.org,
-        linux-arch@vger.kernel.org, linux-m68k@lists.linux-m68k.org,
-        torvalds@linux-foundation.org
-From:   Michael Schmitz <schmitzmic@gmail.com>
-Message-ID: <47fb6c7e-30e2-0525-9b2a-c8430a9bfa38@gmail.com>
-Date:   Mon, 19 Jul 2021 15:15:44 +1200
-User-Agent: Mozilla/5.0 (X11; Linux ppc; rv:45.0) Gecko/20100101
- Icedove/45.4.0
+        id S239333AbhGSWfH (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Mon, 19 Jul 2021 18:35:07 -0400
+Received: from mga04.intel.com ([192.55.52.120]:43826 "EHLO mga04.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S245673AbhGSWSi (ORCPT <rfc822;linux-m68k@lists.linux-m68k.org>);
+        Mon, 19 Jul 2021 18:18:38 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10050"; a="209240350"
+X-IronPort-AV: E=Sophos;i="5.84,253,1620716400"; 
+   d="scan'208";a="209240350"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Jul 2021 15:59:16 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.84,253,1620716400"; 
+   d="scan'208";a="509541477"
+Received: from lkp-server01.sh.intel.com (HELO a467b34d8c10) ([10.239.97.150])
+  by fmsmga002.fm.intel.com with ESMTP; 19 Jul 2021 15:59:15 -0700
+Received: from kbuild by a467b34d8c10 with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1m5cEF-0000pQ-0K; Mon, 19 Jul 2021 22:59:15 +0000
+Date:   Tue, 20 Jul 2021 06:58:46 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Geert Uytterhoeven <geert@linux-m68k.org>
+Cc:     linux-m68k@lists.linux-m68k.org
+Subject: [m68k:for-v5.15] BUILD SUCCESS
+ a0b22464ce9352c4a3e100f10f976c85b0ae6690
+Message-ID: <60f603a6.jeyaoIspvDlcL2Ku%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
-In-Reply-To: <20210718205956.GA802@allandria.com>
-Content-Type: text/plain; charset=windows-1252; format=flowed
+Content-Type: text/plain; charset=us-ascii
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-Hi Brad,
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/geert/linux-m68k.git for-v5.15
+branch HEAD: a0b22464ce9352c4a3e100f10f976c85b0ae6690  m68k: defconfig: Update defconfigs for v5.14-rc1:
 
-Am 19.07.2021 um 08:59 schrieb Brad Boyer:
-> On Mon, Jul 19, 2021 at 07:47:19AM +1200, Michael Schmitz wrote:
->> Somewhere in entry.S is
->>
->> addql   #8,%sp
->> addql   #4,%sp
->>
->> - is that faster than
->>
->> lea     12(%sp),%sp ?
->
-> On the 68040 the timing can depend on the other instructions around
-> it. Each of those addql instructions is listed as 1 and 1 for
-> fetch/execute, while that lea is listed as 2 and 1L+1 meaning that
-> it could potentially be faster depending on the behavior of the
-> instruction that preceded it thorough the execute stage. That one
-> free cycle if the stage is busy (due to the 1L) could make it
-> effectively faster since the first addql would have to wait that
-> extra cycle in that case.
->
-> On the 68060, it looks like the lea version is the clear winner,
-> although the timing description is obviously much more complicated
-> and thus I might have missed something. From a quick look, it
-> seems that lea takes the same time as just the first addql.
->
-> On CPU32, the lea version loses due to the extra 3 cycles from
-> the addressing mode, even though the base cycles of lea are the
-> same as for addql (2 cycles each). The lea might be even worse
-> if it can't take advantage of overlapping the surrounding
-> instructions (1 cycle before and 1 after).
->
-> Those are the only ones I already have the documentation in my
-> hands. I haven't checked older classic cores or coldfire, but
-> it does seem like it is specific to each chip which is faster.
->
-> Obviously both versions would be the same size (2 words).
+elapsed time: 727m
 
-Thanks, best leave it as is then.
+configs tested: 87
+configs skipped: 105
 
-Cheers,
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
-	Michael
+gcc tested configs:
+arm                                 defconfig
+arm64                            allyesconfig
+arm64                               defconfig
+arm                              allyesconfig
+arm                              allmodconfig
+powerpc                     rainier_defconfig
+x86_64                              defconfig
+mips                   sb1250_swarm_defconfig
+mips                  maltasmvp_eva_defconfig
+sparc64                             defconfig
+arm                         mv78xx0_defconfig
+arm                         lpc32xx_defconfig
+arm                          imote2_defconfig
+arm                       imx_v4_v5_defconfig
+sh                          polaris_defconfig
+m68k                        m5307c3_defconfig
+parisc                              defconfig
+powerpc                 mpc8313_rdb_defconfig
+powerpc                   microwatt_defconfig
+arm                         at91_dt_defconfig
+mips                        bcm63xx_defconfig
+powerpc                      ppc44x_defconfig
+m68k                             allyesconfig
+openrisc                         alldefconfig
+arm                          gemini_defconfig
+xtensa                    xip_kc705_defconfig
+sh                          r7780mp_defconfig
+riscv                    nommu_virt_defconfig
+arm                           spitz_defconfig
+x86_64                            allnoconfig
+ia64                             allmodconfig
+ia64                                defconfig
+ia64                             allyesconfig
+m68k                                defconfig
+m68k                             allmodconfig
+xtensa                           allyesconfig
+h8300                            allyesconfig
+arc                                 defconfig
+sh                               allmodconfig
+s390                             allyesconfig
+s390                             allmodconfig
+parisc                           allyesconfig
+s390                                defconfig
+mips                             allyesconfig
+mips                             allmodconfig
+powerpc                          allyesconfig
+powerpc                          allmodconfig
+powerpc                           allnoconfig
+x86_64               randconfig-a005-20210718
+x86_64               randconfig-a004-20210718
+x86_64               randconfig-a002-20210718
+x86_64               randconfig-a003-20210718
+x86_64               randconfig-a006-20210718
+x86_64               randconfig-a001-20210718
+i386                 randconfig-a005-20210720
+i386                 randconfig-a003-20210720
+i386                 randconfig-a004-20210720
+i386                 randconfig-a002-20210720
+i386                 randconfig-a001-20210720
+i386                 randconfig-a006-20210720
+i386                 randconfig-a005-20210719
+i386                 randconfig-a004-20210719
+i386                 randconfig-a006-20210719
+i386                 randconfig-a001-20210719
+i386                 randconfig-a003-20210719
+i386                 randconfig-a002-20210719
+i386                 randconfig-a014-20210719
+i386                 randconfig-a015-20210719
+i386                 randconfig-a011-20210719
+i386                 randconfig-a013-20210719
+i386                 randconfig-a016-20210719
+i386                 randconfig-a012-20210719
+riscv                    nommu_k210_defconfig
+riscv                            allyesconfig
+riscv                             allnoconfig
+riscv                               defconfig
+riscv                          rv32_defconfig
+riscv                            allmodconfig
+um                           x86_64_defconfig
+um                             i386_defconfig
+x86_64                    rhel-8.3-kselftests
+x86_64                               rhel-8.3
+x86_64                      rhel-8.3-kbuiltin
+x86_64                           allyesconfig
+x86_64                                  kexec
+
+clang tested configs:
+x86_64               randconfig-b001-20210720
+x86_64               randconfig-b001-20210719
+
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
