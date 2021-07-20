@@ -2,238 +2,259 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-7.2 required=3.0 tests=BAYES_00,DATE_IN_PAST_03_06,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-15.1 required=3.0 tests=BAYES_00,DKIM_INVALID,
+	DKIM_SIGNED,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,NICE_REPLY_A,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
+	USER_AGENT_SANE_1 autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 501B8C07E95
-	for <linux-m68k@archiver.kernel.org>; Tue, 20 Jul 2021 06:12:46 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 726F8C07E95
+	for <linux-m68k@archiver.kernel.org>; Tue, 20 Jul 2021 18:55:12 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 2E6F16113A
-	for <linux-m68k@archiver.kernel.org>; Tue, 20 Jul 2021 06:12:46 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 48789610A7
+	for <linux-m68k@archiver.kernel.org>; Tue, 20 Jul 2021 18:55:12 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236197AbhGTFcE (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Tue, 20 Jul 2021 01:32:04 -0400
-Received: from mga05.intel.com ([192.55.52.43]:10943 "EHLO mga05.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236094AbhGTFcA (ORCPT <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Tue, 20 Jul 2021 01:32:00 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10050"; a="296746091"
-X-IronPort-AV: E=Sophos;i="5.84,254,1620716400"; 
-   d="scan'208";a="296746091"
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Jul 2021 23:12:24 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.84,254,1620716400"; 
-   d="scan'208";a="453933879"
-Received: from lkp-server02.sh.intel.com (HELO 1b5a72ed9419) ([10.239.97.151])
-  by orsmga007.jf.intel.com with ESMTP; 19 Jul 2021 23:12:23 -0700
-Received: from kbuild by 1b5a72ed9419 with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1m5izO-00001u-D3; Tue, 20 Jul 2021 06:12:22 +0000
-Date:   Tue, 20 Jul 2021 08:10:09 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     linux-m68k@lists.linux-m68k.org
-Subject: [m68k:master] BUILD SUCCESS
- 05f25d0bea1e40424b38787cf1a81f65684e760c
-Message-ID: <60f61461.Gury7I3JENBeT44Z%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+        id S230271AbhGTSOc (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Tue, 20 Jul 2021 14:14:32 -0400
+Received: from mail.kernel-space.org ([195.201.34.187]:54392 "EHLO
+        mail.kernel-space.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230381AbhGTSOc (ORCPT
+        <rfc822;linux-m68k@vger.kernel.org>); Tue, 20 Jul 2021 14:14:32 -0400
+Received: from ziongate (localhost [127.0.0.1])
+        by ziongate (OpenSMTPD) with ESMTP id 51fa09d7;
+        Tue, 20 Jul 2021 18:55:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha1; c=simple; d=kernel-space.org; h=subject
+        :to:cc:references:from:message-id:date:mime-version:in-reply-to
+        :content-type:content-transfer-encoding; s=default; bh=s0vvVoLkq
+        btG8PNHtQtHnFb04So=; b=lSXLsUkjxyQo+2iEP0M3wEDdTEQATyM8YoWM+XCMu
+        fCm/9bAGN7K4ivCEmPSw6wZvDdoSjnx6yaBnV470VQ3jMbFywwJHtiWkOvPXDuYO
+        ZSLINa+9iE22QhZTb2CsGVuK1yv0yMvMzxT/yux9pDKwVuYtdpRACNqut05d1fj+
+        mE=
+DomainKey-Signature: a=rsa-sha1; c=simple; d=kernel-space.org; h=subject
+        :to:cc:references:from:message-id:date:mime-version:in-reply-to
+        :content-type:content-transfer-encoding; q=dns; s=default; b=FeA
+        8dKr6UiirUvv32Op3ZdU/5ScDcaWFmlvutnvheDaG82R4wGXO0F+TMmrv9+0dqTR
+        skE0Xcyb79wNr+ATzPe6PTBsGshlWajXfuP8lLsgzOGA0zBHVPQ1NSdGD/7eEd5F
+        LwH2rQpenCS531BpdI2CEZSEtneQ+FdW9Gpqw+ao=
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel-space.org;
+        s=20190913; t=1626807305;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=V0IYEFLY5WzSA6ooG0i7TxFb7OwS3upixnLzGSkrKGI=;
+        b=j6/8rnVdlhKrknNFY8RZJ6aPiuuAjR6Lz/NiT2OF05iorFw676vFMfnx8oImEAr8LGWVS9
+        aTP65298RB875tz5LUt+IwH2L6HOnhh2PRphewouX6uUu5TdDz2r2PwuBg7IScRGIk3VMc
+        lYiNZFl4rNOEVnZfMDieRbVFtmuqlhw=
+Received: from [192.168.0.2] (host-79-44-236-76.retail.telecomitalia.it [79.44.236.76])
+        by ziongate (OpenSMTPD) with ESMTPSA id ff798db3 (TLSv1.3:TLS_AES_256_GCM_SHA384:256:NO);
+        Tue, 20 Jul 2021 18:55:05 +0000 (UTC)
+Subject: Re: [PATCH v5 3/5] m68k: m5441x: add flexcan support
+To:     Greg Ungerer <gerg@linux-m68k.org>, wg@grandegger.com,
+        mkl@pengutronix.de
+Cc:     geert@linux-m68k.org, linux-m68k@vger.kernel.org,
+        linux-can@vger.kernel.org, qiangqing.zhang@nxp.com
+References: <20210702094841.327679-1-angelo@kernel-space.org>
+ <20210702094841.327679-3-angelo@kernel-space.org>
+ <1a95b055-5d14-f43e-81dd-d0a0ddbdb1f1@linux-m68k.org>
+From:   Angelo Dureghello <angelo@kernel-space.org>
+Message-ID: <aaa06e75-bcfa-d6ae-a994-630a74501f6b@kernel-space.org>
+Date:   Tue, 20 Jul 2021 20:53:57 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <1a95b055-5d14-f43e-81dd-d0a0ddbdb1f1@linux-m68k.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/geert/linux-m68k.git master
-branch HEAD: 05f25d0bea1e40424b38787cf1a81f65684e760c  m68k: emu: Fix invalid free in nfeth_cleanup()
+Hi Greg,
 
-elapsed time: 794m
+sorry was away for some vacation time.
 
-configs tested: 172
-configs skipped: 4
+Is there still any job required here ?
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+On 12/07/21 6:33 AM, Greg Ungerer wrote:
+> Hi Angelo,
+> 
+> There is a couple of changes I would like to see here to make this
+> not depend on patch 1/5.
+> 
+> 
+> On 2/7/21 7:48 pm, Angelo Dureghello wrote:
+>> Add flexcan support.
+>>
+>> Signed-off-by: Angelo Dureghello <angelo@kernel-space.org>
+>> ---
+>> Changes for v2:
+>> - add irq resources for ERR and BOFF interrutps
+>> Changes for v3:
+>> - differentiate device name, for future variants addition
+>> Changes for v4:
+>> - change platform data structure name to flexcan_platform_data
+>> Changes for v5:
+>> none
+>> ---
+>>   arch/m68k/coldfire/device.c       | 42 +++++++++++++++++++++++++++++++
+>>   arch/m68k/coldfire/m5441x.c       |  8 +++---
+>>   arch/m68k/include/asm/m5441xsim.h | 19 ++++++++++++++
+>>   3 files changed, 65 insertions(+), 4 deletions(-)
+>>
+>> diff --git a/arch/m68k/coldfire/device.c b/arch/m68k/coldfire/device.c
+>> index 59f7dfe50a4d..5f7effbf7c60 100644
+>> --- a/arch/m68k/coldfire/device.c
+>> +++ b/arch/m68k/coldfire/device.c
+>> @@ -23,6 +23,7 @@
+>>   #include <linux/platform_data/edma.h>
+>>   #include <linux/platform_data/dma-mcf-edma.h>
+>>   #include <linux/platform_data/mmc-esdhc-mcf.h>
+>> +#include <linux/can/platform/flexcan.h>
+> 
+> Move this to inside the CONFIG_CAN block.
+> 
+>>   /*
+>>    *    All current ColdFire parts contain from 2, 3, 4 or 10 UARTS.
+>> @@ -581,6 +582,44 @@ static struct platform_device mcf_esdhc = {
+>>   };
+>>   #endif /* MCFSDHC_BASE */
+>> +#if IS_ENABLED(CONFIG_CAN)
+> 
+> Change this to IS_ENABLED(CONFIG_CAN_FLEXCAN).
+> 
+> All the other device resource blocks in this file depend on the
+> actual driver being enabled that they apply to. Not the general subsystem
+> (in this case CAN).
+> 
+> That way the timing of patches 1, 4 and 5 being applied doesn't matter.
+> There is no way to enable CONFIG_CAN_FLEXCAN until patch 4 is applied.
+> (And you probably should have swapped the order of patches 4 and 5, so that
+> the Kconfig change is the last in the series.)
+> 
+> Regards
+> Greg
+> 
+> 
+> 
+>> +static struct flexcan_platform_data mcf5441x_flexcan_info = {
+>> +    .clk_src = 1,
+>> +    .clock_frequency = 120000000,
+>> +};
+>> +
+>> +static struct resource mcf5441x_flexcan0_resource[] = {
+>> +    {
+>> +        .start = MCFFLEXCAN_BASE0,
+>> +        .end = MCFFLEXCAN_BASE0 + MCFFLEXCAN_SIZE,
+>> +        .flags = IORESOURCE_MEM,
+>> +    },
+>> +    {
+>> +        .start = MCF_IRQ_IFL0,
+>> +        .end = MCF_IRQ_IFL0,
+>> +        .flags = IORESOURCE_IRQ,
+>> +    },
+>> +    {
+>> +        .start = MCF_IRQ_BOFF0,
+>> +        .end = MCF_IRQ_BOFF0,
+>> +        .flags = IORESOURCE_IRQ,
+>> +    },
+>> +    {
+>> +        .start = MCF_IRQ_ERR0,
+>> +        .end = MCF_IRQ_ERR0,
+>> +        .flags = IORESOURCE_IRQ,
+>> +    },
+>> +};
+>> +
+>> +static struct platform_device mcf_flexcan0 = {
+>> +    .name = "flexcan-mcf5441x",
+>> +    .id = 0,
+>> +    .num_resources = ARRAY_SIZE(mcf5441x_flexcan0_resource),
+>> +    .resource = mcf5441x_flexcan0_resource,
+>> +    .dev.platform_data = &mcf5441x_flexcan_info,
+>> +};
+>> +#endif /* IS_ENABLED(CONFIG_CAN) */
+>> +
+>>   static struct platform_device *mcf_devices[] __initdata = {
+>>       &mcf_uart,
+>>   #if IS_ENABLED(CONFIG_FEC)
+>> @@ -616,6 +655,9 @@ static struct platform_device *mcf_devices[] 
+>> __initdata = {
+>>   #ifdef MCFSDHC_BASE
+>>       &mcf_esdhc,
+>>   #endif
+>> +#if IS_ENABLED(CONFIG_CAN)
+>> +    &mcf_flexcan0,
+>> +#endif
+>>   };
+>>   /*
+>> diff --git a/arch/m68k/coldfire/m5441x.c b/arch/m68k/coldfire/m5441x.c
+>> index 1e5259a652d1..18b152edb69c 100644
+>> --- a/arch/m68k/coldfire/m5441x.c
+>> +++ b/arch/m68k/coldfire/m5441x.c
+>> @@ -18,8 +18,8 @@
+>>   #include <asm/mcfclk.h>
+>>   DEFINE_CLK(0, "flexbus", 2, MCF_CLK);
+>> -DEFINE_CLK(0, "mcfcan.0", 8, MCF_CLK);
+>> -DEFINE_CLK(0, "mcfcan.1", 9, MCF_CLK);
+>> +DEFINE_CLK(0, "flexcan.0", 8, MCF_CLK);
+>> +DEFINE_CLK(0, "flexcan.1", 9, MCF_CLK);
+>>   DEFINE_CLK(0, "imx1-i2c.1", 14, MCF_CLK);
+>>   DEFINE_CLK(0, "mcfdspi.1", 15, MCF_CLK);
+>>   DEFINE_CLK(0, "edma", 17, MCF_CLK);
+>> @@ -146,6 +146,8 @@ struct clk *mcf_clks[] = {
+>>   static struct clk * const enable_clks[] __initconst = {
+>>       /* make sure these clocks are enabled */
+>> +    &__clk_0_8, /* flexcan.0 */
+>> +    &__clk_0_9, /* flexcan.1 */
+>>       &__clk_0_15, /* dspi.1 */
+>>       &__clk_0_17, /* eDMA */
+>>       &__clk_0_18, /* intc0 */
+>> @@ -166,8 +168,6 @@ static struct clk * const enable_clks[] 
+>> __initconst = {
+>>       &__clk_1_37, /* gpio */
+>>   };
+>>   static struct clk * const disable_clks[] __initconst = {
+>> -    &__clk_0_8, /* can.0 */
+>> -    &__clk_0_9, /* can.1 */
+>>       &__clk_0_14, /* i2c.1 */
+>>       &__clk_0_22, /* i2c.0 */
+>>       &__clk_0_23, /* dspi.0 */
+>> diff --git a/arch/m68k/include/asm/m5441xsim.h 
+>> b/arch/m68k/include/asm/m5441xsim.h
+>> index e091e36d3464..f48cf63bd782 100644
+>> --- a/arch/m68k/include/asm/m5441xsim.h
+>> +++ b/arch/m68k/include/asm/m5441xsim.h
+>> @@ -73,6 +73,12 @@
+>>   #define MCFINT0_FECENTC1    55
+>>   /* on interrupt controller 1 */
+>> +#define MCFINT1_FLEXCAN0_IFL    0
+>> +#define MCFINT1_FLEXCAN0_BOFF    1
+>> +#define MCFINT1_FLEXCAN0_ERR    3
+>> +#define MCFINT1_FLEXCAN1_IFL    4
+>> +#define MCFINT1_FLEXCAN1_BOFF    5
+>> +#define MCFINT1_FLEXCAN1_ERR    7
+>>   #define MCFINT1_UART4        48
+>>   #define MCFINT1_UART5        49
+>>   #define MCFINT1_UART6        50
+>> @@ -314,4 +320,17 @@
+>>   #define MCF_IRQ_SDHC        (MCFINT2_VECBASE + MCFINT2_SDHC)
+>>   #define MCFSDHC_CLK        (MCFSDHC_BASE + 0x2c)
+>> +/*
+>> + * Flexcan module
+>> + */
+>> +#define MCFFLEXCAN_BASE0    0xfc020000
+>> +#define MCFFLEXCAN_BASE1    0xfc024000
+>> +#define MCFFLEXCAN_SIZE        0x4000
+>> +#define MCF_IRQ_IFL0        (MCFINT1_VECBASE + MCFINT1_FLEXCAN0_IFL)
+>> +#define MCF_IRQ_BOFF0        (MCFINT1_VECBASE + MCFINT1_FLEXCAN0_BOFF)
+>> +#define MCF_IRQ_ERR0        (MCFINT1_VECBASE + MCFINT1_FLEXCAN0_ERR)
+>> +#define MCF_IRQ_IFL1        (MCFINT1_VECBASE + MCFINT1_FLEXCAN1_IFL)
+>> +#define MCF_IRQ_BOFF1        (MCFINT1_VECBASE + MCFINT1_FLEXCAN1_BOFF)
+>> +#define MCF_IRQ_ERR1        (MCFINT1_VECBASE + MCFINT1_FLEXCAN1_ERR)
+>> +
+>>   #endif /* m5441xsim_h */
+>>
 
-gcc tested configs:
-arm                                 defconfig
-arm64                            allyesconfig
-arm64                               defconfig
-arm                              allyesconfig
-arm                              allmodconfig
-arm                  colibri_pxa300_defconfig
-arm                       netwinder_defconfig
-powerpc                    gamecube_defconfig
-m68k                           sun3_defconfig
-sh                            hp6xx_defconfig
-powerpc                     rainier_defconfig
-x86_64                              defconfig
-mips                   sb1250_swarm_defconfig
-arm                        shmobile_defconfig
-sh                        dreamcast_defconfig
-arm                        neponset_defconfig
-sh                     sh7710voipgw_defconfig
-openrisc                 simple_smp_defconfig
-arm                            mps2_defconfig
-mips                  maltasmvp_eva_defconfig
-sparc64                             defconfig
-arm                         mv78xx0_defconfig
-arm                         lpc32xx_defconfig
-arm                          imote2_defconfig
-powerpc                     ep8248e_defconfig
-mips                             allmodconfig
-sh                           se7343_defconfig
-powerpc                     stx_gp3_defconfig
-mips                           ci20_defconfig
-mips                          malta_defconfig
-riscv             nommu_k210_sdcard_defconfig
-mips                       rbtx49xx_defconfig
-powerpc                     mpc83xx_defconfig
-powerpc               mpc834x_itxgp_defconfig
-arm                             mxs_defconfig
-arm                            pleb_defconfig
-mips                        omega2p_defconfig
-mips                           ip32_defconfig
-mips                     loongson1c_defconfig
-powerpc                      bamboo_defconfig
-powerpc                      katmai_defconfig
-sh                           se7780_defconfig
-arm                        mvebu_v5_defconfig
-arm                         lubbock_defconfig
-arm                   milbeaut_m10v_defconfig
-um                               alldefconfig
-powerpc                  iss476-smp_defconfig
-arm                       imx_v4_v5_defconfig
-sh                          polaris_defconfig
-m68k                        m5307c3_defconfig
-parisc                              defconfig
-powerpc                 mpc8313_rdb_defconfig
-powerpc                   microwatt_defconfig
-arm                         at91_dt_defconfig
-mips                        bcm63xx_defconfig
-powerpc                      ppc44x_defconfig
-m68k                             allyesconfig
-powerpc                 xes_mpc85xx_defconfig
-sh                               j2_defconfig
-powerpc                 mpc832x_mds_defconfig
-arm                            mmp2_defconfig
-arm                       mainstone_defconfig
-sh                          r7780mp_defconfig
-arm                           u8500_defconfig
-openrisc                         alldefconfig
-arm                          gemini_defconfig
-xtensa                    xip_kc705_defconfig
-riscv                    nommu_virt_defconfig
-arm                           spitz_defconfig
-powerpc                     ppa8548_defconfig
-sh                     magicpanelr2_defconfig
-powerpc                           allnoconfig
-powerpc                   motionpro_defconfig
-m68k                          atari_defconfig
-sh                ecovec24-romimage_defconfig
-sh                               allmodconfig
-arm                    vt8500_v6_v7_defconfig
-nds32                             allnoconfig
-arm                        trizeps4_defconfig
-h8300                            allyesconfig
-h8300                     edosk2674_defconfig
-powerpc                     tqm8548_defconfig
-sh                   rts7751r2dplus_defconfig
-x86_64                            allnoconfig
-ia64                             allmodconfig
-ia64                                defconfig
-ia64                             allyesconfig
-m68k                             allmodconfig
-m68k                                defconfig
-nios2                               defconfig
-arc                              allyesconfig
-nds32                               defconfig
-nios2                            allyesconfig
-csky                                defconfig
-alpha                               defconfig
-alpha                            allyesconfig
-xtensa                           allyesconfig
-arc                                 defconfig
-s390                             allyesconfig
-s390                             allmodconfig
-parisc                           allyesconfig
-s390                                defconfig
-i386                             allyesconfig
-sparc                            allyesconfig
-sparc                               defconfig
-i386                                defconfig
-mips                             allyesconfig
-powerpc                          allyesconfig
-powerpc                          allmodconfig
-x86_64               randconfig-a005-20210718
-x86_64               randconfig-a004-20210718
-x86_64               randconfig-a002-20210718
-x86_64               randconfig-a003-20210718
-x86_64               randconfig-a006-20210718
-x86_64               randconfig-a001-20210718
-i386                 randconfig-a005-20210720
-i386                 randconfig-a003-20210720
-i386                 randconfig-a004-20210720
-i386                 randconfig-a002-20210720
-i386                 randconfig-a001-20210720
-i386                 randconfig-a006-20210720
-i386                 randconfig-a005-20210719
-i386                 randconfig-a004-20210719
-i386                 randconfig-a006-20210719
-i386                 randconfig-a001-20210719
-i386                 randconfig-a003-20210719
-i386                 randconfig-a002-20210719
-x86_64               randconfig-a013-20210719
-x86_64               randconfig-a012-20210719
-x86_64               randconfig-a015-20210719
-x86_64               randconfig-a014-20210719
-x86_64               randconfig-a011-20210719
-x86_64               randconfig-a016-20210719
-i386                 randconfig-a014-20210719
-i386                 randconfig-a015-20210719
-i386                 randconfig-a011-20210719
-i386                 randconfig-a013-20210719
-i386                 randconfig-a016-20210719
-i386                 randconfig-a012-20210719
-i386                 randconfig-a016-20210720
-i386                 randconfig-a013-20210720
-i386                 randconfig-a012-20210720
-i386                 randconfig-a014-20210720
-i386                 randconfig-a011-20210720
-i386                 randconfig-a015-20210720
-riscv                    nommu_k210_defconfig
-riscv                            allyesconfig
-riscv                             allnoconfig
-riscv                               defconfig
-riscv                          rv32_defconfig
-riscv                            allmodconfig
-x86_64                    rhel-8.3-kselftests
-um                           x86_64_defconfig
-um                             i386_defconfig
-x86_64                           allyesconfig
-x86_64                               rhel-8.3
-x86_64                      rhel-8.3-kbuiltin
-x86_64                                  kexec
-
-clang tested configs:
-x86_64               randconfig-b001-20210720
-x86_64               randconfig-b001-20210719
-x86_64               randconfig-a005-20210719
-x86_64               randconfig-a004-20210719
-x86_64               randconfig-a002-20210719
-x86_64               randconfig-a003-20210719
-x86_64               randconfig-a006-20210719
-x86_64               randconfig-a001-20210719
-x86_64               randconfig-a011-20210720
-x86_64               randconfig-a016-20210720
-x86_64               randconfig-a013-20210720
-x86_64               randconfig-a014-20210720
-x86_64               randconfig-a012-20210720
-x86_64               randconfig-a015-20210720
-
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+Regards,
+-- 
+Angelo Dureghello
