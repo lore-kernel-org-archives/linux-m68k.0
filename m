@@ -2,155 +2,243 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.3 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,NICE_REPLY_A,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=ham autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-20.3 required=3.0 tests=BAYES_00,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,NICE_REPLY_A,SPF_HELO_NONE,SPF_PASS,
+	URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 519CAC636C8
-	for <linux-m68k@archiver.kernel.org>; Tue, 20 Jul 2021 22:17:19 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 1FF4CC07E9B
+	for <linux-m68k@archiver.kernel.org>; Tue, 20 Jul 2021 23:01:38 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 2E6E66120A
-	for <linux-m68k@archiver.kernel.org>; Tue, 20 Jul 2021 22:17:19 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 01B1C60FE7
+	for <linux-m68k@archiver.kernel.org>; Tue, 20 Jul 2021 23:01:37 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230233AbhGTVgj (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Tue, 20 Jul 2021 17:36:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35256 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234525AbhGTVge (ORCPT
-        <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Tue, 20 Jul 2021 17:36:34 -0400
-Received: from mail-pl1-x633.google.com (mail-pl1-x633.google.com [IPv6:2607:f8b0:4864:20::633])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C19A8C061768
-        for <linux-m68k@lists.linux-m68k.org>; Tue, 20 Jul 2021 15:16:11 -0700 (PDT)
-Received: by mail-pl1-x633.google.com with SMTP id j3so12128955plx.7
-        for <linux-m68k@lists.linux-m68k.org>; Tue, 20 Jul 2021 15:16:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-transfer-encoding:content-language;
-        bh=HMP4hOg3SpK+nsKtMUngLG5eW2U79IIKIlymfzgnAXs=;
-        b=hXUjgTVkiGDcwRj0K05Ze1rB4fS2Tk8YOBWplqcHc/RigtxHWeA743PNhvx6dnYMnq
-         ePnWoKM6/hjh5nXSS3yKHnFlNiJLuAE4xb8Htd8G9e+81G51Mjc4yqzSsIlpLz2puMfs
-         CiUSQEsh4GELOi0RKKxG4HvBpzIZC6HC4D9Ozk+T7oJ3R9lVK9+z29LKinq9yhF2M1UE
-         tHL6vkX40Xx2LPjW287pN5LNzoTHQ5KB0KrDi46QPn0J89XdTc7CxqXavBkDzKGMm0nR
-         OYDWlh8tkedWHon/t845oVJx/81lHguh5HVyzz8ifyZnJgP9sutebEgpV4x2fkNlz/fU
-         cQqQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=HMP4hOg3SpK+nsKtMUngLG5eW2U79IIKIlymfzgnAXs=;
-        b=uI5TIDDCLw68A0Js8ueVY/KcR8kpXWFHBXjDKqMBy92Yh9VtDIO1uldnveBgDnJAt3
-         q3g9YDXypSzUx49dwT0dVINWyrzOWD2pSt/oj7NECeCzzZZr/qbYD6JdUU16oCtrY//q
-         AsyEsIh0DgS4fLBzubi+3ZgZb5abJs7iVV7dAZFW6iVvHVsTxrC5Vgvz7cV+uYRj08Q4
-         8L0LOZWGhe789i+piR/7i+WV5xABESLRZ+mtnBcND8jxyfC1rJLkBaPpymvgJsDWlg9u
-         xLrs3A32wTWs15uZzj8z9nN99XZcaaYDLPHOyoJakZvnZ3vV9E1x7Qr1ZgsPlS5jzSXv
-         Yc9g==
-X-Gm-Message-State: AOAM533dMP25a6oUfcp9ce83CvyVZOyUhqbhj2vcA6ZJAsLkPgxi0KEt
-        FtfOgs/gG7IeXNId8pkmUyY=
-X-Google-Smtp-Source: ABdhPJwEPgQZE7JpUgmFjH+qkNOCJb48z+MSJu0/zjqro44n6IkH2fjA3vP8tuRIgejRIs6b0U8zqw==
-X-Received: by 2002:a17:90a:2906:: with SMTP id g6mr31523081pjd.100.1626819370838;
-        Tue, 20 Jul 2021 15:16:10 -0700 (PDT)
-Received: from ?IPv6:2001:df0:0:200c:9497:db03:a72f:4a88? ([2001:df0:0:200c:9497:db03:a72f:4a88])
-        by smtp.gmail.com with ESMTPSA id s36sm12519531pgl.8.2021.07.20.15.16.07
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 20 Jul 2021 15:16:10 -0700 (PDT)
-Subject: Re: [PATCH v4 0/3] m68k: Improved switch stack handling
-To:     "Eric W. Biederman" <ebiederm@xmission.com>
-Cc:     geert@linux-m68k.org, linux-arch@vger.kernel.org,
-        linux-m68k@lists.linux-m68k.org, torvalds@linux-foundation.org,
-        schwab@linux-m68k.org
-References: <1624407696-20180-1-git-send-email-schmitzmic@gmail.com>
- <87zgunzovm.fsf@disp2133> <3b4f287b-7be2-0e7b-ae5a-6c11972601fb@gmail.com>
- <1b656c02-925c-c4ba-03d3-f56075cdfac5@gmail.com> <8735scvklk.fsf@disp2133>
- <e9009e13-cfec-c494-0b3b-f334f75cd1e4@gmail.com>
- <af434994-5c61-0e3a-c7bc-3ed966ccb44f@gmail.com> <87h7gopvz2.fsf@disp2133>
-From:   Michael Schmitz <schmitzmic@gmail.com>
-Message-ID: <328e59fb-3e8c-e4cd-06b4-1975ce98614a@gmail.com>
-Date:   Wed, 21 Jul 2021 10:16:05 +1200
+        id S231792AbhGTWUy (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Tue, 20 Jul 2021 18:20:54 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37214 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229909AbhGTWUT (ORCPT <rfc822;linux-m68k@vger.kernel.org>);
+        Tue, 20 Jul 2021 18:20:19 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 25D3160FF1;
+        Tue, 20 Jul 2021 23:00:54 +0000 (UTC)
+Subject: Re: [PATCH v5 3/5] m68k: m5441x: add flexcan support
+To:     Angelo Dureghello <angelo@kernel-space.org>, wg@grandegger.com,
+        mkl@pengutronix.de
+Cc:     geert@linux-m68k.org, linux-m68k@vger.kernel.org,
+        linux-can@vger.kernel.org, qiangqing.zhang@nxp.com
+References: <20210702094841.327679-1-angelo@kernel-space.org>
+ <20210702094841.327679-3-angelo@kernel-space.org>
+ <1a95b055-5d14-f43e-81dd-d0a0ddbdb1f1@linux-m68k.org>
+ <aaa06e75-bcfa-d6ae-a994-630a74501f6b@kernel-space.org>
+From:   Greg Ungerer <gerg@linux-m68k.org>
+Message-ID: <4a745955-8e43-3024-a004-0db0e084d74f@linux-m68k.org>
+Date:   Wed, 21 Jul 2021 09:00:52 +1000
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
  Thunderbird/78.11.0
 MIME-Version: 1.0
-In-Reply-To: <87h7gopvz2.fsf@disp2133>
+In-Reply-To: <aaa06e75-bcfa-d6ae-a994-630a74501f6b@kernel-space.org>
 Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
 Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-Hi Eric,
+Hi Angelo,
 
-On 21/07/21 8:32 am, Eric W. Biederman wrote:
->
->> diff --git a/arch/m68k/fpsp040/skeleton.S b/arch/m68k/fpsp040/skeleton.S
->> index a8f4161..6c92d38 100644
->> --- a/arch/m68k/fpsp040/skeleton.S
->> +++ b/arch/m68k/fpsp040/skeleton.S
->> @@ -502,7 +502,17 @@ in_ea:
->>   	.section .fixup,#alloc,#execinstr
->>   	.even
->>   1:
->> +
->> +	SAVE_ALL_INT
->> +	SAVE_SWITCH_STACK
->          ^^^^^^^^^^
->
-> I don't think this saves the registers in the well known fixed location
-> on the stack because some registers are saved at the exception entry
-> point.
+On 21/7/21 4:53 am, Angelo Dureghello wrote:
+> Hi Greg,
+> 
+> sorry was away for some vacation time.
+> 
+> Is there still any job required here ?
 
-The FPU exception entry points are not using the exception entry code in 
-head.S. These entry points are stored in the exception vector table 
-directly. No saving of a syscall stack frame happens there. The FPU 
-places its exception frame on the stack, and that is what the FPU 
-exception handlers use.
+No :-)
+I modified the change as per my suggestions below - so I could push to m68knommu git tree.
+(Otherwise It does not compile). See:
 
-(If these have to call out to the generic exception handlers again, they 
-will build a minimal stack frame, see code in skeleton.S.)
+https://git.kernel.org/pub/scm/linux/kernel/git/gerg/m68knommu.git/commit/?h=for-next&id=64151620227a2fcb13dae0b99b6a1003edb38c67
 
-Calling fpsp040_die() is no different from calling a syscall that may 
-need to have access to the full stack frame. The 'fixed location' is 
-just 'on the stack before calling  fpsp040_die()', again this is no 
-different from calling e.g. sys_fork() which does not take a pointer to 
-the begin of the stack frame as an argument.
-
-I must admit I never looked at how do_exit() figures out where the stack 
-frame containing the saved registers is stored, I just assumed it 
-unwinds the stack up to the point where the caller syscall was made, and 
-works from there. The same strategy ought to work here.
-
->
-> Without being saved at the well known fixed location if some process
-> stops in PTRACE_EVENT_EXIT in do_exit we likely get some complete
-> gibberish.
->
-> That is probably safe.
->
->>   	jbra	fpsp040_die
->> +	addql   #8,%sp
->> +	addql   #8,%sp
->> +	addql   #8,%sp
->> +	addql   #8,%sp
->> +	addql   #8,%sp
->> +	addql   #4,%sp
->> +	rts
-> Especially as everything after jumping to fpsp040_die does not execute.
-
-Unless we change fpsp040_die() to call force_sig(SIGSEGV).
-
-Cheers,
-
-     Michael
+Regards
+Greg
 
 
->
-> Eric
->
->
->>   
->>   	.section __ex_table,#alloc
->>   	.align	4
+
+> 
+> On 12/07/21 6:33 AM, Greg Ungerer wrote:
+>> Hi Angelo,
+>>
+>> There is a couple of changes I would like to see here to make this
+>> not depend on patch 1/5.
+>>
+>>
+>> On 2/7/21 7:48 pm, Angelo Dureghello wrote:
+>>> Add flexcan support.
+>>>
+>>> Signed-off-by: Angelo Dureghello <angelo@kernel-space.org>
+>>> ---
+>>> Changes for v2:
+>>> - add irq resources for ERR and BOFF interrutps
+>>> Changes for v3:
+>>> - differentiate device name, for future variants addition
+>>> Changes for v4:
+>>> - change platform data structure name to flexcan_platform_data
+>>> Changes for v5:
+>>> none
+>>> ---
+>>>   arch/m68k/coldfire/device.c       | 42 +++++++++++++++++++++++++++++++
+>>>   arch/m68k/coldfire/m5441x.c       |  8 +++---
+>>>   arch/m68k/include/asm/m5441xsim.h | 19 ++++++++++++++
+>>>   3 files changed, 65 insertions(+), 4 deletions(-)
+>>>
+>>> diff --git a/arch/m68k/coldfire/device.c b/arch/m68k/coldfire/device.c
+>>> index 59f7dfe50a4d..5f7effbf7c60 100644
+>>> --- a/arch/m68k/coldfire/device.c
+>>> +++ b/arch/m68k/coldfire/device.c
+>>> @@ -23,6 +23,7 @@
+>>>   #include <linux/platform_data/edma.h>
+>>>   #include <linux/platform_data/dma-mcf-edma.h>
+>>>   #include <linux/platform_data/mmc-esdhc-mcf.h>
+>>> +#include <linux/can/platform/flexcan.h>
+>>
+>> Move this to inside the CONFIG_CAN block.
+>>
+>>>   /*
+>>>    *    All current ColdFire parts contain from 2, 3, 4 or 10 UARTS.
+>>> @@ -581,6 +582,44 @@ static struct platform_device mcf_esdhc = {
+>>>   };
+>>>   #endif /* MCFSDHC_BASE */
+>>> +#if IS_ENABLED(CONFIG_CAN)
+>>
+>> Change this to IS_ENABLED(CONFIG_CAN_FLEXCAN).
+>>
+>> All the other device resource blocks in this file depend on the
+>> actual driver being enabled that they apply to. Not the general subsystem
+>> (in this case CAN).
+>>
+>> That way the timing of patches 1, 4 and 5 being applied doesn't matter.
+>> There is no way to enable CONFIG_CAN_FLEXCAN until patch 4 is applied.
+>> (And you probably should have swapped the order of patches 4 and 5, so that
+>> the Kconfig change is the last in the series.)
+>>
+>> Regards
+>> Greg
+>>
+>>
+>>
+>>> +static struct flexcan_platform_data mcf5441x_flexcan_info = {
+>>> +    .clk_src = 1,
+>>> +    .clock_frequency = 120000000,
+>>> +};
+>>> +
+>>> +static struct resource mcf5441x_flexcan0_resource[] = {
+>>> +    {
+>>> +        .start = MCFFLEXCAN_BASE0,
+>>> +        .end = MCFFLEXCAN_BASE0 + MCFFLEXCAN_SIZE,
+>>> +        .flags = IORESOURCE_MEM,
+>>> +    },
+>>> +    {
+>>> +        .start = MCF_IRQ_IFL0,
+>>> +        .end = MCF_IRQ_IFL0,
+>>> +        .flags = IORESOURCE_IRQ,
+>>> +    },
+>>> +    {
+>>> +        .start = MCF_IRQ_BOFF0,
+>>> +        .end = MCF_IRQ_BOFF0,
+>>> +        .flags = IORESOURCE_IRQ,
+>>> +    },
+>>> +    {
+>>> +        .start = MCF_IRQ_ERR0,
+>>> +        .end = MCF_IRQ_ERR0,
+>>> +        .flags = IORESOURCE_IRQ,
+>>> +    },
+>>> +};
+>>> +
+>>> +static struct platform_device mcf_flexcan0 = {
+>>> +    .name = "flexcan-mcf5441x",
+>>> +    .id = 0,
+>>> +    .num_resources = ARRAY_SIZE(mcf5441x_flexcan0_resource),
+>>> +    .resource = mcf5441x_flexcan0_resource,
+>>> +    .dev.platform_data = &mcf5441x_flexcan_info,
+>>> +};
+>>> +#endif /* IS_ENABLED(CONFIG_CAN) */
+>>> +
+>>>   static struct platform_device *mcf_devices[] __initdata = {
+>>>       &mcf_uart,
+>>>   #if IS_ENABLED(CONFIG_FEC)
+>>> @@ -616,6 +655,9 @@ static struct platform_device *mcf_devices[] __initdata = {
+>>>   #ifdef MCFSDHC_BASE
+>>>       &mcf_esdhc,
+>>>   #endif
+>>> +#if IS_ENABLED(CONFIG_CAN)
+>>> +    &mcf_flexcan0,
+>>> +#endif
+>>>   };
+>>>   /*
+>>> diff --git a/arch/m68k/coldfire/m5441x.c b/arch/m68k/coldfire/m5441x.c
+>>> index 1e5259a652d1..18b152edb69c 100644
+>>> --- a/arch/m68k/coldfire/m5441x.c
+>>> +++ b/arch/m68k/coldfire/m5441x.c
+>>> @@ -18,8 +18,8 @@
+>>>   #include <asm/mcfclk.h>
+>>>   DEFINE_CLK(0, "flexbus", 2, MCF_CLK);
+>>> -DEFINE_CLK(0, "mcfcan.0", 8, MCF_CLK);
+>>> -DEFINE_CLK(0, "mcfcan.1", 9, MCF_CLK);
+>>> +DEFINE_CLK(0, "flexcan.0", 8, MCF_CLK);
+>>> +DEFINE_CLK(0, "flexcan.1", 9, MCF_CLK);
+>>>   DEFINE_CLK(0, "imx1-i2c.1", 14, MCF_CLK);
+>>>   DEFINE_CLK(0, "mcfdspi.1", 15, MCF_CLK);
+>>>   DEFINE_CLK(0, "edma", 17, MCF_CLK);
+>>> @@ -146,6 +146,8 @@ struct clk *mcf_clks[] = {
+>>>   static struct clk * const enable_clks[] __initconst = {
+>>>       /* make sure these clocks are enabled */
+>>> +    &__clk_0_8, /* flexcan.0 */
+>>> +    &__clk_0_9, /* flexcan.1 */
+>>>       &__clk_0_15, /* dspi.1 */
+>>>       &__clk_0_17, /* eDMA */
+>>>       &__clk_0_18, /* intc0 */
+>>> @@ -166,8 +168,6 @@ static struct clk * const enable_clks[] __initconst = {
+>>>       &__clk_1_37, /* gpio */
+>>>   };
+>>>   static struct clk * const disable_clks[] __initconst = {
+>>> -    &__clk_0_8, /* can.0 */
+>>> -    &__clk_0_9, /* can.1 */
+>>>       &__clk_0_14, /* i2c.1 */
+>>>       &__clk_0_22, /* i2c.0 */
+>>>       &__clk_0_23, /* dspi.0 */
+>>> diff --git a/arch/m68k/include/asm/m5441xsim.h b/arch/m68k/include/asm/m5441xsim.h
+>>> index e091e36d3464..f48cf63bd782 100644
+>>> --- a/arch/m68k/include/asm/m5441xsim.h
+>>> +++ b/arch/m68k/include/asm/m5441xsim.h
+>>> @@ -73,6 +73,12 @@
+>>>   #define MCFINT0_FECENTC1    55
+>>>   /* on interrupt controller 1 */
+>>> +#define MCFINT1_FLEXCAN0_IFL    0
+>>> +#define MCFINT1_FLEXCAN0_BOFF    1
+>>> +#define MCFINT1_FLEXCAN0_ERR    3
+>>> +#define MCFINT1_FLEXCAN1_IFL    4
+>>> +#define MCFINT1_FLEXCAN1_BOFF    5
+>>> +#define MCFINT1_FLEXCAN1_ERR    7
+>>>   #define MCFINT1_UART4        48
+>>>   #define MCFINT1_UART5        49
+>>>   #define MCFINT1_UART6        50
+>>> @@ -314,4 +320,17 @@
+>>>   #define MCF_IRQ_SDHC        (MCFINT2_VECBASE + MCFINT2_SDHC)
+>>>   #define MCFSDHC_CLK        (MCFSDHC_BASE + 0x2c)
+>>> +/*
+>>> + * Flexcan module
+>>> + */
+>>> +#define MCFFLEXCAN_BASE0    0xfc020000
+>>> +#define MCFFLEXCAN_BASE1    0xfc024000
+>>> +#define MCFFLEXCAN_SIZE        0x4000
+>>> +#define MCF_IRQ_IFL0        (MCFINT1_VECBASE + MCFINT1_FLEXCAN0_IFL)
+>>> +#define MCF_IRQ_BOFF0        (MCFINT1_VECBASE + MCFINT1_FLEXCAN0_BOFF)
+>>> +#define MCF_IRQ_ERR0        (MCFINT1_VECBASE + MCFINT1_FLEXCAN0_ERR)
+>>> +#define MCF_IRQ_IFL1        (MCFINT1_VECBASE + MCFINT1_FLEXCAN1_IFL)
+>>> +#define MCF_IRQ_BOFF1        (MCFINT1_VECBASE + MCFINT1_FLEXCAN1_BOFF)
+>>> +#define MCF_IRQ_ERR1        (MCFINT1_VECBASE + MCFINT1_FLEXCAN1_ERR)
+>>> +
+>>>   #endif /* m5441xsim_h */
+>>>
+> 
+> Regards,
