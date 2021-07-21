@@ -2,108 +2,229 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-10.2 required=3.0 tests=BAYES_00,DKIM_INVALID,
-	DKIM_SIGNED,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
-	MENTIONS_GIT_HOSTING,NICE_REPLY_A,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1
-	autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-7.2 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 07148C07E9B
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 3CD39C636C9
 	for <linux-m68k@archiver.kernel.org>; Wed, 21 Jul 2021 11:27:30 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id D7D1760FED
-	for <linux-m68k@archiver.kernel.org>; Wed, 21 Jul 2021 11:27:29 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 0F86B6121F
+	for <linux-m68k@archiver.kernel.org>; Wed, 21 Jul 2021 11:27:30 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237983AbhGUKnm (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Wed, 21 Jul 2021 06:43:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54326 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238477AbhGUJe3 (ORCPT
-        <rfc822;linux-m68k@vger.kernel.org>); Wed, 21 Jul 2021 05:34:29 -0400
-Received: from mail.kernel-space.org (unknown [IPv6:2a01:4f8:c2c:5a84::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 097ABC0613B7;
-        Wed, 21 Jul 2021 03:12:01 -0700 (PDT)
-Received: from ziongate (localhost [127.0.0.1])
-        by ziongate (OpenSMTPD) with ESMTP id fc018ed5;
-        Wed, 21 Jul 2021 10:05:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha1; c=simple; d=kernel-space.org; h=subject
-        :to:cc:references:from:message-id:date:mime-version:in-reply-to
-        :content-type:content-transfer-encoding; s=default; bh=WH9fkuBaC
-        W6AXKnQB5kTe3bEZcI=; b=aJC1LttRyCOYIJHk3dMMGRjzmoSMV2i128E8fx9nu
-        CrM+rE6ZbT/Bgkv+/MMnzDGDSuiMRXyyOgA/ptcr2KBuPC2B8b2sK9AL60E4aswl
-        Y3rkMaSzjHz6RL1R3fBcitZRgK+GxBDUslOiz+WRfitGLxZy8gsxfUjphfUs3qFx
-        qI=
-DomainKey-Signature: a=rsa-sha1; c=simple; d=kernel-space.org; h=subject
-        :to:cc:references:from:message-id:date:mime-version:in-reply-to
-        :content-type:content-transfer-encoding; q=dns; s=default; b=lJq
-        3EJ7N4tjRltDCDhDVzqzOEcY7vkcvhBaJGWfDcDxaDb6byhpx/OzotM8g/2gQmJZ
-        obGLrM1mL2JDOjlgtZTZrtoiyoJMS074j0Nfc0tMxVtjDFmEsq6p5BEgwSOmMPoR
-        /GrzTxDP6DRgFu+uMCDFm8d15wWkzZibyhDBGv+A=
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel-space.org;
-        s=20190913; t=1626861919;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=tT1drKIFh/pk2IunUXW1WLo26FZPmF/ilo2ON2O/XFI=;
-        b=JRt/Xgg3GxPZX12NhSc7zQuxBsl2oslzQlKwdQNOUH7HQdGWEja1ytPbpCpQiOW6bJyrUd
-        sii6QkRClEHnOwggnf1KafEx4GAybdtr4+NkE7iDH2VBSLc9cAvDeTnGfI1Iz6IWG+7Dby
-        bub1sCNHMq+taWaUuVpmk2efMA3H33w=
-Received: from [192.168.0.2] (host-79-44-236-76.retail.telecomitalia.it [79.44.236.76])
-        by ziongate (OpenSMTPD) with ESMTPSA id 8b877209 (TLSv1.3:TLS_AES_256_GCM_SHA384:256:NO);
-        Wed, 21 Jul 2021 10:05:19 +0000 (UTC)
-Subject: Re: [PATCH v5 3/5] m68k: m5441x: add flexcan support
-To:     Greg Ungerer <gerg@linux-m68k.org>, wg@grandegger.com,
-        mkl@pengutronix.de
-Cc:     geert@linux-m68k.org, linux-m68k@vger.kernel.org,
-        linux-can@vger.kernel.org, qiangqing.zhang@nxp.com
-References: <20210702094841.327679-1-angelo@kernel-space.org>
- <20210702094841.327679-3-angelo@kernel-space.org>
- <1a95b055-5d14-f43e-81dd-d0a0ddbdb1f1@linux-m68k.org>
- <aaa06e75-bcfa-d6ae-a994-630a74501f6b@kernel-space.org>
- <4a745955-8e43-3024-a004-0db0e084d74f@linux-m68k.org>
-From:   Angelo Dureghello <angelo@kernel-space.org>
-Message-ID: <e1e702b8-9124-b063-a17c-217336f8c840@kernel-space.org>
-Date:   Wed, 21 Jul 2021 12:04:10 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.1
+        id S237398AbhGUKni (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Wed, 21 Jul 2021 06:43:38 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47558 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S238697AbhGUJ3J (ORCPT <rfc822;linux-m68k@lists.linux-m68k.org>);
+        Wed, 21 Jul 2021 05:29:09 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0BAC960FE7;
+        Wed, 21 Jul 2021 10:09:43 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1626862185;
+        bh=AkCAzoeKK4dm3J0IYr3eqKdLUog3VqnY+aXSEhth1R0=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=c1tD+1+8N7ya+U+R4FoCk5r1AY0+njsEQDtKrpnu5fKg2Nsyw8ad0RAbDRa8LMlYN
+         kIGK/SB0S4EC/Bt9LoElGD8+QX12QgKfoR1683w3NYrmezl45haNH7nWDa/e7NVumf
+         ZIzS+wQ0FwO2WzFS4jJEXOjj+Re557OYzd+zf9Xc=
+Date:   Wed, 21 Jul 2021 12:09:41 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= 
+        <u.kleine-koenig@pengutronix.de>
+Cc:     kernel@pengutronix.de,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Alexandre Bounine <alex.bou9@gmail.com>,
+        Alex Dubov <oakad@yahoo.com>, Alex Elder <elder@kernel.org>,
+        Alex Williamson <alex.williamson@redhat.com>,
+        Alison Schofield <alison.schofield@intel.com>,
+        Allen Hubbe <allenbh@gmail.com>,
+        Andreas Noever <andreas.noever@gmail.com>,
+        Andy Gross <agross@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
+        Ben Widawsky <ben.widawsky@intel.com>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Bodo Stroesser <bostroesser@gmail.com>,
+        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+        Chen-Yu Tsai <wens@csie.org>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        Cornelia Huck <cohuck@redhat.com>,
+        Cristian Marussi <cristian.marussi@arm.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Dave Jiang <dave.jiang@intel.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        David Woodhouse <dwmw@amazon.co.uk>,
+        Dexuan Cui <decui@microsoft.com>,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        Dominik Brodowski <linux@dominikbrodowski.net>,
+        Eric Farman <farman@linux.ibm.com>,
+        Finn Thain <fthain@linux-m68k.org>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Frank Li <lznuaa@gmail.com>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Geoff Levand <geoff@infradead.org>,
+        Haiyang Zhang <haiyangz@microsoft.com>,
+        Halil Pasic <pasic@linux.ibm.com>,
+        Hannes Reinecke <hare@suse.de>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Harald Freudenberger <freude@linux.ibm.com>,
+        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Helge Deller <deller@gmx.de>, Ira Weiny <ira.weiny@intel.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Jason Wang <jasowang@redhat.com>,
+        Jens Taprogge <jens.taprogge@taprogge.org>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        Jiri Kosina <jikos@kernel.org>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        Joey Pabalan <jpabalanb@gmail.com>,
+        Johan Hovold <johan@kernel.org>,
+        Johannes Berg <johannes@sipsolutions.net>,
+        Johannes Thumshirn <morbidrsa@gmail.com>,
+        Jon Mason <jdmason@kudzu.us>, Juergen Gross <jgross@suse.com>,
+        Julien Grall <jgrall@amazon.com>,
+        Kai-Heng Feng <kai.heng.feng@canonical.com>,
+        Kirti Wankhede <kwankhede@nvidia.com>,
+        Kishon Vijay Abraham I <kishon@ti.com>,
+        Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
+        "K. Y. Srinivasan" <kys@microsoft.com>,
+        Lee Jones <lee.jones@linaro.org>, Len Brown <lenb@kernel.org>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Manohar Vanga <manohar.vanga@gmail.com>,
+        Marc Zyngier <maz@kernel.org>, Mark Brown <broonie@kernel.org>,
+        Mark Gross <mgross@linux.intel.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Martyn Welch <martyn@welchs.me.uk>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>,
+        Matthew Rosato <mjrosato@linux.ibm.com>,
+        Matt Porter <mporter@kernel.crashing.org>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Maxime Ripard <mripard@kernel.org>,
+        Maximilian Luz <luzmaximilian@gmail.com>,
+        Maxim Levitsky <maximlevitsky@gmail.com>,
+        Michael Buesch <m@bues.ch>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Michael Jamet <michael.jamet@intel.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        Mike Christie <michael.christie@oracle.com>,
+        Moritz Fischer <mdf@kernel.org>,
+        Ohad Ben-Cohen <ohad@wizery.com>,
+        Pali =?iso-8859-1?Q?Roh=E1r?= <pali@kernel.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Peter Oberparleiter <oberpar@linux.ibm.com>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        =?utf-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>,
+        Rich Felker <dalias@libc.org>,
+        Rikard Falkeborn <rikard.falkeborn@gmail.com>,
+        Rob Herring <robh@kernel.org>,
+        Russell King <linux@armlinux.org.uk>,
+        "Russell King (Oracle)" <rmk+kernel@armlinux.org.uk>,
+        Samuel Holland <samuel@sholland.org>,
+        Samuel Iglesias Gonsalvez <siglesias@igalia.com>,
+        SeongJae Park <sjpark@amazon.de>,
+        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+        Stefano Stabellini <sstabellini@kernel.org>,
+        Stefan Richter <stefanr@s5r6.in-berlin.de>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Stephen Hemminger <sthemmin@microsoft.com>,
+        Sudeep Holla <sudeep.holla@arm.com>,
+        Sven Van Asbroeck <TheSven73@gmail.com>,
+        Takashi Iwai <tiwai@suse.com>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Thorsten Scherer <t.scherer@eckelmann.de>,
+        Tomas Winkler <tomas.winkler@intel.com>,
+        Tom Rix <trix@redhat.com>,
+        Tyrel Datwyler <tyreld@linux.ibm.com>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Vineeth Vijayan <vneethv@linux.ibm.com>,
+        Vinod Koul <vkoul@kernel.org>,
+        Vishal Verma <vishal.l.verma@intel.com>,
+        Wei Liu <wei.liu@kernel.org>,
+        William Breathitt Gray <vilhelm.gray@gmail.com>,
+        Wolfram Sang <wsa@kernel.org>, Wu Hao <hao.wu@intel.com>,
+        Yehezkel Bernat <YehezkelShB@gmail.com>,
+        Yoshinori Sato <ysato@users.sourceforge.jp>,
+        YueHaibing <yuehaibing@huawei.com>,
+        Yufen Yu <yuyufen@huawei.com>, alsa-devel@alsa-project.org,
+        dmaengine@vger.kernel.org, greybus-dev@lists.linaro.org,
+        industrypack-devel@lists.sourceforge.net, kvm@vger.kernel.org,
+        linux1394-devel@lists.sourceforge.net, linux-acpi@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-arm-msm@vger.kernel.org, linux-cxl@vger.kernel.org,
+        linux-fpga@vger.kernel.org, linux-hyperv@vger.kernel.org,
+        linux-i2c@vger.kernel.org, linux-i3c@lists.infradead.org,
+        linux-input@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-m68k@lists.linux-m68k.org, linux-media@vger.kernel.org,
+        linux-mips@vger.kernel.org, linux-mmc@vger.kernel.org,
+        linux-ntb@googlegroups.com, linux-parisc@vger.kernel.org,
+        linux-pci@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        linux-remoteproc@vger.kernel.org, linux-s390@vger.kernel.org,
+        linux-scsi@vger.kernel.org, linux-serial@vger.kernel.org,
+        linux-sh@vger.kernel.org, linux-spi@vger.kernel.org,
+        linux-staging@lists.linux.dev, linux-sunxi@lists.linux.dev,
+        linux-usb@vger.kernel.org, linux-wireless@vger.kernel.org,
+        netdev@vger.kernel.org, nvdimm@lists.linux.dev,
+        platform-driver-x86@vger.kernel.org, sparclinux@vger.kernel.org,
+        target-devel@vger.kernel.org,
+        virtualization@lists.linux-foundation.org,
+        xen-devel@lists.xenproject.org
+Subject: Re: [PATCH v4 0/5] bus: Make remove callback return void
+Message-ID: <YPfyZen4Y0uDKqDT@kroah.com>
+References: <20210713193522.1770306-1-u.kleine-koenig@pengutronix.de>
 MIME-Version: 1.0
-In-Reply-To: <4a745955-8e43-3024-a004-0db0e084d74f@linux-m68k.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210713193522.1770306-1-u.kleine-koenig@pengutronix.de>
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-Hi Greg,
+On Tue, Jul 13, 2021 at 09:35:17PM +0200, Uwe Kleine-König wrote:
+> Hello,
+> 
+> this is v4 of the final patch set for my effort to make struct
+> bus_type::remove return void.
+> 
+> The first four patches contain cleanups that make some of these
+> callbacks (more obviously) always return 0. They are acked by the
+> respective maintainers. Bjorn Helgaas explicitly asked to include the
+> pci patch (#1) into this series, so Greg taking this is fine. I assume
+> the s390 people are fine with Greg taking patches #2 to #4, too, they
+> didn't explicitly said so though.
+> 
+> The last patch actually changes the prototype and so touches quite some
+> drivers and has the potential to conflict with future developments, so I
+> consider it beneficial to put these patches into next soon. I expect
+> that it will be Greg who takes the complete series, he already confirmed
+> via irc (for v2) to look into this series.
+> 
+> The only change compared to v3 is in the fourth patch where I modified a
+> few more drivers to fix build failures. Some of them were found by build
+> bots (thanks!), some of them I found myself using a regular expression
+> search. The newly modified files are:
+> 
+>  arch/sparc/kernel/vio.c
+>  drivers/nubus/bus.c
+>  drivers/sh/superhyway/superhyway.c
+>  drivers/vlynq/vlynq.c
+>  drivers/zorro/zorro-driver.c
+>  sound/ac97/bus.c
+> 
+> Best regards
+> Uwe
 
-On 21/07/21 1:00 AM, Greg Ungerer wrote:
-> Hi Angelo,
-> 
-> On 21/7/21 4:53 am, Angelo Dureghello wrote:
->> Hi Greg,
->>
->> sorry was away for some vacation time.
->>
->> Is there still any job required here ?
-> 
-> No :-)
-> I modified the change as per my suggestions below - so I could push to 
-> m68knommu git tree.
-> (Otherwise It does not compile). See:
-> 
-> https://git.kernel.org/pub/scm/linux/kernel/git/gerg/m68knommu.git/commit/?h=for-next&id=64151620227a2fcb13dae0b99b6a1003edb38c67 
-> 
-> 
+Now queued up.  I can go make a git tag that people can pull from after
+0-day is finished testing this to verify all is good, if others need it.
 
-Super thanks ! Will check this properly next time.
+thanks,
 
-> Regards
-> Greg
-> 
-> 
-> 
-
-Regards,
-Angelo
-
+greg k-h
