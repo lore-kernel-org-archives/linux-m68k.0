@@ -2,117 +2,108 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-15.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
+X-Spam-Status: No, score=-10.2 required=3.0 tests=BAYES_00,DKIM_INVALID,
+	DKIM_SIGNED,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
+	MENTIONS_GIT_HOSTING,NICE_REPLY_A,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1
 	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 454CFC07E9B
-	for <linux-m68k@archiver.kernel.org>; Wed, 21 Jul 2021 11:24:19 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 07148C07E9B
+	for <linux-m68k@archiver.kernel.org>; Wed, 21 Jul 2021 11:27:30 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 25A6661019
-	for <linux-m68k@archiver.kernel.org>; Wed, 21 Jul 2021 11:24:19 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id D7D1760FED
+	for <linux-m68k@archiver.kernel.org>; Wed, 21 Jul 2021 11:27:29 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237795AbhGUKni (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Wed, 21 Jul 2021 06:43:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60628 "EHLO
+        id S237983AbhGUKnm (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Wed, 21 Jul 2021 06:43:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54326 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239699AbhGUKGQ (ORCPT
-        <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Wed, 21 Jul 2021 06:06:16 -0400
-Received: from mail-pj1-x1036.google.com (mail-pj1-x1036.google.com [IPv6:2607:f8b0:4864:20::1036])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 43A28C0610E0
-        for <linux-m68k@lists.linux-m68k.org>; Wed, 21 Jul 2021 03:44:51 -0700 (PDT)
-Received: by mail-pj1-x1036.google.com with SMTP id g22-20020a17090a5796b02901763aca3df6so768609pji.5
-        for <linux-m68k@lists.linux-m68k.org>; Wed, 21 Jul 2021 03:44:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=iFUwahSmjzwEO3iNL/tyqfaZAA7mIcEImQPSmKf6ov8=;
-        b=Li9+WtqETLBhV/JQP66cuGPV8yJNrTiXyHeIizNhq8dWV4nVxd4XSjGkJnXDTbBpJA
-         YnhMbrIYZo/Omzw/W0xqwXwLSYagTZ/FNE+hj6ZUT72g1cyMgnouieKGoAgCu2jY1rRv
-         x7axV9bwZbmQNdq+CsMd1wnSIhXBlIN0wQQz+4TQXJC1cKNWdqIhlWLkdm891JnGKdTH
-         FODeXsqHlrX2oDe5Kxx8K4oIfKZSgcqQ9OTe0GrNmWCLAVORUARraFefJk5QE3YPpu++
-         y3ivxivbLUL8hbaURCWB65C/kHR9+5y76eczMAdSxA0AodrXv3ToleV+2p1L0oGjpreE
-         yuVw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=iFUwahSmjzwEO3iNL/tyqfaZAA7mIcEImQPSmKf6ov8=;
-        b=sT6eGPbiDRUSJ6ga6WksApm8xaO3NcrLekWEjh3jpX1J2oYrVNg84IHtxfwrpT7rG5
-         +ThPS2mtX0vBesb1fqNHl4PR8aTIWxw5O3RRfoI81nAtJAs96O6K8sgyq/dLJBh2sV7o
-         1aXdVXXYZQ6Pp7HAlLzM0+hnFH0id1/rliL8Gvp080hENL38uSYSr60Z0WXwWj169vOE
-         sriY1P7J7EZcNJ3p4R9OUqtfzxxaWiu/DtLSKXDt760fe4r78PQgIKLYCCKdYovcYkxR
-         tL4H4B9oGbu/dmB87mfp9Cvn+/uoVyGr4XV4YrQwIgqHWv7BQKc7EDTbMgFivxxevUel
-         sItg==
-X-Gm-Message-State: AOAM530ZneRTBfsAvu6ul/vjwT7xoVMZ7O5l8DDTOMCYXIh0k4zwRW+i
-        /dvZe030Rh/MtEHOisvXuho=
-X-Google-Smtp-Source: ABdhPJz4f+r9jmRbY0sqHuYuIM0bdz13iA0DYKeoLSez28UkKZJTjZ8MJmq+aUu1Xc3ZCP1y7KzchA==
-X-Received: by 2002:a17:90a:c095:: with SMTP id o21mr34755519pjs.53.1626864290666;
-        Wed, 21 Jul 2021 03:44:50 -0700 (PDT)
-Received: from localhost.localdomain ([2604:a880:1:20::1f:7001])
-        by smtp.gmail.com with ESMTPSA id 85sm26965182pfz.76.2021.07.21.03.44.49
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 21 Jul 2021 03:44:50 -0700 (PDT)
-From:   Wende Tan <twd2.me@gmail.com>
-To:     geert@linux-m68k.org, linux-m68k@lists.linux-m68k.org
-Cc:     Wende Tan <twd2.me@gmail.com>, linux-kernel@vger.kernel.org,
-        lkp@intel.com
-Subject: [PATCH] m68k: Remove redefinitions of `PMD_SIZE`, `PMD_MASK`, etc.
-Date:   Wed, 21 Jul 2021 10:43:18 +0000
-Message-Id: <20210721104318.1070133-1-twd2.me@gmail.com>
-X-Mailer: git-send-email 2.25.1
+        with ESMTP id S238477AbhGUJe3 (ORCPT
+        <rfc822;linux-m68k@vger.kernel.org>); Wed, 21 Jul 2021 05:34:29 -0400
+Received: from mail.kernel-space.org (unknown [IPv6:2a01:4f8:c2c:5a84::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 097ABC0613B7;
+        Wed, 21 Jul 2021 03:12:01 -0700 (PDT)
+Received: from ziongate (localhost [127.0.0.1])
+        by ziongate (OpenSMTPD) with ESMTP id fc018ed5;
+        Wed, 21 Jul 2021 10:05:19 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha1; c=simple; d=kernel-space.org; h=subject
+        :to:cc:references:from:message-id:date:mime-version:in-reply-to
+        :content-type:content-transfer-encoding; s=default; bh=WH9fkuBaC
+        W6AXKnQB5kTe3bEZcI=; b=aJC1LttRyCOYIJHk3dMMGRjzmoSMV2i128E8fx9nu
+        CrM+rE6ZbT/Bgkv+/MMnzDGDSuiMRXyyOgA/ptcr2KBuPC2B8b2sK9AL60E4aswl
+        Y3rkMaSzjHz6RL1R3fBcitZRgK+GxBDUslOiz+WRfitGLxZy8gsxfUjphfUs3qFx
+        qI=
+DomainKey-Signature: a=rsa-sha1; c=simple; d=kernel-space.org; h=subject
+        :to:cc:references:from:message-id:date:mime-version:in-reply-to
+        :content-type:content-transfer-encoding; q=dns; s=default; b=lJq
+        3EJ7N4tjRltDCDhDVzqzOEcY7vkcvhBaJGWfDcDxaDb6byhpx/OzotM8g/2gQmJZ
+        obGLrM1mL2JDOjlgtZTZrtoiyoJMS074j0Nfc0tMxVtjDFmEsq6p5BEgwSOmMPoR
+        /GrzTxDP6DRgFu+uMCDFm8d15wWkzZibyhDBGv+A=
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel-space.org;
+        s=20190913; t=1626861919;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=tT1drKIFh/pk2IunUXW1WLo26FZPmF/ilo2ON2O/XFI=;
+        b=JRt/Xgg3GxPZX12NhSc7zQuxBsl2oslzQlKwdQNOUH7HQdGWEja1ytPbpCpQiOW6bJyrUd
+        sii6QkRClEHnOwggnf1KafEx4GAybdtr4+NkE7iDH2VBSLc9cAvDeTnGfI1Iz6IWG+7Dby
+        bub1sCNHMq+taWaUuVpmk2efMA3H33w=
+Received: from [192.168.0.2] (host-79-44-236-76.retail.telecomitalia.it [79.44.236.76])
+        by ziongate (OpenSMTPD) with ESMTPSA id 8b877209 (TLSv1.3:TLS_AES_256_GCM_SHA384:256:NO);
+        Wed, 21 Jul 2021 10:05:19 +0000 (UTC)
+Subject: Re: [PATCH v5 3/5] m68k: m5441x: add flexcan support
+To:     Greg Ungerer <gerg@linux-m68k.org>, wg@grandegger.com,
+        mkl@pengutronix.de
+Cc:     geert@linux-m68k.org, linux-m68k@vger.kernel.org,
+        linux-can@vger.kernel.org, qiangqing.zhang@nxp.com
+References: <20210702094841.327679-1-angelo@kernel-space.org>
+ <20210702094841.327679-3-angelo@kernel-space.org>
+ <1a95b055-5d14-f43e-81dd-d0a0ddbdb1f1@linux-m68k.org>
+ <aaa06e75-bcfa-d6ae-a994-630a74501f6b@kernel-space.org>
+ <4a745955-8e43-3024-a004-0db0e084d74f@linux-m68k.org>
+From:   Angelo Dureghello <angelo@kernel-space.org>
+Message-ID: <e1e702b8-9124-b063-a17c-217336f8c840@kernel-space.org>
+Date:   Wed, 21 Jul 2021 12:04:10 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <4a745955-8e43-3024-a004-0db0e084d74f@linux-m68k.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-Remove redefinitions of `PMD_SIZE`, `PMD_MASK`, `PTRS_PER_PMD`,
-and `__PAGETABLE_PMD_FOLDED` when PGTABLE_LEVELS == 2 (i.e. SUN3 ||
-COLDFIRE).  They have already been defined in
-`asm-generic/pgtable-nopmd.h`.
+Hi Greg,
 
-See also https://lore.kernel.org/lkml/202107201907.lqC6B3dF-lkp@intel.com/#t
+On 21/07/21 1:00 AM, Greg Ungerer wrote:
+> Hi Angelo,
+> 
+> On 21/7/21 4:53 am, Angelo Dureghello wrote:
+>> Hi Greg,
+>>
+>> sorry was away for some vacation time.
+>>
+>> Is there still any job required here ?
+> 
+> No :-)
+> I modified the change as per my suggestions below - so I could push to 
+> m68knommu git tree.
+> (Otherwise It does not compile). See:
+> 
+> https://git.kernel.org/pub/scm/linux/kernel/git/gerg/m68knommu.git/commit/?h=for-next&id=64151620227a2fcb13dae0b99b6a1003edb38c67 
+> 
+> 
 
-Reported-by: kernel test robot <lkp@intel.com>
-Signed-off-by: Wende Tan <twd2.me@gmail.com>
----
- arch/m68k/include/asm/pgtable_mm.h | 6 +-----
- 1 file changed, 1 insertion(+), 5 deletions(-)
+Super thanks ! Will check this properly next time.
 
-diff --git a/arch/m68k/include/asm/pgtable_mm.h b/arch/m68k/include/asm/pgtable_mm.h
-index 143ba7de9bda..51653e8216a7 100644
---- a/arch/m68k/include/asm/pgtable_mm.h
-+++ b/arch/m68k/include/asm/pgtable_mm.h
-@@ -37,9 +37,9 @@
- /* PMD_SHIFT determines the size of the area a second-level page table can map */
- #if CONFIG_PGTABLE_LEVELS == 3
- #define PMD_SHIFT	18
--#endif
- #define PMD_SIZE	(1UL << PMD_SHIFT)
- #define PMD_MASK	(~(PMD_SIZE-1))
-+#endif
- 
- /* PGDIR_SHIFT determines what a third-level page table entry can map */
- #ifdef CONFIG_SUN3
-@@ -58,13 +58,9 @@
-  */
- #ifdef CONFIG_SUN3
- #define PTRS_PER_PTE   16
--#define __PAGETABLE_PMD_FOLDED 1
--#define PTRS_PER_PMD   1
- #define PTRS_PER_PGD   2048
- #elif defined(CONFIG_COLDFIRE)
- #define PTRS_PER_PTE	512
--#define __PAGETABLE_PMD_FOLDED 1
--#define PTRS_PER_PMD	1
- #define PTRS_PER_PGD	1024
- #else
- #define PTRS_PER_PTE	64
--- 
-2.25.1
+> Regards
+> Greg
+> 
+> 
+> 
+
+Regards,
+Angelo
 
