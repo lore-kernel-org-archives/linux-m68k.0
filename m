@@ -2,420 +2,168 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-13.8 required=3.0 tests=BAYES_00,
+X-Spam-Status: No, score=-15.3 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no
-	version=3.4.0
+	MAILING_LIST_MULTI,NICE_REPLY_A,SPF_HELO_NONE,SPF_PASS,URIBL_RED,
+	USER_AGENT_SANE_1 autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 78B5AC4338F
-	for <linux-m68k@archiver.kernel.org>; Sun, 25 Jul 2021 17:22:24 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 14AADC4338F
+	for <linux-m68k@archiver.kernel.org>; Sun, 25 Jul 2021 20:48:40 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 5143460698
-	for <linux-m68k@archiver.kernel.org>; Sun, 25 Jul 2021 17:22:24 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id E7221604DC
+	for <linux-m68k@archiver.kernel.org>; Sun, 25 Jul 2021 20:48:39 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231156AbhGYQlx (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Sun, 25 Jul 2021 12:41:53 -0400
-Received: from zeniv-ca.linux.org.uk ([142.44.231.140]:46066 "EHLO
-        zeniv-ca.linux.org.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229545AbhGYQlx (ORCPT
+        id S230515AbhGYUIJ (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Sun, 25 Jul 2021 16:08:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45282 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229518AbhGYUII (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Sun, 25 Jul 2021 12:41:53 -0400
-Received: from viro by zeniv-ca.linux.org.uk with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1m7hnR-003rxN-PU; Sun, 25 Jul 2021 17:20:13 +0000
-Date:   Sun, 25 Jul 2021 17:20:13 +0000
-From:   Al Viro <viro@zeniv.linux.org.uk>
-To:     linux-m68k@lists.linux-m68k.org
-Cc:     Geert Uytterhoeven <geert@linux-m68k.org>,
-        Greg Ungerer <gerg@linux-m68k.org>,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH 3/3] m68k: leave stack mangling to asm wrapper of sigreturn()
-Message-ID: <YP2dTQPm1wGPWFgD@zeniv-ca.linux.org.uk>
-References: <YP2c1xk9LJ0zE3KW@zeniv-ca.linux.org.uk>
+        Sun, 25 Jul 2021 16:08:08 -0400
+Received: from mail-pj1-x102a.google.com (mail-pj1-x102a.google.com [IPv6:2607:f8b0:4864:20::102a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA346C061760
+        for <linux-m68k@lists.linux-m68k.org>; Sun, 25 Jul 2021 13:48:37 -0700 (PDT)
+Received: by mail-pj1-x102a.google.com with SMTP id o44-20020a17090a0a2fb0290176ca3e5a2fso4037492pjo.1
+        for <linux-m68k@lists.linux-m68k.org>; Sun, 25 Jul 2021 13:48:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-transfer-encoding:content-language;
+        bh=+soFvlggdNemFNXTJHD7EfeCnCEyuBk0Q2su2ig+5L8=;
+        b=YbUUTDNk7o/e5YA1/aFcqfEKITpxP2h0EuKnA5r7WqwXnMivekCIcIQmbg1iwboQka
+         fMNAUchCEEB35l1T/bMYGc4Sco/iTnVs4acwuzDgPrUskiEFpXE7Wo7xeXm4WQ1ueKgZ
+         gpW4VqTCNPsKW2jzcpV9HwJ++paEjxxpS0eLdAAZQXnhUOezgKhIZxwQDlQIdDYuVJuM
+         J04nWgVmTOynoPC36dUcrRFZvLSu2oPivRCcC6GpKNEeN5Crtj4eM4KLw/79ufVw0Ra7
+         sC2yRovewpVjZboSunDlpEPTPt71zdToIv2FgNvAJE304e8VsiLCfXGcmAAI3ibkNOGl
+         uVvw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=+soFvlggdNemFNXTJHD7EfeCnCEyuBk0Q2su2ig+5L8=;
+        b=T/Cw16fsvfO2tC039SCxZerZb18AkMthoz39q0JI40gkO6iG+6jfXvpl4t3CeGc7mC
+         a1c3honeGgsaHKNDvAtLpIpI2cshPAiGEoueUbZ9Dh3PmU9C+eRHyfR5MJSZ0XOjXjcS
+         TsCv+k4mWgNVSyqRyl/faTyr6px38aBAjAik2psQMXzu2q+Ym1Vqncd54SRaz9cZ76hy
+         iqhV5rDz/PrhCPnUU1FKbTAJLs9Ohvlsm99aNggUL+D9/5oBTE2uaMYUihjet7NY70nm
+         Q//5NxuA8Rwo5a2+mVlINNHTf/fg9k7+I+PWproPDWBEtoJxaiO0Lf82M8sRUyBmQTV5
+         rpZQ==
+X-Gm-Message-State: AOAM5314dBbqK8UDd0ADWcHtGbgYvnCE0CBWP2BT6XbLdh8LwEtbTNTY
+        dPgTh8p8H7xl1osJo6A7zJg=
+X-Google-Smtp-Source: ABdhPJxAwUjtf6aH2nU8kNF07zj4jThELQp/vaYPpNBhwADETnR0gtGwQwM2yIarqctVz6Yes5QGZg==
+X-Received: by 2002:a62:15c5:0:b029:32c:ea9f:a5ed with SMTP id 188-20020a6215c50000b029032cea9fa5edmr14360945pfv.27.1627246117087;
+        Sun, 25 Jul 2021 13:48:37 -0700 (PDT)
+Received: from ?IPv6:2001:df0:0:200c:29ad:8fa7:168b:a8c8? ([2001:df0:0:200c:29ad:8fa7:168b:a8c8])
+        by smtp.gmail.com with ESMTPSA id r128sm12785460pfc.155.2021.07.25.13.48.33
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 25 Jul 2021 13:48:36 -0700 (PDT)
+Subject: Re: [PATCH v4 3/3] m68k: track syscalls being traced with shallow
+ user context stack
+To:     Geert Uytterhoeven <geert@linux-m68k.org>
+Cc:     Linux-Arch <linux-arch@vger.kernel.org>,
+        linux-m68k <linux-m68k@lists.linux-m68k.org>,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Andreas Schwab <schwab@linux-m68k.org>
+References: <1624407696-20180-1-git-send-email-schmitzmic@gmail.com>
+ <1624407696-20180-4-git-send-email-schmitzmic@gmail.com>
+ <CAMuHMdVA5d7z6awGrpJ+Tb3PRxz7Nczd_SLXZ=cAwsS8tFU_vg@mail.gmail.com>
+From:   Michael Schmitz <schmitzmic@gmail.com>
+Message-ID: <f99d3d82-150b-62fc-3b38-141710a4826e@gmail.com>
+Date:   Mon, 26 Jul 2021 08:48:30 +1200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YP2c1xk9LJ0zE3KW@zeniv-ca.linux.org.uk>
-Sender: Al Viro <viro@ftp.linux.org.uk>
+In-Reply-To: <CAMuHMdVA5d7z6awGrpJ+Tb3PRxz7Nczd_SLXZ=cAwsS8tFU_vg@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-sigreturn has to deal with an unpleasant problem - exception stack frames
-have different sizes, depending upon the exception (and processor model, as
-well) and variable-sized part of exception frame may contain information
-needed for instruction restart.  So when signal handler terminates and calls
-sigreturn to resume the execution at the place where we'd been when we caught
-the signal, it has to rearrange the frame at the bottom of kernel stack.
-Worse, it might need to open a gap in the kernel stack, shifting pt_regs
-towards lower addresses.
+Hi Geert,
 
-Doing that from C is insane - we'd need to shift stack frames (return addresses,
-local variables, etc.) of C call chain, right under the nose of compiler and
-hope it won't fall apart horribly.  What had been actually done is only slightly
-less insane - an inline asm in mangle_kernel_stack() moved the stuff around,
-then reset stack pointer and jumped to label in asm glue.
+thanks for the feedback!
 
-However, we can avoid all that mess if the asm wrapper we have to use anyway
-would reserve some space on the stack between switch_stack and the C stack
-frame of do_{rt_,}sigreturn().   Then C part can simply memmove() pt_regs +
-switch_stack, memcpy() the variable part of exception frame into the opened
-gap - all of that without inline asm, buggering C call chain, magical jumps
-to asm labels, etc.
+As far as I understand, Eric's 'refactor exit()' patch series has 
+obsoleted this band-aid fix of mine. The last remnant of code using 
+do_exit() is our fpsp040 copyin/copyout exception handling, and there's 
+another patch in testing for that. (I'd need access to a 040 hardware 
+setup to properly test that one, but that's a different matter.)
 
-Asm wrapper would need to know where the moved switch_stack has ended up -
-it might have been shifted into the gap we'd reserved before do_rt_sigreturn()
-call.  That's where it needs to set the stack pointer to.  So let the C part
-return just that and be done with that.
+Eric, Andreas - please correct me if I'm wrong (again).
 
-While we are at it, the call of berr_040cleanup() we need to do when
-returning via 68040 bus error exception frame can be moved into C part
-as well.
+Just out of interest - what would be the correct way to set/clear a 
+single bit on Coldfire? Add/subtract the 1<<bit value?
 
-Signed-off-by: Al Viro <viro@zeniv.linux.org.uk>
----
- arch/m68k/68000/entry.S       |   3 --
- arch/m68k/coldfire/entry.S    |   3 --
- arch/m68k/include/asm/traps.h |   4 ++
- arch/m68k/kernel/entry.S      |  55 ++++++++++-----------
- arch/m68k/kernel/signal.c     | 111 ++++++++++++++++--------------------------
- 5 files changed, 71 insertions(+), 105 deletions(-)
+Cheers,
 
-diff --git a/arch/m68k/68000/entry.S b/arch/m68k/68000/entry.S
-index 259b3661b614..cce465e850fe 100644
---- a/arch/m68k/68000/entry.S
-+++ b/arch/m68k/68000/entry.S
-@@ -25,7 +25,6 @@
- .globl system_call
- .globl resume
- .globl ret_from_exception
--.globl ret_from_signal
- .globl sys_call_table
- .globl bad_interrupt
- .globl inthandler1
-@@ -59,8 +58,6 @@ do_trace:
- 	subql	#4,%sp			/* dummy return address */
- 	SAVE_SWITCH_STACK
- 	jbsr	syscall_trace_leave
--
--ret_from_signal:
- 	RESTORE_SWITCH_STACK
- 	addql	#4,%sp
- 	jra	ret_from_exception
-diff --git a/arch/m68k/coldfire/entry.S b/arch/m68k/coldfire/entry.S
-index d43a02795a4a..68adb7b5b296 100644
---- a/arch/m68k/coldfire/entry.S
-+++ b/arch/m68k/coldfire/entry.S
-@@ -51,7 +51,6 @@ sw_usp:
- .globl system_call
- .globl resume
- .globl ret_from_exception
--.globl ret_from_signal
- .globl sys_call_table
- .globl inthandler
- 
-@@ -98,8 +97,6 @@ ENTRY(system_call)
- 	subql	#4,%sp			/* dummy return address */
- 	SAVE_SWITCH_STACK
- 	jbsr	syscall_trace_leave
--
--ret_from_signal:
- 	RESTORE_SWITCH_STACK
- 	addql	#4,%sp
- 
-diff --git a/arch/m68k/include/asm/traps.h b/arch/m68k/include/asm/traps.h
-index 4aff3358fbaf..a9d5c1c870d3 100644
---- a/arch/m68k/include/asm/traps.h
-+++ b/arch/m68k/include/asm/traps.h
-@@ -267,6 +267,10 @@ struct frame {
-     } un;
- };
- 
-+#ifdef CONFIG_M68040
-+asmlinkage void berr_040cleanup(struct frame *fp);
-+#endif
-+
- #endif /* __ASSEMBLY__ */
- 
- #endif /* _M68K_TRAPS_H */
-diff --git a/arch/m68k/kernel/entry.S b/arch/m68k/kernel/entry.S
-index ff9e842cec0f..8fa9822b5922 100644
---- a/arch/m68k/kernel/entry.S
-+++ b/arch/m68k/kernel/entry.S
-@@ -78,20 +78,38 @@ ENTRY(__sys_clone3)
- 
- ENTRY(sys_sigreturn)
- 	SAVE_SWITCH_STACK
--	movel	%sp,%sp@-		  | switch_stack pointer
--	pea	%sp@(SWITCH_STACK_SIZE+4) | pt_regs pointer
-+	movel	%sp,%a1			  	| switch_stack pointer
-+	lea	%sp@(SWITCH_STACK_SIZE),%a0	| pt_regs pointer
-+	lea     %sp@(-84),%sp			| leave a gap
-+	movel	%a1,%sp@-
-+	movel	%a0,%sp@-
- 	jbsr	do_sigreturn
--	addql	#8,%sp
--	RESTORE_SWITCH_STACK
--	rts
-+	jra	1f				| shared with rt_sigreturn()
- 
- ENTRY(sys_rt_sigreturn)
- 	SAVE_SWITCH_STACK
--	movel	%sp,%sp@-		  | switch_stack pointer
--	pea	%sp@(SWITCH_STACK_SIZE+4) | pt_regs pointer
-+	movel	%sp,%a1			  	| switch_stack pointer
-+	lea	%sp@(SWITCH_STACK_SIZE),%a0	| pt_regs pointer
-+	lea     %sp@(-84),%sp			| leave a gap
-+	movel	%a1,%sp@-
-+	movel	%a0,%sp@-
-+	| stack contents:
-+	|   [original pt_regs address] [original switch_stack address]
-+	|   [gap] [switch_stack] [pt_regs] [exception frame]
- 	jbsr	do_rt_sigreturn
--	addql	#8,%sp
-+
-+1:
-+	| stack contents now:
-+	|   [original pt_regs address] [original switch_stack address]
-+	|   [unused part of the gap] [moved switch_stack] [moved pt_regs]
-+	|   [replacement exception frame]
-+	| return value of do_{rt_,}sigreturn() points to moved switch_stack.
-+
-+	movel	%d0,%sp				| discard the leftover junk
- 	RESTORE_SWITCH_STACK
-+	| stack contents now is just [syscall return address] [pt_regs] [frame]
-+	| return pt_regs.d0
-+	movel	%sp@(PT_OFF_D0+4),%d0
- 	rts
- 
- ENTRY(buserr)
-@@ -182,27 +200,6 @@ do_trace_exit:
- 	addql	#4,%sp
- 	jra	.Lret_from_exception
- 
--ENTRY(ret_from_signal)
--	movel	%curptr@(TASK_STACK),%a1
--	tstb	%a1@(TINFO_FLAGS+2)
--	jge	1f
--	lea	%sp@(SWITCH_STACK_SIZE),%a1
--	movel	%a1,%curptr@(TASK_THREAD+THREAD_ESP0)
--	jbsr	syscall_trace
--1:	RESTORE_SWITCH_STACK
--	addql	#4,%sp
--/* on 68040 complete pending writebacks if any */
--#ifdef CONFIG_M68040
--	bfextu	%sp@(PT_OFF_FORMATVEC){#0,#4},%d0
--	subql	#7,%d0				| bus error frame ?
--	jbne	1f
--	movel	%sp,%sp@-
--	jbsr	berr_040cleanup
--	addql	#4,%sp
--1:
--#endif
--	jra	.Lret_from_exception
--
- ENTRY(system_call)
- 	SAVE_ALL_SYS
- 
-diff --git a/arch/m68k/kernel/signal.c b/arch/m68k/kernel/signal.c
-index cd11eb101eac..338817d0cb3f 100644
---- a/arch/m68k/kernel/signal.c
-+++ b/arch/m68k/kernel/signal.c
-@@ -641,56 +641,35 @@ static inline void siginfo_build_tests(void)
- static int mangle_kernel_stack(struct pt_regs *regs, int formatvec,
- 			       void __user *fp)
- {
--	int fsize = frame_extra_sizes(formatvec >> 12);
--	if (fsize < 0) {
-+	int extra = frame_extra_sizes(formatvec >> 12);
-+	char buf[sizeof_field(struct frame, un)];
-+
-+	if (extra < 0) {
- 		/*
- 		 * user process trying to return with weird frame format
- 		 */
- 		pr_debug("user process returning with weird frame format\n");
--		return 1;
-+		return -1;
- 	}
--	if (!fsize) {
--		regs->format = formatvec >> 12;
--		regs->vector = formatvec & 0xfff;
--	} else {
--		struct switch_stack *sw = (struct switch_stack *)regs - 1;
--		/* yes, twice as much as max(sizeof(frame.un.fmt<x>)) */
--		unsigned long buf[sizeof_field(struct frame, un) / 2];
--
--		/* that'll make sure that expansion won't crap over data */
--		if (copy_from_user(buf + fsize / 4, fp, fsize))
--			return 1;
--
--		/* point of no return */
--		regs->format = formatvec >> 12;
--		regs->vector = formatvec & 0xfff;
--#define frame_offset (sizeof(struct pt_regs)+sizeof(struct switch_stack))
--		__asm__ __volatile__ (
--#ifdef CONFIG_COLDFIRE
--			 "   movel %0,%/sp\n\t"
--			 "   bra ret_from_signal\n"
--#else
--			 "   movel %0,%/a0\n\t"
--			 "   subl %1,%/a0\n\t"     /* make room on stack */
--			 "   movel %/a0,%/sp\n\t"  /* set stack pointer */
--			 /* move switch_stack and pt_regs */
--			 "1: movel %0@+,%/a0@+\n\t"
--			 "   dbra %2,1b\n\t"
--			 "   lea %/sp@(%c3),%/a0\n\t" /* add offset of fmt */
--			 "   lsrl  #2,%1\n\t"
--			 "   subql #1,%1\n\t"
--			 /* copy to the gap we'd made */
--			 "2: movel %4@+,%/a0@+\n\t"
--			 "   dbra %1,2b\n\t"
--			 "   bral ret_from_signal\n"
-+	if (extra && copy_from_user(buf, fp, extra))
-+		return -1;
-+	regs->format = formatvec >> 12;
-+	regs->vector = formatvec & 0xfff;
-+	if (extra) {
-+		void *p = (struct switch_stack *)regs - 1;
-+		struct frame *new = (void *)regs - extra;
-+		int size = sizeof(struct pt_regs)+sizeof(struct switch_stack);
-+
-+		memmove(p - extra, p, size);
-+		memcpy(p - extra + size, buf, extra);
-+		current->thread.esp0 = (unsigned long)&new->ptregs;
-+#ifdef CONFIG_M68040
-+		/* on 68040 complete pending writebacks if any */
-+		if (new->ptregs.format == 7) // bus error frame
-+			berr_040cleanup(new);
- #endif
--			 : /* no outputs, it doesn't ever return */
--			 : "a" (sw), "d" (fsize), "d" (frame_offset/4-1),
--			   "n" (frame_offset), "a" (buf + fsize/4)
--			 : "a0");
--#undef frame_offset
- 	}
--	return 0;
-+	return extra;
- }
- 
- static inline int
-@@ -698,7 +677,6 @@ restore_sigcontext(struct pt_regs *regs, struct sigcontext __user *usc, void __u
- {
- 	int formatvec;
- 	struct sigcontext context;
--	int err = 0;
- 
- 	siginfo_build_tests();
- 
-@@ -707,7 +685,7 @@ restore_sigcontext(struct pt_regs *regs, struct sigcontext __user *usc, void __u
- 
- 	/* get previous context */
- 	if (copy_from_user(&context, usc, sizeof(context)))
--		goto badframe;
-+		return -1;
- 
- 	/* restore passed registers */
- 	regs->d0 = context.sc_d0;
-@@ -720,15 +698,10 @@ restore_sigcontext(struct pt_regs *regs, struct sigcontext __user *usc, void __u
- 	wrusp(context.sc_usp);
- 	formatvec = context.sc_formatvec;
- 
--	err = restore_fpu_state(&context);
--
--	if (err || mangle_kernel_stack(regs, formatvec, fp))
--		goto badframe;
--
--	return 0;
-+	if (restore_fpu_state(&context))
-+		return -1;
- 
--badframe:
--	return 1;
-+	return mangle_kernel_stack(regs, formatvec, fp);
- }
- 
- static inline int
-@@ -745,7 +718,7 @@ rt_restore_ucontext(struct pt_regs *regs, struct switch_stack *sw,
- 
- 	err = __get_user(temp, &uc->uc_mcontext.version);
- 	if (temp != MCONTEXT_VERSION)
--		goto badframe;
-+		return -1;
- 	/* restore passed registers */
- 	err |= __get_user(regs->d0, &gregs[0]);
- 	err |= __get_user(regs->d1, &gregs[1]);
-@@ -774,22 +747,17 @@ rt_restore_ucontext(struct pt_regs *regs, struct switch_stack *sw,
- 	err |= restore_altstack(&uc->uc_stack);
- 
- 	if (err)
--		goto badframe;
--
--	if (mangle_kernel_stack(regs, temp, &uc->uc_extra))
--		goto badframe;
-+		return -1;
- 
--	return 0;
--
--badframe:
--	return 1;
-+	return mangle_kernel_stack(regs, temp, &uc->uc_extra);
- }
- 
--asmlinkage int do_sigreturn(struct pt_regs *regs, struct switch_stack *sw)
-+asmlinkage void *do_sigreturn(struct pt_regs *regs, struct switch_stack *sw)
- {
- 	unsigned long usp = rdusp();
- 	struct sigframe __user *frame = (struct sigframe __user *)(usp - 4);
- 	sigset_t set;
-+	int size;
- 
- 	if (!access_ok(frame, sizeof(*frame)))
- 		goto badframe;
-@@ -801,20 +769,22 @@ asmlinkage int do_sigreturn(struct pt_regs *regs, struct switch_stack *sw)
- 
- 	set_current_blocked(&set);
- 
--	if (restore_sigcontext(regs, &frame->sc, frame + 1))
-+	size = restore_sigcontext(regs, &frame->sc, frame + 1);
-+	if (size < 0)
- 		goto badframe;
--	return regs->d0;
-+	return (void *)sw - size;
- 
- badframe:
- 	force_sig(SIGSEGV);
--	return 0;
-+	return sw;
- }
- 
--asmlinkage int do_rt_sigreturn(struct pt_regs *regs, struct switch_stack *sw)
-+asmlinkage void *do_rt_sigreturn(struct pt_regs *regs, struct switch_stack *sw)
- {
- 	unsigned long usp = rdusp();
- 	struct rt_sigframe __user *frame = (struct rt_sigframe __user *)(usp - 4);
- 	sigset_t set;
-+	int size;
- 
- 	if (!access_ok(frame, sizeof(*frame)))
- 		goto badframe;
-@@ -823,13 +793,14 @@ asmlinkage int do_rt_sigreturn(struct pt_regs *regs, struct switch_stack *sw)
- 
- 	set_current_blocked(&set);
- 
--	if (rt_restore_ucontext(regs, sw, &frame->uc))
-+	size = rt_restore_ucontext(regs, sw, &frame->uc);
-+	if (size < 0)
- 		goto badframe;
--	return regs->d0;
-+	return (void *)sw - size;
- 
- badframe:
- 	force_sig(SIGSEGV);
--	return 0;
-+	return sw;
- }
- 
- static inline struct pt_regs *rte_regs(struct pt_regs *regs)
--- 
-2.11.0
+     Michael
 
+
+On 25/07/21 10:05 pm, Geert Uytterhoeven wrote:
+> Hi Michael,
+>
+> On Wed, Jun 23, 2021 at 2:21 AM Michael Schmitz <schmitzmic@gmail.com> wrote:
+>> Add 'status' field to thread_info struct to hold syscall trace
+>> status info.
+>>
+>> Set flag bit in thread_info->status at syscall trace entry, clear
+>> flag bit on trace exit.
+>>
+>> Set another flag bit on entering syscall where the full stack
+>> frame has been saved. These flags can be checked whenever a
+>> syscall calls ptrace_stop().
+>>
+>> Check flag bits in get_reg()/put_reg() and prevent access to
+>> registers that are saved on the switch stack, in case the
+>> syscall did not actually save these registers on the switch
+>> stack.
+>>
+>> Tested on ARAnyM only - boots and survives running strace on a
+>> binary, nothing fancy.
+>>
+>> CC: Eric W. Biederman <ebiederm@xmission.com>
+>> CC: Linus Torvalds <torvalds@linux-foundation.org>
+>> CC: Andreas Schwab <schwab@linux-m68k.org>
+>> Signed-off-by: Michael Schmitz <schmitzmic@gmail.com>
+> Thanks for your patch!
+>
+>> --- a/arch/m68k/kernel/entry.S
+>> +++ b/arch/m68k/kernel/entry.S
+>> @@ -51,75 +51,115 @@
+>>
+>>   .text
+>>   ENTRY(__sys_fork)
+>> +       movel   %curptr@(TASK_STACK),%a1
+>> +       orb     #TIS_SWITCH_STACK, %a1@(TINFO_STATUS+3)
+> This doesn't work on Coldfire:
+>
+> arch/m68k/kernel/entry.S:55: Error: invalid instruction for this
+> architecture; needs 68000 or higher (68000 [68ec000, 68hc000, 68hc001,
+> 68008, 68302, 68306, 68307, 68322, 68356], 68010, 68020 [68k,
+> 68ec020], 68030 [68ec030], 68040 [68ec040], 68060 [68ec060], cpu32
+> [68330, 68331, 68332,
+>   68333, 68334, 68336, 68340, 68341, 68349, 68360], fidoa [fido]) --
+> statement `orb #(1<<1),%a1@(16+3)' ignored
+>
+>>          SAVE_SWITCH_STACK
+>>          jbsr    sys_fork
+>>          lea     %sp@(24),%sp
+>> +       movel   %curptr@(TASK_STACK),%a1
+>> +       andb    #TIS_NO_SWITCH_STACK, %a1@(TINFO_STATUS+3)
+> arch/m68k/kernel/entry.S:60: Error: invalid instruction for this
+> architecture; needs 68000 or higher (68000 [68ec000, 68hc000, 68hc001,
+> 68008, 68302, 68306, 68307, 68322, 68356], 68010, 68020 [68k,
+> 68ec020], 68030 [68ec030], 68040 [68ec040], 68060 [68ec060], cpu32
+> [68330, 68331, 68332, 68333, 68334, 68336, 68340, 68341, 68349,
+> 68360], fidoa [fido]) -- statement `andb #(~((1<<1))),%a1@(16+3)'
+> ignored
+>
+>>          rts
+> Gr{oetje,eeting}s,
+>
+>                          Geert
+>
