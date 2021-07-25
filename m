@@ -2,88 +2,98 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.8 required=3.0 tests=BAYES_00,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
-	autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-13.8 required=3.0 tests=BAYES_00,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B8954C4338F
-	for <linux-m68k@archiver.kernel.org>; Sun, 25 Jul 2021 14:24:49 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id EE73CC4338F
+	for <linux-m68k@archiver.kernel.org>; Sun, 25 Jul 2021 15:22:20 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 896D760241
-	for <linux-m68k@archiver.kernel.org>; Sun, 25 Jul 2021 14:24:49 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id C6F3460F38
+	for <linux-m68k@archiver.kernel.org>; Sun, 25 Jul 2021 15:22:20 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231145AbhGYNoS (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Sun, 25 Jul 2021 09:44:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45984 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230192AbhGYNoS (ORCPT
+        id S231319AbhGYOlr (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Sun, 25 Jul 2021 10:41:47 -0400
+Received: from mout.kundenserver.de ([212.227.126.133]:42403 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231283AbhGYOlh (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Sun, 25 Jul 2021 09:44:18 -0400
-Received: from mail-out.m-online.net (mail-out.m-online.net [IPv6:2001:a60:0:28:0:1:25:1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9D517C061757
-        for <linux-m68k@lists.linux-m68k.org>; Sun, 25 Jul 2021 07:24:47 -0700 (PDT)
-Received: from frontend01.mail.m-online.net (unknown [192.168.8.182])
-        by mail-out.m-online.net (Postfix) with ESMTP id 4GXlgT4TlKz1sByw;
-        Sun, 25 Jul 2021 16:24:37 +0200 (CEST)
-Received: from localhost (dynscan1.mnet-online.de [192.168.6.70])
-        by mail.m-online.net (Postfix) with ESMTP id 4GXlgT36ssz1rmXy;
-        Sun, 25 Jul 2021 16:24:37 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at mnet-online.de
-Received: from mail.mnet-online.de ([192.168.8.182])
-        by localhost (dynscan1.mail.m-online.net [192.168.6.70]) (amavisd-new, port 10024)
-        with ESMTP id c2MbuW-tLki4; Sun, 25 Jul 2021 16:24:36 +0200 (CEST)
-X-Auth-Info: S2GRYpvJ6Ix5RcLIMInDsuaROFJPacPETA21g+GmTBpMaYzcOEO82V4CzZyl1ltH
-Received: from igel.home (ppp-46-244-170-80.dynamic.mnet-online.de [46.244.170.80])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.mnet-online.de (Postfix) with ESMTPSA;
-        Sun, 25 Jul 2021 16:24:36 +0200 (CEST)
-Received: by igel.home (Postfix, from userid 1000)
-        id C05D52C2617; Sun, 25 Jul 2021 16:24:35 +0200 (CEST)
-From:   Andreas Schwab <schwab@linux-m68k.org>
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     Greg Ungerer <gerg@uclinux.org>, Will Deacon <will@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Brendan Jackman <jackmanb@google.com>,
-        kernel test robot <lkp@intel.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] m68k: Fix asm register constraints for atomic ops
-References: <20210725104618.365790-1-geert@linux-m68k.org>
-X-Yow:  Look!  A ladder!  Maybe it leads to heaven, or a sandwich!
-Date:   Sun, 25 Jul 2021 16:24:35 +0200
-In-Reply-To: <20210725104618.365790-1-geert@linux-m68k.org> (Geert
-        Uytterhoeven's message of "Sun, 25 Jul 2021 12:46:18 +0200")
-Message-ID: <87r1fm4gkc.fsf@igel.home>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/27.2 (gnu/linux)
+        Sun, 25 Jul 2021 10:41:37 -0400
+Received: from mail-wr1-f52.google.com ([209.85.221.52]) by
+ mrelayeu.kundenserver.de (mreue011 [213.165.67.97]) with ESMTPSA (Nemesis) id
+ 1MysmQ-1lCynN2qfa-00vugB for <linux-m68k@lists.linux-m68k.org>; Sun, 25 Jul
+ 2021 17:21:43 +0200
+Received: by mail-wr1-f52.google.com with SMTP id b9so7059762wrx.12
+        for <linux-m68k@lists.linux-m68k.org>; Sun, 25 Jul 2021 08:21:43 -0700 (PDT)
+X-Gm-Message-State: AOAM530kLiXbsSBzQf2qDRDBKZu0kfEDwSbkBt3tpO7xZGzdRX8FhfoV
+        sDNwYndleKEm1AR4M0PlRAiyhSjWlK7aSSQBZys=
+X-Google-Smtp-Source: ABdhPJy4pI0h4luhm+4JXMhENt6D2TnA8PlTq5W9CZjdcuAQGV0u44bA1tlmL1oLHEq6hqwVp90WdcdSjk0/o/sW8Ro=
+X-Received: by 2002:adf:f446:: with SMTP id f6mr1909349wrp.361.1627226503350;
+ Sun, 25 Jul 2021 08:21:43 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
+References: <20210725104413.318932-1-geert@linux-m68k.org>
+In-Reply-To: <20210725104413.318932-1-geert@linux-m68k.org>
+From:   Arnd Bergmann <arnd@arndb.de>
+Date:   Sun, 25 Jul 2021 17:21:26 +0200
+X-Gmail-Original-Message-ID: <CAK8P3a0aa-F6HbakzFRPv1JewLVHmrv-=DNnTfukdY-g4g0Txg@mail.gmail.com>
+Message-ID: <CAK8P3a0aa-F6HbakzFRPv1JewLVHmrv-=DNnTfukdY-g4g0Txg@mail.gmail.com>
+Subject: Re: [PATCH] m68k: Fix invalid RMW_INSNS on CPUs that lack CAS
+To:     Geert Uytterhoeven <geert@linux-m68k.org>
+Cc:     Greg Ungerer <gerg@uclinux.org>, kernel test robot <lkp@intel.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        linux-m68k <linux-m68k@lists.linux-m68k.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Provags-ID: V03:K1:BOrANnEhCvpcqnpZ+BSJe5anui1jsGjs80iokyYvdr8O3QvuyN9
+ NYZpIHkkWB4cMwUp4SLQXLVz06qt+UMLFKGzPdPGsDzCd64MiiM6WdHiHBruTHoW3MEnVe8
+ PBKVmWA256PeUMch8qO2azEAX5Fo0VfKkbj+JhNOtJNj6VDBJwXAHUX0JVLoLqtLoxBOSJt
+ U1llUCXk+bX9yLWo1ef4w==
+X-UI-Out-Filterresults: notjunk:1;V03:K0:3hnr3g/T+T8=:jXP8f/Ew6IWzXlz303Apm4
+ HnMBWIt/NS3iYPUPqAt3mcNI5HP7Y3sRIsyK6Sg7xIoRzBdECzY4wK+2yMoxtmCW4Aj/rNJ+J
+ x16Q0He/A5BlOsmBQU9DeTzNUm9XinlPnUOHJmpsWOrgaxMZcFSClvOeT0gVM9s6LzKBWpj3a
+ e+cimttk6FhCwIMlxuEt4kuVw/BMmgM7ZA8OIpxAy6levDZ2cQxzgnYS/+0UsiynQc6WGE8Az
+ /m+SohMz2v8GKY0mkgu1foEyT7XJU7c/YCWcWHODgt0LnhzTpgVgxoC3ZhZD26rEiAIIShD1c
+ OJnqLumxuR8RDgSPR3sADmcUWUr2bdlQCPq5yKdMVbCwh88kR1U+SvgXVkg0zQuBNQ17u2SHn
+ 2Hw5l3PqbCutHlSK7KfP6uOkJjiKGQY1WCoxBHO/FdaYDFvDi8CGhhb1KT6PK0qswdnnEXkn5
+ v1r48Xkbne2SAFomaDhodf4hL9xr5/4v5v583XyokIbkZvZJtr1xY9DsoDUqu5WXkMSR67DeJ
+ orkM2TB/w/e6ZDEM/hbH1GJnh/gtzfMDVPL7tWX9Ow6YBOXjHaLMnV1K3CU1SJ73GTscp9tJJ
+ hOQHFru7C3zipGcIhUevkwt8mPKlw0zQ6bxz8AhRz/cqaZJ4WMg+FDM2CvRi7Za0h911cpLNU
+ s3ECoQJG+ZiGIVZbI7yIE4o8OEzITG2qHdjW/P5u4S+INiwwR4S2JPAAo1805EEXtgvh7PqpJ
+ zkg2T+SX1ncDLSucCc6lVpgOHPJNM5W2vfs1Dcg83ePcn1NJBWd4rA6Fdc4jBcYzyPlBuqO78
+ N1PQCxaExxu+IUn2e7jhIAStXFKRh8kIcZ7D0fLRfcQaq3FWfwurQNL318za5V1xUABBK6b
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-On Jul 25 2021, Geert Uytterhoeven wrote:
-
-> Depending on register assignment by the compiler:
+On Sun, Jul 25, 2021 at 3:02 PM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
 >
->     {standard input}:3084: Error: operands mismatch -- statement `andl %a1,%d1' ignored
->     {standard input}:3145: Error: operands mismatch -- statement `orl %a1,%d1' ignored
->     {standard input}:3195: Error: operands mismatch -- statement `eorl %a1,%d1' ignored
+> When enabling CONFIG_RMW_INSNS in e.g. a Coldfire build:
 >
-> Indeed, the first operand must not be an address register.  Fix this by
-> adjusting the register constraint from "g" (general purpose register) to
-> "d" (data register).
+>     {standard input}:3068: Error: invalid instruction for this architecture; needs 68020 or higher (68020 [68k, 68ec020], 68030 [68ec030], 68040 [68ec040], 68060 [68ec060]) -- statement `casl %d4,%d0,(%a6)' ignored
+>
+> Fix this by (a) adding a new config symbol to track if support for any
+> CPU that lacks the CAS instruction is enabled, and (b) making
+> CONFIG_RMW_INSNS depend on the new symbol not being set.
+>
+> Fixes: 0e152d80507b75c0 ("m68k: reorganize Kconfig options to improve mmu/non-mmu selections")
+> Reported-by: kernel test robot <lkp@intel.com>
+> Reported-by: Arnd Bergmann <arnd@arndb.de>
+> Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
 
-You should also allow immediate ("i").
+Acked-by: Arnd Bergmann <arnd@arndb.de>
 
-There is the ASM_DI macro for that, but since CONFIG_RMW_INSNS is never
-defined for CONFIG_COLDFIRE, it probably doesn't matter.
+> @@ -54,6 +56,7 @@ config M68000
+>  config MCPU32
+>         bool
+>         select CPU_HAS_NO_BITFIELDS
+> +       select CPU_HAS_NO_CAS
+>         select CPU_HAS_NO_UNALIGNED
+>         select CPU_NO_EFFICIENT_FFS
+>         help
 
-Andreas.
+As far as I can see, there are no users for CONFIG_MCPU32
+after M68360 was removed in linux-4.6, but as long as the
+option is there, it makes sense to keep it correct.
 
--- 
-Andreas Schwab, schwab@linux-m68k.org
-GPG Key fingerprint = 7578 EB47 D4E5 4D69 2510  2552 DF73 E780 A9DA AEC1
-"And now for something completely different."
+     Arnd
