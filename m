@@ -2,85 +2,128 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.7 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,MAILING_LIST_MULTI,NICE_REPLY_A,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=unavailable
+X-Spam-Status: No, score=-13.7 required=3.0 tests=BAYES_00,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id F17ECC4338F
-	for <linux-m68k@archiver.kernel.org>; Mon, 26 Jul 2021 14:27:40 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4E022C432BE
+	for <linux-m68k@archiver.kernel.org>; Mon, 26 Jul 2021 19:36:53 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id CF5E060F57
-	for <linux-m68k@archiver.kernel.org>; Mon, 26 Jul 2021 14:27:40 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 209006056C
+	for <linux-m68k@archiver.kernel.org>; Mon, 26 Jul 2021 19:36:53 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234037AbhGZNrL (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Mon, 26 Jul 2021 09:47:11 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47304 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233809AbhGZNrL (ORCPT <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Mon, 26 Jul 2021 09:47:11 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7401E60F37;
-        Mon, 26 Jul 2021 14:27:38 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1627309660;
-        bh=Hny3S4bK8lPLJq0Ngo4+VpBfahxBW1AWq54BVJylhv0=;
-        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
-        b=Dujh/cNBaldi8s6+idkZZoUGvjLI9S7O619ejgOTnjTxNf6z+g2pKyly9iZ/EHPuB
-         LHLUCMkPj/5igWle3VWmSJa9aSOlXa+cIKHmH/AhJX3+Z6e1dUOIaypOW4ALhfAFL/
-         t2+vqlybWCGGBzltmZWLoYZ6bGCFld39F0GdprjGGS8azpTmGAd/9If3zEe6ne7HWL
-         Wa4mphphZoGxbI4ais/ssFOhTf4+bbccZ+B/bQZT6LKtE1MBwENnbmUkBCmjJYtbsp
-         jALr3DBZcZwBr49ssjzIbzoWLKh+1aKaL9m8tbhnkSRHehF1YgWd1/QbRVNOl2G9Wx
-         cZjK+ApCFOn6Q==
-Subject: Re: [PATCH v4 3/3] m68k: track syscalls being traced with shallow
- user context stack
-To:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Michael Schmitz <schmitzmic@gmail.com>
-Cc:     Geert Uytterhoeven <geert@linux-m68k.org>,
-        Linux-Arch <linux-arch@vger.kernel.org>,
-        linux-m68k <linux-m68k@lists.linux-m68k.org>,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        Andreas Schwab <schwab@linux-m68k.org>
-References: <1624407696-20180-1-git-send-email-schmitzmic@gmail.com>
- <1624407696-20180-4-git-send-email-schmitzmic@gmail.com>
- <CAMuHMdVA5d7z6awGrpJ+Tb3PRxz7Nczd_SLXZ=cAwsS8tFU_vg@mail.gmail.com>
- <f99d3d82-150b-62fc-3b38-141710a4826e@gmail.com>
- <CAHk-=wgVFUJAD62jtpbbKddu1ZeGF+nR4VuTGzQjS_ncCa5nQQ@mail.gmail.com>
-From:   Greg Ungerer <gerg@kernel.org>
-Message-ID: <c7945741-ec10-afc0-065f-35dcdf5924ea@kernel.org>
-Date:   Tue, 27 Jul 2021 00:27:35 +1000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        id S231639AbhGZS4X (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Mon, 26 Jul 2021 14:56:23 -0400
+Received: from out03.mta.xmission.com ([166.70.13.233]:39582 "EHLO
+        out03.mta.xmission.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230488AbhGZS4X (ORCPT
+        <rfc822;linux-m68k@lists.linux-m68k.org>);
+        Mon, 26 Jul 2021 14:56:23 -0400
+Received: from in01.mta.xmission.com ([166.70.13.51]:37180)
+        by out03.mta.xmission.com with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.93)
+        (envelope-from <ebiederm@xmission.com>)
+        id 1m86PB-00C1hw-W6; Mon, 26 Jul 2021 13:36:50 -0600
+Received: from ip68-227-160-95.om.om.cox.net ([68.227.160.95]:41932 helo=email.xmission.com)
+        by in01.mta.xmission.com with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.93)
+        (envelope-from <ebiederm@xmission.com>)
+        id 1m86PA-003pQK-Ik; Mon, 26 Jul 2021 13:36:49 -0600
+From:   ebiederm@xmission.com (Eric W. Biederman)
+To:     Michael Schmitz <schmitzmic@gmail.com>
+Cc:     Brad Boyer <flar@allandria.com>,
+        Andreas Schwab <schwab@linux-m68k.org>, geert@linux-m68k.org,
+        linux-arch@vger.kernel.org, linux-m68k@lists.linux-m68k.org,
+        torvalds@linux-foundation.org
+References: <e9009e13-cfec-c494-0b3b-f334f75cd1e4@gmail.com>
+        <af434994-5c61-0e3a-c7bc-3ed966ccb44f@gmail.com>
+        <87h7gopvz2.fsf@disp2133>
+        <328e59fb-3e8c-e4cd-06b4-1975ce98614a@gmail.com>
+        <877dhio13t.fsf@disp2133>
+        <12992a3c-0740-f90e-aa4e-1ec1d8ea38f6@gmail.com>
+        <87tukkk6h3.fsf@disp2133>
+        <df6618bf-d1bc-4759-2d14-934c22d54a83@gmail.com>
+        <87eebn7w7y.fsf@igel.home>
+        <db43bef1-7938-4fc1-853d-c20d66521329@gmail.com>
+        <20210725101253.GA6096@allandria.com>
+        <be3ddf9a-745e-4798-17a7-a9d0ddd7eef7@gmail.com>
+Date:   Mon, 26 Jul 2021 14:36:42 -0500
+In-Reply-To: <be3ddf9a-745e-4798-17a7-a9d0ddd7eef7@gmail.com> (Michael
+        Schmitz's message of "Mon, 26 Jul 2021 14:00:01 +1200")
+Message-ID: <87a6m8kgtx.fsf_-_@disp2133>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
 MIME-Version: 1.0
-In-Reply-To: <CAHk-=wgVFUJAD62jtpbbKddu1ZeGF+nR4VuTGzQjS_ncCa5nQQ@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
+X-XM-SPF: eid=1m86PA-003pQK-Ik;;;mid=<87a6m8kgtx.fsf_-_@disp2133>;;;hst=in01.mta.xmission.com;;;ip=68.227.160.95;;;frm=ebiederm@xmission.com;;;spf=neutral
+X-XM-AID: U2FsdGVkX18N0N9bnXIRvhcVoadJMHU7sFIvwUtGVxc=
+X-SA-Exim-Connect-IP: 68.227.160.95
+X-SA-Exim-Mail-From: ebiederm@xmission.com
+Subject: [RFC][PATCH] signal/m68k: Use force_sigsegv(SIGSEGV) in fpsp040_die
+X-SA-Exim-Version: 4.2.1 (built Sat, 08 Feb 2020 21:53:50 +0000)
+X-SA-Exim-Scanned: Yes (on in01.mta.xmission.com)
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
 
-On 26/7/21 7:00 am, Linus Torvalds wrote:
-> On Sun, Jul 25, 2021 at 1:48 PM Michael Schmitz <schmitzmic@gmail.com> wrote:
->>
->> Just out of interest - what would be the correct way to set/clear a
->> single bit on Coldfire? Add/subtract the 1<<bit value?
-> 
-> I think BSET/BCLR are the way to go.
+In the fpsp040 code when copyin or copyout fails call
+force_sigsegv(SIGSEGV) instead of do_exit(SIGSEGV).
 
-Yep, they are available on all ColdFire revisions.
-I think they are the best choice here.
+This solves a couple of problems.  Because do_exit embeds the ptrace
+stop PTRACE_EVENT_EXIT a complete stack frame needs to be present for
+that to work correctly.  There is always the information needed for a
+ptrace stop where get_signal is called.  So exiting with a signal
+solves the ptrace issue.
 
+Further exiting with a signal ensures that all of the threads in a
+process are killed not just the thread that malfunctioned.  Which
+avoids confusing userspace.
 
-> Or, alternatively, put the constant in a register, and use a longword
-> memory access. The arithmetic ops don't do immediates _and_ memory
-> operands in Coldfire, and they don't do byte ops.
-> 
-> Or something like that.
+To make force_sigsegv(SIGSEGV) work in fpsp040_die modify the code to
+save all of the registers and jump to ret_from_exception (which
+ultimately calls get_signal) after fpsp040_die returns.
 
-Yes, that is right with one exception. You can use addq with immediates
-of value 1 to 8 with memory operands.
+Signed-off-by: "Eric W. Biederman" <ebiederm@xmission.com>
+---
 
-Regards
-Greg
+Can someone please check my m68k assembly changes?
+
+I think I have them correct, and the code assembles but I don't
+understand the fine points of when the different branch instructions
+should be used.
+
+ arch/m68k/fpsp040/skeleton.S | 3 ++-
+ arch/m68k/kernel/traps.c     | 2 +-
+ 2 files changed, 3 insertions(+), 2 deletions(-)
+
+diff --git a/arch/m68k/fpsp040/skeleton.S b/arch/m68k/fpsp040/skeleton.S
+index a8f41615d94a..ec767523c012 100644
+--- a/arch/m68k/fpsp040/skeleton.S
++++ b/arch/m68k/fpsp040/skeleton.S
+@@ -502,7 +502,8 @@ in_ea:
+ 	.section .fixup,#alloc,#execinstr
+ 	.even
+ 1:
+-	jbra	fpsp040_die
++	bsrl	fpsp040_die
++	jmp	.Lnotkern
+ 
+ 	.section __ex_table,#alloc
+ 	.align	4
+diff --git a/arch/m68k/kernel/traps.c b/arch/m68k/kernel/traps.c
+index 9e1261462bcc..5b19fcdcd69e 100644
+--- a/arch/m68k/kernel/traps.c
++++ b/arch/m68k/kernel/traps.c
+@@ -1150,7 +1150,7 @@ asmlinkage void set_esp0(unsigned long ssp)
+  */
+ asmlinkage void fpsp040_die(void)
+ {
+-	do_exit(SIGSEGV);
++	force_sigsegv(SIGSEGV);
+ }
+ 
+ #ifdef CONFIG_M68KFPU_EMU
+-- 
+2.20.1
 
