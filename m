@@ -2,100 +2,84 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.7 required=3.0 tests=BAYES_00,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-8.7 required=3.0 tests=BAYES_00,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,MAILING_LIST_MULTI,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B5100C432BE
-	for <linux-m68k@archiver.kernel.org>; Mon, 26 Jul 2021 07:40:15 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 50379C4338F
+	for <linux-m68k@archiver.kernel.org>; Mon, 26 Jul 2021 09:23:44 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 94E7C60F4B
-	for <linux-m68k@archiver.kernel.org>; Mon, 26 Jul 2021 07:40:15 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 2FFF760243
+	for <linux-m68k@archiver.kernel.org>; Mon, 26 Jul 2021 09:23:44 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232462AbhGZG7o (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Mon, 26 Jul 2021 02:59:44 -0400
-Received: from mout.kundenserver.de ([212.227.17.24]:50297 "EHLO
-        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232752AbhGZG7n (ORCPT
+        id S232156AbhGZInO (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Mon, 26 Jul 2021 04:43:14 -0400
+Received: from mail-vk1-f177.google.com ([209.85.221.177]:44680 "EHLO
+        mail-vk1-f177.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232087AbhGZInN (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Mon, 26 Jul 2021 02:59:43 -0400
-Received: from mail-wm1-f52.google.com ([209.85.128.52]) by
- mrelayeu.kundenserver.de (mreue107 [213.165.67.113]) with ESMTPSA (Nemesis)
- id 1M6EOc-1m1Lda1U2i-006fjZ for <linux-m68k@lists.linux-m68k.org>; Mon, 26
- Jul 2021 09:40:10 +0200
-Received: by mail-wm1-f52.google.com with SMTP id 9-20020a05600c26c9b02901e44e9caa2aso5605902wmv.4
-        for <linux-m68k@lists.linux-m68k.org>; Mon, 26 Jul 2021 00:40:10 -0700 (PDT)
-X-Gm-Message-State: AOAM531dE3ZrxB4rnX23w5NFMlYDdbQNhHf8V1/1IybCfy777OYjLEgP
-        9y0h0NvogKp+MjdVG4WZGE29HcvciKJXbswX3U8=
-X-Google-Smtp-Source: ABdhPJyUu+zpKQgLCzD92xlTKJ+CdL+Qe3BKBoET07REAC9wsTFKxyxXX9p30cgRZ0s2LdofhlqDl1W4NQEu0QxiHko=
-X-Received: by 2002:a7b:ce10:: with SMTP id m16mr6487271wmc.75.1627285210031;
- Mon, 26 Jul 2021 00:40:10 -0700 (PDT)
+        Mon, 26 Jul 2021 04:43:13 -0400
+Received: by mail-vk1-f177.google.com with SMTP id r2so1858153vkl.11
+        for <linux-m68k@lists.linux-m68k.org>; Mon, 26 Jul 2021 02:23:42 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=IjJGdTE/tlZseW0pzt6q9F9+mym1b0Btcv6i5Gjm01k=;
+        b=MCsaCyhsUdJOtBdpnP+qfiJlNSBP/bMQxC4lcvD4fSY8FBENCjERLcXD16G6dK+xlT
+         gQ0nEyG30+gUTE75tospUDB2WQZB2pvtXc9cs/MyfsCZOID8emmKZG3/bt1UAxJ704iQ
+         LhnOowMlhQG5fZgXtkXDh3tUNdlQGx6R0VWGxDUO6WCSIlPwfDB13oXPeMWiWpztwx1b
+         WB9ynxf45s6xMbmmGEtp7ddOY6xU4xb5Ge8yG7imGvE4fDS75tY11qmqqAAJMT0TtqC2
+         jj1hD3Fyr4CTuL1AgL13hz4cESeGcI516i6TDiv40uIwrRtaq45om0DvCWJNsdF5nxOD
+         3/4w==
+X-Gm-Message-State: AOAM532rKghYwe+Z8VeZy6zB0GOIgJHmU9hVKJVh61Fs06SgUCkesIgO
+        eGNwQc4pqZ6UlH1rK9hB9Hbd0aQb5sXBX373xzs=
+X-Google-Smtp-Source: ABdhPJzMngFHTfWJxJKBUeUs1WgMw84W9+9SLI15f2X46Ju0B58oyj/TSYhfyq+/enRTeyL3FRCzbQw4VUn+lNK7ay4=
+X-Received: by 2002:ac5:cd9b:: with SMTP id i27mr9296318vka.1.1627291422600;
+ Mon, 26 Jul 2021 02:23:42 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210725104618.365790-1-geert@linux-m68k.org> <db2de193-a10-598-a21e-3a305b91d191@linux-m68k.org>
- <CAMuHMdWrg7zUC+iMjXS=RS=Fa7ZVS-0iycjQ2UP6W0pHzdGxKQ@mail.gmail.com>
-In-Reply-To: <CAMuHMdWrg7zUC+iMjXS=RS=Fa7ZVS-0iycjQ2UP6W0pHzdGxKQ@mail.gmail.com>
-From:   Arnd Bergmann <arnd@arndb.de>
-Date:   Mon, 26 Jul 2021 09:39:53 +0200
-X-Gmail-Original-Message-ID: <CAK8P3a3N61zpEphfPoPWgAK3iGx2Cqo3HL1jrce=Kz9iuML1Og@mail.gmail.com>
-Message-ID: <CAK8P3a3N61zpEphfPoPWgAK3iGx2Cqo3HL1jrce=Kz9iuML1Og@mail.gmail.com>
-Subject: Re: [PATCH] m68k: Fix asm register constraints for atomic ops
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     Finn Thain <fthain@linux-m68k.org>,
-        Greg Ungerer <gerg@uclinux.org>, Will Deacon <will@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Brendan Jackman <jackmanb@google.com>,
-        kernel test robot <lkp@intel.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        linux-m68k <linux-m68k@lists.linux-m68k.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+References: <20210721104318.1070133-1-twd2.me@gmail.com>
+In-Reply-To: <20210721104318.1070133-1-twd2.me@gmail.com>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Mon, 26 Jul 2021 11:23:31 +0200
+Message-ID: <CAMuHMdUWvnz4jCyPctZevq8MdFtCD8MCNSfDbCVR+__rP_=gvw@mail.gmail.com>
+Subject: Re: [PATCH] m68k: Remove redefinitions of `PMD_SIZE`, `PMD_MASK`, etc.
+To:     Wende Tan <twd2.me@gmail.com>
+Cc:     linux-m68k <linux-m68k@lists.linux-m68k.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        kbuild test robot <lkp@intel.com>
 Content-Type: text/plain; charset="UTF-8"
-X-Provags-ID: V03:K1:/1GmSkq1OvnEf845NWQIzq3SJwPqGQpw5mRUxQ4suqK4b7D29yZ
- baQSJ0mQMFBx5sSJh4DhRWf4UHLPqyxHTDVCfGl5zDhoMJhDxG4UtG3KYd2wyWuVXlDl4T8
- aqUKu6/0npkcgiGKm95J1qrgLlCCXuVqNGFFLkGrwb9xFxfL+tWmqZ1IV/wrZ2HTP659g6a
- qAESPeyvqs99QGkIc6XIg==
-X-UI-Out-Filterresults: notjunk:1;V03:K0:H+7OapuVzhI=:iWtQtHVm3qReTe3KuN0zM/
- c3nBX2Ef7f/iYLx4QtVfpk8xHzWYRRZGIW4I7z+fh0/kUwTctRjFngnSn2DKh5yifXunqTWUw
- d3vOgYwQ5mOxrGUPtyg3orHFTR9bY11VUTzt4U7xTknv+2mjGN45ZL9JOn7H8UQyjz1vg0T4x
- WD1KhCoXfH/xxGuWDBrzFM8e5qZAsUR3ztriu3N6NN2nSsnuMY/PcP9dGBacrzCvF4sgh3YkL
- 3hUwiEKbCiOmIB7Dc2cWJP1xD0Dler+PewBl85v1tJT1bAKb+GEsPTSyNNjQl+mEd8y7Qh0mw
- jnswHUR+Jr/Al4tQGqDiEJM8Ov992+Hip8gyEcrG5YMcrSyObykfiZUFGNtvPFk+aqryAB5NM
- HrvEGHKZ5wMWMsDT/iHUYzAYPaEl+Yf5MBLPKORa6I9J/NA5OMA1DTFNZlLuILD7foJUTzYuF
- BqP9NyELIKSMAMPck6fbI5g+AiC+Mti5sJFNY079e/bd1rSpBV3rOfElBgUj8SA9PYkGQJbue
- hDJIZW4FIQqtImLTerybkQar02Rv1mF6g7KQkl0srveyUw6TuX6T95pDybp2mp6ScsPV+/Ogj
- 6xGn8Kv4ts9EDKcrhwUVKhemVKYTv/MyHg9IqlFbR6rww832nsuTqMpBygHgPHvCE7a8uIakn
- /zD0z0OIBRLypcYEaNdN5UNRMvHkfEkDy83CDnOUpadG1cG2h5xgCutPQg/dTu8EVE/8dHmBb
- S+z5ZUb+ebCLMw+TONnoToVd+75tiEXgLSfKwIDGVjhRPybDrrFyMMokUTHj6qOKlNDEFhxxm
- eAlnEDeLPe7gL7+BLMQCXndmLtquuIVgGZhlUjtbHtesnrdlB0NDtOK5CVjfusW/a3Cr4zm/d
- hrpC3quOCMNL63tHMfoFM6T0rwJ401gKhcxBTXf2okpDqSJ/jQKG6ISrXX85h6p/H6Mcu1PQj
- Axz2hIprke24K6avDVLyyYny3zk6YzcGlnFyG0PM8uumk2f0rahfm
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-On Mon, Jul 26, 2021 at 9:34 AM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
->
-> Hi Finn,
->
-> On Mon, Jul 26, 2021 at 1:45 AM Finn Thain <fthain@linux-m68k.org> wrote:
-> > On Sun, 25 Jul 2021, Geert Uytterhoeven wrote:
-> > > Fixes: d839bae4269aea46 ("locking,arch,m68k: Fold atomic_ops")
-> > > ...
-> > > Technically, the issue was present before, but I doubt adding pre-v3.18
-> > > Fixes tags would make any difference for stable...
-> >
-> > There is a better way to constrain backporting, that is Cc:
-> > stable@vger.kernel.org # 3.12+
->
-> I don't want to constrain backporting.
+Hi Wende,
 
-I would recommend adding the plain
+On Wed, Jul 21, 2021 at 12:44 PM Wende Tan <twd2.me@gmail.com> wrote:
+> Remove redefinitions of `PMD_SIZE`, `PMD_MASK`, `PTRS_PER_PMD`,
+> and `__PAGETABLE_PMD_FOLDED` when PGTABLE_LEVELS == 2 (i.e. SUN3 ||
+> COLDFIRE).  They have already been defined in
+> `asm-generic/pgtable-nopmd.h`.
 
-Cc: stable@vger.kernel.org
+Thanks for your patch!
 
-line to the footer to make it unambiguous that you want it backported then,
-plus moving the explanation above the --- line. You can never be too explicit
-with those.
+> See also https://lore.kernel.org/lkml/202107201907.lqC6B3dF-lkp@intel.com/#t
 
-      Arnd
+I'm a bit confused: is this a new issue introduced by the patch from
+the above thread, or is this a pre-existing issue?
+If the latter, do you know when it was introduced, and how to reproduce it?
+
+> Reported-by: kernel test robot <lkp@intel.com>
+> Signed-off-by: Wende Tan <twd2.me@gmail.com>
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
+-- 
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
