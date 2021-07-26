@@ -2,250 +2,94 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-15.3 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,NICE_REPLY_A,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
-	USER_AGENT_SANE_1 autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-3.7 required=3.0 tests=BAYES_00,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 0CF31C4338F
-	for <linux-m68k@archiver.kernel.org>; Mon, 26 Jul 2021 02:00:13 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E021DC4338F
+	for <linux-m68k@archiver.kernel.org>; Mon, 26 Jul 2021 07:29:22 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id E305660E78
-	for <linux-m68k@archiver.kernel.org>; Mon, 26 Jul 2021 02:00:12 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id C80E360F02
+	for <linux-m68k@archiver.kernel.org>; Mon, 26 Jul 2021 07:29:22 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231387AbhGZBTm (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Sun, 25 Jul 2021 21:19:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57052 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231374AbhGZBTj (ORCPT
+        id S231759AbhGZGsx (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Mon, 26 Jul 2021 02:48:53 -0400
+Received: from mail-ua1-f44.google.com ([209.85.222.44]:45834 "EHLO
+        mail-ua1-f44.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231728AbhGZGsw (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Sun, 25 Jul 2021 21:19:39 -0400
-Received: from mail-pj1-x1034.google.com (mail-pj1-x1034.google.com [IPv6:2607:f8b0:4864:20::1034])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EC5D3C061757
-        for <linux-m68k@lists.linux-m68k.org>; Sun, 25 Jul 2021 19:00:07 -0700 (PDT)
-Received: by mail-pj1-x1034.google.com with SMTP id k4-20020a17090a5144b02901731c776526so17540384pjm.4
-        for <linux-m68k@lists.linux-m68k.org>; Sun, 25 Jul 2021 19:00:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language;
-        bh=PuA/B3Xh8re6VMwGprN6Srm77JaO2WORhSdLB6MfWAQ=;
-        b=SL4RxgMK8041Wo1farGcExnBzUsee47iybSuyx3oajO/ZsJnZZnIAsf5cNgXL+YSl7
-         NdHkGpOHhSpFUBUwz+8ZiC40Yb2XXz//kdYZHj2oY/qMxukMh7A4UO7jc0gO37GV4ULZ
-         jdVi8dh1ZVu495kHlmWGeHAZKlqgV8JY8I42IYvRlouIILzZcPdb9o5yScsTvHPWRPMV
-         g1ssN2GKQVN6bBGWJOaK0MqFcKLA0PbtxhRmE1aYa9jBsNEaXVfG4+L39FEQQv3Ipm17
-         ijs9iN2Yhbgo61aqb0YA2B5FkJZDjWKVDLQqJ+WnOIq3G6dlPcHHWH4w86P6o1FXLla2
-         lz+w==
+        Mon, 26 Jul 2021 02:48:52 -0400
+Received: by mail-ua1-f44.google.com with SMTP id t26so3177267uao.12
+        for <linux-m68k@lists.linux-m68k.org>; Mon, 26 Jul 2021 00:29:21 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language;
-        bh=PuA/B3Xh8re6VMwGprN6Srm77JaO2WORhSdLB6MfWAQ=;
-        b=Cf+SwNHPhMxK5OMH4qsTymgp5CgqJd7gdBwfiDW9tErrV2gS8/J9GWavjIsHMSho0W
-         jSsrkUUSgMQmsMK1RJXs+syV5t+YHl40QiVq6H01eNkRpIKG5ikvq52s3xtAm917q1H7
-         g7G3Ww07e7HMBCw87aluelEtet2ryapbmQ1Lh8zbsRC83yhf/RIMkGGwcRqJMnRPQCE5
-         tJX90mLgLP7DC8CyCiGDRHBslVPu6JSQlxCNBrSqOB8kLBvwDXSqxG7W/JZ1ShdRkEdV
-         pCj6D1qqxk/E3WtbKw/J9KlyjEv+KgQyALJ4HWyiVG8IizK6mmcQop3Ih2dT7BDie+ai
-         buZQ==
-X-Gm-Message-State: AOAM532PU7mZxuAJiiJhZF4liMVxnXZuzhPWwCEswA/F1iZ8a/WE0Way
-        hUEOnEDd4rmzdWl0a1QCRSw=
-X-Google-Smtp-Source: ABdhPJyzbS8fwVaXCSxa39rdu0IeSQie7q0OEfkNhi2FgnV0VBE8n0oUHNosI1phIwHr+HR7VU6Dnw==
-X-Received: by 2002:aa7:84c1:0:b029:32d:6bbf:b788 with SMTP id x1-20020aa784c10000b029032d6bbfb788mr15597150pfn.38.1627264807179;
-        Sun, 25 Jul 2021 19:00:07 -0700 (PDT)
-Received: from ?IPv6:2001:df0:0:200c:29ad:8fa7:168b:a8c8? ([2001:df0:0:200c:29ad:8fa7:168b:a8c8])
-        by smtp.gmail.com with ESMTPSA id r15sm34733108pje.12.2021.07.25.19.00.03
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 25 Jul 2021 19:00:06 -0700 (PDT)
-Subject: Re: [PATCH v4 0/3] m68k: Improved switch stack handling
-To:     Brad Boyer <flar@allandria.com>
-Cc:     Andreas Schwab <schwab@linux-m68k.org>,
-        "Eric W. Biederman" <ebiederm@xmission.com>, geert@linux-m68k.org,
-        linux-arch@vger.kernel.org, linux-m68k@lists.linux-m68k.org,
-        torvalds@linux-foundation.org
-References: <e9009e13-cfec-c494-0b3b-f334f75cd1e4@gmail.com>
- <af434994-5c61-0e3a-c7bc-3ed966ccb44f@gmail.com> <87h7gopvz2.fsf@disp2133>
- <328e59fb-3e8c-e4cd-06b4-1975ce98614a@gmail.com> <877dhio13t.fsf@disp2133>
- <12992a3c-0740-f90e-aa4e-1ec1d8ea38f6@gmail.com> <87tukkk6h3.fsf@disp2133>
- <df6618bf-d1bc-4759-2d14-934c22d54a83@gmail.com> <87eebn7w7y.fsf@igel.home>
- <db43bef1-7938-4fc1-853d-c20d66521329@gmail.com>
- <20210725101253.GA6096@allandria.com>
-From:   Michael Schmitz <schmitzmic@gmail.com>
-Message-ID: <be3ddf9a-745e-4798-17a7-a9d0ddd7eef7@gmail.com>
-Date:   Mon, 26 Jul 2021 14:00:01 +1200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=NG27AyXXZCjyF9qPFwESDtcNxflCSnT0u4Wh1DD8tKI=;
+        b=GNoZHFVYWH4jSoUkHFuLordcH6mfYqggIuW6Ct53B30y6n5rQ1H7wHuDdeCcesUc27
+         /F1oSCf3I5P3Md7uQgGl2xVoQn1HFBMPX2KRxV382BCnIQrruy4H+XCHx8LwgIupDS0W
+         FDB9r4ZoimWPim8+YtQunEJh8LSdKeAnDcnNTCH34wpc+zqsuSzH9g5nKSGhNWsuzJXg
+         JCOEbNDkdCBZ5exuPpTHCyCiWHUlsPfEzSweSjp1MwptoQmBMTV4bzDXXsk8jr8gtIW6
+         iELp0reaZWLv5cs5rTRuuU7P7Sjdbj8DshYR3Q0DUfM8n5HOOtMbPWwC74ekwLUOSoHi
+         sJOg==
+X-Gm-Message-State: AOAM533+PB1Tva/9I7EnL9+5HO2o+2HR5v4CWZj2LjOy+oqlMGrzDdvR
+        aBDqTK7lllrLojR7VdQ+OnF6b5C1JDgKtdesOcg=
+X-Google-Smtp-Source: ABdhPJxLD4ikNVv07En0vqEiq9snN7hRwnpHZdlIycaLnBHc8MiULtoCWq/tCZCRcWxDgsRkki9Dc9AF3qfRocp1KNE=
+X-Received: by 2002:ab0:6710:: with SMTP id q16mr11373970uam.106.1627284561331;
+ Mon, 26 Jul 2021 00:29:21 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20210725101253.GA6096@allandria.com>
-Content-Type: multipart/mixed;
- boundary="------------8DA757192A993533D4532EED"
-Content-Language: en-US
+References: <20210725104618.365790-1-geert@linux-m68k.org> <87r1fm4gkc.fsf@igel.home>
+In-Reply-To: <87r1fm4gkc.fsf@igel.home>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Mon, 26 Jul 2021 09:29:10 +0200
+Message-ID: <CAMuHMdVbZtnOMsc0p84bTX5RJXeYN-hcW4=W0En04nf_b1WKGw@mail.gmail.com>
+Subject: Re: [PATCH] m68k: Fix asm register constraints for atomic ops
+To:     Andreas Schwab <schwab@linux-m68k.org>
+Cc:     Greg Ungerer <gerg@uclinux.org>, Will Deacon <will@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Brendan Jackman <jackmanb@google.com>,
+        kernel test robot <lkp@intel.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        linux-m68k <linux-m68k@lists.linux-m68k.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-This is a multi-part message in MIME format.
---------------8DA757192A993533D4532EED
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Hi Andreas,
 
-Thanks Brad, Andreas,
-
-I won't rely on ARAnyM for these tests any longer then.
-
-I would be much obliged if one of the m68k kernel crowd with access to a 
-68040 could apply the two attached patches, on top of Eric's 
-'refactoring exit' series for preference, and check that any program 
-attempting a simple sin() or exp() operation exits with SEGV.
-
-If you know of a way to trace said program and set a breakpoint in 
-do_exit(), please also try to inspect saved registers at that point 
-(though I'm not sure how to create a dump of the actual registers from 
-inside the exception handler to compare with).
-
-Cheers,
-
-     Michael
-
-
-On 25/07/21 10:12 pm, Brad Boyer wrote:
-
-> On Sun, Jul 25, 2021 at 07:44:11PM +1200, Michael Schmitz wrote:
->> Am 25.07.2021 um 00:05 schrieb Andreas Schwab:
->>> On Jul 24 2021, Michael Schmitz wrote:
->>>
->>>> According to my understanding, you can't get a F-line exception on
->>>> 68040.
->>> The F-line exception vector is used for all FPU illegal and
->>> unimplemented insns.
->> Thanks - now from my reading of the fpsp040 code (which has mislead me in
->> the past), it would seem that operations like sin() and exp() ought to raise
->> that exception then. I don't see that in ARAnyM.
-> Yes, according to the 68040 user's manual, unimplemented and illegal F-line
-> instructions trigger the standard F-line exception vector (11) but have
-> separate stack frame formats so the fpsp040 code gets some extra data.
-> The CPU does a bunch of the prep work so that part doesn't need to be
-> emulated in software.
+On Sun, Jul 25, 2021 at 4:24 PM Andreas Schwab <schwab@linux-m68k.org> wrote:
+> On Jul 25 2021, Geert Uytterhoeven wrote:
+> > Depending on register assignment by the compiler:
+> >
+> >     {standard input}:3084: Error: operands mismatch -- statement `andl %a1,%d1' ignored
+> >     {standard input}:3145: Error: operands mismatch -- statement `orl %a1,%d1' ignored
+> >     {standard input}:3195: Error: operands mismatch -- statement `eorl %a1,%d1' ignored
+> >
+> > Indeed, the first operand must not be an address register.  Fix this by
+> > adjusting the register constraint from "g" (general purpose register) to
+> > "d" (data register).
 >
-> The ARAnyM docs appear to claim a strange combination that wouldn't
-> exist in hardware by implementing a full 68882 instead of the limited
-> subset found on a real 68040. Strangely, that might have been easier to
-> implement. However, it would also completely bypass any use of fpsp040.
->
-> 	Brad Boyer
-> 	flar@allandria.com
->
+> You should also allow immediate ("i").
 
---------------8DA757192A993533D4532EED
-Content-Type: text/x-patch; charset=UTF-8;
- name="0002-m68k-fpsp040-test-changes-to-copyin-out-exception-ha.patch"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: attachment;
- filename*0="0002-m68k-fpsp040-test-changes-to-copyin-out-exception-ha.pa";
- filename*1="tch"
+Good point.
 
-From 3df3164dd0f34f3ef7cfaccd079e83a7d146ee5f Mon Sep 17 00:00:00 2001
-From: Michael Schmitz <schmitzmic@gmail.com>
-Date: Sat, 24 Jul 2021 15:22:58 +1200
-Subject: [PATCH 2/2] m68k/fpsp040 - test changes to copyin/out exception
- handling
+> There is the ASM_DI macro for that, but since CONFIG_RMW_INSNS is never
+> defined for CONFIG_COLDFIRE, it probably doesn't matter.
 
-Call the exception handler in fpsp040/skeleton.S on each f-line
-trap. This ought to allow verifying that the added stack frame
-is accessible and contains useful data by just tracing a simple
-program using one of the floating point operations not supported
-by the 68040 FPU.
+As the second operand is a register, not memory, there is no need to
+use ASM_DI, and "di" should be fine, right?
 
-Signed-off-By: Michael Schmitz <schmitzmic@gmail.com>
----
- arch/m68k/fpsp040/skeleton.S | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+Gr{oetje,eeting}s,
 
-diff --git a/arch/m68k/fpsp040/skeleton.S b/arch/m68k/fpsp040/skeleton.S
-index 1cbc52b..1ca04bd 100644
---- a/arch/m68k/fpsp040/skeleton.S
-+++ b/arch/m68k/fpsp040/skeleton.S
-@@ -302,7 +302,8 @@ real_bsun:
- 	.global	real_fline
- 	.global	fline
- fline:
--	jmp	fpsp_fline
-+	jmp	test_fpsp040_die
-+	|jmp	fpsp_fline
- real_fline:
- 
- 	SAVE_ALL_INT
-@@ -501,6 +502,7 @@ in_ea:
- 
- 	.section .fixup,#alloc,#execinstr
- 	.even
-+test_fpsp040_die:
- 1:
- 
- 	SAVE_ALL_INT
+                        Geert
+
 -- 
-2.7.4
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
-
---------------8DA757192A993533D4532EED
-Content-Type: text/x-patch; charset=UTF-8;
- name="0001-m68k-fpsp040-save-full-stack-frame-before-calling-fp.patch"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: attachment;
- filename*0="0001-m68k-fpsp040-save-full-stack-frame-before-calling-fp.pa";
- filename*1="tch"
-
-From 737b74a376f0b3da09ba7cb088e99c2c85b7405c Mon Sep 17 00:00:00 2001
-From: Michael Schmitz <schmitzmic@gmail.com>
-Date: Sun, 18 Jul 2021 10:31:42 +1200
-Subject: [PATCH 1/2] m68k/fpsp040 - save full stack frame before calling
- fpsp040_die
-
-The FPSP040 floating point support code does not know how to
-handle user space access faults gracefully, and just calls
-do_exit(SIGSEGV) indirectly on these faults to abort.
-
-do_exit() may stop if traced, and needs a full stack frame
-available to avoid exposing kernel data.
-
-Add the current stack frame before calling do_exit() from the
-fpsp040 user access exception handler. Top of stack frame saved
-to task->thread.esp0 as is done for system calls.
-
-Unwind the stack frame and return to caller once done, in case
-do_exit() is replaced by force_sig() later on. Note that this
-will allow the current exception handler to continue with
-incorrect state, but the results will never make it to the
-calling user program which is terminated by SYSSIGV upon return
-from exception.
-
-CC: Eric W. Biederman <ebiederm@xmission.com>
-Signed-off-by: Michael Schmitz <schmitzmic@gmail.com>
----
- arch/m68k/fpsp040/skeleton.S | 7 +++++++
- 1 file changed, 7 insertions(+)
-
-diff --git a/arch/m68k/fpsp040/skeleton.S b/arch/m68k/fpsp040/skeleton.S
-index a8f4161..1cbc52b 100644
---- a/arch/m68k/fpsp040/skeleton.S
-+++ b/arch/m68k/fpsp040/skeleton.S
-@@ -502,7 +502,14 @@ in_ea:
- 	.section .fixup,#alloc,#execinstr
- 	.even
- 1:
-+
-+	SAVE_ALL_INT
-+	| save top of frame
-+	movel	%sp,%curptr@(TASK_THREAD+THREAD_ESP0)
-+	SAVE_SWITCH_STACK
- 	jbra	fpsp040_die
-+	lea	44(%sp),%sp
-+	rts
- 
- 	.section __ex_table,#alloc
- 	.align	4
--- 
-2.7.4
-
-
---------------8DA757192A993533D4532EED--
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
