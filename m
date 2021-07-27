@@ -2,116 +2,86 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-13.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-3.7 required=3.0 tests=BAYES_00,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id CB432C432BE
-	for <linux-m68k@archiver.kernel.org>; Tue, 27 Jul 2021 09:50:42 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 6D6FFC4338F
+	for <linux-m68k@archiver.kernel.org>; Tue, 27 Jul 2021 10:07:44 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id AAE6D6139F
-	for <linux-m68k@archiver.kernel.org>; Tue, 27 Jul 2021 09:50:42 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 4480961414
+	for <linux-m68k@archiver.kernel.org>; Tue, 27 Jul 2021 10:07:44 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235948AbhG0Jul (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Tue, 27 Jul 2021 05:50:41 -0400
-Received: from wout5-smtp.messagingengine.com ([64.147.123.21]:47247 "EHLO
-        wout5-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S235897AbhG0Jul (ORCPT
+        id S236109AbhG0KHm convert rfc822-to-8bit (ORCPT
+        <rfc822;linux-m68k@archiver.kernel.org>);
+        Tue, 27 Jul 2021 06:07:42 -0400
+Received: from mail-vk1-f181.google.com ([209.85.221.181]:44934 "EHLO
+        mail-vk1-f181.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236071AbhG0KHm (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Tue, 27 Jul 2021 05:50:41 -0400
-Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
-        by mailout.west.internal (Postfix) with ESMTP id AC4333200921;
-        Tue, 27 Jul 2021 05:50:40 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute1.internal (MEProxy); Tue, 27 Jul 2021 05:50:41 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-id:content-type:date:from
-        :in-reply-to:message-id:mime-version:references:subject:to
-        :x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
-        fm3; bh=J3f2eYP/ypsMclzmndLPiDcKO9gMzTgRakt9f1pTvUg=; b=ioG4IDXG
-        Anz/sJRnt6VaB5HnV6qUmyr7uuV29HlVhBu9Xm1yrHhGolhiLHr0rL6bBs2/cD0D
-        PBGwhlXBOfL0WFqeWWMAfV2AB+Thcghu9eLnwECGhYbeKJb3H/uOimPRugYECtDB
-        WZhdT/dDfue90eJdph0GPlKMLVpbI9pc+9hbME9xeFQOwJ3oSuTdD7prfxZ9VFtI
-        kGkuWG+cFOgP3uiIEU3Gtno3YLyfPFXrJG7M2Mc9bdpLQ7/PGgVUlAi+lZfgZi+J
-        /2yaGGdF6je0giF60J+FX3r78y1+XMb4cREbu1B8QNNx4fnNk8hAoied0Si/VVCV
-        ruFxXZRhrm39LA==
-X-ME-Sender: <xms:79b_YEJ94qRyzKucpzPBInJUiCu6PSF7JDx1jSPzf_P2oNClHoy9Nw>
-    <xme:79b_YEK9xq02f3Lgq7l61TghPt-oVJC4FnG0aJG3L_ccwlfJEh1jh7yDh0-CLWZP_
-    jTxVG9pkkOOALUPI_U>
-X-ME-Received: <xmr:79b_YEs54DfL_ExZ015DBzC8ogREg4Uzwa0zlMCP5mjs_EvZMxH1C3XaqJcSQvyvES_fF1LieaU88JflOsxYMT8ZHWEI6HeIpro>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrgeejgdduhecutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
-    fjughrpeffhffvufgjkfhfgggtsehmtderredttdejnecuhfhrohhmpefhihhnnhcuvfhh
-    rghinhcuoehfthhhrghinheslhhinhhugidqmheikehkrdhorhhgqeenucggtffrrghtth
-    gvrhhnpeefffejiefgheevheefvefhteeggfeijeeiveeihfffffdugfefkeelfffhgfeh
-    vdenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehfth
-    hhrghinheslhhinhhugidqmheikehkrdhorhhg
-X-ME-Proxy: <xmx:79b_YBYz-V0dHBW1gpxxJJ3kFnkujo54QJ6dmxVjRq-HoIwl8gS8OQ>
-    <xmx:79b_YLZIjE8aWs_gGELOuZbTmBI95FpvpMmNcR1JTyvzpdDaRkvusw>
-    <xmx:79b_YNAVvUTw7_kU-ZSHEuHraEBQo9qgd4Uu0xRhSYYUA5cueehqAw>
-    <xmx:8Nb_YKl2V6s2ugSLqtHHGf0A8h7XCjq2dAaSKfkmwvPB2Hr_JV7uXQ>
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Tue,
- 27 Jul 2021 05:50:36 -0400 (EDT)
-Date:   Tue, 27 Jul 2021 19:50:39 +1000 (AEST)
-From:   Finn Thain <fthain@linux-m68k.org>
-To:     =?UTF-8?Q?Uwe_Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
-cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-kernel@vger.kernel.org, kernel@pengutronix.de,
-        linux-m68k@lists.linux-m68k.org
-Subject: Re: [PATCH 1/5] nubus: Simplify check in remove callback
-In-Reply-To: <20210727080840.3550927-2-u.kleine-koenig@pengutronix.de>
-Message-ID: <d74ccd1-116d-9450-5ee4-8d5074998872@linux-m68k.org>
-References: <20210727080840.3550927-1-u.kleine-koenig@pengutronix.de> <20210727080840.3550927-2-u.kleine-koenig@pengutronix.de>
+        Tue, 27 Jul 2021 06:07:42 -0400
+Received: by mail-vk1-f181.google.com with SMTP id r2so2633073vkl.11
+        for <linux-m68k@lists.linux-m68k.org>; Tue, 27 Jul 2021 03:07:41 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=FCUItsUrNsIOTE4P27lKrABY3CasfpkaGPUBOlpzuIA=;
+        b=XjOfnRRO0N8CvVvJIU2WgJbuTOi4yM9aLcZtvfpZuMNzqqI9jRNlO9sUX/c0o+qW7S
+         IfXtPYC8cFiAvlpTM9iPw0YFwj6U1Tvea3SspH13HAtkGN4+2yJXems7IdFYausulY2C
+         8uPm36iGjY2FA9BHkCGE4SOEiRV1UZAGECxzGM4pO9qaK9vaUZCXaZkMHafR1naHswnt
+         d2Q1tQYsFjSG0J004F554f+yNFHIXQT1pFKjlwSFUC7ozQ8QNoOG9RY1EIUtwOpVo72D
+         QVJRBgpSozK161rwikXdWbYe5VKg6P1KDvQqIjYDlBPXkHNfRDDJsoX9gUNVtdP/FTkv
+         68jA==
+X-Gm-Message-State: AOAM533gWDjJ8JhUPOque2VXn/0f8zATalafBZe4ons0yKZ4j5VL9ODt
+        d2yEu/5xDLHCY6QQ2Wsim6G75+85Y+zo7BbYzCM=
+X-Google-Smtp-Source: ABdhPJyJZ2K2v5gkPcV5lyHX5OJ6ojes2JgkZC6Nxg8yjXVY0y3Yn43EJt4tI1HaIXLl75DtR+ZLBeyBHpoziXGZOkM=
+X-Received: by 2002:ac5:c956:: with SMTP id s22mr13658214vkm.2.1627380461341;
+ Tue, 27 Jul 2021 03:07:41 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/mixed; BOUNDARY="-1463811774-245338131-1627379007=:27"
-Content-ID: <7a42c831-acd5-2e2f-28c2-99efc32374e2@nippy.intranet>
+References: <20210727080840.3550927-1-u.kleine-koenig@pengutronix.de>
+ <20210727080840.3550927-2-u.kleine-koenig@pengutronix.de> <d74ccd1-116d-9450-5ee4-8d5074998872@linux-m68k.org>
+In-Reply-To: <d74ccd1-116d-9450-5ee4-8d5074998872@linux-m68k.org>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Tue, 27 Jul 2021 12:07:30 +0200
+Message-ID: <CAMuHMdX=K4S3Yd_ybd5C3e40XefMf5kHs1tWs1+VKTgiWEWEDg@mail.gmail.com>
+Subject: Re: [PATCH 1/5] nubus: Simplify check in remove callback
+To:     Finn Thain <fthain@linux-m68k.org>
+Cc:     =?UTF-8?Q?Uwe_Kleine=2DK=C3=B6nig?= 
+        <u.kleine-koenig@pengutronix.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Sascha Hauer <kernel@pengutronix.de>,
+        linux-m68k <linux-m68k@lists.linux-m68k.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-  This message is in MIME format.  The first part should be readable text,
-  while the remaining parts are likely unreadable without MIME-aware tools.
+Hi Finn,
 
----1463811774-245338131-1627379007=:27
-Content-Type: text/plain; CHARSET=UTF-8
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Content-ID: <eb76bb50-e32-3e93-cf95-e39ea524d11f@nippy.intranet>
+On Tue, Jul 27, 2021 at 11:50 AM Finn Thain <fthain@linux-m68k.org> wrote:
+> On Tue, 27 Jul 2021, Uwe Kleine-König wrote:
+> > Apart from that, the compiler might already assume dev->driver being
+> > non-NULL after to_nubus_driver(dev->driver) was called.
+>
+> I don't understand how a compiler can make that assumption. But then, I
+> don't know why compilers do a lot of the things they do...
 
-On Tue, 27 Jul 2021, Uwe Kleine-K=C3=B6nig wrote:
+It is one of those recent optimizations people have been complaining
+about.  Once you have dereferenced a pointer, compilers may remove
+all further NULL-checks, assuming they can't happen, as the code
+would have crashed anyway before due to the dereference.
+Good luck running on bare metal with RAM at zero ;-)
 
-> The driver core only calls a remove callback when the device was
-> successfully bound (aka probed) before. So dev->driver is never NULL.
->=20
+Gr{oetje,eeting}s,
 
-Are you sure dev->driver is non-NULL for the lifetime of the device?
-A quick glance at device_reprobe() makes me wonder about that.
+                        Geert
 
-> Apart from that, the compiler might already assume dev->driver being
-> non-NULL after to_nubus_driver(dev->driver) was called.
->=20
+-- 
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
-I don't understand how a compiler can make that assumption. But then, I=20
-don't know why compilers do a lot of the things they do...
-
-> Signed-off-by: Uwe Kleine-K=C3=B6nig <u.kleine-koenig@pengutronix.de>
-> ---
->  drivers/nubus/bus.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->=20
-> diff --git a/drivers/nubus/bus.c b/drivers/nubus/bus.c
-> index d9d04f27f89b..17fad660032c 100644
-> --- a/drivers/nubus/bus.c
-> +++ b/drivers/nubus/bus.c
-> @@ -33,7 +33,7 @@ static void nubus_device_remove(struct device *dev)
->  {
->  =09struct nubus_driver *ndrv =3D to_nubus_driver(dev->driver);
-> =20
-> -=09if (dev->driver && ndrv->remove)
-> +=09if (ndrv->remove)
->  =09=09ndrv->remove(to_nubus_board(dev));
->  }
-> =20
->=20
----1463811774-245338131-1627379007=:27--
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
