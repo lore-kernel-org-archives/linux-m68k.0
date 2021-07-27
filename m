@@ -7,39 +7,39 @@ X-Spam-Status: No, score=-13.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id EBCF8C4338F
-	for <linux-m68k@archiver.kernel.org>; Tue, 27 Jul 2021 09:47:35 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id CB432C432BE
+	for <linux-m68k@archiver.kernel.org>; Tue, 27 Jul 2021 09:50:42 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id CB23361390
-	for <linux-m68k@archiver.kernel.org>; Tue, 27 Jul 2021 09:47:35 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id AAE6D6139F
+	for <linux-m68k@archiver.kernel.org>; Tue, 27 Jul 2021 09:50:42 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235990AbhG0Jre (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Tue, 27 Jul 2021 05:47:34 -0400
-Received: from wout5-smtp.messagingengine.com ([64.147.123.21]:39923 "EHLO
+        id S235948AbhG0Jul (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Tue, 27 Jul 2021 05:50:41 -0400
+Received: from wout5-smtp.messagingengine.com ([64.147.123.21]:47247 "EHLO
         wout5-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S236061AbhG0Jrc (ORCPT
+        by vger.kernel.org with ESMTP id S235897AbhG0Jul (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Tue, 27 Jul 2021 05:47:32 -0400
-Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
-        by mailout.west.internal (Postfix) with ESMTP id 5B661320079B;
-        Tue, 27 Jul 2021 05:47:30 -0400 (EDT)
+        Tue, 27 Jul 2021 05:50:41 -0400
+Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
+        by mailout.west.internal (Postfix) with ESMTP id AC4333200921;
+        Tue, 27 Jul 2021 05:50:40 -0400 (EDT)
 Received: from mailfrontend1 ([10.202.2.162])
-  by compute4.internal (MEProxy); Tue, 27 Jul 2021 05:47:31 -0400
+  by compute1.internal (MEProxy); Tue, 27 Jul 2021 05:50:41 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
         messagingengine.com; h=cc:content-id:content-type:date:from
         :in-reply-to:message-id:mime-version:references:subject:to
         :x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
-        fm3; bh=gY4UTeqi38qVevjiESPFwl2OdxktiSNqxtqK3cUHOio=; b=jg4CBx/S
-        v3Z6dyIz7AY3SOHbLxOViTe+aFIbPs9XVnS8SgmAHpv92YZU1jpz7wzIZkImvpvT
-        Cus/z9nBY2RzPBKRwUOnUCpC2MkkI+IO31VDZ40N0CESjtMBwfFO5CAnSPHWqiK/
-        LtS6jWVWtQ8rRF0/E01El5jfT9Jc04jMi/7Sg6tDsWoOsv6uDhCzpUMpGs1x4enO
-        Fbr+cf3z2BZj6sArbsDzciN0szSqS3Ld+AvpORmoMDcjtW1uTonpr5T2Iznuq1BC
-        7eKRoF21ddpqzDZmVEmXRhYU7Kq81p6l/bH6BQkKYz5YuR2DW4AE0EwbITPfI2Dw
-        BumtkbbMp2PeXQ==
-X-ME-Sender: <xms:MNb_YEv1qWq8CNlMBF5EtMQplVHMoRZUMQU92xZNNKgCSnCCkZnKpQ>
-    <xme:MNb_YBfv2I9cU5CEW_D0bCRM776zOKeqjVNdswzxC9fSLnvicc-MnUXGCBc02zDFr
-    AycMvh-NZZsEWVtwuo>
-X-ME-Received: <xmr:MNb_YPzOwHjyZnCV0zxhis-RG7T-Shc-SPFAvqD4DySw54CbOo3pMmpSDvdg-Se3l4Fl0eh_kDfGEYIIrNfHyh1IcKYQd2zscGU>
+        fm3; bh=J3f2eYP/ypsMclzmndLPiDcKO9gMzTgRakt9f1pTvUg=; b=ioG4IDXG
+        Anz/sJRnt6VaB5HnV6qUmyr7uuV29HlVhBu9Xm1yrHhGolhiLHr0rL6bBs2/cD0D
+        PBGwhlXBOfL0WFqeWWMAfV2AB+Thcghu9eLnwECGhYbeKJb3H/uOimPRugYECtDB
+        WZhdT/dDfue90eJdph0GPlKMLVpbI9pc+9hbME9xeFQOwJ3oSuTdD7prfxZ9VFtI
+        kGkuWG+cFOgP3uiIEU3Gtno3YLyfPFXrJG7M2Mc9bdpLQ7/PGgVUlAi+lZfgZi+J
+        /2yaGGdF6je0giF60J+FX3r78y1+XMb4cREbu1B8QNNx4fnNk8hAoied0Si/VVCV
+        ruFxXZRhrm39LA==
+X-ME-Sender: <xms:79b_YEJ94qRyzKucpzPBInJUiCu6PSF7JDx1jSPzf_P2oNClHoy9Nw>
+    <xme:79b_YEK9xq02f3Lgq7l61TghPt-oVJC4FnG0aJG3L_ccwlfJEh1jh7yDh0-CLWZP_
+    jTxVG9pkkOOALUPI_U>
+X-ME-Received: <xmr:79b_YEs54DfL_ExZ015DBzC8ogREg4Uzwa0zlMCP5mjs_EvZMxH1C3XaqJcSQvyvES_fF1LieaU88JflOsxYMT8ZHWEI6HeIpro>
 X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrgeejgdduhecutefuodetggdotefrodftvf
     curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
     uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
@@ -48,30 +48,25 @@ X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrgeejgdduhecutefuodetggdote
     gvrhhnpeefffejiefgheevheefvefhteeggfeijeeiveeihfffffdugfefkeelfffhgfeh
     vdenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehfth
     hhrghinheslhhinhhugidqmheikehkrdhorhhg
-X-ME-Proxy: <xmx:MNb_YHP1QUG41yPCkYUfVoLQVFsz6bN8RoJsjwNIw5zAEhxNlPR-9w>
-    <xmx:MNb_YE-Y4kfXMQPoBiE4uA6I6txfq72C_O-I8-b0vMJ1XxKGh772BQ>
-    <xmx:MNb_YPVvDJyjMAqWFSJbmWQHTW66qRB7GDy2j0dJVFLZyDRKd_ioDw>
-    <xmx:Mtb_YBNtyCAMcv8ITE2dzfuHa73O3JOgAzsgXYQxZe3x71Pa5qzuOw>
+X-ME-Proxy: <xmx:79b_YBYz-V0dHBW1gpxxJJ3kFnkujo54QJ6dmxVjRq-HoIwl8gS8OQ>
+    <xmx:79b_YLZIjE8aWs_gGELOuZbTmBI95FpvpMmNcR1JTyvzpdDaRkvusw>
+    <xmx:79b_YNAVvUTw7_kU-ZSHEuHraEBQo9qgd4Uu0xRhSYYUA5cueehqAw>
+    <xmx:8Nb_YKl2V6s2ugSLqtHHGf0A8h7XCjq2dAaSKfkmwvPB2Hr_JV7uXQ>
 Received: by mail.messagingengine.com (Postfix) with ESMTPA; Tue,
- 27 Jul 2021 05:47:26 -0400 (EDT)
-Date:   Tue, 27 Jul 2021 19:47:30 +1000 (AEST)
+ 27 Jul 2021 05:50:36 -0400 (EDT)
+Date:   Tue, 27 Jul 2021 19:50:39 +1000 (AEST)
 From:   Finn Thain <fthain@linux-m68k.org>
 To:     =?UTF-8?Q?Uwe_Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
 cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         linux-kernel@vger.kernel.org, kernel@pengutronix.de,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Zhang Qilong <zhangqilong3@huawei.com>,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-        netdev@vger.kernel.org, linux-m68k@lists.linux-m68k.org
-Subject: Re: [PATCH 2/5] nubus: Make struct nubus_driver::remove return
- void
-In-Reply-To: <20210727080840.3550927-3-u.kleine-koenig@pengutronix.de>
-Message-ID: <59bc4bf-7e8e-24be-5a7a-d165e6b73c32@linux-m68k.org>
-References: <20210727080840.3550927-1-u.kleine-koenig@pengutronix.de> <20210727080840.3550927-3-u.kleine-koenig@pengutronix.de>
+        linux-m68k@lists.linux-m68k.org
+Subject: Re: [PATCH 1/5] nubus: Simplify check in remove callback
+In-Reply-To: <20210727080840.3550927-2-u.kleine-koenig@pengutronix.de>
+Message-ID: <d74ccd1-116d-9450-5ee4-8d5074998872@linux-m68k.org>
+References: <20210727080840.3550927-1-u.kleine-koenig@pengutronix.de> <20210727080840.3550927-2-u.kleine-koenig@pengutronix.de>
 MIME-Version: 1.0
-Content-Type: multipart/mixed; BOUNDARY="-1463811774-1321263043-1627379041=:27"
-Content-ID: <5c95884-21f4-a5b0-c5ad-12dc7ae6ffc8@nippy.intranet>
+Content-Type: multipart/mixed; BOUNDARY="-1463811774-245338131-1627379007=:27"
+Content-ID: <7a42c831-acd5-2e2f-28c2-99efc32374e2@nippy.intranet>
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
@@ -79,87 +74,44 @@ X-Mailing-List: linux-m68k@vger.kernel.org
   This message is in MIME format.  The first part should be readable text,
   while the remaining parts are likely unreadable without MIME-aware tools.
 
----1463811774-1321263043-1627379041=:27
+---1463811774-245338131-1627379007=:27
 Content-Type: text/plain; CHARSET=UTF-8
 Content-Transfer-Encoding: QUOTED-PRINTABLE
-Content-ID: <4427256-e4b9-b8ee-c183-114bc2c5c61e@nippy.intranet>
+Content-ID: <eb76bb50-e32-3e93-cf95-e39ea524d11f@nippy.intranet>
 
 On Tue, 27 Jul 2021, Uwe Kleine-K=C3=B6nig wrote:
 
-> The nubus core ignores the return value of the remove callback (in
-> nubus_device_remove()) and all implementers return 0 anyway.
+> The driver core only calls a remove callback when the device was
+> successfully bound (aka probed) before. So dev->driver is never NULL.
 >=20
-> So make it impossible for future drivers to return an unused error code
-> by changing the remove prototype to return void.
+
+Are you sure dev->driver is non-NULL for the lifetime of the device?
+A quick glance at device_reprobe() makes me wonder about that.
+
+> Apart from that, the compiler might already assume dev->driver being
+> non-NULL after to_nubus_driver(dev->driver) was called.
 >=20
+
+I don't understand how a compiler can make that assumption. But then, I=20
+don't know why compilers do a lot of the things they do...
+
 > Signed-off-by: Uwe Kleine-K=C3=B6nig <u.kleine-koenig@pengutronix.de>
-
-Acked-by: Finn Thain <fthain@linux-m68k.org>
-
 > ---
->  drivers/net/ethernet/8390/mac8390.c     | 3 +--
->  drivers/net/ethernet/natsemi/macsonic.c | 4 +---
->  include/linux/nubus.h                   | 2 +-
->  3 files changed, 3 insertions(+), 6 deletions(-)
+>  drivers/nubus/bus.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 >=20
-> diff --git a/drivers/net/ethernet/8390/mac8390.c b/drivers/net/ethernet/8=
-390/mac8390.c
-> index 9aac7119d382..91b04abfd687 100644
-> --- a/drivers/net/ethernet/8390/mac8390.c
-> +++ b/drivers/net/ethernet/8390/mac8390.c
-> @@ -428,13 +428,12 @@ static int mac8390_device_probe(struct nubus_board =
-*board)
->  =09return err;
->  }
-> =20
-> -static int mac8390_device_remove(struct nubus_board *board)
-> +static void mac8390_device_remove(struct nubus_board *board)
+> diff --git a/drivers/nubus/bus.c b/drivers/nubus/bus.c
+> index d9d04f27f89b..17fad660032c 100644
+> --- a/drivers/nubus/bus.c
+> +++ b/drivers/nubus/bus.c
+> @@ -33,7 +33,7 @@ static void nubus_device_remove(struct device *dev)
 >  {
->  =09struct net_device *dev =3D nubus_get_drvdata(board);
+>  =09struct nubus_driver *ndrv =3D to_nubus_driver(dev->driver);
 > =20
->  =09unregister_netdev(dev);
->  =09free_netdev(dev);
-> -=09return 0;
+> -=09if (dev->driver && ndrv->remove)
+> +=09if (ndrv->remove)
+>  =09=09ndrv->remove(to_nubus_board(dev));
 >  }
 > =20
->  static struct nubus_driver mac8390_driver =3D {
-> diff --git a/drivers/net/ethernet/natsemi/macsonic.c b/drivers/net/ethern=
-et/natsemi/macsonic.c
-> index 2289e1fe3741..8709d700e15a 100644
-> --- a/drivers/net/ethernet/natsemi/macsonic.c
-> +++ b/drivers/net/ethernet/natsemi/macsonic.c
-> @@ -603,7 +603,7 @@ static int mac_sonic_nubus_probe(struct nubus_board *=
-board)
->  =09return err;
->  }
-> =20
-> -static int mac_sonic_nubus_remove(struct nubus_board *board)
-> +static void mac_sonic_nubus_remove(struct nubus_board *board)
->  {
->  =09struct net_device *ndev =3D nubus_get_drvdata(board);
->  =09struct sonic_local *lp =3D netdev_priv(ndev);
-> @@ -613,8 +613,6 @@ static int mac_sonic_nubus_remove(struct nubus_board =
-*board)
->  =09=09=09  SIZEOF_SONIC_DESC * SONIC_BUS_SCALE(lp->dma_bitmode),
->  =09=09=09  lp->descriptors, lp->descriptors_laddr);
->  =09free_netdev(ndev);
-> -
-> -=09return 0;
->  }
-> =20
->  static struct nubus_driver mac_sonic_nubus_driver =3D {
-> diff --git a/include/linux/nubus.h b/include/linux/nubus.h
-> index eba50b057f6f..392fc6c53e96 100644
-> --- a/include/linux/nubus.h
-> +++ b/include/linux/nubus.h
-> @@ -86,7 +86,7 @@ extern struct list_head nubus_func_rsrcs;
->  struct nubus_driver {
->  =09struct device_driver driver;
->  =09int (*probe)(struct nubus_board *board);
-> -=09int (*remove)(struct nubus_board *board);
-> +=09void (*remove)(struct nubus_board *board);
->  };
-> =20
->  extern struct bus_type nubus_bus_type;
 >=20
----1463811774-1321263043-1627379041=:27--
+---1463811774-245338131-1627379007=:27--
