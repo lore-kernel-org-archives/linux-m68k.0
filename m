@@ -2,128 +2,303 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
-	MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-15.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3D335C4338F
-	for <linux-m68k@archiver.kernel.org>; Wed, 28 Jul 2021 01:23:37 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E80F5C4338F
+	for <linux-m68k@archiver.kernel.org>; Wed, 28 Jul 2021 18:21:31 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 170AB60F23
-	for <linux-m68k@archiver.kernel.org>; Wed, 28 Jul 2021 01:23:37 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id C9E0A60524
+	for <linux-m68k@archiver.kernel.org>; Wed, 28 Jul 2021 18:21:31 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234138AbhG1BXh (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Tue, 27 Jul 2021 21:23:37 -0400
-Received: from wout5-smtp.messagingengine.com ([64.147.123.21]:48645 "EHLO
-        wout5-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234029AbhG1BXg (ORCPT
+        id S229581AbhG1SVd (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Wed, 28 Jul 2021 14:21:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37040 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229542AbhG1SVc (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Tue, 27 Jul 2021 21:23:36 -0400
-Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
-        by mailout.west.internal (Postfix) with ESMTP id 759333200754;
-        Tue, 27 Jul 2021 21:23:34 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute4.internal (MEProxy); Tue, 27 Jul 2021 21:23:34 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=qcOAmK
-        Z6XlEpzxajr3df3EJ15DHZZ8RZdgiDKKttjE8=; b=bphnyQefhT87xYqE1Dz+S+
-        BCwnhIlGXpb30wU14kB5j38Bz+p3TaPn7/oReiMP0t7HefZlzMMMtTSZOIhQHnCQ
-        SpjD0QZh4PdYAipgYpWeq2Es0e5cXUWNTkM4ymvlwL9mHcp2mSP9fy9saHXwnzp9
-        gThzFyqSa1Debqy9sth+MA3Zj8R+nw5b5Pyl6gFsXnPriEWwBdRPe8KQVJXu+QFY
-        Zh2t57Dn2Tfquw2phHKsw4B6aydecKsosHWlUiISJdlOUroTRxx9W+RqERRfFDcP
-        6Y/5Ml+jK/WFVRxwOho57YAzgJXLfxO58C88ZDiy6/wm1fzmTm0yA5f0mtaqEckA
-        ==
-X-ME-Sender: <xms:lLEAYXclOqZgRjS46tWHY66lpVzl94T9RCKm45Yf2erVThV39bVtPg>
-    <xme:lLEAYdP5FAhaXnmeq9YPJxFy8Ind430wShQVn-cliOQiN_6LmPS98A2cqvkghoZKg
-    Hub-oO4vmuRB_Pv2h0>
-X-ME-Received: <xmr:lLEAYQhJRol931B0O0_Kp5LObpZkZQLgAd8LxI_DXeFjzZeq6sOznaj2J_wCWiMjn9oSbIyZS_rPvNLfslAMNgVfMsx03bFaFK4>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrgeekgdefvdcutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
-    fjughrpeffhffvufgjkfhfgggtsehttdertddttddvnecuhfhrohhmpefhihhnnhcuvfhh
-    rghinhcuoehfthhhrghinheslhhinhhugidqmheikehkrdhorhhgqeenucggtffrrghtth
-    gvrhhnpeekveevtdekfedtfefhvdfgleelfefhtdefieetjeejvefghfdufeejkeehgfeu
-    udenucffohhmrghinhepkhgvrhhnvghlrdhorhhgnecuvehluhhsthgvrhfuihiivgeptd
-    enucfrrghrrghmpehmrghilhhfrhhomhepfhhthhgrihhnsehlihhnuhigqdhmieekkhdr
-    ohhrgh
-X-ME-Proxy: <xmx:lLEAYY-0zSCe0eEytEXlRXdlialLTSfwiev3qbYVVykYW5AIWJ-iZg>
-    <xmx:lLEAYTsf5nl9IdRJfTK4c1_REjoOH7ZHgdeyVeUiIcqZlVGq8FcNyw>
-    <xmx:lLEAYXHqVByZVm24f1Or_6WgzFPBc-K8pE8KWhTbwoJQH7HZlSdUyw>
-    <xmx:lrEAYc64YYkMZ3wl5WOzy3xblqCH0rXdXSLXuvWANRI9zhjfDj7wUA>
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Tue,
- 27 Jul 2021 21:23:29 -0400 (EDT)
-Date:   Wed, 28 Jul 2021 11:23:24 +1000 (AEST)
-From:   Finn Thain <fthain@linux-m68k.org>
-To:     Al Viro <viro@zeniv.linux.org.uk>
-cc:     linux-m68k@lists.linux-m68k.org,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Greg Ungerer <gerg@linux-m68k.org>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [RFC][CFT] signal handling fixes
-In-Reply-To: <YQAbTazP4/JB8Aas@zeniv-ca.linux.org.uk>
-Message-ID: <689cf6b8-e8fc-dc35-9d47-2c3d3e6aafb1@linux-m68k.org>
-References: <YP2c1xk9LJ0zE3KW@zeniv-ca.linux.org.uk> <5622d120-1b89-6898-d091-8b4ceff6418@linux-m68k.org> <YQAbTazP4/JB8Aas@zeniv-ca.linux.org.uk>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+        Wed, 28 Jul 2021 14:21:32 -0400
+Received: from mail-wm1-x32f.google.com (mail-wm1-x32f.google.com [IPv6:2a00:1450:4864:20::32f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B7FE3C061765
+        for <linux-m68k@lists.linux-m68k.org>; Wed, 28 Jul 2021 11:21:30 -0700 (PDT)
+Received: by mail-wm1-x32f.google.com with SMTP id u15so2038824wmj.1
+        for <linux-m68k@lists.linux-m68k.org>; Wed, 28 Jul 2021 11:21:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=aF3/VHib9GfO0nFJBohIRSm4KR3E1di5VfkCUNhyYTc=;
+        b=j+7JSdyL/y+5Tp4kgvBfv3a7O8SxDct7cjXFxt3kfO/nBdrjysT8zMYTtmjcjmICNe
+         xXtbgscX5Z0OO2TGenxgzYhXqChAYsMPuE9fLcrY9TZtp3bbRqYTnkU3W1it9aR9oxTs
+         /v02VoW84XyvkeNvrYtqh6CQGDoQDDz1s6G4NMTxlSbXIMfdT05h/dXKstyEPoePxH2I
+         HeZwsjiPBjbjexDG8zIAI1QxlM/cASCcmgVGwALVa66j6CeDbILQqX+Phg4+t/OT6goC
+         npeNIatPb4N8bnvQAhNzyfwiViindBb/BAgUbh2gX2h54t86yGRFpLKg6AUGjq2lr+K1
+         hfyg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=aF3/VHib9GfO0nFJBohIRSm4KR3E1di5VfkCUNhyYTc=;
+        b=mt7aZPBFGP2cZhib/C4OxQljs/fnJYLZpH8TpzZCLE7/wcSjKW3fVrIURtYbB8vAhB
+         XrVWBJQXI92Te99kPW9e0FlgIXRKGzER/Vd/WCkMBB9RFKC1lEJbf14hNlnCPFvUjyTk
+         RQz8nPbi4O6uEdQRQW+abg3hBlDiQoLe8FdnURzM2mTu7KEQ0eTWZju2YaeExawO4WgM
+         rnuhPZZEZ98cnQePacLLNFVYLorObSBhYhHcMcUWTnj0XwLH8dSqqQJTkvW/31cpd982
+         I9TsCMVw74XO7vvzaOYxL8/dB4RPdr+FhIDfvKDKRW+8Dy8YVe3sTmm5YEP6XeHPktt4
+         AvHA==
+X-Gm-Message-State: AOAM532Nn4d/6OI+Pt6af/qopDNsTd6E9ZmHyE8lQIa2i7SSWiZ1ykaC
+        a3XijsTs84eAD9B1I3qUmBU=
+X-Google-Smtp-Source: ABdhPJx0eEbkPeH6aJH3m0u5RZgt9e6APmNbopPFI39+3QwRNHGBoeSXptg7zSKawFDABm59R+KI5g==
+X-Received: by 2002:a05:600c:2e4a:: with SMTP id q10mr10720693wmf.133.1627496489195;
+        Wed, 28 Jul 2021 11:21:29 -0700 (PDT)
+Received: from felia.fritz.box ([2001:16b8:2d7f:fa00:1d1c:996c:af83:88fd])
+        by smtp.gmail.com with ESMTPSA id i5sm620880wrs.85.2021.07.28.11.21.28
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 28 Jul 2021 11:21:28 -0700 (PDT)
+From:   Lukas Bulwahn <lukas.bulwahn@gmail.com>
+To:     Christoph Hellwig <hch@lst.de>, Jens Axboe <axboe@kernel.dk>,
+        Randy Dunlap <rdunlap@infradead.org>
+Cc:     x86@kernel.org, linux-alpha@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        uclinux-h8-devel@lists.sourceforge.jp, linux-ia64@vger.kernel.org,
+        linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org,
+        linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        linux-sh@vger.kernel.org, sparclinux@vger.kernel.org,
+        linux-xtensa@linux-xtensa.org, linux-kernel@vger.kernel.org,
+        kernel-janitors@vger.kernel.org,
+        Lukas Bulwahn <lukas.bulwahn@gmail.com>
+Subject: [PATCH] arch: Kconfig: clean up obsolete use of HAVE_IDE
+Date:   Wed, 28 Jul 2021 20:21:15 +0200
+Message-Id: <20210728182115.4401-1-lukas.bulwahn@gmail.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-On Tue, 27 Jul 2021, Al Viro wrote:
+The arch-specific Kconfig files use HAVE_IDE to indicate if IDE is
+supported.
 
-> On Tue, Jul 27, 2021 at 08:21:52PM +1000, Finn Thain wrote:
-> > On Sun, 25 Jul 2021, Al Viro wrote:
-> > 
-> > > 
-> > > 	The series is on top of 5.14-rc1; it lives in
-> > > git://git.kernel.org/pub/scm/linux/kernel/git/viro/vfs.git #untested.m68k
-> > > Individual patches in followups...
-> > > 
-> > > 	_Very_ lightly tested on aranym; no real hardware to test it on.
-> > > Any help with review and testing would be very welcome.
-> > > 
-> > 
-> > I can test this branch on a Motorola 68040 machine I have here. Can you 
-> > advise how to get decent code coverage? Maybe there's a package out there 
-> > with a signal-heavy test suite? Maybe I need a break point in a signal 
-> > handler? Or perhaps just send ^C to a process running under strace?
-> 
-> Generally, SIGINT is not the best insertion vector...
-> 
+As IDE support and the HAVE_IDE config vanishes with commit b7fb14d3ac63
+("ide: remove the legacy ide driver"), there is no need to mention
+HAVE_IDE in all those arch-specific Kconfig files.
 
-True. I see that 'man 7 signal' says that SIGQUIT will produce a coredump. 
-Would that contain anything of interest?
+The issue was identified with ./scripts/checkkconfigsymbols.py.
 
-> Set a handler of e.g. SIGALRM with sigaction(), with a couple of other signals
-> in sa_mask (e.g. SIGUSR1 and SIGUSR2).  With raise() on those inside the
-> SIGALRM handler - then they will become deliverable on return from handler.
-> And have SIGUSR1 and SIGUSR2 handlers print siginfo and ucontext contents
-> (have them set with SA_SIGINFO in sa_flags, look at the second and third
-> arguments of sighandler).
-> 
-> Use alarm(2) to arrange for SIGALRM and sit in a tight loop - that'll give you
-> delivery on return from interrupt.  Alternatively, raise(SIGALRM) will give
-> you delivery on return from trap.  And making that a SIGBUS handler instead,
-> mmapping a file, truncating it to 0 and dereferencing something in mmapped
-> area will give you delivery on return from access error trap.  Division by
-> zero (and insertion handler on SIGFPE) ought to give you a type 2 exception
-> stack frame (4 bytes of aux data, that makes shifted exception frame bugger
-> format and vector fields of the original).
-> 
-> FWIW, the third argument of handler points to
-> struct ucontext {
->         unsigned long     uc_flags;
->         struct ucontext  *uc_link;
->         stack_t           uc_stack;
->         struct mcontext   uc_mcontext;
->         unsigned long     uc_filler[80];
->         sigset_t          uc_sigmask;   /* mask last for extensibility */
-> };
-> and type/vector is stored in uc_filler[54] (216 bytes into the array), with
-> aux data from exception stack frame starting from uc_filler[55].
-> 
+Fixes: b7fb14d3ac63 ("ide: remove the legacy ide driver")
+Suggested-by: Randy Dunlap <rdunlap@infradead.org>
+Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
+---
+ arch/alpha/Kconfig            | 1 -
+ arch/arm/Kconfig              | 6 ------
+ arch/arm/mach-davinci/Kconfig | 1 -
+ arch/h8300/Kconfig.cpu        | 1 -
+ arch/ia64/Kconfig             | 1 -
+ arch/m68k/Kconfig             | 1 -
+ arch/mips/Kconfig             | 1 -
+ arch/parisc/Kconfig           | 1 -
+ arch/powerpc/Kconfig          | 1 -
+ arch/sh/Kconfig               | 1 -
+ arch/sparc/Kconfig            | 1 -
+ arch/x86/Kconfig              | 1 -
+ arch/xtensa/Kconfig           | 1 -
+ 13 files changed, 18 deletions(-)
 
-OK, give me a week or so and I'll see what I can come up with. 
+diff --git a/arch/alpha/Kconfig b/arch/alpha/Kconfig
+index 77d3280dc678..a6d4c2f744e3 100644
+--- a/arch/alpha/Kconfig
++++ b/arch/alpha/Kconfig
+@@ -14,7 +14,6 @@ config ALPHA
+ 	select PCI_SYSCALL if PCI
+ 	select HAVE_AOUT
+ 	select HAVE_ASM_MODVERSIONS
+-	select HAVE_IDE
+ 	select HAVE_PCSPKR_PLATFORM
+ 	select HAVE_PERF_EVENTS
+ 	select NEED_DMA_MAP_STATE
+diff --git a/arch/arm/Kconfig b/arch/arm/Kconfig
+index 82f908fa5676..2fb7012c3246 100644
+--- a/arch/arm/Kconfig
++++ b/arch/arm/Kconfig
+@@ -95,7 +95,6 @@ config ARM
+ 	select HAVE_FUNCTION_TRACER if !XIP_KERNEL
+ 	select HAVE_GCC_PLUGINS
+ 	select HAVE_HW_BREAKPOINT if PERF_EVENTS && (CPU_V6 || CPU_V6K || CPU_V7)
+-	select HAVE_IDE if PCI || ISA || PCMCIA
+ 	select HAVE_IRQ_TIME_ACCOUNTING
+ 	select HAVE_KERNEL_GZIP
+ 	select HAVE_KERNEL_LZ4
+@@ -361,7 +360,6 @@ config ARCH_FOOTBRIDGE
+ 	bool "FootBridge"
+ 	select CPU_SA110
+ 	select FOOTBRIDGE
+-	select HAVE_IDE
+ 	select NEED_MACH_IO_H if !MMU
+ 	select NEED_MACH_MEMORY_H
+ 	help
+@@ -430,7 +428,6 @@ config ARCH_PXA
+ 	select GENERIC_IRQ_MULTI_HANDLER
+ 	select GPIO_PXA
+ 	select GPIOLIB
+-	select HAVE_IDE
+ 	select IRQ_DOMAIN
+ 	select PLAT_PXA
+ 	select SPARSE_IRQ
+@@ -446,7 +443,6 @@ config ARCH_RPC
+ 	select ARM_HAS_SG_CHAIN
+ 	select CPU_SA110
+ 	select FIQ
+-	select HAVE_IDE
+ 	select HAVE_PATA_PLATFORM
+ 	select ISA_DMA_API
+ 	select LEGACY_TIMER_TICK
+@@ -469,7 +465,6 @@ config ARCH_SA1100
+ 	select CPU_SA1100
+ 	select GENERIC_IRQ_MULTI_HANDLER
+ 	select GPIOLIB
+-	select HAVE_IDE
+ 	select IRQ_DOMAIN
+ 	select ISA
+ 	select NEED_MACH_MEMORY_H
+@@ -505,7 +500,6 @@ config ARCH_OMAP1
+ 	select GENERIC_IRQ_CHIP
+ 	select GENERIC_IRQ_MULTI_HANDLER
+ 	select GPIOLIB
+-	select HAVE_IDE
+ 	select HAVE_LEGACY_CLK
+ 	select IRQ_DOMAIN
+ 	select NEED_MACH_IO_H if PCCARD
+diff --git a/arch/arm/mach-davinci/Kconfig b/arch/arm/mach-davinci/Kconfig
+index de11030748d0..1d3aef84287d 100644
+--- a/arch/arm/mach-davinci/Kconfig
++++ b/arch/arm/mach-davinci/Kconfig
+@@ -9,7 +9,6 @@ menuconfig ARCH_DAVINCI
+ 	select PM_GENERIC_DOMAINS_OF if PM && OF
+ 	select REGMAP_MMIO
+ 	select RESET_CONTROLLER
+-	select HAVE_IDE
+ 	select PINCTRL_SINGLE
+ 
+ if ARCH_DAVINCI
+diff --git a/arch/h8300/Kconfig.cpu b/arch/h8300/Kconfig.cpu
+index 2b9cbaf41cd0..e4467d40107d 100644
+--- a/arch/h8300/Kconfig.cpu
++++ b/arch/h8300/Kconfig.cpu
+@@ -44,7 +44,6 @@ config H8300_H8MAX
+ 	bool "H8MAX"
+ 	select H83069
+ 	select RAMKERNEL
+-	select HAVE_IDE
+ 	help
+ 	  H8MAX Evaluation Board Support
+ 	  More Information. (Japanese Only)
+diff --git a/arch/ia64/Kconfig b/arch/ia64/Kconfig
+index cf425c2c63af..4993c7ac7ff6 100644
+--- a/arch/ia64/Kconfig
++++ b/arch/ia64/Kconfig
+@@ -25,7 +25,6 @@ config IA64
+ 	select HAVE_ASM_MODVERSIONS
+ 	select HAVE_UNSTABLE_SCHED_CLOCK
+ 	select HAVE_EXIT_THREAD
+-	select HAVE_IDE
+ 	select HAVE_KPROBES
+ 	select HAVE_KRETPROBES
+ 	select HAVE_FTRACE_MCOUNT_RECORD
+diff --git a/arch/m68k/Kconfig b/arch/m68k/Kconfig
+index 96989ad46f66..d632a1d576f9 100644
+--- a/arch/m68k/Kconfig
++++ b/arch/m68k/Kconfig
+@@ -23,7 +23,6 @@ config M68K
+ 	select HAVE_DEBUG_BUGVERBOSE
+ 	select HAVE_EFFICIENT_UNALIGNED_ACCESS if !CPU_HAS_NO_UNALIGNED
+ 	select HAVE_FUTEX_CMPXCHG if MMU && FUTEX
+-	select HAVE_IDE
+ 	select HAVE_MOD_ARCH_SPECIFIC
+ 	select HAVE_UID16
+ 	select MMU_GATHER_NO_RANGE if MMU
+diff --git a/arch/mips/Kconfig b/arch/mips/Kconfig
+index cee6087cd686..6dfb27d531dd 100644
+--- a/arch/mips/Kconfig
++++ b/arch/mips/Kconfig
+@@ -71,7 +71,6 @@ config MIPS
+ 	select HAVE_FUNCTION_TRACER
+ 	select HAVE_GCC_PLUGINS
+ 	select HAVE_GENERIC_VDSO
+-	select HAVE_IDE
+ 	select HAVE_IOREMAP_PROT
+ 	select HAVE_IRQ_EXIT_ON_IRQ_STACK
+ 	select HAVE_IRQ_TIME_ACCOUNTING
+diff --git a/arch/parisc/Kconfig b/arch/parisc/Kconfig
+index bde9907bc5b2..4f8c1fbf8f2f 100644
+--- a/arch/parisc/Kconfig
++++ b/arch/parisc/Kconfig
+@@ -3,7 +3,6 @@ config PARISC
+ 	def_bool y
+ 	select ARCH_32BIT_OFF_T if !64BIT
+ 	select ARCH_MIGHT_HAVE_PC_PARPORT
+-	select HAVE_IDE
+ 	select HAVE_FUNCTION_TRACER
+ 	select HAVE_FUNCTION_GRAPH_TRACER
+ 	select HAVE_SYSCALL_TRACEPOINTS
+diff --git a/arch/powerpc/Kconfig b/arch/powerpc/Kconfig
+index 53db06ba4223..2e213ec6ec05 100644
+--- a/arch/powerpc/Kconfig
++++ b/arch/powerpc/Kconfig
+@@ -220,7 +220,6 @@ config PPC
+ 	select HAVE_HARDLOCKUP_DETECTOR_ARCH	if PPC_BOOK3S_64 && SMP
+ 	select HAVE_HARDLOCKUP_DETECTOR_PERF	if PERF_EVENTS && HAVE_PERF_EVENTS_NMI && !HAVE_HARDLOCKUP_DETECTOR_ARCH
+ 	select HAVE_HW_BREAKPOINT		if PERF_EVENTS && (PPC_BOOK3S || PPC_8xx)
+-	select HAVE_IDE
+ 	select HAVE_IOREMAP_PROT
+ 	select HAVE_IRQ_EXIT_ON_IRQ_STACK
+ 	select HAVE_IRQ_TIME_ACCOUNTING
+diff --git a/arch/sh/Kconfig b/arch/sh/Kconfig
+index 45a0549421cd..b683b69a4556 100644
+--- a/arch/sh/Kconfig
++++ b/arch/sh/Kconfig
+@@ -39,7 +39,6 @@ config SUPERH
+ 	select HAVE_FUTEX_CMPXCHG if FUTEX
+ 	select HAVE_FTRACE_MCOUNT_RECORD
+ 	select HAVE_HW_BREAKPOINT
+-	select HAVE_IDE if HAS_IOPORT_MAP
+ 	select HAVE_IOREMAP_PROT if MMU && !X2TLB
+ 	select HAVE_KERNEL_BZIP2
+ 	select HAVE_KERNEL_GZIP
+diff --git a/arch/sparc/Kconfig b/arch/sparc/Kconfig
+index c5fa7932b550..f0c0f955e169 100644
+--- a/arch/sparc/Kconfig
++++ b/arch/sparc/Kconfig
+@@ -19,7 +19,6 @@ config SPARC
+ 	select OF
+ 	select OF_PROMTREE
+ 	select HAVE_ASM_MODVERSIONS
+-	select HAVE_IDE
+ 	select HAVE_ARCH_KGDB if !SMP || SPARC64
+ 	select HAVE_ARCH_TRACEHOOK
+ 	select HAVE_ARCH_SECCOMP if SPARC64
+diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
+index 89a286d5e4b9..ff0769cd4b31 100644
+--- a/arch/x86/Kconfig
++++ b/arch/x86/Kconfig
+@@ -202,7 +202,6 @@ config X86
+ 	select HAVE_FUNCTION_TRACER
+ 	select HAVE_GCC_PLUGINS
+ 	select HAVE_HW_BREAKPOINT
+-	select HAVE_IDE
+ 	select HAVE_IOREMAP_PROT
+ 	select HAVE_IRQ_EXIT_ON_IRQ_STACK	if X86_64
+ 	select HAVE_IRQ_TIME_ACCOUNTING
+diff --git a/arch/xtensa/Kconfig b/arch/xtensa/Kconfig
+index 1bdb55c2d0c1..b843902ad9fd 100644
+--- a/arch/xtensa/Kconfig
++++ b/arch/xtensa/Kconfig
+@@ -327,7 +327,6 @@ config XTENSA_PLATFORM_ISS
+ 
+ config XTENSA_PLATFORM_XT2000
+ 	bool "XT2000"
+-	select HAVE_IDE
+ 	help
+ 	  XT2000 is the name of Tensilica's feature-rich emulation platform.
+ 	  This hardware is capable of running a full Linux distribution.
+-- 
+2.17.1
+
