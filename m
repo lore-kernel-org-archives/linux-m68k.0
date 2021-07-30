@@ -2,83 +2,98 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-15.4 required=3.0 tests=BAYES_00,
+X-Spam-Status: No, score=-13.8 required=3.0 tests=BAYES_00,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,NICE_REPLY_A,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1
-	autolearn=unavailable autolearn_force=no version=3.4.0
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 57D7EC4320A
-	for <linux-m68k@archiver.kernel.org>; Fri, 30 Jul 2021 06:56:42 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 18FDBC43216
+	for <linux-m68k@archiver.kernel.org>; Fri, 30 Jul 2021 11:54:09 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 3125460720
-	for <linux-m68k@archiver.kernel.org>; Fri, 30 Jul 2021 06:56:42 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 01C9F60EE6
+	for <linux-m68k@archiver.kernel.org>; Fri, 30 Jul 2021 11:54:08 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237667AbhG3G4p (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Fri, 30 Jul 2021 02:56:45 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42784 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237598AbhG3G4p (ORCPT <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Fri, 30 Jul 2021 02:56:45 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C549E60F6B;
-        Fri, 30 Jul 2021 06:56:38 +0000 (UTC)
-Subject: Re: [PATCH] m68k: coldfire: return success for clk_enable(NULL)
-To:     Dan Carpenter <dan.carpenter@oracle.com>
-Cc:     Geert Uytterhoeven <geert@linux-m68k.org>,
-        Defang Bo <bodefang@126.com>, Steven King <sfking@fdwdc.com>,
-        linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org,
-        kernel-janitors@vger.kernel.org,
-        Marc Kleine-Budde <mkl@pengutronix.de>,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-References: <20210729122702.GA27150@kili>
-From:   Greg Ungerer <gerg@linux-m68k.org>
-Message-ID: <10e74100-2f3b-6c71-3e13-ba9a33766bf1@linux-m68k.org>
-Date:   Fri, 30 Jul 2021 16:56:36 +1000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        id S238222AbhG3LyM (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Fri, 30 Jul 2021 07:54:12 -0400
+Received: from mail-vs1-f47.google.com ([209.85.217.47]:46070 "EHLO
+        mail-vs1-f47.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238729AbhG3LyJ (ORCPT
+        <rfc822;linux-m68k@lists.linux-m68k.org>);
+        Fri, 30 Jul 2021 07:54:09 -0400
+Received: by mail-vs1-f47.google.com with SMTP id u11so2818329vst.12
+        for <linux-m68k@lists.linux-m68k.org>; Fri, 30 Jul 2021 04:54:04 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=10AbK6xK8RHobfuB2T0I9ydjpvpHcTKY9gPukwHCGGA=;
+        b=kIsoeUxAhwKVttKLf4J9HDv6wcnCoN3OhxyWkI3KM217WQY6ZiFtOPB1l3EqlwbfR+
+         zaIzQB6BAHwzEbq46rrAvO5IIDyWCnXf3lbPTHJ1J73JkMQtaOsI2ajcK1Cae4GEDeLA
+         oVx7DE5ITf24onk3HDB28VmxPs6be2hy1E3iCzlyAHq9SLdL8TMT5+CTevsljCil/NyS
+         l+HUVWCvGfaJ5w15bKzCmdeiPWvAbMjBAGwgIjuazim9aC9O7Pt1H/7Vx3q/StNrwDO5
+         IOuJeG+MmkWVx9zuwAdrsTRPymZHRZcDkexzDlf+PuCkM80GzXjy5h0+/hoROz3Vudws
+         Ouig==
+X-Gm-Message-State: AOAM531TyZjwGgj85GrrQfGbcuK6DsYhdKBmFjji5PegV1cpTZue0U7/
+        YntdzKkqfCELsJdOvB4xhaV4aeg+1XU2Efo8KZg=
+X-Google-Smtp-Source: ABdhPJz4vdafBihdMrOKEMxBFoPjbpJQjxu69DET98mge7/3K8Au1C7Ct04O+Z9CWQAOZ0tklY4nnHzuyfbZq+wo9hQ=
+X-Received: by 2002:a05:6102:321c:: with SMTP id r28mr1030174vsf.40.1627646043462;
+ Fri, 30 Jul 2021 04:54:03 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20210729122702.GA27150@kili>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20210728182115.4401-1-lukas.bulwahn@gmail.com>
+In-Reply-To: <20210728182115.4401-1-lukas.bulwahn@gmail.com>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Fri, 30 Jul 2021 13:53:52 +0200
+Message-ID: <CAMuHMdXt4tYHcgPNUZ0ZQ9iKhmZ_dC=ub=Ha35xDy+jR2-CroQ@mail.gmail.com>
+Subject: Re: [PATCH] arch: Kconfig: clean up obsolete use of HAVE_IDE
+To:     Lukas Bulwahn <lukas.bulwahn@gmail.com>
+Cc:     Christoph Hellwig <hch@lst.de>, Jens Axboe <axboe@kernel.dk>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        "the arch/x86 maintainers" <x86@kernel.org>,
+        alpha <linux-alpha@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        "moderated list:H8/300 ARCHITECTURE" 
+        <uclinux-h8-devel@lists.sourceforge.jp>,
+        "linux-ia64@vger.kernel.org" <linux-ia64@vger.kernel.org>,
+        linux-m68k <linux-m68k@lists.linux-m68k.org>,
+        "open list:BROADCOM NVRAM DRIVER" <linux-mips@vger.kernel.org>,
+        Parisc List <linux-parisc@vger.kernel.org>,
+        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
+        Linux-sh list <linux-sh@vger.kernel.org>,
+        sparclinux <sparclinux@vger.kernel.org>,
+        "open list:TENSILICA XTENSA PORT (xtensa)" 
+        <linux-xtensa@linux-xtensa.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        kernel-janitors@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
+On Wed, Jul 28, 2021 at 8:21 PM Lukas Bulwahn <lukas.bulwahn@gmail.com> wrote:
+> The arch-specific Kconfig files use HAVE_IDE to indicate if IDE is
+> supported.
+>
+> As IDE support and the HAVE_IDE config vanishes with commit b7fb14d3ac63
+> ("ide: remove the legacy ide driver"), there is no need to mention
+> HAVE_IDE in all those arch-specific Kconfig files.
+>
+> The issue was identified with ./scripts/checkkconfigsymbols.py.
+>
+> Fixes: b7fb14d3ac63 ("ide: remove the legacy ide driver")
+> Suggested-by: Randy Dunlap <rdunlap@infradead.org>
+> Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
 
-On 29/7/21 10:27 pm, Dan Carpenter wrote:
-> The clk_enable is supposed work when CONFIG_HAVE_CLK is false, but it
-> returns -EINVAL.  That means some drivers fail during probe.
-> 
-> [    1.680000] flexcan: probe of flexcan.0 failed with error -22
-> 
-> Fixes: c1fb1bf64bb6 ("m68k: let clk_enable() return immediately if clk is NULL")
-> Fixes: bea8bcb12da0 ("m68knommu: Add support for the Coldfire m5441x.")
-> Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+>  arch/m68k/Kconfig             | 1 -
 
-Thanks Dan.
-Applied to the m68knommu git tree, for-next branch, with Marc's Acked-by added.
+Acked-by: Geert Uytterhoeven <geert@linux-m68k.org>
 
-Regards
-Greg
+Gr{oetje,eeting}s,
 
+                        Geert
 
-> ---
-> I can't actually compile test this, but it's correct.
-> 
->   arch/m68k/coldfire/clk.c | 2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/arch/m68k/coldfire/clk.c b/arch/m68k/coldfire/clk.c
-> index 2ed841e94111..d03b6c4aa86b 100644
-> --- a/arch/m68k/coldfire/clk.c
-> +++ b/arch/m68k/coldfire/clk.c
-> @@ -78,7 +78,7 @@ int clk_enable(struct clk *clk)
->   	unsigned long flags;
->   
->   	if (!clk)
-> -		return -EINVAL;
-> +		return 0;
->   
->   	spin_lock_irqsave(&clk_lock, flags);
->   	if ((clk->enabled++ == 0) && clk->clk_ops)
-> 
+-- 
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
