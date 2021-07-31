@@ -2,93 +2,112 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
-	autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-3.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id F05FDC4320E
-	for <linux-m68k@archiver.kernel.org>; Fri, 30 Jul 2021 19:10:54 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8FB22C4338F
+	for <linux-m68k@archiver.kernel.org>; Sat, 31 Jul 2021 10:32:52 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id DB2D260F36
-	for <linux-m68k@archiver.kernel.org>; Fri, 30 Jul 2021 19:10:54 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 58C8960FE7
+	for <linux-m68k@archiver.kernel.org>; Sat, 31 Jul 2021 10:32:52 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231180AbhG3TK7 (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Fri, 30 Jul 2021 15:10:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58210 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231137AbhG3TK6 (ORCPT
+        id S232331AbhGaKc5 (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Sat, 31 Jul 2021 06:32:57 -0400
+Received: from out4-smtp.messagingengine.com ([66.111.4.28]:35595 "EHLO
+        out4-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232294AbhGaKc4 (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Fri, 30 Jul 2021 15:10:58 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 74AEDC06179C
-        for <linux-m68k@lists.linux-m68k.org>; Fri, 30 Jul 2021 12:10:46 -0700 (PDT)
-Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1m9Xu6-00068k-Qf; Fri, 30 Jul 2021 21:10:42 +0200
-Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
-        by drehscheibe.grey.stw.pengutronix.de with esmtp (Exim 4.92)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1m9Xu6-0005yq-AL; Fri, 30 Jul 2021 21:10:42 +0200
-Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.92)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1m9Xu6-0007Kr-9X; Fri, 30 Jul 2021 21:10:42 +0200
-From:   =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-kernel@vger.kernel.org, kernel@pengutronix.de,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        linux-m68k@lists.linux-m68k.org
-Subject: [PATCH v2 3/4] zorro: Simplify remove callback
-Date:   Fri, 30 Jul 2021 21:10:34 +0200
-Message-Id: <20210730191035.1455248-4-u.kleine-koenig@pengutronix.de>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210730191035.1455248-1-u.kleine-koenig@pengutronix.de>
-References: <20210730191035.1455248-1-u.kleine-koenig@pengutronix.de>
+        Sat, 31 Jul 2021 06:32:56 -0400
+Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
+        by mailout.nyi.internal (Postfix) with ESMTP id 9226B5C007D;
+        Sat, 31 Jul 2021 06:32:50 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute6.internal (MEProxy); Sat, 31 Jul 2021 06:32:50 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-id:content-type:date:from
+        :in-reply-to:message-id:mime-version:references:subject:to
+        :x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
+        fm3; bh=d+NXTrGFKDqrfs1qtW7ghetxFZrLoqbnkx+91xB+FPY=; b=kfb4Bn9I
+        UGMUGIuUQiUE6eCVdUVz+qzAFr9WUIABrED/3xZYAnGOhyTMeqBvRNpSHMAmm2/r
+        YX/rWGut3o2XKx6k2wTNEI80xV50/wSUULTZnfhP5q15XXZc7v1xHgV6Gr59i3om
+        LSGGT7oV3NzZ+CKbIAKxkE0r11EQvWbwTQBdOezZQicpkMmNKc3J82v/1zFu5NqA
+        mq9UOjw3MzQ8vGh6AhTQ7moBGXxvfEnhhpj0k/I0AXil/DuTDpGSJQjHWdUToIQo
+        hbNBDqhd0nCwCilXew4dadSGFzDStTkBPw14t0IaqxJz2heq25Xapxo75oIx7Fwp
+        OR4DM5XdNWC0jw==
+X-ME-Sender: <xms:0SYFYaCLpWwoA2MPrgF7M7kszWVlqPXOAHDHxKSpfiYWmf4dmV-7Aw>
+    <xme:0SYFYUhPZL1fqJEkeFM3Lon4mLrKSGyyK42pqiK9vG5AV-lPyq1K5hRdrVBJmijgp
+    Ksi3HzPuisJvW-yifM>
+X-ME-Received: <xmr:0SYFYdnJsEBYG6T-nxYgFz8ABEd5bdmvLmrI262hCxugd1oRAFi2o13ueT0YsaNiEYM2H0OYNzzNM1Wo4io0zna20pXuN7coJkE>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrheejgddvkecutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
+    fjughrpeffhffvufgjkfhfgggtsehmtderredttdejnecuhfhrohhmpefhihhnnhcuvfhh
+    rghinhcuoehfthhhrghinheslhhinhhugidqmheikehkrdhorhhgqeenucggtffrrghtth
+    gvrhhnpeefffejiefgheevheefvefhteeggfeijeeiveeihfffffdugfefkeelfffhgfeh
+    vdenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehfth
+    hhrghinheslhhinhhugidqmheikehkrdhorhhg
+X-ME-Proxy: <xmx:0SYFYYxTjucRqWX59AoG2xRyq3Gn-GkHBKTV09rTsdN6CWzcdkPc2A>
+    <xmx:0SYFYfQe_R_o-jz_CeH1Xr_Ag9vTbR7GXtcx999uEjFGUlYNMO0pOA>
+    <xmx:0SYFYTYCbKq_nggfqDej27VwFums2UoCGaUkoTxgxOk-0fLefOQIyA>
+    <xmx:0iYFYaeW6Rde0H7iv5uckiZc2QimONFVfnCfc4pSV40dRQfGHFBImg>
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Sat,
+ 31 Jul 2021 06:32:47 -0400 (EDT)
+Date:   Sat, 31 Jul 2021 20:32:38 +1000 (AEST)
+From:   Finn Thain <fthain@linux-m68k.org>
+To:     =?UTF-8?Q?Uwe_Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
+cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org,
+        kernel@pengutronix.de
+Subject: Re: [PATCH 1/5] nubus: Simplify check in remove callback
+In-Reply-To: <20210727114220.7drjl6xvvlwetaod@pengutronix.de>
+Message-ID: <4b44c8a4-7d2b-83d-60fa-2d4e4f8284db@linux-m68k.org>
+References: <20210727080840.3550927-1-u.kleine-koenig@pengutronix.de> <20210727080840.3550927-2-u.kleine-koenig@pengutronix.de> <d74ccd1-116d-9450-5ee4-8d5074998872@linux-m68k.org> <20210727114220.7drjl6xvvlwetaod@pengutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-X-Patch-Hashes: v=1; h=sha256; i=2IHfhYKwbh9XCZ0XszehSQcpjlGMcK+XmwnHD2PqbFY=; m=9UHNse895G/vDh5P0mx6F6/J3P0ggUJrPURLuex7MUI=; p=NMbKzy49SX2G6O5rZrz4ze2ElKxz5AkSixdtDWWVYhQ=; g=6c0f3e7061faf1de64c915bdce3f6298646e583c
-X-Patch-Sig: m=pgp; i=u.kleine-koenig@pengutronix.de; s=0x0D2511F322BFAB1C1580266BE2DCDD9132669BD6; b=iQEzBAABCgAdFiEEfnIqFpAYrP8+dKQLwfwUeK3K7AkFAmEETqUACgkQwfwUeK3K7AksLgf9F59 oknv1wn9tv4PDk5uIvk63nE8/xaanWZ5d2mqrtSZmaCXnvmHRmvVKfflDyoLrFRVHMQTSyD32NE4w 4mOEfprApL5qe01R1zZsG7cgVZAx+pzsNBiaFOOK8Y6LVK2UzBYci0b+b6IBRnYeo2pzf2VOB/1xZ RbXjEVPeyvSUs8P+c10uexjx5bYOWKIOCYIlSARniePInWR4q48zGNelP7zE65Rfc4+vcqZJ0FVMu JJYQdGxgKPwqT/x8c02fyxah9ylGlEVyVzY26PbVs0POUNxzJv4A774grQyFguLUWsMEi/7MDP9QX cZUzH2esy2Lef6lKtO0vywenomfd4Hw==
-Content-Transfer-Encoding: 8bit
-X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
-X-SA-Exim-Mail-From: ukl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-m68k@lists.linux-m68k.org
+Content-Type: multipart/mixed; BOUNDARY="-1463811774-1671877625-1627726966=:27"
+Content-ID: <e042cd98-5938-63df-9034-7720ee545436@nippy.intranet>
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-The driver core only calls a remove callback when the device was
-successfully bound (aka probed) before. So dev->driver is never NULL.
+  This message is in MIME format.  The first part should be readable text,
+  while the remaining parts are likely unreadable without MIME-aware tools.
 
-(And even if it was NULL, to_zorro_driver(NULL) isn't ...)
+---1463811774-1671877625-1627726966=:27
+Content-Type: text/plain; CHARSET=UTF-8
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-ID: <8cd094c5-f4b-ada3-cacd-f77e4f8772f@nippy.intranet>
 
-Signed-off-by: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
----
- drivers/zorro/zorro-driver.c | 8 +++-----
- 1 file changed, 3 insertions(+), 5 deletions(-)
+On Tue, 27 Jul 2021, Uwe Kleine-K=C3=B6nig wrote:
 
-diff --git a/drivers/zorro/zorro-driver.c b/drivers/zorro/zorro-driver.c
-index c18524bb8b2a..ab06c9ce2c78 100644
---- a/drivers/zorro/zorro-driver.c
-+++ b/drivers/zorro/zorro-driver.c
-@@ -67,11 +67,9 @@ static void zorro_device_remove(struct device *dev)
- 	struct zorro_dev *z = to_zorro_dev(dev);
- 	struct zorro_driver *drv = to_zorro_driver(dev->driver);
- 
--	if (drv) {
--		if (drv->remove)
--			drv->remove(z);
--		z->driver = NULL;
--	}
-+	if (drv->remove)
-+		drv->remove(z);
-+	z->driver = NULL;
- }
- 
- 
--- 
-2.30.2
+> On Tue, Jul 27, 2021 at 07:50:39PM +1000, Finn Thain wrote:
+> > On Tue, 27 Jul 2021, Uwe Kleine-K=C3=B6nig wrote:
+> >=20
+> > > The driver core only calls a remove callback when the device was=20
+> > > successfully bound (aka probed) before. So dev->driver is never=20
+> > > NULL.
+> >=20
+> > Are you sure dev->driver is non-NULL for the lifetime of the device? A=
+=20
+> > quick glance at device_reprobe() makes me wonder about that.
+>=20
+> Not for the lifetime of the device, but as long as a driver is bound to=
+=20
+> the device. device_reprobe() calls device_driver_detach() after which=20
+> the driver is considered unbound and dev->driver is assigned NULL. (via=
+=20
+> device_driver_detach -> device_release_driver_internal ->=20
+> __device_release_driver)
+>=20
 
+Are you saying that this situation does not presently apply to nubus,=20
+zorro or superhyway? Or are you saying that the remove callback will never=
+=20
+be called in this situation?
+
+Perhaps the device_reprobe() API should be documented accordingly, so that=
+=20
+a missing NULL check can be added if need be. Perhaps it is better to just=
+=20
+leave this pattern as is (i.e. keep the NULL check).
+---1463811774-1671877625-1627726966=:27--
