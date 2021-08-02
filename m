@@ -2,132 +2,131 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-13.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no
+X-Spam-Status: No, score=-8.7 required=3.0 tests=BAYES_00,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,MAILING_LIST_MULTI,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id BDE5DC4338F
-	for <linux-m68k@archiver.kernel.org>; Sun,  1 Aug 2021 05:04:15 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A3ECBC4338F
+	for <linux-m68k@archiver.kernel.org>; Mon,  2 Aug 2021 06:52:33 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 993596109F
-	for <linux-m68k@archiver.kernel.org>; Sun,  1 Aug 2021 05:04:15 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 88BAE61050
+	for <linux-m68k@archiver.kernel.org>; Mon,  2 Aug 2021 06:52:33 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229505AbhHAFEW (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Sun, 1 Aug 2021 01:04:22 -0400
-Received: from out2-smtp.messagingengine.com ([66.111.4.26]:56629 "EHLO
-        out2-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229451AbhHAFEV (ORCPT
+        id S232412AbhHBGwl (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Mon, 2 Aug 2021 02:52:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49782 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232387AbhHBGwl (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Sun, 1 Aug 2021 01:04:21 -0400
-Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
-        by mailout.nyi.internal (Postfix) with ESMTP id 8DF235C00A7;
-        Sun,  1 Aug 2021 01:04:11 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute1.internal (MEProxy); Sun, 01 Aug 2021 01:04:11 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-id:content-type:date:from
-        :in-reply-to:message-id:mime-version:references:subject:to
-        :x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
-        fm3; bh=ixXBiF5JMgE/jUfE+hpqY4FdeRq+epIUTn/nmvE6jJ0=; b=WebSY7C9
-        FAHKPgJvFoR1uu08jVMVfCqNSRNPXqlT1nvgNEPi+wugD0d6B8/2/BCeXUhrvrmv
-        fjxtRAzVJH0iQFnekwdUPGlQ/MzF0JGatyDJM3hprQCSMowHC178lMG9vCIjKJfi
-        lJ2hNJSgWE1agkuC7eVuVq8y+7TeWpI1AakokQ6IYBoJvA80tMPC5xQ5tdIsH5Qb
-        KsbSrigE/nxjIrk6Y8i3mbPikRICNfmWrjsHX3VAKDVmzgqGpXv3+sqEMRkx0wad
-        A0UtO4vLjRvdrKH4OSG/TRGueUJdLAwV+1HQnmzbkHMbwDd5z7cm+TWyT2udqrbw
-        ZTwKlUzD03uRIA==
-X-ME-Sender: <xms:SisGYZ_nkbMjsGdEQxUPiAIha876S-oiF171GzIukMvNx1k6O5kieQ>
-    <xme:SisGYduUwjsV6ZNzFxxReeJIynLICubzXGITBK-ybYvm35EXJiRjsXM3_5gTUZI9M
-    cINJlA1hoLc2ZcDViI>
-X-ME-Received: <xmr:SisGYXB72l5pi9X-eGPkFlnHgj1flDVNVs7Xqmqp8m4cg5eWha_hlOSRTbw5RaKm9YR2l3yQ_ZQD9mIu4kAQUFL2-3Jfroibmfw>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrheekgdeglecutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
-    fjughrpeffhffvufgjkfhfgggtsehmtderredttdejnecuhfhrohhmpefhihhnnhcuvfhh
-    rghinhcuoehfthhhrghinheslhhinhhugidqmheikehkrdhorhhgqeenucggtffrrghtth
-    gvrhhnpeefffejiefgheevheefvefhteeggfeijeeiveeihfffffdugfefkeelfffhgfeh
-    vdenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehfth
-    hhrghinheslhhinhhugidqmheikehkrdhorhhg
-X-ME-Proxy: <xmx:SisGYdeaEN6I7PZt29wkpnJ5hCa9pE8Zs4IWef3NyG1FWr-nCTPvSw>
-    <xmx:SisGYePbpuRVZ1I7Iei1JcoWyrgy_Ukid-nNGuAUhH8mLmyBmCejcQ>
-    <xmx:SisGYfktxFQRdPl5kszdECRQ4VRLeuD4TWlQSgDyW9vczEG22SYh6Q>
-    <xmx:SysGYXZirp0_sDutraj3or5wSk9-UGcGF1ftNIaLCcB5tqcf-iI9yA>
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Sun,
- 1 Aug 2021 01:04:08 -0400 (EDT)
-Date:   Sun, 1 Aug 2021 15:04:03 +1000 (AEST)
-From:   Finn Thain <fthain@linux-m68k.org>
-To:     =?UTF-8?Q?Uwe_Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
-cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-kernel@vger.kernel.org, kernel@pengutronix.de,
-        linux-m68k@lists.linux-m68k.org
+        Mon, 2 Aug 2021 02:52:41 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 04082C0613D5
+        for <linux-m68k@lists.linux-m68k.org>; Sun,  1 Aug 2021 23:52:31 -0700 (PDT)
+Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1mARoI-0008JH-60; Mon, 02 Aug 2021 08:52:26 +0200
+Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
+        by drehscheibe.grey.stw.pengutronix.de with esmtp (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1mARoH-0003Xl-0D; Mon, 02 Aug 2021 08:52:25 +0200
+Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1mARoG-0006s8-VY; Mon, 02 Aug 2021 08:52:24 +0200
+Date:   Mon, 2 Aug 2021 08:52:24 +0200
+From:   Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
+To:     Finn Thain <fthain@linux-m68k.org>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org,
+        kernel@pengutronix.de
 Subject: Re: [PATCH v2 1/4] nubus: Simplify check in remove callback
-In-Reply-To: <20210730191035.1455248-2-u.kleine-koenig@pengutronix.de>
-Message-ID: <dd248ad3-87b-ead8-957d-aea36cb01058@linux-m68k.org>
-References: <20210730191035.1455248-1-u.kleine-koenig@pengutronix.de> <20210730191035.1455248-2-u.kleine-koenig@pengutronix.de>
+Message-ID: <20210802065224.n2tarfx6hzfamdyp@pengutronix.de>
+References: <20210730191035.1455248-1-u.kleine-koenig@pengutronix.de>
+ <20210730191035.1455248-2-u.kleine-koenig@pengutronix.de>
+ <dd248ad3-87b-ead8-957d-aea36cb01058@linux-m68k.org>
 MIME-Version: 1.0
-Content-Type: multipart/mixed; BOUNDARY="-1463811774-1980221512-1627794129=:27"
-Content-ID: <f0cf4098-5fe6-2ba5-457a-fd1b6bf4b24c@nippy.intranet>
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="5fojauxrhuxtr35u"
+Content-Disposition: inline
+In-Reply-To: <dd248ad3-87b-ead8-957d-aea36cb01058@linux-m68k.org>
+X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
+X-SA-Exim-Mail-From: ukl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-m68k@lists.linux-m68k.org
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-  This message is in MIME format.  The first part should be readable text,
-  while the remaining parts are likely unreadable without MIME-aware tools.
 
----1463811774-1980221512-1627794129=:27
-Content-Type: text/plain; CHARSET=UTF-8
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Content-ID: <422deda6-11f-a1c8-5510-7123c82751b8@nippy.intranet>
+--5fojauxrhuxtr35u
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-On Fri, 30 Jul 2021, Uwe Kleine-K=C3=B6nig wrote:
+Hello Finn,
 
-> The driver core only calls a remove callback when the device was
-> successfully bound (aka probed) before. So dev->driver is never NULL and
-> the respective check can just be dropped.
+On Sun, Aug 01, 2021 at 03:04:03PM +1000, Finn Thain wrote:
+> On Fri, 30 Jul 2021, Uwe Kleine-K=F6nig wrote:
 >=20
-> Signed-off-by: Uwe Kleine-K=C3=B6nig <u.kleine-koenig@pengutronix.de>
-
-Acked-by: Finn Thain <fthain@linux-m68k.org>
-
-BTW, aside from nubus, zorro and superhyway you can find the same pattern
-in many other busses. You may want to patch the following methods too.
-
-acpi_device_remove
-apr_device_remove
-ccwgroup_remove
-gio_device_remove
-hid_device_remove=20
-ibmebus_bus_device_remove
-macio_device_remove
-memstick_device_remove
-ntb_remove
-pci_device_remove
-pnp_device_remove
-ps3_system_bus_remove
-rio_device_remove
-slim_device_remove
-soundbus_device_remove
-ssb_device_remove
-tifm_device_remove
-vdpa_dev_remove
-vmbus_remove
-
-> ---
->  drivers/nubus/bus.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+> > The driver core only calls a remove callback when the device was
+> > successfully bound (aka probed) before. So dev->driver is never NULL and
+> > the respective check can just be dropped.
+> >=20
+> > Signed-off-by: Uwe Kleine-K=F6nig <u.kleine-koenig@pengutronix.de>
 >=20
-> diff --git a/drivers/nubus/bus.c b/drivers/nubus/bus.c
-> index d9d04f27f89b..17fad660032c 100644
-> --- a/drivers/nubus/bus.c
-> +++ b/drivers/nubus/bus.c
-> @@ -33,7 +33,7 @@ static void nubus_device_remove(struct device *dev)
->  {
->  =09struct nubus_driver *ndrv =3D to_nubus_driver(dev->driver);
-> =20
-> -=09if (dev->driver && ndrv->remove)
-> +=09if (ndrv->remove)
->  =09=09ndrv->remove(to_nubus_board(dev));
->  }
-> =20
+> Acked-by: Finn Thain <fthain@linux-m68k.org>
 >=20
----1463811774-1980221512-1627794129=:27--
+> BTW, aside from nubus, zorro and superhyway you can find the same pattern
+> in many other busses. You may want to patch the following methods too.
+>=20
+> acpi_device_remove
+> apr_device_remove
+> ccwgroup_remove
+> gio_device_remove
+> hid_device_remove=20
+> ibmebus_bus_device_remove
+> macio_device_remove
+> memstick_device_remove
+> ntb_remove
+> pci_device_remove
+> pnp_device_remove
+> ps3_system_bus_remove
+> rio_device_remove
+> slim_device_remove
+> soundbus_device_remove
+> ssb_device_remove
+> tifm_device_remove
+> vdpa_dev_remove
+> vmbus_remove
+
+Did you find these by hand? Or using a coccinelle match?
+
+Anyhow, thanks for the list, I'll add it to my todo list but if you're
+motivated don't consider these cleanups as my property. (Please Cc: me
+though to prevent duplicated effort.)
+
+Best regards
+Uwe
+
+--=20
+Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
+Industrial Linux Solutions                 | https://www.pengutronix.de/ |
+
+--5fojauxrhuxtr35u
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEfnIqFpAYrP8+dKQLwfwUeK3K7AkFAmEHliUACgkQwfwUeK3K
+7AmrvAf9Gj/ycetiy4CpnD54L0WCnwWHBfM5j7ugv1yT8W21V/oUlqs7OjPF16i5
+gEPGZ4tYdiOd89M++P7zgfVWSnD3XDpdRfP9hgJu30KrUyUz8hQi3Y3caGaSzx3Q
+aTP4I3v94qeRRR79t0ckMqw/wnCH+UsdODv0dUxfChw9udvY9XufHfov3WSiL0ep
+e3CJn3im7m+znXugiQchPaO8DZ5anT/rW0Y9gvCMqeh0vlO4lnM5ut5p7iYh275E
+rHpQb5eoehumjDLuP5o8wG/U9O0caRG64Usgaq+9oCrBvL7w1GumI2B9WeaTezdO
+NNn9NnWx9YLgUnrN0gEdujSGYHqFFQ==
+=iJUA
+-----END PGP SIGNATURE-----
+
+--5fojauxrhuxtr35u--
