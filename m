@@ -2,131 +2,137 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.7 required=3.0 tests=BAYES_00,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,MAILING_LIST_MULTI,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-3.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A3ECBC4338F
-	for <linux-m68k@archiver.kernel.org>; Mon,  2 Aug 2021 06:52:33 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 6E368C4338F
+	for <linux-m68k@archiver.kernel.org>; Tue,  3 Aug 2021 02:14:17 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 88BAE61050
-	for <linux-m68k@archiver.kernel.org>; Mon,  2 Aug 2021 06:52:33 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 5730860BD3
+	for <linux-m68k@archiver.kernel.org>; Tue,  3 Aug 2021 02:14:17 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232412AbhHBGwl (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Mon, 2 Aug 2021 02:52:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49782 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232387AbhHBGwl (ORCPT
+        id S233510AbhHCCO0 (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Mon, 2 Aug 2021 22:14:26 -0400
+Received: from out4-smtp.messagingengine.com ([66.111.4.28]:37433 "EHLO
+        out4-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233304AbhHCCO0 (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Mon, 2 Aug 2021 02:52:41 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 04082C0613D5
-        for <linux-m68k@lists.linux-m68k.org>; Sun,  1 Aug 2021 23:52:31 -0700 (PDT)
-Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1mARoI-0008JH-60; Mon, 02 Aug 2021 08:52:26 +0200
-Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
-        by drehscheibe.grey.stw.pengutronix.de with esmtp (Exim 4.92)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1mARoH-0003Xl-0D; Mon, 02 Aug 2021 08:52:25 +0200
-Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.92)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1mARoG-0006s8-VY; Mon, 02 Aug 2021 08:52:24 +0200
-Date:   Mon, 2 Aug 2021 08:52:24 +0200
-From:   Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
-To:     Finn Thain <fthain@linux-m68k.org>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Mon, 2 Aug 2021 22:14:26 -0400
+Received: from compute2.internal (compute2.nyi.internal [10.202.2.42])
+        by mailout.nyi.internal (Postfix) with ESMTP id BFC5B5C0170;
+        Mon,  2 Aug 2021 22:14:15 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute2.internal (MEProxy); Mon, 02 Aug 2021 22:14:15 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-id:content-type:date:from
+        :in-reply-to:message-id:mime-version:references:subject:to
+        :x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
+        fm3; bh=EY/qN5uHXz1UU/DqCSwm4dCJ+qLyDdaY4qJGkkdoc/M=; b=h4zLHHot
+        g2yv59x/Nit1MoUGQcmabI99D5cZfoU3fyGF8YZE7ZNdgRCTVVPJHo9rwI/JRNv2
+        2Mfnvk+tKlxrOD8Ljfky9fgsW+ZwKWVmLD0HzDFMq7jtSHmmOGCfasS6/1VEVwZd
+        WQCkSEsEq0+WmxVvHzygkCjhLda1j7Kuy25UCXDWiEg7cMUaHuMD82hVvVHeYU9s
+        6IMYe3APtwO6eZJDmilwQuxn+f2cUspmy3NdsngQA0/hq+0ibrtyFPDVpih+9VkO
+        rUSQp6cMev40cgy5n36Fj+RQnik2p2vHyGuAaXhJKs9erDOnTYx0/FmY4PUru8At
+        fA7cX2ONQ+0Bkw==
+X-ME-Sender: <xms:d6YIYc_Q_DwfEbuy-1gaikOylEijaioFaKjPbryqoxn7q9kzlYB-rA>
+    <xme:d6YIYUv-CGQO5rKtX8aTZSit4Yv6PtMsAN5PT0zXPd8CFHNadJOLohJ0ezzHWGl3X
+    eE6UGvGrlsj53w6Gkc>
+X-ME-Received: <xmr:d6YIYSAA0BqZ7ITmyykZTg-R9rV2SmnN08aSAt9LBWABwBDYjKe8zxsr_HsDYYxRjDvUB0lXaA2ch5TG4h2xayGYg2Ua1gWfzWw>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrieefgdegjecutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
+    fjughrpeffhffvufgjkfhfgggtsehmtderredttdejnecuhfhrohhmpefhihhnnhcuvfhh
+    rghinhcuoehfthhhrghinheslhhinhhugidqmheikehkrdhorhhgqeenucggtffrrghtth
+    gvrhhnpeefffejiefgheevheefvefhteeggfeijeeiveeihfffffdugfefkeelfffhgfeh
+    vdenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehfth
+    hhrghinheslhhinhhugidqmheikehkrdhorhhg
+X-ME-Proxy: <xmx:d6YIYcc5EG3BjhK_M5eGRmmEXzdGXAxtQBaKn-d3aprYq4lKF5Yp1w>
+    <xmx:d6YIYRMoiRWhL6vMindGfRPvVSAthrwEV0y2tUrOxCstJ-KzI5v6MQ>
+    <xmx:d6YIYWm-0VHP4SirfaqI_qPJjNmZg04uOVyqnSBxvniM5haI_PwB6g>
+    <xmx:d6YIYaYEHEtgAHvEJF3lHzpbBbrtirPpt13XG4FN9CurMQ3CjsqG4g>
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Mon,
+ 2 Aug 2021 22:14:12 -0400 (EDT)
+Date:   Tue, 3 Aug 2021 12:14:07 +1000 (AEST)
+From:   Finn Thain <fthain@linux-m68k.org>
+To:     =?UTF-8?Q?Uwe_Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
+cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org,
         kernel@pengutronix.de
 Subject: Re: [PATCH v2 1/4] nubus: Simplify check in remove callback
-Message-ID: <20210802065224.n2tarfx6hzfamdyp@pengutronix.de>
-References: <20210730191035.1455248-1-u.kleine-koenig@pengutronix.de>
- <20210730191035.1455248-2-u.kleine-koenig@pengutronix.de>
- <dd248ad3-87b-ead8-957d-aea36cb01058@linux-m68k.org>
+In-Reply-To: <20210802065224.n2tarfx6hzfamdyp@pengutronix.de>
+Message-ID: <efc9599-82db-5343-a377-ed53bdb928c6@linux-m68k.org>
+References: <20210730191035.1455248-1-u.kleine-koenig@pengutronix.de> <20210730191035.1455248-2-u.kleine-koenig@pengutronix.de> <dd248ad3-87b-ead8-957d-aea36cb01058@linux-m68k.org> <20210802065224.n2tarfx6hzfamdyp@pengutronix.de>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="5fojauxrhuxtr35u"
-Content-Disposition: inline
-In-Reply-To: <dd248ad3-87b-ead8-957d-aea36cb01058@linux-m68k.org>
-X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
-X-SA-Exim-Mail-From: ukl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-m68k@lists.linux-m68k.org
+Content-Type: multipart/mixed; BOUNDARY="-1463811774-1637780939-1627949988=:28"
+Content-ID: <fca194e9-4926-3b59-a4c0-aa43688049ee@nippy.intranet>
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
+  This message is in MIME format.  The first part should be readable text,
+  while the remaining parts are likely unreadable without MIME-aware tools.
 
---5fojauxrhuxtr35u
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+---1463811774-1637780939-1627949988=:28
+Content-Type: text/plain; CHARSET=UTF-8
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-ID: <8ba6725c-fdf-1438-4fad-ee38d77f32d3@nippy.intranet>
 
-Hello Finn,
+On Mon, 2 Aug 2021, Uwe Kleine-K=C3=B6nig wrote:
 
-On Sun, Aug 01, 2021 at 03:04:03PM +1000, Finn Thain wrote:
-> On Fri, 30 Jul 2021, Uwe Kleine-K=F6nig wrote:
->=20
-> > The driver core only calls a remove callback when the device was
-> > successfully bound (aka probed) before. So dev->driver is never NULL and
-> > the respective check can just be dropped.
 > >=20
-> > Signed-off-by: Uwe Kleine-K=F6nig <u.kleine-koenig@pengutronix.de>
+> > BTW, aside from nubus, zorro and superhyway you can find the same=20
+> > pattern in many other busses. You may want to patch the following=20
+> > methods too.
+> >=20
+> > acpi_device_remove
+> > apr_device_remove
+> > ccwgroup_remove
+> > gio_device_remove
+> > hid_device_remove=20
+> > ibmebus_bus_device_remove
+> > macio_device_remove
+> > memstick_device_remove
+> > ntb_remove
+> > pci_device_remove
+> > pnp_device_remove
+> > ps3_system_bus_remove
+> > rio_device_remove
+> > slim_device_remove
+> > soundbus_device_remove
+> > ssb_device_remove
+> > tifm_device_remove
+> > vdpa_dev_remove
+> > vmbus_remove
 >=20
-> Acked-by: Finn Thain <fthain@linux-m68k.org>
+> Did you find these by hand? Or using a coccinelle match?
 >=20
-> BTW, aside from nubus, zorro and superhyway you can find the same pattern
-> in many other busses. You may want to patch the following methods too.
+
+I used grep and visual inspection.
+
+> Anyhow, thanks for the list, I'll add it to my todo list but if you're=20
+> motivated don't consider these cleanups as my property. (Please Cc: me=20
+> though to prevent duplicated effort.)
 >=20
-> acpi_device_remove
-> apr_device_remove
-> ccwgroup_remove
-> gio_device_remove
-> hid_device_remove=20
-> ibmebus_bus_device_remove
-> macio_device_remove
-> memstick_device_remove
-> ntb_remove
-> pci_device_remove
-> pnp_device_remove
-> ps3_system_bus_remove
-> rio_device_remove
-> slim_device_remove
-> soundbus_device_remove
-> ssb_device_remove
-> tifm_device_remove
-> vdpa_dev_remove
-> vmbus_remove
 
-Did you find these by hand? Or using a coccinelle match?
+I went looking for the other examples of this pattern because I wanted to=
+=20
+understand it better. Then I realized that I might as well make a list=20
+since I was searching anyway.
 
-Anyhow, thanks for the list, I'll add it to my todo list but if you're
-motivated don't consider these cleanups as my property. (Please Cc: me
-though to prevent duplicated effort.)
+When skimming that code, I took the impression that the dev->driver =3D=3D=
+=20
+NULL test probably comes from old code written before the 'remove'=20
+functions became bus methods. See also commit 594c8281f905 ("[PATCH] Add=20
+bus_type probe, remove, shutdown methods.")
 
-Best regards
-Uwe
+Back when I wrote drivers/nubus/bus.c, apparently I copied-and-pasted the=
+=20
+old pattern from drivers/pci/pci-driver.c, even though that pattern was=20
+already obsolete.
 
---=20
-Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
-Industrial Linux Solutions                 | https://www.pengutronix.de/ |
-
---5fojauxrhuxtr35u
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEfnIqFpAYrP8+dKQLwfwUeK3K7AkFAmEHliUACgkQwfwUeK3K
-7AmrvAf9Gj/ycetiy4CpnD54L0WCnwWHBfM5j7ugv1yT8W21V/oUlqs7OjPF16i5
-gEPGZ4tYdiOd89M++P7zgfVWSnD3XDpdRfP9hgJu30KrUyUz8hQi3Y3caGaSzx3Q
-aTP4I3v94qeRRR79t0ckMqw/wnCH+UsdODv0dUxfChw9udvY9XufHfov3WSiL0ep
-e3CJn3im7m+znXugiQchPaO8DZ5anT/rW0Y9gvCMqeh0vlO4lnM5ut5p7iYh275E
-rHpQb5eoehumjDLuP5o8wG/U9O0caRG64Usgaq+9oCrBvL7w1GumI2B9WeaTezdO
-NNn9NnWx9YLgUnrN0gEdujSGYHqFFQ==
-=iJUA
------END PGP SIGNATURE-----
-
---5fojauxrhuxtr35u--
+So I do see the value in this cleanup but I'm afraid I'm too busy to help=
+=20
+further. If you don't want to finish it perhaps you can get the janitors=20
+to do so.
+---1463811774-1637780939-1627949988=:28--
