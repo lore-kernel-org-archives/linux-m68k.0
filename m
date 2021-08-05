@@ -2,137 +2,135 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-18.8 required=3.0 tests=BAYES_00,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 6E368C4338F
-	for <linux-m68k@archiver.kernel.org>; Tue,  3 Aug 2021 02:14:17 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 6C044C4338F
+	for <linux-m68k@archiver.kernel.org>; Thu,  5 Aug 2021 06:46:14 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 5730860BD3
-	for <linux-m68k@archiver.kernel.org>; Tue,  3 Aug 2021 02:14:17 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 4BFF160EC0
+	for <linux-m68k@archiver.kernel.org>; Thu,  5 Aug 2021 06:46:14 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233510AbhHCCO0 (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Mon, 2 Aug 2021 22:14:26 -0400
-Received: from out4-smtp.messagingengine.com ([66.111.4.28]:37433 "EHLO
-        out4-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233304AbhHCCO0 (ORCPT
-        <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Mon, 2 Aug 2021 22:14:26 -0400
-Received: from compute2.internal (compute2.nyi.internal [10.202.2.42])
-        by mailout.nyi.internal (Postfix) with ESMTP id BFC5B5C0170;
-        Mon,  2 Aug 2021 22:14:15 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute2.internal (MEProxy); Mon, 02 Aug 2021 22:14:15 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-id:content-type:date:from
-        :in-reply-to:message-id:mime-version:references:subject:to
-        :x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
-        fm3; bh=EY/qN5uHXz1UU/DqCSwm4dCJ+qLyDdaY4qJGkkdoc/M=; b=h4zLHHot
-        g2yv59x/Nit1MoUGQcmabI99D5cZfoU3fyGF8YZE7ZNdgRCTVVPJHo9rwI/JRNv2
-        2Mfnvk+tKlxrOD8Ljfky9fgsW+ZwKWVmLD0HzDFMq7jtSHmmOGCfasS6/1VEVwZd
-        WQCkSEsEq0+WmxVvHzygkCjhLda1j7Kuy25UCXDWiEg7cMUaHuMD82hVvVHeYU9s
-        6IMYe3APtwO6eZJDmilwQuxn+f2cUspmy3NdsngQA0/hq+0ibrtyFPDVpih+9VkO
-        rUSQp6cMev40cgy5n36Fj+RQnik2p2vHyGuAaXhJKs9erDOnTYx0/FmY4PUru8At
-        fA7cX2ONQ+0Bkw==
-X-ME-Sender: <xms:d6YIYc_Q_DwfEbuy-1gaikOylEijaioFaKjPbryqoxn7q9kzlYB-rA>
-    <xme:d6YIYUv-CGQO5rKtX8aTZSit4Yv6PtMsAN5PT0zXPd8CFHNadJOLohJ0ezzHWGl3X
-    eE6UGvGrlsj53w6Gkc>
-X-ME-Received: <xmr:d6YIYSAA0BqZ7ITmyykZTg-R9rV2SmnN08aSAt9LBWABwBDYjKe8zxsr_HsDYYxRjDvUB0lXaA2ch5TG4h2xayGYg2Ua1gWfzWw>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrieefgdegjecutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
-    fjughrpeffhffvufgjkfhfgggtsehmtderredttdejnecuhfhrohhmpefhihhnnhcuvfhh
-    rghinhcuoehfthhhrghinheslhhinhhugidqmheikehkrdhorhhgqeenucggtffrrghtth
-    gvrhhnpeefffejiefgheevheefvefhteeggfeijeeiveeihfffffdugfefkeelfffhgfeh
-    vdenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehfth
-    hhrghinheslhhinhhugidqmheikehkrdhorhhg
-X-ME-Proxy: <xmx:d6YIYcc5EG3BjhK_M5eGRmmEXzdGXAxtQBaKn-d3aprYq4lKF5Yp1w>
-    <xmx:d6YIYRMoiRWhL6vMindGfRPvVSAthrwEV0y2tUrOxCstJ-KzI5v6MQ>
-    <xmx:d6YIYWm-0VHP4SirfaqI_qPJjNmZg04uOVyqnSBxvniM5haI_PwB6g>
-    <xmx:d6YIYaYEHEtgAHvEJF3lHzpbBbrtirPpt13XG4FN9CurMQ3CjsqG4g>
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Mon,
- 2 Aug 2021 22:14:12 -0400 (EDT)
-Date:   Tue, 3 Aug 2021 12:14:07 +1000 (AEST)
-From:   Finn Thain <fthain@linux-m68k.org>
-To:     =?UTF-8?Q?Uwe_Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
-cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org,
-        kernel@pengutronix.de
-Subject: Re: [PATCH v2 1/4] nubus: Simplify check in remove callback
-In-Reply-To: <20210802065224.n2tarfx6hzfamdyp@pengutronix.de>
-Message-ID: <efc9599-82db-5343-a377-ed53bdb928c6@linux-m68k.org>
-References: <20210730191035.1455248-1-u.kleine-koenig@pengutronix.de> <20210730191035.1455248-2-u.kleine-koenig@pengutronix.de> <dd248ad3-87b-ead8-957d-aea36cb01058@linux-m68k.org> <20210802065224.n2tarfx6hzfamdyp@pengutronix.de>
+        id S237870AbhHEGq0 (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Thu, 5 Aug 2021 02:46:26 -0400
+Received: from mout.kundenserver.de ([217.72.192.75]:42021 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231418AbhHEGq0 (ORCPT
+        <rfc822;linux-m68k@vger.kernel.org>); Thu, 5 Aug 2021 02:46:26 -0400
+Received: from mail-wr1-f52.google.com ([209.85.221.52]) by
+ mrelayeu.kundenserver.de (mreue108 [213.165.67.113]) with ESMTPSA (Nemesis)
+ id 1MtOOm-1n0btc29Ne-00usHC for <linux-m68k@vger.kernel.org>; Thu, 05 Aug
+ 2021 08:46:10 +0200
+Received: by mail-wr1-f52.google.com with SMTP id n12so5055357wrr.2
+        for <linux-m68k@vger.kernel.org>; Wed, 04 Aug 2021 23:46:10 -0700 (PDT)
+X-Gm-Message-State: AOAM531ulFdrhe4ZWEadcVjq1lty5GJJOysG0k5L/5t8Q7NxnBtAoKo4
+        FiEjgv0dsAoNbPI/X16oy3YB70twQ+bPTkHOfZQ=
+X-Google-Smtp-Source: ABdhPJyxgj8VIAwqZDTBChx9JSU3D2TgK9tXtdv41Bto0HO/Dh2DmlkqO4kPCcds3kEGPU1qkuE5cs68sRfYrNll2bs=
+X-Received: by 2002:a5d:44c7:: with SMTP id z7mr3409608wrr.286.1628145970199;
+ Wed, 04 Aug 2021 23:46:10 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/mixed; BOUNDARY="-1463811774-1637780939-1627949988=:28"
-Content-ID: <fca194e9-4926-3b59-a4c0-aa43688049ee@nippy.intranet>
+References: <202108050531.p7zYKip9-lkp@intel.com>
+In-Reply-To: <202108050531.p7zYKip9-lkp@intel.com>
+From:   Arnd Bergmann <arnd@arndb.de>
+Date:   Thu, 5 Aug 2021 08:45:54 +0200
+X-Gmail-Original-Message-ID: <CAK8P3a1Z3eXV=H99z2TDzAXLqY64aS5qB3Zo=sEPHZYVfntqbg@mail.gmail.com>
+Message-ID: <CAK8P3a1Z3eXV=H99z2TDzAXLqY64aS5qB3Zo=sEPHZYVfntqbg@mail.gmail.com>
+Subject: Re: [linux-next:master 4771/5318] drivers/net/ethernet/cirrus/cs89x0.c:914:3:
+ error: implicit declaration of function 'disable_dma'; did you mean 'disable_irq'?
+To:     kernel test robot <lkp@intel.com>
+Cc:     Arnd Bergmann <arnd@arndb.de>, kbuild-all@lists.01.org,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        "Linux/m68k" <linux-m68k@vger.kernel.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Greg Ungerer <gerg@linux-m68k.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Provags-ID: V03:K1:m7R8ij1apdbKFV8W6Z0MVb5emiB7iIKhZflrxWOxZzGWawfieWi
+ wm6IGAnhz2pOUbvGyi51Ve0hhsIErEJ93+/XpKqwbrVbQ46FsYGLPw+MTu6eNFN/4nqw2BW
+ S0LNy+NSo7iLXXGDCRjXs/HUR1OUYoRgNdBhpXLr0lwJYzxokh0bqsTC3s5QBoChYctSEQ6
+ ySWMVptNOncwUbpBcvEjA==
+X-UI-Out-Filterresults: notjunk:1;V03:K0:GIyZAYXH7S8=:jfey3YrxqV3qVJ6oEbMdpy
+ +1rYR8Xqo8ko2GqE626Zg1rAeoZWGUVjqlImEFC6OQ3PgIPzAOamWiisMFSL0DC03r9y1PThp
+ Fls12iAkZ5GNnXU1punDme1ZA8UHpK9kIuRg97rmMhvmoBJM9JoL+SCrklHT2SZ/MzJEWigRk
+ X+xTgVmYzqVJToTj2AgTXeH5haRJn7qOE0D5VvDWQesSxg93HRSCC70eOuWEFvei5RxyU6blm
+ 3j3QGdAxfmm5wxyzgkuDoZFa4Enzgh5/Db0tFFwcO4Z9PgLXsvdff0MCJ0p4K2Ifk1N7FEjuD
+ 1GPrPdihSMxRiTUEb7nC+2h0vVkIb3JLw1R/F0MI669kdaH5o/RswcsiKLhdcZKAp+G61m+60
+ +agUy9m77w8hCYyhUEqdP/NWbf+EbYcmwLawRe7TbDWCxQ+HK64Dcwj6rekSH+3qZHsiHFVk9
+ 0mfp6jYAw1B5Yh0HLKIIjnC03TOt0vxANWxaMnzk+7/woABxzw0Cp2nUbhjiqGcmo9tuAQ1PD
+ 2gdmsj6eUxJyCYR8Mfd3is+p+BEQJNb4P0P6SoCJG56hI2ZZ/ke8tmA2dCjnTmX1yA2sF4wyK
+ 5fXzT7sNB77gZo6rSJNelEhlSMp6LICA62pXmXbUYdfxERPADPCNepEeiLcSEk9cgi71fyYO2
+ Lhw5Pja35qulhL3BCMmKuKpzcTBWnggi7a2jOarkIQD4Vlc3jW8IqxgJG9V/1OzTBXe3Aj2mp
+ EXNs/40jQdq8r5zA6mfq7uQajsMWwQ/+RHsdMK3F8I+qYSX1cumGE2265nTclrPDvP0B88zwz
+ ptGRL+ycMOWBuFwxD3KtYXoGFScKWWfC/n2ef4SYPdW8QNOFsYOJqB8NOmlU2VMuoMBQpf4
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-  This message is in MIME format.  The first part should be readable text,
-  while the remaining parts are likely unreadable without MIME-aware tools.
+On Wed, Aug 4, 2021 at 11:15 PM kernel test robot <lkp@intel.com> wrote:
+>
+> Hi Arnd,
+>
+> First bad commit (maybe != root cause):
+>
+> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git master
+> head:   2f73937c9aa561e2082839bc1a8efaac75d6e244
+> commit: 47fd22f2b84765a2f7e3f150282497b902624547 [4771/5318] cs89x0: rework driver configuration
+> config: m68k-randconfig-c003-20210804 (attached as .config)
+> compiler: m68k-linux-gcc (GCC) 10.3.0
+> reproduce (this is a W=1 build):
+>         wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
+>         chmod +x ~/bin/make.cross
+>         # https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git/commit/?id=47fd22f2b84765a2f7e3f150282497b902624547
+>         git remote add linux-next https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git
+>         git fetch --no-tags linux-next master
+>         git checkout 47fd22f2b84765a2f7e3f150282497b902624547
+>         # save the attached .config to linux build tree
+>         COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-10.3.0 make.cross ARCH=m68k
+>
+> If you fix the issue, kindly add following tag as appropriate
+> Reported-by: kernel test robot <lkp@intel.com>
+>
+> All errors (new ones prefixed by >>):
+>
+>    In file included from include/linux/kernel.h:19,
+>                     from include/linux/list.h:9,
+>                     from include/linux/module.h:12,
+>                     from drivers/net/ethernet/cirrus/cs89x0.c:51:
+>    drivers/net/ethernet/cirrus/cs89x0.c: In function 'net_open':
+>    drivers/net/ethernet/cirrus/cs89x0.c:897:20: error: implicit declaration of function 'isa_virt_to_bus'; did you mean 'virt_to_bus'? [-Werror=implicit-function-declaration]
+>      897 |     (unsigned long)isa_virt_to_bus(lp->dma_buff));
+>          |                    ^~~~~~~~~~~~~~~
+>    include/linux/printk.h:141:17: note: in definition of macro 'no_printk'
+>      141 |   printk(fmt, ##__VA_ARGS__);  \
+>          |                 ^~~~~~~~~~~
+>    drivers/net/ethernet/cirrus/cs89x0.c:86:3: note: in expansion of macro 'pr_debug'
+>       86 |   pr_##level(fmt, ##__VA_ARGS__);   \
+>          |   ^~~
+>    drivers/net/ethernet/cirrus/cs89x0.c:894:3: note: in expansion of macro 'cs89_dbg'
+>      894 |   cs89_dbg(1, debug, "%s: dma %lx %lx\n",
+>          |   ^~~~~~~~
+> >> drivers/net/ethernet/cirrus/cs89x0.c:914:3: error: implicit declaration of function 'disable_dma'; did you mean 'disable_irq'? [-Werror=implicit-function-declaration]
 
----1463811774-1637780939-1627949988=:28
-Content-Type: text/plain; CHARSET=UTF-8
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Content-ID: <8ba6725c-fdf-1438-4fad-ee38d77f32d3@nippy.intranet>
+As far as I can tell, this is a bug with the m68kmmu architecture, not
+with my driver:
+The CONFIG_ISA_DMA_API option is provided for coldfire, which implements it,
+but dragonball also sets the option as a side-effect, without actually
+implementing
+the interfaces. The patch below should fix it.
 
-On Mon, 2 Aug 2021, Uwe Kleine-K=C3=B6nig wrote:
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 
-> >=20
-> > BTW, aside from nubus, zorro and superhyway you can find the same=20
-> > pattern in many other busses. You may want to patch the following=20
-> > methods too.
-> >=20
-> > acpi_device_remove
-> > apr_device_remove
-> > ccwgroup_remove
-> > gio_device_remove
-> > hid_device_remove=20
-> > ibmebus_bus_device_remove
-> > macio_device_remove
-> > memstick_device_remove
-> > ntb_remove
-> > pci_device_remove
-> > pnp_device_remove
-> > ps3_system_bus_remove
-> > rio_device_remove
-> > slim_device_remove
-> > soundbus_device_remove
-> > ssb_device_remove
-> > tifm_device_remove
-> > vdpa_dev_remove
-> > vmbus_remove
->=20
-> Did you find these by hand? Or using a coccinelle match?
->=20
+diff --git a/arch/m68k/Kconfig.bus b/arch/m68k/Kconfig.bus
+index f1be832e2b74..d1e93a39cd3b 100644
+--- a/arch/m68k/Kconfig.bus
++++ b/arch/m68k/Kconfig.bus
+@@ -63,7 +63,7 @@ source "drivers/zorro/Kconfig"
 
-I used grep and visual inspection.
+ endif
 
-> Anyhow, thanks for the list, I'll add it to my todo list but if you're=20
-> motivated don't consider these cleanups as my property. (Please Cc: me=20
-> though to prevent duplicated effort.)
->=20
+-if !MMU
++if COLDFIRE
 
-I went looking for the other examples of this pattern because I wanted to=
-=20
-understand it better. Then I realized that I might as well make a list=20
-since I was searching anyway.
-
-When skimming that code, I took the impression that the dev->driver =3D=3D=
-=20
-NULL test probably comes from old code written before the 'remove'=20
-functions became bus methods. See also commit 594c8281f905 ("[PATCH] Add=20
-bus_type probe, remove, shutdown methods.")
-
-Back when I wrote drivers/nubus/bus.c, apparently I copied-and-pasted the=
-=20
-old pattern from drivers/pci/pci-driver.c, even though that pattern was=20
-already obsolete.
-
-So I do see the value in this cleanup but I'm afraid I'm too busy to help=
-=20
-further. If you don't want to finish it perhaps you can get the janitors=20
-to do so.
----1463811774-1637780939-1627949988=:28--
+ config ISA_DMA_API
+        def_bool !M5272
