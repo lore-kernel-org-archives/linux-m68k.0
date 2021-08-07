@@ -2,88 +2,373 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
-	SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-2.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	UPPERCASE_75_100 autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 496A5C4338F
-	for <linux-m68k@archiver.kernel.org>; Fri,  6 Aug 2021 17:45:21 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 6763FC432BE
+	for <linux-m68k@archiver.kernel.org>; Sat,  7 Aug 2021 14:29:06 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 236B66113C
-	for <linux-m68k@archiver.kernel.org>; Fri,  6 Aug 2021 17:45:21 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 4814C60F70
+	for <linux-m68k@archiver.kernel.org>; Sat,  7 Aug 2021 14:29:06 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241338AbhHFRpg (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Fri, 6 Aug 2021 13:45:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46438 "EHLO
+        id S232445AbhHGO3W (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Sat, 7 Aug 2021 10:29:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36316 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231776AbhHFRpe (ORCPT
+        with ESMTP id S232434AbhHGO3W (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Fri, 6 Aug 2021 13:45:34 -0400
-Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 35F0DC0613CF;
-        Fri,  6 Aug 2021 10:45:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=qRduPNPCLfBMTFYoq3QGcw3w+yL4nRTomePXW3/qUjU=; b=iqeWAgdtlkNbV8x9UpOR22Kofq
-        vOZK1ssLyeBoWZ6PDtdLTbF21sQzm4KeIOOlGD0Xs6Dkf3ypCp/Vp1wesR8+RiSCT+im1Oc3gxOJW
-        dBrg/iKozPAmVjNh/ri6w0VGgybsTFZp+m445sNHeCCR+TPBcqloIfDTZ/njdo/hUHXpah+E6g70s
-        sWhe6WJ8RsenGANYYvYfV+vEntvL8O1lGzL5pldMrAPdLCNSLq/uGNbEit2kSIBbF6GS4EnRcRSNC
-        Ib4lvbL2z90SJV7tSOi2SPnoXv9ooHjtQAzdrDVQnDLeEuCBhJH1rDYfTrSnYRQydKkGTvyf8DJK5
-        4SItqBXA==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=worktop.programming.kicks-ass.net)
-        by desiato.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mC3tz-006QB3-Ln; Fri, 06 Aug 2021 17:45:00 +0000
-Received: by worktop.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 5E17498632E; Fri,  6 Aug 2021 19:44:57 +0200 (CEST)
-Date:   Fri, 6 Aug 2021 19:44:57 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Mete Polat <metepolat2000@gmail.com>
-Cc:     Michel Lespinasse <michel@lespinasse.org>,
-        Davidlohr Bueso <dbueso@suse.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Lukas Bulwahn <lukas.bulwahn@gmail.com>,
-        Jesper Nilsson <jesper@jni.nu>, Arnd Bergmann <arnd@arndb.de>,
-        David Woodhouse <dwmw2@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        kernel-janitors@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-m68k <linux-m68k@lists.linux-m68k.org>
-Subject: Re: [PATCH v2] rbtree: remove unneeded explicit alignment in struct
- rb_node
-Message-ID: <20210806174457.GA2184@worktop.programming.kicks-ass.net>
-References: <YQ1ToK8EMdAO4CyH@precision>
+        Sat, 7 Aug 2021 10:29:22 -0400
+Received: from mail-oi1-x22b.google.com (mail-oi1-x22b.google.com [IPv6:2607:f8b0:4864:20::22b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E199DC0613D3
+        for <linux-m68k@lists.linux-m68k.org>; Sat,  7 Aug 2021 07:29:03 -0700 (PDT)
+Received: by mail-oi1-x22b.google.com with SMTP id n16so16754694oij.2
+        for <linux-m68k@lists.linux-m68k.org>; Sat, 07 Aug 2021 07:29:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:from:date:message-id:subject:to:cc;
+        bh=TfqRwzqta/UmYDzbxnvXrLmTMpNTiMW+sJo+7ulhkMU=;
+        b=CRYI+yPsNJvq4bhelYMjjGbwRv6ayQh7Fm0kXjaMqUrEsQHJK/AnBXmDA/8uQnHLWy
+         TKOt9CWBewulfUc0ikDdlc0+NgrZDDGQceB8JlvvTXvmyXi5ZLApfLKCqW7W2H+uoGtv
+         4E0cQdKvd3IdIIjiRtPFK6DJUUN/0VbryVi8P5Roeb5dR57nBJj5zUwlXaHgbVmjYVxl
+         WdOsXVDeb+PT+DmE5Ybbo5Q75YOIv/p9yFL2tOO45pXF/QJXM1G5amx5VHprQdwUoUJR
+         ZIIbiqmdI7PMzzZ3rBFbnPwP+lhvki7cUI9z61ZQMBAeZ9SaEeoHNh2kLDGi3x/VW4ia
+         3VAQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
+        bh=TfqRwzqta/UmYDzbxnvXrLmTMpNTiMW+sJo+7ulhkMU=;
+        b=G+Lqvn847J9Y3VWIBewY2uNd/wWUF3xh5DWkvPrOBZhKzb7LITisTPlEYDeebh8f2Z
+         hMq+aE27b53GmV1QU8SAUSuLJSw9gKFfgcAo6Er77XbDcOaq28HHwiBchoYG2laNmEvO
+         HmHQ1RAU4TiB1UJgRIq4J8dwwAnyOcZe57AHNgjNBgrihn1rJ10LDLp05UFj1V9XOMQw
+         uB8iP4MkSBlM70nnEgXsC6Wt4zkbz5kul6Px16z3NSRmEQ+1srqgUogW0xqHGeUP1F63
+         OGN3kcSI9mKGFnpKE2e+F9sNsGGffZkBxjq2zg1Rjpa+BO7q8C4GaQIKNlvFs8EQbSta
+         cGnw==
+X-Gm-Message-State: AOAM532qUXaGa1BKbQ/SnDtsE4wXBH9RJr8vzDJuUrHw847ON6j3bSMa
+        jfcJHClcQyD2jhe37u2B6SWJbNe7uhvNaE9o04g=
+X-Google-Smtp-Source: ABdhPJx2wm0d3W37GRnTzyJaKEZz0oszN+K9M+KYCdt0lmZ7LYMl0c9r0BcrslKIOcSVGeHJAbw5q60X+YHodAUEOAg=
+X-Received: by 2002:a05:6808:601:: with SMTP id y1mr9167584oih.27.1628346543146;
+ Sat, 07 Aug 2021 07:29:03 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YQ1ToK8EMdAO4CyH@precision>
+From:   Mikael Pettersson <mikpelinux@gmail.com>
+Date:   Sat, 7 Aug 2021 16:28:52 +0200
+Message-ID: <CAM43=SM4KFE8C1ekwiw_kBYZKSwycnTYcbBXfw5OhUn4h=r9YA@mail.gmail.com>
+Subject: [BISECTED][REGRESSION] 5.10.56 longterm kernel breakage on m68k/aranym
+To:     Linux Kernel list <linux-kernel@vger.kernel.org>
+Cc:     linux-m68k@lists.linux-m68k.org, stable@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-On Fri, Aug 06, 2021 at 05:22:08PM +0200, Mete Polat wrote:
-> Commit e977145aeaad ("[RBTREE] Add explicit alignment to sizeof(long) for
-> struct rb_node.") adds an explicit alignment to the struct rb_node due to
-> some speciality of the CRIS architecture.
-> 
-> The support for the CRIS architecture was removed with commit c690eddc2f3b
-> ("CRIS: Drop support for the CRIS port")
-> 
-> So, remove this now unneeded explicit alignment in struct rb_node as well.
-> 
-> This basically reverts commit e977145aeaad ("[RBTREE] Add explicit
-> alignment to sizeof(long) for struct rb_node.").
-> 
-> The rbtree node color is stored in the LSB of '__rb_parent_color'.
-> Only mask the first bit in '__rb_parent()', otherwise it modifies the
-> node's parent address on m68k.
+I updated the 5.10 longterm kernel on one of my m68k/aranym VMs from
+5.10.47 to 5.10.56, and the new kernel failed to boot:
 
-I still don't believe for a second this will actually work. We rely on
-rcu_assign_pointer() and rcu_dereference() to work on the
-rb_{left,right} members, and I don't think any architecture can provide
-single copy atomic loads and stores that are not naturally aligned (eg.
-when they straddle a cache or page boundary).
+ARAnyM 1.1.0
+Using config file: 'aranym1.headless.config'
+Could not open joystick 0
+ARAnyM RTC Timer: /dev/rtc: Permission denied
+ARAnyM LILO: Error loading ramdisk 'root.bin'
+Blitter tried to read byte from register ff8a00 at 0077ee
 
+At this point it kept running, but produced no output to the console,
+and would never get to the point of starting user-space. Attaching gdb
+to aranym showed nothing interesting, i.e. it seemed to be executing
+normally.
+
+A git bisect identified the following commit between 5.10.52 and
+5.10.53 as the culprit:
+# first bad commit: [9e1cf2d1ed37c934c9935f2c0b2f8b15d9355654]
+mm/userfaultfd: fix uffd-wp special cases for fork()
+
+5.10.52, 5.11.22, 5.12.19, and 5.13.8 all boot fine. 5.10.53 to
+5.10.56 all fail as described above.
+
+grep ^CONFIG .config below, everything omitted is of course disabled,
+including I might add CONFIG_USERFAULTFD.
+
+/Mikael
+
+CONFIG_CC_VERSION_TEXT="m68k-unknown-linux-gcc (GCC) 10.3.1 20210424"
+CONFIG_CC_IS_GCC=y
+CONFIG_GCC_VERSION=100301
+CONFIG_LD_VERSION=231010000
+CONFIG_CLANG_VERSION=0
+CONFIG_LLD_VERSION=0
+CONFIG_CC_CAN_LINK=y
+CONFIG_CC_CAN_LINK_STATIC=y
+CONFIG_CC_HAS_ASM_GOTO=y
+CONFIG_CC_HAS_ASM_INLINE=y
+CONFIG_IRQ_WORK=y
+CONFIG_BROKEN_ON_SMP=y
+CONFIG_INIT_ENV_ARG_LIMIT=32
+CONFIG_LOCALVERSION=""
+CONFIG_BUILD_SALT=""
+CONFIG_DEFAULT_INIT=""
+CONFIG_DEFAULT_HOSTNAME="(none)"
+CONFIG_SWAP=y
+CONFIG_SYSVIPC=y
+CONFIG_SYSVIPC_SYSCTL=y
+CONFIG_GENERIC_IRQ_SHOW=y
+CONFIG_PREEMPT_NONE=y
+CONFIG_TICK_CPU_ACCOUNTING=y
+CONFIG_TINY_RCU=y
+CONFIG_SRCU=y
+CONFIG_TINY_SRCU=y
+CONFIG_LOG_BUF_SHIFT=15
+CONFIG_PRINTK_SAFE_LOG_BUF_SHIFT=13
+CONFIG_CGROUPS=y
+CONFIG_BLK_DEV_INITRD=y
+CONFIG_INITRAMFS_SOURCE=""
+CONFIG_RD_GZIP=y
+CONFIG_CC_OPTIMIZE_FOR_PERFORMANCE=y
+CONFIG_SYSCTL=y
+CONFIG_HAVE_UID16=y
+CONFIG_BPF=y
+CONFIG_EXPERT=y
+CONFIG_UID16=y
+CONFIG_MULTIUSER=y
+CONFIG_FHANDLE=y
+CONFIG_POSIX_TIMERS=y
+CONFIG_PRINTK=y
+CONFIG_BUG=y
+CONFIG_ELF_CORE=y
+CONFIG_BASE_FULL=y
+CONFIG_FUTEX=y
+CONFIG_FUTEX_PI=y
+CONFIG_HAVE_FUTEX_CMPXCHG=y
+CONFIG_EPOLL=y
+CONFIG_SIGNALFD=y
+CONFIG_TIMERFD=y
+CONFIG_EVENTFD=y
+CONFIG_SHMEM=y
+CONFIG_ADVISE_SYSCALLS=y
+CONFIG_KALLSYMS=y
+CONFIG_KALLSYMS_BASE_RELATIVE=y
+CONFIG_EMBEDDED=y
+CONFIG_SLUB=y
+CONFIG_SLAB_MERGE_DEFAULT=y
+CONFIG_M68K=y
+CONFIG_CPU_BIG_ENDIAN=y
+CONFIG_GENERIC_HWEIGHT=y
+CONFIG_GENERIC_CALIBRATE_DELAY=y
+CONFIG_TIME_LOW_RES=y
+CONFIG_NO_IOPORT_MAP=y
+CONFIG_ZONE_DMA=y
+CONFIG_HZ=100
+CONFIG_PGTABLE_LEVELS=3
+CONFIG_MMU=y
+CONFIG_MMU_MOTOROLA=y
+CONFIG_M68KCLASSIC=y
+CONFIG_M68020=y
+CONFIG_M68030=y
+CONFIG_M68040=y
+CONFIG_M68060=y
+CONFIG_M68KFPU_EMU=y
+CONFIG_M68KFPU_EMU_EXTRAPREC=y
+CONFIG_ADVANCED=y
+CONFIG_RMW_INSNS=y
+CONFIG_ARCH_DISCONTIGMEM_ENABLE=y
+CONFIG_NODES_SHIFT=3
+CONFIG_CPU_HAS_ADDRESS_SPACES=y
+CONFIG_FPU=y
+CONFIG_ATARI=y
+CONFIG_ATARI_KBD_CORE=y
+CONFIG_PROC_HARDWARE=y
+CONFIG_NATFEAT=y
+CONFIG_NFBLOCK=y
+CONFIG_NFCON=y
+CONFIG_NFETH=y
+CONFIG_CRASH_CORE=y
+CONFIG_SET_FS=y
+CONFIG_ARCH_32BIT_OFF_T=y
+CONFIG_HAVE_ASM_MODVERSIONS=y
+CONFIG_MMU_GATHER_NO_RANGE=y
+CONFIG_ARCH_HAVE_NMI_SAFE_CMPXCHG=y
+CONFIG_ARCH_WANT_IPC_PARSE_VERSION=y
+CONFIG_HAVE_MOD_ARCH_SPECIFIC=y
+CONFIG_MODULES_USE_ELF_RELA=y
+CONFIG_MODULES_USE_ELF_REL=y
+CONFIG_HAVE_ARCH_NVRAM_OPS=y
+CONFIG_OLD_SIGSUSPEND3=y
+CONFIG_OLD_SIGACTION=y
+CONFIG_COMPAT_32BIT_TIME=y
+CONFIG_ARCH_NO_PREEMPT=y
+CONFIG_RT_MUTEXES=y
+CONFIG_BASE_SMALL=0
+CONFIG_MODULES=y
+CONFIG_MODULE_UNLOAD=y
+CONFIG_BLOCK=y
+CONFIG_BLK_SCSI_REQUEST=y
+CONFIG_BLK_DEV_BSG=y
+CONFIG_PARTITION_ADVANCED=y
+CONFIG_ATARI_PARTITION=y
+CONFIG_MSDOS_PARTITION=y
+CONFIG_INLINE_SPIN_UNLOCK_IRQ=y
+CONFIG_INLINE_READ_UNLOCK=y
+CONFIG_INLINE_READ_UNLOCK_IRQ=y
+CONFIG_INLINE_WRITE_UNLOCK=y
+CONFIG_INLINE_WRITE_UNLOCK_IRQ=y
+CONFIG_BINFMT_ELF=y
+CONFIG_ELFCORE=y
+CONFIG_CORE_DUMP_DEFAULT_ELF_HEADERS=y
+CONFIG_BINFMT_SCRIPT=y
+CONFIG_ARCH_HAS_BINFMT_FLAT=y
+CONFIG_BINFMT_FLAT_ARGVP_ENVP_ON_STACK=y
+CONFIG_HAVE_AOUT=y
+CONFIG_COREDUMP=y
+CONFIG_DISCONTIGMEM=y
+CONFIG_FLAT_NODE_MEM_MAP=y
+CONFIG_NEED_MULTIPLE_NODES=y
+CONFIG_SPLIT_PTLOCK_CPUS=4
+CONFIG_BOUNCE=y
+CONFIG_VIRT_TO_BUS=y
+CONFIG_DEFAULT_MMAP_MIN_ADDR=4096
+CONFIG_NEED_PER_CPU_KM=y
+CONFIG_NET=y
+CONFIG_PACKET=y
+CONFIG_UNIX=y
+CONFIG_UNIX_SCM=y
+CONFIG_INET=y
+CONFIG_TCP_CONG_CUBIC=y
+CONFIG_DEFAULT_TCP_CONG="cubic"
+CONFIG_IPV6=m
+CONFIG_HAVE_NET_DSA=y
+CONFIG_NET_RX_BUSY_POLL=y
+CONFIG_BQL=y
+CONFIG_DEVTMPFS=y
+CONFIG_DEVTMPFS_MOUNT=y
+CONFIG_STANDALONE=y
+CONFIG_PREVENT_FIRMWARE_BUILD=y
+CONFIG_GENERIC_CPU_DEVICES=y
+CONFIG_BLK_DEV=y
+CONFIG_BLK_DEV_LOOP=m
+CONFIG_BLK_DEV_LOOP_MIN_COUNT=8
+CONFIG_HAVE_IDE=y
+CONFIG_SCSI_MOD=y
+CONFIG_NETDEVICES=y
+CONFIG_ETHERNET=y
+CONFIG_INPUT=y
+CONFIG_INPUT_MOUSEDEV=y
+CONFIG_INPUT_MOUSEDEV_SCREEN_X=1024
+CONFIG_INPUT_MOUSEDEV_SCREEN_Y=768
+CONFIG_INPUT_EVDEV=m
+CONFIG_INPUT_KEYBOARD=y
+CONFIG_KEYBOARD_ATARI=y
+CONFIG_INPUT_MOUSE=y
+CONFIG_MOUSE_ATARI=y
+CONFIG_INPUT_MISC=y
+CONFIG_INPUT_M68K_BEEP=y
+CONFIG_TTY=y
+CONFIG_VT=y
+CONFIG_CONSOLE_TRANSLATIONS=y
+CONFIG_VT_CONSOLE=y
+CONFIG_HW_CONSOLE=y
+CONFIG_VT_HW_CONSOLE_BINDING=y
+CONFIG_UNIX98_PTYS=y
+CONFIG_LDISC_AUTOLOAD=y
+CONFIG_NVRAM=y
+CONFIG_SSB_POSSIBLE=y
+CONFIG_BCMA_POSSIBLE=y
+CONFIG_FB_CMDLINE=y
+CONFIG_FB_NOTIFY=y
+CONFIG_FB=y
+CONFIG_FB_CFB_FILLRECT=y
+CONFIG_FB_CFB_COPYAREA=y
+CONFIG_FB_CFB_IMAGEBLIT=y
+CONFIG_FB_ATARI=y
+CONFIG_DUMMY_CONSOLE=y
+CONFIG_DUMMY_CONSOLE_COLUMNS=80
+CONFIG_DUMMY_CONSOLE_ROWS=25
+CONFIG_FRAMEBUFFER_CONSOLE=y
+CONFIG_USB_OHCI_LITTLE_ENDIAN=y
+CONFIG_RTC_LIB=y
+CONFIG_RTC_CLASS=y
+CONFIG_RTC_HCTOSYS=y
+CONFIG_RTC_HCTOSYS_DEVICE="rtc0"
+CONFIG_RTC_INTF_SYSFS=y
+CONFIG_RTC_INTF_PROC=y
+CONFIG_RTC_INTF_DEV=y
+CONFIG_RTC_DRV_GENERIC=y
+CONFIG_FS_IOMAP=y
+CONFIG_EXT4_FS=y
+CONFIG_EXT4_USE_FOR_EXT2=y
+CONFIG_EXT4_FS_POSIX_ACL=y
+CONFIG_EXT4_FS_SECURITY=y
+CONFIG_JBD2=y
+CONFIG_FS_MBCACHE=y
+CONFIG_FS_POSIX_ACL=y
+CONFIG_EXPORTFS=y
+CONFIG_FILE_LOCKING=y
+CONFIG_FSNOTIFY=y
+CONFIG_DNOTIFY=y
+CONFIG_INOTIFY_USER=y
+CONFIG_FANOTIFY=y
+CONFIG_PROC_FS=y
+CONFIG_PROC_KCORE=y
+CONFIG_PROC_SYSCTL=y
+CONFIG_KERNFS=y
+CONFIG_SYSFS=y
+CONFIG_TMPFS=y
+CONFIG_TMPFS_POSIX_ACL=y
+CONFIG_TMPFS_XATTR=y
+CONFIG_MEMFD_CREATE=y
+CONFIG_SECURITY=y
+CONFIG_HAVE_HARDENED_USERCOPY_ALLOCATOR=y
+CONFIG_DEFAULT_SECURITY_DAC=y
+CONFIG_LSM="lockdown,yama,loadpin,safesetid,integrity,bpf"
+CONFIG_INIT_STACK_NONE=y
+CONFIG_CRYPTO=y
+CONFIG_CRYPTO_ALGAPI=y
+CONFIG_CRYPTO_ALGAPI2=y
+CONFIG_CRYPTO_HASH=y
+CONFIG_CRYPTO_HASH2=y
+CONFIG_CRYPTO_MANAGER_DISABLE_TESTS=y
+CONFIG_CRYPTO_CRC32C=y
+CONFIG_CRYPTO_AES=y
+CONFIG_CRYPTO_LIB_AES=y
+CONFIG_CRYPTO_LIB_POLY1305_RSIZE=1
+CONFIG_BITREVERSE=y
+CONFIG_GENERIC_STRNCPY_FROM_USER=y
+CONFIG_GENERIC_STRNLEN_USER=y
+CONFIG_GENERIC_NET_UTILS=y
+CONFIG_GENERIC_PCI_IOMAP=y
+CONFIG_GENERIC_IOMAP=y
+CONFIG_CRC16=y
+CONFIG_CRC32=y
+CONFIG_CRC32_SLICEBY8=y
+CONFIG_ZLIB_INFLATE=y
+CONFIG_DECOMPRESS_GZIP=y
+CONFIG_GENERIC_ALLOCATOR=y
+CONFIG_HAS_IOMEM=y
+CONFIG_HAS_DMA=y
+CONFIG_ARCH_HAS_SYNC_DMA_FOR_DEVICE=y
+CONFIG_ARCH_HAS_DMA_PREP_COHERENT=y
+CONFIG_DMA_NONCOHERENT_MMAP=y
+CONFIG_DMA_COHERENT_POOL=y
+CONFIG_DMA_REMAP=y
+CONFIG_DMA_DIRECT_REMAP=y
+CONFIG_DQL=y
+CONFIG_NLATTR=y
+CONFIG_GENERIC_ATOMIC64=y
+CONFIG_FONT_SUPPORT=y
+CONFIG_FONT_8x8=y
+CONFIG_FONT_8x16=y
+CONFIG_SBITMAP=y
+CONFIG_CONSOLE_LOGLEVEL_DEFAULT=7
+CONFIG_CONSOLE_LOGLEVEL_QUIET=4
+CONFIG_MESSAGE_LOGLEVEL_DEFAULT=4
+CONFIG_DEBUG_BUGVERBOSE=y
+CONFIG_ENABLE_MUST_CHECK=y
+CONFIG_FRAME_WARN=1024
+CONFIG_STRIP_ASM_SYMS=y
+CONFIG_SECTION_MISMATCH_WARN_ONLY=y
+CONFIG_MAGIC_SYSRQ=y
+CONFIG_MAGIC_SYSRQ_DEFAULT_ENABLE=0x1
+CONFIG_DEBUG_KERNEL=y
+CONFIG_CC_HAS_WORKING_NOSANITIZE_ADDRESS=y
+CONFIG_PANIC_ON_OOPS_VALUE=0
+CONFIG_PANIC_TIMEOUT=0
+CONFIG_HAVE_DEBUG_BUGVERBOSE=y
+CONFIG_CC_HAS_SANCOV_TRACE_PC=y
