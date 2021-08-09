@@ -2,128 +2,120 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-20.3 required=3.0 tests=BAYES_00,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,NICE_REPLY_A,SPF_HELO_NONE,SPF_PASS,
-	URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=unavailable autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-2.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 0578FC432BE
-	for <linux-m68k@archiver.kernel.org>; Mon,  9 Aug 2021 08:00:32 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 67986C4320A
+	for <linux-m68k@archiver.kernel.org>; Mon,  9 Aug 2021 10:09:05 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id D76836105A
-	for <linux-m68k@archiver.kernel.org>; Mon,  9 Aug 2021 08:00:31 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 43DED610CB
+	for <linux-m68k@archiver.kernel.org>; Mon,  9 Aug 2021 10:09:05 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233749AbhHIIAv (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Mon, 9 Aug 2021 04:00:51 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48698 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233744AbhHIIAr (ORCPT <rfc822;linux-m68k@vger.kernel.org>);
-        Mon, 9 Aug 2021 04:00:47 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D9FAD60462;
-        Mon,  9 Aug 2021 08:00:25 +0000 (UTC)
-Subject: Re: [linux-next:master 4771/5318]
- drivers/net/ethernet/cirrus/cs89x0.c:914:3: error: implicit declaration of
- function 'disable_dma'; did you mean 'disable_irq'?
-To:     Arnd Bergmann <arnd@arndb.de>, kernel test robot <lkp@intel.com>
-Cc:     kbuild-all@lists.01.org,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        Linux/m68k <linux-m68k@vger.kernel.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>
-References: <202108050531.p7zYKip9-lkp@intel.com>
- <CAK8P3a1Z3eXV=H99z2TDzAXLqY64aS5qB3Zo=sEPHZYVfntqbg@mail.gmail.com>
-From:   Greg Ungerer <gerg@linux-m68k.org>
-Message-ID: <5734a1f8-54c9-ebfb-11e3-f884e9131266@linux-m68k.org>
-Date:   Mon, 9 Aug 2021 18:00:23 +1000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        id S234485AbhHIKJY (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Mon, 9 Aug 2021 06:09:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41978 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233894AbhHIKJX (ORCPT
+        <rfc822;linux-m68k@lists.linux-m68k.org>);
+        Mon, 9 Aug 2021 06:09:23 -0400
+Received: from mail-ot1-x32e.google.com (mail-ot1-x32e.google.com [IPv6:2607:f8b0:4864:20::32e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 98E4AC061796
+        for <linux-m68k@lists.linux-m68k.org>; Mon,  9 Aug 2021 03:09:01 -0700 (PDT)
+Received: by mail-ot1-x32e.google.com with SMTP id g5-20020a9d6b050000b02904f21e977c3eso17346342otp.5
+        for <linux-m68k@lists.linux-m68k.org>; Mon, 09 Aug 2021 03:09:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=qoHRXfLSkf+2u1HB47ZXYyLT4NgEVZM0x+hX2iAEM0A=;
+        b=V3dDLieTWYZK7LcO6IcE0dgZhbK3gmN5Dn1hrPuqmFwnYyqHT9HPXAtiAO+8x5LD2a
+         rhZFan2ys8KPoz3pcG6PhhHxRtlejRkeG0R0x2uecegwLq2xmVX9l0KZjed6bDsAZUxd
+         0/DQhTbNtPpx8727V8VsXa3kHezj/UkSMnGV2Raf2eckllnX43mB1ik0Nq9tv4qv/NBy
+         VP6xuaTr21q3i58BtB9Q73+tQBzWtAXfVKae5XLTxj2IIRewzJhnZsn2U4f3UDjZfu2p
+         x4rL4gmsFTWwAoaa3U7yN6eTINbme175X4Bh9iA+HsToZ4fiJksj0W/djk/5Cwt2Bmsg
+         Qufw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=qoHRXfLSkf+2u1HB47ZXYyLT4NgEVZM0x+hX2iAEM0A=;
+        b=FO5w8aFxcsY8Hzu2L02EF2UwHqGEYpDAX+V2XOYIzIwwDTbQJpgW9qt7CD3RtL5fx7
+         iuIbgyXTU7AkNQd8d3nwdMLyW1/s+PNRKVxk+/W3CYK9NnkzsHPBlCd1UgjqVa/7a46T
+         U9sdHtjXHDvTz9msl5q7thXtLE4UojnrcN3tOK7uPaA5ZSZfFpeMoZQbEeKXanHqnsMp
+         EK2b317A43bnP5QS0T4VHd1ppEwO+T8FqBvFRjNxxhb2CZFW0jqvo5mNqMPcZt1EkQhl
+         yDSTZiZe/mIbbNvBMU8y55icKOYqgeCDJlrosHWS7yx+7zEJm66qXs1O8ygWrLYuU5M5
+         ekYQ==
+X-Gm-Message-State: AOAM530MY5hj+nwoPQiEufLmnYZfqytzqLfVCgtF+njL24jNE1PgAWIJ
+        GVt2JLg/By4zU0WAM8bobyPuSyuUAtYyhJmjXfU=
+X-Google-Smtp-Source: ABdhPJzSl9HGih+1oYlUMtTUINQffGyH3LHGqFRlSVEPYWjJF8/bhu9t47I5IwHuvLo6LextsjMFOBY/uHLsjyXWJ88=
+X-Received: by 2002:a05:6830:1459:: with SMTP id w25mr769993otp.370.1628503740799;
+ Mon, 09 Aug 2021 03:09:00 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <CAK8P3a1Z3eXV=H99z2TDzAXLqY64aS5qB3Zo=sEPHZYVfntqbg@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <CAM43=SM4KFE8C1ekwiw_kBYZKSwycnTYcbBXfw5OhUn4h=r9YA@mail.gmail.com>
+ <31298797-f791-4ac5-cfda-c95d7c7958a4@linux-m68k.org> <CAM43=SNV4016i2ByssN9tvXDN6ZyQiYM218_NkrebyPA=p6Rcg@mail.gmail.com>
+ <380dd57-4b60-ac9c-508c-826d8ec1b0aa@linux-m68k.org>
+In-Reply-To: <380dd57-4b60-ac9c-508c-826d8ec1b0aa@linux-m68k.org>
+From:   Mikael Pettersson <mikpelinux@gmail.com>
+Date:   Mon, 9 Aug 2021 12:08:49 +0200
+Message-ID: <CAM43=SPsQv-fS1cOF9NA+kKEQcFw9BjyNeDZtqkBiHVvgGwQfg@mail.gmail.com>
+Subject: Re: [BISECTED][REGRESSION] 5.10.56 longterm kernel breakage on m68k/aranym
+To:     Finn Thain <fthain@linux-m68k.org>
+Cc:     Linux Kernel list <linux-kernel@vger.kernel.org>,
+        linux-m68k@lists.linux-m68k.org, stable@vger.kernel.org,
+        Peter Xu <peterx@redhat.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-Hi Arnd,
+On Mon, Aug 9, 2021 at 3:59 AM Finn Thain <fthain@linux-m68k.org> wrote:
+>
+> On Sun, 8 Aug 2021, Mikael Pettersson wrote:
+>
+> > On Sun, Aug 8, 2021 at 1:20 AM Finn Thain <fthain@linux-m68k.org> wrote:
+> > >
+> > > On Sat, 7 Aug 2021, Mikael Pettersson wrote:
+> > >
+> > > > I updated the 5.10 longterm kernel on one of my m68k/aranym VMs from
+> > > > 5.10.47 to 5.10.56, and the new kernel failed to boot:
+> > > >
+> > > > ARAnyM 1.1.0
+> > > > Using config file: 'aranym1.headless.config'
+> > > > Could not open joystick 0
+> > > > ARAnyM RTC Timer: /dev/rtc: Permission denied
+> > > > ARAnyM LILO: Error loading ramdisk 'root.bin'
+> > > > Blitter tried to read byte from register ff8a00 at 0077ee
+> > > >
+> > > > At this point it kept running, but produced no output to the console,
+> > > > and would never get to the point of starting user-space. Attaching gdb
+> > > > to aranym showed nothing interesting, i.e. it seemed to be executing
+> > > > normally.
+> > > >
+> > > > A git bisect identified the following commit between 5.10.52 and
+> > > > 5.10.53 as the culprit:
+> > > > # first bad commit: [9e1cf2d1ed37c934c9935f2c0b2f8b15d9355654]
+> > > > mm/userfaultfd: fix uffd-wp special cases for fork()
+> > > >
+> > >
+> > > That commit appeared in mainline between v5.13 and v5.14-rc1. Is mainline
+> > > also affected? e.g. v5.14-rc4.
+> >
+> > 5.14-rc4 boots fine. I suspect the commit has some dependency that
+> > hasn't been backported to 5.10 stable.
+> >
+>
+> On mainline, 9e1cf2d1ed3 is known as commit 8f34f1eac382 ("mm/userfaultfd:
+> fix uffd-wp special cases for fork()").
+>
+> There are differences between the two commits that may be relevant. I
+> don't know.
+>
+> If you checkout 8f34f1eac382 and if that works, it would indicate either
+> missing dependencies in -stable, or those differences are important.
+>
+> OTOH, if 8f34f1eac382 fails in the same way as linux-5.10.y, it would
+> indicate that -stable is missing a fix that's present in v5.14-rc4.
 
-On 5/8/21 4:45 pm, Arnd Bergmann wrote:
-> On Wed, Aug 4, 2021 at 11:15 PM kernel test robot <lkp@intel.com> wrote:
->>
->> Hi Arnd,
->>
->> First bad commit (maybe != root cause):
->>
->> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git master
->> head:   2f73937c9aa561e2082839bc1a8efaac75d6e244
->> commit: 47fd22f2b84765a2f7e3f150282497b902624547 [4771/5318] cs89x0: rework driver configuration
->> config: m68k-randconfig-c003-20210804 (attached as .config)
->> compiler: m68k-linux-gcc (GCC) 10.3.0
->> reproduce (this is a W=1 build):
->>          wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
->>          chmod +x ~/bin/make.cross
->>          # https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git/commit/?id=47fd22f2b84765a2f7e3f150282497b902624547
->>          git remote add linux-next https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git
->>          git fetch --no-tags linux-next master
->>          git checkout 47fd22f2b84765a2f7e3f150282497b902624547
->>          # save the attached .config to linux build tree
->>          COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-10.3.0 make.cross ARCH=m68k
->>
->> If you fix the issue, kindly add following tag as appropriate
->> Reported-by: kernel test robot <lkp@intel.com>
->>
->> All errors (new ones prefixed by >>):
->>
->>     In file included from include/linux/kernel.h:19,
->>                      from include/linux/list.h:9,
->>                      from include/linux/module.h:12,
->>                      from drivers/net/ethernet/cirrus/cs89x0.c:51:
->>     drivers/net/ethernet/cirrus/cs89x0.c: In function 'net_open':
->>     drivers/net/ethernet/cirrus/cs89x0.c:897:20: error: implicit declaration of function 'isa_virt_to_bus'; did you mean 'virt_to_bus'? [-Werror=implicit-function-declaration]
->>       897 |     (unsigned long)isa_virt_to_bus(lp->dma_buff));
->>           |                    ^~~~~~~~~~~~~~~
->>     include/linux/printk.h:141:17: note: in definition of macro 'no_printk'
->>       141 |   printk(fmt, ##__VA_ARGS__);  \
->>           |                 ^~~~~~~~~~~
->>     drivers/net/ethernet/cirrus/cs89x0.c:86:3: note: in expansion of macro 'pr_debug'
->>        86 |   pr_##level(fmt, ##__VA_ARGS__);   \
->>           |   ^~~
->>     drivers/net/ethernet/cirrus/cs89x0.c:894:3: note: in expansion of macro 'cs89_dbg'
->>       894 |   cs89_dbg(1, debug, "%s: dma %lx %lx\n",
->>           |   ^~~~~~~~
->>>> drivers/net/ethernet/cirrus/cs89x0.c:914:3: error: implicit declaration of function 'disable_dma'; did you mean 'disable_irq'? [-Werror=implicit-function-declaration]
-> 
-> As far as I can tell, this is a bug with the m68kmmu architecture, not
-> with my driver:
-> The CONFIG_ISA_DMA_API option is provided for coldfire, which implements it,
-> but dragonball also sets the option as a side-effect, without actually
-> implementing
-> the interfaces. The patch below should fix it.
-> 
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-> 
-> diff --git a/arch/m68k/Kconfig.bus b/arch/m68k/Kconfig.bus
-> index f1be832e2b74..d1e93a39cd3b 100644
-> --- a/arch/m68k/Kconfig.bus
-> +++ b/arch/m68k/Kconfig.bus
-> @@ -63,7 +63,7 @@ source "drivers/zorro/Kconfig"
-> 
->   endif
-> 
-> -if !MMU
-> +if COLDFIRE
-> 
->   config ISA_DMA_API
->          def_bool !M5272
-> 
-
-Yes I think that is right.
-Though this does mean now that the ColdFire with MMU has this turned on.
-I think that is ok.
-
-I'll apply to the m68knommu git tree, for-next branch.
-
-Regards
-Greg
-
+8f34f1eac382 boots fine.
