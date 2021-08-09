@@ -2,99 +2,117 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
-	autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-3.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 130A2C432BE
-	for <linux-m68k@archiver.kernel.org>; Sun,  8 Aug 2021 10:45:02 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4112DC4338F
+	for <linux-m68k@archiver.kernel.org>; Mon,  9 Aug 2021 01:59:24 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id E0BF16101E
-	for <linux-m68k@archiver.kernel.org>; Sun,  8 Aug 2021 10:45:01 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 1B00A60D07
+	for <linux-m68k@archiver.kernel.org>; Mon,  9 Aug 2021 01:59:24 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230435AbhHHKpR (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Sun, 8 Aug 2021 06:45:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43548 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229613AbhHHKpR (ORCPT
+        id S231675AbhHIB7n (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Sun, 8 Aug 2021 21:59:43 -0400
+Received: from out2-smtp.messagingengine.com ([66.111.4.26]:41953 "EHLO
+        out2-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231542AbhHIB7m (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Sun, 8 Aug 2021 06:45:17 -0400
-Received: from mail-ot1-x32b.google.com (mail-ot1-x32b.google.com [IPv6:2607:f8b0:4864:20::32b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A908AC061760
-        for <linux-m68k@lists.linux-m68k.org>; Sun,  8 Aug 2021 03:44:57 -0700 (PDT)
-Received: by mail-ot1-x32b.google.com with SMTP id a7-20020a9d5c870000b029050333abe08aso744543oti.13
-        for <linux-m68k@lists.linux-m68k.org>; Sun, 08 Aug 2021 03:44:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=9U9q0lZUKvbYE54RBYTDoIiNw159S6rYKfxs0QanQdA=;
-        b=BCaXKSSv8FmRRSLzHzm5EhLBPmnNWT/0VRlgGcNrsJe2NF9ugmko/soup69ZBwzvRE
-         3cUBeS6Ue/BzWCq+en/H7LbqhB8HaeqwdcbgtNLA2oHtdNuIxTt/1yy/OHPHkaOiEAEz
-         ov0Pxq/QWWfQMkLvyL1avZ82+pYbZ9sg/JM6F3zNqUX+t9+XMedlCmIH7c2tPpljZaEk
-         fx1NGv/vzANWdTIvlk6LrISKq6ojPebU/UvIRglJEqwnJiwN6ejk+EC3GMOHu5yBOehC
-         vd+4dZPzYkn0oId536oKDEr8oRsMtnpyo14qISzrWZPFv2R8K39GZaWAg3FysPtNEOJs
-         xKjQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=9U9q0lZUKvbYE54RBYTDoIiNw159S6rYKfxs0QanQdA=;
-        b=NHcCbn2JZV/kVue5TDCCLsxQdtws2Gz94aOI+se/0pxSCdkaN1Qovjy8aPdx7dkwbR
-         4ES9bRMbeWfKyCDEw3cOvkW/jauiDswPEzwTe/AMQraarNDyyG3pmP4O7TurJU8Fd+nJ
-         x4rn3Ahx5lnKSfGDvYI3XbgN3VLoAPbHTVIIenYgoJEV6lS5o3rO7NlTI4x4aoF83h5X
-         6Zsraa+1pghgtDg3seKy0I5yJhqRZGFTAOmr1jquGZTtt1OBK4rlItFik/SaoW2CRHOd
-         Zyt3HCkwZp7raT/FdMjd1PQcLl4zOCnIyZqywI90abkcNAD5z2f8mFY5qY0GVKeiCtCN
-         KeGg==
-X-Gm-Message-State: AOAM531TabK4GWmxTd14MDnWpuzSMcaO2kSXEVdrbIdKvwLoIU+eLktM
-        0WfJyCToilzBrS8kUkO+Dy22D/A6hM5p7ho5fGw=
-X-Google-Smtp-Source: ABdhPJy2xl2rUBT0EBVx9mc8SQaSdTYDIZ5+UnBlv5OtJBtHIvX0gEjsxmHl0LTo4Zn1RVIxV19ZPvTTK+kGldTW/WU=
-X-Received: by 2002:a9d:749a:: with SMTP id t26mr13870019otk.370.1628419496524;
- Sun, 08 Aug 2021 03:44:56 -0700 (PDT)
+        Sun, 8 Aug 2021 21:59:42 -0400
+Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
+        by mailout.nyi.internal (Postfix) with ESMTP id 52D6C5C010D;
+        Sun,  8 Aug 2021 21:59:22 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute4.internal (MEProxy); Sun, 08 Aug 2021 21:59:22 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=OylQU9
+        vb93bEc/qD54BoqNyoSqL9L9zi1LBegBb5SC4=; b=onQH3F3G6O/fyvoN8JBbFb
+        /TH/8f1xTMnAqHKCVzKrizgo6kEiiyqj+UERZrq6DHux4E9AQE7S3mO2pt4LbnzX
+        WsnB5nB9Xg9OO2qt/cEVEKocfPj+HgkbvNLqiAPcag+i6ElL+jkNJs1jn0bCdb5S
+        vaeApFnXm4idihpqc6oC863We3yN9zg6cpHfclHfMrS2FdsOruOHl3Yw35t/6GFH
+        jfdUPzWe7h4VCFKx6IV6HEYCwLb0G5FT2PrTZnnGOn4cgn1mZN9I/x7+uMeMx7tk
+        9LhEC9EglC4e0LtsWj293vO09bUoD3dCcx/Ll8psGstVJjVve25bok1cw/n7rUWw
+        ==
+X-ME-Sender: <xms:-YsQYaif_8F4BPrLVNrPMvuabgYV_YHdn_KKAWiw9tqmkm9ZaC5NhQ>
+    <xme:-YsQYbAGHmpIXDDrFF2c1Tp8RZEfgDcGG9vSl7180__u3yPkFnETC96FxS-TVUGgk
+    zhnzMXMzcs6ihRddcE>
+X-ME-Received: <xmr:-YsQYSFRa-pRjhNsNVgDuEQkbFex26fJgcUsiIeUN30aJblHGi4eWF4S4YxYHgWb8rBsyY8uoYVH61o5QZ9zpxLrYktcVf0ULoU>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrjeeigdegkecutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
+    fjughrpeffhffvufgjkfhfgggtsehttdertddttddvnecuhfhrohhmpefhihhnnhcuvfhh
+    rghinhcuoehfthhhrghinheslhhinhhugidqmheikehkrdhorhhgqeenucggtffrrghtth
+    gvrhhnpeekgeejkeffhfefgeelieffueethfeludduhfdtteduvddthedtteeftdevfefh
+    jeenucffohhmrghinhepudegqdhrtgdurdhishenucevlhhushhtvghrufhiiigvpedtne
+    curfgrrhgrmhepmhgrihhlfhhrohhmpehfthhhrghinheslhhinhhugidqmheikehkrdho
+    rhhg
+X-ME-Proxy: <xmx:-YsQYTSd5OdThR58l1aB7eTiLWQnIEg20VATmXtwvjY3zsHtZTMTXw>
+    <xmx:-YsQYXxrx2F3DoTAcXerqBN-k_XGiB7hcOTmyMxCBavUW31MOvjuNA>
+    <xmx:-YsQYR7IsOtutOVOXAvnYFCqWD7BEXQ29aco0FB878OiGwBmrZKIbA>
+    <xmx:-osQYS_sLcD5hF6GQo4MgWbjVdgJIf8LNarRFDq9UB6wGUcuWA-SDw>
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Sun,
+ 8 Aug 2021 21:59:19 -0400 (EDT)
+Date:   Mon, 9 Aug 2021 11:59:11 +1000 (AEST)
+From:   Finn Thain <fthain@linux-m68k.org>
+To:     Mikael Pettersson <mikpelinux@gmail.com>
+cc:     Linux Kernel list <linux-kernel@vger.kernel.org>,
+        linux-m68k@lists.linux-m68k.org, stable@vger.kernel.org,
+        Peter Xu <peterx@redhat.com>
+Subject: Re: [BISECTED][REGRESSION] 5.10.56 longterm kernel breakage on
+ m68k/aranym
+In-Reply-To: <CAM43=SNV4016i2ByssN9tvXDN6ZyQiYM218_NkrebyPA=p6Rcg@mail.gmail.com>
+Message-ID: <380dd57-4b60-ac9c-508c-826d8ec1b0aa@linux-m68k.org>
+References: <CAM43=SM4KFE8C1ekwiw_kBYZKSwycnTYcbBXfw5OhUn4h=r9YA@mail.gmail.com> <31298797-f791-4ac5-cfda-c95d7c7958a4@linux-m68k.org> <CAM43=SNV4016i2ByssN9tvXDN6ZyQiYM218_NkrebyPA=p6Rcg@mail.gmail.com>
 MIME-Version: 1.0
-References: <CAM43=SM4KFE8C1ekwiw_kBYZKSwycnTYcbBXfw5OhUn4h=r9YA@mail.gmail.com>
- <31298797-f791-4ac5-cfda-c95d7c7958a4@linux-m68k.org>
-In-Reply-To: <31298797-f791-4ac5-cfda-c95d7c7958a4@linux-m68k.org>
-From:   Mikael Pettersson <mikpelinux@gmail.com>
-Date:   Sun, 8 Aug 2021 12:44:45 +0200
-Message-ID: <CAM43=SNV4016i2ByssN9tvXDN6ZyQiYM218_NkrebyPA=p6Rcg@mail.gmail.com>
-Subject: Re: [BISECTED][REGRESSION] 5.10.56 longterm kernel breakage on m68k/aranym
-To:     Finn Thain <fthain@linux-m68k.org>
-Cc:     Linux Kernel list <linux-kernel@vger.kernel.org>,
-        linux-m68k@lists.linux-m68k.org, stable@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-On Sun, Aug 8, 2021 at 1:20 AM Finn Thain <fthain@linux-m68k.org> wrote:
->
-> On Sat, 7 Aug 2021, Mikael Pettersson wrote:
->
-> > I updated the 5.10 longterm kernel on one of my m68k/aranym VMs from
-> > 5.10.47 to 5.10.56, and the new kernel failed to boot:
-> >
-> > ARAnyM 1.1.0
-> > Using config file: 'aranym1.headless.config'
-> > Could not open joystick 0
-> > ARAnyM RTC Timer: /dev/rtc: Permission denied
-> > ARAnyM LILO: Error loading ramdisk 'root.bin'
-> > Blitter tried to read byte from register ff8a00 at 0077ee
-> >
-> > At this point it kept running, but produced no output to the console,
-> > and would never get to the point of starting user-space. Attaching gdb
-> > to aranym showed nothing interesting, i.e. it seemed to be executing
-> > normally.
-> >
-> > A git bisect identified the following commit between 5.10.52 and
-> > 5.10.53 as the culprit:
-> > # first bad commit: [9e1cf2d1ed37c934c9935f2c0b2f8b15d9355654]
-> > mm/userfaultfd: fix uffd-wp special cases for fork()
-> >
->
-> That commit appeared in mainline between v5.13 and v5.14-rc1. Is mainline
-> also affected? e.g. v5.14-rc4.
+On Sun, 8 Aug 2021, Mikael Pettersson wrote:
 
-5.14-rc4 boots fine. I suspect the commit has some dependency that
-hasn't been backported to 5.10 stable.
+> On Sun, Aug 8, 2021 at 1:20 AM Finn Thain <fthain@linux-m68k.org> wrote:
+> >
+> > On Sat, 7 Aug 2021, Mikael Pettersson wrote:
+> >
+> > > I updated the 5.10 longterm kernel on one of my m68k/aranym VMs from
+> > > 5.10.47 to 5.10.56, and the new kernel failed to boot:
+> > >
+> > > ARAnyM 1.1.0
+> > > Using config file: 'aranym1.headless.config'
+> > > Could not open joystick 0
+> > > ARAnyM RTC Timer: /dev/rtc: Permission denied
+> > > ARAnyM LILO: Error loading ramdisk 'root.bin'
+> > > Blitter tried to read byte from register ff8a00 at 0077ee
+> > >
+> > > At this point it kept running, but produced no output to the console,
+> > > and would never get to the point of starting user-space. Attaching gdb
+> > > to aranym showed nothing interesting, i.e. it seemed to be executing
+> > > normally.
+> > >
+> > > A git bisect identified the following commit between 5.10.52 and
+> > > 5.10.53 as the culprit:
+> > > # first bad commit: [9e1cf2d1ed37c934c9935f2c0b2f8b15d9355654]
+> > > mm/userfaultfd: fix uffd-wp special cases for fork()
+> > >
+> >
+> > That commit appeared in mainline between v5.13 and v5.14-rc1. Is mainline
+> > also affected? e.g. v5.14-rc4.
+> 
+> 5.14-rc4 boots fine. I suspect the commit has some dependency that
+> hasn't been backported to 5.10 stable.
+> 
+
+On mainline, 9e1cf2d1ed3 is known as commit 8f34f1eac382 ("mm/userfaultfd: 
+fix uffd-wp special cases for fork()").
+
+There are differences between the two commits that may be relevant. I 
+don't know.
+
+If you checkout 8f34f1eac382 and if that works, it would indicate either 
+missing dependencies in -stable, or those differences are important.
+
+OTOH, if 8f34f1eac382 fails in the same way as linux-5.10.y, it would 
+indicate that -stable is missing a fix that's present in v5.14-rc4.
