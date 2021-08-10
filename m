@@ -2,226 +2,252 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.9 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	FSL_HELO_FAKE,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-	autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-8.8 required=3.0 tests=BAYES_00,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,
+	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 7C869C4338F
-	for <linux-m68k@archiver.kernel.org>; Tue, 10 Aug 2021 19:39:59 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B3AD0C4338F
+	for <linux-m68k@archiver.kernel.org>; Tue, 10 Aug 2021 21:21:09 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 4DC0760F38
-	for <linux-m68k@archiver.kernel.org>; Tue, 10 Aug 2021 19:39:59 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 8C5FE6024A
+	for <linux-m68k@archiver.kernel.org>; Tue, 10 Aug 2021 21:21:09 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230331AbhHJTkU (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Tue, 10 Aug 2021 15:40:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52136 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230309AbhHJTkU (ORCPT
-        <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Tue, 10 Aug 2021 15:40:20 -0400
-Received: from mail-wr1-x432.google.com (mail-wr1-x432.google.com [IPv6:2a00:1450:4864:20::432])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C9D40C0613D3
-        for <linux-m68k@lists.linux-m68k.org>; Tue, 10 Aug 2021 12:39:57 -0700 (PDT)
-Received: by mail-wr1-x432.google.com with SMTP id f5so12016471wrm.13
-        for <linux-m68k@lists.linux-m68k.org>; Tue, 10 Aug 2021 12:39:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=jGkcpHQgdiXrS5Od7hLZ7BhCcru2V3NWm4a1KfAmayw=;
-        b=ODFpxicpFNqiuCFYCmGDotmv11hnwg7d03gLkyHKtFRuBPieFDvmyiZv7GFQWoHceL
-         xe0ecO5MhgSXBq6GmsGRdxcrf5y5u+YmyG9e8UIkI/RBsQ64ri+pveZAFL84RfLS80GG
-         IxcvJtKIRzTqyizXTwv2yfTM9KaRl3k3SLZIRPBffgZ6lSLsZEJjTEyDtTtqpPgVEIbV
-         7z8oU9i5cRWF6h21RXjRRuNVXJx2UzkT8c8Ptno4BM8A6/AVwftwXqxMsJMqBJ5Y5G+n
-         vU7mdxW9ef+8SUSEsFEBhjUDrWzMTtEkG1MtZowTb1SuOfXimSs+ysRWGeuGj8HHJCG/
-         u6aw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=jGkcpHQgdiXrS5Od7hLZ7BhCcru2V3NWm4a1KfAmayw=;
-        b=ZzKlH+ycmxK4EyJgFtj8Obyre11dsJiXP9S7LIGN41xrrsTvCHl8JY4V6bAzLB3tVn
-         L9Ig9Kr4qkhFAnIvKwz6Y6Jl9QU5bPmT+FG0ABRP6pkyX7PPQa3OZDCkm8kM/iMw0/IG
-         37uJPOIUSWtxFXhOR6khryjE0a0+ckF4pW7AvybdDmwfkITUv+dSPkE1PejaT4XwUNXg
-         eo1AG0Y676KG4ab8nmPQF2xNzW/ePCYPz4DRxaZtYXA8U8SQuzltsAJKxualUwsm1JWG
-         QT0PIwiiASgixrKYAOa4u9q/CnlLHy/+/la5E2yDc4KHoI9t6f1U1HbiIdLY+r9p8X5P
-         2vvg==
-X-Gm-Message-State: AOAM532CKi/PgYTzISQLbF9pwBtUWvLpRUnaYzhqZRXVRpnAMGqBIRS/
-        DDpE/XaSu0pLffXAMXzRpok=
-X-Google-Smtp-Source: ABdhPJzjDREO51W2+CCUdnqImQBctZMvD1VPZnHtkBb8stzXeuZGaFZfx21FQ/W40sFNW8c5SiFo4w==
-X-Received: by 2002:a5d:58cd:: with SMTP id o13mr14110704wrf.421.1628624396257;
-        Tue, 10 Aug 2021 12:39:56 -0700 (PDT)
-Received: from gmail.com (aftr-62-216-202-192.dynamic.mnet-online.de. [62.216.202.192])
-        by smtp.gmail.com with ESMTPSA id o24sm3626463wmm.37.2021.08.10.12.39.54
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 10 Aug 2021 12:39:55 -0700 (PDT)
-Date:   Tue, 10 Aug 2021 21:39:52 +0200
-From:   Mete Polat <metepolat2000@gmail.com>
+        id S234167AbhHJVVb (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Tue, 10 Aug 2021 17:21:31 -0400
+Received: from mga09.intel.com ([134.134.136.24]:57180 "EHLO mga09.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233887AbhHJVVb (ORCPT <rfc822;linux-m68k@lists.linux-m68k.org>);
+        Tue, 10 Aug 2021 17:21:31 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10072"; a="214983665"
+X-IronPort-AV: E=Sophos;i="5.84,310,1620716400"; 
+   d="scan'208";a="214983665"
+Received: from fmsmga007.fm.intel.com ([10.253.24.52])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Aug 2021 14:21:07 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.84,310,1620716400"; 
+   d="scan'208";a="445375638"
+Received: from lkp-server01.sh.intel.com (HELO d053b881505b) ([10.239.97.150])
+  by fmsmga007.fm.intel.com with ESMTP; 10 Aug 2021 14:21:05 -0700
+Received: from kbuild by d053b881505b with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1mDZBJ-000Kwi-34; Tue, 10 Aug 2021 21:21:05 +0000
+Date:   Wed, 11 Aug 2021 05:20:21 +0800
+From:   kernel test robot <lkp@intel.com>
 To:     Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     Michel Lespinasse <michel@lespinasse.org>,
-        Davidlohr Bueso <dbueso@suse.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Lukas Bulwahn <lukas.bulwahn@gmail.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Jesper Nilsson <jesper@jni.nu>, Arnd Bergmann <arnd@arndb.de>,
-        David Woodhouse <dwmw2@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        kernel-janitors@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-m68k <linux-m68k@lists.linux-m68k.org>
-Subject: Re: [PATCH v2] rbtree: remove unneeded explicit alignment in struct
- rb_node
-Message-ID: <YRLWCNS/O9/yKdqg@gmail.com>
-References: <YQ1ToK8EMdAO4CyH@precision>
- <CAMuHMdUzeN54PtKXQxJ0SDtrWSUMFHbae2a66iD7i075Ls1Y6A@mail.gmail.com>
+Cc:     linux-m68k@lists.linux-m68k.org
+Subject: [m68k:master] BUILD SUCCESS
+ 5f10755da6b9281682cd3cd9b5d868d1c94c0e03
+Message-ID: <6112ed95.wznQs1tV1DpmXIzx%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAMuHMdUzeN54PtKXQxJ0SDtrWSUMFHbae2a66iD7i075Ls1Y6A@mail.gmail.com>
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-On Mon, Aug 09, 2021 at 02:25:35PM +0200, Geert Uytterhoeven wrote:
-> Hi Mete,
-> 
-> On Fri, Aug 6, 2021 at 5:22 PM Mete Polat <metepolat2000@gmail.com> wrote:
-> > Commit e977145aeaad ("[RBTREE] Add explicit alignment to sizeof(long) for
-> > struct rb_node.") adds an explicit alignment to the struct rb_node due to
-> > some speciality of the CRIS architecture.
-> >
-> > The support for the CRIS architecture was removed with commit c690eddc2f3b
-> > ("CRIS: Drop support for the CRIS port")
-> >
-> > So, remove this now unneeded explicit alignment in struct rb_node as well.
-> >
-> > This basically reverts commit e977145aeaad ("[RBTREE] Add explicit
-> > alignment to sizeof(long) for struct rb_node.").
-> >
-> > The rbtree node color is stored in the LSB of '__rb_parent_color'.
-> > Only mask the first bit in '__rb_parent()', otherwise it modifies the
-> > node's parent address on m68k.
-> >
-> > Reported-by: Randy Dunlap <rdunlap@infradead.org>
-> > Reported-by: Mete Polat <metepolat2000@gmail.com>
-> > Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
-> > Signed-off-by: Mete Polat <metepolat2000@gmail.com>
-> > ---
-> > I have tested it on x86, but not on m68k. Can you ack that Geert?
-> 
-> Unfortunately not.  Just booting on ARAnyM gives:
-> 
-> Unable to handle kernel access at virtual address 84abc227
-> Oops: 00000000
-> Modules linked in:
-> PC: [<b45b0005>] 0xb45b0005
-> SR: 2700  SP: fc24ede1  a2: 01322b40
-> d0: b45aff7c    d1: 00002708    d2: 00000000    d3: 0033a6a4
-> d4: 00000005    d5: 95847357    a0: b45b0005    a1: 000f4240
-> Process sh (pid: 402, task=672891a8)
-> Frame format=7 eff addr=b45b0005 ssw=0546 faddr=b45b0005
-> wb 1 stat/addr/data: 0000 00000000 00000000
-> wb 2 stat/addr/data: 0000 00000000 00000000
-> wb 3 stat/addr/data: 0000 b45b0005 00000000
-> push data: 00000000 00000000 00000000 00000000
-> Stack from 0131debc:
->         0004ddf4 0122e0a4 0122e0a4 00477c26 00000000 00000000 00000005 95847357
->         00002708 0004558e 0033ab30 00000002 01003180 0047273c 0131df88 0033a6a4
->         00477c3a 00477c24 0004dfee 00000005 95847357 00002708 0000000f 00000001
->         9915a000 0000000d 0004d430 01322b40 00000001 00002604 00000000 00006e50
->         00000001 00000000 0004560c 0000000d 00000000 00000000 efc3aa78 efc3aa78
->         c0158c0c 8009ff68 0047273c efc3aa64 c01537a8 0131df8c 000456b6 0047273c
-> Call Trace: [<0004ddf4>] __hrtimer_run_queues.constprop.0+0xba/0x144
->  [<00002708>] calibrate_delay+0xd6/0x18a
->  [<0004558e>] __irq_wake_thread+0x0/0x40
->  [<0033ab30>] printk+0x0/0x18
->  [<0033a6a4>] warn_slowpath_fmt+0x0/0x62
->  [<0004dfee>] hrtimer_run_queues+0xb4/0xc0
->  [<00002708>] calibrate_delay+0xd6/0x18a
->  [<0004d430>] update_process_times+0x38/0x8c
->  [<00002604>] wait_for_initramfs+0x30/0x58
->  [<00006e50>] mfp_timer_c_handler+0x2c/0x3c
->  [<0004560c>] __handle_irq_event_percpu+0x3e/0xcc
->  [<000456b6>] handle_irq_event_percpu+0x1c/0x52
->  [<0004570a>] handle_irq_event+0x1e/0x30
->  [<00047aa2>] handle_simple_irq+0x4a/0x4e
->  [<00045062>] handle_irq_desc+0x1e/0x28
->  [<00002cac>] do_IRQ+0x20/0x32
->  [<00002bcc>] user_irqvec_fixup+0xc/0x14
->  [<0010c00b>] mb_cache_create+0x47/0xdc
-> 
-> Code: dde0 dde0 dde0 dde0 dde0 dde0 dde0 dde0 Bad PC value.
-> Disabling lock debugging due to kernel taint
-> Kernel panic - not syncing: Aiee, killing interrupt handler!
-> ---[ end Kernel panic - not syncing: Aiee, killing interrupt handler! ]---
-> 
-> > --- a/include/linux/rbtree.h
-> > +++ b/include/linux/rbtree.h
-> > @@ -25,8 +25,7 @@ struct rb_node {
-> >         unsigned long  __rb_parent_color;
-> >         struct rb_node *rb_right;
-> >         struct rb_node *rb_left;
-> > -} __attribute__((aligned(sizeof(long))));
-> > -    /* The alignment might seem pointless, but allegedly CRIS needs it */
-> > +};
-> >
-> >  struct rb_root {
-> >         struct rb_node *rb_node;
-> > diff --git a/include/linux/rbtree_augmented.h b/include/linux/rbtree_augmented.h
-> > index d1c53e9d8c75..94b6a0f4499e 100644
-> > --- a/include/linux/rbtree_augmented.h
-> > +++ b/include/linux/rbtree_augmented.h
-> > @@ -145,7 +145,7 @@ RB_DECLARE_CALLBACKS(RBSTATIC, RBNAME,                                            \
-> >  #define        RB_RED          0
-> >  #define        RB_BLACK        1
-> >
-> > -#define __rb_parent(pc)    ((struct rb_node *)(pc & ~3))
-> > +#define __rb_parent(pc)    ((struct rb_node *)(pc & ~1))
-> 
-> Are you sure you can do this, i.e. that nothing else relies on the
-> alignment to (at least) 4 bytes?
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/geert/linux-m68k.git master
+branch HEAD: 5f10755da6b9281682cd3cd9b5d868d1c94c0e03  Merge tag 'v5.14-rc5'
 
-I am quite sure that the RBT algorithm itself only relies on the LSB,
-but I am unsure yet if RCU requires this natural alignment as Peter
-mentioned.
+elapsed time: 1988m
 
-> 
-> There is another definition of rb_parent().  If I make a similar change there:
-> 
-> --- a/include/linux/rbtree.h
-> +++ b/include/linux/rbtree.h
-> @@ -31,7 +31,7 @@ struct rb_root {
->         struct rb_node *rb_node;
->  };
-> 
-> -#define rb_parent(r)   ((struct rb_node *)((r)->__rb_parent_color & ~3))
-> +#define rb_parent(r)   ((struct rb_node *)((r)->__rb_parent_color & ~1))
-> 
->  #define RB_ROOT        (struct rb_root) { NULL, }
->  #define        rb_entry(ptr, type, member) container_of(ptr, type, member)
-> 
-> the system boots on ARAnyM, but I prefer to be a bit cautious...
+configs tested: 187
+configs skipped: 3
 
-Ah yes I forgot that the same makro is also defined in the other header
-file as well; and similary in some other locations:
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
-./scripts/gdb/linux/rbtree.py:
-parent = gdb.Value(node['__rb_parent_color'] & ~3)
-./tools/include/linux/rbtree.h:
-#define rb_parent(r)   ((struct rb_node *)((r)->__rb_parent_color & ~3))
+gcc tested configs:
+arm                                 defconfig
+arm64                            allyesconfig
+arm64                               defconfig
+arm                              allyesconfig
+arm                              allmodconfig
+sh                           se7750_defconfig
+arm                         at91_dt_defconfig
+arm                          iop32x_defconfig
+sh                               allmodconfig
+h8300                     edosk2674_defconfig
+sh                          r7785rp_defconfig
+powerpc                     ksi8560_defconfig
+sh                        edosk7705_defconfig
+arm                         socfpga_defconfig
+s390                             allyesconfig
+arc                           tb10x_defconfig
+powerpc                     kmeter1_defconfig
+sh                         ecovec24_defconfig
+arm                      jornada720_defconfig
+xtensa                    xip_kc705_defconfig
+parisc                              defconfig
+m68k                        m5407c3_defconfig
+powerpc                     rainier_defconfig
+arm                    vt8500_v6_v7_defconfig
+arc                                 defconfig
+arm                           corgi_defconfig
+mips                           rs90_defconfig
+powerpc                      acadia_defconfig
+mips                            gpr_defconfig
+sh                          polaris_defconfig
+alpha                            alldefconfig
+xtensa                    smp_lx200_defconfig
+parisc                generic-32bit_defconfig
+arm                          imote2_defconfig
+sh                          rsk7264_defconfig
+ia64                        generic_defconfig
+sh                        sh7785lcr_defconfig
+xtensa                  nommu_kc705_defconfig
+mips                           ip28_defconfig
+powerpc                     tqm8541_defconfig
+i386                             alldefconfig
+powerpc                      bamboo_defconfig
+arm                          pxa910_defconfig
+sh                          landisk_defconfig
+openrisc                         alldefconfig
+arm                           stm32_defconfig
+powerpc                      ppc64e_defconfig
+powerpc                     tqm8540_defconfig
+sh                         apsh4a3a_defconfig
+mips                       capcella_defconfig
+arm                      pxa255-idp_defconfig
+sh                          rsk7201_defconfig
+xtensa                         virt_defconfig
+arm                         bcm2835_defconfig
+sparc64                             defconfig
+powerpc                      ppc40x_defconfig
+mips                        nlm_xlp_defconfig
+powerpc                 mpc834x_itx_defconfig
+arm                       aspeed_g5_defconfig
+arc                            hsdk_defconfig
+mips                          rb532_defconfig
+sh                     sh7710voipgw_defconfig
+arm                        spear3xx_defconfig
+mips                         tb0219_defconfig
+arm                        neponset_defconfig
+powerpc                      tqm8xx_defconfig
+arm                       omap2plus_defconfig
+powerpc                      mgcoge_defconfig
+mips                         cobalt_defconfig
+powerpc                 mpc85xx_cds_defconfig
+arm                         s3c6400_defconfig
+sh                             sh03_defconfig
+riscv                    nommu_virt_defconfig
+i386                                defconfig
+powerpc                     tqm5200_defconfig
+sh                            titan_defconfig
+powerpc                     taishan_defconfig
+arm                            hisi_defconfig
+x86_64                            allnoconfig
+sh                          urquell_defconfig
+mips                     loongson1b_defconfig
+mips                     loongson1c_defconfig
+powerpc                       holly_defconfig
+powerpc                 mpc8540_ads_defconfig
+ia64                             allmodconfig
+ia64                             allyesconfig
+ia64                                defconfig
+m68k                             allmodconfig
+m68k                                defconfig
+m68k                             allyesconfig
+nios2                               defconfig
+arc                              allyesconfig
+nds32                             allnoconfig
+nds32                               defconfig
+nios2                            allyesconfig
+csky                                defconfig
+alpha                               defconfig
+alpha                            allyesconfig
+xtensa                           allyesconfig
+h8300                            allyesconfig
+s390                             allmodconfig
+parisc                           allyesconfig
+s390                                defconfig
+i386                             allyesconfig
+sparc                            allyesconfig
+sparc                               defconfig
+mips                             allyesconfig
+mips                             allmodconfig
+powerpc                          allyesconfig
+powerpc                          allmodconfig
+powerpc                           allnoconfig
+x86_64               randconfig-a004-20210810
+x86_64               randconfig-a006-20210810
+x86_64               randconfig-a003-20210810
+x86_64               randconfig-a005-20210810
+x86_64               randconfig-a002-20210810
+x86_64               randconfig-a001-20210810
+x86_64               randconfig-a003-20210809
+x86_64               randconfig-a002-20210809
+x86_64               randconfig-a004-20210809
+x86_64               randconfig-a006-20210809
+x86_64               randconfig-a001-20210809
+x86_64               randconfig-a005-20210809
+i386                 randconfig-a004-20210809
+i386                 randconfig-a005-20210809
+i386                 randconfig-a006-20210809
+i386                 randconfig-a002-20210809
+i386                 randconfig-a001-20210809
+i386                 randconfig-a003-20210809
+i386                 randconfig-a004-20210808
+i386                 randconfig-a005-20210808
+i386                 randconfig-a006-20210808
+i386                 randconfig-a002-20210808
+i386                 randconfig-a001-20210808
+i386                 randconfig-a003-20210808
+x86_64               randconfig-a016-20210808
+x86_64               randconfig-a012-20210808
+x86_64               randconfig-a013-20210808
+x86_64               randconfig-a011-20210808
+x86_64               randconfig-a014-20210808
+x86_64               randconfig-a015-20210808
+i386                 randconfig-a012-20210808
+i386                 randconfig-a015-20210808
+i386                 randconfig-a011-20210808
+i386                 randconfig-a013-20210808
+i386                 randconfig-a014-20210808
+i386                 randconfig-a016-20210808
+i386                 randconfig-a012-20210809
+i386                 randconfig-a015-20210809
+i386                 randconfig-a011-20210809
+i386                 randconfig-a013-20210809
+i386                 randconfig-a014-20210809
+i386                 randconfig-a016-20210809
+i386                 randconfig-a011-20210810
+i386                 randconfig-a015-20210810
+i386                 randconfig-a013-20210810
+i386                 randconfig-a014-20210810
+i386                 randconfig-a016-20210810
+i386                 randconfig-a012-20210810
+riscv                    nommu_k210_defconfig
+riscv                             allnoconfig
+riscv                            allyesconfig
+riscv                               defconfig
+riscv                          rv32_defconfig
+riscv                            allmodconfig
+um                           x86_64_defconfig
+um                             i386_defconfig
+x86_64                    rhel-8.3-kselftests
+x86_64                              defconfig
+x86_64                               rhel-8.3
+x86_64                                  kexec
+x86_64                           allyesconfig
 
+clang tested configs:
+x86_64               randconfig-c001-20210810
+x86_64               randconfig-c001-20210809
+x86_64               randconfig-c001-20210808
+x86_64               randconfig-a013-20210810
+x86_64               randconfig-a011-20210810
+x86_64               randconfig-a012-20210810
+x86_64               randconfig-a016-20210810
+x86_64               randconfig-a014-20210810
+x86_64               randconfig-a015-20210810
+x86_64               randconfig-a016-20210809
+x86_64               randconfig-a012-20210809
+x86_64               randconfig-a013-20210809
+x86_64               randconfig-a011-20210809
+x86_64               randconfig-a014-20210809
+x86_64               randconfig-a015-20210809
 
-> 
-> Gr{oetje,eeting}s,
-> 
->                         Geert
-> 
-> -- 
-> Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-> 
-> In personal conversations with technical people, I call myself a hacker. But
-> when I'm talking to journalists I just say "programmer" or something like that.
->                                 -- Linus Torvalds
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
