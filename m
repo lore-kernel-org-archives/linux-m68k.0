@@ -2,203 +2,121 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.8 required=3.0 tests=BAYES_00,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,
+X-Spam-Status: No, score=-11.7 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,INCLUDES_PATCH,MAILING_LIST_MULTI,
 	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 11989C4338F
-	for <linux-m68k@archiver.kernel.org>; Tue, 10 Aug 2021 00:17:05 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 490B6C4320A
+	for <linux-m68k@archiver.kernel.org>; Tue, 10 Aug 2021 15:59:34 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id E125E60F38
-	for <linux-m68k@archiver.kernel.org>; Tue, 10 Aug 2021 00:17:04 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 1DEF861052
+	for <linux-m68k@archiver.kernel.org>; Tue, 10 Aug 2021 15:59:34 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235616AbhHJARZ (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Mon, 9 Aug 2021 20:17:25 -0400
-Received: from mga18.intel.com ([134.134.136.126]:14096 "EHLO mga18.intel.com"
+        id S238887AbhHJP7y (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Tue, 10 Aug 2021 11:59:54 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43694 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231439AbhHJARY (ORCPT <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Mon, 9 Aug 2021 20:17:24 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10070"; a="201978846"
-X-IronPort-AV: E=Sophos;i="5.84,308,1620716400"; 
-   d="scan'208";a="201978846"
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Aug 2021 17:17:02 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.84,308,1620716400"; 
-   d="scan'208";a="674453788"
-Received: from lkp-server01.sh.intel.com (HELO d053b881505b) ([10.239.97.150])
-  by fmsmga005.fm.intel.com with ESMTP; 09 Aug 2021 17:17:01 -0700
-Received: from kbuild by d053b881505b with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1mDFS0-000K1Y-Q9; Tue, 10 Aug 2021 00:17:00 +0000
-Date:   Tue, 10 Aug 2021 08:16:14 +0800
-From:   kernel test robot <lkp@intel.com>
+        id S238012AbhHJP7y (ORCPT <rfc822;linux-m68k@lists.linux-m68k.org>);
+        Tue, 10 Aug 2021 11:59:54 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6275E60EDF;
+        Tue, 10 Aug 2021 15:59:30 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1628611172;
+        bh=6RkQphdjckd+qub6KtWUN9S2yyFXyL19GDUrNRmexHA=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=c6kaag/KlN8JjHM0wTc5OBUEnDUdCVTM9N752Dw9VdVerRdGY+BTKn9E/fwixQFTE
+         V4x+MRkSAWLo4SNnpgGhJ9cl4hzakfKHFX7L9Cqfm/9+ttNYT/NRTOyHy84LX0oZd4
+         cYHmUVe8sZSG/Q7hcKZqGL6raK4NVkHDReOOx915njzEJO3pGaUEwm4CgYIzM86EGG
+         gYj5XyNMc8aLt4xkXKY64Zkybs2B5ergNo2DRjsVs6O3ckMM1naaWudpoLP3k2XI0Y
+         f+1DKjb7yktTCbv9YRRBcsV3Qbi6RaNSrFtM5Q/4ZIDVFSPs+ZTxOiLVOA+VjOqNav
+         ffXp1DLf1ikZQ==
+Date:   Tue, 10 Aug 2021 18:59:26 +0300
+From:   Mike Rapoport <rppt@kernel.org>
 To:     Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     linux-m68k@lists.linux-m68k.org
-Subject: [m68k:for-v5.15] BUILD SUCCESS
- 2189e928b62e91d8efbc9826ae7c0968f0d55790
-Message-ID: <6111c54e./AmXg0t3Bjgc3FFA%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+Cc:     Mikael Pettersson <mikpelinux@gmail.com>,
+        Finn Thain <fthain@linux-m68k.org>,
+        Linux Kernel list <linux-kernel@vger.kernel.org>,
+        linux-m68k <linux-m68k@lists.linux-m68k.org>,
+        stable <stable@vger.kernel.org>, Peter Xu <peterx@redhat.com>
+Subject: Re: [BISECTED][REGRESSION] 5.10.56 longterm kernel breakage on
+ m68k/aranym
+Message-ID: <YRKiXiL4jk6DefMD@kernel.org>
+References: <CAM43=SM4KFE8C1ekwiw_kBYZKSwycnTYcbBXfw5OhUn4h=r9YA@mail.gmail.com>
+ <31298797-f791-4ac5-cfda-c95d7c7958a4@linux-m68k.org>
+ <CAM43=SNV4016i2ByssN9tvXDN6ZyQiYM218_NkrebyPA=p6Rcg@mail.gmail.com>
+ <380dd57-4b60-ac9c-508c-826d8ec1b0aa@linux-m68k.org>
+ <CAM43=SO03vCzo4LiwSFJyNbWdVXu_wu1gdm5wzi2ArsWShCqqA@mail.gmail.com>
+ <CAMuHMdUADRtNrVsJZFdymOoGe8LNEg=x2PtzRVJhh0rcyLpHoQ@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+In-Reply-To: <CAMuHMdUADRtNrVsJZFdymOoGe8LNEg=x2PtzRVJhh0rcyLpHoQ@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/geert/linux-m68k.git for-v5.15
-branch HEAD: 2189e928b62e91d8efbc9826ae7c0968f0d55790  m68k: Fix invalid RMW_INSNS on CPUs that lack CAS
+On Mon, Aug 09, 2021 at 03:40:04PM +0200, Geert Uytterhoeven wrote:
+> CC Mike
+> 
+> On Mon, Aug 9, 2021 at 3:32 PM Mikael Pettersson <mikpelinux@gmail.com> wrote:
+> > On Mon, Aug 9, 2021 at 3:59 AM Finn Thain <fthain@linux-m68k.org> wrote:
+> > > On Sun, 8 Aug 2021, Mikael Pettersson wrote:
+> > > > On Sun, Aug 8, 2021 at 1:20 AM Finn Thain <fthain@linux-m68k.org> wrote:
+> > > > > On Sat, 7 Aug 2021, Mikael Pettersson wrote:
+> > > > > > I updated the 5.10 longterm kernel on one of my m68k/aranym VMs from
+> > > > > > 5.10.47 to 5.10.56, and the new kernel failed to boot:
+> > > > > >
+> > > > > > ARAnyM 1.1.0
+> > > > > > Using config file: 'aranym1.headless.config'
+> > > > > > Could not open joystick 0
+> > > > > > ARAnyM RTC Timer: /dev/rtc: Permission denied
+> > > > > > ARAnyM LILO: Error loading ramdisk 'root.bin'
+> > > > > > Blitter tried to read byte from register ff8a00 at 0077ee
+> > > > > >
+> > > > > > At this point it kept running, but produced no output to the console,
+> > > > > > and would never get to the point of starting user-space. Attaching gdb
+> > > > > > to aranym showed nothing interesting, i.e. it seemed to be executing
+> > > > > > normally.
+> >
+> > My initial bisect was wrong. I tried reverting 8f34f1eac382 from
+> > 5.10.57 but that made no difference, so I re-ran the git bisect with
+> > all known good points pre-marked. This landed on:
+> > # first bad commit: [ce6ee46e0f39ed97e23ebf7b5a565e0266a8a1a3]
+> > mm/page_alloc: fix memory map initialization for descending nodes
+> >
+> > Reverting _that_ from 5.10.57 does unbreak that kernel.
 
-elapsed time: 727m
+Indeed there is a problem with that commit in 5.10. The memmap
+initialization relies on availability of zone_to_nid() to link struct page
+to a node. But in 5.10 zone_to_nid() is only defined for NUMA, but not for
+DISCONTIGMEM.
 
-configs tested: 137
-configs skipped: 126
+Mikael, can you please try the patch below:
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+diff --git a/include/linux/mmzone.h b/include/linux/mmzone.h
+index 9d0c454d23cd..63b550403317 100644
+--- a/include/linux/mmzone.h
++++ b/include/linux/mmzone.h
+@@ -445,7 +445,7 @@ struct zone {
+ 	 */
+ 	long lowmem_reserve[MAX_NR_ZONES];
+ 
+-#ifdef CONFIG_NUMA
++#ifdef CONFIG_NEED_MULTIPLE_NODES
+ 	int node;
+ #endif
+ 	struct pglist_data	*zone_pgdat;
+@@ -896,7 +896,7 @@ static inline bool populated_zone(struct zone *zone)
+ 	return zone->present_pages;
+ }
+ 
+-#ifdef CONFIG_NUMA
++#ifdef CONFIG_NEED_MULTIPLE_NODES
+ static inline int zone_to_nid(struct zone *zone)
+ {
+ 	return zone->node;
 
-gcc tested configs:
-arm                                 defconfig
-arm64                            allyesconfig
-arm64                               defconfig
-arm                              allyesconfig
-arm                              allmodconfig
-sh                           se7750_defconfig
-arm                         at91_dt_defconfig
-arm                          iop32x_defconfig
-m68k                       m5208evb_defconfig
-arc                         haps_hs_defconfig
-riscv                            alldefconfig
-arm                       netwinder_defconfig
-powerpc                     ksi8560_defconfig
-powerpc                 mpc8272_ads_defconfig
-m68k                         apollo_defconfig
-mips                           jazz_defconfig
-arm                          gemini_defconfig
-m68k                            q40_defconfig
-ia64                            zx1_defconfig
-mips                        vocore2_defconfig
-mips                           ip28_defconfig
-powerpc                     tqm8541_defconfig
-i386                             alldefconfig
-powerpc                      bamboo_defconfig
-arm                          pxa910_defconfig
-powerpc                         ps3_defconfig
-mips                malta_qemu_32r6_defconfig
-arm                        mvebu_v7_defconfig
-sh                        sh7757lcr_defconfig
-arm                  colibri_pxa300_defconfig
-arm                         axm55xx_defconfig
-mips                         bigsur_defconfig
-arm                        oxnas_v6_defconfig
-powerpc                    sam440ep_defconfig
-arc                      axs103_smp_defconfig
-mips                      pistachio_defconfig
-powerpc                 mpc837x_rdb_defconfig
-x86_64                            allnoconfig
-ia64                             allmodconfig
-ia64                                defconfig
-ia64                             allyesconfig
-m68k                             allmodconfig
-m68k                                defconfig
-m68k                             allyesconfig
-nios2                               defconfig
-arc                              allyesconfig
-nds32                             allnoconfig
-nds32                               defconfig
-nios2                            allyesconfig
-csky                                defconfig
-alpha                               defconfig
-alpha                            allyesconfig
-xtensa                           allyesconfig
-h8300                            allyesconfig
-arc                                 defconfig
-sh                               allmodconfig
-parisc                              defconfig
-s390                             allyesconfig
-s390                             allmodconfig
-parisc                           allyesconfig
-s390                                defconfig
-i386                             allyesconfig
-sparc                            allyesconfig
-sparc                               defconfig
-i386                                defconfig
-mips                             allyesconfig
-mips                             allmodconfig
-powerpc                          allyesconfig
-powerpc                          allmodconfig
-powerpc                           allnoconfig
-x86_64               randconfig-a004-20210810
-x86_64               randconfig-a006-20210810
-x86_64               randconfig-a003-20210810
-x86_64               randconfig-a005-20210810
-x86_64               randconfig-a002-20210810
-x86_64               randconfig-a001-20210810
-x86_64               randconfig-a002-20210809
-x86_64               randconfig-a004-20210809
-x86_64               randconfig-a006-20210809
-x86_64               randconfig-a003-20210809
-x86_64               randconfig-a001-20210809
-x86_64               randconfig-a005-20210809
-i386                 randconfig-a004-20210809
-i386                 randconfig-a005-20210809
-i386                 randconfig-a006-20210809
-i386                 randconfig-a002-20210809
-i386                 randconfig-a001-20210809
-i386                 randconfig-a003-20210809
-i386                 randconfig-a004-20210808
-i386                 randconfig-a005-20210808
-i386                 randconfig-a006-20210808
-i386                 randconfig-a002-20210808
-i386                 randconfig-a001-20210808
-i386                 randconfig-a003-20210808
-x86_64               randconfig-a016-20210808
-x86_64               randconfig-a012-20210808
-x86_64               randconfig-a013-20210808
-x86_64               randconfig-a011-20210808
-x86_64               randconfig-a014-20210808
-x86_64               randconfig-a015-20210808
-i386                 randconfig-a012-20210808
-i386                 randconfig-a015-20210808
-i386                 randconfig-a011-20210808
-i386                 randconfig-a013-20210808
-i386                 randconfig-a014-20210808
-i386                 randconfig-a016-20210808
-i386                 randconfig-a012-20210809
-i386                 randconfig-a015-20210809
-i386                 randconfig-a011-20210809
-i386                 randconfig-a013-20210809
-i386                 randconfig-a014-20210809
-i386                 randconfig-a016-20210809
-riscv                    nommu_k210_defconfig
-riscv                            allyesconfig
-riscv                    nommu_virt_defconfig
-riscv                             allnoconfig
-riscv                               defconfig
-riscv                          rv32_defconfig
-riscv                            allmodconfig
-x86_64                           allyesconfig
-x86_64                    rhel-8.3-kselftests
-x86_64                              defconfig
-x86_64                               rhel-8.3
-x86_64                                  kexec
-
-clang tested configs:
-x86_64               randconfig-c001-20210809
-x86_64               randconfig-a002-20210808
-x86_64               randconfig-a004-20210808
-x86_64               randconfig-a006-20210808
-x86_64               randconfig-a003-20210808
-x86_64               randconfig-a001-20210808
-x86_64               randconfig-a005-20210808
-x86_64               randconfig-a016-20210809
-x86_64               randconfig-a012-20210809
-x86_64               randconfig-a013-20210809
-x86_64               randconfig-a011-20210809
-x86_64               randconfig-a014-20210809
-x86_64               randconfig-a015-20210809
-
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+-- 
+Sincerely yours,
+Mike.
