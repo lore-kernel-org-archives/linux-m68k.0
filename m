@@ -2,105 +2,145 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-10.3 required=3.0 tests=BAYES_00,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS,USER_AGENT_SANE_1 autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-12.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 8313EC432BE
-	for <linux-m68k@archiver.kernel.org>; Wed, 11 Aug 2021 09:13:02 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 0E455C4320A
+	for <linux-m68k@archiver.kernel.org>; Wed, 11 Aug 2021 09:25:02 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 6318D60F55
-	for <linux-m68k@archiver.kernel.org>; Wed, 11 Aug 2021 09:13:02 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id CB2896056C
+	for <linux-m68k@archiver.kernel.org>; Wed, 11 Aug 2021 09:25:01 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236661AbhHKJNZ (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Wed, 11 Aug 2021 05:13:25 -0400
-Received: from verein.lst.de ([213.95.11.211]:39756 "EHLO verein.lst.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236511AbhHKJNY (ORCPT <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Wed, 11 Aug 2021 05:13:24 -0400
-Received: by verein.lst.de (Postfix, from userid 2407)
-        id 2BBF96736F; Wed, 11 Aug 2021 11:12:59 +0200 (CEST)
-Date:   Wed, 11 Aug 2021 11:12:59 +0200
-From:   Christoph Hellwig <hch@lst.de>
-To:     Michael Schmitz <schmitzmic@gmail.com>
-Cc:     Christoph Hellwig <hch@lst.de>,
-        Andreas Schwab <schwab@linux-m68k.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Greg Ungerer <gerg@linux-m68k.org>,
-        linux-m68k@lists.linux-m68k.org,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Subject: Re: RFC: remove set_fs for m68k
-Message-ID: <20210811091259.GA15014@lst.de>
-References: <eb057cdd-e9f2-27ce-cf60-7b0d87cb6bce@gmail.com> <3acb1a9e-9133-50d4-a642-98d7046d6d4f@gmail.com> <65a95ae0-4734-68ce-ef71-7491b5534718@gmail.com> <8f470389-fe8a-90b0-19a5-68f85526b30e@gmail.com> <20210721170529.GA14550@lst.de> <a70d80f4-6034-e20b-26c5-76609c52c92a@gmail.com> <20210723051126.GA31274@lst.de> <e9fb28d4-405a-5cc6-b071-707a2edbce92@gmail.com> <8884e940-22e8-72a5-e9ec-f9b2628b6ef4@gmail.com> <251aa093-047a-b37c-4e88-d543c6fa8bc6@gmail.com>
+        id S236277AbhHKJZX (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Wed, 11 Aug 2021 05:25:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41512 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234869AbhHKJZX (ORCPT
+        <rfc822;linux-m68k@lists.linux-m68k.org>);
+        Wed, 11 Aug 2021 05:25:23 -0400
+Received: from mail-oi1-x230.google.com (mail-oi1-x230.google.com [IPv6:2607:f8b0:4864:20::230])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BA813C0613D3
+        for <linux-m68k@lists.linux-m68k.org>; Wed, 11 Aug 2021 02:24:59 -0700 (PDT)
+Received: by mail-oi1-x230.google.com with SMTP id r5so3639596oiw.7
+        for <linux-m68k@lists.linux-m68k.org>; Wed, 11 Aug 2021 02:24:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=KpUGh0zg9Fpa+S0TUkpvupAbNPR/xy3fQ3etaoZJ5lg=;
+        b=sMd/okKyGAWpSM9VToNJ5wG3HHyL+w1XYSM7ab9XX+uaEyTkRdQ89EONbdEBSHKG4T
+         MYrNdTGrttS2TqgkOvb2gWHTvsciNcMv71mBIWqVEhF8kTpb3piO7qsJOpoFnrwE71sf
+         xQCQkhelG2ZEaK28PHwsTMCvol689cEDt2XV5BywppQM0PMAEt0Gfq3L5B0kX2c53BHk
+         aBKOqYsjaEr8jrOFunuoLdtl3xgBShsAGnbylO5SWUES0hD346dqF6qhznGZQb8JyDEI
+         u3zwuHvaTAXm0/9o3uy0JG2RXdbiEEeKxPwbuHPRhy20tFETenO7Qru4T+GwAIs0KwGN
+         l4Rg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=KpUGh0zg9Fpa+S0TUkpvupAbNPR/xy3fQ3etaoZJ5lg=;
+        b=TIr34NSo0Jf/vh+CC0fvUg7KOzfV98IihNoK+RmoEvo6VT5Rjz6o1SJF8KGrenvkCx
+         H+2y5sOm5leOc+IDAodTykV1ngJeHtPQozSAYkmpCrhodlVtjlyR0F+zffzyPGp/mSQR
+         UAQlGXycecrhGWie8IwBJKXUecmDVkY1NioIraoEupvI9LB5BclCKF4vjcPUibG6GYoJ
+         2XLNx+iaavuG9Y1RuQgE3+U5zPdIj2JhNAOTVGI8c/8/sf5zRRjscRs4Q2vEXG+Bpbwd
+         5zdlzsOlt16g+wz7+CdS0HjBff8FwRx2FB3lTp9UhsjjkNK+7MvMkNQiG2Rk3FP5UMUH
+         2nrA==
+X-Gm-Message-State: AOAM531gD+D90TIa0rPE/9MeltUE7K8gI1zXofF16xIZMtKyjFj1CvLp
+        10Xz3Fx1aGeorepDgU6yvridrpnZO3J4bODoJGo=
+X-Google-Smtp-Source: ABdhPJwrgB/rwz9fAiKby0fgb7UbnJ+HtqNmIaVdt+Hl3JXb+Jk3DP801dbFMSvWnOo2bIsw08H26FgwB/ybmOjlj34=
+X-Received: by 2002:aca:f203:: with SMTP id q3mr4037582oih.143.1628673899119;
+ Wed, 11 Aug 2021 02:24:59 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <251aa093-047a-b37c-4e88-d543c6fa8bc6@gmail.com>
-User-Agent: Mutt/1.5.17 (2007-11-01)
+References: <CAM43=SM4KFE8C1ekwiw_kBYZKSwycnTYcbBXfw5OhUn4h=r9YA@mail.gmail.com>
+ <31298797-f791-4ac5-cfda-c95d7c7958a4@linux-m68k.org> <CAM43=SNV4016i2ByssN9tvXDN6ZyQiYM218_NkrebyPA=p6Rcg@mail.gmail.com>
+ <380dd57-4b60-ac9c-508c-826d8ec1b0aa@linux-m68k.org> <CAM43=SO03vCzo4LiwSFJyNbWdVXu_wu1gdm5wzi2ArsWShCqqA@mail.gmail.com>
+ <CAMuHMdUADRtNrVsJZFdymOoGe8LNEg=x2PtzRVJhh0rcyLpHoQ@mail.gmail.com> <YRKiXiL4jk6DefMD@kernel.org>
+In-Reply-To: <YRKiXiL4jk6DefMD@kernel.org>
+From:   Mikael Pettersson <mikpelinux@gmail.com>
+Date:   Wed, 11 Aug 2021 11:24:47 +0200
+Message-ID: <CAM43=SOG60ETBZRk1VsDmhzfoC_eC8F0KxRDQZgXdhoZUyLEjw@mail.gmail.com>
+Subject: Re: [BISECTED][REGRESSION] 5.10.56 longterm kernel breakage on m68k/aranym
+To:     Mike Rapoport <rppt@kernel.org>
+Cc:     Geert Uytterhoeven <geert@linux-m68k.org>,
+        Finn Thain <fthain@linux-m68k.org>,
+        Linux Kernel list <linux-kernel@vger.kernel.org>,
+        linux-m68k <linux-m68k@lists.linux-m68k.org>,
+        stable <stable@vger.kernel.org>, Peter Xu <peterx@redhat.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-Hi Michael,
+On Tue, Aug 10, 2021 at 5:59 PM Mike Rapoport <rppt@kernel.org> wrote:
+>
+> On Mon, Aug 09, 2021 at 03:40:04PM +0200, Geert Uytterhoeven wrote:
+> > CC Mike
+> >
+> > On Mon, Aug 9, 2021 at 3:32 PM Mikael Pettersson <mikpelinux@gmail.com> wrote:
+> > > On Mon, Aug 9, 2021 at 3:59 AM Finn Thain <fthain@linux-m68k.org> wrote:
+> > > > On Sun, 8 Aug 2021, Mikael Pettersson wrote:
+> > > > > On Sun, Aug 8, 2021 at 1:20 AM Finn Thain <fthain@linux-m68k.org> wrote:
+> > > > > > On Sat, 7 Aug 2021, Mikael Pettersson wrote:
+> > > > > > > I updated the 5.10 longterm kernel on one of my m68k/aranym VMs from
+> > > > > > > 5.10.47 to 5.10.56, and the new kernel failed to boot:
+> > > > > > >
+> > > > > > > ARAnyM 1.1.0
+> > > > > > > Using config file: 'aranym1.headless.config'
+> > > > > > > Could not open joystick 0
+> > > > > > > ARAnyM RTC Timer: /dev/rtc: Permission denied
+> > > > > > > ARAnyM LILO: Error loading ramdisk 'root.bin'
+> > > > > > > Blitter tried to read byte from register ff8a00 at 0077ee
+> > > > > > >
+> > > > > > > At this point it kept running, but produced no output to the console,
+> > > > > > > and would never get to the point of starting user-space. Attaching gdb
+> > > > > > > to aranym showed nothing interesting, i.e. it seemed to be executing
+> > > > > > > normally.
+> > >
+> > > My initial bisect was wrong. I tried reverting 8f34f1eac382 from
+> > > 5.10.57 but that made no difference, so I re-ran the git bisect with
+> > > all known good points pre-marked. This landed on:
+> > > # first bad commit: [ce6ee46e0f39ed97e23ebf7b5a565e0266a8a1a3]
+> > > mm/page_alloc: fix memory map initialization for descending nodes
+> > >
+> > > Reverting _that_ from 5.10.57 does unbreak that kernel.
+>
+> Indeed there is a problem with that commit in 5.10. The memmap
+> initialization relies on availability of zone_to_nid() to link struct page
+> to a node. But in 5.10 zone_to_nid() is only defined for NUMA, but not for
+> DISCONTIGMEM.
+>
+> Mikael, can you please try the patch below:
+>
+> diff --git a/include/linux/mmzone.h b/include/linux/mmzone.h
+> index 9d0c454d23cd..63b550403317 100644
+> --- a/include/linux/mmzone.h
+> +++ b/include/linux/mmzone.h
+> @@ -445,7 +445,7 @@ struct zone {
+>          */
+>         long lowmem_reserve[MAX_NR_ZONES];
+>
+> -#ifdef CONFIG_NUMA
+> +#ifdef CONFIG_NEED_MULTIPLE_NODES
+>         int node;
+>  #endif
+>         struct pglist_data      *zone_pgdat;
+> @@ -896,7 +896,7 @@ static inline bool populated_zone(struct zone *zone)
+>         return zone->present_pages;
+>  }
+>
+> -#ifdef CONFIG_NUMA
+> +#ifdef CONFIG_NEED_MULTIPLE_NODES
+>  static inline int zone_to_nid(struct zone *zone)
+>  {
+>         return zone->node;
+>
+> --
+> Sincerely yours,
+> Mike.
 
-from looking at your patches I suspect the 040 traps might be able
-to be called witha different fc.  Can you check if the below patch,
-which is a cut down version of your changes makes all the issues
-go away?
+Applying this on top of 5.10.57 fixes the problem, thanks.
 
-diff --git a/arch/m68k/include/asm/processor.h b/arch/m68k/include/asm/processor.h
-index debb4537eab5..a554e529fd26 100644
---- a/arch/m68k/include/asm/processor.h
-+++ b/arch/m68k/include/asm/processor.h
-@@ -94,6 +94,13 @@ static inline void set_fc(unsigned long val)
- 			      "movec %0,%/dfc\n\t"
- 			      : /* no outputs */ : "r" (val) : "memory");
- }
-+static inline unsigned long get_fc(void)
-+{
-+	unsigned long val;
-+	__asm__ ("movec %/dfc,%0":"=r" (val):);
-+	WARN_ON_ONCE(val != USER_DATA);
-+	return val;
-+}
- #else
- static inline void set_fc(unsigned long val)
- {
-diff --git a/arch/m68k/kernel/traps.c b/arch/m68k/kernel/traps.c
-index c5e0a4f93bd5..1b073299fa55 100644
---- a/arch/m68k/kernel/traps.c
-+++ b/arch/m68k/kernel/traps.c
-@@ -181,6 +181,7 @@ static inline void access_error060 (struct frame *fp)
- static inline unsigned long probe040(int iswrite, unsigned long addr, int wbs)
- {
- 	unsigned long mmusr;
-+	unsigned long old_fc = get_fc();
- 
- 	set_fc(wbs);
- 
-@@ -191,7 +192,7 @@ static inline unsigned long probe040(int iswrite, unsigned long addr, int wbs)
- 
- 	asm volatile (".chip 68040; movec %%mmusr,%0; .chip 68k" : "=r" (mmusr));
- 
--	set_fc(USER_DATA);
-+	set_fc(old_fc);
- 
- 	return mmusr;
- }
-@@ -200,6 +201,7 @@ static inline int do_040writeback1(unsigned short wbs, unsigned long wba,
- 				   unsigned long wbd)
- {
- 	int res = 0;
-+	unsigned long old_fc = get_fc();
- 
- 	set_fc(wbs);
- 
-@@ -215,7 +217,7 @@ static inline int do_040writeback1(unsigned short wbs, unsigned long wba,
- 		break;
- 	}
- 
--	set_fc(USER_DATA);
-+	set_fc(old_fc);
- 
- 	pr_debug("do_040writeback1, res=%d\n", res);
- 
+Tested-by: Mikael Pettersson <mikpelinux@gmail.com>
