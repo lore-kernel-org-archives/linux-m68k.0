@@ -2,145 +2,145 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-12.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham
+X-Spam-Status: No, score=-19.7 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 0E455C4320A
-	for <linux-m68k@archiver.kernel.org>; Wed, 11 Aug 2021 09:25:02 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8EE1DC4320A
+	for <linux-m68k@archiver.kernel.org>; Wed, 11 Aug 2021 13:41:54 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id CB2896056C
-	for <linux-m68k@archiver.kernel.org>; Wed, 11 Aug 2021 09:25:01 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 7514A6101E
+	for <linux-m68k@archiver.kernel.org>; Wed, 11 Aug 2021 13:41:54 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236277AbhHKJZX (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Wed, 11 Aug 2021 05:25:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41512 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234869AbhHKJZX (ORCPT
-        <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Wed, 11 Aug 2021 05:25:23 -0400
-Received: from mail-oi1-x230.google.com (mail-oi1-x230.google.com [IPv6:2607:f8b0:4864:20::230])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BA813C0613D3
-        for <linux-m68k@lists.linux-m68k.org>; Wed, 11 Aug 2021 02:24:59 -0700 (PDT)
-Received: by mail-oi1-x230.google.com with SMTP id r5so3639596oiw.7
-        for <linux-m68k@lists.linux-m68k.org>; Wed, 11 Aug 2021 02:24:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=KpUGh0zg9Fpa+S0TUkpvupAbNPR/xy3fQ3etaoZJ5lg=;
-        b=sMd/okKyGAWpSM9VToNJ5wG3HHyL+w1XYSM7ab9XX+uaEyTkRdQ89EONbdEBSHKG4T
-         MYrNdTGrttS2TqgkOvb2gWHTvsciNcMv71mBIWqVEhF8kTpb3piO7qsJOpoFnrwE71sf
-         xQCQkhelG2ZEaK28PHwsTMCvol689cEDt2XV5BywppQM0PMAEt0Gfq3L5B0kX2c53BHk
-         aBKOqYsjaEr8jrOFunuoLdtl3xgBShsAGnbylO5SWUES0hD346dqF6qhznGZQb8JyDEI
-         u3zwuHvaTAXm0/9o3uy0JG2RXdbiEEeKxPwbuHPRhy20tFETenO7Qru4T+GwAIs0KwGN
-         l4Rg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=KpUGh0zg9Fpa+S0TUkpvupAbNPR/xy3fQ3etaoZJ5lg=;
-        b=TIr34NSo0Jf/vh+CC0fvUg7KOzfV98IihNoK+RmoEvo6VT5Rjz6o1SJF8KGrenvkCx
-         H+2y5sOm5leOc+IDAodTykV1ngJeHtPQozSAYkmpCrhodlVtjlyR0F+zffzyPGp/mSQR
-         UAQlGXycecrhGWie8IwBJKXUecmDVkY1NioIraoEupvI9LB5BclCKF4vjcPUibG6GYoJ
-         2XLNx+iaavuG9Y1RuQgE3+U5zPdIj2JhNAOTVGI8c/8/sf5zRRjscRs4Q2vEXG+Bpbwd
-         5zdlzsOlt16g+wz7+CdS0HjBff8FwRx2FB3lTp9UhsjjkNK+7MvMkNQiG2Rk3FP5UMUH
-         2nrA==
-X-Gm-Message-State: AOAM531gD+D90TIa0rPE/9MeltUE7K8gI1zXofF16xIZMtKyjFj1CvLp
-        10Xz3Fx1aGeorepDgU6yvridrpnZO3J4bODoJGo=
-X-Google-Smtp-Source: ABdhPJwrgB/rwz9fAiKby0fgb7UbnJ+HtqNmIaVdt+Hl3JXb+Jk3DP801dbFMSvWnOo2bIsw08H26FgwB/ybmOjlj34=
-X-Received: by 2002:aca:f203:: with SMTP id q3mr4037582oih.143.1628673899119;
- Wed, 11 Aug 2021 02:24:59 -0700 (PDT)
-MIME-Version: 1.0
-References: <CAM43=SM4KFE8C1ekwiw_kBYZKSwycnTYcbBXfw5OhUn4h=r9YA@mail.gmail.com>
- <31298797-f791-4ac5-cfda-c95d7c7958a4@linux-m68k.org> <CAM43=SNV4016i2ByssN9tvXDN6ZyQiYM218_NkrebyPA=p6Rcg@mail.gmail.com>
- <380dd57-4b60-ac9c-508c-826d8ec1b0aa@linux-m68k.org> <CAM43=SO03vCzo4LiwSFJyNbWdVXu_wu1gdm5wzi2ArsWShCqqA@mail.gmail.com>
- <CAMuHMdUADRtNrVsJZFdymOoGe8LNEg=x2PtzRVJhh0rcyLpHoQ@mail.gmail.com> <YRKiXiL4jk6DefMD@kernel.org>
-In-Reply-To: <YRKiXiL4jk6DefMD@kernel.org>
-From:   Mikael Pettersson <mikpelinux@gmail.com>
-Date:   Wed, 11 Aug 2021 11:24:47 +0200
-Message-ID: <CAM43=SOG60ETBZRk1VsDmhzfoC_eC8F0KxRDQZgXdhoZUyLEjw@mail.gmail.com>
-Subject: Re: [BISECTED][REGRESSION] 5.10.56 longterm kernel breakage on m68k/aranym
-To:     Mike Rapoport <rppt@kernel.org>
+        id S232030AbhHKNmR (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Wed, 11 Aug 2021 09:42:17 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54432 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231818AbhHKNmQ (ORCPT <rfc822;linux-m68k@lists.linux-m68k.org>);
+        Wed, 11 Aug 2021 09:42:16 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D0DB760FA0;
+        Wed, 11 Aug 2021 13:41:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1628689313;
+        bh=LWKT/XlWW6r43708akQ/YJmJ2WRlCw9TDzGke2pxA10=;
+        h=From:To:Cc:Subject:Date:From;
+        b=IdVF5moXtsjCSfhcaOQfqS+E3V30eqxPcHmpqJ4EiAFVRKIriapKIuAKWegTm9SbK
+         7EMUdGdJxRbJUF89G63se/UwcYktm/jmZMvlaRjVMib76c/BEJKb62/FQiA0Va3Pq9
+         HzhFTiAYuTMU4EikLVBQCjQYqwYP0gm3+nsPfAWBq9aL/t1gGLn3gF0BggoCp6Lig0
+         w/flfjcW519ige9heLW0rPUmRF42V+S3S1adE8DiwytoOYk3CRhOf3qVHerB4HI8yg
+         /eu+YNOiGVIIum41TLd0z2bjaur6nqDyvbkAU6hPs/D7+uoufStEdWXVctFj5P1UHi
+         vYTfuLjTckYyg==
+From:   Mike Rapoport <rppt@kernel.org>
+To:     stable@vger.kernel.org
 Cc:     Geert Uytterhoeven <geert@linux-m68k.org>,
         Finn Thain <fthain@linux-m68k.org>,
-        Linux Kernel list <linux-kernel@vger.kernel.org>,
-        linux-m68k <linux-m68k@lists.linux-m68k.org>,
-        stable <stable@vger.kernel.org>, Peter Xu <peterx@redhat.com>
-Content-Type: text/plain; charset="UTF-8"
+        Mikael Pettersson <mikpelinux@gmail.com>,
+        Mike Rapoport <rppt@kernel.org>,
+        Mike Rapoport <rppt@linux.ibm.com>,
+        linux-kernel@vger.kernel.org, linux-m68k@lists.linux-m68k.org
+Subject: [PATCH stable 5.10] mm: make zone_to_nid() and zone_set_nid() available for DISCONTIGMEM
+Date:   Wed, 11 Aug 2021 16:41:39 +0300
+Message-Id: <20210811134139.5451-1-rppt@kernel.org>
+X-Mailer: git-send-email 2.28.0
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-On Tue, Aug 10, 2021 at 5:59 PM Mike Rapoport <rppt@kernel.org> wrote:
->
-> On Mon, Aug 09, 2021 at 03:40:04PM +0200, Geert Uytterhoeven wrote:
-> > CC Mike
-> >
-> > On Mon, Aug 9, 2021 at 3:32 PM Mikael Pettersson <mikpelinux@gmail.com> wrote:
-> > > On Mon, Aug 9, 2021 at 3:59 AM Finn Thain <fthain@linux-m68k.org> wrote:
-> > > > On Sun, 8 Aug 2021, Mikael Pettersson wrote:
-> > > > > On Sun, Aug 8, 2021 at 1:20 AM Finn Thain <fthain@linux-m68k.org> wrote:
-> > > > > > On Sat, 7 Aug 2021, Mikael Pettersson wrote:
-> > > > > > > I updated the 5.10 longterm kernel on one of my m68k/aranym VMs from
-> > > > > > > 5.10.47 to 5.10.56, and the new kernel failed to boot:
-> > > > > > >
-> > > > > > > ARAnyM 1.1.0
-> > > > > > > Using config file: 'aranym1.headless.config'
-> > > > > > > Could not open joystick 0
-> > > > > > > ARAnyM RTC Timer: /dev/rtc: Permission denied
-> > > > > > > ARAnyM LILO: Error loading ramdisk 'root.bin'
-> > > > > > > Blitter tried to read byte from register ff8a00 at 0077ee
-> > > > > > >
-> > > > > > > At this point it kept running, but produced no output to the console,
-> > > > > > > and would never get to the point of starting user-space. Attaching gdb
-> > > > > > > to aranym showed nothing interesting, i.e. it seemed to be executing
-> > > > > > > normally.
-> > >
-> > > My initial bisect was wrong. I tried reverting 8f34f1eac382 from
-> > > 5.10.57 but that made no difference, so I re-ran the git bisect with
-> > > all known good points pre-marked. This landed on:
-> > > # first bad commit: [ce6ee46e0f39ed97e23ebf7b5a565e0266a8a1a3]
-> > > mm/page_alloc: fix memory map initialization for descending nodes
-> > >
-> > > Reverting _that_ from 5.10.57 does unbreak that kernel.
->
-> Indeed there is a problem with that commit in 5.10. The memmap
-> initialization relies on availability of zone_to_nid() to link struct page
-> to a node. But in 5.10 zone_to_nid() is only defined for NUMA, but not for
-> DISCONTIGMEM.
->
-> Mikael, can you please try the patch below:
->
-> diff --git a/include/linux/mmzone.h b/include/linux/mmzone.h
-> index 9d0c454d23cd..63b550403317 100644
-> --- a/include/linux/mmzone.h
-> +++ b/include/linux/mmzone.h
-> @@ -445,7 +445,7 @@ struct zone {
->          */
->         long lowmem_reserve[MAX_NR_ZONES];
->
-> -#ifdef CONFIG_NUMA
-> +#ifdef CONFIG_NEED_MULTIPLE_NODES
->         int node;
->  #endif
->         struct pglist_data      *zone_pgdat;
-> @@ -896,7 +896,7 @@ static inline bool populated_zone(struct zone *zone)
->         return zone->present_pages;
->  }
->
-> -#ifdef CONFIG_NUMA
-> +#ifdef CONFIG_NEED_MULTIPLE_NODES
->  static inline int zone_to_nid(struct zone *zone)
->  {
->         return zone->node;
->
-> --
-> Sincerely yours,
-> Mike.
+From: Mike Rapoport <rppt@linux.ibm.com>
 
-Applying this on top of 5.10.57 fixes the problem, thanks.
+Since the commit ce6ee46e0f39 ("mm/page_alloc: fix memory map
+initialization for descending nodes") initialization of the memory map
+relies on availability of zone_to_nid() and zone_set_nid methods to link
+struct page to a node.
 
+But in 5.10 zone_to_nid() is only defined for NUMA, but not for
+DISCONTIGMEM which causes crashes on m68k systems with two memory banks.
+
+For instance on ARAnyM with both ST-RAM and FastRAM atari_defconfig build
+produces the following crash:
+
+Unable to handle kernel access at virtual address (ptrval)
+Oops: 00000000
+Modules linked in:
+PC: [<0005fbbc>] bpf_prog_alloc_no_stats+0x5c/0xba
+SR: 2200  SP: (ptrval)  a2: 016daa90
+d0: 0000000c    d1: 00000200    d2: 00000001    d3: 00000cc0
+d4: 016d1f80    d5: 00034da6    a0: 305c2800    a1: 305c2a00
+Process swapper (pid: 1, task=(ptrval))
+Frame format=7 eff addr=31800000 ssw=0445 faddr=31800000
+wb 1 stat/addr/data: 0000 00000000 00000000
+wb 2 stat/addr/data: 0000 00000000 00000000
+wb 3 stat/addr/data: 00c5 31800000 00000001
+push data: 00000000 00000000 00000000 00000000
+Stack from 3058fec8:
+        00000dc0 00000000 004addc2 3058ff16 0005fc34 00000238 00000000 00000210
+        004addc2 3058ff16 00281ae0 00000238 00000000 00000000 004addc2 004bc7ec
+        004aea9e 0048b0c0 3058ff16 00460042 004ba4d2 3058ff8c 004ade6a 0000007e
+        0000210e 0000007e 00000002 016d1f80 00034da6 000020b4 00000000 004b4764
+        004bc7ec 00000000 004b4760 004bc7c0 004b4744 001e4cb2 00010001 016d1fe5
+        016d1ff0 004994d2 003e1589 016d1f80 00412b8c 0000007e 00000001 00000001
+Call Trace: [<004addc2>] sock_init+0x0/0xaa
+ [<0005fc34>] bpf_prog_alloc+0x1a/0x66
+ [<004addc2>] sock_init+0x0/0xaa
+ [<00281ae0>] bpf_prog_create+0x2e/0x7c
+ [<004addc2>] sock_init+0x0/0xaa
+ [<004aea9e>] ptp_classifier_init+0x22/0x44
+ [<004ade6a>] sock_init+0xa8/0xaa
+ [<0000210e>] do_one_initcall+0x5a/0x150
+ [<00034da6>] parse_args+0x0/0x208
+ [<000020b4>] do_one_initcall+0x0/0x150
+ [<001e4cb2>] strcpy+0x0/0x1c
+ [<00010001>] stwotoxd+0x5/0x1c
+ [<004994d2>] kernel_init_freeable+0x154/0x1a6
+ [<001e4cb2>] strcpy+0x0/0x1c
+ [<0049951a>] kernel_init_freeable+0x19c/0x1a6
+ [<004addc2>] sock_init+0x0/0xaa
+ [<00321510>] kernel_init+0x0/0xd8
+ [<00321518>] kernel_init+0x8/0xd8
+ [<00321510>] kernel_init+0x0/0xd8
+ [<00002890>] ret_from_kernel_thread+0xc/0x14
+
+Code: 204b 200b 4cdf 180c 4e75 700c e0aa 3682 <2748> 001c 214b 0140 022b
+ffbf 0002 206b 001c 2008 0680 0000 0108 2140 0108 2140
+Disabling lock debugging due to kernel taint
+Kernel panic - not syncing: Attempted to kill init! exitcode=0x0000000b
+
+Using CONFIG_NEED_MULTIPLE_NODES rather than CONFIG_NUMA to guard
+definitions of zone_to_nid() and zone_set_nid() fixes the issue.
+
+Reported-by: Mikael Pettersson <mikpelinux@gmail.com>
+Fixes: ce6ee46e0f39 ("mm/page_alloc: fix memory map initialization for descending nodes")
+Signed-off-by: Mike Rapoport <rppt@linux.ibm.com>
 Tested-by: Mikael Pettersson <mikpelinux@gmail.com>
+---
+ include/linux/mmzone.h | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/include/linux/mmzone.h b/include/linux/mmzone.h
+index 9d0c454d23cd..63b550403317 100644
+--- a/include/linux/mmzone.h
++++ b/include/linux/mmzone.h
+@@ -445,7 +445,7 @@ struct zone {
+ 	 */
+ 	long lowmem_reserve[MAX_NR_ZONES];
+ 
+-#ifdef CONFIG_NUMA
++#ifdef CONFIG_NEED_MULTIPLE_NODES
+ 	int node;
+ #endif
+ 	struct pglist_data	*zone_pgdat;
+@@ -896,7 +896,7 @@ static inline bool populated_zone(struct zone *zone)
+ 	return zone->present_pages;
+ }
+ 
+-#ifdef CONFIG_NUMA
++#ifdef CONFIG_NEED_MULTIPLE_NODES
+ static inline int zone_to_nid(struct zone *zone)
+ {
+ 	return zone->node;
+-- 
+2.28.0
+
