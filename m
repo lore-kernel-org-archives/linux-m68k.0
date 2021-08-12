@@ -2,145 +2,171 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-19.7 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-7.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,NICE_REPLY_A,
+	SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 8EE1DC4320A
-	for <linux-m68k@archiver.kernel.org>; Wed, 11 Aug 2021 13:41:54 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7402DC4338F
+	for <linux-m68k@archiver.kernel.org>; Thu, 12 Aug 2021 03:38:11 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 7514A6101E
-	for <linux-m68k@archiver.kernel.org>; Wed, 11 Aug 2021 13:41:54 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 55B3A60EE2
+	for <linux-m68k@archiver.kernel.org>; Thu, 12 Aug 2021 03:38:11 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232030AbhHKNmR (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Wed, 11 Aug 2021 09:42:17 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54432 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231818AbhHKNmQ (ORCPT <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Wed, 11 Aug 2021 09:42:16 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D0DB760FA0;
-        Wed, 11 Aug 2021 13:41:48 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1628689313;
-        bh=LWKT/XlWW6r43708akQ/YJmJ2WRlCw9TDzGke2pxA10=;
-        h=From:To:Cc:Subject:Date:From;
-        b=IdVF5moXtsjCSfhcaOQfqS+E3V30eqxPcHmpqJ4EiAFVRKIriapKIuAKWegTm9SbK
-         7EMUdGdJxRbJUF89G63se/UwcYktm/jmZMvlaRjVMib76c/BEJKb62/FQiA0Va3Pq9
-         HzhFTiAYuTMU4EikLVBQCjQYqwYP0gm3+nsPfAWBq9aL/t1gGLn3gF0BggoCp6Lig0
-         w/flfjcW519ige9heLW0rPUmRF42V+S3S1adE8DiwytoOYk3CRhOf3qVHerB4HI8yg
-         /eu+YNOiGVIIum41TLd0z2bjaur6nqDyvbkAU6hPs/D7+uoufStEdWXVctFj5P1UHi
-         vYTfuLjTckYyg==
-From:   Mike Rapoport <rppt@kernel.org>
-To:     stable@vger.kernel.org
-Cc:     Geert Uytterhoeven <geert@linux-m68k.org>,
-        Finn Thain <fthain@linux-m68k.org>,
-        Mikael Pettersson <mikpelinux@gmail.com>,
-        Mike Rapoport <rppt@kernel.org>,
-        Mike Rapoport <rppt@linux.ibm.com>,
-        linux-kernel@vger.kernel.org, linux-m68k@lists.linux-m68k.org
-Subject: [PATCH stable 5.10] mm: make zone_to_nid() and zone_set_nid() available for DISCONTIGMEM
-Date:   Wed, 11 Aug 2021 16:41:39 +0300
-Message-Id: <20210811134139.5451-1-rppt@kernel.org>
-X-Mailer: git-send-email 2.28.0
+        id S230373AbhHLDif (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Wed, 11 Aug 2021 23:38:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40342 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229729AbhHLDie (ORCPT
+        <rfc822;linux-m68k@lists.linux-m68k.org>);
+        Wed, 11 Aug 2021 23:38:34 -0400
+Received: from mail-pj1-x102c.google.com (mail-pj1-x102c.google.com [IPv6:2607:f8b0:4864:20::102c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1F236C061765
+        for <linux-m68k@lists.linux-m68k.org>; Wed, 11 Aug 2021 20:38:07 -0700 (PDT)
+Received: by mail-pj1-x102c.google.com with SMTP id u13-20020a17090abb0db0290177e1d9b3f7so13060012pjr.1
+        for <linux-m68k@lists.linux-m68k.org>; Wed, 11 Aug 2021 20:38:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:references:cc:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-transfer-encoding;
+        bh=SJSX6qlyRtNd0LzBcUXlmF1D06z5qNWVDKcH5XxoyRA=;
+        b=NkeXL1qsT5Iqq0E7t6BbuO1g9llPMzztorp2BDAYjhQnshuxZuk4B5ol3G8/S4XtN2
+         1VTKbtWxlUevUEEZDeVdZP4su9C2AlgTO8ZusdwMAnTqX5GXuLEWyin5MbdXLgbjH1QG
+         nF7fxu+D3pGI0xLBRH6uNJImgdnt0XIYrgDE0A0HN33qxfBkpp18Rgl6zR+dJoaO206I
+         UfeHBZ3j9D0+J9xTVfSfell3FRJ0oAXvfNdaMmIJeYHHR0KIGmvdQkE76XrH9dkdFvWy
+         NuatGMYzkeHyEsEHsNmF4B3kF1hAVaj5HH3HcAeucCJQXBZDdhHjGA85q4FqqFCLa1BO
+         x83g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:references:cc:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding;
+        bh=SJSX6qlyRtNd0LzBcUXlmF1D06z5qNWVDKcH5XxoyRA=;
+        b=AeHbLl2PC45U2xpNMvMxz7IMEIXkAepWWpCmuSG/eBih53NAc3qNwTk99ZradWlq9i
+         mAzfIHA8FbPPWRUgHG8m2W/3IUNVOcf1ICOutY/t6rJxWHTdwCZHtjP+kUNlaRKkb4fv
+         0x8uIr0oK6LUiWSyGe0C6M+gTydGR3psrfO5vK1FZbjw31N23HIyEpjPETPRuRbegXUf
+         xeocNSVic0IexwhB7g3NPnDjiojo2WN+479GBKK9Ppx7nHiq1/KxtRgZ468iwL+X9e94
+         x6Tt7pjsyakcH/WNrmSaZyDZK53+T2uUDiFjQuuX99Q3TS1wncD7EjW0ZFnjxBn15fOh
+         whuQ==
+X-Gm-Message-State: AOAM5339UVNtf5cag7y2EgGc/Y9nUSE5QGZzWAGU4GFRdqs0jUD9Zuvf
+        BBTOzBOjbBoomeQ5Me1PDe8=
+X-Google-Smtp-Source: ABdhPJwdnUKRYrNRu/WRa4PXSdj9p/+2ovXN8lZwdSnGUfo+G2Jl5MbRcS5fQ2dLBZzyzDsx1jEfsA==
+X-Received: by 2002:a65:448a:: with SMTP id l10mr1881534pgq.313.1628739486188;
+        Wed, 11 Aug 2021 20:38:06 -0700 (PDT)
+Received: from [10.1.1.25] (222-152-187-49-fibre.sparkbb.co.nz. [222.152.187.49])
+        by smtp.gmail.com with ESMTPSA id j16sm1163200pfi.165.2021.08.11.20.38.01
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Wed, 11 Aug 2021 20:38:05 -0700 (PDT)
+Subject: Re: RFC: remove set_fs for m68k
+To:     Christoph Hellwig <hch@lst.de>
+References: <eb057cdd-e9f2-27ce-cf60-7b0d87cb6bce@gmail.com>
+ <3acb1a9e-9133-50d4-a642-98d7046d6d4f@gmail.com>
+ <65a95ae0-4734-68ce-ef71-7491b5534718@gmail.com>
+ <8f470389-fe8a-90b0-19a5-68f85526b30e@gmail.com>
+ <20210721170529.GA14550@lst.de>
+ <a70d80f4-6034-e20b-26c5-76609c52c92a@gmail.com>
+ <20210723051126.GA31274@lst.de>
+ <e9fb28d4-405a-5cc6-b071-707a2edbce92@gmail.com>
+ <8884e940-22e8-72a5-e9ec-f9b2628b6ef4@gmail.com>
+ <251aa093-047a-b37c-4e88-d543c6fa8bc6@gmail.com>
+ <20210811091259.GA15014@lst.de>
+Cc:     Andreas Schwab <schwab@linux-m68k.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Greg Ungerer <gerg@linux-m68k.org>,
+        linux-m68k@lists.linux-m68k.org,
+        Linus Torvalds <torvalds@linux-foundation.org>
+From:   Michael Schmitz <schmitzmic@gmail.com>
+Message-ID: <96e587de-9600-16aa-d1fb-686ab1f3ed06@gmail.com>
+Date:   Thu, 12 Aug 2021 15:37:59 +1200
+User-Agent: Mozilla/5.0 (X11; Linux ppc; rv:45.0) Gecko/20100101
+ Icedove/45.4.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210811091259.GA15014@lst.de>
+Content-Type: text/plain; charset=windows-1252; format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-From: Mike Rapoport <rppt@linux.ibm.com>
+Hi Christoph,
 
-Since the commit ce6ee46e0f39 ("mm/page_alloc: fix memory map
-initialization for descending nodes") initialization of the memory map
-relies on availability of zone_to_nid() and zone_set_nid methods to link
-struct page to a node.
+I run my tests on a 030, so that patch is unlikely to have any effect 
+there. I'll give it a spin though (once my current tests with restoring 
+USER_DATA everywhere but logging if get_fc() reads something else) are 
+done.
 
-But in 5.10 zone_to_nid() is only defined for NUMA, but not for
-DISCONTIGMEM which causes crashes on m68k systems with two memory banks.
+I wonder whether copy_thread() ought to set SUPER_DATA when creating 
+kernel threads though (see the comment there). With init_thread starting 
+out with USER_DATA now, we'd have to explicitly set SUPER_DATA instead 
+of just copying the current value there...
 
-For instance on ARAnyM with both ST-RAM and FastRAM atari_defconfig build
-produces the following crash:
+Leaves flush_icache_range() and flush_tlb_page() to worry about.
 
-Unable to handle kernel access at virtual address (ptrval)
-Oops: 00000000
-Modules linked in:
-PC: [<0005fbbc>] bpf_prog_alloc_no_stats+0x5c/0xba
-SR: 2200  SP: (ptrval)  a2: 016daa90
-d0: 0000000c    d1: 00000200    d2: 00000001    d3: 00000cc0
-d4: 016d1f80    d5: 00034da6    a0: 305c2800    a1: 305c2a00
-Process swapper (pid: 1, task=(ptrval))
-Frame format=7 eff addr=31800000 ssw=0445 faddr=31800000
-wb 1 stat/addr/data: 0000 00000000 00000000
-wb 2 stat/addr/data: 0000 00000000 00000000
-wb 3 stat/addr/data: 00c5 31800000 00000001
-push data: 00000000 00000000 00000000 00000000
-Stack from 3058fec8:
-        00000dc0 00000000 004addc2 3058ff16 0005fc34 00000238 00000000 00000210
-        004addc2 3058ff16 00281ae0 00000238 00000000 00000000 004addc2 004bc7ec
-        004aea9e 0048b0c0 3058ff16 00460042 004ba4d2 3058ff8c 004ade6a 0000007e
-        0000210e 0000007e 00000002 016d1f80 00034da6 000020b4 00000000 004b4764
-        004bc7ec 00000000 004b4760 004bc7c0 004b4744 001e4cb2 00010001 016d1fe5
-        016d1ff0 004994d2 003e1589 016d1f80 00412b8c 0000007e 00000001 00000001
-Call Trace: [<004addc2>] sock_init+0x0/0xaa
- [<0005fc34>] bpf_prog_alloc+0x1a/0x66
- [<004addc2>] sock_init+0x0/0xaa
- [<00281ae0>] bpf_prog_create+0x2e/0x7c
- [<004addc2>] sock_init+0x0/0xaa
- [<004aea9e>] ptp_classifier_init+0x22/0x44
- [<004ade6a>] sock_init+0xa8/0xaa
- [<0000210e>] do_one_initcall+0x5a/0x150
- [<00034da6>] parse_args+0x0/0x208
- [<000020b4>] do_one_initcall+0x0/0x150
- [<001e4cb2>] strcpy+0x0/0x1c
- [<00010001>] stwotoxd+0x5/0x1c
- [<004994d2>] kernel_init_freeable+0x154/0x1a6
- [<001e4cb2>] strcpy+0x0/0x1c
- [<0049951a>] kernel_init_freeable+0x19c/0x1a6
- [<004addc2>] sock_init+0x0/0xaa
- [<00321510>] kernel_init+0x0/0xd8
- [<00321518>] kernel_init+0x8/0xd8
- [<00321510>] kernel_init+0x0/0xd8
- [<00002890>] ret_from_kernel_thread+0xc/0x14
+Cheers,
 
-Code: 204b 200b 4cdf 180c 4e75 700c e0aa 3682 <2748> 001c 214b 0140 022b
-ffbf 0002 206b 001c 2008 0680 0000 0108 2140 0108 2140
-Disabling lock debugging due to kernel taint
-Kernel panic - not syncing: Attempted to kill init! exitcode=0x0000000b
+	Michael
 
-Using CONFIG_NEED_MULTIPLE_NODES rather than CONFIG_NUMA to guard
-definitions of zone_to_nid() and zone_set_nid() fixes the issue.
-
-Reported-by: Mikael Pettersson <mikpelinux@gmail.com>
-Fixes: ce6ee46e0f39 ("mm/page_alloc: fix memory map initialization for descending nodes")
-Signed-off-by: Mike Rapoport <rppt@linux.ibm.com>
-Tested-by: Mikael Pettersson <mikpelinux@gmail.com>
----
- include/linux/mmzone.h | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/include/linux/mmzone.h b/include/linux/mmzone.h
-index 9d0c454d23cd..63b550403317 100644
---- a/include/linux/mmzone.h
-+++ b/include/linux/mmzone.h
-@@ -445,7 +445,7 @@ struct zone {
- 	 */
- 	long lowmem_reserve[MAX_NR_ZONES];
- 
--#ifdef CONFIG_NUMA
-+#ifdef CONFIG_NEED_MULTIPLE_NODES
- 	int node;
- #endif
- 	struct pglist_data	*zone_pgdat;
-@@ -896,7 +896,7 @@ static inline bool populated_zone(struct zone *zone)
- 	return zone->present_pages;
- }
- 
--#ifdef CONFIG_NUMA
-+#ifdef CONFIG_NEED_MULTIPLE_NODES
- static inline int zone_to_nid(struct zone *zone)
- {
- 	return zone->node;
--- 
-2.28.0
-
+Am 11.08.2021 um 21:12 schrieb Christoph Hellwig:
+> Hi Michael,
+>
+> from looking at your patches I suspect the 040 traps might be able
+> to be called witha different fc.  Can you check if the below patch,
+> which is a cut down version of your changes makes all the issues
+> go away?
+>
+> diff --git a/arch/m68k/include/asm/processor.h b/arch/m68k/include/asm/processor.h
+> index debb4537eab5..a554e529fd26 100644
+> --- a/arch/m68k/include/asm/processor.h
+> +++ b/arch/m68k/include/asm/processor.h
+> @@ -94,6 +94,13 @@ static inline void set_fc(unsigned long val)
+>  			      "movec %0,%/dfc\n\t"
+>  			      : /* no outputs */ : "r" (val) : "memory");
+>  }
+> +static inline unsigned long get_fc(void)
+> +{
+> +	unsigned long val;
+> +	__asm__ ("movec %/dfc,%0":"=r" (val):);
+> +	WARN_ON_ONCE(val != USER_DATA);
+> +	return val;
+> +}
+>  #else
+>  static inline void set_fc(unsigned long val)
+>  {
+> diff --git a/arch/m68k/kernel/traps.c b/arch/m68k/kernel/traps.c
+> index c5e0a4f93bd5..1b073299fa55 100644
+> --- a/arch/m68k/kernel/traps.c
+> +++ b/arch/m68k/kernel/traps.c
+> @@ -181,6 +181,7 @@ static inline void access_error060 (struct frame *fp)
+>  static inline unsigned long probe040(int iswrite, unsigned long addr, int wbs)
+>  {
+>  	unsigned long mmusr;
+> +	unsigned long old_fc = get_fc();
+>
+>  	set_fc(wbs);
+>
+> @@ -191,7 +192,7 @@ static inline unsigned long probe040(int iswrite, unsigned long addr, int wbs)
+>
+>  	asm volatile (".chip 68040; movec %%mmusr,%0; .chip 68k" : "=r" (mmusr));
+>
+> -	set_fc(USER_DATA);
+> +	set_fc(old_fc);
+>
+>  	return mmusr;
+>  }
+> @@ -200,6 +201,7 @@ static inline int do_040writeback1(unsigned short wbs, unsigned long wba,
+>  				   unsigned long wbd)
+>  {
+>  	int res = 0;
+> +	unsigned long old_fc = get_fc();
+>
+>  	set_fc(wbs);
+>
+> @@ -215,7 +217,7 @@ static inline int do_040writeback1(unsigned short wbs, unsigned long wba,
+>  		break;
+>  	}
+>
+> -	set_fc(USER_DATA);
+> +	set_fc(old_fc);
+>
+>  	pr_debug("do_040writeback1, res=%d\n", res);
+>
+>
