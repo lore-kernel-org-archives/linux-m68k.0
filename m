@@ -2,99 +2,167 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
-	SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-13.5 required=3.0 tests=BAYES_00,DKIM_INVALID,
+	DKIM_SIGNED,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 35F04C4338F
-	for <linux-m68k@archiver.kernel.org>; Fri, 13 Aug 2021 08:42:46 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 61C8EC4338F
+	for <linux-m68k@archiver.kernel.org>; Fri, 13 Aug 2021 09:04:56 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 18A2360F11
-	for <linux-m68k@archiver.kernel.org>; Fri, 13 Aug 2021 08:42:46 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 37E03610A5
+	for <linux-m68k@archiver.kernel.org>; Fri, 13 Aug 2021 09:04:56 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239322AbhHMInL (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Fri, 13 Aug 2021 04:43:11 -0400
-Received: from wnew3-smtp.messagingengine.com ([64.147.123.17]:44229 "EHLO
-        wnew3-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S239279AbhHMInL (ORCPT
-        <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Fri, 13 Aug 2021 04:43:11 -0400
-Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
-        by mailnew.west.internal (Postfix) with ESMTP id C85662B0139F;
-        Fri, 13 Aug 2021 04:42:43 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute1.internal (MEProxy); Fri, 13 Aug 2021 04:42:44 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kroah.com; h=
-        date:from:to:cc:subject:message-id:references:mime-version
-        :content-type:in-reply-to; s=fm1; bh=F5YQ1dW0u1fv61CywT9l9tWUbLb
-        4qN/ZrIhJXoxfc3Q=; b=qUUXISbhfXhrxQWDbPH1v6+iKaZ66ZskWiz9tXmrb06
-        wjHIsS4qwjWQBuiO8MruDdaKj89oJZmQcZ7ieEBxgsGe7P8SLB8imIq0XK5giZ37
-        /XIO37WRPaAKTMRU29qriFpbnmoMJ6nzKln1Man0srtXtNa3MRBgNAXMflEilSuk
-        mEyzI6PdbCMs4VTkoVkAyOM6IGGFaI4yV6Gjwx23i+O52WJ9rQHM6FQbuDx76x8f
-        GCbKx19yGAt3EX2DF6/4aFLLlslq/vV3CUMC5SY3X+QLC4nd2kmmlIM8ZXNzUQ35
-        zFEb5JTnASY62cHfQQDWcBLEZ/BPyzTNFvI7EPZVxgw==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=F5YQ1d
-        W0u1fv61CywT9l9tWUbLb4qN/ZrIhJXoxfc3Q=; b=MzEiDiO1PAd0lpRxUUyiN9
-        XqlurIyI/YB9ZsMUcBN2UxI/VRlqwsRr56usKEwFoD+lVCUIx54bmNDMhk18E5jn
-        XZDzYHm1tFHHV6LAaHlfpfI1UjvcVdrs1UORNdQlaF46LVD2KaUeqlb1pI/kONPe
-        cMYBQ862cdw5BRMpQwgav1MwR1OgXGRqdfg6pR/5eiy3P7zZPPejGcUtgbat51dB
-        ZYbTaoGe3yj/YL7wrZZESav3ElaG7XRQYX+mtp9nqria0fVTzqKyLRiTyvVXSePy
-        2qbXZ+6MGB4iyclHpGD0z03toSx1sMIga3PYCpFMeunDI8kcgw9p1egV/w9ucxKg
-        ==
-X-ME-Sender: <xms:gjAWYRllwHMT9z3QQMnRDHJ-EtL699iOJjIa65QRVltJQt9L2UqzkA>
-    <xme:gjAWYc2dwUxHrgmrI_9TVzvPxzyWxf9uM7Wwa8WDt-ljbRWib6OZLux9M2ht8QX64
-    el2TlU6e75q3g>
-X-ME-Received: <xmr:gjAWYXq2ktjSvziSFex-xTabwivUGiQtJQU1bvUBv1Nu0Nn7Tz1atRV5Hi604995rydPJeGPZ7Yi_7V7-cZkHrrefU374b9p>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrkeehgddtiecutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
-    fjughrpeffhffvuffkfhggtggujgesthdtredttddtvdenucfhrhhomhepifhrvghgucfm
-    jfcuoehgrhgvgheskhhrohgrhhdrtghomheqnecuggftrfgrthhtvghrnhepveeuheejgf
-    ffgfeivddukedvkedtleelleeghfeljeeiueeggeevueduudekvdetnecuvehluhhsthgv
-    rhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepghhrvghgsehkrhhorghhrd
-    gtohhm
-X-ME-Proxy: <xmx:gjAWYRm6xE8yG-DymG8IcRlXtG-tMgQ5i55Oayq-rbirchMiup92jw>
-    <xmx:gjAWYf12RS8h-Hr2P3wFelW2h-o9vLqUZ3e7iZvIknxu48zbpNY0KA>
-    <xmx:gjAWYQuUnSHYcBBGHIEoX3soLOiFZSwaZF9GYgc_FU6-GonMQin7DA>
-    <xmx:gzAWYZMjoATgMr8s04Bi1WKb8pTOkE_ALLfcjCHdbRbaX420311fMC23Miw>
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Fri,
- 13 Aug 2021 04:42:42 -0400 (EDT)
-Date:   Fri, 13 Aug 2021 10:42:39 +0200
-From:   Greg KH <greg@kroah.com>
-To:     Mike Rapoport <rppt@kernel.org>
-Cc:     stable@vger.kernel.org, Geert Uytterhoeven <geert@linux-m68k.org>,
-        Finn Thain <fthain@linux-m68k.org>,
-        Mikael Pettersson <mikpelinux@gmail.com>,
-        Mike Rapoport <rppt@linux.ibm.com>,
-        linux-kernel@vger.kernel.org, linux-m68k@lists.linux-m68k.org
-Subject: Re: [PATCH stable 5.10] mm: make zone_to_nid() and zone_set_nid()
- available for DISCONTIGMEM
-Message-ID: <YRYwf3rAHfWUWfiL@kroah.com>
-References: <20210811134139.5451-1-rppt@kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+        id S239014AbhHMJFV (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Fri, 13 Aug 2021 05:05:21 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60838 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S239443AbhHMJFV (ORCPT <rfc822;linux-m68k@lists.linux-m68k.org>);
+        Fri, 13 Aug 2021 05:05:21 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D4F796024A;
+        Fri, 13 Aug 2021 09:04:53 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1628845494;
+        bh=6tHY09yWuFQkQQgiuW/e3QIl9j+59CnHpTLvEP76250=;
+        h=Subject:To:Cc:From:Date:In-Reply-To:From;
+        b=U7cJ1d08x+Rb92ARtjfpt4X1oHZjHgye913RbdfHg2MbF0/CVyT/2KAxTeGO7uwxQ
+         2RHrlbbvKZ6jmUMGEUzuCM7dFnacnqwM58WZTIThr1VZ1D1nIUUGIfuo5prjz5BGrm
+         j3NTTunjxwQEgTcuj8c0rLKe89Osk2T/SUk7Vx0U=
+Subject: Patch "mm: make zone_to_nid() and zone_set_nid() available for DISCONTIGMEM" has been added to the 5.10-stable tree
+To:     fthain@linux-m68k.org, geert@linux-m68k.org,
+        gregkh@linuxfoundation.org, linux-m68k@lists.linux-m68k.org,
+        mikpelinux@gmail.com, rppt@kernel.org, rppt@linux.ibm.com
+Cc:     <stable-commits@vger.kernel.org>
+From:   <gregkh@linuxfoundation.org>
+Date:   Fri, 13 Aug 2021 11:04:19 +0200
 In-Reply-To: <20210811134139.5451-1-rppt@kernel.org>
+Message-ID: <162884545991194@kroah.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=ANSI_X3.4-1968
+Content-Transfer-Encoding: 8bit
+X-stable: commit
+X-Patchwork-Hint: ignore 
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-On Wed, Aug 11, 2021 at 04:41:39PM +0300, Mike Rapoport wrote:
-> From: Mike Rapoport <rppt@linux.ibm.com>
-> 
-> Since the commit ce6ee46e0f39 ("mm/page_alloc: fix memory map
-> initialization for descending nodes") initialization of the memory map
-> relies on availability of zone_to_nid() and zone_set_nid methods to link
-> struct page to a node.
-> 
-> But in 5.10 zone_to_nid() is only defined for NUMA, but not for
-> DISCONTIGMEM which causes crashes on m68k systems with two memory banks.
-> 
 
-Many thanks for the work done to figure this out and fix it.  Now queued
-up.
+This is a note to let you know that I've just added the patch titled
 
-greg k-h
+    mm: make zone_to_nid() and zone_set_nid() available for DISCONTIGMEM
+
+to the 5.10-stable tree which can be found at:
+    http://www.kernel.org/git/?p=linux/kernel/git/stable/stable-queue.git;a=summary
+
+The filename of the patch is:
+     mm-make-zone_to_nid-and-zone_set_nid-available-for-discontigmem.patch
+and it can be found in the queue-5.10 subdirectory.
+
+If you, or anyone else, feels it should not be added to the stable tree,
+please let <stable@vger.kernel.org> know about it.
+
+
+From rppt@kernel.org  Fri Aug 13 10:41:57 2021
+From: Mike Rapoport <rppt@kernel.org>
+Date: Wed, 11 Aug 2021 16:41:39 +0300
+Subject: mm: make zone_to_nid() and zone_set_nid() available for DISCONTIGMEM
+To: stable@vger.kernel.org
+Cc: Geert Uytterhoeven <geert@linux-m68k.org>, Finn Thain <fthain@linux-m68k.org>, Mikael Pettersson <mikpelinux@gmail.com>, Mike Rapoport <rppt@kernel.org>, Mike Rapoport <rppt@linux.ibm.com>, linux-kernel@vger.kernel.org, linux-m68k@lists.linux-m68k.org
+Message-ID: <20210811134139.5451-1-rppt@kernel.org>
+
+From: Mike Rapoport <rppt@linux.ibm.com>
+
+Since the commit ce6ee46e0f39 ("mm/page_alloc: fix memory map
+initialization for descending nodes") initialization of the memory map
+relies on availability of zone_to_nid() and zone_set_nid methods to link
+struct page to a node.
+
+But in 5.10 zone_to_nid() is only defined for NUMA, but not for
+DISCONTIGMEM which causes crashes on m68k systems with two memory banks.
+
+For instance on ARAnyM with both ST-RAM and FastRAM atari_defconfig build
+produces the following crash:
+
+Unable to handle kernel access at virtual address (ptrval)
+Oops: 00000000
+Modules linked in:
+PC: [<0005fbbc>] bpf_prog_alloc_no_stats+0x5c/0xba
+SR: 2200  SP: (ptrval)  a2: 016daa90
+d0: 0000000c    d1: 00000200    d2: 00000001    d3: 00000cc0
+d4: 016d1f80    d5: 00034da6    a0: 305c2800    a1: 305c2a00
+Process swapper (pid: 1, task=(ptrval))
+Frame format=7 eff addr=31800000 ssw=0445 faddr=31800000
+wb 1 stat/addr/data: 0000 00000000 00000000
+wb 2 stat/addr/data: 0000 00000000 00000000
+wb 3 stat/addr/data: 00c5 31800000 00000001
+push data: 00000000 00000000 00000000 00000000
+Stack from 3058fec8:
+        00000dc0 00000000 004addc2 3058ff16 0005fc34 00000238 00000000 00000210
+        004addc2 3058ff16 00281ae0 00000238 00000000 00000000 004addc2 004bc7ec
+        004aea9e 0048b0c0 3058ff16 00460042 004ba4d2 3058ff8c 004ade6a 0000007e
+        0000210e 0000007e 00000002 016d1f80 00034da6 000020b4 00000000 004b4764
+        004bc7ec 00000000 004b4760 004bc7c0 004b4744 001e4cb2 00010001 016d1fe5
+        016d1ff0 004994d2 003e1589 016d1f80 00412b8c 0000007e 00000001 00000001
+Call Trace: [<004addc2>] sock_init+0x0/0xaa
+ [<0005fc34>] bpf_prog_alloc+0x1a/0x66
+ [<004addc2>] sock_init+0x0/0xaa
+ [<00281ae0>] bpf_prog_create+0x2e/0x7c
+ [<004addc2>] sock_init+0x0/0xaa
+ [<004aea9e>] ptp_classifier_init+0x22/0x44
+ [<004ade6a>] sock_init+0xa8/0xaa
+ [<0000210e>] do_one_initcall+0x5a/0x150
+ [<00034da6>] parse_args+0x0/0x208
+ [<000020b4>] do_one_initcall+0x0/0x150
+ [<001e4cb2>] strcpy+0x0/0x1c
+ [<00010001>] stwotoxd+0x5/0x1c
+ [<004994d2>] kernel_init_freeable+0x154/0x1a6
+ [<001e4cb2>] strcpy+0x0/0x1c
+ [<0049951a>] kernel_init_freeable+0x19c/0x1a6
+ [<004addc2>] sock_init+0x0/0xaa
+ [<00321510>] kernel_init+0x0/0xd8
+ [<00321518>] kernel_init+0x8/0xd8
+ [<00321510>] kernel_init+0x0/0xd8
+ [<00002890>] ret_from_kernel_thread+0xc/0x14
+
+Code: 204b 200b 4cdf 180c 4e75 700c e0aa 3682 <2748> 001c 214b 0140 022b
+ffbf 0002 206b 001c 2008 0680 0000 0108 2140 0108 2140
+Disabling lock debugging due to kernel taint
+Kernel panic - not syncing: Attempted to kill init! exitcode=0x0000000b
+
+Using CONFIG_NEED_MULTIPLE_NODES rather than CONFIG_NUMA to guard
+definitions of zone_to_nid() and zone_set_nid() fixes the issue.
+
+Reported-by: Mikael Pettersson <mikpelinux@gmail.com>
+Fixes: ce6ee46e0f39 ("mm/page_alloc: fix memory map initialization for descending nodes")
+Signed-off-by: Mike Rapoport <rppt@linux.ibm.com>
+Tested-by: Mikael Pettersson <mikpelinux@gmail.com>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+---
+ include/linux/mmzone.h |    4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+--- a/include/linux/mmzone.h
++++ b/include/linux/mmzone.h
+@@ -445,7 +445,7 @@ struct zone {
+ 	 */
+ 	long lowmem_reserve[MAX_NR_ZONES];
+ 
+-#ifdef CONFIG_NUMA
++#ifdef CONFIG_NEED_MULTIPLE_NODES
+ 	int node;
+ #endif
+ 	struct pglist_data	*zone_pgdat;
+@@ -896,7 +896,7 @@ static inline bool populated_zone(struct
+ 	return zone->present_pages;
+ }
+ 
+-#ifdef CONFIG_NUMA
++#ifdef CONFIG_NEED_MULTIPLE_NODES
+ static inline int zone_to_nid(struct zone *zone)
+ {
+ 	return zone->node;
+
+
+Patches currently in stable-queue which might be from rppt@kernel.org are
+
+queue-5.10/mm-make-zone_to_nid-and-zone_set_nid-available-for-discontigmem.patch
