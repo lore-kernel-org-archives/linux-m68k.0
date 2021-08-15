@@ -2,167 +2,62 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-13.5 required=3.0 tests=BAYES_00,DKIM_INVALID,
-	DKIM_SIGNED,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-5.3 required=3.0 tests=BAYES_00,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 61C8EC4338F
-	for <linux-m68k@archiver.kernel.org>; Fri, 13 Aug 2021 09:04:56 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8B78BC4338F
+	for <linux-m68k@archiver.kernel.org>; Sun, 15 Aug 2021 07:42:40 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 37E03610A5
-	for <linux-m68k@archiver.kernel.org>; Fri, 13 Aug 2021 09:04:56 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 5F3D560C40
+	for <linux-m68k@archiver.kernel.org>; Sun, 15 Aug 2021 07:42:40 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239014AbhHMJFV (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Fri, 13 Aug 2021 05:05:21 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60838 "EHLO mail.kernel.org"
+        id S235569AbhHOHnJ (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Sun, 15 Aug 2021 03:43:09 -0400
+Received: from verein.lst.de ([213.95.11.211]:51288 "EHLO verein.lst.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239443AbhHMJFV (ORCPT <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Fri, 13 Aug 2021 05:05:21 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D4F796024A;
-        Fri, 13 Aug 2021 09:04:53 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1628845494;
-        bh=6tHY09yWuFQkQQgiuW/e3QIl9j+59CnHpTLvEP76250=;
-        h=Subject:To:Cc:From:Date:In-Reply-To:From;
-        b=U7cJ1d08x+Rb92ARtjfpt4X1oHZjHgye913RbdfHg2MbF0/CVyT/2KAxTeGO7uwxQ
-         2RHrlbbvKZ6jmUMGEUzuCM7dFnacnqwM58WZTIThr1VZ1D1nIUUGIfuo5prjz5BGrm
-         j3NTTunjxwQEgTcuj8c0rLKe89Osk2T/SUk7Vx0U=
-Subject: Patch "mm: make zone_to_nid() and zone_set_nid() available for DISCONTIGMEM" has been added to the 5.10-stable tree
-To:     fthain@linux-m68k.org, geert@linux-m68k.org,
-        gregkh@linuxfoundation.org, linux-m68k@lists.linux-m68k.org,
-        mikpelinux@gmail.com, rppt@kernel.org, rppt@linux.ibm.com
-Cc:     <stable-commits@vger.kernel.org>
-From:   <gregkh@linuxfoundation.org>
-Date:   Fri, 13 Aug 2021 11:04:19 +0200
-In-Reply-To: <20210811134139.5451-1-rppt@kernel.org>
-Message-ID: <162884545991194@kroah.com>
+        id S232774AbhHOHnI (ORCPT <rfc822;linux-m68k@lists.linux-m68k.org>);
+        Sun, 15 Aug 2021 03:43:08 -0400
+Received: by verein.lst.de (Postfix, from userid 2407)
+        id 744F26736F; Sun, 15 Aug 2021 09:42:36 +0200 (CEST)
+Date:   Sun, 15 Aug 2021 09:42:36 +0200
+From:   Christoph Hellwig <hch@lst.de>
+To:     Michael Schmitz <schmitzmic@gmail.com>
+Cc:     Christoph Hellwig <hch@lst.de>,
+        Andreas Schwab <schwab@linux-m68k.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Greg Ungerer <gerg@linux-m68k.org>,
+        linux-m68k@lists.linux-m68k.org,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Subject: Re: RFC: remove set_fs for m68k
+Message-ID: <20210815074236.GA23777@lst.de>
+References: <eb057cdd-e9f2-27ce-cf60-7b0d87cb6bce@gmail.com> <3acb1a9e-9133-50d4-a642-98d7046d6d4f@gmail.com> <65a95ae0-4734-68ce-ef71-7491b5534718@gmail.com> <8f470389-fe8a-90b0-19a5-68f85526b30e@gmail.com> <20210721170529.GA14550@lst.de> <a70d80f4-6034-e20b-26c5-76609c52c92a@gmail.com> <20210723051126.GA31274@lst.de> <e9fb28d4-405a-5cc6-b071-707a2edbce92@gmail.com> <8884e940-22e8-72a5-e9ec-f9b2628b6ef4@gmail.com> <251aa093-047a-b37c-4e88-d543c6fa8bc6@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=ANSI_X3.4-1968
-Content-Transfer-Encoding: 8bit
-X-stable: commit
-X-Patchwork-Hint: ignore 
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <251aa093-047a-b37c-4e88-d543c6fa8bc6@gmail.com>
+User-Agent: Mutt/1.5.17 (2007-11-01)
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
+Hi Michael,
 
-This is a note to let you know that I've just added the patch titled
+after your last mail I went back and looked very closely at the
+set_fs removal and your debug patches below.  And one hunk stands out:
 
-    mm: make zone_to_nid() and zone_set_nid() available for DISCONTIGMEM
+>  static inline void flush_tlb_page(struct vm_area_struct *vma, unsigned long addr)
+>  {
+> -	if (vma->vm_mm == current->active_mm)
+> +	if (vma->vm_mm == current->active_mm) {
+> +		unsigned long old_fc = force_user_fc_begin();
+>  		__flush_tlb_one(addr);
+> +		force_user_fc_end(old_fc);
+> +	}
 
-to the 5.10-stable tree which can be found at:
-    http://www.kernel.org/git/?p=linux/kernel/git/stable/stable-queue.git;a=summary
-
-The filename of the patch is:
-     mm-make-zone_to_nid-and-zone_set_nid-available-for-discontigmem.patch
-and it can be found in the queue-5.10 subdirectory.
-
-If you, or anyone else, feels it should not be added to the stable tree,
-please let <stable@vger.kernel.org> know about it.
-
-
-From rppt@kernel.org  Fri Aug 13 10:41:57 2021
-From: Mike Rapoport <rppt@kernel.org>
-Date: Wed, 11 Aug 2021 16:41:39 +0300
-Subject: mm: make zone_to_nid() and zone_set_nid() available for DISCONTIGMEM
-To: stable@vger.kernel.org
-Cc: Geert Uytterhoeven <geert@linux-m68k.org>, Finn Thain <fthain@linux-m68k.org>, Mikael Pettersson <mikpelinux@gmail.com>, Mike Rapoport <rppt@kernel.org>, Mike Rapoport <rppt@linux.ibm.com>, linux-kernel@vger.kernel.org, linux-m68k@lists.linux-m68k.org
-Message-ID: <20210811134139.5451-1-rppt@kernel.org>
-
-From: Mike Rapoport <rppt@linux.ibm.com>
-
-Since the commit ce6ee46e0f39 ("mm/page_alloc: fix memory map
-initialization for descending nodes") initialization of the memory map
-relies on availability of zone_to_nid() and zone_set_nid methods to link
-struct page to a node.
-
-But in 5.10 zone_to_nid() is only defined for NUMA, but not for
-DISCONTIGMEM which causes crashes on m68k systems with two memory banks.
-
-For instance on ARAnyM with both ST-RAM and FastRAM atari_defconfig build
-produces the following crash:
-
-Unable to handle kernel access at virtual address (ptrval)
-Oops: 00000000
-Modules linked in:
-PC: [<0005fbbc>] bpf_prog_alloc_no_stats+0x5c/0xba
-SR: 2200  SP: (ptrval)  a2: 016daa90
-d0: 0000000c    d1: 00000200    d2: 00000001    d3: 00000cc0
-d4: 016d1f80    d5: 00034da6    a0: 305c2800    a1: 305c2a00
-Process swapper (pid: 1, task=(ptrval))
-Frame format=7 eff addr=31800000 ssw=0445 faddr=31800000
-wb 1 stat/addr/data: 0000 00000000 00000000
-wb 2 stat/addr/data: 0000 00000000 00000000
-wb 3 stat/addr/data: 00c5 31800000 00000001
-push data: 00000000 00000000 00000000 00000000
-Stack from 3058fec8:
-        00000dc0 00000000 004addc2 3058ff16 0005fc34 00000238 00000000 00000210
-        004addc2 3058ff16 00281ae0 00000238 00000000 00000000 004addc2 004bc7ec
-        004aea9e 0048b0c0 3058ff16 00460042 004ba4d2 3058ff8c 004ade6a 0000007e
-        0000210e 0000007e 00000002 016d1f80 00034da6 000020b4 00000000 004b4764
-        004bc7ec 00000000 004b4760 004bc7c0 004b4744 001e4cb2 00010001 016d1fe5
-        016d1ff0 004994d2 003e1589 016d1f80 00412b8c 0000007e 00000001 00000001
-Call Trace: [<004addc2>] sock_init+0x0/0xaa
- [<0005fc34>] bpf_prog_alloc+0x1a/0x66
- [<004addc2>] sock_init+0x0/0xaa
- [<00281ae0>] bpf_prog_create+0x2e/0x7c
- [<004addc2>] sock_init+0x0/0xaa
- [<004aea9e>] ptp_classifier_init+0x22/0x44
- [<004ade6a>] sock_init+0xa8/0xaa
- [<0000210e>] do_one_initcall+0x5a/0x150
- [<00034da6>] parse_args+0x0/0x208
- [<000020b4>] do_one_initcall+0x0/0x150
- [<001e4cb2>] strcpy+0x0/0x1c
- [<00010001>] stwotoxd+0x5/0x1c
- [<004994d2>] kernel_init_freeable+0x154/0x1a6
- [<001e4cb2>] strcpy+0x0/0x1c
- [<0049951a>] kernel_init_freeable+0x19c/0x1a6
- [<004addc2>] sock_init+0x0/0xaa
- [<00321510>] kernel_init+0x0/0xd8
- [<00321518>] kernel_init+0x8/0xd8
- [<00321510>] kernel_init+0x0/0xd8
- [<00002890>] ret_from_kernel_thread+0xc/0x14
-
-Code: 204b 200b 4cdf 180c 4e75 700c e0aa 3682 <2748> 001c 214b 0140 022b
-ffbf 0002 206b 001c 2008 0680 0000 0108 2140 0108 2140
-Disabling lock debugging due to kernel taint
-Kernel panic - not syncing: Attempted to kill init! exitcode=0x0000000b
-
-Using CONFIG_NEED_MULTIPLE_NODES rather than CONFIG_NUMA to guard
-definitions of zone_to_nid() and zone_set_nid() fixes the issue.
-
-Reported-by: Mikael Pettersson <mikpelinux@gmail.com>
-Fixes: ce6ee46e0f39 ("mm/page_alloc: fix memory map initialization for descending nodes")
-Signed-off-by: Mike Rapoport <rppt@linux.ibm.com>
-Tested-by: Mikael Pettersson <mikpelinux@gmail.com>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
----
- include/linux/mmzone.h |    4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
---- a/include/linux/mmzone.h
-+++ b/include/linux/mmzone.h
-@@ -445,7 +445,7 @@ struct zone {
- 	 */
- 	long lowmem_reserve[MAX_NR_ZONES];
- 
--#ifdef CONFIG_NUMA
-+#ifdef CONFIG_NEED_MULTIPLE_NODES
- 	int node;
- #endif
- 	struct pglist_data	*zone_pgdat;
-@@ -896,7 +896,7 @@ static inline bool populated_zone(struct
- 	return zone->present_pages;
- }
- 
--#ifdef CONFIG_NUMA
-+#ifdef CONFIG_NEED_MULTIPLE_NODES
- static inline int zone_to_nid(struct zone *zone)
- {
- 	return zone->node;
-
-
-Patches currently in stable-queue which might be from rppt@kernel.org are
-
-queue-5.10/mm-make-zone_to_nid-and-zone_set_nid-available-for-discontigmem.patch
+This is the only old user of force_uaccess_begin, and the only one
+where this patch adds back a DFC/SFC access where there was none at
+at all with the set_fs removal.  So I'd be curious if you just add this
+hunk (plus the supporting infrastructure) on top of my tree for now to
+see if there were some side effects of the instructions that were
+important, be that seralization, timing or anything else.
