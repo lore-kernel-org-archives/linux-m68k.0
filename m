@@ -2,205 +2,130 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.8 required=3.0 tests=BAYES_00,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,
-	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-3.7 required=3.0 tests=BAYES_00,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id AF2DAC4338F
-	for <linux-m68k@archiver.kernel.org>; Mon, 23 Aug 2021 23:55:52 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E0D20C4338F
+	for <linux-m68k@archiver.kernel.org>; Tue, 24 Aug 2021 08:08:51 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 89F4360E8B
-	for <linux-m68k@archiver.kernel.org>; Mon, 23 Aug 2021 23:55:52 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id B7E8961262
+	for <linux-m68k@archiver.kernel.org>; Tue, 24 Aug 2021 08:08:51 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233260AbhHWX4f (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Mon, 23 Aug 2021 19:56:35 -0400
-Received: from mga17.intel.com ([192.55.52.151]:55104 "EHLO mga17.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233278AbhHWX4e (ORCPT <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Mon, 23 Aug 2021 19:56:34 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10085"; a="197448491"
-X-IronPort-AV: E=Sophos;i="5.84,346,1620716400"; 
-   d="scan'208";a="197448491"
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Aug 2021 16:55:51 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.84,344,1620716400"; 
-   d="scan'208";a="515207952"
-Received: from lkp-server02.sh.intel.com (HELO ca0e9373e375) ([10.239.97.151])
-  by fmsmga004.fm.intel.com with ESMTP; 23 Aug 2021 16:55:50 -0700
-Received: from kbuild by ca0e9373e375 with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1mIJnB-0000XZ-Bk; Mon, 23 Aug 2021 23:55:49 +0000
-Date:   Tue, 24 Aug 2021 07:55:28 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     linux-m68k@lists.linux-m68k.org
-Subject: [m68k:for-v5.15] BUILD SUCCESS
- 87d93029fe83e326d5b906e12e95600b157d2c0d
-Message-ID: <61243570.BeBeoiEeM73RbuNp%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+        id S234817AbhHXIJe (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Tue, 24 Aug 2021 04:09:34 -0400
+Received: from mail-out.m-online.net ([212.18.0.9]:47573 "EHLO
+        mail-out.m-online.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233910AbhHXIJe (ORCPT
+        <rfc822;linux-m68k@lists.linux-m68k.org>);
+        Tue, 24 Aug 2021 04:09:34 -0400
+Received: from frontend01.mail.m-online.net (unknown [192.168.8.182])
+        by mail-out.m-online.net (Postfix) with ESMTP id 4Gv1w00KQ5z1qwy3;
+        Tue, 24 Aug 2021 10:08:48 +0200 (CEST)
+Received: from localhost (dynscan1.mnet-online.de [192.168.6.70])
+        by mail.m-online.net (Postfix) with ESMTP id 4Gv1vz6hN0z1qrPD;
+        Tue, 24 Aug 2021 10:08:47 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at mnet-online.de
+Received: from mail.mnet-online.de ([192.168.8.182])
+        by localhost (dynscan1.mail.m-online.net [192.168.6.70]) (amavisd-new, port 10024)
+        with ESMTP id WH0VIjsn3-mU; Tue, 24 Aug 2021 10:08:46 +0200 (CEST)
+X-Auth-Info: v8toCXE3qtc9wyAbYZtoLYoxUA8oPbPmjsqpNi4VWOKSUworSbaTCk7uTuarJU+/
+Received: from igel.home (ppp-46-244-170-245.dynamic.mnet-online.de [46.244.170.245])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.mnet-online.de (Postfix) with ESMTPSA;
+        Tue, 24 Aug 2021 10:08:46 +0200 (CEST)
+Received: by igel.home (Postfix, from userid 1000)
+        id 99FB32C0CFF; Tue, 24 Aug 2021 10:08:45 +0200 (CEST)
+From:   Andreas Schwab <schwab@linux-m68k.org>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Michael Schmitz <schmitzmic@gmail.com>,
+        Christoph Hellwig <hch@lst.de>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Greg Ungerer <gerg@linux-m68k.org>,
+        linux-m68k <linux-m68k@lists.linux-m68k.org>
+Subject: Re: RFC: remove set_fs for m68k
+References: <65a95ae0-4734-68ce-ef71-7491b5534718@gmail.com>
+        <8f470389-fe8a-90b0-19a5-68f85526b30e@gmail.com>
+        <20210721170529.GA14550@lst.de>
+        <a70d80f4-6034-e20b-26c5-76609c52c92a@gmail.com>
+        <20210723051126.GA31274@lst.de>
+        <e9fb28d4-405a-5cc6-b071-707a2edbce92@gmail.com>
+        <8884e940-22e8-72a5-e9ec-f9b2628b6ef4@gmail.com>
+        <251aa093-047a-b37c-4e88-d543c6fa8bc6@gmail.com>
+        <20210815074236.GA23777@lst.de>
+        <63c35a20-3eec-1825-fa18-5df28f5b6eaa@gmail.com>
+        <20210816065851.GA26665@lst.de>
+        <e705cfe1-4386-d205-89c6-73e13335c792@gmail.com>
+        <7517d306-21ad-daa1-a2fb-b273211cb588@gmail.com>
+        <CAHk-=wgEFfm61UP3tfkVthVoivsyo0m4c-HrKo7SP8fwZTn4tA@mail.gmail.com>
+        <b211dea5-ec59-21db-4235-387d7983905c@gmail.com>
+        <CAHk-=wib3p3rn+4YgS+dVVb=VciMGXJwGL-SiMY9QTytDMF08w@mail.gmail.com>
+X-Yow:  It's the RINSE CYCLE!!  They've ALL IGNORED the RINSE CYCLE!!
+Date:   Tue, 24 Aug 2021 10:08:45 +0200
+In-Reply-To: <CAHk-=wib3p3rn+4YgS+dVVb=VciMGXJwGL-SiMY9QTytDMF08w@mail.gmail.com>
+        (Linus Torvalds's message of "Mon, 23 Aug 2021 14:49:48 -0700")
+Message-ID: <87zgt79sdu.fsf@igel.home>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/27.2 (gnu/linux)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/geert/linux-m68k.git for-v5.15
-branch HEAD: 87d93029fe83e326d5b906e12e95600b157d2c0d  m68k: Fix asm register constraints for atomic ops
+On Aug 23 2021, Linus Torvalds wrote:
 
-elapsed time: 729m
+> On Mon, Aug 23, 2021 at 2:31 PM Michael Schmitz <schmitzmic@gmail.com> wrote:
+>>
+>> Hi Linus,
+>>
+>>
+>> On 24/08/21 05:59, Linus Torvalds wrote:
+>> > On Sun, Aug 22, 2021 at 12:34 PM Michael Schmitz <schmitzmic@gmail.com> wrote:
+>> >> Got this overnight:
+>> >>
+>> >>> [536154.200000] *** FORMAT ERROR ***   FORMAT=0
+>> >>> [536154.210000] Current process id is 4656
+>> >>> [536154.230000] BAD KERNEL TRAP: 00000000
+>> >>> [536154.240000] Modules linked in: atari_scsi ne 8390p [last unloaded: atari_scsi]
+>> >>> [536154.260000] PC: [<00002a8c>] resume_userspace+0x14/0x16
+>> >>> [536154.270000] SR: 2208  SP: 977bd1be  a2: 8009b5e8
+>> >>> [536154.290000] d0: 8009b5e8    d1: cfcfcfcf    d2: 00000000    d3: ffffffff
+>> >>> [536154.300000] d4: 00000000    d5: 00000000    a0: 8008a108    a1: 8009b7df
+>> >>> [536154.320000] Process savelog (pid: 4656, task=e49aa246)
+>> >>> [536154.330000] Frame format=0
+>> >>> [536154.340000] Stack from 00cc5fa4:
+>> >>> [536154.340000]         02088004 3666b008 1c0eb209 007eb5e8 8006a2d0 efaec378 8004366c 61ff61ff
+>> >>> [536154.340000]         8006a2d4 8006a2d2 00000000 030dfffb 0044fffa 0e000000 fffa1a00 fffa1c00
+>> >>> [536154.340000]         fffa1e00 fffb0e40 fffb0e80 00049b66 00000040 005f5800 00000001
+>> > Strange. If I read that stack frame correctly, that seems to be an
+>> > exception frame of type 0xb ("Long Bus Cycle").
+>>
+>> Not sure where you get the 0xb from - the frame format I see is 0.
+>
+> The "Frame format=0" is, afaik, the format of when the error happens.
+>
+> But I'm looking at what the stack contents are at the time of the
+> exception, to see what actually *triggered* the error.
+>
+> And if I read it right, the RTE that took the format error fault had this stack:
+>
+>         02088004 3666b008 1c0eb209 ..
+>
+> and that means that it tried to return with status register 0208
+> (which looks correct: supervisor bit clear), to PC 80043666 (which
+> might be right - it's a similar address to the ones in A0/A1).
+>
+> And then the format/vector value is b008.
+>
+> That is, if I read it right, format 0xb, which is that "Long Bus Cycle" thing.
 
-configs tested: 140
-configs skipped: 114
+Right.  It was a fault in stage C of the instruction pipeline (SSW =
+0xb209) at 0x8006a2d2-2 (BADDR-2).
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+Andreas.
 
-gcc tested configs:
-arm                                 defconfig
-arm64                            allyesconfig
-arm64                               defconfig
-arm                              allyesconfig
-arm                              allmodconfig
-arm                        spear6xx_defconfig
-mips                malta_qemu_32r6_defconfig
-xtensa                       common_defconfig
-mips                             allyesconfig
-sh                          sdk7786_defconfig
-um                             i386_defconfig
-arm                         bcm2835_defconfig
-mips                           rs90_defconfig
-powerpc                       ppc64_defconfig
-arm                       versatile_defconfig
-sh                             shx3_defconfig
-arm                          collie_defconfig
-mips                         rt305x_defconfig
-mips                           ip28_defconfig
-powerpc                    adder875_defconfig
-arm                      footbridge_defconfig
-arm                        cerfcube_defconfig
-arm                        trizeps4_defconfig
-mips                         tb0287_defconfig
-powerpc                 mpc832x_mds_defconfig
-mips                            e55_defconfig
-microblaze                      mmu_defconfig
-mips                        bcm63xx_defconfig
-arm                         nhk8815_defconfig
-arm                     davinci_all_defconfig
-mips                           ip32_defconfig
-arm                        multi_v7_defconfig
-nds32                            alldefconfig
-powerpc                     tqm8541_defconfig
-sh                        edosk7760_defconfig
-m68k                       m5249evb_defconfig
-sh                   rts7751r2dplus_defconfig
-powerpc                  mpc866_ads_defconfig
-mips                           gcw0_defconfig
-powerpc64                           defconfig
-mips                           mtx1_defconfig
-m68k                         amcore_defconfig
-powerpc                      katmai_defconfig
-powerpc                 mpc832x_rdb_defconfig
-arm                             rpc_defconfig
-sparc64                          alldefconfig
-arm                          iop32x_defconfig
-mips                      pistachio_defconfig
-mips                      loongson3_defconfig
-riscv                    nommu_k210_defconfig
-mips                        workpad_defconfig
-powerpc                    amigaone_defconfig
-sh                          r7780mp_defconfig
-m68k                             allmodconfig
-s390                          debug_defconfig
-arm                        clps711x_defconfig
-powerpc                 linkstation_defconfig
-mips                  decstation_64_defconfig
-arm                            zeus_defconfig
-powerpc               mpc834x_itxgp_defconfig
-powerpc                  storcenter_defconfig
-s390                             alldefconfig
-x86_64                            allnoconfig
-ia64                             allmodconfig
-ia64                                defconfig
-ia64                             allyesconfig
-m68k                                defconfig
-m68k                             allyesconfig
-nios2                               defconfig
-arc                              allyesconfig
-nds32                             allnoconfig
-nds32                               defconfig
-nios2                            allyesconfig
-csky                                defconfig
-alpha                               defconfig
-alpha                            allyesconfig
-xtensa                           allyesconfig
-h8300                            allyesconfig
-arc                                 defconfig
-sh                               allmodconfig
-parisc                              defconfig
-s390                             allyesconfig
-s390                             allmodconfig
-parisc                           allyesconfig
-s390                                defconfig
-i386                             allyesconfig
-sparc                            allyesconfig
-sparc                               defconfig
-i386                                defconfig
-mips                             allmodconfig
-powerpc                          allyesconfig
-powerpc                          allmodconfig
-powerpc                           allnoconfig
-x86_64               randconfig-a005-20210822
-x86_64               randconfig-a006-20210822
-x86_64               randconfig-a001-20210822
-x86_64               randconfig-a003-20210822
-x86_64               randconfig-a004-20210822
-x86_64               randconfig-a002-20210822
-i386                 randconfig-a006-20210822
-i386                 randconfig-a001-20210822
-i386                 randconfig-a002-20210822
-i386                 randconfig-a005-20210822
-i386                 randconfig-a003-20210822
-i386                 randconfig-a004-20210822
-riscv                            allyesconfig
-riscv                    nommu_virt_defconfig
-riscv                             allnoconfig
-riscv                               defconfig
-riscv                          rv32_defconfig
-riscv                            allmodconfig
-um                           x86_64_defconfig
-x86_64                           allyesconfig
-x86_64                    rhel-8.3-kselftests
-x86_64                              defconfig
-x86_64                               rhel-8.3
-x86_64                                  kexec
-
-clang tested configs:
-i386                 randconfig-c001-20210822
-s390                 randconfig-c005-20210822
-arm                  randconfig-c002-20210822
-riscv                randconfig-c006-20210822
-powerpc              randconfig-c003-20210822
-x86_64               randconfig-c007-20210822
-mips                 randconfig-c004-20210822
-x86_64               randconfig-a014-20210822
-x86_64               randconfig-a016-20210822
-x86_64               randconfig-a015-20210822
-x86_64               randconfig-a013-20210822
-x86_64               randconfig-a012-20210822
-x86_64               randconfig-a011-20210822
-i386                 randconfig-a011-20210822
-i386                 randconfig-a016-20210822
-i386                 randconfig-a012-20210822
-i386                 randconfig-a014-20210822
-i386                 randconfig-a013-20210822
-i386                 randconfig-a015-20210822
-hexagon              randconfig-r041-20210822
-hexagon              randconfig-r045-20210822
-riscv                randconfig-r042-20210822
-s390                 randconfig-r044-20210822
-
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+-- 
+Andreas Schwab, schwab@linux-m68k.org
+GPG Key fingerprint = 7578 EB47 D4E5 4D69 2510  2552 DF73 E780 A9DA AEC1
+"And now for something completely different."
