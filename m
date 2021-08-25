@@ -2,90 +2,131 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.8 required=3.0 tests=BAYES_00,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
-	autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-13.8 required=3.0 tests=BAYES_00,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id AC77CC4338F
-	for <linux-m68k@archiver.kernel.org>; Wed, 25 Aug 2021 08:44:24 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 921F6C4338F
+	for <linux-m68k@archiver.kernel.org>; Wed, 25 Aug 2021 15:56:36 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 8B1DA61176
-	for <linux-m68k@archiver.kernel.org>; Wed, 25 Aug 2021 08:44:24 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 75C77610C8
+	for <linux-m68k@archiver.kernel.org>; Wed, 25 Aug 2021 15:56:36 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239336AbhHYIpJ (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Wed, 25 Aug 2021 04:45:09 -0400
-Received: from mail-out.m-online.net ([212.18.0.9]:60922 "EHLO
-        mail-out.m-online.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239321AbhHYIpI (ORCPT
+        id S240899AbhHYP5V (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Wed, 25 Aug 2021 11:57:21 -0400
+Received: from out02.mta.xmission.com ([166.70.13.232]:59200 "EHLO
+        out02.mta.xmission.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S240495AbhHYP5V (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Wed, 25 Aug 2021 04:45:08 -0400
-Received: from frontend01.mail.m-online.net (unknown [192.168.8.182])
-        by mail-out.m-online.net (Postfix) with ESMTP id 4GvffY1cHjz1qwGy;
-        Wed, 25 Aug 2021 10:44:21 +0200 (CEST)
-Received: from localhost (dynscan1.mnet-online.de [192.168.6.70])
-        by mail.m-online.net (Postfix) with ESMTP id 4GvffY0tpmz1qrPg;
-        Wed, 25 Aug 2021 10:44:21 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at mnet-online.de
-Received: from mail.mnet-online.de ([192.168.8.182])
-        by localhost (dynscan1.mail.m-online.net [192.168.6.70]) (amavisd-new, port 10024)
-        with ESMTP id 6Uz7LJKK-gEC; Wed, 25 Aug 2021 10:44:20 +0200 (CEST)
-X-Auth-Info: ZmrARmRiTU193lvyL0MIaWhU+G3VYj8SzBZiAI7WE88Yaxf4Uv5bsHCd0PCa/U+V
-Received: from igel.home (ppp-46-244-164-226.dynamic.mnet-online.de [46.244.164.226])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.mnet-online.de (Postfix) with ESMTPSA;
-        Wed, 25 Aug 2021 10:44:20 +0200 (CEST)
-Received: by igel.home (Postfix, from userid 1000)
-        id D52592C25AD; Wed, 25 Aug 2021 10:44:18 +0200 (CEST)
-From:   Andreas Schwab <schwab@linux-m68k.org>
+        Wed, 25 Aug 2021 11:57:21 -0400
+Received: from in01.mta.xmission.com ([166.70.13.51]:34002)
+        by out02.mta.xmission.com with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.93)
+        (envelope-from <ebiederm@xmission.com>)
+        id 1mIvGU-00BJtr-36; Wed, 25 Aug 2021 09:56:34 -0600
+Received: from ip68-227-160-95.om.om.cox.net ([68.227.160.95]:55852 helo=email.xmission.com)
+        by in01.mta.xmission.com with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.93)
+        (envelope-from <ebiederm@xmission.com>)
+        id 1mIvGS-00DL13-SD; Wed, 25 Aug 2021 09:56:33 -0600
+From:   ebiederm@xmission.com (Eric W. Biederman)
 To:     Michael Schmitz <schmitzmic@gmail.com>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Christoph Hellwig <hch@lst.de>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Greg Ungerer <gerg@linux-m68k.org>,
-        linux-m68k <linux-m68k@lists.linux-m68k.org>
-Subject: Re: RFC: remove set_fs for m68k
-References: <65a95ae0-4734-68ce-ef71-7491b5534718@gmail.com>
-        <8f470389-fe8a-90b0-19a5-68f85526b30e@gmail.com>
-        <20210721170529.GA14550@lst.de>
-        <a70d80f4-6034-e20b-26c5-76609c52c92a@gmail.com>
-        <20210723051126.GA31274@lst.de>
-        <e9fb28d4-405a-5cc6-b071-707a2edbce92@gmail.com>
-        <8884e940-22e8-72a5-e9ec-f9b2628b6ef4@gmail.com>
-        <251aa093-047a-b37c-4e88-d543c6fa8bc6@gmail.com>
-        <20210815074236.GA23777@lst.de>
-        <63c35a20-3eec-1825-fa18-5df28f5b6eaa@gmail.com>
-        <20210816065851.GA26665@lst.de>
-        <e705cfe1-4386-d205-89c6-73e13335c792@gmail.com>
-        <7517d306-21ad-daa1-a2fb-b273211cb588@gmail.com>
-        <CAHk-=wgEFfm61UP3tfkVthVoivsyo0m4c-HrKo7SP8fwZTn4tA@mail.gmail.com>
-        <b211dea5-ec59-21db-4235-387d7983905c@gmail.com>
-        <CAHk-=wib3p3rn+4YgS+dVVb=VciMGXJwGL-SiMY9QTytDMF08w@mail.gmail.com>
-        <57501cee-de70-99e5-3a92-e5d2a515bb51@gmail.com>
-        <87bl5n9q1e.fsf@igel.home>
-        <208ad46d-e4ef-68e3-97d0-aa7756852a92@gmail.com>
-X-Yow:  Are you guys lined up for the METHADONE PROGRAM or FOOD STAMPS??
-Date:   Wed, 25 Aug 2021 10:44:18 +0200
-In-Reply-To: <208ad46d-e4ef-68e3-97d0-aa7756852a92@gmail.com> (Michael
-        Schmitz's message of "Wed, 25 Aug 2021 19:51:11 +1200")
-Message-ID: <878s0px6al.fsf@igel.home>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/27.2 (gnu/linux)
+Cc:     Brad Boyer <flar@allandria.com>,
+        Andreas Schwab <schwab@linux-m68k.org>, geert@linux-m68k.org,
+        linux-arch@vger.kernel.org, linux-m68k@lists.linux-m68k.org,
+        torvalds@linux-foundation.org
+References: <e9009e13-cfec-c494-0b3b-f334f75cd1e4@gmail.com>
+        <af434994-5c61-0e3a-c7bc-3ed966ccb44f@gmail.com>
+        <87h7gopvz2.fsf@disp2133>
+        <328e59fb-3e8c-e4cd-06b4-1975ce98614a@gmail.com>
+        <877dhio13t.fsf@disp2133>
+        <12992a3c-0740-f90e-aa4e-1ec1d8ea38f6@gmail.com>
+        <87tukkk6h3.fsf@disp2133>
+        <df6618bf-d1bc-4759-2d14-934c22d54a83@gmail.com>
+        <87eebn7w7y.fsf@igel.home>
+        <db43bef1-7938-4fc1-853d-c20d66521329@gmail.com>
+        <20210725101253.GA6096@allandria.com>
+        <be3ddf9a-745e-4798-17a7-a9d0ddd7eef7@gmail.com>
+        <87a6m8kgtx.fsf_-_@disp2133>
+        <33327fd4-47fc-2eab-04e4-242697a23d5f@gmail.com>
+        <87tukghjfs.fsf_-_@disp2133>
+Date:   Wed, 25 Aug 2021 10:56:26 -0500
+In-Reply-To: <87tukghjfs.fsf_-_@disp2133> (Eric W. Biederman's message of
+        "Mon, 26 Jul 2021 16:08:39 -0500")
+Message-ID: <87v93tmsb9.fsf@disp2133>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
 MIME-Version: 1.0
 Content-Type: text/plain
+X-XM-SPF: eid=1mIvGS-00DL13-SD;;;mid=<87v93tmsb9.fsf@disp2133>;;;hst=in01.mta.xmission.com;;;ip=68.227.160.95;;;frm=ebiederm@xmission.com;;;spf=neutral
+X-XM-AID: U2FsdGVkX19jEnItnpOVDV2Rm9Ei+HQwl2CuUif63q4=
+X-SA-Exim-Connect-IP: 68.227.160.95
+X-SA-Exim-Mail-From: ebiederm@xmission.com
+Subject: Re: [PATCH] signal/m68k: Use force_sigsegv(SIGSEGV) in fpsp040_die
+X-SA-Exim-Version: 4.2.1 (built Sat, 08 Feb 2020 21:53:50 +0000)
+X-SA-Exim-Scanned: Yes (on in01.mta.xmission.com)
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-On Aug 25 2021, Michael Schmitz wrote:
+ebiederm@xmission.com (Eric W. Biederman) writes:
 
-> the manuals on the NXP web site don't have the exception frame format
-> tables,
+> In the fpsp040 code when copyin or copyout fails call
+> force_sigsegv(SIGSEGV) instead of do_exit(SIGSEGV).
+>
+> This solves a couple of problems.  Because do_exit embeds the ptrace
+> stop PTRACE_EVENT_EXIT a complete stack frame needs to be present for
+> that to work correctly.  There is always the information needed for a
+> ptrace stop where get_signal is called.  So exiting with a signal
+> solves the ptrace issue.
+>
+> Further exiting with a signal ensures that all of the threads in a
+> process are killed not just the thread that malfunctioned.  Which
+> avoids confusing userspace.
+>
+> To make force_sigsegv(SIGSEGV) work in fpsp040_die modify the code to
+> save all of the registers and jump to ret_from_exception (which
+> ultimately calls get_signal) after fpsp040_die returns.
+>
+> v2: Updated the branches to use gas's pseudo ops that automatically
+>     calculate the best branch instruction to use for the purpose.
+>
+> v1: Link: https://lkml.kernel.org/r/87a6m8kgtx.fsf_-_@disp2133
+> Signed-off-by: "Eric W. Biederman" <ebiederm@xmission.com>
 
-See 8.4 EXCEPTION STACK FRAME FORMATS.
+Any chance I can get an ack on this patch?
 
-Andreas.
+Eric
 
--- 
-Andreas Schwab, schwab@linux-m68k.org
-GPG Key fingerprint = 7578 EB47 D4E5 4D69 2510  2552 DF73 E780 A9DA AEC1
-"And now for something completely different."
+> ---
+>  arch/m68k/fpsp040/skeleton.S | 3 ++-
+>  arch/m68k/kernel/traps.c     | 2 +-
+>  2 files changed, 3 insertions(+), 2 deletions(-)
+>
+> diff --git a/arch/m68k/fpsp040/skeleton.S b/arch/m68k/fpsp040/skeleton.S
+> index a8f41615d94a..439395aa6fb4 100644
+> --- a/arch/m68k/fpsp040/skeleton.S
+> +++ b/arch/m68k/fpsp040/skeleton.S
+> @@ -502,7 +502,8 @@ in_ea:
+>  	.section .fixup,#alloc,#execinstr
+>  	.even
+>  1:
+> -	jbra	fpsp040_die
+> +	jbsr	fpsp040_die
+> +	jbra	.Lnotkern
+>  
+>  	.section __ex_table,#alloc
+>  	.align	4
+> diff --git a/arch/m68k/kernel/traps.c b/arch/m68k/kernel/traps.c
+> index 9e1261462bcc..5b19fcdcd69e 100644
+> --- a/arch/m68k/kernel/traps.c
+> +++ b/arch/m68k/kernel/traps.c
+> @@ -1150,7 +1150,7 @@ asmlinkage void set_esp0(unsigned long ssp)
+>   */
+>  asmlinkage void fpsp040_die(void)
+>  {
+> -	do_exit(SIGSEGV);
+> +	force_sigsegv(SIGSEGV);
+>  }
+>  
+>  #ifdef CONFIG_M68KFPU_EMU
