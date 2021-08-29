@@ -2,270 +2,97 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.8 required=3.0 tests=BAYES_00,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-5.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	USER_AGENT_GIT autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C43CCC4320A
-	for <linux-m68k@archiver.kernel.org>; Sat, 28 Aug 2021 12:46:29 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B4DE3C432BE
+	for <linux-m68k@archiver.kernel.org>; Sun, 29 Aug 2021 03:12:10 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id AAF5160E8B
-	for <linux-m68k@archiver.kernel.org>; Sat, 28 Aug 2021 12:46:29 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 892B260E97
+	for <linux-m68k@archiver.kernel.org>; Sun, 29 Aug 2021 03:12:10 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234318AbhH1MrT (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Sat, 28 Aug 2021 08:47:19 -0400
-Received: from mga18.intel.com ([134.134.136.126]:46276 "EHLO mga18.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234012AbhH1MrS (ORCPT <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Sat, 28 Aug 2021 08:47:18 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10089"; a="205229216"
-X-IronPort-AV: E=Sophos;i="5.84,359,1620716400"; 
-   d="scan'208";a="205229216"
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Aug 2021 05:46:27 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.84,359,1620716400"; 
-   d="scan'208";a="517922800"
-Received: from lkp-server01.sh.intel.com (HELO 4fbc2b3ce5aa) ([10.239.97.150])
-  by fmsmga004.fm.intel.com with ESMTP; 28 Aug 2021 05:46:26 -0700
-Received: from kbuild by 4fbc2b3ce5aa with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1mJxj7-0003RC-JK; Sat, 28 Aug 2021 12:46:25 +0000
-Date:   Sat, 28 Aug 2021 20:45:30 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     linux-m68k@lists.linux-m68k.org
-Subject: [m68k:master] BUILD SUCCESS
- 420b13e4124ab8fa930febb1292602297eeae955
-Message-ID: <612a2fea.Ssf/K0lF4tp8Bmoy%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+        id S232718AbhH2DNA (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Sat, 28 Aug 2021 23:13:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56162 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231558AbhH2DNA (ORCPT
+        <rfc822;linux-m68k@vger.kernel.org>); Sat, 28 Aug 2021 23:13:00 -0400
+Received: from mail-pj1-x102b.google.com (mail-pj1-x102b.google.com [IPv6:2607:f8b0:4864:20::102b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DEE75C061756
+        for <linux-m68k@vger.kernel.org>; Sat, 28 Aug 2021 20:12:08 -0700 (PDT)
+Received: by mail-pj1-x102b.google.com with SMTP id fz10so7258283pjb.0
+        for <linux-m68k@vger.kernel.org>; Sat, 28 Aug 2021 20:12:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=SpcOd2MIvcOldUpxUHBYqiU8SOG2Sst2j14VLXb1EY0=;
+        b=kd9eScxZYvHRjnBaWHNpzwAIq6VlqPacYLcnKgJ3IsHaYEtW3sI3nVepFX5Be4+gb1
+         eocupLZJK1urHmfBVl+VtwF8H4qktYtzUowfb4spmvCAvA/Sqysd3aeC8g2DEfIsL/zp
+         DcAv/tWpbp+Puq1Abt+2gQbJUFtBASiUxVdcb2W/xvN0o0IcfNsJwLX2cZWemPe0/JOK
+         BHRqwBdErujj+rBBjCcL4UvM6at3z0NahGSKAzZlDxCrkTCGCrtBSvYWkT8e12RNOD+B
+         qzunLT596+hbj9PDSvQsWP1DIZ9xASnVVP1duC1PZs5/G/l9BGXgHwNPDp914cGS/rtY
+         C5wA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=SpcOd2MIvcOldUpxUHBYqiU8SOG2Sst2j14VLXb1EY0=;
+        b=G43EbWBZwqCvxzBLvbj9P786KxiW2M5+iAJHpZVmIrBmiTDxYimf06vk8BW6Qj1uNU
+         I4Vc9VA/wr1bng2Q+DXrMZVwFTiP02v/idSAYHm/5M4qizNnvUKWQ4UCSrfqkt5J3bJW
+         j9sKEsfNr2J4tQRtEb0WZsZwPW4mjJOGcKvv/EsLi55M2dm7zhB6+273ybTr76kerkVS
+         5Dbx6B3E8RSX4hctGegm9NFSkUQzQBcGJ7Yq0geyhfCERgN5Yh0YBnoASnjUlI3w2IjA
+         parxAvtZMRL9umJEle0vXH0FGclsmLodsMVDBb4QFYzHcOhEmmtur7ymkqdsdkaKsSt/
+         A+vw==
+X-Gm-Message-State: AOAM530qxKtT4wKLMJzum1Me6dWdTGNUUMKzioY5/ZLeElOF7EB/zPNX
+        CUn9q3O+cB/CpAjWUVxa3+lHa3rMsno=
+X-Google-Smtp-Source: ABdhPJycKEE6mT8BRfzgzSr8n9C3+IhwwK9pQroYYIN7btRI1J9kkYyaVZUpBFce8euTucS7JvasZw==
+X-Received: by 2002:a17:902:9a03:b029:12d:72e2:f7a1 with SMTP id v3-20020a1709029a03b029012d72e2f7a1mr15642811plp.49.1630206728168;
+        Sat, 28 Aug 2021 20:12:08 -0700 (PDT)
+Received: from xplor.waratah.dyndns.org (222-155-6-212-adsl.sparkbb.co.nz. [222.155.6.212])
+        by smtp.gmail.com with ESMTPSA id a7sm11769953pga.34.2021.08.28.20.12.06
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Sat, 28 Aug 2021 20:12:07 -0700 (PDT)
+Received: by xplor.waratah.dyndns.org (Postfix, from userid 1000)
+        id 5CAA03603E5; Sun, 29 Aug 2021 15:12:03 +1200 (NZST)
+From:   Michael Schmitz <schmitzmic@gmail.com>
+To:     linux-m68k@vger.kernel.org, geert@linux-m68k.org
+Cc:     alex@kazik.de
+Subject: [PATCH v7 0/4] Add APNE PCMCIA 100 Mbit support
+Date:   Sun, 29 Aug 2021 15:11:46 +1200
+Message-Id: <1630206710-5954-1-git-send-email-schmitzmic@gmail.com>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/geert/linux-m68k.git master
-branch HEAD: 420b13e4124ab8fa930febb1292602297eeae955  m68k: Fix asm register constraints for atomic ops
+Revisit support for the 100 Mbit APNE PCMCIA card variants, again.
 
-elapsed time: 7256m
+Add a new ISA type for these cards, and switch to that type
+from the APNE probe code in case 16 bit IO support is noted
+the PCMCIA config table data. A module parameter or kernel
+can be used to enable 16 bit IO as a fallback option.
+Support for the 16 bit 10/100 Mbit cards is now included by
+default.
 
-configs tested: 203
-configs skipped: 4
+The first two patches enable the use of core PCMCIA code to
+parse config table entries. The remaining two patches add 16
+bit IO support to the m68k low-level IO access code, and switch
+the APNE driver to use 16 bit IO on cards that support it (the
+100 Mbit cards).
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+I'm in two minds about enabling CONFIG_PCMCIA - the alternative
+is to duplicate the cftable parser in amiga/pcmcia.c (which
+has been tested and works just as well). Feedback welcome.
 
-gcc tested configs:
-arm                                 defconfig
-arm64                            allyesconfig
-arm64                               defconfig
-arm                              allyesconfig
-arm                              allmodconfig
-i386                 randconfig-c001-20210826
-arm                        spear6xx_defconfig
-mips                malta_qemu_32r6_defconfig
-xtensa                       common_defconfig
-powerpc                   lite5200b_defconfig
-riscv                    nommu_virt_defconfig
-arm                         vf610m4_defconfig
-arm                          collie_defconfig
-arm                     davinci_all_defconfig
-sh                          sdk7786_defconfig
-mips                           ip32_defconfig
-arm                        multi_v7_defconfig
-sh                               j2_defconfig
-powerpc                      arches_defconfig
-arc                            hsdk_defconfig
-mips                         tb0226_defconfig
-arm                        neponset_defconfig
-sh                                  defconfig
-arm                           stm32_defconfig
-sh                           sh2007_defconfig
-sh                           se7721_defconfig
-xtensa                           allyesconfig
-arc                        vdk_hs38_defconfig
-powerpc                     sbc8548_defconfig
-arm                           spitz_defconfig
-mips                        nlm_xlr_defconfig
-arm                      integrator_defconfig
-m68k                          hp300_defconfig
-arm                             rpc_defconfig
-powerpc                  storcenter_defconfig
-powerpc                      ppc6xx_defconfig
-powerpc                 mpc837x_mds_defconfig
-powerpc                  mpc866_ads_defconfig
-powerpc                 mpc834x_itx_defconfig
-powerpc                     pq2fads_defconfig
-arm                       aspeed_g4_defconfig
-sh                            titan_defconfig
-sparc                       sparc64_defconfig
-m68k                          multi_defconfig
-sh                          lboxre2_defconfig
-powerpc                     mpc5200_defconfig
-powerpc                      chrp32_defconfig
-mips                           ip28_defconfig
-s390                          debug_defconfig
-mips                        qi_lb60_defconfig
-arm                       spear13xx_defconfig
-arm                        clps711x_defconfig
-sh                          rsk7264_defconfig
-mips                             allmodconfig
-powerpc                      pmac32_defconfig
-mips                          ath79_defconfig
-s390                       zfcpdump_defconfig
-i386                             alldefconfig
-x86_64                              defconfig
-arm                             pxa_defconfig
-sh                ecovec24-romimage_defconfig
-arm                            dove_defconfig
-sh                            hp6xx_defconfig
-powerpc64                        alldefconfig
-x86_64                            allnoconfig
-ia64                             allmodconfig
-ia64                                defconfig
-ia64                             allyesconfig
-m68k                             allmodconfig
-m68k                                defconfig
-m68k                             allyesconfig
-nios2                               defconfig
-arc                              allyesconfig
-nds32                             allnoconfig
-nds32                               defconfig
-nios2                            allyesconfig
-csky                                defconfig
-alpha                               defconfig
-alpha                            allyesconfig
-h8300                            allyesconfig
-arc                                 defconfig
-sh                               allmodconfig
-parisc                              defconfig
-s390                             allyesconfig
-s390                             allmodconfig
-parisc                           allyesconfig
-s390                                defconfig
-i386                             allyesconfig
-sparc                            allyesconfig
-sparc                               defconfig
-i386                                defconfig
-mips                             allyesconfig
-powerpc                          allyesconfig
-powerpc                          allmodconfig
-powerpc                           allnoconfig
-x86_64               randconfig-a005-20210824
-x86_64               randconfig-a006-20210824
-x86_64               randconfig-a001-20210824
-x86_64               randconfig-a003-20210824
-x86_64               randconfig-a004-20210824
-x86_64               randconfig-a002-20210824
-x86_64               randconfig-a005-20210822
-x86_64               randconfig-a006-20210822
-x86_64               randconfig-a001-20210822
-x86_64               randconfig-a003-20210822
-x86_64               randconfig-a004-20210822
-x86_64               randconfig-a002-20210822
-i386                 randconfig-a006-20210822
-i386                 randconfig-a001-20210822
-i386                 randconfig-a002-20210822
-i386                 randconfig-a005-20210822
-i386                 randconfig-a003-20210822
-i386                 randconfig-a004-20210822
-i386                 randconfig-a006-20210824
-i386                 randconfig-a001-20210824
-i386                 randconfig-a002-20210824
-i386                 randconfig-a005-20210824
-i386                 randconfig-a003-20210824
-i386                 randconfig-a004-20210824
-x86_64               randconfig-a014-20210825
-x86_64               randconfig-a015-20210825
-x86_64               randconfig-a016-20210825
-x86_64               randconfig-a013-20210825
-x86_64               randconfig-a012-20210825
-x86_64               randconfig-a011-20210825
-i386                 randconfig-a011-20210825
-i386                 randconfig-a016-20210825
-i386                 randconfig-a012-20210825
-i386                 randconfig-a014-20210825
-i386                 randconfig-a013-20210825
-i386                 randconfig-a015-20210825
-arc                  randconfig-r043-20210822
-riscv                    nommu_k210_defconfig
-riscv                            allyesconfig
-riscv                             allnoconfig
-riscv                               defconfig
-riscv                          rv32_defconfig
-riscv                            allmodconfig
-x86_64                    rhel-8.3-kselftests
-um                           x86_64_defconfig
-um                             i386_defconfig
-x86_64                           allyesconfig
-x86_64                               rhel-8.3
-x86_64                                  kexec
+Tested by Alex on a 100 Mbit card. Not yet tested on 10 Mbit
+cards - if any of those also have the 16 bit IO feature set
+in their config table, this patch series would break on those
+cards. 
 
-clang tested configs:
-i386                 randconfig-c001-20210824
-s390                 randconfig-c005-20210824
-arm                  randconfig-c002-20210824
-riscv                randconfig-c006-20210824
-powerpc              randconfig-c003-20210824
-x86_64               randconfig-c007-20210824
-mips                 randconfig-c004-20210824
-s390                 randconfig-c005-20210825
-i386                 randconfig-c001-20210825
-arm                  randconfig-c002-20210825
-riscv                randconfig-c006-20210825
-powerpc              randconfig-c003-20210825
-x86_64               randconfig-c007-20210825
-i386                 randconfig-c001-20210822
-s390                 randconfig-c005-20210822
-arm                  randconfig-c002-20210822
-riscv                randconfig-c006-20210822
-powerpc              randconfig-c003-20210822
-x86_64               randconfig-c007-20210822
-mips                 randconfig-c004-20210822
-mips                 randconfig-c004-20210825
-i386                 randconfig-c001-20210826
-s390                 randconfig-c005-20210826
-arm                  randconfig-c002-20210826
-riscv                randconfig-c006-20210826
-powerpc              randconfig-c003-20210826
-x86_64               randconfig-c007-20210826
-mips                 randconfig-c004-20210826
-x86_64               randconfig-a014-20210822
-x86_64               randconfig-a016-20210822
-x86_64               randconfig-a015-20210822
-x86_64               randconfig-a013-20210822
-x86_64               randconfig-a012-20210822
-x86_64               randconfig-a011-20210822
-x86_64               randconfig-a014-20210824
-x86_64               randconfig-a015-20210824
-x86_64               randconfig-a016-20210824
-x86_64               randconfig-a013-20210824
-x86_64               randconfig-a012-20210824
-x86_64               randconfig-a011-20210824
-i386                 randconfig-a011-20210824
-i386                 randconfig-a016-20210824
-i386                 randconfig-a012-20210824
-i386                 randconfig-a014-20210824
-i386                 randconfig-a013-20210824
-i386                 randconfig-a015-20210824
-i386                 randconfig-a011-20210822
-i386                 randconfig-a016-20210822
-i386                 randconfig-a012-20210822
-i386                 randconfig-a014-20210822
-i386                 randconfig-a013-20210822
-i386                 randconfig-a015-20210822
-hexagon              randconfig-r041-20210822
-hexagon              randconfig-r045-20210822
-riscv                randconfig-r042-20210822
-s390                 randconfig-r044-20210822
-hexagon              randconfig-r041-20210824
-hexagon              randconfig-r045-20210824
-riscv                randconfig-r042-20210824
-s390                 randconfig-r044-20210824
+Note that only patch 4 has been sent to netdev. Please CC
+linux-m68k when providing comments.
 
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+Cheers,
+
+   Michael
