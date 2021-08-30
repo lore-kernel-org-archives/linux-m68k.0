@@ -2,234 +2,114 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.8 required=3.0 tests=BAYES_00,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+X-Spam-Status: No, score=-17.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,INCLUDES_CR_TRAILER,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A7E17C432BE
-	for <linux-m68k@archiver.kernel.org>; Mon, 30 Aug 2021 21:25:54 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 55369C432BE
+	for <linux-m68k@archiver.kernel.org>; Mon, 30 Aug 2021 22:10:32 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 8251160F3A
-	for <linux-m68k@archiver.kernel.org>; Mon, 30 Aug 2021 21:25:54 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 3063E60241
+	for <linux-m68k@archiver.kernel.org>; Mon, 30 Aug 2021 22:10:32 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231199AbhH3V0r (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Mon, 30 Aug 2021 17:26:47 -0400
-Received: from mga01.intel.com ([192.55.52.88]:56517 "EHLO mga01.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230255AbhH3V0n (ORCPT <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Mon, 30 Aug 2021 17:26:43 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10092"; a="240597422"
-X-IronPort-AV: E=Sophos;i="5.84,364,1620716400"; 
-   d="scan'208";a="240597422"
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Aug 2021 14:25:48 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.84,364,1620716400"; 
-   d="scan'208";a="459597088"
-Received: from lkp-server01.sh.intel.com (HELO 4fbc2b3ce5aa) ([10.239.97.150])
-  by fmsmga007.fm.intel.com with ESMTP; 30 Aug 2021 14:25:46 -0700
-Received: from kbuild by 4fbc2b3ce5aa with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1mKomn-0005Vu-IK; Mon, 30 Aug 2021 21:25:45 +0000
-Date:   Tue, 31 Aug 2021 05:24:52 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     linux-m68k@lists.linux-m68k.org
-Subject: [m68k:m68k-v5.14] BUILD SUCCESS
- 9bebcd3cc120ae9463b619251362ed460f0ccb3c
-Message-ID: <612d4ca4.FLX/5YUcMM8vKt6K%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+        id S238813AbhH3WLZ (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Mon, 30 Aug 2021 18:11:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43410 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237713AbhH3WLU (ORCPT
+        <rfc822;linux-m68k@lists.linux-m68k.org>);
+        Mon, 30 Aug 2021 18:11:20 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3DE12C061575;
+        Mon, 30 Aug 2021 15:10:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=Sender:Content-Transfer-Encoding:
+        MIME-Version:References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:
+        Reply-To:Content-Type:Content-ID:Content-Description;
+        bh=36SL0wDTuPKE88DN3bn6CHYvWFCssDMr/vLYk5vdXW4=; b=D2xTVTYV2/R0+e0G3GBfPfTMt2
+        pw0sjSo97A8CT8qrUzQncZ508kfl1FcrxxX7NqSCPiVpNc1urI85Aym19fKi4B+xU+rV/2W3mQRvn
+        OMmfbKN3nrAbpu0u3DDkuz4eSf6ClexUSd1HCAdJvzn/d8EaYTFbzfxji/DrDgvlZCT6QVu5lFCmM
+        J+BXc/Trv1LW6U/mp716JwXzWAr4jqAbZrp1uM2lFHhhgfyqI5gNmHn5Dv8XgVew/ug388mgNVyyX
+        gJYDBofc36tTUcxbJv839KQ/+v6JOI+1ovoWL6muc3pmz5SZKnzX1JRjL70si8oz258csqk/fLfJO
+        gK7mFADg==;
+Received: from mcgrof by bombadil.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mKpTk-000khS-17; Mon, 30 Aug 2021 22:10:08 +0000
+From:   Luis Chamberlain <mcgrof@kernel.org>
+To:     axboe@kernel.dk, justin@coraid.com, geert@linux-m68k.org,
+        ulf.hansson@linaro.org, hare@suse.de, tj@kernel.org,
+        philipp.reisner@linbit.com, lars.ellenberg@linbit.com,
+        jdike@addtoit.com, richard@nod.at, anton.ivanov@cambridgegreys.com,
+        johannes.berg@intel.com, chris.obbard@collabora.com,
+        krisman@collabora.com, zhuyifei1999@gmail.com, thehajime@gmail.com,
+        chris@zankel.net, jcmvbkbc@gmail.com, tim@cyberelk.net
+Cc:     linux-xtensa@linux-xtensa.org, linux-um@lists.infradead.org,
+        linux-m68k@lists.linux-m68k.org, drbd-dev@lists.linbit.com,
+        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Luis Chamberlain <mcgrof@kernel.org>
+Subject: [PATCH 07/15] n64cart: add error handling support for add_disk()
+Date:   Mon, 30 Aug 2021 15:09:52 -0700
+Message-Id: <20210830221000.179369-8-mcgrof@kernel.org>
+X-Mailer: git-send-email 2.31.1
+In-Reply-To: <20210830221000.179369-1-mcgrof@kernel.org>
+References: <20210830221000.179369-1-mcgrof@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+Sender: Luis Chamberlain <mcgrof@infradead.org>
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/geert/linux-m68k.git m68k-v5.14
-branch HEAD: 9bebcd3cc120ae9463b619251362ed460f0ccb3c  m68k: defconfig: Enable Atari EtherNAT and NetUSBee USB support
+We never checked for errors on add_disk() as this function
+returned void. Now that this is fixed, use the shiny new
+error handling.
 
-elapsed time: 720m
-
-configs tested: 167
-configs skipped: 4
-
-The following configs have been built successfully.
-More configs may be tested in the coming days.
-
-gcc tested configs:
-arm                                 defconfig
-arm64                            allyesconfig
-arm64                               defconfig
-arm                              allyesconfig
-arm                              allmodconfig
-i386                 randconfig-c001-20210830
-s390                       zfcpdump_defconfig
-mips                         tb0287_defconfig
-m68k                       m5475evb_defconfig
-powerpc                     sequoia_defconfig
-arm                              alldefconfig
-arm                          gemini_defconfig
-powerpc64                           defconfig
-powerpc                      arches_defconfig
-arm                         vf610m4_defconfig
-powerpc                 mpc836x_mds_defconfig
-powerpc                     tqm8541_defconfig
-mips                          ath25_defconfig
-arc                     nsimosci_hs_defconfig
-arm                         nhk8815_defconfig
-arm                       omap2plus_defconfig
-arm                          pxa3xx_defconfig
-arm                           h3600_defconfig
-arm                          iop32x_defconfig
-mips                      pistachio_defconfig
-xtensa                  nommu_kc705_defconfig
-sh                           se7206_defconfig
-mips                     loongson2k_defconfig
-arm                           h5000_defconfig
-xtensa                         virt_defconfig
-powerpc                     powernv_defconfig
-sh                          sdk7786_defconfig
-csky                                defconfig
-arm                        neponset_defconfig
-mips                           ip28_defconfig
-powerpc                          g5_defconfig
-powerpc                        cell_defconfig
-ia64                             alldefconfig
-mips                         tb0219_defconfig
-mips                           xway_defconfig
-mips                         mpc30x_defconfig
-arm                          badge4_defconfig
-mips                         cobalt_defconfig
-sh                        edosk7705_defconfig
-powerpc                     mpc5200_defconfig
-sparc64                             defconfig
-arm                        magician_defconfig
-mips                        nlm_xlr_defconfig
-mips                           ci20_defconfig
-openrisc                  or1klitex_defconfig
-mips                      malta_kvm_defconfig
-powerpc                      cm5200_defconfig
-sparc                       sparc32_defconfig
-powerpc                  mpc885_ads_defconfig
-arm                            mmp2_defconfig
-powerpc                      ppc6xx_defconfig
-sh                           se7721_defconfig
-m68k                             alldefconfig
-mips                      fuloong2e_defconfig
-powerpc                      bamboo_defconfig
-arm                         s3c2410_defconfig
-arm                           sunxi_defconfig
-mips                           gcw0_defconfig
-powerpc                    socrates_defconfig
-arm                       netwinder_defconfig
-arc                           tb10x_defconfig
-sh                          rsk7201_defconfig
-mips                     cu1830-neo_defconfig
-alpha                            alldefconfig
-sh                            titan_defconfig
-mips                       bmips_be_defconfig
-h8300                       h8s-sim_defconfig
-sh                           se7724_defconfig
-m68k                        m5407c3_defconfig
-sh                         apsh4a3a_defconfig
-powerpc                 mpc834x_mds_defconfig
-mips                        vocore2_defconfig
-nios2                         3c120_defconfig
-m68k                            q40_defconfig
-sh                           se7751_defconfig
-powerpc               mpc834x_itxgp_defconfig
-sh                   sh7770_generic_defconfig
-arm                         bcm2835_defconfig
-powerpc                     tqm8555_defconfig
-powerpc                     pq2fads_defconfig
-mips                     decstation_defconfig
-arm                         s3c6400_defconfig
-powerpc                       eiger_defconfig
-x86_64                            allnoconfig
-ia64                             allmodconfig
-ia64                                defconfig
-ia64                             allyesconfig
-m68k                             allmodconfig
-m68k                                defconfig
-m68k                             allyesconfig
-nios2                               defconfig
-arc                              allyesconfig
-nds32                             allnoconfig
-nds32                               defconfig
-nios2                            allyesconfig
-alpha                               defconfig
-alpha                            allyesconfig
-xtensa                           allyesconfig
-h8300                            allyesconfig
-arc                                 defconfig
-sh                               allmodconfig
-parisc                              defconfig
-s390                             allyesconfig
-s390                             allmodconfig
-parisc                           allyesconfig
-s390                                defconfig
-i386                             allyesconfig
-sparc                            allyesconfig
-sparc                               defconfig
-i386                                defconfig
-mips                             allyesconfig
-mips                             allmodconfig
-powerpc                          allyesconfig
-powerpc                          allmodconfig
-powerpc                           allnoconfig
-x86_64               randconfig-a014-20210830
-x86_64               randconfig-a015-20210830
-x86_64               randconfig-a013-20210830
-x86_64               randconfig-a016-20210830
-x86_64               randconfig-a012-20210830
-x86_64               randconfig-a011-20210830
-i386                 randconfig-a016-20210830
-i386                 randconfig-a011-20210830
-i386                 randconfig-a015-20210830
-i386                 randconfig-a014-20210830
-i386                 randconfig-a012-20210830
-i386                 randconfig-a013-20210830
-s390                 randconfig-r044-20210830
-arc                  randconfig-r043-20210830
-riscv                randconfig-r042-20210830
-riscv                    nommu_k210_defconfig
-riscv                            allyesconfig
-riscv                    nommu_virt_defconfig
-riscv                             allnoconfig
-riscv                               defconfig
-riscv                          rv32_defconfig
-riscv                            allmodconfig
-x86_64                    rhel-8.3-kselftests
-um                           x86_64_defconfig
-um                             i386_defconfig
-x86_64                           allyesconfig
-x86_64                              defconfig
-x86_64                               rhel-8.3
-x86_64                                  kexec
-
-clang tested configs:
-i386                 randconfig-c001-20210830
-s390                 randconfig-c005-20210830
-riscv                randconfig-c006-20210830
-powerpc              randconfig-c003-20210830
-mips                 randconfig-c004-20210830
-arm                  randconfig-c002-20210830
-x86_64               randconfig-c007-20210830
-x86_64               randconfig-a005-20210830
-x86_64               randconfig-a001-20210830
-x86_64               randconfig-a003-20210830
-x86_64               randconfig-a002-20210830
-x86_64               randconfig-a004-20210830
-x86_64               randconfig-a006-20210830
-i386                 randconfig-a005-20210830
-i386                 randconfig-a002-20210830
-i386                 randconfig-a003-20210830
-i386                 randconfig-a006-20210830
-i386                 randconfig-a004-20210830
-i386                 randconfig-a001-20210830
-
+Signed-off-by: Luis Chamberlain <mcgrof@kernel.org>
 ---
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+ drivers/block/n64cart.c | 12 ++++++++++--
+ 1 file changed, 10 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/block/n64cart.c b/drivers/block/n64cart.c
+index c84be0028f63..1ba9137bdf30 100644
+--- a/drivers/block/n64cart.c
++++ b/drivers/block/n64cart.c
+@@ -117,6 +117,7 @@ static const struct block_device_operations n64cart_fops = {
+ static int __init n64cart_probe(struct platform_device *pdev)
+ {
+ 	struct gendisk *disk;
++	int err = -ENOMEM;
+ 
+ 	if (!start || !size) {
+ 		pr_err("start or size not specified\n");
+@@ -134,7 +135,7 @@ static int __init n64cart_probe(struct platform_device *pdev)
+ 
+ 	disk = blk_alloc_disk(NUMA_NO_NODE);
+ 	if (!disk)
+-		return -ENOMEM;
++		goto out;
+ 
+ 	disk->first_minor = 0;
+ 	disk->flags = GENHD_FL_NO_PART_SCAN;
+@@ -149,11 +150,18 @@ static int __init n64cart_probe(struct platform_device *pdev)
+ 	blk_queue_physical_block_size(disk->queue, 4096);
+ 	blk_queue_logical_block_size(disk->queue, 4096);
+ 
+-	add_disk(disk);
++	err = add_disk(disk);
++	if (err)
++		goto out_cleanup_disk;
+ 
+ 	pr_info("n64cart: %u kb disk\n", size / 1024);
+ 
+ 	return 0;
++
++out_cleanup_disk:
++	blk_cleanup_disk(disk);
++out:
++	return err;
+ }
+ 
+ static struct platform_driver n64cart_driver = {
+-- 
+2.30.2
+
