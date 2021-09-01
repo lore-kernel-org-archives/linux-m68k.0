@@ -2,82 +2,125 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,
+X-Spam-Status: No, score=-13.8 required=3.0 tests=BAYES_00,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
-	autolearn=ham autolearn_force=no version=3.4.0
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 28743C432BE
-	for <linux-m68k@archiver.kernel.org>; Wed,  1 Sep 2021 12:17:41 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 71B3EC432BE
+	for <linux-m68k@archiver.kernel.org>; Wed,  1 Sep 2021 13:42:03 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 0CEF460F92
-	for <linux-m68k@archiver.kernel.org>; Wed,  1 Sep 2021 12:17:41 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 4E2C060BD3
+	for <linux-m68k@archiver.kernel.org>; Wed,  1 Sep 2021 13:42:03 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244052AbhIAMSh (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Wed, 1 Sep 2021 08:18:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54994 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244048AbhIAMSg (ORCPT
-        <rfc822;linux-m68k@vger.kernel.org>); Wed, 1 Sep 2021 08:18:36 -0400
-Received: from laurent.telenet-ops.be (laurent.telenet-ops.be [IPv6:2a02:1800:110:4::f00:19])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F1A17C061764
-        for <linux-m68k@vger.kernel.org>; Wed,  1 Sep 2021 05:17:39 -0700 (PDT)
-Received: from ramsan.of.borg ([IPv6:2a02:1810:ac12:ed20:2193:279a:893d:20ae])
-        by laurent.telenet-ops.be with bizsmtp
-        id ocHd250011ZidPp01cHd0y; Wed, 01 Sep 2021 14:17:37 +0200
-Received: from rox.of.borg ([192.168.97.57])
-        by ramsan.of.borg with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.93)
-        (envelope-from <geert@linux-m68k.org>)
-        id 1mLPBQ-0017AR-Ls; Wed, 01 Sep 2021 14:17:36 +0200
-Received: from geert by rox.of.borg with local (Exim 4.93)
-        (envelope-from <geert@linux-m68k.org>)
-        id 1mLPBQ-00AOXs-6t; Wed, 01 Sep 2021 14:17:36 +0200
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-To:     Arnd Bergmann <arnd@arndb.de>,
-        "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>
-Cc:     Sam Creasey <sammy@sammy.net>, netdev@vger.kernel.org,
-        linux-m68k@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: [PATCH] net/sun3_82586: Fix return value of sun3_82586_probe()
-Date:   Wed,  1 Sep 2021 14:17:35 +0200
-Message-Id: <20210901121735.2477588-1-geert@linux-m68k.org>
-X-Mailer: git-send-email 2.25.1
+        id S244396AbhIANm4 (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Wed, 1 Sep 2021 09:42:56 -0400
+Received: from mail-vs1-f50.google.com ([209.85.217.50]:39541 "EHLO
+        mail-vs1-f50.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S244344AbhIANm4 (ORCPT
+        <rfc822;linux-m68k@lists.linux-m68k.org>);
+        Wed, 1 Sep 2021 09:42:56 -0400
+Received: by mail-vs1-f50.google.com with SMTP id m190so2460932vsm.6
+        for <linux-m68k@lists.linux-m68k.org>; Wed, 01 Sep 2021 06:41:59 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=/xOCv7duiKV85YEAr3p0lxEIgvNf6vJOyFaux8D3sgc=;
+        b=hkdVykL+tGLtJXy03pDX3GVsfgciDJ1LFVjJLH582elA1WQnXghz+bIf84VJ3DRZBM
+         qnalxpBGnDEw+PedPH7RvqpD4eC9aacP2+f3Ra1Yv6n3hPK7TNQ/zCXwZaPOlpUhp/BA
+         0menEcgdphq/4RzIbdueeoxXm/5PgGpKOwWOitmCC92ddmh7Xne4hMFVGoWJv2f+uWVp
+         J8RR4F8Th4GZSkorX4DEglEPfoD8L963c1VtG4YyV4okJiSba/1fIe5Whds2AG2erWTm
+         ekpKQr6qGUP6vscPpmjQN751xQSK8ppbzO1JdcTY/nZjeApFYcfzD+7kx/SoHupGP5fb
+         rp2w==
+X-Gm-Message-State: AOAM532ZEb35Q/FsU4Q7tvmhW7CJHpIJ/ILPXXlCKVJJEh6yXFESypa/
+        QE6syLHzoBlElRvD02eN0/r+NamZxAvQJldHb90=
+X-Google-Smtp-Source: ABdhPJx/jw1Hd9z5dejjk2bylHrBEE4LNmlEMO2utTQ/YLBtNm+pHtrY/uki14hOKxAFDVFkelRD3cReRgD5NymWjeI=
+X-Received: by 2002:a05:6102:34c9:: with SMTP id a9mr18408820vst.26.1630503718663;
+ Wed, 01 Sep 2021 06:41:58 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+References: <20210830221000.179369-1-mcgrof@kernel.org> <20210830221000.179369-2-mcgrof@kernel.org>
+In-Reply-To: <20210830221000.179369-2-mcgrof@kernel.org>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Wed, 1 Sep 2021 15:41:47 +0200
+Message-ID: <CAMuHMdUUrp-ktVmOPRs7KinykrVKEMx-dG42RapPc-egxODNnQ@mail.gmail.com>
+Subject: Re: [PATCH 01/15] z2ram: add error handling support for add_disk()
+To:     Luis Chamberlain <mcgrof@kernel.org>
+Cc:     Jens Axboe <axboe@kernel.dk>, justin@coraid.com,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Hannes Reinecke <hare@suse.de>, Tejun Heo <tj@kernel.org>,
+        Philipp Reisner <philipp.reisner@linbit.com>,
+        Lars Ellenberg <lars.ellenberg@linbit.com>,
+        Jeff Dike <jdike@addtoit.com>,
+        Richard Weinberger <richard@nod.at>,
+        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
+        Johannes Berg <johannes.berg@intel.com>,
+        chris.obbard@collabora.com,
+        Gabriel Krisman Bertazi <krisman@collabora.com>,
+        YiFei Zhu <zhuyifei1999@gmail.com>, thehajime@gmail.com,
+        Chris Zankel <chris@zankel.net>,
+        Max Filippov <jcmvbkbc@gmail.com>,
+        Tim Waugh <tim@cyberelk.net>,
+        "open list:TENSILICA XTENSA PORT (xtensa)" 
+        <linux-xtensa@linux-xtensa.org>,
+        linux-um <linux-um@lists.infradead.org>,
+        linux-m68k <linux-m68k@lists.linux-m68k.org>,
+        Lars Ellenberg <drbd-dev@lists.linbit.com>,
+        linux-block@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-drivers/net/ethernet/i825xx/sun3_82586.c: In function ‘sun3_82586_probe’:
-drivers/net/ethernet/i825xx/sun3_82586.c:317:9: warning: returning ‘struct net_device *’ from a function with return type ‘int’ makes integer from pointer without a cast [-Wint-conversion]
-  317 |  return dev;
-      |         ^~~
+Hi Luis,
 
-The return type of sun3_82586_probe() was changed, but one return value
-was forgotten to be updated.
+On Tue, Aug 31, 2021 at 12:10 AM Luis Chamberlain <mcgrof@kernel.org> wrote:
+> We never checked for errors on add_disk() as this function
+> returned void. Now that this is fixed, use the shiny new
+> error handling. Only the disk is cleaned up inside
+> z2ram_register_disk() as the caller deals with the rest.
+>
+> Signed-off-by: Luis Chamberlain <mcgrof@kernel.org>
 
-Fixes: e179d78ee11a70e2 ("m68k: remove legacy probing")
-Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
----
- drivers/net/ethernet/i825xx/sun3_82586.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Thanks for your patch!
 
-diff --git a/drivers/net/ethernet/i825xx/sun3_82586.c b/drivers/net/ethernet/i825xx/sun3_82586.c
-index 8c57e6e36647e9d3..ec4c5cfe2d68e8ed 100644
---- a/drivers/net/ethernet/i825xx/sun3_82586.c
-+++ b/drivers/net/ethernet/i825xx/sun3_82586.c
-@@ -314,7 +314,7 @@ static int __init sun3_82586_probe(void)
- 	err = register_netdev(dev);
- 	if (err)
- 		goto out2;
--	return dev;
-+	return 0;
- 
- out2:
- 	release_region(ioaddr, SUN3_82586_TOTAL_SIZE);
--- 
-2.25.1
+> --- a/drivers/block/z2ram.c
+> +++ b/drivers/block/z2ram.c
+> @@ -318,6 +318,7 @@ static const struct blk_mq_ops z2_mq_ops = {
+>  static int z2ram_register_disk(int minor)
+>  {
+>         struct gendisk *disk;
+> +       int err;
+>
+>         disk = blk_mq_alloc_disk(&tag_set, NULL);
+>         if (IS_ERR(disk))
+> @@ -333,8 +334,10 @@ static int z2ram_register_disk(int minor)
+>                 sprintf(disk->disk_name, "z2ram");
+>
+>         z2ram_gendisk[minor] = disk;
+> -       add_disk(disk);
+> -       return 0;
+> +       err = add_disk(disk);
+> +       if (err)
+> +               blk_cleaup_disk(disk);
 
+blk_cleanup_disk()?
+
+Seems like lkp already detected this back in July...
+
+> +       return err;
+>  }
+>
+>  static int __init z2_init(void)
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
