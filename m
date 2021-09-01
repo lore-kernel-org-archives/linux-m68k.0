@@ -2,49 +2,49 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-13.8 required=3.0 tests=BAYES_00,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no
+X-Spam-Status: No, score=-8.8 required=3.0 tests=BAYES_00,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,MAILING_LIST_MULTI,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 71B3EC432BE
-	for <linux-m68k@archiver.kernel.org>; Wed,  1 Sep 2021 13:42:03 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id ED50DC432BE
+	for <linux-m68k@archiver.kernel.org>; Wed,  1 Sep 2021 13:43:59 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 4E2C060BD3
-	for <linux-m68k@archiver.kernel.org>; Wed,  1 Sep 2021 13:42:03 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id D5D1A60BD3
+	for <linux-m68k@archiver.kernel.org>; Wed,  1 Sep 2021 13:43:59 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244396AbhIANm4 (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Wed, 1 Sep 2021 09:42:56 -0400
-Received: from mail-vs1-f50.google.com ([209.85.217.50]:39541 "EHLO
-        mail-vs1-f50.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244344AbhIANm4 (ORCPT
+        id S244221AbhIANoz (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Wed, 1 Sep 2021 09:44:55 -0400
+Received: from mail-ua1-f47.google.com ([209.85.222.47]:47064 "EHLO
+        mail-ua1-f47.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S243518AbhIANoz (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Wed, 1 Sep 2021 09:42:56 -0400
-Received: by mail-vs1-f50.google.com with SMTP id m190so2460932vsm.6
-        for <linux-m68k@lists.linux-m68k.org>; Wed, 01 Sep 2021 06:41:59 -0700 (PDT)
+        Wed, 1 Sep 2021 09:44:55 -0400
+Received: by mail-ua1-f47.google.com with SMTP id 37so1343247uau.13
+        for <linux-m68k@lists.linux-m68k.org>; Wed, 01 Sep 2021 06:43:58 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=/xOCv7duiKV85YEAr3p0lxEIgvNf6vJOyFaux8D3sgc=;
-        b=hkdVykL+tGLtJXy03pDX3GVsfgciDJ1LFVjJLH582elA1WQnXghz+bIf84VJ3DRZBM
-         qnalxpBGnDEw+PedPH7RvqpD4eC9aacP2+f3Ra1Yv6n3hPK7TNQ/zCXwZaPOlpUhp/BA
-         0menEcgdphq/4RzIbdueeoxXm/5PgGpKOwWOitmCC92ddmh7Xne4hMFVGoWJv2f+uWVp
-         J8RR4F8Th4GZSkorX4DEglEPfoD8L963c1VtG4YyV4okJiSba/1fIe5Whds2AG2erWTm
-         ekpKQr6qGUP6vscPpmjQN751xQSK8ppbzO1JdcTY/nZjeApFYcfzD+7kx/SoHupGP5fb
-         rp2w==
-X-Gm-Message-State: AOAM532ZEb35Q/FsU4Q7tvmhW7CJHpIJ/ILPXXlCKVJJEh6yXFESypa/
-        QE6syLHzoBlElRvD02eN0/r+NamZxAvQJldHb90=
-X-Google-Smtp-Source: ABdhPJx/jw1Hd9z5dejjk2bylHrBEE4LNmlEMO2utTQ/YLBtNm+pHtrY/uki14hOKxAFDVFkelRD3cReRgD5NymWjeI=
-X-Received: by 2002:a05:6102:34c9:: with SMTP id a9mr18408820vst.26.1630503718663;
- Wed, 01 Sep 2021 06:41:58 -0700 (PDT)
+        bh=gWwkSDKtYGpqljVYI1y+WfrFXR09Q3LdZi5r8xigkjk=;
+        b=gnUjd5Thb6/lSybyYIa4/wgoN1aOSfH+Fwrp6ZDT5pfwozAOgSBemducjKV9UDeMjw
+         IqkoyEaZf/GGDeb41BrYHNw27bEp4VGGJD9YmMJTySKZpQhqrJJ+8BVS0Qal9O4dNeqH
+         qmd7XJufptCSvMECIeHeiQrYGgoX6+T9gD6k3QwjxOP+Y9m8j8/+18CVcLluxTtvws3J
+         ARWG19pL0W93t4/CLs3Oei6Z/32o+eViWnAtStoDeVQjWSjbglZgg8haNX8N/uBiiEcq
+         Fts9N8dOKT91QTI/UW/PnuKJ2mhvBasqXi974+KsPSO/5pXB+4iSqsnp5+bY4DXSeaIH
+         fYXw==
+X-Gm-Message-State: AOAM530Xp/ISJ3bSn7SqucFbOOg+PyzzlUEa4QQnSp4bpH8Z5e2YayWt
+        1+hjsA89u+kjGp/gcT0zKMNcbTROFA+SkeyuoLQ=
+X-Google-Smtp-Source: ABdhPJwQuBYdXPN25peyItUun+pLAld/i8v6Ep8jdmiUeF2ltHZxB5QeDFZxYSpkK7+IOC5bnXvgZm+ETQziLUn4arE=
+X-Received: by 2002:ab0:2989:: with SMTP id u9mr22973907uap.122.1630503838209;
+ Wed, 01 Sep 2021 06:43:58 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210830221000.179369-1-mcgrof@kernel.org> <20210830221000.179369-2-mcgrof@kernel.org>
-In-Reply-To: <20210830221000.179369-2-mcgrof@kernel.org>
+References: <20210830221000.179369-1-mcgrof@kernel.org> <20210830221000.179369-4-mcgrof@kernel.org>
+In-Reply-To: <20210830221000.179369-4-mcgrof@kernel.org>
 From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Wed, 1 Sep 2021 15:41:47 +0200
-Message-ID: <CAMuHMdUUrp-ktVmOPRs7KinykrVKEMx-dG42RapPc-egxODNnQ@mail.gmail.com>
-Subject: Re: [PATCH 01/15] z2ram: add error handling support for add_disk()
+Date:   Wed, 1 Sep 2021 15:43:46 +0200
+Message-ID: <CAMuHMdXCUhrnXSmjFP7nJKHZp2joVRz-Ka2BUNMcZFA06CJ1wQ@mail.gmail.com>
+Subject: Re: [PATCH 03/15] m68k/emu/nfblock: add error handling support for add_disk()
 To:     Luis Chamberlain <mcgrof@kernel.org>
 Cc:     Jens Axboe <axboe@kernel.dk>, justin@coraid.com,
         Ulf Hansson <ulf.hansson@linaro.org>,
@@ -73,52 +73,21 @@ Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-Hi Luis,
-
 On Tue, Aug 31, 2021 at 12:10 AM Luis Chamberlain <mcgrof@kernel.org> wrote:
 > We never checked for errors on add_disk() as this function
 > returned void. Now that this is fixed, use the shiny new
-> error handling. Only the disk is cleaned up inside
-> z2ram_register_disk() as the caller deals with the rest.
+> error handling.
 >
 > Signed-off-by: Luis Chamberlain <mcgrof@kernel.org>
 
-Thanks for your patch!
-
-> --- a/drivers/block/z2ram.c
-> +++ b/drivers/block/z2ram.c
-> @@ -318,6 +318,7 @@ static const struct blk_mq_ops z2_mq_ops = {
->  static int z2ram_register_disk(int minor)
->  {
->         struct gendisk *disk;
-> +       int err;
->
->         disk = blk_mq_alloc_disk(&tag_set, NULL);
->         if (IS_ERR(disk))
-> @@ -333,8 +334,10 @@ static int z2ram_register_disk(int minor)
->                 sprintf(disk->disk_name, "z2ram");
->
->         z2ram_gendisk[minor] = disk;
-> -       add_disk(disk);
-> -       return 0;
-> +       err = add_disk(disk);
-> +       if (err)
-> +               blk_cleaup_disk(disk);
-
-blk_cleanup_disk()?
-
-Seems like lkp already detected this back in July...
-
-> +       return err;
->  }
->
->  static int __init z2_init(void)
+Reviewed-by: Geert Uytterhoeven <geert@linux-m68k.org>
+Acked-by: Geert Uytterhoeven <geert@linux-m68k.org>
 
 Gr{oetje,eeting}s,
 
                         Geert
 
---
+-- 
 Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
 In personal conversations with technical people, I call myself a hacker. But
