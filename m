@@ -2,98 +2,65 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-20.3 required=3.0 tests=BAYES_00,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,INCLUDES_PULL_REQUEST,
-	MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,
-	USER_AGENT_SANE_1 autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-11.4 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,
+	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 7CE61C432BE
-	for <linux-m68k@archiver.kernel.org>; Thu,  2 Sep 2021 00:09:25 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 002F1C432BE
+	for <linux-m68k@archiver.kernel.org>; Thu,  2 Sep 2021 02:14:13 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 5749661074
-	for <linux-m68k@archiver.kernel.org>; Thu,  2 Sep 2021 00:09:25 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id D78BE610CD
+	for <linux-m68k@archiver.kernel.org>; Thu,  2 Sep 2021 02:14:13 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232614AbhIBAKW (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Wed, 1 Sep 2021 20:10:22 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46688 "EHLO mail.kernel.org"
+        id S233070AbhIBCPJ (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Wed, 1 Sep 2021 22:15:09 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37072 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232490AbhIBAKV (ORCPT <rfc822;linux-m68k@vger.kernel.org>);
-        Wed, 1 Sep 2021 20:10:21 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 20D4060FE6;
-        Thu,  2 Sep 2021 00:09:22 +0000 (UTC)
-From:   Greg Ungerer <gerg@linux-m68k.org>
-Subject: [git pull] m68knommu changes for v5.15
-To:     torvalds@linux-foundation.org
-Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        id S233041AbhIBCPJ (ORCPT <rfc822;linux-m68k@vger.kernel.org>);
+        Wed, 1 Sep 2021 22:15:09 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPS id A0E55610CA;
+        Thu,  2 Sep 2021 02:14:11 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1630548851;
+        bh=kKqf5AOp6ZK+VPZzX5LEbzAxpYG9hJXwZgERkx5stgM=;
+        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
+        b=S5MwE4Gp4/WE6EAaXxE+zhTTcyQgJwG4vq6PtNmPVQ+Liv5PiCKpvqWYtNBHB+OD9
+         PRyvhPR/0X1igO3oUq+YU9lxJYNS6y+XeAW7Mfp9eTT2g+HbotBDyTVaDdJE7ZEXiG
+         34N+4hiVwOhLr3VZlLNZu8nPTK4Xu8bJzQrPCyuyq34/DItz4a/HggHNlxFtEqZ2wI
+         BBOlBEayY5x17Z62pi6xcoA0gXBAoBwDWJjwd3oq7ck0A4jjZghlxQNOJnYQMW5907
+         4lYYnkEPXUUqPoJxmyhL1opVjBXlr3IFLJBjdQqTnaPeolah2onkHvBTJudVjAxySw
+         irCjqK9Ofz4Sw==
+Subject: Re: [git pull] m68knommu changes for v5.15
+From:   pr-tracker-bot@kernel.org
+In-Reply-To: <40f5e521-673a-dbfb-efff-62bdd8c01f49@linux-m68k.org>
+References: <40f5e521-673a-dbfb-efff-62bdd8c01f49@linux-m68k.org>
+X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
+X-PR-Tracked-Message-Id: <40f5e521-673a-dbfb-efff-62bdd8c01f49@linux-m68k.org>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/gerg/m68knommu.git tags/m68knommu-for-v5.15
+X-PR-Tracked-Commit-Id: db87db65c1059f3be04506d122f8ec9b2fa3b05e
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: 6104dde096eba9f443845686a2c4b3fa31129eb4
+Message-Id: <163054885162.9778.12867962222805284981.pr-tracker-bot@kernel.org>
+Date:   Thu, 02 Sep 2021 02:14:11 +0000
+To:     Greg Ungerer <gerg@linux-m68k.org>
+Cc:     torvalds@linux-foundation.org,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
         Linux/m68k <linux-m68k@vger.kernel.org>,
         Geert Uytterhoeven <geert@linux-m68k.org>, gerg@kernel.org
-Message-ID: <40f5e521-673a-dbfb-efff-62bdd8c01f49@linux-m68k.org>
-Date:   Thu, 2 Sep 2021 10:09:20 +1000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-Hi Linus,
+The pull request you sent on Thu, 2 Sep 2021 10:09:20 +1000:
 
-Please pull the m68knommu changes for v5.15.
+> git://git.kernel.org/pub/scm/linux/kernel/git/gerg/m68knommu.git tags/m68knommu-for-v5.15
 
-As per the tag comment, changes include:
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/6104dde096eba9f443845686a2c4b3fa31129eb4
 
-. flexcan platform support (for m5441x)
-. fix CONFIG_ROMKERNEL linking
-. fix compilation when CONFIG_ISA_DMA_API is set
-. fix local ColdFire clk_enable() for NULL clk
+Thank you!
 
-Regards
-Greg
-
-
-
-The following changes since commit e22ce8eb631bdc47a4a4ea7ecf4e4ba499db4f93:
-
-   Linux 5.14-rc7 (2021-08-22 14:24:56 -0700)
-
-are available in the Git repository at:
-
-   git://git.kernel.org/pub/scm/linux/kernel/git/gerg/m68knommu.git tags/m68knommu-for-v5.15
-
-for you to fetch changes up to db87db65c1059f3be04506d122f8ec9b2fa3b05e:
-
-   m68knommu: only set CONFIG_ISA_DMA_API for ColdFire sub-arch (2021-08-23 08:40:05 +1000)
-
-----------------------------------------------------------------
-m68knommu: collection of fixes for 5.15
-
-. flexcan platform support (for m5441x)
-. fix CONFIG_ROMKERNEL linking
-. fix compilation when CONFIG_ISA_DMA_API is set
-. fix local ColdFire clk_enable() for NULL clk
-
-----------------------------------------------------------------
-Angelo Dureghello (2):
-       m68k: stmark2: update board setup
-       m68k: m5441x: add flexcan support
-
-Arnd Bergmann (1):
-       m68knommu: only set CONFIG_ISA_DMA_API for ColdFire sub-arch
-
-Dan Carpenter (1):
-       m68k: coldfire: return success for clk_enable(NULL)
-
-Randy Dunlap (1):
-       m68k/nommu: prevent setting ROMKERNEL when ROM is not set
-
-  arch/m68k/Kconfig.bus             |  2 +-
-  arch/m68k/Kconfig.machine         |  1 +
-  arch/m68k/coldfire/clk.c          |  2 +-
-  arch/m68k/coldfire/device.c       | 44 +++++++++++++++++++++++++++++++++++++++
-  arch/m68k/coldfire/m5441x.c       |  8 +++----
-  arch/m68k/coldfire/stmark2.c      |  6 ++++--
-  arch/m68k/include/asm/m5441xsim.h | 19 +++++++++++++++++
-  7 files changed, 74 insertions(+), 8 deletions(-)
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/prtracker.html
