@@ -2,118 +2,129 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-13.7 required=3.0 tests=BAYES_00,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-5.1 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,NICE_REPLY_A,SPF_HELO_NONE,
+	SPF_PASS,USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 67B49C433F5
-	for <linux-m68k@archiver.kernel.org>; Fri,  3 Sep 2021 14:14:30 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8A4E2C433F5
+	for <linux-m68k@archiver.kernel.org>; Fri,  3 Sep 2021 21:52:35 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 3AD2C61058
-	for <linux-m68k@archiver.kernel.org>; Fri,  3 Sep 2021 14:14:30 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 71A7D60FD7
+	for <linux-m68k@archiver.kernel.org>; Fri,  3 Sep 2021 21:52:35 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243495AbhICOP3 (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Fri, 3 Sep 2021 10:15:29 -0400
-Received: from mail-vs1-f51.google.com ([209.85.217.51]:38661 "EHLO
-        mail-vs1-f51.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235544AbhICOP2 (ORCPT
-        <rfc822;linux-m68k@vger.kernel.org>); Fri, 3 Sep 2021 10:15:28 -0400
-Received: by mail-vs1-f51.google.com with SMTP id a25so4465095vso.5
-        for <linux-m68k@vger.kernel.org>; Fri, 03 Sep 2021 07:14:28 -0700 (PDT)
+        id S236059AbhICVxf (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Fri, 3 Sep 2021 17:53:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56314 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1349762AbhICVxe (ORCPT
+        <rfc822;linux-m68k@vger.kernel.org>); Fri, 3 Sep 2021 17:53:34 -0400
+Received: from mail-pj1-x1034.google.com (mail-pj1-x1034.google.com [IPv6:2607:f8b0:4864:20::1034])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5CBEEC061764
+        for <linux-m68k@vger.kernel.org>; Fri,  3 Sep 2021 14:52:34 -0700 (PDT)
+Received: by mail-pj1-x1034.google.com with SMTP id u11-20020a17090adb4b00b00181668a56d6so459320pjx.5
+        for <linux-m68k@vger.kernel.org>; Fri, 03 Sep 2021 14:52:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=subject:to:references:cc:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-transfer-encoding;
+        bh=gKeSZ+pF0BB5facpi5/3rm8YHs77lF8++bw8wKEiUDA=;
+        b=YsILxUeUm/UpWjhTLk8bdEgnj9Ms5mJ6iL92euc07kNw3H5yzNIrlLX3Dl51KOIu+H
+         rW6a+3dPn15GnIZ0wfAQPnboZitw55T/nQk4Kv/65LfsjJ4qTxFUH8QQZ1MuQ7mwpPu2
+         P5ReoBa3+1quM9LA46Cqbi+On/eFX8HNmvK22nwsGXvBv9Z1TnO3VWCNkXLQX0H0zq/T
+         HQNOFLBBCNHwxhQZ+ooByhzdrAFPNkcyAnDNvEbecM7jhvhXo96xdgSreUTrt/wkgz9g
+         FDxbrewojiVlzq+A2bs6ZIyofcY3rXtcHVavIrQc/VxNxrKzNbjAzzU56V5sqo71EmoS
+         CzCQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=UFJrqCkwEFWmoWQF1ApmVh5dqXjUuusu9uonayiZtz0=;
-        b=BsZJtIsObp7D0/DoBm1R6BYNa46ZpmCOu2dzZa8U8zziBrs45a1aa6OJRV/j5Gvg6h
-         IbXvU5N0r0+lKN6a01MdSfV1Y2LdEOS1wmM+MgSgbjKJQG3VBEulGR5VJ8sURRXPo0lM
-         TlycIatiLliJuRKHJo/oyqr27ol08h20UbRniwipYURetktqB/VjCSZdHsvTudrLWv3E
-         xaPcNXaHHboh56CS28t7dPzAkUcnRlXzKIthJcSHQS5WoF1FaZLWe6m4kdM6q4g2uN4A
-         pRXaV4aE4/Lu4pFhbznhDJebsqvLhmwmKJpjORYshI7jl/pE4HOsMdbA+2kVQvITKR4y
-         jqow==
-X-Gm-Message-State: AOAM533f2n9PYb6pWxp9dzM8474a2JT2HW7zsDrP6JXq3oPtzslUb0FZ
-        jfVyvuR/BM+zMOc9qfYWFv0QvSq8fhtZs/3FHtg=
-X-Google-Smtp-Source: ABdhPJy+x5u9Cg+2Kwk/lEgSQXTXW5xoRNvam3wIYzTvKhgYAiLAEcJDdDzrPsZI6Z9gw2dRV2WQ/YpQBxKhT3BRwTQ=
-X-Received: by 2002:a67:cb0a:: with SMTP id b10mr2858173vsl.9.1630678467150;
- Fri, 03 Sep 2021 07:14:27 -0700 (PDT)
-MIME-Version: 1.0
-References: <1630206710-5954-1-git-send-email-schmitzmic@gmail.com>
- <1630206710-5954-2-git-send-email-schmitzmic@gmail.com> <CAMuHMdV5hWcg=pPZ7=E5QEi5OqM=X4JsqymsL-vHWjMjDvyWQQ@mail.gmail.com>
- <6843c140-7f58-8510-30f2-201d824601df@gmail.com>
-In-Reply-To: <6843c140-7f58-8510-30f2-201d824601df@gmail.com>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Fri, 3 Sep 2021 16:14:15 +0200
-Message-ID: <CAMuHMdUwSMDgQ8Vk9JV4kngJ52Vz1X8fXiTPLow_9sE9OX2tLg@mail.gmail.com>
+        h=x-gm-message-state:subject:to:references:cc:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding;
+        bh=gKeSZ+pF0BB5facpi5/3rm8YHs77lF8++bw8wKEiUDA=;
+        b=HlL4R2AZ8cQ4lFjGJdMFTC8MObnsBIW63C6cY270GED1cIs0cMzn9qIaur4x8M39VK
+         BGzCf31s7MjRcXxhXA3fL8/YKL0U5rHBsTeCnGGPRmDMgPew8jgF3MiVVQaK8TJr+pfh
+         4DmQIRiez9NBdvYux0gvse7z8PiRHG/Ox8E5t9xdqzA6WJOlGJwhaSX9rXfDW2AzhWFH
+         NvKYEABc8HUQkeP40kmT+gW2KAA4hpZ5nJ/n9uL+GcbaTPVVSN1Pwf2cE5HMF0kfRYqz
+         VHJL7g5q8RJ0gb3A9dkTzR0R+cYZIxSMsrXyf7mVjjmtI06XRTnwwveHF+SSjByZrGDQ
+         HCUw==
+X-Gm-Message-State: AOAM532rNMBqYx1enq5RFnO1+ikLSIEtTP3I2DTkPSQBSqyLs4PT8hnm
+        mmtb8MSa5rhM8cfGcddaSFs=
+X-Google-Smtp-Source: ABdhPJxDLONtMreBtv/Zr/nJ5jDz497ADPFGKcVdhyWYzs0pnmJHFTeq0xUc0NjEjSEKMQ3M44KDTA==
+X-Received: by 2002:a17:90a:df0c:: with SMTP id gp12mr962064pjb.116.1630705953941;
+        Fri, 03 Sep 2021 14:52:33 -0700 (PDT)
+Received: from [10.1.1.26] (222-155-5-209-adsl.sparkbb.co.nz. [222.155.5.209])
+        by smtp.gmail.com with ESMTPSA id d3sm337234pga.7.2021.09.03.14.52.30
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Fri, 03 Sep 2021 14:52:33 -0700 (PDT)
 Subject: Re: [PATCH v7 1/4] m68k: Kconfig - select core PCMCIA support module
  for Amiga PCMCIA
-To:     Michael Schmitz <schmitzmic@gmail.com>
-Cc:     "Linux/m68k" <linux-m68k@vger.kernel.org>,
-        ALeX Kazik <alex@kazik.de>
-Content-Type: text/plain; charset="UTF-8"
+To:     Geert Uytterhoeven <geert@linux-m68k.org>
+References: <1630206710-5954-1-git-send-email-schmitzmic@gmail.com>
+ <1630206710-5954-2-git-send-email-schmitzmic@gmail.com>
+ <CAMuHMdV5hWcg=pPZ7=E5QEi5OqM=X4JsqymsL-vHWjMjDvyWQQ@mail.gmail.com>
+ <6843c140-7f58-8510-30f2-201d824601df@gmail.com>
+ <CAMuHMdUwSMDgQ8Vk9JV4kngJ52Vz1X8fXiTPLow_9sE9OX2tLg@mail.gmail.com>
+Cc:     Linux/m68k <linux-m68k@vger.kernel.org>, ALeX Kazik <alex@kazik.de>
+From:   Michael Schmitz <schmitzmic@gmail.com>
+Message-ID: <2edf2cc4-7e5a-1045-cb58-0b8f55d20b3f@gmail.com>
+Date:   Sat, 4 Sep 2021 09:51:29 +1200
+User-Agent: Mozilla/5.0 (X11; Linux ppc64; rv:45.0) Gecko/20100101
+ Thunderbird/45.8.0
+MIME-Version: 1.0
+In-Reply-To: <CAMuHMdUwSMDgQ8Vk9JV4kngJ52Vz1X8fXiTPLow_9sE9OX2tLg@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-Hi Michael,
+Hi Geert,
 
-On Fri, Sep 3, 2021 at 4:52 AM Michael Schmitz <schmitzmic@gmail.com> wrote:
-> On 03/09/21 00:42, Geert Uytterhoeven wrote:
-> > On Sun, Aug 29, 2021 at 5:12 AM Michael Schmitz<schmitzmic@gmail.com>  wrote:
-> >> The 16 bit card support test for the apne.c driver needs a whole
-> >> lot of hairy parser code which is already present in the core
-> >> PCMCIA code - make use of that instead of duplicating it.
-> >>
-> >> Signed-off-by: Michael Schmitz<schmitzmic@gmail.com>
-> > Thanks for your patch!
-> >
-> >> --- a/arch/m68k/Kconfig.bus
-> >> +++ b/arch/m68k/Kconfig.bus
-> >> @@ -31,6 +31,8 @@ config ZORRO
-> >>   config AMIGA_PCMCIA
-> >>          bool "Amiga 1200/600 PCMCIA support"
-> > Can this become tristate?
-> I suspect it can - though I wonder why it hasn't been made tristate
-> before. Ah - pcmcia.c needs a little patch to add a MODULE_LICENSE clause.
-> >>          depends on AMIGA
-> >> +       select PCCARD
-> >> +       select PCMCIA
-> > This is now forcing PCCARD and PCMCIA builtin instead of modular
-> > in an allmodconfig kernel.
-> Thanks, that's what I'd been worried about.
+On 04/09/21 02:14, Geert Uytterhoeven wrote:
+> Hi Michael,
+>> How do I make sure CONFIG_PCMCIA gets selected as module as well? I can
+>> select this when CONFIG_APNE is set, from
+>> drivers/net/ethernet/8390/Kconfig, but I'd then have to protect the
+>> cftable parse hook in amiga/pcmcia.c against the case where CONFIG_APNE
+>> is not selected.
 >
-> How do I make sure CONFIG_PCMCIA gets selected as module as well? I can
-> select this when CONFIG_APNE is set, from
-> drivers/net/ethernet/8390/Kconfig, but I'd then have to protect the
-> cftable parse hook in amiga/pcmcia.c against the case where CONFIG_APNE
-> is not selected.
+> That will be fixed automatically by making AMIGA_PCMCIA tristate.
+> Select from a modular symbol will make the target modular, too.
 
-That will be fixed automatically by making AMIGA_PCMCIA tristate.
-Select from a modular symbol will make the target modular, too.
+Maybe when starting from a new .config - if no one had these set on m68k 
+before, we're OK.
 
-> Not to mention we need to rename amiga/pcmcia.c to avoid a module naming
-> conflict.
 >
-> Just including cistpl.o as a module is not an option unfortunately - too
-> many dependencies.
+>> Not to mention we need to rename amiga/pcmcia.c to avoid a module naming
+>> conflict.
+
+No objection? Anything in particular to be careful about when renaming a 
+file?
+
+>>
+>> Just including cistpl.o as a module is not an option unfortunately - too
+>> many dependencies.
+>>
+>> And I don't think we need CONFIG_PCMCIA_PROBE=Y?
 >
-> And I don't think we need CONFIG_PCMCIA_PROBE=Y?
+> No idea if we need that...
 
-No idea if we need that...
+It's about IRQ probing, so yechhh .... OTOH, it doesn't hurt as we'll 
+never call the IRQ probe hooks, so we can just as well leave it active.
 
--default y if ISA && !ARCH_SA1100 && !PARISC
-+default y if ISA && !ARCH_SA1100 && !PARISC && !AMIGA_PCMCIA
+> -default y if ISA && !ARCH_SA1100 && !PARISC
+> +default y if ISA && !ARCH_SA1100 && !PARISC && !AMIGA_PCMCIA
+>
+> (wondering how many platforms that can use PCMCIA are left, and if
+>  this can be converted into positive logic?)
 
-(wondering how many platforms that can use PCMCIA are left, and if
- this can be converted into positive logic?)
+You're welcome to open that discussion. Hope it won't backfire...
 
-Gr{oetje,eeting}s,
+Cheers,
 
-                        Geert
+	Michael
 
--- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+>
+> Gr{oetje,eeting}s,
+>
+>                         Geert
+>
