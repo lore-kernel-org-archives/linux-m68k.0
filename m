@@ -2,86 +2,135 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-13.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 96662C433F5
-	for <linux-m68k@archiver.kernel.org>; Tue,  7 Sep 2021 23:50:58 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D905CC433F5
+	for <linux-m68k@archiver.kernel.org>; Wed,  8 Sep 2021 04:13:07 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 769DB60041
-	for <linux-m68k@archiver.kernel.org>; Tue,  7 Sep 2021 23:50:58 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id BAAA86112F
+	for <linux-m68k@archiver.kernel.org>; Wed,  8 Sep 2021 04:13:07 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231642AbhIGXwE (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Tue, 7 Sep 2021 19:52:04 -0400
-Received: from out1-smtp.messagingengine.com ([66.111.4.25]:56955 "EHLO
-        out1-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231519AbhIGXwE (ORCPT
-        <rfc822;linux-m68k@vger.kernel.org>); Tue, 7 Sep 2021 19:52:04 -0400
-Received: from compute2.internal (compute2.nyi.internal [10.202.2.42])
-        by mailout.nyi.internal (Postfix) with ESMTP id E6C445C0058;
-        Tue,  7 Sep 2021 19:50:56 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute2.internal (MEProxy); Tue, 07 Sep 2021 19:50:56 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=edRlyL
-        E+/ZUaqZlIGbdYMwq3j5dlLhen7foTFFWhycc=; b=rGaCbW9tCRS2/DQFx8O2jO
-        kBQjFtUPgTLhG9KjbqFaGR16850U1RMoT6S+U4u4b9zeEqf7ViwIHurLHDV9EmCj
-        me7A9AaBgcdKhsRqkTN4DUSFUtOtS2TuO74d9Rtj0CFNLAHxKNJx9bk6lD/6JDwi
-        wfRIYdoEv+J18IrpqAx0TsYsEwjj0jlQ+Ew9ssA4DJz37HMHHyrGnn/iALl3rWFp
-        6/LU+ZHKhjdw+O746R8X4TgHw491OMNhjGPMEBWg7JY3yO6E/mZ1eA/1hpw0UElP
-        AnMmnBhYvMyf72OI1zsHceXolrRKfc8QJVlxj5Xy3GPjW5ZOWpL8oRqu8LT2BxXA
-        ==
-X-ME-Sender: <xms:3_o3Yf2KiPC0m1DrlszRCTeOwpgph-PZpV3-ZS3Ej-6zQqq-0BUERQ>
-    <xme:3_o3YeGXNOZnd_yqUxJ-H4RUA4cPIspXdU7sjyPCEWnwL0Y2RP0x5JlnmJ9Ybq9a0
-    OOliU_Hfj7JrTGlbYc>
-X-ME-Received: <xmr:3_o3Yf4opV3_iUe49X_cn7mu-iPLJuh6Fs5NYyt9AJ8AuH47nX4I1hX36nSpdUAoG1ZVRRb_mPvuyp9npIJuaFSHJtPtYku1-dccvg>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrudefiedgvdegucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepfffhvffujgfkfhggtgesthdtredttddtvdenucfhrhhomhephfhinhhnucfv
-    hhgrihhnuceofhhthhgrihhnsehlihhnuhigqdhmieekkhdrohhrgheqnecuggftrfgrth
-    htvghrnhepffduhfegfedvieetudfgleeugeehkeekfeevfffhieevteelvdfhtdevffet
-    uedunecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepfh
-    hthhgrihhnsehlihhnuhigqdhmieekkhdrohhrgh
-X-ME-Proxy: <xmx:4Po3YU0UMpXhlQmrIQleqqtrT_9P2vefGyY3vmAb2Cm1EiyQV9vLVA>
-    <xmx:4Po3YSGXzz2Sl-byilCatA6emmgyBt4mWZ6JAOFIlVM-OQGK4gTFaA>
-    <xmx:4Po3YV-bfUTQjrVjq4aojaGmevdqO3_Mp9nXEFBVmtccCucHupjevw>
-    <xmx:4Po3YdyFZXm65b-rKjMxOCqvopvuZbn6pN4qbfwVB4gVlZMT7XxZgw>
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Tue,
- 7 Sep 2021 19:50:53 -0400 (EDT)
-Date:   Wed, 8 Sep 2021 09:50:34 +1000 (AEST)
-From:   Finn Thain <fthain@linux-m68k.org>
-To:     Michael Schmitz <schmitzmic@gmail.com>
-cc:     linux-m68k@vger.kernel.org
-Subject: Re: Mainline kernel crashes, was Re: RFC: remove set_fs for m68k
-In-Reply-To: <977bb34f-6de9-3a9e-818f-b1aa0758f78f@gmail.com>
-Message-ID: <fa8682aa-c5f4-7995-166d-8fa899594b19@linux-m68k.org>
-References: <20210721170529.GA14550@lst.de> <8884e940-22e8-72a5-e9ec-f9b2628b6ef4@gmail.com> <251aa093-047a-b37c-4e88-d543c6fa8bc6@gmail.com> <20210815074236.GA23777@lst.de> <63c35a20-3eec-1825-fa18-5df28f5b6eaa@gmail.com> <20210816065851.GA26665@lst.de>
- <23f745f2-9086-81fb-3d9e-40ea08a1923@linux-m68k.org> <20210816075155.GA29187@lst.de> <d407a2a1-738b-5cd5-c2ed-b7250c5da8ec@gmail.com> <83571ae-10ae-2919-cde-b6b4a5769c9@linux-m68k.org> <dc594142-e459-533e-cac2-c7a213cec464@gmail.com>
- <f4ab2dcb-6761-c60b-54ce-35d0d017d371@gmail.com> <d772d22e-a945-3e35-80a2-f4783893bea@linux-m68k.org> <b2c55280-657b-51c2-065c-3fc93db050b9@gmail.com> <d7b8f7eb-fc18-c8d-fe3e-dcdf19d3f4b@linux-m68k.org> <755e55ba-4ce2-b4e4-a628-5abc183a557a@linux-m68k.org>
- <b52a10fe-3e4b-5740-d3f8-52bce3bc988@linux-m68k.org> <31f27da7-be60-8eb-9834-748b653c2246@linux-m68k.org> <ed2ca322-b957-cd52-8d2f-a8edd2785625@linux-m68k.org> <977bb34f-6de9-3a9e-818f-b1aa0758f78f@gmail.com>
+        id S229744AbhIHEOO (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Wed, 8 Sep 2021 00:14:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60582 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229737AbhIHEOM (ORCPT
+        <rfc822;linux-m68k@lists.linux-m68k.org>);
+        Wed, 8 Sep 2021 00:14:12 -0400
+Received: from mail-ot1-x32e.google.com (mail-ot1-x32e.google.com [IPv6:2607:f8b0:4864:20::32e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7F647C061757
+        for <linux-m68k@lists.linux-m68k.org>; Tue,  7 Sep 2021 21:13:05 -0700 (PDT)
+Received: by mail-ot1-x32e.google.com with SMTP id c19-20020a9d6153000000b0051829acbfc7so1237896otk.9
+        for <linux-m68k@lists.linux-m68k.org>; Tue, 07 Sep 2021 21:13:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=HkIuLVDKn7TgiCzRztoLPo7WO6itaQ7BA8yRHyvqmmo=;
+        b=Ur8IPF1yWy22Q0kJ/WFmntzBviiE2zn/rwKijChNN1Wm+xfBYvALfoYlSH/nLo+5Fa
+         DZ5M0bNGH1eAOziJCp3RiQ5URJKyfRK34JqRBsLFyRi8xYhsA9QxAoVp8bpyzBMYVluu
+         3HGtkrIKzyC+wDzrzJjVWSP6tUIZjFHZo+Bpojuh56NtlRL/zyid3hJQTm1xtJCou7/q
+         7WN3rYKpGAeatm3UQACj38hDs+GaEO7wVh5c/t5d5nXWpMpSoWKrRdwxwQw54FH3cfjH
+         E+C3kvlmn3N33fUrMrAVBuDK5PWqvfGIGH0xKF7d167ywTtksTyi5w/UpGHGacZuJ1TW
+         xZnw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=HkIuLVDKn7TgiCzRztoLPo7WO6itaQ7BA8yRHyvqmmo=;
+        b=UjQ/OBzr4z+gxRwnfgehEas+O9rXvfodDcikyVl1Leau2eYiiGO8fb8/NBJjyu2nfh
+         2F9KbrebVfKcWXIKxoi/BoB1ERtMG5uvXmZriDijIvyxiFqAQNUpyzd4xUd8pg8sxGKb
+         7+MJViKh3evbQLbFV7sm9PyMQvUbPqbeH0OeB2zkzgipRVAvhc+QaSY3mpaOY/MGHeXV
+         KbsiG1y3/KGN9hxTPAD3gaZUiS2drzpjMs0LK6RfabUO2ixMngNCUw31i4nZ3Tmfht+6
+         qJZvWlNTjHYAN9DnEWYKf9EUlxMm/jGRJfqScKk+NPVx1hieFLphTdrlWZ49iBeeUK7M
+         EStQ==
+X-Gm-Message-State: AOAM532t1F4hTOQbtMFp0Nmey59bqZZbBhjFe4CNJdsqx+iNlfck+I7R
+        QRlha9zB40fg7+YMGpqBwqs=
+X-Google-Smtp-Source: ABdhPJxPC/ElUQrxDzILrbmOrghUnICdEMQf0kufEGvSFVx5WCxFtQVy+RXq9o6FxgGv6ItwJ8/iqQ==
+X-Received: by 2002:a9d:828:: with SMTP id 37mr1509555oty.0.1631074384551;
+        Tue, 07 Sep 2021 21:13:04 -0700 (PDT)
+Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id c75sm209181oob.47.2021.09.07.21.13.03
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 07 Sep 2021 21:13:04 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Date:   Tue, 7 Sep 2021 21:13:02 -0700
+From:   Guenter Roeck <linux@roeck-us.net>
+To:     Geert Uytterhoeven <geert@linux-m68k.org>
+Cc:     linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] m68k: mvme: Remove overdue #warnings in RTC handling
+Message-ID: <20210908041302.GA2585571@roeck-us.net>
+References: <20210907124511.2723414-1-geert@linux-m68k.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210907124511.2723414-1-geert@linux-m68k.org>
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-On Tue, 7 Sep 2021, Michael Schmitz wrote:
-
-> > Does anyone know what causes this?
+On Tue, Sep 07, 2021 at 02:45:11PM +0200, Geert Uytterhoeven wrote:
+> The warnings were introduced when converting the MVME147 and MVME16x
+> RTC handling from gettod to hwclk.  Replace the #warning by a comment,
+> and return an error to inform the upper layer that writing to the RTC is
+> not yet supported.
 > 
-> Our practice to run interrupt handlers at the IPL of the current 
-> interrupt under service, instead of disabling local interrupts for the 
-> duration of the handler?
+> Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
+
+Reviewed-by: Guenter Roeck <linux@roeck-us.net>
+
+> ---
+>  arch/m68k/mvme147/config.c | 4 +++-
+>  arch/m68k/mvme16x/config.c | 4 +++-
+>  2 files changed, 6 insertions(+), 2 deletions(-)
 > 
-
-Lock contention will happen anyway.
-
-If using spin_trylock() outside of "atomic" context was a bug (really?) 
-then it can't be used here.
-
-Perhaps add_interrupt_randomness() should use the lock in irq mode, like 
-the rest of drivers/char/random.c does.
+> diff --git a/arch/m68k/mvme147/config.c b/arch/m68k/mvme147/config.c
+> index e1e90c49a49624cc..dfd6202fd403e92b 100644
+> --- a/arch/m68k/mvme147/config.c
+> +++ b/arch/m68k/mvme147/config.c
+> @@ -171,7 +171,6 @@ static int bcd2int (unsigned char b)
+>  
+>  int mvme147_hwclk(int op, struct rtc_time *t)
+>  {
+> -#warning check me!
+>  	if (!op) {
+>  		m147_rtc->ctrl = RTC_READ;
+>  		t->tm_year = bcd2int (m147_rtc->bcd_year);
+> @@ -183,6 +182,9 @@ int mvme147_hwclk(int op, struct rtc_time *t)
+>  		m147_rtc->ctrl = 0;
+>  		if (t->tm_year < 70)
+>  			t->tm_year += 100;
+> +	} else {
+> +		/* FIXME Setting the time is not yet supported */
+> +		return -EOPNOTSUPP;
+>  	}
+>  	return 0;
+>  }
+> diff --git a/arch/m68k/mvme16x/config.c b/arch/m68k/mvme16x/config.c
+> index b59593c7cfb9dfbf..b4422c2dfbbf4f7c 100644
+> --- a/arch/m68k/mvme16x/config.c
+> +++ b/arch/m68k/mvme16x/config.c
+> @@ -436,7 +436,6 @@ int bcd2int (unsigned char b)
+>  
+>  int mvme16x_hwclk(int op, struct rtc_time *t)
+>  {
+> -#warning check me!
+>  	if (!op) {
+>  		rtc->ctrl = RTC_READ;
+>  		t->tm_year = bcd2int (rtc->bcd_year);
+> @@ -448,6 +447,9 @@ int mvme16x_hwclk(int op, struct rtc_time *t)
+>  		rtc->ctrl = 0;
+>  		if (t->tm_year < 70)
+>  			t->tm_year += 100;
+> +	} else {
+> +		/* FIXME Setting the time is not yet supported */
+> +		return -EOPNOTSUPP;
+>  	}
+>  	return 0;
+>  }
+> -- 
+> 2.25.1
+> 
