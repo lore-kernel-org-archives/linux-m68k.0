@@ -2,128 +2,195 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-24.4 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
-	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-13.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id F32E3C433EF
-	for <linux-m68k@archiver.kernel.org>; Thu,  9 Sep 2021 11:59:58 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 519C3C43219
+	for <linux-m68k@archiver.kernel.org>; Thu,  9 Sep 2021 14:04:13 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id E0D3B61212
-	for <linux-m68k@archiver.kernel.org>; Thu,  9 Sep 2021 11:59:58 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 3D336610CE
+	for <linux-m68k@archiver.kernel.org>; Thu,  9 Sep 2021 14:04:13 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244913AbhIIMBH (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Thu, 9 Sep 2021 08:01:07 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39544 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S245105AbhIIL56 (ORCPT <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Thu, 9 Sep 2021 07:57:58 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B5F4E63218;
-        Thu,  9 Sep 2021 11:56:48 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1631188609;
-        bh=8DU1iuGYv74LnsIoiQnBgxC46+p/xTgoTDxSj+Xr8tw=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=NxtsmOm4q87e14q0etvwVcxTSBTlXGiZne6ebLDtDVnxg0apr8SIuyBuKn/w9NuoL
-         dXbtv78cDWmDefrcQDAkGC1ewstJ8yQ4r7skOCowzNX3FllzwN6ZJwExfO3DWFB6iq
-         so6ncnjzr7zM5BTdDKXVotkn77LBzn4MjH1nVWuUHryLaYT1l16sOg697DR1ApVFFc
-         BygkkcwyZYQvLhilFPvav103XVij7sT+HXrCDoz6qQtC2J8rG+Ek7ypqHcMvmY1ClD
-         Pb01MNkPVb7EuSukKwkzO5Ax1Y1eRt45Tj6/PYQ/XWKJYZVQPasTiRb824hHYvi38A
-         6e4Z63AARGuHw==
-From:   Sasha Levin <sashal@kernel.org>
-To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Arnd Bergmann <arnd@arndb.de>, Greg Ungerer <gerg@linux-m68k.org>,
-        Sasha Levin <sashal@kernel.org>,
-        linux-m68k@lists.linux-m68k.org
-Subject: [PATCH AUTOSEL 5.4 080/109] m68knommu: only set CONFIG_ISA_DMA_API for ColdFire sub-arch
-Date:   Thu,  9 Sep 2021 07:54:37 -0400
-Message-Id: <20210909115507.147917-80-sashal@kernel.org>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210909115507.147917-1-sashal@kernel.org>
-References: <20210909115507.147917-1-sashal@kernel.org>
+        id S1345148AbhIIOFU (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Thu, 9 Sep 2021 10:05:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38192 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1346561AbhIIOFD (ORCPT
+        <rfc822;linux-m68k@lists.linux-m68k.org>);
+        Thu, 9 Sep 2021 10:05:03 -0400
+Received: from mail-wr1-x42a.google.com (mail-wr1-x42a.google.com [IPv6:2a00:1450:4864:20::42a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 08CABC0363C7
+        for <linux-m68k@lists.linux-m68k.org>; Thu,  9 Sep 2021 05:04:27 -0700 (PDT)
+Received: by mail-wr1-x42a.google.com with SMTP id q11so2191257wrr.9
+        for <linux-m68k@lists.linux-m68k.org>; Thu, 09 Sep 2021 05:04:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=TGhvxcJ5e0tWwjSJNqM6XCMaaGd6Uf1B/o2F+QC2P2E=;
+        b=G9Aqk2QIyaP4NStdJlI2W+jYyFf2cxdEkKsatz7oGDFsfmYZi9tBWCduPA4+jE5p7U
+         BOuY6gqJjmyV8v5QQKYxDwuzwKGa/5XhOO/tgHUHlhmUEBmh3zMhoy6pH4jz/X3mqm+B
+         aiFLyQdZrtcHXPQq/wBywud/Lta/EdrBpbrZgbARYUg/fOO/ZsAxLyZc7yqfUK2jqcg3
+         720naMUmXaJh+2jyYDvtsgc7dQDFDjt/gHNTBax++79zSiiVG4xnl5N2SAU6gkjrhJJm
+         w9rVyMGtlv9iW1cuSRn5jzCsOgqZnJRO0L04W/ii+Is7cQG1OlyTaPAzvogxQD1BYjMN
+         IkgA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=TGhvxcJ5e0tWwjSJNqM6XCMaaGd6Uf1B/o2F+QC2P2E=;
+        b=8GXBxLeRPpiL5ke5MWtx8lAsTuoPoEzDkWxTX0Qxl3Afs5KdS4g8uTTzJtL7EKgWKk
+         SiCouNY+eyN3eB4vuR5p9m78w4GvfjnOQrXTw9Jyu2loJeo6izLIkS06exSQvX4JB7O4
+         l7CjZjSlDZjloyiDbq6HYWIRnH2KEFv2sKhsiTB8zW4kILtqNAIlVErsyAlriMCEkmKh
+         3VWbGrw5bB0qHKn+5HTej0u3Djjx9Adyc5zqcjqeWuPvGDcBQEQvPWLbE5KMNgU53MJ6
+         W0L83a0zfue2NAVUSiCw5SupyLKNTJ91uj6ZC+wP+uWcxo+bS4crtw0eLqCMuXUhqmbA
+         moLw==
+X-Gm-Message-State: AOAM532S/EQBuAeTaoJqHm7Xjst8nVsNBanrHgvBY3PdgosEmsnfuBqv
+        SvRPcC+FaA2b93w4ZDn7Q9eBuQ==
+X-Google-Smtp-Source: ABdhPJwXFzB1KuSRyctCLMeToyBav6moCwvyVSJSQ2wA2Una7A66/qiHNzLd3gX+GGFxN1qUveWbMQ==
+X-Received: by 2002:adf:de8a:: with SMTP id w10mr3133483wrl.413.1631189065464;
+        Thu, 09 Sep 2021 05:04:25 -0700 (PDT)
+Received: from localhost.localdomain ([95.148.6.201])
+        by smtp.gmail.com with ESMTPSA id n66sm1437498wmn.2.2021.09.09.05.04.23
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 09 Sep 2021 05:04:24 -0700 (PDT)
+From:   Lee Jones <lee.jones@linaro.org>
+To:     lee.jones@linaro.org
+Cc:     linux-kernel@vger.kernel.org, Albert Ou <aou@eecs.berkeley.edu>,
+        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
+        Borislav Petkov <bp@alien8.de>,
+        Brian Cain <bcain@codeaurora.org>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        Chris Zankel <chris@zankel.net>,
+        "David S . Miller" <davem@davemloft.net>,
+        Guo Ren <guoren@kernel.org>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Helge Deller <deller@gmx.de>, Ingo Molnar <mingo@redhat.com>,
+        "James E . J . Bottomley" <James.Bottomley@HansenPartnership.com>,
+        Jeff Dike <jdike@addtoit.com>, John Crispin <john@phrozen.org>,
+        Jonas Bonn <jonas@southpole.se>,
+        Ley Foon Tan <ley.foon.tan@intel.com>,
+        linux-arm-kernel@lists.infradead.org, linux-csky@vger.kernel.org,
+        linux-hexagon@vger.kernel.org, linux-m68k@lists.linux-m68k.org,
+        linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org,
+        linux-s390@vger.kernel.org, linux-sh@vger.kernel.org,
+        linux-snps-arc@lists.infradead.org, linux-um@lists.infradead.org,
+        linux-xtensa@linux-xtensa.org, Max Filippov <jcmvbkbc@gmail.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Michal Simek <monstr@monstr.eu>, openrisc@lists.librecores.org,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Richard Weinberger <richard@nod.at>,
+        Rich Felker <dalias@libc.org>, sparclinux@vger.kernel.org,
+        Stafford Horne <shorne@gmail.com>,
+        Stefan Kristiansson <stefan.kristiansson@saunalahti.fi>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        uclinux-h8-devel@lists.sourceforge.jp,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Vineet Gupta <vgupta@synopsys.com>,
+        Will Deacon <will@kernel.org>,
+        Yoshinori Sato <ysato@users.sourceforge.jp>
+Subject: [PATCH v2 0/3] power: reset: Convert Power-Off driver to tristate
+Date:   Thu,  9 Sep 2021 13:04:18 +0100
+Message-Id: <20210909120421.1313908-1-lee.jones@linaro.org>
+X-Mailer: git-send-email 2.33.0.153.gba50c8fa24-goog
 MIME-Version: 1.0
-X-stable: review
-X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-From: Arnd Bergmann <arnd@arndb.de>
+Provide support to compile the Power-Off driver as a module.
 
-[ Upstream commit db87db65c1059f3be04506d122f8ec9b2fa3b05e ]
-
-> Hi Arnd,
->
-> First bad commit (maybe != root cause):
->
-> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git master
-> head:   2f73937c9aa561e2082839bc1a8efaac75d6e244
-> commit: 47fd22f2b84765a2f7e3f150282497b902624547 [4771/5318] cs89x0: rework driver configuration
-> config: m68k-randconfig-c003-20210804 (attached as .config)
-> compiler: m68k-linux-gcc (GCC) 10.3.0
-> reproduce (this is a W=1 build):
->         wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
->         chmod +x ~/bin/make.cross
->         # https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git/commit/?id=47fd22f2b84765a2f7e3f150282497b902624547
->         git remote add linux-next https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git
->         git fetch --no-tags linux-next master
->         git checkout 47fd22f2b84765a2f7e3f150282497b902624547
->         # save the attached .config to linux build tree
->         COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-10.3.0 make.cross ARCH=m68k
->
-> If you fix the issue, kindly add following tag as appropriate
-> Reported-by: kernel test robot <lkp@intel.com>
->
-> All errors (new ones prefixed by >>):
->
->    In file included from include/linux/kernel.h:19,
->                     from include/linux/list.h:9,
->                     from include/linux/module.h:12,
->                     from drivers/net/ethernet/cirrus/cs89x0.c:51:
->    drivers/net/ethernet/cirrus/cs89x0.c: In function 'net_open':
->    drivers/net/ethernet/cirrus/cs89x0.c:897:20: error: implicit declaration of function 'isa_virt_to_bus'; did you mean 'virt_to_bus'? [-Werror=implicit-function-declaration]
->      897 |     (unsigned long)isa_virt_to_bus(lp->dma_buff));
->          |                    ^~~~~~~~~~~~~~~
->    include/linux/printk.h:141:17: note: in definition of macro 'no_printk'
->      141 |   printk(fmt, ##__VA_ARGS__);  \
->          |                 ^~~~~~~~~~~
->    drivers/net/ethernet/cirrus/cs89x0.c:86:3: note: in expansion of macro 'pr_debug'
->       86 |   pr_##level(fmt, ##__VA_ARGS__);   \
->          |   ^~~
->    drivers/net/ethernet/cirrus/cs89x0.c:894:3: note: in expansion of macro 'cs89_dbg'
->      894 |   cs89_dbg(1, debug, "%s: dma %lx %lx\n",
->          |   ^~~~~~~~
-> >> drivers/net/ethernet/cirrus/cs89x0.c:914:3: error: implicit declaration of function 'disable_dma'; did you mean 'disable_irq'? [-Werror=implicit-function-declaration]
-
-As far as I can tell, this is a bug with the m68kmmu architecture, not
-with my driver:
-The CONFIG_ISA_DMA_API option is provided for coldfire, which implements it,
-but dragonball also sets the option as a side-effect, without actually
-implementing
-the interfaces. The patch below should fix it.
-
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-Signed-off-by: Greg Ungerer <gerg@linux-m68k.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
- arch/m68k/Kconfig.bus | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/arch/m68k/Kconfig.bus b/arch/m68k/Kconfig.bus
-index 9d0a3a23d50e..355c51309ed8 100644
---- a/arch/m68k/Kconfig.bus
-+++ b/arch/m68k/Kconfig.bus
-@@ -63,7 +63,7 @@ source "drivers/zorro/Kconfig"
+v1 => v2:
+ - s/EXPORT_SYMBOL/EXPORT_SYMBOL_GPL/
  
- endif
- 
--if !MMU
-+if COLDFIRE
- 
- config ISA_DMA_API
-         def_bool !M5272
+Elliot Berman (2):
+  reboot: Export reboot_mode
+  power: reset: Enable tristate on restart power-off driver
+
+Lee Jones (1):
+  arch: Export machine_restart() instances so they can be called from
+    modules
+
+ arch/arc/kernel/reset.c            | 1 +
+ arch/arm/kernel/reboot.c           | 1 +
+ arch/arm64/kernel/process.c        | 1 +
+ arch/csky/kernel/power.c           | 1 +
+ arch/h8300/kernel/process.c        | 1 +
+ arch/hexagon/kernel/reset.c        | 1 +
+ arch/m68k/kernel/process.c         | 1 +
+ arch/microblaze/kernel/reset.c     | 1 +
+ arch/mips/kernel/reset.c           | 1 +
+ arch/mips/lantiq/falcon/reset.c    | 1 +
+ arch/mips/sgi-ip27/ip27-reset.c    | 1 +
+ arch/nds32/kernel/process.c        | 2 +-
+ arch/nios2/kernel/process.c        | 1 +
+ arch/openrisc/kernel/process.c     | 1 +
+ arch/parisc/kernel/process.c       | 1 +
+ arch/powerpc/kernel/setup-common.c | 1 +
+ arch/riscv/kernel/reset.c          | 1 +
+ arch/s390/kernel/setup.c           | 1 +
+ arch/sh/kernel/reboot.c            | 1 +
+ arch/sparc/kernel/process_32.c     | 1 +
+ arch/sparc/kernel/reboot.c         | 1 +
+ arch/um/kernel/reboot.c            | 1 +
+ arch/x86/kernel/reboot.c           | 1 +
+ arch/xtensa/kernel/setup.c         | 1 +
+ drivers/power/reset/Kconfig        | 2 +-
+ kernel/reboot.c                    | 2 ++
+ 26 files changed, 27 insertions(+), 2 deletions(-)
+
+Cc: Albert Ou <aou@eecs.berkeley.edu>
+Cc: Anton Ivanov <anton.ivanov@cambridgegreys.com>
+Cc: Borislav Petkov <bp@alien8.de>
+Cc: Brian Cain <bcain@codeaurora.org>
+Cc: Christian Borntraeger <borntraeger@de.ibm.com>
+Cc: Chris Zankel <chris@zankel.net>
+Cc: David S. Miller <davem@davemloft.net>
+Cc: Guo Ren <guoren@kernel.org>
+Cc: Heiko Carstens <hca@linux.ibm.com>
+Cc: Helge Deller <deller@gmx.de>
+Cc: Ingo Molnar <mingo@redhat.com>
+Cc: James E.J. Bottomley <James.Bottomley@HansenPartnership.com>
+Cc: Jeff Dike <jdike@addtoit.com>
+Cc: John Crispin <john@phrozen.org>
+Cc: Jonas Bonn <jonas@southpole.se>
+Cc: Ley Foon Tan <ley.foon.tan@intel.com>
+Cc: linux-arm-kernel@lists.infradead.org
+Cc: linux-csky@vger.kernel.org
+Cc: linux-hexagon@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org
+Cc: linux-m68k@lists.linux-m68k.org
+Cc: linux-mips@vger.kernel.org
+Cc: linux-parisc@vger.kernel.org
+Cc: linuxppc-dev@lists.ozlabs.org
+Cc: linux-riscv@lists.infradead.org
+Cc: linux-s390@vger.kernel.org
+Cc: linux-sh@vger.kernel.org
+Cc: linux-snps-arc@lists.infradead.org
+Cc: linux-um@lists.infradead.org
+Cc: linux-xtensa@linux-xtensa.org
+Cc: Max Filippov <jcmvbkbc@gmail.com>
+Cc: Michael Ellerman <mpe@ellerman.id.au>
+Cc: Michal Simek <monstr@monstr.eu>
+Cc: openrisc@lists.librecores.org
+Cc: Palmer Dabbelt <palmer@dabbelt.com>
+Cc: Paul Walmsley <paul.walmsley@sifive.com>
+Cc: Richard Weinberger <richard@nod.at>
+Cc: Rich Felker <dalias@libc.org>
+Cc: sparclinux@vger.kernel.org
+Cc: Stafford Horne <shorne@gmail.com>
+Cc: Stefan Kristiansson <stefan.kristiansson@saunalahti.fi>
+Cc: Thomas Gleixner <tglx@linutronix.de>
+Cc: uclinux-h8-devel@lists.sourceforge.jp
+Cc: Vasily Gorbik <gor@linux.ibm.com>
+Cc: Vineet Gupta <vgupta@synopsys.com>
+Cc: Will Deacon <will@kernel.org>
+Cc: Yoshinori Sato <ysato@users.sourceforge.jp>
 -- 
-2.30.2
+2.33.0.153.gba50c8fa24-goog
 
