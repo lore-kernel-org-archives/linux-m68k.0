@@ -7,41 +7,41 @@ X-Spam-Status: No, score=-24.4 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
 	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A0E7DC4332F
-	for <linux-m68k@archiver.kernel.org>; Thu,  9 Sep 2021 11:56:18 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id F32E3C433EF
+	for <linux-m68k@archiver.kernel.org>; Thu,  9 Sep 2021 11:59:58 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 8C9716321B
-	for <linux-m68k@archiver.kernel.org>; Thu,  9 Sep 2021 11:56:18 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id E0D3B61212
+	for <linux-m68k@archiver.kernel.org>; Thu,  9 Sep 2021 11:59:58 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241364AbhIIL5Z (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Thu, 9 Sep 2021 07:57:25 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35346 "EHLO mail.kernel.org"
+        id S244913AbhIIMBH (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Thu, 9 Sep 2021 08:01:07 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39544 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1343693AbhIILz1 (ORCPT <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Thu, 9 Sep 2021 07:55:27 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1965461B9F;
-        Thu,  9 Sep 2021 11:54:14 +0000 (UTC)
+        id S245105AbhIIL56 (ORCPT <rfc822;linux-m68k@lists.linux-m68k.org>);
+        Thu, 9 Sep 2021 07:57:58 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B5F4E63218;
+        Thu,  9 Sep 2021 11:56:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1631188454;
-        bh=n5trVym9rA9eKT958C+3eitE2IdRM6j8B2EA8KcOOJs=;
+        s=k20201202; t=1631188609;
+        bh=8DU1iuGYv74LnsIoiQnBgxC46+p/xTgoTDxSj+Xr8tw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=rlNb1sDICIAhlIdb7pKSmSjjw4ybrzpUY1oBMPPoOsEX8O2qyAengFHHh7OpR39ig
-         tYtXM+HvL2gVpCFLF0ZaJtyH8U2U7O+lALELJE9JHNXBJhqHh+sBA1YMOcv4kXeJ5d
-         pySMvALPKsI3viHs50p3VI+W2NKQnuZyE8Zzm+LKggAXINyB2wU7y8seMISnNIrvwu
-         yKW88zLea2YA+2zbn/IRktMHfmmbAf1hcua8JbJCPaSUL5omw/TBarvfs3ZYxf5E8q
-         15WcnMmvMqQbb9onD9/LlpEsTk/Ams6oRHvAGASC71Xv9QWFvOlCN7j1zTW8rQ24Hk
-         2EosKHbGG9X2Q==
+        b=NxtsmOm4q87e14q0etvwVcxTSBTlXGiZne6ebLDtDVnxg0apr8SIuyBuKn/w9NuoL
+         dXbtv78cDWmDefrcQDAkGC1ewstJ8yQ4r7skOCowzNX3FllzwN6ZJwExfO3DWFB6iq
+         so6ncnjzr7zM5BTdDKXVotkn77LBzn4MjH1nVWuUHryLaYT1l16sOg697DR1ApVFFc
+         BygkkcwyZYQvLhilFPvav103XVij7sT+HXrCDoz6qQtC2J8rG+Ek7ypqHcMvmY1ClD
+         Pb01MNkPVb7EuSukKwkzO5Ax1Y1eRt45Tj6/PYQ/XWKJYZVQPasTiRb824hHYvi38A
+         6e4Z63AARGuHw==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
 Cc:     Arnd Bergmann <arnd@arndb.de>, Greg Ungerer <gerg@linux-m68k.org>,
         Sasha Levin <sashal@kernel.org>,
         linux-m68k@lists.linux-m68k.org
-Subject: [PATCH AUTOSEL 5.10 136/176] m68knommu: only set CONFIG_ISA_DMA_API for ColdFire sub-arch
-Date:   Thu,  9 Sep 2021 07:50:38 -0400
-Message-Id: <20210909115118.146181-136-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.4 080/109] m68knommu: only set CONFIG_ISA_DMA_API for ColdFire sub-arch
+Date:   Thu,  9 Sep 2021 07:54:37 -0400
+Message-Id: <20210909115507.147917-80-sashal@kernel.org>
 X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210909115118.146181-1-sashal@kernel.org>
-References: <20210909115118.146181-1-sashal@kernel.org>
+In-Reply-To: <20210909115507.147917-1-sashal@kernel.org>
+References: <20210909115507.147917-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
@@ -112,7 +112,7 @@ Signed-off-by: Sasha Levin <sashal@kernel.org>
  1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/arch/m68k/Kconfig.bus b/arch/m68k/Kconfig.bus
-index f1be832e2b74..d1e93a39cd3b 100644
+index 9d0a3a23d50e..355c51309ed8 100644
 --- a/arch/m68k/Kconfig.bus
 +++ b/arch/m68k/Kconfig.bus
 @@ -63,7 +63,7 @@ source "drivers/zorro/Kconfig"
@@ -123,7 +123,7 @@ index f1be832e2b74..d1e93a39cd3b 100644
 +if COLDFIRE
  
  config ISA_DMA_API
- 	def_bool !M5272
+         def_bool !M5272
 -- 
 2.30.2
 
