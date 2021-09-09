@@ -7,41 +7,41 @@ X-Spam-Status: No, score=-24.4 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
 	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 56F85C4332F
-	for <linux-m68k@archiver.kernel.org>; Thu,  9 Sep 2021 11:47:35 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 67B73C4332F
+	for <linux-m68k@archiver.kernel.org>; Thu,  9 Sep 2021 11:52:51 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 4211E619E2
-	for <linux-m68k@archiver.kernel.org>; Thu,  9 Sep 2021 11:47:35 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 51B9761B26
+	for <linux-m68k@archiver.kernel.org>; Thu,  9 Sep 2021 11:52:51 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240858AbhIILs0 (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Thu, 9 Sep 2021 07:48:26 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51714 "EHLO mail.kernel.org"
+        id S239311AbhIILx7 (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Thu, 9 Sep 2021 07:53:59 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58414 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240864AbhIILqY (ORCPT <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Thu, 9 Sep 2021 07:46:24 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id CF37A613A1;
-        Thu,  9 Sep 2021 11:45:12 +0000 (UTC)
+        id S241133AbhIILvW (ORCPT <rfc822;linux-m68k@lists.linux-m68k.org>);
+        Thu, 9 Sep 2021 07:51:22 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5964961AA5;
+        Thu,  9 Sep 2021 11:50:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1631187913;
+        s=k20201202; t=1631188213;
         bh=n5trVym9rA9eKT958C+3eitE2IdRM6j8B2EA8KcOOJs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=uJ7CdJkNmhM+9NAgnX76wLuUfpXiRP6bQ/fVVgeXMlCK2Y8mANereJEEE89qnIfQz
-         7n/x1veBdmoCNKffyM6GdcEA4yOQ8ruTEzB4PkK7fZewRfhcNemw3MlJvo7BA64JDI
-         p6JnGX7xGj1EhlRh0VjvKfqZ8aF42vdGtzxqNWv//5iBg92ijuDBMc+GP1tz3kTWr0
-         0+emlI14xpg42ODBGQCAsMgJ8fVxUKLl3Pfnks59olLF56VALqiWKBT/To++TzfdB1
-         qKgIuh2z23DQpJuhfqhxBzP8of9nW5SHNSsAAyeuTG99v936BW+JJxjxyz8QSKhLr0
-         CxWtRvHodwfZA==
+        b=c9gZIncV/BfSeNOi4ugltzjnTlD70aC/9EKkI21EIZKLoCoIqmDGfnV8einMiFmMo
+         OqAi88XoUjuDh8gdhorD2aQinb5rOnF10OwZiWqDjVUpcrLIy0ukvTlHwnifeulqel
+         vbUf53kKSTprop3PrsLZDLF7h4YhxStCssHG97YDrOgKExjF6T0es04FEv3ChGvBCw
+         BV8WbMEU4/mGr9obg0ymlRz9otQOMt1GosfBvf/B4xZbaowPsCt44my6PsFDGtgovJ
+         jQRg4CIXfntoOwKFAz9NxvbdDNURCBH/nlNbZZn3wAwWd8p4pH1lFYChmzcuHp3hnW
+         v2qAx+Ao4bcMg==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
 Cc:     Arnd Bergmann <arnd@arndb.de>, Greg Ungerer <gerg@linux-m68k.org>,
         Sasha Levin <sashal@kernel.org>,
         linux-m68k@lists.linux-m68k.org
-Subject: [PATCH AUTOSEL 5.14 189/252] m68knommu: only set CONFIG_ISA_DMA_API for ColdFire sub-arch
-Date:   Thu,  9 Sep 2021 07:40:03 -0400
-Message-Id: <20210909114106.141462-189-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.13 168/219] m68knommu: only set CONFIG_ISA_DMA_API for ColdFire sub-arch
+Date:   Thu,  9 Sep 2021 07:45:44 -0400
+Message-Id: <20210909114635.143983-168-sashal@kernel.org>
 X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210909114106.141462-1-sashal@kernel.org>
-References: <20210909114106.141462-1-sashal@kernel.org>
+In-Reply-To: <20210909114635.143983-1-sashal@kernel.org>
+References: <20210909114635.143983-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
