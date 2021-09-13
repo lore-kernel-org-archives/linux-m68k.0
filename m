@@ -2,141 +2,133 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-11.2 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+X-Spam-Status: No, score=-6.2 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,NICE_REPLY_A,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=ham autolearn_force=no
-	version=3.4.0
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,NICE_REPLY_A,SPF_HELO_NONE,
+	SPF_PASS,USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id BC844C433F5
-	for <linux-m68k@archiver.kernel.org>; Mon, 13 Sep 2021 06:54:58 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 886D6C433EF
+	for <linux-m68k@archiver.kernel.org>; Mon, 13 Sep 2021 07:22:02 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 9099460F26
-	for <linux-m68k@archiver.kernel.org>; Mon, 13 Sep 2021 06:54:58 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 67BE760F4A
+	for <linux-m68k@archiver.kernel.org>; Mon, 13 Sep 2021 07:22:02 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237453AbhIMG4M (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Mon, 13 Sep 2021 02:56:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53628 "EHLO
+        id S237599AbhIMHXR (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Mon, 13 Sep 2021 03:23:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59826 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237429AbhIMG4M (ORCPT
-        <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Mon, 13 Sep 2021 02:56:12 -0400
-Received: from mail-pg1-x52b.google.com (mail-pg1-x52b.google.com [IPv6:2607:f8b0:4864:20::52b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 653B8C061574
-        for <linux-m68k@lists.linux-m68k.org>; Sun, 12 Sep 2021 23:54:57 -0700 (PDT)
-Received: by mail-pg1-x52b.google.com with SMTP id t1so8557533pgv.3
-        for <linux-m68k@lists.linux-m68k.org>; Sun, 12 Sep 2021 23:54:57 -0700 (PDT)
+        with ESMTP id S237598AbhIMHXQ (ORCPT
+        <rfc822;linux-m68k@vger.kernel.org>); Mon, 13 Sep 2021 03:23:16 -0400
+Received: from mail-pg1-x530.google.com (mail-pg1-x530.google.com [IPv6:2607:f8b0:4864:20::530])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7377AC061574
+        for <linux-m68k@vger.kernel.org>; Mon, 13 Sep 2021 00:22:01 -0700 (PDT)
+Received: by mail-pg1-x530.google.com with SMTP id n18so8584537pgm.12
+        for <linux-m68k@vger.kernel.org>; Mon, 13 Sep 2021 00:22:01 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=subject:to:references:cc:from:message-id:date:user-agent
          :mime-version:in-reply-to:content-transfer-encoding;
-        bh=DpXYH80Z7pPdLLKjZiOU8V+DZoFDcjGv5Xb072+0Kvo=;
-        b=MskEUdi2JIXiQ4u1jS5m4f4VNYtfdOzNDSftIu0EgOJCeoU9gOtVdXdnRcsOL5QLBf
-         FB0rcWUGMUW4bjh23Va7aj48b+9n46AnwWwf3J6rujx1mwniXNLqn1UFsQ3q9WIumMAj
-         fwmgZi2JwmQs2iHOqdeLoVrF2KU5/WqOm0MPU+4wP8nMTsSSVk3+mCBpgQz1+7c+n/gv
-         rVYhAypcD7178JGYxasJIzaErD6q2HSaxh2bQ+AwJYWiWgIQr0UtCmrF++aFzAqYFFGE
-         CZ2DbxIeUGG0y3FBZsYN+yaQ+iuIeQBKO3N1FI+VwdNVq6+yAVdalc5SEIyUqFqBGEh2
-         lVmA==
+        bh=TobJmJd3uZrVEXJWipVb7Ho4alBqqMfAAc6rb99Phng=;
+        b=EOIgBV+USHP6BBV0Vuxvf7AezmjDvhMqkzTglCgRbsnyYkNhWKNk3l+as4pEDm35ms
+         02MejLSAHUKXHotzJpel7AboCCGXCyp01TFDxZMPaIxWS0f1ErdHZp+lc1TS+X2uEgwH
+         WC/Z7oa9LXicKrGxG/0tCnOGy/bHzKj6hrz2h14P+wwKoRzsZFBpsaV9jYlgWjaZSeE6
+         IPx7kJ2XRlu+0zDrXlKbE5MK484A5T/JS51bKnN0sTiBXfadkB3o2XV98kXTQYjQLTDc
+         qlC6XQhVMzBIUwtRlkVL4vFQL8poxne57q0V9oUQh7fOZALpsV/4dbcBNeT5TWS+ZUzS
+         jB4A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:subject:to:references:cc:from:message-id:date
          :user-agent:mime-version:in-reply-to:content-transfer-encoding;
-        bh=DpXYH80Z7pPdLLKjZiOU8V+DZoFDcjGv5Xb072+0Kvo=;
-        b=VrCKPBvF4QPFzEqak9+t+MWFx/gSZpe24Lj/sJoBBAqhcokhUOcZpAgiKQkjl84Rjr
-         KqMyDgLsW7qij5BLc5+L+kDshDrSy1Pc+yuin+Y1EqqFJnJKToOvlvLWhPisX62XQlqQ
-         +GVzOJJ4w0pwnomMQg54//t5T1f0kaSsDQlejVV7FcNkx7xjOQP2h67+bgm2o/2F1MQy
-         /Mt8qcbG1/CQxVHVwjpQeKQaI8OfM41aTlo+y7evUI5unVnv/PsTpl+CGQtwpBF1RTRS
-         KuUKh6NEHQdJx9uqdzqAx6baqKddfw8W+/8gd8kzEarfcHeWf9KW0EWcwn6hG+LVWttQ
-         se9g==
-X-Gm-Message-State: AOAM5309qP/unSvbgi+FhbZ/7uTttUfEJcPlpbhDsihZvzvz1PhIPfI0
-        qDEufHdJ1QAPRAXsfGektpqgM/JeGxs=
-X-Google-Smtp-Source: ABdhPJxFhFNH4GlUUvQst6r/BPSZRzBApoKbjlWwaY2xhYvTQUoPTX+Gcs8AMhim/gJW5vunB9dIVg==
-X-Received: by 2002:a63:30d:: with SMTP id 13mr9988193pgd.289.1631516096608;
-        Sun, 12 Sep 2021 23:54:56 -0700 (PDT)
+        bh=TobJmJd3uZrVEXJWipVb7Ho4alBqqMfAAc6rb99Phng=;
+        b=IWj2K/6geY1T0DCJeq9DsriE0CAx2AK/f+n4z7kigNMCvil86sSIAVxXGEdheSCQwb
+         P502fWYUtEdnPfwFucNN7JeJQJo61Z6SlTyzhFvlod1huE9lbS8TUupM9XCeBGiYQe/O
+         yOPzqG7eo9qWhAF6+VN+2tijHe1djzhHtlroj8m2enrK2wAuuc19oP5/Yk+uuPp+GJCY
+         nPDvCwU/PH754qNlOoaGJLDhK7zPR5rDHFKnVbSJBjYQvpvz/d9qnRg8w8xmEeyl0xJ3
+         CSZAoTIoqSWJbrOk2UilwX61AaCDe1CcURym2Hxeh06JScpdbWQVyZV93tkYosMk+V/A
+         sp1A==
+X-Gm-Message-State: AOAM531hrJQx29xW75Svm0gsPpxrM1yrM7lkOw0irjkZhj3xWcdx92Xj
+        bIk31mWI7JeCOznowXV6TQZSqP7fPAs=
+X-Google-Smtp-Source: ABdhPJyZLkF5zh8KpC3C7LLWh5ZTozFEBPMaSMhjZo8rk3ohsxN7VVLfc4UoXiUNvPmi6R4zrMrWTQ==
+X-Received: by 2002:a63:480a:: with SMTP id v10mr9944784pga.113.1631517720684;
+        Mon, 13 Sep 2021 00:22:00 -0700 (PDT)
 Received: from [10.1.1.26] (222-155-4-20-adsl.sparkbb.co.nz. [222.155.4.20])
-        by smtp.gmail.com with ESMTPSA id bx2sm5542497pjb.35.2021.09.12.23.54.53
+        by smtp.gmail.com with ESMTPSA id b29sm7135048pgn.53.2021.09.13.00.21.58
         (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Sun, 12 Sep 2021 23:54:56 -0700 (PDT)
-Subject: Re: [RFC] m68k: Enable memtest kernel parameter
-To:     Mike Rapoport <rppt@kernel.org>, Finn Thain <fthain@linux-m68k.org>
-References: <9fac90da-18d5-7b89-96a5-3cf9dbc8bcf8@linux-m68k.org>
- <b1b630b8-d6b6-661b-b5c1-2a2831b5b8c2@gmail.com>
- <a4cd5e13-bdd0-35c-77ff-c0f0cef1486@linux-m68k.org>
- <YT7oDJhKHNVyHZU9@kernel.org>
-Cc:     linux-m68k@lists.linux-m68k.org
+        Mon, 13 Sep 2021 00:22:00 -0700 (PDT)
+Subject: Re: Mainline kernel crashes, was Re: RFC: remove set_fs for m68k
+To:     Finn Thain <fthain@linux-m68k.org>
+References: <20210721170529.GA14550@lst.de>
+ <dc594142-e459-533e-cac2-c7a213cec464@gmail.com>
+ <f4ab2dcb-6761-c60b-54ce-35d0d017d371@gmail.com>
+ <d772d22e-a945-3e35-80a2-f4783893bea@linux-m68k.org>
+ <b2c55280-657b-51c2-065c-3fc93db050b9@gmail.com>
+ <d7b8f7eb-fc18-c8d-fe3e-dcdf19d3f4b@linux-m68k.org>
+ <755e55ba-4ce2-b4e4-a628-5abc183a557a@linux-m68k.org>
+ <b52a10fe-3e4b-5740-d3f8-52bce3bc988@linux-m68k.org>
+ <31f27da7-be60-8eb-9834-748b653c2246@linux-m68k.org>
+ <ed2ca322-b957-cd52-8d2f-a8edd2785625@linux-m68k.org>
+ <977bb34f-6de9-3a9e-818f-b1aa0758f78f@gmail.com>
+ <fa8682aa-c5f4-7995-166d-8fa899594b19@linux-m68k.org>
+ <42b30d4f-b871-51ea-1b0e-479f4fe096eb@gmail.com>
+ <7ac7a41a-53f9-b13c-83fa-2c6b8ef2b90@linux-m68k.org>
+ <0477f373-86c9-dacb-a7b1-25fe4b3befd3@gmail.com>
+ <2c624213-6a4-799c-45e-a1be578dd5f@linux-m68k.org>
+ <d59a44c-ddea-a774-d217-2484ad582dc0@linux-m68k.org>
+ <82f6f161-b9e0-bf9b-3c20-aa2ce810d99a@gmail.com>
+ <4564a46-2115-9058-2a9-2d77736291c@linux-m68k.org>
+Cc:     linux-m68k@vger.kernel.org
 From:   Michael Schmitz <schmitzmic@gmail.com>
-Message-ID: <71f1f942-aa38-dd1a-033e-c10b4417554a@gmail.com>
-Date:   Mon, 13 Sep 2021 18:53:20 +1200
+Message-ID: <b43a3f6d-3d91-e1c6-bafd-103326087d50@gmail.com>
+Date:   Mon, 13 Sep 2021 19:20:25 +1200
 User-Agent: Mozilla/5.0 (X11; Linux ppc64; rv:45.0) Gecko/20100101
  Thunderbird/45.8.0
 MIME-Version: 1.0
-In-Reply-To: <YT7oDJhKHNVyHZU9@kernel.org>
+In-Reply-To: <4564a46-2115-9058-2a9-2d77736291c@linux-m68k.org>
 Content-Type: text/plain; charset=windows-1252; format=flowed
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-Hi Mike,
+Hi Finn,
 
-tested and found to work as intended.
+On 13/09/21 17:22, Finn Thain wrote:
+> On Mon, 13 Sep 2021, Michael Schmitz wrote:
+>
+>>>
+>>> [23982.680000] list_add corruption. next->prev should be prev
+>>> (00b51e98), but was 00bb22d8. (next=00b75cd0).
+>>
+>> I chased a similar list corruption bug (shadow LRU list corrupt in
+>> mm/workingset.c:shadow_lru_isolate()) in 4.10. I believe that was
+>> related to an out of bounds memory access - maybe get_reg() from
+>> drivers/char/random.c but it might have been something else.
+>>
+>> That bug had disappeared in 4.12, haven't seen it ever since.
+>>
+>
+> Do all of your builds have BUG_ON_DATA_CORRUPTION and DEBUG_LIST enabled?
+
+None had, but that particular list corruption had generated warnings, 
+and null pointer accesses. __list_del() uses WRITE_ONCE() now, can't 
+remember that from 4.10 (but the log for linux/list.h doesn't mention 
+adding WRITE_ONCE so I suppose it must have been there).
+
+>
+>>
+>> Incidentally - have you ever checked whether Al Viro's signal handling
+>> fixes have an impact on these bugs?
+>>
+>
+> I will try that patch series if you think it is related.
+
+Initial tests look promising (but I've said that before).
+
+> So far the problem seems to be confined to one machine. Stress tests on
+> other mac models did not yet reproduce the problem.
+
+Yes, that's suspicious. I'll keep you posted.
 
 Cheers,
 
 	Michael
-
-On 13/09/21 17:56, Mike Rapoport wrote:
-> Hi Finn,
->
-> On Mon, Sep 13, 2021 at 03:17:33PM +1000, Finn Thain wrote:
->> On Mon, 13 Sep 2021, Michael Schmitz wrote:
->>
->>>
->>> I'm amazed this works - I'd expect the kernel text segment to get
->>> trashed by the memory test routines.
->>
->> I think the initramfs may get clobbered when the 'memtest' parameter is
->> set. But that may be expected behaviour...
->
-> It's not the expected behaviour. The initramfs is clobbered because memtest
-> runs before initramfs memory is reserved. The patch below (not even compile
-> tested) should help. Now, for some reason the reservation of initrd does
-> not happen on SUN3, which is probably wrong, so maybe we can drop that
-> #ifndef CONFIG_SUN3 before #ifdef CONFIG_BLK_DEV_INITRD.
->
-> diff --git a/arch/m68k/kernel/setup_mm.c b/arch/m68k/kernel/setup_mm.c
-> index 4b51bfd38e5f..4ca8f1120abc 100644
-> --- a/arch/m68k/kernel/setup_mm.c
-> +++ b/arch/m68k/kernel/setup_mm.c
-> @@ -338,12 +338,6 @@ void __init setup_arch(char **cmdline_p)
->  		panic("No configuration setup");
->  	}
->
-> -	paging_init();
-> -
-> -#ifdef CONFIG_NATFEAT
-> -	nf_init();
-> -#endif
-> -
->  #ifndef CONFIG_SUN3
->  #ifdef CONFIG_BLK_DEV_INITRD
->  	if (m68k_ramdisk.size) {
-> @@ -352,8 +346,16 @@ void __init setup_arch(char **cmdline_p)
->  		initrd_end = initrd_start + m68k_ramdisk.size;
->  		pr_info("initrd: %08lx - %08lx\n", initrd_start, initrd_end);
->  	}
-> +#endif
->  #endif
->
-> +	paging_init();
-> +
-> +#ifdef CONFIG_NATFEAT
-> +	nf_init();
-> +#endif
-> +
-> +#ifndef CONFIG_SUN3
->  #ifdef CONFIG_ATARI
->  	if (MACH_IS_ATARI)
->  		atari_stram_reserve_pages((void *)availmem);
->
->
