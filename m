@@ -2,132 +2,694 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-6.2 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,NICE_REPLY_A,SPF_HELO_NONE,
-	SPF_PASS,USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-16.7 required=3.0 tests=BAYES_00,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,UPPERCASE_50_75,USER_AGENT_GIT
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C1D3EC433F5
-	for <linux-m68k@archiver.kernel.org>; Tue, 14 Sep 2021 03:15:31 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5CCAEC433F5
+	for <linux-m68k@archiver.kernel.org>; Tue, 14 Sep 2021 07:30:41 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id A07FA60FDA
-	for <linux-m68k@archiver.kernel.org>; Tue, 14 Sep 2021 03:15:31 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 42B5760E74
+	for <linux-m68k@archiver.kernel.org>; Tue, 14 Sep 2021 07:30:41 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237213AbhINDQr (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Mon, 13 Sep 2021 23:16:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51746 "EHLO
+        id S240756AbhINHb5 (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Tue, 14 Sep 2021 03:31:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53130 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238135AbhINDQr (ORCPT
-        <rfc822;linux-m68k@vger.kernel.org>); Mon, 13 Sep 2021 23:16:47 -0400
-Received: from mail-pf1-x42d.google.com (mail-pf1-x42d.google.com [IPv6:2607:f8b0:4864:20::42d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A88AC061574
-        for <linux-m68k@vger.kernel.org>; Mon, 13 Sep 2021 20:15:29 -0700 (PDT)
-Received: by mail-pf1-x42d.google.com with SMTP id g14so10821181pfm.1
-        for <linux-m68k@vger.kernel.org>; Mon, 13 Sep 2021 20:15:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=subject:to:references:cc:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-transfer-encoding;
-        bh=HoG1CRkqnPAtOoAv6b09kulUP0T/YlAugQZLXP2TvVA=;
-        b=fhhrv7QqiZvZlSRPqK5OUuZCHqLxZbSIEj97V5l/smb+FoDxmH3NrulJRsvsRHy7NI
-         Ki/SAgU8qMS03mxd8tgBHGX08WxMVRT6v8FfOHeNUQff+1E67oPFx5xftlRritSGwrZ6
-         v/xM8vuUwyVhJVN3GbwAWqrVq3SExBaA9kN/qISG1Gj79bTYuNyb2WiEYljig1zgMYyG
-         kzOIFeCdqQCBUeTscsB3P61Mi/4946o0JySTLZdGsQLpMYVUpwknfVSNJYl39+ACoYLJ
-         wyA/J58zs6jdlQdT89p7nsTyJ8l0G26spHFChNqH87AqDC8qHnjNKWiRhhj1h5ed08QP
-         +rLA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:references:cc:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding;
-        bh=HoG1CRkqnPAtOoAv6b09kulUP0T/YlAugQZLXP2TvVA=;
-        b=dJ6TTRPsKslwURUKEmZqcYSnCNTtvzuDDhcU80gvq69fwGtsYtnfLaXtlqebxfD+Yn
-         slMKAevjKIWJtHSbumLd9aUb32EmDG/3Z87PEYqQYFqoGq+PKOKtE9sgLpkqvn0qrvck
-         tvDqgwgVdvIrPm3UV/qkFyBnMT3I8aY1BuM57Ka4NBs7DmOhLUzs7IScy9+N4zSh36NU
-         SEcgqu+VszAgRVTKtdEm7EAp2UCjAS3i07pTUuwNIKLp6TkKzLicdsRpXq9r7a1gi6XG
-         oaROTA/oGHyamdxrdrJbNi6ZCWcCSos9RUDFJEcZsOxuZvAgTiTcXs5H7gNzm4zJ9fsf
-         beMA==
-X-Gm-Message-State: AOAM5322vwopzlq54Wl5ma9ylr7rsgnI75POo93Hn0Zp7Sudp4TIV4GH
-        jweV7FlFc+K/PuCaosIwrkGCHPN7t70=
-X-Google-Smtp-Source: ABdhPJwtxTkPL3CsxsRsTXp5PwQ8j9+RRWMBVFUuaWAFGlBV2vo1+ZbWSV3+iiMfmJfJlc2UgTpjFQ==
-X-Received: by 2002:aa7:8246:0:b029:39a:1e0a:cd48 with SMTP id e6-20020aa782460000b029039a1e0acd48mr2531954pfn.14.1631589328659;
-        Mon, 13 Sep 2021 20:15:28 -0700 (PDT)
-Received: from [10.1.1.26] (222-155-4-20-adsl.sparkbb.co.nz. [222.155.4.20])
-        by smtp.gmail.com with ESMTPSA id 4sm8169056pjb.21.2021.09.13.20.15.26
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Mon, 13 Sep 2021 20:15:27 -0700 (PDT)
-Subject: Re: Mainline kernel crashes, was Re: RFC: remove set_fs for m68k
-To:     Finn Thain <fthain@linux-m68k.org>
-References: <20210721170529.GA14550@lst.de>
- <f4ab2dcb-6761-c60b-54ce-35d0d017d371@gmail.com>
- <d772d22e-a945-3e35-80a2-f4783893bea@linux-m68k.org>
- <b2c55280-657b-51c2-065c-3fc93db050b9@gmail.com>
- <d7b8f7eb-fc18-c8d-fe3e-dcdf19d3f4b@linux-m68k.org>
- <755e55ba-4ce2-b4e4-a628-5abc183a557a@linux-m68k.org>
- <b52a10fe-3e4b-5740-d3f8-52bce3bc988@linux-m68k.org>
- <31f27da7-be60-8eb-9834-748b653c2246@linux-m68k.org>
- <ed2ca322-b957-cd52-8d2f-a8edd2785625@linux-m68k.org>
- <977bb34f-6de9-3a9e-818f-b1aa0758f78f@gmail.com>
- <fa8682aa-c5f4-7995-166d-8fa899594b19@linux-m68k.org>
- <42b30d4f-b871-51ea-1b0e-479f4fe096eb@gmail.com>
- <7ac7a41a-53f9-b13c-83fa-2c6b8ef2b90@linux-m68k.org>
- <0477f373-86c9-dacb-a7b1-25fe4b3befd3@gmail.com>
- <2c624213-6a4-799c-45e-a1be578dd5f@linux-m68k.org>
- <d59a44c-ddea-a774-d217-2484ad582dc0@linux-m68k.org>
- <82f6f161-b9e0-bf9b-3c20-aa2ce810d99a@gmail.com>
- <4564a46-2115-9058-2a9-2d77736291c@linux-m68k.org>
- <b43a3f6d-3d91-e1c6-bafd-103326087d50@gmail.com>
-Cc:     linux-m68k@vger.kernel.org
-From:   Michael Schmitz <schmitzmic@gmail.com>
-Message-ID: <38c23979-e662-2f7b-2bae-53955f9ab443@gmail.com>
-Date:   Tue, 14 Sep 2021 15:13:50 +1200
-User-Agent: Mozilla/5.0 (X11; Linux ppc64; rv:45.0) Gecko/20100101
- Thunderbird/45.8.0
+        with ESMTP id S239257AbhINHb5 (ORCPT
+        <rfc822;linux-m68k@lists.linux-m68k.org>);
+        Tue, 14 Sep 2021 03:31:57 -0400
+Received: from xavier.telenet-ops.be (xavier.telenet-ops.be [IPv6:2a02:1800:120:4::f00:14])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D3652C061574
+        for <linux-m68k@lists.linux-m68k.org>; Tue, 14 Sep 2021 00:30:39 -0700 (PDT)
+Received: from ramsan.of.borg ([IPv6:2a02:1810:ac12:ed20:d46f:7eb5:4a37:9d14])
+        by xavier.telenet-ops.be with bizsmtp
+        id tjWc2500Y2aSKa101jWcKt; Tue, 14 Sep 2021 09:30:36 +0200
+Received: from rox.of.borg ([192.168.97.57])
+        by ramsan.of.borg with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.93)
+        (envelope-from <geert@linux-m68k.org>)
+        id 1mQ2to-004PH2-Cs; Tue, 14 Sep 2021 09:30:36 +0200
+Received: from geert by rox.of.borg with local (Exim 4.93)
+        (envelope-from <geert@linux-m68k.org>)
+        id 1mQ2tn-00GIFG-Mh; Tue, 14 Sep 2021 09:30:35 +0200
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+To:     linux-m68k@lists.linux-m68k.org
+Cc:     linux-kernel@vger.kernel.org,
+        Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: [PATCH] m68k: defconfig: Update defconfigs for v5.15-rc1
+Date:   Tue, 14 Sep 2021 09:30:34 +0200
+Message-Id: <20210914073034.3883338-1-geert@linux-m68k.org>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-In-Reply-To: <b43a3f6d-3d91-e1c6-bafd-103326087d50@gmail.com>
-Content-Type: text/plain; charset=windows-1252; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-Hi Finn,
+  - Enable modular build of the new MCTP networking core protocol,
+  - Enable modular build of the new NTFS Read-Write file system support
+    (incl. external compressions lzx/xpress),
+  - Enable modular build of the MD4 digest algorithm (no longer
+    auto-selected since commit 42c21973fa3c0f48 ("cifs: create a MD4
+    module and switch cifs.ko to use it")),
+  - Move CONFIG_STRING_SELFTEST=m (moved in commit b2ff70a01a7a8083
+    ("lib/test_string.c: move string selftest in the Runtime Testing
+    menu")).
+  - Drop CONFIG_TEST_SORT=m (auto-enabled since commit 36f33b562936295a
+    ("lib/test: convert test_sort.c to use KUnit")).
 
-On 13/09/21 19:20, Michael Schmitz wrote:
->>>
->>> Incidentally - have you ever checked whether Al Viro's signal handling
->>> fixes have an impact on these bugs?
->>>
->>
->> I will try that patch series if you think it is related.
->
-> Initial tests look promising (but I've said that before).
->
->> So far the problem seems to be confined to one machine. Stress tests on
->> other mac models did not yet reproduce the problem.
->
-> Yes, that's suspicious. I'll keep you posted.
+Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
+---
+To be queued in the m68k tree for v5.16.
 
-I've seen neither format errors in resume_userspace() nor bus errors in 
-setup_frame() after two days of tests (and would have expected multiple 
-errors in that amount of time). Al's patches appear to have fixed these 
-errors for me. And that makes a lot of sense, considering handling of 
-multiple signals was broken before, and would have been expected to 
-result in corrupt exception frames on return from exception, and just 
-the sort of format errors I'd seen.
+ arch/m68k/configs/amiga_defconfig    | 7 +++++--
+ arch/m68k/configs/apollo_defconfig   | 7 +++++--
+ arch/m68k/configs/atari_defconfig    | 7 +++++--
+ arch/m68k/configs/bvme6000_defconfig | 7 +++++--
+ arch/m68k/configs/hp300_defconfig    | 7 +++++--
+ arch/m68k/configs/mac_defconfig      | 7 +++++--
+ arch/m68k/configs/multi_defconfig    | 7 +++++--
+ arch/m68k/configs/mvme147_defconfig  | 7 +++++--
+ arch/m68k/configs/mvme16x_defconfig  | 7 +++++--
+ arch/m68k/configs/q40_defconfig      | 7 +++++--
+ arch/m68k/configs/sun3_defconfig     | 7 +++++--
+ arch/m68k/configs/sun3x_defconfig    | 7 +++++--
+ 12 files changed, 60 insertions(+), 24 deletions(-)
 
-I still have to trace what issues the incorrect exception stack handling 
-would have caused in setup_frame() to force a bus error on the first 
-__put_user() there.
-
-My tests were run successfully without any disabling of interrupts games 
-BTW.
-
-The issues on 040 would be very similar, and I don't think you'd seen 
-format errors on exception return or bus errors in setup_frame(), so 
-this might not matter to you.
-
-Cheers,
-
-	Michael
-
+diff --git a/arch/m68k/configs/amiga_defconfig b/arch/m68k/configs/amiga_defconfig
+index 5f536286f5fce88d..e2b14ea9934236ed 100644
+--- a/arch/m68k/configs/amiga_defconfig
++++ b/arch/m68k/configs/amiga_defconfig
+@@ -302,6 +302,7 @@ CONFIG_MPLS_ROUTING=m
+ CONFIG_MPLS_IPTUNNEL=m
+ CONFIG_NET_NSH=m
+ CONFIG_AF_KCM=m
++CONFIG_MCTP=m
+ # CONFIG_WIRELESS is not set
+ CONFIG_PSAMPLE=m
+ CONFIG_NET_IFE=m
+@@ -474,6 +475,8 @@ CONFIG_UDF_FS=m
+ CONFIG_MSDOS_FS=m
+ CONFIG_VFAT_FS=m
+ CONFIG_EXFAT_FS=m
++CONFIG_NTFS3_FS=m
++CONFIG_NTFS3_LZX_XPRESS=y
+ CONFIG_PROC_KCORE=y
+ CONFIG_PROC_CHILDREN=y
+ CONFIG_TMPFS=y
+@@ -580,6 +583,7 @@ CONFIG_CRYPTO_ADIANTUM=m
+ CONFIG_CRYPTO_XCBC=m
+ CONFIG_CRYPTO_VMAC=m
+ CONFIG_CRYPTO_BLAKE2S=m
++CONFIG_CRYPTO_MD4=m
+ CONFIG_CRYPTO_MICHAEL_MIC=m
+ CONFIG_CRYPTO_RMD160=m
+ CONFIG_CRYPTO_SHA3=m
+@@ -618,7 +622,6 @@ CONFIG_CRC32_SELFTEST=m
+ CONFIG_CRC64=m
+ CONFIG_XZ_DEC_TEST=m
+ CONFIG_GLOB_SELFTEST=m
+-CONFIG_STRING_SELFTEST=m
+ # CONFIG_SECTION_MISMATCH_WARN_ONLY is not set
+ CONFIG_MAGIC_SYSRQ=y
+ CONFIG_TEST_LOCKUP=m
+@@ -627,12 +630,12 @@ CONFIG_EARLY_PRINTK=y
+ CONFIG_KUNIT=m
+ CONFIG_KUNIT_ALL_TESTS=m
+ CONFIG_TEST_MIN_HEAP=m
+-CONFIG_TEST_SORT=m
+ CONFIG_TEST_DIV64=m
+ CONFIG_REED_SOLOMON_TEST=m
+ CONFIG_ATOMIC64_SELFTEST=m
+ CONFIG_ASYNC_RAID6_TEST=m
+ CONFIG_TEST_HEXDUMP=m
++CONFIG_STRING_SELFTEST=m
+ CONFIG_TEST_STRING_HELPERS=m
+ CONFIG_TEST_STRSCPY=m
+ CONFIG_TEST_KSTRTOX=m
+diff --git a/arch/m68k/configs/apollo_defconfig b/arch/m68k/configs/apollo_defconfig
+index d9568644051adb24..41f3f3b738b3e042 100644
+--- a/arch/m68k/configs/apollo_defconfig
++++ b/arch/m68k/configs/apollo_defconfig
+@@ -298,6 +298,7 @@ CONFIG_MPLS_ROUTING=m
+ CONFIG_MPLS_IPTUNNEL=m
+ CONFIG_NET_NSH=m
+ CONFIG_AF_KCM=m
++CONFIG_MCTP=m
+ # CONFIG_WIRELESS is not set
+ CONFIG_PSAMPLE=m
+ CONFIG_NET_IFE=m
+@@ -431,6 +432,8 @@ CONFIG_UDF_FS=m
+ CONFIG_MSDOS_FS=m
+ CONFIG_VFAT_FS=m
+ CONFIG_EXFAT_FS=m
++CONFIG_NTFS3_FS=m
++CONFIG_NTFS3_LZX_XPRESS=y
+ CONFIG_PROC_KCORE=y
+ CONFIG_PROC_CHILDREN=y
+ CONFIG_TMPFS=y
+@@ -537,6 +540,7 @@ CONFIG_CRYPTO_ADIANTUM=m
+ CONFIG_CRYPTO_XCBC=m
+ CONFIG_CRYPTO_VMAC=m
+ CONFIG_CRYPTO_BLAKE2S=m
++CONFIG_CRYPTO_MD4=m
+ CONFIG_CRYPTO_MICHAEL_MIC=m
+ CONFIG_CRYPTO_RMD160=m
+ CONFIG_CRYPTO_SHA3=m
+@@ -574,7 +578,6 @@ CONFIG_PRIME_NUMBERS=m
+ CONFIG_CRC32_SELFTEST=m
+ CONFIG_CRC64=m
+ CONFIG_XZ_DEC_TEST=m
+-CONFIG_STRING_SELFTEST=m
+ # CONFIG_SECTION_MISMATCH_WARN_ONLY is not set
+ CONFIG_MAGIC_SYSRQ=y
+ CONFIG_TEST_LOCKUP=m
+@@ -583,12 +586,12 @@ CONFIG_EARLY_PRINTK=y
+ CONFIG_KUNIT=m
+ CONFIG_KUNIT_ALL_TESTS=m
+ CONFIG_TEST_MIN_HEAP=m
+-CONFIG_TEST_SORT=m
+ CONFIG_TEST_DIV64=m
+ CONFIG_REED_SOLOMON_TEST=m
+ CONFIG_ATOMIC64_SELFTEST=m
+ CONFIG_ASYNC_RAID6_TEST=m
+ CONFIG_TEST_HEXDUMP=m
++CONFIG_STRING_SELFTEST=m
+ CONFIG_TEST_STRING_HELPERS=m
+ CONFIG_TEST_STRSCPY=m
+ CONFIG_TEST_KSTRTOX=m
+diff --git a/arch/m68k/configs/atari_defconfig b/arch/m68k/configs/atari_defconfig
+index 55fa03710ccca852..b06038d3d7bd7c3b 100644
+--- a/arch/m68k/configs/atari_defconfig
++++ b/arch/m68k/configs/atari_defconfig
+@@ -305,6 +305,7 @@ CONFIG_MPLS_ROUTING=m
+ CONFIG_MPLS_IPTUNNEL=m
+ CONFIG_NET_NSH=m
+ CONFIG_AF_KCM=m
++CONFIG_MCTP=m
+ # CONFIG_WIRELESS is not set
+ CONFIG_PSAMPLE=m
+ CONFIG_NET_IFE=m
+@@ -463,6 +464,8 @@ CONFIG_UDF_FS=m
+ CONFIG_MSDOS_FS=m
+ CONFIG_VFAT_FS=m
+ CONFIG_EXFAT_FS=m
++CONFIG_NTFS3_FS=m
++CONFIG_NTFS3_LZX_XPRESS=y
+ CONFIG_PROC_KCORE=y
+ CONFIG_PROC_CHILDREN=y
+ CONFIG_TMPFS=y
+@@ -569,6 +572,7 @@ CONFIG_CRYPTO_ADIANTUM=m
+ CONFIG_CRYPTO_XCBC=m
+ CONFIG_CRYPTO_VMAC=m
+ CONFIG_CRYPTO_BLAKE2S=m
++CONFIG_CRYPTO_MD4=m
+ CONFIG_CRYPTO_MICHAEL_MIC=m
+ CONFIG_CRYPTO_RMD160=m
+ CONFIG_CRYPTO_SHA3=m
+@@ -607,7 +611,6 @@ CONFIG_CRC32_SELFTEST=m
+ CONFIG_CRC64=m
+ CONFIG_XZ_DEC_TEST=m
+ CONFIG_GLOB_SELFTEST=m
+-CONFIG_STRING_SELFTEST=m
+ # CONFIG_SECTION_MISMATCH_WARN_ONLY is not set
+ CONFIG_MAGIC_SYSRQ=y
+ CONFIG_TEST_LOCKUP=m
+@@ -616,12 +619,12 @@ CONFIG_EARLY_PRINTK=y
+ CONFIG_KUNIT=m
+ CONFIG_KUNIT_ALL_TESTS=m
+ CONFIG_TEST_MIN_HEAP=m
+-CONFIG_TEST_SORT=m
+ CONFIG_TEST_DIV64=m
+ CONFIG_REED_SOLOMON_TEST=m
+ CONFIG_ATOMIC64_SELFTEST=m
+ CONFIG_ASYNC_RAID6_TEST=m
+ CONFIG_TEST_HEXDUMP=m
++CONFIG_STRING_SELFTEST=m
+ CONFIG_TEST_STRING_HELPERS=m
+ CONFIG_TEST_STRSCPY=m
+ CONFIG_TEST_KSTRTOX=m
+diff --git a/arch/m68k/configs/bvme6000_defconfig b/arch/m68k/configs/bvme6000_defconfig
+index 7620db3e33e7fabc..11a19f87e5864bec 100644
+--- a/arch/m68k/configs/bvme6000_defconfig
++++ b/arch/m68k/configs/bvme6000_defconfig
+@@ -295,6 +295,7 @@ CONFIG_MPLS_ROUTING=m
+ CONFIG_MPLS_IPTUNNEL=m
+ CONFIG_NET_NSH=m
+ CONFIG_AF_KCM=m
++CONFIG_MCTP=m
+ # CONFIG_WIRELESS is not set
+ CONFIG_PSAMPLE=m
+ CONFIG_NET_IFE=m
+@@ -424,6 +425,8 @@ CONFIG_UDF_FS=m
+ CONFIG_MSDOS_FS=m
+ CONFIG_VFAT_FS=m
+ CONFIG_EXFAT_FS=m
++CONFIG_NTFS3_FS=m
++CONFIG_NTFS3_LZX_XPRESS=y
+ CONFIG_PROC_KCORE=y
+ CONFIG_PROC_CHILDREN=y
+ CONFIG_TMPFS=y
+@@ -530,6 +533,7 @@ CONFIG_CRYPTO_ADIANTUM=m
+ CONFIG_CRYPTO_XCBC=m
+ CONFIG_CRYPTO_VMAC=m
+ CONFIG_CRYPTO_BLAKE2S=m
++CONFIG_CRYPTO_MD4=m
+ CONFIG_CRYPTO_MICHAEL_MIC=m
+ CONFIG_CRYPTO_RMD160=m
+ CONFIG_CRYPTO_SHA3=m
+@@ -567,7 +571,6 @@ CONFIG_PRIME_NUMBERS=m
+ CONFIG_CRC32_SELFTEST=m
+ CONFIG_CRC64=m
+ CONFIG_XZ_DEC_TEST=m
+-CONFIG_STRING_SELFTEST=m
+ # CONFIG_SECTION_MISMATCH_WARN_ONLY is not set
+ CONFIG_MAGIC_SYSRQ=y
+ CONFIG_TEST_LOCKUP=m
+@@ -576,12 +579,12 @@ CONFIG_EARLY_PRINTK=y
+ CONFIG_KUNIT=m
+ CONFIG_KUNIT_ALL_TESTS=m
+ CONFIG_TEST_MIN_HEAP=m
+-CONFIG_TEST_SORT=m
+ CONFIG_TEST_DIV64=m
+ CONFIG_REED_SOLOMON_TEST=m
+ CONFIG_ATOMIC64_SELFTEST=m
+ CONFIG_ASYNC_RAID6_TEST=m
+ CONFIG_TEST_HEXDUMP=m
++CONFIG_STRING_SELFTEST=m
+ CONFIG_TEST_STRING_HELPERS=m
+ CONFIG_TEST_STRSCPY=m
+ CONFIG_TEST_KSTRTOX=m
+diff --git a/arch/m68k/configs/hp300_defconfig b/arch/m68k/configs/hp300_defconfig
+index 113a02d47ebbfae9..ee981271476a8ed3 100644
+--- a/arch/m68k/configs/hp300_defconfig
++++ b/arch/m68k/configs/hp300_defconfig
+@@ -297,6 +297,7 @@ CONFIG_MPLS_ROUTING=m
+ CONFIG_MPLS_IPTUNNEL=m
+ CONFIG_NET_NSH=m
+ CONFIG_AF_KCM=m
++CONFIG_MCTP=m
+ # CONFIG_WIRELESS is not set
+ CONFIG_PSAMPLE=m
+ CONFIG_NET_IFE=m
+@@ -433,6 +434,8 @@ CONFIG_UDF_FS=m
+ CONFIG_MSDOS_FS=m
+ CONFIG_VFAT_FS=m
+ CONFIG_EXFAT_FS=m
++CONFIG_NTFS3_FS=m
++CONFIG_NTFS3_LZX_XPRESS=y
+ CONFIG_PROC_KCORE=y
+ CONFIG_PROC_CHILDREN=y
+ CONFIG_TMPFS=y
+@@ -539,6 +542,7 @@ CONFIG_CRYPTO_ADIANTUM=m
+ CONFIG_CRYPTO_XCBC=m
+ CONFIG_CRYPTO_VMAC=m
+ CONFIG_CRYPTO_BLAKE2S=m
++CONFIG_CRYPTO_MD4=m
+ CONFIG_CRYPTO_MICHAEL_MIC=m
+ CONFIG_CRYPTO_RMD160=m
+ CONFIG_CRYPTO_SHA3=m
+@@ -576,7 +580,6 @@ CONFIG_PRIME_NUMBERS=m
+ CONFIG_CRC32_SELFTEST=m
+ CONFIG_CRC64=m
+ CONFIG_XZ_DEC_TEST=m
+-CONFIG_STRING_SELFTEST=m
+ # CONFIG_SECTION_MISMATCH_WARN_ONLY is not set
+ CONFIG_MAGIC_SYSRQ=y
+ CONFIG_TEST_LOCKUP=m
+@@ -585,12 +588,12 @@ CONFIG_EARLY_PRINTK=y
+ CONFIG_KUNIT=m
+ CONFIG_KUNIT_ALL_TESTS=m
+ CONFIG_TEST_MIN_HEAP=m
+-CONFIG_TEST_SORT=m
+ CONFIG_TEST_DIV64=m
+ CONFIG_REED_SOLOMON_TEST=m
+ CONFIG_ATOMIC64_SELFTEST=m
+ CONFIG_ASYNC_RAID6_TEST=m
+ CONFIG_TEST_HEXDUMP=m
++CONFIG_STRING_SELFTEST=m
+ CONFIG_TEST_STRING_HELPERS=m
+ CONFIG_TEST_STRSCPY=m
+ CONFIG_TEST_KSTRTOX=m
+diff --git a/arch/m68k/configs/mac_defconfig b/arch/m68k/configs/mac_defconfig
+index a8e006e8da6688fc..a48656d328dd10ce 100644
+--- a/arch/m68k/configs/mac_defconfig
++++ b/arch/m68k/configs/mac_defconfig
+@@ -299,6 +299,7 @@ CONFIG_MPLS_ROUTING=m
+ CONFIG_MPLS_IPTUNNEL=m
+ CONFIG_NET_NSH=m
+ CONFIG_AF_KCM=m
++CONFIG_MCTP=m
+ # CONFIG_WIRELESS is not set
+ CONFIG_PSAMPLE=m
+ CONFIG_NET_IFE=m
+@@ -454,6 +455,8 @@ CONFIG_UDF_FS=m
+ CONFIG_MSDOS_FS=m
+ CONFIG_VFAT_FS=m
+ CONFIG_EXFAT_FS=m
++CONFIG_NTFS3_FS=m
++CONFIG_NTFS3_LZX_XPRESS=y
+ CONFIG_PROC_KCORE=y
+ CONFIG_PROC_CHILDREN=y
+ CONFIG_TMPFS=y
+@@ -560,6 +563,7 @@ CONFIG_CRYPTO_ADIANTUM=m
+ CONFIG_CRYPTO_XCBC=m
+ CONFIG_CRYPTO_VMAC=m
+ CONFIG_CRYPTO_BLAKE2S=m
++CONFIG_CRYPTO_MD4=m
+ CONFIG_CRYPTO_MICHAEL_MIC=m
+ CONFIG_CRYPTO_RMD160=m
+ CONFIG_CRYPTO_SHA3=m
+@@ -598,7 +602,6 @@ CONFIG_CRC32_SELFTEST=m
+ CONFIG_CRC64=m
+ CONFIG_XZ_DEC_TEST=m
+ CONFIG_GLOB_SELFTEST=m
+-CONFIG_STRING_SELFTEST=m
+ # CONFIG_SECTION_MISMATCH_WARN_ONLY is not set
+ CONFIG_MAGIC_SYSRQ=y
+ CONFIG_TEST_LOCKUP=m
+@@ -607,12 +610,12 @@ CONFIG_EARLY_PRINTK=y
+ CONFIG_KUNIT=m
+ CONFIG_KUNIT_ALL_TESTS=m
+ CONFIG_TEST_MIN_HEAP=m
+-CONFIG_TEST_SORT=m
+ CONFIG_TEST_DIV64=m
+ CONFIG_REED_SOLOMON_TEST=m
+ CONFIG_ATOMIC64_SELFTEST=m
+ CONFIG_ASYNC_RAID6_TEST=m
+ CONFIG_TEST_HEXDUMP=m
++CONFIG_STRING_SELFTEST=m
+ CONFIG_TEST_STRING_HELPERS=m
+ CONFIG_TEST_STRSCPY=m
+ CONFIG_TEST_KSTRTOX=m
+diff --git a/arch/m68k/configs/multi_defconfig b/arch/m68k/configs/multi_defconfig
+index b6655907a1f3cc3f..b9b7a5cc6a1e6652 100644
+--- a/arch/m68k/configs/multi_defconfig
++++ b/arch/m68k/configs/multi_defconfig
+@@ -319,6 +319,7 @@ CONFIG_MPLS_ROUTING=m
+ CONFIG_MPLS_IPTUNNEL=m
+ CONFIG_NET_NSH=m
+ CONFIG_AF_KCM=m
++CONFIG_MCTP=m
+ # CONFIG_WIRELESS is not set
+ CONFIG_PSAMPLE=m
+ CONFIG_NET_IFE=m
+@@ -539,6 +540,8 @@ CONFIG_UDF_FS=m
+ CONFIG_MSDOS_FS=m
+ CONFIG_VFAT_FS=m
+ CONFIG_EXFAT_FS=m
++CONFIG_NTFS3_FS=m
++CONFIG_NTFS3_LZX_XPRESS=y
+ CONFIG_PROC_KCORE=y
+ CONFIG_PROC_CHILDREN=y
+ CONFIG_TMPFS=y
+@@ -645,6 +648,7 @@ CONFIG_CRYPTO_ADIANTUM=m
+ CONFIG_CRYPTO_XCBC=m
+ CONFIG_CRYPTO_VMAC=m
+ CONFIG_CRYPTO_BLAKE2S=m
++CONFIG_CRYPTO_MD4=m
+ CONFIG_CRYPTO_MICHAEL_MIC=m
+ CONFIG_CRYPTO_RMD160=m
+ CONFIG_CRYPTO_SHA3=m
+@@ -683,7 +687,6 @@ CONFIG_CRC32_SELFTEST=m
+ CONFIG_CRC64=m
+ CONFIG_XZ_DEC_TEST=m
+ CONFIG_GLOB_SELFTEST=m
+-CONFIG_STRING_SELFTEST=m
+ # CONFIG_SECTION_MISMATCH_WARN_ONLY is not set
+ CONFIG_MAGIC_SYSRQ=y
+ CONFIG_TEST_LOCKUP=m
+@@ -692,12 +695,12 @@ CONFIG_EARLY_PRINTK=y
+ CONFIG_KUNIT=m
+ CONFIG_KUNIT_ALL_TESTS=m
+ CONFIG_TEST_MIN_HEAP=m
+-CONFIG_TEST_SORT=m
+ CONFIG_TEST_DIV64=m
+ CONFIG_REED_SOLOMON_TEST=m
+ CONFIG_ATOMIC64_SELFTEST=m
+ CONFIG_ASYNC_RAID6_TEST=m
+ CONFIG_TEST_HEXDUMP=m
++CONFIG_STRING_SELFTEST=m
+ CONFIG_TEST_STRING_HELPERS=m
+ CONFIG_TEST_STRSCPY=m
+ CONFIG_TEST_KSTRTOX=m
+diff --git a/arch/m68k/configs/mvme147_defconfig b/arch/m68k/configs/mvme147_defconfig
+index 563ba47db8c68dd0..3887b1c9c5fdca7b 100644
+--- a/arch/m68k/configs/mvme147_defconfig
++++ b/arch/m68k/configs/mvme147_defconfig
+@@ -294,6 +294,7 @@ CONFIG_MPLS_ROUTING=m
+ CONFIG_MPLS_IPTUNNEL=m
+ CONFIG_NET_NSH=m
+ CONFIG_AF_KCM=m
++CONFIG_MCTP=m
+ # CONFIG_WIRELESS is not set
+ CONFIG_PSAMPLE=m
+ CONFIG_NET_IFE=m
+@@ -423,6 +424,8 @@ CONFIG_UDF_FS=m
+ CONFIG_MSDOS_FS=m
+ CONFIG_VFAT_FS=m
+ CONFIG_EXFAT_FS=m
++CONFIG_NTFS3_FS=m
++CONFIG_NTFS3_LZX_XPRESS=y
+ CONFIG_PROC_KCORE=y
+ CONFIG_PROC_CHILDREN=y
+ CONFIG_TMPFS=y
+@@ -529,6 +532,7 @@ CONFIG_CRYPTO_ADIANTUM=m
+ CONFIG_CRYPTO_XCBC=m
+ CONFIG_CRYPTO_VMAC=m
+ CONFIG_CRYPTO_BLAKE2S=m
++CONFIG_CRYPTO_MD4=m
+ CONFIG_CRYPTO_MICHAEL_MIC=m
+ CONFIG_CRYPTO_RMD160=m
+ CONFIG_CRYPTO_SHA3=m
+@@ -566,7 +570,6 @@ CONFIG_PRIME_NUMBERS=m
+ CONFIG_CRC32_SELFTEST=m
+ CONFIG_CRC64=m
+ CONFIG_XZ_DEC_TEST=m
+-CONFIG_STRING_SELFTEST=m
+ # CONFIG_SECTION_MISMATCH_WARN_ONLY is not set
+ CONFIG_MAGIC_SYSRQ=y
+ CONFIG_TEST_LOCKUP=m
+@@ -575,12 +578,12 @@ CONFIG_EARLY_PRINTK=y
+ CONFIG_KUNIT=m
+ CONFIG_KUNIT_ALL_TESTS=m
+ CONFIG_TEST_MIN_HEAP=m
+-CONFIG_TEST_SORT=m
+ CONFIG_TEST_DIV64=m
+ CONFIG_REED_SOLOMON_TEST=m
+ CONFIG_ATOMIC64_SELFTEST=m
+ CONFIG_ASYNC_RAID6_TEST=m
+ CONFIG_TEST_HEXDUMP=m
++CONFIG_STRING_SELFTEST=m
+ CONFIG_TEST_STRING_HELPERS=m
+ CONFIG_TEST_STRSCPY=m
+ CONFIG_TEST_KSTRTOX=m
+diff --git a/arch/m68k/configs/mvme16x_defconfig b/arch/m68k/configs/mvme16x_defconfig
+index 9f1b44de4706e1b0..19e5992bba6caa94 100644
+--- a/arch/m68k/configs/mvme16x_defconfig
++++ b/arch/m68k/configs/mvme16x_defconfig
+@@ -295,6 +295,7 @@ CONFIG_MPLS_ROUTING=m
+ CONFIG_MPLS_IPTUNNEL=m
+ CONFIG_NET_NSH=m
+ CONFIG_AF_KCM=m
++CONFIG_MCTP=m
+ # CONFIG_WIRELESS is not set
+ CONFIG_PSAMPLE=m
+ CONFIG_NET_IFE=m
+@@ -424,6 +425,8 @@ CONFIG_UDF_FS=m
+ CONFIG_MSDOS_FS=m
+ CONFIG_VFAT_FS=m
+ CONFIG_EXFAT_FS=m
++CONFIG_NTFS3_FS=m
++CONFIG_NTFS3_LZX_XPRESS=y
+ CONFIG_PROC_KCORE=y
+ CONFIG_PROC_CHILDREN=y
+ CONFIG_TMPFS=y
+@@ -530,6 +533,7 @@ CONFIG_CRYPTO_ADIANTUM=m
+ CONFIG_CRYPTO_XCBC=m
+ CONFIG_CRYPTO_VMAC=m
+ CONFIG_CRYPTO_BLAKE2S=m
++CONFIG_CRYPTO_MD4=m
+ CONFIG_CRYPTO_MICHAEL_MIC=m
+ CONFIG_CRYPTO_RMD160=m
+ CONFIG_CRYPTO_SHA3=m
+@@ -567,7 +571,6 @@ CONFIG_PRIME_NUMBERS=m
+ CONFIG_CRC32_SELFTEST=m
+ CONFIG_CRC64=m
+ CONFIG_XZ_DEC_TEST=m
+-CONFIG_STRING_SELFTEST=m
+ # CONFIG_SECTION_MISMATCH_WARN_ONLY is not set
+ CONFIG_MAGIC_SYSRQ=y
+ CONFIG_TEST_LOCKUP=m
+@@ -576,12 +579,12 @@ CONFIG_EARLY_PRINTK=y
+ CONFIG_KUNIT=m
+ CONFIG_KUNIT_ALL_TESTS=m
+ CONFIG_TEST_MIN_HEAP=m
+-CONFIG_TEST_SORT=m
+ CONFIG_TEST_DIV64=m
+ CONFIG_REED_SOLOMON_TEST=m
+ CONFIG_ATOMIC64_SELFTEST=m
+ CONFIG_ASYNC_RAID6_TEST=m
+ CONFIG_TEST_HEXDUMP=m
++CONFIG_STRING_SELFTEST=m
+ CONFIG_TEST_STRING_HELPERS=m
+ CONFIG_TEST_STRSCPY=m
+ CONFIG_TEST_KSTRTOX=m
+diff --git a/arch/m68k/configs/q40_defconfig b/arch/m68k/configs/q40_defconfig
+index 1993433d08406eeb..af25efaa32967722 100644
+--- a/arch/m68k/configs/q40_defconfig
++++ b/arch/m68k/configs/q40_defconfig
+@@ -296,6 +296,7 @@ CONFIG_MPLS_ROUTING=m
+ CONFIG_MPLS_IPTUNNEL=m
+ CONFIG_NET_NSH=m
+ CONFIG_AF_KCM=m
++CONFIG_MCTP=m
+ # CONFIG_WIRELESS is not set
+ CONFIG_PSAMPLE=m
+ CONFIG_NET_IFE=m
+@@ -441,6 +442,8 @@ CONFIG_UDF_FS=m
+ CONFIG_MSDOS_FS=m
+ CONFIG_VFAT_FS=m
+ CONFIG_EXFAT_FS=m
++CONFIG_NTFS3_FS=m
++CONFIG_NTFS3_LZX_XPRESS=y
+ CONFIG_PROC_KCORE=y
+ CONFIG_PROC_CHILDREN=y
+ CONFIG_TMPFS=y
+@@ -547,6 +550,7 @@ CONFIG_CRYPTO_ADIANTUM=m
+ CONFIG_CRYPTO_XCBC=m
+ CONFIG_CRYPTO_VMAC=m
+ CONFIG_CRYPTO_BLAKE2S=m
++CONFIG_CRYPTO_MD4=m
+ CONFIG_CRYPTO_MICHAEL_MIC=m
+ CONFIG_CRYPTO_RMD160=m
+ CONFIG_CRYPTO_SHA3=m
+@@ -585,7 +589,6 @@ CONFIG_CRC32_SELFTEST=m
+ CONFIG_CRC64=m
+ CONFIG_XZ_DEC_TEST=m
+ CONFIG_GLOB_SELFTEST=m
+-CONFIG_STRING_SELFTEST=m
+ # CONFIG_SECTION_MISMATCH_WARN_ONLY is not set
+ CONFIG_MAGIC_SYSRQ=y
+ CONFIG_TEST_LOCKUP=m
+@@ -594,12 +597,12 @@ CONFIG_EARLY_PRINTK=y
+ CONFIG_KUNIT=m
+ CONFIG_KUNIT_ALL_TESTS=m
+ CONFIG_TEST_MIN_HEAP=m
+-CONFIG_TEST_SORT=m
+ CONFIG_TEST_DIV64=m
+ CONFIG_REED_SOLOMON_TEST=m
+ CONFIG_ATOMIC64_SELFTEST=m
+ CONFIG_ASYNC_RAID6_TEST=m
+ CONFIG_TEST_HEXDUMP=m
++CONFIG_STRING_SELFTEST=m
+ CONFIG_TEST_STRING_HELPERS=m
+ CONFIG_TEST_STRSCPY=m
+ CONFIG_TEST_KSTRTOX=m
+diff --git a/arch/m68k/configs/sun3_defconfig b/arch/m68k/configs/sun3_defconfig
+index 56dbc63cef5bc48b..14dd96d3f5efde48 100644
+--- a/arch/m68k/configs/sun3_defconfig
++++ b/arch/m68k/configs/sun3_defconfig
+@@ -292,6 +292,7 @@ CONFIG_MPLS_ROUTING=m
+ CONFIG_MPLS_IPTUNNEL=m
+ CONFIG_NET_NSH=m
+ CONFIG_AF_KCM=m
++CONFIG_MCTP=m
+ # CONFIG_WIRELESS is not set
+ CONFIG_PSAMPLE=m
+ CONFIG_NET_IFE=m
+@@ -426,6 +427,8 @@ CONFIG_UDF_FS=m
+ CONFIG_MSDOS_FS=m
+ CONFIG_VFAT_FS=m
+ CONFIG_EXFAT_FS=m
++CONFIG_NTFS3_FS=m
++CONFIG_NTFS3_LZX_XPRESS=y
+ CONFIG_PROC_KCORE=y
+ CONFIG_PROC_CHILDREN=y
+ CONFIG_TMPFS=y
+@@ -532,6 +535,7 @@ CONFIG_CRYPTO_ADIANTUM=m
+ CONFIG_CRYPTO_XCBC=m
+ CONFIG_CRYPTO_VMAC=m
+ CONFIG_CRYPTO_BLAKE2S=m
++CONFIG_CRYPTO_MD4=m
+ CONFIG_CRYPTO_MICHAEL_MIC=m
+ CONFIG_CRYPTO_RMD160=m
+ CONFIG_CRYPTO_SHA3=m
+@@ -569,7 +573,6 @@ CONFIG_PRIME_NUMBERS=m
+ CONFIG_CRC32_SELFTEST=m
+ CONFIG_CRC64=m
+ CONFIG_XZ_DEC_TEST=m
+-CONFIG_STRING_SELFTEST=m
+ # CONFIG_SECTION_MISMATCH_WARN_ONLY is not set
+ CONFIG_MAGIC_SYSRQ=y
+ CONFIG_TEST_LOCKUP=m
+@@ -577,12 +580,12 @@ CONFIG_WW_MUTEX_SELFTEST=m
+ CONFIG_KUNIT=m
+ CONFIG_KUNIT_ALL_TESTS=m
+ CONFIG_TEST_MIN_HEAP=m
+-CONFIG_TEST_SORT=m
+ CONFIG_TEST_DIV64=m
+ CONFIG_REED_SOLOMON_TEST=m
+ CONFIG_ATOMIC64_SELFTEST=m
+ CONFIG_ASYNC_RAID6_TEST=m
+ CONFIG_TEST_HEXDUMP=m
++CONFIG_STRING_SELFTEST=m
+ CONFIG_TEST_STRING_HELPERS=m
+ CONFIG_TEST_STRSCPY=m
+ CONFIG_TEST_KSTRTOX=m
+diff --git a/arch/m68k/configs/sun3x_defconfig b/arch/m68k/configs/sun3x_defconfig
+index 6bd1bba81ac32876..8ac2402ac334ad3f 100644
+--- a/arch/m68k/configs/sun3x_defconfig
++++ b/arch/m68k/configs/sun3x_defconfig
+@@ -292,6 +292,7 @@ CONFIG_MPLS_ROUTING=m
+ CONFIG_MPLS_IPTUNNEL=m
+ CONFIG_NET_NSH=m
+ CONFIG_AF_KCM=m
++CONFIG_MCTP=m
+ # CONFIG_WIRELESS is not set
+ CONFIG_PSAMPLE=m
+ CONFIG_NET_IFE=m
+@@ -425,6 +426,8 @@ CONFIG_UDF_FS=m
+ CONFIG_MSDOS_FS=m
+ CONFIG_VFAT_FS=m
+ CONFIG_EXFAT_FS=m
++CONFIG_NTFS3_FS=m
++CONFIG_NTFS3_LZX_XPRESS=y
+ CONFIG_PROC_KCORE=y
+ CONFIG_PROC_CHILDREN=y
+ CONFIG_TMPFS=y
+@@ -531,6 +534,7 @@ CONFIG_CRYPTO_ADIANTUM=m
+ CONFIG_CRYPTO_XCBC=m
+ CONFIG_CRYPTO_VMAC=m
+ CONFIG_CRYPTO_BLAKE2S=m
++CONFIG_CRYPTO_MD4=m
+ CONFIG_CRYPTO_MICHAEL_MIC=m
+ CONFIG_CRYPTO_RMD160=m
+ CONFIG_CRYPTO_SHA3=m
+@@ -568,7 +572,6 @@ CONFIG_PRIME_NUMBERS=m
+ CONFIG_CRC32_SELFTEST=m
+ CONFIG_CRC64=m
+ CONFIG_XZ_DEC_TEST=m
+-CONFIG_STRING_SELFTEST=m
+ # CONFIG_SECTION_MISMATCH_WARN_ONLY is not set
+ CONFIG_MAGIC_SYSRQ=y
+ CONFIG_TEST_LOCKUP=m
+@@ -577,12 +580,12 @@ CONFIG_EARLY_PRINTK=y
+ CONFIG_KUNIT=m
+ CONFIG_KUNIT_ALL_TESTS=m
+ CONFIG_TEST_MIN_HEAP=m
+-CONFIG_TEST_SORT=m
+ CONFIG_TEST_DIV64=m
+ CONFIG_REED_SOLOMON_TEST=m
+ CONFIG_ATOMIC64_SELFTEST=m
+ CONFIG_ASYNC_RAID6_TEST=m
+ CONFIG_TEST_HEXDUMP=m
++CONFIG_STRING_SELFTEST=m
+ CONFIG_TEST_STRING_HELPERS=m
+ CONFIG_TEST_STRSCPY=m
+ CONFIG_TEST_KSTRTOX=m
+-- 
+2.25.1
 
