@@ -7,44 +7,44 @@ X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 6578BC433EF
-	for <linux-m68k@archiver.kernel.org>; Thu, 16 Sep 2021 07:07:37 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8DDCBC433EF
+	for <linux-m68k@archiver.kernel.org>; Thu, 16 Sep 2021 07:08:25 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 3638461029
-	for <linux-m68k@archiver.kernel.org>; Thu, 16 Sep 2021 07:07:37 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 715B560F23
+	for <linux-m68k@archiver.kernel.org>; Thu, 16 Sep 2021 07:08:25 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234539AbhIPHI4 (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Thu, 16 Sep 2021 03:08:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58656 "EHLO
+        id S234539AbhIPHJo (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Thu, 16 Sep 2021 03:09:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58844 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234532AbhIPHIz (ORCPT
+        with ESMTP id S233880AbhIPHJn (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Thu, 16 Sep 2021 03:08:55 -0400
+        Thu, 16 Sep 2021 03:09:43 -0400
 Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EBE96C061574
-        for <linux-m68k@lists.linux-m68k.org>; Thu, 16 Sep 2021 00:07:35 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BADB0C061764
+        for <linux-m68k@lists.linux-m68k.org>; Thu, 16 Sep 2021 00:08:23 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
         d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
         References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:
         Content-Type:Content-ID:Content-Description;
-        bh=j8G0Qw1OqMPcWgsI54a+i3ZvID2rz/bU9IASzI7zYTw=; b=X4ysEW3QH+tcsL2bcXnH5F0XUI
-        xw4tpFZaAFk6Bmp0W/hiUZM5TPTZaiLB1QkB/Q2Qq/dNQwT7cqMPAvNs9DS6tSZtNpNknGq7w1ehq
-        YH+vBSAd7m0ipLoQ5FeMgLvO6/X2GtptppMOjRLZyXvE+3Uhgrdl35mMevcsX+m8ZYZ2UikpngUeX
-        cKOgGW4WSmOPViWQDJt3TQFB8dWPgk+WvmB/eyZPblFsOp4PdHFco4LOocrk8DYJD9s7KZyx7rzRn
-        7V6DKf6R8CWulKwCXVtB7veO8vpuuP+a3oYQHDu3t9x/s/wW8CrEQdcBddN++RKuq7SUWHmtaYQjv
-        hTuTQfGQ==;
+        bh=pjv2olVAhiNf4/Q09FJIXlXmayUf8+wZMeKoj4G6BuA=; b=u0SEy64JZpql5DK1AVe4qNKfy/
+        vUPgzJfUNRObpcQ771lMcdqJoPR9wDw5YLTIpD4M8zSFnAlhvI9hSqjt5v9PfUB4npF4i8T1UPgoB
+        76eWWr2QDEKodcSJ1Sf/OQGLrPrgQ3bLl1SZ9KhQvFrPJnwZA6mvphsBvUDZDPnSLvGCk7+6guumW
+        Q9ek73maEYLQ0Duv5DzX7oIGQYDeylVW3n/+DEtwIVoOlUCZFxyYnP2U2GQ+NoTzLULWOUrKAMVXh
+        BzkcfPqDHoY23UzLt7vO5rQ/nfJI6uctAPxzpyzVPzSWoCxpjK2kWRfh/n4/tVt0zQjO4ygOByQqq
+        DRYlOQGg==;
 Received: from [2001:4bb8:184:72db:6d44:b004:a9fa:2cf3] (helo=localhost)
         by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mQlUB-00GP6z-5c; Thu, 16 Sep 2021 07:07:13 +0000
+        id 1mQlUT-00GP7S-CS; Thu, 16 Sep 2021 07:07:34 +0000
 From:   Christoph Hellwig <hch@lst.de>
 To:     Geert Uytterhoeven <geert@linux-m68k.org>,
         Greg Ungerer <gerg@linux-m68k.org>
 Cc:     Michael Schmitz <schmitzmic@gmail.com>,
         Linus Torvalds <torvalds@linux-foundation.org>,
         linux-m68k@lists.linux-m68k.org
-Subject: [PATCH 5/6] m68k: provide __{get,put}_kernel_nofault
-Date:   Thu, 16 Sep 2021 09:04:04 +0200
-Message-Id: <20210916070405.52750-6-hch@lst.de>
+Subject: [PATCH 6/6] m68k: remove set_fs()
+Date:   Thu, 16 Sep 2021 09:04:05 +0200
+Message-Id: <20210916070405.52750-7-hch@lst.de>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210916070405.52750-1-hch@lst.de>
 References: <20210916070405.52750-1-hch@lst.de>
@@ -55,214 +55,558 @@ Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-Allow non-faulting access to kernel addresses without overriding the
-address space.  Implemented by passing the instruction name to the
-low-level assembly macros as an argument, and force the use of the
-normal move instructions for kernel access.
+Add a m68k-only set_fc helper to set the SFC and DFC registers for the
+few places that need to override it for special MM operations, but
+disconnect that from the deprecated kernel-wide set_fs() API.
+
+Note that the SFC/DFC registers are context switched, so there is no need
+to disable preemption.
+
+Partially based on an earlier patch from
+Linus Torvalds <torvalds@linux-foundation.org>.
 
 Signed-off-by: Christoph Hellwig <hch@lst.de>
 ---
- arch/m68k/include/asm/uaccess.h | 105 +++++++++++++++++++++++++-------
- 1 file changed, 84 insertions(+), 21 deletions(-)
+ arch/m68k/68000/entry.S             |  1 -
+ arch/m68k/Kconfig                   |  1 -
+ arch/m68k/coldfire/entry.S          |  1 -
+ arch/m68k/include/asm/processor.h   | 31 +++++++++++++--
+ arch/m68k/include/asm/segment.h     | 59 -----------------------------
+ arch/m68k/include/asm/thread_info.h |  3 --
+ arch/m68k/include/asm/tlbflush.h    | 11 ++----
+ arch/m68k/include/asm/uaccess.h     |  4 --
+ arch/m68k/kernel/asm-offsets.c      |  2 +-
+ arch/m68k/kernel/entry.S            |  5 +--
+ arch/m68k/kernel/process.c          |  4 +-
+ arch/m68k/kernel/traps.c            | 13 ++-----
+ arch/m68k/mac/misc.c                |  1 -
+ arch/m68k/mm/cache.c                |  6 +--
+ arch/m68k/mm/init.c                 |  6 ---
+ arch/m68k/mm/kmap.c                 |  1 -
+ arch/m68k/mm/memory.c               |  1 -
+ arch/m68k/mm/motorola.c             |  2 +-
+ arch/m68k/sun3/config.c             |  3 +-
+ arch/m68k/sun3/mmu_emu.c            |  6 +--
+ arch/m68k/sun3/sun3ints.c           |  1 -
+ arch/m68k/sun3x/prom.c              |  1 -
+ 22 files changed, 46 insertions(+), 117 deletions(-)
+ delete mode 100644 arch/m68k/include/asm/segment.h
 
-diff --git a/arch/m68k/include/asm/uaccess.h b/arch/m68k/include/asm/uaccess.h
-index 288ef7d11a7a3..65581a7874d4d 100644
---- a/arch/m68k/include/asm/uaccess.h
-+++ b/arch/m68k/include/asm/uaccess.h
-@@ -39,9 +39,9 @@ static inline int access_ok(const void __user *addr,
- #define	MOVES	"move"
+diff --git a/arch/m68k/68000/entry.S b/arch/m68k/68000/entry.S
+index 259b3661b6141..6aefcc20c28a8 100644
+--- a/arch/m68k/68000/entry.S
++++ b/arch/m68k/68000/entry.S
+@@ -15,7 +15,6 @@
+ #include <asm/unistd.h>
+ #include <asm/errno.h>
+ #include <asm/setup.h>
+-#include <asm/segment.h>
+ #include <asm/traps.h>
+ #include <asm/asm-offsets.h>
+ #include <asm/entry.h>
+diff --git a/arch/m68k/Kconfig b/arch/m68k/Kconfig
+index 774c35f47eeab..0b50da08a9c56 100644
+--- a/arch/m68k/Kconfig
++++ b/arch/m68k/Kconfig
+@@ -29,7 +29,6 @@ config M68K
+ 	select NO_DMA if !MMU && !COLDFIRE
+ 	select OLD_SIGACTION
+ 	select OLD_SIGSUSPEND3
+-	select SET_FS
+ 	select UACCESS_MEMCPY if !MMU
+ 	select VIRT_TO_BUS
+ 	select ZONE_DMA
+diff --git a/arch/m68k/coldfire/entry.S b/arch/m68k/coldfire/entry.S
+index d43a02795a4a4..412bb7326099b 100644
+--- a/arch/m68k/coldfire/entry.S
++++ b/arch/m68k/coldfire/entry.S
+@@ -31,7 +31,6 @@
+ #include <asm/thread_info.h>
+ #include <asm/errno.h>
+ #include <asm/setup.h>
+-#include <asm/segment.h>
+ #include <asm/asm-offsets.h>
+ #include <asm/entry.h>
+ 
+diff --git a/arch/m68k/include/asm/processor.h b/arch/m68k/include/asm/processor.h
+index 3750819ac5a13..f4d82c619a5c4 100644
+--- a/arch/m68k/include/asm/processor.h
++++ b/arch/m68k/include/asm/processor.h
+@@ -9,7 +9,6 @@
+ #define __ASM_M68K_PROCESSOR_H
+ 
+ #include <linux/thread_info.h>
+-#include <asm/segment.h>
+ #include <asm/fpu.h>
+ #include <asm/ptrace.h>
+ 
+@@ -75,11 +74,37 @@ static inline void wrusp(unsigned long usp)
+ #define TASK_UNMAPPED_BASE	0
  #endif
  
--#define __put_user_asm(res, x, ptr, bwl, reg, err)	\
-+#define __put_user_asm(inst, res, x, ptr, bwl, reg, err) \
- asm volatile ("\n"					\
--	"1:	"MOVES"."#bwl"	%2,%1\n"		\
-+	"1:	"inst"."#bwl"	%2,%1\n"		\
- 	"2:\n"						\
- 	"	.section .fixup,\"ax\"\n"		\
- 	"	.even\n"				\
-@@ -57,13 +57,13 @@ asm volatile ("\n"					\
- 	: "+d" (res), "=m" (*(ptr))			\
- 	: #reg (x), "i" (err))
- 
--#define __put_user_asm8(res, x, ptr)				\
-+#define __put_user_asm8(inst, res, x, ptr)			\
- do {								\
- 	const void *__pu_ptr = (const void __force *)(ptr);	\
- 								\
- 	asm volatile ("\n"					\
--		"1:	"MOVES".l %2,(%1)+\n"			\
--		"2:	"MOVES".l %R2,(%1)\n"			\
-+		"1:	"inst".l %2,(%1)+\n"			\
-+		"2:	"inst".l %R2,(%1)\n"			\
- 		"3:\n"						\
- 		"	.section .fixup,\"ax\"\n"		\
- 		"	.even\n"				\
-@@ -94,16 +94,16 @@ do {								\
- 	__chk_user_ptr(ptr);						\
- 	switch (sizeof (*(ptr))) {					\
- 	case 1:								\
--		__put_user_asm(__pu_err, __pu_val, ptr, b, d, -EFAULT);	\
-+		__put_user_asm(MOVES, __pu_err, __pu_val, ptr, b, d, -EFAULT); \
- 		break;							\
- 	case 2:								\
--		__put_user_asm(__pu_err, __pu_val, ptr, w, r, -EFAULT);	\
-+		__put_user_asm(MOVES, __pu_err, __pu_val, ptr, w, r, -EFAULT); \
- 		break;							\
- 	case 4:								\
--		__put_user_asm(__pu_err, __pu_val, ptr, l, r, -EFAULT);	\
-+		__put_user_asm(MOVES, __pu_err, __pu_val, ptr, l, r, -EFAULT); \
- 		break;							\
- 	case 8:								\
--		__put_user_asm8(__pu_err, __pu_val, ptr);		\
-+		__put_user_asm8(MOVES, __pu_err, __pu_val, ptr);	\
- 		break;							\
- 	default:							\
- 		BUILD_BUG();						\
-@@ -113,10 +113,10 @@ do {								\
- #define put_user(x, ptr)	__put_user(x, ptr)
- 
- 
--#define __get_user_asm(res, x, ptr, type, bwl, reg, err) ({		\
-+#define __get_user_asm(inst, res, x, ptr, type, bwl, reg, err) ({	\
- 	type __gu_val;							\
- 	asm volatile ("\n"						\
--		"1:	"MOVES"."#bwl"	%2,%1\n"			\
-+		"1:	"inst"."#bwl"	%2,%1\n"			\
- 		"2:\n"							\
- 		"	.section .fixup,\"ax\"\n"			\
- 		"	.even\n"					\
-@@ -134,7 +134,7 @@ do {								\
- 	(x) = (__force typeof(*(ptr)))(__force unsigned long)__gu_val;	\
- })
- 
--#define __get_user_asm8(res, x, ptr)					\
-+#define __get_user_asm8(inst, res, x, ptr) 				\
- do {									\
- 	const void *__gu_ptr = (const void __force *)(ptr);		\
- 	union {								\
-@@ -143,8 +143,8 @@ do {									\
- 	} __gu_val;							\
- 									\
- 	asm volatile ("\n"						\
--		"1:	"MOVES".l	(%2)+,%1\n"			\
--		"2:	"MOVES".l	(%2),%R1\n"			\
-+		"1:	"inst".l (%2)+,%1\n"				\
-+		"2:	"inst".l (%2),%R1\n"				\
- 		"3:\n"							\
- 		"	.section .fixup,\"ax\"\n"			\
- 		"	.even\n"					\
-@@ -172,16 +172,16 @@ do {									\
- 	__chk_user_ptr(ptr);						\
- 	switch (sizeof(*(ptr))) {					\
- 	case 1:								\
--		__get_user_asm(__gu_err, x, ptr, u8, b, d, -EFAULT);	\
-+		__get_user_asm(MOVES, __gu_err, x, ptr, u8, b, d, -EFAULT); \
- 		break;							\
- 	case 2:								\
--		__get_user_asm(__gu_err, x, ptr, u16, w, r, -EFAULT);	\
-+		__get_user_asm(MOVES, __gu_err, x, ptr, u16, w, r, -EFAULT); \
- 		break;							\
- 	case 4:								\
--		__get_user_asm(__gu_err, x, ptr, u32, l, r, -EFAULT);	\
-+		__get_user_asm(MOVES, __gu_err, x, ptr, u32, l, r, -EFAULT); \
- 		break;							\
- 	case 8:								\
--		__get_user_asm8(__gu_err, x, ptr);			\
-+		__get_user_asm8(MOVES, __gu_err, x, ptr);		\
- 		break;							\
- 	default:							\
- 		BUILD_BUG();						\
-@@ -330,16 +330,19 @@ __constant_copy_to_user(void __user *to, const void *from, unsigned long n)
- 
- 	switch (n) {
- 	case 1:
--		__put_user_asm(res, *(u8 *)from, (u8 __user *)to, b, d, 1);
-+		__put_user_asm(MOVES, res, *(u8 *)from, (u8 __user *)to,
-+				b, d, 1);
- 		break;
- 	case 2:
--		__put_user_asm(res, *(u16 *)from, (u16 __user *)to, w, r, 2);
-+		__put_user_asm(MOVES, res, *(u16 *)from, (u16 __user *)to,
-+				w, r, 2);
- 		break;
- 	case 3:
- 		__constant_copy_to_user_asm(res, to, from, tmp, 3, w, b,);
- 		break;
- 	case 4:
--		__put_user_asm(res, *(u32 *)from, (u32 __user *)to, l, r, 4);
-+		__put_user_asm(MOVES, res, *(u32 *)from, (u32 __user *)to,
-+				l, r, 4);
- 		break;
- 	case 5:
- 		__constant_copy_to_user_asm(res, to, from, tmp, 5, l, b,);
-@@ -388,6 +391,66 @@ raw_copy_to_user(void __user *to, const void *from, unsigned long n)
- #define INLINE_COPY_FROM_USER
- #define INLINE_COPY_TO_USER
- 
-+#define HAVE_GET_KERNEL_NOFAULT
++/* Address spaces (or Function Codes in Motorola lingo) */
++#define USER_DATA     1
++#define USER_PROGRAM  2
++#define SUPER_DATA    5
++#define SUPER_PROGRAM 6
++#define CPU_SPACE     7
 +
-+#define __get_kernel_nofault(dst, src, type, err_label)			\
-+do {									\
-+	type *__gk_dst = (type *)(dst);					\
-+	type *__gk_src = (type *)(src);					\
-+	int __gk_err = 0;						\
-+									\
-+	switch (sizeof(type)) {						\
-+	case 1:								\
-+		__get_user_asm("move", __gk_err, *__gk_dst, __gk_src,	\
-+				u8, b, d, -EFAULT);			\
-+		break;							\
-+	case 2:								\
-+		__get_user_asm("move", __gk_err, *__gk_dst, __gk_src,	\
-+				u16, w, r, -EFAULT);			\
-+		break;							\
-+	case 4:								\
-+		__get_user_asm("move", __gk_err, *__gk_dst, __gk_src,	\
-+				u32, l, r, -EFAULT);			\
-+		break;							\
-+	case 8:								\
-+		__get_user_asm8("move", __gk_err, *__gk_dst, __gk_src);	\
-+		break;							\
-+	default:							\
-+		BUILD_BUG();						\
-+	}								\
-+	if (unlikely(__gk_err))						\
-+		goto err_label;						\
-+} while (0)
++#ifdef CONFIG_CPU_HAS_ADDRESS_SPACES
++/*
++ * Set the SFC/DFC registers for special MM operations.  For most normal
++ * operation these remain set to USER_DATA for the uaccess routines.
++ */
++static inline void set_fc(unsigned long val)
++{
++	WARN_ON_ONCE(in_interrupt());
 +
-+#define __put_kernel_nofault(dst, src, type, err_label)			\
-+do {									\
-+	type __pk_src = *(type *)(src);					\
-+	type *__pk_dst = (type *)(dst);					\
-+	int __pk_err = 0;						\
-+									\
-+	switch (sizeof(type)) {						\
-+	case 1:								\
-+		__put_user_asm("move", __pk_err, __pk_src, __pk_dst,	\
-+				b, d, -EFAULT);				\
-+		break;							\
-+	case 2:								\
-+		__put_user_asm("move", __pk_err, __pk_src, __pk_dst,	\
-+				w, r, -EFAULT);				\
-+		break;							\
-+	case 4:								\
-+		__put_user_asm("move", __pk_err, __pk_src, __pk_dst,	\
-+				l, r, -EFAULT);				\
-+		break;							\
-+	case 8:								\
-+		__put_user_asm8("move", __pk_err, __pk_src, __pk_dst);	\
-+		break;							\
-+	default:							\
-+		BUILD_BUG();						\
-+	}								\
-+	if (unlikely(__pk_err))						\
-+		goto err_label;						\
-+} while (0)
++	__asm__ __volatile__ ("movec %0,%/sfc\n\t"
++			      "movec %0,%/dfc\n\t"
++			      : /* no outputs */ : "r" (val) : "memory");
++}
++#else
++static inline void set_fc(unsigned long val)
++{
++}
++#endif /* CONFIG_CPU_HAS_ADDRESS_SPACES */
 +
- #define user_addr_max() \
- 	(uaccess_kernel() ? ~0UL : TASK_SIZE)
+ struct thread_struct {
+ 	unsigned long  ksp;		/* kernel stack pointer */
+ 	unsigned long  usp;		/* user stack pointer */
+ 	unsigned short sr;		/* saved status register */
+-	unsigned short fs;		/* saved fs (sfc, dfc) */
++	unsigned short fc;		/* saved fc (sfc, dfc) */
+ 	unsigned long  crp[2];		/* cpu root pointer */
+ 	unsigned long  esp0;		/* points to SR of stack frame */
+ 	unsigned long  faddr;		/* info about last fault */
+@@ -92,7 +117,7 @@ struct thread_struct {
+ #define INIT_THREAD  {							\
+ 	.ksp	= sizeof(init_stack) + (unsigned long) init_stack,	\
+ 	.sr	= PS_S,							\
+-	.fs	= __KERNEL_DS,						\
++	.fc	= USER_DATA,						\
+ }
  
+ /*
+diff --git a/arch/m68k/include/asm/segment.h b/arch/m68k/include/asm/segment.h
+deleted file mode 100644
+index 2b5e68a71ef78..0000000000000
+--- a/arch/m68k/include/asm/segment.h
++++ /dev/null
+@@ -1,59 +0,0 @@
+-/* SPDX-License-Identifier: GPL-2.0 */
+-#ifndef _M68K_SEGMENT_H
+-#define _M68K_SEGMENT_H
+-
+-/* define constants */
+-/* Address spaces (FC0-FC2) */
+-#define USER_DATA     (1)
+-#ifndef __USER_DS
+-#define __USER_DS     (USER_DATA)
+-#endif
+-#define USER_PROGRAM  (2)
+-#define SUPER_DATA    (5)
+-#ifndef __KERNEL_DS
+-#define __KERNEL_DS   (SUPER_DATA)
+-#endif
+-#define SUPER_PROGRAM (6)
+-#define CPU_SPACE     (7)
+-
+-#ifndef __ASSEMBLY__
+-
+-typedef struct {
+-	unsigned long seg;
+-} mm_segment_t;
+-
+-#define MAKE_MM_SEG(s)	((mm_segment_t) { (s) })
+-
+-#ifdef CONFIG_CPU_HAS_ADDRESS_SPACES
+-/*
+- * Get/set the SFC/DFC registers for MOVES instructions
+- */
+-#define USER_DS		MAKE_MM_SEG(__USER_DS)
+-#define KERNEL_DS	MAKE_MM_SEG(__KERNEL_DS)
+-
+-static inline mm_segment_t get_fs(void)
+-{
+-	mm_segment_t _v;
+-	__asm__ ("movec %/dfc,%0":"=r" (_v.seg):);
+-	return _v;
+-}
+-
+-static inline void set_fs(mm_segment_t val)
+-{
+-	__asm__ __volatile__ ("movec %0,%/sfc\n\t"
+-			      "movec %0,%/dfc\n\t"
+-			      : /* no outputs */ : "r" (val.seg) : "memory");
+-}
+-
+-#else
+-#define USER_DS		MAKE_MM_SEG(TASK_SIZE)
+-#define KERNEL_DS	MAKE_MM_SEG(0xFFFFFFFF)
+-#define get_fs()	(current_thread_info()->addr_limit)
+-#define set_fs(x)	(current_thread_info()->addr_limit = (x))
+-#endif
+-
+-#define uaccess_kernel()	(get_fs().seg == KERNEL_DS.seg)
+-
+-#endif /* __ASSEMBLY__ */
+-
+-#endif /* _M68K_SEGMENT_H */
+diff --git a/arch/m68k/include/asm/thread_info.h b/arch/m68k/include/asm/thread_info.h
+index 15a757073fa58..c952658ba7922 100644
+--- a/arch/m68k/include/asm/thread_info.h
++++ b/arch/m68k/include/asm/thread_info.h
+@@ -4,7 +4,6 @@
+ 
+ #include <asm/types.h>
+ #include <asm/page.h>
+-#include <asm/segment.h>
+ 
+ /*
+  * On machines with 4k pages we default to an 8k thread size, though we
+@@ -27,7 +26,6 @@
+ struct thread_info {
+ 	struct task_struct	*task;		/* main task structure */
+ 	unsigned long		flags;
+-	mm_segment_t		addr_limit;	/* thread address space */
+ 	int			preempt_count;	/* 0 => preemptable, <0 => BUG */
+ 	__u32			cpu;		/* should always be 0 on m68k */
+ 	unsigned long		tp_value;	/* thread pointer */
+@@ -37,7 +35,6 @@ struct thread_info {
+ #define INIT_THREAD_INFO(tsk)			\
+ {						\
+ 	.task		= &tsk,			\
+-	.addr_limit	= KERNEL_DS,		\
+ 	.preempt_count	= INIT_PREEMPT_COUNT,	\
+ }
+ 
+diff --git a/arch/m68k/include/asm/tlbflush.h b/arch/m68k/include/asm/tlbflush.h
+index a6318ccd308fd..b882e2f4f5516 100644
+--- a/arch/m68k/include/asm/tlbflush.h
++++ b/arch/m68k/include/asm/tlbflush.h
+@@ -13,13 +13,12 @@ static inline void flush_tlb_kernel_page(void *addr)
+ 	if (CPU_IS_COLDFIRE) {
+ 		mmu_write(MMUOR, MMUOR_CNL);
+ 	} else if (CPU_IS_040_OR_060) {
+-		mm_segment_t old_fs = get_fs();
+-		set_fs(KERNEL_DS);
++		set_fc(SUPER_DATA);
+ 		__asm__ __volatile__(".chip 68040\n\t"
+ 				     "pflush (%0)\n\t"
+ 				     ".chip 68k"
+ 				     : : "a" (addr));
+-		set_fs(old_fs);
++		set_fc(USER_DATA);
+ 	} else if (CPU_IS_020_OR_030)
+ 		__asm__ __volatile__("pflush #4,#4,(%0)" : : "a" (addr));
+ }
+@@ -84,12 +83,8 @@ static inline void flush_tlb_mm(struct mm_struct *mm)
+ 
+ static inline void flush_tlb_page(struct vm_area_struct *vma, unsigned long addr)
+ {
+-	if (vma->vm_mm == current->active_mm) {
+-		mm_segment_t old_fs = force_uaccess_begin();
+-
++	if (vma->vm_mm == current->active_mm)
+ 		__flush_tlb_one(addr);
+-		force_uaccess_end(old_fs);
+-	}
+ }
+ 
+ static inline void flush_tlb_range(struct vm_area_struct *vma,
+diff --git a/arch/m68k/include/asm/uaccess.h b/arch/m68k/include/asm/uaccess.h
+index 65581a7874d4d..ba670523885c8 100644
+--- a/arch/m68k/include/asm/uaccess.h
++++ b/arch/m68k/include/asm/uaccess.h
+@@ -9,7 +9,6 @@
+  */
+ #include <linux/compiler.h>
+ #include <linux/types.h>
+-#include <asm/segment.h>
+ #include <asm/extable.h>
+ 
+ /* We let the MMU do all checking */
+@@ -451,9 +450,6 @@ do {									\
+ 		goto err_label;						\
+ } while (0)
+ 
+-#define user_addr_max() \
+-	(uaccess_kernel() ? ~0UL : TASK_SIZE)
+-
+ extern long strncpy_from_user(char *dst, const char __user *src, long count);
+ extern __must_check long strnlen_user(const char __user *str, long n);
+ 
+diff --git a/arch/m68k/kernel/asm-offsets.c b/arch/m68k/kernel/asm-offsets.c
+index ccea355052efa..906d732305374 100644
+--- a/arch/m68k/kernel/asm-offsets.c
++++ b/arch/m68k/kernel/asm-offsets.c
+@@ -31,7 +31,7 @@ int main(void)
+ 	DEFINE(THREAD_KSP, offsetof(struct thread_struct, ksp));
+ 	DEFINE(THREAD_USP, offsetof(struct thread_struct, usp));
+ 	DEFINE(THREAD_SR, offsetof(struct thread_struct, sr));
+-	DEFINE(THREAD_FS, offsetof(struct thread_struct, fs));
++	DEFINE(THREAD_FC, offsetof(struct thread_struct, fc));
+ 	DEFINE(THREAD_CRP, offsetof(struct thread_struct, crp));
+ 	DEFINE(THREAD_ESP0, offsetof(struct thread_struct, esp0));
+ 	DEFINE(THREAD_FPREG, offsetof(struct thread_struct, fp));
+diff --git a/arch/m68k/kernel/entry.S b/arch/m68k/kernel/entry.S
+index 9dd76fbb7c6b2..63434f331561f 100644
+--- a/arch/m68k/kernel/entry.S
++++ b/arch/m68k/kernel/entry.S
+@@ -36,7 +36,6 @@
+ #include <linux/linkage.h>
+ #include <asm/errno.h>
+ #include <asm/setup.h>
+-#include <asm/segment.h>
+ #include <asm/traps.h>
+ #include <asm/unistd.h>
+ #include <asm/asm-offsets.h>
+@@ -338,7 +337,7 @@ resume:
+ 
+ 	/* save fs (sfc,%dfc) (may be pointing to kernel memory) */
+ 	movec	%sfc,%d0
+-	movew	%d0,%a0@(TASK_THREAD+THREAD_FS)
++	movew	%d0,%a0@(TASK_THREAD+THREAD_FC)
+ 
+ 	/* save usp */
+ 	/* it is better to use a movel here instead of a movew 8*) */
+@@ -424,7 +423,7 @@ resume:
+ 	movel	%a0,%usp
+ 
+ 	/* restore fs (sfc,%dfc) */
+-	movew	%a1@(TASK_THREAD+THREAD_FS),%a0
++	movew	%a1@(TASK_THREAD+THREAD_FC),%a0
+ 	movec	%a0,%sfc
+ 	movec	%a0,%dfc
+ 
+diff --git a/arch/m68k/kernel/process.c b/arch/m68k/kernel/process.c
+index db49f90917112..1ab692b952cd6 100644
+--- a/arch/m68k/kernel/process.c
++++ b/arch/m68k/kernel/process.c
+@@ -92,7 +92,7 @@ void show_regs(struct pt_regs * regs)
+ 
+ void flush_thread(void)
+ {
+-	current->thread.fs = __USER_DS;
++	current->thread.fc = USER_DATA;
+ #ifdef CONFIG_FPU
+ 	if (!FPU_IS_EMU) {
+ 		unsigned long zero = 0;
+@@ -155,7 +155,7 @@ int copy_thread(unsigned long clone_flags, unsigned long usp, unsigned long arg,
+ 	 * Must save the current SFC/DFC value, NOT the value when
+ 	 * the parent was last descheduled - RGH  10-08-96
+ 	 */
+-	p->thread.fs = get_fs().seg;
++	p->thread.fc = USER_DATA;
+ 
+ 	if (unlikely(p->flags & (PF_KTHREAD | PF_IO_WORKER))) {
+ 		/* kernel thread */
+diff --git a/arch/m68k/kernel/traps.c b/arch/m68k/kernel/traps.c
+index 5b19fcdcd69e9..9718ce94cc845 100644
+--- a/arch/m68k/kernel/traps.c
++++ b/arch/m68k/kernel/traps.c
+@@ -181,9 +181,8 @@ static inline void access_error060 (struct frame *fp)
+ static inline unsigned long probe040(int iswrite, unsigned long addr, int wbs)
+ {
+ 	unsigned long mmusr;
+-	mm_segment_t old_fs = get_fs();
+ 
+-	set_fs(MAKE_MM_SEG(wbs));
++	set_fc(wbs);
+ 
+ 	if (iswrite)
+ 		asm volatile (".chip 68040; ptestw (%0); .chip 68k" : : "a" (addr));
+@@ -192,7 +191,7 @@ static inline unsigned long probe040(int iswrite, unsigned long addr, int wbs)
+ 
+ 	asm volatile (".chip 68040; movec %%mmusr,%0; .chip 68k" : "=r" (mmusr));
+ 
+-	set_fs(old_fs);
++	set_fc(USER_DATA);
+ 
+ 	return mmusr;
+ }
+@@ -201,10 +200,8 @@ static inline int do_040writeback1(unsigned short wbs, unsigned long wba,
+ 				   unsigned long wbd)
+ {
+ 	int res = 0;
+-	mm_segment_t old_fs = get_fs();
+ 
+-	/* set_fs can not be moved, otherwise put_user() may oops */
+-	set_fs(MAKE_MM_SEG(wbs));
++	set_fc(wbs);
+ 
+ 	switch (wbs & WBSIZ_040) {
+ 	case BA_SIZE_BYTE:
+@@ -218,9 +215,7 @@ static inline int do_040writeback1(unsigned short wbs, unsigned long wba,
+ 		break;
+ 	}
+ 
+-	/* set_fs can not be moved, otherwise put_user() may oops */
+-	set_fs(old_fs);
+-
++	set_fc(USER_DATA);
+ 
+ 	pr_debug("do_040writeback1, res=%d\n", res);
+ 
+diff --git a/arch/m68k/mac/misc.c b/arch/m68k/mac/misc.c
+index 90f4e9ca1276b..4fab347917586 100644
+--- a/arch/m68k/mac/misc.c
++++ b/arch/m68k/mac/misc.c
+@@ -18,7 +18,6 @@
+ 
+ #include <linux/uaccess.h>
+ #include <asm/io.h>
+-#include <asm/segment.h>
+ #include <asm/setup.h>
+ #include <asm/macintosh.h>
+ #include <asm/mac_via.h>
+diff --git a/arch/m68k/mm/cache.c b/arch/m68k/mm/cache.c
+index e7c1cabbfac45..dde978e66f14f 100644
+--- a/arch/m68k/mm/cache.c
++++ b/arch/m68k/mm/cache.c
+@@ -90,11 +90,9 @@ void flush_icache_user_range(unsigned long address, unsigned long endaddr)
+ 
+ void flush_icache_range(unsigned long address, unsigned long endaddr)
+ {
+-	mm_segment_t old_fs = get_fs();
+-
+-	set_fs(KERNEL_DS);
++	set_fc(SUPER_DATA);
+ 	flush_icache_user_range(address, endaddr);
+-	set_fs(old_fs);
++	set_fc(USER_DATA);
+ }
+ EXPORT_SYMBOL(flush_icache_range);
+ 
+diff --git a/arch/m68k/mm/init.c b/arch/m68k/mm/init.c
+index 5d749e188246d..1b47bec158320 100644
+--- a/arch/m68k/mm/init.c
++++ b/arch/m68k/mm/init.c
+@@ -72,12 +72,6 @@ void __init paging_init(void)
+ 	if (!empty_zero_page)
+ 		panic("%s: Failed to allocate %lu bytes align=0x%lx\n",
+ 		      __func__, PAGE_SIZE, PAGE_SIZE);
+-
+-	/*
+-	 * Set up SFC/DFC registers (user data space).
+-	 */
+-	set_fs (USER_DS);
+-
+ 	max_zone_pfn[ZONE_DMA] = end_mem >> PAGE_SHIFT;
+ 	free_area_init(max_zone_pfn);
+ }
+diff --git a/arch/m68k/mm/kmap.c b/arch/m68k/mm/kmap.c
+index 1269d513b2217..20ddf71b43d05 100644
+--- a/arch/m68k/mm/kmap.c
++++ b/arch/m68k/mm/kmap.c
+@@ -17,7 +17,6 @@
+ #include <linux/vmalloc.h>
+ 
+ #include <asm/setup.h>
+-#include <asm/segment.h>
+ #include <asm/page.h>
+ #include <asm/io.h>
+ #include <asm/tlbflush.h>
+diff --git a/arch/m68k/mm/memory.c b/arch/m68k/mm/memory.c
+index fe75aecfb238a..c2c03b0a1567f 100644
+--- a/arch/m68k/mm/memory.c
++++ b/arch/m68k/mm/memory.c
+@@ -15,7 +15,6 @@
+ #include <linux/gfp.h>
+ 
+ #include <asm/setup.h>
+-#include <asm/segment.h>
+ #include <asm/page.h>
+ #include <asm/traps.h>
+ #include <asm/machdep.h>
+diff --git a/arch/m68k/mm/motorola.c b/arch/m68k/mm/motorola.c
+index 3a653f0a4188d..9f3f77785aa78 100644
+--- a/arch/m68k/mm/motorola.c
++++ b/arch/m68k/mm/motorola.c
+@@ -467,7 +467,7 @@ void __init paging_init(void)
+ 	/*
+ 	 * Set up SFC/DFC registers
+ 	 */
+-	set_fs(KERNEL_DS);
++	set_fc(USER_DATA);
+ 
+ #ifdef DEBUG
+ 	printk ("before free_area_init\n");
+diff --git a/arch/m68k/sun3/config.c b/arch/m68k/sun3/config.c
+index f7dd47232b6ca..203f428a0344a 100644
+--- a/arch/m68k/sun3/config.c
++++ b/arch/m68k/sun3/config.c
+@@ -31,7 +31,6 @@
+ #include <asm/intersil.h>
+ #include <asm/irq.h>
+ #include <asm/sections.h>
+-#include <asm/segment.h>
+ #include <asm/sun3ints.h>
+ 
+ char sun3_reserved_pmeg[SUN3_PMEGS_NUM];
+@@ -89,7 +88,7 @@ void __init sun3_init(void)
+ 	sun3_reserved_pmeg[249] = 1;
+ 	sun3_reserved_pmeg[252] = 1;
+ 	sun3_reserved_pmeg[253] = 1;
+-	set_fs(KERNEL_DS);
++	set_fc(USER_DATA);
+ }
+ 
+ /* Without this, Bad Things happen when something calls arch_reset. */
+diff --git a/arch/m68k/sun3/mmu_emu.c b/arch/m68k/sun3/mmu_emu.c
+index 7aa879b7c7ff5..7ec20817c0c9e 100644
+--- a/arch/m68k/sun3/mmu_emu.c
++++ b/arch/m68k/sun3/mmu_emu.c
+@@ -23,7 +23,6 @@
+ #include <linux/uaccess.h>
+ #include <asm/page.h>
+ #include <asm/sun3mmu.h>
+-#include <asm/segment.h>
+ #include <asm/oplib.h>
+ #include <asm/mmu_context.h>
+ #include <asm/dvma.h>
+@@ -191,14 +190,13 @@ void __init mmu_emu_init(unsigned long bootmem_end)
+ 	for(seg = 0; seg < PAGE_OFFSET; seg += SUN3_PMEG_SIZE)
+ 		sun3_put_segmap(seg, SUN3_INVALID_PMEG);
+ 
+-	set_fs(MAKE_MM_SEG(3));
++	set_fc(3);
+ 	for(seg = 0; seg < 0x10000000; seg += SUN3_PMEG_SIZE) {
+ 		i = sun3_get_segmap(seg);
+ 		for(j = 1; j < CONTEXTS_NUM; j++)
+ 			(*(romvec->pv_setctxt))(j, (void *)seg, i);
+ 	}
+-	set_fs(KERNEL_DS);
+-
++	set_fc(USER_DATA);
+ }
+ 
+ /* erase the mappings for a dead context.  Uses the pg_dir for hints
+diff --git a/arch/m68k/sun3/sun3ints.c b/arch/m68k/sun3/sun3ints.c
+index 41ae422119d32..36cc280a4505f 100644
+--- a/arch/m68k/sun3/sun3ints.c
++++ b/arch/m68k/sun3/sun3ints.c
+@@ -11,7 +11,6 @@
+ #include <linux/sched.h>
+ #include <linux/kernel_stat.h>
+ #include <linux/interrupt.h>
+-#include <asm/segment.h>
+ #include <asm/intersil.h>
+ #include <asm/oplib.h>
+ #include <asm/sun3ints.h>
+diff --git a/arch/m68k/sun3x/prom.c b/arch/m68k/sun3x/prom.c
+index 74d2fe57524b3..64c23bfaa90c5 100644
+--- a/arch/m68k/sun3x/prom.c
++++ b/arch/m68k/sun3x/prom.c
+@@ -14,7 +14,6 @@
+ #include <asm/traps.h>
+ #include <asm/sun3xprom.h>
+ #include <asm/idprom.h>
+-#include <asm/segment.h>
+ #include <asm/sun3ints.h>
+ #include <asm/openprom.h>
+ #include <asm/machines.h>
 -- 
 2.30.2
 
