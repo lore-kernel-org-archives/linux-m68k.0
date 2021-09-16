@@ -2,62 +2,66 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.8 required=3.0 tests=BAYES_00,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
-	autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-11.4 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,
+	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id CDBBAC433EF
-	for <linux-m68k@archiver.kernel.org>; Thu, 16 Sep 2021 16:44:12 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 10A89C433F5
+	for <linux-m68k@archiver.kernel.org>; Thu, 16 Sep 2021 18:26:14 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id BB46D61BF7
-	for <linux-m68k@archiver.kernel.org>; Thu, 16 Sep 2021 16:44:12 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id DEF31611C4
+	for <linux-m68k@archiver.kernel.org>; Thu, 16 Sep 2021 18:26:13 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243528AbhIPQpa (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Thu, 16 Sep 2021 12:45:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50908 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S245686AbhIPQmF (ORCPT
-        <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Thu, 16 Sep 2021 12:42:05 -0400
-Received: from zeniv-ca.linux.org.uk (zeniv-ca.linux.org.uk [IPv6:2607:5300:60:148a::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 546B6C0613E8;
-        Thu, 16 Sep 2021 09:14:11 -0700 (PDT)
-Received: from viro by zeniv-ca.linux.org.uk with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mQu1Z-004kaR-Ej; Thu, 16 Sep 2021 16:14:09 +0000
-Date:   Thu, 16 Sep 2021 16:14:09 +0000
-From:   Al Viro <viro@zeniv.linux.org.uk>
-To:     Michael Schmitz <schmitzmic@gmail.com>
-Cc:     linux-m68k@lists.linux-m68k.org,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
+        id S1350560AbhIPS1d (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Thu, 16 Sep 2021 14:27:33 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39672 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1350150AbhIPS0u (ORCPT <rfc822;linux-m68k@lists.linux-m68k.org>);
+        Thu, 16 Sep 2021 14:26:50 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPS id DB303611C4;
+        Thu, 16 Sep 2021 18:25:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1631816729;
+        bh=IKbL0+P26yrT60PUSF9ToDMxXj0h9UjbkJCYM+R+kbg=;
+        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
+        b=FsCDS88V9L0SPAGYZzSjxiMy4laezTqsANVpJzThxuWlmwtIPnObzyOFw/SE7e1Gr
+         x/8MWLCZ74JeO30Nvn8wmqIBZ2uHxuGoIiqxlxOLR5lRzhT3LQQAnFMJq76CfKs4ZK
+         HjNrC+G/PAeh7R9N9lvh2679LLw0vLyLDjErdYYh4XLv051DP4QWHl96LAECkVsmLZ
+         LSJlvQGli+J4IS/0hplVTO0N8ZvcmcWU94LNRx06r+UckNjODI8y2wUjdyPnwBwAiB
+         xe8/PCaRaqTwTAEsTKRpgU887mTFIE5qsndVYF3bhSfizITs483foh7C93g+I7xFDK
+         jn1LQMBdGnk+w==
+Subject: Re: [GIT PULL] m68k updates for v5.15 (take two)
+From:   pr-tracker-bot@kernel.org
+In-Reply-To: <20210916065257.775368-1-geert@linux-m68k.org>
+References: <20210916065257.775368-1-geert@linux-m68k.org>
+X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
+X-PR-Tracked-Message-Id: <20210916065257.775368-1-geert@linux-m68k.org>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/geert/linux-m68k.git tags/m68k-for-v5.15-tag2
+X-PR-Tracked-Commit-Id: a7b68ed15d1fd72c1e451d5eb6edebee2a624b90
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: 077a6ccf2588c7c893b443fad62d0f8ed342cafc
+Message-Id: <163181672977.572.3096908781411027570.pr-tracker-bot@kernel.org>
+Date:   Thu, 16 Sep 2021 18:25:29 +0000
+To:     Geert Uytterhoeven <geert@linux-m68k.org>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
         Greg Ungerer <gerg@linux-m68k.org>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 3/3] m68k: leave stack mangling to asm wrapper of
- sigreturn()
-Message-ID: <YUNtUXUVK5sRL5vw@zeniv-ca.linux.org.uk>
-References: <YP2c1xk9LJ0zE3KW@zeniv-ca.linux.org.uk>
- <YP2dTQPm1wGPWFgD@zeniv-ca.linux.org.uk>
- <08183665-f846-0c5e-a8c7-d0a65e78a3da@gmail.com>
- <YUKNn3erTbH+ytpM@zeniv-ca.linux.org.uk>
- <48dafad1-4f0c-4ab7-792c-b34a81d26799@gmail.com>
- <YUK4MWzI73lwRq0W@zeniv-ca.linux.org.uk>
- <59a44e17-bff8-041e-b704-2b1d97601ce7@gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <59a44e17-bff8-041e-b704-2b1d97601ce7@gmail.com>
-Sender: Al Viro <viro@ftp.linux.org.uk>
+        linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org,
+        Geert Uytterhoeven <geert@linux-m68k.org>
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-On Thu, Sep 16, 2021 at 05:02:22PM +1200, Michael Schmitz wrote:
+The pull request you sent on Thu, 16 Sep 2021 08:52:57 +0200:
 
-> The only question that remains is whether the third patch can also go to
-> -stable. Most of my testing was with all three patches applied, I can drop
-> the third one and retest if you're worries the third one is not appropriate
-> for -stable.
+> git://git.kernel.org/pub/scm/linux/kernel/git/geert/linux-m68k.git tags/m68k-for-v5.15-tag2
 
-	Up to m68k folks, really.  The current mainline mangle_kernel_stack()
-is, er, not nice and the entire area is delicate enough as it is (witness the
-bugs dealt with in the rest of the series), but strictly speaking the third
-patch is not fixing any functional bugs.
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/077a6ccf2588c7c893b443fad62d0f8ed342cafc
+
+Thank you!
+
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/prtracker.html
