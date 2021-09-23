@@ -5,44 +5,44 @@ X-Spam-Level:
 X-Spam-Status: No, score=-20.5 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
-	autolearn=ham autolearn_force=no version=3.4.0
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 66B3FC4332F
-	for <linux-m68k@archiver.kernel.org>; Thu, 23 Sep 2021 03:42:26 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 655EDC433EF
+	for <linux-m68k@archiver.kernel.org>; Thu, 23 Sep 2021 03:42:48 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 4F9D360F4C
-	for <linux-m68k@archiver.kernel.org>; Thu, 23 Sep 2021 03:42:26 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 4F2C060F4C
+	for <linux-m68k@archiver.kernel.org>; Thu, 23 Sep 2021 03:42:48 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239421AbhIWDny (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Wed, 22 Sep 2021 23:43:54 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44284 "EHLO mail.kernel.org"
+        id S239473AbhIWDoO (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Wed, 22 Sep 2021 23:44:14 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42548 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239422AbhIWDmD (ORCPT <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Wed, 22 Sep 2021 23:42:03 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0643261130;
-        Thu, 23 Sep 2021 03:40:31 +0000 (UTC)
+        id S239315AbhIWDlI (ORCPT <rfc822;linux-m68k@lists.linux-m68k.org>);
+        Wed, 22 Sep 2021 23:41:08 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 735FF61152;
+        Thu, 23 Sep 2021 03:39:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1632368432;
-        bh=9YslAXxCMaTFHOBWoSiFZ6Zq2lboJuzMRnlyQStX84w=;
+        s=k20201202; t=1632368377;
+        bh=DbamdzFqwzYxjWAY90N4KPNFpacLwI+hR16Rry/o9dY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ZAzYQHY1w7FfgZIeTkpDZ9cNOQrEsSGb6iIP2fWO78HtUsJ65AW5cP2VHiTc2tdYI
-         1vOL4D4cMXccgCsD8ZNd6Y//QCyvRAYAjQ04Vr2g1Jch7k1Q0GGk/D0AQSPPaC8g7U
-         IWZyuSO8PNvPHeZmbUZjE+LwMx74r4Y0PpqWeGBTNapK87eDgqok9A7hyi65euSz8L
-         /dznm/bSXNUQYfhOiu3ZBio60/YB6AtSWDjPAFpFPL7la1Nl0ezAcm6a9iuPQVWZyf
-         XcbIMcC9oOAeZpf+yit15N07ChovJEjOu7uIAfglpiMUWyVBFE2BAgC3UxOBgKloBt
-         L0x1BgPUX/mow==
+        b=P7yLv6NHC9ZPjM4jFpPDvFfG4nuwWMZl75t1ceN5VhfRBu+gGg3Y9G157vsVzGIuR
+         /BKEqOO8SEreGybGjj4cTvwZzJidVACwRE9P8RiALWq84H6FX9q8P7kaBzzCn77Qeo
+         tz9UlblTXdT0jT9VM7mxfhjUHtt9MbViuuSI+Cun7ZrM77EDQVuUcwKrE+KRZAiKEu
+         VEv/OGpteV5AFsP8PDvAPnuik/Jtsz8j3ppP4qo9fypVlK3yXnAfCqRrWxvXLlvXAS
+         Oiqmi+eZTGdK7HxgUfuTWF+OWklhPxJIBvFjUPHzk0P0ztUSIpRrr8YjG4Phmw9RQd
+         Lz551cq8sGq9A==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
 Cc:     Guenter Roeck <linux@roeck-us.net>,
         Geert Uytterhoeven <geert@linux-m68k.org>,
         Sasha Levin <sashal@kernel.org>,
         linux-m68k@lists.linux-m68k.org
-Subject: [PATCH AUTOSEL 4.9 02/11] m68k: Double cast io functions to unsigned long
-Date:   Wed, 22 Sep 2021 23:40:18 -0400
-Message-Id: <20210923034028.1421876-2-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 4.19 04/15] m68k: Double cast io functions to unsigned long
+Date:   Wed, 22 Sep 2021 23:39:18 -0400
+Message-Id: <20210923033929.1421446-4-sashal@kernel.org>
 X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210923034028.1421876-1-sashal@kernel.org>
-References: <20210923034028.1421876-1-sashal@kernel.org>
+In-Reply-To: <20210923033929.1421446-1-sashal@kernel.org>
+References: <20210923033929.1421446-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
@@ -76,10 +76,10 @@ Signed-off-by: Sasha Levin <sashal@kernel.org>
  1 file changed, 10 insertions(+), 10 deletions(-)
 
 diff --git a/arch/m68k/include/asm/raw_io.h b/arch/m68k/include/asm/raw_io.h
-index 932faa35655b..2238232c360e 100644
+index 85761255dde5..6a03aef53980 100644
 --- a/arch/m68k/include/asm/raw_io.h
 +++ b/arch/m68k/include/asm/raw_io.h
-@@ -30,21 +30,21 @@ extern void __iounmap(void *addr, unsigned long size);
+@@ -17,21 +17,21 @@
   * two accesses to memory, which may be undesirable for some devices.
   */
  #define in_8(addr) \
