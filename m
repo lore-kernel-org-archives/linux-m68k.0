@@ -7,44 +7,44 @@ X-Spam-Status: No, score=-8.8 required=3.0 tests=BAYES_00,
 	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 66E21C433EF
-	for <linux-m68k@archiver.kernel.org>; Thu, 23 Sep 2021 14:48:14 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 44A4BC433EF
+	for <linux-m68k@archiver.kernel.org>; Thu, 23 Sep 2021 14:48:57 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 4ECFC61164
-	for <linux-m68k@archiver.kernel.org>; Thu, 23 Sep 2021 14:48:14 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 1790E61107
+	for <linux-m68k@archiver.kernel.org>; Thu, 23 Sep 2021 14:48:57 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241661AbhIWOtp (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Thu, 23 Sep 2021 10:49:45 -0400
-Received: from mail-ua1-f43.google.com ([209.85.222.43]:39565 "EHLO
-        mail-ua1-f43.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241707AbhIWOtm (ORCPT
+        id S241501AbhIWOu0 (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Thu, 23 Sep 2021 10:50:26 -0400
+Received: from mail-ua1-f48.google.com ([209.85.222.48]:42581 "EHLO
+        mail-ua1-f48.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S241661AbhIWOuZ (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Thu, 23 Sep 2021 10:49:42 -0400
-Received: by mail-ua1-f43.google.com with SMTP id o13so4409578uat.6
-        for <linux-m68k@lists.linux-m68k.org>; Thu, 23 Sep 2021 07:48:11 -0700 (PDT)
+        Thu, 23 Sep 2021 10:50:25 -0400
+Received: by mail-ua1-f48.google.com with SMTP id c33so4409788uae.9
+        for <linux-m68k@lists.linux-m68k.org>; Thu, 23 Sep 2021 07:48:53 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=E4xP9L2cLDK0aq+efN1FLZRwl97RqX/C4sxbEMHakGY=;
-        b=d4GkY+xZgDkjPgnUXN6kCKQBTJEzc71uC/5DZTBd4H+PgPXaE67oFwhfMMEunX0mpB
-         L0wCM7SIbqFLbnUN0Dnv/CkZQEz4DJvV/aiHG0vvSsWdIsgw6AozlHmZLdyni3cXcMui
-         OkHrLSC4CgS/XtCECoRMpxXvAPLL2JUsKiRUJeeyTQBccWsmCajG7b8yV73nVawJiav3
-         JrP3m9qvzWa2UVXBfEiT3TILVvv6fJtBCsd6ojSCG0e/nqnUUZPElFHajp6nQE1BWTIv
-         t+J/8te/NKvb+mSWrsYWXetfToOxu7GSeqcAShwrmpmyAHZyTna+3PEliTVGbQx2dDGD
-         cAuQ==
-X-Gm-Message-State: AOAM532tF6NWK4/3TsGX85bS/EeG05lkFGqxNflFWoNzjMqjZQzvVfUZ
-        gXJ3bWcEegTpDKyGxTIeAadFD8vpTQPTDDv7W9I=
-X-Google-Smtp-Source: ABdhPJx44Pk+LtMq3W48bl+iSP5KDlYa6wDZT8AreV0LhqtfnJlGFjWYCS2kPuxNxuIgi+kcZDRKIAAizykPqi4r8JM=
-X-Received: by 2002:ab0:16d4:: with SMTP id g20mr4550088uaf.114.1632408490857;
- Thu, 23 Sep 2021 07:48:10 -0700 (PDT)
+        bh=j98vUeTcIYCND21ck4r0l/SXh6s2pf4muu78Mp5nQVg=;
+        b=Hqe7E+XHV0i5QFMRDsyUNdzuEIzOQip43QUDSgjliXBQhCC+9ntanZYjvYQttVKO10
+         OoTDPg9V18Q9x9lbqqQ3p0vDiWEUMBneL50CKmF4NRucJVsLS82PbwuxGIpvAjCiCHwq
+         rrDWAKuKHNo/eidKEOZuzKE4sPb+3bj5WXF5knyK6Usg095p3+VmgqbNORTudiXX3dNu
+         3q9t1rah6HaZPjlCx8mwRPtcfPLu4niJLfkENnejGs4t4p3LWVHuyn/iISxzNJeg8U0H
+         sasOrvHFbcAli/TuSe34CWOAcjpJCKn96ooloIQUqqgnURWVYpZDEclSbiG2YE8KtvZa
+         4dEw==
+X-Gm-Message-State: AOAM533VkghgWtwZK1N5/t7hFE8wQzgEXijs82WxUSwl7QY2f2hiEPrN
+        d/WYexRqVSto2Kz+VpD58M4kh00XlBUDsC9GgWY=
+X-Google-Smtp-Source: ABdhPJycCz2De6Vf2NykYjUvQ9gd3g6zgAnpwKg9bdwgajKCHWoGemJpEizOAoNDbS3Ib5awPgzSb6zTYGM1o2Q8uFA=
+X-Received: by 2002:a9f:30d8:: with SMTP id k24mr4437625uab.89.1632408532436;
+ Thu, 23 Sep 2021 07:48:52 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210916070405.52750-1-hch@lst.de> <20210916070405.52750-6-hch@lst.de>
-In-Reply-To: <20210916070405.52750-6-hch@lst.de>
+References: <20210916070405.52750-1-hch@lst.de> <20210916070405.52750-7-hch@lst.de>
+In-Reply-To: <20210916070405.52750-7-hch@lst.de>
 From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Thu, 23 Sep 2021 16:47:59 +0200
-Message-ID: <CAMuHMdUfvktqu+KPDxPbS8Zg7snniq37WSh=nARj-LfcESz6Uw@mail.gmail.com>
-Subject: Re: [PATCH 5/6] m68k: provide __{get,put}_kernel_nofault
+Date:   Thu, 23 Sep 2021 16:48:41 +0200
+Message-ID: <CAMuHMdW0RUSt6FeFfy_g2jwLDDbm2a2TYD04Lt+mL2=Y04u4Bw@mail.gmail.com>
+Subject: Re: [PATCH 6/6] m68k: remove set_fs()
 To:     Christoph Hellwig <hch@lst.de>
 Cc:     Greg Ungerer <gerg@linux-m68k.org>,
         Michael Schmitz <schmitzmic@gmail.com>,
@@ -55,11 +55,16 @@ Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-On Thu, Sep 16, 2021 at 9:07 AM Christoph Hellwig <hch@lst.de> wrote:
-> Allow non-faulting access to kernel addresses without overriding the
-> address space.  Implemented by passing the instruction name to the
-> low-level assembly macros as an argument, and force the use of the
-> normal move instructions for kernel access.
+On Thu, Sep 16, 2021 at 9:08 AM Christoph Hellwig <hch@lst.de> wrote:
+> Add a m68k-only set_fc helper to set the SFC and DFC registers for the
+> few places that need to override it for special MM operations, but
+> disconnect that from the deprecated kernel-wide set_fs() API.
+>
+> Note that the SFC/DFC registers are context switched, so there is no need
+> to disable preemption.
+>
+> Partially based on an earlier patch from
+> Linus Torvalds <torvalds@linux-foundation.org>.
 >
 > Signed-off-by: Christoph Hellwig <hch@lst.de>
 
