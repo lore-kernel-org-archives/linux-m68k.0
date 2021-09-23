@@ -7,45 +7,44 @@ X-Spam-Status: No, score=-8.8 required=3.0 tests=BAYES_00,
 	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 372CEC433EF
-	for <linux-m68k@archiver.kernel.org>; Thu, 23 Sep 2021 14:47:52 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 66E21C433EF
+	for <linux-m68k@archiver.kernel.org>; Thu, 23 Sep 2021 14:48:14 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 1B7BA61152
-	for <linux-m68k@archiver.kernel.org>; Thu, 23 Sep 2021 14:47:52 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 4ECFC61164
+	for <linux-m68k@archiver.kernel.org>; Thu, 23 Sep 2021 14:48:14 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241662AbhIWOtS (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Thu, 23 Sep 2021 10:49:18 -0400
-Received: from mail-vk1-f171.google.com ([209.85.221.171]:38712 "EHLO
-        mail-vk1-f171.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241661AbhIWOtR (ORCPT
+        id S241661AbhIWOtp (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Thu, 23 Sep 2021 10:49:45 -0400
+Received: from mail-ua1-f43.google.com ([209.85.222.43]:39565 "EHLO
+        mail-ua1-f43.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S241707AbhIWOtm (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Thu, 23 Sep 2021 10:49:17 -0400
-Received: by mail-vk1-f171.google.com with SMTP id g15so2688007vke.5
-        for <linux-m68k@lists.linux-m68k.org>; Thu, 23 Sep 2021 07:47:45 -0700 (PDT)
+        Thu, 23 Sep 2021 10:49:42 -0400
+Received: by mail-ua1-f43.google.com with SMTP id o13so4409578uat.6
+        for <linux-m68k@lists.linux-m68k.org>; Thu, 23 Sep 2021 07:48:11 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=O46kFOGWMCzi4PxqWPkyyZ1n2nuBvocSR+a4vgxNaCQ=;
-        b=6brv931d+sULR+akL6mo21Dh35njzZpBKHECJzVMe9wT/+txuayHKsGqf3bxk8II3M
-         +cw2OapZfaLhl6UW0UOsgWCVQ54q7Zw64FkAOzWxT4JCK0dspvhVjLTAbu2uniDJSjke
-         0ZJfBu16TMwa0ik2b963kwoVxaiOO6spPkR2HBoINKxYsv85VzlOy8KwBPuMWQsUmq7N
-         AsuSlpzZaopgqQptqcDLNCN2LXiokakaKjrWgLMLC0Y9PVoOops0Hm8snJK8mGnJVsDB
-         hWxAVxswgapAIx0gmGVVxKmxq9dunnac7VLZsZMbrvcYes6iKVjI0YTX8ovveAjXO97r
-         6fpA==
-X-Gm-Message-State: AOAM532S/ctJLSk+WLjxp2/hoVL/3qhrHUA4AEZ1IgvcwKORY8b+j+PS
-        s5eY8emSKaEGyZKTb/kdNXyIWPd6RQ1WS2z/bOg=
-X-Google-Smtp-Source: ABdhPJwTPcwu6bHTj990X0xpAjv1llw+79GpsycZk6qJMtw21KOw3ckDzxIOA7+fkLV2zLvoV9DHoRsEmMuuWvbf2hU=
-X-Received: by 2002:a1f:9187:: with SMTP id t129mr3807059vkd.15.1632408465110;
- Thu, 23 Sep 2021 07:47:45 -0700 (PDT)
+        bh=E4xP9L2cLDK0aq+efN1FLZRwl97RqX/C4sxbEMHakGY=;
+        b=d4GkY+xZgDkjPgnUXN6kCKQBTJEzc71uC/5DZTBd4H+PgPXaE67oFwhfMMEunX0mpB
+         L0wCM7SIbqFLbnUN0Dnv/CkZQEz4DJvV/aiHG0vvSsWdIsgw6AozlHmZLdyni3cXcMui
+         OkHrLSC4CgS/XtCECoRMpxXvAPLL2JUsKiRUJeeyTQBccWsmCajG7b8yV73nVawJiav3
+         JrP3m9qvzWa2UVXBfEiT3TILVvv6fJtBCsd6ojSCG0e/nqnUUZPElFHajp6nQE1BWTIv
+         t+J/8te/NKvb+mSWrsYWXetfToOxu7GSeqcAShwrmpmyAHZyTna+3PEliTVGbQx2dDGD
+         cAuQ==
+X-Gm-Message-State: AOAM532tF6NWK4/3TsGX85bS/EeG05lkFGqxNflFWoNzjMqjZQzvVfUZ
+        gXJ3bWcEegTpDKyGxTIeAadFD8vpTQPTDDv7W9I=
+X-Google-Smtp-Source: ABdhPJx44Pk+LtMq3W48bl+iSP5KDlYa6wDZT8AreV0LhqtfnJlGFjWYCS2kPuxNxuIgi+kcZDRKIAAizykPqi4r8JM=
+X-Received: by 2002:ab0:16d4:: with SMTP id g20mr4550088uaf.114.1632408490857;
+ Thu, 23 Sep 2021 07:48:10 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210916070405.52750-1-hch@lst.de> <20210916070405.52750-5-hch@lst.de>
-In-Reply-To: <20210916070405.52750-5-hch@lst.de>
+References: <20210916070405.52750-1-hch@lst.de> <20210916070405.52750-6-hch@lst.de>
+In-Reply-To: <20210916070405.52750-6-hch@lst.de>
 From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Thu, 23 Sep 2021 16:47:33 +0200
-Message-ID: <CAMuHMdWTcMZ_v_6ub7kCJ6jFKCrCVEWBwx2-ytwOH-tLKjvi2w@mail.gmail.com>
-Subject: Re: [PATCH 4/6] m68k: factor the 8-byte lowlevel {get,put}_user code
- into helpers
+Date:   Thu, 23 Sep 2021 16:47:59 +0200
+Message-ID: <CAMuHMdUfvktqu+KPDxPbS8Zg7snniq37WSh=nARj-LfcESz6Uw@mail.gmail.com>
+Subject: Re: [PATCH 5/6] m68k: provide __{get,put}_kernel_nofault
 To:     Christoph Hellwig <hch@lst.de>
 Cc:     Greg Ungerer <gerg@linux-m68k.org>,
         Michael Schmitz <schmitzmic@gmail.com>,
@@ -57,9 +56,10 @@ List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
 On Thu, Sep 16, 2021 at 9:07 AM Christoph Hellwig <hch@lst.de> wrote:
->
-> Add new helpers for doing the grunt work of the 8-byte {get,put}_user
-> routines to allow for better reuse.
+> Allow non-faulting access to kernel addresses without overriding the
+> address space.  Implemented by passing the instruction name to the
+> low-level assembly macros as an argument, and force the use of the
+> normal move instructions for kernel access.
 >
 > Signed-off-by: Christoph Hellwig <hch@lst.de>
 
