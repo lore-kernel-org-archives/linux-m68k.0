@@ -5,44 +5,44 @@ X-Spam-Level:
 X-Spam-Status: No, score=-20.5 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
-	autolearn=ham autolearn_force=no version=3.4.0
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 1A312C4332F
-	for <linux-m68k@archiver.kernel.org>; Thu, 23 Sep 2021 03:38:38 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7E2F6C433F5
+	for <linux-m68k@archiver.kernel.org>; Thu, 23 Sep 2021 03:39:16 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id F1D61610A1
-	for <linux-m68k@archiver.kernel.org>; Thu, 23 Sep 2021 03:38:37 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 6A3B661215
+	for <linux-m68k@archiver.kernel.org>; Thu, 23 Sep 2021 03:39:16 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239143AbhIWDkH (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Wed, 22 Sep 2021 23:40:07 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40650 "EHLO mail.kernel.org"
+        id S239094AbhIWDko (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Wed, 22 Sep 2021 23:40:44 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41206 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239137AbhIWDkF (ORCPT <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Wed, 22 Sep 2021 23:40:05 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E805561019;
-        Thu, 23 Sep 2021 03:38:33 +0000 (UTC)
+        id S239226AbhIWDkV (ORCPT <rfc822;linux-m68k@lists.linux-m68k.org>);
+        Wed, 22 Sep 2021 23:40:21 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7F0A761214;
+        Thu, 23 Sep 2021 03:38:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1632368314;
+        s=k20201202; t=1632368330;
         bh=Gf2FnkOaQ91AEONPvVF/VzudkzZW4e+CyOj1RT/bFUA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=uLkn1MxVRzhOOcWOF1DB9qExqTBy+P5imUEEZ8uy3bJQyCpSU+1Yw4dpIgzL9t1yQ
-         dyrtFUPFdZTn4gurkENOGJsHHKAAw2dcIPtD7viz0SJh7+X4A6UJKdM+WVFlG/VEl9
-         bSntuYLeRgMS2AN2WafSfXX22UNSe65Eo4ngyEPsgrEqauKWDSOirCu//NjCrfr8ED
-         v14sY2KK4nhdSVddvLFBupqGvZdOC6bQkEYg6mSpUqDdYM/Bi35RfhktGMzMu/EUAJ
-         /3tm0lwEqIKhDE8opda9++TCHeDtUyvXl+TGt2nFjmn8n3z3I2u8n17gzgAorGIb3k
-         u2Fq4udfuZ4YA==
+        b=cFmoSqRhjzE1oT2+1/oPbitQfovX3Nh45f1G9tOAr9zh8HHm/du1iArtfgSyOl3ZO
+         dqMt2s94dAjVEqhAgKqMueb1dKNCkykTd1o4z+cpuIx/kHGrzCdYEXbSHFlVA3KIjt
+         F6MUFNC5DIAzMi2Dp5UIW0BBQiwJH5994mNRgX0ag8gi50zUdObb6GyNL/J+2/Rge6
+         g/YccqnrZBeEDc9zzHyM6FEG0MZPqGHGdkGo2OuMiuEm90+s+MKw1nZd9Iow0PSdit
+         ZQP0l6adZDqOcg8t5JbLVz3/ncJRpCUAIxVWErGQxGZshJ8E3GziRLdyhQOjtFAqpc
+         ej/Fo8GT0IfNA==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
 Cc:     Guenter Roeck <linux@roeck-us.net>,
         Geert Uytterhoeven <geert@linux-m68k.org>,
         Sasha Levin <sashal@kernel.org>,
         linux-m68k@lists.linux-m68k.org
-Subject: [PATCH AUTOSEL 5.14 06/34] m68k: Double cast io functions to unsigned long
-Date:   Wed, 22 Sep 2021 23:37:54 -0400
-Message-Id: <20210923033823.1420814-6-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.10 06/26] m68k: Double cast io functions to unsigned long
+Date:   Wed, 22 Sep 2021 23:38:19 -0400
+Message-Id: <20210923033839.1421034-6-sashal@kernel.org>
 X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210923033823.1420814-1-sashal@kernel.org>
-References: <20210923033823.1420814-1-sashal@kernel.org>
+In-Reply-To: <20210923033839.1421034-1-sashal@kernel.org>
+References: <20210923033839.1421034-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
