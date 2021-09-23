@@ -7,44 +7,45 @@ X-Spam-Status: No, score=-8.8 required=3.0 tests=BAYES_00,
 	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 2EFE2C433F5
-	for <linux-m68k@archiver.kernel.org>; Thu, 23 Sep 2021 14:46:28 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 372CEC433EF
+	for <linux-m68k@archiver.kernel.org>; Thu, 23 Sep 2021 14:47:52 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 0C6EB611C6
-	for <linux-m68k@archiver.kernel.org>; Thu, 23 Sep 2021 14:46:28 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 1B7BA61152
+	for <linux-m68k@archiver.kernel.org>; Thu, 23 Sep 2021 14:47:52 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241731AbhIWOr6 (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Thu, 23 Sep 2021 10:47:58 -0400
-Received: from mail-vk1-f171.google.com ([209.85.221.171]:33516 "EHLO
+        id S241662AbhIWOtS (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Thu, 23 Sep 2021 10:49:18 -0400
+Received: from mail-vk1-f171.google.com ([209.85.221.171]:38712 "EHLO
         mail-vk1-f171.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241710AbhIWOr6 (ORCPT
+        with ESMTP id S241661AbhIWOtR (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Thu, 23 Sep 2021 10:47:58 -0400
-Received: by mail-vk1-f171.google.com with SMTP id t200so2728591vkt.0
-        for <linux-m68k@lists.linux-m68k.org>; Thu, 23 Sep 2021 07:46:26 -0700 (PDT)
+        Thu, 23 Sep 2021 10:49:17 -0400
+Received: by mail-vk1-f171.google.com with SMTP id g15so2688007vke.5
+        for <linux-m68k@lists.linux-m68k.org>; Thu, 23 Sep 2021 07:47:45 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=NqaY63wLQkjGVchlsTPy8eoJVOD0kUUe8+eJx3riRCc=;
-        b=CCnr3rlXMcAd1EGO9ESFPqPwoa9u8SiVq9GkFpJyoBbZw5XMAdiJZ5+iQ9YJ6IE6dj
-         oDPhC3oIkPguOgwsM8CPTbuBTA3qQBd1lgW70WdkubRqZfZvvuSWdx3YRvGKhCHcs49P
-         /Vbh7W6ZutqTDPacDSZBUUhTsE5sePl+iVrNmcLQfrt4+ktSzRGCIHx66qv/2L6WRr3y
-         vX3PQ3XXBZI4iVFzYQY/OlqhpIB6hjmyS3cX2K37lebGauSu9V38pC8nKgEh/eVPQuyB
-         nig3H+hAhBVSxkNNMECJN5n4by6wCQpMKkytjjLLlFa8kJdo6vZJWB4RUt862PocoYlF
-         Wzuw==
-X-Gm-Message-State: AOAM531mcZAQ9EPkjsTYRbjkSdSCoH60MmqLLb4ZStdAMTLIboL+cmFj
-        CaVJjQ39p6ODBGVm1CGO2e2jizDR0y/gAldj/NY=
-X-Google-Smtp-Source: ABdhPJzJRl/CfdeTAuJi2tM/LhVG0B4ZkulnI7E0Inib/uM+U7PV+ekKLfrx4zJ0NbLcdAbt1lR1/N8aWrkUgZiuyu0=
-X-Received: by 2002:a1f:230c:: with SMTP id j12mr3603364vkj.11.1632408386446;
- Thu, 23 Sep 2021 07:46:26 -0700 (PDT)
+        bh=O46kFOGWMCzi4PxqWPkyyZ1n2nuBvocSR+a4vgxNaCQ=;
+        b=6brv931d+sULR+akL6mo21Dh35njzZpBKHECJzVMe9wT/+txuayHKsGqf3bxk8II3M
+         +cw2OapZfaLhl6UW0UOsgWCVQ54q7Zw64FkAOzWxT4JCK0dspvhVjLTAbu2uniDJSjke
+         0ZJfBu16TMwa0ik2b963kwoVxaiOO6spPkR2HBoINKxYsv85VzlOy8KwBPuMWQsUmq7N
+         AsuSlpzZaopgqQptqcDLNCN2LXiokakaKjrWgLMLC0Y9PVoOops0Hm8snJK8mGnJVsDB
+         hWxAVxswgapAIx0gmGVVxKmxq9dunnac7VLZsZMbrvcYes6iKVjI0YTX8ovveAjXO97r
+         6fpA==
+X-Gm-Message-State: AOAM532S/ctJLSk+WLjxp2/hoVL/3qhrHUA4AEZ1IgvcwKORY8b+j+PS
+        s5eY8emSKaEGyZKTb/kdNXyIWPd6RQ1WS2z/bOg=
+X-Google-Smtp-Source: ABdhPJwTPcwu6bHTj990X0xpAjv1llw+79GpsycZk6qJMtw21KOw3ckDzxIOA7+fkLV2zLvoV9DHoRsEmMuuWvbf2hU=
+X-Received: by 2002:a1f:9187:: with SMTP id t129mr3807059vkd.15.1632408465110;
+ Thu, 23 Sep 2021 07:47:45 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210916070405.52750-1-hch@lst.de> <20210916070405.52750-4-hch@lst.de>
-In-Reply-To: <20210916070405.52750-4-hch@lst.de>
+References: <20210916070405.52750-1-hch@lst.de> <20210916070405.52750-5-hch@lst.de>
+In-Reply-To: <20210916070405.52750-5-hch@lst.de>
 From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Thu, 23 Sep 2021 16:46:15 +0200
-Message-ID: <CAMuHMdWa0ZfaToY=82iaH19oTnPy0MrL+CoASPPnnnMOS4+VYg@mail.gmail.com>
-Subject: Re: [PATCH 3/6] m68k: use BUILD_BUG for passing invalid sizes to get_user/put_user
+Date:   Thu, 23 Sep 2021 16:47:33 +0200
+Message-ID: <CAMuHMdWTcMZ_v_6ub7kCJ6jFKCrCVEWBwx2-ytwOH-tLKjvi2w@mail.gmail.com>
+Subject: Re: [PATCH 4/6] m68k: factor the 8-byte lowlevel {get,put}_user code
+ into helpers
 To:     Christoph Hellwig <hch@lst.de>
 Cc:     Greg Ungerer <gerg@linux-m68k.org>,
         Michael Schmitz <schmitzmic@gmail.com>,
@@ -55,9 +56,10 @@ Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-On Thu, Sep 16, 2021 at 9:06 AM Christoph Hellwig <hch@lst.de> wrote:
-> Simplify the handling a bit by using the common helper instead of
-> referencing undefined symbols.
+On Thu, Sep 16, 2021 at 9:07 AM Christoph Hellwig <hch@lst.de> wrote:
+>
+> Add new helpers for doing the grunt work of the 8-byte {get,put}_user
+> routines to allow for better reuse.
 >
 > Signed-off-by: Christoph Hellwig <hch@lst.de>
 
