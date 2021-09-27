@@ -2,94 +2,104 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 937A7C433EF
-	for <linux-m68k@archiver.kernel.org>; Mon, 27 Sep 2021 15:20:03 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 3DA83C433F5
+	for <linux-m68k@archiver.kernel.org>; Mon, 27 Sep 2021 22:02:05 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 644FD60EE2
-	for <linux-m68k@archiver.kernel.org>; Mon, 27 Sep 2021 15:20:03 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 215FE60EB6
+	for <linux-m68k@archiver.kernel.org>; Mon, 27 Sep 2021 22:02:05 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235089AbhI0PVk (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Mon, 27 Sep 2021 11:21:40 -0400
-Received: from mail-vk1-f174.google.com ([209.85.221.174]:33373 "EHLO
-        mail-vk1-f174.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235088AbhI0PVk (ORCPT
+        id S237611AbhI0WDm (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Mon, 27 Sep 2021 18:03:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50770 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237894AbhI0WDa (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Mon, 27 Sep 2021 11:21:40 -0400
-Received: by mail-vk1-f174.google.com with SMTP id t200so7137484vkt.0
-        for <linux-m68k@lists.linux-m68k.org>; Mon, 27 Sep 2021 08:20:02 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=F5wb4ZX9gwgasne0NhWUEprI9AwQOWamOuZRWGphiLM=;
-        b=WajIgWveieJRsFmCRddVEm+vX/Mx1r33ZjcSb7KepSGhP58+tuhLwknTg2egOq18nB
-         3A4YOQVxVjxPTp/ebK8fuVDO7JlO6uNLXmNu5eR7j1v3wAwS4XmNTfkppGH9bdksrE4b
-         wMmiQdWYOUbQ7CGibEtvvIpzoqtHmLVWtfz3geh8rdSmuDvYe2n5rAChPurdKR59PDhT
-         9McTijEfl5EaZzByGMMRvL8vwbdY9P0aca1/VN33e6kMMV0hZXN4fObWa3/D4BaLJaPq
-         dHUJPFtFAj76gnQq2cBbP35vuRnpA3GZkaaFLyBTMvEiviy1WVEdO9/hQlkuBHamqhS0
-         lHcA==
-X-Gm-Message-State: AOAM532fNURNbemR6+kqb4hsWccBfsq7P1EcFErsjXzO4dElfBOdPv/f
-        B7SqLnwXiBu2C6Cy5UtpIrUnfmx9BXe/60MBEek=
-X-Google-Smtp-Source: ABdhPJxj2OeFkxklgcIGHyfFHROJ0kJKH8P7BoepnpioKOsPmd/3DG/ainzZgT/3Vd7Z0PN8a+SyRrxXemz3PM2L1AY=
-X-Received: by 2002:a1f:230c:: with SMTP id j12mr572707vkj.11.1632756001800;
- Mon, 27 Sep 2021 08:20:01 -0700 (PDT)
+        Mon, 27 Sep 2021 18:03:30 -0400
+Received: from bombadil.infradead.org (unknown [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 23583C061575;
+        Mon, 27 Sep 2021 15:01:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=Sender:Content-Transfer-Encoding:
+        MIME-Version:Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-Type:
+        Content-ID:Content-Description:In-Reply-To:References;
+        bh=PIC+qXoGsoFJ1eZ9LA9t8T951f2hrkUOPPt1FYAGsmg=; b=FuCcNq9IOVETu5gZfPU8ZyHeZ0
+        4yRRj59j+TWMJveqzARzPIPnGBkIS/5Y078bG/DLPJo1lgh8OCNwb8EpIOOsJ0GtuUVKQxuHZ/3ld
+        HL0sUlBkiWjZ77631MgWdDggaYxof/KSEim0JSi0S3NKEmak/7p/dqHVg/kW0ASIsF7WDhhpaebSp
+        4fefTGDxj/g/uR9rTjLmBSfyf/Tv1cvID9Bf630aiPWO86W8Ajx45BwFipe5bb4YETBXNjbbBvE6r
+        f3FqRfIhJNfTLkqYXp8ynHhmGzqzYn2l/ZVmr6WYZBoDyCtvcn9oBnf7tLAJrjDo1H5H71B32c3Fr
+        4KiKUnwg==;
+Received: from mcgrof by bombadil.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mUygR-004TPC-K8; Mon, 27 Sep 2021 22:01:11 +0000
+From:   Luis Chamberlain <mcgrof@kernel.org>
+To:     axboe@kernel.dk, justin@coraid.com, geert@linux-m68k.org,
+        ulf.hansson@linaro.org, hare@suse.de, tj@kernel.org,
+        philipp.reisner@linbit.com, lars.ellenberg@linbit.com,
+        jdike@addtoit.com, richard@nod.at, anton.ivanov@cambridgegreys.com,
+        johannes.berg@intel.com, chris.obbard@collabora.com,
+        krisman@collabora.com, zhuyifei1999@gmail.com, thehajime@gmail.com,
+        chris@zankel.net, jcmvbkbc@gmail.com, tim@cyberelk.net
+Cc:     linux-xtensa@linux-xtensa.org, linux-um@lists.infradead.org,
+        linux-m68k@lists.linux-m68k.org, drbd-dev@lists.linbit.com,
+        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Luis Chamberlain <mcgrof@kernel.org>
+Subject: [PATCH v2 00/15] block: third batch of add_disk() error handling conversions
+Date:   Mon, 27 Sep 2021 15:00:55 -0700
+Message-Id: <20210927220110.1066271-1-mcgrof@kernel.org>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-References: <20210927150518.8607-1-david@redhat.com> <20210927150518.8607-3-david@redhat.com>
-In-Reply-To: <20210927150518.8607-3-david@redhat.com>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Mon, 27 Sep 2021 17:19:50 +0200
-Message-ID: <CAMuHMdWuRtxwRCy-x63s9BkDKk+hkXhEfZYC5pmXomzCuDBrYg@mail.gmail.com>
-Subject: Re: [PATCH v1 2/4] memblock: allow to specify flags with memblock_add_node()
-To:     David Hildenbrand <david@redhat.com>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Mike Rapoport <rppt@kernel.org>,
-        Michal Hocko <mhocko@suse.com>,
-        Oscar Salvador <osalvador@suse.de>,
-        Jianyong Wu <Jianyong.Wu@arm.com>,
-        "Aneesh Kumar K . V" <aneesh.kumar@linux.ibm.com>,
-        Vineet Gupta <vgupta@kernel.org>,
-        Huacai Chen <chenhuacai@kernel.org>,
-        Jiaxun Yang <jiaxun.yang@flygoat.com>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        Eric Biederman <ebiederm@xmission.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        arcml <linux-snps-arc@lists.infradead.org>,
-        "linux-ia64@vger.kernel.org" <linux-ia64@vger.kernel.org>,
-        linux-m68k <linux-m68k@lists.linux-m68k.org>,
-        "open list:BROADCOM NVRAM DRIVER" <linux-mips@vger.kernel.org>,
-        linux-s390 <linux-s390@vger.kernel.org>,
-        Linux MM <linux-mm@kvack.org>, kexec@lists.infradead.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+Sender: Luis Chamberlain <mcgrof@infradead.org>
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-On Mon, Sep 27, 2021 at 5:05 PM David Hildenbrand <david@redhat.com> wrote:
-> We want to specify flags when hotplugging memory. Let's prepare to pass
-> flags to memblock_add_node() by adjusting all existing users.
->
-> Note that when hotplugging memory the system is already up and running
-> and we don't want to add the memory first and apply flags later: it
-> should happen within one memblock call.
->
-> Signed-off-by: David Hildenbrand <david@redhat.com>
+This is the 2nd version of the third batch of driver conversions for the
+add_disk() error handling. This and the entire 7th series of driver
+conversions can be found on my 20210927-for-axboe-add-disk-error-handling
+branch [0].
 
->  arch/m68k/mm/mcfmmu.c            | 3 ++-
->  arch/m68k/mm/motorola.c          | 6 ++++--
+On this v2 series the following changes have been made since the v1
+series of this patch set:
 
-Acked-by: Geert Uytterhoeven <geert@linux-m68k.org>
+  - rebased onto linux-next tag 20210927
+  - z2ram: fixed compile warning reported by 0day and Geert Uytterhoe
+  - um/drivers/ubd_kern: added the reviewed-by tag by Gabriel Krisman
+    Bertazi
 
-Gr{oetje,eeting}s,
+[0] https://git.kernel.org/pub/scm/linux/kernel/git/mcgrof/linux-next.git/log/?h=20210927-for-axboe-add-disk-error-handling
 
-                        Geert
+Christoph Hellwig (4):
+  pcd: move the identify buffer into pcd_identify
+  pcd: cleanup initialization
+  pf: cleanup initialization
+  pd: cleanup initialization
+
+Luis Chamberlain (11):
+  z2ram: add error handling support for add_disk()
+  aoe: add error handling support for add_disk()
+  m68k/emu/nfblock: add error handling support for add_disk()
+  drbd: add error handling support for add_disk()
+  um/drivers/ubd_kern: add error handling support for add_disk()
+  xtensa/platforms/iss/simdisk: add error handling support for
+    add_disk()
+  n64cart: add error handling support for add_disk()
+  pcd: add error handling support for add_disk()
+  pcd: fix ordering of unregister_cdrom()
+  pcd: capture errors on cdrom_register()
+  pd: add error handling support for add_disk()
+
+ arch/m68k/emu/nfblock.c             |   9 +-
+ arch/um/drivers/ubd_kern.c          |  13 +-
+ arch/xtensa/platforms/iss/simdisk.c |  13 +-
+ drivers/block/aoe/aoeblk.c          |   6 +-
+ drivers/block/drbd/drbd_main.c      |   6 +-
+ drivers/block/n64cart.c             |  12 +-
+ drivers/block/paride/pcd.c          | 304 +++++++++++++---------------
+ drivers/block/paride/pd.c           | 144 ++++++-------
+ drivers/block/paride/pf.c           | 223 +++++++++-----------
+ drivers/block/z2ram.c               |   7 +-
+ 10 files changed, 364 insertions(+), 373 deletions(-)
 
 -- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+2.30.2
 
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
