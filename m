@@ -2,62 +2,61 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 2F44AC433F5
-	for <linux-m68k@archiver.kernel.org>; Mon, 27 Sep 2021 22:50:51 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id ACFB0C433EF
+	for <linux-m68k@archiver.kernel.org>; Mon, 27 Sep 2021 23:24:04 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 0FF6C610FC
-	for <linux-m68k@archiver.kernel.org>; Mon, 27 Sep 2021 22:50:51 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 908E0611C2
+	for <linux-m68k@archiver.kernel.org>; Mon, 27 Sep 2021 23:24:04 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238030AbhI0Ww2 (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Mon, 27 Sep 2021 18:52:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34124 "EHLO
+        id S238057AbhI0XZk (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Mon, 27 Sep 2021 19:25:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41792 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238027AbhI0Ww2 (ORCPT
+        with ESMTP id S238115AbhI0XZk (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Mon, 27 Sep 2021 18:52:28 -0400
-Received: from mail-ed1-x52e.google.com (mail-ed1-x52e.google.com [IPv6:2a00:1450:4864:20::52e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 753B8C061740
-        for <linux-m68k@lists.linux-m68k.org>; Mon, 27 Sep 2021 15:50:49 -0700 (PDT)
-Received: by mail-ed1-x52e.google.com with SMTP id g8so75420177edt.7
-        for <linux-m68k@lists.linux-m68k.org>; Mon, 27 Sep 2021 15:50:49 -0700 (PDT)
+        Mon, 27 Sep 2021 19:25:40 -0400
+Received: from mail-io1-xd33.google.com (mail-io1-xd33.google.com [IPv6:2607:f8b0:4864:20::d33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DA08BC061604
+        for <linux-m68k@lists.linux-m68k.org>; Mon, 27 Sep 2021 16:24:01 -0700 (PDT)
+Received: by mail-io1-xd33.google.com with SMTP id b78so19656169iof.2
+        for <linux-m68k@lists.linux-m68k.org>; Mon, 27 Sep 2021 16:24:01 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=lbtHxjRemmXiBIhG0GW8nlURXNpwyPs370Xxo7AeQQk=;
-        b=YZ2VTmSCUUUwt9GaX+TF009NFPIKAVOBMPTgS3jayY1GsTxjk0eyD6zyo3KSDp2ffd
-         15/G6kf8ngNImvfP+WO3GwmQFWGvbVqsojWS5PsZGnhvbMFfwNf8hSswllXfjJWH5bOE
-         iuZL52rFsekbaWI4lIXdwtbN7zFzDlTDgpjQpSXSpN15NE9HDPayoVqneLYjbtMi9s4X
-         ps/Z9ps2NUVxdYW6SyynTklGHbpuzsS5CawTlfWbAl6o8ozZlHhvGY0lDmYlvpfHfCUs
-         GD4OE0hwIQQOcnCDaiwMPQ95SiG9tHFH0M56s31hXESkpNn5z5fJT/O3fmOeyg3xh3Pb
-         IunQ==
+        d=kernel-dk.20210112.gappssmtp.com; s=20210112;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=aiFGagUTxQBnltkSEFIoIU5oY0RjA6yVWSQ2liMMneI=;
+        b=j4l4cerZxmvRBFo9+l9BQYL6AkzAopJsl20GWDSIrISjgLNhwhyUQDgcFLI87OvTcL
+         t/He9yZhqI/cPodGu+OkbgGmH1S7L95w9IwBPy2eDb5ZhrO4OA22DQ6orSLthPUp8xVZ
+         oIIr58M8MAbD2pjlXaHNHESM9fKnM1zfg80Mb2N1pp9d9BpGhpxkwS7as7y454k+B0ye
+         LufmIqZDO3GmPh+zxBgitFrPpt5gouRgTIBta571rDslFpm75wmx5PtMFvZKfisPb48N
+         6e4Pw3KgnWYPremFqKZ5Zf2mk39T9srpZap80F9Oudy/lbsB3AgEF4sONU54MRun0xf/
+         Kvkw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=lbtHxjRemmXiBIhG0GW8nlURXNpwyPs370Xxo7AeQQk=;
-        b=UeSXaPWSA7BP6fzOznX+MvFpdoMmQ8QeENUt4LIjYDCafZJ1aeF6HbttWOyv4G6QfO
-         80Au3e4anbDD/SRadkhA7dc6VLCs9WOUTC3jGtyXE9glgTN4GZzjAKBgYd/M/9sy/N/x
-         XjeKuoFpzmpUeGjVGClAN5sL4ufiFtPf5czeChV9vZWHfhy7WT4xMT8pWoLUGdSSFTgh
-         hmCUY12XzZtzGCiV/l3L+6meD6KZ2RnHHmRQddlWStOrWHeiuPE0vNiTxZqAgUGHdvux
-         ByrSbJ7vHtKM8FHcCYYMLCvbxvCmhI/KjYm+h9FCUqBOs4AN2tUCkIpaoPtVniCWpsIu
-         sXNg==
-X-Gm-Message-State: AOAM531U7hp8zNyhkCtGaLuJuDpDn/FOrIryutKNEstboFrNrDXe5YjL
-        8V5o6Japoz0rbA8znFXXkxKVmW2RJXnCD/IaTXA=
-X-Google-Smtp-Source: ABdhPJxqWtQBQk+q3MXvQ7lymGiQEolFkglJxXrWFsK3GxDKn2WvP9KOWmJHtaEmST6By7Czy4V78fbFN5iEYd3RzYA=
-X-Received: by 2002:aa7:d592:: with SMTP id r18mr3465274edq.172.1632783048036;
- Mon, 27 Sep 2021 15:50:48 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210927220110.1066271-1-mcgrof@kernel.org> <20210927220110.1066271-7-mcgrof@kernel.org>
-In-Reply-To: <20210927220110.1066271-7-mcgrof@kernel.org>
-From:   Max Filippov <jcmvbkbc@gmail.com>
-Date:   Mon, 27 Sep 2021 15:50:36 -0700
-Message-ID: <CAMo8BfLX84HBuVe=FyqWkVU5Ek-aKFk++omnqsmf9wO6fdVpMQ@mail.gmail.com>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=aiFGagUTxQBnltkSEFIoIU5oY0RjA6yVWSQ2liMMneI=;
+        b=s7AswN6bPQ2A53UHmxXBJpY2k3pJfYgCHXEBeU6/EGOcT8ODaRfP+f4WDHB7lUTbe0
+         bHRowocCNTuGqTnTis+OnToqYn5Ti8JEX+Z8Q21oSM4ovXj/D8asThCvcpwnYwlGX9Lm
+         cBW37Q7TwiTHnsTkpVLP+vKkT4arWzmcf5zzNwuEIjlvxEmXen1zByos3b+loCW2kiwZ
+         7t2WASkpI5OAIHAXIxNkklxxUrBien9bRoN/+IWHsGtCVoIBoTr8M3q1mCf4R2HUYYNq
+         oWDOUsMnVDAzhc4P/vJ8EPaA64EW0La2fsFVZWJa0NChUtUdJYtfxLhqvNa8e6oY/t0I
+         ibEg==
+X-Gm-Message-State: AOAM530IspA9x+++o3OAoJ54Bz3jMI7jf1G3gF/H0urN7RWB7rD44Pov
+        SmvUSLZ6Pu91MwGIyMK0g3JSNQ==
+X-Google-Smtp-Source: ABdhPJzcHoH9jP9w7ZB7Bz7huhMzmKrPerS4qwZbTDMWfRTFVmKbhCBMUPsYmvpBiIoTu14VNW/P4w==
+X-Received: by 2002:a6b:6f0a:: with SMTP id k10mr1611488ioc.101.1632785041193;
+        Mon, 27 Sep 2021 16:24:01 -0700 (PDT)
+Received: from [192.168.1.116] ([66.219.217.159])
+        by smtp.gmail.com with ESMTPSA id o7sm10361931ilm.9.2021.09.27.16.23.59
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 27 Sep 2021 16:24:00 -0700 (PDT)
 Subject: Re: [PATCH v2 06/15] xtensa/platforms/iss/simdisk: add error handling
  support for add_disk()
-To:     Luis Chamberlain <mcgrof@kernel.org>
-Cc:     Jens Axboe <axboe@kernel.dk>, justin@coraid.com,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
+To:     Max Filippov <jcmvbkbc@gmail.com>,
+        Luis Chamberlain <mcgrof@kernel.org>
+Cc:     justin@coraid.com, Geert Uytterhoeven <geert@linux-m68k.org>,
         Ulf Hansson <ulf.hansson@linaro.org>, hare@suse.de,
         Tejun Heo <tj@kernel.org>, philipp.reisner@linbit.com,
         lars.ellenberg@linbit.com, Jeff Dike <jdike@addtoit.com>,
@@ -71,24 +70,39 @@ Cc:     Jens Axboe <axboe@kernel.dk>, justin@coraid.com,
         "open list:M68K ARCHITECTURE" <linux-m68k@lists.linux-m68k.org>,
         drbd-dev@lists.linbit.com, linux-block@vger.kernel.org,
         LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+References: <20210927220110.1066271-1-mcgrof@kernel.org>
+ <20210927220110.1066271-7-mcgrof@kernel.org>
+ <CAMo8BfLX84HBuVe=FyqWkVU5Ek-aKFk++omnqsmf9wO6fdVpMQ@mail.gmail.com>
+From:   Jens Axboe <axboe@kernel.dk>
+Message-ID: <7889116c-c01a-a041-89f3-4390b16c6ac0@kernel.dk>
+Date:   Mon, 27 Sep 2021 17:24:00 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
+MIME-Version: 1.0
+In-Reply-To: <CAMo8BfLX84HBuVe=FyqWkVU5Ek-aKFk++omnqsmf9wO6fdVpMQ@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-On Mon, Sep 27, 2021 at 3:01 PM Luis Chamberlain <mcgrof@kernel.org> wrote:
->
-> We never checked for errors on add_disk() as this function
-> returned void. Now that this is fixed, use the shiny new
-> error handling.
->
-> Signed-off-by: Luis Chamberlain <mcgrof@kernel.org>
-> ---
->  arch/xtensa/platforms/iss/simdisk.c | 13 +++++++++++--
->  1 file changed, 11 insertions(+), 2 deletions(-)
+On 9/27/21 4:50 PM, Max Filippov wrote:
+> On Mon, Sep 27, 2021 at 3:01 PM Luis Chamberlain <mcgrof@kernel.org> wrote:
+>>
+>> We never checked for errors on add_disk() as this function
+>> returned void. Now that this is fixed, use the shiny new
+>> error handling.
+>>
+>> Signed-off-by: Luis Chamberlain <mcgrof@kernel.org>
+>> ---
+>>  arch/xtensa/platforms/iss/simdisk.c | 13 +++++++++++--
+>>  1 file changed, 11 insertions(+), 2 deletions(-)
+> 
+> Acked-by: Max Filippov <jcmvbkbc@gmail.com>
 
-Acked-by: Max Filippov <jcmvbkbc@gmail.com>
+Applied, thanks.
 
 -- 
-Thanks.
--- Max
+Jens Axboe
+
