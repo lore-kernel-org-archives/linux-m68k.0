@@ -2,109 +2,92 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 5E4C3C433FE
-	for <linux-m68k@archiver.kernel.org>; Mon, 27 Sep 2021 22:02:33 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 28B13C433EF
+	for <linux-m68k@archiver.kernel.org>; Mon, 27 Sep 2021 22:29:37 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 4CD78610E8
-	for <linux-m68k@archiver.kernel.org>; Mon, 27 Sep 2021 22:02:33 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 0D48A61058
+	for <linux-m68k@archiver.kernel.org>; Mon, 27 Sep 2021 22:29:37 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237894AbhI0WEE (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Mon, 27 Sep 2021 18:04:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50780 "EHLO
+        id S237735AbhI0WbO (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Mon, 27 Sep 2021 18:31:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57270 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237364AbhI0WDf (ORCPT
+        with ESMTP id S237658AbhI0WbO (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Mon, 27 Sep 2021 18:03:35 -0400
-Received: from bombadil.infradead.org (unknown [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E344DC06125B;
-        Mon, 27 Sep 2021 15:01:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=Sender:Content-Transfer-Encoding:
-        MIME-Version:References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:
-        Reply-To:Content-Type:Content-ID:Content-Description;
-        bh=tG8cam/XDT2SqSq+KO9LsRJ8EhJRU6E2udZdmJan7KU=; b=g0Vd2Ijjj9zsDyU8t7j0CK91EA
-        v7BCEM2ruytnp2jd68hUDBrkHzYUY3FLJiWdR8xhFZZkaeqY1HOdu7egCLMLB7p7kYyXv6p85Acog
-        7TNHe3KAQFiZiZ/0K/FVkZjLTY+2ZBsi+T6lrceiHDC3iHRvt80jQCCW3AW7YsnLJn03oTON1aVWG
-        kzhuOxkyQpLIbiBm5+sWhYj48Ft+5UhMv/bo7DCYeo1d2euLclfrI/WZ5lavETGaWqL0ECP5vtyM6
-        4iRrJu/tEJJWS6rz6GSqxbhdRiVCjk+ZlqN4Yw62pdnYMfZOJ74JZjbO9M8Nm9fxKR7EOrTf6brzq
-        OQ9rjZGg==;
-Received: from mcgrof by bombadil.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mUygR-004TPS-UF; Mon, 27 Sep 2021 22:01:11 +0000
-From:   Luis Chamberlain <mcgrof@kernel.org>
-To:     axboe@kernel.dk, justin@coraid.com, geert@linux-m68k.org,
-        ulf.hansson@linaro.org, hare@suse.de, tj@kernel.org,
-        philipp.reisner@linbit.com, lars.ellenberg@linbit.com,
-        jdike@addtoit.com, richard@nod.at, anton.ivanov@cambridgegreys.com,
-        johannes.berg@intel.com, chris.obbard@collabora.com,
-        krisman@collabora.com, zhuyifei1999@gmail.com, thehajime@gmail.com,
-        chris@zankel.net, jcmvbkbc@gmail.com, tim@cyberelk.net
+        Mon, 27 Sep 2021 18:31:14 -0400
+Received: from mail-io1-xd2e.google.com (mail-io1-xd2e.google.com [IPv6:2607:f8b0:4864:20::d2e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ED79FC061604
+        for <linux-m68k@lists.linux-m68k.org>; Mon, 27 Sep 2021 15:29:35 -0700 (PDT)
+Received: by mail-io1-xd2e.google.com with SMTP id q3so24620891iot.3
+        for <linux-m68k@lists.linux-m68k.org>; Mon, 27 Sep 2021 15:29:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=kernel-dk.20210112.gappssmtp.com; s=20210112;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=mqOH7D1ukF9Zx8b0uf7vcP62TIlQ9RE291MOEYFvaPI=;
+        b=5v8EI4K57W2nZC6Fz5gZTCvYGpzpLmIVxBdnAzUCwcOELQ+Z50Fvi0F2ewrLtFDHRt
+         vtQkQZUUT9draUGadJ6ZaetWUBTobhsNeKmmxnly90D3cPXzYH+dCrqn7mpikqrckWDt
+         WHi7wR55Ek303Gg+2dugwLfcDXsRNH1MLrzdZ6XsBnqq5oBHq+hSOTcA57myq7M9AOAa
+         aCJaO2UWkm+hsZKGxK0d0D/TNWYEqb0UDgv+4L/taDU3hH3nbprrs7bGRma0s183dv+l
+         EPbxyWPCeAI7d/kBAGPUllWTqDWK0UR5PhnZh81ZPhBozZwXA1lGrbmMOWvdwHaSVxRe
+         8BZg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=mqOH7D1ukF9Zx8b0uf7vcP62TIlQ9RE291MOEYFvaPI=;
+        b=ksRH0CsN47DamWn1FSdqIOmsWPJtSuBkwuL/bLiTN5C++xjvopKhFNUSngMOUZwkTE
+         qQC1k2eH88j/UX/EOh5eAAxSSiMQCZeFtZPYFWVQfiQKUQrJjW8b2ZVEQ6OFKIdh1k+g
+         mBs/NnMgHL+8dWgS0ub85yfjp5Czfk/bTymECTJ/ea3n12oXD3kr8FMpipVa7uhXErSJ
+         P7ALEEt+qOOGoIT7+CGxqCC3ZM1z31l+uzWeQemoahpaiYaehT1q+d0p1732RW2CTk2n
+         KEkVzmC1wsHKMmVsl3EN62nh4b9fGo4a+5nGjwGmAAa1TX8oWQ60m8na2SxQsxKi6dAh
+         tdlQ==
+X-Gm-Message-State: AOAM530pW+3X7IZ48CmoD0573p7eGXKtX8WS85Yu1flbGhutB+m0uHLH
+        9NLKvflfsrTFy+3P8KTMAS7DNg==
+X-Google-Smtp-Source: ABdhPJx4BepmT9sgpk1hyVciVWTm6ec+ZxPGy9AhD/MitW3pGK1ERf8eVfBwoyEV70Tjv8vb1T8inA==
+X-Received: by 2002:a05:6638:164c:: with SMTP id a12mr1841987jat.62.1632781775194;
+        Mon, 27 Sep 2021 15:29:35 -0700 (PDT)
+Received: from [192.168.1.116] ([66.219.217.159])
+        by smtp.gmail.com with ESMTPSA id b12sm9902455ilv.46.2021.09.27.15.29.33
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 27 Sep 2021 15:29:34 -0700 (PDT)
+Subject: Re: [PATCH v2 00/15] block: third batch of add_disk() error handling
+ conversions
+To:     Luis Chamberlain <mcgrof@kernel.org>, justin@coraid.com,
+        geert@linux-m68k.org, ulf.hansson@linaro.org, hare@suse.de,
+        tj@kernel.org, philipp.reisner@linbit.com,
+        lars.ellenberg@linbit.com, jdike@addtoit.com, richard@nod.at,
+        anton.ivanov@cambridgegreys.com, johannes.berg@intel.com,
+        chris.obbard@collabora.com, krisman@collabora.com,
+        zhuyifei1999@gmail.com, thehajime@gmail.com, chris@zankel.net,
+        jcmvbkbc@gmail.com, tim@cyberelk.net
 Cc:     linux-xtensa@linux-xtensa.org, linux-um@lists.infradead.org,
         linux-m68k@lists.linux-m68k.org, drbd-dev@lists.linbit.com,
-        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Luis Chamberlain <mcgrof@kernel.org>
-Subject: [PATCH v2 07/15] n64cart: add error handling support for add_disk()
-Date:   Mon, 27 Sep 2021 15:01:02 -0700
-Message-Id: <20210927220110.1066271-8-mcgrof@kernel.org>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210927220110.1066271-1-mcgrof@kernel.org>
+        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org
 References: <20210927220110.1066271-1-mcgrof@kernel.org>
+From:   Jens Axboe <axboe@kernel.dk>
+Message-ID: <ee2c245d-7190-b708-4c48-cbee28f56f9a@kernel.dk>
+Date:   Mon, 27 Sep 2021 16:29:33 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Sender: Luis Chamberlain <mcgrof@infradead.org>
+In-Reply-To: <20210927220110.1066271-1-mcgrof@kernel.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-We never checked for errors on add_disk() as this function
-returned void. Now that this is fixed, use the shiny new
-error handling.
+On 9/27/21 4:00 PM, Luis Chamberlain wrote:
+> This is the 2nd version of the third batch of driver conversions for the
+> add_disk() error handling. This and the entire 7th series of driver
+> conversions can be found on my 20210927-for-axboe-add-disk-error-handling
+> branch [0].
 
-Signed-off-by: Luis Chamberlain <mcgrof@kernel.org>
----
- drivers/block/n64cart.c | 12 ++++++++++--
- 1 file changed, 10 insertions(+), 2 deletions(-)
+Applied 2, 4, 7, 8-15.
 
-diff --git a/drivers/block/n64cart.c b/drivers/block/n64cart.c
-index 26798da661bd..35aa5d38f57d 100644
---- a/drivers/block/n64cart.c
-+++ b/drivers/block/n64cart.c
-@@ -117,6 +117,7 @@ static const struct block_device_operations n64cart_fops = {
- static int __init n64cart_probe(struct platform_device *pdev)
- {
- 	struct gendisk *disk;
-+	int err = -ENOMEM;
- 
- 	if (!start || !size) {
- 		pr_err("start or size not specified\n");
-@@ -134,7 +135,7 @@ static int __init n64cart_probe(struct platform_device *pdev)
- 
- 	disk = blk_alloc_disk(NUMA_NO_NODE);
- 	if (!disk)
--		return -ENOMEM;
-+		goto out;
- 
- 	disk->first_minor = 0;
- 	disk->flags = GENHD_FL_NO_PART_SCAN;
-@@ -149,11 +150,18 @@ static int __init n64cart_probe(struct platform_device *pdev)
- 	blk_queue_physical_block_size(disk->queue, 4096);
- 	blk_queue_logical_block_size(disk->queue, 4096);
- 
--	add_disk(disk);
-+	err = add_disk(disk);
-+	if (err)
-+		goto out_cleanup_disk;
- 
- 	pr_info("n64cart: %u kb disk\n", size / 1024);
- 
- 	return 0;
-+
-+out_cleanup_disk:
-+	blk_cleanup_disk(disk);
-+out:
-+	return err;
- }
- 
- static struct platform_driver n64cart_driver = {
 -- 
-2.30.2
+Jens Axboe
 
