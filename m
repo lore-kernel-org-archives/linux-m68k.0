@@ -1,84 +1,144 @@
 Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-13.8 required=3.0 tests=BAYES_00,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no
-	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 2F738C433F5
-	for <linux-m68k@archiver.kernel.org>; Fri, 24 Sep 2021 11:29:24 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7B01EC4321E
+	for <linux-m68k@archiver.kernel.org>; Mon, 27 Sep 2021 15:05:46 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 1588D610CF
-	for <linux-m68k@archiver.kernel.org>; Fri, 24 Sep 2021 11:29:24 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 5E74E6108E
+	for <linux-m68k@archiver.kernel.org>; Mon, 27 Sep 2021 15:05:46 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245069AbhIXLay (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Fri, 24 Sep 2021 07:30:54 -0400
-Received: from mail-ua1-f43.google.com ([209.85.222.43]:44890 "EHLO
-        mail-ua1-f43.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244860AbhIXLay (ORCPT
+        id S235022AbhI0PHX (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Mon, 27 Sep 2021 11:07:23 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:56504 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S235018AbhI0PHV (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Fri, 24 Sep 2021 07:30:54 -0400
-Received: by mail-ua1-f43.google.com with SMTP id n4so1128152uaj.11
-        for <linux-m68k@lists.linux-m68k.org>; Fri, 24 Sep 2021 04:29:21 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Xb4E71PLRVwAgc7nxTvHtPqOviEnsfHRocCh1h1TNpU=;
-        b=1hF7eqCZwwDnjWR4hTRWvBPHyGESuNNz0dqrGA7Qy1Z/DYWe8GC4wzGdvFBq+dGp3n
-         eGR3k55xLUv/uamCIRukZ6lUAfCFIWGoUmFx0+N9vSTxSpMRE+Fmu0gUDxjzESRIl2iX
-         oc0h8Cn2YokbRJSHOmX4ufKEUFRiSgu7EXW9fkC7Hc6C6VVwD91tR3psqIHyh5409Vj3
-         chQzN23FZvJaahlRhzd+vx2Z26XGboO/5mzIcurtNXT8KYumnAGOHm39itbB34t+8hS3
-         sAQSTzRkUtYRzm89hH951VB4jeP5ptVNNrrvwHxTGMsm00vBMF7INdyijzdA2NM+SmZ/
-         Cj0Q==
-X-Gm-Message-State: AOAM533NMSsOCkn4yKpJRm6MqSTezUYv6sdBshdRlXupkSHuCgEx5DRt
-        KiaHczWdx4N5rYGT27+sQpF3YswMgRWY2Wh04RQ=
-X-Google-Smtp-Source: ABdhPJz3tf5Uuih13QoXr/+WiaUJFLErVwra6v83B0+Z+LkdV1BQqgZUmWZw8z25y996cRukWMEezFzll0NRKknW/74=
-X-Received: by 2002:ab0:7d5:: with SMTP id d21mr8830579uaf.78.1632482960571;
- Fri, 24 Sep 2021 04:29:20 -0700 (PDT)
+        Mon, 27 Sep 2021 11:07:21 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1632755143;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=C3epFIds1GdiZHzRVp8oQ/YE01ZWNz++UB0u9toC/UY=;
+        b=Wlx4Typh4jK8Xywcu2x5GyLj0pNb5zMbyC1dzblNTDQl9NATVyXtH9REhQuISh5ojQlSxn
+        HqWP7IR7cOEZT0/iUK/20SeCm00et/MNXkvckgS7Sjb1H5v5jMcU60IzmupccvS8cJ7NC8
+        CQPoeBgg539IItdWRUMM/vHPQ6SnxZs=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-598-wESedMfYNS2jvH245K4Uwg-1; Mon, 27 Sep 2021 11:05:39 -0400
+X-MC-Unique: wESedMfYNS2jvH245K4Uwg-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 98FCA100C612;
+        Mon, 27 Sep 2021 15:05:36 +0000 (UTC)
+Received: from t480s.redhat.com (unknown [10.39.193.71])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 7320860C13;
+        Mon, 27 Sep 2021 15:05:19 +0000 (UTC)
+From:   David Hildenbrand <david@redhat.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     David Hildenbrand <david@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Mike Rapoport <rppt@kernel.org>,
+        Michal Hocko <mhocko@suse.com>,
+        Oscar Salvador <osalvador@suse.de>,
+        Jianyong Wu <Jianyong.Wu@arm.com>,
+        "Aneesh Kumar K . V" <aneesh.kumar@linux.ibm.com>,
+        Vineet Gupta <vgupta@kernel.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Huacai Chen <chenhuacai@kernel.org>,
+        Jiaxun Yang <jiaxun.yang@flygoat.com>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        Eric Biederman <ebiederm@xmission.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        linux-snps-arc@lists.infradead.org, linux-ia64@vger.kernel.org,
+        linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org,
+        linux-s390@vger.kernel.org, linux-mm@kvack.org,
+        kexec@lists.infradead.org
+Subject: [PATCH v1 0/4] mm/memory_hotplug: full support for
+Date:   Mon, 27 Sep 2021 17:05:14 +0200
+Message-Id: <20210927150518.8607-1-david@redhat.com>
 MIME-Version: 1.0
-References: <20210906142413.130774-1-wangborong@cdjrlc.com>
-In-Reply-To: <20210906142413.130774-1-wangborong@cdjrlc.com>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Fri, 24 Sep 2021 13:29:09 +0200
-Message-ID: <CAMuHMdUYMabCK7aknqTMSOqZrLkwJ1uRTPPyqn7AXLQ7VXeg2w@mail.gmail.com>
-Subject: Re: [PATCH] m68k: Add a missing SPDX license header
-To:     Jason Wang <wangborong@cdjrlc.com>
-Cc:     Arnd Bergmann <arnd@arndb.de>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        linux-m68k <linux-m68k@lists.linux-m68k.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-Hi Jason,
+Architectures that require CONFIG_ARCH_KEEP_MEMBLOCK=y, such as arm64,
+don't cleanly support add_memory_driver_managed() yet. Most prominently,
+kexec_file can still end up placing images on such driver-managed memory,
+resulting in undesired behavior.
 
-On Mon, Sep 6, 2021 at 4:24 PM Jason Wang <wangborong@cdjrlc.com> wrote:
-> Add the missing SPDX license header to arch/m68k/q40/q40ints.c.
->
-> Signed-off-by: Jason Wang <wangborong@cdjrlc.com>
+Teaching kexec to not place images on driver-managed memory is especially
+relevant for virtio-mem. Details can be found in commit 7b7b27214bba
+("mm/memory_hotplug: introduce add_memory_driver_managed()").
 
-Thanks for your patch!
+Extend memblock with a new flag and set it from memory hotplug code
+when applicable. This is required to fully support virtio-mem on
+arm64, making also kexec_file behave like on x86-64.
 
-> ---
->  arch/m68k/q40/q40ints.c | 5 +----
->  1 file changed, 1 insertion(+), 4 deletions(-)
+Alternative A: Extend kexec_walk_memblock() to consult the kernel resource
+tree whether IORESOURCE_SYSRAM_DRIVER_MANAGED is set. This feels wrong,
+because the goal was to rely on memblock and not the resource tree.
 
-Is there any specific reason you only updated this file?
-There are 209 other files under arch/m68k/ lacking an SPDX license
-header.
+Alternative B: Reuse MEMBLOCK_HOTPLUG. MEMBLOCK_HOTPLUG serves a different
+purpose, though.
 
-Gr{oetje,eeting}s,
+Cc: Andrew Morton <akpm@linux-foundation.org>
+Cc: Mike Rapoport <rppt@kernel.org>
+Cc: Michal Hocko <mhocko@suse.com>
+Cc: Oscar Salvador <osalvador@suse.de>
+Cc: Jianyong Wu <Jianyong.Wu@arm.com>
+Cc: Aneesh Kumar K.V <aneesh.kumar@linux.ibm.com>
+Cc: Vineet Gupta <vgupta@kernel.org>
+Cc: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: Huacai Chen <chenhuacai@kernel.org>
+Cc: Jiaxun Yang <jiaxun.yang@flygoat.com>
+Cc: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+Cc: Heiko Carstens <hca@linux.ibm.com>
+Cc: Vasily Gorbik <gor@linux.ibm.com>
+Cc: Christian Borntraeger <borntraeger@de.ibm.com>
+Cc: Eric Biederman <ebiederm@xmission.com>
+Cc: Arnd Bergmann <arnd@arndb.de>
+Cc: linux-snps-arc@lists.infradead.org
+Cc: linux-ia64@vger.kernel.org
+Cc: linux-m68k@lists.linux-m68k.org
+Cc: linux-mips@vger.kernel.org
+Cc: linux-s390@vger.kernel.org
+Cc: linux-mm@kvack.org
+Cc: kexec@lists.infradead.org
 
-                        Geert
+David Hildenbrand (4):
+  mm/memory_hotplug: handle memblock_add_node() failures in
+    add_memory_resource()
+  memblock: allow to specify flags with memblock_add_node()
+  memblock: add MEMBLOCK_DRIVER_MANAGED to mimic
+    IORESOURCE_SYSRAM_DRIVER_MANAGED
+  mm/memory_hotplug: indicate MEMBLOCK_DRIVER_MANAGED with
+    IORESOURCE_SYSRAM_DRIVER_MANAGED
 
+ arch/arc/mm/init.c               |  4 ++--
+ arch/ia64/mm/contig.c            |  2 +-
+ arch/ia64/mm/init.c              |  2 +-
+ arch/m68k/mm/mcfmmu.c            |  3 ++-
+ arch/m68k/mm/motorola.c          |  6 ++++--
+ arch/mips/loongson64/init.c      |  4 +++-
+ arch/mips/sgi-ip27/ip27-memory.c |  3 ++-
+ arch/s390/kernel/setup.c         |  3 ++-
+ include/linux/memblock.h         | 19 ++++++++++++++++---
+ include/linux/mm.h               |  2 +-
+ kernel/kexec_file.c              |  5 +++++
+ mm/memblock.c                    | 13 +++++++++----
+ mm/memory_hotplug.c              | 11 +++++++++--
+ 13 files changed, 57 insertions(+), 20 deletions(-)
+
+
+base-commit: 5816b3e6577eaa676ceb00a848f0fd65fe2adc29
 -- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+2.31.1
 
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
