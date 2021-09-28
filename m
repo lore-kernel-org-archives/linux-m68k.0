@@ -2,120 +2,119 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 2F27EC433F5
-	for <linux-m68k@archiver.kernel.org>; Tue, 28 Sep 2021 09:39:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 949BDC433EF
+	for <linux-m68k@archiver.kernel.org>; Tue, 28 Sep 2021 14:00:27 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 1200A60FBF
-	for <linux-m68k@archiver.kernel.org>; Tue, 28 Sep 2021 09:39:39 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 70D9F60F5B
+	for <linux-m68k@archiver.kernel.org>; Tue, 28 Sep 2021 14:00:27 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239998AbhI1JlP (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Tue, 28 Sep 2021 05:41:15 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:14594 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S239959AbhI1JlE (ORCPT
+        id S240950AbhI1OCF (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Tue, 28 Sep 2021 10:02:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45736 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S240908AbhI1OCE (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Tue, 28 Sep 2021 05:41:04 -0400
-Received: from pps.filterd (m0187473.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 18S7UBn8026547;
-        Tue, 28 Sep 2021 05:38:38 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
- subject : message-id : references : mime-version : content-type :
- in-reply-to; s=pp1; bh=gd3cWqhTDSyS7Hfr1k1CCLr2jp8k1f/AoKbil7aEFf0=;
- b=duSbsVZmUmqGLbFK1dXmqUDbVDdow4b7xLNuuK5K47qnbpPEyrMtIwAB/evA59updROu
- MX3unQ9lG4a/vui2PNfrpPLwPnSl4BBrTR73aU8ZlzCcijp7K81yQkH44hnzZIclpDT/
- u55G81479MSLWzSJblktfFc0bSNlRF0UW78S6El7BwJ5L0O6casSjyIA7eqj1JvfksCP
- DUBbwr0Q4sQ/CA5nJsWso6zEt2e+CU2V075UOjB4aRuiehirAkx3A4J+8EL9aFuVi6Vw
- UU05Tfj+Gh48Wp+ImIS15K2d10mETT0AdfgmWk6cJUVzMu3jEWNhqZhGzmrMH35Fy/9k 1w== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3bbxq7afby-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 28 Sep 2021 05:38:37 -0400
-Received: from m0187473.ppops.net (m0187473.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 18S89K36037942;
-        Tue, 28 Sep 2021 05:38:36 -0400
-Received: from ppma03ams.nl.ibm.com (62.31.33a9.ip4.static.sl-reverse.com [169.51.49.98])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3bbxq7afar-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 28 Sep 2021 05:38:36 -0400
-Received: from pps.filterd (ppma03ams.nl.ibm.com [127.0.0.1])
-        by ppma03ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 18S9VruV021585;
-        Tue, 28 Sep 2021 09:38:34 GMT
-Received: from b06cxnps3074.portsmouth.uk.ibm.com (d06relay09.portsmouth.uk.ibm.com [9.149.109.194])
-        by ppma03ams.nl.ibm.com with ESMTP id 3b9ud9v83y-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 28 Sep 2021 09:38:34 +0000
-Received: from d06av25.portsmouth.uk.ibm.com (d06av25.portsmouth.uk.ibm.com [9.149.105.61])
-        by b06cxnps3074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 18S9cUB740829210
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 28 Sep 2021 09:38:30 GMT
-Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 9E61011C05B;
-        Tue, 28 Sep 2021 09:38:30 +0000 (GMT)
-Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id B07D311C058;
-        Tue, 28 Sep 2021 09:38:29 +0000 (GMT)
-Received: from osiris (unknown [9.145.163.77])
-        by d06av25.portsmouth.uk.ibm.com (Postfix) with ESMTPS;
-        Tue, 28 Sep 2021 09:38:29 +0000 (GMT)
-Date:   Tue, 28 Sep 2021 11:38:28 +0200
-From:   Heiko Carstens <hca@linux.ibm.com>
-To:     David Hildenbrand <david@redhat.com>
-Cc:     linux-kernel@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Mike Rapoport <rppt@kernel.org>,
-        Michal Hocko <mhocko@suse.com>,
-        Oscar Salvador <osalvador@suse.de>,
-        Jianyong Wu <Jianyong.Wu@arm.com>,
-        "Aneesh Kumar K . V" <aneesh.kumar@linux.ibm.com>,
-        Vineet Gupta <vgupta@kernel.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Huacai Chen <chenhuacai@kernel.org>,
-        Jiaxun Yang <jiaxun.yang@flygoat.com>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        Eric Biederman <ebiederm@xmission.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        linux-snps-arc@lists.infradead.org, linux-ia64@vger.kernel.org,
-        linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org,
-        linux-s390@vger.kernel.org, linux-mm@kvack.org,
-        kexec@lists.infradead.org
-Subject: Re: [PATCH v1 2/4] memblock: allow to specify flags with
- memblock_add_node()
-Message-ID: <YVLilCj7C+Aj7T6E@osiris>
-References: <20210927150518.8607-1-david@redhat.com>
- <20210927150518.8607-3-david@redhat.com>
+        Tue, 28 Sep 2021 10:02:04 -0400
+Received: from albert.telenet-ops.be (albert.telenet-ops.be [IPv6:2a02:1800:110:4::f00:1a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 408B9C06161C
+        for <linux-m68k@lists.linux-m68k.org>; Tue, 28 Sep 2021 07:00:24 -0700 (PDT)
+Received: from ramsan.of.borg ([IPv6:2a02:1810:ac12:ed30:9d6a:ba71:99b4:9160])
+        by albert.telenet-ops.be with bizsmtp
+        id zS0M250034bPoua06S0MA4; Tue, 28 Sep 2021 16:00:21 +0200
+Received: from rox.of.borg ([192.168.97.57])
+        by ramsan.of.borg with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.93)
+        (envelope-from <geert@linux-m68k.org>)
+        id 1mVDef-000LNP-3P; Tue, 28 Sep 2021 16:00:21 +0200
+Received: from geert by rox.of.borg with local (Exim 4.93)
+        (envelope-from <geert@linux-m68k.org>)
+        id 1mVDee-00AFEY-Jf; Tue, 28 Sep 2021 16:00:20 +0200
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Greg Ungerer <gerg@linux-m68k.org>,
+        linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org,
+        Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: [GIT PULL] m68k updates for v5.15 (take three)
+Date:   Tue, 28 Sep 2021 16:00:18 +0200
+Message-Id: <20210928140018.2441795-1-geert@linux-m68k.org>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210927150518.8607-3-david@redhat.com>
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: v4fMMpMPN4hOnztYJTaKk6Fq5kTW6jKy
-X-Proofpoint-GUID: WgNggeLkwnBEAxsGbglfAEurxeshA1qK
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.391,FMLib:17.0.607.475
- definitions=2021-09-28_05,2021-09-28_01,2020-04-07_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
- clxscore=1011 malwarescore=0 phishscore=0 mlxscore=0 spamscore=0
- adultscore=0 bulkscore=0 impostorscore=0 suspectscore=0 lowpriorityscore=0
- mlxlogscore=819 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2109230001 definitions=main-2109280056
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-On Mon, Sep 27, 2021 at 05:05:16PM +0200, David Hildenbrand wrote:
-> We want to specify flags when hotplugging memory. Let's prepare to pass
-> flags to memblock_add_node() by adjusting all existing users.
-> 
-> Note that when hotplugging memory the system is already up and running
-> and we don't want to add the memory first and apply flags later: it
-> should happen within one memblock call.
-> 
-> Signed-off-by: David Hildenbrand <david@redhat.com>
-> ---
-...
->  arch/s390/kernel/setup.c         | 3 ++-
+	Hi Linus,
 
-For s390
-Acked-by: Heiko Carstens <hca@linux.ibm.com>
+The following changes since commit a7b68ed15d1fd72c1e451d5eb6edebee2a624b90:
+
+  m68k: mvme: Remove overdue #warnings in RTC handling (2021-09-13 11:19:05 +0200)
+
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/geert/linux-m68k.git tags/m68k-for-v5.15-tag3
+
+for you to fetch changes up to 9fde0348640252c79d462c4d29a09a14e8741f5c:
+
+  m68k: Remove set_fs() (2021-09-24 13:35:07 +0200)
+
+----------------------------------------------------------------
+m68k updates for v5.15 (take three)
+
+  - Signal handling fixes,
+  - Removal of set_fs().
+
+Thanks for pulling!
+
+----------------------------------------------------------------
+Al Viro (3):
+      m68k: Handle arrivals of multiple signals correctly
+      m68k: Update ->thread.esp0 before calling syscall_trace() in ret_from_signal
+      m68k: Leave stack mangling to asm wrapper of sigreturn()
+
+Christoph Hellwig (6):
+      m68k: Document that access_ok is broken for !CONFIG_CPU_HAS_ADDRESS_SPACES
+      m68k: Remove the 030 case in virt_to_phys_slow
+      m68k: Use BUILD_BUG for passing invalid sizes to get_user/put_user
+      m68k: Factor the 8-byte lowlevel {get,put}_user code into helpers
+      m68k: Provide __{get,put}_kernel_nofault
+      m68k: Remove set_fs()
+
+ arch/m68k/68000/entry.S             |   4 -
+ arch/m68k/Kconfig                   |   1 -
+ arch/m68k/coldfire/entry.S          |   4 -
+ arch/m68k/include/asm/processor.h   |  31 +++++-
+ arch/m68k/include/asm/segment.h     |  59 ----------
+ arch/m68k/include/asm/thread_info.h |   3 -
+ arch/m68k/include/asm/tlbflush.h    |  11 +-
+ arch/m68k/include/asm/traps.h       |   4 +
+ arch/m68k/include/asm/uaccess.h     | 215 +++++++++++++++++++++++-------------
+ arch/m68k/kernel/asm-offsets.c      |   2 +-
+ arch/m68k/kernel/entry.S            |  58 +++++-----
+ arch/m68k/kernel/process.c          |   4 +-
+ arch/m68k/kernel/signal.c           | 199 ++++++++++++++-------------------
+ arch/m68k/kernel/traps.c            |  13 +--
+ arch/m68k/mac/misc.c                |   1 -
+ arch/m68k/mm/cache.c                |  25 +----
+ arch/m68k/mm/init.c                 |   6 -
+ arch/m68k/mm/kmap.c                 |   1 -
+ arch/m68k/mm/memory.c               |   1 -
+ arch/m68k/mm/motorola.c             |   2 +-
+ arch/m68k/sun3/config.c             |   3 +-
+ arch/m68k/sun3/mmu_emu.c            |   6 +-
+ arch/m68k/sun3/sun3ints.c           |   1 -
+ arch/m68k/sun3x/prom.c              |   1 -
+ 24 files changed, 301 insertions(+), 354 deletions(-)
+ delete mode 100644 arch/m68k/include/asm/segment.h
+
+Gr{oetje,eeting}s,
+
+						Geert
+
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+							    -- Linus Torvalds
