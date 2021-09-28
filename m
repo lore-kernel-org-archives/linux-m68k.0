@@ -2,119 +2,62 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 949BDC433EF
-	for <linux-m68k@archiver.kernel.org>; Tue, 28 Sep 2021 14:00:27 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id EDCF3C433FE
+	for <linux-m68k@archiver.kernel.org>; Tue, 28 Sep 2021 20:29:18 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 70D9F60F5B
-	for <linux-m68k@archiver.kernel.org>; Tue, 28 Sep 2021 14:00:27 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id D188B6127C
+	for <linux-m68k@archiver.kernel.org>; Tue, 28 Sep 2021 20:29:18 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240950AbhI1OCF (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Tue, 28 Sep 2021 10:02:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45736 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240908AbhI1OCE (ORCPT
-        <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Tue, 28 Sep 2021 10:02:04 -0400
-Received: from albert.telenet-ops.be (albert.telenet-ops.be [IPv6:2a02:1800:110:4::f00:1a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 408B9C06161C
-        for <linux-m68k@lists.linux-m68k.org>; Tue, 28 Sep 2021 07:00:24 -0700 (PDT)
-Received: from ramsan.of.borg ([IPv6:2a02:1810:ac12:ed30:9d6a:ba71:99b4:9160])
-        by albert.telenet-ops.be with bizsmtp
-        id zS0M250034bPoua06S0MA4; Tue, 28 Sep 2021 16:00:21 +0200
-Received: from rox.of.borg ([192.168.97.57])
-        by ramsan.of.borg with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.93)
-        (envelope-from <geert@linux-m68k.org>)
-        id 1mVDef-000LNP-3P; Tue, 28 Sep 2021 16:00:21 +0200
-Received: from geert by rox.of.borg with local (Exim 4.93)
-        (envelope-from <geert@linux-m68k.org>)
-        id 1mVDee-00AFEY-Jf; Tue, 28 Sep 2021 16:00:20 +0200
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        id S242730AbhI1Ua6 (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Tue, 28 Sep 2021 16:30:58 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47598 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S242721AbhI1Ua5 (ORCPT <rfc822;linux-m68k@lists.linux-m68k.org>);
+        Tue, 28 Sep 2021 16:30:57 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPS id 83CEC6124B;
+        Tue, 28 Sep 2021 20:29:17 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1632860957;
+        bh=5NAc0nKafKFT6BHAFbFPEQIjF4JqhnsB+1Onk/jLdrM=;
+        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
+        b=p5TqY05dt9lKWamKFKpv0h8UCGCG2MKrrNZ8dqajsdUMR91KeLX/LnaBg5DxAl35C
+         2FFN2mbau+6hK78hvHzksaYgni7PobQ3YuHpJ4XZd9gyuhpeUl2KD4Q2+Rd/fJNl0X
+         oxpVNHM11E0mSPJf3GlR9q8XHWxGn5sdHBsfk+3NRFEhIER0BkErQzlaOTwV5YwVhJ
+         5koXstOnmqEuKhynXDIFczxCwCC7atyWBewWYTnUG/8JlZxxq7ovFuHxBADL6n8ZBi
+         XVeD0fppP1FULY50/SE7eCzAxAN6XuV5f2wX+Q3jA5isTSlGGt180evpqPImsUhrnP
+         SQXg1fS6iWpfQ==
+Subject: Re: [GIT PULL] m68k updates for v5.15 (take three)
+From:   pr-tracker-bot@kernel.org
+In-Reply-To: <20210928140018.2441795-1-geert@linux-m68k.org>
+References: <20210928140018.2441795-1-geert@linux-m68k.org>
+X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
+X-PR-Tracked-Message-Id: <20210928140018.2441795-1-geert@linux-m68k.org>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/geert/linux-m68k.git tags/m68k-for-v5.15-tag3
+X-PR-Tracked-Commit-Id: 9fde0348640252c79d462c4d29a09a14e8741f5c
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: e7bd807e8c9e37b0eef24e13df1f0619c39dc559
+Message-Id: <163286095741.21949.15273207397325726053.pr-tracker-bot@kernel.org>
+Date:   Tue, 28 Sep 2021 20:29:17 +0000
+To:     Geert Uytterhoeven <geert@linux-m68k.org>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
         Greg Ungerer <gerg@linux-m68k.org>,
         linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org,
         Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: [GIT PULL] m68k updates for v5.15 (take three)
-Date:   Tue, 28 Sep 2021 16:00:18 +0200
-Message-Id: <20210928140018.2441795-1-geert@linux-m68k.org>
-X-Mailer: git-send-email 2.25.1
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-	Hi Linus,
+The pull request you sent on Tue, 28 Sep 2021 16:00:18 +0200:
 
-The following changes since commit a7b68ed15d1fd72c1e451d5eb6edebee2a624b90:
+> git://git.kernel.org/pub/scm/linux/kernel/git/geert/linux-m68k.git tags/m68k-for-v5.15-tag3
 
-  m68k: mvme: Remove overdue #warnings in RTC handling (2021-09-13 11:19:05 +0200)
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/e7bd807e8c9e37b0eef24e13df1f0619c39dc559
 
-are available in the Git repository at:
+Thank you!
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/geert/linux-m68k.git tags/m68k-for-v5.15-tag3
-
-for you to fetch changes up to 9fde0348640252c79d462c4d29a09a14e8741f5c:
-
-  m68k: Remove set_fs() (2021-09-24 13:35:07 +0200)
-
-----------------------------------------------------------------
-m68k updates for v5.15 (take three)
-
-  - Signal handling fixes,
-  - Removal of set_fs().
-
-Thanks for pulling!
-
-----------------------------------------------------------------
-Al Viro (3):
-      m68k: Handle arrivals of multiple signals correctly
-      m68k: Update ->thread.esp0 before calling syscall_trace() in ret_from_signal
-      m68k: Leave stack mangling to asm wrapper of sigreturn()
-
-Christoph Hellwig (6):
-      m68k: Document that access_ok is broken for !CONFIG_CPU_HAS_ADDRESS_SPACES
-      m68k: Remove the 030 case in virt_to_phys_slow
-      m68k: Use BUILD_BUG for passing invalid sizes to get_user/put_user
-      m68k: Factor the 8-byte lowlevel {get,put}_user code into helpers
-      m68k: Provide __{get,put}_kernel_nofault
-      m68k: Remove set_fs()
-
- arch/m68k/68000/entry.S             |   4 -
- arch/m68k/Kconfig                   |   1 -
- arch/m68k/coldfire/entry.S          |   4 -
- arch/m68k/include/asm/processor.h   |  31 +++++-
- arch/m68k/include/asm/segment.h     |  59 ----------
- arch/m68k/include/asm/thread_info.h |   3 -
- arch/m68k/include/asm/tlbflush.h    |  11 +-
- arch/m68k/include/asm/traps.h       |   4 +
- arch/m68k/include/asm/uaccess.h     | 215 +++++++++++++++++++++++-------------
- arch/m68k/kernel/asm-offsets.c      |   2 +-
- arch/m68k/kernel/entry.S            |  58 +++++-----
- arch/m68k/kernel/process.c          |   4 +-
- arch/m68k/kernel/signal.c           | 199 ++++++++++++++-------------------
- arch/m68k/kernel/traps.c            |  13 +--
- arch/m68k/mac/misc.c                |   1 -
- arch/m68k/mm/cache.c                |  25 +----
- arch/m68k/mm/init.c                 |   6 -
- arch/m68k/mm/kmap.c                 |   1 -
- arch/m68k/mm/memory.c               |   1 -
- arch/m68k/mm/motorola.c             |   2 +-
- arch/m68k/sun3/config.c             |   3 +-
- arch/m68k/sun3/mmu_emu.c            |   6 +-
- arch/m68k/sun3/sun3ints.c           |   1 -
- arch/m68k/sun3x/prom.c              |   1 -
- 24 files changed, 301 insertions(+), 354 deletions(-)
- delete mode 100644 arch/m68k/include/asm/segment.h
-
-Gr{oetje,eeting}s,
-
-						Geert
-
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-							    -- Linus Torvalds
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/prtracker.html
