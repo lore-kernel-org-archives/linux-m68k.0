@@ -2,79 +2,79 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id CAEE4C433EF
-	for <linux-m68k@archiver.kernel.org>; Thu, 30 Sep 2021 12:31:11 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4F223C433EF
+	for <linux-m68k@archiver.kernel.org>; Thu, 30 Sep 2021 20:56:46 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 9BC7D613A5
-	for <linux-m68k@archiver.kernel.org>; Thu, 30 Sep 2021 12:31:11 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 25C7461390
+	for <linux-m68k@archiver.kernel.org>; Thu, 30 Sep 2021 20:56:46 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350851AbhI3Mcx (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Thu, 30 Sep 2021 08:32:53 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36930 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1350378AbhI3Mcw (ORCPT <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Thu, 30 Sep 2021 08:32:52 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 25869613A0;
-        Thu, 30 Sep 2021 12:31:08 +0000 (UTC)
-Subject: Re: m68k: default value for MEMORY_RESERVE?
-To:     Geert Uytterhoeven <geert@linux-m68k.org>,
-        Randy Dunlap <rdunlap@infradead.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        linux-m68k <linux-m68k@lists.linux-m68k.org>
-References: <a1c34f2b-115c-7ab9-5b69-7c11ebc18b4f@infradead.org>
- <CAMuHMdWJGFm0p-5qSj4xybfo7pZB_PrSjt2ghcgL2HaB6TQENw@mail.gmail.com>
-From:   Greg Ungerer <gerg@linux-m68k.org>
-Message-ID: <dcd8eb4c-f151-e1f7-cec9-8b66e860f748@linux-m68k.org>
-Date:   Thu, 30 Sep 2021 22:31:06 +1000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        id S1348365AbhI3U62 (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Thu, 30 Sep 2021 16:58:28 -0400
+Received: from outpost1.zedat.fu-berlin.de ([130.133.4.66]:54109 "EHLO
+        outpost1.zedat.fu-berlin.de" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1346766AbhI3U62 (ORCPT
+        <rfc822;linux-m68k@lists.linux-m68k.org>);
+        Thu, 30 Sep 2021 16:58:28 -0400
+Received: from inpost2.zedat.fu-berlin.de ([130.133.4.69])
+          by outpost.zedat.fu-berlin.de (Exim 4.94)
+          with esmtps (TLS1.2)
+          tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+          (envelope-from <glaubitz@zedat.fu-berlin.de>)
+          id 1mW36h-003yql-7J; Thu, 30 Sep 2021 22:56:43 +0200
+Received: from p57bd97e9.dip0.t-ipconnect.de ([87.189.151.233] helo=[192.168.178.81])
+          by inpost2.zedat.fu-berlin.de (Exim 4.94)
+          with esmtpsa (TLS1.2)
+          tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+          (envelope-from <glaubitz@physik.fu-berlin.de>)
+          id 1mW36f-003cOA-Gk; Thu, 30 Sep 2021 22:56:43 +0200
+Message-ID: <9f7ad0df-b58c-1b24-5c48-5ee6478260dd@physik.fu-berlin.de>
+Date:   Thu, 30 Sep 2021 22:56:41 +0200
 MIME-Version: 1.0
-In-Reply-To: <CAMuHMdWJGFm0p-5qSj4xybfo7pZB_PrSjt2ghcgL2HaB6TQENw@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.1.1
+Subject: Re: [PATCH 2/2] m68k: introduce a virtual m68k machine
 Content-Language: en-US
+To:     Laurent Vivier <laurent@vivier.eu>,
+        Geert Uytterhoeven <geert@linux-m68k.org>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-m68k <linux-m68k@lists.linux-m68k.org>,
+        linux-rtc@vger.kernel.org, Alessandro Zummo <a.zummo@towertech.it>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>
+References: <20210323221430.3735147-1-laurent@vivier.eu>
+ <20210323221430.3735147-3-laurent@vivier.eu>
+ <a9c75ae7-6023-6b6c-260f-a0d6841ea4fa@vivier.eu>
+ <CAMuHMdW49S_81Oip2p+yUO5YUL1-V3_K_C1WEXux7mQWcb-mKA@mail.gmail.com>
+ <c28b0c92-a997-6978-890f-4222f4bb8cc6@vivier.eu>
+From:   John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
+In-Reply-To: <c28b0c92-a997-6978-890f-4222f4bb8cc6@vivier.eu>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
+X-Original-Sender: glaubitz@physik.fu-berlin.de
+X-Originating-IP: 87.189.151.233
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-Hi Randy, Geert,
+Hi Laurent!
 
-On 28/9/21 5:20 pm, Geert Uytterhoeven wrote:
-> Hi Randy,
+On 4/28/21 14:15, Laurent Vivier wrote:
+>> I have tested and reviewed your patch, great work!
+>> I'm confident this can make v5.14, with the small nits fixed.
 > 
-> On Mon, Sep 27, 2021 at 11:26 PM Randy Dunlap <rdunlap@infradead.org> wrote:
->> Would it be safe (or unsafe) to add a default value for MEMORY_RESERVE?
+> Thank you for your review.
 > 
-> No idea ;-)
+> I will answer to some of your comments and update accordingly my patch.
 
-Me neither :-)
-Looking at the code I am pretty sure a default value would be ok.
+It looks like this patch somehow fell off the table, didn't it?
 
-I am not sure what the need for MEMORY_RESERVE was for.
-It is only used on the uCsimm and uCdimm platforms, which are DragonBall
-(68328) based devices. Not obvious to me why it was needed.
+I was hoping to be able to build a virt kernel for Debian/m68k by default
+in the near future.
 
+Adrian
 
->> As it is, kconfig can generate a randconfig with
->> "CONFIG_MEMORY_RESERVE=" (no value) since it has no default.
->>
->> Then a following 'make all' finds an invalid symbol value and restarts
->> the config:
->>
->> .config:214:warning: symbol value '' invalid for MEMORY_RESERVE
->> * Restart config...
->> Memory reservation (MiB) (MEMORY_RESERVE) [] (NEW)
->>
->> That's OK until I try to script/automate randconfig builds.
->>
->> Can we do anything about this or should I just add it to my
->> ignore-list?
-> 
-> Looking at its sole user, I guess "default 0" would be fine.
-> Greg?
-
-Yep, I think that would be fine. Looks to be harmless if set to 0.
-
-Regards
-Greg
+-- 
+ .''`.  John Paul Adrian Glaubitz
+: :' :  Debian Developer - glaubitz@debian.org
+`. `'   Freie Universitaet Berlin - glaubitz@physik.fu-berlin.de
+  `-    GPG: 62FF 8A75 84E0 2956 9546  0006 7426 3B37 F5B5 F913
 
