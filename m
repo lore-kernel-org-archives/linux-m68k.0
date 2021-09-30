@@ -2,99 +2,130 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 47B79C433EF
-	for <linux-m68k@archiver.kernel.org>; Thu, 30 Sep 2021 21:14:54 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id ED148C433F5
+	for <linux-m68k@archiver.kernel.org>; Thu, 30 Sep 2021 21:21:58 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 28A6A61A0B
-	for <linux-m68k@archiver.kernel.org>; Thu, 30 Sep 2021 21:14:54 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id D88C561A55
+	for <linux-m68k@archiver.kernel.org>; Thu, 30 Sep 2021 21:21:58 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349037AbhI3VQg (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Thu, 30 Sep 2021 17:16:36 -0400
-Received: from outpost1.zedat.fu-berlin.de ([130.133.4.66]:42339 "EHLO
-        outpost1.zedat.fu-berlin.de" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1348652AbhI3VQg (ORCPT
-        <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Thu, 30 Sep 2021 17:16:36 -0400
-Received: from inpost2.zedat.fu-berlin.de ([130.133.4.69])
-          by outpost.zedat.fu-berlin.de (Exim 4.94)
-          with esmtps (TLS1.2)
-          tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-          (envelope-from <glaubitz@zedat.fu-berlin.de>)
-          id 1mW3OF-0042kT-Kz; Thu, 30 Sep 2021 23:14:51 +0200
-Received: from p57bd97e9.dip0.t-ipconnect.de ([87.189.151.233] helo=[192.168.178.81])
-          by inpost2.zedat.fu-berlin.de (Exim 4.94)
-          with esmtpsa (TLS1.2)
-          tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-          (envelope-from <glaubitz@physik.fu-berlin.de>)
-          id 1mW3OF-003e2L-7n; Thu, 30 Sep 2021 23:14:51 +0200
-Message-ID: <506fe100-04b6-e465-f4b8-bae58ab505ac@physik.fu-berlin.de>
-Date:   Thu, 30 Sep 2021 23:14:50 +0200
+        id S1349534AbhI3VXl (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Thu, 30 Sep 2021 17:23:41 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35966 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1349422AbhI3VXk (ORCPT <rfc822;linux-m68k@lists.linux-m68k.org>);
+        Thu, 30 Sep 2021 17:23:40 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5030061A38;
+        Thu, 30 Sep 2021 21:21:57 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1633036917;
+        bh=5ZljzaXbR3xYsQvJRNVhxdM1OvKapm+v1Ojej4R63xE=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=GqbQwG1DyM3InnuIHi9HKra4huPMkQuVPLqsznYbmXGWNX1Sdw8gTbP6jGRu67Wul
+         eoDKkWvnRYBvinlJhcLuN3McvlBEGXoLDVJOCyt14fdqSjivb5EKQxejPVLL8eXafC
+         MY/HA2LZsZgy3JkzEsFlK1JVlqHt1tX09qhJ/n9N7x/mlOc4rZ7oOxwoL19LYdu/Kw
+         2xkVxOLhAK/gzBynTVb8ZNDYyL0LZ9PqvNK9J20Bh6TKV7Y7STMqJkhXwhhX+SBY4x
+         GpSiJ68+2RhjkQqGWoWssyxzMBDlC17Nfmg7tpWOtxUQH1r6sgJQACVFGLWnj1quYn
+         KaUBJs+ZAnYMA==
+Date:   Thu, 30 Sep 2021 14:21:56 -0700
+From:   Mike Rapoport <rppt@kernel.org>
+To:     David Hildenbrand <david@redhat.com>
+Cc:     linux-kernel@vger.kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Michal Hocko <mhocko@suse.com>,
+        Oscar Salvador <osalvador@suse.de>,
+        Jianyong Wu <Jianyong.Wu@arm.com>,
+        "Aneesh Kumar K . V" <aneesh.kumar@linux.ibm.com>,
+        Vineet Gupta <vgupta@kernel.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Huacai Chen <chenhuacai@kernel.org>,
+        Jiaxun Yang <jiaxun.yang@flygoat.com>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        Eric Biederman <ebiederm@xmission.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        linux-snps-arc@lists.infradead.org, linux-ia64@vger.kernel.org,
+        linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org,
+        linux-s390@vger.kernel.org, linux-mm@kvack.org,
+        kexec@lists.infradead.org
+Subject: Re: [PATCH v1 3/4] memblock: add MEMBLOCK_DRIVER_MANAGED to mimic
+ IORESOURCE_SYSRAM_DRIVER_MANAGED
+Message-ID: <YVYqdN7MFdzBlCVm@kernel.org>
+References: <20210927150518.8607-1-david@redhat.com>
+ <20210927150518.8607-4-david@redhat.com>
+ <YVSW3uuu7mIcJMm3@kernel.org>
+ <830c1670-378b-0fb6-bd5e-208e545fa126@redhat.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.1.1
-Subject: Re: [PATCH 2/2] m68k: introduce a virtual m68k machine
-Content-Language: en-US
-To:     Laurent Vivier <laurent@vivier.eu>,
-        Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-m68k <linux-m68k@lists.linux-m68k.org>,
-        linux-rtc@vger.kernel.org, Alessandro Zummo <a.zummo@towertech.it>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>
-References: <20210323221430.3735147-1-laurent@vivier.eu>
- <20210323221430.3735147-3-laurent@vivier.eu>
- <CAMuHMdUFh2W-bY5Ez1aOTZQjq0=THvmOf22JdxWoNNtFLskSzw@mail.gmail.com>
- <90ab81cd-0d83-9537-b7d8-40e4bffa152e@vivier.eu>
-From:   John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
-In-Reply-To: <90ab81cd-0d83-9537-b7d8-40e4bffa152e@vivier.eu>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Original-Sender: glaubitz@physik.fu-berlin.de
-X-Originating-IP: 87.189.151.233
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <830c1670-378b-0fb6-bd5e-208e545fa126@redhat.com>
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-Hi!
-
-On 9/30/21 23:11, Laurent Vivier wrote:
->>> --- a/arch/m68k/Kconfig.machine
->>> +++ b/arch/m68k/Kconfig.machine
->>> @@ -145,6 +145,23 @@ config SUN3
->>>
->>>           If you don't want to compile a kernel exclusively for a Sun 3, say N.
->>>
->>> +config VIRT
->>> +       bool "Virtual M68k Machine support"
->>> +       depends on MMU
->>> +       select MMU_MOTOROLA if MMU
->>> +       select M68040
->>> +       select LEGACY_TIMER_TICK
->>
->> Can we avoid selecting this for a new platform?
->>
+On Wed, Sep 29, 2021 at 06:54:01PM +0200, David Hildenbrand wrote:
+> On 29.09.21 18:39, Mike Rapoport wrote:
+> > Hi,
+> > 
+> > On Mon, Sep 27, 2021 at 05:05:17PM +0200, David Hildenbrand wrote:
+> > > Let's add a flag that corresponds to IORESOURCE_SYSRAM_DRIVER_MANAGED.
+> > > Similar to MEMBLOCK_HOTPLUG, most infrastructure has to treat such memory
+> > > like ordinary MEMBLOCK_NONE memory -- for example, when selecting memory
+> > > regions to add to the vmcore for dumping in the crashkernel via
+> > > for_each_mem_range().
+> > Can you please elaborate on the difference in semantics of MEMBLOCK_HOTPLUG
+> > and MEMBLOCK_DRIVER_MANAGED?
+> > Unless I'm missing something they both mark memory that can be unplugged
+> > anytime and so it should not be used in certain cases. Why is there a need
+> > for a new flag?
 > 
-> I tried but I was not able to have a working scheduler.
+> In the cover letter I have "Alternative B: Reuse MEMBLOCK_HOTPLUG.
+> MEMBLOCK_HOTPLUG serves a different purpose, though.", but looking into the
+> details it won't work as is.
 > 
-> As the machine has been tested with this option and most of the other m68k machines uses it, I will
-> keep it.
+> MEMBLOCK_HOTPLUG is used to mark memory early during boot that can later get
+> hotunplugged again and should be placed into ZONE_MOVABLE if the
+> "movable_node" kernel parameter is set.
+> 
+> The confusing part is that we talk about "hotpluggable" but really mean
+> "hotunpluggable": the reason is that HW flags DIMM slots that can later be
+> hotplugged as "hotpluggable" even though there is already something
+> hotplugged.
 
-FWIW, the VM in its current form works very well and reliable and has been
-in use as a Debian porterbox for almost a year now without any issues.
+MEMBLOCK_HOTPLUG name is indeed somewhat confusing, but still it's core
+meaning "this memory may be removed" which does not differ from what
+IORESOURCE_SYSRAM_DRIVER_MANAGED means.
 
-root@mitchy:~# uname -a
-Linux mitchy 5.10.0-rc1-183617-gd7f4e16357f6 #1 Mon Nov 2 12:06:55 CET 2020 m68k GNU/Linux
-root@mitchy:~# uptime
- 23:13:47 up 332 days, 10:04,  1 user,  load average: 0.08, 0.05, 0.06
-root@mitchy:~#
+MEMBLOCK_HOTPLUG regions are indeed placed into ZONE_MOVABLE, but more
+importantly, they are avoided when we allocate memory from memblock.
 
-Would be great if we could get this feature added upstream so I can enable
-this kernel configuration in Debian.
+So, in my view, both flags mean that the memory may be removed and it
+should not be used for certain types of allocations.
+ 
+> For example, ranges in the ACPI SRAT that are marked as
+> ACPI_SRAT_MEM_HOT_PLUGGABLE will be marked MEMBLOCK_HOTPLUG early during
+> boot (drivers/acpi/numa/srat.c:acpi_numa_memory_affinity_init()). Later, we
+> use that information to size ZONE_MOVABLE
+> (mm/page_alloc.c:find_zone_movable_pfns_for_nodes()). This will make sure
+> that these "hotpluggable" DIMMs can later get hotunplugged.
+> 
+> Also, see should_skip_region() how this relates to the "movable_node" kernel
+> parameter:
+> 
+> 	/* skip hotpluggable memory regions if needed */
+> 	if (movable_node_is_enabled() && memblock_is_hotpluggable(m) &&
+> 	    (flags & MEMBLOCK_HOTPLUG))
+> 		return true;
 
-Adrian
+Hmm, I think that the movable_node_is_enabled() check here is excessive,
+but I suspect we cannot simply remove it without breaking anything.
+
+I'll take a deeper look on the potential consequences.
+
+BTW, is there anything that prevents putting kexec to hot-unplugable memory
+that was cold-plugged on boot?
 
 -- 
- .''`.  John Paul Adrian Glaubitz
-: :' :  Debian Developer - glaubitz@debian.org
-`. `'   Freie Universitaet Berlin - glaubitz@physik.fu-berlin.de
-  `-    GPG: 62FF 8A75 84E0 2956 9546  0006 7426 3B37 F5B5 F913
-
+Sincerely yours,
+Mike.
