@@ -2,145 +2,100 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 11CE3C433F5
-	for <linux-m68k@archiver.kernel.org>; Fri,  1 Oct 2021 14:03:20 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 1B705C433FE
+	for <linux-m68k@archiver.kernel.org>; Fri,  1 Oct 2021 21:32:36 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id EB0EF61A07
-	for <linux-m68k@archiver.kernel.org>; Fri,  1 Oct 2021 14:03:19 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 02AF661AFA
+	for <linux-m68k@archiver.kernel.org>; Fri,  1 Oct 2021 21:32:35 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231805AbhJAOFD (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Fri, 1 Oct 2021 10:05:03 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49396 "EHLO mail.kernel.org"
+        id S1355562AbhJAVeT (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Fri, 1 Oct 2021 17:34:19 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36006 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231826AbhJAOE7 (ORCPT <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Fri, 1 Oct 2021 10:04:59 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B184461439;
-        Fri,  1 Oct 2021 14:03:14 +0000 (UTC)
+        id S1355553AbhJAVeS (ORCPT <rfc822;linux-m68k@lists.linux-m68k.org>);
+        Fri, 1 Oct 2021 17:34:18 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9B182610A2;
+        Fri,  1 Oct 2021 21:32:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1633096994;
-        bh=j7RiikMVul/vm+Prmyx1rYn9xETi77NUVt/50phH7k0=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=JIchVvHkPwXFrApRkJNJ1jo9dQIfHa2T63ZG1i87FhM0l0ZvtL87mlGvplRQBraes
-         vyMIL4dKf6z0JSmVBUSKIGtpiCVW0zfnCqS9jOnbL2dAZNjae538ZVygnqS9nR+eLF
-         xHUU2hdOzmpySeLHR8g8uhJ86dXHlY3KzJVFj48iCHOSsm/sFJxKKMIWTwhwBE82+F
-         FzjRuTX/sl0Oc1bN9a0bDb8maV8TNilTngNHqHbDe+oFp/6kLeNtnncm2EB6xtvQPd
-         RxHjszo7Yuib1/P1V58ChVRmeUZKnKnZO6L+qjCn49PqGMSsJSfKE5Y6LZatW8Cmz/
-         K9IirY56cVdeg==
-Date:   Fri, 1 Oct 2021 07:03:13 -0700
-From:   Mike Rapoport <rppt@kernel.org>
-To:     David Hildenbrand <david@redhat.com>
-Cc:     linux-kernel@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Michal Hocko <mhocko@suse.com>,
-        Oscar Salvador <osalvador@suse.de>,
-        Jianyong Wu <Jianyong.Wu@arm.com>,
-        "Aneesh Kumar K . V" <aneesh.kumar@linux.ibm.com>,
-        Vineet Gupta <vgupta@kernel.org>,
+        s=k20201202; t=1633123953;
+        bh=6cx8ggxzqc9m/D/YbelQC9guZeJsyaPdqqXezUeguGI=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=qDU+vsx6UlBuoLy6HR4A1ZhBdt92QsZfXfKn3wxcvYXmNinsTCg0WCOo8DGs5yTzP
+         sZIX6vbfgxMQp6bQL1yegNbGvqz9Q3iZVkA6sp3wSMFHhPxIFp5umgLqJizBTqAeaa
+         AZ7Xg/ED2tdZ2cAxPKpso7VfyorvQf6ZKZNpN2yAsp3s2sBzTueaDKFQ27MRaece72
+         kcnhOF/zIEzSQV/hztE+8/5SpRTdOpcXSFIT5ZX1ROoU/O2ETr8hQN0vSqHxqSMv0o
+         dmzYZyj7OKY8BdLpVCaExj6G5CJ1weA4/q+za2CpZnfHJATAn/+QlJTyzNXkwfCqkz
+         RF+sd2UKibKVw==
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     davem@davemloft.net
+Cc:     netdev@vger.kernel.org, Jakub Kicinski <kuba@kernel.org>,
         Geert Uytterhoeven <geert@linux-m68k.org>,
-        Huacai Chen <chenhuacai@kernel.org>,
-        Jiaxun Yang <jiaxun.yang@flygoat.com>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        Eric Biederman <ebiederm@xmission.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        linux-snps-arc@lists.infradead.org, linux-ia64@vger.kernel.org,
-        linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org,
-        linux-s390@vger.kernel.org, linux-mm@kvack.org,
-        kexec@lists.infradead.org
-Subject: Re: [PATCH v1 3/4] memblock: add MEMBLOCK_DRIVER_MANAGED to mimic
- IORESOURCE_SYSRAM_DRIVER_MANAGED
-Message-ID: <YVcVIej0Wlyd9JAB@kernel.org>
-References: <20210927150518.8607-1-david@redhat.com>
- <20210927150518.8607-4-david@redhat.com>
- <YVSW3uuu7mIcJMm3@kernel.org>
- <830c1670-378b-0fb6-bd5e-208e545fa126@redhat.com>
- <YVYqdN7MFdzBlCVm@kernel.org>
- <0d6c86ba-076b-5d4b-33a8-da267f951a85@redhat.com>
+        linux-m68k@lists.linux-m68k.org, Chris Zankel <chris@zankel.net>,
+        Max Filippov <jcmvbkbc@gmail.com>,
+        linux-xtensa@linux-xtensa.org
+Subject: [PATCH net-next 01/11] arch: use eth_hw_addr_set()
+Date:   Fri,  1 Oct 2021 14:32:18 -0700
+Message-Id: <20211001213228.1735079-2-kuba@kernel.org>
+X-Mailer: git-send-email 2.31.1
+In-Reply-To: <20211001213228.1735079-1-kuba@kernel.org>
+References: <20211001213228.1735079-1-kuba@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <0d6c86ba-076b-5d4b-33a8-da267f951a85@redhat.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-On Fri, Oct 01, 2021 at 10:04:24AM +0200, David Hildenbrand wrote:
-> On 30.09.21 23:21, Mike Rapoport wrote:
-> > On Wed, Sep 29, 2021 at 06:54:01PM +0200, David Hildenbrand wrote:
-> > > On 29.09.21 18:39, Mike Rapoport wrote:
-> > > > Hi,
-> > > > 
-> > > > On Mon, Sep 27, 2021 at 05:05:17PM +0200, David Hildenbrand wrote:
-> > > > > Let's add a flag that corresponds to IORESOURCE_SYSRAM_DRIVER_MANAGED.
-> > > > > Similar to MEMBLOCK_HOTPLUG, most infrastructure has to treat such memory
-> > > > > like ordinary MEMBLOCK_NONE memory -- for example, when selecting memory
-> > > > > regions to add to the vmcore for dumping in the crashkernel via
-> > > > > for_each_mem_range().
-> > > > Can you please elaborate on the difference in semantics of MEMBLOCK_HOTPLUG
-> > > > and MEMBLOCK_DRIVER_MANAGED?
-> > > > Unless I'm missing something they both mark memory that can be unplugged
-> > > > anytime and so it should not be used in certain cases. Why is there a need
-> > > > for a new flag?
-> > > 
-> > > In the cover letter I have "Alternative B: Reuse MEMBLOCK_HOTPLUG.
-> > > MEMBLOCK_HOTPLUG serves a different purpose, though.", but looking into the
-> > > details it won't work as is.
-> > > 
-> > > MEMBLOCK_HOTPLUG is used to mark memory early during boot that can later get
-> > > hotunplugged again and should be placed into ZONE_MOVABLE if the
-> > > "movable_node" kernel parameter is set.
-> > > 
-> > > The confusing part is that we talk about "hotpluggable" but really mean
-> > > "hotunpluggable": the reason is that HW flags DIMM slots that can later be
-> > > hotplugged as "hotpluggable" even though there is already something
-> > > hotplugged.
-> > 
-> > MEMBLOCK_HOTPLUG name is indeed somewhat confusing, but still it's core
-> > meaning "this memory may be removed" which does not differ from what
-> > IORESOURCE_SYSRAM_DRIVER_MANAGED means.
-> > 
-> > MEMBLOCK_HOTPLUG regions are indeed placed into ZONE_MOVABLE, but more
-> > importantly, they are avoided when we allocate memory from memblock.
-> > 
-> > So, in my view, both flags mean that the memory may be removed and it
-> > should not be used for certain types of allocations.
-> 
-> The semantics are different:
-> 
-> MEMBLOCK_HOTPLUG: memory is indicated as "System RAM" in the
-> firmware-provided memory map and added to the system early during boot; we
-> want this memory to be managed by ZONE_MOVABLE with "movable_node" set on
-> the kernel command line, because only then we want it to be hotpluggable
-> again. kexec *has to* indicate this memory to the second kernel and can
-> place kexec-images on this memory. After memory hotunplug, kexec has to be
-> re-armed.
-> 
-> MEMBLOCK_DRIVER_MANAGED: memory is not indicated as System RAM" in the
-> firmware-provided memory map; this memory is always detected and added to
-> the system by a driver; memory might not actually be physically
-> hotunpluggable and the ZONE selection does not depend on "movable_core".
-> kexec *must not* indicate this memory to the second kernel and *must not*
-> place kexec-images on this memory.
+Commit 406f42fa0d3c ("net-next: When a bond have a massive amount
+of VLANs...") introduced a rbtree for faster Ethernet address look
+up. To maintain netdev->dev_addr in this tree we need to make all
+the writes to it got through appropriate helpers.
 
-Ok, this clarifies.
-This explanation should be a part of the changelog. The sentences about the
-zone selection could be probably skipped, because they are less important
-for this case. E.g something like:
+Convert misc arch drivers from memcpy(... ETH_ADDR) to eth_hw_addr_set():
 
-MEMBLOCK_HOTPLUG: memory is indicated as "System RAM" in the
-firmware-provided memory map and added to the system early during boot;
-kexec *has to* indicate this memory to the second kernel and can place
-kexec-images on this memory. After memory hotunplug, kexec has to be
-re-armed.
+  @@
+  expression dev, np;
+  @@
+  - memcpy(dev->dev_addr, np, ETH_ALEN)
+  + eth_hw_addr_set(dev, np)
 
-MEMBLOCK_DRIVER_MANAGED: memory is not indicated as "System RAM" in the
-firmware-provided memory map; this memory is always detected and added to
-the system by a driver; memory might not actually be physically
-hotunpluggable.  kexec *must not* indicate this memory to the second kernel
-and *must not* place kexec-images on this memory.
+Signed-off-by: Jakub Kicinski <kuba@kernel.org>
+--
+CC: Geert Uytterhoeven <geert@linux-m68k.org>
+CC: linux-m68k@lists.linux-m68k.org
+CC: Chris Zankel <chris@zankel.net>
+CC: Max Filippov <jcmvbkbc@gmail.com>
+CC: linux-xtensa@linux-xtensa.org
+---
+ arch/m68k/emu/nfeth.c               | 2 +-
+ arch/xtensa/platforms/iss/network.c | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
 
+diff --git a/arch/m68k/emu/nfeth.c b/arch/m68k/emu/nfeth.c
+index 79e55421cfb1..1a5d1e8eb4c8 100644
+--- a/arch/m68k/emu/nfeth.c
++++ b/arch/m68k/emu/nfeth.c
+@@ -200,7 +200,7 @@ static struct net_device * __init nfeth_probe(int unit)
+ 	dev->irq = nfEtherIRQ;
+ 	dev->netdev_ops = &nfeth_netdev_ops;
+ 
+-	memcpy(dev->dev_addr, mac, ETH_ALEN);
++	eth_hw_addr_set(dev, mac);
+ 
+ 	priv = netdev_priv(dev);
+ 	priv->ethX = unit;
+diff --git a/arch/xtensa/platforms/iss/network.c b/arch/xtensa/platforms/iss/network.c
+index 4986226a5ab2..8b806d305948 100644
+--- a/arch/xtensa/platforms/iss/network.c
++++ b/arch/xtensa/platforms/iss/network.c
+@@ -467,7 +467,7 @@ static int iss_net_set_mac(struct net_device *dev, void *addr)
+ 	if (!is_valid_ether_addr(hwaddr->sa_data))
+ 		return -EADDRNOTAVAIL;
+ 	spin_lock_bh(&lp->lock);
+-	memcpy(dev->dev_addr, hwaddr->sa_data, ETH_ALEN);
++	eth_hw_addr_set(dev, hwaddr->sa_data);
+ 	spin_unlock_bh(&lp->lock);
+ 	return 0;
+ }
 -- 
-Sincerely yours,
-Mike.
+2.31.1
+
