@@ -2,108 +2,91 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 28437C43217
-	for <linux-m68k@archiver.kernel.org>; Mon,  4 Oct 2021 09:37:06 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 84B52C433EF
+	for <linux-m68k@archiver.kernel.org>; Mon,  4 Oct 2021 10:09:58 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 1810261244
-	for <linux-m68k@archiver.kernel.org>; Mon,  4 Oct 2021 09:37:06 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 694A9613A1
+	for <linux-m68k@archiver.kernel.org>; Mon,  4 Oct 2021 10:09:58 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232417AbhJDJix (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Mon, 4 Oct 2021 05:38:53 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:45117 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232305AbhJDJir (ORCPT
+        id S230185AbhJDKLq (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Mon, 4 Oct 2021 06:11:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45562 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229505AbhJDKLp (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Mon, 4 Oct 2021 05:38:47 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1633340218;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=65rZyeBSOs3Q4+ni7NpmP4KZICyvZvVHfeOoz1UxwGM=;
-        b=TecImN/K8+WHm0KUp+yQULIi+R67LRZLYx2jIaNi8BeQJ+A3Lmo/fqcXT4aCb0+noKg4jr
-        S3W268Tv6SJWqbXftBy0mWYfl79WpxeqwXV3TUzzaGa/AlQc88OKk1GOQrPUfveBofwQMX
-        JsVpRehg89NJ1CABvpnpVNpuq9cIngg=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-479-sIowyth_M46viQW4UzuBQg-1; Mon, 04 Oct 2021 05:36:55 -0400
-X-MC-Unique: sIowyth_M46viQW4UzuBQg-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 8321F10168C6;
-        Mon,  4 Oct 2021 09:36:52 +0000 (UTC)
-Received: from t480s.redhat.com (unknown [10.39.194.159])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id F0EC210013C1;
-        Mon,  4 Oct 2021 09:36:42 +0000 (UTC)
-From:   David Hildenbrand <david@redhat.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     David Hildenbrand <david@redhat.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Mike Rapoport <rppt@kernel.org>,
-        Michal Hocko <mhocko@suse.com>,
-        Oscar Salvador <osalvador@suse.de>,
-        Jianyong Wu <Jianyong.Wu@arm.com>,
-        "Aneesh Kumar K . V" <aneesh.kumar@linux.ibm.com>,
-        Vineet Gupta <vgupta@kernel.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Huacai Chen <chenhuacai@kernel.org>,
-        Jiaxun Yang <jiaxun.yang@flygoat.com>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        Eric Biederman <ebiederm@xmission.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        linux-snps-arc@lists.infradead.org, linux-ia64@vger.kernel.org,
-        linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org,
-        linux-s390@vger.kernel.org, linux-mm@kvack.org,
-        kexec@lists.infradead.org
-Subject: [PATCH v2 5/5] mm/memory_hotplug: indicate MEMBLOCK_DRIVER_MANAGED with IORESOURCE_SYSRAM_DRIVER_MANAGED
-Date:   Mon,  4 Oct 2021 11:36:05 +0200
-Message-Id: <20211004093605.5830-6-david@redhat.com>
-In-Reply-To: <20211004093605.5830-1-david@redhat.com>
-References: <20211004093605.5830-1-david@redhat.com>
+        Mon, 4 Oct 2021 06:11:45 -0400
+Received: from baptiste.telenet-ops.be (baptiste.telenet-ops.be [IPv6:2a02:1800:120:4::f00:13])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC397C061745
+        for <linux-m68k@lists.linux-m68k.org>; Mon,  4 Oct 2021 03:09:56 -0700 (PDT)
+Received: from ramsan.of.borg ([IPv6:2a02:1810:ac12:ed20:9ca4:a53a:9ffa:e003])
+        by baptiste.telenet-ops.be with bizsmtp
+        id 1m9t2600811933301m9ttw; Mon, 04 Oct 2021 12:09:53 +0200
+Received: from rox.of.borg ([192.168.97.57])
+        by ramsan.of.borg with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.93)
+        (envelope-from <geert@linux-m68k.org>)
+        id 1mXKks-001pGa-BT; Mon, 04 Oct 2021 11:59:30 +0200
+Received: from geert by rox.of.borg with local (Exim 4.93)
+        (envelope-from <geert@linux-m68k.org>)
+        id 1mXHzc-00CLiU-GE; Mon, 04 Oct 2021 09:02:32 +0200
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+To:     Greg Ungerer <gerg@linux-m68k.org>
+Cc:     linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org,
+        Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: [PATCH] m68knommu: Remove MCPU32 config symbol
+Date:   Mon,  4 Oct 2021 09:02:31 +0200
+Message-Id: <20211004070231.2943362-1-geert@linux-m68k.org>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-Let's communicate driver-managed regions to memblock, to properly
-teach kexec_file with CONFIG_ARCH_KEEP_MEMBLOCK to not place images on
-these memory regions.
+As of commit a3595962d82495f5 ("m68knommu: remove obsolete 68360
+support"), nothing selects MCPU32 anymore.
 
-Signed-off-by: David Hildenbrand <david@redhat.com>
+Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
 ---
- mm/memory_hotplug.c | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
+ arch/m68k/Kconfig.cpu          | 11 -----------
+ arch/m68k/include/asm/bitops.h |  2 +-
+ 2 files changed, 1 insertion(+), 12 deletions(-)
 
-diff --git a/mm/memory_hotplug.c b/mm/memory_hotplug.c
-index 5f873e7f5b29..6d90818d4ce8 100644
---- a/mm/memory_hotplug.c
-+++ b/mm/memory_hotplug.c
-@@ -1357,6 +1357,7 @@ bool mhp_supports_memmap_on_memory(unsigned long size)
- int __ref add_memory_resource(int nid, struct resource *res, mhp_t mhp_flags)
- {
- 	struct mhp_params params = { .pgprot = pgprot_mhp(PAGE_KERNEL) };
-+	enum memblock_flags memblock_flags = MEMBLOCK_NONE;
- 	struct vmem_altmap mhp_altmap = {};
- 	struct memory_group *group = NULL;
- 	u64 start, size;
-@@ -1385,7 +1386,9 @@ int __ref add_memory_resource(int nid, struct resource *res, mhp_t mhp_flags)
- 	mem_hotplug_begin();
+diff --git a/arch/m68k/Kconfig.cpu b/arch/m68k/Kconfig.cpu
+index 277d61a094637ce3..0d00ef5117dceed9 100644
+--- a/arch/m68k/Kconfig.cpu
++++ b/arch/m68k/Kconfig.cpu
+@@ -53,17 +53,6 @@ config M68000
+ 	  System-On-Chip devices (eg 68328, 68302, etc). It does not contain
+ 	  a paging MMU.
  
- 	if (IS_ENABLED(CONFIG_ARCH_KEEP_MEMBLOCK)) {
--		ret = memblock_add_node(start, size, nid, MEMBLOCK_NONE);
-+		if (res->flags & IORESOURCE_SYSRAM_DRIVER_MANAGED)
-+			memblock_flags = MEMBLOCK_DRIVER_MANAGED;
-+		ret = memblock_add_node(start, size, nid, memblock_flags);
- 		if (ret)
- 			goto error_mem_hotplug_end;
- 	}
+-config MCPU32
+-	bool
+-	select CPU_HAS_NO_BITFIELDS
+-	select CPU_HAS_NO_CAS
+-	select CPU_HAS_NO_UNALIGNED
+-	select CPU_NO_EFFICIENT_FFS
+-	help
+-	  The Freescale (was then Motorola) CPU32 is a CPU core that is
+-	  based on the 68020 processor. For the most part it is used in
+-	  System-On-Chip parts, and does not contain a paging MMU.
+-
+ config M68020
+ 	bool "68020 support"
+ 	depends on MMU
+diff --git a/arch/m68k/include/asm/bitops.h b/arch/m68k/include/asm/bitops.h
+index 7b414099e5fc20fa..7b93e1fd8ffa902f 100644
+--- a/arch/m68k/include/asm/bitops.h
++++ b/arch/m68k/include/asm/bitops.h
+@@ -451,7 +451,7 @@ static inline unsigned long ffz(unsigned long word)
+  *	generic functions for those.
+  */
+ #if (defined(__mcfisaaplus__) || defined(__mcfisac__)) && \
+-	!defined(CONFIG_M68000) && !defined(CONFIG_MCPU32)
++	!defined(CONFIG_M68000)
+ static inline unsigned long __ffs(unsigned long x)
+ {
+ 	__asm__ __volatile__ ("bitrev %0; ff1 %0"
 -- 
-2.31.1
+2.25.1
 
