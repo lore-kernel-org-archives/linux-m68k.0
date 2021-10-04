@@ -2,82 +2,84 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A8867C433F5
-	for <linux-m68k@archiver.kernel.org>; Sun,  3 Oct 2021 00:02:26 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 11FA6C433EF
+	for <linux-m68k@archiver.kernel.org>; Mon,  4 Oct 2021 06:47:50 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 6F4D2619EC
-	for <linux-m68k@archiver.kernel.org>; Sun,  3 Oct 2021 00:02:26 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id DC179613A0
+	for <linux-m68k@archiver.kernel.org>; Mon,  4 Oct 2021 06:47:49 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234219AbhJCAEL (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Sat, 2 Oct 2021 20:04:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48920 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234050AbhJCAEL (ORCPT
+        id S232789AbhJDGtg (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Mon, 4 Oct 2021 02:49:36 -0400
+Received: from mail-ua1-f47.google.com ([209.85.222.47]:43793 "EHLO
+        mail-ua1-f47.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232747AbhJDGtf (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Sat, 2 Oct 2021 20:04:11 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 57843C0613EC;
-        Sat,  2 Oct 2021 17:02:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-        MIME-Version:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:
-        Content-ID:Content-Description:In-Reply-To:References;
-        bh=omHdQW8RoUi6ifbhhHmVnPn0+e1h6W72GazCfAP8OU0=; b=0ZUD4MHG6qPchZNa8EQnH2kNrY
-        lRb31Wc/RnFjAEEgHvsFjYvOHaZPxH2sEMvlNo6EOH6miLAEgpZD8unein9YFR7vk3pzEVjthekMu
-        3wSlcvVhwi523wey4lbpohoFUs2+IWeCx5xDCmGjoRAiw3NqEzASlm/1IjLAyLxxmVbWUGmFSos6i
-        WRXFy4tZeinPgTWEKex3bfh6CB6jAahc2Jcdp67npYOwFUzJCbc/sN5SQ502DItyMVLWZT+tShMVP
-        kCEOf2MYr/j6okRjk6byyWIxnH5MzEPWqmh8qzt+u07LC6NOuDv7HP7sKdOqoIXHw5tqByOzGpYHb
-        +ldMYI7g==;
-Received: from [2601:1c0:6280:3f0:e65e:37ff:febd:ee53] (helo=bombadil.infradead.org)
-        by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mWoxU-002vzh-FQ; Sun, 03 Oct 2021 00:02:24 +0000
-From:   Randy Dunlap <rdunlap@infradead.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Randy Dunlap <rdunlap@infradead.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Greg Ungerer <gerg@linux-m68k.org>,
-        linux-m68k@lists.linux-m68k.org
-Subject: [RFC PATCH] m68k: set a default value for MEMORY_RESERVE
-Date:   Sat,  2 Oct 2021 17:02:23 -0700
-Message-Id: <20211003000223.25769-1-rdunlap@infradead.org>
-X-Mailer: git-send-email 2.31.1
+        Mon, 4 Oct 2021 02:49:35 -0400
+Received: by mail-ua1-f47.google.com with SMTP id w2so558308uau.10
+        for <linux-m68k@lists.linux-m68k.org>; Sun, 03 Oct 2021 23:47:47 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=dkQyyOwNhUveMKMLyLtnL30fGuoMI6Ske0DgXTygTcg=;
+        b=c896Fda4BMiUSjVKnxv4fqcIp0DabeADxVuMfj119aqYqjcmqEuHf8GVxSGviYrziM
+         f1wiF3oNSo79IjDDV+j0EfzX5/LGAWqLPz4cxxKB17YcEe0y5OJ+mxx+cbhpi0ICP/DS
+         CJsPEkh4bCYv4pKDNX873hP8P4KWnvtfdVB8R0QqrRAckTcE4I16wuT112iWztdTMceo
+         FGp4U6GXD4tP52SblmRrxDUo1CjY0aRIx0ia3pvkLfh2E6XvmdwRPrLMUMNgEo2Navww
+         75VZrW8lVOsWrcNEGUokLHqXNPqK+RJpyxcsjruts2xYutxdXCvRQch0zdBwQyT9R6ug
+         /j+Q==
+X-Gm-Message-State: AOAM533+qMa/mp0m7o290mp17qUlXUYvLL/WzozUzlK6WPWD5f63dCaM
+        eCk96a9bqe/HICPc2Qd85o2ZpY8s/NwLv6Rypf8=
+X-Google-Smtp-Source: ABdhPJzekemMTDmOcZmAwc8VjcdhOBpqy9LccBnGIanXqRsFDCR1FNoQwvmiBHwkI3zP0T0FAw6AH1Y5YyKf1zNYeb8=
+X-Received: by 2002:ab0:311a:: with SMTP id e26mr5140985ual.122.1633330066468;
+ Sun, 03 Oct 2021 23:47:46 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20211003000223.25769-1-rdunlap@infradead.org>
+In-Reply-To: <20211003000223.25769-1-rdunlap@infradead.org>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Mon, 4 Oct 2021 08:47:35 +0200
+Message-ID: <CAMuHMdWxZn85bk9MuMfW1K_k4v68t4duvJtVHgArdqgawxf78Q@mail.gmail.com>
+Subject: Re: [RFC PATCH] m68k: set a default value for MEMORY_RESERVE
+To:     Randy Dunlap <rdunlap@infradead.org>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Greg Ungerer <gerg@linux-m68k.org>,
+        linux-m68k <linux-m68k@lists.linux-m68k.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-'make randconfig' can produce a .config file with
-"CONFIG_MEMORY_RESERVE=" (no value) since it has no default.
-When a subsequent 'make all' is done, kconfig restarts the config
-and prompts for a value for MEMORY_RESERVE. This breaks
-scripting/automation where there is no interactive user input.
+On Sun, Oct 3, 2021 at 2:02 AM Randy Dunlap <rdunlap@infradead.org> wrote:
+> 'make randconfig' can produce a .config file with
+> "CONFIG_MEMORY_RESERVE=" (no value) since it has no default.
+> When a subsequent 'make all' is done, kconfig restarts the config
+> and prompts for a value for MEMORY_RESERVE. This breaks
+> scripting/automation where there is no interactive user input.
+>
+> Add a default value for MEMORY_RESERVE. (Any integer value will
+> work here for kconfig.)
+>
+> Fixes a kconfig warning:
+>
+> .config:214:warning: symbol value '' invalid for MEMORY_RESERVE
+> * Restart config...
+> Memory reservation (MiB) (MEMORY_RESERVE) [] (NEW)
+>
+> Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2") # from beginning of git history
+> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
 
-Add a default value for MEMORY_RESERVE. (Any integer value will
-work here for kconfig.)
+Reviewed-by: Geert Uytterhoeven <geert@linux-m68k.org>
 
-Fixes a kconfig warning:
+As this is relevant for m68knommu, I'll leave it to Greg, unless he's too
+busy.
 
-.config:214:warning: symbol value '' invalid for MEMORY_RESERVE
-* Restart config...
-Memory reservation (MiB) (MEMORY_RESERVE) [] (NEW)
+Gr{oetje,eeting}s,
 
-Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2") # from beginning of git history
-Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-Cc: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: Greg Ungerer <gerg@linux-m68k.org>
-Cc: linux-m68k@lists.linux-m68k.org
----
- arch/m68k/Kconfig.machine |    1 +
- 1 file changed, 1 insertion(+)
+                        Geert
 
---- linux-next-20211001.orig/arch/m68k/Kconfig.machine
-+++ linux-next-20211001/arch/m68k/Kconfig.machine
-@@ -203,6 +203,7 @@ config INIT_LCD
- config MEMORY_RESERVE
- 	int "Memory reservation (MiB)"
- 	depends on (UCSIMM || UCDIMM)
-+	default 0
- 	help
- 	  Reserve certain memory regions on 68x328 based boards.
- 
+-- 
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
