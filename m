@@ -2,116 +2,91 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 2D1B2C433EF
-	for <linux-m68k@archiver.kernel.org>; Sat, 16 Oct 2021 06:26:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 66722C433EF
+	for <linux-m68k@archiver.kernel.org>; Sat, 16 Oct 2021 13:25:45 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 0BED3610D1
-	for <linux-m68k@archiver.kernel.org>; Sat, 16 Oct 2021 06:26:09 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 44B0861164
+	for <linux-m68k@archiver.kernel.org>; Sat, 16 Oct 2021 13:25:45 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239819AbhJPG2O (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Sat, 16 Oct 2021 02:28:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43902 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239451AbhJPG2O (ORCPT
+        id S240346AbhJPN1w (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Sat, 16 Oct 2021 09:27:52 -0400
+Received: from www262.sakura.ne.jp ([202.181.97.72]:54009 "EHLO
+        www262.sakura.ne.jp" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S240323AbhJPN1w (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Sat, 16 Oct 2021 02:28:14 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0579EC061570;
-        Fri, 15 Oct 2021 23:26:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-        MIME-Version:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:
-        Content-ID:Content-Description:In-Reply-To:References;
-        bh=BhYE3boCAjVmx4aSjOWGjKR2hEoYtcDr4JkhxOOfVO4=; b=R2HFpAoV+B6ur9uK6VrlG7o4YP
-        8CLC12444uKYaZfD39HJ+vH2CJkVAHjzrGf9ndDZOSAUcUQZUWrLNYH2YBfQkV0ii+1b67V6SERaN
-        Vqm7L04x1XmobTN+e3pRbtPiFD2G1G7V5WTAu0CgK/331lp5ctq70Dv+6qFdr8pGTEBDMG+IfzEuN
-        i0mXGomZ9a3B99wO84iJyCgUXqbOR1mcktsZzcksQufAqwzFd3sCHCjv+K0OKTLybmQHAZ4RKZgv7
-        VFUMc4UWIhHPI+RfOIyTkGqA34qIJvj6DhS/ZeyLmdaa41JOo6tWDrK6fixNr4LYxv2x9kwB1eOMf
-        C2KcMxlg==;
-Received: from [2601:1c0:6280:3f0::aa0b] (helo=bombadil.infradead.org)
-        by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mbd8u-009wZI-6h; Sat, 16 Oct 2021 06:26:04 +0000
-From:   Randy Dunlap <rdunlap@infradead.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Randy Dunlap <rdunlap@infradead.org>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org,
-        linux-m68k@lists.linux-m68k.org,
-        Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: [RFC PATCH] sound: ISA: not for M68K
-Date:   Fri, 15 Oct 2021 23:26:02 -0700
-Message-Id: <20211016062602.3588-1-rdunlap@infradead.org>
-X-Mailer: git-send-email 2.31.1
+        Sat, 16 Oct 2021 09:27:52 -0400
+Received: from fsav414.sakura.ne.jp (fsav414.sakura.ne.jp [133.242.250.113])
+        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTP id 19GDPela063723;
+        Sat, 16 Oct 2021 22:25:40 +0900 (JST)
+        (envelope-from penguin-kernel@i-love.sakura.ne.jp)
+Received: from www262.sakura.ne.jp (202.181.97.72)
+ by fsav414.sakura.ne.jp (F-Secure/fsigk_smtp/550/fsav414.sakura.ne.jp);
+ Sat, 16 Oct 2021 22:25:40 +0900 (JST)
+X-Virus-Status: clean(F-Secure/fsigk_smtp/550/fsav414.sakura.ne.jp)
+Received: from [192.168.1.9] (M106072142033.v4.enabler.ne.jp [106.72.142.33])
+        (authenticated bits=0)
+        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTPSA id 19GDPdvA063720
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NO);
+        Sat, 16 Oct 2021 22:25:39 +0900 (JST)
+        (envelope-from penguin-kernel@i-love.sakura.ne.jp)
+To:     linux-block@vger.kernel.org, linux-m68k@lists.linux-m68k.org,
+        Christoph Hellwig <hch@lst.de>,
+        Luis Chamberlain <mcgrof@kernel.org>
+From:   Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>
+Subject: [PATCH] ataflop: unlock ataflop_probe_lock at atari_floppy_init()
+Message-ID: <1d9351dc-baeb-1a54-625c-04ce01b009b0@i-love.sakura.ne.jp>
+Date:   Sat, 16 Oct 2021 22:25:35 +0900
+User-Agent: Mozilla/5.0 (Windows NT 6.3; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.14.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-On m68k, compiling drivers under SND_ISA causes build errors:
+Commit bf9c0538e485b591 ("ataflop: use a separate gendisk for each media
+format") introduced ataflop_probe_lock mutex, but forgot to unlock the
+mutex when atari_floppy_init() (i.e. module loading) succeeded. If
+ataflop_probe() is called, it will deadlock on ataflop_probe_lock mutex.
 
-../sound/core/isadma.c: In function 'snd_dma_program':
-../sound/core/isadma.c:33:17: error: implicit declaration of function 'claim_dma_lock' [-Werror=implicit-function-declaration]
-   33 |         flags = claim_dma_lock();
-      |                 ^~~~~~~~~~~~~~
-../sound/core/isadma.c:41:9: error: implicit declaration of function 'release_dma_lock' [-Werror=implicit-function-declaration]
-   41 |         release_dma_lock(flags);
-      |         ^~~~~~~~~~~~~~~~
-
-../sound/isa/sb/sb16_main.c: In function 'snd_sb16_playback_prepare':
-../sound/isa/sb/sb16_main.c:253:72: error: 'DMA_AUTOINIT' undeclared (first use in this function)
-  253 |         snd_dma_program(dma, runtime->dma_addr, size, DMA_MODE_WRITE | DMA_AUTOINIT);
-      |                                                                        ^~~~~~~~~~~~
-../sound/isa/sb/sb16_main.c:253:72: note: each undeclared identifier is reported only once for each function it appears in
-../sound/isa/sb/sb16_main.c: In function 'snd_sb16_capture_prepare':
-../sound/isa/sb/sb16_main.c:322:71: error: 'DMA_AUTOINIT' undeclared (first use in this function)
-  322 |         snd_dma_program(dma, runtime->dma_addr, size, DMA_MODE_READ | DMA_AUTOINIT);
-      |                                                                       ^~~~~~~~~~~~
-
-and more...
-
-Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-Cc: Jaroslav Kysela <perex@perex.cz>
-Cc: Takashi Iwai <tiwai@suse.com>
-Cc: alsa-devel@alsa-project.org
-Cc: linux-m68k@lists.linux-m68k.org
-Cc: Geert Uytterhoeven <geert@linux-m68k.org>
+Signed-off-by: Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
+Fixes: bf9c0538e485b591 ("ataflop: use a separate gendisk for each media format")
 ---
- sound/core/Makefile |    2 ++
- sound/isa/Kconfig   |    2 +-
- sound/pci/Kconfig   |    1 +
- 3 files changed, 4 insertions(+), 1 deletion(-)
+To m68k users
 
---- linux-next-20211015.orig/sound/isa/Kconfig
-+++ linux-next-20211015/sound/isa/Kconfig
-@@ -22,7 +22,7 @@ config SND_SB16_DSP
- menuconfig SND_ISA
- 	bool "ISA sound devices"
- 	depends on ISA || COMPILE_TEST
--	depends on ISA_DMA_API
-+	depends on ISA_DMA_API && !M68K
- 	default y
- 	help
- 	  Support for sound devices connected via the ISA bus.
---- linux-next-20211015.orig/sound/pci/Kconfig
-+++ linux-next-20211015/sound/pci/Kconfig
-@@ -279,6 +279,7 @@ config SND_CS46XX_NEW_DSP
- config SND_CS5530
- 	tristate "CS5530 Audio"
- 	depends on ISA_DMA_API && (X86_32 || COMPILE_TEST)
-+	depends on !M68K
- 	select SND_SB16_DSP
- 	help
- 	  Say Y here to include support for audio on Cyrix/NatSemi CS5530 chips.
---- linux-next-20211015.orig/sound/core/Makefile
-+++ linux-next-20211015/sound/core/Makefile
-@@ -9,7 +9,9 @@ ifneq ($(CONFIG_SND_PROC_FS),)
- snd-y += info.o
- snd-$(CONFIG_SND_OSSEMUL) += info_oss.o
- endif
-+ifneq ($(CONFIG_M68K),y)
- snd-$(CONFIG_ISA_DMA_API) += isadma.o
-+endif
- snd-$(CONFIG_SND_OSSEMUL) += sound_oss.o
- snd-$(CONFIG_SND_VMASTER) += vmaster.o
- snd-$(CONFIG_SND_JACK)	  += ctljack.o jack.o
+  This patch suggests that nobody is testing this module using a real hardware.
+  Can somebody test this module?
+  Is current m68k hardware still supporting Atari floppy?
+  If Atari floppy is no longer supported, do we still need this module?
+
+To Christoph Hellwig and Luis Chamberlain
+
+  If we move __register_blkdev() in atari_floppy_init() to the end of
+  atari_floppy_init() and move unregister_blkdev() in atari_floppy_exit() to
+  the beginning of atari_floppy_exit(), we can remove unregister_blkdev() from
+  atari_floppy_init(), and I think we can also remove ataflop_probe_lock mutex
+  because probe function and __exit function are serialized by major_names_lock
+  mutex.
+
+ drivers/block/ataflop.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/block/ataflop.c b/drivers/block/ataflop.c
+index a093644ac39f..39b42cb8d173 100644
+--- a/drivers/block/ataflop.c
++++ b/drivers/block/ataflop.c
+@@ -2072,7 +2072,8 @@ static int __init atari_floppy_init (void)
+ 	       UseTrackbuffer ? "" : "no ");
+ 	config_types();
+ 
+-	return 0;
++	ret = 0;
++	goto out_unlock;
+ 
+ err:
+ 	while (--i >= 0) {
+-- 
+2.18.4
+
