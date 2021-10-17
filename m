@@ -2,95 +2,146 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 92099C433F5
-	for <linux-m68k@archiver.kernel.org>; Sat, 16 Oct 2021 22:57:01 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7171EC433EF
+	for <linux-m68k@archiver.kernel.org>; Sun, 17 Oct 2021 01:52:20 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 7547E6105A
-	for <linux-m68k@archiver.kernel.org>; Sat, 16 Oct 2021 22:57:01 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 3E47D60F56
+	for <linux-m68k@archiver.kernel.org>; Sun, 17 Oct 2021 01:52:20 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241085AbhJPW7J (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Sat, 16 Oct 2021 18:59:09 -0400
-Received: from wout4-smtp.messagingengine.com ([64.147.123.20]:57355 "EHLO
-        wout4-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S241082AbhJPW7I (ORCPT
+        id S244778AbhJQBy2 (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Sat, 16 Oct 2021 21:54:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43310 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235366AbhJQBy2 (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Sat, 16 Oct 2021 18:59:08 -0400
-Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
-        by mailout.west.internal (Postfix) with ESMTP id 8ABDA32008FD;
-        Sat, 16 Oct 2021 18:56:55 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute6.internal (MEProxy); Sat, 16 Oct 2021 18:56:55 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=8i8WYj
-        DIhrEQ0/Z8Qo0Op4UPbrZU2DIMxgjvejckIBc=; b=BfapxsJ0bcWBiiMyrx4twu
-        XeBl/pdeG1nrIqkYC4yI9BpfwEGlQtBQrKDUbTgWU33Gyk5GG3BQphH0g9STXAWB
-        MqFrfj2oJ9qL3Q8GGqEOu0QmF5oDhIpABBcS01VLtHWIzesz6UGGI4iXAGls6hhE
-        XdzGmtqAyC3XvgH44fj0Tg3qS9VnuUo4Bmp/xl7XEPD4lMxMqX+zQsRa9ulC4oZ/
-        GNYRpi7jAAf6/DjljhTGPyE9uVQcY3+o0lN2Ddgi1cvircBXvR9BqoE1TPNnJzUZ
-        /yqoeSS5lwJyBTN5qUtverX3RpBA09VZEcKPwtNargUHUEIBitw88dPG0MiasXwA
-        ==
-X-ME-Sender: <xms:tlhrYfFFWDOcyUg_oxThSOz-R0FfRmS4Ho294lolHw9tng8gQ39rAg>
-    <xme:tlhrYcVpjuuxmlNzTfZzV8rVSYgXHFCohqVXZTbg1JHw-ixfaAgAvsBrK98_5G-Tn
-    a_t6t1AKA1pzLjIucc>
-X-ME-Received: <xmr:tlhrYRJfpo248QT0QVXX9LhCMrw6EousjxxedjsNgH0eJ7xFXcPchihzYmH_rlsrzRZPUidDyp2OFLH1__9ltVnq0eV8H0UVy9w>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrvddujedgudeiucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepfffhvffujgfkfhggtgesthdtredttddtvdenucfhrhhomhephfhinhhnucfv
-    hhgrihhnuceofhhthhgrihhnsehlihhnuhigqdhmieekkhdrohhrgheqnecuggftrfgrth
-    htvghrnhepffduhfegfedvieetudfgleeugeehkeekfeevfffhieevteelvdfhtdevffet
-    uedunecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepfh
-    hthhgrihhnsehlihhnuhigqdhmieekkhdrohhrgh
-X-ME-Proxy: <xmx:tlhrYdESvE5EaxJgxwyrItOZzTJWbp-asn32TmOMUeC0rCvoilv4PQ>
-    <xmx:tlhrYVWN61Egm482Qg4TeWFK3OtkcpXSypGrz5JuYIu6EN5T5BtFUQ>
-    <xmx:tlhrYYMniANn5AKq3XKoD8SAja5eAzT6iWrSRPlC-F_p7YML_d-_zg>
-    <xmx:t1hrYSgQOdFrloqMxksNreferwG3IwCJIz43ghulcRCBjQ7MJFpKDQ>
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Sat,
- 16 Oct 2021 18:56:52 -0400 (EDT)
-Date:   Sun, 17 Oct 2021 09:56:52 +1100 (AEDT)
-From:   Finn Thain <fthain@linux-m68k.org>
-To:     Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>
-cc:     linux-block@vger.kernel.org, linux-m68k@lists.linux-m68k.org,
+        Sat, 16 Oct 2021 21:54:28 -0400
+Received: from mail-pj1-x1033.google.com (mail-pj1-x1033.google.com [IPv6:2607:f8b0:4864:20::1033])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0407DC061767
+        for <linux-m68k@lists.linux-m68k.org>; Sat, 16 Oct 2021 18:52:16 -0700 (PDT)
+Received: by mail-pj1-x1033.google.com with SMTP id q10-20020a17090a1b0a00b001a076a59640so9121427pjq.0
+        for <linux-m68k@lists.linux-m68k.org>; Sat, 16 Oct 2021 18:52:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=subject:to:references:from:message-id:date:user-agent:mime-version
+         :in-reply-to:content-transfer-encoding;
+        bh=kFsx5p0S2J6if3CoPL0tGJwTCamVX4gEpCHzQKPONpU=;
+        b=aGdWTYH1HHWHgyCnQ1WXgvjtm7nhOhTa1Jhr5+MmVHWVTeFRjtGBTGOOiM0EW1tgxj
+         q31O+nliO7gQp1lTg1E/qlkpCgVVX/c7okRnCbpWvNggpLY74+rg1cE/eBfuCYVvkICV
+         mAyfj59Cbrkfbw0v/M0jmaEgkXWGn1fW7c1Sd9IcalfgjKQH3WufFsx/Gi8fb/2TMoa5
+         +7dToF6nrp+W/QMRCNnPGIsl8Qhpiv53mqnsYUAn8tYqGPPvLAp/FGRVQM01JNnAQbN9
+         PQBOluB3//fz8RP3z/e1dZeATW6izqr8LIqBcpcjqabBsnCEgc7CMvJuZjHx8b8Zr9NF
+         G7Ag==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:subject:to:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding;
+        bh=kFsx5p0S2J6if3CoPL0tGJwTCamVX4gEpCHzQKPONpU=;
+        b=1hnw0tsIl6fcJFPVmOl4KHrnLpAbgb4oUt2Qfe6kkLD9UaRmMYdcyBdGcbCLxaFJWP
+         Azbiconsn0gPcFRyHaPnytkFk2AcW+tph75GksWCIg2OkINyUc9NbuvMBu2rqBNGcRzs
+         hoClY646fSh3QJanhpqI6i5zdgCWDyC2qRfbql5yam6sZRbUACpEK+YURxtfFSR/JO4C
+         M/rb0M+2bZj+BO0E5xlF5onc1jmpx5TaRi8PRuVuUeMQrn4mlpSjhhHoAZnY6egJW+dE
+         J+ldr2trzKlsny3jOs/cIR9L0RLsrVhsd6Qi/XT+KuZNBpjWDKldiuCyjQApAZtS4U3t
+         HRSg==
+X-Gm-Message-State: AOAM533xBBCXeyIhTDZHd/Zbe78cdshu+dRD3b2Z+tgE6vuCiycu4MmI
+        SPVO+A5OvV50pW45MtrlltY=
+X-Google-Smtp-Source: ABdhPJzopR8j7+MF9HH7rTHEJbMBofHK4l234546f8+XLA7llRSFgERPhMqa4nNjtqlX++79J7bXTA==
+X-Received: by 2002:a17:90a:2902:: with SMTP id g2mr23750027pjd.161.1634435536336;
+        Sat, 16 Oct 2021 18:52:16 -0700 (PDT)
+Received: from [10.1.1.26] (222-155-4-20-adsl.sparkbb.co.nz. [222.155.4.20])
+        by smtp.gmail.com with ESMTPSA id o72sm8703401pjo.50.2021.10.16.18.52.13
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Sat, 16 Oct 2021 18:52:15 -0700 (PDT)
+Subject: Re: [PATCH] ataflop: unlock ataflop_probe_lock at atari_floppy_init()
+To:     Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
+        linux-block@vger.kernel.org, linux-m68k@lists.linux-m68k.org,
         Christoph Hellwig <hch@lst.de>,
         Luis Chamberlain <mcgrof@kernel.org>
-Subject: Re: [PATCH] ataflop: unlock ataflop_probe_lock at
- atari_floppy_init()
-In-Reply-To: <1d9351dc-baeb-1a54-625c-04ce01b009b0@i-love.sakura.ne.jp>
-Message-ID: <84fe74c6-9174-695b-563d-6ccbfa69ccd@linux-m68k.org>
 References: <1d9351dc-baeb-1a54-625c-04ce01b009b0@i-love.sakura.ne.jp>
+From:   Michael Schmitz <schmitzmic@gmail.com>
+Message-ID: <6d26961c-3b51-d6e1-fb95-b72e720ed5d0@gmail.com>
+Date:   Sun, 17 Oct 2021 14:52:05 +1300
+User-Agent: Mozilla/5.0 (X11; Linux ppc64; rv:45.0) Gecko/20100101
+ Thunderbird/45.8.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+In-Reply-To: <1d9351dc-baeb-1a54-625c-04ce01b009b0@i-love.sakura.ne.jp>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-On Sat, 16 Oct 2021, Tetsuo Handa wrote:
+Hi Tetsuo,
 
+thank you for fixing this bug!
+
+On 17/10/21 02:25, Tetsuo Handa wrote:
 > Commit bf9c0538e485b591 ("ataflop: use a separate gendisk for each media
 > format") introduced ataflop_probe_lock mutex, but forgot to unlock the
 > mutex when atari_floppy_init() (i.e. module loading) succeeded. If
 > ataflop_probe() is called, it will deadlock on ataflop_probe_lock mutex.
-> 
+>
 > Signed-off-by: Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
 > Fixes: bf9c0538e485b591 ("ataflop: use a separate gendisk for each media format")
 > ---
 > To m68k users
-> 
+>
 >   This patch suggests that nobody is testing this module using a real hardware.
+
+Not as a module, no. I use the Atari floppy driver built-in. Latest 
+kernel version I ran was 5.13.
+
+Relevant kernel log excerpt:
+
+calling  atari_floppy_init+0x0/0x4d4 @ 1
+Atari floppy driver: max. HD, track buffering
+Probing floppy drive(s):
+fd0
+initcall atari_floppy_init+0x0/0x4d4 returned 0 after 675082 usecs
+
+Haven't tried to read from the drive in a while though... waiting for 
+floppy I/O isn't my favourite spectator sport.
+
+I take it a read attempt should fail, without your patch?
+
 >   Can somebody test this module?
+
+Yes.
+
 >   Is current m68k hardware still supporting Atari floppy?
+
+Yes.
+
+Cheers,
+
+	Michael Schmitz
+
+
 >   If Atari floppy is no longer supported, do we still need this module?
-> 
-
-It is only to be expected that no-one would have reported this bug yet.
-
-2 months ago, Debian 11 shipped with a 5.10 kernel, but the bug you found 
-first appeared in Linux 5.11.
-
-The existence of buggy drivers in mainline is undesirable but the real 
-problem here is the rate at which new bugs get added.
-
-So I wonder if it would have been possible to use Aranym to find the 
-regression, or avoid it in the first place?
+>
+> To Christoph Hellwig and Luis Chamberlain
+>
+>   If we move __register_blkdev() in atari_floppy_init() to the end of
+>   atari_floppy_init() and move unregister_blkdev() in atari_floppy_exit() to
+>   the beginning of atari_floppy_exit(), we can remove unregister_blkdev() from
+>   atari_floppy_init(), and I think we can also remove ataflop_probe_lock mutex
+>   because probe function and __exit function are serialized by major_names_lock
+>   mutex.
+>
+>  drivers/block/ataflop.c | 3 ++-
+>  1 file changed, 2 insertions(+), 1 deletion(-)
+>
+> diff --git a/drivers/block/ataflop.c b/drivers/block/ataflop.c
+> index a093644ac39f..39b42cb8d173 100644
+> --- a/drivers/block/ataflop.c
+> +++ b/drivers/block/ataflop.c
+> @@ -2072,7 +2072,8 @@ static int __init atari_floppy_init (void)
+>  	       UseTrackbuffer ? "" : "no ");
+>  	config_types();
+>
+> -	return 0;
+> +	ret = 0;
+> +	goto out_unlock;
+>
+>  err:
+>  	while (--i >= 0) {
+>
