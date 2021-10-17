@@ -2,93 +2,212 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B4376C433FE
-	for <linux-m68k@archiver.kernel.org>; Sun, 17 Oct 2021 20:16:34 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 71E3EC433EF
+	for <linux-m68k@archiver.kernel.org>; Sun, 17 Oct 2021 23:47:20 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 9187960FD9
-	for <linux-m68k@archiver.kernel.org>; Sun, 17 Oct 2021 20:16:34 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 444C760C4A
+	for <linux-m68k@archiver.kernel.org>; Sun, 17 Oct 2021 23:47:20 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242828AbhJQUSm (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Sun, 17 Oct 2021 16:18:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58330 "EHLO
+        id S235900AbhJQXt3 (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Sun, 17 Oct 2021 19:49:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47288 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233577AbhJQUSm (ORCPT
+        with ESMTP id S234184AbhJQXt2 (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Sun, 17 Oct 2021 16:18:42 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6410BC06161C;
-        Sun, 17 Oct 2021 13:16:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-        Content-Type:In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:
-        Subject:Sender:Reply-To:Content-ID:Content-Description;
-        bh=4XUukp+9b1viCm7WWWZGfVXYbKx7reWhMLUTlGTz/mY=; b=OiQ/T7qAoFzQ6AlGWgkM2KtzSU
-        0pr+j+P4ClYOvS5GoS9zIPfR8gutFxP1w47+XD4OCqDP+x2a9Id26Y9moyD2NY2UvSzdsLBEM0sAx
-        1S82gs1kBF/TyGCiK9r0+JGauWZ4UryYDfMlZo7vEdr1HgBchCVjaXiPuhsieqaroQebQnAUGZeQ0
-        3HGPdf6aDDPwTfqoJHxP3r8Gh1a14TYJ/6ACdGOSX9nj/OLq/+mOmh7jqjkN93mJ6/Oy7B8+Hxn/m
-        ZYLQcwr8jA2Gox3L/Xv03W0XiNF5cEgTc2i8MVHM4S7pMZqMdM+3B1KoPohusiqLxiulHPTbzuK0W
-        spHlze4g==;
-Received: from [2601:1c0:6280:3f0::aa0b]
-        by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mcCa7-00DH4c-4x; Sun, 17 Oct 2021 20:16:31 +0000
-Subject: Re: [PATCH] asm-generic: bug.h: add unreachable() in BUG() for
- CONFIG_BUG not set
-To:     Arnd Bergmann <arnd@arndb.de>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        linux-m68k <linux-m68k@lists.linux-m68k.org>
-References: <20211017174905.18943-1-rdunlap@infradead.org>
- <CAK8P3a3XDY5gMUA3h3tVmQuxSHn_J3qOw_rDurzBx-KFdGhCKA@mail.gmail.com>
- <8aad5fd2-6850-800a-3c56-199bb5d4f4ae@infradead.org>
- <CAK8P3a21-mu=eN7qu+1C11Rwp_S3T0iJ+ronmMGyeYcw=Ym61A@mail.gmail.com>
- <fec67616-f1d0-08da-f393-489233210cbd@infradead.org>
- <CAK8P3a2PuTe2h49n72Z-GHnn_wyq-naPm55LJJG+OnCdSLz5tw@mail.gmail.com>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <0b1f21f5-fe78-2581-610b-5551679786a6@infradead.org>
-Date:   Sun, 17 Oct 2021 13:16:30 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        Sun, 17 Oct 2021 19:49:28 -0400
+Received: from mail-pf1-x431.google.com (mail-pf1-x431.google.com [IPv6:2607:f8b0:4864:20::431])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AC7E6C061765
+        for <linux-m68k@lists.linux-m68k.org>; Sun, 17 Oct 2021 16:47:18 -0700 (PDT)
+Received: by mail-pf1-x431.google.com with SMTP id k26so13319943pfi.5
+        for <linux-m68k@lists.linux-m68k.org>; Sun, 17 Oct 2021 16:47:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=subject:to:references:from:message-id:date:user-agent:mime-version
+         :in-reply-to:content-transfer-encoding;
+        bh=KFiSVc8Zko5CpBjPKP65FXAChRXWPf23yfUAec9Ysaw=;
+        b=jEwmiqtm2GSLjOOcE5MdG2hvJc0ao/68t5Z+XsY4UrfCjDhXjdqaill750WxLS0zLZ
+         1UhoY71Ef2qlFgJo4AjXTa4ZLm92IbaKaeaa9c/xvPLBYYbeD+CHdfbPIPrzfci1wMmV
+         FJZWIhNFPtwJyML6W+3m5kc0knnHGMBJGwmI+ozTHosZa9fbMH8CgSf0sgJNqDMxjiHb
+         zNfGm1acdVSBTUadMjw0BIzuEQ/xKsd5GMpChfaWSMX39F3G22TrmM5jtQTqYZnBl9i9
+         A3aUSpqmfu2kX7RZZlC91VT1NCbZA5EBy4de+g+/hOnA2WdPQ21PKLOIzmNFrcbJqkV5
+         DlaQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:subject:to:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding;
+        bh=KFiSVc8Zko5CpBjPKP65FXAChRXWPf23yfUAec9Ysaw=;
+        b=UIp0yYHN9+rHAW5Jga3YXZ95WdXuM06LUi3SdDBb/9AxsqIyfmNfaQOwJycPrBhtQH
+         BMD/9RReumYX50erG7ooKbKWp/hw1tMaFUw90ajezTHrgAGA5K20BIsByuMA4K4k6YdY
+         aeavK83/Q25Gy492KWdgWxbZ0K7Ls6BOV2dEbRiOKuEcSK8oCFZUqV+CSszoSGgQiFED
+         Tzty0UhUICZpKVABgRiw9glJwlYES5nme9v0x9IPuUC26Q/yFtaL2CXM7eNdyNL/vR7b
+         QWajNUDJhFWVKEXQom5aUNABhQW21CIWQK82axSebn7jq859bd+5W5z0okO3kGaCfZbG
+         npsA==
+X-Gm-Message-State: AOAM532sMt2n4NwbSRQQfX/Aq6piZe+zohmr0NvlXd2jUGtXiqsKNiP9
+        3bFXnPQ5GsN1DRzYKe9+/S4=
+X-Google-Smtp-Source: ABdhPJySUKTRPsdxDRhXDtz6cpPbVLRvuO/9AcLU0zfFKWcqhdhzABYFLZ7DDoTMe5wPK4AdeVuSng==
+X-Received: by 2002:a63:724a:: with SMTP id c10mr20499384pgn.224.1634514437907;
+        Sun, 17 Oct 2021 16:47:17 -0700 (PDT)
+Received: from [10.1.1.26] (222-155-4-20-adsl.sparkbb.co.nz. [222.155.4.20])
+        by smtp.gmail.com with ESMTPSA id d19sm951332pfl.129.2021.10.17.16.47.14
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Sun, 17 Oct 2021 16:47:17 -0700 (PDT)
+Subject: Re: [PATCH v2] ataflop: remove ataflop_probe_lock mutex
+To:     Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
+        linux-block@vger.kernel.org, linux-m68k@lists.linux-m68k.org,
+        Christoph Hellwig <hch@lst.de>,
+        Luis Chamberlain <mcgrof@kernel.org>,
+        Finn Thain <fthain@linux-m68k.org>
+References: <1d9351dc-baeb-1a54-625c-04ce01b009b0@i-love.sakura.ne.jp>
+ <6d26961c-3b51-d6e1-fb95-b72e720ed5d0@gmail.com>
+ <5524e6ee-e469-9775-07c4-7baf5e330148@i-love.sakura.ne.jp>
+ <7bf8ba1a-ed7c-059b-f4a1-cd7cfb5c21da@gmail.com>
+From:   Michael Schmitz <schmitzmic@gmail.com>
+Message-ID: <156eaf61-a225-d560-ebfe-617756ad2c5e@gmail.com>
+Date:   Mon, 18 Oct 2021 12:47:02 +1300
+User-Agent: Mozilla/5.0 (X11; Linux ppc64; rv:45.0) Gecko/20100101
+ Thunderbird/45.8.0
 MIME-Version: 1.0
-In-Reply-To: <CAK8P3a2PuTe2h49n72Z-GHnn_wyq-naPm55LJJG+OnCdSLz5tw@mail.gmail.com>
+In-Reply-To: <7bf8ba1a-ed7c-059b-f4a1-cd7cfb5c21da@gmail.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-On 10/17/21 12:38 PM, Arnd Bergmann wrote:
-> On Sun, Oct 17, 2021 at 9:27 PM Randy Dunlap <rdunlap@infradead.org> wrote:
->> On 10/17/21 12:24 PM, Arnd Bergmann wrote:
->>> On Sun, Oct 17, 2021 at 9:17 PM Randy Dunlap <rdunlap@infradead.org> wrote:
->>>> On 10/17/21 12:09 PM, Arnd Bergmann wrote:
->>>>> On Sun, Oct 17, 2021 at 7:49 PM Randy Dunlap <rdunlap@infradead.org> wrote:
->>>>
->>>>> Did you see any other issues like this one on m68k, or the
->>>>> same one on another architecture?
->>>>
->>>> No and no.
->>>
->>> Ok, maybe before we waste too much time on it, just add an extra
->>> return statement to afs_dir_set_page_dirty()?
+Hi Tetsuo,
+
+nevermind - stock 5.9 doesn't work either (mount hangs indefinitely).
+
+Might have to do with format autoprobing - I'll try that next.
+
+Cheers,
+
+	Michael
+
+
+On 18/10/21 08:05, Michael Schmitz wrote:
+>> Michael Schmitz wrote:
+>>> Not as a module, no. I use the Atari floppy driver built-in. Latest
+>>> kernel version I ran was 5.13.
 >>
->> I think that patch has already been rejected a few times...
-> 
-> Indeed, this is one I had looked at before:
-> 
-> https://lore.kernel.org/all/CAK8P3a3L6B9HXsOXSu9_c6pz1kN91Vig6EPsetLuYVW=M72XaQ@mail.gmail.com/
-> 
-> It seems that this version:
-> 
-> +#define BUG() do {                                             \
-> +               do {} while (1);                                \
-> +               unreachable();                                  \
-> +       } while (0)
-> 
-> ended up being one that didn't see any objections.
-
-Yes, I was just thinking of a change like that while eating lunch. :)
-
--- 
-~Randy
+>> Great. Can you try this patch alone?
+>
+> Doesn't appear to work, sorry.
+>
+> Regards,
+>
+>     Michael Schmitz
+>
+>>
+>>  drivers/block/ataflop.c | 55 ++++++++++++++++++++---------------------
+>>  1 file changed, 27 insertions(+), 28 deletions(-)
+>>
+>> diff --git a/drivers/block/ataflop.c b/drivers/block/ataflop.c
+>> index a093644ac39f..adfe198e4699 100644
+>> --- a/drivers/block/ataflop.c
+>> +++ b/drivers/block/ataflop.c
+>> @@ -1986,8 +1986,6 @@ static int ataflop_alloc_disk(unsigned int
+>> drive, unsigned int type)
+>>      return 0;
+>>  }
+>>
+>> -static DEFINE_MUTEX(ataflop_probe_lock);
+>> -
+>>  static void ataflop_probe(dev_t dev)
+>>  {
+>>      int drive = MINOR(dev) & 3;
+>> @@ -1998,12 +1996,30 @@ static void ataflop_probe(dev_t dev)
+>>
+>>      if (drive >= FD_MAX_UNITS || type >= NUM_DISK_MINORS)
+>>          return;
+>> -    mutex_lock(&ataflop_probe_lock);
+>>      if (!unit[drive].disk[type]) {
+>>          if (ataflop_alloc_disk(drive, type) == 0)
+>>              add_disk(unit[drive].disk[type]);
+>>      }
+>> -    mutex_unlock(&ataflop_probe_lock);
+>> +}
+>> +
+>> +static void atari_floppy_cleanup(void)
+>> +{
+>> +    int i;
+>> +    int type;
+>> +
+>> +    for (i = 0; i < FD_MAX_UNITS; i++) {
+>> +        for (type = 0; type < NUM_DISK_MINORS; type++) {
+>> +            if (!unit[i].disk[type])
+>> +                continue;
+>> +            del_gendisk(unit[i].disk[type]);
+>> +            blk_cleanup_queue(unit[i].disk[type]->queue);
+>> +            put_disk(unit[i].disk[type]);
+>> +        }
+>> +        blk_mq_free_tag_set(&unit[i].tag_set);
+>> +    }
+>> +
+>> +    del_timer_sync(&fd_timer);
+>> +    atari_stram_free(DMABuffer);
+>>  }
+>>
+>>  static int __init atari_floppy_init (void)
+>> @@ -2015,11 +2031,6 @@ static int __init atari_floppy_init (void)
+>>          /* Amiga, Mac, ... don't have Atari-compatible floppy :-) */
+>>          return -ENODEV;
+>>
+>> -    mutex_lock(&ataflop_probe_lock);
+>> -    ret = __register_blkdev(FLOPPY_MAJOR, "fd", ataflop_probe);
+>> -    if (ret)
+>> -        goto out_unlock;
+>> -
+>>      for (i = 0; i < FD_MAX_UNITS; i++) {
+>>          memset(&unit[i].tag_set, 0, sizeof(unit[i].tag_set));
+>>          unit[i].tag_set.ops = &ataflop_mq_ops;
+>> @@ -2072,7 +2083,12 @@ static int __init atari_floppy_init (void)
+>>             UseTrackbuffer ? "" : "no ");
+>>      config_types();
+>>
+>> -    return 0;
+>> +    ret = __register_blkdev(FLOPPY_MAJOR, "fd", ataflop_probe);
+>> +    if (ret) {
+>> +        printk(KERN_ERR "atari_floppy_init: cannot register block
+>> device\n");
+>> +        atari_floppy_cleanup();
+>> +    }
+>> +    return ret;
+>>
+>>  err:
+>>      while (--i >= 0) {
+>> @@ -2081,9 +2097,6 @@ static int __init atari_floppy_init (void)
+>>          blk_mq_free_tag_set(&unit[i].tag_set);
+>>      }
+>>
+>> -    unregister_blkdev(FLOPPY_MAJOR, "fd");
+>> -out_unlock:
+>> -    mutex_unlock(&ataflop_probe_lock);
+>>      return ret;
+>>  }
+>>
+>> @@ -2128,22 +2141,8 @@ __setup("floppy=", atari_floppy_setup);
+>>
+>>  static void __exit atari_floppy_exit(void)
+>>  {
+>> -    int i, type;
+>> -
+>> -    for (i = 0; i < FD_MAX_UNITS; i++) {
+>> -        for (type = 0; type < NUM_DISK_MINORS; type++) {
+>> -            if (!unit[i].disk[type])
+>> -                continue;
+>> -            del_gendisk(unit[i].disk[type]);
+>> -            blk_cleanup_queue(unit[i].disk[type]->queue);
+>> -            put_disk(unit[i].disk[type]);
+>> -        }
+>> -        blk_mq_free_tag_set(&unit[i].tag_set);
+>> -    }
+>>      unregister_blkdev(FLOPPY_MAJOR, "fd");
+>> -
+>> -    del_timer_sync(&fd_timer);
+>> -    atari_stram_free( DMABuffer );
+>> +    atari_floppy_cleanup();
+>>  }
+>>
+>>  module_init(atari_floppy_init)
+>>
