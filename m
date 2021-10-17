@@ -2,90 +2,87 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 92914C433F5
-	for <linux-m68k@archiver.kernel.org>; Sun, 17 Oct 2021 19:17:36 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A4BBDC433EF
+	for <linux-m68k@archiver.kernel.org>; Sun, 17 Oct 2021 19:20:58 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 7350960F36
-	for <linux-m68k@archiver.kernel.org>; Sun, 17 Oct 2021 19:17:36 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 7A37E60F36
+	for <linux-m68k@archiver.kernel.org>; Sun, 17 Oct 2021 19:20:58 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232482AbhJQTTo (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Sun, 17 Oct 2021 15:19:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45470 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231243AbhJQTTn (ORCPT
+        id S1344473AbhJQTXH (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Sun, 17 Oct 2021 15:23:07 -0400
+Received: from mout.kundenserver.de ([212.227.17.24]:33877 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234164AbhJQTXG (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Sun, 17 Oct 2021 15:19:43 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1E637C06161C;
-        Sun, 17 Oct 2021 12:17:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-        Content-Type:In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:
-        Subject:Sender:Reply-To:Content-ID:Content-Description;
-        bh=amegNczcXWZqbV+pSNOZ0As1r+nqYhmZrOOa6o5Q754=; b=Fw+wrvfOgZNt1BlOzAIQshFKkb
-        Ljau5J+pxoct50M3POpx8rZSHkUOznhNQyFhQ2UUdNhdlo7mXarrK0VhdVg244Av4gC+kClBcqaSS
-        kjYuDR8Um9lOI1+n0owpTUX2H3JUQ+C8P+nnBgG0Exkcqj43FCt9TwMwRL4g86VWmCziTlN3oVhZa
-        t+Pe+G1k2Udg3ehtt8qUrf8XJJIQ50CmhyIdXs268aTGrqbeRpFNLTB8ZMJbqVQXLGKSSlTA8nXnV
-        mt/RcqXHDZl3vklCiuhZnxlovIGwfdZUnFbNw4jtB3vuWTXhxbpel7tMQvJngyZKNqzyfc9XqoyBo
-        7EFd7YcQ==;
-Received: from [2601:1c0:6280:3f0::aa0b]
-        by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mcBf3-00DCdL-17; Sun, 17 Oct 2021 19:17:33 +0000
-Subject: Re: [PATCH] asm-generic: bug.h: add unreachable() in BUG() for
- CONFIG_BUG not set
-To:     Arnd Bergmann <arnd@arndb.de>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        linux-m68k <linux-m68k@lists.linux-m68k.org>
-References: <20211017174905.18943-1-rdunlap@infradead.org>
- <CAK8P3a3XDY5gMUA3h3tVmQuxSHn_J3qOw_rDurzBx-KFdGhCKA@mail.gmail.com>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <8aad5fd2-6850-800a-3c56-199bb5d4f4ae@infradead.org>
-Date:   Sun, 17 Oct 2021 12:17:32 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        Sun, 17 Oct 2021 15:23:06 -0400
+Received: from mail-wm1-f54.google.com ([209.85.128.54]) by
+ mrelayeu.kundenserver.de (mreue109 [213.165.67.113]) with ESMTPSA (Nemesis)
+ id 1M72wT-1me63M3Uul-008b7d for <linux-m68k@lists.linux-m68k.org>; Sun, 17
+ Oct 2021 21:20:55 +0200
+Received: by mail-wm1-f54.google.com with SMTP id o24-20020a05600c511800b0030d9da600aeso6674271wms.4
+        for <linux-m68k@lists.linux-m68k.org>; Sun, 17 Oct 2021 12:20:55 -0700 (PDT)
+X-Gm-Message-State: AOAM531koygWLAtVplSmeCjyOikNCFFwGCFOdiwLTLcopKbYWcgbIWAq
+        +rRpGc4BeLsGlCQbeFMXYH1qs4+g6BjoTQxMWZ0=
+X-Google-Smtp-Source: ABdhPJyUlFebsGacqn/DbORh+me3VGF2rJiA/LeldArqxN3agfF/M3+TgUm3ShSK4jjOvlyCwRLNkS5pXcgtKPXtbJI=
+X-Received: by 2002:a1c:4b08:: with SMTP id y8mr27612763wma.98.1634498455480;
+ Sun, 17 Oct 2021 12:20:55 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <CAK8P3a3XDY5gMUA3h3tVmQuxSHn_J3qOw_rDurzBx-KFdGhCKA@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20211017175949.23838-1-rdunlap@infradead.org>
+In-Reply-To: <20211017175949.23838-1-rdunlap@infradead.org>
+From:   Arnd Bergmann <arnd@arndb.de>
+Date:   Sun, 17 Oct 2021 21:20:39 +0200
+X-Gmail-Original-Message-ID: <CAK8P3a1WHPnLNE7=4872iaVcL708NcVmMhRvAR0OLujP=Y3Tjw@mail.gmail.com>
+Message-ID: <CAK8P3a1WHPnLNE7=4872iaVcL708NcVmMhRvAR0OLujP=Y3Tjw@mail.gmail.com>
+Subject: Re: [PATCH] mmc: winbond: don't build on M68K
+To:     Randy Dunlap <rdunlap@infradead.org>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Pierre Ossman <pierre@ossman.eu>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        linux-mmc <linux-mmc@vger.kernel.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        linux-m68k <linux-m68k@lists.linux-m68k.org>,
+        Arnd Bergmann <arnd@arndb.de>
+Content-Type: text/plain; charset="UTF-8"
+X-Provags-ID: V03:K1:fq1nEWkG0CqZd0AjFDEykVs/W7JRzABsPHQqci5DQ/JZx+oQ8eg
+ eIswMvlV0zgaXoUcwbY0zWgxpsyLN8lGK5d/Zc60X7qLP1lY6TN7ACwuFMu029RHPtg1n9G
+ 1Lzawehd8Coo4bHQCqPar741C8bdYy0VCSPChyNa4E8SYIoxLc8rn4b2yQdhDKxtaLM+juI
+ kHI0swgF5vYenYgw87sZg==
+X-UI-Out-Filterresults: notjunk:1;V03:K0:JxHpaf3N89o=:j+bb3NsiWN+o0NAVcjCbYP
+ mjHSaVTaQKZ8YKwULdS0Hr70HreL6zTcbqTjPduaXbygEbMkrfQELaXUZxEnqbr2Yf++u+Wbz
+ Zn8DAJg3uLSw7Me1YObG+f/3Jd9KB/mE3xTXdNGu3PFskDbtbY0VCORRKMKeIy8Y+K7fM2fWv
+ Lp7N3muFXfnRTGU8vn/G4XQqupixj53G9vgkSBVKMEFIoQgAzr5nhjdTMFYMqefwqA9+cteHn
+ K6owO4Z/imOU96rA1k9bhgT9KZlLsKRdpIN32SAwN2dST6Yk8JBtoUtXAYAyMCFdqQ6NrOEkA
+ xn66llwQALO9PccBzjSQjDrbgdIDe+qthqMwIwhWcByW2oG8NfszZHyA8rVYGWkTMJdDS709G
+ EcSE3RQaMrl8laS8rsHxy5hRuIKRJ2hmEwDX6DpJRpF3gB3Gb4cPTmMJyP6uYZnW1Pl323PI0
+ mzfycQsaezVBs6wCQzr3jc8b4SVOgYT89sr1Xyqzw6Z/SJDw1iREv8lv9GRtV0oNf3EIhrdiR
+ outN24TeFAV1w90osLEmanKZMWvbIEEWftDWxeFfSqNbCWAwmQucb3cqUEFaEFEzMX5o0R3DW
+ DHcyeqx876Ynr93DJOmEaUSaLh135947CV+ORHCnOwJJkyGzeWQb3Rb2uBFggq9hC4zt9+L3A
+ AwWLRPBWccDtr83w78Txu0aXt0QfPLTzmPEseOvh2zL+VY/dIU2tUSUx+J7Zc31MS7L8YaWKc
+ Rafiou300U+aECtyBJgNb3CA3urDhi6KkknsCN4x9+2QFoo/rj+deWrbIKYBasmyctVbd0KHn
+ zryLko6Du77e075t1PmfnugZddYhWINQrbLA3qrq0LEiyHmpeR2AhLJVx04QXVHzUL+BIsikq
+ jt0BZC+HJ/BBOznhYH6w==
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-On 10/17/21 12:09 PM, Arnd Bergmann wrote:
-> On Sun, Oct 17, 2021 at 7:49 PM Randy Dunlap <rdunlap@infradead.org> wrote:
->>
->> When CONFIG_BUG is not set/enabled, there is a warning
->> on ARCH=m68k, gcc version 11.1.0-nolibc from Arnd's crosstools:
->>
->> ../fs/afs/dir.c: In function 'afs_dir_set_page_dirty':
->> ../fs/afs/dir.c:51:1: error: no return statement in function returning non-void [-Werror=return-type]
->>
->> Adding "unreachable()" in the BUG() macro silences the warning.
-> 
-> No, I don't think this is the right solution:
-> 
->> -#define BUG() do {} while (1)
->> +#define BUG() do {unreachable();} while (1)
-> 
-> Marking this code unreachable() means the compiler is free
-> to assume any code path leading here will never be entered,
-> which leads to additional undefined behavior and other warnings
-> rather than just hanging reproducibly.
-> 
-> The endless loop here should normally be sufficient to tell the
-> compiler that the function never returns, so it sounds like a
-> problem in gcc for m68k.
+On Sun, Oct 17, 2021 at 7:59 PM Randy Dunlap <rdunlap@infradead.org> wrote:
+>
+> The Winbond MMC driver fails to build on ARCH=m68k so prevent
+> that build config. Silences these build errors:
+>
+> ../drivers/mmc/host/wbsd.c: In function 'wbsd_request_end':
+> ../drivers/mmc/host/wbsd.c:212:28: error: implicit declaration of function 'claim_dma_lock' [-Werror=implicit-function-declaration]
+>   212 |                 dmaflags = claim_dma_lock();
+> ../drivers/mmc/host/wbsd.c:215:17: error: implicit declaration of function 'release_dma_lock'; did you mean 'release_task'? [-Werror=implicit-function-declaration]
+>   215 |                 release_dma_lock(dmaflags);
+>
 
-Sounds likely.
+It looks like m68k and sparc declare this function in asm/floppy.h,
+while everyone
+else has it in asm/dma.h.
 
-> Did you see any other issues like this one on m68k, or the
-> same one on another architecture?
+Not sure if it's worth fixing in a better way, but I suspect sparc
+would have the
+same issue here.
 
-No and no.
-
-thanks.
--- 
-~Randy
+      Arnd
