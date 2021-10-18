@@ -2,80 +2,236 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 02580C433EF
-	for <linux-m68k@archiver.kernel.org>; Mon, 18 Oct 2021 20:32:23 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 78033C433EF
+	for <linux-m68k@archiver.kernel.org>; Mon, 18 Oct 2021 21:02:45 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id DCA3B608FB
-	for <linux-m68k@archiver.kernel.org>; Mon, 18 Oct 2021 20:32:22 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 4C2E76103B
+	for <linux-m68k@archiver.kernel.org>; Mon, 18 Oct 2021 21:02:45 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232493AbhJRUeb (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Mon, 18 Oct 2021 16:34:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47936 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229674AbhJRUeb (ORCPT
-        <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Mon, 18 Oct 2021 16:34:31 -0400
-Received: from bombadil.infradead.org (unknown [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D981DC06161C;
-        Mon, 18 Oct 2021 13:32:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=Sender:In-Reply-To:Content-Type:
-        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=OBMvbiCZ3mmK4xvpOD56mvuToBpo4s4ONuPdaMpMXso=; b=TIkzxO1O7vQd0T1PMQ31eP873s
-        pPHNaKNwfjx7mTwD9RmpK0u2Dr52r7UfxNzSSDXj8Ur4f/57iSBP9syn65/BRLw+Qf0YqEROqC1+F
-        /VG4vFcKrZ4lPNCkYzTKj7o2L7DwvWpMe/Cj9lb6MSKQzaI23JMePqdIEZskz+65OByIz865kTj2M
-        S7C7JWy6K7A2w9h6miRNVROzQSV0cHn3nsz/ISMK8rBY/sbh7syYv+06of00RqsVQ7L8TnPZCsvnm
-        bLR1p6dai2RCCksWMX0lknKUYeC/2U9k2JV7oYNMmdKjgqpOgr1yAHVsYweFfh4DDrfwCTLAV00Ez
-        KwZhXR7g==;
-Received: from mcgrof by bombadil.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mcZIX-00HDlV-C4; Mon, 18 Oct 2021 20:31:53 +0000
-Date:   Mon, 18 Oct 2021 13:31:53 -0700
-From:   Luis Chamberlain <mcgrof@kernel.org>
-To:     "Martin K. Petersen" <martin.petersen@oracle.com>, axboe@kernel.dk
-Cc:     jejb@linux.ibm.com, agk@redhat.com, snitzer@redhat.com,
-        colyli@suse.de, kent.overstreet@gmail.com,
-        boris.ostrovsky@oracle.com, jgross@suse.com,
-        sstabellini@kernel.org, roger.pau@citrix.com, geert@linux-m68k.org,
-        ulf.hansson@linaro.org, tj@kernel.org, hare@suse.de,
-        jdike@addtoit.com, richard@nod.at, anton.ivanov@cambridgegreys.com,
-        johannes.berg@intel.com, krisman@collabora.com,
-        chris.obbard@collabora.com, thehajime@gmail.com,
-        zhuyifei1999@gmail.com, haris.iqbal@ionos.com,
-        jinpu.wang@ionos.com, miquel.raynal@bootlin.com, vigneshr@ti.com,
-        linux-mtd@lists.infradead.org, linux-scsi@vger.kernel.org,
-        dm-devel@redhat.com, linux-bcache@vger.kernel.org,
-        xen-devel@lists.xenproject.org, linux-m68k@lists.linux-m68k.org,
-        linux-um@lists.infradead.org, linux-block@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Christoph Hellwig <hch@lst.de>
-Subject: Re: [PATCH 1/9] scsi/sd: add error handling support for add_disk()
-Message-ID: <YW3ZuQv1qpIXkd5b@bombadil.infradead.org>
-References: <20211015233028.2167651-1-mcgrof@kernel.org>
- <20211015233028.2167651-2-mcgrof@kernel.org>
- <yq1bl3ofjo5.fsf@ca-mkp.ca.oracle.com>
+        id S229723AbhJRVE4 (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Mon, 18 Oct 2021 17:04:56 -0400
+Received: from mga05.intel.com ([192.55.52.43]:40610 "EHLO mga05.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229529AbhJRVEz (ORCPT <rfc822;linux-m68k@lists.linux-m68k.org>);
+        Mon, 18 Oct 2021 17:04:55 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10141"; a="314561257"
+X-IronPort-AV: E=Sophos;i="5.85,382,1624345200"; 
+   d="scan'208";a="314561257"
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Oct 2021 14:02:43 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.85,382,1624345200"; 
+   d="scan'208";a="443607079"
+Received: from lkp-server02.sh.intel.com (HELO 08b2c502c3de) ([10.239.97.151])
+  by orsmga006.jf.intel.com with ESMTP; 18 Oct 2021 14:02:42 -0700
+Received: from kbuild by 08b2c502c3de with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1mcZmL-000BkE-Qv; Mon, 18 Oct 2021 21:02:41 +0000
+Date:   Tue, 19 Oct 2021 05:02:09 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Geert Uytterhoeven <geert@linux-m68k.org>
+Cc:     linux-m68k@lists.linux-m68k.org
+Subject: [geert-m68k:master] BUILD SUCCESS
+ 6b37b59f9fbf660843d28721a624eacc06f43273
+Message-ID: <616de0d1.njErYuMmBDlYcVCH%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <yq1bl3ofjo5.fsf@ca-mkp.ca.oracle.com>
-Sender: Luis Chamberlain <mcgrof@infradead.org>
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-On Sat, Oct 16, 2021 at 10:51:48PM -0400, Martin K. Petersen wrote:
-> 
-> Luis,
-> 
-> > We never checked for errors on add_disk() as this function returned
-> > void. Now that this is fixed, use the shiny new error handling.
-> >
-> > As with the error handling for device_add() we follow the same logic
-> > and just put the device so that cleanup is done via the
-> > scsi_disk_release().
-> 
-> Acked-by: Martin K. Petersen <martin.petersen@oracle.com>
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/geert/linux-m68k.git master
+branch HEAD: 6b37b59f9fbf660843d28721a624eacc06f43273  Merge tag 'v5.15-rc6'
 
-Thanks, would you like Jens to pick this up and the other scsi/sr patch
-or are you taking it through your tree?
+elapsed time: 720m
 
-  Luis
+configs tested: 172
+configs skipped: 4
+
+The following configs have been built successfully.
+More configs may be tested in the coming days.
+
+gcc tested configs:
+arm64                            allyesconfig
+arm64                               defconfig
+arm                                 defconfig
+arm                              allyesconfig
+arm                              allmodconfig
+mips                         tb0287_defconfig
+s390                          debug_defconfig
+mips                      bmips_stb_defconfig
+powerpc                 mpc836x_mds_defconfig
+powerpc                    adder875_defconfig
+powerpc                      walnut_defconfig
+arc                        nsim_700_defconfig
+sparc                       sparc64_defconfig
+powerpc                     tqm8548_defconfig
+arm                      pxa255-idp_defconfig
+powerpc                     stx_gp3_defconfig
+mips                         cobalt_defconfig
+powerpc                     pseries_defconfig
+xtensa                       common_defconfig
+mips                            gpr_defconfig
+xtensa                         virt_defconfig
+powerpc                      obs600_defconfig
+mips                        qi_lb60_defconfig
+mips                    maltaup_xpa_defconfig
+mips                      maltasmvp_defconfig
+powerpc                     powernv_defconfig
+openrisc                            defconfig
+sh                   secureedge5410_defconfig
+powerpc                       ppc64_defconfig
+arm                         palmz72_defconfig
+arm                         nhk8815_defconfig
+m68k                          atari_defconfig
+mips                       capcella_defconfig
+powerpc               mpc834x_itxgp_defconfig
+arm                         orion5x_defconfig
+powerpc                 mpc85xx_cds_defconfig
+arm                          imote2_defconfig
+powerpc                 mpc836x_rdk_defconfig
+arm                         hackkit_defconfig
+powerpc                 mpc8560_ads_defconfig
+mips                     cu1000-neo_defconfig
+m68k                           sun3_defconfig
+mips                            e55_defconfig
+powerpc                      makalu_defconfig
+sh                         ap325rxa_defconfig
+sh                          r7780mp_defconfig
+m68k                          sun3x_defconfig
+m68k                        mvme147_defconfig
+s390                       zfcpdump_defconfig
+mips                     loongson2k_defconfig
+mips                      malta_kvm_defconfig
+arm                           stm32_defconfig
+powerpc                     mpc5200_defconfig
+arm                         cm_x300_defconfig
+powerpc                   currituck_defconfig
+powerpc                        icon_defconfig
+arm                       imx_v4_v5_defconfig
+powerpc                      ep88xc_defconfig
+arm                            hisi_defconfig
+xtensa                  nommu_kc705_defconfig
+powerpc                      tqm8xx_defconfig
+arm                       mainstone_defconfig
+sh                          r7785rp_defconfig
+m68k                         amcore_defconfig
+powerpc                     kmeter1_defconfig
+arm                  randconfig-c002-20211017
+i386                 randconfig-c001-20211017
+x86_64               randconfig-c001-20211017
+arm                  randconfig-c002-20211018
+i386                 randconfig-c001-20211018
+x86_64               randconfig-c001-20211018
+arm                  randconfig-c002-20211019
+i386                 randconfig-c001-20211019
+x86_64               randconfig-c001-20211019
+ia64                             allmodconfig
+ia64                                defconfig
+ia64                             allyesconfig
+m68k                                defconfig
+m68k                             allmodconfig
+m68k                             allyesconfig
+nios2                               defconfig
+nds32                             allnoconfig
+nds32                               defconfig
+nios2                            allyesconfig
+csky                                defconfig
+alpha                               defconfig
+alpha                            allyesconfig
+h8300                            allyesconfig
+arc                                 defconfig
+sh                               allmodconfig
+xtensa                           allyesconfig
+parisc                              defconfig
+s390                                defconfig
+s390                             allyesconfig
+s390                             allmodconfig
+parisc                           allyesconfig
+sparc                            allyesconfig
+sparc                               defconfig
+i386                                defconfig
+i386                             allyesconfig
+arc                              allyesconfig
+mips                             allyesconfig
+mips                             allmodconfig
+powerpc                          allyesconfig
+powerpc                          allmodconfig
+powerpc                           allnoconfig
+x86_64               randconfig-a004-20211018
+x86_64               randconfig-a006-20211018
+x86_64               randconfig-a005-20211018
+x86_64               randconfig-a001-20211018
+x86_64               randconfig-a002-20211018
+x86_64               randconfig-a003-20211018
+i386                 randconfig-a001-20211018
+i386                 randconfig-a003-20211018
+i386                 randconfig-a004-20211018
+i386                 randconfig-a005-20211018
+i386                 randconfig-a002-20211018
+i386                 randconfig-a006-20211018
+x86_64               randconfig-a015-20211019
+x86_64               randconfig-a012-20211019
+x86_64               randconfig-a016-20211019
+x86_64               randconfig-a014-20211019
+x86_64               randconfig-a013-20211019
+x86_64               randconfig-a011-20211019
+i386                 randconfig-a014-20211019
+i386                 randconfig-a016-20211019
+i386                 randconfig-a011-20211019
+i386                 randconfig-a015-20211019
+i386                 randconfig-a012-20211019
+i386                 randconfig-a013-20211019
+arc                  randconfig-r043-20211018
+riscv                    nommu_k210_defconfig
+riscv                    nommu_virt_defconfig
+riscv                             allnoconfig
+riscv                               defconfig
+riscv                          rv32_defconfig
+riscv                            allyesconfig
+riscv                            allmodconfig
+um                           x86_64_defconfig
+um                             i386_defconfig
+x86_64                    rhel-8.3-kselftests
+x86_64                              defconfig
+x86_64                               rhel-8.3
+x86_64                                  kexec
+x86_64                           allyesconfig
+
+clang tested configs:
+mips                 randconfig-c004-20211017
+arm                  randconfig-c002-20211017
+i386                 randconfig-c001-20211017
+s390                 randconfig-c005-20211017
+arm                  randconfig-c002-20211019
+mips                 randconfig-c004-20211019
+i386                 randconfig-a001-20211019
+i386                 randconfig-a003-20211019
+i386                 randconfig-a004-20211019
+i386                 randconfig-a005-20211019
+i386                 randconfig-a002-20211019
+i386                 randconfig-a006-20211019
+x86_64               randconfig-a015-20211018
+x86_64               randconfig-a012-20211018
+x86_64               randconfig-a016-20211018
+x86_64               randconfig-a014-20211018
+x86_64               randconfig-a013-20211018
+x86_64               randconfig-a011-20211018
+i386                 randconfig-a014-20211018
+i386                 randconfig-a016-20211018
+i386                 randconfig-a011-20211018
+i386                 randconfig-a015-20211018
+i386                 randconfig-a012-20211018
+i386                 randconfig-a013-20211018
+hexagon              randconfig-r041-20211018
+s390                 randconfig-r044-20211018
+riscv                randconfig-r042-20211018
+hexagon              randconfig-r045-20211018
+hexagon              randconfig-r041-20211019
+hexagon              randconfig-r045-20211019
+
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
