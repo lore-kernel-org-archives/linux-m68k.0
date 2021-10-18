@@ -2,236 +2,163 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 78033C433EF
-	for <linux-m68k@archiver.kernel.org>; Mon, 18 Oct 2021 21:02:45 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 90BC3C433EF
+	for <linux-m68k@archiver.kernel.org>; Mon, 18 Oct 2021 22:22:05 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 4C2E76103B
-	for <linux-m68k@archiver.kernel.org>; Mon, 18 Oct 2021 21:02:45 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 6566260C41
+	for <linux-m68k@archiver.kernel.org>; Mon, 18 Oct 2021 22:22:05 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229723AbhJRVE4 (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Mon, 18 Oct 2021 17:04:56 -0400
-Received: from mga05.intel.com ([192.55.52.43]:40610 "EHLO mga05.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229529AbhJRVEz (ORCPT <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Mon, 18 Oct 2021 17:04:55 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10141"; a="314561257"
-X-IronPort-AV: E=Sophos;i="5.85,382,1624345200"; 
-   d="scan'208";a="314561257"
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Oct 2021 14:02:43 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.85,382,1624345200"; 
-   d="scan'208";a="443607079"
-Received: from lkp-server02.sh.intel.com (HELO 08b2c502c3de) ([10.239.97.151])
-  by orsmga006.jf.intel.com with ESMTP; 18 Oct 2021 14:02:42 -0700
-Received: from kbuild by 08b2c502c3de with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1mcZmL-000BkE-Qv; Mon, 18 Oct 2021 21:02:41 +0000
-Date:   Tue, 19 Oct 2021 05:02:09 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     linux-m68k@lists.linux-m68k.org
-Subject: [geert-m68k:master] BUILD SUCCESS
- 6b37b59f9fbf660843d28721a624eacc06f43273
-Message-ID: <616de0d1.njErYuMmBDlYcVCH%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+        id S232045AbhJRWYQ (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Mon, 18 Oct 2021 18:24:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44320 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232134AbhJRWYP (ORCPT
+        <rfc822;linux-m68k@vger.kernel.org>); Mon, 18 Oct 2021 18:24:15 -0400
+Received: from mail-pl1-x633.google.com (mail-pl1-x633.google.com [IPv6:2607:f8b0:4864:20::633])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 53DC5C06161C;
+        Mon, 18 Oct 2021 15:22:04 -0700 (PDT)
+Received: by mail-pl1-x633.google.com with SMTP id w17so432536plg.9;
+        Mon, 18 Oct 2021 15:22:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id;
+        bh=YRsopof5A2/00ri8cvfNmLoaL3AbJ/UUBzy5J1HTjAE=;
+        b=WLut5/yqQPRQlFB6sNQu20MRY5WRYac19gvCcyrvs9R1TXLrEvfU1FfMo3dXec6SJy
+         SXjEaKSkDai+wL7rdqP+Sm083UIR7ZmmI4gcQDxTuing7LqEJR0N3zxN1aJnLz1GPGJs
+         +kt1GU7eKzsnCrEii/vf+Vau2KC7AXtNr5wc7itLTb+3wojAb/oT041t3qq2aRZbPi+2
+         SofUrAKf0mvgtzyV3w+MxvB753re1XSdTFsl8+dek8Btwf+7mQNC0HHc27wTCnHu4Ifp
+         cNE9l/EZaOnJ1PwDuyBHUt4W1ofR4UDL5J54Ul1WSTVNnFb6B2NxmVUX+3chcA4AMyZF
+         L0XA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=YRsopof5A2/00ri8cvfNmLoaL3AbJ/UUBzy5J1HTjAE=;
+        b=vXJwb9RjhcmQlOC1NMrt9f1vf0Pp8S+gyPalch5B4an0imSxjO25MBnHT8sIrbKg41
+         yaVsGrXMcYtEULO/QxrgXQS5/uZqb52xtRUFTu0J4kovlnP9gOdTm3oosjYjWsoC2Ox+
+         wVtrrpswXbND5hHV/YrkQBTdow4j/SF4zjzZKD+NX0+QH64i1dxCkMAWg+0UX8iT4Lm5
+         oWTuFDbcQHkz+xgK7IjyYNXTwMLY9yC0Xt1+qqGOB6i8PFQW0d0eyysYPjSAqSErc0ev
+         y8gby6d7ifAzzI5VpBx7nsx4w4RYi08HDexuq5tCWT/UxwGwN+QvJX5AVzecf4p9Tl7E
+         zGFw==
+X-Gm-Message-State: AOAM530TNPD77t7qKwuxeLh2Us6FHWGWnpUx4QNqTT9Kvce2gJ75do+Q
+        kn9y+Te33f0kAkvKHEXlYDV7WvPbt4g=
+X-Google-Smtp-Source: ABdhPJx6HLGaH4A7tSbTuMILV6baudXGJmokjtCBElyrBC/7eRIYErJ8ujk+MGrl8v0+MxCwg8l9wA==
+X-Received: by 2002:a17:903:1ca:b0:13e:f367:9361 with SMTP id e10-20020a17090301ca00b0013ef3679361mr29760440plh.3.1634595723560;
+        Mon, 18 Oct 2021 15:22:03 -0700 (PDT)
+Received: from xplor.waratah.dyndns.org (222-155-4-20-adsl.sparkbb.co.nz. [222.155.4.20])
+        by smtp.gmail.com with ESMTPSA id 21sm395334pjg.57.2021.10.18.15.22.02
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Mon, 18 Oct 2021 15:22:03 -0700 (PDT)
+Received: by xplor.waratah.dyndns.org (Postfix, from userid 1000)
+        id 286DC36040C; Tue, 19 Oct 2021 11:21:59 +1300 (NZDT)
+From:   Michael Schmitz <schmitzmic@gmail.com>
+To:     linux-m68k@vger.kernel.org, geert@linux-m68k.org
+Cc:     schmitzmic@gmail.com, linux-block@vger.kernel.org,
+        Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>
+Subject: [PATCH RFC] block - ataflop.c: fix breakage introduced at blk-mq refactoring
+Date:   Tue, 19 Oct 2021 11:21:57 +1300
+Message-Id: <20211018222157.12238-1-schmitzmic@gmail.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/geert/linux-m68k.git master
-branch HEAD: 6b37b59f9fbf660843d28721a624eacc06f43273  Merge tag 'v5.15-rc6'
+Refactoring of the Atari floppy driver when converting to blk-mq
+has broken the state machine in not-so-subtle ways:
 
-elapsed time: 720m
+finish_fdc() must be called when operations on the floppy device
+have completed. This is crucial in order to relase the ST-DMA
+lock, which protects against concurrent access to the ST-DMA
+controller by other drivers (some DMA related, most just related
+to device register access - broken beyond compare, I know).
 
-configs tested: 172
-configs skipped: 4
+When rewriting the drivers' old do_request() function, the fact
+that finish_fdc() was called only when all queued requests had
+completed appears to have been overlooked. Instead, the new
+request function calls finish_fdc() immediately after the last
+request has been queued. finish_fdc() executes a dummy seek after
+most requests, and this overwrites the state machine's interrupt
+hander that was set up to wait for completion of the read/write
+request just prior. To make matters worse, finish_fdc() is called
+before device interrupts are re-enabled, making certain that the
+read/write interupt is missed.
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+Shifting the finish_fdc() call into the read/write request completion
+handler ensures the driver waits for the request to actually complete.
 
-gcc tested configs:
-arm64                            allyesconfig
-arm64                               defconfig
-arm                                 defconfig
-arm                              allyesconfig
-arm                              allmodconfig
-mips                         tb0287_defconfig
-s390                          debug_defconfig
-mips                      bmips_stb_defconfig
-powerpc                 mpc836x_mds_defconfig
-powerpc                    adder875_defconfig
-powerpc                      walnut_defconfig
-arc                        nsim_700_defconfig
-sparc                       sparc64_defconfig
-powerpc                     tqm8548_defconfig
-arm                      pxa255-idp_defconfig
-powerpc                     stx_gp3_defconfig
-mips                         cobalt_defconfig
-powerpc                     pseries_defconfig
-xtensa                       common_defconfig
-mips                            gpr_defconfig
-xtensa                         virt_defconfig
-powerpc                      obs600_defconfig
-mips                        qi_lb60_defconfig
-mips                    maltaup_xpa_defconfig
-mips                      maltasmvp_defconfig
-powerpc                     powernv_defconfig
-openrisc                            defconfig
-sh                   secureedge5410_defconfig
-powerpc                       ppc64_defconfig
-arm                         palmz72_defconfig
-arm                         nhk8815_defconfig
-m68k                          atari_defconfig
-mips                       capcella_defconfig
-powerpc               mpc834x_itxgp_defconfig
-arm                         orion5x_defconfig
-powerpc                 mpc85xx_cds_defconfig
-arm                          imote2_defconfig
-powerpc                 mpc836x_rdk_defconfig
-arm                         hackkit_defconfig
-powerpc                 mpc8560_ads_defconfig
-mips                     cu1000-neo_defconfig
-m68k                           sun3_defconfig
-mips                            e55_defconfig
-powerpc                      makalu_defconfig
-sh                         ap325rxa_defconfig
-sh                          r7780mp_defconfig
-m68k                          sun3x_defconfig
-m68k                        mvme147_defconfig
-s390                       zfcpdump_defconfig
-mips                     loongson2k_defconfig
-mips                      malta_kvm_defconfig
-arm                           stm32_defconfig
-powerpc                     mpc5200_defconfig
-arm                         cm_x300_defconfig
-powerpc                   currituck_defconfig
-powerpc                        icon_defconfig
-arm                       imx_v4_v5_defconfig
-powerpc                      ep88xc_defconfig
-arm                            hisi_defconfig
-xtensa                  nommu_kc705_defconfig
-powerpc                      tqm8xx_defconfig
-arm                       mainstone_defconfig
-sh                          r7785rp_defconfig
-m68k                         amcore_defconfig
-powerpc                     kmeter1_defconfig
-arm                  randconfig-c002-20211017
-i386                 randconfig-c001-20211017
-x86_64               randconfig-c001-20211017
-arm                  randconfig-c002-20211018
-i386                 randconfig-c001-20211018
-x86_64               randconfig-c001-20211018
-arm                  randconfig-c002-20211019
-i386                 randconfig-c001-20211019
-x86_64               randconfig-c001-20211019
-ia64                             allmodconfig
-ia64                                defconfig
-ia64                             allyesconfig
-m68k                                defconfig
-m68k                             allmodconfig
-m68k                             allyesconfig
-nios2                               defconfig
-nds32                             allnoconfig
-nds32                               defconfig
-nios2                            allyesconfig
-csky                                defconfig
-alpha                               defconfig
-alpha                            allyesconfig
-h8300                            allyesconfig
-arc                                 defconfig
-sh                               allmodconfig
-xtensa                           allyesconfig
-parisc                              defconfig
-s390                                defconfig
-s390                             allyesconfig
-s390                             allmodconfig
-parisc                           allyesconfig
-sparc                            allyesconfig
-sparc                               defconfig
-i386                                defconfig
-i386                             allyesconfig
-arc                              allyesconfig
-mips                             allyesconfig
-mips                             allmodconfig
-powerpc                          allyesconfig
-powerpc                          allmodconfig
-powerpc                           allnoconfig
-x86_64               randconfig-a004-20211018
-x86_64               randconfig-a006-20211018
-x86_64               randconfig-a005-20211018
-x86_64               randconfig-a001-20211018
-x86_64               randconfig-a002-20211018
-x86_64               randconfig-a003-20211018
-i386                 randconfig-a001-20211018
-i386                 randconfig-a003-20211018
-i386                 randconfig-a004-20211018
-i386                 randconfig-a005-20211018
-i386                 randconfig-a002-20211018
-i386                 randconfig-a006-20211018
-x86_64               randconfig-a015-20211019
-x86_64               randconfig-a012-20211019
-x86_64               randconfig-a016-20211019
-x86_64               randconfig-a014-20211019
-x86_64               randconfig-a013-20211019
-x86_64               randconfig-a011-20211019
-i386                 randconfig-a014-20211019
-i386                 randconfig-a016-20211019
-i386                 randconfig-a011-20211019
-i386                 randconfig-a015-20211019
-i386                 randconfig-a012-20211019
-i386                 randconfig-a013-20211019
-arc                  randconfig-r043-20211018
-riscv                    nommu_k210_defconfig
-riscv                    nommu_virt_defconfig
-riscv                             allnoconfig
-riscv                               defconfig
-riscv                          rv32_defconfig
-riscv                            allyesconfig
-riscv                            allmodconfig
-um                           x86_64_defconfig
-um                             i386_defconfig
-x86_64                    rhel-8.3-kselftests
-x86_64                              defconfig
-x86_64                               rhel-8.3
-x86_64                                  kexec
-x86_64                           allyesconfig
+Testing this change, I've only ever seen single sector requests with the
+'last' flag set. If there is a way to send requests to the driver
+without that flag set, I'd appreciate a hint. As it now stands,
+the driver won't release the ST-DMA lock on requests that don't have
+this flag set, but won't accept further requests because the attempt
+to acquire the already-held lock once more will fail.
 
-clang tested configs:
-mips                 randconfig-c004-20211017
-arm                  randconfig-c002-20211017
-i386                 randconfig-c001-20211017
-s390                 randconfig-c005-20211017
-arm                  randconfig-c002-20211019
-mips                 randconfig-c004-20211019
-i386                 randconfig-a001-20211019
-i386                 randconfig-a003-20211019
-i386                 randconfig-a004-20211019
-i386                 randconfig-a005-20211019
-i386                 randconfig-a002-20211019
-i386                 randconfig-a006-20211019
-x86_64               randconfig-a015-20211018
-x86_64               randconfig-a012-20211018
-x86_64               randconfig-a016-20211018
-x86_64               randconfig-a014-20211018
-x86_64               randconfig-a013-20211018
-x86_64               randconfig-a011-20211018
-i386                 randconfig-a014-20211018
-i386                 randconfig-a016-20211018
-i386                 randconfig-a011-20211018
-i386                 randconfig-a015-20211018
-i386                 randconfig-a012-20211018
-i386                 randconfig-a013-20211018
-hexagon              randconfig-r041-20211018
-s390                 randconfig-r044-20211018
-riscv                randconfig-r042-20211018
-hexagon              randconfig-r045-20211018
-hexagon              randconfig-r041-20211019
-hexagon              randconfig-r045-20211019
-
+Signed-off-by: Michael Schmitz <schmitzmic@gmail.com>
+Fixes: 6ec3938cff95f (ataflop: convert to blk-mq)
+CC: linux-block@vger.kernel.org
+CC: Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>
 ---
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+ drivers/block/ataflop.c | 19 +++++++++++++++++--
+ 1 file changed, 17 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/block/ataflop.c b/drivers/block/ataflop.c
+index 96e2abe34a72..95469b4a8f78 100644
+--- a/drivers/block/ataflop.c
++++ b/drivers/block/ataflop.c
+@@ -653,8 +653,10 @@ static inline void copy_buffer(void *from, void *to)
+ 		*p2++ = *p1++;
+ }
+ 
++/* finish_fdc() handling */
+   
+-  
++static void (*fdc_finish_action)( void ) = NULL;
++
+ 
+ /* General Interrupt Handling */
+ 
+@@ -1228,6 +1230,12 @@ static void fd_rwsec_done1(int status)
+ 	}
+ 	else {
+ 		/* all sectors finished */
++		void (*handler)( void );
++
++		handler = xchg(&fdc_finish_action, NULL);
++		if (handler)
++			handler();
++
+ 		fd_end_request_cur(BLK_STS_OK);
+ 	}
+ 	return;
+@@ -1391,6 +1399,11 @@ static void finish_fdc_done( int dummy )
+ 	DPRINT(("finish_fdc() finished\n"));
+ }
+ 
++static void queue_finish_fdc( void )
++{
++	fdc_finish_action = finish_fdc;
++}
++
+ /* The detection of disk changes is a dark chapter in Atari history :-(
+  * Because the "Drive ready" signal isn't present in the Atari
+  * hardware, one has to rely on the "Write Protect". This works fine,
+@@ -1491,6 +1504,8 @@ static blk_status_t ataflop_queue_rq(struct blk_mq_hw_ctx *hctx,
+ 	int drive = floppy - unit;
+ 	int type = floppy->type;
+ 
++	DPRINT(("Queue request: drive %d type %d\n", drive, type));
++
+ 	spin_lock_irq(&ataflop_lock);
+ 	if (fd_request) {
+ 		spin_unlock_irq(&ataflop_lock);
+@@ -1551,7 +1566,7 @@ static blk_status_t ataflop_queue_rq(struct blk_mq_hw_ctx *hctx,
+ 	do_fd_action( drive );
+ 
+ 	if (bd->last)
+-		finish_fdc();
++		queue_finish_fdc();
+ 	atari_enable_irq( IRQ_MFP_FDC );
+ 
+ out:
+-- 
+2.17.1
+
