@@ -2,92 +2,100 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 53D71C433EF
-	for <linux-m68k@archiver.kernel.org>; Tue, 19 Oct 2021 12:12:46 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id ECF12C433EF
+	for <linux-m68k@archiver.kernel.org>; Tue, 19 Oct 2021 21:30:23 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 3BF0861260
-	for <linux-m68k@archiver.kernel.org>; Tue, 19 Oct 2021 12:12:46 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id C6F476134F
+	for <linux-m68k@archiver.kernel.org>; Tue, 19 Oct 2021 21:30:23 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231236AbhJSMO6 (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Tue, 19 Oct 2021 08:14:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33086 "EHLO
+        id S229491AbhJSVcf (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Tue, 19 Oct 2021 17:32:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48378 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230097AbhJSMO5 (ORCPT
-        <rfc822;linux-m68k@vger.kernel.org>); Tue, 19 Oct 2021 08:14:57 -0400
-Received: from mail-il1-x12f.google.com (mail-il1-x12f.google.com [IPv6:2607:f8b0:4864:20::12f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 52F01C061745
-        for <linux-m68k@vger.kernel.org>; Tue, 19 Oct 2021 05:12:45 -0700 (PDT)
-Received: by mail-il1-x12f.google.com with SMTP id a8so18088795ilj.10
-        for <linux-m68k@vger.kernel.org>; Tue, 19 Oct 2021 05:12:45 -0700 (PDT)
+        with ESMTP id S229483AbhJSVcf (ORCPT
+        <rfc822;linux-m68k@vger.kernel.org>); Tue, 19 Oct 2021 17:32:35 -0400
+Received: from mail-pl1-x636.google.com (mail-pl1-x636.google.com [IPv6:2607:f8b0:4864:20::636])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 41AAFC06161C;
+        Tue, 19 Oct 2021 14:30:22 -0700 (PDT)
+Received: by mail-pl1-x636.google.com with SMTP id n11so14643213plf.4;
+        Tue, 19 Oct 2021 14:30:22 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20210112.gappssmtp.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=S2+IEK3kg0Zk0fJ8fVzfsJ8iQZtRFkLoIjiPyMP+4TQ=;
-        b=rYMR3/ayUdq6BOHApXcp3WB8LgaM+NV4OChBFajBEypzKlP5oEtHPhP6l29DHWi+u5
-         Z4xECFjipr206uH0Av8SQzdEUxp53elYQFNswRVJtpzNj+vbY5dFRLjr3pmM6OVvOv6N
-         ywdmDr8bE2+0vQrEtFDAgrabxwfygbSMXEz37Gv7mAhjZcCgQqPGNJJsMOz0nKZ14Ayc
-         7FQzr6r/MS4h+V8vkqoHZ3dOGEyTlU2jxGfk11mZIq9RsH0oKRiCveZTA8UcnQfmozUK
-         qqpMa3wOVr/XLwqkIeiV+f4+YgS8Dzreo6cUzr/U1HUy1PgXtoo/ZJM8BDdc4tGvPv9S
-         LRkA==
+        d=gmail.com; s=20210112;
+        h=from:subject:to:references:cc:message-id:date:user-agent
+         :mime-version:in-reply-to:content-transfer-encoding;
+        bh=/A0vjBtdWcQiSlwZh59qIbopjqHxgB5b4LP7gfZx3Oo=;
+        b=oILrH2qysB+qDzhwkdG8LC2R/dLRHXDpRW+GHAfo68BlOShl4R3Y5OakI73uO6ClMm
+         IXx3pihhbxSMgFAW1tl6wekLLi3NXPlc5a6a/prVsqDGe54UI3SVnE+SRqT0iB0nWU9D
+         V2C1XdG+22z7ELfnDRTljKrkcExNSoJsEzRt/LMg+soZzJ9l9EGi12k+s1f1l9XUAAfg
+         Ytc8Rqd8LB3/fs2uyDJmVuG8Tm/Kfa0lnnlubQkboz6imhqJjobVLMQvBQP2mqnjiYgC
+         NEKMLpN9CkHEjMXTQBBihpr6QQJkXeSgRrQv7cPSDYKZjytUCYc97fehiiY3hKwDQ1wr
+         61bQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=S2+IEK3kg0Zk0fJ8fVzfsJ8iQZtRFkLoIjiPyMP+4TQ=;
-        b=XLRDhpY76tIgOSJndTbzWz8L7FoHYh2T+/tFg2LEAy6jBSB8eXYJaI+BatwOkXrl7S
-         wmV98/cuAtG4SQay1TbparzPqPtYjhrcsVSJVPHPAf19K6Mq7FeMdOHSqi7txAqe21KQ
-         CWkGSLcriUb6Ied/ETTrusjghS9rnY3ZeIpaOeKj4ObTuqPT2WxYxcuAXZNATl3A5Gab
-         MuuGr0YQKFyDR1+bsruClE0JlQ2CrT/zEhvZWnUyk7laa+ilHZf24rp1OS1LrCnYtTvY
-         Z2eQ9TFhCiOEPzUj0B8P8hYHwPI6Z2T+IAdSNhBw+eVcGu87FOgQ3wj7k1hgCZIeehPC
-         EnXw==
-X-Gm-Message-State: AOAM533ofeGxaCXiCAAU/L26vYObyLAjik1QvPel/YZMy3xa+737+g0O
-        4NoMCXa3gA9PD2JZZXFpq5FnIg==
-X-Google-Smtp-Source: ABdhPJy1dAgRBhEuurIgLxhtm5eJT2y+bdnaMO2DXmtd55Pm4T/CUs9a59T40/rDSJV07Qx3iTn0cA==
-X-Received: by 2002:a05:6e02:160e:: with SMTP id t14mr18857041ilu.107.1634645564723;
-        Tue, 19 Oct 2021 05:12:44 -0700 (PDT)
-Received: from localhost.localdomain ([66.219.217.159])
-        by smtp.gmail.com with ESMTPSA id y6sm8587580ilv.57.2021.10.19.05.12.44
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 19 Oct 2021 05:12:44 -0700 (PDT)
-From:   Jens Axboe <axboe@kernel.dk>
-To:     geert@linux-m68k.org, Michael Schmitz <schmitzmic@gmail.com>,
+        h=x-gm-message-state:from:subject:to:references:cc:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding;
+        bh=/A0vjBtdWcQiSlwZh59qIbopjqHxgB5b4LP7gfZx3Oo=;
+        b=apVWCQhpuFPHK6QrcpigwPcGjMbgsEMZhs9jk4bvZqxi4YCDlaEVA9OKHx3+jLUZ5w
+         eMGlFnih0FYMH8ywh+JKUQcePmv5XBvtM47bKDxTAuIWmrIgRbzInbZ4KbWeG98TUbbZ
+         Nf79PVtmDYF4B/3bFv8tzhLR+6t70kY++vJVbth09rIfF2pTP/pLhEEjKf5YtqTCD9TU
+         dH4SFwIllhsLCBEuGP8mbYSPTWUqlxNyVlx+9o+7lDAjDySJs3KGjFuDIXUMA7oZdbIX
+         ob6ryZWOJcw7LMM75M/JWoM0fG+NPSXyiV1pClWNQixBVOj9D9CHdgeCqwEpQ7Rn83/R
+         BjRw==
+X-Gm-Message-State: AOAM533+wXnu2+3E48VjAPtksxeL6NCfS8nesImX/pLvT11vJWOgsb7F
+        KolzE3WvlRc0tpYhlCZi/ycBUwwLGrc=
+X-Google-Smtp-Source: ABdhPJzHARR0Ko1Jx1iA5U9QYvyBKHW+A2haok8dfwMYjyR0ffa+wpvQVT5VJi9wDnU3uBDUfjY1Yg==
+X-Received: by 2002:a17:902:9b8a:b0:13f:c286:a060 with SMTP id y10-20020a1709029b8a00b0013fc286a060mr12356715plp.66.1634679021318;
+        Tue, 19 Oct 2021 14:30:21 -0700 (PDT)
+Received: from [10.1.1.26] (222-155-4-20-adsl.sparkbb.co.nz. [222.155.4.20])
+        by smtp.gmail.com with ESMTPSA id a12sm3554685pjq.16.2021.10.19.14.30.18
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Tue, 19 Oct 2021 14:30:20 -0700 (PDT)
+From:   Michael Schmitz <schmitzmic@gmail.com>
+Subject: Re: [PATCH v2] block - ataflop.c: fix breakage introduced at blk-mq
+ refactoring
+To:     Jens Axboe <axboe@kernel.dk>, geert@linux-m68k.org,
         linux-m68k@vger.kernel.org
-Cc:     Jens Axboe <axboe@kernel.dk>,
-        Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
-        linux-block@vger.kernel.org
-Subject: Re: [PATCH v2] block - ataflop.c: fix breakage introduced at blk-mq refactoring
-Date:   Tue, 19 Oct 2021 06:12:41 -0600
-Message-Id: <163464555754.595860.5260761740824485566.b4-ty@kernel.dk>
-X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211019061321.26425-1-schmitzmic@gmail.com>
 References: <20211019061321.26425-1-schmitzmic@gmail.com>
+ <163464555754.595860.5260761740824485566.b4-ty@kernel.dk>
+Cc:     Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
+        linux-block@vger.kernel.org
+Message-ID: <658a78d1-942c-3099-eaac-91afbbddc31c@gmail.com>
+Date:   Wed, 20 Oct 2021 10:30:09 +1300
+User-Agent: Mozilla/5.0 (X11; Linux ppc64; rv:45.0) Gecko/20100101
+ Thunderbird/45.8.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <163464555754.595860.5260761740824485566.b4-ty@kernel.dk>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-On Tue, 19 Oct 2021 19:13:21 +1300, Michael Schmitz wrote:
-> Refactoring of the Atari floppy driver when converting to blk-mq
-> has broken the state machine in not-so-subtle ways:
-> 
-> finish_fdc() must be called when operations on the floppy device
-> have completed. This is crucial in order to relase the ST-DMA
-> lock, which protects against concurrent access to the ST-DMA
-> controller by other drivers (some DMA related, most just related
-> to device register access - broken beyond compare, I know).
-> 
-> [...]
+Thanks Jens,
 
-Applied, thanks!
+I'll pore over the code some more to see if there are any other problems...
 
-[1/1] block - ataflop.c: fix breakage introduced at blk-mq refactoring
-      commit: 86d46fdaa12ae5befc16b8d73fc85a3ca0399ea6
+Cheers,
 
-Best regards,
--- 
-Jens Axboe
+	Michael
 
-
+On 20/10/21 01:12, Jens Axboe wrote:
+> On Tue, 19 Oct 2021 19:13:21 +1300, Michael Schmitz wrote:
+>> Refactoring of the Atari floppy driver when converting to blk-mq
+>> has broken the state machine in not-so-subtle ways:
+>>
+>> finish_fdc() must be called when operations on the floppy device
+>> have completed. This is crucial in order to relase the ST-DMA
+>> lock, which protects against concurrent access to the ST-DMA
+>> controller by other drivers (some DMA related, most just related
+>> to device register access - broken beyond compare, I know).
+>>
+>> [...]
+>
+> Applied, thanks!
+>
+> [1/1] block - ataflop.c: fix breakage introduced at blk-mq refactoring
+>       commit: 86d46fdaa12ae5befc16b8d73fc85a3ca0399ea6
+>
+> Best regards,
+>
