@@ -2,100 +2,97 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id ECF12C433EF
-	for <linux-m68k@archiver.kernel.org>; Tue, 19 Oct 2021 21:30:23 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 16E07C433F5
+	for <linux-m68k@archiver.kernel.org>; Thu, 21 Oct 2021 03:43:50 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id C6F476134F
-	for <linux-m68k@archiver.kernel.org>; Tue, 19 Oct 2021 21:30:23 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id F0E6C60ED3
+	for <linux-m68k@archiver.kernel.org>; Thu, 21 Oct 2021 03:43:49 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229491AbhJSVcf (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Tue, 19 Oct 2021 17:32:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48378 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229483AbhJSVcf (ORCPT
-        <rfc822;linux-m68k@vger.kernel.org>); Tue, 19 Oct 2021 17:32:35 -0400
-Received: from mail-pl1-x636.google.com (mail-pl1-x636.google.com [IPv6:2607:f8b0:4864:20::636])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 41AAFC06161C;
-        Tue, 19 Oct 2021 14:30:22 -0700 (PDT)
-Received: by mail-pl1-x636.google.com with SMTP id n11so14643213plf.4;
-        Tue, 19 Oct 2021 14:30:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:subject:to:references:cc:message-id:date:user-agent
-         :mime-version:in-reply-to:content-transfer-encoding;
-        bh=/A0vjBtdWcQiSlwZh59qIbopjqHxgB5b4LP7gfZx3Oo=;
-        b=oILrH2qysB+qDzhwkdG8LC2R/dLRHXDpRW+GHAfo68BlOShl4R3Y5OakI73uO6ClMm
-         IXx3pihhbxSMgFAW1tl6wekLLi3NXPlc5a6a/prVsqDGe54UI3SVnE+SRqT0iB0nWU9D
-         V2C1XdG+22z7ELfnDRTljKrkcExNSoJsEzRt/LMg+soZzJ9l9EGi12k+s1f1l9XUAAfg
-         Ytc8Rqd8LB3/fs2uyDJmVuG8Tm/Kfa0lnnlubQkboz6imhqJjobVLMQvBQP2mqnjiYgC
-         NEKMLpN9CkHEjMXTQBBihpr6QQJkXeSgRrQv7cPSDYKZjytUCYc97fehiiY3hKwDQ1wr
-         61bQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:subject:to:references:cc:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding;
-        bh=/A0vjBtdWcQiSlwZh59qIbopjqHxgB5b4LP7gfZx3Oo=;
-        b=apVWCQhpuFPHK6QrcpigwPcGjMbgsEMZhs9jk4bvZqxi4YCDlaEVA9OKHx3+jLUZ5w
-         eMGlFnih0FYMH8ywh+JKUQcePmv5XBvtM47bKDxTAuIWmrIgRbzInbZ4KbWeG98TUbbZ
-         Nf79PVtmDYF4B/3bFv8tzhLR+6t70kY++vJVbth09rIfF2pTP/pLhEEjKf5YtqTCD9TU
-         dH4SFwIllhsLCBEuGP8mbYSPTWUqlxNyVlx+9o+7lDAjDySJs3KGjFuDIXUMA7oZdbIX
-         ob6ryZWOJcw7LMM75M/JWoM0fG+NPSXyiV1pClWNQixBVOj9D9CHdgeCqwEpQ7Rn83/R
-         BjRw==
-X-Gm-Message-State: AOAM533+wXnu2+3E48VjAPtksxeL6NCfS8nesImX/pLvT11vJWOgsb7F
-        KolzE3WvlRc0tpYhlCZi/ycBUwwLGrc=
-X-Google-Smtp-Source: ABdhPJzHARR0Ko1Jx1iA5U9QYvyBKHW+A2haok8dfwMYjyR0ffa+wpvQVT5VJi9wDnU3uBDUfjY1Yg==
-X-Received: by 2002:a17:902:9b8a:b0:13f:c286:a060 with SMTP id y10-20020a1709029b8a00b0013fc286a060mr12356715plp.66.1634679021318;
-        Tue, 19 Oct 2021 14:30:21 -0700 (PDT)
-Received: from [10.1.1.26] (222-155-4-20-adsl.sparkbb.co.nz. [222.155.4.20])
-        by smtp.gmail.com with ESMTPSA id a12sm3554685pjq.16.2021.10.19.14.30.18
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 19 Oct 2021 14:30:20 -0700 (PDT)
-From:   Michael Schmitz <schmitzmic@gmail.com>
-Subject: Re: [PATCH v2] block - ataflop.c: fix breakage introduced at blk-mq
- refactoring
-To:     Jens Axboe <axboe@kernel.dk>, geert@linux-m68k.org,
-        linux-m68k@vger.kernel.org
-References: <20211019061321.26425-1-schmitzmic@gmail.com>
- <163464555754.595860.5260761740824485566.b4-ty@kernel.dk>
-Cc:     Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
-        linux-block@vger.kernel.org
-Message-ID: <658a78d1-942c-3099-eaac-91afbbddc31c@gmail.com>
-Date:   Wed, 20 Oct 2021 10:30:09 +1300
-User-Agent: Mozilla/5.0 (X11; Linux ppc64; rv:45.0) Gecko/20100101
- Thunderbird/45.8.0
+        id S231409AbhJUDqC (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Wed, 20 Oct 2021 23:46:02 -0400
+Received: from mx0a-00069f02.pphosted.com ([205.220.165.32]:9822 "EHLO
+        mx0a-00069f02.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231443AbhJUDpt (ORCPT
+        <rfc822;linux-m68k@lists.linux-m68k.org>);
+        Wed, 20 Oct 2021 23:45:49 -0400
+Received: from pps.filterd (m0246629.ppops.net [127.0.0.1])
+        by mx0b-00069f02.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 19L345vU029738;
+        Thu, 21 Oct 2021 03:43:10 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
+ subject : date : message-id : in-reply-to : references : mime-version :
+ content-type : content-transfer-encoding; s=corp-2021-07-09;
+ bh=BSjTWby1MMCLQUchrOSGc4QoXnzcMZ91l35lRX12C+A=;
+ b=s10GXTgGaX78Zmg+DOSDrfc0P0mwy8l94S/NZcyOPTkKyIMY2Y0KlCwxCAx31besDrcr
+ gXfw3fEKtGCdejoVtEWUD00kuevcL/euKQ1b4LL0nm4E8CV6SIOFqCYP0rxj7RC74EVk
+ e1PqokwRndi0pkrqAVruOVLwEN5l5viuqDFrINzci/HP18Znfe79FD5iVhadUThPY2uw
+ odRGpVz8brO185YsW3tTaXuLihuEjMaflid8MLFI6u/8vn+luvxy/mDr7zofRsdPscVh
+ mNLR9sg3Koj94WqKMhqpn6d0kreDZqZeu97CD8yHp5SK3EUYUYKj0bD7U5PsVZFWhw4s kA== 
+Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
+        by mx0b-00069f02.pphosted.com with ESMTP id 3btkwj3wvw-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 21 Oct 2021 03:43:10 +0000
+Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
+        by aserp3030.oracle.com (8.16.1.2/8.16.1.2) with SMTP id 19L3etve078225;
+        Thu, 21 Oct 2021 03:43:08 GMT
+Received: from pps.reinject (localhost [127.0.0.1])
+        by aserp3030.oracle.com with ESMTP id 3bqmshem6t-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 21 Oct 2021 03:43:08 +0000
+Received: from aserp3030.oracle.com (aserp3030.oracle.com [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 19L3gu8A082116;
+        Thu, 21 Oct 2021 03:43:07 GMT
+Received: from ca-mkp.mkp.ca.oracle.com (ca-mkp.ca.oracle.com [10.156.108.201])
+        by aserp3030.oracle.com with ESMTP id 3bqmshekyd-13;
+        Thu, 21 Oct 2021 03:43:07 +0000
+From:   "Martin K. Petersen" <martin.petersen@oracle.com>
+To:     zhuyifei1999@gmail.com, thehajime@gmail.com, hare@suse.de,
+        jinpu.wang@ionos.com, jgross@suse.com, johannes.berg@intel.com,
+        geert@linux-m68k.org, linux-mtd@lists.infradead.org,
+        miquel.raynal@bootlin.com, axboe@kernel.dk,
+        Luis Chamberlain <mcgrof@kernel.org>, jdike@addtoit.com,
+        kent.overstreet@gmail.com, richard@nod.at, colyli@suse.de,
+        agk@redhat.com, haris.iqbal@ionos.com, krisman@collabora.com,
+        roger.pau@citrix.com, anton.ivanov@cambridgegreys.com,
+        sstabellini@kernel.org, ulf.hansson@linaro.org, vigneshr@ti.com,
+        chris.obbard@collabora.com, jejb@linux.ibm.com,
+        boris.ostrovsky@oracle.com, tj@kernel.org, snitzer@redhat.com
+Cc:     "Martin K . Petersen" <martin.petersen@oracle.com>,
+        linux-um@lists.infradead.org, linux-block@vger.kernel.org,
+        xen-devel@lists.xenproject.org, linux-scsi@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-m68k@lists.linux-m68k.org,
+        dm-devel@redhat.com, linux-bcache@vger.kernel.org
+Subject: Re: [PATCH 0/9] block: reviewed add_disk() error handling set
+Date:   Wed, 20 Oct 2021 23:42:44 -0400
+Message-Id: <163478764105.7011.9400354892813636458.b4-ty@oracle.com>
+X-Mailer: git-send-email 2.32.0
+In-Reply-To: <20211015233028.2167651-1-mcgrof@kernel.org>
+References: <20211015233028.2167651-1-mcgrof@kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <163464555754.595860.5260761740824485566.b4-ty@kernel.dk>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+X-Proofpoint-ORIG-GUID: BAR8nzodBeKYX4DEPTjC7SU079lshTb2
+X-Proofpoint-GUID: BAR8nzodBeKYX4DEPTjC7SU079lshTb2
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-Thanks Jens,
+On Fri, 15 Oct 2021 16:30:19 -0700, Luis Chamberlain wrote:
 
-I'll pore over the code some more to see if there are any other problems...
+> Jens,
+> 
+> I had last split up patches into 7 groups, but at this point now
+> most changes are merged except a few more drivers. Instead of creating
+> a new patch set for each of the 7 groups I'm creating 3 new groups of
+> patches now:
+> 
+> [...]
 
-Cheers,
+Applied to 5.16/scsi-queue, thanks!
 
-	Michael
+[1/9] scsi/sd: add error handling support for add_disk()
+      https://git.kernel.org/mkp/scsi/c/2a7a891f4c40
+[2/9] scsi/sr: add error handling support for add_disk()
+      https://git.kernel.org/mkp/scsi/c/e9d658c2175b
 
-On 20/10/21 01:12, Jens Axboe wrote:
-> On Tue, 19 Oct 2021 19:13:21 +1300, Michael Schmitz wrote:
->> Refactoring of the Atari floppy driver when converting to blk-mq
->> has broken the state machine in not-so-subtle ways:
->>
->> finish_fdc() must be called when operations on the floppy device
->> have completed. This is crucial in order to relase the ST-DMA
->> lock, which protects against concurrent access to the ST-DMA
->> controller by other drivers (some DMA related, most just related
->> to device register access - broken beyond compare, I know).
->>
->> [...]
->
-> Applied, thanks!
->
-> [1/1] block - ataflop.c: fix breakage introduced at blk-mq refactoring
->       commit: 86d46fdaa12ae5befc16b8d73fc85a3ca0399ea6
->
-> Best regards,
->
+-- 
+Martin K. Petersen	Oracle Linux Engineering
