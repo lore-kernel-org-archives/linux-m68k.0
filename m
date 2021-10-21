@@ -2,113 +2,82 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id AFEBAC433FE
-	for <linux-m68k@archiver.kernel.org>; Thu, 21 Oct 2021 15:01:18 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 28AEEC433EF
+	for <linux-m68k@archiver.kernel.org>; Thu, 21 Oct 2021 16:20:10 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 9DDDB61205
-	for <linux-m68k@archiver.kernel.org>; Thu, 21 Oct 2021 15:01:18 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 0639C6136F
+	for <linux-m68k@archiver.kernel.org>; Thu, 21 Oct 2021 16:20:10 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231628AbhJUPDd (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Thu, 21 Oct 2021 11:03:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46740 "EHLO
+        id S231596AbhJUQWZ (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Thu, 21 Oct 2021 12:22:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37674 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231567AbhJUPDZ (ORCPT
+        with ESMTP id S231424AbhJUQWY (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Thu, 21 Oct 2021 11:03:25 -0400
-Received: from mail-oi1-x230.google.com (mail-oi1-x230.google.com [IPv6:2607:f8b0:4864:20::230])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AE0A1C061348
-        for <linux-m68k@lists.linux-m68k.org>; Thu, 21 Oct 2021 08:01:09 -0700 (PDT)
-Received: by mail-oi1-x230.google.com with SMTP id o204so1151186oih.13
-        for <linux-m68k@lists.linux-m68k.org>; Thu, 21 Oct 2021 08:01:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20210112.gappssmtp.com; s=20210112;
-        h=from:to:cc:in-reply-to:references:subject:message-id:date
-         :mime-version:content-transfer-encoding;
-        bh=6jnVZbBkLbnw6pFZpxUldRg4FuFfEZElhVVQao3Uy20=;
-        b=ZGFMo833ta2HUfgqVLXUNHJV5pTUNb23BosrQDRrArzz1VYW1rZvujqd1q9AvwL/2L
-         I3qasTS/LaOX+rTG38fA1WkYeozE1AIG6Y1LWW3KJy++pLKzaue+ysn5BR5qqBazSL3X
-         IVR4Fjt0Mg/h6j4Zo8LPwJHvk9rRXi+EODiN4CZjW0a3nWKAwsxdaWUyN0Iinpv2NO0m
-         dB+Q+OGRW5ZAtyv3ynB4fi22vLxF+kmJ+bRRxyM9NM8BrnQaDlNccb6EwaqBPSB/5dXE
-         w0UzuwJbGrVM1iqd9niPDqAPfBdtIGPYSTrtcyZITTG5mzlvKTmg+/w7FrEp4Vj/y3G+
-         Cdig==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:in-reply-to:references:subject
-         :message-id:date:mime-version:content-transfer-encoding;
-        bh=6jnVZbBkLbnw6pFZpxUldRg4FuFfEZElhVVQao3Uy20=;
-        b=tRdclYDToeGlvs+uoPQbEwNprqkkIUCyHwoQC6U4IFxi5qHNNAMYzw9fWHyk9b6DzR
-         NdEBArr1jC6C7RHFG8EAvWEEPULx3xb8ja0vQCF9vckrlLmZBDPlrRKXc1igJA18Suqv
-         9mKVOMbEwWpnFRSRaIESULxRFmYywlwANixx0Jay4+n9PAgFAPq6mDP+ERRa8yaI72bY
-         dJJx4WynoQEoerx46UXRifLWCDtICZTDjJbTZReCF7ASfBp8Jb30un/4ESNS8isPXKwr
-         mv9UwwcoB/iiDcnKE2Lu0P1w0KVXr1kY/QausBs+xYqTnklabiMdQShReyjfqV+1UUeT
-         mbSQ==
-X-Gm-Message-State: AOAM531+y3mFLOPyEPjz8i/tjDeyp9l9VINvstVsSbCRgFcf5RN5ZUwE
-        PxKAoSMZQotkzfBUwoN+PhWxWg==
-X-Google-Smtp-Source: ABdhPJxcqYzZpw8hjWvx8wtyMAFaG+Ip962yojdp/B4kEz2Pn9lx52Qn4eX8lgw7zW26Sgpyf8s+nQ==
-X-Received: by 2002:a05:6808:3c9:: with SMTP id o9mr4905862oie.20.1634828468846;
-        Thu, 21 Oct 2021 08:01:08 -0700 (PDT)
-Received: from [127.0.1.1] ([2600:380:783a:c43c:af64:c142:4db7:63ac])
-        by smtp.gmail.com with ESMTPSA id w18sm1173833ott.29.2021.10.21.08.01.06
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 21 Oct 2021 08:01:08 -0700 (PDT)
-From:   Jens Axboe <axboe@kernel.dk>
-To:     thehajime@gmail.com, zhuyifei1999@gmail.com, haris.iqbal@ionos.com,
-        johannes.berg@intel.com, roger.pau@citrix.com,
-        miquel.raynal@bootlin.com, jdike@addtoit.com,
-        anton.ivanov@cambridgegreys.com, geert@linux-m68k.org,
-        krisman@collabora.com, vigneshr@ti.com, richard@nod.at,
-        hare@suse.de, jinpu.wang@ionos.com, jgross@suse.com,
-        sstabellini@kernel.org, ulf.hansson@linaro.org, agk@redhat.com,
-        linux-mtd@lists.infradead.org,
-        Luis Chamberlain <mcgrof@kernel.org>, tj@kernel.org,
-        colyli@suse.de, jejb@linux.ibm.com, chris.obbard@collabora.com,
-        snitzer@redhat.com, boris.ostrovsky@oracle.com,
-        kent.overstreet@gmail.com, martin.petersen@oracle.com
-Cc:     linux-block@vger.kernel.org, dm-devel@redhat.com,
-        xen-devel@lists.xenproject.org, linux-um@lists.infradead.org,
-        linux-bcache@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-m68k@lists.linux-m68k.org, linux-scsi@vger.kernel.org
-In-Reply-To: <20211015233028.2167651-1-mcgrof@kernel.org>
-References: <20211015233028.2167651-1-mcgrof@kernel.org>
-Subject: Re: (subset) [PATCH 0/9] block: reviewed add_disk() error handling set
-Message-Id: <163482846658.50565.12530170761457767964.b4-ty@kernel.dk>
-Date:   Thu, 21 Oct 2021 09:01:06 -0600
+        Thu, 21 Oct 2021 12:22:24 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A28B5C061764;
+        Thu, 21 Oct 2021 09:20:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=Sender:In-Reply-To:Content-Type:
+        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=j3cARMZC1YE0ryBVMhAl66n8bE53g1begq+IwJ+0mbU=; b=KPsOmz6IMNhjy1klpJ7Ivlx2Lq
+        aveGHmP3DNWMV7WS4Cd0KmigLGC2vGPeJdfwiNMfjNXVh/qpMEFJc5TWdIRpWVaq1sWM2rUxN58DQ
+        RHT2ACcPNdj9XCi4iK1iaokzLyRo3hyrpygM8LUunT2jHY3XSnJZzdHDN+XcZDs0a2zdviQ6N1kWK
+        EHP5wdGKUtrqDrr4rBPNI8cdhvBtHFPmzoYtDkCXxY4tKxrVO6A7xCd2PPkiqYqbeQoDWCBoXsXNj
+        w8PCIwihpXdw8uFFTd7HkJpMv0k/mIqWfzIsnqCjPIBdylU+4L/aTctl7W61Tbk79qEhfwmwDaN+u
+        xDeOBAQA==;
+Received: from mcgrof by bombadil.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mdanW-008L1Y-6b; Thu, 21 Oct 2021 16:20:06 +0000
+Date:   Thu, 21 Oct 2021 09:20:06 -0700
+From:   Luis Chamberlain <mcgrof@kernel.org>
+To:     Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>
+Cc:     Michael Schmitz <schmitzmic@gmail.com>,
+        linux-block@vger.kernel.org, linux-m68k@lists.linux-m68k.org,
+        Christoph Hellwig <hch@lst.de>,
+        Finn Thain <fthain@linux-m68k.org>
+Subject: Re: [PATCH v2] ataflop: remove ataflop_probe_lock mutex
+Message-ID: <YXGTNjhWfVjsB9A8@bombadil.infradead.org>
+References: <1d9351dc-baeb-1a54-625c-04ce01b009b0@i-love.sakura.ne.jp>
+ <6d26961c-3b51-d6e1-fb95-b72e720ed5d0@gmail.com>
+ <5524e6ee-e469-9775-07c4-7baf5e330148@i-love.sakura.ne.jp>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <5524e6ee-e469-9775-07c4-7baf5e330148@i-love.sakura.ne.jp>
+Sender: Luis Chamberlain <mcgrof@infradead.org>
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-On Fri, 15 Oct 2021 16:30:19 -0700, Luis Chamberlain wrote:
-> Jens,
+On Sun, Oct 17, 2021 at 11:09:47AM +0900, Tetsuo Handa wrote:
+> Commit bf9c0538e485b591 ("ataflop: use a separate gendisk for each media
+> format") introduced ataflop_probe_lock mutex, but forgot to unlock the
+> mutex when atari_floppy_init() (i.e. module loading) succeeded. This will
+> result in double lock deadlock if ataflop_probe() is called. Also,
+> unregister_blkdev() must not be called from atari_floppy_init() with
+> ataflop_probe_lock held when atari_floppy_init() failed, for
+> ataflop_probe() waits for ataflop_probe_lock with major_names_lock held
+> (i.e. AB-BA deadlock).
 > 
-> I had last split up patches into 7 groups, but at this point now
-> most changes are merged except a few more drivers. Instead of creating
-> a new patch set for each of the 7 groups I'm creating 3 new groups of
-> patches now:
+> __register_blkdev() needs to be called last in order to avoid calling
+> ataflop_probe() when atari_floppy_init() is about to fail, for memory for
+> completing already-started ataflop_probe() safely will be released as soon
+> as atari_floppy_init() released ataflop_probe_lock mutex.
 > 
-> [...]
+> As with commit 8b52d8be86d72308 ("loop: reorder loop_exit"),
+> unregister_blkdev() needs to be called first in order to avoid calling
+> ataflop_alloc_disk() from ataflop_probe() after del_gendisk() from
+> atari_floppy_exit().
+> 
+> By relocating __register_blkdev() / unregister_blkdev() as explained above,
+> we can remove ataflop_probe_lock mutex, for probe function and __exit
+> function are serialized by major_names_lock mutex.
+> 
+> Signed-off-by: Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
+> Fixes: bf9c0538e485b591 ("ataflop: use a separate gendisk for each media format")
 
-Applied, thanks!
+Reviewed-by: Luis Chamberlain <mcgrof@kernel.org>
 
-[3/9] dm: add add_disk() error handling
-      commit: e7089f65dd51afeda5eb760506b5950d95f9ec29
-[4/9] bcache: add error handling support for add_disk()
-      commit: 2961c3bbcaec0ed7fb7b9a465b3796f37f2294e5
-[5/9] xen-blkfront: add error handling support for add_disk()
-      commit: 293a7c528803321479593d42d0898bb5a9769db1
-[6/9] m68k/emu/nfblock: add error handling support for add_disk()
-      commit: 21fd880d3da7564bab68979417cab7408e4f9642
-[7/9] um/drivers/ubd_kern: add error handling support for add_disk()
-      commit: 66638f163a2b5c5b462ca38525129b14a20117eb
-[8/9] rnbd: add error handling support for add_disk()
-      commit: 2e9e31bea01997450397d64da43b6675e0adb9e3
-[9/9] mtd: add add_disk() error handling
-      commit: 83b863f4a3f0de4ece7802d9121fed0c3e64145f
-
-Best regards,
--- 
-Jens Axboe
-
-
+  Luis
