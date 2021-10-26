@@ -2,60 +2,59 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 91D00C433F5
-	for <linux-m68k@archiver.kernel.org>; Tue, 26 Oct 2021 21:24:52 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 307F6C433FE
+	for <linux-m68k@archiver.kernel.org>; Tue, 26 Oct 2021 21:34:59 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 77ED760F9B
-	for <linux-m68k@archiver.kernel.org>; Tue, 26 Oct 2021 21:24:52 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 18FE960F6F
+	for <linux-m68k@archiver.kernel.org>; Tue, 26 Oct 2021 21:34:59 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239581AbhJZV1P (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Tue, 26 Oct 2021 17:27:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38750 "EHLO
+        id S239652AbhJZVhW (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Tue, 26 Oct 2021 17:37:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41068 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239580AbhJZV1P (ORCPT
+        with ESMTP id S232186AbhJZVhU (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Tue, 26 Oct 2021 17:27:15 -0400
-Received: from mail-lj1-x22c.google.com (mail-lj1-x22c.google.com [IPv6:2a00:1450:4864:20::22c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 033D7C061745
-        for <linux-m68k@lists.linux-m68k.org>; Tue, 26 Oct 2021 14:24:51 -0700 (PDT)
-Received: by mail-lj1-x22c.google.com with SMTP id o26so1156173ljj.2
-        for <linux-m68k@lists.linux-m68k.org>; Tue, 26 Oct 2021 14:24:50 -0700 (PDT)
+        Tue, 26 Oct 2021 17:37:20 -0400
+Received: from mail-lj1-x229.google.com (mail-lj1-x229.google.com [IPv6:2a00:1450:4864:20::229])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7747FC061745
+        for <linux-m68k@lists.linux-m68k.org>; Tue, 26 Oct 2021 14:34:56 -0700 (PDT)
+Received: by mail-lj1-x229.google.com with SMTP id 205so1119016ljf.9
+        for <linux-m68k@lists.linux-m68k.org>; Tue, 26 Oct 2021 14:34:56 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=soleen.com; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=eH7S5IumUVeN7L8l1WgDLmgF00kuecfKrHYb8RcvYCs=;
-        b=AjHm0pXtMOyYcyYD3wvK5+j6X3gTYWxd2SRvwXksgKKjz9avBBM7spcuif+K+BVMJY
-         d7mI5LVg0RqlXjn3XsrNUkpcG9WkpQFA3Ptcvsg45ufd9zxnAqWUyqDqlpcwKxP5Sefv
-         SjtrYVFeeO/7duhIxQhyuB8jLaYa0aP3Dlt4cUDecgxkq81mn0J+sezkaNIBA0x5OvpC
-         0ITSj5rk5Cx/U52Fbx9JhzyKC+KPngCZzQ15+AvS+iR0n2Eb96MbUn+rLAPhNzD3oJ+7
-         nsbuERUC51elKjxAh+TTG02wbx4PUcqCbvSpON8ShUxJ1GXhM8UYvgAjkBOkxUFojuHr
-         7s4w==
+        bh=g6bRc3hEdmoyhbDnFfzjpCbgpj5AnIIMpxpQWkoEAPc=;
+        b=Q4c50WAkXBkEgY6gvfcvo5e8MhJnvWwBTJNOzFIu/Getb0WstjIXLdG5eqbfR8JHCO
+         E6Y0rOmp5bYSVo1Q9PcxShZiHfhSraEdNL+WfcryfjngLxGyqGCsA5mFOURH3O99GL/i
+         KVy9PC23hRaZpo6bFOq801aVnJMORPKPAlnrqhhYhS6shRWe6cLbC0zIajMFQL8Rjy+Y
+         9c1nn6cpFy+B2gmYUl2It8YpTn+2JQ5ZHX22aV2hXltq1IDGBQO1f7LThO574E+8qUnV
+         crYxEAr25H0V5ROMUrRin0hi1zM0AlaD7yMwLRHVEEVtJLGIPpPI2022dKE11PYdtY6s
+         4Pvg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=eH7S5IumUVeN7L8l1WgDLmgF00kuecfKrHYb8RcvYCs=;
-        b=vlAXueXHPzQG4RZRjZk9BoQQoemlj4fE910Kr9/Kp5xTtpm5cqq3IZhPSp6QeqGMuY
-         q6lxYoQuo0+QaHPz9kc1ZoMaD0wHSVuxVby+BnxPk4GcdCvMG5h7XVBcGgvEHyu0EkU2
-         JHocQ051GxrRNec5F3HdDJy0KtaggXTi5JqFQT2OJB42KOwLFq78tWUQMjbUSlSbE4gV
-         0Pbx8bG8AMnYCF1yIbXMxWsNJ1isqK2PfPzdVEAGOmEBBWTFw0Api4vgES6Hnp3SPXeS
-         UneW/hqZUqaC3bt3z5iu0CFuGRVdGxo4IX313vYdPfayrS7n2FZ5jH/fuhfLVyJooBtR
-         Zvpw==
-X-Gm-Message-State: AOAM531vdAAKpDqeuET/Ch5VjgH8+7Vc2RDmWAdjr8ZzialRzaoHx2MK
-        0u9lhVy0/0gtVGaIxiLNX1rFRrTLTdMeluK6QfkbPQ==
-X-Google-Smtp-Source: ABdhPJxgEpVsONeBJ/mXU1kEZqRAB95gArl1xcPgE1AXUX5wSDjbzr/NDKJ0OuOSRof/wfJ+uUwFFDvm4D0CbfOmcYI=
-X-Received: by 2002:a2e:810c:: with SMTP id d12mr29001490ljg.177.1635283489290;
- Tue, 26 Oct 2021 14:24:49 -0700 (PDT)
+        bh=g6bRc3hEdmoyhbDnFfzjpCbgpj5AnIIMpxpQWkoEAPc=;
+        b=BS5HF5F/rXGfQlTTGxPvgKGNAuxWHuYyQnLWw/goFBZ3v/5psSQOipRa7TYcK7U1X7
+         yHQQSEA9VodQHdfXdjJycYdcxTlYW9hqpXlY1SZdBI7o8Q/scNt+ajE3hCK5Mto/4/C8
+         KIYBjKRxW5cBFsVklwWRO/5zMqBh2vnyNZK+w0ZynVC4IfUVN9Qw1k5DnLvpR1HVgs0p
+         jUSUmo8TmWTr5V2zgh7l63KLfjMy6W4a3DPqLSo+tUbdA8ttEsKfxUlEnzBv5CUnB/f3
+         YKMAc7oXBo9XYANbmxUgP0ZCtiINnB6NjkC5d3oZFO6EKbTnj0zuwdm4XjPr1hUYTjBB
+         FABA==
+X-Gm-Message-State: AOAM531faRdLC5IKxkoPahHpxNtYJQ26P5Sgo8f9LAhjjcnNTW2gbMZ+
+        HkmtXANNmW/MZH6TcV9TMViBtl0t2QxANbHYgs0kNg==
+X-Google-Smtp-Source: ABdhPJyq6ZHqYiDS8wM3KDSM1FRUj5xGQE4Nq6PhjHX04LBcqXGgXrhGvXWB7NaICqxAg2MRMZNWWZ7nPiqdXVQhY5o=
+X-Received: by 2002:a2e:a0d7:: with SMTP id f23mr29374831ljm.422.1635284094799;
+ Tue, 26 Oct 2021 14:34:54 -0700 (PDT)
 MIME-Version: 1.0
 References: <20211026173822.502506-1-pasha.tatashin@soleen.com>
- <YXhHq52jDrU61V4E@casper.infradead.org> <CA+CK2bBbGEJa4s7HtgQkG_tZmN66UaVcDRovgLz4q+a0VGSqZg@mail.gmail.com>
- <YXhhbSSRQrG5Av6P@casper.infradead.org>
-In-Reply-To: <YXhhbSSRQrG5Av6P@casper.infradead.org>
+ <20211026173822.502506-2-pasha.tatashin@soleen.com> <YXhbq/6OIpIAr7Tx@casper.infradead.org>
+In-Reply-To: <YXhbq/6OIpIAr7Tx@casper.infradead.org>
 From:   Pasha Tatashin <pasha.tatashin@soleen.com>
-Date:   Tue, 26 Oct 2021 17:24:12 -0400
-Message-ID: <CA+CK2bBhMHv=G0Hd=rmCHUjKDOw0sYhOX2q3DfBXSJWFdQj8BQ@mail.gmail.com>
-Subject: Re: [RFC 0/8] Hardening page _refcount
+Date:   Tue, 26 Oct 2021 17:34:18 -0400
+Message-ID: <CA+CK2bCZO5J-NRqavWFKXt+yB1u17dFA9VrW48HLBepiQLJtcA@mail.gmail.com>
+Subject: Re: [RFC 1/8] mm: add overflow and underflow checks for page->_refcount
 To:     Matthew Wilcox <willy@infradead.org>
 Cc:     LKML <linux-kernel@vger.kernel.org>, linux-mm <linux-mm@kvack.org>,
         linux-m68k@lists.linux-m68k.org,
@@ -75,63 +74,36 @@ Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-On Tue, Oct 26, 2021 at 4:14 PM Matthew Wilcox <willy@infradead.org> wrote:
+On Tue, Oct 26, 2021 at 3:50 PM Matthew Wilcox <willy@infradead.org> wrote:
 >
-> On Tue, Oct 26, 2021 at 02:30:25PM -0400, Pasha Tatashin wrote:
-> > On Tue, Oct 26, 2021 at 2:24 PM Matthew Wilcox <willy@infradead.org> wrote:
-> > > I think this is overkill.  Won't we get exactly the same protection
-> > > by simply testing that page->_refcount == 0 in set_page_count()?
-> > > Anything which triggers that BUG_ON would already be buggy because
-> > > it can race with speculative gets.
-> >
-> > We can't because set_page_count(v) is used for
-> > 1. changing _refcount form a current value to unconstrained v
-> > 2.  initialize _refcount from undefined state to v.
-> >
-> > In this work we forbid the first case, and reduce the second case to
-> > initialize only to 1.
+> On Tue, Oct 26, 2021 at 05:38:15PM +0000, Pasha Tatashin wrote:
+> >  static inline void page_ref_add(struct page *page, int nr)
+> >  {
+> > -     atomic_add(nr, &page->_refcount);
+> > +     int ret;
+> > +
+> > +     VM_BUG_ON(nr <= 0);
+> > +     ret = atomic_add_return(nr, &page->_refcount);
+> > +     VM_BUG_ON_PAGE(ret <= 0, page);
 >
-> Anything that is calling set_page_refcount() on something which is
-> not 0 is buggy today
+> This isn't right.  _refcount is allowed to overflow into the negatives.
+> See page_ref_zero_or_close_to_overflow() and the conversations that led
+> to it being added.
 
-For performance reasons the memblock allocator does not zero struct
-page memory, we initialize every field in struct page individually,
-that includes page->_refcount. Most of the time the boot memory is
-zeroed by firmware, but it is not guaranteed, non-zero pages can come
-from bootloader, or from freed firmware pages. Also, after kexec
-memory state is not zeroed as well, and struct pages can contain
-garbage until fields are initialized.
+#define page_ref_zero_or_close_to_overflow(page) \
+1204   ((unsigned int) page_ref_count(page) + 127u <= 127u)
 
-This is a valid reason to do set_page_recount() with non-zero
-refcounts, but the function is too generic, as in this case we really
-need to set it only to 1: so instead rename it to page_ref_init() and
-set it only to 1.
 
-Another example:
-In __free_pages_core() and in init_cma_reserved_pageblock() we do
-set_page_refcount() when _ref_count is 1 and we change it to 0.
+Uh, right, I saw the macro but did not realize there was an (unsigned int) cast.
 
-In this case doing dec_return check makes more sense in order to
-verify that the ref_count was indeed 1, and we won't have a double
-free.
+OK, I think we can move this macro inside:
+include/linux/page_ref.h
 
->  There are several ways to increment the page
-> refcount speculatively if it is not 0.  eg lockless GUP and page cache
-> reads.  So we could have:
->
-> CPU 0: alloc_page() (refcount now 1)
-> CPU 1: get_page_unless_zero() (refcount now 2)
-> CPU 0: set_page_refcount(5) (refcount now 5)
-> CPU 1: put_page() (refcount now 4)
->
-> Now the refcount is wrong.  So it is *only* safe to call
-> set_page_refcount() if the refcount is 0.  If you can find somewhere
-> that's calling set_page_refcount() on a non-0 refcount, that's a bug
-> that needs to be fixed.
+modify it to something like this:
+#define page_ref_zero_or_close_to_overflow(page) \
+   ((unsigned int) page_ref_count(page) + v + 127u <= v + 127u)
 
-Right, add_return/sub_return() with check after operation ensures that
-there are no races where we could have some writes to refcount between
-knowing it is 0 and calling set_page_refcount().
+The sub/dec can also be fixed to ensure that we do not underflow but
+still working with the fact that we use all 32bits of _refcount.
 
-Thanks,
 Pasha
