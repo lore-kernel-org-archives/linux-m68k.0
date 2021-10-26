@@ -2,324 +2,187 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E2381C433EF
-	for <linux-m68k@archiver.kernel.org>; Tue, 26 Oct 2021 17:39:00 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 9513EC433F5
+	for <linux-m68k@archiver.kernel.org>; Tue, 26 Oct 2021 17:53:31 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id CDA0061002
-	for <linux-m68k@archiver.kernel.org>; Tue, 26 Oct 2021 17:39:00 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 688FD60EDF
+	for <linux-m68k@archiver.kernel.org>; Tue, 26 Oct 2021 17:53:31 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237939AbhJZRlX (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Tue, 26 Oct 2021 13:41:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43330 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237868AbhJZRlC (ORCPT
-        <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Tue, 26 Oct 2021 13:41:02 -0400
-Received: from mail-qk1-x72b.google.com (mail-qk1-x72b.google.com [IPv6:2607:f8b0:4864:20::72b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 81508C06122A
-        for <linux-m68k@lists.linux-m68k.org>; Tue, 26 Oct 2021 10:38:33 -0700 (PDT)
-Received: by mail-qk1-x72b.google.com with SMTP id bp7so15868595qkb.12
-        for <linux-m68k@lists.linux-m68k.org>; Tue, 26 Oct 2021 10:38:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=soleen.com; s=google;
-        h=from:to:subject:date:message-id:in-reply-to:references:mime-version
-         :content-transfer-encoding;
-        bh=HF6B+ANn807oEjA+4tqKdVdBlJJYmmQDtbry277TkjQ=;
-        b=UOWyQLPF0kSv2vshEy+5mKyoiYKfuFaWJXQEAM4Dq5suXZs5nNy8D6u8PIMAb/vTh6
-         LixhC1W+oJGXwIkcXzvCtKxzxpViFcoP7Q3E4H7G9tOGaD84tilIoXqYVMMrCDCEsk87
-         eHGEWz07VwEKHc8KxWiS3SCx7UvLktRXlwdRBF1vizFzQ35YbkBx5Uk6SB4OWwHoa2O3
-         qlXoVx0HtXPJySJmcnHMuCIodzP38uK4FSYI1u3Yb+3vV44Or2DJ1694HJcu8tmNa7tK
-         hljvkwRFGVoIIvc7+PNxTNb3vrxlaeDhmK+hYuwgS1ufuLy5Wes2iWmmnreU7k6BDP8F
-         xbUg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=HF6B+ANn807oEjA+4tqKdVdBlJJYmmQDtbry277TkjQ=;
-        b=YpuwLfDPdzaK8iiq/VM8ZCcpV0copDjAluFz48mZ+XSS2qkvYJ77LcoX04xIBSr9wF
-         7/oaMz7AES3+WgZyP7uU8UmqiN64mtT12co+0xC2cK6ifXFg1YyINNFHNsekJNjps6u6
-         eBsCrNQkklEortPMGy1CxCe+jJnvWjM602NsIUelRDkT1ZUrBk6TulIXLP0pV6Ff/Q8r
-         qD3KqqcZCnKuIJu8Y2GR0yikdw+7HbASAaxTJ2BUB2f51OuuJcyPDcxFlTpA4ryEFB4x
-         as87soTBjGHR/eqCcDHWnqjsO883zZ+CygwkWDqe3K4GaS7H+43rM054jPxhFqfGi9Xg
-         8Y2w==
-X-Gm-Message-State: AOAM530o+hF2eyq/CreiqXKwKRE5S+50gsRRC3mrtqI1v/hXokEBzhQo
-        GYHqAQUgil3MzQ0GO7NoC6wPmQ==
-X-Google-Smtp-Source: ABdhPJxx9MFs+/QV/teVroSXPkhUKINhq5aIn3syHlgyXssAgeoP8UjDKqxkaYgieNJDGNNH/dS1LQ==
-X-Received: by 2002:a05:620a:288b:: with SMTP id j11mr4071680qkp.257.1635269912637;
-        Tue, 26 Oct 2021 10:38:32 -0700 (PDT)
-Received: from soleen.c.googlers.com.com (189.216.85.34.bc.googleusercontent.com. [34.85.216.189])
-        by smtp.gmail.com with ESMTPSA id bj37sm11001939qkb.49.2021.10.26.10.38.31
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 26 Oct 2021 10:38:32 -0700 (PDT)
-From:   Pasha Tatashin <pasha.tatashin@soleen.com>
-To:     pasha.tatashin@soleen.com, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, linux-m68k@lists.linux-m68k.org,
-        anshuman.khandual@arm.com, willy@infradead.org,
-        akpm@linux-foundation.org, william.kucharski@oracle.com,
-        mike.kravetz@oracle.com, vbabka@suse.cz, geert@linux-m68k.org,
-        schmitzmic@gmail.com, rostedt@goodmis.org, mingo@redhat.com,
-        hannes@cmpxchg.org, guro@fb.com, songmuchun@bytedance.com,
-        weixugc@google.com, gthelen@google.com
-Subject: [RFC 8/8] mm: simplify page_ref_* functions
-Date:   Tue, 26 Oct 2021 17:38:22 +0000
-Message-Id: <20211026173822.502506-9-pasha.tatashin@soleen.com>
-X-Mailer: git-send-email 2.33.0.1079.g6e70778dc9-goog
-In-Reply-To: <20211026173822.502506-1-pasha.tatashin@soleen.com>
+        id S237970AbhJZRzy (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Tue, 26 Oct 2021 13:55:54 -0400
+Received: from mail-dm6nam12on2074.outbound.protection.outlook.com ([40.107.243.74]:18305
+        "EHLO NAM12-DM6-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S237962AbhJZRzy (ORCPT <rfc822;linux-m68k@lists.linux-m68k.org>);
+        Tue, 26 Oct 2021 13:55:54 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=FLqdAGXC2ZFnhbv2+3/+cn6eFF7p9CpLkBi4yvNqA+hmR29eMxUCq4RiyyqRTKMaljW+r4tfTlNmEXkYSRUtQaMuMmWRfioPCL5YbK0yIjNDGx7ipNxaMyZC3sE5UxpjOFceX6xNnZfNFUrLJ+Aw+xxaasm+8PzEjuyLp2DjMn52Ks+d8cNkoT71MhY3KeLv1JHuFZ2KWKymwTjx2bCD8/+URkk3fvJvu0r617BrDSaU3ehnxeVpiWOwaCR6e8Wa450ta/A/EUlYgAga9eIHPdg3ajqkBNM7flknwyM1iUiVo21kT57v8UL+Z4bxambAGZScr/WzQZec5jPh7Zz7/A==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=P3M3W5qPJh2he3Hox4e2uh9EFpk9eMn2vzfbPx40zJE=;
+ b=HxEMmo4+C84KROSNWcIHpNag9oVJP1ZOze+z1nddbLMPb3Mjw2LO3ulWaoGJbdy7y4LrLxPrAkuKqi80rUj8I/zmRcLwxqkgSq0riV3qdCPfDTD3ynCI1fxTfLR37zwmenTQDguXUxClLkxbV58M+vsGwLrOAwOsvPJkOWJZRjfAQfMIS5lprmRR0YpmTmpe+ueGWxtPDJ4d+q4nqXNAtXqnR66/kp1y+CklccaH5Cqopw4o0nmqqMEzUrGbrcnwvVLo2ftzVhVDNGg3U0HAFGOV0wvyAb1Yewv2E3rlgXvTdH8m2jf0yB7HPxNDUyP8cU/rwFIGiQR49ZuXllv++Q==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=P3M3W5qPJh2he3Hox4e2uh9EFpk9eMn2vzfbPx40zJE=;
+ b=D+aJlHH36U4cPvLkIKPY6O1XbtCWHKig186qSaKmGLOfp9R8vd/ODp4eNYjLySrFB5pf+bpvjYxTSjRglg2czbAiKCGT525URhPQ3d74BPVWhFB4OBKRuJXWDH7VgM4O+ammFk33vevtpugCHNzJEGb/ZvxURhYt60od5T4r30FtssQt2tgi1lsYF8BTnqXgunocUPyYMYN77RuIZNQzz1yGPOJ0fe5JYRAMlLy5/3UQc8NYGo0fIMibUcEdJLiSs81jCApImxCOLoTB2Qi0Xs4AwaWXcIPfxU1aEpdkSAj0PimCIoAe53Tp5K381QNBLo/G6f9H3ZfDcVODYy2wOA==
+Authentication-Results: soleen.com; dkim=none (message not signed)
+ header.d=none;soleen.com; dmarc=none action=none header.from=nvidia.com;
+Received: from DM6PR12MB4140.namprd12.prod.outlook.com (2603:10b6:5:221::13)
+ by DM6PR12MB4925.namprd12.prod.outlook.com (2603:10b6:5:1b7::8) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4628.18; Tue, 26 Oct
+ 2021 17:53:28 +0000
+Received: from DM6PR12MB4140.namprd12.prod.outlook.com
+ ([fe80::4971:dc6a:3ca0:aa25]) by DM6PR12MB4140.namprd12.prod.outlook.com
+ ([fe80::4971:dc6a:3ca0:aa25%7]) with mapi id 15.20.4628.020; Tue, 26 Oct 2021
+ 17:53:28 +0000
+Message-ID: <7b131cb1-68d8-6746-f9c1-2b01d4838869@nvidia.com>
+Date:   Tue, 26 Oct 2021 10:53:24 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.2.1
+Subject: Re: [RFC 3/8] mm: Avoid using set_page_count() in
+ set_page_recounted()
+Content-Language: en-US
+To:     Pasha Tatashin <pasha.tatashin@soleen.com>,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        linux-m68k@lists.linux-m68k.org, anshuman.khandual@arm.com,
+        willy@infradead.org, akpm@linux-foundation.org,
+        william.kucharski@oracle.com, mike.kravetz@oracle.com,
+        vbabka@suse.cz, geert@linux-m68k.org, schmitzmic@gmail.com,
+        rostedt@goodmis.org, mingo@redhat.com, hannes@cmpxchg.org,
+        guro@fb.com, songmuchun@bytedance.com, weixugc@google.com,
+        gthelen@google.com
 References: <20211026173822.502506-1-pasha.tatashin@soleen.com>
+ <20211026173822.502506-4-pasha.tatashin@soleen.com>
+From:   John Hubbard <jhubbard@nvidia.com>
+In-Reply-To: <20211026173822.502506-4-pasha.tatashin@soleen.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: BYAPR05CA0087.namprd05.prod.outlook.com
+ (2603:10b6:a03:e0::28) To DM6PR12MB4140.namprd12.prod.outlook.com
+ (2603:10b6:5:221::13)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Received: from [10.2.61.40] (216.228.112.21) by BYAPR05CA0087.namprd05.prod.outlook.com (2603:10b6:a03:e0::28) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4649.11 via Frontend Transport; Tue, 26 Oct 2021 17:53:26 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 7e9a7be7-a970-42ad-edcf-08d998a983c5
+X-MS-TrafficTypeDiagnostic: DM6PR12MB4925:
+X-Microsoft-Antispam-PRVS: <DM6PR12MB4925E06FF3AA0E8FE23E1630A8849@DM6PR12MB4925.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:8882;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: SCuwa+/jWfYTxJY2GudUi/sFQtd7hUZJeKj4Q1LcBiqojTdU/ASBfakVZIXtPmiws9Dxdio+6ck7Via9Lga9bo4ySTjLskH7aSdcdQYWDC5i0n3bgUUP71D8XfylJ/OmR6WIsRBqcPVln7NF0Lk8dRAFAC70fMvqytkQ3n24aHRrwVJwdo5IpqyKfkr0wGe+WFoDMvvTiAUof/yrEyye7EGX+rv+uXf7nCxFfQkQ5Cf6rzylRQUIJ3KAFbQJL4ST1t8mYoChKr9UcD9agC/CS5+n/JbaP0jCx31oa9wcn7dYHq31gJ8do7Ketj3WEMvJz+016EcTMiKs9jL0CRk7GQqek1hBDgFTztfYpQqBEFlY6uIoM3xtDxz1kUu4FLHr+9X62ByKPTydqtuEVB1S8BYaO9qGa1iMENcHinX607H8v/3VjdI87OiB5jRSvVgwY9OlhbVSbSjvS00OcilAYt3Raf4k9Cyauhzz/GUjrzPVg/oABMB1JOCyv19PbiqAIjNtI3luFjE2WIr6oh/NRnd6flFpA3tvuqyMcd2wwA5KQOXj28ap2VxLAa5Kg8EoUbgXSVLt4qSRRH4ile4zAxCEKwckP+9lp600jpz6T4VLTDQphpAwKDz3nBzAw9oi+njPs2GBBLV/x/RNQYHZStnRgaSSSy9VEFrRa+qgHmCEAlp/Uy3H5t2VpJHFqZSoLUMUl5sBdX7YM0s44bt5sX8Jv0XTzD+tnh9BFhMKqRnfl17WrLhGPR3lOoxUhsakBbZDCOe6deJ99AEZqa10mQ==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR12MB4140.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(86362001)(66476007)(66556008)(508600001)(66946007)(31696002)(956004)(31686004)(7416002)(36756003)(8936002)(6486002)(2616005)(8676002)(53546011)(83380400001)(921005)(5660300002)(186003)(26005)(2906002)(16576012)(316002)(38100700002)(43740500002)(45980500001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?T1cxaUhXUUZzbldOS3dQbmpKSEU4YStLSS9lWmlSWmppMG5VWnZLZnhmdENn?=
+ =?utf-8?B?Q2lEb2RSazVIK2JEZHlGNmJHdGdVS1IxZjU3c0lzY2tTbi9RYlU0eFVXN2tG?=
+ =?utf-8?B?UE5CVkMyNFpIY1lzZDZCcXNiK3drN0dkQnVZZHB0emc5cndvMXZndWpoS09a?=
+ =?utf-8?B?ekFuQjBXODIrM2R5ZGVMNGl6Tm8waXg2b1dmZ2pVQm5Ec0ZZQW9IMUd2b3I0?=
+ =?utf-8?B?Q3prdjZ0Q2FaUmgwSFlnZ3prOWd3L1hmek12Q2p5YllOMnhKTitIay9zOHhD?=
+ =?utf-8?B?azZ2ZUlmUVM0NFl4YjJ3U0ltWkNKTk5rNGRRZzBnL2NQeHlqRm9wUUsveDB3?=
+ =?utf-8?B?c3FQbEVvMDlocnZ3aHJrYmJmSkl3c0dMUTFMemcyWjkxVWp0d3BXNGVLWG1k?=
+ =?utf-8?B?a3BBOU82U2ptU3pOVExZNGdUTnROZ24xSysvZnRBaUhHWmFFdUUwa1lLbzlE?=
+ =?utf-8?B?TEdQajJ1bU8xbEpCZkIyc05NeTFBZWhLcEUvZXRjWmFqK3RNZ0hndzUybzAz?=
+ =?utf-8?B?M1M3b2tEa2dqNTVpWkViWFJJUVhWUjJzOUdRNDVTWEJNZFgxNnNlbEdyQ0sz?=
+ =?utf-8?B?UjY4bHhRcm9IcjlDdHgzSDdEV1ErUkhQR0k4NEY1RURHc2tYZ3dLSStQdjIv?=
+ =?utf-8?B?NW0zODBGQU1zTU5GdUNON1Q3YVRvMUNaOTJPTXltOHFuQldMMTdydVY3KytO?=
+ =?utf-8?B?Z3h3MmZ5Z1NqYUR5WFdkMUc5eVI5Z1FxTVpjaXNrVkp0eGxCd01CbWVnQVVx?=
+ =?utf-8?B?ekFYanVEd3JjZWpCQnVQV0I4M255eWwzeVVNZ2N1ekFWaVAwa0orTk9QNTk1?=
+ =?utf-8?B?VEo3MzNkdHgzZjVZYjlZZTB4STNyd2tBZVdrUXBadCtzVHduNXZ4a3ordFNJ?=
+ =?utf-8?B?dHh3ZlRlTmFFcXBEb2cyQ280ZVljblhRYzY2K2VnbVFJbHA4VU9IZlJIZ3Ja?=
+ =?utf-8?B?OE9taGdxZ1cyU09vVVk5OG4vcVNpdzYvZGhodXlmaTZRT1c2MGFPSUZwUG1m?=
+ =?utf-8?B?QjlSbk1RZWRjL3czbXh5TC9FL3RqRGJXb3c5bGJQMlg1RkVTWmFrR1JuMHRm?=
+ =?utf-8?B?TWhsSU5SMGprSFU2OWEyV3VXejlmMUs4aEM0VVFsdHZvWW9iZklRQTRqSDky?=
+ =?utf-8?B?bU01UFc1aFhlOEN1a0xLR21Dc21NOTQ0QWtlTzF2enpRb3NRWmEvRVB1K3gz?=
+ =?utf-8?B?ME5oOVZabDBZbDJpNEVuRC9FNEozRnRmMDRKc3l4dG5oTC9FTndOdm1FdHFY?=
+ =?utf-8?B?QjhCWWZDUzFzNUdFZGtLQnNKTHlsaVZrODRsZFAxb1pXM2JvQ083Um1Rd2NZ?=
+ =?utf-8?B?d3FXZ2svczZ5aXBVZHV3eFFDemp4NExGbW9jU1dEbUpMRWhPNTdqQmhpWVo2?=
+ =?utf-8?B?Y3Jid1dObzduK0lhek8wbFNEZXY4YWFibmNpZDdULy9VYUp6Vmd5UVFJYWhS?=
+ =?utf-8?B?cFhudEIxVEM0R1VvdXM1VFJNbjFJTjhMSWdiRUIyQ0U3bTBOMytlZ0VFeVY5?=
+ =?utf-8?B?UUwzMExjamU4c1dEU054ME1MR2g0NzFkSVkwZDd2Y3pnMld5OXVoMnZBVGtP?=
+ =?utf-8?B?NjY2N0x0ODNQYk5VQ0cwTG5vWmxmV0lMeTdQNVNaZEs3dURDR1k1MlNRUTR1?=
+ =?utf-8?B?eGdkVklqUlRZUGRzS0YyQm5sNWtkTE1CYXl5bjhSOUNTTU9sRmdPWFQzNDBT?=
+ =?utf-8?B?ZFQ5VUlIRVFtOEo2NXhoYVdKbnVFUVJpMk5sUGdXTUdxTEtYK2w0MlNtTzlq?=
+ =?utf-8?B?cjZQVk44L1N5azg5NnBXdWZGbjdmYmEwMm96S2E5dERSYk01dVlUZ2dpRC9Y?=
+ =?utf-8?B?YW9MQXpEZjdoNitUU3U3aGxRK0MycUczK2toVm1IYURWZDhCT1htQkpxckpE?=
+ =?utf-8?B?TXFpR2R6Y3lUTm5STDdBT1ViTzVnU0toOTkrSjZ5dDM4RGljYW9FQXN6K1lO?=
+ =?utf-8?B?UU1wQjBvQXdDSUI4eHpaNGROUDFRZVhMdVI0d2RLRE5KRFg4SmV5V2FOSDRo?=
+ =?utf-8?B?elVGSXNXditNTWFwMDRIQ3RNZ1dJL0xUN1ViUElqMi9SdTgwTFhTaFZKZXBW?=
+ =?utf-8?B?TDZ2MlNqaTNZQlhJTklhVGdRNmIvY0pHWmNZOHh1TVNyNm00OG83WnVCWVM2?=
+ =?utf-8?B?dmtMRCsxY2ZiRjBuWXNYK3pjSE90TlJSMWtOSHBLZlJBd0JBcTFWMnpLR1JN?=
+ =?utf-8?Q?NqtxDZZ7lQEaU65IxVc11hI=3D?=
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 7e9a7be7-a970-42ad-edcf-08d998a983c5
+X-MS-Exchange-CrossTenant-AuthSource: DM6PR12MB4140.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 26 Oct 2021 17:53:28.0075
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: F2jqxcREy+0sesiWJAFaKwpYSxqy2OJJ62iwrcRXZHAO1xHI4ZSOQGvQKJpJaZ8WtvCL5/7QFjvrirzVFr5nJg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR12MB4925
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-Now, that we are using atomic_return variants to add/sub/inc/dec page
-_refcount, it makes sense to combined page_ref_* return and non return
-functions.
+On 10/26/21 10:38, Pasha Tatashin wrote:
+> set_page_refcounted() converts a non-refcounted page that has
+> (page->_refcount == 0) into a refcounted page by setting _refcount to 1,
+> 
+> Use page_ref_inc_return() instead to avoid unconditionally overwriting
+> the _refcount value.
+> 
+> Signed-off-by: Pasha Tatashin <pasha.tatashin@soleen.com>
+> ---
+>   mm/internal.h | 5 ++++-
+>   1 file changed, 4 insertions(+), 1 deletion(-)
+> 
+> diff --git a/mm/internal.h b/mm/internal.h
+> index cf3cb933eba3..cf345fac6894 100644
+> --- a/mm/internal.h
+> +++ b/mm/internal.h
+> @@ -91,9 +91,12 @@ static inline bool page_evictable(struct page *page)
+>    */
+>   static inline void set_page_refcounted(struct page *page)
+>   {
+> +	int refcnt;
+> +
+>   	VM_BUG_ON_PAGE(PageTail(page), page);
+>   	VM_BUG_ON_PAGE(page_ref_count(page), page);
+> -	set_page_count(page, 1);
+> +	refcnt = page_ref_inc_return(page);
+> +	VM_BUG_ON_PAGE(refcnt != 1, page);
 
-Also remove some extra trace points for non-return  variants. This
-improves the tracability by always recording the new _refcount value
-after the modifications has occurred.
+Hi Pavel,
 
-Signed-off-by: Pasha Tatashin <pasha.tatashin@soleen.com>
----
- include/linux/page_ref.h        | 79 +++++++--------------------------
- include/trace/events/page_ref.h | 26 +++--------
- mm/debug_page_ref.c             | 14 ------
- 3 files changed, 22 insertions(+), 97 deletions(-)
+I am acutely uncomfortable with this change, because it changes the
+meaning and behavior of the function to something completely different,
+while leaving the function name unchanged. Furthermore, in relies upon
+debug assertions, rather than a return value (for example) to verify
+that all is well.
 
-diff --git a/include/linux/page_ref.h b/include/linux/page_ref.h
-index 06f5760fcd06..2a91dbc33486 100644
---- a/include/linux/page_ref.h
-+++ b/include/linux/page_ref.h
-@@ -8,8 +8,6 @@
- #include <linux/tracepoint-defs.h>
- 
- DECLARE_TRACEPOINT(page_ref_init);
--DECLARE_TRACEPOINT(page_ref_mod);
--DECLARE_TRACEPOINT(page_ref_mod_and_test);
- DECLARE_TRACEPOINT(page_ref_mod_and_return);
- DECLARE_TRACEPOINT(page_ref_mod_unless);
- DECLARE_TRACEPOINT(page_ref_freeze);
-@@ -27,8 +25,6 @@ DECLARE_TRACEPOINT(page_ref_unfreeze);
- #define page_ref_tracepoint_active(t) tracepoint_enabled(t)
- 
- extern void __page_ref_init(struct page *page);
--extern void __page_ref_mod(struct page *page, int v);
--extern void __page_ref_mod_and_test(struct page *page, int v, int ret);
- extern void __page_ref_mod_and_return(struct page *page, int v, int ret);
- extern void __page_ref_mod_unless(struct page *page, int v, int u);
- extern void __page_ref_freeze(struct page *page, int v, int ret);
-@@ -41,12 +37,6 @@ extern void __page_ref_unfreeze(struct page *page, int v);
- static inline void __page_ref_init(struct page *page)
- {
- }
--static inline void __page_ref_mod(struct page *page, int v)
--{
--}
--static inline void __page_ref_mod_and_test(struct page *page, int v, int ret)
--{
--}
- static inline void __page_ref_mod_and_return(struct page *page, int v, int ret)
- {
- }
-@@ -102,26 +92,7 @@ static inline int page_ref_add_return(struct page *page, int nr)
- 
- static inline void page_ref_add(struct page *page, int nr)
- {
--	int ret;
--
--	VM_BUG_ON(nr <= 0);
--	ret = atomic_add_return(nr, &page->_refcount);
--	VM_BUG_ON_PAGE(ret <= 0, page);
--
--	if (page_ref_tracepoint_active(page_ref_mod))
--		__page_ref_mod(page, nr);
--}
--
--static inline void page_ref_sub(struct page *page, int nr)
--{
--	int ret;
--
--	VM_BUG_ON(nr <= 0);
--	ret = atomic_sub_return(nr, &page->_refcount);
--	VM_BUG_ON_PAGE(ret < 0, page);
--
--	if (page_ref_tracepoint_active(page_ref_mod))
--		__page_ref_mod(page, -nr);
-+	page_ref_add_return(page, nr);
- }
- 
- static inline int page_ref_sub_return(struct page *page, int nr)
-@@ -137,37 +108,14 @@ static inline int page_ref_sub_return(struct page *page, int nr)
- 	return ret;
- }
- 
--static inline void page_ref_inc(struct page *page)
--{
--	int ret = atomic_inc_return(&page->_refcount);
--
--	VM_BUG_ON_PAGE(ret <= 0, page);
--
--	if (page_ref_tracepoint_active(page_ref_mod))
--		__page_ref_mod(page, 1);
--}
--
--static inline void page_ref_dec(struct page *page)
-+static inline void page_ref_sub(struct page *page, int nr)
- {
--	int ret = atomic_dec_return(&page->_refcount);
--
--	VM_BUG_ON_PAGE(ret < 0, page);
--
--	if (page_ref_tracepoint_active(page_ref_mod))
--		__page_ref_mod(page, -1);
-+	page_ref_sub_return(page, nr);
- }
- 
- static inline int page_ref_sub_and_test(struct page *page, int nr)
- {
--	int ret;
--
--	VM_BUG_ON(nr <= 0);
--	ret = atomic_sub_return(nr, &page->_refcount);
--	VM_BUG_ON_PAGE(ret < 0, page);
--
--	if (page_ref_tracepoint_active(page_ref_mod_and_test))
--		__page_ref_mod_and_test(page, -nr, ret);
--	return ret == 0;
-+	return page_ref_sub_return(page, nr) == 0;
- }
- 
- static inline int page_ref_inc_return(struct page *page)
-@@ -181,15 +129,10 @@ static inline int page_ref_inc_return(struct page *page)
- 	return ret;
- }
- 
--static inline int page_ref_dec_and_test(struct page *page)
-+static inline void page_ref_inc(struct page *page)
- {
--	int ret = atomic_dec_return(&page->_refcount);
- 
--	VM_BUG_ON_PAGE(ret < 0, page);
--
--	if (page_ref_tracepoint_active(page_ref_mod_and_test))
--		__page_ref_mod_and_test(page, -1, ret);
--	return ret == 0;
-+	page_ref_inc_return(page);
- }
- 
- static inline int page_ref_dec_return(struct page *page)
-@@ -203,6 +146,16 @@ static inline int page_ref_dec_return(struct page *page)
- 	return ret;
- }
- 
-+static inline void page_ref_dec(struct page *page)
-+{
-+	page_ref_dec_return(page);
-+}
-+
-+static inline int page_ref_dec_and_test(struct page *page)
-+{
-+	return page_ref_dec_return(page) == 0;
-+}
-+
- static inline int page_ref_add_unless(struct page *page, int nr, int u)
- {
- 	int ret;
-diff --git a/include/trace/events/page_ref.h b/include/trace/events/page_ref.h
-index 87551bb1df9e..883d90508ca2 100644
---- a/include/trace/events/page_ref.h
-+++ b/include/trace/events/page_ref.h
-@@ -49,7 +49,7 @@ DEFINE_EVENT(page_ref_init_template, page_ref_init,
- 	TP_ARGS(page)
- );
- 
--DECLARE_EVENT_CLASS(page_ref_mod_template,
-+DECLARE_EVENT_CLASS(page_ref_unfreeze_template,
- 
- 	TP_PROTO(struct page *page, int v),
- 
-@@ -83,14 +83,7 @@ DECLARE_EVENT_CLASS(page_ref_mod_template,
- 		__entry->val)
- );
- 
--DEFINE_EVENT(page_ref_mod_template, page_ref_mod,
--
--	TP_PROTO(struct page *page, int v),
--
--	TP_ARGS(page, v)
--);
--
--DECLARE_EVENT_CLASS(page_ref_mod_and_test_template,
-+DECLARE_EVENT_CLASS(page_ref_mod_template,
- 
- 	TP_PROTO(struct page *page, int v, int ret),
- 
-@@ -126,35 +119,28 @@ DECLARE_EVENT_CLASS(page_ref_mod_and_test_template,
- 		__entry->val, __entry->ret)
- );
- 
--DEFINE_EVENT(page_ref_mod_and_test_template, page_ref_mod_and_test,
--
--	TP_PROTO(struct page *page, int v, int ret),
--
--	TP_ARGS(page, v, ret)
--);
--
--DEFINE_EVENT(page_ref_mod_and_test_template, page_ref_mod_and_return,
-+DEFINE_EVENT(page_ref_mod_template, page_ref_mod_and_return,
- 
- 	TP_PROTO(struct page *page, int v, int ret),
- 
- 	TP_ARGS(page, v, ret)
- );
- 
--DEFINE_EVENT(page_ref_mod_and_test_template, page_ref_mod_unless,
-+DEFINE_EVENT(page_ref_mod_template, page_ref_mod_unless,
- 
- 	TP_PROTO(struct page *page, int v, int ret),
- 
- 	TP_ARGS(page, v, ret)
- );
- 
--DEFINE_EVENT(page_ref_mod_and_test_template, page_ref_freeze,
-+DEFINE_EVENT(page_ref_mod_template, page_ref_freeze,
- 
- 	TP_PROTO(struct page *page, int v, int ret),
- 
- 	TP_ARGS(page, v, ret)
- );
- 
--DEFINE_EVENT(page_ref_mod_template, page_ref_unfreeze,
-+DEFINE_EVENT(page_ref_unfreeze_template, page_ref_unfreeze,
- 
- 	TP_PROTO(struct page *page, int v),
- 
-diff --git a/mm/debug_page_ref.c b/mm/debug_page_ref.c
-index e32149734122..1de9d93cca25 100644
---- a/mm/debug_page_ref.c
-+++ b/mm/debug_page_ref.c
-@@ -12,20 +12,6 @@ void __page_ref_init(struct page *page)
- EXPORT_SYMBOL(__page_ref_init);
- EXPORT_TRACEPOINT_SYMBOL(page_ref_init);
- 
--void __page_ref_mod(struct page *page, int v)
--{
--	trace_page_ref_mod(page, v);
--}
--EXPORT_SYMBOL(__page_ref_mod);
--EXPORT_TRACEPOINT_SYMBOL(page_ref_mod);
--
--void __page_ref_mod_and_test(struct page *page, int v, int ret)
--{
--	trace_page_ref_mod_and_test(page, v, ret);
--}
--EXPORT_SYMBOL(__page_ref_mod_and_test);
--EXPORT_TRACEPOINT_SYMBOL(page_ref_mod_and_test);
--
- void __page_ref_mod_and_return(struct page *page, int v, int ret)
- {
- 	trace_page_ref_mod_and_return(page, v, ret);
+I understand where this patchset is going, but this intermediate step is
+not a good move.
+
+Also, for the overall series, if you want to change from
+"set_page_count()" to "inc_and_verify_val_equals_one()", then the way to
+do that is *not* to depend solely on VM_BUG*() to verify. Instead,
+return something like -EBUSY if incrementing the value results in a
+surprise, and let the caller decide how to handle it.
+
+thanks,
 -- 
-2.33.0.1079.g6e70778dc9-goog
+John Hubbard
+NVIDIA
+
+>   }
+>   
+>   extern unsigned long highest_memmap_pfn;
+> 
 
