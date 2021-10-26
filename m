@@ -2,108 +2,111 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 307F6C433FE
-	for <linux-m68k@archiver.kernel.org>; Tue, 26 Oct 2021 21:34:59 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5BC84C433EF
+	for <linux-m68k@archiver.kernel.org>; Tue, 26 Oct 2021 23:25:22 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 18FE960F6F
-	for <linux-m68k@archiver.kernel.org>; Tue, 26 Oct 2021 21:34:59 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 3A28660E78
+	for <linux-m68k@archiver.kernel.org>; Tue, 26 Oct 2021 23:25:21 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239652AbhJZVhW (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Tue, 26 Oct 2021 17:37:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41068 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232186AbhJZVhU (ORCPT
-        <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Tue, 26 Oct 2021 17:37:20 -0400
-Received: from mail-lj1-x229.google.com (mail-lj1-x229.google.com [IPv6:2a00:1450:4864:20::229])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7747FC061745
-        for <linux-m68k@lists.linux-m68k.org>; Tue, 26 Oct 2021 14:34:56 -0700 (PDT)
-Received: by mail-lj1-x229.google.com with SMTP id 205so1119016ljf.9
-        for <linux-m68k@lists.linux-m68k.org>; Tue, 26 Oct 2021 14:34:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=soleen.com; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=g6bRc3hEdmoyhbDnFfzjpCbgpj5AnIIMpxpQWkoEAPc=;
-        b=Q4c50WAkXBkEgY6gvfcvo5e8MhJnvWwBTJNOzFIu/Getb0WstjIXLdG5eqbfR8JHCO
-         E6Y0rOmp5bYSVo1Q9PcxShZiHfhSraEdNL+WfcryfjngLxGyqGCsA5mFOURH3O99GL/i
-         KVy9PC23hRaZpo6bFOq801aVnJMORPKPAlnrqhhYhS6shRWe6cLbC0zIajMFQL8Rjy+Y
-         9c1nn6cpFy+B2gmYUl2It8YpTn+2JQ5ZHX22aV2hXltq1IDGBQO1f7LThO574E+8qUnV
-         crYxEAr25H0V5ROMUrRin0hi1zM0AlaD7yMwLRHVEEVtJLGIPpPI2022dKE11PYdtY6s
-         4Pvg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=g6bRc3hEdmoyhbDnFfzjpCbgpj5AnIIMpxpQWkoEAPc=;
-        b=BS5HF5F/rXGfQlTTGxPvgKGNAuxWHuYyQnLWw/goFBZ3v/5psSQOipRa7TYcK7U1X7
-         yHQQSEA9VodQHdfXdjJycYdcxTlYW9hqpXlY1SZdBI7o8Q/scNt+ajE3hCK5Mto/4/C8
-         KIYBjKRxW5cBFsVklwWRO/5zMqBh2vnyNZK+w0ZynVC4IfUVN9Qw1k5DnLvpR1HVgs0p
-         jUSUmo8TmWTr5V2zgh7l63KLfjMy6W4a3DPqLSo+tUbdA8ttEsKfxUlEnzBv5CUnB/f3
-         YKMAc7oXBo9XYANbmxUgP0ZCtiINnB6NjkC5d3oZFO6EKbTnj0zuwdm4XjPr1hUYTjBB
-         FABA==
-X-Gm-Message-State: AOAM531faRdLC5IKxkoPahHpxNtYJQ26P5Sgo8f9LAhjjcnNTW2gbMZ+
-        HkmtXANNmW/MZH6TcV9TMViBtl0t2QxANbHYgs0kNg==
-X-Google-Smtp-Source: ABdhPJyq6ZHqYiDS8wM3KDSM1FRUj5xGQE4Nq6PhjHX04LBcqXGgXrhGvXWB7NaICqxAg2MRMZNWWZ7nPiqdXVQhY5o=
-X-Received: by 2002:a2e:a0d7:: with SMTP id f23mr29374831ljm.422.1635284094799;
- Tue, 26 Oct 2021 14:34:54 -0700 (PDT)
+        id S236404AbhJZX1o (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Tue, 26 Oct 2021 19:27:44 -0400
+Received: from mga02.intel.com ([134.134.136.20]:2362 "EHLO mga02.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S236228AbhJZX1n (ORCPT <rfc822;linux-m68k@lists.linux-m68k.org>);
+        Tue, 26 Oct 2021 19:27:43 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10149"; a="217208564"
+X-IronPort-AV: E=Sophos;i="5.87,184,1631602800"; 
+   d="scan'208";a="217208564"
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Oct 2021 16:25:19 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.87,184,1631602800"; 
+   d="scan'208";a="447312056"
+Received: from lkp-server01.sh.intel.com (HELO 072b454ebba8) ([10.239.97.150])
+  by orsmga003.jf.intel.com with ESMTP; 26 Oct 2021 16:25:17 -0700
+Received: from kbuild by 072b454ebba8 with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1mfVoi-0000bw-TM; Tue, 26 Oct 2021 23:25:16 +0000
+Date:   Wed, 27 Oct 2021 07:24:35 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Geert Uytterhoeven <geert@linux-m68k.org>
+Cc:     linux-m68k@lists.linux-m68k.org
+Subject: [geert-m68k:master] BUILD SUCCESS
+ 32e14e83735eaee6a0d041b75d68f0e830aa9eb4
+Message-ID: <61788e33.D4dPyv/55bMkpqxY%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
-References: <20211026173822.502506-1-pasha.tatashin@soleen.com>
- <20211026173822.502506-2-pasha.tatashin@soleen.com> <YXhbq/6OIpIAr7Tx@casper.infradead.org>
-In-Reply-To: <YXhbq/6OIpIAr7Tx@casper.infradead.org>
-From:   Pasha Tatashin <pasha.tatashin@soleen.com>
-Date:   Tue, 26 Oct 2021 17:34:18 -0400
-Message-ID: <CA+CK2bCZO5J-NRqavWFKXt+yB1u17dFA9VrW48HLBepiQLJtcA@mail.gmail.com>
-Subject: Re: [RFC 1/8] mm: add overflow and underflow checks for page->_refcount
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>, linux-mm <linux-mm@kvack.org>,
-        linux-m68k@lists.linux-m68k.org,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        william.kucharski@oracle.com,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        schmitzmic@gmail.com, Steven Rostedt <rostedt@goodmis.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Roman Gushchin <guro@fb.com>, songmuchun@bytedance.com,
-        weixugc@google.com, Greg Thelen <gthelen@google.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-On Tue, Oct 26, 2021 at 3:50 PM Matthew Wilcox <willy@infradead.org> wrote:
->
-> On Tue, Oct 26, 2021 at 05:38:15PM +0000, Pasha Tatashin wrote:
-> >  static inline void page_ref_add(struct page *page, int nr)
-> >  {
-> > -     atomic_add(nr, &page->_refcount);
-> > +     int ret;
-> > +
-> > +     VM_BUG_ON(nr <= 0);
-> > +     ret = atomic_add_return(nr, &page->_refcount);
-> > +     VM_BUG_ON_PAGE(ret <= 0, page);
->
-> This isn't right.  _refcount is allowed to overflow into the negatives.
-> See page_ref_zero_or_close_to_overflow() and the conversations that led
-> to it being added.
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/geert/linux-m68k.git master
+branch HEAD: 32e14e83735eaee6a0d041b75d68f0e830aa9eb4  Merge tag 'v5.15-rc7'
 
-#define page_ref_zero_or_close_to_overflow(page) \
-1204   ((unsigned int) page_ref_count(page) + 127u <= 127u)
+elapsed time: 949m
 
+configs tested: 52
+configs skipped: 3
 
-Uh, right, I saw the macro but did not realize there was an (unsigned int) cast.
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
-OK, I think we can move this macro inside:
-include/linux/page_ref.h
+gcc tested configs:
+arm                                 defconfig
+arm64                            allyesconfig
+arm64                               defconfig
+arm                              allyesconfig
+arm                              allmodconfig
+ia64                             allmodconfig
+ia64                                defconfig
+ia64                             allyesconfig
+m68k                             allmodconfig
+m68k                                defconfig
+m68k                             allyesconfig
+nds32                               defconfig
+nios2                            allyesconfig
+csky                                defconfig
+alpha                               defconfig
+alpha                            allyesconfig
+xtensa                           allyesconfig
+h8300                            allyesconfig
+arc                                 defconfig
+sh                               allmodconfig
+parisc                              defconfig
+s390                             allyesconfig
+s390                             allmodconfig
+parisc                           allyesconfig
+s390                                defconfig
+i386                             allyesconfig
+sparc                            allyesconfig
+sparc                               defconfig
+i386                                defconfig
+i386                              debian-10.3
+nios2                               defconfig
+arc                              allyesconfig
+nds32                             allnoconfig
+mips                             allyesconfig
+mips                             allmodconfig
+powerpc                          allyesconfig
+powerpc                          allmodconfig
+powerpc                           allnoconfig
+riscv                    nommu_k210_defconfig
+riscv                            allyesconfig
+riscv                    nommu_virt_defconfig
+riscv                             allnoconfig
+riscv                               defconfig
+riscv                          rv32_defconfig
+riscv                            allmodconfig
+um                           x86_64_defconfig
+um                             i386_defconfig
+x86_64                           allyesconfig
+x86_64                    rhel-8.3-kselftests
+x86_64                              defconfig
+x86_64                               rhel-8.3
+x86_64                                  kexec
 
-modify it to something like this:
-#define page_ref_zero_or_close_to_overflow(page) \
-   ((unsigned int) page_ref_count(page) + v + 127u <= v + 127u)
-
-The sub/dec can also be fixed to ensure that we do not underflow but
-still working with the fact that we use all 32bits of _refcount.
-
-Pasha
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
