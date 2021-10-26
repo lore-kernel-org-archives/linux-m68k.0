@@ -2,88 +2,93 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 472F5C433F5
-	for <linux-m68k@archiver.kernel.org>; Tue, 26 Oct 2021 20:14:28 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 78630C433F5
+	for <linux-m68k@archiver.kernel.org>; Tue, 26 Oct 2021 20:41:45 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 2B72760EB4
-	for <linux-m68k@archiver.kernel.org>; Tue, 26 Oct 2021 20:14:28 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 5BE4960EFF
+	for <linux-m68k@archiver.kernel.org>; Tue, 26 Oct 2021 20:41:45 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235948AbhJZUQv (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Tue, 26 Oct 2021 16:16:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51002 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234301AbhJZUQv (ORCPT
+        id S239257AbhJZUoI (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Tue, 26 Oct 2021 16:44:08 -0400
+Received: from brightrain.aerifal.cx ([216.12.86.13]:39674 "EHLO
+        brightrain.aerifal.cx" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239250AbhJZUoH (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Tue, 26 Oct 2021 16:16:51 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 14FA5C061570;
-        Tue, 26 Oct 2021 13:14:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=XpcCZaMDhTMnYyJSdOgPGsmV13N4Kdjo79sKD4gwqi4=; b=g5HEEyPqoYTrvCHhJurluWH14d
-        GhrqbBsrMvPDxy93l7ms1zJyXKSFlQCa/LcV8U0RTMKWGuWnxQI24FGbLMu8zHwvrMLrnqUi7tFT6
-        x7c0HQwcj3ReCJzyafrRF61hUCM6Z4S1ZD4MhfSXT9l7BRR3TXlibO9ctHctzH3sjvUMB2boWHSee
-        uZcOLIZsHsWvanVlKVUUCC/IDuooM92qmnVaFSUIqoSUdfV1U6MCo5rfV0RHQ1FKjHge/6ODqa2K8
-        RvfTG4GNCkq3Xf8EQmS24cUsJU7l2oKbS40/FVt0pUD0/whQdI/hSSpNkAz/8SOFI+XCHw89P006k
-        YKvVEp4Q==;
-Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mfSpB-00H8Hv-3p; Tue, 26 Oct 2021 20:13:45 +0000
-Date:   Tue, 26 Oct 2021 21:13:33 +0100
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Pasha Tatashin <pasha.tatashin@soleen.com>
-Cc:     LKML <linux-kernel@vger.kernel.org>, linux-mm <linux-mm@kvack.org>,
-        linux-m68k@lists.linux-m68k.org,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        william.kucharski@oracle.com,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
+        Tue, 26 Oct 2021 16:44:07 -0400
+X-Greylist: delayed 910 seconds by postgrey-1.27 at vger.kernel.org; Tue, 26 Oct 2021 16:44:07 EDT
+Date:   Tue, 26 Oct 2021 16:26:27 -0400
+From:   Rich Felker <dalias@libc.org>
+To:     Arnd Bergmann <arnd@kernel.org>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Arnd Bergmann <arnd@arndb.de>,
+        Vineet Gupta <vgupta@kernel.org>,
+        Russell King <linux@armlinux.org.uk>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>, Guo Ren <guoren@kernel.org>,
         Geert Uytterhoeven <geert@linux-m68k.org>,
-        schmitzmic@gmail.com, Steven Rostedt <rostedt@goodmis.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Roman Gushchin <guro@fb.com>, songmuchun@bytedance.com,
-        weixugc@google.com, Greg Thelen <gthelen@google.com>
-Subject: Re: [RFC 0/8] Hardening page _refcount
-Message-ID: <YXhhbSSRQrG5Av6P@casper.infradead.org>
-References: <20211026173822.502506-1-pasha.tatashin@soleen.com>
- <YXhHq52jDrU61V4E@casper.infradead.org>
- <CA+CK2bBbGEJa4s7HtgQkG_tZmN66UaVcDRovgLz4q+a0VGSqZg@mail.gmail.com>
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        Alexander Gordeev <agordeev@linux.ibm.com>,
+        Yoshinori Sato <ysato@users.sourceforge.jp>,
+        Jeff Dike <jdike@addtoit.com>,
+        Richard Weinberger <richard@nod.at>,
+        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
+        Chris Zankel <chris@zankel.net>,
+        Max Filippov <jcmvbkbc@gmail.com>,
+        Darren Hart <dvhart@infradead.org>,
+        Davidlohr Bueso <dave@stgolabs.net>,
+        =?utf-8?B?QW5kcsOp?= Almeida <andrealmeid@collabora.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Mike Rapoport <rppt@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Anshuman Khandual <anshuman.khandual@arm.com>,
+        linux-snps-arc@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-csky@vger.kernel.org,
+        linux-m68k@lists.linux-m68k.org, linux-riscv@lists.infradead.org,
+        linux-s390@vger.kernel.org, linux-sh@vger.kernel.org,
+        linux-um@lists.infradead.org, linux-xtensa@linux-xtensa.org
+Subject: Re: [PATCH 2/2] futex: remove futex_cmpxchg detection
+Message-ID: <20211026202625.GU7074@brightrain.aerifal.cx>
+References: <20211026100432.1730393-1-arnd@kernel.org>
+ <20211026100432.1730393-2-arnd@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CA+CK2bBbGEJa4s7HtgQkG_tZmN66UaVcDRovgLz4q+a0VGSqZg@mail.gmail.com>
+In-Reply-To: <20211026100432.1730393-2-arnd@kernel.org>
+User-Agent: Mutt/1.5.21 (2010-09-15)
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-On Tue, Oct 26, 2021 at 02:30:25PM -0400, Pasha Tatashin wrote:
-> On Tue, Oct 26, 2021 at 2:24 PM Matthew Wilcox <willy@infradead.org> wrote:
-> > I think this is overkill.  Won't we get exactly the same protection
-> > by simply testing that page->_refcount == 0 in set_page_count()?
-> > Anything which triggers that BUG_ON would already be buggy because
-> > it can race with speculative gets.
+On Tue, Oct 26, 2021 at 12:03:48PM +0200, Arnd Bergmann wrote:
+> From: Arnd Bergmann <arnd@arndb.de>
 > 
-> We can't because set_page_count(v) is used for
-> 1. changing _refcount form a current value to unconstrained v
-> 2.  initialize _refcount from undefined state to v.
+> Now that all architectures have a working futex implementation
+> in any configuration, remove the runtime detection code.
 > 
-> In this work we forbid the first case, and reduce the second case to
-> initialize only to 1.
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+> ---
+>  arch/arc/Kconfig              |  1 -
+>  arch/arm/Kconfig              |  1 -
+>  arch/arm64/Kconfig            |  1 -
+>  arch/csky/Kconfig             |  1 -
+>  arch/m68k/Kconfig             |  1 -
+>  arch/riscv/Kconfig            |  1 -
+>  arch/s390/Kconfig             |  1 -
+>  arch/sh/Kconfig               |  1 -
+>  arch/um/Kconfig               |  1 -
+>  arch/um/kernel/skas/uaccess.c |  1 -
+>  arch/xtensa/Kconfig           |  1 -
+>  init/Kconfig                  |  8 --------
+>  kernel/futex/core.c           | 35 -----------------------------------
+>  kernel/futex/futex.h          |  6 ------
+>  kernel/futex/syscalls.c       | 22 ----------------------
+>  15 files changed, 82 deletions(-)
 
-Anything that is calling set_page_refcount() on something which is
-not 0 is buggy today.  There are several ways to increment the page
-refcount speculatively if it is not 0.  eg lockless GUP and page cache
-reads.  So we could have:
+Acked-by: Rich Felker <dalias@libc.org>
 
-CPU 0: alloc_page() (refcount now 1)
-CPU 1: get_page_unless_zero() (refcount now 2)
-CPU 0: set_page_refcount(5) (refcount now 5)
-CPU 1: put_page() (refcount now 4)
-
-Now the refcount is wrong.  So it is *only* safe to call
-set_page_refcount() if the refcount is 0.  If you can find somewhere
-that's calling set_page_refcount() on a non-0 refcount, that's a bug
-that needs to be fixed.
