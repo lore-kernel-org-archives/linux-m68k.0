@@ -2,55 +2,55 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id AC833C43219
-	for <linux-m68k@archiver.kernel.org>; Wed, 27 Oct 2021 21:25:12 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4CCFDC433EF
+	for <linux-m68k@archiver.kernel.org>; Wed, 27 Oct 2021 21:25:13 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 95AFF610CB
-	for <linux-m68k@archiver.kernel.org>; Wed, 27 Oct 2021 21:25:12 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 3392C6109E
+	for <linux-m68k@archiver.kernel.org>; Wed, 27 Oct 2021 21:25:13 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235347AbhJ0V1f (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Wed, 27 Oct 2021 17:27:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53838 "EHLO
+        id S239789AbhJ0V1i (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Wed, 27 Oct 2021 17:27:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53828 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239789AbhJ0VZW (ORCPT
+        with ESMTP id S241128AbhJ0VZZ (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Wed, 27 Oct 2021 17:25:22 -0400
-Received: from mail-lf1-x12d.google.com (mail-lf1-x12d.google.com [IPv6:2a00:1450:4864:20::12d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C17EC0432EE
-        for <linux-m68k@lists.linux-m68k.org>; Wed, 27 Oct 2021 14:18:59 -0700 (PDT)
-Received: by mail-lf1-x12d.google.com with SMTP id j9so8980626lfu.7
-        for <linux-m68k@lists.linux-m68k.org>; Wed, 27 Oct 2021 14:18:59 -0700 (PDT)
+        Wed, 27 Oct 2021 17:25:25 -0400
+Received: from mail-lf1-x136.google.com (mail-lf1-x136.google.com [IPv6:2a00:1450:4864:20::136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3E929C0432F2
+        for <linux-m68k@lists.linux-m68k.org>; Wed, 27 Oct 2021 14:19:03 -0700 (PDT)
+Received: by mail-lf1-x136.google.com with SMTP id u11so9042887lfs.1
+        for <linux-m68k@lists.linux-m68k.org>; Wed, 27 Oct 2021 14:19:03 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=/Hqy/1scbv2xgSJ+Pfjnwd9vR5EU0n/d3WfB2tugTgE=;
-        b=fdXEajT5ReWU0k76RL+UMQexWX6+dI9dqZX5MdJXsVZcuokskYVO71+oKjzDY4A2wc
-         hJ1YtaH4eNeZaWabxSPD6IdHvppV9tDUjSfbiCZ9pzJbnyd1ILGvgPlaBo02Y2jjZnzD
-         JbO/7oiPSFxLAQwFLHGGO2Gfwy8dZZlQdidry7vBInQu2wS67Np/bBN1rUC/SIaULQAp
-         mZSgP8kJbrDoclvDh2sRCaJ+wiPArCAPZMKwm6/7+fwfn1T4SmuQIaJDkhw4NUU2izwl
-         4ikxIWp8MhgEKidppyJcozjOV5jYdL31Pn9EYMxWJrcs7VGZ0QCvDnuFIw51Kr2focF2
-         kW1g==
+        bh=IkN5RxNvfWU6udxIv0HqPwHPsreqVVHZYAiW4uOSdQE=;
+        b=EBSN3i6pBzJ/QX6b7hWJ61FbfkEkrcOrflTwto+4KX4or46ACVz9Tr/1pugxTtiHmi
+         G7CMVOoidyYK0g+Vg4pJnm/bKfolm8lIe6sk0vITgUl/0On7GAe1avC+nPdsUhal8n/2
+         2LfBGzyZF4kisF1H8Fy3oqJJlA7mP+5FCx9jGZBePen+YJxCg52jU7glSS7bDwelermJ
+         QOk39GQqnkcumTBHd2mHERoDOJXwlx4KsuyCu/MObr6DT96WNWvs0v/iyAkBnjjhRCxD
+         gw7GTseQp5qiH+atTqu6Rg9n+NmY0IzLKdyAE4sSGNY6W234A5z05GeGyvCsr57AR1H6
+         zVgw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=/Hqy/1scbv2xgSJ+Pfjnwd9vR5EU0n/d3WfB2tugTgE=;
-        b=3HPxK3S4qwvz9YPxPjyScEcXxiJOQgkU5q02O7BuAi/zV0lZzXEi7MqjqcfofxjfZk
-         a5SKrv2MBj2OzJIwKqFTp7b7/scgeq2z3md1Y7yEnV7GWbovOmiiefxpZZLB7MvxpGQe
-         9OIqIqggs7SfkvxCchasIZKX5q41xbp2pjpY8LdLBCdW9gVeNI3PYndyGc365+FNEDbo
-         XA25p5UVnYDOEdFYro7qUDo5qRoOa7ocvxF+U1ddNsHoCV8pAcvbOX/YS6mVI+ERPygX
-         lmTdGV7C7+vj3lOhH10GnjgPuemRJ4Zt0NAdlxhuFthVaL3UfrgZR+Tif3NGWtksm13o
-         bXpg==
-X-Gm-Message-State: AOAM531vJitywnKKaFctwWbv3eqCGYvVUgfc0LyD/7kPfu+/YlFcH/zC
-        LadiI5TyzpAVWIb70VWV05o=
-X-Google-Smtp-Source: ABdhPJxErOfbgWaHoJDyROU+wtxCyzAJwEEk/21TSkl3Wl7+6OTCwc5MbFi2KTtZM0ExVMRMX2XJDw==
-X-Received: by 2002:a05:6512:344a:: with SMTP id j10mr78084lfr.653.1635369538003;
-        Wed, 27 Oct 2021 14:18:58 -0700 (PDT)
+        bh=IkN5RxNvfWU6udxIv0HqPwHPsreqVVHZYAiW4uOSdQE=;
+        b=iiSuAiJ6hGd1ORoFrWQqpwgzPQUV0CeQ7gyR9OqASWPRiR5CpnmZpMrxg8SgYh5CTl
+         ccmN05TEeiB2UsvfeesKG4/50l4MMIfJuI35bf4/m8iKS8Zen6dmBJ/qfHebX2bp4Jod
+         vpg3kvrsYg88A5++NHpuXeG0fNVvRgPzY3iWr5jICJn0ijWWfKLDjJG1xQjCTBZsvGFA
+         cEaM6Q+ZGhSYuQUYfpoKU+Eyt5ygjGwioPq+uDESIyw5jtCFkD7Dx4eDrr9/7wwnn7tN
+         9VCu+mPg+n2BR3sTc0W58dkU0/O/SFUrfUeXsBf/Px0+XIUnJ0taweNP+I7s8rE7OZQO
+         zuCA==
+X-Gm-Message-State: AOAM531fxNKU+mWIGcmDtsMLXP9NvGNaBa/kn07nUfLhj896kXobIilo
+        N2y37nCFwIe+nd1cV17u89U=
+X-Google-Smtp-Source: ABdhPJxsr/pRUcPc/yvXJw9vQsQsBRCfPMRUucvUkltufw5utcaA8e0PD5R7U1W5XHhl0HmaGsY5xg==
+X-Received: by 2002:a05:6512:aca:: with SMTP id n10mr150724lfu.66.1635369541621;
+        Wed, 27 Oct 2021 14:19:01 -0700 (PDT)
 Received: from localhost.localdomain (46-138-41-28.dynamic.spd-mgts.ru. [46.138.41.28])
-        by smtp.gmail.com with ESMTPSA id d7sm104336ljl.18.2021.10.27.14.18.56
+        by smtp.gmail.com with ESMTPSA id d7sm104336ljl.18.2021.10.27.14.18.59
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 27 Oct 2021 14:18:57 -0700 (PDT)
+        Wed, 27 Oct 2021 14:19:01 -0700 (PDT)
 From:   Dmitry Osipenko <digetx@gmail.com>
 To:     Thierry Reding <thierry.reding@gmail.com>,
         Jonathan Hunter <jonathanh@nvidia.com>,
@@ -114,9 +114,9 @@ Cc:     Catalin Marinas <catalin.marinas@arm.com>,
         xen-devel@lists.xenproject.org, linux-acpi@vger.kernel.org,
         linux-omap@vger.kernel.org, openbmc@lists.ozlabs.org,
         linux-tegra@vger.kernel.org, linux-pm@vger.kernel.org
-Subject: [PATCH v2 35/45] mfd: max8907: Use devm_register_simple_power_off_handler()
-Date:   Thu, 28 Oct 2021 00:17:05 +0300
-Message-Id: <20211027211715.12671-36-digetx@gmail.com>
+Subject: [PATCH v2 37/45] mfd: tps65910: Use devm_register_simple_power_off_handler()
+Date:   Thu, 28 Oct 2021 00:17:07 +0300
+Message-Id: <20211027211715.12671-38-digetx@gmail.com>
 X-Mailer: git-send-email 2.33.1
 In-Reply-To: <20211027211715.12671-1-digetx@gmail.com>
 References: <20211027211715.12671-1-digetx@gmail.com>
@@ -131,64 +131,52 @@ pm_power_off variable and allows to register multiple power-off handlers.
 
 Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
 ---
- drivers/mfd/max8907.c | 22 +++++++++++++++-------
- 1 file changed, 15 insertions(+), 7 deletions(-)
+ drivers/mfd/tps65910.c | 17 ++++++++++++-----
+ 1 file changed, 12 insertions(+), 5 deletions(-)
 
-diff --git a/drivers/mfd/max8907.c b/drivers/mfd/max8907.c
-index 41f566e6a096..58699510311b 100644
---- a/drivers/mfd/max8907.c
-+++ b/drivers/mfd/max8907.c
+diff --git a/drivers/mfd/tps65910.c b/drivers/mfd/tps65910.c
+index 6e105cca27d4..8fab30dc84e5 100644
+--- a/drivers/mfd/tps65910.c
++++ b/drivers/mfd/tps65910.c
 @@ -16,6 +16,7 @@
- #include <linux/module.h>
- #include <linux/of.h>
- #include <linux/of_device.h>
+ #include <linux/irq.h>
+ #include <linux/irqdomain.h>
+ #include <linux/mfd/core.h>
 +#include <linux/reboot.h>
  #include <linux/regmap.h>
- #include <linux/slab.h>
- 
-@@ -174,9 +175,10 @@ static const struct regmap_irq_chip max8907_rtc_irq_chip = {
- 	.num_irqs = ARRAY_SIZE(max8907_rtc_irqs),
- };
- 
--static struct max8907 *max8907_pm_off;
--static void max8907_power_off(void)
-+static void max8907_power_off(void *data)
- {
-+	struct max8907 *max8907_pm_off = data;
-+
- 	regmap_update_bits(max8907_pm_off->regmap_gen, MAX8907_REG_RESET_CNFG,
- 			MAX8907_MASK_POWER_OFF, MAX8907_MASK_POWER_OFF);
+ #include <linux/mfd/tps65910.h>
+ #include <linux/of.h>
+@@ -429,9 +430,9 @@ struct tps65910_board *tps65910_parse_dt(struct i2c_client *client,
  }
-@@ -214,6 +216,17 @@ static int max8907_i2c_probe(struct i2c_client *i2c,
- 		goto err_regmap_gen;
- 	}
+ #endif
  
-+	if (pm_off) {
+-static struct i2c_client *tps65910_i2c_client;
+-static void tps65910_power_off(void)
++static void tps65910_power_off(void *data)
+ {
++	struct i2c_client *tps65910_i2c_client = data;
+ 	struct tps65910 *tps65910;
+ 
+ 	tps65910 = dev_get_drvdata(&tps65910_i2c_client->dev);
+@@ -503,9 +504,15 @@ static int tps65910_i2c_probe(struct i2c_client *i2c,
+ 	tps65910_ck32k_init(tps65910, pmic_plat_data);
+ 	tps65910_sleepinit(tps65910, pmic_plat_data);
+ 
+-	if (pmic_plat_data->pm_off && !pm_power_off) {
+-		tps65910_i2c_client = i2c;
+-		pm_power_off = tps65910_power_off;
++	if (pmic_plat_data->pm_off) {
 +		ret = devm_register_simple_power_off_handler(&i2c->dev,
-+							     max8907_power_off,
-+							     max8907);
++							     tps65910_power_off,
++							     i2c);
 +		if (ret) {
 +			dev_err(&i2c->dev,
 +				"failed to register power-off handler: %d\n", ret);
 +			return ret;
 +		}
-+	}
-+
- 	max8907->i2c_rtc = i2c_new_dummy_device(i2c->adapter, MAX8907_RTC_I2C_ADDR);
- 	if (IS_ERR(max8907->i2c_rtc)) {
- 		ret = PTR_ERR(max8907->i2c_rtc);
-@@ -260,11 +273,6 @@ static int max8907_i2c_probe(struct i2c_client *i2c,
- 		goto err_add_devices;
  	}
  
--	if (pm_off && !pm_power_off) {
--		max8907_pm_off = max8907;
--		pm_power_off = max8907_power_off;
--	}
--
- 	return 0;
- 
- err_add_devices:
+ 	ret = devm_mfd_add_devices(tps65910->dev, -1,
 -- 
 2.33.1
 
