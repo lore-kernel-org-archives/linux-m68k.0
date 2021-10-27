@@ -2,55 +2,55 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 4CCFDC433EF
-	for <linux-m68k@archiver.kernel.org>; Wed, 27 Oct 2021 21:25:13 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 62F95C4167B
+	for <linux-m68k@archiver.kernel.org>; Wed, 27 Oct 2021 21:25:14 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 3392C6109E
-	for <linux-m68k@archiver.kernel.org>; Wed, 27 Oct 2021 21:25:13 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 4BE00610C7
+	for <linux-m68k@archiver.kernel.org>; Wed, 27 Oct 2021 21:25:14 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239789AbhJ0V1i (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Wed, 27 Oct 2021 17:27:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53828 "EHLO
+        id S241083AbhJ0V1j (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Wed, 27 Oct 2021 17:27:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53814 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241128AbhJ0VZZ (ORCPT
+        with ESMTP id S241239AbhJ0VZ2 (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Wed, 27 Oct 2021 17:25:25 -0400
-Received: from mail-lf1-x136.google.com (mail-lf1-x136.google.com [IPv6:2a00:1450:4864:20::136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3E929C0432F2
-        for <linux-m68k@lists.linux-m68k.org>; Wed, 27 Oct 2021 14:19:03 -0700 (PDT)
-Received: by mail-lf1-x136.google.com with SMTP id u11so9042887lfs.1
-        for <linux-m68k@lists.linux-m68k.org>; Wed, 27 Oct 2021 14:19:03 -0700 (PDT)
+        Wed, 27 Oct 2021 17:25:28 -0400
+Received: from mail-lj1-x22e.google.com (mail-lj1-x22e.google.com [IPv6:2a00:1450:4864:20::22e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A3C9C0432F5
+        for <linux-m68k@lists.linux-m68k.org>; Wed, 27 Oct 2021 14:19:05 -0700 (PDT)
+Received: by mail-lj1-x22e.google.com with SMTP id d23so5640144ljj.10
+        for <linux-m68k@lists.linux-m68k.org>; Wed, 27 Oct 2021 14:19:05 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=IkN5RxNvfWU6udxIv0HqPwHPsreqVVHZYAiW4uOSdQE=;
-        b=EBSN3i6pBzJ/QX6b7hWJ61FbfkEkrcOrflTwto+4KX4or46ACVz9Tr/1pugxTtiHmi
-         G7CMVOoidyYK0g+Vg4pJnm/bKfolm8lIe6sk0vITgUl/0On7GAe1avC+nPdsUhal8n/2
-         2LfBGzyZF4kisF1H8Fy3oqJJlA7mP+5FCx9jGZBePen+YJxCg52jU7glSS7bDwelermJ
-         QOk39GQqnkcumTBHd2mHERoDOJXwlx4KsuyCu/MObr6DT96WNWvs0v/iyAkBnjjhRCxD
-         gw7GTseQp5qiH+atTqu6Rg9n+NmY0IzLKdyAE4sSGNY6W234A5z05GeGyvCsr57AR1H6
-         zVgw==
+        bh=Mu7tO95vXROZ9xbCJkoDzGl64HT6xR31EdIoyaMnKtk=;
+        b=kPE91xXN+stBc0ha+PSjaOkkNGKlDTid0pZMJS4/z0xuWbbpv+/mX7oe8gzrFGsnxt
+         knUKantyHU6PWIePiCnlFQ4UN8ZQdQP1oXKoJzSLIKv1lTDAhiLZjpDPc+aijhkrEZAj
+         Xd8HN8BgZu0o5hpIxMQVtpuABAaRE4DHHXJZzo4Dy3xXk62gjG4MyDoYUHzKrSYuupRB
+         lCz2OE27nWCjWUb+PHoI0yIS0mi3esed5R8cO+FhwY/2Rv4/jyVsNkj3xtgaoN5/YStc
+         dCcP9WUacf6ElBGM42XMwNMMkAZqDoGVD/aHJJj9Cz/Tk9wj2JFlAJdIXkKMwT6cvxA3
+         e31g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=IkN5RxNvfWU6udxIv0HqPwHPsreqVVHZYAiW4uOSdQE=;
-        b=iiSuAiJ6hGd1ORoFrWQqpwgzPQUV0CeQ7gyR9OqASWPRiR5CpnmZpMrxg8SgYh5CTl
-         ccmN05TEeiB2UsvfeesKG4/50l4MMIfJuI35bf4/m8iKS8Zen6dmBJ/qfHebX2bp4Jod
-         vpg3kvrsYg88A5++NHpuXeG0fNVvRgPzY3iWr5jICJn0ijWWfKLDjJG1xQjCTBZsvGFA
-         cEaM6Q+ZGhSYuQUYfpoKU+Eyt5ygjGwioPq+uDESIyw5jtCFkD7Dx4eDrr9/7wwnn7tN
-         9VCu+mPg+n2BR3sTc0W58dkU0/O/SFUrfUeXsBf/Px0+XIUnJ0taweNP+I7s8rE7OZQO
-         zuCA==
-X-Gm-Message-State: AOAM531fxNKU+mWIGcmDtsMLXP9NvGNaBa/kn07nUfLhj896kXobIilo
-        N2y37nCFwIe+nd1cV17u89U=
-X-Google-Smtp-Source: ABdhPJxsr/pRUcPc/yvXJw9vQsQsBRCfPMRUucvUkltufw5utcaA8e0PD5R7U1W5XHhl0HmaGsY5xg==
-X-Received: by 2002:a05:6512:aca:: with SMTP id n10mr150724lfu.66.1635369541621;
-        Wed, 27 Oct 2021 14:19:01 -0700 (PDT)
+        bh=Mu7tO95vXROZ9xbCJkoDzGl64HT6xR31EdIoyaMnKtk=;
+        b=E5dlro/0itrjIKmqAdpqZqInhd3DfAt9GYYt371K1YSWEPdrqiCnqskmxPty2oCmwM
+         U3lCcPhYuKpBxPgEMKFFfXHmEu8YdzPEQmaZjU/bb0U1NIdW3IgSUQUxwBQkpTlmvkub
+         7T+9ePqIk0gtDtSuoMOKF1lKXH7QJJdexU0TOYzr8AkwbBGN5AdLN6v+OLJFTVGt+iti
+         70DaTzRZmk57xgNUey5E1KI+SNfQhsNGEinnMo1b9HgBVLm4UTmDj1P5x7qXFo/u8oUF
+         SlvnmQOziJ8NIiYbjxAM0FuBEgA0ZaxfnvJZsvOKus7hphrcHCECijQN/BJqJ2xck3OO
+         6Xvg==
+X-Gm-Message-State: AOAM533DUkB5yzlBJHrnqJvolwI8pp+VTO53QXWwoImJOpAiK91bA6uo
+        Hldhuf126TndcQhbqRP4/B8=
+X-Google-Smtp-Source: ABdhPJx+pRFjcRYPR1om8nKBpIgAHoRaPbEg7vS4nL7YKN3yH6zq2Ajomu3cvpnY+yAbJLhjtqI1TQ==
+X-Received: by 2002:a2e:bb98:: with SMTP id y24mr344716lje.168.1635369543476;
+        Wed, 27 Oct 2021 14:19:03 -0700 (PDT)
 Received: from localhost.localdomain (46-138-41-28.dynamic.spd-mgts.ru. [46.138.41.28])
-        by smtp.gmail.com with ESMTPSA id d7sm104336ljl.18.2021.10.27.14.18.59
+        by smtp.gmail.com with ESMTPSA id d7sm104336ljl.18.2021.10.27.14.19.01
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 27 Oct 2021 14:19:01 -0700 (PDT)
+        Wed, 27 Oct 2021 14:19:03 -0700 (PDT)
 From:   Dmitry Osipenko <digetx@gmail.com>
 To:     Thierry Reding <thierry.reding@gmail.com>,
         Jonathan Hunter <jonathanh@nvidia.com>,
@@ -114,9 +114,9 @@ Cc:     Catalin Marinas <catalin.marinas@arm.com>,
         xen-devel@lists.xenproject.org, linux-acpi@vger.kernel.org,
         linux-omap@vger.kernel.org, openbmc@lists.ozlabs.org,
         linux-tegra@vger.kernel.org, linux-pm@vger.kernel.org
-Subject: [PATCH v2 37/45] mfd: tps65910: Use devm_register_simple_power_off_handler()
-Date:   Thu, 28 Oct 2021 00:17:07 +0300
-Message-Id: <20211027211715.12671-38-digetx@gmail.com>
+Subject: [PATCH v2 38/45] mfd: max77620: Use devm_register_simple_power_off_handler()
+Date:   Thu, 28 Oct 2021 00:17:08 +0300
+Message-Id: <20211027211715.12671-39-digetx@gmail.com>
 X-Mailer: git-send-email 2.33.1
 In-Reply-To: <20211027211715.12671-1-digetx@gmail.com>
 References: <20211027211715.12671-1-digetx@gmail.com>
@@ -129,54 +129,68 @@ X-Mailing-List: linux-m68k@vger.kernel.org
 Use devm_register_simple_power_off_handler() that replaces global
 pm_power_off variable and allows to register multiple power-off handlers.
 
+Nexus 7 Android tablet can be powered off using MAX77663 PMIC and using
+a special bootloader command. At first the bootloader option should be
+tried, it will have a higher priority than of PMIC that uses default
+priority.
+
 Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
 ---
- drivers/mfd/tps65910.c | 17 ++++++++++++-----
- 1 file changed, 12 insertions(+), 5 deletions(-)
+ drivers/mfd/max77620.c | 21 ++++++++++++---------
+ 1 file changed, 12 insertions(+), 9 deletions(-)
 
-diff --git a/drivers/mfd/tps65910.c b/drivers/mfd/tps65910.c
-index 6e105cca27d4..8fab30dc84e5 100644
---- a/drivers/mfd/tps65910.c
-+++ b/drivers/mfd/tps65910.c
-@@ -16,6 +16,7 @@
- #include <linux/irq.h>
- #include <linux/irqdomain.h>
- #include <linux/mfd/core.h>
+diff --git a/drivers/mfd/max77620.c b/drivers/mfd/max77620.c
+index fec2096474ad..29487ccc191a 100644
+--- a/drivers/mfd/max77620.c
++++ b/drivers/mfd/max77620.c
+@@ -31,11 +31,10 @@
+ #include <linux/init.h>
+ #include <linux/of.h>
+ #include <linux/of_device.h>
 +#include <linux/reboot.h>
  #include <linux/regmap.h>
- #include <linux/mfd/tps65910.h>
- #include <linux/of.h>
-@@ -429,9 +430,9 @@ struct tps65910_board *tps65910_parse_dt(struct i2c_client *client,
+ #include <linux/slab.h>
+ 
+-static struct max77620_chip *max77620_scratch;
+-
+ static const struct resource gpio_resources[] = {
+ 	DEFINE_RES_IRQ(MAX77620_IRQ_TOP_GPIO),
+ };
+@@ -483,13 +482,13 @@ static int max77620_read_es_version(struct max77620_chip *chip)
+ 	return ret;
  }
- #endif
  
--static struct i2c_client *tps65910_i2c_client;
--static void tps65910_power_off(void)
-+static void tps65910_power_off(void *data)
+-static void max77620_pm_power_off(void)
++static void max77620_pm_power_off(void *data)
  {
-+	struct i2c_client *tps65910_i2c_client = data;
- 	struct tps65910 *tps65910;
+-	struct max77620_chip *chip = max77620_scratch;
++	struct max77620_chip *chip = data;
  
- 	tps65910 = dev_get_drvdata(&tps65910_i2c_client->dev);
-@@ -503,9 +504,15 @@ static int tps65910_i2c_probe(struct i2c_client *i2c,
- 	tps65910_ck32k_init(tps65910, pmic_plat_data);
- 	tps65910_sleepinit(tps65910, pmic_plat_data);
+ 	regmap_update_bits(chip->rmap, MAX77620_REG_ONOFFCNFG1,
+-			   MAX77620_ONOFFCNFG1_SFT_RST,
+-			   MAX77620_ONOFFCNFG1_SFT_RST);
++				   MAX77620_ONOFFCNFG1_SFT_RST,
++				   MAX77620_ONOFFCNFG1_SFT_RST);
+ }
  
--	if (pmic_plat_data->pm_off && !pm_power_off) {
--		tps65910_i2c_client = i2c;
--		pm_power_off = tps65910_power_off;
-+	if (pmic_plat_data->pm_off) {
-+		ret = devm_register_simple_power_off_handler(&i2c->dev,
-+							     tps65910_power_off,
-+							     i2c);
-+		if (ret) {
-+			dev_err(&i2c->dev,
-+				"failed to register power-off handler: %d\n", ret);
-+			return ret;
-+		}
+ static int max77620_probe(struct i2c_client *client,
+@@ -566,9 +565,13 @@ static int max77620_probe(struct i2c_client *client,
  	}
  
- 	ret = devm_mfd_add_devices(tps65910->dev, -1,
+ 	pm_off = of_device_is_system_power_controller(client->dev.of_node);
+-	if (pm_off && !pm_power_off) {
+-		max77620_scratch = chip;
+-		pm_power_off = max77620_pm_power_off;
++	if (pm_off) {
++		ret = devm_register_simple_power_off_handler(chip->dev,
++							     max77620_pm_power_off,
++							     chip);
++		if (ret < 0)
++			dev_err(chip->dev,
++				"Failed to register power-off handler: %d\n", ret);
+ 	}
+ 
+ 	return 0;
 -- 
 2.33.1
 
