@@ -2,55 +2,55 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3F36BC433F5
-	for <linux-m68k@archiver.kernel.org>; Wed, 27 Oct 2021 21:21:16 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 31CC0C43217
+	for <linux-m68k@archiver.kernel.org>; Wed, 27 Oct 2021 21:21:59 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 29419610CB
-	for <linux-m68k@archiver.kernel.org>; Wed, 27 Oct 2021 21:21:16 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 20923610CB
+	for <linux-m68k@archiver.kernel.org>; Wed, 27 Oct 2021 21:21:59 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241426AbhJ0VXk (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Wed, 27 Oct 2021 17:23:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53912 "EHLO
+        id S238834AbhJ0VYW (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Wed, 27 Oct 2021 17:24:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53906 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244671AbhJ0VVv (ORCPT
+        with ESMTP id S238889AbhJ0VXf (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Wed, 27 Oct 2021 17:21:51 -0400
+        Wed, 27 Oct 2021 17:23:35 -0400
 Received: from mail-lf1-x135.google.com (mail-lf1-x135.google.com [IPv6:2a00:1450:4864:20::135])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7512EC07978C
-        for <linux-m68k@lists.linux-m68k.org>; Wed, 27 Oct 2021 14:18:35 -0700 (PDT)
-Received: by mail-lf1-x135.google.com with SMTP id bq11so8955703lfb.10
-        for <linux-m68k@lists.linux-m68k.org>; Wed, 27 Oct 2021 14:18:35 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F1D9C0432CB
+        for <linux-m68k@lists.linux-m68k.org>; Wed, 27 Oct 2021 14:18:41 -0700 (PDT)
+Received: by mail-lf1-x135.google.com with SMTP id c28so8887877lfv.13
+        for <linux-m68k@lists.linux-m68k.org>; Wed, 27 Oct 2021 14:18:40 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=4OWbCpLiTrW70NMTPpPUNVkhVF3RKPzG5GTofMVph+0=;
-        b=nyjF7CMTiXZTknDCkjxSlwBlmez3wFeA+zehsvTRn8HWRCKWBbu+VeqUVL44ms69wV
-         nnBlf5yP21RTavxXaqxcjkZ3KCf591eZC6XUlLgNrDZoqwAeG0e8waWDmBuDqGJPa/ia
-         TWGnRhqwCJRO6ZHGrxxDEuuBCRuC8gitnwXoBy6yPn2yaI52p7BdBoMEudji1fyrvZ7s
-         jQQkx67Vh3JRx01BzNxvLauTbUeZkFSOIEd8jQMxIMky+FUXABFowKrpCYCop+RjKrYK
-         44VAj9OlGjdC9id5DEzvny9pb4y7eTDKQL+s4i3zBATQTR5zvjDC+NzhG9GB4CVWfx2z
-         vHjQ==
+        bh=ss23/14gvwwJvYM34ibI/ZgbUmpHxVjzq3uUOBHaqko=;
+        b=arwhy2EzVRFeFixUch4iOYgWEx15do0VgxAfdqV0D/m7TKP9iKYpnGzKHPc/i8aFQC
+         696TXg56UlUupf+0+RULAffCTRlP8iUn1mFqCgape3sBElIYYn3vwgHjtN2bztkR/yaz
+         5XVeuFkp92H0x78xi/Heckb4RKbtEPv+wOARiARvxCIQqcVNpwpOqlLJtRckQaDgVOF7
+         skIGftczMYqZ1vyVBJ3tsSBqPsOUSX9T5P10sVT2ED2dp7t8+MxfkB66wM+xzBA5lfYi
+         IRYhj0tnB8GrulFr808wNLi8EcEAMFxyf0xL4I35lWHzPaQq0/pqp97SuSICmC8JFF01
+         uymg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=4OWbCpLiTrW70NMTPpPUNVkhVF3RKPzG5GTofMVph+0=;
-        b=BLsbk5bRQrfatErYK+pAcr+0TtcCSnNepbarw3kWUgLRV1AFAKaGT13s7tSinCTUqZ
-         WhXvAbjryFM6jRHLR5fBcUXDTCKmjw/MlTJJk+HOhjvR6Sdzy0e7gdM8w49tfOokmbF5
-         6Tk/Yabi2K0GwXtvqmHBwVmuSbQDeSOIyHhyWhkuluImfzlVAU15pGN4TZCmwfIUqe17
-         CbMMjxLHANmDDL9yPOuxsG8e+3zN7K1Lisd8dBXmBcdd8XUWqgSqhJtAWYXQak7OojpP
-         5NJvjnGloVlM7gL2hrRXjWcdLQU3eZ2e9nVLMJ3YnPGQ5u0CQerurV/WeD8IR6jtJVnI
-         C2lw==
-X-Gm-Message-State: AOAM5334f5t0CREF34+BXKp8t6c1XPbwyXQV8hXfNYtl5WLhnDNZJqj0
-        oa6omj5NtigFJxLR7+bBJEs=
-X-Google-Smtp-Source: ABdhPJy61JBdPHWehe+0JZDFDtaEYRkwyYUuH0JZUFf3l53X5Ds5OQvvxR8PRHj15LQUp0FSRiIF9w==
-X-Received: by 2002:ac2:53a5:: with SMTP id j5mr141454lfh.130.1635369513848;
-        Wed, 27 Oct 2021 14:18:33 -0700 (PDT)
+        bh=ss23/14gvwwJvYM34ibI/ZgbUmpHxVjzq3uUOBHaqko=;
+        b=XkKSTR3PUZX3NJL0ddnXoQUovJ27RyU3wQnO3D/o4cbO16KbVyAAjDNAUbLERhplNp
+         cG1tt2R3+QdHrvp/eMrMzRyuqUgxLUN+Um4bO7jV6BkQH73oFUR0MmgNYvWx27iRt876
+         VspP+UZgptyOYEaEmzf3QrRLwcyLC8chsCtDQm53FNFKwRv16exwwg/fhjEd/mm7AYGS
+         l8Ezz1g3I6SmXnY0uukWA4soqWa3b3NnmxyKYmm+gPQ0oFkGWMOJDKHREt/F0X/xQzAF
+         Qno12IFAQ5QvrOQoRmoMnhDwzLbSDa5DwOafQc5WJg849plXwN9AGEwVHX13lFo07YQC
+         6IrQ==
+X-Gm-Message-State: AOAM531MStZmSRIoWLJB/tcE5Q7rKfGuYY37/QU2VOShM0Re2twcWm6q
+        eDlD3MelH8KtB0L90se5Y0o=
+X-Google-Smtp-Source: ABdhPJwimcGthRahpfEG00zaldcVjrnfSz4ndztOCehFVrD6lb951uJJXEFJ6kDGLgjZU1iMb9PE8Q==
+X-Received: by 2002:a05:6512:1047:: with SMTP id c7mr83192lfb.589.1635369519432;
+        Wed, 27 Oct 2021 14:18:39 -0700 (PDT)
 Received: from localhost.localdomain (46-138-41-28.dynamic.spd-mgts.ru. [46.138.41.28])
-        by smtp.gmail.com with ESMTPSA id d7sm104336ljl.18.2021.10.27.14.18.32
+        by smtp.gmail.com with ESMTPSA id d7sm104336ljl.18.2021.10.27.14.18.37
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 27 Oct 2021 14:18:33 -0700 (PDT)
+        Wed, 27 Oct 2021 14:18:39 -0700 (PDT)
 From:   Dmitry Osipenko <digetx@gmail.com>
 To:     Thierry Reding <thierry.reding@gmail.com>,
         Jonathan Hunter <jonathanh@nvidia.com>,
@@ -114,9 +114,9 @@ Cc:     Catalin Marinas <catalin.marinas@arm.com>,
         xen-devel@lists.xenproject.org, linux-acpi@vger.kernel.org,
         linux-omap@vger.kernel.org, openbmc@lists.ozlabs.org,
         linux-tegra@vger.kernel.org, linux-pm@vger.kernel.org
-Subject: [PATCH v2 22/45] memory: emif: Use kernel_can_power_off()
-Date:   Thu, 28 Oct 2021 00:16:52 +0300
-Message-Id: <20211027211715.12671-23-digetx@gmail.com>
+Subject: [PATCH v2 25/45] reboot: Remove pm_power_off_prepare()
+Date:   Thu, 28 Oct 2021 00:16:55 +0300
+Message-Id: <20211027211715.12671-26-digetx@gmail.com>
 X-Mailer: git-send-email 2.33.1
 In-Reply-To: <20211027211715.12671-1-digetx@gmail.com>
 References: <20211027211715.12671-1-digetx@gmail.com>
@@ -126,27 +126,56 @@ Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-Replace legacy pm_power_off with kernel_can_power_off() helper that
-is aware about chained power-off handlers.
+All pm_power_off_prepare() users were converted to power-handler API.
+Remove the obsolete callback.
 
 Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
 ---
- drivers/memory/emif.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ include/linux/pm.h |  1 -
+ kernel/reboot.c    | 11 -----------
+ 2 files changed, 12 deletions(-)
 
-diff --git a/drivers/memory/emif.c b/drivers/memory/emif.c
-index 762d0c0f0716..cab10d5274a0 100644
---- a/drivers/memory/emif.c
-+++ b/drivers/memory/emif.c
-@@ -630,7 +630,7 @@ static irqreturn_t emif_threaded_isr(int irq, void *dev_id)
- 		dev_emerg(emif->dev, "SDRAM temperature exceeds operating limit.. Needs shut down!!!\n");
+diff --git a/include/linux/pm.h b/include/linux/pm.h
+index 1d8209c09686..d9bf1426f81e 100644
+--- a/include/linux/pm.h
++++ b/include/linux/pm.h
+@@ -20,7 +20,6 @@
+  * Callbacks for platform drivers to implement.
+  */
+ extern void (*pm_power_off)(void);
+-extern void (*pm_power_off_prepare)(void);
  
- 		/* If we have Power OFF ability, use it, else try restarting */
--		if (pm_power_off) {
-+		if (kernel_can_power_off()) {
- 			kernel_power_off();
- 		} else {
- 			WARN(1, "FIXME: NO pm_power_off!!! trying restart\n");
+ struct device; /* we have a circular dep with device.h */
+ #ifdef CONFIG_VT_CONSOLE_SLEEP
+diff --git a/kernel/reboot.c b/kernel/reboot.c
+index 779429726616..9895bb56cee4 100644
+--- a/kernel/reboot.c
++++ b/kernel/reboot.c
+@@ -48,13 +48,6 @@ int reboot_cpu;
+ enum reboot_type reboot_type = BOOT_ACPI;
+ int reboot_force;
+ 
+-/*
+- * If set, this is used for preparing the system to power off.
+- */
+-
+-void (*pm_power_off_prepare)(void);
+-EXPORT_SYMBOL_GPL(pm_power_off_prepare);
+-
+ /**
+  *	emergency_restart - reboot the system
+  *
+@@ -866,10 +859,6 @@ void do_kernel_power_off(void)
+ 
+ static void do_kernel_power_off_prepare(void)
+ {
+-	/* legacy pm_power_off_prepare() is unchained and it has highest priority */
+-	if (pm_power_off_prepare)
+-		return pm_power_off_prepare();
+-
+ 	blocking_notifier_call_chain(&power_off_handler_list, POWEROFF_PREPARE,
+ 				     NULL);
+ }
 -- 
 2.33.1
 
