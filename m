@@ -2,55 +2,55 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id CA572C4321E
-	for <linux-m68k@archiver.kernel.org>; Wed, 27 Oct 2021 21:18:35 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id F1FE1C4167D
+	for <linux-m68k@archiver.kernel.org>; Wed, 27 Oct 2021 21:19:16 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id A8CB8610A6
-	for <linux-m68k@archiver.kernel.org>; Wed, 27 Oct 2021 21:18:35 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id DE968610F8
+	for <linux-m68k@archiver.kernel.org>; Wed, 27 Oct 2021 21:19:16 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244502AbhJ0VVA (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Wed, 27 Oct 2021 17:21:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53824 "EHLO
+        id S232466AbhJ0VVl (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Wed, 27 Oct 2021 17:21:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53730 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244404AbhJ0VUm (ORCPT
+        with ESMTP id S244302AbhJ0VU3 (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Wed, 27 Oct 2021 17:20:42 -0400
-Received: from mail-lf1-x12e.google.com (mail-lf1-x12e.google.com [IPv6:2a00:1450:4864:20::12e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD4B2C061570
-        for <linux-m68k@lists.linux-m68k.org>; Wed, 27 Oct 2021 14:18:14 -0700 (PDT)
-Received: by mail-lf1-x12e.google.com with SMTP id j9so8977388lfu.7
-        for <linux-m68k@lists.linux-m68k.org>; Wed, 27 Oct 2021 14:18:14 -0700 (PDT)
+        Wed, 27 Oct 2021 17:20:29 -0400
+Received: from mail-lf1-x12a.google.com (mail-lf1-x12a.google.com [IPv6:2a00:1450:4864:20::12a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A0BF6C061570
+        for <linux-m68k@lists.linux-m68k.org>; Wed, 27 Oct 2021 14:18:03 -0700 (PDT)
+Received: by mail-lf1-x12a.google.com with SMTP id c28so8885148lfv.13
+        for <linux-m68k@lists.linux-m68k.org>; Wed, 27 Oct 2021 14:18:03 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=mkT4WvxT7RtftPa0rTvgt/WDicZUVRxbWN0FWKN7Smg=;
-        b=Yo8WLAj00ehYxZyZdDVWixoWYFZCxGC5pnXCEDD+Lpmu7VCTkoyMEfgBUZ5rd74829
-         10cwYzMjgPMmfgRZlSo7KTAiAM4JViXknvJSGF9v6lX6GD7KJFaPvImanRJ6VVtdquR5
-         UWHkY3wgAzq9P8o4pg5QZxxWrvHm8PSEPWuEh07SLsPZUVJPf1GZYbO3PdmhFgXJ+BA3
-         yKffg+/c59X1/gl1a+krdkF8Zrm1ykankDPCOetkz+NKynMz9QOH9WwpSKXop30n94Hj
-         u5jmdqBNWkVvyuWeZCuboMhJEA6otxFAt6GyTyoGvAX05kLjRNIXysRA8hScLTqoqleX
-         /lfA==
+        bh=O+IvQoJf2OjzCPAk90L+IlIvsTQGqRsS8A3mVG9thss=;
+        b=BbS8+/zxVJ00rr3ixtYTd3bTdxqjkUjnBr55DaOxzJArvyNX4521PAqPigYX/BjB1N
+         aGylVDFiYrs5wRaWuZx6L52it/PPywema7yDnahBHenwiuFnc4S3m//ivsOGtXuUlPNB
+         ubXOhenNVEu1KXB2mXMptIWVwaeJRf3hxW3c8R68HPPg3pjoH3MM7xhUxuphpty83aFx
+         DGHamMHIXY7/zgP3wsKkRhZ7yEHgmahY/byikn8BiZjEw2DWUQkjcB5nYo+Xgh+eH8p4
+         oVpJycq4ZWi1GYj36y1/HBYlXfcjUxN5WpbpwFTT0cF/PRko7dGul5P66XpFeKCAINSY
+         8XVA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=mkT4WvxT7RtftPa0rTvgt/WDicZUVRxbWN0FWKN7Smg=;
-        b=3jWAxNA/WuNcaIJAJ+9k4HolY0NttXXYO7gx7bkCoTme4/1znRKQsh+xvi1ueSdm+X
-         uAbhOKnQitPYYldERn5ItxaRVd2CYoK1Ox9a4+jWDwwaAUnYVbt8LyoWlR7xG9uFAOOp
-         QYX8wDH0emQ9rWyYWvuQsdjrbS8tH4dFNwJpPT5sOyGgK0VE7mPF2ScgFTjg2V4cOmpx
-         s+NsdbiOmpjX7pdanLMVovaV4w0xWLZN86AP2Z/996ahf1CRFueE9txgHx/WO4ank9gG
-         r2p10Uq9Sy94Eme8T+bzjm6oxu8Egp9fZ87DhrLlUNwLE63mycH1UoNBbEFhD3VcR/Pv
-         DFkQ==
-X-Gm-Message-State: AOAM5313DdU0F8SVh9Fh2i29qvJ/PVjysH5whoj+Cgbj3HI/XxXXx1DU
-        JyBxGkbuUiQcuAHVp7lbisc=
-X-Google-Smtp-Source: ABdhPJwGPYNJdHipR88AgCsSNedxVrXKRLPSbCNZ0Vw/PQMqS4/ZZmjcey45JQAWlpQD9BTSBOkxoA==
-X-Received: by 2002:ac2:5fea:: with SMTP id s10mr112420lfg.652.1635369493279;
-        Wed, 27 Oct 2021 14:18:13 -0700 (PDT)
+        bh=O+IvQoJf2OjzCPAk90L+IlIvsTQGqRsS8A3mVG9thss=;
+        b=nvl4A8893jVVOTpj/r/sHXGl/n7g+OsJufRmTCEXfS70XtcaYLRILfVrwLr+yLw/LN
+         I/9DWSfWZXGQv/RIOWGlKqtsDxq7WpMdRcbqrgv9WVzu0RANJ9H2xU4QOEbGA2X00AF3
+         rpkucC7TCQx/6O9cjPszrdSlrbIVXMkHauP4aYwzoUNUEqe/36YYVwoePUB8kstARhTt
+         a4zuA/G/6Qg9pE5YpbOiMgs21PiMNPresIrpunJbQqyasCS6ChYlbUQGvebJkkyggtLS
+         pX1jUlSO0JDd6YV0efn1kbJ9OUsZWgQWFWNcZtcaJ+e7uMEkpQUVieCemNOHgd/yv4wx
+         LVzg==
+X-Gm-Message-State: AOAM5339nbIA3r7tC3XTLRub/st1JrUnexAs80LCKcOKRrfLaopgtK+1
+        vhRUISsqJ4ftXPTJNWAAfFA=
+X-Google-Smtp-Source: ABdhPJxyJaCNELbykyJ8mI+u0lU4wtjMFWua0Lm4EEmjlSiKb32hiTjDEQ+OHhGC/feOlGuy6qCfSA==
+X-Received: by 2002:ac2:4285:: with SMTP id m5mr140041lfh.86.1635369481970;
+        Wed, 27 Oct 2021 14:18:01 -0700 (PDT)
 Received: from localhost.localdomain (46-138-41-28.dynamic.spd-mgts.ru. [46.138.41.28])
-        by smtp.gmail.com with ESMTPSA id d7sm104336ljl.18.2021.10.27.14.18.11
+        by smtp.gmail.com with ESMTPSA id d7sm104336ljl.18.2021.10.27.14.18.00
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 27 Oct 2021 14:18:13 -0700 (PDT)
+        Wed, 27 Oct 2021 14:18:01 -0700 (PDT)
 From:   Dmitry Osipenko <digetx@gmail.com>
 To:     Thierry Reding <thierry.reding@gmail.com>,
         Jonathan Hunter <jonathanh@nvidia.com>,
@@ -114,9 +114,9 @@ Cc:     Catalin Marinas <catalin.marinas@arm.com>,
         xen-devel@lists.xenproject.org, linux-acpi@vger.kernel.org,
         linux-omap@vger.kernel.org, openbmc@lists.ozlabs.org,
         linux-tegra@vger.kernel.org, linux-pm@vger.kernel.org
-Subject: [PATCH v2 11/45] arm64: Use do_kernel_power_off()
-Date:   Thu, 28 Oct 2021 00:16:41 +0300
-Message-Id: <20211027211715.12671-12-digetx@gmail.com>
+Subject: [PATCH v2 05/45] reboot: Warn if restart handler has duplicated priority
+Date:   Thu, 28 Oct 2021 00:16:35 +0300
+Message-Id: <20211027211715.12671-6-digetx@gmail.com>
 X-Mailer: git-send-email 2.33.1
 In-Reply-To: <20211027211715.12671-1-digetx@gmail.com>
 References: <20211027211715.12671-1-digetx@gmail.com>
@@ -126,30 +126,41 @@ Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-Kernel now supports chained power-off handlers. Use do_kernel_power_off()
-that invokes chained power-off handlers. It also invokes legacy
-pm_power_off() for now, which will be removed once all drivers will
-be converted to the new power-off API.
+Add sanity check which ensures that there are no two restart handlers
+registered with the same priority. Normally it's a direct sign of a
+problem if two handlers use the same priority.
 
 Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
 ---
- arch/arm64/kernel/process.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+ kernel/reboot.c | 15 ++++++++++++++-
+ 1 file changed, 14 insertions(+), 1 deletion(-)
 
-diff --git a/arch/arm64/kernel/process.c b/arch/arm64/kernel/process.c
-index aacf2f5559a8..f8db031afa7d 100644
---- a/arch/arm64/kernel/process.c
-+++ b/arch/arm64/kernel/process.c
-@@ -110,8 +110,7 @@ void machine_power_off(void)
+diff --git a/kernel/reboot.c b/kernel/reboot.c
+index efb40d095d1e..d39e599c3c99 100644
+--- a/kernel/reboot.c
++++ b/kernel/reboot.c
+@@ -182,7 +182,20 @@ static ATOMIC_NOTIFIER_HEAD(restart_handler_list);
+  */
+ int register_restart_handler(struct notifier_block *nb)
  {
- 	local_irq_disable();
- 	smp_send_stop();
--	if (pm_power_off)
--		pm_power_off();
-+	do_kernel_power_off();
+-	return atomic_notifier_chain_register(&restart_handler_list, nb);
++	int ret;
++
++	ret = atomic_notifier_chain_register(&restart_handler_list, nb);
++	if (ret)
++		return ret;
++
++	/*
++	 * Handler must have unique priority. Otherwise invocation order is
++	 * determined by the registration order, which is presumed to be
++	 * unreliable.
++	 */
++	WARN_ON(!atomic_notifier_has_unique_priority(&restart_handler_list, nb));
++
++	return 0;
  }
+ EXPORT_SYMBOL(register_restart_handler);
  
- /*
 -- 
 2.33.1
 
