@@ -2,55 +2,55 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D3290C43217
-	for <linux-m68k@archiver.kernel.org>; Wed, 27 Oct 2021 21:19:19 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id BECABC4167B
+	for <linux-m68k@archiver.kernel.org>; Wed, 27 Oct 2021 21:19:20 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id B5C28610C7
-	for <linux-m68k@archiver.kernel.org>; Wed, 27 Oct 2021 21:19:19 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id A457E61106
+	for <linux-m68k@archiver.kernel.org>; Wed, 27 Oct 2021 21:19:20 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237369AbhJ0VVn (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Wed, 27 Oct 2021 17:21:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53838 "EHLO
+        id S244286AbhJ0VVo (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Wed, 27 Oct 2021 17:21:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53814 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244286AbhJ0VUm (ORCPT
+        with ESMTP id S244418AbhJ0VUq (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Wed, 27 Oct 2021 17:20:42 -0400
-Received: from mail-lf1-x136.google.com (mail-lf1-x136.google.com [IPv6:2a00:1450:4864:20::136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C8C61C0613B9
-        for <linux-m68k@lists.linux-m68k.org>; Wed, 27 Oct 2021 14:18:16 -0700 (PDT)
-Received: by mail-lf1-x136.google.com with SMTP id l13so8989232lfg.6
-        for <linux-m68k@lists.linux-m68k.org>; Wed, 27 Oct 2021 14:18:16 -0700 (PDT)
+        Wed, 27 Oct 2021 17:20:46 -0400
+Received: from mail-lf1-x135.google.com (mail-lf1-x135.google.com [IPv6:2a00:1450:4864:20::135])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ABBE6C061227
+        for <linux-m68k@lists.linux-m68k.org>; Wed, 27 Oct 2021 14:18:18 -0700 (PDT)
+Received: by mail-lf1-x135.google.com with SMTP id bp15so9012859lfb.4
+        for <linux-m68k@lists.linux-m68k.org>; Wed, 27 Oct 2021 14:18:18 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=Vv5v7NJqa2pgRBcibgPiURAuuSzsOgTRkcWT+pa422M=;
-        b=VGbgvR+u/npCM8vNPn38NuZ+MIrzGhV81ZfjU+MvKS7AiNy8hSxCjA7ujiUYCw1avb
-         GAS28yQKe3RY82NkG0EyIE3kAScJ6kyKTE9XbDbIDpQ4/fNIy31zksAcsMcf8bk9+oZI
-         1wHpYlYvsjYNqCu/GmNzEr8yZmApiaFT6QsgmW5CvvcXj9w3x5S6f7cRGSestmqNVLhh
-         o9VGqc+8lw97d2ugsZVtaD4DU57/XiuAmduAg/0PPfMVALR+BIUtVf/vGT/0dSW22xNm
-         0l5U0Yw6vCM5eFCBC2LE4tjs/ctA+ukPU11+6ITwiBuENW3D9cS5YJDtN5S1cIiSXp7j
-         wB1A==
+        bh=jIixMSKlDuHM/ROsyXYWDI0GhGtBfDPAGuo/NFEP3H8=;
+        b=VuUlnz7weOhSfAIMvRGdAiCqe8Shtv78aoHm3EO65feC0nT0nvvBnSk8QPIhVywkUj
+         RNOysBHRGg3KyTpFUTlL4md1P0VicBRamsV0pMYoslyc5mszXHbTC0wuGj5LLTuLIDD2
+         VnVcbr+sDBlhSPvrsCXrkM2C7rhvtU8y8OQkbc+espeBKofEXAYEbW1oSchhu8gpHnH6
+         5hh0T8v4+pCxxupjUbq3tFFMpwd3gXAylv/eoy7+WuK9q+47ahw0aKqYniKpkL9kizMT
+         KLoyc7ML3E1XRsxFnCpxt+IjBVgNhbN/TY6BaYE18l22YJ+9HYMvndESw4+sKVIU4K+r
+         XT2Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=Vv5v7NJqa2pgRBcibgPiURAuuSzsOgTRkcWT+pa422M=;
-        b=1mPUhdQzOJtpO6oEIGBreKnt5n9NGn9dv205MMcPOqTN0KWbFv/7YyV0ESi3E8P4zg
-         EkGzHc1/rgFICtEhqY3RYa3STDXlSQLewV6VXo+wuF7v8iNbjaR2nRO+wEDWQyz42z0d
-         a1Lq5xRAWxzDm2PjMsOZe0ieOz9KH+FangAwoGqA/HRF09tydpwVeVuZDW9YujZhaTzM
-         H+V3D+IutMSkJOE4vqtdNBAQt6nlEEiDinztXUUSAteVWrFFXDDW6Ns1MntaXLEMWNKq
-         uDHzMCyPg15ON91kK8pPb6y5DT+D+BwaxcSGtr+OG90GIpDki0KeDL/Hq5CkqPT850vb
-         Barw==
-X-Gm-Message-State: AOAM530Em0+EtFElmPegVOWwYLZmxi5L2ZxtcBsJjpLi51k4LPV+87jD
-        VuZAZ7vRtFUzdc9muLUpZZw=
-X-Google-Smtp-Source: ABdhPJycpSIBttPaIIeVkgKRen/cPXePW42pRZoMffRx62Sit7qS0BR3pB37ZmB7g4nrP0IYjPFMsA==
-X-Received: by 2002:ac2:5c43:: with SMTP id s3mr133719lfp.248.1635369495190;
-        Wed, 27 Oct 2021 14:18:15 -0700 (PDT)
+        bh=jIixMSKlDuHM/ROsyXYWDI0GhGtBfDPAGuo/NFEP3H8=;
+        b=cxpHB2piiTHhrOozTUugu5bMxxOxvVJtDjpSmgoI2yMIwYWgLI3Atyi+iC3uUjuMRp
+         G156Z61LzX8sF6hh2Z3uBViNdVmLXCbc6NiqaeGsV38VuTWxtA36vo54EZo9nGOCRFDi
+         cry6ekJDXz0g2Uvt1BXZSRZWJRUsGr5UgbTXQDB78WWtlfjV67t2qVpeqv1x6PGthmVp
+         mBsbrT447tZPZyRORv8iO2Ace2ezYS/UjR4hkcH7a4hI9s3g0lnBHKloYeEtCZ2gUK0y
+         1LccmL6sJlFU/ODXz0N8djbh9+5Vvpktq+3NthFf5kf/wT23rx5sM+1tBP4CX6DXPER6
+         ixxQ==
+X-Gm-Message-State: AOAM530SHHgSSFP9k2lB7jMl9NJanWa4wsNWgFvO106YfQs+RL8fzJji
+        YXuY1QQiLVcPb4v+lZ5z9vE=
+X-Google-Smtp-Source: ABdhPJzTnlhiIBlvhjatRngwhlUNPcdRxQkZ5VPhYXoHnLeJsw7ZI6sTw6Ma1GzH+vutcEMuVDSyeQ==
+X-Received: by 2002:a05:6512:228e:: with SMTP id f14mr113005lfu.610.1635369497072;
+        Wed, 27 Oct 2021 14:18:17 -0700 (PDT)
 Received: from localhost.localdomain (46-138-41-28.dynamic.spd-mgts.ru. [46.138.41.28])
-        by smtp.gmail.com with ESMTPSA id d7sm104336ljl.18.2021.10.27.14.18.13
+        by smtp.gmail.com with ESMTPSA id d7sm104336ljl.18.2021.10.27.14.18.15
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 27 Oct 2021 14:18:14 -0700 (PDT)
+        Wed, 27 Oct 2021 14:18:16 -0700 (PDT)
 From:   Dmitry Osipenko <digetx@gmail.com>
 To:     Thierry Reding <thierry.reding@gmail.com>,
         Jonathan Hunter <jonathanh@nvidia.com>,
@@ -114,9 +114,9 @@ Cc:     Catalin Marinas <catalin.marinas@arm.com>,
         xen-devel@lists.xenproject.org, linux-acpi@vger.kernel.org,
         linux-omap@vger.kernel.org, openbmc@lists.ozlabs.org,
         linux-tegra@vger.kernel.org, linux-pm@vger.kernel.org
-Subject: [PATCH v2 12/45] csky: Use do_kernel_power_off()
-Date:   Thu, 28 Oct 2021 00:16:42 +0300
-Message-Id: <20211027211715.12671-13-digetx@gmail.com>
+Subject: [PATCH v2 13/45] ia64: Use do_kernel_power_off()
+Date:   Thu, 28 Oct 2021 00:16:43 +0300
+Message-Id: <20211027211715.12671-14-digetx@gmail.com>
 X-Mailer: git-send-email 2.33.1
 In-Reply-To: <20211027211715.12671-1-digetx@gmail.com>
 References: <20211027211715.12671-1-digetx@gmail.com>
@@ -133,30 +133,29 @@ be converted to the new power-off API.
 
 Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
 ---
- arch/csky/kernel/power.c | 6 ++----
- 1 file changed, 2 insertions(+), 4 deletions(-)
+ arch/ia64/kernel/process.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/arch/csky/kernel/power.c b/arch/csky/kernel/power.c
-index 923ee4e381b8..86ee202906f8 100644
---- a/arch/csky/kernel/power.c
-+++ b/arch/csky/kernel/power.c
-@@ -9,16 +9,14 @@ EXPORT_SYMBOL(pm_power_off);
- void machine_power_off(void)
+diff --git a/arch/ia64/kernel/process.c b/arch/ia64/kernel/process.c
+index 834df24a88f1..cee4d7db2143 100644
+--- a/arch/ia64/kernel/process.c
++++ b/arch/ia64/kernel/process.c
+@@ -19,6 +19,7 @@
+ #include <linux/module.h>
+ #include <linux/notifier.h>
+ #include <linux/personality.h>
++#include <linux/reboot.h>
+ #include <linux/sched.h>
+ #include <linux/sched/debug.h>
+ #include <linux/sched/hotplug.h>
+@@ -599,8 +600,7 @@ machine_halt (void)
+ void
+ machine_power_off (void)
  {
- 	local_irq_disable();
 -	if (pm_power_off)
 -		pm_power_off();
 +	do_kernel_power_off();
- 	asm volatile ("bkpt");
- }
- 
- void machine_halt(void)
- {
- 	local_irq_disable();
--	if (pm_power_off)
--		pm_power_off();
-+	do_kernel_power_off();
- 	asm volatile ("bkpt");
+ 	machine_halt();
  }
  
 -- 
