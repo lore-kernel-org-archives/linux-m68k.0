@@ -2,55 +2,55 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id F1FE1C4167D
-	for <linux-m68k@archiver.kernel.org>; Wed, 27 Oct 2021 21:19:16 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id CD399C433FE
+	for <linux-m68k@archiver.kernel.org>; Wed, 27 Oct 2021 21:19:17 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id DE968610F8
-	for <linux-m68k@archiver.kernel.org>; Wed, 27 Oct 2021 21:19:16 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id BA92E610C7
+	for <linux-m68k@archiver.kernel.org>; Wed, 27 Oct 2021 21:19:17 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232466AbhJ0VVl (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Wed, 27 Oct 2021 17:21:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53730 "EHLO
+        id S244407AbhJ0VVm (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Wed, 27 Oct 2021 17:21:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53744 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244302AbhJ0VU3 (ORCPT
+        with ESMTP id S244282AbhJ0VU3 (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
         Wed, 27 Oct 2021 17:20:29 -0400
-Received: from mail-lf1-x12a.google.com (mail-lf1-x12a.google.com [IPv6:2a00:1450:4864:20::12a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A0BF6C061570
-        for <linux-m68k@lists.linux-m68k.org>; Wed, 27 Oct 2021 14:18:03 -0700 (PDT)
-Received: by mail-lf1-x12a.google.com with SMTP id c28so8885148lfv.13
-        for <linux-m68k@lists.linux-m68k.org>; Wed, 27 Oct 2021 14:18:03 -0700 (PDT)
+Received: from mail-lj1-x22d.google.com (mail-lj1-x22d.google.com [IPv6:2a00:1450:4864:20::22d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 06481C06122C
+        for <linux-m68k@lists.linux-m68k.org>; Wed, 27 Oct 2021 14:18:01 -0700 (PDT)
+Received: by mail-lj1-x22d.google.com with SMTP id s19so6941567ljj.11
+        for <linux-m68k@lists.linux-m68k.org>; Wed, 27 Oct 2021 14:18:01 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=O+IvQoJf2OjzCPAk90L+IlIvsTQGqRsS8A3mVG9thss=;
-        b=BbS8+/zxVJ00rr3ixtYTd3bTdxqjkUjnBr55DaOxzJArvyNX4521PAqPigYX/BjB1N
-         aGylVDFiYrs5wRaWuZx6L52it/PPywema7yDnahBHenwiuFnc4S3m//ivsOGtXuUlPNB
-         ubXOhenNVEu1KXB2mXMptIWVwaeJRf3hxW3c8R68HPPg3pjoH3MM7xhUxuphpty83aFx
-         DGHamMHIXY7/zgP3wsKkRhZ7yEHgmahY/byikn8BiZjEw2DWUQkjcB5nYo+Xgh+eH8p4
-         oVpJycq4ZWi1GYj36y1/HBYlXfcjUxN5WpbpwFTT0cF/PRko7dGul5P66XpFeKCAINSY
-         8XVA==
+        bh=TugVlbRXpFiQ9yttEJ2CYhwYKdBA8PSz6pBjqNjtqe8=;
+        b=LxdZEWQx3suPqkadhSlrIg8Y/wBbCgZ19oaPbtBfHJRBGXgu8OvRhmKtGBeiAtGOi+
+         liDoShgJoGfChatXJvVHlGfhJqZTZfaSa614IMYrTFjYDb/peXO5oxQ8SJntz+ROu8lH
+         ob1M7/DUPmtXRrZcD8cMolSz0IhB48FDFGrv8rmurlnFUtz5GHTwT3bfswp5rSRPgw7Q
+         Bzriun3on2U4+nPpGH/7v8uRLlN52ALrwjKmwn0fNW7IfodPJ5+z4OBz44Q0tz7qr3AI
+         hQkqoobZyhuG5/zdS6+8c5M7BaM8ouPopuZJKxbxjokH3QVc4vnRaK15kTyz9igV7eYm
+         7uUg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=O+IvQoJf2OjzCPAk90L+IlIvsTQGqRsS8A3mVG9thss=;
-        b=nvl4A8893jVVOTpj/r/sHXGl/n7g+OsJufRmTCEXfS70XtcaYLRILfVrwLr+yLw/LN
-         I/9DWSfWZXGQv/RIOWGlKqtsDxq7WpMdRcbqrgv9WVzu0RANJ9H2xU4QOEbGA2X00AF3
-         rpkucC7TCQx/6O9cjPszrdSlrbIVXMkHauP4aYwzoUNUEqe/36YYVwoePUB8kstARhTt
-         a4zuA/G/6Qg9pE5YpbOiMgs21PiMNPresIrpunJbQqyasCS6ChYlbUQGvebJkkyggtLS
-         pX1jUlSO0JDd6YV0efn1kbJ9OUsZWgQWFWNcZtcaJ+e7uMEkpQUVieCemNOHgd/yv4wx
-         LVzg==
-X-Gm-Message-State: AOAM5339nbIA3r7tC3XTLRub/st1JrUnexAs80LCKcOKRrfLaopgtK+1
-        vhRUISsqJ4ftXPTJNWAAfFA=
-X-Google-Smtp-Source: ABdhPJxyJaCNELbykyJ8mI+u0lU4wtjMFWua0Lm4EEmjlSiKb32hiTjDEQ+OHhGC/feOlGuy6qCfSA==
-X-Received: by 2002:ac2:4285:: with SMTP id m5mr140041lfh.86.1635369481970;
-        Wed, 27 Oct 2021 14:18:01 -0700 (PDT)
+        bh=TugVlbRXpFiQ9yttEJ2CYhwYKdBA8PSz6pBjqNjtqe8=;
+        b=tPV0ErS4giqMNwmLIAGeM+AODE9q+67VO7S9EGQqMAti6MMyzoybb8xFVcPKAaWJMO
+         KeqfiyTZpalgo8vdS0T3/1J4UVR84iA2wAcpxTFBPeCtRDkQFhMi2wYEjvHBtkeQXTU3
+         xV4qfdUky8QnpzxOyVaUD1tjdF0m7jK2/wi2itndTON767MRkU+W1vLi6gALZk519qOn
+         qdNYxayJKlA9z5ACTaKYGAJv/A1ikdChzsrUG26ZvYa0IMcH+XeNW92Rk6pz8dlpTvOP
+         wymTR7eWT4BtM14AnlBE6yrCsMwOOMHt5TgJbK7NU5AbiPHvuNWtULElOrL4CyWEsUGB
+         O+cw==
+X-Gm-Message-State: AOAM530SYoJHsC4PHsYh9XgwaouB1YJ1X+I1o02B2rCxnh6zuV0EHaMA
+        KaficHKOdc/enaqUBuj7FOQ=
+X-Google-Smtp-Source: ABdhPJzuqmviV3vutEjHAVvh6ry+9Hwrmd//Nm2QPeCY1TzVEUwjdrrEOpdr1ds5exnt/bZhRUUrMg==
+X-Received: by 2002:a2e:a5c8:: with SMTP id n8mr301030ljp.307.1635369480150;
+        Wed, 27 Oct 2021 14:18:00 -0700 (PDT)
 Received: from localhost.localdomain (46-138-41-28.dynamic.spd-mgts.ru. [46.138.41.28])
-        by smtp.gmail.com with ESMTPSA id d7sm104336ljl.18.2021.10.27.14.18.00
+        by smtp.gmail.com with ESMTPSA id d7sm104336ljl.18.2021.10.27.14.17.58
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 27 Oct 2021 14:18:01 -0700 (PDT)
+        Wed, 27 Oct 2021 14:17:59 -0700 (PDT)
 From:   Dmitry Osipenko <digetx@gmail.com>
 To:     Thierry Reding <thierry.reding@gmail.com>,
         Jonathan Hunter <jonathanh@nvidia.com>,
@@ -114,9 +114,9 @@ Cc:     Catalin Marinas <catalin.marinas@arm.com>,
         xen-devel@lists.xenproject.org, linux-acpi@vger.kernel.org,
         linux-omap@vger.kernel.org, openbmc@lists.ozlabs.org,
         linux-tegra@vger.kernel.org, linux-pm@vger.kernel.org
-Subject: [PATCH v2 05/45] reboot: Warn if restart handler has duplicated priority
-Date:   Thu, 28 Oct 2021 00:16:35 +0300
-Message-Id: <20211027211715.12671-6-digetx@gmail.com>
+Subject: [PATCH v2 04/45] reboot: Correct typo in a comment
+Date:   Thu, 28 Oct 2021 00:16:34 +0300
+Message-Id: <20211027211715.12671-5-digetx@gmail.com>
 X-Mailer: git-send-email 2.33.1
 In-Reply-To: <20211027211715.12671-1-digetx@gmail.com>
 References: <20211027211715.12671-1-digetx@gmail.com>
@@ -126,41 +126,26 @@ Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-Add sanity check which ensures that there are no two restart handlers
-registered with the same priority. Normally it's a direct sign of a
-problem if two handlers use the same priority.
+Correct s/implemenations/implementations/ in <reboot.h>.
 
 Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
 ---
- kernel/reboot.c | 15 ++++++++++++++-
- 1 file changed, 14 insertions(+), 1 deletion(-)
+ include/linux/reboot.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/kernel/reboot.c b/kernel/reboot.c
-index efb40d095d1e..d39e599c3c99 100644
---- a/kernel/reboot.c
-+++ b/kernel/reboot.c
-@@ -182,7 +182,20 @@ static ATOMIC_NOTIFIER_HEAD(restart_handler_list);
-  */
- int register_restart_handler(struct notifier_block *nb)
- {
--	return atomic_notifier_chain_register(&restart_handler_list, nb);
-+	int ret;
-+
-+	ret = atomic_notifier_chain_register(&restart_handler_list, nb);
-+	if (ret)
-+		return ret;
-+
-+	/*
-+	 * Handler must have unique priority. Otherwise invocation order is
-+	 * determined by the registration order, which is presumed to be
-+	 * unreliable.
-+	 */
-+	WARN_ON(!atomic_notifier_has_unique_priority(&restart_handler_list, nb));
-+
-+	return 0;
- }
- EXPORT_SYMBOL(register_restart_handler);
+diff --git a/include/linux/reboot.h b/include/linux/reboot.h
+index af907a3d68d1..7c288013a3ca 100644
+--- a/include/linux/reboot.h
++++ b/include/linux/reboot.h
+@@ -63,7 +63,7 @@ struct pt_regs;
+ extern void machine_crash_shutdown(struct pt_regs *);
  
+ /*
+- * Architecture independent implemenations of sys_reboot commands.
++ * Architecture independent implementations of sys_reboot commands.
+  */
+ 
+ extern void kernel_restart_prepare(char *cmd);
 -- 
 2.33.1
 
