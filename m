@@ -2,59 +2,60 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 824DAC433EF
-	for <linux-m68k@archiver.kernel.org>; Thu, 28 Oct 2021 22:05:59 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A3661C433F5
+	for <linux-m68k@archiver.kernel.org>; Thu, 28 Oct 2021 22:10:26 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 609D8610C8
-	for <linux-m68k@archiver.kernel.org>; Thu, 28 Oct 2021 22:05:59 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 81CCB60FC1
+	for <linux-m68k@archiver.kernel.org>; Thu, 28 Oct 2021 22:10:26 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231382AbhJ1WI0 (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Thu, 28 Oct 2021 18:08:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51370 "EHLO
+        id S230264AbhJ1WMw (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Thu, 28 Oct 2021 18:12:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52420 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231307AbhJ1WIZ (ORCPT
+        with ESMTP id S231364AbhJ1WMu (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Thu, 28 Oct 2021 18:08:25 -0400
-Received: from mail-lj1-x235.google.com (mail-lj1-x235.google.com [IPv6:2a00:1450:4864:20::235])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B8AB8C061570
-        for <linux-m68k@lists.linux-m68k.org>; Thu, 28 Oct 2021 15:05:57 -0700 (PDT)
-Received: by mail-lj1-x235.google.com with SMTP id i26so11279049ljg.7
-        for <linux-m68k@lists.linux-m68k.org>; Thu, 28 Oct 2021 15:05:57 -0700 (PDT)
+        Thu, 28 Oct 2021 18:12:50 -0400
+Received: from mail-lj1-x236.google.com (mail-lj1-x236.google.com [IPv6:2a00:1450:4864:20::236])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7F904C061570
+        for <linux-m68k@lists.linux-m68k.org>; Thu, 28 Oct 2021 15:10:22 -0700 (PDT)
+Received: by mail-lj1-x236.google.com with SMTP id q16so13237986ljg.3
+        for <linux-m68k@lists.linux-m68k.org>; Thu, 28 Oct 2021 15:10:22 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=subject:from:to:cc:references:message-id:date:user-agent
+        h=subject:to:cc:references:from:message-id:date:user-agent
          :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=QdlXzZMWoVtcTasTaLsmBsOCqsQBbCgeCfcj0o9XtUc=;
-        b=OJvAD8QIK23NiAd5gHFgNc2jMlnwbUhscd64oItZCjDzpbaa9HqfW53eGYcjGvS+Hd
-         8DJvk+brxf2GEvT4zQ6W/ef2iXaKU3cVUF0C3X+R0CYtCLZK9UxcbzlXYXArEArHwTk8
-         vcyalmRFTF2jyokLO2ef7zgVnqs7E2ea+6mOp4eaXLCsLH7zqMUa5b9lGYh++3iI3c5l
-         5SNXuX8KUFV580Mc9ixmfzVIv8iajcv/gjbcoXvjaxxhRQdJfHyZ96a4PDZESCiQ0JsQ
-         ezipbNgT7rnH4g7QwqVqZwJlBhjMy6NJ72j6JC2Ohga6KFFIy4TxdzbmMsSK+f4qNFMJ
-         K+tA==
+        bh=oJ/0ZuzBVjUo38Wh85+gleqyoNxUo2tupcS3OG//HMk=;
+        b=oyp+4ZpoBN8sNbj4o8xY6UXK7DWV+2AXCzvhz53IZDVW7yBXuU0WcYtlG9nrr26Gko
+         pspAZNzk5nSawwOoCboqqIBx1NtwU9YP7ClGYgBOs5f5QS+oYjdLS6Chq+lHwnAJsaRE
+         aw808EWXPhfWuOImaYWLgQPkx/4+EXGI76qDso1CJ2aKNZ2aChJYUzNXxoU4wlUL2Pxg
+         oy7RsSyXKkJJvyMzgbQsMkVQ26q7g1vnPJco9ifX2k6oVsTB9g0J3QdHglNbFRrrT6c8
+         P9uyPf++7eB6LV3eSwFOc5BxbfYBVDwZrUUANM1FlvuP72N8IokbXokq1o8sSzQ34LI5
+         dsGQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:from:to:cc:references:message-id:date
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
          :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=QdlXzZMWoVtcTasTaLsmBsOCqsQBbCgeCfcj0o9XtUc=;
-        b=TzSsgKZ/hy6w1cKyRyh/3bgywnIANhcew5wBLcnsUjS2OjNUErQj0HBSAc0jwBuhh9
-         FAGECsfgmm9ycaQ3jWRn7blLT9YHuTpjOXTT+SREhRyuxLgDOt9KWFezxuFPp15gySNN
-         wGHnwzCJDubEB+zVltemtx6og3Gt6F7lchMiUI2zZZmos6JsUPnBEpmLPCbc/NLqBZLf
-         6kEXYdonGsQ0/jOzCsi+oPjJRdxpxCpP2xSt+zYeftStdtKSHOY71P0UsNbsbUh0pyzL
-         zvqrXV90u1liXGpRj/RxaCrrZJNDL4/n1P8e6PATeZnZaPL+ANXO70ikaKnoE6Ll+PbQ
-         JpBQ==
-X-Gm-Message-State: AOAM531feVV7tY8Kf5CmeUJILaQ+54Jek9PE7lZ6BRosUpWrbDAhizgN
-        EuX+omfortHPYN0aP8ZAkPI=
-X-Google-Smtp-Source: ABdhPJzozZj+Szoqatj9JJ7zamkbp5Jf8v8z0Y7vkU95q/rca882+TrclSa79lyDyuur0f9DZkdGEw==
-X-Received: by 2002:a2e:99da:: with SMTP id l26mr5923422ljj.508.1635458756009;
-        Thu, 28 Oct 2021 15:05:56 -0700 (PDT)
+        bh=oJ/0ZuzBVjUo38Wh85+gleqyoNxUo2tupcS3OG//HMk=;
+        b=H7iSBxPd6AZjuCgpgeSjBeUL/uG6gDRmUPnveiy709DickS7lm/4dDo8o7Zp2yPa8h
+         l2nQE5D+ic/uOgRNJQYjS/R13MO2ZX1PG5JT31ctnczhIK+EVF29kvKgR1SKg7V/UIGV
+         sEYE0n4fq4bs+S0E4rTAYyuXCfNKIVS2immBjPndO6mFINNutXy2dD1VA9WFJ6fzKLAS
+         IfV3mDnxPdtMuLr1Xue+N5upmejFVqzfBUddj02IJOAcfCkPam2ieGPwpGpg4wqo8CJn
+         kn4l8/ERZ3ENJ5Su7re+1+J8MLfTpdvbrsVOzVYnwyRGzyxep/cDy9CrWP0KSmaBOyEW
+         zeRw==
+X-Gm-Message-State: AOAM530PLAcdmNAl1UB0J6LCNx0NyEg4wikktW68dqhLzh1mZgi24okF
+        QOeMkYPFkQRSxBzVJ7R3w1Q=
+X-Google-Smtp-Source: ABdhPJykwIAUVmO5wKdpzX+/iWk6pBH4AnIAWbvXPbs4nxxBZpydFbV5fsYhpk8QZgUr9D29NxqkEQ==
+X-Received: by 2002:a2e:361a:: with SMTP id d26mr7788286lja.104.1635459020939;
+        Thu, 28 Oct 2021 15:10:20 -0700 (PDT)
 Received: from [192.168.2.145] (46-138-44-18.dynamic.spd-mgts.ru. [46.138.44.18])
-        by smtp.googlemail.com with ESMTPSA id v13sm444651ljk.72.2021.10.28.15.05.54
+        by smtp.googlemail.com with ESMTPSA id x26sm406331ljh.24.2021.10.28.15.10.18
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 28 Oct 2021 15:05:55 -0700 (PDT)
-Subject: Re: [PATCH v2 00/45] Introduce power-off+restart call chain API
-From:   Dmitry Osipenko <digetx@gmail.com>
-To:     Thierry Reding <thierry.reding@gmail.com>,
+        Thu, 28 Oct 2021 15:10:20 -0700 (PDT)
+Subject: Re: [PATCH v2 03/45] notifier: Add
+ atomic/blocking_notifier_has_unique_priority()
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc:     Thierry Reding <thierry.reding@gmail.com>,
         Jonathan Hunter <jonathanh@nvidia.com>,
         Lee Jones <lee.jones@linaro.org>,
         "Rafael J . Wysocki" <rafael@kernel.org>,
@@ -63,9 +64,8 @@ To:     Thierry Reding <thierry.reding@gmail.com>,
         Guenter Roeck <linux@roeck-us.net>,
         Russell King <linux@armlinux.org.uk>,
         Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>
-Cc:     Catalin Marinas <catalin.marinas@arm.com>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
         Will Deacon <will@kernel.org>, Guo Ren <guoren@kernel.org>,
         Geert Uytterhoeven <geert@linux-m68k.org>,
         Greg Ungerer <gerg@linux-m68k.org>,
@@ -74,7 +74,7 @@ Cc:     Catalin Marinas <catalin.marinas@arm.com>,
         Nick Hu <nickhu@andestech.com>,
         Greentime Hu <green.hu@gmail.com>,
         Vincent Chen <deanbo422@gmail.com>,
-        "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
+        "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
         Helge Deller <deller@gmx.de>,
         Michael Ellerman <mpe@ellerman.id.au>,
         Benjamin Herrenschmidt <benh@kernel.crashing.org>,
@@ -117,12 +117,15 @@ Cc:     Catalin Marinas <catalin.marinas@arm.com>,
         linux-omap@vger.kernel.org, openbmc@lists.ozlabs.org,
         linux-tegra@vger.kernel.org, linux-pm@vger.kernel.org
 References: <20211027211715.12671-1-digetx@gmail.com>
-Message-ID: <92067c5e-a256-ff45-eae2-21033c6a83d2@gmail.com>
-Date:   Fri, 29 Oct 2021 01:05:53 +0300
+ <20211027211715.12671-4-digetx@gmail.com>
+ <YXqCz/utp2DFJJ45@smile.fi.intel.com>
+From:   Dmitry Osipenko <digetx@gmail.com>
+Message-ID: <ba9d1a3f-c3e4-7060-9859-97014aa633b4@gmail.com>
+Date:   Fri, 29 Oct 2021 01:10:18 +0300
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
  Thunderbird/78.14.0
 MIME-Version: 1.0
-In-Reply-To: <20211027211715.12671-1-digetx@gmail.com>
+In-Reply-To: <YXqCz/utp2DFJJ45@smile.fi.intel.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 8bit
@@ -130,13 +133,9 @@ Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-28.10.2021 00:16, Dmitry Osipenko пишет:
->   mfd: ab8500: Use devm_register_trivial_power_off_handler()
->   reset: ath79: Use devm_register_simple_restart_handler()
->   reset: intel-gw: Use devm_register_simple_restart_handler()
->   reset: lpc18xx: Use devm_register_prioritized_restart_handler()
->   reset: npcm: Use devm_register_prioritized_restart_handler()
+28.10.2021 14:00, Andy Shevchenko пишет:
+>> +	while ((*nl) != NULL && (*nl)->priority >= n->priority) {
+> ' != NULL' is not needed.
+> 
 
-These patches got lost because Gmail gave me ban after 40's email. I
-think it doesn't worth to re-send them now since you should get an idea
-about how API usage looks like without the lost patches.
+I'll change it in v3, thanks.
