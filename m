@@ -2,56 +2,56 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 32330C433EF
-	for <linux-m68k@archiver.kernel.org>; Thu, 28 Oct 2021 21:58:38 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 92EFCC433F5
+	for <linux-m68k@archiver.kernel.org>; Thu, 28 Oct 2021 21:59:52 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 0867460E8B
-	for <linux-m68k@archiver.kernel.org>; Thu, 28 Oct 2021 21:58:38 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 676B860F70
+	for <linux-m68k@archiver.kernel.org>; Thu, 28 Oct 2021 21:59:52 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231370AbhJ1WBE (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Thu, 28 Oct 2021 18:01:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49634 "EHLO
+        id S230476AbhJ1WCT (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Thu, 28 Oct 2021 18:02:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49912 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230476AbhJ1WBE (ORCPT
+        with ESMTP id S230264AbhJ1WCS (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Thu, 28 Oct 2021 18:01:04 -0400
-Received: from mail-lj1-x235.google.com (mail-lj1-x235.google.com [IPv6:2a00:1450:4864:20::235])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7B491C061570
-        for <linux-m68k@lists.linux-m68k.org>; Thu, 28 Oct 2021 14:58:36 -0700 (PDT)
-Received: by mail-lj1-x235.google.com with SMTP id 188so13186896ljj.4
-        for <linux-m68k@lists.linux-m68k.org>; Thu, 28 Oct 2021 14:58:36 -0700 (PDT)
+        Thu, 28 Oct 2021 18:02:18 -0400
+Received: from mail-lj1-x230.google.com (mail-lj1-x230.google.com [IPv6:2a00:1450:4864:20::230])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DCBD8C061570
+        for <linux-m68k@lists.linux-m68k.org>; Thu, 28 Oct 2021 14:59:50 -0700 (PDT)
+Received: by mail-lj1-x230.google.com with SMTP id 17so10012479ljq.0
+        for <linux-m68k@lists.linux-m68k.org>; Thu, 28 Oct 2021 14:59:50 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=subject:to:cc:references:from:message-id:date:user-agent
          :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=c23uil5g78FyKWMRLgZ6hSpJ/5dZjfgZdNOr6DwhpW8=;
-        b=fN/sghTD1TZsVWGg7UdNVpmnpsJmxwTIReywOn3iS879FfwyrwTro/6JMf4MaGrEqh
-         0NHbUx8tMPVCykH7rLffN6x80gPATjYeRH0X7Rke1JX3QXf40ikAhOl25K5S1BWImyNK
-         Ws74ZKNhvY45yMsuq3FCKQn2UeHbmrvMca8cD6CCJ0R2lYcZYJkrBjgifHSN/5oWm7n1
-         lFtQ6NQQUb7L/5VMhM9mJogVid13IyjOv29tIrHnCgMGRUpYmk/I5bl/5lJ21eD61OSt
-         uVSSMkzEczkDy+3W/RlWkglTIAMMvdWcaEVw6izXBz+EOktxUqL8EL8FpyIQN0i0+0ax
-         cKtg==
+        bh=7iQ4oU5lLihLvwqt++KnGQLKBiUKhW8mB9CMlvRrAlo=;
+        b=A2gDnKnXbVmAEWSfC30h5AU4KgqctGREzx+w+qi3liDGTlzRRXf3E1jZyML8gNPqGK
+         Li6mIZ0lXuGBdwOE60K0G95Tgukhjr9rRKc5cXQiD0w/VxhtL95meDusnxyabh4+EWGW
+         r0TYt6OWs+PjfxzqoZ6eJ3DrcMZlu658BTNljXfs4JxLykUHrLNYB1GLE4vhnXR1mGD/
+         zsbBpAOKKFkkKsVx+h1bPiV6KMSfM+yc+Xd2DvoUE9RQ/ZfhiCHVvnICfk2iVe468EjX
+         DSGsN20SLeM1V9+yNC6BNE7z4vvudCJzb443pi2WeFnCmYQbcFE9zeHCdAOjGieXrkv9
+         /UcA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:subject:to:cc:references:from:message-id:date
          :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=c23uil5g78FyKWMRLgZ6hSpJ/5dZjfgZdNOr6DwhpW8=;
-        b=5k8oLC48nlXwWUBGJKCkxLztQyil6fHZT6AyGwY9iDoykahCyerEeg/amv2xy2lFAd
-         wgYPZE+JSIrf69Rcrare+K9zD/m0gYr7k82vtWD6A6z11GoLJgTOhTQBH5jwqrkl4x01
-         wLvNSWM3OqKDJI1nvN2EKnfjLQlZ5PNI+bQC8Xs8Hf6gh/j5vBq+ZzdEFK4EPJu42RdL
-         3wvRrgs0Mb8MQca+aLiR8c5AR2MeMHDvyW3niVh05mQFca4mA9aQdrSw5D5MVwLdIAJD
-         B5Rm5VskjF9O3HGKvIGw8sLsroge/Q2Rloo+ui5J8OUB5yHr8Oyi7iXD6R4TPnTo9+dc
-         ooqw==
-X-Gm-Message-State: AOAM532zU6sOUziSpmGl0/4q5zkrslkaeJy0Wrom72k1n6ci4yi17v6L
-        wC+HOgtQajqoqyNRV8XfM94=
-X-Google-Smtp-Source: ABdhPJwU+yd9K4RKqPYJGKdWrmOtthi6PCwOlEc1MXGCnrTPBunu0coGknm3bBb5A7s1sx8AG2GBkw==
-X-Received: by 2002:a2e:b88f:: with SMTP id r15mr7402126ljp.157.1635458314886;
-        Thu, 28 Oct 2021 14:58:34 -0700 (PDT)
+        bh=7iQ4oU5lLihLvwqt++KnGQLKBiUKhW8mB9CMlvRrAlo=;
+        b=EZQjozNzCcFG0Qltkbh+Tmk+Df91YgXA6h1RjTddh1R59xSIgH6Et0e4Jze9ILjAeN
+         AvLDdOYMpP0mRHEceUpyr59I+7eTojXbZjU/QU8qNTl667WnRcxlqT25noWVNAqXuFC9
+         Zyg10ekzQQzN32OYBVTw8Pn/NJpH2ekTkZ1YjP+iEKq4thzReS8eHw0tIUdgEsZ1u5BK
+         Tj5iLuxzsYBJWIr7K7ThZU53RtSGw9MOShtCY7qGssFOm57MOSPODtYdAFbX80DVs0md
+         1kkIRVOtekq1xemEBcCz7DPEWoS3CyLp4EdU6IuhVt+ChI6ddn7847r/99yPqzKQFi80
+         Ohsw==
+X-Gm-Message-State: AOAM531mg3WzUMarycdZZz9+2Sg60xDDlMkgdVZycNVdM7/4aHWcin/V
+        ftL2G6J75Y7uaR9ZcUN19Js=
+X-Google-Smtp-Source: ABdhPJxS5C9pTHHcX2SeZO1OzU/OwueG01d90Y/t9QArtk4xiAh7ZBD5U7QFitj+IF+gde/bz4TCKA==
+X-Received: by 2002:a2e:9d93:: with SMTP id c19mr7265789ljj.363.1635458389307;
+        Thu, 28 Oct 2021 14:59:49 -0700 (PDT)
 Received: from [192.168.2.145] (46-138-44-18.dynamic.spd-mgts.ru. [46.138.44.18])
-        by smtp.googlemail.com with ESMTPSA id t17sm248350ljc.136.2021.10.28.14.58.32
+        by smtp.googlemail.com with ESMTPSA id e12sm398160ljp.30.2021.10.28.14.59.47
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 28 Oct 2021 14:58:34 -0700 (PDT)
+        Thu, 28 Oct 2021 14:59:49 -0700 (PDT)
 Subject: Re: [PATCH v2 08/45] kernel: Add combined power-off+restart handler
  call chain API
 To:     "Rafael J. Wysocki" <rafael@kernel.org>
@@ -126,8 +126,8 @@ References: <20211027211715.12671-1-digetx@gmail.com>
  <20211027211715.12671-9-digetx@gmail.com>
  <CAJZ5v0gpu2ezMhWr=grg6M8aWAx58DQozbXHoZaiPqUaZxJi4Q@mail.gmail.com>
 From:   Dmitry Osipenko <digetx@gmail.com>
-Message-ID: <28560da7-8ab6-3bd5-b4d6-e34b21a9bbb0@gmail.com>
-Date:   Fri, 29 Oct 2021 00:58:32 +0300
+Message-ID: <31547403-969e-91a9-0792-6fd657b78503@gmail.com>
+Date:   Fri, 29 Oct 2021 00:59:46 +0300
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
  Thunderbird/78.14.0
 MIME-Version: 1.0
@@ -140,70 +140,30 @@ List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
 28.10.2021 12:59, Rafael J. Wysocki пишет:
->> +#define RESTART_PRIO_RESERVED          0
->> +#define RESTART_PRIO_DEFAULT           128
->> +#define RESTART_PRIO_HIGH              192
->>
->>  enum reboot_mode {
->>         REBOOT_UNDEFINED = -1,
->> @@ -49,6 +55,167 @@ int register_restart_handler(struct notifier_block *);
->>  int unregister_restart_handler(struct notifier_block *);
->>  void do_kernel_restart(char *cmd);
->>
->> +/*
->> + * Unified poweroff + restart API.
+>> +/**
+>> + * struct power_handler - Machine power-off + restart handler
+>> + *
+>> + * Describes power-off and restart handlers which are invoked by kernel
+>> + * to power off or restart this machine.  Supports prioritized chaining for
+>> + * both restart and power-off handlers.  Callback's priority must be unique.
+>> + * Intended to be used by device drivers that are responsible for restarting
+>> + * and powering off hardware which kernel is running on.
+>> + *
+>> + * Struct power_handler can be static.  Members of this structure must not be
+>> + * altered while handler is registered.
+>> + *
+>> + * Fill the structure members and pass it to register_power_handler().
 >> + */
->> +
->> +#define POWEROFF_PRIO_RESERVED         0
->> +#define POWEROFF_PRIO_PLATFORM         1
->> +#define POWEROFF_PRIO_DEFAULT          128
->> +#define POWEROFF_PRIO_HIGH             192
->> +#define POWEROFF_PRIO_FIRMWARE         224
-> Also I'm wondering why these particular numbers were chosen, here and above?
+>> +struct power_handler {
+>> +       /**
+>> +        * @cb_data:
+>> +        *
+>> +        * User data included in callback's argument.
+>> +        */
+> And here I would document the structure fields in the main kerneldoc
+> comment above.
+> 
+> As is, it is a bit hard to grasp the whole definition.
+> 
 
-These values are chosen based on priorities that drivers already use. I looked thorough them all and ended with this scheme that fulfills the needs of the current API users.
-
-I'll add these comments in v3:
-
-/*
- * Standard restart priority levels. Intended to be set in the
- * sys_off_handler.restart_priority field.
- *
- * Use `RESTART_PRIO_XXX +- prio` style for additional levels.
- *
- * RESTART_PRIO_RESERVED:	Falls back to RESTART_PRIO_DEFAULT.
- *				Drivers may leave priority initialized
- *				to zero, to auto-set it to the default level.
- *
- * RESTART_PRIO_DEFAULT:	Use this for generic handler.
- *
- * RESTART_PRIO_HIGH:		Use this if you have multiple handlers and
- *				this handler has higher priority than the
- *				default handler.
- */
-
-/*
- * Standard power-off priority levels. Intended to be set in the
- * sys_off_handler.power_off_priority field.
- *
- * Use `POWEROFF_PRIO_XXX +- prio` style for additional levels.
- *
- * POWEROFF_PRIO_RESERVED:	Falls back to POWEROFF_PRIO_DEFAULT.
- *				Drivers may leave priority initialized
- *				to zero, to auto-set it to the default level.
- *
- * POWEROFF_PRIO_PLATFORM:	Intended to be used by platform-level handler.
- *				Has lowest priority since device drivers are
- *				expected to take over platform handler which
- *				doesn't allow further callback chaining.
- *
- * POWEROFF_PRIO_DEFAULT:	Use this for generic handler.
- *
- * POWEROFF_PRIO_HIGH:		Use this if you have multiple handlers and
- *				this handler has higher priority than the
- *				default handler.
- *
- * POWEROFF_PRIO_FIRMWARE:	Use this if handler uses firmware call.
- *				Has highest priority since firmware is expected
- *				to know best how to power-off hardware properly.
- */
+I'll move the comments in v3, thanks.
