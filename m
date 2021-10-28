@@ -2,60 +2,59 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 93126C433F5
-	for <linux-m68k@archiver.kernel.org>; Thu, 28 Oct 2021 12:22:03 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 923E3C433F5
+	for <linux-m68k@archiver.kernel.org>; Thu, 28 Oct 2021 21:32:49 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 773BC610FC
-	for <linux-m68k@archiver.kernel.org>; Thu, 28 Oct 2021 12:22:03 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 7338760FE3
+	for <linux-m68k@archiver.kernel.org>; Thu, 28 Oct 2021 21:32:49 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230407AbhJ1MY3 (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Thu, 28 Oct 2021 08:24:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58222 "EHLO
+        id S231262AbhJ1VfQ (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Thu, 28 Oct 2021 17:35:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43758 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229868AbhJ1MY0 (ORCPT
+        with ESMTP id S231464AbhJ1VfJ (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Thu, 28 Oct 2021 08:24:26 -0400
-Received: from mail-pj1-x102e.google.com (mail-pj1-x102e.google.com [IPv6:2607:f8b0:4864:20::102e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B6E3C061745
-        for <linux-m68k@lists.linux-m68k.org>; Thu, 28 Oct 2021 05:22:00 -0700 (PDT)
-Received: by mail-pj1-x102e.google.com with SMTP id gn3so4584064pjb.0
-        for <linux-m68k@lists.linux-m68k.org>; Thu, 28 Oct 2021 05:22:00 -0700 (PDT)
+        Thu, 28 Oct 2021 17:35:09 -0400
+Received: from mail-lj1-x231.google.com (mail-lj1-x231.google.com [IPv6:2a00:1450:4864:20::231])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1D3A3C061226
+        for <linux-m68k@lists.linux-m68k.org>; Thu, 28 Oct 2021 14:32:42 -0700 (PDT)
+Received: by mail-lj1-x231.google.com with SMTP id k13so12991253ljj.12
+        for <linux-m68k@lists.linux-m68k.org>; Thu, 28 Oct 2021 14:32:42 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=sEQTGe1SdVzMEvdAS+JHzGs+s//rKDLb3zrHBeoZhQ4=;
-        b=iTF+KxXEUPxEL0X/A/h2gzR6rfhKbueZtpV43T9ecbwhzi0t+l3q/o5Ua3AWvU+Enc
-         ByGkTqENMRntgh3iznFMDxu2CMYcinTkd+zVseDqmIBVqNiOOl7jtDTN28tXnXeh/eHS
-         f+SIvvi2YC7tI22dM3EDibcHeQLa3iIqsv5H8CiejoyVxtmYKOA3VOetskmtU4Lx+Pqb
-         LjWvbMeTK5pVAec3h6exgixTZBuA0b6b4pLrHZnH5EOvWXMCcJgTfSDot7PpiFpwOrmA
-         UDe0Zf8yyrgR8VQIYltC0W9ualVYljq6alX4ZkNWzu2NeGmBPW3wY5ZPA2p2XVSWoIe3
-         jylQ==
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=FNhb8m0Up8WrlODFU5XusWNjgw7FYM5tGcizMhHIPzY=;
+        b=USVIOuLFNftY9TSlAv8GQB7acWI1sWWXinRBTyt58drm2RaLh5La11nG4ixMTMewfR
+         mX32BgQ2N30EhppM8q0HGzyhqJFMUCJMnblCfs4t5KonQ44KE0wlYv2W8rFYqs4V2koj
+         XX371v1ONZUx01vnBeB6kBqd5XtkGxjVTj1e6iP0L3n7qnRFNsZrpRBj/O9TAqf3J13f
+         DVFT1FMABW5ltJOUpFKPkQHX+APbXjkM1X+NMw4LCmok7h64fUY8hoIatZpEbYmauo9R
+         3tzIe6iUnZRzMnNPnMBZ+KjZo2BGgmZ8KUvvaXZMV9Llm3C259zfQ4YRn+8CQPkkCOFN
+         RJzA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=sEQTGe1SdVzMEvdAS+JHzGs+s//rKDLb3zrHBeoZhQ4=;
-        b=CVVPfSFIhRId4UHMZQAKztzP57hGbGX4GU5ocMpH1O4g/DnNNRwciKkFyEFrBj5z9w
-         DFQVT6kzS0KOzL+yrr/3ewu5Wxkkl0lJDypyyZ+/wLAr+nl5dx5nMGuljOYF5kL37ppn
-         aGlGjU2uyGnwdVLw75yoW6C1M4x3MhO7ZhYdXsP9dIGY1LVWHkZXsSMBYPITIk8/NJM5
-         xn8+/h0QMzYYBGNc4vAhzZvbsnrihTTxxhDiOX1rP0WLR5WjYYR/l94MLorE/RvftPdx
-         JeZK9C0cKODJR3zDqdS3oLFJEXAsZjNHm+2MlL8NyclJg7/LjZ8kAp1AC/htXR6p8i/O
-         BuvA==
-X-Gm-Message-State: AOAM530TAlxpPlBPhzJ6EAGHQert2uyCQ0jGy1SprskNBqp5nslx0rXK
-        qq+0kGmOmTLEenFwGrO5CG3TKYcNX5t8f8plyA4=
-X-Google-Smtp-Source: ABdhPJwgRG6Z5IlQAMmxkEb7xwk/3DRskWOoc9lq5s+Jze0PB67uqVa13ZU9GrnI44E+cb/61DiEpYjC8sFDBN8RSYA=
-X-Received: by 2002:a17:902:b716:b0:13f:b2d1:f316 with SMTP id
- d22-20020a170902b71600b0013fb2d1f316mr3644234pls.24.1635423719258; Thu, 28
- Oct 2021 05:21:59 -0700 (PDT)
-MIME-Version: 1.0
-References: <20211027211715.12671-1-digetx@gmail.com> <20211027211715.12671-16-digetx@gmail.com>
-In-Reply-To: <20211027211715.12671-16-digetx@gmail.com>
-From:   Greentime Hu <green.hu@gmail.com>
-Date:   Thu, 28 Oct 2021 20:20:00 +0800
-Message-ID: <CAEbi=3eTruN6rYvEHCtyhTEZ=Ep8n6g75UMpHffc=0UrVTGbdQ@mail.gmail.com>
-Subject: Re: [PATCH v2 15/45] nds32: Use do_kernel_power_off()
-To:     Dmitry Osipenko <digetx@gmail.com>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=FNhb8m0Up8WrlODFU5XusWNjgw7FYM5tGcizMhHIPzY=;
+        b=c87E8fXn9ZPx2VUzNIvs10O5sDgY7LbUAyD5mWQXLsEey1CpI5zBW6+Ovs95LTftIz
+         MevuiNJBFWp4iwXRNWYhfoVSy6iMPfyGBlO32maDmH85IabnNCMDQ8bYuHJM0JspIvau
+         7TvDmSi5arT+BPD6ivdwFWji/eaaK2IMfhFTzyGPhwc+Q94rIvgYCSUliOuT3dS9LpBi
+         N6o4HD97A2DrRNFPrJS0TnaSC2gelIfjWsu4agvZwel356KG1MFqu8yLLdTbmgnD9ian
+         SXR+SXBd0nERsV7cYnlObZNKT8EIfGJNAozmgbGKnIrlDWh0IBiD0Uf7CdVhbajj+w3J
+         6xjQ==
+X-Gm-Message-State: AOAM533gJk27d3VaJS5801/P/Y3Uo8TL/OXZUad1Y1wQpe9m+DTWt+8o
+        QfXFtiWUUcEqmTTxEiQf6Qw=
+X-Google-Smtp-Source: ABdhPJwcWGds1J/UVngHunSwfN7ztb9W9OVxlAX827dktWLGe1JrS01AY9nWnDg96vqg3wWMmL+l6Q==
+X-Received: by 2002:a2e:9b0e:: with SMTP id u14mr7220400lji.247.1635456760396;
+        Thu, 28 Oct 2021 14:32:40 -0700 (PDT)
+Received: from [192.168.2.145] (46-138-44-18.dynamic.spd-mgts.ru. [46.138.44.18])
+        by smtp.googlemail.com with ESMTPSA id bi14sm474384lfb.290.2021.10.28.14.32.38
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 28 Oct 2021 14:32:39 -0700 (PDT)
+Subject: Re: [PATCH v2 03/45] notifier: Add
+ atomic/blocking_notifier_has_unique_priority()
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 Cc:     Thierry Reding <thierry.reding@gmail.com>,
         Jonathan Hunter <jonathanh@nvidia.com>,
         Lee Jones <lee.jones@linaro.org>,
@@ -65,7 +64,6 @@ Cc:     Thierry Reding <thierry.reding@gmail.com>,
         Guenter Roeck <linux@roeck-us.net>,
         Russell King <linux@armlinux.org.uk>,
         Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
         Ulf Hansson <ulf.hansson@linaro.org>,
         Catalin Marinas <catalin.marinas@arm.com>,
         Will Deacon <will@kernel.org>, Guo Ren <guoren@kernel.org>,
@@ -74,6 +72,7 @@ Cc:     Thierry Reding <thierry.reding@gmail.com>,
         Joshua Thompson <funaho@jurai.org>,
         Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
         Nick Hu <nickhu@andestech.com>,
+        Greentime Hu <green.hu@gmail.com>,
         Vincent Chen <deanbo422@gmail.com>,
         "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
         Helge Deller <deller@gmx.de>,
@@ -97,7 +96,7 @@ Cc:     Thierry Reding <thierry.reding@gmail.com>,
         Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
         Linus Walleij <linus.walleij@linaro.org>,
         Chen-Yu Tsai <wens@csie.org>,
-        =?UTF-8?Q?Jonathan_Neusch=C3=A4fer?= <j.neuschaefer@gmx.net>,
+        =?UTF-8?Q?Jonathan_Neusch=c3=a4fer?= <j.neuschaefer@gmx.net>,
         Tony Lindgren <tony@atomide.com>,
         Liam Girdwood <lgirdwood@gmail.com>,
         Philipp Zabel <p.zabel@pengutronix.de>,
@@ -109,54 +108,62 @@ Cc:     Thierry Reding <thierry.reding@gmail.com>,
         Nancy Yuen <yuenn@google.com>,
         Benjamin Fair <benjaminfair@google.com>,
         Pavel Machek <pavel@ucw.cz>,
-        linux-arm-kernel@lists.infradead.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
         linux-csky@vger.kernel.org, linux-ia64@vger.kernel.org,
         linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org,
-        linux-parisc@vger.kernel.org,
-        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
+        linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
         linux-riscv@lists.infradead.org, linux-sh@vger.kernel.org,
         xen-devel@lists.xenproject.org, linux-acpi@vger.kernel.org,
         linux-omap@vger.kernel.org, openbmc@lists.ozlabs.org,
-        linux-tegra@vger.kernel.org, linux-pm@vger.kernel.org,
-        Alan Kao <alankao@andestech.com>,
-        =?UTF-8?B?Sy5DLiBLdWVuLUNoZXJuIExpbijmnpflnaTmiJAp?= 
-        <kclin@andestech.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+        linux-tegra@vger.kernel.org, linux-pm@vger.kernel.org
+References: <20211027211715.12671-1-digetx@gmail.com>
+ <20211027211715.12671-4-digetx@gmail.com>
+ <YXqCz/utp2DFJJ45@smile.fi.intel.com>
+From:   Dmitry Osipenko <digetx@gmail.com>
+Message-ID: <c5fb7590-03a7-0eea-4040-07472a5c9710@gmail.com>
+Date:   Fri, 29 Oct 2021 00:32:37 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.14.0
+MIME-Version: 1.0
+In-Reply-To: <YXqCz/utp2DFJJ45@smile.fi.intel.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-Dmitry Osipenko <digetx@gmail.com> =E6=96=BC 2021=E5=B9=B410=E6=9C=8828=E6=
-=97=A5 =E9=80=B1=E5=9B=9B =E4=B8=8A=E5=8D=885:18=E5=AF=AB=E9=81=93=EF=BC=9A
->
-> Kernel now supports chained power-off handlers. Use do_kernel_power_off()
-> that invokes chained power-off handlers. It also invokes legacy
-> pm_power_off() for now, which will be removed once all drivers will
-> be converted to the new power-off API.
->
-> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
-> ---
->  arch/nds32/kernel/process.c | 3 +--
->  1 file changed, 1 insertion(+), 2 deletions(-)
->
-> diff --git a/arch/nds32/kernel/process.c b/arch/nds32/kernel/process.c
-> index 49fab9e39cbf..0936dcd7db1b 100644
-> --- a/arch/nds32/kernel/process.c
-> +++ b/arch/nds32/kernel/process.c
-> @@ -54,8 +54,7 @@ EXPORT_SYMBOL(machine_halt);
->
->  void machine_power_off(void)
->  {
-> -       if (pm_power_off)
-> -               pm_power_off();
-> +       do_kernel_power_off();
->  }
->
->  EXPORT_SYMBOL(machine_power_off);
-> --
-> 2.33.1
->
+28.10.2021 14:00, Andy Shevchenko пишет:
+> On Thu, Oct 28, 2021 at 12:16:33AM +0300, Dmitry Osipenko wrote:
+>> Add atomic/blocking_notifier_has_unique_priority() helpers which return
+>> true if given handler has unique priority.
+> 
+> ...
+> 
+>> +/**
+>> + *	atomic_notifier_has_unique_priority - Checks whether notifier's priority is unique
+>> + *	@nh: Pointer to head of the atomic notifier chain
+>> + *	@n: Entry in notifier chain to check
+>> + *
+>> + *	Checks whether there is another notifier in the chain with the same priority.
+>> + *	Must be called in process context.
+>> + *
+>> + *	Returns true if priority is unique, false otherwise.
+> 
+> Why this indentation?
 
-Loop in Alan and KC
+This is the same doc-comment style used by this file in general. I
+haven't tried to invent anything new.
+
+
+> ...
+> 
+>> +	/*
+>> +	 * This code gets used during boot-up, when task switching is
+>> +	 * not yet working and interrupts must remain disabled.  At
+> 
+> One space is enough.
+
+This comment is replicated multiple times over this source file. You can
+find it before each down_write(). I borrowed the text as-is, for
+consistency.
