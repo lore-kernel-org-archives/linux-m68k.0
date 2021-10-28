@@ -2,43 +2,43 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E6511C433EF
-	for <linux-m68k@archiver.kernel.org>; Thu, 28 Oct 2021 09:53:35 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id CDA48C43217
+	for <linux-m68k@archiver.kernel.org>; Thu, 28 Oct 2021 09:59:36 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id C288560FF2
-	for <linux-m68k@archiver.kernel.org>; Thu, 28 Oct 2021 09:53:35 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id B644160FF2
+	for <linux-m68k@archiver.kernel.org>; Thu, 28 Oct 2021 09:59:36 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229850AbhJ1J4A (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Thu, 28 Oct 2021 05:56:00 -0400
-Received: from mail-ot1-f47.google.com ([209.85.210.47]:36783 "EHLO
-        mail-ot1-f47.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229835AbhJ1Jz7 (ORCPT
+        id S229626AbhJ1KCA (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Thu, 28 Oct 2021 06:02:00 -0400
+Received: from mail-ot1-f45.google.com ([209.85.210.45]:45801 "EHLO
+        mail-ot1-f45.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229788AbhJ1KB5 (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Thu, 28 Oct 2021 05:55:59 -0400
-Received: by mail-ot1-f47.google.com with SMTP id s23-20020a056830125700b00553e2ca2dccso2923734otp.3
-        for <linux-m68k@lists.linux-m68k.org>; Thu, 28 Oct 2021 02:53:33 -0700 (PDT)
+        Thu, 28 Oct 2021 06:01:57 -0400
+Received: by mail-ot1-f45.google.com with SMTP id l16-20020a9d6a90000000b0054e7ab56f27so7762833otq.12
+        for <linux-m68k@lists.linux-m68k.org>; Thu, 28 Oct 2021 02:59:31 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=uz31be5RzrXoa4uAxe1xyKZoIQd0wtsVVy1gZjyOGeo=;
-        b=gNNDaAddlcU0GENqh/y8Re/Z+iLNLJxXLxJAAPEHWXbx3Tjp5U7fYXhtVrKzAchzom
-         CoJlQSk/hK7NwQZOA99v5i1fiWBtCxdCsEe7ZyPEc8N2woxiJywizrCj+xquCpdiUTYd
-         U36OglrZqj2WKVaVFktaTjL85XSeJ3ExdnCj/o+YRgheuA9mLjkvyi1QptGt25zJwDjN
-         K7jgmJeUAcmjlNQ55UBIzxxUT5VK6V8+UfeCkVqbA2voLfI6o+ulVZfl5KZXdtexwVY5
-         8IPmnzHYPMkneBF1g0NFa8ORHHLrtoa3L0m2FdjS499g3FbkLWoabVC/Ta6WlpQXqVyt
-         P3nw==
-X-Gm-Message-State: AOAM5324NXEeraFPT6PelUSCM0zdkIcb05Tt2U00sdv1EsFpVzvgPpZp
-        9YIQZMHfKH08ncJKxsuGkWXq3NknaDSRCxDF7lQ=
-X-Google-Smtp-Source: ABdhPJzOhFRTFEQQ+n5tEP/bBwTFb0889hJMVw20FWNyFAcerxAE3whFQ+5AhX1ip3T9ogNIhdu7wA8+/uN9VNCEoX8=
-X-Received: by 2002:a9d:65c1:: with SMTP id z1mr2411564oth.198.1635414812552;
- Thu, 28 Oct 2021 02:53:32 -0700 (PDT)
+        bh=YApfc+rtORQHprN7aKpnZNhl8TPl/VtOJQI8beQJmCY=;
+        b=cC/xrSR89RqLWWkjz24ZdDCuYtKaoY591IKzwfABOmVaFy5eD5G5jDZL/MzvJN2jJN
+         YTZCgdEnzyGUmEc9cBvNqRmfKcZE5Jms7f2PgnrpifVVGAQEm1Z+/NWYRZFEzLT5JcrQ
+         2Hs0mKTvsx9ja4wDY8NbLRtrb2lxuzoNHA/ZbdZ+v0FBUHhtBcwu+LTR4++b2LgxVNGT
+         YjvnQ/PbsWYatCPuc69UvzZjpbtxPmNxVq3lTsA+KgErnFtuCttVQkik8aqjCeX7LmFs
+         R8mnpGawCKQoWJFhKiGHm/iQoZ9CJ6stW40c6+5D2KoaPoWy8k9FPOSRhtA8yf0ziT29
+         Lekg==
+X-Gm-Message-State: AOAM530eL9PGH3eNUvq5iCKDyq/ypCfYVW3rEUaSIobTzrmW3fR55V/x
+        XIolZzfcEJjDPBaFnZZJckAeebIBWPoYfkHB+mg=
+X-Google-Smtp-Source: ABdhPJzD4cm7tn60vkyopY5CUMxUc9huwAUhS0IgxTyGcJq7Km0Bm+8fuUNsdZomFIBYzzQsRecVralPmU+TS+34zNY=
+X-Received: by 2002:a9d:65c1:: with SMTP id z1mr2427957oth.198.1635415170827;
+ Thu, 28 Oct 2021 02:59:30 -0700 (PDT)
 MIME-Version: 1.0
 References: <20211027211715.12671-1-digetx@gmail.com> <20211027211715.12671-9-digetx@gmail.com>
 In-Reply-To: <20211027211715.12671-9-digetx@gmail.com>
 From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Thu, 28 Oct 2021 11:53:20 +0200
-Message-ID: <CAJZ5v0jMdSjmkswzu18LSxcNk+k92Oz5XFFXmu-h=W8aPP4Oig@mail.gmail.com>
+Date:   Thu, 28 Oct 2021 11:59:18 +0200
+Message-ID: <CAJZ5v0gpu2ezMhWr=grg6M8aWAx58DQozbXHoZaiPqUaZxJi4Q@mail.gmail.com>
 Subject: Re: [PATCH v2 08/45] kernel: Add combined power-off+restart handler
  call chain API
 To:     Dmitry Osipenko <digetx@gmail.com>
@@ -59,7 +59,6 @@ Cc:     Thierry Reding <thierry.reding@gmail.com>,
         Greg Ungerer <gerg@linux-m68k.org>,
         Joshua Thompson <funaho@jurai.org>,
         Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Nick Hu <nickhu@andestech.com>,
         Greentime Hu <green.hu@gmail.com>,
         Vincent Chen <deanbo422@gmail.com>,
         "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
@@ -184,6 +183,9 @@ On Wed, Oct 27, 2021 at 11:18 PM Dmitry Osipenko <digetx@gmail.com> wrote:
 > +#define POWEROFF_PRIO_DEFAULT          128
 > +#define POWEROFF_PRIO_HIGH             192
 > +#define POWEROFF_PRIO_FIRMWARE         224
+
+Also I'm wondering why these particular numbers were chosen, here and above?
+
 > +
 > +enum poweroff_mode {
 > +       POWEROFF_NORMAL = 0,
@@ -235,9 +237,78 @@ On Wed, Oct 27, 2021 at 11:18 PM Dmitry Osipenko <digetx@gmail.com> wrote:
 > + * Fill the structure members and pass it to register_power_handler().
 > + */
 > +struct power_handler {
+> +       /**
+> +        * @cb_data:
+> +        *
+> +        * User data included in callback's argument.
+> +        */
 
-The name of this structure is too generic IMV.  There are many things
-that it might apply to in principle.
+And here I would document the structure fields in the main kerneldoc
+comment above.
 
-What about calling power_off_handler or sys_off_handler as it need not
-be about power at all?
+As is, it is a bit hard to grasp the whole definition.
+
+> +       void *cb_data;
+> +
+> +       /**
+> +        * @power_off_cb:
+> +        *
+> +        * Callback that should turn off machine.  Inactive if NULL.
+> +        */
+> +       void (*power_off_cb)(struct power_off_data *data);
+> +
+> +       /**
+> +        * @power_off_prepare_cb:
+> +        *
+> +        * Power-off preparation callback.  All power-off preparation callbacks
+> +        * are invoked before @restart_cb.  Inactive if NULL.
+> +        */
+> +       void (*power_off_prepare_cb)(struct power_off_prep_data *data);
+> +
+> +       /**
+> +        * @power_off_priority:
+> +        *
+> +        * Power-off callback priority, must be unique.  Zero value is
+> +        * reassigned to default priority.  Inactive if @power_off_cb is NULL.
+> +        */
+> +       int power_off_priority;
+> +
+> +       /**
+> +        * @power_off_chaining_allowed:
+> +        *
+> +        * False if callbacks execution should stop when @power_off_cb fails
+> +        * to power off machine.  True if further lower priority power-off
+> +        * callback should be executed.
+> +        */
+> +       bool power_off_chaining_allowed;
+> +
+> +       /**
+> +        * @restart_cb:
+> +        *
+> +        * Callback that should reboot machine.  Inactive if NULL.
+> +        */
+> +       void (*restart_cb)(struct restart_data *data);
+> +
+> +       /**
+> +        * @restart_priority:
+> +        *
+> +        * Restart callback priority, must be unique.  Zero value is reassigned
+> +        * to default priority.  Inactive if @restart_cb is NULL.
+> +        */
+> +       int restart_priority;
+> +
+> +       /**
+> +        * @reboot_prepare_cb:
+> +        *
+> +        * Reboot preparation callback.  All reboot preparation callbacks are
+> +        * invoked before @restart_cb.  Inactive if NULL.
+> +        */
+> +       void (*reboot_prepare_cb)(struct reboot_prep_data *data);
+> +
+> +       /**
+> +        * @priv:
+> +        *
+> +        * Internal data.  Shouldn't be touched.
+> +        */
+> +       const struct power_handler_private_data priv;
+> +};
