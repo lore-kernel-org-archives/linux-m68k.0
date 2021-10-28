@@ -2,68 +2,68 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 923E3C433F5
-	for <linux-m68k@archiver.kernel.org>; Thu, 28 Oct 2021 21:32:49 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 37078C433F5
+	for <linux-m68k@archiver.kernel.org>; Thu, 28 Oct 2021 21:36:32 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 7338760FE3
-	for <linux-m68k@archiver.kernel.org>; Thu, 28 Oct 2021 21:32:49 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 1FBE6610C8
+	for <linux-m68k@archiver.kernel.org>; Thu, 28 Oct 2021 21:36:32 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231262AbhJ1VfQ (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Thu, 28 Oct 2021 17:35:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43758 "EHLO
+        id S231393AbhJ1Vi5 (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Thu, 28 Oct 2021 17:38:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44708 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231464AbhJ1VfJ (ORCPT
+        with ESMTP id S231411AbhJ1Viz (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Thu, 28 Oct 2021 17:35:09 -0400
-Received: from mail-lj1-x231.google.com (mail-lj1-x231.google.com [IPv6:2a00:1450:4864:20::231])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1D3A3C061226
-        for <linux-m68k@lists.linux-m68k.org>; Thu, 28 Oct 2021 14:32:42 -0700 (PDT)
-Received: by mail-lj1-x231.google.com with SMTP id k13so12991253ljj.12
-        for <linux-m68k@lists.linux-m68k.org>; Thu, 28 Oct 2021 14:32:42 -0700 (PDT)
+        Thu, 28 Oct 2021 17:38:55 -0400
+Received: from mail-lf1-x12b.google.com (mail-lf1-x12b.google.com [IPv6:2a00:1450:4864:20::12b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8FDF0C061745
+        for <linux-m68k@lists.linux-m68k.org>; Thu, 28 Oct 2021 14:36:27 -0700 (PDT)
+Received: by mail-lf1-x12b.google.com with SMTP id u11so16505743lfs.1
+        for <linux-m68k@lists.linux-m68k.org>; Thu, 28 Oct 2021 14:36:27 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=subject:to:cc:references:from:message-id:date:user-agent
          :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=FNhb8m0Up8WrlODFU5XusWNjgw7FYM5tGcizMhHIPzY=;
-        b=USVIOuLFNftY9TSlAv8GQB7acWI1sWWXinRBTyt58drm2RaLh5La11nG4ixMTMewfR
-         mX32BgQ2N30EhppM8q0HGzyhqJFMUCJMnblCfs4t5KonQ44KE0wlYv2W8rFYqs4V2koj
-         XX371v1ONZUx01vnBeB6kBqd5XtkGxjVTj1e6iP0L3n7qnRFNsZrpRBj/O9TAqf3J13f
-         DVFT1FMABW5ltJOUpFKPkQHX+APbXjkM1X+NMw4LCmok7h64fUY8hoIatZpEbYmauo9R
-         3tzIe6iUnZRzMnNPnMBZ+KjZo2BGgmZ8KUvvaXZMV9Llm3C259zfQ4YRn+8CQPkkCOFN
-         RJzA==
+        bh=thttoNtx85IqBzMI/c95u4NQI+WEGNQqD09v61bWPkE=;
+        b=Y9ted3wnUvFPZbztZa+QHRbohuO2ujzfF68/pFicW5dA7D1yuFrKCL4aTWk/1AChzB
+         fKwgUocsDwuNOGM2+iseiHe/bj2d1v3+dSRNtXKqEmTsyBkz7IWQs8pVvc2a2gvGjfup
+         yLqAO4u/w7mjCphm/lBZwptgCTPupkSC+307KKr7OHU7po5AtPQB8ZhrguBiu6yERIjH
+         bK0WN85VLNpdVAhT7soiJpVcCZ4Sp0KIHJV14Uu8RloVE9YJBCz/nPhBHDPyGgkjYHQ0
+         imoJdP8GopH3zoQfTkWNgL4xsg20XHFvSLev9dZQthSUfjSrDblQ5bVzKxHiquLI0ZeF
+         3ufg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:subject:to:cc:references:from:message-id:date
          :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=FNhb8m0Up8WrlODFU5XusWNjgw7FYM5tGcizMhHIPzY=;
-        b=c87E8fXn9ZPx2VUzNIvs10O5sDgY7LbUAyD5mWQXLsEey1CpI5zBW6+Ovs95LTftIz
-         MevuiNJBFWp4iwXRNWYhfoVSy6iMPfyGBlO32maDmH85IabnNCMDQ8bYuHJM0JspIvau
-         7TvDmSi5arT+BPD6ivdwFWji/eaaK2IMfhFTzyGPhwc+Q94rIvgYCSUliOuT3dS9LpBi
-         N6o4HD97A2DrRNFPrJS0TnaSC2gelIfjWsu4agvZwel356KG1MFqu8yLLdTbmgnD9ian
-         SXR+SXBd0nERsV7cYnlObZNKT8EIfGJNAozmgbGKnIrlDWh0IBiD0Uf7CdVhbajj+w3J
-         6xjQ==
-X-Gm-Message-State: AOAM533gJk27d3VaJS5801/P/Y3Uo8TL/OXZUad1Y1wQpe9m+DTWt+8o
-        QfXFtiWUUcEqmTTxEiQf6Qw=
-X-Google-Smtp-Source: ABdhPJwcWGds1J/UVngHunSwfN7ztb9W9OVxlAX827dktWLGe1JrS01AY9nWnDg96vqg3wWMmL+l6Q==
-X-Received: by 2002:a2e:9b0e:: with SMTP id u14mr7220400lji.247.1635456760396;
-        Thu, 28 Oct 2021 14:32:40 -0700 (PDT)
+        bh=thttoNtx85IqBzMI/c95u4NQI+WEGNQqD09v61bWPkE=;
+        b=cq32tdkSTVbcos9W9jHZSOw8mUEmTGwKe/XB3Xnqr6fYbldRFLS9Ui4CyjjHazK3l8
+         44imSJy4YipTcE9C1qo5MPHeuvAmLFWKHzg0/L6CffwEsZlZg0pZvN7AaSbRXcJuczkM
+         0z0INyFV5DFlhrOi5GoHbQoxZvWjrZMJrdq+VEg4PCfi6Yx9FAgTWOndXa4IINCI5QoA
+         mLoIlIjPz9Czdel2nGpxpl3kNPgpiYK2jvMRz1tHndZfChGDN1hNA6YoYie2UC2NxB+c
+         nFLjBa+KWXTA/yxoupwxuz8K5hTaxlm5cwcTvF13IiMh+KT57mDxLrxG3PYAXVObW2nt
+         s/oQ==
+X-Gm-Message-State: AOAM533QmaFDkvLnmCjX00AawvMHb7z6sREnX5AZZzSpAnvEZAnDSImb
+        R4KvMfK/r1gGMQucdcNZl1o=
+X-Google-Smtp-Source: ABdhPJzbYSC0nWI15MXaoXJe2SikVhRJRnLxoLeSiSPsVfPjrcP1DbWpe0jTqiEw6MLnleJHOc1O3g==
+X-Received: by 2002:a05:6512:2292:: with SMTP id f18mr6437448lfu.619.1635456985989;
+        Thu, 28 Oct 2021 14:36:25 -0700 (PDT)
 Received: from [192.168.2.145] (46-138-44-18.dynamic.spd-mgts.ru. [46.138.44.18])
-        by smtp.googlemail.com with ESMTPSA id bi14sm474384lfb.290.2021.10.28.14.32.38
+        by smtp.googlemail.com with ESMTPSA id s9sm396521ljg.76.2021.10.28.14.36.23
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 28 Oct 2021 14:32:39 -0700 (PDT)
-Subject: Re: [PATCH v2 03/45] notifier: Add
- atomic/blocking_notifier_has_unique_priority()
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+        Thu, 28 Oct 2021 14:36:25 -0700 (PDT)
+Subject: Re: [PATCH v2 08/45] kernel: Add combined power-off+restart handler
+ call chain API
+To:     "Rafael J. Wysocki" <rafael@kernel.org>
 Cc:     Thierry Reding <thierry.reding@gmail.com>,
         Jonathan Hunter <jonathanh@nvidia.com>,
         Lee Jones <lee.jones@linaro.org>,
-        "Rafael J . Wysocki" <rafael@kernel.org>,
         Mark Brown <broonie@kernel.org>,
         Andrew Morton <akpm@linux-foundation.org>,
         Guenter Roeck <linux@roeck-us.net>,
         Russell King <linux@armlinux.org.uk>,
         Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
         Ulf Hansson <ulf.hansson@linaro.org>,
         Catalin Marinas <catalin.marinas@arm.com>,
         Will Deacon <will@kernel.org>, Guo Ren <guoren@kernel.org>,
@@ -86,7 +86,8 @@ Cc:     Thierry Reding <thierry.reding@gmail.com>,
         Rich Felker <dalias@libc.org>,
         Thomas Gleixner <tglx@linutronix.de>,
         Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        the arch/x86 maintainers <x86@kernel.org>,
         "H. Peter Anvin" <hpa@zytor.com>,
         Boris Ostrovsky <boris.ostrovsky@oracle.com>,
         Juergen Gross <jgross@suse.com>,
@@ -108,24 +109,30 @@ Cc:     Thierry Reding <thierry.reding@gmail.com>,
         Nancy Yuen <yuenn@google.com>,
         Benjamin Fair <benjaminfair@google.com>,
         Pavel Machek <pavel@ucw.cz>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
         linux-csky@vger.kernel.org, linux-ia64@vger.kernel.org,
         linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org,
-        linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        linux-riscv@lists.infradead.org, linux-sh@vger.kernel.org,
-        xen-devel@lists.xenproject.org, linux-acpi@vger.kernel.org,
-        linux-omap@vger.kernel.org, openbmc@lists.ozlabs.org,
-        linux-tegra@vger.kernel.org, linux-pm@vger.kernel.org
+        linux-parisc@vger.kernel.org,
+        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
+        linux-riscv@lists.infradead.org,
+        Linux-sh list <linux-sh@vger.kernel.org>,
+        xen-devel@lists.xenproject.org,
+        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
+        Linux OMAP Mailing List <linux-omap@vger.kernel.org>,
+        openbmc@lists.ozlabs.org,
+        linux-tegra <linux-tegra@vger.kernel.org>,
+        Linux PM <linux-pm@vger.kernel.org>
 References: <20211027211715.12671-1-digetx@gmail.com>
- <20211027211715.12671-4-digetx@gmail.com>
- <YXqCz/utp2DFJJ45@smile.fi.intel.com>
+ <20211027211715.12671-9-digetx@gmail.com>
+ <CAJZ5v0jMdSjmkswzu18LSxcNk+k92Oz5XFFXmu-h=W8aPP4Oig@mail.gmail.com>
 From:   Dmitry Osipenko <digetx@gmail.com>
-Message-ID: <c5fb7590-03a7-0eea-4040-07472a5c9710@gmail.com>
-Date:   Fri, 29 Oct 2021 00:32:37 +0300
+Message-ID: <d1837954-bd70-460d-3548-0d5ec5b75704@gmail.com>
+Date:   Fri, 29 Oct 2021 00:36:23 +0300
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
  Thunderbird/78.14.0
 MIME-Version: 1.0
-In-Reply-To: <YXqCz/utp2DFJJ45@smile.fi.intel.com>
+In-Reply-To: <CAJZ5v0jMdSjmkswzu18LSxcNk+k92Oz5XFFXmu-h=W8aPP4Oig@mail.gmail.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 8bit
@@ -133,37 +140,27 @@ Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-28.10.2021 14:00, Andy Shevchenko пишет:
-> On Thu, Oct 28, 2021 at 12:16:33AM +0300, Dmitry Osipenko wrote:
->> Add atomic/blocking_notifier_has_unique_priority() helpers which return
->> true if given handler has unique priority.
-> 
-> ...
-> 
+28.10.2021 12:53, Rafael J. Wysocki пишет:
 >> +/**
->> + *	atomic_notifier_has_unique_priority - Checks whether notifier's priority is unique
->> + *	@nh: Pointer to head of the atomic notifier chain
->> + *	@n: Entry in notifier chain to check
+>> + * struct power_handler - Machine power-off + restart handler
 >> + *
->> + *	Checks whether there is another notifier in the chain with the same priority.
->> + *	Must be called in process context.
+>> + * Describes power-off and restart handlers which are invoked by kernel
+>> + * to power off or restart this machine.  Supports prioritized chaining for
+>> + * both restart and power-off handlers.  Callback's priority must be unique.
+>> + * Intended to be used by device drivers that are responsible for restarting
+>> + * and powering off hardware which kernel is running on.
 >> + *
->> + *	Returns true if priority is unique, false otherwise.
+>> + * Struct power_handler can be static.  Members of this structure must not be
+>> + * altered while handler is registered.
+>> + *
+>> + * Fill the structure members and pass it to register_power_handler().
+>> + */
+>> +struct power_handler {
+> The name of this structure is too generic IMV.  There are many things
+> that it might apply to in principle.
 > 
-> Why this indentation?
+> What about calling power_off_handler or sys_off_handler as it need not
+> be about power at all?
 
-This is the same doc-comment style used by this file in general. I
-haven't tried to invent anything new.
-
-
-> ...
-> 
->> +	/*
->> +	 * This code gets used during boot-up, when task switching is
->> +	 * not yet working and interrupts must remain disabled.  At
-> 
-> One space is enough.
-
-This comment is replicated multiple times over this source file. You can
-find it before each down_write(). I borrowed the text as-is, for
-consistency.
+I didn't like much the 'power' either, but couldn't come up with a
+better variant. Will change it in v3, thank you.
