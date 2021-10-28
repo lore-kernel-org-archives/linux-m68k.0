@@ -2,114 +2,167 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9E264C433F5
-	for <linux-m68k@archiver.kernel.org>; Thu, 28 Oct 2021 04:09:02 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 34DF9C433EF
+	for <linux-m68k@archiver.kernel.org>; Thu, 28 Oct 2021 06:41:07 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 772EF60200
-	for <linux-m68k@archiver.kernel.org>; Thu, 28 Oct 2021 04:09:02 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 1218360D07
+	for <linux-m68k@archiver.kernel.org>; Thu, 28 Oct 2021 06:41:07 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229659AbhJ1EL2 (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Thu, 28 Oct 2021 00:11:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60368 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229488AbhJ1EL1 (ORCPT
-        <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Thu, 28 Oct 2021 00:11:27 -0400
-Received: from mail-yb1-xb35.google.com (mail-yb1-xb35.google.com [IPv6:2607:f8b0:4864:20::b35])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5BE4EC061745
-        for <linux-m68k@lists.linux-m68k.org>; Wed, 27 Oct 2021 21:09:01 -0700 (PDT)
-Received: by mail-yb1-xb35.google.com with SMTP id v64so5460502ybi.5
-        for <linux-m68k@lists.linux-m68k.org>; Wed, 27 Oct 2021 21:09:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20210112.gappssmtp.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=6yUHQHi+npTtdXXk5DuMN99wacJ4E9CG46ltzl64228=;
-        b=LTdKGO67Jtzw5+Mnn0yELwzRX3RGMm4YHRaPSISq3WsblH3jMwIZrhcpbR8CE3AvqX
-         vtlCTmihlqAvOTVddnUf33y6YNos+fTc/rxkg2k+Zqe1Ao9rTbFm4AUSGNALP1Oi4Iwl
-         FG0aF4WHwTzEevGHd3OAGEvZ6ajzCwD8U5CHo42tD2zOV0v8Dnb+FzpLZorxejensSRK
-         Z0MCsf6vXDHbAoUN1lM7g7WsUwlVHU1KV1QetqD9qlWyTePAyOSg5aj1Z4/vLw5KToFG
-         oWvZ7PnOLSb82758FfRyf6fG82KPDKWUeZ8Nfw85EpQdesseSq2G0bFbbIm/a6HuqdmY
-         9hMw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=6yUHQHi+npTtdXXk5DuMN99wacJ4E9CG46ltzl64228=;
-        b=3TFDxrtTjQrLb5kEHIHttBQbckltJ1DW9KK/iIULSKO5btvHDLPvq8BBa1xU4AXeXw
-         Mpy7RXf9wQFJgbmYS/zo5T9frmC1yzjSH27qo+0gWLrzlrUXGR8CKJDXkQ+ZUlR5hwtO
-         SSyKXMZKpkzxizWjsBk1lQJOUB4z+LFPwIh7pImCeMfLx3Oql7roAHVOvYQtVzSOQ7Ic
-         A7cUCw4t9/6c5hS1e/Www49QgK2hHkbMQwXfk49DG3Qs3k/dbc5wusispmCUt5XsKp8K
-         yQDZpq1Y9n/NPyHoOg/jz4cI+XRUWZ21ie3ZuCx502XQhDdIBIldX/kbUoSJ7V3eE6Fm
-         tlSQ==
-X-Gm-Message-State: AOAM531tT3X4zhq8ilOtthOmPmcuY9ApCjtclcaaFyf/8RtSUjcZCiab
-        jziuFzQjVkz/Z2v7c9RE4io4Jmz7yO91dpKn3gy6Sg==
-X-Google-Smtp-Source: ABdhPJw+r345VCUEQFGpfG8g3EemP/2PHcshnTveryovvI3QNoAMM2nb8j9v9wlGZ+D6DgP/z6a+aAhMIjHeqxiDtxk=
-X-Received: by 2002:a25:d610:: with SMTP id n16mr2080814ybg.208.1635394140512;
- Wed, 27 Oct 2021 21:09:00 -0700 (PDT)
+        id S229775AbhJ1Gnc (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Thu, 28 Oct 2021 02:43:32 -0400
+Received: from mout.gmx.net ([212.227.15.15]:57871 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229586AbhJ1Gnb (ORCPT <rfc822;linux-m68k@lists.linux-m68k.org>);
+        Thu, 28 Oct 2021 02:43:31 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1635403130;
+        bh=9epiwmWdzTgZY2j4GBWRs9N0QEWknADgKRkQPvp+Ggo=;
+        h=X-UI-Sender-Class:Date:Subject:To:Cc:References:From:In-Reply-To;
+        b=FXhe5yXxylYP540/EC+4AzkmLOP3fNSEmO39fyo/3NOlbWcEm0ryYTd7J3Iv20szB
+         cWKWEC4dZ521NZJ4gyIpkKod8spMS5RmsFlBvqxTT96Vwc/S6HyYHyyyo0FoSjpetw
+         nwPjJnU+hcraQ+NzVcLrxZf8To+aYZc5aH/99quU=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from [192.168.20.60] ([92.116.152.46]) by mail.gmx.net (mrgmx005
+ [212.227.17.190]) with ESMTPSA (Nemesis) id 1M3UZ6-1mfR6019Wc-000dpr; Thu, 28
+ Oct 2021 08:38:50 +0200
+Message-ID: <6470d500-a832-9e1f-e3b9-4d3972b3996e@gmx.de>
+Date:   Thu, 28 Oct 2021 08:38:35 +0200
 MIME-Version: 1.0
-References: <20211026173822.502506-1-pasha.tatashin@soleen.com>
- <20211026173822.502506-2-pasha.tatashin@soleen.com> <CAMZfGtVS2ZRAsd9HLODoLa1vVp0XCcBOTXjsmpoWwDcdGaADvQ@mail.gmail.com>
- <CA+CK2bA1mj3B8Y47r8KG7oYCNn63WsjUZeyAdOkThjixxqxGPQ@mail.gmail.com>
-In-Reply-To: <CA+CK2bA1mj3B8Y47r8KG7oYCNn63WsjUZeyAdOkThjixxqxGPQ@mail.gmail.com>
-From:   Muchun Song <songmuchun@bytedance.com>
-Date:   Thu, 28 Oct 2021 12:08:24 +0800
-Message-ID: <CAMZfGtVMLUrDZc+_j29jSPTKYmsMRWymxZNwtM2TpKH9wMPfUw@mail.gmail.com>
-Subject: Re: [RFC 1/8] mm: add overflow and underflow checks for page->_refcount
-To:     Pasha Tatashin <pasha.tatashin@soleen.com>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        linux-m68k@lists.linux-m68k.org,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        Matthew Wilcox <willy@infradead.org>,
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.2.0
+Subject: Re: [PATCH v2 16/45] parisc: Use do_kernel_power_off()
+Content-Language: en-US
+To:     Dmitry Osipenko <digetx@gmail.com>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Lee Jones <lee.jones@linaro.org>,
+        "Rafael J . Wysocki" <rafael@kernel.org>,
+        Mark Brown <broonie@kernel.org>,
         Andrew Morton <akpm@linux-foundation.org>,
-        william.kucharski@oracle.com,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Russell King <linux@armlinux.org.uk>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Ulf Hansson <ulf.hansson@linaro.org>
+Cc:     Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>, Guo Ren <guoren@kernel.org>,
         Geert Uytterhoeven <geert@linux-m68k.org>,
-        schmitzmic@gmail.com, Steven Rostedt <rostedt@goodmis.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Roman Gushchin <guro@fb.com>, weixugc@google.com,
-        Greg Thelen <gthelen@google.com>
-Content-Type: text/plain; charset="UTF-8"
+        Greg Ungerer <gerg@linux-m68k.org>,
+        Joshua Thompson <funaho@jurai.org>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Nick Hu <nickhu@andestech.com>,
+        Greentime Hu <green.hu@gmail.com>,
+        Vincent Chen <deanbo422@gmail.com>,
+        "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Yoshinori Sato <ysato@users.sourceforge.jp>,
+        Rich Felker <dalias@libc.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+        Juergen Gross <jgross@suse.com>,
+        Stefano Stabellini <sstabellini@kernel.org>,
+        Len Brown <lenb@kernel.org>,
+        Santosh Shilimkar <ssantosh@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Chen-Yu Tsai <wens@csie.org>,
+        =?UTF-8?Q?Jonathan_Neusch=c3=a4fer?= <j.neuschaefer@gmx.net>,
+        Tony Lindgren <tony@atomide.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Vladimir Zapolskiy <vz@mleia.com>,
+        Avi Fishman <avifishman70@gmail.com>,
+        Tomer Maimon <tmaimon77@gmail.com>,
+        Tali Perry <tali.perry1@gmail.com>,
+        Patrick Venture <venture@google.com>,
+        Nancy Yuen <yuenn@google.com>,
+        Benjamin Fair <benjaminfair@google.com>,
+        Pavel Machek <pavel@ucw.cz>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-csky@vger.kernel.org, linux-ia64@vger.kernel.org,
+        linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org,
+        linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        linux-riscv@lists.infradead.org, linux-sh@vger.kernel.org,
+        xen-devel@lists.xenproject.org, linux-acpi@vger.kernel.org,
+        linux-omap@vger.kernel.org, openbmc@lists.ozlabs.org,
+        linux-tegra@vger.kernel.org, linux-pm@vger.kernel.org
+References: <20211027211715.12671-1-digetx@gmail.com>
+ <20211027211715.12671-17-digetx@gmail.com>
+From:   Helge Deller <deller@gmx.de>
+In-Reply-To: <20211027211715.12671-17-digetx@gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:FyRzIrUgBb05q0bHWFRS/zQ/jjhGXy+pktz0g9vMu8rSAyG2PhH
+ igLh0yuSJkfQClwGAYYVp96vDjlam7EqP3CW0lWkZ155s/JTRG7aXysFtzh8fsHm3d7JOnd
+ U2wPiCoWHArr/c1zeopIGDkaYwvec8wHmOgMEvIr7aPgxK9GcFiXcIhkSKruN1bnrxyn2QX
+ umWMtuIv0Xa3Bg/ofbf6Q==
+X-UI-Out-Filterresults: notjunk:1;V03:K0:Nt03nam4XH8=:N7PuLhTcs13ezPdb4QL3P5
+ EAsOC32SEC/CwoA2+8DjNnTsILfn+sFrb9LZytvE/YP2J2Aj7Qx7fkEO40fY8T8rIBLGw9GX+
+ NIsaN0+sjNJKdkOQlJE/AFyfJG+vQ7ahzCRk2HMLrf3z5M6K/b0L71tddrkVIJCMb7IuCUzph
+ ykgDP6aZxfqVXIMaikKg097ePHHG0x47b/94G1+2NvXBe71nBfFTfm04TrvRNne2czLnMB+Lg
+ v+wFHtJZ2jQ9cLfCu2fzZQuGkclVf14XlYnoDKMRVnVFWWYf0adoOjwfKSRtptB20/q31drw2
+ HePgYF8sylMcfQbim3Wp4ygBdzf5/6i3x4H4dnB1q/EhvkJY/KiaZgrjHxrJkHNauXcVxsg6y
+ 3vvk7psmlYjcJLo6ddOdIBc9OIQs133Ce1iU2wSod2qhYwBPSJppgIk8kJCYKzZxAzsnModUK
+ BgEImgsOUGiDlYZe9Muppxy4TrQaqVmfjaM9kmqq8Gvz9GaOjVqBYmFsm570hW8BuF9BI+r+S
+ 0GJuN3cdiVBY0G0MhcxnoHe4O22baIwcBDk2FnckJriXO5mZE3hJQVTcEKeAb2ybK5KNuVVY6
+ nww/BdElXnSWt1HhtpoHRHlgigO4KvVdiDhtBi8tFoyeYg8pvvK9qgrlLqCEJsbs8TBaWRdRr
+ 7fvMB1yoKM8dWEL+Z/gHindYZd433ys7huBzX1XyE7cCnO+L/FE5ZfETDY8DSBwlBCCD940Ri
+ wkqaYntrDtmIkWD9BWTD4j7K3fgZUU7IPEaJZjdl5xWo8e268I+GMSTVMrUSVDmQzI7cEG+Lb
+ i0qZzTuZiztLiwLZgXQVnYgopvNIgyfo6LMbZ9e4NuBR0ff+vu+fsAwWJH4T3BJlzoZYXX193
+ PLDnh+2eGZNNZJ83DOYN1ApcqeJpwMwKyPuCFuf/SxuBIQ7A6oWrcCikiPFJaPxKlXhX5RTg8
+ v7QQ4c9ImeWqMCb0i29R5vmks8Ui9IG2X5j/SIZwSpXutCAWE2F/LMHO+pOK/jVtTRVpgu0WW
+ MapTUMEB41Z0LdVwL6aYL1P3sWB52Pfffr4C3r7aA/3cWiJWf1QCoiwOmHCTExfYhCTFuQCe5
+ +ZRYgxUKbSq514=
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-On Thu, Oct 28, 2021 at 2:22 AM Pasha Tatashin
-<pasha.tatashin@soleen.com> wrote:
+On 10/27/21 23:16, Dmitry Osipenko wrote:
+> Kernel now supports chained power-off handlers. Use do_kernel_power_off(=
+)
+> that invokes chained power-off handlers. It also invokes legacy
+> pm_power_off() for now, which will be removed once all drivers will
+> be converted to the new power-off API.
 >
-> > I found some atomic_add/dec are replaced with atomic_add/dec_return,
->
-> I am going to replace -return variants with -fetch variants, potentially -fetch
->
-> > those helpers with return value imply a full memory barrier around it, but
-> > others without return value do not. Do you have any numbers to show
-> > the impact? Maybe atomic_add/dec_return_relaxed can help this.
->
-> The generic variant uses  arch_cmpxchg() for all atomic variants
-> without any extra barriers. Therefore, on platforms that use generic
-> implementations there won't be performance differences except for an
-> extra branch that checks results when VM_BUG_ON is enabled.
->
-> On x86 the difference between the two is the following
->
-> atomic_add:
->    lock add %eax,(%rsi)
->
-> atomic_fetch_add:
->    lock xadd %eax,(%rsi)
->
-> atomic_fetch_add_relaxed:
->    lock xadd %eax,(%rsi)
->
-> No differences between relaxed and non relaxed variants. However, we
+> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
 
-Right. There is no difference on x86. Maybe there are differences in
-other architectures.
+Acked-by: Helge Deller <deller@gmx.de> # parisc
 
-> used lock xadd instead of lock add. I am not sure if the performance
-> difference is going to be different.
+
+
+> ---
+>  arch/parisc/kernel/process.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
 >
-> Pasha
+> diff --git a/arch/parisc/kernel/process.c b/arch/parisc/kernel/process.c
+> index ea3d83b6fb62..928201b1f58f 100644
+> --- a/arch/parisc/kernel/process.c
+> +++ b/arch/parisc/kernel/process.c
+> @@ -26,6 +26,7 @@
+>  #include <linux/module.h>
+>  #include <linux/personality.h>
+>  #include <linux/ptrace.h>
+> +#include <linux/reboot.h>
+>  #include <linux/sched.h>
+>  #include <linux/sched/debug.h>
+>  #include <linux/sched/task.h>
+> @@ -114,8 +115,7 @@ void machine_power_off(void)
+>  	pdc_chassis_send_status(PDC_CHASSIS_DIRECT_SHUTDOWN);
+>
+>  	/* ipmi_poweroff may have been installed. */
+> -	if (pm_power_off)
+> -		pm_power_off();
+> +	do_kernel_power_off();
+>
+>  	/* It seems we have no way to power the system off via
+>  	 * software. The user has to press the button himself. */
+>
+
