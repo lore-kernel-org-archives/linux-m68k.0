@@ -2,146 +2,93 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 453FEC4332F
-	for <linux-m68k@archiver.kernel.org>; Thu, 28 Oct 2021 23:28:21 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 9C52DC433F5
+	for <linux-m68k@archiver.kernel.org>; Fri, 29 Oct 2021 18:05:14 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 19372610FD
-	for <linux-m68k@archiver.kernel.org>; Thu, 28 Oct 2021 23:28:21 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 78B12610CF
+	for <linux-m68k@archiver.kernel.org>; Fri, 29 Oct 2021 18:05:14 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230134AbhJ1Xaq (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Thu, 28 Oct 2021 19:30:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41954 "EHLO
+        id S230044AbhJ2SHm (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Fri, 29 Oct 2021 14:07:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38198 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229621AbhJ1Xap (ORCPT
+        with ESMTP id S229837AbhJ2SHl (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Thu, 28 Oct 2021 19:30:45 -0400
-Received: from mail-lf1-x133.google.com (mail-lf1-x133.google.com [IPv6:2a00:1450:4864:20::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 69511C061570
-        for <linux-m68k@lists.linux-m68k.org>; Thu, 28 Oct 2021 16:28:17 -0700 (PDT)
-Received: by mail-lf1-x133.google.com with SMTP id j9so16972404lfu.7
-        for <linux-m68k@lists.linux-m68k.org>; Thu, 28 Oct 2021 16:28:17 -0700 (PDT)
+        Fri, 29 Oct 2021 14:07:41 -0400
+Received: from mail-lf1-x12f.google.com (mail-lf1-x12f.google.com [IPv6:2a00:1450:4864:20::12f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 74D07C061570
+        for <linux-m68k@lists.linux-m68k.org>; Fri, 29 Oct 2021 11:05:12 -0700 (PDT)
+Received: by mail-lf1-x12f.google.com with SMTP id i13so13045851lfe.4
+        for <linux-m68k@lists.linux-m68k.org>; Fri, 29 Oct 2021 11:05:12 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=subject:from:to:cc:references:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=g1ASowQL1SYh3xyvjjnrsnFWzhxhuZ1FkP7TdHa31mE=;
-        b=or9I8eXmdc6hOUu3ilMz+ymgHlGQQmwFfcjANI787MFy3461r29Qlx4Drko3A82jiZ
-         /Dxbh+rXJkVd+vSmZQz7ByF21FNMWE7Msuh2tmQH7FzEaAaJykw/79BGIIrJtKwboRDm
-         04V8OvO+c+XCXlI7f4QRPE7cqx6GZulezk5I+0MnmugoyzWrW9wGp3T/sQ+0YL50opsM
-         PEj+17btedXyPtu3l7DUltlj+rCIDD63O2gZoZwfDEKUeboD39P9kLuxM5uqsYcKe9n/
-         MuNWRD7sUlbhLEou6B/xsQNLsenMP/929SI9uvSZZXHuqFx/YvhRAZPMrz7X4+YxCerI
-         /TgQ==
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=K6KCBeD/pNCG9HZQnIVtuH+wCZVkgQgovkR8K6qXsz0=;
+        b=DK+Tp3O/3gtk6Mj6EirsKfvX8mAe0+szIVxVBHJaMcoxLOtuvV48Rqi0Ta0I9gUMTR
+         F0btd8b3EQOXM97fEoJPbO3hLFaaM//stWMVDGe6zk5xsGZmTRz6EQE2YKHKyw7CXr/F
+         N8UoFNI/13+/GBJUOvYX4fRekOCCnOhfYNR30=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:from:to:cc:references:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=g1ASowQL1SYh3xyvjjnrsnFWzhxhuZ1FkP7TdHa31mE=;
-        b=RXtOhNqXmFz9kdekeJETfkuFS0sbPxFuq2S0Y8MlFlqk9+p8cqppfbrr/6WVK9tN37
-         UgqHNAfmlZXjgTj7F3EH0Nlo9uo8orZbnw/VuhRINNjkki0ryyIe/ZT8Tre8ZJ6xFK3V
-         rURqJrB33gvVU+uD9Vioj1esGirVWK54EpJJ/NQHEpWbqb60GXtcgA6n2cYI3kTKxGKC
-         m4rYzIMLGTuVOWPq5uFWITjGyFl4dLVtAxF5+8SyS6uoIzjvFECnIvJlJTM1E8zLvel9
-         0wp+Y5fHgkbtO9vpTkoeR8bYVlp9m0IAFLYorvcLoyDoXRfYDYy+RRF/SogAi6gHuG0J
-         z+0Q==
-X-Gm-Message-State: AOAM5323r9Eveh8s3Wt2DwoccdaRaYDFmlUeH5s5PfB3f1dm1pHg5aLV
-        ZjX+vA3vIB3mKN+Cn7WXOog=
-X-Google-Smtp-Source: ABdhPJwV2hV4le461ll7P/MiVtzPzva4GF7PaVejAVvhmYPc9uewsxLl7FIVcxk+rSnnrtvlDg/jfg==
-X-Received: by 2002:a19:760a:: with SMTP id c10mr6627861lff.302.1635463695803;
-        Thu, 28 Oct 2021 16:28:15 -0700 (PDT)
-Received: from [192.168.2.145] (46-138-44-18.dynamic.spd-mgts.ru. [46.138.44.18])
-        by smtp.googlemail.com with ESMTPSA id bn3sm414682ljb.7.2021.10.28.16.28.13
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=K6KCBeD/pNCG9HZQnIVtuH+wCZVkgQgovkR8K6qXsz0=;
+        b=HPJdixRfxDFo07mUXkU7E9mzyQ2IQqG/kCrrYkW2CRTGEUGBuh9lXwY9BUJV/qAaJv
+         RUsNTVrCrikey7OispYfgNSgiuZrxnjRtrPW1nY/ky/uD1jtmwMr4FexS/Ienh7lAJ4P
+         zGbVhJlQB+CE5uU9ijfFOFZd++L46VH2cmkO6Xt5yZ+Hva4Qy7jO45qwgsoX0kkYNian
+         FleIg+G0wy9rTP/sjjCB+ZxAzHWRW3M5pU2oPXyqVTgb0JEtbOJACylsIgWFfIZB8MGC
+         U0Xl9lHahkmzecNXTxZZ6jEQcDeQbO14A+jyZxQnDeMw15sQhCmiLY35Xi3fmiX/IqIY
+         h4JA==
+X-Gm-Message-State: AOAM532hCGcz3hAiWjqkmqFRAgTj7eSwT4akczYzBhBuf5L9shWQhSVJ
+        5oR02ZiWJlHuATXxhtA57v5WZSEHozGxmlWcYms=
+X-Google-Smtp-Source: ABdhPJx1Nf5RPywvN5yOTjC1FV6XHj3c1GbjbHbIkVFEx+E+ZUUe0JYvDAoF3DqINJez4sPAycWCJg==
+X-Received: by 2002:a05:6512:3887:: with SMTP id n7mr11924655lft.356.1635530710102;
+        Fri, 29 Oct 2021 11:05:10 -0700 (PDT)
+Received: from mail-lf1-f53.google.com (mail-lf1-f53.google.com. [209.85.167.53])
+        by smtp.gmail.com with ESMTPSA id v10sm129506lfo.80.2021.10.29.11.05.09
+        for <linux-m68k@lists.linux-m68k.org>
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 28 Oct 2021 16:28:15 -0700 (PDT)
-Subject: Re: [PATCH v2 03/45] notifier: Add
- atomic/blocking_notifier_has_unique_priority()
-From:   Dmitry Osipenko <digetx@gmail.com>
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Lee Jones <lee.jones@linaro.org>,
-        "Rafael J . Wysocki" <rafael@kernel.org>,
-        Mark Brown <broonie@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Russell King <linux@armlinux.org.uk>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>, Guo Ren <guoren@kernel.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Greg Ungerer <gerg@linux-m68k.org>,
-        Joshua Thompson <funaho@jurai.org>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Nick Hu <nickhu@andestech.com>,
-        Greentime Hu <green.hu@gmail.com>,
-        Vincent Chen <deanbo422@gmail.com>,
-        "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
-        Helge Deller <deller@gmx.de>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Yoshinori Sato <ysato@users.sourceforge.jp>,
-        Rich Felker <dalias@libc.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
-        Juergen Gross <jgross@suse.com>,
-        Stefano Stabellini <sstabellini@kernel.org>,
-        Len Brown <lenb@kernel.org>,
-        Santosh Shilimkar <ssantosh@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Chen-Yu Tsai <wens@csie.org>,
-        =?UTF-8?Q?Jonathan_Neusch=c3=a4fer?= <j.neuschaefer@gmx.net>,
-        Tony Lindgren <tony@atomide.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Vladimir Zapolskiy <vz@mleia.com>,
-        Avi Fishman <avifishman70@gmail.com>,
-        Tomer Maimon <tmaimon77@gmail.com>,
-        Tali Perry <tali.perry1@gmail.com>,
-        Patrick Venture <venture@google.com>,
-        Nancy Yuen <yuenn@google.com>,
-        Benjamin Fair <benjaminfair@google.com>,
-        Pavel Machek <pavel@ucw.cz>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-csky@vger.kernel.org, linux-ia64@vger.kernel.org,
-        linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org,
-        linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        linux-riscv@lists.infradead.org, linux-sh@vger.kernel.org,
-        xen-devel@lists.xenproject.org, linux-acpi@vger.kernel.org,
-        linux-omap@vger.kernel.org, openbmc@lists.ozlabs.org,
-        linux-tegra@vger.kernel.org, linux-pm@vger.kernel.org
-References: <20211027211715.12671-1-digetx@gmail.com>
- <20211027211715.12671-4-digetx@gmail.com>
- <YXqCz/utp2DFJJ45@smile.fi.intel.com>
- <c5fb7590-03a7-0eea-4040-07472a5c9710@gmail.com>
-Message-ID: <8a9c4a9a-ea0d-4bc9-cf57-9bd99b211d47@gmail.com>
-Date:   Fri, 29 Oct 2021 02:28:13 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.14.0
+        Fri, 29 Oct 2021 11:05:09 -0700 (PDT)
+Received: by mail-lf1-f53.google.com with SMTP id u11so22643994lfs.1
+        for <linux-m68k@lists.linux-m68k.org>; Fri, 29 Oct 2021 11:05:09 -0700 (PDT)
+X-Received: by 2002:a05:6512:3993:: with SMTP id j19mr9826124lfu.402.1635530709299;
+ Fri, 29 Oct 2021 11:05:09 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <c5fb7590-03a7-0eea-4040-07472a5c9710@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+References: <20211029120709.79366-1-ulf.hansson@linaro.org>
+In-Reply-To: <20211029120709.79366-1-ulf.hansson@linaro.org>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Fri, 29 Oct 2021 11:04:53 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wgQLtvDh-3zhGNCWNAssubDxgxC+7RdEmHBmK_84rLT2Q@mail.gmail.com>
+Message-ID: <CAHk-=wgQLtvDh-3zhGNCWNAssubDxgxC+7RdEmHBmK_84rLT2Q@mail.gmail.com>
+Subject: Re: [GIT PULL] MMC fixes for v5.15-rc8
+To:     Ulf Hansson <ulf.hansson@linaro.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>
+Cc:     linux-mmc@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-m68k <linux-m68k@lists.linux-m68k.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-29.10.2021 00:32, Dmitry Osipenko пишет:
->>> +	/*
->>> +	 * This code gets used during boot-up, when task switching is
->>> +	 * not yet working and interrupts must remain disabled.  At
->> One space is enough.
-> This comment is replicated multiple times over this source file. You can
-> find it before each down_write(). I borrowed the text as-is, for
-> consistency.
+On Fri, Oct 29, 2021 at 5:07 AM Ulf Hansson <ulf.hansson@linaro.org> wrote:
+>
+>  - winbond: Silences build errors on M68K
 
-Actually, it should be down_read() here since there are no writes. I'll
-correct it in v3.
+I think this one is wrong.
+
+I think the problem is that m68k declares "claim_dma_lock()" in the
+wrong header file. It's in <asm/floppy.h> instead of <asm/dma.h>
+
+I'm somewhat surprised that this doesn't hit m68k in other places -
+there are other drivers that use that same ISA DMA interface.
+
+I've pulled this, but I hate how random that fix is.
+
+(And on the topic of hate - the merge messages are just auto-munged
+from the commit line - please spend a _bit_ more time on it, ok? Or at
+least make it closer to proper English - things like "Re-enable card
+irqs after a reset in tmio driver" instead of "tmio: Re-enable card
+irqs after a reset")
+
+              Linus
