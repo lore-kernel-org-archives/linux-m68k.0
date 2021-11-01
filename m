@@ -2,80 +2,159 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C7122C433F5
-	for <linux-m68k@archiver.kernel.org>; Fri, 29 Oct 2021 21:47:28 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 29C3EC433F5
+	for <linux-m68k@archiver.kernel.org>; Mon,  1 Nov 2021 01:57:34 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id A911060D43
-	for <linux-m68k@archiver.kernel.org>; Fri, 29 Oct 2021 21:47:28 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id EBCDC61075
+	for <linux-m68k@archiver.kernel.org>; Mon,  1 Nov 2021 01:57:33 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230489AbhJ2Vt5 (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Fri, 29 Oct 2021 17:49:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60614 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230355AbhJ2Vt4 (ORCPT
-        <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Fri, 29 Oct 2021 17:49:56 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B951EC061570;
-        Fri, 29 Oct 2021 14:47:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-        Content-Type:In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:
-        Subject:Sender:Reply-To:Content-ID:Content-Description;
-        bh=9nDAyc2CEQnQbldKt9DkGeYslg1kSi1u4+9mTf4hmOU=; b=U03hNFRjzzqmMGdfaNDvAi+PC/
-        sMi8qnty/SIi8RZeyRF+OQ9pZJsHtS7yvDTcADBP/RhifuaqKN4yf3v2/RE2gaGSINkenep3Oy7D5
-        1kyPmjhVhlqHePk3XMkhfNgpAHgc6fEDX56DCiX2CUbQqiNM1CIOBLWxxlG3w5VyZCqk1eAPKZl9I
-        OWN0vpL5Ed9y+R3ns19WmIM2MXjUs3pUE0dJTS+cDkIdVRLm1NL0CSDhzaRE3KD2owTdsW3Vrietk
-        47Zlhyr35TZMk8tM0HMujz7DMf8glfCWPOVrfOyFKemEtOwQItcfbTxd66vfovsOSuSUMVvfB/nno
-        9gRFmVcQ==;
-Received: from [2601:1c0:6280:3f0::aa0b]
-        by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mgZif-00CPI9-Vz; Fri, 29 Oct 2021 21:47:26 +0000
-Subject: Re: [GIT PULL] MMC fixes for v5.15-rc8
-To:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     linux-mmc@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-m68k <linux-m68k@lists.linux-m68k.org>
-References: <20211029120709.79366-1-ulf.hansson@linaro.org>
- <CAHk-=wgQLtvDh-3zhGNCWNAssubDxgxC+7RdEmHBmK_84rLT2Q@mail.gmail.com>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <c9deee06-dd78-22fc-2d93-7c70e1f6522b@infradead.org>
-Date:   Fri, 29 Oct 2021 14:47:24 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        id S230222AbhKACAF (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Sun, 31 Oct 2021 22:00:05 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38870 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230233AbhKACAF (ORCPT <rfc822;linux-m68k@lists.linux-m68k.org>);
+        Sun, 31 Oct 2021 22:00:05 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2E3A8610A0
+        for <linux-m68k@lists.linux-m68k.org>; Mon,  1 Nov 2021 01:57:32 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1635731852;
+        bh=fuaUan8WpsO3AU0Pd876OqdiQB5S59Rz/RFmfxHCqFo=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=WTZ2r/aqsZBJ/SEMp/W5aRRvu0wWWG+qZmM8hZPwjrObwwMpW1TgXwf1zWnw0Qa9i
+         Zv/YGYWGYxl7myNvWxfw0CIgJUc9b2/XePq2AH0H37XLuqx44GHHVjgkb3ys6UwuYH
+         QFUJSlyCI2x3AldpppHi6cKlbUrpf5epTIwYkQ0LyIddZNVrNNmKUj9pq1nkh3vhav
+         ePFznWLS5KXHwuBhRZexeraVkFwzXRLP/38HX/OFwy/5mrR8Hs9LdC9PbwjoOwqbNV
+         ADgrJu7beLvyyJTcpsvn3lAsea5miSCymSsM2dL/H4uMyDHc1oqmdVcUWCHL7cYIF+
+         w+SQ6/88DMfNA==
+Received: by mail-ua1-f53.google.com with SMTP id ay21so8703415uab.12
+        for <linux-m68k@lists.linux-m68k.org>; Sun, 31 Oct 2021 18:57:32 -0700 (PDT)
+X-Gm-Message-State: AOAM53121rPOE7CrMACiRlNnA/FMlCD9gIpupeqJ0GbgknOGc84hfeBV
+        PJZ1Wu7A54rxa3ILZbgI454FZZSE0pVTBPT5ghE=
+X-Google-Smtp-Source: ABdhPJwLzr48xvkbPUYNSwW4wG4jcRHULAsaxHDgvLOaeOhiDi1MY+7mZCeP1WaifSe+QfUYgjKQrdu4XIYT2pTMgvI=
+X-Received: by 2002:ab0:6883:: with SMTP id t3mr16913634uar.66.1635731841194;
+ Sun, 31 Oct 2021 18:57:21 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <CAHk-=wgQLtvDh-3zhGNCWNAssubDxgxC+7RdEmHBmK_84rLT2Q@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20211027211715.12671-1-digetx@gmail.com> <20211027211715.12671-13-digetx@gmail.com>
+In-Reply-To: <20211027211715.12671-13-digetx@gmail.com>
+From:   Guo Ren <guoren@kernel.org>
+Date:   Mon, 1 Nov 2021 09:57:10 +0800
+X-Gmail-Original-Message-ID: <CAJF2gTT+EsLt+pnYyTw_B0C8isho=E4tfOWROe9h-GZpYjET=w@mail.gmail.com>
+Message-ID: <CAJF2gTT+EsLt+pnYyTw_B0C8isho=E4tfOWROe9h-GZpYjET=w@mail.gmail.com>
+Subject: Re: [PATCH v2 12/45] csky: Use do_kernel_power_off()
+To:     Dmitry Osipenko <digetx@gmail.com>
+Cc:     Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Lee Jones <lee.jones@linaro.org>,
+        "Rafael J . Wysocki" <rafael@kernel.org>,
+        Mark Brown <broonie@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Russell King <linux@armlinux.org.uk>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Greg Ungerer <gerg@linux-m68k.org>,
+        Joshua Thompson <funaho@jurai.org>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Nick Hu <nickhu@andestech.com>,
+        Greentime Hu <green.hu@gmail.com>,
+        Vincent Chen <deanbo422@gmail.com>,
+        "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
+        Helge Deller <deller@gmx.de>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Yoshinori Sato <ysato@users.sourceforge.jp>,
+        Rich Felker <dalias@libc.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+        Juergen Gross <jgross@suse.com>,
+        Stefano Stabellini <sstabellini@kernel.org>,
+        Len Brown <lenb@kernel.org>,
+        Santosh Shilimkar <ssantosh@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Chen-Yu Tsai <wens@csie.org>,
+        =?UTF-8?Q?Jonathan_Neusch=C3=A4fer?= <j.neuschaefer@gmx.net>,
+        Tony Lindgren <tony@atomide.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Vladimir Zapolskiy <vz@mleia.com>,
+        Avi Fishman <avifishman70@gmail.com>,
+        Tomer Maimon <tmaimon77@gmail.com>,
+        Tali Perry <tali.perry1@gmail.com>,
+        Patrick Venture <venture@google.com>,
+        Nancy Yuen <yuenn@google.com>,
+        Benjamin Fair <benjaminfair@google.com>,
+        Pavel Machek <pavel@ucw.cz>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-csky@vger.kernel.org, linux-ia64@vger.kernel.org,
+        linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org,
+        linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        linux-riscv <linux-riscv@lists.infradead.org>,
+        linux-sh@vger.kernel.org, xen-devel@lists.xenproject.org,
+        linux-acpi@vger.kernel.org, linux-omap@vger.kernel.org,
+        openbmc@lists.ozlabs.org, linux-tegra@vger.kernel.org,
+        linux-pm@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-On 10/29/21 11:04 AM, Linus Torvalds wrote:
-> On Fri, Oct 29, 2021 at 5:07 AM Ulf Hansson <ulf.hansson@linaro.org> wrote:
->>
->>   - winbond: Silences build errors on M68K
-> 
-> I think this one is wrong.
-> 
-> I think the problem is that m68k declares "claim_dma_lock()" in the
-> wrong header file. It's in <asm/floppy.h> instead of <asm/dma.h>
-> 
-> I'm somewhat surprised that this doesn't hit m68k in other places -
-> there are other drivers that use that same ISA DMA interface.
+Only for this patch, Acked-by: Guo Ren <guoren@kernel.org>
 
-I moved claim_dma_lock() and release_dma_lock() fro asm/floppy.h
-to asm/dma.h (for arch/m68k/). I spent a few hours trying to fix
-the resulting fallout.  Guess I'm just slow.
-
-FWIW, the biggest problem I had was the variety of types of DMA that
-M68K supports (once a driver includes <asm/dma.h>, things get messy).
-
-> I've pulled this, but I hate how random that fix is.
+On Thu, Oct 28, 2021 at 5:18 AM Dmitry Osipenko <digetx@gmail.com> wrote:
+>
+> Kernel now supports chained power-off handlers. Use do_kernel_power_off()
+> that invokes chained power-off handlers. It also invokes legacy
+> pm_power_off() for now, which will be removed once all drivers will
+> be converted to the new power-off API.
+>
+> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
+> ---
+>  arch/csky/kernel/power.c | 6 ++----
+>  1 file changed, 2 insertions(+), 4 deletions(-)
+>
+> diff --git a/arch/csky/kernel/power.c b/arch/csky/kernel/power.c
+> index 923ee4e381b8..86ee202906f8 100644
+> --- a/arch/csky/kernel/power.c
+> +++ b/arch/csky/kernel/power.c
+> @@ -9,16 +9,14 @@ EXPORT_SYMBOL(pm_power_off);
+>  void machine_power_off(void)
+>  {
+>         local_irq_disable();
+> -       if (pm_power_off)
+> -               pm_power_off();
+> +       do_kernel_power_off();
+>         asm volatile ("bkpt");
+>  }
+>
+>  void machine_halt(void)
+>  {
+>         local_irq_disable();
+> -       if (pm_power_off)
+> -               pm_power_off();
+> +       do_kernel_power_off();
+>         asm volatile ("bkpt");
+>  }
+>
+> --
+> 2.33.1
+>
 
 
 -- 
-~Randy
+Best Regards
+ Guo Ren
+
+ML: https://lore.kernel.org/linux-csky/
