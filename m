@@ -2,152 +2,98 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 0D881C433F5
-	for <linux-m68k@archiver.kernel.org>; Mon,  1 Nov 2021 14:31:23 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 36C9EC433F5
+	for <linux-m68k@archiver.kernel.org>; Mon,  1 Nov 2021 16:34:12 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id E3F246108F
-	for <linux-m68k@archiver.kernel.org>; Mon,  1 Nov 2021 14:31:22 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 1830C61175
+	for <linux-m68k@archiver.kernel.org>; Mon,  1 Nov 2021 16:34:12 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231801AbhKAOdz (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Mon, 1 Nov 2021 10:33:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57092 "EHLO
+        id S229811AbhKAQgo (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Mon, 1 Nov 2021 12:36:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56678 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229826AbhKAOdy (ORCPT
+        with ESMTP id S232655AbhKAQgm (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Mon, 1 Nov 2021 10:33:54 -0400
-Received: from mail-lj1-x236.google.com (mail-lj1-x236.google.com [IPv6:2a00:1450:4864:20::236])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 89342C061764
-        for <linux-m68k@lists.linux-m68k.org>; Mon,  1 Nov 2021 07:31:18 -0700 (PDT)
-Received: by mail-lj1-x236.google.com with SMTP id e2so29667093ljg.13
-        for <linux-m68k@lists.linux-m68k.org>; Mon, 01 Nov 2021 07:31:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=soleen.com; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=kJLhZg8fgyUrWR28/t5VvMjVzdgGdzLZ7WEsafpviKg=;
-        b=IuCM/zkA9w+zgj7vM1G+9lF2cqdeAOg3vv9y1Byl7DrCiV23k+GnQ4JGGsr7QyATI+
-         1StNazJxafHRYdl260iMQFo4AmqjwPrsOVEsobM+Knsyjgd2xz83jHHujz9TzyOA8wji
-         V73MWziifVDeKIR1KLYWw6A1KkjeD/laXqi0j0nHmTXPqILXVUIcV1nMJ7V+TvaaF7Kf
-         MBzaKrCwZfGd1Xi8JjBRFwmOns5L79zNRXTGNHDtTZDW78CsruZn8e9uVFnOA/UWdbUS
-         8iidVKw4qfj2b6ds/SwYhli/fuofO8cLzOOEDshbVNx5goTKMqWCYPNEQO1RvjSaSpMu
-         vu+A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=kJLhZg8fgyUrWR28/t5VvMjVzdgGdzLZ7WEsafpviKg=;
-        b=F/Wh0pSrMqkvUjDI0O9fmKA4GOoUit9PMdryhYRu4OdFaNlsA3miqv4smMkxntvIlP
-         L8YrwpajK/XQZLSCXk3CRizcFsBFWd/KClEQDOoAcoeWcBFQy+zlQU0VWsQISAwiy/i2
-         +9M5TK/oDFY7NEwR8Ye2ZcL5FudJ3h3kl0NqoVRyu0HeLA9OZ0UUVDk/efwTYx1qzZw7
-         a8/xiUHrLbIG7amhNjG21OwXlbD9qOJMTnNVftorpyAwXnZeYvNhJ6Qv3/jGWisOCX5G
-         HP+F09BmPboQ9n/q9DUeMdyKtXPbIR7yvTF68GM5icsZs3tIig2XvBjkdWu75PN2dpRC
-         yjDA==
-X-Gm-Message-State: AOAM531MKCcwIUeB8SwUsy2UuQS+7qgpf3Od2KmpV/1K9x2em4uXv/PW
-        6mS573LPeqmoAxbXOds4O0ja38wrWTIsvFCD1LQzDQ==
-X-Google-Smtp-Source: ABdhPJxoZb9NdURfvUT8GcH1I9TuGJTGoo8r4lq3ScBZPmN1Z72mGEA5Knv8Ic2/fcV/g5pp3DguNSmkdxt3rLfc/jU=
-X-Received: by 2002:a05:651c:114b:: with SMTP id h11mr5220050ljo.41.1635777076656;
- Mon, 01 Nov 2021 07:31:16 -0700 (PDT)
+        Mon, 1 Nov 2021 12:36:42 -0400
+Received: from michel.telenet-ops.be (michel.telenet-ops.be [IPv6:2a02:1800:110:4::f00:18])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 60087C061767
+        for <linux-m68k@lists.linux-m68k.org>; Mon,  1 Nov 2021 09:34:07 -0700 (PDT)
+Received: from ramsan.of.borg ([IPv6:2a02:1810:ac12:ed20:5050:fce2:2424:248f])
+        by michel.telenet-ops.be with bizsmtp
+        id D4a42600G0xGf5L064a4Jx; Mon, 01 Nov 2021 17:34:06 +0100
+Received: from rox.of.borg ([192.168.97.57])
+        by ramsan.of.borg with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.93)
+        (envelope-from <geert@linux-m68k.org>)
+        id 1mhZsp-009XTD-2q; Mon, 01 Nov 2021 17:10:03 +0100
+Received: from geert by rox.of.borg with local (Exim 4.93)
+        (envelope-from <geert@linux-m68k.org>)
+        id 1mhWuy-00DRAe-U7; Mon, 01 Nov 2021 14:00:04 +0100
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Greg Ungerer <gerg@linux-m68k.org>,
+        linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org,
+        Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: [GIT PULL] m68k updates for v5.16
+Date:   Mon,  1 Nov 2021 14:00:03 +0100
+Message-Id: <20211101130003.3202665-1-geert@linux-m68k.org>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-References: <20211026173822.502506-1-pasha.tatashin@soleen.com>
- <20211026173822.502506-4-pasha.tatashin@soleen.com> <7b131cb1-68d8-6746-f9c1-2b01d4838869@nvidia.com>
- <CA+CK2bD6x01PevPqshzYqkO3aokjP2jBbt_4e5H5U3DVEdcJ5Q@mail.gmail.com>
- <b346cafd-d8b8-57a4-c7b9-6574b256a400@nvidia.com> <CA+CK2bBiomTe-vOuxM_R+0CMAippyrfZ6AgpXQGqps3ZFQCtRA@mail.gmail.com>
- <19d16b40-355f-3f79-dcba-e1d8d2216d33@nvidia.com> <27b7177c-71be-9ff2-716e-caaa5035d451@nvidia.com>
-In-Reply-To: <27b7177c-71be-9ff2-716e-caaa5035d451@nvidia.com>
-From:   Pasha Tatashin <pasha.tatashin@soleen.com>
-Date:   Mon, 1 Nov 2021 10:30:41 -0400
-Message-ID: <CA+CK2bDb4vZYFEYf7WuanbCYFh+Kb=U3VHqRwj-YTFhzsp6ZuQ@mail.gmail.com>
-Subject: Re: [RFC 3/8] mm: Avoid using set_page_count() in set_page_recounted()
-To:     John Hubbard <jhubbard@nvidia.com>
-Cc:     LKML <linux-kernel@vger.kernel.org>, linux-mm <linux-mm@kvack.org>,
-        linux-m68k@lists.linux-m68k.org,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        william.kucharski@oracle.com,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        schmitzmic@gmail.com, Steven Rostedt <rostedt@goodmis.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Roman Gushchin <guro@fb.com>,
-        Muchun Song <songmuchun@bytedance.com>, weixugc@google.com,
-        Greg Thelen <gthelen@google.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-On Wed, Oct 27, 2021 at 9:35 PM John Hubbard <jhubbard@nvidia.com> wrote:
->
-> On 10/27/21 18:20, John Hubbard wrote:
-> >>> But it's still not good to have this function name doing something completely
-> >>> different than its name indicates.
-> >>
-> >> I see, I can rename it to: 'set_page_recounted/get_page_recounted' ?
-> >>
-> >
-> > What? No, that's not where I was going at all. The function is already
-> > named set_page_refcounted(), and one of the problems I see is that your
-> > changes turn it into something that most certainly does not
-> > set_page_refounted(). Instead, this patch *increments* the refcount.
-> > That is not the same thing.
-> >
-> > And then it uses a .config-sensitive assertion to "prevent" problems.
-> > And by that I mean, the wording throughout this series seems to equate
-> > VM_BUG_ON_PAGE() assertions with real assertions. They are only active,
-> > however, in CONFIG_DEBUG_VM configurations, and provide no protection at
-> > all for normal (most distros) users. That's something that the wording,
-> > comments, and even design should be tweaked to account for.
->
-> ...and to clarify a bit more, maybe this also helps:
->
-> These patches are attempting to improve debugging, and that is fine, as
+	Hi Linus,
 
-They are attempting to catch potentioal race conditions where
-_refcount is changed between the time we verified what it was and we
-set it to something else.
+The following changes since commit 9fde0348640252c79d462c4d29a09a14e8741f5c:
 
-They also attempt to prevent overflows and underflows bugs which are
-not all tested today, but can be tested with this patch set at least
-on kernels where DEBUG_VM is enabled.
+  m68k: Remove set_fs() (2021-09-24 13:35:07 +0200)
 
-> far as debugging goes. However, a point that seems to be slightly
-> misunderstood is: incrementing a bad refcount value is not actually any
-> better than overwriting it, from a recovery point of view. Maybe (?)
-> it's better from a debugging point of view.
+are available in the Git repository at:
 
-It is better for debugging as well: if one is tracing the page
-_refcount history, knowing that the _refcount can only be
-incremented/decremented/frozen/unfrozen provides a contiguous history
-of refcount that can be tracked. In case when we set refcount in some
-places as we do today, the contigous history is lost, as we do not
-know the actual _refcount value at the time of the set operation.
+  git://git.kernel.org/pub/scm/linux/kernel/git/geert/linux-m68k.git tags/m68k-for-v5.16-tag1
 
->
-> That's because the problem occurred before this code, and its debug-only
-> assertions, ran. Once here, the code cannot actually recover: there is
-> no automatic way to recover from a refcount that it 1, -1, 2, or 706,
-> when it was supposed to be zero. Incrementing it is, again, not really
-> necessarily better than setting: setting it might actually make the
-> broken system appear to run--and in some cases, even avoid symptoms.
-> Whereas incrementing doesn't cover anything up. The only thing you can
-> really does is just panic() or BUG(), really.
+for you to fetch changes up to 8a3c0a74ae87473589cb881a3854948d40000b7a:
 
-This is what my patch series attempt to do, I chose to use VM_BUG()
-instead of BUG() because this is VM code, and avoid potential
-performance regressions for those who chose performance over possible
-security implications.
+  m68k: defconfig: Update defconfigs for v5.15-rc1 (2021-10-11 10:34:52 +0200)
 
->
-> Don't get me wrong, I don't want bugs covered up. But the claim that
-> incrementing is somehow better deserves some actual thinking about it.
+----------------------------------------------------------------
+m68k updates for v5.16
 
-I think it does, I described my points above, if you still disagree
-please let me know.
+  - A small comma vs. semicolon cleanup,
+  - Defconfig updates.
 
-Thank you for providing your thoughts on this RFC, I will send out a
-new version, and we can continue discussion in the new thread.
+----------------------------------------------------------------
+Geert Uytterhoeven (2):
+      m68k: muldi3: Use semicolon instead of comma
+      m68k: defconfig: Update defconfigs for v5.15-rc1
 
-Pasha
+ arch/m68k/configs/amiga_defconfig    | 7 +++++--
+ arch/m68k/configs/apollo_defconfig   | 7 +++++--
+ arch/m68k/configs/atari_defconfig    | 7 +++++--
+ arch/m68k/configs/bvme6000_defconfig | 7 +++++--
+ arch/m68k/configs/hp300_defconfig    | 7 +++++--
+ arch/m68k/configs/mac_defconfig      | 7 +++++--
+ arch/m68k/configs/multi_defconfig    | 7 +++++--
+ arch/m68k/configs/mvme147_defconfig  | 7 +++++--
+ arch/m68k/configs/mvme16x_defconfig  | 7 +++++--
+ arch/m68k/configs/q40_defconfig      | 7 +++++--
+ arch/m68k/configs/sun3_defconfig     | 7 +++++--
+ arch/m68k/configs/sun3x_defconfig    | 7 +++++--
+ arch/m68k/lib/muldi3.c               | 2 +-
+ 13 files changed, 61 insertions(+), 25 deletions(-)
+
+Thanks for pulling!
+
+Gr{oetje,eeting}s,
+
+						Geert
+
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+							    -- Linus Torvalds
