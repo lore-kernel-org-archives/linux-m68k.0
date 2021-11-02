@@ -2,160 +2,103 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 77A8DC433F5
-	for <linux-m68k@archiver.kernel.org>; Tue,  2 Nov 2021 01:53:20 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 6CEE1C433F5
+	for <linux-m68k@archiver.kernel.org>; Tue,  2 Nov 2021 06:24:52 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 4DC7D60EE3
-	for <linux-m68k@archiver.kernel.org>; Tue,  2 Nov 2021 01:53:20 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 4883760F0F
+	for <linux-m68k@archiver.kernel.org>; Tue,  2 Nov 2021 06:24:52 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229486AbhKBBzx (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Mon, 1 Nov 2021 21:55:53 -0400
-Received: from mga07.intel.com ([134.134.136.100]:6692 "EHLO mga07.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229498AbhKBBzx (ORCPT <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Mon, 1 Nov 2021 21:55:53 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10155"; a="294620456"
-X-IronPort-AV: E=Sophos;i="5.87,201,1631602800"; 
-   d="scan'208";a="294620456"
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Nov 2021 18:53:18 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.87,201,1631602800"; 
-   d="scan'208";a="449179124"
-Received: from lkp-server02.sh.intel.com (HELO c20d8bc80006) ([10.239.97.151])
-  by orsmga006.jf.intel.com with ESMTP; 01 Nov 2021 18:53:17 -0700
-Received: from kbuild by c20d8bc80006 with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1mhizE-0003tp-Kc; Tue, 02 Nov 2021 01:53:16 +0000
-Date:   Tue, 02 Nov 2021 09:53:00 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     linux-m68k@lists.linux-m68k.org
-Subject: [geert-m68k:master] BUILD SUCCESS
- 66c41a87a182fbf2547dba18312cc1eb483f5c95
-Message-ID: <618099fc.hHYsk8DMWxj8FyNL%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+        id S229497AbhKBG1Z (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Tue, 2 Nov 2021 02:27:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44170 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229526AbhKBG1Z (ORCPT
+        <rfc822;linux-m68k@vger.kernel.org>); Tue, 2 Nov 2021 02:27:25 -0400
+Received: from mail-pf1-x429.google.com (mail-pf1-x429.google.com [IPv6:2607:f8b0:4864:20::429])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 22110C061714
+        for <linux-m68k@vger.kernel.org>; Mon,  1 Nov 2021 23:24:51 -0700 (PDT)
+Received: by mail-pf1-x429.google.com with SMTP id g11so7200173pfv.7
+        for <linux-m68k@vger.kernel.org>; Mon, 01 Nov 2021 23:24:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=subject:to:references:cc:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-transfer-encoding;
+        bh=Hn9Mw468iC/k7ZXDFt3TRwuut2cRkfTuSdIcbwfRxRQ=;
+        b=hEw1EyrmNKBKimS1FrVa81/g7v+7PeGsF/hHXrKXGTRPAX/foAV1M037P/PTy1VG5V
+         CzaDJFFcrVWiEt2ab5dfIzlEb6/iJlqzx2BXqFBMX7Qzf31IvggeVhvZ/iiG4fitujOp
+         QXKDokGsMirLhWROmFZNl5781zmgR9MMk0+P+MgbWT3kTdBtS+n0Ok7gdrLG0y54Rdkx
+         utNtPVM5psHqwFimAwtRUK4mCwUCqzGCWWLdXV3wMnVNvy4807va1xCo6e09myhGQ1bS
+         A0h/lKqCae6dbBggTYzsSuGngZU/HQJ9RRBvlLZuB44nP1rnbdcAtlGecEAN7TWAX8g5
+         4Dog==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:subject:to:references:cc:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding;
+        bh=Hn9Mw468iC/k7ZXDFt3TRwuut2cRkfTuSdIcbwfRxRQ=;
+        b=ALXGShIXAkCfqpWHNz05HMRP9otHin+6f2LZE2EfPJpy87ZrhzFimH/pFGpaJVLtoX
+         ZZyKibVAgwEHO8x8dSTOgFjWlamxVMywe9bJWSz5vu/iaVuTtX4tP9bj/nFMZSD68MQn
+         TCgaAL2rGwqlZmiIsPloSvsakqqMhOGAGyRL7EabhrL954Kffg2M36bZ48j3JQh/pEIw
+         39NbtmnwlKqi78rpaEag7XqX6c0XkVYhk2RYzBZF4JvYw8a4+puVH2mO0lKCaRPvtRu6
+         gd6aXphv6Wwvo1Cetgycpnd0iVNkRETAfafF5/oj69oa7I1Um4Akw7gZDzuy5ZR7MK2p
+         drwA==
+X-Gm-Message-State: AOAM532Yf2wjNNX1ozWbLHfEY9NtOIcgLiBrEBO0tr3AEZSuyV0m4H3t
+        /aWMmTfHr/n90SwDZXdpN2613AZBO7o=
+X-Google-Smtp-Source: ABdhPJwpTIDDCo/PxVY4vz7X3t7SYb5G6YaEDAGgThQT18AcHdJVTWksMVSnLppgMMxgPUYWXS4jOg==
+X-Received: by 2002:a63:8ac2:: with SMTP id y185mr12022940pgd.205.1635834290701;
+        Mon, 01 Nov 2021 23:24:50 -0700 (PDT)
+Received: from [10.1.1.26] (222-155-4-20-adsl.sparkbb.co.nz. [222.155.4.20])
+        by smtp.gmail.com with ESMTPSA id mn15sm1287367pjb.35.2021.11.01.23.24.47
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Mon, 01 Nov 2021 23:24:49 -0700 (PDT)
+Subject: Re: [PATCH v7 0/4] Add APNE PCMCIA 100 Mbit support
+To:     linux-m68k@vger.kernel.org, geert@linux-m68k.org
+References: <1630206710-5954-1-git-send-email-schmitzmic@gmail.com>
+Cc:     alex@kazik.de
+From:   Michael Schmitz <schmitzmic@gmail.com>
+Message-ID: <9283f7a8-36ba-3383-0150-c188ef2fe7b1@gmail.com>
+Date:   Tue, 2 Nov 2021 19:24:36 +1300
+User-Agent: Mozilla/5.0 (X11; Linux ppc64; rv:45.0) Gecko/20100101
+ Thunderbird/45.8.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <1630206710-5954-1-git-send-email-schmitzmic@gmail.com>
+Content-Type: text/plain; charset=windows-1252; format=flowed
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/geert/linux-m68k.git master
-branch HEAD: 66c41a87a182fbf2547dba18312cc1eb483f5c95  Merge tag 'v5.15'
+Ping?
 
-elapsed time: 728m
 
-configs tested: 99
-configs skipped: 3
-
-The following configs have been built successfully.
-More configs may be tested in the coming days.
-
-gcc tested configs:
-arm                                 defconfig
-arm64                            allyesconfig
-arm64                               defconfig
-arm                              allyesconfig
-arm                              allmodconfig
-powerpc                     redwood_defconfig
-powerpc                       eiger_defconfig
-sh                           se7343_defconfig
-mips                          ath25_defconfig
-powerpc                     powernv_defconfig
-arm                        shmobile_defconfig
-mips                            ar7_defconfig
-powerpc                   currituck_defconfig
-mips                      fuloong2e_defconfig
-mips                     loongson1b_defconfig
-sh                          r7785rp_defconfig
-mips                        bcm47xx_defconfig
-arm                         shannon_defconfig
-arm                           h3600_defconfig
-m68k                        m5407c3_defconfig
-xtensa                  audio_kc705_defconfig
-arm                  randconfig-c002-20211101
-ia64                             allmodconfig
-ia64                                defconfig
-ia64                             allyesconfig
-m68k                             allmodconfig
-m68k                                defconfig
-m68k                             allyesconfig
-nios2                               defconfig
-arc                              allyesconfig
-nds32                             allnoconfig
-nds32                               defconfig
-nios2                            allyesconfig
-csky                                defconfig
-alpha                               defconfig
-alpha                            allyesconfig
-xtensa                           allyesconfig
-h8300                            allyesconfig
-arc                                 defconfig
-sh                               allmodconfig
-parisc                              defconfig
-s390                             allyesconfig
-s390                             allmodconfig
-parisc                           allyesconfig
-s390                                defconfig
-i386                             allyesconfig
-sparc                            allyesconfig
-sparc                               defconfig
-i386                                defconfig
-i386                              debian-10.3
-mips                             allyesconfig
-mips                             allmodconfig
-powerpc                          allyesconfig
-powerpc                          allmodconfig
-powerpc                           allnoconfig
-x86_64               randconfig-a012-20211101
-x86_64               randconfig-a015-20211101
-x86_64               randconfig-a016-20211101
-x86_64               randconfig-a013-20211101
-x86_64               randconfig-a011-20211101
-x86_64               randconfig-a014-20211101
-i386                 randconfig-a016-20211101
-i386                 randconfig-a014-20211101
-i386                 randconfig-a015-20211101
-i386                 randconfig-a013-20211101
-i386                 randconfig-a011-20211101
-i386                 randconfig-a012-20211101
-arc                  randconfig-r043-20211101
-riscv                randconfig-r042-20211101
-s390                 randconfig-r044-20211101
-riscv                    nommu_k210_defconfig
-riscv                            allyesconfig
-riscv                    nommu_virt_defconfig
-riscv                             allnoconfig
-riscv                               defconfig
-riscv                          rv32_defconfig
-riscv                            allmodconfig
-um                           x86_64_defconfig
-um                             i386_defconfig
-x86_64                           allyesconfig
-x86_64                    rhel-8.3-kselftests
-x86_64                              defconfig
-x86_64                               rhel-8.3
-x86_64                          rhel-8.3-func
-x86_64                                  kexec
-
-clang tested configs:
-x86_64               randconfig-a004-20211101
-x86_64               randconfig-a006-20211101
-x86_64               randconfig-a001-20211101
-x86_64               randconfig-a002-20211101
-x86_64               randconfig-a003-20211101
-x86_64               randconfig-a005-20211101
-i386                 randconfig-a005-20211101
-i386                 randconfig-a001-20211101
-i386                 randconfig-a003-20211101
-i386                 randconfig-a004-20211101
-i386                 randconfig-a006-20211101
-i386                 randconfig-a002-20211101
-hexagon              randconfig-r041-20211101
-hexagon              randconfig-r045-20211101
-
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+On 29/08/21 15:11, Michael Schmitz wrote:
+> Revisit support for the 100 Mbit APNE PCMCIA card variants, again.
+>
+> Add a new ISA type for these cards, and switch to that type
+> from the APNE probe code in case 16 bit IO support is noted
+> the PCMCIA config table data. A module parameter or kernel
+> can be used to enable 16 bit IO as a fallback option.
+> Support for the 16 bit 10/100 Mbit cards is now included by
+> default.
+>
+> The first two patches enable the use of core PCMCIA code to
+> parse config table entries. The remaining two patches add 16
+> bit IO support to the m68k low-level IO access code, and switch
+> the APNE driver to use 16 bit IO on cards that support it (the
+> 100 Mbit cards).
+>
+> I'm in two minds about enabling CONFIG_PCMCIA - the alternative
+> is to duplicate the cftable parser in amiga/pcmcia.c (which
+> has been tested and works just as well). Feedback welcome.
+>
+> Tested by Alex on a 100 Mbit card. Not yet tested on 10 Mbit
+> cards - if any of those also have the 16 bit IO feature set
+> in their config table, this patch series would break on those
+> cards.
+>
+> Note that only patch 4 has been sent to netdev. Please CC
+> linux-m68k when providing comments.
+>
+> Cheers,
+>
+>    Michael
+>
