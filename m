@@ -2,59 +2,58 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 676FAC433F5
-	for <linux-m68k@archiver.kernel.org>; Sun,  7 Nov 2021 17:08:21 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E8C8BC433EF
+	for <linux-m68k@archiver.kernel.org>; Sun,  7 Nov 2021 17:16:49 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 4140E6134F
-	for <linux-m68k@archiver.kernel.org>; Sun,  7 Nov 2021 17:08:21 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id CC60E61354
+	for <linux-m68k@archiver.kernel.org>; Sun,  7 Nov 2021 17:16:49 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230525AbhKGRLD (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Sun, 7 Nov 2021 12:11:03 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39566 "EHLO
+        id S235939AbhKGRTc (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Sun, 7 Nov 2021 12:19:32 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41398 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229800AbhKGRLC (ORCPT
+        with ESMTP id S235167AbhKGRTb (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Sun, 7 Nov 2021 12:11:02 -0500
-Received: from mail-oi1-x22a.google.com (mail-oi1-x22a.google.com [IPv6:2607:f8b0:4864:20::22a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B99A3C061570
-        for <linux-m68k@lists.linux-m68k.org>; Sun,  7 Nov 2021 09:08:19 -0800 (PST)
-Received: by mail-oi1-x22a.google.com with SMTP id bn12so23927224oib.2
-        for <linux-m68k@lists.linux-m68k.org>; Sun, 07 Nov 2021 09:08:19 -0800 (PST)
+        Sun, 7 Nov 2021 12:19:31 -0500
+Received: from mail-lj1-x229.google.com (mail-lj1-x229.google.com [IPv6:2a00:1450:4864:20::229])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3B0C9C061570
+        for <linux-m68k@lists.linux-m68k.org>; Sun,  7 Nov 2021 09:16:48 -0800 (PST)
+Received: by mail-lj1-x229.google.com with SMTP id e11so5634148ljo.13
+        for <linux-m68k@lists.linux-m68k.org>; Sun, 07 Nov 2021 09:16:48 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=sender:subject:to:cc:references:from:message-id:date:user-agent
+        h=subject:to:cc:references:from:message-id:date:user-agent
          :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=tdjg7OFm02RxoZkWdNYUJLWTVIAPxTK8o9TtiXrumos=;
-        b=TxOMGGlgYCG6dkxhcHrWleMH5bQzzwXZ9FgwNICO938yYvOADrHCJxaIH+GmktBmdj
-         VF/g/5abCbj1SCo77l//+Q8ZaEKZ59DzYbLYNazQAh1d/LI9QSnOgttApF1NrD9BSZdp
-         gXEIPq4X5WBftSdrWeIB1XoHAUTyRVaiGJM3hjDVKwLTIaIl/5BV9x60u06nn/MoayP2
-         XKdxX9rsONJssDlEkPGWyc5+2eLAU/A93X+4aNShdnC/nVsO9kvbYnMJEh3NiFo/gq2s
-         n/ryBqjSn/iug4O0nxdm910/aVIInOrXjz5uU8hb+PebuTd+WVfeeVeSdkkUcfpq82Ph
-         3xyA==
+        bh=jV9RGgGqsoNpHnAdElYoxsETzdtFTgnoU+evNHPJvgw=;
+        b=XcS1vFi7jvcKKMU+Vh16iv2r+zEgY2qHFwfEvUkTbUqhYfGd/aHwUSSPvlkmYZnUDY
+         yKyQ/S1MODqE5UdkEERTRM+mtxI1gBtYC+YHMFR0Q7VUSP941Fv1rRNweTBgkgPsVjOi
+         /VhimMLC6erylFfqa93dW9OuY6rPJeGZgNEfAStOSIcxbKlGE8kYSWtur2agIS+KxZBT
+         uxw/ElMwoYX/SIJQ69spejui0ImHzrQg/eO3RQFc7ylvx2K4v5e4KD8cBjKF0cCi6jz/
+         kU0RJ2R+nsOSEtcz9pzFEbzI1pboWLlqc1bt4/UyILzUL1onLEjZ1y8wuTJEXkf/BE4p
+         Mk4w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:sender:subject:to:cc:references:from:message-id
-         :date:user-agent:mime-version:in-reply-to:content-language
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=tdjg7OFm02RxoZkWdNYUJLWTVIAPxTK8o9TtiXrumos=;
-        b=ss4PgWb5iZ//p17+j1mcxY0c1SNEpyb1E7gg1lgS7M43UcbRJ27tmtn8ozpgD07G/P
-         XF+zMwkePc1ECuI3Ui68Frv0bK8iXUGWUvpCZ0EoyWANCpeIXpsfBuGvtDcKrmose0cZ
-         QMTDokGJjxv57c58GSE69GEdFUUnxdUDCVPMEc5egWXscZiFTv8rvoOAJXb0P8doirWv
-         fkoO2spEh1vTmeyA0iAuXnQSV+SseU1Swes2vBwQKoigMfJjThxVBkFSOiuMCfd6wyst
-         UOxdy8tkaYbnPajHPC2xcVxU3Z9vAcZMDHxgZmsh8Eci56KOyDgYQSmrpE7+4bqgodVN
-         6L+g==
-X-Gm-Message-State: AOAM532jSG9nTBPBkgl4eJEONk1KFLA9v5G3gPCf4oRxEWZqjFU4YX/4
-        c6XNOD/j88Y42unahsGLOmk=
-X-Google-Smtp-Source: ABdhPJwtuSZgtmAkEs0Dks9+MnuUhljSkzaFgRaxP+iMBCUUKLEs54Fh1SgZ30w0yfdl8sLFhcnMyg==
-X-Received: by 2002:a05:6808:158a:: with SMTP id t10mr3003509oiw.24.1636304899015;
-        Sun, 07 Nov 2021 09:08:19 -0800 (PST)
-Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id i18sm3076850oik.6.2021.11.07.09.08.12
+        bh=jV9RGgGqsoNpHnAdElYoxsETzdtFTgnoU+evNHPJvgw=;
+        b=g1408w1Wv52QstVms8MWic8vetR3ELqJJKitrDyulitehti1B+DSepxbHw5RBjtjcb
+         t4PiyoSWFIgejH6VQtNCPKubxfAEwTEjNOZlm5RR8FWYRaWaZHv1hZHLqRSjIuKSBz7U
+         JuUIxsnF3mBDeIfHOuQoF4l6GrxcZjGEJrXxztPZidp0VCzu6hh3jkG9/riqhReUizyG
+         KumVPBlysWW1bFemBlGkgd+RbDB77AectuYciWpVvTXtXD218b8ENQ+3z8VRlFBo4xSw
+         zZR+JPsBJCCueeL5HXUot/fcu9MzB8DL/oRNtss/qP8j99h4GNYSSYmif4laUInDSlkP
+         Y90w==
+X-Gm-Message-State: AOAM532hCfnjjNSyGUXk3j/CqgTuZJMAYTNExhUItxDyYdgyXJBgHt3i
+        LKBDgbb92WvoduS8HD8/8dY=
+X-Google-Smtp-Source: ABdhPJxvgxAU8oisB10upx88enZ2ZbX58EuDflf4IdQYDWaIcA3t9DPLAVkvy85p5EpHAL+e+Eae8Q==
+X-Received: by 2002:a2e:92c4:: with SMTP id k4mr61687714ljh.271.1636305406651;
+        Sun, 07 Nov 2021 09:16:46 -0800 (PST)
+Received: from [192.168.2.145] (79-139-182-132.dynamic.spd-mgts.ru. [79.139.182.132])
+        by smtp.googlemail.com with ESMTPSA id h14sm1531135lfv.83.2021.11.07.09.16.44
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 07 Nov 2021 09:08:18 -0800 (PST)
-Sender: Guenter Roeck <groeck7@gmail.com>
+        Sun, 07 Nov 2021 09:16:46 -0800 (PST)
 Subject: Re: [PATCH v2 27/45] mfd: ntxec: Use devm_register_power_handler()
-To:     Dmitry Osipenko <digetx@gmail.com>,
+To:     Guenter Roeck <linux@roeck-us.net>,
         =?UTF-8?Q?Jonathan_Neusch=c3=a4fer?= <j.neuschaefer@gmx.net>
 Cc:     Thierry Reding <thierry.reding@gmail.com>,
         Jonathan Hunter <jonathanh@nvidia.com>,
@@ -117,60 +116,68 @@ Cc:     Thierry Reding <thierry.reding@gmail.com>,
 References: <20211027211715.12671-1-digetx@gmail.com>
  <20211027211715.12671-28-digetx@gmail.com> <YYbqlmOM95q7Hbjo@latitude>
  <be0c74c6-05a9-cad5-c285-6626d05f8860@gmail.com>
-From:   Guenter Roeck <linux@roeck-us.net>
-Message-ID: <9a22c22d-94b1-f519-27a2-ae0b8bbf6e99@roeck-us.net>
-Date:   Sun, 7 Nov 2021 09:08:11 -0800
+ <9a22c22d-94b1-f519-27a2-ae0b8bbf6e99@roeck-us.net>
+From:   Dmitry Osipenko <digetx@gmail.com>
+Message-ID: <658cf796-e3b1-f816-1e15-9e9e08b8ade0@gmail.com>
+Date:   Sun, 7 Nov 2021 20:16:44 +0300
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+ Thunderbird/78.14.0
 MIME-Version: 1.0
-In-Reply-To: <be0c74c6-05a9-cad5-c285-6626d05f8860@gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
+In-Reply-To: <9a22c22d-94b1-f519-27a2-ae0b8bbf6e99@roeck-us.net>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-On 11/7/21 8:53 AM, Dmitry Osipenko wrote:
-> 06.11.2021 23:54, Jonathan Neuschäfer пишет:
->> Hi,
->>
->> On Thu, Oct 28, 2021 at 12:16:57AM +0300, Dmitry Osipenko wrote:
->>> Use devm_register_power_handler() that replaces global pm_power_off
->>> variable and allows to register multiple power-off handlers. It also
->>> provides restart-handler support, i.e. all in one API.
+07.11.2021 20:08, Guenter Roeck пишет:
+> On 11/7/21 8:53 AM, Dmitry Osipenko wrote:
+>> 06.11.2021 23:54, Jonathan Neuschäfer пишет:
+>>> Hi,
 >>>
->>> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
->>> ---
+>>> On Thu, Oct 28, 2021 at 12:16:57AM +0300, Dmitry Osipenko wrote:
+>>>> Use devm_register_power_handler() that replaces global pm_power_off
+>>>> variable and allows to register multiple power-off handlers. It also
+>>>> provides restart-handler support, i.e. all in one API.
+>>>>
+>>>> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
+>>>> ---
+>>>
+>>> When I boot with (most of) this patchset applied, I get the warning at
+>>> kernel/reboot.c:187:
+>>>
+>>>     /*
+>>>      * Handler must have unique priority. Otherwise call order is
+>>>      * determined by registration order, which is unreliable.
+>>>      */
+>>>     WARN_ON(!atomic_notifier_has_unique_priority(&restart_handler_list,
+>>> nb));
+>>>
+>>> As the NTXEC driver doesn't specify a priority, I think this is an issue
+>>> to be fixed elsewhere.
+>>>
+>>> Other than that, it works and looks good, as far as I can tell.
+>>>
+>>>
+>>> For this patch:
+>>>
+>>> Reviewed-by: Jonathan Neuschäfer <j.neuschaefer@gmx.net>
+>>> Tested-by: Jonathan Neuschäfer <j.neuschaefer@gmx.net>
 >>
->> When I boot with (most of) this patchset applied, I get the warning at
->> kernel/reboot.c:187:
+>> Thank you. You have conflicting restart handlers, apparently NTXEC
+>> driver should have higher priority than the watchdog driver. It should
+>> be a common problem for the watchdog drivers, I will lower watchdog's
+>> default priority to fix it.
 >>
->> 	/*
->> 	 * Handler must have unique priority. Otherwise call order is
->> 	 * determined by registration order, which is unreliable.
->> 	 */
->> 	WARN_ON(!atomic_notifier_has_unique_priority(&restart_handler_list, nb));
->>
->> As the NTXEC driver doesn't specify a priority, I think this is an issue
->> to be fixed elsewhere.
->>
->> Other than that, it works and looks good, as far as I can tell.
->>
->>
->> For this patch:
->>
->> Reviewed-by: Jonathan Neuschäfer <j.neuschaefer@gmx.net>
->> Tested-by: Jonathan Neuschäfer <j.neuschaefer@gmx.net>
 > 
-> Thank you. You have conflicting restart handlers, apparently NTXEC
-> driver should have higher priority than the watchdog driver. It should
-> be a common problem for the watchdog drivers, I will lower watchdog's
-> default priority to fix it.
-> 
+> The watchdog subsystem already uses "0" as default priority, which was
+> intended as priority of last resort for restart handlers. I do not see
+> a reason to change that.
 
-The watchdog subsystem already uses "0" as default priority, which was
-intended as priority of last resort for restart handlers. I do not see
-a reason to change that.
+Right, I meant that watchdog drivers which use restart handler set the
+level to the default 128 [1]. Although, maybe it's a problem only for
+i.MX drivers in practice, I'll take a closer look at the other drivers.
 
-Guenter
+[1]
+https://elixir.bootlin.com/linux/latest/source/drivers/watchdog/imx2_wdt.c#L318
