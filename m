@@ -2,71 +2,67 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id DBB0DC433F5
-	for <linux-m68k@archiver.kernel.org>; Mon,  8 Nov 2021 01:14:35 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 38D73C433F5
+	for <linux-m68k@archiver.kernel.org>; Mon,  8 Nov 2021 07:47:36 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id B321B6139E
-	for <linux-m68k@archiver.kernel.org>; Mon,  8 Nov 2021 01:14:35 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 25832610F8
+	for <linux-m68k@archiver.kernel.org>; Mon,  8 Nov 2021 07:47:36 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234212AbhKHBRS (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Sun, 7 Nov 2021 20:17:18 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60938 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229754AbhKHBRR (ORCPT
+        id S235081AbhKHHuS (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Mon, 8 Nov 2021 02:50:18 -0500
+Received: from mail-pj1-f47.google.com ([209.85.216.47]:34510 "EHLO
+        mail-pj1-f47.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236496AbhKHHuQ (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Sun, 7 Nov 2021 20:17:17 -0500
-Received: from mail-lf1-x130.google.com (mail-lf1-x130.google.com [IPv6:2a00:1450:4864:20::130])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 38AC5C061570
-        for <linux-m68k@lists.linux-m68k.org>; Sun,  7 Nov 2021 17:14:34 -0800 (PST)
-Received: by mail-lf1-x130.google.com with SMTP id o18so32524467lfu.13
-        for <linux-m68k@lists.linux-m68k.org>; Sun, 07 Nov 2021 17:14:34 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=subject:from:to:cc:references:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=N1+snwcBj4tP86kuMCj3Y4Q1vBUEL/Sem2JBurze6Ko=;
-        b=apuxSRuYyxkG2byFKoxt6B4SK3xt1zayG+GZKAbfvgzKkxFXAeWb1AzxtxUprSjERR
-         whaPt6KEn6/vTE9oOPwvBS4c5ID/DXiDnXsanKsV2qmMrBWiYaIO7BigzI+qvvrAxwrZ
-         BmkpTmeKr37leQpkRplTucmSrwDlfNefD7m3qL+hvwRStGquM9P0I0wrBTfpw9rn76sI
-         lN0LLW+RgmTAyUEm+V4IH6cGKjORdlWIvcP/u6EPAVmjyc5BQEYpbw/tX7i3HHJcJjAB
-         7CLlDSjKnU1JYhgjRjgZm0uF5v+cV0cGD400r4GBT6NRs15v93q/OMHQaBAFH5aMWKYN
-         dIDg==
+        Mon, 8 Nov 2021 02:50:16 -0500
+Received: by mail-pj1-f47.google.com with SMTP id j5-20020a17090a318500b001a6c749e697so6056563pjb.1
+        for <linux-m68k@lists.linux-m68k.org>; Sun, 07 Nov 2021 23:47:32 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:from:to:cc:references:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=N1+snwcBj4tP86kuMCj3Y4Q1vBUEL/Sem2JBurze6Ko=;
-        b=tBemx7y+GVVWBdDJzBH9malY/+u77T+6pfDZk49Ii9ONzd3uxp5Qdugi4m170/bHK6
-         4dXFrKfGkCt3g5q+g/7MZGZG9DIgkPC7PYhMtWy2XUG2ne+o3yWC+KzqM8dBL25qyhJB
-         Kt0jgjlJVvjiqrohZcME3AQTLp2XCRlLSQVCb0aEbzmIsRqaRWgIZf3iGDtNDIMlHTxF
-         sO/fY8yQIB9RknHZz6sssHZ1fAfAUiJqugRqdsMI1XU1WTd+3J3bSpufqazM1vunSk0R
-         inBprv3pjuVG7CQVP4BRwdqqsfp6tPlOWOmLM81DLPFtIbNhZRnKKRZm3Lv6Pvry9ihW
-         y/hA==
-X-Gm-Message-State: AOAM533gbOQiWIewZuY2a/E3TqjYnr3bHATkqo5uvVnCmuZ6vcKlO3nP
-        TIwzNUjPLO3jXvFrkhav20JG4X5h4Mc=
-X-Google-Smtp-Source: ABdhPJwwKCpUyEi2gUYCZoydWPAlQSBS5OGz69Lgly2auw/yDbGC37SlN+Qc84kMLx0VxH8b+KOpeA==
-X-Received: by 2002:a05:6512:31d4:: with SMTP id j20mr3632382lfe.395.1636334072590;
-        Sun, 07 Nov 2021 17:14:32 -0800 (PST)
-Received: from [192.168.2.145] (79-139-188-96.dynamic.spd-mgts.ru. [79.139.188.96])
-        by smtp.googlemail.com with ESMTPSA id b6sm50427ljr.103.2021.11.07.17.14.30
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=niQCVpji9nu8a8Mfie3ofua8MkF1HzpLuS22ys5pvwg=;
+        b=fOZWSRthk1ItGCBR7vNDTTci5r/dc8f3SAgIPaPlwv65RWuDSBzZPlF8a2IoLtCZYP
+         S5OsoPPOvBFjc81a15VGVPmjAoh79VP2YfqdOLAfBqgCPv3N0nB267zBW6ChKxD8OCDz
+         YH8B7PboNqCbe52Jo3L2+SDYWIUUP6/UTW0OnHix+fYJ1B1hbI2J34wxeAbqfI8WlcLT
+         48aHnvFxrw9zNa6NLRLjf+ajFiHw3Z2IPMOEncic5BBeqROf/6f1HaPixY3WlZsMxm+4
+         atQZcsBTQ/j0xQycpZ8HcLWaX4wKkTlVReBI8Ia1SbZxsXBjtgifSGOh2oOMbTznG/J2
+         7g6Q==
+X-Gm-Message-State: AOAM531fNS226+2qGzUTwZ3fYa+egcZJbfGHRsIloVwkqLHjzV1iaSO+
+        lLv7tpCrNlLA02Fk91F/CJ+HfofhVctBMg==
+X-Google-Smtp-Source: ABdhPJwpDTO4iOX528/+3yxhijUT4iXhF9cEAXYSgVQx0tG1WoPmJ5r5Vaj/QRe0qzHjdvg7mRsiJg==
+X-Received: by 2002:a17:902:da8e:b0:142:1142:b794 with SMTP id j14-20020a170902da8e00b001421142b794mr39122371plx.82.1636357652073;
+        Sun, 07 Nov 2021 23:47:32 -0800 (PST)
+Received: from mail-pj1-f53.google.com (mail-pj1-f53.google.com. [209.85.216.53])
+        by smtp.gmail.com with ESMTPSA id i10sm5252244pjd.3.2021.11.07.23.47.31
+        for <linux-m68k@lists.linux-m68k.org>
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 07 Nov 2021 17:14:32 -0800 (PST)
-Subject: Re: [PATCH v3 00/25] Introduce power-off+restart call chain API
-From:   Dmitry Osipenko <digetx@gmail.com>
-To:     Thierry Reding <thierry.reding@gmail.com>,
+        Sun, 07 Nov 2021 23:47:31 -0800 (PST)
+Received: by mail-pj1-f53.google.com with SMTP id nh10-20020a17090b364a00b001a69adad5ebso8145397pjb.2
+        for <linux-m68k@lists.linux-m68k.org>; Sun, 07 Nov 2021 23:47:31 -0800 (PST)
+X-Received: by 2002:a05:6102:3a07:: with SMTP id b7mr71214037vsu.35.1636357641114;
+ Sun, 07 Nov 2021 23:47:21 -0800 (PST)
+MIME-Version: 1.0
+References: <20211108004524.29465-1-digetx@gmail.com> <20211108004524.29465-22-digetx@gmail.com>
+In-Reply-To: <20211108004524.29465-22-digetx@gmail.com>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Mon, 8 Nov 2021 08:47:10 +0100
+X-Gmail-Original-Message-ID: <CAMuHMdXpW0389_uJR2xg+HCstXanutPxrcRdvgu8kxH1J9T++w@mail.gmail.com>
+Message-ID: <CAMuHMdXpW0389_uJR2xg+HCstXanutPxrcRdvgu8kxH1J9T++w@mail.gmail.com>
+Subject: Re: [PATCH v3 21/25] m68k: Switch to new sys-off handler API
+To:     Dmitry Osipenko <digetx@gmail.com>
+Cc:     Thierry Reding <thierry.reding@gmail.com>,
         Jonathan Hunter <jonathanh@nvidia.com>,
         Russell King <linux@armlinux.org.uk>,
         Catalin Marinas <catalin.marinas@arm.com>,
         Will Deacon <will@kernel.org>, Guo Ren <guoren@kernel.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
         Greg Ungerer <gerg@linux-m68k.org>,
         Joshua Thompson <funaho@jurai.org>,
         Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
         Nick Hu <nickhu@andestech.com>,
         Greentime Hu <green.hu@gmail.com>,
         Vincent Chen <deanbo422@gmail.com>,
-        "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
+        "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
         Helge Deller <deller@gmx.de>,
         Michael Ellerman <mpe@ellerman.id.au>,
         Benjamin Herrenschmidt <benh@kernel.crashing.org>,
@@ -78,7 +74,8 @@ To:     Thierry Reding <thierry.reding@gmail.com>,
         Rich Felker <dalias@libc.org>,
         Thomas Gleixner <tglx@linutronix.de>,
         Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        "the arch/x86 maintainers" <x86@kernel.org>,
         "H. Peter Anvin" <hpa@zytor.com>,
         Boris Ostrovsky <boris.ostrovsky@oracle.com>,
         Juergen Gross <jgross@suse.com>,
@@ -95,207 +92,43 @@ To:     Thierry Reding <thierry.reding@gmail.com>,
         Daniel Lezcano <daniel.lezcano@linaro.org>,
         Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
         Ulf Hansson <ulf.hansson@linaro.org>,
-        Sebastian Reichel <sre@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>
-Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
         linux-csky@vger.kernel.org, linux-ia64@vger.kernel.org,
         linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org,
         linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
         linux-riscv@lists.infradead.org, linux-sh@vger.kernel.org,
         xen-devel@lists.xenproject.org, linux-acpi@vger.kernel.org,
         linux-pm@vger.kernel.org, linux-tegra@vger.kernel.org
-References: <20211108004524.29465-1-digetx@gmail.com>
-Message-ID: <a4cf1410-564b-ced5-1209-fa55ba672431@gmail.com>
-Date:   Mon, 8 Nov 2021 04:14:30 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.14.0
-MIME-Version: 1.0
-In-Reply-To: <20211108004524.29465-1-digetx@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-08.11.2021 03:44, Dmitry Osipenko пишет:
-> Problem
-> -------
-> 
-> SoC devices require power-off call chaining functionality from kernel.
-> We have a widely used restart chaining provided by restart notifier API,
-> but nothing for power-off.
-> 
-> Solution
-> --------
-> 
-> Introduce new API that provides both restart and power-off call chains.
-> 
-> Why combine restart with power-off? Because drivers often do both.
-> More practical to have API that provides both under the same roof.
-> 
-> The new API is designed with simplicity and extensibility in mind.
-> It's built upon the existing restart and reboot APIs. The simplicity
-> is in new helper functions that are convenient for drivers. The
-> extensibility is in the design that doesn't hardcode callback
-> arguments, making easy to add new parameters and remove old.
-> 
-> This is a third attempt to introduce the new API. First was made by
-> Guenter Roeck back in 2014, second was made by Thierry Reding in 2017.
-> In fact the work didn't stop and recently arm_pm_restart() was removed
-> from v5.14 kernel, which was a part of preparatory work started by
-> Guenter Roeck. I took into account experience and ideas from the
-> previous attempts, extended and polished them.
-> 
-> Adoption plan
-> -------------
-> 
-> This patchset introduces the new API. It also converts multiple drivers
-> and arch code to the new API to demonstrate how it all looks in practice.
-> 
-> The plan is:
-> 
-> 1. Merge new API (patches 1-8). This API will co-exist with the old APIs.
-> 
-> 2. Convert arch code to do_kernel_power_off() (patches 9-21).
-> 
-> 3. Convert drivers and platform code to the new API.
-> 
-> 4. Remove obsolete pm_power_off and pm_power_off_prepare variables.
-> 
-> 5. Make restart-notifier API private to kernel/reboot.c once no users left.
-> 
-> It's fully implemented here:
-> 
-> [1] https://github.com/grate-driver/linux/commits/sys-off-handler
-> 
-> For now I'm sending only the first 25 base patches out of ~180. It's
-> preferable to squash 1-2, partially 3 and 4 points of the plan into a
-> single patchset to ease and speed up applying of the rest of the patches.
-> Majority of drivers and platform patches depend on the base, hence they
-> will come later (and per subsystem), once base will land.
-> 
-> All [1] patches are compile-tested. Tegra and x86 ACPI patches are tested
-> on hardware. The remaining should be covered by unit tests (unpublished).
-> 
-> Results
-> -------
-> 
-> 1. Devices can be powered off properly.
-> 
-> 2. Global variables are removed from drivers.
-> 
-> 3. Global pm_power_off and pm_power_off_prepare callback variables are
-> removed once all users are converted to the new API. The latter callback
-> is removed by patch #25 of this series.
-> 
-> 4. Ambiguous call chain ordering is prohibited. See patch #5 which adds
-> verification of restart handlers priorities, ensuring that they are unique.
-> 
-> Changelog:
-> 
-> v3: - Renamed power_handler to sys_off_handler as was suggested by
->       Rafael Wysocki.
-> 
->     - Improved doc-comments as was suggested by Rafael Wysocki. Added more
->       doc-comments.
-> 
->     - Implemented full set of 180 patches which convert whole kernel in
->       accordance to the plan, see link [1] above. Slightly adjusted API to
->       better suit for the remaining converted drivers.
-> 
->       * Added unregister_sys_off_handler() that is handy for a couple old
->         platform drivers.
-> 
->       * Dropped devm_register_trivial_restart_handler(), 'simple' variant
->         is enough to have.
-> 
->     - Improved "Add atomic/blocking_notifier_has_unique_priority()" patch,
->       as was suggested by Andy Shevchenko. Also replaced down_write() with
->       down_read() and factored out common notifier_has_unique_priority().
-> 
->     - Added stop_chain field to struct restart_data and reboot_prep_data
->       after discovering couple drivers wanting that feature.
-> 
->     - Added acks that were given to v2.
-> 
-> v2: - Replaced standalone power-off call chain demo-API with the combined
->       power-off+restart API because this is what drivers want. It's a more
->       comprehensive solution.
-> 
->     - Converted multiple drivers and arch code to the new API. Suggested by
->       Andy Shevchenko. I skimmed through the rest of drivers, verifying that
->       new API suits them. The rest of the drivers will be converted once we
->       will settle on the new API, otherwise will be too many patches here.
-> 
->     - v2 API doesn't expose notifier to users and require handlers to
->       have unique priority. Suggested by Guenter Roeck.
-> 
->     - v2 API has power-off chaining disabled by default and require
->       drivers to explicitly opt-in to the chaining. This preserves old
->       behaviour for existing drivers once they are converted to the new
->       API.
-> 
-> Dmitry Osipenko (25):
->   notifier: Remove extern annotation from function prototypes
->   notifier: Add blocking_notifier_call_chain_is_empty()
->   notifier: Add atomic/blocking_notifier_has_unique_priority()
->   reboot: Correct typo in a comment
->   reboot: Warn if restart handler has duplicated priority
->   reboot: Warn if unregister_restart_handler() fails
->   reboot: Remove extern annotation from function prototypes
->   kernel: Add combined power-off+restart handler call chain API
->   ARM: Use do_kernel_power_off()
->   csky: Use do_kernel_power_off()
->   riscv: Use do_kernel_power_off()
->   arm64: Use do_kernel_power_off()
->   parisc: Use do_kernel_power_off()
->   xen/x86: Use do_kernel_power_off()
->   sh: Use do_kernel_power_off()
->   x86: Use do_kernel_power_off()
->   ia64: Use do_kernel_power_off()
->   mips: Use do_kernel_power_off()
->   nds32: Use do_kernel_power_off()
->   powerpc: Use do_kernel_power_off()
->   m68k: Switch to new sys-off handler API
->   memory: emif: Use kernel_can_power_off()
->   ACPI: power: Switch to sys-off handler API
->   regulator: pfuze100: Use devm_register_sys_off_handler()
->   reboot: Remove pm_power_off_prepare()
-> 
->  arch/arm/kernel/reboot.c               |   4 +-
->  arch/arm64/kernel/process.c            |   3 +-
->  arch/csky/kernel/power.c               |   6 +-
->  arch/ia64/kernel/process.c             |   4 +-
->  arch/m68k/emu/natfeat.c                |   3 +-
->  arch/m68k/include/asm/machdep.h        |   1 -
->  arch/m68k/kernel/process.c             |   5 +-
->  arch/m68k/kernel/setup_mm.c            |   1 -
->  arch/m68k/kernel/setup_no.c            |   1 -
->  arch/m68k/mac/config.c                 |   4 +-
->  arch/mips/kernel/reset.c               |   3 +-
->  arch/nds32/kernel/process.c            |   3 +-
->  arch/parisc/kernel/process.c           |   4 +-
->  arch/powerpc/kernel/setup-common.c     |   4 +-
->  arch/powerpc/xmon/xmon.c               |   3 +-
->  arch/riscv/kernel/reset.c              |  12 +-
->  arch/sh/kernel/reboot.c                |   3 +-
->  arch/x86/kernel/reboot.c               |   4 +-
->  arch/x86/xen/enlighten_pv.c            |   4 +-
->  drivers/acpi/sleep.c                   |  25 +-
->  drivers/memory/emif.c                  |   2 +-
->  drivers/regulator/pfuze100-regulator.c |  38 +-
->  include/linux/notifier.h               |  37 +-
->  include/linux/pm.h                     |   1 -
->  include/linux/reboot.h                 | 305 ++++++++++++--
->  kernel/notifier.c                      |  83 ++++
->  kernel/power/hibernate.c               |   2 +-
->  kernel/reboot.c                        | 556 ++++++++++++++++++++++++-
->  28 files changed, 985 insertions(+), 136 deletions(-)
-> 
+On Mon, Nov 8, 2021 at 1:48 AM Dmitry Osipenko <digetx@gmail.com> wrote:
+> Kernel now supports chained power-off handlers. Use
+> register_power_off_handler() that registers power-off handlers and
+> do_kernel_power_off() that invokes chained power-off handlers. Legacy
+> pm_power_off() will be removed once all drivers will be converted to
+> the new power-off API.
+>
+> Normally arch code should adopt only the do_kernel_power_off() at first,
+> but m68k is a special case because it uses pm_power_off() "inside out",
+> i.e. pm_power_off() invokes machine_power_off() [in fact it does nothing],
+> while it's machine_power_off() that should invoke the pm_power_off(), and
+> thus, we can't convert platforms to the new API separately. There are only
+> two platforms changed here, so it's not a big deal.
+>
+> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
 
-+CC Linus Walleij, Sebastian Reichel and Philipp Zabel; whom I missed to
-include by accident.
+Acked-by: Geert Uytterhoeven <geert@linux-m68k.org>
 
-https://lore.kernel.org/all/20211108004524.29465-1-digetx@gmail.com/T/#t
+Gr{oetje,eeting}s,
+
+                        Geert
+
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
