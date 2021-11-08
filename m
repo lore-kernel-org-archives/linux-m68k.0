@@ -2,55 +2,55 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 28A98C433F5
-	for <linux-m68k@archiver.kernel.org>; Mon,  8 Nov 2021 00:52:00 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 27B57C433EF
+	for <linux-m68k@archiver.kernel.org>; Mon,  8 Nov 2021 00:52:34 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 152A261359
-	for <linux-m68k@archiver.kernel.org>; Mon,  8 Nov 2021 00:52:00 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 0E03B61350
+	for <linux-m68k@archiver.kernel.org>; Mon,  8 Nov 2021 00:52:34 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236268AbhKHAym (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Sun, 7 Nov 2021 19:54:42 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55136 "EHLO
+        id S229990AbhKHAzQ (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Sun, 7 Nov 2021 19:55:16 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55230 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237280AbhKHAxR (ORCPT
+        with ESMTP id S237158AbhKHAyW (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Sun, 7 Nov 2021 19:53:17 -0500
-Received: from mail-lj1-x22a.google.com (mail-lj1-x22a.google.com [IPv6:2a00:1450:4864:20::22a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C16EFC0797BD
-        for <linux-m68k@lists.linux-m68k.org>; Sun,  7 Nov 2021 16:48:31 -0800 (PST)
-Received: by mail-lj1-x22a.google.com with SMTP id t11so26206059ljh.6
-        for <linux-m68k@lists.linux-m68k.org>; Sun, 07 Nov 2021 16:48:31 -0800 (PST)
+        Sun, 7 Nov 2021 19:54:22 -0500
+Received: from mail-lj1-x233.google.com (mail-lj1-x233.google.com [IPv6:2a00:1450:4864:20::233])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9CDE6C0432C4
+        for <linux-m68k@lists.linux-m68k.org>; Sun,  7 Nov 2021 16:48:33 -0800 (PST)
+Received: by mail-lj1-x233.google.com with SMTP id i63so916637lji.3
+        for <linux-m68k@lists.linux-m68k.org>; Sun, 07 Nov 2021 16:48:33 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=rkacp5n+z0D4++qm+Vz/WWDd0s3O3Dw6o+6i9hrIfWs=;
-        b=RqR+4fCVEnzIej5WEta4m7eVP9J0cifvkt1Mu0YPaTP2A9CMdL6tu/SjMp4lB0+FJm
-         ZQshmgPm64wSSZwKBHmOtA8t/EVqSNmkzF0MqQPAR/mp7ZLpjGx/vSJ1KlsFqNnZ9veH
-         Dcm8gmKpUcqPf8R7fL5FlDm6P589xDSkGrLH67wFz4P5/cBO1nSmh1ck88Vc3JUYjWJZ
-         ai5x9zvn9mG9RuY2DGypZ1nMlX0U5N+2NIBjhooAS4M0ocg5F25DHZ4qNHyux3JP8ufI
-         p4KngmDN11Xh1YN0KCXFJvsyGD+xkZe8nNCdya2HLnrDDghh7kB3TpDSsqXcchV7r1qK
-         LCKQ==
+        bh=Ghk8UhoJL9jY8/O2iNT2jlf6L/Wn8kxWwQZa55OiZz4=;
+        b=m9lmCk/PNCVIe1iEnMmaqECXsitq8Ovx65V6clklfsjRBigZmz6/oAFi59I8Avu9aR
+         /4oHJVMcszm/lvy0RA7NH61GOesoLhRm/H0MMNHdKaVxHA8Y772q/nC7qfVwr0BUWORd
+         4n9sp6eaAevDNsWyzj2KL5GDRiCyib9OAhzwqEUyBVetNtsOWUjYXYfwC3XE/LWI6FF2
+         5SCFiiSjMuXGcqeRPmGFYZomzzHY3sW/IAHf7uFJpoeDDsjSMY317bnTHbfVpyoi8oyB
+         D1wPsFRzqjnVayOk5njS/b5J1LZTN95Kba7gv17JheCtxYvN4aHjfKGDExsNwEpn43PB
+         8CzQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=rkacp5n+z0D4++qm+Vz/WWDd0s3O3Dw6o+6i9hrIfWs=;
-        b=q2C/rJ2n8UHpEmr2Gx4rS6olnnYt0OhzWBWSbxzsWK7+Dg5nhAO1T/HPyWjzYscemr
-         NI5SriJwtTE4dx0UBZxPlF74d79Y8aHl+EOtdT50on/ztaFStFDMsgFjC7g9HGMf/eiX
-         ZHIVNhRtBi4lk6KwKgqoOKY5lJxH4FKkaNuwF8G53RXSTcd08n4GmS1kxeFLAitLDHJ/
-         OVi6soLxJo+h51kgX7vp6cLsImCdzAweTfIKSTFAXLsiPEYUQw+4Tav2OoxjsaC5KIZt
-         mpCVMtIXSYULU7IMSAQK+goEzJ88o9oo+vf+UnuUE/1WfGYMHQEoH5kMizUhjcPkC1lR
-         Ghrg==
-X-Gm-Message-State: AOAM530XKFkmOIGF0MYsiloCT703xPkznXPBYlcRDJR6y9BiWD2cVoHB
-        w4LKEHdgRb9zFHqpU+ETFFU=
-X-Google-Smtp-Source: ABdhPJxfKztOfDSBd7HSMtU+Am4Er8ebg/172DyOtTe15mPTYxlsPPldUWp9y70Z3OwiXlFCDFSHow==
-X-Received: by 2002:a2e:7616:: with SMTP id r22mr1836123ljc.391.1636332510201;
-        Sun, 07 Nov 2021 16:48:30 -0800 (PST)
+        bh=Ghk8UhoJL9jY8/O2iNT2jlf6L/Wn8kxWwQZa55OiZz4=;
+        b=vPd0HGaj9uYUZZPJE30lfpAuvWHqhclhk1Eg2b81YtJjpIDMaq+h0SKIUlhwsjYPlB
+         crwWS7J+NB0yNULWvTXyYF2B1XFAJl5JaAYwPX0MDXc6M5UuGxbW9D0RGAuYPxNNhN/+
+         r7EtGcfB9HAJEifMovm3v27Hlnbbw0h/a/57dMzzvUcozkhOKSqAyBQUjQQ/C3pLY8qu
+         Hj4VhZPIza2ju8kprdExd7ma+cjBySJnEZqfHcNdKTsgBfsNRuRZ01rvgk/KhWzNq7bJ
+         kPGZ82CjQwMOte9t/eqNLdBle1mOHJNMyF2wAoxUgKRJ/AtytcakreufwkK3BU9mwXM4
+         PzqQ==
+X-Gm-Message-State: AOAM5320kHOqJiFk7t3AVpXx+LBEnrlBmqctw88C5lGHMJH7uU764Etq
+        BFe/3nm+ScE6IDzsaTWxnGA=
+X-Google-Smtp-Source: ABdhPJxIhCbr+E8e4RgafYf7yr1n/XPTP0a1gz0z709HjiRW7R+OIC1zaIspIzluAFf9Nr8w4fNXhA==
+X-Received: by 2002:a2e:7819:: with SMTP id t25mr76018090ljc.57.1636332512040;
+        Sun, 07 Nov 2021 16:48:32 -0800 (PST)
 Received: from localhost.localdomain (79-139-188-96.dynamic.spd-mgts.ru. [79.139.188.96])
-        by smtp.gmail.com with ESMTPSA id p17sm1625266lfu.209.2021.11.07.16.48.28
+        by smtp.gmail.com with ESMTPSA id p17sm1625266lfu.209.2021.11.07.16.48.30
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 07 Nov 2021 16:48:29 -0800 (PST)
+        Sun, 07 Nov 2021 16:48:31 -0800 (PST)
 From:   Dmitry Osipenko <digetx@gmail.com>
 To:     Thierry Reding <thierry.reding@gmail.com>,
         Jonathan Hunter <jonathanh@nvidia.com>,
@@ -100,9 +100,9 @@ Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
         linux-riscv@lists.infradead.org, linux-sh@vger.kernel.org,
         xen-devel@lists.xenproject.org, linux-acpi@vger.kernel.org,
         linux-pm@vger.kernel.org, linux-tegra@vger.kernel.org
-Subject: [PATCH v3 24/25] regulator: pfuze100: Use devm_register_sys_off_handler()
-Date:   Mon,  8 Nov 2021 03:45:23 +0300
-Message-Id: <20211108004524.29465-25-digetx@gmail.com>
+Subject: [PATCH v3 25/25] reboot: Remove pm_power_off_prepare()
+Date:   Mon,  8 Nov 2021 03:45:24 +0300
+Message-Id: <20211108004524.29465-26-digetx@gmail.com>
 X-Mailer: git-send-email 2.33.1
 In-Reply-To: <20211108004524.29465-1-digetx@gmail.com>
 References: <20211108004524.29465-1-digetx@gmail.com>
@@ -112,108 +112,56 @@ Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-Use devm_register_sys_off_handler() that replaces global
-pm_power_off_prepare variable and allows to register multiple
-power-off handlers.
+All pm_power_off_prepare() users were converted to sys-off handler API.
+Remove the obsolete callback.
 
-Acked-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
 ---
- drivers/regulator/pfuze100-regulator.c | 38 ++++++++++----------------
- 1 file changed, 14 insertions(+), 24 deletions(-)
+ include/linux/pm.h |  1 -
+ kernel/reboot.c    | 11 -----------
+ 2 files changed, 12 deletions(-)
 
-diff --git a/drivers/regulator/pfuze100-regulator.c b/drivers/regulator/pfuze100-regulator.c
-index d60d7d1b7fa2..2eca8d43a097 100644
---- a/drivers/regulator/pfuze100-regulator.c
-+++ b/drivers/regulator/pfuze100-regulator.c
-@@ -10,6 +10,7 @@
- #include <linux/of_device.h>
- #include <linux/regulator/of_regulator.h>
- #include <linux/platform_device.h>
-+#include <linux/reboot.h>
- #include <linux/regulator/driver.h>
- #include <linux/regulator/machine.h>
- #include <linux/regulator/pfuze100.h>
-@@ -76,6 +77,7 @@ struct pfuze_chip {
- 	struct pfuze_regulator regulator_descs[PFUZE100_MAX_REGULATOR];
- 	struct regulator_dev *regulators[PFUZE100_MAX_REGULATOR];
- 	struct pfuze_regulator *pfuze_regulators;
-+	struct sys_off_handler sys_off;
- };
+diff --git a/include/linux/pm.h b/include/linux/pm.h
+index 1d8209c09686..d9bf1426f81e 100644
+--- a/include/linux/pm.h
++++ b/include/linux/pm.h
+@@ -20,7 +20,6 @@
+  * Callbacks for platform drivers to implement.
+  */
+ extern void (*pm_power_off)(void);
+-extern void (*pm_power_off_prepare)(void);
  
- static const int pfuze100_swbst[] = {
-@@ -569,10 +571,10 @@ static inline struct device_node *match_of_node(int index)
- 	return pfuze_matches[index].of_node;
- }
+ struct device; /* we have a circular dep with device.h */
+ #ifdef CONFIG_VT_CONSOLE_SLEEP
+diff --git a/kernel/reboot.c b/kernel/reboot.c
+index 4884204f9a31..a832bb660040 100644
+--- a/kernel/reboot.c
++++ b/kernel/reboot.c
+@@ -48,13 +48,6 @@ int reboot_cpu;
+ enum reboot_type reboot_type = BOOT_ACPI;
+ int reboot_force;
  
--static struct pfuze_chip *syspm_pfuze_chip;
+-/*
+- * If set, this is used for preparing the system to power off.
+- */
 -
--static void pfuze_power_off_prepare(void)
-+static void pfuze_power_off_prepare(struct power_off_prep_data *data)
+-void (*pm_power_off_prepare)(void);
+-EXPORT_SYMBOL_GPL(pm_power_off_prepare);
+-
+ /**
+  *	emergency_restart - reboot the system
+  *
+@@ -807,10 +800,6 @@ void do_kernel_power_off(void)
+ 
+ static void do_kernel_power_off_prepare(void)
  {
-+	struct pfuze_chip *syspm_pfuze_chip = data->cb_data;
-+
- 	dev_info(syspm_pfuze_chip->dev, "Configure standby mode for power off");
- 
- 	/* Switch from default mode: APS/APS to APS/Off */
-@@ -611,24 +613,23 @@ static void pfuze_power_off_prepare(void)
- 
- static int pfuze_power_off_prepare_init(struct pfuze_chip *pfuze_chip)
- {
-+	int err;
-+
- 	if (pfuze_chip->chip_id != PFUZE100) {
- 		dev_warn(pfuze_chip->dev, "Requested pm_power_off_prepare handler for not supported chip\n");
- 		return -ENODEV;
- 	}
- 
--	if (pm_power_off_prepare) {
--		dev_warn(pfuze_chip->dev, "pm_power_off_prepare is already registered.\n");
--		return -EBUSY;
--	}
-+	pfuze_chip->sys_off.power_off_prepare_cb = pfuze_power_off_prepare;
-+	pfuze_chip->sys_off.cb_data = pfuze_chip;
- 
--	if (syspm_pfuze_chip) {
--		dev_warn(pfuze_chip->dev, "syspm_pfuze_chip is already set.\n");
--		return -EBUSY;
-+	err = devm_register_sys_off_handler(pfuze_chip->dev, &pfuze_chip->sys_off);
-+	if (err) {
-+		dev_err(pfuze_chip->dev,
-+			"failed to register sys-off handler: %d\n", err);
-+		return err;
- 	}
- 
--	syspm_pfuze_chip = pfuze_chip;
--	pm_power_off_prepare = pfuze_power_off_prepare;
+-	/* legacy pm_power_off_prepare() is unchained and has highest priority */
+-	if (pm_power_off_prepare)
+-		return pm_power_off_prepare();
 -
- 	return 0;
+ 	blocking_notifier_call_chain(&power_off_handler_list, POWEROFF_PREPARE,
+ 				     NULL);
  }
- 
-@@ -837,23 +838,12 @@ static int pfuze100_regulator_probe(struct i2c_client *client,
- 	return 0;
- }
- 
--static int pfuze100_regulator_remove(struct i2c_client *client)
--{
--	if (syspm_pfuze_chip) {
--		syspm_pfuze_chip = NULL;
--		pm_power_off_prepare = NULL;
--	}
--
--	return 0;
--}
--
- static struct i2c_driver pfuze_driver = {
- 	.driver = {
- 		.name = "pfuze100-regulator",
- 		.of_match_table = pfuze_dt_ids,
- 	},
- 	.probe = pfuze100_regulator_probe,
--	.remove = pfuze100_regulator_remove,
- };
- module_i2c_driver(pfuze_driver);
- 
 -- 
 2.33.1
 
