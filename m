@@ -2,55 +2,55 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 2CFF4C433F5
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 3FAB0C433EF
 	for <linux-m68k@archiver.kernel.org>; Mon,  8 Nov 2021 00:49:30 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 117AD61251
+	by mail.kernel.org (Postfix) with ESMTP id 2A3D660C4D
 	for <linux-m68k@archiver.kernel.org>; Mon,  8 Nov 2021 00:49:30 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230364AbhKHAwK (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Sun, 7 Nov 2021 19:52:10 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55194 "EHLO
+        id S237156AbhKHAwL (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Sun, 7 Nov 2021 19:52:11 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55196 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236925AbhKHAvJ (ORCPT
+        with ESMTP id S237081AbhKHAvK (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Sun, 7 Nov 2021 19:51:09 -0500
-Received: from mail-lj1-x234.google.com (mail-lj1-x234.google.com [IPv6:2a00:1450:4864:20::234])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 249F6C061766
-        for <linux-m68k@lists.linux-m68k.org>; Sun,  7 Nov 2021 16:48:12 -0800 (PST)
-Received: by mail-lj1-x234.google.com with SMTP id 13so8240923ljj.11
-        for <linux-m68k@lists.linux-m68k.org>; Sun, 07 Nov 2021 16:48:12 -0800 (PST)
+        Sun, 7 Nov 2021 19:51:10 -0500
+Received: from mail-lf1-x12f.google.com (mail-lf1-x12f.google.com [IPv6:2a00:1450:4864:20::12f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D82FFC0613F5
+        for <linux-m68k@lists.linux-m68k.org>; Sun,  7 Nov 2021 16:48:13 -0800 (PST)
+Received: by mail-lf1-x12f.google.com with SMTP id u11so32527266lfs.1
+        for <linux-m68k@lists.linux-m68k.org>; Sun, 07 Nov 2021 16:48:13 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=qRRUcggihxuvvuxXR8avhK/eModbACqCMIG7s3bijm0=;
-        b=KBhPxSaW9lrnwg/ZeqJS2nu0HdKIoak3A7KEcWoxjZ8ZDLYfXwp1aXhrc8oCufl4X9
-         MKLsob6NFLsKmC3aak9WZhqpQvEY4rFz6TP5tCGr2UIze2Tsvqt8QYHF9D+yEMaBHVPm
-         WBhljEA9GFAvFym8H3desu0Q0Qf41WaNht0kxdCTsPansaa3e36GY/Lm0YlrziYL6KTb
-         2Adk6zJSc93DD9T+BiQ9AEP3Q9XzvbblhJVfx1e1iiRtap7ytYjo7dpjC41oxn8g8q8v
-         R3FH/69p8KJwif6y9Y/ENfpHxQH9zh/vXioHmNWUl3BVDks73jxZaW9geoZzhNoBNZfA
-         CVxQ==
+        bh=cQhCUMmxREqlb3fYFdUNP+80Jr1xwOUlupNd5E99mX4=;
+        b=jxcQzJM1jm4ITIQpwF7sIniQUOmyyd20zqOX8gxsMFNa/9hDa05ywN9MS2er+nzvkg
+         spQLArMiTvZtxNnWDJ75OE3dgnrkoS9MDkPRHte9gE6FXcTKHPRnED9qO9W3e99UZf7m
+         A1KTZoJ6alj41Ktv2I90p7YOSa0dD0Xm01nBcRuWgbG3eKl6et6MW8gX9CSHBNjY/OC3
+         kJ7vj4jBq+OBthAumKYplEumuBq+rAmZsUoI/K5B3YmlCl4VwV+iT25QjX+y2TUDFlkH
+         MlXfPOA3xn9JRfWs9yq7NjBzJ+4COil84nQep1AFVFsZUKem8I6ABJP1Xx3rMMUJsPbu
+         6R/A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=qRRUcggihxuvvuxXR8avhK/eModbACqCMIG7s3bijm0=;
-        b=uQAKKFHo0uyRo0SnFZWoQDyb6TVJNAbJBq7p3zJSt6lSRnaoissmRnxOJCk7MrsCd+
-         fkevpERVISkq9cXLvx79R7Tdw0hGnJ90D+AaNYtZJSKU+G3pi5hzWLxHPtRCBrTySwmo
-         AUgSAO/KnRGsnEDfvZ6yb5rK1Wpr8SKPbyI8e3jn9ggmNqD99sr7n6SWD3AZfFZ/6Puo
-         1OAejK7eXXF1GEBfIFRTVNEF30IW2r3MoIBx3G2iCJdDRvY6wzC+dhp2CXG7KJ4DggRN
-         CE4mb1yjoJ1Wp1SodECl7Dfn3TUfm6BAjE2RCloStPv9NvDKXdhCIwxQRw0y9G2/b7em
-         jEvA==
-X-Gm-Message-State: AOAM531a+3ZTMrgtAirJhk4anqo2LfzINZXWkhvSJOzwuY72Nbp42bli
-        ztrhJsK0WmeiIo97Fw4UjkE=
-X-Google-Smtp-Source: ABdhPJyfH7OANNMfjdVl1/BvZl9WPVHDE8Bg86gEBvgA8TNGSwiw/Je54t6L5Ttvpi+gyGASQBIYuw==
-X-Received: by 2002:a2e:a54b:: with SMTP id e11mr55909067ljn.157.1636332490552;
-        Sun, 07 Nov 2021 16:48:10 -0800 (PST)
+        bh=cQhCUMmxREqlb3fYFdUNP+80Jr1xwOUlupNd5E99mX4=;
+        b=YYdy/NufCBGhUVmO2afmiZyl4y54rGzZx5iiQbWqV7SIjzIFXYCqF8uW8K/OTASXKu
+         6aq2Ou0KBK53wLYz7/uHj976Bg1x+QpwW5W4d3WBc3KjTb28rLdFHeOSVvE7VQyPCK+h
+         Rl9nmT5ZCXaUf7Ojhd86A5gbal2MF83jejdM8mp4jm379nYqozAHKws/EtcCa3GtL03G
+         Q0SVDq54urgivdcvXfVBj2E4uVzv/QL3Cilo42nPI0nvm5WXK2wGsP0D0JugHC2m6XQv
+         GCEKXiHl23UcJ2jWCphcuBqwBrz0TGjkU+kCRruQBAVbcrsFG8YrXgo/3djxT+O34jiS
+         4x7g==
+X-Gm-Message-State: AOAM532JQxf2o5iEyZ2WQO46PxXbLdEi8pfrTgRZBeyI/RO3Gf7iHN7Q
+        3va/Y0/HPXioErqgz541Uo0=
+X-Google-Smtp-Source: ABdhPJw/xj7+vjQzmw+08eVs7NGwQQ7VzmtZSs0aqLXqTUoWrFUbxhrr0Z5KltUJyCDy5Y4kRFsHgg==
+X-Received: by 2002:ac2:4570:: with SMTP id k16mr62980992lfm.611.1636332492292;
+        Sun, 07 Nov 2021 16:48:12 -0800 (PST)
 Received: from localhost.localdomain (79-139-188-96.dynamic.spd-mgts.ru. [79.139.188.96])
-        by smtp.gmail.com with ESMTPSA id p17sm1625266lfu.209.2021.11.07.16.48.08
+        by smtp.gmail.com with ESMTPSA id p17sm1625266lfu.209.2021.11.07.16.48.10
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 07 Nov 2021 16:48:10 -0800 (PST)
+        Sun, 07 Nov 2021 16:48:12 -0800 (PST)
 From:   Dmitry Osipenko <digetx@gmail.com>
 To:     Thierry Reding <thierry.reding@gmail.com>,
         Jonathan Hunter <jonathanh@nvidia.com>,
@@ -100,9 +100,9 @@ Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
         linux-riscv@lists.infradead.org, linux-sh@vger.kernel.org,
         xen-devel@lists.xenproject.org, linux-acpi@vger.kernel.org,
         linux-pm@vger.kernel.org, linux-tegra@vger.kernel.org
-Subject: [PATCH v3 13/25] parisc: Use do_kernel_power_off()
-Date:   Mon,  8 Nov 2021 03:45:12 +0300
-Message-Id: <20211108004524.29465-14-digetx@gmail.com>
+Subject: [PATCH v3 14/25] xen/x86: Use do_kernel_power_off()
+Date:   Mon,  8 Nov 2021 03:45:13 +0300
+Message-Id: <20211108004524.29465-15-digetx@gmail.com>
 X-Mailer: git-send-email 2.33.1
 In-Reply-To: <20211108004524.29465-1-digetx@gmail.com>
 References: <20211108004524.29465-1-digetx@gmail.com>
@@ -117,34 +117,34 @@ that invokes chained power-off handlers. It also invokes legacy
 pm_power_off() for now, which will be removed once all drivers will
 be converted to the new power-off API.
 
-Acked-by: Helge Deller <deller@gmx.de> # parisc
+Acked-by: Juergen Gross <jgross@suse.com>
 Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
 ---
- arch/parisc/kernel/process.c | 4 ++--
+ arch/x86/xen/enlighten_pv.c | 4 ++--
  1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/arch/parisc/kernel/process.c b/arch/parisc/kernel/process.c
-index ea3d83b6fb62..928201b1f58f 100644
---- a/arch/parisc/kernel/process.c
-+++ b/arch/parisc/kernel/process.c
-@@ -26,6 +26,7 @@
- #include <linux/module.h>
- #include <linux/personality.h>
- #include <linux/ptrace.h>
+diff --git a/arch/x86/xen/enlighten_pv.c b/arch/x86/xen/enlighten_pv.c
+index 5004feb16783..527fa545eb1f 100644
+--- a/arch/x86/xen/enlighten_pv.c
++++ b/arch/x86/xen/enlighten_pv.c
+@@ -31,6 +31,7 @@
+ #include <linux/gfp.h>
+ #include <linux/edd.h>
+ #include <linux/objtool.h>
 +#include <linux/reboot.h>
- #include <linux/sched.h>
- #include <linux/sched/debug.h>
- #include <linux/sched/task.h>
-@@ -114,8 +115,7 @@ void machine_power_off(void)
- 	pdc_chassis_send_status(PDC_CHASSIS_DIRECT_SHUTDOWN);
  
- 	/* ipmi_poweroff may have been installed. */
+ #include <xen/xen.h>
+ #include <xen/events.h>
+@@ -1068,8 +1069,7 @@ static void xen_machine_halt(void)
+ 
+ static void xen_machine_power_off(void)
+ {
 -	if (pm_power_off)
 -		pm_power_off();
 +	do_kernel_power_off();
- 		
- 	/* It seems we have no way to power the system off via
- 	 * software. The user has to press the button himself. */
+ 	xen_reboot(SHUTDOWN_poweroff);
+ }
+ 
 -- 
 2.33.1
 
