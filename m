@@ -2,138 +2,86 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 74EE4C433EF
-	for <linux-m68k@archiver.kernel.org>; Mon,  8 Nov 2021 21:48:02 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 55E91C433EF
+	for <linux-m68k@archiver.kernel.org>; Tue,  9 Nov 2021 04:02:56 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 55DED61361
-	for <linux-m68k@archiver.kernel.org>; Mon,  8 Nov 2021 21:48:02 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 20BEB61130
+	for <linux-m68k@archiver.kernel.org>; Tue,  9 Nov 2021 04:02:56 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240590AbhKHVuq (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Mon, 8 Nov 2021 16:50:46 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56432 "EHLO
+        id S241519AbhKIEFk (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Mon, 8 Nov 2021 23:05:40 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56326 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240591AbhKHVup (ORCPT
-        <rfc822;linux-m68k@vger.kernel.org>); Mon, 8 Nov 2021 16:50:45 -0500
-Received: from mail-pl1-x62a.google.com (mail-pl1-x62a.google.com [IPv6:2607:f8b0:4864:20::62a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 15C99C061570
-        for <linux-m68k@vger.kernel.org>; Mon,  8 Nov 2021 13:48:01 -0800 (PST)
-Received: by mail-pl1-x62a.google.com with SMTP id b11so3814209pld.12
-        for <linux-m68k@vger.kernel.org>; Mon, 08 Nov 2021 13:48:01 -0800 (PST)
+        with ESMTP id S229648AbhKIEFk (ORCPT
+        <rfc822;linux-m68k@vger.kernel.org>); Mon, 8 Nov 2021 23:05:40 -0500
+Received: from mail-pf1-x42f.google.com (mail-pf1-x42f.google.com [IPv6:2607:f8b0:4864:20::42f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1229DC061764;
+        Mon,  8 Nov 2021 20:02:55 -0800 (PST)
+Received: by mail-pf1-x42f.google.com with SMTP id o4so4133882pfp.13;
+        Mon, 08 Nov 2021 20:02:54 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=subject:to:references:cc:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-transfer-encoding;
-        bh=R/8fc5BVCUkti+5ltf7/7V4/QJkXWYTW/7UycP2MzbA=;
-        b=Ie7RbOc9mu49Bi2jnrRjeiFFhSd6XruwhKrt7XSbHleEOwcSNlVr5eExuL0QqTq8y1
-         dpSAW4KXl6vHFruc627mptkVv6MeEQXhCrjH/ATMA+sPitMP/cHd8z8Eexo9Lp0FbSXI
-         LXjgwIC9O86wvbKJQ7fLAvOJOolEvz49f6lQn3nt4nUgFWmAQJM2mwvkcoL7HQQNko4W
-         OH50npVfpDK6hzmhU+GNaA5ql8X9yKSoIBJXv/xv113Av3LRJz9SRZ6oFITr/Q0n/0+o
-         vI/QJljFQ29phUAbEfkjEKJqRO6ffj1LotN5VBX00GK1mg9/sYMokoVk5segfwtfrIx3
-         5QYA==
+        h=from:to:cc:subject:date:message-id;
+        bh=UG9q6G2BjwUWH74xhXcfBU7EE+jidL6jgypNu9B29wo=;
+        b=ohWbT9CobePWC23pP+yX2XJKKR/ohsm3wpML+aI54B5cKMqPZiP5Ci6/R9MYaurMiD
+         2s7BA+ON0KAmhelts8TVsf2cOMNjk4+hZafzHYmS2PdPY2ky5p33G4chupmN7NemJQO1
+         khqa+iTi/Z/s4cCHmIkxzkc+7Bd/eqwVWVPLfk4juRDGwgap8M45E7heC8BW1JAurhwz
+         asx0NnHII+dJI2OwZhVyq4LJf1Vxs5RY61Yzx0MfVCJSR5kNhIU2z8fr13sgcaHEkZcC
+         HuS8pt9T9t3/WWV8wMz0l0pvPxv1XKKG2Qj9M3Gu76JVQLPfK2GVjHACf5Oga+82H+QW
+         lLYw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:references:cc:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding;
-        bh=R/8fc5BVCUkti+5ltf7/7V4/QJkXWYTW/7UycP2MzbA=;
-        b=rfJYfwJRqwlA3hrzyc287RAJam3y+4bqN/HQOo2BJG+IQ9jAeJiRZ0alwckMJN1ydL
-         QICQA71vYViDlOK6phHHLmOXcLsdxpDRLNlqGx5GSpzgz9CZ/ycC30Hob/fxIFqb5M+a
-         6kVha7Bu6V+IHnKcs3T66rPNifl4o9Vh5yLrS2VLjAFAqIcETI7Q/TpXO9quEogidT+W
-         bvoIpZiJIdm9oOY5LIN8OlCT4dPWU/ScVzDkk5++VrPscDkxFZU3LrFH+yPF1DcXCzuA
-         j2Yw5zwMPEQ8v34xxLQNl/q9l1fV+B4q8NQMqGcD5+xGzsk0huXDbUljhKnUMByNflnZ
-         j5GQ==
-X-Gm-Message-State: AOAM531HMYQ0kZQaCe54eTqKorPUKrNPRZkb3KZjEUYcvuA8Mmd6dM0D
-        uG5R3rZMFRlFhXzTEwvrjLY=
-X-Google-Smtp-Source: ABdhPJyZbt8BWl+iUJELBUd+pHlXGsEGOUMjX+ASsSN0HSJUqOLk++fyD1hULpoKOOvw/jHT0uTDOg==
-X-Received: by 2002:a17:902:c412:b0:141:f710:2a94 with SMTP id k18-20020a170902c41200b00141f7102a94mr2042967plk.1.1636408080567;
-        Mon, 08 Nov 2021 13:48:00 -0800 (PST)
-Received: from [10.1.1.26] (222-155-101-117-fibre.sparkbb.co.nz. [222.155.101.117])
-        by smtp.gmail.com with ESMTPSA id b21sm12934567pff.179.2021.11.08.13.47.57
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Mon, 08 Nov 2021 13:48:00 -0800 (PST)
-Subject: Re: [PATCH v8 1/3] m68k: amiga/pcmcia - add 16 bit detection
- interface to amipcmcia.h
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-References: <20211104061102.30899-1-schmitzmic@gmail.com>
- <20211104061102.30899-2-schmitzmic@gmail.com>
- <CAMuHMdVDAZpG=H210R_qeWmMPFm_62jGgsXv_ymYjDBC5-CcZQ@mail.gmail.com>
-Cc:     Linux/m68k <linux-m68k@vger.kernel.org>, ALeX Kazik <alex@kazik.de>
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=UG9q6G2BjwUWH74xhXcfBU7EE+jidL6jgypNu9B29wo=;
+        b=fSozAUXZD1tIHM7rSgTLFnlchxLOlyzq5cO3sE276t3i0sDociXdvrMYylrgPgfUWh
+         ZjmWN7AI4wcSg9kFtx8QgjkwiKYQ0D+91Xk3Cw/GwEBa4aaGH3dYIzFPTr5PGJEDWh+/
+         zO3+CIV7E2WYfib7BKzEGFGCgpIGkkdgkq/4pJsYp41xaQHvUZIG/Y98lEOXTBB5PhZ5
+         KInQJd2CX/gMNobx7x6/mlU3ZAP77E3sW8TasVw+bAJ9EqaSaQPhKuNE6i1SljNEnVs5
+         7tW9Czwuk4C+vl2JRtYrqEiOIRRzHyqdoE9qvFJq9eFc8u3oVlj+7PSF/T/w7vZIRYqo
+         9q7A==
+X-Gm-Message-State: AOAM533ypdJohf4qv6c64jaQthYZsp3OKGKpOj+IiJ1HQ2MQ920IYPdw
+        9In0uLklkG66EKeGab58SZmT3lKLI5Y=
+X-Google-Smtp-Source: ABdhPJwt6aO5oipx4XJpGw634PaVTeI7qAjUbGLYA4bc39kLvIm/+miB22trjreDQGILH/R8yHzgDQ==
+X-Received: by 2002:a05:6a00:24cd:b0:49f:bf3f:c42c with SMTP id d13-20020a056a0024cd00b0049fbf3fc42cmr4854389pfv.54.1636430574485;
+        Mon, 08 Nov 2021 20:02:54 -0800 (PST)
+Received: from xplor.waratah.dyndns.org (222-155-101-117-fibre.sparkbb.co.nz. [222.155.101.117])
+        by smtp.gmail.com with ESMTPSA id i10sm13771358pfe.180.2021.11.08.20.02.53
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 08 Nov 2021 20:02:53 -0800 (PST)
+Received: by xplor.waratah.dyndns.org (Postfix, from userid 1000)
+        id 7A51836020F; Tue,  9 Nov 2021 17:02:49 +1300 (NZDT)
 From:   Michael Schmitz <schmitzmic@gmail.com>
-Message-ID: <c14ea1ed-c3f1-c5f4-c7d6-1b73387bc278@gmail.com>
-Date:   Tue, 9 Nov 2021 10:47:55 +1300
-User-Agent: Mozilla/5.0 (X11; Linux ppc64; rv:45.0) Gecko/20100101
- Thunderbird/45.8.0
-MIME-Version: 1.0
-In-Reply-To: <CAMuHMdVDAZpG=H210R_qeWmMPFm_62jGgsXv_ymYjDBC5-CcZQ@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
+To:     linux-m68k@vger.kernel.org, geert@linux-m68k.org
+Cc:     alex@kazik.de, netdev@vger.kernel.org
+Subject: [PATCH v9 0/3] Add APNE PCMCIA 100 Mbit support
+Date:   Tue,  9 Nov 2021 17:02:39 +1300
+Message-Id: <20211109040242.11615-1-schmitzmic@gmail.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-Hi Geert,
+The first patch enables the use of core PCMCIA code to parse
+config table entries in Amiga drivers. The remaining two patches
+add 16 bit IO support to the m68k low-level IO access code, and 
+add code to the APNE driver to autoprobe for 16 bit IO on cards
+that support it (the 100 Mbit cards). The core PCMCIA config
+table parser is utilized for this (may be built as a module).
 
+Tested by Alex on a 100 Mbit card. Not yet tested on 10 Mbit
+cards - if any of those also have the 16 bit IO feature set
+in their config table, this patch series would break on those
+cards. 
 
-On 08/11/21 21:35, Geert Uytterhoeven wrote:
-> Hi Michael,
->
-> On Thu, Nov 4, 2021 at 7:11 AM Michael Schmitz <schmitzmic@gmail.com> wrote:
->> Add the interface definitions for 16 bit card autoprobing (using
->> the generic PCMCIA cftable entry parser) to amipcmcia.h for use
->> by apne.c.
->>
->> Signed-off-by: Michael Schmitz <schmitzmic@gmail.com>
->
-> Thanks for your patch!
->
->> --- a/arch/m68k/include/asm/amipcmcia.h
->> +++ b/arch/m68k/include/asm/amipcmcia.h
->> @@ -64,6 +64,7 @@ static inline void pcmcia_disable_irq(void)
->>  #define PCMCIA_SPEED_250NS     250
->>  #define PCMCIA_SPEED_720NS     720
->>
->> +#ifndef _LINUX_CISTPL_H
->
-> This #ifndef is here to prevent conflicts with <pcmcia/cistpl.h>?
-> Why can't the definitions below be removed, and <pcmcia/cistpl.h>
-> always included instead?
+Note that only patch 3 has been sent to netdev. Please CC
+linux-m68k when providing comments.
 
-We'd have to include it everywhere amipcmcia.h is included (because of 
-the pcmcia_parse_tuple() external declaration below). Didn't want to do 
-that unless absolutely necessary, but if you don't mind that, I'll 
-change this part.
-
->
->>  /* PCMCIA Tuple codes */
->>
->>  #define CISTPL_NULL            0x00
->> @@ -106,5 +107,8 @@ static inline void pcmcia_disable_irq(void)
->>  #define CISTPL_FUNCID_NETWORK  0x06
->>  #define CISTPL_FUNCID_AIMS     0x07
->>  #define CISTPL_FUNCID_SCSI     0x08
->> +#else  /* defined _LINUX_CISTPL_H */
->> +extern int pcmcia_parse_tuple(tuple_t *cftuple, cisparse_t *cfparse);
->
-> This can be unconditional?
-
-Brain fade on my part - this of course needs to be conditional on 
-CONFIG_PCMCIA. not on _LINUX_CISTPL_H.
+v9 adds a couple of fixes following review comments by Geert.
 
 Cheers,
 
-	Michael
+   Michael
+
+CC: netdev@vger.kernel.org
 
 
->
->> +#endif
->
-> Gr{oetje,eeting}s,
->
->                         Geert
->
-> --
-> Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
->
-> In personal conversations with technical people, I call myself a hacker. But
-> when I'm talking to journalists I just say "programmer" or something like that.
->                                 -- Linus Torvalds
->
