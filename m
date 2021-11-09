@@ -2,30 +2,30 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 8206AC433EF
-	for <linux-m68k@archiver.kernel.org>; Tue,  9 Nov 2021 22:23:58 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 327AEC433F5
+	for <linux-m68k@archiver.kernel.org>; Tue,  9 Nov 2021 22:24:51 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 6D17D61B3C
-	for <linux-m68k@archiver.kernel.org>; Tue,  9 Nov 2021 22:23:58 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 1AC1561B4E
+	for <linux-m68k@archiver.kernel.org>; Tue,  9 Nov 2021 22:24:51 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344075AbhKIW0l (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Tue, 9 Nov 2021 17:26:41 -0500
-Received: from mail.kernel.org ([198.145.29.99]:47782 "EHLO mail.kernel.org"
+        id S1344190AbhKIW1g (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Tue, 9 Nov 2021 17:27:36 -0500
+Received: from mail.kernel.org ([198.145.29.99]:49344 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240868AbhKIWYu (ORCPT <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Tue, 9 Nov 2021 17:24:50 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D244A619EA;
-        Tue,  9 Nov 2021 22:22:02 +0000 (UTC)
+        id S1344261AbhKIWZp (ORCPT <rfc822;linux-m68k@lists.linux-m68k.org>);
+        Tue, 9 Nov 2021 17:25:45 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 359A161506;
+        Tue,  9 Nov 2021 22:22:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1636496523;
-        bh=ZMGpCI8oDIhIjEv0205Deqq+Gh7JpQMOGyNXtAcjAOI=;
+        s=k20201202; t=1636496579;
+        bh=bZYwmws7ttw+7pmQhuTuxLgNOJ+/Q2vHTKQPCg9K4Ws=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ZrLwthaNxaYJpcC1mNppW+TyVWTydyKOty3Nwy3s15bF1eqJIu3WiK94LGHHl8X1i
-         u2QRMD9gkUGWaf4P4tMx60Ptfqp7kuaea2U3Kqc6gRjVqBwApb5+m8Tcw3+cEYc+75
-         bUIo/HRaKX4NFxelO+JaBaKLanKUTiRlGgb/kV0a5aoL3s5rR8dMVYdvrIdFAPS5Iy
-         AUGYWEWzCXjpTY3dG1SaWCIiQn/5Szk40da+Zdgpr6v+rm9iBH02+hh5FTeFefNnm9
-         e0Wg7gTr/5Rue9wVnbC7beFmvJgpuQfE2JXMqCmcYx9PQTEfWOVf4CkXJ/shwTSCN4
-         8Y6CHc+IVJjfQ==
+        b=EBuYlWXn4q4BT5Hu1wFVx6xX+6+6IYrOyqQuZNVkpCt3itIw1cM/qmuIr8ati2kdg
+         Gg/rTQIOLwKQW/JWrVjrc+EiVAmwPB93zYPstTs8AoSWQ2TquUXuXOWU5FI8JGWeKF
+         2HQXooX6gb8g94i2EDBWpSvoXqn6OxmJbU1zSjGGD8rxkRjUk5bgkzqx8dDeW4NnqU
+         8fXw1lFX0HVDYjjJq+1fNWr6rRq6UB+o9iubWDGQeBGgCKrDNKiopzyiChg8LeXYZW
+         4yk3TVxH1K6OxG9u41SwB9iK25Qhqix14ZmrHPUHPXZbxAI1LSYDZFC52H6nOvlIhT
+         0SuOaHKkmqY5A==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
 Cc:     Randy Dunlap <rdunlap@infradead.org>,
@@ -34,12 +34,12 @@ Cc:     Randy Dunlap <rdunlap@infradead.org>,
         linux-m68k@lists.linux-m68k.org,
         Geert Uytterhoeven <geert@linux-m68k.org>,
         Takashi Iwai <tiwai@suse.de>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH AUTOSEL 5.10 37/50] ALSA: ISA: not for M68K
-Date:   Tue,  9 Nov 2021 17:20:50 -0500
-Message-Id: <20211109222103.1234885-37-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.4 22/30] ALSA: ISA: not for M68K
+Date:   Tue,  9 Nov 2021 17:22:16 -0500
+Message-Id: <20211109222224.1235388-22-sashal@kernel.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20211109222103.1234885-1-sashal@kernel.org>
-References: <20211109222103.1234885-1-sashal@kernel.org>
+In-Reply-To: <20211109222224.1235388-1-sashal@kernel.org>
+References: <20211109222224.1235388-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
@@ -104,7 +104,7 @@ index ee4a4a6b99ba7..d123587c0fd8f 100644
  snd-$(CONFIG_SND_VMASTER) += vmaster.o
  snd-$(CONFIG_SND_JACK)	  += ctljack.o jack.o
 diff --git a/sound/isa/Kconfig b/sound/isa/Kconfig
-index 6ffa48dd59830..570b88e0b2018 100644
+index b690ed937cbe8..df2e45c8814e9 100644
 --- a/sound/isa/Kconfig
 +++ b/sound/isa/Kconfig
 @@ -22,7 +22,7 @@ config SND_SB16_DSP
@@ -117,7 +117,7 @@ index 6ffa48dd59830..570b88e0b2018 100644
  	help
  	  Support for sound devices connected via the ISA bus.
 diff --git a/sound/pci/Kconfig b/sound/pci/Kconfig
-index 93bc9bef7641f..41ce125971777 100644
+index 7630f808d087c..6edde2f145025 100644
 --- a/sound/pci/Kconfig
 +++ b/sound/pci/Kconfig
 @@ -279,6 +279,7 @@ config SND_CS46XX_NEW_DSP
