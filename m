@@ -2,30 +2,30 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C85C2C433F5
-	for <linux-m68k@archiver.kernel.org>; Tue,  9 Nov 2021 22:22:37 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8206AC433EF
+	for <linux-m68k@archiver.kernel.org>; Tue,  9 Nov 2021 22:23:58 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id B964661AF7
-	for <linux-m68k@archiver.kernel.org>; Tue,  9 Nov 2021 22:22:37 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 6D17D61B3C
+	for <linux-m68k@archiver.kernel.org>; Tue,  9 Nov 2021 22:23:58 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343981AbhKIWZW (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Tue, 9 Nov 2021 17:25:22 -0500
-Received: from mail.kernel.org ([198.145.29.99]:45662 "EHLO mail.kernel.org"
+        id S1344075AbhKIW0l (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Tue, 9 Nov 2021 17:26:41 -0500
+Received: from mail.kernel.org ([198.145.29.99]:47782 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1344284AbhKIWXT (ORCPT <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Tue, 9 Nov 2021 17:23:19 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0D9BB61350;
-        Tue,  9 Nov 2021 22:20:31 +0000 (UTC)
+        id S240868AbhKIWYu (ORCPT <rfc822;linux-m68k@lists.linux-m68k.org>);
+        Tue, 9 Nov 2021 17:24:50 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D244A619EA;
+        Tue,  9 Nov 2021 22:22:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1636496433;
-        bh=YqdcfG9rMUg1aPmE15BG3JxqWSif0cagwCUxwHc/YEU=;
+        s=k20201202; t=1636496523;
+        bh=ZMGpCI8oDIhIjEv0205Deqq+Gh7JpQMOGyNXtAcjAOI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=dLFReVA1jNBzLqzwh+452RGEbfvRVp72UGpH9QlKEbUWpNmubDQQqPdeXgEHCI5Zr
-         eVehXluJZfdEG+qJ5EQH5naX/Nd6XBRxXm0QYCAqfqXZ50v1TXnSS5HNYAniQzQrrA
-         bmwrRpMeH6/D7iUYbcGoJLExdILLXVzju29619+sJZeNYYD4uwPuZKYRT7wBYuUqvP
-         4XAHXyjENpt/V5mPjHYCAdFe5+grl140ygBZRhHdGFJG4NHrDjWJ9WufHwaPhuIVvo
-         L0ljVGoDHAhq8EqRlkDjugrZcMllM4X5ZjEdpTljUmu9AYWSBpQAuGrs1B2H79jkik
-         C0H3XY1ER63MA==
+        b=ZrLwthaNxaYJpcC1mNppW+TyVWTydyKOty3Nwy3s15bF1eqJIu3WiK94LGHHl8X1i
+         u2QRMD9gkUGWaf4P4tMx60Ptfqp7kuaea2U3Kqc6gRjVqBwApb5+m8Tcw3+cEYc+75
+         bUIo/HRaKX4NFxelO+JaBaKLanKUTiRlGgb/kV0a5aoL3s5rR8dMVYdvrIdFAPS5Iy
+         AUGYWEWzCXjpTY3dG1SaWCIiQn/5Szk40da+Zdgpr6v+rm9iBH02+hh5FTeFefNnm9
+         e0Wg7gTr/5Rue9wVnbC7beFmvJgpuQfE2JXMqCmcYx9PQTEfWOVf4CkXJ/shwTSCN4
+         8Y6CHc+IVJjfQ==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
 Cc:     Randy Dunlap <rdunlap@infradead.org>,
@@ -34,12 +34,12 @@ Cc:     Randy Dunlap <rdunlap@infradead.org>,
         linux-m68k@lists.linux-m68k.org,
         Geert Uytterhoeven <geert@linux-m68k.org>,
         Takashi Iwai <tiwai@suse.de>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH AUTOSEL 5.14 54/75] ALSA: ISA: not for M68K
-Date:   Tue,  9 Nov 2021 17:18:44 -0500
-Message-Id: <20211109221905.1234094-54-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.10 37/50] ALSA: ISA: not for M68K
+Date:   Tue,  9 Nov 2021 17:20:50 -0500
+Message-Id: <20211109222103.1234885-37-sashal@kernel.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20211109221905.1234094-1-sashal@kernel.org>
-References: <20211109221905.1234094-1-sashal@kernel.org>
+In-Reply-To: <20211109222103.1234885-1-sashal@kernel.org>
+References: <20211109222103.1234885-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
@@ -90,7 +90,7 @@ Signed-off-by: Sasha Levin <sashal@kernel.org>
  3 files changed, 4 insertions(+), 1 deletion(-)
 
 diff --git a/sound/core/Makefile b/sound/core/Makefile
-index d774792850f31..79e1407cd0de7 100644
+index ee4a4a6b99ba7..d123587c0fd8f 100644
 --- a/sound/core/Makefile
 +++ b/sound/core/Makefile
 @@ -9,7 +9,9 @@ ifneq ($(CONFIG_SND_PROC_FS),)
