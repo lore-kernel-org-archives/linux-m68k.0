@@ -2,84 +2,98 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 288E4C433F5
-	for <linux-m68k@archiver.kernel.org>; Tue,  9 Nov 2021 08:15:48 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id ADB62C43217
+	for <linux-m68k@archiver.kernel.org>; Tue,  9 Nov 2021 11:50:12 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 0BDB1611BF
-	for <linux-m68k@archiver.kernel.org>; Tue,  9 Nov 2021 08:15:48 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 993F2611CC
+	for <linux-m68k@archiver.kernel.org>; Tue,  9 Nov 2021 11:50:12 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243987AbhKIISc (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Tue, 9 Nov 2021 03:18:32 -0500
-Received: from mail-ua1-f43.google.com ([209.85.222.43]:37680 "EHLO
-        mail-ua1-f43.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235389AbhKIISc (ORCPT
-        <rfc822;linux-m68k@vger.kernel.org>); Tue, 9 Nov 2021 03:18:32 -0500
-Received: by mail-ua1-f43.google.com with SMTP id l43so36930457uad.4
-        for <linux-m68k@vger.kernel.org>; Tue, 09 Nov 2021 00:15:47 -0800 (PST)
+        id S1343589AbhKILw5 (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Tue, 9 Nov 2021 06:52:57 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49090 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1343591AbhKILw4 (ORCPT
+        <rfc822;linux-m68k@lists.linux-m68k.org>);
+        Tue, 9 Nov 2021 06:52:56 -0500
+Received: from mail-ot1-x336.google.com (mail-ot1-x336.google.com [IPv6:2607:f8b0:4864:20::336])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8B602C0613B9
+        for <linux-m68k@lists.linux-m68k.org>; Tue,  9 Nov 2021 03:50:10 -0800 (PST)
+Received: by mail-ot1-x336.google.com with SMTP id z2-20020a9d71c2000000b0055c6a7d08b8so18243015otj.5
+        for <linux-m68k@lists.linux-m68k.org>; Tue, 09 Nov 2021 03:50:10 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=ALBcIFK0M2sDqjczdXHc9NoWo8sCRANOPePxtQKC6v0=;
+        b=WiNjKmsahtkj7noZ9ffdWo8zufH5fxNGTifxSgsaMThK1Bc25ubh55+CHeuGaG7dca
+         IUJu9SE+F1ZklwyVbmXyyhhwcj0fg+IcXAUeMkT2TM5AtPRpH3WjiiGM0JbYuy1FNyNo
+         W/m4prG/Qo/AI9tmUfrtEwc1xzSfJ8Q+7ZXo7dZw2gmjbx0/oFHLRnz+TXr7yb4yt4rw
+         DbpNSz1GfVi/hAHf/6iZhz37emGktf2XV99bWXojbMU9ELu6783fpV36atKSUBhOD6FP
+         qt5X3Lt9oO+YFKDBZilTPQ4bEsJUs+P+vARkfPy4jNZXysxqcTZkkSfcAc6qC7oUWOwo
+         t/8g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=tQmJQ0theI2WYPUDat4qPwi5IRdzZ241bY4hdW+wuiU=;
-        b=YyFf8Ewk+6OMi07C5sAgsH63Fi/4RlpAkZ9nbRltZ8jEnLmYZURdw1X3Zj0ocp6pAR
-         4wzRR/Gel7/BREBfBkAax4u4pSTQ3zNjbjrPz3Z9DPy5rh4QgkqlM7aGr8odW//zes0L
-         Q86R2z41Ev6RYe1KspLp4ed0GkRGgUNAeG09/r2XsVNRjn1ANl5S1SzdiQVTQn9zCigY
-         58AJui/z4lVUTAy+UD01qiZSA1vksNMd4i/XUJjPIc1NsDMCcUGG/G8TdFtvvPVNMldA
-         4xVYo3XmomLdOPdmwdmbwGfKVRswFCWxlgPpeUJ3/ApkqrH0ICw90J5yo1rSlL2YeGky
-         Fxcw==
-X-Gm-Message-State: AOAM532IAkXUZMjHmfcptlZPjk/XKvt7pk23S00YzNf9HGTMS7BXLoFi
-        Djl9/9wIxuSYr4zDy5cN269oqdqF1mvGayUg
-X-Google-Smtp-Source: ABdhPJyFaj//ebA6i8xPU/VrCO1kcPYGfhqB8dUZvARaCVRIITnASI3m5shm+LhgIFJ/UpBNk3vDLQ==
-X-Received: by 2002:ab0:7784:: with SMTP id x4mr7571028uar.143.1636445746513;
-        Tue, 09 Nov 2021 00:15:46 -0800 (PST)
-Received: from mail-ua1-f43.google.com (mail-ua1-f43.google.com. [209.85.222.43])
-        by smtp.gmail.com with ESMTPSA id m15sm1581515vkl.40.2021.11.09.00.15.46
-        for <linux-m68k@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 09 Nov 2021 00:15:46 -0800 (PST)
-Received: by mail-ua1-f43.google.com with SMTP id p37so35791077uae.8
-        for <linux-m68k@vger.kernel.org>; Tue, 09 Nov 2021 00:15:46 -0800 (PST)
-X-Received: by 2002:a05:6102:3a07:: with SMTP id b7mr84379870vsu.35.1636445746049;
- Tue, 09 Nov 2021 00:15:46 -0800 (PST)
+        bh=ALBcIFK0M2sDqjczdXHc9NoWo8sCRANOPePxtQKC6v0=;
+        b=tPItqsMReYLFINFqpV9jLHq69tktu/53UveLA4aoLdsWZOwBDT9lXeX/M69E76a0FG
+         4F6BE8Ew+gfMRwX5ivJIXDEcUnDK5zwaSLQ2XItR/jXYheSupPpwmoj3JTCMGOWdWGc8
+         3i7CP7ssDRyZJ9oiGI//1TiP/b37pJNrf6oHh/pGL4Vf7myXODMEfc+sh9bpMbfM0KZm
+         iFjC9AxCjPd8l0bpdN/+MI6Pa80M9baGRY8+KZifvDk1IiFE9B0dr54Z2c5ypc0Ua41D
+         e0qS4bRot5Pm/PADizkWQDQ2YqdwcKphkEn/LoHnFBvXWov9bRFxxwq5MHzEYEELeITK
+         7ctg==
+X-Gm-Message-State: AOAM533jMvITrRA9ZaYk5wk4TnGjm1h0BZEAfMcKODw0xFGAJXcHT2K8
+        mw8kkpPfu+s/ac1vzGXlMXPBtaETf32dXBNZ3v/ecg==
+X-Google-Smtp-Source: ABdhPJykswbjVxAwy6QccCD6a4oKxQG8ZBoSavSKVwonmEEZcj7+3DiAKXMLdnvkMbWw05xgzSkhW8FiyFJlI+8TVv8=
+X-Received: by 2002:a9d:ed6:: with SMTP id 80mr5272989otj.35.1636458609456;
+ Tue, 09 Nov 2021 03:50:09 -0800 (PST)
 MIME-Version: 1.0
-References: <20211109040242.11615-1-schmitzmic@gmail.com> <20211109040242.11615-3-schmitzmic@gmail.com>
-In-Reply-To: <20211109040242.11615-3-schmitzmic@gmail.com>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Tue, 9 Nov 2021 09:15:35 +0100
-X-Gmail-Original-Message-ID: <CAMuHMdWQNzntik0Op6vdpLOD31SCUiu+Lr5bbL9EKOyo3feYNQ@mail.gmail.com>
-Message-ID: <CAMuHMdWQNzntik0Op6vdpLOD31SCUiu+Lr5bbL9EKOyo3feYNQ@mail.gmail.com>
-Subject: Re: [PATCH v9 2/3] m68k: io_mm.h - add APNE 100 MBit support
-To:     Michael Schmitz <schmitzmic@gmail.com>
-Cc:     "Linux/m68k" <linux-m68k@vger.kernel.org>,
-        ALeX Kazik <alex@kazik.de>
+References: <20211105130338.241100-1-arnd@kernel.org>
+In-Reply-To: <20211105130338.241100-1-arnd@kernel.org>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Tue, 9 Nov 2021 12:49:58 +0100
+Message-ID: <CACRpkdYKs==og5pSsSxMXXozkexybJEnTHZWUr1ObsqAsGPuRA@mail.gmail.com>
+Subject: Re: [RFC 1/3] gpiolib: remove irq_to_gpio() definition
+To:     Arnd Bergmann <arnd@kernel.org>
+Cc:     linux-gpio@vger.kernel.org, Bartosz Golaszewski <brgl@bgdev.pl>,
+        linux-m68k@lists.linux-m68k.org, geert@linux-m68k.org,
+        gerg@linux-m68k.org, linux@armlinux.org.uk,
+        linux-arm-kernel@lists.infradead.org, linux-sh@vger.kernel.org,
+        dalias@libc.org, ysato@users.sourceforge.jp,
+        Arnd Bergmann <arnd@arndb.de>,
+        Fu Wei <tekkamanninja@gmail.com>, Alex Shi <alexs@kernel.org>,
+        Hu Haowen <src.res@email.cn>,
+        linux-doc-tw-discuss@lists.sourceforge.net,
+        Jonathan Corbet <corbet@lwn.net>,
+        Drew Fustini <drew@beagleboard.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-On Tue, Nov 9, 2021 at 5:03 AM Michael Schmitz <schmitzmic@gmail.com> wrote:
-> Add code to support 10 Mbit and 100 Mbit mode for APNE driver.
+On Fri, Nov 5, 2021 at 2:03 PM Arnd Bergmann <arnd@kernel.org> wrote:
+
+> From: Arnd Bergmann <arnd@arndb.de>
 >
-> A new ISA type ISA_TYPE_AG16 dynamically switches the Amiga
-> ISA inb accessor to word access as required by the 100 Mbit cards.
+> All implementations other than coldfire have returned an error since
+> the avr32 and blackfin architectures got removed, and the last user in
+> driver code was removed in 2016, so just remove this old interface.
 >
-> Patch modified after patch "[PATCH RFC net-next] Amiga PCMCIA
-> 100 MBit card support" submitted to netdev 2018/09/16 by Alex
-> Kazik <alex@kazik.de>.
+> The only reference is now in the Chinese documentation, which should be
+> changed to remove this reference as well.
 >
-> Signed-off-by: Michael Schmitz <schmitzmic@gmail.com>
+> Cc: Fu Wei <tekkamanninja@gmail.com>
+> Cc: Alex Shi <alexs@kernel.org>
+> Cc: Hu Haowen <src.res@email.cn>
+> Cc: linux-doc-tw-discuss@lists.sourceforge.net
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 
-You forgot to add my tag ;-)
+Thanks for doing this Arnd. I had it on my mind some years
+ago but I think Coldfire or something was still using it and didn't
+think about it as the last user disappeared.
+Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
 
-Reviewed-by: Geert Uytterhoeven <geert@linux-m68k.org>
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+Yours,
+Linus Walleij
