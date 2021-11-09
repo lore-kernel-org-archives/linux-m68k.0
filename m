@@ -2,117 +2,89 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 09C37C433F5
-	for <linux-m68k@archiver.kernel.org>; Tue,  9 Nov 2021 19:39:43 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2853DC433F5
+	for <linux-m68k@archiver.kernel.org>; Tue,  9 Nov 2021 20:07:58 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id E65A061055
-	for <linux-m68k@archiver.kernel.org>; Tue,  9 Nov 2021 19:39:42 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 037B461159
+	for <linux-m68k@archiver.kernel.org>; Tue,  9 Nov 2021 20:07:57 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242276AbhKITm2 (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Tue, 9 Nov 2021 14:42:28 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43124 "EHLO
+        id S244158AbhKIUKn (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Tue, 9 Nov 2021 15:10:43 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49506 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231249AbhKITm1 (ORCPT
-        <rfc822;linux-m68k@vger.kernel.org>); Tue, 9 Nov 2021 14:42:27 -0500
-Received: from mail-pl1-x634.google.com (mail-pl1-x634.google.com [IPv6:2607:f8b0:4864:20::634])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BEE4BC061764;
-        Tue,  9 Nov 2021 11:39:41 -0800 (PST)
-Received: by mail-pl1-x634.google.com with SMTP id q17so401997plr.11;
-        Tue, 09 Nov 2021 11:39:41 -0800 (PST)
+        with ESMTP id S244154AbhKIUKm (ORCPT
+        <rfc822;linux-m68k@lists.linux-m68k.org>);
+        Tue, 9 Nov 2021 15:10:42 -0500
+Received: from mail-ot1-x335.google.com (mail-ot1-x335.google.com [IPv6:2607:f8b0:4864:20::335])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9D3F7C0613F5
+        for <linux-m68k@lists.linux-m68k.org>; Tue,  9 Nov 2021 12:07:56 -0800 (PST)
+Received: by mail-ot1-x335.google.com with SMTP id u18-20020a9d7212000000b00560cb1dc10bso374389otj.11
+        for <linux-m68k@lists.linux-m68k.org>; Tue, 09 Nov 2021 12:07:56 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=subject:to:references:cc:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-transfer-encoding;
-        bh=RWFJQ1qkbsa5F3INdZSYF9XYBxAarnZZ0OkMW84AtA8=;
-        b=os3xCHEjLgNEN75kaP1ani+AyRtG5xDv8q0jgPChmGcxfnL0sn/eSnSjFxtmWwVDkj
-         f6KZysEn9wDsVWwxwhRSP5FVzydX0Jdf29wUwLxX6+6+nw6PWxwwKsDgfbFZYH7XQn9r
-         cCjv7+PMdj5yTt3ymJw2MN/TCm8ou8KHKGw5qo32Nx/oUNRhidwHTTvpKlNyO6D7+iH1
-         S0U4YQ7thms/zX97hIcGoXO0kuDC/J2V+/YfqK5qeR4v28YsMFjS1kjKzeiyra1qeB9+
-         IhKWFA+YDrizIzimxU+AgmMuFZ9irUkD77hIbnO+3Or44klvSUZ2twDSUnIzKIa/BLSK
-         mvlA==
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=jay4bvn1CHVbECfZlQ8rRUGomUTSbkN+CtKVdn6fLuw=;
+        b=UjmZ16XdSJmMTk1B1Q+5+jygX0AQnxVwiZ8nHytzix8JWJdKkHA1DfCyxpMIn+LvEH
+         8oizt36qlO9lPjxYa3z2hdYSazQstIsTha8sWrMq1ruzMdEPbGL3u5PuxcO4nDQuLaUq
+         pyPzmwEP8ypf51mZzOYgHlTUGmWAcNvmbj4GcHgW1Le9W2SMDQpIoZkZurFoTaWpkMxJ
+         KQz5SeJ7AjGA+PDdbqbJvFDXxQh0CLR4VQuTMWpxCcQ3rpPXPUIZctwdhI5NK9/3E07a
+         B+zKCrYOIohAOeNfqN7g2oTnYVPNaqsaqUv23gFcCRUKzyRNzVLCPBqc2W48WHrcvU7O
+         WOGw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:references:cc:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding;
-        bh=RWFJQ1qkbsa5F3INdZSYF9XYBxAarnZZ0OkMW84AtA8=;
-        b=hNI/wl7xPfG3kyEhGD0KV/gM1yzdnQuYpwQeUUsoWRaslf9kr6ri4ZzvcSl6txCN5A
-         NPY28dGbdL2oy64vxdBQ3mEEftsSfvrDe1EBmyuSb5aBg5qSTY/5BSr3YBqg1U3vK0UB
-         Kc9qL6GsU0PUbbYxct6aFpc0OrZaanDuHvxrcmo/ajaPhYq+gy11vDPWqOzy+NDtoMqE
-         bygIH/oJPLJs0Ge0b1qY61uc/X2c1ehu1a7zJrOol9TKuiglh6Z8EP8ZCAdYkz+whghu
-         69N6lG+3bSZxB1q+nXxLka0Wk4U8HXy9vUhv4AmUUQfRjBz9Ykm6t1VU1K2qPxSvO8h6
-         1THQ==
-X-Gm-Message-State: AOAM533F+7TGg/HIoeoUht7R9EMuF8kQHU4RfUP3NHRAXxKbpZvc7jJ2
-        P/31t/ndCVc9FWgMUNiF/5+tcryu/6Q=
-X-Google-Smtp-Source: ABdhPJxluh+TYNpvVp7WU8UgvTkY7srzCDOyThCkI5cSoJeP/dJDejCwfWN4KVkKLwHJA8WYTguDiw==
-X-Received: by 2002:a17:902:e842:b0:142:dbc:bade with SMTP id t2-20020a170902e84200b001420dbcbademr9982447plg.45.1636486780839;
-        Tue, 09 Nov 2021 11:39:40 -0800 (PST)
-Received: from [10.1.1.26] (222-155-101-117-fibre.sparkbb.co.nz. [222.155.101.117])
-        by smtp.gmail.com with ESMTPSA id 11sm19166161pfl.41.2021.11.09.11.39.37
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 09 Nov 2021 11:39:40 -0800 (PST)
-Subject: Re: [PATCH net v9 3/3] net/8390: apne.c - add 100 Mbit support to
- apne.c driver
-To:     Randy Dunlap <rdunlap@infradead.org>, linux-m68k@vger.kernel.org,
-        geert@linux-m68k.org
-References: <20211109040242.11615-1-schmitzmic@gmail.com>
- <20211109040242.11615-4-schmitzmic@gmail.com>
- <3d4c9e98-f004-755c-2f30-45b951ede6a6@infradead.org>
- <d5fa96b6-a351-1195-7967-25c26d9a04fb@gmail.com>
- <c7ab4109-9abf-dfe8-0325-7d3e113aa66c@infradead.org>
- <1ed3a71a-e57b-0754-b719-36ac862413da@gmail.com>
- <f5fb3808-b658-abfb-3b33-4ded8cd8ba57@infradead.org>
-Cc:     alex@kazik.de, netdev@vger.kernel.org
-From:   Michael Schmitz <schmitzmic@gmail.com>
-Message-ID: <bcf2265d-cbd3-83dd-0131-a72efa97fd99@gmail.com>
-Date:   Wed, 10 Nov 2021 08:39:34 +1300
-User-Agent: Mozilla/5.0 (X11; Linux ppc64; rv:45.0) Gecko/20100101
- Thunderbird/45.8.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=jay4bvn1CHVbECfZlQ8rRUGomUTSbkN+CtKVdn6fLuw=;
+        b=F7fiET4qrwjKT1ugggHQIU+pKBFV2BH5SqyySr4kLWqompjWIAo13W3uJOBkDzgCg6
+         Rpxz6VtXitxlxD52EmXek/5+TOsQ5lJu+LmzooCTeY6fTAfsXdpVF1j6tzX9e6VqeOq2
+         /FsTS4sOIQuSDw5PaX3R8zt2+KjzTJrlbdipCClTAZkR4XX+70QyTE/baa18JmqtI3Gf
+         F0q5topLQFZFueekqs+Q5yrixVq17ocj+h/rlnjIvFoJTBjb7xUbqgKENlGGf31eJ6tv
+         RQICx4H57PZL/DgI6MaoFKKptQOOhkUfT+T/JclYtVSN4qthSScWernhNgSG0bHhVnvw
+         4K5w==
+X-Gm-Message-State: AOAM533B5n6QzeD7wmp2UzmVLOGROA9c3n2Alcb/OcFdS6vwGJjC72OK
+        ccVSXYEz92G5EpLWvRmg7KOyVfNJoovhsbiQUf/IrA==
+X-Google-Smtp-Source: ABdhPJxNipPZr7+vmyXXCN9McHMGmga6b23qum9RT+SVZQNWx6aLiAtMH8PkORDzg0FIgBHPXVE6XphIIe1qjYrStiM=
+X-Received: by 2002:a9d:6348:: with SMTP id y8mr8389289otk.179.1636488475884;
+ Tue, 09 Nov 2021 12:07:55 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <f5fb3808-b658-abfb-3b33-4ded8cd8ba57@infradead.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
+References: <20211105130338.241100-1-arnd@kernel.org> <20211105130338.241100-3-arnd@kernel.org>
+In-Reply-To: <20211105130338.241100-3-arnd@kernel.org>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Tue, 9 Nov 2021 21:07:44 +0100
+Message-ID: <CACRpkdYdrm_YnwvxjqLBrJfOF07_nDyu1g0xggRMJ9_x2S+LJA@mail.gmail.com>
+Subject: Re: [RFC 3/3] gpiolib: coldfire: remove custom asm/gpio.h
+To:     Arnd Bergmann <arnd@kernel.org>
+Cc:     linux-gpio@vger.kernel.org, Bartosz Golaszewski <brgl@bgdev.pl>,
+        linux-m68k@lists.linux-m68k.org, geert@linux-m68k.org,
+        gerg@linux-m68k.org, linux@armlinux.org.uk,
+        linux-arm-kernel@lists.infradead.org, linux-sh@vger.kernel.org,
+        dalias@libc.org, ysato@users.sourceforge.jp,
+        Arnd Bergmann <arnd@arndb.de>, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-Geert,
+On Fri, Nov 5, 2021 at 2:05 PM Arnd Bergmann <arnd@kernel.org> wrote:
 
-On 10/11/21 08:25, Randy Dunlap wrote:
->>>>> There are no other drivers that "select PCCARD" or
->>>>> "select PCMCIA" in the entire kernel tree.
->>>>> I don't see any good justification to allow it here.
->>>>
->>>> Amiga doesn't use anything from the core PCMCIA code, instead
->>>> providing its own basic PCMCIA support code.
->>>>
->>>> I had initially duplicated some of the cis tuple parser code, but
->>>> decided to use what's already there instead.
->>>>
->>>> I can drop these selects, and add instructions to manually select
->>>> these options in the Kconfig help section. Seemed a little error prone
->>>> to me.
->>>
->>> Just make it the same as other drivers in this respect, please.
->>
->> "depends on PCMCIA" is what I've seen for other drivers. That is not
->> really appropriate for the APNE driver (8 bit cards work fine with
->> just the support code from arch/m68k/amiga/pcmcia.c).
->>
->> Please confirm that "depends on PCMCIA" is what you want me to use?
+> From: Arnd Bergmann <arnd@arndb.de>
 >
-> Hi Michael,
+> Now that coldfire is the only user of a custom asm/gpio.h, it seems
+> better to remove this as well, and have the same interface everywhere.
 >
-> I don't want to see this driver using 'select', so that probably only
-> leaves "depends on".
-> But if you or Geert tell me that I am bonkers, so be it. :)
-
-Are you OK with adding CONFIG_PCCARD=y and CONFIG_PCMCIA=y to 
-amiga_defconfig to allow APNE to still be built when changed to depend 
-on PCMCIA?
-
-Cheers,
-
-	Michael
-
+> For the gpio_get_value()/gpio_set_value()/gpio_to_irq(), gpio_cansleep()
+> functions, the custom version is only a micro-optimization to inline the
+> function for constant GPIO numbers. However, in the coldfire defconfigs,
+> I was unable to find a single instance where this micro-optimization
+> was even used, so to my best knowledge removing this has no downsides.
 >
-> Thanks.
+> The custom gpio_request_one() function is even less useful, as it is
+> guarded by an #ifdef that is never true.
+>
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+
+Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
+
+Yours,
+Linus Walleij
