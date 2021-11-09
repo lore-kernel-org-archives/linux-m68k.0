@@ -2,54 +2,53 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 73215C433F5
-	for <linux-m68k@archiver.kernel.org>; Tue,  9 Nov 2021 07:55:51 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A8231C433F5
+	for <linux-m68k@archiver.kernel.org>; Tue,  9 Nov 2021 08:14:36 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 5170D610F8
-	for <linux-m68k@archiver.kernel.org>; Tue,  9 Nov 2021 07:55:51 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 8B683611BD
+	for <linux-m68k@archiver.kernel.org>; Tue,  9 Nov 2021 08:14:36 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243796AbhKIH6e (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Tue, 9 Nov 2021 02:58:34 -0500
-Received: from mail-ua1-f43.google.com ([209.85.222.43]:44761 "EHLO
-        mail-ua1-f43.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236392AbhKIH6b (ORCPT
-        <rfc822;linux-m68k@vger.kernel.org>); Tue, 9 Nov 2021 02:58:31 -0500
-Received: by mail-ua1-f43.google.com with SMTP id s13so21313645uaj.11
-        for <linux-m68k@vger.kernel.org>; Mon, 08 Nov 2021 23:55:45 -0800 (PST)
+        id S241714AbhKIIRV (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Tue, 9 Nov 2021 03:17:21 -0500
+Received: from mail-ua1-f42.google.com ([209.85.222.42]:33533 "EHLO
+        mail-ua1-f42.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235389AbhKIIRV (ORCPT
+        <rfc822;linux-m68k@vger.kernel.org>); Tue, 9 Nov 2021 03:17:21 -0500
+Received: by mail-ua1-f42.google.com with SMTP id b17so36992346uas.0
+        for <linux-m68k@vger.kernel.org>; Tue, 09 Nov 2021 00:14:35 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=v27g96gWc/T41/P1Xw29szFjYTV5iQWqN+swknaykxA=;
-        b=ahuE9vnXUM4XMcEdEl09GYeyMFidDiY//72NSAr126FCq+/5qWBm28I+X3LZJ3m4LB
-         U5j2z7v/oe+/JpyB+g0Ofm3cYCdn3f8uF17EuQ2nP2IHYf2ppgyOqtVilWql36cyYCPg
-         T6NlkOZDYSuFhvv00WjJXm8vQFYr91XjtxHUIQSgWlBDprxHh5h4xZKUstpS67qHPnj/
-         Jv51h9wEgM8yByUFfwx/kl2HWPTFR0sxCsUUHq8M7Bw7CIqR0lPVNv/M5zjbqDGifO7Y
-         pw+iAcdvomfs5Ncy6ClFGX3u0BqCOedWPFOaH4QHu8WJwhuTY20USz431M2xEtdBgdj8
-         LVDA==
-X-Gm-Message-State: AOAM532aagL0db4LvvhS0fK6EWmRKbKgfrMtVniGWw/sVvwcUFuyacYq
-        U4eywTxvct8BgZiNKS9vRLapZhyEvs9D7mge
-X-Google-Smtp-Source: ABdhPJxLZ2JMLN1YU/cQy/QqogtuHbifaSyiG1OAzt8hP8XFg1tAha9fHAHzz8lfjadNHnszcYnO4w==
-X-Received: by 2002:ab0:6808:: with SMTP id z8mr7348886uar.130.1636444545248;
-        Mon, 08 Nov 2021 23:55:45 -0800 (PST)
-Received: from mail-ua1-f41.google.com (mail-ua1-f41.google.com. [209.85.222.41])
-        by smtp.gmail.com with ESMTPSA id q9sm1423355vkn.44.2021.11.08.23.55.44
+        bh=hhd3ezy8myzp/ikE3sazwWI83nlclz2J63YyVOY6B+c=;
+        b=hWrREqjF7bc6d7MEG8kroOXT3G21onz4FSXMbjNgMiEw0iDFc2RkkxAvF5K5NOz09H
+         xVC7ahPp71HGZf92qI+ND2QrdyiLxCXdRfBbFMrEtsJzlxpwLaHjTP7a0I/QQiMgD8hC
+         kA7RNsCSSBU+SCS4PpLedCgD7NWkUneWpqsBnaBortktFKyQ+51dH8z82wspniEjdG/f
+         COeVCuGdkT4dDQZLKHB+smp+wp4LknoTFsp/wdmMygefZdHAKz4ojgjbJJFxP/KGgjZR
+         1+o1z+Pe/VD4jKOwdtIpn9FZsMqjZYSL8W0wL0EB+Iyu1cj6ieO78olmNLfoNwqV5G7O
+         Ag/w==
+X-Gm-Message-State: AOAM530V7sHOJhJ39X2mbgbrVc/beUsfOCFv/FJNZ5hnWZs+MYPwK4wo
+        Si4NM9qookKtny8/fG3SHShn2v9S78otW7Z9
+X-Google-Smtp-Source: ABdhPJyYNy+yltv7KBrOACJoC9CdmPg+TICbzr/R/O7gVdrQLoe/BDbIB5qrQIRvisD1ewbfdeulZg==
+X-Received: by 2002:a05:6102:2910:: with SMTP id cz16mr48502224vsb.9.1636445674621;
+        Tue, 09 Nov 2021 00:14:34 -0800 (PST)
+Received: from mail-ua1-f43.google.com (mail-ua1-f43.google.com. [209.85.222.43])
+        by smtp.gmail.com with ESMTPSA id k185sm3584936vsc.21.2021.11.09.00.14.34
         for <linux-m68k@vger.kernel.org>
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 08 Nov 2021 23:55:45 -0800 (PST)
-Received: by mail-ua1-f41.google.com with SMTP id e10so36903790uab.3
-        for <linux-m68k@vger.kernel.org>; Mon, 08 Nov 2021 23:55:44 -0800 (PST)
-X-Received: by 2002:ab0:15a1:: with SMTP id i30mr7547350uae.122.1636444544749;
- Mon, 08 Nov 2021 23:55:44 -0800 (PST)
+        Tue, 09 Nov 2021 00:14:34 -0800 (PST)
+Received: by mail-ua1-f43.google.com with SMTP id t13so21605595uad.9
+        for <linux-m68k@vger.kernel.org>; Tue, 09 Nov 2021 00:14:34 -0800 (PST)
+X-Received: by 2002:a05:6102:1354:: with SMTP id j20mr38346902vsl.41.1636445674121;
+ Tue, 09 Nov 2021 00:14:34 -0800 (PST)
 MIME-Version: 1.0
-References: <20211104061102.30899-1-schmitzmic@gmail.com> <20211104061102.30899-2-schmitzmic@gmail.com>
- <CAMuHMdVDAZpG=H210R_qeWmMPFm_62jGgsXv_ymYjDBC5-CcZQ@mail.gmail.com> <c14ea1ed-c3f1-c5f4-c7d6-1b73387bc278@gmail.com>
-In-Reply-To: <c14ea1ed-c3f1-c5f4-c7d6-1b73387bc278@gmail.com>
+References: <20211109040242.11615-1-schmitzmic@gmail.com> <20211109040242.11615-2-schmitzmic@gmail.com>
+In-Reply-To: <20211109040242.11615-2-schmitzmic@gmail.com>
 From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Tue, 9 Nov 2021 08:55:33 +0100
-X-Gmail-Original-Message-ID: <CAMuHMdVU4DJ+ahHVW47swRfyFC97-uGUz4nZBo4OZipBTvut-Q@mail.gmail.com>
-Message-ID: <CAMuHMdVU4DJ+ahHVW47swRfyFC97-uGUz4nZBo4OZipBTvut-Q@mail.gmail.com>
-Subject: Re: [PATCH v8 1/3] m68k: amiga/pcmcia - add 16 bit detection
+Date:   Tue, 9 Nov 2021 09:14:22 +0100
+X-Gmail-Original-Message-ID: <CAMuHMdUnn5Nzkj=CF-sSUhbJ+uC_UL1Rw==xtwMbvc3h5e2YKA@mail.gmail.com>
+Message-ID: <CAMuHMdUnn5Nzkj=CF-sSUhbJ+uC_UL1Rw==xtwMbvc3h5e2YKA@mail.gmail.com>
+Subject: Re: [PATCH v9 1/3] m68k: amiga/pcmcia - add 16 bit detection
  interface to amipcmcia.h
 To:     Michael Schmitz <schmitzmic@gmail.com>
 Cc:     "Linux/m68k" <linux-m68k@vger.kernel.org>,
@@ -61,54 +60,86 @@ X-Mailing-List: linux-m68k@vger.kernel.org
 
 Hi Michael,
 
-On Mon, Nov 8, 2021 at 10:48 PM Michael Schmitz <schmitzmic@gmail.com> wrote:
-> On 08/11/21 21:35, Geert Uytterhoeven wrote:
-> > On Thu, Nov 4, 2021 at 7:11 AM Michael Schmitz <schmitzmic@gmail.com> wrote:
-> >> Add the interface definitions for 16 bit card autoprobing (using
-> >> the generic PCMCIA cftable entry parser) to amipcmcia.h for use
-> >> by apne.c.
-> >>
-> >> Signed-off-by: Michael Schmitz <schmitzmic@gmail.com>
-> >
-> > Thanks for your patch!
-> >
-> >> --- a/arch/m68k/include/asm/amipcmcia.h
-> >> +++ b/arch/m68k/include/asm/amipcmcia.h
-> >> @@ -64,6 +64,7 @@ static inline void pcmcia_disable_irq(void)
-> >>  #define PCMCIA_SPEED_250NS     250
-> >>  #define PCMCIA_SPEED_720NS     720
-> >>
-> >> +#ifndef _LINUX_CISTPL_H
-> >
-> > This #ifndef is here to prevent conflicts with <pcmcia/cistpl.h>?
-> > Why can't the definitions below be removed, and <pcmcia/cistpl.h>
-> > always included instead?
+On Tue, Nov 9, 2021 at 5:03 AM Michael Schmitz <schmitzmic@gmail.com> wrote:
+> Add the interface definition for 16 bit card autoprobing (using
+> the generic PCMCIA cftable entry parser) to amipcmcia.h for use
+> by apne.c. Include necessary cftable definitions from cistpl.h,
+> remove locally duplicate definitions from amipcmcia.h.
 >
-> We'd have to include it everywhere amipcmcia.h is included (because of
-> the pcmcia_parse_tuple() external declaration below). Didn't want to do
-> that unless absolutely necessary, but if you don't mind that, I'll
-> change this part.
+> Signed-off-by: Michael Schmitz <schmitzmic@gmail.com>
+>
+> --
+>
+> Changes from v8:
+>
+> Geert Uytterhoeven:
+>
+> - just include pcmcia/cistpl.h; declare pcmcia_parse_tuple()
+>   only if core PCMCIA code is included
 
-That include can be avoided by providing forward declarations for
-struct tuple_t and struct cisparse_t, and using the struct types
-instead of the typedefs for the pcmcia_parse_tuple() parameters, right?
+Thanks for the update!
 
+> --- a/arch/m68k/include/asm/amipcmcia.h
+> +++ b/arch/m68k/include/asm/amipcmcia.h
+> @@ -13,6 +13,7 @@
+>  #ifndef __AMIGA_PCMCIA_H__
+>  #define __AMIGA_PCMCIA_H__
 >
-> >
-> >>  /* PCMCIA Tuple codes */
-> >>
-> >>  #define CISTPL_NULL            0x00
-> >> @@ -106,5 +107,8 @@ static inline void pcmcia_disable_irq(void)
-> >>  #define CISTPL_FUNCID_NETWORK  0x06
-> >>  #define CISTPL_FUNCID_AIMS     0x07
-> >>  #define CISTPL_FUNCID_SCSI     0x08
-> >> +#else  /* defined _LINUX_CISTPL_H */
-> >> +extern int pcmcia_parse_tuple(tuple_t *cftuple, cisparse_t *cfparse);
-> >
-> > This can be unconditional?
+> +#include <pcmcia/cistpl.h>
+>  #include <asm/amigayle.h>
 >
-> Brain fade on my part - this of course needs to be conditional on
-> CONFIG_PCMCIA. not on _LINUX_CISTPL_H.
+>  /* prototypes */
+> @@ -64,47 +65,8 @@ static inline void pcmcia_disable_irq(void)
+>  #define PCMCIA_SPEED_250NS     250
+>  #define PCMCIA_SPEED_720NS     720
+>
+> -/* PCMCIA Tuple codes */
+> -
+> -#define CISTPL_NULL            0x00
+> -#define CISTPL_DEVICE          0x01
+> -#define CISTPL_LONGLINK_CB     0x02
+> -#define CISTPL_CONFIG_CB       0x04
+> -#define CISTPL_CFTABLE_ENTRY_CB        0x05
+> -#define CISTPL_LONGLINK_MFC    0x06
+> -#define CISTPL_BAR             0x07
+> -#define CISTPL_CHECKSUM                0x10
+> -#define CISTPL_LONGLINK_A      0x11
+> -#define CISTPL_LONGLINK_C      0x12
+> -#define CISTPL_LINKTARGET      0x13
+> -#define CISTPL_NO_LINK         0x14
+> -#define CISTPL_VERS_1          0x15
+> -#define CISTPL_ALTSTR          0x16
+> -#define CISTPL_DEVICE_A                0x17
+> -#define CISTPL_JEDEC_C         0x18
+> -#define CISTPL_JEDEC_A         0x19
+> -#define CISTPL_CONFIG          0x1a
+> -#define CISTPL_CFTABLE_ENTRY   0x1b
+> -#define CISTPL_DEVICE_OC       0x1c
+> -#define CISTPL_DEVICE_OA       0x1d
+> -#define CISTPL_DEVICE_GEO      0x1e
+> -#define CISTPL_DEVICE_GEO_A    0x1f
+> -#define CISTPL_MANFID          0x20
+> -#define CISTPL_FUNCID          0x21
+> -#define CISTPL_FUNCE           0x22
+> -#define CISTPL_SWIL            0x23
+> -#define CISTPL_END             0xff
+> -
+> -/* FUNCID */
+> -
+> -#define CISTPL_FUNCID_MULTI    0x00
+> -#define CISTPL_FUNCID_MEMORY   0x01
+> -#define CISTPL_FUNCID_SERIAL   0x02
+> -#define CISTPL_FUNCID_PARALLEL 0x03
+> -#define CISTPL_FUNCID_FIXED    0x04
+> -#define CISTPL_FUNCID_VIDEO    0x05
+> -#define CISTPL_FUNCID_NETWORK  0x06
+> -#define CISTPL_FUNCID_AIMS     0x07
+> -#define CISTPL_FUNCID_SCSI     0x08
+> +#if IS_ENABLED(CONFIG_PCMCIA)
+> +extern int pcmcia_parse_tuple(tuple_t *cftuple, cisparse_t *cfparse);
+> +#endif
+
+Why the #ifdef? Can't it be defined unconditionally?
 
 Gr{oetje,eeting}s,
 
