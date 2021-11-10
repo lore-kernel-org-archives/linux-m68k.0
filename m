@@ -2,132 +2,111 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 6157DC433F5
-	for <linux-m68k@archiver.kernel.org>; Tue,  9 Nov 2021 22:26:37 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id CABA8C433EF
+	for <linux-m68k@archiver.kernel.org>; Wed, 10 Nov 2021 08:27:29 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 3C7B16108C
-	for <linux-m68k@archiver.kernel.org>; Tue,  9 Nov 2021 22:26:37 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id AB8E96108E
+	for <linux-m68k@archiver.kernel.org>; Wed, 10 Nov 2021 08:27:29 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236476AbhKIW3N (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Tue, 9 Nov 2021 17:29:13 -0500
-Received: from mail.kernel.org ([198.145.29.99]:50246 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1343561AbhKIW0T (ORCPT <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Tue, 9 Nov 2021 17:26:19 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6C13461B2A;
-        Tue,  9 Nov 2021 22:23:32 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1636496613;
-        bh=aOK/IR1dpDc8S/kfx4aITc/e7OlsxFe9NaHm55Gg33M=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=kOmWts9gLwzKExj/pzPp7XOQB82oSdbuGQ5Xu5NvgOAKsJuo6KjWcwr7+4iK6H2QT
-         aPLavPRwaH1Pm7E4vJ9A5RKyRrUmTTg2QY5JtMqA8kSqc7VlaWSjxhw5NNBI/armvM
-         OleDkx+K1BAXKKVJViNMErV085pu5vhXTn+NPI6UbehQr0PNBWhrmtwXlFO890ngCC
-         5QJ6/ZljVd/IhmI+rRHKDzv6SZ5BD5dItLZn/DYLUmRWrjja7q89PXSihBFxjmWp5n
-         GyPJ87vlQBuMkfBe8Rb3n2jMoyVQGpMUAVb7ItNMOP0EFxNhm48heGTfSl7Hu9VOpD
-         50+4yivW0Kq9A==
-From:   Sasha Levin <sashal@kernel.org>
-To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Randy Dunlap <rdunlap@infradead.org>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org,
-        linux-m68k@lists.linux-m68k.org,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Takashi Iwai <tiwai@suse.de>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH AUTOSEL 4.19 14/21] ALSA: ISA: not for M68K
-Date:   Tue,  9 Nov 2021 17:23:03 -0500
-Message-Id: <20211109222311.1235686-14-sashal@kernel.org>
-X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20211109222311.1235686-1-sashal@kernel.org>
-References: <20211109222311.1235686-1-sashal@kernel.org>
+        id S229908AbhKJIaQ (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Wed, 10 Nov 2021 03:30:16 -0500
+Received: from mail-ua1-f43.google.com ([209.85.222.43]:39553 "EHLO
+        mail-ua1-f43.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229582AbhKJIaP (ORCPT
+        <rfc822;linux-m68k@vger.kernel.org>); Wed, 10 Nov 2021 03:30:15 -0500
+Received: by mail-ua1-f43.google.com with SMTP id i6so3166198uae.6;
+        Wed, 10 Nov 2021 00:27:28 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=uQGLy9TSy7z4CUPPpyYTSpZf9gYsNWWhiopCAQfwV3s=;
+        b=m66vYe0WPCZ/eokMg00ZW764pKyFAp56/ZXfp14EBaU2hqV0nombvvTvu0UQh8ZYjQ
+         yVpDFPq6pdH8G+QxFW0qgUbv+EYx28WUzA67ZU6762owcDOQowzIi/k+ZnTLIBM0htz5
+         P6oJMMIFlrNZDmre4ubemvmbXNYfmT6wpsAPCZcIkWxH9purkb+XKf88QPE7DR8KA1zK
+         1iId7PoXKhmoCUowbZmKXGY00FE7fGcEUl0RB0nug+N03bgCmFpeAXz82SlpuVK2iFY+
+         WmqkhuTbJwPJr25EpW2UThdowBBbN9ACYvHC/VjiGgxRquyiGBGIJmHFbTxRRiuGZSqL
+         6VkA==
+X-Gm-Message-State: AOAM5333x9oq8ojXkp9DBNFbBAUh34ZEYqFqLocss8QdHI9r6KTabTIS
+        FkhLgeSaB+XyB1qXGITQmig6bJI/pWdjtQ==
+X-Google-Smtp-Source: ABdhPJzK4bWMqyN0aZXo6H4T3fio0qM8a+t1Ktk9AuD4jLSEwZWtx97ZVa/dYnBhVLZcHzjkn1fTBQ==
+X-Received: by 2002:ab0:298c:: with SMTP id u12mr19555157uap.64.1636532847951;
+        Wed, 10 Nov 2021 00:27:27 -0800 (PST)
+Received: from mail-ua1-f50.google.com (mail-ua1-f50.google.com. [209.85.222.50])
+        by smtp.gmail.com with ESMTPSA id y2sm2913968vke.43.2021.11.10.00.27.27
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 10 Nov 2021 00:27:27 -0800 (PST)
+Received: by mail-ua1-f50.google.com with SMTP id p2so3111111uad.11;
+        Wed, 10 Nov 2021 00:27:27 -0800 (PST)
+X-Received: by 2002:a9f:2431:: with SMTP id 46mr10283360uaq.114.1636532847452;
+ Wed, 10 Nov 2021 00:27:27 -0800 (PST)
 MIME-Version: 1.0
-X-stable: review
-X-Patchwork-Hint: Ignore
-Content-Transfer-Encoding: 8bit
+References: <20211109040242.11615-1-schmitzmic@gmail.com> <20211109040242.11615-4-schmitzmic@gmail.com>
+ <3d4c9e98-f004-755c-2f30-45b951ede6a6@infradead.org> <d5fa96b6-a351-1195-7967-25c26d9a04fb@gmail.com>
+ <c7ab4109-9abf-dfe8-0325-7d3e113aa66c@infradead.org> <1ed3a71a-e57b-0754-b719-36ac862413da@gmail.com>
+ <f5fb3808-b658-abfb-3b33-4ded8cd8ba57@infradead.org> <bcf2265d-cbd3-83dd-0131-a72efa97fd99@gmail.com>
+In-Reply-To: <bcf2265d-cbd3-83dd-0131-a72efa97fd99@gmail.com>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Wed, 10 Nov 2021 09:27:16 +0100
+X-Gmail-Original-Message-ID: <CAMuHMdVjZxVmLp5Vg=Ks_vQpoJ_7D9JYoELhQM4zbKqvQMybDQ@mail.gmail.com>
+Message-ID: <CAMuHMdVjZxVmLp5Vg=Ks_vQpoJ_7D9JYoELhQM4zbKqvQMybDQ@mail.gmail.com>
+Subject: Re: [PATCH net v9 3/3] net/8390: apne.c - add 100 Mbit support to
+ apne.c driver
+To:     Michael Schmitz <schmitzmic@gmail.com>
+Cc:     Randy Dunlap <rdunlap@infradead.org>,
+        "Linux/m68k" <linux-m68k@vger.kernel.org>,
+        ALeX Kazik <alex@kazik.de>, netdev <netdev@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-From: Randy Dunlap <rdunlap@infradead.org>
+Hi Michael,
 
-[ Upstream commit 3c05f1477e62ea5a0a8797ba6a545b1dc751fb31 ]
+On Tue, Nov 9, 2021 at 8:39 PM Michael Schmitz <schmitzmic@gmail.com> wrote:
+> On 10/11/21 08:25, Randy Dunlap wrote:
+> >>>>> There are no other drivers that "select PCCARD" or
+> >>>>> "select PCMCIA" in the entire kernel tree.
+> >>>>> I don't see any good justification to allow it here.
+> >>>>
+> >>>> Amiga doesn't use anything from the core PCMCIA code, instead
+> >>>> providing its own basic PCMCIA support code.
+> >>>>
+> >>>> I had initially duplicated some of the cis tuple parser code, but
+> >>>> decided to use what's already there instead.
+> >>>>
+> >>>> I can drop these selects, and add instructions to manually select
+> >>>> these options in the Kconfig help section. Seemed a little error prone
+> >>>> to me.
+> >>>
+> >>> Just make it the same as other drivers in this respect, please.
+> >>
+> >> "depends on PCMCIA" is what I've seen for other drivers. That is not
+> >> really appropriate for the APNE driver (8 bit cards work fine with
+> >> just the support code from arch/m68k/amiga/pcmcia.c).
+> >>
+> >> Please confirm that "depends on PCMCIA" is what you want me to use?
+> >
+> > Hi Michael,
+> >
+> > I don't want to see this driver using 'select', so that probably only
+> > leaves "depends on".
+> > But if you or Geert tell me that I am bonkers, so be it. :)
+>
+> Are you OK with adding CONFIG_PCCARD=y and CONFIG_PCMCIA=y to
+> amiga_defconfig to allow APNE to still be built when changed to depend
+> on PCMCIA?
 
-On m68k, compiling drivers under SND_ISA causes build errors:
+Sure.  When they become dependencies for APNE, I will update them in
+the next defconfig refresh.
 
-../sound/core/isadma.c: In function 'snd_dma_program':
-../sound/core/isadma.c:33:17: error: implicit declaration of function 'claim_dma_lock' [-Werror=implicit-function-declaration]
-   33 |         flags = claim_dma_lock();
-      |                 ^~~~~~~~~~~~~~
-../sound/core/isadma.c:41:9: error: implicit declaration of function 'release_dma_lock' [-Werror=implicit-function-declaration]
-   41 |         release_dma_lock(flags);
-      |         ^~~~~~~~~~~~~~~~
+Gr{oetje,eeting}s,
 
-../sound/isa/sb/sb16_main.c: In function 'snd_sb16_playback_prepare':
-../sound/isa/sb/sb16_main.c:253:72: error: 'DMA_AUTOINIT' undeclared (first use in this function)
-  253 |         snd_dma_program(dma, runtime->dma_addr, size, DMA_MODE_WRITE | DMA_AUTOINIT);
-      |                                                                        ^~~~~~~~~~~~
-../sound/isa/sb/sb16_main.c:253:72: note: each undeclared identifier is reported only once for each function it appears in
-../sound/isa/sb/sb16_main.c: In function 'snd_sb16_capture_prepare':
-../sound/isa/sb/sb16_main.c:322:71: error: 'DMA_AUTOINIT' undeclared (first use in this function)
-  322 |         snd_dma_program(dma, runtime->dma_addr, size, DMA_MODE_READ | DMA_AUTOINIT);
-      |                                                                       ^~~~~~~~~~~~
+                        Geert
 
-and more...
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
-Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-Cc: Jaroslav Kysela <perex@perex.cz>
-Cc: Takashi Iwai <tiwai@suse.com>
-Cc: alsa-devel@alsa-project.org
-Cc: linux-m68k@lists.linux-m68k.org
-Cc: Geert Uytterhoeven <geert@linux-m68k.org>
-Link: https://lore.kernel.org/r/20211016062602.3588-1-rdunlap@infradead.org
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
- sound/core/Makefile | 2 ++
- sound/isa/Kconfig   | 2 +-
- sound/pci/Kconfig   | 1 +
- 3 files changed, 4 insertions(+), 1 deletion(-)
-
-diff --git a/sound/core/Makefile b/sound/core/Makefile
-index ee4a4a6b99ba7..d123587c0fd8f 100644
---- a/sound/core/Makefile
-+++ b/sound/core/Makefile
-@@ -9,7 +9,9 @@ ifneq ($(CONFIG_SND_PROC_FS),)
- snd-y += info.o
- snd-$(CONFIG_SND_OSSEMUL) += info_oss.o
- endif
-+ifneq ($(CONFIG_M68K),y)
- snd-$(CONFIG_ISA_DMA_API) += isadma.o
-+endif
- snd-$(CONFIG_SND_OSSEMUL) += sound_oss.o
- snd-$(CONFIG_SND_VMASTER) += vmaster.o
- snd-$(CONFIG_SND_JACK)	  += ctljack.o jack.o
-diff --git a/sound/isa/Kconfig b/sound/isa/Kconfig
-index d7db1eeebc844..f8f3433925bb4 100644
---- a/sound/isa/Kconfig
-+++ b/sound/isa/Kconfig
-@@ -21,7 +21,7 @@ config SND_SB16_DSP
- menuconfig SND_ISA
- 	bool "ISA sound devices"
- 	depends on ISA || COMPILE_TEST
--	depends on ISA_DMA_API
-+	depends on ISA_DMA_API && !M68K
- 	default y
- 	help
- 	  Support for sound devices connected via the ISA bus.
-diff --git a/sound/pci/Kconfig b/sound/pci/Kconfig
-index 4105d9f653d90..bbaf46dc3f804 100644
---- a/sound/pci/Kconfig
-+++ b/sound/pci/Kconfig
-@@ -278,6 +278,7 @@ config SND_CS46XX_NEW_DSP
- config SND_CS5530
- 	tristate "CS5530 Audio"
- 	depends on ISA_DMA_API && (X86_32 || COMPILE_TEST)
-+	depends on !M68K
- 	select SND_SB16_DSP
- 	help
- 	  Say Y here to include support for audio on Cyrix/NatSemi CS5530 chips.
--- 
-2.33.0
-
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
