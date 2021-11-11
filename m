@@ -2,85 +2,85 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 2264AC433F5
-	for <linux-m68k@archiver.kernel.org>; Thu, 11 Nov 2021 01:12:52 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 86FA8C433EF
+	for <linux-m68k@archiver.kernel.org>; Thu, 11 Nov 2021 02:04:51 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id F34276103D
-	for <linux-m68k@archiver.kernel.org>; Thu, 11 Nov 2021 01:12:51 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 698D3601FF
+	for <linux-m68k@archiver.kernel.org>; Thu, 11 Nov 2021 02:04:51 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232187AbhKKBPj (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Wed, 10 Nov 2021 20:15:39 -0500
-Received: from wnew1-smtp.messagingengine.com ([64.147.123.26]:42785 "EHLO
-        wnew1-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232439AbhKKBPi (ORCPT
+        id S232958AbhKKCHj (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Wed, 10 Nov 2021 21:07:39 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59524 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233156AbhKKCHi (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Wed, 10 Nov 2021 20:15:38 -0500
-Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
-        by mailnew.west.internal (Postfix) with ESMTP id D35702B016A9;
-        Wed, 10 Nov 2021 20:12:49 -0500 (EST)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute4.internal (MEProxy); Wed, 10 Nov 2021 20:12:50 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:date:from:message-id:subject:to
-        :x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
-        fm1; bh=lttO4PhdhNIQwAlpI6RWIhcyJA0IcmTqe22T0/FCtuU=; b=WS+hsxkr
-        q/I3fSlY60H8zslNqW/+bzDt7VKjW/36LZlor/yFpQk7bnSnADFOKA00SsmllluN
-        IlHryDZC60DdAICuX6UmZOfB8+KdmswYujevM0Vnog0wyisqFdqR0DFfjvdBxKqF
-        y+gHsXDXwTJ935FxUH6VvIcdsv+bnIpRdjibw3JQRLZSVfd4NhWQf1L6QSmUiJw+
-        TcvosOBz43D1L4Fux/UPRHAiYZlxYaBk9MYhVaLa2n3w8PHb0iupRuemWCA8aSYy
-        yvutGGY9kcqYmV7fzNuuswPNyh8dCVV33IL7F84KSCbncGHrqLQWe0XbDjQc+xMp
-        p6XhJ7826rfCHg==
-X-ME-Sender: <xms:EW6MYXB9Eu7VlJVPyfBrKOifb3aUsSRLv9xYVOUJeG_UJxXR3E_9bw>
-    <xme:EW6MYdgkyAW9JqD6lfvnz4e2vPA5QZseIUkVkUjDr45zsH0zuYHTDLS3qBpr6Iwkf
-    5HeD-jp2fs_9uTT8yI>
-X-ME-Received: <xmr:EW6MYSkY0oXDPJj9mh2CpL3bmP1xceD1r2XavpyHJEmhSH06VbxEFH-E2I0QB_K9kqhFaH0yiNDEiTHenINvflIFkTEeKQCar8I>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvuddrvddtgddvkecutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenog
-    fhohhrsghiugguvghnjfgurhculdehtddtmdenucfjughrpefvkffhufffsedttdertddt
-    tdenucfhrhhomhephfhinhhnucfvhhgrihhnuceofhhthhgrihhnsehlihhnuhigqdhmie
-    ekkhdrohhrgheqnecuhfhorhgsihguuggvnhfjughrpefvkffhufffsedttdertddttddp
-    vffkhffuffestddtredttddtnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpe
-    hmrghilhhfrhhomhepfhhthhgrihhnsehlihhnuhigqdhmieekkhdrohhrgh
-X-ME-Proxy: <xmx:EW6MYZyL2NRYXGOwgbRt7RDyJb5VbEGKs9Ey14R78J_knIKE91tnEg>
-    <xmx:EW6MYcRdtWWQUs7pD9w9ctYJrtJq4RF0R7tLbUEzrTE7vcvN2N1sOw>
-    <xmx:EW6MYcagDSoxBvtZyO_mvkEdBv-mS0UodpaKlm1blvHJmvBR_qH-mA>
-    <xmx:EW6MYXLughvzejek9L5fwE0m9EMVbtI8AVzhs32GXN04DeT8tTUCvkMS4h8>
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Wed,
- 10 Nov 2021 20:12:47 -0500 (EST)
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     "Joshua Thompson" <funaho@jurai.org>,
+        Wed, 10 Nov 2021 21:07:38 -0500
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9481AC061766;
+        Wed, 10 Nov 2021 18:04:50 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+        Content-Type:In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:
+        Subject:Sender:Reply-To:Content-ID:Content-Description;
+        bh=0Nt0HEE9X5wOjLHK/2KYgOYAmFu/jqQA+XTNP+rxn0c=; b=LI/lgat9mSPLl11pGP8oR1Dzkr
+        YctlCHlPLfJ36I08z8F//KgzzWOmRL1wKQuOwPXfDGWkmuQDroVf9BjN+opYYk6WAlTqpvO4jjCHz
+        Y0DWqkJ9cMuMrViAULF6EURm1vZsdfo2bCOKcDufwipVCPCqzSRoEx8mvw9aeUXxPg3/UsrweOHl0
+        goceDKe2lbk9v34JDd+3jgiK150CvRnJAOixcGBugSva2jyq0aWUpxuh0u5iTdPqiYTHUSBEXZWkr
+        ffFP478ZRT5aa2vWrpkfzTE1eEtOcemtn7lg1NWhr2UnWqpRcISaV42XFvsmCUYx1xrI/AwYVelhw
+        X3WRH/mg==;
+Received: from [2601:1c0:6280:3f0::aa0b]
+        by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mkzSL-006kGt-9H; Thu, 11 Nov 2021 02:04:49 +0000
+Subject: Re: [PATCH] m68k: Enable memtest kernel parameter
+To:     Finn Thain <fthain@linux-m68k.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>
+Cc:     Mike Rapoport <rppt@kernel.org>, Sam Creasey <sammy@sammy.net>,
         linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org
-Message-Id: <e07d814e65cd38c00bf7b6cb806e81a4d32286ef.1636593047.git.fthain@linux-m68k.org>
-From:   Finn Thain <fthain@linux-m68k.org>
-Subject: [PATCH] MAINTAINERS: Add macfb driver to Macintosh section
-Date:   Thu, 11 Nov 2021 12:10:47 +1100
+References: <a57524fe38123ea17a6741cdc282f6c84c30a009.1636593047.git.fthain@linux-m68k.org>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <725c0578-d816-f0c9-175a-7400c4a01887@infradead.org>
+Date:   Wed, 10 Nov 2021 18:04:48 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
+MIME-Version: 1.0
+In-Reply-To: <a57524fe38123ea17a6741cdc282f6c84c30a009.1636593047.git.fthain@linux-m68k.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-According to the MAINTAINERS file, the Framebuffer Layer (and
-drivers/video/) is an orphan. However, macfb is still maintained
-so update the file to reflect that.
+On 11/10/21 5:10 PM, Finn Thain wrote:
+> Enable the memtest feature and rearrange some code to prevent it from
+> clobbering the initrd.
+> 
+> The CONFIG_BLK_DEV_INITRD symbol was conditional on !defined(CONFIG_SUN3).
+> For simplicity, remove that test on the basis that m68k_ramdisk.size == 0
+> on Sun 3.
+> 
+> The SLIME source code athttp://sammy.net/  shows that no BI_RAMDISK entry
+> is ever passed to the kernel due to #ifdef 0 around the relevant code.
+> 
+> Cc: Mike Rapoport<rppt@kernel.org>
+> Cc: Sam Creasey<sammy@sammy.net>
+> Signed-off-by: Finn Thain<fthain@linux-m68k.org>
+> ---
+> Are there any other Linux bootloaders on Sun 3?
+> ---
+>   arch/m68k/Kconfig           |  1 +
+>   arch/m68k/kernel/setup_mm.c | 15 ++++++---------
+>   arch/m68k/mm/motorola.c     |  2 ++
+>   3 files changed, 9 insertions(+), 9 deletions(-)
 
-Cc: Joshua Thompson <funaho@jurai.org>
-Signed-off-by: Finn Thain <fthain@linux-m68k.org>
----
- MAINTAINERS | 1 +
- 1 file changed, 1 insertion(+)
+Hi Finn,
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 3b79fd441dde..c9f2d49a7dd6 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -11069,6 +11069,7 @@ W:	http://www.mac.linux-m68k.org/
- F:	arch/m68k/mac/
- F:	drivers/macintosh/adb-iop.c
- F:	drivers/macintosh/via-macii.c
-+F:	drivers/video/fbdev/macfb.c
- 
- M68K ON HP9000/300
- M:	Philip Blundell <philb@gnu.org>
+Please also update Documentation/admin-guide/kernel-parameters.txt:
+
+	memtest=	[KNL,X86,ARM,PPC,RISCV] Enable memtest
+
+to include "M68K".
+
+thanks.
 -- 
-2.26.3
-
+~Randy
