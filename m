@@ -2,105 +2,109 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 08EAEC433EF
-	for <linux-m68k@archiver.kernel.org>; Thu, 11 Nov 2021 06:21:10 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id F1868C433F5
+	for <linux-m68k@archiver.kernel.org>; Thu, 11 Nov 2021 12:58:42 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id E373761212
-	for <linux-m68k@archiver.kernel.org>; Thu, 11 Nov 2021 06:21:09 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id D76E061107
+	for <linux-m68k@archiver.kernel.org>; Thu, 11 Nov 2021 12:58:42 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230129AbhKKGX4 (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Thu, 11 Nov 2021 01:23:56 -0500
-Received: from wout5-smtp.messagingengine.com ([64.147.123.21]:58137 "EHLO
-        wout5-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229905AbhKKGXz (ORCPT
+        id S232918AbhKKNBb (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Thu, 11 Nov 2021 08:01:31 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35370 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232257AbhKKNBa (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Thu, 11 Nov 2021 01:23:55 -0500
-Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
-        by mailout.west.internal (Postfix) with ESMTP id 903E032019DA;
-        Thu, 11 Nov 2021 01:21:06 -0500 (EST)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute5.internal (MEProxy); Thu, 11 Nov 2021 01:21:07 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=Ird/Co
-        1YqQUp1YcWv57cF2bwHWsDv4vjeqtH46VjxBA=; b=aTf8cBpLIhiRsDpBJOw0WA
-        L2Z7SdELEychvFNEST6RsawydxZPgy7wzuplZFru5r33/TDRqHG4P6hcfg52jDPM
-        usjsnTaWWBg3Hbd1CLHrZOBgQejJ9OwpNaimnqp7tCA3lpD27VkJ9pK9xTc73VKr
-        HqS2UuyT8WHxVdEamonl4PwOkhfIo2vo77fh02+gpmp4RDZ8xnLu1LeByoRXxVPm
-        qYZgOh8QX5KM0KI9vuLhnfo+7vieEQKZ9VB3A0xlr/sRsroM+B9F2PX16qoeW0rV
-        py8VRMT4aMiUqDjcW79/4k2eRdGRfJ8Hw9TmbDZ8rfE4oyFdIsw2HNN/zcT5MYlQ
-        ==
-X-ME-Sender: <xms:UbaMYYpcrIQdIJs0kfjYUe3lYS5kD2JqtgXrJ4A1-tnPViDwe_W9jg>
-    <xme:UbaMYep-tZu90bQ_sDrgy40z3bjyhEkkZlWvAJfvVYIM3HLeqISjxdfoW6Ljp9NiY
-    dTcWKVbFI89TJGMap4>
-X-ME-Received: <xmr:UbaMYdOdZT_KP9ihbgTRhNacNQAWYHqXBgHcZX1tSUYszXKqf31IdXe_WEC0CQhk7NNOPiaZ6FuF2yPVzRV-ChUR1O_HtFS3k88>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvuddrvddtgdeklecutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
-    fjughrpeffhffvufgjkfhfgggtsehttdertddttddvnecuhfhrohhmpefhihhnnhcuvfhh
-    rghinhcuoehfthhhrghinheslhhinhhugidqmheikehkrdhorhhgqeenucggtffrrghtth
-    gvrhhnpeevudfhheduhfdugeduuddvgefhveeigefhteeguddvkeehgfejjeehhfetvdek
-    ieenucffohhmrghinhepshgrmhhmhidrnhgvthenucevlhhushhtvghrufhiiigvpedtne
-    curfgrrhgrmhepmhgrihhlfhhrohhmpehfthhhrghinheslhhinhhugidqmheikehkrdho
-    rhhg
-X-ME-Proxy: <xmx:UbaMYf4wdweHaNPBKs7GZmjcC4m7aQoX9wWT6ICRQHu8vlelONvfGg>
-    <xmx:UbaMYX7UL-6CMrEQ50llEEgZXYtRjOFgCzlsQ-bUmPZgj675PoyDBA>
-    <xmx:UbaMYfhJVQwNA-CxdWw_tU9jokMnDIKWVewRotoUn8QsU868K3z2pg>
-    <xmx:UraMYZn2by6BQUnTFyRMFsE42UyL_1hDGFm21AVnpHJIthYsNleplg>
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Thu,
- 11 Nov 2021 01:21:02 -0500 (EST)
-Date:   Thu, 11 Nov 2021 17:20:56 +1100 (AEDT)
-From:   Finn Thain <fthain@linux-m68k.org>
-To:     Randy Dunlap <rdunlap@infradead.org>
-cc:     Geert Uytterhoeven <geert@linux-m68k.org>,
-        Mike Rapoport <rppt@kernel.org>, Sam Creasey <sammy@sammy.net>,
+        Thu, 11 Nov 2021 08:01:30 -0500
+Received: from baptiste.telenet-ops.be (baptiste.telenet-ops.be [IPv6:2a02:1800:120:4::f00:13])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A4A9C061766
+        for <linux-m68k@lists.linux-m68k.org>; Thu, 11 Nov 2021 04:58:41 -0800 (PST)
+Received: from ramsan.of.borg ([IPv6:2a02:1810:ac12:ed20:c018:2195:47a6:f384])
+        by baptiste.telenet-ops.be with bizsmtp
+        id H0ye2600816Lvom010yeZi; Thu, 11 Nov 2021 13:58:38 +0100
+Received: from geert (helo=localhost)
+        by ramsan.of.borg with local-esmtp (Exim 4.93)
+        (envelope-from <geert@linux-m68k.org>)
+        id 1ml9f4-00BfVd-2I; Thu, 11 Nov 2021 13:58:38 +0100
+Date:   Thu, 11 Nov 2021 13:58:38 +0100 (CET)
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+X-X-Sender: geert@ramsan.of.borg
+To:     Jens Axboe <axboe@kernel.dk>
+cc:     Christoph Hellwig <hch@infradead.org>, linux-block@vger.kernel.org,
         linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] m68k: Enable memtest kernel parameter
-In-Reply-To: <725c0578-d816-f0c9-175a-7400c4a01887@infradead.org>
-Message-ID: <fc341bdf-a145-3a6b-5325-eb8dce2f1cf4@linux-m68k.org>
-References: <a57524fe38123ea17a6741cdc282f6c84c30a009.1636593047.git.fthain@linux-m68k.org> <725c0578-d816-f0c9-175a-7400c4a01887@infradead.org>
+Subject: Re: [PATCH 4/5] block: move queue enter logic into
+ blk_mq_submit_bio()
+In-Reply-To: <87ee0091-9c2f-50e8-c8f2-dcebebb9de48@kernel.dk>
+Message-ID: <alpine.DEB.2.22.394.2111111350150.2780761@ramsan.of.borg>
+References: <20211104182201.83906-1-axboe@kernel.dk> <20211104182201.83906-5-axboe@kernel.dk> <YYQoLzMn7+s9hxpX@infradead.org> <2865c289-7014-2250-0f5b-a9ed8770d0ec@kernel.dk> <YYQo4ougXZvgv11X@infradead.org> <8c6163f4-0c0f-5254-5f79-9074f5a73cfe@kernel.dk>
+ <461c4758-2675-1d11-ac8a-6f25ef01d781@kernel.dk> <YYQr3jl3avsuOUAJ@infradead.org> <3d29a5ce-aace-6198-3ea9-e6f603e74aa1@kernel.dk> <YYQuyt2/y1MgzRi0@infradead.org> <87ee0091-9c2f-50e8-c8f2-dcebebb9de48@kernel.dk>
+User-Agent: Alpine 2.22 (DEB 394 2020-01-19)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain; charset=US-ASCII; format=flowed
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-On Wed, 10 Nov 2021, Randy Dunlap wrote:
+ 	Hi Jens,
 
-> On 11/10/21 5:10 PM, Finn Thain wrote:
-> > Enable the memtest feature and rearrange some code to prevent it from
-> > clobbering the initrd.
-> > 
-> > The CONFIG_BLK_DEV_INITRD symbol was conditional on !defined(CONFIG_SUN3).
-> > For simplicity, remove that test on the basis that m68k_ramdisk.size == 0
-> > on Sun 3.
-> > 
-> > The SLIME source code athttp://sammy.net/  shows that no BI_RAMDISK entry
-> > is ever passed to the kernel due to #ifdef 0 around the relevant code.
-> > 
-> > Cc: Mike Rapoport<rppt@kernel.org>
-> > Cc: Sam Creasey<sammy@sammy.net>
-> > Signed-off-by: Finn Thain<fthain@linux-m68k.org>
-> > ---
-> > Are there any other Linux bootloaders on Sun 3?
-> > ---
-> >   arch/m68k/Kconfig           |  1 +
-> >   arch/m68k/kernel/setup_mm.c | 15 ++++++---------
-> >   arch/m68k/mm/motorola.c     |  2 ++
-> >   3 files changed, 9 insertions(+), 9 deletions(-)
-> 
-> Hi Finn,
-> 
-> Please also update Documentation/admin-guide/kernel-parameters.txt:
-> 
-> 	memtest=	[KNL,X86,ARM,PPC,RISCV] Enable memtest
-> 
-> to include "M68K".
-> 
-> thanks.
-> 
+On Thu, 4 Nov 2021, Jens Axboe wrote:
+> On 11/4/21 1:04 PM, Christoph Hellwig wrote:
+>> On Thu, Nov 04, 2021 at 01:02:54PM -0600, Jens Axboe wrote:
+>>> On 11/4/21 12:52 PM, Christoph Hellwig wrote:
+>>>> Looks good:
+>>>>
+>>>> Reviewed-by: Christoph Hellwig <hch@lst.de>
+>>>
+>>> So these two are now:
+>>>
+>>> https://git.kernel.dk/cgit/linux-block/commit/?h=for-5.16/block&id=c98cb5bbdab10d187aff9b4e386210eb2332af96
+>>>
+>>> which is the one I sent here, and then the next one gets cleaned up to
+>>> remove that queue enter helper:
+>>>
+>>> https://git.kernel.dk/cgit/linux-block/commit/?h=for-5.16/block&id=7f930eb31eeb07f1b606b3316d8ad3ab6a92905b
+>>>
+>>> Can I add your reviewed-by to this last one as well? Only change is the
+>>> removal of blk_mq_enter_queue() and the weird construct there, it's just
+>>> bio_queue_enter() now.
+>>
+>> Sure.
+>
+> Thanks, prematurely already done, as you could tell :-)
 
-Will do.
+The updated version is now commit 900e080752025f00 ("block: move queue
+enter logic into blk_mq_submit_bio()") in Linus' tree.
 
-Thanks for your review.
+I have bisected failures on m68k/atari (on ARAnyM, using nfhd as the
+root device) to this commit, e.g.:
+
+     sd 0:0:0:0: [sda] tag#0 FAILED Result: hostbyte=DID_OK driverbyte=DRIVER_OK cmd_age=0s
+     sd 0:0:0:0: [sda] tag#0 Sense Key : Illegal Request [current]
+     sd 0:0:0:0: [sda] tag#0 Add. Sense: Invalid field in cdb
+     sd 0:0:0:0: [sda] tag#0 CDB: Write(10) 2a 08 00 00 00 01 00 00 08 00
+     critical target error, dev sda, sector 1 op 0x1:(WRITE) flags 0x20800 phys_seg 1 prio class 0
+     Buffer I/O error on dev sda1, logical block 0, lost sync page write
+
+     EXT4-fs (sda1): I/O error while writing superblock
+     sd 0:0:0:0: [sda] tag#0 FAILED Result: hostbyte=DID_OK driverbyte=DRIVER_OK cmd_age=0s
+     sd 0:0:0:0: [sda] tag#0 Sense Key : Illegal Request [current]
+     sd 0:0:0:0: [sda] tag#0 Add. Sense: Invalid field in cdb
+     sd 0:0:0:0: [sda] tag#0 CDB: Write(10) 2a 08 00 00 00 01 00 00 08 00
+     critical target error, dev sda, sector 1 op 0x1:(WRITE) flags 0x20800 phys_seg 1 prio class 0
+     Buffer I/O error on dev sda1, logical block 0, lost sync page write
+     EXT4-fs (sda1): I/O error while writing superblock
+
+This may happen either when mounting the root file system (leading to an
+unable to mount root fs panic), or later (leading to a read-only
+rootfs).
+
+Gr{oetje,eeting}s,
+
+ 						Geert
+
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+ 							    -- Linus Torvalds
+
