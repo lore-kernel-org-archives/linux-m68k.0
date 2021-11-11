@@ -2,77 +2,149 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9394EC433F5
-	for <linux-m68k@archiver.kernel.org>; Wed, 10 Nov 2021 23:49:22 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2DC83C433F5
+	for <linux-m68k@archiver.kernel.org>; Thu, 11 Nov 2021 01:12:40 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 6F29C61215
-	for <linux-m68k@archiver.kernel.org>; Wed, 10 Nov 2021 23:49:22 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 04BF761251
+	for <linux-m68k@archiver.kernel.org>; Thu, 11 Nov 2021 01:12:39 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234005AbhKJXwJ (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Wed, 10 Nov 2021 18:52:09 -0500
-Received: from mail.kernel.org ([198.145.29.99]:60804 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234279AbhKJXwG (ORCPT <rfc822;linux-m68k@vger.kernel.org>);
-        Wed, 10 Nov 2021 18:52:06 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9C57E61213;
-        Wed, 10 Nov 2021 23:49:17 +0000 (UTC)
-From:   Greg Ungerer <gerg@linux-m68k.org>
-Subject: [git pull] m68knommu changes for v5.16
-To:     torvalds@linux-foundation.org
-Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Linux/m68k <linux-m68k@vger.kernel.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>, gerg@kernel.org
-Message-ID: <318e7461-6fec-a6ac-5c88-e17b6fb914cc@linux-m68k.org>
-Date:   Thu, 11 Nov 2021 09:49:14 +1000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+        id S232286AbhKKBP1 (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Wed, 10 Nov 2021 20:15:27 -0500
+Received: from wnew1-smtp.messagingengine.com ([64.147.123.26]:47507 "EHLO
+        wnew1-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231254AbhKKBP0 (ORCPT
+        <rfc822;linux-m68k@lists.linux-m68k.org>);
+        Wed, 10 Nov 2021 20:15:26 -0500
+Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
+        by mailnew.west.internal (Postfix) with ESMTP id B794F2B016A9;
+        Wed, 10 Nov 2021 20:12:37 -0500 (EST)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute4.internal (MEProxy); Wed, 10 Nov 2021 20:12:38 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:date:from:message-id:subject:to
+        :x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
+        fm1; bh=gzBopdKcSAuOB8C+OTK/rUbW4nSHcYhlAOpsPtq26FU=; b=HeP3Sa7n
+        6Rcn/CUSdLeUx2Z6uVIDrEkdRpKkGhJ97J+tGqTz5BS//IUj3Yefq2puJesm9ECm
+        mcgJV9WVHcJp8PUP54CXewmz5xf2jS9F0+9kGy3ScADwh1GQssoiM7SZnt7ucoVx
+        +qEjOFEEIn3BwHAMBbj5xGoX7xO6D6jyYqNIGrrgNBYSP/Blojjuu9HRJiOtTI+8
+        SnEKPWrBHYOT6NhNY1m23MRBWc9Jx2JrV3N/7TlCBe4T38cz+KdOW82Aa7uqGZj8
+        G28bGYkbhHS6jZ+QB8Fjq65mG9ChMhQ/KSghrVTICNdD7jQgOdqDqOFmNG/QE5/d
+        OdjvUTgfu27qJA==
+X-ME-Sender: <xms:BW6MYcOCqOQW1H_FMtDGuQWBeDDVxpXMbff8oF6UTKKnLHnB-MQOEw>
+    <xme:BW6MYS_79K5gFAXdQlr1dfvE1tbo2FThqy2S4F-LgTaD5XsqcLzrS1jQDAEMAdcEM
+    DjzpDwrZKGo154BCHk>
+X-ME-Received: <xmr:BW6MYTSFr-A8cDnQ9iptnXOF9P4xbVUU-7fLj_tyNY6-YcWsQ9bwrgs2CXmrAzB3lW_EGRThgiTcV45xOCBAQya940FdUjxyut8>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvuddrvddtgddvkecutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenog
+    fhohhrsghiugguvghnjfgurhculdehtddtmdenucfjughrpefvkffhufffsedttdertddt
+    tdenucfhrhhomhephfhinhhnucfvhhgrihhnuceofhhthhgrihhnsehlihhnuhigqdhmie
+    ekkhdrohhrgheqnecuhfhorhgsihguuggvnhfjughrpefvkffhufffsedttdertddttddp
+    vffkhffuffestddtredttddtnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpe
+    hmrghilhhfrhhomhepfhhthhgrihhnsehlihhnuhigqdhmieekkhdrohhrgh
+X-ME-Proxy: <xmx:BW6MYUvbO4U_0V_Tr_YOAIuB8nShZr2XCrvTBfYW8Lvk1_F1nY4AiQ>
+    <xmx:BW6MYUeF6fDVV1Yv7B80WWuszJnRldeRJcVm2tYeUttnHOgeZ5qzbA>
+    <xmx:BW6MYY0lhlG7J2BYZ7PEkDv5jr2P-7q46795PArIY2X2QTDiWliIyQ>
+    <xmx:BW6MYVpU7zDW8sfEllsHaFGJLt54PaYLngHBQG62_pUO9PwlCymypF0ZAHw>
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Wed,
+ 10 Nov 2021 20:12:34 -0500 (EST)
+To:     Geert Uytterhoeven <geert@linux-m68k.org>
+Cc:     "Mike Rapoport" <rppt@kernel.org>, "Sam Creasey" <sammy@sammy.net>,
+        linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org
+Message-Id: <a57524fe38123ea17a6741cdc282f6c84c30a009.1636593047.git.fthain@linux-m68k.org>
+From:   Finn Thain <fthain@linux-m68k.org>
+Subject: [PATCH] m68k: Enable memtest kernel parameter
+Date:   Thu, 11 Nov 2021 12:10:47 +1100
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-Hi Linus,
+Enable the memtest feature and rearrange some code to prevent it from
+clobbering the initrd.
 
-Please pull the m68knommu changes for v5.16.
+The CONFIG_BLK_DEV_INITRD symbol was conditional on !defined(CONFIG_SUN3).
+For simplicity, remove that test on the basis that m68k_ramdisk.size == 0
+on Sun 3.
 
-Only 2 changes. One removes the now unused CONFIG_MCPU32 symbol.
-The other sets a default for the CONFIG_MEMORY_RESERVE config symbol
-(this aids scripting and other automation) so you don't interactively get
-asked for a value at configure time.
+The SLIME source code at http://sammy.net/ shows that no BI_RAMDISK entry
+is ever passed to the kernel due to #ifdef 0 around the relevant code.
 
-Regards
-Greg
+Cc: Mike Rapoport <rppt@kernel.org>
+Cc: Sam Creasey <sammy@sammy.net>
+Signed-off-by: Finn Thain <fthain@linux-m68k.org>
+---
+Are there any other Linux bootloaders on Sun 3?
+---
+ arch/m68k/Kconfig           |  1 +
+ arch/m68k/kernel/setup_mm.c | 15 ++++++---------
+ arch/m68k/mm/motorola.c     |  2 ++
+ 3 files changed, 9 insertions(+), 9 deletions(-)
 
+diff --git a/arch/m68k/Kconfig b/arch/m68k/Kconfig
+index 0b50da08a9c5..0e96066b3c46 100644
+--- a/arch/m68k/Kconfig
++++ b/arch/m68k/Kconfig
+@@ -9,6 +9,7 @@ config M68K
+ 	select ARCH_HAVE_NMI_SAFE_CMPXCHG if RMW_INSNS
+ 	select ARCH_MIGHT_HAVE_PC_PARPORT if ISA
+ 	select ARCH_NO_PREEMPT if !COLDFIRE
++	select ARCH_USE_MEMTEST
+ 	select ARCH_WANT_IPC_PARSE_VERSION
+ 	select BINFMT_FLAT_ARGVP_ENVP_ON_STACK
+ 	select DMA_DIRECT_REMAP if HAS_DMA && MMU && !COLDFIRE
+diff --git a/arch/m68k/kernel/setup_mm.c b/arch/m68k/kernel/setup_mm.c
+index 4b51bfd38e5f..49e573b94326 100644
+--- a/arch/m68k/kernel/setup_mm.c
++++ b/arch/m68k/kernel/setup_mm.c
+@@ -338,13 +338,6 @@ void __init setup_arch(char **cmdline_p)
+ 		panic("No configuration setup");
+ 	}
+ 
+-	paging_init();
+-
+-#ifdef CONFIG_NATFEAT
+-	nf_init();
+-#endif
+-
+-#ifndef CONFIG_SUN3
+ #ifdef CONFIG_BLK_DEV_INITRD
+ 	if (m68k_ramdisk.size) {
+ 		memblock_reserve(m68k_ramdisk.addr, m68k_ramdisk.size);
+@@ -354,6 +347,12 @@ void __init setup_arch(char **cmdline_p)
+ 	}
+ #endif
+ 
++	paging_init();
++
++#ifdef CONFIG_NATFEAT
++	nf_init();
++#endif
++
+ #ifdef CONFIG_ATARI
+ 	if (MACH_IS_ATARI)
+ 		atari_stram_reserve_pages((void *)availmem);
+@@ -364,8 +363,6 @@ void __init setup_arch(char **cmdline_p)
+ 	}
+ #endif
+ 
+-#endif /* !CONFIG_SUN3 */
+-
+ /* set ISA defs early as possible */
+ #if defined(CONFIG_ISA) && defined(MULTI_ISA)
+ 	if (MACH_IS_Q40) {
+diff --git a/arch/m68k/mm/motorola.c b/arch/m68k/mm/motorola.c
+index 9f3f77785aa7..5b6575eb6d02 100644
+--- a/arch/m68k/mm/motorola.c
++++ b/arch/m68k/mm/motorola.c
+@@ -455,6 +455,8 @@ void __init paging_init(void)
+ 
+ 	flush_tlb_all();
+ 
++	early_memtest(min_addr, max_addr);
++
+ 	/*
+ 	 * initialize the bad page table and bad page to point
+ 	 * to a couple of allocated pages
+-- 
+2.26.3
 
-
-The following changes since commit 3906fe9bb7f1a2c8667ae54e967dc8690824f4ea:
-
-   Linux 5.15-rc7 (2021-10-25 11:30:31 -0700)
-
-are available in the Git repository at:
-
-   git://git.kernel.org/pub/scm/linux/kernel/git/gerg/m68knommu.git tags/m68knommu-for-v5.16
-
-for you to fetch changes up to 6dbe88e93c351a6cf5b7c70850d7a1a7f67d83ab:
-
-   m68knommu: Remove MCPU32 config symbol (2021-10-26 08:46:27 +1000)
-
-----------------------------------------------------------------
-Fixes include:
-. remove unused CONFIG_MCPU32 symbol
-. default CONFIG_MEMORY_RESERVE value (for scripting)
-
-----------------------------------------------------------------
-Geert Uytterhoeven (1):
-       m68knommu: Remove MCPU32 config symbol
-
-Randy Dunlap (1):
-       m68k: set a default value for MEMORY_RESERVE
-
-  arch/m68k/Kconfig.cpu          | 11 -----------
-  arch/m68k/Kconfig.machine      |  1 +
-  arch/m68k/include/asm/bitops.h |  2 +-
-  3 files changed, 2 insertions(+), 12 deletions(-)
