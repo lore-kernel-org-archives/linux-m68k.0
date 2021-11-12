@@ -2,144 +2,162 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id BED8DC433F5
-	for <linux-m68k@archiver.kernel.org>; Fri, 12 Nov 2021 10:33:25 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 1D3F1C433F5
+	for <linux-m68k@archiver.kernel.org>; Fri, 12 Nov 2021 12:34:36 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id A72E060C4A
-	for <linux-m68k@archiver.kernel.org>; Fri, 12 Nov 2021 10:33:25 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id E8AC660F93
+	for <linux-m68k@archiver.kernel.org>; Fri, 12 Nov 2021 12:34:35 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231173AbhKLKgP (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Fri, 12 Nov 2021 05:36:15 -0500
-Received: from mail-ua1-f53.google.com ([209.85.222.53]:45580 "EHLO
-        mail-ua1-f53.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234982AbhKLKgK (ORCPT
-        <rfc822;linux-m68k@vger.kernel.org>); Fri, 12 Nov 2021 05:36:10 -0500
-Received: by mail-ua1-f53.google.com with SMTP id ay21so17778115uab.12
-        for <linux-m68k@vger.kernel.org>; Fri, 12 Nov 2021 02:33:20 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=vK2x6JFHN4dkNwGqtUQbeziQcHNFscdvaRq4c7kpmg4=;
-        b=uVkvW+Xno1TwXR1Kmki5Iw3xHrs1pu7wquq0BB1rnQy/6Wv55LVcOP94YHve12A7aN
-         R68zus+NjBWLS+IZgO/Ng+98UaDjuj+7AUZ1mjNj7GLH1fgi5frajvK4FWAvmVTFZ6af
-         iuN54qbFJqTv0IfjuiEkmPpw1UeLkjiAz3PTPkpnAoQ4lA6uW37zgg2z4NyjG25Ilj8Z
-         PcYMQgZXsuqYI7zbj5EQIXoDJhXStVBYnmuho/yORM4lVV7SGR3cXkdJfdHxVxkaJWC1
-         o7DG0/g0KgzX3YeUkeshNIrhfn1qo6u56sL1Whx9FxgwaYKOvj2SZlVGab2i+hKF/EJi
-         Toqw==
-X-Gm-Message-State: AOAM5307DiEQI3FBP7nZcv2ZhEd7rnOe/brzyoNtyIvVLsCPHvfaakqN
-        I/9ehMQleWzWNBHND+egllsMInAWzwMdIA==
-X-Google-Smtp-Source: ABdhPJyySQcUb3EfX9DTztlJU7EJqtlKK4uMA4LcOS278Qjy6VNAm/8AKSuTtzgoGNK9Vym5xjytCw==
-X-Received: by 2002:a67:dc86:: with SMTP id g6mr8723794vsk.8.1636713199632;
-        Fri, 12 Nov 2021 02:33:19 -0800 (PST)
-Received: from mail-ua1-f43.google.com (mail-ua1-f43.google.com. [209.85.222.43])
-        by smtp.gmail.com with ESMTPSA id y7sm3944006uac.3.2021.11.12.02.33.19
-        for <linux-m68k@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 12 Nov 2021 02:33:19 -0800 (PST)
-Received: by mail-ua1-f43.google.com with SMTP id p2so17770872uad.11
-        for <linux-m68k@vger.kernel.org>; Fri, 12 Nov 2021 02:33:19 -0800 (PST)
-X-Received: by 2002:a05:6102:e82:: with SMTP id l2mr8368110vst.37.1636713198994;
- Fri, 12 Nov 2021 02:33:18 -0800 (PST)
+        id S234899AbhKLMhZ (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Fri, 12 Nov 2021 07:37:25 -0500
+Received: from mail.kernel.org ([198.145.29.99]:38616 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231433AbhKLMhZ (ORCPT <rfc822;linux-m68k@lists.linux-m68k.org>);
+        Fri, 12 Nov 2021 07:37:25 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 181C560F70;
+        Fri, 12 Nov 2021 12:34:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1636720474;
+        bh=Km0Qj/C2HMPSq6M4sHLzSwyndnOPG+XNEqv0q7Y6RLk=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=AYhlKauXpBMhRIbZ/ZwmFge2ez7YiQx6MV/14L5hS3uqcH+wSWuJ6mo+41qcIzpud
+         vluXvs20KKkXQ/AsjBziXb840+P1/GUSk0PBiecRgEOBfEu5zuUPupNokCL3nFH7eF
+         JaYKcCFz+7rT3+LFlkwqeGZsR8TghV4xV211ylEkrkN8ZW1JwqyNGWHIFTW0ccEHWK
+         f8yR6VPfFRsu5P52XmbP/6LzNN2HyZmeSHU6Yi7dZql7kZGW/NDWZFr2Dgm7JU98n7
+         QlYpqPaWkIYGU1yAvD0kN6BO+gUPev5hw9J2NUssw8Mx7im/X4Pt1PeZ4CGQAVLHx5
+         LJrPWt2IzmeDg==
+Date:   Fri, 12 Nov 2021 14:34:27 +0200
+From:   Mike Rapoport <rppt@kernel.org>
+To:     Geert Uytterhoeven <geert@linux-m68k.org>
+Cc:     Finn Thain <fthain@linux-m68k.org>, Sam Creasey <sammy@sammy.net>,
+        Jonathan Corbet <corbet@lwn.net>,
+        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-m68k <linux-m68k@lists.linux-m68k.org>
+Subject: Re: [PATCH] m68k: Enable memtest functionality
+Message-ID: <YY5fU8Hq8fq7HtJJ@kernel.org>
+References: <1a89fd7d58f22e4817cf5bb406cc191dc0bc9325.1636677401.git.fthain@linux-m68k.org>
+ <CAMuHMdXsVvXCbmrdukLCd-AXrqT-LmCz427BdNNCbDUw9vmL1A@mail.gmail.com>
 MIME-Version: 1.0
-References: <20211111025554.26768-1-schmitzmic@gmail.com> <20211111025554.26768-2-schmitzmic@gmail.com>
-In-Reply-To: <20211111025554.26768-2-schmitzmic@gmail.com>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Fri, 12 Nov 2021 11:33:07 +0100
-X-Gmail-Original-Message-ID: <CAMuHMdWqUO5xBp+sbOJrAGRPA+4YqZNuXjypdHi8R3fkQ9Ufxw@mail.gmail.com>
-Message-ID: <CAMuHMdWqUO5xBp+sbOJrAGRPA+4YqZNuXjypdHi8R3fkQ9Ufxw@mail.gmail.com>
-Subject: Re: [PATCH v10 1/3] m68k: amiga/pcmcia - add 16 bit detection
- interface to amipcmcia.h
-To:     Michael Schmitz <schmitzmic@gmail.com>
-Cc:     "Linux/m68k" <linux-m68k@vger.kernel.org>,
-        ALeX Kazik <alex@kazik.de>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAMuHMdXsVvXCbmrdukLCd-AXrqT-LmCz427BdNNCbDUw9vmL1A@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-Hi Michael,
+On Fri, Nov 12, 2021 at 09:05:31AM +0100, Geert Uytterhoeven wrote:
+> Hi Finn,
+> 
+> On Fri, Nov 12, 2021 at 1:37 AM Finn Thain <fthain@linux-m68k.org> wrote:
+> > Enable the memtest functionality and rearrange some code to prevent it
+> > from clobbering the initrd.
+> >
+> > The CONFIG_BLK_DEV_INITRD symbol was conditional on !defined(CONFIG_SUN3).
+> > For simplicity, remove that test on the basis that m68k_ramdisk.size == 0
+> > on Sun 3.
+> >
+> > The SLIME source code at
+> > http://sammy.net/sun3/ftp/pub/m68k/sun3/slime/slime-2.0.tar.gz
+> > indicates that no BI_RAMDISK entry is ever passed to the kernel due
+> > to #ifdef 0 around the relevant code.
+> >
+> > Cc: Mike Rapoport <rppt@kernel.org>
+> > Cc: Sam Creasey <sammy@sammy.net>
+> > Cc: Jonathan Corbet <corbet@lwn.net>
+> > Signed-off-by: Finn Thain <fthain@linux-m68k.org>
+> 
+> Thanks for your patch!
+> 
+> > --- a/arch/m68k/Kconfig
+> > +++ b/arch/m68k/Kconfig
+> > @@ -9,6 +9,7 @@ config M68K
+> >         select ARCH_HAVE_NMI_SAFE_CMPXCHG if RMW_INSNS
+> >         select ARCH_MIGHT_HAVE_PC_PARPORT if ISA
+> >         select ARCH_NO_PREEMPT if !COLDFIRE
+> > +       select ARCH_USE_MEMTEST
+> 
+> if MMU_MOTOROLA?
+> 
+> >         select ARCH_WANT_IPC_PARSE_VERSION
+> >         select BINFMT_FLAT_ARGVP_ENVP_ON_STACK
+> >         select DMA_DIRECT_REMAP if HAS_DMA && MMU && !COLDFIRE
+> > diff --git a/arch/m68k/kernel/setup_mm.c b/arch/m68k/kernel/setup_mm.c
+> > index 4b51bfd38e5f..49e573b94326 100644
+> > --- a/arch/m68k/kernel/setup_mm.c
+> > +++ b/arch/m68k/kernel/setup_mm.c
+> > @@ -338,13 +338,6 @@ void __init setup_arch(char **cmdline_p)
+> >                 panic("No configuration setup");
+> >         }
+> >
+> > -       paging_init();
+> > -
+> > -#ifdef CONFIG_NATFEAT
+> > -       nf_init();
+> > -#endif
+> > -
+> > -#ifndef CONFIG_SUN3
+> >  #ifdef CONFIG_BLK_DEV_INITRD
+> >         if (m68k_ramdisk.size) {
+> >                 memblock_reserve(m68k_ramdisk.addr, m68k_ramdisk.size);
+> 
+> Does this still work, given the initrd is part of memory that used
+> to be added before (in paging_init(), but now is added later?
+> (I'm no memblock expert, so that might be a silly question ;-)
 
-On Thu, Nov 11, 2021 at 3:56 AM Michael Schmitz <schmitzmic@gmail.com> wrote:
-> Add the interface definition for 16 bit card autoprobing (using
-> the generic PCMCIA cftable entry parser) to amipcmcia.h for use
-> by apne.c. Include necessary cftable definitions from cistpl.h,
-> remove locally duplicate definitions from amipcmcia.h.
->
-> Signed-off-by: Michael Schmitz <schmitzmic@gmail.com>
+memblock allows reserving non-existing memory just fine. 
+ 
+> > @@ -354,6 +347,12 @@ void __init setup_arch(char **cmdline_p)
+> >         }
+> >  #endif
+> >
+> > +       paging_init();
+> > +
+> > +#ifdef CONFIG_NATFEAT
+> > +       nf_init();
+> > +#endif
+> > +
+> >  #ifdef CONFIG_ATARI
+> >         if (MACH_IS_ATARI)
+> >                 atari_stram_reserve_pages((void *)availmem);
+> > @@ -364,8 +363,6 @@ void __init setup_arch(char **cmdline_p)
+> >         }
+> >  #endif
+> >
+> > -#endif /* !CONFIG_SUN3 */
+> > -
+> >  /* set ISA defs early as possible */
+> >  #if defined(CONFIG_ISA) && defined(MULTI_ISA)
+> >         if (MACH_IS_Q40) {
+> > diff --git a/arch/m68k/mm/motorola.c b/arch/m68k/mm/motorola.c
+> > index 9f3f77785aa7..5b6575eb6d02 100644
+> > --- a/arch/m68k/mm/motorola.c
+> > +++ b/arch/m68k/mm/motorola.c
+> > @@ -455,6 +455,8 @@ void __init paging_init(void)
+> >
+> >         flush_tlb_all();
+> >
+> > +       early_memtest(min_addr, max_addr);
+> 
+> So this is available only if MMU_MOTOROLA, not for Sun-3, Coldfire,
+> or nommu.
+> 
+> > +
+> >         /*
+> >          * initialize the bad page table and bad page to point
+> >          * to a couple of allocated pages
+> 
+> Gr{oetje,eeting}s,
+> 
+>                         Geert
+> 
+> --
+> Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+> 
+> In personal conversations with technical people, I call myself a hacker. But
+> when I'm talking to journalists I just say "programmer" or something like that.
+>                                 -- Linus Torvalds
 
-Thanks for your patch!
-
-> --- a/arch/m68k/include/asm/amipcmcia.h
-> +++ b/arch/m68k/include/asm/amipcmcia.h
-> @@ -13,6 +13,7 @@
->  #ifndef __AMIGA_PCMCIA_H__
->  #define __AMIGA_PCMCIA_H__
->
-> +#include <pcmcia/cistpl.h>
->  #include <asm/amigayle.h>
->
->  /* prototypes */
-> @@ -64,47 +65,8 @@ static inline void pcmcia_disable_irq(void)
->  #define PCMCIA_SPEED_250NS     250
->  #define PCMCIA_SPEED_720NS     720
->
-> -/* PCMCIA Tuple codes */
-> -
-> -#define CISTPL_NULL            0x00
-> -#define CISTPL_DEVICE          0x01
-> -#define CISTPL_LONGLINK_CB     0x02
-> -#define CISTPL_CONFIG_CB       0x04
-> -#define CISTPL_CFTABLE_ENTRY_CB        0x05
-> -#define CISTPL_LONGLINK_MFC    0x06
-> -#define CISTPL_BAR             0x07
-> -#define CISTPL_CHECKSUM                0x10
-> -#define CISTPL_LONGLINK_A      0x11
-> -#define CISTPL_LONGLINK_C      0x12
-> -#define CISTPL_LINKTARGET      0x13
-> -#define CISTPL_NO_LINK         0x14
-> -#define CISTPL_VERS_1          0x15
-> -#define CISTPL_ALTSTR          0x16
-> -#define CISTPL_DEVICE_A                0x17
-> -#define CISTPL_JEDEC_C         0x18
-> -#define CISTPL_JEDEC_A         0x19
-> -#define CISTPL_CONFIG          0x1a
-> -#define CISTPL_CFTABLE_ENTRY   0x1b
-> -#define CISTPL_DEVICE_OC       0x1c
-> -#define CISTPL_DEVICE_OA       0x1d
-> -#define CISTPL_DEVICE_GEO      0x1e
-> -#define CISTPL_DEVICE_GEO_A    0x1f
-> -#define CISTPL_MANFID          0x20
-> -#define CISTPL_FUNCID          0x21
-> -#define CISTPL_FUNCE           0x22
-> -#define CISTPL_SWIL            0x23
-> -#define CISTPL_END             0xff
-> -
-> -/* FUNCID */
-> -
-> -#define CISTPL_FUNCID_MULTI    0x00
-> -#define CISTPL_FUNCID_MEMORY   0x01
-> -#define CISTPL_FUNCID_SERIAL   0x02
-> -#define CISTPL_FUNCID_PARALLEL 0x03
-> -#define CISTPL_FUNCID_FIXED    0x04
-> -#define CISTPL_FUNCID_VIDEO    0x05
-> -#define CISTPL_FUNCID_NETWORK  0x06
-> -#define CISTPL_FUNCID_AIMS     0x07
-> -#define CISTPL_FUNCID_SCSI     0x08
-> +/* CIS tuple parser for 16 bit IO detection */
-> +
-> +extern int pcmcia_parse_tuple(tuple_t *cftuple, cisparse_t *cfparse);
-
-Seems like you can just #include <pcmcia/ds.h> instead, no ill
-effects on .i and .s output?
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+-- 
+Sincerely yours,
+Mike.
