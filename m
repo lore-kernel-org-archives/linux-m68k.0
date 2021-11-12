@@ -2,134 +2,71 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 1D3F1C433F5
-	for <linux-m68k@archiver.kernel.org>; Fri, 12 Nov 2021 12:34:36 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4DEEAC433FE
+	for <linux-m68k@archiver.kernel.org>; Fri, 12 Nov 2021 21:04:03 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id E8AC660F93
-	for <linux-m68k@archiver.kernel.org>; Fri, 12 Nov 2021 12:34:35 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 3885961073
+	for <linux-m68k@archiver.kernel.org>; Fri, 12 Nov 2021 21:04:03 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234899AbhKLMhZ (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Fri, 12 Nov 2021 07:37:25 -0500
-Received: from mail.kernel.org ([198.145.29.99]:38616 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231433AbhKLMhZ (ORCPT <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Fri, 12 Nov 2021 07:37:25 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 181C560F70;
-        Fri, 12 Nov 2021 12:34:31 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1636720474;
-        bh=Km0Qj/C2HMPSq6M4sHLzSwyndnOPG+XNEqv0q7Y6RLk=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=AYhlKauXpBMhRIbZ/ZwmFge2ez7YiQx6MV/14L5hS3uqcH+wSWuJ6mo+41qcIzpud
-         vluXvs20KKkXQ/AsjBziXb840+P1/GUSk0PBiecRgEOBfEu5zuUPupNokCL3nFH7eF
-         JaYKcCFz+7rT3+LFlkwqeGZsR8TghV4xV211ylEkrkN8ZW1JwqyNGWHIFTW0ccEHWK
-         f8yR6VPfFRsu5P52XmbP/6LzNN2HyZmeSHU6Yi7dZql7kZGW/NDWZFr2Dgm7JU98n7
-         QlYpqPaWkIYGU1yAvD0kN6BO+gUPev5hw9J2NUssw8Mx7im/X4Pt1PeZ4CGQAVLHx5
-         LJrPWt2IzmeDg==
-Date:   Fri, 12 Nov 2021 14:34:27 +0200
-From:   Mike Rapoport <rppt@kernel.org>
+        id S235747AbhKLVGx (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Fri, 12 Nov 2021 16:06:53 -0500
+Received: from wout3-smtp.messagingengine.com ([64.147.123.19]:40615 "EHLO
+        wout3-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232902AbhKLVGw (ORCPT
+        <rfc822;linux-m68k@lists.linux-m68k.org>);
+        Fri, 12 Nov 2021 16:06:52 -0500
+Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
+        by mailout.west.internal (Postfix) with ESMTP id D495032006F5;
+        Fri, 12 Nov 2021 16:04:00 -0500 (EST)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute5.internal (MEProxy); Fri, 12 Nov 2021 16:04:01 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=8FPYXt
+        YY8uMK6gqNCM+Tfz9ygESeiWIujQT9sQlrWCQ=; b=jjc6aydAZiU4si6xn1cHmj
+        OV3/K2KFFqqZT9MosJWJAicnWvse2/7lciSG7tXTWtGXAVK1zYf1fdIkCfO71Qsg
+        T8j7jqThjbgQiLNGs0pwk/8nZjfGKqKzq6Vz08S5oAPL+c+58cd16VucVQ9a/DdX
+        p6XPNzfGniCErpx37tD6ChyTEwXncBiBYrH7o8rkDJU/3YOBhEPrPEfDRB822i6o
+        lnleGV/LWc01GtFPMkjG5xYCkLYCteXnbOzmTtg5euOXNDcLCK5ixwSF7aCQtuyF
+        tCgMwvC16brPiQg7cnwQ/o6/famn9pzJgwOWfy8UCXkC0kB/1ix4AEbWH3fzAFlA
+        ==
+X-ME-Sender: <xms:v9aOYVX94JxMj5_H_XJD6iyU9whVgFp9sf85c2QU825wJO9S8Du12A>
+    <xme:v9aOYVlXuHf4PStuQTu3SLUwAVnBT0pTnP9PeUPcGg1eHIWX-YjkCnKQQykMD_cHG
+    22bckA4P6FQNedUKqI>
+X-ME-Received: <xmr:v9aOYRZ_Y0PWhxfW_uP_huB7DhyvwDuiblaJNs6_uV1MXZ-Q-G98EBneV9NXehYrsI0tIOz1fPFn4HEKckgO1D1cYe3sCXltSSo>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvuddrvdefgddugeduucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepfffhvffujgfkfhggtgesthdtredttddtvdenucfhrhhomhephfhinhhnucfv
+    hhgrihhnuceofhhthhgrihhnsehlihhnuhigqdhmieekkhdrohhrgheqnecuggftrfgrth
+    htvghrnhepffduhfegfedvieetudfgleeugeehkeekfeevfffhieevteelvdfhtdevffet
+    uedunecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepfh
+    hthhgrihhnsehlihhnuhigqdhmieekkhdrohhrgh
+X-ME-Proxy: <xmx:v9aOYYVMtpZgVlgIrLY9CJbHzJgpgpTLaiGP8r77G6wcL3_c0dVYOw>
+    <xmx:v9aOYfnWPRHFR9KWh_p6Dt22zqMOXp4Z_WrD1WnWbxZRd8zJsVkZHg>
+    <xmx:v9aOYVfa6oKK3xavmdBqFJyxGOIxw34xt4H8RIdBKBx4KYg0FQYf2Q>
+    <xmx:wNaOYYCiHzIep0uKiIb0Ih0f4BSVCHSL2Mys_ukFZtXhfBo2S_bnyw>
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Fri,
+ 12 Nov 2021 16:03:57 -0500 (EST)
+Date:   Sat, 13 Nov 2021 08:03:52 +1100 (AEDT)
+From:   Finn Thain <fthain@linux-m68k.org>
 To:     Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     Finn Thain <fthain@linux-m68k.org>, Sam Creasey <sammy@sammy.net>,
-        Jonathan Corbet <corbet@lwn.net>,
-        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-m68k <linux-m68k@lists.linux-m68k.org>
+cc:     Mike Rapoport <rppt@kernel.org>, Sam Creasey <sammy@sammy.net>,
+        Jonathan Corbet <corbet@lwn.net>, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-m68k@lists.linux-m68k.org
 Subject: Re: [PATCH] m68k: Enable memtest functionality
-Message-ID: <YY5fU8Hq8fq7HtJJ@kernel.org>
-References: <1a89fd7d58f22e4817cf5bb406cc191dc0bc9325.1636677401.git.fthain@linux-m68k.org>
- <CAMuHMdXsVvXCbmrdukLCd-AXrqT-LmCz427BdNNCbDUw9vmL1A@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
 In-Reply-To: <CAMuHMdXsVvXCbmrdukLCd-AXrqT-LmCz427BdNNCbDUw9vmL1A@mail.gmail.com>
+Message-ID: <9a70775c-25f8-a7e5-43b6-5aa385bf729f@linux-m68k.org>
+References: <1a89fd7d58f22e4817cf5bb406cc191dc0bc9325.1636677401.git.fthain@linux-m68k.org> <CAMuHMdXsVvXCbmrdukLCd-AXrqT-LmCz427BdNNCbDUw9vmL1A@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-On Fri, Nov 12, 2021 at 09:05:31AM +0100, Geert Uytterhoeven wrote:
-> Hi Finn,
-> 
-> On Fri, Nov 12, 2021 at 1:37 AM Finn Thain <fthain@linux-m68k.org> wrote:
-> > Enable the memtest functionality and rearrange some code to prevent it
-> > from clobbering the initrd.
-> >
-> > The CONFIG_BLK_DEV_INITRD symbol was conditional on !defined(CONFIG_SUN3).
-> > For simplicity, remove that test on the basis that m68k_ramdisk.size == 0
-> > on Sun 3.
-> >
-> > The SLIME source code at
-> > http://sammy.net/sun3/ftp/pub/m68k/sun3/slime/slime-2.0.tar.gz
-> > indicates that no BI_RAMDISK entry is ever passed to the kernel due
-> > to #ifdef 0 around the relevant code.
-> >
-> > Cc: Mike Rapoport <rppt@kernel.org>
-> > Cc: Sam Creasey <sammy@sammy.net>
-> > Cc: Jonathan Corbet <corbet@lwn.net>
-> > Signed-off-by: Finn Thain <fthain@linux-m68k.org>
-> 
-> Thanks for your patch!
-> 
-> > --- a/arch/m68k/Kconfig
-> > +++ b/arch/m68k/Kconfig
-> > @@ -9,6 +9,7 @@ config M68K
-> >         select ARCH_HAVE_NMI_SAFE_CMPXCHG if RMW_INSNS
-> >         select ARCH_MIGHT_HAVE_PC_PARPORT if ISA
-> >         select ARCH_NO_PREEMPT if !COLDFIRE
-> > +       select ARCH_USE_MEMTEST
-> 
-> if MMU_MOTOROLA?
-> 
-> >         select ARCH_WANT_IPC_PARSE_VERSION
-> >         select BINFMT_FLAT_ARGVP_ENVP_ON_STACK
-> >         select DMA_DIRECT_REMAP if HAS_DMA && MMU && !COLDFIRE
-> > diff --git a/arch/m68k/kernel/setup_mm.c b/arch/m68k/kernel/setup_mm.c
-> > index 4b51bfd38e5f..49e573b94326 100644
-> > --- a/arch/m68k/kernel/setup_mm.c
-> > +++ b/arch/m68k/kernel/setup_mm.c
-> > @@ -338,13 +338,6 @@ void __init setup_arch(char **cmdline_p)
-> >                 panic("No configuration setup");
-> >         }
-> >
-> > -       paging_init();
-> > -
-> > -#ifdef CONFIG_NATFEAT
-> > -       nf_init();
-> > -#endif
-> > -
-> > -#ifndef CONFIG_SUN3
-> >  #ifdef CONFIG_BLK_DEV_INITRD
-> >         if (m68k_ramdisk.size) {
-> >                 memblock_reserve(m68k_ramdisk.addr, m68k_ramdisk.size);
-> 
-> Does this still work, given the initrd is part of memory that used
-> to be added before (in paging_init(), but now is added later?
-> (I'm no memblock expert, so that might be a silly question ;-)
+On Fri, 12 Nov 2021, Geert Uytterhoeven wrote:
 
-memblock allows reserving non-existing memory just fine. 
- 
-> > @@ -354,6 +347,12 @@ void __init setup_arch(char **cmdline_p)
-> >         }
-> >  #endif
-> >
-> > +       paging_init();
-> > +
-> > +#ifdef CONFIG_NATFEAT
-> > +       nf_init();
-> > +#endif
-> > +
-> >  #ifdef CONFIG_ATARI
-> >         if (MACH_IS_ATARI)
-> >                 atari_stram_reserve_pages((void *)availmem);
-> > @@ -364,8 +363,6 @@ void __init setup_arch(char **cmdline_p)
-> >         }
-> >  #endif
-> >
-> > -#endif /* !CONFIG_SUN3 */
-> > -
-> >  /* set ISA defs early as possible */
-> >  #if defined(CONFIG_ISA) && defined(MULTI_ISA)
-> >         if (MACH_IS_Q40) {
-> > diff --git a/arch/m68k/mm/motorola.c b/arch/m68k/mm/motorola.c
 > > index 9f3f77785aa7..5b6575eb6d02 100644
 > > --- a/arch/m68k/mm/motorola.c
 > > +++ b/arch/m68k/mm/motorola.c
@@ -139,25 +76,9 @@ memblock allows reserving non-existing memory just fine.
 > >
 > > +       early_memtest(min_addr, max_addr);
 > 
-> So this is available only if MMU_MOTOROLA, not for Sun-3, Coldfire,
-> or nommu.
+> So this is available only if MMU_MOTOROLA, not for Sun-3, Coldfire, or 
+> nommu.
 > 
-> > +
-> >         /*
-> >          * initialize the bad page table and bad page to point
-> >          * to a couple of allocated pages
-> 
-> Gr{oetje,eeting}s,
-> 
->                         Geert
-> 
-> --
-> Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-> 
-> In personal conversations with technical people, I call myself a hacker. But
-> when I'm talking to journalists I just say "programmer" or something like that.
->                                 -- Linus Torvalds
 
--- 
-Sincerely yours,
-Mike.
+That's because I can't test the others. If anyone would be willing to test 
+a patch like this for Coldfire etc., please let me know and I'll send one.
