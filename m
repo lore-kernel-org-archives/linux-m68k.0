@@ -2,170 +2,162 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A05D2C4332F
-	for <linux-m68k@archiver.kernel.org>; Fri, 12 Nov 2021 07:51:29 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id AB7DBC433F5
+	for <linux-m68k@archiver.kernel.org>; Fri, 12 Nov 2021 08:05:44 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 715AA60FBF
-	for <linux-m68k@archiver.kernel.org>; Fri, 12 Nov 2021 07:51:29 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 9003260FBF
+	for <linux-m68k@archiver.kernel.org>; Fri, 12 Nov 2021 08:05:44 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233189AbhKLHyQ (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Fri, 12 Nov 2021 02:54:16 -0500
-Received: from mail-ua1-f48.google.com ([209.85.222.48]:33436 "EHLO
-        mail-ua1-f48.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233279AbhKLHyP (ORCPT
+        id S233476AbhKLIIe (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Fri, 12 Nov 2021 03:08:34 -0500
+Received: from mail-ua1-f53.google.com ([209.85.222.53]:35619 "EHLO
+        mail-ua1-f53.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233189AbhKLIId (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Fri, 12 Nov 2021 02:54:15 -0500
-Received: by mail-ua1-f48.google.com with SMTP id b17so17257451uas.0
-        for <linux-m68k@lists.linux-m68k.org>; Thu, 11 Nov 2021 23:51:25 -0800 (PST)
+        Fri, 12 Nov 2021 03:08:33 -0500
+Received: by mail-ua1-f53.google.com with SMTP id l24so12922452uak.2
+        for <linux-m68k@lists.linux-m68k.org>; Fri, 12 Nov 2021 00:05:43 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=s8HBKR2e7f8USrVYae8TJzCMhd+TVP1tFNS5pXP6hgc=;
-        b=Fw6Jk8dkuajW+zMFcGa90oiJxGGe/Dlyt6R4RUZcsmRH3psWz33xe3rwbvSD2X589S
-         AjGnkeiKN63/yPwCpUCamDS+bwyV5DmSeaSI+PvRcQBClzKeBgQNOqovzktfMcft10zf
-         KpZVJqDwOjfAWSsN2a3CYjt9/ImBTe9qA+FwCTokpLrpV2b+GTWkbrb9GjH57adKHsLq
-         MGe2rab86nx6VuwyEu9BQjrwtyKFkt/koGoy4VwuGy98C8MoiZapHVjVoVuZdoYP2zG9
-         JajJdHsZxyNmxNZ1zrIOfYvqkab3nCfPe1k87Cm4SKLcnHP9gaovpSlDYLuYtMEJdtqI
-         nVoQ==
-X-Gm-Message-State: AOAM530G/w2XhkzPb+RQa0u4lIT9orU2af1tq6U6IHfygoL8Rp3Yau4X
-        0iUMAljyjslaXWtWWOqyodl9wpORKrK1Ow==
-X-Google-Smtp-Source: ABdhPJwIEBNUZPFHTk7f03UypUeLIM3xVsQ85+nY76taKoVmFnwVd54z3Hvp+KducHE1sGQ6NvBIuw==
-X-Received: by 2002:ab0:26c9:: with SMTP id b9mr20105220uap.10.1636703484641;
-        Thu, 11 Nov 2021 23:51:24 -0800 (PST)
-Received: from mail-ua1-f49.google.com (mail-ua1-f49.google.com. [209.85.222.49])
-        by smtp.gmail.com with ESMTPSA id f21sm3559023vke.39.2021.11.11.23.51.24
+        bh=CKrL2aGswaQqu3Y4OscoOg26JEi6rIvHQtas6Avt604=;
+        b=4fc7RmsFaSgJEg1WFCUx5DueXEy1YkjmNeYDsGev/wNSfexOD7sCyAoIfkteRe/7E0
+         shZs7tQIXk0uVBNw4+5GwnsLJbWuCYiKINHDN5sEbUud/kFAnVk96XlR2VQ4Lbs5fPGS
+         SuhFrK2HPoosyoeKh7+QmfwITN55CbA8bYVvl/U69lDzx1+tvqrihG3fAwJzyJ0leGMj
+         6Qmb46RGFPm4yCj0UotwJlwfMxgUn9SiUTJlIrMfUQ9RXOiBAwpsymiL3GxXHKEM88cg
+         PoT4g0ZmYRUzgv8hSnf2otB3f6BXG3H/Bd8wPnXf/pRd5yLNrcrcIbN03Llo2GqVpN+b
+         puog==
+X-Gm-Message-State: AOAM532LSIwraWFrxg9TaxJT4lWLVvwd7I1wcaQ9vGuFCvzv+Tys2Ekp
+        q/2kRqvb3P6iUUuwRFSWd77kbURVkpmcrA==
+X-Google-Smtp-Source: ABdhPJwvSfm8DAZnj+oJ5QnI3gYsOwpy9fw9wOAh9twQS0aZdWshSi6whKsC0kvyUIYw4JbjNzQEOQ==
+X-Received: by 2002:ab0:5b5d:: with SMTP id v29mr20048989uae.110.1636704342880;
+        Fri, 12 Nov 2021 00:05:42 -0800 (PST)
+Received: from mail-ua1-f41.google.com (mail-ua1-f41.google.com. [209.85.222.41])
+        by smtp.gmail.com with ESMTPSA id e9sm3832927uan.9.2021.11.12.00.05.42
         for <linux-m68k@lists.linux-m68k.org>
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 11 Nov 2021 23:51:24 -0800 (PST)
-Received: by mail-ua1-f49.google.com with SMTP id e2so17141510uax.7
-        for <linux-m68k@lists.linux-m68k.org>; Thu, 11 Nov 2021 23:51:24 -0800 (PST)
-X-Received: by 2002:a67:c38f:: with SMTP id s15mr7356471vsj.50.1636703483815;
- Thu, 11 Nov 2021 23:51:23 -0800 (PST)
+        Fri, 12 Nov 2021 00:05:42 -0800 (PST)
+Received: by mail-ua1-f41.google.com with SMTP id i6so17183416uae.6
+        for <linux-m68k@lists.linux-m68k.org>; Fri, 12 Nov 2021 00:05:42 -0800 (PST)
+X-Received: by 2002:a05:6102:e82:: with SMTP id l2mr7254340vst.37.1636704342222;
+ Fri, 12 Nov 2021 00:05:42 -0800 (PST)
 MIME-Version: 1.0
-References: <461c4758-2675-1d11-ac8a-6f25ef01d781@kernel.dk>
- <YYQr3jl3avsuOUAJ@infradead.org> <3d29a5ce-aace-6198-3ea9-e6f603e74aa1@kernel.dk>
- <YYQuyt2/y1MgzRi0@infradead.org> <87ee0091-9c2f-50e8-c8f2-dcebebb9de48@kernel.dk>
- <alpine.DEB.2.22.394.2111111350150.2780761@ramsan.of.borg>
- <YY0eVnbjmHmPZ3M4@T590> <CAMuHMdWTiF3MpcwHc=jCGLoBtTngzXTLHsYSYKPyfLBFBn8B2g@mail.gmail.com>
- <YY01hzAuvmeMxO+0@T590> <17ce59ff-bc8c-e8c8-22e1-96605440629a@kernel.dk> <YY246bCP+wKw0Z2c@T590>
-In-Reply-To: <YY246bCP+wKw0Z2c@T590>
+References: <1a89fd7d58f22e4817cf5bb406cc191dc0bc9325.1636677401.git.fthain@linux-m68k.org>
+In-Reply-To: <1a89fd7d58f22e4817cf5bb406cc191dc0bc9325.1636677401.git.fthain@linux-m68k.org>
 From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Fri, 12 Nov 2021 08:51:12 +0100
-X-Gmail-Original-Message-ID: <CAMuHMdV30yvjam8i0Z4Nsu=e1YhPaRb4E1bAtw7=268v6TnrJg@mail.gmail.com>
-Message-ID: <CAMuHMdV30yvjam8i0Z4Nsu=e1YhPaRb4E1bAtw7=268v6TnrJg@mail.gmail.com>
-Subject: Re: [PATCH 4/5] block: move queue enter logic into blk_mq_submit_bio()
-To:     Ming Lei <ming.lei@redhat.com>
-Cc:     Jens Axboe <axboe@kernel.dk>,
-        Christoph Hellwig <hch@infradead.org>,
-        linux-block@vger.kernel.org,
-        linux-m68k <linux-m68k@lists.linux-m68k.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Date:   Fri, 12 Nov 2021 09:05:31 +0100
+X-Gmail-Original-Message-ID: <CAMuHMdXsVvXCbmrdukLCd-AXrqT-LmCz427BdNNCbDUw9vmL1A@mail.gmail.com>
+Message-ID: <CAMuHMdXsVvXCbmrdukLCd-AXrqT-LmCz427BdNNCbDUw9vmL1A@mail.gmail.com>
+Subject: Re: [PATCH] m68k: Enable memtest functionality
+To:     Finn Thain <fthain@linux-m68k.org>
+Cc:     Mike Rapoport <rppt@kernel.org>, Sam Creasey <sammy@sammy.net>,
+        Jonathan Corbet <corbet@lwn.net>,
+        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-m68k <linux-m68k@lists.linux-m68k.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-Hi Ming,
+Hi Finn,
 
-On Fri, Nov 12, 2021 at 1:44 AM Ming Lei <ming.lei@redhat.com> wrote:
-> On Thu, Nov 11, 2021 at 03:17:27PM -0700, Jens Axboe wrote:
-> > On 11/11/21 8:23 AM, Ming Lei wrote:
-> > > On Thu, Nov 11, 2021 at 03:51:28PM +0100, Geert Uytterhoeven wrote:
-> > >> On Thu, Nov 11, 2021 at 2:45 PM Ming Lei <ming.lei@redhat.com> wrote:
-> > >>> On Thu, Nov 11, 2021 at 01:58:38PM +0100, Geert Uytterhoeven wrote:
-> > >>>> On Thu, 4 Nov 2021, Jens Axboe wrote:
-> > >>>>> On 11/4/21 1:04 PM, Christoph Hellwig wrote:
-> > >>>>>> On Thu, Nov 04, 2021 at 01:02:54PM -0600, Jens Axboe wrote:
-> > >>>>>>> On 11/4/21 12:52 PM, Christoph Hellwig wrote:
-> > >>>>>>>> Looks good:
-> > >>>>>>>>
-> > >>>>>>>> Reviewed-by: Christoph Hellwig <hch@lst.de>
-> > >>>>>>>
-> > >>>>>>> So these two are now:
-> > >>>>>>>
-> > >>>>>>> https://git.kernel.dk/cgit/linux-block/commit/?h=for-5.16/block&id=c98cb5bbdab10d187aff9b4e386210eb2332af96
-> > >>>>>>>
-> > >>>>>>> which is the one I sent here, and then the next one gets cleaned up to
-> > >>>>>>> remove that queue enter helper:
-> > >>>>>>>
-> > >>>>>>> https://git.kernel.dk/cgit/linux-block/commit/?h=for-5.16/block&id=7f930eb31eeb07f1b606b3316d8ad3ab6a92905b
-> > >>>>>>>
-> > >>>>>>> Can I add your reviewed-by to this last one as well? Only change is the
-> > >>>>>>> removal of blk_mq_enter_queue() and the weird construct there, it's just
-> > >>>>>>> bio_queue_enter() now.
-> > >>>>>>
-> > >>>>>> Sure.
-> > >>>>>
-> > >>>>> Thanks, prematurely already done, as you could tell :-)
-> > >>>>
-> > >>>> The updated version is now commit 900e080752025f00 ("block: move queue
-> > >>>> enter logic into blk_mq_submit_bio()") in Linus' tree.
-> > >>>>
-> > >>>> I have bisected failures on m68k/atari (on ARAnyM, using nfhd as the
-> > >>>> root device) to this commit, e.g.:
-> > >>>>
-> > >>>>     sd 0:0:0:0: [sda] tag#0 FAILED Result: hostbyte=DID_OK driverbyte=DRIVER_OK cmd_age=0s
-> > >>>>     sd 0:0:0:0: [sda] tag#0 Sense Key : Illegal Request [current]
-> > >>>>     sd 0:0:0:0: [sda] tag#0 Add. Sense: Invalid field in cdb
-> > >>>>     sd 0:0:0:0: [sda] tag#0 CDB: Write(10) 2a 08 00 00 00 01 00 00 08 00
-> > >>>>     critical target error, dev sda, sector 1 op 0x1:(WRITE) flags 0x20800 phys_seg 1 prio class 0
-> > >>>>     Buffer I/O error on dev sda1, logical block 0, lost sync page write
-> > >>>>
-> > >>>>     EXT4-fs (sda1): I/O error while writing superblock
-> > >>>>     sd 0:0:0:0: [sda] tag#0 FAILED Result: hostbyte=DID_OK driverbyte=DRIVER_OK cmd_age=0s
-> > >>>>     sd 0:0:0:0: [sda] tag#0 Sense Key : Illegal Request [current]
-> > >>>>     sd 0:0:0:0: [sda] tag#0 Add. Sense: Invalid field in cdb
-> > >>>>     sd 0:0:0:0: [sda] tag#0 CDB: Write(10) 2a 08 00 00 00 01 00 00 08 00
-> > >>>>     critical target error, dev sda, sector 1 op 0x1:(WRITE) flags 0x20800 phys_seg 1 prio class 0
-> > >>>>     Buffer I/O error on dev sda1, logical block 0, lost sync page write
-> > >>>>     EXT4-fs (sda1): I/O error while writing superblock
-> > >>>>
-> > >>>> This may happen either when mounting the root file system (leading to an
-> > >>>> unable to mount root fs panic), or later (leading to a read-only
-> > >>>> rootfs).
-> > >>>
-> > >>> BTW, today I just found that hang in blk_mq_freeze_queue_wait() is
-> > >>> caused by commit 900e080752025f00, and the following patch can fix it:
-> > >>>
-> > >>> - blk-mq: don't grab ->q_usage_counter in blk_mq_sched_bio_merge
-> > >>>
-> > >>> https://lore.kernel.org/linux-block/20211111085650.GA476@lst.de/T/#m759b88fda094a65ebf29bc81b780967cdaf9cf28
-> > >>>
-> > >>> Maybe you can try the above patch.
-> > >>
-> > >> Thanks! I have applied both patches, but it doesn't make a difference.
-> > >
-> > > Thanks for your test!
-> > >
-> > > Can you try the following patch?
-
-[...]
-
-> > That's definitely a real fix, akin to the other pre-enter variants, this
-> > one just post checks. Geert, can you give this a whirl?
-
-With both of
-
-    blk-mq: don't grab ->q_usage_counter in blk_mq_sched_bio_merge
-    blk-mq: rename blk_attempt_bio_merge
-
-applied, and the version above, I no longer saw the error, but the
-boot sometimes hangs after:
-
-    ext3 filesystem being remounted at / supports timestamps until
-2038 (0x7fffffff)
-
-I don't know how easy that is to trigger: it hung on my first try, but
-the second and third tries it booted fully into old Debian userspace.
-
-> > Ming, would you mind sending this as a real patch?
+On Fri, Nov 12, 2021 at 1:37 AM Finn Thain <fthain@linux-m68k.org> wrote:
+> Enable the memtest functionality and rearrange some code to prevent it
+> from clobbering the initrd.
 >
-> The above patch may not be enough, since submit_bio_checks() is done in
-> case of using cached request, so how about the following patch(un-tested)?
+> The CONFIG_BLK_DEV_INITRD symbol was conditional on !defined(CONFIG_SUN3).
+> For simplicity, remove that test on the basis that m68k_ramdisk.size == 0
+> on Sun 3.
+>
+> The SLIME source code at
+> http://sammy.net/sun3/ftp/pub/m68k/sun3/slime/slime-2.0.tar.gz
+> indicates that no BI_RAMDISK entry is ever passed to the kernel due
+> to #ifdef 0 around the relevant code.
+>
+> Cc: Mike Rapoport <rppt@kernel.org>
+> Cc: Sam Creasey <sammy@sammy.net>
+> Cc: Jonathan Corbet <corbet@lwn.net>
+> Signed-off-by: Finn Thain <fthain@linux-m68k.org>
 
-Worked fine in five subsequent boots. Thanks!
-Tested-by: Geert Uytterhoeven <geert@linux-m68k.org>
+Thanks for your patch!
+
+> --- a/arch/m68k/Kconfig
+> +++ b/arch/m68k/Kconfig
+> @@ -9,6 +9,7 @@ config M68K
+>         select ARCH_HAVE_NMI_SAFE_CMPXCHG if RMW_INSNS
+>         select ARCH_MIGHT_HAVE_PC_PARPORT if ISA
+>         select ARCH_NO_PREEMPT if !COLDFIRE
+> +       select ARCH_USE_MEMTEST
+
+if MMU_MOTOROLA?
+
+>         select ARCH_WANT_IPC_PARSE_VERSION
+>         select BINFMT_FLAT_ARGVP_ENVP_ON_STACK
+>         select DMA_DIRECT_REMAP if HAS_DMA && MMU && !COLDFIRE
+> diff --git a/arch/m68k/kernel/setup_mm.c b/arch/m68k/kernel/setup_mm.c
+> index 4b51bfd38e5f..49e573b94326 100644
+> --- a/arch/m68k/kernel/setup_mm.c
+> +++ b/arch/m68k/kernel/setup_mm.c
+> @@ -338,13 +338,6 @@ void __init setup_arch(char **cmdline_p)
+>                 panic("No configuration setup");
+>         }
+>
+> -       paging_init();
+> -
+> -#ifdef CONFIG_NATFEAT
+> -       nf_init();
+> -#endif
+> -
+> -#ifndef CONFIG_SUN3
+>  #ifdef CONFIG_BLK_DEV_INITRD
+>         if (m68k_ramdisk.size) {
+>                 memblock_reserve(m68k_ramdisk.addr, m68k_ramdisk.size);
+
+Does this still work, given the initrd is part of memory that used
+to be added before (in paging_init(), but now is added later?
+(I'm no memblock expert, so that might be a silly question ;-)
+
+> @@ -354,6 +347,12 @@ void __init setup_arch(char **cmdline_p)
+>         }
+>  #endif
+>
+> +       paging_init();
+> +
+> +#ifdef CONFIG_NATFEAT
+> +       nf_init();
+> +#endif
+> +
+>  #ifdef CONFIG_ATARI
+>         if (MACH_IS_ATARI)
+>                 atari_stram_reserve_pages((void *)availmem);
+> @@ -364,8 +363,6 @@ void __init setup_arch(char **cmdline_p)
+>         }
+>  #endif
+>
+> -#endif /* !CONFIG_SUN3 */
+> -
+>  /* set ISA defs early as possible */
+>  #if defined(CONFIG_ISA) && defined(MULTI_ISA)
+>         if (MACH_IS_Q40) {
+> diff --git a/arch/m68k/mm/motorola.c b/arch/m68k/mm/motorola.c
+> index 9f3f77785aa7..5b6575eb6d02 100644
+> --- a/arch/m68k/mm/motorola.c
+> +++ b/arch/m68k/mm/motorola.c
+> @@ -455,6 +455,8 @@ void __init paging_init(void)
+>
+>         flush_tlb_all();
+>
+> +       early_memtest(min_addr, max_addr);
+
+So this is available only if MMU_MOTOROLA, not for Sun-3, Coldfire,
+or nommu.
+
+> +
+>         /*
+>          * initialize the bad page table and bad page to point
+>          * to a couple of allocated pages
 
 Gr{oetje,eeting}s,
 
