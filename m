@@ -2,87 +2,163 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id F33FCC433EF
-	for <linux-m68k@archiver.kernel.org>; Sun, 14 Nov 2021 23:40:37 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C4CE1C433F5
+	for <linux-m68k@archiver.kernel.org>; Sun, 14 Nov 2021 23:40:38 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id CF02D60EFE
-	for <linux-m68k@archiver.kernel.org>; Sun, 14 Nov 2021 23:40:37 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id A592F60EE0
+	for <linux-m68k@archiver.kernel.org>; Sun, 14 Nov 2021 23:40:38 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235015AbhKNXn1 (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Sun, 14 Nov 2021 18:43:27 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54422 "EHLO
+        id S234778AbhKNXna (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Sun, 14 Nov 2021 18:43:30 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54428 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234850AbhKNXnL (ORCPT
-        <rfc822;linux-m68k@vger.kernel.org>); Sun, 14 Nov 2021 18:43:11 -0500
-Received: from mail-pf1-x42e.google.com (mail-pf1-x42e.google.com [IPv6:2607:f8b0:4864:20::42e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F14F7C061746;
-        Sun, 14 Nov 2021 15:40:16 -0800 (PST)
-Received: by mail-pf1-x42e.google.com with SMTP id b68so13428175pfg.11;
-        Sun, 14 Nov 2021 15:40:16 -0800 (PST)
+        with ESMTP id S234874AbhKNXnM (ORCPT
+        <rfc822;linux-m68k@vger.kernel.org>); Sun, 14 Nov 2021 18:43:12 -0500
+Received: from mail-pf1-x42a.google.com (mail-pf1-x42a.google.com [IPv6:2607:f8b0:4864:20::42a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 503CEC061766
+        for <linux-m68k@vger.kernel.org>; Sun, 14 Nov 2021 15:40:17 -0800 (PST)
+Received: by mail-pf1-x42a.google.com with SMTP id r130so13487443pfc.1
+        for <linux-m68k@vger.kernel.org>; Sun, 14 Nov 2021 15:40:17 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id;
-        bh=pgmv3M4B238SIiPc46gdEGxPH8W7iZDv8IyHZEGA3xE=;
-        b=gg1n9jtsWW8KV4vhHrlSE8/WHzDru8u6PklLrPf4a59nqbhhWB2WGphQuKTmtVyrAi
-         fsfjI62pLPSBmphkOnIz7d7Gox1uvMiHKR2IgyHk80joCDapwSnwbZiBxQ0k2uC6a6xQ
-         VvOkeh0+tN2fxmyUBRR1pLKx8AbdENDsFTnPaTJcoCuahty3JNYhTBxUVLIT2NuYhXFI
-         LxTdbtItNN0cR01WOplqzwtfrmaRhxh9UlNjxiciwownDsDgwMK/23EcQbEExey1BolY
-         VSLztkOcjlaPdSlJkMCbtKVTlNDyWQzYFed7Si7PB9SW9710DyosxGdYMgOzueCQOoJu
-         TfaA==
+        h=from:to:cc:subject:date:message-id:in-reply-to:references;
+        bh=NEFu4f6EN+lTthlxVdPHuZf75udGh2+rV/NL28fHCP8=;
+        b=p1QSzHeGiAQw9seCVQspL/u/3MJwuT1IVovPcYDxeIdmF+DN/BM1zmS7iAyMVU9I3A
+         Rbxv3A+ooIf7mpj8uyINDjKFhYmNiV/WBFGm9EnkO1X93e0BBzOIMFRSccf36CPRe9Fn
+         +84rZ3we/weuM/+CcYADXBQkXcfH8IOjRtflGEcR1B1yBfJkgiMLlLiAf9WfxSdl5VpP
+         VqSCmDecZWaEJHPzp6B7mK6K+FMu21Rt0uMP0nOKXSkdx0kZEnnQOTFfWK4TwGhrbHeq
+         muxAOaLS7t/fybG9miYqlHpkLM1bDGwQrM3Y/NXP1joBoVOCsYrE9jTXgvVwA97aUl69
+         jhWg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=pgmv3M4B238SIiPc46gdEGxPH8W7iZDv8IyHZEGA3xE=;
-        b=XqUap5CMD7aux7p0PtCDbiSrJGB5r9Cj2fuNsHJ7/AIP5TKbHV8zmFEeGO5GCaNIXR
-         C+3WLAnfGgeKbB1Avber2M08kREMjOdEeNv1/LTIvrHOFZP1AAoS2/Bx9YsGbDT0wdlr
-         2nmJxjHhm6nc7BGTEULgIFTsyScWsIeQPlgaRuOkdOhD4Jh3sHZxaRT7AAKdx9as9Rin
-         vSwGptVZuSmSEHR0dutrdeUYkdYOkOaVFRB21EYT9ZQmOqRfBmrcCZRq5Aqz2Y7rXKZz
-         Hyv1xSyvf7iJR+IAdmK6zwT1nj6Q5z2hjCvUh3NDU1X3YShPCORqYSezCYG66qY52VXt
-         C5Jg==
-X-Gm-Message-State: AOAM5323h7VzQUY2DS/GKTDBvAoiBDNUQQ/hR4+RApAQEuQ72/XrSd5n
-        5UPpV4bm0A1julQS1VeTRMj3AA+AcoU=
-X-Google-Smtp-Source: ABdhPJwJmR/ScQ0BY5UgLS767TrpZf32Mips6V3+j+7LYkOHmHGHrs/NIUbz4fPhUtuQ9zvEM94JaQ==
-X-Received: by 2002:a63:7cc:: with SMTP id 195mr20997729pgh.328.1636933216554;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references;
+        bh=NEFu4f6EN+lTthlxVdPHuZf75udGh2+rV/NL28fHCP8=;
+        b=wFfJymWsgf9Cma/s7Uv5t9z8wuI2pLy5EcDBavF4/+kcBm65xHxWOahy+T46Rl2iOq
+         UFgq3qlvHLid7XEsEyHb25becCeecwXNlmkGyq5CP3WMQx44EhEPm3XmDMfAKwWVLdGe
+         cH6ljSGBxBgwzeUw0L+Fpk0hEqKIqRXry6nLkNO4ksGoeu/2QxZrt/YKe0VjgYzqJtP6
+         z4GIAd6t7uy/HxDhWzQOp0XT5B3K73/+wxqCaED20EF4aLwkAHM5puxf5ffmmeA5W2qu
+         5IH+LHMuDHITuvWwsfgFXswQSUeCu99UZ2fc5twYdnZk7QTTqnVYTcvcBf89upgEiLvl
+         jLbw==
+X-Gm-Message-State: AOAM533/MT9KDCeNeBVXgV2wTzTyiDYfosfVxFqRzRkJx1M2ged23ylC
+        wkaPwDu/n25gfHwjOHn6UEAh4RKwX38=
+X-Google-Smtp-Source: ABdhPJzmZDNCSoo8ZVDXMCkxCVRFUrAOeEqCydKEnD7zIrrCsFhvV4tNZdedSZEYSCaXIyClNSUjsQ==
+X-Received: by 2002:a05:6a00:10d3:b0:49f:faf7:6f8e with SMTP id d19-20020a056a0010d300b0049ffaf76f8emr29830380pfu.75.1636933216709;
         Sun, 14 Nov 2021 15:40:16 -0800 (PST)
 Received: from xplor.waratah.dyndns.org (222-155-101-117-fibre.sparkbb.co.nz. [222.155.101.117])
-        by smtp.gmail.com with ESMTPSA id p2sm10444750pja.55.2021.11.14.15.40.15
+        by smtp.gmail.com with ESMTPSA id b15sm12706414pfv.48.2021.11.14.15.40.15
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 14 Nov 2021 15:40:15 -0800 (PST)
+        Sun, 14 Nov 2021 15:40:16 -0800 (PST)
 Received: by xplor.waratah.dyndns.org (Postfix, from userid 1000)
-        id BF80B360207; Mon, 15 Nov 2021 12:40:11 +1300 (NZDT)
+        id BFAD5360208; Mon, 15 Nov 2021 12:40:12 +1300 (NZDT)
 From:   Michael Schmitz <schmitzmic@gmail.com>
 To:     linux-m68k@vger.kernel.org, geert@linux-m68k.org
-Cc:     alex@kazik.de, netdev@vger.kernel.org
-Subject: [PATCH v11 0/3] Add APNE PCMCIA 100 Mbit support
-Date:   Mon, 15 Nov 2021 12:40:02 +1300
-Message-Id: <20211114234005.335-1-schmitzmic@gmail.com>
+Cc:     alex@kazik.de, Michael Schmitz <schmitzmic@gmail.com>
+Subject: [PATCH v11 1/3] m68k: amiga/pcmcia - add 16 bit detection interface to amipcmcia.h
+Date:   Mon, 15 Nov 2021 12:40:03 +1300
+Message-Id: <20211114234005.335-2-schmitzmic@gmail.com>
 X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20211114234005.335-1-schmitzmic@gmail.com>
+References: <20211114234005.335-1-schmitzmic@gmail.com>
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-The first patch enables the use of core PCMCIA code to parse
-config table entries in Amiga drivers. The remaining two patches
-add 16 bit IO support to the m68k low-level IO access code, and 
-add code to the APNE driver to autoprobe for 16 bit IO on cards
-that support it (the 100 Mbit cards). The core PCMCIA config
-table parser is utilized for this (may be built as a module;
-must be selected manually for build in order to enable autoprobe).
+Add the interface definition for 16 bit card autoprobing (using
+the generic PCMCIA cftable entry parser) to amipcmcia.h for use
+by apne.c. Include necessary cftable definitions from cistpl.h,
+remove locally duplicate definitions from amipcmcia.h.
 
-Tested by Alex on a 100 Mbit card. Not yet tested on 10 Mbit
-cards - if any of those also have the 16 bit IO feature set
-in their config table, this patch series would break on those
-cards. 
+Signed-off-by: Michael Schmitz <schmitzmic@gmail.com>
 
-Note that only patch 3 has been sent to netdev. Please CC
-linux-m68k when providing comments.
+--
 
-v11 addresses review comments by Geert.
+Changes from v10:
 
-Cheers,
+Geert Uytterhoeven:
+- include <pcmcia/ds.h> instead of explict pcmcia_parse_tuple()
+  prototype declaration
 
-   Michael
+Changes from v9:
 
-CC: netdev@vger.kernel.org
+Geert Uytterhoeven:
+- declare declare pcmcia_parse_tuple() unconditionally
 
+Changes from v8:
+
+Geert Uytterhoeven:
+
+- just include pcmcia/cistpl.h; declare pcmcia_parse_tuple()
+  only if core PCMCIA code is included
+
+Changes from v7:
+
+- add interface definitions only, move actual code to apne.c
+---
+ arch/m68k/include/asm/amipcmcia.h | 45 ++-----------------------------
+ 1 file changed, 2 insertions(+), 43 deletions(-)
+
+diff --git a/arch/m68k/include/asm/amipcmcia.h b/arch/m68k/include/asm/amipcmcia.h
+index 6f1ec1887d82..fbc80b1d853e 100644
+--- a/arch/m68k/include/asm/amipcmcia.h
++++ b/arch/m68k/include/asm/amipcmcia.h
+@@ -13,6 +13,8 @@
+ #ifndef __AMIGA_PCMCIA_H__
+ #define __AMIGA_PCMCIA_H__
+ 
++#include <pcmcia/cistpl.h>
++#include <pcmcia/ds.h>
+ #include <asm/amigayle.h>
+ 
+ /* prototypes */
+@@ -64,47 +66,4 @@ static inline void pcmcia_disable_irq(void)
+ #define PCMCIA_SPEED_250NS	250
+ #define PCMCIA_SPEED_720NS	720
+ 
+-/* PCMCIA Tuple codes */
+-
+-#define CISTPL_NULL		0x00
+-#define CISTPL_DEVICE		0x01
+-#define CISTPL_LONGLINK_CB	0x02
+-#define CISTPL_CONFIG_CB	0x04
+-#define CISTPL_CFTABLE_ENTRY_CB	0x05
+-#define CISTPL_LONGLINK_MFC	0x06
+-#define CISTPL_BAR		0x07
+-#define CISTPL_CHECKSUM		0x10
+-#define CISTPL_LONGLINK_A	0x11
+-#define CISTPL_LONGLINK_C	0x12
+-#define CISTPL_LINKTARGET	0x13
+-#define CISTPL_NO_LINK		0x14
+-#define CISTPL_VERS_1		0x15
+-#define CISTPL_ALTSTR		0x16
+-#define CISTPL_DEVICE_A		0x17
+-#define CISTPL_JEDEC_C		0x18
+-#define CISTPL_JEDEC_A		0x19
+-#define CISTPL_CONFIG		0x1a
+-#define CISTPL_CFTABLE_ENTRY	0x1b
+-#define CISTPL_DEVICE_OC	0x1c
+-#define CISTPL_DEVICE_OA	0x1d
+-#define CISTPL_DEVICE_GEO	0x1e
+-#define CISTPL_DEVICE_GEO_A	0x1f
+-#define CISTPL_MANFID		0x20
+-#define CISTPL_FUNCID		0x21
+-#define CISTPL_FUNCE		0x22
+-#define CISTPL_SWIL		0x23
+-#define CISTPL_END		0xff
+-
+-/* FUNCID */
+-
+-#define CISTPL_FUNCID_MULTI	0x00
+-#define CISTPL_FUNCID_MEMORY	0x01
+-#define CISTPL_FUNCID_SERIAL	0x02
+-#define CISTPL_FUNCID_PARALLEL	0x03
+-#define CISTPL_FUNCID_FIXED	0x04
+-#define CISTPL_FUNCID_VIDEO	0x05
+-#define CISTPL_FUNCID_NETWORK	0x06
+-#define CISTPL_FUNCID_AIMS	0x07
+-#define CISTPL_FUNCID_SCSI	0x08
+-
+ #endif
+-- 
+2.17.1
 
