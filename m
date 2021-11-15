@@ -2,27 +2,27 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 07CFEC43217
-	for <linux-m68k@archiver.kernel.org>; Mon, 15 Nov 2021 17:49:36 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 70E28C433EF
+	for <linux-m68k@archiver.kernel.org>; Mon, 15 Nov 2021 19:06:29 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id E8DEE633DD
-	for <linux-m68k@archiver.kernel.org>; Mon, 15 Nov 2021 17:49:35 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 540D3636E1
+	for <linux-m68k@archiver.kernel.org>; Mon, 15 Nov 2021 19:06:29 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236718AbhKORw3 (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Mon, 15 Nov 2021 12:52:29 -0500
-Received: from mail.kernel.org ([198.145.29.99]:36580 "EHLO mail.kernel.org"
+        id S243791AbhKOTJS (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Mon, 15 Nov 2021 14:09:18 -0500
+Received: from mail.kernel.org ([198.145.29.99]:38976 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231767AbhKORth (ORCPT <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Mon, 15 Nov 2021 12:49:37 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1D13B633AE;
-        Mon, 15 Nov 2021 17:46:40 +0000 (UTC)
+        id S243816AbhKOTGX (ORCPT <rfc822;linux-m68k@lists.linux-m68k.org>);
+        Mon, 15 Nov 2021 14:06:23 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id F174061BE5;
+        Mon, 15 Nov 2021 19:03:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1636998401;
-        bh=KR3+Fl7Pstcu+h0z3QgDS9jHtpp2Nbp43keS4jBEWE0=;
+        s=korg; t=1637003007;
+        bh=hbWP4FzoI6l8+oBod14lyaWElt5Yhcj0wXmfOKfOHks=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=L7NGiqlfg7KpdP6GLLw+0HRihgWgdVNd6QGB50d0XTywm4/s/49M6vvVpXLR2XEG1
-         63yGycOZRWdBrg1pSsXEBWudgnd+0IXCb0ZTJda4HeLmSyqnuX17aGhJtLqOEQAoTR
-         fsOhh6A/IA/gSMn+pVlcf+VN9LhjMODB9H31ESOM=
+        b=VHa48bcV/FpMJA78kboMcNNSK8Dk8iWp+33bTYdH/vMJhIgvKIt5iqqXNknABXzCm
+         v+HyC+l8AnHmzQHFnGn0sjGXpXNVZElD8MtvleTSH2MIxlyP7hUZt+yJR7V+QkVMkr
+         AknWNpBWHjCLkK9IxRUx+8MkM0RO1pEKbwS3Eqok=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
@@ -30,12 +30,12 @@ Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         Geert Uytterhoeven <geert@linux-m68k.org>,
         Greg Ungerer <gerg@linux-m68k.org>,
         linux-m68k@lists.linux-m68k.org, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 495/575] m68k: set a default value for MEMORY_RESERVE
-Date:   Mon, 15 Nov 2021 18:03:40 +0100
-Message-Id: <20211115165400.804139580@linuxfoundation.org>
+Subject: [PATCH 5.15 743/917] m68k: set a default value for MEMORY_RESERVE
+Date:   Mon, 15 Nov 2021 18:03:58 +0100
+Message-Id: <20211115165454.107886679@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211115165343.579890274@linuxfoundation.org>
-References: <20211115165343.579890274@linuxfoundation.org>
+In-Reply-To: <20211115165428.722074685@linuxfoundation.org>
+References: <20211115165428.722074685@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -75,10 +75,10 @@ Signed-off-by: Sasha Levin <sashal@kernel.org>
  1 file changed, 1 insertion(+)
 
 diff --git a/arch/m68k/Kconfig.machine b/arch/m68k/Kconfig.machine
-index e161a4e1493b4..51a878803fb6d 100644
+index 36fa0c3ef1296..eeab4f3e6c197 100644
 --- a/arch/m68k/Kconfig.machine
 +++ b/arch/m68k/Kconfig.machine
-@@ -191,6 +191,7 @@ config INIT_LCD
+@@ -203,6 +203,7 @@ config INIT_LCD
  config MEMORY_RESERVE
  	int "Memory reservation (MiB)"
  	depends on (UCSIMM || UCDIMM)
