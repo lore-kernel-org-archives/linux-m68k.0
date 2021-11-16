@@ -2,92 +2,204 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 6923DC433FE
-	for <linux-m68k@archiver.kernel.org>; Tue, 16 Nov 2021 02:22:45 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C3C18C433EF
+	for <linux-m68k@archiver.kernel.org>; Tue, 16 Nov 2021 07:21:48 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 4ED1F60E0C
-	for <linux-m68k@archiver.kernel.org>; Tue, 16 Nov 2021 02:22:45 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 9D414613A7
+	for <linux-m68k@archiver.kernel.org>; Tue, 16 Nov 2021 07:21:48 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344762AbhKPCZk (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Mon, 15 Nov 2021 21:25:40 -0500
-Received: from mail.kernel.org ([198.145.29.99]:57058 "EHLO mail.kernel.org"
+        id S230011AbhKPHYk (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Tue, 16 Nov 2021 02:24:40 -0500
+Received: from mga04.intel.com ([192.55.52.120]:14740 "EHLO mga04.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236915AbhKORYi (ORCPT <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Mon, 15 Nov 2021 12:24:38 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0531A60F22;
-        Mon, 15 Nov 2021 17:21:41 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1636996902;
-        bh=iIKX5yfv9uwF+P+1c+mH0hmTXAkbWkdnhEr6khbfSpI=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=A23Pin89CkGH/fkHRMK+mMUvsbBhbFqBbMlJl4doOCuxHyRCQGCx5yvYJSM06MCq2
-         NYWqNlDX9a+MJf61N7RgLM97sCEVqXM0Gjg2hapCsjSlo9ulDY6CakQPI0CMQbIQxs
-         0pzXf+O76/6WgTrfkOL/Q5u0HLYeI6OBFQHQZiVw=
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Randy Dunlap <rdunlap@infradead.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Greg Ungerer <gerg@linux-m68k.org>,
-        linux-m68k@lists.linux-m68k.org, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 308/355] m68k: set a default value for MEMORY_RESERVE
-Date:   Mon, 15 Nov 2021 18:03:52 +0100
-Message-Id: <20211115165323.686018432@linuxfoundation.org>
-X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211115165313.549179499@linuxfoundation.org>
-References: <20211115165313.549179499@linuxfoundation.org>
-User-Agent: quilt/0.66
+        id S230241AbhKPHYH (ORCPT <rfc822;linux-m68k@lists.linux-m68k.org>);
+        Tue, 16 Nov 2021 02:24:07 -0500
+X-IronPort-AV: E=McAfee;i="6200,9189,10169"; a="232360041"
+X-IronPort-AV: E=Sophos;i="5.87,238,1631602800"; 
+   d="scan'208";a="232360041"
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Nov 2021 23:21:08 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.87,238,1631602800"; 
+   d="scan'208";a="494355110"
+Received: from lkp-server02.sh.intel.com (HELO c20d8bc80006) ([10.239.97.151])
+  by orsmga007.jf.intel.com with ESMTP; 15 Nov 2021 23:21:06 -0800
+Received: from kbuild by c20d8bc80006 with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1mmsm9-0000B8-FD; Tue, 16 Nov 2021 07:21:05 +0000
+Date:   Tue, 16 Nov 2021 15:20:29 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Geert Uytterhoeven <geert@linux-m68k.org>
+Cc:     linux-m68k@lists.linux-m68k.org
+Subject: [geert-m68k:master] BUILD SUCCESS
+ 0c3f9e7220ddd6ad1d9093b4a1bae7ec750d523c
+Message-ID: <61935bbd.DSa+OUwpSIgoGj/B%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-From: Randy Dunlap <rdunlap@infradead.org>
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/geert/linux-m68k.git master
+branch HEAD: 0c3f9e7220ddd6ad1d9093b4a1bae7ec750d523c  Merge tag 'v5.16-rc1'
 
-[ Upstream commit 1aaa557b2db95c9506ed0981bc34505c32d6b62b ]
+elapsed time: 1216m
 
-'make randconfig' can produce a .config file with
-"CONFIG_MEMORY_RESERVE=" (no value) since it has no default.
-When a subsequent 'make all' is done, kconfig restarts the config
-and prompts for a value for MEMORY_RESERVE. This breaks
-scripting/automation where there is no interactive user input.
+configs tested: 141
+configs skipped: 3
 
-Add a default value for MEMORY_RESERVE. (Any integer value will
-work here for kconfig.)
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
-Fixes a kconfig warning:
+gcc tested configs:
+arm                                 defconfig
+arm64                            allyesconfig
+arm                              allyesconfig
+arm                              allmodconfig
+arm64                               defconfig
+i386                 randconfig-c001-20211115
+m68k                        m5307c3_defconfig
+arm64                            alldefconfig
+arc                            hsdk_defconfig
+arm                         lpc32xx_defconfig
+s390                          debug_defconfig
+powerpc                     stx_gp3_defconfig
+powerpc                 mpc85xx_cds_defconfig
+arm                         cm_x300_defconfig
+m68k                          atari_defconfig
+sh                             espt_defconfig
+arm                        vexpress_defconfig
+h8300                    h8300h-sim_defconfig
+xtensa                generic_kc705_defconfig
+arc                        vdk_hs38_defconfig
+powerpc64                           defconfig
+arm                        mvebu_v5_defconfig
+arm                         mv78xx0_defconfig
+sh                           se7619_defconfig
+arm                      tct_hammer_defconfig
+sh                          sdk7780_defconfig
+powerpc                      cm5200_defconfig
+powerpc                   microwatt_defconfig
+mips                       bmips_be_defconfig
+um                               alldefconfig
+powerpc                   lite5200b_defconfig
+mips                           ip32_defconfig
+powerpc                      ppc6xx_defconfig
+xtensa                         virt_defconfig
+arm                             mxs_defconfig
+mips                      maltaaprp_defconfig
+sh                         apsh4a3a_defconfig
+parisc                generic-64bit_defconfig
+powerpc                     pseries_defconfig
+arm                  randconfig-c002-20211116
+arm                  randconfig-c002-20211115
+ia64                             allmodconfig
+ia64                                defconfig
+ia64                             allyesconfig
+m68k                                defconfig
+m68k                             allyesconfig
+m68k                             allmodconfig
+nios2                               defconfig
+nds32                             allnoconfig
+arc                              allyesconfig
+nds32                               defconfig
+nios2                            allyesconfig
+csky                                defconfig
+alpha                               defconfig
+alpha                            allyesconfig
+h8300                            allyesconfig
+arc                                 defconfig
+sh                               allmodconfig
+xtensa                           allyesconfig
+parisc                              defconfig
+s390                             allyesconfig
+s390                             allmodconfig
+parisc                           allyesconfig
+s390                                defconfig
+i386                             allyesconfig
+sparc                            allyesconfig
+sparc                               defconfig
+i386                                defconfig
+i386                              debian-10.3
+mips                             allyesconfig
+mips                             allmodconfig
+powerpc                           allnoconfig
+powerpc                          allmodconfig
+powerpc                          allyesconfig
+x86_64               randconfig-a003-20211115
+x86_64               randconfig-a002-20211115
+x86_64               randconfig-a001-20211115
+x86_64               randconfig-a006-20211115
+x86_64               randconfig-a004-20211115
+x86_64               randconfig-a005-20211115
+i386                 randconfig-a006-20211115
+i386                 randconfig-a003-20211115
+i386                 randconfig-a005-20211115
+i386                 randconfig-a001-20211115
+i386                 randconfig-a004-20211115
+i386                 randconfig-a002-20211115
+i386                 randconfig-a014-20211116
+i386                 randconfig-a016-20211116
+i386                 randconfig-a012-20211116
+i386                 randconfig-a013-20211116
+i386                 randconfig-a011-20211116
+i386                 randconfig-a015-20211116
+arc                  randconfig-r043-20211115
+riscv                    nommu_k210_defconfig
+riscv                            allyesconfig
+riscv                    nommu_virt_defconfig
+riscv                             allnoconfig
+riscv                               defconfig
+riscv                          rv32_defconfig
+riscv                            allmodconfig
+um                             i386_defconfig
+um                           x86_64_defconfig
+x86_64                              defconfig
+x86_64                               rhel-8.3
+x86_64                          rhel-8.3-func
+x86_64                                  kexec
+x86_64                           allyesconfig
+x86_64                    rhel-8.3-kselftests
 
-.config:214:warning: symbol value '' invalid for MEMORY_RESERVE
-* Restart config...
-Memory reservation (MiB) (MEMORY_RESERVE) [] (NEW)
+clang tested configs:
+x86_64               randconfig-c007-20211115
+i386                 randconfig-c001-20211115
+arm                  randconfig-c002-20211115
+riscv                randconfig-c006-20211115
+powerpc              randconfig-c003-20211115
+s390                 randconfig-c005-20211115
+mips                 randconfig-c004-20211115
+i386                 randconfig-a006-20211116
+i386                 randconfig-a003-20211116
+i386                 randconfig-a005-20211116
+i386                 randconfig-a001-20211116
+i386                 randconfig-a004-20211116
+i386                 randconfig-a002-20211116
+x86_64               randconfig-a013-20211115
+x86_64               randconfig-a011-20211115
+x86_64               randconfig-a012-20211115
+x86_64               randconfig-a014-20211115
+x86_64               randconfig-a015-20211115
+x86_64               randconfig-a016-20211115
+i386                 randconfig-a014-20211115
+i386                 randconfig-a016-20211115
+i386                 randconfig-a012-20211115
+i386                 randconfig-a013-20211115
+i386                 randconfig-a011-20211115
+i386                 randconfig-a015-20211115
+x86_64               randconfig-a005-20211116
+x86_64               randconfig-a003-20211116
+x86_64               randconfig-a001-20211116
+x86_64               randconfig-a002-20211116
+x86_64               randconfig-a006-20211116
+x86_64               randconfig-a004-20211116
+hexagon              randconfig-r045-20211115
+hexagon              randconfig-r041-20211115
+s390                 randconfig-r044-20211115
+riscv                randconfig-r042-20211115
 
-Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2") # from beginning of git history
-Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-Reviewed-by: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: Greg Ungerer <gerg@linux-m68k.org>
-Cc: linux-m68k@lists.linux-m68k.org
-Signed-off-by: Greg Ungerer <gerg@linux-m68k.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/m68k/Kconfig.machine | 1 +
- 1 file changed, 1 insertion(+)
-
-diff --git a/arch/m68k/Kconfig.machine b/arch/m68k/Kconfig.machine
-index 1bbe0dd0c4fe5..b88a980f56f8a 100644
---- a/arch/m68k/Kconfig.machine
-+++ b/arch/m68k/Kconfig.machine
-@@ -190,6 +190,7 @@ config INIT_LCD
- config MEMORY_RESERVE
- 	int "Memory reservation (MiB)"
- 	depends on (UCSIMM || UCDIMM)
-+	default 0
- 	help
- 	  Reserve certain memory regions on 68x328 based boards.
- 
--- 
-2.33.0
-
-
-
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
