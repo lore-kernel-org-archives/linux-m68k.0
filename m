@@ -2,55 +2,55 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 1035AC4167D
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 1A0C2C4167B
 	for <linux-m68k@archiver.kernel.org>; Wed, 17 Nov 2021 01:21:19 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id DB7646325A
+	by mail.kernel.org (Postfix) with ESMTP id EA04863244
 	for <linux-m68k@archiver.kernel.org>; Wed, 17 Nov 2021 01:21:18 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232556AbhKQBYN (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        id S232553AbhKQBYN (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
         Tue, 16 Nov 2021 20:24:13 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47300 "EHLO
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47308 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232501AbhKQBYH (ORCPT
+        with ESMTP id S232519AbhKQBYI (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Tue, 16 Nov 2021 20:24:07 -0500
-Received: from mail-qv1-xf2a.google.com (mail-qv1-xf2a.google.com [IPv6:2607:f8b0:4864:20::f2a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C04FAC061746
-        for <linux-m68k@lists.linux-m68k.org>; Tue, 16 Nov 2021 17:21:09 -0800 (PST)
-Received: by mail-qv1-xf2a.google.com with SMTP id s9so834115qvk.12
-        for <linux-m68k@lists.linux-m68k.org>; Tue, 16 Nov 2021 17:21:09 -0800 (PST)
+        Tue, 16 Nov 2021 20:24:08 -0500
+Received: from mail-qv1-xf2d.google.com (mail-qv1-xf2d.google.com [IPv6:2607:f8b0:4864:20::f2d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 932CCC061746
+        for <linux-m68k@lists.linux-m68k.org>; Tue, 16 Nov 2021 17:21:10 -0800 (PST)
+Received: by mail-qv1-xf2d.google.com with SMTP id s9so834132qvk.12
+        for <linux-m68k@lists.linux-m68k.org>; Tue, 16 Nov 2021 17:21:10 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=soleen.com; s=google;
         h=from:to:subject:date:message-id:in-reply-to:references:mime-version
          :content-transfer-encoding;
-        bh=dKJmUx0S3b3gU9QerEdM5MtTK89f9bkEO3AdXrfthGg=;
-        b=SiJvkIEmmAa+081NeDmkVtE5qXMKEyWz2TjohNpRU6u4LtKyx1uEhrJppd73vJzoFM
-         8BY29UHCMxrocLY5y8FJwbRKNg6rvaOr7/BCdVobyI3GcPT5w+zM9lIOzu7/Wbk0BEZR
-         e9hAbvkI7utgriQ3AL8kzQ4cwOISlKrA9LJXK4vnEUb5RqZKIQHhhCxEx/UyFzJ1FY07
-         pRtmRje2wnvSN56pig/ow3liUabXKOy+ebNopsBKUDbYRi4Y95kZ+2Av9hHhlRUf9isj
-         9ihzFXX4IeTiln6zC9lZaS63ci3YUFDZCouE7fLp5n77zubKk27nRzSOQ6DI4RK6i71T
-         CwOA==
+        bh=175Dn+OmrWLalikvHXgtLaL0RinzWYRBjCoX9yGsvr8=;
+        b=nRlJZzzt9m88Z0nj/5kEB+Zes3UkJ20EFtCk6ZM48f4cGo5kl2wcnggusHD2Dz7vhJ
+         qAtHdjH9IyoAgHS5377lUw68u2uP7GUDcU3rk+mbiS+vyiLJ2e58T5UIfkY4HOqj+Qeh
+         g5ad5XTxjzetjTTUD987sYt0ChOKZBfxwprjP9ti8pdDaQBQ1JSj++YdhF2SGP4twv82
+         bZcrCJDYcvlP/eZ8w5pR8rsbjnUKX5BfxJsKwXkQii6xqYCMXp6kPm5uV5rH29tXYxks
+         n3rvnnTdxpxz4g4VdgvhLT5lNrq7flTarDX62meRhLNYdqUFQ0rmod1NjGyVyV9mUfIH
+         /26A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=dKJmUx0S3b3gU9QerEdM5MtTK89f9bkEO3AdXrfthGg=;
-        b=03MxxQQgMhoy7G3orbuoDS92d+/wuv0jMNjnZzo3CQaIu0MTcMcVCcQD3/NvBlDmO+
-         pz+rBmLUt/7Y9k7LbgWfdCNtuGpc61s/cypafnFqM49MbFWNxLLz7nDUX18KTziBcizG
-         LlfSN/G1qlNqhHrzmIVl1QtsQMf78sH5qdf+qmkT9Dj78WctFzRWzw5K7MAyQx9rNWGA
-         swmCR8jdM8FAw4aVlYgQae4hvmwBFEVUIeWqikJy3ORFeEtl1NLKVyusGqDXdBdTbc/B
-         n678WiPjLoUw6gKLxODV2e/fuU+tE2E44c3QC0cmmfib01WSUf6AWT2LDi58Ls9D+ygn
-         DSMQ==
-X-Gm-Message-State: AOAM531RNYwgfG8z7NP9AUeqJMRy64/PiQp7+2KT+WOBwxXzFTDRqryX
-        AMmtawBchk48i8ezL6WZMDX69w==
-X-Google-Smtp-Source: ABdhPJyGremPP9L92/6lcac/wA3df9Bul/Oomg4HlgGr7phDDIKwAGBqFNBXjyfBYYwK7urnRXunoQ==
-X-Received: by 2002:ad4:5fcd:: with SMTP id jq13mr49700248qvb.29.1637112069006;
+        bh=175Dn+OmrWLalikvHXgtLaL0RinzWYRBjCoX9yGsvr8=;
+        b=KLFmLLaTpKbpa/jOlKcHNfSexSPVWyjWUudysQlSJILemV5BoVBDqNevf/h0nuDH8H
+         EhQIytqKRycYsMkSxC+ut0uLhMn6ip2DQvsRRkbiZVNVhy6WiIrNUGSme7Idd6gcPJwv
+         BVdW4v6OfHD0gwct0mVN6zLsHggYxv4EhGAcnaYHRXwQl+OadF1F7+vJAD+c0Addr5zo
+         2OSSqvgpHnx7jVPG5QlXhvzY48cOK1rVR7aBvmljSOjZ1PUD43FGABybfpv8xRfe0bUT
+         RF1gdsXG2b2qSuDVEGRHV7cqOvX10UVEE4PPcsScMaXP7oigNrprdsaASymOgjfeubFn
+         91uA==
+X-Gm-Message-State: AOAM533QMSY4v1UySvGutt/7jSB4W2c1YgJeBNwSwPLwWLB8LJz7oUoA
+        Pfxr55c98MqRrZTKEWIjGJU2/w==
+X-Google-Smtp-Source: ABdhPJxOZPahTDzBZTUSHs/wzhS9iI2h8iV/m3zGhfmCPnFCVKUT0V4XucRscYGgLdy3/nkIiDQutQ==
+X-Received: by 2002:a0c:e98a:: with SMTP id z10mr50125465qvn.43.1637112069776;
         Tue, 16 Nov 2021 17:21:09 -0800 (PST)
 Received: from soleen.c.googlers.com.com (189.216.85.34.bc.googleusercontent.com. [34.85.216.189])
-        by smtp.gmail.com with ESMTPSA id i6sm3482289qti.40.2021.11.16.17.21.08
+        by smtp.gmail.com with ESMTPSA id i6sm3482289qti.40.2021.11.16.17.21.09
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 16 Nov 2021 17:21:08 -0800 (PST)
+        Tue, 16 Nov 2021 17:21:09 -0800 (PST)
 From:   Pasha Tatashin <pasha.tatashin@soleen.com>
 To:     pasha.tatashin@soleen.com, linux-kernel@vger.kernel.org,
         linux-mm@kvack.org, linux-m68k@lists.linux-m68k.org,
@@ -61,9 +61,9 @@ To:     pasha.tatashin@soleen.com, linux-kernel@vger.kernel.org,
         hannes@cmpxchg.org, guro@fb.com, songmuchun@bytedance.com,
         weixugc@google.com, gthelen@google.com, rientjes@google.com,
         pjt@google.com
-Subject: [RFC v2 09/10] mm: do not use atomic_set_release in page_ref_unfreeze()
-Date:   Wed, 17 Nov 2021 01:20:58 +0000
-Message-Id: <20211117012059.141450-10-pasha.tatashin@soleen.com>
+Subject: [RFC v2 10/10] mm: use atomic_cmpxchg_acquire in page_ref_freeze().
+Date:   Wed, 17 Nov 2021 01:20:59 +0000
+Message-Id: <20211117012059.141450-11-pasha.tatashin@soleen.com>
 X-Mailer: git-send-email 2.34.0.rc1.387.gb447b232ab-goog
 In-Reply-To: <20211117012059.141450-1-pasha.tatashin@soleen.com>
 References: <20211117012059.141450-1-pasha.tatashin@soleen.com>
@@ -73,41 +73,35 @@ Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-In we set the old _refcount value after verifying that the old value was
-indeed 0.
+page_ref_freeze and page_ref_unfreeze are designed to be used as a pair.
+They protect critical sections where struct page can be modified.
 
-VM_BUG_ON_PAGE(page_count(page) != 0, page);
-< the _refcount may change here>
-atomic_set_release(&page->_refcount, count);
+page_ref_unfreeze() is protected by _release() atomic operation, but
+page_ref_freeze() is not as it is assumed that cmpxch provides the full
+barrier.
 
-To avoid the smal gap where _refcount may change lets verify the time
-of the _refcount at the time of the set operation.
-
-Use atomic_xchg_release() and at the set time verify that the value
-was 0.
+Instead, use the appropriate atomic_cmpxchg_acquire() to ensure that
+memory model is excplicitly followed.
 
 Signed-off-by: Pasha Tatashin <pasha.tatashin@soleen.com>
 ---
- include/linux/page_ref.h | 5 ++---
- 1 file changed, 2 insertions(+), 3 deletions(-)
+ include/linux/page_ref.h | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
 diff --git a/include/linux/page_ref.h b/include/linux/page_ref.h
-index 8c76bf3bf7e1..26676d3bcd58 100644
+index 26676d3bcd58..ecd92d7f3eef 100644
 --- a/include/linux/page_ref.h
 +++ b/include/linux/page_ref.h
-@@ -322,10 +322,9 @@ static inline int folio_ref_freeze(struct folio *folio, int count)
+@@ -308,7 +308,8 @@ static inline bool folio_try_get_rcu(struct folio *folio)
  
- static inline void page_ref_unfreeze(struct page *page, int count)
+ static inline int page_ref_freeze(struct page *page, int count)
  {
--	VM_BUG_ON_PAGE(page_count(page) != 0, page);
--	VM_BUG_ON(count == 0);
-+	int old_val = atomic_xchg_release(&page->_refcount, count);
+-	int ret = likely(atomic_cmpxchg(&page->_refcount, count, 0) == count);
++	int old_val = atomic_cmpxchg_acquire(&page->_refcount, count, 0);
++	int ret = likely(old_val == count);
  
--	atomic_set_release(&page->_refcount, count);
-+	VM_BUG_ON_PAGE(count == 0 || old_val != 0, page);
- 	if (page_ref_tracepoint_active(page_ref_unfreeze))
- 		__page_ref_unfreeze(page, count);
- }
+ 	if (page_ref_tracepoint_active(page_ref_freeze))
+ 		__page_ref_freeze(page, count, ret);
 -- 
 2.34.0.rc1.387.gb447b232ab-goog
 
