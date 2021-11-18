@@ -2,130 +2,171 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 63FCBC433F5
-	for <linux-m68k@archiver.kernel.org>; Thu, 18 Nov 2021 19:43:04 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 50EA5C433EF
+	for <linux-m68k@archiver.kernel.org>; Thu, 18 Nov 2021 22:31:57 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 405E2619BB
-	for <linux-m68k@archiver.kernel.org>; Thu, 18 Nov 2021 19:43:04 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 355CE61181
+	for <linux-m68k@archiver.kernel.org>; Thu, 18 Nov 2021 22:31:57 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232274AbhKRTqE (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Thu, 18 Nov 2021 14:46:04 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60384 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229552AbhKRTqD (ORCPT
-        <rfc822;linux-m68k@vger.kernel.org>); Thu, 18 Nov 2021 14:46:03 -0500
-Received: from mail-pg1-x530.google.com (mail-pg1-x530.google.com [IPv6:2607:f8b0:4864:20::530])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C357C061574
-        for <linux-m68k@vger.kernel.org>; Thu, 18 Nov 2021 11:43:03 -0800 (PST)
-Received: by mail-pg1-x530.google.com with SMTP id h63so6323541pgc.12
-        for <linux-m68k@vger.kernel.org>; Thu, 18 Nov 2021 11:43:03 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=subject:to:references:cc:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-transfer-encoding;
-        bh=0X2NZHFl/NpiBC6W+rWSDW/S8iLawqw+UEl3EgMTojY=;
-        b=HX4oaB6sx3kUz19EmK7Jjsz6snS7zh/iO0cCp45NXz59HhYOFTvd+x/f/hdY7H4whi
-         LqUuoo3xrm+2XWhHaAznbdUind/BeB+6TF8QerRQ/M0e0LJRrvlzB3er7sQZBHrypxJw
-         7+NeVKBBnDh7xvlfjaCpPtWoy+b2V7UaiQQ+wCDEflLqAUVZS0ew7ACZrXkg3IAi4TAc
-         vrtKI0DAcqepFIzDEf20YaVjrfAQ+jhp/ibg7hQRms2YpxvtuPpGaPfcU11VxEH8n65m
-         wkUO8zoT/RSVrqZFYb2uviSy0sSmwENgpRR6PpREk6jiFxiNVhnH3OsCPntbzYWce3+t
-         5r5Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:references:cc:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding;
-        bh=0X2NZHFl/NpiBC6W+rWSDW/S8iLawqw+UEl3EgMTojY=;
-        b=GodJo+M1lDt/8sH+68PVlqPeGQzLki2iPDmJ2HbuhpnnXdBQ5ougrcUgrjmwaMsuFW
-         8AUUYqb3eqxvFU5tZT8SeJZ+IXguojG2JJfsSw7ov400p5/mw7560DHBRODVaXmfBxpL
-         xUAPSgCmSKSH5qoBJWv00JFa9+mJoOrN0Lxw3dBBcl1IcPa273/qB+SRlGX4CfOrQpfA
-         2iUSjBRGfFI3WYLqODpTOy7yDKDLLz8xoQxc2JHT9Pe7Nt5wAb+w9KlgMknO0M+SF7AX
-         KyWVPL9AAREJidl9tpSsTauWt6Xihee2uDmGNltpM2pekaZlWgm+/69rgup1qxN+n/48
-         P8eQ==
-X-Gm-Message-State: AOAM531fS3A5/TXeAKk9xLFqvt8gHFx+4mlJm6ZJEUsd6L8HW9CqP55W
-        TIp0hXm8WcpsXjdWTNw6lPk=
-X-Google-Smtp-Source: ABdhPJz/zTMMcurWOHGAvCAcbTeKO+a6tYMzDNHtoqVO998kgc0I6cwJWFpkbkceE3BH4bvGWMBtEA==
-X-Received: by 2002:a65:4107:: with SMTP id w7mr2006261pgp.29.1637264582934;
-        Thu, 18 Nov 2021 11:43:02 -0800 (PST)
-Received: from [10.1.1.26] (222-155-101-117-fibre.sparkbb.co.nz. [222.155.101.117])
-        by smtp.gmail.com with ESMTPSA id w189sm379979pfd.164.2021.11.18.11.42.59
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 18 Nov 2021 11:43:02 -0800 (PST)
-Subject: Re: [PATCH v11 1/3] m68k: amiga/pcmcia - add 16 bit detection
- interface to amipcmcia.h
+        id S231363AbhKRWe5 (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Thu, 18 Nov 2021 17:34:57 -0500
+Received: from wnew4-smtp.messagingengine.com ([64.147.123.18]:35523 "EHLO
+        wnew4-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229701AbhKRWe5 (ORCPT
+        <rfc822;linux-m68k@lists.linux-m68k.org>);
+        Thu, 18 Nov 2021 17:34:57 -0500
+Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
+        by mailnew.west.internal (Postfix) with ESMTP id 9B54B2B011A3;
+        Thu, 18 Nov 2021 17:31:55 -0500 (EST)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute4.internal (MEProxy); Thu, 18 Nov 2021 17:31:56 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:date:from:message-id:subject:to
+        :x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
+        fm1; bh=EgttxCz67NcGqBysOvfjKjCJjUrua2/KraxC4XRjMOo=; b=MIvEX0Uw
+        CHwc8/1iR65sKpJadsaYNFN3tJsJphfdn2z17p73TeiyDaJU6YdAqNYEB5EdjrBH
+        WC7YHhV9oJFxmj03KIYsT5grO9Vy6c09y2Jno24SChu7o7fnKhbA4P4aTcvDFY6w
+        PMWk6E9OxDcS/Jt15yovQlDljvNdJMx8BxX1aNAwQfiQNP7rLNo2EoX+4fmBD5JG
+        bmziiQYeUffo48o712hQasV3Y/YU3NfW7vsiS3r9vl3lEDLMZHlF28KLgh3Vg6aZ
+        Nf2rCQBAwcik/qWBZeAqhZDFZZXMgnQMAfVkfB7k0amCX3QfAY9r3+VNRoHB2XFc
+        z1VvyhOCVlsFAg==
+X-ME-Sender: <xms:WtSWYdXLpil2AjAeZlsHq7OdZZb_y4dMiY88UjrIm0Ij-js4t0ou3w>
+    <xme:WtSWYdlDeH1hkl7U2fWdxHgTHSBC8fEMCgOY_PhIcfzZt3bLtvSJw3z9JFLNssbUK
+    CRA6JXRWB6h_IFWKMk>
+X-ME-Received: <xmr:WtSWYZYxlipmCY7YEpXnXAsdvBARFR44UJ5yrEl3WUwLcGjZjByAv2kLLZaIOP8OtYjnJHsSIFi2yFhwYIGeS6Wh9Oq_d_saNUM>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvuddrfeeigdduheekucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    gohfhorhgsihguuggvnhfjughrucdlhedttddmnecujfgurhepvffkhffuffestddtredt
+    tddtnecuhfhrohhmpefhihhnnhcuvfhhrghinhcuoehfthhhrghinheslhhinhhugidqmh
+    eikehkrdhorhhgqeenucfhohhrsghiugguvghnjfgurhepvffkhffuffestddtredttddt
+    pdfvkffhufffsedttdertddttdenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmh
+    epmhgrihhlfhhrohhmpehfthhhrghinheslhhinhhugidqmheikehkrdhorhhg
+X-ME-Proxy: <xmx:WtSWYQVNqyHU2m8QhyJipMxzeFT8A-anjgcnvBiexeWR5JgKlYoPnA>
+    <xmx:WtSWYXkNAtDM3whEUvHz8M_zr24WtK0gp1lm6ix07LO1_BrSU994TQ>
+    <xmx:WtSWYdcObUNCRdi522esKtha7wc0BGGpnwDVy_cdJfyWUNARow-SKA>
+    <xmx:WtSWYQDN26_AQMZij2_cnLlg0XMh8xmHcisxLizMroVCoA9wV1hP9jwdsCI>
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Thu,
+ 18 Nov 2021 17:31:52 -0500 (EST)
 To:     Geert Uytterhoeven <geert@linux-m68k.org>
-References: <20211114234005.335-1-schmitzmic@gmail.com>
- <20211114234005.335-2-schmitzmic@gmail.com>
- <CAMuHMdWP-15RzVZiE1zR3sdSf06bqj9LZwh3BkgpoUHmvqxLsg@mail.gmail.com>
- <cbc4b37e-0ab7-b719-c7c5-a4315da220e6@gmail.com>
- <CAMuHMdVZHHAKb8y0YKbKJ5Qw-_pJvwczaNqkrsJhFEWQd6h4uw@mail.gmail.com>
- <a5a71ab2-2e71-ca0f-59b1-d85c4e86bfe8@gmail.com>
- <CAMuHMdXpqDWLdFeEaEpS06fK_jKLOU8LMv5v7d=ey1oR=7jo9A@mail.gmail.com>
-Cc:     Linux/m68k <linux-m68k@vger.kernel.org>,
-        ALeX Kazik <alex@kazik.de>, Denis Kirjanov <dkirjanov@suse.de>
-From:   Michael Schmitz <schmitzmic@gmail.com>
-Message-ID: <fd0f59e5-753f-5a38-66b9-5edda6a03247@gmail.com>
-Date:   Fri, 19 Nov 2021 08:42:57 +1300
-User-Agent: Mozilla/5.0 (X11; Linux ppc64; rv:45.0) Gecko/20100101
- Thunderbird/45.8.0
-MIME-Version: 1.0
-In-Reply-To: <CAMuHMdXpqDWLdFeEaEpS06fK_jKLOU8LMv5v7d=ey1oR=7jo9A@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Cc:     "Mike Rapoport" <rppt@kernel.org>, "Sam Creasey" <sammy@sammy.net>,
+        "Jonathan Corbet" <corbet@lwn.net>, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-m68k@lists.linux-m68k.org
+Message-Id: <8170fe1d1c62426d82275d36ba409ecc18754292.1637274578.git.fthain@linux-m68k.org>
+From:   Finn Thain <fthain@linux-m68k.org>
+Subject: [PATCH v3] m68k: Enable memtest functionality
+Date:   Fri, 19 Nov 2021 09:29:38 +1100
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-Hi Geert,
+Enable the memtest functionality and rearrange some code to prevent it
+from clobbering the initrd.
 
-On 18/11/21 21:09, Geert Uytterhoeven wrote:
->>>> I suggest to move that parameter to arch/m68k/amiga/pcmcia.c to ensure
->>>> it's always visible, and rename it to better reflect its actual function
->>>> (pcmcia_16bit comes to mind). apne.c would then use that parameter to
->>>> autoprobe 16 bit IO support, or set isa_type according to the parameter.
->>>>
->>>> Would that satisfy your concerns, Denis?
->>>
->>> What's the point of the sysfs parameter, given the driver cannot be
->>> unbound and rebound, as it does not use the driver model yet?
->>
->> Pre-setting the desired IO type before loading the module - though
->> actual setting of isa_type still has to wait until module load (or
->> driver probe). I'd have to write a callback that validates user input if
->> we want to set isa_type directly in pcmcia.c ...
->
-> IMHO the sysfs parameter would only make sense if all of the 8/16-bit
-> handling (and the special reset) is done in arch/m68k/amiga/pcmcia.c,
-> so it can be shared for multiple cards.
+The code to implement CONFIG_BLK_DEV_INITRD was conditional on
+!defined(CONFIG_SUN3). For simplicity, remove that test on the basis
+that m68k_ramdisk.size == 0 on Sun 3. The SLIME source code at
+http://sammy.net/sun3/ftp/pub/m68k/sun3/slime/slime-2.0.tar.gz
+indicates that no BI_RAMDISK entry is ever passed to the kernel due
+to #ifdef 0 around the relevant code.
 
-Do we even have any other cards/drivers that work with the Amiga PCMCIA 
-port?
+Cc: Mike Rapoport <rppt@kernel.org>
+Cc: Sam Creasey <sammy@sammy.net>
+Cc: Jonathan Corbet <corbet@lwn.net>
+Signed-off-by: Finn Thain <fthain@linux-m68k.org>
+---
+Is SLIME the only Linux bootloader on Sun 3?
+---
+Changed since v2:
+ - Made conditional on MMU_MOTOROLA.
 
->>> The only thing you can (try to) do is unload and reload the module,
->>> at which point you can pass the module parameter again?
->>
->> I take that as 'don't do that', then ... ?
->
-> I meant you can do the above without the sysfs parameter.
+Changed since v1:
+ - Updated documentation.
+---
+ Documentation/admin-guide/kernel-parameters.txt |  2 +-
+ arch/m68k/Kconfig                               |  1 +
+ arch/m68k/kernel/setup_mm.c                     | 15 ++++++---------
+ arch/m68k/mm/motorola.c                         |  2 ++
+ 4 files changed, 10 insertions(+), 10 deletions(-)
 
-I wasn't overly clear there - what I meant is, I take your comment to 
-mean 'don't bother adding a sysfs parameter that does not add any extra 
-functionality'.
+diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
+index 43dc35fe5bc0..ac42b421a95c 100644
+--- a/Documentation/admin-guide/kernel-parameters.txt
++++ b/Documentation/admin-guide/kernel-parameters.txt
+@@ -2924,7 +2924,7 @@
+ 			both parameters are enabled, hugetlb_free_vmemmap takes
+ 			precedence over memory_hotplug.memmap_on_memory.
+ 
+-	memtest=	[KNL,X86,ARM,PPC,RISCV] Enable memtest
++	memtest=	[KNL,X86,ARM,M68K,PPC,RISCV] Enable memtest
+ 			Format: <integer>
+ 			default : 0 <disable>
+ 			Specifies the number of memtest passes to be
+diff --git a/arch/m68k/Kconfig b/arch/m68k/Kconfig
+index 0b50da08a9c5..4cae3fbe7f97 100644
+--- a/arch/m68k/Kconfig
++++ b/arch/m68k/Kconfig
+@@ -9,6 +9,7 @@ config M68K
+ 	select ARCH_HAVE_NMI_SAFE_CMPXCHG if RMW_INSNS
+ 	select ARCH_MIGHT_HAVE_PC_PARPORT if ISA
+ 	select ARCH_NO_PREEMPT if !COLDFIRE
++	select ARCH_USE_MEMTEST if MMU_MOTOROLA
+ 	select ARCH_WANT_IPC_PARSE_VERSION
+ 	select BINFMT_FLAT_ARGVP_ENVP_ON_STACK
+ 	select DMA_DIRECT_REMAP if HAS_DMA && MMU && !COLDFIRE
+diff --git a/arch/m68k/kernel/setup_mm.c b/arch/m68k/kernel/setup_mm.c
+index 4b51bfd38e5f..49e573b94326 100644
+--- a/arch/m68k/kernel/setup_mm.c
++++ b/arch/m68k/kernel/setup_mm.c
+@@ -338,13 +338,6 @@ void __init setup_arch(char **cmdline_p)
+ 		panic("No configuration setup");
+ 	}
+ 
+-	paging_init();
+-
+-#ifdef CONFIG_NATFEAT
+-	nf_init();
+-#endif
+-
+-#ifndef CONFIG_SUN3
+ #ifdef CONFIG_BLK_DEV_INITRD
+ 	if (m68k_ramdisk.size) {
+ 		memblock_reserve(m68k_ramdisk.addr, m68k_ramdisk.size);
+@@ -354,6 +347,12 @@ void __init setup_arch(char **cmdline_p)
+ 	}
+ #endif
+ 
++	paging_init();
++
++#ifdef CONFIG_NATFEAT
++	nf_init();
++#endif
++
+ #ifdef CONFIG_ATARI
+ 	if (MACH_IS_ATARI)
+ 		atari_stram_reserve_pages((void *)availmem);
+@@ -364,8 +363,6 @@ void __init setup_arch(char **cmdline_p)
+ 	}
+ #endif
+ 
+-#endif /* !CONFIG_SUN3 */
+-
+ /* set ISA defs early as possible */
+ #if defined(CONFIG_ISA) && defined(MULTI_ISA)
+ 	if (MACH_IS_Q40) {
+diff --git a/arch/m68k/mm/motorola.c b/arch/m68k/mm/motorola.c
+index 9f3f77785aa7..5b6575eb6d02 100644
+--- a/arch/m68k/mm/motorola.c
++++ b/arch/m68k/mm/motorola.c
+@@ -455,6 +455,8 @@ void __init paging_init(void)
+ 
+ 	flush_tlb_all();
+ 
++	early_memtest(min_addr, max_addr);
++
+ 	/*
+ 	 * initialize the bad page table and bad page to point
+ 	 * to a couple of allocated pages
+-- 
+2.26.3
 
-The module parameter will appear in sysfs and can be used to read out 
-the 16 bit IO state anyway.
-
-Cheers,
-
-	Michael
-
-> Gr{oetje,eeting}s,
->
->                         Geert
->
-> --
-> Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
->
-> In personal conversations with technical people, I call myself a hacker. But
-> when I'm talking to journalists I just say "programmer" or something like that.
->                                 -- Linus Torvalds
->
