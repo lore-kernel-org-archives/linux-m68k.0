@@ -2,57 +2,60 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id DAB97C433EF
-	for <linux-m68k@archiver.kernel.org>; Thu, 18 Nov 2021 08:01:45 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id F142EC433EF
+	for <linux-m68k@archiver.kernel.org>; Thu, 18 Nov 2021 08:09:57 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id B832561B3A
-	for <linux-m68k@archiver.kernel.org>; Thu, 18 Nov 2021 08:01:45 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id D25B361B30
+	for <linux-m68k@archiver.kernel.org>; Thu, 18 Nov 2021 08:09:57 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244171AbhKRIEn (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Thu, 18 Nov 2021 03:04:43 -0500
-Received: from mail-ua1-f52.google.com ([209.85.222.52]:35735 "EHLO
-        mail-ua1-f52.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244119AbhKRIEm (ORCPT
-        <rfc822;linux-m68k@vger.kernel.org>); Thu, 18 Nov 2021 03:04:42 -0500
-Received: by mail-ua1-f52.google.com with SMTP id l24so11857166uak.2;
-        Thu, 18 Nov 2021 00:01:41 -0800 (PST)
+        id S235724AbhKRIMz (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Thu, 18 Nov 2021 03:12:55 -0500
+Received: from mail-ua1-f49.google.com ([209.85.222.49]:46827 "EHLO
+        mail-ua1-f49.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S244255AbhKRIMi (ORCPT
+        <rfc822;linux-m68k@vger.kernel.org>); Thu, 18 Nov 2021 03:12:38 -0500
+Received: by mail-ua1-f49.google.com with SMTP id az37so11768286uab.13
+        for <linux-m68k@vger.kernel.org>; Thu, 18 Nov 2021 00:09:39 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=TmFOilwnxUZVPTqShriY8qbMwRioLWhqep7gwdQi2bk=;
-        b=DOmJ4iBziyrHEkBlcQlG23KrZRBZIin6rDTwSj6NV5m7WkwdODGf7NUhCLf2v+BdFO
-         6v/8YCo9GGWUsqoOzknvr4dnC2Jc7fyKGqZ6wM0m0L5jY+6AC/kT29/XMVZqABhLKGKT
-         +6hp4vUFljuo/mmobP7p/CjgzSVVtFSG05qOfty4u2ncnExC7Rz5xIoDsePKbNS2LLy+
-         mpt7sohzA7MkiFjrrh1iGjXGbpTyovu1n/kQUc92Te1zQSq5/KGOVizY53wQn6mRoKVL
-         SpQpvIi+ZgGRmIlNJ/MV6toQS6oHFgmikWFjYVc9gpXhg7OBSD8cspA+YgeEShB9h35m
-         dpFg==
-X-Gm-Message-State: AOAM531uWsiDUe4yXmBe8bccv5nigSyd/6gV4liEarN9URgHjtutP6CV
-        ujCleTiP8dVPMkrCbczHR18TyZUb4T9kFA==
-X-Google-Smtp-Source: ABdhPJzYQoaa+1X2Z1PKfrhj35niM0ffT986K/dynW+AnTgMhTfz90otrB7OZzXXBwtzPiI7xlR5Eg==
-X-Received: by 2002:ab0:224c:: with SMTP id z12mr33499515uan.41.1637222501316;
-        Thu, 18 Nov 2021 00:01:41 -0800 (PST)
-Received: from mail-ua1-f42.google.com (mail-ua1-f42.google.com. [209.85.222.42])
-        by smtp.gmail.com with ESMTPSA id b8sm1241853vsl.19.2021.11.18.00.01.40
+        bh=fsQjZ0Y3hb8WX8MUjSJnaBrtChgZ2EzF3DQPSjODBiE=;
+        b=F9xQpMlwMh/+jE1lBZ1WrcvDC3gFAnuhlW/ah2NacCCCFCy+Ag0zLmunEwbzAfnnTY
+         r6+I0SQAs9TBRv1fK73Ap9h5iojfMN0vAJS4i3uAEuoly+bGFf2FwF8+6MBHg9fC2jw5
+         +x43ZWbYs24Eliv/PD43rrxoo2T+YJwnuinpRIHid3oK1PiiyqhLguQN1MzPTq+dhEKq
+         r7lL+LJuagizHYe88v9AphnuaIEtiAANzD0gaiO0bHhhD2Cj7yzZTwSmtG4G393kO0ka
+         bo93B1ia1HNXeF2rYCptpK1AquSpIwrgoEiiQs+PHlqOO+8qUWstcp1V8cJLTffQ5jx2
+         OKKQ==
+X-Gm-Message-State: AOAM531H5UGlDlMJuRx/LOheNh8ucKaz5QSzPk7LOP1IeuKtaUHYUrUx
+        bfRrHAoNMpVlCWLNPHBixe0FAZXljnmNqQ==
+X-Google-Smtp-Source: ABdhPJzaEVyuZO+3kLzeXsUTIZwXwd4KklrD8qt5scGDeMFtzOuyj4jTylVJU/0WTN+fxtQh8SSPJg==
+X-Received: by 2002:a05:6102:c8a:: with SMTP id f10mr23067028vst.22.1637222978378;
+        Thu, 18 Nov 2021 00:09:38 -0800 (PST)
+Received: from mail-ua1-f50.google.com (mail-ua1-f50.google.com. [209.85.222.50])
+        by smtp.gmail.com with ESMTPSA id j126sm1240863vsc.17.2021.11.18.00.09.37
+        for <linux-m68k@vger.kernel.org>
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 18 Nov 2021 00:01:41 -0800 (PST)
-Received: by mail-ua1-f42.google.com with SMTP id j14so2008672uan.10;
-        Thu, 18 Nov 2021 00:01:40 -0800 (PST)
-X-Received: by 2002:a9f:2431:: with SMTP id 46mr33574622uaq.114.1637222500752;
- Thu, 18 Nov 2021 00:01:40 -0800 (PST)
+        Thu, 18 Nov 2021 00:09:38 -0800 (PST)
+Received: by mail-ua1-f50.google.com with SMTP id j14so2046627uan.10
+        for <linux-m68k@vger.kernel.org>; Thu, 18 Nov 2021 00:09:37 -0800 (PST)
+X-Received: by 2002:a9f:3e01:: with SMTP id o1mr33752468uai.89.1637222977769;
+ Thu, 18 Nov 2021 00:09:37 -0800 (PST)
 MIME-Version: 1.0
-References: <20211114234005.335-1-schmitzmic@gmail.com> <20211114234005.335-4-schmitzmic@gmail.com>
- <CAMuHMdXj4-D9R_QAgj+vr1j79pPYmoU3uokKHBZFUv5J5jvpaA@mail.gmail.com> <ceacbd6b-8151-fc94-58c4-3a24d3308705@gmail.com>
-In-Reply-To: <ceacbd6b-8151-fc94-58c4-3a24d3308705@gmail.com>
+References: <20211114234005.335-1-schmitzmic@gmail.com> <20211114234005.335-2-schmitzmic@gmail.com>
+ <CAMuHMdWP-15RzVZiE1zR3sdSf06bqj9LZwh3BkgpoUHmvqxLsg@mail.gmail.com>
+ <cbc4b37e-0ab7-b719-c7c5-a4315da220e6@gmail.com> <CAMuHMdVZHHAKb8y0YKbKJ5Qw-_pJvwczaNqkrsJhFEWQd6h4uw@mail.gmail.com>
+ <a5a71ab2-2e71-ca0f-59b1-d85c4e86bfe8@gmail.com>
+In-Reply-To: <a5a71ab2-2e71-ca0f-59b1-d85c4e86bfe8@gmail.com>
 From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Thu, 18 Nov 2021 09:01:29 +0100
-X-Gmail-Original-Message-ID: <CAMuHMdV5EJB-5F057sAdhAK-jFgyXT9j0UA8trKf+Lsj89K0wQ@mail.gmail.com>
-Message-ID: <CAMuHMdV5EJB-5F057sAdhAK-jFgyXT9j0UA8trKf+Lsj89K0wQ@mail.gmail.com>
-Subject: Re: [PATCH net v11 3/3] net/8390: apne.c - add 100 Mbit support to
- apne.c driver
+Date:   Thu, 18 Nov 2021 09:09:26 +0100
+X-Gmail-Original-Message-ID: <CAMuHMdXpqDWLdFeEaEpS06fK_jKLOU8LMv5v7d=ey1oR=7jo9A@mail.gmail.com>
+Message-ID: <CAMuHMdXpqDWLdFeEaEpS06fK_jKLOU8LMv5v7d=ey1oR=7jo9A@mail.gmail.com>
+Subject: Re: [PATCH v11 1/3] m68k: amiga/pcmcia - add 16 bit detection
+ interface to amipcmcia.h
 To:     Michael Schmitz <schmitzmic@gmail.com>
 Cc:     "Linux/m68k" <linux-m68k@vger.kernel.org>,
-        ALeX Kazik <alex@kazik.de>, netdev <netdev@vger.kernel.org>
+        ALeX Kazik <alex@kazik.de>, Denis Kirjanov <dkirjanov@suse.de>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
@@ -61,91 +64,48 @@ X-Mailing-List: linux-m68k@vger.kernel.org
 Hi Michael,
 
 On Thu, Nov 18, 2021 at 5:58 AM Michael Schmitz <schmitzmic@gmail.com> wrote:
-> On 18/11/21 03:42, Geert Uytterhoeven wrote:
-> > On Mon, Nov 15, 2021 at 12:40 AM Michael Schmitz <schmitzmic@gmail.com> wrote:
-> >> Add module parameter, IO mode autoprobe and PCMCIA reset code
-> >> required to support 100 Mbit PCMCIA ethernet cards on Amiga.
+> On 18/11/21 03:35, Geert Uytterhoeven wrote:
+> > On Wed, Nov 17, 2021 at 8:15 AM Michael Schmitz <schmitzmic@gmail.com> wrote:
+> >> On 15/11/21 22:59, Geert Uytterhoeven wrote:
+> >>> On Mon, Nov 15, 2021 at 12:40 AM Michael Schmitz <schmitzmic@gmail.com> wrote:
+> >>>> Add the interface definition for 16 bit card autoprobing (using
+> >>>> the generic PCMCIA cftable entry parser) to amipcmcia.h for use
+> >>>> by apne.c. Include necessary cftable definitions from cistpl.h,
+> >>>> remove locally duplicate definitions from amipcmcia.h.
+> >>>>
+> >>>> Signed-off-by: Michael Schmitz <schmitzmic@gmail.com>
+> >>>
+> >>> Reviewed-by: Geert Uytterhoeven <geert@linux-m68k.org>
 > >>
-> >> 10 Mbit and 100 Mbit mode are supported by the same module.
-> >> Use the core PCMCIA cftable parser to detect 16 bit cards,
-> >> and automatically enable 16 bit ISA IO access for those cards
-> >> by changing isa_type at runtime. The user must select PCCARD
-> >> and PCMCIA in the kernel config to make the necessary support
-> >> modules available
+> >> I may have to give this another spin, in order to address a review
+> >> comment by Denis about making the apne.c 16 bit IO autoprobe module
+> >> parameter ('100mbit') a sysfs parameter.
 > >>
-> >> Code to reset the PCMCIA hardware required for 16 bit cards is
-> >> also added to the driver probe.
+> >> I suggest to move that parameter to arch/m68k/amiga/pcmcia.c to ensure
+> >> it's always visible, and rename it to better reflect its actual function
+> >> (pcmcia_16bit comes to mind). apne.c would then use that parameter to
+> >> autoprobe 16 bit IO support, or set isa_type according to the parameter.
 > >>
-> >> An optional module parameter switches Amiga ISA IO accessors
-> >> to 8 or 16 bit access in case autoprobe fails.
-> >>
-> >> Patch modified after patch "[PATCH RFC net-next] Amiga PCMCIA
-> >> 100 MBit card support" submitted to netdev 2018/09/16 by Alex
-> >> Kazik <alex@kazik.de>.
-> >>
-> >> CC: netdev@vger.kernel.org
-> >> Link: https://lore.kernel.org/r/1622958877-2026-1-git-send-email-schmitzmic@gmail.com
-> >> Tested-by: Alex Kazik <alex@kazik.de>
-> >> Signed-off-by: Michael Schmitz <schmitzmic@gmail.com>
-
-> >> --- a/drivers/net/ethernet/8390/apne.c
-> >> +++ b/drivers/net/ethernet/8390/apne.c
-> >> @@ -119,6 +119,48 @@ static u32 apne_msg_enable;
-> >>  module_param_named(msg_enable, apne_msg_enable, uint, 0444);
-> >>  MODULE_PARM_DESC(msg_enable, "Debug message level (see linux/netdevice.h for bitmap)");
-> >>
-> >> +static int apne_100_mbit = -1;
-> >> +module_param_named(100_mbit, apne_100_mbit, int, 0444);
-> >> +MODULE_PARM_DESC(100_mbit, "Enable 100 Mbit support");
-> >> +
-> >> +#if IS_ENABLED(CONFIG_PCMCIA)
+> >> Would that satisfy your concerns, Denis?
 > >
-> > What if CONFIG_PCMIA=m, and CONFIG_APNE=y?
+> > What's the point of the sysfs parameter, given the driver cannot be
+> > unbound and rebound, as it does not use the driver model yet?
 >
-> Fails to build (undefined reference to `pcmcia_parse_tuple').
+> Pre-setting the desired IO type before loading the module - though
+> actual setting of isa_type still has to wait until module load (or
+> driver probe). I'd have to write a callback that validates user input if
+> we want to set isa_type directly in pcmcia.c ...
+
+IMHO the sysfs parameter would only make sense if all of the 8/16-bit
+handling (and the special reset) is done in arch/m68k/amiga/pcmcia.c,
+so it can be shared for multiple cards.
+
+> > The only thing you can (try to) do is unload and reload the module,
+> > at which point you can pass the module parameter again?
 >
-> That's what 'select PCMCIA' was avoiding before, but got vetoed. I can
-> add a dependency on PCMCIA in the APNE Kconfig entry which does force
-> APNE the same as what's selected for PCMCIA, but that means we can't
-> build APNE without PCMCIA anymore. Is there a way to express 'constrain
-> build type if PCMCIA is enabled, else leave choice to user' ??
+> I take that as 'don't do that', then ... ?
 
-#if IS_REACHABLE(CONFIG_PCMIA)
-
-> >> @@ -140,6 +182,13 @@ static struct net_device * __init apne_probe(void)
-> >>
-> >>         pr_info("Looking for PCMCIA ethernet card : ");
-> >>
-> >> +       if (apne_100_mbit == 1)
-> >> +               isa_type = ISA_TYPE_AG16;
-> >> +       else if (apne_100_mbit == 0)
-> >> +               isa_type = ISA_TYPE_AG;
-> >> +       else
-> >> +               pr_cont(" (autoprobing 16 bit mode) ");
-> >> +
-> >>         /* check if a card is inserted */
-> >>         if (!(PCMCIA_INSERTED)) {
-> >>                 pr_cont("NO PCMCIA card inserted\n");
-> >> @@ -167,6 +216,14 @@ static struct net_device * __init apne_probe(void)
-> >>
-> >>         pr_cont("ethernet PCMCIA card inserted\n");
-> >>
-> >> +#if IS_ENABLED(CONFIG_PCMCIA)
-> >> +       if (apne_100_mbit < 0 && pcmcia_is_16bit()) {
-> >> +               pr_info("16-bit PCMCIA card detected!\n");
-> >> +               isa_type = ISA_TYPE_AG16;
-> >> +               apne_100_mbit = 1;
-> >> +       }
-> >
-> > I think you should reset apne_100_mbit to zero if apne_100_mbit < 0
-> > && !pcmcia_is_16bit(), so rmmod + switching card + modprobe
-> > has a chance to work.
->
-> Good catch - though when switching to another card using this same
-> driver, the module parameter can be used again to select IO mode or
-> force autoprobe.
-
-The autoprobe won't work if the new card is 8-bit.
+I meant you can do the above without the sysfs parameter.
 
 Gr{oetje,eeting}s,
 
