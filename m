@@ -1,344 +1,161 @@
 Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
-Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6D6BBC433FE
-	for <linux-m68k@archiver.kernel.org>; Fri, 19 Nov 2021 20:25:12 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 4338461AA2
-	for <linux-m68k@archiver.kernel.org>; Fri, 19 Nov 2021 20:25:12 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 937FBC433F5
+	for <linux-m68k@archiver.kernel.org>; Sun, 21 Nov 2021 06:29:39 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234319AbhKSU2N (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Fri, 19 Nov 2021 15:28:13 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55954 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235260AbhKSU2L (ORCPT
-        <rfc822;linux-m68k@vger.kernel.org>); Fri, 19 Nov 2021 15:28:11 -0500
-Received: from mail-pg1-x52f.google.com (mail-pg1-x52f.google.com [IPv6:2607:f8b0:4864:20::52f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 64FCAC061574;
-        Fri, 19 Nov 2021 12:25:09 -0800 (PST)
-Received: by mail-pg1-x52f.google.com with SMTP id b4so9538305pgh.10;
-        Fri, 19 Nov 2021 12:25:09 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=+BWvAqhdT2jL71URRHX5jmqMTAivpsQ3QFmrVo9lF/w=;
-        b=fOlt89RfVLXyps4ILJbl3tH1Rb2cA/dBuaiNpO8ZKnQtE7LUZhIpFdPsMyyZnH48kC
-         NJjNi1cyiLLesyX4l549OoSG4buuUZBSrq93g6XaxI6WJ6XCoJOZ+Ble/k5dMb6Oe/kA
-         0UQEv7CXaPZ2wEaPKKX9PxDPjcOEDHEae4O2u2tkG4s0GMXUvUfElIOuhcsjoHODlVcP
-         PczdHpVGvNLELFU1aX+JONlnSlAkybwdPkDljtfCiG1AA1sJyUExRIyrC0D0W4UDzJ3i
-         bgMCw7FTSAXKA78M72rwmJxy6tqGNtkOIeFRApMrUnR/+UVYGfYo6wEOd63l4k//9QpX
-         i1lA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references;
-        bh=+BWvAqhdT2jL71URRHX5jmqMTAivpsQ3QFmrVo9lF/w=;
-        b=0UplR/8WW0visuyarYZH/tGvwdWmgtJsWIlW4M37q/j6CNc85plot8wf3dvTo9FEh3
-         Rba6AinZWFy71VmsxShiU827SxQ5zPXHIq0KCCsbsk9rCjXNUE0woWrbHYoGgSkWz2Fq
-         +3zf1oG9N4fu1bX/M9pqkk1HoeKjYeivfKL7NK+3e0DIK1iSnqH1ktknhCuALyc0mF1h
-         SUog/y9iH9c1lYYbJxcMEMyGz5gZgv2Q4safO8UwKDclmbPZBqHpr7O3KkaU5UzGl7/C
-         oU9UG7GHJGvWM/bn0Dj8i/dmMS8X4pEI8+3OFYtLcKCx/HJGYPLmrLhmYZqKHju3nS6F
-         4CNg==
-X-Gm-Message-State: AOAM531QxWbBACZBqbfgxu1JdMRmiEJmCAAtcnjtUl//qQ7qfKGShykL
-        6zc2+MvclN9A30emQY8nkcc=
-X-Google-Smtp-Source: ABdhPJx0tYNjXSK8VF/Ar2Ck1CUV7DtV7ij2tXJyFtSshsDCLkdyDBeGzoTV0sb4o/hZUOcf+Ayl7w==
-X-Received: by 2002:a62:52cd:0:b0:49f:a7b8:69ad with SMTP id g196-20020a6252cd000000b0049fa7b869admr25751199pfb.3.1637353508887;
-        Fri, 19 Nov 2021 12:25:08 -0800 (PST)
-Received: from xplor.waratah.dyndns.org (222-155-101-117-fibre.sparkbb.co.nz. [222.155.101.117])
-        by smtp.gmail.com with ESMTPSA id h8sm522307pfh.10.2021.11.19.12.25.07
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 19 Nov 2021 12:25:08 -0800 (PST)
-Received: by xplor.waratah.dyndns.org (Postfix, from userid 1000)
-        id BC847360312; Sat, 20 Nov 2021 09:25:04 +1300 (NZDT)
-From:   Michael Schmitz <schmitzmic@gmail.com>
-To:     linux-m68k@vger.kernel.org, geert@linux-m68k.org
-Cc:     alex@kazik.de, Michael Schmitz <schmitzmic@gmail.com>,
-        netdev@vger.kernel.org
-Subject: [PATCH net v13 3/3] net/8390: apne.c - add 100 Mbit support to apne.c driver
-Date:   Sat, 20 Nov 2021 09:25:00 +1300
-Message-Id: <20211119202500.17850-4-schmitzmic@gmail.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20211119202500.17850-1-schmitzmic@gmail.com>
-References: <20211119202500.17850-1-schmitzmic@gmail.com>
+        id S231449AbhKUGcj (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Sun, 21 Nov 2021 01:32:39 -0500
+Received: from mail.kernel.org ([198.145.29.99]:57544 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230237AbhKUGc2 (ORCPT <rfc822;linux-m68k@lists.linux-m68k.org>);
+        Sun, 21 Nov 2021 01:32:28 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A73C260C4A;
+        Sun, 21 Nov 2021 06:29:17 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1637476160;
+        bh=A2FbeRl3V1l2ksZ9wM0BVAX4t2bfqwjgHNSx9b4lWHE=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=RfJOlGe5boVfDciCEArB8lCo8yXqEnrsL/Qm0w1v0DAU2i00vL+jpIP+vvS5mJpOe
+         u01HUX1DEIbOZdZ8qG8PpGWdGANLMn0T05KPV2ot1Lsn3dS1B+eZCSpbAeqhRFQPHz
+         foYhfYvz/JTpBEuyc1x209Cwl2SgYmx3GSlWQotfg8GSySTnClhO42XP+F0uq97kFN
+         4jCFh2Qox/3dkoBEnxuVjSOCIkgn57zzwa81eytCWm6b45niDJNvN7F8qivxuTJRXB
+         BN0qtql4TBx8dokwWV4wUtZSBli55Fga+fQCjAtgRvDbQYcUB8JOo/0+3XQfSBaF7f
+         F6+h0TOTuDZMg==
+Date:   Sun, 21 Nov 2021 08:29:12 +0200
+From:   Mike Rapoport <rppt@kernel.org>
+To:     Finn Thain <fthain@linux-m68k.org>
+Cc:     Geert Uytterhoeven <geert@linux-m68k.org>,
+        Sam Creasey <sammy@sammy.net>,
+        Jonathan Corbet <corbet@lwn.net>, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-m68k@lists.linux-m68k.org
+Subject: Re: [PATCH v3] m68k: Enable memtest functionality
+Message-ID: <YZnnOAoEIS1wmOyr@kernel.org>
+References: <8170fe1d1c62426d82275d36ba409ecc18754292.1637274578.git.fthain@linux-m68k.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <8170fe1d1c62426d82275d36ba409ecc18754292.1637274578.git.fthain@linux-m68k.org>
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-Add module parameter, IO mode autoprobe and PCMCIA reset code
-required to support 100 Mbit PCMCIA ethernet cards on Amiga.
+On Fri, Nov 19, 2021 at 09:29:38AM +1100, Finn Thain wrote:
+> Enable the memtest functionality and rearrange some code to prevent it
+> from clobbering the initrd.
+> 
+> The code to implement CONFIG_BLK_DEV_INITRD was conditional on
+> !defined(CONFIG_SUN3). For simplicity, remove that test on the basis
+> that m68k_ramdisk.size == 0 on Sun 3. The SLIME source code at
+> http://sammy.net/sun3/ftp/pub/m68k/sun3/slime/slime-2.0.tar.gz
+> indicates that no BI_RAMDISK entry is ever passed to the kernel due
+> to #ifdef 0 around the relevant code.
+> 
+> Cc: Mike Rapoport <rppt@kernel.org>
+> Cc: Sam Creasey <sammy@sammy.net>
+> Cc: Jonathan Corbet <corbet@lwn.net>
+> Signed-off-by: Finn Thain <fthain@linux-m68k.org>
 
-10 Mbit and 100 Mbit mode are supported by the same module.
-Use the core PCMCIA cftable parser to detect 16 bit cards,
-and automatically enable 16 bit ISA IO access for those cards
-by changing isa_type at runtime. The user must select PCCARD
-and PCMCIA in the kernel config to make the necessary support
-modules available.
+Acked-by: Mike Rapoport <rppt@linux.ibm.com>
 
-Code to reset the PCMCIA hardware required for 16 bit cards is
-also added to the driver probe.
+> ---
+> Is SLIME the only Linux bootloader on Sun 3?
+> ---
+> Changed since v2:
+>  - Made conditional on MMU_MOTOROLA.
+> 
+> Changed since v1:
+>  - Updated documentation.
+> ---
+>  Documentation/admin-guide/kernel-parameters.txt |  2 +-
+>  arch/m68k/Kconfig                               |  1 +
+>  arch/m68k/kernel/setup_mm.c                     | 15 ++++++---------
+>  arch/m68k/mm/motorola.c                         |  2 ++
+>  4 files changed, 10 insertions(+), 10 deletions(-)
+> 
+> diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
+> index 43dc35fe5bc0..ac42b421a95c 100644
+> --- a/Documentation/admin-guide/kernel-parameters.txt
+> +++ b/Documentation/admin-guide/kernel-parameters.txt
+> @@ -2924,7 +2924,7 @@
+>  			both parameters are enabled, hugetlb_free_vmemmap takes
+>  			precedence over memory_hotplug.memmap_on_memory.
+>  
+> -	memtest=	[KNL,X86,ARM,PPC,RISCV] Enable memtest
+> +	memtest=	[KNL,X86,ARM,M68K,PPC,RISCV] Enable memtest
+>  			Format: <integer>
+>  			default : 0 <disable>
+>  			Specifies the number of memtest passes to be
+> diff --git a/arch/m68k/Kconfig b/arch/m68k/Kconfig
+> index 0b50da08a9c5..4cae3fbe7f97 100644
+> --- a/arch/m68k/Kconfig
+> +++ b/arch/m68k/Kconfig
+> @@ -9,6 +9,7 @@ config M68K
+>  	select ARCH_HAVE_NMI_SAFE_CMPXCHG if RMW_INSNS
+>  	select ARCH_MIGHT_HAVE_PC_PARPORT if ISA
+>  	select ARCH_NO_PREEMPT if !COLDFIRE
+> +	select ARCH_USE_MEMTEST if MMU_MOTOROLA
+>  	select ARCH_WANT_IPC_PARSE_VERSION
+>  	select BINFMT_FLAT_ARGVP_ENVP_ON_STACK
+>  	select DMA_DIRECT_REMAP if HAS_DMA && MMU && !COLDFIRE
+> diff --git a/arch/m68k/kernel/setup_mm.c b/arch/m68k/kernel/setup_mm.c
+> index 4b51bfd38e5f..49e573b94326 100644
+> --- a/arch/m68k/kernel/setup_mm.c
+> +++ b/arch/m68k/kernel/setup_mm.c
+> @@ -338,13 +338,6 @@ void __init setup_arch(char **cmdline_p)
+>  		panic("No configuration setup");
+>  	}
+>  
+> -	paging_init();
+> -
+> -#ifdef CONFIG_NATFEAT
+> -	nf_init();
+> -#endif
+> -
+> -#ifndef CONFIG_SUN3
+>  #ifdef CONFIG_BLK_DEV_INITRD
+>  	if (m68k_ramdisk.size) {
+>  		memblock_reserve(m68k_ramdisk.addr, m68k_ramdisk.size);
+> @@ -354,6 +347,12 @@ void __init setup_arch(char **cmdline_p)
+>  	}
+>  #endif
+>  
+> +	paging_init();
+> +
+> +#ifdef CONFIG_NATFEAT
+> +	nf_init();
+> +#endif
+> +
+>  #ifdef CONFIG_ATARI
+>  	if (MACH_IS_ATARI)
+>  		atari_stram_reserve_pages((void *)availmem);
+> @@ -364,8 +363,6 @@ void __init setup_arch(char **cmdline_p)
+>  	}
+>  #endif
+>  
+> -#endif /* !CONFIG_SUN3 */
+> -
+>  /* set ISA defs early as possible */
+>  #if defined(CONFIG_ISA) && defined(MULTI_ISA)
+>  	if (MACH_IS_Q40) {
+> diff --git a/arch/m68k/mm/motorola.c b/arch/m68k/mm/motorola.c
+> index 9f3f77785aa7..5b6575eb6d02 100644
+> --- a/arch/m68k/mm/motorola.c
+> +++ b/arch/m68k/mm/motorola.c
+> @@ -455,6 +455,8 @@ void __init paging_init(void)
+>  
+>  	flush_tlb_all();
+>  
+> +	early_memtest(min_addr, max_addr);
+> +
+>  	/*
+>  	 * initialize the bad page table and bad page to point
+>  	 * to a couple of allocated pages
+> -- 
+> 2.26.3
+> 
 
-An optional module parameter switches Amiga ISA IO accessors
-to 8 or 16 bit access in case autoprobe fails.
-
-Patch modified after patch "[PATCH RFC net-next] Amiga PCMCIA
-100 MBit card support" submitted to netdev 2018/09/16 by Alex
-Kazik <alex@kazik.de>.
-
-CC: netdev@vger.kernel.org
-Link: https://lore.kernel.org/r/1622958877-2026-1-git-send-email-schmitzmic@gmail.com
-Tested-by: Alex Kazik <alex@kazik.de>
-Signed-off-by: Michael Schmitz <schmitzmic@gmail.com>
-Reviewed-by: Geert Uytterhoeven <geert@linux-m68k.org>
-
---
-
-Changes from v12:
-
-Geert Uytterhoeven:
-- clarify Kconfig help text regarding mis-probing 10 Mbit cards
-
-Changes from v11:
-
-Geert Uytterhoeven:
-- use IS_REACHABLE() for PCMCIA dependent code
-- use container_of() instead of cast in pcmcia_parse_tuple()
-  call
-- set isa_type and apne_100_mbit correctly if autoprobe fails
-- reset isa_type and apne_100_mbit on module exit
-
-Joe Perches:
-- use pr_debug and co. to avoid #ifdef DEBUG
-
-Changes from v9:
-
-- avoid pcmcia_is_16bit() forward declaration
-
-Randy Dunlap:
-- do not select PCCARD and PCMCIA options when selecting APNE
-
-Changes from v8:
-
-Geert Uytterhoeven:
-- cistpl.h definitions now provided through amipcmcia.h
-- really change module parameter to (signed) int
-
-Changes from v7:
-
-- move 'select' for PCCARD and PCMCIA to 8390 Kconfig, so
-  Amiga pcmcia.c may remain built-in while core PCMCIA
-  code can be built as modules if APNE driver is a module.
-- move 16 bit mode autoprobe code from amiga/pcmcia.c to this
-  driver, to allow the core PCMCIA code we depend on to be
-  built as modules.
-- change module parameter type from bool to int to allow for
-  tri-state semantics (autoprobe, 8 bit, 16 bit).
-
-Changes from v6:
-
-- use 16 bit mode autoprobe based on PCMCIA config table data
-
-Changes from v5:
-
-- move autoprobe code to new patch in this series
-
-Geert Uytterhoeven:
-- reword Kconfig help text
-
-Finn Thain:
-- style fixes, use msec_to_jiffies in timeout calc
-
-Alex Kazik:
-- revert module parameter permission change
-
-Changes from v4:
-
-Geert Uytterhoeven:
-- remove APNE100MBIT config option, always include 16 bit support
-- change module parameter permissions
-- try autoprobing for 16 bit mode early on in device probe
-
-Changes from v3:
-
-- change module parameter name to match Kconfig help
-
-Finn Thain:
-- fix coding style in new card reset code block
-- allow reset of isa_type by module parameter
-
-Changes from v1:
-
-- fix module parameter name in Kconfig help text
-
-Alex Kazik:
-- change module parameter type to bool, fix module parameter
-  permission
-
-Changes from RFC:
-
-Geert Uytterhoeven:
-- change APNE_100MBIT to depend on APNE
-- change '---help---' to 'help' (former no longer supported)
-- fix whitespace errors
-- fix module_param_named() arg count
-- protect all added code by #ifdef CONFIG_APNE_100MBIT
-
-set ISA_TYPE_AG if 16 bit autoprobe failed; reset to sane state on module
-exit
----
- drivers/net/ethernet/8390/Kconfig |  8 +++
- drivers/net/ethernet/8390/apne.c  | 82 +++++++++++++++++++++++++++++++
- 2 files changed, 90 insertions(+)
-
-diff --git a/drivers/net/ethernet/8390/Kconfig b/drivers/net/ethernet/8390/Kconfig
-index a4130e643342..617d9a6431c4 100644
---- a/drivers/net/ethernet/8390/Kconfig
-+++ b/drivers/net/ethernet/8390/Kconfig
-@@ -144,6 +144,14 @@ config APNE
- 	  To compile this driver as a module, choose M here: the module
- 	  will be called apne.
- 
-+	  The driver also supports 10/100Mbit cards (e.g. Netgear FA411,
-+	  CNet Singlepoint). To activate 100 Mbit support, use the kernel
-+	  option apne.100mbit=1 (builtin) at boot time, or the apne.100mbit
-+	  module parameter. The driver will attempt to autoprobe 100 Mbit
-+	  mode if the PCCARD and PCMCIA kernel configuration options are
-+	  selected, so this option may not be necessary. Use apne.100mbit=0
-+	  should autoprobe mis-detect a 10 Mbit card as 100 Mbit.
-+
- config PCMCIA_PCNET
- 	tristate "NE2000 compatible PCMCIA support"
- 	depends on PCMCIA
-diff --git a/drivers/net/ethernet/8390/apne.c b/drivers/net/ethernet/8390/apne.c
-index da1ae37a9d73..ed7e97bd260b 100644
---- a/drivers/net/ethernet/8390/apne.c
-+++ b/drivers/net/ethernet/8390/apne.c
-@@ -119,6 +119,45 @@ static u32 apne_msg_enable;
- module_param_named(msg_enable, apne_msg_enable, uint, 0444);
- MODULE_PARM_DESC(msg_enable, "Debug message level (see linux/netdevice.h for bitmap)");
- 
-+static int apne_100_mbit = -1;
-+module_param_named(100_mbit, apne_100_mbit, int, 0444);
-+MODULE_PARM_DESC(100_mbit, "Enable 100 Mbit support");
-+
-+#if IS_REACHABLE(CONFIG_PCMCIA)
-+static int pcmcia_is_16bit(void)
-+{
-+	u_char cftuple[258];
-+	int cftuple_len;
-+	tuple_t cftable_tuple;
-+	cistpl_cftable_entry_t cftable_entry;
-+
-+	cftuple_len = pcmcia_copy_tuple(CISTPL_CFTABLE_ENTRY, cftuple, 256);
-+	if (cftuple_len < 3)
-+		return 0;
-+	else
-+		print_hex_dump_debug("cftable: ", DUMP_PREFIX_NONE, 8,
-+				sizeof(char), cftuple, cftuple_len, false);
-+
-+	/* build tuple_t struct and call pcmcia_parse_tuple */
-+	cftable_tuple.DesiredTuple = CISTPL_CFTABLE_ENTRY;
-+	cftable_tuple.TupleCode = CISTPL_CFTABLE_ENTRY;
-+	cftable_tuple.TupleData = &cftuple[2];
-+	cftable_tuple.TupleDataLen = cftuple_len - 2;
-+	cftable_tuple.TupleDataMax = cftuple_len - 2;
-+
-+	if (pcmcia_parse_tuple(&cftable_tuple, container_of(&cftable_entry,
-+				cisparse_t, cftable_entry)))
-+		return 0;
-+
-+	pr_debug("IO flags: %x\n", cftable_entry.io.flags);
-+
-+	if (cftable_entry.io.flags & CISTPL_IO_16BIT)
-+		return 1;
-+
-+	return 0;
-+}
-+#endif
-+
- static struct net_device * __init apne_probe(void)
- {
- 	struct net_device *dev;
-@@ -140,6 +179,17 @@ static struct net_device * __init apne_probe(void)
- 
- 	pr_info("Looking for PCMCIA ethernet card : ");
- 
-+	if (apne_100_mbit == 1)
-+		isa_type = ISA_TYPE_AG16;
-+	else if (apne_100_mbit == 0)
-+		isa_type = ISA_TYPE_AG;
-+	else
-+#if IS_REACHABLE(CONFIG_PCMCIA)
-+		pr_cont(" (autoprobing 16 bit mode) ");
-+#else
-+		pr_cont(" (no 16 bit autoprobe support) ");
-+#endif
-+
- 	/* check if a card is inserted */
- 	if (!(PCMCIA_INSERTED)) {
- 		pr_cont("NO PCMCIA card inserted\n");
-@@ -167,6 +217,19 @@ static struct net_device * __init apne_probe(void)
- 
- 	pr_cont("ethernet PCMCIA card inserted\n");
- 
-+#if IS_REACHABLE(CONFIG_PCMCIA)
-+	if (apne_100_mbit < 0) {
-+		if (pcmcia_is_16bit()) {
-+			pr_info("16-bit PCMCIA card detected!\n");
-+			isa_type = ISA_TYPE_AG16;
-+			apne_100_mbit = 1;
-+		} else {
-+			isa_type = ISA_TYPE_AG;
-+			apne_100_mbit = 0;
-+		}
-+	}
-+#endif
-+
- 	if (!init_pcmcia()) {
- 		/* XXX: shouldn't we re-enable irq here? */
- 		free_netdev(dev);
-@@ -193,6 +256,10 @@ static struct net_device * __init apne_probe(void)
- 	pcmcia_reset();
- 	release_region(IOBASE, 0x20);
- 	free_netdev(dev);
-+#if IS_REACHABLE(CONFIG_PCMCIA)
-+	isa_type = ISA_TYPE_AG;
-+	apne_100_mbit = -1;
-+#endif
- 	return ERR_PTR(err);
- }
- 
-@@ -570,6 +637,11 @@ static void __exit apne_module_exit(void)
- 	release_region(IOBASE, 0x20);
- 
- 	free_netdev(apne_dev);
-+
-+#if IS_REACHABLE(CONFIG_PCMCIA)
-+	isa_type = ISA_TYPE_AG;
-+	apne_100_mbit = -1;
-+#endif
- }
- module_init(apne_module_init);
- module_exit(apne_module_exit);
-@@ -583,6 +655,16 @@ static int init_pcmcia(void)
- #endif
- 	u_long offset;
- 
-+	/* reset card (idea taken from CardReset by Artur Pogoda) */
-+	if (isa_type == ISA_TYPE_AG16) {
-+		u_char tmp = gayle.intreq;
-+
-+		gayle.intreq = 0xff;
-+		mdelay(1);
-+		gayle.intreq = tmp;
-+		mdelay(300);
-+	}
-+
- 	pcmcia_reset();
- 	pcmcia_program_voltage(PCMCIA_0V);
- 	pcmcia_access_speed(PCMCIA_SPEED_250NS);
 -- 
-2.17.1
-
+Sincerely yours,
+Mike.
