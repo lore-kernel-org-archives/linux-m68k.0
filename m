@@ -2,24 +2,24 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C8890C4332F
-	for <linux-m68k@archiver.kernel.org>; Wed, 24 Nov 2021 12:44:50 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B8B29C433FE
+	for <linux-m68k@archiver.kernel.org>; Wed, 24 Nov 2021 12:48:28 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243818AbhKXMr7 (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Wed, 24 Nov 2021 07:47:59 -0500
-Received: from mail.kernel.org ([198.145.29.99]:53590 "EHLO mail.kernel.org"
+        id S245725AbhKXMvg (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Wed, 24 Nov 2021 07:51:36 -0500
+Received: from mail.kernel.org ([198.145.29.99]:57416 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S242898AbhKXMp7 (ORCPT <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Wed, 24 Nov 2021 07:45:59 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id CC8A061A8B;
-        Wed, 24 Nov 2021 12:42:48 +0000 (UTC)
+        id S245287AbhKXMto (ORCPT <rfc822;linux-m68k@lists.linux-m68k.org>);
+        Wed, 24 Nov 2021 07:49:44 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id BBDAA61AFB;
+        Wed, 24 Nov 2021 12:46:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637757769;
-        bh=aOK/IR1dpDc8S/kfx4aITc/e7OlsxFe9NaHm55Gg33M=;
+        s=korg; t=1637757994;
+        bh=bZYwmws7ttw+7pmQhuTuxLgNOJ+/Q2vHTKQPCg9K4Ws=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=rtJ9/dQ+zkT5o9M8LrE0Oonw4ohPrXjDdDmnfQAbmCDg/rEpagM0K1LJlj1rGGpO1
-         pgrC9ft2QBIc7JlErQg6UaClIQ5uTYzC+oObbKY0vFIj9OwauRt7LhZ1dzZYfLqXa/
-         vQJJ+fdbU16sXXwh+wpIrhPCGq6dh5iUXNDJpMA0=
+        b=q17HaNG/kSaHP1B+u1WcYyCdwPJKbIMjWGeCnSwSqvCM91M6jchrZ+O+aoBZGJZYM
+         0xbHvBtQp2HKcnz0OIvPMaF+z2kVkQWGi3/AAIuePgK6bXbR7YbrRSeu2uLf0XkaLK
+         E+6Bl+fpOwkXQiaPuXmNT0kF+mm0e386kWAhZKuw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
@@ -29,12 +29,12 @@ Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         linux-m68k@lists.linux-m68k.org,
         Geert Uytterhoeven <geert@linux-m68k.org>,
         Takashi Iwai <tiwai@suse.de>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 271/323] ALSA: ISA: not for M68K
-Date:   Wed, 24 Nov 2021 12:57:41 +0100
-Message-Id: <20211124115728.022427637@linuxfoundation.org>
+Subject: [PATCH 5.4 021/100] ALSA: ISA: not for M68K
+Date:   Wed, 24 Nov 2021 12:57:37 +0100
+Message-Id: <20211124115655.548755545@linuxfoundation.org>
 X-Mailer: git-send-email 2.34.0
-In-Reply-To: <20211124115718.822024889@linuxfoundation.org>
-References: <20211124115718.822024889@linuxfoundation.org>
+In-Reply-To: <20211124115654.849735859@linuxfoundation.org>
+References: <20211124115654.849735859@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -99,10 +99,10 @@ index ee4a4a6b99ba7..d123587c0fd8f 100644
  snd-$(CONFIG_SND_VMASTER) += vmaster.o
  snd-$(CONFIG_SND_JACK)	  += ctljack.o jack.o
 diff --git a/sound/isa/Kconfig b/sound/isa/Kconfig
-index d7db1eeebc844..f8f3433925bb4 100644
+index b690ed937cbe8..df2e45c8814e9 100644
 --- a/sound/isa/Kconfig
 +++ b/sound/isa/Kconfig
-@@ -21,7 +21,7 @@ config SND_SB16_DSP
+@@ -22,7 +22,7 @@ config SND_SB16_DSP
  menuconfig SND_ISA
  	bool "ISA sound devices"
  	depends on ISA || COMPILE_TEST
@@ -112,10 +112,10 @@ index d7db1eeebc844..f8f3433925bb4 100644
  	help
  	  Support for sound devices connected via the ISA bus.
 diff --git a/sound/pci/Kconfig b/sound/pci/Kconfig
-index 4105d9f653d90..bbaf46dc3f804 100644
+index 7630f808d087c..6edde2f145025 100644
 --- a/sound/pci/Kconfig
 +++ b/sound/pci/Kconfig
-@@ -278,6 +278,7 @@ config SND_CS46XX_NEW_DSP
+@@ -279,6 +279,7 @@ config SND_CS46XX_NEW_DSP
  config SND_CS5530
  	tristate "CS5530 Audio"
  	depends on ISA_DMA_API && (X86_32 || COMPILE_TEST)
