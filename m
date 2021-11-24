@@ -2,24 +2,24 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B8B29C433FE
-	for <linux-m68k@archiver.kernel.org>; Wed, 24 Nov 2021 12:48:28 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A91C7C433FE
+	for <linux-m68k@archiver.kernel.org>; Wed, 24 Nov 2021 12:54:32 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245725AbhKXMvg (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Wed, 24 Nov 2021 07:51:36 -0500
-Received: from mail.kernel.org ([198.145.29.99]:57416 "EHLO mail.kernel.org"
+        id S1345334AbhKXM5j (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Wed, 24 Nov 2021 07:57:39 -0500
+Received: from mail.kernel.org ([198.145.29.99]:34880 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S245287AbhKXMto (ORCPT <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Wed, 24 Nov 2021 07:49:44 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id BBDAA61AFB;
-        Wed, 24 Nov 2021 12:46:33 +0000 (UTC)
+        id S1346065AbhKXMz3 (ORCPT <rfc822;linux-m68k@lists.linux-m68k.org>);
+        Wed, 24 Nov 2021 07:55:29 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 074F561183;
+        Wed, 24 Nov 2021 12:52:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637757994;
-        bh=bZYwmws7ttw+7pmQhuTuxLgNOJ+/Q2vHTKQPCg9K4Ws=;
+        s=korg; t=1637758338;
+        bh=ZMGpCI8oDIhIjEv0205Deqq+Gh7JpQMOGyNXtAcjAOI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=q17HaNG/kSaHP1B+u1WcYyCdwPJKbIMjWGeCnSwSqvCM91M6jchrZ+O+aoBZGJZYM
-         0xbHvBtQp2HKcnz0OIvPMaF+z2kVkQWGi3/AAIuePgK6bXbR7YbrRSeu2uLf0XkaLK
-         E+6Bl+fpOwkXQiaPuXmNT0kF+mm0e386kWAhZKuw=
+        b=raByjrgClzrxOVvRIc2/DRjsEIQSNayLKNe0GL18Zwzfr1AtHA0bFW+EHMNVOr4t8
+         0Pru+o8iSJjT8jOBSV/3XN0hegniifokt15bIDjW+HCD95NX6dnC3YWpwGpJLXtxmv
+         hObxVVqacYDm7MaeYdm5zTqoTZS1m1QAKgQqLLew=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
@@ -29,12 +29,12 @@ Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         linux-m68k@lists.linux-m68k.org,
         Geert Uytterhoeven <geert@linux-m68k.org>,
         Takashi Iwai <tiwai@suse.de>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 021/100] ALSA: ISA: not for M68K
-Date:   Wed, 24 Nov 2021 12:57:37 +0100
-Message-Id: <20211124115655.548755545@linuxfoundation.org>
+Subject: [PATCH 5.10 035/154] ALSA: ISA: not for M68K
+Date:   Wed, 24 Nov 2021 12:57:11 +0100
+Message-Id: <20211124115703.493353371@linuxfoundation.org>
 X-Mailer: git-send-email 2.34.0
-In-Reply-To: <20211124115654.849735859@linuxfoundation.org>
-References: <20211124115654.849735859@linuxfoundation.org>
+In-Reply-To: <20211124115702.361983534@linuxfoundation.org>
+References: <20211124115702.361983534@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -99,7 +99,7 @@ index ee4a4a6b99ba7..d123587c0fd8f 100644
  snd-$(CONFIG_SND_VMASTER) += vmaster.o
  snd-$(CONFIG_SND_JACK)	  += ctljack.o jack.o
 diff --git a/sound/isa/Kconfig b/sound/isa/Kconfig
-index b690ed937cbe8..df2e45c8814e9 100644
+index 6ffa48dd59830..570b88e0b2018 100644
 --- a/sound/isa/Kconfig
 +++ b/sound/isa/Kconfig
 @@ -22,7 +22,7 @@ config SND_SB16_DSP
@@ -112,7 +112,7 @@ index b690ed937cbe8..df2e45c8814e9 100644
  	help
  	  Support for sound devices connected via the ISA bus.
 diff --git a/sound/pci/Kconfig b/sound/pci/Kconfig
-index 7630f808d087c..6edde2f145025 100644
+index 93bc9bef7641f..41ce125971777 100644
 --- a/sound/pci/Kconfig
 +++ b/sound/pci/Kconfig
 @@ -279,6 +279,7 @@ config SND_CS46XX_NEW_DSP
