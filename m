@@ -2,24 +2,24 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A91C7C433FE
-	for <linux-m68k@archiver.kernel.org>; Wed, 24 Nov 2021 12:54:32 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 00949C433FE
+	for <linux-m68k@archiver.kernel.org>; Wed, 24 Nov 2021 13:04:51 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345334AbhKXM5j (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Wed, 24 Nov 2021 07:57:39 -0500
-Received: from mail.kernel.org ([198.145.29.99]:34880 "EHLO mail.kernel.org"
+        id S1344008AbhKXNH7 (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Wed, 24 Nov 2021 08:07:59 -0500
+Received: from mail.kernel.org ([198.145.29.99]:48124 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1346065AbhKXMz3 (ORCPT <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Wed, 24 Nov 2021 07:55:29 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 074F561183;
-        Wed, 24 Nov 2021 12:52:17 +0000 (UTC)
+        id S1346154AbhKXNF6 (ORCPT <rfc822;linux-m68k@lists.linux-m68k.org>);
+        Wed, 24 Nov 2021 08:05:58 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6BC296334D;
+        Wed, 24 Nov 2021 13:02:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637758338;
-        bh=ZMGpCI8oDIhIjEv0205Deqq+Gh7JpQMOGyNXtAcjAOI=;
+        s=korg; t=1637758969;
+        bh=YqdcfG9rMUg1aPmE15BG3JxqWSif0cagwCUxwHc/YEU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=raByjrgClzrxOVvRIc2/DRjsEIQSNayLKNe0GL18Zwzfr1AtHA0bFW+EHMNVOr4t8
-         0Pru+o8iSJjT8jOBSV/3XN0hegniifokt15bIDjW+HCD95NX6dnC3YWpwGpJLXtxmv
-         hObxVVqacYDm7MaeYdm5zTqoTZS1m1QAKgQqLLew=
+        b=Rjucz8QXXixIZY68x2f07XEI8oa4L9vERWBiYRgcBZEk++SfYLTHsOcM8l78ylNOf
+         I9J/g79/MHdyBwWImMpxgM5YROjXv2CnoFDxCcMVeWL35wAjoX8itcgJFmGyRoynBv
+         +JlQ/IDcFJvkRay4W4/XHhHHmGBlR4efOPVMqcMg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
@@ -29,12 +29,12 @@ Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         linux-m68k@lists.linux-m68k.org,
         Geert Uytterhoeven <geert@linux-m68k.org>,
         Takashi Iwai <tiwai@suse.de>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 035/154] ALSA: ISA: not for M68K
-Date:   Wed, 24 Nov 2021 12:57:11 +0100
-Message-Id: <20211124115703.493353371@linuxfoundation.org>
+Subject: [PATCH 5.15 057/279] ALSA: ISA: not for M68K
+Date:   Wed, 24 Nov 2021 12:55:44 +0100
+Message-Id: <20211124115720.693727021@linuxfoundation.org>
 X-Mailer: git-send-email 2.34.0
-In-Reply-To: <20211124115702.361983534@linuxfoundation.org>
-References: <20211124115702.361983534@linuxfoundation.org>
+In-Reply-To: <20211124115718.776172708@linuxfoundation.org>
+References: <20211124115718.776172708@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -85,7 +85,7 @@ Signed-off-by: Sasha Levin <sashal@kernel.org>
  3 files changed, 4 insertions(+), 1 deletion(-)
 
 diff --git a/sound/core/Makefile b/sound/core/Makefile
-index ee4a4a6b99ba7..d123587c0fd8f 100644
+index d774792850f31..79e1407cd0de7 100644
 --- a/sound/core/Makefile
 +++ b/sound/core/Makefile
 @@ -9,7 +9,9 @@ ifneq ($(CONFIG_SND_PROC_FS),)
