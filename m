@@ -2,129 +2,106 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 00949C433FE
-	for <linux-m68k@archiver.kernel.org>; Wed, 24 Nov 2021 13:04:51 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 0638FC433F5
+	for <linux-m68k@archiver.kernel.org>; Wed, 24 Nov 2021 14:01:26 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344008AbhKXNH7 (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Wed, 24 Nov 2021 08:07:59 -0500
-Received: from mail.kernel.org ([198.145.29.99]:48124 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1346154AbhKXNF6 (ORCPT <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Wed, 24 Nov 2021 08:05:58 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6BC296334D;
-        Wed, 24 Nov 2021 13:02:48 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637758969;
-        bh=YqdcfG9rMUg1aPmE15BG3JxqWSif0cagwCUxwHc/YEU=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Rjucz8QXXixIZY68x2f07XEI8oa4L9vERWBiYRgcBZEk++SfYLTHsOcM8l78ylNOf
-         I9J/g79/MHdyBwWImMpxgM5YROjXv2CnoFDxCcMVeWL35wAjoX8itcgJFmGyRoynBv
-         +JlQ/IDcFJvkRay4W4/XHhHHmGBlR4efOPVMqcMg=
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Randy Dunlap <rdunlap@infradead.org>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org,
-        linux-m68k@lists.linux-m68k.org,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Takashi Iwai <tiwai@suse.de>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.15 057/279] ALSA: ISA: not for M68K
-Date:   Wed, 24 Nov 2021 12:55:44 +0100
-Message-Id: <20211124115720.693727021@linuxfoundation.org>
-X-Mailer: git-send-email 2.34.0
-In-Reply-To: <20211124115718.776172708@linuxfoundation.org>
-References: <20211124115718.776172708@linuxfoundation.org>
-User-Agent: quilt/0.66
+        id S1356578AbhKXOEc convert rfc822-to-8bit (ORCPT
+        <rfc822;linux-m68k@archiver.kernel.org>);
+        Wed, 24 Nov 2021 09:04:32 -0500
+Received: from mail-ua1-f53.google.com ([209.85.222.53]:35542 "EHLO
+        mail-ua1-f53.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1348372AbhKXOBR (ORCPT
+        <rfc822;linux-m68k@lists.linux-m68k.org>);
+        Wed, 24 Nov 2021 09:01:17 -0500
+Received: by mail-ua1-f53.google.com with SMTP id l24so5324601uak.2
+        for <linux-m68k@lists.linux-m68k.org>; Wed, 24 Nov 2021 05:58:07 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=Hf4rPGIgUhHt4w8e7uNMvl+iKhb8nrL9YmbQ22fq8VI=;
+        b=XUXOCB00t9erUiGIfasyqBBY8eSq++pGJNFYD53kOZMOFfkxjPfPfWwSTTp4ftw7lD
+         IkzLoooT/diMl0qtKurtmqzqoHOVmfK34/GekFeBxphXY96ERG8jOF3F0jVX1j2T79we
+         5nmkRgGTzuqxRSHek/i7hOKrV3ajvmoJe0n72gMWRWCTRLf7sKy2Vl8VNP3NYL9nVttR
+         9oi+D9ESuk/KRzPYw5SOX/G45cPNkZF49MGmn7VaEqsdp8fwiiryYT4wZDKp6ddko/Pv
+         LdDG3QNoA+6E9Icn9RUI7kjXVNBNM0TbEVXtIqBe9VmH27KIpwx8vFinE/vf/5o15teK
+         l7+w==
+X-Gm-Message-State: AOAM530b6Dz1D1KluH78DGxmUC0OeucBIMcd64azksBoKj/Z3cd1cUfm
+        mdEM3xhf2QlDhagHKDAgFzrDKJ2z360ebA==
+X-Google-Smtp-Source: ABdhPJzzDRJ7B+ZAaebtop5y5hcEqPo5bpQCtPiKiLex2pJJWFp9lvWt8a5eQc+OHoj5DMAjyDfTmw==
+X-Received: by 2002:ab0:6905:: with SMTP id b5mr10782906uas.43.1637762286586;
+        Wed, 24 Nov 2021 05:58:06 -0800 (PST)
+Received: from mail-ua1-f46.google.com (mail-ua1-f46.google.com. [209.85.222.46])
+        by smtp.gmail.com with ESMTPSA id i27sm8416437uab.8.2021.11.24.05.58.06
+        for <linux-m68k@lists.linux-m68k.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 24 Nov 2021 05:58:06 -0800 (PST)
+Received: by mail-ua1-f46.google.com with SMTP id az37so5220320uab.13
+        for <linux-m68k@lists.linux-m68k.org>; Wed, 24 Nov 2021 05:58:06 -0800 (PST)
+X-Received: by 2002:a67:c38f:: with SMTP id s15mr24413982vsj.50.1637761804180;
+ Wed, 24 Nov 2021 05:50:04 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+References: <CAK8P3a3pQW59NVF=5P+ZiBjNJmnWh+iTZUHvqHBrXkHA6pMd4g@mail.gmail.com>
+ <20211124132112.11641-1-andrealmeid@collabora.com>
+In-Reply-To: <20211124132112.11641-1-andrealmeid@collabora.com>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Wed, 24 Nov 2021 14:49:53 +0100
+X-Gmail-Original-Message-ID: <CAMuHMdViovyQ2xBeKaMRbAmYF5eMWKdYhQEPmnTyLJoF7a+xsg@mail.gmail.com>
+Message-ID: <CAMuHMdViovyQ2xBeKaMRbAmYF5eMWKdYhQEPmnTyLJoF7a+xsg@mail.gmail.com>
+Subject: Re: [PATCH 1/1] futex: Wireup futex_waitv syscall
+To:     =?UTF-8?Q?Andr=C3=A9_Almeida?= <andrealmeid@collabora.com>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>, Michal Simek <monstr@monstr.eu>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Yoshinori Sato <ysato@users.sourceforge.jp>,
+        Rich Felker <dalias@libc.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Chris Zankel <chris@zankel.net>,
+        Max Filippov <jcmvbkbc@gmail.com>,
+        alpha <linux-alpha@vger.kernel.org>,
+        "linux-ia64@vger.kernel.org" <linux-ia64@vger.kernel.org>,
+        linux-m68k <linux-m68k@lists.linux-m68k.org>,
+        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
+        Linux-sh list <linux-sh@vger.kernel.org>,
+        sparclinux <sparclinux@vger.kernel.org>,
+        "open list:TENSILICA XTENSA PORT (xtensa)" 
+        <linux-xtensa@linux-xtensa.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Linux-Next <linux-next@vger.kernel.org>,
+        lkft-triage@lists.linaro.org, Waiman Long <longman@redhat.com>,
+        Minchan Kim <minchan@kernel.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Naresh Kamboju <naresh.kamboju@linaro.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Rob Landley <rob@landley.net>,
+        Sergey Senozhatsky <senozhatsky@chromium.org>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        Mike Galbraith <umgwanakikbuti@gmail.com>,
+        Will Deacon <will@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-From: Randy Dunlap <rdunlap@infradead.org>
+On Wed, Nov 24, 2021 at 2:21 PM André Almeida <andrealmeid@collabora.com> wrote:
+> Wireup futex_waitv syscall for all remaining archs.
+>
+> Signed-off-by: André Almeida <andrealmeid@collabora.com>
 
-[ Upstream commit 3c05f1477e62ea5a0a8797ba6a545b1dc751fb31 ]
+>  arch/m68k/kernel/syscalls/syscall.tbl       | 1 +
 
-On m68k, compiling drivers under SND_ISA causes build errors:
+Acked-by: Geert Uytterhoeven <geert@linux-m68k.org>
 
-../sound/core/isadma.c: In function 'snd_dma_program':
-../sound/core/isadma.c:33:17: error: implicit declaration of function 'claim_dma_lock' [-Werror=implicit-function-declaration]
-   33 |         flags = claim_dma_lock();
-      |                 ^~~~~~~~~~~~~~
-../sound/core/isadma.c:41:9: error: implicit declaration of function 'release_dma_lock' [-Werror=implicit-function-declaration]
-   41 |         release_dma_lock(flags);
-      |         ^~~~~~~~~~~~~~~~
+Gr{oetje,eeting}s,
 
-../sound/isa/sb/sb16_main.c: In function 'snd_sb16_playback_prepare':
-../sound/isa/sb/sb16_main.c:253:72: error: 'DMA_AUTOINIT' undeclared (first use in this function)
-  253 |         snd_dma_program(dma, runtime->dma_addr, size, DMA_MODE_WRITE | DMA_AUTOINIT);
-      |                                                                        ^~~~~~~~~~~~
-../sound/isa/sb/sb16_main.c:253:72: note: each undeclared identifier is reported only once for each function it appears in
-../sound/isa/sb/sb16_main.c: In function 'snd_sb16_capture_prepare':
-../sound/isa/sb/sb16_main.c:322:71: error: 'DMA_AUTOINIT' undeclared (first use in this function)
-  322 |         snd_dma_program(dma, runtime->dma_addr, size, DMA_MODE_READ | DMA_AUTOINIT);
-      |                                                                       ^~~~~~~~~~~~
+                        Geert
 
-and more...
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
-Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-Cc: Jaroslav Kysela <perex@perex.cz>
-Cc: Takashi Iwai <tiwai@suse.com>
-Cc: alsa-devel@alsa-project.org
-Cc: linux-m68k@lists.linux-m68k.org
-Cc: Geert Uytterhoeven <geert@linux-m68k.org>
-Link: https://lore.kernel.org/r/20211016062602.3588-1-rdunlap@infradead.org
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
- sound/core/Makefile | 2 ++
- sound/isa/Kconfig   | 2 +-
- sound/pci/Kconfig   | 1 +
- 3 files changed, 4 insertions(+), 1 deletion(-)
-
-diff --git a/sound/core/Makefile b/sound/core/Makefile
-index d774792850f31..79e1407cd0de7 100644
---- a/sound/core/Makefile
-+++ b/sound/core/Makefile
-@@ -9,7 +9,9 @@ ifneq ($(CONFIG_SND_PROC_FS),)
- snd-y += info.o
- snd-$(CONFIG_SND_OSSEMUL) += info_oss.o
- endif
-+ifneq ($(CONFIG_M68K),y)
- snd-$(CONFIG_ISA_DMA_API) += isadma.o
-+endif
- snd-$(CONFIG_SND_OSSEMUL) += sound_oss.o
- snd-$(CONFIG_SND_VMASTER) += vmaster.o
- snd-$(CONFIG_SND_JACK)	  += ctljack.o jack.o
-diff --git a/sound/isa/Kconfig b/sound/isa/Kconfig
-index 6ffa48dd59830..570b88e0b2018 100644
---- a/sound/isa/Kconfig
-+++ b/sound/isa/Kconfig
-@@ -22,7 +22,7 @@ config SND_SB16_DSP
- menuconfig SND_ISA
- 	bool "ISA sound devices"
- 	depends on ISA || COMPILE_TEST
--	depends on ISA_DMA_API
-+	depends on ISA_DMA_API && !M68K
- 	default y
- 	help
- 	  Support for sound devices connected via the ISA bus.
-diff --git a/sound/pci/Kconfig b/sound/pci/Kconfig
-index 93bc9bef7641f..41ce125971777 100644
---- a/sound/pci/Kconfig
-+++ b/sound/pci/Kconfig
-@@ -279,6 +279,7 @@ config SND_CS46XX_NEW_DSP
- config SND_CS5530
- 	tristate "CS5530 Audio"
- 	depends on ISA_DMA_API && (X86_32 || COMPILE_TEST)
-+	depends on !M68K
- 	select SND_SB16_DSP
- 	help
- 	  Say Y here to include support for audio on Cyrix/NatSemi CS5530 chips.
--- 
-2.33.0
-
-
-
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
