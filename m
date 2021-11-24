@@ -2,24 +2,24 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9C011C433F5
-	for <linux-m68k@archiver.kernel.org>; Wed, 24 Nov 2021 12:16:10 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A33F1C43219
+	for <linux-m68k@archiver.kernel.org>; Wed, 24 Nov 2021 12:28:01 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242066AbhKXMTQ (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Wed, 24 Nov 2021 07:19:16 -0500
-Received: from mail.kernel.org ([198.145.29.99]:34044 "EHLO mail.kernel.org"
+        id S245052AbhKXMbI (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Wed, 24 Nov 2021 07:31:08 -0500
+Received: from mail.kernel.org ([198.145.29.99]:47938 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S242219AbhKXMQq (ORCPT <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Wed, 24 Nov 2021 07:16:46 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 736BB610CE;
-        Wed, 24 Nov 2021 12:13:36 +0000 (UTC)
+        id S245552AbhKXM2d (ORCPT <rfc822;linux-m68k@lists.linux-m68k.org>);
+        Wed, 24 Nov 2021 07:28:33 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2DA1A61401;
+        Wed, 24 Nov 2021 12:25:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637756016;
-        bh=N8ayh2IAyO2EcjbxZUlVX/pGg0vD/YDJmgaALpwReW8=;
+        s=korg; t=1637756721;
+        bh=jT/8A8Y1sg1F60qNUNPOGGswM2LgQvQGCL4U+19B91s=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=dR2j6StmT3Boy5ZwpWjlIgIVJgqs5BuRQHXseVCxhKXoHkABc4Epk3cZxQMO/xrp5
-         VVGdLpMtmiJcFH5TJqC0UCxGGicEUXL4xyAkOEpZtpgjqxa7GX3Hm28Ah1aWZ3hu4d
-         yTG2mRkZODWmiHMrdCzgG26+2XRH30FOrpkGDW8M=
+        b=PD+1G6M7D7AHZBzgGFdJ/PRmSYsgMNZvc5OENZAqrpTgYE3rWXr0cS63AzrMc/UyU
+         xA9w85MKRK/Niq2KqqLcfclN47UuW4wkCGjlgABZHy+jVPyzQOFLrTquOCdlamJ2+5
+         Mh0Fu05kYSr/Crq8i4B0oYEFBJaVjkhvaIqzNd3Q=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
@@ -27,12 +27,12 @@ Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         Geert Uytterhoeven <geert@linux-m68k.org>,
         Greg Ungerer <gerg@linux-m68k.org>,
         linux-m68k@lists.linux-m68k.org, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.9 140/207] m68k: set a default value for MEMORY_RESERVE
-Date:   Wed, 24 Nov 2021 12:56:51 +0100
-Message-Id: <20211124115708.556510772@linuxfoundation.org>
+Subject: [PATCH 4.14 174/251] m68k: set a default value for MEMORY_RESERVE
+Date:   Wed, 24 Nov 2021 12:56:56 +0100
+Message-Id: <20211124115716.317461738@linuxfoundation.org>
 X-Mailer: git-send-email 2.34.0
-In-Reply-To: <20211124115703.941380739@linuxfoundation.org>
-References: <20211124115703.941380739@linuxfoundation.org>
+In-Reply-To: <20211124115710.214900256@linuxfoundation.org>
+References: <20211124115710.214900256@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -72,10 +72,10 @@ Signed-off-by: Sasha Levin <sashal@kernel.org>
  1 file changed, 1 insertion(+)
 
 diff --git a/arch/m68k/Kconfig.machine b/arch/m68k/Kconfig.machine
-index 2a5c7abb2896e..f622c3ccafc31 100644
+index 5cd57b4d36156..4a1697fa9a37d 100644
 --- a/arch/m68k/Kconfig.machine
 +++ b/arch/m68k/Kconfig.machine
-@@ -184,6 +184,7 @@ config INIT_LCD
+@@ -185,6 +185,7 @@ config INIT_LCD
  config MEMORY_RESERVE
  	int "Memory reservation (MiB)"
  	depends on (UCSIMM || UCDIMM)
