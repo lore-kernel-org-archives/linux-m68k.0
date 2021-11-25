@@ -2,157 +2,103 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9E6E6C433EF
-	for <linux-m68k@archiver.kernel.org>; Thu, 25 Nov 2021 08:40:15 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 255D5C433EF
+	for <linux-m68k@archiver.kernel.org>; Thu, 25 Nov 2021 10:42:54 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1353482AbhKYInZ (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Thu, 25 Nov 2021 03:43:25 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38110 "EHLO
+        id S1354467AbhKYKqE (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Thu, 25 Nov 2021 05:46:04 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36708 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1347693AbhKYIlZ (ORCPT
+        with ESMTP id S1350042AbhKYKoE (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Thu, 25 Nov 2021 03:41:25 -0500
-Received: from laurent.telenet-ops.be (laurent.telenet-ops.be [IPv6:2a02:1800:110:4::f00:19])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 69C13C06175F
-        for <linux-m68k@lists.linux-m68k.org>; Thu, 25 Nov 2021 00:38:14 -0800 (PST)
-Received: from ramsan.of.borg ([IPv6:2a02:1810:ac12:ed10:1511:ffa3:275:45dd])
-        by laurent.telenet-ops.be with bizsmtp
-        id NYe92600J5CGg7701Ye9RP; Thu, 25 Nov 2021 09:38:10 +0100
-Received: from rox.of.borg ([192.168.97.57])
-        by ramsan.of.borg with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.93)
-        (envelope-from <geert@linux-m68k.org>)
-        id 1mqAGe-0009GZ-T1; Thu, 25 Nov 2021 09:38:08 +0100
-Received: from geert by rox.of.borg with local (Exim 4.93)
-        (envelope-from <geert@linux-m68k.org>)
-        id 1mqAGe-000LUN-AK; Thu, 25 Nov 2021 09:38:08 +0100
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-To:     Finn Thain <fthain@linux-m68k.org>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        Muchun Song <songmuchun@bytedance.com>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Andrew Morton <akpm@linux-foundation.org>
-Cc:     linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org
-Subject: [PATCH -next] nubus: Rename pde_data var to fix conflict with external function
-Date:   Thu, 25 Nov 2021 09:38:08 +0100
-Message-Id: <20211125083808.82560-1-geert@linux-m68k.org>
-X-Mailer: git-send-email 2.25.1
+        Thu, 25 Nov 2021 05:44:04 -0500
+Received: from mail-yb1-xb35.google.com (mail-yb1-xb35.google.com [IPv6:2607:f8b0:4864:20::b35])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B416C06173E
+        for <linux-m68k@lists.linux-m68k.org>; Thu, 25 Nov 2021 02:40:53 -0800 (PST)
+Received: by mail-yb1-xb35.google.com with SMTP id d10so10601208ybe.3
+        for <linux-m68k@lists.linux-m68k.org>; Thu, 25 Nov 2021 02:40:53 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance-com.20210112.gappssmtp.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=Xa1vZazox6ICgKLpFIvg6K1JUC/KEtKPUA08cmaogzs=;
+        b=L36hQ4y5VJsbScrIBBG+WJ8b9mItC1MabGVvD7Hq8NLo3lExxon0sapneQA6D9FRb0
+         gk8wk2D+TNQIgYNY6lCAaitOEE1jvS0kD6/VmRm6wU3fB4RG8ttCeEjqzUKAgVz/cnnL
+         UudUlOvxjC6U51KWZbtVZeTu9hG8lKHwakVzl4RjisfZs1hpl4J4FZTdYmTg1VOSs20q
+         XaVrpEtiXRMcVknmAppC/E/3noqRW1obHfzHz8cE+WnPId6sLHTWSp34Y2ZvxbsZiRRk
+         XX7hQdbM431wElGWKJv54RoNllBuPluhoGI0jnEeujYtLkzHDv4iVqpfNpfZhMpPnyXc
+         Ccwg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=Xa1vZazox6ICgKLpFIvg6K1JUC/KEtKPUA08cmaogzs=;
+        b=GIYmrn2wpMD5mU48+IFZUCNu/qitIEed9bVJ+ZpDW5nWndCkNxD1wGRrFI+AUL2lyy
+         hGbmcvWtYXmzdaIq8F0S5dDtivDLbjU1bCDMashMeDpcwTuVOJg5p/CtVOJbmt3rbFl8
+         3FyTo1MrfCM9PzfhLBvY7UcdhmaqlMnfior60hX8d0Tg2ft/zumZqsRzS8Z/dTBKKapC
+         07o03LJRMoLWhnzM8xoVwXerIcIUH3meaDPHEEk8wtQg1ufWPPbUFSJjRm1pGV3WxMbQ
+         S1/Uq77pCoWdTGYVsATZTSDKed7+gf/7BopgkhmYO/BZQlxWdXsTxKYX9Twqz+xTqguh
+         gbqw==
+X-Gm-Message-State: AOAM531g60ZFYsk8rO796U3A916ygv9E5kV3WG4i130FuU9owRa7F5j0
+        mCobigvkfgFrhMJQGgT4XxbrwYhHtsw1exIy/7WYNw==
+X-Google-Smtp-Source: ABdhPJzhuxUwCLB7988KOPawNrwByY8pulkA5xPXvlbDYjRLBwkua/kCFbfwQXye+MghxY6YVJaxtrLROtoPY+PwKpM=
+X-Received: by 2002:a25:b0a8:: with SMTP id f40mr5033138ybj.125.1637836852216;
+ Thu, 25 Nov 2021 02:40:52 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+References: <20211125083808.82560-1-geert@linux-m68k.org>
+In-Reply-To: <20211125083808.82560-1-geert@linux-m68k.org>
+From:   Muchun Song <songmuchun@bytedance.com>
+Date:   Thu, 25 Nov 2021 18:40:11 +0800
+Message-ID: <CAMZfGtWUYR0d2QyDA9Y7KZ9dUH4Yj1L6LjfsQ_8qaYyg7s4-aQ@mail.gmail.com>
+Subject: Re: [PATCH -next] nubus: Rename pde_data var to fix conflict with
+ external function
+To:     Geert Uytterhoeven <geert@linux-m68k.org>
+Cc:     Finn Thain <fthain@linux-m68k.org>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        linux-m68k@lists.linux-m68k.org,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-In file included from drivers/nubus/proc.c:24:
-drivers/nubus/proc.c: In function ‘nubus_proc_rsrc_show’:
-./include/linux/proc_fs.h:123:21: error: called object ‘pde_data’ is not a function or function pointer
-  123 | #define PDE_DATA(i) pde_data(i)
-      |                     ^~~~~~~~
-drivers/nubus/proc.c:112:13: note: in expansion of macro ‘PDE_DATA’
-  112 |  pde_data = PDE_DATA(inode);
-      |             ^~~~~~~~
-drivers/nubus/proc.c:110:30: note: declared here
-  110 |  struct nubus_proc_pde_data *pde_data;
-      |                              ^~~~~~~~
+On Thu, Nov 25, 2021 at 4:38 PM Geert Uytterhoeven <geert@linux-m68k.org> w=
+rote:
+>
+> In file included from drivers/nubus/proc.c:24:
+> drivers/nubus/proc.c: In function =E2=80=98nubus_proc_rsrc_show=E2=80=99:
+> ./include/linux/proc_fs.h:123:21: error: called object =E2=80=98pde_data=
+=E2=80=99 is not a function or function pointer
+>   123 | #define PDE_DATA(i) pde_data(i)
+>       |                     ^~~~~~~~
+> drivers/nubus/proc.c:112:13: note: in expansion of macro =E2=80=98PDE_DAT=
+A=E2=80=99
+>   112 |  pde_data =3D PDE_DATA(inode);
+>       |             ^~~~~~~~
+> drivers/nubus/proc.c:110:30: note: declared here
+>   110 |  struct nubus_proc_pde_data *pde_data;
+>       |                              ^~~~~~~~
+>
+> Fix this by renaming the local variable to "pde".  Do this everywhere
+> for consistency.
+>
+> Reported-by: noreply@ellerman.id.au
+> Fixes: e7e935db128e724f ("fs: proc: store PDE()->data into inode->i_priva=
+te")
 
-Fix this by renaming the local variable to "pde".  Do this everywhere
-for consistency.
+Since the commit ID is not stable, Fixes tag is unnecessary.
 
-Reported-by: noreply@ellerman.id.au
-Fixes: e7e935db128e724f ("fs: proc: store PDE()->data into inode->i_private")
-Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
----
-Not fixed by commit 5de6353a96bec91d ("proc: remove PDE_DATA()
-completely"), which just removes the macro indirection.
----
- drivers/nubus/proc.c | 36 ++++++++++++++++++------------------
- 1 file changed, 18 insertions(+), 18 deletions(-)
+> Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
+> ---
+> Not fixed by commit 5de6353a96bec91d ("proc: remove PDE_DATA()
+> completely"), which just removes the macro indirection.
+> ---
 
-diff --git a/drivers/nubus/proc.c b/drivers/nubus/proc.c
-index 22fb11da519bfc43..aff1c5d257cd8183 100644
---- a/drivers/nubus/proc.c
-+++ b/drivers/nubus/proc.c
-@@ -93,30 +93,30 @@ struct nubus_proc_pde_data {
- static struct nubus_proc_pde_data *
- nubus_proc_alloc_pde_data(unsigned char *ptr, unsigned int size)
- {
--	struct nubus_proc_pde_data *pde_data;
-+	struct nubus_proc_pde_data *pde;
- 
--	pde_data = kmalloc(sizeof(*pde_data), GFP_KERNEL);
--	if (!pde_data)
-+	pde = kmalloc(sizeof(*pde), GFP_KERNEL);
-+	if (!pde)
- 		return NULL;
- 
--	pde_data->res_ptr = ptr;
--	pde_data->res_size = size;
--	return pde_data;
-+	pde->res_ptr = ptr;
-+	pde->res_size = size;
-+	return pde;
- }
- 
- static int nubus_proc_rsrc_show(struct seq_file *m, void *v)
- {
- 	struct inode *inode = m->private;
--	struct nubus_proc_pde_data *pde_data;
-+	struct nubus_proc_pde_data *pde;
- 
--	pde_data = pde_data(inode);
--	if (!pde_data)
-+	pde = pde_data(inode);
-+	if (!pde)
- 		return 0;
- 
--	if (pde_data->res_size > m->size)
-+	if (pde->res_size > m->size)
- 		return -EFBIG;
- 
--	if (pde_data->res_size) {
-+	if (pde->res_size) {
- 		int lanes = (int)proc_get_parent_data(inode);
- 		struct nubus_dirent ent;
- 
-@@ -124,11 +124,11 @@ static int nubus_proc_rsrc_show(struct seq_file *m, void *v)
- 			return 0;
- 
- 		ent.mask = lanes;
--		ent.base = pde_data->res_ptr;
-+		ent.base = pde->res_ptr;
- 		ent.data = 0;
--		nubus_seq_write_rsrc_mem(m, &ent, pde_data->res_size);
-+		nubus_seq_write_rsrc_mem(m, &ent, pde->res_size);
- 	} else {
--		unsigned int data = (unsigned int)pde_data->res_ptr;
-+		unsigned int data = (unsigned int)pde->res_ptr;
- 
- 		seq_putc(m, data >> 16);
- 		seq_putc(m, data >> 8);
-@@ -142,18 +142,18 @@ void nubus_proc_add_rsrc_mem(struct proc_dir_entry *procdir,
- 			     unsigned int size)
- {
- 	char name[9];
--	struct nubus_proc_pde_data *pde_data;
-+	struct nubus_proc_pde_data *pde;
- 
- 	if (!procdir)
- 		return;
- 
- 	snprintf(name, sizeof(name), "%x", ent->type);
- 	if (size)
--		pde_data = nubus_proc_alloc_pde_data(nubus_dirptr(ent), size);
-+		pde = nubus_proc_alloc_pde_data(nubus_dirptr(ent), size);
- 	else
--		pde_data = NULL;
-+		pde = NULL;
- 	proc_create_single_data(name, S_IFREG | 0444, procdir,
--			nubus_proc_rsrc_show, pde_data);
-+			nubus_proc_rsrc_show, pde);
- }
- 
- void nubus_proc_add_rsrc(struct proc_dir_entry *procdir,
--- 
-2.25.1
+My bad. I didn't realize this situation. Thanks for fixing this.
 
+Reviewed-by: Muchun Song <songmuchun@bytedance.com>
+
+Thanks.
