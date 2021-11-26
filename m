@@ -2,52 +2,52 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 24792C433F5
-	for <linux-m68k@archiver.kernel.org>; Fri, 26 Nov 2021 18:24:11 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D9499C433EF
+	for <linux-m68k@archiver.kernel.org>; Fri, 26 Nov 2021 18:24:34 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240348AbhKZS1W (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Fri, 26 Nov 2021 13:27:22 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57646 "EHLO
+        id S242771AbhKZS1r (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Fri, 26 Nov 2021 13:27:47 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57740 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240368AbhKZSZU (ORCPT
+        with ESMTP id S239684AbhKZSZq (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Fri, 26 Nov 2021 13:25:20 -0500
-Received: from mail-lj1-x22a.google.com (mail-lj1-x22a.google.com [IPv6:2a00:1450:4864:20::22a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EDD0CC0698E4
-        for <linux-m68k@lists.linux-m68k.org>; Fri, 26 Nov 2021 10:02:11 -0800 (PST)
-Received: by mail-lj1-x22a.google.com with SMTP id e11so20148783ljo.13
-        for <linux-m68k@lists.linux-m68k.org>; Fri, 26 Nov 2021 10:02:11 -0800 (PST)
+        Fri, 26 Nov 2021 13:25:46 -0500
+Received: from mail-lf1-x133.google.com (mail-lf1-x133.google.com [IPv6:2a00:1450:4864:20::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9F358C0698E6
+        for <linux-m68k@lists.linux-m68k.org>; Fri, 26 Nov 2021 10:02:12 -0800 (PST)
+Received: by mail-lf1-x133.google.com with SMTP id y26so26022901lfa.11
+        for <linux-m68k@lists.linux-m68k.org>; Fri, 26 Nov 2021 10:02:12 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=4G0wXMIRKtQjgiQjhPPTWIJTonbxBMvj833mzQfGVdU=;
-        b=Q7bS5Bcds94ZCTDJZ73tKxITpYV8Kav4ePR+HRo9YdxSWek6px4wRJdgcPmS5hk/Rr
-         VPvNAMuE26rR2wieWZvoqh2JqGKS7hi+wU3x2h17uhsQmowPgLITYDnbrjG1GwGkvefd
-         hHxk6lkApAV38Oi8vIzUQfEJ8wFoDrL8RwZq4qDk19AhYWVm238iVmmmVO7DlbUJ33tI
-         BLX+/0wZLAv6GevVfNs/5TC56F1I6JNn+sAhx6wYa6M2qI3hZxBZFaK0EH29RxIb8wYE
-         l0fPT66HRS9VmV580SbvW1FY/SVTqBcYuvfEtu2otEWz3FsM+lLxfdinbLZf9OO11+V4
-         J1yg==
+        bh=WLlXRmIj/zMVA0EiitKjc0V06oQPoMgvuV0WtFcoWEk=;
+        b=dwQkjQc8XJ9Zv7re/xh1WQ2UESbNnOIjv44tV2yYkTMSfE9Pw4ixbam1sYNjgU1ziC
+         YsjSnbkQEYOmSOD/fv2OcaoktyLva3BRmUT1f1EHzpHOs1H4O5FRr9HjwLwmIJ0kwol4
+         En1ylnQpmG3ktfI1Fg/Q/EuJpzuzjUdYaT7dPWgdOpPbhofgmKEPmXbgYeO1l98bR8OD
+         7+AULvyVTAbuaPQqm0dZB4n1ycZXUvc6CpxX2dZaHQaHbP8ogu2BN4iuPHoYBKRTBq6b
+         tgYxssEnkU5biyG5fZrNPOs0vGjei7DrFVluWj41isSbTpsczS+9OOm9yoDDpdejZQ4Y
+         d6OQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=4G0wXMIRKtQjgiQjhPPTWIJTonbxBMvj833mzQfGVdU=;
-        b=W7gNzkaNfsn5U8UEKRreoLMDt/6/VTjea9zeUHipvVVUTHztk/3dAZUZiwGpvPutHW
-         D5GYy8daSudUaDAb/WdQBN+dT4VTQUL6DInsBxOE56B9rnU5JbxzY+ISX583GrdFEY93
-         ZeS264cOoCzQnEqrf54IDk/Q0A+VSwp8hu6yAMyfNA5XcMD1VES6zl2iuspDrOA/ACfM
-         WIHV1lIC4qOFIehkDNoQOH164wVIkpPk4ZPRj45ktVWfpkWagLEswz0Ut1LJRE+31EVz
-         NrsA4A9aJwRyjR1ELgLFfYsbqv8tEFzb3hr1uGKrwmo4L6ZOsGPTb7+1kD9ytMQEogx5
-         +pHw==
-X-Gm-Message-State: AOAM531Fm6JzFhJFfjmFNr/drNcK9q9sCotgxHFuLCgunfxG8BQxwsDA
-        5Klkm1WyNkd7O9v5b4R/pI0=
-X-Google-Smtp-Source: ABdhPJw++X7mxtdOavKH8Ip6GlDs2g7F+GbwMx/tI9yDFlFB9AlrVDhMOYYWaSu8ROQpefmcYFa9fg==
-X-Received: by 2002:a2e:858f:: with SMTP id b15mr33453590lji.177.1637949728768;
-        Fri, 26 Nov 2021 10:02:08 -0800 (PST)
+        bh=WLlXRmIj/zMVA0EiitKjc0V06oQPoMgvuV0WtFcoWEk=;
+        b=22+wEOWyAQyQtAncv6uskCgZkU/gJbCrit0NIbNkL+Eam8QJ01FUs3ex+WpoEsmjaF
+         h8HqH5UBIH2RcsYF4k8Cog7wj8HNzjm3WwMQOu94Ah6vyTr2qWflPQN0OQRDAWdvpMKk
+         epceYe9NYoXV3Kl+dITk6xfG5sqnXNaYhneuF/sigmYow77hJ5OMynvuFTvZg5HZjyMs
+         4IGSQ+a8Rfp/XfbOqTT/PMSG8Hmio/U1/cEY+2FWLi9dJjR3snIeVtoq/7Zq93vEewix
+         hW/uY4Ma0FTo75xA7E1z2X7bgS+qYNK0oyrP9djewlQq2uNCogXgRvDA6VxnWbCrLVzO
+         VDsA==
+X-Gm-Message-State: AOAM531bsWbH9lZ6BdzDPj46KQ+8jdtO47LBjJitF2WVBKYcmLxBJf8K
+        fVNZ48HPyjnnjFnMEiqvP8w=
+X-Google-Smtp-Source: ABdhPJxQTNSOwCEIeWTILMI5rMPmmxh09mM/FdZM/5H+6ue5hatuq9sGyT0G3QPFh5axuTAZ8BDbdg==
+X-Received: by 2002:a05:6512:3456:: with SMTP id j22mr31418434lfr.89.1637949730890;
+        Fri, 26 Nov 2021 10:02:10 -0800 (PST)
 Received: from localhost.localdomain (94-29-48-99.dynamic.spd-mgts.ru. [94.29.48.99])
-        by smtp.gmail.com with ESMTPSA id i32sm553831lfv.295.2021.11.26.10.02.06
+        by smtp.gmail.com with ESMTPSA id i32sm553831lfv.295.2021.11.26.10.02.08
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 26 Nov 2021 10:02:08 -0800 (PST)
+        Fri, 26 Nov 2021 10:02:10 -0800 (PST)
 From:   Dmitry Osipenko <digetx@gmail.com>
 To:     Thierry Reding <thierry.reding@gmail.com>,
         Jonathan Hunter <jonathanh@nvidia.com>,
@@ -100,9 +100,9 @@ Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
         linux-riscv@lists.infradead.org, linux-sh@vger.kernel.org,
         xen-devel@lists.xenproject.org, linux-acpi@vger.kernel.org,
         linux-pm@vger.kernel.org, linux-tegra@vger.kernel.org
-Subject: [PATCH v4 09/25] ARM: Use do_kernel_power_off()
-Date:   Fri, 26 Nov 2021 21:00:45 +0300
-Message-Id: <20211126180101.27818-10-digetx@gmail.com>
+Subject: [PATCH v4 10/25] csky: Use do_kernel_power_off()
+Date:   Fri, 26 Nov 2021 21:00:46 +0300
+Message-Id: <20211126180101.27818-11-digetx@gmail.com>
 X-Mailer: git-send-email 2.33.1
 In-Reply-To: <20211126180101.27818-1-digetx@gmail.com>
 References: <20211126180101.27818-1-digetx@gmail.com>
@@ -117,27 +117,35 @@ that invokes chained power-off handlers. It also invokes legacy
 pm_power_off() for now, which will be removed once all drivers will
 be converted to the new power-off API.
 
-Reviewed-by: Russell King (Oracle) <rmk+kernel@armlinux.org.uk>
+Acked-by: Guo Ren <guoren@kernel.org>
 Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
 ---
- arch/arm/kernel/reboot.c | 4 +---
- 1 file changed, 1 insertion(+), 3 deletions(-)
+ arch/csky/kernel/power.c | 6 ++----
+ 1 file changed, 2 insertions(+), 4 deletions(-)
 
-diff --git a/arch/arm/kernel/reboot.c b/arch/arm/kernel/reboot.c
-index 3044fcb8d073..2cb943422554 100644
---- a/arch/arm/kernel/reboot.c
-+++ b/arch/arm/kernel/reboot.c
-@@ -116,9 +116,7 @@ void machine_power_off(void)
+diff --git a/arch/csky/kernel/power.c b/arch/csky/kernel/power.c
+index 923ee4e381b8..86ee202906f8 100644
+--- a/arch/csky/kernel/power.c
++++ b/arch/csky/kernel/power.c
+@@ -9,16 +9,14 @@ EXPORT_SYMBOL(pm_power_off);
+ void machine_power_off(void)
  {
  	local_irq_disable();
- 	smp_send_stop();
--
 -	if (pm_power_off)
 -		pm_power_off();
 +	do_kernel_power_off();
+ 	asm volatile ("bkpt");
  }
  
- /*
+ void machine_halt(void)
+ {
+ 	local_irq_disable();
+-	if (pm_power_off)
+-		pm_power_off();
++	do_kernel_power_off();
+ 	asm volatile ("bkpt");
+ }
+ 
 -- 
 2.33.1
 
