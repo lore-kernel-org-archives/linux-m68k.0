@@ -2,196 +2,296 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 4527AC433EF
-	for <linux-m68k@archiver.kernel.org>; Thu, 25 Nov 2021 22:43:37 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id CD82DC433F5
+	for <linux-m68k@archiver.kernel.org>; Fri, 26 Nov 2021 18:21:43 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235786AbhKYWqs (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Thu, 25 Nov 2021 17:46:48 -0500
-Received: from gandalf.ozlabs.org ([150.107.74.76]:38219 "EHLO
-        gandalf.ozlabs.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239704AbhKYWos (ORCPT
+        id S240040AbhKZSYz (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Fri, 26 Nov 2021 13:24:55 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57548 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231664AbhKZSWz (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Thu, 25 Nov 2021 17:44:48 -0500
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4J0Xt626fmz4xdT;
-        Fri, 26 Nov 2021 09:41:34 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-        s=201702; t=1637880095;
-        bh=nlaUd9W0tHCOhsyv8/Mj4y6isLo9UUrKlGwjXMPqxhY=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=Hs1ZVK5+xUJJHcbPE8yKP38GbX3mJ7gGHh61yR/7uOtsK7X5YQbUPruGKyV0E+Cg9
-         gIOWGQYo5RdkEsUe2MclH3kN5kwnmrTj3rTq/bn5PXzsEku4IhKCTu1ac1Gmx1At+x
-         oGP70uitSSmOpzeAaaoF3b7Mrb8WklVzw08jRejN6kx6Vy5soAFbeDHZVjAny1meL1
-         iXV4gEHcrt6ypzZR6OQp6XDnTqcKfQq8nbNYyhkq2IBVup8jDjIL7SYNVpqREqREI5
-         V++s6a7LLn9HDxJp6J4yCchCap+UImmvN8AgTqr9GMrUe0pcRbhossQLVFCq+3oOWG
-         YUJe183SwdSLQ==
-Date:   Fri, 26 Nov 2021 09:41:33 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     Finn Thain <fthain@linux-m68k.org>,
-        Muchun Song <songmuchun@bytedance.com>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
+        Fri, 26 Nov 2021 13:22:55 -0500
+Received: from mail-lj1-x230.google.com (mail-lj1-x230.google.com [IPv6:2a00:1450:4864:20::230])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9EB3FC061758
+        for <linux-m68k@lists.linux-m68k.org>; Fri, 26 Nov 2021 10:01:51 -0800 (PST)
+Received: by mail-lj1-x230.google.com with SMTP id t11so20236918ljh.6
+        for <linux-m68k@lists.linux-m68k.org>; Fri, 26 Nov 2021 10:01:51 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=yZvlQF7jemGNKuxK9mzF5Z4xr/dnsXa5rLAqs5Ol3X8=;
+        b=Ed82JEObwjUcFpk7miNmCf04LkcGcLm/RlBewmnkusWrEy5/nqS3O+0w0eISPh4Aso
+         aBkMxDeUbWHPyXUv4atXu25kZtbexzsVvnJH9E6vyURjSI6deD6F0TbqH/7+HfxF12o0
+         X3vj9tEXqYwU3oJ6qfxcp+IxBq3g6jjWZacInNpp5YMyTAuOsjqTpzTJYXVd3VrfvNdu
+         PaHVIfiPoeVnU2nOs9nUhBDhZvXFXEUW6qI5Ij+ETQOM4SImHXEDcUtqsEnZ+zMbB/UP
+         Vb4UFAjGCcwPzOXiEcSB9psaFDi5qACBbyEL0pCzZY2OFahwTbJKwvpnUlR1RBt4FhLB
+         wmgQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=yZvlQF7jemGNKuxK9mzF5Z4xr/dnsXa5rLAqs5Ol3X8=;
+        b=FFC4BXgHoeAJQOeCZHFVGBGt+uNOhyYeHGsmiXk1wSucoLQ1bVfOyHWF1tfNWUrAA1
+         SuqZDbjEe47QGvk7UwA/mNA2hXm80B7etELxj96jbEiFT/R/cOCguTLqlSihllmiIdUG
+         ZXdoWYrl4kN0lmpp1Pge88shVRFtsjcWwfquGgrCvbw8YVVRaE2ycsTlb2Eo2FERYIiz
+         UqGdl1NhyhUZZEqSY/bBbuW5BcNuHTCK1bf5cHvp748STOLQDLiGVdQc8uoB9iV50vUz
+         1WaSx0WTx/ilu2Y7yl9QwLvwWmLPiXiYAC5JMINcpH9u1+EK7ROBMEc8H7OlW5l0O6K+
+         PinA==
+X-Gm-Message-State: AOAM531nXNbkr2hGXHZaemYIh6x6ePEvgoDyHC5RPjwdhMy2zJ/XErMY
+        Dqn9BQnSKUT0+L5SSlI05V0=
+X-Google-Smtp-Source: ABdhPJyUSCxf/+NOJZdoDZc8h3Vb/twk3Q7Gp7LgynrSk8F6dcdudijW4UqggVYffkqsltKi8Bb6Vg==
+X-Received: by 2002:a05:651c:1204:: with SMTP id i4mr32981935lja.437.1637949709729;
+        Fri, 26 Nov 2021 10:01:49 -0800 (PST)
+Received: from localhost.localdomain (94-29-48-99.dynamic.spd-mgts.ru. [94.29.48.99])
+        by smtp.gmail.com with ESMTPSA id i32sm553831lfv.295.2021.11.26.10.01.47
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 26 Nov 2021 10:01:49 -0800 (PST)
+From:   Dmitry Osipenko <digetx@gmail.com>
+To:     Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>, Guo Ren <guoren@kernel.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Greg Ungerer <gerg@linux-m68k.org>,
+        Joshua Thompson <funaho@jurai.org>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Sebastian Reichel <sre@kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Greentime Hu <green.hu@gmail.com>,
+        Vincent Chen <deanbo422@gmail.com>,
+        "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
+        Helge Deller <deller@gmx.de>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Yoshinori Sato <ysato@users.sourceforge.jp>,
+        Rich Felker <dalias@libc.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+        Juergen Gross <jgross@suse.com>,
+        Stefano Stabellini <sstabellini@kernel.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Len Brown <lenb@kernel.org>,
+        Santosh Shilimkar <ssantosh@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>, Pavel Machek <pavel@ucw.cz>,
+        Lee Jones <lee.jones@linaro.org>,
         Andrew Morton <akpm@linux-foundation.org>,
-        linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH -next] nubus: Rename pde_data var to fix conflict with
- external function
-Message-ID: <20211126094133.6eae75fd@canb.auug.org.au>
-In-Reply-To: <20211125083808.82560-1-geert@linux-m68k.org>
-References: <20211125083808.82560-1-geert@linux-m68k.org>
+        Guenter Roeck <linux@roeck-us.net>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Ulf Hansson <ulf.hansson@linaro.org>, alankao@andestech.com,
+        "K . C . Kuen-Chern Lin" <kclin@andestech.com>
+Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-csky@vger.kernel.org, linux-ia64@vger.kernel.org,
+        linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org,
+        linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        linux-riscv@lists.infradead.org, linux-sh@vger.kernel.org,
+        xen-devel@lists.xenproject.org, linux-acpi@vger.kernel.org,
+        linux-pm@vger.kernel.org, linux-tegra@vger.kernel.org
+Subject: [PATCH v4 00/25] Introduce power-off+restart call chain API
+Date:   Fri, 26 Nov 2021 21:00:36 +0300
+Message-Id: <20211126180101.27818-1-digetx@gmail.com>
+X-Mailer: git-send-email 2.33.1
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/kxt5KF1MAk6lTn0K+HoKuzs";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
---Sig_/kxt5KF1MAk6lTn0K+HoKuzs
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+Problem
+-------
 
-Hi all,
+SoC devices require power-off call chaining functionality from kernel.
+We have a widely used restart chaining provided by restart notifier API,
+but nothing for power-off.
 
-On Thu, 25 Nov 2021 09:38:08 +0100 Geert Uytterhoeven <geert@linux-m68k.org=
-> wrote:
->
-> In file included from drivers/nubus/proc.c:24:
-> drivers/nubus/proc.c: In function =E2=80=98nubus_proc_rsrc_show=E2=80=99:
-> ./include/linux/proc_fs.h:123:21: error: called object =E2=80=98pde_data=
-=E2=80=99 is not a function or function pointer
->   123 | #define PDE_DATA(i) pde_data(i)
->       |                     ^~~~~~~~
-> drivers/nubus/proc.c:112:13: note: in expansion of macro =E2=80=98PDE_DAT=
-A=E2=80=99
->   112 |  pde_data =3D PDE_DATA(inode);
->       |             ^~~~~~~~
-> drivers/nubus/proc.c:110:30: note: declared here
->   110 |  struct nubus_proc_pde_data *pde_data;
->       |                              ^~~~~~~~
->=20
-> Fix this by renaming the local variable to "pde".  Do this everywhere
-> for consistency.
->=20
-> Reported-by: noreply@ellerman.id.au
-> Fixes: e7e935db128e724f ("fs: proc: store PDE()->data into inode->i_priva=
-te")
-> Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
-> ---
-> Not fixed by commit 5de6353a96bec91d ("proc: remove PDE_DATA()
-> completely"), which just removes the macro indirection.
-> ---
->  drivers/nubus/proc.c | 36 ++++++++++++++++++------------------
->  1 file changed, 18 insertions(+), 18 deletions(-)
->=20
-> diff --git a/drivers/nubus/proc.c b/drivers/nubus/proc.c
-> index 22fb11da519bfc43..aff1c5d257cd8183 100644
-> --- a/drivers/nubus/proc.c
-> +++ b/drivers/nubus/proc.c
-> @@ -93,30 +93,30 @@ struct nubus_proc_pde_data {
->  static struct nubus_proc_pde_data *
->  nubus_proc_alloc_pde_data(unsigned char *ptr, unsigned int size)
->  {
-> -	struct nubus_proc_pde_data *pde_data;
-> +	struct nubus_proc_pde_data *pde;
-> =20
-> -	pde_data =3D kmalloc(sizeof(*pde_data), GFP_KERNEL);
-> -	if (!pde_data)
-> +	pde =3D kmalloc(sizeof(*pde), GFP_KERNEL);
-> +	if (!pde)
->  		return NULL;
-> =20
-> -	pde_data->res_ptr =3D ptr;
-> -	pde_data->res_size =3D size;
-> -	return pde_data;
-> +	pde->res_ptr =3D ptr;
-> +	pde->res_size =3D size;
-> +	return pde;
->  }
-> =20
->  static int nubus_proc_rsrc_show(struct seq_file *m, void *v)
->  {
->  	struct inode *inode =3D m->private;
-> -	struct nubus_proc_pde_data *pde_data;
-> +	struct nubus_proc_pde_data *pde;
-> =20
-> -	pde_data =3D pde_data(inode);
-> -	if (!pde_data)
-> +	pde =3D pde_data(inode);
-> +	if (!pde)
->  		return 0;
-> =20
-> -	if (pde_data->res_size > m->size)
-> +	if (pde->res_size > m->size)
->  		return -EFBIG;
-> =20
-> -	if (pde_data->res_size) {
-> +	if (pde->res_size) {
->  		int lanes =3D (int)proc_get_parent_data(inode);
->  		struct nubus_dirent ent;
-> =20
-> @@ -124,11 +124,11 @@ static int nubus_proc_rsrc_show(struct seq_file *m,=
- void *v)
->  			return 0;
-> =20
->  		ent.mask =3D lanes;
-> -		ent.base =3D pde_data->res_ptr;
-> +		ent.base =3D pde->res_ptr;
->  		ent.data =3D 0;
-> -		nubus_seq_write_rsrc_mem(m, &ent, pde_data->res_size);
-> +		nubus_seq_write_rsrc_mem(m, &ent, pde->res_size);
->  	} else {
-> -		unsigned int data =3D (unsigned int)pde_data->res_ptr;
-> +		unsigned int data =3D (unsigned int)pde->res_ptr;
-> =20
->  		seq_putc(m, data >> 16);
->  		seq_putc(m, data >> 8);
-> @@ -142,18 +142,18 @@ void nubus_proc_add_rsrc_mem(struct proc_dir_entry =
-*procdir,
->  			     unsigned int size)
->  {
->  	char name[9];
-> -	struct nubus_proc_pde_data *pde_data;
-> +	struct nubus_proc_pde_data *pde;
-> =20
->  	if (!procdir)
->  		return;
-> =20
->  	snprintf(name, sizeof(name), "%x", ent->type);
->  	if (size)
-> -		pde_data =3D nubus_proc_alloc_pde_data(nubus_dirptr(ent), size);
-> +		pde =3D nubus_proc_alloc_pde_data(nubus_dirptr(ent), size);
->  	else
-> -		pde_data =3D NULL;
-> +		pde =3D NULL;
->  	proc_create_single_data(name, S_IFREG | 0444, procdir,
-> -			nubus_proc_rsrc_show, pde_data);
-> +			nubus_proc_rsrc_show, pde);
->  }
-> =20
->  void nubus_proc_add_rsrc(struct proc_dir_entry *procdir,
+Solution
+--------
 
-I will apply that to linux-next today.
+Introduce new API that provides both restart and power-off call chains.
 
---=20
-Cheers,
-Stephen Rothwell
+Why combine restart with power-off? Because drivers often do both.
+More practical to have API that provides both under the same roof.
 
---Sig_/kxt5KF1MAk6lTn0K+HoKuzs
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
+The new API is designed with simplicity and extensibility in mind.
+It's built upon the existing restart and reboot APIs. The simplicity
+is in new helper functions that are convenient for drivers. The
+extensibility is in the design that doesn't hardcode callback
+arguments, making easy to add new parameters and remove old.
 
------BEGIN PGP SIGNATURE-----
+This is a third attempt to introduce the new API. First was made by
+Guenter Roeck back in 2014, second was made by Thierry Reding in 2017.
+In fact the work didn't stop and recently arm_pm_restart() was removed
+from v5.14 kernel, which was a part of preparatory work started by
+Guenter Roeck. I took into account experience and ideas from the
+previous attempts, extended and polished them.
 
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmGgER0ACgkQAVBC80lX
-0GxvdQf/eNvmkFiAljQDufRVjwgWomvmlol1phwO73AsKvmeFa4JzKiHKZv4D1UO
-bXUZxhIvfoOdLOiTvcSrthWQNWO7P4xxWiJGpp2MDui3JJ4MGB9gf4oIzcP3aiIv
-KUenPvZEu96SU29DDAzbGIMfBPVeKkA3bcnuHyKwvfYB0S1pM0iAydloFyQDNgq4
-FF1jqcqwxJ7NPGHCDIl/Ylbk5Xs9oz626O3tm7Nds8Paq1ESPwnwgUrPkvT0rRRV
-qHwgbDXW/i2E1C6CATrbioEop1t0Q7yKOxpyMs38Qqxw91eupsVUjiCRllQ8BNT0
-z1qYpkuhcNqpgoxxL9DMRcULwfVIPQ==
-=y5F9
------END PGP SIGNATURE-----
+Adoption plan
+-------------
 
---Sig_/kxt5KF1MAk6lTn0K+HoKuzs--
+This patchset introduces the new API. It also converts multiple drivers
+and arch code to the new API to demonstrate how it all looks in practice.
+
+The plan is:
+
+1. Merge new API (patches 1-8). This API will co-exist with the old APIs.
+
+2. Convert arch code to do_kernel_power_off() (patches 9-21).
+
+3. Convert drivers and platform code to the new API.
+
+4. Remove obsolete pm_power_off and pm_power_off_prepare variables.
+
+5. Make restart-notifier API private to kernel/reboot.c once no users left.
+
+It's fully implemented here:
+
+[1] https://github.com/grate-driver/linux/commits/sys-off-handler
+
+For now I'm sending only the first 25 base patches out of ~180. It's
+preferable to squash 1-2, partially 3 and 4 points of the plan into a
+single patchset to ease and speed up applying of the rest of the patches.
+Majority of drivers and platform patches depend on the base, hence they
+will come later (and per subsystem), once base will land.
+
+All [1] patches are compile-tested. Tegra and x86 ACPI patches are tested
+on hardware. The remaining should be covered by unit tests (unpublished).
+
+Results
+-------
+
+1. Devices can be powered off properly.
+
+2. Global variables are removed from drivers.
+
+3. Global pm_power_off and pm_power_off_prepare callback variables are
+removed once all users are converted to the new API. The latter callback
+is removed by patch #25 of this series.
+
+4. Ambiguous call chain ordering is prohibited. See patch #5 which adds
+verification of restart handlers priorities, ensuring that they are unique.
+
+Changelog:
+
+v4: - Made a very minor improvement to doc comments, clarifying couple
+      default values.
+
+    - Corrected list of emails recipient by adding Linus, Sebastian,
+      Philipp and more NDS people. Removed bouncing emails.
+
+    - Added acks that were given to v3.
+
+v3: - Renamed power_handler to sys_off_handler as was suggested by
+      Rafael Wysocki.
+
+    - Improved doc-comments as was suggested by Rafael Wysocki. Added more
+      doc-comments.
+
+    - Implemented full set of 180 patches which convert whole kernel in
+      accordance to the plan, see link [1] above. Slightly adjusted API to
+      better suit for the remaining converted drivers.
+
+      * Added unregister_sys_off_handler() that is handy for a couple old
+        platform drivers.
+
+      * Dropped devm_register_trivial_restart_handler(), 'simple' variant
+        is enough to have.
+
+    - Improved "Add atomic/blocking_notifier_has_unique_priority()" patch,
+      as was suggested by Andy Shevchenko. Also replaced down_write() with
+      down_read() and factored out common notifier_has_unique_priority().
+
+    - Added stop_chain field to struct restart_data and reboot_prep_data
+      after discovering couple drivers wanting that feature.
+
+    - Added acks that were given to v2.
+
+v2: - Replaced standalone power-off call chain demo-API with the combined
+      power-off+restart API because this is what drivers want. It's a more
+      comprehensive solution.
+
+    - Converted multiple drivers and arch code to the new API. Suggested by
+      Andy Shevchenko. I skimmed through the rest of drivers, verifying that
+      new API suits them. The rest of the drivers will be converted once we
+      will settle on the new API, otherwise will be too many patches here.
+
+    - v2 API doesn't expose notifier to users and require handlers to
+      have unique priority. Suggested by Guenter Roeck.
+
+    - v2 API has power-off chaining disabled by default and require
+      drivers to explicitly opt-in to the chaining. This preserves old
+      behaviour for existing drivers once they are converted to the new
+      API.
+
+Dmitry Osipenko (25):
+  notifier: Remove extern annotation from function prototypes
+  notifier: Add blocking_notifier_call_chain_is_empty()
+  notifier: Add atomic/blocking_notifier_has_unique_priority()
+  reboot: Correct typo in a comment
+  reboot: Warn if restart handler has duplicated priority
+  reboot: Warn if unregister_restart_handler() fails
+  reboot: Remove extern annotation from function prototypes
+  kernel: Add combined power-off+restart handler call chain API
+  ARM: Use do_kernel_power_off()
+  csky: Use do_kernel_power_off()
+  riscv: Use do_kernel_power_off()
+  arm64: Use do_kernel_power_off()
+  parisc: Use do_kernel_power_off()
+  xen/x86: Use do_kernel_power_off()
+  powerpc: Use do_kernel_power_off()
+  m68k: Switch to new sys-off handler API
+  sh: Use do_kernel_power_off()
+  x86: Use do_kernel_power_off()
+  ia64: Use do_kernel_power_off()
+  mips: Use do_kernel_power_off()
+  nds32: Use do_kernel_power_off()
+  memory: emif: Use kernel_can_power_off()
+  ACPI: power: Switch to sys-off handler API
+  regulator: pfuze100: Use devm_register_sys_off_handler()
+  reboot: Remove pm_power_off_prepare()
+
+ arch/arm/kernel/reboot.c               |   4 +-
+ arch/arm64/kernel/process.c            |   3 +-
+ arch/csky/kernel/power.c               |   6 +-
+ arch/ia64/kernel/process.c             |   4 +-
+ arch/m68k/emu/natfeat.c                |   3 +-
+ arch/m68k/include/asm/machdep.h        |   1 -
+ arch/m68k/kernel/process.c             |   5 +-
+ arch/m68k/kernel/setup_mm.c            |   1 -
+ arch/m68k/kernel/setup_no.c            |   1 -
+ arch/m68k/mac/config.c                 |   4 +-
+ arch/mips/kernel/reset.c               |   3 +-
+ arch/nds32/kernel/process.c            |   3 +-
+ arch/parisc/kernel/process.c           |   4 +-
+ arch/powerpc/kernel/setup-common.c     |   4 +-
+ arch/powerpc/xmon/xmon.c               |   3 +-
+ arch/riscv/kernel/reset.c              |  12 +-
+ arch/sh/kernel/reboot.c                |   3 +-
+ arch/x86/kernel/reboot.c               |   4 +-
+ arch/x86/xen/enlighten_pv.c            |   4 +-
+ drivers/acpi/sleep.c                   |  25 +-
+ drivers/memory/emif.c                  |   2 +-
+ drivers/regulator/pfuze100-regulator.c |  38 +-
+ include/linux/notifier.h               |  37 +-
+ include/linux/pm.h                     |   1 -
+ include/linux/reboot.h                 | 305 ++++++++++++--
+ kernel/notifier.c                      |  83 ++++
+ kernel/power/hibernate.c               |   2 +-
+ kernel/reboot.c                        | 556 ++++++++++++++++++++++++-
+ 28 files changed, 985 insertions(+), 136 deletions(-)
+
+-- 
+2.33.1
+
