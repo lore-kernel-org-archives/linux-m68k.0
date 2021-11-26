@@ -2,52 +2,52 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E0D14C433F5
-	for <linux-m68k@archiver.kernel.org>; Fri, 26 Nov 2021 18:24:55 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 6C42CC433FE
+	for <linux-m68k@archiver.kernel.org>; Fri, 26 Nov 2021 18:24:56 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243378AbhKZS2G (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Fri, 26 Nov 2021 13:28:06 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57802 "EHLO
+        id S243412AbhKZS2H (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Fri, 26 Nov 2021 13:28:07 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57808 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241109AbhKZSZ6 (ORCPT
+        with ESMTP id S241163AbhKZS0B (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Fri, 26 Nov 2021 13:25:58 -0500
-Received: from mail-lj1-x236.google.com (mail-lj1-x236.google.com [IPv6:2a00:1450:4864:20::236])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E5D2AC07E5C7
-        for <linux-m68k@lists.linux-m68k.org>; Fri, 26 Nov 2021 10:02:20 -0800 (PST)
-Received: by mail-lj1-x236.google.com with SMTP id k2so20273277lji.4
-        for <linux-m68k@lists.linux-m68k.org>; Fri, 26 Nov 2021 10:02:20 -0800 (PST)
+        Fri, 26 Nov 2021 13:26:01 -0500
+Received: from mail-lj1-x22f.google.com (mail-lj1-x22f.google.com [IPv6:2a00:1450:4864:20::22f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 17682C07E5DB
+        for <linux-m68k@lists.linux-m68k.org>; Fri, 26 Nov 2021 10:02:23 -0800 (PST)
+Received: by mail-lj1-x22f.google.com with SMTP id k2so20273468lji.4
+        for <linux-m68k@lists.linux-m68k.org>; Fri, 26 Nov 2021 10:02:22 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=cQhCUMmxREqlb3fYFdUNP+80Jr1xwOUlupNd5E99mX4=;
-        b=iJedDqBmhe3+60jiATM7eoXnQMEolWhm1QV+PRtSvFQT1XQ5mcMSJ4SbbE7J6fhvtw
-         VH/PZa1wZwSWHs33Y/6nAuLNnbDCHXNpD6aQoyfIZCZ2XMBam1grhl0wuHW/5yhdfH30
-         KiN8EvZnlo5gV1MVEqlZkSUCt0WOr9CtN6icR3uiXanS114nv6/nF+zlN43mnzmy3llc
-         ohdo9Z3rua0Sa4TQlEEOe0yQW25sVwndRUvmhHAO8CXp3nhrBzc6CAxuW3di0hnLxbsi
-         rrHpvmlKGY4sMYtvd2+oJRIzegBMKEp8SKSQwBwHWbPTyfn/AE/HmcsgS7He03Kr5FVt
-         zegQ==
+        bh=gu1TeBm+2e/G5RkADOFU3cJrqp3hDioEihnrKvJEWzw=;
+        b=btNqE7qj3gxEiDVofvmyjyd5e7+E6dC5EvozkZ3YONorP6vNKMDK/arxDxAc+ltG7R
+         TI/OKrB+ElUSGJggS6fR+VvabEemoQpP54QSf8icDIcXqsN3cetkl+MJM3Uv83OU/ua5
+         YnrqP6SpxE3RilnmapTLWdFynEqGWoF9UKLd/DifHXHRRJENB4MJ8bZKGXsja5FQh/Ln
+         Gn1mmiKEwmPfkV+5o1Qx1UHHE5Ho0OF5Lv2UTxiT+KLX82V7SYEs1ZWnthM6isYJwRQ9
+         tdU5PDbvVk5b/rhIUQRngDxoQRVVJQlBNfOWOrEip1niZaJKsE7C6PZqI9A924a269T1
+         nFWw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=cQhCUMmxREqlb3fYFdUNP+80Jr1xwOUlupNd5E99mX4=;
-        b=Va/cVXCMUdAsciw9vvyqT5p4KpqkC3la7ryK0EYYXe/4US3lhLs8HTVF0+dZOXrf44
-         18XshXT59YWgzEiM8Ike6+QpTheA7lxu93/1emHx5NibOMUaNRjekhJY9k9ZEJFN1PNX
-         7wf+3sscTtWEJkgb5L3ZX1wLT4MB+TUsclm3WpvohYLydnlo4vaa5a1pKk0TKrxkjMmZ
-         BwuXrEsi0IexssxBoO+wNtJI3WEWrXmYvY3LsuICynng3qAWOEiPMSo2L851ncnPL2zw
-         dWTGLEu/CTQR2kMterAuQ7xRJm4fmNJBEA1UW8AFIGs4t6fUk7ZPYelyCMpTR4dRTITT
-         WOHg==
-X-Gm-Message-State: AOAM531ViDlf04tfc0LHmX1UsYhM6fBiQgBOUELkWTYufC9dT4x0JKRC
-        5J5sUgcOBgLxg8vq3dn9ncI=
-X-Google-Smtp-Source: ABdhPJzLA9Z8G9nq11XvR1DefFsoLdvZVIBJZngCYUnkQI+xNdPv3SMCQJctE1SNfGefKSxAA3JkZQ==
-X-Received: by 2002:a2e:8807:: with SMTP id x7mr32119061ljh.490.1637949739271;
-        Fri, 26 Nov 2021 10:02:19 -0800 (PST)
+        bh=gu1TeBm+2e/G5RkADOFU3cJrqp3hDioEihnrKvJEWzw=;
+        b=sNH9bZsp2H+TeP/A7NtNyR9s2VN7UGA+RkWVSveAbIjIZSZolXrwD3DW5ywZku1KJ5
+         JBT8dR753kS40NxvDmy+021pS4QxtRECa7RW27SQ/p0/vuA9+6nxjxtdXgtnvgKuGIL1
+         6FxaIdcJ1FEXShkINdjh44L2StDxQ8Pjt2j6Q6lDBWkD2vlndF5E3f5+mEwig4Eb1RFx
+         2hxiVHcLTdy3WCM0Wlt6YQs/tLrOYky/18gDHHaVUww+NwxCaK7r4Bmvd0sjQHNz/NAA
+         I2a0Ygctho0e8PGCpiMuGOqRqDpVitQmfWZNa3PfwdcWcYaFw7U8dXJWi4W8QUwkrv8T
+         ILwQ==
+X-Gm-Message-State: AOAM532oTickynGaJEUVprh73MPcgadW/S5hjqnbkm69Nz1tdUvCjq8G
+        u0RIU08WJjq0kIYP9MFm4M8=
+X-Google-Smtp-Source: ABdhPJyqXZVO64K86xv5JIX/t9zYDjx1u3F4bWT4GBdKatrIZNjie6T+K7n3Ac1v1Jvn5JGF+DNcxQ==
+X-Received: by 2002:a2e:7d0a:: with SMTP id y10mr33852017ljc.259.1637949741369;
+        Fri, 26 Nov 2021 10:02:21 -0800 (PST)
 Received: from localhost.localdomain (94-29-48-99.dynamic.spd-mgts.ru. [94.29.48.99])
-        by smtp.gmail.com with ESMTPSA id i32sm553831lfv.295.2021.11.26.10.02.17
+        by smtp.gmail.com with ESMTPSA id i32sm553831lfv.295.2021.11.26.10.02.19
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 26 Nov 2021 10:02:18 -0800 (PST)
+        Fri, 26 Nov 2021 10:02:20 -0800 (PST)
 From:   Dmitry Osipenko <digetx@gmail.com>
 To:     Thierry Reding <thierry.reding@gmail.com>,
         Jonathan Hunter <jonathanh@nvidia.com>,
@@ -100,9 +100,9 @@ Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
         linux-riscv@lists.infradead.org, linux-sh@vger.kernel.org,
         xen-devel@lists.xenproject.org, linux-acpi@vger.kernel.org,
         linux-pm@vger.kernel.org, linux-tegra@vger.kernel.org
-Subject: [PATCH v4 14/25] xen/x86: Use do_kernel_power_off()
-Date:   Fri, 26 Nov 2021 21:00:50 +0300
-Message-Id: <20211126180101.27818-15-digetx@gmail.com>
+Subject: [PATCH v4 15/25] powerpc: Use do_kernel_power_off()
+Date:   Fri, 26 Nov 2021 21:00:51 +0300
+Message-Id: <20211126180101.27818-16-digetx@gmail.com>
 X-Mailer: git-send-email 2.33.1
 In-Reply-To: <20211126180101.27818-1-digetx@gmail.com>
 References: <20211126180101.27818-1-digetx@gmail.com>
@@ -117,32 +117,40 @@ that invokes chained power-off handlers. It also invokes legacy
 pm_power_off() for now, which will be removed once all drivers will
 be converted to the new power-off API.
 
-Acked-by: Juergen Gross <jgross@suse.com>
+Acked-by: Michael Ellerman <mpe@ellerman.id.au>
 Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
 ---
- arch/x86/xen/enlighten_pv.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ arch/powerpc/kernel/setup-common.c | 4 +---
+ arch/powerpc/xmon/xmon.c           | 3 +--
+ 2 files changed, 2 insertions(+), 5 deletions(-)
 
-diff --git a/arch/x86/xen/enlighten_pv.c b/arch/x86/xen/enlighten_pv.c
-index 5004feb16783..527fa545eb1f 100644
---- a/arch/x86/xen/enlighten_pv.c
-+++ b/arch/x86/xen/enlighten_pv.c
-@@ -31,6 +31,7 @@
- #include <linux/gfp.h>
- #include <linux/edd.h>
- #include <linux/objtool.h>
-+#include <linux/reboot.h>
- 
- #include <xen/xen.h>
- #include <xen/events.h>
-@@ -1068,8 +1069,7 @@ static void xen_machine_halt(void)
- 
- static void xen_machine_power_off(void)
+diff --git a/arch/powerpc/kernel/setup-common.c b/arch/powerpc/kernel/setup-common.c
+index 4f1322b65760..71c4ccd9bbb1 100644
+--- a/arch/powerpc/kernel/setup-common.c
++++ b/arch/powerpc/kernel/setup-common.c
+@@ -161,9 +161,7 @@ void machine_restart(char *cmd)
+ void machine_power_off(void)
  {
+ 	machine_shutdown();
 -	if (pm_power_off)
 -		pm_power_off();
+-
 +	do_kernel_power_off();
- 	xen_reboot(SHUTDOWN_poweroff);
+ 	smp_send_stop();
+ 	machine_hang();
+ }
+diff --git a/arch/powerpc/xmon/xmon.c b/arch/powerpc/xmon/xmon.c
+index 83100c6524cc..759e167704e6 100644
+--- a/arch/powerpc/xmon/xmon.c
++++ b/arch/powerpc/xmon/xmon.c
+@@ -1243,8 +1243,7 @@ static void bootcmds(void)
+ 	} else if (cmd == 'h') {
+ 		ppc_md.halt();
+ 	} else if (cmd == 'p') {
+-		if (pm_power_off)
+-			pm_power_off();
++		do_kernel_power_off();
+ 	}
  }
  
 -- 
