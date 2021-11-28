@@ -2,55 +2,54 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 81DC8C433F5
-	for <linux-m68k@archiver.kernel.org>; Sun, 28 Nov 2021 21:08:34 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B1187C433F5
+	for <linux-m68k@archiver.kernel.org>; Sun, 28 Nov 2021 21:09:39 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1358869AbhK1VLt (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Sun, 28 Nov 2021 16:11:49 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38310 "EHLO
+        id S1359324AbhK1VMz (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Sun, 28 Nov 2021 16:12:55 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38572 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1359329AbhK1VJr (ORCPT
+        with ESMTP id S230129AbhK1VKz (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Sun, 28 Nov 2021 16:09:47 -0500
-Received: from mail-lf1-x12b.google.com (mail-lf1-x12b.google.com [IPv6:2a00:1450:4864:20::12b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5E696C06175B
-        for <linux-m68k@lists.linux-m68k.org>; Sun, 28 Nov 2021 13:06:30 -0800 (PST)
-Received: by mail-lf1-x12b.google.com with SMTP id b1so39083343lfs.13
-        for <linux-m68k@lists.linux-m68k.org>; Sun, 28 Nov 2021 13:06:30 -0800 (PST)
+        Sun, 28 Nov 2021 16:10:55 -0500
+Received: from mail-lf1-x130.google.com (mail-lf1-x130.google.com [IPv6:2a00:1450:4864:20::130])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5517AC061763
+        for <linux-m68k@lists.linux-m68k.org>; Sun, 28 Nov 2021 13:07:08 -0800 (PST)
+Received: by mail-lf1-x130.google.com with SMTP id l22so39210151lfg.7
+        for <linux-m68k@lists.linux-m68k.org>; Sun, 28 Nov 2021 13:07:08 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=subject:to:cc:references:from:message-id:date:user-agent
          :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=dBFzSL4UYCAYQqmDupNTSShpvRMUEbaJ9Mx4K7HGHPc=;
-        b=oml1oX0ZWjhkzuRjHJtH1XTn55+HCuWM51eukHmTMUsqYvepCYTnsQ8nmJ1fi6Ny8O
-         hk+9nsbkv1H426inD0KEeQ2Fx2c/aojT5orC8a1HaRiSAHCfbZ4GibLUq6jXw8umdLa+
-         7Npmf61QEFnfrTJUhnvyNQXEcG3o44nwO/yhewKgQ2Tv5+cyXPwRAr9avOHgipiR7uOU
-         3lG/X5TvXt9e7Baba1QmnryaUy282ao9aOX5wnj9w2azfGP26R8Qk0MYK0SZQyDuBX5E
-         nJWhN9xVkrVnERfId0Z6c0a3FiVVFjBlUiijA64WcIz/4PjWlAuAjWR6TMU93ETZJ9CC
-         EpYg==
+        bh=Kep6H8+bfVZ1xeLjsaS2A7zU/qUFFdJhuzBNEKDyf18=;
+        b=MXJpk4bHJWHUsXnttmXJmMehCMhy9keZTcA7B/bYgzynu+fs9AEzA0zWS1didKGcXM
+         ufZY1nIVOAfP0n1FcIj/YQO+JHOspxllH7lEwqxum4orCJ0HB2fsnMEDGJmWeH/qyrsf
+         tBfKAbmns7/1QIwfCwYfnwageJ9+iaZP7wrA89IK5FuGsmtz3WgnEbf4CfOtVYKh+y1P
+         P/ivsGXGLfJ8qk+PLiIxuT1vyrHF2S+SyEG3Jc+cuHLep64IrIJ92EMzFal/KsyKC+gQ
+         ETMGdua/dzs6IwN9uDl7VCnKUva5ihWYK7VOkSKYM4fVdcc0cO/WridgO5+laEgsd2tU
+         tz4w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:subject:to:cc:references:from:message-id:date
          :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=dBFzSL4UYCAYQqmDupNTSShpvRMUEbaJ9Mx4K7HGHPc=;
-        b=Zkk0r+JetBkmKnqTdrs9WZYjDb9aKpDMWcOb3X1MIb84ccViDwOqXlZ1orrhctqIM5
-         1NxfbDGg0Qkua1AQWBomFShraR2rr/Cct9AFEbShrdswiQ6lrtQVmsCdqOMHheC0/7/j
-         j0XF/JTCmmycHdhknmJexOJ5vHU7Z5umUnC42JjFv1Ai5A1bGvGCsiPddzFXDVaNpLZx
-         d+hOmNL4f4skPguZsAdgpfgVcO9vWTKN/m8o8XsB+vffAdTvoDJziHXnRhYc0wuWVD/9
-         p6hT7Dawh0ztNVrnwUcnbYv5gtoNYPO1dfVPUfzoJDjr6MsaBdaCi3cL8wERct3KgCb8
-         7Tqg==
-X-Gm-Message-State: AOAM533213bL2qC7oQk1nOk2i83/18K8Rzk4R9IffBZ5lAfTnFw63udz
-        nOEmHcGLVAJlN9+dqYOUDJ8=
-X-Google-Smtp-Source: ABdhPJw8DbrxRHQUKfkUrzcq3jrRe892hdaQjtTmhQ/Pf+osYN9e0RKllfwyJmy+SLn8xY0V3MlxVg==
-X-Received: by 2002:a05:6512:3fa1:: with SMTP id x33mr34004371lfa.676.1638133588639;
-        Sun, 28 Nov 2021 13:06:28 -0800 (PST)
+        bh=Kep6H8+bfVZ1xeLjsaS2A7zU/qUFFdJhuzBNEKDyf18=;
+        b=DvmypZriXWMjYcN2SFGdAKdIgTEpqFYWnelqHgN0+vpFpB9+Z475c6MBv7g/cChjNC
+         GOCS+eGrlYDEL0obWV0Fkpnkx2ZQJh1x+qOQU6prU4tomVM6Kt5aYBP7uslLRQ6+MGzM
+         b7AIOnFie7cvUvcrN866WYvEUQVPPJ+U/qzvJ4+OAKnRyh7roYNhaRl9kBU8fb9OWIoi
+         ckzF/djGB0WGZSdaimxljp0fbbmQNf9Zw5c4n6rCBb7/32H35TgDOWQ6TdP34iU17rQF
+         nIT9XKwoIiwAlXa2kYSvvpEXZhh3DoFr0rzNsXEskCg3xs2nZBtzhlYKSJ1TcWk9+ECi
+         pvBQ==
+X-Gm-Message-State: AOAM5308vPM6RQ4VIJ4pVQCQKTKQ+zDAuAU9vF6QrXY9uedvtJP/wnDL
+        qVToXteP62co/O3G9Q1TJpQ=
+X-Google-Smtp-Source: ABdhPJy4zl/AZzFPwJNVkHu3GSDT6aqXWQbZeWCJLgVwlcbzfRDN23rTDTUYoWjDb/oPahZVEVnA9Q==
+X-Received: by 2002:a19:5e59:: with SMTP id z25mr43385851lfi.686.1638133626682;
+        Sun, 28 Nov 2021 13:07:06 -0800 (PST)
 Received: from [192.168.2.145] (94-29-46-111.dynamic.spd-mgts.ru. [94.29.46.111])
-        by smtp.googlemail.com with ESMTPSA id v2sm1096217lfb.258.2021.11.28.13.06.26
+        by smtp.googlemail.com with ESMTPSA id s13sm1104272lfg.126.2021.11.28.13.07.04
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 28 Nov 2021 13:06:28 -0800 (PST)
-Subject: Re: [PATCH v4 05/25] reboot: Warn if restart handler has duplicated
- priority
+        Sun, 28 Nov 2021 13:07:06 -0800 (PST)
+Subject: Re: [PATCH v4 18/25] x86: Use do_kernel_power_off()
 To:     =?UTF-8?B?TWljaGHFgiBNaXJvc8WCYXc=?= <mirq-linux@rere.qmqm.pl>
 Cc:     Thierry Reding <thierry.reding@gmail.com>,
         Jonathan Hunter <jonathanh@nvidia.com>,
@@ -104,14 +103,14 @@ Cc:     Thierry Reding <thierry.reding@gmail.com>,
         xen-devel@lists.xenproject.org, linux-acpi@vger.kernel.org,
         linux-pm@vger.kernel.org, linux-tegra@vger.kernel.org
 References: <20211126180101.27818-1-digetx@gmail.com>
- <20211126180101.27818-6-digetx@gmail.com> <YaLNOJTM+lVq+YNS@qmqm.qmqm.pl>
+ <20211126180101.27818-19-digetx@gmail.com> <YaLYR24XRijSmBq3@qmqm.qmqm.pl>
 From:   Dmitry Osipenko <digetx@gmail.com>
-Message-ID: <033ddf2a-6223-1a82-ec64-30f17c891f67@gmail.com>
-Date:   Mon, 29 Nov 2021 00:06:19 +0300
+Message-ID: <3082ba7a-f8f6-b2d9-5ae3-ec639b1a6bee@gmail.com>
+Date:   Mon, 29 Nov 2021 00:06:57 +0300
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
  Thunderbird/78.14.0
 MIME-Version: 1.0
-In-Reply-To: <YaLNOJTM+lVq+YNS@qmqm.qmqm.pl>
+In-Reply-To: <YaLYR24XRijSmBq3@qmqm.qmqm.pl>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 8bit
@@ -119,35 +118,43 @@ Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-28.11.2021 03:28, Michał Mirosław пишет:
-> On Fri, Nov 26, 2021 at 09:00:41PM +0300, Dmitry Osipenko wrote:
->> Add sanity check which ensures that there are no two restart handlers
->> registered with the same priority. Normally it's a direct sign of a
->> problem if two handlers use the same priority.
+28.11.2021 04:15, Michał Mirosław пишет:
+> On Fri, Nov 26, 2021 at 09:00:54PM +0300, Dmitry Osipenko wrote:
+>> Kernel now supports chained power-off handlers. Use do_kernel_power_off()
+>> that invokes chained power-off handlers. It also invokes legacy
+>> pm_power_off() for now, which will be removed once all drivers will
+>> be converted to the new power-off API.
+>>
+>> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
+>> ---
+>>  arch/x86/kernel/reboot.c | 4 ++--
+>>  1 file changed, 2 insertions(+), 2 deletions(-)
+>>
+>> diff --git a/arch/x86/kernel/reboot.c b/arch/x86/kernel/reboot.c
+>> index 0a40df66a40d..cd7d9416d81a 100644
+>> --- a/arch/x86/kernel/reboot.c
+>> +++ b/arch/x86/kernel/reboot.c
+>> @@ -747,10 +747,10 @@ static void native_machine_halt(void)
+>>  
+>>  static void native_machine_power_off(void)
+>>  {
+>> -	if (pm_power_off) {
+>> +	if (kernel_can_power_off()) {
+>>  		if (!reboot_force)
+>>  			machine_shutdown();
+>> -		pm_power_off();
+>> +		do_kernel_power_off();
+>>  	}
 > 
-> The patch doesn't ensure the property that there are no duplicated-priority
-> entries on the chain.
+> Judging from an old commit from 2006 [1], this can be rewritten as:
+> 
+> if (!reboot_force && kernel_can_power_off())
+> 	machine_shutdown();
+> do_kernel_power_off();
+> 
+> And maybe later reworked so it doesn't need kernel_can_power_off().
+> 
+> [1] http://lkml.iu.edu/hypermail//linux/kernel/0511.3/0681.html
 
-It's not the exact point of this patch.
-
-> I'd rather see a atomic_notifier_chain_register_unique() that returns
-> -EBUSY or something istead of adding an entry with duplicate priority.
-> That way it would need only one list traversal unless you want to
-> register the duplicate anyway (then you would call the older
-> atomic_notifier_chain_register() after reporting the error).
-
-The point of this patch is to warn developers about the problem that
-needs to be fixed. We already have such troubling drivers in mainline.
-
-It's not critical to register different handlers with a duplicated
-priorities, but such cases really need to be corrected. We shouldn't
-break users' machines during transition to the new API, meanwhile
-developers should take action of fixing theirs drivers.
-
-> (Or you could return > 0 when a duplicate is registered in
-> atomic_notifier_chain_register() if the callers are prepared
-> for that. I don't really like this way, though.)
-
-I had a similar thought at some point before and decided that I'm not in
-favor of this approach. It's nicer to have a dedicated function that
-verifies the uniqueness, IMO.
+It could be rewritten like you're suggesting, but I'd prefer to keep the
+old variant, for clarity.
