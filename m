@@ -2,32 +2,56 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 172E7C433F5
-	for <linux-m68k@archiver.kernel.org>; Sun, 28 Nov 2021 01:25:50 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 80D85C4167B
+	for <linux-m68k@archiver.kernel.org>; Sun, 28 Nov 2021 21:06:19 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230295AbhK1B3D (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Sat, 27 Nov 2021 20:29:03 -0500
-Received: from rere.qmqm.pl ([91.227.64.183]:38320 "EHLO rere.qmqm.pl"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231241AbhK1B1D (ORCPT <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Sat, 27 Nov 2021 20:27:03 -0500
-Received: from remote.user (localhost [127.0.0.1])
-        by rere.qmqm.pl (Postfix) with ESMTPSA id 4J1rNJ4FZPz9Y;
-        Sun, 28 Nov 2021 02:23:44 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=rere.qmqm.pl; s=1;
-        t=1638062626; bh=RQibj5ShLXXbscS9xDdhXFMN8ya6wwZPbmp6fmGd398=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=n44MG2e5RBocnZVovLrwXYhpcT9mGSj0Yz0AO4iH3bISdkksZFTaPRPQ7fTkCKO8d
-         x+/RaAsmPFcJpyVM1wTyOQcpl9iI/qARQ9nnHNFUKcC/buQZ3OQy4ZdUfMi7/yUTEW
-         7WlKE+/agJAITMqFPd9R5R3E+MgK29J+XYHqyR0kp8JBFZvXtnVk0Pz1QzN3kso8HK
-         er/OuchNHm9U/TZDlt7ogfSjpTlkJvuHMLoM8/Ch6dpvLC0GmYw4askPTjYE6cd0GB
-         +8Icr2w4j1952hSNLT41SWUjT5RKnwcfW3Td5KzPdFvlY7NR4Wfe30xf1uZw3jj57o
-         PLz4CVm2GyNBg==
-X-Virus-Status: Clean
-X-Virus-Scanned: clamav-milter 0.103.3 at mail
-Date:   Sun, 28 Nov 2021 02:23:43 +0100
-From:   =?iso-8859-2?Q?Micha=B3_Miros=B3aw?= <mirq-linux@rere.qmqm.pl>
-To:     Dmitry Osipenko <digetx@gmail.com>
+        id S1358715AbhK1VJe (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Sun, 28 Nov 2021 16:09:34 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37798 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1348329AbhK1VHa (ORCPT
+        <rfc822;linux-m68k@lists.linux-m68k.org>);
+        Sun, 28 Nov 2021 16:07:30 -0500
+Received: from mail-lj1-x234.google.com (mail-lj1-x234.google.com [IPv6:2a00:1450:4864:20::234])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C3C1C061761
+        for <linux-m68k@lists.linux-m68k.org>; Sun, 28 Nov 2021 13:04:13 -0800 (PST)
+Received: by mail-lj1-x234.google.com with SMTP id u22so30582761lju.7
+        for <linux-m68k@lists.linux-m68k.org>; Sun, 28 Nov 2021 13:04:13 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=wtn5Hkee5e4Yh99ylBrB3oNbIRTQMbXx6i2LcHRuAAA=;
+        b=D7axuJW5K4soTW7ePg2XEY/iNxftObXK2r+AyGGcLpSZUVVVDeOdARXPvJKsrnTiWz
+         AoAXcXPY5kZDAFmNd2VORgyu8fNJK2h3Akf7Z4wOIV4j7hl4k+Lg94oWKvPyZvxvLsrU
+         gHjqykqz9pVTUOOpARf13AebW7syYSoupun9EMn0XvrUZckKr/LqJa+4eSWKEzDWJLdo
+         K7OPzWs09+Av5yHcfZj3Q7MZQ+BDltCGiVFFVwhBt7T15YiSiT0WAJ3uiNnPq9pF4dyU
+         I8pWXsXnC3XNCL+7zY4D1T6JR7EW9moTsiVuNSfEmpW1ojxHFbjsYoYQXbcJq5XV5+Um
+         iPxw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=wtn5Hkee5e4Yh99ylBrB3oNbIRTQMbXx6i2LcHRuAAA=;
+        b=eD0k1//jPkzJeLd5HZS8kw5Ms6e7mF7FCEUc51ckwFpnHTdXVz1/BIzP8Ksg5j1fZz
+         /9L4sd6cI6VgOhQYmXA1Rg3F/cuW8AjIas+pzismKzrhbA1fWM5sJy+S70uBWK4j0gdC
+         w731eLf4h+/0BNAhd3HyMwXowDl655ugqgCAniwyhoq7tU/ZbeZpo/l32zimUid6LM+1
+         8WszIK89NJpKSQ3EIG0bpO6GjOuZ8x5LWDRlHF4bFpcRODqOSFMtPpXCG1G9hQeQfIAH
+         m1ScV9n7p6BdmctLBSqtftzMn/jMUMi6T2ilfUvCqRETf9QPKRBDffVhd1r3DLXjR4Ce
+         U1QQ==
+X-Gm-Message-State: AOAM533zROzXMVix4JEKvgxvHjiWAr4TEgB/4LyjuseCp1C2n3XhvGy7
+        pKwIdnNfNq4EA4qU/CdxHwA=
+X-Google-Smtp-Source: ABdhPJxH7knkFdz7TFpFlawyIdB41srtPJMqsrOfzCPJDLK6AlWk3m8N6okcECoeJRZyDtP9PR9VhQ==
+X-Received: by 2002:a05:651c:1257:: with SMTP id h23mr44458754ljh.17.1638133451873;
+        Sun, 28 Nov 2021 13:04:11 -0800 (PST)
+Received: from [192.168.2.145] (94-29-46-111.dynamic.spd-mgts.ru. [94.29.46.111])
+        by smtp.googlemail.com with ESMTPSA id c17sm1100736lfr.235.2021.11.28.13.04.09
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 28 Nov 2021 13:04:11 -0800 (PST)
+Subject: Re: [PATCH v4 08/25] kernel: Add combined power-off+restart handler
+ call chain API
+To:     =?UTF-8?B?TWljaGHFgiBNaXJvc8WCYXc=?= <mirq-linux@rere.qmqm.pl>
 Cc:     Thierry Reding <thierry.reding@gmail.com>,
         Jonathan Hunter <jonathanh@nvidia.com>,
         Russell King <linux@armlinux.org.uk>,
@@ -79,45 +103,66 @@ Cc:     Thierry Reding <thierry.reding@gmail.com>,
         linux-riscv@lists.infradead.org, linux-sh@vger.kernel.org,
         xen-devel@lists.xenproject.org, linux-acpi@vger.kernel.org,
         linux-pm@vger.kernel.org, linux-tegra@vger.kernel.org
-Subject: Re: [PATCH v4 22/25] memory: emif: Use kernel_can_power_off()
-Message-ID: <YaLaH3Yt2M/Gko//@qmqm.qmqm.pl>
 References: <20211126180101.27818-1-digetx@gmail.com>
- <20211126180101.27818-23-digetx@gmail.com>
+ <20211126180101.27818-9-digetx@gmail.com> <YaLQqks8cB0vWp6Q@qmqm.qmqm.pl>
+From:   Dmitry Osipenko <digetx@gmail.com>
+Message-ID: <9213569e-0f40-0df1-4710-8dab564e12d6@gmail.com>
+Date:   Mon, 29 Nov 2021 00:04:01 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.14.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-2
-Content-Disposition: inline
+In-Reply-To: <YaLQqks8cB0vWp6Q@qmqm.qmqm.pl>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20211126180101.27818-23-digetx@gmail.com>
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-On Fri, Nov 26, 2021 at 09:00:58PM +0300, Dmitry Osipenko wrote:
-> Replace legacy pm_power_off with kernel_can_power_off() helper that
-> is aware about chained power-off handlers.
+28.11.2021 03:43, Michał Mirosław пишет:
+> On Fri, Nov 26, 2021 at 09:00:44PM +0300, Dmitry Osipenko wrote:
+>> SoC platforms often have multiple ways of how to perform system's
+>> power-off and restart operations. Meanwhile today's kernel is limited to
+>> a single option. Add combined power-off+restart handler call chain API,
+>> which is inspired by the restart API. The new API provides both power-off
+>> and restart functionality.
+>>
+>> The old pm_power_off method will be kept around till all users are
+>> converted to the new API.
+>>
+>> Current restart API will be replaced by the new unified API since
+>> new API is its superset. The restart functionality of the sys-off handler
+>> API is built upon the existing restart-notifier APIs.
+>>
+>> In order to ease conversion to the new API, convenient helpers are added
+>> for the common use-cases. They will reduce amount of boilerplate code and
+>> remove global variables. These helpers preserve old behaviour for cases
+>> where only one power-off handler is expected, this is what all existing
+>> drivers want, and thus, they could be easily converted to the new API.
+>> Users of the new API should explicitly enable power-off chaining by
+>> setting corresponding flag of the power_handler structure.
+> [...]
 > 
-> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
-> ---
->  drivers/memory/emif.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+> Hi,
 > 
-> diff --git a/drivers/memory/emif.c b/drivers/memory/emif.c
-> index 762d0c0f0716..cab10d5274a0 100644
-> --- a/drivers/memory/emif.c
-> +++ b/drivers/memory/emif.c
-> @@ -630,7 +630,7 @@ static irqreturn_t emif_threaded_isr(int irq, void *dev_id)
->  		dev_emerg(emif->dev, "SDRAM temperature exceeds operating limit.. Needs shut down!!!\n");
->  
->  		/* If we have Power OFF ability, use it, else try restarting */
-> -		if (pm_power_off) {
-> +		if (kernel_can_power_off()) {
->  			kernel_power_off();
->  		} else {
->  			WARN(1, "FIXME: NO pm_power_off!!! trying restart\n");
+> A general question: do we really need three distinct chains for this?
 
-BTW, this part of the code seems to be better moved to generic code that
-could replace POWER_OFF request with REBOOT like it is done for reboot()
-syscall.
+Hello Michał,
 
-Best Regards
-Micha��Miros�aw
+At minimum this makes code easier to follow.
+
+> Can't there be only one that chain of callbacks that get a stage
+> (RESTART_PREPARE, RESTART, POWER_OFF_PREPARE, POWER_OFF) and can ignore
+> them at will? Calling through POWER_OFF_PREPARE would also return
+> whether that POWER_OFF is possible (for kernel_can_power_off()).
+
+I'm having trouble with parsing this comment. Could you please try to
+rephrase it? I don't see how you could check whether power-off handler
+is available if you'll mix all handlers together.
+
+> I would also split this patch into preparation cleanups (like wrapping
+> pm_power_off call with a function) and adding the notifier-based
+> implementation.
+
+What's the benefit of this split up will be? Are you suggesting that it
+will ease reviewing of this patch or something else?
