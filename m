@@ -2,102 +2,114 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D1CDAC433FE
-	for <linux-m68k@archiver.kernel.org>; Fri, 26 Nov 2021 23:55:29 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id EE8E4C433F5
+	for <linux-m68k@archiver.kernel.org>; Sun, 28 Nov 2021 00:31:03 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233537AbhKZX6m (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Fri, 26 Nov 2021 18:58:42 -0500
-Received: from mga02.intel.com ([134.134.136.20]:9992 "EHLO mga02.intel.com"
+        id S231622AbhK1AeR (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Sat, 27 Nov 2021 19:34:17 -0500
+Received: from rere.qmqm.pl ([91.227.64.183]:38523 "EHLO rere.qmqm.pl"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233612AbhKZX4h (ORCPT <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Fri, 26 Nov 2021 18:56:37 -0500
-X-IronPort-AV: E=McAfee;i="6200,9189,10180"; a="222955285"
-X-IronPort-AV: E=Sophos;i="5.87,267,1631602800"; 
-   d="scan'208";a="222955285"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Nov 2021 15:53:23 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.87,267,1631602800"; 
-   d="scan'208";a="510837777"
-Received: from lkp-server02.sh.intel.com (HELO 9e1e9f9b3bcb) ([10.239.97.151])
-  by orsmga008.jf.intel.com with ESMTP; 26 Nov 2021 15:53:21 -0800
-Received: from kbuild by 9e1e9f9b3bcb with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1mql1s-0008n4-Me; Fri, 26 Nov 2021 23:53:20 +0000
-Date:   Sat, 27 Nov 2021 07:53:12 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Greg Ungerer <gerg@uclinux.org>
-Cc:     llvm@lists.linux.dev, kbuild-all@lists.01.org,
-        linux-m68k@lists.linux-m68k.org, uclinux-dev@uclinux.org,
-        linux-kernel@vger.kernel.org
-Subject: [gerg-m68knommu:armnommu 4/4]
- arch/arm/mach-versatile/versatile_dt.c:60:14: warning: no previous prototype
- for function 'mmc_status'
-Message-ID: <202111270741.t0BFBqcL-lkp@intel.com>
+        id S232401AbhK1AcQ (ORCPT <rfc822;linux-m68k@lists.linux-m68k.org>);
+        Sat, 27 Nov 2021 19:32:16 -0500
+Received: from remote.user (localhost [127.0.0.1])
+        by rere.qmqm.pl (Postfix) with ESMTPSA id 4J1q8r4xRGz9Y;
+        Sun, 28 Nov 2021 01:28:44 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=rere.qmqm.pl; s=1;
+        t=1638059340; bh=BpCUv6sc6+ijt8bP2X1dBPBQztb08CMPEjcmSI4mWHs=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=E2pJXVdwpF7xa7NgJpuaA7I4sUgCSxdIM51ma240k1OvyN0BqmbHCll/qibc7LmRW
+         l2lYyRdiOG0LzZZRcQGCbOEp7l5l7FW2EF13o78tAxh2BlfQLPIqSf2RtHjwNL3AHE
+         ag5QLlLhW95Kp8fH9dCV3j4Imx5XQ5T4nV1vyleMAzKz1Soq6c6OnKpJ5TdzfdwJ2G
+         LnQoKtgUWmpQEblg3IMnaxzgslueaP8apjKdZ9y96JJ35QjeXKQSawNEPmoxjBztTd
+         XADr6Ffb3r0e7Kv67f/UCkeky+8m4GCPkGRqXkdYh2BWzTit8bUIHp4dPNUh/LgLHY
+         SH/yCd1X39o+Q==
+X-Virus-Status: Clean
+X-Virus-Scanned: clamav-milter 0.103.3 at mail
+Date:   Sun, 28 Nov 2021 01:28:40 +0100
+From:   =?iso-8859-2?Q?Micha=B3_Miros=B3aw?= <mirq-linux@rere.qmqm.pl>
+To:     Dmitry Osipenko <digetx@gmail.com>
+Cc:     Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>, Guo Ren <guoren@kernel.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Greg Ungerer <gerg@linux-m68k.org>,
+        Joshua Thompson <funaho@jurai.org>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Sebastian Reichel <sre@kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Greentime Hu <green.hu@gmail.com>,
+        Vincent Chen <deanbo422@gmail.com>,
+        "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
+        Helge Deller <deller@gmx.de>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Yoshinori Sato <ysato@users.sourceforge.jp>,
+        Rich Felker <dalias@libc.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+        Juergen Gross <jgross@suse.com>,
+        Stefano Stabellini <sstabellini@kernel.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Len Brown <lenb@kernel.org>,
+        Santosh Shilimkar <ssantosh@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>, Pavel Machek <pavel@ucw.cz>,
+        Lee Jones <lee.jones@linaro.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Ulf Hansson <ulf.hansson@linaro.org>, alankao@andestech.com,
+        "K . C . Kuen-Chern Lin" <kclin@andestech.com>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-csky@vger.kernel.org, linux-ia64@vger.kernel.org,
+        linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org,
+        linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        linux-riscv@lists.infradead.org, linux-sh@vger.kernel.org,
+        xen-devel@lists.xenproject.org, linux-acpi@vger.kernel.org,
+        linux-pm@vger.kernel.org, linux-tegra@vger.kernel.org
+Subject: Re: [PATCH v4 05/25] reboot: Warn if restart handler has duplicated
+ priority
+Message-ID: <YaLNOJTM+lVq+YNS@qmqm.qmqm.pl>
+References: <20211126180101.27818-1-digetx@gmail.com>
+ <20211126180101.27818-6-digetx@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-2
 Content-Disposition: inline
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20211126180101.27818-6-digetx@gmail.com>
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/gerg/m68knommu.git armnommu
-head:   2f172ee2c4ba76853a7f5a95d657111dae7e5207
-commit: 2f172ee2c4ba76853a7f5a95d657111dae7e5207 [4/4] ARM: versatile: support configuring versatile machine for no-MMU
-config: arm-randconfig-r022-20211126 (https://download.01.org/0day-ci/archive/20211127/202111270741.t0BFBqcL-lkp@intel.com/config)
-compiler: clang version 14.0.0 (https://github.com/llvm/llvm-project 5162b558d8c0b542e752b037e72a69d5fd51eb1e)
-reproduce (this is a W=1 build):
-        wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
-        chmod +x ~/bin/make.cross
-        # install arm cross compiling tool for clang build
-        # apt-get install binutils-arm-linux-gnueabi
-        # https://git.kernel.org/pub/scm/linux/kernel/git/gerg/m68knommu.git/commit/?id=2f172ee2c4ba76853a7f5a95d657111dae7e5207
-        git remote add gerg-m68knommu https://git.kernel.org/pub/scm/linux/kernel/git/gerg/m68knommu.git
-        git fetch --no-tags gerg-m68knommu armnommu
-        git checkout 2f172ee2c4ba76853a7f5a95d657111dae7e5207
-        # save the config file to linux build tree
-        mkdir build_dir
-        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=clang make.cross W=1 O=build_dir ARCH=arm SHELL=/bin/bash
+On Fri, Nov 26, 2021 at 09:00:41PM +0300, Dmitry Osipenko wrote:
+> Add sanity check which ensures that there are no two restart handlers
+> registered with the same priority. Normally it's a direct sign of a
+> problem if two handlers use the same priority.
 
-If you fix the issue, kindly add following tag as appropriate
-Reported-by: kernel test robot <lkp@intel.com>
+The patch doesn't ensure the property that there are no duplicated-priority
+entries on the chain.
 
-All warnings (new ones prefixed by >>):
+I'd rather see a atomic_notifier_chain_register_unique() that returns
+-EBUSY or something istead of adding an entry with duplicate priority.
+That way it would need only one list traversal unless you want to
+register the duplicate anyway (then you would call the older
+atomic_notifier_chain_register() after reporting the error).
 
->> arch/arm/mach-versatile/versatile_dt.c:60:14: warning: no previous prototype for function 'mmc_status' [-Wmissing-prototypes]
-   unsigned int mmc_status(struct device *dev)
-                ^
-   arch/arm/mach-versatile/versatile_dt.c:60:1: note: declare 'static' if the function is not intended to be used outside of this translation unit
-   unsigned int mmc_status(struct device *dev)
-   ^
-   static 
-   1 warning generated.
+(Or you could return > 0 when a duplicate is registered in
+atomic_notifier_chain_register() if the callers are prepared
+for that. I don't really like this way, though.)
 
-
-vim +/mmc_status +60 arch/arm/mach-versatile/versatile_dt.c
-
-a7096789211193 Rob Herring 2015-12-08  59  
-a7096789211193 Rob Herring 2015-12-08 @60  unsigned int mmc_status(struct device *dev)
-a7096789211193 Rob Herring 2015-12-08  61  {
-a7096789211193 Rob Herring 2015-12-08  62  	struct amba_device *adev = container_of(dev, struct amba_device, dev);
-a7096789211193 Rob Herring 2015-12-08  63  	u32 mask;
-a7096789211193 Rob Herring 2015-12-08  64  
-a7096789211193 Rob Herring 2015-12-08  65  	if (adev->res.start == VERSATILE_MMCI0_BASE)
-a7096789211193 Rob Herring 2015-12-08  66  		mask = 1;
-a7096789211193 Rob Herring 2015-12-08  67  	else
-a7096789211193 Rob Herring 2015-12-08  68  		mask = 2;
-a7096789211193 Rob Herring 2015-12-08  69  
-a7096789211193 Rob Herring 2015-12-08  70  	return readl(versatile_sys_base + VERSATILE_SYS_MCI_OFFSET) & mask;
-a7096789211193 Rob Herring 2015-12-08  71  }
-a7096789211193 Rob Herring 2015-12-08  72  
-
-:::::: The code at line 60 was first introduced by commit
-:::::: a70967892111934e292485ce84f1bab38cc55380 ARM: versatile: merge mach code into a single file
-
-:::::: TO: Rob Herring <robh@kernel.org>
-:::::: CC: Arnd Bergmann <arnd@arndb.de>
-
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+Best Regards
+Micha³ Miros³aw
