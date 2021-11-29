@@ -2,147 +2,88 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C50F6C433F5
-	for <linux-m68k@archiver.kernel.org>; Mon, 29 Nov 2021 00:38:40 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id DBF0FC433F5
+	for <linux-m68k@archiver.kernel.org>; Mon, 29 Nov 2021 10:09:33 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232544AbhK2Al4 (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Sun, 28 Nov 2021 19:41:56 -0500
-Received: from rere.qmqm.pl ([91.227.64.183]:41811 "EHLO rere.qmqm.pl"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234135AbhK2Aj4 (ORCPT <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Sun, 28 Nov 2021 19:39:56 -0500
-Received: from remote.user (localhost [127.0.0.1])
-        by rere.qmqm.pl (Postfix) with ESMTPSA id 4J2RHF5R6Gz9Y;
-        Mon, 29 Nov 2021 01:36:25 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=rere.qmqm.pl; s=1;
-        t=1638146198; bh=DI1VWBOrDzR1kSFvGVwF5e/uC6F95umcWDF0D1gW0co=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=H73sBxsM7L9z8xEfnp2Ak7MzBK8+vuHhYSpX9ZmIw96z66YhhL0jbzAc1kAW4E8/k
-         E+n0myrDaFBdTPW3DCJBAB1QxLCznookgF41GB3ur/8AtJ172fB625fAJLQBCfF2Il
-         1tVB3rwB3wCft3kEONBcl+9mGZ0YFJna/va55m2Id6G5OQJMzxWyiW8mEoVG9uWh4D
-         9FU7cd4y+9BUv1/bcd+v0FTSSINIJ8msC5Z+cow25KP+uSrFkzTmZSbuYJNYmoN8pj
-         wIHmD3sAFqkn2Up4Tyhb9Q0kZcFFYL4JTYDk03Wdeze2AnxwyR74tes3GEAEUnF7BY
-         Uq7OHC/U12/7A==
-X-Virus-Status: Clean
-X-Virus-Scanned: clamav-milter 0.103.3 at mail
-Date:   Mon, 29 Nov 2021 01:36:24 +0100
-From:   =?iso-8859-2?Q?Micha=B3_Miros=B3aw?= <mirq-linux@rere.qmqm.pl>
-To:     Dmitry Osipenko <digetx@gmail.com>
-Cc:     Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>, Guo Ren <guoren@kernel.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Greg Ungerer <gerg@linux-m68k.org>,
-        Joshua Thompson <funaho@jurai.org>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Sebastian Reichel <sre@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Greentime Hu <green.hu@gmail.com>,
-        Vincent Chen <deanbo422@gmail.com>,
-        "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
-        Helge Deller <deller@gmx.de>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Yoshinori Sato <ysato@users.sourceforge.jp>,
-        Rich Felker <dalias@libc.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
-        Juergen Gross <jgross@suse.com>,
-        Stefano Stabellini <sstabellini@kernel.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Len Brown <lenb@kernel.org>,
-        Santosh Shilimkar <ssantosh@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>, Pavel Machek <pavel@ucw.cz>,
-        Lee Jones <lee.jones@linaro.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>, alankao@andestech.com,
-        "K . C . Kuen-Chern Lin" <kclin@andestech.com>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-csky@vger.kernel.org, linux-ia64@vger.kernel.org,
-        linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org,
-        linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        linux-riscv@lists.infradead.org, linux-sh@vger.kernel.org,
-        xen-devel@lists.xenproject.org, linux-acpi@vger.kernel.org,
-        linux-pm@vger.kernel.org, linux-tegra@vger.kernel.org
-Subject: Re: [PATCH v4 08/25] kernel: Add combined power-off+restart handler
- call chain API
-Message-ID: <YaQgiLw03lPyvuhr@qmqm.qmqm.pl>
-References: <20211126180101.27818-1-digetx@gmail.com>
- <20211126180101.27818-9-digetx@gmail.com>
- <YaLQqks8cB0vWp6Q@qmqm.qmqm.pl>
- <9213569e-0f40-0df1-4710-8dab564e12d6@gmail.com>
- <YaPx0kY7poGpwCL9@qmqm.qmqm.pl>
- <1fa2d9d5-f5f6-77f5-adf6-827921acce49@gmail.com>
+        id S235152AbhK2KMu (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Mon, 29 Nov 2021 05:12:50 -0500
+Received: from mail-vk1-f182.google.com ([209.85.221.182]:38470 "EHLO
+        mail-vk1-f182.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236596AbhK2KKt (ORCPT
+        <rfc822;linux-m68k@lists.linux-m68k.org>);
+        Mon, 29 Nov 2021 05:10:49 -0500
+Received: by mail-vk1-f182.google.com with SMTP id s17so10633353vka.5
+        for <linux-m68k@lists.linux-m68k.org>; Mon, 29 Nov 2021 02:07:32 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=GVFNfQPdN79DFaiM4xA6K3MbJdiYsXlejmisa39lhE8=;
+        b=pwg5EHi/eOrEN+EuovvRtPwFkOWIDuUZASAVjaOCd/zcTKaGKjCbGP7sYXIFe9Rejw
+         v0ysuweiGjANuLT/EVngk1PoeMOGxEOWjDtaIvdqAnCBTWQxrfzS9N5eZ8dX4HwVGDBM
+         rGbc73pViI4iCpINK87I+Jv8Svh54PA4Tzu6KCRl+6Nae8yZdWiR2VD2ZPjuFOoS8Wk1
+         u+1KdsDel+C2HlwYN1REdeHeZitHGVyeKrXzZUMx5MWuiPvPnXkUkuDk9qKGqclmTSJ9
+         nzPQ+PQYEUI7mwYCuvhVHMcQXWdEWoieZpNtj8B6iM2dOHp/lm0U0x8462Vb10+94YMq
+         vxSA==
+X-Gm-Message-State: AOAM530k2k9mtyv/+WUPhz36yDERIxrY07+VSa7r9xlCxXGmXfkGYEun
+        FK7r6JNizz78rjdYYhq3UnBjGYTJIeEBkw==
+X-Google-Smtp-Source: ABdhPJzMSE5lk5HNl+bVDUzBietgVF5D4MVfzATy6uM/qCJYtBvV5GIhR886OXuN00Hf1BjUiplGqg==
+X-Received: by 2002:a05:6122:201e:: with SMTP id l30mr34645596vkd.10.1638180451713;
+        Mon, 29 Nov 2021 02:07:31 -0800 (PST)
+Received: from mail-ua1-f48.google.com (mail-ua1-f48.google.com. [209.85.222.48])
+        by smtp.gmail.com with ESMTPSA id r24sm8209476vsn.1.2021.11.29.02.07.30
+        for <linux-m68k@lists.linux-m68k.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 29 Nov 2021 02:07:31 -0800 (PST)
+Received: by mail-ua1-f48.google.com with SMTP id az37so32749813uab.13
+        for <linux-m68k@lists.linux-m68k.org>; Mon, 29 Nov 2021 02:07:30 -0800 (PST)
+X-Received: by 2002:a67:c106:: with SMTP id d6mr31358268vsj.77.1638180450870;
+ Mon, 29 Nov 2021 02:07:30 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <1fa2d9d5-f5f6-77f5-adf6-827921acce49@gmail.com>
+References: <8170fe1d1c62426d82275d36ba409ecc18754292.1637274578.git.fthain@linux-m68k.org>
+In-Reply-To: <8170fe1d1c62426d82275d36ba409ecc18754292.1637274578.git.fthain@linux-m68k.org>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Mon, 29 Nov 2021 11:07:19 +0100
+X-Gmail-Original-Message-ID: <CAMuHMdUFZkFkDaxHx-hbXhZAk2B-J_sprtEz=S8AYf9wJgH1pg@mail.gmail.com>
+Message-ID: <CAMuHMdUFZkFkDaxHx-hbXhZAk2B-J_sprtEz=S8AYf9wJgH1pg@mail.gmail.com>
+Subject: Re: [PATCH v3] m68k: Enable memtest functionality
+To:     Finn Thain <fthain@linux-m68k.org>
+Cc:     Mike Rapoport <rppt@kernel.org>, Sam Creasey <sammy@sammy.net>,
+        Jonathan Corbet <corbet@lwn.net>,
+        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-m68k <linux-m68k@lists.linux-m68k.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-On Mon, Nov 29, 2021 at 12:53:51AM +0300, Dmitry Osipenko wrote:
-> 29.11.2021 00:17, Michał Mirosław пишет:
-> >> I'm having trouble with parsing this comment. Could you please try to
-> >> rephrase it? I don't see how you could check whether power-off handler
-> >> is available if you'll mix all handlers together.
-> > If notify_call_chain() would be fixed to return NOTIFY_OK if any call
-> > returned NOTIFY_OK, then this would be a clear way to gather the
-> > answer if any of the handlers will attempt the final action (reboot or
-> > power off).
-> Could you please show a code snippet that implements your suggestion?
+On Thu, Nov 18, 2021 at 11:32 PM Finn Thain <fthain@linux-m68k.org> wrote:
+> Enable the memtest functionality and rearrange some code to prevent it
+> from clobbering the initrd.
+>
+> The code to implement CONFIG_BLK_DEV_INITRD was conditional on
+> !defined(CONFIG_SUN3). For simplicity, remove that test on the basis
+> that m68k_ramdisk.size == 0 on Sun 3. The SLIME source code at
+> http://sammy.net/sun3/ftp/pub/m68k/sun3/slime/slime-2.0.tar.gz
+> indicates that no BI_RAMDISK entry is ever passed to the kernel due
+> to #ifdef 0 around the relevant code.
+>
+> Cc: Mike Rapoport <rppt@kernel.org>
+> Cc: Sam Creasey <sammy@sammy.net>
+> Cc: Jonathan Corbet <corbet@lwn.net>
+> Signed-off-by: Finn Thain <fthain@linux-m68k.org>
 
-A rough idea is this:
+Reviewed-by: Geert Uytterhoeven <geert@linux-m68k.org>
+i.e. will queue in the m68k for-v5.17 branch.
 
- static int notifier_call_chain(struct notifier_block **nl,
- 			       unsigned long val, void *v,
- 			       int nr_to_call, int *nr_calls)
- {
--	int ret = NOTIFY_DONE;
-+	int ret, result = NOTIFY_DONE;
- 	struct notifier_block *nb, *next_nb;
- 
- 	nb = rcu_dereference_raw(*nl);
- 
- 	while (nb && nr_to_call) {
-...
- 		ret = nb->notifier_call(nb, val, v);
-+
-+		/* Assuming NOTIFY_STOP-carrying return is always greater than non-stopping one. */
-+		if (result < ret)
-+			result = ret;
-... 
- 	}
--	return ret;
-+	return result;
- }
+Gr{oetje,eeting}s,
 
-Then:
+                        Geert
 
-bool prepare_reboot()
-{
-	int ret = xx_notifier_call_chain(&shutdown_notifier, PREPARE_REBOOT, ...);
-	return ret == NOTIFY_OK;
-}
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
-And the return value would signify whether the reboot will be attempted
-when calling the chain for the REBOOT action. (Analogously for powering off.)
-
-Best Regards
-Michał Mirosław
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
