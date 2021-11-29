@@ -2,88 +2,188 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id DBF0FC433F5
-	for <linux-m68k@archiver.kernel.org>; Mon, 29 Nov 2021 10:09:33 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id BD77EC433F5
+	for <linux-m68k@archiver.kernel.org>; Mon, 29 Nov 2021 12:51:52 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235152AbhK2KMu (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Mon, 29 Nov 2021 05:12:50 -0500
-Received: from mail-vk1-f182.google.com ([209.85.221.182]:38470 "EHLO
-        mail-vk1-f182.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236596AbhK2KKt (ORCPT
+        id S236263AbhK2MzJ (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Mon, 29 Nov 2021 07:55:09 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45430 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230181AbhK2MxJ (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Mon, 29 Nov 2021 05:10:49 -0500
-Received: by mail-vk1-f182.google.com with SMTP id s17so10633353vka.5
-        for <linux-m68k@lists.linux-m68k.org>; Mon, 29 Nov 2021 02:07:32 -0800 (PST)
+        Mon, 29 Nov 2021 07:53:09 -0500
+Received: from mail-lj1-x230.google.com (mail-lj1-x230.google.com [IPv6:2a00:1450:4864:20::230])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0767EC08EAEC
+        for <linux-m68k@lists.linux-m68k.org>; Mon, 29 Nov 2021 03:34:53 -0800 (PST)
+Received: by mail-lj1-x230.google.com with SMTP id e11so33717594ljo.13
+        for <linux-m68k@lists.linux-m68k.org>; Mon, 29 Nov 2021 03:34:52 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=euaa0MK3qpl38vu/xm/JZntaVOCHcXyS5pdHcr9Cv9Y=;
+        b=j7IepB0c7QsF+gZGn8sLWlXDCQr83Yhq9Uwq9fJmgvQdhWWCer0J3Db/gwAG0Blu3V
+         KLIiDLWANtPW2sX+O/m2jQqBDLC+4NfkDAxYnlnBfxi7qlePYrZZysw0Kj4NFPMagEe7
+         5Z58UnljUl1PUrtNNqQtNaR8rjEOAOjAptz9aZ81TzHnOGVzQL+Ka518l0o45nrM05c1
+         wTSb3kazkFWdVLhzdtamDwO56fb5XsgOF41m+pkkrOCbpYLS/NmBUtznRV2wcvObV+eX
+         /QUCocD7Th3AP/6bIoc90HuBDrH/5Le5nNAAFps88ziv0187Td+CIqcDZxoQmDkSEFJt
+         ILjw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=GVFNfQPdN79DFaiM4xA6K3MbJdiYsXlejmisa39lhE8=;
-        b=pwg5EHi/eOrEN+EuovvRtPwFkOWIDuUZASAVjaOCd/zcTKaGKjCbGP7sYXIFe9Rejw
-         v0ysuweiGjANuLT/EVngk1PoeMOGxEOWjDtaIvdqAnCBTWQxrfzS9N5eZ8dX4HwVGDBM
-         rGbc73pViI4iCpINK87I+Jv8Svh54PA4Tzu6KCRl+6Nae8yZdWiR2VD2ZPjuFOoS8Wk1
-         u+1KdsDel+C2HlwYN1REdeHeZitHGVyeKrXzZUMx5MWuiPvPnXkUkuDk9qKGqclmTSJ9
-         nzPQ+PQYEUI7mwYCuvhVHMcQXWdEWoieZpNtj8B6iM2dOHp/lm0U0x8462Vb10+94YMq
-         vxSA==
-X-Gm-Message-State: AOAM530k2k9mtyv/+WUPhz36yDERIxrY07+VSa7r9xlCxXGmXfkGYEun
-        FK7r6JNizz78rjdYYhq3UnBjGYTJIeEBkw==
-X-Google-Smtp-Source: ABdhPJzMSE5lk5HNl+bVDUzBietgVF5D4MVfzATy6uM/qCJYtBvV5GIhR886OXuN00Hf1BjUiplGqg==
-X-Received: by 2002:a05:6122:201e:: with SMTP id l30mr34645596vkd.10.1638180451713;
-        Mon, 29 Nov 2021 02:07:31 -0800 (PST)
-Received: from mail-ua1-f48.google.com (mail-ua1-f48.google.com. [209.85.222.48])
-        by smtp.gmail.com with ESMTPSA id r24sm8209476vsn.1.2021.11.29.02.07.30
-        for <linux-m68k@lists.linux-m68k.org>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=euaa0MK3qpl38vu/xm/JZntaVOCHcXyS5pdHcr9Cv9Y=;
+        b=Bcv88H3WIf9mFebj4Uyq0zE/jMSX8Dox6C8kX/8jszcqqW6sUAqxHLzpvAxD8cH1QI
+         2sQHRS1ZlhrNhzOMKmWMDyuVVja/mfGFcPaxn/Nk08JNRrIS8QuQR/7eG0Nx0ZRxsyjO
+         FV/QdHBpvZ2xfoPvQhhiPzO9yH4A5yz3MQMA0FTWivmKSMgpuPC7cp8iyGvfpdj1Kde+
+         uAZxOOSlfRaO9o6sj1OqTdrtOmv9RRvvz903fZbOS1/rv3t1xQddfOoCaOFi9HcZY30w
+         eA0XXuCZsbvqzNQrW/+WnI3DbSXmrzic8Tx3qSPRZjZbZ/WTGRs5mATFJQl9a1MKLio/
+         e7mg==
+X-Gm-Message-State: AOAM530ctlNzm9uQ0qc0bJEoKaitdFXwrXtImMQMcxSG6EueEuLkpsJi
+        AZjNPuYMIVsL60AWvfBwGJ0=
+X-Google-Smtp-Source: ABdhPJzVpycz41Q2saZagDnrHTPX3H5Cn8S9UMBEs5Q4UAjlx4ArmiP2PAHXWXd2FxMxn0TZfV9KEQ==
+X-Received: by 2002:a2e:814b:: with SMTP id t11mr47973901ljg.171.1638185691187;
+        Mon, 29 Nov 2021 03:34:51 -0800 (PST)
+Received: from [192.168.2.145] (94-29-46-111.dynamic.spd-mgts.ru. [94.29.46.111])
+        by smtp.googlemail.com with ESMTPSA id n2sm131579ljq.30.2021.11.29.03.34.49
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 29 Nov 2021 02:07:31 -0800 (PST)
-Received: by mail-ua1-f48.google.com with SMTP id az37so32749813uab.13
-        for <linux-m68k@lists.linux-m68k.org>; Mon, 29 Nov 2021 02:07:30 -0800 (PST)
-X-Received: by 2002:a67:c106:: with SMTP id d6mr31358268vsj.77.1638180450870;
- Mon, 29 Nov 2021 02:07:30 -0800 (PST)
+        Mon, 29 Nov 2021 03:34:50 -0800 (PST)
+Subject: Re: [PATCH v4 05/25] reboot: Warn if restart handler has duplicated
+ priority
+To:     =?UTF-8?B?TWljaGHFgiBNaXJvc8WCYXc=?= <mirq-linux@rere.qmqm.pl>
+Cc:     Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>, Guo Ren <guoren@kernel.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Greg Ungerer <gerg@linux-m68k.org>,
+        Joshua Thompson <funaho@jurai.org>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Sebastian Reichel <sre@kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Greentime Hu <green.hu@gmail.com>,
+        Vincent Chen <deanbo422@gmail.com>,
+        "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
+        Helge Deller <deller@gmx.de>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Yoshinori Sato <ysato@users.sourceforge.jp>,
+        Rich Felker <dalias@libc.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+        Juergen Gross <jgross@suse.com>,
+        Stefano Stabellini <sstabellini@kernel.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Len Brown <lenb@kernel.org>,
+        Santosh Shilimkar <ssantosh@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>, Pavel Machek <pavel@ucw.cz>,
+        Lee Jones <lee.jones@linaro.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Ulf Hansson <ulf.hansson@linaro.org>, alankao@andestech.com,
+        "K . C . Kuen-Chern Lin" <kclin@andestech.com>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-csky@vger.kernel.org, linux-ia64@vger.kernel.org,
+        linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org,
+        linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        linux-riscv@lists.infradead.org, linux-sh@vger.kernel.org,
+        xen-devel@lists.xenproject.org, linux-acpi@vger.kernel.org,
+        linux-pm@vger.kernel.org, linux-tegra@vger.kernel.org
+References: <20211126180101.27818-1-digetx@gmail.com>
+ <20211126180101.27818-6-digetx@gmail.com> <YaLNOJTM+lVq+YNS@qmqm.qmqm.pl>
+ <033ddf2a-6223-1a82-ec64-30f17c891f67@gmail.com>
+ <YaQeQgbW+CjEdsqG@qmqm.qmqm.pl>
+From:   Dmitry Osipenko <digetx@gmail.com>
+Message-ID: <091321ea-4919-0579-88a8-23d05871575d@gmail.com>
+Date:   Mon, 29 Nov 2021 14:34:40 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.14.0
 MIME-Version: 1.0
-References: <8170fe1d1c62426d82275d36ba409ecc18754292.1637274578.git.fthain@linux-m68k.org>
-In-Reply-To: <8170fe1d1c62426d82275d36ba409ecc18754292.1637274578.git.fthain@linux-m68k.org>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Mon, 29 Nov 2021 11:07:19 +0100
-X-Gmail-Original-Message-ID: <CAMuHMdUFZkFkDaxHx-hbXhZAk2B-J_sprtEz=S8AYf9wJgH1pg@mail.gmail.com>
-Message-ID: <CAMuHMdUFZkFkDaxHx-hbXhZAk2B-J_sprtEz=S8AYf9wJgH1pg@mail.gmail.com>
-Subject: Re: [PATCH v3] m68k: Enable memtest functionality
-To:     Finn Thain <fthain@linux-m68k.org>
-Cc:     Mike Rapoport <rppt@kernel.org>, Sam Creasey <sammy@sammy.net>,
-        Jonathan Corbet <corbet@lwn.net>,
-        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-m68k <linux-m68k@lists.linux-m68k.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <YaQeQgbW+CjEdsqG@qmqm.qmqm.pl>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-On Thu, Nov 18, 2021 at 11:32 PM Finn Thain <fthain@linux-m68k.org> wrote:
-> Enable the memtest functionality and rearrange some code to prevent it
-> from clobbering the initrd.
->
-> The code to implement CONFIG_BLK_DEV_INITRD was conditional on
-> !defined(CONFIG_SUN3). For simplicity, remove that test on the basis
-> that m68k_ramdisk.size == 0 on Sun 3. The SLIME source code at
-> http://sammy.net/sun3/ftp/pub/m68k/sun3/slime/slime-2.0.tar.gz
-> indicates that no BI_RAMDISK entry is ever passed to the kernel due
-> to #ifdef 0 around the relevant code.
->
-> Cc: Mike Rapoport <rppt@kernel.org>
-> Cc: Sam Creasey <sammy@sammy.net>
-> Cc: Jonathan Corbet <corbet@lwn.net>
-> Signed-off-by: Finn Thain <fthain@linux-m68k.org>
+29.11.2021 03:26, Michał Mirosław пишет:
+> On Mon, Nov 29, 2021 at 12:06:19AM +0300, Dmitry Osipenko wrote:
+>> 28.11.2021 03:28, Michał Mirosław пишет:
+>>> On Fri, Nov 26, 2021 at 09:00:41PM +0300, Dmitry Osipenko wrote:
+>>>> Add sanity check which ensures that there are no two restart handlers
+>>>> registered with the same priority. Normally it's a direct sign of a
+>>>> problem if two handlers use the same priority.
+>>>
+>>> The patch doesn't ensure the property that there are no duplicated-priority
+>>> entries on the chain.
+>>
+>> It's not the exact point of this patch.
+>>
+>>> I'd rather see a atomic_notifier_chain_register_unique() that returns
+>>> -EBUSY or something istead of adding an entry with duplicate priority.
+>>> That way it would need only one list traversal unless you want to
+>>> register the duplicate anyway (then you would call the older
+>>> atomic_notifier_chain_register() after reporting the error).
+>>
+>> The point of this patch is to warn developers about the problem that
+>> needs to be fixed. We already have such troubling drivers in mainline.
+>>
+>> It's not critical to register different handlers with a duplicated
+>> priorities, but such cases really need to be corrected. We shouldn't
+>> break users' machines during transition to the new API, meanwhile
+>> developers should take action of fixing theirs drivers.
+>>
+>>> (Or you could return > 0 when a duplicate is registered in
+>>> atomic_notifier_chain_register() if the callers are prepared
+>>> for that. I don't really like this way, though.)
+>>
+>> I had a similar thought at some point before and decided that I'm not in
+>> favor of this approach. It's nicer to have a dedicated function that
+>> verifies the uniqueness, IMO.
+> 
+> I don't like the part that it traverses the list second time to check
+> the uniqueness. But actually you could avoid that if
+> notifier_chain_register() would always add equal-priority entries in
+> reverse order:
+> 
+>  static int notifier_chain_register(struct notifier_block **nl,
+>  		struct notifier_block *n)
+>  {
+>  	while ((*nl) != NULL) {
+>  		if (unlikely((*nl) == n)) {
+>  			WARN(1, "double register detected");
+>  			return 0;
+>  		}
+> -		if (n->priority > (*nl)->priority)
+> +		if (n->priority >= (*nl)->priority)
+>  			break;
+>  		nl = &((*nl)->next);
+>  	}
+>  	n->next = *nl;
+>  	rcu_assign_pointer(*nl, n);
+>  	return 0;
+>  }
+> 
+> Then the check for uniqueness after adding would be:
+> 
+>  WARN(nb->next && nb->priority == nb->next->priority);
 
-Reviewed-by: Geert Uytterhoeven <geert@linux-m68k.org>
-i.e. will queue in the m68k for-v5.17 branch.
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+We can't just change the registration order because invocation order of
+the call chain depends on the registration order and some of current
+users may rely on that order. I'm pretty sure that changing the order
+will have unfortunate consequences.
