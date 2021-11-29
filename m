@@ -2,56 +2,32 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E1113C433EF
-	for <linux-m68k@archiver.kernel.org>; Sun, 28 Nov 2021 21:56:03 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E6882C433F5
+	for <linux-m68k@archiver.kernel.org>; Mon, 29 Nov 2021 00:28:56 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232692AbhK1V7T (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Sun, 28 Nov 2021 16:59:19 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48576 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241703AbhK1V5T (ORCPT
-        <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Sun, 28 Nov 2021 16:57:19 -0500
-Received: from mail-lf1-x134.google.com (mail-lf1-x134.google.com [IPv6:2a00:1450:4864:20::134])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 56E35C06175A
-        for <linux-m68k@lists.linux-m68k.org>; Sun, 28 Nov 2021 13:54:02 -0800 (PST)
-Received: by mail-lf1-x134.google.com with SMTP id l22so39384695lfg.7
-        for <linux-m68k@lists.linux-m68k.org>; Sun, 28 Nov 2021 13:54:02 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=6vgwLT/ouzyM4jlzEumPwuoC7gyZzE5j02z7WHT5gL0=;
-        b=Ve2rGzh1LJA0+OcOlbbQ73O4vszbugE425G36NIT/LJkRhFMX190Vmwf9Z1u+DozQy
-         nt7KBoHLP6NcqsCJJVf/XMiWi1msgC02rhfjLu8CKl0SI+0RrFvUKjFjlZH7bdfHOiEX
-         jvvRM0yX0DY0N616Cr6USUXBiFSTo4izfqBOoNpjwV+G+cH1cFHUwmonpjoWJX8Ppl5i
-         8dEUJUKATxCUbOfS4VM/cGGt6HuPu0povTPAj3Y6GTkQG70Ogmn5eg+CfWVBj+3pxNr6
-         ReZIvwRQlO/G/fnEj5DP0/liBCD4UXfZ78eAcvQevgGY/DQsBvKDeMEPHSEvbIQ59N2I
-         efCQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=6vgwLT/ouzyM4jlzEumPwuoC7gyZzE5j02z7WHT5gL0=;
-        b=Xgv8M7khLI0VpjjToh8+4a1tzKDNNiU4Bc4tl6bNXr/JwFnpY6vLvF3AZV0KJfBy1z
-         suBCXM+nwFJbMfGF8PvVZasixPDKOvGKaOjwMi1SL5O/LANjX+EDPlJT3M4wkJevgihE
-         HX+KgnAe9LGPBsVX33aVRMJ3QzR9Bd34aG/ynuFl/aF/JeUDslHKc75/5TPRACnZzKYP
-         u0nSF9bm2nZf+/08pKToxJWZ1Z1QCQSoduw+Xh80QanhYkGmHnlStiTviShY8FgHIq+2
-         bGH3T6Ux6+NvssxUnBxXApY4c9prdN9JErDbgGdtpiQ1kqRoXzLX5ybjW8e1LzUYv+5J
-         emlA==
-X-Gm-Message-State: AOAM532STaNL7416+SYpTsoRx9z817LKLYV/43LrS3TALuJBxsN+pEUr
-        7TmTDXKrnL+SKUVlAwTkMD0=
-X-Google-Smtp-Source: ABdhPJxrac6Czjs8U2D2QGSscJN4jhlYtGpRqd/e7TNYLEXAP/IVggs/yFEWoCFlClXMagpvBwvrwg==
-X-Received: by 2002:a05:6512:3c82:: with SMTP id h2mr44786433lfv.128.1638136440658;
-        Sun, 28 Nov 2021 13:54:00 -0800 (PST)
-Received: from [192.168.2.145] (94-29-46-111.dynamic.spd-mgts.ru. [94.29.46.111])
-        by smtp.googlemail.com with ESMTPSA id w15sm1168884ljo.97.2021.11.28.13.53.58
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 28 Nov 2021 13:54:00 -0800 (PST)
-Subject: Re: [PATCH v4 08/25] kernel: Add combined power-off+restart handler
- call chain API
-To:     =?UTF-8?B?TWljaGHFgiBNaXJvc8WCYXc=?= <mirq-linux@rere.qmqm.pl>
+        id S230414AbhK2AcN (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Sun, 28 Nov 2021 19:32:13 -0500
+Received: from rere.qmqm.pl ([91.227.64.183]:42155 "EHLO rere.qmqm.pl"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231707AbhK2AaM (ORCPT <rfc822;linux-m68k@lists.linux-m68k.org>);
+        Sun, 28 Nov 2021 19:30:12 -0500
+Received: from remote.user (localhost [127.0.0.1])
+        by rere.qmqm.pl (Postfix) with ESMTPSA id 4J2R463HYCz9Y;
+        Mon, 29 Nov 2021 01:26:46 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=rere.qmqm.pl; s=1;
+        t=1638145614; bh=rYhG1/gOEGdeEm/s8Gt8rEBk1iF8QMIsgq7S9tytKm0=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=CbL6Dkr0hp6+eWfnOkswWvW2NOKJ79Uh6/l2ZCnK5kWTiOO50iqx187Rg4dryYZZY
+         bxYRz4m9fgWtZVh11lmgMaMMzocpKUJUWIlke/44DEMmzJJm4vDOSxFAyf1Gq25nhd
+         1THlT17c8aj7yKXukSvNxOS2rqgVH1j/XRMa1p7Hswrcs4jJdmmxtpOwmRnm9PweUg
+         dgln8/6i94ET+XVFAx+2l6pzk4WNbL+PWxg255szxizJhOsvQ3eK1ntEQbcIyPN3HU
+         KJwCs9dJC+yqQftWDNSkBS/r4FvpiW2ousq8It65okWyLREqQTSJR+N2Sf4mDmjtBp
+         iZvEDATRHwtcA==
+X-Virus-Status: Clean
+X-Virus-Scanned: clamav-milter 0.103.3 at mail
+Date:   Mon, 29 Nov 2021 01:26:42 +0100
+From:   =?iso-8859-2?Q?Micha=B3_Miros=B3aw?= <mirq-linux@rere.qmqm.pl>
+To:     Dmitry Osipenko <digetx@gmail.com>
 Cc:     Thierry Reding <thierry.reding@gmail.com>,
         Jonathan Hunter <jonathanh@nvidia.com>,
         Russell King <linux@armlinux.org.uk>,
@@ -103,32 +79,82 @@ Cc:     Thierry Reding <thierry.reding@gmail.com>,
         linux-riscv@lists.infradead.org, linux-sh@vger.kernel.org,
         xen-devel@lists.xenproject.org, linux-acpi@vger.kernel.org,
         linux-pm@vger.kernel.org, linux-tegra@vger.kernel.org
+Subject: Re: [PATCH v4 05/25] reboot: Warn if restart handler has duplicated
+ priority
+Message-ID: <YaQeQgbW+CjEdsqG@qmqm.qmqm.pl>
 References: <20211126180101.27818-1-digetx@gmail.com>
- <20211126180101.27818-9-digetx@gmail.com> <YaLQqks8cB0vWp6Q@qmqm.qmqm.pl>
- <9213569e-0f40-0df1-4710-8dab564e12d6@gmail.com>
- <YaPx0kY7poGpwCL9@qmqm.qmqm.pl>
-From:   Dmitry Osipenko <digetx@gmail.com>
-Message-ID: <1fa2d9d5-f5f6-77f5-adf6-827921acce49@gmail.com>
-Date:   Mon, 29 Nov 2021 00:53:51 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.14.0
+ <20211126180101.27818-6-digetx@gmail.com>
+ <YaLNOJTM+lVq+YNS@qmqm.qmqm.pl>
+ <033ddf2a-6223-1a82-ec64-30f17c891f67@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <YaPx0kY7poGpwCL9@qmqm.qmqm.pl>
 Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <033ddf2a-6223-1a82-ec64-30f17c891f67@gmail.com>
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-29.11.2021 00:17, Michał Mirosław пишет:
->> I'm having trouble with parsing this comment. Could you please try to
->> rephrase it? I don't see how you could check whether power-off handler
->> is available if you'll mix all handlers together.
-> If notify_call_chain() would be fixed to return NOTIFY_OK if any call
-> returned NOTIFY_OK, then this would be a clear way to gather the
-> answer if any of the handlers will attempt the final action (reboot or
-> power off).
+On Mon, Nov 29, 2021 at 12:06:19AM +0300, Dmitry Osipenko wrote:
+> 28.11.2021 03:28, Michał Mirosław пишет:
+> > On Fri, Nov 26, 2021 at 09:00:41PM +0300, Dmitry Osipenko wrote:
+> >> Add sanity check which ensures that there are no two restart handlers
+> >> registered with the same priority. Normally it's a direct sign of a
+> >> problem if two handlers use the same priority.
+> > 
+> > The patch doesn't ensure the property that there are no duplicated-priority
+> > entries on the chain.
 > 
+> It's not the exact point of this patch.
+> 
+> > I'd rather see a atomic_notifier_chain_register_unique() that returns
+> > -EBUSY or something istead of adding an entry with duplicate priority.
+> > That way it would need only one list traversal unless you want to
+> > register the duplicate anyway (then you would call the older
+> > atomic_notifier_chain_register() after reporting the error).
+> 
+> The point of this patch is to warn developers about the problem that
+> needs to be fixed. We already have such troubling drivers in mainline.
+> 
+> It's not critical to register different handlers with a duplicated
+> priorities, but such cases really need to be corrected. We shouldn't
+> break users' machines during transition to the new API, meanwhile
+> developers should take action of fixing theirs drivers.
+> 
+> > (Or you could return > 0 when a duplicate is registered in
+> > atomic_notifier_chain_register() if the callers are prepared
+> > for that. I don't really like this way, though.)
+> 
+> I had a similar thought at some point before and decided that I'm not in
+> favor of this approach. It's nicer to have a dedicated function that
+> verifies the uniqueness, IMO.
 
-Could you please show a code snippet that implements your suggestion?
+I don't like the part that it traverses the list second time to check
+the uniqueness. But actually you could avoid that if
+notifier_chain_register() would always add equal-priority entries in
+reverse order:
+
+ static int notifier_chain_register(struct notifier_block **nl,
+ 		struct notifier_block *n)
+ {
+ 	while ((*nl) != NULL) {
+ 		if (unlikely((*nl) == n)) {
+ 			WARN(1, "double register detected");
+ 			return 0;
+ 		}
+-		if (n->priority > (*nl)->priority)
++		if (n->priority >= (*nl)->priority)
+ 			break;
+ 		nl = &((*nl)->next);
+ 	}
+ 	n->next = *nl;
+ 	rcu_assign_pointer(*nl, n);
+ 	return 0;
+ }
+
+Then the check for uniqueness after adding would be:
+
+ WARN(nb->next && nb->priority == nb->next->priority);
+
+Best Regards
+Michał Mirosław
