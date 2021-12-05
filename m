@@ -2,220 +2,127 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id F0653C433EF
-	for <linux-m68k@archiver.kernel.org>; Mon, 29 Nov 2021 22:39:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B9C48C433EF
+	for <linux-m68k@archiver.kernel.org>; Sun,  5 Dec 2021 01:44:13 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234337AbhK2Wm1 (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Mon, 29 Nov 2021 17:42:27 -0500
-Received: from mga11.intel.com ([192.55.52.93]:34077 "EHLO mga11.intel.com"
+        id S230204AbhLEBri (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Sat, 4 Dec 2021 20:47:38 -0500
+Received: from mga11.intel.com ([192.55.52.93]:19255 "EHLO mga11.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234736AbhK2Wln (ORCPT <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Mon, 29 Nov 2021 17:41:43 -0500
-X-IronPort-AV: E=McAfee;i="6200,9189,10183"; a="233591218"
-X-IronPort-AV: E=Sophos;i="5.87,273,1631602800"; 
-   d="scan'208";a="233591218"
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Nov 2021 14:38:24 -0800
+        id S231152AbhLEBrg (ORCPT <rfc822;linux-m68k@lists.linux-m68k.org>);
+        Sat, 4 Dec 2021 20:47:36 -0500
+X-IronPort-AV: E=McAfee;i="6200,9189,10188"; a="234667938"
+X-IronPort-AV: E=Sophos;i="5.87,288,1631602800"; 
+   d="scan'208";a="234667938"
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Dec 2021 17:44:09 -0800
 X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.87,273,1631602800"; 
-   d="scan'208";a="459348551"
+X-IronPort-AV: E=Sophos;i="5.87,288,1631602800"; 
+   d="scan'208";a="578878252"
 Received: from lkp-server02.sh.intel.com (HELO 9e1e9f9b3bcb) ([10.239.97.151])
-  by orsmga006.jf.intel.com with ESMTP; 29 Nov 2021 14:38:22 -0800
+  by fmsmga004.fm.intel.com with ESMTP; 04 Dec 2021 17:44:07 -0800
 Received: from kbuild by 9e1e9f9b3bcb with local (Exim 4.92)
         (envelope-from <lkp@intel.com>)
-        id 1mrpHy-000CRP-2U; Mon, 29 Nov 2021 22:38:22 +0000
-Date:   Tue, 30 Nov 2021 06:37:53 +0800
+        id 1mtgZT-000Jfk-3k; Sun, 05 Dec 2021 01:44:07 +0000
+Date:   Sun, 5 Dec 2021 09:43:07 +0800
 From:   kernel test robot <lkp@intel.com>
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     linux-m68k@lists.linux-m68k.org
-Subject: [geert-m68k:master] BUILD SUCCESS
- 6312c672bea8b22c3042d7d383c4933a0a144d12
-Message-ID: <61a55641.f4eVSZA2E7N2X50I%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+To:     Greg Ungerer <gerg@uclinux.org>
+Cc:     kbuild-all@lists.01.org, linux-m68k@lists.linux-m68k.org,
+        uclinux-dev@uclinux.org, linux-kernel@vger.kernel.org
+Subject: [gerg-m68knommu:armnommu 4/4] cc1: error:
+ arch/arm/mach-versatile/include: No such file or directory
+Message-ID: <202112050940.8HUo4dw9-lkp@intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/geert/linux-m68k.git master
-branch HEAD: 6312c672bea8b22c3042d7d383c4933a0a144d12  m68k: Enable memtest functionality
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/gerg/m68knommu.git armnommu
+head:   6ffd7a3db739bfbe74f339ddf1ba19083ddd319e
+commit: 6ffd7a3db739bfbe74f339ddf1ba19083ddd319e [4/4] ARM: versatile: support configuring versatile machine for no-MMU
+config: arm-randconfig-p002-20211205 (https://download.01.org/0day-ci/archive/20211205/202112050940.8HUo4dw9-lkp@intel.com/config)
+compiler: arm-linux-gnueabi-gcc (GCC) 11.2.0
+reproduce (this is a W=1 build):
+        wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
+        chmod +x ~/bin/make.cross
+        # https://git.kernel.org/pub/scm/linux/kernel/git/gerg/m68knommu.git/commit/?id=6ffd7a3db739bfbe74f339ddf1ba19083ddd319e
+        git remote add gerg-m68knommu https://git.kernel.org/pub/scm/linux/kernel/git/gerg/m68knommu.git
+        git fetch --no-tags gerg-m68knommu armnommu
+        git checkout 6ffd7a3db739bfbe74f339ddf1ba19083ddd319e
+        # save the config file to linux build tree
+        mkdir build_dir
+        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-11.2.0 make.cross O=build_dir ARCH=arm SHELL=/bin/bash
 
-elapsed time: 732m
+If you fix the issue, kindly add following tag as appropriate
+Reported-by: kernel test robot <lkp@intel.com>
 
-configs tested: 163
-configs skipped: 3
+All error/warnings (new ones prefixed by >>):
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
-
-gcc tested configs:
-arm                                 defconfig
-arm64                            allyesconfig
-arm64                               defconfig
-arm                              allyesconfig
-arm                              allmodconfig
-i386                 randconfig-c001-20211128
-arm                        shmobile_defconfig
-mips                      fuloong2e_defconfig
-arc                            hsdk_defconfig
-nios2                            alldefconfig
-arm                        mini2440_defconfig
-powerpc                 mpc85xx_cds_defconfig
-arm                        spear3xx_defconfig
-arc                          axs103_defconfig
-arm                     davinci_all_defconfig
-mips                malta_qemu_32r6_defconfig
-powerpc                      cm5200_defconfig
-mips                        qi_lb60_defconfig
-sh                           se7619_defconfig
-sh                   rts7751r2dplus_defconfig
-powerpc                        icon_defconfig
-arm                              alldefconfig
-mips                         tb0219_defconfig
-arm                            qcom_defconfig
-mips                           xway_defconfig
-parisc                generic-64bit_defconfig
-powerpc                      makalu_defconfig
-arm                         s3c6400_defconfig
-arm                             mxs_defconfig
-sh                          r7785rp_defconfig
-powerpc                         wii_defconfig
-xtensa                  nommu_kc705_defconfig
-arm                        mvebu_v7_defconfig
-x86_64                              defconfig
-arm                       versatile_defconfig
-microblaze                      mmu_defconfig
-arm                         orion5x_defconfig
-mips                           ip22_defconfig
-s390                       zfcpdump_defconfig
-powerpc                    socrates_defconfig
-riscv             nommu_k210_sdcard_defconfig
-sparc                       sparc32_defconfig
-mips                         cobalt_defconfig
-sh                           se7722_defconfig
-arc                                 defconfig
-mips                        omega2p_defconfig
-parisc                           allyesconfig
-mips                           gcw0_defconfig
-arm                       imx_v6_v7_defconfig
-arm                           h5000_defconfig
-mips                           rs90_defconfig
-m68k                        m5307c3_defconfig
-arm                           h3600_defconfig
-mips                     loongson1c_defconfig
-mips                        bcm47xx_defconfig
-mips                      maltaaprp_defconfig
-openrisc                            defconfig
-arm                          pcm027_defconfig
-powerpc                        warp_defconfig
-mips                 decstation_r4k_defconfig
-arm                         axm55xx_defconfig
-arc                        vdk_hs38_defconfig
-arm                         socfpga_defconfig
-ia64                          tiger_defconfig
-powerpc64                        alldefconfig
-arm                         shannon_defconfig
-sh                          rsk7203_defconfig
-arm                           u8500_defconfig
-arm                        cerfcube_defconfig
-m68k                        m5272c3_defconfig
-arm                  randconfig-c002-20211128
-arm                  randconfig-c002-20211130
-ia64                             allmodconfig
-ia64                                defconfig
-ia64                             allyesconfig
-m68k                             allmodconfig
-m68k                                defconfig
-m68k                             allyesconfig
-nios2                               defconfig
-arc                              allyesconfig
-nds32                             allnoconfig
-nds32                               defconfig
-nios2                            allyesconfig
-csky                                defconfig
-alpha                               defconfig
-alpha                            allyesconfig
-xtensa                           allyesconfig
-h8300                            allyesconfig
-sh                               allmodconfig
-parisc                              defconfig
-s390                             allmodconfig
-s390                                defconfig
-s390                             allyesconfig
-i386                             allyesconfig
-sparc                            allyesconfig
-sparc                               defconfig
-i386                                defconfig
-i386                   debian-10.3-kselftests
-i386                              debian-10.3
-mips                             allyesconfig
-mips                             allmodconfig
-powerpc                          allyesconfig
-powerpc                          allmodconfig
-powerpc                           allnoconfig
-i386                 randconfig-a001-20211129
-i386                 randconfig-a002-20211129
-i386                 randconfig-a006-20211129
-i386                 randconfig-a005-20211129
-i386                 randconfig-a004-20211129
-i386                 randconfig-a003-20211129
-x86_64               randconfig-a011-20211128
-x86_64               randconfig-a014-20211128
-x86_64               randconfig-a012-20211128
-x86_64               randconfig-a016-20211128
-x86_64               randconfig-a013-20211128
-x86_64               randconfig-a015-20211128
-i386                 randconfig-a015-20211128
-i386                 randconfig-a016-20211128
-i386                 randconfig-a013-20211128
-i386                 randconfig-a012-20211128
-i386                 randconfig-a014-20211128
-i386                 randconfig-a011-20211128
-arc                  randconfig-r043-20211128
-s390                 randconfig-r044-20211128
-riscv                randconfig-r042-20211128
-riscv                    nommu_k210_defconfig
-riscv                            allyesconfig
-riscv                    nommu_virt_defconfig
-riscv                             allnoconfig
-riscv                               defconfig
-riscv                          rv32_defconfig
-riscv                            allmodconfig
-x86_64                    rhel-8.3-kselftests
-um                           x86_64_defconfig
-um                             i386_defconfig
-x86_64                           allyesconfig
-x86_64                               rhel-8.3
-x86_64                          rhel-8.3-func
-x86_64                                  kexec
-
-clang tested configs:
-x86_64               randconfig-a001-20211128
-x86_64               randconfig-a006-20211128
-x86_64               randconfig-a003-20211128
-x86_64               randconfig-a005-20211128
-x86_64               randconfig-a004-20211128
-x86_64               randconfig-a002-20211128
-i386                 randconfig-a001-20211128
-i386                 randconfig-a002-20211128
-i386                 randconfig-a006-20211128
-i386                 randconfig-a005-20211128
-i386                 randconfig-a004-20211128
-i386                 randconfig-a003-20211128
-i386                 randconfig-a015-20211129
-i386                 randconfig-a016-20211129
-i386                 randconfig-a013-20211129
-i386                 randconfig-a012-20211129
-i386                 randconfig-a014-20211129
-i386                 randconfig-a011-20211129
-hexagon              randconfig-r045-20211129
-hexagon              randconfig-r041-20211129
-s390                 randconfig-r044-20211129
-riscv                randconfig-r042-20211129
-hexagon              randconfig-r045-20211128
-hexagon              randconfig-r041-20211128
+>> cc1: warning: arch/arm/mach-versatile/include: No such file or directory [-Wmissing-include-dirs]
+--
+>> cc1: error: arch/arm/mach-versatile/include: No such file or directory [-Werror=missing-include-dirs]
+   cc1: all warnings being treated as errors
+--
+>> cc1: warning: arch/arm/mach-versatile/include: No such file or directory [-Wmissing-include-dirs]
+   drivers/dax/super.c:375:6: warning: no previous prototype for 'run_dax' [-Wmissing-prototypes]
+     375 | void run_dax(struct dax_device *dax_dev)
+         |      ^~~~~~~
+--
+>> arm-linux-gnueabi-gcc: error: unrecognized command-line option '-Wout-of-line-declaration'; did you mean '-Wold-style-declaration'?
+--
+>> cc1: warning: arch/arm/mach-versatile/include: No such file or directory [-Wmissing-include-dirs]
+   init/main.c:768:20: warning: no previous prototype for 'arch_post_acpi_subsys_init' [-Wmissing-prototypes]
+     768 | void __init __weak arch_post_acpi_subsys_init(void) { }
+         |                    ^~~~~~~~~~~~~~~~~~~~~~~~~~
+   init/main.c:780:20: warning: no previous prototype for 'mem_encrypt_init' [-Wmissing-prototypes]
+     780 | void __init __weak mem_encrypt_init(void) { }
+         |                    ^~~~~~~~~~~~~~~~
+   init/main.c:782:20: warning: no previous prototype for 'poking_init' [-Wmissing-prototypes]
+     782 | void __init __weak poking_init(void) { }
+         |                    ^~~~~~~~~~~
+--
+>> cc1: warning: arch/arm/mach-versatile/include: No such file or directory [-Wmissing-include-dirs]
+   init/calibrate.c:261:37: warning: no previous prototype for 'calibrate_delay_is_known' [-Wmissing-prototypes]
+     261 | unsigned long __attribute__((weak)) calibrate_delay_is_known(void)
+         |                                     ^~~~~~~~~~~~~~~~~~~~~~~~
+--
+>> cc1: warning: arch/arm/mach-versatile/include: No such file or directory [-Wmissing-include-dirs]
+   arch/arm/kernel/ptrace.c:854:16: warning: no previous prototype for 'syscall_trace_enter' [-Wmissing-prototypes]
+     854 | asmlinkage int syscall_trace_enter(struct pt_regs *regs)
+         |                ^~~~~~~~~~~~~~~~~~~
+   arch/arm/kernel/ptrace.c:882:17: warning: no previous prototype for 'syscall_trace_exit' [-Wmissing-prototypes]
+     882 | asmlinkage void syscall_trace_exit(struct pt_regs *regs)
+         |                 ^~~~~~~~~~~~~~~~~~
+--
+>> cc1: warning: arch/arm/mach-versatile/include: No such file or directory [-Wmissing-include-dirs]
+   arch/arm/kernel/reboot.c:78:6: warning: no previous prototype for 'soft_restart' [-Wmissing-prototypes]
+      78 | void soft_restart(unsigned long addr)
+         |      ^~~~~~~~~~~~
+--
+>> cc1: warning: arch/arm/mach-versatile/include: No such file or directory [-Wmissing-include-dirs]
+   arch/arm/kernel/signal.c:186:16: warning: no previous prototype for 'sys_sigreturn' [-Wmissing-prototypes]
+     186 | asmlinkage int sys_sigreturn(struct pt_regs *regs)
+         |                ^~~~~~~~~~~~~
+   arch/arm/kernel/signal.c:216:16: warning: no previous prototype for 'sys_rt_sigreturn' [-Wmissing-prototypes]
+     216 | asmlinkage int sys_rt_sigreturn(struct pt_regs *regs)
+         |                ^~~~~~~~~~~~~~~~
+   arch/arm/kernel/signal.c:601:1: warning: no previous prototype for 'do_work_pending' [-Wmissing-prototypes]
+     601 | do_work_pending(struct pt_regs *regs, unsigned int thread_flags, int syscall)
+         | ^~~~~~~~~~~~~~~
+--
+>> cc1: warning: arch/arm/mach-versatile/include: No such file or directory [-Wmissing-include-dirs]
+   arch/arm/kernel/sys_arm.c:32:17: warning: no previous prototype for 'sys_arm_fadvise64_64' [-Wmissing-prototypes]
+      32 | asmlinkage long sys_arm_fadvise64_64(int fd, int advice,
+         |                 ^~~~~~~~~~~~~~~~~~~~
+--
+>> cc1: warning: arch/arm/mach-versatile/include: No such file or directory [-Wmissing-include-dirs]
+   arch/arm/kernel/time.c:88:13: warning: no previous prototype for 'time_init' [-Wmissing-prototypes]
+      88 | void __init time_init(void)
+         |             ^~~~~~~~~
+..
 
 ---
 0-DAY CI Kernel Test Service, Intel Corporation
