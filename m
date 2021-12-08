@@ -2,180 +2,126 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 0818FC433F5
-	for <linux-m68k@archiver.kernel.org>; Mon,  6 Dec 2021 21:18:25 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2FA05C433EF
+	for <linux-m68k@archiver.kernel.org>; Wed,  8 Dec 2021 20:35:49 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238869AbhLFVVx (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Mon, 6 Dec 2021 16:21:53 -0500
-Received: from mga01.intel.com ([192.55.52.88]:22548 "EHLO mga01.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240931AbhLFVVw (ORCPT <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Mon, 6 Dec 2021 16:21:52 -0500
-X-IronPort-AV: E=McAfee;i="6200,9189,10190"; a="261472090"
-X-IronPort-AV: E=Sophos;i="5.87,292,1631602800"; 
-   d="scan'208";a="261472090"
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Dec 2021 13:18:21 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.87,292,1631602800"; 
-   d="scan'208";a="679144518"
-Received: from lkp-server02.sh.intel.com (HELO 9e1e9f9b3bcb) ([10.239.97.151])
-  by orsmga005.jf.intel.com with ESMTP; 06 Dec 2021 13:18:20 -0800
-Received: from kbuild by 9e1e9f9b3bcb with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1muLNL-000Lle-Mh; Mon, 06 Dec 2021 21:18:19 +0000
-Date:   Tue, 07 Dec 2021 05:17:35 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     linux-m68k@lists.linux-m68k.org
-Subject: [geert-m68k:master] BUILD SUCCESS
- f00c047f99d9c29630f421820c85dd7c7dd8f012
-Message-ID: <61ae7def.eYRZOhV6t/w7D4sH%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+        id S236796AbhLHUjU (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Wed, 8 Dec 2021 15:39:20 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43286 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236773AbhLHUjU (ORCPT
+        <rfc822;linux-m68k@lists.linux-m68k.org>);
+        Wed, 8 Dec 2021 15:39:20 -0500
+Received: from mail-qt1-x829.google.com (mail-qt1-x829.google.com [IPv6:2607:f8b0:4864:20::829])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 05A59C061746
+        for <linux-m68k@lists.linux-m68k.org>; Wed,  8 Dec 2021 12:35:48 -0800 (PST)
+Received: by mail-qt1-x829.google.com with SMTP id n15so3444063qta.0
+        for <linux-m68k@lists.linux-m68k.org>; Wed, 08 Dec 2021 12:35:47 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=soleen.com; s=google;
+        h=from:to:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=UcwIfa9Q1MTq8zG33ugFYvbjeTEPFMdkgQsXOakzRUs=;
+        b=YlACTCnGc24GsFKawqgHfolnYdISsTq88d/0YI/6NrvyZdGTFgH83rF9U4pEADNk6h
+         RYDEa8F+P+3i6QJdRd6Z/IeU4p1M+TSO5sjdKJw2/U3dsSrCzgdgevt2LqqBNsF5bztz
+         ZENs+r3asp1MEKOsRCaDRDhGC9yFkTrkD/RF0Hxb4WoTZCLiB2EYC+6G2lAEajJqgvvw
+         7RjJZkF4J73rUI2H9lTZwexOcc4JQrEC9m590YhaEILyBkhAI6WdhOLIXsYaJzxMxvD9
+         AmcgFBWhTv+ksvYm712A6uDYB7/NL3yZGcw0gBcd7vLVSTTcAyNTL+0UOjIHhc609uWb
+         Pfhw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=UcwIfa9Q1MTq8zG33ugFYvbjeTEPFMdkgQsXOakzRUs=;
+        b=DTi3YCjQDmeIQys+SdvTjInhPxWql54KWI6FcSNAPT7GXNXmimnhpb3loiVx+g7jrW
+         4c9b07gzA49rGobU9JUs3uLMZMSwpe3nwXoWf3uAUbZ7AaAWaX9S9YeBbPE/w+pSKPXB
+         SAI1SZVm7MuHpKUciMueFS1LfFX4MxzJ4N8JJD9rSZyAR3fTvS8iSCECJAkn5Rd2kI2n
+         lZPraRl1TUzQA6XOJy7xSZCCQGMw2eyMbF03OaMPhIo+sYcRxjlf3hOosVK5W67sZZXj
+         JKWIrhTIC7wHzpWfsxVb+N0Ng+4c8IcQLWqbS2zx9nROm89BMlyOJmjmg6MS0DjMhcNf
+         eTvQ==
+X-Gm-Message-State: AOAM532c9og3FddmgJ92BdPUSt7J5P8UeiNIuujK8iCO9+TY4rRl0UlG
+        s8IEiMP6zdArw9kAZgVFzETmMQ==
+X-Google-Smtp-Source: ABdhPJwRtSIS9JHVQruIhtRtSiWxusJu07ubKDoUdrUWvGS4ssN4aSSNDnM0cJSn6V5VUznWrOLgjg==
+X-Received: by 2002:a05:622a:1483:: with SMTP id t3mr11082168qtx.518.1638995747143;
+        Wed, 08 Dec 2021 12:35:47 -0800 (PST)
+Received: from soleen.c.googlers.com.com (189.216.85.34.bc.googleusercontent.com. [34.85.216.189])
+        by smtp.gmail.com with ESMTPSA id 143sm1898710qkg.87.2021.12.08.12.35.45
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 08 Dec 2021 12:35:46 -0800 (PST)
+From:   Pasha Tatashin <pasha.tatashin@soleen.com>
+To:     pasha.tatashin@soleen.com, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, linux-m68k@lists.linux-m68k.org,
+        anshuman.khandual@arm.com, willy@infradead.org,
+        akpm@linux-foundation.org, william.kucharski@oracle.com,
+        mike.kravetz@oracle.com, vbabka@suse.cz, geert@linux-m68k.org,
+        schmitzmic@gmail.com, rostedt@goodmis.org, mingo@redhat.com,
+        hannes@cmpxchg.org, guro@fb.com, songmuchun@bytedance.com,
+        weixugc@google.com, gthelen@google.com, rientjes@google.com,
+        pjt@google.com
+Subject: [PATCH 00/10] Hardening page _refcount
+Date:   Wed,  8 Dec 2021 20:35:34 +0000
+Message-Id: <20211208203544.2297121-1-pasha.tatashin@soleen.com>
+X-Mailer: git-send-email 2.34.1.400.ga245620fadb-goog
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/geert/linux-m68k.git master
-branch HEAD: f00c047f99d9c29630f421820c85dd7c7dd8f012  Merge tag 'v5.16-rc4'
+Changelog:
+v1:
+- sync with the latest linux-next
+RFCv2:
+- use the "fetch" variant instead of "return" of atomic instructions
+- allow negative values, as we are using all 32-bits of _refcount.
 
-elapsed time: 725m
 
-configs tested: 121
-configs skipped: 3
+It is hard to root cause _refcount problems, because they usually
+manifest after the damage has occurred.  Yet, they can lead to
+catastrophic failures such memory corruptions. There were a number
+of refcount related issues discovered recently [1], [2], [3].
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+Improve debugability by adding more checks that ensure that
+page->_refcount never turns negative (i.e. double free does not
+happen, or free after freeze etc).
 
-gcc tested configs:
-arm                                 defconfig
-arm                              allyesconfig
-arm                              allmodconfig
-arm64                               defconfig
-arm64                            allyesconfig
-sh                          r7780mp_defconfig
-powerpc                     tqm5200_defconfig
-powerpc                     asp8347_defconfig
-arm                            xcep_defconfig
-m68k                          amiga_defconfig
-ia64                            zx1_defconfig
-m68k                             allyesconfig
-powerpc                     powernv_defconfig
-powerpc                        fsp2_defconfig
-arm                       cns3420vb_defconfig
-sparc64                             defconfig
-m68k                            mac_defconfig
-arm                        multi_v5_defconfig
-arm                          ixp4xx_defconfig
-powerpc                         ps3_defconfig
-sh                        edosk7760_defconfig
-arm                        keystone_defconfig
-ia64                      gensparse_defconfig
-arm                            mps2_defconfig
-arm                       imx_v4_v5_defconfig
-arm                           sama7_defconfig
-arm                            zeus_defconfig
-arm                         vf610m4_defconfig
-arm                      integrator_defconfig
-arm                        multi_v7_defconfig
-sh                               alldefconfig
-powerpc                 mpc8540_ads_defconfig
-powerpc                      mgcoge_defconfig
-arm                         s3c6400_defconfig
-sh                           se7721_defconfig
-sh                          polaris_defconfig
-sh                           se7705_defconfig
-um                           x86_64_defconfig
-arm                  randconfig-c002-20211206
-ia64                             allmodconfig
-ia64                                defconfig
-ia64                             allyesconfig
-m68k                                defconfig
-m68k                             allmodconfig
-nios2                               defconfig
-arc                              allyesconfig
-nds32                             allnoconfig
-nds32                               defconfig
-nios2                            allyesconfig
-csky                                defconfig
-alpha                               defconfig
-alpha                            allyesconfig
-xtensa                           allyesconfig
-h8300                            allyesconfig
-arc                                 defconfig
-sh                               allmodconfig
-parisc                              defconfig
-s390                             allmodconfig
-s390                                defconfig
-parisc                           allyesconfig
-s390                             allyesconfig
-i386                             allyesconfig
-sparc                            allyesconfig
-sparc                               defconfig
-i386                                defconfig
-i386                   debian-10.3-kselftests
-i386                              debian-10.3
-mips                             allmodconfig
-mips                             allyesconfig
-powerpc                          allyesconfig
-powerpc                          allmodconfig
-powerpc                           allnoconfig
-x86_64               randconfig-a016-20211206
-x86_64               randconfig-a011-20211206
-x86_64               randconfig-a013-20211206
-x86_64               randconfig-a014-20211206
-x86_64               randconfig-a012-20211206
-x86_64               randconfig-a015-20211206
-i386                 randconfig-a016-20211206
-i386                 randconfig-a013-20211206
-i386                 randconfig-a011-20211206
-i386                 randconfig-a014-20211206
-i386                 randconfig-a012-20211206
-i386                 randconfig-a015-20211206
-arc                  randconfig-r043-20211206
-s390                 randconfig-r044-20211206
-riscv                randconfig-r042-20211206
-riscv                    nommu_k210_defconfig
-riscv                            allyesconfig
-riscv                    nommu_virt_defconfig
-riscv                             allnoconfig
-riscv                               defconfig
-riscv                          rv32_defconfig
-riscv                            allmodconfig
-um                             i386_defconfig
-x86_64                              defconfig
-x86_64                               rhel-8.3
-x86_64                          rhel-8.3-func
-x86_64                                  kexec
-x86_64                           allyesconfig
-x86_64                    rhel-8.3-kselftests
+- Check for overflow and underflow right from the functions that
+  modify _refcount
+- Remove set_page_count(), so we do not unconditionally overwrite
+  _refcount with an unrestrained value
+- Trace return values in all functions that modify _refcount
 
-clang tested configs:
-x86_64               randconfig-c007-20211206
-arm                  randconfig-c002-20211206
-mips                 randconfig-c004-20211206
-i386                 randconfig-c001-20211206
-powerpc              randconfig-c003-20211206
-s390                 randconfig-c005-20211206
-riscv                randconfig-c006-20211206
-x86_64               randconfig-a006-20211206
-x86_64               randconfig-a005-20211206
-x86_64               randconfig-a001-20211206
-x86_64               randconfig-a002-20211206
-x86_64               randconfig-a004-20211206
-x86_64               randconfig-a003-20211206
-i386                 randconfig-a001-20211206
-i386                 randconfig-a005-20211206
-i386                 randconfig-a002-20211206
-i386                 randconfig-a003-20211206
-i386                 randconfig-a006-20211206
-i386                 randconfig-a004-20211206
-hexagon              randconfig-r045-20211206
-hexagon              randconfig-r041-20211206
+Applies against next-20211208.
 
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+Previous verions:
+RFCv2: https://lore.kernel.org/all/20211117012059.141450-1-pasha.tatashin@soleen.com
+RFCv1: https://lore.kernel.org/all/20211026173822.502506-1-pasha.tatashin@soleen.com
+
+[1] https://lore.kernel.org/all/xr9335nxwc5y.fsf@gthelen2.svl.corp.google.com
+[2] https://lore.kernel.org/all/1582661774-30925-2-git-send-email-akaher@vmware.com
+[3] https://lore.kernel.org/all/20210622021423.154662-3-mike.kravetz@oracle.com
+
+Pasha Tatashin (10):
+  mm: page_ref_add_unless() does not trace 'u' argument
+  mm: add overflow and underflow checks for page->_refcount
+  mm: Avoid using set_page_count() in set_page_recounted()
+  mm: remove set_page_count() from page_frag_alloc_align
+  mm: avoid using set_page_count() when pages are freed into allocator
+  mm: rename init_page_count() -> page_ref_init()
+  mm: remove set_page_count()
+  mm: simplify page_ref_* functions
+  mm: do not use atomic_set_release in page_ref_unfreeze()
+  mm: use atomic_cmpxchg_acquire in page_ref_freeze().
+
+ arch/m68k/mm/motorola.c         |   2 +-
+ include/linux/mm.h              |   2 +-
+ include/linux/page_ref.h        | 159 +++++++++++++++-----------------
+ include/trace/events/page_ref.h |  99 +++++++++++++++-----
+ mm/debug_page_ref.c             |  30 ++----
+ mm/internal.h                   |   6 +-
+ mm/page_alloc.c                 |  19 ++--
+ 7 files changed, 180 insertions(+), 137 deletions(-)
+
+-- 
+2.34.1.400.ga245620fadb-goog
+
