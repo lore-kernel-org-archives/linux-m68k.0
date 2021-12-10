@@ -2,58 +2,57 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 871F4C433F5
-	for <linux-m68k@archiver.kernel.org>; Fri, 10 Dec 2021 19:49:53 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 78681C433EF
+	for <linux-m68k@archiver.kernel.org>; Fri, 10 Dec 2021 20:16:39 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235353AbhLJTx2 (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Fri, 10 Dec 2021 14:53:28 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48330 "EHLO
+        id S1343878AbhLJUUM (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Fri, 10 Dec 2021 15:20:12 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54934 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235207AbhLJTx1 (ORCPT
+        with ESMTP id S232797AbhLJUUJ (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Fri, 10 Dec 2021 14:53:27 -0500
+        Fri, 10 Dec 2021 15:20:09 -0500
 Received: from mail-lf1-x130.google.com (mail-lf1-x130.google.com [IPv6:2a00:1450:4864:20::130])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 28141C061746
-        for <linux-m68k@lists.linux-m68k.org>; Fri, 10 Dec 2021 11:49:52 -0800 (PST)
-Received: by mail-lf1-x130.google.com with SMTP id bu18so20084165lfb.0
-        for <linux-m68k@lists.linux-m68k.org>; Fri, 10 Dec 2021 11:49:52 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CF82BC061746
+        for <linux-m68k@lists.linux-m68k.org>; Fri, 10 Dec 2021 12:16:33 -0800 (PST)
+Received: by mail-lf1-x130.google.com with SMTP id k37so20113905lfv.3
+        for <linux-m68k@lists.linux-m68k.org>; Fri, 10 Dec 2021 12:16:33 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=subject:from:to:cc:references:message-id:date:user-agent
          :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=8Fx2AxGyl7h70TiPIfAS4vLJoC4O4KHoawTu1bt5PLU=;
-        b=V/Owe18bjaHxi/q9LMXS8LNROf16L9DCZYGpExoCj+SNTLCiSQNB3HcPLajV/NP5JE
-         39hqIvfIb3bc7xrS2E0EYCC3yAPKzLg7BnA0PumFQ89YOCGyLF9Ipz3BTISejc0ZvQJA
-         z5FDAeVaX1e2/Z9TFGOO31SRX4KXbVNvKZ2tbYOwQTeu/RyJ9cs6xalps+Kn8iqrggDL
-         HFUryH5SPjqHR6nW0F4ENPTnll1o3uJ7tQu3AMV7MUX+qx7nV3LMFjM06jk+Y2dJ7HtP
-         J+zk+OszrogiRw5+RRL4W19jTgJEJXo+L0tNHRiDg9ofDsu8gJQpDKtlXAuJgOp4GYiB
-         LSvg==
+        bh=3TjXmEXDJ/+bmC4Ps/ax4TtRHBZzHR+/4MLS5Bo5vyY=;
+        b=pA5gJzqpb6DuYCThgFEy/8I55Q/DWCaUg3a+PUCGAi7titTHPZavt9HNjzNTaNOdtA
+         W9bvYLeTFtb26OuFlSespYNsQjEuRbN74aib6efdQf4sRvk0jZOXEyR7Ry1SlPtvny3V
+         dHFm88kS0utx46N/B1V95jCju3EdX/3tioPOW0AUjL07+k8WzDTAaYKBNQJxB0pggImt
+         zxKY302IiWihQZ6zPY6n4S1ZYz2akRfe0TTR5ci41YrCJJyH8fb1pqNG9DRsK91AXeR3
+         4OlRlbRYehYwacP4ScBqgyVswzojoT/ol0CB6bk5gTERql84YP9I/T1kujCvte5MFcNM
+         x95w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:subject:from:to:cc:references:message-id:date
          :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=8Fx2AxGyl7h70TiPIfAS4vLJoC4O4KHoawTu1bt5PLU=;
-        b=vG7EfsWZC+TuHnc0xgimAb2nnSCvOg59APRAUln2nLkNhKgZ/GpfLG+gXmPP+8Qy+F
-         QUYeDI6GfSPgRjELW0Fyr/o3FGGu8tqCp/+k5znOozKKtcFLZuq+0TdWBIAq+pHohzBB
-         uOLFdmmv4qSVF/9PmU1TAtz3YDQRWthZdZMST53epY9NXCZXSljMpxmHRKGjTN42b7jw
-         64naeuRUw/OhKvy4ssplydPoU4xhFod2q75RmZJtoS+loTaG2GpgInC3yggpy0mNFWBt
-         MC+PeNXF9qPpyPdFxj/25IuwqkxhopWLAvrzYWwNKCO98WoXoPPxeww2daONPQEb3T7q
-         c4NQ==
-X-Gm-Message-State: AOAM530Sfpy3YmSmOSrPbmcOyD1iqchH3eqSEL5p+68hUkWcjeDI/k+6
-        2BqEekpye5f4KkZzP17lQxY=
-X-Google-Smtp-Source: ABdhPJz32UCAa2RfOn9XCHx2JjAq/5XnkzKJ8mqE0CmU9Bnm8cg96K7fElVvubFW0G/2Bv0vNQ8r/g==
-X-Received: by 2002:a05:6512:114a:: with SMTP id m10mr14457333lfg.188.1639165790431;
-        Fri, 10 Dec 2021 11:49:50 -0800 (PST)
+        bh=3TjXmEXDJ/+bmC4Ps/ax4TtRHBZzHR+/4MLS5Bo5vyY=;
+        b=gPbNi5Wgyu9JffQog4oq9UrvZsY0wrZU55gpjE788RbblqsB39dwoHMSrE+9MQSShV
+         VAvgOg0a/C5dDRFNDjRgtrqNG8cYlQpEE5zMTeGGCh+4K7LURPdnCoay/2vpHW6aUavx
+         AUY2oEXrwpBI23XUEeIv5f7BFV2F/Lm0GCiUHwox2bBsz75l2TofwoUHVY6rOkwKMRzw
+         keUVcyDR6/sCKmHcQCbWx0N+ebVG7BTPce6o4/RxIhRcpSjOb9xwP09LH20RDXDq2zob
+         gvLqgr1uSjTh/wj3l0bkQLbPZK/G+EKIBFEzqnTwUgInguamxCuKNDvgYATelVuuLF7C
+         QL2Q==
+X-Gm-Message-State: AOAM531TNvpuigOafdsFH3QJ0GhoBLp/pavU0VCybixaqy8zbPmzZH9n
+        U2pq3JBNkpTIwKxerv5Vjck=
+X-Google-Smtp-Source: ABdhPJwE5tZeH/HHL0CnlLb6JayzZfWyUFquo/I1vHYJYjJlUN8IQfec3+fnfy4fMkF6dVQvXojbFQ==
+X-Received: by 2002:a05:6512:2292:: with SMTP id f18mr14265704lfu.18.1639167392050;
+        Fri, 10 Dec 2021 12:16:32 -0800 (PST)
 Received: from [192.168.2.145] (94-29-46-111.dynamic.spd-mgts.ru. [94.29.46.111])
-        by smtp.googlemail.com with ESMTPSA id z24sm395757lfh.289.2021.12.10.11.49.48
+        by smtp.googlemail.com with ESMTPSA id z23sm409427ljn.23.2021.12.10.12.16.30
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 10 Dec 2021 11:49:49 -0800 (PST)
-Subject: Re: [PATCH v4 05/25] reboot: Warn if restart handler has duplicated
- priority
+        Fri, 10 Dec 2021 12:16:31 -0800 (PST)
+Subject: Re: [PATCH v4 03/25] notifier: Add
+ atomic/blocking_notifier_has_unique_priority()
 From:   Dmitry Osipenko <digetx@gmail.com>
-To:     "Rafael J. Wysocki" <rafael@kernel.org>,
-        =?UTF-8?B?TWljaGHFgiBNaXJvc8WCYXc=?= <mirq-linux@rere.qmqm.pl>
+To:     "Rafael J. Wysocki" <rafael@kernel.org>
 Cc:     Thierry Reding <thierry.reding@gmail.com>,
         Jonathan Hunter <jonathanh@nvidia.com>,
         Russell King <linux@armlinux.org.uk>,
@@ -111,21 +110,17 @@ Cc:     Thierry Reding <thierry.reding@gmail.com>,
         Linux PM <linux-pm@vger.kernel.org>,
         linux-tegra <linux-tegra@vger.kernel.org>
 References: <20211126180101.27818-1-digetx@gmail.com>
- <20211126180101.27818-6-digetx@gmail.com> <YaLNOJTM+lVq+YNS@qmqm.qmqm.pl>
- <033ddf2a-6223-1a82-ec64-30f17c891f67@gmail.com>
- <YaQeQgbW+CjEdsqG@qmqm.qmqm.pl>
- <091321ea-4919-0579-88a8-23d05871575d@gmail.com>
- <CAJZ5v0jMvdhfBqjY+V9h_Z6EH1ohuJH+KjuGiOw_Jor1Tnp7vg@mail.gmail.com>
- <45025b2d-4be1-f694-be61-31903795cf5d@gmail.com>
- <CAJZ5v0ieTwnBVjW8R_VTdPFH3yr5AwLc+ZEG5N3KrpTH+j8qZw@mail.gmail.com>
- <45228c88-4d51-591e-5da5-9ec468e71684@gmail.com>
- <ad6c7d73-e7d3-4901-fd63-ef87eecd39a2@gmail.com>
-Message-ID: <7875d10b-0d9b-ca29-668b-630ea3650fd0@gmail.com>
-Date:   Fri, 10 Dec 2021 22:49:47 +0300
+ <20211126180101.27818-4-digetx@gmail.com>
+ <CAJZ5v0jTJ3f7oUUR690PGaPJsxA8yzua9XDa8MONBHMzHnDfOQ@mail.gmail.com>
+ <e6ff1cea-a168-1cb0-25c5-fb16c681cf4a@gmail.com>
+ <CAJZ5v0gwnY07vg71_NB8RDWyv84FtMsmx7UTDd8TkUd7vFzc6A@mail.gmail.com>
+ <fd158245-aa9a-2e48-0145-004f30005a66@gmail.com>
+Message-ID: <218e67e2-1d8c-5727-3862-8884d74aa63e@gmail.com>
+Date:   Fri, 10 Dec 2021 23:16:29 +0300
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
  Thunderbird/78.14.0
 MIME-Version: 1.0
-In-Reply-To: <ad6c7d73-e7d3-4901-fd63-ef87eecd39a2@gmail.com>
+In-Reply-To: <fd158245-aa9a-2e48-0145-004f30005a66@gmail.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 8bit
@@ -133,41 +128,29 @@ Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-10.12.2021 22:44, Dmitry Osipenko пишет:
-> 10.12.2021 22:42, Dmitry Osipenko пишет:
-> ...
->>>> There is no strong requirement for priorities to be unique, the reboot.c
->>>> code will work properly.
->>>
->>> In which case adding the WARN() is not appropriate IMV.
->>>
->>> Also I've looked at the existing code and at least in some cases the
->>> order in which the notifiers run doesn't matter.  I'm not sure what
->>> the purpose of this patch is TBH.
+10.12.2021 22:33, Dmitry Osipenko пишет:
+>> Not really, they only prevent the race from occurring while
+>> notifier_has_unique_priority() is running.
 >>
->> The purpose is to let developer know that driver needs to be corrected.
+>> If anyone depends on this check for correctness, they need to lock the
+>> rwsem, do the check, do the thing depending on the check while holding
+>> the rwsem and then release the rwsem.  Otherwise it is racy.
 >>
->>>> The potential problem is on the user's side and the warning is intended
->>>> to aid the user.
->>>
->>> Unless somebody has the panic_on_warn mentioned previously set and
->>> really the user need not understand what the WARN() is about.  IOW,
->>> WARN() helps developers, not users.
->>>
->>>> We can make it a strong requirement, but only after converting and
->>>> testing all kernel drivers.
->>>
->>> Right.
->>>
->>>> I'll consider to add patches for that.
->>>
->>> But can you avoid adding more patches to this series?
->>
->> I won't add more patches since such patches can be added only after
->> completion of transition to the new API of the whole kernel.
->>
+> It's fine that it's a bit "racy" since in the context of this series. We
+> always do the check after adding new entry, so it's not a problem.
 > 
-> Thank you for the review.
+> There are two options:
 > 
+> 1. Use blocking_notifier_has_unique_priority() like it's done in this
+> patchset. Remove it after all drivers are converted to the new API and
+> add blocking_notifier_chain_register_unique().
+> 
+> 2. Add blocking_notifier_chain_register_unique(), but don't let it fail
+> the registration of non-unique entries until all drivers are converted
+> to the new API.
 
-I meant you, Rafael, and Michał, just in case :)
+There is third, perhaps the best option:
+
+3. Add blocking_notifier_chain_register_unique() and fall back to
+blocking_notifier_chain_register() if unique fails, do it until all
+drivers are converted to the new API.
