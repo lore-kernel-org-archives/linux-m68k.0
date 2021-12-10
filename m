@@ -2,43 +2,46 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 6C4ABC433EF
-	for <linux-m68k@archiver.kernel.org>; Fri, 10 Dec 2021 18:32:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 3328BC433F5
+	for <linux-m68k@archiver.kernel.org>; Fri, 10 Dec 2021 18:35:33 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233921AbhLJSgO (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Fri, 10 Dec 2021 13:36:14 -0500
-Received: from mail-ot1-f53.google.com ([209.85.210.53]:45805 "EHLO
-        mail-ot1-f53.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231611AbhLJSgN (ORCPT
+        id S229502AbhLJSjF convert rfc822-to-8bit (ORCPT
+        <rfc822;linux-m68k@archiver.kernel.org>);
+        Fri, 10 Dec 2021 13:39:05 -0500
+Received: from mail-oi1-f170.google.com ([209.85.167.170]:38819 "EHLO
+        mail-oi1-f170.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236135AbhLJSjA (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Fri, 10 Dec 2021 13:36:13 -0500
-Received: by mail-ot1-f53.google.com with SMTP id a23-20020a9d4717000000b0056c15d6d0caso10442302otf.12
-        for <linux-m68k@lists.linux-m68k.org>; Fri, 10 Dec 2021 10:32:38 -0800 (PST)
+        Fri, 10 Dec 2021 13:39:00 -0500
+Received: by mail-oi1-f170.google.com with SMTP id r26so14376204oiw.5
+        for <linux-m68k@lists.linux-m68k.org>; Fri, 10 Dec 2021 10:35:24 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=XYFeMefDtygzQHG6cGasFJft83PyhMCvIHgML7JQ1W8=;
-        b=ba/V5qmcWzuKjM4oLgKvPtzX2rRiPxbGRPeelrBT5oZlGhu1bFdZD+SLsR7z1C7T4L
-         gRmZspbe/mwlOwdX6cfPOlyirGaHQHbA6EqGZCkWZL0sj1+JotzGpm4p7BXc37vQVGaA
-         OpkK7jhg8mHZMP5090iT9eHOPzgS/Z9Rj5Mbho4bmS6sIyN5N1cGFeNfAVXfE4tOKzN7
-         Qo/tfoZFxybo5wKNoaZIKc28LPgP5EYN78VRlny1c0rZwh3SFp4Pn5g5/PBJNNRvizyx
-         Btfy6W8ej+RAzd3OgzJE85KxntbXPUQxYYx0Twty7npXE9pKigKZRPg/dXmjnjqn8R4s
-         HxOQ==
-X-Gm-Message-State: AOAM530GCluV/N3HFN+1wQaHKq/Bsw75BKdygnG0T6KW4LrkT4tSI9+6
-        PCWITNmUbH+TS7epsXl1WJbO8z5JKu6ZTXt4aoo=
-X-Google-Smtp-Source: ABdhPJy/ApH2I9ley83OfAtDiEoSWuJBoE9Gqun3QKF0IviB+39TRacgd3bR+5yVv4MXsqS5F4aemy99lcaDR84MB0I=
-X-Received: by 2002:a05:6830:348f:: with SMTP id c15mr12642134otu.254.1639161158278;
- Fri, 10 Dec 2021 10:32:38 -0800 (PST)
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=cmWwBA8Prvw8yKg8YllQ7/9D+dqLH//9VzjE/Uy0t0I=;
+        b=V/lD83dOkHrkEiLOE9xiRc73IUEhvdutrOZ9PTR7KAwr127Z6RG1ySQmZFWt6AgnaX
+         eIQQF4GkApQmw+rFiteofzfhSCiP96idVbwZoFq52A6qgF5s2RG1Ccm3tW/F8NvYjV4Z
+         RAxyFrwTyycVk0GqpNVvcoYmY2/s3YZiJWg+9g2hmqIKXJBMmIYa4CnVatrhtx0A/XcG
+         2CndRmCis6X3+wzT5E1Gev+WPkWF2pe5FhKt7sESMiw3TUvhWed7pGclqvf3AugPYbRa
+         ziwD7mR0mQ7zr8iUE2vVVnOHs+cu9qUck06uFlDoHnVAUBok0lEzUm3q5G6im8GCD6e2
+         d2Dw==
+X-Gm-Message-State: AOAM531XA73uTFcwFK/eaEVRA7VECCbBUnOKWCE4FWDUcxF+Qg3Rm+YS
+        CpRidNFnI2BrKVtj8qAmz99mEVqnRfjGxfv4Rg8=
+X-Google-Smtp-Source: ABdhPJy55tGpIDxF+0NXDym/GuLq/jPswo3lW9bQPH3JZ5naSMZQfeBVB0yUiflqPmuJ6rchV13JR6onKlnNSicDR4M=
+X-Received: by 2002:aca:eb0b:: with SMTP id j11mr14005588oih.51.1639161324582;
+ Fri, 10 Dec 2021 10:35:24 -0800 (PST)
 MIME-Version: 1.0
-References: <20211126180101.27818-1-digetx@gmail.com> <20211126180101.27818-7-digetx@gmail.com>
-In-Reply-To: <20211126180101.27818-7-digetx@gmail.com>
+References: <20211126180101.27818-1-digetx@gmail.com> <20211126180101.27818-8-digetx@gmail.com>
+ <CAJZ5v0i=zgubEtF5-Wnaqa5FMnfVUdSnEmD11-LAuYCH8ZCwrA@mail.gmail.com> <acf8289e-6ab8-6eda-ec06-e9044ddd9a92@gmail.com>
+In-Reply-To: <acf8289e-6ab8-6eda-ec06-e9044ddd9a92@gmail.com>
 From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Fri, 10 Dec 2021 19:32:27 +0100
-Message-ID: <CAJZ5v0ii7tGRDbxw+5GqdyONXvRPznXUqBZd03+pdoAd+pH=JQ@mail.gmail.com>
-Subject: Re: [PATCH v4 06/25] reboot: Warn if unregister_restart_handler() fails
+Date:   Fri, 10 Dec 2021 19:35:13 +0100
+Message-ID: <CAJZ5v0gvuteY4EtXWTKmh4-Wt-Z_dPcqfDLwc-ja1uovbV3rpw@mail.gmail.com>
+Subject: Re: [PATCH v4 07/25] reboot: Remove extern annotation from function prototypes
 To:     Dmitry Osipenko <digetx@gmail.com>
-Cc:     Thierry Reding <thierry.reding@gmail.com>,
+Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
+        Thierry Reding <thierry.reding@gmail.com>,
         Jonathan Hunter <jonathanh@nvidia.com>,
         Russell King <linux@armlinux.org.uk>,
         Catalin Marinas <catalin.marinas@arm.com>,
@@ -70,7 +73,6 @@ Cc:     Thierry Reding <thierry.reding@gmail.com>,
         Boris Ostrovsky <boris.ostrovsky@oracle.com>,
         Juergen Gross <jgross@suse.com>,
         Stefano Stabellini <sstabellini@kernel.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
         Len Brown <lenb@kernel.org>,
         Santosh Shilimkar <ssantosh@kernel.org>,
         Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
@@ -96,38 +98,33 @@ Cc:     Thierry Reding <thierry.reding@gmail.com>,
         Linux PM <linux-pm@vger.kernel.org>,
         linux-tegra <linux-tegra@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-On Fri, Nov 26, 2021 at 7:02 PM Dmitry Osipenko <digetx@gmail.com> wrote:
+On Fri, Dec 10, 2021 at 7:16 PM Dmitry Osipenko <digetx@gmail.com> wrote:
 >
-> Emit warning if unregister_restart_handler() fails since it never should
-> fail. This will ease further API development by catching mistakes early.
+> 10.12.2021 21:09, Rafael J. Wysocki пишет:
+> > On Fri, Nov 26, 2021 at 7:02 PM Dmitry Osipenko <digetx@gmail.com> wrote:
+> >>
+> >> There is no need to annotate function prototypes with 'extern', it makes
+> >> code less readable. Remove unnecessary annotations from <reboot.h>.
+> >>
+> >> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
+> >
+> > I'm not sure that this is really useful.
+> >
+> > Personally, I tend to respect the existing conventions like this.
+> >
+> > Surely, this change is not required for the rest of the series to work.
 >
-> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
-> ---
->  kernel/reboot.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+> Problem that such things start to spread all over the kernel with a
+> copy-paste approach if there is nobody to clean up the code.
 >
-> diff --git a/kernel/reboot.c b/kernel/reboot.c
-> index e6659ae329f1..f0e7b9c13f6b 100644
-> --- a/kernel/reboot.c
-> +++ b/kernel/reboot.c
-> @@ -210,7 +210,7 @@ EXPORT_SYMBOL(register_restart_handler);
->   */
->  int unregister_restart_handler(struct notifier_block *nb)
->  {
-> -       return atomic_notifier_chain_unregister(&restart_handler_list, nb);
-> +       return WARN_ON(atomic_notifier_chain_unregister(&restart_handler_list, nb));
+> This is not a common convention and sometimes it's getting corrected [1].
+>
+> [1] https://git.kernel.org/linus/6d7434931
 
-The only reason why it can fail is if the object pointed to by nb is
-not in the chain.  Why WARN() about this?  And what about systems with
-panic_on_warn set?
-
->  }
->  EXPORT_SYMBOL(unregister_restart_handler);
->
-> --
-> 2.33.1
->
+In separate patches outside of series adding new features, if one is
+so inclined.
