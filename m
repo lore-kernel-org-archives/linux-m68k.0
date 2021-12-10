@@ -2,59 +2,59 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 6DEA7C433F5
-	for <linux-m68k@archiver.kernel.org>; Fri, 10 Dec 2021 19:44:47 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 871F4C433F5
+	for <linux-m68k@archiver.kernel.org>; Fri, 10 Dec 2021 19:49:53 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343683AbhLJTsW (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Fri, 10 Dec 2021 14:48:22 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47088 "EHLO
+        id S235353AbhLJTx2 (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Fri, 10 Dec 2021 14:53:28 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48330 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242169AbhLJTsV (ORCPT
+        with ESMTP id S235207AbhLJTx1 (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Fri, 10 Dec 2021 14:48:21 -0500
-Received: from mail-lf1-x134.google.com (mail-lf1-x134.google.com [IPv6:2a00:1450:4864:20::134])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BC7C3C061746
-        for <linux-m68k@lists.linux-m68k.org>; Fri, 10 Dec 2021 11:44:45 -0800 (PST)
-Received: by mail-lf1-x134.google.com with SMTP id k37so19986355lfv.3
-        for <linux-m68k@lists.linux-m68k.org>; Fri, 10 Dec 2021 11:44:45 -0800 (PST)
+        Fri, 10 Dec 2021 14:53:27 -0500
+Received: from mail-lf1-x130.google.com (mail-lf1-x130.google.com [IPv6:2a00:1450:4864:20::130])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 28141C061746
+        for <linux-m68k@lists.linux-m68k.org>; Fri, 10 Dec 2021 11:49:52 -0800 (PST)
+Received: by mail-lf1-x130.google.com with SMTP id bu18so20084165lfb.0
+        for <linux-m68k@lists.linux-m68k.org>; Fri, 10 Dec 2021 11:49:52 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=subject:from:to:cc:references:message-id:date:user-agent
          :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=bghkq/gqakBG3UMA9KtKqv9kgT5Wq1LJh/DaMMP+Buo=;
-        b=lFdiyPZK17AYCTV65ZUsvdfciaNUYWPxmzSgJajTwQ07RVOIMn5cd3OMLqgm70DBAO
-         sO9a+0M7Ylp7HtPfjlNdELPWJPhFEsL+BBJZhlleZ8ktrzvWgXu2rCggboh+AgCAyR+i
-         WdIEhcqPzr+EGbl0oQk36HsGosG8oJ4OqatnVU+rYKpyd3R/jmhh8wJ5nt8gGw45GBZy
-         rNd0gesXdm60r4RJ7qNGWsHGKiq3UiUqi5FkpCzhl0LGExdzbir7EPh4UTzIBF/YRE+s
-         kyUVKadGSflj2NYa6m+B4vuldmIqJM59VgWObzoRC+XA5qxz4D0b/H+jRuY2tRZWYoPI
-         /XGQ==
+        bh=8Fx2AxGyl7h70TiPIfAS4vLJoC4O4KHoawTu1bt5PLU=;
+        b=V/Owe18bjaHxi/q9LMXS8LNROf16L9DCZYGpExoCj+SNTLCiSQNB3HcPLajV/NP5JE
+         39hqIvfIb3bc7xrS2E0EYCC3yAPKzLg7BnA0PumFQ89YOCGyLF9Ipz3BTISejc0ZvQJA
+         z5FDAeVaX1e2/Z9TFGOO31SRX4KXbVNvKZ2tbYOwQTeu/RyJ9cs6xalps+Kn8iqrggDL
+         HFUryH5SPjqHR6nW0F4ENPTnll1o3uJ7tQu3AMV7MUX+qx7nV3LMFjM06jk+Y2dJ7HtP
+         J+zk+OszrogiRw5+RRL4W19jTgJEJXo+L0tNHRiDg9ofDsu8gJQpDKtlXAuJgOp4GYiB
+         LSvg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:subject:from:to:cc:references:message-id:date
          :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=bghkq/gqakBG3UMA9KtKqv9kgT5Wq1LJh/DaMMP+Buo=;
-        b=pcso5eW9UjdhYYIr24lj9MVTZJhbW9nV8fl/Hw2K956BOWm/tHJ1Gsih815rFRLbIO
-         py+K15uMkOrHxcfuyGcudR4L9SsrOhQO6wj0UAJDCNE5xAl2KVCCGyZijcb4xic/DrkF
-         UwQdl8fDKPtqqMn3ao56C8GzEDkt9oLE7/ZPeqO5qGQmh7LqwB7rn3J4IXopEtONq0g9
-         ULD0h1Elo7pdp/sck1X2zeLVgERtcEWFhgWKr6Yhk+NOPNNsOqB2Oq2Chin0fLqkE4sc
-         Je+NJ2Fcb2G2c+T/xeHdGllgyHDXTn09UmL+czI4cYwTrILXkzkKiKUv9/3YuqHFEb8C
-         ymCQ==
-X-Gm-Message-State: AOAM530yIDggJDGV/Go+CZqqA6UsRWcueLgUhLIaC45cDD40l8BwMiTg
-        zBvQ10hXs0jPBAx+MG77tAc=
-X-Google-Smtp-Source: ABdhPJwdPpKxpD5iCVpMoy0RbhPzj8+6gSmN9/Uu5pMKxteqUazmF0c3BRQXsHXIE6Vu9MIa4P5vrA==
-X-Received: by 2002:ac2:4c50:: with SMTP id o16mr14291331lfk.517.1639165484083;
-        Fri, 10 Dec 2021 11:44:44 -0800 (PST)
+        bh=8Fx2AxGyl7h70TiPIfAS4vLJoC4O4KHoawTu1bt5PLU=;
+        b=vG7EfsWZC+TuHnc0xgimAb2nnSCvOg59APRAUln2nLkNhKgZ/GpfLG+gXmPP+8Qy+F
+         QUYeDI6GfSPgRjELW0Fyr/o3FGGu8tqCp/+k5znOozKKtcFLZuq+0TdWBIAq+pHohzBB
+         uOLFdmmv4qSVF/9PmU1TAtz3YDQRWthZdZMST53epY9NXCZXSljMpxmHRKGjTN42b7jw
+         64naeuRUw/OhKvy4ssplydPoU4xhFod2q75RmZJtoS+loTaG2GpgInC3yggpy0mNFWBt
+         MC+PeNXF9qPpyPdFxj/25IuwqkxhopWLAvrzYWwNKCO98WoXoPPxeww2daONPQEb3T7q
+         c4NQ==
+X-Gm-Message-State: AOAM530Sfpy3YmSmOSrPbmcOyD1iqchH3eqSEL5p+68hUkWcjeDI/k+6
+        2BqEekpye5f4KkZzP17lQxY=
+X-Google-Smtp-Source: ABdhPJz32UCAa2RfOn9XCHx2JjAq/5XnkzKJ8mqE0CmU9Bnm8cg96K7fElVvubFW0G/2Bv0vNQ8r/g==
+X-Received: by 2002:a05:6512:114a:: with SMTP id m10mr14457333lfg.188.1639165790431;
+        Fri, 10 Dec 2021 11:49:50 -0800 (PST)
 Received: from [192.168.2.145] (94-29-46-111.dynamic.spd-mgts.ru. [94.29.46.111])
-        by smtp.googlemail.com with ESMTPSA id c15sm394938lfb.154.2021.12.10.11.44.42
+        by smtp.googlemail.com with ESMTPSA id z24sm395757lfh.289.2021.12.10.11.49.48
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 10 Dec 2021 11:44:43 -0800 (PST)
+        Fri, 10 Dec 2021 11:49:49 -0800 (PST)
 Subject: Re: [PATCH v4 05/25] reboot: Warn if restart handler has duplicated
  priority
 From:   Dmitry Osipenko <digetx@gmail.com>
-To:     "Rafael J. Wysocki" <rafael@kernel.org>
-Cc:     =?UTF-8?B?TWljaGHFgiBNaXJvc8WCYXc=?= <mirq-linux@rere.qmqm.pl>,
-        Thierry Reding <thierry.reding@gmail.com>,
+To:     "Rafael J. Wysocki" <rafael@kernel.org>,
+        =?UTF-8?B?TWljaGHFgiBNaXJvc8WCYXc=?= <mirq-linux@rere.qmqm.pl>
+Cc:     Thierry Reding <thierry.reding@gmail.com>,
         Jonathan Hunter <jonathanh@nvidia.com>,
         Russell King <linux@armlinux.org.uk>,
         Catalin Marinas <catalin.marinas@arm.com>,
@@ -119,12 +119,13 @@ References: <20211126180101.27818-1-digetx@gmail.com>
  <45025b2d-4be1-f694-be61-31903795cf5d@gmail.com>
  <CAJZ5v0ieTwnBVjW8R_VTdPFH3yr5AwLc+ZEG5N3KrpTH+j8qZw@mail.gmail.com>
  <45228c88-4d51-591e-5da5-9ec468e71684@gmail.com>
-Message-ID: <ad6c7d73-e7d3-4901-fd63-ef87eecd39a2@gmail.com>
-Date:   Fri, 10 Dec 2021 22:44:41 +0300
+ <ad6c7d73-e7d3-4901-fd63-ef87eecd39a2@gmail.com>
+Message-ID: <7875d10b-0d9b-ca29-668b-630ea3650fd0@gmail.com>
+Date:   Fri, 10 Dec 2021 22:49:47 +0300
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
  Thunderbird/78.14.0
 MIME-Version: 1.0
-In-Reply-To: <45228c88-4d51-591e-5da5-9ec468e71684@gmail.com>
+In-Reply-To: <ad6c7d73-e7d3-4901-fd63-ef87eecd39a2@gmail.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 8bit
@@ -132,37 +133,41 @@ Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-10.12.2021 22:42, Dmitry Osipenko пишет:
-...
->>> There is no strong requirement for priorities to be unique, the reboot.c
->>> code will work properly.
+10.12.2021 22:44, Dmitry Osipenko пишет:
+> 10.12.2021 22:42, Dmitry Osipenko пишет:
+> ...
+>>>> There is no strong requirement for priorities to be unique, the reboot.c
+>>>> code will work properly.
+>>>
+>>> In which case adding the WARN() is not appropriate IMV.
+>>>
+>>> Also I've looked at the existing code and at least in some cases the
+>>> order in which the notifiers run doesn't matter.  I'm not sure what
+>>> the purpose of this patch is TBH.
 >>
->> In which case adding the WARN() is not appropriate IMV.
+>> The purpose is to let developer know that driver needs to be corrected.
 >>
->> Also I've looked at the existing code and at least in some cases the
->> order in which the notifiers run doesn't matter.  I'm not sure what
->> the purpose of this patch is TBH.
+>>>> The potential problem is on the user's side and the warning is intended
+>>>> to aid the user.
+>>>
+>>> Unless somebody has the panic_on_warn mentioned previously set and
+>>> really the user need not understand what the WARN() is about.  IOW,
+>>> WARN() helps developers, not users.
+>>>
+>>>> We can make it a strong requirement, but only after converting and
+>>>> testing all kernel drivers.
+>>>
+>>> Right.
+>>>
+>>>> I'll consider to add patches for that.
+>>>
+>>> But can you avoid adding more patches to this series?
+>>
+>> I won't add more patches since such patches can be added only after
+>> completion of transition to the new API of the whole kernel.
+>>
 > 
-> The purpose is to let developer know that driver needs to be corrected.
-> 
->>> The potential problem is on the user's side and the warning is intended
->>> to aid the user.
->>
->> Unless somebody has the panic_on_warn mentioned previously set and
->> really the user need not understand what the WARN() is about.  IOW,
->> WARN() helps developers, not users.
->>
->>> We can make it a strong requirement, but only after converting and
->>> testing all kernel drivers.
->>
->> Right.
->>
->>> I'll consider to add patches for that.
->>
->> But can you avoid adding more patches to this series?
-> 
-> I won't add more patches since such patches can be added only after
-> completion of transition to the new API of the whole kernel.
+> Thank you for the review.
 > 
 
-Thank you for the review.
+I meant you, Rafael, and Michał, just in case :)
