@@ -2,131 +2,197 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id AE7BBC433EF
-	for <linux-m68k@archiver.kernel.org>; Thu,  9 Dec 2021 15:18:18 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C35B7C433EF
+	for <linux-m68k@archiver.kernel.org>; Fri, 10 Dec 2021 18:09:33 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235026AbhLIPVv (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Thu, 9 Dec 2021 10:21:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45138 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230283AbhLIPVv (ORCPT
+        id S236526AbhLJSNI (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Fri, 10 Dec 2021 13:13:08 -0500
+Received: from mail-oo1-f48.google.com ([209.85.161.48]:40726 "EHLO
+        mail-oo1-f48.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235759AbhLJSNH (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Thu, 9 Dec 2021 10:21:51 -0500
-Received: from mail-ed1-x536.google.com (mail-ed1-x536.google.com [IPv6:2a00:1450:4864:20::536])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 534A0C061746
-        for <linux-m68k@lists.linux-m68k.org>; Thu,  9 Dec 2021 07:18:17 -0800 (PST)
-Received: by mail-ed1-x536.google.com with SMTP id x15so20965388edv.1
-        for <linux-m68k@lists.linux-m68k.org>; Thu, 09 Dec 2021 07:18:17 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=soleen.com; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=5iLRlZbJOhFJD4EQnidHmyuZneL5KPibp0BnEDW6M4E=;
-        b=XKxrG505Sz1sZS8PCxd1z/+1G9hIWyBeHrpW/RGRkYyXmm6hiPJhblWxflzSu4LFqG
-         iqpjEgy0taT+ew3UUT4qvw4Dr21XYT55fCWa2WGjYRTvUK+Cig11U6IveF6Tgued8h1+
-         g8atBQ6kTRWGPou4+2dAHdJ1afUKqCohQrqU11Ct/RA1PZUuXO6MsDEI+vnsVeFcIZEB
-         gfCBkmYq05XNPAbBDL8yMKvAljbhOMaoFqF/NnsU4HwFTc5Rb81ualaP5HEtld9DDX5I
-         r7/bM11AMehkrpQUF1WSOgRIWgYI8ld0JyDT98uc4v2Uj7ifdVz5t9T9BDjxVaPD0P+3
-         0T6A==
+        Fri, 10 Dec 2021 13:13:07 -0500
+Received: by mail-oo1-f48.google.com with SMTP id m37-20020a4a9528000000b002b83955f771so2570266ooi.7
+        for <linux-m68k@lists.linux-m68k.org>; Fri, 10 Dec 2021 10:09:32 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=5iLRlZbJOhFJD4EQnidHmyuZneL5KPibp0BnEDW6M4E=;
-        b=p2hWxi44oiClKhKGQp5m9jvxlsz6Man1VTroyqBTGxpK0RqBrs/fdL4modchnaD+pE
-         h4SQzauJTKuktGNUZbeXohI3Ji9sTzJ5L1pPfigT+DWAdKJ6/r+xg7R0rldg+bYNEFMw
-         X6pHmIZPpFGMpDiP8Mc8RFCzAc5VnCa7qKylicvMaUPPG8269fOXMU4wxSk7qx0gbOyu
-         ckn1Ad8eH4fHO1leuzoGH+PSsAQVmkCFK9ZDQQx1/TP5ZN4j8CphLns4TWvJlyJWFvtM
-         s/QGr58uxT0cuQgeCRhfew/ZSQKWQqxslcajLmlbvcdV2jZNtAiLsjKtz6OwgsFqvg8e
-         pTYA==
-X-Gm-Message-State: AOAM530Tc/5dIqJ/2/8sPydHOfJyTplFVKbAoqUAKFGPVgi24Ig0KZOt
-        a+hFknKrJp8YEU0leelox0hQFYMRNoM8T6Qu/KHwbQ==
-X-Google-Smtp-Source: ABdhPJwPXyWfT49E05oQInkSdO194qjrWNF44bvD1ZcSTHL7E7581f+iLrsjJJxu6vli7hBtpZ4WRsKKg47fYbK4fso=
-X-Received: by 2002:a50:d74e:: with SMTP id i14mr29231311edj.243.1639062996948;
- Thu, 09 Dec 2021 07:16:36 -0800 (PST)
+        bh=bnSiIIEAxVbWb5ME0b4EjQTIeMlzMMlMKVBEVEKFmvo=;
+        b=GeNyfUv5iMJI6S3DGerkLksDotbd31DUPFoEu3KY6SQB+JAmzIvgkWAMk02tHINsEP
+         LaOBhUz2v+vg+gC/xL3h/i+UJ6oyZY2GznvxmeGDTx1FCw7cT284WrQY+5ZGre069sfk
+         14DLfMucsBSltjgs0ID1MDOK/AapU5C/if28T9BqJSU7RVGhbyBDnh1cnqVyOp1SegvC
+         cs/OB0k9zeILcILyspQAorR8FshDJXXbB04VyRfOjIiE1vckIa7UdWeHGDSW8kfdKGVn
+         yK0sJa2pv3e7QE/Ex0wCTz3Q0pB+azJl04J1f3bZzPELjc3JOh4xfd/HCYO2PMlspWiF
+         wxQA==
+X-Gm-Message-State: AOAM531Hqf1zQvwzF7qMVVEwE/wUMWconjEOXoYQ19I/N7jCJSHx+vU2
+        /6vVqa4xja+d+wT2qdfiLfLmOBMiMdu0wEMWauw=
+X-Google-Smtp-Source: ABdhPJylQaHxxBjvxLDdejK26dmax8gF5GO2emXKWarqrtdmHFUWV4Injg4wQQswc1tWUgMSYyPwJPfech+QMe2lThI=
+X-Received: by 2002:a05:6820:388:: with SMTP id r8mr9365162ooj.0.1639159771506;
+ Fri, 10 Dec 2021 10:09:31 -0800 (PST)
 MIME-Version: 1.0
-References: <20211208203544.2297121-1-pasha.tatashin@soleen.com>
- <20211208203544.2297121-2-pasha.tatashin@soleen.com> <YbEbvwU81QKK/wUu@casper.infradead.org>
- <CA+CK2bCLkMoJXooxGw-z+-qz20YtE96JxmDYPYM8N0f0eFb52w@mail.gmail.com> <YbFnMnVxftnsxoF5@casper.infradead.org>
-In-Reply-To: <YbFnMnVxftnsxoF5@casper.infradead.org>
-From:   Pasha Tatashin <pasha.tatashin@soleen.com>
-Date:   Thu, 9 Dec 2021 10:15:59 -0500
-Message-ID: <CA+CK2bANo3VJ=8VouqqnE8QWUMg30_Sospizk6eXozpzgUB7VA@mail.gmail.com>
-Subject: Re: [PATCH 01/10] mm: page_ref_add_unless() does not trace 'u' argument
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>, linux-mm <linux-mm@kvack.org>,
-        linux-m68k@lists.linux-m68k.org,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        william.kucharski@oracle.com,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
+References: <20211126180101.27818-1-digetx@gmail.com> <20211126180101.27818-8-digetx@gmail.com>
+In-Reply-To: <20211126180101.27818-8-digetx@gmail.com>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Fri, 10 Dec 2021 19:09:20 +0100
+Message-ID: <CAJZ5v0i=zgubEtF5-Wnaqa5FMnfVUdSnEmD11-LAuYCH8ZCwrA@mail.gmail.com>
+Subject: Re: [PATCH v4 07/25] reboot: Remove extern annotation from function prototypes
+To:     Dmitry Osipenko <digetx@gmail.com>
+Cc:     Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>, Guo Ren <guoren@kernel.org>,
         Geert Uytterhoeven <geert@linux-m68k.org>,
-        schmitzmic@gmail.com, Steven Rostedt <rostedt@goodmis.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Roman Gushchin <guro@fb.com>,
-        Muchun Song <songmuchun@bytedance.com>, weixugc@google.com,
-        Greg Thelen <gthelen@google.com>,
-        David Rientjes <rientjes@google.com>,
-        Paul Turner <pjt@google.com>
+        Greg Ungerer <gerg@linux-m68k.org>,
+        Joshua Thompson <funaho@jurai.org>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Sebastian Reichel <sre@kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Greentime Hu <green.hu@gmail.com>,
+        Vincent Chen <deanbo422@gmail.com>,
+        "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
+        Helge Deller <deller@gmx.de>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Yoshinori Sato <ysato@users.sourceforge.jp>,
+        Rich Felker <dalias@libc.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        "the arch/x86 maintainers" <x86@kernel.org>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+        Juergen Gross <jgross@suse.com>,
+        Stefano Stabellini <sstabellini@kernel.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Len Brown <lenb@kernel.org>,
+        Santosh Shilimkar <ssantosh@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>, Pavel Machek <pavel@ucw.cz>,
+        Lee Jones <lee.jones@linaro.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Ulf Hansson <ulf.hansson@linaro.org>, alankao@andestech.com,
+        "K . C . Kuen-Chern Lin" <kclin@andestech.com>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-csky@vger.kernel.org, linux-ia64@vger.kernel.org,
+        linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org,
+        linux-parisc@vger.kernel.org,
+        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
+        linux-riscv@lists.infradead.org,
+        Linux-sh list <linux-sh@vger.kernel.org>,
+        xen-devel@lists.xenproject.org,
+        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        linux-tegra <linux-tegra@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-On Wed, Dec 8, 2021 at 9:17 PM Matthew Wilcox <willy@infradead.org> wrote:
+On Fri, Nov 26, 2021 at 7:02 PM Dmitry Osipenko <digetx@gmail.com> wrote:
 >
-> On Wed, Dec 08, 2021 at 08:25:22PM -0500, Pasha Tatashin wrote:
-> > On Wed, Dec 8, 2021 at 3:55 PM Matthew Wilcox <willy@infradead.org> wrote:
-> > >
-> > > On Wed, Dec 08, 2021 at 08:35:35PM +0000, Pasha Tatashin wrote:
-> > > > In other page_ref_* functions all arguments and returns are traced, but
-> > > > in page_ref_add_unless the 'u' argument which stands for unless boolean
-> > > > is not traced. However, what is more confusing is that in the tracing
-> > > > routine:
-> > > >       __page_ref_mod_unless(struct page *page, int v, int u);
-> > > >
-> > > > The 'u' argument present, but instead a return value is passed into
-> > > > this argument.
-> > > >
-> > > > Add a new template specific for page_ref_add_unless(), and trace all
-> > > > arguments and the return value.
-> > >
-> > > The special casing of '1' for device pages is going away, so NAK
-> > > to this user-visible change.
-> >
-> > I can drop this patch, as it really intended to fix existing oddities
-> > and missing info. However, I do not really understand your NAK reason.
-> > Can you please explain about the special casing of "1" for device
-> > pages?
+> There is no need to annotate function prototypes with 'extern', it makes
+> code less readable. Remove unnecessary annotations from <reboot.h>.
 >
-> $ git grep page_ref_add_unless
-> include/linux/mm.h:     return page_ref_add_unless(page, 1, 0);
-> include/linux/page_ref.h:static inline bool page_ref_add_unless(struct page *page, int nr, int u)
-> include/linux/page_ref.h:       return page_ref_add_unless(&folio->page, nr, u);
-> mm/memcontrol.c:                if (!page_ref_add_unless(page, 1, 1))
->
-> 'u' is always 0, except for the caller in mm/memcontrol.c:
->
->         if (is_device_private_entry(ent)) {
->                 page = pfn_swap_entry_to_page(ent);
->                 /*
->                  * MEMORY_DEVICE_PRIVATE means ZONE_DEVICE page and which have
->                  * a refcount of 1 when free (unlike normal page)
->                  */
->                 if (!page_ref_add_unless(page, 1, 1))
->                         return NULL;
->                 return page;
->         }
->
-> That special casing of ZONE_DEVICE pages is being fixed, so 'u' will
-> soon always be 0, and I'm sure we'll delete it as an argument.  So
-> there's no point in tracing what it 'used to be'.
+> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
 
-Sounds good, at the time when 'u' is deleted we can also address
-inconsistencies fixed in this patch. So, I will drop it from my series
-in the next version.
+I'm not sure that this is really useful.
 
-Thanks,
-Pasha
+Personally, I tend to respect the existing conventions like this.
+
+Surely, this change is not required for the rest of the series to work.
+
+> ---
+>  include/linux/reboot.h | 38 +++++++++++++++++++-------------------
+>  1 file changed, 19 insertions(+), 19 deletions(-)
+>
+> diff --git a/include/linux/reboot.h b/include/linux/reboot.h
+> index 7c288013a3ca..b7fa25726323 100644
+> --- a/include/linux/reboot.h
+> +++ b/include/linux/reboot.h
+> @@ -40,36 +40,36 @@ extern int reboot_cpu;
+>  extern int reboot_force;
+>
+>
+> -extern int register_reboot_notifier(struct notifier_block *);
+> -extern int unregister_reboot_notifier(struct notifier_block *);
+> +int register_reboot_notifier(struct notifier_block *);
+> +int unregister_reboot_notifier(struct notifier_block *);
+>
+> -extern int devm_register_reboot_notifier(struct device *, struct notifier_block *);
+> +int devm_register_reboot_notifier(struct device *, struct notifier_block *);
+>
+> -extern int register_restart_handler(struct notifier_block *);
+> -extern int unregister_restart_handler(struct notifier_block *);
+> -extern void do_kernel_restart(char *cmd);
+> +int register_restart_handler(struct notifier_block *);
+> +int unregister_restart_handler(struct notifier_block *);
+> +void do_kernel_restart(char *cmd);
+>
+>  /*
+>   * Architecture-specific implementations of sys_reboot commands.
+>   */
+>
+> -extern void migrate_to_reboot_cpu(void);
+> -extern void machine_restart(char *cmd);
+> -extern void machine_halt(void);
+> -extern void machine_power_off(void);
+> +void migrate_to_reboot_cpu(void);
+> +void machine_restart(char *cmd);
+> +void machine_halt(void);
+> +void machine_power_off(void);
+>
+> -extern void machine_shutdown(void);
+> +void machine_shutdown(void);
+>  struct pt_regs;
+> -extern void machine_crash_shutdown(struct pt_regs *);
+> +void machine_crash_shutdown(struct pt_regs *);
+>
+>  /*
+>   * Architecture independent implementations of sys_reboot commands.
+>   */
+>
+> -extern void kernel_restart_prepare(char *cmd);
+> -extern void kernel_restart(char *cmd);
+> -extern void kernel_halt(void);
+> -extern void kernel_power_off(void);
+> +void kernel_restart_prepare(char *cmd);
+> +void kernel_restart(char *cmd);
+> +void kernel_halt(void);
+> +void kernel_power_off(void);
+>
+>  extern int C_A_D; /* for sysctl */
+>  void ctrl_alt_del(void);
+> @@ -77,15 +77,15 @@ void ctrl_alt_del(void);
+>  #define POWEROFF_CMD_PATH_LEN  256
+>  extern char poweroff_cmd[POWEROFF_CMD_PATH_LEN];
+>
+> -extern void orderly_poweroff(bool force);
+> -extern void orderly_reboot(void);
+> +void orderly_poweroff(bool force);
+> +void orderly_reboot(void);
+>  void hw_protection_shutdown(const char *reason, int ms_until_forced);
+>
+>  /*
+>   * Emergency restart, callable from an interrupt handler.
+>   */
+>
+> -extern void emergency_restart(void);
+> +void emergency_restart(void);
+>  #include <asm/emergency-restart.h>
+>
+>  #endif /* _LINUX_REBOOT_H */
+> --
+> 2.33.1
+>
