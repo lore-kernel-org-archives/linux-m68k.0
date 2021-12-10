@@ -2,43 +2,47 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C032BC433EF
-	for <linux-m68k@archiver.kernel.org>; Fri, 10 Dec 2021 18:21:23 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 242F8C433F5
+	for <linux-m68k@archiver.kernel.org>; Fri, 10 Dec 2021 18:28:08 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244835AbhLJSY6 (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Fri, 10 Dec 2021 13:24:58 -0500
-Received: from mail-ot1-f51.google.com ([209.85.210.51]:34716 "EHLO
-        mail-ot1-f51.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241988AbhLJSY5 (ORCPT
+        id S245331AbhLJSbm convert rfc822-to-8bit (ORCPT
+        <rfc822;linux-m68k@archiver.kernel.org>);
+        Fri, 10 Dec 2021 13:31:42 -0500
+Received: from mail-ot1-f53.google.com ([209.85.210.53]:36490 "EHLO
+        mail-ot1-f53.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S244557AbhLJSbm (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Fri, 10 Dec 2021 13:24:57 -0500
-Received: by mail-ot1-f51.google.com with SMTP id x19-20020a9d7053000000b0055c8b39420bso10482251otj.1
-        for <linux-m68k@lists.linux-m68k.org>; Fri, 10 Dec 2021 10:21:22 -0800 (PST)
+        Fri, 10 Dec 2021 13:31:42 -0500
+Received: by mail-ot1-f53.google.com with SMTP id w6-20020a9d77c6000000b0055e804fa524so10485015otl.3
+        for <linux-m68k@lists.linux-m68k.org>; Fri, 10 Dec 2021 10:28:07 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=CGnO4bxnTAqMK/uthYlBDN3+OwLPbg309qxpgobdKxI=;
-        b=OhDNTiH5kMMDWN5oT9VBc5o94QD+/tb97vR2LzfLhzb2paKG1CW4dppI2cmaR6Xc7J
-         GMJMZbn4bKemkdPvu0mViiIfK1tKS4RCXDQqhFNdZgKo8qKiqZBLqaCM3zV9luBRsNY4
-         bmdvKnHG5gt5bCQflKWgKOxOgzbtf5cay4lhgR9T4aLWzhsu6VHsIRW/9m+x3arkPAq1
-         z/W7TrQf0kEGc3ALvL92kyLduBGreSUKra/AvSnjRZ5kFVHIXPRoXIkVDWANOXGvW26+
-         yq6c2v3VXNfKZn41UygVzbVZ7pKTK77IzGfu+GPDU8VWr640RiHKTIHDYocSmgl4nQ5i
-         LdAA==
-X-Gm-Message-State: AOAM531spWYdIZ8eIjP2bIT9mnf+CaCowBdiGhecmNKLW+pPucraPjLF
-        x8HN5M+0OyC/2a8Dt25itMgM32D9Y33GLQH7/Q0=
-X-Google-Smtp-Source: ABdhPJxyUbegeOKjvJ3CxiHL7dwpj9EzFVDPRUNdKiJGM3d307QrxgUO9bUGZj0EMwemLB2snxZHAeDirffJcqK0rDM=
-X-Received: by 2002:a05:6830:1e57:: with SMTP id e23mr12377743otj.16.1639160481982;
- Fri, 10 Dec 2021 10:21:21 -0800 (PST)
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=O1tFpICrUp02/Rz91q5M3zJOsfP+AsepTWSxKHsDYko=;
+        b=QtOU4SAHnC+KGE7uxfcfONOspT+w9NFaWUpSQ0s1h4EpNDTRk2JQucADOT5gvPqjJ3
+         I7HdpmKtp+q07AOJh19oUavIr1q+j852CoAtMEnXYytTBjGrPitVc33Oaz1iwOH9GXZ5
+         dIC7fgQXM0/fgzy7zMevwO9T0jX82Y/AhxEravRl55RVbeuCyc8Iv4eL+UumxkY9hzst
+         kDBSLfhVk+TSNmXFDDpckMVhpteDbgjYW4986zbyIRFf2LYpwQk5NBp0uAwkyyQCClh2
+         5zJqjOXZObsdaUA9ZCLqV/4W3aHqHf5KGylY7wEMb+dd+5SmWVKaYGdEJkI7OMjsgA3o
+         ml4g==
+X-Gm-Message-State: AOAM530HhHT64Slx6VWGunkmDCn3mlg2OVd3kNT+qqNr1+I3VK7HPKdE
+        tbxumCpLfhQa+o8NV4QNUr3dXA9GOJCjbf5LO2Y=
+X-Google-Smtp-Source: ABdhPJyYCS/8s4tkJCG4AWTeWKT+d6o4I/cnaoDS1n1/MlonZY2Ew73o7SGhiWkpQrPntkE0d8ozu+9C4WKQVKYTs8M=
+X-Received: by 2002:a9d:4c10:: with SMTP id l16mr12535470otf.198.1639160886984;
+ Fri, 10 Dec 2021 10:28:06 -0800 (PST)
 MIME-Version: 1.0
-References: <20211126180101.27818-1-digetx@gmail.com> <20211126180101.27818-5-digetx@gmail.com>
-In-Reply-To: <20211126180101.27818-5-digetx@gmail.com>
+References: <20211126180101.27818-1-digetx@gmail.com> <20211126180101.27818-6-digetx@gmail.com>
+ <YaLNOJTM+lVq+YNS@qmqm.qmqm.pl> <033ddf2a-6223-1a82-ec64-30f17c891f67@gmail.com>
+ <YaQeQgbW+CjEdsqG@qmqm.qmqm.pl> <091321ea-4919-0579-88a8-23d05871575d@gmail.com>
+In-Reply-To: <091321ea-4919-0579-88a8-23d05871575d@gmail.com>
 From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Fri, 10 Dec 2021 19:21:11 +0100
-Message-ID: <CAJZ5v0h_OfrQ92KqsUdiKAfUrXDT9dPXzq4S=b6zi4k_2cPAjg@mail.gmail.com>
-Subject: Re: [PATCH v4 04/25] reboot: Correct typo in a comment
+Date:   Fri, 10 Dec 2021 19:27:55 +0100
+Message-ID: <CAJZ5v0jMvdhfBqjY+V9h_Z6EH1ohuJH+KjuGiOw_Jor1Tnp7vg@mail.gmail.com>
+Subject: Re: [PATCH v4 05/25] reboot: Warn if restart handler has duplicated priority
 To:     Dmitry Osipenko <digetx@gmail.com>
-Cc:     Thierry Reding <thierry.reding@gmail.com>,
+Cc:     =?UTF-8?B?TWljaGHFgiBNaXJvc8WCYXc=?= <mirq-linux@rere.qmqm.pl>,
+        Thierry Reding <thierry.reding@gmail.com>,
         Jonathan Hunter <jonathanh@nvidia.com>,
         Russell King <linux@armlinux.org.uk>,
         Catalin Marinas <catalin.marinas@arm.com>,
@@ -96,35 +100,86 @@ Cc:     Thierry Reding <thierry.reding@gmail.com>,
         Linux PM <linux-pm@vger.kernel.org>,
         linux-tegra <linux-tegra@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-On Fri, Nov 26, 2021 at 7:02 PM Dmitry Osipenko <digetx@gmail.com> wrote:
+On Mon, Nov 29, 2021 at 12:34 PM Dmitry Osipenko <digetx@gmail.com> wrote:
 >
-> Correct s/implemenations/implementations/ in <reboot.h>.
+> 29.11.2021 03:26, Michał Mirosław пишет:
+> > On Mon, Nov 29, 2021 at 12:06:19AM +0300, Dmitry Osipenko wrote:
+> >> 28.11.2021 03:28, Michał Mirosław пишет:
+> >>> On Fri, Nov 26, 2021 at 09:00:41PM +0300, Dmitry Osipenko wrote:
+> >>>> Add sanity check which ensures that there are no two restart handlers
+> >>>> registered with the same priority. Normally it's a direct sign of a
+> >>>> problem if two handlers use the same priority.
+> >>>
+> >>> The patch doesn't ensure the property that there are no duplicated-priority
+> >>> entries on the chain.
+> >>
+> >> It's not the exact point of this patch.
+> >>
+> >>> I'd rather see a atomic_notifier_chain_register_unique() that returns
+> >>> -EBUSY or something istead of adding an entry with duplicate priority.
+> >>> That way it would need only one list traversal unless you want to
+> >>> register the duplicate anyway (then you would call the older
+> >>> atomic_notifier_chain_register() after reporting the error).
+> >>
+> >> The point of this patch is to warn developers about the problem that
+> >> needs to be fixed. We already have such troubling drivers in mainline.
+> >>
+> >> It's not critical to register different handlers with a duplicated
+> >> priorities, but such cases really need to be corrected. We shouldn't
+> >> break users' machines during transition to the new API, meanwhile
+> >> developers should take action of fixing theirs drivers.
+> >>
+> >>> (Or you could return > 0 when a duplicate is registered in
+> >>> atomic_notifier_chain_register() if the callers are prepared
+> >>> for that. I don't really like this way, though.)
+> >>
+> >> I had a similar thought at some point before and decided that I'm not in
+> >> favor of this approach. It's nicer to have a dedicated function that
+> >> verifies the uniqueness, IMO.
+> >
+> > I don't like the part that it traverses the list second time to check
+> > the uniqueness. But actually you could avoid that if
+> > notifier_chain_register() would always add equal-priority entries in
+> > reverse order:
+> >
+> >  static int notifier_chain_register(struct notifier_block **nl,
+> >               struct notifier_block *n)
+> >  {
+> >       while ((*nl) != NULL) {
+> >               if (unlikely((*nl) == n)) {
+> >                       WARN(1, "double register detected");
+> >                       return 0;
+> >               }
+> > -             if (n->priority > (*nl)->priority)
+> > +             if (n->priority >= (*nl)->priority)
+> >                       break;
+> >               nl = &((*nl)->next);
+> >       }
+> >       n->next = *nl;
+> >       rcu_assign_pointer(*nl, n);
+> >       return 0;
+> >  }
+> >
+> > Then the check for uniqueness after adding would be:
+> >
+> >  WARN(nb->next && nb->priority == nb->next->priority);
 >
-> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
+> We can't just change the registration order because invocation order of
+> the call chain depends on the registration order
 
-This patch clearly need not be part of this series.
+It doesn't if unique priorities are required and isn't that what you want?
 
-> ---
->  include/linux/reboot.h | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/include/linux/reboot.h b/include/linux/reboot.h
-> index af907a3d68d1..7c288013a3ca 100644
-> --- a/include/linux/reboot.h
-> +++ b/include/linux/reboot.h
-> @@ -63,7 +63,7 @@ struct pt_regs;
->  extern void machine_crash_shutdown(struct pt_regs *);
->
->  /*
-> - * Architecture independent implemenations of sys_reboot commands.
-> + * Architecture independent implementations of sys_reboot commands.
->   */
->
->  extern void kernel_restart_prepare(char *cmd);
-> --
-> 2.33.1
->
+> and some of current
+> users may rely on that order. I'm pretty sure that changing the order
+> will have unfortunate consequences.
+
+Well, the WARN() doesn't help much then.
+
+Either you can make all of the users register with unique priorities,
+and then you can make the registration reject non-unique ones, or you
+cannot assume them to be unique.
