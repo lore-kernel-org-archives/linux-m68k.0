@@ -2,49 +2,49 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id EA93EC433EF
-	for <linux-m68k@archiver.kernel.org>; Sun, 12 Dec 2021 21:17:57 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id AEB5BC4332F
+	for <linux-m68k@archiver.kernel.org>; Sun, 12 Dec 2021 21:17:58 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229657AbhLLVRz (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Sun, 12 Dec 2021 16:17:55 -0500
-Received: from mail-lf1-f50.google.com ([209.85.167.50]:38730 "EHLO
-        mail-lf1-f50.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229816AbhLLVRh (ORCPT
+        id S229673AbhLLVR6 (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Sun, 12 Dec 2021 16:17:58 -0500
+Received: from mail-ed1-f45.google.com ([209.85.208.45]:33353 "EHLO
+        mail-ed1-f45.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229811AbhLLVRh (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
         Sun, 12 Dec 2021 16:17:37 -0500
-Received: by mail-lf1-f50.google.com with SMTP id bi37so27505400lfb.5
-        for <linux-m68k@lists.linux-m68k.org>; Sun, 12 Dec 2021 13:15:15 -0800 (PST)
+Received: by mail-ed1-f45.google.com with SMTP id t5so45829172edd.0
+        for <linux-m68k@lists.linux-m68k.org>; Sun, 12 Dec 2021 13:15:09 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=Cc0IUGWHitJ0Cooyguk/vAdy9iAEtCRPuqNtfJHYmrA=;
-        b=Q/c1xA4uTfURNpesTFDEluAGeukAv0A39h1++QrnHKHB/Wx+jD9uvH8v63QIbUTx/0
-         +6rR5eBZFCFfLub5tT4XZSawg+QmuNCEsjrKd9tJnYsJi7NapchhtdTTw5BZoWSvXNqZ
-         6qalX/P65Sx1m+OSvepBjdrlXRB10kpIkI8l0kGvB4dwAOxWvQSYyQVUabX2ElBpn+NL
-         9XDYXpgHW6Qi4N2A46fFgcC634zKj6WeJBReRhrYc+nPBcEHLfR4bNetpt3CSzMg8EgJ
-         8HNfo2NJArfFto2I2XSFuYiZIyXwvuRmtRKx9vRDmnjHIRre5YAsG7Vp/31CfQv6ggAb
-         qrCA==
+        bh=jIixMSKlDuHM/ROsyXYWDI0GhGtBfDPAGuo/NFEP3H8=;
+        b=hrGVAHE56JpFf7T1U0arv4PmuX7CbiQ1yLnbkKYuXMHBz+H3yb3VN2/nIyUDqephff
+         QqKz1o3ksHyfMD3DtBk4DYltiAcjPD5RzT6wcBtuIMufZ2IM1Vel7z+a1Exa8MHUOxuI
+         Dt4mQ6Vnuxs5g7ALA4qb9IZybJQfrWTEvo8JdYZtrfc8/kHvvuQX3Pn7PZtd57VOGXgj
+         0YqHm4SASgoJmXMLGsZ/pIqqXI/HfsjVI1++/o/84XkQkMqRzS2O9gDjhujVp11R8QEK
+         S6qzjMGucoD6LjpSZw60nGaKCWanFs77owbTLZZY3Or/CEpJJw8lyGS/ALFLDgBppTYT
+         hA9w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=Cc0IUGWHitJ0Cooyguk/vAdy9iAEtCRPuqNtfJHYmrA=;
-        b=e9gMBmbRQ0vRKOMS32xrc97v8YPhtchr/xpy5D87wvvwp9LB0x4WFij6b3HbLiAz9E
-         uccqTPbofh8nXMVuZ4R36Iuo5KzZAJmF56RfcsqFTVIZg95Zt02/E2YiQDpGlygaADLp
-         5CaelKjb9BjAwHfsIfK9eXfZ1ahSBd0heA1wJokpjeZsHokj87EyLRUkGc4sBVBP9YKE
-         ACaCJD++m4QpCf69qTQt51MTjFtp2OmsI5Iwy9eLuJcrViljQS6CCdv2KB2oa2Jq6muO
-         /jbXo2/zwuS8ndJruKSBgTSLZc6eFbUiJFjdt0pJ8XWO0AaypoAeYxaYON/ULDfOsirm
-         /bfw==
-X-Gm-Message-State: AOAM530CKvGkh3HTlt60zU5WnTZm3MofE3aeY2Wcs5+vXr9IwtIL37fL
-        HwP+D93KAoBJ5QEOvd1OFoE8S1HY8CI=
-X-Google-Smtp-Source: ABdhPJy9fCaXc17ytJafsM7AkKSnE1Az22GGN1LbVGAjsgQu/yV7EBxctgRg/qU3ELcpWZOjbb6Yyw==
-X-Received: by 2002:a2e:a58d:: with SMTP id m13mr26702958ljp.281.1639343046781;
-        Sun, 12 Dec 2021 13:04:06 -0800 (PST)
+        bh=jIixMSKlDuHM/ROsyXYWDI0GhGtBfDPAGuo/NFEP3H8=;
+        b=UzX/yfmsep+afSm/imZ8EAd979j7rMGCBQQfhsoppfG/3GPsYUIUPnGS9Ygbi6jrVk
+         QppcR+lsKveipnl/UiVF/A7uOQv7X6yTlzcTWwpJKAJqz8UWA/O9CPQFOCboiQ2NLH7w
+         qMBFJLFh1Li9c6lBli20KiQYkYECTHSA2pUl4ATEjL6nWUHu0+7e/tKcEgsT9hauQAvA
+         xFbEtmX2lCkaX8FwZPVGImg5NRCpI6k08Mxa7ZEPzJaGZCT7/Xl773P87ODiLG1WoJZ8
+         zA1p6bDP48CGv2CDk5Z4/+ZxRFhm5KPk/Mv7vCEWzWJtTM4PoOQeTDsDGw5DpM6Ybdok
+         OtzQ==
+X-Gm-Message-State: AOAM5317Tr1zzHaixpwf45kbjk001nV+Oiegs/SKVkQuF8iTmYUDtulu
+        i4mhWeHvmDoYJ9CVH4XSPLQLu9qigbM=
+X-Google-Smtp-Source: ABdhPJyGhLtLr0TWgn93QxuZFfYOb4V/87m+HVEQhOkYVUOBLQiR21oi6QbMq+Q/ve+fVLOCMbRPCw==
+X-Received: by 2002:a05:6512:3048:: with SMTP id b8mr25740519lfb.677.1639343044820;
+        Sun, 12 Dec 2021 13:04:04 -0800 (PST)
 Received: from localhost.localdomain (94-29-46-111.dynamic.spd-mgts.ru. [94.29.46.111])
-        by smtp.gmail.com with ESMTPSA id y4sm1197172ljp.16.2021.12.12.13.04.04
+        by smtp.gmail.com with ESMTPSA id y4sm1197172ljp.16.2021.12.12.13.04.02
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 12 Dec 2021 13:04:06 -0800 (PST)
+        Sun, 12 Dec 2021 13:04:04 -0800 (PST)
 From:   Dmitry Osipenko <digetx@gmail.com>
 To:     Thierry Reding <thierry.reding@gmail.com>,
         Jonathan Hunter <jonathanh@nvidia.com>,
@@ -98,9 +98,9 @@ Cc:     linux-kernel@vger.kernel.org, linux-csky@vger.kernel.org,
         linux-sh@vger.kernel.org, xen-devel@lists.xenproject.org,
         linux-acpi@vger.kernel.org, linux-pm@vger.kernel.org,
         linux-tegra@vger.kernel.org
-Subject: [PATCH v5 16/21] mips: Use do_kernel_power_off()
-Date:   Mon, 13 Dec 2021 00:03:04 +0300
-Message-Id: <20211212210309.9851-17-digetx@gmail.com>
+Subject: [PATCH v5 15/21] ia64: Use do_kernel_power_off()
+Date:   Mon, 13 Dec 2021 00:03:03 +0300
+Message-Id: <20211212210309.9851-16-digetx@gmail.com>
 X-Mailer: git-send-email 2.33.1
 In-Reply-To: <20211212210309.9851-1-digetx@gmail.com>
 References: <20211212210309.9851-1-digetx@gmail.com>
@@ -117,23 +117,31 @@ be converted to the new power-off API.
 
 Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
 ---
- arch/mips/kernel/reset.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+ arch/ia64/kernel/process.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/arch/mips/kernel/reset.c b/arch/mips/kernel/reset.c
-index 6288780b779e..e7ce07b3e79b 100644
---- a/arch/mips/kernel/reset.c
-+++ b/arch/mips/kernel/reset.c
-@@ -114,8 +114,7 @@ void machine_halt(void)
- 
- void machine_power_off(void)
+diff --git a/arch/ia64/kernel/process.c b/arch/ia64/kernel/process.c
+index 834df24a88f1..cee4d7db2143 100644
+--- a/arch/ia64/kernel/process.c
++++ b/arch/ia64/kernel/process.c
+@@ -19,6 +19,7 @@
+ #include <linux/module.h>
+ #include <linux/notifier.h>
+ #include <linux/personality.h>
++#include <linux/reboot.h>
+ #include <linux/sched.h>
+ #include <linux/sched/debug.h>
+ #include <linux/sched/hotplug.h>
+@@ -599,8 +600,7 @@ machine_halt (void)
+ void
+ machine_power_off (void)
  {
 -	if (pm_power_off)
 -		pm_power_off();
 +	do_kernel_power_off();
+ 	machine_halt();
+ }
  
- #ifdef CONFIG_SMP
- 	preempt_disable();
 -- 
 2.33.1
 
