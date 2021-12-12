@@ -2,52 +2,52 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9FDF6C433EF
-	for <linux-m68k@archiver.kernel.org>; Sun, 12 Dec 2021 21:32:43 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 88123C433EF
+	for <linux-m68k@archiver.kernel.org>; Sun, 12 Dec 2021 21:33:44 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229510AbhLLVcn (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Sun, 12 Dec 2021 16:32:43 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35934 "EHLO
+        id S229618AbhLLVdo (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Sun, 12 Dec 2021 16:33:44 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36162 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229468AbhLLVcn (ORCPT
+        with ESMTP id S229468AbhLLVdn (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Sun, 12 Dec 2021 16:32:43 -0500
-Received: from mail-lf1-x12f.google.com (mail-lf1-x12f.google.com [IPv6:2a00:1450:4864:20::12f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 65499C06173F
-        for <linux-m68k@lists.linux-m68k.org>; Sun, 12 Dec 2021 13:32:42 -0800 (PST)
-Received: by mail-lf1-x12f.google.com with SMTP id b1so27436066lfs.13
-        for <linux-m68k@lists.linux-m68k.org>; Sun, 12 Dec 2021 13:32:42 -0800 (PST)
+        Sun, 12 Dec 2021 16:33:43 -0500
+Received: from mail-wr1-x42b.google.com (mail-wr1-x42b.google.com [IPv6:2a00:1450:4864:20::42b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 621F6C06173F
+        for <linux-m68k@lists.linux-m68k.org>; Sun, 12 Dec 2021 13:33:43 -0800 (PST)
+Received: by mail-wr1-x42b.google.com with SMTP id t9so24047571wrx.7
+        for <linux-m68k@lists.linux-m68k.org>; Sun, 12 Dec 2021 13:33:43 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=wYDTQaETrXPItP1/JDli7ai+6XwIrQRRYJAIL5Q83WI=;
-        b=mytm/DccZ1wzLV8XTmme10BTi4beUxZb3ysJUV5xYL3KUNdI6UIdOg14PI4Xf14XxI
-         7c+v89VpWLB0ZUhSuYpai3wHhN1WGcKOGbWxhGz9tr3OzP6swV60YcA1Wv5ZjDbMnKUa
-         xazlSiI4jIde5eD9wVDd3hacMA1401SIHTIVPK4datO44ZlP1Doly3s0Wmv47NPuWclC
-         2Crdjrp9htA7LHc95eECzQ1s6YjHoLBwAjSAcevyU9K8Sfc578kND8lSRu7vK9feHITf
-         xRYypJ8GB6uZ0ZKBDnu+9y0H6KT0THCoLFcjbrxfymTRhYWqXWoS+2dhJR4JAajg0Zvg
-         IWnw==
+        bh=CYB4TkQOzA3vf/K7WR0AkGT34Ge0Y+0VoaElZGGGZzU=;
+        b=YPGRWatSQET2pz+NVqu4ADHfYgaxmP/wWxna6m/lloO4toehydZkLAQeVKfAZnur3U
+         ytUl8qCGBZdPLRC2UzNM4AW78JtCd6wM5cGhTywvum741iPm3RcFk7tkhkZidnvbCnJl
+         R/4YWy2Kn2XQsZfcdS0OqacDfDDCQ28GjMnqHQTevEBhyfW+vOkmPPci2FrLZRzsEI3D
+         rIODFz6+YMOOUk7HX9YcjikZPgA6Qmy3MY8VgfLlwgexSKQyGvZ0zOYmPyq4U9vsPiW2
+         gzi0gfD7OcJAbuwERD0Pe26Rs8F2W7VMl8LrFpshwRBhPegOZQws/YUiLfZf5um9S4nw
+         C5Tg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=wYDTQaETrXPItP1/JDli7ai+6XwIrQRRYJAIL5Q83WI=;
-        b=Fv68C2UCbGtgoxl1X4tEUDG30N9g30jC90Cin4E2gG7NhyMQGlpN36pN0Gg/KVRtGZ
-         haq81cvo6/XCCnKprvGcGGe7LZL5ny9FkpZ3/0SgNz4fpcB3P/LN8g02EqAR8K6RsbrL
-         ILQijVVJ8hs7s1i+m9aDrAJVsz075l3afzjWD3UnmzNTg3PBQPXA4omuogT5+1rlaCa7
-         f6Q9I5vJPnOi4aXAeR7CvHH2zNNI3OsfhqiOLJQsWmKjI60hRuV3SfH9frsbcpUIKIEl
-         c+P9fo3hfanCa6NA9Io4x2t4tTPNJXlpFbweWzwY0SSSKSCMPLjwguTzfJUIp8aiAWGI
-         KlHw==
-X-Gm-Message-State: AOAM531V9w5nonmVrmShUb+qFtgJIXE6H0RS+1DasvidKlPFT2RYPeSg
-        ZrVx/3j31OZ3SZ9cMDZf8Ykt8jeWWuc=
-X-Google-Smtp-Source: ABdhPJyb60LD2qugqos2h5QyxI/abab2bR0WoFiHVAsfElgYVMLf1BWWm1ZERTHxaqoQ3zC4K8Hjug==
-X-Received: by 2002:a2e:a238:: with SMTP id i24mr25511659ljm.296.1639343038939;
-        Sun, 12 Dec 2021 13:03:58 -0800 (PST)
+        bh=CYB4TkQOzA3vf/K7WR0AkGT34Ge0Y+0VoaElZGGGZzU=;
+        b=gGJL/wUrev7NvUAB67U8dwoHZWrQDJF4A6HT8fzRlYNkTGYIiPZsVH3TGqN/TEeEIY
+         cx9dAHUv3RYoAn2u1Ud8+4Ip0uYe/M551GTV0Tq5l8+sSiALYYsk1kOmuOocXlKcgxg+
+         I5ncBzu0BJCfvo6jAC0rybZDLJISfY4aQwI/wyoZlOoIOWhfwYrA3JEPJUY7gzbRsS78
+         3HurypHEcPK4P4J1/bFVIyIzJ02vsmNU9vJ+KlyfhhZlPeHxEjQtgvXwT3bnct+GRMAU
+         6D1Vg55m7Xs8msxud2s6p0W12ejEQN3PnJU0cVyh5YpDZQR6QGUnDD9KtxS3hQnNaH37
+         a2yA==
+X-Gm-Message-State: AOAM532jheHAx1+hzG11Lf198TBrROADvpHHjw2J9UtLekbC7zQcpSZg
+        q8kIz/4XDzQIl9fCR3DMVQ4zAQ9zN/o=
+X-Google-Smtp-Source: ABdhPJzJGi8tVTi5bdKFCxEOnO/KtQERR8PihOgq6tSrXYkNCawTEu3K38hiwfey531aaHgxOHQg5Q==
+X-Received: by 2002:a2e:874b:: with SMTP id q11mr26014054ljj.194.1639343018442;
+        Sun, 12 Dec 2021 13:03:38 -0800 (PST)
 Received: from localhost.localdomain (94-29-46-111.dynamic.spd-mgts.ru. [94.29.46.111])
-        by smtp.gmail.com with ESMTPSA id y4sm1197172ljp.16.2021.12.12.13.03.56
+        by smtp.gmail.com with ESMTPSA id y4sm1197172ljp.16.2021.12.12.13.03.36
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 12 Dec 2021 13:03:58 -0800 (PST)
+        Sun, 12 Dec 2021 13:03:38 -0800 (PST)
 From:   Dmitry Osipenko <digetx@gmail.com>
 To:     Thierry Reding <thierry.reding@gmail.com>,
         Jonathan Hunter <jonathanh@nvidia.com>,
@@ -101,9 +101,9 @@ Cc:     linux-kernel@vger.kernel.org, linux-csky@vger.kernel.org,
         linux-sh@vger.kernel.org, xen-devel@lists.xenproject.org,
         linux-acpi@vger.kernel.org, linux-pm@vger.kernel.org,
         linux-tegra@vger.kernel.org
-Subject: [PATCH v5 12/21] m68k: Switch to new sys-off handler API
-Date:   Mon, 13 Dec 2021 00:03:00 +0300
-Message-Id: <20211212210309.9851-13-digetx@gmail.com>
+Subject: [PATCH v5 02/21] notifier: Add atomic/blocking_notifier_chain_register_unique_prio()
+Date:   Mon, 13 Dec 2021 00:02:50 +0300
+Message-Id: <20211212210309.9851-3-digetx@gmail.com>
 X-Mailer: git-send-email 2.33.1
 In-Reply-To: <20211212210309.9851-1-digetx@gmail.com>
 References: <20211212210309.9851-1-digetx@gmail.com>
@@ -113,133 +113,186 @@ Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-Kernel now supports chained power-off handlers. Use
-register_power_off_handler() that registers power-off handlers and
-do_kernel_power_off() that invokes chained power-off handlers. Legacy
-pm_power_off() will be removed once all drivers will be converted to
-the new power-off API.
+Add variant of atomic/blocking_notifier_chain_register() functions that
+doesn't allow to register notifier using a duplicated priority. The -EBUSY
+error code is returned in this case by the new API functions.
 
-Normally arch code should adopt only the do_kernel_power_off() at first,
-but m68k is a special case because it uses pm_power_off() "inside out",
-i.e. pm_power_off() invokes machine_power_off() [in fact it does nothing],
-while it's machine_power_off() that should invoke the pm_power_off(), and
-thus, we can't convert platforms to the new API separately. There are only
-two platforms changed here, so it's not a big deal.
-
-Acked-by: Geert Uytterhoeven <geert@linux-m68k.org>
 Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
 ---
- arch/m68k/emu/natfeat.c         | 3 ++-
- arch/m68k/include/asm/machdep.h | 1 -
- arch/m68k/kernel/process.c      | 5 ++---
- arch/m68k/kernel/setup_mm.c     | 1 -
- arch/m68k/kernel/setup_no.c     | 1 -
- arch/m68k/mac/config.c          | 4 +++-
- 6 files changed, 7 insertions(+), 8 deletions(-)
+ include/linux/notifier.h |  5 +++
+ kernel/notifier.c        | 87 +++++++++++++++++++++++++++++++---------
+ 2 files changed, 73 insertions(+), 19 deletions(-)
 
-diff --git a/arch/m68k/emu/natfeat.c b/arch/m68k/emu/natfeat.c
-index 71b78ecee75c..b19dc00026d9 100644
---- a/arch/m68k/emu/natfeat.c
-+++ b/arch/m68k/emu/natfeat.c
-@@ -15,6 +15,7 @@
- #include <linux/string.h>
- #include <linux/kernel.h>
- #include <linux/module.h>
-+#include <linux/reboot.h>
- #include <linux/io.h>
- #include <asm/machdep.h>
- #include <asm/natfeat.h>
-@@ -90,5 +91,5 @@ void __init nf_init(void)
- 	pr_info("NatFeats found (%s, %lu.%lu)\n", buf, version >> 16,
- 		version & 0xffff);
+diff --git a/include/linux/notifier.h b/include/linux/notifier.h
+index d4717bc0ab85..ccce26197dd2 100644
+--- a/include/linux/notifier.h
++++ b/include/linux/notifier.h
+@@ -150,6 +150,11 @@ extern int raw_notifier_chain_register(struct raw_notifier_head *nh,
+ extern int srcu_notifier_chain_register(struct srcu_notifier_head *nh,
+ 		struct notifier_block *nb);
  
--	mach_power_off = nf_poweroff;
-+	register_platform_power_off(nf_poweroff);
- }
-diff --git a/arch/m68k/include/asm/machdep.h b/arch/m68k/include/asm/machdep.h
-index 8fd80ef1b77e..8d8c3ee2069f 100644
---- a/arch/m68k/include/asm/machdep.h
-+++ b/arch/m68k/include/asm/machdep.h
-@@ -24,7 +24,6 @@ extern int (*mach_get_rtc_pll)(struct rtc_pll_info *);
- extern int (*mach_set_rtc_pll)(struct rtc_pll_info *);
- extern void (*mach_reset)( void );
- extern void (*mach_halt)( void );
--extern void (*mach_power_off)( void );
- extern unsigned long (*mach_hd_init) (unsigned long, unsigned long);
- extern void (*mach_hd_setup)(char *, int *);
- extern void (*mach_heartbeat) (int);
-diff --git a/arch/m68k/kernel/process.c b/arch/m68k/kernel/process.c
-index a6030dbaa089..e160a7c57bd3 100644
---- a/arch/m68k/kernel/process.c
-+++ b/arch/m68k/kernel/process.c
-@@ -67,12 +67,11 @@ void machine_halt(void)
- 
- void machine_power_off(void)
- {
--	if (mach_power_off)
--		mach_power_off();
-+	do_kernel_power_off();
- 	for (;;);
- }
- 
--void (*pm_power_off)(void) = machine_power_off;
-+void (*pm_power_off)(void);
- EXPORT_SYMBOL(pm_power_off);
- 
- void show_regs(struct pt_regs * regs)
-diff --git a/arch/m68k/kernel/setup_mm.c b/arch/m68k/kernel/setup_mm.c
-index 49e573b94326..a3ff1342ced7 100644
---- a/arch/m68k/kernel/setup_mm.c
-+++ b/arch/m68k/kernel/setup_mm.c
-@@ -98,7 +98,6 @@ EXPORT_SYMBOL(mach_get_rtc_pll);
- EXPORT_SYMBOL(mach_set_rtc_pll);
- void (*mach_reset)( void );
- void (*mach_halt)( void );
--void (*mach_power_off)( void );
- #ifdef CONFIG_HEARTBEAT
- void (*mach_heartbeat) (int);
- EXPORT_SYMBOL(mach_heartbeat);
-diff --git a/arch/m68k/kernel/setup_no.c b/arch/m68k/kernel/setup_no.c
-index 5e4104f07a44..00bf82258233 100644
---- a/arch/m68k/kernel/setup_no.c
-+++ b/arch/m68k/kernel/setup_no.c
-@@ -55,7 +55,6 @@ int (*mach_hwclk) (int, struct rtc_time*);
- /* machine dependent reboot functions */
- void (*mach_reset)(void);
- void (*mach_halt)(void);
--void (*mach_power_off)(void);
- 
- #ifdef CONFIG_M68000
- #if defined(CONFIG_M68328)
-diff --git a/arch/m68k/mac/config.c b/arch/m68k/mac/config.c
-index 5d16f9b47aa9..727320dedf08 100644
---- a/arch/m68k/mac/config.c
-+++ b/arch/m68k/mac/config.c
-@@ -12,6 +12,7 @@
- 
- #include <linux/errno.h>
- #include <linux/module.h>
-+#include <linux/reboot.h>
- #include <linux/types.h>
- #include <linux/mm.h>
- #include <linux/tty.h>
-@@ -139,7 +140,6 @@ void __init config_mac(void)
- 	mach_hwclk = mac_hwclk;
- 	mach_reset = mac_reset;
- 	mach_halt = mac_poweroff;
--	mach_power_off = mac_poweroff;
- #if IS_ENABLED(CONFIG_INPUT_M68K_BEEP)
- 	mach_beep = mac_mksound;
- #endif
-@@ -159,6 +159,8 @@ void __init config_mac(void)
- 
- 	if (macintosh_config->ident == MAC_MODEL_IICI)
- 		mach_l2_flush = via_l2_flush;
++extern int atomic_notifier_chain_register_unique_prio(
++		struct atomic_notifier_head *nh, struct notifier_block *nb);
++extern int blocking_notifier_chain_register_unique_prio(
++		struct blocking_notifier_head *nh, struct notifier_block *nb);
 +
-+	register_platform_power_off(mac_poweroff);
+ extern int atomic_notifier_chain_unregister(struct atomic_notifier_head *nh,
+ 		struct notifier_block *nb);
+ extern int blocking_notifier_chain_unregister(struct blocking_notifier_head *nh,
+diff --git a/kernel/notifier.c b/kernel/notifier.c
+index e30d24ee88e9..77e5112ff05b 100644
+--- a/kernel/notifier.c
++++ b/kernel/notifier.c
+@@ -20,7 +20,7 @@ BLOCKING_NOTIFIER_HEAD(reboot_notifier_list);
+  */
+ 
+ static int notifier_chain_register(struct notifier_block **nl,
+-		struct notifier_block *n)
++		struct notifier_block *n, bool unique_priority)
+ {
+ 	while ((*nl) != NULL) {
+ 		if (unlikely((*nl) == n)) {
+@@ -29,6 +29,8 @@ static int notifier_chain_register(struct notifier_block **nl,
+ 		}
+ 		if (n->priority > (*nl)->priority)
+ 			break;
++		if (n->priority == (*nl)->priority && unique_priority)
++			return -EBUSY;
+ 		nl = &((*nl)->next);
+ 	}
+ 	n->next = *nl;
+@@ -143,12 +145,35 @@ int atomic_notifier_chain_register(struct atomic_notifier_head *nh,
+ 	int ret;
+ 
+ 	spin_lock_irqsave(&nh->lock, flags);
+-	ret = notifier_chain_register(&nh->head, n);
++	ret = notifier_chain_register(&nh->head, n, false);
+ 	spin_unlock_irqrestore(&nh->lock, flags);
+ 	return ret;
  }
+ EXPORT_SYMBOL_GPL(atomic_notifier_chain_register);
  
++/**
++ *	atomic_notifier_chain_register_unique_prio - Add notifier to an atomic notifier chain
++ *	@nh: Pointer to head of the atomic notifier chain
++ *	@n: New entry in notifier chain
++ *
++ *	Adds a notifier to an atomic notifier chain if there is no other
++ *	notifier registered using the same priority.
++ *
++ *	Returns zero on success, -EBUSY otherwise.
++ */
++int atomic_notifier_chain_register_unique_prio(struct atomic_notifier_head *nh,
++					       struct notifier_block *n)
++{
++	unsigned long flags;
++	int ret;
++
++	spin_lock_irqsave(&nh->lock, flags);
++	ret = notifier_chain_register(&nh->head, n, true);
++	spin_unlock_irqrestore(&nh->lock, flags);
++	return ret;
++}
++EXPORT_SYMBOL_GPL(atomic_notifier_chain_register_unique_prio);
++
+ /**
+  *	atomic_notifier_chain_unregister - Remove notifier from an atomic notifier chain
+  *	@nh: Pointer to head of the atomic notifier chain
+@@ -208,18 +233,9 @@ NOKPROBE_SYMBOL(atomic_notifier_call_chain);
+  *	synchronized by an rwsem.
+  */
  
+-/**
+- *	blocking_notifier_chain_register - Add notifier to a blocking notifier chain
+- *	@nh: Pointer to head of the blocking notifier chain
+- *	@n: New entry in notifier chain
+- *
+- *	Adds a notifier to a blocking notifier chain.
+- *	Must be called in process context.
+- *
+- *	Currently always returns zero.
+- */
+-int blocking_notifier_chain_register(struct blocking_notifier_head *nh,
+-		struct notifier_block *n)
++static int __blocking_notifier_chain_register(struct blocking_notifier_head *nh,
++					      struct notifier_block *n,
++					      bool unique_priority)
+ {
+ 	int ret;
+ 
+@@ -229,15 +245,48 @@ int blocking_notifier_chain_register(struct blocking_notifier_head *nh,
+ 	 * such times we must not call down_write().
+ 	 */
+ 	if (unlikely(system_state == SYSTEM_BOOTING))
+-		return notifier_chain_register(&nh->head, n);
++		return notifier_chain_register(&nh->head, n, unique_priority);
+ 
+ 	down_write(&nh->rwsem);
+-	ret = notifier_chain_register(&nh->head, n);
++	ret = notifier_chain_register(&nh->head, n, unique_priority);
+ 	up_write(&nh->rwsem);
+ 	return ret;
+ }
++
++/**
++ *	blocking_notifier_chain_register - Add notifier to a blocking notifier chain
++ *	@nh: Pointer to head of the blocking notifier chain
++ *	@n: New entry in notifier chain
++ *
++ *	Adds a notifier to a blocking notifier chain.
++ *	Must be called in process context.
++ *
++ *	Currently always returns zero.
++ */
++int blocking_notifier_chain_register(struct blocking_notifier_head *nh,
++		struct notifier_block *n)
++{
++	return __blocking_notifier_chain_register(nh, n, false);
++}
+ EXPORT_SYMBOL_GPL(blocking_notifier_chain_register);
+ 
++/**
++ *	blocking_notifier_chain_register_unique_prio - Add notifier to a blocking notifier chain
++ *	@nh: Pointer to head of the blocking notifier chain
++ *	@n: New entry in notifier chain
++ *
++ *	Adds a notifier to an blocking notifier chain if there is no other
++ *	notifier registered using the same priority.
++ *
++ *	Returns zero on success, -EBUSY otherwise.
++ */
++int blocking_notifier_chain_register_unique_prio(struct blocking_notifier_head *nh,
++						 struct notifier_block *n)
++{
++	return __blocking_notifier_chain_register(nh, n, true);
++}
++EXPORT_SYMBOL_GPL(blocking_notifier_chain_register_unique_prio);
++
+ /**
+  *	blocking_notifier_chain_unregister - Remove notifier from a blocking notifier chain
+  *	@nh: Pointer to head of the blocking notifier chain
+@@ -353,7 +402,7 @@ bool blocking_notifier_call_chain_is_empty(struct blocking_notifier_head *nh)
+ int raw_notifier_chain_register(struct raw_notifier_head *nh,
+ 		struct notifier_block *n)
+ {
+-	return notifier_chain_register(&nh->head, n);
++	return notifier_chain_register(&nh->head, n, false);
+ }
+ EXPORT_SYMBOL_GPL(raw_notifier_chain_register);
+ 
+@@ -432,10 +481,10 @@ int srcu_notifier_chain_register(struct srcu_notifier_head *nh,
+ 	 * such times we must not call mutex_lock().
+ 	 */
+ 	if (unlikely(system_state == SYSTEM_BOOTING))
+-		return notifier_chain_register(&nh->head, n);
++		return notifier_chain_register(&nh->head, n, false);
+ 
+ 	mutex_lock(&nh->mutex);
+-	ret = notifier_chain_register(&nh->head, n);
++	ret = notifier_chain_register(&nh->head, n, false);
+ 	mutex_unlock(&nh->mutex);
+ 	return ret;
+ }
 -- 
 2.33.1
 
