@@ -2,49 +2,52 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 32A0AC433FE
-	for <linux-m68k@archiver.kernel.org>; Sun, 12 Dec 2021 21:17:58 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 9FDF6C433EF
+	for <linux-m68k@archiver.kernel.org>; Sun, 12 Dec 2021 21:32:43 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229662AbhLLVR5 (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Sun, 12 Dec 2021 16:17:57 -0500
-Received: from mail-ed1-f43.google.com ([209.85.208.43]:36791 "EHLO
-        mail-ed1-f43.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229792AbhLLVRh (ORCPT
+        id S229510AbhLLVcn (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Sun, 12 Dec 2021 16:32:43 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35934 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229468AbhLLVcn (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Sun, 12 Dec 2021 16:17:37 -0500
-Received: by mail-ed1-f43.google.com with SMTP id z5so46868428edd.3
-        for <linux-m68k@lists.linux-m68k.org>; Sun, 12 Dec 2021 13:14:53 -0800 (PST)
+        Sun, 12 Dec 2021 16:32:43 -0500
+Received: from mail-lf1-x12f.google.com (mail-lf1-x12f.google.com [IPv6:2a00:1450:4864:20::12f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 65499C06173F
+        for <linux-m68k@lists.linux-m68k.org>; Sun, 12 Dec 2021 13:32:42 -0800 (PST)
+Received: by mail-lf1-x12f.google.com with SMTP id b1so27436066lfs.13
+        for <linux-m68k@lists.linux-m68k.org>; Sun, 12 Dec 2021 13:32:42 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=SiVmxmlmX7gD18KWJKuTaPa7pNX7A6+5Wut7BQEWlWA=;
-        b=qyaqAU+HSKD+HsUBKg5AB4Grj9JsCbr9g/kNEIZtJUYDPkR5w7X3oEBoqbhkveHPA0
-         i7WuMCFDqVmy4v4uwmxmKqJQgyKWbZxAuezUxU7vJ7Js6Vv9mGU7AXWM79sgkKDLmhWK
-         jFp8UPoUTDTrVPMbjiOZPw0kaHhZEow7vk98bEAvorv4PN2Ae1WrpFauYpbNmt6sURPu
-         EHsFzc94IQPacNeM0GpGjXTCkggEJqqfF6pqgsflI/TGqDXRSOm8kaL/erYImjVTvQQe
-         TKd1cdir2wKhwb/5hDwmkKqbCAzORiU/FXU4xaDIEAT35buQchr71urUuURu0JjCKmA+
-         4E2Q==
+        bh=wYDTQaETrXPItP1/JDli7ai+6XwIrQRRYJAIL5Q83WI=;
+        b=mytm/DccZ1wzLV8XTmme10BTi4beUxZb3ysJUV5xYL3KUNdI6UIdOg14PI4Xf14XxI
+         7c+v89VpWLB0ZUhSuYpai3wHhN1WGcKOGbWxhGz9tr3OzP6swV60YcA1Wv5ZjDbMnKUa
+         xazlSiI4jIde5eD9wVDd3hacMA1401SIHTIVPK4datO44ZlP1Doly3s0Wmv47NPuWclC
+         2Crdjrp9htA7LHc95eECzQ1s6YjHoLBwAjSAcevyU9K8Sfc578kND8lSRu7vK9feHITf
+         xRYypJ8GB6uZ0ZKBDnu+9y0H6KT0THCoLFcjbrxfymTRhYWqXWoS+2dhJR4JAajg0Zvg
+         IWnw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=SiVmxmlmX7gD18KWJKuTaPa7pNX7A6+5Wut7BQEWlWA=;
-        b=e+9F7ucKe+SBO6l6LwQoGoRLifAV0UixNms+U5uAj+V9+m0+aeS7tFlnPCLsk/lxDk
-         1c7ss+9LtvX7iO+42LwNp9XJnfsGe1/YPCJ/acAb8Bvddd09CgC5Puqu+3TxRlNr2sbN
-         DvTt8vy6vBfORuOum/CM0kb7W1Ezh1Xvzb36JfTw9se5FNok2SnOoQEvkpYxnOTsngM3
-         30bdPJOj5juYzRpak2hqwlRkoENLngwpDmbCcXJ+syA9m1RHBMfGrJgpc4JkO/4gY6WH
-         OCzQVfuak/CR6Ip0koT4pokAbxWH7AqIaexAlPc7F054Ud+QOLwjWiF68QvtiCj8Gy4C
-         fmWA==
-X-Gm-Message-State: AOAM533OeaYha/dcdXvaO13OLESxdqc5yezP2gAKdcqNbnpeFzzw7cWO
-        U1cqeinrQTD7okyKKx09tDOCLT2a12M=
-X-Google-Smtp-Source: ABdhPJzPB5bwYAfFOn1aDytHDcrWq16AdXdyLAU7ztJCQFx3xpkh7jhCINcDSwIbtlftQmSbgta8Pw==
-X-Received: by 2002:a2e:9903:: with SMTP id v3mr25528327lji.143.1639343020440;
-        Sun, 12 Dec 2021 13:03:40 -0800 (PST)
+        bh=wYDTQaETrXPItP1/JDli7ai+6XwIrQRRYJAIL5Q83WI=;
+        b=Fv68C2UCbGtgoxl1X4tEUDG30N9g30jC90Cin4E2gG7NhyMQGlpN36pN0Gg/KVRtGZ
+         haq81cvo6/XCCnKprvGcGGe7LZL5ny9FkpZ3/0SgNz4fpcB3P/LN8g02EqAR8K6RsbrL
+         ILQijVVJ8hs7s1i+m9aDrAJVsz075l3afzjWD3UnmzNTg3PBQPXA4omuogT5+1rlaCa7
+         f6Q9I5vJPnOi4aXAeR7CvHH2zNNI3OsfhqiOLJQsWmKjI60hRuV3SfH9frsbcpUIKIEl
+         c+P9fo3hfanCa6NA9Io4x2t4tTPNJXlpFbweWzwY0SSSKSCMPLjwguTzfJUIp8aiAWGI
+         KlHw==
+X-Gm-Message-State: AOAM531V9w5nonmVrmShUb+qFtgJIXE6H0RS+1DasvidKlPFT2RYPeSg
+        ZrVx/3j31OZ3SZ9cMDZf8Ykt8jeWWuc=
+X-Google-Smtp-Source: ABdhPJyb60LD2qugqos2h5QyxI/abab2bR0WoFiHVAsfElgYVMLf1BWWm1ZERTHxaqoQ3zC4K8Hjug==
+X-Received: by 2002:a2e:a238:: with SMTP id i24mr25511659ljm.296.1639343038939;
+        Sun, 12 Dec 2021 13:03:58 -0800 (PST)
 Received: from localhost.localdomain (94-29-46-111.dynamic.spd-mgts.ru. [94.29.46.111])
-        by smtp.gmail.com with ESMTPSA id y4sm1197172ljp.16.2021.12.12.13.03.38
+        by smtp.gmail.com with ESMTPSA id y4sm1197172ljp.16.2021.12.12.13.03.56
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 12 Dec 2021 13:03:40 -0800 (PST)
+        Sun, 12 Dec 2021 13:03:58 -0800 (PST)
 From:   Dmitry Osipenko <digetx@gmail.com>
 To:     Thierry Reding <thierry.reding@gmail.com>,
         Jonathan Hunter <jonathanh@nvidia.com>,
@@ -98,9 +101,9 @@ Cc:     linux-kernel@vger.kernel.org, linux-csky@vger.kernel.org,
         linux-sh@vger.kernel.org, xen-devel@lists.xenproject.org,
         linux-acpi@vger.kernel.org, linux-pm@vger.kernel.org,
         linux-tegra@vger.kernel.org
-Subject: [PATCH v5 03/21] reboot: Print error message if restart handler has duplicated priority
-Date:   Mon, 13 Dec 2021 00:02:51 +0300
-Message-Id: <20211212210309.9851-4-digetx@gmail.com>
+Subject: [PATCH v5 12/21] m68k: Switch to new sys-off handler API
+Date:   Mon, 13 Dec 2021 00:03:00 +0300
+Message-Id: <20211212210309.9851-13-digetx@gmail.com>
 X-Mailer: git-send-email 2.33.1
 In-Reply-To: <20211212210309.9851-1-digetx@gmail.com>
 References: <20211212210309.9851-1-digetx@gmail.com>
@@ -110,42 +113,133 @@ Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-Add sanity check which ensures that there are no two restart handlers
-registered using the same priority. This requirement will become mandatory
-once all drivers will be converted to the new API and such errors will be
-fixed.
+Kernel now supports chained power-off handlers. Use
+register_power_off_handler() that registers power-off handlers and
+do_kernel_power_off() that invokes chained power-off handlers. Legacy
+pm_power_off() will be removed once all drivers will be converted to
+the new power-off API.
 
+Normally arch code should adopt only the do_kernel_power_off() at first,
+but m68k is a special case because it uses pm_power_off() "inside out",
+i.e. pm_power_off() invokes machine_power_off() [in fact it does nothing],
+while it's machine_power_off() that should invoke the pm_power_off(), and
+thus, we can't convert platforms to the new API separately. There are only
+two platforms changed here, so it's not a big deal.
+
+Acked-by: Geert Uytterhoeven <geert@linux-m68k.org>
 Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
 ---
- kernel/reboot.c | 15 +++++++++++++++
- 1 file changed, 15 insertions(+)
+ arch/m68k/emu/natfeat.c         | 3 ++-
+ arch/m68k/include/asm/machdep.h | 1 -
+ arch/m68k/kernel/process.c      | 5 ++---
+ arch/m68k/kernel/setup_mm.c     | 1 -
+ arch/m68k/kernel/setup_no.c     | 1 -
+ arch/m68k/mac/config.c          | 4 +++-
+ 6 files changed, 7 insertions(+), 8 deletions(-)
 
-diff --git a/kernel/reboot.c b/kernel/reboot.c
-index 6bcc5d6a6572..35f0cde641c1 100644
---- a/kernel/reboot.c
-+++ b/kernel/reboot.c
-@@ -182,6 +182,21 @@ static ATOMIC_NOTIFIER_HEAD(restart_handler_list);
-  */
- int register_restart_handler(struct notifier_block *nb)
- {
-+	int ret;
-+
-+	ret = atomic_notifier_chain_register_unique_prio(&restart_handler_list, nb);
-+	if (ret != -EBUSY)
-+		return ret;
-+
-+	/*
-+	 * Handler must have unique priority. Otherwise call order is
-+	 * determined by registration order, which is unreliable.
-+	 *
-+	 * This requirement will become mandatory once all drivers
-+	 * will be converted to use new sys-off API.
-+	 */
-+	pr_err("failed to register restart handler using unique priority\n");
-+
- 	return atomic_notifier_chain_register(&restart_handler_list, nb);
+diff --git a/arch/m68k/emu/natfeat.c b/arch/m68k/emu/natfeat.c
+index 71b78ecee75c..b19dc00026d9 100644
+--- a/arch/m68k/emu/natfeat.c
++++ b/arch/m68k/emu/natfeat.c
+@@ -15,6 +15,7 @@
+ #include <linux/string.h>
+ #include <linux/kernel.h>
+ #include <linux/module.h>
++#include <linux/reboot.h>
+ #include <linux/io.h>
+ #include <asm/machdep.h>
+ #include <asm/natfeat.h>
+@@ -90,5 +91,5 @@ void __init nf_init(void)
+ 	pr_info("NatFeats found (%s, %lu.%lu)\n", buf, version >> 16,
+ 		version & 0xffff);
+ 
+-	mach_power_off = nf_poweroff;
++	register_platform_power_off(nf_poweroff);
  }
- EXPORT_SYMBOL(register_restart_handler);
+diff --git a/arch/m68k/include/asm/machdep.h b/arch/m68k/include/asm/machdep.h
+index 8fd80ef1b77e..8d8c3ee2069f 100644
+--- a/arch/m68k/include/asm/machdep.h
++++ b/arch/m68k/include/asm/machdep.h
+@@ -24,7 +24,6 @@ extern int (*mach_get_rtc_pll)(struct rtc_pll_info *);
+ extern int (*mach_set_rtc_pll)(struct rtc_pll_info *);
+ extern void (*mach_reset)( void );
+ extern void (*mach_halt)( void );
+-extern void (*mach_power_off)( void );
+ extern unsigned long (*mach_hd_init) (unsigned long, unsigned long);
+ extern void (*mach_hd_setup)(char *, int *);
+ extern void (*mach_heartbeat) (int);
+diff --git a/arch/m68k/kernel/process.c b/arch/m68k/kernel/process.c
+index a6030dbaa089..e160a7c57bd3 100644
+--- a/arch/m68k/kernel/process.c
++++ b/arch/m68k/kernel/process.c
+@@ -67,12 +67,11 @@ void machine_halt(void)
+ 
+ void machine_power_off(void)
+ {
+-	if (mach_power_off)
+-		mach_power_off();
++	do_kernel_power_off();
+ 	for (;;);
+ }
+ 
+-void (*pm_power_off)(void) = machine_power_off;
++void (*pm_power_off)(void);
+ EXPORT_SYMBOL(pm_power_off);
+ 
+ void show_regs(struct pt_regs * regs)
+diff --git a/arch/m68k/kernel/setup_mm.c b/arch/m68k/kernel/setup_mm.c
+index 49e573b94326..a3ff1342ced7 100644
+--- a/arch/m68k/kernel/setup_mm.c
++++ b/arch/m68k/kernel/setup_mm.c
+@@ -98,7 +98,6 @@ EXPORT_SYMBOL(mach_get_rtc_pll);
+ EXPORT_SYMBOL(mach_set_rtc_pll);
+ void (*mach_reset)( void );
+ void (*mach_halt)( void );
+-void (*mach_power_off)( void );
+ #ifdef CONFIG_HEARTBEAT
+ void (*mach_heartbeat) (int);
+ EXPORT_SYMBOL(mach_heartbeat);
+diff --git a/arch/m68k/kernel/setup_no.c b/arch/m68k/kernel/setup_no.c
+index 5e4104f07a44..00bf82258233 100644
+--- a/arch/m68k/kernel/setup_no.c
++++ b/arch/m68k/kernel/setup_no.c
+@@ -55,7 +55,6 @@ int (*mach_hwclk) (int, struct rtc_time*);
+ /* machine dependent reboot functions */
+ void (*mach_reset)(void);
+ void (*mach_halt)(void);
+-void (*mach_power_off)(void);
+ 
+ #ifdef CONFIG_M68000
+ #if defined(CONFIG_M68328)
+diff --git a/arch/m68k/mac/config.c b/arch/m68k/mac/config.c
+index 5d16f9b47aa9..727320dedf08 100644
+--- a/arch/m68k/mac/config.c
++++ b/arch/m68k/mac/config.c
+@@ -12,6 +12,7 @@
+ 
+ #include <linux/errno.h>
+ #include <linux/module.h>
++#include <linux/reboot.h>
+ #include <linux/types.h>
+ #include <linux/mm.h>
+ #include <linux/tty.h>
+@@ -139,7 +140,6 @@ void __init config_mac(void)
+ 	mach_hwclk = mac_hwclk;
+ 	mach_reset = mac_reset;
+ 	mach_halt = mac_poweroff;
+-	mach_power_off = mac_poweroff;
+ #if IS_ENABLED(CONFIG_INPUT_M68K_BEEP)
+ 	mach_beep = mac_mksound;
+ #endif
+@@ -159,6 +159,8 @@ void __init config_mac(void)
+ 
+ 	if (macintosh_config->ident == MAC_MODEL_IICI)
+ 		mach_l2_flush = via_l2_flush;
++
++	register_platform_power_off(mac_poweroff);
+ }
+ 
+ 
 -- 
 2.33.1
 
