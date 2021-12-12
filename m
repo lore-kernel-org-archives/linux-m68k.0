@@ -2,49 +2,49 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 317F1C433FE
-	for <linux-m68k@archiver.kernel.org>; Sun, 12 Dec 2021 21:17:51 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id DFC4BC433F5
+	for <linux-m68k@archiver.kernel.org>; Sun, 12 Dec 2021 21:17:52 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229601AbhLLVRs (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Sun, 12 Dec 2021 16:17:48 -0500
-Received: from mail-wr1-f51.google.com ([209.85.221.51]:37666 "EHLO
-        mail-wr1-f51.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229772AbhLLVRh (ORCPT
+        id S229623AbhLLVRu (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Sun, 12 Dec 2021 16:17:50 -0500
+Received: from mail-wr1-f54.google.com ([209.85.221.54]:40584 "EHLO
+        mail-wr1-f54.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229779AbhLLVRh (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
         Sun, 12 Dec 2021 16:17:37 -0500
-Received: by mail-wr1-f51.google.com with SMTP id d9so24034329wrw.4
-        for <linux-m68k@lists.linux-m68k.org>; Sun, 12 Dec 2021 13:14:23 -0800 (PST)
+Received: by mail-wr1-f54.google.com with SMTP id t9so24003918wrx.7
+        for <linux-m68k@lists.linux-m68k.org>; Sun, 12 Dec 2021 13:14:44 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=qRRUcggihxuvvuxXR8avhK/eModbACqCMIG7s3bijm0=;
-        b=cwgMkLRmIC5Jc7bTumRtZfdR/utOuYZMGz1d8ygkTHHtVzgzo42XHF3MxCIlHJHEyT
-         C7LdLWylZ0pNaMDQhDT13J5l+njgSg9TNbzeMmfiPFReiWjuLN3BPKhAAriju1eHl9cw
-         v0xZYrbokM5iV9yDxCHW4tROVpkV6lIWT7CatJGFsO5P7KMEX+3KZoYfdE3quHDnbdkY
-         jpj2wUw+3g4R/1VtteNb23NQNkNZ2V1/PAhs7heDgq209kuV3pPkDwgZ1aWLoWFqzEEX
-         OFHc08yxalGQachdnm1D3b45tSRQQlH3u/KkV4GShGX8mzd5qIB7iZpCyJ01mJBdqNcV
-         pVRA==
+        bh=IgdEY3brdUGAcbkVUTuopyRaDKQjmT9IOiG4donLZPs=;
+        b=pRjCeelZEbxaZGwO+A2aL0XPV/VaH02YaHpKAd9wdI9JEveM57sE60GJ6XNHSn3X7R
+         3k3prwg00aYmbn6qrs0hvCC/Qu+NXBudxBQ11zdQ8NwOHe1318/leMZcgjGjBHY51gwa
+         7soXg88k1YVhJkGc+TTtq+bVpeCDRCSSMfOlkqSinKAC0bda9LJdWsfx6/W5MHM5/jd9
+         DvPUXfjXzCMkaPG3Qy81MLfolhXJsYt+NP13KnN+kkNkRrGfJb6pVBACzy9He8+wQu/l
+         eGVwkctUMedEHbT7ecy6K+YGcbliElewyWmMiaaA91DPydKzN7z1nc6/16QB5Y1JZoWn
+         FbWg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=qRRUcggihxuvvuxXR8avhK/eModbACqCMIG7s3bijm0=;
-        b=MLDCv83KYGd7eSkk86YJJR5NIaYC33+UNKcOyeJz4iL81hlaJpvur1MDC6Dd9egrO/
-         +QdQ6JEDh+L9obLnMZjrD6Cy5H+0SHZZ3ZmePIK7jGLRM1FuHtuqw13FvEj7ATOQP4w9
-         FE/FELyb68lWhWge7B09Ler/XcfZMlTsvCdJBx7tDHfvVpmlxR4ePYbbDiCx8FUGYHsk
-         WvAKGyeZx3dJ7V/88EIsKmASmMFUxv8fDasHWNsbhOeXKj4yf4MyOk4Ya39/VbpwCyr7
-         iygRxvDYTF2BqD4XxffMMBrHICUxFH2oojLG8CT8/BNv9ySqAb+7dcC7KnnedsPxB261
-         1AZQ==
-X-Gm-Message-State: AOAM532DsqISCzOsUm2T3dBLR+KVTNltsF1cQqhkPGk+KOFhFaAZ4glT
-        99A7S4ZQLw5YFxWw1KM0NZgSBNZDm0I=
-X-Google-Smtp-Source: ABdhPJwkugCxrPdxtc+DUdPqlE8VTgsZlj2PXoqJkSrC88l4/tv/AsdhkMaJuxd6V34n0G6eKbJ/hw==
-X-Received: by 2002:a05:651c:1790:: with SMTP id bn16mr25960176ljb.475.1639343032645;
-        Sun, 12 Dec 2021 13:03:52 -0800 (PST)
+        bh=IgdEY3brdUGAcbkVUTuopyRaDKQjmT9IOiG4donLZPs=;
+        b=FI1xSTXd+7cNMU4DArneKJnGsWiTkAb2jFTjr47fhcPYE8Ljk5daqu76XZm/eZg6mK
+         +47o5Ok8hSoUWrbeNSyDvuzrqXkDXSLNyOit1C/BCXUJlLQgz04EPFBJ1LXSHYasiJ8r
+         CwY1GYnkF8hGF7DeonWzxtb2d7AXRKY1VVYubbRYKtlj0klYhs9pkHfZgSCo4umvLYQ+
+         4yhkIupFriv2y0KVFuTzlcYzBHu0Gz8qz93P3Gtv4Aqee+zHlImjlUz94pRY0kRVPPt5
+         8n/nVdn+C7YetYC6rdywaLpypoywcVL00IgVX8WnguBM+Ax6XogzF5ebVBUEV43K8mxR
+         cvBA==
+X-Gm-Message-State: AOAM531KTeCqpylSfj3l/7Og4ILawTRSiSDP//quqNX81mRX97hhqIwo
+        8iFTWLWo07q628yfJBaum/bqDTxnPq4=
+X-Google-Smtp-Source: ABdhPJxNW1DwCShpX2NDWOWr5vcKraTuFYIWDWgUXB6EPWJrHuuBITafm/NNerVkSN6nEKqLT69IWQ==
+X-Received: by 2002:a05:651c:1548:: with SMTP id y8mr25360872ljp.458.1639343048830;
+        Sun, 12 Dec 2021 13:04:08 -0800 (PST)
 Received: from localhost.localdomain (94-29-46-111.dynamic.spd-mgts.ru. [94.29.46.111])
-        by smtp.gmail.com with ESMTPSA id y4sm1197172ljp.16.2021.12.12.13.03.50
+        by smtp.gmail.com with ESMTPSA id y4sm1197172ljp.16.2021.12.12.13.04.06
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 12 Dec 2021 13:03:52 -0800 (PST)
+        Sun, 12 Dec 2021 13:04:08 -0800 (PST)
 From:   Dmitry Osipenko <digetx@gmail.com>
 To:     Thierry Reding <thierry.reding@gmail.com>,
         Jonathan Hunter <jonathanh@nvidia.com>,
@@ -98,9 +98,9 @@ Cc:     linux-kernel@vger.kernel.org, linux-csky@vger.kernel.org,
         linux-sh@vger.kernel.org, xen-devel@lists.xenproject.org,
         linux-acpi@vger.kernel.org, linux-pm@vger.kernel.org,
         linux-tegra@vger.kernel.org
-Subject: [PATCH v5 09/21] parisc: Use do_kernel_power_off()
-Date:   Mon, 13 Dec 2021 00:02:57 +0300
-Message-Id: <20211212210309.9851-10-digetx@gmail.com>
+Subject: [PATCH v5 17/21] nds32: Use do_kernel_power_off()
+Date:   Mon, 13 Dec 2021 00:03:05 +0300
+Message-Id: <20211212210309.9851-18-digetx@gmail.com>
 X-Mailer: git-send-email 2.33.1
 In-Reply-To: <20211212210309.9851-1-digetx@gmail.com>
 References: <20211212210309.9851-1-digetx@gmail.com>
@@ -115,34 +115,25 @@ that invokes chained power-off handlers. It also invokes legacy
 pm_power_off() for now, which will be removed once all drivers will
 be converted to the new power-off API.
 
-Acked-by: Helge Deller <deller@gmx.de> # parisc
 Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
 ---
- arch/parisc/kernel/process.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ arch/nds32/kernel/process.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-diff --git a/arch/parisc/kernel/process.c b/arch/parisc/kernel/process.c
-index ea3d83b6fb62..928201b1f58f 100644
---- a/arch/parisc/kernel/process.c
-+++ b/arch/parisc/kernel/process.c
-@@ -26,6 +26,7 @@
- #include <linux/module.h>
- #include <linux/personality.h>
- #include <linux/ptrace.h>
-+#include <linux/reboot.h>
- #include <linux/sched.h>
- #include <linux/sched/debug.h>
- #include <linux/sched/task.h>
-@@ -114,8 +115,7 @@ void machine_power_off(void)
- 	pdc_chassis_send_status(PDC_CHASSIS_DIRECT_SHUTDOWN);
+diff --git a/arch/nds32/kernel/process.c b/arch/nds32/kernel/process.c
+index 49fab9e39cbf..0936dcd7db1b 100644
+--- a/arch/nds32/kernel/process.c
++++ b/arch/nds32/kernel/process.c
+@@ -54,8 +54,7 @@ EXPORT_SYMBOL(machine_halt);
  
- 	/* ipmi_poweroff may have been installed. */
+ void machine_power_off(void)
+ {
 -	if (pm_power_off)
 -		pm_power_off();
 +	do_kernel_power_off();
- 		
- 	/* It seems we have no way to power the system off via
- 	 * software. The user has to press the button himself. */
+ }
+ 
+ EXPORT_SYMBOL(machine_power_off);
 -- 
 2.33.1
 
