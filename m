@@ -2,58 +2,51 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 78681C433EF
-	for <linux-m68k@archiver.kernel.org>; Fri, 10 Dec 2021 20:16:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 724E3C433EF
+	for <linux-m68k@archiver.kernel.org>; Sun, 12 Dec 2021 21:17:42 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343878AbhLJUUM (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Fri, 10 Dec 2021 15:20:12 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54934 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232797AbhLJUUJ (ORCPT
+        id S229449AbhLLVRh (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Sun, 12 Dec 2021 16:17:37 -0500
+Received: from mail-lj1-f172.google.com ([209.85.208.172]:42691 "EHLO
+        mail-lj1-f172.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229721AbhLLVRh (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Fri, 10 Dec 2021 15:20:09 -0500
-Received: from mail-lf1-x130.google.com (mail-lf1-x130.google.com [IPv6:2a00:1450:4864:20::130])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CF82BC061746
-        for <linux-m68k@lists.linux-m68k.org>; Fri, 10 Dec 2021 12:16:33 -0800 (PST)
-Received: by mail-lf1-x130.google.com with SMTP id k37so20113905lfv.3
-        for <linux-m68k@lists.linux-m68k.org>; Fri, 10 Dec 2021 12:16:33 -0800 (PST)
+        Sun, 12 Dec 2021 16:17:37 -0500
+Received: by mail-lj1-f172.google.com with SMTP id z8so21102030ljz.9
+        for <linux-m68k@lists.linux-m68k.org>; Sun, 12 Dec 2021 13:13:39 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=subject:from:to:cc:references:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=3TjXmEXDJ/+bmC4Ps/ax4TtRHBZzHR+/4MLS5Bo5vyY=;
-        b=pA5gJzqpb6DuYCThgFEy/8I55Q/DWCaUg3a+PUCGAi7titTHPZavt9HNjzNTaNOdtA
-         W9bvYLeTFtb26OuFlSespYNsQjEuRbN74aib6efdQf4sRvk0jZOXEyR7Ry1SlPtvny3V
-         dHFm88kS0utx46N/B1V95jCju3EdX/3tioPOW0AUjL07+k8WzDTAaYKBNQJxB0pggImt
-         zxKY302IiWihQZ6zPY6n4S1ZYz2akRfe0TTR5ci41YrCJJyH8fb1pqNG9DRsK91AXeR3
-         4OlRlbRYehYwacP4ScBqgyVswzojoT/ol0CB6bk5gTERql84YP9I/T1kujCvte5MFcNM
-         x95w==
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=NEBfa1fMA+x5w4qEnSCEpCMUhXzxF+K5pq5bQ4oFCgw=;
+        b=jKT5aLZfWR0wdy1ZRHa2+F5Hc16ta1np03rkr+cf27BN8zUNhbkEoAuNYpXOIawSIH
+         2XymTHuAk1C3VpWmhK4AsE1yb/G2IulrJt3rlG67Vh5DarQrO3/RvtCACcc9q/mrlMzG
+         idTBdpttStFv0rFHXoDeMkKrlqiTc6LMJnuQorLtWh4hfdMc2KQqq/SPJGqZAD8cFtP7
+         bU0fIoQxCEwyS17dGv1ELgqsYZc+uy4iyxYp9vTtn2S36VrT7egCJ/N2pPTJk/5GCnV0
+         wCdVD2AV/3wMZeA5Ef+Z3RwjWWbr7SVUDzZ2VoU/BSE2RRwY2l531P1a/0YVFVmDZNjy
+         PILQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:from:to:cc:references:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=3TjXmEXDJ/+bmC4Ps/ax4TtRHBZzHR+/4MLS5Bo5vyY=;
-        b=gPbNi5Wgyu9JffQog4oq9UrvZsY0wrZU55gpjE788RbblqsB39dwoHMSrE+9MQSShV
-         VAvgOg0a/C5dDRFNDjRgtrqNG8cYlQpEE5zMTeGGCh+4K7LURPdnCoay/2vpHW6aUavx
-         AUY2oEXrwpBI23XUEeIv5f7BFV2F/Lm0GCiUHwox2bBsz75l2TofwoUHVY6rOkwKMRzw
-         keUVcyDR6/sCKmHcQCbWx0N+ebVG7BTPce6o4/RxIhRcpSjOb9xwP09LH20RDXDq2zob
-         gvLqgr1uSjTh/wj3l0bkQLbPZK/G+EKIBFEzqnTwUgInguamxCuKNDvgYATelVuuLF7C
-         QL2Q==
-X-Gm-Message-State: AOAM531TNvpuigOafdsFH3QJ0GhoBLp/pavU0VCybixaqy8zbPmzZH9n
-        U2pq3JBNkpTIwKxerv5Vjck=
-X-Google-Smtp-Source: ABdhPJwE5tZeH/HHL0CnlLb6JayzZfWyUFquo/I1vHYJYjJlUN8IQfec3+fnfy4fMkF6dVQvXojbFQ==
-X-Received: by 2002:a05:6512:2292:: with SMTP id f18mr14265704lfu.18.1639167392050;
-        Fri, 10 Dec 2021 12:16:32 -0800 (PST)
-Received: from [192.168.2.145] (94-29-46-111.dynamic.spd-mgts.ru. [94.29.46.111])
-        by smtp.googlemail.com with ESMTPSA id z23sm409427ljn.23.2021.12.10.12.16.30
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 10 Dec 2021 12:16:31 -0800 (PST)
-Subject: Re: [PATCH v4 03/25] notifier: Add
- atomic/blocking_notifier_has_unique_priority()
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=NEBfa1fMA+x5w4qEnSCEpCMUhXzxF+K5pq5bQ4oFCgw=;
+        b=zP6bbaBqZuzxtkzYSFyNBeaRf+AaDdcXsj107jwgXYhifrfdm3TMAQETbAkpW/ohUT
+         2aot5r8TadEx6yOFrM3ZlP2fbehiFnj0hh7BYgrOA2DTLDuqD3HjdQDrCimkSjJ/ebI2
+         /O/EV55Q8w3liq96ZCum3SLuX1Pf9oEMYrlYOspdicranvzXImC1qaFP6ECd55hdd63E
+         jiJ0bbkjKXpxdyt4YmkOl/Htu8BgF8DV7xWD3gI/Y81+xV6Z5BDSbBs/vUVA5pgUghRt
+         AQ2rJaNCqpDuYARhqsLsTQ4sSxlJX/+bna6tj0MLsCfwdaFu4gn0Eg1nkQOCZedlc4uW
+         eVug==
+X-Gm-Message-State: AOAM5322IfeDCP0nGSY+9lWAPnv4bbbTowOqqHcX8beSIHXdQ9vDX/wS
+        0weEc7xq7Fd9RAgmkuusuFD0zqiOInI=
+X-Google-Smtp-Source: ABdhPJxgpZfqxao+vFSyfTfxI+LCB5noXzLgWBaLJYSm65bPEK2lM39NLgbcPLKrE+YWXn5oNC0cUA==
+X-Received: by 2002:a2e:a26a:: with SMTP id k10mr25711010ljm.156.1639343030651;
+        Sun, 12 Dec 2021 13:03:50 -0800 (PST)
+Received: from localhost.localdomain (94-29-46-111.dynamic.spd-mgts.ru. [94.29.46.111])
+        by smtp.gmail.com with ESMTPSA id y4sm1197172ljp.16.2021.12.12.13.03.48
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 12 Dec 2021 13:03:50 -0800 (PST)
 From:   Dmitry Osipenko <digetx@gmail.com>
-To:     "Rafael J. Wysocki" <rafael@kernel.org>
-Cc:     Thierry Reding <thierry.reding@gmail.com>,
+To:     Thierry Reding <thierry.reding@gmail.com>,
         Jonathan Hunter <jonathanh@nvidia.com>,
         Russell King <linux@armlinux.org.uk>,
         Catalin Marinas <catalin.marinas@arm.com>,
@@ -67,7 +60,7 @@ Cc:     Thierry Reding <thierry.reding@gmail.com>,
         Philipp Zabel <p.zabel@pengutronix.de>,
         Greentime Hu <green.hu@gmail.com>,
         Vincent Chen <deanbo422@gmail.com>,
-        "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
+        "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
         Helge Deller <deller@gmx.de>,
         Michael Ellerman <mpe@ellerman.id.au>,
         Benjamin Herrenschmidt <benh@kernel.crashing.org>,
@@ -79,12 +72,12 @@ Cc:     Thierry Reding <thierry.reding@gmail.com>,
         Rich Felker <dalias@libc.org>,
         Thomas Gleixner <tglx@linutronix.de>,
         Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        the arch/x86 maintainers <x86@kernel.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
         "H. Peter Anvin" <hpa@zytor.com>,
         Boris Ostrovsky <boris.ostrovsky@oracle.com>,
         Juergen Gross <jgross@suse.com>,
         Stefano Stabellini <sstabellini@kernel.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
         Len Brown <lenb@kernel.org>,
         Santosh Shilimkar <ssantosh@kernel.org>,
         Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
@@ -97,60 +90,51 @@ Cc:     Thierry Reding <thierry.reding@gmail.com>,
         Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
         Ulf Hansson <ulf.hansson@linaro.org>, alankao@andestech.com,
         "K . C . Kuen-Chern Lin" <kclin@andestech.com>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-csky@vger.kernel.org, linux-ia64@vger.kernel.org,
-        linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org,
-        linux-parisc@vger.kernel.org,
-        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
-        linux-riscv@lists.infradead.org,
-        Linux-sh list <linux-sh@vger.kernel.org>,
-        xen-devel@lists.xenproject.org,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        linux-tegra <linux-tegra@vger.kernel.org>
-References: <20211126180101.27818-1-digetx@gmail.com>
- <20211126180101.27818-4-digetx@gmail.com>
- <CAJZ5v0jTJ3f7oUUR690PGaPJsxA8yzua9XDa8MONBHMzHnDfOQ@mail.gmail.com>
- <e6ff1cea-a168-1cb0-25c5-fb16c681cf4a@gmail.com>
- <CAJZ5v0gwnY07vg71_NB8RDWyv84FtMsmx7UTDd8TkUd7vFzc6A@mail.gmail.com>
- <fd158245-aa9a-2e48-0145-004f30005a66@gmail.com>
-Message-ID: <218e67e2-1d8c-5727-3862-8884d74aa63e@gmail.com>
-Date:   Fri, 10 Dec 2021 23:16:29 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.14.0
+        =?UTF-8?q?Micha=C5=82=20Miros=C5=82aw?= <mirq-linux@rere.qmqm.pl>
+Cc:     linux-kernel@vger.kernel.org, linux-csky@vger.kernel.org,
+        linux-ia64@vger.kernel.org, linux-m68k@lists.linux-m68k.org,
+        linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org,
+        linux-sh@vger.kernel.org, xen-devel@lists.xenproject.org,
+        linux-acpi@vger.kernel.org, linux-pm@vger.kernel.org,
+        linux-tegra@vger.kernel.org
+Subject: [PATCH v5 08/21] arm64: Use do_kernel_power_off()
+Date:   Mon, 13 Dec 2021 00:02:56 +0300
+Message-Id: <20211212210309.9851-9-digetx@gmail.com>
+X-Mailer: git-send-email 2.33.1
+In-Reply-To: <20211212210309.9851-1-digetx@gmail.com>
+References: <20211212210309.9851-1-digetx@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <fd158245-aa9a-2e48-0145-004f30005a66@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-10.12.2021 22:33, Dmitry Osipenko пишет:
->> Not really, they only prevent the race from occurring while
->> notifier_has_unique_priority() is running.
->>
->> If anyone depends on this check for correctness, they need to lock the
->> rwsem, do the check, do the thing depending on the check while holding
->> the rwsem and then release the rwsem.  Otherwise it is racy.
->>
-> It's fine that it's a bit "racy" since in the context of this series. We
-> always do the check after adding new entry, so it's not a problem.
-> 
-> There are two options:
-> 
-> 1. Use blocking_notifier_has_unique_priority() like it's done in this
-> patchset. Remove it after all drivers are converted to the new API and
-> add blocking_notifier_chain_register_unique().
-> 
-> 2. Add blocking_notifier_chain_register_unique(), but don't let it fail
-> the registration of non-unique entries until all drivers are converted
-> to the new API.
+Kernel now supports chained power-off handlers. Use do_kernel_power_off()
+that invokes chained power-off handlers. It also invokes legacy
+pm_power_off() for now, which will be removed once all drivers will
+be converted to the new power-off API.
 
-There is third, perhaps the best option:
+Acked-by: Catalin Marinas <catalin.marinas@arm.com>
+Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
+---
+ arch/arm64/kernel/process.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-3. Add blocking_notifier_chain_register_unique() and fall back to
-blocking_notifier_chain_register() if unique fails, do it until all
-drivers are converted to the new API.
+diff --git a/arch/arm64/kernel/process.c b/arch/arm64/kernel/process.c
+index aacf2f5559a8..f8db031afa7d 100644
+--- a/arch/arm64/kernel/process.c
++++ b/arch/arm64/kernel/process.c
+@@ -110,8 +110,7 @@ void machine_power_off(void)
+ {
+ 	local_irq_disable();
+ 	smp_send_stop();
+-	if (pm_power_off)
+-		pm_power_off();
++	do_kernel_power_off();
+ }
+ 
+ /*
+-- 
+2.33.1
+
