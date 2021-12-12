@@ -2,49 +2,49 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 23A51C433FE
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 0E23AC433F5
 	for <linux-m68k@archiver.kernel.org>; Sun, 12 Dec 2021 21:17:49 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229561AbhLLVRp (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Sun, 12 Dec 2021 16:17:45 -0500
-Received: from mail-ed1-f41.google.com ([209.85.208.41]:47071 "EHLO
-        mail-ed1-f41.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229766AbhLLVRh (ORCPT
+        id S229555AbhLLVRn (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Sun, 12 Dec 2021 16:17:43 -0500
+Received: from mail-ed1-f45.google.com ([209.85.208.45]:42673 "EHLO
+        mail-ed1-f45.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229760AbhLLVRh (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
         Sun, 12 Dec 2021 16:17:37 -0500
-Received: by mail-ed1-f41.google.com with SMTP id y13so45723306edd.13
-        for <linux-m68k@lists.linux-m68k.org>; Sun, 12 Dec 2021 13:14:21 -0800 (PST)
+Received: by mail-ed1-f45.google.com with SMTP id r11so45566319edd.9
+        for <linux-m68k@lists.linux-m68k.org>; Sun, 12 Dec 2021 13:14:15 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=hKgqav8a8uS+JOYHQI8KBeK4UU43xCMXoqbNcSGFyUw=;
-        b=KUwqX4BEtYi0Tl6FHY2CY8/c97CDNjqMcby3q7qakxzQRe7fXsisnIY/MWhKC0c/of
-         zGMKDdImy6NTe9G0A7mThOpcw6K/S+1AR3eVT8uprZ/XHyIT4qyf2Wds12KFazsicm2w
-         bCeOnXKrjzFNqWMPd1F+4GYHIWkBe3KzeOKUJ7KCKaBggqii376yhMOZjBlnlQ+uIszq
-         o5w0MaH69JTpDhOPa5VxphJ3hllwl22I2McYWQ9jDuw0qGIyBUeZs+8S9NMFTWPSbYZ6
-         7nWpNaZC68XoQbuOZZurBgla3U0x2zQDP37QsCnspr/jFi2Zol4uIo+V9XhzwJK0tYnt
-         /a9w==
+        bh=n3cwwyKh/hwErnoFuV8i3YcIMR9FHZoMKEZSbOKAmdY=;
+        b=Ex8lL4mdgUiRHYGoAXofDELzYU2M39Rf62MPEL6+NwhL4DG7f7g8blGnth50zzv9nv
+         XtgwZ9AQGnJnLqVio+QWKRb0Z2UFZU13/SlOZ6knhCS8nzv79jUJrhvhvCtb6xbOGhRe
+         QCo64//4R6yL9xhgOYc3zcYTNZnDzQezIWCwpso0yHMq6Gqm01cbjFNzL9wdR1IpObJX
+         QNX5u0vTw2iIw9GwynLoMaZBVQkfGVwbmM4effBPRqVI72+jfv9/MdqbIDB9jPZ8pJzw
+         hYqD/Yu8obJVLM9NSCzZb3jXy2mxfU4mU/jDrUalTCSK4fBVmU6wUB9oiNX1E5nzJKlr
+         /TtA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=hKgqav8a8uS+JOYHQI8KBeK4UU43xCMXoqbNcSGFyUw=;
-        b=NGvbmi3UMIpXyEGarWeSD3h5+BXJOas3y6W6O6PlNCL67m5iHxcIvUekdVfQQaVJJq
-         SRQrCZrXzByJAxQ18pW6ZVR/FJl8pDNu6S+/8VdvJCcJlsRoO+oaB2mrbeEqJvijbBLc
-         rCT9mXD4E7nYFqRNRRIXCVMHldLsQX8ejO1FlaMP42gPjyv79vE2TFCBFxzLbpp1VIaj
-         InXMS1yRLehNnEHuQQ4lCF6IPltuk2p5vMLTp5afk4ylIPuZLBpU4z+ygvSeO0b5pHfY
-         sSK5cOMwYRFdheAzDpziHDM8iK7Df3/3SUXzO6T804mEDZdl+faHjeiZgWFRZ2zfmea9
-         4eqA==
-X-Gm-Message-State: AOAM533teQEAkh+TpD2fD3AEdSsUZpx2o3xmQj/1kN0DngYhVsyLPNXE
-        +2lVo4PG9Tde0+q498nPCOi8Rdj3X1Y=
-X-Google-Smtp-Source: ABdhPJx8zOHfYkUzyKpEFmy9Fj+BAxzXOZqHBn3tHFlW4guWn1rgQHHNzqejujAnyj7ZOsRsx/6BSA==
-X-Received: by 2002:a2e:920a:: with SMTP id k10mr25768511ljg.234.1639343028659;
-        Sun, 12 Dec 2021 13:03:48 -0800 (PST)
+        bh=n3cwwyKh/hwErnoFuV8i3YcIMR9FHZoMKEZSbOKAmdY=;
+        b=yHTr9nGBh7r13vDLO6SpCWoHWAGkmha0dCtFbLrLXCOesMstyy6u2SN+uQ+W6m+0o7
+         DH/1qjidyqW5faJoc5Mke/XQHmlnLUE/tnadHKZBhKg0Q4lvQpBHBhMrg0xO0CeVRKeS
+         75Bhz1p4ermedn8D3XWd2Ilgn3FINl0aGU+ODmLMTRwekOAuYFzsiTaEUP0Vllyd1EyF
+         m4vkKmDLw9Ujqb+E2056JofoMsttz6HgKkeclYmggCskhJD6leaSNtocGarQSL34ggaB
+         u+v57QQV4nvailZEjYdub82O3mufLsdhuzDohW/J+wqofFX3gHTv9EIaBhJD6I7KpAuH
+         dJTg==
+X-Gm-Message-State: AOAM531KE+KqD2dWUMbzirxjPeKa5OqYno1iIJCkeJaGMV1+ZOhFLF6R
+        S4O3WG98rlHNgoeH2MuJ+ZWAKG1yvhM=
+X-Google-Smtp-Source: ABdhPJyVUXR8xADdHsxaMm4O/Lfphg0rT3u//x42eqt+aVA8OPTC8ytA0fee16pgBcrKP9uKJF2ykQ==
+X-Received: by 2002:a05:651c:514:: with SMTP id o20mr26693103ljp.393.1639343016405;
+        Sun, 12 Dec 2021 13:03:36 -0800 (PST)
 Received: from localhost.localdomain (94-29-46-111.dynamic.spd-mgts.ru. [94.29.46.111])
-        by smtp.gmail.com with ESMTPSA id y4sm1197172ljp.16.2021.12.12.13.03.46
+        by smtp.gmail.com with ESMTPSA id y4sm1197172ljp.16.2021.12.12.13.03.34
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 12 Dec 2021 13:03:48 -0800 (PST)
+        Sun, 12 Dec 2021 13:03:36 -0800 (PST)
 From:   Dmitry Osipenko <digetx@gmail.com>
 To:     Thierry Reding <thierry.reding@gmail.com>,
         Jonathan Hunter <jonathanh@nvidia.com>,
@@ -98,9 +98,9 @@ Cc:     linux-kernel@vger.kernel.org, linux-csky@vger.kernel.org,
         linux-sh@vger.kernel.org, xen-devel@lists.xenproject.org,
         linux-acpi@vger.kernel.org, linux-pm@vger.kernel.org,
         linux-tegra@vger.kernel.org
-Subject: [PATCH v5 07/21] riscv: Use do_kernel_power_off()
-Date:   Mon, 13 Dec 2021 00:02:55 +0300
-Message-Id: <20211212210309.9851-8-digetx@gmail.com>
+Subject: [PATCH v5 01/21] notifier: Add blocking_notifier_call_chain_is_empty()
+Date:   Mon, 13 Dec 2021 00:02:49 +0300
+Message-Id: <20211212210309.9851-2-digetx@gmail.com>
 X-Mailer: git-send-email 2.33.1
 In-Reply-To: <20211212210309.9851-1-digetx@gmail.com>
 References: <20211212210309.9851-1-digetx@gmail.com>
@@ -110,42 +110,52 @@ Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-Kernel now supports chained power-off handlers. Use do_kernel_power_off()
-that invokes chained power-off handlers. It also invokes legacy
-pm_power_off() for now, which will be removed once all drivers will
-be converted to the new power-off API.
+Add blocking_notifier_call_chain_is_empty() that returns true if call
+chain is empty.
 
-Acked-by: Palmer Dabbelt <palmer@dabbelt.com>
 Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
 ---
- arch/riscv/kernel/reset.c | 12 ++++--------
- 1 file changed, 4 insertions(+), 8 deletions(-)
+ include/linux/notifier.h |  2 ++
+ kernel/notifier.c        | 13 +++++++++++++
+ 2 files changed, 15 insertions(+)
 
-diff --git a/arch/riscv/kernel/reset.c b/arch/riscv/kernel/reset.c
-index 9c842c41684a..912288572226 100644
---- a/arch/riscv/kernel/reset.c
-+++ b/arch/riscv/kernel/reset.c
-@@ -23,16 +23,12 @@ void machine_restart(char *cmd)
+diff --git a/include/linux/notifier.h b/include/linux/notifier.h
+index 87069b8459af..d4717bc0ab85 100644
+--- a/include/linux/notifier.h
++++ b/include/linux/notifier.h
+@@ -173,6 +173,8 @@ extern int blocking_notifier_call_chain_robust(struct blocking_notifier_head *nh
+ extern int raw_notifier_call_chain_robust(struct raw_notifier_head *nh,
+ 		unsigned long val_up, unsigned long val_down, void *v);
  
- void machine_halt(void)
- {
--	if (pm_power_off != NULL)
--		pm_power_off();
--	else
--		default_power_off();
-+	do_kernel_power_off();
-+	default_power_off();
++extern bool blocking_notifier_call_chain_is_empty(struct blocking_notifier_head *nh);
++
+ #define NOTIFY_DONE		0x0000		/* Don't care */
+ #define NOTIFY_OK		0x0001		/* Suits me */
+ #define NOTIFY_STOP_MASK	0x8000		/* Don't call further */
+diff --git a/kernel/notifier.c b/kernel/notifier.c
+index b8251dc0bc0f..e30d24ee88e9 100644
+--- a/kernel/notifier.c
++++ b/kernel/notifier.c
+@@ -322,6 +322,19 @@ int blocking_notifier_call_chain(struct blocking_notifier_head *nh,
  }
+ EXPORT_SYMBOL_GPL(blocking_notifier_call_chain);
  
- void machine_power_off(void)
- {
--	if (pm_power_off != NULL)
--		pm_power_off();
--	else
--		default_power_off();
-+	do_kernel_power_off();
-+	default_power_off();
- }
++/**
++ *	blocking_notifier_call_chain_is_empty - Check whether notifier chain is empty
++ *	@nh: Pointer to head of the blocking notifier chain
++ *
++ *	Checks whether notifier chain is empty.
++ *
++ *	Returns true is notifier chain is empty, false otherwise.
++ */
++bool blocking_notifier_call_chain_is_empty(struct blocking_notifier_head *nh)
++{
++	return !rcu_access_pointer(nh->head);
++}
++
+ /*
+  *	Raw notifier chain routines.  There is no protection;
+  *	the caller must provide it.  Use at your own risk!
 -- 
 2.33.1
 
