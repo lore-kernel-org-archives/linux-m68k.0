@@ -2,59 +2,64 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 0F425C433EF
-	for <linux-m68k@archiver.kernel.org>; Sun, 12 Dec 2021 21:40:30 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 47BFEC433EF
+	for <linux-m68k@archiver.kernel.org>; Mon, 13 Dec 2021 09:23:36 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229630AbhLLVk3 (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Sun, 12 Dec 2021 16:40:29 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37606 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229625AbhLLVk3 (ORCPT
+        id S233672AbhLMJXf convert rfc822-to-8bit (ORCPT
+        <rfc822;linux-m68k@archiver.kernel.org>);
+        Mon, 13 Dec 2021 04:23:35 -0500
+Received: from mail-vk1-f169.google.com ([209.85.221.169]:37653 "EHLO
+        mail-vk1-f169.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230357AbhLMJXf (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Sun, 12 Dec 2021 16:40:29 -0500
-Received: from mail-ed1-x534.google.com (mail-ed1-x534.google.com [IPv6:2a00:1450:4864:20::534])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C7BD6C06173F
-        for <linux-m68k@lists.linux-m68k.org>; Sun, 12 Dec 2021 13:40:28 -0800 (PST)
-Received: by mail-ed1-x534.google.com with SMTP id x15so47097201edv.1
-        for <linux-m68k@lists.linux-m68k.org>; Sun, 12 Dec 2021 13:40:28 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=SHhUp08VE2ztEefsMlISnf3ubNnW0z005TmsLrFHcW4=;
-        b=M4kpDtgNg/HMIKnHemPbZaAlzhr0ntsevGanXWQ4n3yWnl//f+XQDu5U2Ja/bsZBLw
-         ZB7lG6HNkYZjH8rldh7wQZsaGJBaC4h0p4AT21fuNpchnkBJWm9NM9UGwpzaKojZCS7y
-         bTuVH9eWn0ocvLyPuLVpNAy1ngP0f11Fg78Z4AEVGIk7G8QbthlbgjrYXuLAU498OxT8
-         bgCN/dHbI9hpQ/7EtqeytCSL7rK/H+myVWm8Se1R6C2Q4UDGC7MvllRFkeixGbQendIJ
-         yK+CRe2KyF+IJR5cBcrAOj9h551rxSL2ZajWGRFkc4kB3fO9UCnd3vhKtJZ1+yX50+HP
-         yKJg==
+        Mon, 13 Dec 2021 04:23:35 -0500
+Received: by mail-vk1-f169.google.com with SMTP id e27so9965782vkd.4
+        for <linux-m68k@lists.linux-m68k.org>; Mon, 13 Dec 2021 01:23:35 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=SHhUp08VE2ztEefsMlISnf3ubNnW0z005TmsLrFHcW4=;
-        b=3x0qe7eiuCM36uemeUsbf17MP29blfZVG8rHZkMGgjDsvXIxbkSVIcqfAYyS3mLkfh
-         s7af4/8U+TqjkB5arMdzGuchZv53KCviu/QBDdOUqcaFgvtqniCEx/ic2cDf9LMcFTZO
-         svI3CXW0XBc9Z/XhKWRZAvaK2rJAFkeUWk6sXH3CT4LeH64wTIgICHpekfG17l94oMxK
-         CBudCRsissO1ljSDyRl1WwzTbUfolrpWyfD1A/X432uSC7XaxdH5UuopGuhaJZaOAcew
-         oq6TsLspW46Z2vhvx2gnVr6xWRO75DH1MTU3TwNhzhWYMt/Vr64JvJqrUEuxyRLGnjB3
-         rLcw==
-X-Gm-Message-State: AOAM533pdK/CCxEfQKoBYuHJ0+OYmDwyCvvFsHMqFTA77RldcG0v7wub
-        bbMfX7QlyhXadDuAi0ql4vkmM4UenPA=
-X-Google-Smtp-Source: ABdhPJz8R3Mq1R/xI8IHeAv3OrqV+OEyi8dYUIUI01foRIKaOY1/e4KcpBxYoYjyrD2YWzDb+CaShQ==
-X-Received: by 2002:a2e:bf1e:: with SMTP id c30mr19020669ljr.408.1639343036846;
-        Sun, 12 Dec 2021 13:03:56 -0800 (PST)
-Received: from localhost.localdomain (94-29-46-111.dynamic.spd-mgts.ru. [94.29.46.111])
-        by smtp.gmail.com with ESMTPSA id y4sm1197172ljp.16.2021.12.12.13.03.54
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 12 Dec 2021 13:03:56 -0800 (PST)
-From:   Dmitry Osipenko <digetx@gmail.com>
-To:     Thierry Reding <thierry.reding@gmail.com>,
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=7JQ6xhDuC8UGs/jm3YR6x8QoCCs8KyehtdxluDCRZKo=;
+        b=5AbiJl3EDD/7vwWCvlLp4RkWyy+CvZ9i1/oW7KqVPWBDh13WcjKIqlKYnKQ4TtBN+0
+         HtjuOKncXwbfqL+YbmXh33wE6jCVpPjf8GNlQ6NryOxC3toxypk4AYDQ7ypQZPHUV8ea
+         t9J8Q4lrUDpnpSBcANXRrlsMLmXIpXc9aqRQ0IiY/LNMymEi9AyFb9rh2i0nZdgjSXiz
+         RteGk4cB96uNTocmkBVDo0eh4pGAkMoEaA1ORsGV0fS75mpHYwEr1IcpeX/ShIR8jXNi
+         T9WF6803Rtdz7tye5e4mc+c5ahyOSLTJhOz5xYMGfVVpaViVPo9qAzirbNwXvULAzxfl
+         z01Q==
+X-Gm-Message-State: AOAM530LQc6tKcL+eHIOGSLfL466JGr9LeYcRUHuKimCJNy5X1vKQLe2
+        b37JXiAuL9h0Z6oL0Art7v1Nkf/aRu+2kw==
+X-Google-Smtp-Source: ABdhPJw0rU23CiT6Cxjw6mAf2OVXu2XA1v2AsTXFEFRD7iCx0bNraVW41Xk9xsIsGoV8iwnYP3EnhA==
+X-Received: by 2002:a05:6122:1813:: with SMTP id ay19mr31047659vkb.10.1639387414426;
+        Mon, 13 Dec 2021 01:23:34 -0800 (PST)
+Received: from mail-ua1-f48.google.com (mail-ua1-f48.google.com. [209.85.222.48])
+        by smtp.gmail.com with ESMTPSA id t193sm3607041vst.9.2021.12.13.01.23.34
+        for <linux-m68k@lists.linux-m68k.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 13 Dec 2021 01:23:34 -0800 (PST)
+Received: by mail-ua1-f48.google.com with SMTP id a14so28127721uak.0
+        for <linux-m68k@lists.linux-m68k.org>; Mon, 13 Dec 2021 01:23:34 -0800 (PST)
+X-Received: by 2002:a67:c106:: with SMTP id d6mr26074577vsj.77.1639387403608;
+ Mon, 13 Dec 2021 01:23:23 -0800 (PST)
+MIME-Version: 1.0
+References: <20211126180101.27818-1-digetx@gmail.com> <20211126180101.27818-6-digetx@gmail.com>
+ <YaLNOJTM+lVq+YNS@qmqm.qmqm.pl> <033ddf2a-6223-1a82-ec64-30f17c891f67@gmail.com>
+ <YaQeQgbW+CjEdsqG@qmqm.qmqm.pl> <091321ea-4919-0579-88a8-23d05871575d@gmail.com>
+ <CAJZ5v0jMvdhfBqjY+V9h_Z6EH1ohuJH+KjuGiOw_Jor1Tnp7vg@mail.gmail.com>
+ <45025b2d-4be1-f694-be61-31903795cf5d@gmail.com> <CAJZ5v0ieTwnBVjW8R_VTdPFH3yr5AwLc+ZEG5N3KrpTH+j8qZw@mail.gmail.com>
+In-Reply-To: <CAJZ5v0ieTwnBVjW8R_VTdPFH3yr5AwLc+ZEG5N3KrpTH+j8qZw@mail.gmail.com>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Mon, 13 Dec 2021 10:23:12 +0100
+X-Gmail-Original-Message-ID: <CAMuHMdXW1bCLkJhC1Jnf2rkS1rBnXsMX=4LMVdXDvMV5HOzrLw@mail.gmail.com>
+Message-ID: <CAMuHMdXW1bCLkJhC1Jnf2rkS1rBnXsMX=4LMVdXDvMV5HOzrLw@mail.gmail.com>
+Subject: Re: [PATCH v4 05/25] reboot: Warn if restart handler has duplicated priority
+To:     "Rafael J. Wysocki" <rafael@kernel.org>
+Cc:     Dmitry Osipenko <digetx@gmail.com>,
+        =?UTF-8?B?TWljaGHFgiBNaXJvc8WCYXc=?= <mirq-linux@rere.qmqm.pl>,
+        Thierry Reding <thierry.reding@gmail.com>,
         Jonathan Hunter <jonathanh@nvidia.com>,
         Russell King <linux@armlinux.org.uk>,
         Catalin Marinas <catalin.marinas@arm.com>,
         Will Deacon <will@kernel.org>, Guo Ren <guoren@kernel.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
         Greg Ungerer <gerg@linux-m68k.org>,
         Joshua Thompson <funaho@jurai.org>,
         Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
@@ -63,7 +68,7 @@ To:     Thierry Reding <thierry.reding@gmail.com>,
         Philipp Zabel <p.zabel@pengutronix.de>,
         Greentime Hu <green.hu@gmail.com>,
         Vincent Chen <deanbo422@gmail.com>,
-        "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
+        "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
         Helge Deller <deller@gmx.de>,
         Michael Ellerman <mpe@ellerman.id.au>,
         Benjamin Herrenschmidt <benh@kernel.crashing.org>,
@@ -75,12 +80,12 @@ To:     Thierry Reding <thierry.reding@gmail.com>,
         Rich Felker <dalias@libc.org>,
         Thomas Gleixner <tglx@linutronix.de>,
         Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        "the arch/x86 maintainers" <x86@kernel.org>,
         "H. Peter Anvin" <hpa@zytor.com>,
         Boris Ostrovsky <boris.ostrovsky@oracle.com>,
         Juergen Gross <jgross@suse.com>,
         Stefano Stabellini <sstabellini@kernel.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
         Len Brown <lenb@kernel.org>,
         Santosh Shilimkar <ssantosh@kernel.org>,
         Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
@@ -93,67 +98,131 @@ To:     Thierry Reding <thierry.reding@gmail.com>,
         Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
         Ulf Hansson <ulf.hansson@linaro.org>, alankao@andestech.com,
         "K . C . Kuen-Chern Lin" <kclin@andestech.com>,
-        =?UTF-8?q?Micha=C5=82=20Miros=C5=82aw?= <mirq-linux@rere.qmqm.pl>
-Cc:     linux-kernel@vger.kernel.org, linux-csky@vger.kernel.org,
-        linux-ia64@vger.kernel.org, linux-m68k@lists.linux-m68k.org,
-        linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org,
-        linux-sh@vger.kernel.org, xen-devel@lists.xenproject.org,
-        linux-acpi@vger.kernel.org, linux-pm@vger.kernel.org,
-        linux-tegra@vger.kernel.org
-Subject: [PATCH v5 11/21] powerpc: Use do_kernel_power_off()
-Date:   Mon, 13 Dec 2021 00:02:59 +0300
-Message-Id: <20211212210309.9851-12-digetx@gmail.com>
-X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211212210309.9851-1-digetx@gmail.com>
-References: <20211212210309.9851-1-digetx@gmail.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-csky@vger.kernel.org, linux-ia64@vger.kernel.org,
+        linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org,
+        linux-parisc@vger.kernel.org,
+        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
+        linux-riscv@lists.infradead.org,
+        Linux-sh list <linux-sh@vger.kernel.org>,
+        xen-devel@lists.xenproject.org,
+        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        linux-tegra <linux-tegra@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-Kernel now supports chained power-off handlers. Use do_kernel_power_off()
-that invokes chained power-off handlers. It also invokes legacy
-pm_power_off() for now, which will be removed once all drivers will
-be converted to the new power-off API.
+On Fri, Dec 10, 2021 at 8:14 PM Rafael J. Wysocki <rafael@kernel.org> wrote:
+> On Fri, Dec 10, 2021 at 8:04 PM Dmitry Osipenko <digetx@gmail.com> wrote:
+> > 10.12.2021 21:27, Rafael J. Wysocki пишет:
+> > > On Mon, Nov 29, 2021 at 12:34 PM Dmitry Osipenko <digetx@gmail.com> wrote:
+> > >> 29.11.2021 03:26, Michał Mirosław пишет:
+> > >>> On Mon, Nov 29, 2021 at 12:06:19AM +0300, Dmitry Osipenko wrote:
+> > >>>> 28.11.2021 03:28, Michał Mirosław пишет:
+> > >>>>> On Fri, Nov 26, 2021 at 09:00:41PM +0300, Dmitry Osipenko wrote:
+> > >>>>>> Add sanity check which ensures that there are no two restart handlers
+> > >>>>>> registered with the same priority. Normally it's a direct sign of a
+> > >>>>>> problem if two handlers use the same priority.
+> > >>>>>
+> > >>>>> The patch doesn't ensure the property that there are no duplicated-priority
+> > >>>>> entries on the chain.
+> > >>>>
+> > >>>> It's not the exact point of this patch.
+> > >>>>
+> > >>>>> I'd rather see a atomic_notifier_chain_register_unique() that returns
+> > >>>>> -EBUSY or something istead of adding an entry with duplicate priority.
+> > >>>>> That way it would need only one list traversal unless you want to
+> > >>>>> register the duplicate anyway (then you would call the older
+> > >>>>> atomic_notifier_chain_register() after reporting the error).
+> > >>>>
+> > >>>> The point of this patch is to warn developers about the problem that
+> > >>>> needs to be fixed. We already have such troubling drivers in mainline.
+> > >>>>
+> > >>>> It's not critical to register different handlers with a duplicated
+> > >>>> priorities, but such cases really need to be corrected. We shouldn't
+> > >>>> break users' machines during transition to the new API, meanwhile
+> > >>>> developers should take action of fixing theirs drivers.
+> > >>>>
+> > >>>>> (Or you could return > 0 when a duplicate is registered in
+> > >>>>> atomic_notifier_chain_register() if the callers are prepared
+> > >>>>> for that. I don't really like this way, though.)
+> > >>>>
+> > >>>> I had a similar thought at some point before and decided that I'm not in
+> > >>>> favor of this approach. It's nicer to have a dedicated function that
+> > >>>> verifies the uniqueness, IMO.
+> > >>>
+> > >>> I don't like the part that it traverses the list second time to check
+> > >>> the uniqueness. But actually you could avoid that if
+> > >>> notifier_chain_register() would always add equal-priority entries in
+> > >>> reverse order:
+> > >>>
+> > >>>  static int notifier_chain_register(struct notifier_block **nl,
+> > >>>               struct notifier_block *n)
+> > >>>  {
+> > >>>       while ((*nl) != NULL) {
+> > >>>               if (unlikely((*nl) == n)) {
+> > >>>                       WARN(1, "double register detected");
+> > >>>                       return 0;
+> > >>>               }
+> > >>> -             if (n->priority > (*nl)->priority)
+> > >>> +             if (n->priority >= (*nl)->priority)
+> > >>>                       break;
+> > >>>               nl = &((*nl)->next);
+> > >>>       }
+> > >>>       n->next = *nl;
+> > >>>       rcu_assign_pointer(*nl, n);
+> > >>>       return 0;
+> > >>>  }
+> > >>>
+> > >>> Then the check for uniqueness after adding would be:
+> > >>>
+> > >>>  WARN(nb->next && nb->priority == nb->next->priority);
+> > >>
+> > >> We can't just change the registration order because invocation order of
+> > >> the call chain depends on the registration order
+> > >
+> > > It doesn't if unique priorities are required and isn't that what you want?
+> > >
+> > >> and some of current
+> > >> users may rely on that order. I'm pretty sure that changing the order
+> > >> will have unfortunate consequences.
+> > >
+> > > Well, the WARN() doesn't help much then.
+> > >
+> > > Either you can make all of the users register with unique priorities,
+> > > and then you can make the registration reject non-unique ones, or you
+> > > cannot assume them to be unique.
+> >
+> > There is no strong requirement for priorities to be unique, the reboot.c
+> > code will work properly.
+>
+> In which case adding the WARN() is not appropriate IMV.
+>
+> Also I've looked at the existing code and at least in some cases the
+> order in which the notifiers run doesn't matter.  I'm not sure what
+> the purpose of this patch is TBH.
+>
+> > The potential problem is on the user's side and the warning is intended
+> > to aid the user.
+>
+> Unless somebody has the panic_on_warn mentioned previously set and
+> really the user need not understand what the WARN() is about.  IOW,
+> WARN() helps developers, not users.
 
-Acked-by: Michael Ellerman <mpe@ellerman.id.au>
-Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
----
- arch/powerpc/kernel/setup-common.c | 4 +---
- arch/powerpc/xmon/xmon.c           | 3 +--
- 2 files changed, 2 insertions(+), 5 deletions(-)
+Do panic_on_warn and reboot_on_panic play well with having a WARN()
+in the reboot notifier handling?
 
-diff --git a/arch/powerpc/kernel/setup-common.c b/arch/powerpc/kernel/setup-common.c
-index f8da937df918..8158e940db81 100644
---- a/arch/powerpc/kernel/setup-common.c
-+++ b/arch/powerpc/kernel/setup-common.c
-@@ -161,9 +161,7 @@ void machine_restart(char *cmd)
- void machine_power_off(void)
- {
- 	machine_shutdown();
--	if (pm_power_off)
--		pm_power_off();
--
-+	do_kernel_power_off();
- 	smp_send_stop();
- 	machine_hang();
- }
-diff --git a/arch/powerpc/xmon/xmon.c b/arch/powerpc/xmon/xmon.c
-index 83100c6524cc..759e167704e6 100644
---- a/arch/powerpc/xmon/xmon.c
-+++ b/arch/powerpc/xmon/xmon.c
-@@ -1243,8 +1243,7 @@ static void bootcmds(void)
- 	} else if (cmd == 'h') {
- 		ppc_md.halt();
- 	} else if (cmd == 'p') {
--		if (pm_power_off)
--			pm_power_off();
-+		do_kernel_power_off();
- 	}
- }
- 
--- 
-2.33.1
+Gr{oetje,eeting}s,
 
+                        Geert
+
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
