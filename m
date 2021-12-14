@@ -2,227 +2,239 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 47BFEC433EF
-	for <linux-m68k@archiver.kernel.org>; Mon, 13 Dec 2021 09:23:36 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id CDCDDC433EF
+	for <linux-m68k@archiver.kernel.org>; Tue, 14 Dec 2021 03:25:07 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233672AbhLMJXf convert rfc822-to-8bit (ORCPT
-        <rfc822;linux-m68k@archiver.kernel.org>);
-        Mon, 13 Dec 2021 04:23:35 -0500
-Received: from mail-vk1-f169.google.com ([209.85.221.169]:37653 "EHLO
-        mail-vk1-f169.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230357AbhLMJXf (ORCPT
-        <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Mon, 13 Dec 2021 04:23:35 -0500
-Received: by mail-vk1-f169.google.com with SMTP id e27so9965782vkd.4
-        for <linux-m68k@lists.linux-m68k.org>; Mon, 13 Dec 2021 01:23:35 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=7JQ6xhDuC8UGs/jm3YR6x8QoCCs8KyehtdxluDCRZKo=;
-        b=5AbiJl3EDD/7vwWCvlLp4RkWyy+CvZ9i1/oW7KqVPWBDh13WcjKIqlKYnKQ4TtBN+0
-         HtjuOKncXwbfqL+YbmXh33wE6jCVpPjf8GNlQ6NryOxC3toxypk4AYDQ7ypQZPHUV8ea
-         t9J8Q4lrUDpnpSBcANXRrlsMLmXIpXc9aqRQ0IiY/LNMymEi9AyFb9rh2i0nZdgjSXiz
-         RteGk4cB96uNTocmkBVDo0eh4pGAkMoEaA1ORsGV0fS75mpHYwEr1IcpeX/ShIR8jXNi
-         T9WF6803Rtdz7tye5e4mc+c5ahyOSLTJhOz5xYMGfVVpaViVPo9qAzirbNwXvULAzxfl
-         z01Q==
-X-Gm-Message-State: AOAM530LQc6tKcL+eHIOGSLfL466JGr9LeYcRUHuKimCJNy5X1vKQLe2
-        b37JXiAuL9h0Z6oL0Art7v1Nkf/aRu+2kw==
-X-Google-Smtp-Source: ABdhPJw0rU23CiT6Cxjw6mAf2OVXu2XA1v2AsTXFEFRD7iCx0bNraVW41Xk9xsIsGoV8iwnYP3EnhA==
-X-Received: by 2002:a05:6122:1813:: with SMTP id ay19mr31047659vkb.10.1639387414426;
-        Mon, 13 Dec 2021 01:23:34 -0800 (PST)
-Received: from mail-ua1-f48.google.com (mail-ua1-f48.google.com. [209.85.222.48])
-        by smtp.gmail.com with ESMTPSA id t193sm3607041vst.9.2021.12.13.01.23.34
-        for <linux-m68k@lists.linux-m68k.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 13 Dec 2021 01:23:34 -0800 (PST)
-Received: by mail-ua1-f48.google.com with SMTP id a14so28127721uak.0
-        for <linux-m68k@lists.linux-m68k.org>; Mon, 13 Dec 2021 01:23:34 -0800 (PST)
-X-Received: by 2002:a67:c106:: with SMTP id d6mr26074577vsj.77.1639387403608;
- Mon, 13 Dec 2021 01:23:23 -0800 (PST)
+        id S233040AbhLNDZH (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Mon, 13 Dec 2021 22:25:07 -0500
+Received: from mga18.intel.com ([134.134.136.126]:59723 "EHLO mga18.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233141AbhLNDZG (ORCPT <rfc822;linux-m68k@lists.linux-m68k.org>);
+        Mon, 13 Dec 2021 22:25:06 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1639452306; x=1670988306;
+  h=date:from:to:cc:subject:message-id:mime-version:
+   content-transfer-encoding;
+  bh=GZaDfCBjwZ5B2jzoNS3XWaT8knMldN9Q0V+rDss7LOQ=;
+  b=Rh7ojKNVH5a0xZl+Ch3mwT4dKvg/u3uBAutoTyxDDFZPhX1aJtcJZ8Dq
+   cEgQrCv6k/ifS+tIpnMSv/9H1C6Ax2xx4o4d0aE0uzdZb/06loh44zV3A
+   QyRiu257cUbr4YkpOKhBkzq7vZvsTRs9h61xdsYpAW8k6X6xZ5d9nmMO9
+   ZqV6VDqdc0ahddS4Eq5yr42LeY9FyRMYZAo56woLeaUoq/VhzymBxqAZn
+   Nnr0LcXw6/idOV6vQ/LljfZ0vKGrVWzHVEw5Nm6y/MOPO1MgstLiL27Ro
+   SQpHqWkYHgcR2wqO8Ww+B62KHpajDwwWGXcKqYsD5PkfS+7YUY3zvne8N
+   Q==;
+X-IronPort-AV: E=McAfee;i="6200,9189,10197"; a="225747787"
+X-IronPort-AV: E=Sophos;i="5.88,204,1635231600"; 
+   d="scan'208";a="225747787"
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Dec 2021 19:25:04 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.88,204,1635231600"; 
+   d="scan'208";a="604090179"
+Received: from lkp-server02.sh.intel.com (HELO 9e1e9f9b3bcb) ([10.239.97.151])
+  by FMSMGA003.fm.intel.com with ESMTP; 13 Dec 2021 19:25:03 -0800
+Received: from kbuild by 9e1e9f9b3bcb with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1mwyR4-0007Mp-MS; Tue, 14 Dec 2021 03:25:02 +0000
+Date:   Tue, 14 Dec 2021 11:24:38 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Geert Uytterhoeven <geert@linux-m68k.org>
+Cc:     linux-m68k@lists.linux-m68k.org
+Subject: [geert-m68k:for-v5.17] BUILD SUCCESS
+ 1a0ae068bf6b6f4233b1f31bf48bcbc47b111ef2
+Message-ID: <61b80e76.0ZXHzYLN+H2IZH9c%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
-References: <20211126180101.27818-1-digetx@gmail.com> <20211126180101.27818-6-digetx@gmail.com>
- <YaLNOJTM+lVq+YNS@qmqm.qmqm.pl> <033ddf2a-6223-1a82-ec64-30f17c891f67@gmail.com>
- <YaQeQgbW+CjEdsqG@qmqm.qmqm.pl> <091321ea-4919-0579-88a8-23d05871575d@gmail.com>
- <CAJZ5v0jMvdhfBqjY+V9h_Z6EH1ohuJH+KjuGiOw_Jor1Tnp7vg@mail.gmail.com>
- <45025b2d-4be1-f694-be61-31903795cf5d@gmail.com> <CAJZ5v0ieTwnBVjW8R_VTdPFH3yr5AwLc+ZEG5N3KrpTH+j8qZw@mail.gmail.com>
-In-Reply-To: <CAJZ5v0ieTwnBVjW8R_VTdPFH3yr5AwLc+ZEG5N3KrpTH+j8qZw@mail.gmail.com>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Mon, 13 Dec 2021 10:23:12 +0100
-X-Gmail-Original-Message-ID: <CAMuHMdXW1bCLkJhC1Jnf2rkS1rBnXsMX=4LMVdXDvMV5HOzrLw@mail.gmail.com>
-Message-ID: <CAMuHMdXW1bCLkJhC1Jnf2rkS1rBnXsMX=4LMVdXDvMV5HOzrLw@mail.gmail.com>
-Subject: Re: [PATCH v4 05/25] reboot: Warn if restart handler has duplicated priority
-To:     "Rafael J. Wysocki" <rafael@kernel.org>
-Cc:     Dmitry Osipenko <digetx@gmail.com>,
-        =?UTF-8?B?TWljaGHFgiBNaXJvc8WCYXc=?= <mirq-linux@rere.qmqm.pl>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>, Guo Ren <guoren@kernel.org>,
-        Greg Ungerer <gerg@linux-m68k.org>,
-        Joshua Thompson <funaho@jurai.org>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Sebastian Reichel <sre@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Greentime Hu <green.hu@gmail.com>,
-        Vincent Chen <deanbo422@gmail.com>,
-        "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
-        Helge Deller <deller@gmx.de>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Yoshinori Sato <ysato@users.sourceforge.jp>,
-        Rich Felker <dalias@libc.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        "the arch/x86 maintainers" <x86@kernel.org>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
-        Juergen Gross <jgross@suse.com>,
-        Stefano Stabellini <sstabellini@kernel.org>,
-        Len Brown <lenb@kernel.org>,
-        Santosh Shilimkar <ssantosh@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>, Pavel Machek <pavel@ucw.cz>,
-        Lee Jones <lee.jones@linaro.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>, alankao@andestech.com,
-        "K . C . Kuen-Chern Lin" <kclin@andestech.com>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-csky@vger.kernel.org, linux-ia64@vger.kernel.org,
-        linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org,
-        linux-parisc@vger.kernel.org,
-        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
-        linux-riscv@lists.infradead.org,
-        Linux-sh list <linux-sh@vger.kernel.org>,
-        xen-devel@lists.xenproject.org,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        linux-tegra <linux-tegra@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-On Fri, Dec 10, 2021 at 8:14 PM Rafael J. Wysocki <rafael@kernel.org> wrote:
-> On Fri, Dec 10, 2021 at 8:04 PM Dmitry Osipenko <digetx@gmail.com> wrote:
-> > 10.12.2021 21:27, Rafael J. Wysocki пишет:
-> > > On Mon, Nov 29, 2021 at 12:34 PM Dmitry Osipenko <digetx@gmail.com> wrote:
-> > >> 29.11.2021 03:26, Michał Mirosław пишет:
-> > >>> On Mon, Nov 29, 2021 at 12:06:19AM +0300, Dmitry Osipenko wrote:
-> > >>>> 28.11.2021 03:28, Michał Mirosław пишет:
-> > >>>>> On Fri, Nov 26, 2021 at 09:00:41PM +0300, Dmitry Osipenko wrote:
-> > >>>>>> Add sanity check which ensures that there are no two restart handlers
-> > >>>>>> registered with the same priority. Normally it's a direct sign of a
-> > >>>>>> problem if two handlers use the same priority.
-> > >>>>>
-> > >>>>> The patch doesn't ensure the property that there are no duplicated-priority
-> > >>>>> entries on the chain.
-> > >>>>
-> > >>>> It's not the exact point of this patch.
-> > >>>>
-> > >>>>> I'd rather see a atomic_notifier_chain_register_unique() that returns
-> > >>>>> -EBUSY or something istead of adding an entry with duplicate priority.
-> > >>>>> That way it would need only one list traversal unless you want to
-> > >>>>> register the duplicate anyway (then you would call the older
-> > >>>>> atomic_notifier_chain_register() after reporting the error).
-> > >>>>
-> > >>>> The point of this patch is to warn developers about the problem that
-> > >>>> needs to be fixed. We already have such troubling drivers in mainline.
-> > >>>>
-> > >>>> It's not critical to register different handlers with a duplicated
-> > >>>> priorities, but such cases really need to be corrected. We shouldn't
-> > >>>> break users' machines during transition to the new API, meanwhile
-> > >>>> developers should take action of fixing theirs drivers.
-> > >>>>
-> > >>>>> (Or you could return > 0 when a duplicate is registered in
-> > >>>>> atomic_notifier_chain_register() if the callers are prepared
-> > >>>>> for that. I don't really like this way, though.)
-> > >>>>
-> > >>>> I had a similar thought at some point before and decided that I'm not in
-> > >>>> favor of this approach. It's nicer to have a dedicated function that
-> > >>>> verifies the uniqueness, IMO.
-> > >>>
-> > >>> I don't like the part that it traverses the list second time to check
-> > >>> the uniqueness. But actually you could avoid that if
-> > >>> notifier_chain_register() would always add equal-priority entries in
-> > >>> reverse order:
-> > >>>
-> > >>>  static int notifier_chain_register(struct notifier_block **nl,
-> > >>>               struct notifier_block *n)
-> > >>>  {
-> > >>>       while ((*nl) != NULL) {
-> > >>>               if (unlikely((*nl) == n)) {
-> > >>>                       WARN(1, "double register detected");
-> > >>>                       return 0;
-> > >>>               }
-> > >>> -             if (n->priority > (*nl)->priority)
-> > >>> +             if (n->priority >= (*nl)->priority)
-> > >>>                       break;
-> > >>>               nl = &((*nl)->next);
-> > >>>       }
-> > >>>       n->next = *nl;
-> > >>>       rcu_assign_pointer(*nl, n);
-> > >>>       return 0;
-> > >>>  }
-> > >>>
-> > >>> Then the check for uniqueness after adding would be:
-> > >>>
-> > >>>  WARN(nb->next && nb->priority == nb->next->priority);
-> > >>
-> > >> We can't just change the registration order because invocation order of
-> > >> the call chain depends on the registration order
-> > >
-> > > It doesn't if unique priorities are required and isn't that what you want?
-> > >
-> > >> and some of current
-> > >> users may rely on that order. I'm pretty sure that changing the order
-> > >> will have unfortunate consequences.
-> > >
-> > > Well, the WARN() doesn't help much then.
-> > >
-> > > Either you can make all of the users register with unique priorities,
-> > > and then you can make the registration reject non-unique ones, or you
-> > > cannot assume them to be unique.
-> >
-> > There is no strong requirement for priorities to be unique, the reboot.c
-> > code will work properly.
->
-> In which case adding the WARN() is not appropriate IMV.
->
-> Also I've looked at the existing code and at least in some cases the
-> order in which the notifiers run doesn't matter.  I'm not sure what
-> the purpose of this patch is TBH.
->
-> > The potential problem is on the user's side and the warning is intended
-> > to aid the user.
->
-> Unless somebody has the panic_on_warn mentioned previously set and
-> really the user need not understand what the WARN() is about.  IOW,
-> WARN() helps developers, not users.
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/geert/linux-m68k.git for-v5.17
+branch HEAD: 1a0ae068bf6b6f4233b1f31bf48bcbc47b111ef2  m68k: defconfig: Update defconfigs for v5.16-rc1
 
-Do panic_on_warn and reboot_on_panic play well with having a WARN()
-in the reboot notifier handling?
+elapsed time: 734m
 
-Gr{oetje,eeting}s,
+configs tested: 166
+configs skipped: 3
 
-                        Geert
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+gcc tested configs:
+arm                                 defconfig
+arm64                            allyesconfig
+arm64                               defconfig
+arm                              allyesconfig
+arm                              allmodconfig
+i386                 randconfig-c001-20211213
+sh                          landisk_defconfig
+powerpc                         wii_defconfig
+powerpc                      acadia_defconfig
+arm                        magician_defconfig
+arm                        oxnas_v6_defconfig
+arc                        vdk_hs38_defconfig
+powerpc                     pq2fads_defconfig
+arm                           h5000_defconfig
+powerpc                 mpc837x_mds_defconfig
+openrisc                 simple_smp_defconfig
+powerpc                     tqm5200_defconfig
+powerpc                      walnut_defconfig
+sh                ecovec24-romimage_defconfig
+mips                           xway_defconfig
+arm                        keystone_defconfig
+powerpc                   motionpro_defconfig
+arm                       imx_v6_v7_defconfig
+arm                         s5pv210_defconfig
+powerpc                     taishan_defconfig
+powerpc                          allyesconfig
+arm                          pxa3xx_defconfig
+sh                           se7722_defconfig
+arc                     haps_hs_smp_defconfig
+mips                     decstation_defconfig
+mips                          rm200_defconfig
+xtensa                  audio_kc705_defconfig
+mips                           rs90_defconfig
+powerpc                      ppc6xx_defconfig
+powerpc                   currituck_defconfig
+sparc                       sparc32_defconfig
+arm                      integrator_defconfig
+sh                     magicpanelr2_defconfig
+powerpc                   bluestone_defconfig
+mips                           mtx1_defconfig
+m68k                       m5249evb_defconfig
+s390                             allyesconfig
+mips                           gcw0_defconfig
+mips                         tb0219_defconfig
+powerpc                       ebony_defconfig
+arm                        trizeps4_defconfig
+arm                         at91_dt_defconfig
+arm                       spear13xx_defconfig
+powerpc64                        alldefconfig
+sh                        sh7785lcr_defconfig
+m68k                        stmark2_defconfig
+i386                             alldefconfig
+sh                         ap325rxa_defconfig
+powerpc                 mpc8560_ads_defconfig
+powerpc                    sam440ep_defconfig
+m68k                       m5208evb_defconfig
+m68k                         apollo_defconfig
+powerpc                       holly_defconfig
+sh                              ul2_defconfig
+m68k                       bvme6000_defconfig
+powerpc                 canyonlands_defconfig
+arm                           sunxi_defconfig
+mips                           ip22_defconfig
+openrisc                         alldefconfig
+mips                         bigsur_defconfig
+arc                 nsimosci_hs_smp_defconfig
+openrisc                            defconfig
+powerpc                  iss476-smp_defconfig
+m68k                          hp300_defconfig
+mips                          malta_defconfig
+powerpc                     ksi8560_defconfig
+arc                          axs101_defconfig
+powerpc                      obs600_defconfig
+m68k                          atari_defconfig
+mips                     loongson1c_defconfig
+h8300                       h8s-sim_defconfig
+arm                       multi_v4t_defconfig
+mips                      loongson3_defconfig
+arm                            qcom_defconfig
+sh                           se7724_defconfig
+mips                      bmips_stb_defconfig
+mips                      pic32mzda_defconfig
+powerpc                     mpc512x_defconfig
+m68k                          multi_defconfig
+arm                  randconfig-c002-20211213
+ia64                             allmodconfig
+ia64                                defconfig
+ia64                             allyesconfig
+m68k                             allmodconfig
+m68k                                defconfig
+m68k                             allyesconfig
+nios2                               defconfig
+arc                              allyesconfig
+nds32                             allnoconfig
+nds32                               defconfig
+nios2                            allyesconfig
+csky                                defconfig
+alpha                               defconfig
+alpha                            allyesconfig
+xtensa                           allyesconfig
+h8300                            allyesconfig
+arc                                 defconfig
+sh                               allmodconfig
+parisc                              defconfig
+s390                             allmodconfig
+parisc                           allyesconfig
+s390                                defconfig
+i386                             allyesconfig
+sparc                            allyesconfig
+sparc                               defconfig
+i386                                defconfig
+i386                   debian-10.3-kselftests
+i386                              debian-10.3
+mips                             allyesconfig
+mips                             allmodconfig
+powerpc                          allmodconfig
+powerpc                           allnoconfig
+x86_64               randconfig-a011-20211213
+x86_64               randconfig-a012-20211213
+x86_64               randconfig-a014-20211213
+x86_64               randconfig-a013-20211213
+x86_64               randconfig-a016-20211213
+x86_64               randconfig-a015-20211213
+i386                 randconfig-a013-20211213
+i386                 randconfig-a011-20211213
+i386                 randconfig-a016-20211213
+i386                 randconfig-a014-20211213
+i386                 randconfig-a015-20211213
+i386                 randconfig-a012-20211213
+arc                  randconfig-r043-20211213
+riscv                randconfig-r042-20211213
+s390                 randconfig-r044-20211213
+riscv                    nommu_k210_defconfig
+riscv                            allyesconfig
+riscv                    nommu_virt_defconfig
+riscv                             allnoconfig
+riscv                               defconfig
+riscv                          rv32_defconfig
+riscv                            allmodconfig
+x86_64                    rhel-8.3-kselftests
+um                           x86_64_defconfig
+um                             i386_defconfig
+x86_64                           allyesconfig
+x86_64                              defconfig
+x86_64                               rhel-8.3
+x86_64                          rhel-8.3-func
+x86_64                                  kexec
 
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+clang tested configs:
+x86_64               randconfig-c007-20211213
+arm                  randconfig-c002-20211213
+riscv                randconfig-c006-20211213
+mips                 randconfig-c004-20211213
+i386                 randconfig-c001-20211213
+s390                 randconfig-c005-20211213
+powerpc              randconfig-c003-20211213
+x86_64               randconfig-a006-20211213
+x86_64               randconfig-a005-20211213
+x86_64               randconfig-a001-20211213
+x86_64               randconfig-a002-20211213
+x86_64               randconfig-a003-20211213
+x86_64               randconfig-a004-20211213
+i386                 randconfig-a001-20211213
+i386                 randconfig-a002-20211213
+i386                 randconfig-a005-20211213
+i386                 randconfig-a003-20211213
+i386                 randconfig-a006-20211213
+i386                 randconfig-a004-20211213
+hexagon              randconfig-r045-20211213
+hexagon              randconfig-r041-20211213
+
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
