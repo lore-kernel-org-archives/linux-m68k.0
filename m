@@ -2,155 +2,195 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B29FCC433EF
-	for <linux-m68k@archiver.kernel.org>; Fri, 17 Dec 2021 13:54:22 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C2A63C433F5
+	for <linux-m68k@archiver.kernel.org>; Mon, 20 Dec 2021 21:08:26 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236878AbhLQNyW (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Fri, 17 Dec 2021 08:54:22 -0500
-Received: from gate.crashing.org ([63.228.1.57]:60104 "EHLO gate.crashing.org"
+        id S230120AbhLTVIZ (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Mon, 20 Dec 2021 16:08:25 -0500
+Received: from mga05.intel.com ([192.55.52.43]:18270 "EHLO mga05.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231667AbhLQNyV (ORCPT <rfc822;linux-m68k@vger.kernel.org>);
-        Fri, 17 Dec 2021 08:54:21 -0500
-Received: from gate.crashing.org (localhost.localdomain [127.0.0.1])
-        by gate.crashing.org (8.14.1/8.14.1) with ESMTP id 1BHDZQmf021580;
-        Fri, 17 Dec 2021 07:35:26 -0600
-Received: (from segher@localhost)
-        by gate.crashing.org (8.14.1/8.14.1/Submit) id 1BHDZJZQ021573;
-        Fri, 17 Dec 2021 07:35:19 -0600
-X-Authentication-Warning: gate.crashing.org: segher set sender to segher@kernel.crashing.org using -f
-Date:   Fri, 17 Dec 2021 07:35:18 -0600
-From:   Segher Boessenkool <segher@kernel.crashing.org>
-To:     David Laight <David.Laight@aculab.com>
-Cc:     Ard Biesheuvel <ardb@kernel.org>,
-        "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>,
-        "Jason A. Donenfeld" <Jason@zx2c4.com>,
-        Rich Felker <dalias@libc.org>,
-        "linux-sh@vger.kernel.org" <linux-sh@vger.kernel.org>,
-        "Richard Russon (FlatCap)" <ldm@flatcap.org>,
-        X86 ML <x86@kernel.org>,
-        Amitkumar Karwar <amitkarwar@gmail.com>,
-        James Morris <jmorris@namei.org>,
-        Eric Dumazet <edumazet@google.com>,
-        Paul Mackerras <paulus@samba.org>,
-        linux-m68k <linux-m68k@vger.kernel.org>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        "open list:SPARC + UltraSPARC (sparc/sparc64)" 
-        <sparclinux@vger.kernel.org>, Stafford Horne <shorne@gmail.com>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Yoshinori Sato <ysato@users.osdn.me>,
-        Russell King <linux@armlinux.org.uk>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Kalle Valo <kvalo@codeaurora.org>,
-        Vladimir Oltean <vladimir.oltean@nxp.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        "Serge E. Hallyn" <serge@hallyn.com>,
-        Jonas Bonn <jonas@southpole.se>,
-        Kees Cook <keescook@chromium.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Ganapathi Bhat <ganapathi017@gmail.com>,
-        Stefan Kristiansson <stefan.kristiansson@saunalahti.fi>,
-        "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
-        "openrisc@lists.librecores.org" <openrisc@lists.librecores.org>,
-        Borislav Petkov <bp@alien8.de>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Jens Axboe <axboe@kernel.dk>, Arnd Bergmann <arnd@kernel.org>,
-        John Johansen <john.johansen@canonical.com>,
-        Xinming Hu <huxinming820@gmail.com>,
-        Vineet Gupta <vgupta@synopsys.com>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "linux-ntfs-dev@lists.sourceforge.net" 
-        <linux-ntfs-dev@lists.sourceforge.net>,
-        "linux-security-module@vger.kernel.org" 
-        <linux-security-module@vger.kernel.org>,
-        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
-        "open list:BPF JIT for MIPS (32-BIT AND 64-BIT)" 
-        <netdev@vger.kernel.org>,
-        "johannes@sipsolutions.net" <johannes@sipsolutions.net>,
-        "open list:LINUX FOR POWERPC (32-BIT AND 64-BIT)" 
-        <linuxppc-dev@lists.ozlabs.org>,
-        Sharvari Harisangam <sharvari.harisangam@nxp.com>
-Subject: Re: [PATCH v2 00/13] Unify asm/unaligned.h around struct helper
-Message-ID: <20211217133518.GR614@gate.crashing.org>
-References: <20210514100106.3404011-1-arnd@kernel.org> <CAMj1kXG0CNomZ0aXxh_4094fT+g4bVWFCkrd7QwgTQgiqoxMWA@mail.gmail.com> <20211216185620.GP614@gate.crashing.org> <698cfc52a0d441f7b9f29424be82b2e8@AcuMS.aculab.com>
-Mime-Version: 1.0
+        id S229795AbhLTVIZ (ORCPT <rfc822;linux-m68k@lists.linux-m68k.org>);
+        Mon, 20 Dec 2021 16:08:25 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1640034505; x=1671570505;
+  h=date:from:to:cc:subject:message-id:mime-version:
+   content-transfer-encoding;
+  bh=bb3QnXDckVi6i4Hznj0qlbdMxP1yZnNAOYQdJpHegoQ=;
+  b=AfJL89q1QtlUSOCLyrnm27/l0VGhRopunk12bFVsRTHcsH5p+Z4sZ3x3
+   hrEjgm7gNkNJLEhs6Z/fyJdvAFvfw1ALEhcdCvStS+zRrAqPsowo+JLgw
+   Fr14z9xCClaBMA6oT823xp0bwXf61BYKAfAxilw1Ol1HQFy5vdoN/dTm0
+   vYdFoIZbiaOG5Tjwk37B22xhhMG6uAheA/ZlUfKpZov1xTAakryZAHKSc
+   N97JtXQUcz1vB+rWRKlbiUzYhL6NavcQVkTkeXRBv0AODHW98PWEnLBU4
+   Eh1tM65tT3X7wR9AkR3E019D/oA7Sr9WQFTguGY69VRmLSL86N4URhX6V
+   A==;
+X-IronPort-AV: E=McAfee;i="6200,9189,10204"; a="326568681"
+X-IronPort-AV: E=Sophos;i="5.88,221,1635231600"; 
+   d="scan'208";a="326568681"
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Dec 2021 13:08:24 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.88,221,1635231600"; 
+   d="scan'208";a="684419741"
+Received: from lkp-server02.sh.intel.com (HELO 9f38c0981d9f) ([10.239.97.151])
+  by orsmga005.jf.intel.com with ESMTP; 20 Dec 2021 13:08:23 -0800
+Received: from kbuild by 9f38c0981d9f with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1mzPtO-0008FT-DO; Mon, 20 Dec 2021 21:08:22 +0000
+Date:   Tue, 21 Dec 2021 05:08:15 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Geert Uytterhoeven <geert@linux-m68k.org>
+Cc:     linux-m68k@lists.linux-m68k.org
+Subject: [geert-m68k:master] BUILD SUCCESS
+ e4c085679585b7ab78af0244cc6dcb67724aacdf
+Message-ID: <61c0f0bf.FFAXk55oQAS/umh4%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
+MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <698cfc52a0d441f7b9f29424be82b2e8@AcuMS.aculab.com>
-User-Agent: Mutt/1.4.2.3i
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-On Fri, Dec 17, 2021 at 12:34:53PM +0000, David Laight wrote:
-> From: Segher Boessenkool
-> > Sent: 16 December 2021 18:56
-> ...
-> > > The only remaining problem here is reinterpreting a char* pointer to a
-> > > u32*, e.g., for accessing the IP address in an Ethernet frame when
-> > > NET_IP_ALIGN == 2, which could suffer from the same UB problem again,
-> > > as I understand it.
-> > 
-> > The problem is never casting a pointer to pointer to character type, and
-> > then later back to an appriopriate pointer type.
-> > These things are both required to work.
-> 
-> I think that is true of 'void *', not 'char *'.
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/geert/linux-m68k.git master
+branch HEAD: e4c085679585b7ab78af0244cc6dcb67724aacdf  Merge tag 'v5.16-rc6'
 
-No, see 6.3.2.3/7.  Both are allowed (and behave the same in fact).
+elapsed time: 726m
 
-> 'char' is special in that 'strict aliasing' doesn't apply to it.
-> (Which is actually a pain sometimes.)
+configs tested: 124
+configs skipped: 3
 
-That has nothing to do with it.  Yes, you can validly access any memory
-as a character type, but that has nothing to do with what pointer casts
-are allowed and which are not.
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
-> > The problem always is accessing something as if it
-> > was something of another type, which is not valid C.  This however is
-> > exactly what -fno-strict-aliasing allows, so that works as well.
-> 
-> IIRC the C language only allows you to have pointers to valid data items.
-> (Since they can only be generated by the & operator on a valid item.)
+gcc tested configs:
+arm                                 defconfig
+arm64                            allyesconfig
+arm64                               defconfig
+arm                              allyesconfig
+arm                              allmodconfig
+m68k                       m5208evb_defconfig
+mips                         bigsur_defconfig
+arm                        magician_defconfig
+powerpc                mpc7448_hpc2_defconfig
+powerpc                 mpc85xx_cds_defconfig
+powerpc                       maple_defconfig
+arm                       imx_v4_v5_defconfig
+sh                           se7712_defconfig
+arm                        vexpress_defconfig
+mips                       bmips_be_defconfig
+arm                        shmobile_defconfig
+sh                        edosk7760_defconfig
+sh                             espt_defconfig
+arm                      footbridge_defconfig
+arm                           tegra_defconfig
+sh                        sh7757lcr_defconfig
+powerpc                      chrp32_defconfig
+powerpc                 mpc832x_mds_defconfig
+riscv             nommu_k210_sdcard_defconfig
+powerpc                 canyonlands_defconfig
+powerpc                      ppc44x_defconfig
+powerpc                           allnoconfig
+mips                     loongson2k_defconfig
+m68k                        m5272c3_defconfig
+powerpc                 mpc836x_mds_defconfig
+openrisc                  or1klitex_defconfig
+powerpc                     tqm5200_defconfig
+arm                           omap1_defconfig
+powerpc                      walnut_defconfig
+powerpc64                        alldefconfig
+arm                         hackkit_defconfig
+powerpc                 mpc832x_rdb_defconfig
+sh                             sh03_defconfig
+parisc                generic-64bit_defconfig
+powerpc                       eiger_defconfig
+sh                            hp6xx_defconfig
+arc                     haps_hs_smp_defconfig
+mips                        jmr3927_defconfig
+arc                              alldefconfig
+arm                         nhk8815_defconfig
+arm                  randconfig-c002-20211220
+ia64                                defconfig
+ia64                             allmodconfig
+ia64                             allyesconfig
+m68k                                defconfig
+m68k                             allyesconfig
+m68k                             allmodconfig
+nios2                               defconfig
+arc                              allyesconfig
+nds32                             allnoconfig
+nds32                               defconfig
+csky                                defconfig
+alpha                               defconfig
+alpha                            allyesconfig
+nios2                            allyesconfig
+xtensa                           allyesconfig
+arc                                 defconfig
+sh                               allmodconfig
+h8300                            allyesconfig
+parisc                              defconfig
+s390                             allyesconfig
+s390                             allmodconfig
+parisc                           allyesconfig
+s390                                defconfig
+i386                             allyesconfig
+sparc                            allyesconfig
+sparc                               defconfig
+i386                   debian-10.3-kselftests
+i386                              debian-10.3
+i386                                defconfig
+mips                             allyesconfig
+mips                             allmodconfig
+powerpc                          allyesconfig
+powerpc                          allmodconfig
+x86_64               randconfig-a001-20211220
+x86_64               randconfig-a003-20211220
+x86_64               randconfig-a006-20211220
+x86_64               randconfig-a004-20211220
+x86_64               randconfig-a002-20211220
+i386                 randconfig-a004-20211220
+i386                 randconfig-a002-20211220
+i386                 randconfig-a003-20211220
+i386                 randconfig-a005-20211220
+i386                 randconfig-a001-20211220
+i386                 randconfig-a006-20211220
+i386                 randconfig-a015-20211219
+x86_64               randconfig-a005-20211220
+arc                  randconfig-r043-20211220
+riscv                    nommu_k210_defconfig
+riscv                            allyesconfig
+riscv                    nommu_virt_defconfig
+riscv                             allnoconfig
+riscv                               defconfig
+riscv                          rv32_defconfig
+riscv                            allmodconfig
+um                           x86_64_defconfig
+um                             i386_defconfig
+x86_64                           allyesconfig
+x86_64                    rhel-8.3-kselftests
+x86_64                               rhel-8.3
+x86_64                          rhel-8.3-func
+x86_64                                  kexec
+x86_64                              defconfig
 
-Not so.  For example you are explicitly allowed to have pointers one
-past the last element of an array (and do arithmetic on that!), and of
-course null pointers are a thing.
+clang tested configs:
+x86_64               randconfig-a013-20211220
+x86_64               randconfig-a015-20211220
+x86_64               randconfig-a014-20211220
+x86_64               randconfig-a012-20211220
+x86_64               randconfig-a011-20211220
+x86_64               randconfig-a016-20211220
+i386                 randconfig-a012-20211220
+i386                 randconfig-a011-20211220
+i386                 randconfig-a014-20211220
+i386                 randconfig-a016-20211220
+i386                 randconfig-a015-20211220
+i386                 randconfig-a013-20211220
+s390                 randconfig-r044-20211220
+hexagon              randconfig-r041-20211220
+hexagon              randconfig-r045-20211220
+riscv                randconfig-r042-20211220
 
-C allows you to make up pointers from integers as well.  This is
-perfectly fine to do.  Accessing anything via such pointers might well
-be not standard C, of course.
-
-> Indirecting any other pointer is probably UB!
-
-If a pointer points to an object, indirecting it gives an lvalue of that
-object.  It does not matter how you got that pointer, all that matters
-is that it points at a valid object.
-
-> This (sort of) allows the compiler to 'look through' casts to find
-> what the actual type is (or might be).
-> It can then use that information to make optimisation choices.
-> This has caused grief with memcpy() calls that are trying to copy
-> a structure that the coder knows is misaligned to an aligned buffer.
-
-This is 6.5/7.
-
-Alignment is 6.2.8 but it doesn't actually come into play at all here.
-
-> So while *(unaligned_ptr *)char_ptr probably has to work.
-
-Only if the original pointer points to an object that is correct
-(including correctly aligned) for such an lvalue.
-
-> If the compiler can see *(unaligned_ptr *)(char *)int_ptr it can
-> assume the alignment of the 'int_ptr' and do a single aligned access.
-
-It is undefined behaviour to have an address in int_ptr that is not
-correctly aligned for whatever type it points to.
-
-
-Segher
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
