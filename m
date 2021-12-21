@@ -2,52 +2,52 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E0BC5C433EF
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A049AC43217
 	for <linux-m68k@archiver.kernel.org>; Tue, 21 Dec 2021 15:01:57 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238779AbhLUPB5 (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Tue, 21 Dec 2021 10:01:57 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53336 "EHLO
+        id S238743AbhLUPB4 (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Tue, 21 Dec 2021 10:01:56 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53354 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235839AbhLUPBu (ORCPT
+        with ESMTP id S235750AbhLUPBx (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Tue, 21 Dec 2021 10:01:50 -0500
-Received: from mail-qk1-x733.google.com (mail-qk1-x733.google.com [IPv6:2607:f8b0:4864:20::733])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A8204C061757
-        for <linux-m68k@lists.linux-m68k.org>; Tue, 21 Dec 2021 07:01:49 -0800 (PST)
-Received: by mail-qk1-x733.google.com with SMTP id p4so12779574qkm.7
-        for <linux-m68k@lists.linux-m68k.org>; Tue, 21 Dec 2021 07:01:49 -0800 (PST)
+        Tue, 21 Dec 2021 10:01:53 -0500
+Received: from mail-qv1-xf36.google.com (mail-qv1-xf36.google.com [IPv6:2607:f8b0:4864:20::f36])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AEFC8C061401
+        for <linux-m68k@lists.linux-m68k.org>; Tue, 21 Dec 2021 07:01:52 -0800 (PST)
+Received: by mail-qv1-xf36.google.com with SMTP id q3so5259515qvc.7
+        for <linux-m68k@lists.linux-m68k.org>; Tue, 21 Dec 2021 07:01:52 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=soleen.com; s=google;
         h=from:to:subject:date:message-id:in-reply-to:references:mime-version
          :content-transfer-encoding;
-        bh=SsQjilbSmtOxN4/+kaclrIIaX0+LAsp7vHqyKiKMlRY=;
-        b=gcBvZoUtrYF3NYCTKHXzdceQiMgG3aqp8QQC/1YCPMu//H6PPmBh6cbnqiASj5UIOO
-         2wJEeGwU4eOhh4IP+XQ974yhSApwdUidA9SYQadh0fRVAuP4IbUKVo6lqjggb2oOK5lq
-         DM9iFM+R8v7OAN4Xa6Lb1xPTsXCEgta3V/iUyRbPzgcSGntUN2RXWivv3j6pSrJn7CpH
-         Pmj2c2F8EET1EyM0FQ3c/4EfrGh5jpd71L68gnn3IL+M+OT4a47k1HGc4YJWxVgW0tYd
-         njGijwXT7U5gG64oLXvjZ4CFri64I8WnnI91/PXtSVFrpKzw5l/A1IG64P1bXl6rX+p8
-         uPcQ==
+        bh=jaGLmQY52APl8v98fQta2llNqqHuAoOAllJQBEPRHxk=;
+        b=eBNsLd7ARojSEaIKr1fNBnwoyaIGKyZ1YHAKdIfcl9DOJfyYTkckGPZbs6qzYnm8KF
+         UJGzZZh8frzcL5dLuDfj2s2helG8nS8rsopxSfDzz9tw/cLdXPv2mCjPvrstIh/YQPYO
+         MbaoqWmM6lsBlKCaN1uZQkuIZ41kY/Gcg1uwL/9zkiAhhYTohOSNbbZBjIn2BSzk9Nm0
+         q/s7BnOn/guBwmkQKFZUpYCqMI3XtWH6SDbIOS1QqygMsL4z0JmE0xbqcgBZAaN02AU7
+         azLIyYmAUcTHEF5X85XZmwKKXfDKkG6YkmrdODo9qNwJSKd0aZg2I6SaJzvz7h66dyAp
+         JdJw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=SsQjilbSmtOxN4/+kaclrIIaX0+LAsp7vHqyKiKMlRY=;
-        b=Va5rFSDQQrYcpXd8pcjXlldOEv53dzrHG8KjH6bkw+ahAnuscZTo7j6UadgxHbOhiG
-         iIEQBeFXFxbD3KSKe/MFGgeE6XLdxqTHe8R/KebRrW8oHXcpKsjktvvHu4OBvrDfsDgb
-         qD9eGTX7B7MkypHTbtCfgZakGd0Zg38wqEyXa98GayeEhpqFnopBkf9hgegKBniy0PeP
-         65av3Q5/X95lggQ/pNxmKEKHx+nUB0u/vEn0954Z+qgnbTfT9ySYiiWR2LTfY3+nciS/
-         g1UCqcxPs8NEzcr1Tn/7h90nWKhZCxliI4uD2uRJcjNkMAnfOL4GK0iDts/XoRI6XkHg
-         XfkQ==
-X-Gm-Message-State: AOAM531Lnvv7kvdET9JRgdEMh23YpHmRHeZb/9gfAhd5/dG2ZcK3g1FS
-        SFOF/se6T6yQJaKMonnNX19nuQ==
-X-Google-Smtp-Source: ABdhPJzRSE2PQv8kZTNTCLI9TYbronVdzGDNuPGOGxLks2rlUw8onAlSVNgM6PFYon6DnS7EEo9SMg==
-X-Received: by 2002:a05:620a:2989:: with SMTP id r9mr2208491qkp.630.1640098908598;
-        Tue, 21 Dec 2021 07:01:48 -0800 (PST)
+        bh=jaGLmQY52APl8v98fQta2llNqqHuAoOAllJQBEPRHxk=;
+        b=OrODhb58mZi/ANa2tkno8dJ24nMP6g19uwgbDEQFfPZbW751s1VqM2jWkfnVLNg249
+         lAqfvkQuyVYBU2LuVJ3sxkgwIaSm/dSiS0a74qqJgO56HhTqHMwGlsMu9GoTFY84wQ5x
+         ikggQKlAv60IYnb4otukCyroCwc7IVjhZqh2+LCtac144+hGawFQs45et+DAySb4EhBS
+         wIRj/EihHiq5R9drHCR+JGxHiBv8WuOVYGXQLYUSorxyWJU+ssegR0qt9rTXZP+TqGNX
+         mzaXyeuOxWjWM+bR+mtL96NOVtvtxHq9sh99ZEyAtQNLcqZOgWVSux4MOXhaNcOxWkiF
+         9AOw==
+X-Gm-Message-State: AOAM533qdWzzPpgF5N51uDR/UmGYvRVWxKu6EwH4/AB24sDczy48p0Rb
+        sfKW/Jgfn1bBHmFc/XOz89WQ0g==
+X-Google-Smtp-Source: ABdhPJwMlFRiSYhQumZA31hM2R0ePuuAlQ2ZhyLXodIAC4YlYRRVox4HfZF1uSX5tXZr7Hd0UOKJ3A==
+X-Received: by 2002:a0c:8e08:: with SMTP id v8mr2635635qvb.93.1640098910549;
+        Tue, 21 Dec 2021 07:01:50 -0800 (PST)
 Received: from soleen.c.googlers.com.com (189.216.85.34.bc.googleusercontent.com. [34.85.216.189])
-        by smtp.gmail.com with ESMTPSA id d4sm1991371qkn.79.2021.12.21.07.01.47
+        by smtp.gmail.com with ESMTPSA id d4sm1991371qkn.79.2021.12.21.07.01.49
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 21 Dec 2021 07:01:48 -0800 (PST)
+        Tue, 21 Dec 2021 07:01:50 -0800 (PST)
 From:   Pasha Tatashin <pasha.tatashin@soleen.com>
 To:     pasha.tatashin@soleen.com, linux-kernel@vger.kernel.org,
         linux-mm@kvack.org, linux-m68k@lists.linux-m68k.org,
@@ -58,9 +58,9 @@ To:     pasha.tatashin@soleen.com, linux-kernel@vger.kernel.org,
         hannes@cmpxchg.org, guro@fb.com, songmuchun@bytedance.com,
         weixugc@google.com, gthelen@google.com, rientjes@google.com,
         pjt@google.com
-Subject: [PATCH v2 5/9] mm: rename init_page_count() -> page_ref_init()
-Date:   Tue, 21 Dec 2021 15:01:36 +0000
-Message-Id: <20211221150140.988298-6-pasha.tatashin@soleen.com>
+Subject: [PATCH v2 7/9] mm: simplify page_ref_* functions
+Date:   Tue, 21 Dec 2021 15:01:38 +0000
+Message-Id: <20211221150140.988298-8-pasha.tatashin@soleen.com>
 X-Mailer: git-send-email 2.34.1.307.g9b7440fafd-goog
 In-Reply-To: <20211221150140.988298-1-pasha.tatashin@soleen.com>
 References: <20211221150140.988298-1-pasha.tatashin@soleen.com>
@@ -70,84 +70,300 @@ Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-Now, that set_page_count() is not called from outside anymore and about
-to be removed, init_page_count() is the only function that is going to
-be used to unconditionally set _refcount, however it is restricted to set
-it only to 1.
+Now, that we are using atomic_fetch* variants to add/sub/inc/dec page
+_refcount, it makes sense to combined page_ref_* return and non return
+functions.
 
-Make init_page_count() aligned with the other page_ref_*
-functions by renaming it.
+Also remove some extra trace points for non-return  variants. This
+improves the tracability by always recording the new _refcount value
+after the modifications has occurred.
 
 Signed-off-by: Pasha Tatashin <pasha.tatashin@soleen.com>
-Acked-by: Geert Uytterhoeven <geert@linux-m68k.org>
 ---
- arch/m68k/mm/motorola.c  |  2 +-
- include/linux/mm.h       |  2 +-
- include/linux/page_ref.h | 10 +++++++---
- mm/page_alloc.c          |  2 +-
- 4 files changed, 10 insertions(+), 6 deletions(-)
+ include/linux/page_ref.h        | 102 +++++++++-----------------------
+ include/trace/events/page_ref.h |  18 +-----
+ mm/debug_page_ref.c             |  14 -----
+ 3 files changed, 31 insertions(+), 103 deletions(-)
 
-diff --git a/arch/m68k/mm/motorola.c b/arch/m68k/mm/motorola.c
-index ecbe948f4c1a..dd3b77d03d5c 100644
---- a/arch/m68k/mm/motorola.c
-+++ b/arch/m68k/mm/motorola.c
-@@ -133,7 +133,7 @@ void __init init_pointer_table(void *table, int type)
- 
- 	/* unreserve the page so it's possible to free that page */
- 	__ClearPageReserved(PD_PAGE(dp));
--	init_page_count(PD_PAGE(dp));
-+	page_ref_init(PD_PAGE(dp));
- 
- 	return;
- }
-diff --git a/include/linux/mm.h b/include/linux/mm.h
-index d211a06784d5..fae3b6ef66a5 100644
---- a/include/linux/mm.h
-+++ b/include/linux/mm.h
-@@ -2451,7 +2451,7 @@ extern void reserve_bootmem_region(phys_addr_t start, phys_addr_t end);
- static inline void free_reserved_page(struct page *page)
- {
- 	ClearPageReserved(page);
--	init_page_count(page);
-+	page_ref_init(page);
- 	__free_page(page);
- 	adjust_managed_page_count(page, 1);
- }
 diff --git a/include/linux/page_ref.h b/include/linux/page_ref.h
-index 03e21ce2f1bd..1af12a0d7ba1 100644
+index d7316881626c..243fc60ae6c8 100644
 --- a/include/linux/page_ref.h
 +++ b/include/linux/page_ref.h
-@@ -107,10 +107,14 @@ static inline void folio_set_count(struct folio *folio, int v)
+@@ -8,8 +8,6 @@
+ #include <linux/tracepoint-defs.h>
+ 
+ DECLARE_TRACEPOINT(page_ref_init);
+-DECLARE_TRACEPOINT(page_ref_mod);
+-DECLARE_TRACEPOINT(page_ref_mod_and_test);
+ DECLARE_TRACEPOINT(page_ref_mod_and_return);
+ DECLARE_TRACEPOINT(page_ref_mod_unless);
+ DECLARE_TRACEPOINT(page_ref_freeze);
+@@ -27,8 +25,6 @@ DECLARE_TRACEPOINT(page_ref_unfreeze);
+ #define page_ref_tracepoint_active(t) tracepoint_enabled(t)
+ 
+ extern void __page_ref_init(struct page *page);
+-extern void __page_ref_mod(struct page *page, int v);
+-extern void __page_ref_mod_and_test(struct page *page, int v, int ret);
+ extern void __page_ref_mod_and_return(struct page *page, int v, int ret);
+ extern void __page_ref_mod_unless(struct page *page, int v, int u);
+ extern void __page_ref_freeze(struct page *page, int v, int ret);
+@@ -41,12 +37,6 @@ extern void __page_ref_unfreeze(struct page *page, int v);
+ static inline void __page_ref_init(struct page *page)
+ {
+ }
+-static inline void __page_ref_mod(struct page *page, int v)
+-{
+-}
+-static inline void __page_ref_mod_and_test(struct page *page, int v, int ret)
+-{
+-}
+ static inline void __page_ref_mod_and_return(struct page *page, int v, int ret)
+ {
+ }
+@@ -127,12 +117,7 @@ static inline int page_ref_add_return(struct page *page, int nr)
+ 
+ static inline void page_ref_add(struct page *page, int nr)
+ {
+-	int old_val = atomic_fetch_add(nr, &page->_refcount);
+-	int new_val = old_val + nr;
+-
+-	VM_BUG_ON_PAGE((unsigned int)new_val < (unsigned int)old_val, page);
+-	if (page_ref_tracepoint_active(page_ref_mod))
+-		__page_ref_mod(page, nr);
++	page_ref_add_return(page, nr);
  }
  
- /*
-- * Setup the page count before being freed into the page allocator for
-- * the first time (boot or memory hotplug)
-+ * Setup the page refcount to one before being freed into the page allocator.
-+ * The memory might not be initialized and therefore there cannot be any
-+ * assumptions about the current value of page->_refcount. This call should be
-+ * done during boot when memory is being initialized, during memory hotplug
-+ * when new memory is added, or when a previous reserved memory is unreserved
-+ * this is the first time kernel take control of the given memory.
-  */
--static inline void init_page_count(struct page *page)
-+static inline void page_ref_init(struct page *page)
- {
- 	set_page_count(page, 1);
+ static inline void folio_ref_add(struct folio *folio, int nr)
+@@ -140,30 +125,25 @@ static inline void folio_ref_add(struct folio *folio, int nr)
+ 	page_ref_add(&folio->page, nr);
  }
-diff --git a/mm/page_alloc.c b/mm/page_alloc.c
-index 13d989d62012..000c057a2d24 100644
---- a/mm/page_alloc.c
-+++ b/mm/page_alloc.c
-@@ -1569,7 +1569,7 @@ static void __meminit __init_single_page(struct page *page, unsigned long pfn,
+ 
+-static inline void page_ref_sub(struct page *page, int nr)
++static inline int page_ref_sub_return(struct page *page, int nr)
  {
- 	mm_zero_struct_page(page);
- 	set_page_links(page, zone, nid, pfn);
--	init_page_count(page);
-+	page_ref_init(page);
- 	page_mapcount_reset(page);
- 	page_cpupid_reset_last(page);
- 	page_kasan_tag_reset(page);
+ 	int old_val = atomic_fetch_sub(nr, &page->_refcount);
+ 	int new_val = old_val - nr;
+ 
+ 	VM_BUG_ON_PAGE((unsigned int)new_val > (unsigned int)old_val, page);
+-	if (page_ref_tracepoint_active(page_ref_mod))
+-		__page_ref_mod(page, -nr);
++	if (page_ref_tracepoint_active(page_ref_mod_and_return))
++		__page_ref_mod_and_return(page, -nr, new_val);
++	return new_val;
+ }
+ 
+-static inline void folio_ref_sub(struct folio *folio, int nr)
++static inline void page_ref_sub(struct page *page, int nr)
+ {
+-	page_ref_sub(&folio->page, nr);
++	page_ref_sub_return(page, nr);
+ }
+ 
+-static inline int page_ref_sub_return(struct page *page, int nr)
++static inline void folio_ref_sub(struct folio *folio, int nr)
+ {
+-	int old_val = atomic_fetch_sub(nr, &page->_refcount);
+-	int new_val = old_val - nr;
+-
+-	VM_BUG_ON_PAGE((unsigned int)new_val > (unsigned int)old_val, page);
+-	if (page_ref_tracepoint_active(page_ref_mod_and_return))
+-		__page_ref_mod_and_return(page, -nr, new_val);
+-	return new_val;
++	page_ref_sub(&folio->page, nr);
+ }
+ 
+ static inline int folio_ref_sub_return(struct folio *folio, int nr)
+@@ -171,14 +151,20 @@ static inline int folio_ref_sub_return(struct folio *folio, int nr)
+ 	return page_ref_sub_return(&folio->page, nr);
+ }
+ 
+-static inline void page_ref_inc(struct page *page)
++static inline int page_ref_inc_return(struct page *page)
+ {
+ 	int old_val = atomic_fetch_inc(&page->_refcount);
+ 	int new_val = old_val + 1;
+ 
+ 	VM_BUG_ON_PAGE((unsigned int)new_val < (unsigned int)old_val, page);
+-	if (page_ref_tracepoint_active(page_ref_mod))
+-		__page_ref_mod(page, 1);
++	if (page_ref_tracepoint_active(page_ref_mod_and_return))
++		__page_ref_mod_and_return(page, 1, new_val);
++	return new_val;
++}
++
++static inline void page_ref_inc(struct page *page)
++{
++	page_ref_inc_return(page);
+ }
+ 
+ static inline void folio_ref_inc(struct folio *folio)
+@@ -186,14 +172,20 @@ static inline void folio_ref_inc(struct folio *folio)
+ 	page_ref_inc(&folio->page);
+ }
+ 
+-static inline void page_ref_dec(struct page *page)
++static inline int page_ref_dec_return(struct page *page)
+ {
+ 	int old_val = atomic_fetch_dec(&page->_refcount);
+ 	int new_val = old_val - 1;
+ 
+ 	VM_BUG_ON_PAGE((unsigned int)new_val > (unsigned int)old_val, page);
+-	if (page_ref_tracepoint_active(page_ref_mod))
+-		__page_ref_mod(page, -1);
++	if (page_ref_tracepoint_active(page_ref_mod_and_return))
++		__page_ref_mod_and_return(page, -1, new_val);
++	return new_val;
++}
++
++static inline void page_ref_dec(struct page *page)
++{
++	page_ref_dec_return(page);
+ }
+ 
+ static inline void folio_ref_dec(struct folio *folio)
+@@ -203,14 +195,7 @@ static inline void folio_ref_dec(struct folio *folio)
+ 
+ static inline int page_ref_sub_and_test(struct page *page, int nr)
+ {
+-	int old_val = atomic_fetch_sub(nr, &page->_refcount);
+-	int new_val = old_val - nr;
+-	int ret = new_val == 0;
+-
+-	VM_BUG_ON_PAGE((unsigned int)new_val > (unsigned int)old_val, page);
+-	if (page_ref_tracepoint_active(page_ref_mod_and_test))
+-		__page_ref_mod_and_test(page, -nr, ret);
+-	return ret;
++	return page_ref_sub_return(page, nr) == 0;
+ }
+ 
+ static inline int folio_ref_sub_and_test(struct folio *folio, int nr)
+@@ -218,17 +203,6 @@ static inline int folio_ref_sub_and_test(struct folio *folio, int nr)
+ 	return page_ref_sub_and_test(&folio->page, nr);
+ }
+ 
+-static inline int page_ref_inc_return(struct page *page)
+-{
+-	int old_val = atomic_fetch_inc(&page->_refcount);
+-	int new_val = old_val + 1;
+-
+-	VM_BUG_ON_PAGE((unsigned int)new_val < (unsigned int)old_val, page);
+-	if (page_ref_tracepoint_active(page_ref_mod_and_return))
+-		__page_ref_mod_and_return(page, 1, new_val);
+-	return new_val;
+-}
+-
+ static inline int folio_ref_inc_return(struct folio *folio)
+ {
+ 	return page_ref_inc_return(&folio->page);
+@@ -236,14 +210,7 @@ static inline int folio_ref_inc_return(struct folio *folio)
+ 
+ static inline int page_ref_dec_and_test(struct page *page)
+ {
+-	int old_val = atomic_fetch_dec(&page->_refcount);
+-	int new_val = old_val - 1;
+-	int ret = new_val == 0;
+-
+-	VM_BUG_ON_PAGE((unsigned int)new_val > (unsigned int)old_val, page);
+-	if (page_ref_tracepoint_active(page_ref_mod_and_test))
+-		__page_ref_mod_and_test(page, -1, ret);
+-	return ret;
++	return page_ref_dec_return(page) == 0;
+ }
+ 
+ static inline int folio_ref_dec_and_test(struct folio *folio)
+@@ -251,17 +218,6 @@ static inline int folio_ref_dec_and_test(struct folio *folio)
+ 	return page_ref_dec_and_test(&folio->page);
+ }
+ 
+-static inline int page_ref_dec_return(struct page *page)
+-{
+-	int old_val = atomic_fetch_dec(&page->_refcount);
+-	int new_val = old_val - 1;
+-
+-	VM_BUG_ON_PAGE((unsigned int)new_val > (unsigned int)old_val, page);
+-	if (page_ref_tracepoint_active(page_ref_mod_and_return))
+-		__page_ref_mod_and_return(page, -1, new_val);
+-	return new_val;
+-}
+-
+ static inline int folio_ref_dec_return(struct folio *folio)
+ {
+ 	return page_ref_dec_return(&folio->page);
+diff --git a/include/trace/events/page_ref.h b/include/trace/events/page_ref.h
+index 87551bb1df9e..35cd795aa7c6 100644
+--- a/include/trace/events/page_ref.h
++++ b/include/trace/events/page_ref.h
+@@ -49,7 +49,7 @@ DEFINE_EVENT(page_ref_init_template, page_ref_init,
+ 	TP_ARGS(page)
+ );
+ 
+-DECLARE_EVENT_CLASS(page_ref_mod_template,
++DECLARE_EVENT_CLASS(page_ref_unfreeze_template,
+ 
+ 	TP_PROTO(struct page *page, int v),
+ 
+@@ -83,13 +83,6 @@ DECLARE_EVENT_CLASS(page_ref_mod_template,
+ 		__entry->val)
+ );
+ 
+-DEFINE_EVENT(page_ref_mod_template, page_ref_mod,
+-
+-	TP_PROTO(struct page *page, int v),
+-
+-	TP_ARGS(page, v)
+-);
+-
+ DECLARE_EVENT_CLASS(page_ref_mod_and_test_template,
+ 
+ 	TP_PROTO(struct page *page, int v, int ret),
+@@ -126,13 +119,6 @@ DECLARE_EVENT_CLASS(page_ref_mod_and_test_template,
+ 		__entry->val, __entry->ret)
+ );
+ 
+-DEFINE_EVENT(page_ref_mod_and_test_template, page_ref_mod_and_test,
+-
+-	TP_PROTO(struct page *page, int v, int ret),
+-
+-	TP_ARGS(page, v, ret)
+-);
+-
+ DEFINE_EVENT(page_ref_mod_and_test_template, page_ref_mod_and_return,
+ 
+ 	TP_PROTO(struct page *page, int v, int ret),
+@@ -154,7 +140,7 @@ DEFINE_EVENT(page_ref_mod_and_test_template, page_ref_freeze,
+ 	TP_ARGS(page, v, ret)
+ );
+ 
+-DEFINE_EVENT(page_ref_mod_template, page_ref_unfreeze,
++DEFINE_EVENT(page_ref_unfreeze_template, page_ref_unfreeze,
+ 
+ 	TP_PROTO(struct page *page, int v),
+ 
+diff --git a/mm/debug_page_ref.c b/mm/debug_page_ref.c
+index e32149734122..1de9d93cca25 100644
+--- a/mm/debug_page_ref.c
++++ b/mm/debug_page_ref.c
+@@ -12,20 +12,6 @@ void __page_ref_init(struct page *page)
+ EXPORT_SYMBOL(__page_ref_init);
+ EXPORT_TRACEPOINT_SYMBOL(page_ref_init);
+ 
+-void __page_ref_mod(struct page *page, int v)
+-{
+-	trace_page_ref_mod(page, v);
+-}
+-EXPORT_SYMBOL(__page_ref_mod);
+-EXPORT_TRACEPOINT_SYMBOL(page_ref_mod);
+-
+-void __page_ref_mod_and_test(struct page *page, int v, int ret)
+-{
+-	trace_page_ref_mod_and_test(page, v, ret);
+-}
+-EXPORT_SYMBOL(__page_ref_mod_and_test);
+-EXPORT_TRACEPOINT_SYMBOL(page_ref_mod_and_test);
+-
+ void __page_ref_mod_and_return(struct page *page, int v, int ret)
+ {
+ 	trace_page_ref_mod_and_return(page, v, ret);
 -- 
 2.34.1.307.g9b7440fafd-goog
 
