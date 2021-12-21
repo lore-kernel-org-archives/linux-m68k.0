@@ -2,52 +2,52 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 831A5C433FE
-	for <linux-m68k@archiver.kernel.org>; Tue, 21 Dec 2021 15:01:56 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E0BC5C433EF
+	for <linux-m68k@archiver.kernel.org>; Tue, 21 Dec 2021 15:01:57 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235870AbhLUPB4 (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Tue, 21 Dec 2021 10:01:56 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53324 "EHLO
+        id S238779AbhLUPB5 (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Tue, 21 Dec 2021 10:01:57 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53336 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235814AbhLUPBt (ORCPT
+        with ESMTP id S235839AbhLUPBu (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Tue, 21 Dec 2021 10:01:49 -0500
+        Tue, 21 Dec 2021 10:01:50 -0500
 Received: from mail-qk1-x733.google.com (mail-qk1-x733.google.com [IPv6:2607:f8b0:4864:20::733])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 71B5AC061748
-        for <linux-m68k@lists.linux-m68k.org>; Tue, 21 Dec 2021 07:01:48 -0800 (PST)
-Received: by mail-qk1-x733.google.com with SMTP id t83so12763417qke.8
-        for <linux-m68k@lists.linux-m68k.org>; Tue, 21 Dec 2021 07:01:48 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A8204C061757
+        for <linux-m68k@lists.linux-m68k.org>; Tue, 21 Dec 2021 07:01:49 -0800 (PST)
+Received: by mail-qk1-x733.google.com with SMTP id p4so12779574qkm.7
+        for <linux-m68k@lists.linux-m68k.org>; Tue, 21 Dec 2021 07:01:49 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=soleen.com; s=google;
         h=from:to:subject:date:message-id:in-reply-to:references:mime-version
          :content-transfer-encoding;
-        bh=/Bz+RH2sd3d5dh0W3emMfNr+x1w1TZodqurj+f1M1QQ=;
-        b=KidDaTtrQ8tAIOl8DDgN3FOj8v1GQoe8AsMNbfRPu+zCoyTqxLCHTwzt9TbJbGovo0
-         6Q9nLCCLveS3W+IiLFrcheP6UIKLC/0UIEGvzCdIJEB3tS03dwPcqR5y4Gx65v2xT1pJ
-         9DSwSVolFxtdTKHj0Ik+YdvPhw6379bJal5U2mQLhnKWK+y+akA/COr5nZyW37G/V5Pt
-         LnhAmG0s96vB1BlwKg3qDz836SVwtKNrueM8zE6fy78U14axejFvjq5Gfq1OVGF5Z/7C
-         Wk9q1LEkgVQYUNYNyzxS2vRVpOaUifCNJ5eGJPO6psx4JzNMhN5x+6NRyXbvV/t0qYjL
-         UO7w==
+        bh=SsQjilbSmtOxN4/+kaclrIIaX0+LAsp7vHqyKiKMlRY=;
+        b=gcBvZoUtrYF3NYCTKHXzdceQiMgG3aqp8QQC/1YCPMu//H6PPmBh6cbnqiASj5UIOO
+         2wJEeGwU4eOhh4IP+XQ974yhSApwdUidA9SYQadh0fRVAuP4IbUKVo6lqjggb2oOK5lq
+         DM9iFM+R8v7OAN4Xa6Lb1xPTsXCEgta3V/iUyRbPzgcSGntUN2RXWivv3j6pSrJn7CpH
+         Pmj2c2F8EET1EyM0FQ3c/4EfrGh5jpd71L68gnn3IL+M+OT4a47k1HGc4YJWxVgW0tYd
+         njGijwXT7U5gG64oLXvjZ4CFri64I8WnnI91/PXtSVFrpKzw5l/A1IG64P1bXl6rX+p8
+         uPcQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=/Bz+RH2sd3d5dh0W3emMfNr+x1w1TZodqurj+f1M1QQ=;
-        b=BoEnLBDWIW//lNAZOyrethrURVXKq3dN6bVUQivueowdHZ31WBdRe8APS0J7lDHOzt
-         MWQrG+zEMVgWMGhB0KphPqgQ7F+IXk6BEHqYCDUsSILFCr78bSj+WlxpMBQAH6VOkUxy
-         +CpwgsuOM9BU8u5rG8Xx/tq4Gd6lWNDokA+JaaY6g5E3ELEKuN6NEBJM5aDftpaWMZ1Z
-         vxbuDiLmLjg8+joqnpiCINdUQ6sM5sv6SOM8vJO7BeNyu3gikMRSvhhSnyg10LnXwy2s
-         ewco8SA53ReQ3SEUpfNG0WkBALS59yoNytkekxvwOlnWG2VkKEfxThr8H2endlQ8Iw+D
-         zRdA==
-X-Gm-Message-State: AOAM533vji+4pgxkZeTmwPzbpUAP2G/vCZ2zHzQzEVppXbVlQZAinYbp
-        2b6lsYEXCMfI2dBtEIFQHhOF+w==
-X-Google-Smtp-Source: ABdhPJwWtWwvP9UVXTIMJbtTvAxC6RyjKtLEk/a3kJ8GOYA632y7N+nkICuXAEpwnyyJVHEAouzJYA==
-X-Received: by 2002:a37:60a:: with SMTP id 10mr1540467qkg.19.1640098906882;
-        Tue, 21 Dec 2021 07:01:46 -0800 (PST)
+        bh=SsQjilbSmtOxN4/+kaclrIIaX0+LAsp7vHqyKiKMlRY=;
+        b=Va5rFSDQQrYcpXd8pcjXlldOEv53dzrHG8KjH6bkw+ahAnuscZTo7j6UadgxHbOhiG
+         iIEQBeFXFxbD3KSKe/MFGgeE6XLdxqTHe8R/KebRrW8oHXcpKsjktvvHu4OBvrDfsDgb
+         qD9eGTX7B7MkypHTbtCfgZakGd0Zg38wqEyXa98GayeEhpqFnopBkf9hgegKBniy0PeP
+         65av3Q5/X95lggQ/pNxmKEKHx+nUB0u/vEn0954Z+qgnbTfT9ySYiiWR2LTfY3+nciS/
+         g1UCqcxPs8NEzcr1Tn/7h90nWKhZCxliI4uD2uRJcjNkMAnfOL4GK0iDts/XoRI6XkHg
+         XfkQ==
+X-Gm-Message-State: AOAM531Lnvv7kvdET9JRgdEMh23YpHmRHeZb/9gfAhd5/dG2ZcK3g1FS
+        SFOF/se6T6yQJaKMonnNX19nuQ==
+X-Google-Smtp-Source: ABdhPJzRSE2PQv8kZTNTCLI9TYbronVdzGDNuPGOGxLks2rlUw8onAlSVNgM6PFYon6DnS7EEo9SMg==
+X-Received: by 2002:a05:620a:2989:: with SMTP id r9mr2208491qkp.630.1640098908598;
+        Tue, 21 Dec 2021 07:01:48 -0800 (PST)
 Received: from soleen.c.googlers.com.com (189.216.85.34.bc.googleusercontent.com. [34.85.216.189])
-        by smtp.gmail.com with ESMTPSA id d4sm1991371qkn.79.2021.12.21.07.01.45
+        by smtp.gmail.com with ESMTPSA id d4sm1991371qkn.79.2021.12.21.07.01.47
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 21 Dec 2021 07:01:46 -0800 (PST)
+        Tue, 21 Dec 2021 07:01:48 -0800 (PST)
 From:   Pasha Tatashin <pasha.tatashin@soleen.com>
 To:     pasha.tatashin@soleen.com, linux-kernel@vger.kernel.org,
         linux-mm@kvack.org, linux-m68k@lists.linux-m68k.org,
@@ -58,9 +58,9 @@ To:     pasha.tatashin@soleen.com, linux-kernel@vger.kernel.org,
         hannes@cmpxchg.org, guro@fb.com, songmuchun@bytedance.com,
         weixugc@google.com, gthelen@google.com, rientjes@google.com,
         pjt@google.com
-Subject: [PATCH v2 3/9] mm: remove set_page_count() from page_frag_alloc_align
-Date:   Tue, 21 Dec 2021 15:01:34 +0000
-Message-Id: <20211221150140.988298-4-pasha.tatashin@soleen.com>
+Subject: [PATCH v2 5/9] mm: rename init_page_count() -> page_ref_init()
+Date:   Tue, 21 Dec 2021 15:01:36 +0000
+Message-Id: <20211221150140.988298-6-pasha.tatashin@soleen.com>
 X-Mailer: git-send-email 2.34.1.307.g9b7440fafd-goog
 In-Reply-To: <20211221150140.988298-1-pasha.tatashin@soleen.com>
 References: <20211221150140.988298-1-pasha.tatashin@soleen.com>
@@ -70,66 +70,84 @@ Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-set_page_count() unconditionally resets the value of _ref_count and that
-is dangerous, as it is not programmatically verified. Instead we rely on
-comments like: "OK, page count is 0, we can safely set it".
+Now, that set_page_count() is not called from outside anymore and about
+to be removed, init_page_count() is the only function that is going to
+be used to unconditionally set _refcount, however it is restricted to set
+it only to 1.
 
-Add a new refcount function: page_ref_add_return() to return the new
-refcount value after adding to it. Use the return value to verify that
-the _ref_count was indeed the expected one.
+Make init_page_count() aligned with the other page_ref_*
+functions by renaming it.
 
 Signed-off-by: Pasha Tatashin <pasha.tatashin@soleen.com>
+Acked-by: Geert Uytterhoeven <geert@linux-m68k.org>
 ---
- include/linux/page_ref.h | 11 +++++++++++
- mm/page_alloc.c          |  6 ++++--
- 2 files changed, 15 insertions(+), 2 deletions(-)
+ arch/m68k/mm/motorola.c  |  2 +-
+ include/linux/mm.h       |  2 +-
+ include/linux/page_ref.h | 10 +++++++---
+ mm/page_alloc.c          |  2 +-
+ 4 files changed, 10 insertions(+), 6 deletions(-)
 
+diff --git a/arch/m68k/mm/motorola.c b/arch/m68k/mm/motorola.c
+index ecbe948f4c1a..dd3b77d03d5c 100644
+--- a/arch/m68k/mm/motorola.c
++++ b/arch/m68k/mm/motorola.c
+@@ -133,7 +133,7 @@ void __init init_pointer_table(void *table, int type)
+ 
+ 	/* unreserve the page so it's possible to free that page */
+ 	__ClearPageReserved(PD_PAGE(dp));
+-	init_page_count(PD_PAGE(dp));
++	page_ref_init(PD_PAGE(dp));
+ 
+ 	return;
+ }
+diff --git a/include/linux/mm.h b/include/linux/mm.h
+index d211a06784d5..fae3b6ef66a5 100644
+--- a/include/linux/mm.h
++++ b/include/linux/mm.h
+@@ -2451,7 +2451,7 @@ extern void reserve_bootmem_region(phys_addr_t start, phys_addr_t end);
+ static inline void free_reserved_page(struct page *page)
+ {
+ 	ClearPageReserved(page);
+-	init_page_count(page);
++	page_ref_init(page);
+ 	__free_page(page);
+ 	adjust_managed_page_count(page, 1);
+ }
 diff --git a/include/linux/page_ref.h b/include/linux/page_ref.h
-index fe4864f7f69c..03e21ce2f1bd 100644
+index 03e21ce2f1bd..1af12a0d7ba1 100644
 --- a/include/linux/page_ref.h
 +++ b/include/linux/page_ref.h
-@@ -115,6 +115,17 @@ static inline void init_page_count(struct page *page)
- 	set_page_count(page, 1);
+@@ -107,10 +107,14 @@ static inline void folio_set_count(struct folio *folio, int v)
  }
  
-+static inline int page_ref_add_return(struct page *page, int nr)
-+{
-+	int old_val = atomic_fetch_add(nr, &page->_refcount);
-+	int new_val = old_val + nr;
-+
-+	VM_BUG_ON_PAGE((unsigned int)new_val < (unsigned int)old_val, page);
-+	if (page_ref_tracepoint_active(page_ref_mod_and_return))
-+		__page_ref_mod_and_return(page, nr, new_val);
-+	return new_val;
-+}
-+
- static inline void page_ref_add(struct page *page, int nr)
+ /*
+- * Setup the page count before being freed into the page allocator for
+- * the first time (boot or memory hotplug)
++ * Setup the page refcount to one before being freed into the page allocator.
++ * The memory might not be initialized and therefore there cannot be any
++ * assumptions about the current value of page->_refcount. This call should be
++ * done during boot when memory is being initialized, during memory hotplug
++ * when new memory is added, or when a previous reserved memory is unreserved
++ * this is the first time kernel take control of the given memory.
+  */
+-static inline void init_page_count(struct page *page)
++static inline void page_ref_init(struct page *page)
  {
- 	int old_val = atomic_fetch_add(nr, &page->_refcount);
+ 	set_page_count(page, 1);
+ }
 diff --git a/mm/page_alloc.c b/mm/page_alloc.c
-index edfd6c81af82..b5554767b9de 100644
+index 13d989d62012..000c057a2d24 100644
 --- a/mm/page_alloc.c
 +++ b/mm/page_alloc.c
-@@ -5523,6 +5523,7 @@ void *page_frag_alloc_align(struct page_frag_cache *nc,
- 	unsigned int size = PAGE_SIZE;
- 	struct page *page;
- 	int offset;
-+	int refcnt;
- 
- 	if (unlikely(!nc->va)) {
- refill:
-@@ -5561,8 +5562,9 @@ void *page_frag_alloc_align(struct page_frag_cache *nc,
- 		/* if size can vary use size else just use PAGE_SIZE */
- 		size = nc->size;
- #endif
--		/* OK, page count is 0, we can safely set it */
--		set_page_count(page, PAGE_FRAG_CACHE_MAX_SIZE + 1);
-+		/* page count is 0, set it to PAGE_FRAG_CACHE_MAX_SIZE + 1 */
-+		refcnt = page_ref_add_return(page, PAGE_FRAG_CACHE_MAX_SIZE + 1);
-+		VM_BUG_ON_PAGE(refcnt != PAGE_FRAG_CACHE_MAX_SIZE + 1, page);
- 
- 		/* reset page count bias and offset to start of new frag */
- 		nc->pagecnt_bias = PAGE_FRAG_CACHE_MAX_SIZE + 1;
+@@ -1569,7 +1569,7 @@ static void __meminit __init_single_page(struct page *page, unsigned long pfn,
+ {
+ 	mm_zero_struct_page(page);
+ 	set_page_links(page, zone, nid, pfn);
+-	init_page_count(page);
++	page_ref_init(page);
+ 	page_mapcount_reset(page);
+ 	page_cpupid_reset_last(page);
+ 	page_kasan_tag_reset(page);
 -- 
 2.34.1.307.g9b7440fafd-goog
 
