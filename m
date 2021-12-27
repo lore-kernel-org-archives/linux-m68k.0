@@ -2,128 +2,88 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 1CA15C433FE
-	for <linux-m68k@archiver.kernel.org>; Tue, 21 Dec 2021 15:02:00 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 29109C433F5
+	for <linux-m68k@archiver.kernel.org>; Mon, 27 Dec 2021 09:09:34 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238808AbhLUPB7 (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Tue, 21 Dec 2021 10:01:59 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53326 "EHLO
+        id S235752AbhL0JJd (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Mon, 27 Dec 2021 04:09:33 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35296 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235803AbhLUPBt (ORCPT
+        with ESMTP id S235748AbhL0JJc (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Tue, 21 Dec 2021 10:01:49 -0500
-Received: from mail-qt1-x835.google.com (mail-qt1-x835.google.com [IPv6:2607:f8b0:4864:20::835])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 911C3C061751
-        for <linux-m68k@lists.linux-m68k.org>; Tue, 21 Dec 2021 07:01:48 -0800 (PST)
-Received: by mail-qt1-x835.google.com with SMTP id 8so13075892qtx.5
-        for <linux-m68k@lists.linux-m68k.org>; Tue, 21 Dec 2021 07:01:48 -0800 (PST)
+        Mon, 27 Dec 2021 04:09:32 -0500
+Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 84650C061401
+        for <linux-m68k@lists.linux-m68k.org>; Mon, 27 Dec 2021 01:09:32 -0800 (PST)
+Received: by mail-pg1-x541.google.com with SMTP id i8so4603072pgt.13
+        for <linux-m68k@lists.linux-m68k.org>; Mon, 27 Dec 2021 01:09:32 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=soleen.com; s=google;
-        h=from:to:subject:date:message-id:in-reply-to:references:mime-version
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=z2VhwZJp+CYNkMvAFgED+Ch239FJE+mqbH+kwAZRtjs=;
-        b=Isqh/qtjAM6CifMsfjDdrpzprBY88bVNe++QqbYGtWKvcFBuirzAI8eSLjED3Yr8q+
-         K7oDPwFcOSairohgieMo5fJaUSk3ooSZuchaU6ouPnieVyBf+Z59FeGZDN+/F0u1b5Nl
-         GrT5P6lCepWEXlpHRGEpkNm6qhtg9jSC7cSG1N4qf4C6+XirC+wMJAFVTFCPxeHMeONP
-         cVrb23Wr6/HQ33ydNc0n+tMa8LJY0iVIUicZuVRXqOe0MxFIZmGEdMuYvosUMV3neE7k
-         9Scs7dNJ/vV1gn2dv0CVxKWBB5vpDAPau9zo11fySBO4QlfQCVXtinoeU+NScgXZ/d8T
-         jm0Q==
+        bh=KP3YVQJ4biv4U+8Gd/f+YsR8MUWxl5xUFHc5/8r5sRM=;
+        b=Zf+fHnZmOREYGBv2HVzFWEoL3SomNcCJ297KAPMlzEzEmaxt8YgQ0FjmEhnRXfU24U
+         c7opPNO6VyWtll0ssAiqTn7RHKZSAMuK6pZhLhk/JLboJZtSQ4L5qoICtFCxOYI8AuaR
+         QNnLGOlFwxioToP+GJl2IENEXYVote2Me/ntF0ksIYh9Kg+TCVtD6zM/m/HqpZHmM9lU
+         AWg/w6LiDyx00FmJ8nhhyz7WG/aiyi0Ncg0mhMcWVOirrcUum/n8IeTQ3I1zM08mF2p9
+         Ozs47eg/a+HrY/fJRsH0Ejn90M/6s5HsC009bG23pjBA8iNk/cper5louHkutd6JhsLv
+         5bbA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=z2VhwZJp+CYNkMvAFgED+Ch239FJE+mqbH+kwAZRtjs=;
-        b=RzCKEuo11/Y1BGe7oPnKP2V3nVDwsdNteAaW6HXqkGjfsxeQz91WbNDko+MGq6nbai
-         jXBkSuEPzhnqbvHvk7EibIQoiVCj//xGLP3qjzZn4L1sYnlO/rMvoWF1OXnE0cJKGeVe
-         yxARJvelVyYJZFO8M/lG63xheJufZ8jLj4AN9F/xZ+y/iCELccDmNmP2y3XFAje+wXpp
-         DMzINNY131PXFSTu3a5ln7uENi/9Lt2ThFF8WmG9FjZBRCqI9VyZikVhYH+iWjQn/yiH
-         KIBy63ly6Fhi8pHscLDsMdcBLa6Xox3fcBv1e1bwwvmnSjV8D+lYMZtsYw7esRvHFxSH
-         GFvw==
-X-Gm-Message-State: AOAM532na8cwqzfZQt/8rHYP7DVVtscx239e3wjWTt00AfEhdkjh/9bl
-        urKg/vB1VJGdbPm45KNd3BuQEA==
-X-Google-Smtp-Source: ABdhPJz6AlBZ8QhXsFxyNCcVEnd/n/MyhBcR1fXsh3p0kndyZdbgogIw17CApmd9zqCEKn07vnlowQ==
-X-Received: by 2002:ac8:5a51:: with SMTP id o17mr2530376qta.180.1640098907723;
-        Tue, 21 Dec 2021 07:01:47 -0800 (PST)
-Received: from soleen.c.googlers.com.com (189.216.85.34.bc.googleusercontent.com. [34.85.216.189])
-        by smtp.gmail.com with ESMTPSA id d4sm1991371qkn.79.2021.12.21.07.01.46
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=KP3YVQJ4biv4U+8Gd/f+YsR8MUWxl5xUFHc5/8r5sRM=;
+        b=a1FhQioFXgitZYPF8euYzEgTAOFRTpcM8b1Ow0S5FR7E7Utn08UGMDlV+/F4bPuwI5
+         sOY6UEWXG/zzPPxK3xZLsdg9yDGYYask64gXlB602nfofTk9tTQ+5hpjeI06q7OfPYL1
+         ARS/oX09qxD8FwuJXS6T4KMsVH68jWj02oshOUozH3TLIIiOp9oPz8TVCXpNlMbnUwm4
+         yfmnJCOaXSg5RzaJmWjvpUlnAtLLCp3U3O3MuuoiRjehhLqfei6qIfeg9fPwP4Va0/iT
+         TG9i8pIoiOaRNvSCqlZ+nlVhRt5PUbPsgt7ShRug1yDzZ4hodWYThziYWIAAiWHcmtnJ
+         Cnog==
+X-Gm-Message-State: AOAM531Lq17oRxoikizEZGc9UEUkvJ9JufzPTUAsPfWAu9kY+G4Bor1Q
+        30QntepsZP/hu8rLUAZdmk4=
+X-Google-Smtp-Source: ABdhPJy5lDNV56AsXfd2Am9DMW6ZwTZOAge3OfJcO94V6iXHXjAocOeCUQxKZ0Tx38MOVp5oaP9ssA==
+X-Received: by 2002:a63:5906:: with SMTP id n6mr14670827pgb.586.1640596171879;
+        Mon, 27 Dec 2021 01:09:31 -0800 (PST)
+Received: from slim.das-security.cn ([103.84.139.53])
+        by smtp.gmail.com with ESMTPSA id 10sm16659078pfm.56.2021.12.27.01.09.30
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 21 Dec 2021 07:01:47 -0800 (PST)
-From:   Pasha Tatashin <pasha.tatashin@soleen.com>
-To:     pasha.tatashin@soleen.com, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, linux-m68k@lists.linux-m68k.org,
-        anshuman.khandual@arm.com, willy@infradead.org,
-        akpm@linux-foundation.org, william.kucharski@oracle.com,
-        mike.kravetz@oracle.com, vbabka@suse.cz, geert@linux-m68k.org,
-        schmitzmic@gmail.com, rostedt@goodmis.org, mingo@redhat.com,
-        hannes@cmpxchg.org, guro@fb.com, songmuchun@bytedance.com,
-        weixugc@google.com, gthelen@google.com, rientjes@google.com,
-        pjt@google.com
-Subject: [PATCH v2 4/9] mm: avoid using set_page_count() when pages are freed into allocator
-Date:   Tue, 21 Dec 2021 15:01:35 +0000
-Message-Id: <20211221150140.988298-5-pasha.tatashin@soleen.com>
-X-Mailer: git-send-email 2.34.1.307.g9b7440fafd-goog
-In-Reply-To: <20211221150140.988298-1-pasha.tatashin@soleen.com>
-References: <20211221150140.988298-1-pasha.tatashin@soleen.com>
+        Mon, 27 Dec 2021 01:09:31 -0800 (PST)
+From:   Hangyu Hua <hbh25y@gmail.com>
+To:     geert@linux-m68k.org
+Cc:     linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org,
+        Hangyu Hua <hbh25y@gmail.com>
+Subject: [PATCH] m68k/kernel: array out of bound access in process_uboot_commandline
+Date:   Mon, 27 Dec 2021 17:09:17 +0800
+Message-Id: <20211227090917.35838-1-hbh25y@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-When struct pages are first initialized the page->_refcount field is
-set 1. However, later when pages are freed into allocator we set
-_refcount to 0 via set_page_count(). Unconditionally resetting
-_refcount is dangerous.
+When the size of commandp >= size, array out of bound write occurs because
+len == 0.
 
-Instead use page_ref_dec_return(), and verify that the _refcount is
-what is expected.
-
-Signed-off-by: Pasha Tatashin <pasha.tatashin@soleen.com>
+Signed-off-by: Hangyu Hua <hbh25y@gmail.com>
 ---
- mm/page_alloc.c | 11 ++++++++---
- 1 file changed, 8 insertions(+), 3 deletions(-)
+ arch/m68k/kernel/uboot.c | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
 
-diff --git a/mm/page_alloc.c b/mm/page_alloc.c
-index b5554767b9de..13d989d62012 100644
---- a/mm/page_alloc.c
-+++ b/mm/page_alloc.c
-@@ -1667,6 +1667,7 @@ void __free_pages_core(struct page *page, unsigned int order)
- 	unsigned int nr_pages = 1 << order;
- 	struct page *p = page;
- 	unsigned int loop;
-+	int refcnt;
- 
- 	/*
- 	 * When initializing the memmap, __init_single_page() sets the refcount
-@@ -1677,10 +1678,12 @@ void __free_pages_core(struct page *page, unsigned int order)
- 	for (loop = 0; loop < (nr_pages - 1); loop++, p++) {
- 		prefetchw(p + 1);
- 		__ClearPageReserved(p);
--		set_page_count(p, 0);
-+		refcnt = page_ref_dec_return(p);
-+		VM_BUG_ON_PAGE(refcnt, p);
+diff --git a/arch/m68k/kernel/uboot.c b/arch/m68k/kernel/uboot.c
+index 928dbd33fc4a..05eca6f653b5 100644
+--- a/arch/m68k/kernel/uboot.c
++++ b/arch/m68k/kernel/uboot.c
+@@ -101,5 +101,8 @@ __init void process_uboot_commandline(char *commandp, int size)
  	}
- 	__ClearPageReserved(p);
--	set_page_count(p, 0);
-+	refcnt = page_ref_dec_return(p);
-+	VM_BUG_ON_PAGE(refcnt, p);
  
- 	atomic_long_add(nr_pages, &page_zone(page)->managed_pages);
- 
-@@ -2252,10 +2255,12 @@ void __init init_cma_reserved_pageblock(struct page *page)
- {
- 	unsigned i = pageblock_nr_pages;
- 	struct page *p = page;
-+	int refcnt;
- 
- 	do {
- 		__ClearPageReserved(p);
--		set_page_count(p, 0);
-+		refcnt = page_ref_dec_return(p);
-+		VM_BUG_ON_PAGE(refcnt, p);
- 	} while (++p, --i);
- 
- 	set_pageblock_migratetype(page, MIGRATE_CMA);
+ 	parse_uboot_commandline(commandp, len);
+-	commandp[len - 1] = 0;
++	if (len > 0)
++		commandp[len - 1] = 0;
++	else
++		commandp[0] = 0;
+ }
 -- 
-2.34.1.307.g9b7440fafd-goog
+2.25.1
 
