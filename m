@@ -2,76 +2,165 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 83061C433F5
-	for <linux-m68k@archiver.kernel.org>; Mon, 27 Dec 2021 09:28:03 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5E8D0C433FE
+	for <linux-m68k@archiver.kernel.org>; Mon, 27 Dec 2021 09:39:46 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235779AbhL0J2D (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Mon, 27 Dec 2021 04:28:03 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39336 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235777AbhL0J2C (ORCPT
+        id S235829AbhL0Jjn convert rfc822-to-8bit (ORCPT
+        <rfc822;linux-m68k@archiver.kernel.org>);
+        Mon, 27 Dec 2021 04:39:43 -0500
+Received: from mout.kundenserver.de ([212.227.17.24]:45137 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233173AbhL0Jjm (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Mon, 27 Dec 2021 04:28:02 -0500
-X-Greylist: delayed 505 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Mon, 27 Dec 2021 01:28:02 PST
-Received: from mail-out.m-online.net (mail-out.m-online.net [IPv6:2001:a60:0:28:0:1:25:1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B9E61C06173E
-        for <linux-m68k@lists.linux-m68k.org>; Mon, 27 Dec 2021 01:28:02 -0800 (PST)
-Received: from frontend01.mail.m-online.net (unknown [192.168.8.182])
-        by mail-out.m-online.net (Postfix) with ESMTP id 4JMsYw4wRKz1sCwH;
-        Mon, 27 Dec 2021 10:19:32 +0100 (CET)
-Received: from localhost (dynscan1.mnet-online.de [192.168.6.70])
-        by mail.m-online.net (Postfix) with ESMTP id 4JMsYw4RJyz1qqkB;
-        Mon, 27 Dec 2021 10:19:32 +0100 (CET)
-X-Virus-Scanned: amavisd-new at mnet-online.de
-Received: from mail.mnet-online.de ([192.168.8.182])
-        by localhost (dynscan1.mail.m-online.net [192.168.6.70]) (amavisd-new, port 10024)
-        with ESMTP id T45w46u3pAhI; Mon, 27 Dec 2021 10:19:31 +0100 (CET)
-X-Auth-Info: majyy0NQwjSFk230xmI+suEEuXQ4Iu13a86kP1EJyPp/HFLQtBOYhldVgB8YzLnp
-Received: from igel.home (ppp-46-244-168-165.dynamic.mnet-online.de [46.244.168.165])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.mnet-online.de (Postfix) with ESMTPSA;
-        Mon, 27 Dec 2021 10:19:31 +0100 (CET)
-Received: by igel.home (Postfix, from userid 1000)
-        id 32F112C37F3; Mon, 27 Dec 2021 10:19:31 +0100 (CET)
-From:   Andreas Schwab <schwab@linux-m68k.org>
-To:     Hangyu Hua <hbh25y@gmail.com>
-Cc:     geert@linux-m68k.org, linux-m68k@lists.linux-m68k.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] m68k/kernel: array out of bound access in
- process_uboot_commandline
-References: <20211227090917.35838-1-hbh25y@gmail.com>
-X-Yow:  What PROGRAM are they watching?
-Date:   Mon, 27 Dec 2021 10:19:31 +0100
-In-Reply-To: <20211227090917.35838-1-hbh25y@gmail.com> (Hangyu Hua's message
-        of "Mon, 27 Dec 2021 17:09:17 +0800")
-Message-ID: <87h7aus8v0.fsf@igel.home>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/28.0.90 (gnu/linux)
+        Mon, 27 Dec 2021 04:39:42 -0500
+Received: from quad ([82.142.30.186]) by mrelayeu.kundenserver.de (mreue107
+ [212.227.15.183]) with ESMTPSA (Nemesis) id 1MadGG-1mQmy644RG-00cBAv; Mon, 27
+ Dec 2021 10:39:33 +0100
+From:   Laurent Vivier <laurent@vivier.eu>
+To:     linux-kernel@vger.kernel.org
+Cc:     Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        linux-rtc@vger.kernel.org, Alessandro Zummo <a.zummo@towertech.it>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        linux-m68k@lists.linux-m68k.org, Laurent Vivier <laurent@vivier.eu>
+Subject: [PATCH v2 0/1] m68k: Add Virtual M68k Machine
+Date:   Mon, 27 Dec 2021 10:39:30 +0100
+Message-Id: <20211227093931.480329-1-laurent@vivier.eu>
+X-Mailer: git-send-email 2.33.1
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Transfer-Encoding: 8BIT
+X-Provags-ID: V03:K1:fE+9S3RXnXn3AFWIj8kvwpDVE3sFvKWR6/jB09PIS2a5I8Amvug
+ FgPU4qpVb+GSdzeVInaYGOYdhHip8EU8J+2XrzXtw/0/nOnatiFZEzhJYD8KuWHZoaScnuQ
+ VX1a3i1Poj+7fJe7LDkNjXJY80Y0V+QNnyn2SHP6csCVbcgNsny1NGGBYB9+9uhwz6UD7ZK
+ H7gWBub+LF2ql97IynQSg==
+X-UI-Out-Filterresults: notjunk:1;V03:K0:JXMQUKYRg5c=:dKmjuvagxuTKHSSOtwiCGh
+ aMNmHJmto2qjUeZNhy8uZf3RbVcNy1gTf+VTQMfJwhOzByXmXkX++B6BLXMmSlu/wq8HEgdS1
+ IkypvunzJovN8zq/iQdeS2+XUKvZROHsgrruGiyUqBckMR0UZVFzgD9fkJtZLLerDnesbZp6K
+ bezVUShmNHu6siVb0mTXNXEPqgTdfpnq/kSH5OtxQyXaOaQg8WWjYRzu01Atblx4qo2H3joR3
+ yOQkR3xjx4oiBH+Jgj9Rib3NYCQdKnQ0GUMNHaZGZnTrFd/ljxYvdYmUS+xsOjxRFux7woGgv
+ S0jmvtETxopk6HleVNKsHOCfJ6TG1H9+aHi7PDwUYWcIaO3+1321MQYl6144wjx+x9jdDPiav
+ +gfubam21uNa4TGe4cgiduyqeLLvW9fG9OXoNfhy3MmCy9gqyW+ANo8hvRlnXOgxClqFbVWC5
+ yXEJBJBcMOnUPUGLsJIAZz10qAEJ3sAMj4c6K0g7KJQHyT8y/5H0TrLm+qHitat65ENK9dED3
+ QB+zhBuRXYbK64Kmh1IvhfTpf938JCjbyvHWiTm6Pcg4JQsa0NOT0TrxzzSiPVa74oS6rQRUr
+ ZVXbI/j+CR38MkTzcAhhRC2ypfKojH62Nbc/m8xmIgOavWq7Bal35dXe/9R69/1kTwPBnU7Df
+ JZaMmq9Fy+7jiW/+vZIOoPOjrtaY7QXCdCe/Z916VDT8nuPjE920uAmevcCFSOztURB0=
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-On Dez 27 2021, Hangyu Hua wrote:
+The most powerful m68k machine emulated by QEMU is a Quadra 800,
+but this machine is very limited: only 1 GiB of memory and only some
+specific interfaces, with no DMA.
 
-> diff --git a/arch/m68k/kernel/uboot.c b/arch/m68k/kernel/uboot.c
-> index 928dbd33fc4a..05eca6f653b5 100644
-> --- a/arch/m68k/kernel/uboot.c
-> +++ b/arch/m68k/kernel/uboot.c
-> @@ -101,5 +101,8 @@ __init void process_uboot_commandline(char *commandp, int size)
->  	}
->  
->  	parse_uboot_commandline(commandp, len);
-> -	commandp[len - 1] = 0;
-> +	if (len > 0)
-> +		commandp[len - 1] = 0;
-> +	else
-> +		commandp[0] = 0;
+The Virtual M68k Machine is based on Goldfish interfaces defined by Google
+for Android simulator. It uses Goldfish-rtc (timer and RTC),
+Goldfish-pic (PIC) and Goldfish-tty (for early tty).
 
-If len == 0 then even commandp[0] is OOB.
+The machine is created with 128 virtio-mmio buses, and they can
+be used to add serial console, GPU, disk, NIC, HID, hwrng, 9PFS...
+
+The virtual m68k machine has been merged in QEMU and will be available
+with the release 6.0.
+
+This series introduces the support of this new machine in the linux kernel.
+
+If you want to try:
+
+- Configure and build latest QEMU with (or download qemu 6.0 binary):
+
+  .../configure --target-list=m68k-softmmu --enable-virglrenderer
+  make
+
+- Configure and build linux with:
+
+  make virt_defconfig
+  make vmlinux
+
+A pre-installed qcow2 disk image is available at:
+
+http://vivier.eu/debian-10.0.qcow2
+
+You can run the machine with something like:
+
+qemu-system-m68k -M virt \
+  -m 3G \
+  -chardev stdio,signal=off,mux=on,id=char0 \
+  -mon chardev=char0,mode=readline \
+  -kernel vmlinux \
+  -append "console=hvc0 root=/dev/vda2" \
+  -blockdev node-name=system,driver=file,filename=debian-10.0.qcow2 \
+  -blockdev node-name=drive0,driver=qcow2,file=system \
+  -device virtio-blk-device,drive=drive0 \
+  -serial chardev:char0 \
+  -device virtio-net-device,netdev=hostnet0 \
+  -netdev bridge,id=hostnet0,br=virbr0,helper=/usr/libexec/qemu-bridge-helper \
+  -device virtio-serial-device \
+  -device virtio-gpu-device \
+  -device virtconsole,chardev=char0 \
+  -device virtio-keyboard-device \
+  -device virtio-mouse-device
+
+You can watch a presentation about the machine on the Planet m68k channel:
+
+    https://youtu.be/s_ve0bCC9q4
+    [Demo at 38:00]
+
+v2:
+- Remove VIRTO_MENU set y
+- sort the selects
+- add CONFIG_LOCALVERSION="-virt"
+- generate virt_defconfig using "make savedefconfig"
+- rename MACH_VIRTONLY to MACH_VIRT_ONLY
+- add a test_notvirt label in head.S
+- rework iounmap() to use two separate #ifdefs
+- use %u in virt_get_model()
+- drop show_registers() in config.c
+- drop pr_err() from config_virt()
+- sort includes in ints.c
+- call virt_irq_enable() in virt_irq_startup()
+- drop virt_irq_shutdown() and use virt_irq_disable()
+- move in_nmi into virt_nmi_handler()
+- use pr_warn() in virt_nmi_handler()
+- rework goldfish_pic_irq() IRQ scan
+- copy goldfish-pic IRQs related information from QEMU hw/m68k/virt
+- add a comment to "min_low_pfn = 0"
+- use platform_device_register_simple()
+- use goldfish_timer_read(), upper_32_bits() and lower_32_bits()
+
+Thanks,
+Laurent
+
+Laurent Vivier (1):
+  m68k: introduce a virtual m68k machine
+
+ arch/m68k/Kbuild                           |   1 +
+ arch/m68k/Kconfig.machine                  |  16 +++
+ arch/m68k/configs/virt_defconfig           |  65 +++++++++++
+ arch/m68k/include/asm/irq.h                |   3 +-
+ arch/m68k/include/asm/pgtable_mm.h         |   7 ++
+ arch/m68k/include/asm/setup.h              |  44 ++++++--
+ arch/m68k/include/asm/virt.h               |  26 +++++
+ arch/m68k/include/uapi/asm/bootinfo-virt.h |  18 ++++
+ arch/m68k/include/uapi/asm/bootinfo.h      |   1 +
+ arch/m68k/kernel/Makefile                  |   1 +
+ arch/m68k/kernel/head.S                    |  31 ++++++
+ arch/m68k/kernel/setup_mm.c                |   9 ++
+ arch/m68k/mm/kmap.c                        |  23 ++--
+ arch/m68k/virt/Makefile                    |   6 ++
+ arch/m68k/virt/config.c                    | 111 +++++++++++++++++++
+ arch/m68k/virt/ints.c                      | 120 +++++++++++++++++++++
+ arch/m68k/virt/platform.c                  |  72 +++++++++++++
+ arch/m68k/virt/timer.c                     |  90 ++++++++++++++++
+ 18 files changed, 626 insertions(+), 18 deletions(-)
+ create mode 100644 arch/m68k/configs/virt_defconfig
+ create mode 100644 arch/m68k/include/asm/virt.h
+ create mode 100644 arch/m68k/include/uapi/asm/bootinfo-virt.h
+ create mode 100644 arch/m68k/virt/Makefile
+ create mode 100644 arch/m68k/virt/config.c
+ create mode 100644 arch/m68k/virt/ints.c
+ create mode 100644 arch/m68k/virt/platform.c
+ create mode 100644 arch/m68k/virt/timer.c
 
 -- 
-Andreas Schwab, schwab@linux-m68k.org
-GPG Key fingerprint = 7578 EB47 D4E5 4D69 2510  2552 DF73 E780 A9DA AEC1
-"And now for something completely different."
+2.33.1
+
