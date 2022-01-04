@@ -2,96 +2,123 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 06A85C433EF
-	for <linux-m68k@archiver.kernel.org>; Tue,  4 Jan 2022 02:29:40 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 03753C433F5
+	for <linux-m68k@archiver.kernel.org>; Tue,  4 Jan 2022 16:03:01 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232235AbiADC3j (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Mon, 3 Jan 2022 21:29:39 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60948 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232228AbiADC3j (ORCPT
-        <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Mon, 3 Jan 2022 21:29:39 -0500
-Received: from mail-yb1-xb42.google.com (mail-yb1-xb42.google.com [IPv6:2607:f8b0:4864:20::b42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 05744C061761
-        for <linux-m68k@lists.linux-m68k.org>; Mon,  3 Jan 2022 18:29:38 -0800 (PST)
-Received: by mail-yb1-xb42.google.com with SMTP id j83so85190200ybg.2
-        for <linux-m68k@lists.linux-m68k.org>; Mon, 03 Jan 2022 18:29:38 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=QwE8JmVaZMVjGKtYTKzHg5oYnNTcXLM3eaPcCyNjzP0=;
-        b=clKFPcLbJzKiUhKx+beJMiRJztw8LmSWxSvsesJ0+aN7u4+UHuNYrFIQv0lmrTOeTt
-         450lXNQn9XcybOpCzfzJkYil2anwiKGEbydTQeDQrph925qvo+gZi2ghUQcQUEUL9ggN
-         hALWM0V5HzkcSppyWvgNIN6DA4k3SqOEPgJe11R4PQR5QdVUxUDcQKikNcAgjMgFRD3k
-         adRNR92tpi0SFsDd5Dq0DSnc7hBjHi7tSd8mtIScOlGuhC6OqM1SeDk6EEqVOBz/LTql
-         YQ2o8fAAa+rGWyJO3d12NH8nj2+uU0iR4byv5SWeVcTOiRlvOYb06p9geGIHKY3VHAxl
-         z60g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=QwE8JmVaZMVjGKtYTKzHg5oYnNTcXLM3eaPcCyNjzP0=;
-        b=hj0TKPgy94S3g3KOMcAfd6l63+tJ2fw5xd/79Z7GrhFLvrmf9m9ZzpjgjpufO8ufcx
-         WRwIwdIHrZYd/SCdMtOAqJRPexuFFwWdXIcp+dgAbSElqCEk3QmDskZ7yKv7SWlRvomo
-         Hbh6KrXQY4s9+g+z51hYxXDBvqzvoT7v68rts1ByYyZ8xVsiW9Y+A3mEwB3RuSqrvWus
-         4IjiNJV8evAdiW5lI3N2x5KfOL5TbeMTbkBsvyxdwqFvYwEsddShE2YPLY384dscGJ36
-         5MwADFub44QzFcTz0RbEzxNMTME7DgbQfUJQ2830yObfkDt/9Gvu5AU/hzcmZoc6QnOk
-         qfGA==
-X-Gm-Message-State: AOAM533Tj9Y7Fgrl6gBv9MJ3sqcvTGCFVZEgUTYdQ4chqK9tc306/KuB
-        hOnxVDqgVcdzY1+MKRpZ/dXN/86dByu6W/dARMo=
-X-Google-Smtp-Source: ABdhPJyr9R2K20doWqMFSm6oR6rPxsWteustiBykGyvjhzMQp6Rz9gnbTshpV2L8bmCl5t76qWsavsVixU2lNGD4ekk=
-X-Received: by 2002:a25:1344:: with SMTP id 65mr57529351ybt.468.1641263378140;
- Mon, 03 Jan 2022 18:29:38 -0800 (PST)
-MIME-Version: 1.0
-References: <20211228020611.6582-1-hbh25y@gmail.com> <CAMuHMdXYuH6kgWCPjQhmd6Xi2N=oiyCSoE8U4NMg3tOrJ9bwDw@mail.gmail.com>
-In-Reply-To: <CAMuHMdXYuH6kgWCPjQhmd6Xi2N=oiyCSoE8U4NMg3tOrJ9bwDw@mail.gmail.com>
-From:   Hangyu Hua <hbh25y@gmail.com>
-Date:   Tue, 4 Jan 2022 10:29:27 +0800
-Message-ID: <CAOo-nLK3Coda+YPqy1eH=MKyrm36kTG+Uj2KZ5NL-002STzMUg@mail.gmail.com>
-Subject: Re: [PATCH v2] m68k/kernel: array out of bound access in process_uboot_commandline
+        id S234073AbiADQDA (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Tue, 4 Jan 2022 11:03:00 -0500
+Received: from mga18.intel.com ([134.134.136.126]:37272 "EHLO mga18.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234096AbiADQC7 (ORCPT <rfc822;linux-m68k@lists.linux-m68k.org>);
+        Tue, 4 Jan 2022 11:02:59 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1641312179; x=1672848179;
+  h=date:from:to:cc:subject:message-id:mime-version:
+   content-transfer-encoding;
+  bh=3hB6w28fDpwewzFRCrrDwR2oO6zcDJzH1GDZgFn8hOw=;
+  b=HYAMJGPR/QyIKG56PFuxhUC5+c9PV+6eBdYeQQ2LHFlIwTcotCM3HBum
+   bo9rs9zdhT1p0d/1hmWfwY8/XR5mDXSyUg2jX0jXxF3dXAFNHe++nG0Vr
+   YMtSseANK8RF8D67APfEst1Y6bj7g1oZvmGjrMKIh9GL5wsWB8PgklWEY
+   U9VmKyZQIkH7gT1CQ+PFfcetfDAlmXidzX+LpYQ9rY86E36V/CZCdWYHr
+   YcMtFA2tdprvdv8j6lZNK9IM84+6n4GoIQDzRdF2XIqJYuyfZX1MkfqYR
+   xu5VGl+lg2zsKEejQdtHsGXdv/99fGz50XOZSbTwz4p9Yj/cfhFXqUr40
+   Q==;
+X-IronPort-AV: E=McAfee;i="6200,9189,10216"; a="229065524"
+X-IronPort-AV: E=Sophos;i="5.88,261,1635231600"; 
+   d="scan'208";a="229065524"
+Received: from fmsmga007.fm.intel.com ([10.253.24.52])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Jan 2022 08:02:59 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.88,261,1635231600"; 
+   d="scan'208";a="526302101"
+Received: from lkp-server01.sh.intel.com (HELO e357b3ef1427) ([10.239.97.150])
+  by fmsmga007.fm.intel.com with ESMTP; 04 Jan 2022 08:02:57 -0800
+Received: from kbuild by e357b3ef1427 with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1n4mH3-000FbV-A2; Tue, 04 Jan 2022 16:02:57 +0000
+Date:   Wed, 05 Jan 2022 00:02:37 +0800
+From:   kernel test robot <lkp@intel.com>
 To:     Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     linux-m68k <linux-m68k@lists.linux-m68k.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Greg Ungerer <gerg@linux-m68k.org>,
-        Andreas Schwab <schwab@linux-m68k.org>
-Content-Type: text/plain; charset="UTF-8"
+Cc:     linux-m68k@lists.linux-m68k.org
+Subject: [geert-m68k:master] BUILD SUCCESS
+ a7d8c163e3093ea440b90b5778174744fdc4d084
+Message-ID: <61d46f9d.XmU2Fjwwzku0QYwf%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-Hi, I think this patch may be forgotten. So I send this e-mail. And I
-cc Andreas
-who helped me fix the initial version of this patch.
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/geert/linux-m68k.git master
+branch HEAD: a7d8c163e3093ea440b90b5778174744fdc4d084  Merge tag 'v5.16-rc8'
 
-Happy new year.
+elapsed time: 1542m
 
-On Tue, Dec 28, 2021 at 4:40 PM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
->
-> CC greg
->
-> On Tue, Dec 28, 2021 at 3:06 AM Hangyu Hua <hbh25y@gmail.com> wrote:
-> >
-> > When the size of commandp >= size, array out of bound write occurs because
-> > len == 0.
-> >
-> > Signed-off-by: Hangyu Hua <hbh25y@gmail.com>
-> > ---
-> >  arch/m68k/kernel/uboot.c | 3 ++-
-> >  1 file changed, 2 insertions(+), 1 deletion(-)
-> >
-> > diff --git a/arch/m68k/kernel/uboot.c b/arch/m68k/kernel/uboot.c
-> > index 928dbd33fc4a..63eaf3c3ddcd 100644
-> > --- a/arch/m68k/kernel/uboot.c
-> > +++ b/arch/m68k/kernel/uboot.c
-> > @@ -101,5 +101,6 @@ __init void process_uboot_commandline(char *commandp, int size)
-> >         }
-> >
-> >         parse_uboot_commandline(commandp, len);
-> > -       commandp[len - 1] = 0;
-> > +       if (len > 0)
-> > +               commandp[len - 1] = 0;
-> >  }
-> > --
-> > 2.25.1
+configs tested: 54
+configs skipped: 3
+
+The following configs have been built successfully.
+More configs may be tested in the coming days.
+
+gcc tested configs:
+arm                                 defconfig
+arm64                            allyesconfig
+arm64                               defconfig
+arm                              allyesconfig
+arm                              allmodconfig
+ia64                                defconfig
+ia64                             allmodconfig
+ia64                             allyesconfig
+m68k                             allmodconfig
+m68k                                defconfig
+m68k                             allyesconfig
+nios2                               defconfig
+arc                              allyesconfig
+nds32                             allnoconfig
+nds32                               defconfig
+nios2                            allyesconfig
+csky                                defconfig
+alpha                               defconfig
+alpha                            allyesconfig
+arc                                 defconfig
+sh                               allmodconfig
+h8300                            allyesconfig
+xtensa                           allyesconfig
+parisc                              defconfig
+s390                             allyesconfig
+s390                             allmodconfig
+parisc                           allyesconfig
+s390                                defconfig
+i386                             allyesconfig
+i386                                defconfig
+i386                   debian-10.3-kselftests
+i386                              debian-10.3
+sparc                               defconfig
+sparc                            allyesconfig
+mips                             allyesconfig
+mips                             allmodconfig
+powerpc                          allyesconfig
+powerpc                          allmodconfig
+powerpc                           allnoconfig
+riscv                    nommu_k210_defconfig
+riscv                            allyesconfig
+riscv                    nommu_virt_defconfig
+riscv                             allnoconfig
+riscv                               defconfig
+riscv                          rv32_defconfig
+riscv                            allmodconfig
+um                           x86_64_defconfig
+um                             i386_defconfig
+x86_64                           allyesconfig
+x86_64                              defconfig
+x86_64                               rhel-8.3
+x86_64                                  kexec
+x86_64                          rhel-8.3-func
+x86_64                    rhel-8.3-kselftests
+
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
