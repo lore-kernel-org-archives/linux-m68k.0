@@ -2,131 +2,109 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 159C7C433FE
-	for <linux-m68k@archiver.kernel.org>; Tue,  4 Jan 2022 22:32:01 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C1FA4C433EF
+	for <linux-m68k@archiver.kernel.org>; Thu,  6 Jan 2022 11:18:57 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235519AbiADWb6 (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Tue, 4 Jan 2022 17:31:58 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53140 "EHLO
+        id S238400AbiAFLS5 (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Thu, 6 Jan 2022 06:18:57 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42506 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234175AbiADWb6 (ORCPT
-        <rfc822;linux-m68k@vger.kernel.org>); Tue, 4 Jan 2022 17:31:58 -0500
-Received: from mail-lf1-x132.google.com (mail-lf1-x132.google.com [IPv6:2a00:1450:4864:20::132])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C8F6C061784
-        for <linux-m68k@vger.kernel.org>; Tue,  4 Jan 2022 14:31:57 -0800 (PST)
-Received: by mail-lf1-x132.google.com with SMTP id j11so83107461lfg.3
-        for <linux-m68k@vger.kernel.org>; Tue, 04 Jan 2022 14:31:57 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=drummond.us; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=WCROm2fnDVp3gJHoFF4FSh0CLwqqTwPGgd5WC3cykAE=;
-        b=SpNAIy18+a+BDF8ohbOhhPTgn+rzzWGPHdpXue1Z95/qQvcACFPfls+EhsBOb9bJ5I
-         J4obAOpt6rzp6Cc6ysV/HzbOKr1fr3e+TeLO6bRMnYdo3Gyh9nb1rzv1ICxH2cvlIvP1
-         O7zLwOaJVfjhHVFevNE78XtRHOJLnOt4OvZNOrtO4+Qth9yQuKO3Y0zMqJxHhe1sPN68
-         AsVbfWMCG2xnfSZ0gRMgCWFuQi9faGM0w08EmIWjCfBZLojXQfuuYl5i08TleIW/7b/n
-         nzMZzBq9PSmCXV2xi+HfGLAjucKoCMHpfD9Bcb6PeCRSN1t/e4GZt0e33JDtOpwXUI3r
-         +ijA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=WCROm2fnDVp3gJHoFF4FSh0CLwqqTwPGgd5WC3cykAE=;
-        b=v/tDbsiW8Dkipu0UPZAYnzs1u2sZFK0FwEU6vfeST+AHCcTcTU3tgwuZ7/hTNU43XE
-         FFx8bTtz6Ej5pqLO2NwoiWVDmE0rvc2WgHrDo9fcakW2S41nkRygzdp1VivZbZU/fKnL
-         ztLFrpzjEtuqD0kataVSzTAneuCjFDZjYeeR0yTVUzjbpOeo6IPz4Ps3Jp3nq3bEt+wR
-         B5rofliUvOFPh9aWIJIV/50zr1Nglbrg58R4AYFYi4jnx5yDxrWuVAwXj3gXrmJ50m/e
-         mGudp0eQXMZUrTf3fLNR/jJlVW+6zmzVE0WymHWox4lvq4ZgmfJkb2tyqBGUx0QtgNbW
-         ex+w==
-X-Gm-Message-State: AOAM532XxdufO6NT7U017UnzP1vMxXil3y76fawQtTGPltute24Zdpvy
-        6i7hsPBC5wNv2moFQKmYeYN7NvD1t7PTW7E/EDMUWg==
-X-Google-Smtp-Source: ABdhPJx1kX6sFLTseOkg2YWGeBhi1W6ClRmDNwQ/+U2YIr6vghHpml3Y6bKghVPjgaFOMW5MDitHq9bLobHNxLYmId8=
-X-Received: by 2002:a05:6512:ba9:: with SMTP id b41mr43938123lfv.529.1641335515666;
- Tue, 04 Jan 2022 14:31:55 -0800 (PST)
+        with ESMTP id S238391AbiAFLS4 (ORCPT
+        <rfc822;linux-m68k@vger.kernel.org>); Thu, 6 Jan 2022 06:18:56 -0500
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2EAD8C061245
+        for <linux-m68k@vger.kernel.org>; Thu,  6 Jan 2022 03:18:56 -0800 (PST)
+Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <mkl@pengutronix.de>)
+        id 1n5QnC-0007yE-RK; Thu, 06 Jan 2022 12:18:50 +0100
+Received: from pengutronix.de (2a03-f580-87bc-d400-fd40-da16-8525-0d68.ip6.dokom21.de [IPv6:2a03:f580:87bc:d400:fd40:da16:8525:d68])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (Client did not present a certificate)
+        (Authenticated sender: mkl-all@blackshift.org)
+        by smtp.blackshift.org (Postfix) with ESMTPSA id 3B4226D2552;
+        Thu,  6 Jan 2022 11:18:48 +0000 (UTC)
+Date:   Thu, 6 Jan 2022 12:18:47 +0100
+From:   Marc Kleine-Budde <mkl@pengutronix.de>
+To:     Angelo Dureghello <angelo@kernel-space.org>
+Cc:     gerg@linux-m68k.org, geert@linux-m68k.org,
+        linux-m68k@vger.kernel.org, linux-can@vger.kernel.org,
+        qiangqing.zhang@nxp.com,
+        Dario Binacchi <dario.binacchi@amarulasolutions.com>
+Subject: mcf5441x: flexcan FIFO and mailbox mode (was: Re: [PATCH v5 5/5]
+ can: flexcan: add mcf5441x support)
+Message-ID: <20220106111847.zjkrghehxr7mrkkt@pengutronix.de>
 MIME-Version: 1.0
-References: <20220103181956.983342-1-walt@drummond.us> <87iluzidod.fsf@email.froward.int.ebiederm.org>
- <YdSzjPbVDVGKT4km@mit.edu> <87pmp79mxl.fsf@email.froward.int.ebiederm.org> <YdTI16ZxFFNco7rH@mit.edu>
-In-Reply-To: <YdTI16ZxFFNco7rH@mit.edu>
-From:   Walt Drummond <walt@drummond.us>
-Date:   Tue, 4 Jan 2022 14:31:44 -0800
-Message-ID: <CADCN6nzT-Dw-AabtwWrfVRDd5HzMS3EOy8WkeomicJF07nQyoA@mail.gmail.com>
-Subject: Re: [RFC PATCH 0/8] signals: Support more than 64 signals
-To:     "Theodore Ts'o" <tytso@mit.edu>
-Cc:     "Eric W. Biederman" <ebiederm@xmission.com>, aacraid@microsemi.com,
-        viro@zeniv.linux.org.uk, anna.schumaker@netapp.com, arnd@arndb.de,
-        bsegall@google.com, bp@alien8.de, chuck.lever@oracle.com,
-        bristot@redhat.com, dave.hansen@linux.intel.com,
-        dwmw2@infradead.org, dietmar.eggemann@arm.com, dinguyen@kernel.org,
-        geert@linux-m68k.org, gregkh@linuxfoundation.org, hpa@zytor.com,
-        idryomov@gmail.com, mingo@redhat.com, yzaikin@google.com,
-        ink@jurassic.park.msu.ru, jejb@linux.ibm.com, jmorris@namei.org,
-        bfields@fieldses.org, jlayton@kernel.org, jirislaby@kernel.org,
-        john.johansen@canonical.com, juri.lelli@redhat.com,
-        keescook@chromium.org, mcgrof@kernel.org,
-        martin.petersen@oracle.com, mattst88@gmail.com, mgorman@suse.de,
-        oleg@redhat.com, pbonzini@redhat.com, peterz@infradead.org,
-        rth@twiddle.net, richard@nod.at, serge@hallyn.com,
-        rostedt@goodmis.org, tglx@linutronix.de,
-        trond.myklebust@hammerspace.com, vincent.guittot@linaro.org,
-        x86@kernel.org, linux-kernel@vger.kernel.org,
-        ceph-devel@vger.kernel.org, kvm@vger.kernel.org,
-        linux-alpha@vger.kernel.org, linux-arch@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-m68k@vger.kernel.org,
-        linux-mtd@lists.infradead.org, linux-nfs@vger.kernel.org,
-        linux-scsi@vger.kernel.org, linux-security-module@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="zwauvc2xjplx623i"
+Content-Disposition: inline
+X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
+X-SA-Exim-Mail-From: mkl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-m68k@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-The only standard tools that support SIGINFO are sleep, dd and ping,
-(and kill, for obvious reasons) so it's not like there's a vast hole
-in the tooling or something, nor is there a large legacy software base
-just waiting for SIGINFO to appear.   So while I very much enjoyed
-figuring out how to make SIGINFO work ...
 
-I'll have the VSTATUS patch out in a little bit.
+--zwauvc2xjplx623i
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-I also think there might be some merit in consolidating the 10
-'sigsetsize != sizeof(sigset_t)' checks in a macro and adding comments
-that wave people off on trying to do what I did.  If that would be
-useful, happy to provide the patch.
+Hello Angelo,
 
-On Tue, Jan 4, 2022 at 2:23 PM Theodore Ts'o <tytso@mit.edu> wrote:
->
-> On Tue, Jan 04, 2022 at 04:05:26PM -0600, Eric W. Biederman wrote:
-> >
-> > That is all as expected, and does not demonstrate a regression would
-> > happen if SIGPWR were to treat SIG_DFL as SIG_IGN, as SIGWINCH, SIGCONT,
-> > SIGCHLD, SIGURG do.  It does show there is the possibility of problems.
-> >
-> > The practical question is does anything send SIGPWR to anything besides
-> > init, and expect the process to handle SIGPWR or terminate?
->
-> So if I *cared* about SIGINFO, what I'd do is ask the systemd
-> developers and users list if there are any users of the sigpwr.target
-> feature that they know of.  And I'd also download all of the open
-> source UPS monitoring applications (and perhaps documentation of
-> closed-source UPS applications, such as for example APC's program) and
-> see if any of them are trying to send the SIGPWR signal.
->
-> I don't personally think it's worth the effort to do that research,
-> but maybe other people care enough to do the work.
->
-> > > I claim, though, that we could implement VSTATUS without implenting
-> > > the SIGINFO part of the feature.
-> >
-> > I agree that is the place to start.  And if we aren't going to use
-> > SIGINFO perhaps we could have an equally good notification method
-> > if anyone wants one.  Say call an ioctl and get an fd that can
-> > be read when a VSTATUS request comes in.
-> >
-> > SIGINFO vs SIGCONT vs a fd vs something else is something we can sort
-> > out when people get interested in modifying userspace.
->
->
-> Once VSTATUS support lands in the kernel, we can wait and see if there
-> is anyone who shows up wanting the SIGINFO functionality.  Certainly
-> we have no shortage of userspace notification interfaces in Linux.  :-)
->
->                                               - Ted
+On 02.07.2021 11:48:41, Angelo Dureghello wrote:
+> Add flexcan support for NXP ColdFire mcf5441x family.
+>=20
+> This flexcan module is quite similar to imx6 flexcan module, but
+> with some exceptions:
+>=20
+> - 3 separate interrupt sources, MB, BOFF and ERR,
+> - implements 16 mb only,
+> - m68k architecture is not supporting devicetrees, so a
+>   platform data check/case has been added,
+> - ColdFire is m68k, so big-endian cpu, with a little-endian flexcan
+>   module.
+
+we're currently discussing the option that the user of a flexcan can
+switch between RX-FIFO and RX via mailboxes.
+
+I noticed that the mcf5441x currently is configured for FIFO mode. Have
+you tested the driver in mailbox mode?
+
+The reason that some cores use the FIFO mode is, that they cannot
+receive RTR CAN frames in mailbox mode. According to the IP core
+overview table, the mcf5441x can receive RTR frames.
+
+If the IP core supports reception of RTR frames, mailbox mode should be
+used, as it makes use of more buffers (16-2) instead of 6 in FIFO mode.
+Should we activate mailbox mode for the mcf5441x?
+
+regards,
+Marc
+
+--=20
+Pengutronix e.K.                 | Marc Kleine-Budde           |
+Embedded Linux                   | https://www.pengutronix.de  |
+Vertretung West/Dortmund         | Phone: +49-231-2826-924     |
+Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-5555 |
+
+--zwauvc2xjplx623i
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEK3kIWJt9yTYMP3ehqclaivrt76kFAmHW0BQACgkQqclaivrt
+76nYYgf+L7XNXnaqqxsDKE0fUL2odEuMaMlm+oatg7rgSbA5XBjG6GqTZiF3lCJJ
+Ntf2rz4XXoIFlei8QRgC6b08/66La6b/titJUijEEk5R9JB2TXfTQOK0MoOC2xcf
+3BmAOpvJ13BmuUYF/be8QwfiXJ2K7Hpfume3JNhelLyYR6sPK6PM3n5HiW7XgkXx
+eUpG9rF29c5EHd3W8+DTCMdqmNABs66AfIHKjsB2q0/iEd6jmDkmRDpmPRD9a/vS
+zmhj+SjOY25uMEEE/41f+cnT/0Xwt83UyEF1eniZJIEPbTQn7+5eQLh2G8ced7We
+BM1DC1tI3Z7O/MbE3greq85bEaM6OQ==
+=nAb5
+-----END PGP SIGNATURE-----
+
+--zwauvc2xjplx623i--
