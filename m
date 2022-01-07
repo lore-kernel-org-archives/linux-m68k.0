@@ -2,109 +2,120 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C1FA4C433EF
-	for <linux-m68k@archiver.kernel.org>; Thu,  6 Jan 2022 11:18:57 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 285B0C433F5
+	for <linux-m68k@archiver.kernel.org>; Fri,  7 Jan 2022 19:30:49 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238400AbiAFLS5 (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Thu, 6 Jan 2022 06:18:57 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42506 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238391AbiAFLS4 (ORCPT
-        <rfc822;linux-m68k@vger.kernel.org>); Thu, 6 Jan 2022 06:18:56 -0500
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2EAD8C061245
-        for <linux-m68k@vger.kernel.org>; Thu,  6 Jan 2022 03:18:56 -0800 (PST)
-Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <mkl@pengutronix.de>)
-        id 1n5QnC-0007yE-RK; Thu, 06 Jan 2022 12:18:50 +0100
-Received: from pengutronix.de (2a03-f580-87bc-d400-fd40-da16-8525-0d68.ip6.dokom21.de [IPv6:2a03:f580:87bc:d400:fd40:da16:8525:d68])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (Client did not present a certificate)
-        (Authenticated sender: mkl-all@blackshift.org)
-        by smtp.blackshift.org (Postfix) with ESMTPSA id 3B4226D2552;
-        Thu,  6 Jan 2022 11:18:48 +0000 (UTC)
-Date:   Thu, 6 Jan 2022 12:18:47 +0100
-From:   Marc Kleine-Budde <mkl@pengutronix.de>
-To:     Angelo Dureghello <angelo@kernel-space.org>
-Cc:     gerg@linux-m68k.org, geert@linux-m68k.org,
-        linux-m68k@vger.kernel.org, linux-can@vger.kernel.org,
-        qiangqing.zhang@nxp.com,
-        Dario Binacchi <dario.binacchi@amarulasolutions.com>
-Subject: mcf5441x: flexcan FIFO and mailbox mode (was: Re: [PATCH v5 5/5]
- can: flexcan: add mcf5441x support)
-Message-ID: <20220106111847.zjkrghehxr7mrkkt@pengutronix.de>
+        id S232395AbiAGTar (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Fri, 7 Jan 2022 14:30:47 -0500
+Received: from mx.cs.msu.ru ([188.44.42.42]:53104 "EHLO mail.cs.msu.ru"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S232106AbiAGTar (ORCPT <rfc822;linux-m68k@vger.kernel.org>);
+        Fri, 7 Jan 2022 14:30:47 -0500
+X-Greylist: delayed 515 seconds by postgrey-1.27 at vger.kernel.org; Fri, 07 Jan 2022 14:30:44 EST
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=cs.msu.ru;
+        s=dkim; h=Subject:In-Reply-To:Content-Type:MIME-Version:References:Message-ID
+        :Cc:To:From:Date:Sender:Reply-To:Content-Transfer-Encoding:Content-ID:
+        Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+        :Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
+        List-Post:List-Owner:List-Archive;
+        bh=CAj6ZvCGsPU1I8LtRSp3RhetGGO18H0jd7c6GnJn/AI=; b=Tmtwzq882fuqOFkgczsh/hVTJV
+        vjYXVLuJSb3ebjGHUX/IMLewO/j7T7pru2BtNUWx1U0M9+uf4naJNbstc4a4hV627q9Fmvp2M8WVB
+        rrPobMbnO55k1E282B+ZDvv2xnqKt+6vi2dm/N58n2PoB9yvml12ZZi653qVVPbFvBrQ1N3Cb1Mlt
+        VpFJqmRvAKdp7QhJGXuWQmopkT9Zg4uypDmWsHhYSHIs2H59UUqr6Mb685+Z5ze6ULlPQQej9nGSV
+        Up77CfcM/pPZTa0PvLewaq5PkmdXAK939R648+o8vCCb1GgM/jYykm3sn1Pe3d2AL16FSeIumeX9/
+        Rgr2mlbw==;
+Received: from [37.204.119.143] (port=58124 helo=cello)
+        by mail.cs.msu.ru with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
+        (Exim 4.94.2 (FreeBSD))
+        (envelope-from <ar@cs.msu.ru>)
+        id 1n5uvJ-00092m-Js; Fri, 07 Jan 2022 22:29:15 +0300
+Date:   Fri, 7 Jan 2022 22:29:12 +0300
+From:   Arseny Maslennikov <ar@cs.msu.ru>
+To:     Walt Drummond <walt@drummond.us>
+Cc:     Theodore Ts'o <tytso@mit.edu>,
+        "Eric W. Biederman" <ebiederm@xmission.com>, aacraid@microsemi.com,
+        viro@zeniv.linux.org.uk, anna.schumaker@netapp.com, arnd@arndb.de,
+        bsegall@google.com, bp@alien8.de, chuck.lever@oracle.com,
+        bristot@redhat.com, dave.hansen@linux.intel.com,
+        dwmw2@infradead.org, dietmar.eggemann@arm.com, dinguyen@kernel.org,
+        geert@linux-m68k.org, gregkh@linuxfoundation.org, hpa@zytor.com,
+        idryomov@gmail.com, mingo@redhat.com, yzaikin@google.com,
+        ink@jurassic.park.msu.ru, jejb@linux.ibm.com, jmorris@namei.org,
+        bfields@fieldses.org, jlayton@kernel.org, jirislaby@kernel.org,
+        john.johansen@canonical.com, juri.lelli@redhat.com,
+        keescook@chromium.org, mcgrof@kernel.org,
+        martin.petersen@oracle.com, mattst88@gmail.com, mgorman@suse.de,
+        oleg@redhat.com, pbonzini@redhat.com, peterz@infradead.org,
+        rth@twiddle.net, richard@nod.at, serge@hallyn.com,
+        rostedt@goodmis.org, tglx@linutronix.de,
+        trond.myklebust@hammerspace.com, vincent.guittot@linaro.org,
+        x86@kernel.org, linux-kernel@vger.kernel.org,
+        ceph-devel@vger.kernel.org, kvm@vger.kernel.org,
+        linux-alpha@vger.kernel.org, linux-arch@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-m68k@vger.kernel.org,
+        linux-mtd@lists.infradead.org, linux-nfs@vger.kernel.org,
+        linux-scsi@vger.kernel.org, linux-security-module@vger.kernel.org
+Message-ID: <YdiUiHAhLyfgpvVY@cello>
+References: <20220103181956.983342-1-walt@drummond.us>
+ <87iluzidod.fsf@email.froward.int.ebiederm.org>
+ <YdSzjPbVDVGKT4km@mit.edu>
+ <87pmp79mxl.fsf@email.froward.int.ebiederm.org>
+ <YdTI16ZxFFNco7rH@mit.edu>
+ <CADCN6nzT-Dw-AabtwWrfVRDd5HzMS3EOy8WkeomicJF07nQyoA@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="zwauvc2xjplx623i"
+        protocol="application/pgp-signature"; boundary="jM/2AY6iSqMbsk1G"
 Content-Disposition: inline
-X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
-X-SA-Exim-Mail-From: mkl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-m68k@vger.kernel.org
+In-Reply-To: <CADCN6nzT-Dw-AabtwWrfVRDd5HzMS3EOy8WkeomicJF07nQyoA@mail.gmail.com>
+OpenPGP: url=http://grep.cs.msu.ru/~ar/pgp-key.asc
+X-SA-Exim-Connect-IP: 37.204.119.143
+X-SA-Exim-Mail-From: ar@cs.msu.ru
+Subject: Re: [RFC PATCH 0/8] signals: Support more than 64 signals
+X-SA-Exim-Version: 4.2.1
+X-SA-Exim-Scanned: No (on mail.cs.msu.ru); Unknown failure
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
 
---zwauvc2xjplx623i
-Content-Type: text/plain; charset=utf-8
+--jM/2AY6iSqMbsk1G
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-Hello Angelo,
+On Tue, Jan 04, 2022 at 02:31:44PM -0800, Walt Drummond wrote:
+> The only standard tools that support SIGINFO are sleep, dd and ping,
+> (and kill, for obvious reasons) so it's not like there's a vast hole
+> in the tooling or something, nor is there a large legacy software base
+> just waiting for SIGINFO to appear.   So while I very much enjoyed
+> figuring out how to make SIGINFO work ...
 
-On 02.07.2021 11:48:41, Angelo Dureghello wrote:
-> Add flexcan support for NXP ColdFire mcf5441x family.
->=20
-> This flexcan module is quite similar to imx6 flexcan module, but
-> with some exceptions:
->=20
-> - 3 separate interrupt sources, MB, BOFF and ERR,
-> - implements 16 mb only,
-> - m68k architecture is not supporting devicetrees, so a
->   platform data check/case has been added,
-> - ColdFire is m68k, so big-endian cpu, with a little-endian flexcan
->   module.
+As far as I recall, GNU make on *BSD does support SIGINFO (Not a
+standard tool, but obviously an established one).
 
-we're currently discussing the option that the user of a flexcan can
-switch between RX-FIFO and RX via mailboxes.
+The developers of strace have expressed interest in SIGINFO support
+to print tracer status messages (unfortunately, not on a public list).
+Computational software can use this instead of stderr progress spam, if
+run in an interactive fashion on a terminal, as it frequently is. There
+is a user base, it's just not very vocal on kernel lists. :)
 
-I noticed that the mcf5441x currently is configured for FIFO mode. Have
-you tested the driver in mailbox mode?
-
-The reason that some cores use the FIFO mode is, that they cannot
-receive RTR CAN frames in mailbox mode. According to the IP core
-overview table, the mcf5441x can receive RTR frames.
-
-If the IP core supports reception of RTR frames, mailbox mode should be
-used, as it makes use of more buffers (16-2) instead of 6 in FIFO mode.
-Should we activate mailbox mode for the mcf5441x?
-
-regards,
-Marc
-
---=20
-Pengutronix e.K.                 | Marc Kleine-Budde           |
-Embedded Linux                   | https://www.pengutronix.de  |
-Vertretung West/Dortmund         | Phone: +49-231-2826-924     |
-Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-5555 |
-
---zwauvc2xjplx623i
+--jM/2AY6iSqMbsk1G
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAABCgAdFiEEK3kIWJt9yTYMP3ehqclaivrt76kFAmHW0BQACgkQqclaivrt
-76nYYgf+L7XNXnaqqxsDKE0fUL2odEuMaMlm+oatg7rgSbA5XBjG6GqTZiF3lCJJ
-Ntf2rz4XXoIFlei8QRgC6b08/66La6b/titJUijEEk5R9JB2TXfTQOK0MoOC2xcf
-3BmAOpvJ13BmuUYF/be8QwfiXJ2K7Hpfume3JNhelLyYR6sPK6PM3n5HiW7XgkXx
-eUpG9rF29c5EHd3W8+DTCMdqmNABs66AfIHKjsB2q0/iEd6jmDkmRDpmPRD9a/vS
-zmhj+SjOY25uMEEE/41f+cnT/0Xwt83UyEF1eniZJIEPbTQn7+5eQLh2G8ced7We
-BM1DC1tI3Z7O/MbE3greq85bEaM6OQ==
-=nAb5
+iQIzBAEBCgAdFiEE56JD3UKTLEu/ddrm9dQjyAYL01AFAmHYlIMACgkQ9dQjyAYL
+01A2JA/+L9JwmjJHTVt97zLB/gp/798jHIH5xpSIqAGns8OfFkzQ95dxlpb2U9vw
+QnNRixTQzfe+GISVL0FKMOQnAodV/FiSCGQU3ebudcPQXtrGtYHUT8Ijz9WL8+pR
+LEbZvDDW4JT2N8sGVcsiAtSER9kHRUpdNBPCdIxURmQf0Fgjj16cYV/cr3j8NQpw
+uXKAulKoHIWjD84jc1douEnwo6Eij7QA7nZ1N4PLesZ6cdPxLpKYMR7bWbf9r5Fd
+B6C8jKZKl+eETWJx7ECQ/z2BBeUNw1bwUK8F0MgF+Kb01V29ouGaB2eUP4JhBH1b
+zBhEM+N1dYjc3gzDDTJHURS0lm9Pzcg1Dj4nRYVEYbddU3wNd/kYPQIk+BmWoUH8
+h6xtMYCT3k+hL6Y59LVXra23PpktJljTFtMI8DXYmuJS+yy+dV7g1rn4Ui9FmF7B
+UmI4khTwZV2TQ1C0LsSuzwkBm71S27ziqmKVTci0hmzEFalls/Mr2rAP7dSwK4FE
+3kjQxOPKuiSgwV2+Odw4M6JQKChplAVOy6dzr8QIq3ULzaMoZ4LxX4JhvqvaK/0w
+vqRxoJ/OmC/pbHdVM/h7OnsS0t67UnlO8zJwuOAn03S7mpo67HZ/xKHCsJctF4Ca
+cwRnCVEeiYv1kjA2YEbjg9uohTtnfysNsoVA+rE7TNEqeWb4r1c=
+=ueZJ
 -----END PGP SIGNATURE-----
 
---zwauvc2xjplx623i--
+--jM/2AY6iSqMbsk1G--
