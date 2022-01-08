@@ -2,271 +2,191 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id DF415C433F5
-	for <linux-m68k@archiver.kernel.org>; Fri,  7 Jan 2022 19:34:41 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 12660C433EF
+	for <linux-m68k@archiver.kernel.org>; Sat,  8 Jan 2022 23:35:34 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232757AbiAGTel (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Fri, 7 Jan 2022 14:34:41 -0500
-Received: from mx.cs.msu.ru ([188.44.42.42]:53954 "EHLO mail.cs.msu.ru"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S232688AbiAGTej (ORCPT <rfc822;linux-m68k@vger.kernel.org>);
-        Fri, 7 Jan 2022 14:34:39 -0500
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=cs.msu.ru;
-        s=dkim; h=Subject:In-Reply-To:Content-Type:MIME-Version:References:Message-ID
-        :Cc:To:From:Date:Sender:Reply-To:Content-Transfer-Encoding:Content-ID:
-        Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-        :Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
-        List-Post:List-Owner:List-Archive;
-        bh=OCmqg7hdVMRDf9S2TRzQcyQTVURjWWjA2U66wZsX9xE=; b=GZTN5nPrZajSo0Dsw8ti3k+ewF
-        w1M5DO8uta92yExxmpRX1irxHJV5CazVnzyUy/i9UXyucK+gf9zJtvBGsOPrIVuPj7Ip48EqV8PBE
-        qazaFFVv9YUZnYw0PIDKesYTg2I3YuLVS8PvQZkPGEMHmqbpaEboMRKWIWE4mU++TrxxcN7YXgzgQ
-        ouTjjURG2hZtWJyIMWlmT+BlDYSsZgLf88F0m10ZJkuYyXoEcn5Q7IRNgCBR3mWnvTtJcsnbRWoFs
-        LM/bPMRKrMRgVRcM9UZNHpJj3bznRqeLBk/YUH54uF9sVNrmZGQwYPNskpZ40XKn4YDGguOE9+l+j
-        hNV7XitQ==;
-Received: from [37.204.119.143] (port=58122 helo=cello)
-        by mail.cs.msu.ru with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
-        (Exim 4.94.2 (FreeBSD))
-        (envelope-from <ar@cs.msu.ru>)
-        id 1n5um6-000CP7-UJ; Fri, 07 Jan 2022 22:19:44 +0300
-Date:   Fri, 7 Jan 2022 22:19:36 +0300
-From:   Arseny Maslennikov <ar@cs.msu.ru>
-To:     Theodore Ts'o <tytso@mit.edu>
-Cc:     "Eric W. Biederman" <ebiederm@xmission.com>,
-        Walt Drummond <walt@drummond.us>, aacraid@microsemi.com,
-        viro@zeniv.linux.org.uk, anna.schumaker@netapp.com, arnd@arndb.de,
-        bsegall@google.com, bp@alien8.de, chuck.lever@oracle.com,
-        bristot@redhat.com, dave.hansen@linux.intel.com,
-        dwmw2@infradead.org, dietmar.eggemann@arm.com, dinguyen@kernel.org,
-        geert@linux-m68k.org, gregkh@linuxfoundation.org, hpa@zytor.com,
-        idryomov@gmail.com, mingo@redhat.com, yzaikin@google.com,
-        ink@jurassic.park.msu.ru, jejb@linux.ibm.com, jmorris@namei.org,
-        bfields@fieldses.org, jlayton@kernel.org, jirislaby@kernel.org,
-        john.johansen@canonical.com, juri.lelli@redhat.com,
-        keescook@chromium.org, mcgrof@kernel.org,
-        martin.petersen@oracle.com, mattst88@gmail.com, mgorman@suse.de,
-        oleg@redhat.com, pbonzini@redhat.com, peterz@infradead.org,
-        rth@twiddle.net, richard@nod.at, serge@hallyn.com,
-        rostedt@goodmis.org, tglx@linutronix.de,
-        trond.myklebust@hammerspace.com, vincent.guittot@linaro.org,
-        x86@kernel.org, linux-kernel@vger.kernel.org,
-        ceph-devel@vger.kernel.org, kvm@vger.kernel.org,
-        linux-alpha@vger.kernel.org, linux-arch@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-m68k@vger.kernel.org,
-        linux-mtd@lists.infradead.org, linux-nfs@vger.kernel.org,
-        linux-scsi@vger.kernel.org, linux-security-module@vger.kernel.org
-Message-ID: <YdiSSGLinhOVqS8a@cello>
-References: <20220103181956.983342-1-walt@drummond.us>
- <87iluzidod.fsf@email.froward.int.ebiederm.org>
- <YdSzjPbVDVGKT4km@mit.edu>
+        id S229761AbiAHXfd (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Sat, 8 Jan 2022 18:35:33 -0500
+Received: from rere.qmqm.pl ([91.227.64.183]:5050 "EHLO rere.qmqm.pl"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230473AbiAHXfd (ORCPT <rfc822;linux-m68k@lists.linux-m68k.org>);
+        Sat, 8 Jan 2022 18:35:33 -0500
+Received: from remote.user (localhost [127.0.0.1])
+        by rere.qmqm.pl (Postfix) with ESMTPSA id 4JWbzn6Bf4z9c;
+        Sun,  9 Jan 2022 00:35:17 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=rere.qmqm.pl; s=1;
+        t=1641684931; bh=PlUOfTOJmz/Ue3/EDBlVUxJ2DxqecfDU18/1xQbQtoA=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=FscL30pAUhiOa20r1Aci5nnOyAPPM7+JoY4I/TdvClRTh0U4D6S+wg1hl5DP6lTxY
+         uXsR1x49ZX58OBDSXL5QGeKh44OE5Qx3HX+fhAHnzzl6d2Bb3RMolFLW/CZs7ANyT9
+         2B2bqDVSaDvrnFLV9W4laov2KVjSpYZyXNNSx0uhvIf6/Ty/Jc6im2Ya6WtOK+mKnU
+         8tBa912YBdNEWU6kN5XGlGndW+KwbfYMSoJHIv4OJWOXoW7NdW+vFlXd5iG2C0Sl5t
+         yLjrrdYJpGeB9xfuugFJFXVZkd4+VRh97hWFY+LEwPEsT5kUEeN00fOMl2F0IbFH2g
+         x9nJQfgC6GmfA==
+X-Virus-Status: Clean
+X-Virus-Scanned: clamav-milter 0.103.4 at mail
+Date:   Sun, 9 Jan 2022 00:35:15 +0100
+From:   =?iso-8859-2?Q?Micha=B3_Miros=B3aw?= <mirq-linux@rere.qmqm.pl>
+To:     Dmitry Osipenko <digetx@gmail.com>
+Cc:     Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>, Guo Ren <guoren@kernel.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Greg Ungerer <gerg@linux-m68k.org>,
+        Joshua Thompson <funaho@jurai.org>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Sebastian Reichel <sre@kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Greentime Hu <green.hu@gmail.com>,
+        Vincent Chen <deanbo422@gmail.com>,
+        "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
+        Helge Deller <deller@gmx.de>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Yoshinori Sato <ysato@users.sourceforge.jp>,
+        Rich Felker <dalias@libc.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+        Juergen Gross <jgross@suse.com>,
+        Stefano Stabellini <sstabellini@kernel.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Len Brown <lenb@kernel.org>,
+        Santosh Shilimkar <ssantosh@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>, Pavel Machek <pavel@ucw.cz>,
+        Lee Jones <lee.jones@linaro.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Ulf Hansson <ulf.hansson@linaro.org>, alankao@andestech.com,
+        "K . C . Kuen-Chern Lin" <kclin@andestech.com>,
+        linux-kernel@vger.kernel.org, linux-csky@vger.kernel.org,
+        linux-ia64@vger.kernel.org, linux-m68k@lists.linux-m68k.org,
+        linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org,
+        linux-sh@vger.kernel.org, xen-devel@lists.xenproject.org,
+        linux-acpi@vger.kernel.org, linux-pm@vger.kernel.org,
+        linux-tegra@vger.kernel.org
+Subject: Re: [PATCH v5 04/21] kernel: Add combined power-off+restart handler
+ call chain API
+Message-ID: <Ydofs2CIfA+r5KAz@qmqm.qmqm.pl>
+References: <20211212210309.9851-1-digetx@gmail.com>
+ <20211212210309.9851-5-digetx@gmail.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="qWnueR4sTyTaRsaN"
+Content-Type: text/plain; charset=iso-8859-2
 Content-Disposition: inline
-In-Reply-To: <YdSzjPbVDVGKT4km@mit.edu>
-OpenPGP: url=http://grep.cs.msu.ru/~ar/pgp-key.asc
-X-SA-Exim-Connect-IP: 37.204.119.143
-X-SA-Exim-Mail-From: ar@cs.msu.ru
-Subject: Re: [RFC PATCH 0/8] signals: Support more than 64 signals
-X-SA-Exim-Version: 4.2.1
-X-SA-Exim-Scanned: No (on mail.cs.msu.ru); Unknown failure
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20211212210309.9851-5-digetx@gmail.com>
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
+On Mon, Dec 13, 2021 at 12:02:52AM +0300, Dmitry Osipenko wrote:
+[...]
+> +/**
+> + * struct power_off_data - Power-off callback argument
+> + *
+> + * @cb_data: Callback data.
+> + */
+> +struct power_off_data {
+> +	void *cb_data;
+> +};
+> +
+> +/**
+> + * struct power_off_prep_data - Power-off preparation callback argument
+> + *
+> + * @cb_data: Callback data.
+> + */
+> +struct power_off_prep_data {
+> +	void *cb_data;
+> +};
 
---qWnueR4sTyTaRsaN
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Why two exactly same structures? Why only a single pointer instead? If
+it just to enable type-checking callbacks, then thouse could be opaque
+or zero-sized structs that would be embedded or casted away in
+respective callbacks.
 
-I generally agree with Ted's suggestion that we could merge the
-easy-to-design part =E2=80=94 the VSTATUS+kerninfo =E2=80=94 first and deal=
- with the
-SIGINFO part later. The only concern I have here is that the "later"
-part might never practically arrive... :)
+> +
+> +/**
+> + * struct restart_data - Restart callback argument
+> + *
+> + * @cb_data: Callback data.
+> + * @cmd: Restart command string.
+> + * @stop_chain: Further lower priority callbacks won't be executed if set to
+> + *		true. Can be changed within callback. Default is false.
+> + * @mode: Reboot mode ID.
+> + */
+> +struct restart_data {
+> +	void *cb_data;
+> +	const char *cmd;
+> +	bool stop_chain;
+> +	enum reboot_mode mode;
+> +};
+> +
+> +/**
+> + * struct reboot_prep_data - Reboot and shutdown preparation callback argument
+> + *
+> + * @cb_data: Callback data.
+> + * @cmd: Restart command string.
+> + * @stop_chain: Further lower priority callbacks won't be executed if set to
+> + *		true. Can be changed within callback. Default is false.
 
-Still, some notes on the SIGINFO/userspace-status
-part:
+Why would we want to stop power-off or erboot chain? If the callback
+succeded, then further calls won't be made. If it doesn't succeed, but
+possibly breaks the system somehow, it shouldn't return. Then the only
+case left would be to just try the next method of shutting down.
 
-On Tue, Jan 04, 2022 at 03:52:28PM -0500, Theodore Ts'o wrote:
-> On Tue, Jan 04, 2022 at 12:00:34PM -0600, Eric W. Biederman wrote:
-> > I dug through the previous conversations and there is a little debate
-> > about what makes sense for SIGPWR to do by default.  Alan Cox remembered
-> > SIGPWR was sent when the power was restored, so ignoring SIGPWR by
-> > default made sense.  Ted Tso pointed out a different scenario where it
-> > was reasonable for SIGPWR to be a terminating signal.
-> >=20
-> > So far no one has actually found any applications that will regress if
-> > SIGPWR becomes ignored by default.
+> + * @mode: Preparation mode ID.
+> + */
+> +struct reboot_prep_data {
+> +	void *cb_data;
+> +	const char *cmd;
+> +	bool stop_chain;
+> +	enum reboot_prepare_mode mode;
+> +};
+> +
+> +struct sys_off_handler_private_data {
+> +	struct notifier_block power_off_nb;
+> +	struct notifier_block restart_nb;
+> +	struct notifier_block reboot_nb;
 
-Some folks from linux-api@ claimed otherwise, but unfortunately didn't elab=
-orate.
+What's the difference between restart and reboot?
 
-> > Furthermore on linux SIGPWR is only
-> > defined to be sent to init, and init ignores all signals by default so
-> > in practice SIGPWR is ignored by the only process that receives it
-> > currently.
->=20
-> As it turns out, systemd does *not* ignore SIGPWR.  Instead, it will
-> initiate the sigpwr target.  From the systemd.special man page:
->=20
->        sigpwr.target
->            A special target that is started when systemd receives the
->            SIGPWR process signal, which is normally sent by the kernel
->            or UPS daemons when power fails.
+> +	void (*platform_power_off_cb)(void);
+> +	void (*simple_power_off_cb)(void *data);
+> +	void *simple_power_off_cb_data;
+> +	bool registered;
+> +};
 
-Not sure what you had in mind; in case you're suggesting that systemd has
-to drop the sigpwr.target semantics =E2=80=94 it doesn't.
-We don't need to ask systemd to drop sigpwr.target semantics.
+BTW, I couldn't find a right description of my idea of unifying the
+chains before, so let me sketch it now.
 
-To introduce SIGINFO =3D=3D SIGPWR to the kernel, the only "breaking" change
-we have to do is to change the default disposition for SIGPWR, i. e. the
-behaviour if the signal is set to SIG_DFL. If a process (including PID
-1) installs its own signal handler for SIGPWR to do something when PWR
-is received (or blocks the signal and handles it via signalfd
-notifications), then the default disposition does not matter at all, as
-Eric notes further in this thread.
+The idea is to have a single system-off chain in which the callback
+gets a mode ({QUERY_*, PREP_*, DO_*} for each of {*_REBOOT, *_POWEROFF, ...?).
+The QUERY_* calls would be made in can_kernel_reboot/poweroff(): all
+would be called, and if at least one returned true, then the shutdown
+mode would continue. All of PREP_* would be called then. After that
+all DO_* would be tried until one doesn't return (succeeded or broke
+the system hard). Classic for(;;); could be a final fallback for the
+case where arch/machine (lowest priority) call would return instead
+of halting the system in machine-dependent way. The QUERY and PREP
+stages could be combined, but I haven't thought about it enough to
+see what conditions would need to be imposed on the callbacks in
+that case (maybe it's not worth the trouble, since it isn't a fast
+path anyway?). The goal here is to have less (duplicated) code in
+kernel, but otherwise it seems equivalent to your API proposal.
 
-=46rom a quick glance at systemd code, pid1's main() function calls
-manager_new() calls manager_setup_signals(); this function, in turn,
-blocks a set of signals, including PWR, and sets up a signalfd(2) on
-that set. No changes have to be made in systemd, no need to remove the
-sigpwr.target semantics.
-
-The target activation does not send SIGPWR to anyone, it results in
-systemd services being started and possibly stopped; the exact
-consequences are out of scope for systemd.
-
-There could be another concern: a VSTATUS keypress could result in
-SIGINFO =3D=3D SIGPWR being sent to pid1. In a correct implementation this
-will not ever happen, because a sane PID 1 does not have (and never
-acquires) a controlling terminal.
-
-> And child processes of systemd are not ignoring SIGPWR.  Instead, they
-> are getting terminated.
->=20
-> <tytso@cwcc>
-> 41% /bin/sleep 50 &
-> [1] 180671
-> <tytso@cwcc>
-> 42% kill -PWR 180671
-> [1]+  Power failure           /bin/sleep 50
-
-All the possible surprises with the SIGINFO =3D=3D SIGPWR approach we might
-get stem from here, not from the sigpwr.target.
-
-> > Where I saw the last conversation falter was in making a persuasive
-> > case of why SIGINFO was interesting to add.  Given a world of ssh
-> > connections I expect a persuasive case can be made.  Especially if there
-> > are a handful of utilities where it is already implemented that just
-> > need to be built with SIGINFO defined.
->=20
-> One thing that's perhaps worth disentangling is the value of
-> supporting VSTATUS --- which is a control character much like VINTR
-> (^C) or VQUIT (control backslash) which is set via the c_cc[] array in
-> termios structure.  Quoting from the termios man page:
->=20
->        VSTATUS
->               (not in POSIX; not supported under Linux; status
->               request: 024, DC4, Ctrl-T).  Status character (STATUS).
->               Display status information at terminal, including state
->               of foreground process and amount of CPU time it has
->               consumed.  Also sends a SIGINFO signal (not supported on
->               Linux) to the foreground process group.
->=20
-> The basic idea is that when you type C-t, you can find out information
-> about the currently running process.  This is a feature that
-> originally comes from TOPS-10's TENEX operating system, and it is
-> supported today on FreeBSD and Mac OS.  For example, it might display
-> something like this:
->=20
-> load: 2.39  cmd: ping 5374 running 0.00u 0.00s
->=20
-> The reason why SIGINFO is sent to the foreground process group is that
-> it gives the process an opportunity print application specific
-> information about currently running process.  For example, maybe the C
-> compiler could print something like "parsing 2042 of 5000 header
-> files", or some such.  :-)
->=20
-> There are people who wish that Linux supported Control-T / VSTATUS,
-> for example, just last week, on TUHS, the Unix greybeards list, there
-> were two such heartfelt wishes for Control-T support from two such
-> greybeards:
->=20
->     "It's my biggest annoyance with Linux that it doesn't [support
->     control-t]
->     - https://minnie.tuhs.org/pipermail/tuhs/2021-December/024849.html
->=20
->     "I personally can't stand using Linux, even casually for a very
->      short sys-admin task, because of this missing feature"
->     - https://minnie.tuhs.org/pipermail/tuhs/2021-December/024898.html
->=20
-> I claim, though, that we could implement VSTATUS without implenting
-> the SIGINFO part of the feature.  Previous few applications *ever*
-> implemented SIGINFO signal handlers so they could give status
-> information, it's the hard one, since we don't have any spare signals
-> left.  If we were to repurpose some lesser used signal, whether it be
-> SIGPWR, SIGLOST, or SIGSTKFLT, the danger is that there might be some
-> userspace program (such as a UPS monitoring program which wants to
-> trigger power fail handling, or a userspace NFSv4 process that wants
-> to signal that it was unable to recover a file's file lock after a
-> server reboot), and if we try to take over the signal assignment, it's
-> possible that we might get surprised.  Furthermore, all of the
-> possibly unused signals that we might try to reclaim terminate the
-> process by default, and SIGINFO *has* to have a default signal
-> handling action of Ignore, since otherwise typing Control-T will end
-> up killing the current foreground application.
->=20
-> Personally, I don't care all that much about VSTATUS support --- I
-> used it when I was in university, but honestly, I've never missed it.
-> But if there is someone who wants to try to implement VSTATUS, and
-> make some Unix greybeards happy, and maybe even switch from FreeBSD to
-> Linux as a result, go wild.  I'm not convinced, though, that adding
-> the SIGINFO part of the support is worth the effort.
->=20
-> Not only do almost no programs implement SIGINFO support, a lot of CPU
-
-To be fair, many programs are a lot younger than 4.3BSD, and with the
-current ubiquity of Linux without VSTATUS, it's kind of a chicken-egg
-problem. :)
-
-> bound programs where this might be actually useful, end up running a
-> large number of processes in parallel.  Take the "parsing 2042 of 5000
-> header files" example I gave above.  Consider what would happen if gcc
-> implemented support for SIGINFO, but the user was running a "make -j
-> 16" and typed Control-T.   The result would be chaos!
->=20
-> So if you really miss Control-T, and it's the only thing holding back
-> a few FreeBSD users from Linux, I don't see the problem with
-> implementing that part of the feature.  Why not just do the easy part
-> of the feature which is perhaps 5% of the work, and might provide 99%
-> of the benefit (at least for those people who care).
->=20
-> > Without seeing the persuasive case for more signals I have to say that
-> > adding more signals to the kernel sounds like a bad idea.
->=20
-> Concur, 100%.
->=20
-> 						- Ted
-
---qWnueR4sTyTaRsaN
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAEBCgAdFiEE56JD3UKTLEu/ddrm9dQjyAYL01AFAmHYkkIACgkQ9dQjyAYL
-01CKqw//fRo598+oG7eu1P/GUZQ6vFoTL0kGRWMTenBGAe6d/mxq+VqE65I7oxSp
-WuoYr65MDc+0jQxkykcyJonrsLORM1VYyceFSWc8oIaeoLz6Hota5v2mqSZoVouO
-shRoPTDm/FfaHd9QEz8goK87gv3SRz/3yzcZMt+Ezt8/5MAry1Hej17EsWeWK+DL
-25AgQpnZiqalF/99rUMTxGRoZh2oAE6oUMaaCMj6rgWM/wWgGTiL89gFbz96DVVf
-ZRxTVR4/wkU+xGKHu8g9rskEJMPiP96CdQ42ApxgIqGCZHLq5g6TsrS1vB9Kym5Z
-tZJettnHQke4IQ8F28i7429Ya7LJuBhc9K27YqoPaRnqbkpH0ULkRR0vHRGMapTr
-tVlWaRKrgfOBpo0Ozyd8sMYgwatbO/9avkv4Al/+RDaBYDvkbscL0yidy3d8mFPO
-6dzpeuDFlAMX9rZWMd+cGm/GG2VBv6VbKQuFbzY59cfxoXHkQB3RvJCEiE1oZUPk
-tPT5hqzF525Sfy9VqnjW9/9lDfl5/n6Ip6uI+3vWiPfFypmmuDHQAH5D5wA5hGJg
-615nXgANcr/YxxQ+Tq6ErKbnx+8GzQVinkhMgGuzVpaU5hfnDZ3xOQ1oitTKoTBl
-9zNo2aZN1OSddJtCpq0PROCGQOLNnZ45TqEAbWEuDn24fypRBjE=
-=ut2q
------END PGP SIGNATURE-----
-
---qWnueR4sTyTaRsaN--
+Best Regards
+Micha³ Miros³aw
