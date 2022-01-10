@@ -2,129 +2,71 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 4AA2FC433F5
-	for <linux-m68k@archiver.kernel.org>; Mon, 10 Jan 2022 17:55:11 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 1CDBFC433FE
+	for <linux-m68k@archiver.kernel.org>; Mon, 10 Jan 2022 18:27:58 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238582AbiAJRzK (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Mon, 10 Jan 2022 12:55:10 -0500
-Received: from mail-vk1-f172.google.com ([209.85.221.172]:39548 "EHLO
-        mail-vk1-f172.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238609AbiAJRzK (ORCPT
+        id S241562AbiAJS14 (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Mon, 10 Jan 2022 13:27:56 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33712 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S241536AbiAJS14 (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Mon, 10 Jan 2022 12:55:10 -0500
-Received: by mail-vk1-f172.google.com with SMTP id n124so4011435vke.6
-        for <linux-m68k@lists.linux-m68k.org>; Mon, 10 Jan 2022 09:55:10 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=dXFTaslrvvoNS6lV+4lLY/0Kq9/XDOlT+IxlTp/BRWs=;
-        b=RB0bvRYppsSVQOZm2fizhPwVpJp8QmuKRsty1nPAz5Oip4kCL2vFyLXILuhHXezzDt
-         zsKzB0V6d1XBe2423dJQsMmD9DcfLYbypEFH415vTKbMqn13/fVNzA4hFGTFWz3jsPEA
-         GsV3uQc+RkNo1uJ5mkdPsjFQVgmV1zk/gMctNOvscepiWoXGRcJ5Myw4IQXMWgBrlS56
-         3IEtzg0iabYmZrve5J/VpqFH5XDspx+ZeUyxTufqDL5bdvO9Ta/7yxGpASu16kQj+RQ4
-         nkn8ym+U4doVz/17Bq0knXyzGXQ+w4jzHIboASTR4iRlEct3UM2KsShT2dqT9D+p6h2/
-         OArA==
-X-Gm-Message-State: AOAM532Q+gR7q2SJPRKhKKVKaOM+ADm96RsK/qwNjyzsiKqp0g1pSEcb
-        xVc5daiL4TgLO2MyZN8sVV37uT3l/VCFSA==
-X-Google-Smtp-Source: ABdhPJxuifYTB2ICjpGGd1Uvua3jQXPuSpg1qqbveMuLu8WB/ppAfA2W90HRYfU74KOsdyRSQUxApA==
-X-Received: by 2002:a1f:30c1:: with SMTP id w184mr293394vkw.20.1641837309536;
-        Mon, 10 Jan 2022 09:55:09 -0800 (PST)
-Received: from mail-ua1-f44.google.com (mail-ua1-f44.google.com. [209.85.222.44])
-        by smtp.gmail.com with ESMTPSA id m2sm1190054vki.0.2022.01.10.09.55.08
-        for <linux-m68k@lists.linux-m68k.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 10 Jan 2022 09:55:09 -0800 (PST)
-Received: by mail-ua1-f44.google.com with SMTP id y4so24971770uad.1
-        for <linux-m68k@lists.linux-m68k.org>; Mon, 10 Jan 2022 09:55:08 -0800 (PST)
-X-Received: by 2002:a67:e985:: with SMTP id b5mr430323vso.77.1641837308695;
- Mon, 10 Jan 2022 09:55:08 -0800 (PST)
-MIME-Version: 1.0
-References: <87r19opkx1.fsf_-_@email.froward.int.ebiederm.org>
- <20220103213312.9144-8-ebiederm@xmission.com> <CAMuHMdWsNBjOJh0QEx9sppA9x3WoL8H2icqukNqECFhOPremjw@mail.gmail.com>
- <YdxcszwEslyQJSuF@zeniv-ca.linux.org.uk>
-In-Reply-To: <YdxcszwEslyQJSuF@zeniv-ca.linux.org.uk>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Mon, 10 Jan 2022 18:54:57 +0100
-X-Gmail-Original-Message-ID: <CAMuHMdX9nhUQe_jeQCUtXeQgcQ5MBiHpPiRexh86EssoHNtJ3Q@mail.gmail.com>
-Message-ID: <CAMuHMdX9nhUQe_jeQCUtXeQgcQ5MBiHpPiRexh86EssoHNtJ3Q@mail.gmail.com>
-Subject: Re: [PATCH 08/17] ptrace/m68k: Stop open coding ptrace_report_syscall
-To:     Al Viro <viro@zeniv.linux.org.uk>
-Cc:     "Eric W. Biederman" <ebiederm@xmission.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux-Arch <linux-arch@vger.kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Oleg Nesterov <oleg@redhat.com>,
-        Kees Cook <keescook@chromium.org>,
-        Linux API <linux-api@vger.kernel.org>,
-        Michael Schmitz <schmitzmic@gmail.com>,
-        linux-m68k <linux-m68k@lists.linux-m68k.org>
-Content-Type: text/plain; charset="UTF-8"
+        Mon, 10 Jan 2022 13:27:56 -0500
+Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B925AC06173F
+        for <linux-m68k@lists.linux-m68k.org>; Mon, 10 Jan 2022 10:27:55 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 52611B81747;
+        Mon, 10 Jan 2022 18:27:54 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 24160C36AE9;
+        Mon, 10 Jan 2022 18:27:53 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1641839273;
+        bh=sreBQKD5pUMhM2K3c/C/oNdpS1h8qXHVoF0eERG0ODQ=;
+        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
+        b=BXlkjCXNh9bN+ZlB3vgK5XOTILR4czjU/l43XDbaEMPI2u5GzCFILSa6wkq9BTLuz
+         mhbSdQdBpv3oh+u/C4G16WKO0I1o4/TD1x94XA283x8Jb+VVNUt9ouJGy/N3nCxzp1
+         DnCsV7P5bvKSr7Vn2+nLvZivwqVoHvR9ByjYjqw5DaISg4wWvZ4Hg6YXgQpclfP61L
+         Ihzw4gONfZHrdegPJb2Iwf8AypH3gp+rgxXyMCxe5l4/mCFhdNhlvHM/SsBb5ywt1W
+         QJk16ALgjdNKPksbPk12GnYEYinipVOET8f4nnSJdqvoZ9oSiVyLKZw+d39wNwj9JW
+         1yWvnSjW60YuQ==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 0F827F6078C;
+        Mon, 10 Jan 2022 18:27:53 +0000 (UTC)
+Subject: Re: [GIT PULL] m68k updates for v5.17
+From:   pr-tracker-bot@kernel.org
+In-Reply-To: <20220110092303.1921532-1-geert@linux-m68k.org>
+References: <20220110092303.1921532-1-geert@linux-m68k.org>
+X-PR-Tracked-List-Id: <linux-m68k.vger.kernel.org>
+X-PR-Tracked-Message-Id: <20220110092303.1921532-1-geert@linux-m68k.org>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/geert/linux-m68k.git tags/m68k-for-v5.17-tag1
+X-PR-Tracked-Commit-Id: 1a0ae068bf6b6f4233b1f31bf48bcbc47b111ef2
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: 8cc1e20765f03a29442484a9acbc97e31578af92
+Message-Id: <164183927305.9673.627079502563652905.pr-tracker-bot@kernel.org>
+Date:   Mon, 10 Jan 2022 18:27:53 +0000
+To:     Geert Uytterhoeven <geert@linux-m68k.org>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Greg Ungerer <gerg@linux-m68k.org>,
+        linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org,
+        Geert Uytterhoeven <geert@linux-m68k.org>
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-Hi Al,
+The pull request you sent on Mon, 10 Jan 2022 10:23:03 +0100:
 
-CC Michael/m68k,
+> git://git.kernel.org/pub/scm/linux/kernel/git/geert/linux-m68k.git tags/m68k-for-v5.17-tag1
 
-On Mon, Jan 10, 2022 at 5:20 PM Al Viro <viro@zeniv.linux.org.uk> wrote:
-> On Mon, Jan 10, 2022 at 04:26:57PM +0100, Geert Uytterhoeven wrote:
-> > On Mon, Jan 3, 2022 at 10:33 PM Eric W. Biederman <ebiederm@xmission.com> wrote:
-> > > The generic function ptrace_report_syscall does a little more
-> > > than syscall_trace on m68k.  The function ptrace_report_syscall
-> > > stops early if PT_TRACED is not set, it sets ptrace_message,
-> > > and returns the result of fatal_signal_pending.
-> > >
-> > > Setting ptrace_message to a passed in value of 0 is effectively not
-> > > setting ptrace_message, making that additional work a noop.
-> > >
-> > > Returning the result of fatal_signal_pending and letting the caller
-> > > ignore the result becomes a noop in this change.
-> > >
-> > > When a process is ptraced, the flag PT_PTRACED is always set in
-> > > current->ptrace.  Testing for PT_PTRACED in ptrace_report_syscall is
-> > > just an optimization to fail early if the process is not ptraced.
-> > > Later on in ptrace_notify, ptrace_stop will test current->ptrace under
-> > > tasklist_lock and skip performing any work if the task is not ptraced.
-> > >
-> > > Cc: Geert Uytterhoeven <geert@linux-m68k.org>
-> > > Signed-off-by: "Eric W. Biederman" <ebiederm@xmission.com>
-> >
-> > As this depends on the removal of a parameter from
-> > ptrace_report_syscall() earlier in this series:
-> > Acked-by: Geert Uytterhoeven <geert@linux-m68k.org>
->
-> FWIW, I would suggest taking it a bit further: make syscall_trace_enter()
-> and syscall_trace_leave() in m68k ptrace.c unconditional, replace the
-> calls of syscall_trace() in entry.S with syscall_trace_enter() and
-> syscall_trace_leave() resp. and remove syscall_trace().
->
-> Geert, do you see any problems with that?  The only difference is that
-> current->ptrace_message would be set to 1 for ptrace stop on entry and
-> 2 - on leave.  Currently m68k just has it 0 all along.
->
-> It is user-visible (the whole point is to let the tracer see which
-> stop it is - entry or exit one), so somebody using PTRACE_GETEVENTMSG
-> on syscall stops would start seeing 1 or 2 instead of "0 all along".
-> That's how it works on all other architectures (including m68k-nommu),
-> and I doubt that anything in userland will get broken.
->
-> Behaviour of PTRACE_GETEVENTMSG for other stops (fork, etc.) remains
-> as-is, of course.
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/8cc1e20765f03a29442484a9acbc97e31578af92
 
-In fact Michael did so in "[PATCH v7 1/2] m68k/kernel - wire up
-syscall_trace_enter/leave for m68k"[1], but that's still stuck...
+Thank you!
 
-[1] https://lore.kernel.org/r/1624924520-17567-2-git-send-email-schmitzmic@gmail.com/
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/prtracker.html
