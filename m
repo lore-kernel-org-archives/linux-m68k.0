@@ -2,191 +2,261 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 12660C433EF
-	for <linux-m68k@archiver.kernel.org>; Sat,  8 Jan 2022 23:35:34 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 66DFCC433FE
+	for <linux-m68k@archiver.kernel.org>; Mon, 10 Jan 2022 08:45:44 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229761AbiAHXfd (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Sat, 8 Jan 2022 18:35:33 -0500
-Received: from rere.qmqm.pl ([91.227.64.183]:5050 "EHLO rere.qmqm.pl"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230473AbiAHXfd (ORCPT <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Sat, 8 Jan 2022 18:35:33 -0500
-Received: from remote.user (localhost [127.0.0.1])
-        by rere.qmqm.pl (Postfix) with ESMTPSA id 4JWbzn6Bf4z9c;
-        Sun,  9 Jan 2022 00:35:17 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=rere.qmqm.pl; s=1;
-        t=1641684931; bh=PlUOfTOJmz/Ue3/EDBlVUxJ2DxqecfDU18/1xQbQtoA=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=FscL30pAUhiOa20r1Aci5nnOyAPPM7+JoY4I/TdvClRTh0U4D6S+wg1hl5DP6lTxY
-         uXsR1x49ZX58OBDSXL5QGeKh44OE5Qx3HX+fhAHnzzl6d2Bb3RMolFLW/CZs7ANyT9
-         2B2bqDVSaDvrnFLV9W4laov2KVjSpYZyXNNSx0uhvIf6/Ty/Jc6im2Ya6WtOK+mKnU
-         8tBa912YBdNEWU6kN5XGlGndW+KwbfYMSoJHIv4OJWOXoW7NdW+vFlXd5iG2C0Sl5t
-         yLjrrdYJpGeB9xfuugFJFXVZkd4+VRh97hWFY+LEwPEsT5kUEeN00fOMl2F0IbFH2g
-         x9nJQfgC6GmfA==
-X-Virus-Status: Clean
-X-Virus-Scanned: clamav-milter 0.103.4 at mail
-Date:   Sun, 9 Jan 2022 00:35:15 +0100
-From:   =?iso-8859-2?Q?Micha=B3_Miros=B3aw?= <mirq-linux@rere.qmqm.pl>
-To:     Dmitry Osipenko <digetx@gmail.com>
-Cc:     Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>, Guo Ren <guoren@kernel.org>,
+        id S242099AbiAJIpn (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Mon, 10 Jan 2022 03:45:43 -0500
+Received: from mout.kundenserver.de ([212.227.17.13]:59045 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232475AbiAJImw (ORCPT
+        <rfc822;linux-m68k@lists.linux-m68k.org>);
+        Mon, 10 Jan 2022 03:42:52 -0500
+Received: from quad ([82.142.23.158]) by mrelayeu.kundenserver.de (mreue107
+ [212.227.15.183]) with ESMTPSA (Nemesis) id 1MGQzj-1n9pLr09Gv-00GtQD; Mon, 10
+ Jan 2022 09:42:42 +0100
+From:   Laurent Vivier <laurent@vivier.eu>
+To:     linux-kernel@vger.kernel.org
+Cc:     linux-m68k@lists.linux-m68k.org,
         Geert Uytterhoeven <geert@linux-m68k.org>,
-        Greg Ungerer <gerg@linux-m68k.org>,
-        Joshua Thompson <funaho@jurai.org>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Sebastian Reichel <sre@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Greentime Hu <green.hu@gmail.com>,
-        Vincent Chen <deanbo422@gmail.com>,
-        "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
-        Helge Deller <deller@gmx.de>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Yoshinori Sato <ysato@users.sourceforge.jp>,
-        Rich Felker <dalias@libc.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
-        Juergen Gross <jgross@suse.com>,
-        Stefano Stabellini <sstabellini@kernel.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Len Brown <lenb@kernel.org>,
-        Santosh Shilimkar <ssantosh@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>, Pavel Machek <pavel@ucw.cz>,
-        Lee Jones <lee.jones@linaro.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>, alankao@andestech.com,
-        "K . C . Kuen-Chern Lin" <kclin@andestech.com>,
-        linux-kernel@vger.kernel.org, linux-csky@vger.kernel.org,
-        linux-ia64@vger.kernel.org, linux-m68k@lists.linux-m68k.org,
-        linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org,
-        linux-sh@vger.kernel.org, xen-devel@lists.xenproject.org,
-        linux-acpi@vger.kernel.org, linux-pm@vger.kernel.org,
-        linux-tegra@vger.kernel.org
-Subject: Re: [PATCH v5 04/21] kernel: Add combined power-off+restart handler
- call chain API
-Message-ID: <Ydofs2CIfA+r5KAz@qmqm.qmqm.pl>
-References: <20211212210309.9851-1-digetx@gmail.com>
- <20211212210309.9851-5-digetx@gmail.com>
+        linux-rtc@vger.kernel.org, Alessandro Zummo <a.zummo@towertech.it>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Laurent Vivier <laurent@vivier.eu>
+Subject: [PATCH v3 1/2] m68k: add asm/config.h
+Date:   Mon, 10 Jan 2022 09:42:38 +0100
+Message-Id: <20220110084239.1597511-2-laurent@vivier.eu>
+X-Mailer: git-send-email 2.33.1
+In-Reply-To: <20220110084239.1597511-1-laurent@vivier.eu>
+References: <20220110084239.1597511-1-laurent@vivier.eu>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-2
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20211212210309.9851-5-digetx@gmail.com>
+X-Provags-ID: V03:K1:mL4Xz69wPo3xRMMtSWWjQeec9/9Hkv8ScwFc2aD2gAeqAdrEK/3
+ TILLiQ0BE5S+YzPS11qnYBWyoDUXrpLMi1pMi0bXQcFOCK0FSrrCTRbOaU9FgeBeWFBeNMw
+ kXPlwcyCauYhbav988WCNAJ1DkZvWOwVj9+DKNWQdewUiFHm78mIDs9CP2ZteVodot4bIqe
+ udUlAsy7kg6iKIJTtr9zQ==
+X-UI-Out-Filterresults: notjunk:1;V03:K0:g0d+pyZf8E8=:Q+7RyzKIXS9ov8WQRRJ5NO
+ 8ssE4xWWW4J06ce7leaj9zux0Ikn5+VLhUZ7+1K4g9538WS9pD7Mvb2fPjxF+99l6eFjHh559
+ S1DL0wgX2fIVli9nMWcKWVaAPXw1hoy5BRKc/FpEHIkyK0v+YpoTU6MdVHM/bN0eh0qdZZOu5
+ mlwH3xrGSObgQqNxfNJa/gFbKBT/4hpT94+gQotBxxru0LINzp4cEzL9vMTm9oELhcmtJ6Yiv
+ Z5kkBN6AFrUUlZfVCkuxQRsj0LeN5biVBleIiLlquFgq/pNbKiL1bmMa7qSDEozsSoi+MlKul
+ esHsoP87rraEFqEbBX8u0smdmjoE23jKbh1MMOFEdc464p4pgZ/9LCWCOuMaqWb+WJ0ePzPJh
+ grt6c2Ed6PHiaJP/KM2QHMfAZjCEsooYuxCggbzg8zn5bdz4odH7Lz7/ew3cYV762cAbB2M3z
+ 6rZ4jm60dbjpplu9lWIWE6tsAahlR1STC/tI4jBGLf5/WcQWraXMyg12Yw1Nb2ddKV27lSVLh
+ WtIeafK/HwTjBQk/Kpi7uDHIwRoqdu5c1rzYAiiF1xAfkbeopSeOozL343cfelrea0Rcc14Ys
+ H0jvQOwPPZ4D1/gFZemLiIqnQ0bYiCchmxGw0eFJvOAnIFP2HSc8UVl9NovR1Ah9n56yDZaGm
+ 2RePwxNtdUF6Lgd0flWDAcMCl4tPC/V9HeVCD6AsXVD7mDfMXi7aubAL6Y6I1wZvTPgQ=
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-On Mon, Dec 13, 2021 at 12:02:52AM +0300, Dmitry Osipenko wrote:
-[...]
-> +/**
-> + * struct power_off_data - Power-off callback argument
-> + *
-> + * @cb_data: Callback data.
-> + */
-> +struct power_off_data {
-> +	void *cb_data;
-> +};
-> +
-> +/**
-> + * struct power_off_prep_data - Power-off preparation callback argument
-> + *
-> + * @cb_data: Callback data.
-> + */
-> +struct power_off_prep_data {
-> +	void *cb_data;
-> +};
+To avoid 'warning: no previous prototype for' error, declare all
+the parse_bootinfo and config functions prototypes into asm/config.h
+and include it in arch/m68k/kernel/setup_mm.c and arch/m68k/*/config.c
 
-Why two exactly same structures? Why only a single pointer instead? If
-it just to enable type-checking callbacks, then thouse could be opaque
-or zero-sized structs that would be embedded or casted away in
-respective callbacks.
+Signed-off-by: Laurent Vivier <laurent@vivier.eu>
+---
+ arch/m68k/amiga/config.c       |  1 +
+ arch/m68k/apollo/config.c      |  1 +
+ arch/m68k/atari/config.c       |  1 +
+ arch/m68k/bvme6000/config.c    |  1 +
+ arch/m68k/hp300/config.c       |  1 +
+ arch/m68k/include/asm/config.h | 33 +++++++++++++++++++++++++++++++++
+ arch/m68k/kernel/setup_mm.c    | 23 +----------------------
+ arch/m68k/mac/config.c         |  1 +
+ arch/m68k/mvme147/config.c     |  1 +
+ arch/m68k/mvme16x/config.c     |  1 +
+ arch/m68k/q40/config.c         |  1 +
+ 11 files changed, 43 insertions(+), 22 deletions(-)
+ create mode 100644 arch/m68k/include/asm/config.h
 
-> +
-> +/**
-> + * struct restart_data - Restart callback argument
-> + *
-> + * @cb_data: Callback data.
-> + * @cmd: Restart command string.
-> + * @stop_chain: Further lower priority callbacks won't be executed if set to
-> + *		true. Can be changed within callback. Default is false.
-> + * @mode: Reboot mode ID.
-> + */
-> +struct restart_data {
-> +	void *cb_data;
-> +	const char *cmd;
-> +	bool stop_chain;
-> +	enum reboot_mode mode;
-> +};
-> +
-> +/**
-> + * struct reboot_prep_data - Reboot and shutdown preparation callback argument
-> + *
-> + * @cb_data: Callback data.
-> + * @cmd: Restart command string.
-> + * @stop_chain: Further lower priority callbacks won't be executed if set to
-> + *		true. Can be changed within callback. Default is false.
+diff --git a/arch/m68k/amiga/config.c b/arch/m68k/amiga/config.c
+index be2dfab48fd4..3137b45750df 100644
+--- a/arch/m68k/amiga/config.c
++++ b/arch/m68k/amiga/config.c
+@@ -37,6 +37,7 @@
+ #include <asm/irq.h>
+ #include <asm/machdep.h>
+ #include <asm/io.h>
++#include <asm/config.h>
+ 
+ static unsigned long amiga_model;
+ 
+diff --git a/arch/m68k/apollo/config.c b/arch/m68k/apollo/config.c
+index 581a5f68d102..42a8b8e2b664 100644
+--- a/arch/m68k/apollo/config.c
++++ b/arch/m68k/apollo/config.c
+@@ -16,6 +16,7 @@
+ #include <asm/apollohw.h>
+ #include <asm/irq.h>
+ #include <asm/machdep.h>
++#include <asm/config.h>
+ 
+ u_long sio01_physaddr;
+ u_long sio23_physaddr;
+diff --git a/arch/m68k/atari/config.c b/arch/m68k/atari/config.c
+index 261a0f57cc9a..38a7c0578105 100644
+--- a/arch/m68k/atari/config.c
++++ b/arch/m68k/atari/config.c
+@@ -46,6 +46,7 @@
+ #include <asm/machdep.h>
+ #include <asm/hwtest.h>
+ #include <asm/io.h>
++#include <asm/config.h>
+ 
+ u_long atari_mch_cookie;
+ EXPORT_SYMBOL(atari_mch_cookie);
+diff --git a/arch/m68k/bvme6000/config.c b/arch/m68k/bvme6000/config.c
+index 0c6feafbbd11..9b060d466e03 100644
+--- a/arch/m68k/bvme6000/config.c
++++ b/arch/m68k/bvme6000/config.c
+@@ -36,6 +36,7 @@
+ #include <asm/traps.h>
+ #include <asm/machdep.h>
+ #include <asm/bvme6000hw.h>
++#include <asm/config.h>
+ 
+ static void bvme6000_get_model(char *model);
+ extern void bvme6000_sched_init(void);
+diff --git a/arch/m68k/hp300/config.c b/arch/m68k/hp300/config.c
+index ce1eb3d3d55d..2c92843397c3 100644
+--- a/arch/m68k/hp300/config.c
++++ b/arch/m68k/hp300/config.c
+@@ -22,6 +22,7 @@
+ #include <asm/blinken.h>
+ #include <asm/io.h>                               /* readb() and writeb() */
+ #include <asm/hp300hw.h>
++#include <asm/config.h>
+ 
+ #include "time.h"
+ 
+diff --git a/arch/m68k/include/asm/config.h b/arch/m68k/include/asm/config.h
+new file mode 100644
+index 000000000000..cdbf8aec7d27
+--- /dev/null
++++ b/arch/m68k/include/asm/config.h
+@@ -0,0 +1,33 @@
++// SPDX-License-Identifier: GPL-2.0
++
++/*
++ * This file contains prototypes provided by each m68k machine
++ * to parse bootinfo datastructure and to configure the machine
++ */
++
++#ifndef _M68K_CONFIG_H
++#define _M68K_CONFIG_H
++
++extern int amiga_parse_bootinfo(const struct bi_record *);
++extern int atari_parse_bootinfo(const struct bi_record *);
++extern int mac_parse_bootinfo(const struct bi_record *);
++extern int q40_parse_bootinfo(const struct bi_record *);
++extern int bvme6000_parse_bootinfo(const struct bi_record *);
++extern int mvme16x_parse_bootinfo(const struct bi_record *);
++extern int mvme147_parse_bootinfo(const struct bi_record *);
++extern int hp300_parse_bootinfo(const struct bi_record *);
++extern int apollo_parse_bootinfo(const struct bi_record *);
++
++extern void config_amiga(void);
++extern void config_atari(void);
++extern void config_mac(void);
++extern void config_sun3(void);
++extern void config_apollo(void);
++extern void config_mvme147(void);
++extern void config_mvme16x(void);
++extern void config_bvme6000(void);
++extern void config_hp300(void);
++extern void config_q40(void);
++extern void config_sun3x(void);
++
++#endif /* _M68K_CONFIG_H */
+diff --git a/arch/m68k/kernel/setup_mm.c b/arch/m68k/kernel/setup_mm.c
+index 4b51bfd38e5f..226dc3750397 100644
+--- a/arch/m68k/kernel/setup_mm.c
++++ b/arch/m68k/kernel/setup_mm.c
+@@ -47,6 +47,7 @@
+ #endif
+ #include <asm/macintosh.h>
+ #include <asm/natfeat.h>
++#include <asm/config.h>
+ 
+ #if !FPSTATESIZE || !NR_IRQS
+ #warning No CPU/platform type selected, your kernel will not work!
+@@ -113,28 +114,6 @@ EXPORT_SYMBOL(isa_type);
+ EXPORT_SYMBOL(isa_sex);
+ #endif
+ 
+-extern int amiga_parse_bootinfo(const struct bi_record *);
+-extern int atari_parse_bootinfo(const struct bi_record *);
+-extern int mac_parse_bootinfo(const struct bi_record *);
+-extern int q40_parse_bootinfo(const struct bi_record *);
+-extern int bvme6000_parse_bootinfo(const struct bi_record *);
+-extern int mvme16x_parse_bootinfo(const struct bi_record *);
+-extern int mvme147_parse_bootinfo(const struct bi_record *);
+-extern int hp300_parse_bootinfo(const struct bi_record *);
+-extern int apollo_parse_bootinfo(const struct bi_record *);
+-
+-extern void config_amiga(void);
+-extern void config_atari(void);
+-extern void config_mac(void);
+-extern void config_sun3(void);
+-extern void config_apollo(void);
+-extern void config_mvme147(void);
+-extern void config_mvme16x(void);
+-extern void config_bvme6000(void);
+-extern void config_hp300(void);
+-extern void config_q40(void);
+-extern void config_sun3x(void);
+-
+ #define MASK_256K 0xfffc0000
+ 
+ extern void paging_init(void);
+diff --git a/arch/m68k/mac/config.c b/arch/m68k/mac/config.c
+index 5d16f9b47aa9..65d124ec80bb 100644
+--- a/arch/m68k/mac/config.c
++++ b/arch/m68k/mac/config.c
+@@ -47,6 +47,7 @@
+ #include <asm/mac_via.h>
+ #include <asm/mac_oss.h>
+ #include <asm/mac_psc.h>
++#include <asm/config.h>
+ 
+ /* Mac bootinfo struct */
+ struct mac_booter_data mac_bi_data;
+diff --git a/arch/m68k/mvme147/config.c b/arch/m68k/mvme147/config.c
+index dfd6202fd403..b96ea7c76a19 100644
+--- a/arch/m68k/mvme147/config.c
++++ b/arch/m68k/mvme147/config.c
+@@ -34,6 +34,7 @@
+ #include <asm/traps.h>
+ #include <asm/machdep.h>
+ #include <asm/mvme147hw.h>
++#include <asm/config.h>
+ 
+ 
+ static void mvme147_get_model(char *model);
+diff --git a/arch/m68k/mvme16x/config.c b/arch/m68k/mvme16x/config.c
+index b4422c2dfbbf..88cbdc10925b 100644
+--- a/arch/m68k/mvme16x/config.c
++++ b/arch/m68k/mvme16x/config.c
+@@ -37,6 +37,7 @@
+ #include <asm/traps.h>
+ #include <asm/machdep.h>
+ #include <asm/mvme16xhw.h>
++#include <asm/config.h>
+ 
+ extern t_bdid mvme_bdid;
+ 
+diff --git a/arch/m68k/q40/config.c b/arch/m68k/q40/config.c
+index 5caf1e5be1c2..9237243077ce 100644
+--- a/arch/m68k/q40/config.c
++++ b/arch/m68k/q40/config.c
+@@ -34,6 +34,7 @@
+ #include <asm/traps.h>
+ #include <asm/machdep.h>
+ #include <asm/q40_master.h>
++#include <asm/config.h>
+ 
+ extern void q40_init_IRQ(void);
+ static void q40_get_model(char *model);
+-- 
+2.33.1
 
-Why would we want to stop power-off or erboot chain? If the callback
-succeded, then further calls won't be made. If it doesn't succeed, but
-possibly breaks the system somehow, it shouldn't return. Then the only
-case left would be to just try the next method of shutting down.
-
-> + * @mode: Preparation mode ID.
-> + */
-> +struct reboot_prep_data {
-> +	void *cb_data;
-> +	const char *cmd;
-> +	bool stop_chain;
-> +	enum reboot_prepare_mode mode;
-> +};
-> +
-> +struct sys_off_handler_private_data {
-> +	struct notifier_block power_off_nb;
-> +	struct notifier_block restart_nb;
-> +	struct notifier_block reboot_nb;
-
-What's the difference between restart and reboot?
-
-> +	void (*platform_power_off_cb)(void);
-> +	void (*simple_power_off_cb)(void *data);
-> +	void *simple_power_off_cb_data;
-> +	bool registered;
-> +};
-
-BTW, I couldn't find a right description of my idea of unifying the
-chains before, so let me sketch it now.
-
-The idea is to have a single system-off chain in which the callback
-gets a mode ({QUERY_*, PREP_*, DO_*} for each of {*_REBOOT, *_POWEROFF, ...?).
-The QUERY_* calls would be made in can_kernel_reboot/poweroff(): all
-would be called, and if at least one returned true, then the shutdown
-mode would continue. All of PREP_* would be called then. After that
-all DO_* would be tried until one doesn't return (succeeded or broke
-the system hard). Classic for(;;); could be a final fallback for the
-case where arch/machine (lowest priority) call would return instead
-of halting the system in machine-dependent way. The QUERY and PREP
-stages could be combined, but I haven't thought about it enough to
-see what conditions would need to be imposed on the callbacks in
-that case (maybe it's not worth the trouble, since it isn't a fast
-path anyway?). The goal here is to have less (duplicated) code in
-kernel, but otherwise it seems equivalent to your API proposal.
-
-Best Regards
-Micha³ Miros³aw
