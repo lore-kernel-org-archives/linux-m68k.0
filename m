@@ -2,71 +2,65 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 1CDBFC433FE
-	for <linux-m68k@archiver.kernel.org>; Mon, 10 Jan 2022 18:27:58 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 0B0F4C433EF
+	for <linux-m68k@archiver.kernel.org>; Mon, 10 Jan 2022 20:37:43 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241562AbiAJS14 (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Mon, 10 Jan 2022 13:27:56 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33712 "EHLO
+        id S240030AbiAJUhm (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Mon, 10 Jan 2022 15:37:42 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35606 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241536AbiAJS14 (ORCPT
+        with ESMTP id S239773AbiAJUhm (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Mon, 10 Jan 2022 13:27:56 -0500
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B925AC06173F
-        for <linux-m68k@lists.linux-m68k.org>; Mon, 10 Jan 2022 10:27:55 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 52611B81747;
-        Mon, 10 Jan 2022 18:27:54 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 24160C36AE9;
-        Mon, 10 Jan 2022 18:27:53 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1641839273;
-        bh=sreBQKD5pUMhM2K3c/C/oNdpS1h8qXHVoF0eERG0ODQ=;
-        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-        b=BXlkjCXNh9bN+ZlB3vgK5XOTILR4czjU/l43XDbaEMPI2u5GzCFILSa6wkq9BTLuz
-         mhbSdQdBpv3oh+u/C4G16WKO0I1o4/TD1x94XA283x8Jb+VVNUt9ouJGy/N3nCxzp1
-         DnCsV7P5bvKSr7Vn2+nLvZivwqVoHvR9ByjYjqw5DaISg4wWvZ4Hg6YXgQpclfP61L
-         Ihzw4gONfZHrdegPJb2Iwf8AypH3gp+rgxXyMCxe5l4/mCFhdNhlvHM/SsBb5ywt1W
-         QJk16ALgjdNKPksbPk12GnYEYinipVOET8f4nnSJdqvoZ9oSiVyLKZw+d39wNwj9JW
-         1yWvnSjW60YuQ==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 0F827F6078C;
-        Mon, 10 Jan 2022 18:27:53 +0000 (UTC)
-Subject: Re: [GIT PULL] m68k updates for v5.17
-From:   pr-tracker-bot@kernel.org
-In-Reply-To: <20220110092303.1921532-1-geert@linux-m68k.org>
-References: <20220110092303.1921532-1-geert@linux-m68k.org>
-X-PR-Tracked-List-Id: <linux-m68k.vger.kernel.org>
-X-PR-Tracked-Message-Id: <20220110092303.1921532-1-geert@linux-m68k.org>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/geert/linux-m68k.git tags/m68k-for-v5.17-tag1
-X-PR-Tracked-Commit-Id: 1a0ae068bf6b6f4233b1f31bf48bcbc47b111ef2
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 8cc1e20765f03a29442484a9acbc97e31578af92
-Message-Id: <164183927305.9673.627079502563652905.pr-tracker-bot@kernel.org>
-Date:   Mon, 10 Jan 2022 18:27:53 +0000
+        Mon, 10 Jan 2022 15:37:42 -0500
+Received: from zeniv-ca.linux.org.uk (zeniv-ca.linux.org.uk [IPv6:2607:5300:60:148a::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 151C2C06173F;
+        Mon, 10 Jan 2022 12:37:42 -0800 (PST)
+Received: from viro by zeniv-ca.linux.org.uk with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1n71Q8-0015hA-DI; Mon, 10 Jan 2022 20:37:36 +0000
+Date:   Mon, 10 Jan 2022 20:37:36 +0000
+From:   Al Viro <viro@zeniv.linux.org.uk>
 To:     Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Greg Ungerer <gerg@linux-m68k.org>,
-        linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org,
-        Geert Uytterhoeven <geert@linux-m68k.org>
+Cc:     "Eric W. Biederman" <ebiederm@xmission.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux-Arch <linux-arch@vger.kernel.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Oleg Nesterov <oleg@redhat.com>,
+        Kees Cook <keescook@chromium.org>,
+        Linux API <linux-api@vger.kernel.org>,
+        Michael Schmitz <schmitzmic@gmail.com>,
+        linux-m68k <linux-m68k@lists.linux-m68k.org>
+Subject: Re: [PATCH 08/17] ptrace/m68k: Stop open coding ptrace_report_syscall
+Message-ID: <YdyZEAWKVTVnq2ef@zeniv-ca.linux.org.uk>
+References: <87r19opkx1.fsf_-_@email.froward.int.ebiederm.org>
+ <20220103213312.9144-8-ebiederm@xmission.com>
+ <CAMuHMdWsNBjOJh0QEx9sppA9x3WoL8H2icqukNqECFhOPremjw@mail.gmail.com>
+ <YdxcszwEslyQJSuF@zeniv-ca.linux.org.uk>
+ <CAMuHMdX9nhUQe_jeQCUtXeQgcQ5MBiHpPiRexh86EssoHNtJ3Q@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAMuHMdX9nhUQe_jeQCUtXeQgcQ5MBiHpPiRexh86EssoHNtJ3Q@mail.gmail.com>
+Sender: Al Viro <viro@ftp.linux.org.uk>
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-The pull request you sent on Mon, 10 Jan 2022 10:23:03 +0100:
+On Mon, Jan 10, 2022 at 06:54:57PM +0100, Geert Uytterhoeven wrote:
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/geert/linux-m68k.git tags/m68k-for-v5.17-tag1
+> In fact Michael did so in "[PATCH v7 1/2] m68k/kernel - wire up
+> syscall_trace_enter/leave for m68k"[1], but that's still stuck...
+> 
+> [1] https://lore.kernel.org/r/1624924520-17567-2-git-send-email-schmitzmic@gmail.com/
 
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/8cc1e20765f03a29442484a9acbc97e31578af92
+Looks sane, but I'd split it in two - switch to calling syscall_trace_{enter,leave}
+and then handling the return values...
 
-Thank you!
+The former would keep the current behaviour (modulo reporting enter vs. leave
+via PTRACE_GETEVENTMSG), the latter would allow syscall number change by tracer
+and/or handling of seccomp/audit/whatnot.
 
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/prtracker.html
+For exit+signal work the former would suffice, and IMO it would be a good idea
+to put that one into a shared branch to be pulled both by seccomp and by signal
+series.  Would reduce the conflicts...
+
+Objections?
