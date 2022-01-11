@@ -2,252 +2,155 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9A3D5C433F5
-	for <linux-m68k@archiver.kernel.org>; Tue, 11 Jan 2022 07:57:20 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 323AFC433EF
+	for <linux-m68k@archiver.kernel.org>; Tue, 11 Jan 2022 22:43:09 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348701AbiAKH5U (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Tue, 11 Jan 2022 02:57:20 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51412 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235603AbiAKH5T (ORCPT
+        id S1346579AbiAKWnI (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Tue, 11 Jan 2022 17:43:08 -0500
+Received: from wnew2-smtp.messagingengine.com ([64.147.123.27]:40733 "EHLO
+        wnew2-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S244914AbiAKWnI (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Tue, 11 Jan 2022 02:57:19 -0500
-Received: from mail-lf1-x130.google.com (mail-lf1-x130.google.com [IPv6:2a00:1450:4864:20::130])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C88B6C06173F
-        for <linux-m68k@lists.linux-m68k.org>; Mon, 10 Jan 2022 23:57:18 -0800 (PST)
-Received: by mail-lf1-x130.google.com with SMTP id x7so53228481lfu.8
-        for <linux-m68k@lists.linux-m68k.org>; Mon, 10 Jan 2022 23:57:18 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=LWyZT2KfS7vn2dLo/4rK0hRIU1bTIB9BhSt1xTZyjfs=;
-        b=o816YNn0CIDbCy7uwUkg0QIssuplfNYZWg1E7+kMoiU09fEhi1ExzqEDKdXYCKWai9
-         qL9GIVzs3SGnxKwGJEOsSM3dx9RhiXQOO+ArNyWLk+C6CEkyik9J0oiqnGoR0d0pIAj9
-         53smI6i/pfdhdE0TtmtHvyvhbPCgckL8+ELBFQn7KfvHLFewJSBKJEg5/OYThOUaKs30
-         YfS/REggk0oGjchlK3DJSLwWFv3g0lGM/Rxm4G3MobhsE5sy8EV2tAxeU17tchxilpyJ
-         Cm1nk2GkD8C8mwFhmX8oxyCwbcyhBHAvQH1mhnlt/pBPXM0S0279pLMAkDnMH4r8aI8U
-         4vGQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=LWyZT2KfS7vn2dLo/4rK0hRIU1bTIB9BhSt1xTZyjfs=;
-        b=U9TKLPv/HdeNLNxXsRm5XIwGGkHXzDoSpNCIBbtvQjqc9Ek7PJ0vuqvGiNW0ewfgZb
-         dRL7AhkKPu2NlR9ejIrjhA8z9iEokz6JVAoQWH5Rh6DjTisloYmw/NJRRh9kGypf2axk
-         Q8whSWqKazOpXzMwcwOGGffuoQp2Y9VFD2jlc41La+Z0pZaAUkrkrXFvoMRr6TEfFU1M
-         XYXq0KRrBvrULO0hnvaa6YAdn0p/rnxSPU2te7eeDZvF4cVGDDfXBNBB1XY5yRNUJXHj
-         iCcvGRJnDTntFA+ra9fKhkJLChMmA4xhxrTOmbrsf9hM5t6p1eW0G/ptwo3gvYrCfWw+
-         lLKw==
-X-Gm-Message-State: AOAM531q562rWZSCVhwOfvi5n+eNCfppZXqR8+hFaGkC+qsR5vGk8Ft5
-        642/WvE2MG7SE8BTtqSqy/M=
-X-Google-Smtp-Source: ABdhPJwj4SWIivJF19fC8reHgAOesHmr0N4ouSyiTwjUsKFxuFFgsPk/HMJ5T5WGAATZ9pKSch9NEg==
-X-Received: by 2002:a05:651c:49a:: with SMTP id s26mr2063487ljc.109.1641887836867;
-        Mon, 10 Jan 2022 23:57:16 -0800 (PST)
-Received: from ?IPv6:2a00:1370:810c:714f:a10:76ff:fe69:21b6? ([2a00:1370:810c:714f:a10:76ff:fe69:21b6])
-        by smtp.googlemail.com with ESMTPSA id x14sm1206180ljd.76.2022.01.10.23.57.14
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 10 Jan 2022 23:57:16 -0800 (PST)
-Subject: Re: [PATCH v5 04/21] kernel: Add combined power-off+restart handler
- call chain API
-To:     =?UTF-8?B?TWljaGHFgiBNaXJvc8WCYXc=?= <mirq-linux@rere.qmqm.pl>
-Cc:     Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>, Guo Ren <guoren@kernel.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Greg Ungerer <gerg@linux-m68k.org>,
-        Joshua Thompson <funaho@jurai.org>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Sebastian Reichel <sre@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Greentime Hu <green.hu@gmail.com>,
-        Vincent Chen <deanbo422@gmail.com>,
-        "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
-        Helge Deller <deller@gmx.de>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Yoshinori Sato <ysato@users.sourceforge.jp>,
-        Rich Felker <dalias@libc.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
-        Juergen Gross <jgross@suse.com>,
-        Stefano Stabellini <sstabellini@kernel.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Len Brown <lenb@kernel.org>,
-        Santosh Shilimkar <ssantosh@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>, Pavel Machek <pavel@ucw.cz>,
-        Lee Jones <lee.jones@linaro.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>, alankao@andestech.com,
-        "K . C . Kuen-Chern Lin" <kclin@andestech.com>,
-        linux-kernel@vger.kernel.org, linux-csky@vger.kernel.org,
-        linux-ia64@vger.kernel.org, linux-m68k@lists.linux-m68k.org,
-        linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org,
-        linux-sh@vger.kernel.org, xen-devel@lists.xenproject.org,
-        linux-acpi@vger.kernel.org, linux-pm@vger.kernel.org,
-        linux-tegra@vger.kernel.org
-References: <20211212210309.9851-1-digetx@gmail.com>
- <20211212210309.9851-5-digetx@gmail.com> <Ydofs2CIfA+r5KAz@qmqm.qmqm.pl>
-From:   Dmitry Osipenko <digetx@gmail.com>
-Message-ID: <80f5a739-0850-a8db-7493-e8c387109ce0@gmail.com>
-Date:   Tue, 11 Jan 2022 10:57:13 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.14.0
+        Tue, 11 Jan 2022 17:43:08 -0500
+Received: from compute2.internal (compute2.nyi.internal [10.202.2.46])
+        by mailnew.west.internal (Postfix) with ESMTP id BDFBC2B001EB;
+        Tue, 11 Jan 2022 17:43:06 -0500 (EST)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute2.internal (MEProxy); Tue, 11 Jan 2022 17:43:07 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=ore8dv
+        WM0JKihk7KMxojL1R4RgpvIFLf1KOnBxVgtZE=; b=QM3EFuZU3HYDksJk3yyYYd
+        Uc/46nL4E+JEU+jx3mRPEK+Hfn/dfBYNite3IRsAsv3/EES5EUO8LKdpddZqZxG2
+        lxsk07NDd0iqIp+kj+qOxXuFuhk0JLxwchP9ADpZk5yLVwsrBRBFslzdFQm1Ma2Q
+        dv3q2sh43UfaC1q3wlzHNqVZl9TCFuDQGlXTPgGxrBKdS/t//Cz/RqVOKxY6W5Fl
+        smHrEo6DRlE+Ja0RJjxLPf7xBo29NT0QRzO7ZJzKAgcBW9k4IU1gybxswtB5ECfz
+        vdjiT6Uuwi5S8STvls7P1waJeKSXVUbe7uOOK6dxOfNWwsho5JJFd6WEsyUaaYmQ
+        ==
+X-ME-Sender: <xms:-QfeYV_yzx34TALBD21GjyMiQQZ_IGsMFgqtXFICXQONCTXOZfriTw>
+    <xme:-QfeYZuo1Z4OsIDpATbw619ebj3HtYhvsZWsXTVXX6fIhq6TWInCsASS2We_i_9Pk
+    Dvo7y962u1OUTm0Sl0>
+X-ME-Received: <xmr:-QfeYTBkuGYyaMCudP-oZEjjCDffbZtMMIvyOzEnz-wVKTniQia7PXRj_pc58AoYsyV_DV_TGKs1if1l2XsmDgh9GUtSAO5eIpg>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvuddrudehgedgtdduucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepfffhvffujgfkfhggtgesthdtredttddtvdenucfhrhhomhephfhinhhnucfv
+    hhgrihhnuceofhhthhgrihhnsehlihhnuhigqdhmieekkhdrohhrgheqnecuggftrfgrth
+    htvghrnhepkeevvedtkeeftdefhfdvgfelleefhfdtfeeiteejjeevgffhudefjeekhefg
+    uedunecuffhomhgrihhnpehkvghrnhgvlhdrohhrghenucevlhhushhtvghrufhiiigvpe
+    dtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehfthhhrghinheslhhinhhugidqmheikehk
+    rdhorhhg
+X-ME-Proxy: <xmx:-QfeYZc0qae5bTmMSpBv34Ezm959JNgkFGJNxcHcvGUL_Hxl6M1mzA>
+    <xmx:-QfeYaPSwhHauZNh8WQtCxE_xm0IXuOzpRiXokDeJc6LLpuvszoy1Q>
+    <xmx:-QfeYbm9XKKo9E-pfR4VoNj6Ho0uO5TGmc9jZViHrAhYaoyLQR7SkA>
+    <xmx:-gfeYbi4CCNZQIHMd-RWiCKJm0eGhZi2rCMzunjD0wUGX4GyDK5eIalxqro>
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Tue,
+ 11 Jan 2022 17:43:03 -0500 (EST)
+Date:   Wed, 12 Jan 2022 09:42:52 +1100 (AEDT)
+From:   Finn Thain <fthain@linux-m68k.org>
+To:     Michael Schmitz <schmitzmic@gmail.com>
+cc:     Geert Uytterhoeven <geert@linux-m68k.org>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux-Arch <linux-arch@vger.kernel.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Oleg Nesterov <oleg@redhat.com>,
+        Kees Cook <keescook@chromium.org>,
+        Linux API <linux-api@vger.kernel.org>,
+        linux-m68k <linux-m68k@lists.linux-m68k.org>
+Subject: Re: [PATCH 08/17] ptrace/m68k: Stop open coding
+ ptrace_report_syscall
+In-Reply-To: <acf7b627-2dec-c76c-2aa0-6b4c6addd793@gmail.com>
+Message-ID: <d660267-ce4f-e598-9b40-5cdbb4566c7@linux-m68k.org>
+References: <87r19opkx1.fsf_-_@email.froward.int.ebiederm.org> <20220103213312.9144-8-ebiederm@xmission.com> <CAMuHMdWsNBjOJh0QEx9sppA9x3WoL8H2icqukNqECFhOPremjw@mail.gmail.com> <YdxcszwEslyQJSuF@zeniv-ca.linux.org.uk> <CAMuHMdX9nhUQe_jeQCUtXeQgcQ5MBiHpPiRexh86EssoHNtJ3Q@mail.gmail.com>
+ <acf7b627-2dec-c76c-2aa0-6b4c6addd793@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <Ydofs2CIfA+r5KAz@qmqm.qmqm.pl>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-09.01.2022 02:35, Michał Mirosław пишет:
-> On Mon, Dec 13, 2021 at 12:02:52AM +0300, Dmitry Osipenko wrote:
-> [...]
->> +/**
->> + * struct power_off_data - Power-off callback argument
->> + *
->> + * @cb_data: Callback data.
->> + */
->> +struct power_off_data {
->> +	void *cb_data;
->> +};
->> +
->> +/**
->> + * struct power_off_prep_data - Power-off preparation callback argument
->> + *
->> + * @cb_data: Callback data.
->> + */
->> +struct power_off_prep_data {
->> +	void *cb_data;
->> +};
+On Tue, 11 Jan 2022, Michael Schmitz wrote:
+
+> Am 11.01.2022 um 06:54 schrieb Geert Uytterhoeven:
+> > Hi Al,
+> >
+> > CC Michael/m68k,
+> >
+> > On Mon, Jan 10, 2022 at 5:20 PM Al Viro <viro@zeniv.linux.org.uk> wrote:
+> >> On Mon, Jan 10, 2022 at 04:26:57PM +0100, Geert Uytterhoeven wrote:
+> >>> On Mon, Jan 3, 2022 at 10:33 PM Eric W. Biederman <ebiederm@xmission.com>
+> >>> wrote:
+> >>>> The generic function ptrace_report_syscall does a little more
+> >>>> than syscall_trace on m68k.  The function ptrace_report_syscall
+> >>>> stops early if PT_TRACED is not set, it sets ptrace_message,
+> >>>> and returns the result of fatal_signal_pending.
+> >>>>
+> >>>> Setting ptrace_message to a passed in value of 0 is effectively not
+> >>>> setting ptrace_message, making that additional work a noop.
+> >>>>
+> >>>> Returning the result of fatal_signal_pending and letting the caller
+> >>>> ignore the result becomes a noop in this change.
+> >>>>
+> >>>> When a process is ptraced, the flag PT_PTRACED is always set in
+> >>>> current->ptrace.  Testing for PT_PTRACED in ptrace_report_syscall is
+> >>>> just an optimization to fail early if the process is not ptraced.
+> >>>> Later on in ptrace_notify, ptrace_stop will test current->ptrace under
+> >>>> tasklist_lock and skip performing any work if the task is not ptraced.
+> >>>>
+> >>>> Cc: Geert Uytterhoeven <geert@linux-m68k.org>
+> >>>> Signed-off-by: "Eric W. Biederman" <ebiederm@xmission.com>
+> >>>
+> >>> As this depends on the removal of a parameter from
+> >>> ptrace_report_syscall() earlier in this series:
+> >>> Acked-by: Geert Uytterhoeven <geert@linux-m68k.org>
+> >>
+> >> FWIW, I would suggest taking it a bit further: make syscall_trace_enter()
+> >> and syscall_trace_leave() in m68k ptrace.c unconditional, replace the
+> >> calls of syscall_trace() in entry.S with syscall_trace_enter() and
+> >> syscall_trace_leave() resp. and remove syscall_trace().
+> >>
+> >> Geert, do you see any problems with that?  The only difference is that
+> >> current->ptrace_message would be set to 1 for ptrace stop on entry and
+> >> 2 - on leave.  Currently m68k just has it 0 all along.
+> >>
+> >> It is user-visible (the whole point is to let the tracer see which
+> >> stop it is - entry or exit one), so somebody using PTRACE_GETEVENTMSG
+> >> on syscall stops would start seeing 1 or 2 instead of "0 all along".
+> >> That's how it works on all other architectures (including m68k-nommu),
+> >> and I doubt that anything in userland will get broken.
+> >>
+> >> Behaviour of PTRACE_GETEVENTMSG for other stops (fork, etc.) remains
+> >> as-is, of course.
+> >
+> > In fact Michael did so in "[PATCH v7 1/2] m68k/kernel - wire up
+> > syscall_trace_enter/leave for m68k"[1], but that's still stuck...
+> >
+> > [1]
+> > https://lore.kernel.org/r/1624924520-17567-2-git-send-email-schmitzmic@gmail.com/
 > 
-> Why two exactly same structures? Why only a single pointer instead? If
-> it just to enable type-checking callbacks, then thouse could be opaque
-> or zero-sized structs that would be embedded or casted away in
-> respective callbacks.
-
-Preparation and final execution are two different operations, it's much
-cleaner from a user's perspective to have same separated, IMO. In the
-future we may would want to extend one of the structs, and not the
-other. Type-checking is another benefit, of course.
-
-The single callback pointer is what is utilized by all current kernel
-users. This may change in the future and then it won't be a problem to
-extend the power-off API without disrupting whole kernel.
-
->> +
->> +/**
->> + * struct restart_data - Restart callback argument
->> + *
->> + * @cb_data: Callback data.
->> + * @cmd: Restart command string.
->> + * @stop_chain: Further lower priority callbacks won't be executed if set to
->> + *		true. Can be changed within callback. Default is false.
->> + * @mode: Reboot mode ID.
->> + */
->> +struct restart_data {
->> +	void *cb_data;
->> +	const char *cmd;
->> +	bool stop_chain;
->> +	enum reboot_mode mode;
->> +};
->> +
->> +/**
->> + * struct reboot_prep_data - Reboot and shutdown preparation callback argument
->> + *
->> + * @cb_data: Callback data.
->> + * @cmd: Restart command string.
->> + * @stop_chain: Further lower priority callbacks won't be executed if set to
->> + *		true. Can be changed within callback. Default is false.
+> That patch (for reasons I never found out) did interact badly with 
+> Christoph Hellwig's 'remove set_fs' patches (and Al's signal fixes which 
+> Christoph's patches are based upon). Caused format errors under memory 
+> stress tests quite reliably, on my 030 hardware.
 > 
-> Why would we want to stop power-off or erboot chain? If the callback
-> succeded, then further calls won't be made. If it doesn't succeed, but
-> possibly breaks the system somehow, it shouldn't return. Then the only
-> case left would be to just try the next method of shutting down.
 
-This is what some of the API users were doing for years. I don't know
-for sure why they want to stop the chain, it indeed looks like an
-incorrect behaviour, but that's up to developers to decide. I only
-retained the old behaviour for those users.
+Those patches have since been merged, BTW.
 
->> + * @mode: Preparation mode ID.
->> + */
->> +struct reboot_prep_data {
->> +	void *cb_data;
->> +	const char *cmd;
->> +	bool stop_chain;
->> +	enum reboot_prepare_mode mode;
->> +};
->> +
->> +struct sys_off_handler_private_data {
->> +	struct notifier_block power_off_nb;
->> +	struct notifier_block restart_nb;
->> +	struct notifier_block reboot_nb;
+> Probably needs a fresh look - the signal return path got changed by Al's 
+> patches IIRC, and I might have relied on offsets to data on the stack 
+> that are no longer correct with these patches. Or there's a race between 
+> the syscall trap and signal handling when returning from interrupt 
+> context ...
 > 
-> What's the difference between restart and reboot?
-
-Reboot is always executed before restart and power-off callbacks. This
-is explained in the doc-comment of the struct sys_off_handler.
-
-+ * @reboot_prepare_cb: Reboot/shutdown preparation callback. All reboot
-+ * preparation callbacks are invoked before @restart_cb or @power_off_cb,
-+ * depending on the mode. It's registered with register_reboot_notifier().
-+ * The point is to remove boilerplate code from drivers which use this
-+ * callback in conjunction with the restart/power-off callbacks.
-+ *
-
-This reboot callback usually performs early preparations that are need
-to be done before machine is placed into reset state, please see [1] for
-the examples.
-
-[1] https://elixir.bootlin.com/linux/v5.16/A/ident/register_reboot_notifier
-
-I agree that "reboot" sounds like a misnomer. This name was coined long
-time ago, perhaps not worth to rename it at this point. I'm also not
-sure what could be a better name.
-
->> +	void (*platform_power_off_cb)(void);
->> +	void (*simple_power_off_cb)(void *data);
->> +	void *simple_power_off_cb_data;
->> +	bool registered;
->> +};
+> Still school hols over here so I won't have much peace and quiet until 
+> February.
 > 
-> BTW, I couldn't find a right description of my idea of unifying the
-> chains before, so let me sketch it now.
-> 
-> The idea is to have a single system-off chain in which the callback
-> gets a mode ({QUERY_*, PREP_*, DO_*} for each of {*_REBOOT, *_POWEROFF, ...?).
-> The QUERY_* calls would be made in can_kernel_reboot/poweroff(): all
-> would be called, and if at least one returned true, then the shutdown
-> mode would continue. All of PREP_* would be called then. After that
-> all DO_* would be tried until one doesn't return (succeeded or broke
-> the system hard). Classic for(;;); could be a final fallback for the
-> case where arch/machine (lowest priority) call would return instead
-> of halting the system in machine-dependent way. The QUERY and PREP
-> stages could be combined, but I haven't thought about it enough to
-> see what conditions would need to be imposed on the callbacks in
-> that case (maybe it's not worth the trouble, since it isn't a fast
-> path anyway?). The goal here is to have less (duplicated) code in
-> kernel, but otherwise it seems equivalent to your API proposal.
 
-Michał, thank you for the review and suggestions! I'll take another look
-at yours proposal during this merge window, in a preparation to v6.
+So the patch works okay with Aranym 68040 but not Motorola 68030? Since 
+there is at least one known issue affecting both Motorola 68030 and Hatari 
+68030, perhaps this patch is not the problem. In anycase, Al's suggestion 
+to split the patch into two may help in that testing two smaller patches 
+might narrow down the root cause.
