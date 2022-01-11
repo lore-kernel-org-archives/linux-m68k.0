@@ -2,123 +2,166 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E425AC433F5
-	for <linux-m68k@archiver.kernel.org>; Mon, 10 Jan 2022 22:10:16 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id DCC9BC4332F
+	for <linux-m68k@archiver.kernel.org>; Tue, 11 Jan 2022 01:34:01 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241871AbiAJWKQ (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Mon, 10 Jan 2022 17:10:16 -0500
-Received: from mga11.intel.com ([192.55.52.93]:59378 "EHLO mga11.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240848AbiAJWKQ (ORCPT <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Mon, 10 Jan 2022 17:10:16 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1641852616; x=1673388616;
-  h=date:from:to:cc:subject:message-id:mime-version:
-   content-transfer-encoding;
-  bh=2eAK/1B7k7dnl2twn9LWseTxqNeMCn21Mp+Bg0Zo5M8=;
-  b=kGelCub6a9e8b/MLFxtZo8PHXer6lhz+lwFE25xa9H7v72R6UvgcFmTY
-   kUPT6vNY0vHcWBM/PdYrLYSXls/ShIL0soVAOJHaouqUyNQHBVIoQ6YyA
-   rjxMnX43RFNdKl6MV/foHsqwCNYLmw7/u9fmUfpLn9DtBzmRQhXMfEcWk
-   d855I1A32anrrUXRmu0tXLHbB3STUgNHeTSad3TREV7D38XqOsAqpI7Ls
-   gGExNN2wjTkra/XvVBIFBFyqAHHrpkkGe4q2wd/WowTtW/fE0I4bC9UIm
-   8rG3S2FloGpnkgDUDyLKRx4zPP7lwhDYuM3SwazA3bu0abr6Q2xsOYy6E
-   g==;
-X-IronPort-AV: E=McAfee;i="6200,9189,10223"; a="240888896"
-X-IronPort-AV: E=Sophos;i="5.88,278,1635231600"; 
-   d="scan'208";a="240888896"
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Jan 2022 14:10:15 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.88,278,1635231600"; 
-   d="scan'208";a="690739611"
-Received: from lkp-server01.sh.intel.com (HELO 276f1b88eecb) ([10.239.97.150])
-  by orsmga005.jf.intel.com with ESMTP; 10 Jan 2022 14:10:13 -0800
-Received: from kbuild by 276f1b88eecb with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1n72rl-00040R-8O; Mon, 10 Jan 2022 22:10:13 +0000
-Date:   Tue, 11 Jan 2022 06:09:33 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     linux-m68k@lists.linux-m68k.org
-Subject: [geert-m68k:m68k-v5.16] BUILD SUCCESS
- 61b439794190c9eb1746c08e8271692cad2b33e1
-Message-ID: <61dcae9d./6HIctuhQ/AY5e1w%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+        id S229601AbiAKBeB (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Mon, 10 Jan 2022 20:34:01 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47192 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S243765AbiAKBeA (ORCPT
+        <rfc822;linux-m68k@lists.linux-m68k.org>);
+        Mon, 10 Jan 2022 20:34:00 -0500
+Received: from mail-pl1-x634.google.com (mail-pl1-x634.google.com [IPv6:2607:f8b0:4864:20::634])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EC2C7C06173F
+        for <linux-m68k@lists.linux-m68k.org>; Mon, 10 Jan 2022 17:33:59 -0800 (PST)
+Received: by mail-pl1-x634.google.com with SMTP id q14so14837186plx.4
+        for <linux-m68k@lists.linux-m68k.org>; Mon, 10 Jan 2022 17:33:59 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=subject:to:references:cc:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-transfer-encoding;
+        bh=F2ZMsidULY/UwIx/Ch3Zop5xXT7D40iAokDW8asVY/g=;
+        b=njivyDZgo4ribC/UGiFHXUlbr3SoZTWCgeLro8eP65+y63P9MWd9771AimCjlaNK1K
+         8N7QQejTNmi6I2/NQil8uOPoKaMTgApEEdrlCinEzACR47hX5M6VRP73L9/NPr8JANXh
+         NOuIga20wQ7vDZ2r+mxIDZuYDCua50NSVYnW+hxS1OEyFhYVy6cDgaj+mg77P85bMYh6
+         bNs5YGTDzWw8eFDm+Zv6mU8bkFu3GlmNcdAWxzF2abav6dedP9v61xmT0JYVadKiTJbX
+         VeiCelnnvA/ul2p+2KAZF0GPwnud33/xrwVBTbwnm6gCFY6db/bl7aniq3UwlOPm554j
+         nHNQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:subject:to:references:cc:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding;
+        bh=F2ZMsidULY/UwIx/Ch3Zop5xXT7D40iAokDW8asVY/g=;
+        b=XcN1QDe9YVur6H2yagEtiD/ljQ2OYbIbWIbBupdyX0DkVKoYwPhULzbq9GIght/AeT
+         nIGgl86Jy9XAnMxSmmwHyqFv3uwhVpwZgbBIEHjTRw2uxdKJ9CrK7lUMdGhSutajO5j+
+         rspiIRiy9WACpbiCCbE0VjoTh222crdrZWvgzlb3yTwLITrRpt4O9F7GFE5aJmiJ1y4p
+         oZ3WiFr5vV97PUehN8e7Lr63hBtgkg8OoxzJI8xPDdsTjqUynWm/Pes5rvHqYDLfGK2P
+         dF7PRh+DkC4xanugCWYQcoYh07VXXslgSHgzwYrc41BI0dfp3ChVkcoilXhcnne3KYOC
+         4fAA==
+X-Gm-Message-State: AOAM531B5vVN2kUqTUoRzn8i9UMkeKFPBTco3tMy/vzSEhXy6lDX7kXQ
+        j/3hH6+RtApkgr0+qyGuGtH5fxTXG9g=
+X-Google-Smtp-Source: ABdhPJzpY3sW1zsiJEXNIF+/rpB6tJbNyFAD8FoSPYbO+0hn3cWA/3OG783Mtr9NOyz4hiHj82UhQw==
+X-Received: by 2002:a63:b407:: with SMTP id s7mr2119523pgf.202.1641864839097;
+        Mon, 10 Jan 2022 17:33:59 -0800 (PST)
+Received: from [10.1.1.24] (222-155-5-102-adsl.sparkbb.co.nz. [222.155.5.102])
+        by smtp.gmail.com with ESMTPSA id a1sm253057pjs.20.2022.01.10.17.33.53
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Mon, 10 Jan 2022 17:33:58 -0800 (PST)
+Subject: Re: [PATCH 08/17] ptrace/m68k: Stop open coding ptrace_report_syscall
+To:     Geert Uytterhoeven <geert@linux-m68k.org>,
+        Al Viro <viro@zeniv.linux.org.uk>
+References: <87r19opkx1.fsf_-_@email.froward.int.ebiederm.org>
+ <20220103213312.9144-8-ebiederm@xmission.com>
+ <CAMuHMdWsNBjOJh0QEx9sppA9x3WoL8H2icqukNqECFhOPremjw@mail.gmail.com>
+ <YdxcszwEslyQJSuF@zeniv-ca.linux.org.uk>
+ <CAMuHMdX9nhUQe_jeQCUtXeQgcQ5MBiHpPiRexh86EssoHNtJ3Q@mail.gmail.com>
+Cc:     "Eric W. Biederman" <ebiederm@xmission.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux-Arch <linux-arch@vger.kernel.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Oleg Nesterov <oleg@redhat.com>,
+        Kees Cook <keescook@chromium.org>,
+        Linux API <linux-api@vger.kernel.org>,
+        linux-m68k <linux-m68k@lists.linux-m68k.org>
+From:   Michael Schmitz <schmitzmic@gmail.com>
+Message-ID: <acf7b627-2dec-c76c-2aa0-6b4c6addd793@gmail.com>
+Date:   Tue, 11 Jan 2022 14:33:50 +1300
+User-Agent: Mozilla/5.0 (X11; Linux ppc; rv:45.0) Gecko/20100101
+ Icedove/45.4.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <CAMuHMdX9nhUQe_jeQCUtXeQgcQ5MBiHpPiRexh86EssoHNtJ3Q@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/geert/linux-m68k.git m68k-v5.16
-branch HEAD: 61b439794190c9eb1746c08e8271692cad2b33e1  m68k: defconfig: Enable Atari EtherNAT and NetUSBee USB support
+Hi Geert,
 
-elapsed time: 746m
+Am 11.01.2022 um 06:54 schrieb Geert Uytterhoeven:
+> Hi Al,
+>
+> CC Michael/m68k,
+>
+> On Mon, Jan 10, 2022 at 5:20 PM Al Viro <viro@zeniv.linux.org.uk> wrote:
+>> On Mon, Jan 10, 2022 at 04:26:57PM +0100, Geert Uytterhoeven wrote:
+>>> On Mon, Jan 3, 2022 at 10:33 PM Eric W. Biederman <ebiederm@xmission.com> wrote:
+>>>> The generic function ptrace_report_syscall does a little more
+>>>> than syscall_trace on m68k.  The function ptrace_report_syscall
+>>>> stops early if PT_TRACED is not set, it sets ptrace_message,
+>>>> and returns the result of fatal_signal_pending.
+>>>>
+>>>> Setting ptrace_message to a passed in value of 0 is effectively not
+>>>> setting ptrace_message, making that additional work a noop.
+>>>>
+>>>> Returning the result of fatal_signal_pending and letting the caller
+>>>> ignore the result becomes a noop in this change.
+>>>>
+>>>> When a process is ptraced, the flag PT_PTRACED is always set in
+>>>> current->ptrace.  Testing for PT_PTRACED in ptrace_report_syscall is
+>>>> just an optimization to fail early if the process is not ptraced.
+>>>> Later on in ptrace_notify, ptrace_stop will test current->ptrace under
+>>>> tasklist_lock and skip performing any work if the task is not ptraced.
+>>>>
+>>>> Cc: Geert Uytterhoeven <geert@linux-m68k.org>
+>>>> Signed-off-by: "Eric W. Biederman" <ebiederm@xmission.com>
+>>>
+>>> As this depends on the removal of a parameter from
+>>> ptrace_report_syscall() earlier in this series:
+>>> Acked-by: Geert Uytterhoeven <geert@linux-m68k.org>
+>>
+>> FWIW, I would suggest taking it a bit further: make syscall_trace_enter()
+>> and syscall_trace_leave() in m68k ptrace.c unconditional, replace the
+>> calls of syscall_trace() in entry.S with syscall_trace_enter() and
+>> syscall_trace_leave() resp. and remove syscall_trace().
+>>
+>> Geert, do you see any problems with that?  The only difference is that
+>> current->ptrace_message would be set to 1 for ptrace stop on entry and
+>> 2 - on leave.  Currently m68k just has it 0 all along.
+>>
+>> It is user-visible (the whole point is to let the tracer see which
+>> stop it is - entry or exit one), so somebody using PTRACE_GETEVENTMSG
+>> on syscall stops would start seeing 1 or 2 instead of "0 all along".
+>> That's how it works on all other architectures (including m68k-nommu),
+>> and I doubt that anything in userland will get broken.
+>>
+>> Behaviour of PTRACE_GETEVENTMSG for other stops (fork, etc.) remains
+>> as-is, of course.
+>
+> In fact Michael did so in "[PATCH v7 1/2] m68k/kernel - wire up
+> syscall_trace_enter/leave for m68k"[1], but that's still stuck...
+>
+> [1] https://lore.kernel.org/r/1624924520-17567-2-git-send-email-schmitzmic@gmail.com/
 
-configs tested: 54
-configs skipped: 3
+That patch (for reasons I never found out) did interact badly with 
+Christoph Hellwig's 'remove set_fs' patches (and Al's signal fixes which 
+Christoph's patches are based upon). Caused format errors under memory 
+stress tests quite reliably, on my 030 hardware.
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+Probably needs a fresh look - the signal return path got changed by Al's 
+patches IIRC, and I might have relied on offsets to data on the stack 
+that are no longer correct with these patches. Or there's a race between 
+the syscall trap and signal handling when returning from interrupt 
+context ...
 
-gcc tested configs:
-arm                                 defconfig
-arm64                            allyesconfig
-arm64                               defconfig
-arm                              allyesconfig
-arm                              allmodconfig
-ia64                             allmodconfig
-ia64                                defconfig
-ia64                             allyesconfig
-m68k                             allmodconfig
-m68k                                defconfig
-m68k                             allyesconfig
-nios2                               defconfig
-arc                              allyesconfig
-nds32                             allnoconfig
-nds32                               defconfig
-nios2                            allyesconfig
-csky                                defconfig
-alpha                               defconfig
-alpha                            allyesconfig
-xtensa                           allyesconfig
-h8300                            allyesconfig
-arc                                 defconfig
-sh                               allmodconfig
-parisc                              defconfig
-s390                             allyesconfig
-s390                             allmodconfig
-parisc                           allyesconfig
-s390                                defconfig
-i386                             allyesconfig
-sparc                            allyesconfig
-sparc                               defconfig
-i386                                defconfig
-i386                   debian-10.3-kselftests
-i386                              debian-10.3
-mips                             allyesconfig
-mips                             allmodconfig
-powerpc                          allyesconfig
-powerpc                          allmodconfig
-powerpc                           allnoconfig
-riscv                    nommu_k210_defconfig
-riscv                            allyesconfig
-riscv                    nommu_virt_defconfig
-riscv                             allnoconfig
-riscv                               defconfig
-riscv                          rv32_defconfig
-riscv                            allmodconfig
-um                           x86_64_defconfig
-um                             i386_defconfig
-x86_64                           allyesconfig
-x86_64                    rhel-8.3-kselftests
-x86_64                              defconfig
-x86_64                               rhel-8.3
-x86_64                          rhel-8.3-func
-x86_64                                  kexec
+Still school hols over here so I won't have much peace and quiet until 
+February.
 
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+Cheers,
+
+	Michael
+
+
+>
+> Gr{oetje,eeting}s,
+>
+>                         Geert
+>
+> --
+> Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+>
+> In personal conversations with technical people, I call myself a hacker. But
+> when I'm talking to journalists I just say "programmer" or something like that.
+>                                 -- Linus Torvalds
+>
