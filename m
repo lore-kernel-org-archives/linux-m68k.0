@@ -2,226 +2,189 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 18A6AC433EF
-	for <linux-m68k@archiver.kernel.org>; Wed, 12 Jan 2022 13:53:55 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 50844C433F5
+	for <linux-m68k@archiver.kernel.org>; Wed, 12 Jan 2022 21:39:20 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238942AbiALNxx (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Wed, 12 Jan 2022 08:53:53 -0500
-Received: from mga03.intel.com ([134.134.136.65]:23396 "EHLO mga03.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1353749AbiALNxu (ORCPT <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Wed, 12 Jan 2022 08:53:50 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1641995630; x=1673531630;
-  h=date:from:to:cc:subject:message-id:mime-version:
-   content-transfer-encoding;
-  bh=JF9zoMFy8qzFXP3pztMeJTmWtD3811DfRIKLaVaoMBM=;
-  b=GZoAV2+WqUQC13ddyOvtmisIWSapUApsfm/pX08Dj+OEVKkWxmo2qzYX
-   TB0DES6RyNpsFDEuh3kvyHEnaJSY/5kCrijC0mYr7Zb47wyQo4ooL+uGX
-   llnYlNU51EtnMIn7Uv8IC2iBC29wU7L9ZcfdBaOWqTebp+Az6O+lkqWeM
-   YdKPUzMnHGhBLl/f6U7LJdMtaJmztJve3d394r//5IthOulEYTr4dQgnI
-   8LbTfg+U42fXmt3rSYMXRc1MyKr4TTZTJ6pfFfzhsPvaN0eCfJh+IvE7M
-   apv0aYuHmIYzLRquzEYEg/6zJQH8gq9X2ps7s9u/HmuGaZe6ddgBL48O/
-   A==;
-X-IronPort-AV: E=McAfee;i="6200,9189,10224"; a="243692314"
-X-IronPort-AV: E=Sophos;i="5.88,282,1635231600"; 
-   d="scan'208";a="243692314"
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Jan 2022 05:53:49 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.88,282,1635231600"; 
-   d="scan'208";a="472833280"
-Received: from lkp-server01.sh.intel.com (HELO 276f1b88eecb) ([10.239.97.150])
-  by orsmga003.jf.intel.com with ESMTP; 12 Jan 2022 05:53:48 -0800
-Received: from kbuild by 276f1b88eecb with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1n7e4R-0005t5-QC; Wed, 12 Jan 2022 13:53:47 +0000
-Date:   Wed, 12 Jan 2022 21:52:47 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     linux-m68k@lists.linux-m68k.org
-Subject: [geert-m68k:master] BUILD SUCCESS
- 6f42711e47bb379b5552af8007969eba5c015152
-Message-ID: <61dedd2f.LsPzoQ2LpIGulroE%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+        id S233245AbiALVjS convert rfc822-to-8bit (ORCPT
+        <rfc822;linux-m68k@archiver.kernel.org>);
+        Wed, 12 Jan 2022 16:39:18 -0500
+Received: from mout.kundenserver.de ([212.227.126.131]:37349 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233158AbiALVjO (ORCPT
+        <rfc822;linux-m68k@lists.linux-m68k.org>);
+        Wed, 12 Jan 2022 16:39:14 -0500
+Received: from quad ([82.142.23.158]) by mrelayeu.kundenserver.de (mreue010
+ [212.227.15.167]) with ESMTPSA (Nemesis) id 1MsI4Q-1mEH4H2TIA-00tggO; Wed, 12
+ Jan 2022 22:39:03 +0100
+From:   Laurent Vivier <laurent@vivier.eu>
+To:     linux-kernel@vger.kernel.org
+Cc:     Geert Uytterhoeven <geert@linux-m68k.org>,
+        linux-m68k@lists.linux-m68k.org,
+        Alessandro Zummo <a.zummo@towertech.it>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        linux-rtc@vger.kernel.org, Laurent Vivier <laurent@vivier.eu>
+Subject: [PATCH v4 0/3] m68k: Add Virtual M68k Machine
+Date:   Wed, 12 Jan 2022 22:38:58 +0100
+Message-Id: <20220112213901.2178667-1-laurent@vivier.eu>
+X-Mailer: git-send-email 2.34.1
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8BIT
+X-Provags-ID: V03:K1:4N99baOhvJG11zr7P1b8VwsKrZ920g97xi0dfxLAG++GHybmiHN
+ x93UsGEoyeeAnJMEXmnYJd/cYPy+lEMmHpt71Zw8XdeaNCcynE/FmUOd0FSkeqE+tIhrvfo
+ TTb8EV3S1ZC3isQ6e5tvuTs8ZnN6Uod31rYq1Z/2T6X66c4oWb8mhBAMj4YmA1aYTHax22q
+ yjQC6lKv6M6jUToG5FBBQ==
+X-UI-Out-Filterresults: notjunk:1;V03:K0:G6PBQvgmGJc=:G7HnsnJ3EWmp+SFBhVBvHs
+ PVmeavCg1+AImhwZbXBJlQbTMnny08JBImVm1arExbmlJ887sHqxOwUxvZOfM285OFLsHmZSG
+ 6XBqA+bPUMujGBGBrTijTQH5I1yNIlgljUvBnM56AcS9FuadRQthQuryZ4V/elwS+iMINnjeW
+ sn+99ElnV6L7SjEGjDpMCSXMneckc2lS/oKpR8wKCTiXgp4pGwtRuv/a1RdGYckzc70KLagES
+ jxHwGPc0MAwVgbLG+foJi8/e9Q6+zyHxyUpqvlTKs6vBzQm8RxAS6BEGhwmrgnTsc8W7SE6F6
+ cp35PzAILnMNILrDx8RVulNyf+J19Qg6bgHjqVFpLBMSTrs3iNpXkLobEZcbcZiEgt+LvzShm
+ va27gYEhRWHSq/8DHBx/Bv43vClx5sFEYyJ/KOb3gQLcit8KJWfliHwWrXsO2VO0S91ErEYyY
+ 1S7QUhGBoeW19NagZYcOGzNHiBE+1acY9MVMiROQjD31nfYM5UQheD9tOSaf7m/iStghiTeVr
+ 57rEdtfb+4RgVFdiI7flHlpOxv5FjHiJjFHpgP2zqNrMzGwRxcA0Ugfple9n9jG1F4t7+z4b7
+ QDrces3p3NqC3QUe7/S3q26LbMgyxMy0nEgAiNFLgjQYd6louZ5YChpOZNE7QYvq+xvI2LeTu
+ BPddMj5nmulp/bISWWfh3D3SMNhdTaYBjoGw+azo00uiXU2lIuIhrDYN9cFVG4qMQq78=
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/geert/linux-m68k.git master
-branch HEAD: 6f42711e47bb379b5552af8007969eba5c015152  Merge tag 'v5.16'
+The most powerful m68k machine emulated by QEMU is a Quadra 800,
+but this machine is very limited: only 1 GiB of memory and only some
+specific interfaces, with no DMA.
 
-elapsed time: 3124m
+The Virtual M68k Machine is based on Goldfish interfaces defined by Google
+for Android simulator. It uses Goldfish-rtc (timer and RTC),
+Goldfish-pic (PIC) and Goldfish-tty (for early tty).
 
-configs tested: 153
-configs skipped: 3
+The machine is created with 128 virtio-mmio buses, and they can
+be used to add serial console, GPU, disk, NIC, HID, hwrng, 9PFS...
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+The virtual m68k machine has been merged in QEMU and will be available
+with the release 6.0.
 
-gcc tested configs:
-arm                                 defconfig
-arm                              allyesconfig
-arm                              allmodconfig
-arm64                               defconfig
-arm64                            allyesconfig
-i386                          randconfig-c001
-sh                           se7750_defconfig
-arm                          badge4_defconfig
-m68k                           sun3_defconfig
-m68k                       m5475evb_defconfig
-sh                ecovec24-romimage_defconfig
-powerpc                     mpc83xx_defconfig
-mips                      maltasmvp_defconfig
-m68k                          hp300_defconfig
-arm                         axm55xx_defconfig
-um                             i386_defconfig
-sparc                            alldefconfig
-arm                           stm32_defconfig
-sh                                  defconfig
-powerpc                      ep88xc_defconfig
-arm                        mini2440_defconfig
-sh                            migor_defconfig
-m68k                                defconfig
-sh                          r7780mp_defconfig
-arc                 nsimosci_hs_smp_defconfig
-powerpc                         ps3_defconfig
-sh                 kfr2r09-romimage_defconfig
-arc                        nsim_700_defconfig
-powerpc                   currituck_defconfig
-sh                          rsk7203_defconfig
-powerpc                 linkstation_defconfig
-powerpc                      cm5200_defconfig
-powerpc                     tqm8541_defconfig
-sh                            titan_defconfig
-powerpc                       ppc64_defconfig
-arm                        multi_v7_defconfig
-arm                            zeus_defconfig
-sh                           se7722_defconfig
-ia64                        generic_defconfig
-mips                         mpc30x_defconfig
-arc                          axs103_defconfig
-powerpc                      pcm030_defconfig
-arm                         assabet_defconfig
-xtensa                       common_defconfig
-powerpc                   motionpro_defconfig
-sh                          kfr2r09_defconfig
-m68k                             allmodconfig
-sh                           se7780_defconfig
-m68k                         apollo_defconfig
-arm                       aspeed_g5_defconfig
-arm                        cerfcube_defconfig
-um                               alldefconfig
-sh                             espt_defconfig
-xtensa                    smp_lx200_defconfig
-arm                        realview_defconfig
-powerpc                     taishan_defconfig
-ia64                             alldefconfig
-arm                  randconfig-c002-20220111
-ia64                                defconfig
-ia64                             allmodconfig
-ia64                             allyesconfig
-m68k                             allyesconfig
-nios2                               defconfig
-arc                              allyesconfig
-nds32                             allnoconfig
-nds32                               defconfig
-csky                                defconfig
-alpha                               defconfig
-alpha                            allyesconfig
-nios2                            allyesconfig
-xtensa                           allyesconfig
-h8300                            allyesconfig
-arc                                 defconfig
-sh                               allmodconfig
-parisc                              defconfig
-s390                             allyesconfig
-s390                             allmodconfig
-parisc                           allyesconfig
-s390                                defconfig
-i386                             allyesconfig
-sparc                            allyesconfig
-sparc                               defconfig
-i386                                defconfig
-i386                   debian-10.3-kselftests
-i386                              debian-10.3
-mips                             allyesconfig
-mips                             allmodconfig
-powerpc                          allyesconfig
-powerpc                          allmodconfig
-powerpc                           allnoconfig
-x86_64                        randconfig-a006
-x86_64                        randconfig-a004
-x86_64                        randconfig-a002
-i386                          randconfig-a003
-i386                          randconfig-a001
-i386                          randconfig-a005
-x86_64                        randconfig-a011
-x86_64                        randconfig-a013
-x86_64                        randconfig-a015
-i386                          randconfig-a012
-i386                          randconfig-a014
-i386                          randconfig-a016
-riscv                randconfig-r042-20220111
-arc                  randconfig-r043-20220111
-s390                 randconfig-r044-20220111
-riscv                    nommu_k210_defconfig
-riscv                            allyesconfig
-riscv                    nommu_virt_defconfig
-riscv                             allnoconfig
-riscv                               defconfig
-riscv                          rv32_defconfig
-riscv                            allmodconfig
-x86_64                    rhel-8.3-kselftests
-um                           x86_64_defconfig
-x86_64                           allyesconfig
-x86_64                              defconfig
-x86_64                                  kexec
-x86_64                               rhel-8.3
-x86_64                          rhel-8.3-func
+This series introduces the support of this new machine in the linux kernel.
 
-clang tested configs:
-arm                  randconfig-c002-20220111
-x86_64                        randconfig-c007
-riscv                randconfig-c006-20220111
-powerpc              randconfig-c003-20220111
-i386                          randconfig-c001
-mips                 randconfig-c004-20220111
-s390                 randconfig-c005-20220111
-arm                  colibri_pxa300_defconfig
-mips                          malta_defconfig
-arm                          ep93xx_defconfig
-powerpc                 mpc836x_mds_defconfig
-powerpc                     akebono_defconfig
-powerpc                     kilauea_defconfig
-powerpc                        fsp2_defconfig
-powerpc                      pmac32_defconfig
-arm                    vt8500_v6_v7_defconfig
-mips                          rm200_defconfig
-powerpc                      acadia_defconfig
-hexagon                          alldefconfig
-mips                           ip22_defconfig
-powerpc                   lite5200b_defconfig
-arm                        vexpress_defconfig
-i386                          randconfig-a002
-i386                          randconfig-a006
-i386                          randconfig-a004
-x86_64                        randconfig-a012
-x86_64                        randconfig-a014
-x86_64                        randconfig-a016
-i386                          randconfig-a011
-i386                          randconfig-a013
-i386                          randconfig-a015
-x86_64                        randconfig-a005
-x86_64                        randconfig-a003
-x86_64                        randconfig-a001
-hexagon              randconfig-r045-20220111
-hexagon              randconfig-r041-20220111
+If you want to try:
 
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+- Configure and build latest QEMU with (or download qemu 6.0 binary):
+
+  .../configure --target-list=m68k-softmmu --enable-virglrenderer
+  make
+
+- Configure and build linux with:
+
+  make virt_defconfig
+  make vmlinux
+
+A pre-installed qcow2 disk image is available at:
+
+http://vivier.eu/debian-10.0.qcow2
+
+You can run the machine with something like:
+
+qemu-system-m68k -M virt \
+  -m 3G \
+  -chardev stdio,signal=off,mux=on,id=char0 \
+  -mon chardev=char0,mode=readline \
+  -kernel vmlinux \
+  -append "console=hvc0 root=/dev/vda2" \
+  -blockdev node-name=system,driver=file,filename=debian-10.0.qcow2 \
+  -blockdev node-name=drive0,driver=qcow2,file=system \
+  -device virtio-blk-device,drive=drive0 \
+  -serial chardev:char0 \
+  -device virtio-net-device,netdev=hostnet0 \
+  -netdev bridge,id=hostnet0,br=virbr0,helper=/usr/libexec/qemu-bridge-helper \
+  -device virtio-serial-device \
+  -device virtio-gpu-device \
+  -device virtconsole,chardev=char0 \
+  -device virtio-keyboard-device \
+  -device virtio-mouse-device
+
+You can watch a presentation about the machine on the Planet m68k channel:
+
+    https://youtu.be/s_ve0bCC9q4
+    [Demo at 38:00]
+
+v4:
+- update PATCH 1: comments and parameter names
+- add a patch to move to generic clockevents
+  (I prefer to have a separate patch as it can be used as an example to
+   move from legacy timer tick to generic clockevents)
+
+v3:
+- introduce config.h to export prototypes to arch/m68k/kernel/setup_mm.c
+- define virt_nmi_handler as static
+
+v2:
+- Remove VIRTO_MENU set y
+- sort the selects
+- add CONFIG_LOCALVERSION="-virt"
+- generate virt_defconfig using "make savedefconfig"
+- rename MACH_VIRTONLY to MACH_VIRT_ONLY
+- add a test_notvirt label in head.S
+- rework iounmap() to use two separate #ifdefs
+- use %u in virt_get_model()
+- drop show_registers() in config.c
+- drop pr_err() from config_virt()
+- sort includes in ints.c
+- call virt_irq_enable() in virt_irq_startup()
+- drop virt_irq_shutdown() and use virt_irq_disable()
+- move in_nmi into virt_nmi_handler()
+- use pr_warn() in virt_nmi_handler()
+- rework goldfish_pic_irq() IRQ scan
+- copy goldfish-pic IRQs related information from QEMU hw/m68k/virt
+- add a comment to "min_low_pfn = 0"
+- use platform_device_register_simple()
+- use goldfish_timer_read(), upper_32_bits() and lower_32_bits()
+
+Thanks,
+Laurent
+
+Laurent Vivier (3):
+  m68k: add asm/config.h
+  m68k: introduce a virtual m68k machine
+  m68k: virt: Remove LEGACY_TIMER_TICK
+
+ arch/m68k/Kbuild                           |   1 +
+ arch/m68k/Kconfig.machine                  |  15 +++
+ arch/m68k/amiga/config.c                   |   1 +
+ arch/m68k/apollo/config.c                  |   1 +
+ arch/m68k/atari/config.c                   |   1 +
+ arch/m68k/bvme6000/config.c                |   1 +
+ arch/m68k/configs/virt_defconfig           |  65 +++++++++++
+ arch/m68k/hp300/config.c                   |   1 +
+ arch/m68k/include/asm/config.h             |  35 ++++++
+ arch/m68k/include/asm/irq.h                |   3 +-
+ arch/m68k/include/asm/pgtable_mm.h         |   7 ++
+ arch/m68k/include/asm/setup.h              |  44 ++++++--
+ arch/m68k/include/asm/virt.h               |  26 +++++
+ arch/m68k/include/uapi/asm/bootinfo-virt.h |  18 ++++
+ arch/m68k/include/uapi/asm/bootinfo.h      |   1 +
+ arch/m68k/kernel/Makefile                  |   1 +
+ arch/m68k/kernel/head.S                    |  31 ++++++
+ arch/m68k/kernel/setup_mm.c                |  30 ++----
+ arch/m68k/mac/config.c                     |   1 +
+ arch/m68k/mm/kmap.c                        |  23 ++--
+ arch/m68k/mvme147/config.c                 |   1 +
+ arch/m68k/mvme16x/config.c                 |   1 +
+ arch/m68k/q40/config.c                     |   1 +
+ arch/m68k/virt/Makefile                    |   6 ++
+ arch/m68k/virt/config.c                    | 112 +++++++++++++++++++
+ arch/m68k/virt/ints.c                      | 120 +++++++++++++++++++++
+ arch/m68k/virt/platform.c                  |  72 +++++++++++++
+ arch/m68k/virt/timer.c                     | 120 +++++++++++++++++++++
+ 28 files changed, 699 insertions(+), 40 deletions(-)
+ create mode 100644 arch/m68k/configs/virt_defconfig
+ create mode 100644 arch/m68k/include/asm/config.h
+ create mode 100644 arch/m68k/include/asm/virt.h
+ create mode 100644 arch/m68k/include/uapi/asm/bootinfo-virt.h
+ create mode 100644 arch/m68k/virt/Makefile
+ create mode 100644 arch/m68k/virt/config.c
+ create mode 100644 arch/m68k/virt/ints.c
+ create mode 100644 arch/m68k/virt/platform.c
+ create mode 100644 arch/m68k/virt/timer.c
+
+-- 
+2.34.1
+
