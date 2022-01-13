@@ -2,87 +2,262 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B4D50C433EF
-	for <linux-m68k@archiver.kernel.org>; Thu, 13 Jan 2022 01:59:15 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 47B3DC433F5
+	for <linux-m68k@archiver.kernel.org>; Thu, 13 Jan 2022 10:36:13 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231530AbiAMB7P (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Wed, 12 Jan 2022 20:59:15 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36044 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231513AbiAMB7M (ORCPT
+        id S231830AbiAMKgM (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Thu, 13 Jan 2022 05:36:12 -0500
+Received: from mout.kundenserver.de ([217.72.192.75]:58257 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230436AbiAMKgL (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Wed, 12 Jan 2022 20:59:12 -0500
-Received: from mail-pj1-x1042.google.com (mail-pj1-x1042.google.com [IPv6:2607:f8b0:4864:20::1042])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C2A12C061748
-        for <linux-m68k@lists.linux-m68k.org>; Wed, 12 Jan 2022 17:59:11 -0800 (PST)
-Received: by mail-pj1-x1042.google.com with SMTP id i8-20020a17090a138800b001b3936fb375so16190831pja.1
-        for <linux-m68k@lists.linux-m68k.org>; Wed, 12 Jan 2022 17:59:11 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=2cfldz1eeMJcpNwnXB66nvpkQHd9gmRZUm2/X7KhHco=;
-        b=Mcv5lolFdSbDXkT5MmOyiFVbSDEhQP6xFuTYgJIgjLIEP9dHEXmbNOvVyWwKNzTAYU
-         +uDPFnAfMp2Dgbzev83JzwnbBhVGG3Uf1My4/U/mDEnnc0gkyb5TmtQMyUXR7kujOnEg
-         wvssxHq/rXYplwqVtv6Of+djQJN/HpFhmz4gRHyRK1nHuEmxsgjiZ41g8Q81oaRh4Qmk
-         3KEGA0pIEvGN34ODVnqwMUcYjQK1ljscU20CHhe9wuS7aetl/yNPIlATq5wsZO3Ddxm5
-         PwauI67kFWdiFnzY4YVjlcZPVkEC0ixHTNIgez8JA9jpt6JV6XeoBQyPPEVq5EOab5sO
-         Hr4Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=2cfldz1eeMJcpNwnXB66nvpkQHd9gmRZUm2/X7KhHco=;
-        b=RZcYc3DAhn9PFDIFsC6ZFJPWOC/uCfjxeZC9L/rbE/5wDqNvl7GizzgfJ1YykbLa1H
-         Y3D/2mAnbH2HF3JdOaMM68ZcWlce4SZK0zDxEMywaiATiwxPCaaWtVLqYdLaxq1zoRdJ
-         c3Xh/PlUG27O8Sgod79oPCWXpJa576CE/7thtzDaxsg01EohfH58+YVnWifzv5t9H5J0
-         6f/gHWuTLinID+47Wb1K7tyfpIczjkU7Q9DEtQaSwFMar9wpG4PZm+7KHuHvrYAZJk74
-         qNsb79e6aa+J6LoRUei9QjAh/w0hpbyzy7uu/n4FYRpoHF8h62Wi7eF0YXptG+XflpYd
-         kdWQ==
-X-Gm-Message-State: AOAM533Y9VeXmp9xT1DathLmu3idBouaYOkQIcHKRv0Blfp24d+Dsg/t
-        pTkDfMb5HzIWiutwdq+Xnvc=
-X-Google-Smtp-Source: ABdhPJw0+d7mdGrxuYxATKHc66u8ysbhM4k83yTUQVUKqthfB24t3zzJ+IP08lUeBIrx/D5cWtktJQ==
-X-Received: by 2002:a65:6a0f:: with SMTP id m15mr2094339pgu.391.1642039151314;
-        Wed, 12 Jan 2022 17:59:11 -0800 (PST)
-Received: from slim.das-security.cn ([103.84.139.54])
-        by smtp.gmail.com with ESMTPSA id b9sm753326pgb.17.2022.01.12.17.59.09
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 12 Jan 2022 17:59:11 -0800 (PST)
-From:   Hangyu Hua <hbh25y@gmail.com>
-To:     geert@linux-m68k.org
-Cc:     schwab@linux-m68k.org, gerg@linux-m68k.org,
-        linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org,
-        Hangyu Hua <hbh25y@gmail.com>
-Subject: [PATCH v2 RESEND] m68k/kernel: array out of bound access in process_uboot_commandline
-Date:   Thu, 13 Jan 2022 09:58:54 +0800
-Message-Id: <20220113015854.9326-1-hbh25y@gmail.com>
-X-Mailer: git-send-email 2.25.1
+        Thu, 13 Jan 2022 05:36:11 -0500
+Received: from quad ([82.142.23.158]) by mrelayeu.kundenserver.de (mreue109
+ [212.227.15.183]) with ESMTPSA (Nemesis) id 1MLz3X-1mqhiy3MSv-00HzOX; Thu, 13
+ Jan 2022 11:36:02 +0100
+From:   Laurent Vivier <laurent@vivier.eu>
+To:     linux-kernel@vger.kernel.org
+Cc:     Geert Uytterhoeven <geert@linux-m68k.org>,
+        linux-m68k@lists.linux-m68k.org,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Alessandro Zummo <a.zummo@towertech.it>,
+        linux-rtc@vger.kernel.org, Laurent Vivier <laurent@vivier.eu>
+Subject: [PATCH v5 1/3] m68k: add asm/config.h
+Date:   Thu, 13 Jan 2022 11:35:57 +0100
+Message-Id: <20220113103559.2577216-2-laurent@vivier.eu>
+X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20220113103559.2577216-1-laurent@vivier.eu>
+References: <20220113103559.2577216-1-laurent@vivier.eu>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+X-Provags-ID: V03:K1:SZ1Mqen4j8j7dwwMEDLh5Zgy3U6903fJaCynGoYhII8fmQFzEZC
+ M+qd7SJoo3mHTZqAeyh6uOR6uEan7bkK1rGs/k0JXHpRi/h9FQuvQwqQmVU0mf5G7KOKSCU
+ UisYB9lrJGeTkIWR+NT1hSkHbnrpUc37bduU840sK6neMIt74EJ5zWHGclEPhg8nIBjpSNs
+ tDUelzU1qQBHokNfPgx9g==
+X-UI-Out-Filterresults: notjunk:1;V03:K0:MtE7iRlOMFs=:8mx1ma0Tvuj2EmZ9wP9NcH
+ UxV7VvOfguKmJMmyrLLwnGwxDD+hKF17mo+3BtDeh6grDU4qrV0HxeSAaFKFGV28fMWx52b6m
+ RJ/w4qrwANc4PphGLjRjjeDwPjY4eUSU8FhZRbnO1jNd9dtgHvV09ZOJ9cBjvWwcpf/90IebI
+ 9rV77GIYnTIRHunSaODWYquNdariVsTvBBnsmkYB0A/pR4m/oE38V/ZP8LnMH5/PLeBpdKZRE
+ xMniahQ7dDiR8wq1QMcc0lYdxvtYo5oB58vwrgbBnAUU08S+Wkgew8KI94tRisgsO+zm7n2T8
+ 24gbG9/9+vr4629WMpkgV9AZvDHMzZ9CNPnYFGlT45IK4D+MT5yvmdUawyyKF5DlKRj0oLTd8
+ NGdrtHMCM4P7Zaf0uM+YR7WXkYlTibrKxIF0h0znEgApb3oKB1Ivhw7U3JnE/o6nYy+BVbZYw
+ qLTpFzqQIsfdq6FiN0eERw2PR5c2TQPPLszI+J7ynMJ3G3vZXhnVvUg4rfm2LKeMzmhAPEJqi
+ Hq1wYwOJ+iKgpFbtSOnsxAZy/X1WmbFFA3kmu2K26voYCxSJuR9nVXfYz3EU3sng7rqOqt6tT
+ aJq5LGVL88XmftinIUd5PGhFQslgt/gOmbDfV/00ZG01inR+VSCZNX/tTasMbqCeaSOC4Rk0U
+ J3b6yCJYM3AV9MwUfAFTwmn8jVpCc5ej7yTf+6RRJTYIbobWmahu3jM7WYHx6uYEaFWg=
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-When the size of commandp >= size, array out of bound write occurs because
-len == 0.
+To avoid 'warning: no previous prototype for' error, declare all
+the parse_bootinfo and config functions prototypes into asm/config.h
+and include it in arch/m68k/kernel/setup_mm.c and arch/m68k/*/config.c
 
-Signed-off-by: Hangyu Hua <hbh25y@gmail.com>
+Signed-off-by: Laurent Vivier <laurent@vivier.eu>
+Reviewed-by: Geert Uytterhoeven <geert@linux-m68k.org>
 ---
- arch/m68k/kernel/uboot.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ arch/m68k/amiga/config.c       |  1 +
+ arch/m68k/apollo/config.c      |  1 +
+ arch/m68k/atari/config.c       |  1 +
+ arch/m68k/bvme6000/config.c    |  1 +
+ arch/m68k/hp300/config.c       |  1 +
+ arch/m68k/include/asm/config.h | 33 +++++++++++++++++++++++++++++++++
+ arch/m68k/kernel/setup_mm.c    | 23 +----------------------
+ arch/m68k/mac/config.c         |  1 +
+ arch/m68k/mvme147/config.c     |  1 +
+ arch/m68k/mvme16x/config.c     |  1 +
+ arch/m68k/q40/config.c         |  1 +
+ 11 files changed, 43 insertions(+), 22 deletions(-)
+ create mode 100644 arch/m68k/include/asm/config.h
 
-diff --git a/arch/m68k/kernel/uboot.c b/arch/m68k/kernel/uboot.c
-index 928dbd33fc4a..63eaf3c3ddcd 100644
---- a/arch/m68k/kernel/uboot.c
-+++ b/arch/m68k/kernel/uboot.c
-@@ -101,5 +101,6 @@ __init void process_uboot_commandline(char *commandp, int size)
- 	}
+diff --git a/arch/m68k/amiga/config.c b/arch/m68k/amiga/config.c
+index be2dfab48fd4..3137b45750df 100644
+--- a/arch/m68k/amiga/config.c
++++ b/arch/m68k/amiga/config.c
+@@ -37,6 +37,7 @@
+ #include <asm/irq.h>
+ #include <asm/machdep.h>
+ #include <asm/io.h>
++#include <asm/config.h>
  
- 	parse_uboot_commandline(commandp, len);
--	commandp[len - 1] = 0;
-+	if (len > 0)
-+		commandp[len - 1] = 0;
- }
+ static unsigned long amiga_model;
+ 
+diff --git a/arch/m68k/apollo/config.c b/arch/m68k/apollo/config.c
+index 581a5f68d102..42a8b8e2b664 100644
+--- a/arch/m68k/apollo/config.c
++++ b/arch/m68k/apollo/config.c
+@@ -16,6 +16,7 @@
+ #include <asm/apollohw.h>
+ #include <asm/irq.h>
+ #include <asm/machdep.h>
++#include <asm/config.h>
+ 
+ u_long sio01_physaddr;
+ u_long sio23_physaddr;
+diff --git a/arch/m68k/atari/config.c b/arch/m68k/atari/config.c
+index 261a0f57cc9a..38a7c0578105 100644
+--- a/arch/m68k/atari/config.c
++++ b/arch/m68k/atari/config.c
+@@ -46,6 +46,7 @@
+ #include <asm/machdep.h>
+ #include <asm/hwtest.h>
+ #include <asm/io.h>
++#include <asm/config.h>
+ 
+ u_long atari_mch_cookie;
+ EXPORT_SYMBOL(atari_mch_cookie);
+diff --git a/arch/m68k/bvme6000/config.c b/arch/m68k/bvme6000/config.c
+index 0c6feafbbd11..9b060d466e03 100644
+--- a/arch/m68k/bvme6000/config.c
++++ b/arch/m68k/bvme6000/config.c
+@@ -36,6 +36,7 @@
+ #include <asm/traps.h>
+ #include <asm/machdep.h>
+ #include <asm/bvme6000hw.h>
++#include <asm/config.h>
+ 
+ static void bvme6000_get_model(char *model);
+ extern void bvme6000_sched_init(void);
+diff --git a/arch/m68k/hp300/config.c b/arch/m68k/hp300/config.c
+index ce1eb3d3d55d..2c92843397c3 100644
+--- a/arch/m68k/hp300/config.c
++++ b/arch/m68k/hp300/config.c
+@@ -22,6 +22,7 @@
+ #include <asm/blinken.h>
+ #include <asm/io.h>                               /* readb() and writeb() */
+ #include <asm/hp300hw.h>
++#include <asm/config.h>
+ 
+ #include "time.h"
+ 
+diff --git a/arch/m68k/include/asm/config.h b/arch/m68k/include/asm/config.h
+new file mode 100644
+index 000000000000..aae61070628b
+--- /dev/null
++++ b/arch/m68k/include/asm/config.h
+@@ -0,0 +1,33 @@
++/* SPDX-License-Identifier: GPL-2.0 */
++
++/*
++ * This file contains prototypes provided by each m68k machine
++ * to parse bootinfo data structures and to configure the machine
++ */
++
++#ifndef _M68K_CONFIG_H
++#define _M68K_CONFIG_H
++
++extern int amiga_parse_bootinfo(const struct bi_record *record);
++extern int atari_parse_bootinfo(const struct bi_record *record);
++extern int mac_parse_bootinfo(const struct bi_record *record);
++extern int q40_parse_bootinfo(const struct bi_record *record);
++extern int bvme6000_parse_bootinfo(const struct bi_record *record);
++extern int mvme16x_parse_bootinfo(const struct bi_record *record);
++extern int mvme147_parse_bootinfo(const struct bi_record *record);
++extern int hp300_parse_bootinfo(const struct bi_record *record);
++extern int apollo_parse_bootinfo(const struct bi_record *record);
++
++extern void config_amiga(void);
++extern void config_atari(void);
++extern void config_mac(void);
++extern void config_sun3(void);
++extern void config_apollo(void);
++extern void config_mvme147(void);
++extern void config_mvme16x(void);
++extern void config_bvme6000(void);
++extern void config_hp300(void);
++extern void config_q40(void);
++extern void config_sun3x(void);
++
++#endif /* _M68K_CONFIG_H */
+diff --git a/arch/m68k/kernel/setup_mm.c b/arch/m68k/kernel/setup_mm.c
+index 4b51bfd38e5f..226dc3750397 100644
+--- a/arch/m68k/kernel/setup_mm.c
++++ b/arch/m68k/kernel/setup_mm.c
+@@ -47,6 +47,7 @@
+ #endif
+ #include <asm/macintosh.h>
+ #include <asm/natfeat.h>
++#include <asm/config.h>
+ 
+ #if !FPSTATESIZE || !NR_IRQS
+ #warning No CPU/platform type selected, your kernel will not work!
+@@ -113,28 +114,6 @@ EXPORT_SYMBOL(isa_type);
+ EXPORT_SYMBOL(isa_sex);
+ #endif
+ 
+-extern int amiga_parse_bootinfo(const struct bi_record *);
+-extern int atari_parse_bootinfo(const struct bi_record *);
+-extern int mac_parse_bootinfo(const struct bi_record *);
+-extern int q40_parse_bootinfo(const struct bi_record *);
+-extern int bvme6000_parse_bootinfo(const struct bi_record *);
+-extern int mvme16x_parse_bootinfo(const struct bi_record *);
+-extern int mvme147_parse_bootinfo(const struct bi_record *);
+-extern int hp300_parse_bootinfo(const struct bi_record *);
+-extern int apollo_parse_bootinfo(const struct bi_record *);
+-
+-extern void config_amiga(void);
+-extern void config_atari(void);
+-extern void config_mac(void);
+-extern void config_sun3(void);
+-extern void config_apollo(void);
+-extern void config_mvme147(void);
+-extern void config_mvme16x(void);
+-extern void config_bvme6000(void);
+-extern void config_hp300(void);
+-extern void config_q40(void);
+-extern void config_sun3x(void);
+-
+ #define MASK_256K 0xfffc0000
+ 
+ extern void paging_init(void);
+diff --git a/arch/m68k/mac/config.c b/arch/m68k/mac/config.c
+index 5d16f9b47aa9..65d124ec80bb 100644
+--- a/arch/m68k/mac/config.c
++++ b/arch/m68k/mac/config.c
+@@ -47,6 +47,7 @@
+ #include <asm/mac_via.h>
+ #include <asm/mac_oss.h>
+ #include <asm/mac_psc.h>
++#include <asm/config.h>
+ 
+ /* Mac bootinfo struct */
+ struct mac_booter_data mac_bi_data;
+diff --git a/arch/m68k/mvme147/config.c b/arch/m68k/mvme147/config.c
+index dfd6202fd403..b96ea7c76a19 100644
+--- a/arch/m68k/mvme147/config.c
++++ b/arch/m68k/mvme147/config.c
+@@ -34,6 +34,7 @@
+ #include <asm/traps.h>
+ #include <asm/machdep.h>
+ #include <asm/mvme147hw.h>
++#include <asm/config.h>
+ 
+ 
+ static void mvme147_get_model(char *model);
+diff --git a/arch/m68k/mvme16x/config.c b/arch/m68k/mvme16x/config.c
+index b4422c2dfbbf..88cbdc10925b 100644
+--- a/arch/m68k/mvme16x/config.c
++++ b/arch/m68k/mvme16x/config.c
+@@ -37,6 +37,7 @@
+ #include <asm/traps.h>
+ #include <asm/machdep.h>
+ #include <asm/mvme16xhw.h>
++#include <asm/config.h>
+ 
+ extern t_bdid mvme_bdid;
+ 
+diff --git a/arch/m68k/q40/config.c b/arch/m68k/q40/config.c
+index 5caf1e5be1c2..9237243077ce 100644
+--- a/arch/m68k/q40/config.c
++++ b/arch/m68k/q40/config.c
+@@ -34,6 +34,7 @@
+ #include <asm/traps.h>
+ #include <asm/machdep.h>
+ #include <asm/q40_master.h>
++#include <asm/config.h>
+ 
+ extern void q40_init_IRQ(void);
+ static void q40_get_model(char *model);
 -- 
-2.25.1
+2.34.1
 
