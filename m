@@ -2,127 +2,118 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3761AC433EF
-	for <linux-m68k@archiver.kernel.org>; Fri, 14 Jan 2022 08:33:44 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D800DC433EF
+	for <linux-m68k@archiver.kernel.org>; Fri, 14 Jan 2022 10:46:57 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231472AbiANIdn (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Fri, 14 Jan 2022 03:33:43 -0500
-Received: from mga03.intel.com ([134.134.136.65]:44861 "EHLO mga03.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233646AbiANIdn (ORCPT <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Fri, 14 Jan 2022 03:33:43 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1642149223; x=1673685223;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=SP5uKYsWvxtFx7YjJ4PgaYlzJmeTwx2UzB3SXbUqZS8=;
-  b=Qw3AfPqCRawWDqcf9bnHLyEUmKGi30HDiUs8J2IbMh4lWzdkSu4BUlJ2
-   K67baoiJkTtweNeKwYVLprfbIYQxRckY9NOS9D+HUpEhNt2JRoTc5a2QQ
-   9TAosT3/jQ17oZDDNFAXr/f2G1CU3ZZK/FOrkVAeTDoDAtJ+Dxw1seUPS
-   ETWIY05my8MXn+AyK0PcjATfMGT/1hRnkgeEQM/LnZAhBh0Uj+8hpevZk
-   fP4ZRcuV43gBEE3F0cF2wMhxdU4wTZTwTuz3orvY1cMRN++DWwVDP5ZIw
-   xOk3Wj0xpsl9OcpTttbjTH8OOrvjAPs+JM3Cbs3lmHX+DyYSCuJw++t7k
-   w==;
-X-IronPort-AV: E=McAfee;i="6200,9189,10226"; a="244162945"
-X-IronPort-AV: E=Sophos;i="5.88,288,1635231600"; 
-   d="scan'208";a="244162945"
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Jan 2022 00:33:41 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.88,288,1635231600"; 
-   d="scan'208";a="529266915"
-Received: from lkp-server01.sh.intel.com (HELO 276f1b88eecb) ([10.239.97.150])
-  by fmsmga007.fm.intel.com with ESMTP; 14 Jan 2022 00:33:35 -0800
-Received: from kbuild by 276f1b88eecb with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1n8I1e-0008Ir-KT; Fri, 14 Jan 2022 08:33:34 +0000
-Date:   Fri, 14 Jan 2022 16:32:38 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Laurent Vivier <laurent@vivier.eu>, linux-kernel@vger.kernel.org
-Cc:     kbuild-all@lists.01.org, Thomas Gleixner <tglx@linutronix.de>,
+        id S240444AbiANKq5 (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Fri, 14 Jan 2022 05:46:57 -0500
+Received: from mout.kundenserver.de ([212.227.126.135]:55055 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S240284AbiANKq4 (ORCPT
+        <rfc822;linux-m68k@lists.linux-m68k.org>);
+        Fri, 14 Jan 2022 05:46:56 -0500
+Received: from mail-wm1-f47.google.com ([209.85.128.47]) by
+ mrelayeu.kundenserver.de (mreue011 [213.165.67.97]) with ESMTPSA (Nemesis) id
+ 1N79hs-1mGW6F1aYu-017Yuv for <linux-m68k@lists.linux-m68k.org>; Fri, 14 Jan
+ 2022 11:46:55 +0100
+Received: by mail-wm1-f47.google.com with SMTP id q141-20020a1ca793000000b00347b48dfb53so5413703wme.0
+        for <linux-m68k@lists.linux-m68k.org>; Fri, 14 Jan 2022 02:46:54 -0800 (PST)
+X-Gm-Message-State: AOAM531C83GPQf+Bx0pZ3kZjsu6wtt9ATZJEVIr1GJlHQKlMAJZar6B4
+        fq8K3PwbSSQ4TC2iWSVor2tduWeAX58pOn3Jrq4=
+X-Google-Smtp-Source: ABdhPJwAWWNZkfH3zvOak1E2MdZhsLPVQGdvjKTtuDO+j6YhpQJjnaj8sNFQLsSqZON5BUwmQiGLZMoD/6dNPWTOY/Y=
+X-Received: by 2002:a7b:c418:: with SMTP id k24mr3646582wmi.173.1642157214594;
+ Fri, 14 Jan 2022 02:46:54 -0800 (PST)
+MIME-Version: 1.0
+References: <20220113201920.3201760-1-laurent@vivier.eu> <20220113201920.3201760-4-laurent@vivier.eu>
+In-Reply-To: <20220113201920.3201760-4-laurent@vivier.eu>
+From:   Arnd Bergmann <arnd@arndb.de>
+Date:   Fri, 14 Jan 2022 11:46:38 +0100
+X-Gmail-Original-Message-ID: <CAK8P3a2QzMiga0FFVmTuefnq1OzsgyopiJN2he8043K0TRF1ng@mail.gmail.com>
+Message-ID: <CAK8P3a2QzMiga0FFVmTuefnq1OzsgyopiJN2he8043K0TRF1ng@mail.gmail.com>
+Subject: Re: [PATCH v6 3/4] clocksource/drivers: Add a goldfish-timer clocksource
+To:     Laurent Vivier <laurent@vivier.eu>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
         Jiaxun Yang <jiaxun.yang@flygoat.com>,
         Alessandro Zummo <a.zummo@towertech.it>,
-        linux-m68k@lists.linux-m68k.org,
+        linux-m68k <linux-m68k@lists.linux-m68k.org>,
         John Stultz <john.stultz@linaro.org>,
         linux-rtc@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>,
         Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: Re: [PATCH v6 3/4] clocksource/drivers: Add a goldfish-timer
- clocksource
-Message-ID: <202201141640.iSJ8IkCj-lkp@intel.com>
-References: <20220113201920.3201760-4-laurent@vivier.eu>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20220113201920.3201760-4-laurent@vivier.eu>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Provags-ID: V03:K1:5KWyq0MjL8SNEs09GWU5mgv5agIiD5L5ZmGrc7UdwFp9sqIgR5E
+ Qg8u3MjZHnRqHxn5hZn5u01PVMR4wkb4VV1c4hxw1K+dt58+h1LJCUZ7apZh30k2vpJLISN
+ 85URYHjNEyh8qErWOCzWVNxvycOStfu+o/cNFbaUNCw2e5KNl71hC1wlsStknRNYddZLPlQ
+ Uxs5xyqsJoLO/KbdbchrA==
+X-UI-Out-Filterresults: notjunk:1;V03:K0:EnSjWdPbEzE=:rgBoohvFDOCrps+A99pmuB
+ wPjN9QM2L62p3+q30b9YHzd+3WZSMYmWCv4O3hshY/WrnKqDtoLDgmPXzjkk+h0BCSRzDJQBk
+ e+q10M3Z9puhRFrpVkpmhjkTMtjOgFDaHkqmYWLntJEro2VXUb+fqvjGUesHbR/OOOEwfUwdn
+ y33K8OGG+qhSce+hPnFJve5c4n9Vup8snu0p6LtD8MD7YEjrBhLar6q0dw4umnp7vecQ0wc3m
+ tmIpyZROO1M3yZtqB4EkkFQObhl9EU8n9MKLizQmZZIw+nSLwIVkgm2iwm7yjNjILguu40tgk
+ GjGIwpCTZjg8mUjWm64kJGr611U5aTRRnKZCvEo9AeQljT26utzDkcHWimyflOGxXINXe+g6k
+ rOuB3TXj2QaJ6HhlKpcgB+lOPTy4OpbhmljSARO/tUPlX3Xko3fkabxBluJmGBuAsr0z6tNbt
+ OKi/s8Z7ec+bBZMRkz2di3XU0tu9TIVqH4cmvFe6KMQawY3RmM47aqueYVFyyE9ohHmaVuwc5
+ BWIhRRguycWuRuLVQfJ07upE7Q9k6F2F41koVS7kZ7Ko3A4BDtzGzTY8BCmEflEMW5ib2XAWe
+ VAfHqqCFR75UxVwymuF81BnfOoAKC+2QjWr9bLg9BggbAFvCIAe2cNPfnArsepEwYrncgBj/k
+ /QH921ocIVR1MMeP/Mllr+tr2DAPaGjPkKE/fvv8v4kvQ5zJ6/c30Lm+kUQ5Bre+LdVuB0QP+
+ BdXqOFh0hMC6MV5A5sd9msAbyQhj6QrZoLltefCHSXRnXjnZqYu2G92uUVLNE1Z9mOAA1aovP
+ DN0UoeSruzbXt5I3aWwrDG4dvHt3untgzCcmCnokN+vU4A0k2A=
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-Hi Laurent,
+On Thu, Jan 13, 2022 at 9:19 PM Laurent Vivier <laurent@vivier.eu> wrote:
+>
+> Add a clocksource based on the goldfish-rtc device.
+>
+> Signed-off-by: Laurent Vivier <laurent@vivier.eu>
+> ---
+>  drivers/clocksource/Kconfig          |   7 ++
+>  drivers/clocksource/Makefile         |   1 +
+>  drivers/clocksource/timer-goldfish.c | 130 +++++++++++++++++++++++++++
+>  include/clocksource/timer-goldfish.h |  12 +++
+>  4 files changed, 150 insertions(+)
+>  create mode 100644 drivers/clocksource/timer-goldfish.c
+>  create mode 100644 include/clocksource/timer-goldfish.h
+>
+> diff --git a/drivers/clocksource/Kconfig b/drivers/clocksource/Kconfig
+> index f65e31bab9ae..6ca9bb78407d 100644
+> --- a/drivers/clocksource/Kconfig
+> +++ b/drivers/clocksource/Kconfig
+> @@ -711,4 +711,11 @@ config MICROCHIP_PIT64B
+>           modes and high resolution. It is used as a clocksource
+>           and a clockevent.
+>
+> +config GOLDFISH_TIMER
+> +       bool "Clocksource using goldfish-rtc"
+> +       select RTC_CLASS
+> +       select RTC_DRV_GOLDFISH
 
-Thank you for the patch! Yet something to improve:
+This should probably be
 
-[auto build test ERROR on geert-m68k/for-next]
-[also build test ERROR on linux/master v5.16]
-[cannot apply to tip/timers/core linus/master next-20220114]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch]
+          depends on M68K || COMPILE_TEST
+          depends on RTC_DRV_GOLDFISH
 
-url:    https://github.com/0day-ci/linux/commits/Laurent-Vivier/m68k-Add-Virtual-M68k-Machine/20220114-042103
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/geert/linux-m68k.git for-next
-config: s390-allmodconfig (https://download.01.org/0day-ci/archive/20220114/202201141640.iSJ8IkCj-lkp@intel.com/config)
-compiler: s390-linux-gcc (GCC) 11.2.0
-reproduce (this is a W=1 build):
-        wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
-        chmod +x ~/bin/make.cross
-        # https://github.com/0day-ci/linux/commit/7e887e6ec0d7193083a2f0020007688db2318c76
-        git remote add linux-review https://github.com/0day-ci/linux
-        git fetch --no-tags linux-review Laurent-Vivier/m68k-Add-Virtual-M68k-Machine/20220114-042103
-        git checkout 7e887e6ec0d7193083a2f0020007688db2318c76
-        # save the config file to linux build tree
-        mkdir build_dir
-        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-11.2.0 make.cross O=build_dir ARCH=s390 SHELL=/bin/bash drivers/
+A driver should never 'select' another user-selectable subsystem
 
-If you fix the issue, kindly add following tag as appropriate
-Reported-by: kernel test robot <lkp@intel.com>
+> +static int goldfish_timer_set_oneshot(struct clock_event_device *evt)
+> +{
+> +       struct goldfish_timer *timerdrv = ced_to_gf(evt);
+> +       void __iomem *base = timerdrv->base;
+> +
+> +       __raw_writel(0, base + TIMER_ALARM_HIGH);
+> +       __raw_writel(0, base + TIMER_ALARM_LOW);
+> +       __raw_writel(1, base + TIMER_IRQ_ENABLED);
 
-All errors (new ones prefixed by >>):
+As mentioned elsewhere, the __raw_* accessors are not portable, please
+use readl()/writel() here, or possibly ioread32_be()/iowrite32_be() for
+the big-endian variant.
 
-   drivers/clocksource/timer-goldfish.c: In function 'goldfish_timer_init':
->> drivers/clocksource/timer-goldfish.c:94:20: error: implicit declaration of function 'kzalloc'; did you mean 'vzalloc'? [-Werror=implicit-function-declaration]
-      94 |         timerdrv = kzalloc(sizeof(*timerdrv), GFP_KERNEL);
-         |                    ^~~~~~~
-         |                    vzalloc
-   drivers/clocksource/timer-goldfish.c:94:18: warning: assignment to 'struct goldfish_timer *' from 'int' makes pointer from integer without a cast [-Wint-conversion]
-      94 |         timerdrv = kzalloc(sizeof(*timerdrv), GFP_KERNEL);
-         |                  ^
-   cc1: some warnings being treated as errors
+> +EXPORT_SYMBOL_GPL(goldfish_timer_init);
 
-Kconfig warnings: (for reference only)
-   WARNING: unmet direct dependencies detected for RTC_CLASS
-   Depends on !S390
-   Selected by
-   - GOLDFISH_TIMER && GENERIC_CLOCKEVENTS
-   WARNING: unmet direct dependencies detected for RTC_DRV_GOLDFISH
-   Depends on RTC_CLASS && HAS_IOMEM
-   Selected by
-   - GOLDFISH_TIMER && GENERIC_CLOCKEVENTS
+No need to export this if the only callers are in the kernel.
 
-
-vim +94 drivers/clocksource/timer-goldfish.c
-
-    88	
-    89	void __init goldfish_timer_init(int irq, void __iomem *base)
-    90	{
-    91		struct goldfish_timer *timerdrv;
-    92		int ret;
-    93	
-  > 94		timerdrv = kzalloc(sizeof(*timerdrv), GFP_KERNEL);
-
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+         Arnd
