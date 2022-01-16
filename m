@@ -2,29 +2,39 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 235B6C433EF
-	for <linux-m68k@archiver.kernel.org>; Sun, 16 Jan 2022 11:54:42 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8FD91C433F5
+	for <linux-m68k@archiver.kernel.org>; Sun, 16 Jan 2022 16:20:02 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232952AbiAPLyl (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Sun, 16 Jan 2022 06:54:41 -0500
-Received: from mout.kundenserver.de ([217.72.192.74]:52965 "EHLO
+        id S235565AbiAPQUB (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Sun, 16 Jan 2022 11:20:01 -0500
+Received: from mout.kundenserver.de ([212.227.17.10]:50471 "EHLO
         mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232933AbiAPLyk (ORCPT
+        with ESMTP id S235543AbiAPQUB (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Sun, 16 Jan 2022 06:54:40 -0500
-Received: from [192.168.100.1] ([82.142.13.186]) by mrelayeu.kundenserver.de
- (mreue107 [213.165.67.119]) with ESMTPSA (Nemesis) id
- 1MF45G-1n6vRv3Iro-00FQij; Sun, 16 Jan 2022 12:54:07 +0100
-Message-ID: <77e747de-c7d6-314d-e0b0-58852d463326@vivier.eu>
-Date:   Sun, 16 Jan 2022 12:54:04 +0100
+        Sun, 16 Jan 2022 11:20:01 -0500
+Received: from mail-wm1-f49.google.com ([209.85.128.49]) by
+ mrelayeu.kundenserver.de (mreue106 [213.165.67.113]) with ESMTPSA (Nemesis)
+ id 1Mg6qO-1mg92131e2-00hdvN for <linux-m68k@lists.linux-m68k.org>; Sun, 16
+ Jan 2022 17:19:59 +0100
+Received: by mail-wm1-f49.google.com with SMTP id bg19-20020a05600c3c9300b0034565e837b6so6404747wmb.1
+        for <linux-m68k@lists.linux-m68k.org>; Sun, 16 Jan 2022 08:19:59 -0800 (PST)
+X-Gm-Message-State: AOAM530uby1MCvgW3oqTGsuyaqONjAamfenFXqa2BK9vmrf983iplMoy
+        FSFr6gye8lrZc62+Q5yJ7JwgVby7mu3gn14U0eo=
+X-Google-Smtp-Source: ABdhPJwLndypdoZqcgVySXUrUaTHtCgNSa0LHq+rQ0wsbDBGYparskmUw5otmdG9JKYAHAXXiKO0Lvzj6vDV3ZLvoZo=
+X-Received: by 2002:a05:600c:5c1:: with SMTP id p1mr23740237wmd.1.1642349999360;
+ Sun, 16 Jan 2022 08:19:59 -0800 (PST)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.4.0
-Subject: Re: [PATCH v8 3/4] clocksource/drivers: Add a goldfish-timer
- clocksource
-Content-Language: fr
-To:     Arnd Bergmann <arnd@arndb.de>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+References: <20220115193245.3777833-1-laurent@vivier.eu> <20220115193245.3777833-4-laurent@vivier.eu>
+ <CAK8P3a13g_o4mTsOO-4b=WU6TGRHubY7HCt1x1FdXpVmjy6-Sg@mail.gmail.com> <77e747de-c7d6-314d-e0b0-58852d463326@vivier.eu>
+In-Reply-To: <77e747de-c7d6-314d-e0b0-58852d463326@vivier.eu>
+From:   Arnd Bergmann <arnd@arndb.de>
+Date:   Sun, 16 Jan 2022 17:19:43 +0100
+X-Gmail-Original-Message-ID: <CAK8P3a1i_ngEaqhsy4xNrQV8=d1jY=JTxGNNUqOZ0g0to5bw8Q@mail.gmail.com>
+Message-ID: <CAK8P3a1i_ngEaqhsy4xNrQV8=d1jY=JTxGNNUqOZ0g0to5bw8Q@mail.gmail.com>
+Subject: Re: [PATCH v8 3/4] clocksource/drivers: Add a goldfish-timer clocksource
+To:     Laurent Vivier <laurent@vivier.eu>
+Cc:     Arnd Bergmann <arnd@arndb.de>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
         John Stultz <john.stultz@linaro.org>,
         linux-rtc@vger.kernel.org, Jiaxun Yang <jiaxun.yang@flygoat.com>,
         Daniel Lezcano <daniel.lezcano@linaro.org>,
@@ -34,71 +44,51 @@ Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
         Stephen Boyd <sboyd@kernel.org>,
         Geert Uytterhoeven <geert@linux-m68k.org>,
         linux-m68k <linux-m68k@lists.linux-m68k.org>
-References: <20220115193245.3777833-1-laurent@vivier.eu>
- <20220115193245.3777833-4-laurent@vivier.eu>
- <CAK8P3a13g_o4mTsOO-4b=WU6TGRHubY7HCt1x1FdXpVmjy6-Sg@mail.gmail.com>
-From:   Laurent Vivier <laurent@vivier.eu>
-In-Reply-To: <CAK8P3a13g_o4mTsOO-4b=WU6TGRHubY7HCt1x1FdXpVmjy6-Sg@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Provags-ID: V03:K1:X3raeUWjLbG4Qv47KMacOpNsSNYi+XeJ1v535mvSQI9q5vKvWK/
- ohgGS/PrmpSvQ1hbNTCXKp5KzkldAxzyDGdxxyQ/uxXI4u5qObM5/ccaVIlt5kf8jd6Yrxl
- plPsDC+2JxuR4Cmzh6Y6DPUzDvBckDbAGpi7a3p+2DjbqnSCZKGs8GYyKOCFR8ejkh4nVql
- 640D6HnWL1HzY/pH7iyuA==
-X-UI-Out-Filterresults: notjunk:1;V03:K0:qm+OVm7QkMQ=:9cX7LUVzh36XwM6BDed5Ov
- sgCqq5kOQzBRNjEA3OK4nBO+t6x4Mk7JKnJlF+I6buSaBxVSRtoo3HJymPf1U5eOoYWiUuKHt
- DFWwizsC0RS+x1Ra14ajoulm+QG1Bsj/VoCu8UiD6Rg/JD/Rqd/VLfGpygScxtzLIDPyluVAq
- rxl3+Jd+NHJQRfkVkceLaXIiJ2fkP9JB1vZ8F9l58KUsQEeIN+dE6JUI9N6Av1fH8WTc5PGw1
- NoyLO0tjWzVCmtPaSQKOTTBuAg+u20EXFfZnwcf0i+en/lkYw14qEyUpi7rVK0VFxUHjS4jW1
- Qhm1Mahrg+CYWnpXuvc5Ba+0EwmMxAka49i+yhgeMjDYf8mHgC3Ak6Ywr/14mWQtbi3gZQydY
- P/k8VgtF1bdZ5udOsYqye5bfFdADSELtH8nrtiQm2ivNTXAyFc8mAuyrr36FqLmpzVdq33cVf
- ai1G4LGtpXV62jjProRKWREd2GbLQnC9rlpxXLGWo2f/uSVAI3JoNoC+p6R0nUB3iw2Nyiy13
- NiS5zqqA9ZUtcxZwTUMnTX3AwDh4T1FxRzizCAK6hTtdAaPGeyb3OVF8hWWgnspIcAnqG7E6G
- ww+QZ2uWm0kJV78yK+KOiGNSSg3ofxUnPH/PBPAdnwr+gXEv06Tn9N6umGQOOCQajomom3fpz
- /dfOT/SDZTpp6tIHmdsl8APCJFfcCkaDRHW8AMs5Vb3DpVKQ9oAM65fh35AeTsTrvbRQ=
+Content-Type: text/plain; charset="UTF-8"
+X-Provags-ID: V03:K1:9/zanKaccaoMqwIrnqrjXXhwQCYoJArgkP3pVUIvh8+sMufGufp
+ 0BxA5u1WEOIQtbvuNKiR6gpUKvMMbrvyoNd1EeQoM9nRK1S+VWmHrM5BW4+g5FEP+FhmETH
+ BLz21rsmeLMSZYBinfo1ISwlyvXld0JSSkHekft5SU64sBH9a5Q88UkFZ6ceS780wjtz8Dj
+ d0XPqzHRiAy1uoUK4ohMA==
+X-UI-Out-Filterresults: notjunk:1;V03:K0:Z26QeK4V6+Q=:45epP19JtylAWQHLzLANsu
+ k9owl8zZ0NIHXfM31ZYcqJoqPGN9qW6vBlT71TTkmYOJhq23jmp5qbs6VbUWlKa7nf63N71oq
+ xsj0E7rCuZcfywqmDtrwC4ME8xNaJFMAp4HAoYCu3xvQcO35t/BHlsgGbYwchKfBgJAz7h+Z+
+ k9/LQROHyHyTUKXykzq95kEPGlYiX4wC0gEYechyFhOhmcjle28NvUuvgjRpzNOXrg6WPLRVe
+ NshMuYAaDE2IZtTqVQMowz7r/vVz4y6xZIfm9JKXj25aXiAzE+5BU4vaRHBIYj5XXaHski9xz
+ CSwVU/N3EWz+mw9Nh53SYpLb7u70iduYS/iqweTbNJOghrhnD/8vMaNx2WLDfOxwG7dvJjfM0
+ H7o29iOTrDCbuW2gAz79UoiWPNOJgOhE183TU/tWWKcZuRfcfCLwXDRoU+9f+4+q4NzvHeQpC
+ DOm/maoGptHDJHSSt5u7U3qROCThAfsdg/xBN5FTcynejFhKo2b9aFBAa5Ncb9A0OmZ3JFPBc
+ mEr92/DUgllZQBUrLFKrUwSiTzm0+V+PlifT5z5hbtJsBJb7api/Yv5wlvHTSkgCnkKU3JiA3
+ 0EWMsqRh+f1/s5EerjExVud7WY2VDaCRGOiHa8Ts55ePkCT9K7QWOqMSESZKDWeeoRezzPD64
+ XAEpkLxUWeLUcs9n8PDvattHxJ9hfg88F4PoYc/FP990J8DOzmWQv2AIFomTn0u6e95Q39ws1
+ V3o4bR8DN7w6eH5IBVdAWtzVqH+8Gq/oETtKTBiYSdnrF2Fy8kKw2VHFiuj3WU9Mi3YMB79yQ
+ iSWSCZ4iYElDQ1Ti9OaKDganGnQurY4AhsxRHsSZm9jg7J7PMM=
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-Le 16/01/2022 à 11:44, Arnd Bergmann a écrit :
-> On Sat, Jan 15, 2022 at 8:32 PM Laurent Vivier <laurent@vivier.eu> wrote:
-> 
->> +
->> +/* goldfish endianness depends on CPU endianness */
->> +#ifdef CONFIG_CPU_BIG_ENDIAN
->> +#define goldfish_ioread32 ioread32be
->> +#define goldfish_iowrite32 iowrite32be
->> +#else
->> +#define goldfish_ioread32 ioread32
->> +#define goldfish_iowrite32 iowrite32
->> +#endif
-> 
-> This is not what I meant here, as you are breaking big-endian support
-> for all other
-> architectures in the process.
-> 
-> On architectures that support both big-endian and little-endian kernels, devices
-> (including emulated ones) can't know which type of kernel you are running, so
-> this has to be fixed by architecture. Ideally this macro should be in
-> an architecture
-> specific header file, but you can also just make this a check for m68k and  hope
-> that qemu doesn't duplicate this bug on architectures that gain support for this
-> driver in the future.
+On Sun, Jan 16, 2022 at 12:54 PM Laurent Vivier <laurent@vivier.eu> wrote:
+>
+> Virtio has exactly the same problem in the past (prio to v1.0), and it uses __LITTLE_ENDIAN in
+> virtio_legacy_is_little_endian() to know the endianness of the device.
 
-Virtio has exactly the same problem in the past (prio to v1.0), and it uses __LITTLE_ENDIAN in 
-virtio_legacy_is_little_endian() to know the endianness of the device.
+Right, that was my point, let's not duplicate the bug from pre-standard virtio.
 
-So the code can become:
+> So the code can become:
+>
+> #ifdef __LITTLE_ENDIAN
+> #define goldfish_ioread32 ioread32
+> #define goldfish_iowrite32 iowrite32
+> #else
+> #define goldfish_ioread32 ioread32be
+> #define goldfish_iowrite32 iowrite32be
+> #endif
 
-#ifdef __LITTLE_ENDIAN
-#define goldfish_ioread32 ioread32
-#define goldfish_iowrite32 iowrite32
-#else
-#define goldfish_ioread32 ioread32be
-#define goldfish_iowrite32 iowrite32be
-#endif
+This is exactly the same as what you had before, it continues to break when
+host and guest disagree on the endianess.
 
-What do you prefer: CONFIG_M68K or __LITTLE_ENDIAN?
+> What do you prefer: CONFIG_M68K or __LITTLE_ENDIAN?
 
-Thanks,
-Laurent
+Checking for CONFIG_M68K at least has a chance of working, provided
+that all existing qemu implementations agree on the semantics here.
+
+       Arnd
