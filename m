@@ -2,184 +2,103 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id EAFE9C4167B
-	for <linux-m68k@archiver.kernel.org>; Sun, 16 Jan 2022 16:51:20 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id CE034C433F5
+	for <linux-m68k@archiver.kernel.org>; Mon, 17 Jan 2022 04:03:52 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235835AbiAPQvT (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Sun, 16 Jan 2022 11:51:19 -0500
-Received: from mout.kundenserver.de ([217.72.192.73]:37789 "EHLO
-        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235783AbiAPQvN (ORCPT
+        id S236970AbiAQEDw (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Sun, 16 Jan 2022 23:03:52 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36668 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234174AbiAQEDw (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Sun, 16 Jan 2022 11:51:13 -0500
-Received: from quad ([82.142.13.186]) by mrelayeu.kundenserver.de (mreue108
- [212.227.15.183]) with ESMTPSA (Nemesis) id 1MtOOm-1mK3Bh2Hde-00upva; Sun, 16
- Jan 2022 17:50:55 +0100
-From:   Laurent Vivier <laurent@vivier.eu>
-To:     linux-kernel@vger.kernel.org
-Cc:     Stephen Boyd <sboyd@kernel.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Alessandro Zummo <a.zummo@towertech.it>,
-        linux-m68k@lists.linux-m68k.org,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Jiaxun Yang <jiaxun.yang@flygoat.com>,
-        John Stultz <john.stultz@linaro.org>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        linux-rtc@vger.kernel.org, Laurent Vivier <laurent@vivier.eu>
-Subject: [PATCH v9 2/4] rtc: goldfish: introduce goldfish_ioread32()/goldfish_iowrite32()
-Date:   Sun, 16 Jan 2022 17:50:49 +0100
-Message-Id: <20220116165051.120826-3-laurent@vivier.eu>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20220116165051.120826-1-laurent@vivier.eu>
-References: <20220116165051.120826-1-laurent@vivier.eu>
+        Sun, 16 Jan 2022 23:03:52 -0500
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB62BC061574
+        for <linux-m68k@lists.linux-m68k.org>; Sun, 16 Jan 2022 20:03:51 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 2C29260C35;
+        Mon, 17 Jan 2022 04:03:51 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6525FC36AE3;
+        Mon, 17 Jan 2022 04:03:49 +0000 (UTC)
+Subject: Re: [PATCH v2 RESEND] m68k/kernel: array out of bound access in
+ process_uboot_commandline
+To:     Hangyu Hua <hbh25y@gmail.com>, geert@linux-m68k.org
+Cc:     schwab@linux-m68k.org, linux-m68k@lists.linux-m68k.org,
+        linux-kernel@vger.kernel.org
+References: <20220113015854.9326-1-hbh25y@gmail.com>
+From:   Greg Ungerer <gerg@linux-m68k.org>
+Message-ID: <95d91f5f-c5e1-0750-ebb9-b6839aecdc7c@linux-m68k.org>
+Date:   Mon, 17 Jan 2022 14:03:45 +1000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.14.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Provags-ID: V03:K1:+k1FifxnRr8+ISOTLHm6WqlQsIQaRoVY6Z83ax8p5wBA8cD2Tyc
- nVMAMV2wLRlXvXALWqksmqr7ARM0KJ9MwbJLtNIENPsHQLydQWd7KU7JOD75XowHT9oSoAv
- uw1KcRYP9WnXKEXMQS6jFjp1jS37mecIzpbVFsLSHpwpwvqyeZ0aACswVQFK4+XsmRxy+Jt
- c3DVA26WkozM3L3vXIALA==
-X-UI-Out-Filterresults: notjunk:1;V03:K0:veMA0nMWdjM=:i75S6vO+lnRqRqnxkbBPR8
- 0ml/9CqhE+UL24AMW939SL+hmNsDrhlkInu/OQeUzQCHGsyvdF/CatAuvSQQBWlWqM0JWEXoq
- ZHIcbn8xmPnxG9gN4GMyZwxB3BeanFacGE24MhRYcNZ+MlMZpSTIZ3+oSg01Vp1xI+5utj1el
- RBq9RO8F+x+c4rjS/bs9YFchxapIBcI8rFGmWqPQeCbBzJhTDtmITktcI7o83TqxKDb+KNPSp
- xGmU7RlWkd82V3uLlfTlgKxrJZqAmYaGvl13wlx/jKlpgfThA8Po9xy9KmRnvJI+FUBbxOT+G
- 2rMTVN2kI8L6XG9C704L0Wqo5q860BS49AR18YSuq0F8xSrs2SCMJRhd/XfwRHCNSr43syvFP
- B1P4cAetq9bae6zB25MbeKy/2i14T1lIPwoiVFwkRvfq+VboJ4ndCi9CcOOdzsdpKPs9D+ZMS
- zeVuyahz7MU3LQHMjhewGnDctmm/kG8AwmjE/p/1V1Dp8TtojMrVK866CqBog3PjU9AVCbBFT
- 8mwi6Dz6x6bA/ZGZTBSSSuqgiOm8b9w/nvAX9oaUlYXcm/eai7yEvAf6TrcwQ7aFtUdcmJITs
- wXl1qK3/6HSTkRFRMvfe3gsgD7nSIQF4KqdP/+PfoC1bmrev2bq0ul2/1CJ8WqXYTCVnzsYaq
- HDr3GAoglrPNGbr0DueEH315SDDggzW82pZYVwyqakyy6X6/DofXhjs6t6ohHt8vkyyE=
+In-Reply-To: <20220113015854.9326-1-hbh25y@gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-The goldfish device always uses the same endianness as the architecture
-using it:
-https://android.googlesource.com/platform/external/qemu/+/refs/heads/emu-master-dev/hw/timer/goldfish_timer.c#177
+Hi Hangyu,
 
-On a big-endian machine, the device is also big-endian, on a
-little-endian machine the device is little-endian.
+On 13/1/22 11:58 am, Hangyu Hua wrote:
+> When the size of commandp >= size, array out of bound write occurs because
+> len == 0.
+> 
+> Signed-off-by: Hangyu Hua <hbh25y@gmail.com>
+> ---
+>   arch/m68k/kernel/uboot.c | 3 ++-
+>   1 file changed, 2 insertions(+), 1 deletion(-)
+> 
+> diff --git a/arch/m68k/kernel/uboot.c b/arch/m68k/kernel/uboot.c
+> index 928dbd33fc4a..63eaf3c3ddcd 100644
+> --- a/arch/m68k/kernel/uboot.c
+> +++ b/arch/m68k/kernel/uboot.c
+> @@ -101,5 +101,6 @@ __init void process_uboot_commandline(char *commandp, int size)
+>   	}
+>   
+>   	parse_uboot_commandline(commandp, len);
+> -	commandp[len - 1] = 0;
+> +	if (len > 0)
+> +		commandp[len - 1] = 0;
+>   }
+> 
 
-So we need to use the right accessor to read/write values to the goldfish
-registers: ioread32()/iowrite32() on a little-endian machine,
-ioread32be()/iowrite32be() on a big-endian machine.
+I am not convinced this is wrong for the reason you think it is.
+Looking at the code in its entirety:
 
-This patch introduces goldfish_ioread32()/goldfish_iowrite32() that uses
-the expected accessor according to the machine endianness.
+__init void process_uboot_commandline(char *commandp, int size)
+{
+         int len, n;
 
-Signed-off-by: Laurent Vivier <laurent@vivier.eu>
----
- drivers/rtc/rtc-goldfish.c | 38 +++++++++++++++++++++++---------------
- 1 file changed, 23 insertions(+), 15 deletions(-)
+         n = strnlen(commandp, size);
+         commandp += n;
+         len = size - n;
+         if (len) {
+                 /* Add the whitespace separator */
+                 *commandp++ = ' ';
+                 len--;
+         }
 
-diff --git a/drivers/rtc/rtc-goldfish.c b/drivers/rtc/rtc-goldfish.c
-index 7ab95d052644..611cc6123bbe 100644
---- a/drivers/rtc/rtc-goldfish.c
-+++ b/drivers/rtc/rtc-goldfish.c
-@@ -23,6 +23,14 @@
- #define TIMER_ALARM_STATUS	0x18
- #define TIMER_CLEAR_INTERRUPT	0x1c
- 
-+#ifdef CONFIG_M68K
-+#define goldfish_ioread32 ioread32be
-+#define goldfish_iowrite32 iowrite32be
-+#else
-+#define goldfish_ioread32 ioread32
-+#define goldfish_iowrite32 iowrite32
-+#endif
-+
- struct goldfish_rtc {
- 	void __iomem *base;
- 	int irq;
-@@ -41,8 +49,8 @@ static int goldfish_rtc_read_alarm(struct device *dev,
- 	rtcdrv = dev_get_drvdata(dev);
- 	base = rtcdrv->base;
- 
--	rtc_alarm_low = readl(base + TIMER_ALARM_LOW);
--	rtc_alarm_high = readl(base + TIMER_ALARM_HIGH);
-+	rtc_alarm_low = goldfish_ioread32(base + TIMER_ALARM_LOW);
-+	rtc_alarm_high = goldfish_ioread32(base + TIMER_ALARM_HIGH);
- 	rtc_alarm = (rtc_alarm_high << 32) | rtc_alarm_low;
- 
- 	do_div(rtc_alarm, NSEC_PER_SEC);
-@@ -50,7 +58,7 @@ static int goldfish_rtc_read_alarm(struct device *dev,
- 
- 	rtc_time64_to_tm(rtc_alarm, &alrm->time);
- 
--	if (readl(base + TIMER_ALARM_STATUS))
-+	if (goldfish_ioread32(base + TIMER_ALARM_STATUS))
- 		alrm->enabled = 1;
- 	else
- 		alrm->enabled = 0;
-@@ -71,18 +79,18 @@ static int goldfish_rtc_set_alarm(struct device *dev,
- 
- 	if (alrm->enabled) {
- 		rtc_alarm64 = rtc_tm_to_time64(&alrm->time) * NSEC_PER_SEC;
--		writel((rtc_alarm64 >> 32), base + TIMER_ALARM_HIGH);
--		writel(rtc_alarm64, base + TIMER_ALARM_LOW);
--		writel(1, base + TIMER_IRQ_ENABLED);
-+		goldfish_iowrite32((rtc_alarm64 >> 32), base + TIMER_ALARM_HIGH);
-+		goldfish_iowrite32(rtc_alarm64, base + TIMER_ALARM_LOW);
-+		goldfish_iowrite32(1, base + TIMER_IRQ_ENABLED);
- 	} else {
- 		/*
- 		 * if this function was called with enabled=0
- 		 * then it could mean that the application is
- 		 * trying to cancel an ongoing alarm
- 		 */
--		rtc_status_reg = readl(base + TIMER_ALARM_STATUS);
-+		rtc_status_reg = goldfish_ioread32(base + TIMER_ALARM_STATUS);
- 		if (rtc_status_reg)
--			writel(1, base + TIMER_CLEAR_ALARM);
-+			goldfish_iowrite32(1, base + TIMER_CLEAR_ALARM);
- 	}
- 
- 	return 0;
-@@ -98,9 +106,9 @@ static int goldfish_rtc_alarm_irq_enable(struct device *dev,
- 	base = rtcdrv->base;
- 
- 	if (enabled)
--		writel(1, base + TIMER_IRQ_ENABLED);
-+		goldfish_iowrite32(1, base + TIMER_IRQ_ENABLED);
- 	else
--		writel(0, base + TIMER_IRQ_ENABLED);
-+		goldfish_iowrite32(0, base + TIMER_IRQ_ENABLED);
- 
- 	return 0;
- }
-@@ -110,7 +118,7 @@ static irqreturn_t goldfish_rtc_interrupt(int irq, void *dev_id)
- 	struct goldfish_rtc *rtcdrv = dev_id;
- 	void __iomem *base = rtcdrv->base;
- 
--	writel(1, base + TIMER_CLEAR_INTERRUPT);
-+	goldfish_iowrite32(1, base + TIMER_CLEAR_INTERRUPT);
- 
- 	rtc_update_irq(rtcdrv->rtc, 1, RTC_IRQF | RTC_AF);
- 
-@@ -128,8 +136,8 @@ static int goldfish_rtc_read_time(struct device *dev, struct rtc_time *tm)
- 	rtcdrv = dev_get_drvdata(dev);
- 	base = rtcdrv->base;
- 
--	time_low = readl(base + TIMER_TIME_LOW);
--	time_high = readl(base + TIMER_TIME_HIGH);
-+	time_low = goldfish_ioread32(base + TIMER_TIME_LOW);
-+	time_high = goldfish_ioread32(base + TIMER_TIME_HIGH);
- 	time = (time_high << 32) | time_low;
- 
- 	do_div(time, NSEC_PER_SEC);
-@@ -149,8 +157,8 @@ static int goldfish_rtc_set_time(struct device *dev, struct rtc_time *tm)
- 	base = rtcdrv->base;
- 
- 	now64 = rtc_tm_to_time64(tm) * NSEC_PER_SEC;
--	writel((now64 >> 32), base + TIMER_TIME_HIGH);
--	writel(now64, base + TIMER_TIME_LOW);
-+	goldfish_iowrite32((now64 >> 32), base + TIMER_TIME_HIGH);
-+	goldfish_iowrite32(now64, base + TIMER_TIME_LOW);
- 
- 	return 0;
- }
--- 
-2.34.1
+         parse_uboot_commandline(commandp, len);
+         commandp[len - 1] = 0;
+}
 
+
+"commandp" is moved based on the return of the strnlen(). So in the
+case of commandp actually being full of valid characters (so n == size,
+and thus len == 0) the commandp technically points outside of its
+real size at that point. But "command[[len - 1]" would actually be
+pointing to the last char in the original commandp array (so the original
+commandp[size - 1]). Well at least if you are happy with the use of
+negative array indexes.
+
+Clearly this could be structured better. There is no point in calling
+parse_uboot_commandline() if len == 0, or even if len == 1, since you
+cannot add anymore to the command line, it is full.
+
+Regards
+Greg
