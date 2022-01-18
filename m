@@ -2,37 +2,68 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 7BA86C433EF
-	for <linux-m68k@archiver.kernel.org>; Tue, 18 Jan 2022 08:27:04 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4B357C433EF
+	for <linux-m68k@archiver.kernel.org>; Tue, 18 Jan 2022 10:40:27 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235950AbiARI1E (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Tue, 18 Jan 2022 03:27:04 -0500
-Received: from ams.source.kernel.org ([145.40.68.75]:50860 "EHLO
-        ams.source.kernel.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232989AbiARI1D (ORCPT
+        id S237606AbiARKk0 (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Tue, 18 Jan 2022 05:40:26 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60216 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237603AbiARKk0 (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Tue, 18 Jan 2022 03:27:03 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 79F35B8125A;
-        Tue, 18 Jan 2022 08:27:02 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0A5F0C00446;
-        Tue, 18 Jan 2022 08:26:59 +0000 (UTC)
+        Tue, 18 Jan 2022 05:40:26 -0500
+Received: from mail-pl1-x644.google.com (mail-pl1-x644.google.com [IPv6:2607:f8b0:4864:20::644])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 58130C061574
+        for <linux-m68k@lists.linux-m68k.org>; Tue, 18 Jan 2022 02:40:26 -0800 (PST)
+Received: by mail-pl1-x644.google.com with SMTP id d1so657881plh.10
+        for <linux-m68k@lists.linux-m68k.org>; Tue, 18 Jan 2022 02:40:26 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=69DwjfMjzmf/AfXmnX+bsAUeKxZaOoNzZ3bIdAfPGMI=;
+        b=opIuoYaqtSYw6OdTB0wfs5HX5bdoHOzR03F+uG4vjYBlMKq9aChQ9AQGL7RjUBdCfG
+         NKELFOfdnR790bqNjuyr8kS+9y0ZR5TGIb5EMFwNwLTHH/0TDXj9sV2gg6+Kz9ayVRF7
+         E6Ei+8HRpwKU/OasIW039tRjOamn/B3C9Qv2pCyLclNkDZYS+u3ZS9nOAawRN60pedZP
+         UAQ8U1VAYrgPybdyr96mqAwT3KI1IUS1YgZ57KeOohH3PLjmJHitI/GYzIbzXQwt8L8u
+         2upSu4nUyBZEDfg2uqsp+e4HzcTr5OHf2GEeuMx4lO2IADbKzh9aIp5k/7859xS/0yox
+         GWIw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=69DwjfMjzmf/AfXmnX+bsAUeKxZaOoNzZ3bIdAfPGMI=;
+        b=7NTL6wnyTA/nLcQClIMnHE/emYb+nQhkZCiPEdz7Ujccq3T2RGQcoxpaoWz5MF97Va
+         ShUKvVKvWdAgEHzdpvjNvOfQL/j4PciJq4LYIrX3HEGzugvJoGxToarMsfPhapzyYi+l
+         jaqmj1o1f7Eu8LfUbsMZrg1u22nN4cVEPC24wL3DHAWaee63XnE8MuLScnaVoRLfj2iQ
+         LptLZOeK/p+HZLzg7w7ipEpvBizMLv//Ug2mqDjADzAKFzsNr9z0gAHa3qL3UxTHe/e+
+         7RlhUiHuh83Prss06AxxTGgmRd8jfC5enqBhqYwHfF8tltCyuybtFof4ePTJLCGzWpaf
+         /VvA==
+X-Gm-Message-State: AOAM5338iBAbx5Uvw9FOoEK+S7R2Cacalb37IcljTNy+GvKxynx2QPhd
+        mTSQbVXIfNJF4bRj2X0FQlo=
+X-Google-Smtp-Source: ABdhPJxGAs9HhjxAbkmFEDtmQ5xCX5NN3VHLZOT59Cfx5kBMc/aXOIHFRTt7VrUl3yp+Iw9X7pdOCQ==
+X-Received: by 2002:a17:902:6841:b0:149:6791:5a4f with SMTP id f1-20020a170902684100b0014967915a4fmr26641604pln.123.1642502425705;
+        Tue, 18 Jan 2022 02:40:25 -0800 (PST)
+Received: from [0.0.0.0] ([209.97.166.32])
+        by smtp.gmail.com with ESMTPSA id m18sm5011395pfk.180.2022.01.18.02.40.23
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 18 Jan 2022 02:40:25 -0800 (PST)
 Subject: Re: [PATCH v2 RESEND] m68k/kernel: array out of bound access in
  process_uboot_commandline
-To:     Hangyu Hua <hbh25y@gmail.com>
-References: <9775e266-5fee-b0e9-7fa3-b602ec4b7796 () gmail ! com>
+To:     Greg Ungerer <gerg@linux-m68k.org>
 Cc:     Geert Uytterhoeven <geert@linux-m68k.org>,
         linux-m68k <linux-m68k@lists.linux-m68k.org>,
         "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-From:   Greg Ungerer <gerg@linux-m68k.org>
-Message-ID: <a7483172-09dc-21ad-d674-25b7015156fd@linux-m68k.org>
-Date:   Tue, 18 Jan 2022 18:26:56 +1000
+References: <9775e266-5fee-b0e9-7fa3-b602ec4b7796 () gmail ! com>
+ <a7483172-09dc-21ad-d674-25b7015156fd@linux-m68k.org>
+From:   Hangyu Hua <hbh25y@gmail.com>
+Message-ID: <c9238f43-406f-3a75-c469-7d8ad30f88f3@gmail.com>
+Date:   Tue, 18 Jan 2022 18:40:20 +0800
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
  Thunderbird/78.14.0
 MIME-Version: 1.0
-In-Reply-To: <9775e266-5fee-b0e9-7fa3-b602ec4b7796 () gmail ! com>
+In-Reply-To: <a7483172-09dc-21ad-d674-25b7015156fd@linux-m68k.org>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 8bit
@@ -40,98 +71,118 @@ Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-Hi Hangyu,
+Hi, Greg
 
-On 18/1/22 12:18 pm, Hangyu Hua wrote:
-> Hi Greg,
+
+On 2022/1/18 下午4:26, Greg Ungerer wrote:
+> Hi Hangyu,
 > 
-> On 2022/1/17 下午12:03, Greg Ungerer wrote:
->> Hi Hangyu,
+> On 18/1/22 12:18 pm, Hangyu Hua wrote:
+>> Hi Greg,
 >>
->> On 13/1/22 11:58 am, Hangyu Hua wrote:
->>> When the size of commandp >= size, array out of bound write occurs
->>> because
->>> len == 0.
+>> On 2022/1/17 下午12:03, Greg Ungerer wrote:
+>>> Hi Hangyu,
 >>>
->>> Signed-off-by: Hangyu Hua <hbh25y@gmail.com>
->>> ---
->>>    arch/m68k/kernel/uboot.c | 3 ++-
->>>    1 file changed, 2 insertions(+), 1 deletion(-)
+>>> On 13/1/22 11:58 am, Hangyu Hua wrote:
+>>>> When the size of commandp >= size, array out of bound write occurs
+>>>> because
+>>>> len == 0.
+>>>>
+>>>> Signed-off-by: Hangyu Hua <hbh25y@gmail.com>
+>>>> ---
+>>>>    arch/m68k/kernel/uboot.c | 3 ++-
+>>>>    1 file changed, 2 insertions(+), 1 deletion(-)
+>>>>
+>>>> diff --git a/arch/m68k/kernel/uboot.c b/arch/m68k/kernel/uboot.c
+>>>> index 928dbd33fc4a..63eaf3c3ddcd 100644
+>>>> --- a/arch/m68k/kernel/uboot.c
+>>>> +++ b/arch/m68k/kernel/uboot.c
+>>>> @@ -101,5 +101,6 @@ __init void process_uboot_commandline(char
+>>>> *commandp, int size)
+>>>>        }
+>>>>        parse_uboot_commandline(commandp, len);
+>>>> -    commandp[len - 1] = 0;
+>>>> +    if (len > 0)
+>>>> +        commandp[len - 1] = 0;
+>>>>    }
+>>>>
 >>>
->>> diff --git a/arch/m68k/kernel/uboot.c b/arch/m68k/kernel/uboot.c
->>> index 928dbd33fc4a..63eaf3c3ddcd 100644
->>> --- a/arch/m68k/kernel/uboot.c
->>> +++ b/arch/m68k/kernel/uboot.c
->>> @@ -101,5 +101,6 @@ __init void process_uboot_commandline(char
->>> *commandp, int size)
->>>        }
->>>        parse_uboot_commandline(commandp, len);
->>> -    commandp[len - 1] = 0;
->>> +    if (len > 0)
->>> +        commandp[len - 1] = 0;
->>>    }
+>>> I am not convinced this is wrong for the reason you think it is.
+>>> Looking at the code in its entirety:
+>>>
+>>> __init void process_uboot_commandline(char *commandp, int size)
+>>> {
+>>>           int len, n;
+>>>
+>>>           n = strnlen(commandp, size);
+>>>           commandp += n;
+>>>           len = size - n;
+>>>           if (len) {
+>>>                   /* Add the whitespace separator */
+>>>                   *commandp++ = ' ';
+>>>                   len--;
+>>>           }
+>>>
+>>>           parse_uboot_commandline(commandp, len);
+>>>           commandp[len - 1] = 0;
+>>> }
+>>>
+>>>
+>>> "commandp" is moved based on the return of the strnlen(). So in the
+>>> case of commandp actually being full of valid characters (so n == size,
+>>> and thus len == 0) the commandp technically points outside of its
+>>> real size at that point. But "command[[len - 1]" would actually be
+>>> pointing to the last char in the original commandp array (so the 
+>>> original
+>>> commandp[size - 1]). Well at least if you are happy with the use of
+>>> negative array indexes.
 >>>
 >>
->> I am not convinced this is wrong for the reason you think it is.
->> Looking at the code in its entirety:
+>> You mean this is a friendly out of bound beacause "command[[len - 1]"
+>> pointing to the last char in the original commandp array. I used to
+>> think command[[len - 1] = 0 may be a zero-terminated for command. You
+>> can see my discussion with Andreas Schwab and my patch v1 in
 >>
->> __init void process_uboot_commandline(char *commandp, int size)
->> {
->>           int len, n;
->>
->>           n = strnlen(commandp, size);
->>           commandp += n;
->>           len = size - n;
->>           if (len) {
->>                   /* Add the whitespace separator */
->>                   *commandp++ = ' ';
->>                   len--;
->>           }
->>
->>           parse_uboot_commandline(commandp, len);
->>           commandp[len - 1] = 0;
->> }
+>> https://lore.kernel.org/all/CAOo-nLJG71QqqD0-cJDyH0rY2VTx1eO9nHVQ5MCe8J0iiME_vw@mail.gmail.com/ 
 >>
 >>
->> "commandp" is moved based on the return of the strnlen(). So in the
->> case of commandp actually being full of valid characters (so n == size,
->> and thus len == 0) the commandp technically points outside of its
->> real size at that point. But "command[[len - 1]" would actually be
->> pointing to the last char in the original commandp array (so the original
->> commandp[size - 1]). Well at least if you are happy with the use of
->> negative array indexes.
->>
+>> But this still be a out of bound write because "commandp" is a macro
+>> definition with a fixed size.
 > 
-> You mean this is a friendly out of bound beacause "command[[len - 1]"
-> pointing to the last char in the original commandp array. I used to
-> think command[[len - 1] = 0 may be a zero-terminated for command. You
-> can see my discussion with Andreas Schwab and my patch v1 in
+> No, "commandp" is not a macro, it is a parameter to this function, is a 
+> char pointer.
+> It points into a char array of size "size" (which will be non-zero).
+> It is modified during execution of this function.
+> I don't see an out-of-bound write here.
 > 
-> https://lore.kernel.org/all/CAOo-nLJG71QqqD0-cJDyH0rY2VTx1eO9nHVQ5MCe8J0iiME_vw@mail.gmail.com/
+
+I am sorry i make a mistake in here. What i want to express is that 
+setup_arch call parse_uboot_commandline with m68k_command_line or 
+command_line.The definitions of m68k_command_line and command_line
+are:
+
+char __initdata command_line[COMMAND_LINE_SIZE];
+static char m68k_command_line[CL_SIZE] __initdata;
+
+And I undertand what you mean. You are right. There isn't a out-of-bound.
+
 > 
-> But this still be a out of bound write because "commandp" is a macro
-> definition with a fixed size.
+>>> Clearly this could be structured better. There is no point in calling
+>>> parse_uboot_commandline() if len == 0, or even if len == 1, since you
+>>> cannot add anymore to the command line, it is full.
+>>>
+>> I think it is no point too. But the caller (setup_arch()) don't check
+>> the size of "commandp" before call parse_uboot_commandline(). Instead we
+>> do this in parse_uboot_commandline(). So it may be better to move these
+>> checks to the caller ?
+> 
+> No, I don't think so. The caller doesn't care if it is already full.
+> And the common case is that process_uboot_commandline() is empty
+> when CONFIG_UBOOT is not enabled.
+> 
+> Regards
+> Greg
+> 
+> 
 
-No, "commandp" is not a macro, it is a parameter to this function, is a char pointer.
-It points into a char array of size "size" (which will be non-zero).
-It is modified during execution of this function.
-I don't see an out-of-bound write here.
-
-
->> Clearly this could be structured better. There is no point in calling
->> parse_uboot_commandline() if len == 0, or even if len == 1, since you
->> cannot add anymore to the command line, it is full.
->>
-> I think it is no point too. But the caller (setup_arch()) don't check
-> the size of "commandp" before call parse_uboot_commandline(). Instead we
-> do this in parse_uboot_commandline(). So it may be better to move these
-> checks to the caller ?
-
-No, I don't think so. The caller doesn't care if it is already full.
-And the common case is that process_uboot_commandline() is empty
-when CONFIG_UBOOT is not enabled.
-
-Regards
-Greg
-
-
+Thanks
