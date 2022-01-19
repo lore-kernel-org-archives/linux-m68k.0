@@ -2,144 +2,120 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 69D4EC433F5
-	for <linux-m68k@archiver.kernel.org>; Wed, 19 Jan 2022 06:38:48 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E1B63C433FE
+	for <linux-m68k@archiver.kernel.org>; Wed, 19 Jan 2022 08:22:00 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350206AbiASGir (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Wed, 19 Jan 2022 01:38:47 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50000 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1349687AbiASGir (ORCPT
-        <rfc822;linux-m68k@vger.kernel.org>); Wed, 19 Jan 2022 01:38:47 -0500
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE788C061574
-        for <linux-m68k@vger.kernel.org>; Tue, 18 Jan 2022 22:38:46 -0800 (PST)
-Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <mkl@pengutronix.de>)
-        id 1nA4cE-0000HX-Lg; Wed, 19 Jan 2022 07:38:42 +0100
-Received: from pengutronix.de (unknown [195.138.59.174])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (Client did not present a certificate)
-        (Authenticated sender: mkl-all@blackshift.org)
-        by smtp.blackshift.org (Postfix) with ESMTPSA id B1AF11D392;
-        Wed, 19 Jan 2022 06:38:40 +0000 (UTC)
-Date:   Wed, 19 Jan 2022 07:38:37 +0100
-From:   Marc Kleine-Budde <mkl@pengutronix.de>
-To:     Angelo Dureghello <angelo@kernel-space.org>
-Cc:     gerg@linux-m68k.org, geert@linux-m68k.org,
-        linux-m68k@vger.kernel.org, linux-can@vger.kernel.org,
-        qiangqing.zhang@nxp.com,
-        Dario Binacchi <dario.binacchi@amarulasolutions.com>
-Subject: Re: mcf5441x: flexcan FIFO and mailbox mode (was: Re: [PATCH v5 5/5]
- can: flexcan: add mcf5441x support)
-Message-ID: <20220119063837.idsiq72xrv4fvtih@pengutronix.de>
-References: <20220106111847.zjkrghehxr7mrkkt@pengutronix.de>
- <1cf937d1-1e26-e611-c85f-f9e2128c225@kernel-space.org>
+        id S1346997AbiASIWA (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Wed, 19 Jan 2022 03:22:00 -0500
+Received: from mail-ua1-f47.google.com ([209.85.222.47]:37390 "EHLO
+        mail-ua1-f47.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S245478AbiASIV7 (ORCPT
+        <rfc822;linux-m68k@lists.linux-m68k.org>);
+        Wed, 19 Jan 2022 03:21:59 -0500
+Received: by mail-ua1-f47.google.com with SMTP id b16so3109134uaq.4
+        for <linux-m68k@lists.linux-m68k.org>; Wed, 19 Jan 2022 00:21:59 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=mNEeF7mEICXaIClDfLKBUPzmMnomVxgHrUkxe4T3tSU=;
+        b=vMYtUI99nYHonDxRAothGmVkc+Vb7XPhgIc8D1g8bXi+Od2zguCnvZvJPOWHOVx04Y
+         Q8FEY3mvoHlIEkTpszZ812xpC4EFfbGZC3bH51oOSmZVNspnPruu1erukHR53Qz5+t3o
+         IsMr/bZIH0MjZXITBYz/6uRLWH9yR1vw7JnclLcIv2Lo9k/vdW06oRgPab+9X+EEO3Rz
+         Qm3I6zUNE7FtB3JsXqCv170qg56EvdbexTZA9DyQ1cn5ZndSyU9S+vnusthCsycbW6gq
+         zfWyt1PTDZo8A4cHSbXqhdqyCmamlhQcrfWeMqi5hQ+guhg3td+5OFOmx7km/7f8lV7G
+         3XAA==
+X-Gm-Message-State: AOAM531U4qdix9h3CvB4rpB6Iwr9qyRoeZe+hZnyxC4MU8LwDryArbfM
+        Wd0DRe/zHWf8fsdxrXFo2VTauAlmcdew0g==
+X-Google-Smtp-Source: ABdhPJya7TMOoJByqDrjOgeOfY9lbDapoEblmH/xno2qO8QqGdDvP7uAx/rXYJHYJbnAIEw70fwLqA==
+X-Received: by 2002:a67:fb59:: with SMTP id e25mr10757079vsr.78.1642580518634;
+        Wed, 19 Jan 2022 00:21:58 -0800 (PST)
+Received: from mail-ua1-f44.google.com (mail-ua1-f44.google.com. [209.85.222.44])
+        by smtp.gmail.com with ESMTPSA id o26sm4386883vsl.9.2022.01.19.00.21.57
+        for <linux-m68k@lists.linux-m68k.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 19 Jan 2022 00:21:57 -0800 (PST)
+Received: by mail-ua1-f44.google.com with SMTP id 2so3050301uax.10
+        for <linux-m68k@lists.linux-m68k.org>; Wed, 19 Jan 2022 00:21:57 -0800 (PST)
+X-Received: by 2002:a05:6102:3581:: with SMTP id h1mr11184748vsu.5.1642580517250;
+ Wed, 19 Jan 2022 00:21:57 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="3t4iimn5toj3urys"
-Content-Disposition: inline
-In-Reply-To: <1cf937d1-1e26-e611-c85f-f9e2128c225@kernel-space.org>
-X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
-X-SA-Exim-Mail-From: mkl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-m68k@vger.kernel.org
+References: <20220119000506.1299843-1-laurent@vivier.eu> <20220119000506.1299843-3-laurent@vivier.eu>
+In-Reply-To: <20220119000506.1299843-3-laurent@vivier.eu>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Wed, 19 Jan 2022 09:21:46 +0100
+X-Gmail-Original-Message-ID: <CAMuHMdXSFU4N+FLYkCLJCJcWJ74g=8Vr23Rx0cka-kDTBs6Z4Q@mail.gmail.com>
+Message-ID: <CAMuHMdXSFU4N+FLYkCLJCJcWJ74g=8Vr23Rx0cka-kDTBs6Z4Q@mail.gmail.com>
+Subject: Re: [PATCH v10 2/5] rtc: goldfish: introduce goldfish_ioread32()/goldfish_iowrite32()
+To:     Laurent Vivier <laurent@vivier.eu>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Alessandro Zummo <a.zummo@towertech.it>,
+        John Stultz <john.stultz@linaro.org>,
+        Arnd Bergmann <arnd@arndb.de>, linux-rtc@vger.kernel.org,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Jiaxun Yang <jiaxun.yang@flygoat.com>,
+        linux-m68k <linux-m68k@lists.linux-m68k.org>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Stephen Boyd <sboyd@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
+Hi Laurent,
 
---3t4iimn5toj3urys
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+On Wed, Jan 19, 2022 at 1:05 AM Laurent Vivier <laurent@vivier.eu> wrote:
+> The goldfish device always uses the same endianness as the architecture
+> using it:
+> https://android.googlesource.com/platform/external/qemu/+/refs/heads/emu-master-dev/hw/timer/goldfish_timer.c#177
+>
+> On a big-endian machine, the device is also big-endian, on a
+> little-endian machine the device is little-endian.
+>
+> So we need to use the right accessor to read/write values to the goldfish
+> registers: ioread32()/iowrite32() on a little-endian machine,
+> ioread32be()/iowrite32be() on a big-endian machine.
+>
+> This patch introduces goldfish_ioread32()/goldfish_iowrite32() to allow
+> architectures to define them accordlingly to their endianness.
+>
+> We define them by default in asm-generic/io.h to access the device using
+> little-endian access as it is the current use, but we will be able to define
+> big-endian version when new architectures will use them.
+>
+> Signed-off-by: Laurent Vivier <laurent@vivier.eu>
 
-On 19.01.2022 07:25:21, Angelo Dureghello wrote:
-> > we're currently discussing the option that the user of a flexcan can
-> > switch between RX-FIFO and RX via mailboxes.
-> >=20
-> > I noticed that the mcf5441x currently is configured for FIFO mode. Have
-> > you tested the driver in mailbox mode?
-> >=20
-> > The reason that some cores use the FIFO mode is, that they cannot
-> > receive RTR CAN frames in mailbox mode. According to the IP core
-> > overview table, the mcf5441x can receive RTR frames.
-> >=20
-> > If the IP core supports reception of RTR frames, mailbox mode should be
-> > used, as it makes use of more buffers (16-2) instead of 6 in FIFO mode.
-> > Should we activate mailbox mode for the mcf5441x?
->=20
-> Ok, not sure why i selected FIFO mode initially, my application
-> actually is quite simple. Will try the switch to mailbox, sure,
-> looking into this.
+Thanks for your patch!
 
-Thanks for coming back to me. The mailbox mode performs better under
-heavy load, as you have more buffers available.=20
+> --- a/include/asm-generic/io.h
+> +++ b/include/asm-generic/io.h
+> @@ -906,6 +906,13 @@ static inline void iowrite64_rep(volatile void __iomem *addr,
+>  #endif /* CONFIG_64BIT */
+>  #endif /* CONFIG_GENERIC_IOMAP */
+>
+> +#ifndef goldfish_ioread32
+> +#define goldfish_ioread32 ioread32
+> +#endif
+> +#ifndef goldfish_iowrite32
+> +#define goldfish_iowrite32 iowrite32
+> +#endif
+> +
+>  #ifdef __KERNEL__
 
-If you're using a recent kernel, the flexcan driver has been moved to:
-| drivers/net/can/flexcan/flexcan-core.c
+I've just discovered include/linux/goldfish.h, which already has gf_*()
+accessors for 64-bit, so it'd make sense to move the above there,
+and adjust the names.
 
-diff --git a/drivers/net/can/flexcan/flexcan-core.c b/drivers/net/can/flexc=
-an/flexcan-core.c
-index 0bff1884d5cc..aa0b7efb5ca6 100644
---- a/drivers/net/can/flexcan/flexcan-core.c
-+++ b/drivers/net/can/flexcan/flexcan-core.c
-@@ -296,7 +296,8 @@ static_assert(sizeof(struct flexcan_regs) =3D=3D  0x4 *=
- 18 + 0xfb8);
- static const struct flexcan_devtype_data fsl_mcf5441x_devtype_data =3D {
-        .quirks =3D FLEXCAN_QUIRK_BROKEN_PERR_STATE |
-                FLEXCAN_QUIRK_NR_IRQ_3 | FLEXCAN_QUIRK_NR_MB_16 |
--               FLEXCAN_QUIRK_SUPPPORT_RX_FIFO,
-+               FLEXCAN_QUIRK_SUPPPORT_RX_MAILBOX |
-+               FLEXCAN_QUIRK_SUPPPORT_RX_MAILBOX_RTR,
- };
+Arnd: note that the existing ones do use __raw_writel().
 
-On older kernel with drivers/net/can/flexcan.c you need:
+Gr{oetje,eeting}s,
 
-diff --git a/drivers/net/can/flexcan.c b/drivers/net/can/flexcan.c
-index 7734229aa078..538b26619460 100644
---- a/drivers/net/can/flexcan.c
-+++ b/drivers/net/can/flexcan.c
-@@ -382,7 +382,8 @@ struct flexcan_priv {
-=20
- static const struct flexcan_devtype_data fsl_mcf5441x_devtype_data =3D {
-        .quirks =3D FLEXCAN_QUIRK_BROKEN_PERR_STATE |
--               FLEXCAN_QUIRK_NR_IRQ_3 | FLEXCAN_QUIRK_NR_MB_16,
-+               FLEXCAN_QUIRK_NR_IRQ_3 | FLEXCAN_QUIRK_NR_MB_16 |
-+               FLEXCAN_QUIRK_USE_OFF_TIMESTAMP,
- };
-=20
- static const struct flexcan_devtype_data fsl_p1010_devtype_data =3D {
+                        Geert
 
-Please apply appropriate change and check if the driver still works if
-you RX with full CAN bus load. Please also test if you can still receive
-RTR frames.
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
-regards,
-Marc
-
---=20
-Pengutronix e.K.                 | Marc Kleine-Budde           |
-Embedded Linux                   | https://www.pengutronix.de  |
-Vertretung West/Dortmund         | Phone: +49-231-2826-924     |
-Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-5555 |
-
---3t4iimn5toj3urys
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEK3kIWJt9yTYMP3ehqclaivrt76kFAmHnseoACgkQqclaivrt
-76lWPgf9FuBJhUgLmEiYib3sj7kwV7dTCvICIJobL0o+3DDuq4c8P71beO4gW0e9
-UEHl1i+NtHxwga57nr6BZ3YbxAxcf7UoEDbye0itSEAjgsKd6yPa0seQJiCZvUI6
-HGWSZKoLsUTFCF3DsOISqPkyCgA4HEPqrVxFpAtyeY3pNbuyeNjnoQZTL+Djtmly
-TfxxSsVMMwTz+uH3bF7f3aef1naFx10b9B28CL74+szRZkVxHl6UrBi1oZyR+3mt
-0Sxujv/pJY+l4WHvKF0SsO7NN/2Gr47673wDOaJS4DiGRUdKK0dV84xIpVyfAnb5
-dTojuaNX+GyyRFs+IcsP4BojTje3VQ==
-=84Ls
------END PGP SIGNATURE-----
-
---3t4iimn5toj3urys--
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
