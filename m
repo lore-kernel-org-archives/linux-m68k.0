@@ -2,192 +2,113 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D44C1C433F5
-	for <linux-m68k@archiver.kernel.org>; Wed, 19 Jan 2022 00:05:51 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8EAC3C433EF
+	for <linux-m68k@archiver.kernel.org>; Wed, 19 Jan 2022 06:32:11 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350365AbiASAFt (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Tue, 18 Jan 2022 19:05:49 -0500
-Received: from mout.kundenserver.de ([217.72.192.73]:43981 "EHLO
-        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1350354AbiASAFn (ORCPT
-        <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Tue, 18 Jan 2022 19:05:43 -0500
-Received: from quad ([82.142.13.186]) by mrelayeu.kundenserver.de (mreue107
- [212.227.15.183]) with ESMTPSA (Nemesis) id 1MJW5G-1muW1X0kEi-00JugW; Wed, 19
- Jan 2022 01:05:11 +0100
-From:   Laurent Vivier <laurent@vivier.eu>
-To:     linux-kernel@vger.kernel.org
-Cc:     Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Alessandro Zummo <a.zummo@towertech.it>,
-        John Stultz <john.stultz@linaro.org>,
-        Arnd Bergmann <arnd@arndb.de>, linux-rtc@vger.kernel.org,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Jiaxun Yang <jiaxun.yang@flygoat.com>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        linux-m68k@lists.linux-m68k.org,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Laurent Vivier <laurent@vivier.eu>
-Subject: [PATCH v10 2/5] rtc: goldfish: introduce goldfish_ioread32()/goldfish_iowrite32()
-Date:   Wed, 19 Jan 2022 01:05:03 +0100
-Message-Id: <20220119000506.1299843-3-laurent@vivier.eu>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20220119000506.1299843-1-laurent@vivier.eu>
-References: <20220119000506.1299843-1-laurent@vivier.eu>
+        id S1351784AbiASGcK (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Wed, 19 Jan 2022 01:32:10 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48550 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1350142AbiASGcJ (ORCPT
+        <rfc822;linux-m68k@vger.kernel.org>); Wed, 19 Jan 2022 01:32:09 -0500
+X-Greylist: delayed 400 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Tue, 18 Jan 2022 22:32:08 PST
+Received: from mail.kernel-space.org (unknown [IPv6:2a01:4f8:c2c:5a84::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7DADFC061574;
+        Tue, 18 Jan 2022 22:32:08 -0800 (PST)
+Received: from ziongate (localhost [127.0.0.1])
+        by ziongate (OpenSMTPD) with ESMTP id 439408cc;
+        Wed, 19 Jan 2022 06:25:26 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha1; c=simple; d=kernel-space.org; h=date
+        :from:to:cc:subject:in-reply-to:message-id:references
+        :mime-version:content-type; s=default; bh=s2ZSs/PKN1DSOLrxonrNUr
+        JXLFs=; b=FFl/L2e5n9Dss43S2mb3AijX09FGjDAVuagYKtR/DOITA9+qGJHCna
+        B9imOZLJjJlqeJAdrt7HCQn/LWbFtEdHLgD4ZGow25Me9QyahO7my4Ez539/LzUJ
+        /UcTebk6jroiCO/VWuXrl1Ch8Pf285Y3NRqGY7s/gKqsJfPqeHVrY=
+DomainKey-Signature: a=rsa-sha1; c=simple; d=kernel-space.org; h=date
+        :from:to:cc:subject:in-reply-to:message-id:references
+        :mime-version:content-type; q=dns; s=default; b=sxzxGa9shXLeeLXp
+        M+8UL81kODdWqJN2zDuBlnwk474hTW5UzyOmtHQUD2JLM7xNrz/9Q7800SKr0veS
+        xk2R8h6TWLQUf4dCF/En2b9POBlkMqIOjSKyPhmMSSPyk/TNzDbUSjl6gp0pkeJe
+        oHZUqI8FtTrDa2aC/XevhvWygmo=
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel-space.org;
+        s=20190913; t=1642573525;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=FQiF7uSbYYHDzY09oc6psHu+j2M09N/5yPqOvHCHhJw=;
+        b=TfrGJ9QkUyCnq4jKzWsVc5/X31/P7m4xsgODpHU4BihZKo81fQOQWT6IDuQCYF30EiqJt6
+        mnAD8yGh0/mEAiJ2eeDPzK1phiCJtSC8vjLbQA31+c1XES0EpdKQ+mXe5aheck9bM626c/
+        ITtMPv2hvYElHpkJM1qTKmGQCscOkQg=
+Received: from dfj (host-79-40-232-124.business.telecomitalia.it [79.40.232.124])
+        by ziongate (OpenSMTPD) with ESMTPSA id e7f79889 (TLSv1.3:TLS_AES_256_GCM_SHA384:256:NO);
+        Wed, 19 Jan 2022 06:25:25 +0000 (UTC)
+Date:   Wed, 19 Jan 2022 07:25:21 +0100 (CET)
+From:   Angelo Dureghello <angelo@kernel-space.org>
+To:     Marc Kleine-Budde <mkl@pengutronix.de>
+cc:     gerg@linux-m68k.org, geert@linux-m68k.org,
+        linux-m68k@vger.kernel.org, linux-can@vger.kernel.org,
+        qiangqing.zhang@nxp.com,
+        Dario Binacchi <dario.binacchi@amarulasolutions.com>
+Subject: Re: mcf5441x: flexcan FIFO and mailbox mode (was: Re: [PATCH v5 5/5]
+ can: flexcan: add mcf5441x support)
+In-Reply-To: <20220106111847.zjkrghehxr7mrkkt@pengutronix.de>
+Message-ID: <1cf937d1-1e26-e611-c85f-f9e2128c225@kernel-space.org>
+References: <20220106111847.zjkrghehxr7mrkkt@pengutronix.de>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Provags-ID: V03:K1:0bxgxaXMXgbL7csaXO2BB1eRaJk0rCjqkzDj0UjF7V23QJ5xWD0
- /ZFeL6X34SMhWEwkx51zHptBsS5PvTvwMd+EiWT8fIDwrohazZZvw6r40qH8HKEG1P62IoM
- tB5rIBQauuYw7PwGBxgf5UyJZ3s+rXUX2QXH8iEZWQICKxwF8X7AWrL9mz/gkjcdiIr0f2u
- bfb69LNPqovp6PUYi7xdQ==
-X-UI-Out-Filterresults: notjunk:1;V03:K0:iHCX0BuEoY4=:YYQHByIHg07sUO4NKXweB4
- 5656OGcoUEYdODgMuxhgoGGQnhAtUv9qeLreGwYct66HC4K6B7PQzg5oduxhgW4Pr/Q9AW6pq
- PEo8+YUcjyEdYDLhT3JmAEk+4f85rD58LFqZCYUbOBL/RrKqiRNt772xgCz3ZWW4MllhrlyhJ
- gIxJc8kQrl96m2OMH1nm2Lc/v2LlMsQp3pJjdZyW7CpmbTPg84/RjdYXNFohOTH5FtxCQ8ni4
- Bip4HpvWmID4QnzAA3rN4Ltc8mB+bkxgqIsIfalifRPsykcYCBVFRxlMJI4JUdj1XIVZO1IJd
- TS7NglU+E6YtIIg1KegckWitKSr6WPeG5D0qtuOTSek0Z6zyaKmgvZOmcfFrk+sDTvxcEJ26/
- sHSbSfdWyTqTSMy8eTrPL1ofCZCPyQIeUFx1bi7aPzVfhf+eNTSfqpBKwlcmQhNuMIt/NJFOs
- HB1ytUAgGjtfI3n3DlnydYXwLH1UdNKVvGDzYKs3L5/GmqDjoKkBj+L50GMw1bXk4fjv/OJy/
- vUw7V0K4x6SghZquK2VqfNnOoq8Bba06l+rnEcS8mve5ixhI3Awvb2Tz8IvhL9Sakx/7SKFZI
- YM+56txGjxZTQaaBD1IgZXaFeNtfk449FKTuM75VloBqwbzEYzghbIM60oLm8UkBVZddG5Lhu
- 7UiGjmjr1Dp8OXA9EcGjfOFUi+F97EdNGxIH1QRScFd2CI6fG0kZHMK+7gSicFwPyR7M=
+Content-Type: text/plain; charset=US-ASCII; format=flowed
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-The goldfish device always uses the same endianness as the architecture
-using it:
-https://android.googlesource.com/platform/external/qemu/+/refs/heads/emu-master-dev/hw/timer/goldfish_timer.c#177
+Hi Marc,
 
-On a big-endian machine, the device is also big-endian, on a
-little-endian machine the device is little-endian.
+On Thu, 6 Jan 2022, Marc Kleine-Budde wrote:
 
-So we need to use the right accessor to read/write values to the goldfish
-registers: ioread32()/iowrite32() on a little-endian machine,
-ioread32be()/iowrite32be() on a big-endian machine.
+> Hello Angelo,
+>
+> On 02.07.2021 11:48:41, Angelo Dureghello wrote:
+>> Add flexcan support for NXP ColdFire mcf5441x family.
+>>
+>> This flexcan module is quite similar to imx6 flexcan module, but
+>> with some exceptions:
+>>
+>> - 3 separate interrupt sources, MB, BOFF and ERR,
+>> - implements 16 mb only,
+>> - m68k architecture is not supporting devicetrees, so a
+>>   platform data check/case has been added,
+>> - ColdFire is m68k, so big-endian cpu, with a little-endian flexcan
+>>   module.
+>
+> we're currently discussing the option that the user of a flexcan can
+> switch between RX-FIFO and RX via mailboxes.
+>
+> I noticed that the mcf5441x currently is configured for FIFO mode. Have
+> you tested the driver in mailbox mode?
+>
+> The reason that some cores use the FIFO mode is, that they cannot
+> receive RTR CAN frames in mailbox mode. According to the IP core
+> overview table, the mcf5441x can receive RTR frames.
+>
+> If the IP core supports reception of RTR frames, mailbox mode should be
+> used, as it makes use of more buffers (16-2) instead of 6 in FIFO mode.
+> Should we activate mailbox mode for the mcf5441x?
+>
 
-This patch introduces goldfish_ioread32()/goldfish_iowrite32() to allow
-architectures to define them accordlingly to their endianness.
+Ok, not sure why i selected FIFO mode initially, my application
+actually is quite simple. Will try the switch to mailbox, sure,
+looking into this.
 
-We define them by default in asm-generic/io.h to access the device using
-little-endian access as it is the current use, but we will be able to define
-big-endian version when new architectures will use them.
 
-Signed-off-by: Laurent Vivier <laurent@vivier.eu>
----
- drivers/rtc/rtc-goldfish.c | 30 +++++++++++++++---------------
- include/asm-generic/io.h   |  7 +++++++
- 2 files changed, 22 insertions(+), 15 deletions(-)
+> regards,
+> Marc
+>
 
-diff --git a/drivers/rtc/rtc-goldfish.c b/drivers/rtc/rtc-goldfish.c
-index 7ab95d052644..1b2180ccfcdd 100644
---- a/drivers/rtc/rtc-goldfish.c
-+++ b/drivers/rtc/rtc-goldfish.c
-@@ -41,8 +41,8 @@ static int goldfish_rtc_read_alarm(struct device *dev,
- 	rtcdrv = dev_get_drvdata(dev);
- 	base = rtcdrv->base;
- 
--	rtc_alarm_low = readl(base + TIMER_ALARM_LOW);
--	rtc_alarm_high = readl(base + TIMER_ALARM_HIGH);
-+	rtc_alarm_low = goldfish_ioread32(base + TIMER_ALARM_LOW);
-+	rtc_alarm_high = goldfish_ioread32(base + TIMER_ALARM_HIGH);
- 	rtc_alarm = (rtc_alarm_high << 32) | rtc_alarm_low;
- 
- 	do_div(rtc_alarm, NSEC_PER_SEC);
-@@ -50,7 +50,7 @@ static int goldfish_rtc_read_alarm(struct device *dev,
- 
- 	rtc_time64_to_tm(rtc_alarm, &alrm->time);
- 
--	if (readl(base + TIMER_ALARM_STATUS))
-+	if (goldfish_ioread32(base + TIMER_ALARM_STATUS))
- 		alrm->enabled = 1;
- 	else
- 		alrm->enabled = 0;
-@@ -71,18 +71,18 @@ static int goldfish_rtc_set_alarm(struct device *dev,
- 
- 	if (alrm->enabled) {
- 		rtc_alarm64 = rtc_tm_to_time64(&alrm->time) * NSEC_PER_SEC;
--		writel((rtc_alarm64 >> 32), base + TIMER_ALARM_HIGH);
--		writel(rtc_alarm64, base + TIMER_ALARM_LOW);
--		writel(1, base + TIMER_IRQ_ENABLED);
-+		goldfish_iowrite32((rtc_alarm64 >> 32), base + TIMER_ALARM_HIGH);
-+		goldfish_iowrite32(rtc_alarm64, base + TIMER_ALARM_LOW);
-+		goldfish_iowrite32(1, base + TIMER_IRQ_ENABLED);
- 	} else {
- 		/*
- 		 * if this function was called with enabled=0
- 		 * then it could mean that the application is
- 		 * trying to cancel an ongoing alarm
- 		 */
--		rtc_status_reg = readl(base + TIMER_ALARM_STATUS);
-+		rtc_status_reg = goldfish_ioread32(base + TIMER_ALARM_STATUS);
- 		if (rtc_status_reg)
--			writel(1, base + TIMER_CLEAR_ALARM);
-+			goldfish_iowrite32(1, base + TIMER_CLEAR_ALARM);
- 	}
- 
- 	return 0;
-@@ -98,9 +98,9 @@ static int goldfish_rtc_alarm_irq_enable(struct device *dev,
- 	base = rtcdrv->base;
- 
- 	if (enabled)
--		writel(1, base + TIMER_IRQ_ENABLED);
-+		goldfish_iowrite32(1, base + TIMER_IRQ_ENABLED);
- 	else
--		writel(0, base + TIMER_IRQ_ENABLED);
-+		goldfish_iowrite32(0, base + TIMER_IRQ_ENABLED);
- 
- 	return 0;
- }
-@@ -110,7 +110,7 @@ static irqreturn_t goldfish_rtc_interrupt(int irq, void *dev_id)
- 	struct goldfish_rtc *rtcdrv = dev_id;
- 	void __iomem *base = rtcdrv->base;
- 
--	writel(1, base + TIMER_CLEAR_INTERRUPT);
-+	goldfish_iowrite32(1, base + TIMER_CLEAR_INTERRUPT);
- 
- 	rtc_update_irq(rtcdrv->rtc, 1, RTC_IRQF | RTC_AF);
- 
-@@ -128,8 +128,8 @@ static int goldfish_rtc_read_time(struct device *dev, struct rtc_time *tm)
- 	rtcdrv = dev_get_drvdata(dev);
- 	base = rtcdrv->base;
- 
--	time_low = readl(base + TIMER_TIME_LOW);
--	time_high = readl(base + TIMER_TIME_HIGH);
-+	time_low = goldfish_ioread32(base + TIMER_TIME_LOW);
-+	time_high = goldfish_ioread32(base + TIMER_TIME_HIGH);
- 	time = (time_high << 32) | time_low;
- 
- 	do_div(time, NSEC_PER_SEC);
-@@ -149,8 +149,8 @@ static int goldfish_rtc_set_time(struct device *dev, struct rtc_time *tm)
- 	base = rtcdrv->base;
- 
- 	now64 = rtc_tm_to_time64(tm) * NSEC_PER_SEC;
--	writel((now64 >> 32), base + TIMER_TIME_HIGH);
--	writel(now64, base + TIMER_TIME_LOW);
-+	goldfish_iowrite32((now64 >> 32), base + TIMER_TIME_HIGH);
-+	goldfish_iowrite32(now64, base + TIMER_TIME_LOW);
- 
- 	return 0;
- }
-diff --git a/include/asm-generic/io.h b/include/asm-generic/io.h
-index 7ce93aaf69f8..7f7e9d8c2eef 100644
---- a/include/asm-generic/io.h
-+++ b/include/asm-generic/io.h
-@@ -906,6 +906,13 @@ static inline void iowrite64_rep(volatile void __iomem *addr,
- #endif /* CONFIG_64BIT */
- #endif /* CONFIG_GENERIC_IOMAP */
- 
-+#ifndef goldfish_ioread32
-+#define goldfish_ioread32 ioread32
-+#endif
-+#ifndef goldfish_iowrite32
-+#define goldfish_iowrite32 iowrite32
-+#endif
-+
- #ifdef __KERNEL__
- 
- #include <linux/vmalloc.h>
--- 
-2.34.1
+Regards,
+angelo
 
+> -- 
+> Pengutronix e.K.                 | Marc Kleine-Budde           |
+> Embedded Linux                   | https://www.pengutronix.de  |
+> Vertretung West/Dortmund         | Phone: +49-231-2826-924     |
+> Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-5555 |
+>
