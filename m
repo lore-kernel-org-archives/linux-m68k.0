@@ -2,202 +2,181 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C2DA3C433F5
-	for <linux-m68k@archiver.kernel.org>; Thu, 20 Jan 2022 17:36:34 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 693C4C433FE
+	for <linux-m68k@archiver.kernel.org>; Thu, 20 Jan 2022 23:35:55 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231842AbiATRge (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Thu, 20 Jan 2022 12:36:34 -0500
-Received: from mga01.intel.com ([192.55.52.88]:23618 "EHLO mga01.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231718AbiATRge (ORCPT <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Thu, 20 Jan 2022 12:36:34 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1642700194; x=1674236194;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=+dYWYcsVjO72w3HaxwuCXXUjMt6guX+HVrSAVR0okx0=;
-  b=Wbzplzrvv9UC2i6DxxUH5iqb/KOwKa4BgRTgVrBYQ8YNBz7PWtqmrOgG
-   JcqQ0e+5yTbmIuGUmWKvRpurvvfnmUH9QuaGiMbUgLlVBiQQM5UCyifA3
-   2Pm+pRQz2Q+UllvttGSStI9u4ZVFsxi1JeDONbnXi33ZtxVXlgY3i3KrU
-   MBI6a5rvu/q0yZF9LlgfIwth2Jlr+2QfZwzcJ17jf4uy9SwGE1c2rr700
-   UnCwKIs1NeUb210FNJPWniTnkLtCDZDj2F9XJV2TRULDQK2UFHVL4g5+M
-   syOkt2vidT+ehKpHzyNoGwx3TwggWLvcLSARc73jvKqqu8s/qra1It6bg
-   Q==;
-X-IronPort-AV: E=McAfee;i="6200,9189,10233"; a="269825386"
-X-IronPort-AV: E=Sophos;i="5.88,303,1635231600"; 
-   d="scan'208";a="269825386"
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Jan 2022 09:36:17 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.88,303,1635231600"; 
-   d="scan'208";a="626391000"
-Received: from lkp-server01.sh.intel.com (HELO 276f1b88eecb) ([10.239.97.150])
-  by orsmga004.jf.intel.com with ESMTP; 20 Jan 2022 09:36:13 -0800
-Received: from kbuild by 276f1b88eecb with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1nAbM5-000EWZ-1L; Thu, 20 Jan 2022 17:36:13 +0000
-Date:   Fri, 21 Jan 2022 01:35:54 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Laurent Vivier <laurent@vivier.eu>, linux-kernel@vger.kernel.org
-Cc:     llvm@lists.linux.dev, kbuild-all@lists.01.org,
-        Alessandro Zummo <a.zummo@towertech.it>,
-        linux-rtc@vger.kernel.org, John Stultz <john.stultz@linaro.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Jiaxun Yang <jiaxun.yang@flygoat.com>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        linux-m68k@lists.linux-m68k.org,
-        Thomas Gleixner <tglx@linutronix.de>
-Subject: Re: [PATCH v11 3/5] rtc: goldfish: use gf_ioread32()/gf_iowrite32()
-Message-ID: <202201210103.XWJt8hcA-lkp@intel.com>
-References: <20220120080347.1595379-4-laurent@vivier.eu>
+        id S1348152AbiATXfz (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Thu, 20 Jan 2022 18:35:55 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43198 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1348117AbiATXfy (ORCPT
+        <rfc822;linux-m68k@vger.kernel.org>); Thu, 20 Jan 2022 18:35:54 -0500
+Received: from mail.kernel-space.org (unknown [IPv6:2a01:4f8:c2c:5a84::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A2CCCC061574;
+        Thu, 20 Jan 2022 15:35:53 -0800 (PST)
+Received: from ziongate (localhost [127.0.0.1])
+        by ziongate (OpenSMTPD) with ESMTP id 993447b7;
+        Thu, 20 Jan 2022 23:35:50 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha1; c=simple; d=kernel-space.org; h=date
+        :from:to:cc:subject:in-reply-to:message-id:references
+        :mime-version:content-type; s=default; bh=jrHEeKBu4luCXoGQ2nSVXI
+        84rwI=; b=FJptuwXtRten4amypX1XFYwxdgfqthzdOY2v10t6QThkcouHUv6/UW
+        C0E4WgvPbMk2FSjycbwMUp4um3g7wucatjN7K5Ju9+A47hPOiafDzLtgdAdKK1tn
+        +9IwWzyxx3OazSsRmS3L1H/8+U20WIxrelR+hMPViUqoCCYDKtpW4=
+DomainKey-Signature: a=rsa-sha1; c=simple; d=kernel-space.org; h=date
+        :from:to:cc:subject:in-reply-to:message-id:references
+        :mime-version:content-type; q=dns; s=default; b=sGs9c8FJXdKjXh85
+        NOvuJfGa5nUvkLD89Q/uwVLcsFFSt5GUc9hPmTjZloNfusPa+YZPJ3vaVJrFsCDl
+        v8OgKWlxoBwiKsBjpbd25qI3axT5YkfT0FvvcJBgzxwxvAx3kAAyfHpZI3X+JBYw
+        KNoCFavnlQPTlCbq8jTaAEvHbz0=
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel-space.org;
+        s=20190913; t=1642721750;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=IIcAySSBxcKIsYGdWnpwGBQ8cXvcrTisXWajSTPD6sg=;
+        b=I4+PS8QkND7brfk5Co7uH5XIBBKP6RvVrRTN+XgdZpSMS1/vlFqiuw1EyrkTxIu4dYLgt5
+        V0AkMqmlmYXZdtfFPEALd/X9bA1bPiXl+lECJvWeDZO71bzQQCPDdZuYnfqvW+wN+roaK+
+        Oc/gYJxouVkXTN3NiS16WJA4VTm9l7w=
+Received: from dfj (host-79-40-232-124.business.telecomitalia.it [79.40.232.124])
+        by ziongate (OpenSMTPD) with ESMTPSA id d245c478 (TLSv1.3:TLS_AES_256_GCM_SHA384:256:NO);
+        Thu, 20 Jan 2022 23:35:50 +0000 (UTC)
+Date:   Fri, 21 Jan 2022 00:35:43 +0100 (CET)
+From:   Angelo Dureghello <angelo@kernel-space.org>
+To:     Marc Kleine-Budde <mkl@pengutronix.de>
+cc:     gerg@linux-m68k.org, geert@linux-m68k.org,
+        linux-m68k@vger.kernel.org, linux-can@vger.kernel.org,
+        qiangqing.zhang@nxp.com,
+        Dario Binacchi <dario.binacchi@amarulasolutions.com>
+Subject: Re: mcf5441x: flexcan FIFO and mailbox mode (was: Re: [PATCH v5 5/5]
+ can: flexcan: add mcf5441x support)
+In-Reply-To: <20220119063837.idsiq72xrv4fvtih@pengutronix.de>
+Message-ID: <9ea16c48-b4bc-0c1-13c8-85e985ab86b1@kernel-space.org>
+References: <20220106111847.zjkrghehxr7mrkkt@pengutronix.de> <1cf937d1-1e26-e611-c85f-f9e2128c225@kernel-space.org> <20220119063837.idsiq72xrv4fvtih@pengutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20220120080347.1595379-4-laurent@vivier.eu>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain; charset=US-ASCII; format=flowed
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-Hi Laurent,
+Hi Marc,
 
-Thank you for the patch! Yet something to improve:
+On Wed, 19 Jan 2022, Marc Kleine-Budde wrote:
 
-[auto build test ERROR on tip/timers/core]
-[also build test ERROR on linux/master linus/master v5.16 next-20220120]
-[cannot apply to geert-m68k/for-next]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch]
+> On 19.01.2022 07:25:21, Angelo Dureghello wrote:
+>>> we're currently discussing the option that the user of a flexcan can
+>>> switch between RX-FIFO and RX via mailboxes.
+>>>
+>>> I noticed that the mcf5441x currently is configured for FIFO mode. Have
+>>> you tested the driver in mailbox mode?
+>>>
+>>> The reason that some cores use the FIFO mode is, that they cannot
+>>> receive RTR CAN frames in mailbox mode. According to the IP core
+>>> overview table, the mcf5441x can receive RTR frames.
+>>>
+>>> If the IP core supports reception of RTR frames, mailbox mode should be
+>>> used, as it makes use of more buffers (16-2) instead of 6 in FIFO mode.
+>>> Should we activate mailbox mode for the mcf5441x?
+>>
+>> Ok, not sure why i selected FIFO mode initially, my application
+>> actually is quite simple. Will try the switch to mailbox, sure,
+>> looking into this.
+>
+> Thanks for coming back to me. The mailbox mode performs better under
+> heavy load, as you have more buffers available.
+>
+> If you're using a recent kernel, the flexcan driver has been moved to:
+> | drivers/net/can/flexcan/flexcan-core.c
+>
+> diff --git a/drivers/net/can/flexcan/flexcan-core.c b/drivers/net/can/flexcan/flexcan-core.c
+> index 0bff1884d5cc..aa0b7efb5ca6 100644
+> --- a/drivers/net/can/flexcan/flexcan-core.c
+> +++ b/drivers/net/can/flexcan/flexcan-core.c
+> @@ -296,7 +296,8 @@ static_assert(sizeof(struct flexcan_regs) ==  0x4 * 18 + 0xfb8);
+> static const struct flexcan_devtype_data fsl_mcf5441x_devtype_data = {
+>        .quirks = FLEXCAN_QUIRK_BROKEN_PERR_STATE |
+>                FLEXCAN_QUIRK_NR_IRQ_3 | FLEXCAN_QUIRK_NR_MB_16 |
+> -               FLEXCAN_QUIRK_SUPPPORT_RX_FIFO,
+> +               FLEXCAN_QUIRK_SUPPPORT_RX_MAILBOX |
+> +               FLEXCAN_QUIRK_SUPPPORT_RX_MAILBOX_RTR,
+> };
+>
+> On older kernel with drivers/net/can/flexcan.c you need:
+>
+> diff --git a/drivers/net/can/flexcan.c b/drivers/net/can/flexcan.c
+> index 7734229aa078..538b26619460 100644
+> --- a/drivers/net/can/flexcan.c
+> +++ b/drivers/net/can/flexcan.c
+> @@ -382,7 +382,8 @@ struct flexcan_priv {
+>
+> static const struct flexcan_devtype_data fsl_mcf5441x_devtype_data = {
+>        .quirks = FLEXCAN_QUIRK_BROKEN_PERR_STATE |
+> -               FLEXCAN_QUIRK_NR_IRQ_3 | FLEXCAN_QUIRK_NR_MB_16,
+> +               FLEXCAN_QUIRK_NR_IRQ_3 | FLEXCAN_QUIRK_NR_MB_16 |
+> +               FLEXCAN_QUIRK_USE_OFF_TIMESTAMP,
+> };
+>
+> static const struct flexcan_devtype_data fsl_p1010_devtype_data = {
+>
+> Please apply appropriate change and check if the driver still works if
+> you RX with full CAN bus load. Please also test if you can still receive
+> RTR frames.
+>
 
-url:    https://github.com/0day-ci/linux/commits/Laurent-Vivier/m68k-Add-Virtual-M68k-Machine/20220120-160832
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git 35e13e9da9afbce13c1d36465504ece4e65f24fe
-config: riscv-randconfig-r042-20220120 (https://download.01.org/0day-ci/archive/20220121/202201210103.XWJt8hcA-lkp@intel.com/config)
-compiler: clang version 14.0.0 (https://github.com/llvm/llvm-project f7b7138a62648f4019c55e4671682af1f851f295)
-reproduce (this is a W=1 build):
-        wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
-        chmod +x ~/bin/make.cross
-        # install riscv cross compiling tool for clang build
-        # apt-get install binutils-riscv64-linux-gnu
-        # https://github.com/0day-ci/linux/commit/82ea64fc7cab43e258085769ed1d90b0685bf091
-        git remote add linux-review https://github.com/0day-ci/linux
-        git fetch --no-tags linux-review Laurent-Vivier/m68k-Add-Virtual-M68k-Machine/20220120-160832
-        git checkout 82ea64fc7cab43e258085769ed1d90b0685bf091
-        # save the config file to linux build tree
-        mkdir build_dir
-        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=clang make.cross W=1 O=build_dir ARCH=riscv SHELL=/bin/bash drivers/rtc/
+I tested this patch:
 
-If you fix the issue, kindly add following tag as appropriate
-Reported-by: kernel test robot <lkp@intel.com>
+-------------------- drivers/net/can/flexcan/flexcan-core.c 
+index 0bff1884d5cc..daeeb6250347 100644
+@@ -296,7 +296,10 @@ static_assert(sizeof(struct flexcan_regs) ==  0x4 * 
+18 + 0xfb8);
+  static const struct flexcan_devtype_data fsl_mcf5441x_devtype_data = {
+  	.quirks = FLEXCAN_QUIRK_BROKEN_PERR_STATE |
+  		FLEXCAN_QUIRK_NR_IRQ_3 | FLEXCAN_QUIRK_NR_MB_16 |
+-		FLEXCAN_QUIRK_SUPPPORT_RX_FIFO,
++		FLEXCAN_QUIRK_USE_RX_MAILBOX |
++		FLEXCAN_QUIRK_SUPPPORT_RX_FIFO |
++		FLEXCAN_QUIRK_SUPPPORT_RX_MAILBOX |
++		FLEXCAN_QUIRK_SUPPPORT_RX_MAILBOX_RTR,
+  };
 
-All errors (new ones prefixed by >>):
+  static const struct flexcan_devtype_data fsl_p1010_devtype_data = {
 
->> drivers/rtc/rtc-goldfish.c:44:18: error: implicit declaration of function 'gf_ioread32' [-Werror,-Wimplicit-function-declaration]
-           rtc_alarm_low = gf_ioread32(base + TIMER_ALARM_LOW);
-                           ^
-   drivers/rtc/rtc-goldfish.c:44:18: note: did you mean 'ioread32'?
-   include/asm-generic/io.h:726:19: note: 'ioread32' declared here
-   static inline u32 ioread32(const volatile void __iomem *addr)
-                     ^
-   include/asm-generic/io.h:725:18: note: expanded from macro 'ioread32'
-   #define ioread32 ioread32
-                    ^
->> drivers/rtc/rtc-goldfish.c:74:3: error: implicit declaration of function 'gf_iowrite32' [-Werror,-Wimplicit-function-declaration]
-                   gf_iowrite32((rtc_alarm64 >> 32), base + TIMER_ALARM_HIGH);
-                   ^
-   drivers/rtc/rtc-goldfish.c:74:3: note: did you mean 'iowrite32'?
-   include/asm-generic/io.h:760:20: note: 'iowrite32' declared here
-   static inline void iowrite32(u32 value, volatile void __iomem *addr)
-                      ^
-   include/asm-generic/io.h:759:19: note: expanded from macro 'iowrite32'
-   #define iowrite32 iowrite32
-                     ^
-   drivers/rtc/rtc-goldfish.c:83:20: error: implicit declaration of function 'gf_ioread32' [-Werror,-Wimplicit-function-declaration]
-                   rtc_status_reg = gf_ioread32(base + TIMER_ALARM_STATUS);
-                                    ^
-   drivers/rtc/rtc-goldfish.c:85:4: error: implicit declaration of function 'gf_iowrite32' [-Werror,-Wimplicit-function-declaration]
-                           gf_iowrite32(1, base + TIMER_CLEAR_ALARM);
-                           ^
-   drivers/rtc/rtc-goldfish.c:101:3: error: implicit declaration of function 'gf_iowrite32' [-Werror,-Wimplicit-function-declaration]
-                   gf_iowrite32(1, base + TIMER_IRQ_ENABLED);
-                   ^
-   drivers/rtc/rtc-goldfish.c:113:2: error: implicit declaration of function 'gf_iowrite32' [-Werror,-Wimplicit-function-declaration]
-           gf_iowrite32(1, base + TIMER_CLEAR_INTERRUPT);
-           ^
-   drivers/rtc/rtc-goldfish.c:131:13: error: implicit declaration of function 'gf_ioread32' [-Werror,-Wimplicit-function-declaration]
-           time_low = gf_ioread32(base + TIMER_TIME_LOW);
-                      ^
-   drivers/rtc/rtc-goldfish.c:152:2: error: implicit declaration of function 'gf_iowrite32' [-Werror,-Wimplicit-function-declaration]
-           gf_iowrite32((now64 >> 32), base + TIMER_TIME_HIGH);
-           ^
-   8 errors generated.
+Bus load PC -> mcf5441x tested by
+
+ip link set can0 type can bitrate 1000000
+ip link set can0 up
+cangen can0 -g 0
+
+On target (mcf54415)
+candump can0
+
+It works, even better then FIFO mode.
+
+While unfortunately, RTR rx does not work. Tested it by putting
+a trace in flexcan_mailbox_read()
+
+ 	if (reg_ctrl & FLEXCAN_MB_CNT_RTR) {
+ 		printk("%s() RX RTR frame\n", __func__);
+ 		cfd->can_id |= CAN_RTR_FLAG;
+ 	}
+
+on host pc i used:
+
+cangen can0 -R
+
+No sign of RTR in rx. While in FIFO mode i can see it.
 
 
-vim +/gf_ioread32 +44 drivers/rtc/rtc-goldfish.c
+> regards,
+> Marc
+>
 
-    31	
-    32	static int goldfish_rtc_read_alarm(struct device *dev,
-    33					   struct rtc_wkalrm *alrm)
-    34	{
-    35		u64 rtc_alarm;
-    36		u64 rtc_alarm_low;
-    37		u64 rtc_alarm_high;
-    38		void __iomem *base;
-    39		struct goldfish_rtc *rtcdrv;
-    40	
-    41		rtcdrv = dev_get_drvdata(dev);
-    42		base = rtcdrv->base;
-    43	
-  > 44		rtc_alarm_low = gf_ioread32(base + TIMER_ALARM_LOW);
-    45		rtc_alarm_high = gf_ioread32(base + TIMER_ALARM_HIGH);
-    46		rtc_alarm = (rtc_alarm_high << 32) | rtc_alarm_low;
-    47	
-    48		do_div(rtc_alarm, NSEC_PER_SEC);
-    49		memset(alrm, 0, sizeof(struct rtc_wkalrm));
-    50	
-    51		rtc_time64_to_tm(rtc_alarm, &alrm->time);
-    52	
-    53		if (gf_ioread32(base + TIMER_ALARM_STATUS))
-    54			alrm->enabled = 1;
-    55		else
-    56			alrm->enabled = 0;
-    57	
-    58		return 0;
-    59	}
-    60	
-    61	static int goldfish_rtc_set_alarm(struct device *dev,
-    62					  struct rtc_wkalrm *alrm)
-    63	{
-    64		struct goldfish_rtc *rtcdrv;
-    65		u64 rtc_alarm64;
-    66		u64 rtc_status_reg;
-    67		void __iomem *base;
-    68	
-    69		rtcdrv = dev_get_drvdata(dev);
-    70		base = rtcdrv->base;
-    71	
-    72		if (alrm->enabled) {
-    73			rtc_alarm64 = rtc_tm_to_time64(&alrm->time) * NSEC_PER_SEC;
-  > 74			gf_iowrite32((rtc_alarm64 >> 32), base + TIMER_ALARM_HIGH);
-    75			gf_iowrite32(rtc_alarm64, base + TIMER_ALARM_LOW);
-    76			gf_iowrite32(1, base + TIMER_IRQ_ENABLED);
-    77		} else {
-    78			/*
-    79			 * if this function was called with enabled=0
-    80			 * then it could mean that the application is
-    81			 * trying to cancel an ongoing alarm
-    82			 */
-    83			rtc_status_reg = gf_ioread32(base + TIMER_ALARM_STATUS);
-    84			if (rtc_status_reg)
-    85				gf_iowrite32(1, base + TIMER_CLEAR_ALARM);
-    86		}
-    87	
-    88		return 0;
-    89	}
-    90	
+Regards,
+angelo
 
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+> -- 
+> Pengutronix e.K.                 | Marc Kleine-Budde           |
+> Embedded Linux                   | https://www.pengutronix.de  |
+> Vertretung West/Dortmund         | Phone: +49-231-2826-924     |
+> Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-5555 |
+>
