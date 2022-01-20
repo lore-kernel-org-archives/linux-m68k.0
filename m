@@ -2,40 +2,29 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 8F406C433FE
-	for <linux-m68k@archiver.kernel.org>; Thu, 20 Jan 2022 08:50:50 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 18E6AC433EF
+	for <linux-m68k@archiver.kernel.org>; Thu, 20 Jan 2022 17:09:55 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1359391AbiATIuu (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Thu, 20 Jan 2022 03:50:50 -0500
-Received: from mout.kundenserver.de ([212.227.126.133]:49679 "EHLO
+        id S1377228AbiATRJy (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Thu, 20 Jan 2022 12:09:54 -0500
+Received: from mout.kundenserver.de ([212.227.126.134]:54389 "EHLO
         mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241250AbiATIus (ORCPT
+        with ESMTP id S1377242AbiATRJe (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Thu, 20 Jan 2022 03:50:48 -0500
-Received: from mail-wm1-f46.google.com ([209.85.128.46]) by
- mrelayeu.kundenserver.de (mreue009 [213.165.67.97]) with ESMTPSA (Nemesis) id
- 1Mv2tE-1mJsZD0uae-00qz1J for <linux-m68k@lists.linux-m68k.org>; Thu, 20 Jan
- 2022 09:50:47 +0100
-Received: by mail-wm1-f46.google.com with SMTP id i187-20020a1c3bc4000000b0034d2ed1be2aso18739176wma.1
-        for <linux-m68k@lists.linux-m68k.org>; Thu, 20 Jan 2022 00:50:47 -0800 (PST)
-X-Gm-Message-State: AOAM531FPISAKcEPGB+JYAC+HQ2k+BztR4dthfogMlehhR+yI70ZAVXe
-        1aWwNrgkOwcDPNg1Dn7ne5VETxq/Tdb5iFZuG1Y=
-X-Google-Smtp-Source: ABdhPJwa2TLFWWtVzRt+gvdo3caSsHZVcnbUi/A/hVZ7P0/vZnDNJpHv52UMEl2oHT4PQoB1G9hWQmqPRnKWtHwc0qw=
-X-Received: by 2002:a1c:2784:: with SMTP id n126mr5427772wmn.1.1642668646881;
- Thu, 20 Jan 2022 00:50:46 -0800 (PST)
+        Thu, 20 Jan 2022 12:09:34 -0500
+Received: from [192.168.100.1] ([82.142.13.186]) by mrelayeu.kundenserver.de
+ (mreue009 [213.165.67.103]) with ESMTPSA (Nemesis) id
+ 1MatZr-1mZLAn3xiF-00cUYe; Thu, 20 Jan 2022 18:09:07 +0100
+Message-ID: <cb884368-0226-e913-80d2-62d2b7b2e761@vivier.eu>
+Date:   Thu, 20 Jan 2022 18:09:04 +0100
 MIME-Version: 1.0
-References: <20220120080347.1595379-1-laurent@vivier.eu> <20220120080347.1595379-3-laurent@vivier.eu>
-In-Reply-To: <20220120080347.1595379-3-laurent@vivier.eu>
-From:   Arnd Bergmann <arnd@arndb.de>
-Date:   Thu, 20 Jan 2022 09:50:30 +0100
-X-Gmail-Original-Message-ID: <CAK8P3a1oN8NrUjkh2X8jHQbyz42Xo6GSa=5n0gD6vQcXRjmq1Q@mail.gmail.com>
-Message-ID: <CAK8P3a1oN8NrUjkh2X8jHQbyz42Xo6GSa=5n0gD6vQcXRjmq1Q@mail.gmail.com>
-Subject: Re: [PATCH v11 2/5] tty: goldfish: introduce gf_ioread32()/gf_iowrite32()
-To:     Laurent Vivier <laurent@vivier.eu>
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.4.0
+Content-Language: en-US
+To:     Arnd Bergmann <arnd@arndb.de>
 Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
         Alessandro Zummo <a.zummo@towertech.it>,
         linux-rtc@vger.kernel.org, John Stultz <john.stultz@linaro.org>,
-        Arnd Bergmann <arnd@arndb.de>,
         Daniel Lezcano <daniel.lezcano@linaro.org>,
         Jiaxun Yang <jiaxun.yang@flygoat.com>,
         Alexandre Belloni <alexandre.belloni@bootlin.com>,
@@ -43,57 +32,77 @@ Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
         Thomas Gleixner <tglx@linutronix.de>,
         Stephen Boyd <sboyd@kernel.org>,
         Geert Uytterhoeven <geert@linux-m68k.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Provags-ID: V03:K1:Vj1mYQMCKu9345x7Sw0E+MCV/jb1Y0PEbDysnSEvQHtmEcSKqud
- GcHRzeLAJoTBuuTYApO1Agv8Avhr9rcuheCIMAlGDNoz8RYEd9WRROB5uA+C60GHwhvNvV4
- ak2By5mBY/CHYKj8vnWbeDnkGRDHnIdTG0wurz6LuF9V8O/a8fEXsGf0JEiVFQ0y9TfMJ0V
- jVjtk0YH3Ym4FXxG+exwA==
-X-UI-Out-Filterresults: notjunk:1;V03:K0:uAveEqGMCrA=:hZRzqsO2UghsurIO8oX5mc
- VXAZBbeGSobS51ax/i30Fe3pX7pXeMNJD0hCSL9b5Tkceu9TYsAPMWTSM/eIIb8FZ7DZCWD0/
- OUzfevRyEDUbfbXzRALiK0Fl4vKvLbI4AmSvSVRV1r/pGvAa0HGBkNxwuH/wamy6Ai9soInt6
- 9X0OoikUCxq/nHMkD+WJ6vUWTIVCSVpRu7TtAyvx4gMycefuWUYAvUoV9/i30dM39hNmzoDd6
- FfIDqGH6ZUAJt+o23njxHu7fMuQg/ktmAwnnIBdPUa2DFa2JvF0Ug2q2cIrZ1swyOGvxHxyTf
- cKAM1UDv3aDnQs0XpIWAIdq4KC0yEB0vfGDQJhZbn9ws6ia/4Rvy1hNl0wLGFbqHFx72rybWw
- NSSm3p2SD/CosE+zDqf1j5+g3ZU4ZWmEDbMIy17PczbJz/LkwQU+9M7yj0sgxNTV8K/7sRp1v
- BsNVvkLpMGrfDShzCN7L20KELlA5Uxei+phos3bOAWjZRAB6KkpjQOToIcuWrC4ENT+VgLVcT
- LeJTz9mvWaNsqBaw4NwsVrjJTGavjdYF5zknPpaMgcgj72Z3kuj9QizmwQCGteZwr7iPviQOb
- aLK+Zso4G3dJ6r8FHSPRjdRAbwGYrqKiiSc3B6fooILS0Khn5j4bN8r1NV9/t7weNJ6EbZP4G
- Q3sj+byUib5RhxY+aub9z9cUjkE8FEqhfjT63R+HAFfH88ETzeQArrGxkKrzzrG0QUXI=
+References: <20220120080347.1595379-1-laurent@vivier.eu>
+ <20220120080347.1595379-3-laurent@vivier.eu>
+ <CAK8P3a1oN8NrUjkh2X8jHQbyz42Xo6GSa=5n0gD6vQcXRjmq1Q@mail.gmail.com>
+From:   Laurent Vivier <laurent@vivier.eu>
+Subject: Re: [PATCH v11 2/5] tty: goldfish: introduce
+ gf_ioread32()/gf_iowrite32()
+In-Reply-To: <CAK8P3a1oN8NrUjkh2X8jHQbyz42Xo6GSa=5n0gD6vQcXRjmq1Q@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Provags-ID: V03:K1:dddbphkpSIF6p9YP9xYcw9vEmF+op0Ndo1F40uOawLCcXjeMmby
+ bzCBkRZkM916Hemr2XwL4CE+QGkvN9gPsdnDZSoBwFeEEF1+P71tAnSEekxfLcnseozmQIZ
+ BFedbjRVjUqTrfdGkbfmRKXX3eHaVOMuukaBkOkfkMxV736K6p9Vw1SPkFrsNFT2UjO+T0c
+ kA55JRy6V+N/CaihCUAVw==
+X-UI-Out-Filterresults: notjunk:1;V03:K0:Dy7v5wb7I0k=:yylvJx+860sEkjPyrIC1H8
+ gVm97KvhlrbB7LDmCyziiAT8iq/NfLr2vvH5lp3V5l8hQiyEbH2DoO0Re2ofm8pId0JZ/EiBN
+ B2cu949M9qo/mqWwSEipoGgH7fNy1b8Vx4RAxLGz4k+9det3NYOz4YMSN13/agp5gcQaIBlcp
+ fVlJ8rIQbiJmiTKXvjRe0g0F9IOdz4xDES+FGeeqS6UI8/PmQicu9sKGIB5TwqkNl05RhcoRm
+ nqXRkgjBTILY9TuOplO0v3dw8QubtGKug/O0EB/o34hmLo5n6QT6Vhc/jIgvM4aNEFOV/YoMb
+ IW6RfezQCCe7HzGreO+6KpRXuz4We17N6wlr8rKpBPgjE0W0jJZPZs7jVl8YiPPvLVjNxbeNt
+ +CDACzRdD4WODjEBfVRE0xYbZUpUoi/OZFL4lbiA8KrnRhGe86CW36Mbfs95Tuxq+up/HN0zy
+ BRnVF4DbBpNW/Pgj6qM1XPdSZIRZ5FP1cixDGWpud2Ine6WpIQrH9cPiA0jaftWv4cZqK/xRV
+ hTv0N3mIjhKbIXR+W88kvpJVkbjpy+XCd19S2i7IgUsvOcm2UurA9fWHxqFTdih3JvOscxZ4G
+ olAP2EPrLZtUcgK9ZZNc3pNjiU1CgiA2OhzxMHAXtInR2BzoUIALDTbEdhDFMadAWI88Nm3FU
+ mALgZhB2l9/KRGEMhZIlRPb7Lgfxj0m4Plz4hwBIujqUjQBKiTeRpa8UTmxmW4s58YfE=
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-On Thu, Jan 20, 2022 at 9:03 AM Laurent Vivier <laurent@vivier.eu> wrote:
->
-> Revert
-> commit da31de35cd2f ("tty: goldfish: use __raw_writel()/__raw_readl()")
->
-> to use accessors defined by the architecture.
->
-> Define by default the accessor to be little-endian as we
-> have only little-endian architectures using goldfish devices.
->
-> Signed-off-by: Laurent Vivier <laurent@vivier.eu>
+Le 20/01/2022 à 09:50, Arnd Bergmann a écrit :
+> On Thu, Jan 20, 2022 at 9:03 AM Laurent Vivier <laurent@vivier.eu> wrote:
+>>
+>> Revert
+>> commit da31de35cd2f ("tty: goldfish: use __raw_writel()/__raw_readl()")
+>>
+>> to use accessors defined by the architecture.
+>>
+>> Define by default the accessor to be little-endian as we
+>> have only little-endian architectures using goldfish devices.
+>>
+>> Signed-off-by: Laurent Vivier <laurent@vivier.eu>
+> 
+> The patch looks good, but the description seems wrong to me:
+> 
+> Talking about "little-endian architectures" makes no sense here, the
+> point is that the device was clearly defined as having little-endian
+> registers, and your earlier patch broke this driver when running
+> on big-endian kernels (if anyone ever tried this).
+To explain why I did that:
 
-The patch looks good, but the description seems wrong to me:
+The reference document[1] doesn't define the endianness of goldfish.
 
-Talking about "little-endian architectures" makes no sense here, the
-point is that the device was clearly defined as having little-endian
-registers, and your earlier patch broke this driver when running
-on big-endian kernels (if anyone ever tried this).
+In QEMU, goldfish devices are defined with the DEVICE_NATIVE_ENDIAN flag [2], that means all the 
+target architectures defined in QEMU with TARGET_WORDS_BIGENDIAN will present them as big-endian 
+devices, the others as little-endian devices.
 
-This means you should also add
+According to TARGET_WORDS_BIGENDIAN definition:
 
-Cc: stable@vger.kernel.org # v5.11+
-Fixes: da31de35cd2f ("tty: goldfish: use __raw_writel()/__raw_readl()")
+On the following QEMU target architectures (qemu-system-XXX), goldfish devices must be accessed with 
+big-endian read/write:
 
-The fact that m68k gets this wrong is just a bug in qemu, but it's
-probably impossible to fix that since there is no way of knowing which
-other operating systems have started relying on that bug over the years.
+mips, mips64, s390x, sparc, sparc64, or1k, m68k, ppc, ppc64, xtensaeb, hppa, sh4eb, microblaze
 
-It might be a good idea to revisit the qemu implementation and make
-sure that the extra byteswap is only inserted on m68k and not on
-other targets, but hopefully there are no new targets based on goldfish
-anymore and we don't need to care.
+On the following QEMU target architectures, goldfish devices must be accessed with little-endian 
+read/write:
 
-        Arnd
+arm, aarch64, alpha, avr, cris, i386, x86_64, microblazeel, mipsel, mips64el, nios2, riscv32, 
+riscv64, rx, sh4, tricore, xtensa
+
+Thanks,
+Laurent
+
+[1] https://android.googlesource.com/platform/external/qemu/+/master/docs/GOLDFISH-VIRTUAL-HARDWARE.TXT
+[2] 
+https://android.googlesource.com/platform/external/qemu/+/refs/heads/emu-master-dev/hw/char/goldfish_tty.c#222
