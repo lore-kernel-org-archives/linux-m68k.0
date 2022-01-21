@@ -2,156 +2,144 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 884B4C433F5
-	for <linux-m68k@archiver.kernel.org>; Fri, 21 Jan 2022 10:16:24 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id F1BBFC433EF
+	for <linux-m68k@archiver.kernel.org>; Fri, 21 Jan 2022 12:24:53 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1379960AbiAUKQY (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Fri, 21 Jan 2022 05:16:24 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43496 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1379955AbiAUKQX (ORCPT
-        <rfc822;linux-m68k@vger.kernel.org>); Fri, 21 Jan 2022 05:16:23 -0500
-Received: from mail.kernel-space.org (unknown [IPv6:2a01:4f8:c2c:5a84::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BA265C061401;
-        Fri, 21 Jan 2022 02:16:22 -0800 (PST)
-Received: from ziongate (localhost [127.0.0.1])
-        by ziongate (OpenSMTPD) with ESMTP id 9d8f87a6;
-        Fri, 21 Jan 2022 10:16:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha1; c=simple; d=kernel-space.org; h=date
-        :from:to:cc:subject:in-reply-to:message-id:references
-        :mime-version:content-type; s=default; bh=AhpObT7A0b/qpwu9eTMTst
-        FSMo0=; b=hJllvZNUKw+FmV+d8hqNnYjd9f7Gt2lhjsnpjCocJ3LDh4gE+nnerR
-        cVIgId0i3GBb00hqJU3+Kbt93GwvWO9LgF8cuXkKQbkz3WukRyF2926iJgWg9m6V
-        zNNKXejrkmE+4MMLkrn05VjBiZxCI8haYq8NFFK5b6QzmQ/23laig=
-DomainKey-Signature: a=rsa-sha1; c=simple; d=kernel-space.org; h=date
-        :from:to:cc:subject:in-reply-to:message-id:references
-        :mime-version:content-type; q=dns; s=default; b=pboqxCei+Hc2jRm7
-        58yDcaUZYG2qoKEwKkWIwMZmOWhgSVIiL9VGv5sWgc+2RWdy+HuFo5LaSREAUR2V
-        u3N/dIW3DUYw6Ztmjjsw4huj3kEOyY2b+jWcDZyRuKjyki2TwVUOTQZlULn/F9tc
-        WkYPZoFLm5Jsdcf+phJcJ8n05P0=
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel-space.org;
-        s=20190913; t=1642760180;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=977NVgy6ZgfTNsnlkwz7B+7C1uPBelrZdQpdDU/M87o=;
-        b=XhJgH/zKOWCNSxW8/EQkMLJ4WPsBHybWvH/q2l2eyt36X8/SvMr2gm8l0es/oQZICrZqsC
-        EMWRZzzI87umA2ChUcVINgC3X2rjF4vr8NdHUyCobpsWclbxAMhnV+jh7Uv0D2xXZC5oIb
-        rpQzyvJgV5Ss4Nh3D0OK8IrQ2M02A9w=
-Received: from dfj (host-79-40-232-124.business.telecomitalia.it [79.40.232.124])
-        by ziongate (OpenSMTPD) with ESMTPSA id f1307ad8 (TLSv1.3:TLS_AES_256_GCM_SHA384:256:NO);
-        Fri, 21 Jan 2022 10:16:20 +0000 (UTC)
-Date:   Fri, 21 Jan 2022 11:16:16 +0100 (CET)
-From:   Angelo Dureghello <angelo@kernel-space.org>
-To:     Marc Kleine-Budde <mkl@pengutronix.de>
-cc:     gerg@linux-m68k.org, geert@linux-m68k.org,
-        linux-m68k@vger.kernel.org, linux-can@vger.kernel.org,
-        qiangqing.zhang@nxp.com,
-        Dario Binacchi <dario.binacchi@amarulasolutions.com>
-Subject: Re: mcf5441x: flexcan FIFO and mailbox mode (was: Re: [PATCH v5 5/5]
- can: flexcan: add mcf5441x support)
-In-Reply-To: <20220121084931.llxryhizdaeb4ph4@pengutronix.de>
-Message-ID: <d67c4bbf-1c39-323-2a4-3167d6febe64@kernel-space.org>
-References: <20220106111847.zjkrghehxr7mrkkt@pengutronix.de> <1cf937d1-1e26-e611-c85f-f9e2128c225@kernel-space.org> <20220119063837.idsiq72xrv4fvtih@pengutronix.de> <9ea16c48-b4bc-0c1-13c8-85e985ab86b1@kernel-space.org>
- <20220121084931.llxryhizdaeb4ph4@pengutronix.de>
+        id S1380329AbiAUMYt (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Fri, 21 Jan 2022 07:24:49 -0500
+Received: from mga07.intel.com ([134.134.136.100]:8060 "EHLO mga07.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1380328AbiAUMYt (ORCPT <rfc822;linux-m68k@lists.linux-m68k.org>);
+        Fri, 21 Jan 2022 07:24:49 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1642767889; x=1674303889;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=3hfDR6qd0OhhK8ZgQ4/ZQOZpwPEBT6cE5sRbv1NeCD0=;
+  b=QbBc13bpeedldqK8NpktJM8KmVoCE/T4qmCvoxyZFEuwuxgSLfD+wioU
+   VmjfzZRjMib/RmrMRFpKhSl+sGAJ5ME+KwTw8rCFx4MgOl0Y9rRMB57i8
+   YUFmpX4bikTu4gEMUjrDqh3xlE7zu/toxJV1VtTWNcel9T8IIQ7z4kX2G
+   drsQHOQ4BBD9VgpD5ZhKpXEB1GiLoGzrMkLBVdbT1kdw+Jtkut/zllnVQ
+   ez4mVrGj4doIPGAN4OSjFzuHXs7gqZGOj3EP9nXr3ELCf0+q9dOUKyaWO
+   mzIN1cP7r9DwylUbVAcNMckoiSPvdZmrX5jCm1Av4DoUXwdF9nhVNk4M7
+   Q==;
+X-IronPort-AV: E=McAfee;i="6200,9189,10233"; a="308970360"
+X-IronPort-AV: E=Sophos;i="5.88,304,1635231600"; 
+   d="scan'208";a="308970360"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Jan 2022 04:24:47 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.88,304,1635231600"; 
+   d="scan'208";a="579592908"
+Received: from lkp-server01.sh.intel.com (HELO 276f1b88eecb) ([10.239.97.150])
+  by fmsmga008.fm.intel.com with ESMTP; 21 Jan 2022 04:24:44 -0800
+Received: from kbuild by 276f1b88eecb with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1nAsyC-000FHR-AK; Fri, 21 Jan 2022 12:24:44 +0000
+Date:   Fri, 21 Jan 2022 20:23:42 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Laurent Vivier <laurent@vivier.eu>, linux-kernel@vger.kernel.org
+Cc:     kbuild-all@lists.01.org, Alessandro Zummo <a.zummo@towertech.it>,
+        linux-rtc@vger.kernel.org, John Stultz <john.stultz@linaro.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Jiaxun Yang <jiaxun.yang@flygoat.com>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        linux-m68k@lists.linux-m68k.org,
+        Thomas Gleixner <tglx@linutronix.de>
+Subject: Re: [PATCH v11 4/5] clocksource/drivers: Add a goldfish-timer
+ clocksource
+Message-ID: <202201212032.qL41ty3V-lkp@intel.com>
+References: <20220120080347.1595379-5-laurent@vivier.eu>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII; format=flowed
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20220120080347.1595379-5-laurent@vivier.eu>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-Hi Marc,
+Hi Laurent,
 
-On Fri, 21 Jan 2022, Marc Kleine-Budde wrote:
+Thank you for the patch! Yet something to improve:
 
-> On 21.01.2022 00:35:43, Angelo Dureghello wrote:
->>> Please apply appropriate change and check if the driver still works if
->>> you RX with full CAN bus load. Please also test if you can still receive
->>> RTR frames.
->>>
->>
->> I tested this patch:
->>
->> -------------------- drivers/net/can/flexcan/flexcan-core.c index
->> 0bff1884d5cc..daeeb6250347 100644
->> @@ -296,7 +296,10 @@ static_assert(sizeof(struct flexcan_regs) ==  0x4 * 18
->> + 0xfb8);
->>  static const struct flexcan_devtype_data fsl_mcf5441x_devtype_data = {
->>  	.quirks = FLEXCAN_QUIRK_BROKEN_PERR_STATE |
->>  		FLEXCAN_QUIRK_NR_IRQ_3 | FLEXCAN_QUIRK_NR_MB_16 |
->> -		FLEXCAN_QUIRK_SUPPPORT_RX_FIFO,
->> +		FLEXCAN_QUIRK_USE_RX_MAILBOX |
->> +		FLEXCAN_QUIRK_SUPPPORT_RX_FIFO |
->> +		FLEXCAN_QUIRK_SUPPPORT_RX_MAILBOX |
->> +		FLEXCAN_QUIRK_SUPPPORT_RX_MAILBOX_RTR,
->>  };
->>
->>  static const struct flexcan_devtype_data fsl_p1010_devtype_data = {
->>
->> Bus load PC -> mcf5441x tested by
->>
->> ip link set can0 type can bitrate 1000000
->> ip link set can0 up
->> cangen can0 -g 0
->>
->> On target (mcf54415)
->> candump can0
->>
->> It works, even better then FIFO mode.
->
-> What's the difference, does it produce less overruns?
->
+[auto build test ERROR on tip/timers/core]
+[also build test ERROR on linux/master linus/master next-20220121]
+[cannot apply to geert-m68k/for-next v5.16]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch]
 
-In FIFO mode, i had a conditions where the mcf system
-was stuck. Had to reboot. Not clear what's happen btw, should try to 
-reproduce this.
+url:    https://github.com/0day-ci/linux/commits/Laurent-Vivier/m68k-Add-Virtual-M68k-Machine/20220120-160832
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git 35e13e9da9afbce13c1d36465504ece4e65f24fe
+config: arc-allyesconfig (https://download.01.org/0day-ci/archive/20220121/202201212032.qL41ty3V-lkp@intel.com/config)
+compiler: arceb-elf-gcc (GCC) 11.2.0
+reproduce (this is a W=1 build):
+        wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
+        chmod +x ~/bin/make.cross
+        # https://github.com/0day-ci/linux/commit/ea1170b472532011ab0c8208b6414a36810f45ab
+        git remote add linux-review https://github.com/0day-ci/linux
+        git fetch --no-tags linux-review Laurent-Vivier/m68k-Add-Virtual-M68k-Machine/20220120-160832
+        git checkout ea1170b472532011ab0c8208b6414a36810f45ab
+        # save the config file to linux build tree
+        mkdir build_dir
+        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-11.2.0 make.cross O=build_dir ARCH=arc SHELL=/bin/bash
 
->> While unfortunately, RTR rx does not work. Tested it by putting
->> a trace in flexcan_mailbox_read()
->>
->> 	if (reg_ctrl & FLEXCAN_MB_CNT_RTR) {
->> 		printk("%s() RX RTR frame\n", __func__);
->> 		cfd->can_id |= CAN_RTR_FLAG;
->> 	}
->>
->> on host pc i used:
->>
->> cangen can0 -R
->>
->> No sign of RTR in rx. While in FIFO mode i can see it.
->
-> Ok, then I enable the mailbox support for the mcf5441x and fix the note
-> that the IP core doesn't support RTR reception via mailboxes. See the
-> following patch:
->
-> | https://lore.kernel.org/all/20220121084425.3141218-1-mkl@pengutronix.de
->
-> If you have time, please test and add your Tested-by.
->
-> You can switch to mailbox mode during runtime, if the interface is down:
->
-> | ethtool --set-priv-flags can0 rx-rtr off
->
-> With ethtool you can query the number of used RX and TX buffers:
->
-> | ethtool --show-ring can0
->
-> The FIFO mode uses 6 RX buffers, while mailbox mode will probably use
-> 14.
->
+If you fix the issue, kindly add following tag as appropriate
+Reported-by: kernel test robot <lkp@intel.com>
 
-My mcf5441x small system does not have ethtool available
-right now. Will test this as soon as i can.
+All errors (new ones prefixed by >>):
 
-> regards,
-> Marc
+   drivers/clocksource/timer-goldfish.c: In function 'goldfish_timer_read':
+>> drivers/clocksource/timer-goldfish.c:52:20: error: implicit declaration of function 'gf_ioread32'; did you mean 'ioread32'? [-Werror=implicit-function-declaration]
+      52 |         time_low = gf_ioread32(base + TIMER_TIME_LOW);
+         |                    ^~~~~~~~~~~
+         |                    ioread32
+   drivers/clocksource/timer-goldfish.c: In function 'goldfish_timer_set_oneshot':
+>> drivers/clocksource/timer-goldfish.c:65:9: error: implicit declaration of function 'gf_iowrite32'; did you mean 'iowrite32'? [-Werror=implicit-function-declaration]
+      65 |         gf_iowrite32(0, base + TIMER_ALARM_HIGH);
+         |         ^~~~~~~~~~~~
+         |         iowrite32
+   cc1: some warnings being treated as errors
 
-regards,
-angelo
->
-> -- 
-> Pengutronix e.K.                 | Marc Kleine-Budde           |
-> Embedded Linux                   | https://www.pengutronix.de  |
-> Vertretung West/Dortmund         | Phone: +49-231-2826-924     |
-> Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-5555 |
->
+
+vim +52 drivers/clocksource/timer-goldfish.c
+
+    40	
+    41	static u64 goldfish_timer_read(struct clocksource *cs)
+    42	{
+    43		struct goldfish_timer *timerdrv = cs_to_gf(cs);
+    44		void __iomem *base = timerdrv->base;
+    45		u32 time_low, time_high;
+    46		u64 ticks;
+    47	
+    48		/*
+    49		 * time_low: get low bits of current time and update time_high
+    50		 * time_high: get high bits of time at last time_low read
+    51		 */
+  > 52		time_low = gf_ioread32(base + TIMER_TIME_LOW);
+    53		time_high = gf_ioread32(base + TIMER_TIME_HIGH);
+    54	
+    55		ticks = ((u64)time_high << 32) | time_low;
+    56	
+    57		return ticks;
+    58	}
+    59	
+    60	static int goldfish_timer_set_oneshot(struct clock_event_device *evt)
+    61	{
+    62		struct goldfish_timer *timerdrv = ced_to_gf(evt);
+    63		void __iomem *base = timerdrv->base;
+    64	
+  > 65		gf_iowrite32(0, base + TIMER_ALARM_HIGH);
+    66		gf_iowrite32(0, base + TIMER_ALARM_LOW);
+    67		gf_iowrite32(1, base + TIMER_IRQ_ENABLED);
+    68	
+    69		return 0;
+    70	}
+    71	
+
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
