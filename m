@@ -2,144 +2,165 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id F1BBFC433EF
-	for <linux-m68k@archiver.kernel.org>; Fri, 21 Jan 2022 12:24:53 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id F2CD6C433FE
+	for <linux-m68k@archiver.kernel.org>; Fri, 21 Jan 2022 20:08:09 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1380329AbiAUMYt (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Fri, 21 Jan 2022 07:24:49 -0500
-Received: from mga07.intel.com ([134.134.136.100]:8060 "EHLO mga07.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1380328AbiAUMYt (ORCPT <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Fri, 21 Jan 2022 07:24:49 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1642767889; x=1674303889;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=3hfDR6qd0OhhK8ZgQ4/ZQOZpwPEBT6cE5sRbv1NeCD0=;
-  b=QbBc13bpeedldqK8NpktJM8KmVoCE/T4qmCvoxyZFEuwuxgSLfD+wioU
-   VmjfzZRjMib/RmrMRFpKhSl+sGAJ5ME+KwTw8rCFx4MgOl0Y9rRMB57i8
-   YUFmpX4bikTu4gEMUjrDqh3xlE7zu/toxJV1VtTWNcel9T8IIQ7z4kX2G
-   drsQHOQ4BBD9VgpD5ZhKpXEB1GiLoGzrMkLBVdbT1kdw+Jtkut/zllnVQ
-   ez4mVrGj4doIPGAN4OSjFzuHXs7gqZGOj3EP9nXr3ELCf0+q9dOUKyaWO
-   mzIN1cP7r9DwylUbVAcNMckoiSPvdZmrX5jCm1Av4DoUXwdF9nhVNk4M7
-   Q==;
-X-IronPort-AV: E=McAfee;i="6200,9189,10233"; a="308970360"
-X-IronPort-AV: E=Sophos;i="5.88,304,1635231600"; 
-   d="scan'208";a="308970360"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Jan 2022 04:24:47 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.88,304,1635231600"; 
-   d="scan'208";a="579592908"
-Received: from lkp-server01.sh.intel.com (HELO 276f1b88eecb) ([10.239.97.150])
-  by fmsmga008.fm.intel.com with ESMTP; 21 Jan 2022 04:24:44 -0800
-Received: from kbuild by 276f1b88eecb with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1nAsyC-000FHR-AK; Fri, 21 Jan 2022 12:24:44 +0000
-Date:   Fri, 21 Jan 2022 20:23:42 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Laurent Vivier <laurent@vivier.eu>, linux-kernel@vger.kernel.org
-Cc:     kbuild-all@lists.01.org, Alessandro Zummo <a.zummo@towertech.it>,
-        linux-rtc@vger.kernel.org, John Stultz <john.stultz@linaro.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        id S230237AbiAUUIJ (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Fri, 21 Jan 2022 15:08:09 -0500
+Received: from mout.kundenserver.de ([212.227.126.134]:58049 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229474AbiAUUIJ (ORCPT
+        <rfc822;linux-m68k@lists.linux-m68k.org>);
+        Fri, 21 Jan 2022 15:08:09 -0500
+Received: from quad ([82.142.13.186]) by mrelayeu.kundenserver.de (mreue009
+ [212.227.15.167]) with ESMTPSA (Nemesis) id 1Mw9Lw-1mLW2S12Rw-00s5pz; Fri, 21
+ Jan 2022 21:07:48 +0100
+From:   Laurent Vivier <laurent@vivier.eu>
+To:     linux-kernel@vger.kernel.org
+Cc:     linux-rtc@vger.kernel.org, Alessandro Zummo <a.zummo@towertech.it>,
         Jiaxun Yang <jiaxun.yang@flygoat.com>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        linux-m68k@lists.linux-m68k.org, Arnd Bergmann <arnd@arndb.de>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Stephen Boyd <sboyd@kernel.org>,
         Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        linux-m68k@lists.linux-m68k.org,
-        Thomas Gleixner <tglx@linutronix.de>
-Subject: Re: [PATCH v11 4/5] clocksource/drivers: Add a goldfish-timer
- clocksource
-Message-ID: <202201212032.qL41ty3V-lkp@intel.com>
-References: <20220120080347.1595379-5-laurent@vivier.eu>
+        John Stultz <john.stultz@linaro.org>,
+        Laurent Vivier <laurent@vivier.eu>
+Subject: [PATCH v12 3/5] rtc: goldfish: use gf_ioread32()/gf_iowrite32()
+Date:   Fri, 21 Jan 2022 21:07:36 +0100
+Message-Id: <20220121200738.2577697-4-laurent@vivier.eu>
+X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20220121200738.2577697-1-laurent@vivier.eu>
+References: <20220121200738.2577697-1-laurent@vivier.eu>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20220120080347.1595379-5-laurent@vivier.eu>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8bit
+X-Provags-ID: V03:K1:wMc9aE7SFhI7ob7vc3dfBy3RQ4C731TguCOa+Fbg8SfX8eSNBwH
+ WyCC1Z2nARQd/EkrKPQO49x4Gwdz73YUsShXk+pNkAu5w36sSzKx+YlgHTSZQF5+X331XQ3
+ oMMKs8SG9uDrvuDp4q44xnK/zQqQPEEOT13m/n6SrPD69SIKm2MQ2eE0a41L7E73g5yd+Lh
+ fqbPmwobKkCiHkjyYZ0oQ==
+X-UI-Out-Filterresults: notjunk:1;V03:K0:dXI6QUoe4hs=:jubA7W0XAkAQpKv/ggIbaU
+ aoYyBvb+WURmh9pkbCsEznOaIhQZzRh9zyFfnHNQJCNrdMqiGcOHSpKdf4fe5Ka5huKFg2FXB
+ GkbVC9MLlPnGGR9lbS4295pKX3ADX+rEfsfL/U2NHKVzuTEgxojR9wSWMvIFdK/yVC7ZWKli9
+ de6CrLLx0Blk66qe9P0MfM+0Pn9HsvowTQwf9qne9GQLbg3EjMMp0IEJZqPXSFql8A0gGquLu
+ ZxjlVMIU4LjuWMB4qlxlUjnC/gB5dTmTW5az4yee8qv0mPG6DeYTtfFfOROQL2TrRsiWfTVWT
+ 4Qe2IxMOuyavIOyEHAh5+wB6rkXsRgP0fmQ5zl5fzYrqn2+J8H4yc9n8PMLzLQ8TrvD9n6SXT
+ BdPAyCv3stv0Q1xvEVHxi9pHKelK9aPyJzpXzcNVvTtTAkOpJo4DwkyJNWz42AQNqZU2oWnAc
+ hfb/5oxdd2CgUCMxQEOeWU9ag6/nz0NsvbBa8/kshQAmba2XKoOU/yq6PxJ+ALF4A5K5HCwXJ
+ NiPutnJ11jh4CHc2qvYTi6lNlj4HXYzTBeoSH4gXAvRJ0D9kvLcjej1qYSDwME7YklmbVPmaY
+ JWqFxE8WL8HtsS9YDwR61vC12Q7//M2vrHBMsmkgQfnykEJqUMVzTEijH6W9N9/8oZN/k+Mql
+ 2mcJvK37ACOAShH4MlHQwcsPoEXRI1w0B6I5aaRuw0zGsMOHTNluBcGHYYCTwC3HUbyQ=
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-Hi Laurent,
+replace readl()/writel() by gf_ioread32()/gf_iowrite32()
+as done for goldfish-tty.
 
-Thank you for the patch! Yet something to improve:
-
-[auto build test ERROR on tip/timers/core]
-[also build test ERROR on linux/master linus/master next-20220121]
-[cannot apply to geert-m68k/for-next v5.16]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch]
-
-url:    https://github.com/0day-ci/linux/commits/Laurent-Vivier/m68k-Add-Virtual-M68k-Machine/20220120-160832
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git 35e13e9da9afbce13c1d36465504ece4e65f24fe
-config: arc-allyesconfig (https://download.01.org/0day-ci/archive/20220121/202201212032.qL41ty3V-lkp@intel.com/config)
-compiler: arceb-elf-gcc (GCC) 11.2.0
-reproduce (this is a W=1 build):
-        wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
-        chmod +x ~/bin/make.cross
-        # https://github.com/0day-ci/linux/commit/ea1170b472532011ab0c8208b6414a36810f45ab
-        git remote add linux-review https://github.com/0day-ci/linux
-        git fetch --no-tags linux-review Laurent-Vivier/m68k-Add-Virtual-M68k-Machine/20220120-160832
-        git checkout ea1170b472532011ab0c8208b6414a36810f45ab
-        # save the config file to linux build tree
-        mkdir build_dir
-        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-11.2.0 make.cross O=build_dir ARCH=arc SHELL=/bin/bash
-
-If you fix the issue, kindly add following tag as appropriate
-Reported-by: kernel test robot <lkp@intel.com>
-
-All errors (new ones prefixed by >>):
-
-   drivers/clocksource/timer-goldfish.c: In function 'goldfish_timer_read':
->> drivers/clocksource/timer-goldfish.c:52:20: error: implicit declaration of function 'gf_ioread32'; did you mean 'ioread32'? [-Werror=implicit-function-declaration]
-      52 |         time_low = gf_ioread32(base + TIMER_TIME_LOW);
-         |                    ^~~~~~~~~~~
-         |                    ioread32
-   drivers/clocksource/timer-goldfish.c: In function 'goldfish_timer_set_oneshot':
->> drivers/clocksource/timer-goldfish.c:65:9: error: implicit declaration of function 'gf_iowrite32'; did you mean 'iowrite32'? [-Werror=implicit-function-declaration]
-      65 |         gf_iowrite32(0, base + TIMER_ALARM_HIGH);
-         |         ^~~~~~~~~~~~
-         |         iowrite32
-   cc1: some warnings being treated as errors
-
-
-vim +52 drivers/clocksource/timer-goldfish.c
-
-    40	
-    41	static u64 goldfish_timer_read(struct clocksource *cs)
-    42	{
-    43		struct goldfish_timer *timerdrv = cs_to_gf(cs);
-    44		void __iomem *base = timerdrv->base;
-    45		u32 time_low, time_high;
-    46		u64 ticks;
-    47	
-    48		/*
-    49		 * time_low: get low bits of current time and update time_high
-    50		 * time_high: get high bits of time at last time_low read
-    51		 */
-  > 52		time_low = gf_ioread32(base + TIMER_TIME_LOW);
-    53		time_high = gf_ioread32(base + TIMER_TIME_HIGH);
-    54	
-    55		ticks = ((u64)time_high << 32) | time_low;
-    56	
-    57		return ticks;
-    58	}
-    59	
-    60	static int goldfish_timer_set_oneshot(struct clock_event_device *evt)
-    61	{
-    62		struct goldfish_timer *timerdrv = ced_to_gf(evt);
-    63		void __iomem *base = timerdrv->base;
-    64	
-  > 65		gf_iowrite32(0, base + TIMER_ALARM_HIGH);
-    66		gf_iowrite32(0, base + TIMER_ALARM_LOW);
-    67		gf_iowrite32(1, base + TIMER_IRQ_ENABLED);
-    68	
-    69		return 0;
-    70	}
-    71	
-
+Signed-off-by: Laurent Vivier <laurent@vivier.eu>
 ---
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+ drivers/rtc/rtc-goldfish.c | 31 ++++++++++++++++---------------
+ 1 file changed, 16 insertions(+), 15 deletions(-)
+
+diff --git a/drivers/rtc/rtc-goldfish.c b/drivers/rtc/rtc-goldfish.c
+index 7ab95d052644..eb1929b0cbb6 100644
+--- a/drivers/rtc/rtc-goldfish.c
++++ b/drivers/rtc/rtc-goldfish.c
+@@ -10,6 +10,7 @@
+ #include <linux/of.h>
+ #include <linux/platform_device.h>
+ #include <linux/rtc.h>
++#include <linux/goldfish.h>
+ 
+ #define TIMER_TIME_LOW		0x00	/* get low bits of current time  */
+ 					/*   and update TIMER_TIME_HIGH  */
+@@ -41,8 +42,8 @@ static int goldfish_rtc_read_alarm(struct device *dev,
+ 	rtcdrv = dev_get_drvdata(dev);
+ 	base = rtcdrv->base;
+ 
+-	rtc_alarm_low = readl(base + TIMER_ALARM_LOW);
+-	rtc_alarm_high = readl(base + TIMER_ALARM_HIGH);
++	rtc_alarm_low = gf_ioread32(base + TIMER_ALARM_LOW);
++	rtc_alarm_high = gf_ioread32(base + TIMER_ALARM_HIGH);
+ 	rtc_alarm = (rtc_alarm_high << 32) | rtc_alarm_low;
+ 
+ 	do_div(rtc_alarm, NSEC_PER_SEC);
+@@ -50,7 +51,7 @@ static int goldfish_rtc_read_alarm(struct device *dev,
+ 
+ 	rtc_time64_to_tm(rtc_alarm, &alrm->time);
+ 
+-	if (readl(base + TIMER_ALARM_STATUS))
++	if (gf_ioread32(base + TIMER_ALARM_STATUS))
+ 		alrm->enabled = 1;
+ 	else
+ 		alrm->enabled = 0;
+@@ -71,18 +72,18 @@ static int goldfish_rtc_set_alarm(struct device *dev,
+ 
+ 	if (alrm->enabled) {
+ 		rtc_alarm64 = rtc_tm_to_time64(&alrm->time) * NSEC_PER_SEC;
+-		writel((rtc_alarm64 >> 32), base + TIMER_ALARM_HIGH);
+-		writel(rtc_alarm64, base + TIMER_ALARM_LOW);
+-		writel(1, base + TIMER_IRQ_ENABLED);
++		gf_iowrite32((rtc_alarm64 >> 32), base + TIMER_ALARM_HIGH);
++		gf_iowrite32(rtc_alarm64, base + TIMER_ALARM_LOW);
++		gf_iowrite32(1, base + TIMER_IRQ_ENABLED);
+ 	} else {
+ 		/*
+ 		 * if this function was called with enabled=0
+ 		 * then it could mean that the application is
+ 		 * trying to cancel an ongoing alarm
+ 		 */
+-		rtc_status_reg = readl(base + TIMER_ALARM_STATUS);
++		rtc_status_reg = gf_ioread32(base + TIMER_ALARM_STATUS);
+ 		if (rtc_status_reg)
+-			writel(1, base + TIMER_CLEAR_ALARM);
++			gf_iowrite32(1, base + TIMER_CLEAR_ALARM);
+ 	}
+ 
+ 	return 0;
+@@ -98,9 +99,9 @@ static int goldfish_rtc_alarm_irq_enable(struct device *dev,
+ 	base = rtcdrv->base;
+ 
+ 	if (enabled)
+-		writel(1, base + TIMER_IRQ_ENABLED);
++		gf_iowrite32(1, base + TIMER_IRQ_ENABLED);
+ 	else
+-		writel(0, base + TIMER_IRQ_ENABLED);
++		gf_iowrite32(0, base + TIMER_IRQ_ENABLED);
+ 
+ 	return 0;
+ }
+@@ -110,7 +111,7 @@ static irqreturn_t goldfish_rtc_interrupt(int irq, void *dev_id)
+ 	struct goldfish_rtc *rtcdrv = dev_id;
+ 	void __iomem *base = rtcdrv->base;
+ 
+-	writel(1, base + TIMER_CLEAR_INTERRUPT);
++	gf_iowrite32(1, base + TIMER_CLEAR_INTERRUPT);
+ 
+ 	rtc_update_irq(rtcdrv->rtc, 1, RTC_IRQF | RTC_AF);
+ 
+@@ -128,8 +129,8 @@ static int goldfish_rtc_read_time(struct device *dev, struct rtc_time *tm)
+ 	rtcdrv = dev_get_drvdata(dev);
+ 	base = rtcdrv->base;
+ 
+-	time_low = readl(base + TIMER_TIME_LOW);
+-	time_high = readl(base + TIMER_TIME_HIGH);
++	time_low = gf_ioread32(base + TIMER_TIME_LOW);
++	time_high = gf_ioread32(base + TIMER_TIME_HIGH);
+ 	time = (time_high << 32) | time_low;
+ 
+ 	do_div(time, NSEC_PER_SEC);
+@@ -149,8 +150,8 @@ static int goldfish_rtc_set_time(struct device *dev, struct rtc_time *tm)
+ 	base = rtcdrv->base;
+ 
+ 	now64 = rtc_tm_to_time64(tm) * NSEC_PER_SEC;
+-	writel((now64 >> 32), base + TIMER_TIME_HIGH);
+-	writel(now64, base + TIMER_TIME_LOW);
++	gf_iowrite32((now64 >> 32), base + TIMER_TIME_HIGH);
++	gf_iowrite32(now64, base + TIMER_TIME_LOW);
+ 
+ 	return 0;
+ }
+-- 
+2.34.1
+
