@@ -2,57 +2,104 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 0FA4CC433F5
-	for <linux-m68k@archiver.kernel.org>; Tue, 25 Jan 2022 07:20:57 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 9A9ACC4332F
+	for <linux-m68k@archiver.kernel.org>; Tue, 25 Jan 2022 08:49:58 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1356452AbiAYHUx (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Tue, 25 Jan 2022 02:20:53 -0500
-Received: from foss.arm.com ([217.140.110.172]:39696 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1350409AbiAYDmE (ORCPT <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Mon, 24 Jan 2022 22:42:04 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id E1A911FB;
-        Mon, 24 Jan 2022 19:42:00 -0800 (PST)
-Received: from [10.163.42.113] (unknown [10.163.42.113])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 478853F766;
-        Mon, 24 Jan 2022 19:41:57 -0800 (PST)
-Subject: Re: [RFC V1 08/31] m68k/mm: Enable ARCH_HAS_VM_GET_PAGE_PROT
-To:     Andreas Schwab <schwab@linux-m68k.org>
-Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        hch@infradead.org, akpm@linux-foundation.org,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        linux-m68k@lists.linux-m68k.org
-References: <1643029028-12710-1-git-send-email-anshuman.khandual@arm.com>
- <1643029028-12710-9-git-send-email-anshuman.khandual@arm.com>
- <87mtjl8bnl.fsf@igel.home>
-From:   Anshuman Khandual <anshuman.khandual@arm.com>
-Message-ID: <aef5318e-0b48-2a9e-1a1b-386894b116f4@arm.com>
-Date:   Tue, 25 Jan 2022 09:12:04 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1452612AbiAYIt4 (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Tue, 25 Jan 2022 03:49:56 -0500
+Received: from mail-vk1-f172.google.com ([209.85.221.172]:36657 "EHLO
+        mail-vk1-f172.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1452301AbiAYIru (ORCPT
+        <rfc822;linux-m68k@lists.linux-m68k.org>);
+        Tue, 25 Jan 2022 03:47:50 -0500
+Received: by mail-vk1-f172.google.com with SMTP id d189so11956207vkg.3
+        for <linux-m68k@lists.linux-m68k.org>; Tue, 25 Jan 2022 00:47:48 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=AlenwNbrW3HyQCtaJwFpWckVmU5Z8Lu18+yoa5O/tis=;
+        b=sXcw9tgWNsxAgzPXUMaAYq/ui5QschqrwVPEAmyGtKx/jydfdCdLet/eSXCnA4TGjb
+         obq1e6XtosgHDLuPol0f15Qqsnc0/LPyg690jSDRgnxFjYrzX3fPDHAIrAakhZqMNETu
+         +U1zKjZGXcxFHUqiKtpoMhZSx2pGqQ1LU5DH9+jnKq7WwNGZTSehqmXluRMJnsbxx62g
+         3SrxpaevU368uFsRMenAbmX8f0FIgrnY1FYCyacu16pS2FQXy5b2qatJuhiJbw+hInzN
+         HRgD8giqljWUBulbU3UIay3obMakue6UazTD70egKlmZsPxyRiwzBiqD39tiSeH9MyNh
+         jIjQ==
+X-Gm-Message-State: AOAM531pGDgBJpQ9qnTozSqNRwypWUf/Imgy05gvPKAxt8c4xbBgDZwq
+        BVu7RWOAsiMKBhZsUQtUSBTjkvMWyFRKeg==
+X-Google-Smtp-Source: ABdhPJynVj5yjCIjQWfq4xcQcX3MGR4EKZQa8ebFNK9gxZUBp3aV/sbQTaWTu0sRx5p2kzh7PqQn3w==
+X-Received: by 2002:a1f:4d42:: with SMTP id a63mr2097135vkb.20.1643100468248;
+        Tue, 25 Jan 2022 00:47:48 -0800 (PST)
+Received: from mail-ua1-f43.google.com (mail-ua1-f43.google.com. [209.85.222.43])
+        by smtp.gmail.com with ESMTPSA id j9sm3301403vkj.8.2022.01.25.00.47.47
+        for <linux-m68k@lists.linux-m68k.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 25 Jan 2022 00:47:48 -0800 (PST)
+Received: by mail-ua1-f43.google.com with SMTP id y4so36081243uad.1
+        for <linux-m68k@lists.linux-m68k.org>; Tue, 25 Jan 2022 00:47:47 -0800 (PST)
+X-Received: by 2002:a67:b009:: with SMTP id z9mr3762032vse.57.1643100467677;
+ Tue, 25 Jan 2022 00:47:47 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <87mtjl8bnl.fsf@igel.home>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20220125073137.1.83124@7e6451f583e7>
+In-Reply-To: <20220125073137.1.83124@7e6451f583e7>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Tue, 25 Jan 2022 09:47:36 +0100
+X-Gmail-Original-Message-ID: <CAMuHMdVYhwpP0vSK4LT+50ZqB9opD8gcm-2aor8wAc49=GR+-w@mail.gmail.com>
+Message-ID: <CAMuHMdVYhwpP0vSK4LT+50ZqB9opD8gcm-2aor8wAc49=GR+-w@mail.gmail.com>
+Subject: Re: kisskb: FAILED linux-next/m68k-allmodconfig/m68k-gcc8 Tue Jan 25, 18:24
+To:     linux-m68k <linux-m68k@lists.linux-m68k.org>
+Cc:     Arnd Bergmann <arnd@arndb.de>, Yury Norov <yury.norov@gmail.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
+On Tue, Jan 25, 2022 at 8:31 AM <noreply@ellerman.id.au> wrote:
+> FAILED linux-next/m68k-allmodconfig/m68k-gcc8 Tue Jan 25, 18:24
+>
+> http://kisskb.ellerman.id.au/kisskb/buildresult/14688953/
+>
+> Commit:   Add linux-next specific files for 20220125
+>           d25ee88530253138d0b20d43511ca5acbda4e9f7
+> Compiler: m68k-linux-gcc (GCC) 8.1.0 / GNU ld (GNU Binutils) 2.30
+>
+> Possible errors
+> ---------------
+>
+> arch/m68k/include/asm/bitops.h:329:20: error: array subscript 2 is above array bounds of 'long unsigned int[1]' [-Werror=array-bounds]
+> cc1: all warnings being treated as errors
+> make[4]: *** [scripts/Makefile.build:289: drivers/net/ipa/ipa_mem.o] Error 1
+> make[3]: *** [scripts/Makefile.build:572: drivers/net/ipa] Error 2
+> make[2]: *** [scripts/Makefile.build:572: drivers/net] Error 2
+> make[1]: *** [Makefile:1965: drivers] Error 2
+> make: *** [Makefile:226: __sub-make] Error 2
+>
+> No warnings found in log.
 
+The code that causes this is drivers/net/ipa/ipa_mem.c:ipa_mem_valid():
 
-On 1/24/22 7:43 PM, Andreas Schwab wrote:
-> On Jan 24 2022, Anshuman Khandual wrote:
-> 
->> +pgprot_t vm_get_page_prot(unsigned long vm_flags)
->> +{
->> +	switch (vm_flags & (VM_READ | VM_WRITE | VM_EXEC | VM_SHARED)) {
->> +	case VM_NONE:
->> +		return __pgprot(pgprot_val(PAGE_NONE_C)|_PAGE_CACHE040);
-> 
-> _PAGE_CACHE040 should only be present when running on a 040 or 060.
-> 
+        DECLARE_BITMAP(regions, IPA_MEM_COUNT) = { };
+        ...
+        for_each_clear_bit(mem_id, regions, IPA_MEM_COUNT) {
+                if (ipa_mem_id_required(ipa, mem_id))
+                        dev_err(dev, "required memory region %u missing\n",
+                                mem_id);
+        }
 
-Right, seems like I have missed the conditionality on CPU_IS_040_OR_060
-while moving the code, will fix it.
+This only happens with gcc-8, not with gcc-9, so it might be a
+compiler bug. I don't see anything wrong with c:ipa_mem_valid()
+nor with m68k's find_first_zero_bit().
+
+Thanks!
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
