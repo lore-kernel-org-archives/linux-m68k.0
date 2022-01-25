@@ -2,59 +2,59 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 0EAD0C433EF
-	for <linux-m68k@archiver.kernel.org>; Tue, 25 Jan 2022 07:16:49 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 34EB5C433F5
+	for <linux-m68k@archiver.kernel.org>; Tue, 25 Jan 2022 07:16:55 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1442712AbiAYHQi (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Tue, 25 Jan 2022 02:16:38 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47360 "EHLO
+        id S1443729AbiAYHQm (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Tue, 25 Jan 2022 02:16:42 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48320 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1442713AbiAYHKl (ORCPT
+        with ESMTP id S1442714AbiAYHKl (ORCPT
         <rfc822;linux-m68k@vger.kernel.org>); Tue, 25 Jan 2022 02:10:41 -0500
-Received: from mail-pj1-x102b.google.com (mail-pj1-x102b.google.com [IPv6:2607:f8b0:4864:20::102b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5EF49C068098
-        for <linux-m68k@vger.kernel.org>; Mon, 24 Jan 2022 22:08:29 -0800 (PST)
-Received: by mail-pj1-x102b.google.com with SMTP id d5so16478817pjk.5
-        for <linux-m68k@vger.kernel.org>; Mon, 24 Jan 2022 22:08:29 -0800 (PST)
+Received: from mail-pf1-x42c.google.com (mail-pf1-x42c.google.com [IPv6:2607:f8b0:4864:20::42c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F1F4C04D628
+        for <linux-m68k@vger.kernel.org>; Mon, 24 Jan 2022 22:08:30 -0800 (PST)
+Received: by mail-pf1-x42c.google.com with SMTP id a8so13241769pfa.6
+        for <linux-m68k@vger.kernel.org>; Mon, 24 Jan 2022 22:08:30 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=cRS1uuNrZ/VXWG04KnyYN+/H30PFxdTCvSCAVODnZiI=;
-        b=ZPXZ+PXTLF/0dn5OK+8+/zMhUftaD/+0PhEw7p6jaM/FWwP8sQernsdgd6CTmrlyAj
-         I/r9jViyz9qSqSnQhEk4taACAQNTeB69+j0e1BICOe3JSk1gr5ea+0qxBY7UzG0ZUWwD
-         01YkvT3b55eTSUfrub3yWmOfgXHpvkOwj8aFi83geFMGaYiZVz2hoae8enqlnse3QPrS
-         XqlnRy1j9BA21WldbPW+/qhOtBiXeg3eSSBbmM8+nl2+KwAStgexohFcec96wMp/prCD
-         Ba3VohJ3xpktFkwVw001jjB3zksb1BIIW1IDmBc8SFYyi9iM9wt7/fjuSzpCVm5cBHeZ
-         jlaA==
+        bh=P0ruwGrmu3WrfhB/BQVXFaCmc7Q1qbZSGeSfheU+cjc=;
+        b=ln4htZ1LE9WKSyECxxt+/fk+9LfeBwSjQbODxAHwi/Wl0ehP+LNq6xvtxVBWf2jIot
+         cS4ZKAtBWBsgohUnjVK68zwmFmkm6VOfLPKdRFHav1PW1pAG12N3i7dWuIWOtckJNWfC
+         r2ZfnzC59y1N+COe/yL/TD2JO7Voy1o5+ONZ44C+oUdyFSPTmqzupJY8HaCxwd2VFwWp
+         XGnw43s5hUotXCxluWQxfZjZ0kzRev65hOJDa1e1SJZ5eWIK4kwEBj4OyVCtddelUFuW
+         lmyFWaUCddRl6DotVXmFu0pB4+Uw4v+PMOLSJ86WXs/6G59MmXH58tMeEd9cPVJQcuYb
+         OQQQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references;
-        bh=cRS1uuNrZ/VXWG04KnyYN+/H30PFxdTCvSCAVODnZiI=;
-        b=krE+FmgDZjMpn19kJYikVY3JP1jTCyC8P0x3H3x5FIWLiiah92nkNweerzWsaoK2lN
-         kaKnRpCsjAEjmcZheBFAkbEL1AlesIQ5s+wys1vT932mK4UkgwUmjxH64gxlDDCh1fvG
-         WhMX7dZ2sfN6eY6X3ugrlZGBvfS3XgTk+F4orrIpsEJgN+bYH2lwCJ5LhS3A8Ixqs0UF
-         zp4MYNmPCSiIuOLQf8KH3n9qKsZAqmyDdxkHzhfmBvpIhq2/ZW+87hBnT+ChI3EfpD7o
-         hfpEpf2foVrZWDf1G0eBIzAF5kM+zexFifTudukkDvez7tfEeF+jA5+/NAI8E9SeKxDx
-         LM1w==
-X-Gm-Message-State: AOAM533vjlZKvZ0H2R/rXGDJluicROHWKT/KyDRBL74GgTjQ7w83pcdD
-        qLpBqwoBCL2G3iu3hwK0aFPeMR44Yug=
-X-Google-Smtp-Source: ABdhPJytctiySTifTDbpw4j85x+P0y1iKFV0tAraYRjjGPzjOXBdyQHT0AWbyX7FJN4MijHqBu1bWQ==
-X-Received: by 2002:a17:90a:34cc:: with SMTP id m12mr2013756pjf.24.1643090908986;
-        Mon, 24 Jan 2022 22:08:28 -0800 (PST)
+        bh=P0ruwGrmu3WrfhB/BQVXFaCmc7Q1qbZSGeSfheU+cjc=;
+        b=ES94Z4SX/wMZJdhffrLjPZZcH8EkAVBh+7k4ddlDGssMXOhkBzEvDsUqNVI4okRF82
+         T2tRSbUbucPLQ/LBeRFfS6s4VuW6zjlvjBZUHhcYQPk98fZtKnTgrseTDwo3A9IVECQ6
+         63Pf4IAyIEd7MfPO2YOU74mxSZx7HIF5relyop1F9yVy+WR0GPQl7IwZBT7HzAwtRd3+
+         8yb+IcXdZHjVTFzkt7cvOX9OKsyp/cy6P2e3JKSAyddOcsv0i7Nqc02BB/JE+bwp2frR
+         6LJn5TGbR8isxv89sVefPc4Xqplv53gEG7/8duhZp3uMRd/gCtQ9BI4voAz1zyJXAnbS
+         811w==
+X-Gm-Message-State: AOAM532ui2mRngTQI4w0ehhULY+6RcDTPHMItOuM2kWJHbN6hettPEIy
+        27UVgDEF/VfYoaHsIa/ystQ=
+X-Google-Smtp-Source: ABdhPJyCsih4pOehrxqOsXpyFyqPj9LsXJdnBn2B+N+55QQB/NEqHXiUwdWZkt6A/bDvR5P8jvYdeA==
+X-Received: by 2002:a63:d417:: with SMTP id a23mr14116834pgh.297.1643090910159;
+        Mon, 24 Jan 2022 22:08:30 -0800 (PST)
 Received: from xplor.waratah.dyndns.org (222-155-5-102-adsl.sparkbb.co.nz. [222.155.5.102])
-        by smtp.gmail.com with ESMTPSA id b20sm5020292pfv.134.2022.01.24.22.08.27
+        by smtp.gmail.com with ESMTPSA id j11sm18472145pfu.55.2022.01.24.22.08.27
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 24 Jan 2022 22:08:27 -0800 (PST)
+        Mon, 24 Jan 2022 22:08:29 -0800 (PST)
 Received: by xplor.waratah.dyndns.org (Postfix, from userid 1000)
-        id 60BFE360335; Tue, 25 Jan 2022 19:08:24 +1300 (NZDT)
+        id E1033360337; Tue, 25 Jan 2022 19:08:24 +1300 (NZDT)
 From:   Michael Schmitz <schmitzmic@gmail.com>
 To:     linux-m68k@vger.kernel.org, geert@linux-m68k.org
 Cc:     ebiederm@xmission.com, viro@zeniv.linux.org.uk,
         Michael Schmitz <schmitzmic@gmail.com>
-Subject: [PATCH v9 2/3] m68k/kernel - check syscall_trace_enter() return code on m68k
-Date:   Tue, 25 Jan 2022 19:08:20 +1300
-Message-Id: <20220125060821.2405-3-schmitzmic@gmail.com>
+Subject: [PATCH v9 3/3] m68k: add kernel seccomp support
+Date:   Tue, 25 Jan 2022 19:08:21 +1300
+Message-Id: <20220125060821.2405-4-schmitzmic@gmail.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20220125060821.2405-1-schmitzmic@gmail.com>
 References: <20220125060821.2405-1-schmitzmic@gmail.com>
@@ -62,84 +62,202 @@ Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-Check return code of syscall_trace_enter(), and skip syscall
-if -1. Return code will be left at what had been set by
-ptrace or seccomp (in regs->d0).
+Add secure_computing() call to syscall_trace_enter to actually
+filter system calls.
 
-No regression seen in testing with strace on ARAnyM.
+Add necessary arch Kconfig options, define TIF_SECCOMP trace
+flag and provide basic seccomp filter support in asm/syscall.h
+
+syscall_get_nr currently uses the syscall nr stored in orig_d0
+because we change d0 to a default return code before starting a
+syscall trace. This may be inconsistent with syscall_rollback
+copying orig_d0 to d0 (which we never check upon return from
+trace). We use d0 for the return code from syscall_trace_enter
+in entry.S currently, and could perhaps expand that to store
+a new syscall number returned by the seccomp filter before
+executing the syscall. This clearly needs some discussion.
+
+No regressions in seccomp_bpf self test on ARAnyM.
 
 Signed-off-by: Michael Schmitz <schmitzmic@gmail.com>
 
 --
-Changes from v7:
-
-Al Viro:
-- split return code checks from switch to syscall_trace_enter()
-
 Changes from v6:
 
 Geert Uytterhoeven:
-- add syscall_trace_enter() return code check for 68000
-  and coldfire
+- add syscall_get_error(), syscall_get_return_value(), and
+  syscall_set_arguments() (not needed to compile!)
 
 Changes from v5:
 
-- add comment to explain optimization
+Geert Uytterhoeven:
+- correct wrong offset for d1-d5 register copy
+- update Documentation/features/seccomp/seccomp-filter/arch-support.txt
 
-Changes from v4:
-
-Andreas Schwab:
-- optimize return code test (addql #1,%d0 for cmpil #-1,%d0)
-- spelling fix in commit message
-
-Changes from v3:
-
-- change syscall_trace_enter return code test from !=0 to ==-1
+add syscall_get_error(), syscall_get_return_value(), syscall_set_arguments()
 ---
- arch/m68k/68000/entry.S    | 2 ++
- arch/m68k/coldfire/entry.S | 2 ++
- arch/m68k/kernel/entry.S   | 2 ++
- 3 files changed, 6 insertions(+)
+ .../seccomp/seccomp-filter/arch-support.txt   |  2 +-
+ arch/m68k/Kconfig                             |  2 +
+ arch/m68k/include/asm/seccomp.h               | 11 ++++
+ arch/m68k/include/asm/syscall.h               | 56 +++++++++++++++++++
+ arch/m68k/include/asm/thread_info.h           |  2 +
+ arch/m68k/kernel/ptrace.c                     |  5 ++
+ 6 files changed, 77 insertions(+), 1 deletion(-)
+ create mode 100644 arch/m68k/include/asm/seccomp.h
 
-diff --git a/arch/m68k/68000/entry.S b/arch/m68k/68000/entry.S
-index 997b54933015..7d63e2f1555a 100644
---- a/arch/m68k/68000/entry.S
-+++ b/arch/m68k/68000/entry.S
-@@ -45,6 +45,8 @@ do_trace:
- 	jbsr	syscall_trace_enter
- 	RESTORE_SWITCH_STACK
- 	addql	#4,%sp
-+	addql	#1,%d0
-+	jeq	ret_from_exception
- 	movel	%sp@(PT_OFF_ORIG_D0),%d1
- 	movel	#-ENOSYS,%d0
- 	cmpl	#NR_syscalls,%d1
-diff --git a/arch/m68k/coldfire/entry.S b/arch/m68k/coldfire/entry.S
-index 9f337c70243a..35104c5417ff 100644
---- a/arch/m68k/coldfire/entry.S
-+++ b/arch/m68k/coldfire/entry.S
-@@ -90,6 +90,8 @@ ENTRY(system_call)
- 	jbsr	syscall_trace_enter
- 	RESTORE_SWITCH_STACK
- 	addql	#4,%sp
-+	addql	#1,%d0
-+	jeq	ret_from_exception
- 	movel	%d3,%a0
- 	jbsr	%a0@
- 	movel	%d0,%sp@(PT_OFF_D0)		/* save the return value */
-diff --git a/arch/m68k/kernel/entry.S b/arch/m68k/kernel/entry.S
-index 18f278bdbd21..0d5b7085d76f 100644
---- a/arch/m68k/kernel/entry.S
-+++ b/arch/m68k/kernel/entry.S
-@@ -184,6 +184,8 @@ do_trace_entry:
- 	jbsr	syscall_trace_enter
- 	RESTORE_SWITCH_STACK
- 	addql	#4,%sp
-+	addql	#1,%d0			| optimization for cmpil #-1,%d0
-+	jeq	ret_from_syscall
- 	movel	%sp@(PT_OFF_ORIG_D0),%d0
- 	cmpl	#NR_syscalls,%d0
- 	jcs	syscall
+diff --git a/Documentation/features/seccomp/seccomp-filter/arch-support.txt b/Documentation/features/seccomp/seccomp-filter/arch-support.txt
+index 26eec58ab819..be71f2066981 100644
+--- a/Documentation/features/seccomp/seccomp-filter/arch-support.txt
++++ b/Documentation/features/seccomp/seccomp-filter/arch-support.txt
+@@ -14,7 +14,7 @@
+     |       h8300: | TODO |
+     |     hexagon: | TODO |
+     |        ia64: | TODO |
+-    |        m68k: | TODO |
++    |        m68k: |  ok  |
+     |  microblaze: | TODO |
+     |        mips: |  ok  |
+     |       nds32: | TODO |
+diff --git a/arch/m68k/Kconfig b/arch/m68k/Kconfig
+index 936e1803c7c7..c0ef187fb3ed 100644
+--- a/arch/m68k/Kconfig
++++ b/arch/m68k/Kconfig
+@@ -18,6 +18,8 @@ config M68K
+ 	select GENERIC_IOMAP
+ 	select GENERIC_IRQ_SHOW
+ 	select HAVE_AOUT if MMU
++	select HAVE_ARCH_SECCOMP
++	select HAVE_ARCH_SECCOMP_FILTER
+ 	select HAVE_ASM_MODVERSIONS
+ 	select HAVE_DEBUG_BUGVERBOSE
+ 	select HAVE_EFFICIENT_UNALIGNED_ACCESS if !CPU_HAS_NO_UNALIGNED
+diff --git a/arch/m68k/include/asm/seccomp.h b/arch/m68k/include/asm/seccomp.h
+new file mode 100644
+index 000000000000..de8a94e1fb3f
+--- /dev/null
++++ b/arch/m68k/include/asm/seccomp.h
+@@ -0,0 +1,11 @@
++/* SPDX-License-Identifier: GPL-2.0-only */
++#ifndef _ASM_SECCOMP_H
++#define _ASM_SECCOMP_H
++
++#include <asm-generic/seccomp.h>
++
++#define SECCOMP_ARCH_NATIVE		AUDIT_ARCH_M68K
++#define SECCOMP_ARCH_NATIVE_NR		NR_syscalls
++#define SECCOMP_ARCH_NATIVE_NAME	"m68k"
++
++#endif /* _ASM_SECCOMP_H */
+diff --git a/arch/m68k/include/asm/syscall.h b/arch/m68k/include/asm/syscall.h
+index 465ac039be09..2b49ad725655 100644
+--- a/arch/m68k/include/asm/syscall.h
++++ b/arch/m68k/include/asm/syscall.h
+@@ -4,6 +4,62 @@
+ 
+ #include <uapi/linux/audit.h>
+ 
++#include <asm/unistd.h>
++
++extern const unsigned long sys_call_table[];
++
++static inline int syscall_get_nr(struct task_struct *task,
++				 struct pt_regs *regs)
++{
++	return regs->orig_d0;
++}
++
++static inline void syscall_rollback(struct task_struct *task,
++				    struct pt_regs *regs)
++{
++	regs->d0 = regs->orig_d0;
++}
++
++static inline long syscall_get_error(struct task_struct *task,
++				     struct pt_regs *regs)
++{
++	unsigned long error = regs->d0;
++	return IS_ERR_VALUE(error) ? error : 0;
++}
++
++static inline long syscall_get_return_value(struct task_struct *task,
++					    struct pt_regs *regs)
++{
++	return regs->d0;
++}
++
++static inline void syscall_set_return_value(struct task_struct *task,
++					    struct pt_regs *regs,
++					    int error, long val)
++{
++	regs->d0 = (long) error ? error : val;
++}
++
++static inline void syscall_get_arguments(struct task_struct *task,
++					 struct pt_regs *regs,
++					 unsigned long *args)
++{
++	args[0] = regs->orig_d0;
++	args++;
++
++	memcpy(args, &regs->d1, 5 * sizeof(args[0]));
++}
++
++static inline void syscall_set_arguments(struct task_struct *task,
++					 struct pt_regs *regs,
++					 unsigned long *args)
++{
++	regs->orig_d0 = args[0];
++	args++;
++
++	memcpy(&regs->d1, args, 5 * sizeof(args[0]));
++}
++
+ static inline int syscall_get_arch(struct task_struct *task)
+ {
+ 	return AUDIT_ARCH_M68K;
+diff --git a/arch/m68k/include/asm/thread_info.h b/arch/m68k/include/asm/thread_info.h
+index c952658ba792..31be2ad999ca 100644
+--- a/arch/m68k/include/asm/thread_info.h
++++ b/arch/m68k/include/asm/thread_info.h
+@@ -61,6 +61,7 @@ static inline struct thread_info *current_thread_info(void)
+ #define TIF_NOTIFY_RESUME	5	/* callback before returning to user */
+ #define TIF_SIGPENDING		6	/* signal pending */
+ #define TIF_NEED_RESCHED	7	/* rescheduling necessary */
++#define TIF_SECCOMP		13	/* seccomp syscall filtering active */
+ #define TIF_DELAYED_TRACE	14	/* single step a syscall */
+ #define TIF_SYSCALL_TRACE	15	/* syscall trace active */
+ #define TIF_MEMDIE		16	/* is terminating due to OOM killer */
+@@ -69,6 +70,7 @@ static inline struct thread_info *current_thread_info(void)
+ #define _TIF_NOTIFY_RESUME	(1 << TIF_NOTIFY_RESUME)
+ #define _TIF_SIGPENDING		(1 << TIF_SIGPENDING)
+ #define _TIF_NEED_RESCHED	(1 << TIF_NEED_RESCHED)
++#define _TIF_SECCOMP		(1 << TIF_SECCOMP)
+ #define _TIF_DELAYED_TRACE	(1 << TIF_DELAYED_TRACE)
+ #define _TIF_SYSCALL_TRACE	(1 << TIF_SYSCALL_TRACE)
+ #define _TIF_MEMDIE		(1 << TIF_MEMDIE)
+diff --git a/arch/m68k/kernel/ptrace.c b/arch/m68k/kernel/ptrace.c
+index 74d58a82a135..bc2490c3fb52 100644
+--- a/arch/m68k/kernel/ptrace.c
++++ b/arch/m68k/kernel/ptrace.c
+@@ -19,6 +19,7 @@
+ #include <linux/ptrace.h>
+ #include <linux/user.h>
+ #include <linux/signal.h>
++#include <linux/seccomp.h>
+ #include <linux/tracehook.h>
+ 
+ #include <linux/uaccess.h>
+@@ -277,6 +278,10 @@ asmlinkage int syscall_trace_enter(void)
+ 
+ 	if (test_thread_flag(TIF_SYSCALL_TRACE))
+ 		ret = tracehook_report_syscall_entry(task_pt_regs(current));
++
++	if (secure_computing() == -1)
++		return -1;
++
+ 	return ret;
+ }
+ 
 -- 
 2.17.1
 
