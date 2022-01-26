@@ -2,118 +2,370 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 785E7C2BA4C
-	for <linux-m68k@archiver.kernel.org>; Wed, 26 Jan 2022 16:42:52 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 435A4C63682
+	for <linux-m68k@archiver.kernel.org>; Wed, 26 Jan 2022 17:14:53 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243247AbiAZQmv (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Wed, 26 Jan 2022 11:42:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34132 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243244AbiAZQmv (ORCPT
+        id S243628AbiAZROw (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Wed, 26 Jan 2022 12:14:52 -0500
+Received: from mout.kundenserver.de ([212.227.126.135]:40075 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S243627AbiAZROw (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Wed, 26 Jan 2022 11:42:51 -0500
-Received: from mail-pl1-x633.google.com (mail-pl1-x633.google.com [IPv6:2607:f8b0:4864:20::633])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6AA7DC06173B
-        for <linux-m68k@lists.linux-m68k.org>; Wed, 26 Jan 2022 08:42:51 -0800 (PST)
-Received: by mail-pl1-x633.google.com with SMTP id d7so41728plr.12
-        for <linux-m68k@lists.linux-m68k.org>; Wed, 26 Jan 2022 08:42:51 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=26nuG5LfIcJuY5lnKgqDnkrN+Bi4a/GtEIReoSCalwo=;
-        b=e1tCczybPYMnGteIsw/Iy4xrVvd6PUu020NPKs65UhYUYv2ezLk5aZAHpRuE/NWfcw
-         oxpeDkpnn1At9Teli22xs0UrmFZ8T8XpkGsJcl79tzLlO1bj+rC1edtF22wugzrR+6Px
-         8ePgTBuHRzLtN8pVAX18mlKPTysea3dzwRszk=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=26nuG5LfIcJuY5lnKgqDnkrN+Bi4a/GtEIReoSCalwo=;
-        b=LJWeclRR0fzDoVY6szODu68DbZcLiEhn2JK+OqPSSp3t78lnHo7b82RauR0df9Lorr
-         TwIz3aHDwFSbBHX+2Jyo7ARzs5krK1YOL/506GCMNQxEijvEuQeFQX4MZKDJOa17Mphy
-         MyqSX9URJByt3sKyH5ttYxvACKCJElkxu8Oa2af2yFXP2ALKOm8b6UU2T0RXLbjFX1v/
-         EqWxR8UUIwg5KU7UjnXyLc3ml5yNWlP3/TrPuZp7Xrs1+d87cjhkOwypNRNA4YPe836Y
-         P9Bm7krkQlTH5ODr5GG+hbymcUkOWLOm9Be/VurCpjLdrhV0ysY9TwEN4jcfbwOswqBX
-         Diwg==
-X-Gm-Message-State: AOAM533iQ4aFW+JapNUZQDyNID7xAfuuvJp6/3TYXRQhAgI0SQu4lcI9
-        7BCV3UH/qpHLQBZo8L+R8Gk2bQ==
-X-Google-Smtp-Source: ABdhPJwEaqXhBDYt8L4MmY8L3qeHkQcdYlDpnZAjA7VNfpFNDFLUz10nyaHBSrokzeXgaXk/JncLTA==
-X-Received: by 2002:a17:90b:3ec4:: with SMTP id rm4mr9537219pjb.120.1643215370627;
-        Wed, 26 Jan 2022 08:42:50 -0800 (PST)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id l2sm2658185pfc.183.2022.01.26.08.42.50
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 26 Jan 2022 08:42:50 -0800 (PST)
-Date:   Wed, 26 Jan 2022 08:42:49 -0800
-From:   Kees Cook <keescook@chromium.org>
-To:     Arnd Bergmann <arnd@arndb.de>
-Cc:     Geert Uytterhoeven <geert@linux-m68k.org>,
-        Yury Norov <yury.norov@gmail.com>,
-        linux-m68k <linux-m68k@lists.linux-m68k.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: kisskb: FAILED linux-next/m68k-allmodconfig/m68k-gcc8 Tue Jan
- 25, 18:24
-Message-ID: <202201260841.6C449DD63@keescook>
-References: <20220125073137.1.83124@7e6451f583e7>
- <CAMuHMdVYhwpP0vSK4LT+50ZqB9opD8gcm-2aor8wAc49=GR+-w@mail.gmail.com>
- <CAAH8bW93TUpyn8GaZfB83pu8Kvrsz9PHPCBHcG3+UStU7v=s=A@mail.gmail.com>
- <31219CC3-CEE4-4CFA-A416-B98F2115A527@chromium.org>
- <CAMuHMdUwd=2KGk9JkZPSZsvAWG4wddxZFxd5bFfbrtZi3JynQA@mail.gmail.com>
- <CAK8P3a0bLTWc-UG4eX14CQ=hiXms+wHx2VvaovXA-ZUQYAA1fA@mail.gmail.com>
+        Wed, 26 Jan 2022 12:14:52 -0500
+Received: from [192.168.100.1] ([82.142.25.174]) by mrelayeu.kundenserver.de
+ (mreue012 [213.165.67.103]) with ESMTPSA (Nemesis) id
+ 1N7xml-1m92CK44vr-014y4F; Wed, 26 Jan 2022 18:14:24 +0100
+Message-ID: <1bc0bf2d-49c6-3f68-bc35-919b2a1e4cfc@vivier.eu>
+Date:   Wed, 26 Jan 2022 18:14:22 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAK8P3a0bLTWc-UG4eX14CQ=hiXms+wHx2VvaovXA-ZUQYAA1fA@mail.gmail.com>
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.5.0
+Content-Language: fr
+To:     Daniel Lezcano <daniel.lezcano@linaro.org>,
+        linux-kernel@vger.kernel.org
+Cc:     linux-rtc@vger.kernel.org, Alessandro Zummo <a.zummo@towertech.it>,
+        Jiaxun Yang <jiaxun.yang@flygoat.com>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        linux-m68k@lists.linux-m68k.org, Arnd Bergmann <arnd@arndb.de>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        John Stultz <john.stultz@linaro.org>
+References: <20220121200738.2577697-1-laurent@vivier.eu>
+ <20220121200738.2577697-5-laurent@vivier.eu>
+ <2dc495b0-b9a1-e493-ddeb-d966afd624c0@linaro.org>
+From:   Laurent Vivier <laurent@vivier.eu>
+Subject: Re: [PATCH v12 4/5] clocksource/drivers: Add a goldfish-timer
+ clocksource
+In-Reply-To: <2dc495b0-b9a1-e493-ddeb-d966afd624c0@linaro.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Provags-ID: V03:K1:TSngsJf/7ICXuJGzytnz6JqiIjFf/27jh1/ag3P2TXE4eeydH1H
+ o6DvpVjIhKoHkhleSt4AsHX2CMeZ0ZLZzf7+ZoBXBWuoAYl7N4LeLxscWP5c4wNYh+2gX5A
+ QTsJ5qRiIcIp1N5Nu5ZPtZiHN6ehKKpaysWdvyggpllc8zvVlkBg3DfSoduZ8bGfQHoo0qc
+ dDrOzyByeT2mXlHM0SHKA==
+X-UI-Out-Filterresults: notjunk:1;V03:K0:yrRrKUG4n78=:4xlhW6p0ePou239EOh6IHz
+ bDcc1P8KFjRnw1MkyXraA7Tv44+KiZWec3UWDyFaNk0LBtl4xb43q6PyAOq7EyKCP9yu8y1w5
+ WryUasYoRu2xT8PBjawPHbh4lvyx8hR0CpWuVOAtVhnuK7VKeNwM66EPJmNj6UxrGZaD3VXEY
+ AM5FV8Fb1KRHHsNTFkpYVx7aeiejm8h/PQ9YHe45nCMUEgF0Ws1ISsGJnVe7wetL+qVlN+BJ1
+ gEl4hQgoniJaV/xRBo06CMkFYyWwt+x7CbgIsSTagwEYm/Vaw0ZkP5ysfOBx1Rxnufzi0dgOD
+ PRsRUiKgM0dopLLGxL4C8AfUmz0UDMmhXfmHZuSdQDx5hB55/aADSM2atoqbWHbxKhdAT0L45
+ YT0ePmQS4WbKtiMSKx3qeOeYo4dSkFR4l3VLMM/6WyWRHnxXUvwxPKWezvaCFXkCZa5avMQSD
+ 6ahbyEeFebNnYGuyEYGBZBU4LI1wLEmFl36oTvkBZ4U68gyJqSdp4ms61fTMP5EVPOh5Uwtrl
+ x92m8Ewj4MunuG594nr1wH5hNBlFskXqNX+mCXy5jxp3eIgZAqDObgsTN65joigBuLvRT+LzW
+ s7jBTXDTiFgHvOCGHSFJWDfwBgy6+i/0bH6oSLtTwIQ4gFQ1sKApPDiY+RcThZ2lGpxXF22qy
+ hd7MSeU2fxGfUIEQ58Y8mN6w09HLqJhmSqH7U94OQFs/OzNRK3AuTJrjsK5XjlBEFavQ=
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-On Wed, Jan 26, 2022 at 01:25:45PM +0100, Arnd Bergmann wrote:
-> On Wed, Jan 26, 2022 at 10:16 AM Geert Uytterhoeven
-> <geert@linux-m68k.org> wrote:
-> > On Wed, Jan 26, 2022 at 9:54 AM Kees Cook <keescook@chromium.org> wrote:
-> > > >>
-> > > >> The code that causes this is drivers/net/ipa/ipa_mem.c:ipa_mem_valid():
-> > > >>
-> > > >>         DECLARE_BITMAP(regions, IPA_MEM_COUNT) = { };
-> > > >>         ...
-> > > >>         for_each_clear_bit(mem_id, regions, IPA_MEM_COUNT) {
-> > > >>                 if (ipa_mem_id_required(ipa, mem_id))
-> > > >>                         dev_err(dev, "required memory region %u missing\n",
-> > > >>                                 mem_id);
-> > > >>         }
-> > > >>
-> > > >> This only happens with gcc-8, not with gcc-9, so it might be a
-> > > >> compiler bug. I don't see anything wrong with c:ipa_mem_valid()
-> > > >> nor with m68k's find_first_zero_bit().
-> > > >
-> > > >I don't see any problems about how this code uses bitmap API.
-> > > >The m68k version of find_first_zero_bit() looks correct as well.
-> > >
-> > > The trouble is with "enum ipa_mem_id mem_id;" which is an int, and the bitmap API requires unsigned long. I tried to fix this[1] at the source, but the maintainers want each[2] call site to fix it instead. :(
-> >
-> > Sorry, I don't get it. "mem_id" is not used as the bitmap, "regions" is,
-> > and the latter has the correct type?
-
-Oops, sorry, this looked so much like the other bitops stuff I thought
-that was the problem. You are right -- something else is going on.
-
-> I think you are right here, and even if it was an array of 'unsigned
-> int' instead
-> of 'unsigned long', this should not change the size of the object on
-> a 32-bit architecture.
+Le 26/01/2022 à 12:55, Daniel Lezcano a écrit :
 > 
-> I ran the preprocessed code through cvise[1], bisecting for a reduced
-> test case that fails on gcc-8 but succeeds on gcc-9. The reduced
-> case is still fairly complex, and it appears to only happen in the
-> presence of an inline asm. Narrowing down the compiler versions shows
-> that anything after gcc-9.2 does not warn, but 9.1 and earlier versions do,
-> which is further indication that  it was probably a false-positive that got
-> fixed in gcc.
+> Hi Laurent,
+> 
 
-Eek. Can we work around it in this code, or should -Warray-bounds have a
-gcc version check?
+Hi Daniel,
 
--- 
-Kees Cook
+> On 21/01/2022 21:07, Laurent Vivier wrote:
+>> Add a clocksource based on the goldfish-rtc device.
+> 
+> As a first submission, please provide a more detailed description of the
+> timer.
+
+ok.
+
+The timer uses in fact the goldifsh RTC clock so I supposed refering to drivers/rtc/rtc-goldfish.c 
+could give the missing pieces of information
+
+>> Signed-off-by: Laurent Vivier <laurent@vivier.eu>
+>> ---
+>>   drivers/clocksource/Kconfig          |   7 ++
+>>   drivers/clocksource/Makefile         |   1 +
+>>   drivers/clocksource/timer-goldfish.c | 163 +++++++++++++++++++++++++++
+>>   include/clocksource/timer-goldfish.h |  11 ++
+>>   4 files changed, 182 insertions(+)
+>>   create mode 100644 drivers/clocksource/timer-goldfish.c
+>>   create mode 100644 include/clocksource/timer-goldfish.h
+>>
+>> diff --git a/drivers/clocksource/Kconfig b/drivers/clocksource/Kconfig
+>> index cfb8ea0df3b1..94f00374cebb 100644
+>> --- a/drivers/clocksource/Kconfig
+>> +++ b/drivers/clocksource/Kconfig
+>> @@ -721,4 +721,11 @@ config MICROCHIP_PIT64B
+>>   	  modes and high resolution. It is used as a clocksource
+>>   	  and a clockevent.
+>>   
+>> +config GOLDFISH_TIMER
+>> +	bool "Clocksource using goldfish-rtc"
+>> +	depends on M68K || COMPILE_TEST
+>> +	depends on RTC_DRV_GOLDFISH
+>> +	help
+>> +	  Support for the timer/counter of goldfish-rtc
+>> +
+>>   endmenu
+>> diff --git a/drivers/clocksource/Makefile b/drivers/clocksource/Makefile
+>> index fa5f624eadb6..12f5d7e8cc2d 100644
+>> --- a/drivers/clocksource/Makefile
+>> +++ b/drivers/clocksource/Makefile
+>> @@ -89,3 +89,4 @@ obj-$(CONFIG_GX6605S_TIMER)		+= timer-gx6605s.o
+>>   obj-$(CONFIG_HYPERV_TIMER)		+= hyperv_timer.o
+>>   obj-$(CONFIG_MICROCHIP_PIT64B)		+= timer-microchip-pit64b.o
+>>   obj-$(CONFIG_MSC313E_TIMER)		+= timer-msc313e.o
+>> +obj-$(CONFIG_GOLDFISH_TIMER)		+= timer-goldfish.o
+>> diff --git a/drivers/clocksource/timer-goldfish.c b/drivers/clocksource/timer-goldfish.c
+>> new file mode 100644
+>> index 000000000000..4c670a1aea16
+>> --- /dev/null
+>> +++ b/drivers/clocksource/timer-goldfish.c
+>> @@ -0,0 +1,163 @@
+>> +// SPDX-License-Identifier: GPL-2.0
+>> +
+>> +#include <linux/interrupt.h>
+>> +#include <linux/ioport.h>
+>> +#include <linux/clocksource.h>
+>> +#include <linux/clockchips.h>
+>> +#include <linux/module.h>
+>> +#include <linux/slab.h>
+>> +#include <linux/goldfish.h>
+>> +#include <clocksource/timer-goldfish.h>
+>> +
+>> +#define TIMER_TIME_LOW		0x00	/* get low bits of current time  */
+>> +					/*   and update TIMER_TIME_HIGH  */
+>> +#define TIMER_TIME_HIGH		0x04	/* get high bits of time at last */
+>> +					/*   TIMER_TIME_LOW read         */
+>> +#define TIMER_ALARM_LOW		0x08	/* set low bits of alarm and     */
+>> +					/*   activate it                 */
+>> +#define TIMER_ALARM_HIGH	0x0c	/* set high bits of next alarm   */
+> 
+> Thanks for the comments giving the update details of the register.
+> However the format is not very easy to read. I suggest to add these
+> information in the log or above the macros being a bit more verbose
+> 
+> /*
+>   * bla bla
+>   */
+
+In fact, I copied them from drivers/rtc/rtc-goldfish.c but I can update this as you say.
+
+
+>> +#define TIMER_IRQ_ENABLED	0x10
+>> +#define TIMER_CLEAR_ALARM	0x14
+>> +#define TIMER_ALARM_STATUS	0x18
+>> +#define TIMER_CLEAR_INTERRUPT	0x1c
+>> +
+>> +struct goldfish_timer {
+>> +	struct clocksource cs;
+>> +	struct clock_event_device ced;
+>> +	struct resource res;
+>> +	void __iomem *base;
+>> +	int irq;
+> 
+> 'res' and 'irq' can be local variable in the init function, they are not
+> used anywhere else
+
+I agree for irq, but res is passed to request_resource() and I think it is added to a linked tree, 
+so I'm not sure it can be local to the function.
+
+Do you mean a "static" declaration in the function?
+
+> 
+>> +};
+>> +
+>> +static struct goldfish_timer *ced_to_gf(struct clock_event_device *ced)
+>> +{
+>> +	return container_of(ced, struct goldfish_timer, ced);
+>> +}
+>> +
+>> +static struct goldfish_timer *cs_to_gf(struct clocksource *cs)
+>> +{
+>> +	return container_of(cs, struct goldfish_timer, cs);
+>> +}
+>> +
+>> +static u64 goldfish_timer_read(struct clocksource *cs)
+>> +{
+>> +	struct goldfish_timer *timerdrv = cs_to_gf(cs);
+>> +	void __iomem *base = timerdrv->base;
+>> +	u32 time_low, time_high;
+>> +	u64 ticks;
+>> +
+>> +	/*
+>> +	 * time_low: get low bits of current time and update time_high
+>> +	 * time_high: get high bits of time at last time_low read
+>> +	 */
+>> +	time_low = gf_ioread32(base + TIMER_TIME_LOW);
+>> +	time_high = gf_ioread32(base + TIMER_TIME_HIGH);
+>> +
+>> +	ticks = ((u64)time_high << 32) | time_low;
+>> +
+>> +	return ticks;
+>> +}
+>> +
+>> +static int goldfish_timer_set_oneshot(struct clock_event_device *evt)
+>> +{
+>> +	struct goldfish_timer *timerdrv = ced_to_gf(evt);
+>> +	void __iomem *base = timerdrv->base;
+>> +
+>> +	gf_iowrite32(0, base + TIMER_ALARM_HIGH);
+>> +	gf_iowrite32(0, base + TIMER_ALARM_LOW);
+>> +	gf_iowrite32(1, base + TIMER_IRQ_ENABLED);
+>> +
+>> +	return 0;
+>> +}
+>> +
+>> +static int goldfish_timer_shutdown(struct clock_event_device *evt)
+>> +{
+>> +	struct goldfish_timer *timerdrv = ced_to_gf(evt);
+>> +	void __iomem *base = timerdrv->base;
+>> +
+>> +	gf_iowrite32(0, base + TIMER_IRQ_ENABLED);
+>> +
+>> +	return 0;
+>> +}
+>> +
+>> +static int goldfish_timer_next_event(unsigned long delta,
+>> +				     struct clock_event_device *evt)
+>> +{
+>> +	struct goldfish_timer *timerdrv = ced_to_gf(evt);
+>> +	void __iomem *base = timerdrv->base;
+>> +	u64 now;
+>> +
+>> +	now = goldfish_timer_read(&timerdrv->cs);
+>> +
+>> +	now += delta;
+>> +
+>> +	gf_iowrite32(upper_32_bits(now), base + TIMER_ALARM_HIGH);
+>> +	gf_iowrite32(lower_32_bits(now), base + TIMER_ALARM_LOW);
+>> +
+>> +	return 0;
+>> +}
+>> +
+>> +static irqreturn_t golfish_timer_tick(int irq, void *dev_id)
+> 
+> "timer_tick" will be confusing with "scheduler timer tick". Please
+> rename it to (eg. goldfish_timer_irq)
+> 
+> Note: the function name 'golfish' instead of 'goldfish'
+
+ok
+
+> 
+>> +{
+>> +	struct clock_event_device *evt = dev_id;
+>> +	struct goldfish_timer *timerdrv = ced_to_gf(evt);
+>> +	void __iomem *base = timerdrv->base;
+>> +
+>> +	gf_iowrite32(1, base + TIMER_CLEAR_INTERRUPT);
+>> +
+>> +	evt->event_handler(evt);
+>> +
+>> +	return IRQ_HANDLED;
+>> +}
+>> +
+>> +void __init goldfish_timer_init(int irq, void __iomem *base)
+> 
+> Error handling please
+> 
+> int __init goldfish_timer_init(...)
+
+ok
+
+> 
+>> +{
+>> +	struct goldfish_timer *timerdrv;
+>> +	int ret;
+>> +
+>> +	timerdrv = kzalloc(sizeof(*timerdrv), GFP_KERNEL);
+>> +	if (!timerdrv)
+>> +		return;
+>> +
+>> +	timerdrv->base = base;
+>> +	timerdrv->irq = irq;
+> 
+> Not needed
+
+ok
+
+> 
+>> +	timerdrv->ced = (struct clock_event_device){
+>> +		.name			= "goldfish_timer",
+>> +		.features		= CLOCK_EVT_FEAT_ONESHOT,
+>> +		.set_state_shutdown	= goldfish_timer_shutdown,
+>> +		.set_state_oneshot      = goldfish_timer_set_oneshot,
+>> +		.set_next_event		= goldfish_timer_next_event,
+>> +	};
+> 
+> nit: add CR
+
+ok
+
+> 
+>> +	timerdrv->res = (struct resource){
+>> +		.name  = "goldfish_timer",
+>> +		.start = (unsigned long)base,
+>> +		.end   = (unsigned long)base + 0xfff,
+>> +	};
+> 
+> Could be a local variable, no?
+
+As I said above, I think the structure passed to request_resource() must not be released.
+
+> 
+>> +	if (request_resource(&iomem_resource, &timerdrv->res)) {
+>> +		pr_err("Cannot allocate goldfish-timer resource\n");
+> 
+> nit: pr_err("Cannot allocate '%s' resource\n", res.name);
+
+ok
+
+> 
+>> +		return;
+>> +	}
+>> +
+>> +	timerdrv->cs = (struct clocksource){
+>> +		.name		= "goldfish_timer",
+>> +		.rating		= 400,
+>> +		.read		= goldfish_timer_read,
+>> +		.mask		= CLOCKSOURCE_MASK(64),
+>> +		.flags		= 0,
+>> +		.max_idle_ns	= LONG_MAX,
+>> +	};
+>> +
+>> +	clocksource_register_hz(&timerdrv->cs, NSEC_PER_SEC);
+>> +
+>> +	ret = request_irq(timerdrv->irq, golfish_timer_tick, IRQF_TIMER,
+>> +			  "goldfish_timer", &timerdrv->ced);
+> 
+> Why not pass directly 'timerdrv' ?
+
+You're right, we can pass it directly.
+
+> 
+>> +	if (ret) {
+>> +		pr_err("Couldn't register goldfish-timer interrupt\n");
+>> +		return;
+>> +	}
+>> +
+>> +	clockevents_config_and_register(&timerdrv->ced, NSEC_PER_SEC,
+>> +					1, 0xffffffff);
+>> +}
+>> diff --git a/include/clocksource/timer-goldfish.h b/include/clocksource/timer-goldfish.h
+>> new file mode 100644
+>> index 000000000000..b237267844f1
+>> --- /dev/null
+>> +++ b/include/clocksource/timer-goldfish.h
+>> @@ -0,0 +1,11 @@
+>> +/* SPDX-License-Identifier: GPL-2.0-only */
+>> +/*
+>> + * goldfish-timer clocksource
+>> + */
+>> +
+>> +#ifndef _CLOCKSOURCE_GOLDFISH_TIMER_H
+>> +#define _CLOCKSOURCE_GOLDFISH_TIMER_H
+>> +
+>> +extern void goldfish_timer_init(int irq, void __iomem *base);
+>> +
+>> +#endif /* _CLOCKSOURCE_GOLDFISH_TIMER_H */
+>>
+> 
+> 
+
