@@ -2,103 +2,78 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 795D0C2BA4C
-	for <linux-m68k@archiver.kernel.org>; Wed, 26 Jan 2022 18:34:44 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8AB8FC2BA4C
+	for <linux-m68k@archiver.kernel.org>; Wed, 26 Jan 2022 18:59:22 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244164AbiAZSen (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Wed, 26 Jan 2022 13:34:43 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60178 "EHLO
+        id S238348AbiAZS7W (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Wed, 26 Jan 2022 13:59:22 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37800 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244134AbiAZSel (ORCPT
+        with ESMTP id S230349AbiAZS7V (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Wed, 26 Jan 2022 13:34:41 -0500
-Received: from mail-qv1-xf30.google.com (mail-qv1-xf30.google.com [IPv6:2607:f8b0:4864:20::f30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BC3DCC061747
-        for <linux-m68k@lists.linux-m68k.org>; Wed, 26 Jan 2022 10:34:41 -0800 (PST)
-Received: by mail-qv1-xf30.google.com with SMTP id g13so632843qvw.4
-        for <linux-m68k@lists.linux-m68k.org>; Wed, 26 Jan 2022 10:34:41 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=soleen.com; s=google;
-        h=from:to:subject:date:message-id:in-reply-to:references:mime-version
-         :content-transfer-encoding;
-        bh=l8kTegpTqMksygyMNd7O9r7qJ6myjdhmrXkVSbv/IzA=;
-        b=dcgO/hZ6elZPBdqxd4MboPCo3EmolMnIS887io5RaZKDoH7H3DsIKjWe4xL0M92rAN
-         NGAs7DZ4N0Cm3Mu1BqA/u4YPeEnAejo0/rDUXvOGHwdQqDTzgDduz/YPu8cTYag6DNR2
-         pZks0Czhk7nN87F+uqzoh7CXPfDmtA2bXmMEn5cLDfgC74eDx4rtj9zlO5y9Gz/6RdQY
-         QYtkCpcN6yotcPm74Tik/4EYy8j0Ppcfy9AOeQyVai8riP0oJXWDwXI7oyJNNCbj4jxC
-         H/r9ApPE7qNwyGQk9KJq0YaO8bT0ni9gz3Tm8obbCQhHb9KIqrUiniiwj2Db7oc6jaKC
-         ByKQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=l8kTegpTqMksygyMNd7O9r7qJ6myjdhmrXkVSbv/IzA=;
-        b=HN/H891MECYe21fqbQD+T7l/uXfpx7qRDWHSsSSCCv14zvigYjCMBdKq49WL9qC1Pc
-         sCelHK8JwZW7IeV3JbvaGvYRk22hi/HJe14XQjjZHGCG8cseWrZXl8XtWr4sfXP/8LD1
-         RcCys6HdRXcvo5QdK/dvpw6O2Tc241lFQ/6GrF6h5KykBOlScR/o78+nDZ0flFWTW0R3
-         1DfCRqDP6AVkGKo7eQ7fU0fYFtXrf2nqiivEin5zuMZIiebpqybI9Lgij40r9Vaajyf3
-         HNLDRgxm85+4RhW7PIm+xp2Z8qzFW14z87hnRbTKPUaLFd/jJegL2rlorpnjrHfn0Ppv
-         kWWQ==
-X-Gm-Message-State: AOAM533D3AViYVCjD+xPZ3FfbI8b+9tDR7fpTFId2LS6w3WtXqv0hooH
-        1rBUUVElzDB3IgVbDnD419vHlQ==
-X-Google-Smtp-Source: ABdhPJx1uUL1QguAQjuOjaCUHuB84L0yLxyE8YceJm8x5PIc7mOwOmi6RJ2+VMz5b+XHNn1KPA5orA==
-X-Received: by 2002:ad4:5ca4:: with SMTP id q4mr24120qvh.64.1643222080942;
-        Wed, 26 Jan 2022 10:34:40 -0800 (PST)
-Received: from soleen.c.googlers.com.com (189.216.85.34.bc.googleusercontent.com. [34.85.216.189])
-        by smtp.gmail.com with ESMTPSA id u17sm35886qki.12.2022.01.26.10.34.40
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 26 Jan 2022 10:34:40 -0800 (PST)
-From:   Pasha Tatashin <pasha.tatashin@soleen.com>
-To:     pasha.tatashin@soleen.com, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, linux-m68k@lists.linux-m68k.org,
-        anshuman.khandual@arm.com, willy@infradead.org,
+        Wed, 26 Jan 2022 13:59:21 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 56F2EC06161C;
+        Wed, 26 Jan 2022 10:59:21 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=RpL+rxhAhlZQJ9/uSU/qLylpB6hdYn8xv5qg2QKDxL0=; b=i5kUzxOGZ4MkbrV0H9kNy8JeC8
+        eJ6XSbef0LQFUFaxdLeZOeHLtOiEjMQCzGtWkMAj4YduJF7cxoOS6SgQqWDGgFlYgQGxliaQRKdvX
+        TNkjIgZclQ6binDZ8OIBlI670KSAEglYme75yekdyiSm55Ws3NtiyRuUksSs4hR8Qgkx2qvxVetNd
+        aBdU9f1IX4PAc2ymQNrJ8fnO7QTjA56nd3r9fN3BPP8hvnbImC9UpuKTWqVPd93JXWSLuEdvMwmW5
+        PKIgMDv+UORATCAvgLBbZlZH/c7L3y06XHeyL+4WlWoCl8GEYmXP1liMmJ+DZXhdyYca5WCgl2JPr
+        KAYLXe2g==;
+Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1nCnVf-004LUW-CH; Wed, 26 Jan 2022 18:59:11 +0000
+Date:   Wed, 26 Jan 2022 18:59:11 +0000
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Pasha Tatashin <pasha.tatashin@soleen.com>
+Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        linux-m68k@lists.linux-m68k.org, anshuman.khandual@arm.com,
         akpm@linux-foundation.org, william.kucharski@oracle.com,
         mike.kravetz@oracle.com, vbabka@suse.cz, geert@linux-m68k.org,
         schmitzmic@gmail.com, rostedt@goodmis.org, mingo@redhat.com,
         hannes@cmpxchg.org, guro@fb.com, songmuchun@bytedance.com,
         weixugc@google.com, gthelen@google.com, rientjes@google.com,
         pjt@google.com, hughd@google.com
-Subject: [PATCH v3 9/9] mm: use atomic_cmpxchg_acquire in page_ref_freeze().
-Date:   Wed, 26 Jan 2022 18:34:29 +0000
-Message-Id: <20220126183429.1840447-10-pasha.tatashin@soleen.com>
-X-Mailer: git-send-email 2.35.0.rc0.227.g00780c9af4-goog
-In-Reply-To: <20220126183429.1840447-1-pasha.tatashin@soleen.com>
+Subject: Re: [PATCH v3 1/9] mm: add overflow and underflow checks for
+ page->_refcount
+Message-ID: <YfGZ/0hhkqVeX04p@casper.infradead.org>
 References: <20220126183429.1840447-1-pasha.tatashin@soleen.com>
+ <20220126183429.1840447-2-pasha.tatashin@soleen.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20220126183429.1840447-2-pasha.tatashin@soleen.com>
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-page_ref_freeze and page_ref_unfreeze are designed to be used as a pair.
-They protect critical sections where struct page can be modified.
+On Wed, Jan 26, 2022 at 06:34:21PM +0000, Pasha Tatashin wrote:
+> The problems with page->_refcount are hard to debug, because usually
+> when they are detected, the damage has occurred a long time ago. Yet,
+> the problems with invalid page refcount may be catastrophic and lead to
+> memory corruptions.
+> 
+> Reduce the scope of when the _refcount problems manifest themselves by
+> adding checks for underflows and overflows into functions that modify
+> _refcount.
 
-page_ref_unfreeze() is protected by _release() atomic operation, but
-page_ref_freeze() is not as it is assumed that cmpxch provides the full
-barrier.
+If you're chasing a bug like this, presumably you turn on page
+tracepoints.  So could we reduce the cost of this by putting the
+VM_BUG_ON_PAGE parts into __page_ref_mod() et al?  Yes, we'd need to
+change the arguments to those functions to pass in old & new, but that
+should be a cheap change compared to embedding the VM_BUG_ON_PAGE.
 
-Instead, use the appropriate atomic_cmpxchg_acquire() to ensure that
-memory model is excplicitly followed.
-
-Signed-off-by: Pasha Tatashin <pasha.tatashin@soleen.com>
----
- include/linux/page_ref.h | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
-
-diff --git a/include/linux/page_ref.h b/include/linux/page_ref.h
-index 9efabeff4e06..45be731d8919 100644
---- a/include/linux/page_ref.h
-+++ b/include/linux/page_ref.h
-@@ -308,7 +308,8 @@ static inline bool folio_try_get_rcu(struct folio *folio)
- 
- static inline int page_ref_freeze(struct page *page, int count)
- {
--	int ret = likely(atomic_cmpxchg(&page->_refcount, count, 0) == count);
-+	int old_val = atomic_cmpxchg_acquire(&page->_refcount, count, 0);
-+	int ret = likely(old_val == count);
- 
- 	if (page_ref_tracepoint_active(page_ref_freeze))
- 		__page_ref_freeze(page, count, ret);
--- 
-2.35.0.rc0.227.g00780c9af4-goog
-
+>  static inline void page_ref_add(struct page *page, int nr)
+>  {
+> -	atomic_add(nr, &page->_refcount);
+> +	int old_val = atomic_fetch_add(nr, &page->_refcount);
+> +	int new_val = old_val + nr;
+> +
+> +	VM_BUG_ON_PAGE((unsigned int)new_val < (unsigned int)old_val, page);
+>  	if (page_ref_tracepoint_active(page_ref_mod))
+>  		__page_ref_mod(page, nr);
+>  }
