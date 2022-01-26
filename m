@@ -2,52 +2,52 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id AC2F1C63682
-	for <linux-m68k@archiver.kernel.org>; Wed, 26 Jan 2022 18:34:42 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C08E8C63686
+	for <linux-m68k@archiver.kernel.org>; Wed, 26 Jan 2022 18:34:43 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244127AbiAZSel (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Wed, 26 Jan 2022 13:34:41 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60158 "EHLO
+        id S241849AbiAZSem (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Wed, 26 Jan 2022 13:34:42 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60180 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240733AbiAZSej (ORCPT
+        with ESMTP id S244117AbiAZSel (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Wed, 26 Jan 2022 13:34:39 -0500
-Received: from mail-qv1-xf34.google.com (mail-qv1-xf34.google.com [IPv6:2607:f8b0:4864:20::f34])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3441DC06161C
-        for <linux-m68k@lists.linux-m68k.org>; Wed, 26 Jan 2022 10:34:39 -0800 (PST)
-Received: by mail-qv1-xf34.google.com with SMTP id g11so638305qvu.3
-        for <linux-m68k@lists.linux-m68k.org>; Wed, 26 Jan 2022 10:34:39 -0800 (PST)
+        Wed, 26 Jan 2022 13:34:41 -0500
+Received: from mail-qv1-xf31.google.com (mail-qv1-xf31.google.com [IPv6:2607:f8b0:4864:20::f31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E7B24C06173B
+        for <linux-m68k@lists.linux-m68k.org>; Wed, 26 Jan 2022 10:34:40 -0800 (PST)
+Received: by mail-qv1-xf31.google.com with SMTP id b12so627528qvz.5
+        for <linux-m68k@lists.linux-m68k.org>; Wed, 26 Jan 2022 10:34:40 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=soleen.com; s=google;
         h=from:to:subject:date:message-id:in-reply-to:references:mime-version
          :content-transfer-encoding;
-        bh=gYivpEDsQjEq78GhHcAcDgg59f4QbW6Q5APhuV5RVYI=;
-        b=PE3E80IyrXq8BCsBStLnLyvmcgNmV/BpCZmgYh+K7CEQaynk18nntY72LuFtCe7+ha
-         e9s+aKdASKSnS081OwbL3xJFK1jhEuWqFt7PsB5bp5pa9tjcBRynTMdFH8CXbWj4B/xd
-         k+VNwwpTTB2t0ppy9CwDHCTpZaP/pQjGE5H5oXAmrqW5EAJCmoWqnD34gpvK+1bH5TnQ
-         ldZmu8X1VXTq40kLf8Y8enLhHNbaWFRCjbfITCbKAIwgxTWSbWYykxQEAYsCkIhPPYlD
-         2T3JlwV/pLOZxZ2PzS1Z+mkkWt91mujqKbavrDfOPwxP2roA7Yddmbz1UckgKSb4hThF
-         JZcw==
+        bh=9qGtluafW49WVeKC1+T5xXe9Gi8hCvJzE0QRf1Gctb0=;
+        b=WLC8zAaBt+pGLb2dprhgeTFhzFiOz0Dwgv2sKq4nVV6mme5Ik3TLKMC25II36bZZ5S
+         nkiFdbElwzoNvpJfm4IKKcbz4QHq3OId66HMHWWICIgu3RfIP3Y28sd06cMaFCGtpsoS
+         og++vqB9AwLOYf7hTuIUOpHHMLg2tMzq5LGyO4/ee6B06PVN72Mnxy/Dau54Nz815L0m
+         CT7F1/eD+VSzR33uglaTP7hK7ASfdfmOKDZ4FSRaQjQRm6Pxa7fA7N4bO8kgwtKy7d54
+         bCo3neAgZVI3g2RjtaU1yvqnnOVddQ/gjMInuoUFYJvOFvmOj49aqKxoHSPnVsaElEQ5
+         B3Mw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=gYivpEDsQjEq78GhHcAcDgg59f4QbW6Q5APhuV5RVYI=;
-        b=eSgg4QtOr1xE6TXTou64eqGCTEEj5M4EtrOFGPHe91XJRzxFF5Sq6UVlFbErf8KTtj
-         zU02IL6Ll3edg0+Ql55wIUxGkZk9VR2G0963C68o9Fe3cXJCR/D2Xid07DJvVKVjAO/w
-         JBWaAlRpp6C1eB7hEmVMiXKOjkNQunTWjR/FZZUflDW5vsXKJsgYoJZOK3tBsZ6nD6dq
-         SOVckIkPZGb823SlN8YmyNIBOkPg+Q3hgH8C5KqvuVTFQJa1FT5m10w9myVKx074xAre
-         /Y7nSoSIeXgHl0D4CVZQpkEOcEvKmEeLATMonE6051lAlTG3tIdjLwnv2KlfCPvpzxht
-         6lJw==
-X-Gm-Message-State: AOAM531E+t241qgpBlbTHnXtqNAEmG/0w8vxmNS3XoFXtsMafWsjapjx
-        kOzwqDoJFYf2rAIPeF4ygBkGBQ==
-X-Google-Smtp-Source: ABdhPJwprdDGrDVv4RqpUnk5EiygoP6cVKM2Clr2Z/fCbgxkukmcUlI8BNQaQsir3IwuPZgHzOc71A==
-X-Received: by 2002:a05:6214:d6e:: with SMTP id 14mr22475789qvs.63.1643222078322;
-        Wed, 26 Jan 2022 10:34:38 -0800 (PST)
+        bh=9qGtluafW49WVeKC1+T5xXe9Gi8hCvJzE0QRf1Gctb0=;
+        b=4Gs3X5WmUCd/RvTpGsRfWc2GsjN6+A+vGoBY6ayZqCY3mOg/73fAYNsM9wmPwZEVcy
+         gJI/oVZi4TEy5kL7D80Qq69s5MVwPPRZhjU7NhORuwWyWfyop2bNTxZDUF+Bo7VelAX2
+         Z5G3duUGQYDJbDIq6OeNwxJ6hwr2/6j6xikVs6CQrA9Ti8mbwpWdOLM1ybh8fAukaEWZ
+         a2SS7QHvm+hbEm7Sxox/YQeLoz/xGjK+p1Pw8NP7cj2o7iZecYa7xqqpO4qeXcQGUJXj
+         bn3ldEKyc4xQGycoyFujOdafuq9XIDnmIaZLjdvofe3i9vnsHOmTyowRkIs+UFK4dve2
+         4HNA==
+X-Gm-Message-State: AOAM531sY2A7rys5Vk1gMPPSJtUMq3UjYl3hL+wVIKp1RBa+zcHVh10U
+        xyrUKMDBJZtL9mRgB79kVF7Dnw==
+X-Google-Smtp-Source: ABdhPJxJtoQHYrpWNf8C4q9GS25k4xHwcCuWK9f4FFFmUET3LankryAhv5s7uODB4uZa4iJOyGzaCg==
+X-Received: by 2002:a05:6214:1ccb:: with SMTP id g11mr25729042qvd.97.1643222080024;
+        Wed, 26 Jan 2022 10:34:40 -0800 (PST)
 Received: from soleen.c.googlers.com.com (189.216.85.34.bc.googleusercontent.com. [34.85.216.189])
-        by smtp.gmail.com with ESMTPSA id u17sm35886qki.12.2022.01.26.10.34.37
+        by smtp.gmail.com with ESMTPSA id u17sm35886qki.12.2022.01.26.10.34.39
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 26 Jan 2022 10:34:37 -0800 (PST)
+        Wed, 26 Jan 2022 10:34:39 -0800 (PST)
 From:   Pasha Tatashin <pasha.tatashin@soleen.com>
 To:     pasha.tatashin@soleen.com, linux-kernel@vger.kernel.org,
         linux-mm@kvack.org, linux-m68k@lists.linux-m68k.org,
@@ -58,9 +58,9 @@ To:     pasha.tatashin@soleen.com, linux-kernel@vger.kernel.org,
         hannes@cmpxchg.org, guro@fb.com, songmuchun@bytedance.com,
         weixugc@google.com, gthelen@google.com, rientjes@google.com,
         pjt@google.com, hughd@google.com
-Subject: [PATCH v3 6/9] mm: remove set_page_count()
-Date:   Wed, 26 Jan 2022 18:34:26 +0000
-Message-Id: <20220126183429.1840447-7-pasha.tatashin@soleen.com>
+Subject: [PATCH v3 8/9] mm: do not use atomic_set_release in page_ref_unfreeze()
+Date:   Wed, 26 Jan 2022 18:34:28 +0000
+Message-Id: <20220126183429.1840447-9-pasha.tatashin@soleen.com>
 X-Mailer: git-send-email 2.35.0.rc0.227.g00780c9af4-goog
 In-Reply-To: <20220126183429.1840447-1-pasha.tatashin@soleen.com>
 References: <20220126183429.1840447-1-pasha.tatashin@soleen.com>
@@ -70,171 +70,41 @@ Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-set_page_count() is dangerous because it resets _refcount to an
-arbitrary value. Instead we now initialize _refcount to 1 only once,
-and the rest of the time we are using add/dec/cmpxchg to have a
-contiguous track of the counter.
+In we set the old _refcount value after verifying that the old value was
+indeed 0.
 
-Remove set_page_count() and add new tracing hooks to page_ref_init().
+VM_BUG_ON_PAGE(page_count(page) != 0, page);
+< the _refcount may change here>
+atomic_set_release(&page->_refcount, count);
+
+To avoid the smal gap where _refcount may change lets verify the time
+of the _refcount at the time of the set operation.
+
+Use atomic_xchg_release() and at the set time verify that the value
+was 0.
 
 Signed-off-by: Pasha Tatashin <pasha.tatashin@soleen.com>
 ---
- include/linux/page_ref.h        | 27 ++++++++-----------
- include/trace/events/page_ref.h | 46 ++++++++++++++++++++++++++++-----
- mm/debug_page_ref.c             |  8 +++---
- 3 files changed, 54 insertions(+), 27 deletions(-)
+ include/linux/page_ref.h | 5 ++---
+ 1 file changed, 2 insertions(+), 3 deletions(-)
 
 diff --git a/include/linux/page_ref.h b/include/linux/page_ref.h
-index 1af12a0d7ba1..d7316881626c 100644
+index 243fc60ae6c8..9efabeff4e06 100644
 --- a/include/linux/page_ref.h
 +++ b/include/linux/page_ref.h
-@@ -7,7 +7,7 @@
- #include <linux/page-flags.h>
- #include <linux/tracepoint-defs.h>
+@@ -322,10 +322,9 @@ static inline int folio_ref_freeze(struct folio *folio, int count)
  
--DECLARE_TRACEPOINT(page_ref_set);
-+DECLARE_TRACEPOINT(page_ref_init);
- DECLARE_TRACEPOINT(page_ref_mod);
- DECLARE_TRACEPOINT(page_ref_mod_and_test);
- DECLARE_TRACEPOINT(page_ref_mod_and_return);
-@@ -26,7 +26,7 @@ DECLARE_TRACEPOINT(page_ref_unfreeze);
-  */
- #define page_ref_tracepoint_active(t) tracepoint_enabled(t)
- 
--extern void __page_ref_set(struct page *page, int v);
-+extern void __page_ref_init(struct page *page);
- extern void __page_ref_mod(struct page *page, int v);
- extern void __page_ref_mod_and_test(struct page *page, int v, int ret);
- extern void __page_ref_mod_and_return(struct page *page, int v, int ret);
-@@ -38,7 +38,7 @@ extern void __page_ref_unfreeze(struct page *page, int v);
- 
- #define page_ref_tracepoint_active(t) false
- 
--static inline void __page_ref_set(struct page *page, int v)
-+static inline void __page_ref_init(struct page *page)
+ static inline void page_ref_unfreeze(struct page *page, int count)
  {
+-	VM_BUG_ON_PAGE(page_count(page) != 0, page);
+-	VM_BUG_ON(count == 0);
++	int old_val = atomic_xchg_release(&page->_refcount, count);
+ 
+-	atomic_set_release(&page->_refcount, count);
++	VM_BUG_ON_PAGE(count == 0 || old_val != 0, page);
+ 	if (page_ref_tracepoint_active(page_ref_unfreeze))
+ 		__page_ref_unfreeze(page, count);
  }
- static inline void __page_ref_mod(struct page *page, int v)
-@@ -94,18 +94,6 @@ static inline int page_count(const struct page *page)
- 	return folio_ref_count(page_folio(page));
- }
- 
--static inline void set_page_count(struct page *page, int v)
--{
--	atomic_set(&page->_refcount, v);
--	if (page_ref_tracepoint_active(page_ref_set))
--		__page_ref_set(page, v);
--}
--
--static inline void folio_set_count(struct folio *folio, int v)
--{
--	set_page_count(&folio->page, v);
--}
--
- /*
-  * Setup the page refcount to one before being freed into the page allocator.
-  * The memory might not be initialized and therefore there cannot be any
-@@ -116,7 +104,14 @@ static inline void folio_set_count(struct folio *folio, int v)
-  */
- static inline void page_ref_init(struct page *page)
- {
--	set_page_count(page, 1);
-+	atomic_set(&page->_refcount, 1);
-+	if (page_ref_tracepoint_active(page_ref_init))
-+		__page_ref_init(page);
-+}
-+
-+static inline void folio_ref_init(struct folio *folio)
-+{
-+	page_ref_init(&folio->page);
- }
- 
- static inline int page_ref_add_return(struct page *page, int nr)
-diff --git a/include/trace/events/page_ref.h b/include/trace/events/page_ref.h
-index 8a99c1cd417b..87551bb1df9e 100644
---- a/include/trace/events/page_ref.h
-+++ b/include/trace/events/page_ref.h
-@@ -10,6 +10,45 @@
- #include <linux/tracepoint.h>
- #include <trace/events/mmflags.h>
- 
-+DECLARE_EVENT_CLASS(page_ref_init_template,
-+
-+	TP_PROTO(struct page *page),
-+
-+	TP_ARGS(page),
-+
-+	TP_STRUCT__entry(
-+		__field(unsigned long, pfn)
-+		__field(unsigned long, flags)
-+		__field(int, count)
-+		__field(int, mapcount)
-+		__field(void *, mapping)
-+		__field(int, mt)
-+		__field(int, val)
-+	),
-+
-+	TP_fast_assign(
-+		__entry->pfn = page_to_pfn(page);
-+		__entry->flags = page->flags;
-+		__entry->count = page_ref_count(page);
-+		__entry->mapcount = page_mapcount(page);
-+		__entry->mapping = page->mapping;
-+		__entry->mt = get_pageblock_migratetype(page);
-+	),
-+
-+	TP_printk("pfn=0x%lx flags=%s count=%d mapcount=%d mapping=%p mt=%d",
-+		__entry->pfn,
-+		show_page_flags(__entry->flags & PAGEFLAGS_MASK),
-+		__entry->count,
-+		__entry->mapcount, __entry->mapping, __entry->mt)
-+);
-+
-+DEFINE_EVENT(page_ref_init_template, page_ref_init,
-+
-+	TP_PROTO(struct page *page),
-+
-+	TP_ARGS(page)
-+);
-+
- DECLARE_EVENT_CLASS(page_ref_mod_template,
- 
- 	TP_PROTO(struct page *page, int v),
-@@ -44,13 +83,6 @@ DECLARE_EVENT_CLASS(page_ref_mod_template,
- 		__entry->val)
- );
- 
--DEFINE_EVENT(page_ref_mod_template, page_ref_set,
--
--	TP_PROTO(struct page *page, int v),
--
--	TP_ARGS(page, v)
--);
--
- DEFINE_EVENT(page_ref_mod_template, page_ref_mod,
- 
- 	TP_PROTO(struct page *page, int v),
-diff --git a/mm/debug_page_ref.c b/mm/debug_page_ref.c
-index f3b2c9d3ece2..e32149734122 100644
---- a/mm/debug_page_ref.c
-+++ b/mm/debug_page_ref.c
-@@ -5,12 +5,12 @@
- #define CREATE_TRACE_POINTS
- #include <trace/events/page_ref.h>
- 
--void __page_ref_set(struct page *page, int v)
-+void __page_ref_init(struct page *page)
- {
--	trace_page_ref_set(page, v);
-+	trace_page_ref_init(page);
- }
--EXPORT_SYMBOL(__page_ref_set);
--EXPORT_TRACEPOINT_SYMBOL(page_ref_set);
-+EXPORT_SYMBOL(__page_ref_init);
-+EXPORT_TRACEPOINT_SYMBOL(page_ref_init);
- 
- void __page_ref_mod(struct page *page, int v)
- {
 -- 
 2.35.0.rc0.227.g00780c9af4-goog
 
