@@ -2,119 +2,237 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D4183C2BA4C
-	for <linux-m68k@archiver.kernel.org>; Wed, 26 Jan 2022 12:37:59 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 13039C28CF5
+	for <linux-m68k@archiver.kernel.org>; Wed, 26 Jan 2022 13:41:39 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241418AbiAZMh7 (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Wed, 26 Jan 2022 07:37:59 -0500
-Received: from mail-vk1-f173.google.com ([209.85.221.173]:35767 "EHLO
-        mail-vk1-f173.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234221AbiAZMh6 (ORCPT
+        id S240495AbiAZNli (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Wed, 26 Jan 2022 08:41:38 -0500
+Received: from new4-smtp.messagingengine.com ([66.111.4.230]:59471 "EHLO
+        new4-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233947AbiAZNlg (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Wed, 26 Jan 2022 07:37:58 -0500
-Received: by mail-vk1-f173.google.com with SMTP id o15so4205996vki.2
-        for <linux-m68k@lists.linux-m68k.org>; Wed, 26 Jan 2022 04:37:58 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=tmp3oORs5i5H5AZl878+yd1UI/WaXT8+i4zt2rlWV8s=;
-        b=abKCcw9ohznSEKOlASId4a02LeLeyoC0yxkfYPWa/dut09tErFQbuEcN6lQTIRI8PU
-         fqqZmTDasZjHiE+E/lu8EmqjvPr+OcD1OoDlSL84/dgA3GuJF00Z6x5BSPpZTdBpDC55
-         GybIXVWaEfaoujckorJ5FLFy2hakqUCF2f3MvMbHWNVQVCkUmGDuocKK+E/w//MTGPVB
-         W1TiKlYeLibJDfhBP0e8wJ+GXVXstu/2otlcEv38XkSZ5X3UChGgWAu53DPxF0ELpZ29
-         h05xU+ilw1mI5hA3Su0rl5y/h5dcufzTO1y59eaJ97IRYwYu9QM0u9+9JdWfWQ8mHWYQ
-         poJg==
-X-Gm-Message-State: AOAM532Cr/SYhaqYb8V5U5z9gZoWX4ZmLe1BejcbWZoVtlLt4xQysATG
-        N4Si/sP9x9kZ/l+ZQ11BgOZ8AwMNRKrBRQ==
-X-Google-Smtp-Source: ABdhPJy0tuEmdh1U7dBDCJ36zXKG/kqT/mS9iUjqGe9M9iQXZnpZz57Y3Y1G/btmOtntdkTL7xF0kQ==
-X-Received: by 2002:a1f:11d6:: with SMTP id 205mr7181996vkr.2.1643200677639;
-        Wed, 26 Jan 2022 04:37:57 -0800 (PST)
-Received: from mail-vk1-f178.google.com (mail-vk1-f178.google.com. [209.85.221.178])
-        by smtp.gmail.com with ESMTPSA id q4sm2029569vke.15.2022.01.26.04.37.57
-        for <linux-m68k@lists.linux-m68k.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 26 Jan 2022 04:37:57 -0800 (PST)
-Received: by mail-vk1-f178.google.com with SMTP id m131so14330986vkm.7
-        for <linux-m68k@lists.linux-m68k.org>; Wed, 26 Jan 2022 04:37:57 -0800 (PST)
-X-Received: by 2002:a67:b009:: with SMTP id z9mr6116538vse.57.1643200676905;
- Wed, 26 Jan 2022 04:37:56 -0800 (PST)
+        Wed, 26 Jan 2022 08:41:36 -0500
+Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
+        by mailnew.nyi.internal (Postfix) with ESMTP id 3C9B95801EE;
+        Wed, 26 Jan 2022 08:41:36 -0500 (EST)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute3.internal (MEProxy); Wed, 26 Jan 2022 08:41:36 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kroah.com; h=cc
+        :cc:content-type:date:date:from:from:in-reply-to:in-reply-to
+        :message-id:mime-version:references:reply-to:sender:subject
+        :subject:to:to; s=fm2; bh=b6iL1K2h3uSTLekyPz1hyUnMBJ7XuWG/MXCQRm
+        uRNRs=; b=cyZF1hviFaVMW4qEhSwLp14iyu5HsnnGTS1iAcaLLDynWllB1UpZJi
+        LZnt1vAITfvEpQJd+pdnnfaGRQB1dJhdL15yReqOtorz+bmN1toG5rqhVBzQUFxn
+        ZEogl4LAma/5RBq3+uePt+/MtDjKfH4llzblbInHmGXQtLpRlc048UMiNVjXw+/y
+        8w+JI3dr0OTIKYwAIZSlpNrXXTGsTYmP0uglLCmZysBodAIhVQHhvLUIAcNnFMfV
+        Zhycj2k/q4TcD9Alc4WoI/XqmUZOBgnyildkzajLHqsmhtUZHUI6OhVf84VbJmVr
+        V9NbMHTHqv2f9HOg/zNQRmc0ePmPNJfA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:cc:content-type:date:date:from:from
+        :in-reply-to:in-reply-to:message-id:mime-version:references
+        :reply-to:sender:subject:subject:to:to:x-me-proxy:x-me-proxy
+        :x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=b6iL1K2h3uSTLekyP
+        z1hyUnMBJ7XuWG/MXCQRmuRNRs=; b=eyZKEwhOfQexbdKq0S+1jzcaP8UPpzYJ5
+        oTqtBccbwFg8hIQA3K6IacbE0FJbw0DnU3as1JlFxnB08ED0vAyhgnm/GwWgvZC5
+        o0f+JyqZ91Gs9cJ9UoqYxzQ0o47/ziTRtsw7Yao/qQItuzwP0MKG9zGCiST4FYc7
+        z00iOt+uPh8hgyG5qDiKPgj9hliLA6loFUMFNlCZ8s7cNU7CaVz6CL+Be/bP9dVo
+        qqUI/N/l+3FGM6Q1qH8YzLYJS7Uh7eiTHSfW8vIv0gCyZIawLtASNfQy0Q2mAadI
+        lWdU5fKqBV9s29aMWsP5+sgA+lDMBxeBwgdv6pGwvEiC9CdtOM1hA==
+X-ME-Sender: <xms:j0_xYZ0xsUPL2QNymUGxBwzJq_iH-ASdBLceETpcPBlciGtB9n_RRg>
+    <xme:j0_xYQFKty-knV0hLhykpTlm3-CRydrs4jJmV9hz4s06wbF92VXkV-49akykLP6Pw
+    vFHvuhkeTYDzQ>
+X-ME-Received: <xmr:j0_xYZ7A0wvgM04yorZuZiDQ_KvB5c8YsnAq7OSHDH_qJ7Ck5BGgL1aeJJkFzncHWpWu9UBgO2f9CQ7vLc2VZS1oU18mpr4p>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvvddrfedugdehhecutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
+    fjughrpeffhffvuffkfhggtggujgesthdtredttddtvdenucfhrhhomhepifhrvghgucfm
+    jfcuoehgrhgvgheskhhrohgrhhdrtghomheqnecuggftrfgrthhtvghrnhepveeuheejgf
+    ffgfeivddukedvkedtleelleeghfeljeeiueeggeevueduudekvdetnecuvehluhhsthgv
+    rhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepghhrvghgsehkrhhorghhrd
+    gtohhm
+X-ME-Proxy: <xmx:j0_xYW1jwiK94xxT3b5wSQK6QLJyFdwFFYGNrQT01kYMHF9IF6JacQ>
+    <xmx:j0_xYcEH2Nyg0mskg_ERQUrW_FQFAHQNXNKpavlfdtNxUvR1tOKCDA>
+    <xmx:j0_xYX9PxSMkWKR1j3jN9QgSJooQCYTX_20T8InWHYawiNpXe9AUxQ>
+    <xmx:kE_xYfZfkzLFgNgwReF6SuGyXYf6oHer-Cx77zoPpUR2rC_MCY6lLQ>
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Wed,
+ 26 Jan 2022 08:41:35 -0500 (EST)
+Date:   Wed, 26 Jan 2022 14:41:32 +0100
+From:   Greg KH <greg@kroah.com>
+To:     Laurent Vivier <laurent@vivier.eu>
+Cc:     linux-kernel@vger.kernel.org, linux-rtc@vger.kernel.org,
+        Alessandro Zummo <a.zummo@towertech.it>,
+        Jiaxun Yang <jiaxun.yang@flygoat.com>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        linux-m68k@lists.linux-m68k.org, Arnd Bergmann <arnd@arndb.de>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        John Stultz <john.stultz@linaro.org>, stable@vger.kernel.org
+Subject: Re: [PATCH v12 2/5] tty: goldfish: introduce
+ gf_ioread32()/gf_iowrite32()
+Message-ID: <YfFPjOEELiTWr2uj@kroah.com>
+References: <20220121200738.2577697-1-laurent@vivier.eu>
+ <20220121200738.2577697-3-laurent@vivier.eu>
 MIME-Version: 1.0
-References: <20220125073137.1.83124@7e6451f583e7> <CAMuHMdVYhwpP0vSK4LT+50ZqB9opD8gcm-2aor8wAc49=GR+-w@mail.gmail.com>
- <CAAH8bW93TUpyn8GaZfB83pu8Kvrsz9PHPCBHcG3+UStU7v=s=A@mail.gmail.com>
- <31219CC3-CEE4-4CFA-A416-B98F2115A527@chromium.org> <CAMuHMdUwd=2KGk9JkZPSZsvAWG4wddxZFxd5bFfbrtZi3JynQA@mail.gmail.com>
- <CAK8P3a0bLTWc-UG4eX14CQ=hiXms+wHx2VvaovXA-ZUQYAA1fA@mail.gmail.com>
-In-Reply-To: <CAK8P3a0bLTWc-UG4eX14CQ=hiXms+wHx2VvaovXA-ZUQYAA1fA@mail.gmail.com>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Wed, 26 Jan 2022 13:37:45 +0100
-X-Gmail-Original-Message-ID: <CAMuHMdVA5M3J5dxWWVQV+GPLQU9xU=qFm6fO6NXXS+thYYqnKQ@mail.gmail.com>
-Message-ID: <CAMuHMdVA5M3J5dxWWVQV+GPLQU9xU=qFm6fO6NXXS+thYYqnKQ@mail.gmail.com>
-Subject: Re: kisskb: FAILED linux-next/m68k-allmodconfig/m68k-gcc8 Tue Jan 25, 18:24
-To:     Arnd Bergmann <arnd@arndb.de>
-Cc:     Kees Cook <keescook@chromium.org>,
-        Yury Norov <yury.norov@gmail.com>,
-        linux-m68k <linux-m68k@lists.linux-m68k.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20220121200738.2577697-3-laurent@vivier.eu>
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-Hi Arnd,
+On Fri, Jan 21, 2022 at 09:07:35PM +0100, Laurent Vivier wrote:
+> Revert
+> commit da31de35cd2f ("tty: goldfish: use __raw_writel()/__raw_readl()")
 
-On Wed, Jan 26, 2022 at 1:26 PM Arnd Bergmann <arnd@arndb.de> wrote:
-> On Wed, Jan 26, 2022 at 10:16 AM Geert Uytterhoeven
-> <geert@linux-m68k.org> wrote:
-> > On Wed, Jan 26, 2022 at 9:54 AM Kees Cook <keescook@chromium.org> wrote:
-> > > >>
-> > > >> The code that causes this is drivers/net/ipa/ipa_mem.c:ipa_mem_valid():
-> > > >>
-> > > >>         DECLARE_BITMAP(regions, IPA_MEM_COUNT) = { };
-> > > >>         ...
-> > > >>         for_each_clear_bit(mem_id, regions, IPA_MEM_COUNT) {
-> > > >>                 if (ipa_mem_id_required(ipa, mem_id))
-> > > >>                         dev_err(dev, "required memory region %u missing\n",
-> > > >>                                 mem_id);
-> > > >>         }
-> > > >>
-> > > >> This only happens with gcc-8, not with gcc-9, so it might be a
-> > > >> compiler bug. I don't see anything wrong with c:ipa_mem_valid()
-> > > >> nor with m68k's find_first_zero_bit().
-> > > >
-> > > >I don't see any problems about how this code uses bitmap API.
-> > > >The m68k version of find_first_zero_bit() looks correct as well.
-> > >
-> > > The trouble is with "enum ipa_mem_id mem_id;" which is an int, and the bitmap API requires unsigned long. I tried to fix this[1] at the source, but the maintainers want each[2] call site to fix it instead. :(
-> >
-> > Sorry, I don't get it. "mem_id" is not used as the bitmap, "regions" is,
-> > and the latter has the correct type?
->
-> I think you are right here, and even if it was an array of 'unsigned
-> int' instead
-> of 'unsigned long', this should not change the size of the object on
-> a 32-bit architecture.
+Why?
 
-Indeed, size matters not here.
+> and define gf_ioread32()/gf_iowrite32() to be able to use accessors
+> defined by the architecture.
 
-> I ran the preprocessed code through cvise[1], bisecting for a reduced
-> test case that fails on gcc-8 but succeeds on gcc-9. The reduced
-> case is still fairly complex, and it appears to only happen in the
-> presence of an inline asm. Narrowing down the compiler versions shows
-> that anything after gcc-9.2 does not warn, but 9.1 and earlier versions do,
-> which is further indication that  it was probably a false-positive that got
-> fixed in gcc.
+What does this do?
 
-Thanks for investigating! So let's ignore this.
+> 
+> Cc: stable@vger.kernel.org # v5.11+
+> Fixes: da31de35cd2f ("tty: goldfish: use __raw_writel()/__raw_readl()")
+> Signed-off-by: Laurent Vivier <laurent@vivier.eu>
+> ---
+>  drivers/tty/goldfish.c   | 20 ++++++++++----------
+>  include/linux/goldfish.h | 15 +++++++++++----
+>  2 files changed, 21 insertions(+), 14 deletions(-)
+> 
+> diff --git a/drivers/tty/goldfish.c b/drivers/tty/goldfish.c
+> index 5ed19a9857ad..10c13b93ed52 100644
+> --- a/drivers/tty/goldfish.c
+> +++ b/drivers/tty/goldfish.c
+> @@ -61,13 +61,13 @@ static void do_rw_io(struct goldfish_tty *qtty,
+>  	spin_lock_irqsave(&qtty->lock, irq_flags);
+>  	gf_write_ptr((void *)address, base + GOLDFISH_TTY_REG_DATA_PTR,
+>  		     base + GOLDFISH_TTY_REG_DATA_PTR_HIGH);
+> -	__raw_writel(count, base + GOLDFISH_TTY_REG_DATA_LEN);
+> +	gf_iowrite32(count, base + GOLDFISH_TTY_REG_DATA_LEN);
+>  
+>  	if (is_write)
+> -		__raw_writel(GOLDFISH_TTY_CMD_WRITE_BUFFER,
+> +		gf_iowrite32(GOLDFISH_TTY_CMD_WRITE_BUFFER,
+>  		       base + GOLDFISH_TTY_REG_CMD);
+>  	else
+> -		__raw_writel(GOLDFISH_TTY_CMD_READ_BUFFER,
+> +		gf_iowrite32(GOLDFISH_TTY_CMD_READ_BUFFER,
+>  		       base + GOLDFISH_TTY_REG_CMD);
+>  
+>  	spin_unlock_irqrestore(&qtty->lock, irq_flags);
+> @@ -142,7 +142,7 @@ static irqreturn_t goldfish_tty_interrupt(int irq, void *dev_id)
+>  	unsigned char *buf;
+>  	u32 count;
+>  
+> -	count = __raw_readl(base + GOLDFISH_TTY_REG_BYTES_READY);
+> +	count = gf_ioread32(base + GOLDFISH_TTY_REG_BYTES_READY);
+>  	if (count == 0)
+>  		return IRQ_NONE;
+>  
+> @@ -159,7 +159,7 @@ static int goldfish_tty_activate(struct tty_port *port, struct tty_struct *tty)
+>  {
+>  	struct goldfish_tty *qtty = container_of(port, struct goldfish_tty,
+>  									port);
+> -	__raw_writel(GOLDFISH_TTY_CMD_INT_ENABLE, qtty->base + GOLDFISH_TTY_REG_CMD);
+> +	gf_iowrite32(GOLDFISH_TTY_CMD_INT_ENABLE, qtty->base + GOLDFISH_TTY_REG_CMD);
+>  	return 0;
+>  }
+>  
+> @@ -167,7 +167,7 @@ static void goldfish_tty_shutdown(struct tty_port *port)
+>  {
+>  	struct goldfish_tty *qtty = container_of(port, struct goldfish_tty,
+>  									port);
+> -	__raw_writel(GOLDFISH_TTY_CMD_INT_DISABLE, qtty->base + GOLDFISH_TTY_REG_CMD);
+> +	gf_iowrite32(GOLDFISH_TTY_CMD_INT_DISABLE, qtty->base + GOLDFISH_TTY_REG_CMD);
+>  }
+>  
+>  static int goldfish_tty_open(struct tty_struct *tty, struct file *filp)
+> @@ -202,7 +202,7 @@ static unsigned int goldfish_tty_chars_in_buffer(struct tty_struct *tty)
+>  {
+>  	struct goldfish_tty *qtty = &goldfish_ttys[tty->index];
+>  	void __iomem *base = qtty->base;
+> -	return __raw_readl(base + GOLDFISH_TTY_REG_BYTES_READY);
+> +	return gf_ioread32(base + GOLDFISH_TTY_REG_BYTES_READY);
+>  }
+>  
+>  static void goldfish_tty_console_write(struct console *co, const char *b,
+> @@ -355,7 +355,7 @@ static int goldfish_tty_probe(struct platform_device *pdev)
+>  	 * on Ranchu emulator (qemu2) returns 1 here and
+>  	 * driver will use physical addresses.
+>  	 */
+> -	qtty->version = __raw_readl(base + GOLDFISH_TTY_REG_VERSION);
+> +	qtty->version = gf_ioread32(base + GOLDFISH_TTY_REG_VERSION);
+>  
+>  	/*
+>  	 * Goldfish TTY device on Ranchu emulator (qemu2)
+> @@ -374,7 +374,7 @@ static int goldfish_tty_probe(struct platform_device *pdev)
+>  		}
+>  	}
+>  
+> -	__raw_writel(GOLDFISH_TTY_CMD_INT_DISABLE, base + GOLDFISH_TTY_REG_CMD);
+> +	gf_iowrite32(GOLDFISH_TTY_CMD_INT_DISABLE, base + GOLDFISH_TTY_REG_CMD);
+>  
+>  	ret = request_irq(irq, goldfish_tty_interrupt, IRQF_SHARED,
+>  			  "goldfish_tty", qtty);
+> @@ -436,7 +436,7 @@ static int goldfish_tty_remove(struct platform_device *pdev)
+>  #ifdef CONFIG_GOLDFISH_TTY_EARLY_CONSOLE
+>  static void gf_early_console_putchar(struct uart_port *port, int ch)
+>  {
+> -	__raw_writel(ch, port->membase);
+> +	gf_iowrite32(ch, port->membase);
+>  }
+>  
+>  static void gf_early_write(struct console *con, const char *s, unsigned int n)
+> diff --git a/include/linux/goldfish.h b/include/linux/goldfish.h
+> index 12be1601fd84..bcc17f95b906 100644
+> --- a/include/linux/goldfish.h
+> +++ b/include/linux/goldfish.h
+> @@ -8,14 +8,21 @@
+>  
+>  /* Helpers for Goldfish virtual platform */
+>  
+> +#ifndef gf_ioread32
+> +#define gf_ioread32 ioread32
+> +#endif
+> +#ifndef gf_iowrite32
+> +#define gf_iowrite32 iowrite32
+> +#endif
+> +
+>  static inline void gf_write_ptr(const void *ptr, void __iomem *portl,
+>  				void __iomem *porth)
+>  {
+>  	const unsigned long addr = (unsigned long)ptr;
+>  
+> -	__raw_writel(lower_32_bits(addr), portl);
+> +	gf_iowrite32(lower_32_bits(addr), portl);
+>  #ifdef CONFIG_64BIT
+> -	__raw_writel(upper_32_bits(addr), porth);
+> +	gf_iowrite32(upper_32_bits(addr), porth);
+>  #endif
+>  }
+>  
+> @@ -23,9 +30,9 @@ static inline void gf_write_dma_addr(const dma_addr_t addr,
+>  				     void __iomem *portl,
+>  				     void __iomem *porth)
+>  {
+> -	__raw_writel(lower_32_bits(addr), portl);
+> +	gf_iowrite32(lower_32_bits(addr), portl);
+>  #ifdef CONFIG_ARCH_DMA_ADDR_T_64BIT
+> -	__raw_writel(upper_32_bits(addr), porth);
+> +	gf_iowrite32(upper_32_bits(addr), porth);
+>  #endif
+>  }
+>  
+> -- 
+> 2.34.1
+> 
 
-FTR, my gcc-9 is 9.4.0, i.e. >= 9.2.
+This feels like a step backwards.  Why keep this level of indirection
+for no good reason?
 
-Gr{oetje,eeting}s,
+thanks,
 
-                        Geert
-
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+greg k-h
