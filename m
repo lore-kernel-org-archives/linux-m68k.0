@@ -2,104 +2,133 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 7B091C28CF5
-	for <linux-m68k@archiver.kernel.org>; Wed, 26 Jan 2022 17:32:38 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 00359C28CF5
+	for <linux-m68k@archiver.kernel.org>; Wed, 26 Jan 2022 18:34:33 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240642AbiAZRch (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Wed, 26 Jan 2022 12:32:37 -0500
-Received: from mout.kundenserver.de ([212.227.126.187]:46939 "EHLO
-        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236899AbiAZRch (ORCPT
+        id S237453AbiAZSed (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Wed, 26 Jan 2022 13:34:33 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60116 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234913AbiAZSed (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Wed, 26 Jan 2022 12:32:37 -0500
-Received: from [192.168.100.1] ([82.142.25.174]) by mrelayeu.kundenserver.de
- (mreue012 [213.165.67.103]) with ESMTPSA (Nemesis) id
- 1MjxW4-1mWspV3dLE-00kQMA; Wed, 26 Jan 2022 18:32:10 +0100
-Message-ID: <e4e1995c-4fc2-96b7-c732-93aa67207802@vivier.eu>
-Date:   Wed, 26 Jan 2022 18:32:08 +0100
+        Wed, 26 Jan 2022 13:34:33 -0500
+Received: from mail-qv1-xf2f.google.com (mail-qv1-xf2f.google.com [IPv6:2607:f8b0:4864:20::f2f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 08415C06161C
+        for <linux-m68k@lists.linux-m68k.org>; Wed, 26 Jan 2022 10:34:33 -0800 (PST)
+Received: by mail-qv1-xf2f.google.com with SMTP id hu2so610244qvb.8
+        for <linux-m68k@lists.linux-m68k.org>; Wed, 26 Jan 2022 10:34:32 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=soleen.com; s=google;
+        h=from:to:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=4IovCRgH1RgHp4B3YVZ3j1Sxx63RD9XOtaeQVlJ6EjA=;
+        b=cgAboSEa2W3SDny9D7uPpojRwRaMozw8cHMX9fJDnnoYIt2ZF3kZgYqcM+UJ5kUXkc
+         Gb6s+Ho6OMevgVCAwfmvOvEFeHwQ/AwdBskRgB/cidmB8cWSA1HK9MwxqxCFiuOQbGob
+         icfvcRmSoXHFvXIKwOkQ22NN+lY0HcDy+0rTuKiUhFH7i1CGpENDtl+rRgXlfnm99wwg
+         sBnlcfCOKf3ZFzhOW4PSP5fo5TfOHkY2iUwFVWs6kCzJAJfmcNyb7jER3yTKHMAJf8qC
+         p5HCWtJ/rVWsBFyq9TMqBun1yR2U+WcTAYkjtqY6iHv+Nde5v7BO4pJszzR7Vi7pJYxI
+         8vXw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=4IovCRgH1RgHp4B3YVZ3j1Sxx63RD9XOtaeQVlJ6EjA=;
+        b=MH+1TdggWxNoPk7y4AGV9O5Az9lgVaGDFPWBlFHjfQ/ChvgXGjFz+cJ8yBN2/hfjVg
+         6dOF9lESlmNq5DqokoU5Cev2O/51LDIpu9NPBLHjGh7fpctSnYtHFlj6QvTiD4NvSLjh
+         5C5gYOpUOahtXgXMz2a0ugPDhNEN2uojjvyDTnHYhbbIk2oCJ5IR282uAbI3EdjeLVFC
+         4ldKtjThwyiu0H9Fm4lsAGZFcspn7dZ/UbslAhqk0i81Db46Y/w7C/cyayNCXydJwTm3
+         uqvSJhe4DrXj7huQXcsUrIdvJVIkviBLcxvIzZdcUG4eU7bULrrX2umrgxRUuOKd7uuB
+         q7fg==
+X-Gm-Message-State: AOAM5338UTIqhOVDawOPHU+v2rlu3DUp3mQ0Ni1WwJpqtDPXWsx6xGys
+        PRupAX1qs6NzIlmcVkMUo8/HDg==
+X-Google-Smtp-Source: ABdhPJzpUIaLSRUPyh5LBumbcaXtMQrxMKylayajsZz55yXuQrU4tEv8317y9zTEIig6tVf5vHdguw==
+X-Received: by 2002:a05:6214:262d:: with SMTP id gv13mr25607644qvb.1.1643222072145;
+        Wed, 26 Jan 2022 10:34:32 -0800 (PST)
+Received: from soleen.c.googlers.com.com (189.216.85.34.bc.googleusercontent.com. [34.85.216.189])
+        by smtp.gmail.com with ESMTPSA id u17sm35886qki.12.2022.01.26.10.34.30
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 26 Jan 2022 10:34:31 -0800 (PST)
+From:   Pasha Tatashin <pasha.tatashin@soleen.com>
+To:     pasha.tatashin@soleen.com, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, linux-m68k@lists.linux-m68k.org,
+        anshuman.khandual@arm.com, willy@infradead.org,
+        akpm@linux-foundation.org, william.kucharski@oracle.com,
+        mike.kravetz@oracle.com, vbabka@suse.cz, geert@linux-m68k.org,
+        schmitzmic@gmail.com, rostedt@goodmis.org, mingo@redhat.com,
+        hannes@cmpxchg.org, guro@fb.com, songmuchun@bytedance.com,
+        weixugc@google.com, gthelen@google.com, rientjes@google.com,
+        pjt@google.com, hughd@google.com
+Subject: [PATCH v3 0/9] Hardening page _refcount
+Date:   Wed, 26 Jan 2022 18:34:20 +0000
+Message-Id: <20220126183429.1840447-1-pasha.tatashin@soleen.com>
+X-Mailer: git-send-email 2.35.0.rc0.227.g00780c9af4-goog
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.5.0
-Content-Language: fr
-To:     Greg KH <greg@kroah.com>
-Cc:     linux-kernel@vger.kernel.org, linux-rtc@vger.kernel.org,
-        Alessandro Zummo <a.zummo@towertech.it>,
-        Jiaxun Yang <jiaxun.yang@flygoat.com>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        linux-m68k@lists.linux-m68k.org, Arnd Bergmann <arnd@arndb.de>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        John Stultz <john.stultz@linaro.org>, stable@vger.kernel.org
-References: <20220121200738.2577697-1-laurent@vivier.eu>
- <20220121200738.2577697-3-laurent@vivier.eu> <YfFPjOEELiTWr2uj@kroah.com>
-From:   Laurent Vivier <laurent@vivier.eu>
-Subject: Re: [PATCH v12 2/5] tty: goldfish: introduce
- gf_ioread32()/gf_iowrite32()
-In-Reply-To: <YfFPjOEELiTWr2uj@kroah.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Provags-ID: V03:K1:XvNu/dge3CNEYzBbvj4dsSiUzfG9ERgw/LyTB6b0Aj5yx6+KZ9M
- QGo8y1Km5kIVpSrPgBY0y6SzagwYAtktnB9GjfykwLFwRi9tZQVpxJ/BnwfUOfBmFpGBIkg
- cDPFukPmaZ1y9tua0fQ3T6PWrxQW36ZmPU4d0O3wbqDvUsIN2QVlZNqHOi/+3TAWAHnJAkN
- IjKh9Z5r4mvZQ046C54nA==
-X-UI-Out-Filterresults: notjunk:1;V03:K0:IUz2wLhHtK4=:YErz34dKXUUdhaRFFUq59Y
- uZ1krhP53qYSUmIzN/tcOXPkwWZ0LLwMu1OnckCFNi6IIeme5aShQRQGwrYn2g8692/Ln2qCr
- ypxE48BAfl5F/s47vkP+E5TAF291m1LB5YH9r1Kw9DlOxkGhSLFt8yBPLP4uEaeIpDYLZB1+V
- XSJ0O18w5g4NcRwSdEJiu0MdpZ0csxqvFt4br1QLqAqKscd1Vb6G3upYMtJXPxy+ZPv4QIyOd
- JAHd8fWgL1721LCPI8C2bIEKt3qSDdSiki21FRXeiaSljk9VWnrfCGi56jqtaZxdfDwgZ4k4U
- nTK1y/sccw/C1mk1YlhXrTsC4tjK5Nqf9W8vkb8u6/KDJIkRtcquMfyJgCwjidMPGpXfUFIl0
- KMrqJxwv3EAFIhUb8/QzmO0sSnNC3DVtluwYeIBQOjkUFpXQALToV8uPpX6878B0Yq/deBnkk
- lcfyTrSzyh9ygeLQIQsJ8UgG78nC4m0ixTWyM6UeT0YsZrLcCq8pGiL3X/q845lDJcJpriEkt
- pQRcHA7R5gaMDtcYG8A20FHAnVO/h/xfUXnP2imKAQo45PByF+YTwkDq2umrD3eth2o4qCdnL
- bAN44TFcq+XWvsfadMQofaXA/L4TjwGnWDZU/8Z4rdK+TtNAwR+FqhH/1HC0u8ghaq2T+ZZXS
- CnnEAo74CA35cOMfMbEJLQiXYUAFB+xRQ3ww9XkX76tEs2QhbB3Lg2QrPN9BL1j8kFCs=
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-Le 26/01/2022 à 14:41, Greg KH a écrit :
-> On Fri, Jan 21, 2022 at 09:07:35PM +0100, Laurent Vivier wrote:
->> Revert
->> commit da31de35cd2f ("tty: goldfish: use __raw_writel()/__raw_readl()")
-> 
-> Why?
-> 
->> and define gf_ioread32()/gf_iowrite32() to be able to use accessors
->> defined by the architecture.
-> 
-> What does this do?
-> 
->>
->> Cc: stable@vger.kernel.org # v5.11+
->> Fixes: da31de35cd2f ("tty: goldfish: use __raw_writel()/__raw_readl()")
->> Signed-off-by: Laurent Vivier <laurent@vivier.eu>
->> ---
->>   drivers/tty/goldfish.c   | 20 ++++++++++----------
->>   include/linux/goldfish.h | 15 +++++++++++----
->>   2 files changed, 21 insertions(+), 14 deletions(-)
-...
->> -- 
->> 2.34.1
->>
-> 
-> This feels like a step backwards.  Why keep this level of indirection
-> for no good reason?
-> 
+Changelog:
+v3:
+- Sync with the latest linux-next
+v2:
+- As suggested by Matthew Wilcox removed "mm: page_ref_add_unless()
+  does not trace 'u' argument" patch as page_ref_add_unless is going
+  away.
+v1:
+- sync with the latest linux-next
+  RFCv2:
+- use the "fetch" variant instead of "return" of atomic instructions
+- allow negative values, as we are using all 32-bits of _refcount.
 
-It was proposed by Arnd on my previous iteration of the series when I wanted to update goldfish-rtc 
-in the same way:
 
-https://lore.kernel.org/all/CAK8P3a1H6-sd_+FqnOq0Zhj=L51EWuW5VCcYeTENcp3+PkTC4Q@mail.gmail.com/
+It is hard to root cause _refcount problems, because they usually
+manifest after the damage has occurred.  Yet, they can lead to
+catastrophic failures such memory corruptions. There were a number
+of refcount related issues discovered recently [1], [2], [3].
 
-Keeping __raw_XXX() functions works on most of the cases except if the current CPU endianness can 
-differ from the architecture one (like a ppc64le kernel (little-endian) running a ppc64 machine 
-(big-endian)).
+Improve debugability by adding more checks that ensure that
+page->_refcount never turns negative (i.e. double free does not
+happen, or free after freeze etc).
 
-The best solution would be to update QEMU to set the device as a little-endian one, but google 
-didn't merge its implemention in upstream QEMU and this would break all other OSes using goldfish 
-devices on big-endian architectures.
+- Check for overflow and underflow right from the functions that
+  modify _refcount
+- Remove set_page_count(), so we do not unconditionally overwrite
+  _refcount with an unrestrained value
+- Trace return values in all functions that modify _refcount
 
-Thanks,
-Laurent
+Applies against next-20220125.
+
+Previous verions:
+v2: https://lore.kernel.org/all/20211221150140.988298-1-pasha.tatashin@soleen.com
+v1: https://lore.kernel.org/all/20211208203544.2297121-1-pasha.tatashin@soleen.com
+RFCv2: https://lore.kernel.org/all/20211117012059.141450-1-pasha.tatashin@soleen.com
+RFCv1: https://lore.kernel.org/all/20211026173822.502506-1-pasha.tatashin@soleen.com
+
+[1] https://lore.kernel.org/all/xr9335nxwc5y.fsf@gthelen2.svl.corp.google.com
+[2] https://lore.kernel.org/all/1582661774-30925-2-git-send-email-akaher@vmware.com
+[3] https://lore.kernel.org/all/20210622021423.154662-3-mike.kravetz@oracle.com
+
+Pasha Tatashin (9):
+  mm: add overflow and underflow checks for page->_refcount
+  mm: Avoid using set_page_count() in set_page_recounted()
+  mm: remove set_page_count() from page_frag_alloc_align
+  mm: avoid using set_page_count() when pages are freed into allocator
+  mm: rename init_page_count() -> page_ref_init()
+  mm: remove set_page_count()
+  mm: simplify page_ref_* functions
+  mm: do not use atomic_set_release in page_ref_unfreeze()
+  mm: use atomic_cmpxchg_acquire in page_ref_freeze().
+
+ arch/m68k/mm/motorola.c         |   2 +-
+ include/linux/mm.h              |   2 +-
+ include/linux/page_ref.h        | 149 +++++++++++++++-----------------
+ include/trace/events/page_ref.h |  58 ++++++++-----
+ mm/debug_page_ref.c             |  22 +----
+ mm/internal.h                   |   6 +-
+ mm/page_alloc.c                 |  19 ++--
+ 7 files changed, 132 insertions(+), 126 deletions(-)
+
+-- 
+2.35.0.rc0.227.g00780c9af4-goog
+
