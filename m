@@ -2,159 +2,81 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D1732C433FE
-	for <linux-m68k@archiver.kernel.org>; Wed, 26 Jan 2022 22:41:28 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id DFE82C433F5
+	for <linux-m68k@archiver.kernel.org>; Thu, 27 Jan 2022 07:42:08 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229698AbiAZWl1 (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Wed, 26 Jan 2022 17:41:27 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60564 "EHLO
+        id S237427AbiA0HmH (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Thu, 27 Jan 2022 02:42:07 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38242 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229506AbiAZWl0 (ORCPT
-        <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Wed, 26 Jan 2022 17:41:26 -0500
-Received: from mail-ed1-x52a.google.com (mail-ed1-x52a.google.com [IPv6:2a00:1450:4864:20::52a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 387B7C06173B
-        for <linux-m68k@lists.linux-m68k.org>; Wed, 26 Jan 2022 14:41:26 -0800 (PST)
-Received: by mail-ed1-x52a.google.com with SMTP id j2so1138509edj.8
-        for <linux-m68k@lists.linux-m68k.org>; Wed, 26 Jan 2022 14:41:26 -0800 (PST)
+        with ESMTP id S230174AbiA0HmG (ORCPT
+        <rfc822;linux-m68k@vger.kernel.org>); Thu, 27 Jan 2022 02:42:06 -0500
+Received: from mail-pl1-x632.google.com (mail-pl1-x632.google.com [IPv6:2607:f8b0:4864:20::632])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A1AB1C061714
+        for <linux-m68k@vger.kernel.org>; Wed, 26 Jan 2022 23:42:06 -0800 (PST)
+Received: by mail-pl1-x632.google.com with SMTP id c3so1791397pls.5
+        for <linux-m68k@vger.kernel.org>; Wed, 26 Jan 2022 23:42:06 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=soleen.com; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=oPtlTy67Yq/R5pUJBh8Cj52Wrm9Q+Vs7xmfGLT5AbpA=;
-        b=SetlsjCWFNKYNBg+4fhvjOH1cu+KPd/Q3nNl2FWu5Rl3JA+3w/gqKotxQ4V2hIj2zY
-         vV6idOd5VQausx01qBw99aqtP3cAOzFFTrSUYfY1O336iqcRwDy+b1cSDAecK5MgVtOJ
-         kPXi3Fs51HjeCquzMFeyfJ196Z8G3Pc9c5bGfDMrn/HKhSzm6vst4bdlZoHQL7A6eV05
-         T0p/ZNN6X0t1lKamtBqWWrsmqJzIecVCuALFwnB2z+pblaUyTWjMER/9kc0YIhpDXEw7
-         CY2c9SBzgsvKlJz7jM4NGxiqljk6q/1kWYZJQqwPAwvmU03GC01lsUp/prt1bEeqlkKM
-         WQag==
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id;
+        bh=+b6fKdDEPmQijC6tLXvadAPBW43O0LbQf4BnG+c5p74=;
+        b=V7zkRgDPr7H50LLS/EWevfqe87WjammBuRFRIJFORig20AeqhtJW0gJJfjasQ9KRMv
+         /jpB03eIXiNzbx3WsL3/6MCWN2NHQY8fUNomiyxfrnixm3K8/MFwRYWQbhH1MNRWF6XW
+         jprK5rWjAeh7S+N3P2jSmf26BCkNzdR/0e7ljk360nPRcTKIhoaofRocaaAM4ZiwBrbM
+         gRrTL5FbTfkR91OZN/P17MLB3H50doTNYZFZxv8TEe0A9cHHhWUTKOluvFns16WTAMqA
+         WVyzbMvLCNae8Mt4enIvNl0jDiEu2/7z4nTmu+gX+j9iuNPHs9G2wzenMxzCsyxqtQKN
+         lqAA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=oPtlTy67Yq/R5pUJBh8Cj52Wrm9Q+Vs7xmfGLT5AbpA=;
-        b=lqHFo2Wnb5JVcDSxMfOjINvMPr4SI1ESVIHSvG+8kaU08/89yQVoM9UyjEWw7HPZmX
-         U0+l6mAlvoU/MahKTb1nsFamZJzdSUCkvfZlBux9YJbHbKpLTfuBrwOL2jg+CRK5XM07
-         zN2uebXaJFU2b7yJ9t5n/cvFIJ9nUqwEzZQrUHwWjcdmSi4io0xLS4eAZxgleO5Txic+
-         hIBSiaH2lAPLs/5UC/frb/bhlEphKQJ0EDYhrlivnZegW76OI7N8ouWKmZr6t0l64fc6
-         eqc9hnCZDN07juLZdGiTaBM12Bmn9J6tSV7C7D2UOjROGKJMMXcQW8KxJwrGbap7vK2O
-         IMtA==
-X-Gm-Message-State: AOAM531lBX/7enlHQcrHAlcAdNfKeM+f+9oPvTqh/zCCM61t6uUk0gVe
-        EUSz321AKXQik2GeSi86iU8VxnviqsL+6LHIZvsxHA==
-X-Google-Smtp-Source: ABdhPJw5o4z8TJT1hnIdh2XuXnqKEEYj45WboF/3FXlzBvnWx2lvxlXR9cXGB9QCVLsS8inljCwxV8MKMEAwR23dChU=
-X-Received: by 2002:a05:6402:11d2:: with SMTP id j18mr1016217edw.349.1643236884660;
- Wed, 26 Jan 2022 14:41:24 -0800 (PST)
-MIME-Version: 1.0
-References: <20220126183429.1840447-1-pasha.tatashin@soleen.com>
- <20220126183429.1840447-2-pasha.tatashin@soleen.com> <YfGZ/0hhkqVeX04p@casper.infradead.org>
- <CA+CK2bDHkOQbTrK=GbsGbojAj_6gaAX_8w3cBCd_LWqXt--yZA@mail.gmail.com> <YfGkxtQd0KE8YNXt@casper.infradead.org>
-In-Reply-To: <YfGkxtQd0KE8YNXt@casper.infradead.org>
-From:   Pasha Tatashin <pasha.tatashin@soleen.com>
-Date:   Wed, 26 Jan 2022 17:40:47 -0500
-Message-ID: <CA+CK2bAvGjieaXRcHqfhfPp0uogfLOmCtbE_9w3ULFbM+ZuHNg@mail.gmail.com>
-Subject: Re: [PATCH v3 1/9] mm: add overflow and underflow checks for page->_refcount
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>, linux-mm <linux-mm@kvack.org>,
-        linux-m68k@lists.linux-m68k.org,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        william.kucharski@oracle.com,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        schmitzmic@gmail.com, Steven Rostedt <rostedt@goodmis.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Roman Gushchin <guro@fb.com>,
-        Muchun Song <songmuchun@bytedance.com>,
-        Wei Xu <weixugc@google.com>, Greg Thelen <gthelen@google.com>,
-        David Rientjes <rientjes@google.com>,
-        Paul Turner <pjt@google.com>, Hugh Dickins <hughd@google.com>
-Content-Type: text/plain; charset="UTF-8"
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=+b6fKdDEPmQijC6tLXvadAPBW43O0LbQf4BnG+c5p74=;
+        b=Vb7TphsYd3C93S87og/U7zbrbUMCYx/h8zOySsCm2vMlqhdnbB2gidgLnh19wX/ceQ
+         5ZIQzVtRDzsLIUnEHhpu0uUNDToQiH8purbgYvaKeeWvybzO8RNbC1UIzp245twObLUq
+         pIQd3dTH5QjD0rvaoj/T2EfBh7fMpoasGYdpYOWgmZRpO2v3BW2V1u9RWPbp01Mmbzd1
+         PTLrhgASSC590Ziex3JfaSBOLh5I1xrmNC/U/eApvWyvwXvvG4MVyRWiub181pyjQ4X9
+         ez/Tx5azlbrLKdKuSwIML64BKJqlsfWkWfDkRa8y7J+b8WtaeWhfyzYfmGZSxIHwD6ZB
+         XP6w==
+X-Gm-Message-State: AOAM532k1Ls9NgoIHYumnRF1kQ68gXbE5CLnLE9949TnjyX8rXHSB4mC
+        opbQiAvT6Wy2+9+Yn00rndg=
+X-Google-Smtp-Source: ABdhPJytNLxQa8GzICkP+2e0cYZCRHeg8+uAu1Fuico2gdx7dGLnCMF2n88QxRnZIa9UzqTCiy2zww==
+X-Received: by 2002:a17:903:2307:: with SMTP id d7mr2858128plh.52.1643269326088;
+        Wed, 26 Jan 2022 23:42:06 -0800 (PST)
+Received: from xplor.waratah.dyndns.org (222-155-5-102-adsl.sparkbb.co.nz. [222.155.5.102])
+        by smtp.gmail.com with ESMTPSA id j14sm4363144pfj.218.2022.01.26.23.42.04
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 26 Jan 2022 23:42:05 -0800 (PST)
+Received: by xplor.waratah.dyndns.org (Postfix, from userid 1000)
+        id F1CEA360333; Thu, 27 Jan 2022 20:42:00 +1300 (NZDT)
+From:   Michael Schmitz <schmitzmic@gmail.com>
+To:     linux-m68k@vger.kernel.org, geert@linux-m68k.org
+Cc:     ebiederm@xmission.com, viro@zeniv.linux.org.uk,
+        glaubitz@physik.fu-berlin.de
+Subject: [PATCH v10 0/3] Add kernel seccomp support for m68k
+Date:   Thu, 27 Jan 2022 20:41:55 +1300
+Message-Id: <20220127074158.25888-1-schmitzmic@gmail.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-On Wed, Jan 26, 2022 at 2:45 PM Matthew Wilcox <willy@infradead.org> wrote:
->
-> On Wed, Jan 26, 2022 at 02:22:26PM -0500, Pasha Tatashin wrote:
-> > On Wed, Jan 26, 2022 at 1:59 PM Matthew Wilcox <willy@infradead.org> wrote:
-> > >
-> > > On Wed, Jan 26, 2022 at 06:34:21PM +0000, Pasha Tatashin wrote:
-> > > > The problems with page->_refcount are hard to debug, because usually
-> > > > when they are detected, the damage has occurred a long time ago. Yet,
-> > > > the problems with invalid page refcount may be catastrophic and lead to
-> > > > memory corruptions.
-> > > >
-> > > > Reduce the scope of when the _refcount problems manifest themselves by
-> > > > adding checks for underflows and overflows into functions that modify
-> > > > _refcount.
-> > >
-> > > If you're chasing a bug like this, presumably you turn on page
-> > > tracepoints.  So could we reduce the cost of this by putting the
-> > > VM_BUG_ON_PAGE parts into __page_ref_mod() et al?  Yes, we'd need to
-> > > change the arguments to those functions to pass in old & new, but that
-> > > should be a cheap change compared to embedding the VM_BUG_ON_PAGE.
-> >
-> > This is not only about chasing a bug. This also about preventing
-> > memory corruption and information leaking that are caused by ref_count
-> > bugs from happening.
-> > Several months ago a memory corruption bug was discovered by accident:
-> > an engineer was studying a process core from a production system and
-> > noticed that some memory does not look like it belongs to the original
-> > process. We tried to manually reproduce that bug but failed. However,
-> > later analysis by our team, explained that the problem occured due to
-> > ref_count bug in Linux, and the bug itself was root caused and fixed
-> > (mentioned in the cover letter).  This work would have prevented
-> > similar ref_count bugs from yielding to the memory corruption
-> > situation.
->
-> But the VM_BUG_ON_PAGE tells us next to nothing useful.  To take
-> your first example [1] as the kind of thing you say this is going to
-> help fix:
->
-> 1. Page p is allocated by thread a (refcount 1)
-> 2. Thread b gets mistaken pointer to p
+Patch 3 adds the test for TIF_SECCOMP thread info flag to call
+into syscall_trace_enter() when seccomp syscall filtering
+is active, which was missing from earlier versions (classic
+MMU m68k only - need some help with the test for 68000 and
+coldfire).
 
-Thread b gets a mistaken pointer to p because of a bug in the kernel.
-The different types of bugs can lead to such scenarios, and it is
-probably not feasible to prevent all of them. However, one of such
-scenarios is that we lost control of ref_count, and the page was then
-incorrectly remapped or even copied (perhaps migrated) into another
-address space.
+The previous version required the TIF_SYSCALL_TRACE
+flag to be set for syscall filtering to work
 
-While studying the logs of the machine on which the double mapping
-occured, we noticed that ref_count was underflowed. This was the
-smoking gun for the problem, and that is why we concentrated our
-search for the root cause of memory leak around places where ref_count
-can be incorrectly modified.
+The rest of the series remains unchanged from v9. 
 
-This patch series ensures that once we get to a situation where
-ref_count is for some reason becomes negative we panic immediately as
-there is a possibility that a  leak can occur.
+Tested on ARAnyM, 63 out of 89 seccomp_bpf tests now pass
+(33 with the old version).
 
-The second benefit of this series is that it makes the ref_count
-changes contiguous, with this series we never reset the value to 0,
-instead we only operate using offsets and add/sub operations. This
-helps with tracing the history of ref_count via tracepoints.
+I hope you didn't waste too much effort on testing v8/v9, Adrian.
+Should have a suitably large brown paper bag somewhere yet :-(
 
-> 3. Thread b calls put_page(), __put_page(), page goes to memory
->    allocator.
-> 4. Thread c calls alloc_page(), also gets page p (refcount 1 again).
-> 5. Thread a calls put_page(), __put_page()
-> 6. Thread c calls put_page() and gets a VM_BUG_ON_PAGE.
->
-> How do we find thread b's involvement?  I don't think we can even see
-> thread a's involvement in all of this!  All we know is a backtrace
-> pointing to thread c, who is a completely innocent bystander.  I think
-> you have to enable page tracepoints to have any shot at finding thread
-> b's involvement.
+Cheers,
 
-You are right, we cannot get to see thread's involvement, we only get
-a panic closer to the damage and hopefully prior to leak occurs.
-Again, this is just one of the mitigation techniques. Another one is
-this page table check [2].
+   Michael
 
-[2] https://lore.kernel.org/all/20211221154650.1047963-1-pasha.tatashin@soleen.com
->
-> [1] https://lore.kernel.org/stable/20211122171825.1582436-1-gthelen@google.com/
