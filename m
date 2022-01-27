@@ -2,148 +2,124 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 5DE57C433FE
-	for <linux-m68k@archiver.kernel.org>; Thu, 27 Jan 2022 14:39:32 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 3838EC433EF
+	for <linux-m68k@archiver.kernel.org>; Thu, 27 Jan 2022 18:27:26 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242512AbiA0Ojb (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Thu, 27 Jan 2022 09:39:31 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51852 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242502AbiA0Oja (ORCPT
+        id S229871AbiA0S1Z (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Thu, 27 Jan 2022 13:27:25 -0500
+Received: from smtp-out1.suse.de ([195.135.220.28]:32914 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236144AbiA0S1Y (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Thu, 27 Jan 2022 09:39:30 -0500
-Received: from mail-lf1-x130.google.com (mail-lf1-x130.google.com [IPv6:2a00:1450:4864:20::130])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DCC8CC061748
-        for <linux-m68k@lists.linux-m68k.org>; Thu, 27 Jan 2022 06:39:29 -0800 (PST)
-Received: by mail-lf1-x130.google.com with SMTP id n8so5785817lfq.4
-        for <linux-m68k@lists.linux-m68k.org>; Thu, 27 Jan 2022 06:39:29 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=message-id:date:mime-version:user-agent:subject:content-language:to
-         :cc:references:from:in-reply-to:content-transfer-encoding;
-        bh=XkYKE/mqIw+ZogEPzGoXmtOQI8nkKTmA4V70TLbVWS4=;
-        b=BHb2Xn1jq66/9MHahrzGm/gWUKtVbh/58wKW18vGWzni3fO5qyqP4VG1OOnOie8Jsh
-         gDERoDSbSutwAXYx2C5vNn4TrrwM4BpgdHcNKbywEL+R5MYLhL5n2nGGvdHyYC3+WdiR
-         AH7kOLTk/zgQKoF333ryAx/KFlOhDG6pX/tZk4LwhLgv5peCfB01DtWBVE+9RHO5Zn9/
-         GlTTQk4e9TGZCrINPfliTtlCZdTAH9LmWOb+qXQAmfLULPmn+Omh2L6j2NgulGAPM/A+
-         p0mPzTS/Ny1WZgGK/AicqnPTN5Ub7NU4t23e3Ka67Gnz7TG7Nyg0lXeqh7s3FoDGgrJx
-         11/A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:cc:references:from:in-reply-to
-         :content-transfer-encoding;
-        bh=XkYKE/mqIw+ZogEPzGoXmtOQI8nkKTmA4V70TLbVWS4=;
-        b=eiMEfBFxF4470xISdeE0Y8kjpA3JdiPomo88mUHdPlOsVXeG+Umn/vYA+xM4HJVdnt
-         gUh7pQSkXrBSbPQ0gMEEgST3TQ5Uu40qZAZZPYKCBaPp9EI89ESLXm4eeVTR/eaTDYEA
-         LNN18h/oQboA4z89GXEHXlmRnP0mC4aiO//fYnqZWwg+Q6KV/JjlKLCloIgYOSuLNDJK
-         BrY5iP1llgRYvCLZzGHnPxom1q6wxFxSzYUsyJQSN2+I/jMLcZhyHM80t6+piOXoOULQ
-         DRgcGwfUyF5hMMd/W1dIgJp1813xJlBhIncr2O7XQ9rME10hZ7Ge54UFcYqsFC+Yr3hG
-         BD8g==
-X-Gm-Message-State: AOAM530agb6RBP11TPuBluH0CWh2+BBTZI+dPZ07OisDGdegeglHQZmm
-        tiJXzUwkabQl3aBaYWfZ54w=
-X-Google-Smtp-Source: ABdhPJy1MhVvMOXi8UxQ8s4idXCyJ+ifGIsp8CpwyHRf9+W1A9LbFInI9I0x2geweWfK/i1YhzfC+Q==
-X-Received: by 2002:a05:6512:3d1c:: with SMTP id d28mr2997039lfv.135.1643294367899;
-        Thu, 27 Jan 2022 06:39:27 -0800 (PST)
-Received: from [192.168.2.145] (109-252-138-126.dynamic.spd-mgts.ru. [109.252.138.126])
-        by smtp.googlemail.com with ESMTPSA id r13sm476323lfr.65.2022.01.27.06.39.16
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 27 Jan 2022 06:39:22 -0800 (PST)
-Message-ID: <e8d3ca39-ddeb-2c21-6000-1cc65da57915@gmail.com>
-Date:   Thu, 27 Jan 2022 17:39:15 +0300
+        Thu, 27 Jan 2022 13:27:24 -0500
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id EED2B210E4;
+        Thu, 27 Jan 2022 18:27:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1643308043; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=zk2r/XrL2I9M2jio/MO73dxCfXi5kcNty76XDbfCA04=;
+        b=kaCevPFOebUrYtZIeSsQl/Nenll/xKHVI9d26xNpP2Jv/gtiEK40/Qw4N4a6RK0iQlwo9G
+        IRnTWdg2dHxScobVExZ1f12j6cBKSeKLR/UHAxa09Xo+bhpjPWfKEYjIyZesXCpGGzfoeH
+        Yl4x7QGS3XMe7kto4Rofoe0GSn6EwVA=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1643308043;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=zk2r/XrL2I9M2jio/MO73dxCfXi5kcNty76XDbfCA04=;
+        b=ekdcCIxU79QmWvRUkgubRlAQ7C5usaznvpUOk5HdZGr9FAns2IyCl6TfpBoAZAiFuBAxxU
+        0rjqXJEqMV0FzeDA==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 912EC13D4F;
+        Thu, 27 Jan 2022 18:27:23 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id pSyYIgvk8mFoOQAAMHmgww
+        (envelope-from <vbabka@suse.cz>); Thu, 27 Jan 2022 18:27:23 +0000
+Message-ID: <b7f580cb-84f7-5c78-5f68-7ab8f67b0811@suse.cz>
+Date:   Thu, 27 Jan 2022 19:27:23 +0100
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
  Thunderbird/91.5.0
-Subject: Re: [PATCH v5 04/21] kernel: Add combined power-off+restart handler
- call chain API
+Subject: Re: [PATCH v3 1/9] mm: add overflow and underflow checks for
+ page->_refcount
 Content-Language: en-US
-To:     =?UTF-8?B?TWljaGHFgiBNaXJvc8WCYXc=?= <mirq-linux@rere.qmqm.pl>
-Cc:     Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>, Guo Ren <guoren@kernel.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Greg Ungerer <gerg@linux-m68k.org>,
-        Joshua Thompson <funaho@jurai.org>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Sebastian Reichel <sre@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Greentime Hu <green.hu@gmail.com>,
-        Vincent Chen <deanbo422@gmail.com>,
-        "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
-        Helge Deller <deller@gmx.de>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Yoshinori Sato <ysato@users.sourceforge.jp>,
-        Rich Felker <dalias@libc.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
-        Juergen Gross <jgross@suse.com>,
-        Stefano Stabellini <sstabellini@kernel.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Len Brown <lenb@kernel.org>,
-        Santosh Shilimkar <ssantosh@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>, Pavel Machek <pavel@ucw.cz>,
-        Lee Jones <lee.jones@linaro.org>,
+To:     Pasha Tatashin <pasha.tatashin@soleen.com>,
+        Matthew Wilcox <willy@infradead.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>, linux-mm <linux-mm@kvack.org>,
+        linux-m68k@lists.linux-m68k.org,
+        Anshuman Khandual <anshuman.khandual@arm.com>,
         Andrew Morton <akpm@linux-foundation.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>, alankao@andestech.com,
-        "K . C . Kuen-Chern Lin" <kclin@andestech.com>,
-        linux-kernel@vger.kernel.org, linux-csky@vger.kernel.org,
-        linux-ia64@vger.kernel.org, linux-m68k@lists.linux-m68k.org,
-        linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org,
-        linux-sh@vger.kernel.org, xen-devel@lists.xenproject.org,
-        linux-acpi@vger.kernel.org, linux-pm@vger.kernel.org,
-        linux-tegra@vger.kernel.org
-References: <20211212210309.9851-1-digetx@gmail.com>
- <20211212210309.9851-5-digetx@gmail.com> <Ydofs2CIfA+r5KAz@qmqm.qmqm.pl>
-From:   Dmitry Osipenko <digetx@gmail.com>
-In-Reply-To: <Ydofs2CIfA+r5KAz@qmqm.qmqm.pl>
+        william.kucharski@oracle.com,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        schmitzmic@gmail.com, Steven Rostedt <rostedt@goodmis.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Roman Gushchin <guro@fb.com>,
+        Muchun Song <songmuchun@bytedance.com>,
+        Wei Xu <weixugc@google.com>, Greg Thelen <gthelen@google.com>,
+        David Rientjes <rientjes@google.com>,
+        Paul Turner <pjt@google.com>, Hugh Dickins <hughd@google.com>
+References: <20220126183429.1840447-1-pasha.tatashin@soleen.com>
+ <20220126183429.1840447-2-pasha.tatashin@soleen.com>
+ <YfGZ/0hhkqVeX04p@casper.infradead.org>
+ <CA+CK2bDHkOQbTrK=GbsGbojAj_6gaAX_8w3cBCd_LWqXt--yZA@mail.gmail.com>
+From:   Vlastimil Babka <vbabka@suse.cz>
+In-Reply-To: <CA+CK2bDHkOQbTrK=GbsGbojAj_6gaAX_8w3cBCd_LWqXt--yZA@mail.gmail.com>
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-Hello Michał,
-
-09.01.2022 02:35, Michał Mirosław пишет:
-> BTW, I couldn't find a right description of my idea of unifying the
-> chains before, so let me sketch it now.
+On 1/26/22 20:22, Pasha Tatashin wrote:
+> On Wed, Jan 26, 2022 at 1:59 PM Matthew Wilcox <willy@infradead.org> wrote:
+>>
+>> On Wed, Jan 26, 2022 at 06:34:21PM +0000, Pasha Tatashin wrote:
+>> > The problems with page->_refcount are hard to debug, because usually
+>> > when they are detected, the damage has occurred a long time ago. Yet,
+>> > the problems with invalid page refcount may be catastrophic and lead to
+>> > memory corruptions.
+>> >
+>> > Reduce the scope of when the _refcount problems manifest themselves by
+>> > adding checks for underflows and overflows into functions that modify
+>> > _refcount.
+>>
+>> If you're chasing a bug like this, presumably you turn on page
+>> tracepoints.  So could we reduce the cost of this by putting the
+>> VM_BUG_ON_PAGE parts into __page_ref_mod() et al?  Yes, we'd need to
+>> change the arguments to those functions to pass in old & new, but that
+>> should be a cheap change compared to embedding the VM_BUG_ON_PAGE.
 > 
-> The idea is to have a single system-off chain in which the callback
-> gets a mode ({QUERY_*, PREP_*, DO_*} for each of {*_REBOOT, *_POWEROFF, ...?).
-> The QUERY_* calls would be made in can_kernel_reboot/poweroff(): all
-> would be called, and if at least one returned true, then the shutdown
-> mode would continue. All of PREP_* would be called then. After that
-> all DO_* would be tried until one doesn't return (succeeded or broke
-> the system hard). Classic for(;;); could be a final fallback for the
-> case where arch/machine (lowest priority) call would return instead
-> of halting the system in machine-dependent way. The QUERY and PREP
-> stages could be combined, but I haven't thought about it enough to
-> see what conditions would need to be imposed on the callbacks in
-> that case (maybe it's not worth the trouble, since it isn't a fast
-> path anyway?). The goal here is to have less (duplicated) code in
-> kernel, but otherwise it seems equivalent to your API proposal.
+> This is not only about chasing a bug. This also about preventing
+> memory corruption and information leaking that are caused by ref_count
+> bugs from happening.
 
-Thank you again for yours proposal! IMO, it's much more important to
-keep the core code simple and maintainable, rather than try to optimize
-it without a very good reason, given that this isn't a hot code path at
-all and saving a couple of bytes won't be noticeable. The poweroff,
-restart and reboot were separated before this series and I'm finding
-that it's easier to follow the code when it's structured that way. I'm
-not convinced that we need to change it.
+So you mean it like a security hardening feature, not just debugging? To me
+it's dubious to put security hardening under CONFIG_DEBUG_VM. I think it's
+just Fedora that uses DEBUG_VM in general production kernels?
+
+> Several months ago a memory corruption bug was discovered by accident:
+> an engineer was studying a process core from a production system and
+> noticed that some memory does not look like it belongs to the original
+> process. We tried to manually reproduce that bug but failed. However,
+> later analysis by our team, explained that the problem occured due to
+> ref_count bug in Linux, and the bug itself was root caused and fixed
+> (mentioned in the cover letter).  This work would have prevented
+> similar ref_count bugs from yielding to the memory corruption
+> situation.
+> 
+> Pasha
+> 
+
