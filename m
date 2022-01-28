@@ -2,101 +2,115 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 49FFCC433F5
-	for <linux-m68k@archiver.kernel.org>; Thu, 27 Jan 2022 19:42:51 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8393FC433EF
+	for <linux-m68k@archiver.kernel.org>; Fri, 28 Jan 2022 06:51:48 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245491AbiA0Tmu (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Thu, 27 Jan 2022 14:42:50 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38708 "EHLO
+        id S242336AbiA1Gvs (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Fri, 28 Jan 2022 01:51:48 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49190 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S245734AbiA0Tms (ORCPT
-        <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Thu, 27 Jan 2022 14:42:48 -0500
-Received: from mail-ej1-x636.google.com (mail-ej1-x636.google.com [IPv6:2a00:1450:4864:20::636])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F1F7BC061714
-        for <linux-m68k@lists.linux-m68k.org>; Thu, 27 Jan 2022 11:42:47 -0800 (PST)
-Received: by mail-ej1-x636.google.com with SMTP id o12so8115496eju.13
-        for <linux-m68k@lists.linux-m68k.org>; Thu, 27 Jan 2022 11:42:47 -0800 (PST)
+        with ESMTP id S234071AbiA1Gvr (ORCPT
+        <rfc822;linux-m68k@vger.kernel.org>); Fri, 28 Jan 2022 01:51:47 -0500
+Received: from mail-pl1-x62e.google.com (mail-pl1-x62e.google.com [IPv6:2607:f8b0:4864:20::62e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B7999C061714
+        for <linux-m68k@vger.kernel.org>; Thu, 27 Jan 2022 22:51:47 -0800 (PST)
+Received: by mail-pl1-x62e.google.com with SMTP id d18so5069247plg.2
+        for <linux-m68k@vger.kernel.org>; Thu, 27 Jan 2022 22:51:47 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=soleen.com; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=SlWIcHy/3XR7mwnK/GHpmwHwVvr/nhApahfqBZocrNU=;
-        b=YqCrznekqjJGqxJTiBCV9J98MH4sLOY2AlzJgugPm5/1S+vb4pcJxV9Zwm2mcVL5sq
-         yOPmh7MmaQfsM0y7I43NHEJJesuDa7jaPzANYVQYPXe/kubBYmv+/msm7zagHrutr6QN
-         L7Wk9Blrv1JS4QjFiEsYcfIxdd0N+UgCW6sZnnqKNn/vsbb5p9+SNSzu+Udg2f4pR2e3
-         4S5keBjy2zohERuHuVzADnODSIZMZiT7cky9vprdIm74ZstoTdru90283pSzQttQs+Ei
-         b8XtsBlGpgPnU5l+YQK4dP3TUw8HDrLnTPZfGGDMvRpNvYln48idGU1LpLbjXwhw5/5R
-         u9dA==
+        d=gmail.com; s=20210112;
+        h=subject:to:references:from:message-id:date:user-agent:mime-version
+         :in-reply-to:content-transfer-encoding;
+        bh=ZcHabeRUHoY+Z7oIH3QO3XarxiZlX+FBNvYhgYFczYg=;
+        b=L/qT5jk2P9TIyICqZwPVGAbVHFJLrOyOy2stzhqdM5lYwIkS53YNj85XmKxcEzX6j0
+         fvyVXwsgu9VOKFYUC1KOSD+wYZSn2fU5/SoD+askPH1UFPFev7ZsUUPILcm9qX79gwkv
+         ybEgLzCNnuzasKE2EXT8225ggQpHT2jY1URzduDCiVkb0w7DioWWuDycOp6gGnQTO2wG
+         z95/Shh23U8dytR7VThyY1oJdPn9v/WCMOQbtPTiiIbeWb+nHzBWTY7HpNltjNdAcHO0
+         NIvX3WVrxkwdmplxZwy2noSDAZRNQ0MWfiYCVCR3XyTRkmjuXe+ipiO+FESMH5k3FZ2x
+         tSvA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=SlWIcHy/3XR7mwnK/GHpmwHwVvr/nhApahfqBZocrNU=;
-        b=D0PYrYhC2kZueIEUlXJSLQniSzGnPquWI23ysp2TDOBE5sFUqikLlHVxxDn3k7xEf3
-         CGD4gvKuqV0XBTe7U0S+oe9Xi1rORYszpwUiAn39DHpgGsJA8Fu21aa2+QidQbz1RqSS
-         1BrOLnbiYXgBJlEhvw8ywKg62KtK5VZgmrDLNGpoN5J7z/ycvUpCSDTeJPVj9t9qzlhO
-         gk7ZNX6iYRlhC/UBBY73ZcBRxVFZHucI5SwQQWQBJPHLTDv1ol6A//Mz8Bf9XCWWlsnu
-         O2gRgjizkmuJrhwWrvcQqhH+Z/TES3pw/o/JC3qt56XOcjRZPL/A5bpvGduBnKP9TGoR
-         LwXA==
-X-Gm-Message-State: AOAM531YVRP6cNwnztAZAZ4ijBlbRqt+TcoNGEnOot4ZFvmfiVYUJ8Gr
-        3TcmI3NIAwNpuZXLwwUtQuN1dND4koY8SGOR1ozDjA==
-X-Google-Smtp-Source: ABdhPJyRYphRCJufijT8nLWfSafgBSzq7ruAzTjmpKHgO1/ZkxNEN0MqTxVHWccur1KVci8YLBBrAKSYGIwvmUfOKJE=
-X-Received: by 2002:a17:907:2d92:: with SMTP id gt18mr3911682ejc.579.1643312566461;
- Thu, 27 Jan 2022 11:42:46 -0800 (PST)
+        h=x-gm-message-state:subject:to:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding;
+        bh=ZcHabeRUHoY+Z7oIH3QO3XarxiZlX+FBNvYhgYFczYg=;
+        b=Qq/G9MrcKck7Dnz5JggJ1cG11zzpYNciBlxnVNJWqWMjba8mTIE9U04Ev5YiSO28HJ
+         nOACToOeF0kAZblFy1tjGLJZGawQgpYj9/VfAIXv5tzjfLFqOspLjldiCgRKrw/OTXTy
+         GC6dqD1rxH+OrC8v/KrjcCwU/X8IXjwelZ90dNjDgEsM2ctYpS57MWNOgIQM6TysmSeF
+         Ju/q50/SWmIX0/s8DoL4qtGdooCcI2lH4/XgQsxwGFmD2J4sfyLSpEpIqOLPNSCld41d
+         wlblZ5Ok/hjQzwwUxUAfu10METJ7T9XDTGfoCS+4NPA79DbBlebXfdEHokOIrViFb0FB
+         uryg==
+X-Gm-Message-State: AOAM5304XzaVES0T2rtdnb5BNoXLMRvvx3vd+OnchZY01S3noaMPQEQh
+        zveqx4rxIXrNq0ZQK4rHopjsTm7OmhE=
+X-Google-Smtp-Source: ABdhPJzy0pRm497G7CVoTV6DU64YLvR2HXYlkmP8bTXOU+eWi9YnI4TsimN7LhKx5ZN6fj/bXw4wrQ==
+X-Received: by 2002:a17:902:e546:: with SMTP id n6mr7433135plf.38.1643352707086;
+        Thu, 27 Jan 2022 22:51:47 -0800 (PST)
+Received: from [10.1.1.24] (222-155-5-102-adsl.sparkbb.co.nz. [222.155.5.102])
+        by smtp.gmail.com with ESMTPSA id d9sm7680724pfj.79.2022.01.27.22.51.44
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Thu, 27 Jan 2022 22:51:46 -0800 (PST)
+Subject: Re: [PATCH v10 0/3] Add kernel seccomp support for m68k
+To:     John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
+        linux-m68k@vger.kernel.org, geert@linux-m68k.org
+References: <20220127074158.25888-1-schmitzmic@gmail.com>
+ <8dffd9fd-37a5-edfe-4e51-00e8bc19379b@physik.fu-berlin.de>
+From:   Michael Schmitz <schmitzmic@gmail.com>
+Message-ID: <34a669f6-acc7-7de9-5734-03fcf1c24fc5@gmail.com>
+Date:   Fri, 28 Jan 2022 19:51:41 +1300
+User-Agent: Mozilla/5.0 (X11; Linux ppc; rv:45.0) Gecko/20100101
+ Icedove/45.4.0
 MIME-Version: 1.0
-References: <20220126183429.1840447-1-pasha.tatashin@soleen.com>
- <20220126183429.1840447-2-pasha.tatashin@soleen.com> <72cae3c0-e06e-4fe5-24d5-a2c94d99780f@suse.cz>
-In-Reply-To: <72cae3c0-e06e-4fe5-24d5-a2c94d99780f@suse.cz>
-From:   Pasha Tatashin <pasha.tatashin@soleen.com>
-Date:   Thu, 27 Jan 2022 14:42:09 -0500
-Message-ID: <CA+CK2bCP0iFAdr-4VxiS2ubQT0O0c_j-qS4Q0khhRBCLJqQBrg@mail.gmail.com>
-Subject: Re: [PATCH v3 1/9] mm: add overflow and underflow checks for page->_refcount
-To:     Vlastimil Babka <vbabka@suse.cz>
-Cc:     LKML <linux-kernel@vger.kernel.org>, linux-mm <linux-mm@kvack.org>,
-        linux-m68k@lists.linux-m68k.org,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        william.kucharski@oracle.com,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        schmitzmic@gmail.com, Steven Rostedt <rostedt@goodmis.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Roman Gushchin <guro@fb.com>,
-        Muchun Song <songmuchun@bytedance.com>,
-        Wei Xu <weixugc@google.com>, Greg Thelen <gthelen@google.com>,
-        David Rientjes <rientjes@google.com>,
-        Paul Turner <pjt@google.com>, Hugh Dickins <hughd@google.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <8dffd9fd-37a5-edfe-4e51-00e8bc19379b@physik.fu-berlin.de>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-> > diff --git a/include/linux/page_ref.h b/include/linux/page_ref.h
-> > index 2e677e6ad09f..fe4864f7f69c 100644
-> > --- a/include/linux/page_ref.h
-> > +++ b/include/linux/page_ref.h
-> > @@ -117,7 +117,10 @@ static inline void init_page_count(struct page *page)
-> >
-> >  static inline void page_ref_add(struct page *page, int nr)
-> >  {
-> > -     atomic_add(nr, &page->_refcount);
-> > +     int old_val = atomic_fetch_add(nr, &page->_refcount);
-> > +     int new_val = old_val + nr;
-> > +
-> > +     VM_BUG_ON_PAGE((unsigned int)new_val < (unsigned int)old_val, page);
+Hi Adrian,
+
+not to worry - there is no rush on this. I may have to debug this a 
+little more at the kernel level anyway (things like syscall redirection 
+does not work yet, and neither does setting a particular errno when 
+skipping a syscall). Plain syscall filtering does appear to work 
+however, and AFAIR that would be enough for your purpose.
+
+None of my test systems are recent enough to allow compiling current 
+user space code, unfortunately.
+
+Outdated user space might conntribute to some of the selftests failing, 
+so I could use a little help with that perhaps. I know Geert tried the 
+selftests independently some time ago, so I'll post my changes to the 
+selftest code and we'll see whether that improves the score.
+
+Cheers,
+
+	Michael
+
+Am 27.01.2022 um 22:09 schrieb John Paul Adrian Glaubitz:
+> Hi Michael!
 >
-> This seems somewhat weird, as it will trigger not just on overflow, but also
-> if nr is negative. Which I think is valid usage, even though the function
-> has 'add' in name, because 'nr' is signed?
-
-I have not found any places in the mainline kernel where nr is
-negative in page_ref_add(). I think, by adding this assert we ensure
-that when 'add' shows up in backtraces it can be assured that the ref
-count has increased, and if page_ref_sub() showed up it means it
-decreased. It is strange to have both functions, and yet allow them to
-do the opposite. We can also change the type to unsigned.
-
-Pasha
+> On 1/27/22 08:41, Michael Schmitz wrote:
+>> Patch 3 adds the test for TIF_SECCOMP thread info flag to call
+>> into syscall_trace_enter() when seccomp syscall filtering
+>> is active, which was missing from earlier versions (classic
+>> MMU m68k only - need some help with the test for 68000 and
+>> coldfire).
+>>
+>> The previous version required the TIF_SYSCALL_TRACE
+>> flag to be set for syscall filtering to work
+>>
+>> The rest of the series remains unchanged from v9.
+>>
+>> Tested on ARAnyM, 63 out of 89 seccomp_bpf tests now pass
+>> (33 with the old version).
+>>
+>> I hope you didn't waste too much effort on testing v8/v9, Adrian.
+>> Should have a suitably large brown paper bag somewhere yet :-(
+>
+> Sorry, I haven't found the time for the tests yet, I'm really busy at the
+> moment. If you want to test libsecomp, you can check it out from my Github,
+> then build it and run the testsuite.
+>
+> See: https://github.com/glaubitz/libseccomp/tree/m68k
+>
+> Adrian
+>
