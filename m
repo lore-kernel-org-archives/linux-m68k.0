@@ -2,52 +2,52 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 867C1C4321E
-	for <linux-m68k@archiver.kernel.org>; Sun, 30 Jan 2022 23:39:20 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2D1EEC433EF
+	for <linux-m68k@archiver.kernel.org>; Sun, 30 Jan 2022 23:40:15 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1357138AbiA3XjR (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Sun, 30 Jan 2022 18:39:17 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34304 "EHLO
+        id S1357408AbiA3XkK (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Sun, 30 Jan 2022 18:40:10 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34436 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1357277AbiA3Xhy (ORCPT
+        with ESMTP id S1357015AbiA3XiG (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Sun, 30 Jan 2022 18:37:54 -0500
-Received: from mail-lf1-x134.google.com (mail-lf1-x134.google.com [IPv6:2a00:1450:4864:20::134])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F350C06173E
-        for <linux-m68k@lists.linux-m68k.org>; Sun, 30 Jan 2022 15:37:54 -0800 (PST)
-Received: by mail-lf1-x134.google.com with SMTP id z4so23316932lft.3
-        for <linux-m68k@lists.linux-m68k.org>; Sun, 30 Jan 2022 15:37:54 -0800 (PST)
+        Sun, 30 Jan 2022 18:38:06 -0500
+Received: from mail-lf1-x12c.google.com (mail-lf1-x12c.google.com [IPv6:2a00:1450:4864:20::12c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0DDF0C061769
+        for <linux-m68k@lists.linux-m68k.org>; Sun, 30 Jan 2022 15:38:05 -0800 (PST)
+Received: by mail-lf1-x12c.google.com with SMTP id y15so23234417lfa.9
+        for <linux-m68k@lists.linux-m68k.org>; Sun, 30 Jan 2022 15:38:04 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=onbjYH+GRuJ1H+aKPIQ3zfVzcOAEVYGJovL5WFpgYzE=;
-        b=UH1XcKU9Gn1SSFj/c6UF13MQ0Jk4L0iTHT84SKL6CKoxP6s+KdtFoXyH/BcfyYDpHy
-         loZc76siXQCxc0BEyl6FoScWMfzkuy0+stkGcZcwGW2GEdy+KMmBYv7TWditUzAcwMzy
-         Tt6+cvIqwyyrufTRsRpGGLkldJ9LCj0ohCU13mN/KWIDXPq7wGpxAM7zRuw3yc8XG/sX
-         kB5V6sSPdbwBeQeNfwWdQOiHlVD0cbXl/3KN+Taw7rwJQ9btmTdGH9V7WkpieowAbyRI
-         LCnnw5FiTCZdg9w/dnOXicsOkOVxD4dBkbYZp5w48IHi/dsTV0RcMVW6iF0qd1ahO1Hj
-         Vr0A==
+        bh=kEaxNtq4BarrclNUiioDBF+6lBsKK3a9toXDktjcMR4=;
+        b=HntJ6DyCYL+ke6f/r0is/oFtPZ4gM0JnOcriee/6UCUdnbMrZ6NOZCGasE1GEHraDu
+         pCBWJZjwmgcL07nwsUauAU2GlxacbaVxZhonKlPwwFBuAdu9viIQHcwKhf5dcL+qJ3nn
+         XhquQFTcfNjpbKfwUnK91j3Ge7sDIsFDFI/0mJTVowVMyA1BhEquZb8cXOuqYsZtg9aC
+         IwXRQGqgPsQgyNkeIMf9S+4pn8Wundfp1v2UsKp+neG01ddR2rxW0d3I1LRmyGvULbSe
+         5ToOMq/E6pAjk3+OSUQ6ZeKR1+WuSDVpNO845bw8OU98QhOQkdAG7afJAysxD5/92Ee2
+         gC9A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=onbjYH+GRuJ1H+aKPIQ3zfVzcOAEVYGJovL5WFpgYzE=;
-        b=X7SJZBUr2xbofhkwvNy8LyKOJyqPYC4jJ6B8jCUZ9ALkzenE83SIi1RWL0w6uF1M2J
-         B0uFeAbejCayQb5glH98wdYJYS/9mt9xise/tYMJaht5SeQn+F92a+KGWs0meFD8qYEz
-         OfhD45VRVObpPWKL5vdbl/1o2XWBvMjsJL7fztp+Cd3KGrD665kBk2QGaj6KpT0pAC6f
-         Q1CVQpd3AxwsKK4LcMzHiNUAk2/T2i0hRDfLl98KlhbW+gd+GI4gaidW9f1aR0/M2fQx
-         mcvqIOD5IMxbg5LGaXyMo1EgdmSQyXhTRGdEx4E1OlffTJ9DYA8QgTdVhoAa5/AicMN0
-         4nYg==
-X-Gm-Message-State: AOAM533NO7AAEsWpVEwn6ctXuQynS4ZkTtQ3ujmFYubNKodVRiCCpKNk
-        ydD57j93Nh3jhiyVAaygU9I=
-X-Google-Smtp-Source: ABdhPJzNx9wknKIs7vHNlQS9Ch9++IYsC8MJz1WUWotZ0fgIzeDZMu0xSzBho+J/7CYm9WmVvjoXbA==
-X-Received: by 2002:a05:6512:31cd:: with SMTP id j13mr13576351lfe.369.1643585872718;
-        Sun, 30 Jan 2022 15:37:52 -0800 (PST)
+        bh=kEaxNtq4BarrclNUiioDBF+6lBsKK3a9toXDktjcMR4=;
+        b=v+WZwI57RhpRzWzF8P8SBei41haYja0ll4ci8BP38q9QZ91mEY3pdnChpG2ask5U/W
+         w2Wuh/wOJQSpAbKe1B0dZlV4o2QFU4E99AYTGlIDnRLIF6h2hT57b2lDcYINNBob2gDd
+         xiAD+ORCqxyO5+wGaSLkwHyWhIxKtpNyXH/rTImA2gpKFm3CkYfU4hvY+VvwmdURf4qk
+         r9+bnr88ro4+gAJ1R6AO/i3yXH1MUX6Fwuq2Vh2mIXToGnly4PGGpI7Fw5p8klpV7eSB
+         5klwkUzUjt+7jrhTtAy0XsXL6kMLFaz/2wz3Ov8DPVJh6A4glsmYAgNJ8EyQLawp+IJW
+         /ZEA==
+X-Gm-Message-State: AOAM532+amkIQk25BLb8EFhtFfRYAdwVdqOWP3o+0eAMyUXtQwac0yso
+        0Lt2cFOlb+FWpAN1wmtP91g=
+X-Google-Smtp-Source: ABdhPJy7y3uqXOwOev3QXphmi8L7tLYmjKiDpJEwGe8WqzvjXRaZTuzAa3HaIFQiqtNJq5XkxRnQXQ==
+X-Received: by 2002:a05:6512:310:: with SMTP id t16mr13842194lfp.138.1643585883411;
+        Sun, 30 Jan 2022 15:38:03 -0800 (PST)
 Received: from localhost.localdomain (109-252-138-126.dynamic.spd-mgts.ru. [109.252.138.126])
-        by smtp.gmail.com with ESMTPSA id a24sm1262950ljp.112.2022.01.30.15.37.50
+        by smtp.gmail.com with ESMTPSA id a24sm1262950ljp.112.2022.01.30.15.38.01
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 30 Jan 2022 15:37:52 -0800 (PST)
+        Sun, 30 Jan 2022 15:38:03 -0800 (PST)
 From:   Dmitry Osipenko <digetx@gmail.com>
 To:     Thierry Reding <thierry.reding@gmail.com>,
         Jonathan Hunter <jonathanh@nvidia.com>,
@@ -100,9 +100,9 @@ Cc:     linux-kernel@vger.kernel.org, linux-csky@vger.kernel.org,
         linux-riscv@lists.infradead.org, linux-sh@vger.kernel.org,
         xen-devel@lists.xenproject.org, linux-acpi@vger.kernel.org,
         linux-pm@vger.kernel.org, linux-tegra@vger.kernel.org
-Subject: [PATCH v6 15/21] ia64: Use do_kernel_power_off()
-Date:   Mon, 31 Jan 2022 02:37:12 +0300
-Message-Id: <20220130233718.21544-16-digetx@gmail.com>
+Subject: [PATCH v6 21/21] reboot: Remove pm_power_off_prepare()
+Date:   Mon, 31 Jan 2022 02:37:18 +0300
+Message-Id: <20220130233718.21544-22-digetx@gmail.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20220130233718.21544-1-digetx@gmail.com>
 References: <20220130233718.21544-1-digetx@gmail.com>
@@ -112,38 +112,56 @@ Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-Kernel now supports chained power-off handlers. Use do_kernel_power_off()
-that invokes chained power-off handlers. It also invokes legacy
-pm_power_off() for now, which will be removed once all drivers will
-be converted to the new power-off API.
+All pm_power_off_prepare() users were converted to sys-off handler API.
+Remove the obsolete callback.
 
 Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
 ---
- arch/ia64/kernel/process.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ include/linux/pm.h |  1 -
+ kernel/reboot.c    | 11 -----------
+ 2 files changed, 12 deletions(-)
 
-diff --git a/arch/ia64/kernel/process.c b/arch/ia64/kernel/process.c
-index 834df24a88f1..cee4d7db2143 100644
---- a/arch/ia64/kernel/process.c
-+++ b/arch/ia64/kernel/process.c
-@@ -19,6 +19,7 @@
- #include <linux/module.h>
- #include <linux/notifier.h>
- #include <linux/personality.h>
-+#include <linux/reboot.h>
- #include <linux/sched.h>
- #include <linux/sched/debug.h>
- #include <linux/sched/hotplug.h>
-@@ -599,8 +600,7 @@ machine_halt (void)
- void
- machine_power_off (void)
- {
--	if (pm_power_off)
--		pm_power_off();
-+	do_kernel_power_off();
- 	machine_halt();
- }
+diff --git a/include/linux/pm.h b/include/linux/pm.h
+index f7d2be686359..62879bfc4b8e 100644
+--- a/include/linux/pm.h
++++ b/include/linux/pm.h
+@@ -21,7 +21,6 @@
+  * Callbacks for platform drivers to implement.
+  */
+ extern void (*pm_power_off)(void);
+-extern void (*pm_power_off_prepare)(void);
  
+ struct device; /* we have a circular dep with device.h */
+ #ifdef CONFIG_VT_CONSOLE_SLEEP
+diff --git a/kernel/reboot.c b/kernel/reboot.c
+index 1ae5ba86b150..6e0d4deda987 100644
+--- a/kernel/reboot.c
++++ b/kernel/reboot.c
+@@ -48,13 +48,6 @@ int reboot_cpu;
+ enum reboot_type reboot_type = BOOT_ACPI;
+ int reboot_force;
+ 
+-/*
+- * If set, this is used for preparing the system to power off.
+- */
+-
+-void (*pm_power_off_prepare)(void);
+-EXPORT_SYMBOL_GPL(pm_power_off_prepare);
+-
+ /**
+  *	emergency_restart - reboot the system
+  *
+@@ -828,10 +821,6 @@ void do_kernel_power_off(void)
+ 
+ static void do_kernel_power_off_prepare(void)
+ {
+-	/* legacy pm_power_off_prepare() is unchained and has highest priority */
+-	if (pm_power_off_prepare)
+-		return pm_power_off_prepare();
+-
+ 	blocking_notifier_call_chain(&power_off_handler_list, POWEROFF_PREPARE,
+ 				     NULL);
+ }
 -- 
 2.34.1
 
