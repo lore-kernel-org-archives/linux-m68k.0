@@ -2,52 +2,52 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 78404C35276
-	for <linux-m68k@archiver.kernel.org>; Sun, 30 Jan 2022 23:38:11 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C3270C3525C
+	for <linux-m68k@archiver.kernel.org>; Sun, 30 Jan 2022 23:38:13 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1357219AbiA3XiK (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Sun, 30 Jan 2022 18:38:10 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34310 "EHLO
+        id S1357238AbiA3XiL (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Sun, 30 Jan 2022 18:38:11 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34318 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1357041AbiA3Xhr (ORCPT
+        with ESMTP id S1357172AbiA3Xhr (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
         Sun, 30 Jan 2022 18:37:47 -0500
-Received: from mail-lf1-x12a.google.com (mail-lf1-x12a.google.com [IPv6:2a00:1450:4864:20::12a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 25531C061749
-        for <linux-m68k@lists.linux-m68k.org>; Sun, 30 Jan 2022 15:37:45 -0800 (PST)
-Received: by mail-lf1-x12a.google.com with SMTP id i34so2973817lfv.2
-        for <linux-m68k@lists.linux-m68k.org>; Sun, 30 Jan 2022 15:37:45 -0800 (PST)
+Received: from mail-lf1-x133.google.com (mail-lf1-x133.google.com [IPv6:2a00:1450:4864:20::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EC8FEC061751
+        for <linux-m68k@lists.linux-m68k.org>; Sun, 30 Jan 2022 15:37:46 -0800 (PST)
+Received: by mail-lf1-x133.google.com with SMTP id x7so23276892lfu.8
+        for <linux-m68k@lists.linux-m68k.org>; Sun, 30 Jan 2022 15:37:46 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=66lCIOUKcPJ2J+m4Cr3ZW94G0lABJXZaED/s9f5QGmA=;
-        b=IaLlORDZoeaYRpO44854hgYk2/vgTJOclvwIF3Vv/dy/WRswOVfYMTb/lgYFF6u20R
-         kgD4kuaMUZhPrzrsrp+1aHUtVBmfCdIQHjkOsK+D3JxP5SLPXm0dCS3YEeqxtX5eYSIx
-         8EdSobISpvnT22JqnHeoUtNW+EX+/cnH1SeCCQB6STOy1ozdbhelGYqvV1xMpt5YBA99
-         B/96htM+mne2xjdlCrcPFCtKPM7GzoR7BZlH1OzPT5hR1hE9cLpw2j5lrnPZ7ZPlmwwI
-         nMOCD5Tt0vJ4ks8CXxb7pk/YLn1ILllHgnHrKEVAgGpxNOjR5JCV7EBSVseqXYt1IKk7
-         FSXw==
+        bh=EOoRrU+XNCvH4y2De/y0/3nvouQcv+AIk9CqttDCqGU=;
+        b=Xenhc8uEX5pndBJlaDWs7DZMq++uCKYCaPhTRn+v8Pl6kdDQBiq3K+xk68g+lJ4bfb
+         xZ0s68SQJzgN7roWd+Sm2QhFGePj8q4/xhI0aeufWhORrHMmrI9Me+kOtUbih63bZtb6
+         0ONUKG+oe3tUPDlqh+XwtnfSXapDSUNhobEfHkXXD2jWYeC/eLrTsR82DtHf6HHPZ3Ti
+         T856rZoGRovN/ZZzwL74avJYGt+XINSCwpiKRk5t0Q88fCFTaGgu6LEev5sylA8ww9qW
+         bEbiz2YJdBL1j7FCE0FI146AM6wMNEQmt3CI8lSlsxZpxhGAK8uAOhBigDyDJ64IQ5ph
+         fLRw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=66lCIOUKcPJ2J+m4Cr3ZW94G0lABJXZaED/s9f5QGmA=;
-        b=rhp0wjXP9UlCC1hazeIndpsGjULBnCFZrh9UbTK5BB8qc/tIOqvWrJtjdDdQv70R+L
-         IU99tV9ZRfbkwzfPAuyFeK014+u4Bg/D0FqMbzeMdBud1GkO5w7Yk8WUJQAODMUDjfja
-         KbCfzDgcrVMEj6Gnfqp2FHj2yXZkyT5mexOOCi/zmZrTpNvL3JZiXVXB2cOfC3ttZhBg
-         yCCXU3jkV+mJ74lsv6/outpzl/fza8kdthTcIr+hyRWDNJfnzP4rt+HDWJYP0ClaRvRa
-         k5C1eKooWDMq8KZaRbKTJdR8aWBz0Sb6X6nZVgl05bcG6RKm6Rcrs/kZ9gko7pTKQ538
-         7Ydw==
-X-Gm-Message-State: AOAM533gftE0xg97B5Ks0EVequwmMNTNyvbsJPY84SDNmSl0iT0ow0ua
-        ZMB4F7iOmLpuuctgrOgdljg=
-X-Google-Smtp-Source: ABdhPJw0xUt9j/jtl0uaDt91Bsr3KfV7lR3RRZqMVEqi4OIibegSJcLOPzN3p/u9YZbK6f72FdmH0g==
-X-Received: by 2002:a05:6512:3091:: with SMTP id z17mr13662510lfd.216.1643585863533;
-        Sun, 30 Jan 2022 15:37:43 -0800 (PST)
+        bh=EOoRrU+XNCvH4y2De/y0/3nvouQcv+AIk9CqttDCqGU=;
+        b=KmzXtGnK8yQ4ytfOe2GtgB6J1NF+BdwUlUpsME71J8Pc4xcQNa4OcDdHFOZut5E55d
+         oLFwuneX7l9lM285YlU2PCTgiCoEfCFXUgLN40W+EUDP/cwYdzOVME5x23+ae9yM793+
+         +0izdkmdJghxIxSLwbqqAa6k6KhF7mVvGjTebp6CS1mSooBWVk5pNMWJNZV/7UGdn5UI
+         KwKtRWc/YXFYw2GI1dDtXq1B3YwBXvSNeoYI4VQ2Rr5wPq+D22nMjfDZWsHFtuY/ZPOY
+         VEs93oS9CVt23FVVavPHQmzN2lXoIEPlMW5VYfDf7kjhylT020EUo4l8963QzaEfKIv+
+         n/XA==
+X-Gm-Message-State: AOAM530khSjdIhe0HWeGAv31odIl20yT0fM8vNU3hy7DTiCJjzVBxiWV
+        7VDX6o9c4qfeiBsQ2q7SCmQ=
+X-Google-Smtp-Source: ABdhPJwHvsxF1vvJkDiGpTgqSXjFtQ+p50F4FDOHob5db5lzmW0uNoHuWaSIs7Seja+8JuHVDBb7qw==
+X-Received: by 2002:ac2:5333:: with SMTP id f19mr13304920lfh.451.1643585865359;
+        Sun, 30 Jan 2022 15:37:45 -0800 (PST)
 Received: from localhost.localdomain (109-252-138-126.dynamic.spd-mgts.ru. [109.252.138.126])
-        by smtp.gmail.com with ESMTPSA id a24sm1262950ljp.112.2022.01.30.15.37.41
+        by smtp.gmail.com with ESMTPSA id a24sm1262950ljp.112.2022.01.30.15.37.43
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 30 Jan 2022 15:37:43 -0800 (PST)
+        Sun, 30 Jan 2022 15:37:44 -0800 (PST)
 From:   Dmitry Osipenko <digetx@gmail.com>
 To:     Thierry Reding <thierry.reding@gmail.com>,
         Jonathan Hunter <jonathanh@nvidia.com>,
@@ -100,9 +100,9 @@ Cc:     linux-kernel@vger.kernel.org, linux-csky@vger.kernel.org,
         linux-riscv@lists.infradead.org, linux-sh@vger.kernel.org,
         xen-devel@lists.xenproject.org, linux-acpi@vger.kernel.org,
         linux-pm@vger.kernel.org, linux-tegra@vger.kernel.org
-Subject: [PATCH v6 10/21] xen/x86: Use do_kernel_power_off()
-Date:   Mon, 31 Jan 2022 02:37:07 +0300
-Message-Id: <20220130233718.21544-11-digetx@gmail.com>
+Subject: [PATCH v6 11/21] powerpc: Use do_kernel_power_off()
+Date:   Mon, 31 Jan 2022 02:37:08 +0300
+Message-Id: <20220130233718.21544-12-digetx@gmail.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20220130233718.21544-1-digetx@gmail.com>
 References: <20220130233718.21544-1-digetx@gmail.com>
@@ -117,32 +117,40 @@ that invokes chained power-off handlers. It also invokes legacy
 pm_power_off() for now, which will be removed once all drivers will
 be converted to the new power-off API.
 
-Acked-by: Juergen Gross <jgross@suse.com>
+Acked-by: Michael Ellerman <mpe@ellerman.id.au>
 Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
 ---
- arch/x86/xen/enlighten_pv.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ arch/powerpc/kernel/setup-common.c | 4 +---
+ arch/powerpc/xmon/xmon.c           | 3 +--
+ 2 files changed, 2 insertions(+), 5 deletions(-)
 
-diff --git a/arch/x86/xen/enlighten_pv.c b/arch/x86/xen/enlighten_pv.c
-index 5004feb16783..527fa545eb1f 100644
---- a/arch/x86/xen/enlighten_pv.c
-+++ b/arch/x86/xen/enlighten_pv.c
-@@ -31,6 +31,7 @@
- #include <linux/gfp.h>
- #include <linux/edd.h>
- #include <linux/objtool.h>
-+#include <linux/reboot.h>
- 
- #include <xen/xen.h>
- #include <xen/events.h>
-@@ -1068,8 +1069,7 @@ static void xen_machine_halt(void)
- 
- static void xen_machine_power_off(void)
+diff --git a/arch/powerpc/kernel/setup-common.c b/arch/powerpc/kernel/setup-common.c
+index f8da937df918..8158e940db81 100644
+--- a/arch/powerpc/kernel/setup-common.c
++++ b/arch/powerpc/kernel/setup-common.c
+@@ -161,9 +161,7 @@ void machine_restart(char *cmd)
+ void machine_power_off(void)
  {
+ 	machine_shutdown();
 -	if (pm_power_off)
 -		pm_power_off();
+-
 +	do_kernel_power_off();
- 	xen_reboot(SHUTDOWN_poweroff);
+ 	smp_send_stop();
+ 	machine_hang();
+ }
+diff --git a/arch/powerpc/xmon/xmon.c b/arch/powerpc/xmon/xmon.c
+index fd72753e8ad5..c916bf250796 100644
+--- a/arch/powerpc/xmon/xmon.c
++++ b/arch/powerpc/xmon/xmon.c
+@@ -1243,8 +1243,7 @@ static void bootcmds(void)
+ 	} else if (cmd == 'h') {
+ 		ppc_md.halt();
+ 	} else if (cmd == 'p') {
+-		if (pm_power_off)
+-			pm_power_off();
++		do_kernel_power_off();
+ 	}
  }
  
 -- 
