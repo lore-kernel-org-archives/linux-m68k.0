@@ -2,131 +2,268 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 06A4EC433FE
-	for <linux-m68k@archiver.kernel.org>; Sun, 30 Jan 2022 06:57:49 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 0BAA4C433FE
+	for <linux-m68k@archiver.kernel.org>; Sun, 30 Jan 2022 14:33:54 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1354258AbiA3G5r (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Sun, 30 Jan 2022 01:57:47 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41890 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240619AbiA3G5l (ORCPT
+        id S1355017AbiA3Odx (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Sun, 30 Jan 2022 09:33:53 -0500
+Received: from mout.kundenserver.de ([212.227.17.24]:34591 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1355010AbiA3Odw (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Sun, 30 Jan 2022 01:57:41 -0500
-Received: from mail-pj1-x102a.google.com (mail-pj1-x102a.google.com [IPv6:2607:f8b0:4864:20::102a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D5BF2C061714
-        for <linux-m68k@lists.linux-m68k.org>; Sat, 29 Jan 2022 22:57:41 -0800 (PST)
-Received: by mail-pj1-x102a.google.com with SMTP id oa14-20020a17090b1bce00b001b61aed4a03so9248382pjb.5
-        for <linux-m68k@lists.linux-m68k.org>; Sat, 29 Jan 2022 22:57:41 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=subject:to:references:cc:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-transfer-encoding;
-        bh=fM8q32grWZEZw0oluXIqvQZO4Mr5xfE86zn2yqSxGvI=;
-        b=UgmUEAmno7gCdw3heMWy+S1n5AcBNQlLLAqPVtZtvbxtbRE2SaZVKIwzglsgdYdWW/
-         9/u1vWPcu7Ee6fiCsP/qee/IBUdWiCjAn3doDwhBiWCI+O0Qh9BSOS9KwjlXEUlt+5gC
-         yaEeDnz8tf+cdlCbfH9PcGXTaNpoH5IskOj+jUcQj0v6MheGW4YByKEMO4IZWjR8YJw5
-         FbP7VE+y0C9v4VWibsNam3w1vaZ2Fsra2Tc+DoNGoDbCINdUx1R3+e3wzk4iP+Kcejs1
-         cfJBYRId7FtK0ve96jRArRmXbXRONqSVVCE8ECIUTkqOeMGt5mB5I8V/Lq5i0Xe5l2Xr
-         Lb6A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:references:cc:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding;
-        bh=fM8q32grWZEZw0oluXIqvQZO4Mr5xfE86zn2yqSxGvI=;
-        b=OUw2WGQLPB0L2LSXQ1dyxN/SZUvSyucl/gkKrK4VJjhy2DVejFbLutmCgqrHM9t5hf
-         qITSFPF6ekddj6blmW61ZQnor8v3/AcVCb8EWDq34PTbabReVyHK7H46+NIVKh7Kd0nr
-         SO7JPSgmzAsocOF/UPkVEkTGj4QrK9bnyL9wdM+VnKyKcgPUFWjKR0/wqeYDsZOF4HfK
-         QBQOAipB2NeobwUIvuTsIrFUOnTm/b1WvGawt6BMdXBy/h9p+oLu7nffARxeNT9jpQzR
-         x+Q21yKEqT4AHGuLUDRCbSkbA6xA90U8M7TqXwEOba7EBPOFqRLYNLs7LhXlt4csUuOi
-         Hgww==
-X-Gm-Message-State: AOAM531EchgXEAwJFzf9+7FtpAl1SJRhCb5wECIV8GgMZah9QvaVOHG0
-        RjOfoUOOyhs5IElgGZsYtQY=
-X-Google-Smtp-Source: ABdhPJwOYscoSEhgZUw8VpKbyZ3DBjJeYIK+Rpi3YjORDvuU4L9mDd6LB3pqIxf2uUJ+uPSSsAnfZA==
-X-Received: by 2002:a17:90b:3907:: with SMTP id ob7mr24092447pjb.193.1643525861276;
-        Sat, 29 Jan 2022 22:57:41 -0800 (PST)
-Received: from [10.1.1.24] (222-155-5-102-adsl.sparkbb.co.nz. [222.155.5.102])
-        by smtp.gmail.com with ESMTPSA id z7sm14745441pfe.49.2022.01.29.22.57.37
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Sat, 29 Jan 2022 22:57:40 -0800 (PST)
-Subject: Re: [PATCH] m68k: mm: Remove check for VM_IO to fix deferred I/O
-To:     Geert Uytterhoeven <geert@linux-m68k.org>,
-        linux-m68k@lists.linux-m68k.org
-References: <20220128173006.1713210-1-geert@linux-m68k.org>
- <63c80eba-7c55-2a92-8078-c63cec3c9efb@gmail.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
-        linux-fbdev@vger.kernel.org, linux-kernel@vger.kernel.org
-From:   Michael Schmitz <schmitzmic@gmail.com>
-Message-ID: <8913a0a2-9496-143c-18c2-f3023fd37ba0@gmail.com>
-Date:   Sun, 30 Jan 2022 19:57:34 +1300
-User-Agent: Mozilla/5.0 (X11; Linux ppc; rv:45.0) Gecko/20100101
- Icedove/45.4.0
+        Sun, 30 Jan 2022 09:33:52 -0500
+Received: from quad ([82.142.10.94]) by mrelayeu.kundenserver.de (mreue107
+ [212.227.15.183]) with ESMTPSA (Nemesis) id 1MS4WT-1mpkdt3G9L-00TVRi; Sun, 30
+ Jan 2022 15:33:39 +0100
+From:   Laurent Vivier <laurent@vivier.eu>
+To:     linux-kernel@vger.kernel.org
+Cc:     Arnd Bergmann <arnd@arndb.de>, linux-rtc@vger.kernel.org,
+        Jiaxun Yang <jiaxun.yang@flygoat.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        John Stultz <john.stultz@linaro.org>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Alessandro Zummo <a.zummo@towertech.it>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        linux-m68k@lists.linux-m68k.org,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Laurent Vivier <laurent@vivier.eu>
+Subject: [PATCH v14 1/5] m68k: add asm/config.h
+Date:   Sun, 30 Jan 2022 15:33:29 +0100
+Message-Id: <20220130143333.552646-2-laurent@vivier.eu>
+X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20220130143333.552646-1-laurent@vivier.eu>
+References: <20220130143333.552646-1-laurent@vivier.eu>
 MIME-Version: 1.0
-In-Reply-To: <63c80eba-7c55-2a92-8078-c63cec3c9efb@gmail.com>
-Content-Type: text/plain; charset=iso-8859-15; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+X-Provags-ID: V03:K1:kMSKGKkxNv1a1eN2ypugXU4Ago5SMMMeVURxMVgqYjNxTYxgj7S
+ 2o4SwgztjInAztiJRdM5JV2pPgaf/mXSyNkNmtvKKQApiIObNHuAIYz5zwLTudQTCNoZNhy
+ dsdZA1a3VwCBaJTbZctjssKotDKxTyXahVqAsqONnzwupuwEZr71FGhONzxieYToIf5Wjil
+ OEqMGIAl3ftcP5cnvp2AQ==
+X-UI-Out-Filterresults: notjunk:1;V03:K0:bqb3pZsELRI=:piZ7DDAbAUCE3qblElJuwP
+ Ed8q3odP2rkxynXfoEOkqoqqWR3iV5UtBJvhFP028NpEetH/rJ9IJJyUeLAlTpgetWxu4z3cG
+ 8+OEiExfUZDdY00QKqTjM+AcVMjLojqKmCtLr3pXH+Dn3Mncb8cDjDu3uDMa/7dcqg0hmk1Eq
+ 7Ys4gahTmHHLmHPhN8/Q/+CWOfWMoQf6MPi5tuGbOsisaYQgjpvaFXiQsMOQxV8WMgzzMiMt0
+ wleRAjWFzMpkEpzg/vAOsnp2msg4I9qr60JoletHhGqF56kos58YTUW7KPJXLeddlj6qQPD4V
+ eS6vjDRf0ib0Q14WmaMpnSUuikkNXFEbAhj+fzW/UO0TWqfq0FyEnIZVZDOnhEkEeun/VMnaP
+ oRR+LJjFBvJUB3ubb6A6dS33qwUhUvbsO/vWYPqTNgAPrfOnbcQEA65wpbihZ+ROKtImOiPkz
+ My+3o09rjDYqDrM6oLsIe+bx+QWxKI6JxPuKjKsse9nYz1pRFQu299YGdpxgvTElhE+ThHgzW
+ +o2WBKviEj5QOVUf3422cIfZkzHueGLzwqA7KKNIdJicmt8bTgu1gUSJAalVnwZ4A9CokZOL/
+ x6GMDq8w8iE0jGiIzDNmdsSw5b5lL62J3ysnlFFxMhowJvIsx3l7D8+Cvu/OT1nAyPvtUm3Hu
+ grDnsqW6IwoWPejtnxNYAESOVbHNr90ATVqml9ENK764gwwAH6E3aD/02wfKmNgKYvv8=
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-Hi Geert,
+To avoid 'warning: no previous prototype for' error, declare all
+the parse_bootinfo and config functions prototypes into asm/config.h
+and include it in arch/m68k/kernel/setup_mm.c and arch/m68k/*/config.c
 
-Am 30.01.2022 um 13:32 schrieb Michael Schmitz:
-> Hi Geert,
->
-> testing this patch on my Falcon 030, I'm seeing a weird error checking
-> and mounting the root filesystem (pata-falcon). The system appears to
-> sit idle, never completing the journal recovery and mount. Still
-> investigating that.
+Signed-off-by: Laurent Vivier <laurent@vivier.eu>
+Reviewed-by: Geert Uytterhoeven <geert@linux-m68k.org>
+---
+ arch/m68k/amiga/config.c       |  1 +
+ arch/m68k/apollo/config.c      |  1 +
+ arch/m68k/atari/config.c       |  1 +
+ arch/m68k/bvme6000/config.c    |  1 +
+ arch/m68k/hp300/config.c       |  1 +
+ arch/m68k/include/asm/config.h | 33 +++++++++++++++++++++++++++++++++
+ arch/m68k/kernel/setup_mm.c    | 23 +----------------------
+ arch/m68k/mac/config.c         |  1 +
+ arch/m68k/mvme147/config.c     |  1 +
+ arch/m68k/mvme16x/config.c     |  1 +
+ arch/m68k/q40/config.c         |  1 +
+ 11 files changed, 43 insertions(+), 22 deletions(-)
+ create mode 100644 arch/m68k/include/asm/config.h
 
-Belay that - not related to your patch, must be some other regression 
-since v5.16 that I'm seeing there.
+diff --git a/arch/m68k/amiga/config.c b/arch/m68k/amiga/config.c
+index be2dfab48fd4..3137b45750df 100644
+--- a/arch/m68k/amiga/config.c
++++ b/arch/m68k/amiga/config.c
+@@ -37,6 +37,7 @@
+ #include <asm/irq.h>
+ #include <asm/machdep.h>
+ #include <asm/io.h>
++#include <asm/config.h>
+ 
+ static unsigned long amiga_model;
+ 
+diff --git a/arch/m68k/apollo/config.c b/arch/m68k/apollo/config.c
+index 581a5f68d102..42a8b8e2b664 100644
+--- a/arch/m68k/apollo/config.c
++++ b/arch/m68k/apollo/config.c
+@@ -16,6 +16,7 @@
+ #include <asm/apollohw.h>
+ #include <asm/irq.h>
+ #include <asm/machdep.h>
++#include <asm/config.h>
+ 
+ u_long sio01_physaddr;
+ u_long sio23_physaddr;
+diff --git a/arch/m68k/atari/config.c b/arch/m68k/atari/config.c
+index 261a0f57cc9a..38a7c0578105 100644
+--- a/arch/m68k/atari/config.c
++++ b/arch/m68k/atari/config.c
+@@ -46,6 +46,7 @@
+ #include <asm/machdep.h>
+ #include <asm/hwtest.h>
+ #include <asm/io.h>
++#include <asm/config.h>
+ 
+ u_long atari_mch_cookie;
+ EXPORT_SYMBOL(atari_mch_cookie);
+diff --git a/arch/m68k/bvme6000/config.c b/arch/m68k/bvme6000/config.c
+index 0c6feafbbd11..9b060d466e03 100644
+--- a/arch/m68k/bvme6000/config.c
++++ b/arch/m68k/bvme6000/config.c
+@@ -36,6 +36,7 @@
+ #include <asm/traps.h>
+ #include <asm/machdep.h>
+ #include <asm/bvme6000hw.h>
++#include <asm/config.h>
+ 
+ static void bvme6000_get_model(char *model);
+ extern void bvme6000_sched_init(void);
+diff --git a/arch/m68k/hp300/config.c b/arch/m68k/hp300/config.c
+index ce1eb3d3d55d..2c92843397c3 100644
+--- a/arch/m68k/hp300/config.c
++++ b/arch/m68k/hp300/config.c
+@@ -22,6 +22,7 @@
+ #include <asm/blinken.h>
+ #include <asm/io.h>                               /* readb() and writeb() */
+ #include <asm/hp300hw.h>
++#include <asm/config.h>
+ 
+ #include "time.h"
+ 
+diff --git a/arch/m68k/include/asm/config.h b/arch/m68k/include/asm/config.h
+new file mode 100644
+index 000000000000..aae61070628b
+--- /dev/null
++++ b/arch/m68k/include/asm/config.h
+@@ -0,0 +1,33 @@
++/* SPDX-License-Identifier: GPL-2.0 */
++
++/*
++ * This file contains prototypes provided by each m68k machine
++ * to parse bootinfo data structures and to configure the machine
++ */
++
++#ifndef _M68K_CONFIG_H
++#define _M68K_CONFIG_H
++
++extern int amiga_parse_bootinfo(const struct bi_record *record);
++extern int atari_parse_bootinfo(const struct bi_record *record);
++extern int mac_parse_bootinfo(const struct bi_record *record);
++extern int q40_parse_bootinfo(const struct bi_record *record);
++extern int bvme6000_parse_bootinfo(const struct bi_record *record);
++extern int mvme16x_parse_bootinfo(const struct bi_record *record);
++extern int mvme147_parse_bootinfo(const struct bi_record *record);
++extern int hp300_parse_bootinfo(const struct bi_record *record);
++extern int apollo_parse_bootinfo(const struct bi_record *record);
++
++extern void config_amiga(void);
++extern void config_atari(void);
++extern void config_mac(void);
++extern void config_sun3(void);
++extern void config_apollo(void);
++extern void config_mvme147(void);
++extern void config_mvme16x(void);
++extern void config_bvme6000(void);
++extern void config_hp300(void);
++extern void config_q40(void);
++extern void config_sun3x(void);
++
++#endif /* _M68K_CONFIG_H */
+diff --git a/arch/m68k/kernel/setup_mm.c b/arch/m68k/kernel/setup_mm.c
+index 49e573b94326..8228275aae3e 100644
+--- a/arch/m68k/kernel/setup_mm.c
++++ b/arch/m68k/kernel/setup_mm.c
+@@ -47,6 +47,7 @@
+ #endif
+ #include <asm/macintosh.h>
+ #include <asm/natfeat.h>
++#include <asm/config.h>
+ 
+ #if !FPSTATESIZE || !NR_IRQS
+ #warning No CPU/platform type selected, your kernel will not work!
+@@ -113,28 +114,6 @@ EXPORT_SYMBOL(isa_type);
+ EXPORT_SYMBOL(isa_sex);
+ #endif
+ 
+-extern int amiga_parse_bootinfo(const struct bi_record *);
+-extern int atari_parse_bootinfo(const struct bi_record *);
+-extern int mac_parse_bootinfo(const struct bi_record *);
+-extern int q40_parse_bootinfo(const struct bi_record *);
+-extern int bvme6000_parse_bootinfo(const struct bi_record *);
+-extern int mvme16x_parse_bootinfo(const struct bi_record *);
+-extern int mvme147_parse_bootinfo(const struct bi_record *);
+-extern int hp300_parse_bootinfo(const struct bi_record *);
+-extern int apollo_parse_bootinfo(const struct bi_record *);
+-
+-extern void config_amiga(void);
+-extern void config_atari(void);
+-extern void config_mac(void);
+-extern void config_sun3(void);
+-extern void config_apollo(void);
+-extern void config_mvme147(void);
+-extern void config_mvme16x(void);
+-extern void config_bvme6000(void);
+-extern void config_hp300(void);
+-extern void config_q40(void);
+-extern void config_sun3x(void);
+-
+ #define MASK_256K 0xfffc0000
+ 
+ extern void paging_init(void);
+diff --git a/arch/m68k/mac/config.c b/arch/m68k/mac/config.c
+index 5d16f9b47aa9..65d124ec80bb 100644
+--- a/arch/m68k/mac/config.c
++++ b/arch/m68k/mac/config.c
+@@ -47,6 +47,7 @@
+ #include <asm/mac_via.h>
+ #include <asm/mac_oss.h>
+ #include <asm/mac_psc.h>
++#include <asm/config.h>
+ 
+ /* Mac bootinfo struct */
+ struct mac_booter_data mac_bi_data;
+diff --git a/arch/m68k/mvme147/config.c b/arch/m68k/mvme147/config.c
+index dfd6202fd403..b96ea7c76a19 100644
+--- a/arch/m68k/mvme147/config.c
++++ b/arch/m68k/mvme147/config.c
+@@ -34,6 +34,7 @@
+ #include <asm/traps.h>
+ #include <asm/machdep.h>
+ #include <asm/mvme147hw.h>
++#include <asm/config.h>
+ 
+ 
+ static void mvme147_get_model(char *model);
+diff --git a/arch/m68k/mvme16x/config.c b/arch/m68k/mvme16x/config.c
+index b4422c2dfbbf..88cbdc10925b 100644
+--- a/arch/m68k/mvme16x/config.c
++++ b/arch/m68k/mvme16x/config.c
+@@ -37,6 +37,7 @@
+ #include <asm/traps.h>
+ #include <asm/machdep.h>
+ #include <asm/mvme16xhw.h>
++#include <asm/config.h>
+ 
+ extern t_bdid mvme_bdid;
+ 
+diff --git a/arch/m68k/q40/config.c b/arch/m68k/q40/config.c
+index 5caf1e5be1c2..9237243077ce 100644
+--- a/arch/m68k/q40/config.c
++++ b/arch/m68k/q40/config.c
+@@ -34,6 +34,7 @@
+ #include <asm/traps.h>
+ #include <asm/machdep.h>
+ #include <asm/q40_master.h>
++#include <asm/config.h>
+ 
+ extern void q40_init_IRQ(void);
+ static void q40_get_model(char *model);
+-- 
+2.34.1
 
-Just ignore the noise ...
-
-Cheers,
-
-	Michael
-
-
-> Can't see how that would be caused by your patch, just saying I could
-> not yet test it.
->
-> Cheers,
->
->     Michael
->
->
-> Am 29.01.2022 um 06:30 schrieb Geert Uytterhoeven:
->> When an application accesses a mapped frame buffer backed by deferred
->> I/O, it receives a segmentation fault.  Fix this by removing the check
->> for VM_IO in do_page_fault().
->>
->> Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
->> ---
->> This check was never present in a fault handler on any other
->> architecture than m68k.
->> Some digging revealed that it was added in v2.1.106, but I couldn't find
->> an email with a patch adding it.  That same kernel version extended the
->> use of the hwreg_present() helper to HP9000/300, so the check might have
->> been needed there, perhaps only during development?
->> The Atari kernel relies heavily on hwreg_present() (both the success and
->> failure cases), and these still work, at least on ARAnyM.
->> ---
->>  arch/m68k/mm/fault.c | 2 --
->>  1 file changed, 2 deletions(-)
->>
->> diff --git a/arch/m68k/mm/fault.c b/arch/m68k/mm/fault.c
->> index 1493cf5eac1e7a39..71aa9f6315dc8028 100644
->> --- a/arch/m68k/mm/fault.c
->> +++ b/arch/m68k/mm/fault.c
->> @@ -93,8 +93,6 @@ int do_page_fault(struct pt_regs *regs, unsigned
->> long address,
->>      vma = find_vma(mm, address);
->>      if (!vma)
->>          goto map_err;
->> -    if (vma->vm_flags & VM_IO)
->> -        goto acc_err;
->>      if (vma->vm_start <= address)
->>          goto good_area;
->>      if (!(vma->vm_flags & VM_GROWSDOWN))
->>
