@@ -2,52 +2,52 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E434AC4321E
-	for <linux-m68k@archiver.kernel.org>; Sun, 30 Jan 2022 23:37:37 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4E3B0C433F5
+	for <linux-m68k@archiver.kernel.org>; Sun, 30 Jan 2022 23:37:41 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1356973AbiA3Xhd (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Sun, 30 Jan 2022 18:37:33 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34200 "EHLO
+        id S1356982AbiA3Xhh (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Sun, 30 Jan 2022 18:37:37 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34210 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234760AbiA3Xh3 (ORCPT
+        with ESMTP id S1356948AbiA3Xhb (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Sun, 30 Jan 2022 18:37:29 -0500
-Received: from mail-lf1-x12e.google.com (mail-lf1-x12e.google.com [IPv6:2a00:1450:4864:20::12e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D4E2CC06173B
-        for <linux-m68k@lists.linux-m68k.org>; Sun, 30 Jan 2022 15:37:28 -0800 (PST)
-Received: by mail-lf1-x12e.google.com with SMTP id a28so23275088lfl.7
-        for <linux-m68k@lists.linux-m68k.org>; Sun, 30 Jan 2022 15:37:28 -0800 (PST)
+        Sun, 30 Jan 2022 18:37:31 -0500
+Received: from mail-lf1-x12a.google.com (mail-lf1-x12a.google.com [IPv6:2a00:1450:4864:20::12a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B7F4C06173B
+        for <linux-m68k@lists.linux-m68k.org>; Sun, 30 Jan 2022 15:37:30 -0800 (PST)
+Received: by mail-lf1-x12a.google.com with SMTP id z19so23193102lfq.13
+        for <linux-m68k@lists.linux-m68k.org>; Sun, 30 Jan 2022 15:37:30 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=6/CD3Yv31GR8y8GlEUTCAOWsPgz1l4zxLQQTTW1e5nA=;
-        b=eMhJF7grCwjcHhcO0w6NJcJWCpwGV9U0gCsMg0TGwobGBXDG7Vx/L97nAcGbsxn/0t
-         lOUlBHMB48PlUMU15vUurm7j0pvN5BFXkJhFXzQtsg8F+BsiLTVvb3ey/9EANWthyhTT
-         we8glm85/CmQP0QZ8+T+Lm4inD6Om2LbGaB9R6csyvcPXIEYpw/bulY/B/lTyYKOPz5Q
-         wxGxNLfaFVrUEh4p7rOa6O9dbsq2pKYOYPMchljsZ3p2oxyKvQjmDp8knc5kaAt3dCPj
-         bpgTHYROYSaO5OyxFwKNgiQ6VFzTC+FU7O5VMWWPycH5YgdBO3xjR5PNbDcl/bJI2s7Z
-         GBBg==
+        bh=abZuVOnKYJAOti8qIudzltr7GQTBeB9LiERH+rgMBF4=;
+        b=p0RaoTyud6v2TpDuA71R51f3ompbP9DRaCJYPeyLts5rHK9ixyqkUUhLaSJgb2r2Bg
+         2TTG5yphU072WSUMSAx/Z+kedFFVoyzjVzcSIYIUbH1Yygh8uhixqRaJerJ4N4thXRrQ
+         oujlk5kkszBM8GgYOLJuChJo6KFJbDZwMBSQdgvwviExvuANo3f0HA/iWpifG7cGjO9P
+         b27LiqDaZyav/RPf+JoXyPtERudU0yiqx/A+AO0NhKUrQUUb079dd3JY2rcLq6SyDepk
+         dR2VkwBl97GbYrFjbl4KaoSrBe6E7PpqgsF7oDcCPQvs2XTA7ek0i6MDjXu+YxCSo722
+         08Aw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=6/CD3Yv31GR8y8GlEUTCAOWsPgz1l4zxLQQTTW1e5nA=;
-        b=JsmEZJHLx2ZHMdgUlpy8q0pu+/s1ysAbz5yrgZ/Bebt0g3rD6n4zMocp+KXQ+hOZId
-         rZ1E/W8UNkORIW3HxSnQjAC1SA65nV4pdPEoDPzfuQW+DfG5+nJl6ifwMUWEwnHngH9w
-         u5FLkLw5rlv5j8Tv4wLpvqXfnrg3CqvTrD9Hf6a7S6LnjZkr9teRGbqas+SwnomSNN9A
-         3iGaIrWRC7sCuUlP5RfVqaUSRblZZB0BdzYeXsSjBjsxe5Q/A4dXKkwmN0e7vUFpURgG
-         23Oq1QHy0A66CbEknQCeRCNDTuyzhNtOnKMhBLdoABZu3BUik10gA1PRSY++REARWgfI
-         1Hrg==
-X-Gm-Message-State: AOAM530O9Xn2IXhNFMuazbRkCzCR0AOEiIdAg5wXXwbxOt29TwslDe3f
-        1MDP/dFyuAiSwrGdtLDXuic=
-X-Google-Smtp-Source: ABdhPJx51hnlnQqEq7wZo+FkbVvoWM1PpIEWobaBlkXpSMr/tjqFbuGZX/Rv6DdZhPEAEqmSsBcOEQ==
-X-Received: by 2002:a05:6512:38a6:: with SMTP id o6mr13194842lft.4.1643585847142;
-        Sun, 30 Jan 2022 15:37:27 -0800 (PST)
+        bh=abZuVOnKYJAOti8qIudzltr7GQTBeB9LiERH+rgMBF4=;
+        b=dm0ad65Mt5ct0t1VwJwQUuntQTC6ZKhtYKqxlcckvv53m0YgiG44hM59Zqs7+ok242
+         cPFWvU4hCEdpEzmJosTpBmYo7dD3uNiCOasYc2Wwq+yZ+io7iBYzKWrXWc/Mk5zdquiY
+         C5nPOUXU87RtvvqEzW+JEFtF9BTG21FMi0JmZaLlPdPqtm8VEEmWmdZV1uOrcv7ThpFv
+         71hvPBN9DScLqTM1Qo1INdVcR2VrBOWK+gNmECG2PrucINWByI4qXaCnCtEMj3Zokee+
+         wJ/FvwmP+L/6WWnM8jqfta+jYXnzapo6WONhUHTaiqyXFX6NdxYL12Z5bjHNLvvCgGiU
+         7I7w==
+X-Gm-Message-State: AOAM533mpGeITbjHAyYsf/SUAgBJcXgdPvGfhyS7cpi66eyZWrySu4Mb
+        EBmjRphAXl+BbLhLXCKe/2c=
+X-Google-Smtp-Source: ABdhPJwoSJ34ynL6g6uCWlwcTzESsIxMTUNdOjTg1GYgEDzDCVzjTtPXpJhMlyQWeh/100C0s5LuvA==
+X-Received: by 2002:ac2:554a:: with SMTP id l10mr13295710lfk.534.1643585848967;
+        Sun, 30 Jan 2022 15:37:28 -0800 (PST)
 Received: from localhost.localdomain (109-252-138-126.dynamic.spd-mgts.ru. [109.252.138.126])
-        by smtp.gmail.com with ESMTPSA id a24sm1262950ljp.112.2022.01.30.15.37.25
+        by smtp.gmail.com with ESMTPSA id a24sm1262950ljp.112.2022.01.30.15.37.27
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 30 Jan 2022 15:37:26 -0800 (PST)
+        Sun, 30 Jan 2022 15:37:28 -0800 (PST)
 From:   Dmitry Osipenko <digetx@gmail.com>
 To:     Thierry Reding <thierry.reding@gmail.com>,
         Jonathan Hunter <jonathanh@nvidia.com>,
@@ -100,9 +100,9 @@ Cc:     linux-kernel@vger.kernel.org, linux-csky@vger.kernel.org,
         linux-riscv@lists.infradead.org, linux-sh@vger.kernel.org,
         xen-devel@lists.xenproject.org, linux-acpi@vger.kernel.org,
         linux-pm@vger.kernel.org, linux-tegra@vger.kernel.org
-Subject: [PATCH v6 01/21] notifier: Add blocking_notifier_call_chain_is_empty()
-Date:   Mon, 31 Jan 2022 02:36:58 +0300
-Message-Id: <20220130233718.21544-2-digetx@gmail.com>
+Subject: [PATCH v6 02/21] notifier: Add atomic/blocking_notifier_chain_register_unique_prio()
+Date:   Mon, 31 Jan 2022 02:36:59 +0300
+Message-Id: <20220130233718.21544-3-digetx@gmail.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20220130233718.21544-1-digetx@gmail.com>
 References: <20220130233718.21544-1-digetx@gmail.com>
@@ -112,52 +112,187 @@ Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-Add blocking_notifier_call_chain_is_empty() that returns true if call
-chain is empty.
+Add variant of atomic/blocking_notifier_chain_register() functions that
+doesn't allow to register notifier using a duplicated priority. The -EBUSY
+error code is returned in this case by the new API functions.
 
 Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
 ---
- include/linux/notifier.h |  2 ++
- kernel/notifier.c        | 13 +++++++++++++
- 2 files changed, 15 insertions(+)
+ include/linux/notifier.h |  5 +++
+ kernel/notifier.c        | 88 +++++++++++++++++++++++++++++++---------
+ 2 files changed, 74 insertions(+), 19 deletions(-)
 
 diff --git a/include/linux/notifier.h b/include/linux/notifier.h
-index 87069b8459af..d4717bc0ab85 100644
+index d4717bc0ab85..ccce26197dd2 100644
 --- a/include/linux/notifier.h
 +++ b/include/linux/notifier.h
-@@ -173,6 +173,8 @@ extern int blocking_notifier_call_chain_robust(struct blocking_notifier_head *nh
- extern int raw_notifier_call_chain_robust(struct raw_notifier_head *nh,
- 		unsigned long val_up, unsigned long val_down, void *v);
+@@ -150,6 +150,11 @@ extern int raw_notifier_chain_register(struct raw_notifier_head *nh,
+ extern int srcu_notifier_chain_register(struct srcu_notifier_head *nh,
+ 		struct notifier_block *nb);
  
-+extern bool blocking_notifier_call_chain_is_empty(struct blocking_notifier_head *nh);
++extern int atomic_notifier_chain_register_unique_prio(
++		struct atomic_notifier_head *nh, struct notifier_block *nb);
++extern int blocking_notifier_chain_register_unique_prio(
++		struct blocking_notifier_head *nh, struct notifier_block *nb);
 +
- #define NOTIFY_DONE		0x0000		/* Don't care */
- #define NOTIFY_OK		0x0001		/* Suits me */
- #define NOTIFY_STOP_MASK	0x8000		/* Don't call further */
+ extern int atomic_notifier_chain_unregister(struct atomic_notifier_head *nh,
+ 		struct notifier_block *nb);
+ extern int blocking_notifier_chain_unregister(struct blocking_notifier_head *nh,
 diff --git a/kernel/notifier.c b/kernel/notifier.c
-index ba005ebf4730..4ed6bda8f127 100644
+index 4ed6bda8f127..4fc32b1e6cbb 100644
 --- a/kernel/notifier.c
 +++ b/kernel/notifier.c
-@@ -323,6 +323,19 @@ int blocking_notifier_call_chain(struct blocking_notifier_head *nh,
+@@ -20,7 +20,8 @@ BLOCKING_NOTIFIER_HEAD(reboot_notifier_list);
+  */
+ 
+ static int notifier_chain_register(struct notifier_block **nl,
+-				   struct notifier_block *n)
++				   struct notifier_block *n,
++				   bool unique_priority)
+ {
+ 	while ((*nl) != NULL) {
+ 		if (unlikely((*nl) == n)) {
+@@ -30,6 +31,8 @@ static int notifier_chain_register(struct notifier_block **nl,
+ 		}
+ 		if (n->priority > (*nl)->priority)
+ 			break;
++		if (n->priority == (*nl)->priority && unique_priority)
++			return -EBUSY;
+ 		nl = &((*nl)->next);
+ 	}
+ 	n->next = *nl;
+@@ -144,12 +147,35 @@ int atomic_notifier_chain_register(struct atomic_notifier_head *nh,
+ 	int ret;
+ 
+ 	spin_lock_irqsave(&nh->lock, flags);
+-	ret = notifier_chain_register(&nh->head, n);
++	ret = notifier_chain_register(&nh->head, n, false);
+ 	spin_unlock_irqrestore(&nh->lock, flags);
+ 	return ret;
  }
- EXPORT_SYMBOL_GPL(blocking_notifier_call_chain);
+ EXPORT_SYMBOL_GPL(atomic_notifier_chain_register);
  
 +/**
-+ *	blocking_notifier_call_chain_is_empty - Check whether notifier chain is empty
-+ *	@nh: Pointer to head of the blocking notifier chain
++ *	atomic_notifier_chain_register_unique_prio - Add notifier to an atomic notifier chain
++ *	@nh: Pointer to head of the atomic notifier chain
++ *	@n: New entry in notifier chain
 + *
-+ *	Checks whether notifier chain is empty.
++ *	Adds a notifier to an atomic notifier chain if there is no other
++ *	notifier registered using the same priority.
 + *
-+ *	Returns true is notifier chain is empty, false otherwise.
++ *	Returns 0 on success, %-EEXIST or %-EBUSY on error.
 + */
-+bool blocking_notifier_call_chain_is_empty(struct blocking_notifier_head *nh)
++int atomic_notifier_chain_register_unique_prio(struct atomic_notifier_head *nh,
++					       struct notifier_block *n)
 +{
-+	return !rcu_access_pointer(nh->head);
-+}
++	unsigned long flags;
++	int ret;
 +
- /*
-  *	Raw notifier chain routines.  There is no protection;
-  *	the caller must provide it.  Use at your own risk!
++	spin_lock_irqsave(&nh->lock, flags);
++	ret = notifier_chain_register(&nh->head, n, true);
++	spin_unlock_irqrestore(&nh->lock, flags);
++	return ret;
++}
++EXPORT_SYMBOL_GPL(atomic_notifier_chain_register_unique_prio);
++
+ /**
+  *	atomic_notifier_chain_unregister - Remove notifier from an atomic notifier chain
+  *	@nh: Pointer to head of the atomic notifier chain
+@@ -209,18 +235,9 @@ NOKPROBE_SYMBOL(atomic_notifier_call_chain);
+  *	synchronized by an rwsem.
+  */
+ 
+-/**
+- *	blocking_notifier_chain_register - Add notifier to a blocking notifier chain
+- *	@nh: Pointer to head of the blocking notifier chain
+- *	@n: New entry in notifier chain
+- *
+- *	Adds a notifier to a blocking notifier chain.
+- *	Must be called in process context.
+- *
+- *	Returns 0 on success, %-EEXIST on error.
+- */
+-int blocking_notifier_chain_register(struct blocking_notifier_head *nh,
+-		struct notifier_block *n)
++static int __blocking_notifier_chain_register(struct blocking_notifier_head *nh,
++					      struct notifier_block *n,
++					      bool unique_priority)
+ {
+ 	int ret;
+ 
+@@ -230,15 +247,48 @@ int blocking_notifier_chain_register(struct blocking_notifier_head *nh,
+ 	 * such times we must not call down_write().
+ 	 */
+ 	if (unlikely(system_state == SYSTEM_BOOTING))
+-		return notifier_chain_register(&nh->head, n);
++		return notifier_chain_register(&nh->head, n, unique_priority);
+ 
+ 	down_write(&nh->rwsem);
+-	ret = notifier_chain_register(&nh->head, n);
++	ret = notifier_chain_register(&nh->head, n, unique_priority);
+ 	up_write(&nh->rwsem);
+ 	return ret;
+ }
++
++/**
++ *	blocking_notifier_chain_register - Add notifier to a blocking notifier chain
++ *	@nh: Pointer to head of the blocking notifier chain
++ *	@n: New entry in notifier chain
++ *
++ *	Adds a notifier to a blocking notifier chain.
++ *	Must be called in process context.
++ *
++ *	Returns 0 on success, %-EEXIST on error.
++ */
++int blocking_notifier_chain_register(struct blocking_notifier_head *nh,
++		struct notifier_block *n)
++{
++	return __blocking_notifier_chain_register(nh, n, false);
++}
+ EXPORT_SYMBOL_GPL(blocking_notifier_chain_register);
+ 
++/**
++ *	blocking_notifier_chain_register_unique_prio - Add notifier to a blocking notifier chain
++ *	@nh: Pointer to head of the blocking notifier chain
++ *	@n: New entry in notifier chain
++ *
++ *	Adds a notifier to an blocking notifier chain if there is no other
++ *	notifier registered using the same priority.
++ *
++ *	Returns 0 on success, %-EEXIST or %-EBUSY on error.
++ */
++int blocking_notifier_chain_register_unique_prio(struct blocking_notifier_head *nh,
++						 struct notifier_block *n)
++{
++	return __blocking_notifier_chain_register(nh, n, true);
++}
++EXPORT_SYMBOL_GPL(blocking_notifier_chain_register_unique_prio);
++
+ /**
+  *	blocking_notifier_chain_unregister - Remove notifier from a blocking notifier chain
+  *	@nh: Pointer to head of the blocking notifier chain
+@@ -354,7 +404,7 @@ bool blocking_notifier_call_chain_is_empty(struct blocking_notifier_head *nh)
+ int raw_notifier_chain_register(struct raw_notifier_head *nh,
+ 		struct notifier_block *n)
+ {
+-	return notifier_chain_register(&nh->head, n);
++	return notifier_chain_register(&nh->head, n, false);
+ }
+ EXPORT_SYMBOL_GPL(raw_notifier_chain_register);
+ 
+@@ -433,10 +483,10 @@ int srcu_notifier_chain_register(struct srcu_notifier_head *nh,
+ 	 * such times we must not call mutex_lock().
+ 	 */
+ 	if (unlikely(system_state == SYSTEM_BOOTING))
+-		return notifier_chain_register(&nh->head, n);
++		return notifier_chain_register(&nh->head, n, false);
+ 
+ 	mutex_lock(&nh->mutex);
+-	ret = notifier_chain_register(&nh->head, n);
++	ret = notifier_chain_register(&nh->head, n, false);
+ 	mutex_unlock(&nh->mutex);
+ 	return ret;
+ }
 -- 
 2.34.1
 
