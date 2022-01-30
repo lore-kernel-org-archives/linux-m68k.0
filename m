@@ -2,65 +2,66 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 347D1C433EF
-	for <linux-m68k@archiver.kernel.org>; Sun, 30 Jan 2022 00:32:44 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 06A4EC433FE
+	for <linux-m68k@archiver.kernel.org>; Sun, 30 Jan 2022 06:57:49 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1353597AbiA3Acn (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Sat, 29 Jan 2022 19:32:43 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43310 "EHLO
+        id S1354258AbiA3G5r (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Sun, 30 Jan 2022 01:57:47 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41890 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1353588AbiA3Acn (ORCPT
+        with ESMTP id S240619AbiA3G5l (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Sat, 29 Jan 2022 19:32:43 -0500
-Received: from mail-pg1-x531.google.com (mail-pg1-x531.google.com [IPv6:2607:f8b0:4864:20::531])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2CF30C061714
-        for <linux-m68k@lists.linux-m68k.org>; Sat, 29 Jan 2022 16:32:43 -0800 (PST)
-Received: by mail-pg1-x531.google.com with SMTP id 133so8758146pgb.0
-        for <linux-m68k@lists.linux-m68k.org>; Sat, 29 Jan 2022 16:32:43 -0800 (PST)
+        Sun, 30 Jan 2022 01:57:41 -0500
+Received: from mail-pj1-x102a.google.com (mail-pj1-x102a.google.com [IPv6:2607:f8b0:4864:20::102a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D5BF2C061714
+        for <linux-m68k@lists.linux-m68k.org>; Sat, 29 Jan 2022 22:57:41 -0800 (PST)
+Received: by mail-pj1-x102a.google.com with SMTP id oa14-20020a17090b1bce00b001b61aed4a03so9248382pjb.5
+        for <linux-m68k@lists.linux-m68k.org>; Sat, 29 Jan 2022 22:57:41 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=subject:to:references:cc:from:message-id:date:user-agent
          :mime-version:in-reply-to:content-transfer-encoding;
-        bh=lgImJfjptdc33ZuQjXSFN+7hVN4hLMNWcHtJCWzb0jk=;
-        b=YubEnvHsv/crv/QQxQbzdWy0fDh/hJi6DsG2ALzDJKTtR10XIsakvC9+nkSBu1WdFS
-         XfBSh5P7XJHrytzbkcalqUKunVx5cQEUyPOPrz7Foy7uO20XFrYo7EtDG3LugITf17AC
-         AYleJTKTWeKFiuXWKvStwRibqsv9HkDM4jwplWgBMRdecMIqQTmO8gE1ChALqDUj4LhF
-         4pFCmA1nM7cfyYc+DyPSCoNE1L8X3JnagmHmt7vAsHpJjH0wLoL/4tbPQubzSixnmDFV
-         YVmTfxmRg9qD9eGkQhnQPp2SfFDTDyrxatjk+n/xE8IVQn59h20dXLwoCc8gVsVwBX8E
-         slUQ==
+        bh=fM8q32grWZEZw0oluXIqvQZO4Mr5xfE86zn2yqSxGvI=;
+        b=UgmUEAmno7gCdw3heMWy+S1n5AcBNQlLLAqPVtZtvbxtbRE2SaZVKIwzglsgdYdWW/
+         9/u1vWPcu7Ee6fiCsP/qee/IBUdWiCjAn3doDwhBiWCI+O0Qh9BSOS9KwjlXEUlt+5gC
+         yaEeDnz8tf+cdlCbfH9PcGXTaNpoH5IskOj+jUcQj0v6MheGW4YByKEMO4IZWjR8YJw5
+         FbP7VE+y0C9v4VWibsNam3w1vaZ2Fsra2Tc+DoNGoDbCINdUx1R3+e3wzk4iP+Kcejs1
+         cfJBYRId7FtK0ve96jRArRmXbXRONqSVVCE8ECIUTkqOeMGt5mB5I8V/Lq5i0Xe5l2Xr
+         Lb6A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:subject:to:references:cc:from:message-id:date
          :user-agent:mime-version:in-reply-to:content-transfer-encoding;
-        bh=lgImJfjptdc33ZuQjXSFN+7hVN4hLMNWcHtJCWzb0jk=;
-        b=Xeho045XKXj9aaYYBtmATlIL7maWl0EAlW0Enk+/kYqwT5/gZSQgu4Y/I/5fAW3sGo
-         7YJoLAF8oNbWHEvUqdEmVDYvJGvj/vM9mzW25h5O4r7NIArwpQwkiFnsiZVB2TGplNL5
-         HDiC9jD9CpL5box4ILaZ2ZfZW74tI69uOsCyBKV4N6nnFmXw74bi/vD7j7lO9bMTG0oD
-         jqhFqwEq34+2HNFD0231MD577Vu1FW50vQOYUD9efcoCDnSCd0ie/cHhXl+hzbAOvJft
-         sQA2958Iv0rJU8MixkVr4Jq595Q1mmIp3v5DNvK5C0pWlrYEnrRT7HavoDdt3hP55B7V
-         U6NA==
-X-Gm-Message-State: AOAM530j50T9FHfBOvOQJlUMiHLxXkdX6fpzncdjtr8402J7tGylOkgw
-        vi1GVxq5KJ9+fZqnE2rqr8A=
-X-Google-Smtp-Source: ABdhPJzEPfsjnGSZFRUq5OlVjEdAYdbrAKC61FZ5zRV/iwdi8PN7s751/DKYpysmpUagxm8TfPMiQA==
-X-Received: by 2002:a63:6a87:: with SMTP id f129mr2144667pgc.0.1643502762598;
-        Sat, 29 Jan 2022 16:32:42 -0800 (PST)
+        bh=fM8q32grWZEZw0oluXIqvQZO4Mr5xfE86zn2yqSxGvI=;
+        b=OUw2WGQLPB0L2LSXQ1dyxN/SZUvSyucl/gkKrK4VJjhy2DVejFbLutmCgqrHM9t5hf
+         qITSFPF6ekddj6blmW61ZQnor8v3/AcVCb8EWDq34PTbabReVyHK7H46+NIVKh7Kd0nr
+         SO7JPSgmzAsocOF/UPkVEkTGj4QrK9bnyL9wdM+VnKyKcgPUFWjKR0/wqeYDsZOF4HfK
+         QBQOAipB2NeobwUIvuTsIrFUOnTm/b1WvGawt6BMdXBy/h9p+oLu7nffARxeNT9jpQzR
+         x+Q21yKEqT4AHGuLUDRCbSkbA6xA90U8M7TqXwEOba7EBPOFqRLYNLs7LhXlt4csUuOi
+         Hgww==
+X-Gm-Message-State: AOAM531EchgXEAwJFzf9+7FtpAl1SJRhCb5wECIV8GgMZah9QvaVOHG0
+        RjOfoUOOyhs5IElgGZsYtQY=
+X-Google-Smtp-Source: ABdhPJwOYscoSEhgZUw8VpKbyZ3DBjJeYIK+Rpi3YjORDvuU4L9mDd6LB3pqIxf2uUJ+uPSSsAnfZA==
+X-Received: by 2002:a17:90b:3907:: with SMTP id ob7mr24092447pjb.193.1643525861276;
+        Sat, 29 Jan 2022 22:57:41 -0800 (PST)
 Received: from [10.1.1.24] (222-155-5-102-adsl.sparkbb.co.nz. [222.155.5.102])
-        by smtp.gmail.com with ESMTPSA id l4sm14120413pfu.90.2022.01.29.16.32.37
+        by smtp.gmail.com with ESMTPSA id z7sm14745441pfe.49.2022.01.29.22.57.37
         (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Sat, 29 Jan 2022 16:32:41 -0800 (PST)
+        Sat, 29 Jan 2022 22:57:40 -0800 (PST)
 Subject: Re: [PATCH] m68k: mm: Remove check for VM_IO to fix deferred I/O
 To:     Geert Uytterhoeven <geert@linux-m68k.org>,
         linux-m68k@lists.linux-m68k.org
 References: <20220128173006.1713210-1-geert@linux-m68k.org>
+ <63c80eba-7c55-2a92-8078-c63cec3c9efb@gmail.com>
 Cc:     Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
         linux-fbdev@vger.kernel.org, linux-kernel@vger.kernel.org
 From:   Michael Schmitz <schmitzmic@gmail.com>
-Message-ID: <63c80eba-7c55-2a92-8078-c63cec3c9efb@gmail.com>
-Date:   Sun, 30 Jan 2022 13:32:35 +1300
+Message-ID: <8913a0a2-9496-143c-18c2-f3023fd37ba0@gmail.com>
+Date:   Sun, 30 Jan 2022 19:57:34 +1300
 User-Agent: Mozilla/5.0 (X11; Linux ppc; rv:45.0) Gecko/20100101
  Icedove/45.4.0
 MIME-Version: 1.0
-In-Reply-To: <20220128173006.1713210-1-geert@linux-m68k.org>
+In-Reply-To: <63c80eba-7c55-2a92-8078-c63cec3c9efb@gmail.com>
 Content-Type: text/plain; charset=iso-8859-15; format=flowed
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
@@ -69,49 +70,63 @@ X-Mailing-List: linux-m68k@vger.kernel.org
 
 Hi Geert,
 
-testing this patch on my Falcon 030, I'm seeing a weird error checking 
-and mounting the root filesystem (pata-falcon). The system appears to 
-sit idle, never completing the journal recovery and mount. Still 
-investigating that.
+Am 30.01.2022 um 13:32 schrieb Michael Schmitz:
+> Hi Geert,
+>
+> testing this patch on my Falcon 030, I'm seeing a weird error checking
+> and mounting the root filesystem (pata-falcon). The system appears to
+> sit idle, never completing the journal recovery and mount. Still
+> investigating that.
 
-Can't see how that would be caused by your patch, just saying I could 
-not yet test it.
+Belay that - not related to your patch, must be some other regression 
+since v5.16 that I'm seeing there.
+
+Just ignore the noise ...
 
 Cheers,
 
 	Michael
 
 
-Am 29.01.2022 um 06:30 schrieb Geert Uytterhoeven:
-> When an application accesses a mapped frame buffer backed by deferred
-> I/O, it receives a segmentation fault.  Fix this by removing the check
-> for VM_IO in do_page_fault().
+> Can't see how that would be caused by your patch, just saying I could
+> not yet test it.
 >
-> Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
-> ---
-> This check was never present in a fault handler on any other
-> architecture than m68k.
-> Some digging revealed that it was added in v2.1.106, but I couldn't find
-> an email with a patch adding it.  That same kernel version extended the
-> use of the hwreg_present() helper to HP9000/300, so the check might have
-> been needed there, perhaps only during development?
-> The Atari kernel relies heavily on hwreg_present() (both the success and
-> failure cases), and these still work, at least on ARAnyM.
-> ---
->  arch/m68k/mm/fault.c | 2 --
->  1 file changed, 2 deletions(-)
+> Cheers,
 >
-> diff --git a/arch/m68k/mm/fault.c b/arch/m68k/mm/fault.c
-> index 1493cf5eac1e7a39..71aa9f6315dc8028 100644
-> --- a/arch/m68k/mm/fault.c
-> +++ b/arch/m68k/mm/fault.c
-> @@ -93,8 +93,6 @@ int do_page_fault(struct pt_regs *regs, unsigned long address,
->  	vma = find_vma(mm, address);
->  	if (!vma)
->  		goto map_err;
-> -	if (vma->vm_flags & VM_IO)
-> -		goto acc_err;
->  	if (vma->vm_start <= address)
->  		goto good_area;
->  	if (!(vma->vm_flags & VM_GROWSDOWN))
+>     Michael
 >
+>
+> Am 29.01.2022 um 06:30 schrieb Geert Uytterhoeven:
+>> When an application accesses a mapped frame buffer backed by deferred
+>> I/O, it receives a segmentation fault.  Fix this by removing the check
+>> for VM_IO in do_page_fault().
+>>
+>> Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
+>> ---
+>> This check was never present in a fault handler on any other
+>> architecture than m68k.
+>> Some digging revealed that it was added in v2.1.106, but I couldn't find
+>> an email with a patch adding it.  That same kernel version extended the
+>> use of the hwreg_present() helper to HP9000/300, so the check might have
+>> been needed there, perhaps only during development?
+>> The Atari kernel relies heavily on hwreg_present() (both the success and
+>> failure cases), and these still work, at least on ARAnyM.
+>> ---
+>>  arch/m68k/mm/fault.c | 2 --
+>>  1 file changed, 2 deletions(-)
+>>
+>> diff --git a/arch/m68k/mm/fault.c b/arch/m68k/mm/fault.c
+>> index 1493cf5eac1e7a39..71aa9f6315dc8028 100644
+>> --- a/arch/m68k/mm/fault.c
+>> +++ b/arch/m68k/mm/fault.c
+>> @@ -93,8 +93,6 @@ int do_page_fault(struct pt_regs *regs, unsigned
+>> long address,
+>>      vma = find_vma(mm, address);
+>>      if (!vma)
+>>          goto map_err;
+>> -    if (vma->vm_flags & VM_IO)
+>> -        goto acc_err;
+>>      if (vma->vm_start <= address)
+>>          goto good_area;
+>>      if (!(vma->vm_flags & VM_GROWSDOWN))
+>>
