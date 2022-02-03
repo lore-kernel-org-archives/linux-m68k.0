@@ -2,130 +2,66 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C723CC433F5
-	for <linux-m68k@archiver.kernel.org>; Wed,  2 Feb 2022 22:53:31 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7E9B5C433EF
+	for <linux-m68k@archiver.kernel.org>; Thu,  3 Feb 2022 00:00:29 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243882AbiBBWxa (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Wed, 2 Feb 2022 17:53:30 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45270 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1347953AbiBBWxa (ORCPT
-        <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Wed, 2 Feb 2022 17:53:30 -0500
-Received: from mail-pl1-x62e.google.com (mail-pl1-x62e.google.com [IPv6:2607:f8b0:4864:20::62e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F3277C06173D
-        for <linux-m68k@lists.linux-m68k.org>; Wed,  2 Feb 2022 14:53:29 -0800 (PST)
-Received: by mail-pl1-x62e.google.com with SMTP id s6so535840plg.12
-        for <linux-m68k@lists.linux-m68k.org>; Wed, 02 Feb 2022 14:53:29 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=rPOGjmoDh+fnvSCSK8zT1oohl04D24duwddzgIk3nEI=;
-        b=DSgFXePcmMMfWdOEhQeZbRpAjykr8OqvlykT3vCxMLBrsZRkn86Hvb81D++0cC2O7P
-         eaiNtWAwguoFP7szwvwShBZmO2pc9mHzce2wim2ngtRcdJkVeEeL4U4vUYdUSyZ7DMmZ
-         vroJKfx3Nnfi/kZ93LGkWU1daDD1zrRjLqRAc=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=rPOGjmoDh+fnvSCSK8zT1oohl04D24duwddzgIk3nEI=;
-        b=IRtcCK4itdVRgQqKnQawsz3XJ/JMKQHv6IewAeUZIlLD+YdVTWmBJ4deg5xmGiaEbO
-         tO5rA7pLHnDzoO4EY1VJJepMpx46RLWpQK/ZycIvRHUexF/bJLuOaaZQszj+KuuGDzYg
-         NqD8bJD4GTMHpVCsY9LV8iDm627wHWBNHxkFGf3sLyJoK3jr1TEMytmZV0qB5hPjd4Pt
-         qEhIaAzNMH4WJ1aceNpFsCi+FrGkzqILT4Omta/W2fzeDRVqN5LFiGFy22ncccrJCJiS
-         zCG9EqwF5t8GeHO1OebWB8nhoEPJdzmENkPKxXVUpv4y+BThzMY6KmTJuJPe+llpHmFT
-         t6Gw==
-X-Gm-Message-State: AOAM531t0o9jGttHKMgUIQfzcCCAcC89pWcnZtFnnrh00MAVC7OI9JH4
-        QlHmHh2hoxHQ+YzlEG4Nyb7nPw==
-X-Google-Smtp-Source: ABdhPJy46YbgYX/2Q0sy9QYIAZD2Glw5/E490qFkjT5TsETXWbOxhTpw8AgDHSKiaI572HENl1BfAQ==
-X-Received: by 2002:a17:902:ec8a:: with SMTP id x10mr32767661plg.107.1643842409322;
-        Wed, 02 Feb 2022 14:53:29 -0800 (PST)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id y18sm24093086pgh.67.2022.02.02.14.53.28
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 02 Feb 2022 14:53:29 -0800 (PST)
-From:   Kees Cook <keescook@chromium.org>
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     Kees Cook <keescook@chromium.org>,
-        Greg Ungerer <gerg@linux-m68k.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Arnd Bergmann <arnd@arndb.de>, linux-kernel@vger.kernel.org,
-        linux-m68k@lists.linux-m68k.org, linux-hardening@vger.kernel.org
-Subject: [PATCH] m68k: cmpxchg: Dereference matching size
-Date:   Wed,  2 Feb 2022 14:53:27 -0800
-Message-Id: <20220202225327.1544295-1-keescook@chromium.org>
-X-Mailer: git-send-email 2.30.2
+        id S235190AbiBCAA2 (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Wed, 2 Feb 2022 19:00:28 -0500
+Received: from dfw.source.kernel.org ([139.178.84.217]:32972 "EHLO
+        dfw.source.kernel.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234065AbiBCAA2 (ORCPT
+        <rfc822;linux-m68k@vger.kernel.org>); Wed, 2 Feb 2022 19:00:28 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id D93C2616D2
+        for <linux-m68k@vger.kernel.org>; Thu,  3 Feb 2022 00:00:27 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D0458C340EB;
+        Thu,  3 Feb 2022 00:00:26 +0000 (UTC)
+Subject: Re: [RESEND] m68k: m5441x: remove erroneous clock disable
+To:     Angelo Dureghello <angelo.dureghello@timesys.com>
+Cc:     linux-m68k@vger.kernel.org
+References: <20220202194700.289942-1-angelo.dureghello@timesys.com>
+From:   Greg Ungerer <gerg@linux-m68k.org>
+Message-ID: <90cd4311-c30d-94b5-f24a-35ff5aba61fe@linux-m68k.org>
+Date:   Thu, 3 Feb 2022 10:00:24 +1000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.14.0
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=2399; h=from:subject; bh=NU7D+OEXrcXgfft/7RjJlfx2jx9vXFgzFYyD/JEV3D8=; b=owEBbQKS/ZANAwAKAYly9N/cbcAmAcsmYgBh+wtm8ge1jg+Y66KWK4NHs6Y8l51oU5IKktstmzgP 8aFbX3CJAjMEAAEKAB0WIQSlw/aPIp3WD3I+bhOJcvTf3G3AJgUCYfsLZgAKCRCJcvTf3G3AJo54EA CcDIB/M3H+2sLSu4vwe7wzdgtnDCvYBViuTWvKj9z6jyF+/0bEwDwZtCByZtayJmHpkrULNUlR7ge5 sJeji6qeS9CF1nEDQ0KUUeQ+qc66CSWudWduR8j7w/di4TG4AW09Tqlrvkm5/MCNw68uKjR+43iHRf 2INuy6H/p6OWXhgrp4XUQPpyZc+VxSGDp0nRJrZNTKYl454nCfljSzi7jwNVMG7W5Hvqk1Lt5txAr4 Mg11KaGr5xQ/TeOlpcXRnMHEXYpvRecdV0zBiWx1OW3FznjNcgKVWInxf03Fi9wD6GDnmjvOItrNOf HPQKlGbHXbsE2MQQGKrsmW9gys8j8L0wVNOH8dBfhA54Nk+5JDxEmsXKQPCgxuaI5I8VMkKRSbxQjZ 01Rjh+YCTTeebOq1ByPU1by4zI0OKihA1QVv/cPBcgQ7Ja7YKL4yaAf5W1HtmyOz1aV1wnscX1gRpr SAXKlyva9J/EzaQC5gIT+C6jfsX/IGvKWUE691IQGNMzPN/PNJeSWSjbpcbDdbmZN+MMNZEXN5uFAR 1AoQab4fNBAKcrRRPBQnonpliW33MWJ2gZmVre8aQXIy1BbcSUmAQ27qGC5/R7p9KyVIkDhCNtyyct wfDsT4TpBTKUjnXdfGTVOck+cQVJELGXZwGm8cB30kwnD5e6KiAubfaXqt6A==
-X-Developer-Key: i=keescook@chromium.org; a=openpgp; fpr=A5C3F68F229DD60F723E6E138972F4DFDC6DC026
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20220202194700.289942-1-angelo.dureghello@timesys.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-Similar to the recent arm64 fix[1], avoid overly wide casts in the cmpxchg
-implementation. Avoid this warning under -Warray-bounds with GCC 11:
+Hi Angelo,
 
-net/sched/cls_tcindex.c: In function 'tcindex_set_parms':
-./arch/m68k/include/asm/cmpxchg.h:64:17: warning: array subscript 'volatile struct __xchg_dummy[0]' is partly outside array bounds of 'struct tcf_result[1]' [-Warray-bounds]
-   64 |                 __asm__ __volatile__
-      |                 ^~~~~~~
-net/sched/cls_tcindex.c:338:27: note: while referencing 'cr'
-  338 |         struct tcf_result cr = {};
-      |                           ^~
+So it is clear for me this is the correct (and only) patch to apply?
 
-No binary output differences are seen from this change.
+Regards
+Greg
 
-[1] commit 3364c6ce23c6 ("arm64: atomics: lse: Dereference matching size")
 
-Signed-off-by: Kees Cook <keescook@chromium.org>
----
- arch/m68k/include/asm/cmpxchg.h | 9 ++++-----
- 1 file changed, 4 insertions(+), 5 deletions(-)
-
-diff --git a/arch/m68k/include/asm/cmpxchg.h b/arch/m68k/include/asm/cmpxchg.h
-index e8ca4b0ccefa..6cf464cdab06 100644
---- a/arch/m68k/include/asm/cmpxchg.h
-+++ b/arch/m68k/include/asm/cmpxchg.h
-@@ -4,8 +4,7 @@
- 
- #include <linux/irqflags.h>
- 
--struct __xchg_dummy { unsigned long a[100]; };
--#define __xg(x) ((volatile struct __xchg_dummy *)(x))
-+#define __xg(type, x) ((volatile type *)(x))
- 
- extern unsigned long __invalid_xchg_size(unsigned long, volatile void *, int);
- 
-@@ -50,7 +49,7 @@ static inline unsigned long __xchg(unsigned long x, volatile void * ptr, int siz
- 			 "1:\n\t"
- 			 "casb %0,%1,%2\n\t"
- 			 "jne 1b"
--			 : "=&d" (x) : "d" (x), "m" (*__xg(ptr)) : "memory");
-+			 : "=&d" (x) : "d" (x), "m" (*__xg(u8, ptr)) : "memory");
- 		break;
- 	case 2:
- 		__asm__ __volatile__
-@@ -58,7 +57,7 @@ static inline unsigned long __xchg(unsigned long x, volatile void * ptr, int siz
- 			 "1:\n\t"
- 			 "casw %0,%1,%2\n\t"
- 			 "jne 1b"
--			 : "=&d" (x) : "d" (x), "m" (*__xg(ptr)) : "memory");
-+			 : "=&d" (x) : "d" (x), "m" (*__xg(u16, ptr)) : "memory");
- 		break;
- 	case 4:
- 		__asm__ __volatile__
-@@ -66,7 +65,7 @@ static inline unsigned long __xchg(unsigned long x, volatile void * ptr, int siz
- 			 "1:\n\t"
- 			 "casl %0,%1,%2\n\t"
- 			 "jne 1b"
--			 : "=&d" (x) : "d" (x), "m" (*__xg(ptr)) : "memory");
-+			 : "=&d" (x) : "d" (x), "m" (*__xg(u32, ptr)) : "memory");
- 		break;
- 	default:
- 		x = __invalid_xchg_size(x, ptr, size);
--- 
-2.30.2
-
+On 3/2/22 5:47 am, Angelo Dureghello wrote:
+> Remove erroneous esdhc clock disable.
+> 
+> Signed-off-by: Angelo Dureghello <angelo.dureghello@timesys.com>
+> ---
+>   arch/m68k/coldfire/m5441x.c | 1 -
+>   1 file changed, 1 deletion(-)
+> 
+> diff --git a/arch/m68k/coldfire/m5441x.c b/arch/m68k/coldfire/m5441x.c
+> index 02922ced19cb..b13fb3d8a14e 100644
+> --- a/arch/m68k/coldfire/m5441x.c
+> +++ b/arch/m68k/coldfire/m5441x.c
+> @@ -181,7 +181,6 @@ static struct clk * const disable_clks[] __initconst = {
+>   	&__clk_0_47, /* ssi.0 */
+>   	&__clk_0_49, /* rng */
+>   	&__clk_0_50, /* ssi.1 */
+> -	&__clk_0_51, /* eSDHC */
+>   	&__clk_0_53, /* enet-fec */
+>   	&__clk_0_54, /* enet-fec */
+>   	&__clk_0_55, /* switch.0 */
+> 
