@@ -2,170 +2,94 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 5866FC433EF
-	for <linux-m68k@archiver.kernel.org>; Sat,  5 Feb 2022 00:04:24 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5C31AC433F5
+	for <linux-m68k@archiver.kernel.org>; Sat,  5 Feb 2022 08:32:06 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378623AbiBEAEX (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Fri, 4 Feb 2022 19:04:23 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54912 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1378281AbiBEAEW (ORCPT
+        id S1354330AbiBEIcF (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Sat, 5 Feb 2022 03:32:05 -0500
+Received: from mail-ua1-f42.google.com ([209.85.222.42]:36555 "EHLO
+        mail-ua1-f42.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233932AbiBEIcF (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Fri, 4 Feb 2022 19:04:22 -0500
-Received: from mail-pj1-x102a.google.com (mail-pj1-x102a.google.com [IPv6:2607:f8b0:4864:20::102a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 75944DF8C1BC
-        for <linux-m68k@lists.linux-m68k.org>; Fri,  4 Feb 2022 16:04:21 -0800 (PST)
-Received: by mail-pj1-x102a.google.com with SMTP id z14-20020a17090ab10e00b001b6175d4040so14575209pjq.0
-        for <linux-m68k@lists.linux-m68k.org>; Fri, 04 Feb 2022 16:04:21 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=subject:to:references:cc:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-transfer-encoding;
-        bh=DRNBcJ7tyUEYbzPE/bD5g3O69Rw7v+yqrMrOhptcKjo=;
-        b=H+U8+aKZgVvUQkKPAwuvuwzBR7X6nZwv/TeOHzGTPpgSj1ISLlwkBkB+ZBiY1HNLqx
-         FaYfjTkikBweTmgFJw66b22e7SBzGbzdPN6zM26NgiOvgRxwofZ31iE3hx7VVquO7tnd
-         ikeHZxfL10JsA9leW6W1IO2x9oCdUIt57/s4C3TFz23krgGvgA+WEOd/FtTK78mPGBq8
-         CQIPWzoo4W5ywVEpGutnGHF87+2TX64rbVbdkhx362IYydVOkHmub5wk3T85xzLqG2sv
-         5IH02eZzRwt8t/z7uCrJ+ukN/ip4ZrZ8PILrSD0QNfb6DxTUym0g1ZOLzNpqlw073K/u
-         Edlw==
+        Sat, 5 Feb 2022 03:32:05 -0500
+Received: by mail-ua1-f42.google.com with SMTP id v5so3712604uam.3
+        for <linux-m68k@lists.linux-m68k.org>; Sat, 05 Feb 2022 00:32:05 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:references:cc:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding;
-        bh=DRNBcJ7tyUEYbzPE/bD5g3O69Rw7v+yqrMrOhptcKjo=;
-        b=PfaBlGdHxsiAVzFfK4LmW1bDGahJj2iEheYjJS5c+mduIG21ndOObqhudya2OSymUA
-         Ja3aUBOqoWC54aTiA3QeRolxd3oTPd5hPGktyexiVP81qKOqlQT35RzKhd7Er6zroY6J
-         3DoHkY/SJJki9UsKtLUF+QTe6fZOH1iEQ1nEhAPBhlvOOrdMycHk62JGgRrbqs9xcZK4
-         6ug8E8P8OJO0HaceLUeeJbtVL8amQGsA+R9rSwtjzMUcFASUiyFG9DNlVD29dGxu9eoI
-         H9YpYp1hmQeEmhn/558YIYssZAjjoA4aMbKMMJN9tmwGXv35nmsDCQgWw4nBuE3MdenC
-         Ie1g==
-X-Gm-Message-State: AOAM533AMJ9/NVZT+8V6RoAZYTs3SxQUXVWMEQQPOREgRO63rrz8x3uI
-        He2i2pGfpajLDZUTDNZGQuA=
-X-Google-Smtp-Source: ABdhPJznWNFtayTxbEnsBFukX098ns64Jg56oDRElSRQRriFAvOB755XGzWP2mcFUBtyWXHOgRYh0w==
-X-Received: by 2002:a17:90b:4a06:: with SMTP id kk6mr1668336pjb.204.1644019460757;
-        Fri, 04 Feb 2022 16:04:20 -0800 (PST)
-Received: from [10.1.1.24] (222-155-5-102-adsl.sparkbb.co.nz. [222.155.5.102])
-        by smtp.gmail.com with ESMTPSA id y12sm4054438pfa.132.2022.02.04.16.04.16
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Fri, 04 Feb 2022 16:04:20 -0800 (PST)
-Subject: Regression in 5.17-rc1 on pata-falcon (was: Re: [PATCH] m68k: mm:
- Remove check for VM_IO to fix deferred I/O)
-To:     Geert Uytterhoeven <geert@linux-m68k.org>,
-        linux-m68k@lists.linux-m68k.org, Jens Axboe <axboe@kernel.dk>,
-        Laibin Qiu <qiulaibin@huawei.com>
-References: <20220128173006.1713210-1-geert@linux-m68k.org>
- <63c80eba-7c55-2a92-8078-c63cec3c9efb@gmail.com>
- <8913a0a2-9496-143c-18c2-f3023fd37ba0@gmail.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        linux-kernel@vger.kernel.org, linux-block@vger.kernel.org
-From:   Michael Schmitz <schmitzmic@gmail.com>
-Message-ID: <8d215dab-cd0f-452b-281b-f67c9324b53b@gmail.com>
-Date:   Sat, 5 Feb 2022 13:04:13 +1300
-User-Agent: Mozilla/5.0 (X11; Linux ppc; rv:45.0) Gecko/20100101
- Icedove/45.4.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=7YGDXhWoC0YDK4LN4ffYmnnoBIU82UZ+ZgHex0wJpV0=;
+        b=vIBzQ1UORF77MitVCzDE7xdNIE/ROJQ9K6EhBkVZ6N3OI6VufLkIVr6zIT8MohcXIc
+         eQMOGQleuO3htWvnxUiEn4ZIqK/VogkmR+KRhCItLJtskZFENPDExQ0R0E66gOTEuhzs
+         3bHTgQsW7lW/MDI3jIG+nKgz350NQZlHC1goglqium6nDNO3qFspCCXCjxOHECCQzUIC
+         TcPA5sIvZ/FWHbvkW0oOcLeTkuj8kqbOrFdkhmIZHOkTkbZ2RLpzkJfvOCFWY/Q9+f3q
+         bLtnhmdYmBVGHZzFT9Z7UQTfTi5aHa+5FZ5WVZcSKVkh2mDlI+jTdP7aGyJtIz8lCl9h
+         KnyQ==
+X-Gm-Message-State: AOAM531FjHt8qcKj+aNjO7MzDSHKxqAQjHlGc4RaQh00l+Rql1UvqHrm
+        aMsLnNdXjMdrsjQIE1avLArbpfPTiJCeiQ==
+X-Google-Smtp-Source: ABdhPJzqaQI3OOv/1l3TAPvnmt2gDacDCmOll2gcl/G51drg6Jtw83JZWGuCDP/ogqdmWUQIEv0o/w==
+X-Received: by 2002:ab0:b8b:: with SMTP id c11mr908872uak.35.1644049924724;
+        Sat, 05 Feb 2022 00:32:04 -0800 (PST)
+Received: from mail-ua1-f52.google.com (mail-ua1-f52.google.com. [209.85.222.52])
+        by smtp.gmail.com with ESMTPSA id 17sm327506uak.8.2022.02.05.00.32.04
+        for <linux-m68k@lists.linux-m68k.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 05 Feb 2022 00:32:04 -0800 (PST)
+Received: by mail-ua1-f52.google.com with SMTP id 60so14784167uae.1
+        for <linux-m68k@lists.linux-m68k.org>; Sat, 05 Feb 2022 00:32:04 -0800 (PST)
+X-Received: by 2002:ab0:384c:: with SMTP id h12mr469698uaw.122.1644049923955;
+ Sat, 05 Feb 2022 00:32:03 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <8913a0a2-9496-143c-18c2-f3023fd37ba0@gmail.com>
-Content-Type: text/plain; charset=iso-8859-15; format=flowed
-Content-Transfer-Encoding: 7bit
+References: <20220128173006.1713210-1-geert@linux-m68k.org>
+ <63c80eba-7c55-2a92-8078-c63cec3c9efb@gmail.com> <8913a0a2-9496-143c-18c2-f3023fd37ba0@gmail.com>
+ <8d215dab-cd0f-452b-281b-f67c9324b53b@gmail.com>
+In-Reply-To: <8d215dab-cd0f-452b-281b-f67c9324b53b@gmail.com>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Sat, 5 Feb 2022 09:31:52 +0100
+X-Gmail-Original-Message-ID: <CAMuHMdVnkvSCHKt5ouZP7HrMBg7nPg7fjiio-KVJ7dehA=FwyQ@mail.gmail.com>
+Message-ID: <CAMuHMdVnkvSCHKt5ouZP7HrMBg7nPg7fjiio-KVJ7dehA=FwyQ@mail.gmail.com>
+Subject: Re: Regression in 5.17-rc1 on pata-falcon (was: Re: [PATCH] m68k: mm:
+ Remove check for VM_IO to fix deferred I/O)
+To:     Michael Schmitz <schmitzmic@gmail.com>
+Cc:     linux-m68k <linux-m68k@lists.linux-m68k.org>,
+        Jens Axboe <axboe@kernel.dk>,
+        Laibin Qiu <qiulaibin@huawei.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-block <linux-block@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-Hi Jens,
+Hi Michael,
 
-commit 180dccb0dba4f5e84a4a70c1be1d34cbb6528b32 (blk-mq: fix tag_get 
-wait task can't be awakened) does cause a regression on my m68k hardware 
-test rig (m68k Falcon030, IDE disk attached through pata-falcon driver 
-which does use polled IO instead of interrupts, so may be a little on 
-the slow side).
+On Sat, Feb 5, 2022 at 1:04 AM Michael Schmitz <schmitzmic@gmail.com> wrote:
+> commit 180dccb0dba4f5e84a4a70c1be1d34cbb6528b32 (blk-mq: fix tag_get
+> wait task can't be awakened) does cause a regression on my m68k hardware
+> test rig (m68k Falcon030, IDE disk attached through pata-falcon driver
+> which does use polled IO instead of interrupts, so may be a little on
+> the slow side).
 
-While it usually takes 8 minutes for my system to boot to a point where 
-the network driver is loaded, and another 10 minutes before I can  ssh 
-into the box, all the while with IO activity on the disk as seem from 
-the disk activity LED, the boot takes a few hours to complete since 
-v15-rc1, with IO activity only very rarely seen.
+> Bisection between v5.16 and v5.17-rc1 points to
+> 180dccb0dba4f5e84a4a70c1be1d34cbb6528b32 as the culprit, which is
+> corroborated by reverting that commit in v5.17-rc1 and booting as
+> rapidly as before.
 
-In the one case where I could log in remotely, I had to abort the 
-attempted reboot after another few hours.
+Now you know the culprit, it looks like several other people ran into this.
+Does this fix help?
+https://lore.kernel.org/all/1643040870.3bwvk3sis4.none@localhost/
 
-This problem occurs only on real hardware, and isn't seen on e.g. ARAnyM 
-which is frequently used to test changes.
+It is commit 10825410b956dc1e ("blk-mq: Fix wrong wakeup
+batch configuration which will cause hang") in v5.17-rc2.
 
-Bisection between v5.16 and v5.17-rc1 points to 
-180dccb0dba4f5e84a4a70c1be1d34cbb6528b32 as the culprit, which is 
-corroborated by reverting that commit in v5.17-rc1 and booting as 
-rapidly as before.
+Gr{oetje,eeting}s,
 
-I don't pretend to understand the purpose of the problematic commit, and 
-cannot spot anything glaringly obvious with the change in logic in e.g. 
-__blk_mq_tag_idle(). If there's anything you'd like me to test that 
-could make that commit work for my unusual set-up, I'd be happy to help.
+                        Geert
 
-Cheers,
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
-	Michael
-
-
-Am 30.01.2022 um 19:57 schrieb Michael Schmitz:
-> Hi Geert,
->
-> Am 30.01.2022 um 13:32 schrieb Michael Schmitz:
->> Hi Geert,
->>
->> testing this patch on my Falcon 030, I'm seeing a weird error checking
->> and mounting the root filesystem (pata-falcon). The system appears to
->> sit idle, never completing the journal recovery and mount. Still
->> investigating that.
->
-> Belay that - not related to your patch, must be some other regression
-> since v5.16 that I'm seeing there.
->
-> Just ignore the noise ...
->
-> Cheers,
->
->     Michael
->
->
->> Can't see how that would be caused by your patch, just saying I could
->> not yet test it.
->>
->> Cheers,
->>
->>     Michael
->>
->>
->> Am 29.01.2022 um 06:30 schrieb Geert Uytterhoeven:
->>> When an application accesses a mapped frame buffer backed by deferred
->>> I/O, it receives a segmentation fault.  Fix this by removing the check
->>> for VM_IO in do_page_fault().
->>>
->>> Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
->>> ---
->>> This check was never present in a fault handler on any other
->>> architecture than m68k.
->>> Some digging revealed that it was added in v2.1.106, but I couldn't find
->>> an email with a patch adding it.  That same kernel version extended the
->>> use of the hwreg_present() helper to HP9000/300, so the check might have
->>> been needed there, perhaps only during development?
->>> The Atari kernel relies heavily on hwreg_present() (both the success and
->>> failure cases), and these still work, at least on ARAnyM.
->>> ---
->>>  arch/m68k/mm/fault.c | 2 --
->>>  1 file changed, 2 deletions(-)
->>>
->>> diff --git a/arch/m68k/mm/fault.c b/arch/m68k/mm/fault.c
->>> index 1493cf5eac1e7a39..71aa9f6315dc8028 100644
->>> --- a/arch/m68k/mm/fault.c
->>> +++ b/arch/m68k/mm/fault.c
->>> @@ -93,8 +93,6 @@ int do_page_fault(struct pt_regs *regs, unsigned
->>> long address,
->>>      vma = find_vma(mm, address);
->>>      if (!vma)
->>>          goto map_err;
->>> -    if (vma->vm_flags & VM_IO)
->>> -        goto acc_err;
->>>      if (vma->vm_start <= address)
->>>          goto good_area;
->>>      if (!(vma->vm_flags & VM_GROWSDOWN))
->>>
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
