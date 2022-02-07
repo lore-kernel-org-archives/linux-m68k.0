@@ -2,126 +2,117 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id ADA7AC433EF
-	for <linux-m68k@archiver.kernel.org>; Sat,  5 Feb 2022 21:59:17 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id DE18FC433EF
+	for <linux-m68k@archiver.kernel.org>; Mon,  7 Feb 2022 13:44:52 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242791AbiBEV7Q (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Sat, 5 Feb 2022 16:59:16 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33072 "EHLO
+        id S243077AbiBGNoI (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Mon, 7 Feb 2022 08:44:08 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47280 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230390AbiBEV7Q (ORCPT
+        with ESMTP id S1448278AbiBGNKQ (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Sat, 5 Feb 2022 16:59:16 -0500
-Received: from mail-pj1-x1032.google.com (mail-pj1-x1032.google.com [IPv6:2607:f8b0:4864:20::1032])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0EE20C061348
-        for <linux-m68k@lists.linux-m68k.org>; Sat,  5 Feb 2022 13:59:15 -0800 (PST)
-Received: by mail-pj1-x1032.google.com with SMTP id z14-20020a17090ab10e00b001b6175d4040so16557706pjq.0
-        for <linux-m68k@lists.linux-m68k.org>; Sat, 05 Feb 2022 13:59:15 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=subject:to:references:cc:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-transfer-encoding;
-        bh=PWXw56wMSVUiQo+0Y/X1ZEc8HwPwp/sCbKGTlf6LMjs=;
-        b=akjLYJsZTcN5ZzBMtnld1Izt5WF6Pacjnxu649A2A34JBhKdoWD0qdk0G2DxkdH930
-         sWwEuVv7ldvooEhDVXBqvE/hPzyAsIorqDfQf9Y9Whdi/w+RTKvj5PD+BKVOH9/moJc9
-         Os3dgxRTGCSzVc/4SsVQGgMtZsCUXUY1TSV5Zr5YjWEoasYoYdpepnGCAPzxU+GtpldA
-         +QPrQ9nVvE//sBu/vf4BaRAE7iLhi38L/WNUwHA60Ag/kAhNqRvkl7cbEgZj9CV2nrkU
-         2IuUTRiTsT+JMaToV/giN+oFjjmwBXNekLrsqHJEuOAPZc0MdYCI/Bbd/Gn0uBnT1r44
-         W2Rg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:references:cc:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding;
-        bh=PWXw56wMSVUiQo+0Y/X1ZEc8HwPwp/sCbKGTlf6LMjs=;
-        b=8QSrSP7A3ZynN35Dp7hTCj0kX4OtA9ns/mW7G33M6930T4ENUtr2mtSB+5EpCU+lwh
-         +g0P/3pQshXtLHXi7sgePi+PUf50lWBkOqi3+Yh5qFQbfbPgTekSmnZt0LDFG4dhsh1c
-         vafZ22GnWE+b3nPmRIYdZdmTVMyGVH9B4FlWI5TMus4UGhxDUhFWLKhIQYC6iwb9NoJN
-         6xyv4bWJaIjJzjTfxVGHWnu39/vTJpaV0T/nGsrdu9a0D7JiddcJ1ogcZPPJSaJr8NLH
-         suVHdTujZeHdVPLLoBAyOKEHYPQt0O4YyySk4YbN5tMBLt/RlQ4OBAQio9l2pIb85V4R
-         7cCw==
-X-Gm-Message-State: AOAM531t8iWzq0k3TPgYhYxRhnglIP/Dwn/H+I0z0YRfbG8OdA2yTC+l
-        6EUWYWp8LWWyF3BexBKl0uw=
-X-Google-Smtp-Source: ABdhPJzX5yjwAdDFdotVdtPaI3Ecrj5KkR50/7owTP98UVyuhWA/p5XLhclwXNQNWdHJIve3p5BDUw==
-X-Received: by 2002:a17:902:e88b:: with SMTP id w11mr9531591plg.153.1644098354413;
-        Sat, 05 Feb 2022 13:59:14 -0800 (PST)
-Received: from [10.1.1.24] (222-155-5-102-adsl.sparkbb.co.nz. [222.155.5.102])
-        by smtp.gmail.com with ESMTPSA id lp17sm17664003pjb.25.2022.02.05.13.59.09
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Sat, 05 Feb 2022 13:59:13 -0800 (PST)
-Subject: Re: Regression in 5.17-rc1 on pata-falcon
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-References: <20220128173006.1713210-1-geert@linux-m68k.org>
- <63c80eba-7c55-2a92-8078-c63cec3c9efb@gmail.com>
- <8913a0a2-9496-143c-18c2-f3023fd37ba0@gmail.com>
- <8d215dab-cd0f-452b-281b-f67c9324b53b@gmail.com>
- <CAMuHMdVnkvSCHKt5ouZP7HrMBg7nPg7fjiio-KVJ7dehA=FwyQ@mail.gmail.com>
-Cc:     linux-m68k <linux-m68k@lists.linux-m68k.org>,
-        Jens Axboe <axboe@kernel.dk>,
-        Laibin Qiu <qiulaibin@huawei.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-block <linux-block@vger.kernel.org>
-From:   Michael Schmitz <schmitzmic@gmail.com>
-Message-ID: <eb5fc9ae-45a7-44d3-0238-5cdaa1ae3558@gmail.com>
-Date:   Sun, 6 Feb 2022 10:59:07 +1300
-User-Agent: Mozilla/5.0 (X11; Linux ppc; rv:45.0) Gecko/20100101
- Icedove/45.4.0
+        Mon, 7 Feb 2022 08:10:16 -0500
+Received: from laurent.telenet-ops.be (laurent.telenet-ops.be [IPv6:2a02:1800:110:4::f00:19])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A4215C043189
+        for <linux-m68k@lists.linux-m68k.org>; Mon,  7 Feb 2022 05:10:13 -0800 (PST)
+Received: from ramsan.of.borg ([IPv6:2a02:1810:ac12:ed40:8923:c5e0:fe66:f22f])
+        by laurent.telenet-ops.be with bizsmtp
+        id sDAB2600F2zxJMx01DABvF; Mon, 07 Feb 2022 14:10:11 +0100
+Received: from rox.of.borg ([192.168.97.57])
+        by ramsan.of.borg with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.93)
+        (envelope-from <geert@linux-m68k.org>)
+        id 1nH3mU-0004SC-OS; Mon, 07 Feb 2022 14:10:10 +0100
+Received: from geert by rox.of.borg with local (Exim 4.93)
+        (envelope-from <geert@linux-m68k.org>)
+        id 1nH3mU-009F6e-7W; Mon, 07 Feb 2022 14:10:10 +0100
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+To:     linux-m68k@lists.linux-m68k.org
+Cc:     linux-fbdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: [PATCH] m68k: defconfig: Update defconfigs for v5.17-rc3
+Date:   Mon,  7 Feb 2022 14:10:08 +0100
+Message-Id: <20220207131008.2202977-1-geert@linux-m68k.org>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-In-Reply-To: <CAMuHMdVnkvSCHKt5ouZP7HrMBg7nPg7fjiio-KVJ7dehA=FwyQ@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-Hi Geert, Jens,
+  - Enable the new option for legacy fbcon hardware acceleration code on
+    all platforms that have a frame buffer device that can make use of
+    this.
 
-thanks for the hint - applying 10825410b956dc1e on top of 5.17-rc1 does 
-indeed fix the issue.
+Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
+---
+The following drivers set
+FBINFO_HWACCEL_(COPYAREA|FILLRECT|IMAGEBLIT|ROTATE|XPAN|YPAN|YWRAP):
+  - FB_AMIGA,
+  - FB_ATY (not enabled in atari_defconfig, hence ignored),
+  - FB_CIRRUS,
+  - FB_68328 (nommu, hence ignored).
 
-nr_tags == 1 on the Falcon may explain why I ran into this. Oddly 
-enough, I have the same on ARAnyM. Adding a second 'disk' there does 
-reproduce the issue on ARAnyM though. nr_tags == 1 && nr_disks > 1 
-appears to be sufficient to reproduce this.
+The following drivers implement hardware acceleration, but do not set
+any of the FBINFO_HWACCEL_* flags:
+  - FB_APOLLO,
+  - FB_HP300.
+Probably they should be updated to set the appropriate flags?
+---
+ arch/m68k/configs/amiga_defconfig  | 1 +
+ arch/m68k/configs/apollo_defconfig | 1 +
+ arch/m68k/configs/hp300_defconfig  | 1 +
+ arch/m68k/configs/multi_defconfig  | 1 +
+ 4 files changed, 4 insertions(+)
 
-I surmised I couldn't be the only one to run into this, but hadn't seen 
-any other reports yet.
+diff --git a/arch/m68k/configs/amiga_defconfig b/arch/m68k/configs/amiga_defconfig
+index eb930b9633602aff..49f301c57df5fb06 100644
+--- a/arch/m68k/configs/amiga_defconfig
++++ b/arch/m68k/configs/amiga_defconfig
+@@ -432,6 +432,7 @@ CONFIG_FB_AMIGA_ECS=y
+ CONFIG_FB_AMIGA_AGA=y
+ CONFIG_FB_FM2=y
+ CONFIG_FRAMEBUFFER_CONSOLE=y
++CONFIG_FRAMEBUFFER_CONSOLE_LEGACY_ACCELERATION=y
+ CONFIG_LOGO=y
+ CONFIG_SOUND=m
+ CONFIG_DMASOUND_PAULA=m
+diff --git a/arch/m68k/configs/apollo_defconfig b/arch/m68k/configs/apollo_defconfig
+index 5acd495c83ceb756..405997b614472b80 100644
+--- a/arch/m68k/configs/apollo_defconfig
++++ b/arch/m68k/configs/apollo_defconfig
+@@ -390,6 +390,7 @@ CONFIG_PTP_1588_CLOCK=m
+ # CONFIG_HWMON is not set
+ CONFIG_FB=y
+ CONFIG_FRAMEBUFFER_CONSOLE=y
++CONFIG_FRAMEBUFFER_CONSOLE_LEGACY_ACCELERATION=y
+ CONFIG_LOGO=y
+ # CONFIG_LOGO_LINUX_VGA16 is not set
+ # CONFIG_LOGO_LINUX_CLUT224 is not set
+diff --git a/arch/m68k/configs/hp300_defconfig b/arch/m68k/configs/hp300_defconfig
+index 89dd800e7ad24354..048d9b114eb43489 100644
+--- a/arch/m68k/configs/hp300_defconfig
++++ b/arch/m68k/configs/hp300_defconfig
+@@ -392,6 +392,7 @@ CONFIG_PTP_1588_CLOCK=m
+ # CONFIG_HWMON is not set
+ CONFIG_FB=y
+ CONFIG_FRAMEBUFFER_CONSOLE=y
++CONFIG_FRAMEBUFFER_CONSOLE_LEGACY_ACCELERATION=y
+ CONFIG_LOGO=y
+ # CONFIG_LOGO_LINUX_MONO is not set
+ # CONFIG_LOGO_LINUX_VGA16 is not set
+diff --git a/arch/m68k/configs/multi_defconfig b/arch/m68k/configs/multi_defconfig
+index 00757de800b62c90..7df61e743591a028 100644
+--- a/arch/m68k/configs/multi_defconfig
++++ b/arch/m68k/configs/multi_defconfig
+@@ -494,6 +494,7 @@ CONFIG_FB_ATARI=y
+ CONFIG_FB_VALKYRIE=y
+ CONFIG_FB_MAC=y
+ CONFIG_FRAMEBUFFER_CONSOLE=y
++CONFIG_FRAMEBUFFER_CONSOLE_LEGACY_ACCELERATION=y
+ CONFIG_LOGO=y
+ CONFIG_SOUND=m
+ CONFIG_DMASOUND_ATARI=m
+-- 
+2.25.1
 
-Cheers,
-
-	Michael
-
-
-Am 05.02.2022 um 21:31 schrieb Geert Uytterhoeven:
-> Hi Michael,
->
-> On Sat, Feb 5, 2022 at 1:04 AM Michael Schmitz <schmitzmic@gmail.com> wrote:
->> commit 180dccb0dba4f5e84a4a70c1be1d34cbb6528b32 (blk-mq: fix tag_get
->> wait task can't be awakened) does cause a regression on my m68k hardware
->> test rig (m68k Falcon030, IDE disk attached through pata-falcon driver
->> which does use polled IO instead of interrupts, so may be a little on
->> the slow side).
->
->> Bisection between v5.16 and v5.17-rc1 points to
->> 180dccb0dba4f5e84a4a70c1be1d34cbb6528b32 as the culprit, which is
->> corroborated by reverting that commit in v5.17-rc1 and booting as
->> rapidly as before.
->
-> Now you know the culprit, it looks like several other people ran into this.
-> Does this fix help?
-> https://lore.kernel.org/all/1643040870.3bwvk3sis4.none@localhost/
->
-> It is commit 10825410b956dc1e ("blk-mq: Fix wrong wakeup
-> batch configuration which will cause hang") in v5.17-rc2.
->
-> Gr{oetje,eeting}s,
->
->                         Geert
->
-> --
-> Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
->
-> In personal conversations with technical people, I call myself a hacker. But
-> when I'm talking to journalists I just say "programmer" or something like that.
->                                 -- Linus Torvalds
->
