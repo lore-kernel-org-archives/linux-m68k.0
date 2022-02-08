@@ -2,46 +2,46 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 63C3CC35275
-	for <linux-m68k@archiver.kernel.org>; Tue,  8 Feb 2022 22:26:47 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A7ABCC433EF
+	for <linux-m68k@archiver.kernel.org>; Tue,  8 Feb 2022 23:11:25 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1386998AbiBHW0p (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Tue, 8 Feb 2022 17:26:45 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45182 "EHLO
+        id S235577AbiBHXLX (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Tue, 8 Feb 2022 18:11:23 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36272 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1387034AbiBHVtQ (ORCPT
+        with ESMTP id S235576AbiBHXLV (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Tue, 8 Feb 2022 16:49:16 -0500
-Received: from mga12.intel.com (mga12.intel.com [192.55.52.136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F22B2C0612BA
-        for <linux-m68k@lists.linux-m68k.org>; Tue,  8 Feb 2022 13:49:15 -0800 (PST)
+        Tue, 8 Feb 2022 18:11:21 -0500
+Received: from mga18.intel.com (mga18.intel.com [134.134.136.126])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B7DDC06157A
+        for <linux-m68k@lists.linux-m68k.org>; Tue,  8 Feb 2022 15:11:20 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1644356955; x=1675892955;
+  t=1644361880; x=1675897880;
   h=date:from:to:cc:subject:message-id:references:
    mime-version:in-reply-to;
-  bh=2yTF4CDelmoVvKA+lxgQXMC3zxjRDLz1IzX04021fBU=;
-  b=NaY3d+CiJAkrPhMSHOJJJ8tm8OSOuiJo6GgleAkeHOYLpP2YfHTwbXfI
-   BrcxW/vMfJp1UFJ+QiaVzq9phBDJWKULjXINQXkdjSkWvlWXr7yctYBNB
-   CLPqPjHpYFXivG6t0I/bOC/RjIYb1JrB/N41flRyRiqpWpPWVCZ15yZQl
-   cXroOyHV6co+DzFVWBfX5V1WAMzsqkw0KJenph6tKKv1UKkgJg/bcp76+
-   rKRJHCwt3SRTDltKqdV3YvIx9dpDt9mH+rvxhysjawPCh2ucSNba+7/Sg
-   u+0C1g1JWCTSnp71GdlBFtn1CQI6zKMQApfkUZT40/U5N9NsxcOd8g5iK
-   w==;
-X-IronPort-AV: E=McAfee;i="6200,9189,10252"; a="229031649"
-X-IronPort-AV: E=Sophos;i="5.88,353,1635231600"; 
-   d="scan'208";a="229031649"
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Feb 2022 13:49:15 -0800
+  bh=SX+Ukr/Axms+ZkUXzepwxZRP4Htag+UHnjtIv0GwVmA=;
+  b=DBq7OmOmjqSjOEtFfh80qfbwIlStxc5cvLprewViKU72r4av728TPiRw
+   coBbksdI1ehl/zdH1SxMYxHfU5+1D7nNhbrC/bn6hdHy0DRI7niQS9yJd
+   2lJSDPkQrmLyU8DtjRUw/XHXBIylBwH0To6GZrfTGYk2a8kakbEHyVu8Q
+   8kbfVZnSievbtqU5PkOwTxp+YmTqKvZU3DICIg/0dXGAM6itQrarq84Lv
+   CfKiL8COrg8ic1kcizaP5eRRR2rfSM4RcwErBMhFAd7Uvo/cNC7mUbSEy
+   i0tOIFpGfm3Tnyl/Szca24huxtBF5Vl0B4r3NqE+v4otwZZiQNXaGxpz8
+   Q==;
+X-IronPort-AV: E=McAfee;i="6200,9189,10252"; a="232638737"
+X-IronPort-AV: E=Sophos;i="5.88,354,1635231600"; 
+   d="scan'208";a="232638737"
+Received: from fmsmga006.fm.intel.com ([10.253.24.20])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Feb 2022 15:11:19 -0800
 X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.88,353,1635231600"; 
-   d="scan'208";a="536710481"
+X-IronPort-AV: E=Sophos;i="5.88,354,1635231600"; 
+   d="scan'208";a="771145853"
 Received: from lkp-server01.sh.intel.com (HELO d95dc2dabeb1) ([10.239.97.150])
-  by fmsmga007.fm.intel.com with ESMTP; 08 Feb 2022 13:49:11 -0800
+  by fmsmga006.fm.intel.com with ESMTP; 08 Feb 2022 15:11:14 -0800
 Received: from kbuild by d95dc2dabeb1 with local (Exim 4.92)
         (envelope-from <lkp@intel.com>)
-        id 1nHYMI-0000me-A5; Tue, 08 Feb 2022 21:49:10 +0000
-Date:   Wed, 9 Feb 2022 05:48:36 +0800
+        id 1nHZdh-0000uZ-QM; Tue, 08 Feb 2022 23:11:13 +0000
+Date:   Wed, 9 Feb 2022 07:10:39 +0800
 From:   kernel test robot <lkp@intel.com>
 To:     Carlos Bilbao <carlos.bilbao@amd.com>, john.stultz@linaro.org,
         tglx@linutronix.de, sboyd@kernel.org,
@@ -57,7 +57,7 @@ Cc:     kbuild-all@lists.01.org, linux-kernel@vger.kernel.org,
         kernel test robot <lkp@intel.com>
 Subject: Re: [PATCH v2] include: linux: Reorganize timekeeping and ktime
  headers
-Message-ID: <202202090554.VWOt2B2w-lkp@intel.com>
+Message-ID: <202202090656.Bx5FpSa7-lkp@intel.com>
 References: <20220208161049.865402-1-carlos.bilbao@amd.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
@@ -81,8 +81,8 @@ https://git-scm.com/docs/git-format-patch]
 
 url:    https://github.com/0day-ci/linux/commits/Carlos-Bilbao/include-linux-Reorganize-timekeeping-and-ktime-headers/20220209-001309
 base:   https://git.kernel.org/pub/scm/linux/kernel/git/geert/linux-m68k.git for-next
-config: m68k-randconfig-r024-20220208 (https://download.01.org/0day-ci/archive/20220209/202202090554.VWOt2B2w-lkp@intel.com/config)
-compiler: m68k-linux-gcc (GCC) 11.2.0
+config: alpha-randconfig-r001-20220208 (https://download.01.org/0day-ci/archive/20220209/202202090656.Bx5FpSa7-lkp@intel.com/config)
+compiler: alpha-linux-gcc (GCC) 11.2.0
 reproduce (this is a W=1 build):
         wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
         chmod +x ~/bin/make.cross
@@ -92,37 +92,42 @@ reproduce (this is a W=1 build):
         git checkout 5ed7d76f2d6aabedc437bc0b99020dc655ab5719
         # save the config file to linux build tree
         mkdir build_dir
-        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-11.2.0 make.cross O=build_dir ARCH=m68k SHELL=/bin/bash
+        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-11.2.0 make.cross O=build_dir ARCH=alpha SHELL=/bin/bash arch/alpha/kernel/
 
 If you fix the issue, kindly add following tag as appropriate
 Reported-by: kernel test robot <lkp@intel.com>
 
 All errors (new ones prefixed by >>):
 
-   arch/m68k/68000/timers.c: In function 'hw_tick':
->> arch/m68k/68000/timers.c:64:9: error: implicit declaration of function 'legacy_timer_tick' [-Werror=implicit-function-declaration]
-      64 |         legacy_timer_tick(1);
-         |         ^~~~~~~~~~~~~~~~~
-   arch/m68k/68000/timers.c: At top level:
-   arch/m68k/68000/timers.c:120:5: warning: no previous prototype for 'm68328_hwclk' [-Wmissing-prototypes]
-     120 | int m68328_hwclk(int set, struct rtc_time *t)
-         |     ^~~~~~~~~~~~
+   arch/alpha/kernel/osf_sys.c: In function '__do_sys_osf_settimeofday':
+>> arch/alpha/kernel/osf_sys.c:1013:16: error: implicit declaration of function 'do_sys_settimeofday64'; did you mean 'sys_settimeofday'? [-Werror=implicit-function-declaration]
+    1013 |         return do_sys_settimeofday64(tv ? &kts : NULL, tz ? &ktz : NULL);
+         |                ^~~~~~~~~~~~~~~~~~~~~
+         |                sys_settimeofday
    cc1: some warnings being treated as errors
 
 
-vim +/legacy_timer_tick +64 arch/m68k/68000/timers.c
+vim +1013 arch/alpha/kernel/osf_sys.c
 
-36a90f26aa24c5 arch/m68knommu/platform/68328/timers.c Greg Ungerer  2008-02-01  57  
-36a90f26aa24c5 arch/m68knommu/platform/68328/timers.c Greg Ungerer  2008-02-01  58  static irqreturn_t hw_tick(int irq, void *dummy)
-36a90f26aa24c5 arch/m68knommu/platform/68328/timers.c Greg Ungerer  2008-02-01  59  {
-36a90f26aa24c5 arch/m68knommu/platform/68328/timers.c Greg Ungerer  2008-02-01  60  	/* Reset Timer1 */
-36a90f26aa24c5 arch/m68knommu/platform/68328/timers.c Greg Ungerer  2008-02-01  61  	TSTAT &= 0;
-36a90f26aa24c5 arch/m68knommu/platform/68328/timers.c Greg Ungerer  2008-02-01  62  
-36a90f26aa24c5 arch/m68knommu/platform/68328/timers.c Greg Ungerer  2008-02-01  63  	m68328_tick_cnt += TICKS_PER_JIFFY;
-09323308f63708 arch/m68k/68000/timers.c               Arnd Bergmann 2020-09-24 @64  	legacy_timer_tick(1);
-09323308f63708 arch/m68k/68000/timers.c               Arnd Bergmann 2020-09-24  65  	return IRQ_HANDLED;
-36a90f26aa24c5 arch/m68knommu/platform/68328/timers.c Greg Ungerer  2008-02-01  66  }
-36a90f26aa24c5 arch/m68knommu/platform/68328/timers.c Greg Ungerer  2008-02-01  67  
+^1da177e4c3f415 Linus Torvalds  2005-04-16   997  
+e5d9a90c36e05dd Ivan Kokshaysky 2009-01-29   998  SYSCALL_DEFINE2(osf_settimeofday, struct timeval32 __user *, tv,
+e5d9a90c36e05dd Ivan Kokshaysky 2009-01-29   999  		struct timezone __user *, tz)
+^1da177e4c3f415 Linus Torvalds  2005-04-16  1000  {
+ce4c253573ad184 Arnd Bergmann   2017-11-08  1001  	struct timespec64 kts;
+^1da177e4c3f415 Linus Torvalds  2005-04-16  1002  	struct timezone ktz;
+^1da177e4c3f415 Linus Torvalds  2005-04-16  1003  
+^1da177e4c3f415 Linus Torvalds  2005-04-16  1004   	if (tv) {
+ce4c253573ad184 Arnd Bergmann   2017-11-08  1005  		if (get_tv32(&kts, tv))
+^1da177e4c3f415 Linus Torvalds  2005-04-16  1006  			return -EFAULT;
+^1da177e4c3f415 Linus Torvalds  2005-04-16  1007  	}
+^1da177e4c3f415 Linus Torvalds  2005-04-16  1008  	if (tz) {
+^1da177e4c3f415 Linus Torvalds  2005-04-16  1009  		if (copy_from_user(&ktz, tz, sizeof(*tz)))
+^1da177e4c3f415 Linus Torvalds  2005-04-16  1010  			return -EFAULT;
+^1da177e4c3f415 Linus Torvalds  2005-04-16  1011  	}
+^1da177e4c3f415 Linus Torvalds  2005-04-16  1012  
+ce4c253573ad184 Arnd Bergmann   2017-11-08 @1013  	return do_sys_settimeofday64(tv ? &kts : NULL, tz ? &ktz : NULL);
+^1da177e4c3f415 Linus Torvalds  2005-04-16  1014  }
+^1da177e4c3f415 Linus Torvalds  2005-04-16  1015  
 
 ---
 0-DAY CI Kernel Test Service, Intel Corporation
