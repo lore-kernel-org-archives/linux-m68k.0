@@ -2,133 +2,91 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A7ABCC433EF
-	for <linux-m68k@archiver.kernel.org>; Tue,  8 Feb 2022 23:11:25 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B9D51C433FE
+	for <linux-m68k@archiver.kernel.org>; Thu, 10 Feb 2022 13:07:52 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235577AbiBHXLX (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Tue, 8 Feb 2022 18:11:23 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36272 "EHLO
+        id S241964AbiBJNHu (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Thu, 10 Feb 2022 08:07:50 -0500
+Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:43570 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235576AbiBHXLV (ORCPT
+        with ESMTP id S241957AbiBJNHt (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Tue, 8 Feb 2022 18:11:21 -0500
-Received: from mga18.intel.com (mga18.intel.com [134.134.136.126])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B7DDC06157A
-        for <linux-m68k@lists.linux-m68k.org>; Tue,  8 Feb 2022 15:11:20 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1644361880; x=1675897880;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=SX+Ukr/Axms+ZkUXzepwxZRP4Htag+UHnjtIv0GwVmA=;
-  b=DBq7OmOmjqSjOEtFfh80qfbwIlStxc5cvLprewViKU72r4av728TPiRw
-   coBbksdI1ehl/zdH1SxMYxHfU5+1D7nNhbrC/bn6hdHy0DRI7niQS9yJd
-   2lJSDPkQrmLyU8DtjRUw/XHXBIylBwH0To6GZrfTGYk2a8kakbEHyVu8Q
-   8kbfVZnSievbtqU5PkOwTxp+YmTqKvZU3DICIg/0dXGAM6itQrarq84Lv
-   CfKiL8COrg8ic1kcizaP5eRRR2rfSM4RcwErBMhFAd7Uvo/cNC7mUbSEy
-   i0tOIFpGfm3Tnyl/Szca24huxtBF5Vl0B4r3NqE+v4otwZZiQNXaGxpz8
-   Q==;
-X-IronPort-AV: E=McAfee;i="6200,9189,10252"; a="232638737"
-X-IronPort-AV: E=Sophos;i="5.88,354,1635231600"; 
-   d="scan'208";a="232638737"
-Received: from fmsmga006.fm.intel.com ([10.253.24.20])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Feb 2022 15:11:19 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.88,354,1635231600"; 
-   d="scan'208";a="771145853"
-Received: from lkp-server01.sh.intel.com (HELO d95dc2dabeb1) ([10.239.97.150])
-  by fmsmga006.fm.intel.com with ESMTP; 08 Feb 2022 15:11:14 -0800
-Received: from kbuild by d95dc2dabeb1 with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1nHZdh-0000uZ-QM; Tue, 08 Feb 2022 23:11:13 +0000
-Date:   Wed, 9 Feb 2022 07:10:39 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Carlos Bilbao <carlos.bilbao@amd.com>, john.stultz@linaro.org,
-        tglx@linutronix.de, sboyd@kernel.org,
-        alexandre.belloni@bootlin.com, gregkh@linuxfoundation.org
-Cc:     kbuild-all@lists.01.org, linux-kernel@vger.kernel.org,
-        bilbao@vt.edu, geert@linux-m68k.org,
-        linux-arm-kernel@lists.infradead.org, rostedt@goodmis.org,
-        boon.leong.ong@intel.com, mhiramat@kernel.org,
-        linux-ia64@vger.kernel.org, linux-m68k@lists.linux-m68k.org,
-        linux-rtc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        linux-stm32@st-md-mailman.stormreply.com, jgross@suse.com,
-        Carlos Bilbao <carlos.bilbao@amd.com>,
-        kernel test robot <lkp@intel.com>
-Subject: Re: [PATCH v2] include: linux: Reorganize timekeeping and ktime
- headers
-Message-ID: <202202090656.Bx5FpSa7-lkp@intel.com>
-References: <20220208161049.865402-1-carlos.bilbao@amd.com>
+        Thu, 10 Feb 2022 08:07:49 -0500
+Received: from mail-ua1-f45.google.com (mail-ua1-f45.google.com [209.85.222.45])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 56C8122F
+        for <linux-m68k@lists.linux-m68k.org>; Thu, 10 Feb 2022 05:07:50 -0800 (PST)
+Received: by mail-ua1-f45.google.com with SMTP id u77so2959483uau.6
+        for <linux-m68k@lists.linux-m68k.org>; Thu, 10 Feb 2022 05:07:50 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=9xSDkfGA7Gbw9lubbu8lfvfHIM/jNHECsHfMyY0SuGE=;
+        b=cyb0mjao81tDCdqhidwjYdv+H/aMGYBEm3uTSuqPeHCfJWcbYVaJG2RSNushXqRt0D
+         JQYcesJ/ClIVQd4+xYNzyoVwcKv7O3hGlk4ngIQaZgTTqFBnTlPumqbEXG8NFLj8q+Nm
+         rE8uChxz1PXRxrC0apl1Z/H2PGSwugRMp+EsMdbE3fDGZwuQMFUBa1WIZij4Sf7EYvXt
+         E9waWtJTtcpPg3BxVNn/NQVrE5CzIPQ5+PglywKNX6pZ7Tayos2cVIFHyG4XuwiHIoK/
+         S3fKjYL69d9BppR0kKtdqiJedaCubaTGekTHr4M4EhMKkcuClp91OrwUOoVQeHUdmGkF
+         VGUQ==
+X-Gm-Message-State: AOAM5302yrjEu1D1iqhzoReDKODJx5I3EbZkXgxI1GP5L55BDC4oTxbn
+        ZPiDcP7YD/2D1xu8guXufHgmbQFAGQB9Aw==
+X-Google-Smtp-Source: ABdhPJyYh18emuWpLgyeH025UBC9P/S6lOpgd7YwJRMMRNHjOxwv/bgOIlZI13C6XvssY85/0SCL5Q==
+X-Received: by 2002:ab0:3c86:: with SMTP id a6mr2936747uax.6.1644498469151;
+        Thu, 10 Feb 2022 05:07:49 -0800 (PST)
+Received: from mail-vs1-f53.google.com (mail-vs1-f53.google.com. [209.85.217.53])
+        by smtp.gmail.com with ESMTPSA id h141sm3792415vka.19.2022.02.10.05.07.48
+        for <linux-m68k@lists.linux-m68k.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 10 Feb 2022 05:07:48 -0800 (PST)
+Received: by mail-vs1-f53.google.com with SMTP id u134so1494698vsu.8
+        for <linux-m68k@lists.linux-m68k.org>; Thu, 10 Feb 2022 05:07:48 -0800 (PST)
+X-Received: by 2002:a05:6102:34d9:: with SMTP id a25mr2360386vst.68.1644498468038;
+ Thu, 10 Feb 2022 05:07:48 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20220208161049.865402-1-carlos.bilbao@amd.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <20220130143333.552646-1-laurent@vivier.eu> <20220130143333.552646-3-laurent@vivier.eu>
+In-Reply-To: <20220130143333.552646-3-laurent@vivier.eu>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Thu, 10 Feb 2022 14:07:37 +0100
+X-Gmail-Original-Message-ID: <CAMuHMdVX_DTZDTad9iU2DkTT_KTyducGJWtisj8wpTOzWdZMgg@mail.gmail.com>
+Message-ID: <CAMuHMdVX_DTZDTad9iU2DkTT_KTyducGJWtisj8wpTOzWdZMgg@mail.gmail.com>
+Subject: Re: [PATCH v14 2/5] tty: goldfish: introduce gf_ioread32()/gf_iowrite32()
+To:     Laurent Vivier <laurent@vivier.eu>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>, linux-rtc@vger.kernel.org,
+        Jiaxun Yang <jiaxun.yang@flygoat.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        John Stultz <john.stultz@linaro.org>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Alessandro Zummo <a.zummo@towertech.it>,
+        linux-m68k <linux-m68k@lists.linux-m68k.org>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        stable <stable@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-Hi Carlos,
+On Sun, Jan 30, 2022 at 3:33 PM Laurent Vivier <laurent@vivier.eu> wrote:
+> Revert
+> commit da31de35cd2f ("tty: goldfish: use __raw_writel()/__raw_readl()")
+>
+> and define gf_ioread32()/gf_iowrite32() to be able to use accessors
+> defined by the architecture.
+>
+> Cc: stable@vger.kernel.org # v5.11+
+> Fixes: da31de35cd2f ("tty: goldfish: use __raw_writel()/__raw_readl()")
+> Signed-off-by: Laurent Vivier <laurent@vivier.eu>
 
-Thank you for the patch! Yet something to improve:
+Reviewed-by: Geert Uytterhoeven <geert@linux-m68k.org>
 
-[auto build test ERROR on geert-m68k/for-next]
-[also build test ERROR on tip/timers/core tip/x86/core linus/master v5.17-rc3]
-[cannot apply to next-20220208]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch]
+Gr{oetje,eeting}s,
 
-url:    https://github.com/0day-ci/linux/commits/Carlos-Bilbao/include-linux-Reorganize-timekeeping-and-ktime-headers/20220209-001309
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/geert/linux-m68k.git for-next
-config: alpha-randconfig-r001-20220208 (https://download.01.org/0day-ci/archive/20220209/202202090656.Bx5FpSa7-lkp@intel.com/config)
-compiler: alpha-linux-gcc (GCC) 11.2.0
-reproduce (this is a W=1 build):
-        wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
-        chmod +x ~/bin/make.cross
-        # https://github.com/0day-ci/linux/commit/5ed7d76f2d6aabedc437bc0b99020dc655ab5719
-        git remote add linux-review https://github.com/0day-ci/linux
-        git fetch --no-tags linux-review Carlos-Bilbao/include-linux-Reorganize-timekeeping-and-ktime-headers/20220209-001309
-        git checkout 5ed7d76f2d6aabedc437bc0b99020dc655ab5719
-        # save the config file to linux build tree
-        mkdir build_dir
-        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-11.2.0 make.cross O=build_dir ARCH=alpha SHELL=/bin/bash arch/alpha/kernel/
+                        Geert
 
-If you fix the issue, kindly add following tag as appropriate
-Reported-by: kernel test robot <lkp@intel.com>
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
-All errors (new ones prefixed by >>):
-
-   arch/alpha/kernel/osf_sys.c: In function '__do_sys_osf_settimeofday':
->> arch/alpha/kernel/osf_sys.c:1013:16: error: implicit declaration of function 'do_sys_settimeofday64'; did you mean 'sys_settimeofday'? [-Werror=implicit-function-declaration]
-    1013 |         return do_sys_settimeofday64(tv ? &kts : NULL, tz ? &ktz : NULL);
-         |                ^~~~~~~~~~~~~~~~~~~~~
-         |                sys_settimeofday
-   cc1: some warnings being treated as errors
-
-
-vim +1013 arch/alpha/kernel/osf_sys.c
-
-^1da177e4c3f415 Linus Torvalds  2005-04-16   997  
-e5d9a90c36e05dd Ivan Kokshaysky 2009-01-29   998  SYSCALL_DEFINE2(osf_settimeofday, struct timeval32 __user *, tv,
-e5d9a90c36e05dd Ivan Kokshaysky 2009-01-29   999  		struct timezone __user *, tz)
-^1da177e4c3f415 Linus Torvalds  2005-04-16  1000  {
-ce4c253573ad184 Arnd Bergmann   2017-11-08  1001  	struct timespec64 kts;
-^1da177e4c3f415 Linus Torvalds  2005-04-16  1002  	struct timezone ktz;
-^1da177e4c3f415 Linus Torvalds  2005-04-16  1003  
-^1da177e4c3f415 Linus Torvalds  2005-04-16  1004   	if (tv) {
-ce4c253573ad184 Arnd Bergmann   2017-11-08  1005  		if (get_tv32(&kts, tv))
-^1da177e4c3f415 Linus Torvalds  2005-04-16  1006  			return -EFAULT;
-^1da177e4c3f415 Linus Torvalds  2005-04-16  1007  	}
-^1da177e4c3f415 Linus Torvalds  2005-04-16  1008  	if (tz) {
-^1da177e4c3f415 Linus Torvalds  2005-04-16  1009  		if (copy_from_user(&ktz, tz, sizeof(*tz)))
-^1da177e4c3f415 Linus Torvalds  2005-04-16  1010  			return -EFAULT;
-^1da177e4c3f415 Linus Torvalds  2005-04-16  1011  	}
-^1da177e4c3f415 Linus Torvalds  2005-04-16  1012  
-ce4c253573ad184 Arnd Bergmann   2017-11-08 @1013  	return do_sys_settimeofday64(tv ? &kts : NULL, tz ? &ktz : NULL);
-^1da177e4c3f415 Linus Torvalds  2005-04-16  1014  }
-^1da177e4c3f415 Linus Torvalds  2005-04-16  1015  
-
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
