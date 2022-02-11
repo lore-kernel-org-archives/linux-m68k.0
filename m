@@ -2,41 +2,58 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E4FE4C433EF
-	for <linux-m68k@archiver.kernel.org>; Fri, 11 Feb 2022 08:39:04 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 49A12C433EF
+	for <linux-m68k@archiver.kernel.org>; Fri, 11 Feb 2022 12:13:59 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344109AbiBKIjE (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Fri, 11 Feb 2022 03:39:04 -0500
-Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:33044 "EHLO
+        id S1349897AbiBKMN6 (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Fri, 11 Feb 2022 07:13:58 -0500
+Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:55978 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242964AbiBKIjD (ORCPT
+        with ESMTP id S236946AbiBKMN6 (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Fri, 11 Feb 2022 03:39:03 -0500
-Received: from outpost1.zedat.fu-berlin.de (outpost1.zedat.fu-berlin.de [130.133.4.66])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 150091BF;
-        Fri, 11 Feb 2022 00:39:02 -0800 (PST)
-Received: from inpost2.zedat.fu-berlin.de ([130.133.4.69])
-          by outpost.zedat.fu-berlin.de (Exim 4.94)
-          with esmtps (TLS1.2)
-          tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-          (envelope-from <glaubitz@zedat.fu-berlin.de>)
-          id 1nIRPn-001o0H-O4; Fri, 11 Feb 2022 09:36:27 +0100
-Received: from p5b13a545.dip0.t-ipconnect.de ([91.19.165.69] helo=[192.168.178.81])
-          by inpost2.zedat.fu-berlin.de (Exim 4.94)
-          with esmtpsa (TLS1.2)
-          tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-          (envelope-from <glaubitz@physik.fu-berlin.de>)
-          id 1nIRPn-000j9h-Gk; Fri, 11 Feb 2022 09:36:27 +0100
-Message-ID: <0b488b58-3d13-e987-37c7-16bac7a313e0@physik.fu-berlin.de>
-Date:   Fri, 11 Feb 2022 09:36:26 +0100
+        Fri, 11 Feb 2022 07:13:58 -0500
+Received: from mail-ua1-f52.google.com (mail-ua1-f52.google.com [209.85.222.52])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 08B9C1E9
+        for <linux-m68k@lists.linux-m68k.org>; Fri, 11 Feb 2022 04:13:57 -0800 (PST)
+Received: by mail-ua1-f52.google.com with SMTP id v5so4594763uam.3
+        for <linux-m68k@lists.linux-m68k.org>; Fri, 11 Feb 2022 04:13:56 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=ulYLaVXldSoI4tDDRxPqxlHj4drX158bChWih8XppYk=;
+        b=D9PFabHB7gV8PU1CPzQH4PmWGq0r/ZePeOxfabrYSzOF29iYxRJznE8GxSzQaYpLz0
+         nUKOSRQY89XObfNbXsNQlG5Rx27hSJHqPzCuqN+vckfoPorbKA/+Cd4UCmvdbc5DaNIz
+         Fsgf1JCSXtY15fN0vbwQ8f5qUNxTzP1bbQQ9mCbu7if51V08Szd9rNSGg91YYDkUe+uk
+         SfItgXOYNJC3DHv4y0xoGRzg+4uVFAd++aL1iFGGB69BJQechB1XdrZg0y++KoXqSc4Z
+         6Wi0i+3R35QcTbPGMMb1XNmYpVToBHFsWW615xsQ/iiHK2XtNs78gAHG+ywtBQVN2U3f
+         xPwA==
+X-Gm-Message-State: AOAM5331GecZV0ATcaqMaJvCvYp8GrcHZ5TZ8oH4L24kAPPV+15PiiY9
+        rCYCc1YVC9cTRPWsvgvxWyCvfTic12yn0g==
+X-Google-Smtp-Source: ABdhPJwb87+rSZC7VT1oafJ/Bgg8kARG0MQOg5bRPzlB6ZU/YAAwkYjse5b9RJjKNQEiO7HC15NOEg==
+X-Received: by 2002:ab0:69cc:: with SMTP id u12mr412169uaq.111.1644581635830;
+        Fri, 11 Feb 2022 04:13:55 -0800 (PST)
+Received: from mail-vs1-f53.google.com (mail-vs1-f53.google.com. [209.85.217.53])
+        by smtp.gmail.com with ESMTPSA id q22sm4106223vsj.23.2022.02.11.04.13.54
+        for <linux-m68k@lists.linux-m68k.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 11 Feb 2022 04:13:55 -0800 (PST)
+Received: by mail-vs1-f53.google.com with SMTP id u134so5188466vsu.8
+        for <linux-m68k@lists.linux-m68k.org>; Fri, 11 Feb 2022 04:13:54 -0800 (PST)
+X-Received: by 2002:a05:6102:34d9:: with SMTP id a25mr377312vst.68.1644581634672;
+ Fri, 11 Feb 2022 04:13:54 -0800 (PST)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.5.1
+References: <20220129184225.407100-1-laurent@vivier.eu> <20220129184225.407100-2-laurent@vivier.eu>
+ <CAMuHMdVmCV4v=LhGRB3d3hbyL4Etv_Wbb2VPhK5G9a2xB1Pm2A@mail.gmail.com> <0b488b58-3d13-e987-37c7-16bac7a313e0@physik.fu-berlin.de>
+In-Reply-To: <0b488b58-3d13-e987-37c7-16bac7a313e0@physik.fu-berlin.de>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Fri, 11 Feb 2022 13:13:43 +0100
+X-Gmail-Original-Message-ID: <CAMuHMdX53by9-5L5UWnjtpsUOX7LJMG+ySbFqO+QtsSST_iXKA@mail.gmail.com>
+Message-ID: <CAMuHMdX53by9-5L5UWnjtpsUOX7LJMG+ySbFqO+QtsSST_iXKA@mail.gmail.com>
 Subject: Re: [PATCH v13 1/5] m68k: add asm/config.h
-Content-Language: en-US
-To:     Geert Uytterhoeven <geert@linux-m68k.org>,
-        Laurent Vivier <laurent@vivier.eu>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+To:     John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
+Cc:     Laurent Vivier <laurent@vivier.eu>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
         Alessandro Zummo <a.zummo@towertech.it>,
         Daniel Lezcano <daniel.lezcano@linaro.org>,
         Alexandre Belloni <alexandre.belloni@bootlin.com>,
@@ -46,42 +63,38 @@ Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
         linux-rtc@vger.kernel.org, Jiaxun Yang <jiaxun.yang@flygoat.com>,
         Arnd Bergmann <arnd@arndb.de>,
         John Stultz <john.stultz@linaro.org>
-References: <20220129184225.407100-1-laurent@vivier.eu>
- <20220129184225.407100-2-laurent@vivier.eu>
- <CAMuHMdVmCV4v=LhGRB3d3hbyL4Etv_Wbb2VPhK5G9a2xB1Pm2A@mail.gmail.com>
-From:   John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
-In-Reply-To: <CAMuHMdVmCV4v=LhGRB3d3hbyL4Etv_Wbb2VPhK5G9a2xB1Pm2A@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Original-Sender: glaubitz@physik.fu-berlin.de
-X-Originating-IP: 91.19.165.69
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-Hi Geert!
+Hi Adrian,
 
-On 1/29/22 20:05, Geert Uytterhoeven wrote:
-> Hi Laurent,
-> 
-> On Sat, Jan 29, 2022 at 7:42 PM Laurent Vivier <laurent@vivier.eu> wrote:
->> To avoid 'warning: no previous prototype for' error, declare all
->> the parse_bootinfo and config functions prototypes into asm/config.h
->> and include it in arch/m68k/kernel/setup_mm.c and arch/m68k/*/config.c
->>
->> Signed-off-by: Laurent Vivier <laurent@vivier.eu>
->> Reviewed-by: Geert Uytterhoeven <geert@linux-m68k.org>
-> 
-> I have already queued v12.
+On Fri, Feb 11, 2022 at 9:36 AM John Paul Adrian Glaubitz
+<glaubitz@physik.fu-berlin.de> wrote:
+> On 1/29/22 20:05, Geert Uytterhoeven wrote:
+> > On Sat, Jan 29, 2022 at 7:42 PM Laurent Vivier <laurent@vivier.eu> wrote:
+> >> To avoid 'warning: no previous prototype for' error, declare all
+> >> the parse_bootinfo and config functions prototypes into asm/config.h
+> >> and include it in arch/m68k/kernel/setup_mm.c and arch/m68k/*/config.c
+> >>
+> >> Signed-off-by: Laurent Vivier <laurent@vivier.eu>
+> >> Reviewed-by: Geert Uytterhoeven <geert@linux-m68k.org>
+> >
+> > I have already queued v12.
+>
+> I assume you're talking about this particular patch only and not the whole
+> series, correct?
 
-I assume you're talking about this particular patch only and not the whole
-series, correct?
+Exactly.
 
-Adrian
+Gr{oetje,eeting}s,
 
--- 
- .''`.  John Paul Adrian Glaubitz
-: :' :  Debian Developer - glaubitz@debian.org
-`. `'   Freie Universitaet Berlin - glaubitz@physik.fu-berlin.de
-  `-    GPG: 62FF 8A75 84E0 2956 9546  0006 7426 3B37 F5B5 F913
+                        Geert
 
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
