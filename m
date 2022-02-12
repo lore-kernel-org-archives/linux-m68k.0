@@ -2,94 +2,121 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C24F2C433EF
-	for <linux-m68k@archiver.kernel.org>; Fri, 11 Feb 2022 22:10:55 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8831EC433EF
+	for <linux-m68k@archiver.kernel.org>; Sat, 12 Feb 2022 14:59:48 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1353991AbiBKWKz (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Fri, 11 Feb 2022 17:10:55 -0500
-Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:42608 "EHLO
+        id S231777AbiBLO7u (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Sat, 12 Feb 2022 09:59:50 -0500
+Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:58300 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344005AbiBKWKy (ORCPT
+        with ESMTP id S230239AbiBLO7u (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Fri, 11 Feb 2022 17:10:54 -0500
-X-Greylist: delayed 572 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Fri, 11 Feb 2022 14:10:52 PST
-Received: from new3-smtp.messagingengine.com (new3-smtp.messagingengine.com [66.111.4.229])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 85EC3D43
-        for <linux-m68k@lists.linux-m68k.org>; Fri, 11 Feb 2022 14:10:52 -0800 (PST)
-Received: from compute2.internal (compute2.nyi.internal [10.202.2.46])
-        by mailnew.nyi.internal (Postfix) with ESMTP id E34C75800E8;
-        Fri, 11 Feb 2022 17:01:17 -0500 (EST)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute2.internal (MEProxy); Fri, 11 Feb 2022 17:01:17 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:cc:content-type:date:date:from:from
-        :in-reply-to:in-reply-to:message-id:mime-version:references
-        :reply-to:sender:subject:subject:to:to:x-me-proxy:x-me-proxy
-        :x-me-sender:x-me-sender:x-sasl-enc; s=fm2; bh=5zf6jVEQjwVSQ5ZFe
-        HnTKZGFpRdZHZ64iwTJ9Ju+0KE=; b=LlFvrTcCq1B+2kEzvZkHLSNkaWQr+m3ZZ
-        +0eNXDEcpgjZKJLxRPUU7XKWitNaITB5A24lv7mV5wFNdlg0F/oFQoyenr8w1mH/
-        tzlG/0nSoAwyu/3ZvJ3nf/TvNmpBOrTo9uwSCv+QOqVFmJo7zB8bXWV8br2jfFt4
-        8YpVXRleEQuGoWwUV9YZ0z4iJYJjLa2bSPfcjSbC51AF5Su871F1cf9viY3KmNcN
-        QrZMKWh8gPwaTrVWg2hQWLmVHydYnu0E5QTrExMqSyupjRb0QuPAmAMctEZeFKpX
-        S0LNElQDEz4zuHSkj2fotjAV8Fx+pSnHiwVFUtso3CkNry6xR44/w==
-X-ME-Sender: <xms:q9wGYn48OGhGsL8cJ8uYo8qg0iS1w3eSwpSXUALEMiGOjCSEBUALBw>
-    <xme:q9wGYs4RaTaEjtoL8gRFIavTAIMUj78qxHJBIiJxvFpaXQGWETFawyilaAjcFQIqD
-    0knvYX5_lf0YHCwd1o>
-X-ME-Received: <xmr:q9wGYucABJbEybN1WMgSQFiQJTytRIVIe4hXHpQIYfw7EMTzhwYw6wyAxL6wQixK6o1Do7vysV2iU8rnLzbGl8-WORiwgEX13ME>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvvddrieefgdduheefucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepfffhvffujgfkfhggtgesthdtredttddtvdenucfhrhhomhephfhinhhnucfv
-    hhgrihhnuceofhhthhgrihhnsehlihhnuhigqdhmieekkhdrohhrgheqnecuggftrfgrth
-    htvghrnhepffduhfegfedvieetudfgleeugeehkeekfeevfffhieevteelvdfhtdevffet
-    uedunecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepfh
-    hthhgrihhnsehlihhnuhigqdhmieekkhdrohhrgh
-X-ME-Proxy: <xmx:q9wGYoJYW-TUBr2EYt8mEOqMinOi3-peDoIC-mAjQGqPgu3cg_MifA>
-    <xmx:q9wGYrI_hdzBCJKO34Xz4nTZ6qKmVPEgK_XTo1FkhKRNcrIzELAmKg>
-    <xmx:q9wGYhyn9DBmzMoSqb-Wu9VkYGRZW6ipQTjxpRDmB-WJ_kZknYQ0yw>
-    <xmx:rdwGYr9J_xCb6W1UqUIVb-n7z5Gv3lAyoRa5bB7MSFahBmLExEQg_Q>
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Fri,
- 11 Feb 2022 17:01:12 -0500 (EST)
-Date:   Sat, 12 Feb 2022 09:01:19 +1100 (AEDT)
-From:   Finn Thain <fthain@linux-m68k.org>
-To:     "Jason A. Donenfeld" <Jason@zx2c4.com>
-cc:     linux-kernel@vger.kernel.org, linux-crypto@vger.kernel.org,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        linux-riscv@lists.infradead.org,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        linux-m68k@lists.linux-m68k.org,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        linux-mips@vger.kernel.org,
-        Dominik Brodowski <linux@dominikbrodowski.net>,
-        Eric Biggers <ebiggers@google.com>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Andy Lutomirski <luto@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        Lennart Poettering <mzxreary@0pointer.de>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Theodore Ts'o <tytso@mit.edu>
-Subject: Re: [PATCH RFC v0] random: block in /dev/urandom
-In-Reply-To: <20220211210757.612595-1-Jason@zx2c4.com>
-Message-ID: <a7c12f2-c12-f0ea-ad44-10fb607d86@linux-m68k.org>
-References: <20220211210757.612595-1-Jason@zx2c4.com>
+        Sat, 12 Feb 2022 09:59:50 -0500
+Received: from mail-vs1-f53.google.com (mail-vs1-f53.google.com [209.85.217.53])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A2FC214
+        for <linux-m68k@lists.linux-m68k.org>; Sat, 12 Feb 2022 06:59:46 -0800 (PST)
+Received: by mail-vs1-f53.google.com with SMTP id p7so2745889vsg.2
+        for <linux-m68k@lists.linux-m68k.org>; Sat, 12 Feb 2022 06:59:46 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
+        bh=uFtOIkhRRUwgkrLortfSPfxBMrkSbVxzV0guUNJR+x0=;
+        b=l1FFYaPfv4lsVz1aXlLCoU2oz4IY1DNAoVtkhHwnVK6Br2C6uTRnLP/vpl7C1B50WK
+         cjfDP5zY0uciajP1VCbi/xq8rCF6UkWRSO6R7y+/eOPtnTaD1ELCKQgmZ4mHNw3B2tbG
+         wbBkkM8YUPPEz4ALK9sDf/lqeTDDcqzol+4If4YIVVjfyl3ptc5LVAdlWTxV2LBUPTmx
+         gZ1nFbViA5jJCK3dDbbn/B4Yi/PQ5zz1PxUOJgejyPGeIKGXBQSGfvRKeyyIj3jzRrwV
+         7rH7aye82j0rtweLtXl6ZfuhqyKSRmK+LHbrHyzp7beyFuAE/4/L9OoxcqAHgfidKwJU
+         lXUA==
+X-Gm-Message-State: AOAM533xhX4Y3+32ZSU4m+eamBzW0KGfX+9EsEdNpuWrVpUxxIH6CodK
+        nvd18UqR7DykwpEHjpXo27T3Q7H2M12E0g==
+X-Google-Smtp-Source: ABdhPJyE3MTFSXfL5bQrLGgw+coFQXsXfCwToGYFqhUtgTi2tcyAUcFDAuXsUAZQ7vMZ/U5jFGtzYQ==
+X-Received: by 2002:a05:6102:54a7:: with SMTP id bk39mr2057604vsb.60.1644677984955;
+        Sat, 12 Feb 2022 06:59:44 -0800 (PST)
+Received: from mail-vs1-f53.google.com (mail-vs1-f53.google.com. [209.85.217.53])
+        by smtp.gmail.com with ESMTPSA id w15sm2623870uam.13.2022.02.12.06.59.44
+        for <linux-m68k@lists.linux-m68k.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 12 Feb 2022 06:59:44 -0800 (PST)
+Received: by mail-vs1-f53.google.com with SMTP id j26so12380317vso.12
+        for <linux-m68k@lists.linux-m68k.org>; Sat, 12 Feb 2022 06:59:44 -0800 (PST)
+X-Received: by 2002:a67:ec0c:: with SMTP id d12mr1706591vso.77.1644677984376;
+ Sat, 12 Feb 2022 06:59:44 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Sat, 12 Feb 2022 15:59:33 +0100
+X-Gmail-Original-Message-ID: <CAMuHMdU3ievhXxKR_xi_v3aumnYW7UNUO6qMdhgfyWTyVSsCkQ@mail.gmail.com>
+Message-ID: <CAMuHMdU3ievhXxKR_xi_v3aumnYW7UNUO6qMdhgfyWTyVSsCkQ@mail.gmail.com>
+Subject: Wrong colors on ARAnyM
+To:     Petr Stehlik <pstehlik@sophics.cz>,
+        Michael Schmitz <schmitzmic@gmail.com>
+Cc:     aranym@googlegroups.com,
+        linux-m68k <linux-m68k@lists.linux-m68k.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-On Fri, 11 Feb 2022, Jason A. Donenfeld wrote:
+Hi all,
 
-> + * Reading from /dev/random and /dev/urandom both the same effect as
-> + * calling getrandom(2) with flags=0. In earlier versions, however,
-> + * they each had vastly different semantics and should therefore be
-> + * avoided to prevent backwards compatibility issues.
+While working on an Atari DRM driver for Linux, I discovered a problem
+with video modes using 2 bitplanes: the display only shows tints of
+blue. 1, 4, and 8 bitplanes work fine.
 
-If the end result "should be avoided", then why bother? IOW, how does this 
-improve the ABI? I know you said it's a "panacea" but I'm afraid that's 
-not clear to me and the patch description doesn't explain it.
+With debug code added to ARAnyM, it turns out the bad behavior
+happens when ARAnyM uses the STe palette registers instead of the
+Falcon palette registers. And apparently the issue can also be
+reproduced with atafb, and with other color depths:
+
+ 1. Boot Linux (I'm using video=atafb:tthigh)
+
+    Everything looks good:
+
+      refreshPalette:319: st_shift = 0
+      refreshPalette:354: Fal color 0 = 0x00000000 => 00/00/00
+      refreshPalette:354: Fal color 1 = 0x000000a8 => 00/00/aa
+      refreshPalette:354: Fal color 2 = 0x00a80000 => 00/aa/00
+      refreshPalette:354: Fal color 3 = 0x00a800a8 => 00/aa/aa
+
+ 2. Change the color depth a few times:
+
+    $ fbset -depth 1
+    $ fbset -depth 2
+    $ fbset -depth 4
+      ...
+
+    If good: console is white(grey) on black
+
+      refreshPalette:319: st_shift = 0
+      refreshPalette:354: Fal color 0 = 0x00000000 => 00/00/00
+      refreshPalette:354: Fal color 1 = 0xa8a800a8 => aa/aa/aa
+      refreshPalette:354: Fal color 2 = 0x54540054 => 55/55/55
+      refreshPalette:354: Fal color 3 = 0xfcfc00fc => ff/ff/ff
+
+    If bad: console is blue on black
+
+      refreshPalette:319: st_shift = 256
+      refreshPalette:335: STe color 0 = 0x0000 => 00/00/00
+      refreshPalette:335: STe color 1 = 0x0117 => 22/22/ee
+      refreshPalette:335: STe color 2 = 0x0000 => 00/00/00
+      refreshPalette:335: STe color 3 = 0x0000 => 00/00/00
+
+As a workaround, I fixed ARAnyM to force numColors to 256, so
+it will always use the Falcon palette.
+https://github.com/aranym/aranym/blob/master/src/videl.cpp#L319
+
+Is this a bug in ARAnyM, or a bug in atafb?
+As the problem is not 100% reproducible, it looks like a race condition
+in ARAnyM, or a wrong initialization order in atafb.
+
+Thanks!
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
