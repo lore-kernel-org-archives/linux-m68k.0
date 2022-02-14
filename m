@@ -2,129 +2,387 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 32DC6C433EF
-	for <linux-m68k@archiver.kernel.org>; Sun, 13 Feb 2022 03:15:59 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 11A7AC433F5
+	for <linux-m68k@archiver.kernel.org>; Mon, 14 Feb 2022 02:31:56 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233299AbiBMDQC (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Sat, 12 Feb 2022 22:16:02 -0500
-Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:36720 "EHLO
+        id S239554AbiBNCcA (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Sun, 13 Feb 2022 21:32:00 -0500
+Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:45324 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233285AbiBMDQB (ORCPT
+        with ESMTP id S239542AbiBNCbq (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Sat, 12 Feb 2022 22:16:01 -0500
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6942F5F267
-        for <linux-m68k@lists.linux-m68k.org>; Sat, 12 Feb 2022 19:15:56 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 9D1B160F4C;
-        Sun, 13 Feb 2022 03:15:55 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5AD68C340EE;
-        Sun, 13 Feb 2022 03:15:54 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1644722155;
-        bh=cfBWan6cCytJstd6/pWGmDyKPrlRMs3PhvFLZb9flIA=;
-        h=In-Reply-To:References:Date:From:To:Cc:Subject:From;
-        b=n6JbxKlqcL0RAOuXM/wB7PjxNSkOwDc3Mk5RwS+gAaCsG9+WtOvtx0ANA+x9xFJ5w
-         mbXMBbPJydMkjNn3FLkYFKafzV8vihxga6fQD0iDOLO2yVmsjCgk/MvdqjoPKAPQz6
-         moUjoQXuSLmC+ANubX4LzdHVEVmdRvZAWYJ3pRZMkZhSsk/ADJjfOtUffO6ea+L6vB
-         9BT9kvv7671cLvTM6lWU/wj4+wxhJktllZJ+gMIikltRcu5F7JxkwCEv7UrGC8fgO1
-         BY5P9IQyAXsSva1KrgyBvfSt5E+NDpbmKoZ+G262fdNB2d8RFvUGvsCwE2hVXPp4Jf
-         hRCwPV49B1KYA==
-Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
-        by mailauth.nyi.internal (Postfix) with ESMTP id 1BF9027C0054;
-        Sat, 12 Feb 2022 22:15:52 -0500 (EST)
-Received: from imap48 ([10.202.2.98])
-  by compute5.internal (MEProxy); Sat, 12 Feb 2022 22:15:53 -0500
-X-ME-Sender: <xms:53cIYsWHCSBLT20UKSNUTMb5qweuMdG6OtrolriGuqewjZWZS1dtlw>
-    <xme:53cIYgnpm3vUbdrGFAUQQSkkvpvKuUaaSwRCyJz73WAfHhyZxyuOMXUqPKKjs7ynQ
-    JGCD5Ni84IuoaGqbOg>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvvddrieekgdegfecutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
-    fjughrpefofgggkfgjfhffhffvufgtgfesthhqredtreerjeenucfhrhhomhepfdetnhgu
-    hicunfhuthhomhhirhhskhhifdcuoehluhhtoheskhgvrhhnvghlrdhorhhgqeenucggtf
-    frrghtthgvrhhnpedvleehjeejvefhuddtgeegffdtjedtffegveethedvgfejieevieeu
-    feevuedvteenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhroh
-    hmpegrnhguhidomhgvshhmthhprghuthhhphgvrhhsohhnrghlihhthidqudduiedukeeh
-    ieefvddqvdeifeduieeitdekqdhluhhtoheppehkvghrnhgvlhdrohhrgheslhhinhhugi
-    drlhhuthhordhush
-X-ME-Proxy: <xmx:53cIYganbE64N5FtxbXIhcvP5cEsBlcLyBW1qmXC6zPjhg2K9UldOQ>
-    <xmx:53cIYrXtvXSgyojTVSs8d7oybism5nfG7LO6nh_CZPbzlAALvAhXiQ>
-    <xmx:53cIYmmYjq0iVHPXlfReLn_yJanYCFq6QJyScKOL1uKgMZWSpTVD4g>
-    <xmx:6HcIYldQHsQwB-Dv9w6_2nhXKOggZdLrPO6ylOa8HrDKqODCn_wNmh87cJ8>
-Received: by mailuser.nyi.internal (Postfix, from userid 501)
-        id 8F97C21E006E; Sat, 12 Feb 2022 22:15:51 -0500 (EST)
-X-Mailer: MessagingEngine.com Webmail Interface
-User-Agent: Cyrus-JMAP/3.5.0-alpha0-4748-g31a5b5f50e-fm-cal2020-20220204.001-g31a5b5f5
-Mime-Version: 1.0
-Message-Id: <fbdd43e1-a305-48d1-8ccb-2deffcb715f7@www.fastmail.com>
-In-Reply-To: <20220211210757.612595-1-Jason@zx2c4.com>
-References: <20220211210757.612595-1-Jason@zx2c4.com>
-Date:   Sat, 12 Feb 2022 19:15:31 -0800
-From:   "Andy Lutomirski" <luto@kernel.org>
-To:     "Jason A. Donenfeld" <Jason@zx2c4.com>,
-        "Linux Kernel Mailing List" <linux-kernel@vger.kernel.org>,
-        "Linux Crypto Mailing List" <linux-crypto@vger.kernel.org>
-Cc:     "Paul Walmsley" <paul.walmsley@sifive.com>,
-        "Palmer Dabbelt" <palmer@dabbelt.com>,
-        "Albert Ou" <aou@eecs.berkeley.edu>,
-        linux-riscv@lists.infradead.org,
-        "Geert Uytterhoeven" <geert@linux-m68k.org>,
-        linux-m68k@lists.linux-m68k.org,
-        "Thomas Bogendoerfer" <tsbogend@alpha.franken.de>,
-        linux-mips@vger.kernel.org,
-        "Dominik Brodowski" <linux@dominikbrodowski.net>,
-        "Eric Biggers" <ebiggers@google.com>,
-        "Ard Biesheuvel" <ardb@kernel.org>,
-        "Arnd Bergmann" <arnd@arndb.de>,
-        "Thomas Gleixner" <tglx@linutronix.de>,
-        "Kees Cook" <keescook@chromium.org>,
-        "Lennart Poettering" <mzxreary@0pointer.de>,
-        "Linus Torvalds" <torvalds@linux-foundation.org>,
-        "Greg Kroah-Hartman" <gregkh@linuxfoundation.org>,
-        "Theodore Ts'o" <tytso@mit.edu>
-Subject: Re: [PATCH RFC v0] random: block in /dev/urandom
-Content-Type: text/plain;charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+        Sun, 13 Feb 2022 21:31:46 -0500
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 8411657B12
+        for <linux-m68k@lists.linux-m68k.org>; Sun, 13 Feb 2022 18:31:29 -0800 (PST)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 83CB7106F;
+        Sun, 13 Feb 2022 18:31:28 -0800 (PST)
+Received: from p8cg001049571a15.arm.com (unknown [10.163.47.15])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 006173F718;
+        Sun, 13 Feb 2022 18:31:25 -0800 (PST)
+From:   Anshuman Khandual <anshuman.khandual@arm.com>
+To:     linux-mm@kvack.org
+Cc:     linux-kernel@vger.kernel.org,
+        Anshuman Khandual <anshuman.khandual@arm.com>,
+        Christoph Hellwig <hch@infradead.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        linux-arch@vger.kernel.org,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        linux-m68k@lists.linux-m68k.org
+Subject: [PATCH 08/30] m68k/mm: Enable ARCH_HAS_VM_GET_PAGE_PROT
+Date:   Mon, 14 Feb 2022 08:00:31 +0530
+Message-Id: <1644805853-21338-9-git-send-email-anshuman.khandual@arm.com>
+X-Mailer: git-send-email 2.7.4
+In-Reply-To: <1644805853-21338-1-git-send-email-anshuman.khandual@arm.com>
+References: <1644805853-21338-1-git-send-email-anshuman.khandual@arm.com>
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
+This defines and exports a platform specific custom vm_get_page_prot() via
+subscribing ARCH_HAS_VM_GET_PAGE_PROT. Subsequently all __SXXX and __PXXX
+macros can be dropped which are no longer needed.
 
+Cc: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+Cc: linux-m68k@lists.linux-m68k.org
+Cc: linux-kernel@vger.kernel.org
+Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
+---
+ arch/m68k/Kconfig                        |   1 +
+ arch/m68k/include/asm/mcf_pgtable.h      |  59 -------------
+ arch/m68k/include/asm/motorola_pgtable.h |  22 -----
+ arch/m68k/include/asm/sun3_pgtable.h     |  22 -----
+ arch/m68k/mm/init.c                      | 104 +++++++++++++++++++++++
+ arch/m68k/mm/motorola.c                  |  48 ++++++++++-
+ 6 files changed, 150 insertions(+), 106 deletions(-)
 
-On Fri, Feb 11, 2022, at 1:07 PM, Jason A. Donenfeld wrote:
-> This is very much an RFC patch, or maybe even an RFG -- request for
-> grumbles. This topic has come up a million times, and usually doesn't =
-go
-> anywhere. This time I thought I'd bring it up with a slightly narrower
-> focus. Before you read further, realize that I do not intend to merge
-> this without there being an appropriate amount of consensus for it and
-> discussion about it.
->
-> Ever since Linus' 50ee7529ec45 ("random: try to actively add entropy
-> rather than passively wait for it"), the RNG does a haveged-style jitt=
-er
-> dance around the scheduler, in order to produce entropy (and credit it)
-> for the case when we're stuck in wait_for_random_bytes(). How ever you
-> feel about the Linus Jitter Dance is beside the point: it's been there
-> for three years and usually gets the RNG initialized in a second or so.
+diff --git a/arch/m68k/Kconfig b/arch/m68k/Kconfig
+index 936e1803c7c7..114e65164692 100644
+--- a/arch/m68k/Kconfig
++++ b/arch/m68k/Kconfig
+@@ -11,6 +11,7 @@ config M68K
+ 	select ARCH_NO_PREEMPT if !COLDFIRE
+ 	select ARCH_USE_MEMTEST if MMU_MOTOROLA
+ 	select ARCH_WANT_IPC_PARSE_VERSION
++	select ARCH_HAS_VM_GET_PAGE_PROT
+ 	select BINFMT_FLAT_ARGVP_ENVP_ON_STACK
+ 	select DMA_DIRECT_REMAP if HAS_DMA && MMU && !COLDFIRE
+ 	select GENERIC_ATOMIC64
+diff --git a/arch/m68k/include/asm/mcf_pgtable.h b/arch/m68k/include/asm/mcf_pgtable.h
+index 6f2b87d7a50d..dc5c8ab6aa57 100644
+--- a/arch/m68k/include/asm/mcf_pgtable.h
++++ b/arch/m68k/include/asm/mcf_pgtable.h
+@@ -86,65 +86,6 @@
+ 				 | CF_PAGE_READABLE \
+ 				 | CF_PAGE_DIRTY)
+ 
+-/*
+- * Page protections for initialising protection_map. See mm/mmap.c
+- * for use. In general, the bit positions are xwr, and P-items are
+- * private, the S-items are shared.
+- */
+-#define __P000		PAGE_NONE
+-#define __P001		__pgprot(CF_PAGE_VALID \
+-				 | CF_PAGE_ACCESSED \
+-				 | CF_PAGE_READABLE)
+-#define __P010		__pgprot(CF_PAGE_VALID \
+-				 | CF_PAGE_ACCESSED \
+-				 | CF_PAGE_WRITABLE)
+-#define __P011		__pgprot(CF_PAGE_VALID \
+-				 | CF_PAGE_ACCESSED \
+-				 | CF_PAGE_READABLE \
+-				 | CF_PAGE_WRITABLE)
+-#define __P100		__pgprot(CF_PAGE_VALID \
+-				 | CF_PAGE_ACCESSED \
+-				 | CF_PAGE_EXEC)
+-#define __P101		__pgprot(CF_PAGE_VALID \
+-				 | CF_PAGE_ACCESSED \
+-				 | CF_PAGE_READABLE \
+-				 | CF_PAGE_EXEC)
+-#define __P110		__pgprot(CF_PAGE_VALID \
+-				 | CF_PAGE_ACCESSED \
+-				 | CF_PAGE_WRITABLE \
+-				 | CF_PAGE_EXEC)
+-#define __P111		__pgprot(CF_PAGE_VALID \
+-				 | CF_PAGE_ACCESSED \
+-				 | CF_PAGE_READABLE \
+-				 | CF_PAGE_WRITABLE \
+-				 | CF_PAGE_EXEC)
+-
+-#define __S000		PAGE_NONE
+-#define __S001		__pgprot(CF_PAGE_VALID \
+-				 | CF_PAGE_ACCESSED \
+-				 | CF_PAGE_READABLE)
+-#define __S010		PAGE_SHARED
+-#define __S011		__pgprot(CF_PAGE_VALID \
+-				 | CF_PAGE_ACCESSED \
+-				 | CF_PAGE_SHARED \
+-				 | CF_PAGE_READABLE)
+-#define __S100		__pgprot(CF_PAGE_VALID \
+-				 | CF_PAGE_ACCESSED \
+-				 | CF_PAGE_EXEC)
+-#define __S101		__pgprot(CF_PAGE_VALID \
+-				 | CF_PAGE_ACCESSED \
+-				 | CF_PAGE_READABLE \
+-				 | CF_PAGE_EXEC)
+-#define __S110		__pgprot(CF_PAGE_VALID \
+-				 | CF_PAGE_ACCESSED \
+-				 | CF_PAGE_SHARED \
+-				 | CF_PAGE_EXEC)
+-#define __S111		__pgprot(CF_PAGE_VALID \
+-				 | CF_PAGE_ACCESSED \
+-				 | CF_PAGE_SHARED \
+-				 | CF_PAGE_READABLE \
+-				 | CF_PAGE_EXEC)
+-
+ #define PTE_MASK	PAGE_MASK
+ #define CF_PAGE_CHG_MASK (PTE_MASK | CF_PAGE_ACCESSED | CF_PAGE_DIRTY)
+ 
+diff --git a/arch/m68k/include/asm/motorola_pgtable.h b/arch/m68k/include/asm/motorola_pgtable.h
+index 022c3abc280d..4ea1bb57deee 100644
+--- a/arch/m68k/include/asm/motorola_pgtable.h
++++ b/arch/m68k/include/asm/motorola_pgtable.h
+@@ -83,28 +83,6 @@ extern unsigned long mm_cachebits;
+ #define PAGE_COPY_C	__pgprot(_PAGE_PRESENT | _PAGE_RONLY | _PAGE_ACCESSED)
+ #define PAGE_READONLY_C	__pgprot(_PAGE_PRESENT | _PAGE_RONLY | _PAGE_ACCESSED)
+ 
+-/*
+- * The m68k can't do page protection for execute, and considers that the same are read.
+- * Also, write permissions imply read permissions. This is the closest we can get..
+- */
+-#define __P000	PAGE_NONE_C
+-#define __P001	PAGE_READONLY_C
+-#define __P010	PAGE_COPY_C
+-#define __P011	PAGE_COPY_C
+-#define __P100	PAGE_READONLY_C
+-#define __P101	PAGE_READONLY_C
+-#define __P110	PAGE_COPY_C
+-#define __P111	PAGE_COPY_C
+-
+-#define __S000	PAGE_NONE_C
+-#define __S001	PAGE_READONLY_C
+-#define __S010	PAGE_SHARED_C
+-#define __S011	PAGE_SHARED_C
+-#define __S100	PAGE_READONLY_C
+-#define __S101	PAGE_READONLY_C
+-#define __S110	PAGE_SHARED_C
+-#define __S111	PAGE_SHARED_C
+-
+ #define pmd_pgtable(pmd) ((pgtable_t)pmd_page_vaddr(pmd))
+ 
+ /*
+diff --git a/arch/m68k/include/asm/sun3_pgtable.h b/arch/m68k/include/asm/sun3_pgtable.h
+index 5b24283a0a42..086fabdd8d4c 100644
+--- a/arch/m68k/include/asm/sun3_pgtable.h
++++ b/arch/m68k/include/asm/sun3_pgtable.h
+@@ -66,28 +66,6 @@
+ 				 | SUN3_PAGE_SYSTEM \
+ 				 | SUN3_PAGE_NOCACHE)
+ 
+-/*
+- * Page protections for initialising protection_map. The sun3 has only two
+- * protection settings, valid (implying read and execute) and writeable. These
+- * are as close as we can get...
+- */
+-#define __P000	PAGE_NONE
+-#define __P001	PAGE_READONLY
+-#define __P010	PAGE_COPY
+-#define __P011	PAGE_COPY
+-#define __P100	PAGE_READONLY
+-#define __P101	PAGE_READONLY
+-#define __P110	PAGE_COPY
+-#define __P111	PAGE_COPY
+-
+-#define __S000	PAGE_NONE
+-#define __S001	PAGE_READONLY
+-#define __S010	PAGE_SHARED
+-#define __S011	PAGE_SHARED
+-#define __S100	PAGE_READONLY
+-#define __S101	PAGE_READONLY
+-#define __S110	PAGE_SHARED
+-#define __S111	PAGE_SHARED
+ 
+ /* Use these fake page-protections on PMDs. */
+ #define SUN3_PMD_VALID	(0x00000001)
+diff --git a/arch/m68k/mm/init.c b/arch/m68k/mm/init.c
+index 1b47bec15832..b6ef2c6f4e85 100644
+--- a/arch/m68k/mm/init.c
++++ b/arch/m68k/mm/init.c
+@@ -128,3 +128,107 @@ void __init mem_init(void)
+ 	memblock_free_all();
+ 	init_pointer_tables();
+ }
++
++#ifdef CONFIG_COLDFIRE
++/*
++ * Page protections for initialising protection_map. See mm/mmap.c
++ * for use. In general, the bit positions are xwr, and P-items are
++ * private, the S-items are shared.
++ */
++pgprot_t vm_get_page_prot(unsigned long vm_flags)
++{
++	switch (vm_flags & (VM_READ | VM_WRITE | VM_EXEC | VM_SHARED)) {
++	case VM_NONE:
++		return PAGE_NONE;
++	case VM_READ:
++		return __pgprot(CF_PAGE_VALID | CF_PAGE_ACCESSED |
++				CF_PAGE_READABLE);
++	case VM_WRITE:
++		return __pgprot(CF_PAGE_VALID | CF_PAGE_ACCESSED |
++				CF_PAGE_WRITABLE);
++	case VM_WRITE | VM_READ:
++		return __pgprot(CF_PAGE_VALID | CF_PAGE_ACCESSED |
++				CF_PAGE_READABLE | CF_PAGE_WRITABLE);
++	case VM_EXEC:
++		return __pgprot(CF_PAGE_VALID | CF_PAGE_ACCESSED |
++				CF_PAGE_EXEC);
++	case VM_EXEC | VM_READ:
++		return __pgprot(CF_PAGE_VALID | CF_PAGE_ACCESSED |
++				CF_PAGE_READABLE | CF_PAGE_EXEC);
++	case VM_EXEC | VM_WRITE:
++		return __pgprot(CF_PAGE_VALID | CF_PAGE_ACCESSED |
++				CF_PAGE_WRITABLE | CF_PAGE_EXEC);
++	case VM_EXEC | VM_WRITE | VM_READ:
++		return __pgprot(CF_PAGE_VALID | CF_PAGE_ACCESSED |
++				CF_PAGE_READABLE | CF_PAGE_WRITABLE |
++				CF_PAGE_EXEC);
++	case VM_SHARED:
++		return PAGE_NONE;
++	case VM_SHARED | VM_READ:
++		return __pgprot(CF_PAGE_VALID | CF_PAGE_ACCESSED |
++				CF_PAGE_READABLE);
++	case VM_SHARED | VM_WRITE:
++		return PAGE_SHARED;
++	case VM_SHARED | VM_WRITE | VM_READ:
++		return __pgprot(CF_PAGE_VALID | CF_PAGE_ACCESSED |
++				CF_PAGE_READABLE | CF_PAGE_SHARED);
++	case VM_SHARED | VM_EXEC:
++		return __pgprot(CF_PAGE_VALID | CF_PAGE_ACCESSED |
++				CF_PAGE_EXEC);
++	case VM_SHARED | VM_EXEC | VM_READ:
++		return __pgprot(CF_PAGE_VALID | CF_PAGE_ACCESSED |
++				CF_PAGE_READABLE | CF_PAGE_EXEC);
++	case VM_SHARED | VM_EXEC | VM_WRITE:
++		return __pgprot(CF_PAGE_VALID | CF_PAGE_ACCESSED |
++				CF_PAGE_SHARED | CF_PAGE_EXEC);
++	case VM_SHARED | VM_EXEC | VM_WRITE | VM_READ:
++		return __pgprot(CF_PAGE_VALID | CF_PAGE_ACCESSED |
++				CF_PAGE_READABLE | CF_PAGE_SHARED |
++				CF_PAGE_EXEC);
++	default:
++		BUILD_BUG();
++	}
++}
++#endif
++
++#ifdef CONFIG_SUN3
++/*
++ * Page protections for initialising protection_map. The sun3 has only two
++ * protection settings, valid (implying read and execute) and writeable. These
++ * are as close as we can get...
++ */
++pgprot_t vm_get_page_prot(unsigned long vm_flags)
++{
++	switch (vm_flags & (VM_READ | VM_WRITE | VM_EXEC | VM_SHARED)) {
++	case VM_NONE:
++		return PAGE_NONE;
++	case VM_READ:
++		return PAGE_READONLY;
++	case VM_WRITE:
++	case VM_WRITE | VM_READ:
++		return PAGE_COPY;
++	case VM_EXEC:
++	case VM_EXEC | VM_READ:
++		return PAGE_READONLY;
++	case VM_EXEC | VM_WRITE:
++	case VM_EXEC | VM_WRITE | VM_READ:
++		return PAGE_COPY;
++	case VM_SHARED:
++		return PAGE_NONE;
++	case VM_SHARED | VM_READ:
++		return PAGE_READONLY;
++	case VM_SHARED | VM_WRITE:
++	case VM_SHARED | VM_WRITE | VM_READ:
++		return PAGE_SHARED;
++	case VM_SHARED | VM_EXEC:
++	case VM_SHARED | VM_EXEC | VM_READ:
++		return PAGE_READONLY;
++	case VM_SHARED | VM_EXEC | VM_WRITE:
++	case VM_SHARED | VM_EXEC | VM_WRITE | VM_READ:
++		return PAGE_SHARED;
++	default:
++		BUILD_BUG();
++	}
++}
++#endif
++EXPORT_SYMBOL(vm_get_page_prot);
+diff --git a/arch/m68k/mm/motorola.c b/arch/m68k/mm/motorola.c
+index ecbe948f4c1a..495ba0ea083c 100644
+--- a/arch/m68k/mm/motorola.c
++++ b/arch/m68k/mm/motorola.c
+@@ -400,12 +400,9 @@ void __init paging_init(void)
+ 
+ 	/* Fix the cache mode in the page descriptors for the 680[46]0.  */
+ 	if (CPU_IS_040_OR_060) {
+-		int i;
+ #ifndef mm_cachebits
+ 		mm_cachebits = _PAGE_CACHE040;
+ #endif
+-		for (i = 0; i < 16; i++)
+-			pgprot_val(protection_map[i]) |= _PAGE_CACHE040;
+ 	}
+ 
+ 	min_addr = m68k_memory[0].addr;
+@@ -483,3 +480,48 @@ void __init paging_init(void)
+ 	max_zone_pfn[ZONE_DMA] = memblock_end_of_DRAM();
+ 	free_area_init(max_zone_pfn);
+ }
++
++/*
++ * The m68k can't do page protection for execute, and considers that
++ * the same are read. Also, write permissions imply read permissions.
++ * This is the closest we can get..
++ */
++pgprot_t vm_get_page_prot(unsigned long vm_flags)
++{
++	unsigned long cachebits = 0;
++
++	if (CPU_IS_040_OR_060)
++		cachebits = _PAGE_CACHE040;
++
++	switch (vm_flags & (VM_READ | VM_WRITE | VM_EXEC | VM_SHARED)) {
++	case VM_NONE:
++		return __pgprot(pgprot_val(PAGE_NONE_C) | cachebits);
++	case VM_READ:
++		return __pgprot(pgprot_val(PAGE_READONLY_C) | cachebits);
++	case VM_WRITE:
++	case VM_WRITE | VM_READ:
++		return __pgprot(pgprot_val(PAGE_COPY_C) | cachebits);
++	case VM_EXEC:
++	case VM_EXEC | VM_READ:
++		return __pgprot(pgprot_val(PAGE_READONLY_C) | cachebits);
++	case VM_EXEC | VM_WRITE:
++	case VM_EXEC | VM_WRITE | VM_READ:
++		return __pgprot(pgprot_val(PAGE_COPY_C) | cachebits);
++	case VM_SHARED:
++		return __pgprot(pgprot_val(PAGE_NONE_C) | cachebits);
++	case VM_SHARED | VM_READ:
++		return __pgprot(pgprot_val(PAGE_READONLY_C) | cachebits);
++	case VM_SHARED | VM_WRITE:
++	case VM_SHARED | VM_WRITE | VM_READ:
++		return __pgprot(pgprot_val(PAGE_SHARED_C) | cachebits);
++	case VM_SHARED | VM_EXEC:
++	case VM_SHARED | VM_EXEC | VM_READ:
++		return __pgprot(pgprot_val(PAGE_READONLY_C) | cachebits);
++	case VM_SHARED | VM_EXEC | VM_WRITE:
++	case VM_SHARED | VM_EXEC | VM_WRITE | VM_READ:
++		return __pgprot(pgprot_val(PAGE_SHARED_C) | cachebits);
++	default:
++		BUILD_BUG();
++	}
++}
++EXPORT_SYMBOL(vm_get_page_prot);
+-- 
+2.25.1
 
-I dislike this patch for a reason that has nothing to do with security. =
-Somewhere there=E2=80=99s a Linux machine that boots straight to Nethack=
- in a glorious 50ms.  If Nethack gets 256 bits of amazing entropy from /=
-dev/urandom, then the machine=E2=80=99s owner has to play for real. If i=
-t repeats the same game on occasion, the owner can be disappointed or am=
-used. If it gets a weak seed that can be brute forced, then the owner ca=
-n have fun brute forcing it.
-
-If, on the other hand, it waits 750ms for enough jitter entropy to be pe=
-rfect, it=E2=80=99s a complete fail.  No one wants to wait 750ms to play=
- Nethack.
-
-Replace Nethack with something with a backup camera or a lightbulb, both=
- of which have regulations related to startup time, and there may be a r=
-eal problem. Keep in mind that some language runtimes randomize their ha=
-sh table seeds at startup, possibly using /dev/urandom. This patch may b=
-reak actual, correct, working code.
