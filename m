@@ -2,158 +2,97 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C9BA9C433EF
-	for <linux-m68k@archiver.kernel.org>; Mon, 14 Feb 2022 07:42:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id F2C17C433EF
+	for <linux-m68k@archiver.kernel.org>; Mon, 14 Feb 2022 09:00:52 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237131AbiBNHmP (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Mon, 14 Feb 2022 02:42:15 -0500
-Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:58188 "EHLO
+        id S242642AbiBNJA6 (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Mon, 14 Feb 2022 04:00:58 -0500
+Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:54328 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229691AbiBNHmP (ORCPT
+        with ESMTP id S242633AbiBNJA5 (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Mon, 14 Feb 2022 02:42:15 -0500
-Received: from mail-vk1-f170.google.com (mail-vk1-f170.google.com [209.85.221.170])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5CB1759A6B
-        for <linux-m68k@lists.linux-m68k.org>; Sun, 13 Feb 2022 23:42:07 -0800 (PST)
-Received: by mail-vk1-f170.google.com with SMTP id j9so315646vkj.1
-        for <linux-m68k@lists.linux-m68k.org>; Sun, 13 Feb 2022 23:42:07 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=zKUmaVocxDOzwANYwpaVz63VZRyJS0CtXnyVBARgqLs=;
-        b=sgItLCHnxB0IGKSql8jAKJos3Wl/S/d3TtpMyVC0pdD3EMREpPeXbA1rj5060mkZz6
-         XNBkFM9y+rXcbreb3IMTqImMHrn6UfXZKuVW+Qwiw6zIMp0AXUgB05bApIRMQSjmf8wL
-         GpMnLDKAB7hPP7JRP5RYwINYUcS8SXACyBEeXAUu8O1ftW50IUu87CfjzQEFzQZnQlre
-         cCLH+EDc2/uxQ0QoKIjQQZHke5xCLDpvhdrDz1MxYVs60BNOZujWZ69BpzhkyE37W3Ma
-         HxGir9YfYFTSmrZNyNiDAwR8b6k5r2FRNYCl6bkkxSwqAvzPHh+nuSI5LXVS1U5cLOyK
-         YoPQ==
-X-Gm-Message-State: AOAM533d0FYnvPiyLaiU5wsP46BNHtRyyvBHJM+iftU3vLlSUfLdbHwV
-        PngIXoCFZGNNjNjacRj8rBBXTz0WZ+4MvQ==
-X-Google-Smtp-Source: ABdhPJyH4pD9J/PEEs9UnmHN+PFa0jpEZbohPNGGClaK0NnW19F/wy47OFz1fLxvgqFgXb32jLdDSA==
-X-Received: by 2002:a1f:aa4d:: with SMTP id t74mr1417262vke.27.1644824525999;
-        Sun, 13 Feb 2022 23:42:05 -0800 (PST)
-Received: from mail-vs1-f52.google.com (mail-vs1-f52.google.com. [209.85.217.52])
-        by smtp.gmail.com with ESMTPSA id n10sm5196965vso.34.2022.02.13.23.42.05
-        for <linux-m68k@lists.linux-m68k.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 13 Feb 2022 23:42:05 -0800 (PST)
-Received: by mail-vs1-f52.google.com with SMTP id g10so17783446vss.1
-        for <linux-m68k@lists.linux-m68k.org>; Sun, 13 Feb 2022 23:42:05 -0800 (PST)
-X-Received: by 2002:a67:b00e:: with SMTP id z14mr3596777vse.57.1644824525461;
- Sun, 13 Feb 2022 23:42:05 -0800 (PST)
+        Mon, 14 Feb 2022 04:00:57 -0500
+X-Greylist: delayed 414 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Mon, 14 Feb 2022 01:00:48 PST
+Received: from gardel.0pointer.net (gardel.0pointer.net [IPv6:2a01:238:43ed:c300:10c3:bcf3:3266:da74])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7614C5FF02
+        for <linux-m68k@lists.linux-m68k.org>; Mon, 14 Feb 2022 01:00:48 -0800 (PST)
+Received: from gardel-login.0pointer.net (gardel-mail [85.214.157.71])
+        by gardel.0pointer.net (Postfix) with ESMTP id 20549E80485;
+        Mon, 14 Feb 2022 09:53:50 +0100 (CET)
+Received: by gardel-login.0pointer.net (Postfix, from userid 1000)
+        id 72E3916010E; Mon, 14 Feb 2022 09:53:49 +0100 (CET)
+Date:   Mon, 14 Feb 2022 09:53:49 +0100
+From:   Lennart Poettering <mzxreary@0pointer.de>
+To:     "Jason A. Donenfeld" <Jason@zx2c4.com>
+Cc:     linux-kernel@vger.kernel.org, linux-crypto@vger.kernel.org,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        linux-riscv@lists.infradead.org,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        linux-m68k@lists.linux-m68k.org,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        linux-mips@vger.kernel.org,
+        Dominik Brodowski <linux@dominikbrodowski.net>,
+        Eric Biggers <ebiggers@google.com>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Andy Lutomirski <luto@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Theodore Ts'o <tytso@mit.edu>
+Subject: Re: [PATCH RFC v0] random: block in /dev/urandom
+Message-ID: <YgoYnX97imub7KEB@gardel-login>
+References: <20220211210757.612595-1-Jason@zx2c4.com>
 MIME-Version: 1.0
-References: <CAMuHMdU3ievhXxKR_xi_v3aumnYW7UNUO6qMdhgfyWTyVSsCkQ@mail.gmail.com>
- <b03160b6-7f3b-7765-49ee-c49b7dd2c4e0@gmail.com>
-In-Reply-To: <b03160b6-7f3b-7765-49ee-c49b7dd2c4e0@gmail.com>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Mon, 14 Feb 2022 08:41:54 +0100
-X-Gmail-Original-Message-ID: <CAMuHMdVUX0zJtRAtjCBAa7iEk7MwCjcmSsJdCrSrPcY=6ti=cQ@mail.gmail.com>
-Message-ID: <CAMuHMdVUX0zJtRAtjCBAa7iEk7MwCjcmSsJdCrSrPcY=6ti=cQ@mail.gmail.com>
-Subject: Re: Wrong colors on ARAnyM
-To:     Michael Schmitz <schmitzmic@gmail.com>
-Cc:     Petr Stehlik <pstehlik@sophics.cz>, aranym@googlegroups.com,
-        linux-m68k <linux-m68k@lists.linux-m68k.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20220211210757.612595-1-Jason@zx2c4.com>
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-Hi Michael,
+On Fr, 11.02.22 22:07, Jason A. Donenfeld (Jason@zx2c4.com) wrote:
 
-(replying in plain text mode ;-)
+> So, given that the kernel has grown this mechanism for seeding itself
+> from nothing, and that this procedure happens pretty fast, maybe there's
+> no point any longer in having /dev/urandom give insecure bytes. In the
+> past we didn't want the boot process to deadlock, which was
+> understandable. But now, in the worst case, a second goes by, and the
+> problem is resolved. It seems like maybe we're finally at a point when
+> we can get rid of the infamous "urandom read hole".
 
-On Sun, Feb 13, 2022 at 9:29 PM Michael Schmitz <schmitzmic@gmail.com> wrote:
-> On 13/02/22 03:59, Geert Uytterhoeven wrote:
-> While working on an Atari DRM driver for Linux, I discovered a problem
-> with video modes using 2 bitplanes: the display only shows tints of
-> blue. 1, 4, and 8 bitplanes work fine.
->
-> With debug code added to ARAnyM, it turns out the bad behavior
-> happens when ARAnyM uses the STe palette registers instead of the
-> Falcon palette registers. And apparently the issue can also be
-> reproduced with atafb, and with other color depths:
->
->  1. Boot Linux (I'm using video=atafb:tthigh)
->
->     Everything looks good:
->
->       refreshPalette:319: st_shift = 0
->       refreshPalette:354: Fal color 0 = 0x00000000 => 00/00/00
->       refreshPalette:354: Fal color 1 = 0x000000a8 => 00/00/aa
->       refreshPalette:354: Fal color 2 = 0x00a80000 => 00/aa/00
->       refreshPalette:354: Fal color 3 = 0x00a800a8 => 00/aa/aa
->
->  2. Change the color depth a few times:
->
->     $ fbset -depth 1
->     $ fbset -depth 2
->
-> Depth 2 forces STe palette mode (in decode_var; activated in the Videl in the vbl switcher).
->
->     $ fbset -depth 4
->       ...
->
->     If good: console is white(grey) on black
->
->       refreshPalette:319: st_shift = 0
->       refreshPalette:354: Fal color 0 = 0x00000000 => 00/00/00
->       refreshPalette:354: Fal color 1 = 0xa8a800a8 => aa/aa/aa
->       refreshPalette:354: Fal color 2 = 0x54540054 => 55/55/55
->       refreshPalette:354: Fal color 3 = 0xfcfc00fc => ff/ff/ff
->
->     If bad: console is blue on black
->
->       refreshPalette:319: st_shift = 256
->
-> That's still depth 2.
->
->       refreshPalette:335: STe color 0 = 0x0000 => 00/00/00
->       refreshPalette:335: STe color 1 = 0x0117 => 22/22/ee
->       refreshPalette:335: STe color 2 = 0x0000 => 00/00/00
->       refreshPalette:335: STe color 3 = 0x0000 => 00/00/00
->
-> As a workaround, I fixed ARAnyM to force numColors to 256, so
-> it will always use the Falcon palette.
-> https://github.com/aranym/aranym/blob/master/src/videl.cpp#L319
->
-> Is this a bug in ARAnyM, or a bug in atafb?
->
-> It _looks_ as though changes to f_shift and st_shift are not pushed to hardware in the VBL interrupt. Does ARAnyM run the VBL interrupt regularly?
+So, systemd uses (potentially half-initialized) /dev/urandom for
+seeding its hash tables. For that its kinda OK if the random values
+have low entropy initially, as we'll automatically reseed when too
+many hash collisions happen, and then use a newer (and thus hopefully
+better) seed, again acquired through /dev/urandom. i.e. if the seeds
+are initially not good enough to thwart hash collision attacks, once
+the hash table are actually attacked we'll replace the seeds with
+someting better. For that all we need is that the random pool
+eventually gets better, that's all.
 
-Yes it does.
+So for that usecase /dev/urandom behaving the way it so far does is
+kinda nice. We need lots of hash tables, from earliest initialization
+on, hence the ability to get some seed there reasonably fast is really
+good, even if its entropy is initially not as high as we'd want. It's
+a good middle ground for us to be able to boot up quickly and not
+having to block until the entropy pool is fully initialized, but still
+thwart hash table collision attacks.
 
-> But maybe the kernel and ARAnyM disagree because useStPalette() has this:
->
-> int hreg = handleReadW(HW + 0x82); // Too lame!
-> // Better way how to make out ST LOW mode wanted
-> if (hreg == 0x10 || hreg == 0x17 || hreg == 0x3e) {
-> useStPal = true;
->
-> }
->
-> for st_shift == 0
+If you make /dev/urandom block for initialization then this would mean
+systemd and its components would start waiting for initialization
+(simply because we need hash tables all over the place), i.e you'd
+effectively add a second to the boot process of each affected system.
 
-Linux' falcon_setcolreg() writes to both the Falcon palette registers
-and shifter_tt.color_reg[], so shouldn't the STE color palette contain
-the correct colors, too?
+What about AT_RANDOM and /proc/sys/kernel/random/uuid btw, do you
+intend to block for that too? If you block for the former it doesn't
+really matter what systemd does I guess, given that you already have
+to delay invoking PID 1 until you get a good AT_RANDOM.
 
-> As the problem is not 100% reproducible, it looks like a race condition
-> in ARAnyM, or a wrong initialization order in atafb.
->
-> I'd have to test this on hardware but haven't got fbset on the Falcon. I'll try to locate a binary.
-
-Sorry, you do not need fbset to reproduce this:
-
-    echo N > /sys/class/graphics/fb0/bits_per_pixel
-
-Gr{oetje,eeting}s,
-
-                        Geert
+Lennart
 
 --
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+Lennart Poettering, Berlin
