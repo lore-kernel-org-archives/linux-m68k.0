@@ -2,106 +2,149 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 69D13C4332F
-	for <linux-m68k@archiver.kernel.org>; Mon, 14 Feb 2022 21:36:27 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2B305C433EF
+	for <linux-m68k@archiver.kernel.org>; Mon, 14 Feb 2022 22:01:42 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229825AbiBNVge (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Mon, 14 Feb 2022 16:36:34 -0500
-Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:60178 "EHLO
+        id S229747AbiBNWBt (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Mon, 14 Feb 2022 17:01:49 -0500
+Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:42010 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231501AbiBNVg0 (ORCPT
+        with ESMTP id S229457AbiBNWBs (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Mon, 14 Feb 2022 16:36:26 -0500
-Received: from mail-pl1-x630.google.com (mail-pl1-x630.google.com [IPv6:2607:f8b0:4864:20::630])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 84CB513CDA
-        for <linux-m68k@lists.linux-m68k.org>; Mon, 14 Feb 2022 13:36:18 -0800 (PST)
-Received: by mail-pl1-x630.google.com with SMTP id l9so9947557plg.0
-        for <linux-m68k@lists.linux-m68k.org>; Mon, 14 Feb 2022 13:36:18 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=message-id:date:mime-version:user-agent:subject:content-language
-         :from:to:cc:references:in-reply-to:content-transfer-encoding;
-        bh=KsSnXJrW9HJ8IjY5gxzBvOw+14u1fcDhKpwWi/hz4wQ=;
-        b=Uq54cevmmZrUotsnuYv1XiHRoW0wrmWB8dwgg2GTIsqqHhSmwl5lDwgbvmlgOKkTYQ
-         5lyhkWt1SCt9xfcD1jWeNy3yHCY/stdscEyBpCwoJZ2I1y6IcN7qr9dv4gZzVUD0rjVg
-         HIgV/TVJt2i/pmEWQwazrP2oU8pf8e7rKwGxAmpHtaZUWtBkXx3zazZ6StCxQjyZ+LxB
-         xWqw25OiDIM3d3VFJsAPS7zIiUdiBbT30ScytbYsfR1UbywrEKScvL4eOsboHHAOOzwZ
-         dJhlH/JTRvdRMuRfA/eWGBpuVn481ZePM71942snL1jdbvfBPIWv3nyuB1kyJjbJ2tKh
-         Tdrw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:from:to:cc:references:in-reply-to
-         :content-transfer-encoding;
-        bh=KsSnXJrW9HJ8IjY5gxzBvOw+14u1fcDhKpwWi/hz4wQ=;
-        b=aECIzfFk9jU/0F8lhUsid5tbrGBE7J7alBP2y8bVfcMSgZoaQUWsozZA5rkk2MwEZg
-         5zPy+qYuxlb1b8radfZ3a99GoikZT8tnEGXdDrzYXqnNPVPNFraqHrulG6G82TuZIzGI
-         gApGxBaCyKNvYlixCBBR8/wCPgnXE4YNk0nAIK4+BsIsIO8+X8KPE3DvwQlEQOHsGUdc
-         mQHbOzz8GJE+m1pCGE5E7gCPm2uD4nhO+H9bBI3HS3JSpqt0bem8/60MwtsG7zAs9L6M
-         XzUc4veZ7mdV9mdbaxexdVYYPg80VK4L8FZDc5iYN+mgWW1lKl7pwHnLq2lxN/oiz10w
-         cXJQ==
-X-Gm-Message-State: AOAM531S7kmZkad9/GDFWrwMSmkZke+Sg57aPqsOXJGKC74oxso+5U4n
-        KfLCY4QGO9IK9nekc9nl+mE=
-X-Google-Smtp-Source: ABdhPJyYxQX3ad+waw/w0xOdrfoFZ+tiN950Q0BBb5eT95s/IcLwWbw85VeRsODo47V9j6mQgBgL/Q==
-X-Received: by 2002:a17:90b:4a02:b0:1b8:d3c7:7a2b with SMTP id kk2-20020a17090b4a0200b001b8d3c77a2bmr743992pjb.194.1644874577924;
-        Mon, 14 Feb 2022 13:36:17 -0800 (PST)
-Received: from ?IPV6:2001:df0:0:200c:f5e5:b852:89ee:52d? ([2001:df0:0:200c:f5e5:b852:89ee:52d])
-        by smtp.gmail.com with ESMTPSA id v20sm14830407pju.9.2022.02.14.13.36.15
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 14 Feb 2022 13:36:17 -0800 (PST)
-Message-ID: <b23c83d4-487e-5273-a750-e08c1e9fd899@gmail.com>
-Date:   Tue, 15 Feb 2022 10:36:12 +1300
+        Mon, 14 Feb 2022 17:01:48 -0500
+Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3ACB511628E
+        for <linux-m68k@lists.linux-m68k.org>; Mon, 14 Feb 2022 14:01:37 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id B7A29B81670
+        for <linux-m68k@lists.linux-m68k.org>; Mon, 14 Feb 2022 19:25:53 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5F460C340F2
+        for <linux-m68k@lists.linux-m68k.org>; Mon, 14 Feb 2022 19:25:52 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1644866752;
+        bh=zLWY4rc6tKJzkfOHU66+tSLIxceIVdBozj8MWHl9tz8=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=HRzznKrxZvfF8qc6VMsf/ITD1M9TWaBX9YM89R9X1RXEMmeyAaIPs1Vu+QiIBCDxP
+         PRuAKi7BvugYdr2V/Jy+Awa9saoq7GUCzlyK1n9YY99rbYwOtA4qcNXBNUGLFJx12j
+         TMMcMoQZtQ5wGiHA7Z7FyFpd67I1K2Qb4uZjfvO/uPOAWOoFtgFel3d0Zm3rNIUL5b
+         zkbhVEcpghza3JUAedGYOCS3qSF8WxhQtz5ZaFf0b87xg7zAY+7XsRB9MSSAcp1ex0
+         cTzRm2NltXaiQ+ml8rx5wZlbzkoeBEmkCV1GYuoZC4h2l1GPsh1BS2Vg0MoDOs0E5s
+         kK7LeWRoxrFjQ==
+Received: by mail-lj1-f178.google.com with SMTP id bx31so23748026ljb.0
+        for <linux-m68k@lists.linux-m68k.org>; Mon, 14 Feb 2022 11:25:52 -0800 (PST)
+X-Gm-Message-State: AOAM5332h4sIE8tQEOs+szdNMw5QM0dHePEVy4yAP1SQGZeNEDGiWwZV
+        kAk/qpAFw9MAAUitvAn3r1+0AzhUqNHHW59lPM8=
+X-Google-Smtp-Source: ABdhPJwrOpkav7UeztG9pweW7/OWsS+hZNYg7RZgUDmgoSoPSixwWLgUERuof4XivnroH6SdfUIEp08YoMpfbv7qa3w=
+X-Received: by 2002:a5d:5446:: with SMTP id w6mr422520wrv.12.1644866740020;
+ Mon, 14 Feb 2022 11:25:40 -0800 (PST)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.5.0
-Subject: Re: Wrong colors on ARAnyM
-Content-Language: en-US
-From:   Michael Schmitz <schmitzmic@gmail.com>
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     Petr Stehlik <pstehlik@sophics.cz>,
-        linux-m68k <linux-m68k@lists.linux-m68k.org>
-References: <CAMuHMdU3ievhXxKR_xi_v3aumnYW7UNUO6qMdhgfyWTyVSsCkQ@mail.gmail.com>
- <b03160b6-7f3b-7765-49ee-c49b7dd2c4e0@gmail.com>
- <CAMuHMdVUX0zJtRAtjCBAa7iEk7MwCjcmSsJdCrSrPcY=6ti=cQ@mail.gmail.com>
- <4b3a0bc8-24a1-2a33-19bb-fbae954c614c@gmail.com>
-In-Reply-To: <4b3a0bc8-24a1-2a33-19bb-fbae954c614c@gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+References: <20220214163452.1568807-1-arnd@kernel.org> <20220214163452.1568807-8-arnd@kernel.org>
+ <YgqOLZbFK7/B2HJT@zeniv-ca.linux.org.uk>
+In-Reply-To: <YgqOLZbFK7/B2HJT@zeniv-ca.linux.org.uk>
+From:   Arnd Bergmann <arnd@kernel.org>
+Date:   Mon, 14 Feb 2022 20:25:24 +0100
+X-Gmail-Original-Message-ID: <CAK8P3a36U35DK22UT6id=WawWaJa-2+_W9HFgmwdDJ_tVYE5NQ@mail.gmail.com>
+Message-ID: <CAK8P3a36U35DK22UT6id=WawWaJa-2+_W9HFgmwdDJ_tVYE5NQ@mail.gmail.com>
+Subject: Re: [PATCH 07/14] uaccess: generalize access_ok()
+To:     Al Viro <viro@zeniv.linux.org.uk>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Christoph Hellwig <hch@lst.de>,
+        linux-arch <linux-arch@vger.kernel.org>,
+        Linux-MM <linux-mm@kvack.org>,
+        Linux API <linux-api@vger.kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Russell King - ARM Linux <linux@armlinux.org.uk>,
+        Will Deacon <will@kernel.org>, Guo Ren <guoren@kernel.org>,
+        Brian Cain <bcain@codeaurora.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Michal Simek <monstr@monstr.eu>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Nick Hu <nickhu@andestech.com>,
+        Greentime Hu <green.hu@gmail.com>,
+        Dinh Nguyen <dinguyen@kernel.org>,
+        Stafford Horne <shorne@gmail.com>,
+        Helge Deller <deller@gmx.de>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Rich Felker <dalias@libc.org>,
+        David Miller <davem@davemloft.net>,
+        Richard Weinberger <richard@nod.at>,
+        "the arch/x86 maintainers" <x86@kernel.org>,
+        Max Filippov <jcmvbkbc@gmail.com>,
+        "Eric W . Biederman" <ebiederm@xmission.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        alpha <linux-alpha@vger.kernel.org>,
+        "open list:SYNOPSYS ARC ARCHITECTURE" 
+        <linux-snps-arc@lists.infradead.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        linux-csky@vger.kernel.org,
+        "open list:QUALCOMM HEXAGON..." <linux-hexagon@vger.kernel.org>,
+        linux-ia64@vger.kernel.org,
+        linux-m68k <linux-m68k@lists.linux-m68k.org>,
+        "open list:BROADCOM NVRAM DRIVER" <linux-mips@vger.kernel.org>,
+        Openrisc <openrisc@lists.librecores.org>,
+        Parisc List <linux-parisc@vger.kernel.org>,
+        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
+        linux-riscv <linux-riscv@lists.infradead.org>,
+        linux-s390 <linux-s390@vger.kernel.org>,
+        Linux-sh list <linux-sh@vger.kernel.org>,
+        sparclinux <sparclinux@vger.kernel.org>,
+        linux-um <linux-um@lists.infradead.org>,
+        "open list:TENSILICA XTENSA PORT (xtensa)" 
+        <linux-xtensa@linux-xtensa.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-Hi Geert,
-
-On 15/02/22 09:50, Michael Schmitz wrote:
+On Mon, Feb 14, 2022 at 6:15 PM Al Viro <viro@zeniv.linux.org.uk> wrote:
 >
-> Either way, I think we've got operator precedence wrong here. Shift 
-> takes precedence over bitwise and / or? With that precedence, what we 
-> have in summary is
+> On Mon, Feb 14, 2022 at 05:34:45PM +0100, Arnd Bergmann wrote:
 >
->                 shifter_tt.color_reg[regno] =
->                         (((red & 0xe000) >> 13) | ((red & 0x1000) >> 
-> 4)) |
->                         (((green & 0xe000) >> 13) | ((green & 0x1000) 
-> >> 8)) |
->                         ((blue & 0xe000) >> 13) | ((blue & 0x1000) >> 
-> 12);
+> > diff --git a/arch/csky/kernel/signal.c b/arch/csky/kernel/signal.c
+> > index c7b763d2f526..8867ddf3e6c7 100644
+> > --- a/arch/csky/kernel/signal.c
+> > +++ b/arch/csky/kernel/signal.c
+> > @@ -136,7 +136,7 @@ static inline void __user *get_sigframe(struct ksignal *ksig,
+> >  static int
+> >  setup_rt_frame(struct ksignal *ksig, sigset_t *set, struct pt_regs *regs)
+> >  {
+> > -     struct rt_sigframe *frame;
+> > +     struct rt_sigframe __user *frame;
+> >       int err = 0;
+> >
+> >       frame = get_sigframe(ksig, regs, sizeof(*frame));
 >
-> Only the blue bits ever entirely seem to end up where they ought to. 
-> Testing this hypothesis on ARAnyM (without getting it to boot all the 
-> way, for some odd reason likely to do with my current .config) shows 
-> that the current code results in the shifter_tt.color_reg entries 
-> either 5 or 0x17, 0x113 or 0x117. Adding the missing parentheses 
-> results in what I'd expect to see.
+> Minor nit: might make sense to separate annotations (here, on nios2, etc.) from the rest...
+
+Done.
+
+> > -}
+> > -
+> > -static inline int access_ok(const void __user * addr, unsigned long size)
+> > -{
+> > -     return 1;
+> > -}
+> > +#define __range_not_ok(addr, size, limit) (!__access_ok(addr, size))
 >
-I can confirm that the bug is gone with additional parentheses to apply 
-the shifts (<<8 for red, <<4 for green) to the result of the bit-wise 
-or, not just the right-hand portion of it.
+> is really wrong.  For sparc64, access_ok() should always be true.
+> This __range_not_ok() thing is used *only* for valid_user_frame() in
+> arch/sparc/kernel/perf_event.c - it's not a part of normal access_ok()
+> there.
+>
+> sparc64 has separate address spaces for kernel and for userland; access_ok()
+> had never been useful there.
 
-Do you want me to prepare a patch, or would you prefer to do it yourself?
+Ok, fixed as well now. I had the access_ok() bit right, the definition just
+moved around here so it comes before the #include, but I missed the
+bit about __range_not_ok(), which I have now reverted back to the
+correct version in my tree.
 
-Cheers,
-
-     Michael
-
-
+        Arnd
