@@ -2,53 +2,52 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 78B26C433F5
-	for <linux-m68k@archiver.kernel.org>; Mon, 14 Feb 2022 20:56:30 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id EABD3C4167B
+	for <linux-m68k@archiver.kernel.org>; Mon, 14 Feb 2022 21:01:13 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229750AbiBNU4g (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Mon, 14 Feb 2022 15:56:36 -0500
-Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:42764 "EHLO
+        id S230039AbiBNVBU (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Mon, 14 Feb 2022 16:01:20 -0500
+Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:36480 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229782AbiBNU42 (ORCPT
+        with ESMTP id S229541AbiBNVBT (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Mon, 14 Feb 2022 15:56:28 -0500
+        Mon, 14 Feb 2022 16:01:19 -0500
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB1BB101F16
-        for <linux-m68k@lists.linux-m68k.org>; Mon, 14 Feb 2022 12:56:09 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C2C427A9A6
+        for <linux-m68k@lists.linux-m68k.org>; Mon, 14 Feb 2022 13:01:09 -0800 (PST)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 9F84C61179
-        for <linux-m68k@lists.linux-m68k.org>; Mon, 14 Feb 2022 19:40:26 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D42BDC340FB
-        for <linux-m68k@lists.linux-m68k.org>; Mon, 14 Feb 2022 19:40:24 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 681CA6115D
+        for <linux-m68k@lists.linux-m68k.org>; Mon, 14 Feb 2022 19:46:10 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id CDD09C340E9
+        for <linux-m68k@lists.linux-m68k.org>; Mon, 14 Feb 2022 19:46:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1644867624;
-        bh=5szbHF9etsKpvbwWwwc9H/Y1QakuvzjKYGUIBcYFA80=;
+        s=k20201202; t=1644867969;
+        bh=kZ0Ha+ZttRWbRYErkpKyuJC1dyK+QrO2i6Uu5KgHMvM=;
         h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=e8SkA3FlLGu70hI/WgHcE1Xcld6ahEqgd/8aP3tnN+Ui+6c+MZmJxArGum1LdtmAc
-         TVm8LqkWXJbpel0WqJluZlN0q2Rc8pObOFXCjWsE1d3haVSN1sOjQ5hKRVHWsZ71lN
-         9Hnj9zqBHSBBx6qUNlA6sc7rmD8pMbOGHJ9SDDCXuRY9FNQ7binWt4bsfA/Yof8Egb
-         Ksm8rfkNmn9T9/rsBeFI1yBap4xnb6nVmSKUusmotl5Q02Llm+mwF8WcKWget2RALt
-         X3B6AavEfyIeX6XUTomqUIV78jVQAYplU/28sKTs9My6dabsF705ywSdaO+p8h0D4l
-         JZS2fHyItMkuQ==
-Received: by mail-wm1-f53.google.com with SMTP id k3-20020a1ca103000000b0037bdea84f9cso100635wme.1
-        for <linux-m68k@lists.linux-m68k.org>; Mon, 14 Feb 2022 11:40:24 -0800 (PST)
-X-Gm-Message-State: AOAM5326IfcWBubNHsmBI3RBMQcABz6m6PVj8/9UVJApYa9zmdgaH5Re
-        T5KRPZVb45go65L3wqCPN7mfJDYiFxENHODZwwc=
-X-Google-Smtp-Source: ABdhPJzTYqCeBLA8ZZTCXfIkkUBrupnk+RLzKXVQdywxm2I/SfNIqW0R0tvlKvR6EMssd+gXW/CMf7zH4TFa2LGJB14=
-X-Received: by 2002:a05:600c:1d27:b0:37c:74bb:2b4d with SMTP id
- l39-20020a05600c1d2700b0037c74bb2b4dmr252362wms.82.1644867623104; Mon, 14 Feb
- 2022 11:40:23 -0800 (PST)
+        b=XjkcQHKoADicbhy5T7/TEpJ/PjlGKooIhboU4BtneDD9X1yFMmTo2mvqjoht5SzvX
+         r2ZUT1ZmdbgfMplWYmAk6uprDbhwE2BuyJ4zb3DHrj7zhWv6K1j+RwiAM3CftsPs4O
+         Uzpo35lxWKP5B/hbNxauanow4rAQ6aCh6uMDF0T90tl8w2DOQlSl87+UL0MMgLpb2M
+         97l04fN324AzRYaK4MxvZgEb0JNVsVnzzTSyMv1J61QAunhNorK1ubEJ7ZE0lofbUa
+         Joq+mxHdKWjHdPPE2l4mUMX1cQ6/spRi6Nxoffj46r3xMz9nbSYZ1BA5/ub3YKohdQ
+         DBfRAE9E4ycow==
+Received: by mail-wr1-f50.google.com with SMTP id d27so28602675wrc.6
+        for <linux-m68k@lists.linux-m68k.org>; Mon, 14 Feb 2022 11:46:09 -0800 (PST)
+X-Gm-Message-State: AOAM532792Cd9IPEgWcadxZ6nJWNNVwpioSFoAfIGU/oNweVobl8in6H
+        8C9iMW+X3qZxs+POa1GDGSQtRwc6n22/NAQJ2XE=
+X-Google-Smtp-Source: ABdhPJyfeYwWpAfp1t9O1z8BIiteD6oMiQUhUFLNHvAQyjgPbxD0FyJauHtAzbL5TNr8UyIGWRM1U9VPuoeyXIyyYo0=
+X-Received: by 2002:adf:f6ce:: with SMTP id y14mr445399wrp.219.1644867968239;
+ Mon, 14 Feb 2022 11:46:08 -0800 (PST)
 MIME-Version: 1.0
-References: <20220214163452.1568807-1-arnd@kernel.org> <20220214163452.1568807-11-arnd@kernel.org>
- <YgqL/NJ3YHEAhj4i@infradead.org>
-In-Reply-To: <YgqL/NJ3YHEAhj4i@infradead.org>
+References: <20220214163452.1568807-1-arnd@kernel.org> <20220214163452.1568807-5-arnd@kernel.org>
+ <YgqLFYqIqkIsNC92@infradead.org>
+In-Reply-To: <YgqLFYqIqkIsNC92@infradead.org>
 From:   Arnd Bergmann <arnd@kernel.org>
-Date:   Mon, 14 Feb 2022 20:40:07 +0100
-X-Gmail-Original-Message-ID: <CAK8P3a3eOw=QpxWFnODE61EFt8oGPJ7dcusfbPSD1vdEsUmekQ@mail.gmail.com>
-Message-ID: <CAK8P3a3eOw=QpxWFnODE61EFt8oGPJ7dcusfbPSD1vdEsUmekQ@mail.gmail.com>
-Subject: Re: [PATCH 10/14] uaccess: remove most CONFIG_SET_FS users
+Date:   Mon, 14 Feb 2022 20:45:52 +0100
+X-Gmail-Original-Message-ID: <CAK8P3a1F3JaYaJPy9bSCG1+YV6EN05PE0DbwpD_GT1qRwFSJ-w@mail.gmail.com>
+Message-ID: <CAK8P3a1F3JaYaJPy9bSCG1+YV6EN05PE0DbwpD_GT1qRwFSJ-w@mail.gmail.com>
+Subject: Re: [PATCH 04/14] x86: use more conventional access_ok() definition
 To:     Christoph Hellwig <hch@infradead.org>
 Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
         Christoph Hellwig <hch@lst.de>,
@@ -96,29 +95,28 @@ Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
         Richard Weinberger <richard@nod.at>,
         Andrew Morton <akpm@linux-foundation.org>,
         linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
-        David Miller <davem@davemloft.net>
+        David Miller <davem@davemloft.net>,
+        Al Viro <viro@zeniv.linux.org.uk>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-On Mon, Feb 14, 2022 at 6:06 PM Christoph Hellwig <hch@infradead.org> wrote:
+On Mon, Feb 14, 2022 at 6:02 PM Christoph Hellwig <hch@infradead.org> wrote:
 >
-> On Mon, Feb 14, 2022 at 05:34:48PM +0100, Arnd Bergmann wrote:
-> > From: Arnd Bergmann <arnd@arndb.de>
-> >
-> > On almost all architectures, there are no remaining callers
-> > of set_fs(), so CONFIG_SET_FS can be disabled, along with
-> > removing the thread_info field and any references to it.
-> >
-> > This turns access_ok() into a cheaper check against TASK_SIZE_MAX.
+> On Mon, Feb 14, 2022 at 05:34:42PM +0100, Arnd Bergmann wrote:
+> > +#define __range_not_ok(addr, size, limit)    (!__access_ok(addr, size))
+> > +#define __chk_range_not_ok(addr, size, limit)        (!__access_ok((void __user *)addr, size))
 >
-> Wouldn't it make more sense to just merge this into the last patch?
+> Can we just kill these off insted of letting themm obsfucate the code?
 
-Yes, sounds good. I wasn't sure at first if there is enough buy-in to get
-all architectures cleaned up, and I hadn't done the ia64 patch, so it
-seemed more important to do this part early, but now it seems that it
-will all go in at the same time, so doing this as part of a big removal
-at the end makes sense.
+As Al pointed out, they turned out to be necessary on sparc64, but the only
+definitions are on sparc64 and x86, so it's possible that they serve a similar
+purpose here, in which case changing the limit from TASK_SIZE to
+TASK_SIZE_MAX is probably wrong as well.
 
-        Arnd
+So either I need to revert the original definition as I did on sparc64, or
+they can be removed completely. Hopefully Al or the x86 maintainers
+can clarify.
+
+         Arnd
