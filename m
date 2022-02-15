@@ -2,29 +2,29 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D543CC433EF
-	for <linux-m68k@archiver.kernel.org>; Tue, 15 Feb 2022 16:52:46 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id BC605C43217
+	for <linux-m68k@archiver.kernel.org>; Tue, 15 Feb 2022 16:52:47 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241938AbiBOQwz (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        id S241962AbiBOQwz (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
         Tue, 15 Feb 2022 11:52:55 -0500
-Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:60170 "EHLO
+Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:60168 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241893AbiBOQwq (ORCPT
+        with ESMTP id S241885AbiBOQwq (ORCPT
         <rfc822;linux-m68k@vger.kernel.org>); Tue, 15 Feb 2022 11:52:46 -0500
-Received: from michel.telenet-ops.be (michel.telenet-ops.be [IPv6:2a02:1800:110:4::f00:18])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 69FBC9BBAF
-        for <linux-m68k@vger.kernel.org>; Tue, 15 Feb 2022 08:52:34 -0800 (PST)
+Received: from laurent.telenet-ops.be (laurent.telenet-ops.be [IPv6:2a02:1800:110:4::f00:19])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 692889AE64
+        for <linux-m68k@vger.kernel.org>; Tue, 15 Feb 2022 08:52:33 -0800 (PST)
 Received: from ramsan.of.borg ([IPv6:2a02:1810:ac12:ed40:7534:e0be:5adf:2691])
-        by michel.telenet-ops.be with bizsmtp
-        id vUsV2600U18GbK106UsVDd; Tue, 15 Feb 2022 17:52:32 +0100
+        by laurent.telenet-ops.be with bizsmtp
+        id vUsV2600D18GbK101UsV5U; Tue, 15 Feb 2022 17:52:31 +0100
 Received: from rox.of.borg ([192.168.97.57])
         by ramsan.of.borg with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
         (Exim 4.93)
         (envelope-from <geert@linux-m68k.org>)
-        id 1nK141-000tUo-9B; Tue, 15 Feb 2022 17:52:29 +0100
+        id 1nK140-000tUk-NI; Tue, 15 Feb 2022 17:52:28 +0100
 Received: from geert by rox.of.borg with local (Exim 4.93)
         (envelope-from <geert@linux-m68k.org>)
-        id 1nK140-00BURt-1Z; Tue, 15 Feb 2022 17:52:28 +0100
+        id 1nK13z-00BURR-Uu; Tue, 15 Feb 2022 17:52:27 +0100
 From:   Geert Uytterhoeven <geert@linux-m68k.org>
 To:     Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
         Maxime Ripard <mripard@kernel.org>,
@@ -35,9 +35,9 @@ To:     Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
 Cc:     dri-devel@lists.freedesktop.org, linux-fbdev@vger.kernel.org,
         linux-m68k@vger.kernel.org, linux-kernel@vger.kernel.org,
         Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: [PATCH 5/8] drm/framebuffer: Use actual bpp for DRM_IOCTL_MODE_GETFB
-Date:   Tue, 15 Feb 2022 17:52:23 +0100
-Message-Id: <20220215165226.2738568-6-geert@linux-m68k.org>
+Subject: [PATCH 1/8] drm/fourcc: Add DRM_FORMAT_C[124]
+Date:   Tue, 15 Feb 2022 17:52:19 +0100
+Message-Id: <20220215165226.2738568-2-geert@linux-m68k.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20220215165226.2738568-1-geert@linux-m68k.org>
 References: <20220215165226.2738568-1-geert@linux-m68k.org>
@@ -47,32 +47,73 @@ Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-When userspace queries the properties of a frame buffer, the number of
-bits per pixel is derived from the deprecated drm_format_info.cpp[]
-field, which does not take into account block sizes.
+Introduce fourcc codes for color-indexed frame buffer formats with two,
+four, and sixteen color, and provide a suitable mapping from bit per
+pixel and depth to fourcc codes.
 
-Fix this by using the actual number of bits per pixel instead.
+As the number of bits per pixel is less than eight, these rely on proper
+block handling for the calculation of bits per pixel and pitch.
 
 Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
 ---
-Untested.
+Do we want to keep the rounding down if depth < bpp, or insist on depth
+== bpp? I don't think the rounding down will still be needed after
+"[PATCH 4/8] drm/client: Use actual bpp when allocating frame buffers".
 ---
- drivers/gpu/drm/drm_framebuffer.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/gpu/drm/drm_fourcc.c  | 18 ++++++++++++++++++
+ include/uapi/drm/drm_fourcc.h |  3 +++
+ 2 files changed, 21 insertions(+)
 
-diff --git a/drivers/gpu/drm/drm_framebuffer.c b/drivers/gpu/drm/drm_framebuffer.c
-index 07f5abc875e97b96..4b9d7b01cb99c03d 100644
---- a/drivers/gpu/drm/drm_framebuffer.c
-+++ b/drivers/gpu/drm/drm_framebuffer.c
-@@ -530,7 +530,7 @@ int drm_mode_getfb(struct drm_device *dev,
- 	r->height = fb->height;
- 	r->width = fb->width;
- 	r->depth = fb->format->depth;
--	r->bpp = fb->format->cpp[0] * 8;
-+	r->bpp = drm_format_info_bpp(fb->format, 0);
- 	r->pitch = fb->pitches[0];
+diff --git a/drivers/gpu/drm/drm_fourcc.c b/drivers/gpu/drm/drm_fourcc.c
+index 07741b678798b0f1..60ce63d728b8e308 100644
+--- a/drivers/gpu/drm/drm_fourcc.c
++++ b/drivers/gpu/drm/drm_fourcc.c
+@@ -46,6 +46,18 @@ uint32_t drm_mode_legacy_fb_format(uint32_t bpp, uint32_t depth)
+ 	case 8:
+ 		if (depth == 8)
+ 			fmt = DRM_FORMAT_C8;
++		fallthrough;
++	case 4:
++		if (depth == 4)
++			fmt = DRM_FORMAT_C4;
++		fallthrough;
++	case 2:
++		if (depth == 2)
++			fmt = DRM_FORMAT_C2;
++		fallthrough;
++	case 1:
++		if (depth == 1)
++			fmt = DRM_FORMAT_C1;
+ 		break;
  
- 	/* GET_FB() is an unprivileged ioctl so we must not return a
+ 	case 16:
+@@ -132,6 +144,12 @@ EXPORT_SYMBOL(drm_driver_legacy_fb_format);
+ const struct drm_format_info *__drm_format_info(u32 format)
+ {
+ 	static const struct drm_format_info formats[] = {
++		{ .format = DRM_FORMAT_C1,		.depth = 1,  .num_planes = 1,
++		  .char_per_block = { 1, }, .block_w = { 8, }, .block_h = { 1, }, .hsub = 1, .vsub = 1 },
++		{ .format = DRM_FORMAT_C2,		.depth = 2,  .num_planes = 1,
++		  .char_per_block = { 1, }, .block_w = { 4, }, .block_h = { 1, }, .hsub = 1, .vsub = 1 },
++		{ .format = DRM_FORMAT_C4,		.depth = 4,  .num_planes = 1,
++		  .char_per_block = { 1, }, .block_w = { 2, }, .block_h = { 1, }, .hsub = 1, .vsub = 1 },
+ 		{ .format = DRM_FORMAT_C8,		.depth = 8,  .num_planes = 1, .cpp = { 1, 0, 0 }, .hsub = 1, .vsub = 1 },
+ 		{ .format = DRM_FORMAT_R8,		.depth = 8,  .num_planes = 1, .cpp = { 1, 0, 0 }, .hsub = 1, .vsub = 1 },
+ 		{ .format = DRM_FORMAT_R10,		.depth = 10, .num_planes = 1, .cpp = { 2, 0, 0 }, .hsub = 1, .vsub = 1 },
+diff --git a/include/uapi/drm/drm_fourcc.h b/include/uapi/drm/drm_fourcc.h
+index fc0c1454d2757d5d..3f09174670b3cce6 100644
+--- a/include/uapi/drm/drm_fourcc.h
++++ b/include/uapi/drm/drm_fourcc.h
+@@ -99,6 +99,9 @@ extern "C" {
+ #define DRM_FORMAT_INVALID	0
+ 
+ /* color index */
++#define DRM_FORMAT_C1		fourcc_code('C', '1', ' ', ' ') /* [0] C */
++#define DRM_FORMAT_C2		fourcc_code('C', '2', ' ', ' ') /* [1:0] C */
++#define DRM_FORMAT_C4		fourcc_code('C', '4', ' ', ' ') /* [3:0] C */
+ #define DRM_FORMAT_C8		fourcc_code('C', '8', ' ', ' ') /* [7:0] C */
+ 
+ /* 8 bpp Red */
 -- 
 2.25.1
 
