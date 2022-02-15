@@ -2,160 +2,83 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 8B0F4C4167B
-	for <linux-m68k@archiver.kernel.org>; Tue, 15 Feb 2022 11:07:28 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 0D054C433EF
+	for <linux-m68k@archiver.kernel.org>; Tue, 15 Feb 2022 11:21:39 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236929AbiBOLHg (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Tue, 15 Feb 2022 06:07:36 -0500
-Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:33000 "EHLO
+        id S237036AbiBOLVr (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Tue, 15 Feb 2022 06:21:47 -0500
+Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:41288 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236902AbiBOLHd (ORCPT
-        <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Tue, 15 Feb 2022 06:07:33 -0500
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id E69D6107ABF
-        for <linux-m68k@lists.linux-m68k.org>; Tue, 15 Feb 2022 03:07:23 -0800 (PST)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id D50F51424;
-        Tue, 15 Feb 2022 03:07:22 -0800 (PST)
-Received: from FVFF77S0Q05N (unknown [10.57.89.144])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 3D4923F718;
-        Tue, 15 Feb 2022 03:07:16 -0800 (PST)
-Date:   Tue, 15 Feb 2022 11:07:12 +0000
-From:   Mark Rutland <mark.rutland@arm.com>
-To:     Arnd Bergmann <arnd@kernel.org>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Christoph Hellwig <hch@lst.de>, linux-arch@vger.kernel.org,
-        linux-mm@kvack.org, linux-api@vger.kernel.org, arnd@arndb.de,
-        linux-kernel@vger.kernel.org, linux@armlinux.org.uk,
-        will@kernel.org, guoren@kernel.org, bcain@codeaurora.org,
-        geert@linux-m68k.org, monstr@monstr.eu, tsbogend@alpha.franken.de,
-        nickhu@andestech.com, green.hu@gmail.com, dinguyen@kernel.org,
-        shorne@gmail.com, deller@gmx.de, mpe@ellerman.id.au,
-        peterz@infradead.org, mingo@redhat.com, hca@linux.ibm.com,
-        dalias@libc.org, davem@davemloft.net, richard@nod.at,
-        x86@kernel.org, jcmvbkbc@gmail.com, ebiederm@xmission.com,
-        akpm@linux-foundation.org, ardb@kernel.org,
-        linux-alpha@vger.kernel.org, linux-snps-arc@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, linux-csky@vger.kernel.org,
-        linux-hexagon@vger.kernel.org, linux-ia64@vger.kernel.org,
-        linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org,
-        openrisc@lists.librecores.org, linux-parisc@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org,
-        linux-s390@vger.kernel.org, linux-sh@vger.kernel.org,
-        sparclinux@vger.kernel.org, linux-um@lists.infradead.org,
-        linux-xtensa@linux-xtensa.org
-Subject: Re: [PATCH 08/14] arm64: simplify access_ok()
-Message-ID: <YguJYMxJsNj9L4Ee@FVFF77S0Q05N>
-References: <20220214163452.1568807-1-arnd@kernel.org>
- <20220214163452.1568807-9-arnd@kernel.org>
+        with ESMTP id S236600AbiBOLVq (ORCPT
+        <rfc822;linux-m68k@vger.kernel.org>); Tue, 15 Feb 2022 06:21:46 -0500
+Received: from michel.telenet-ops.be (michel.telenet-ops.be [IPv6:2a02:1800:110:4::f00:18])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 80ACBAB440
+        for <linux-m68k@vger.kernel.org>; Tue, 15 Feb 2022 03:21:36 -0800 (PST)
+Received: from ramsan.of.borg ([IPv6:2a02:1810:ac12:ed40:8c73:faf1:1d11:4a47])
+        by michel.telenet-ops.be with bizsmtp
+        id vPMY2600n3BmCM306PMZ0u; Tue, 15 Feb 2022 12:21:33 +0100
+Received: from rox.of.borg ([192.168.97.57])
+        by ramsan.of.borg with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.93)
+        (envelope-from <geert@linux-m68k.org>)
+        id 1nJvtk-000rqd-Gw; Tue, 15 Feb 2022 12:21:32 +0100
+Received: from geert by rox.of.borg with local (Exim 4.93)
+        (envelope-from <geert@linux-m68k.org>)
+        id 1nJvtk-00B34n-50; Tue, 15 Feb 2022 12:21:32 +0100
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+To:     Helge Deller <deller@gmx.de>
+Cc:     Michael Schmitz <schmitzmic@gmail.com>,
+        linux-fbdev@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        linux-m68k@vger.kernel.org,
+        Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: [PATCH 1/3] video: fbdev: atari: Fix TT High video mode
+Date:   Tue, 15 Feb 2022 12:21:24 +0100
+Message-Id: <20220215112126.2633383-2-geert@linux-m68k.org>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20220215112126.2633383-1-geert@linux-m68k.org>
+References: <20220215112126.2633383-1-geert@linux-m68k.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20220214163452.1568807-9-arnd@kernel.org>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-On Mon, Feb 14, 2022 at 05:34:46PM +0100, Arnd Bergmann wrote:
-> From: Arnd Bergmann <arnd@arndb.de>
-> 
-> arm64 has an inline asm implementation of access_ok() that is derived from
-> the 32-bit arm version and optimized for the case that both the limit and
-> the size are variable. With set_fs() gone, the limit is always constant,
-> and the size usually is as well, so just using the default implementation
-> reduces the check into a comparison against a constant that can be
-> scheduled by the compiler.
-> 
-> On a defconfig build, this saves over 28KB of .text.
-> 
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+The horizontal resolution (640) for the TT High video mode (1280x960) is
+definitely bogus.  While fixing that, correct the timings to match the
+TTM195 service manual.
 
-I had a play around with this and a number of alternative options that had
-previously been discussed (e.g. using uint128_t for the check to allow the
-compiler to use the carry flag), and:
+Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
+---
+Untested on actual hardware.
 
-* Any sequences which we significantly simpler involved an ABI change (e.g. not
-  checking tags for tasks not using the relaxed tag ABI), or didn't interact
-  well with the uaccess pointer masking we do for speculation hardening.
+v3:
+  - Adjust pixclock from 7761 to 7760 to match 4 * 32.215905 MHz
+    crystal oscillator frequency,
+  - Make it part of a series.
 
-* For all constant-size cases, this was joint-best for codegen.
+v2[1]:
+  - Use correct base.
 
-* For variable-size cases the difference between options (which did not change
-  ABI or break pointer masking) fell in the noise and really depended on what
-  you were optimizing for.
+[1] https://lore.kernel.org/r/20201101102759.2890612-1-geert@linux-m68k.org/
+---
+ drivers/video/fbdev/atafb.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-This patch itself is clear, I believe the logic is sound and does not result in
-a behavioural change, so for this as-is:
+diff --git a/drivers/video/fbdev/atafb.c b/drivers/video/fbdev/atafb.c
+index e3812a8ff55a4fb8..a9f25cab4a1e6737 100644
+--- a/drivers/video/fbdev/atafb.c
++++ b/drivers/video/fbdev/atafb.c
+@@ -487,8 +487,8 @@ static struct fb_videomode atafb_modedb[] __initdata = {
+ 		"tt-mid", 60, 640, 480, 31041, 120, 100, 8, 16, 140, 30,
+ 		0, FB_VMODE_NONINTERLACED | FB_VMODE_YWRAP
+ 	}, {
+-		/* 1280x960, 29 kHz, 60 Hz (TT high) */
+-		"tt-high", 57, 640, 960, 31041, 120, 100, 8, 16, 140, 30,
++		/* 1280x960, 72 kHz, 72 Hz (TT high) */
++		"tt-high", 57, 1280, 960, 7760, 260, 60, 36, 4, 192, 4,
+ 		0, FB_VMODE_NONINTERLACED | FB_VMODE_YWRAP
+ 	},
+ 
+-- 
+2.25.1
 
-Acked-by: Mark Rutland <mark.rutland@arm.com>
-
-As on other replies, I think that if we want to make further changes to this,
-we should do that as follow-ups, since there are a number of subtleties in this
-area w.r.t. tag management and speculation with potential ABI implications.
-
-Thanks,
-Mark.
-
-> ---
->  arch/arm64/include/asm/uaccess.h | 28 +++++-----------------------
->  1 file changed, 5 insertions(+), 23 deletions(-)
-> 
-> diff --git a/arch/arm64/include/asm/uaccess.h b/arch/arm64/include/asm/uaccess.h
-> index 357f7bd9c981..e8dce0cc5eaa 100644
-> --- a/arch/arm64/include/asm/uaccess.h
-> +++ b/arch/arm64/include/asm/uaccess.h
-> @@ -26,6 +26,8 @@
->  #include <asm/memory.h>
->  #include <asm/extable.h>
->  
-> +static inline int __access_ok(const void __user *ptr, unsigned long size);
-> +
->  /*
->   * Test whether a block of memory is a valid user space address.
->   * Returns 1 if the range is valid, 0 otherwise.
-> @@ -33,10 +35,8 @@
->   * This is equivalent to the following test:
->   * (u65)addr + (u65)size <= (u65)TASK_SIZE_MAX
->   */
-> -static inline unsigned long __access_ok(const void __user *addr, unsigned long size)
-> +static inline int access_ok(const void __user *addr, unsigned long size)
->  {
-> -	unsigned long ret, limit = TASK_SIZE_MAX - 1;
-> -
->  	/*
->  	 * Asynchronous I/O running in a kernel thread does not have the
->  	 * TIF_TAGGED_ADDR flag of the process owning the mm, so always untag
-> @@ -46,27 +46,9 @@ static inline unsigned long __access_ok(const void __user *addr, unsigned long s
->  	    (current->flags & PF_KTHREAD || test_thread_flag(TIF_TAGGED_ADDR)))
->  		addr = untagged_addr(addr);
->  
-> -	__chk_user_ptr(addr);
-> -	asm volatile(
-> -	// A + B <= C + 1 for all A,B,C, in four easy steps:
-> -	// 1: X = A + B; X' = X % 2^64
-> -	"	adds	%0, %3, %2\n"
-> -	// 2: Set C = 0 if X > 2^64, to guarantee X' > C in step 4
-> -	"	csel	%1, xzr, %1, hi\n"
-> -	// 3: Set X' = ~0 if X >= 2^64. For X == 2^64, this decrements X'
-> -	//    to compensate for the carry flag being set in step 4. For
-> -	//    X > 2^64, X' merely has to remain nonzero, which it does.
-> -	"	csinv	%0, %0, xzr, cc\n"
-> -	// 4: For X < 2^64, this gives us X' - C - 1 <= 0, where the -1
-> -	//    comes from the carry in being clear. Otherwise, we are
-> -	//    testing X' - C == 0, subject to the previous adjustments.
-> -	"	sbcs	xzr, %0, %1\n"
-> -	"	cset	%0, ls\n"
-> -	: "=&r" (ret), "+r" (limit) : "Ir" (size), "0" (addr) : "cc");
-> -
-> -	return ret;
-> +	return likely(__access_ok(addr, size));
->  }
-> -#define __access_ok __access_ok
-> +#define access_ok access_ok
->  
->  #include <asm-generic/access_ok.h>
->  
-> -- 
-> 2.29.2
-> 
