@@ -2,106 +2,239 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id AF736C433F5
-	for <linux-m68k@archiver.kernel.org>; Mon, 14 Feb 2022 22:53:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 1B92EC433F5
+	for <linux-m68k@archiver.kernel.org>; Tue, 15 Feb 2022 00:26:32 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232001AbiBNWxR (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Mon, 14 Feb 2022 17:53:17 -0500
-Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:34138 "EHLO
+        id S229704AbiBOA0i (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Mon, 14 Feb 2022 19:26:38 -0500
+Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:56968 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229990AbiBNWxQ (ORCPT
+        with ESMTP id S229531AbiBOA0h (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Mon, 14 Feb 2022 17:53:16 -0500
-Received: from new3-smtp.messagingengine.com (new3-smtp.messagingengine.com [66.111.4.229])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E532517186F
-        for <linux-m68k@lists.linux-m68k.org>; Mon, 14 Feb 2022 14:53:07 -0800 (PST)
-Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
-        by mailnew.nyi.internal (Postfix) with ESMTP id AF0BF580632;
-        Mon, 14 Feb 2022 17:53:04 -0500 (EST)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute5.internal (MEProxy); Mon, 14 Feb 2022 17:53:04 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:cc:content-type:date:date:from:from
-        :in-reply-to:in-reply-to:message-id:mime-version:references
-        :reply-to:sender:subject:subject:to:to:x-me-proxy:x-me-proxy
-        :x-me-sender:x-me-sender:x-sasl-enc; s=fm2; bh=e2LfV2BcYFTZ6ZIg8
-        FOTVm2MpIs9idDpZ8R+EsQHXrs=; b=SJdNeO/8jyTfLiWOckcAG2OHGKCIILKot
-        CoUd+ViU7KAYtLt39PVDcb/IGuv6zV7lLNGGyCe8EGuQ5DurWAtyc+59koNFynFb
-        Vax9tANM2zkhCcUoof6TNS/nhOKqyPS+Hw3tsgsfWgJvrvYRq/oTiaPhFIsCZ3gq
-        572A76x7uTT/SQOWr2a+qXWcnzfFPlN8I/AlTAP67o6ZCB+w+xPm/B5psHno61aJ
-        DCH/hrkY5RKmleyp5ih42WMsScPaotRe9Unr3WD7ZeSnt0m2dNzPfz999KUbozwI
-        V020ATKE/pSE4MZC8o1aHNCuKDsllmkkIJSgA7ad0fRyvnrt2DTiw==
-X-ME-Sender: <xms:T90KYtUsU1i8H8oKgKHJ6zYGcswaPP0J8WgFAclau0XetWuIQzG0mw>
-    <xme:T90KYtmQA6gxwJzCjpgsGZ91IZLbkRkK9l-KZyxb5ryxN91ZuejBSqStpdrtODbHF
-    GifMxA7HMTM-t1YzjE>
-X-ME-Received: <xmr:T90KYpb6E2tmhE99twMc1QbFpCxPqjw62-HdwNAwXMsB5Z1t4aNo3u9CZxAFYhuTPi2ZXSZxw3FS5jdDrwiRWsSOAlcaid0NeVA>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvvddrjeefgddtfecutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
-    fjughrpeffhffvufgjkfhfgggtsehttdertddttddvnecuhfhrohhmpefhihhnnhcuvfhh
-    rghinhcuoehfthhhrghinheslhhinhhugidqmheikehkrdhorhhgqeenucggtffrrghtth
-    gvrhhnpeffudfhgeefvdeitedugfelueegheekkeefveffhfeiveetledvhfdtveffteeu
-    udenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehfth
-    hhrghinheslhhinhhugidqmheikehkrdhorhhg
-X-ME-Proxy: <xmx:T90KYgXiz-V4ond-i7eX1uAvA0i9WOmsdnB3aAw0H2uwKsVWoxeXRw>
-    <xmx:T90KYnl-c428-0I3-b8b87OVnAgj1cO8HsHp8BhvVhhh6vh8QeegDA>
-    <xmx:T90KYtcrQAQMyH87a2CMfgA9HSwqEFEk9lDpm9-zJ546bLNuMFdolw>
-    <xmx:UN0KYnHmkgdFIoGzRmz69Z6jzOvFrkcKI8C9eYQOxPNBA0jBhzy_3Q>
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Mon,
- 14 Feb 2022 17:53:00 -0500 (EST)
-Date:   Tue, 15 Feb 2022 09:53:11 +1100 (AEDT)
-From:   Finn Thain <fthain@linux-m68k.org>
-To:     "Jason A. Donenfeld" <Jason@zx2c4.com>
-cc:     Joshua Kinard <kumba@gentoo.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        linux-riscv <linux-riscv@lists.infradead.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        linux-m68k <linux-m68k@lists.linux-m68k.org>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        "open list:BROADCOM NVRAM DRIVER" <linux-mips@vger.kernel.org>,
-        Dominik Brodowski <linux@dominikbrodowski.net>,
-        Eric Biggers <ebiggers@google.com>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Andy Lutomirski <luto@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        Lennart Poettering <mzxreary@0pointer.de>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Theodore Ts'o <tytso@mit.edu>
-Subject: Re: [PATCH RFC v0] random: block in /dev/urandom
-In-Reply-To: <CAHmME9ooEbgiv3DRk87ei+rUoVNMJthY7UuG_xCgm=kfMZAajw@mail.gmail.com>
-Message-ID: <b43cc58-5ace-11e1-1a11-6cca42f65e7@linux-m68k.org>
-References: <20220211210757.612595-1-Jason@zx2c4.com> <fcab986b-d0bd-c798-de17-266abcdc7da2@gentoo.org> <CAHmME9ooEbgiv3DRk87ei+rUoVNMJthY7UuG_xCgm=kfMZAajw@mail.gmail.com>
+        Mon, 14 Feb 2022 19:26:37 -0500
+Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5D3433FDB8
+        for <linux-m68k@lists.linux-m68k.org>; Mon, 14 Feb 2022 16:26:28 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1644884788; x=1676420788;
+  h=date:from:to:cc:subject:message-id:mime-version:
+   content-transfer-encoding;
+  bh=JMjVUVKnt7thFF6KPMfdmGTkOreA7ub3klFs16no23c=;
+  b=f2RpAVKt+kgkxtT1xwi1AOpqVq4qw2/A3YNSVCFM3SETM7WtOrfA1IWN
+   2yE+HNA5QGucjBwqa1+h5i/vZ/3hIXqQWxQvuCyLWWhouEmix2Xv7YmnL
+   wGlcSDGhPXQXB9mhHZ+8ZK/+oAV2eQjIQZF2B8iDEo+5spieWSkRsEAtK
+   v72SBoxcFkpK+2E7sTPJM9yLhth27hVc4x8TLyGvhecg+NFe/ykeIk5RC
+   63sNWOVbXYoW6iFVjI5Hdstj+Nqml4dYzavp72CpuRpj5TMob6kBXNQ6H
+   Jlq5IJKebhoNLvE5xthmPx8ryMy04qDtJ7IA5w4ai9evYpkK/6daZXgVZ
+   A==;
+X-IronPort-AV: E=McAfee;i="6200,9189,10258"; a="247810373"
+X-IronPort-AV: E=Sophos;i="5.88,368,1635231600"; 
+   d="scan'208";a="247810373"
+Received: from fmsmga006.fm.intel.com ([10.253.24.20])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Feb 2022 16:26:27 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.88,368,1635231600"; 
+   d="scan'208";a="773289127"
+Received: from lkp-server01.sh.intel.com (HELO d95dc2dabeb1) ([10.239.97.150])
+  by fmsmga006.fm.intel.com with ESMTP; 14 Feb 2022 16:26:26 -0800
+Received: from kbuild by d95dc2dabeb1 with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1nJlfl-00095X-N3; Tue, 15 Feb 2022 00:26:25 +0000
+Date:   Tue, 15 Feb 2022 08:26:00 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Geert Uytterhoeven <geert@linux-m68k.org>
+Cc:     linux-m68k@lists.linux-m68k.org
+Subject: [geert-m68k:master] BUILD SUCCESS
+ b71f1c5991da14ccfa9cbf5d08f009737d3afcb0
+Message-ID: <620af318.WXfYwn8eNzprX+Sj%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-On Mon, 14 Feb 2022, Jason A. Donenfeld wrote:
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/geert/linux-m68k.git master
+branch HEAD: b71f1c5991da14ccfa9cbf5d08f009737d3afcb0  Merge tag 'v5.17-rc4'
 
-> 
-> So the only systems we're actually talking about without a good cycle 
-> counter are non-Amiga m68k? If so, that'd be a pretty terrific finding. 
-> It'd mean that this idea can move forward, and we only need to worry 
-> about some m68k museum pieces with misconfigured userspaces...
-> 
+elapsed time: 728m
 
-A processor cycle counter is helpful when mounting a timing attack but my 
-museum pieces don't suffer from that problem.
+configs tested: 159
+configs skipped: 3
 
-Also, they are and always were immune from spectre, meltdown etc.
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
-You misrepresent those secure hardware designs as being problematic, just 
-because of some bad advice on some random blogs about RNG API usage.
+gcc tested configs:
+arm                                 defconfig
+arm64                            allyesconfig
+arm64                               defconfig
+arm                              allyesconfig
+arm                              allmodconfig
+i386                 randconfig-c001-20220214
+mips                 randconfig-c004-20220214
+powerpc              randconfig-c003-20220214
+sh                           se7206_defconfig
+powerpc                     ep8248e_defconfig
+arc                            hsdk_defconfig
+arm                          lpd270_defconfig
+nios2                            alldefconfig
+sh                          r7780mp_defconfig
+sh                            titan_defconfig
+ia64                         bigsur_defconfig
+m68k                       m5249evb_defconfig
+mips                         cobalt_defconfig
+powerpc                       maple_defconfig
+powerpc64                           defconfig
+arm                        mvebu_v7_defconfig
+m68k                       m5475evb_defconfig
+m68k                          atari_defconfig
+sparc                            alldefconfig
+sparc                       sparc32_defconfig
+m68k                            mac_defconfig
+mips                         tb0226_defconfig
+x86_64                           alldefconfig
+ia64                            zx1_defconfig
+sh                           se7705_defconfig
+arm                      integrator_defconfig
+sh                           se7780_defconfig
+sh                         ap325rxa_defconfig
+arm                         at91_dt_defconfig
+arm                           u8500_defconfig
+mips                    maltaup_xpa_defconfig
+arm                         lpc18xx_defconfig
+powerpc                      bamboo_defconfig
+arc                        nsimosci_defconfig
+arm                  randconfig-c002-20220214
+arm                  randconfig-c002-20220213
+ia64                             allmodconfig
+ia64                                defconfig
+ia64                             allyesconfig
+m68k                             allmodconfig
+m68k                                defconfig
+m68k                             allyesconfig
+nios2                               defconfig
+arc                              allyesconfig
+nds32                             allnoconfig
+nds32                               defconfig
+nios2                            allyesconfig
+csky                                defconfig
+alpha                               defconfig
+alpha                            allyesconfig
+xtensa                           allyesconfig
+h8300                            allyesconfig
+arc                                 defconfig
+sh                               allmodconfig
+parisc                              defconfig
+s390                             allyesconfig
+s390                             allmodconfig
+parisc64                            defconfig
+parisc                           allyesconfig
+s390                                defconfig
+i386                             allyesconfig
+sparc                            allyesconfig
+sparc                               defconfig
+i386                                defconfig
+i386                   debian-10.3-kselftests
+i386                              debian-10.3
+mips                             allyesconfig
+mips                             allmodconfig
+powerpc                          allyesconfig
+powerpc                          allmodconfig
+powerpc                           allnoconfig
+i386                          randconfig-a003
+i386                          randconfig-a001
+x86_64               randconfig-a013-20220214
+x86_64               randconfig-a014-20220214
+x86_64               randconfig-a012-20220214
+x86_64               randconfig-a015-20220214
+x86_64               randconfig-a011-20220214
+x86_64               randconfig-a016-20220214
+x86_64                        randconfig-a011
+x86_64                        randconfig-a013
+x86_64                        randconfig-a015
+i386                 randconfig-a013-20220214
+i386                 randconfig-a016-20220214
+i386                 randconfig-a012-20220214
+i386                 randconfig-a015-20220214
+i386                 randconfig-a011-20220214
+i386                 randconfig-a014-20220214
+i386                          randconfig-a012
+i386                          randconfig-a014
+riscv                randconfig-r042-20220214
+arc                  randconfig-r043-20220214
+s390                 randconfig-r044-20220214
+riscv                    nommu_virt_defconfig
+riscv                          rv32_defconfig
+riscv                    nommu_k210_defconfig
+riscv                            allyesconfig
+riscv                             allnoconfig
+riscv                               defconfig
+riscv                            allmodconfig
+um                           x86_64_defconfig
+um                             i386_defconfig
+x86_64                           allyesconfig
+x86_64                    rhel-8.3-kselftests
+x86_64                              defconfig
+x86_64                               rhel-8.3
+x86_64                          rhel-8.3-func
+x86_64                                  kexec
 
-Do you have a phone that no longer gets updates from its vendor? Have you 
-tried patching it?
+clang tested configs:
+i386                 randconfig-c001-20220214
+x86_64               randconfig-c007-20220214
+powerpc              randconfig-c003-20220214
+arm                  randconfig-c002-20220214
+s390                 randconfig-c005-20220214
+mips                 randconfig-c004-20220214
+riscv                randconfig-c006-20220214
+mips                         tb0287_defconfig
+arm                         lpc32xx_defconfig
+powerpc                 mpc8315_rdb_defconfig
+powerpc                     tqm8560_defconfig
+mips                       lemote2f_defconfig
+mips                      malta_kvm_defconfig
+mips                        workpad_defconfig
+arm                         s3c2410_defconfig
+powerpc                     ppa8548_defconfig
+arm64                            allyesconfig
+arm                            dove_defconfig
+mips                          ath25_defconfig
+arm                       mainstone_defconfig
+mips                     cu1830-neo_defconfig
+arm                       spear13xx_defconfig
+powerpc                     mpc512x_defconfig
+arm                          imote2_defconfig
+arm                          moxart_defconfig
+mips                         tb0219_defconfig
+mips                     cu1000-neo_defconfig
+x86_64               randconfig-a002-20220214
+x86_64               randconfig-a006-20220214
+x86_64               randconfig-a005-20220214
+x86_64               randconfig-a004-20220214
+x86_64               randconfig-a003-20220214
+x86_64               randconfig-a001-20220214
+i386                 randconfig-a004-20220214
+i386                 randconfig-a005-20220214
+i386                 randconfig-a006-20220214
+i386                 randconfig-a002-20220214
+i386                 randconfig-a003-20220214
+i386                 randconfig-a001-20220214
+i386                          randconfig-a002
+i386                          randconfig-a006
+x86_64                        randconfig-a012
+x86_64                        randconfig-a014
+x86_64                        randconfig-a016
+i386                          randconfig-a013
+i386                          randconfig-a015
+hexagon              randconfig-r045-20220213
+hexagon              randconfig-r045-20220214
+hexagon              randconfig-r041-20220214
+hexagon              randconfig-r041-20220213
+riscv                randconfig-r042-20220213
 
-Your insecure museum pieces are the real problem, not my secure ones.
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
