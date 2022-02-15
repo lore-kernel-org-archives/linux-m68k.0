@@ -2,219 +2,192 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id F2EFEC433F5
-	for <linux-m68k@archiver.kernel.org>; Tue, 15 Feb 2022 08:12:01 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 75BA3C433EF
+	for <linux-m68k@archiver.kernel.org>; Tue, 15 Feb 2022 08:18:19 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229508AbiBOIMJ (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Tue, 15 Feb 2022 03:12:09 -0500
-Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:57392 "EHLO
+        id S232193AbiBOIS1 (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Tue, 15 Feb 2022 03:18:27 -0500
+Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:51600 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229715AbiBOIMI (ORCPT
+        with ESMTP id S235344AbiBOISX (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Tue, 15 Feb 2022 03:12:08 -0500
-Received: from mail-vs1-f45.google.com (mail-vs1-f45.google.com [209.85.217.45])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9DA44A0
-        for <linux-m68k@lists.linux-m68k.org>; Tue, 15 Feb 2022 00:11:58 -0800 (PST)
-Received: by mail-vs1-f45.google.com with SMTP id w4so3185702vsq.1
-        for <linux-m68k@lists.linux-m68k.org>; Tue, 15 Feb 2022 00:11:58 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=JGh7SZZiZgyy+Ve1VUawmPJHj6ONIGSChe7lpb0CdUg=;
-        b=JEdbCKeYtO71jqiRGuChTW10sRlJ7xmYCQ1zmwgQnQdmc6d+WghSkFNqXdare95wPx
-         6xha1Ya0e1DXniM2VcL3g1mfLPF89399vjH2fcb0CfDYZQHrMACX+XJIcYpcpgHJCTt3
-         bK3FpVI+lgzfDE1WBu1k4nz3ubUXVdGnqdjBKQZKbmpm+RqNSowGoeolCR27QDoNvTwu
-         9kNIw2tq26QoOusfqlAnhZd/JNrbYQqMcxdofHAmAPNLaxzg1htQOXzB3arXzyQYTsOx
-         FdJAds0x1VnSbSfMeMRQaKbxVTvl0aI2i6Okp8rw6ITqiXPXnKVS/ocZdoZW5bD1Zn2e
-         E9/w==
-X-Gm-Message-State: AOAM530etaQTypMGLlF83zbgKbZYY3ojR6VQj6ZBkuumAC664a2mDImV
-        FaqOuIxmT54/3XAT90wfPgRjznR9mXycnA==
-X-Google-Smtp-Source: ABdhPJyB2UYMDGKAnyeTIGrzmiCtfxHdKKIDj5Aq7jUQmBIRz3kAWEb0a3G3ItuIHgFf102GSX8KdA==
-X-Received: by 2002:a67:d116:: with SMTP id u22mr998524vsi.42.1644912717465;
-        Tue, 15 Feb 2022 00:11:57 -0800 (PST)
-Received: from mail-vk1-f173.google.com (mail-vk1-f173.google.com. [209.85.221.173])
-        by smtp.gmail.com with ESMTPSA id i36sm777705vkd.42.2022.02.15.00.11.57
-        for <linux-m68k@lists.linux-m68k.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 15 Feb 2022 00:11:57 -0800 (PST)
-Received: by mail-vk1-f173.google.com with SMTP id j9so2242640vkj.1
-        for <linux-m68k@lists.linux-m68k.org>; Tue, 15 Feb 2022 00:11:57 -0800 (PST)
-X-Received: by 2002:a1f:5e45:: with SMTP id s66mr1019474vkb.7.1644912716794;
- Tue, 15 Feb 2022 00:11:56 -0800 (PST)
+        Tue, 15 Feb 2022 03:18:23 -0500
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 034608AE62
+        for <linux-m68k@lists.linux-m68k.org>; Tue, 15 Feb 2022 00:18:14 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 4935E6166E
+        for <linux-m68k@lists.linux-m68k.org>; Tue, 15 Feb 2022 08:18:13 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1F09EC340EC
+        for <linux-m68k@lists.linux-m68k.org>; Tue, 15 Feb 2022 08:18:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1644913093;
+        bh=04jl3xlTAr2mAK86GyJL0xbgNN5b7HtshwArFPtWTHk=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=stRaKCevAHKdgCmUGBrfhYzWT/8iK3ELaeINBLVStpnUtlgra7KJKB1LPYgCFz1Pz
+         +EGWCG7GiscQwxqnR6qJYfTfqIKew2R3ilXdCTdcizcfhkqcFb2TJHt6sjZQfI2a33
+         z9c50e3SciQbRuuCC7ZH5imVtHHxU2mhBfrCJWqpha1zoDHYemAFJAhKFnW+HE9Ygj
+         VumcFjSy1p4dB9c+6GpPb1xWIMbXv5/9DDjAH5DCfzY/fxC8JQEtfusc6ZaJDHhC5h
+         AXGqyPAIzRgK+LIGR73S0GgDLdYFf2jflIjiT0umxwXaCiuWmVS2bzqZo6JrJeQrhm
+         7SbBQn0gB5/3Q==
+Received: by mail-ed1-f47.google.com with SMTP id q17so2864234edd.4
+        for <linux-m68k@lists.linux-m68k.org>; Tue, 15 Feb 2022 00:18:13 -0800 (PST)
+X-Gm-Message-State: AOAM532Y/WOfcUIPgOuKCJwLNq5md4DVTzsLxvnfcgR9wKSX1XaEdp/Z
+        cvEjXjosfdkJxVftTuBUjn8bMTcJcnawXSCeZFE=
+X-Google-Smtp-Source: ABdhPJw4PL6nNrFqa4c6RC8ozuX9Vj+TpXvd1rMYfibECm69yxHe+9RwBgU/na3QadsOPEjyGv1buhx93wXVXPObDfI=
+X-Received: by 2002:a5d:490d:: with SMTP id x13mr2213081wrq.417.1644913080942;
+ Tue, 15 Feb 2022 00:18:00 -0800 (PST)
 MIME-Version: 1.0
-References: <CAMuHMdU3ievhXxKR_xi_v3aumnYW7UNUO6qMdhgfyWTyVSsCkQ@mail.gmail.com>
- <b03160b6-7f3b-7765-49ee-c49b7dd2c4e0@gmail.com> <CAMuHMdVUX0zJtRAtjCBAa7iEk7MwCjcmSsJdCrSrPcY=6ti=cQ@mail.gmail.com>
- <4b3a0bc8-24a1-2a33-19bb-fbae954c614c@gmail.com>
-In-Reply-To: <4b3a0bc8-24a1-2a33-19bb-fbae954c614c@gmail.com>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Tue, 15 Feb 2022 09:11:45 +0100
-X-Gmail-Original-Message-ID: <CAMuHMdWkxDMbS4D8wkEPAVgrFnoJzejUkxKCnvA+MA38vS6g9Q@mail.gmail.com>
-Message-ID: <CAMuHMdWkxDMbS4D8wkEPAVgrFnoJzejUkxKCnvA+MA38vS6g9Q@mail.gmail.com>
-Subject: Re: Wrong colors on ARAnyM
-To:     Michael Schmitz <schmitzmic@gmail.com>
-Cc:     Petr Stehlik <pstehlik@sophics.cz>,
-        linux-m68k <linux-m68k@lists.linux-m68k.org>
+References: <20220214163452.1568807-1-arnd@kernel.org> <20220214163452.1568807-9-arnd@kernel.org>
+In-Reply-To: <20220214163452.1568807-9-arnd@kernel.org>
+From:   Ard Biesheuvel <ardb@kernel.org>
+Date:   Tue, 15 Feb 2022 09:17:48 +0100
+X-Gmail-Original-Message-ID: <CAMj1kXHixUFjV=4m3tzfGz7AiRWc-VczymbKuZq7dyZZNuLKxQ@mail.gmail.com>
+Message-ID: <CAMj1kXHixUFjV=4m3tzfGz7AiRWc-VczymbKuZq7dyZZNuLKxQ@mail.gmail.com>
+Subject: Re: [PATCH 08/14] arm64: simplify access_ok()
+To:     Arnd Bergmann <arnd@kernel.org>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Christoph Hellwig <hch@lst.de>,
+        linux-arch <linux-arch@vger.kernel.org>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        linux-api@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Russell King <linux@armlinux.org.uk>,
+        Will Deacon <will@kernel.org>, Guo Ren <guoren@kernel.org>,
+        Brian Cain <bcain@codeaurora.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>, monstr@monstr.eu,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Nick Hu <nickhu@andestech.com>,
+        Greentime Hu <green.hu@gmail.com>, dinguyen@kernel.org,
+        Stafford Horne <shorne@gmail.com>,
+        Helge Deller <deller@gmx.de>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Rich Felker <dalias@libc.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Richard Weinberger <richard@nod.at>, X86 ML <x86@kernel.org>,
+        Max Filippov <jcmvbkbc@gmail.com>,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        alpha <linux-alpha@vger.kernel.org>,
+        linux-snps-arc@lists.infradead.org,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        linux-csky@vger.kernel.org, linux-hexagon@vger.kernel.org,
+        linux-ia64@vger.kernel.org,
+        linux-m68k <linux-m68k@lists.linux-m68k.org>,
+        "open list:MIPS" <linux-mips@vger.kernel.org>,
+        openrisc@lists.librecores.org,
+        "open list:PARISC ARCHITECTURE" <linux-parisc@vger.kernel.org>,
+        "open list:LINUX FOR POWERPC (32-BIT AND 64-BIT)" 
+        <linuxppc-dev@lists.ozlabs.org>,
+        linux-riscv <linux-riscv@lists.infradead.org>,
+        "open list:S390" <linux-s390@vger.kernel.org>,
+        linux-sh@vger.kernel.org,
+        "open list:SPARC + UltraSPARC (sparc/sparc64)" 
+        <sparclinux@vger.kernel.org>,
+        linux-um <linux-um@lists.infradead.org>,
+        "open list:TENSILICA XTENSA PORT (xtensa)" 
+        <linux-xtensa@linux-xtensa.org>,
+        Robin Murphy <robin.murphy@arm.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-Hi Michael,
-
-On Mon, Feb 14, 2022 at 9:50 PM Michael Schmitz <schmitzmic@gmail.com> wrote:
-> On 14/02/22 20:41, Geert Uytterhoeven wrote:
-> > On Sun, Feb 13, 2022 at 9:29 PM Michael Schmitz <schmitzmic@gmail.com> wrote:
-> >>
-> >>   2. Change the color depth a few times:
-> >>
-> >>      $ fbset -depth 1
-> >>      $ fbset -depth 2
-> >>
-> >> Depth 2 forces STe palette mode (in decode_var; activated in the Videl in the vbl switcher).
-> >>
-> >> [...]
-> >> It _looks_ as though changes to f_shift and st_shift are not pushed to hardware in the VBL interrupt. Does ARAnyM run the VBL interrupt regularly?
-> > Yes it does.
-> >
-> >> But maybe the kernel and ARAnyM disagree because useStPalette() has this:
-> >>
-> >> int hreg = handleReadW(HW + 0x82); // Too lame!
-> >> // Better way how to make out ST LOW mode wanted
-> >> if (hreg == 0x10 || hreg == 0x17 || hreg == 0x3e) {
-> >> useStPal = true;
-> >>
-> >> }
-> >>
-> >> for st_shift == 0
-> > Linux' falcon_setcolreg() writes to both the Falcon palette registers
-> > and shifter_tt.color_reg[], so shouldn't the STE color palette contain
-> > the correct colors, too?
+On Mon, 14 Feb 2022 at 17:37, Arnd Bergmann <arnd@kernel.org> wrote:
 >
-> I don't think it will:
+> From: Arnd Bergmann <arnd@arndb.de>
 >
-> The STe palette is set like this:
+> arm64 has an inline asm implementation of access_ok() that is derived from
+> the 32-bit arm version and optimized for the case that both the limit and
+> the size are variable. With set_fs() gone, the limit is always constant,
+> and the size usually is as well, so just using the default implementation
+> reduces the check into a comparison against a constant that can be
+> scheduled by the compiler.
 >
->                  shifter_tt.color_reg[regno] =
->                          (((red & 0xe) >> 1) | ((red & 1) << 3) << 8) |
->                          (((green & 0xe) >> 1) | ((green & 1) << 3) << 4) |
->                          ((blue & 0xe) >> 1) | ((blue & 1) << 3);
+> On a defconfig build, this saves over 28KB of .text.
 >
-> with all colours downshifted by 12 bits already. Rewriting that in the
-> same form as is used in falcon_setcolreg(), i.e. without the downshift:
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+> ---
+>  arch/arm64/include/asm/uaccess.h | 28 +++++-----------------------
+>  1 file changed, 5 insertions(+), 23 deletions(-)
 >
->                  shifter_tt.color_reg[regno] =
->                          (((red & 0xe000) >> 13) | ((red & 1000) >> 9)
-> << 8) |
->                          (((green & 0xe000) >> 13) | ((green & 1000) >>
-> 9) << 4) |
->                          ((blue & 0xe000) >> 13) | ((blue & 1000) >> 9);
+> diff --git a/arch/arm64/include/asm/uaccess.h b/arch/arm64/include/asm/uaccess.h
+> index 357f7bd9c981..e8dce0cc5eaa 100644
+> --- a/arch/arm64/include/asm/uaccess.h
+> +++ b/arch/arm64/include/asm/uaccess.h
+> @@ -26,6 +26,8 @@
+>  #include <asm/memory.h>
+>  #include <asm/extable.h>
 >
+> +static inline int __access_ok(const void __user *ptr, unsigned long size);
+> +
+>  /*
+>   * Test whether a block of memory is a valid user space address.
+>   * Returns 1 if the range is valid, 0 otherwise.
+> @@ -33,10 +35,8 @@
+>   * This is equivalent to the following test:
+>   * (u65)addr + (u65)size <= (u65)TASK_SIZE_MAX
+>   */
+> -static inline unsigned long __access_ok(const void __user *addr, unsigned long size)
+> +static inline int access_ok(const void __user *addr, unsigned long size)
+>  {
+> -       unsigned long ret, limit = TASK_SIZE_MAX - 1;
+> -
+>         /*
+>          * Asynchronous I/O running in a kernel thread does not have the
+>          * TIF_TAGGED_ADDR flag of the process owning the mm, so always untag
+> @@ -46,27 +46,9 @@ static inline unsigned long __access_ok(const void __user *addr, unsigned long s
+>             (current->flags & PF_KTHREAD || test_thread_flag(TIF_TAGGED_ADDR)))
+>                 addr = untagged_addr(addr);
 >
-> Now look at falcon_setcolreg:
+> -       __chk_user_ptr(addr);
+> -       asm volatile(
+> -       // A + B <= C + 1 for all A,B,C, in four easy steps:
+> -       // 1: X = A + B; X' = X % 2^64
+> -       "       adds    %0, %3, %2\n"
+> -       // 2: Set C = 0 if X > 2^64, to guarantee X' > C in step 4
+> -       "       csel    %1, xzr, %1, hi\n"
+> -       // 3: Set X' = ~0 if X >= 2^64. For X == 2^64, this decrements X'
+> -       //    to compensate for the carry flag being set in step 4. For
+> -       //    X > 2^64, X' merely has to remain nonzero, which it does.
+> -       "       csinv   %0, %0, xzr, cc\n"
+> -       // 4: For X < 2^64, this gives us X' - C - 1 <= 0, where the -1
+> -       //    comes from the carry in being clear. Otherwise, we are
+> -       //    testing X' - C == 0, subject to the previous adjustments.
+> -       "       sbcs    xzr, %0, %1\n"
+> -       "       cset    %0, ls\n"
+> -       : "=&r" (ret), "+r" (limit) : "Ir" (size), "0" (addr) : "cc");
+> -
+> -       return ret;
+> +       return likely(__access_ok(addr, size));
+>  }
+> -#define __access_ok __access_ok
+> +#define access_ok access_ok
 >
->                  shifter_tt.color_reg[regno] =
->                          (((red & 0xe000) >> 13) | ((red & 0x1000) >>
-> 12) << 8) |
->                          (((green & 0xe000) >> 13) | ((green & 0x1000)
->  >> 12) << 4) |
->                          ((blue & 0xe000) >> 13) | ((blue & 0x1000) >> 12);
+>  #include <asm-generic/access_ok.h>
 >
+> --
+> 2.29.2
 >
-> My guess would be the two ought to be identical, assuming the STe
-> palette registers provide backwards hardware compatibility.
->
-> Either way, I think we've got operator precedence wrong here. Shift
-> takes precedence over bitwise and / or? With that precedence, what we
-> have in summary is
->
->                  shifter_tt.color_reg[regno] =
->                          (((red & 0xe000) >> 13) | ((red & 0x1000) >> 4)) |
->                          (((green & 0xe000) >> 13) | ((green & 0x1000)
->  >> 8)) |
->                          ((blue & 0xe000) >> 13) | ((blue & 0x1000) >> 12);
->
-> Only the blue bits ever entirely seem to end up where they ought to.
-> Testing this hypothesis on ARAnyM (without getting it to boot all the
-> way, for some odd reason likely to do with my current .config) shows
-> that the current code results in the shifter_tt.color_reg entries either
-> 5 or 0x17, 0x113 or 0x117. Adding the missing parentheses results in
-> what I'd expect to see.
 
-Oops.
+With set_fs() out of the picture, wouldn't it be sufficient to check
+that bit #55 is clear? (the bit that selects between TTBR0 and TTBR1)
+That would also remove the need to strip the tag from the address.
 
-> This bug has been present since at least 2.4.30. I do recall seeing this
-> odd blue console before on the Falcon, so it's been a real bug for ages.
+Something like
 
-I recall seeing an odd blue console before, too.
-I always dismissed it as some artefact of redrawing the screen in
-a different color mode, like we used to have when switching from a
-16-color to a monochrome text console (remember the underlined text?).
+    asm goto("tbnz  %0, #55, %2     \n"
+             "tbnz  %1, #55, %2     \n"
+             :: "r"(addr), "r"(addr + size - 1) :: notok);
+    return 1;
+notok:
+    return 0;
 
-Did/do you see it on the real Falcon, too?
-Initially, I suspected the real Falcon always using the Falcon palette,
-so the bug was never seen on real hardware. But the following comment
-makes me think the colors have always been wrong if bpp == 2:
-
-        /* 2 planes must use STE compatibility mode */
-        par->hw.falcon.ste_mode = bpp == 2;
-
-> Did the operator precedence change sometime since?
-
-;-)
-
-> >> As the problem is not 100% reproducible, it looks like a race condition
-> >> in ARAnyM, or a wrong initialization order in atafb.
-> >>
-> >> I'd have to test this on hardware but haven't got fbset on the Falcon. I'll try to locate a binary.
-> > Sorry, you do not need fbset to reproduce this:
-> >
-> >      echo N > /sys/class/graphics/fb0/bits_per_pixel
->
-> Thanks, that's easy enough to try.
->
-> Playing around with that command a bit, it does appear that the second
-> switch after selecting depth 2 turns the console blue (regardless of
-> what depth is set in that step). And the second switch after that (even
-> if setting depth 2) restores normal colours. No race that I can see
-> there, it's quite reproducible.
-
-Yes, it is quite reproducible, but it doesn't always happen every
-second switch. As my Atari DRM driver cannot switch mode on the fly,
-I have to initialize the driver with the mode I want to use. Booting
-with a mode with 2 bitplanes gives me the wrong colors in ca. 20%
-of the cases. So it is random.
-
-> Now what would cause us to miss every other palette update or depth change?
-
-That's a good question! Why does ARAnyM sometimes decide to use the
-Falcon palette, and sometimes the STe palette, and not only with
-bpp == 2, but also with other color depths?
-
-> I'll verify that the bug is gone once I've rebuilt with a sane .config.
-> But I think we've got enough to fix at least the annoying STe palette
-> bug. Unless you want to keep that alive until we've found out what
-> causes us to miss odd updates...
-
-And:
-
-> I can confirm that the bug is gone with additional parentheses to apply
-> the shifts (<<8 for red, <<4 for green) to the result of the bit-wise
-> or, not just the right-hand portion of it.
->
-> Do you want me to prepare a patch, or would you prefer to do it yourself?
-
-Feel free to send a patch.
-If you don't get to it, I'll make one, eventually.
-Thanks!
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+with an additional sanity check on the size which the compiler could
+eliminate for compile-time constant values.
