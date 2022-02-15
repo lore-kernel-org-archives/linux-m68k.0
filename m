@@ -2,63 +2,62 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3B565C433F5
-	for <linux-m68k@archiver.kernel.org>; Tue, 15 Feb 2022 09:40:22 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 45B55C433F5
+	for <linux-m68k@archiver.kernel.org>; Tue, 15 Feb 2022 10:02:50 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234609AbiBOJk3 (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Tue, 15 Feb 2022 04:40:29 -0500
-Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:60598 "EHLO
+        id S236204AbiBOKC6 (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Tue, 15 Feb 2022 05:02:58 -0500
+Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:39594 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235979AbiBOJk2 (ORCPT
+        with ESMTP id S236215AbiBOKCy (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Tue, 15 Feb 2022 04:40:28 -0500
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A013E4499
-        for <linux-m68k@lists.linux-m68k.org>; Tue, 15 Feb 2022 01:40:15 -0800 (PST)
+        Tue, 15 Feb 2022 05:02:54 -0500
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 690DB1ADAE
+        for <linux-m68k@lists.linux-m68k.org>; Tue, 15 Feb 2022 02:02:39 -0800 (PST)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id C59826101E
-        for <linux-m68k@lists.linux-m68k.org>; Tue, 15 Feb 2022 09:40:14 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9BE5FC340F3
-        for <linux-m68k@lists.linux-m68k.org>; Tue, 15 Feb 2022 09:40:14 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 7B131612CF
+        for <linux-m68k@lists.linux-m68k.org>; Tue, 15 Feb 2022 10:02:39 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 510ECC36AE5
+        for <linux-m68k@lists.linux-m68k.org>; Tue, 15 Feb 2022 10:02:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1644918014;
-        bh=hv8AUuEMkapI1zY2x6Wj+fHd7ew8TaKYgsOBPTPrxmw=;
+        s=k20201202; t=1644919359;
+        bh=6OaJO5k8UStns9fCBustiYnW4Ue2uRRTBF363T6I8Z8=;
         h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=VHH7CU79U316XDMWHeHJ8++Eh1MMKITXbQSzlZ0DrA6kWekzDktkCy5KhY7hZLGK7
-         gfiQHmPbEC7L4AF+NDTP3++2HyxQqgay+CXVkTp1m9wIZSWiRsxhjEsRH76HB3HAb3
-         /5H0IwFoMYLMdcVT0XuD8P6Vw9GPBTkN9xgNY7hhrRN337S5eN73tDcRKRPLMOcNTg
-         NXwi07ICMcsXTT77IYOqmuFqUW8m3AaA+2IJmg2fkpra1D1NcZ3zVXZBTrXdEvv5Oq
-         0XRwvrersUnw/PUKjeaOsXZQOemvEGElTmz0nKHB8fy3fN/J5cS0vZm5lHkoOpeHoi
-         hdacTJ8dWWJzg==
-Received: by mail-wm1-f45.google.com with SMTP id x3-20020a05600c21c300b0037c01ad715bso1016946wmj.2
-        for <linux-m68k@lists.linux-m68k.org>; Tue, 15 Feb 2022 01:40:14 -0800 (PST)
-X-Gm-Message-State: AOAM531GtZkLNeZ7s1AWgSDxNkEGHJqYe7Rmp/BRF4dYZA/pmwqHH0YF
-        3LyWGAjB4Z9IxDWae6VgDTd9uxcwOh9NnuP1wy8=
-X-Google-Smtp-Source: ABdhPJxpFSyo2tIfVZXx6xnWqAN7kXzL0SfiKGeaqLH7fIF3GRmujo8Iug1QC1Z1ypgNgRnGoRSGx0exr14yXtWS6QY=
-X-Received: by 2002:a05:600c:1d27:b0:37c:74bb:2b4d with SMTP id
- l39-20020a05600c1d2700b0037c74bb2b4dmr2314325wms.82.1644918002508; Tue, 15
- Feb 2022 01:40:02 -0800 (PST)
+        b=uvEmspgqpxTxsLVTla+f0SMmX15oCQNrms2B9i0V9ia6kENfVsiE5Bzh7iEU5KPnw
+         q9gpvWdnz7Ekg1lzBDLgsrNBP3KQiT85+nX2ztDJVrZIG/Ujb9BpDyYeBvTJqYuFFy
+         UXxanyBNOo8MHsY34ccoxfMGLS2ZnrQfcuAKTi+R29nIBU60+3+8nE+aoXmDCfLSlj
+         gLzEYCibUm4llc2wyWYPuInOJmc4XldnCXU+p9O2WXaNiWoHF4eSAsm49banFdwhfI
+         qZ3iYDoP+YlMRMdIdv1rAxGAF/9VZx8l+SDbw/WEUswwJYP90PuoNP8rnqj493/bDf
+         pKaaRvX+q+uBA==
+Received: by mail-wm1-f51.google.com with SMTP id j9-20020a05600c190900b0037bff8a24ebso1064513wmq.4
+        for <linux-m68k@lists.linux-m68k.org>; Tue, 15 Feb 2022 02:02:39 -0800 (PST)
+X-Gm-Message-State: AOAM532gy/UUpaO5DEXvHRrEmFwpmwAl8xqX6SWIntGtBlwjJ0cL32r/
+        c3JsWCuzG49Yg/ImFnVxCdQHMLPCpFTPBYeQrHk=
+X-Google-Smtp-Source: ABdhPJxXhF5oN8HK5+/UBfeNSuYxeBNAH3pN7Z2cMEK019oVoVAxn2dH7YUg+eieAXhNWJaJdsC0aGcEXS3C4UXMT34=
+X-Received: by 2002:a05:600c:2108:b0:34e:870:966e with SMTP id
+ u8-20020a05600c210800b0034e0870966emr2332972wml.173.1644919346591; Tue, 15
+ Feb 2022 02:02:26 -0800 (PST)
 MIME-Version: 1.0
-References: <20220214163452.1568807-1-arnd@kernel.org> <20220214163452.1568807-9-arnd@kernel.org>
- <CAMj1kXHixUFjV=4m3tzfGz7AiRWc-VczymbKuZq7dyZZNuLKxQ@mail.gmail.com>
- <CAK8P3a2VfvDkueaJNTA9SiB+PFsi_Q17AX+aL46ueooW2ahmQw@mail.gmail.com> <CAMj1kXGkG0KMD2rnKAJc3V7X9LP1grbcHTNYMnj_q4GiYfG2pQ@mail.gmail.com>
-In-Reply-To: <CAMj1kXGkG0KMD2rnKAJc3V7X9LP1grbcHTNYMnj_q4GiYfG2pQ@mail.gmail.com>
+References: <20220214163452.1568807-1-arnd@kernel.org> <20220214163452.1568807-10-arnd@kernel.org>
+ <Ygr11RGjj3C9uAUg@zeniv-ca.linux.org.uk> <20220215062942.GA12551@lst.de> <YgtSpk0boDjsyjFK@zeniv-ca.linux.org.uk>
+In-Reply-To: <YgtSpk0boDjsyjFK@zeniv-ca.linux.org.uk>
 From:   Arnd Bergmann <arnd@kernel.org>
-Date:   Tue, 15 Feb 2022 10:39:46 +0100
-X-Gmail-Original-Message-ID: <CAK8P3a0NTqK_m7q909d8FN6is8k4_u3zeckC9XOrjEi7kqSvmg@mail.gmail.com>
-Message-ID: <CAK8P3a0NTqK_m7q909d8FN6is8k4_u3zeckC9XOrjEi7kqSvmg@mail.gmail.com>
-Subject: Re: [PATCH 08/14] arm64: simplify access_ok()
-To:     Ard Biesheuvel <ardb@kernel.org>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Christoph Hellwig <hch@lst.de>,
+Date:   Tue, 15 Feb 2022 11:02:10 +0100
+X-Gmail-Original-Message-ID: <CAK8P3a0t-dnJXvXH0Mx5L-AeVQe1mYzRi0sQjYxzMQw-mVPv0Q@mail.gmail.com>
+Message-ID: <CAK8P3a0t-dnJXvXH0Mx5L-AeVQe1mYzRi0sQjYxzMQw-mVPv0Q@mail.gmail.com>
+Subject: Re: [PATCH 09/14] m68k: drop custom __access_ok()
+To:     Al Viro <viro@zeniv.linux.org.uk>
+Cc:     Christoph Hellwig <hch@lst.de>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
         linux-arch <linux-arch@vger.kernel.org>,
-        Linux Memory Management List <linux-mm@kvack.org>,
+        Linux-MM <linux-mm@kvack.org>,
         Linux API <linux-api@vger.kernel.org>,
         Arnd Bergmann <arnd@arndb.de>,
         Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Russell King <linux@armlinux.org.uk>,
+        Russell King - ARM Linux <linux@armlinux.org.uk>,
         Will Deacon <will@kernel.org>, Guo Ren <guoren@kernel.org>,
         Brian Cain <bcain@codeaurora.org>,
         Geert Uytterhoeven <geert@linux-m68k.org>,
@@ -75,11 +74,13 @@ Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
         Mark Rutland <mark.rutland@arm.com>,
         Heiko Carstens <hca@linux.ibm.com>,
         Rich Felker <dalias@libc.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Richard Weinberger <richard@nod.at>, X86 ML <x86@kernel.org>,
+        David Miller <davem@davemloft.net>,
+        Richard Weinberger <richard@nod.at>,
+        "the arch/x86 maintainers" <x86@kernel.org>,
         Max Filippov <jcmvbkbc@gmail.com>,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
+        "Eric W . Biederman" <ebiederm@xmission.com>,
         Andrew Morton <akpm@linux-foundation.org>,
+        Ard Biesheuvel <ardb@kernel.org>,
         alpha <linux-alpha@vger.kernel.org>,
         "open list:SYNOPSYS ARC ARCHITECTURE" 
         <linux-snps-arc@lists.infradead.org>,
@@ -88,42 +89,64 @@ Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
         "open list:QUALCOMM HEXAGON..." <linux-hexagon@vger.kernel.org>,
         linux-ia64@vger.kernel.org,
         linux-m68k <linux-m68k@lists.linux-m68k.org>,
-        "open list:MIPS" <linux-mips@vger.kernel.org>,
+        "open list:BROADCOM NVRAM DRIVER" <linux-mips@vger.kernel.org>,
         Openrisc <openrisc@lists.librecores.org>,
-        "open list:PARISC ARCHITECTURE" <linux-parisc@vger.kernel.org>,
-        "open list:LINUX FOR POWERPC (32-BIT AND 64-BIT)" 
-        <linuxppc-dev@lists.ozlabs.org>,
+        Parisc List <linux-parisc@vger.kernel.org>,
+        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
         linux-riscv <linux-riscv@lists.infradead.org>,
-        "open list:S390" <linux-s390@vger.kernel.org>,
+        linux-s390 <linux-s390@vger.kernel.org>,
         Linux-sh list <linux-sh@vger.kernel.org>,
-        "open list:SPARC + UltraSPARC (sparc/sparc64)" 
-        <sparclinux@vger.kernel.org>,
+        sparclinux <sparclinux@vger.kernel.org>,
         linux-um <linux-um@lists.infradead.org>,
         "open list:TENSILICA XTENSA PORT (xtensa)" 
-        <linux-xtensa@linux-xtensa.org>,
-        Robin Murphy <robin.murphy@arm.com>
+        <linux-xtensa@linux-xtensa.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-On Tue, Feb 15, 2022 at 10:21 AM Ard Biesheuvel <ardb@kernel.org> wrote:
-> On Tue, 15 Feb 2022 at 10:13, Arnd Bergmann <arnd@kernel.org> wrote:
+On Tue, Feb 15, 2022 at 8:13 AM Al Viro <viro@zeniv.linux.org.uk> wrote:
+> On Tue, Feb 15, 2022 at 07:29:42AM +0100, Christoph Hellwig wrote:
+> > On Tue, Feb 15, 2022 at 12:37:41AM +0000, Al Viro wrote:
+> > > Perhaps simply wrap that sucker into #ifdef CONFIG_CPU_HAS_ADDRESS_SPACES
+> > > (and trim the comment down to "coldfire and 68000 will pick generic
+> > > variant")?
+> >
+> > I wonder if we should invert CONFIG_ARCH_HAS_NON_OVERLAPPING_ADDRESS_SPACE,
+> > select the separate address space config for s390, sparc64, non-coldfire
+> > m68k and mips with EVA and then just have one single access_ok for
+> > overlapping address space (as added by Arnd) and non-overlapping ones
+> > (always return true).
 >
-> arm64 also has this leading up to the range check, and I think we'd no
-> longer need it:
+> parisc is also such...  How about
 >
->     if (IS_ENABLED(CONFIG_ARM64_TAGGED_ADDR_ABI) &&
->         (current->flags & PF_KTHREAD || test_thread_flag(TIF_TAGGED_ADDR)))
->             addr = untagged_addr(addr);
+>         select ALTERNATE_SPACE_USERLAND
+>
+> for that bunch?
 
-I suspect the expensive part here is checking the two flags, as untagged_addr()
-seems to always just add a sbfx instruction. Would this work?
+Either of those works for me. My current version has this keyed off
+TASK_SIZE_MAX==ULONG_MAX, but a CONFIG_ symbol does
+look more descriptive.
 
-#ifdef CONFIG_ARM64_TAGGED_ADDR_ABI
-#define access_ok(ptr, size) __access_ok(untagged_addr(ptr), (size))
-#else // the else path is the default, this can be left out.
-#define access_ok(ptr, size) __access_ok((ptr), (size))
-#endif
+>  While we are at it, how many unusual access_ok() instances are
+> left after this series?  arm64, itanic, um, anything else?
 
-       Arnd
+x86 adds a WARN_ON_IN_IRQ() check in there. This could be
+made generic, but it's not obvious what exactly the exceptions are
+that other architectures need. The arm64 tagged pointers could
+probably also get integrated into the generic version.
+
+> FWIW, sparc32 has a slightly unusual instance (see uaccess_32.h there); it's
+> obviously cheaper than generic and I wonder if the trick is legitimate (and
+> applicable elsewhere, perhaps)...
+
+Right, a few others have the same, but I wasn't convinced that this
+is actually safe for call possible cases: it's trivial to construct a caller
+that works on other architectures but not this one, if you pass a large
+enough size value and don't access the contents in sequence.
+
+Also, like the ((addr | (addr + size)) & MASK) check on some other
+architectures, it is less portable because it makes assumptions about
+the actual layout beyond a fixed address limit.
+
+        Arnd
