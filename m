@@ -2,150 +2,122 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id BAB49C43219
-	for <linux-m68k@archiver.kernel.org>; Wed, 16 Feb 2022 12:25:57 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 25C2CC4321E
+	for <linux-m68k@archiver.kernel.org>; Wed, 16 Feb 2022 13:06:53 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233163AbiBPM0H convert rfc822-to-8bit (ORCPT
-        <rfc822;linux-m68k@archiver.kernel.org>);
-        Wed, 16 Feb 2022 07:26:07 -0500
-Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:48640 "EHLO
+        id S233643AbiBPNHC (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Wed, 16 Feb 2022 08:07:02 -0500
+Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:49288 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230281AbiBPM0F (ORCPT
+        with ESMTP id S233635AbiBPNG5 (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Wed, 16 Feb 2022 07:26:05 -0500
-Received: from mail-yb1-f170.google.com (mail-yb1-f170.google.com [209.85.219.170])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B6A52A229F
-        for <linux-m68k@lists.linux-m68k.org>; Wed, 16 Feb 2022 04:25:54 -0800 (PST)
-Received: by mail-yb1-f170.google.com with SMTP id v63so5431057ybv.10
-        for <linux-m68k@lists.linux-m68k.org>; Wed, 16 Feb 2022 04:25:54 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=ZzgKkF+Qi9uD0PohBja9X66WgBtIRyDp12JGMxNBcpY=;
-        b=ehvOzlg3H2X4d3hsBiAr6QrVo7v0j+K4CKFQ5OYSLJbkwNZkby/HucFv//r7+QMHA7
-         ihHvSzSTLcgMyBjEp2iCi+D6ZiN/v+7iUTITpy6GhtfR2kHT3kjKolBy99htyFTYMfDZ
-         7DUcFBsbBqySj28T93l1kc25kGzCIEKmMTzVrs97P7zbAgNBDcJ10d30wnnVstjQRuH8
-         SpRrsBMKffmEmOxl/Mv0V6rzX29lhOXLPe6qJsJukl5pcTXWnefPUVWppoxLV3I+cO/z
-         M0JQ1O5tMvtZXWjiHbGOyGVY94S0H7DX5uLTtqOAlVB9Ip+SR+dEGDuI6Dl3nAonGoek
-         GnQg==
-X-Gm-Message-State: AOAM531h/yj13RRMYXPlaDBVvkpJ3SYzBa893VZUksN6TDyi7rBCzjbg
-        oIGMjA3OKjqhEB0XH6LLkbhj+4BzfyKRLnhRDjU=
-X-Google-Smtp-Source: ABdhPJzgB2WXDlMNWyEW279no9A0knLc+PLldmsjtAqBW5sJWGuZ+ouM0fPGPUzKV7R9c8p8BV9gaIDPnZPFqeD/pjM=
-X-Received: by 2002:a81:f008:0:b0:2d0:cd72:74e5 with SMTP id
- p8-20020a81f008000000b002d0cd7274e5mr2135032ywm.301.1645014353165; Wed, 16
- Feb 2022 04:25:53 -0800 (PST)
+        Wed, 16 Feb 2022 08:06:57 -0500
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F115410FCD
+        for <linux-m68k@lists.linux-m68k.org>; Wed, 16 Feb 2022 05:06:44 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 3783D61659
+        for <linux-m68k@lists.linux-m68k.org>; Wed, 16 Feb 2022 13:06:44 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8D159C340FD
+        for <linux-m68k@lists.linux-m68k.org>; Wed, 16 Feb 2022 13:06:43 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1645016803;
+        bh=XpyXyO6XeLPMFwMT57AZNzNQgXnMBZ2Ni2r+dAXZ1s0=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=m86IV6YQZzHRJuDux3taFbaRjn+w9RuI6vh4wtLv8qscNybLMG9S7+2rm1PNzrb20
+         Dd5S6VsCYA0xUl1vOFFn3tNcP5kMF/3okjlp1F0h2o1Xvta1epkmZYCJUZnDs3yLoA
+         VzYx4F/n1Ow3YwU1D9VL3p/ZapRwreq4wU2F2zdBEZVDPHlhJZ5UCirUITvqXKP03u
+         mjPPXaT5ZCAExBhxPZs+6x/NgZOCXftC+3jOhCw6lYUHk202K2WWgJTp7zViNeOTI3
+         d6qcX+NrilxdmbmnVfKB2lTecLHUYHmjxyqYH1gVkIK8Gk+2LbSYNZnzPmnsXhuwAQ
+         I1fP9Rg2mGbLg==
+Received: by mail-wm1-f51.google.com with SMTP id q198-20020a1ca7cf000000b0037bb52545c6so3708674wme.1
+        for <linux-m68k@lists.linux-m68k.org>; Wed, 16 Feb 2022 05:06:43 -0800 (PST)
+X-Gm-Message-State: AOAM531+em99t1s8SBXB2N5JMVwOJoUJdFy/qUsc3hCzipTIylLZwlct
+        2UfRFgOI1gwx2DhZ2khsdo2KcZK3AORLaI6Xbjo=
+X-Google-Smtp-Source: ABdhPJz2fGQt4XBj3ZPZmmV0DF3C11Wmt7pFZ5Wv5cMpV0NQk32vVK4/Sp5p4cooe9t3m3i9Hn5C5g4DuBewCt15hb0=
+X-Received: by 2002:a1c:21c5:0:b0:37d:40d0:94c7 with SMTP id
+ h188-20020a1c21c5000000b0037d40d094c7mr1551416wmh.1.1645016801710; Wed, 16
+ Feb 2022 05:06:41 -0800 (PST)
 MIME-Version: 1.0
-References: <20220130233718.21544-1-digetx@gmail.com> <635e8121-fca4-580c-6af5-d9317a2eee1b@gmail.com>
-In-Reply-To: <635e8121-fca4-580c-6af5-d9317a2eee1b@gmail.com>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Wed, 16 Feb 2022 13:25:39 +0100
-Message-ID: <CAJZ5v0g0MrBm2+GwctkB7kUyBEt6HTAexRCFFRmTF1UKDrVQ-g@mail.gmail.com>
-Subject: Re: [PATCH v6 00/21] Introduce power-off+restart call chain API
-To:     Dmitry Osipenko <digetx@gmail.com>
-Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
+References: <20220214163452.1568807-1-arnd@kernel.org> <20220214163452.1568807-12-arnd@kernel.org>
+ <YgqMLYJs0RMecMck@infradead.org>
+In-Reply-To: <YgqMLYJs0RMecMck@infradead.org>
+From:   Arnd Bergmann <arnd@kernel.org>
+Date:   Wed, 16 Feb 2022 14:06:25 +0100
+X-Gmail-Original-Message-ID: <CAK8P3a0PwjB+KE+j3_sknZuiuY-kUe_J76nYac-mx82dccA3Rw@mail.gmail.com>
+Message-ID: <CAK8P3a0PwjB+KE+j3_sknZuiuY-kUe_J76nYac-mx82dccA3Rw@mail.gmail.com>
+Subject: Re: [PATCH 11/14] sparc64: remove CONFIG_SET_FS support
+To:     Christoph Hellwig <hch@infradead.org>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Christoph Hellwig <hch@lst.de>,
+        linux-arch <linux-arch@vger.kernel.org>,
+        Linux-MM <linux-mm@kvack.org>,
+        Linux API <linux-api@vger.kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>,
         Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-csky@vger.kernel.org, linux-ia64@vger.kernel.org,
-        linux-m68k@lists.linux-m68k.org,
-        "open list:BROADCOM NVRAM DRIVER" <linux-mips@vger.kernel.org>,
-        linux-parisc@vger.kernel.org, linux-riscv@lists.infradead.org,
+        Mark Rutland <mark.rutland@arm.com>,
+        Rich Felker <dalias@libc.org>, linux-ia64@vger.kernel.org,
         Linux-sh list <linux-sh@vger.kernel.org>,
-        xen-devel@lists.xenproject.org,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        linux-tegra <linux-tegra@vger.kernel.org>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>, Guo Ren <guoren@kernel.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Greg Ungerer <gerg@linux-m68k.org>,
-        Joshua Thompson <funaho@jurai.org>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Sebastian Reichel <sre@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Greentime Hu <green.hu@gmail.com>,
-        Vincent Chen <deanbo422@gmail.com>,
-        "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Max Filippov <jcmvbkbc@gmail.com>, Guo Ren <guoren@kernel.org>,
+        sparclinux <sparclinux@vger.kernel.org>,
+        "open list:QUALCOMM HEXAGON..." <linux-hexagon@vger.kernel.org>,
+        linux-riscv <linux-riscv@lists.infradead.org>,
+        Will Deacon <will@kernel.org>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        linux-s390 <linux-s390@vger.kernel.org>,
+        Brian Cain <bcain@codeaurora.org>,
         Helge Deller <deller@gmx.de>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Yoshinori Sato <ysato@users.sourceforge.jp>,
-        Rich Felker <dalias@libc.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
         "the arch/x86 maintainers" <x86@kernel.org>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
-        Juergen Gross <jgross@suse.com>,
-        Stefano Stabellini <sstabellini@kernel.org>,
-        Len Brown <lenb@kernel.org>,
-        Santosh Shilimkar <ssantosh@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>, Pavel Machek <pavel@ucw.cz>,
-        Lee Jones <lee.jones@linaro.org>,
+        Russell King - ARM Linux <linux@armlinux.org.uk>,
+        linux-csky@vger.kernel.org, Ingo Molnar <mingo@redhat.com>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        "open list:SYNOPSYS ARC ARCHITECTURE" 
+        <linux-snps-arc@lists.infradead.org>,
+        "open list:TENSILICA XTENSA PORT (xtensa)" 
+        <linux-xtensa@linux-xtensa.org>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        alpha <linux-alpha@vger.kernel.org>,
+        linux-um <linux-um@lists.infradead.org>,
+        linux-m68k <linux-m68k@lists.linux-m68k.org>,
+        Openrisc <openrisc@lists.librecores.org>,
+        Greentime Hu <green.hu@gmail.com>,
+        Stafford Horne <shorne@gmail.com>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Michal Simek <monstr@monstr.eu>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Parisc List <linux-parisc@vger.kernel.org>,
+        Nick Hu <nickhu@andestech.com>,
+        "open list:BROADCOM NVRAM DRIVER" <linux-mips@vger.kernel.org>,
+        Dinh Nguyen <dinguyen@kernel.org>,
+        "Eric W . Biederman" <ebiederm@xmission.com>,
+        Richard Weinberger <richard@nod.at>,
         Andrew Morton <akpm@linux-foundation.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>, alankao@andestech.com,
-        "K . C . Kuen-Chern Lin" <kclin@andestech.com>,
-        =?UTF-8?B?TWljaGHFgiBNaXJvc8WCYXc=?= <mirq-linux@rere.qmqm.pl>
+        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
+        David Miller <davem@davemloft.net>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-On Tue, Feb 15, 2022 at 11:00 PM Dmitry Osipenko <digetx@gmail.com> wrote:
+On Mon, Feb 14, 2022 at 6:06 PM Christoph Hellwig <hch@infradead.org> wrote:
 >
-> 31.01.2022 02:36, Dmitry Osipenko пишет:
-> > Problem
-> > -------
-> >
-> > SoC devices require power-off call chaining functionality from kernel.
-> > We have a widely used restart chaining provided by restart notifier API,
-> > but nothing for power-off.
-> >
-> > Solution
-> > --------
-> >
-> > Introduce new API that provides both restart and power-off call chains.
-> >
-> > Why combine restart with power-off? Because drivers often do both.
-> > More practical to have API that provides both under the same roof.
-> >
-> > The new API is designed with simplicity and extensibility in mind.
-> > It's built upon the existing restart and reboot APIs. The simplicity
-> > is in new helper functions that are convenient for drivers. The
-> > extensibility is in the design that doesn't hardcode callback
-> > arguments, making easy to add new parameters and remove old.
-> >
-> > This is a third attempt to introduce the new API. First was made by
-> > Guenter Roeck back in 2014, second was made by Thierry Reding in 2017.
-> > In fact the work didn't stop and recently arm_pm_restart() was removed
-> > from v5.14 kernel, which was a part of preparatory work started by
-> > Guenter Roeck. I took into account experience and ideas from the
-> > previous attempts, extended and polished them.
+> >  void prom_world(int enter)
+> >  {
+> > -     if (!enter)
+> > -             set_fs(get_fs());
+> > -
+> >       __asm__ __volatile__("flushw");
+> >  }
 >
->
-> Rafael and all, do you see anything critical that needs to be improved
-> in this v6?
->
-> Will be great if you could take this patchset via the power tree if it
-> looks okay, or give an ack.
+> The enter argument is now unused.
 
-I need some more time for this, sorry.
+Right, good point. I'll add a comment, but I think I will leave that
+as this seems
+too hard to change the callers in assembly code for this. If any
+sparc64 developer
+wants to clean that up, I'm happy to integrate the cleanup patch in my series.
 
-I'm a bit concerned about seeing no response to this set from anyone.
-
-It looks like multiple platforms may be affected by it in principle,
-so doesn't anyone care?
+         Arnd
