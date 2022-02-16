@@ -2,152 +2,116 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E2892C4167B
-	for <linux-m68k@archiver.kernel.org>; Tue, 15 Feb 2022 22:00:50 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E7BA9C433FE
+	for <linux-m68k@archiver.kernel.org>; Wed, 16 Feb 2022 07:26:37 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242254AbiBOWA7 (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Tue, 15 Feb 2022 17:00:59 -0500
-Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:56632 "EHLO
+        id S230015AbiBPH0r (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Wed, 16 Feb 2022 02:26:47 -0500
+Received: from gmail-smtp-in.l.google.com ([23.128.96.19]:57454 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243640AbiBOWAt (ORCPT
-        <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Tue, 15 Feb 2022 17:00:49 -0500
-Received: from mail-lf1-x131.google.com (mail-lf1-x131.google.com [IPv6:2a00:1450:4864:20::131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C876767A
-        for <linux-m68k@lists.linux-m68k.org>; Tue, 15 Feb 2022 14:00:37 -0800 (PST)
-Received: by mail-lf1-x131.google.com with SMTP id b9so205250lfv.7
-        for <linux-m68k@lists.linux-m68k.org>; Tue, 15 Feb 2022 14:00:37 -0800 (PST)
+        with ESMTP id S229468AbiBPH0o (ORCPT
+        <rfc822;linux-m68k@vger.kernel.org>); Wed, 16 Feb 2022 02:26:44 -0500
+Received: from mail-pg1-x52e.google.com (mail-pg1-x52e.google.com [IPv6:2607:f8b0:4864:20::52e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B9FB2DD5B;
+        Tue, 15 Feb 2022 23:26:32 -0800 (PST)
+Received: by mail-pg1-x52e.google.com with SMTP id z4so1372361pgh.12;
+        Tue, 15 Feb 2022 23:26:32 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=message-id:date:mime-version:user-agent:subject:content-language
-         :from:cc:references:to:in-reply-to:content-transfer-encoding;
-        bh=DVulEGE2JpmKCAwv+Z9nIfk2u5ZwvRtSEnvF0++tohE=;
-        b=eAbTUd8SWrkduWMDvYSL9PCIMvTyx1/PDNq+g34U5a6HTO/JfyDazuc/276Sm7ld7f
-         RQAUjz9KnJpaex/eozKDcsnVqqRwA5Fj5CSlNJHiQfzBkJVLCc7y3vw02lxihPY3TExU
-         lYcUYoYFkQWAG/XD2qnNsvTl5P4zqH6pcaasqRB1LojAt2IN4Q9BVX82FHrNStE8wYB4
-         mmhCvKeDI7YjVSy4dXfgCBsx8WWHAoaLNoouUIXdBuim6buHAqSq3/5veKqw8hxrEwEf
-         aYlaoKh86/GFDdT8ghhsvoX3tr735feUL8boUX68tZ9vbfpFMdKPrE/wFw8zC0NNEmPZ
-         ssKw==
+        h=from:to:cc:subject:date:message-id;
+        bh=HO6taZEnI8YA7qrP/AT0huv3lF5MGGX042n8Oc6pmjE=;
+        b=jbUFkgdVvvEXPqiJ+t2gDnE+y8iI1g1Er9neTmVbz9Cl3DhQUIln4lo/92HclKYh6l
+         qWTTJ08Co9WvclPu3pIHcrLurkpZ5vJqowBqk7tH7nbOUDAxO5HzU9iMa03VKGa+JIvR
+         ZKJP1F7TWfh48MXKToLNGUtZJl6pULLxkBPD6hLNG2eyEj8bU2pGC6veBaukFd0PA8QZ
+         o8Wf8i59/6z0d8KZV71RiBn4x/vdLGTvSh0iTarawz2xj/FMcQddyVBpbVcJJfuWSqfj
+         QrdeUYBO9Xm9dE5lJdRjZpbkqFTksMWWLcukxgnR4L4f2ZXpMCOsSrbtYc4C/uQo/e8q
+         r/NA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:from:cc:references:to:in-reply-to
-         :content-transfer-encoding;
-        bh=DVulEGE2JpmKCAwv+Z9nIfk2u5ZwvRtSEnvF0++tohE=;
-        b=3xMNHTh6DdZFJAIKukvqsU6S7J9L6RoGGYF/YfxRTMhCWmJLZG/oaAlAmnK6+6bu5m
-         eEK+T0gXOddtEVbhxMR4GI/jJoQic5gdUztF/KlyWbN1mNH0ul+urjv2evcRWUUfBcra
-         ynfhlQhFZQDqeQAp4asCNiBr/POcx7R9QeLmWaNImt932E9jKpOBa/fk7cG3bYlNbNMA
-         S1yf4pTINsHai8sdf/+TQciORsG0dnW6BAJTcOz1SYvYIFYLtNkkgsg7l2e3KQ8n0ppY
-         wt3e0mUiYB3fUkmf9sicG6jDuSF2Jkb4xs8I7uPtYkk2bYQDR8P9AiFd8GNKyEPqf7g6
-         QKeQ==
-X-Gm-Message-State: AOAM530gy/nke7Gs/p9waXfuEdkRk38ZLCcQ5xKBV9Iikt/5DRQ+Tc99
-        R2dc+/YLHbkr4yvWQHrISWc=
-X-Google-Smtp-Source: ABdhPJyJtWqeT1e2wzvijosINOm/qc6wwzWUL/FDa9uqhHR32CJOoO1KF1UaVLhHtHEQQhQBEaQuLQ==
-X-Received: by 2002:a05:6512:96d:: with SMTP id v13mr790998lft.343.1644962435902;
-        Tue, 15 Feb 2022 14:00:35 -0800 (PST)
-Received: from [192.168.2.145] (109-252-138-165.dynamic.spd-mgts.ru. [109.252.138.165])
-        by smtp.googlemail.com with ESMTPSA id k3sm66075lfo.10.2022.02.15.14.00.33
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 15 Feb 2022 14:00:35 -0800 (PST)
-Message-ID: <635e8121-fca4-580c-6af5-d9317a2eee1b@gmail.com>
-Date:   Wed, 16 Feb 2022 01:00:33 +0300
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.5.0
-Subject: Re: [PATCH v6 00/21] Introduce power-off+restart call chain API
-Content-Language: en-US
-From:   Dmitry Osipenko <digetx@gmail.com>
-Cc:     linux-kernel@vger.kernel.org, linux-csky@vger.kernel.org,
-        linux-ia64@vger.kernel.org, linux-m68k@lists.linux-m68k.org,
-        linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org,
-        linux-riscv@lists.infradead.org, linux-sh@vger.kernel.org,
-        xen-devel@lists.xenproject.org, linux-acpi@vger.kernel.org,
-        linux-pm@vger.kernel.org, linux-tegra@vger.kernel.org,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>, Guo Ren <guoren@kernel.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Greg Ungerer <gerg@linux-m68k.org>,
-        Joshua Thompson <funaho@jurai.org>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Sebastian Reichel <sre@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Greentime Hu <green.hu@gmail.com>,
-        Vincent Chen <deanbo422@gmail.com>,
-        "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
-        Helge Deller <deller@gmx.de>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Yoshinori Sato <ysato@users.sourceforge.jp>,
-        Rich Felker <dalias@libc.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
-        Juergen Gross <jgross@suse.com>,
-        Stefano Stabellini <sstabellini@kernel.org>,
-        Len Brown <lenb@kernel.org>,
-        Santosh Shilimkar <ssantosh@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>, Pavel Machek <pavel@ucw.cz>,
-        Lee Jones <lee.jones@linaro.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>, alankao@andestech.com,
-        "K . C . Kuen-Chern Lin" <kclin@andestech.com>,
-        =?UTF-8?B?TWljaGHFgiBNaXJvc8WCYXc=?= <mirq-linux@rere.qmqm.pl>
-References: <20220130233718.21544-1-digetx@gmail.com>
-To:     "Rafael J. Wysocki" <rafael@kernel.org>
-In-Reply-To: <20220130233718.21544-1-digetx@gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=HO6taZEnI8YA7qrP/AT0huv3lF5MGGX042n8Oc6pmjE=;
+        b=c+8XXE+7PAk+adlNBVgb0wXJS37GpgIExZ4gyASujabGSajrLtceIwqY7iOI9/FfRs
+         7e1j4mXtxHEssD4RJO7rkUkf4P8F5lAqG7EWgtW/8IlQtbW1vRXgjiEvk1zYDz4w2eDc
+         zT3HaljbeU6liazSwXSUpBhHDj12DJU2JcNYT6S/cwLdGXgpSPJlYE2UumZni6f1hWEk
+         ZZ1qPv/rZUtWKgN3xLwMaWKQ8XPoDNpi5CHN/HqxHhkNX+lBPuY07PUfApLx8s/VNYYD
+         4rdFJXQXS/kgjp0BtiKaioAi2heYZfKV0rlIvyhHBW4VMW6Z1BNFzKkAoivPfxMijDFA
+         5HIg==
+X-Gm-Message-State: AOAM533uGSE3r6oEf5jYPYG70W4hj04QPjbbwDosBncmMn9qngoYWUPp
+        /q6WVC2a9Ups2c0nsGtqxyI=
+X-Google-Smtp-Source: ABdhPJxWX73tl16/82RaCvzO0r1M6TT4cX2b655gMiclRI3BkcJonEV5wVvNqQc8BehzyUnpR41K7g==
+X-Received: by 2002:a62:ee12:0:b0:4e1:2ec1:cba2 with SMTP id e18-20020a62ee12000000b004e12ec1cba2mr1886990pfi.71.1644996391734;
+        Tue, 15 Feb 2022 23:26:31 -0800 (PST)
+Received: from xplor.waratah.dyndns.org (222-155-5-102-adsl.sparkbb.co.nz. [222.155.5.102])
+        by smtp.gmail.com with ESMTPSA id e3sm4545515pgc.41.2022.02.15.23.26.30
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 15 Feb 2022 23:26:31 -0800 (PST)
+Received: by xplor.waratah.dyndns.org (Postfix, from userid 1000)
+        id 131BA36020A; Wed, 16 Feb 2022 20:26:27 +1300 (NZDT)
+From:   Michael Schmitz <schmitzmic@gmail.com>
+To:     deller@gmx.de, linux-fbdev@vger.kernel.org,
+        linux-m68k@vger.kernel.org
+Cc:     geert@linux-m68k.org, Michael Schmitz <schmitzmic@gmail.com>,
+        stable@vger.kernel.org
+Subject: [PATCH v1] video/fbdev: Atari 2 bpp (STe) palette bugfix
+Date:   Wed, 16 Feb 2022 20:26:25 +1300
+Message-Id: <20220216072625.16947-1-schmitzmic@gmail.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-31.01.2022 02:36, Dmitry Osipenko пишет:
-> Problem
-> -------
-> 
-> SoC devices require power-off call chaining functionality from kernel.
-> We have a widely used restart chaining provided by restart notifier API,
-> but nothing for power-off.
-> 
-> Solution
-> --------
-> 
-> Introduce new API that provides both restart and power-off call chains.
-> 
-> Why combine restart with power-off? Because drivers often do both.
-> More practical to have API that provides both under the same roof.
-> 
-> The new API is designed with simplicity and extensibility in mind.
-> It's built upon the existing restart and reboot APIs. The simplicity
-> is in new helper functions that are convenient for drivers. The
-> extensibility is in the design that doesn't hardcode callback
-> arguments, making easy to add new parameters and remove old.
-> 
-> This is a third attempt to introduce the new API. First was made by
-> Guenter Roeck back in 2014, second was made by Thierry Reding in 2017.
-> In fact the work didn't stop and recently arm_pm_restart() was removed
-> from v5.14 kernel, which was a part of preparatory work started by
-> Guenter Roeck. I took into account experience and ideas from the
-> previous attempts, extended and polished them.
+The code to set the shifter STe palette registers has a long
+standing operator precedence bug, manifesting as colors set
+on a 2 bits per pixel frame buffer coming up with a distinctive
+blue tint.
 
+Add parentheses around the calculation of the per-color palette
+data before shifting those into their respective bit field position.
 
-Rafael and all, do you see anything critical that needs to be improved
-in this v6?
+This bug goes back a long way (2.4 days at the very least) so there
+won't be a Fixes: tag.
 
-Will be great if you could take this patchset via the power tree if it
-looks okay, or give an ack.
+Tested on ARAnyM as well on Falcon030 hardware.
+
+Cc: stable@vger.kernel.org
+Reported-by: Geert Uytterhoeven <geert@linux-m68k.org>
+Link: https://lore.kernel.org/all/CAMuHMdU3ievhXxKR_xi_v3aumnYW7UNUO6qMdhgfyWTyVSsCkQ@mail.gmail.com
+Tested-by: Michael Schmitz <schmitzmic@gmail.com>
+Signed-off-by: Michael Schmitz <schmitzmic@gmail.com>
+---
+ drivers/video/fbdev/atafb.c | 12 ++++++------
+ 1 file changed, 6 insertions(+), 6 deletions(-)
+
+diff --git a/drivers/video/fbdev/atafb.c b/drivers/video/fbdev/atafb.c
+index e3812a8ff55a..29e650ecfceb 100644
+--- a/drivers/video/fbdev/atafb.c
++++ b/drivers/video/fbdev/atafb.c
+@@ -1683,9 +1683,9 @@ static int falcon_setcolreg(unsigned int regno, unsigned int red,
+ 			   ((blue & 0xfc00) >> 8));
+ 	if (regno < 16) {
+ 		shifter_tt.color_reg[regno] =
+-			(((red & 0xe000) >> 13) | ((red & 0x1000) >> 12) << 8) |
+-			(((green & 0xe000) >> 13) | ((green & 0x1000) >> 12) << 4) |
+-			((blue & 0xe000) >> 13) | ((blue & 0x1000) >> 12);
++			((((red & 0xe000) >> 13)   | ((red & 0x1000) >> 12)) << 8)   |
++			((((green & 0xe000) >> 13) | ((green & 0x1000) >> 12)) << 4) |
++			   ((blue & 0xe000) >> 13) | ((blue & 0x1000) >> 12);
+ 		((u32 *)info->pseudo_palette)[regno] = ((red & 0xf800) |
+ 						       ((green & 0xfc00) >> 5) |
+ 						       ((blue & 0xf800) >> 11));
+@@ -1971,9 +1971,9 @@ static int stste_setcolreg(unsigned int regno, unsigned int red,
+ 	green >>= 12;
+ 	if (ATARIHW_PRESENT(EXTD_SHIFTER))
+ 		shifter_tt.color_reg[regno] =
+-			(((red & 0xe) >> 1) | ((red & 1) << 3) << 8) |
+-			(((green & 0xe) >> 1) | ((green & 1) << 3) << 4) |
+-			((blue & 0xe) >> 1) | ((blue & 1) << 3);
++			((((red & 0xe)   >> 1) | ((red & 1)   << 3)) << 8) |
++			((((green & 0xe) >> 1) | ((green & 1) << 3)) << 4) |
++			  ((blue & 0xe)  >> 1) | ((blue & 1)  << 3);
+ 	else
+ 		shifter_tt.color_reg[regno] =
+ 			((red & 0xe) << 7) |
+-- 
+2.17.1
+
