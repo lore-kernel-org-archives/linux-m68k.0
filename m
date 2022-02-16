@@ -2,116 +2,130 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E7BA9C433FE
-	for <linux-m68k@archiver.kernel.org>; Wed, 16 Feb 2022 07:26:37 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 12F03C433EF
+	for <linux-m68k@archiver.kernel.org>; Wed, 16 Feb 2022 07:33:00 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230015AbiBPH0r (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Wed, 16 Feb 2022 02:26:47 -0500
-Received: from gmail-smtp-in.l.google.com ([23.128.96.19]:57454 "EHLO
+        id S230169AbiBPHdI (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Wed, 16 Feb 2022 02:33:08 -0500
+Received: from gmail-smtp-in.l.google.com ([23.128.96.19]:55546 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229468AbiBPH0o (ORCPT
-        <rfc822;linux-m68k@vger.kernel.org>); Wed, 16 Feb 2022 02:26:44 -0500
-Received: from mail-pg1-x52e.google.com (mail-pg1-x52e.google.com [IPv6:2607:f8b0:4864:20::52e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B9FB2DD5B;
-        Tue, 15 Feb 2022 23:26:32 -0800 (PST)
-Received: by mail-pg1-x52e.google.com with SMTP id z4so1372361pgh.12;
-        Tue, 15 Feb 2022 23:26:32 -0800 (PST)
+        with ESMTP id S230157AbiBPHdI (ORCPT
+        <rfc822;linux-m68k@lists.linux-m68k.org>);
+        Wed, 16 Feb 2022 02:33:08 -0500
+Received: from mail-pg1-x535.google.com (mail-pg1-x535.google.com [IPv6:2607:f8b0:4864:20::535])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BFE6116EA95
+        for <linux-m68k@lists.linux-m68k.org>; Tue, 15 Feb 2022 23:32:51 -0800 (PST)
+Received: by mail-pg1-x535.google.com with SMTP id r76so1397205pgr.10
+        for <linux-m68k@lists.linux-m68k.org>; Tue, 15 Feb 2022 23:32:51 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id;
-        bh=HO6taZEnI8YA7qrP/AT0huv3lF5MGGX042n8Oc6pmjE=;
-        b=jbUFkgdVvvEXPqiJ+t2gDnE+y8iI1g1Er9neTmVbz9Cl3DhQUIln4lo/92HclKYh6l
-         qWTTJ08Co9WvclPu3pIHcrLurkpZ5vJqowBqk7tH7nbOUDAxO5HzU9iMa03VKGa+JIvR
-         ZKJP1F7TWfh48MXKToLNGUtZJl6pULLxkBPD6hLNG2eyEj8bU2pGC6veBaukFd0PA8QZ
-         o8Wf8i59/6z0d8KZV71RiBn4x/vdLGTvSh0iTarawz2xj/FMcQddyVBpbVcJJfuWSqfj
-         QrdeUYBO9Xm9dE5lJdRjZpbkqFTksMWWLcukxgnR4L4f2ZXpMCOsSrbtYc4C/uQo/e8q
-         r/NA==
+        h=subject:to:references:cc:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-transfer-encoding;
+        bh=wCCyVmZ+5iGYbJC8twTzHJn6vR+93LVpKRueppFWfUI=;
+        b=QQcWnwvChAMp/Ey1WjJl7dcyJZcKShbv+ZH+YJwLjkAnPu+ZWrcUWGi0ryjCRxbiEQ
+         Dpfb4pvBxfU7taiV+JhtVI8WCgyUFGhY22gmz/vgMcK+RvL0r69Ar0oVbgyxpshppKX3
+         7x11CwbTdy/25qWCwfldbEg3nIiwDwgk3AXK0MS7sSQQSo4i3Afu4EOVqeFGF5KVWZlw
+         l6MMyvZf2QuGWRdmEm/MYB2mBZ/9uGmsMkqj93e1M7Ysut6uQWEjGLldzetCzqwFnCeV
+         uU2Tm19XTV550nvIwe50t552AbEwsiO2BVtfD1+n3nf3j2t4v5OCYjM03WpsI7dzGGnU
+         1+vg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=HO6taZEnI8YA7qrP/AT0huv3lF5MGGX042n8Oc6pmjE=;
-        b=c+8XXE+7PAk+adlNBVgb0wXJS37GpgIExZ4gyASujabGSajrLtceIwqY7iOI9/FfRs
-         7e1j4mXtxHEssD4RJO7rkUkf4P8F5lAqG7EWgtW/8IlQtbW1vRXgjiEvk1zYDz4w2eDc
-         zT3HaljbeU6liazSwXSUpBhHDj12DJU2JcNYT6S/cwLdGXgpSPJlYE2UumZni6f1hWEk
-         ZZ1qPv/rZUtWKgN3xLwMaWKQ8XPoDNpi5CHN/HqxHhkNX+lBPuY07PUfApLx8s/VNYYD
-         4rdFJXQXS/kgjp0BtiKaioAi2heYZfKV0rlIvyhHBW4VMW6Z1BNFzKkAoivPfxMijDFA
-         5HIg==
-X-Gm-Message-State: AOAM533uGSE3r6oEf5jYPYG70W4hj04QPjbbwDosBncmMn9qngoYWUPp
-        /q6WVC2a9Ups2c0nsGtqxyI=
-X-Google-Smtp-Source: ABdhPJxWX73tl16/82RaCvzO0r1M6TT4cX2b655gMiclRI3BkcJonEV5wVvNqQc8BehzyUnpR41K7g==
-X-Received: by 2002:a62:ee12:0:b0:4e1:2ec1:cba2 with SMTP id e18-20020a62ee12000000b004e12ec1cba2mr1886990pfi.71.1644996391734;
-        Tue, 15 Feb 2022 23:26:31 -0800 (PST)
-Received: from xplor.waratah.dyndns.org (222-155-5-102-adsl.sparkbb.co.nz. [222.155.5.102])
-        by smtp.gmail.com with ESMTPSA id e3sm4545515pgc.41.2022.02.15.23.26.30
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 15 Feb 2022 23:26:31 -0800 (PST)
-Received: by xplor.waratah.dyndns.org (Postfix, from userid 1000)
-        id 131BA36020A; Wed, 16 Feb 2022 20:26:27 +1300 (NZDT)
+        h=x-gm-message-state:subject:to:references:cc:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding;
+        bh=wCCyVmZ+5iGYbJC8twTzHJn6vR+93LVpKRueppFWfUI=;
+        b=3l37Lt4ok4csf6hXzjcMCFWx+BnIap/tjUGUzXYa/Jw8LMPC4L4tixnH8cBe5oAAGO
+         6KBZFXSlYQ7i5X/Tn9JPdY/BU+C5p7LE07+dt11V7cxRwcIOljV8LKm4RILYnefq97h/
+         +xoezwrtZuoTt8V06ESusuKq19IYk/T9x/h5bDr4JoFsRm37u0w+GUQTtlZzrwquzPyt
+         o4zGdUaT+2VqJ8atVtuhqHwyXZJ8nyGpfkS9APzmj/qu0DwEALxAVgTNy0HVIMy06D3t
+         FVE79n7eRJXrQpHIB7/xGors3BQMR33Pb9k2OJM/+HxezWALLDZi3xqv0LT0EgjSWPdg
+         8G8g==
+X-Gm-Message-State: AOAM5331LtSrvkj4iaQqJxANEXrMGcL+cA/rqwwnIpFH+hE2614cXWVL
+        yFyVvH46waSxylMMSJuB4xERJ55GlyE=
+X-Google-Smtp-Source: ABdhPJwDx/TCzlKTRfxfcGDPWeJF1IoPiKZTh/zW/8v6KOrOfl3H8u8Y4sD8l9+DUFxjoGoHGATUsA==
+X-Received: by 2002:a05:6a00:1a88:b0:4c9:6871:59b2 with SMTP id e8-20020a056a001a8800b004c9687159b2mr1948564pfv.31.1644996768045;
+        Tue, 15 Feb 2022 23:32:48 -0800 (PST)
+Received: from [10.1.1.24] (222-155-5-102-adsl.sparkbb.co.nz. [222.155.5.102])
+        by smtp.gmail.com with ESMTPSA id m21sm4590753pgh.69.2022.02.15.23.32.45
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Tue, 15 Feb 2022 23:32:47 -0800 (PST)
+Subject: Re: Wrong colors on ARAnyM
+To:     Geert Uytterhoeven <geert@linux-m68k.org>
+References: <CAMuHMdU3ievhXxKR_xi_v3aumnYW7UNUO6qMdhgfyWTyVSsCkQ@mail.gmail.com>
+ <b03160b6-7f3b-7765-49ee-c49b7dd2c4e0@gmail.com>
+ <CAMuHMdVUX0zJtRAtjCBAa7iEk7MwCjcmSsJdCrSrPcY=6ti=cQ@mail.gmail.com>
+ <4b3a0bc8-24a1-2a33-19bb-fbae954c614c@gmail.com>
+ <CAMuHMdWkxDMbS4D8wkEPAVgrFnoJzejUkxKCnvA+MA38vS6g9Q@mail.gmail.com>
+Cc:     Petr Stehlik <pstehlik@sophics.cz>,
+        linux-m68k <linux-m68k@lists.linux-m68k.org>
 From:   Michael Schmitz <schmitzmic@gmail.com>
-To:     deller@gmx.de, linux-fbdev@vger.kernel.org,
-        linux-m68k@vger.kernel.org
-Cc:     geert@linux-m68k.org, Michael Schmitz <schmitzmic@gmail.com>,
-        stable@vger.kernel.org
-Subject: [PATCH v1] video/fbdev: Atari 2 bpp (STe) palette bugfix
-Date:   Wed, 16 Feb 2022 20:26:25 +1300
-Message-Id: <20220216072625.16947-1-schmitzmic@gmail.com>
-X-Mailer: git-send-email 2.17.1
+Message-ID: <45001563-bd16-616e-3d42-263de137c004@gmail.com>
+Date:   Wed, 16 Feb 2022 20:32:43 +1300
+User-Agent: Mozilla/5.0 (X11; Linux ppc; rv:45.0) Gecko/20100101
+ Icedove/45.4.0
+MIME-Version: 1.0
+In-Reply-To: <CAMuHMdWkxDMbS4D8wkEPAVgrFnoJzejUkxKCnvA+MA38vS6g9Q@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-The code to set the shifter STe palette registers has a long
-standing operator precedence bug, manifesting as colors set
-on a 2 bits per pixel frame buffer coming up with a distinctive
-blue tint.
+Hi Geert,
 
-Add parentheses around the calculation of the per-color palette
-data before shifting those into their respective bit field position.
+Am 15.02.2022 um 21:11 schrieb Geert Uytterhoeven:
+>> Only the blue bits ever entirely seem to end up where they ought to.
+>> Testing this hypothesis on ARAnyM (without getting it to boot all the
+>> way, for some odd reason likely to do with my current .config) shows
+>> that the current code results in the shifter_tt.color_reg entries either
+>> 5 or 0x17, 0x113 or 0x117. Adding the missing parentheses results in
+>> what I'd expect to see.
+>
+> Oops.
+>
+>> This bug has been present since at least 2.4.30. I do recall seeing this
+>> odd blue console before on the Falcon, so it's been a real bug for ages.
+>
+> I recall seeing an odd blue console before, too.
+> I always dismissed it as some artefact of redrawing the screen in
+> a different color mode, like we used to have when switching from a
+> 16-color to a monochrome text console (remember the underlined text?).
+>
+> Did/do you see it on the real Falcon, too?
 
-This bug goes back a long way (2.4 days at the very least) so there
-won't be a Fixes: tag.
+I do see the blue text colour bug, but not the random behaviour in 
+switching to 2 bpp, on the actual hardware. So there appear to be two 
+distinct bugs - the STe colour map entries tend towards the blue, and 
+switching to that palette does not always happen when it should.
 
-Tested on ARAnyM as well on Falcon030 hardware.
+Still no idea what causes ARAnyM to miss palette updates or use the 
+wrong palette at times ...
 
-Cc: stable@vger.kernel.org
-Reported-by: Geert Uytterhoeven <geert@linux-m68k.org>
-Link: https://lore.kernel.org/all/CAMuHMdU3ievhXxKR_xi_v3aumnYW7UNUO6qMdhgfyWTyVSsCkQ@mail.gmail.com
-Tested-by: Michael Schmitz <schmitzmic@gmail.com>
-Signed-off-by: Michael Schmitz <schmitzmic@gmail.com>
----
- drivers/video/fbdev/atafb.c | 12 ++++++------
- 1 file changed, 6 insertions(+), 6 deletions(-)
+>> I can confirm that the bug is gone with additional parentheses to apply
+>> the shifts (<<8 for red, <<4 for green) to the result of the bit-wise
+>> or, not just the right-hand portion of it.
+>>
+>> Do you want me to prepare a patch, or would you prefer to do it yourself?
+>
+> Feel free to send a patch.
 
-diff --git a/drivers/video/fbdev/atafb.c b/drivers/video/fbdev/atafb.c
-index e3812a8ff55a..29e650ecfceb 100644
---- a/drivers/video/fbdev/atafb.c
-+++ b/drivers/video/fbdev/atafb.c
-@@ -1683,9 +1683,9 @@ static int falcon_setcolreg(unsigned int regno, unsigned int red,
- 			   ((blue & 0xfc00) >> 8));
- 	if (regno < 16) {
- 		shifter_tt.color_reg[regno] =
--			(((red & 0xe000) >> 13) | ((red & 0x1000) >> 12) << 8) |
--			(((green & 0xe000) >> 13) | ((green & 0x1000) >> 12) << 4) |
--			((blue & 0xe000) >> 13) | ((blue & 0x1000) >> 12);
-+			((((red & 0xe000) >> 13)   | ((red & 0x1000) >> 12)) << 8)   |
-+			((((green & 0xe000) >> 13) | ((green & 0x1000) >> 12)) << 4) |
-+			   ((blue & 0xe000) >> 13) | ((blue & 0x1000) >> 12);
- 		((u32 *)info->pseudo_palette)[regno] = ((red & 0xf800) |
- 						       ((green & 0xfc00) >> 5) |
- 						       ((blue & 0xf800) >> 11));
-@@ -1971,9 +1971,9 @@ static int stste_setcolreg(unsigned int regno, unsigned int red,
- 	green >>= 12;
- 	if (ATARIHW_PRESENT(EXTD_SHIFTER))
- 		shifter_tt.color_reg[regno] =
--			(((red & 0xe) >> 1) | ((red & 1) << 3) << 8) |
--			(((green & 0xe) >> 1) | ((green & 1) << 3) << 4) |
--			((blue & 0xe) >> 1) | ((blue & 1) << 3);
-+			((((red & 0xe)   >> 1) | ((red & 1)   << 3)) << 8) |
-+			((((green & 0xe) >> 1) | ((green & 1) << 3)) << 4) |
-+			  ((blue & 0xe)  >> 1) | ((blue & 1)  << 3);
- 	else
- 		shifter_tt.color_reg[regno] =
- 			((red & 0xe) << 7) |
--- 
-2.17.1
+Done (now that I've tested on hardware).
 
+Cheers,
+
+	Michael
+
+
+> If you don't get to it, I'll make one, eventually.
+> Thanks!
+>
+> Gr{oetje,eeting}s,
+>
+>                         Geert
+>
+> --
+> Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+>
+> In personal conversations with technical people, I call myself a hacker. But
+> when I'm talking to journalists I just say "programmer" or something like that.
+>                                 -- Linus Torvalds
+>
