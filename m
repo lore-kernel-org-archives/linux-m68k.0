@@ -2,53 +2,53 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 88C05C433EF
-	for <linux-m68k@archiver.kernel.org>; Wed, 16 Feb 2022 22:01:51 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 30ABAC433F5
+	for <linux-m68k@archiver.kernel.org>; Wed, 16 Feb 2022 22:03:21 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236198AbiBPWCC (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Wed, 16 Feb 2022 17:02:02 -0500
-Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:57354 "EHLO
+        id S236304AbiBPWDc (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Wed, 16 Feb 2022 17:03:32 -0500
+Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:34940 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236266AbiBPWCB (ORCPT
+        with ESMTP id S229513AbiBPWD1 (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Wed, 16 Feb 2022 17:02:01 -0500
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E0A70580D8
-        for <linux-m68k@lists.linux-m68k.org>; Wed, 16 Feb 2022 14:01:46 -0800 (PST)
+        Wed, 16 Feb 2022 17:03:27 -0500
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4AE06136869
+        for <linux-m68k@lists.linux-m68k.org>; Wed, 16 Feb 2022 14:03:15 -0800 (PST)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 888BC61B4A
-        for <linux-m68k@lists.linux-m68k.org>; Wed, 16 Feb 2022 22:01:45 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5EDD0C340F0
-        for <linux-m68k@lists.linux-m68k.org>; Wed, 16 Feb 2022 22:01:45 +0000 (UTC)
+        by ams.source.kernel.org (Postfix) with ESMTPS id F01C0B82070
+        for <linux-m68k@lists.linux-m68k.org>; Wed, 16 Feb 2022 22:03:13 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 67922C340F1
+        for <linux-m68k@lists.linux-m68k.org>; Wed, 16 Feb 2022 22:03:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1645048905;
-        bh=3GAgFKFSz4rrd4LtvDFKA/i0kbB+vNidxSnLES7CC90=;
+        s=k20201202; t=1645048993;
+        bh=ay/5589FenTcDxawo4c9r5D5w/FgYtE3zMvoHKiKBw4=;
         h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=fDBP7Mkdj63wKfurqDVyYf13ViT6TEUnhig97uW+IsB/gSvVjcPnPDWnNfq57X7f7
-         2Suucc5sE+/m6dQ46qoh2dUuLuG7hXYighvzH6H9ARTdBIliLsmD1UopXH6CxFmWoN
-         UPk5m0/iEtgdySNxIBVnaJK/O5z79ZosLIwarBtKYOVy5ynsvwoL6XZ9KSYfLz+dRk
-         xXdnASrldM7jFmP3+mA4sB9sbQAt8Gch3ENDKzjuM3u3ZwUVUcK5tOZLPc9eGKSCXe
-         MSSs9xC5Zpku8duLHjnR2lHCT8eqzWuqP6CAhPBjI/s4mvClUIWOMR7kSUK98aUHwP
-         h1vuxqjFH9uIg==
-Received: by mail-wm1-f45.google.com with SMTP id i19so1966698wmq.5
-        for <linux-m68k@lists.linux-m68k.org>; Wed, 16 Feb 2022 14:01:45 -0800 (PST)
-X-Gm-Message-State: AOAM532rFdet/uRFnBI16jDslpvcHp0E67pPjuRTDunfF6R22LvLVJU6
-        R6kBp9Kmo2KUGlPDSdRVJD7E1hWYV9VvISLjbfE=
-X-Google-Smtp-Source: ABdhPJyTINkf1ZMgp+ijDiSYfGY6PCVSFYe6JpwLrHI4jPiDeP7SC/Zo0zGySiauKL0SyOBYxrfLHIczbDoJsvG/Low=
-X-Received: by 2002:a05:600c:1d27:b0:37c:74bb:2b4d with SMTP id
- l39-20020a05600c1d2700b0037c74bb2b4dmr3428429wms.82.1645048892813; Wed, 16
- Feb 2022 14:01:32 -0800 (PST)
+        b=SKBiXg1qMAxSOG7O/+fAEZVno6RY18W0gjWd48YvWVehxkUtMksFHxAKOXPaf1Nim
+         qHK3jdeXyT7izApYt/dKY/APNToDbzS30oZ/3+FsRDGwHCYVq4RDe7vcie8TG09GCB
+         VJT0268zX83XvVza5Mt2NT9M5MRvq5jsvfN9DDwEAft1MUWYI2uGvfXze8xcMLyYPl
+         W5bKKzwddcuQftrn4B+eRiSOdBTv8tp7msayxnS9iimb1X7zN2rzIA/p/RbCumDYFK
+         ozI4OSbpqbFd1JHV5fS/CeCxidkU8UzvVlyBvKvVSqnpavPgI6V4RqMDH4eF/+tdlu
+         AnRmCFW169S3A==
+Received: by mail-lj1-f172.google.com with SMTP id t14so5438923ljh.8
+        for <linux-m68k@lists.linux-m68k.org>; Wed, 16 Feb 2022 14:03:13 -0800 (PST)
+X-Gm-Message-State: AOAM533UTKvCeAmoIU06eirkJTA81A/X9rTx3+U8Kkd/AAfDE22jsFQb
+        UxMRxUDifYwmkFGGeYg+2xA6+nP55wf3WAIMrFQ=
+X-Google-Smtp-Source: ABdhPJyk0zQXj5EZ1uP9z1YUTizioO4kJ6rvneTTyuZji8J8rGr64s8uMSDVOcQeT3f3UOdAxVtCGFpnKRwe/RHh9ys=
+X-Received: by 2002:adf:cf0c:0:b0:1e6:22fe:4580 with SMTP id
+ o12-20020adfcf0c000000b001e622fe4580mr53483wrj.12.1645048981311; Wed, 16 Feb
+ 2022 14:03:01 -0800 (PST)
 MIME-Version: 1.0
-References: <20220216131332.1489939-1-arnd@kernel.org> <20220216131332.1489939-16-arnd@kernel.org>
- <Yg1D08+olCSGmnYU@ravnborg.org> <Yg1FRZcrhlh5C//V@ravnborg.org>
-In-Reply-To: <Yg1FRZcrhlh5C//V@ravnborg.org>
+References: <20220216131332.1489939-1-arnd@kernel.org> <20220216131332.1489939-19-arnd@kernel.org>
+ <Yg1F/VT4vRX4aHEt@ravnborg.org>
+In-Reply-To: <Yg1F/VT4vRX4aHEt@ravnborg.org>
 From:   Arnd Bergmann <arnd@kernel.org>
-Date:   Wed, 16 Feb 2022 23:01:16 +0100
-X-Gmail-Original-Message-ID: <CAK8P3a1kV=0G9WYkdjYCiBu=fuT1fbPGHVD9cgHX3ht6J3MFEw@mail.gmail.com>
-Message-ID: <CAK8P3a1kV=0G9WYkdjYCiBu=fuT1fbPGHVD9cgHX3ht6J3MFEw@mail.gmail.com>
-Subject: Re: [PATCH v2 15/18] sparc64: remove CONFIG_SET_FS support
+Date:   Wed, 16 Feb 2022 23:02:45 +0100
+X-Gmail-Original-Message-ID: <CAK8P3a2gx2w=RDECNbrO4Zu3ZUTfz2UrLbNSz+ieCgMEFiK3TA@mail.gmail.com>
+Message-ID: <CAK8P3a2gx2w=RDECNbrO4Zu3ZUTfz2UrLbNSz+ieCgMEFiK3TA@mail.gmail.com>
+Subject: Re: [PATCH v2 18/18] uaccess: drop maining CONFIG_SET_FS users
 To:     Sam Ravnborg <sam@ravnborg.org>
 Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
         Christoph Hellwig <hch@lst.de>,
@@ -104,25 +104,40 @@ Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-On Wed, Feb 16, 2022 at 7:41 PM Sam Ravnborg <sam@ravnborg.org> wrote:
-> On Wed, Feb 16, 2022 at 07:34:59PM +0100, Sam Ravnborg wrote:
+On Wed, Feb 16, 2022 at 7:44 PM Sam Ravnborg <sam@ravnborg.org> wrote:
+>
+> Hi Arnd,
+>
+> Fix spelling in $subject...
 
+done
+
+> sparc/Kconfig b/arch/sparc/Kconfig
+> > index 9f6f9bce5292..9276f321b3e3 100644
+> > --- a/arch/sparc/Kconfig
+> > +++ b/arch/sparc/Kconfig
+> > @@ -46,7 +46,6 @@ config SPARC
+> >       select LOCKDEP_SMALL if LOCKDEP
+> >       select NEED_DMA_MAP_STATE
+> >       select NEED_SG_DMA_LENGTH
+> > -     select SET_FS
+> >       select TRACE_IRQFLAGS_SUPPORT
 > >
-> > I think you somehow missed the Kconfig change, and also the related
-> > sparc32 change which continue to have set_fs() after this patch.
+> >  config SPARC32
+> > @@ -101,6 +100,7 @@ config SPARC64
+> >       select HAVE_SETUP_PER_CPU_AREA
+> >       select NEED_PER_CPU_EMBED_FIRST_CHUNK
+> >       select NEED_PER_CPU_PAGE_FIRST_CHUNK
+> > +     select SET_FS
+> This looks wrong - looks like some merge went wrong here.
 
-Right, thanks for pointing out the issue.
+Fixed now.
 
-> I now notice the sparc32 bits are in the last patch.
-> To avoid breaking bisect-ability on sparc64 I think you need to merge
-> the sparc32 changes with this patch, unless the sparc64 changes can
-> coexist with CONFIG_SET_FS continue to be set.
+>
+> Other than the above the sparc32 changes looks fine, and with the Kconf
+> stuff fixed:
+> Acked-by: Sam Ravnborg <sam@ravnborg.org> # for sparc32 changes
 
-I originally had them in the reverse order and broke bisectability during my
-rebase. The end result is still fine, but now I need to move the 'select
-SET_FS' from CONFIG_SPARC to CONFIG_SPARC32 in this patch
-and then remove it again from there in the last step.
+Thanks!
 
-I've done that in my local copy now.
-
-         Arnd
+      Arnd
