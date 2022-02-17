@@ -2,188 +2,146 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3E998C4167D
-	for <linux-m68k@archiver.kernel.org>; Thu, 17 Feb 2022 10:13:05 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B9596C433F5
+	for <linux-m68k@archiver.kernel.org>; Thu, 17 Feb 2022 10:42:44 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239058AbiBQKNR (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Thu, 17 Feb 2022 05:13:17 -0500
-Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:56060 "EHLO
+        id S238891AbiBQKm5 (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Thu, 17 Feb 2022 05:42:57 -0500
+Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:55010 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234619AbiBQKNP (ORCPT
-        <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Thu, 17 Feb 2022 05:13:15 -0500
-Received: from mail-lj1-x22f.google.com (mail-lj1-x22f.google.com [IPv6:2a00:1450:4864:20::22f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 16E2E156C6F
-        for <linux-m68k@lists.linux-m68k.org>; Thu, 17 Feb 2022 02:13:01 -0800 (PST)
-Received: by mail-lj1-x22f.google.com with SMTP id n24so7474935ljj.10
-        for <linux-m68k@lists.linux-m68k.org>; Thu, 17 Feb 2022 02:13:01 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=message-id:date:mime-version:user-agent:subject:content-language:to
-         :cc:references:from:in-reply-to:content-transfer-encoding;
-        bh=OO8O5AkWPhI/5yGYSTEQp+LjZetKZnyQ+pZ7++XrzEA=;
-        b=X8w7in6JtN9+vwIDY375tbKdJ6/kAXjQzoJEMNX/aRNZ/xldyGjWjXODYmSy5mi1RE
-         IVBvYSJ5Q0hWoh3euDgluS6hajxAwota0SjPBhdLfholDQzq33VHuJfcHHzCkXGyz8tb
-         MDBzs6ibY/EGdDqB/ff2GewtKr6TpYHNqvy5y4L9nhOeKSaVrEEfVSAdHs3oIc8/KGvy
-         BUoC/Ntz4HLIebyoKI3bup9qeurRZrprpsOzzaMBNquRHtxpasWvx6s1xD7yjJ47gW7a
-         aqMUkT2VhDOvjwLmzIlZFje3GuDLrgVXuDJcvjJJbqm/WRU77L4UMZYg+2nxY7fnS64M
-         8wzw==
+        with ESMTP id S237461AbiBQKm4 (ORCPT
+        <rfc822;linux-m68k@vger.kernel.org>); Thu, 17 Feb 2022 05:42:56 -0500
+Received: from mail-vk1-f171.google.com (mail-vk1-f171.google.com [209.85.221.171])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5AD16293B73;
+        Thu, 17 Feb 2022 02:42:42 -0800 (PST)
+Received: by mail-vk1-f171.google.com with SMTP id k128so2779607vkk.10;
+        Thu, 17 Feb 2022 02:42:42 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:cc:references:from:in-reply-to
-         :content-transfer-encoding;
-        bh=OO8O5AkWPhI/5yGYSTEQp+LjZetKZnyQ+pZ7++XrzEA=;
-        b=gZD+Aj6OEeqRlnh6z6RAZh1nsZrAeSQ6QztyimNOEwO/7Np28gE3GjeYZQZ2xE5jNA
-         liqLEyUGmRNRB1c+eCX2j31MBfui0AxDvGe3mhbP6xEuPZweMC2J9KHvQ6CeOA1nbz96
-         TAdOlfEk8EY26COMNMXuHFAhpBE7SMbb6CCx1YUq3MA9wHBHPjQUGUnUGcCklxyWdND+
-         ImoXYR0EHL/0aKg4dDtWMSQ3z3uJwVCk0+p1rRGbcZq8jOHMds2OB8/c9IVAus3z8g80
-         zLBW2+FgvDNjUQRA1mtZ6fJdgRbJMbWtLzzYjKOxNinLRkBI07sWQvesXMpmtgz7JliR
-         06Ig==
-X-Gm-Message-State: AOAM532JUOVOMvDvEX252BLOEWsHMdBWQnoLQiRbaeG5t/kTEiBa/a/e
-        7+BI1N581p652KyIlaDAtDE=
-X-Google-Smtp-Source: ABdhPJzppLbwPh7ryO4JRMtpJc/4Lz2rbVquaymBUgCgBO2OneSkA3o02raf386TVCaqFDiGA98BPg==
-X-Received: by 2002:a05:651c:1544:b0:246:1887:cf4c with SMTP id y4-20020a05651c154400b002461887cf4cmr917179ljp.118.1645092779295;
-        Thu, 17 Feb 2022 02:12:59 -0800 (PST)
-Received: from [192.168.2.145] (109-252-138-165.dynamic.spd-mgts.ru. [109.252.138.165])
-        by smtp.googlemail.com with ESMTPSA id o10sm5079173lfl.116.2022.02.17.02.12.57
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=URz3vGbBYIEN5IQJZpThn97AmYBtZHbYQoPJObvpYus=;
+        b=G3Gd/cOW9B4p+iV9e4iuBpBPl644LnwAqTqPVZetBGkmj2jYS93B83PoMV+tstJofv
+         ++k0BjCioqKsuqwInJ1BFPIw61kIAGRMBz82LEJ+BhHZVY7BPtTLH6g64Gb53TIOJqoD
+         bkFgb21fFzy66ZMKAcqNOGHD+Qw89rr+uQVPKyza0L9MabqkqKI59cpl/k1uLXnVeK94
+         t7MmqRn0dcW0gavykd8pjPpUjY6OXMGsx2cVSmRCKRvb6LbhYlULDUCBePv+kRLDTe63
+         aGuo7Jd3oq0hFn3lyvSczcIGFVGa5ahyKPlKetKXPSsZEbEm63eJUG2nJCFXONlS8wcu
+         bJLQ==
+X-Gm-Message-State: AOAM533stlObAXiB8Ny1shBVhToRl/cJaTUJTY0OKacUSmqJJP8+CWny
+        KrZaQf0ok69R/5FpCZC9WdwOstFKMrKaHw==
+X-Google-Smtp-Source: ABdhPJxnktVpuCw857SVyJr4O9PFDjXNYxsMStC78sWGoiVxBEDELRuDgXzFxOOJ3DEsGsXG2Vd1ow==
+X-Received: by 2002:a05:6122:d9e:b0:331:33da:48e5 with SMTP id bc30-20020a0561220d9e00b0033133da48e5mr584012vkb.35.1645094561145;
+        Thu, 17 Feb 2022 02:42:41 -0800 (PST)
+Received: from mail-ua1-f46.google.com (mail-ua1-f46.google.com. [209.85.222.46])
+        by smtp.gmail.com with ESMTPSA id 17sm6720336vky.10.2022.02.17.02.42.40
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 17 Feb 2022 02:12:58 -0800 (PST)
-Message-ID: <4f0d1b50-9f55-dd81-f0c7-f5e0dfd75c2a@gmail.com>
-Date:   Thu, 17 Feb 2022 13:12:57 +0300
+        Thu, 17 Feb 2022 02:42:40 -0800 (PST)
+Received: by mail-ua1-f46.google.com with SMTP id g18so2449987uak.5;
+        Thu, 17 Feb 2022 02:42:40 -0800 (PST)
+X-Received: by 2002:ab0:750e:0:b0:33e:8f30:e8ec with SMTP id
+ m14-20020ab0750e000000b0033e8f30e8ecmr816005uap.114.1645094560576; Thu, 17
+ Feb 2022 02:42:40 -0800 (PST)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.5.0
-Subject: Re: [PATCH v6 00/21] Introduce power-off+restart call chain API
-Content-Language: en-US
-To:     Helge Deller <deller@gmx.de>,
-        "Rafael J. Wysocki" <rafael@kernel.org>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-csky@vger.kernel.org, linux-ia64@vger.kernel.org,
-        linux-m68k@lists.linux-m68k.org,
-        "open list:BROADCOM NVRAM DRIVER" <linux-mips@vger.kernel.org>,
-        linux-parisc@vger.kernel.org, linux-riscv@lists.infradead.org,
-        Linux-sh list <linux-sh@vger.kernel.org>,
-        xen-devel@lists.xenproject.org,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        linux-tegra <linux-tegra@vger.kernel.org>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>, Guo Ren <guoren@kernel.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Greg Ungerer <gerg@linux-m68k.org>,
-        Joshua Thompson <funaho@jurai.org>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Sebastian Reichel <sre@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Greentime Hu <green.hu@gmail.com>,
-        Vincent Chen <deanbo422@gmail.com>,
-        "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Yoshinori Sato <ysato@users.sourceforge.jp>,
-        Rich Felker <dalias@libc.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        the arch/x86 maintainers <x86@kernel.org>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
-        Juergen Gross <jgross@suse.com>,
-        Stefano Stabellini <sstabellini@kernel.org>,
-        Len Brown <lenb@kernel.org>,
-        Santosh Shilimkar <ssantosh@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>, Pavel Machek <pavel@ucw.cz>,
-        Lee Jones <lee.jones@linaro.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>, alankao@andestech.com,
-        "K . C . Kuen-Chern Lin" <kclin@andestech.com>,
-        =?UTF-8?B?TWljaGHFgiBNaXJvc8WCYXc=?= <mirq-linux@rere.qmqm.pl>
-References: <20220130233718.21544-1-digetx@gmail.com>
- <635e8121-fca4-580c-6af5-d9317a2eee1b@gmail.com>
- <CAJZ5v0g0MrBm2+GwctkB7kUyBEt6HTAexRCFFRmTF1UKDrVQ-g@mail.gmail.com>
- <de2cbd2a-8d0d-8678-e514-b153d04546cc@gmx.de>
-From:   Dmitry Osipenko <digetx@gmail.com>
-In-Reply-To: <de2cbd2a-8d0d-8678-e514-b153d04546cc@gmx.de>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+References: <20220215165226.2738568-1-geert@linux-m68k.org>
+ <20220215165226.2738568-9-geert@linux-m68k.org> <20220217121033.0fc7f6ba@eldfell>
+In-Reply-To: <20220217121033.0fc7f6ba@eldfell>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Thu, 17 Feb 2022 11:42:29 +0100
+X-Gmail-Original-Message-ID: <CAMuHMdXf3tFLb16Y=wh5C3QUYN4PdCjaYPCzMOTCye-eYS-N8w@mail.gmail.com>
+Message-ID: <CAMuHMdXf3tFLb16Y=wh5C3QUYN4PdCjaYPCzMOTCye-eYS-N8w@mail.gmail.com>
+Subject: Re: [PATCH 8/8] drm/fourcc: Add DRM_FORMAT_D1
+To:     Pekka Paalanen <ppaalanen@gmail.com>
+Cc:     Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>, Helge Deller <deller@gmx.de>,
+        Javier Martinez Canillas <javierm@redhat.com>,
+        Linux Fbdev development list <linux-fbdev@vger.kernel.org>,
+        "Linux/m68k" <linux-m68k@vger.kernel.org>,
+        DRI Development <dri-devel@lists.freedesktop.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-16.02.2022 23:30, Helge Deller пишет:
-> On 2/16/22 13:25, Rafael J. Wysocki wrote:
->> On Tue, Feb 15, 2022 at 11:00 PM Dmitry Osipenko <digetx@gmail.com> wrote:
->>>
->>> 31.01.2022 02:36, Dmitry Osipenko пишет:
->>>> Problem
->>>> -------
->>>>
->>>> SoC devices require power-off call chaining functionality from kernel.
->>>> We have a widely used restart chaining provided by restart notifier API,
->>>> but nothing for power-off.
->>>>
->>>> Solution
->>>> --------
->>>>
->>>> Introduce new API that provides both restart and power-off call chains.
->>>>
->>>> Why combine restart with power-off? Because drivers often do both.
->>>> More practical to have API that provides both under the same roof.
->>>>
->>>> The new API is designed with simplicity and extensibility in mind.
->>>> It's built upon the existing restart and reboot APIs. The simplicity
->>>> is in new helper functions that are convenient for drivers. The
->>>> extensibility is in the design that doesn't hardcode callback
->>>> arguments, making easy to add new parameters and remove old.
->>>>
->>>> This is a third attempt to introduce the new API. First was made by
->>>> Guenter Roeck back in 2014, second was made by Thierry Reding in 2017.
->>>> In fact the work didn't stop and recently arm_pm_restart() was removed
->>>> from v5.14 kernel, which was a part of preparatory work started by
->>>> Guenter Roeck. I took into account experience and ideas from the
->>>> previous attempts, extended and polished them.
->>>
->>>
->>> Rafael and all, do you see anything critical that needs to be improved
->>> in this v6?
->>>
->>> Will be great if you could take this patchset via the power tree if it
->>> looks okay, or give an ack.
->>
->> I need some more time for this, sorry.
+Hi Pekka,
 
-No worries, we're not in a rush.
+On Thu, Feb 17, 2022 at 11:10 AM Pekka Paalanen <ppaalanen@gmail.com> wrote:
+> On Tue, 15 Feb 2022 17:52:26 +0100
+> Geert Uytterhoeven <geert@linux-m68k.org> wrote:
+> > Introduce a fourcc code for a single-channel frame buffer format with two
+> > darkness levels.  This can be used for two-level dark-on-light displays.
+> >
+> > As the number of bits per pixel is less than eight, this relies on
+> > proper block handling for the calculation of bits per pixel and pitch.
+> >
+> > Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
 
->> I'm a bit concerned about seeing no response to this set from anyone.
->>
->> It looks like multiple platforms may be affected by it in principle,
->> so doesn't anyone care?
+> > --- a/drivers/gpu/drm/drm_fourcc.c
+> > +++ b/drivers/gpu/drm/drm_fourcc.c
+> > @@ -151,6 +151,8 @@ const struct drm_format_info *__drm_format_info(u32 format)
+> >               { .format = DRM_FORMAT_C4,              .depth = 4,  .num_planes = 1,
+> >                 .char_per_block = { 1, }, .block_w = { 2, }, .block_h = { 1, }, .hsub = 1, .vsub = 1 },
+> >               { .format = DRM_FORMAT_C8,              .depth = 8,  .num_planes = 1, .cpp = { 1, 0, 0 }, .hsub = 1, .vsub = 1 },
+> > +             { .format = DRM_FORMAT_D1,              .depth = 1,  .num_planes = 1,
+> > +               .char_per_block = { 1, }, .block_w = { 8, }, .block_h = { 1, }, .hsub = 1, .vsub = 1 },
+> >               { .format = DRM_FORMAT_R1,              .depth = 1,  .num_planes = 1,
+> >                 .char_per_block = { 1, }, .block_w = { 8, }, .block_h = { 1, }, .hsub = 1, .vsub = 1 },
+> >               { .format = DRM_FORMAT_R2,              .depth = 2,  .num_planes = 1,
+> > diff --git a/include/uapi/drm/drm_fourcc.h b/include/uapi/drm/drm_fourcc.h
+> > index 8605a1acc6813e6c..c15c6efcc65e5827 100644
+> > --- a/include/uapi/drm/drm_fourcc.h
+> > +++ b/include/uapi/drm/drm_fourcc.h
+> > @@ -104,6 +104,9 @@ extern "C" {
+> >  #define DRM_FORMAT_C4                fourcc_code('C', '4', ' ', ' ') /* [3:0] C */
+> >  #define DRM_FORMAT_C8                fourcc_code('C', '8', ' ', ' ') /* [7:0] C */
+> >
+> > +/* 1 bpp Darkness */
+> > +#define DRM_FORMAT_D1                fourcc_code('D', '1', ' ', ' ') /* [0] D */
+> > +
+>
+> the same comment here as for C1 and R1 formats, need to specify pixel
+> ordering inside a byte.
 
-The platforms that didn't provide ack so far are: SH, x86, IA64, MIPS
-and NDS32. At least x86 and MIPS are alive, not sure why maintainers
-didn't bother to answer yet.
+Right, will do.
 
-> I did looked into the whole patch set after applying it locally.
-> 
-> While I agree a new combined API is good, and the beginning looked promising,
-> after some time I started to ask myself if the whole infrastructure might
-> be a little overdesigned.
-> 
-> Anyway, I tested it and it works for me on parisc.
-> And it's probably better than what we have today.
+> I think it would also be good to explain the rationale why C1 and R1
+> are not suitable for this case and we need yet another 1-bit format in
+> the commit message.
+>
+> For posterity, of course. I roughly remember the discussions.
 
-Thank you!
+C1 is color-indexed, which can be any two colors.
+R1 is light-on-dark.
+D1 is dark-on-light.
+
+> I also wonder if anyone would actually use D1. Should it be added
+> anyway? There is no rule that a pixel format must be used inside the
+> kernel AFAIK, but is there even a prospective userspace wanting this?
+>
+> Exposing R1 and inverting bits while copying to hardware might be
+> enough?
+
+That's an option.  The repaper driver does that:
+
+    drm_fb_xrgb8888_to_gray8(buf, 0, cma_obj->vaddr, fb, &clip);
+    repaper_gray8_to_mono_reversed(buf, fb->width, fb->height);
+
+Can drm_framebuffer objects be backed by graphics memory, i.e.
+can they be displayed without copying?
+
+> >  /* 1 bpp Red */
+> >  #define DRM_FORMAT_R1                fourcc_code('R', '1', ' ', ' ') /* [0] R */
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
