@@ -2,171 +2,126 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 6E2EAC433EF
-	for <linux-m68k@archiver.kernel.org>; Thu, 17 Feb 2022 07:50:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id BCB15C433F5
+	for <linux-m68k@archiver.kernel.org>; Thu, 17 Feb 2022 08:59:19 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236661AbiBQHuv (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Thu, 17 Feb 2022 02:50:51 -0500
-Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:52266 "EHLO
+        id S229830AbiBQI7b (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Thu, 17 Feb 2022 03:59:31 -0500
+Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:52906 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229867AbiBQHum (ORCPT
+        with ESMTP id S238280AbiBQI7a (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Thu, 17 Feb 2022 02:50:42 -0500
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8300F2A39DC
-        for <linux-m68k@lists.linux-m68k.org>; Wed, 16 Feb 2022 23:50:28 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id D6FBC61B14
-        for <linux-m68k@lists.linux-m68k.org>; Thu, 17 Feb 2022 07:50:27 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id ABE63C340EB
-        for <linux-m68k@lists.linux-m68k.org>; Thu, 17 Feb 2022 07:50:27 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1645084227;
-        bh=mjFs6zWH8/AqiitYOR0rg+8IkEbypYLpH0MSBavFTDs=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=a584rkV62+NPf5vGJekocz3Rabu8zTSV8PcNg47mm/icX5LeKaAEsZ4te02a/tYJE
-         A1jdiylih+e/p7SLFG4UsEw7nrpFEkwpPWws4TGuwbXe4/fQ2U84/OnDunJ4txfwKi
-         XKb+bSTvtf7hDifXwCgXLb2kyN+LDy4+oT94YMOqFnGACJx8P8F1/xZBiSpZHlW80l
-         cmtCzHY1IFXVk2/TtsxC6E1H/b/5QxteloN0VqgQ/YzzLUkZuBPr8WiOtY94b6DYsc
-         WzP2EAuzdO1yTjXJBeuErZqTdUb/LFXVlDtuoEOEP5o/nG0LjzKrVpHobr9lyYqnaF
-         TeCEMqPKi+JHQ==
-Received: by mail-wm1-f53.google.com with SMTP id l12-20020a7bc34c000000b003467c58cbdfso5481574wmj.2
-        for <linux-m68k@lists.linux-m68k.org>; Wed, 16 Feb 2022 23:50:27 -0800 (PST)
-X-Gm-Message-State: AOAM531ik407ndkyUMcpsxNFaEZfya6EuL/QMf244u6LnTYK6c09ZQou
-        XpVb33PaQEpwSLIrjuY3avD3dzQMivuHYZUa9c4=
-X-Google-Smtp-Source: ABdhPJxVHiNpam6v+gNoOoH0mO2de38FsGKKulVVSeiH+uDoJW6u9JTqRXgzs52TA7IQLSGpUpbHMUpXX+Sk75rMI5w=
-X-Received: by 2002:a05:600c:2108:b0:34e:870:966e with SMTP id
- u8-20020a05600c210800b0034e0870966emr4902681wml.173.1645084215917; Wed, 16
- Feb 2022 23:50:15 -0800 (PST)
+        Thu, 17 Feb 2022 03:59:30 -0500
+X-Greylist: delayed 303 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Thu, 17 Feb 2022 00:59:16 PST
+Received: from mout.kundenserver.de (mout.kundenserver.de [212.227.126.130])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EFA582A7970
+        for <linux-m68k@lists.linux-m68k.org>; Thu, 17 Feb 2022 00:59:16 -0800 (PST)
+Received: from mail-lf1-f53.google.com ([209.85.167.53]) by
+ mrelayeu.kundenserver.de (mreue010 [213.165.67.97]) with ESMTPSA (Nemesis) id
+ 1M3D7V-1nHa9O3xgD-003dzC for <linux-m68k@lists.linux-m68k.org>; Thu, 17 Feb
+ 2022 09:54:12 +0100
+Received: by mail-lf1-f53.google.com with SMTP id g39so8591220lfv.10
+        for <linux-m68k@lists.linux-m68k.org>; Thu, 17 Feb 2022 00:54:11 -0800 (PST)
+X-Gm-Message-State: AOAM531Z3IkZSZXgNEiAbhU+omToIl369RGS4oRJ3xvdhYkaZxYI4uAZ
+        B6kEtBE/mYh3Nc/j+4Bk7py6Uob4Jl8GrB8d7d4=
+X-Google-Smtp-Source: ABdhPJwQLFNR2EKsG8wmZOAHPh9E9pyoICR3LxZT862dIjr2W4W3Sw6yF+ayzR5i5e/QGR8IN4+3KhdYVHoGFF4fNyc=
+X-Received: by 2002:adf:ea01:0:b0:1e4:b3e6:1f52 with SMTP id
+ q1-20020adfea01000000b001e4b3e61f52mr1268592wrm.317.1645084364936; Wed, 16
+ Feb 2022 23:52:44 -0800 (PST)
 MIME-Version: 1.0
-References: <20220216131332.1489939-1-arnd@kernel.org> <00496df2-f9f2-2547-3ca3-7989e4713d6b@csgroup.eu>
-In-Reply-To: <00496df2-f9f2-2547-3ca3-7989e4713d6b@csgroup.eu>
-From:   Arnd Bergmann <arnd@kernel.org>
-Date:   Thu, 17 Feb 2022 08:49:59 +0100
-X-Gmail-Original-Message-ID: <CAK8P3a3_dPbjB23QffnYMtw+5ojfwChrVC8LLMQqNctU7Nh+mQ@mail.gmail.com>
-Message-ID: <CAK8P3a3_dPbjB23QffnYMtw+5ojfwChrVC8LLMQqNctU7Nh+mQ@mail.gmail.com>
-Subject: Re: [PATCH v2 00/18] clean up asm/uaccess.h, kill set_fs for good
-To:     Christophe Leroy <christophe.leroy@csgroup.eu>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+References: <20220216131332.1489939-1-arnd@kernel.org> <20220216131332.1489939-14-arnd@kernel.org>
+In-Reply-To: <20220216131332.1489939-14-arnd@kernel.org>
+From:   Arnd Bergmann <arnd@arndb.de>
+Date:   Thu, 17 Feb 2022 08:52:29 +0100
+X-Gmail-Original-Message-ID: <CAK8P3a2T1Xr80GeM-3p1riyq=gKDJGeKVz_c5=r5=s14tXimLw@mail.gmail.com>
+Message-ID: <CAK8P3a2T1Xr80GeM-3p1riyq=gKDJGeKVz_c5=r5=s14tXimLw@mail.gmail.com>
+Subject: Re: [PATCH v2 13/18] uaccess: generalize access_ok()
+To:     Linus Torvalds <torvalds@linux-foundation.org>,
         Christoph Hellwig <hch@lst.de>,
-        "linux-arch@vger.kernel.org" <linux-arch@vger.kernel.org>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        "linux-api@vger.kernel.org" <linux-api@vger.kernel.org>,
-        "arnd@arndb.de" <arnd@arndb.de>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "viro@zeniv.linux.org.uk" <viro@zeniv.linux.org.uk>,
-        "mark.rutland@arm.com" <mark.rutland@arm.com>,
-        "dalias@libc.org" <dalias@libc.org>,
-        "linux-ia64@vger.kernel.org" <linux-ia64@vger.kernel.org>,
-        "linux-sh@vger.kernel.org" <linux-sh@vger.kernel.org>,
-        "peterz@infradead.org" <peterz@infradead.org>,
-        "jcmvbkbc@gmail.com" <jcmvbkbc@gmail.com>,
-        "guoren@kernel.org" <guoren@kernel.org>,
-        "sparclinux@vger.kernel.org" <sparclinux@vger.kernel.org>,
-        "linux-hexagon@vger.kernel.org" <linux-hexagon@vger.kernel.org>,
-        "linux-riscv@lists.infradead.org" <linux-riscv@lists.infradead.org>,
-        "will@kernel.org" <will@kernel.org>,
-        "ardb@kernel.org" <ardb@kernel.org>,
-        "linux-s390@vger.kernel.org" <linux-s390@vger.kernel.org>,
-        "bcain@codeaurora.org" <bcain@codeaurora.org>,
-        "deller@gmx.de" <deller@gmx.de>, "x86@kernel.org" <x86@kernel.org>,
-        "linux@armlinux.org.uk" <linux@armlinux.org.uk>,
-        "linux-csky@vger.kernel.org" <linux-csky@vger.kernel.org>,
-        "mingo@redhat.com" <mingo@redhat.com>,
-        "geert@linux-m68k.org" <geert@linux-m68k.org>,
-        "linux-snps-arc@lists.infradead.org" 
-        <linux-snps-arc@lists.infradead.org>,
-        "linux-xtensa@linux-xtensa.org" <linux-xtensa@linux-xtensa.org>,
-        "hca@linux.ibm.com" <hca@linux.ibm.com>,
-        "linux-alpha@vger.kernel.org" <linux-alpha@vger.kernel.org>,
-        "linux-um@lists.infradead.org" <linux-um@lists.infradead.org>,
-        "linux-m68k@lists.linux-m68k.org" <linux-m68k@lists.linux-m68k.org>,
-        "openrisc@lists.librecores.org" <openrisc@lists.librecores.org>,
-        "green.hu@gmail.com" <green.hu@gmail.com>,
-        "shorne@gmail.com" <shorne@gmail.com>,
-        "monstr@monstr.eu" <monstr@monstr.eu>,
-        "tsbogend@alpha.franken.de" <tsbogend@alpha.franken.de>,
-        "linux-parisc@vger.kernel.org" <linux-parisc@vger.kernel.org>,
-        "nickhu@andestech.com" <nickhu@andestech.com>,
-        "linux-mips@vger.kernel.org" <linux-mips@vger.kernel.org>,
-        "dinguyen@kernel.org" <dinguyen@kernel.org>,
-        "ebiederm@xmission.com" <ebiederm@xmission.com>,
-        "richard@nod.at" <richard@nod.at>,
-        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
-        "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>,
-        "davem@davemloft.net" <davem@davemloft.net>
+        linux-arch <linux-arch@vger.kernel.org>,
+        Linux-MM <linux-mm@kvack.org>,
+        Linux API <linux-api@vger.kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Al Viro <viro@zeniv.linux.org.uk>
+Cc:     Russell King - ARM Linux <linux@armlinux.org.uk>,
+        Will Deacon <will@kernel.org>, Guo Ren <guoren@kernel.org>,
+        Brian Cain <bcain@codeaurora.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Michal Simek <monstr@monstr.eu>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Nick Hu <nickhu@andestech.com>,
+        Greentime Hu <green.hu@gmail.com>,
+        Dinh Nguyen <dinguyen@kernel.org>,
+        Stafford Horne <shorne@gmail.com>,
+        Helge Deller <deller@gmx.de>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Rich Felker <dalias@libc.org>,
+        David Miller <davem@davemloft.net>,
+        Richard Weinberger <richard@nod.at>,
+        "the arch/x86 maintainers" <x86@kernel.org>,
+        Max Filippov <jcmvbkbc@gmail.com>,
+        "Eric W . Biederman" <ebiederm@xmission.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        alpha <linux-alpha@vger.kernel.org>,
+        "open list:SYNOPSYS ARC ARCHITECTURE" 
+        <linux-snps-arc@lists.infradead.org>, linux-csky@vger.kernel.org,
+        "open list:QUALCOMM HEXAGON..." <linux-hexagon@vger.kernel.org>,
+        linux-ia64@vger.kernel.org,
+        linux-m68k <linux-m68k@lists.linux-m68k.org>,
+        "open list:BROADCOM NVRAM DRIVER" <linux-mips@vger.kernel.org>,
+        Openrisc <openrisc@lists.librecores.org>,
+        Parisc List <linux-parisc@vger.kernel.org>,
+        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
+        linux-riscv <linux-riscv@lists.infradead.org>,
+        linux-s390 <linux-s390@vger.kernel.org>,
+        Linux-sh list <linux-sh@vger.kernel.org>,
+        sparclinux <sparclinux@vger.kernel.org>,
+        linux-um <linux-um@lists.infradead.org>,
+        "open list:TENSILICA XTENSA PORT (xtensa)" 
+        <linux-xtensa@linux-xtensa.org>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:176PAAQspzP+k4ftrq+vElBZCUzKOR2BC7+qHeYOzJj7Oni1kEw
+ 7YZ3IFLmtHPZa1Xj4YVAnOM8hhABezGa04GVABj2r4qm6TVCzy+i4JLcOdLNKEfvuCCCpxc
+ Ly+zVygaTQFyrBxITWpVkaNk5Y+iHS64iECtAOXw9HNL5f+Q+A9n8iVrBUyWWedtbVb3myi
+ YyZJ4SOKyjvy+T690JAHQ==
+X-UI-Out-Filterresults: notjunk:1;V03:K0:ebN5bhSj06o=:yKVcS9GHJ6qSrO87dB2nRC
+ HX1/Adpy/eFlpYiS4uZyH2psI9/PpP2EBOc57FcEmNe9USe2zZyMub5e1rn5KkTN0WrCpJ1ug
+ s0Ku6vmLLTZSx5JDCCP61PEOdX5cOaBFBfkjrJq3LWQaekGBdR4QQtZIM46dz1MZsOlpsj59y
+ Vu2kI91eVM44j3k4WJzc4q5krMkL24e5JnthajV6yYzqkIATQ3cOhqgQoX37WkJNovUxn0HN5
+ qn4EyJRemf20gpQbO6fv54ybn/XuzmxS7p4AuXYkpTaBfRYyTmfj/97qR17L5iTRx0Af9Lhbq
+ qPn1rVYvSFh2sFVyj1IBDokoAasFrUSHuWinMU6cpkV7i/5rw2L+XLZDV7eHRLSQtDsIsZ1o6
+ ESdd9Y5Zy27SyDeeCRTG2526+dUJdQDzKovVQ4W6j67ikwSesihhVwCJ0F0lCsIHNZxszHz8O
+ X5JafYAWXGszY7evFpBi39odIAFkA1zYCB9Kbe3hupjhGlpjcWti98GjGUHLirP1o8zBB+EJv
+ fpLQ+EdE7bCuQnOtGgQ6ZhlxWH0jsu8LLSkziPpCFR+yUmv+DiADt+7VahEjaRu3XZKuIVLi9
+ sH19AwJXyH6kij/nyleiGffRqDtiYt7ua2AZj8EZ9/yeW8ndfsHyeVTG2uYlH2d8n/KxW72uz
+ bRWkmtACtTENzYU6R/oHKifQ1ruiLZJ4PzD4lPU44rq1lHduvCk4EMwBPfR5lhRICzyFAyvpZ
+ DkrGAoHcnemBRjarfHvCF4NXCrLSw5nxc0GsgHNnkdlYxN/QAazhZqqAMRwg46qoW+2uNq4/I
+ STlFIFUjYzvSXvx96gEBROp6PfwI27IlLfydwc2PRBx535I034=
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-On Thu, Feb 17, 2022 at 8:20 AM Christophe Leroy
-<christophe.leroy@csgroup.eu> wrote:
-> Le 16/02/2022 =C3=A0 14:13, Arnd Bergmann a =C3=A9crit :
-> >
-> > Christoph Hellwig and a few others spent a huge effort on removing
-> > set_fs() from most of the important architectures, but about half the
-> > other architectures were never completed even though most of them don't
-> > actually use set_fs() at all.
-> >
-> > I did a patch for microblaze at some point, which turned out to be fair=
-ly
-> > generic, and now ported it to most other architectures, using new gener=
-ic
-> > implementations of access_ok() and __{get,put}_kernel_nocheck().
-> >
-> > Three architectures (sparc64, ia64, and sh) needed some extra work,
-> > which I also completed.
-> >
-> > The final series contains extra cleanup changes that touch all
-> > architectures. Please review and test these, so we can merge them
-> > for v5.18.
->
-> As a further cleanup, have you thought about making a generic version of
-> clear_user() ? On almost all architectures, clear_user() does an
-> access_ok() then calls __clear_user() or similar.
+On Wed, Feb 16, 2022 at 2:13 PM Arnd Bergmann <arnd@kernel.org> wrote:
 
-This already exists in include/asm-generic/uaccess.h, but that file is
-currently not as easy to use as it should be. I've previously looked into
-what it would take to get more architectures to use common code
-in that file, but I currently have no plans to work on that.
+> + * limit and catch all possible overflows.
+> + * On architectures with separate user address space (m68k, s390, parisc,
+> + * sparc64) or those without an MMU, this should always return true.
+...
+> +static inline int __access_ok(const void __user *ptr, unsigned long size)
+> +{
+> +       unsigned long limit = user_addr_max();
+> +       unsigned long addr = (unsigned long)ptr;
+> +
+> +       if (IS_ENABLED(CONFIG_ALTERNATE_USER_ADDRESS_SPACE))
+> +               return true;
 
-> Maybe also the same with put_user() and get_user() ? After all it is
-> just access_ok() followed by __put_user() or __get_user() ? It seems
-> more tricky though, as some architectures seems to have less trivial
-> stuff there.
+I noticed that I'm missing the check for !CONFIG_MMU here, despite
+mentioning that in the comment above it. I've added it now.
 
-Same here: architectures can already provide a __put_user_fn()
-and __get_user_fn(), to get the generic versions of the interface,
-but few architectures use that. You can actually get all the interfaces
-by just providing raw_copy_from_user() and raw_copy_to_user(),
-but the get_user/put_user versions you get from that are fairly
-inefficient.
-
-> I also see all architectures have a prototype for strncpy_from_user()
-> and strnlen_user(). Could be a common prototype instead when we have
-> GENERIC_STRNCPY_FROM_USER / GENERIC_STRNLEN_USER
->
-> And we have also
-> user_access_begin()/user_read_access_begin()/user_write_access_begin()
-> which call access_ok() then do the real work. Could be made generic with
-> call to some arch specific __user_access_begin() and friends after the
-> access_ok() and eventually the might_fault().
-
-In my opinion, the biggest win would be to move the type-agnostic part of
-get_user/put_user into completely generic code, this is what architectures
-get wrong the most, see patch 02/18 in this series for instance.
-
-What I'd like to see is that architectures only provide fixed-length
-versions of unsafe_get_user()/unsafe_put_user(), with the type-agnostic
-versions (get_user(), __get_user(), unsafe_get_user() and their put
-versions) all defined once in include/linux/uaccess.h based on those.
-
-I tried implementing this in the past, but unfortunately the resulting
-object code from my generalized implementation was worse than
-what we have today, so I did not continue that work.
-
-      Arnd
+        Arnd
