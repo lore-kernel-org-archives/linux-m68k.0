@@ -2,92 +2,114 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 82A9DC433F5
-	for <linux-m68k@archiver.kernel.org>; Thu, 17 Feb 2022 17:21:42 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 0C2C7C43217
+	for <linux-m68k@archiver.kernel.org>; Thu, 17 Feb 2022 19:15:28 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243654AbiBQRVz (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Thu, 17 Feb 2022 12:21:55 -0500
-Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:60236 "EHLO
+        id S242534AbiBQTPl (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Thu, 17 Feb 2022 14:15:41 -0500
+Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:36252 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236689AbiBQRVz (ORCPT
-        <rfc822;linux-m68k@vger.kernel.org>); Thu, 17 Feb 2022 12:21:55 -0500
-Received: from mail-vs1-f51.google.com (mail-vs1-f51.google.com [209.85.217.51])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CF2F165F5;
-        Thu, 17 Feb 2022 09:21:39 -0800 (PST)
-Received: by mail-vs1-f51.google.com with SMTP id e5so7022531vsg.12;
-        Thu, 17 Feb 2022 09:21:39 -0800 (PST)
+        with ESMTP id S245075AbiBQTPk (ORCPT
+        <rfc822;linux-m68k@lists.linux-m68k.org>);
+        Thu, 17 Feb 2022 14:15:40 -0500
+Received: from mail-ej1-x629.google.com (mail-ej1-x629.google.com [IPv6:2a00:1450:4864:20::629])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3917590FD9
+        for <linux-m68k@lists.linux-m68k.org>; Thu, 17 Feb 2022 11:15:24 -0800 (PST)
+Received: by mail-ej1-x629.google.com with SMTP id hw13so9518439ejc.9
+        for <linux-m68k@lists.linux-m68k.org>; Thu, 17 Feb 2022 11:15:24 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=amacapital-net.20210112.gappssmtp.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=+RZ8CAgnGa1bk5gBxds4oezzFjZLQMV+wOvrmesI1Hw=;
+        b=aC4vKGs+W+TwIvfSuol31sXb0DdwmBd+7ynpizLCKhXxCJFdEAZpxJvcWGa/FztIyE
+         kaM//DxAJXCDh5aNx4GSOgCqArnp/pPXpeZOwL6NCOz09LePB9aHf9rLmhVNdEQhmOfG
+         zcHXwBp2FYlRXI6tXnhZ/KCBgXws1BhNZED9tFrHvUNz3V476fnXQSLMeM+Shpqaev6m
+         W07DvhrokY4sorGqrqwhi0S/cnzs7UTqO0cIGR6WWEAN8VmZadQ9VO/+zsTblOwHPeWg
+         SsUN3Cw66rH7ga20AFYG5KTR6BdWsnByVkv9VANJJ9bhC1jZcqQ2NhN41BgDZLcdhMyk
+         TY3g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=mDJqoFZz0dz3Q1I37x7okE1Q7HMXJStYbJXkk2d13x4=;
-        b=seO/xDPaXkxZDHFacKoggtganAFkKTlND89OCWoNcZ99Zl7b7OYzhQ+LEvjgtQoXC8
-         Hd4qBYJfoFZgdDXoBxq3aE4A8io9V641O9HCdqlT3I4nlkksAgw/oqO1UttUyhgzUhOD
-         QaMMx9jKU51LpxynYgCXimtkICxc8A+ril3ZOUx/pjkBhX5Pfynu/WD/PjN2IBacYsg+
-         rACC7GbOaadZ05AvBGL8i708VlSk5zmxwo7dA0TkgV7rmNkfoqP/nFMnGChmiuo9j4Lz
-         gNvibh6azwHf+f8DZ3ArheIRFzTtOUgzMnBJ3+7VGkjPLSa+0mj2fcyWCODKVS4cRTqj
-         mgzg==
-X-Gm-Message-State: AOAM531MuN0DgkFAdEE2+9K0jLrI5tk9duD9AVHqDzxuzIextY6fAMaV
-        jK/tZNsnXpoToB8cJ4Y02ZL35oQ6U2eMsw==
-X-Google-Smtp-Source: ABdhPJyBGvrDRIH7jsK3uqWORRSOhGUnqT6zXuk3lCyaSLH8jlp4pw+ZcgTe7kNab/FY35aQqoDjow==
-X-Received: by 2002:a05:6102:1622:b0:30f:8678:5bb7 with SMTP id cu34-20020a056102162200b0030f86785bb7mr1721707vsb.59.1645118498870;
-        Thu, 17 Feb 2022 09:21:38 -0800 (PST)
-Received: from mail-vs1-f48.google.com (mail-vs1-f48.google.com. [209.85.217.48])
-        by smtp.gmail.com with ESMTPSA id e9sm342847vsl.31.2022.02.17.09.21.38
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 17 Feb 2022 09:21:38 -0800 (PST)
-Received: by mail-vs1-f48.google.com with SMTP id d11so3039885vsm.5;
-        Thu, 17 Feb 2022 09:21:38 -0800 (PST)
-X-Received: by 2002:a67:b00e:0:b0:30d:dc98:6024 with SMTP id
- z14-20020a67b00e000000b0030ddc986024mr1803164vse.57.1645118498172; Thu, 17
- Feb 2022 09:21:38 -0800 (PST)
+        bh=+RZ8CAgnGa1bk5gBxds4oezzFjZLQMV+wOvrmesI1Hw=;
+        b=OVyyn1AndRY+x+1pNRljCfkDYgMac2eeJz4NtEueBHw7eP8QfuyD9MgUlGfDnfqmSz
+         WEfI1J4P1OPOEV9Vp67RP1cPSoQpKnZfIKelgynX+lLEM5oG9V0e9i2W3FiXnVSHN1pq
+         9LF1V857OAZSzOSTGkqTFqMbudqi4x+i4HBgIWZbSneNSb+FP6yjEHnq1saOlfw5/Idm
+         /BLmz2UYGDtCQRTGwtJ2b7yK11IKoaVA7XweeC1tLM1wsnjyMeT2xSZ6TJqkNaGQOtm5
+         yCUitHYHPFBTYLoQYPzZU2+butTz8+C7SnqAz6FqliYV5nSHqFbP/G2Hs1owTLIWfUoF
+         2KzQ==
+X-Gm-Message-State: AOAM533kO1EyXuUZXdu2qLP2LOwY8ggcJG74Ma3YigR+D8XCTYLSjoEa
+        TrvO1pJsYTjxOM3g++KPmj7UOp+n8RHJQ7TzieSvRA==
+X-Google-Smtp-Source: ABdhPJw48Oadf8QR2zY/o5TdRU0UiMjXS1n08+Rvo/jef0cepMooOXBMnDr3m4SH0a9wsDyMLo89s3cuvktj12QRONA=
+X-Received: by 2002:a17:906:4b52:b0:6cd:3863:b35e with SMTP id
+ j18-20020a1709064b5200b006cd3863b35emr3488094ejv.415.1645125322737; Thu, 17
+ Feb 2022 11:15:22 -0800 (PST)
 MIME-Version: 1.0
-References: <20220215165226.2738568-1-geert@linux-m68k.org>
- <20220215165226.2738568-3-geert@linux-m68k.org> <4fff0c08-adab-c1d5-4a7e-1513cb2bf7ca@suse.de>
- <CAMuHMdVK7eWfod73JQAntO=7BAMEcS-ktH4NJmDjna3zUn7giw@mail.gmail.com> <z7NQYyKnuywG0bUt7Wr9e53SGgSZgbMVNKpLAOIP0mH3GljFQI3hd_aQFc8qaqwTbBq8yF3QvR9ugLxlivX-ogj508Vc60XHQPAN3IL5Uik=@emersion.fr>
-In-Reply-To: <z7NQYyKnuywG0bUt7Wr9e53SGgSZgbMVNKpLAOIP0mH3GljFQI3hd_aQFc8qaqwTbBq8yF3QvR9ugLxlivX-ogj508Vc60XHQPAN3IL5Uik=@emersion.fr>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Thu, 17 Feb 2022 18:21:27 +0100
-X-Gmail-Original-Message-ID: <CAMuHMdVeqOj1VfMC6EHHJSX1ttRW3RzaP5tw3aSM4=+SBcz3vg@mail.gmail.com>
-Message-ID: <CAMuHMdVeqOj1VfMC6EHHJSX1ttRW3RzaP5tw3aSM4=+SBcz3vg@mail.gmail.com>
-Subject: Re: [PATCH 2/8] drm/fb-helper: Add support for DRM_FORMAT_C[124]
-To:     Simon Ser <contact@emersion.fr>
-Cc:     Thomas Zimmermann <tzimmermann@suse.de>,
-        Linux Fbdev development list <linux-fbdev@vger.kernel.org>,
-        David Airlie <airlied@linux.ie>, Helge Deller <deller@gmx.de>,
-        Javier Martinez Canillas <javierm@redhat.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "Linux/m68k" <linux-m68k@vger.kernel.org>,
-        DRI Development <dri-devel@lists.freedesktop.org>
+References: <20220216131332.1489939-1-arnd@kernel.org> <20220216131332.1489939-14-arnd@kernel.org>
+In-Reply-To: <20220216131332.1489939-14-arnd@kernel.org>
+From:   Andy Lutomirski <luto@amacapital.net>
+Date:   Thu, 17 Feb 2022 11:15:11 -0800
+Message-ID: <CALCETrVOvYPN4_6hS8wpm2v9bGZupZ5x4=vZAseG57OUgvLGfw@mail.gmail.com>
+Subject: Re: [PATCH v2 13/18] uaccess: generalize access_ok()
+To:     Arnd Bergmann <arnd@kernel.org>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Christoph Hellwig <hch@lst.de>, linux-arch@vger.kernel.org,
+        linux-mm@kvack.org, linux-api@vger.kernel.org, arnd@arndb.de,
+        linux-kernel@vger.kernel.org, viro@zeniv.linux.org.uk,
+        linux@armlinux.org.uk, will@kernel.org, guoren@kernel.org,
+        bcain@codeaurora.org, geert@linux-m68k.org, monstr@monstr.eu,
+        tsbogend@alpha.franken.de, nickhu@andestech.com,
+        green.hu@gmail.com, dinguyen@kernel.org, shorne@gmail.com,
+        deller@gmx.de, mpe@ellerman.id.au, peterz@infradead.org,
+        mingo@redhat.com, mark.rutland@arm.com, hca@linux.ibm.com,
+        dalias@libc.org, davem@davemloft.net, richard@nod.at,
+        x86@kernel.org, jcmvbkbc@gmail.com, ebiederm@xmission.com,
+        akpm@linux-foundation.org, ardb@kernel.org,
+        linux-alpha@vger.kernel.org, linux-snps-arc@lists.infradead.org,
+        linux-csky@vger.kernel.org, linux-hexagon@vger.kernel.org,
+        linux-ia64@vger.kernel.org, linux-m68k@lists.linux-m68k.org,
+        linux-mips@vger.kernel.org, openrisc@lists.librecores.org,
+        linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org,
+        linux-sh@vger.kernel.org, sparclinux@vger.kernel.org,
+        linux-um@lists.infradead.org, linux-xtensa@linux-xtensa.org
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-Hi Simon,
-
-On Thu, Feb 17, 2022 at 5:18 PM Simon Ser <contact@emersion.fr> wrote:
-> On Thursday, February 17th, 2022 at 17:12, Geert Uytterhoeven <geert@linux-m68k.org> wrote:
-> > > What is C0?
-> >
-> > A non-existing color-indexed mode with zero colors ;-)
-> > Introduced purely to make a check like in the comment below work.
-> > What we really want to check here is if the mode is color-indexed
-> > or not...
+On Wed, Feb 16, 2022 at 5:19 AM Arnd Bergmann <arnd@kernel.org> wrote:
 >
-> Maybe it would be worth introducing a drm_format_info_is_color_indexed
-> function? Would be self-describing when used, and would avoid to miss
-> some places to update when adding new color-indexed formats.
+> From: Arnd Bergmann <arnd@arndb.de>
+>
+> There are many different ways that access_ok() is defined across
+> architectures, but in the end, they all just compare against the
+> user_addr_max() value or they accept anything.
+>
+> Provide one definition that works for most architectures, checking
+> against TASK_SIZE_MAX for user processes or skipping the check inside
+> of uaccess_kernel() sections.
+>
+> For architectures without CONFIG_SET_FS(), this should be the fastest
+> check, as it comes down to a single comparison of a pointer against a
+> compile-time constant, while the architecture specific versions tend to
+> do something more complex for historic reasons or get something wrong.
 
-Yep, and a .is_color_indexed flag, cfr. the existing .is_yuv flag.
+This isn't actually optimal.  On x86, TASK_SIZE_MAX is a bizarre
+constant that has a very specific value to work around a bug^Wdesign
+error^Wfeature of Intel CPUs.  TASK_SIZE_MAX is the maximum address at
+which userspace is permitted to allocate memory, but there is a huge
+gap between user and kernel addresses, and any value in the gap would
+be adequate for the comparison.  If we wanted to optimize this, simply
+checking the high bit (which x86 can do without any immediate
+constants at all) would be sufficient and, for an access known to fit
+in 32 bits, one could get even fancier and completely ignore the size
+of the access.  (For accesses not known to fit in 32 bits, I suspect
+some creativity could still come up with a construction that's
+substantially faster than the one in your patch.)
 
-Gr{oetje,eeting}s,
+So there's plenty of room for optimization here.
 
-                        Geert
-
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+(This is not in any respect a NAK -- it's just an observation that
+this could be even better.)
