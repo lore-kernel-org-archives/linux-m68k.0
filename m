@@ -2,40 +2,39 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id BCB15C433F5
-	for <linux-m68k@archiver.kernel.org>; Thu, 17 Feb 2022 08:59:19 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C70BDC433F5
+	for <linux-m68k@archiver.kernel.org>; Thu, 17 Feb 2022 09:18:03 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229830AbiBQI7b (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Thu, 17 Feb 2022 03:59:31 -0500
-Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:52906 "EHLO
+        id S230490AbiBQJSQ (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Thu, 17 Feb 2022 04:18:16 -0500
+Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:48046 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238280AbiBQI7a (ORCPT
+        with ESMTP id S238519AbiBQJSP (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Thu, 17 Feb 2022 03:59:30 -0500
-X-Greylist: delayed 303 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Thu, 17 Feb 2022 00:59:16 PST
-Received: from mout.kundenserver.de (mout.kundenserver.de [212.227.126.130])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EFA582A7970
-        for <linux-m68k@lists.linux-m68k.org>; Thu, 17 Feb 2022 00:59:16 -0800 (PST)
-Received: from mail-lf1-f53.google.com ([209.85.167.53]) by
- mrelayeu.kundenserver.de (mreue010 [213.165.67.97]) with ESMTPSA (Nemesis) id
- 1M3D7V-1nHa9O3xgD-003dzC for <linux-m68k@lists.linux-m68k.org>; Thu, 17 Feb
- 2022 09:54:12 +0100
-Received: by mail-lf1-f53.google.com with SMTP id g39so8591220lfv.10
-        for <linux-m68k@lists.linux-m68k.org>; Thu, 17 Feb 2022 00:54:11 -0800 (PST)
-X-Gm-Message-State: AOAM531Z3IkZSZXgNEiAbhU+omToIl369RGS4oRJ3xvdhYkaZxYI4uAZ
-        B6kEtBE/mYh3Nc/j+4Bk7py6Uob4Jl8GrB8d7d4=
-X-Google-Smtp-Source: ABdhPJwQLFNR2EKsG8wmZOAHPh9E9pyoICR3LxZT862dIjr2W4W3Sw6yF+ayzR5i5e/QGR8IN4+3KhdYVHoGFF4fNyc=
-X-Received: by 2002:adf:ea01:0:b0:1e4:b3e6:1f52 with SMTP id
- q1-20020adfea01000000b001e4b3e61f52mr1268592wrm.317.1645084364936; Wed, 16
- Feb 2022 23:52:44 -0800 (PST)
+        Thu, 17 Feb 2022 04:18:15 -0500
+Received: from mout.kundenserver.de (mout.kundenserver.de [212.227.126.133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E93DB27DF2B
+        for <linux-m68k@lists.linux-m68k.org>; Thu, 17 Feb 2022 01:17:56 -0800 (PST)
+Received: from mail-wm1-f54.google.com ([209.85.128.54]) by
+ mrelayeu.kundenserver.de (mreue011 [213.165.67.97]) with ESMTPSA (Nemesis) id
+ 1MCbVD-1nTBVg1PFb-009fGY for <linux-m68k@lists.linux-m68k.org>; Thu, 17 Feb
+ 2022 10:17:55 +0100
+Received: by mail-wm1-f54.google.com with SMTP id x3-20020a05600c21c300b0037c01ad715bso3521110wmj.2
+        for <linux-m68k@lists.linux-m68k.org>; Thu, 17 Feb 2022 01:17:55 -0800 (PST)
+X-Gm-Message-State: AOAM530+9x4YZqUdOedFyYBN9pwfV7f2b+qDxhaYenILdcERMwKs5Qgy
+        xig59rDns/8BDQaoEzQy25TnqwrizdZj0nEIHsg=
+X-Google-Smtp-Source: ABdhPJwu2NVHGHLxx29UDj0eC2QtTDz9ABoGgqvKd5FtPXFo3D/c1j3IHxwDsslquGRbQQhg+y3kZFZQ6qJy+rJ75Go=
+X-Received: by 2002:a05:600c:1d27:b0:37c:74bb:2b4d with SMTP id
+ l39-20020a05600c1d2700b0037c74bb2b4dmr4990966wms.82.1645085639420; Thu, 17
+ Feb 2022 00:13:59 -0800 (PST)
 MIME-Version: 1.0
-References: <20220216131332.1489939-1-arnd@kernel.org> <20220216131332.1489939-14-arnd@kernel.org>
-In-Reply-To: <20220216131332.1489939-14-arnd@kernel.org>
+References: <20220216131332.1489939-1-arnd@kernel.org>
+In-Reply-To: <20220216131332.1489939-1-arnd@kernel.org>
 From:   Arnd Bergmann <arnd@arndb.de>
-Date:   Thu, 17 Feb 2022 08:52:29 +0100
-X-Gmail-Original-Message-ID: <CAK8P3a2T1Xr80GeM-3p1riyq=gKDJGeKVz_c5=r5=s14tXimLw@mail.gmail.com>
-Message-ID: <CAK8P3a2T1Xr80GeM-3p1riyq=gKDJGeKVz_c5=r5=s14tXimLw@mail.gmail.com>
-Subject: Re: [PATCH v2 13/18] uaccess: generalize access_ok()
+Date:   Thu, 17 Feb 2022 09:13:43 +0100
+X-Gmail-Original-Message-ID: <CAK8P3a3QBWDYjr6VpPdjTBGFg88DdH3SHVgxEowgScgJOkNguQ@mail.gmail.com>
+Message-ID: <CAK8P3a3QBWDYjr6VpPdjTBGFg88DdH3SHVgxEowgScgJOkNguQ@mail.gmail.com>
+Subject: Re: [PATCH v2 00/18] clean up asm/uaccess.h, kill set_fs for good
 To:     Linus Torvalds <torvalds@linux-foundation.org>,
         Christoph Hellwig <hch@lst.de>,
         linux-arch <linux-arch@vger.kernel.org>,
@@ -86,42 +85,52 @@ Cc:     Russell King - ARM Linux <linux@armlinux.org.uk>,
         "open list:TENSILICA XTENSA PORT (xtensa)" 
         <linux-xtensa@linux-xtensa.org>
 Content-Type: text/plain; charset="UTF-8"
-X-Provags-ID: V03:K1:176PAAQspzP+k4ftrq+vElBZCUzKOR2BC7+qHeYOzJj7Oni1kEw
- 7YZ3IFLmtHPZa1Xj4YVAnOM8hhABezGa04GVABj2r4qm6TVCzy+i4JLcOdLNKEfvuCCCpxc
- Ly+zVygaTQFyrBxITWpVkaNk5Y+iHS64iECtAOXw9HNL5f+Q+A9n8iVrBUyWWedtbVb3myi
- YyZJ4SOKyjvy+T690JAHQ==
-X-UI-Out-Filterresults: notjunk:1;V03:K0:ebN5bhSj06o=:yKVcS9GHJ6qSrO87dB2nRC
- HX1/Adpy/eFlpYiS4uZyH2psI9/PpP2EBOc57FcEmNe9USe2zZyMub5e1rn5KkTN0WrCpJ1ug
- s0Ku6vmLLTZSx5JDCCP61PEOdX5cOaBFBfkjrJq3LWQaekGBdR4QQtZIM46dz1MZsOlpsj59y
- Vu2kI91eVM44j3k4WJzc4q5krMkL24e5JnthajV6yYzqkIATQ3cOhqgQoX37WkJNovUxn0HN5
- qn4EyJRemf20gpQbO6fv54ybn/XuzmxS7p4AuXYkpTaBfRYyTmfj/97qR17L5iTRx0Af9Lhbq
- qPn1rVYvSFh2sFVyj1IBDokoAasFrUSHuWinMU6cpkV7i/5rw2L+XLZDV7eHRLSQtDsIsZ1o6
- ESdd9Y5Zy27SyDeeCRTG2526+dUJdQDzKovVQ4W6j67ikwSesihhVwCJ0F0lCsIHNZxszHz8O
- X5JafYAWXGszY7evFpBi39odIAFkA1zYCB9Kbe3hupjhGlpjcWti98GjGUHLirP1o8zBB+EJv
- fpLQ+EdE7bCuQnOtGgQ6ZhlxWH0jsu8LLSkziPpCFR+yUmv+DiADt+7VahEjaRu3XZKuIVLi9
- sH19AwJXyH6kij/nyleiGffRqDtiYt7ua2AZj8EZ9/yeW8ndfsHyeVTG2uYlH2d8n/KxW72uz
- bRWkmtACtTENzYU6R/oHKifQ1ruiLZJ4PzD4lPU44rq1lHduvCk4EMwBPfR5lhRICzyFAyvpZ
- DkrGAoHcnemBRjarfHvCF4NXCrLSw5nxc0GsgHNnkdlYxN/QAazhZqqAMRwg46qoW+2uNq4/I
- STlFIFUjYzvSXvx96gEBROp6PfwI27IlLfydwc2PRBx535I034=
+X-Provags-ID: V03:K1:SYqsWBLXR63jw9p4sBFrwyG9+s+FYkxyLctKc+48t3NEzNRxEaQ
+ 4GRgAuCHbTXZKDVBCiLn4ACjWnfHATXMjz2/EAXmnJyyXLV7xtcJSx3StEhqcCt8/A/ycxq
+ /gycmSpJmP5UpQL6+UFhXFcXbvlwOLsN/CSX70Sii127wrJIFPWhrBflPEDPTfRUHyd234K
+ 4lPAt0Py8u2KoaV+htSrQ==
+X-UI-Out-Filterresults: notjunk:1;V03:K0:AMazmrPA9Os=:QJUpgABhXEJDVtD/IhTJ9Q
+ PaE1/Z0WFXSBtvNqeVCKAdZs3P8jh1r/jxA2nbiR0HnibcrpZyabFWQZ2luG044dc5DyK8XiP
+ 5FxcmQEfPLlkf8doqejprFkg3Xp+pPQc+6RdEL7rJAmyr8tkhR2Bc+5ESVZRoWlMUjoBh+aLd
+ J1bOPm2mqWNQFnh1vmmg2H3tyKpQIOAQqj2432gjvMSIGGwRynrK82JWcjn+hshCj4WQ/jwLT
+ JiKVDmGJMdTWkcpzqwbw7ktAwDtM0WSrXm336/Y2eD0nUtZBWxJDOATiNfGZPnJ9Ce202cUnc
+ wac1NXxqLRn1QlP3b4gfKLlu0KmdiLGq+eUb0dAI8pkyDkTyOtiDA643zyMknqSbWyVFsRawf
+ PU04aWmp+NAbiJS5VVyyVUW+e4sEifs6O9spEM7LKGyfdfdEQG+mxXZeH6BLd0s3DJC6893O1
+ 23801vjHUKmpYtQvlM0U7prvf5jFlnkoQR3eitELFHC/O4kLIxObhpOURephENZWNGZTb4eKB
+ Ua7yWeW09XkxNsAlajK3NgaoPNE5Z+KFTXfGaOJYqtkvXe30l5l3CP4fQr88VPB6NKUm1XRl9
+ uRg76gMmoHogiOUH+XCBc5xWrC8tkIn1JapnyTBAzM0A2uSJWqkh2ZES1MxUvPtdO5H8luiwr
+ eiRcUhpS1mM4FZAVWomk95S8btxHw8ajcNbFJJpUwppHLn3pywY0gV7h0g0Tf7UFcSiuo1LFT
+ g/EazwqPKqKpTRgofiiluSyjme4dwr+6TSKnKD+aUFah+dGFyq7zo1FohlRnNWJKZqlmYUORv
+ WPjnJDWY4B3IfzhJWmcgZ/y3sAIaW1+9+kRZh3wqpk6Tl/hFG4=
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
 On Wed, Feb 16, 2022 at 2:13 PM Arnd Bergmann <arnd@kernel.org> wrote:
+>
+> From: Arnd Bergmann <arnd@arndb.de>
+>
+> Christoph Hellwig and a few others spent a huge effort on removing
+> set_fs() from most of the important architectures, but about half the
+> other architectures were never completed even though most of them don't
+> actually use set_fs() at all.
+>
+> I did a patch for microblaze at some point, which turned out to be fairly
+> generic, and now ported it to most other architectures, using new generic
+> implementations of access_ok() and __{get,put}_kernel_nocheck().
+>
+> Three architectures (sparc64, ia64, and sh) needed some extra work,
+> which I also completed.
+>
+> The final series contains extra cleanup changes that touch all
+> architectures. Please review and test these, so we can merge them
+> for v5.18.
+>
+> The series is available at
+> https://git.kernel.org/pub/scm/linux/kernel/git/arnd/playground.git/log/?h=set_fs-2
+> for testing.
 
-> + * limit and catch all possible overflows.
-> + * On architectures with separate user address space (m68k, s390, parisc,
-> + * sparc64) or those without an MMU, this should always return true.
-...
-> +static inline int __access_ok(const void __user *ptr, unsigned long size)
-> +{
-> +       unsigned long limit = user_addr_max();
-> +       unsigned long addr = (unsigned long)ptr;
-> +
-> +       if (IS_ENABLED(CONFIG_ALTERNATE_USER_ADDRESS_SPACE))
-> +               return true;
+I've added the updated contents to my asm-generic tree now to put them
+into linux-next.
 
-I noticed that I'm missing the check for !CONFIG_MMU here, despite
-mentioning that in the comment above it. I've added it now.
-
-        Arnd
+         Arnd
