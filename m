@@ -2,22 +2,22 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 464E6C433FE
-	for <linux-m68k@archiver.kernel.org>; Fri, 18 Feb 2022 06:30:56 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B6E85C433FE
+	for <linux-m68k@archiver.kernel.org>; Fri, 18 Feb 2022 06:31:36 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230343AbiBRGbK (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Fri, 18 Feb 2022 01:31:10 -0500
-Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:41590 "EHLO
+        id S231356AbiBRGbt (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Fri, 18 Feb 2022 01:31:49 -0500
+Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:44222 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231318AbiBRGbJ (ORCPT
+        with ESMTP id S231345AbiBRGbr (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Fri, 18 Feb 2022 01:31:09 -0500
+        Fri, 18 Feb 2022 01:31:47 -0500
 Received: from verein.lst.de (verein.lst.de [213.95.11.211])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 780501B7186
-        for <linux-m68k@lists.linux-m68k.org>; Thu, 17 Feb 2022 22:30:53 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 31D7B60C1
+        for <linux-m68k@lists.linux-m68k.org>; Thu, 17 Feb 2022 22:31:31 -0800 (PST)
 Received: by verein.lst.de (Postfix, from userid 2407)
-        id 6D3F568BFE; Fri, 18 Feb 2022 07:30:50 +0100 (CET)
-Date:   Fri, 18 Feb 2022 07:30:50 +0100
+        id 3037768BFE; Fri, 18 Feb 2022 07:31:28 +0100 (CET)
+Date:   Fri, 18 Feb 2022 07:31:27 +0100
 From:   Christoph Hellwig <hch@lst.de>
 To:     Arnd Bergmann <arnd@kernel.org>
 Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
@@ -40,14 +40,16 @@ Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
         linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
         linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org,
         linux-sh@vger.kernel.org, sparclinux@vger.kernel.org,
-        linux-um@lists.infradead.org, linux-xtensa@linux-xtensa.org
-Subject: Re: [PATCH v2 10/18] m68k: fix access_ok for coldfire
-Message-ID: <20220218063050.GG22576@lst.de>
-References: <20220216131332.1489939-1-arnd@kernel.org> <20220216131332.1489939-11-arnd@kernel.org>
+        linux-um@lists.infradead.org, linux-xtensa@linux-xtensa.org,
+        kernel test robot <lkp@intel.com>
+Subject: Re: [PATCH v2 12/18] uaccess: fix type mismatch warnings from
+ access_ok()
+Message-ID: <20220218063127.GH22576@lst.de>
+References: <20220216131332.1489939-1-arnd@kernel.org> <20220216131332.1489939-13-arnd@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20220216131332.1489939-11-arnd@kernel.org>
+In-Reply-To: <20220216131332.1489939-13-arnd@kernel.org>
 User-Agent: Mutt/1.5.17 (2007-11-01)
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
