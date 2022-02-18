@@ -2,56 +2,55 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B5FC6C433FE
-	for <linux-m68k@archiver.kernel.org>; Fri, 18 Feb 2022 07:16:54 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 22C4EC433FE
+	for <linux-m68k@archiver.kernel.org>; Fri, 18 Feb 2022 07:24:12 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230301AbiBRHRJ (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Fri, 18 Feb 2022 02:17:09 -0500
-Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:40576 "EHLO
+        id S232004AbiBRHY0 (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Fri, 18 Feb 2022 02:24:26 -0500
+Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:40430 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231939AbiBRHQ6 (ORCPT
+        with ESMTP id S231948AbiBRHYP (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Fri, 18 Feb 2022 02:16:58 -0500
+        Fri, 18 Feb 2022 02:24:15 -0500
 Received: from sin.source.kernel.org (sin.source.kernel.org [145.40.73.55])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8342BBC00
-        for <linux-m68k@lists.linux-m68k.org>; Thu, 17 Feb 2022 23:16:42 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A931A27B39
+        for <linux-m68k@lists.linux-m68k.org>; Thu, 17 Feb 2022 23:23:59 -0800 (PST)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by sin.source.kernel.org (Postfix) with ESMTPS id 60BA2CE3149
-        for <linux-m68k@lists.linux-m68k.org>; Fri, 18 Feb 2022 07:16:40 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D67CBC36AE2
-        for <linux-m68k@lists.linux-m68k.org>; Fri, 18 Feb 2022 07:16:38 +0000 (UTC)
+        by sin.source.kernel.org (Postfix) with ESMTPS id BCAD5CE3157
+        for <linux-m68k@lists.linux-m68k.org>; Fri, 18 Feb 2022 07:23:57 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 62723C340EF
+        for <linux-m68k@lists.linux-m68k.org>; Fri, 18 Feb 2022 07:23:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1645168598;
-        bh=q+jKWrJ4jJZ2v7I08P11+5fwNrVng4vZR8KgCaGgNp8=;
+        s=k20201202; t=1645169037;
+        bh=iX8k9YjATKpR4c62jPbZyUcM9GG/inNR2Rws8vh+5TI=;
         h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=r8o3+Dm+a6u2yuTBujW62OQnvtW5pvmDhps0Cpl0K+eu/wKOlM8p0veQJPpFH1zdv
-         0fxsmSliPkulM7Kl7vCS8nzUNYY6ywTF3wQAYGJsq785nmbKn58bwTfQDo5juQ5bZy
-         4PDz3AKxCyOrSn6qNJQWhgx5127j4tN9UC7OLPbEJyZr/gvDh/ALH4YO64Sj1fSAb3
-         OryhzyLOyA2dZ5YYXLDjxwk7GsfmBEbvyUqiRjhOfjtjHqWPMMFYMHtK7QLWCSGE/x
-         8GFawUQIti8cOYOIFhmNkRCpE3o/qQGRyQUGCKgXA616MOpEZ4OJCypYjdoYSIOwwa
-         BwNXSACYWWZxg==
-Received: by mail-ej1-f43.google.com with SMTP id k25so12853457ejp.5
-        for <linux-m68k@lists.linux-m68k.org>; Thu, 17 Feb 2022 23:16:38 -0800 (PST)
-X-Gm-Message-State: AOAM531YXzX1U634Dv5JRYCSO1VsgY0c5ImVj1WRM1aZz43VkYuhA3dw
-        xTCIwdHJiZf6F2psC98uLC55crnFda2YsZiffU0=
-X-Google-Smtp-Source: ABdhPJzrsD9ZegAYWxopB2Dqyhs5CbptDH37N4ZCxM0ghQnmxjYRVare/kFAwMrZOPIITOhmBYHifd3MXTFISbjy0gQ=
-X-Received: by 2002:adf:c406:0:b0:1e4:a5ae:34a3 with SMTP id
- v6-20020adfc406000000b001e4a5ae34a3mr5120080wrf.407.1645168587142; Thu, 17
- Feb 2022 23:16:27 -0800 (PST)
+        b=tqTEPi3D8ykMJuM1O5WZXRrY+x9fqigElYE+7U2lP66aiQhXjwqc8np5cgJ3nPhob
+         INc5mSHbYoAozc5dz6c6XrssTjPgLHo3DEzE+GZW+ofRygPj1jwo24y8Visn79VwMA
+         TYn3bM3oEslfU6UAsDfSTdiWgRHp/xbijA5Nn8EoxI84pjZNNihf5nveTL2Wg3t2Uk
+         NCbKF/iOfzWH0fJ2ENk81YbpznN36uJOc4XefmD5VTowvxTO475eweZNksp6ybfoLa
+         KPWJ3pTDi4VzPKsHnWQphUSIyN2wHVcVVpwH2x7YU+Z9AstU7CKENvU2MS9xP0zaMn
+         bqHyOdm/qy+lw==
+Received: by mail-wr1-f50.google.com with SMTP id m27so1177633wrb.4
+        for <linux-m68k@lists.linux-m68k.org>; Thu, 17 Feb 2022 23:23:57 -0800 (PST)
+X-Gm-Message-State: AOAM5305u5BRlHSv61ZcRpGtAoWwwkgjhA8VPIwL/RE6FlkKEdahLrYO
+        FvmsaFK2h/B3pj+55agGBEn//rafvFlpGwfbTXc=
+X-Google-Smtp-Source: ABdhPJy+O8dl23fyesXRWHjz7SZRLrJN54UunjRaSC3OSIYzwaAC/i9x7WkjUHComAvPWqTtg86CqT1E/gHbWgqhIZI=
+X-Received: by 2002:adf:90c1:0:b0:1e4:ad27:22b9 with SMTP id
+ i59-20020adf90c1000000b001e4ad2722b9mr4994775wri.219.1645169025031; Thu, 17
+ Feb 2022 23:23:45 -0800 (PST)
 MIME-Version: 1.0
 References: <20220216131332.1489939-1-arnd@kernel.org> <20220216131332.1489939-14-arnd@kernel.org>
- <CALCETrVOvYPN4_6hS8wpm2v9bGZupZ5x4=vZAseG57OUgvLGfw@mail.gmail.com>
-In-Reply-To: <CALCETrVOvYPN4_6hS8wpm2v9bGZupZ5x4=vZAseG57OUgvLGfw@mail.gmail.com>
+ <20220218063450.GI22576@lst.de>
+In-Reply-To: <20220218063450.GI22576@lst.de>
 From:   Arnd Bergmann <arnd@kernel.org>
-Date:   Fri, 18 Feb 2022 08:16:11 +0100
-X-Gmail-Original-Message-ID: <CAK8P3a2r3zB2G7CjCdXB6cDx1Q7jdOnA8YcCHM+3Q3CybnZ=hQ@mail.gmail.com>
-Message-ID: <CAK8P3a2r3zB2G7CjCdXB6cDx1Q7jdOnA8YcCHM+3Q3CybnZ=hQ@mail.gmail.com>
+Date:   Fri, 18 Feb 2022 08:23:29 +0100
+X-Gmail-Original-Message-ID: <CAK8P3a17kdz0gKYz3cDSpvWa80TY6QNSom11HVAb8h91RZn0Jg@mail.gmail.com>
+Message-ID: <CAK8P3a17kdz0gKYz3cDSpvWa80TY6QNSom11HVAb8h91RZn0Jg@mail.gmail.com>
 Subject: Re: [PATCH v2 13/18] uaccess: generalize access_ok()
-To:     Andy Lutomirski <luto@amacapital.net>
+To:     Christoph Hellwig <hch@lst.de>
 Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Christoph Hellwig <hch@lst.de>,
         linux-arch <linux-arch@vger.kernel.org>,
         Linux-MM <linux-mm@kvack.org>,
         Linux API <linux-api@vger.kernel.org>,
@@ -104,56 +103,22 @@ Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-On Thu, Feb 17, 2022 at 8:15 PM Andy Lutomirski <luto@amacapital.net> wrote:
+On Fri, Feb 18, 2022 at 7:34 AM Christoph Hellwig <hch@lst.de> wrote:
 >
-> On Wed, Feb 16, 2022 at 5:19 AM Arnd Bergmann <arnd@kernel.org> wrote:
-> >
-> > From: Arnd Bergmann <arnd@arndb.de>
-> >
-> > There are many different ways that access_ok() is defined across
-> > architectures, but in the end, they all just compare against the
-> > user_addr_max() value or they accept anything.
-> >
-> > Provide one definition that works for most architectures, checking
-> > against TASK_SIZE_MAX for user processes or skipping the check inside
-> > of uaccess_kernel() sections.
-> >
-> > For architectures without CONFIG_SET_FS(), this should be the fastest
-> > check, as it comes down to a single comparison of a pointer against a
-> > compile-time constant, while the architecture specific versions tend to
-> > do something more complex for historic reasons or get something wrong.
+> > +#include <asm-generic/access_ok.h>
 >
-> This isn't actually optimal.  On x86, TASK_SIZE_MAX is a bizarre
-> constant that has a very specific value to work around a bug^Wdesign
-> error^Wfeature of Intel CPUs.  TASK_SIZE_MAX is the maximum address at
-> which userspace is permitted to allocate memory, but there is a huge
-> gap between user and kernel addresses, and any value in the gap would
-> be adequate for the comparison.  If we wanted to optimize this, simply
-> checking the high bit (which x86 can do without any immediate
-> constants at all) would be sufficient and, for an access known to fit
-> in 32 bits, one could get even fancier and completely ignore the size
-> of the access.  (For accesses not known to fit in 32 bits, I suspect
-> some creativity could still come up with a construction that's
-> substantially faster than the one in your patch.)
->
-> So there's plenty of room for optimization here.
->
-> (This is not in any respect a NAK -- it's just an observation that
-> this could be even better.)
+> Instead of the asm-generic games, shouldn't we just define access_ok in
+> <linux/uaccess.h> if not already defined by the architecture?
 
-Thank you for taking a look!
+I tried, but couldn't actually make it work because asm/uaccess.h tends
+to contain inline functions that rely on access_ok(). It could work once we
+move all the high-level functions into linux/uaccess.h, but that would likely
+require another long patch series.
 
-As you can see in the patch that changes the algorithm on x86 [1],
-it was already using TASK_SIZE_MAX as the limit, only the order
-in which the comparison is done, hopefully leading to better code
-already. I have looked at trivial examples on x86 that showed an
-improvement for constant sizes, but only looked at arm64 in detail
-for the overall result.
+One option that can work is to require architectures to have an
+asm/access_ok.h header that gets included by linux/uaccess.h.
+On most architectures, that would be redirected to
+asm-generic/access_ok.h, as only ia64, x86, arm64 and um
+need to override the definition.
 
-It may be worth checking if using LONG_MAX as the limit produces
-better code, but it's probably best to do the optimization in the
-common code in a portable way to keep it from diverging again.
-
-       Arnd
-
-[1] https://lore.kernel.org/lkml/20220216131332.1489939-7-arnd@kernel.org/
+      Arnd
