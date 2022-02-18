@@ -2,53 +2,53 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 22C4EC433FE
-	for <linux-m68k@archiver.kernel.org>; Fri, 18 Feb 2022 07:24:12 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2B68DC433EF
+	for <linux-m68k@archiver.kernel.org>; Fri, 18 Feb 2022 07:30:35 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232004AbiBRHY0 (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Fri, 18 Feb 2022 02:24:26 -0500
-Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:40430 "EHLO
+        id S231174AbiBRHas (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Fri, 18 Feb 2022 02:30:48 -0500
+Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:34508 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231948AbiBRHYP (ORCPT
+        with ESMTP id S232079AbiBRHar (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Fri, 18 Feb 2022 02:24:15 -0500
-Received: from sin.source.kernel.org (sin.source.kernel.org [145.40.73.55])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A931A27B39
-        for <linux-m68k@lists.linux-m68k.org>; Thu, 17 Feb 2022 23:23:59 -0800 (PST)
+        Fri, 18 Feb 2022 02:30:47 -0500
+Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 377FE273759
+        for <linux-m68k@lists.linux-m68k.org>; Thu, 17 Feb 2022 23:30:31 -0800 (PST)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by sin.source.kernel.org (Postfix) with ESMTPS id BCAD5CE3157
-        for <linux-m68k@lists.linux-m68k.org>; Fri, 18 Feb 2022 07:23:57 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 62723C340EF
-        for <linux-m68k@lists.linux-m68k.org>; Fri, 18 Feb 2022 07:23:57 +0000 (UTC)
+        by ams.source.kernel.org (Postfix) with ESMTPS id D620BB82538
+        for <linux-m68k@lists.linux-m68k.org>; Fri, 18 Feb 2022 07:30:29 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9FFECC340F5
+        for <linux-m68k@lists.linux-m68k.org>; Fri, 18 Feb 2022 07:30:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1645169037;
-        bh=iX8k9YjATKpR4c62jPbZyUcM9GG/inNR2Rws8vh+5TI=;
+        s=k20201202; t=1645169427;
+        bh=4Rk51yI7cy+h8GrR+wkZuFO6d6ZOgVmodthZQla/xGE=;
         h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=tqTEPi3D8ykMJuM1O5WZXRrY+x9fqigElYE+7U2lP66aiQhXjwqc8np5cgJ3nPhob
-         INc5mSHbYoAozc5dz6c6XrssTjPgLHo3DEzE+GZW+ofRygPj1jwo24y8Visn79VwMA
-         TYn3bM3oEslfU6UAsDfSTdiWgRHp/xbijA5Nn8EoxI84pjZNNihf5nveTL2Wg3t2Uk
-         NCbKF/iOfzWH0fJ2ENk81YbpznN36uJOc4XefmD5VTowvxTO475eweZNksp6ybfoLa
-         KPWJ3pTDi4VzPKsHnWQphUSIyN2wHVcVVpwH2x7YU+Z9AstU7CKENvU2MS9xP0zaMn
-         bqHyOdm/qy+lw==
-Received: by mail-wr1-f50.google.com with SMTP id m27so1177633wrb.4
-        for <linux-m68k@lists.linux-m68k.org>; Thu, 17 Feb 2022 23:23:57 -0800 (PST)
-X-Gm-Message-State: AOAM5305u5BRlHSv61ZcRpGtAoWwwkgjhA8VPIwL/RE6FlkKEdahLrYO
-        FvmsaFK2h/B3pj+55agGBEn//rafvFlpGwfbTXc=
-X-Google-Smtp-Source: ABdhPJy+O8dl23fyesXRWHjz7SZRLrJN54UunjRaSC3OSIYzwaAC/i9x7WkjUHComAvPWqTtg86CqT1E/gHbWgqhIZI=
-X-Received: by 2002:adf:90c1:0:b0:1e4:ad27:22b9 with SMTP id
- i59-20020adf90c1000000b001e4ad2722b9mr4994775wri.219.1645169025031; Thu, 17
- Feb 2022 23:23:45 -0800 (PST)
+        b=J06iflXsHwt+ig2v+EdVte9FIMjMd1UJqVEFlBSPatvSar0H1DsjIJrEzO4UZmsLA
+         FgLQDKYJQffQRf2jOqj4RvkvbARrp3Zx559O0fjC1X/ZrQnz8/9phWPGirREw3xDmP
+         KiiIouYIXRMgjfFJDvoPYvqstcEIa4USPsx0YasFmINbZVvuxO9R4NCI9YhttU3l3w
+         hYtMGLNSqPqWYJC3UtSm4OZH9d6VfgkASC0oY7FoLJOtuZDxJ7GGHkw6hTV4w0Lp7v
+         R945NbM7PE+UNf3FI0ZmnSCg/psBouNJRccT0U1ZuUR8CSpx8DJXZFWbuaqYEmJYR4
+         Q869KtnC6rt2g==
+Received: by mail-ed1-f45.google.com with SMTP id m17so13832788edc.13
+        for <linux-m68k@lists.linux-m68k.org>; Thu, 17 Feb 2022 23:30:27 -0800 (PST)
+X-Gm-Message-State: AOAM532LpkWy16ouLta6jGHVOSMbSsiopC01+pNqmncBlrqR6zA2M8Go
+        Cc+Gf31IZzoMxb+BVYznsWrCszWyD/OY/wjmfXc=
+X-Google-Smtp-Source: ABdhPJz4trlMwdvjT8y0UPggztkdijECp2hMuaf6QP4pGa8b+VYFZp4/tSgCA0YRdkm1OA4dObRIZr3wh6XhtS+RfLY=
+X-Received: by 2002:adf:ea01:0:b0:1e4:b3e6:1f52 with SMTP id
+ q1-20020adfea01000000b001e4b3e61f52mr4942117wrm.317.1645169415535; Thu, 17
+ Feb 2022 23:30:15 -0800 (PST)
 MIME-Version: 1.0
-References: <20220216131332.1489939-1-arnd@kernel.org> <20220216131332.1489939-14-arnd@kernel.org>
- <20220218063450.GI22576@lst.de>
-In-Reply-To: <20220218063450.GI22576@lst.de>
+References: <20220216131332.1489939-1-arnd@kernel.org> <20220216131332.1489939-6-arnd@kernel.org>
+ <20220218062851.GC22576@lst.de>
+In-Reply-To: <20220218062851.GC22576@lst.de>
 From:   Arnd Bergmann <arnd@kernel.org>
-Date:   Fri, 18 Feb 2022 08:23:29 +0100
-X-Gmail-Original-Message-ID: <CAK8P3a17kdz0gKYz3cDSpvWa80TY6QNSom11HVAb8h91RZn0Jg@mail.gmail.com>
-Message-ID: <CAK8P3a17kdz0gKYz3cDSpvWa80TY6QNSom11HVAb8h91RZn0Jg@mail.gmail.com>
-Subject: Re: [PATCH v2 13/18] uaccess: generalize access_ok()
+Date:   Fri, 18 Feb 2022 08:29:59 +0100
+X-Gmail-Original-Message-ID: <CAK8P3a1Dhn1Gsap1Wss2xpKBwe3jWLAmMYtL7S1-26tZ5D_2fQ@mail.gmail.com>
+Message-ID: <CAK8P3a1Dhn1Gsap1Wss2xpKBwe3jWLAmMYtL7S1-26tZ5D_2fQ@mail.gmail.com>
+Subject: Re: [PATCH v2 05/18] x86: remove __range_not_ok()
 To:     Christoph Hellwig <hch@lst.de>
 Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
         linux-arch <linux-arch@vger.kernel.org>,
@@ -97,28 +97,68 @@ Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
         sparclinux <sparclinux@vger.kernel.org>,
         linux-um <linux-um@lists.infradead.org>,
         "open list:TENSILICA XTENSA PORT (xtensa)" 
-        <linux-xtensa@linux-xtensa.org>
+        <linux-xtensa@linux-xtensa.org>,
+        Christoph Hellwig <hch@infradead.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-On Fri, Feb 18, 2022 at 7:34 AM Christoph Hellwig <hch@lst.de> wrote:
+On Fri, Feb 18, 2022 at 7:28 AM Christoph Hellwig <hch@lst.de> wrote:
+> On Wed, Feb 16, 2022 at 02:13:19PM +0100, Arnd Bergmann wrote:
+> > --- a/arch/x86/events/core.c
+> > +++ b/arch/x86/events/core.c
+> > @@ -2794,7 +2794,7 @@ perf_callchain_kernel(struct perf_callchain_entry_ctx *entry, struct pt_regs *re
+> >  static inline int
+> >  valid_user_frame(const void __user *fp, unsigned long size)
+> >  {
+> > -     return (__range_not_ok(fp, size, TASK_SIZE) == 0);
+> > +     return __access_ok(fp, size);
+> >  }
 >
-> > +#include <asm-generic/access_ok.h>
+> valid_user_frame just need to go away and the following __get_user calls
+> replaced with normal get_user ones.
+
+As I understand it, that would not work here because get_user() calls
+access_ok() rather than __access_ok(), and on x86 that can not be
+called in NMI context.
+
+It is a bit odd that x86 is the only architecture that has this check,
+but adding
+it was clearly intentional, see 7c4788950ba5 ("x86/uaccess, sched/preempt:
+Verify access_ok() context").
+
+> > diff --git a/arch/x86/kernel/dumpstack.c b/arch/x86/kernel/dumpstack.c
+> > index 53de044e5654..da534fb7b5c6 100644
+> > --- a/arch/x86/kernel/dumpstack.c
+> > +++ b/arch/x86/kernel/dumpstack.c
+> > @@ -85,7 +85,7 @@ static int copy_code(struct pt_regs *regs, u8 *buf, unsigned long src,
+> >        * Make sure userspace isn't trying to trick us into dumping kernel
+> >        * memory by pointing the userspace instruction pointer at it.
+> >        */
+> > -     if (__chk_range_not_ok(src, nbytes, TASK_SIZE_MAX))
+> > +     if (!__access_ok((void __user *)src, nbytes))
+> >               return -EINVAL;
 >
-> Instead of the asm-generic games, shouldn't we just define access_ok in
-> <linux/uaccess.h> if not already defined by the architecture?
+> This one is not needed at all as copy_from_user_nmi already checks the
+> access range.
 
-I tried, but couldn't actually make it work because asm/uaccess.h tends
-to contain inline functions that rely on access_ok(). It could work once we
-move all the high-level functions into linux/uaccess.h, but that would likely
-require another long patch series.
+Ok, removing this.
 
-One option that can work is to require architectures to have an
-asm/access_ok.h header that gets included by linux/uaccess.h.
-On most architectures, that would be redirected to
-asm-generic/access_ok.h, as only ia64, x86, arm64 and um
-need to override the definition.
+> > diff --git a/arch/x86/kernel/stacktrace.c b/arch/x86/kernel/stacktrace.c
+> > index 15b058eefc4e..ee117fcf46ed 100644
+> > --- a/arch/x86/kernel/stacktrace.c
+> > +++ b/arch/x86/kernel/stacktrace.c
+> > @@ -90,7 +90,7 @@ copy_stack_frame(const struct stack_frame_user __user *fp,
+> >  {
+> >       int ret;
+> >
+> > -     if (__range_not_ok(fp, sizeof(*frame), TASK_SIZE))
+> > +     if (!__access_ok(fp, sizeof(*frame)))
+> >               return 0;
+>
+> Just switch the __get_user calls below to get_user instead.
 
-      Arnd
+Same as the first one, I think we can't do this in NMI context.
+
+         Arnd
