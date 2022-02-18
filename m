@@ -2,53 +2,54 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 35839C433EF
-	for <linux-m68k@archiver.kernel.org>; Fri, 18 Feb 2022 07:11:05 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 35FEEC433EF
+	for <linux-m68k@archiver.kernel.org>; Fri, 18 Feb 2022 07:16:19 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231364AbiBRHLT (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Fri, 18 Feb 2022 02:11:19 -0500
-Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:52356 "EHLO
+        id S231633AbiBRHQc (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Fri, 18 Feb 2022 02:16:32 -0500
+Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:39098 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231838AbiBRHLR (ORCPT
+        with ESMTP id S231444AbiBRHQ1 (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Fri, 18 Feb 2022 02:11:17 -0500
+        Fri, 18 Feb 2022 02:16:27 -0500
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E8A4F25B6D2
-        for <linux-m68k@lists.linux-m68k.org>; Thu, 17 Feb 2022 23:10:55 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 79B1498F71
+        for <linux-m68k@lists.linux-m68k.org>; Thu, 17 Feb 2022 23:16:11 -0800 (PST)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 3B0EF61EF7
-        for <linux-m68k@lists.linux-m68k.org>; Fri, 18 Feb 2022 07:10:55 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5C506C340FB
-        for <linux-m68k@lists.linux-m68k.org>; Fri, 18 Feb 2022 07:10:54 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id B047561E32
+        for <linux-m68k@lists.linux-m68k.org>; Fri, 18 Feb 2022 07:16:10 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 20366C340E9
+        for <linux-m68k@lists.linux-m68k.org>; Fri, 18 Feb 2022 07:16:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1645168254;
-        bh=U1L1tXaxAPzHw25B4dwwR3MsazfLjv3b5y7cZc7Ajbc=;
+        s=k20201202; t=1645168570;
+        bh=vgWt8lxnjYZUPlvwCFWcIBvafVy+fWmkyAOoKRaWgHQ=;
         h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=mTaQ1idIXxEiGA4X8PSUpvoVAc7LFr9qA/8kqH3K+5U35rBLfWDJoKxXDfYlUROuE
-         vPPFcRJ+RVILr31exZafpiTryhYfp7IBunRUwhoHn1WKRCZPwAgbNkcGThG2RooVaP
-         GL3gRGsNNlCMcbD7pY+xBFyK1Q7Tp+pzMcltuMILYUYpdFsSDcXYtjlndWqiuGfw1e
-         pwUYopJDHnud5NCSujOH+7F8tkPa9QtdmfsYjmbCYsoFO/kmbeBgPP2kLVfOnfqFdL
-         jixtGXBN6hg3xbrliyeIM4R/ixC2I3ehfA2uB4XrRj5DLysBpoCBXBtAUuMAoVDxMD
-         UPCz5DQbKNytw==
-Received: by mail-wr1-f46.google.com with SMTP id m27so1132079wrb.4
-        for <linux-m68k@lists.linux-m68k.org>; Thu, 17 Feb 2022 23:10:54 -0800 (PST)
-X-Gm-Message-State: AOAM533PbahzGjYrkjhbYgQ7cwsEL0dOXgoF6CbxT3WvRhJ9SElhEDXC
-        faHFrZGI7blKRP6wxBbAOW9fLCCt+YPcmr9HDa8=
-X-Google-Smtp-Source: ABdhPJyoMw4CwWZhykLaKIetnvcgd+UId8rsi1OwYV9K65APKYAe4q4e2o9Z+APv3B5OF6xZqiLLay/ZUVAPiuS2n+0=
+        b=brykg3orAWhzT1eShDnIqWiuvTtbNc2QCFkxAh1K7YK/kRc+swoGKo5s8Fy8YLbGr
+         hc4KU9yCkTtPzsEFTjEMsUOlO7S4blCchs5ff0ZUeSF1M1MwsdTpKXs8Q722IoumV5
+         wWZ/Ud2NirMkJK5Z1ZlptDLHluY0qTABwQmvq83LF0HQ/hLeRKtb2S91h930mt7IMN
+         +IVk8tTFexO7cBruFMAUkGnp4XxSmx2qWufMJpXKrZd+rszraON5XmdxGDBB/rBEjq
+         qWnAPIR/pKwix5/alY1YcrHjRud91MIX/ezTnOif5FrydE9krKYz++XLye87rDdKA5
+         AVW3j7aGhb5Pg==
+Received: by mail-wr1-f52.google.com with SMTP id i14so12917911wrc.10
+        for <linux-m68k@lists.linux-m68k.org>; Thu, 17 Feb 2022 23:16:10 -0800 (PST)
+X-Gm-Message-State: AOAM530WsmEcrmzBcrYPpekLyVFZB+4HVSJoj1Vb89wKMAs17woHeQZ0
+        Za/Gu2Kw9R1mQdofFfBkQyeHYoxClUhJcTIuqss=
+X-Google-Smtp-Source: ABdhPJyN/H83BSKKeXJGtgECPVgYv1w4NoilhoSCj+92CRqaoOjPXRtnkFYRBhAzB91QtgFwdj4YRtpnThbImHSlPPw=
 X-Received: by 2002:adf:90c1:0:b0:1e4:ad27:22b9 with SMTP id
- i59-20020adf90c1000000b001e4ad2722b9mr4956866wri.219.1645168241615; Thu, 17
- Feb 2022 23:10:41 -0800 (PST)
+ i59-20020adf90c1000000b001e4ad2722b9mr4972052wri.219.1645168558306; Thu, 17
+ Feb 2022 23:15:58 -0800 (PST)
 MIME-Version: 1.0
-References: <20220216131332.1489939-1-arnd@kernel.org> <20220216131332.1489939-19-arnd@kernel.org>
- <20220218063714.GL22576@lst.de>
-In-Reply-To: <20220218063714.GL22576@lst.de>
+References: <20220216131332.1489939-1-arnd@kernel.org> <20220216131332.1489939-15-arnd@kernel.org>
+ <20220218063549.GJ22576@lst.de>
+In-Reply-To: <20220218063549.GJ22576@lst.de>
 From:   Arnd Bergmann <arnd@kernel.org>
-Date:   Fri, 18 Feb 2022 08:10:25 +0100
-X-Gmail-Original-Message-ID: <CAK8P3a3ac9Wo6fs+Wbdw3-WHfzF9vu_CZs5EUUTX-1iALUr54w@mail.gmail.com>
-Message-ID: <CAK8P3a3ac9Wo6fs+Wbdw3-WHfzF9vu_CZs5EUUTX-1iALUr54w@mail.gmail.com>
-Subject: Re: [PATCH v2 18/18] uaccess: drop maining CONFIG_SET_FS users
+Date:   Fri, 18 Feb 2022 08:15:42 +0100
+X-Gmail-Original-Message-ID: <CAK8P3a31_zG7npZbPHGixOYL0p28dGzs3f9ku_RB4p1tiEY0Tw@mail.gmail.com>
+Message-ID: <CAK8P3a31_zG7npZbPHGixOYL0p28dGzs3f9ku_RB4p1tiEY0Tw@mail.gmail.com>
+Subject: Re: [PATCH v2 14/18] lib/test_lockup: fix kernel pointer check for
+ separate address spaces
 To:     Christoph Hellwig <hch@lst.de>
 Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
         linux-arch <linux-arch@vger.kernel.org>,
@@ -103,21 +104,25 @@ Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-On Fri, Feb 18, 2022 at 7:37 AM Christoph Hellwig <hch@lst.de> wrote:
+On Fri, Feb 18, 2022 at 7:35 AM Christoph Hellwig <hch@lst.de> wrote:
 >
-> s/maining/remaining/ ?
+> On Wed, Feb 16, 2022 at 02:13:28PM +0100, Arnd Bergmann wrote:
+> > From: Arnd Bergmann <arnd@arndb.de>
+> >
+> > test_kernel_ptr() uses access_ok() to figure out if a given address
+> > points to user space instead of kernel space. However on architectures
+> > that set CONFIG_ALTERNATE_USER_ADDRESS_SPACE, a pointer can be valid
+> > for both, and the check always fails because access_ok() returns true.
+> >
+> > Make the check for user space pointers conditional on the type of
+> > address space layout.
 >
-> Or maybe rather:
->
-> uaccess: remove CONFIG_SET_FS
->
-> because it is all gone now.
->
-> > With CONFIG_SET_FS gone, so drop all remaining references to
-> > set_fs()/get_fs(), mm_segment_t and uaccess_kernel().
->
-> And this sentence does not parse.
+> What is this code even trying to do?  It looks extremly broken.
 
-Both fixed now, thanks!
+As I understand it, this is only meant for debugging, and the module contains
+intentionally broken lock usage to test whether the watchdog and lockup
+detection in the kernel is able to find them.
 
-       Arnd
+I did not try that hard to understand how it works though.
+
+      Arnd
