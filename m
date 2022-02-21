@@ -2,324 +2,114 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 0FD6EC433FE
-	for <linux-m68k@archiver.kernel.org>; Mon, 21 Feb 2022 11:54:51 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 248B6C43219
+	for <linux-m68k@archiver.kernel.org>; Mon, 21 Feb 2022 13:47:58 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1356953AbiBULzL (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Mon, 21 Feb 2022 06:55:11 -0500
-Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:52234 "EHLO
+        id S1359599AbiBUNsT (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Mon, 21 Feb 2022 08:48:19 -0500
+Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:42644 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1356940AbiBULzF (ORCPT
+        with ESMTP id S230090AbiBUNsS (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Mon, 21 Feb 2022 06:55:05 -0500
-Received: from mail-ua1-f49.google.com (mail-ua1-f49.google.com [209.85.222.49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 30AF11EEF8
-        for <linux-m68k@lists.linux-m68k.org>; Mon, 21 Feb 2022 03:54:42 -0800 (PST)
-Received: by mail-ua1-f49.google.com with SMTP id 4so7846349uaf.0
-        for <linux-m68k@lists.linux-m68k.org>; Mon, 21 Feb 2022 03:54:42 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=t9glkrk7WFBjBWlhxGJJjxKdsiWpb+Qpxc6YsbbmFGE=;
-        b=7T3m8udYnJSR7x5Yp4Q/Ow5bNH+398WNazEFR1MEug30bS843/xUaVzVMOk6TulpDR
-         NTc3d2jM0CEgiKZKpTdngxStZdvsyJB24GBv/kiSj6Ew8vXGLLRsrYmG/TPNKvC/wE4N
-         WIrGPDpNOUC2zN9YVpz/lNIUEYx5hYrsrLgduu+jGDA9Td35CfjQvKZKzGw+2c0dGZcj
-         3rtv1K/lsxU4oricR6BA2DRLRVLJRtbWr5n2mjw5dIqRoTUucVEzESUQchh5smAwS2ne
-         tJpAD42ZB+NppWMLMExVbUZ1AQLm3M3b/libCL7QsOI5E5GmLdbMhDFIn8SOXfGoxZkN
-         Ixsw==
-X-Gm-Message-State: AOAM532BscYH6nfBk1rAuKQXBm/HbCEGbOQJ02bXZTVjWKt0K463/ePS
-        w+eE0l28h+R57w4bCJBy/KvRIr6+7/yVeg==
-X-Google-Smtp-Source: ABdhPJxNn6SWx2zTzb4qIslL6Xyk/95yDhB37LUwx+DiJy4pQRtQLWFe1dZin8mct5V4Vma5SF5VGQ==
-X-Received: by 2002:ab0:685a:0:b0:33c:aaec:7336 with SMTP id a26-20020ab0685a000000b0033caaec7336mr7131718uas.125.1645444481046;
-        Mon, 21 Feb 2022 03:54:41 -0800 (PST)
-Received: from mail-ua1-f47.google.com (mail-ua1-f47.google.com. [209.85.222.47])
-        by smtp.gmail.com with ESMTPSA id z62sm8681251vkg.43.2022.02.21.03.54.39
-        for <linux-m68k@lists.linux-m68k.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 21 Feb 2022 03:54:40 -0800 (PST)
-Received: by mail-ua1-f47.google.com with SMTP id g18so7819395uak.5
-        for <linux-m68k@lists.linux-m68k.org>; Mon, 21 Feb 2022 03:54:39 -0800 (PST)
-X-Received: by 2002:a9f:360f:0:b0:341:8a12:8218 with SMTP id
- r15-20020a9f360f000000b003418a128218mr6031609uad.14.1645444479570; Mon, 21
- Feb 2022 03:54:39 -0800 (PST)
+        Mon, 21 Feb 2022 08:48:18 -0500
+X-Greylist: delayed 1331 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Mon, 21 Feb 2022 05:47:55 PST
+Received: from elvis.franken.de (elvis.franken.de [193.175.24.41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 5FAAE5FAA;
+        Mon, 21 Feb 2022 05:47:55 -0800 (PST)
+Received: from uucp (helo=alpha)
+        by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
+        id 1nM8h9-0001Eo-00; Mon, 21 Feb 2022 14:25:39 +0100
+Received: by alpha.franken.de (Postfix, from userid 1000)
+        id E4525C25DD; Mon, 21 Feb 2022 14:24:56 +0100 (CET)
+Date:   Mon, 21 Feb 2022 14:24:56 +0100
+From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+To:     Arnd Bergmann <arnd@kernel.org>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Christoph Hellwig <hch@lst.de>, linux-arch@vger.kernel.org,
+        linux-mm@kvack.org, linux-api@vger.kernel.org, arnd@arndb.de,
+        linux-kernel@vger.kernel.org, viro@zeniv.linux.org.uk,
+        linux@armlinux.org.uk, will@kernel.org, guoren@kernel.org,
+        bcain@codeaurora.org, geert@linux-m68k.org, monstr@monstr.eu,
+        nickhu@andestech.com, green.hu@gmail.com, dinguyen@kernel.org,
+        shorne@gmail.com, deller@gmx.de, mpe@ellerman.id.au,
+        peterz@infradead.org, mingo@redhat.com, mark.rutland@arm.com,
+        hca@linux.ibm.com, dalias@libc.org, davem@davemloft.net,
+        richard@nod.at, x86@kernel.org, jcmvbkbc@gmail.com,
+        ebiederm@xmission.com, akpm@linux-foundation.org, ardb@kernel.org,
+        linux-alpha@vger.kernel.org, linux-snps-arc@lists.infradead.org,
+        linux-csky@vger.kernel.org, linux-hexagon@vger.kernel.org,
+        linux-ia64@vger.kernel.org, linux-m68k@lists.linux-m68k.org,
+        linux-mips@vger.kernel.org, openrisc@lists.librecores.org,
+        linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org,
+        linux-sh@vger.kernel.org, sparclinux@vger.kernel.org,
+        linux-um@lists.infradead.org, linux-xtensa@linux-xtensa.org
+Subject: Re: [PATCH v2 09/18] mips: use simpler access_ok()
+Message-ID: <20220221132456.GA7139@alpha.franken.de>
+References: <20220216131332.1489939-1-arnd@kernel.org>
+ <20220216131332.1489939-10-arnd@kernel.org>
 MIME-Version: 1.0
-References: <1645425519-9034-1-git-send-email-anshuman.khandual@arm.com> <1645425519-9034-9-git-send-email-anshuman.khandual@arm.com>
-In-Reply-To: <1645425519-9034-9-git-send-email-anshuman.khandual@arm.com>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Mon, 21 Feb 2022 12:54:28 +0100
-X-Gmail-Original-Message-ID: <CAMuHMdUrA4u5BTRuqTSn++vXFNn0w=HRmp9ZD_8SNZ1wMUKwwQ@mail.gmail.com>
-Message-ID: <CAMuHMdUrA4u5BTRuqTSn++vXFNn0w=HRmp9ZD_8SNZ1wMUKwwQ@mail.gmail.com>
-Subject: Re: [PATCH V2 08/30] m68k/mm: Enable ARCH_HAS_VM_GET_PAGE_PROT
-To:     Anshuman Khandual <anshuman.khandual@arm.com>
-Cc:     Linux MM <linux-mm@kvack.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Christoph Hellwig <hch@infradead.org>,
-        Linux-Arch <linux-arch@vger.kernel.org>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        linux-m68k <linux-m68k@lists.linux-m68k.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20220216131332.1489939-10-arnd@kernel.org>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-Hi Anshuman,
+On Wed, Feb 16, 2022 at 02:13:23PM +0100, Arnd Bergmann wrote:
+> 
+> diff --git a/arch/mips/include/asm/uaccess.h b/arch/mips/include/asm/uaccess.h
+> index db9a8e002b62..d7c89dc3426c 100644
+> --- a/arch/mips/include/asm/uaccess.h
+> +++ b/arch/mips/include/asm/uaccess.h
+> @@ -19,6 +19,7 @@
+>  #ifdef CONFIG_32BIT
+>  
+>  #define __UA_LIMIT 0x80000000UL
+> +#define TASK_SIZE_MAX	__UA_LIMIT
+>  
+>  #define __UA_ADDR	".word"
+>  #define __UA_LA		"la"
+> @@ -33,6 +34,7 @@
+>  extern u64 __ua_limit;
+>  
+>  #define __UA_LIMIT	__ua_limit
+> +#define TASK_SIZE_MAX	XKSSEG
 
-On Mon, Feb 21, 2022 at 9:45 AM Anshuman Khandual
-<anshuman.khandual@arm.com> wrote:
-> This defines and exports a platform specific custom vm_get_page_prot() via
-> subscribing ARCH_HAS_VM_GET_PAGE_PROT. Subsequently all __SXXX and __PXXX
-> macros can be dropped which are no longer needed.
->
-> Cc: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-> Cc: linux-m68k@lists.linux-m68k.org
-> Cc: linux-kernel@vger.kernel.org
-> Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
+this doesn't work. For every access above maximum implemented virtual address
+space of the CPU an address error will be issued, but not a TLB miss.
+And address error isn't able to handle this situation.
 
-Thanks for your patch!
+With this patch
 
-> --- a/arch/m68k/mm/init.c
-> +++ b/arch/m68k/mm/init.c
-> @@ -128,3 +128,107 @@ void __init mem_init(void)
->         memblock_free_all();
->         init_pointer_tables();
->  }
-> +
-> +#ifdef CONFIG_COLDFIRE
-> +/*
-> + * Page protections for initialising protection_map. See mm/mmap.c
-> + * for use. In general, the bit positions are xwr, and P-items are
-> + * private, the S-items are shared.
-> + */
-> +pgprot_t vm_get_page_prot(unsigned long vm_flags)
+diff --git a/arch/mips/kernel/unaligned.c b/arch/mips/kernel/unaligned.c
+index df4b708c04a9..3911f1481f3d 100644
+--- a/arch/mips/kernel/unaligned.c
++++ b/arch/mips/kernel/unaligned.c
+@@ -1480,6 +1480,13 @@ asmlinkage void do_ade(struct pt_regs *regs)
+ 	prev_state = exception_enter();
+ 	perf_sw_event(PERF_COUNT_SW_ALIGNMENT_FAULTS,
+ 			1, regs, regs->cp0_badvaddr);
++
++	/* Are we prepared to handle this kernel fault?	 */
++	if (fixup_exception(regs)) {
++		current->thread.cp0_baduaddr = regs->cp0_badvaddr;
++		return;
++	}
++
+ 	/*
+ 	 * Did we catch a fault trying to load an instruction?
+ 	 */
 
-Wouldn't it make more sense to add this to arch/m68k/mm/mcfmmu.c?
+I at least get my simple test cases fixed, but I'm not sure this is
+correct.
 
-> +{
-> +       switch (vm_flags & (VM_READ | VM_WRITE | VM_EXEC | VM_SHARED)) {
-> +       case VM_NONE:
-> +               return PAGE_NONE;
-> +       case VM_READ:
-> +               return __pgprot(CF_PAGE_VALID | CF_PAGE_ACCESSED |
-> +                               CF_PAGE_READABLE);
-> +       case VM_WRITE:
-> +               return __pgprot(CF_PAGE_VALID | CF_PAGE_ACCESSED |
-> +                               CF_PAGE_WRITABLE);
-> +       case VM_WRITE | VM_READ:
-> +               return __pgprot(CF_PAGE_VALID | CF_PAGE_ACCESSED |
-> +                               CF_PAGE_READABLE | CF_PAGE_WRITABLE);
-> +       case VM_EXEC:
-> +               return __pgprot(CF_PAGE_VALID | CF_PAGE_ACCESSED |
-> +                               CF_PAGE_EXEC);
-> +       case VM_EXEC | VM_READ:
-> +               return __pgprot(CF_PAGE_VALID | CF_PAGE_ACCESSED |
-> +                               CF_PAGE_READABLE | CF_PAGE_EXEC);
-> +       case VM_EXEC | VM_WRITE:
-> +               return __pgprot(CF_PAGE_VALID | CF_PAGE_ACCESSED |
-> +                               CF_PAGE_WRITABLE | CF_PAGE_EXEC);
-> +       case VM_EXEC | VM_WRITE | VM_READ:
-> +               return __pgprot(CF_PAGE_VALID | CF_PAGE_ACCESSED |
-> +                               CF_PAGE_READABLE | CF_PAGE_WRITABLE |
-> +                               CF_PAGE_EXEC);
-> +       case VM_SHARED:
-> +               return PAGE_NONE;
-> +       case VM_SHARED | VM_READ:
-> +               return __pgprot(CF_PAGE_VALID | CF_PAGE_ACCESSED |
-> +                               CF_PAGE_READABLE);
+Is there a reason to not also #define TASK_SIZE_MAX   __UA_LIMIT like
+for the 32bit case ?
 
-This is the same as the plain VM_READ case.
-Perhaps they can be merged?
+Thomas.
 
-> +       case VM_SHARED | VM_WRITE:
-> +               return PAGE_SHARED;
-> +       case VM_SHARED | VM_WRITE | VM_READ:
-> +               return __pgprot(CF_PAGE_VALID | CF_PAGE_ACCESSED |
-> +                               CF_PAGE_READABLE | CF_PAGE_SHARED);
-> +       case VM_SHARED | VM_EXEC:
-> +               return __pgprot(CF_PAGE_VALID | CF_PAGE_ACCESSED |
-> +                               CF_PAGE_EXEC);
-
-Same as plain VM_EXEC.
-
-> +       case VM_SHARED | VM_EXEC | VM_READ:
-> +               return __pgprot(CF_PAGE_VALID | CF_PAGE_ACCESSED |
-> +                               CF_PAGE_READABLE | CF_PAGE_EXEC);
-
-Same as plain VM_EXEC | VM_READ.
-
-> +       case VM_SHARED | VM_EXEC | VM_WRITE:
-> +               return __pgprot(CF_PAGE_VALID | CF_PAGE_ACCESSED |
-> +                               CF_PAGE_SHARED | CF_PAGE_EXEC);
-> +       case VM_SHARED | VM_EXEC | VM_WRITE | VM_READ:
-> +               return __pgprot(CF_PAGE_VALID | CF_PAGE_ACCESSED |
-> +                               CF_PAGE_READABLE | CF_PAGE_SHARED |
-> +                               CF_PAGE_EXEC);
-> +       default:
-> +               BUILD_BUG();
-> +       }
-> +}
-> +#endif
-> +
-> +#ifdef CONFIG_SUN3
-> +/*
-> + * Page protections for initialising protection_map. The sun3 has only two
-> + * protection settings, valid (implying read and execute) and writeable. These
-> + * are as close as we can get...
-> + */
-> +pgprot_t vm_get_page_prot(unsigned long vm_flags)
-
-Wouldn't it make more sense to add this to arch/m68k/mm/sun3mmu.c?
-
-> +{
-> +       switch (vm_flags & (VM_READ | VM_WRITE | VM_EXEC | VM_SHARED)) {
-> +       case VM_NONE:
-> +               return PAGE_NONE;
-> +       case VM_READ:
-> +               return PAGE_READONLY;
-> +       case VM_WRITE:
-> +       case VM_WRITE | VM_READ:
-
-So you did merge some of them...
-
-> +               return PAGE_COPY;
-> +       case VM_EXEC:
-> +       case VM_EXEC | VM_READ:
-> +               return PAGE_READONLY;
-
-But not all? More below...
-
-> +       case VM_EXEC | VM_WRITE:
-> +       case VM_EXEC | VM_WRITE | VM_READ:
-> +               return PAGE_COPY;
-> +       case VM_SHARED:
-> +               return PAGE_NONE;
-> +       case VM_SHARED | VM_READ:
-> +               return PAGE_READONLY;
-> +       case VM_SHARED | VM_WRITE:
-> +       case VM_SHARED | VM_WRITE | VM_READ:
-> +               return PAGE_SHARED;
-> +       case VM_SHARED | VM_EXEC:
-> +       case VM_SHARED | VM_EXEC | VM_READ:
-> +               return PAGE_READONLY;
-> +       case VM_SHARED | VM_EXEC | VM_WRITE:
-> +       case VM_SHARED | VM_EXEC | VM_WRITE | VM_READ:
-> +               return PAGE_SHARED;
-> +       default:
-> +               BUILD_BUG();
-> +       }
-> +}
-> +#endif
-> +EXPORT_SYMBOL(vm_get_page_prot);
-> diff --git a/arch/m68k/mm/motorola.c b/arch/m68k/mm/motorola.c
-> index ecbe948f4c1a..495ba0ea083c 100644
-> --- a/arch/m68k/mm/motorola.c
-> +++ b/arch/m68k/mm/motorola.c
-> @@ -400,12 +400,9 @@ void __init paging_init(void)
->
->         /* Fix the cache mode in the page descriptors for the 680[46]0.  */
->         if (CPU_IS_040_OR_060) {
-> -               int i;
->  #ifndef mm_cachebits
->                 mm_cachebits = _PAGE_CACHE040;
->  #endif
-> -               for (i = 0; i < 16; i++)
-> -                       pgprot_val(protection_map[i]) |= _PAGE_CACHE040;
->         }
->
->         min_addr = m68k_memory[0].addr;
-> @@ -483,3 +480,48 @@ void __init paging_init(void)
->         max_zone_pfn[ZONE_DMA] = memblock_end_of_DRAM();
->         free_area_init(max_zone_pfn);
->  }
-> +
-> +/*
-> + * The m68k can't do page protection for execute, and considers that
-> + * the same are read. Also, write permissions imply read permissions.
-> + * This is the closest we can get..
-> + */
-> +pgprot_t vm_get_page_prot(unsigned long vm_flags)
-
-Good, this one is in arch/m68k/mm/motorola.c :-)
-
-> +{
-> +       unsigned long cachebits = 0;
-> +
-> +       if (CPU_IS_040_OR_060)
-> +               cachebits = _PAGE_CACHE040;
-
-If you would use the non-"_C"-variants (e.g. PAGE_NONE instead of
-PAGE_NONE_C) below, you would get the cachebits handling for free!
-After that, the "_C" variants are no longer used, and can be removed.
-Cfr. arch/m68k/include/asm/motorola_pgtable.h:
-
-    #define PAGE_NONE       __pgprot(_PAGE_PROTNONE | _PAGE_ACCESSED |
-mm_cachebits)
-    #define PAGE_SHARED     __pgprot(_PAGE_PRESENT | _PAGE_ACCESSED |
-mm_cachebits)
-    #define PAGE_COPY       __pgprot(_PAGE_PRESENT | _PAGE_RONLY |
-_PAGE_ACCESSED | mm_cachebits)
-    #define PAGE_READONLY   __pgprot(_PAGE_PRESENT | _PAGE_RONLY |
-_PAGE_ACCESSED | mm_cachebits)
-    #define PAGE_KERNEL     __pgprot(_PAGE_PRESENT | _PAGE_DIRTY |
-_PAGE_ACCESSED | mm_cachebits)
-
-    /* Alternate definitions that are compile time constants, for
-       initializing protection_map.  The cachebits are fixed later.  */
-    #define PAGE_NONE_C     __pgprot(_PAGE_PROTNONE | _PAGE_ACCESSED)
-    #define PAGE_SHARED_C   __pgprot(_PAGE_PRESENT | _PAGE_ACCESSED)
-    #define PAGE_COPY_C     __pgprot(_PAGE_PRESENT | _PAGE_RONLY |
-_PAGE_ACCESSED)
-    #define PAGE_READONLY_C __pgprot(_PAGE_PRESENT | _PAGE_RONLY |
-_PAGE_ACCESSED)
-
-BTW, this shows you left a reference in a comment to the now-gone
-"protection_map".  There are several more across the tree.
-
-> +
-> +       switch (vm_flags & (VM_READ | VM_WRITE | VM_EXEC | VM_SHARED)) {
-> +       case VM_NONE:
-> +               return __pgprot(pgprot_val(PAGE_NONE_C) | cachebits);
-> +       case VM_READ:
-> +               return __pgprot(pgprot_val(PAGE_READONLY_C) | cachebits);
-> +       case VM_WRITE:
-> +       case VM_WRITE | VM_READ:
-> +               return __pgprot(pgprot_val(PAGE_COPY_C) | cachebits);
-> +       case VM_EXEC:
-> +       case VM_EXEC | VM_READ:
-> +               return __pgprot(pgprot_val(PAGE_READONLY_C) | cachebits);
-> +       case VM_EXEC | VM_WRITE:
-> +       case VM_EXEC | VM_WRITE | VM_READ:
-> +               return __pgprot(pgprot_val(PAGE_COPY_C) | cachebits);
-> +       case VM_SHARED:
-> +               return __pgprot(pgprot_val(PAGE_NONE_C) | cachebits);
-
-Same as the VM_NONE case.  More to be merged below...
-
-> +       case VM_SHARED | VM_READ:
-> +               return __pgprot(pgprot_val(PAGE_READONLY_C) | cachebits);
-> +       case VM_SHARED | VM_WRITE:
-> +       case VM_SHARED | VM_WRITE | VM_READ:
-> +               return __pgprot(pgprot_val(PAGE_SHARED_C) | cachebits);
-> +       case VM_SHARED | VM_EXEC:
-> +       case VM_SHARED | VM_EXEC | VM_READ:
-> +               return __pgprot(pgprot_val(PAGE_READONLY_C) | cachebits);
-> +       case VM_SHARED | VM_EXEC | VM_WRITE:
-> +       case VM_SHARED | VM_EXEC | VM_WRITE | VM_READ:
-> +               return __pgprot(pgprot_val(PAGE_SHARED_C) | cachebits);
-> +       default:
-> +               BUILD_BUG();
-> +       }
-> +}
-> +EXPORT_SYMBOL(vm_get_page_prot);
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+-- 
+Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
+good idea.                                                [ RFC1925, 2.3 ]
