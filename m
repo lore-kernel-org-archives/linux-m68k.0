@@ -2,148 +2,122 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 82021C43219
-	for <linux-m68k@archiver.kernel.org>; Fri, 18 Feb 2022 18:07:24 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E85D1C433EF
+	for <linux-m68k@archiver.kernel.org>; Mon, 21 Feb 2022 01:54:29 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238941AbiBRSHi (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Fri, 18 Feb 2022 13:07:38 -0500
-Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:41810 "EHLO
+        id S244979AbiBUByu (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Sun, 20 Feb 2022 20:54:50 -0500
+Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:37864 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238942AbiBRSHh (ORCPT
+        with ESMTP id S243581AbiBUByt (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Fri, 18 Feb 2022 13:07:37 -0500
-Received: from mail-ed1-x52a.google.com (mail-ed1-x52a.google.com [IPv6:2a00:1450:4864:20::52a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5AFE41DA0E2
-        for <linux-m68k@lists.linux-m68k.org>; Fri, 18 Feb 2022 10:07:20 -0800 (PST)
-Received: by mail-ed1-x52a.google.com with SMTP id m3so10854375eda.10
-        for <linux-m68k@lists.linux-m68k.org>; Fri, 18 Feb 2022 10:07:20 -0800 (PST)
+        Sun, 20 Feb 2022 20:54:49 -0500
+Received: from mail-pj1-x102a.google.com (mail-pj1-x102a.google.com [IPv6:2607:f8b0:4864:20::102a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CC7684AE0B
+        for <linux-m68k@lists.linux-m68k.org>; Sun, 20 Feb 2022 17:54:27 -0800 (PST)
+Received: by mail-pj1-x102a.google.com with SMTP id b8so13661991pjb.4
+        for <linux-m68k@lists.linux-m68k.org>; Sun, 20 Feb 2022 17:54:27 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=amacapital-net.20210112.gappssmtp.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=3DIqXxPmp6dtbTijOx2KTFQ/AdtfYUTWecKVh7q3dDI=;
-        b=5c/qRto3YK3Y6/Rhnnpp4RzKmf8QhiKseObhkqXIpnLfhpnv2ua8Z7YCExbmjSYUCG
-         SbBSycxSpm4FRe5zOaxst92xyRDLRie0B4d4p8x0W6snNr+dG6MghxLfcakTWMQA17Pf
-         gOp7JS9gIpdJumtDaMv9IluyX8dB5LI5eLR/YC2U+D7T5N3aQr9NOYHAOP982E02xanw
-         SC1uTLhbyKEp3+LiMa1bFSquyveVGLxTCPf/eSvmTiEZzxEI+wIe4AMdv5VgRD2GYf6G
-         kO3gnVVxKK1wWuKxjcQ5nhLyDgmj/c1nxTJoqfRQTmuVCBNlEZ4IpVOo74LURbiOVsEg
-         CBWA==
+        d=gmail.com; s=20210112;
+        h=subject:to:references:cc:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-transfer-encoding;
+        bh=IotG9PzCOAGZPy26NsbojxV3CpCIh2VaX05qncsSKtw=;
+        b=BJz1Yc1XOSF26alhBGOkFEMnLNkRHUr09jM0cR/2gqXxHi4GWUTjKX0fOmjY1nbBcc
+         j6AtutVI+Qw4NR7YfxQ8EMh6yWuJDUNyozmIG77M6MwKjyrdFlch0Z7Cqbor/rIp8d+Z
+         8PtygpvKwmboP7g/ljQEIgnY6WLjtrLXdHQxQ3rbCMMc1oqI7Vajfne8hRySx/Q9O6Le
+         UFh6/J9q+O0P6Am9062BD6YJXYw4wysL5nd1C4roE9xBSV1RB6JR3rGzcG6CL8Oq2ZUY
+         z4LQ0Y6j/iZODIOxRBjFCKmwM5SyRxRR5h4V1VdcBQbtprV8fI72A9WPmcAdNo4tn57b
+         VD7Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=3DIqXxPmp6dtbTijOx2KTFQ/AdtfYUTWecKVh7q3dDI=;
-        b=HzqiCHIa8T+WG69DknJZ03FVLEktdBdXI2uxenAp2KrMRUHFoylsJawM6XkAMBxDBn
-         POnNuclEpIUNF9eDOJ9e94wSpeZ6UlESEifm6NWDAycXEqLSOlXmGfLUcXdbb36ssp9R
-         SWOkmbrICRYccDPiYm3NOr+kXPijfCyIgv/rPCNRK8Y1BZ38c1wqsYjefRcGxEJ0Tiok
-         IB79nlbcP9dHPMXZtt2dmrdg3CLpKlBeaBW865rcFmn81vwg3fX02rs2f/LU9zNbpv/z
-         m+dHPugmDieo4dKky+x8qnHqJ+tu/e+cEGHXPfyFxqrV2t7NHNv5W4FzFAK/Ch9JtC3A
-         CP0w==
-X-Gm-Message-State: AOAM5316CUrSnWcwo3HnD68O89NbrIPyKN24zIQHDBWfTcBjSn4UMz6H
-        nNilKierTOpr7Zu2GKsLggDVjtPQLtm+lGizgC468A==
-X-Google-Smtp-Source: ABdhPJzKi9/dAquBFvy+ZlpESpcVBT1I3X4XtLJClo2SaEqFpqb8kdqwnL9Fphl8e/qcsjqeDfp/tX4JIrAspWajnck=
-X-Received: by 2002:a05:6402:430f:b0:410:a082:c6da with SMTP id
- m15-20020a056402430f00b00410a082c6damr9386454edc.438.1645207638871; Fri, 18
- Feb 2022 10:07:18 -0800 (PST)
+        h=x-gm-message-state:subject:to:references:cc:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding;
+        bh=IotG9PzCOAGZPy26NsbojxV3CpCIh2VaX05qncsSKtw=;
+        b=ef8gqvRVzav0pPikJynVDh4p065eFSTt3U4Ol0ObIp72YiEVRBBSup5g7xEaEJiXXI
+         l8K6uc/Nxcxj5s6axT4Q2N/R9agtAUH14mo57prpdrv2hNjBVRFjbqfYHX7b/XJqdJU/
+         S9avUaOQvtK5Y3lhDH16KRkn2rVGuFAvjortbm0z9MVVTWwISLQsFgqFp55v/ZSSNKv/
+         UHLCWDwrgVj/0kejiBfw8HxjPHGopDE7Nj7aP0hpXmKAMfvMeWAYh3rMaTMp1W+rFUx7
+         m3tfEN+FtsqP04XDl22x9rINBWii/FiXk0QqH2JzXhXkP1o0asBPeZXqhnSTerP9r10P
+         JRaQ==
+X-Gm-Message-State: AOAM531tKNh1+0uEqKQP4EM7ODrDDaURUjfvz5Uk4wtGQ4zKqrgVBjRL
+        ebUXSREGIq6e1pi5yc7fD6YtjJ4ngAI=
+X-Google-Smtp-Source: ABdhPJwMBKVPcO/wCwoUrM6c3mnBfjm5GDO4/A1r4QNxY9cCivp2xrUCk+cWOmSomsJSdErDiBMihg==
+X-Received: by 2002:a17:90b:3509:b0:1b8:aaea:a82e with SMTP id ls9-20020a17090b350900b001b8aaeaa82emr23241485pjb.109.1645408466927;
+        Sun, 20 Feb 2022 17:54:26 -0800 (PST)
+Received: from [10.1.1.24] (222-155-5-102-adsl.sparkbb.co.nz. [222.155.5.102])
+        by smtp.gmail.com with ESMTPSA id g14sm5763831pfj.80.2022.02.20.17.54.24
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Sun, 20 Feb 2022 17:54:26 -0800 (PST)
+Subject: Re: Wrong colors on ARAnyM
+To:     =?UTF-8?Q?Petr_Stehl=c3=adk?= <pstehlik@sophics.cz>,
+        Geert Uytterhoeven <geert@linux-m68k.org>
+References: <CAMuHMdU3ievhXxKR_xi_v3aumnYW7UNUO6qMdhgfyWTyVSsCkQ@mail.gmail.com>
+ <b03160b6-7f3b-7765-49ee-c49b7dd2c4e0@gmail.com>
+ <CAMuHMdVUX0zJtRAtjCBAa7iEk7MwCjcmSsJdCrSrPcY=6ti=cQ@mail.gmail.com>
+ <4b3a0bc8-24a1-2a33-19bb-fbae954c614c@gmail.com>
+ <CAMuHMdWkxDMbS4D8wkEPAVgrFnoJzejUkxKCnvA+MA38vS6g9Q@mail.gmail.com>
+ <6073b6c3a46eef78dda3e6c522cba691f1ddbd16.camel@sophics.cz>
+Cc:     linux-m68k <linux-m68k@lists.linux-m68k.org>
+From:   Michael Schmitz <schmitzmic@gmail.com>
+Message-ID: <3e0d1d9c-a353-9e05-3db6-d02f6fad4dac@gmail.com>
+Date:   Mon, 21 Feb 2022 14:54:21 +1300
+User-Agent: Mozilla/5.0 (X11; Linux ppc; rv:45.0) Gecko/20100101
+ Icedove/45.4.0
 MIME-Version: 1.0
-References: <20220216131332.1489939-1-arnd@kernel.org> <20220216131332.1489939-14-arnd@kernel.org>
- <CALCETrVOvYPN4_6hS8wpm2v9bGZupZ5x4=vZAseG57OUgvLGfw@mail.gmail.com> <93a1ee797e9d4f789dff85a3c0f0c232@AcuMS.aculab.com>
-In-Reply-To: <93a1ee797e9d4f789dff85a3c0f0c232@AcuMS.aculab.com>
-From:   Andy Lutomirski <luto@amacapital.net>
-Date:   Fri, 18 Feb 2022 10:07:07 -0800
-Message-ID: <CALCETrWTB65vJXsQTPd_o7BRoSU=uqD0pFzKS+r4YgDuiCCqaQ@mail.gmail.com>
-Subject: Re: [PATCH v2 13/18] uaccess: generalize access_ok()
-To:     David Laight <David.Laight@aculab.com>
-Cc:     Arnd Bergmann <arnd@kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Christoph Hellwig <hch@lst.de>,
-        "linux-arch@vger.kernel.org" <linux-arch@vger.kernel.org>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        "linux-api@vger.kernel.org" <linux-api@vger.kernel.org>,
-        "arnd@arndb.de" <arnd@arndb.de>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "viro@zeniv.linux.org.uk" <viro@zeniv.linux.org.uk>,
-        "linux@armlinux.org.uk" <linux@armlinux.org.uk>,
-        "will@kernel.org" <will@kernel.org>,
-        "guoren@kernel.org" <guoren@kernel.org>,
-        "bcain@codeaurora.org" <bcain@codeaurora.org>,
-        "geert@linux-m68k.org" <geert@linux-m68k.org>,
-        "monstr@monstr.eu" <monstr@monstr.eu>,
-        "tsbogend@alpha.franken.de" <tsbogend@alpha.franken.de>,
-        "nickhu@andestech.com" <nickhu@andestech.com>,
-        "green.hu@gmail.com" <green.hu@gmail.com>,
-        "dinguyen@kernel.org" <dinguyen@kernel.org>,
-        "shorne@gmail.com" <shorne@gmail.com>,
-        "deller@gmx.de" <deller@gmx.de>,
-        "mpe@ellerman.id.au" <mpe@ellerman.id.au>,
-        "peterz@infradead.org" <peterz@infradead.org>,
-        "mingo@redhat.com" <mingo@redhat.com>,
-        "mark.rutland@arm.com" <mark.rutland@arm.com>,
-        "hca@linux.ibm.com" <hca@linux.ibm.com>,
-        "dalias@libc.org" <dalias@libc.org>,
-        "davem@davemloft.net" <davem@davemloft.net>,
-        "richard@nod.at" <richard@nod.at>,
-        "x86@kernel.org" <x86@kernel.org>,
-        "jcmvbkbc@gmail.com" <jcmvbkbc@gmail.com>,
-        "ebiederm@xmission.com" <ebiederm@xmission.com>,
-        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
-        "ardb@kernel.org" <ardb@kernel.org>,
-        "linux-alpha@vger.kernel.org" <linux-alpha@vger.kernel.org>,
-        "linux-snps-arc@lists.infradead.org" 
-        <linux-snps-arc@lists.infradead.org>,
-        "linux-csky@vger.kernel.org" <linux-csky@vger.kernel.org>,
-        "linux-hexagon@vger.kernel.org" <linux-hexagon@vger.kernel.org>,
-        "linux-ia64@vger.kernel.org" <linux-ia64@vger.kernel.org>,
-        "linux-m68k@lists.linux-m68k.org" <linux-m68k@lists.linux-m68k.org>,
-        "linux-mips@vger.kernel.org" <linux-mips@vger.kernel.org>,
-        "openrisc@lists.librecores.org" <openrisc@lists.librecores.org>,
-        "linux-parisc@vger.kernel.org" <linux-parisc@vger.kernel.org>,
-        "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>,
-        "linux-riscv@lists.infradead.org" <linux-riscv@lists.infradead.org>,
-        "linux-s390@vger.kernel.org" <linux-s390@vger.kernel.org>,
-        "linux-sh@vger.kernel.org" <linux-sh@vger.kernel.org>,
-        "sparclinux@vger.kernel.org" <sparclinux@vger.kernel.org>,
-        "linux-um@lists.infradead.org" <linux-um@lists.infradead.org>,
-        "linux-xtensa@linux-xtensa.org" <linux-xtensa@linux-xtensa.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <6073b6c3a46eef78dda3e6c522cba691f1ddbd16.camel@sophics.cz>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-On Fri, Feb 18, 2022 at 1:30 AM David Laight <David.Laight@aculab.com> wrote:
->
-> From: Andy Lutomirski
-> > Sent: 17 February 2022 19:15
-> ...
-> > This isn't actually optimal.  On x86, TASK_SIZE_MAX is a bizarre
-> > constant that has a very specific value to work around a bug^Wdesign
-> > error^Wfeature of Intel CPUs.  TASK_SIZE_MAX is the maximum address at
-> > which userspace is permitted to allocate memory, but there is a huge
-> > gap between user and kernel addresses, and any value in the gap would
-> > be adequate for the comparison.  If we wanted to optimize this, simply
-> > checking the high bit (which x86 can do without any immediate
-> > constants at all) would be sufficient and, for an access known to fit
-> > in 32 bits, one could get even fancier and completely ignore the size
-> > of the access.  (For accesses not known to fit in 32 bits, I suspect
-> > some creativity could still come up with a construction that's
-> > substantially faster than the one in your patch.)
-> >
-> > So there's plenty of room for optimization here.
-> >
-> > (This is not in any respect a NAK -- it's just an observation that
-> > this could be even better.)
->
-> For 64bit arch that use the top bit to separate user/kernel
-> you can test '(addr | size) >> 62)'.
-> The compiler optimises out constant sizes.
->
-> This has all been mentioned a lot of times.
-> You do get different fault types.
->
-> OTOH an explicit check for constant size (less than something big)
-> can use the cheaper test of the sign bit.
-> Big constant sizes could be compile time errors.
+Hi Petr,
 
-The different fault type issue may well be a real problem.  Right now
-the core x86 fault code reserves the right to grouch if we get #GP
-instead of #PF.  We could change that.
+all good with the palette handling.
+
+There is another issue I ran into while testing atafb's handling of 16 
+bit video modes though:
+
+When specifying non-default video modes, the kernel parameter
+
+video=atafb:R320;240;16
+
+is used (as an example). Using this in ARAnyM, the command line ends on
+
+video=atafb:R320
+
+and anything specified past the video option on the command line is lost 
+(along with xres and depth).
+
+The same mode option is passed on to the kernel correctly by ataboot on 
+my Falcon.
+
+Could you look into what in ARAnyMs parsing of the config file or the 
+'Args' config item causes truncation of the kernel options?
+
+This can be trivially worked around by using another token separator, 
+and Geert is the only one who ever tried 16 bit video modes as far as 
+I've seen, so nothing urgent ...
+
+Cheers,
+
+	Michael
+
+
+Am 15.02.2022 um 22:16 schrieb Petr Stehlík:
+> On Út, 2022-02-15 at 09:11 +0100, Geert Uytterhoeven wrote:
+>>> Now what would cause us to miss every other palette update or depth
+>>> change?
+>>
+>> That's a good question! Why does ARAnyM sometimes decide to use the
+>> Falcon palette, and sometimes the STe palette, and not only with
+>> bpp == 2, but also with other color depths?
+>
+> just wanted to let you know that I'm following you. If you happen to
+> identify any bug in ARAnyM I'll try to fix it ASAP.
+>
+> Thanks,
+>
+> Petr
+>
+>
