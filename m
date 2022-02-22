@@ -2,200 +2,311 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3F165C433FE
-	for <linux-m68k@archiver.kernel.org>; Tue, 22 Feb 2022 00:06:50 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 818BAC433FE
+	for <linux-m68k@archiver.kernel.org>; Tue, 22 Feb 2022 05:44:46 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237361AbiBVAHN (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Mon, 21 Feb 2022 19:07:13 -0500
-Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:56830 "EHLO
+        id S229786AbiBVFpJ (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Tue, 22 Feb 2022 00:45:09 -0500
+Received: from gmail-smtp-in.l.google.com ([23.128.96.19]:49310 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237352AbiBVAHM (ORCPT
+        with ESMTP id S229894AbiBVFpJ (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Mon, 21 Feb 2022 19:07:12 -0500
-Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 336E3245BC
-        for <linux-m68k@lists.linux-m68k.org>; Mon, 21 Feb 2022 16:06:48 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1645488408; x=1677024408;
-  h=date:from:to:cc:subject:message-id:mime-version:
-   content-transfer-encoding;
-  bh=a7r4Z4yeDLW3my2dQtgYCiZOl94ATemEsHT6O1whbZc=;
-  b=K+B1wUoCjxiwzpDRfXeQOCEsHqrbsG1tyk4bOJutt6SRc8hPrqKMarHQ
-   GpB8atKUZxCMSu0gF/nKqqg8HSykoUxJ8McBNYvHmkWmFCJ+A4RAYs2o0
-   I9EU5AJSg2hO+nXI3WP1T9U7uaQEwzFhhUK18VxNZqllEfA7kFNlJi0XA
-   TTvP9wKdiWrK7eQfJouSlFmbCDHcB3IOXaVO6G/68sX2Ljhi8Aoa+F+al
-   WWNJKK/A+1BOnfobF6h2jnNrcIhl/CR0OTLqjqoc8+M0WCIn2Qr00fJi4
-   6N5YH81wP3h09XivlEAlgMYe4w73VRiOXb+2reuEBNRCI9YKToyQRCX6f
-   Q==;
-X-IronPort-AV: E=McAfee;i="6200,9189,10265"; a="251533974"
-X-IronPort-AV: E=Sophos;i="5.88,386,1635231600"; 
-   d="scan'208";a="251533974"
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Feb 2022 16:06:47 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.88,386,1635231600"; 
-   d="scan'208";a="507779676"
-Received: from lkp-server01.sh.intel.com (HELO da3212ac2f54) ([10.239.97.150])
-  by orsmga006.jf.intel.com with ESMTP; 21 Feb 2022 16:06:46 -0800
-Received: from kbuild by da3212ac2f54 with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1nMIhZ-00027Z-PH; Tue, 22 Feb 2022 00:06:45 +0000
-Date:   Tue, 22 Feb 2022 08:05:49 +0800
-From:   kernel test robot <lkp@intel.com>
+        Tue, 22 Feb 2022 00:45:09 -0500
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id B0EE926AC9
+        for <linux-m68k@lists.linux-m68k.org>; Mon, 21 Feb 2022 21:44:43 -0800 (PST)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id CD011106F;
+        Mon, 21 Feb 2022 21:44:42 -0800 (PST)
+Received: from [10.163.49.161] (unknown [10.163.49.161])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id E838A3F66F;
+        Mon, 21 Feb 2022 21:44:39 -0800 (PST)
+Subject: Re: [PATCH V2 08/30] m68k/mm: Enable ARCH_HAS_VM_GET_PAGE_PROT
 To:     Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     linux-m68k@lists.linux-m68k.org
-Subject: [geert-m68k:master] BUILD SUCCESS
- 7775e06b6677688f74efe8a5d1b7e05576260fcf
-Message-ID: <621428dd.8n7mIF3cUcWu5Gsp%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+Cc:     Linux MM <linux-mm@kvack.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Christoph Hellwig <hch@infradead.org>,
+        Linux-Arch <linux-arch@vger.kernel.org>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        linux-m68k <linux-m68k@lists.linux-m68k.org>
+References: <1645425519-9034-1-git-send-email-anshuman.khandual@arm.com>
+ <1645425519-9034-9-git-send-email-anshuman.khandual@arm.com>
+ <CAMuHMdUrA4u5BTRuqTSn++vXFNn0w=HRmp9ZD_8SNZ1wMUKwwQ@mail.gmail.com>
+From:   Anshuman Khandual <anshuman.khandual@arm.com>
+Message-ID: <5801fc8d-0046-8c08-0893-05dde66d48b1@arm.com>
+Date:   Tue, 22 Feb 2022 11:14:40 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <CAMuHMdUrA4u5BTRuqTSn++vXFNn0w=HRmp9ZD_8SNZ1wMUKwwQ@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/geert/linux-m68k.git master
-branch HEAD: 7775e06b6677688f74efe8a5d1b7e05576260fcf  Merge tag 'v5.17-rc5'
 
-elapsed time: 725m
 
-configs tested: 123
-configs skipped: 3
+On 2/21/22 5:24 PM, Geert Uytterhoeven wrote:
+> Hi Anshuman,
+> 
+> On Mon, Feb 21, 2022 at 9:45 AM Anshuman Khandual
+> <anshuman.khandual@arm.com> wrote:
+>> This defines and exports a platform specific custom vm_get_page_prot() via
+>> subscribing ARCH_HAS_VM_GET_PAGE_PROT. Subsequently all __SXXX and __PXXX
+>> macros can be dropped which are no longer needed.
+>>
+>> Cc: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+>> Cc: linux-m68k@lists.linux-m68k.org
+>> Cc: linux-kernel@vger.kernel.org
+>> Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
+> 
+> Thanks for your patch!
+> 
+>> --- a/arch/m68k/mm/init.c
+>> +++ b/arch/m68k/mm/init.c
+>> @@ -128,3 +128,107 @@ void __init mem_init(void)
+>>         memblock_free_all();
+>>         init_pointer_tables();
+>>  }
+>> +
+>> +#ifdef CONFIG_COLDFIRE
+>> +/*
+>> + * Page protections for initialising protection_map. See mm/mmap.c
+>> + * for use. In general, the bit positions are xwr, and P-items are
+>> + * private, the S-items are shared.
+>> + */
+>> +pgprot_t vm_get_page_prot(unsigned long vm_flags)
+> 
+> Wouldn't it make more sense to add this to arch/m68k/mm/mcfmmu.c?
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+Sure, will move (#ifdef CONFIG_COLDFIRE will not be required anymore).
 
-gcc tested configs:
-arm                                 defconfig
-arm64                               defconfig
-arm                              allmodconfig
-arm                              allyesconfig
-arm64                            allyesconfig
-i386                 randconfig-c001-20220221
-arm                            lart_defconfig
-arm                            zeus_defconfig
-arm                        keystone_defconfig
-parisc                generic-64bit_defconfig
-alpha                            alldefconfig
-sh                           se7724_defconfig
-arc                 nsimosci_hs_smp_defconfig
-mips                 decstation_r4k_defconfig
-sh                     magicpanelr2_defconfig
-powerpc                      mgcoge_defconfig
-sh                           se7780_defconfig
-sh                               allmodconfig
-powerpc                  storcenter_defconfig
-mips                         tb0226_defconfig
-mips                           ip32_defconfig
-sh                            hp6xx_defconfig
-sh                           se7721_defconfig
-arc                          axs101_defconfig
-ia64                          tiger_defconfig
-powerpc                        warp_defconfig
-sh                            migor_defconfig
-sh                        edosk7760_defconfig
-sh                 kfr2r09-romimage_defconfig
-powerpc                         ps3_defconfig
-mips                        jmr3927_defconfig
-sh                           sh2007_defconfig
-arm                  randconfig-c002-20220221
-ia64                                defconfig
-ia64                             allmodconfig
-ia64                             allyesconfig
-m68k                             allmodconfig
-m68k                                defconfig
-m68k                             allyesconfig
-nios2                               defconfig
-arc                              allyesconfig
-nds32                             allnoconfig
-csky                                defconfig
-alpha                               defconfig
-nds32                               defconfig
-nios2                            allyesconfig
-alpha                            allyesconfig
-xtensa                           allyesconfig
-h8300                            allyesconfig
-arc                                 defconfig
-parisc                              defconfig
-parisc64                            defconfig
-s390                             allmodconfig
-parisc                           allyesconfig
-s390                                defconfig
-s390                             allyesconfig
-i386                             allyesconfig
-sparc                            allyesconfig
-sparc                               defconfig
-i386                                defconfig
-i386                   debian-10.3-kselftests
-i386                              debian-10.3
-mips                             allyesconfig
-mips                             allmodconfig
-powerpc                           allnoconfig
-powerpc                          allmodconfig
-powerpc                          allyesconfig
-x86_64               randconfig-a003-20220221
-x86_64               randconfig-a002-20220221
-x86_64               randconfig-a005-20220221
-x86_64               randconfig-a006-20220221
-x86_64               randconfig-a001-20220221
-x86_64               randconfig-a004-20220221
-i386                 randconfig-a002-20220221
-i386                 randconfig-a001-20220221
-i386                 randconfig-a005-20220221
-i386                 randconfig-a003-20220221
-i386                 randconfig-a006-20220221
-i386                 randconfig-a004-20220221
-arc                  randconfig-r043-20220221
-riscv                    nommu_k210_defconfig
-riscv                    nommu_virt_defconfig
-riscv                            allyesconfig
-riscv                             allnoconfig
-riscv                               defconfig
-riscv                          rv32_defconfig
-riscv                            allmodconfig
-x86_64                    rhel-8.3-kselftests
-um                           x86_64_defconfig
-um                             i386_defconfig
-x86_64                           allyesconfig
-x86_64                              defconfig
-x86_64                               rhel-8.3
-x86_64                          rhel-8.3-func
-x86_64                                  kexec
+> 
+>> +{
+>> +       switch (vm_flags & (VM_READ | VM_WRITE | VM_EXEC | VM_SHARED)) {
+>> +       case VM_NONE:
+>> +               return PAGE_NONE;
+>> +       case VM_READ:
+>> +               return __pgprot(CF_PAGE_VALID | CF_PAGE_ACCESSED |
+>> +                               CF_PAGE_READABLE);
+>> +       case VM_WRITE:
+>> +               return __pgprot(CF_PAGE_VALID | CF_PAGE_ACCESSED |
+>> +                               CF_PAGE_WRITABLE);
+>> +       case VM_WRITE | VM_READ:
+>> +               return __pgprot(CF_PAGE_VALID | CF_PAGE_ACCESSED |
+>> +                               CF_PAGE_READABLE | CF_PAGE_WRITABLE);
+>> +       case VM_EXEC:
+>> +               return __pgprot(CF_PAGE_VALID | CF_PAGE_ACCESSED |
+>> +                               CF_PAGE_EXEC);
+>> +       case VM_EXEC | VM_READ:
+>> +               return __pgprot(CF_PAGE_VALID | CF_PAGE_ACCESSED |
+>> +                               CF_PAGE_READABLE | CF_PAGE_EXEC);
+>> +       case VM_EXEC | VM_WRITE:
+>> +               return __pgprot(CF_PAGE_VALID | CF_PAGE_ACCESSED |
+>> +                               CF_PAGE_WRITABLE | CF_PAGE_EXEC);
+>> +       case VM_EXEC | VM_WRITE | VM_READ:
+>> +               return __pgprot(CF_PAGE_VALID | CF_PAGE_ACCESSED |
+>> +                               CF_PAGE_READABLE | CF_PAGE_WRITABLE |
+>> +                               CF_PAGE_EXEC);
+>> +       case VM_SHARED:
+>> +               return PAGE_NONE;
+>> +       case VM_SHARED | VM_READ:
+>> +               return __pgprot(CF_PAGE_VALID | CF_PAGE_ACCESSED |
+>> +                               CF_PAGE_READABLE);
+> 
+> This is the same as the plain VM_READ case.
+> Perhaps they can be merged?
 
-clang tested configs:
-mips                 randconfig-c004-20220221
-x86_64               randconfig-c007-20220221
-powerpc              randconfig-c003-20220221
-i386                 randconfig-c001-20220221
-arm                  randconfig-c002-20220221
-s390                 randconfig-c005-20220221
-riscv                randconfig-c006-20220221
-mips                      malta_kvm_defconfig
-powerpc                 mpc8272_ads_defconfig
-arm                        vexpress_defconfig
-arm                          collie_defconfig
-arm                          pcm027_defconfig
-arm                         lpc32xx_defconfig
-powerpc                      katmai_defconfig
-x86_64               randconfig-a011-20220221
-x86_64               randconfig-a015-20220221
-x86_64               randconfig-a014-20220221
-x86_64               randconfig-a016-20220221
-x86_64               randconfig-a013-20220221
-x86_64               randconfig-a012-20220221
-i386                 randconfig-a016-20220221
-i386                 randconfig-a012-20220221
-i386                 randconfig-a015-20220221
-i386                 randconfig-a011-20220221
-i386                 randconfig-a014-20220221
-i386                 randconfig-a013-20220221
-hexagon              randconfig-r045-20220221
-hexagon              randconfig-r041-20220221
-riscv                randconfig-r042-20220221
-s390                 randconfig-r044-20220221
+IMHO, it is worth preserving the existing switch case sequence as vm_flags
+moves linearly from VM_NONE to (VM_SHARED|VM_EXEC|VM_WRITE|VM_READ). This
+proposal did not attempt to further optimize any common page prot values
+for various vm_flags combinations even on other platforms.
 
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+> 
+>> +       case VM_SHARED | VM_WRITE:
+>> +               return PAGE_SHARED;
+>> +       case VM_SHARED | VM_WRITE | VM_READ:
+>> +               return __pgprot(CF_PAGE_VALID | CF_PAGE_ACCESSED |
+>> +                               CF_PAGE_READABLE | CF_PAGE_SHARED);
+>> +       case VM_SHARED | VM_EXEC:
+>> +               return __pgprot(CF_PAGE_VALID | CF_PAGE_ACCESSED |
+>> +                               CF_PAGE_EXEC);
+> 
+> Same as plain VM_EXEC.
+> 
+>> +       case VM_SHARED | VM_EXEC | VM_READ:
+>> +               return __pgprot(CF_PAGE_VALID | CF_PAGE_ACCESSED |
+>> +                               CF_PAGE_READABLE | CF_PAGE_EXEC);
+> 
+> Same as plain VM_EXEC | VM_READ.
+> 
+>> +       case VM_SHARED | VM_EXEC | VM_WRITE:
+>> +               return __pgprot(CF_PAGE_VALID | CF_PAGE_ACCESSED |
+>> +                               CF_PAGE_SHARED | CF_PAGE_EXEC);
+>> +       case VM_SHARED | VM_EXEC | VM_WRITE | VM_READ:
+>> +               return __pgprot(CF_PAGE_VALID | CF_PAGE_ACCESSED |
+>> +                               CF_PAGE_READABLE | CF_PAGE_SHARED |
+>> +                               CF_PAGE_EXEC);
+>> +       default:
+>> +               BUILD_BUG();
+>> +       }
+>> +}
+>> +#endif
+>> +
+>> +#ifdef CONFIG_SUN3
+>> +/*
+>> + * Page protections for initialising protection_map. The sun3 has only two
+>> + * protection settings, valid (implying read and execute) and writeable. These
+>> + * are as close as we can get...
+>> + */
+>> +pgprot_t vm_get_page_prot(unsigned long vm_flags)
+> 
+> Wouldn't it make more sense to add this to arch/m68k/mm/sun3mmu.c?
+
+Sure, will move (#ifdef CONFIG_SUN3 will not be required anymore).
+
+> 
+>> +{
+>> +       switch (vm_flags & (VM_READ | VM_WRITE | VM_EXEC | VM_SHARED)) {
+>> +       case VM_NONE:
+>> +               return PAGE_NONE;
+>> +       case VM_READ:
+>> +               return PAGE_READONLY;
+>> +       case VM_WRITE:
+>> +       case VM_WRITE | VM_READ:
+> 
+> So you did merge some of them...
+
+Only when they follow vm_flags linear sequence.
+
+> 
+>> +               return PAGE_COPY;
+>> +       case VM_EXEC:
+>> +       case VM_EXEC | VM_READ:
+>> +               return PAGE_READONLY;
+> 
+> But not all? More below...
+
+Right, because did not want to shuffle up vm_flags linear sequence.
+
+> 
+>> +       case VM_EXEC | VM_WRITE:
+>> +       case VM_EXEC | VM_WRITE | VM_READ:
+>> +               return PAGE_COPY;
+>> +       case VM_SHARED:
+>> +               return PAGE_NONE;
+>> +       case VM_SHARED | VM_READ:
+>> +               return PAGE_READONLY;
+>> +       case VM_SHARED | VM_WRITE:
+>> +       case VM_SHARED | VM_WRITE | VM_READ:
+>> +               return PAGE_SHARED;
+>> +       case VM_SHARED | VM_EXEC:
+>> +       case VM_SHARED | VM_EXEC | VM_READ:
+>> +               return PAGE_READONLY;
+>> +       case VM_SHARED | VM_EXEC | VM_WRITE:
+>> +       case VM_SHARED | VM_EXEC | VM_WRITE | VM_READ:
+>> +               return PAGE_SHARED;
+>> +       default:
+>> +               BUILD_BUG();
+>> +       }
+>> +}
+>> +#endif
+>> +EXPORT_SYMBOL(vm_get_page_prot);
+>> diff --git a/arch/m68k/mm/motorola.c b/arch/m68k/mm/motorola.c
+>> index ecbe948f4c1a..495ba0ea083c 100644
+>> --- a/arch/m68k/mm/motorola.c
+>> +++ b/arch/m68k/mm/motorola.c
+>> @@ -400,12 +400,9 @@ void __init paging_init(void)
+>>
+>>         /* Fix the cache mode in the page descriptors for the 680[46]0.  */
+>>         if (CPU_IS_040_OR_060) {
+>> -               int i;
+>>  #ifndef mm_cachebits
+>>                 mm_cachebits = _PAGE_CACHE040;
+>>  #endif
+>> -               for (i = 0; i < 16; i++)
+>> -                       pgprot_val(protection_map[i]) |= _PAGE_CACHE040;
+>>         }
+>>
+>>         min_addr = m68k_memory[0].addr;
+>> @@ -483,3 +480,48 @@ void __init paging_init(void)
+>>         max_zone_pfn[ZONE_DMA] = memblock_end_of_DRAM();
+>>         free_area_init(max_zone_pfn);
+>>  }
+>> +
+>> +/*
+>> + * The m68k can't do page protection for execute, and considers that
+>> + * the same are read. Also, write permissions imply read permissions.
+>> + * This is the closest we can get..
+>> + */
+>> +pgprot_t vm_get_page_prot(unsigned long vm_flags)
+> 
+> Good, this one is in arch/m68k/mm/motorola.c :-)
+> 
+>> +{
+>> +       unsigned long cachebits = 0;
+>> +
+>> +       if (CPU_IS_040_OR_060)
+>> +               cachebits = _PAGE_CACHE040;
+> 
+> If you would use the non-"_C"-variants (e.g. PAGE_NONE instead of
+> PAGE_NONE_C) below, you would get the cachebits handling for free!
+> After that, the "_C" variants are no longer used, and can be removed.
+> Cfr. arch/m68k/include/asm/motorola_pgtable.h:
+
+Right.
+
+> 
+>     #define PAGE_NONE       __pgprot(_PAGE_PROTNONE | _PAGE_ACCESSED |
+> mm_cachebits)
+>     #define PAGE_SHARED     __pgprot(_PAGE_PRESENT | _PAGE_ACCESSED |
+> mm_cachebits)
+>     #define PAGE_COPY       __pgprot(_PAGE_PRESENT | _PAGE_RONLY |
+> _PAGE_ACCESSED | mm_cachebits)
+>     #define PAGE_READONLY   __pgprot(_PAGE_PRESENT | _PAGE_RONLY |
+> _PAGE_ACCESSED | mm_cachebits)
+>     #define PAGE_KERNEL     __pgprot(_PAGE_PRESENT | _PAGE_DIRTY |
+> _PAGE_ACCESSED | mm_cachebits)
+> 
+>     /* Alternate definitions that are compile time constants, for
+>        initializing protection_map.  The cachebits are fixed later.  */
+>     #define PAGE_NONE_C     __pgprot(_PAGE_PROTNONE | _PAGE_ACCESSED)
+>     #define PAGE_SHARED_C   __pgprot(_PAGE_PRESENT | _PAGE_ACCESSED)
+>     #define PAGE_COPY_C     __pgprot(_PAGE_PRESENT | _PAGE_RONLY |
+> _PAGE_ACCESSED)
+>     #define PAGE_READONLY_C __pgprot(_PAGE_PRESENT | _PAGE_RONLY |
+> _PAGE_ACCESSED)
+
+Will drop all _C definitions and change switch case as mentioned above.
+
+> 
+> BTW, this shows you left a reference in a comment to the now-gone
+> "protection_map".  There are several more across the tree.
+
+Right, will remove them all.
+
+> 
+>> +
+>> +       switch (vm_flags & (VM_READ | VM_WRITE | VM_EXEC | VM_SHARED)) {
+>> +       case VM_NONE:
+>> +               return __pgprot(pgprot_val(PAGE_NONE_C) | cachebits);
+>> +       case VM_READ:
+>> +               return __pgprot(pgprot_val(PAGE_READONLY_C) | cachebits);
+>> +       case VM_WRITE:
+>> +       case VM_WRITE | VM_READ:
+>> +               return __pgprot(pgprot_val(PAGE_COPY_C) | cachebits);
+>> +       case VM_EXEC:
+>> +       case VM_EXEC | VM_READ:
+>> +               return __pgprot(pgprot_val(PAGE_READONLY_C) | cachebits);
+>> +       case VM_EXEC | VM_WRITE:
+>> +       case VM_EXEC | VM_WRITE | VM_READ:
+>> +               return __pgprot(pgprot_val(PAGE_COPY_C) | cachebits);
+>> +       case VM_SHARED:
+>> +               return __pgprot(pgprot_val(PAGE_NONE_C) | cachebits);
+> 
+> Same as the VM_NONE case.  More to be merged below...
+
+As explained earlier.
