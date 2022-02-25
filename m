@@ -2,109 +2,208 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id F3B46C433EF
-	for <linux-m68k@archiver.kernel.org>; Thu, 24 Feb 2022 09:56:38 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 36A3FC433EF
+	for <linux-m68k@archiver.kernel.org>; Fri, 25 Feb 2022 04:28:44 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232227AbiBXJ5F (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Thu, 24 Feb 2022 04:57:05 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49930 "EHLO
+        id S232548AbiBYE3N (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Thu, 24 Feb 2022 23:29:13 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57216 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233146AbiBXJ46 (ORCPT
+        with ESMTP id S229702AbiBYE3N (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Thu, 24 Feb 2022 04:56:58 -0500
-Received: from mail-vs1-f47.google.com (mail-vs1-f47.google.com [209.85.217.47])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4939B28ADA1
-        for <linux-m68k@lists.linux-m68k.org>; Thu, 24 Feb 2022 01:56:22 -0800 (PST)
-Received: by mail-vs1-f47.google.com with SMTP id d26so1576985vsh.0
-        for <linux-m68k@lists.linux-m68k.org>; Thu, 24 Feb 2022 01:56:22 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=UaaU3qYErVihNgxgJw4SHNwOEGx/UhY/ytg286+tR04=;
-        b=PqWjvPJWo/2BaphW+2txNxOrWCITE1zT4VbQIhRME+YYBFQ9izMeVOCCAdt3uP0vzn
-         C7t1ruenqr4itXKuewqEkNik9zpv9n2ZBPFIRyENMyXgIwOJ01061FlW2oHI0DolCGaP
-         bnDb2lhF/vSD4p9bzepDViCdEa+PZscKBjmusUiYSVZPz/FhtBAHU/bPTs3qEVvMhlZq
-         33CndukxmNdOGrAzBIxKErf+TkIhLQXMHjLTILWGNkCpaC/thy1R1HqU8go0SQ93wuEw
-         2QEswgTgqGT67YhnWoiAzm02vmgzwSAX7CgB4o3sYw8qbLkPyKls+afKeJ9bS1zj3Kjc
-         yegw==
-X-Gm-Message-State: AOAM531WdXwzNQTyZfFvdPHB/oYXDJ3HzTA3kKxqIecruRig+q+IqjSI
-        zXYyDl4LxgyWBtabw3lK9cyE4q6X7CvdyA==
-X-Google-Smtp-Source: ABdhPJzOIwpApWAW5zd3w+a0VckuAbVVnYxx//XzFS0R+vTvAgWAbk5cn2x/Be9HRzs4Dh1sASlxfg==
-X-Received: by 2002:a67:ecc6:0:b0:31c:33d2:8f6b with SMTP id i6-20020a67ecc6000000b0031c33d28f6bmr867249vsp.46.1645696581324;
-        Thu, 24 Feb 2022 01:56:21 -0800 (PST)
-Received: from mail-ua1-f47.google.com (mail-ua1-f47.google.com. [209.85.222.47])
-        by smtp.gmail.com with ESMTPSA id j24sm322196vki.39.2022.02.24.01.56.21
-        for <linux-m68k@lists.linux-m68k.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 24 Feb 2022 01:56:21 -0800 (PST)
-Received: by mail-ua1-f47.google.com with SMTP id c23so620502uaq.7
-        for <linux-m68k@lists.linux-m68k.org>; Thu, 24 Feb 2022 01:56:21 -0800 (PST)
-X-Received: by 2002:a9f:360f:0:b0:341:8a12:8218 with SMTP id
- r15-20020a9f360f000000b003418a128218mr737932uad.14.1645696580955; Thu, 24 Feb
- 2022 01:56:20 -0800 (PST)
+        Thu, 24 Feb 2022 23:29:13 -0500
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 326F81AAA77
+        for <linux-m68k@lists.linux-m68k.org>; Thu, 24 Feb 2022 20:28:42 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 2283161879;
+        Fri, 25 Feb 2022 04:28:41 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 905E7C340E8;
+        Fri, 25 Feb 2022 04:28:34 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1645763320;
+        bh=7SThN/utKX/p0lzUCmG6ocQvEAx3lLFOHF56GsXqmkg=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=QDYtR8NlrGKuoQjmYA8kyhZOE9M5T1r29vrwrzKtqeW8ZEboLFyE9tpTLIHZrIsc2
+         nruqaf44dOGvL9m0YF8yy/0GnP7bjsDnUbUqIRzmMJPfXE0DXeAhxVhfed4IaeshxM
+         3dBB3rRybvVICiYVW2EwE6UiyRp2P0hHIB0n0MePLyot8SwYrU2i+wAnXsNlJLOQZg
+         JdbB1DfWOrhGY/Jb/JrlNhbdzjO74CuLFiFEukShPqlCb0VjpFFv/dEFsnilhkTnnf
+         /2HYT2lkEsKGxWybS9oRJ8pGnuvkqQGXNVQBnHCXm5s98tF2QqOVujOWC0O/sTxEOf
+         zPy8zKCde1DGg==
+Message-ID: <f6c34635-533f-8b63-b27b-15835b93e6d4@kernel.org>
+Date:   Thu, 24 Feb 2022 22:28:32 -0600
 MIME-Version: 1.0
-References: <20220224060448.1856091-1-keescook@chromium.org>
- <CAMuHMdVioQLy_T2LimgWdfWM=j=fomfpayuS1mbXnBLZj4gGQA@mail.gmail.com>
- <d75f1259c3e64387a161ebcb0448d594@AcuMS.aculab.com> <CAMuHMdWtQ+B-01ZOwZNvgQ7pndNsP3V90_jHdR=RS4K7O3Vk9g@mail.gmail.com>
- <95b9c3e8227a4892b26cc0384d1782c2@AcuMS.aculab.com>
-In-Reply-To: <95b9c3e8227a4892b26cc0384d1782c2@AcuMS.aculab.com>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Thu, 24 Feb 2022 10:56:09 +0100
-X-Gmail-Original-Message-ID: <CAMuHMdU6msvi0j=mS28GFYbm+uMRk7PkYe+zOM4sDmOVxeibLQ@mail.gmail.com>
-Message-ID: <CAMuHMdU6msvi0j=mS28GFYbm+uMRk7PkYe+zOM4sDmOVxeibLQ@mail.gmail.com>
-Subject: Re: [PATCH] m68k: Implement "current_stack_pointer"
-To:     David Laight <David.Laight@aculab.com>,
-        Kees Cook <keescook@chromium.org>
-Cc:     linux-m68k <linux-m68k@lists.linux-m68k.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "linux-hardening@vger.kernel.org" <linux-hardening@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.5.0
+Subject: Re: [PATCH v2 02/18] uaccess: fix nios2 and microblaze get_user_8()
+Content-Language: en-US
+To:     Arnd Bergmann <arnd@kernel.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Christoph Hellwig <hch@lst.de>, linux-arch@vger.kernel.org,
+        linux-mm@kvack.org, linux-api@vger.kernel.org, arnd@arndb.de,
+        linux-kernel@vger.kernel.org, viro@zeniv.linux.org.uk
+Cc:     linux@armlinux.org.uk, will@kernel.org, guoren@kernel.org,
+        bcain@codeaurora.org, geert@linux-m68k.org, monstr@monstr.eu,
+        tsbogend@alpha.franken.de, nickhu@andestech.com,
+        green.hu@gmail.com, shorne@gmail.com, deller@gmx.de,
+        mpe@ellerman.id.au, peterz@infradead.org, mingo@redhat.com,
+        mark.rutland@arm.com, hca@linux.ibm.com, dalias@libc.org,
+        davem@davemloft.net, richard@nod.at, x86@kernel.org,
+        jcmvbkbc@gmail.com, ebiederm@xmission.com,
+        akpm@linux-foundation.org, ardb@kernel.org,
+        linux-alpha@vger.kernel.org, linux-snps-arc@lists.infradead.org,
+        linux-csky@vger.kernel.org, linux-hexagon@vger.kernel.org,
+        linux-ia64@vger.kernel.org, linux-m68k@lists.linux-m68k.org,
+        linux-mips@vger.kernel.org, openrisc@lists.librecores.org,
+        linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org,
+        linux-sh@vger.kernel.org, sparclinux@vger.kernel.org,
+        linux-um@lists.infradead.org, linux-xtensa@linux-xtensa.org
+References: <20220216131332.1489939-1-arnd@kernel.org>
+ <20220216131332.1489939-3-arnd@kernel.org>
+From:   Dinh Nguyen <dinguyen@kernel.org>
+In-Reply-To: <20220216131332.1489939-3-arnd@kernel.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-Hi David, Kees,
 
-On Thu, Feb 24, 2022 at 10:54 AM David Laight <David.Laight@aculab.com> wrote:
-> From: Geert Uytterhoeven <geert@linux-m68k.org>
-> > Sent: 24 February 2022 09:17
-> >
-> > On Thu, Feb 24, 2022 at 10:12 AM David Laight <David.Laight@aculab.com> wrote:
-> > > From: Geert Uytterhoeven
-> > > > Sent: 24 February 2022 08:59
-> > > ...
-> > > > > +register unsigned long current_stack_pointer __asm__("sp");
-> > > >
-> > > > I don't know what HARDENED_USERCOPY does, so I don't know if you need
-> > > > "usp" (see rdusp()) or "sp"?
-> > >
-> > > HARDENED_USERCOPY significantly slows down some systems calls
-> > > (especially things like sendmsg()) by trying to run-time verify
-> > > that the kernel buffer doesn't overrun a stack frame or kmalloc()ed
-> >
-> > Kernel stack frame of user stack frame?
->
-> Kernel, the kernel doesn't care if the user stack gets trashed.
 
-OK.
+On 2/16/22 07:13, Arnd Bergmann wrote:
+> From: Arnd Bergmann <arnd@arndb.de>
+> 
+> These two architectures implement 8-byte get_user() through
+> a memcpy() into a four-byte variable, which won't fit.
+> 
+> Use a temporary 64-bit variable instead here, and use a double
+> cast the way that risc-v and openrisc do to avoid compile-time
+> warnings.
+> 
+> Fixes: 6a090e97972d ("arch/microblaze: support get_user() of size 8 bytes")
+> Fixes: 5ccc6af5e88e ("nios2: Memory management")
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+> ---
+>   arch/microblaze/include/asm/uaccess.h | 18 +++++++++---------
+>   arch/nios2/include/asm/uaccess.h      | 26 ++++++++++++++++----------
+>   2 files changed, 25 insertions(+), 19 deletions(-)
+> 
+> diff --git a/arch/microblaze/include/asm/uaccess.h b/arch/microblaze/include/asm/uaccess.h
+> index 5b6e0e7788f4..3fe96979d2c6 100644
+> --- a/arch/microblaze/include/asm/uaccess.h
+> +++ b/arch/microblaze/include/asm/uaccess.h
+> @@ -130,27 +130,27 @@ extern long __user_bad(void);
+>   
+>   #define __get_user(x, ptr)						\
+>   ({									\
+> -	unsigned long __gu_val = 0;					\
+>   	long __gu_err;							\
+>   	switch (sizeof(*(ptr))) {					\
+>   	case 1:								\
+> -		__get_user_asm("lbu", (ptr), __gu_val, __gu_err);	\
+> +		__get_user_asm("lbu", (ptr), x, __gu_err);		\
+>   		break;							\
+>   	case 2:								\
+> -		__get_user_asm("lhu", (ptr), __gu_val, __gu_err);	\
+> +		__get_user_asm("lhu", (ptr), x, __gu_err);		\
+>   		break;							\
+>   	case 4:								\
+> -		__get_user_asm("lw", (ptr), __gu_val, __gu_err);	\
+> +		__get_user_asm("lw", (ptr), x, __gu_err);		\
+>   		break;							\
+> -	case 8:								\
+> -		__gu_err = __copy_from_user(&__gu_val, ptr, 8);		\
+> -		if (__gu_err)						\
+> -			__gu_err = -EFAULT;				\
+> +	case 8: {							\
+> +		__u64 __x = 0;						\
+> +		__gu_err = raw_copy_from_user(&__x, ptr, 8) ?		\
+> +							-EFAULT : 0;	\
+> +		(x) = (typeof(x))(typeof((x) - (x)))__x;		\
+>   		break;							\
+> +	}								\
+>   	default:							\
+>   		/* __gu_val = 0; __gu_err = -EINVAL;*/ __gu_err = __user_bad();\
+>   	}								\
+> -	x = (__force __typeof__(*(ptr))) __gu_val;			\
+>   	__gu_err;							\
+>   })
+>   
+> diff --git a/arch/nios2/include/asm/uaccess.h b/arch/nios2/include/asm/uaccess.h
+> index ba9340e96fd4..ca9285a915ef 100644
+> --- a/arch/nios2/include/asm/uaccess.h
+> +++ b/arch/nios2/include/asm/uaccess.h
+> @@ -88,6 +88,7 @@ extern __must_check long strnlen_user(const char __user *s, long n);
+>   /* Optimized macros */
+>   #define __get_user_asm(val, insn, addr, err)				\
+>   {									\
+> +	unsigned long __gu_val;						\
+>   	__asm__ __volatile__(						\
+>   	"       movi    %0, %3\n"					\
+>   	"1:   " insn " %1, 0(%2)\n"					\
+> @@ -96,14 +97,20 @@ extern __must_check long strnlen_user(const char __user *s, long n);
+>   	"       .section __ex_table,\"a\"\n"				\
+>   	"       .word 1b, 2b\n"						\
+>   	"       .previous"						\
+> -	: "=&r" (err), "=r" (val)					\
+> +	: "=&r" (err), "=r" (__gu_val)					\
+>   	: "r" (addr), "i" (-EFAULT));					\
+> +	val = (__force __typeof__(*(addr)))__gu_val;			\
+>   }
+>   
+> -#define __get_user_unknown(val, size, ptr, err) do {			\
+> +extern void __get_user_unknown(void);
+> +
+> +#define __get_user_8(val, ptr, err) do {				\
+> +	u64 __val = 0;							\
+>   	err = 0;							\
+> -	if (__copy_from_user(&(val), ptr, size)) {			\
+> +	if (raw_copy_from_user(&(__val), ptr, sizeof(val))) {		\
+>   		err = -EFAULT;						\
+> +	} else {							\
+> +		val = (typeof(val))(typeof((val) - (val)))__val;	\
+>   	}								\
+>   	} while (0)
+>   
+> @@ -119,8 +126,11 @@ do {									\
+>   	case 4:								\
+>   		__get_user_asm(val, "ldw", ptr, err);			\
+>   		break;							\
+> +	case 8:								\
+> +		__get_user_8(val, ptr, err);				\
+> +		break;							\
+>   	default:							\
+> -		__get_user_unknown(val, size, ptr, err);		\
+> +		__get_user_unknown();					\
+>   		break;							\
+>   	}								\
+>   } while (0)
+> @@ -129,9 +139,7 @@ do {									\
+>   	({								\
+>   	long __gu_err = -EFAULT;					\
+>   	const __typeof__(*(ptr)) __user *__gu_ptr = (ptr);		\
+> -	unsigned long __gu_val = 0;					\
+> -	__get_user_common(__gu_val, sizeof(*(ptr)), __gu_ptr, __gu_err);\
+> -	(x) = (__force __typeof__(x))__gu_val;				\
+> +	__get_user_common(x, sizeof(*(ptr)), __gu_ptr, __gu_err);	\
+>   	__gu_err;							\
+>   	})
+>   
+> @@ -139,11 +147,9 @@ do {									\
+>   ({									\
+>   	long __gu_err = -EFAULT;					\
+>   	const __typeof__(*(ptr)) __user *__gu_ptr = (ptr);		\
+> -	unsigned long __gu_val = 0;					\
+>   	if (access_ok( __gu_ptr, sizeof(*__gu_ptr)))	\
+> -		__get_user_common(__gu_val, sizeof(*__gu_ptr),		\
+> +		__get_user_common(x, sizeof(*__gu_ptr),			\
+>   			__gu_ptr, __gu_err);				\
+> -	(x) = (__force __typeof__(x))__gu_val;				\
+>   	__gu_err;							\
+>   })
+>   
 
-Reviewed-by: Geert Uytterhoeven <geert@linux-m68k.org>
-
-Kees: Do you want me to queue this in the m68k for-v5.18 branch, or do
-you want to take it yourself, together with the HARDENED_USERCOPY work?
-In case of the latter:
-Acked-by: Geert Uytterhoeven <geert@linux-m68k.org>
-
-Please let me know. Thanks!
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+Acked-by: Dinh Nguyen <dinguyen@kernel.org>
