@@ -2,94 +2,117 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 1A7F3C433FE
-	for <linux-m68k@archiver.kernel.org>; Fri, 25 Feb 2022 09:35:45 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id AC353C433FE
+	for <linux-m68k@archiver.kernel.org>; Fri, 25 Feb 2022 17:37:34 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239151AbiBYJgO (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Fri, 25 Feb 2022 04:36:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60566 "EHLO
+        id S239421AbiBYRiD (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Fri, 25 Feb 2022 12:38:03 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41226 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237787AbiBYJgN (ORCPT
+        with ESMTP id S243963AbiBYRh6 (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Fri, 25 Feb 2022 04:36:13 -0500
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id D6C211F767A
-        for <linux-m68k@lists.linux-m68k.org>; Fri, 25 Feb 2022 01:35:41 -0800 (PST)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id DF2EF106F;
-        Fri, 25 Feb 2022 01:35:40 -0800 (PST)
-Received: from [10.163.51.16] (unknown [10.163.51.16])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id A5E803F70D;
-        Fri, 25 Feb 2022 01:35:38 -0800 (PST)
-Subject: Re: [PATCH V2 08/30] m68k/mm: Enable ARCH_HAS_VM_GET_PAGE_PROT
-To:     Geert Uytterhoeven <geert@linux-m68k.org>,
-        Andrew Morton <akpm@linux-foundation.org>
-Cc:     Linux MM <linux-mm@kvack.org>,
+        Fri, 25 Feb 2022 12:37:58 -0500
+Received: from mail-pg1-x52f.google.com (mail-pg1-x52f.google.com [IPv6:2607:f8b0:4864:20::52f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC5B11706B
+        for <linux-m68k@lists.linux-m68k.org>; Fri, 25 Feb 2022 09:37:24 -0800 (PST)
+Received: by mail-pg1-x52f.google.com with SMTP id o26so4582951pgb.8
+        for <linux-m68k@lists.linux-m68k.org>; Fri, 25 Feb 2022 09:37:24 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=02IWQGflWXjYwUX29jDdu/P28RFJb4bHYd+IQuUew8g=;
+        b=kUgfr+BUSyJkVMN/Doh8ZyiibLenLl15zo6bOy4rWBJYX17usBgH/o8iJTHO5XKZdv
+         FIRoxVZBZpjCBE2RUff++qJBIi09y14ofiD3ly3QeSlZp5xJscoOCHa7IsD8lgTU/o1J
+         xO0CrtIahGKQzcczYaERI0DLYTA+5L/usaOtM=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=02IWQGflWXjYwUX29jDdu/P28RFJb4bHYd+IQuUew8g=;
+        b=jB4VA7zWSKWweWBbPnz3VnLOON+PVvva8+vJCagSmrDPAd+J2KIA4PuhiFXaqlWtcy
+         r3KTmQK2SWJS8qhq3KkP4KulP5jkb4uGml+2BB6HTh7PiIFvM7H3Tru9mVKWdOdRBKM4
+         giLBq9VylsaAxBEmPlaQlcqn2HkJNok+z9t4PTfiAaxezskcAc1aH6j/P9DQXbIv1r2D
+         /0S5BscZZfhl5IxKue1iQnBMlnIF6KaEXQyrbN7VFQxq2bUnQkzYzRxiEMmR7O4otk7m
+         4FcJo3mffa8rEG1JgarfKZ11ktAPRi8cx5gaRxSOqWUju5SKoBxCN/fpW6Emhpu2Spu1
+         oQPA==
+X-Gm-Message-State: AOAM531cdSlxq2pWohbbwsEztGLbT3MMJRpL+zWNmeerVYIds6NRjdm1
+        wONCT/cUckl2rD8KPX9UfnRQew==
+X-Google-Smtp-Source: ABdhPJxa8cWp+caZT/XsGUM3pG14CnQKF4h0alaujNsw9OZoKX05Fs4iuNMYG7vu03MfC/TBygUB5w==
+X-Received: by 2002:a63:8543:0:b0:35e:3bd9:3798 with SMTP id u64-20020a638543000000b0035e3bd93798mr7089608pgd.73.1645810644059;
+        Fri, 25 Feb 2022 09:37:24 -0800 (PST)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id az22-20020a17090b029600b001bc6500625asm9681173pjb.45.2022.02.25.09.37.23
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 25 Feb 2022 09:37:23 -0800 (PST)
+Date:   Fri, 25 Feb 2022 09:37:23 -0800
+From:   Kees Cook <keescook@chromium.org>
+To:     Geert Uytterhoeven <geert@linux-m68k.org>
+Cc:     David Laight <David.Laight@aculab.com>,
+        linux-m68k <linux-m68k@lists.linux-m68k.org>,
         Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Christoph Hellwig <hch@infradead.org>,
-        Linux-Arch <linux-arch@vger.kernel.org>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        linux-m68k <linux-m68k@lists.linux-m68k.org>
-References: <1645425519-9034-1-git-send-email-anshuman.khandual@arm.com>
- <1645425519-9034-9-git-send-email-anshuman.khandual@arm.com>
- <CAMuHMdUrA4u5BTRuqTSn++vXFNn0w=HRmp9ZD_8SNZ1wMUKwwQ@mail.gmail.com>
- <CAMuHMdXRO5dph1m21=V3bVyniVvKfhDLbMoEHQzwPgvSesXj6A@mail.gmail.com>
-From:   Anshuman Khandual <anshuman.khandual@arm.com>
-Message-ID: <d417c0e7-8a47-4f40-6eb1-161797d16cef@arm.com>
-Date:   Fri, 25 Feb 2022 15:05:36 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        "linux-hardening@vger.kernel.org" <linux-hardening@vger.kernel.org>
+Subject: Re: [PATCH] m68k: Implement "current_stack_pointer"
+Message-ID: <202202250936.BA139C4@keescook>
+References: <20220224060448.1856091-1-keescook@chromium.org>
+ <CAMuHMdVioQLy_T2LimgWdfWM=j=fomfpayuS1mbXnBLZj4gGQA@mail.gmail.com>
+ <d75f1259c3e64387a161ebcb0448d594@AcuMS.aculab.com>
+ <CAMuHMdWtQ+B-01ZOwZNvgQ7pndNsP3V90_jHdR=RS4K7O3Vk9g@mail.gmail.com>
+ <95b9c3e8227a4892b26cc0384d1782c2@AcuMS.aculab.com>
+ <CAMuHMdU6msvi0j=mS28GFYbm+uMRk7PkYe+zOM4sDmOVxeibLQ@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <CAMuHMdXRO5dph1m21=V3bVyniVvKfhDLbMoEHQzwPgvSesXj6A@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAMuHMdU6msvi0j=mS28GFYbm+uMRk7PkYe+zOM4sDmOVxeibLQ@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-
-
-On 2/25/22 2:32 PM, Geert Uytterhoeven wrote:
-> Hi Anshuman, Andrew,
+On Thu, Feb 24, 2022 at 10:56:09AM +0100, Geert Uytterhoeven wrote:
+> Hi David, Kees,
 > 
-> On Mon, Feb 21, 2022 at 12:54 PM Geert Uytterhoeven
-> <geert@linux-m68k.org> wrote:
->> On Mon, Feb 21, 2022 at 9:45 AM Anshuman Khandual
->> <anshuman.khandual@arm.com> wrote:
->>> This defines and exports a platform specific custom vm_get_page_prot() via
->>> subscribing ARCH_HAS_VM_GET_PAGE_PROT. Subsequently all __SXXX and __PXXX
->>> macros can be dropped which are no longer needed.
->>>
->>> Cc: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
->>> Cc: linux-m68k@lists.linux-m68k.org
->>> Cc: linux-kernel@vger.kernel.org
->>> Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
->>
->> Thanks for your patch!
->>
->>> --- a/arch/m68k/mm/init.c
->>> +++ b/arch/m68k/mm/init.c
->>> @@ -128,3 +128,107 @@ void __init mem_init(void)
->>>         memblock_free_all();
->>>         init_pointer_tables();
->>>  }
->>> +
->>> +#ifdef CONFIG_COLDFIRE
->>> +/*
->>> + * Page protections for initialising protection_map. See mm/mmap.c
->>> + * for use. In general, the bit positions are xwr, and P-items are
->>> + * private, the S-items are shared.
->>> + */
->>> +pgprot_t vm_get_page_prot(unsigned long vm_flags)
->>
->> Wouldn't it make more sense to add this to arch/m68k/mm/mcfmmu.c?
-> 
-> It's not just about sense, but also about correctness.
-> The CF_PAGE_* definitions below exist only if CONFIG_MMU=y,
-> thus causing breakage for cfnommu in today's linux-next.
-> http://kisskb.ellerman.id.au/kisskb/buildresult/14701640/
+> On Thu, Feb 24, 2022 at 10:54 AM David Laight <David.Laight@aculab.com> wrote:
+> > From: Geert Uytterhoeven <geert@linux-m68k.org>
+> > > Sent: 24 February 2022 09:17
+> > >
+> > > On Thu, Feb 24, 2022 at 10:12 AM David Laight <David.Laight@aculab.com> wrote:
+> > > > From: Geert Uytterhoeven
+> > > > > Sent: 24 February 2022 08:59
+> > > > ...
+> > > > > > +register unsigned long current_stack_pointer __asm__("sp");
+> > > > >
+> > > > > I don't know what HARDENED_USERCOPY does, so I don't know if you need
+> > > > > "usp" (see rdusp()) or "sp"?
+> > > >
+> > > > HARDENED_USERCOPY significantly slows down some systems calls
+> > > > (especially things like sendmsg()) by trying to run-time verify
+> > > > that the kernel buffer doesn't overrun a stack frame or kmalloc()ed
+> > >
+> > > Kernel stack frame of user stack frame?
+> >
+> > Kernel, the kernel doesn't care if the user stack gets trashed.
 
-As mentioned before, will do all these necessary changes in the next
-version probably sometime earlier next week. I was waiting for other
-reviews (if any) till now.
+Right, this is strictly a kernel-side check in mm/usercopy.c:
+https://lore.kernel.org/linux-hardening/20220225173345.3358109-1-keescook@chromium.org/
+
+> 
+> OK.
+> 
+> Reviewed-by: Geert Uytterhoeven <geert@linux-m68k.org>
+> 
+> Kees: Do you want me to queue this in the m68k for-v5.18 branch, or do
+> you want to take it yourself, together with the HARDENED_USERCOPY work?
+> In case of the latter:
+> Acked-by: Geert Uytterhoeven <geert@linux-m68k.org>
+> 
+> Please let me know. Thanks!
+
+Yeah, I'll take it via my tree, just so it's all together.
+
+Thanks!
+
+-Kees
+
+
+-- 
+Kees Cook
