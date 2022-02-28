@@ -2,118 +2,254 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 2BC7CC433EF
-	for <linux-m68k@archiver.kernel.org>; Mon, 28 Feb 2022 10:27:47 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 46A2BC4167E
+	for <linux-m68k@archiver.kernel.org>; Mon, 28 Feb 2022 10:48:48 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232698AbiB1K2Y (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Mon, 28 Feb 2022 05:28:24 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37966 "EHLO
+        id S234905AbiB1KtY (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Mon, 28 Feb 2022 05:49:24 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43196 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229514AbiB1K2X (ORCPT
+        with ESMTP id S232229AbiB1KtX (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Mon, 28 Feb 2022 05:28:23 -0500
-Received: from mail-wr1-x429.google.com (mail-wr1-x429.google.com [IPv6:2a00:1450:4864:20::429])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C6407286D8
-        for <linux-m68k@lists.linux-m68k.org>; Mon, 28 Feb 2022 02:27:43 -0800 (PST)
-Received: by mail-wr1-x429.google.com with SMTP id d28so14645911wra.4
-        for <linux-m68k@lists.linux-m68k.org>; Mon, 28 Feb 2022 02:27:43 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=message-id:date:mime-version:user-agent:subject:content-language:to
-         :cc:references:from:in-reply-to:content-transfer-encoding;
-        bh=uCr16OVWDuSEsQKxJNsm24ttfbU9MwffSycejs9RTnk=;
-        b=ZUbe634WUdwhywJ4GsoAKl6hduEOQlgM8D4X1TOTsVJvb6+GZ9EMTRfhcBDrpp06UA
-         6hgyt6qOaCIWMfaC4BjthYAtieiqtKpIRA7vsRxDcLPkVrHUQoni9ZjcPVJMK6oDJxkx
-         UBmIixpJLH0kiZ6iLMG8XMjYBSzgjK+IbZNQC9wErZGjhY3GlnYfKjwzQOICDNSidlb1
-         VAdTwLQe61Ci/zAqkCzlw68QDExhMWz/Nbl4LZ1BpDlWQ3Hp/857BytJ3ZRm81o8T2wN
-         8tIO4BQOLGc3f5qvTEzl3IZSmgNQZt7yDYEUg0L6LGS2uygvBc/8DT/jIsf7fXyeR9Nz
-         6aYA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:cc:references:from:in-reply-to
-         :content-transfer-encoding;
-        bh=uCr16OVWDuSEsQKxJNsm24ttfbU9MwffSycejs9RTnk=;
-        b=6ty9kEDV46aoPHc9XE3UccPM2cXRTiNReqpLnf0VoID0k+WE+p0eb/VDqdJe1LLNVb
-         F0ZcXH15M/WF4xmUwZ96OMDM4RVBE5JshjvsI+jf/ZYYUaa3dDxAXrZzBhAPzQcZPxUK
-         zn5pjwLnzYQ/UgsEhcBF6WRDxao3b9ZifQ4EJ8Kwo9+S3A2eu91a8sBGh1B7S2kh/avW
-         6va6CZqA0P8uyIJkWlnjfEg/avZ4VvrO0V61uaP7Jb7LArFOD0Iin0zr/ti7hwHjElLt
-         8WH/+Wnst1+0C3cGDlJ/U+ZoRZbYlQWWjEsIYUM1R49LokBFa0mQygpK7cvoeG5xKmvm
-         7SXg==
-X-Gm-Message-State: AOAM533X+je2uMIzhTcgpOwHEwJxGIAr0IzpmhL6PFmHuQ9viybIGuuG
-        vJLnUKecxJiwjNGxv/1mwJ5oJQ==
-X-Google-Smtp-Source: ABdhPJwYCZzz6bNvTctYj1kOHNVO07F8Rb+DN7QVIJZSBzrbPRTFp96IFJpu9Efpf8Vrl0tgM9L5jg==
-X-Received: by 2002:a5d:53c5:0:b0:1ed:bf1b:be44 with SMTP id a5-20020a5d53c5000000b001edbf1bbe44mr15621470wrw.285.1646044062158;
-        Mon, 28 Feb 2022 02:27:42 -0800 (PST)
-Received: from ?IPV6:2a01:e34:ed2f:f020:7f2b:6650:2756:a131? ([2a01:e34:ed2f:f020:7f2b:6650:2756:a131])
-        by smtp.googlemail.com with ESMTPSA id g5-20020a5d5545000000b001ed9d3f521csm10058972wrw.113.2022.02.28.02.27.40
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 28 Feb 2022 02:27:41 -0800 (PST)
-Message-ID: <2e56d310-65a9-e910-98e0-c7c51b88b7f6@linaro.org>
-Date:   Mon, 28 Feb 2022 11:27:40 +0100
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.5.0
-Subject: Re: [PATCH v14 4/5] clocksource/drivers: Add a goldfish-timer
- clocksource
-Content-Language: en-US
-To:     Laurent Vivier <laurent@vivier.eu>
-Cc:     Arnd Bergmann <arnd@arndb.de>, linux-rtc@vger.kernel.org,
-        Jiaxun Yang <jiaxun.yang@flygoat.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        John Stultz <john.stultz@linaro.org>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Alessandro Zummo <a.zummo@towertech.it>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        linux-m68k@lists.linux-m68k.org,
-        Thomas Gleixner <tglx@linutronix.de>,
-        linux-kernel@vger.kernel.org
-References: <20220130143333.552646-1-laurent@vivier.eu>
- <20220130143333.552646-5-laurent@vivier.eu>
- <1a0f23f2-361a-25d1-b371-7a229758d248@vivier.eu>
-From:   Daniel Lezcano <daniel.lezcano@linaro.org>
-In-Reply-To: <1a0f23f2-361a-25d1-b371-7a229758d248@vivier.eu>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+        Mon, 28 Feb 2022 05:49:23 -0500
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 9CE544506D
+        for <linux-m68k@lists.linux-m68k.org>; Mon, 28 Feb 2022 02:48:44 -0800 (PST)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id EA0F81063;
+        Mon, 28 Feb 2022 02:48:43 -0800 (PST)
+Received: from p8cg001049571a15.arm.com (unknown [10.163.47.185])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 6F2553F73D;
+        Mon, 28 Feb 2022 02:48:36 -0800 (PST)
+From:   Anshuman Khandual <anshuman.khandual@arm.com>
+To:     linux-mm@kvack.org, akpm@linux-foundation.org
+Cc:     linux-kernel@vger.kernel.org, geert@linux-m68k.org,
+        Anshuman Khandual <anshuman.khandual@arm.com>,
+        Christoph Hellwig <hch@infradead.org>,
+        linuxppc-dev@lists.ozlabs.org,
+        linux-arm-kernel@lists.infradead.org, sparclinux@vger.kernel.org,
+        linux-mips@vger.kernel.org, linux-m68k@lists.linux-m68k.org,
+        linux-s390@vger.kernel.org, linux-riscv@lists.infradead.org,
+        linux-alpha@vger.kernel.org, linux-sh@vger.kernel.org,
+        linux-snps-arc@lists.infradead.org, linux-csky@vger.kernel.org,
+        linux-xtensa@linux-xtensa.org, linux-parisc@vger.kernel.org,
+        openrisc@lists.librecores.org, linux-um@lists.infradead.org,
+        linux-hexagon@vger.kernel.org, linux-ia64@vger.kernel.org,
+        linux-arch@vger.kernel.org
+Subject: [PATCH V3 00/30] mm/mmap: Drop protection_map[] and platform's __SXXX/__PXXX requirements
+Date:   Mon, 28 Feb 2022 16:17:23 +0530
+Message-Id: <1646045273-9343-1-git-send-email-anshuman.khandual@arm.com>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-On 16/02/2022 15:31, Laurent Vivier wrote:
-> Daniel,
-> 
-> as you reviewed the v12, could you review this version to see if I have 
-> addressed your comments?
+protection_map[] is an array based construct that translates given vm_flags
+combination. This array contains page protection map, which is populated by
+the platform via [__S000 .. __S111] and [__P000 .. __P111] exported macros.
+Primary usage for protection_map[] is for vm_get_page_prot(), which is used
+to determine page protection value for a given vm_flags. vm_get_page_prot()
+implementation, could again call platform overrides arch_vm_get_page_prot()
+and arch_filter_pgprot(). Some platforms override protection_map[] that was
+originally built with __SXXX/__PXXX with different runtime values.
 
-[ ... ]
+Currently there are multiple layers of abstraction i.e __SXXX/__PXXX macros
+, protection_map[], arch_vm_get_page_prot() and arch_filter_pgprot() built
+between the platform and generic MM, finally defining vm_get_page_prot().
 
-> Le 30/01/2022 à 15:33, Laurent Vivier a écrit :
->> Add a clocksource based on the goldfish-rtc device.
->>
->> Move the timer register definition to <clocksource/timer-goldfish.h>
->>
->> This kernel implementation is based on the QEMU upstream implementation:
->>
->>     https://git.qemu.org/?p=qemu.git;a=blob_plain;f=hw/rtc/goldfish_rtc.c
->>
->> Details related to Goldfish devices can be found in:
->>
->>    
->> https://android.googlesource.com/platform/external/qemu/+/master/docs/GOLDFISH-VIRTUAL-HARDWARE.TXT 
->>
-Please do not add pointer in the changelog as this one will stay forever 
-but no guarantee for the url.
+Hence this series proposes to drop all these abstraction levels and instead
+just move the responsibility of defining vm_get_page_prot() to the platform
+itself making it clean and simple.
 
-A description of the timer is enough:
+This first introduces ARCH_HAS_VM_GET_PAGE_PROT which enables the platforms
+to define custom vm_get_page_prot(). This starts converting platforms that
+either change protection_map[] or define the overrides arch_filter_pgprot()
+or arch_vm_get_page_prot() which enables for those constructs to be dropped
+off completely. This series then converts remaining platforms which enables
+for __SXXX/__PXXX constructs to be dropped off completely. Finally it drops
+the generic vm_get_page_prot() and then ARCH_HAS_VM_GET_PAGE_PROT as every
+platform now defines their own vm_get_page_prot().
 
-eg.
-commit 625022a5f1606
-commit a7ad38b0dd3c1
+The series has been inspired from an earlier discuss with Christoph Hellwig
 
+https://lore.kernel.org/all/1632712920-8171-1-git-send-email-anshuman.khandual@arm.com/
+
+This series applies on 5.17-rc6 after the following patch.
+
+https://lore.kernel.org/all/1643004823-16441-1-git-send-email-anshuman.khandual@arm.com/
+
+This series has been cross built for multiple platforms.
+
+- Anshuman
+
+Cc: Christoph Hellwig <hch@infradead.org>
+Cc: Andrew Morton <akpm@linux-foundation.org>
+Cc: linuxppc-dev@lists.ozlabs.org
+Cc: linux-arm-kernel@lists.infradead.org
+Cc: sparclinux@vger.kernel.org
+Cc: linux-mips@vger.kernel.org
+Cc: linux-m68k@lists.linux-m68k.org
+Cc: linux-s390@vger.kernel.org
+Cc: linux-riscv@lists.infradead.org
+Cc: linux-alpha@vger.kernel.org
+Cc: linux-sh@vger.kernel.org
+Cc: linux-snps-arc@lists.infradead.org
+Cc: linux-csky@vger.kernel.org
+Cc: linux-xtensa@linux-xtensa.org
+Cc: linux-parisc@vger.kernel.org
+Cc: openrisc@lists.librecores.org
+Cc: linux-um@lists.infradead.org
+Cc: linux-hexagon@vger.kernel.org
+Cc: linux-ia64@vger.kernel.org
+Cc: linux-mm@kvack.org
+Cc: linux-arch@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org
+
+Changes in V3:
+
+- Dropped variable 'i' from sme_early_init() on x86 platform
+- Moved CONFIG_COLDFIRE vm_get_page_prot() inside arch/m68k/mm/mcfmmu.c
+- Moved CONFIG_SUN3 vm_get_page_prot() inside arch/m68k/mm/sun3mmu.c
+- Dropped cachebits for vm_get_page_prot() inside arch/m68k/mm/motorola.c
+- Dropped PAGE_XXX_C definitions from arch/m68k/include/asm/motorola_pgtable.h
+- Used PAGE_XXX instead for vm_get_page_prot() inside arch/m68k/mm/motorola.c
+- Dropped all references to protection_map[] in the tree
+- Replaced s/extensa/xtensa/ on the patch title
+- Moved left over comments from pgtable.h into init.c on nios2 platform
+
+Changes in V2:
+
+https://lore.kernel.org/all/1645425519-9034-1-git-send-email-anshuman.khandual@arm.com/
+
+- Dropped the entire comment block in [PATCH 30/30] per Geert
+- Replaced __P010 (although commented) with __PAGE_COPY on arm platform
+- Replaced __P101 with PAGE_READONLY on um platform
+
+Changes in V1:
+
+https://lore.kernel.org/all/1644805853-21338-1-git-send-email-anshuman.khandual@arm.com/
+
+- Add white spaces around the | operators 
+- Moved powerpc_vm_get_page_prot() near vm_get_page_prot() on powerpc
+- Moved arm64_vm_get_page_prot() near vm_get_page_prot() on arm64
+- Moved sparc_vm_get_page_prot() near vm_get_page_prot() on sparc
+- Compacted vm_get_page_prot() switch cases on all platforms
+-  _PAGE_CACHE040 inclusion is dependent on CPU_IS_040_OR_060
+- VM_SHARED case should return PAGE_NONE (not PAGE_COPY) on SH platform
+- Reorganized VM_SHARED, VM_EXEC, VM_WRITE, VM_READ
+- Dropped the last patch [RFC V1 31/31] which added macros for vm_flags combinations
+  https://lore.kernel.org/all/1643029028-12710-32-git-send-email-anshuman.khandual@arm.com/
+
+Changes in RFC:
+
+https://lore.kernel.org/all/1643029028-12710-1-git-send-email-anshuman.khandual@arm.com/
+
+Anshuman Khandual (29):
+  mm/debug_vm_pgtable: Drop protection_map[] usage
+  mm/mmap: Clarify protection_map[] indices
+  mm/mmap: Add new config ARCH_HAS_VM_GET_PAGE_PROT
+  powerpc/mm: Enable ARCH_HAS_VM_GET_PAGE_PROT
+  arm64/mm: Enable ARCH_HAS_VM_GET_PAGE_PROT
+  sparc/mm: Enable ARCH_HAS_VM_GET_PAGE_PROT
+  mips/mm: Enable ARCH_HAS_VM_GET_PAGE_PROT
+  m68k/mm: Enable ARCH_HAS_VM_GET_PAGE_PROT
+  arm/mm: Enable ARCH_HAS_VM_GET_PAGE_PROT
+  mm/mmap: Drop protection_map[]
+  mm/mmap: Drop arch_filter_pgprot()
+  mm/mmap: Drop arch_vm_get_page_pgprot()
+  s390/mm: Enable ARCH_HAS_VM_GET_PAGE_PROT
+  riscv/mm: Enable ARCH_HAS_VM_GET_PAGE_PROT
+  alpha/mm: Enable ARCH_HAS_VM_GET_PAGE_PROT
+  sh/mm: Enable ARCH_HAS_VM_GET_PAGE_PROT
+  arc/mm: Enable ARCH_HAS_VM_GET_PAGE_PROT
+  csky/mm: Enable ARCH_HAS_VM_GET_PAGE_PROT
+  xtensa/mm: Enable ARCH_HAS_VM_GET_PAGE_PROT
+  parisc/mm: Enable ARCH_HAS_VM_GET_PAGE_PROT
+  openrisc/mm: Enable ARCH_HAS_VM_GET_PAGE_PROT
+  um/mm: Enable ARCH_HAS_VM_GET_PAGE_PROT
+  microblaze/mm: Enable ARCH_HAS_VM_GET_PAGE_PROT
+  nios2/mm: Enable ARCH_HAS_VM_GET_PAGE_PROT
+  hexagon/mm: Enable ARCH_HAS_VM_GET_PAGE_PROT
+  nds32/mm: Enable ARCH_HAS_VM_GET_PAGE_PROT
+  ia64/mm: Enable ARCH_HAS_VM_GET_PAGE_PROT
+  mm/mmap: Drop generic vm_get_page_prot()
+  mm/mmap: Drop ARCH_HAS_VM_GET_PAGE_PROT
+
+Christoph Hellwig (1):
+  x86/mm: Enable ARCH_HAS_VM_GET_PAGE_PROT
+
+ arch/alpha/include/asm/pgtable.h          | 17 -----
+ arch/alpha/mm/init.c                      | 37 +++++++++++
+ arch/arc/include/asm/pgtable-bits-arcv2.h | 17 -----
+ arch/arc/mm/mmap.c                        | 41 ++++++++++++
+ arch/arm/include/asm/pgtable.h            | 20 +-----
+ arch/arm/lib/uaccess_with_memcpy.c        |  2 +-
+ arch/arm/mm/mmu.c                         | 44 +++++++++++--
+ arch/arm64/Kconfig                        |  1 -
+ arch/arm64/include/asm/memory.h           |  3 +-
+ arch/arm64/include/asm/mman.h             | 24 -------
+ arch/arm64/include/asm/pgtable-prot.h     | 18 ------
+ arch/arm64/include/asm/pgtable.h          | 11 ----
+ arch/arm64/mm/mmap.c                      | 78 +++++++++++++++++++++++
+ arch/csky/include/asm/pgtable.h           | 18 ------
+ arch/csky/mm/init.c                       | 32 ++++++++++
+ arch/hexagon/include/asm/pgtable.h        | 24 -------
+ arch/hexagon/mm/init.c                    | 67 +++++++++++++++++++
+ arch/ia64/include/asm/pgtable.h           | 17 -----
+ arch/ia64/mm/init.c                       | 41 +++++++++++-
+ arch/m68k/include/asm/mcf_pgtable.h       | 59 -----------------
+ arch/m68k/include/asm/motorola_pgtable.h  | 29 ---------
+ arch/m68k/include/asm/sun3_pgtable.h      | 22 -------
+ arch/m68k/mm/mcfmmu.c                     | 59 +++++++++++++++++
+ arch/m68k/mm/motorola.c                   | 43 ++++++++++++-
+ arch/m68k/mm/sun3mmu.c                    | 39 ++++++++++++
+ arch/microblaze/include/asm/pgtable.h     | 17 -----
+ arch/microblaze/mm/init.c                 | 41 ++++++++++++
+ arch/mips/include/asm/pgtable.h           | 22 -------
+ arch/mips/mm/cache.c                      | 60 +++++++++--------
+ arch/nds32/include/asm/pgtable.h          | 17 -----
+ arch/nds32/mm/mmap.c                      | 37 +++++++++++
+ arch/nios2/include/asm/pgtable.h          | 24 -------
+ arch/nios2/mm/init.c                      | 47 ++++++++++++++
+ arch/openrisc/include/asm/pgtable.h       | 18 ------
+ arch/openrisc/mm/init.c                   | 41 ++++++++++++
+ arch/parisc/include/asm/pgtable.h         | 20 ------
+ arch/parisc/mm/init.c                     | 40 ++++++++++++
+ arch/powerpc/include/asm/mman.h           | 12 ----
+ arch/powerpc/include/asm/pgtable.h        | 19 ------
+ arch/powerpc/mm/mmap.c                    | 59 +++++++++++++++++
+ arch/riscv/include/asm/pgtable.h          | 16 -----
+ arch/riscv/mm/init.c                      | 42 ++++++++++++
+ arch/s390/include/asm/pgtable.h           | 17 -----
+ arch/s390/mm/mmap.c                       | 33 ++++++++++
+ arch/sh/include/asm/pgtable.h             | 17 -----
+ arch/sh/mm/mmap.c                         | 38 +++++++++++
+ arch/sparc/include/asm/mman.h             |  6 --
+ arch/sparc/include/asm/pgtable_32.h       | 19 ------
+ arch/sparc/include/asm/pgtable_64.h       | 19 ------
+ arch/sparc/mm/init_32.c                   | 35 ++++++++++
+ arch/sparc/mm/init_64.c                   | 70 ++++++++++++++------
+ arch/um/include/asm/pgtable.h             | 17 -----
+ arch/um/kernel/mem.c                      | 35 ++++++++++
+ arch/x86/Kconfig                          |  1 -
+ arch/x86/include/asm/pgtable.h            |  5 --
+ arch/x86/include/asm/pgtable_types.h      | 19 ------
+ arch/x86/include/uapi/asm/mman.h          | 14 ----
+ arch/x86/mm/Makefile                      |  2 +-
+ arch/x86/mm/mem_encrypt_amd.c             |  6 --
+ arch/x86/mm/pgprot.c                      | 71 +++++++++++++++++++++
+ arch/x86/um/mem_32.c                      |  2 +-
+ arch/xtensa/include/asm/pgtable.h         | 19 ------
+ arch/xtensa/mm/init.c                     | 35 ++++++++++
+ drivers/gpu/drm/drm_vm.c                  |  4 +-
+ include/linux/mm.h                        |  6 --
+ include/linux/mman.h                      |  4 --
+ mm/Kconfig                                |  3 -
+ mm/debug_vm_pgtable.c                     | 31 +++++----
+ mm/mmap.c                                 | 44 +------------
+ 69 files changed, 1138 insertions(+), 729 deletions(-)
+ create mode 100644 arch/x86/mm/pgprot.c
 
 -- 
-<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
+2.25.1
 
-Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
-<http://twitter.com/#!/linaroorg> Twitter |
-<http://www.linaro.org/linaro-blog/> Blog
