@@ -2,117 +2,118 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id AC353C433FE
-	for <linux-m68k@archiver.kernel.org>; Fri, 25 Feb 2022 17:37:34 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2BC7CC433EF
+	for <linux-m68k@archiver.kernel.org>; Mon, 28 Feb 2022 10:27:47 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239421AbiBYRiD (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Fri, 25 Feb 2022 12:38:03 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41226 "EHLO
+        id S232698AbiB1K2Y (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Mon, 28 Feb 2022 05:28:24 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37966 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243963AbiBYRh6 (ORCPT
+        with ESMTP id S229514AbiB1K2X (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Fri, 25 Feb 2022 12:37:58 -0500
-Received: from mail-pg1-x52f.google.com (mail-pg1-x52f.google.com [IPv6:2607:f8b0:4864:20::52f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC5B11706B
-        for <linux-m68k@lists.linux-m68k.org>; Fri, 25 Feb 2022 09:37:24 -0800 (PST)
-Received: by mail-pg1-x52f.google.com with SMTP id o26so4582951pgb.8
-        for <linux-m68k@lists.linux-m68k.org>; Fri, 25 Feb 2022 09:37:24 -0800 (PST)
+        Mon, 28 Feb 2022 05:28:23 -0500
+Received: from mail-wr1-x429.google.com (mail-wr1-x429.google.com [IPv6:2a00:1450:4864:20::429])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C6407286D8
+        for <linux-m68k@lists.linux-m68k.org>; Mon, 28 Feb 2022 02:27:43 -0800 (PST)
+Received: by mail-wr1-x429.google.com with SMTP id d28so14645911wra.4
+        for <linux-m68k@lists.linux-m68k.org>; Mon, 28 Feb 2022 02:27:43 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=02IWQGflWXjYwUX29jDdu/P28RFJb4bHYd+IQuUew8g=;
-        b=kUgfr+BUSyJkVMN/Doh8ZyiibLenLl15zo6bOy4rWBJYX17usBgH/o8iJTHO5XKZdv
-         FIRoxVZBZpjCBE2RUff++qJBIi09y14ofiD3ly3QeSlZp5xJscoOCHa7IsD8lgTU/o1J
-         xO0CrtIahGKQzcczYaERI0DLYTA+5L/usaOtM=
+        d=linaro.org; s=google;
+        h=message-id:date:mime-version:user-agent:subject:content-language:to
+         :cc:references:from:in-reply-to:content-transfer-encoding;
+        bh=uCr16OVWDuSEsQKxJNsm24ttfbU9MwffSycejs9RTnk=;
+        b=ZUbe634WUdwhywJ4GsoAKl6hduEOQlgM8D4X1TOTsVJvb6+GZ9EMTRfhcBDrpp06UA
+         6hgyt6qOaCIWMfaC4BjthYAtieiqtKpIRA7vsRxDcLPkVrHUQoni9ZjcPVJMK6oDJxkx
+         UBmIixpJLH0kiZ6iLMG8XMjYBSzgjK+IbZNQC9wErZGjhY3GlnYfKjwzQOICDNSidlb1
+         VAdTwLQe61Ci/zAqkCzlw68QDExhMWz/Nbl4LZ1BpDlWQ3Hp/857BytJ3ZRm81o8T2wN
+         8tIO4BQOLGc3f5qvTEzl3IZSmgNQZt7yDYEUg0L6LGS2uygvBc/8DT/jIsf7fXyeR9Nz
+         6aYA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=02IWQGflWXjYwUX29jDdu/P28RFJb4bHYd+IQuUew8g=;
-        b=jB4VA7zWSKWweWBbPnz3VnLOON+PVvva8+vJCagSmrDPAd+J2KIA4PuhiFXaqlWtcy
-         r3KTmQK2SWJS8qhq3KkP4KulP5jkb4uGml+2BB6HTh7PiIFvM7H3Tru9mVKWdOdRBKM4
-         giLBq9VylsaAxBEmPlaQlcqn2HkJNok+z9t4PTfiAaxezskcAc1aH6j/P9DQXbIv1r2D
-         /0S5BscZZfhl5IxKue1iQnBMlnIF6KaEXQyrbN7VFQxq2bUnQkzYzRxiEMmR7O4otk7m
-         4FcJo3mffa8rEG1JgarfKZ11ktAPRi8cx5gaRxSOqWUju5SKoBxCN/fpW6Emhpu2Spu1
-         oQPA==
-X-Gm-Message-State: AOAM531cdSlxq2pWohbbwsEztGLbT3MMJRpL+zWNmeerVYIds6NRjdm1
-        wONCT/cUckl2rD8KPX9UfnRQew==
-X-Google-Smtp-Source: ABdhPJxa8cWp+caZT/XsGUM3pG14CnQKF4h0alaujNsw9OZoKX05Fs4iuNMYG7vu03MfC/TBygUB5w==
-X-Received: by 2002:a63:8543:0:b0:35e:3bd9:3798 with SMTP id u64-20020a638543000000b0035e3bd93798mr7089608pgd.73.1645810644059;
-        Fri, 25 Feb 2022 09:37:24 -0800 (PST)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id az22-20020a17090b029600b001bc6500625asm9681173pjb.45.2022.02.25.09.37.23
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 25 Feb 2022 09:37:23 -0800 (PST)
-Date:   Fri, 25 Feb 2022 09:37:23 -0800
-From:   Kees Cook <keescook@chromium.org>
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     David Laight <David.Laight@aculab.com>,
-        linux-m68k <linux-m68k@lists.linux-m68k.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "linux-hardening@vger.kernel.org" <linux-hardening@vger.kernel.org>
-Subject: Re: [PATCH] m68k: Implement "current_stack_pointer"
-Message-ID: <202202250936.BA139C4@keescook>
-References: <20220224060448.1856091-1-keescook@chromium.org>
- <CAMuHMdVioQLy_T2LimgWdfWM=j=fomfpayuS1mbXnBLZj4gGQA@mail.gmail.com>
- <d75f1259c3e64387a161ebcb0448d594@AcuMS.aculab.com>
- <CAMuHMdWtQ+B-01ZOwZNvgQ7pndNsP3V90_jHdR=RS4K7O3Vk9g@mail.gmail.com>
- <95b9c3e8227a4892b26cc0384d1782c2@AcuMS.aculab.com>
- <CAMuHMdU6msvi0j=mS28GFYbm+uMRk7PkYe+zOM4sDmOVxeibLQ@mail.gmail.com>
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:cc:references:from:in-reply-to
+         :content-transfer-encoding;
+        bh=uCr16OVWDuSEsQKxJNsm24ttfbU9MwffSycejs9RTnk=;
+        b=6ty9kEDV46aoPHc9XE3UccPM2cXRTiNReqpLnf0VoID0k+WE+p0eb/VDqdJe1LLNVb
+         F0ZcXH15M/WF4xmUwZ96OMDM4RVBE5JshjvsI+jf/ZYYUaa3dDxAXrZzBhAPzQcZPxUK
+         zn5pjwLnzYQ/UgsEhcBF6WRDxao3b9ZifQ4EJ8Kwo9+S3A2eu91a8sBGh1B7S2kh/avW
+         6va6CZqA0P8uyIJkWlnjfEg/avZ4VvrO0V61uaP7Jb7LArFOD0Iin0zr/ti7hwHjElLt
+         8WH/+Wnst1+0C3cGDlJ/U+ZoRZbYlQWWjEsIYUM1R49LokBFa0mQygpK7cvoeG5xKmvm
+         7SXg==
+X-Gm-Message-State: AOAM533X+je2uMIzhTcgpOwHEwJxGIAr0IzpmhL6PFmHuQ9viybIGuuG
+        vJLnUKecxJiwjNGxv/1mwJ5oJQ==
+X-Google-Smtp-Source: ABdhPJwYCZzz6bNvTctYj1kOHNVO07F8Rb+DN7QVIJZSBzrbPRTFp96IFJpu9Efpf8Vrl0tgM9L5jg==
+X-Received: by 2002:a5d:53c5:0:b0:1ed:bf1b:be44 with SMTP id a5-20020a5d53c5000000b001edbf1bbe44mr15621470wrw.285.1646044062158;
+        Mon, 28 Feb 2022 02:27:42 -0800 (PST)
+Received: from ?IPV6:2a01:e34:ed2f:f020:7f2b:6650:2756:a131? ([2a01:e34:ed2f:f020:7f2b:6650:2756:a131])
+        by smtp.googlemail.com with ESMTPSA id g5-20020a5d5545000000b001ed9d3f521csm10058972wrw.113.2022.02.28.02.27.40
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 28 Feb 2022 02:27:41 -0800 (PST)
+Message-ID: <2e56d310-65a9-e910-98e0-c7c51b88b7f6@linaro.org>
+Date:   Mon, 28 Feb 2022 11:27:40 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAMuHMdU6msvi0j=mS28GFYbm+uMRk7PkYe+zOM4sDmOVxeibLQ@mail.gmail.com>
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.5.0
+Subject: Re: [PATCH v14 4/5] clocksource/drivers: Add a goldfish-timer
+ clocksource
+Content-Language: en-US
+To:     Laurent Vivier <laurent@vivier.eu>
+Cc:     Arnd Bergmann <arnd@arndb.de>, linux-rtc@vger.kernel.org,
+        Jiaxun Yang <jiaxun.yang@flygoat.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        John Stultz <john.stultz@linaro.org>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Alessandro Zummo <a.zummo@towertech.it>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        linux-m68k@lists.linux-m68k.org,
+        Thomas Gleixner <tglx@linutronix.de>,
+        linux-kernel@vger.kernel.org
+References: <20220130143333.552646-1-laurent@vivier.eu>
+ <20220130143333.552646-5-laurent@vivier.eu>
+ <1a0f23f2-361a-25d1-b371-7a229758d248@vivier.eu>
+From:   Daniel Lezcano <daniel.lezcano@linaro.org>
+In-Reply-To: <1a0f23f2-361a-25d1-b371-7a229758d248@vivier.eu>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-On Thu, Feb 24, 2022 at 10:56:09AM +0100, Geert Uytterhoeven wrote:
-> Hi David, Kees,
+On 16/02/2022 15:31, Laurent Vivier wrote:
+> Daniel,
 > 
-> On Thu, Feb 24, 2022 at 10:54 AM David Laight <David.Laight@aculab.com> wrote:
-> > From: Geert Uytterhoeven <geert@linux-m68k.org>
-> > > Sent: 24 February 2022 09:17
-> > >
-> > > On Thu, Feb 24, 2022 at 10:12 AM David Laight <David.Laight@aculab.com> wrote:
-> > > > From: Geert Uytterhoeven
-> > > > > Sent: 24 February 2022 08:59
-> > > > ...
-> > > > > > +register unsigned long current_stack_pointer __asm__("sp");
-> > > > >
-> > > > > I don't know what HARDENED_USERCOPY does, so I don't know if you need
-> > > > > "usp" (see rdusp()) or "sp"?
-> > > >
-> > > > HARDENED_USERCOPY significantly slows down some systems calls
-> > > > (especially things like sendmsg()) by trying to run-time verify
-> > > > that the kernel buffer doesn't overrun a stack frame or kmalloc()ed
-> > >
-> > > Kernel stack frame of user stack frame?
-> >
-> > Kernel, the kernel doesn't care if the user stack gets trashed.
+> as you reviewed the v12, could you review this version to see if I have 
+> addressed your comments?
 
-Right, this is strictly a kernel-side check in mm/usercopy.c:
-https://lore.kernel.org/linux-hardening/20220225173345.3358109-1-keescook@chromium.org/
+[ ... ]
 
-> 
-> OK.
-> 
-> Reviewed-by: Geert Uytterhoeven <geert@linux-m68k.org>
-> 
-> Kees: Do you want me to queue this in the m68k for-v5.18 branch, or do
-> you want to take it yourself, together with the HARDENED_USERCOPY work?
-> In case of the latter:
-> Acked-by: Geert Uytterhoeven <geert@linux-m68k.org>
-> 
-> Please let me know. Thanks!
+> Le 30/01/2022 à 15:33, Laurent Vivier a écrit :
+>> Add a clocksource based on the goldfish-rtc device.
+>>
+>> Move the timer register definition to <clocksource/timer-goldfish.h>
+>>
+>> This kernel implementation is based on the QEMU upstream implementation:
+>>
+>>     https://git.qemu.org/?p=qemu.git;a=blob_plain;f=hw/rtc/goldfish_rtc.c
+>>
+>> Details related to Goldfish devices can be found in:
+>>
+>>    
+>> https://android.googlesource.com/platform/external/qemu/+/master/docs/GOLDFISH-VIRTUAL-HARDWARE.TXT 
+>>
+Please do not add pointer in the changelog as this one will stay forever 
+but no guarantee for the url.
 
-Yeah, I'll take it via my tree, just so it's all together.
+A description of the timer is enough:
 
-Thanks!
-
--Kees
+eg.
+commit 625022a5f1606
+commit a7ad38b0dd3c1
 
 
 -- 
-Kees Cook
+<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
+
+Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
+<http://twitter.com/#!/linaroorg> Twitter |
+<http://www.linaro.org/linaro-blog/> Blog
