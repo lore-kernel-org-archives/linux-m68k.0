@@ -2,184 +2,147 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 1E76BC433F5
-	for <linux-m68k@archiver.kernel.org>; Tue,  1 Mar 2022 14:00:48 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D5035C433F5
+	for <linux-m68k@archiver.kernel.org>; Tue,  1 Mar 2022 19:27:14 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233437AbiCAOB0 (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Tue, 1 Mar 2022 09:01:26 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56812 "EHLO
+        id S235171AbiCAT1w (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Tue, 1 Mar 2022 14:27:52 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35060 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232355AbiCAOBZ (ORCPT
+        with ESMTP id S235139AbiCAT1v (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Tue, 1 Mar 2022 09:01:25 -0500
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A754B985BD
-        for <linux-m68k@lists.linux-m68k.org>; Tue,  1 Mar 2022 06:00:44 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id EC80161536
-        for <linux-m68k@lists.linux-m68k.org>; Tue,  1 Mar 2022 14:00:43 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id DCB00C340F8
-        for <linux-m68k@lists.linux-m68k.org>; Tue,  1 Mar 2022 14:00:42 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1646143242;
-        bh=OCDdNe18bifA05pJN6Z3cL5GH76Vx+vSN/tAl+9N2NY=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=BXoUaM8AeIN8f71PC8fIcrdCRd3XA5bTRsNaI55YrB3n8AdYcHHNQ5PfFONmNJdx9
-         3/CPcWQI6xI4q3njZfKJ//7qUb0OLv2P2whtuS8vVnMjqGPoCVcBgHyuiPi2wNTcJ+
-         KSByydI8JzRxlo4gWWoVzIU41cydpMN+5Nu46TbYtJPRxdtzH4yMR64LlBcFEmPqIp
-         3wzu1lY8fiIAXNFPydAfWfshcQxjaRgRJyXZ322mrYl9USFIgjN6ICC0+WR+CyrjeE
-         Jxihmtaod4/dKtcpNMu61/NIh4k/DY+2ax2xbrEVmUuihjdGPL4LSD/jeHzVTjPcDD
-         a2kZEW+hgrGpQ==
-Received: by mail-vk1-f173.google.com with SMTP id w128so6904774vkd.3
-        for <linux-m68k@lists.linux-m68k.org>; Tue, 01 Mar 2022 06:00:42 -0800 (PST)
-X-Gm-Message-State: AOAM533PQ3IVVXb5MTpAuO9SoXFW6MUIzYX9RZZVajiS08vnWNOBQfwp
-        xhTarT42H0/S9YEvwkBgI18bzLnKInj/Sg+EAQw=
-X-Google-Smtp-Source: ABdhPJwoZPlQG03sWsMv2LaiAVeC86gQ0+wyv+RzPw7RH1ttQNeeKqagstcZB00XUabb5ygCz6Zjo4KWbVCaIqQUo1I=
-X-Received: by 2002:a05:6122:887:b0:332:699e:7e67 with SMTP id
- 7-20020a056122088700b00332699e7e67mr10404475vkf.35.1646143241667; Tue, 01 Mar
- 2022 06:00:41 -0800 (PST)
+        Tue, 1 Mar 2022 14:27:51 -0500
+Received: from mail-pl1-x635.google.com (mail-pl1-x635.google.com [IPv6:2607:f8b0:4864:20::635])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B662D69CF9
+        for <linux-m68k@lists.linux-m68k.org>; Tue,  1 Mar 2022 11:27:09 -0800 (PST)
+Received: by mail-pl1-x635.google.com with SMTP id z11so5874436pla.7
+        for <linux-m68k@lists.linux-m68k.org>; Tue, 01 Mar 2022 11:27:09 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:date:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=sjfszq0s6rA1DoiuWgRAAaEXXX3ctOb/kx6v17T7+bs=;
+        b=BUf/UxXV9ZTYi6bHIcNSeiVmUkwhpOMtCQdiWC+ay4Z9S5wpiOYuCXCIxzehzgVk+o
+         W1Tz6uC//wm7JDPdHnohPUL8ayfoRdAEJXWOuhp93F6AdjS5zhsdIRdXcMl7LoOxgL5S
+         cQ30ZduAtMTvuIT0IWAMAwvVyturUwj7e81GnYaWkgLwpGQx/29YuWDIvgD88vu2/cB6
+         lIW0y9fMxEHGPAxzIoTAq6cd1acGDgmWfhBtF0rb1zYTJ9wsVCsqlUD6L5WIt+Ny+URQ
+         qK/qz8orT5hZdWRoZ/8JDnt+u1fh9VpSE+nS2ipRNMJp4cJoUQCsCZ7QfPYtwzh2NcxW
+         Yddw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=sjfszq0s6rA1DoiuWgRAAaEXXX3ctOb/kx6v17T7+bs=;
+        b=ambA44phcXpR7J8lz7Jb4tr5SH6OEtz4mbmJSKot9F0KtH+k6crk4ftDdCq7AtBajs
+         VxEPQQ4RrFBKkgxLxUBApdBksx0xvO2SfO/DX1eX//PF/+aVVlycr/iVgAfizxwJXuDO
+         urUjVSKoU3UClzJMYQR0rSghr6qLzAQRWkjMbEEni+NYLywO7iBHp3p7Nnf2VeZWgCGO
+         t/mMiE8Jg95zGt/J5z0bRW3FvExqJ4yleV/ncLuu1wBv7UhP3YrO15ELLCMhDj7KFUKG
+         uuonm0SblP+J3zBo+XzhNmXVhBQP5xkUDQQpGmzDFlolKdasu09UAMtT8LB/3aNw1cqG
+         /aIQ==
+X-Gm-Message-State: AOAM531VZIAUPz6l7AuZQMVNHgixA8F6njHY8yT4yHqrGaO10SYRVK+O
+        fo88Nw8SYnPn3CA9tiybmkE=
+X-Google-Smtp-Source: ABdhPJzLhA38IVBgeS0jS6fmXrfvYXbSfkWLFcH+ksuu9OxckKZQpge4EPfXA8PI1btrQvPsQzH6hA==
+X-Received: by 2002:a17:90b:4001:b0:1bc:68ec:ce48 with SMTP id ie1-20020a17090b400100b001bc68ecce48mr23182579pjb.133.1646162828937;
+        Tue, 01 Mar 2022 11:27:08 -0800 (PST)
+Received: from kitty ([12.231.191.170])
+        by smtp.gmail.com with ESMTPSA id u9-20020a056a00158900b004de90b164d0sm19309394pfk.9.2022.03.01.11.27.08
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 01 Mar 2022 11:27:08 -0800 (PST)
+From:   10maurycy10@gmail.com
+X-Google-Original-From: mz@kitty
+Date:   Tue, 1 Mar 2022 11:27:16 -0800
+To:     linux-kernel@vger.kernel.org, linux-crypto@vger.kernel.org
+Cc:     linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org
+Subject: Re: Re: [PATCH RFC v0] random: block in /dev/urandom
+Message-ID: <Yh5zA1T9GRBFi5H9@kitty>
+References: <20220211210757.612595-1-Jason@zx2c4.com>
+ <fcab986b-d0bd-c798-de17-266abcdc7da2@gentoo.org>
 MIME-Version: 1.0
-References: <1646045273-9343-1-git-send-email-anshuman.khandual@arm.com> <1646045273-9343-20-git-send-email-anshuman.khandual@arm.com>
-In-Reply-To: <1646045273-9343-20-git-send-email-anshuman.khandual@arm.com>
-From:   Guo Ren <guoren@kernel.org>
-Date:   Tue, 1 Mar 2022 22:00:30 +0800
-X-Gmail-Original-Message-ID: <CAJF2gTRSE-=-rDkMTD8D-bNw5inb4Yb_8S-AzXAuAthn9PCJmA@mail.gmail.com>
-Message-ID: <CAJF2gTRSE-=-rDkMTD8D-bNw5inb4Yb_8S-AzXAuAthn9PCJmA@mail.gmail.com>
-Subject: Re: [PATCH V3 19/30] csky/mm: Enable ARCH_HAS_VM_GET_PAGE_PROT
-To:     Anshuman Khandual <anshuman.khandual@arm.com>
-Cc:     Linux-MM <linux-mm@kvack.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Christoph Hellwig <hch@infradead.org>,
-        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        sparclinux <sparclinux@vger.kernel.org>,
-        "open list:BROADCOM NVRAM DRIVER" <linux-mips@vger.kernel.org>,
-        linux-m68k@lists.linux-m68k.org,
-        linux-s390 <linux-s390@vger.kernel.org>,
-        linux-riscv <linux-riscv@lists.infradead.org>,
-        linux-alpha@vger.kernel.org, linux-sh@vger.kernel.org,
-        linux-snps-arc@lists.infradead.org, linux-csky@vger.kernel.org,
-        linux-xtensa@linux-xtensa.org,
-        Parisc List <linux-parisc@vger.kernel.org>,
-        openrisc@lists.librecores.org, linux-um@lists.infradead.org,
-        linux-hexagon@vger.kernel.org, linux-ia64@vger.kernel.org,
-        linux-arch <linux-arch@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <fcab986b-d0bd-c798-de17-266abcdc7da2@gentoo.org>
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-Acked-by: Guo Ren <guoren@kernel.org>
+On Sat, Feb 12, 2022 at 06:05:54PM -0500, Joshua Kinard wrote:
+> On 2/11/2022 16:07, Jason A. Donenfeld wrote:
+> > This is very much an RFC patch, or maybe even an RFG -- request for
+> > grumbles. This topic has come up a million times, and usually doesn't go
+> > anywhere. This time I thought I'd bring it up with a slightly narrower
+> > focus. Before you read further, realize that I do not intend to merge
+> > this without there being an appropriate amount of consensus for it and
+> > discussion about it.
+> > 
+> > Ever since Linus' 50ee7529ec45 ("random: try to actively add entropy
+> > rather than passively wait for it"), the RNG does a haveged-style jitter
+> > dance around the scheduler, in order to produce entropy (and credit it)
+> > for the case when we're stuck in wait_for_random_bytes(). How ever you
+> > feel about the Linus Jitter Dance is beside the point: it's been there
+> > for three years and usually gets the RNG initialized in a second or so.
+> >
 
-On Mon, Feb 28, 2022 at 7:10 PM Anshuman Khandual
-<anshuman.khandual@arm.com> wrote:
->
-> This defines and exports a platform specific custom vm_get_page_prot() via
-> subscribing ARCH_HAS_VM_GET_PAGE_PROT. Subsequently all __SXXX and __PXXX
-> macros can be dropped which are no longer needed.
->
-> Cc: Geert Uytterhoeven <geert@linux-m68k.org>
-> Cc: linux-csky@vger.kernel.org
-> Cc: linux-kernel@vger.kernel.org
-> Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
-> ---
->  arch/csky/Kconfig               |  1 +
->  arch/csky/include/asm/pgtable.h | 18 ------------------
->  arch/csky/mm/init.c             | 32 ++++++++++++++++++++++++++++++++
->  3 files changed, 33 insertions(+), 18 deletions(-)
->
-> diff --git a/arch/csky/Kconfig b/arch/csky/Kconfig
-> index 132f43f12dd8..209dac5686dd 100644
-> --- a/arch/csky/Kconfig
-> +++ b/arch/csky/Kconfig
-> @@ -6,6 +6,7 @@ config CSKY
->         select ARCH_HAS_GCOV_PROFILE_ALL
->         select ARCH_HAS_SYNC_DMA_FOR_CPU
->         select ARCH_HAS_SYNC_DMA_FOR_DEVICE
-> +       select ARCH_HAS_VM_GET_PAGE_PROT
->         select ARCH_USE_BUILTIN_BSWAP
->         select ARCH_USE_QUEUED_RWLOCKS
->         select ARCH_WANT_FRAME_POINTERS if !CPU_CK610 && $(cc-option,-mbacktrace)
-> diff --git a/arch/csky/include/asm/pgtable.h b/arch/csky/include/asm/pgtable.h
-> index 151607ed5158..2c6b1cfb1cce 100644
-> --- a/arch/csky/include/asm/pgtable.h
-> +++ b/arch/csky/include/asm/pgtable.h
-> @@ -76,24 +76,6 @@
->  #define MAX_SWAPFILES_CHECK() \
->                 BUILD_BUG_ON(MAX_SWAPFILES_SHIFT != 5)
->
-> -#define __P000 PAGE_NONE
-> -#define __P001 PAGE_READ
-> -#define __P010 PAGE_READ
-> -#define __P011 PAGE_READ
-> -#define __P100 PAGE_READ
-> -#define __P101 PAGE_READ
-> -#define __P110 PAGE_READ
-> -#define __P111 PAGE_READ
-> -
-> -#define __S000 PAGE_NONE
-> -#define __S001 PAGE_READ
-> -#define __S010 PAGE_WRITE
-> -#define __S011 PAGE_WRITE
-> -#define __S100 PAGE_READ
-> -#define __S101 PAGE_READ
-> -#define __S110 PAGE_WRITE
-> -#define __S111 PAGE_WRITE
-> -
->  extern unsigned long empty_zero_page[PAGE_SIZE / sizeof(unsigned long)];
->  #define ZERO_PAGE(vaddr)       (virt_to_page(empty_zero_page))
->
-> diff --git a/arch/csky/mm/init.c b/arch/csky/mm/init.c
-> index bf2004aa811a..f9babbed17d4 100644
-> --- a/arch/csky/mm/init.c
-> +++ b/arch/csky/mm/init.c
-> @@ -197,3 +197,35 @@ void __init fixaddr_init(void)
->         vaddr = __fix_to_virt(__end_of_fixed_addresses - 1) & PMD_MASK;
->         fixrange_init(vaddr, vaddr + PMD_SIZE, swapper_pg_dir);
->  }
-> +
-> +pgprot_t vm_get_page_prot(unsigned long vm_flags)
-> +{
-> +       switch (vm_flags & (VM_READ | VM_WRITE | VM_EXEC | VM_SHARED)) {
-> +       case VM_NONE:
-> +               return PAGE_NONE;
-> +       case VM_READ:
-> +       case VM_WRITE:
-> +       case VM_WRITE | VM_READ:
-> +       case VM_EXEC:
-> +       case VM_EXEC | VM_READ:
-> +       case VM_EXEC | VM_WRITE:
-> +       case VM_EXEC | VM_WRITE | VM_READ:
-> +               return PAGE_READ;
-> +       case VM_SHARED:
-> +               return PAGE_NONE;
-> +       case VM_SHARED | VM_READ:
-> +               return PAGE_READ;
-> +       case VM_SHARED | VM_WRITE:
-> +       case VM_SHARED | VM_WRITE | VM_READ:
-> +               return PAGE_WRITE;
-> +       case VM_SHARED | VM_EXEC:
-> +       case VM_SHARED | VM_EXEC | VM_READ:
-> +               return PAGE_READ;
-> +       case VM_SHARED | VM_EXEC | VM_WRITE:
-> +       case VM_SHARED | VM_EXEC | VM_WRITE | VM_READ:
-> +               return PAGE_WRITE;
-> +       default:
-> +               BUILD_BUG();
-> +       }
-> +}
-> +EXPORT_SYMBOL(vm_get_page_prot);
-> --
-> 2.25.1
->
+What about the case where a small amount of entropy is avalable?
+
+> > 
+> > As a matter of fact, this is what happens currently when people use
+> > getrandom(2).
+> > 
+> > So, given that the kernel has grown this mechanism for seeding itself
+> > from nothing, and that this procedure happens pretty fast, maybe there's
+> > no point any longer in having /dev/urandom give insecure bytes. In the
+> > past we didn't want the boot process to deadlock, which was
+> > understandable. But now, in the worst case, a second goes by, and the
+> > problem is resolved. It seems like maybe we're finally at a point when
+> > we can get rid of the infamous "urandom read hole".
+> >
+
+Why not keep the distinction between /dev/random and /dev/urandom when a
+good entropy source is not avalable?
+
+> > 
+> > Maybe. And this is why this is a request for grumbles patch: the Linus
+> > Jitter Dance relies on random_get_entropy() returning a cycle counter
+> > value. The first lines of try_to_generate_entropy() are:
+> > 
+> > 	stack.now = random_get_entropy();
+> > 	/* Slow counter - or none. Don't even bother */
+> > 	if (stack.now == random_get_entropy())
+> > 		return;
+> > 
+> > So it would appear that what seemed initially like a panacea does not in
+> > fact work everywhere. Where doesn't it work?
+> > 
+> > On every platform, random_get_entropy() is connected to get_cycles(),
+> > except for three: m68k, MIPS, and RISC-V.
+> > 
+> 
+> [snip]
+> 
+> > 
+> > I think what this adds up to is that this change would positively affect
+> > everybody, except for _possibly_ negatively affecting poorly configured
+> > non-Amiga m68k systems and the MIPS R6000 and R6000A. Does that analysis
+> > seem correct to folks reading, or did I miss something?
+> > 
+> > Are there other cases where the cycle counter does exist but is simply
+> > too slow? Perhaps some computer historians can chime in here.
+> > 
+> > [snip]
 
 
--- 
-Best Regards
- Guo Ren
+This should realy be a config flag. (URANDOM_SECURE_RANDOM?).
 
-ML: https://lore.kernel.org/linux-csky/
+> 
+> 
+> -- 
+> Joshua Kinard
+> Gentoo/MIPS
+> kumba@gentoo.org
+> rsa6144/5C63F4E3F5C6C943 2015-04-27
+> 177C 1972 1FB8 F254 BAD0 3E72 5C63 F4E3 F5C6 C943
+> 
+> "The past tempts us, the present confuses us, the future frightens us.  And
+> our lives slip away, moment by moment, lost in that vast, terrible in-between."
+> 
+> --Emperor Turhan, Centauri Republic
