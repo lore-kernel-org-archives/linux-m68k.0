@@ -2,133 +2,259 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 4B3ACC433EF
-	for <linux-m68k@archiver.kernel.org>; Tue,  1 Mar 2022 00:31:50 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C99C8C433EF
+	for <linux-m68k@archiver.kernel.org>; Tue,  1 Mar 2022 05:06:46 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231834AbiCAAc1 (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Mon, 28 Feb 2022 19:32:27 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44496 "EHLO
+        id S231958AbiCAFHZ (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Tue, 1 Mar 2022 00:07:25 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57174 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229480AbiCAAc0 (ORCPT
+        with ESMTP id S232538AbiCAFHL (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Mon, 28 Feb 2022 19:32:26 -0500
-Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5BB0C4C7BA
-        for <linux-m68k@lists.linux-m68k.org>; Mon, 28 Feb 2022 16:31:46 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
-        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=Ulo3aKo1xFoE/cfpZL+xmuPztKVuMRRxvY14DLWAKfs=; b=TZ2cQwur5niBWVC6LB4QbXcHpv
-        yGq5XkdOUsSWNRkxXZ+xUu5Ne0aoSxjd3EFSlTw//uzlshcrTXL1WSIBeOMG//K6E9//LBKJUF9Lp
-        d7Y8pI7iUxxk/8UV8I9dwPeOHRQJrBUaCR39kXJqEljuLwSEl4MHOJijW5OikAy/N25r3lTVtf1Ag
-        oIBnjedmBuxSvxg8dfoYm9DWWD+PZV27EI5OegTGUF4/hMMKXqnxVwYbdXI8kc3CAp+2jMU4yuwUe
-        xKeSe/NHCpEfdBmuKjHRWnZEZR6+VRP60/U5O3k1v3b2eE1uOwifrodWENU1y4R33yD4snwtAShBo
-        RlwlILPw==;
-Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:57570)
-        by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.94.2)
-        (envelope-from <linux@armlinux.org.uk>)
-        id 1nOqQP-0000ag-Kh; Tue, 01 Mar 2022 00:31:33 +0000
-Received: from linux by shell.armlinux.org.uk with local (Exim 4.94.2)
-        (envelope-from <linux@shell.armlinux.org.uk>)
-        id 1nOqQK-0006cw-KE; Tue, 01 Mar 2022 00:31:28 +0000
-Date:   Tue, 1 Mar 2022 00:31:28 +0000
-From:   "Russell King (Oracle)" <linux@armlinux.org.uk>
-To:     Anshuman Khandual <anshuman.khandual@arm.com>
-Cc:     linux-mm@kvack.org, akpm@linux-foundation.org,
-        linux-kernel@vger.kernel.org, geert@linux-m68k.org,
-        Christoph Hellwig <hch@infradead.org>,
-        linuxppc-dev@lists.ozlabs.org,
-        linux-arm-kernel@lists.infradead.org, sparclinux@vger.kernel.org,
-        linux-mips@vger.kernel.org, linux-m68k@lists.linux-m68k.org,
-        linux-s390@vger.kernel.org, linux-riscv@lists.infradead.org,
-        linux-alpha@vger.kernel.org, linux-sh@vger.kernel.org,
-        linux-snps-arc@lists.infradead.org, linux-csky@vger.kernel.org,
-        linux-xtensa@linux-xtensa.org, linux-parisc@vger.kernel.org,
-        openrisc@lists.librecores.org, linux-um@lists.infradead.org,
-        linux-hexagon@vger.kernel.org, linux-ia64@vger.kernel.org,
-        linux-arch@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>
-Subject: Re: [PATCH V3 09/30] arm/mm: Enable ARCH_HAS_VM_GET_PAGE_PROT
-Message-ID: <Yh1pYAOiskEQes3p@shell.armlinux.org.uk>
-References: <1646045273-9343-1-git-send-email-anshuman.khandual@arm.com>
- <1646045273-9343-10-git-send-email-anshuman.khandual@arm.com>
- <Yhyqjo/4bozJB6j5@shell.armlinux.org.uk>
- <542fa048-131e-240b-cc3a-fd4fff7ce4ba@arm.com>
+        Tue, 1 Mar 2022 00:07:11 -0500
+Received: from mga18.intel.com (mga18.intel.com [134.134.136.126])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C8E3A7561F
+        for <linux-m68k@lists.linux-m68k.org>; Mon, 28 Feb 2022 21:05:59 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1646111159; x=1677647159;
+  h=date:from:to:cc:subject:message-id:mime-version:
+   content-transfer-encoding;
+  bh=+UmYMWsYQvqPWLdWfmHoWcRo8fieBlj38jg3KmYyxRY=;
+  b=Sc8tvsW9Od36KLCX7sAo5UrI8ya+tevJ2tp0bj+Fp6mb8ZycfIBM4Emb
+   VfdaRaH8OdKO3CChmsDHJXU9yFd/iXruBRN9Rhrx9CcT0dMtysAWwkN04
+   8Gmic5GfDYawsxZB1iCFhdun93lO4Sd8WxI6rUR1EvkKTIJXG2L8juhlK
+   N6+FW2FWwBddlKTslqk87r1sXEPFMCz5BwzAOkdtcI7oLbetkaiUpwWFO
+   Y2RuzNL0pI3cRbFA1pTR7Xobg7qzm7AxQoJjhxvUn/42jF8bk2j+nV1/j
+   WxNNs1xHqrstqvTCqZfcqXGW/iwksv4eR6B9dqOHrNExDYrjU+881sQNV
+   A==;
+X-IronPort-AV: E=McAfee;i="6200,9189,10272"; a="236565606"
+X-IronPort-AV: E=Sophos;i="5.90,144,1643702400"; 
+   d="scan'208";a="236565606"
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Feb 2022 21:05:49 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.90,144,1643702400"; 
+   d="scan'208";a="708923005"
+Received: from lkp-server01.sh.intel.com (HELO 788b1cd46f0d) ([10.239.97.150])
+  by orsmga005.jf.intel.com with ESMTP; 28 Feb 2022 21:05:48 -0800
+Received: from kbuild by 788b1cd46f0d with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1nOuhn-000892-La; Tue, 01 Mar 2022 05:05:47 +0000
+Date:   Tue, 01 Mar 2022 13:05:06 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Geert Uytterhoeven <geert@linux-m68k.org>
+Cc:     linux-m68k@lists.linux-m68k.org
+Subject: [geert-m68k:for-v5.18] BUILD SUCCESS
+ 0d52a01a266ba21840c7cb02e1de39c503759dda
+Message-ID: <621da982.OIeyB98g4HaQ3QOt%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <542fa048-131e-240b-cc3a-fd4fff7ce4ba@arm.com>
-Sender: Russell King (Oracle) <linux@armlinux.org.uk>
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-On Tue, Mar 01, 2022 at 05:30:41AM +0530, Anshuman Khandual wrote:
-> On 2/28/22 4:27 PM, Russell King (Oracle) wrote:
-> > On Mon, Feb 28, 2022 at 04:17:32PM +0530, Anshuman Khandual wrote:
-> >> This defines and exports a platform specific custom vm_get_page_prot() via
-> >> subscribing ARCH_HAS_VM_GET_PAGE_PROT. Subsequently all __SXXX and __PXXX
-> >> macros can be dropped which are no longer needed.
-> > 
-> > What I would really like to know is why having to run _code_ to work out
-> > what the page protections need to be is better than looking it up in a
-> > table.
-> > 
-> > Not only is this more expensive in terms of CPU cycles, it also brings
-> > additional code size with it.
-> > 
-> > I'm struggling to see what the benefit is.
-> 
-> Currently vm_get_page_prot() is also being _run_ to fetch required page
-> protection values. Although that is being run in the core MM and from a
-> platform perspective __SXXX, __PXXX are just being exported for a table.
-> Looking it up in a table (and applying more constructs there after) is
-> not much different than a clean switch case statement in terms of CPU
-> usage. So this is not more expensive in terms of CPU cycles.
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/geert/linux-m68k.git for-v5.18
+branch HEAD: 0d52a01a266ba21840c7cb02e1de39c503759dda  m68k: defconfig: Disable fbdev on Sun3/3x
 
-I disagree.
+elapsed time: 733m
 
-However, let's base this disagreement on some evidence. Here is the
-present 32-bit ARM implementation:
+configs tested: 182
+configs skipped: 123
 
-00000048 <vm_get_page_prot>:
-      48:       e200000f        and     r0, r0, #15
-      4c:       e3003000        movw    r3, #0
-                        4c: R_ARM_MOVW_ABS_NC   .LANCHOR1
-      50:       e3403000        movt    r3, #0
-                        50: R_ARM_MOVT_ABS      .LANCHOR1
-      54:       e7930100        ldr     r0, [r3, r0, lsl #2]
-      58:       e12fff1e        bx      lr
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
-That is five instructions long.
+gcc tested configs:
+arm                                 defconfig
+arm64                            allyesconfig
+arm64                               defconfig
+arm                              allyesconfig
+arm                              allmodconfig
+i386                          randconfig-c001
+i386                 randconfig-c001-20220228
+arm                            lart_defconfig
+arm                         assabet_defconfig
+arm                          simpad_defconfig
+sh                           se7780_defconfig
+powerpc                        cell_defconfig
+s390                                defconfig
+mips                         db1xxx_defconfig
+arc                 nsimosci_hs_smp_defconfig
+sh                ecovec24-romimage_defconfig
+m68k                            mac_defconfig
+sh                     sh7710voipgw_defconfig
+powerpc                      tqm8xx_defconfig
+xtensa                    xip_kc705_defconfig
+sh                               alldefconfig
+mips                         tb0226_defconfig
+powerpc                  iss476-smp_defconfig
+m68k                          atari_defconfig
+s390                             allyesconfig
+arm                       omap2plus_defconfig
+powerpc                     tqm8555_defconfig
+mips                         mpc30x_defconfig
+arm                        cerfcube_defconfig
+mips                       bmips_be_defconfig
+arc                              allyesconfig
+arm                          badge4_defconfig
+arc                     nsimosci_hs_defconfig
+sh                          r7780mp_defconfig
+sh                           se7724_defconfig
+sh                          sdk7780_defconfig
+arm                            pleb_defconfig
+microblaze                      mmu_defconfig
+arm                          pxa3xx_defconfig
+m68k                        m5307c3_defconfig
+m68k                          multi_defconfig
+arm                          gemini_defconfig
+sh                          rsk7269_defconfig
+powerpc                      makalu_defconfig
+m68k                        mvme16x_defconfig
+sh                           se7619_defconfig
+sh                        sh7757lcr_defconfig
+s390                       zfcpdump_defconfig
+ia64                                defconfig
+powerpc                     taishan_defconfig
+openrisc                    or1ksim_defconfig
+arm                         axm55xx_defconfig
+powerpc                     sequoia_defconfig
+m68k                       m5275evb_defconfig
+arm                        mini2440_defconfig
+sparc64                          alldefconfig
+openrisc                         alldefconfig
+sh                           se7751_defconfig
+powerpc                 linkstation_defconfig
+arm                            qcom_defconfig
+mips                     loongson1b_defconfig
+arm                       aspeed_g5_defconfig
+arc                        nsimosci_defconfig
+ia64                             allmodconfig
+arc                        vdk_hs38_defconfig
+m68k                         apollo_defconfig
+arm                        spear6xx_defconfig
+m68k                          amiga_defconfig
+arm                           viper_defconfig
+arm                  randconfig-c002-20220228
+arm                  randconfig-c002-20220227
+arm                  randconfig-c002-20220301
+ia64                             allyesconfig
+m68k                             allmodconfig
+m68k                                defconfig
+m68k                             allyesconfig
+nios2                               defconfig
+nds32                             allnoconfig
+nds32                               defconfig
+nios2                            allyesconfig
+csky                                defconfig
+alpha                               defconfig
+alpha                            allyesconfig
+xtensa                           allyesconfig
+h8300                            allyesconfig
+arc                                 defconfig
+sh                               allmodconfig
+parisc                              defconfig
+s390                             allmodconfig
+parisc64                            defconfig
+parisc                           allyesconfig
+i386                             allyesconfig
+sparc                            allyesconfig
+sparc                               defconfig
+i386                                defconfig
+i386                   debian-10.3-kselftests
+i386                              debian-10.3
+mips                             allyesconfig
+mips                             allmodconfig
+powerpc                          allyesconfig
+powerpc                          allmodconfig
+powerpc                           allnoconfig
+x86_64               randconfig-a011-20220228
+x86_64               randconfig-a015-20220228
+x86_64               randconfig-a014-20220228
+x86_64               randconfig-a013-20220228
+x86_64               randconfig-a016-20220228
+x86_64               randconfig-a012-20220228
+i386                 randconfig-a016-20220228
+i386                 randconfig-a012-20220228
+i386                 randconfig-a015-20220228
+i386                 randconfig-a011-20220228
+i386                 randconfig-a013-20220228
+i386                 randconfig-a014-20220228
+x86_64                        randconfig-a006
+x86_64                        randconfig-a004
+x86_64                        randconfig-a002
+s390                 randconfig-r044-20220228
+arc                  randconfig-r043-20220228
+arc                  randconfig-r043-20220227
+riscv                randconfig-r042-20220228
+riscv                    nommu_k210_defconfig
+riscv                            allyesconfig
+riscv                    nommu_virt_defconfig
+riscv                             allnoconfig
+riscv                               defconfig
+riscv                          rv32_defconfig
+riscv                            allmodconfig
+x86_64                    rhel-8.3-kselftests
+um                           x86_64_defconfig
+um                             i386_defconfig
+x86_64                           allyesconfig
+x86_64                              defconfig
+x86_64                               rhel-8.3
+x86_64                          rhel-8.3-func
+x86_64                                  kexec
 
-Please show that your new implementation is not more expensive on
-32-bit ARM. Please do so by building a 32-bit kernel, and providing
-the disassembly.
+clang tested configs:
+powerpc              randconfig-c003-20220227
+x86_64                        randconfig-c007
+arm                  randconfig-c002-20220227
+mips                 randconfig-c004-20220227
+s390                 randconfig-c005-20220227
+i386                          randconfig-c001
+riscv                randconfig-c006-20220227
+powerpc                    ge_imp3a_defconfig
+powerpc                     powernv_defconfig
+mips                           rs90_defconfig
+arm                         hackkit_defconfig
+arm                      pxa255-idp_defconfig
+powerpc                     tqm8540_defconfig
+mips                           mtx1_defconfig
+powerpc                     pseries_defconfig
+powerpc                     tqm8560_defconfig
+arm                       cns3420vb_defconfig
+arm                        neponset_defconfig
+arm                       imx_v4_v5_defconfig
+mips                      bmips_stb_defconfig
+powerpc                      pmac32_defconfig
+arm                    vt8500_v6_v7_defconfig
+powerpc                     mpc5200_defconfig
+arm                           sama7_defconfig
+mips                           ip28_defconfig
+arm                        mvebu_v5_defconfig
+arm                          imote2_defconfig
+x86_64               randconfig-a003-20220228
+x86_64               randconfig-a005-20220228
+x86_64               randconfig-a002-20220228
+x86_64               randconfig-a006-20220228
+x86_64               randconfig-a001-20220228
+x86_64               randconfig-a004-20220228
+i386                 randconfig-a002-20220228
+i386                 randconfig-a001-20220228
+i386                 randconfig-a005-20220228
+i386                 randconfig-a003-20220228
+i386                 randconfig-a006-20220228
+i386                 randconfig-a004-20220228
+x86_64                        randconfig-a012
+x86_64                        randconfig-a014
+x86_64                        randconfig-a016
+i386                          randconfig-a011
+i386                          randconfig-a013
+i386                          randconfig-a015
+hexagon              randconfig-r045-20220227
+hexagon              randconfig-r041-20220227
+riscv                randconfig-r042-20220227
 
-I think you will find way more than five instructions in your version -
-the compiler will have to issue code to decode the protection bits,
-probably using a table of branches or absolute PC values, or possibly
-the worst case of using multiple comparisons and branches. It then has
-to load constants that may be moved using movw on ARMv7, but on
-older architectures would have to be created from multiple instructions
-or loaded from the literal pool. Then there'll be instructions to load
-the address of "user_pgprot", retrieve its value, and bitwise or that.
-
-Therefore, I fail to see how your approach of getting rid of the table
-is somehow "better" than what we currently have in terms of the effect
-on the resulting code.
-
-If you don't like the __P and __S stuff and two arch_* hooks, you could
-move the table into arch code along with vm_get_page_prot() without the
-additional unnecessary hooks, while keeping all the benefits of the
-table lookup.
-
-Thanks.
-
--- 
-RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
-FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
