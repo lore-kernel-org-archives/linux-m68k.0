@@ -2,130 +2,117 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A912BC433F5
-	for <linux-m68k@archiver.kernel.org>; Fri,  4 Mar 2022 23:12:35 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 0D7D4C433EF
+	for <linux-m68k@archiver.kernel.org>; Sat,  5 Mar 2022 06:38:43 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230112AbiCDXNT (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Fri, 4 Mar 2022 18:13:19 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36830 "EHLO
+        id S230241AbiCEGja (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Sat, 5 Mar 2022 01:39:30 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53068 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229880AbiCDXNQ (ORCPT
+        with ESMTP id S230214AbiCEGj3 (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Fri, 4 Mar 2022 18:13:16 -0500
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1402527B929
-        for <linux-m68k@lists.linux-m68k.org>; Fri,  4 Mar 2022 15:12:24 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 8B735B82C49;
-        Fri,  4 Mar 2022 23:12:23 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 82E02C340E9;
-        Fri,  4 Mar 2022 23:12:20 +0000 (UTC)
-Message-ID: <a7b93783-d81b-f34b-a7c0-5e8f4880d7ee@linux-m68k.org>
-Date:   Sat, 5 Mar 2022 09:12:17 +1000
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.5.0
-Subject: Re: [PATCH] m68k: tweak coldfire/device.c for COMPILE_TEST
-Content-Language: en-US
-To:     Randy Dunlap <rdunlap@infradead.org>, linux-kernel@vger.kernel.org
-Cc:     patches@lists.linux.dev, kernel test robot <lkp@intel.com>,
+        Sat, 5 Mar 2022 01:39:29 -0500
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C49E450050;
+        Fri,  4 Mar 2022 22:38:38 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+        MIME-Version:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:
+        Content-ID:Content-Description:In-Reply-To:References;
+        bh=kGAgupbMh3Ndf3YJs4vyb3NVbPO2UtoUReczJ7rSp1M=; b=QI8eEI3/jS7C2mduMtT0uXnf+M
+        tS3nEdTpXI5QrxQvsbCf8biKrSJ09O1JCndejKjwNf9OPeJShru1MXW3/05mMjQ7BpF12V2hGqNj3
+        5cvSIUw9GPT5sA4iy87P9UGIsYmw1j+lgi8NS8QVRfLfP8Rv/KYZKjRN0swfp4seij94FQ2fqR8Yo
+        HR3zeYDPhzGqk3j4bTDPWoiCZOFM1Fidnj1WLvASQOo+qT9PdNj2slqFZ/DQR8aqU40L6B+ogp9rV
+        wXIK+vKbaIf9QkZuSPy/dc8nk2CG7FBTyeHg6FHki1ijlMAXNirddj2Pc/jxuTb06xqUIubV6+DvG
+        SKgkhFgQ==;
+Received: from [2601:1c0:6280:3f0::aa0b] (helo=bombadil.infradead.org)
+        by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1nQO3n-00Crar-ES; Sat, 05 Mar 2022 06:38:35 +0000
+From:   Randy Dunlap <rdunlap@infradead.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Randy Dunlap <rdunlap@infradead.org>,
+        kernel test robot <lkp@intel.com>,
         Angelo Dureghello <angelo@sysam.it>,
+        Greg Ungerer <gerg@kernel.org>,
+        Greg Ungerer <gerg@linux-m68k.org>,
         Geert Uytterhoeven <geert@linux-m68k.org>,
         linux-m68k@lists.linux-m68k.org, uclinux-dev@uclinux.org
-References: <20220304033531.28667-1-rdunlap@infradead.org>
- <cbdbb347-b510-131f-e961-09f1545fb891@linux-m68k.org>
- <bc6899cb-21c2-17d0-b886-c5d7ae33d2de@infradead.org>
-From:   Greg Ungerer <gerg@linux-m68k.org>
-In-Reply-To: <bc6899cb-21c2-17d0-b886-c5d7ae33d2de@infradead.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Subject: [PATCH v2] m68k: coldfire/device.c: only build for MCF_EDMA when xyz
+Date:   Fri,  4 Mar 2022 22:38:32 -0800
+Message-Id: <20220305063832.4601-1-rdunlap@infradead.org>
+X-Mailer: git-send-email 2.34.1
+MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
+When CONFIG_MCF_EDMA is set (due to COMPILE_TEST, not due to
+CONFIG_M5441x), coldfire/device.c has compile errors due to
+missing MCFEDMA_* symbols. In the .config file that was provided,
+CONFIG_M5206=y, not CONFIG_M5441x, so <asm/m5441xsim.h> is not
+included in coldfire/device.c.
 
+Only build the MCF_EDMA code in coldfire/device.c if the MCFEDMA_*
+hardware macros are defined.
 
-On 5/3/22 02:20, Randy Dunlap wrote:
-> On 3/4/22 06:45, Greg Ungerer wrote:
->> Hi Randy,
->>
->> On 4/3/22 13:35, Randy Dunlap wrote:
->>> When CONFIG_MCF_EDMA is set (due to COMPILE_TEST, not due to
->>> CONFIG_M5441x), coldfire/device.c has compile errors due to
->>> missing MCFEDMA_* symbols. In the .config file that was provided,
->>> CONFIG_M5206=y, not CONFIG_M5441x, so <asm/m5441xsim.h> is not
->>> included in coldfire/device.c.
->>>
->>> Only build the MCF_EDMA code in coldfire/device.c if both MCF_EDMA
->>> and M5441x are enabled.
->>>
->>> Fixes these build errors:
->>>
->>> ../arch/m68k/coldfire/device.c:512:35: error: 'MCFEDMA_BASE' undeclared here (not in a function); did you mean 'MCFDMA_BASE1'?
->>>     512 |                 .start          = MCFEDMA_BASE,
->>> ../arch/m68k/coldfire/device.c:513:50: error: 'MCFEDMA_SIZE' undeclared here (not in a function)
->>>     513 |                 .end            = MCFEDMA_BASE + MCFEDMA_SIZE - 1,
->>> ../arch/m68k/coldfire/device.c:517:35: error: 'MCFEDMA_IRQ_INTR0' undeclared here (not in a function)
->>>     517 |                 .start          = MCFEDMA_IRQ_INTR0,
->>> ../arch/m68k/coldfire/device.c:523:35: error: 'MCFEDMA_IRQ_INTR16' undeclared here (not in a function)
->>>     523 |                 .start          = MCFEDMA_IRQ_INTR16,
->>> ../arch/m68k/coldfire/device.c:529:35: error: 'MCFEDMA_IRQ_INTR56' undeclared here (not in a function)
->>>     529 |                 .start          = MCFEDMA_IRQ_INTR56,
->>> ../arch/m68k/coldfire/device.c:535:35: error: 'MCFEDMA_IRQ_ERR' undeclared here (not in a function)
->>>     535 |                 .start          = MCFEDMA_IRQ_ERR,
->>>
->>> Fixes: d7e9d01ac292 ("m68k: add ColdFire mcf5441x eDMA platform support")
->>> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
->>> Reported-by: kernel test robot <lkp@intel.com>
->>> Link: lore.kernel.org/r/202203030252.P752DK46-lkp@intel.com
->>> Cc: Angelo Dureghello <angelo@sysam.it>
->>> Cc: Greg Ungerer <gerg@kernel.org>
->>> Cc: Greg Ungerer <gerg@linux-m68k.org>
->>> Cc: Geert Uytterhoeven <geert@linux-m68k.org>
->>> Cc: linux-m68k@lists.linux-m68k.org
->>> Cc: uclinux-dev@uclinux.org
->>> ---
->>>    arch/m68k/coldfire/device.c |    6 +++---
->>>    1 file changed, 3 insertions(+), 3 deletions(-)
->>>
->>> --- linux-next-20220303.orig/arch/m68k/coldfire/device.c
->>> +++ linux-next-20220303/arch/m68k/coldfire/device.c
->>> @@ -480,7 +480,7 @@ static struct platform_device mcf_i2c5 =
->>>    #endif /* MCFI2C_BASE5 */
->>>    #endif /* IS_ENABLED(CONFIG_I2C_IMX) */
->>>    -#if IS_ENABLED(CONFIG_MCF_EDMA)
->>> +#if IS_ENABLED(CONFIG_MCF_EDMA) && IS_ENABLED(CONFIG_M5441x)
->>
->> I really try to avoid making these ColdFire SoC specific. Freescale has
->> a habit of using the same hardware blocks across a number of parts.
->> The model so far has been to let the Kconfig select these out as required
->> (and so not having to conditionally duplicate that here).
->>
->> I would prefer it to be conditional on !COMPILE_TEST if that is what
->> is ultimately causing the problem.
-> 
-> What is ultimately causing the problem is drivers/dma/Kconfig:
-> 
-> config MCF_EDMA
-> 	tristate "Freescale eDMA engine support, ColdFire mcf5441x SoCs"
-> 	depends on M5441x || COMPILE_TEST
-> 
-> 
-> Would you prefer to just remove that COMPILE_TEST?
-> 
-> Or do like Geert suggested -- see your previous patch:
-> commit 322c512f476f07e9 ("m68knommu: include SDHC support only when hardware has it")
+Fixes these build errors:
 
-No need to remove COMPILE_TEST, so lets leave that in place.
+../arch/m68k/coldfire/device.c:512:35: error: 'MCFEDMA_BASE' undeclared here (not in a function); did you mean 'MCFDMA_BASE1'?
+  512 |                 .start          = MCFEDMA_BASE,
+../arch/m68k/coldfire/device.c:513:50: error: 'MCFEDMA_SIZE' undeclared here (not in a function)
+  513 |                 .end            = MCFEDMA_BASE + MCFEDMA_SIZE - 1,
+../arch/m68k/coldfire/device.c:517:35: error: 'MCFEDMA_IRQ_INTR0' undeclared here (not in a function)
+  517 |                 .start          = MCFEDMA_IRQ_INTR0,
+../arch/m68k/coldfire/device.c:523:35: error: 'MCFEDMA_IRQ_INTR16' undeclared here (not in a function)
+  523 |                 .start          = MCFEDMA_IRQ_INTR16,
+../arch/m68k/coldfire/device.c:529:35: error: 'MCFEDMA_IRQ_INTR56' undeclared here (not in a function)
+  529 |                 .start          = MCFEDMA_IRQ_INTR56,
+../arch/m68k/coldfire/device.c:535:35: error: 'MCFEDMA_IRQ_ERR' undeclared here (not in a function)
+  535 |                 .start          = MCFEDMA_IRQ_ERR,
 
-I should have thought about what I had done here in the past before I replied :-)
-As Geert pointed out the strategy we used before is to just make it conditional
-on the address definitions. So lets do that. The presence of an address definition
-is the real indicator that we have this hardware block.
+Fixes: d7e9d01ac292 ("m68k: add ColdFire mcf5441x eDMA platform support")
+Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+Reported-by: kernel test robot <lkp@intel.com>
+Link: lore.kernel.org/r/202203030252.P752DK46-lkp@intel.com
+Cc: Angelo Dureghello <angelo@sysam.it>
+Cc: Greg Ungerer <gerg@kernel.org>
+Cc: Greg Ungerer <gerg@linux-m68k.org>
+Cc: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: linux-m68k@lists.linux-m68k.org
+Cc: uclinux-dev@uclinux.org
+---
+v2: only build when the hardware macros are defined (suggested by Geert)
 
-Regards
-Greg
+ arch/m68k/coldfire/device.c |    6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-
+--- linux-next-20220303.orig/arch/m68k/coldfire/device.c
++++ linux-next-20220303/arch/m68k/coldfire/device.c
+@@ -480,7 +480,7 @@ static struct platform_device mcf_i2c5 =
+ #endif /* MCFI2C_BASE5 */
+ #endif /* IS_ENABLED(CONFIG_I2C_IMX) */
+ 
+-#if IS_ENABLED(CONFIG_MCF_EDMA)
++#ifdef MCFEDMA_BASE
+ 
+ static const struct dma_slave_map mcf_edma_map[] = {
+ 	{ "dreq0", "rx-tx", MCF_EDMA_FILTER_PARAM(0) },
+@@ -552,7 +552,7 @@ static struct platform_device mcf_edma =
+ 		.platform_data = &mcf_edma_data,
+ 	}
+ };
+-#endif /* IS_ENABLED(CONFIG_MCF_EDMA) */
++#endif /* MCFEDMA_BASE */
+ 
+ #ifdef MCFSDHC_BASE
+ static struct mcf_esdhc_platform_data mcf_esdhc_data = {
+@@ -651,7 +651,7 @@ static struct platform_device *mcf_devic
+ 	&mcf_i2c5,
+ #endif
+ #endif
+-#if IS_ENABLED(CONFIG_MCF_EDMA)
++#ifdef MCFEDMA_BASE
+ 	&mcf_edma,
+ #endif
+ #ifdef MCFSDHC_BASE
