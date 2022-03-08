@@ -2,116 +2,150 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 5D454C4167D
-	for <linux-m68k@archiver.kernel.org>; Mon,  7 Mar 2022 20:54:33 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A6835C433EF
+	for <linux-m68k@archiver.kernel.org>; Tue,  8 Mar 2022 06:59:19 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245400AbiCGUz0 (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Mon, 7 Mar 2022 15:55:26 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44836 "EHLO
+        id S1344328AbiCHHAN (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Tue, 8 Mar 2022 02:00:13 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53226 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S245407AbiCGUzA (ORCPT
-        <rfc822;linux-m68k@vger.kernel.org>); Mon, 7 Mar 2022 15:55:00 -0500
-Received: from andre.telenet-ops.be (andre.telenet-ops.be [IPv6:2a02:1800:120:4::f00:15])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AD87D33A2B
-        for <linux-m68k@vger.kernel.org>; Mon,  7 Mar 2022 12:53:37 -0800 (PST)
-Received: from ramsan.of.borg ([IPv6:2a02:1810:ac12:ed40:6100:2d37:4115:c358])
-        by andre.telenet-ops.be with bizsmtp
-        id 3YtW270091Yj8bA01YtW13; Mon, 07 Mar 2022 21:53:37 +0100
-Received: from rox.of.borg ([192.168.97.57])
-        by ramsan.of.borg with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.93)
-        (envelope-from <geert@linux-m68k.org>)
-        id 1nRKLY-0036Qq-Na; Mon, 07 Mar 2022 21:52:48 +0100
-Received: from geert by rox.of.borg with local (Exim 4.93)
-        (envelope-from <geert@linux-m68k.org>)
-        id 1nRKLY-0034iG-4G; Mon, 07 Mar 2022 21:52:48 +0100
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-To:     Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Javier Martinez Canillas <javierm@redhat.com>,
-        Sam Ravnborg <sam@ravnborg.org>, Helge Deller <deller@gmx.de>
-Cc:     dri-devel@lists.freedesktop.org, linux-fbdev@vger.kernel.org,
-        linux-m68k@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: [PATCH v2 RFC 10/10] drm/fourcc: Add DRM_FORMAT_D[1248]
-Date:   Mon,  7 Mar 2022 21:52:45 +0100
-Message-Id: <e05254ba67598b3973010a7b6f31dd6b20a66844.1646683502.git.geert@linux-m68k.org>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <cover.1646683502.git.geert@linux-m68k.org>
-References: <cover.1646683502.git.geert@linux-m68k.org>
+        with ESMTP id S230005AbiCHHAN (ORCPT
+        <rfc822;linux-m68k@lists.linux-m68k.org>);
+        Tue, 8 Mar 2022 02:00:13 -0500
+Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 795A13D485
+        for <linux-m68k@lists.linux-m68k.org>; Mon,  7 Mar 2022 22:59:17 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1646722757; x=1678258757;
+  h=date:from:to:cc:subject:message-id:mime-version:
+   content-transfer-encoding;
+  bh=3r9Q4MTP0fZhfe8+z8yP9fXmyyh4M+9d2NSqShnQczQ=;
+  b=g9yEwSDIE5Tq4WOgJs0q4H4+5iv1L5Hsvxa7u2APSB35R8+Gu7lnuU7m
+   2A8WAxDnBo9g3VP7RKZj4se87jyDdO4RcIcOfp/NiyVdkm8NgXSSqL1qO
+   pkuO4PA01RFChD4O2WL3+ilBVbYdAbVnvImrGFiF3qmsDujatx/L4kjKn
+   zORHGmjMUSQvjqjSwIhf+19aQDsAOqKp/BTB5uANGYMt9nFGy2jqnOPry
+   w7qPMOdlirnvoszc6T61oZyOIa7rTH1+KwRZBk0PI2+0kugKcXaeTFyAT
+   QkdyKAluiLJf/EKVxCZWU90jqYZTFyiNLX9Bz5mUHFY4quwf9iloT4olf
+   A==;
+X-IronPort-AV: E=McAfee;i="6200,9189,10279"; a="242047199"
+X-IronPort-AV: E=Sophos;i="5.90,163,1643702400"; 
+   d="scan'208";a="242047199"
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Mar 2022 22:59:16 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.90,163,1643702400"; 
+   d="scan'208";a="711432374"
+Received: from lkp-server02.sh.intel.com (HELO 89b41b6ae01c) ([10.239.97.151])
+  by orsmga005.jf.intel.com with ESMTP; 07 Mar 2022 22:59:15 -0800
+Received: from kbuild by 89b41b6ae01c with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1nRToQ-00014F-Nf; Tue, 08 Mar 2022 06:59:14 +0000
+Date:   Tue, 08 Mar 2022 14:58:47 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Geert Uytterhoeven <geert@linux-m68k.org>
+Cc:     linux-m68k@lists.linux-m68k.org
+Subject: [geert-m68k:master] BUILD SUCCESS
+ 46c5118e55c98936e6a433c7b1554dfc36b7cad1
+Message-ID: <6226fea7.mpt/QIcuFzP76WDM%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-As Rn is light-on-dark, and Cn can be any colors, there are currently
-no fourcc codes to describe dark-on-light displays.
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/geert/linux-m68k.git master
+branch HEAD: 46c5118e55c98936e6a433c7b1554dfc36b7cad1  Merge tag 'v5.17-rc7'
 
-Introduce fourcc codes for a single-channel dark-on-light frame buffer
-format with two, four, sixteen, or 256 darkness levels.
+elapsed time: 995m
 
-As the number of bits per pixel may be less than eight, some of these
-formats rely on proper block handling for the calculation of bits per
-pixel and pitch.
+configs tested: 74
+configs skipped: 3
 
-Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
+The following configs have been built successfully.
+More configs may be tested in the coming days.
+
+gcc tested configs:
+arm                                 defconfig
+arm                              allmodconfig
+arm                              allyesconfig
+arm64                            allyesconfig
+arm64                               defconfig
+sh                          landisk_defconfig
+sh                          urquell_defconfig
+mips                           ip32_defconfig
+mips                      fuloong2e_defconfig
+m68k                          atari_defconfig
+mips                    maltaup_xpa_defconfig
+openrisc                 simple_smp_defconfig
+sh                        edosk7705_defconfig
+powerpc                 mpc834x_itx_defconfig
+m68k                       m5249evb_defconfig
+arm                            hisi_defconfig
+riscv                               defconfig
+arm                  randconfig-c002-20220308
+arm                  randconfig-c002-20220307
+ia64                                defconfig
+ia64                             allmodconfig
+ia64                             allyesconfig
+m68k                                defconfig
+m68k                             allyesconfig
+m68k                             allmodconfig
+nds32                             allnoconfig
+nios2                               defconfig
+arc                              allyesconfig
+csky                                defconfig
+alpha                               defconfig
+nds32                               defconfig
+alpha                            allyesconfig
+nios2                            allyesconfig
+arc                                 defconfig
+sh                               allmodconfig
+h8300                            allyesconfig
+xtensa                           allyesconfig
+parisc                              defconfig
+s390                                defconfig
+parisc64                            defconfig
+s390                             allmodconfig
+s390                             allyesconfig
+parisc                           allyesconfig
+i386                             allyesconfig
+i386                              debian-10.3
+i386                   debian-10.3-kselftests
+i386                                defconfig
+sparc                            allyesconfig
+sparc                               defconfig
+mips                             allyesconfig
+mips                             allmodconfig
+powerpc                          allyesconfig
+powerpc                          allmodconfig
+powerpc                           allnoconfig
+riscv                    nommu_k210_defconfig
+riscv                            allyesconfig
+riscv                             allnoconfig
+riscv                          rv32_defconfig
+riscv                            allmodconfig
+riscv                    nommu_virt_defconfig
+um                             i386_defconfig
+um                           x86_64_defconfig
+x86_64                              defconfig
+x86_64                           allyesconfig
+x86_64                                  kexec
+x86_64                               rhel-8.3
+x86_64                          rhel-8.3-func
+x86_64                         rhel-8.3-kunit
+x86_64                    rhel-8.3-kselftests
+
+clang tested configs:
+x86_64                        randconfig-c007
+riscv                randconfig-c006-20220308
+powerpc              randconfig-c003-20220308
+i386                          randconfig-c001
+arm                  randconfig-c002-20220308
+mips                 randconfig-c004-20220308
+
 ---
-RFC, as I have no immediate need for these formats.
-
-v2:
-  - Add rationale for adding new formats,
-  - Improve pixel descriptions,
-  - Add D[248] for completeness.
----
- drivers/gpu/drm/drm_fourcc.c  |  7 +++++++
- include/uapi/drm/drm_fourcc.h | 12 ++++++++++++
- 2 files changed, 19 insertions(+)
-
-diff --git a/drivers/gpu/drm/drm_fourcc.c b/drivers/gpu/drm/drm_fourcc.c
-index 05e65e9ab0c69c6a..e09331bb3bc73f21 100644
---- a/drivers/gpu/drm/drm_fourcc.c
-+++ b/drivers/gpu/drm/drm_fourcc.c
-@@ -154,6 +154,13 @@ const struct drm_format_info *__drm_format_info(u32 format)
- 		{ .format = DRM_FORMAT_C4,		.depth = 4,  .num_planes = 1,
- 		  .char_per_block = { 1, }, .block_w = { 2, }, .block_h = { 1, }, .hsub = 1, .vsub = 1, .is_color_indexed = true },
- 		{ .format = DRM_FORMAT_C8,		.depth = 8,  .num_planes = 1, .cpp = { 1, 0, 0 }, .hsub = 1, .vsub = 1, .is_color_indexed = true },
-+		{ .format = DRM_FORMAT_D1,		.depth = 1,  .num_planes = 1,
-+		  .char_per_block = { 1, }, .block_w = { 8, }, .block_h = { 1, }, .hsub = 1, .vsub = 1 },
-+		{ .format = DRM_FORMAT_D2,		.depth = 2,  .num_planes = 1,
-+		  .char_per_block = { 1, }, .block_w = { 4, }, .block_h = { 1, }, .hsub = 1, .vsub = 1 },
-+		{ .format = DRM_FORMAT_D4,		.depth = 4,  .num_planes = 1,
-+		  .char_per_block = { 1, }, .block_w = { 2, }, .block_h = { 1, }, .hsub = 1, .vsub = 1 },
-+		{ .format = DRM_FORMAT_D8,		.depth = 8,  .num_planes = 1, .cpp = { 1, 0, 0 }, .hsub = 1, .vsub = 1 },
- 		{ .format = DRM_FORMAT_R1,		.depth = 1,  .num_planes = 1,
- 		  .char_per_block = { 1, }, .block_w = { 8, }, .block_h = { 1, }, .hsub = 1, .vsub = 1 },
- 		{ .format = DRM_FORMAT_R2,		.depth = 2,  .num_planes = 1,
-diff --git a/include/uapi/drm/drm_fourcc.h b/include/uapi/drm/drm_fourcc.h
-index def0a73620dc86d2..1d8d82b1742898c0 100644
---- a/include/uapi/drm/drm_fourcc.h
-+++ b/include/uapi/drm/drm_fourcc.h
-@@ -104,6 +104,18 @@ extern "C" {
- #define DRM_FORMAT_C4		fourcc_code('C', '4', ' ', ' ') /* [7:0] C0:C1 4:4 two pixels/byte */
- #define DRM_FORMAT_C8		fourcc_code('C', '8', ' ', ' ') /* [7:0] C 8 one pixel/byte */
- 
-+/* 1 bpp Darkness (monochrome dark-on-light) */
-+#define DRM_FORMAT_D1		fourcc_code('D', '1', ' ', ' ') /* [7:0] D0:D1:D2:D3:D4:D5:D6:D7 1:1:1:1:1:1:1:1 eight pixels/byte */
-+
-+/* 2 bpp Darkness (generic dark-on-light) */
-+#define DRM_FORMAT_D2		fourcc_code('D', '2', ' ', ' ') /* [7:0] D0:D1:D2:D3 2:2:2:2 four pixels/byte */
-+
-+/* 4 bpp Darkness (generic dark-on-light) */
-+#define DRM_FORMAT_D4		fourcc_code('D', '4', ' ', ' ') /* [7:0] D0:D1 4:4 two pixels/byte */
-+
-+/* 8 bpp Darkness (generic dark-on-light) */
-+#define DRM_FORMAT_D8		fourcc_code('D', '8', ' ', ' ') /* [7:0] D 8 one pixel/byte */
-+
- /* 1 bpp Red (or monochrome light-on-dark) */
- #define DRM_FORMAT_R1		fourcc_code('R', '1', ' ', ' ') /* [7:0] R0:R1:R2:R3:R4:R5:R6:R7 1:1:1:1:1:1:1:1 eight pixels/byte */
- 
--- 
-2.25.1
-
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
