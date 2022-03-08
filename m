@@ -2,150 +2,197 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A6835C433EF
-	for <linux-m68k@archiver.kernel.org>; Tue,  8 Mar 2022 06:59:19 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 15F58C433EF
+	for <linux-m68k@archiver.kernel.org>; Tue,  8 Mar 2022 09:04:25 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344328AbiCHHAN (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Tue, 8 Mar 2022 02:00:13 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53226 "EHLO
+        id S240552AbiCHJFT (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Tue, 8 Mar 2022 04:05:19 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58800 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230005AbiCHHAN (ORCPT
-        <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Tue, 8 Mar 2022 02:00:13 -0500
-Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 795A13D485
-        for <linux-m68k@lists.linux-m68k.org>; Mon,  7 Mar 2022 22:59:17 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1646722757; x=1678258757;
-  h=date:from:to:cc:subject:message-id:mime-version:
-   content-transfer-encoding;
-  bh=3r9Q4MTP0fZhfe8+z8yP9fXmyyh4M+9d2NSqShnQczQ=;
-  b=g9yEwSDIE5Tq4WOgJs0q4H4+5iv1L5Hsvxa7u2APSB35R8+Gu7lnuU7m
-   2A8WAxDnBo9g3VP7RKZj4se87jyDdO4RcIcOfp/NiyVdkm8NgXSSqL1qO
-   pkuO4PA01RFChD4O2WL3+ilBVbYdAbVnvImrGFiF3qmsDujatx/L4kjKn
-   zORHGmjMUSQvjqjSwIhf+19aQDsAOqKp/BTB5uANGYMt9nFGy2jqnOPry
-   w7qPMOdlirnvoszc6T61oZyOIa7rTH1+KwRZBk0PI2+0kugKcXaeTFyAT
-   QkdyKAluiLJf/EKVxCZWU90jqYZTFyiNLX9Bz5mUHFY4quwf9iloT4olf
-   A==;
-X-IronPort-AV: E=McAfee;i="6200,9189,10279"; a="242047199"
-X-IronPort-AV: E=Sophos;i="5.90,163,1643702400"; 
-   d="scan'208";a="242047199"
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Mar 2022 22:59:16 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.90,163,1643702400"; 
-   d="scan'208";a="711432374"
-Received: from lkp-server02.sh.intel.com (HELO 89b41b6ae01c) ([10.239.97.151])
-  by orsmga005.jf.intel.com with ESMTP; 07 Mar 2022 22:59:15 -0800
-Received: from kbuild by 89b41b6ae01c with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1nRToQ-00014F-Nf; Tue, 08 Mar 2022 06:59:14 +0000
-Date:   Tue, 08 Mar 2022 14:58:47 +0800
-From:   kernel test robot <lkp@intel.com>
+        with ESMTP id S237612AbiCHJFT (ORCPT
+        <rfc822;linux-m68k@vger.kernel.org>); Tue, 8 Mar 2022 04:05:19 -0500
+Received: from mail-lj1-x22f.google.com (mail-lj1-x22f.google.com [IPv6:2a00:1450:4864:20::22f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1DE673CA4F;
+        Tue,  8 Mar 2022 01:04:23 -0800 (PST)
+Received: by mail-lj1-x22f.google.com with SMTP id o6so24100116ljp.3;
+        Tue, 08 Mar 2022 01:04:23 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:in-reply-to:references
+         :mime-version;
+        bh=jZ+MIPcrQgiBvV9esILrCWNT+QHgAhnZB9Zx1WBFYKc=;
+        b=pui7J67Xw0oUhnvd1RD87Sklk4hyTKg8ESiVGpiLW24baD11IcU6C72omNUGBUj205
+         x9r3fmMbZEiBrJmqcc+fgRHdt7xJopBaXDrnBKx3h0bMIP4KZglWcNopNsB9lrc/WlZC
+         HYtptWeqibQRoeQR0RYMm6Y/M9UhtqSMINpSoZM3blx1AJcqy8eRlSkPtcP/mJ8s60Yn
+         91YOiy+wbd5ZkAoyxgCAVOlwt11F85Es5rYj07iyUGPLsgK6Kbe6x7AK7OxxaxOmynhv
+         bSOfPQ0Yn9ng5C7QssOpL6rb0ydubd9YTqemDg3D3b39XpS0y1AcOMLuH2I1gABcamm5
+         Gw3Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:in-reply-to
+         :references:mime-version;
+        bh=jZ+MIPcrQgiBvV9esILrCWNT+QHgAhnZB9Zx1WBFYKc=;
+        b=kRkj6mGNXUolpzK0gpZ3q3h0Jrg40sWEPqR32ntnSqGGk2z3uWEKA+JTKqVZiikHUG
+         fbMY08Ti0gU9kHlud/U2xiuDHfaJblhaTP1dd755Qe/25Lju5Bsfv/dBM3YBthyg4hBp
+         rslkbpfJn93ZtCZIGNCqSnCinbHrjebfHRKu8cQlP6O6YvuLc7/KkzYPNs0TToT1wAgJ
+         IihHroOJqbW5hiwbzToq81+YFfib63+VZfrP4CuGZGzTrvR1nOFLIFHmjRQfI0JrDon5
+         +wdHIbmYi6HqqrM6yNvMlp9E2WhYhQaQZpht/Dr1iBqH1gnMfKr7B/C+9ie0OpMdqaZ/
+         jLTw==
+X-Gm-Message-State: AOAM5323+VqFBI9E11sM/BsNJ5Ycfb6yPR6En2j3J5pjyqh5AxGbss4M
+        KIxoray5TBFgvYGiS8SmPio=
+X-Google-Smtp-Source: ABdhPJxxTef3eaNlDryAFPPL5nF0q4IhFtlUhPg8XzybHkrwi6IlWSoA/8AUiwzzDQGcesZTH9iplg==
+X-Received: by 2002:a2e:aaa3:0:b0:230:21db:210b with SMTP id bj35-20020a2eaaa3000000b0023021db210bmr10411422ljb.394.1646730261407;
+        Tue, 08 Mar 2022 01:04:21 -0800 (PST)
+Received: from eldfell ([194.136.85.206])
+        by smtp.gmail.com with ESMTPSA id w10-20020ac2442a000000b0044835a52a08sm802928lfl.163.2022.03.08.01.04.20
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 08 Mar 2022 01:04:21 -0800 (PST)
+Date:   Tue, 8 Mar 2022 11:04:17 +0200
+From:   Pekka Paalanen <ppaalanen@gmail.com>
 To:     Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     linux-m68k@lists.linux-m68k.org
-Subject: [geert-m68k:master] BUILD SUCCESS
- 46c5118e55c98936e6a433c7b1554dfc36b7cad1
-Message-ID: <6226fea7.mpt/QIcuFzP76WDM%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+Cc:     Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Javier Martinez Canillas <javierm@redhat.com>,
+        Sam Ravnborg <sam@ravnborg.org>, Helge Deller <deller@gmx.de>,
+        linux-fbdev@vger.kernel.org, linux-m68k@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 05/10] drm/fourcc: Add DRM_FORMAT_C[124]
+Message-ID: <20220308110417.37290c65@eldfell>
+In-Reply-To: <8d3c0cc370b0214244b01a64c588e5e506531716.1646683502.git.geert@linux-m68k.org>
+References: <cover.1646683502.git.geert@linux-m68k.org>
+        <8d3c0cc370b0214244b01a64c588e5e506531716.1646683502.git.geert@linux-m68k.org>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; boundary="Sig_/VBZDq9jhkM14hkgWzHPGink";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/geert/linux-m68k.git master
-branch HEAD: 46c5118e55c98936e6a433c7b1554dfc36b7cad1  Merge tag 'v5.17-rc7'
+--Sig_/VBZDq9jhkM14hkgWzHPGink
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-elapsed time: 995m
+On Mon,  7 Mar 2022 21:52:40 +0100
+Geert Uytterhoeven <geert@linux-m68k.org> wrote:
 
-configs tested: 74
-configs skipped: 3
+> Introduce fourcc codes for color-indexed frame buffer formats with two,
+> four, and sixteen colors, and provide a mapping from bit per pixel and
+> depth to fourcc codes.
+>=20
+> As the number of bits per pixel is less than eight, these rely on proper
+> block handling for the calculation of bits per pixel and pitch.
+>=20
+> Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
+> ---
+> v2:
+>   - Improve pixel descriptions,
+>   - Require depth to match bpp in drm_mode_legacy_fb_format(),
+>   - Set .is_color_indexed flag.
+> ---
+>  drivers/gpu/drm/drm_fourcc.c  | 21 +++++++++++++++++++++
+>  include/uapi/drm/drm_fourcc.h |  5 ++++-
+>  2 files changed, 25 insertions(+), 1 deletion(-)
+>=20
+> diff --git a/drivers/gpu/drm/drm_fourcc.c b/drivers/gpu/drm/drm_fourcc.c
+> index 6c76bd821d17e7c7..29f4fe199c4ddcf0 100644
+> --- a/drivers/gpu/drm/drm_fourcc.c
+> +++ b/drivers/gpu/drm/drm_fourcc.c
+> @@ -43,6 +43,21 @@ uint32_t drm_mode_legacy_fb_format(uint32_t bpp, uint3=
+2_t depth)
+>  	uint32_t fmt =3D DRM_FORMAT_INVALID;
+> =20
+>  	switch (bpp) {
+> +	case 1:
+> +		if (depth =3D=3D 1)
+> +			fmt =3D DRM_FORMAT_C1;
+> +		break;
+> +
+> +	case 2:
+> +		if (depth =3D=3D 2)
+> +			fmt =3D DRM_FORMAT_C2;
+> +		break;
+> +
+> +	case 4:
+> +		if (depth =3D=3D 4)
+> +			fmt =3D DRM_FORMAT_C4;
+> +		break;
+> +
+>  	case 8:
+>  		if (depth =3D=3D 8)
+>  			fmt =3D DRM_FORMAT_C8;
+> @@ -132,6 +147,12 @@ EXPORT_SYMBOL(drm_driver_legacy_fb_format);
+>  const struct drm_format_info *__drm_format_info(u32 format)
+>  {
+>  	static const struct drm_format_info formats[] =3D {
+> +		{ .format =3D DRM_FORMAT_C1,		.depth =3D 1,  .num_planes =3D 1,
+> +		  .char_per_block =3D { 1, }, .block_w =3D { 8, }, .block_h =3D { 1, }=
+, .hsub =3D 1, .vsub =3D 1, .is_color_indexed =3D true },
+> +		{ .format =3D DRM_FORMAT_C2,		.depth =3D 2,  .num_planes =3D 1,
+> +		  .char_per_block =3D { 1, }, .block_w =3D { 4, }, .block_h =3D { 1, }=
+, .hsub =3D 1, .vsub =3D 1, .is_color_indexed =3D true },
+> +		{ .format =3D DRM_FORMAT_C4,		.depth =3D 4,  .num_planes =3D 1,
+> +		  .char_per_block =3D { 1, }, .block_w =3D { 2, }, .block_h =3D { 1, }=
+, .hsub =3D 1, .vsub =3D 1, .is_color_indexed =3D true },
+>  		{ .format =3D DRM_FORMAT_C8,		.depth =3D 8,  .num_planes =3D 1, .cpp =
+=3D { 1, 0, 0 }, .hsub =3D 1, .vsub =3D 1, .is_color_indexed =3D true },
+>  		{ .format =3D DRM_FORMAT_R8,		.depth =3D 8,  .num_planes =3D 1, .cpp =
+=3D { 1, 0, 0 }, .hsub =3D 1, .vsub =3D 1 },
+>  		{ .format =3D DRM_FORMAT_R10,		.depth =3D 10, .num_planes =3D 1, .cpp =
+=3D { 2, 0, 0 }, .hsub =3D 1, .vsub =3D 1 },
+> diff --git a/include/uapi/drm/drm_fourcc.h b/include/uapi/drm/drm_fourcc.h
+> index fc0c1454d2757d5d..457ed39cc48f08e1 100644
+> --- a/include/uapi/drm/drm_fourcc.h
+> +++ b/include/uapi/drm/drm_fourcc.h
+> @@ -99,7 +99,10 @@ extern "C" {
+>  #define DRM_FORMAT_INVALID	0
+> =20
+>  /* color index */
+> -#define DRM_FORMAT_C8		fourcc_code('C', '8', ' ', ' ') /* [7:0] C */
+> +#define DRM_FORMAT_C1		fourcc_code('C', '1', ' ', ' ') /* [7:0] C0:C1:C2=
+:C3:C4:C5:C6:C7 1:1:1:1:1:1:1:1 eight pixels/byte */
+> +#define DRM_FORMAT_C2		fourcc_code('C', '2', ' ', ' ') /* [7:0] C0:C1:C2=
+:C3 2:2:2:2 four pixels/byte */
+> +#define DRM_FORMAT_C4		fourcc_code('C', '4', ' ', ' ') /* [7:0] C0:C1 4:=
+4 two pixels/byte */
+> +#define DRM_FORMAT_C8		fourcc_code('C', '8', ' ', ' ') /* [7:0] C 8 one =
+pixel/byte */
+> =20
+>  /* 8 bpp Red */
+>  #define DRM_FORMAT_R8		fourcc_code('R', '8', ' ', ' ') /* [7:0] R */
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+Hi Geert,
 
-gcc tested configs:
-arm                                 defconfig
-arm                              allmodconfig
-arm                              allyesconfig
-arm64                            allyesconfig
-arm64                               defconfig
-sh                          landisk_defconfig
-sh                          urquell_defconfig
-mips                           ip32_defconfig
-mips                      fuloong2e_defconfig
-m68k                          atari_defconfig
-mips                    maltaup_xpa_defconfig
-openrisc                 simple_smp_defconfig
-sh                        edosk7705_defconfig
-powerpc                 mpc834x_itx_defconfig
-m68k                       m5249evb_defconfig
-arm                            hisi_defconfig
-riscv                               defconfig
-arm                  randconfig-c002-20220308
-arm                  randconfig-c002-20220307
-ia64                                defconfig
-ia64                             allmodconfig
-ia64                             allyesconfig
-m68k                                defconfig
-m68k                             allyesconfig
-m68k                             allmodconfig
-nds32                             allnoconfig
-nios2                               defconfig
-arc                              allyesconfig
-csky                                defconfig
-alpha                               defconfig
-nds32                               defconfig
-alpha                            allyesconfig
-nios2                            allyesconfig
-arc                                 defconfig
-sh                               allmodconfig
-h8300                            allyesconfig
-xtensa                           allyesconfig
-parisc                              defconfig
-s390                                defconfig
-parisc64                            defconfig
-s390                             allmodconfig
-s390                             allyesconfig
-parisc                           allyesconfig
-i386                             allyesconfig
-i386                              debian-10.3
-i386                   debian-10.3-kselftests
-i386                                defconfig
-sparc                            allyesconfig
-sparc                               defconfig
-mips                             allyesconfig
-mips                             allmodconfig
-powerpc                          allyesconfig
-powerpc                          allmodconfig
-powerpc                           allnoconfig
-riscv                    nommu_k210_defconfig
-riscv                            allyesconfig
-riscv                             allnoconfig
-riscv                          rv32_defconfig
-riscv                            allmodconfig
-riscv                    nommu_virt_defconfig
-um                             i386_defconfig
-um                           x86_64_defconfig
-x86_64                              defconfig
-x86_64                           allyesconfig
-x86_64                                  kexec
-x86_64                               rhel-8.3
-x86_64                          rhel-8.3-func
-x86_64                         rhel-8.3-kunit
-x86_64                    rhel-8.3-kselftests
+this patch looks good to me, so
 
-clang tested configs:
-x86_64                        randconfig-c007
-riscv                randconfig-c006-20220308
-powerpc              randconfig-c003-20220308
-i386                          randconfig-c001
-arm                  randconfig-c002-20220308
-mips                 randconfig-c004-20220308
+Reviewed-by: Pekka Paalanen <pekka.paalanen@collabora.com>
 
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+
+Thanks,
+pq
+
+--Sig_/VBZDq9jhkM14hkgWzHPGink
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAEBCAAdFiEEJQjwWQChkWOYOIONI1/ltBGqqqcFAmInHBIACgkQI1/ltBGq
+qqcvIQ/+Iq3B29/S8YElzMbwhbRbCnHjVokyhitB/SEdNY4JMNb4FMtMUhAMRxSF
+Uo31tlj5O5NB91q20uMJCBduXO/YSRaLmoLs15/KmRjgtQ0gPE8XuZlfOc5y7cRR
+XSpGqgcmzjjAC8lUEknvkg1petE8GGa3gbuQzVB22gvkNNGaUFrrsdHsmOm7d1bz
+M8MbwGpI2xZZp1I6c4LqSCLNlLZaSi5N31EtZp5zgJfGVCavF1WyooHB1DNe/U3K
+OLYMPaTtVYomsMH9qYx2VWPWTJ/oVWN1lNe88BltTNNdXd+8GJo32KObx0JC34CB
+WgmJLrirf9LdhoaAjyEWSwUg5tlyU8I6NQQWL+rP7ITsU/Sdgmno1Ccl48dwltyt
+zoJHLym33F6jZGY3cLAi3aNvs3MRNr81if410QQZjeutX0+VEFeilbnypTWaRUiu
+iDY3sLIJyvnrfAnZQmfpz1xHmyVxriRxatYA2Uco6v+yw4Qn78Bwnxkgp6nMDNy7
+dom+5l2xjgf3BNyjdBj70UJ1+T+Ctpc5sytm8eXfiMMazeudXybSYGuBrep2r0oz
+R3QcikKUeJkZevDcxsptDXNx7ocHEzU4v406hvnTv6k5dQnJqH6hC6Tala/JbCxz
+A2D+Y+Oz/EfOS1i7u27CEhHU2ou666eHzdpTFh2aiNdSnJSAJ3s=
+=UfSs
+-----END PGP SIGNATURE-----
+
+--Sig_/VBZDq9jhkM14hkgWzHPGink--
